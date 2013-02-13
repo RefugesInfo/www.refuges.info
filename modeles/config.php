@@ -3,6 +3,7 @@
 Constantes de configuration, plus propre qu'en dur
 *************************************************/
 
+// Ce fichier est privée et contient des différentes clefs et mot de passe
 require_once("config_privee.php");
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
@@ -18,22 +19,6 @@ $config['cartes_vignettes'] = Array (
 //	'Argentina' => Array ('Google'          , ''      , 'OpenCycleMap', 50000),
 	'Autres'    => Array ($config['carte_base'], ''      , 'OpenCycleMap', 50000),
 );
-
-/******** Clés des contrats des cartes **********/
-// Dominique 09/05/2012. Déplacées de /includes/fonctions_gmaps.php
-$config['gmaps_key']="";// Obsolète en GG V3
-
-$config['ign_key']=""; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
-
-// cartes anglaises
-$config['os_key']=""; // User cavailhezd / http://openspace.ordnancesurvey.co.uk
-
-// Accès MySQL : réglages de production
-// si une zone développement doit un jour voir le jour, on pourra mettre un if pour choisir entre prod et dév
-$config['utilisateur_mysql']="user";
-$config['mot_de_passe_mysql']="pass";
-$config['serveur_mysql']="localhost";
-$config['base_mysql']="refuges";
 
 // voici les mensurations des taille des photos afficher sur le site ( pour éviter une guirlande )
 $config['largeur_max_photo']=700;
