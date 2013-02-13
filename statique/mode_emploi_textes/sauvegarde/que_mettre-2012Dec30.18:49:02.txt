@@ -1,0 +1,95 @@
+<h3>Que mettre ou ne pas mettre sur le site refuges.info ?</h3>
+<p>
+Cette page tente de lister de manière la plus complète possible ce que nous souhaitons voir et ne pas voir dans les commentaires ou les fiches du site ; et ce, afin de garder un site aussi utile que possible, avec ce qu'il faut, mais pas trop. 
+</p>
+<p>Cette page est en construction permanente suite à [url=http://www.refuges.info/forum/viewtopic.php?t=3187]une discussion démarrée le 10/10/2008 sur le forum.[/url] Elle est amenée à évoluer et se compléter.<br/>
+</p>
+<ol>
+<li><h4>Les oeuvres protégées</h4>
+<p>
+[url=##contenus_interdits]Rappels sur les contenus <strong>interdits.</strong>[/url]
+</p>
+</li>
+
+<li>
+<h4>Concernant [url=##pages_points]les points du site.[/url]</h4>
+<h5>Les cabanes non gardées:</h5>
+
+<p>
+<h6>Quel type de cabane puis-je mettre ?</h6>
+[url=##fiche-cabane-non-gardee]Voir la description détaillée d'une cabane non gardée[/url]
+</p>
+<p>
+<h6>J'ai trouvé un fort militaire, c'est marqué accès interdit, mais on peut-y rentrer pour dormir, puis-je le mettre ?</h6>
+<strong>Non :</strong> Nous tentons de rester en de bons termes avec tout le monde, nous ne voulons pas inciter à quelque chose d'illégal.
+</p>
+
+<p>
+<h6>J'ai trouvé une grotte très confortable, on peut-y rentrer pour dormir, puis-je le mettre ?</h6>
+<strong>Non :</strong> On préfère rester pour l'instant avec les lieux artificiels, mais venez en discuter sur le forum.
+</p>
+
+<p>
+<h6>J'ai trouvé une bergerie ouverte où j'ai pu dormir, puis-je le mettre ?</h6>
+<strong>Non :</strong> Tant qu'il n'est pas clair que celle-ci est ouverte au public.
+</p>
+
+<h5>Les gîtes :</h5>
+<p>
+<h6>Puis-je mettre mon établissement sur le site refuges.info ?</h6>
+<strong>Oui :</strong> S'il est en connexion avec la montagne et la randonnée.
+</p>
+
+<p>
+<h6>Je suis gérant d'un hôtel, puis-je le mettre sur le site refuges.info ?</h6>
+<strong>Non :</strong> Pour l'instant nous ne voulons pas d'hôtels, mais cela pourrait changer, merci d'en parler sur le forum.
+</p>
+
+<li><h4>Concernant les [url=##commentaires]commentaires sur les points du site.[/url]</h4>
+
+<h5>Sur les refuges gardés et les gîtes:</h5>
+<h6>J'ai trouvé la bouffe infecte, le prix trop cher, les gardiens pas sympas, les douches trop froides..., où est-ce que je le dis ?</h6>
+<strong>Non :</strong> Pas sur les fiches du site qui sont réservées à une information objective et qui se transformeraient en bataille entre ceux qui aiment et ceux qui n'aiment pas.<br/><strong>Oui:</strong> Chaque refuge/gîte dispose d'une page forum un peu plus adaptée à ces avis. Soyez néanmoins courtois sans diffamer, sans quoi les modérateurs supprimerons ce type de commentaire.
+</p>
+
+<h5>Sur les cabanes non gardées:</h5>
+<p>
+<h6>Je prévois d'aller dans un refuge non gardé avec des amis puis-je prévenir les autres sur refuges.info ?</h6>
+<strong>Non :</strong> refuges.info n'a pas pour vocation d'encourager ou aider les "réservations" qui ne sont pas possibles dans des refuges non gardés. Souvent la motivation n'est pas la "réservation" mais "juste" prévenir, mais finalement ça se ressemble, le but, avoué ou non et de dissuader d'autres de s'y rendre. Pas ici de procès d'intention, mais comme il n'est pas possible de différencier les messages, ceux qui ressemblent à ça seront supprimés  ([url=http://www.refuges.info/forum/viewtopic.php?t=37]Les débats furent long [/url] pour définir que c'était plutôt néfaste.)
+</p>
+
+<h5>En général:</h5>
+
+<p>
+<h6>J'ai pris en photo tout notre groupe qui a réussi à y monter, puis-je la mettre sur le site refuges.info ?</h6>
+<strong>Non :</strong> C'est peut-être un bel effort, mais pensez aux autres utilisateurs du site, qui cela pourra-t-il bien intéresser ? 
+</p>
+<p>
+De manière générale ce site n'a pas été fait pour que tout le monde puisse raconter sa randonnée et l'agrémenter de photos (il y'a d'autres sites pour ça) mais pour construire, de manière communautaire, des fiches précises et contenant des informations les plus objectives possibles comme un commentaire/une photo de vue d'intérieur, équipements, vue d'extérieur, chemin d'accès, particularité d'accès, etc.
+</p>
+<p>
+Une devise proche de celle du site pourrait être comme celle dAntoine de Saint-Exupéry (parlant d'avions):<i>La perfection  est atteinte, non pas lorsqu'il n'y a plus rien à ajouter, mais lorsqu'il n'y a plus rien à retirer. </i>
+</p>
+
+<p>
+<h6>Je suis passé récemment voir un refuge et il n'y a rien de spécial à dire</h6>
+<strong>Oui :</strong> Tout l'intérêt de ce site est justement d'avoir un suivi le plus a jour possible de l'état des abris, indiquer à quelle date vous êtes passé et que tout allait bien est déjà une information importante !
+</p>
+
+<p>
+<h6>J'ai pris en photo une fleur, un bouquetin, un chamois, une marmotte, un cristal de quartz ?</h6>
+<strong>Non :</strong> C'est peut-être très beau, mais ça n'a rien a voir avec le site refuges.info.
+</p>
+
+
+<p>
+<h6>J'ai une question à poser concernant un refuge (ou un [url=##autres_points]autre point[/url]) ?</h6>
+<strong>Non :</strong> pas sur la page du refuge, en revanche votre question est la bienvenue sur [url=##pages_forum]la page forum du refuge[/url], mais rien ne garantit que vous obtiendrez une réponse !
+</p>
+
+</li>
+</ol>
+<p>
+Note : le "nous" de cette page peut faire penser qu'une équipe de dictateurs impose sa loi sans discussions sur ce qui doit ou non figurer sur ce site. Il n'en est rien, ce "nous" peut très bien vous inclure, et cela inclut déjà de nombreux utilisateurs du site qui ont pris le temps de venir discuter sur le forum, comprendre notre fonctionnement communautaire et proposer à leur tour de compléter cette page.
+</p>
+</p>

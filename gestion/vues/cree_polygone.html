@@ -1,0 +1,21 @@
+<form method="post" action="/gestion/?page=edit_polygone">
+	<h4>Création d'un nouveau polygone</h4>
+	<p>
+		Nom:
+		<input type="text" name="name" value="Nom" />
+	</p>
+	<p>
+		Type de polygone:
+		<select id="inputType" name="type">
+			<?=$modele->choix_type?>
+		</select>
+	</p>
+	<p>
+		Article partitif:
+		<input type="text" name="article_partitif" size="9" value="du" />
+		("de la", "de l'", "du")
+	</p>
+	<p>
+		<input type="submit" name="creer" value="Créer le polygone">
+	</p>
+</form>

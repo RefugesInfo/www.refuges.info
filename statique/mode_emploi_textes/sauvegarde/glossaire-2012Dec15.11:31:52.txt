@@ -1,0 +1,42 @@
+<h3>Glossaire des termes régulièrement rencontrés sur Refuge.info ou son forum</h3>
+<p></p>
+<ul>
+<li>[b]Calques[/b] : C'est le support des icônes qui représente et positionne géographiquement les points sur les cartes. Certains permettent lorsqu'ils sont activés, d'afficher des informations autres que les points créés sur refuges.info (par exemple, les informations du site chemineur.fr).</li>
+<p></p>
+<li>[b]Cartes[/b] : La carte affichée par défaut est celle de la France. Il est possible de choisir différents fonds de cartes topographiques sur le [url=http://www.refuges.info/nav.php] Présentoir à cartes[/url] pour rechercher un point sur refuges.info. Des cartes pour la Suisse, l'Espagne et l'Italie sont également disponibles.</li>
+<p></p>
+<li>
+  [b]Fiche d'un point[/b] : C'est la description du point qui diffère selon le type de point. [url=##fiches_points]Explications ici[/url]
+</li>
+<p></p>
+<li>[b]Forum sur les refuges [/b]: Forum dédié aux pages de [b]toutes[/b] les catégories de points existantes sur refuges.info. Créées [b]automatiquement[/b] à la création d'une page point, il n'est pas nécessaire d'en créer de nouvelles.
+</li>
+<p></p>
+<li>
+  [b]Mode d'emploi[/b] : ensemble des pages d'aide (vous êtes en train d'en lire une partie)
+</li>
+<p></p>
+<li>
+  [b]Pages d'aide[/b] : pages rédigées dans le but de présenter les objectifs, le fonctionnement du site et tout ce qui y a trait à ce dernier. Voir [url=##/mode_emploi.php?page=index]Mode d'emploi[/url]
+</li>
+<p></p>
+<li>
+  [b]Page Internet[/b] : <strong>Est-ce utile de dire ici ce qu'est une page internet ? </strong>
+</li>
+<p></p>
+<li>
+  [b]Page d'un point[/b] : [url=##pages_points]Explications ici[/url] contient la fiche d'un point, les commentaires/photos liés à un point et une reprise du dernier message du forum de ce point.
+</li>
+<p></p>
+<li>
+  [b]Point[/b] : Un objet du site ayant une latitude, une longitude et une altitude dont la [url=##autres_points]liste complète est ici[/url] et faisant l'objet d'une [b]page point[/b] pour le décrire
+</li>
+<p></p>
+<li>
+  [b]PRC[/b] : Sigle du site Pyrenees-Refuges.Com (le site d'un collègue)
+</li>
+<p></p>
+<li>
+  [b]WRI[/b] : Sigle de Www.Refuges.Info (ce site donc)
+</li>
+</ul>

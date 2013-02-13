@@ -1,0 +1,17 @@
+<h3>Contenus interdits sur refuges.info</h3>
+<p>
+	Il est <strong>Interdit</strong> de rajouter sur le site www.refuges.info une contribution photo ou texte si elle ou il est soumis à un copyright.
+</p>
+<p>
+Il n'est également pas possible de rajouter une contribution dont vous n'êtes pas l'auteur si celle-ci n'est pas 
+compatible avec la [url=##licence]licence de refuges.info[/url]
+</p>
+<p>
+	Cela inclut et sans s'y limiter :
+	<ul style='list-style-type: disc; padding-left: 2em;'>
+		<li>Copie venant d'un autre site (hors contenu sous licence compatible comme wikipedia)</li>
+		<li>Scan d'un document : livre, journal ou brochure</li>
+		<li>Extrait d'un document : livre, journal ou brochure</li>
+		<li>Scan/extrait/information d'une carte : carte routière, topographique, plan de ville</li>
+	</ul>
+</p>

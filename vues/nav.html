@@ -1,0 +1,176 @@
+<?// Bloc HTML réalisant l'affichage de la page des cartes
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+// $modele contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+
+// 17/10/11 Dominique : Création
+// 23/11/11 Dominique : Supression des tables. Disposition en CSS pur
+// 12/05/12 Dominique : Retour en templates simples
+?>
+<div class="contenu">
+	<!-- afficher le titre du massif (en mode massif) -->
+	<h3 id="titrepage">
+		<?=$modele->titre?> (Maj+clic=nouvel onglet) :
+	</h3>
+</div>
+<!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
+<!-- Un premier formulaire pour les consultations courantes -->
+<form
+	id="choix_legende"
+	style="float: left; width: 200px; <?if (isset ($_GET ['cree'])) {?>display:none;<?}?>"
+	action="/exportations/formulaire_exportations.php"
+>
+	<?if (isset ($modele->id_polygone )) {?>
+		<fieldset>
+			<label>
+				<input name="id_massif"
+					type="checkbox"
+					checked="checked"
+					value="<?=$modele->id_polygone?>"
+					onclick="switch_massif(this)"
+				/>
+				<?=$infos_polygone->nom_polygone?> uniquement
+			</label>
+		</fieldset>
+	<?}?>
+
+	<fieldset>
+		<legend>Points</legend>
+		<ul>
+			<?foreach ($modele->infos_base->types_point_affichables AS $ptype) {?>
+				<li>
+					<label>
+						<input
+							name="id_point_type[]"
+							onclick="maj_carte()"
+							value="<?=$ptype->id_point_type?>"
+							type="checkbox"
+							<?if (strstr (",$modele->liste_id_point_type,", ",$ptype->id_point_type,")) {?>
+								checked="checked"
+							<?}?>
+						/>
+						<img
+							id="icone_<?=$ptype->id_point_type?>"
+							src="<?=$config['url_chemin_icones'].$ptype->nom_icone?>.png"
+							alt="icone de <?=$ptype->nom_type?>"
+						/>
+						<?=$ptype->nom_type?>
+					</label>
+				</li>
+			<?}?>
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>Couches</legend>
+		<ul>
+			<div id="switch_nav"></div>
+		</ul>
+	</fieldset>
+
+	<!-- garde les coordonnee de la BBOX sous le coude pour l'export -->
+	<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$infos_polygone->latitude_minimum +0?>" /></p>
+	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$infos_polygone->latitude_maximum +0?>" /></p>
+	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$infos_polygone->longitude_minimum+0?>" /></p>
+	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$infos_polygone->longitude_maximum+0?>" /></p>
+
+	<!-- Cadre pour exporter la vue, appelle la page "exportations.php" avec les param en GET -->
+	<fieldset>
+		<label>
+			<input type="submit" value="Exporter la vue actuelle" />
+		</label>
+	</fieldset>
+	
+	<fieldset>
+		<label id="invit_cree">
+			<input type="button" value="Créer un point" onclick="invit_cree(true)" />
+		</label>
+	</fieldset>
+<!-- Chargement d'un fichier GPX -->
+	<fieldset id="loadGPX" style="display:none;height:45px">
+		<legend>Trace GPS</legend>
+		<label>
+			<input type="button" value="Charger un fichier GPX" /><?/* Bouton visible, inactif */?>
+			<?/* Suivi d'un vrai bouton, actif, invisible car il n'est pas customisable */?>
+			<input type="file" id="GPX" style="opacity:0;filter:alpha(opacity=0);width:100px;position:relative;top:-20px" />
+		</label>
+	</fieldset>
+	
+</form>
+
+<!-- Un deuxième formulaire (caché au début) pour ajouter un point -->
+<form
+	id="cree_point"
+	style="float:left; width:200px; <?if (!isset ($_GET ['cree'])) {?>display:none;<?}?>"
+	action="/point_formulaire_modification.php" 
+>
+	<fieldset>
+		<legend>Création</legend>
+		<ul>
+			<li>Faites glisser le viseur jaune sur la carte ou saisissez les coordonnées</li>
+			<li>
+				<span id="titre-lon">Longitude</span>:
+				<input name="proj-lon" id="proj-lon" type="text" size="5" />
+				<input name="lon" id="lon" type="text" style="display:none" />
+			</li>
+			<li>
+				<span id="titre-lat">Latitude</span>: 
+				<input name="proj-lat" id="proj-lat" type="text" size="6" />
+				<input name="lat" id="lat" type="text" style="display:none" />
+			</li>
+			<li>
+				<select id="select-projection" style="margin-left:-10px">
+					<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
+				</select>
+			</li>
+			<li>
+				<a onclick="layerViseur.centre()" href="#" title="Remettre le viseur au centre actuel de la carte">
+					Recentrer le viseur
+				</a>
+			</li>
+			<li>
+				<hr/>
+			</li>
+			<li>
+				<a title="Voir la liste des types de points possibles"
+				   href="http://www.refuges.info/statique/mode_emploi.php?page=autres_points"
+				>
+					Types de points
+				</a>
+			</li>
+			<li>
+				<select name="id_point_type">
+					<?// Calcul de la liste déroulante pour le menu
+					foreach ($modele->infos_base->types_point_affichables AS $pa) {?>
+						<option  value="<?=$pa->id_point_type?>">
+							<?=$pa->nom_type?>
+						</option>
+					<?}?>
+				</select>
+			</li>
+		</ul>
+		<input type="submit" value="Créer le point" />
+	</fieldset>
+</form>
+
+<div style="height: 80%;margin-left: 210px;"><?/* "Réserve" l'espace qui va bien à gauche. Pas beau mais j'ai pas trouvé mieux */?>
+  <!-- Pour les internautes n'ayant pas javascript d'activé -->
+  <noscript>
+    <p>
+    Vous ne semblez pas avoir activé javascript dans votre navigateur, mais notre site utilise une carte glissante entièrement
+    en javascript, ça ne va pas être pratique pour vous ! Il vous reste le mode "recherche".
+    </p>
+    <?php if (isset($modele->liste->points)) { ?>
+    <p>
+    Mais nous vous proposons quand même la liste des points de ce massif les uns à la suite des autres.
+    </p>
+    <?php foreach ($modele->liste->points as $point) { ?>
+    <a href="<?=$point->lien?>"><?=ucfirst($point->nom)?> (<?=$point->nom_type?>)</a><br />
+    <?php } } ?>
+  </noscript>
+  <!-- Et maintenant, la carte -->
+  <div id="carte_nav" style="height: 100%"></div>
+</div>

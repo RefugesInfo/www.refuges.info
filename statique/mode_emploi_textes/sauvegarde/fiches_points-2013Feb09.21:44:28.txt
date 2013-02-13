@@ -1,0 +1,22 @@
+<h3>Les fiches points de refuges.info</h3>
+<h5>Définition</h5>
+<p>
+	Une fiche point est <em>la carte d'identité du point </em>(comme par exemple la fiche refuge ou la fiche [url=##autres_points] d'autres points[/url].). Elles doivent donc contenir des informations objectives et utiles.
+</p>
+<p>
+Elle résulte d'une œuvre collective de plusieurs contributeurs de refuges.info.
+</p>
+<p> 
+	Tout [url=##contributeurs]contributeur[/url] peut créer une fiche pour un nouveau point.
+	
+</p>
+
+<h5>Présentation</h5>
+<p>
+La partie supérieure des fiches points présentent les informations générales du point comme le nom du point , le type de point (point d'eau, refuge gardé, gîtes, etc.) sa localisation (massif,  coordonnées GPS, altitude )son (ou ses différents) accès et des remarques utiles. A cela s'ajoute selon le type de point, des spécificités (nombre de places de couchage, moyen de chauffage, point d'eau proche... sur une fiche refuge non gardé par exemple).
+</p>
+Cette partie peut être modifiée, mise à jour par le créateur de la fiche (il est recommandé, bien que facultatif, de créer un compte sur le forum au préalable afin de pouvoir revenir compléter et modifier cette fiche ultérieurement) ou par un modérateur si des données communiquées par des contributeurs sur le forum ou dans les commentaires sont à mettre à jour. Sachez en outre, que les [url=##moderateurs]modérateurs[/url] du site peuvent intervenir sur cette fiche si celle ci contient des erreurs ou si son contenu est abusif.
+<p>
+	La partie inférieure permet d'y ajouter des photos permettant de compléter les informations descriptives de la parties supérieure. Des [url=##commentaires]commentaires[/url] peuvent y être régulièrement ajoutés par tout contributeur, pour la mise à jour, le suivi de l'évolution du point, une information sur les modifications de trajets pour l'atteindre, etc. 
+</p>
+<p> Un lien au milieu de cette fiche d'identité du point vous renvoie au forum qui est généré automatiquement lors de la création de cette fiche. Ce forum est fait pour déposer les messages autres que ceux des commentaires (poser une question, une demande d'information supplémentaire, etc.).

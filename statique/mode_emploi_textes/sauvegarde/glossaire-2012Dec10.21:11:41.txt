@@ -1,0 +1,24 @@
+<h3>Glossaire des termes régulièrement rencontrés sur Refuge.info</h3>
+<ul>
+<li>
+  [b]Fiche d'un point[/b] : [url=##fiches_points]Explications ici[/url]
+</li>
+<li>
+  [b]Mode d'emploi[/b] : ensemble des pages d'aide (vous êtes en train d'en lire une partie)
+</li>
+<li>
+  [b]Page Internet[/b] : <strong>Est-ce utile de dire ici ce qu'est une page internet ? </strong>
+</li>
+<li>
+  [b]Page d'un point[/b] : [url=##pages_points]Explications ici[/url]
+</li>
+<li>
+  [b]Page point [/b]: contient une fiche, les commentaires et une reprise du dernier message du forum de ce point, ainsi qu'un lien vers le dit forum (Cf description dans le mode d'emploi).
+</li>
+<li>
+  [b]Pages d'aide[/b] : pages rédigées dans le but de présenter les objectifs, le fonctionnement du site et tout ce qui y a trait à ce dernier
+</li>
+<li>
+  [b]Point [/b]: objet matérialisant une cabane, un point d'eau... représenté par un icône figurant sur une carte et faisant l'objet d'une page point pour le décrire et suivre son évolution
+</li>
+</ul>

@@ -1,0 +1,46 @@
+<div class="contenu">
+	<?// lien pour un retour vers l'index du "wiki"
+	if ($_GET['page']!="index") {?>
+		<a href="<?=lien_mode_emploi()?>">Retour à l'index du mode d'emploi</a>
+	<?}
+	
+	// lien modifier, uniquement pour les modérateurs
+	if ($_SESSION['niveau_moderation']>=1 AND ($_GET['form_modifier']!=1)) {?>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="<?=lien_mode_emploi($_GET[page])?>&amp;form_modifier=1">
+			Modifier cette page
+		</a> /
+		Suppression de cette page sans confirmation :
+		<a href="<?=lien_mode_emploi($_GET[page])?>&amp;supprimer=1">
+			<strong>pouf !</strong>
+		</a>
+	<?php } ?>
+		Date de dernière modification de cette page: <?=$modele->date_fichier?>
+		<br />
+
+	<?php
+	//formulaire pour modifier
+	if (($_SESSION['niveau_moderation'] >= 1) AND ($_GET['form_modifier'] == 1)) {
+	?>
+
+		<p>
+			<form method="post" action="<?=lien_mode_emploi($_GET[page])?>">
+				<textarea cols="150" rows="20" name="texte"><?=$modele->contenu?></textarea>
+				<br />
+				<input name="modification" type="submit" value="Modifier"/>
+			</form>
+		</p>
+		<p>
+			Un lien vers une autre page du mode d'emploi : [url=##nom_page]la bas c'est cool[/url]<br />
+			BBcode : <?=$config['lien_syntaxe']?><br />
+			[->5656] Lien automatique vers la page d'un point en particulier du site<br />
+			Le reste, ce sont les balises HTML :<br />
+			- &lt;h3&gt;Mon gros titre&lt;/h3&gt;<br />
+			- &lt;h4&gt;Mon titre moyen&lt;/h4&gt;<br />
+			- &lt;p&gt;Mon paragraphe&lt;/p&gt;<br />
+			(Prendre les autres pages comme exemple)
+			
+		</p>
+	<?}?>
+	<?=$modele->html?>
+</div>

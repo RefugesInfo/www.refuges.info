@@ -1,0 +1,36 @@
+<h3>Qui sont les contributeurs de refuges.info ?</h3>
+	<p>     
+               Un contributeur est une personne qui participe activement à la création et la mise à jour du contenu du site Refuges.infos.</p>
+	<p> 
+<h5>Contributeur simple </h5>   
+<p>Tout le monde peut devenir contributeur sur le site refuges.info <br/>
+Chacun peut apporter un [url=##commentaires]commentaire[/url] à la page d'un refuge pour aider à la compléter, <br/>
+Chacun peut créer la fiche d'un nouveau refuge ou [url=##autres_points]autre point[/url] si celui-ci ne figure pas déjà sur le site.</p>
+<p>
+
+<li>Si vous connaissez les coordonnées GPS du point à ajouter, <a href="/nav.php?cree">aller directement ici</a></li>
+    <li>Si vous ne connaissez pas les coordonnées GPS du point à ajouter, vous pouvez <a href="/nav.php?lat=45&amp;lon=6&amp;zoom=9">utiliser la carte</a> pour le pointer au mieux</li></p>
+
+<p>
+<strong>ATTENTION - Tout n'a pas forcément sa place sur refuges.info,</strong> [url=##que_mettre]voici une page des contenus qui sont ou non bienvenus sur le site.[/url]
+</p>
+
+<p>
+		Cette contribution peut être anonyme, mais il vous est conseillé de créer un compte sur le [url=##forum_point]forum[/url] et de vous 
+		connecter afin de pouvoir revenir ultérieurement compléter la fiche que vous avez créée.</p>
+
+<h5> Contributeur inscrit sur le forum de Refuges.info</h5>
+              <p>  Un contributeur enregistré sur le forum peut :modifier ou corriger les informations existantes sur la fiche qu'il a créé.
+	<p>
+		Le lien pour cette action se trouve en bas de la fiche de [url=##autres_point]chaque point[/url].<br/>
+		
+		Pour ce faire, vous pouvez :<br />
+		- Vous rendre au [url=/point_ajout_etape2.php]formulaire d'ajout directement[/url] si vous connaissez les coordonées GPS du point.<br />
+		- Choisir un massif sur la barre de tâche, naviguer, utiliser la case "autoriser l'ajout" en bas à gauche, puis cliquer le plus précisément possible sur la carte.
+	</p>
+<p>
+		Si le commentaire est utile, un [url=##moderateurs]modérateur[/url] pourra l'incorporer dans la fiche. Si vous pensez que l'information que vous apportez serait utile pour compléter la fiche, une case à cocher vous permet de prévenir un [url=##moderateurs]modérateur.[/url]
+	</p>
+	<p>
+		<em>Voir aussi [url=##restriction_licence]Conditions sur les ajouts[/url]</em>.
+	</p>

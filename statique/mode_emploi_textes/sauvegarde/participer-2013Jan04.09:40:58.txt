@@ -1,0 +1,63 @@
+<h3>Comment contribuer à Refuges.info ?</h3>
+	<h4>En créant de nouveaux points !</h4>	
+<p>
+La méthode la plus simple c'est de ne pas hésiter à ajouter des [url=##autres_points]nouveaux points[/url] ou des [url=##commentaires]commentaires[/url] sur le site pour qu'il soit toujours plus riche ! Tout le monde peut devenir [url=##contributeurs]contributeurs du site[/url] !
+</p>
+         
+<p>- Si vous connaissez les coordonnées GPS du point à ajouter, <a href="/nav.php?cree">aller directement ici</a></br>
+
+  - Si vous ne connaissez pas les coordonnées GPS du point à ajouter, vous pouvez <a href="/nav.php?lat=45&amp;lon=6&amp;zoom=9">utiliser la carte</a> pour le pointer au mieux</p>	
+	
+<p>
+<em>ATTENTION - Tout n'a pas forcément sa place sur refuges.info, [url=##que_mettre]voici une page des contenus qui sont ou non bienvenus sur le site.[/url]</em>
+</p>
+<p>NB : Toute participation, création de fiche, tout commentaire ou photo postée sur le site [url=##restriction_licence]est publiée par son auteur sous licence creative commons by-sa 2.0[/url].
+</p>	
+<h4>En nous signalant une erreur, un oubli, une copie illégale dans le contenu :</h4>
+	<p>
+		Lorsque vous ajoutez un [url=##commentaires]commentaire[/url] sur la [url=##pages_points]page d'un point[/url], une petite case à cocher vous permet de prévenir un [url=##moderateurs]modérateur[/url] et ainsi lui signifier qu'une erreur se cache sur [url=##fiches_points]la fiche[/url] ou que vous apportez une information importante .
+	</p>
+<p></p>	
+	<h4>En signalant un [url=##commentaires]commentaire[/url] sans intérêt, inadapté ou illicite :</h4>
+	<p>
+		Un de nos problèmes est de garder un site précis comportant ce qu'il faut mais pas trop. Régulièrement nous tentons
+		de faire le tour mais c'est long et nous ne voyons pas tout !</br>
+		Un bon moyen de nous aider est d'utiliser la case à coté de chaque [url=##commentaires]commentaires[/url] qui indiquera à un [url=##moderateurs]modérateur[/url] que vous pensez que ce commentaire est sans intérêt et/ou ne correspond pas à [url=##que_mettre]ce qui est attendu sur le site[/url].
+	</p>
+<p></p>
+<h4>En participant à la vie de Refuges.info </a> :</h4>
+	<p>
+		<h5>Dans le <a href="/forum/">Forum</a></h5>
+Différents forums existent et permettent de donner son avis et de participer à l'évolution du site et du forum, de communiquer une information qui peut être utile à tous.  Laissez donc dans un des Forums un avis, une idée à débattre. Une information sur un accès, l'état d'une source, même si elle n'est valable que ponctuellement, est une contribution très appréciée des internautes. 
+	</p>
+<p>
+		<h5>En participant aux mises à jour</h5>
+Que ce soit en laissant un message dans les forums ou avec un commentaire accompagnée ou non d'une photo sur la fiche du point concerné, toute information permettant de maintenir la base de données à jour est bienvenue et participe à la fiabilité des informations disponibles sur Refuges.info. 
+	</p>
+<p></p>	
+        <h4>En devenant [url=##moderateurs]modérateur[/url] :</h4>
+	<p>
+		Un autre bon moyen pour nous soutenir, c'est de nous aider dans la tâche qui consiste
+		à compléter, ajouter, corriger les informations déjà présentes. Vous pouvez devenir [url=##moderateurs]modérateur[/url]
+		du site (N'hésitez pas à vous proposer sur le [url=http://www.refuges.info/forum]forum[/url]).
+	</p>
+<p></p>	
+	<h4>Et rajouter des fonctionnalités au site refuges.info ?</h4>
+	<p>
+		Si vous êtes développeur, que vous avez des compétences en php/MySQL assorti d'un peu de motivation, vous serez bienvenu(e)
+		pour filer un coup de main sur le code du site refuges.info et ajouter des fonctionnalités que vous aurez au préalable présentées sur 
+		le forum. A noter que l'ensemble des programmes constituant refuges.info est sous une licence libre permettant la redistribution et 		la modification.
+
+<p> La licence est lisible ici : [url=http://www.refuges.info/Licence.txt]Texte de la licence s'appliquant au code du site refuges.info[/url]</br>
+		Le code quand à lui est disponible ici [url=http://www.refuges.info/ressources/www.refuges.info-27-11-2008.tar.gz]www.refuges.info-27-11-2008.tar.gz[/url] (Attention, c'est une vieille version, vous devriez venir demander sur le forum la version plus récente)
+</p>
+<p></p>	
+<p>
+	<h4>En participant financièrement :</h4>
+	
+		La réalisation et la modération du site est bénévole, bien que nos coûts de fonctionnement soient au plus
+		bas, un petit peu de sous pourrait nous aider à payer l'hébergement, le nom de domaine, ou la méchante prune qu'on
+		s'est prise : [url=##condamnation]Voir le pourquoi du comment[/url].
+                Contacter Sly sur le forum pour obtenir des informations supplémentaires.
+	</p>
+									

@@ -1,0 +1,5 @@
+En cas de modification des sources de la librairie:
+- Regénerer les fichiers compresser avec la commande build/build.php
+- prévenir webmestre@chemineur.fr pour report dans les éditions ultérieures
+Cette librairie étant en constante évolution et désormais utilisée sur plusieurs sites, l'original se trouve sur mon PC
+Dominique

@@ -1,0 +1,213 @@
+<?// Bloc affiché sur la page de recherche
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+// $modele contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+
+// 17/10/11 Dominique : Création
+?>
+<div class="contenu">
+	<!-- =========================== -->
+	<h3><?=$modele->titre?></h3>
+	<h4>Rechercher sur ce site</h4>
+	<p>
+		Tous les champs sont facultatifs.
+	</p>
+	<!-- =========================== -->
+	<form method="post" action="./point_recherche.php">
+		<fieldset>
+			<legend>Options de recherche</legend>
+			<table>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Nom: 
+					</td>
+					<td>
+						<input type="text" name="nom" />&nbsp;ex "jasse" ou "la pra"
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Massif: 
+					</td>
+					<td>
+						<select name="id_massif">
+							<option value="">(tous)</option>
+							<?foreach ($modele->massifs AS $m) {?>
+								<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option>
+							<?}?>
+						</select>
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Points à rechercher
+					</td>
+					<td>
+						<select name="id_point_type">
+							<option value="">(tous)</option>
+							<option value="tout-refuge" selected="selected">Tout type de refuge</option>
+							<?foreach ($modele->types_point AS $t) {?>
+								<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
+							<?}?>
+						</select>
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Nombre de places compris entre&nbsp;:
+					</td>
+					<td>
+						<input type="text" name="places_minimum" maxlength="3" size="3" />
+						et
+						<input type="text" name="places_maximum" maxlength="3" size="3" />
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Altitude entre :
+					</td>
+					<td>
+						<input type="text" name="altitude_minimum" maxlength="4" size="4" />
+						m et 
+						<input type="text" name="altitude_maximum" maxlength="4" size="4" />m
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Précision des coordonnéés GPS :
+					</td>
+					<td>
+						<select name="precision_gps">
+							<option value="">(Peu importe)</option>
+							<option value="1,2">Prises sur une carte ou le terrain</option>
+							<?foreach ($modele->type_precision AS $p) {?>
+								<option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
+							<?}?>
+						</select>
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Coordonnées GPS :
+					</td>
+					<td>
+						<label>Latitude:<input type="text" name="gps_lat" maxlength="10" size="8" /></label>
+						<label>Longitude:<input type="text" name="gps_long" maxlength="10" size="8" /></label>
+						et
+						<label><input type="text" name="gps_autour" maxlength="6" size="4" value="0.01" />degrés autour</label>
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Le champ remarques contient: 
+					</td>
+					<td>
+						<input type="text" name="description" />
+						&nbsp; exemple "scie", "table", etc.
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<!--
+				ce truc ne marche plus depuis longtemps, mais j'ai la flemme de le réparer, car je doute que ça ne serve tant que ça
+				<tr>
+					<td></td>
+					<td>
+						<input type="checkbox" name="commenttoo" value="sertarien" checked="checked" /><i>Rechercher également dans les commentaires</i>
+					</td>
+				</tr>
+				-->
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Uniquement les refuges avec photo:
+					</td>
+					<td>
+						<input type="checkbox" name="photo" value="foto" />
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Moyen de chauffage :
+					</td>
+					<td>
+						Poële ou cheminée:<input type="radio" name="chauffage" value="chauffage" />
+						&nbsp; &nbsp; Cheminée:<input type="radio" name="chauffage" value="cheminee" />
+						&nbsp; &nbsp; Poële:<input type="radio" name="chauffage" value="poele" />
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Attributs divers :
+					</td>
+					<td>
+						Couvertures:<input type="checkbox" name="couvertures" value="oui" />
+						&nbsp; &nbsp; Eau à proximité:<input type="checkbox" name="eau_a_proximite" value="oui" />
+						&nbsp; &nbsp; Bois à proximité:<input type="checkbox" name="bois_a_proximite" value="oui" />
+						&nbsp; &nbsp; Latrines:<input type="checkbox" name="latrines" value="oui" />
+						&nbsp; &nbsp; Non utilisable:<input type="checkbox" name="non_utilisable" value="oui" />
+						&nbsp; &nbsp; Lui manque un mur:<input type="checkbox" name="sommaire" value="oui" />
+						&nbsp; &nbsp; Clef à récupérer:<input type="checkbox" name="clef_a_recuperer" value="oui" />
+					</td>
+				</tr>
+				<?php 
+				// Ces options sont juste inutiles et confusionne M. tout le monde, je les gardes pour les modérateurs
+				if (isset($_SESSION['id_utilisateur']) AND ($_SESSION['niveau_moderation'] >= 1))
+				{  ?>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Option modérateur, état inconnu de :
+					</td>
+					<td>
+						Cheminée:<input type="checkbox" name="cheminee" value="vide" />
+						&nbsp; &nbsp; Poële:<input type="checkbox" name="poele" value="vide" />
+						&nbsp; &nbsp; Couvertures: <input type="checkbox" name="couvertures" value="vide" />
+						&nbsp; &nbsp; Eau à proximité:<input type="checkbox" name="eau_a_proximite" value="vide" />
+						&nbsp; &nbsp; Bois à proximité:<input type="checkbox" name="bois_a_proximite" value="vide" />
+						&nbsp; &nbsp; Latrines: <input type="checkbox" name="latrines" value="vide" />
+						&nbsp; &nbsp; Non utilisable:<input type="checkbox" name="non_utilisable" value="vide" />
+						&nbsp; &nbsp; Lui manque un mur:<input type="checkbox" name="sommaire" value="vide" />
+					</td>
+				</tr>
+				<?php } ?>
+				<!-- =========================== -->
+				<tr>
+					<td>
+						Ne pas limiter le nombre de résultat
+					</td>
+					<td>
+						<input type="checkbox" name="pas_limite" value="1" />
+					</td>
+				</tr>
+				<!-- =========================== -->
+				<tr>
+					<td colspan="2">
+						<input type="submit" name="recherche" value="chercher!" />
+						<!--<input type="submit" name="carte" value="Afficher sur une carte (non fonctionnel)" />-->
+					</td>
+				</tr>
+				<!-- =========================== -->
+			</table>
+		</fieldset>
+	</form> 
+	<!-- =========================== -->
+	<h4>Rechercher dans les Pyrénées ?</h4>
+	<p>
+		Compléter votre recherche avec l'excellent site 
+		<a href="http://www.pyrenees-refuges.com">www.pyrenees-refuges.com</a>
+	</p>
+	<!-- =========================== -->
+</div>

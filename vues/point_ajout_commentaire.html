@@ -1,0 +1,83 @@
+<div class="contenu">
+<?php if ($modele->point_existe) { ?>
+  <h3><?=$modele->titre?></h3>
+  <h4><a href="<?=$modele->lien_point?>"><?=$modele->lien_texte_retour?></a></h4>
+  <p>
+  <?php if ($modele->non_connecte) { ?>
+    Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
+    Bien que nous autorisons les contributions anonymes, ils vous est recommandé de vous connecter sur le forum et/ou de créer un compte
+    afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config['connexion_forum']?>">Connexion</a><br /><br />
+  <?php } if ($model->erreur_captcha) { ?>
+    <strong>Mauvaise lettre !</strong>
+    Merci de recopier la lettre indiquée. ceci afin de lutter contre les message 
+    indésirables. Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la 
+    publicité pour des sites plus que douteux. Du coup, cette manoeuvre a pour but de leur 
+    compliquer la tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. 
+    Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a 
+    toujours été d'être simple et rapide d'utilisation.<br /><br />
+  <?php } if ($model->banni) { ?>
+    <strong>Banni !</strong>
+    Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
+    vous pouvez en parler ici : <a href="/forum/viewtopic.php?t=671">Sur le forum</a><br /><br />
+  <?php } if ($modele->messages->erreur) { ?>
+    <strong><?=$modele->messages->message?></strong>
+  <?php } elseif (isset($modele->messages->erreur)) { ?>
+    <?=$modele->messages->message?>.<br /><br />
+  <?php } ?>
+  </p>
+  <div class="com">
+  <form id="comment" method="post" action="/point_ajout_commentaire.php?id_point=<?=$modele->commentaire->id_point?>" enctype="multipart/form-data">
+    <fieldset><legend style="font-size: 1.2em;">Rajouter une information ou une précision</legend>
+    <textarea name="comment_texte" cols="120" rows="8"><?=$modele->commentaire->texte_propre?></textarea><?=$config['lien_syntaxe']?>
+
+	<br />
+	<label>auteur:</label>
+		<input type="text" value="<?=$modele->commentaire->auteur?>" name="comment_auteur" maxlength="120" size="40" />(facultatif)
+	<br />
+
+	<label>Une photo ? (format JPEG)</label>
+		<input type="file" name="comment_photo" size="15" value=""/>(facultatif)
+	<br />
+	<?php if ($modele->captcha) { ?>
+	<fieldset>
+		<legend>Protection anti-spam</legend>
+		Merci de simplement écrire la lettre "f" dans la case<br />
+		<input type="text" name="lettre_verification" value="<?=$modele->lettre_verification?>"/>
+		Ceci afin d'éviter les messages indésirables automatiques (désolé)
+	</fieldset>
+	<?}?>
+	<br />
+	<input type="checkbox" name="demande_correction" value="1"/>
+	<label>Je souhaite prévenir un modérateur car mon commentaire apporte un complément à la partie supérieure de la fiche </label>
+		
+	<br />
+	<br />
+
+	<input type="submit" name="action" value="Envoyer" />
+	<input type="reset" value="Recommencer" />
+</form>
+</div>
+
+		<h4>Droits sur ce que vous allez mettre</h1>
+		<p>
+			Vous ne devez en aucun cas insérer un texte ou une <strong>photo qui ne vous appartient pas</strong>.
+		</p>
+		<p>
+			Une copie d'un autre site, le scan d'un journal ou livre <strong>ne peut pas</strong> trouver sa place sur ce site.
+		</p>
+		<p>
+			<?=$config['message_licence']?>
+		</p>
+	<h4>Rappels: <a href="<?=lien_mode_emploi('que_mettre')?>">voir ce que vous pouvez ou non mettre sur le site</a></h1>
+		<ul>
+			<?php
+			if ($point->equivalent_proprio!="")
+				print("<li>le site n'a aucun rapport avec les propriétaires ou gérants de $point->article_demonstratif $point->nom_type (inutile de leur laisser un message ici)</li>");
+			?>
+			<li>Cette information doit être utile et objective. Pour une appréciation, direction <a href="<?php print($config['forum_refuge'].$point->topic_id); ?>">le forum</a></li>
+		</ul>
+</div>
+<?php } else {?> 
+<strong>Le point sur lequel vous voulez ajouter un commentaire ne semble pas exister</strong>
+<?php } ?>
+</div>

@@ -1,0 +1,7 @@
+<h3>Glossaire des termes régulièrement rencontrés sur Refuge.info</h3>
+[b]Page[/b] : affichage d'une page internet. Elle peut contenir une fiche, une carte, un mode d'emploi, un fil de discussion du forum...
+[b]Fiche[/b] : description d'un point
+[b]Point [/b]: objet matérialisant une cabane, un point d'eau... représenté par un icône figurant sur une carte et faisant l'objet d'une page point pour le décrire et suivre son évolution
+[b]Page point [/b]: contient une fiche, les commentaires et une reprise du dernier message du forum de ce point, ainsi qu'un lien vers le dit forum (Cf description dans le mode d'emploi).
+[b]Mode d'emploi[/b] : ensemble des pages d'aide
+[b]Pages d'aide[/b] : pages rédigées dans le but de présenter les objectifs, le fonctionnement du site et tout ce qui y a trait à ce dernier

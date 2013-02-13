@@ -1,0 +1,22 @@
+<h3>Comment utiliser Refuges.info ?</h3>
+<h4> Rechercher une information sur Refuge.info</h4>
+
+<h5>Utiliser la fonction Recherche</h5>
+<p>Chacun peut <a href="/point_formulaire_recherche.php">rechercher</a> (par nom, par type, par massifs...) un refuge ou [url=##autres_points]un autre point[/url] et en consulter la fiche descriptive, après avoir renseigné, dans les champs disponibles du formulaire, les caractéristiques du point à rechercher.</p>
+
+
+<h5>Chercher un point à partir des cartes</h5>
+<p> Il est aussi possible de réaliser sa recherche à partir d'une carte disponible sur Refuges.info.<br/>
+Positionnez le curseur sur la barre de tâche du site sur le mot <a href=/massifs.php>"Massifs"</a>. Un menu déroulant apparaît pour proposer une zone géographique comportant des massifs montagneux. Cliquez sur le massif désiré.</p>
+<p>
+Lorsque vous êtes sur la carte représentant le massif, un découpage géographique apparaît matérialisé par des couleurs. Cliquez alors sur la partie du massif où vous voulez aller. Les icônes des points recensés sur Refuges.info sont alors visibles. <br/>
+Zoomer avec la roulette pour aller de façon plus précise à l'endroit souhaité et lorsque vous passez la souris sur les différentes icônes leur nom apparaît. Cliquez sur l'icône dont vous voulez consulter la fiche.
+</p>
+<p>
+Pour vous faciliter les recherches, il existe sur toutes les cartes, un onglet vertical de couleur noire qui est placé en haut à droite. Il vous permet de choisir le fond de carte sur lequel vous souhaitez naviguer (Google, Google map, Google photo,  IGN, IGN photo satellite, OSM, MAP refuge.info, etc.) ainsi que le calque (superposition des informations dont les points) que vous voulez rajouter (points, camptocamp.org, chemineur, etc). </p>
+
+<p>Les informations sont apportées par les [url=##contributeurs]contributeurs du site[/url]. 
+<em>De ce fait, Vérifiez la date de leur dernière mise à jour. </em>
+<p/>Si vous envisagez d'utiliser une cabane, un refuge non gardé, prenez connaissance  [url=##cabane_principe_bonne_conduite] du code de bonne conduite [/url]
+<p><strong>Il est de votre responsabilité de vous renseigner et de prévoir un plan "B" au cas où par exemple, le refuge serait fermé, trop petit, etc.</strong>
+</p>

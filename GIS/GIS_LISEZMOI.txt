@@ -1,0 +1,147 @@
+﻿
+Ce Fichier ne couvre que 3 aspects:
+-PREPARATION DE LA BASE
+-CONVERSION DES DATA
+-SOURCES DE NOUVEAUX DATA
+
+//#############################################
+//  PREPARATION DU TERRAIN
+
+//=====================================
+// ETAPES REALISEES JUSQU4A PRESENT (sauf modifs de code PHP/html/js)
+
+ajout column gis in points_gps type POINT
+ajout column gis in polygones type POLYGON
+
+//===================================
+// POLYGONES NON FERMES  
+// un POLYGON est ferme en standard OpenGIS.
+// notre base contient un mix de fermés et ouverts.
+
+// repere les polygons actuels non fermés:
+// TEST NON FIABLE, A ELIMINER  pour archive
+SELECT id_polygone AS idp,
+        COUNT(id_point_gps) AS pts,
+        COUNT(DISTINCT id_point_gps) AS ptsuniq,
+        MAX(ordre) AS maxi,
+        (SELECT id_point_gps FROM lien_polygone_gps WHERE id_polygone=idp ORDER BY ordre LIMIT 1) AS minpt
+    FROM lien_polygone_gps
+    GROUP BY id_polygone
+    HAVING
+        pts=ptsuniq  # ce qui veut dire qu'il y a qu'1 seul point de depart, ca boucle pas. pas bon.
+
+//=========================
+// Boucle tous les polygons actuels ( point debut = point fin)
+// NON FIABLE, pour archive
+// SUITE AU TEST NON FIABLE, j'ai fini par les fermer à la main.
+INSERT INTO lien_polygone_gps ( id_point_gps, id_polygone, ordre )
+SELECT 
+        ( SELECT id_point_gps
+          FROM lien_polygone_gps lpg
+          WHERE lpg.id_polygone=l.id_polygone
+          ORDER BY ordre
+          LIMIT 1) AS point,
+        id_polygone AS idpoly,
+        MAX(ordre)+1 AS indexa
+FROM lien_polygone_gps l
+GROUP BY id_polygone
+HAVING
+      COUNT(id_point_gps)=COUNT(DISTINCT id_point_gps) # ce qui veut dire qu'il y a qu'1 seul point de depart, ca boucle pas. pas bon.
+LIMIT 100 # pas necessaire mais c'est critique alors autant verifier(84 ajout normalement)
+// verifier avec la requete d'avant que tout est fermé (0 result)
+
+
+
+//############################################
+// PEUPLER LES COLUMNS   GIS
+
+//====================================
+// PEUPLER LES POINTS
+// peupler gis, facile. la fct PHP d'ajout modif est maintenant censée le gerer
+UPDATE points_gps SET gis = PointFromText(CONCAT('POINT(',points_gps.longitude,' ',points_gps.latitude,')'));
+
+// fonctionne mais phpmyadmin affiche un blob: faire AsText(gis) et option=>MontrerlesBLOB
+// longitude en 1er, pour que X() et Y() soient coherents (X horizontal)
+
+
+//======================================
+// PEUPLER LES POLYGONES
+// la grosse daube.
+// Plusieurs etapes:
+// 1- convertir les petits polygones
+// 2- convertir les Reserves natureles, coeur de parc meme s'ils sont gros
+// 3- Trouver de nouvelles sources plus legeres pour les gros mastodontes, qui sont les moins interessants.
+
+//== 1- et 2- ==============================
+// Construit les PETITS polygones et les RESERVES NAT
+// Traite tous les poly qui ont moins de 300 arretes. au dela je cherche une autre source moins complexe.
+// par exemple, les dept francais sont traités par un import.
+// exception, les 8 reserves naturelles.
+
+# le GROUP CONCAT par defaut plante en 1024 caracteres ( ~ 40 points par poly )
+SET group_concat_max_len=40000; # marche au random avec PHPmyadmin (sessions multiples)
+#SET GLOBAL group_concat_max_len=40000; # super-user only
+
+UPDATE polygones, 
+  ( # recupere toutes les coord du polygone
+    SELECT id_polygone AS polyid,
+           CONCAT(
+               "POLYGON((",
+               GROUP_CONCAT( 
+                    ( SELECT CONCAT(points_gps.longitude, ' ', points_gps.latitude)
+                      FROM points_gps
+                      WHERE points_gps.id_point_gps=lien_polygone_gps.id_point_gps
+                    ) ORDER BY ordre ASC ),
+               "))"
+           ) AS polygps,
+           COUNT(*) AS nbarretes
+    FROM lien_polygone_gps
+    GROUP BY id_polygone
+  ) AS polyentier
+SET
+ polygones.gis=PolygonFromText(polyentier.polygps)
+WHERE
+    polygones.id_polygone = polyentier.polyid 
+ AND ( polyentier.nbarretes < 300
+       OR polygones.id_polygone IN ( 353, 354, 375, 376, 377, 378, 454, 455 ) 
+     )
+
+// Suite au plantage de MySQL server de prod, j'ai fait en plusieurs etapes passant par une table tempo.
+// la table tempo est le resultat "polyentier" ci dessus
+// pas exactement comme ca mais dans l'idee.
+UPDATE polygones, 
+    temporairegis 
+SET
+ polygones.gis=PolygonFromText(temporairegis.polygps)
+WHERE
+    polygones.id_polygone = temporairegis.polyid 
+ AND ( temporairegis.nbarretes < 300
+       OR polygones.id_polygone IN ( 353, 354, 375, 376, 377, 378, 454, 455 ) 
+     )
+// C'est la que si les polygones ne sont pas fermes , ca plante. grosse daube et corrections manuelles d'une 20e de poly.
+
+
+//== 3- ==============================
+// RECONSTRUIT LES GROS POLYGONES EN PROVENANCE DE SOURCES MOINS DENSES
+// exemple, les departements  passent de 3000 à 400 arretes, les pays de 20000 à 500. environ.
+// les scripts qui ont servis a ce boulot sont dans le sous-rep "sources"
+
+//=========
+// Departements francais
+//source :
+http://melusine.eu.org/syracuse/jms/depfr/
+
+//=============================================
+// Pays et Corse
+//source 
+http://geocommons.com/overlays/119819 (KML countries)
+
+//=====================
+// Alpes est le seul fait a la main avec mapmash, Mapmash qui peut servir à faire des poly vite fait.
+
+//=========================
+//parcs nationaux (certains etaient en erreurs a cause de grosse requetes plus haut)
+//source :
+http://carmen.developpement-durable.gouv.fr/dl_direct.php?map=environnement.map&service_idx=25W&service=DownloadLayer
+http://carmen.developpement-durable.gouv.fr/dl_direct.php?map=NATURE_PAYSAGE_BIODIVERSITE_RA.map&service_idx=30&service=DownloadLayer
+

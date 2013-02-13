@@ -1,0 +1,16 @@
+<h3>Les pages points de Refuges.info </h3>
+<p>
+	Ce sont les pages web donnant des informations sur un point du site.
+</p>
+<p>
+	Pour les retrouver, leur format technique est : 
+	http://www.refuges.info/point/[numero du point]....
+</p>
+<p>
+	Elles sont composées des éléments suivants :
+</p>
+<p>
+<ul>
+<h5>[url=##fiches_points]Les fiches points[/url] partie supérieure et œuvre collective de plusieurs contribueurs</h5>
+<h5>[url=##commentaires]Les commentaires et photos[/url] œuvre personnelle d'un seul contributeur</h5>
+<h5>[url=##pages_forum]La page forum des refuges[/url] zone séparée, plus libre pour poser des questions et faire des remarques.</h5>

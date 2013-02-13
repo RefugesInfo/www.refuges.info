@@ -1,0 +1,13 @@
+AddDefaultCharset UTF-8
+
+ErrorDocument 404 /statique/erreur_404.php
+
+Options +Multiviews
+
+RewriteEngine On
+
+# pas de refuges.info, on redirige vers le www
+RewriteCond %{HTTP_HOST} ^refuges.info$ [NC]
+RewriteRule ^(.*)$ http://www.refuges.info/$1 [L,R=301]
+
+

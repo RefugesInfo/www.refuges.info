@@ -1,0 +1,33 @@
+<?// Affichage des données d'une page du site
+// Contient le pied des pages de refuges.info.
+// $modele contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+
+// 17/10/11 Dominique : Création
+// 20/11/11 Dominique : Remplacement style don par classe
+// 08/05/12 Dominique : Retour en templates simples
+// 03/02/13 Dominique : Ajout du valideur validome.org
+?>
+		<div id="basdepage">
+			<span>
+				<a href="/statique/mode_emploi.php?page=licence" title="Quelle est la licence du contenu de refuges.info ?">
+					<img src="/images/copyleft.png" alt="Copyleft" />
+					Licence des contenus
+				</a>
+			</span>
+			<a href="http://validator.w3.org/check?uri=referer">
+				<img src="/images/valid-xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
+			</a>
+			<a href="http://jigsaw.w3.org/css-validator/check/referer">
+				<img src="/images/valid-css21-blue.gif" alt="Valid CSS niveau 2.1" />
+			</a>
+			<a href="http://www.validome.org/referer">
+				<img src="http://www.validome.org/images/set2/valid_xhtml_1_0.gif" alt="Valid XHTML 1.0" />
+			</a>
+		</div>
+	</body>
+</html>

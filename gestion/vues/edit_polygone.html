@@ -1,0 +1,23 @@
+<!-- Edition des paramètres -->
+<form method="post" action="<?=$_SERVER['REQUEST_URI']?>">
+	Paramètres du polygone:
+	<input type="text" name="name" value="<?=$modele->infos->nom_polygone?>" />
+	<select name="type">
+		<?=$modele->choix_type?>
+	</select>
+	<input type="text" name="article_partitif" size="4" value="<?=$modele->infos->article_partitif?>" />("de la", "de l'", "du")
+	<input type="submit" name="valider" value="Enregistrer les paramètres">
+	(Enregistrez les modifs de tracé sur la carte d'abord)
+</form>
+<hr/>
+<!-- La carte -->
+<div id="map" style="width:100%;height:75%;border:1px solid #ccc;"></div>
+<p>
+	Inclure un fichier .GPX
+	<input type="file" onchange="vectors.addFiles(this.files)" />
+</p>
+
+<!-- Commentaires -->
+<p>Pour voir le mode d'emploi, survoler avec la souris les pictogrammes en haut à droite de la carte</p>
+<p>Note: une fois les polygones modifiés, il faut lancer le "Recalcul de l'appartenance de tous les points" pour que les points s'affichent bien dans ces nouvelles définition. Compte tenu du temps de calcul, ceci se fait en principe une fois à la fin</p>
+<p>Le fonctionnement de cet éditeur n'est pas garanti sous Internet Explorer</p>

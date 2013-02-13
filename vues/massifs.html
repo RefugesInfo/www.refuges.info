@@ -1,0 +1,35 @@
+<?// Bloc spécifique à la mage d'accueil == la carte des massifs
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+// $modele contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+
+// 24/10/11 Dominique : Création
+// 20/11/11 Dominique : Remplacement des tables par DIV + classe
+// 08/05/12 Dominique : Retour en templates simples
+?>
+<div class="contenu">
+	<ul style="display: block;">
+		<li><q>refuges.info</q> est un site web non commercial qui regroupe et présente des informations sur de nombreux refuges de montagne</li>
+		<li>Il <em>n'est le site officiel d'aucun refuge</em> et ne dispense pas de contacter le gardien ou le propriétaire directement 
+			(<a href="/statique/mode_emploi.php">en savoir plus</a>)</li>
+	</ul>
+	
+	<!-- DEBUT DU BLOC CARTE -->
+	<div class="tablo">
+		<div class="carte" id="massifs"></div>
+	</div>
+	<div class="tablo">
+		<ul class="basdepage">
+			<li><b>Et encore...</b></li>
+			<?foreach ($modele->massifs AS $nom => $lien) {?>
+				<li>
+					<a href="<?=$lien?>"><?=$nom?></a>
+				</li>
+			<?}?>
+		</ul>
+	</div>
+	<!-- FIN DU BLOC CARTE -->
+</div>

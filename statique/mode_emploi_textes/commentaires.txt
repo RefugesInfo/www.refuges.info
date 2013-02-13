@@ -1,0 +1,23 @@
+<h3>Les commentaires sur les points de refuges.info :</h3>
+<p>
+	Ce sont les informations objectives que peut apporter tout [url=##contributeurs]contributeur[/url] pour compléter, corriger ou mettre à jour les informations contenues dans [url=##fiches_points]la fiche.[/url]
+	
+</p>
+<h5> les commentaires littéraires</h5>
+<p>
+	Les commentaires peuvent concerner des modifications temporaires de certaines caractéristiques de la fiche (par exemple : "la fontaine ne coule pas en été", le refuge est fermé l'hiver, etc.). Avant d'écrire un commentaire, il faut se poser la question de son utilité pour les autres utilisateurs du site.</p>
+<p>	Les commentaires importants sont appelés à être utilisés par [url=##moderateurs]les modérateurs[/url] pour mettre à jour la fiche du refuge alors qu'au contraire les commentaires dont l'intérêt est marginal pourront être supprimés ou déplacés par les modérateurs vers le [url=##forum_point]forum du point[/url].
+</p>
+<p>Les avis subjectifs sur les qualités ou les défauts d'un refuge, les questions concernant un refuge ou autre, les informations temporaires, les "j'ai perdu mon appareil photo" n'ont leur place que sur la page du forum dédiée au point concerné et qui est accessible par un lien juste en dessous de la fiche de chaque point.</p>
+<p>
+Dans les commentaires, tout comme dans les champs des [url=##fiches_points]fiches point[/url] il peut être utilisée une [url=##syntaxe_bbcode]syntaxe de mise en forme[/url]
+</p>
+
+<h5> Les photographies illustrant le point</h5>
+<p>Les commentaires peuvent contenir des photos. Ces photos doivent également apporter une information utile. Par exemple montrer les équipements du refuge, le bâtiment et son environnement, ou alors un passage clef de l'itinéraire d'accès au refuge.<br/>
+<p>Les photographies qui n'apportent pas d'information directe sur le point pourront être dirigées vers le forum qui lui est dédié.</p>
+Toute photographie mise sur une fiche point de Refuges.info doit être la propriété du contributeur qui la poste et être libre de droit. La reproduction ou l'utilisation d'une photographie venant d'un autre site, d'un livre, d'une revue ou autre est interdite.
+	</p>
+<p>
+	De même que pour une fiche du site, si vous créez un [url=##forum]compte sur le forum[/url] et que vous vous connectez, vous pourrez revenir ultérieurement et modifier ou supprimer votre commentaire et votre photo.
+</p>

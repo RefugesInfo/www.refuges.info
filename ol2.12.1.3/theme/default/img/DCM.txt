@@ -1,0 +1,3 @@
+/*DCM++ © Dominique Cavailhez 2012
+Ajout de editing_tool_bar.png
+Ajout de fullscreen.png

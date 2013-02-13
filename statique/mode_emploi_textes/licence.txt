@@ -1,0 +1,44 @@
+<h3>Quelle licence pour les contenus présents sur le site refuges.info ?</h3>
+
+<h4>Licence</h4>
+<p>
+	La licence retenue pour l'ensemble des [url=##pages_points]pages des points[/url] de refuges.info est la licence "creative commons by-sa" dont une explication peut
+	être trouvée à l'adresse :[url=http://creativecommons.org/licenses/by-sa/2.0/deed.fr]creative commons by-sa[/url]
+</p>
+
+<p>
+L'objectif de cette licence est de garantir un maximum de liberté pour tout le monde, comme pour wikipedia.<br />
+Ainsi, même si refuges.info venait à disparaître, le contenu resterait librement utilisable et copiable pour refaire un 
+site similaire.<br />
+Si tout le monde donne un peu sur le site, chacun peut jouir de toutes les données présentes comme il l'entend.<br />
+[url=/exportations/formulaire_exportations.php]A cette adresse[/url] il est possible d'exporter TOUTE la base de refuge.info pour votre gps (format gpx) ou	vers un tableur. ( format csv )
+</p>
+<ul>
+	<li>Il est donc possible de :
+		<ul style='list-style-type: circle; padding-left: 2em;'>
+			<li>Copier "le contenu de refuges.info"</li>
+			<li>Modifier "le contenu de refuges.info"</li>
+			<li>Diffuser "le contenu de refuges.info"...</li>
+		</ul>
+	</li>
+	<li><strong>... Sous réserve que soit respectés  :</strong>
+		<ul style='list-style-type: disc; padding-left: 2em;'>
+			<li> La propriété intellectuelle de toute contribution : Citer [url=##contributeurs]le contributeur[/url] auteur de [url=##fiches_points]la fiche point[/url] comme "Les contributeurs de refuges.info". Faire de même pour les auteurs respectifs concernant [url=##commentaires]les commentaires et photos[/url] présents sur les [url=##pages_points]pages des points[/url]. </li>
+			<li>La liberté d'exploitation du contenu : Tout contenu modifié devra reprendre la même licence ou une licence équivalente</li>
+		</ul>
+	</li>
+</ul>
+<br />
+<p>[url=##restriction_licence]Rappels pour les contributeurs de refuges.info[/url]</p>
+
+<h4>Terminologie</h4>
+
+<!-- passage en DLDD car special terminologie (jmb) -->
+<dl>
+	<dt>[url=##index]voir ce qu'est refuges.info[/url]</dt>
+	<dt>[url=##contributeurs]voir ce qu'est un contributeur de refuges.info[/url]</dt>
+	<dt>[url=##pages_points]voir ce qu'est une "page point" de refuges.info[/url]</dt>
+	<dt>[url=##fiches_points]voir ce qu'est une "fiche point" de refuges.info[/url]</dt>
+	<dt>[url=##commentaires]voir ce qu'est un commentaires d'une page point sur refuges.info[/url]</dt>
+	<dt>[url=##contenu_refuges.info]voir ce qu'est le contenu de refuges.info[/url]</dt>
+</dl>

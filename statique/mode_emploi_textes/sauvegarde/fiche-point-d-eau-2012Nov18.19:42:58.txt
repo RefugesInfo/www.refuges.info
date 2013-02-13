@@ -1,0 +1,17 @@
+<h3>Source et points d'eau</h3>
+<p>
+ Comme son nom l'indique une source d'eau est un endroit où l'on peut se ravitailler en eau.
+</p>
+
+<p>
+Le site référence aussi bien les sources naturelles sortant de la roche ou du sol que les sources captées par des moyens artificiels
+</p>
+
+<p>
+Les sources, points d'eau qui sont considérés intéressants pour refuges.info sont ceux que l'on trouve sur des itinéraires de randonnée et qui seront bien utiles lors d'une longue randonnée en milieu isolé. Mais l'indication de la présence de fontaine dans les petits village traversés par des itinéraires courants peuvent aussi être intéressante.
+</p>
+<P> Le fait de donner régulièrement des information sur le débit d'une source ou d'une fontaine est important. Cela permet de pouvoir organiser son itinéraire en tenant compte de cette ressource vitale qu'est l'eau (que ce soit en montagne, en pleine nature, comme pour la traversée de villages situés sur les GR où l'on prévoit de se ravitailler). Les fontaines des villages tendant à se tarir les unes après les autres, l'information est importante à préciser.</p>
+<p> La plupart des points d'eau sont maintenant déclarés non potables car il faudrait que celui-ci soit régulièrement contrôlé par la commune pour être déclaré potable. </br>
+<strong>Il vous appartient d'évaluer la pertinence de procéder à une désinfection ou non de l'eau que vous voulez consommer</strong>.</p>
+
+<p>Si vous avez une information sur la potabilité d'un point d'eau ou sur l'évolution de son débit (intermittent, tari, etc.) vous pouvez le préciser par un [url=##commentaires]commentaire[/url] sur la fiche du point d'eau.</p>

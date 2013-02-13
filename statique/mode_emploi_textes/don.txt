@@ -1,0 +1,128 @@
+<h3><em>refuges.info</em> a besoin de vous !</h3>
+ 		<!--
+                Ce bouton tombe maintenant sur le compte de sly et non plus jean-marc, car je suis sans nouvelles de lui depuis longtemps
+		et je ne sais même pas si les sommes sont bien reçues.
+		Je préfère donc lui transmettre la moitié par chèque plutôt que prendre le risque de laisser ça mourir chez paypal
+		Opération réalisée en 08/2010 environ
+                sly 
+                -->
+<strong>Toutes les méthodes pour donner ont pour l'instant été désactivées (problème avec paypal)</strong>
+<h4>Pourquoi donner ?</h4>
+<p>
+	A cause de la <em>fameuse condamnation</em>, assumée financièrement par 2 personnes.
+	J'ai écrit une [url=##condamnation]page spéciale pour présenter l'affaire[/url], 
+	page qui se concentre sur les faits et les textes. Voir aussi le <a href="http://forum.refuges.info/viewtopic.php?t=1383">débat sur le forum</a>
+</p>
+<p>
+	Mais Vous pouvez également donner au site pour l'aider financièrement sans pour autant vous impliquer dans cette affaire.
+</p>
+<p>
+	Les sommes que nous pouvons recevoir (Sly et Yip),
+	ne sont pas sur la même échelle que celles que nous avons déboursées,
+	mais c'est très important de se sentir soutenu dans cette épreuve totalement surréaliste...
+	Et maintenant que la "justice" ne peut plus rien, on essaie de se raccrocher ...
+</p>
+<p>
+	... A <em>vous</em>, visiteurs réguliers du site. 
+	vous qui connaissez la valeur "utile" du site, qui vous est déstiné evidemment.
+	Le site essaie d'être là quand vous en avez besoin, maintenant c'est nous qui avons besoin de vous.
+</p>
+
+<h4>Pourquoi <strong>ne pas</strong> donner ?</h4>
+<p>
+	L'argent <em>n'ira pas</em> à un propriétaire de cabane pour son entretien, voir directement le proprietaire dans ce cas.
+</p>
+<p>
+	C'est un geste personnel et les raisons ne regardent que vous
+</p>
+
+<h4>Comment donner ?</h4>
+<p>Le système de don par paypal est suspendu</p>
+<!--
+<p>en utilisant le service de paiement en ligne "Paypal":
+			l'inscription à leur service n'est pas obligatoire.
+			Il est possible d'utiliser une carte VISA.
+			Paypal retient entre 3% et 5%, en fonction du montant.
+			<br />Cliquer sur ce bouton pour faire un don via Paypal :
+</p>
+<p>		
+
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="hosted_button_id" value="Z5HHG7LR5BA6G">
+		<input type="image" src="https://www.paypal.com/fr_FR/FR/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - la solution de paiement en ligne la plus simple et la plus sécurisée !">
+		<img alt="" border="0" src="https://www.paypal.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
+		</form>
+</p>
+-->
+<h4>Où va l'argent ?</h4>
+	<p>
+		Les sommes sont équitablement réparties entre "Yip" et "Sly". Comme elles sont réparties pour l'-amende-. Ces deux personnes ont été <em>solidaires</em> de GPLservice financièrement
+	</p>
+	<dl>
+		<dt>Yip</dt>
+			<dd>est le créateur du site, co-webmaster, et auteur des copies de cartes ayant été diffusées</dd>
+		<dt>Sly</dt>
+			<dd>est co-webmaster du site</dd>
+	</dl>
+
+
+<h4>Quid de la publicité ?</h4>
+<p>
+	Personne n'aime la publicité. Et nous non plus, les habitués du forum le savent.<br />
+	La publicité est apparue avec le début des ennuis judiciaires; et avec la décision de la cour d'appel, elle ne va pas disparaître malheureusement ...
+	Les sommes qu'elle génère sont trop faibles, mais que pouvons-nous faire ?<br />
+	Si cette publicité vous incommode trop, il reste possible si vous utilisez le navigateur firefox d'utiliser le module <a href="http://addons.mozilla.org/fr/firefox/addon/1865">ADblockplus pour firefox</a> qui vous permettra de naviguer tranquillement.
+</p>
+
+<p><strong>Merci de votre soutien</strong></p>
+
+<h4>Historique (plus à jour) des dons</h4>
+
+<table summary='liste des dons, et total' rules='groups' border='1'>
+	<caption>liste des donations reçues</caption>
+	<colgroup />
+	<colgroup align="center" />
+	<colgroup align="center" />
+	<colgroup align="center" style='font-style: italic;' />
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Montant</th>
+			<th>Donateur</th>
+			<th>Moyen</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th>10 juillet 2008</th>
+			<th><strong>2600 euros</strong></th>
+			<th>Total</th>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr><td>12 mars 2008</td><td>636</td><td></td><td>paypal</td></tr>
+		<tr><td>12 mars 2008</td><td>1000</td><td></td><td>chèque</td></tr>
+		<tr><td>13 mars 2008</td><td>193</td><td></td><td>paypal</td></tr>
+		<tr><td>16 mars 2008</td><td>48</td><td></td><td>paypal</td></tr>
+		<tr><td>17 mars 2008</td><td>48</td><td></td><td>paypal</td></tr>
+		<tr><td>18 mars 2008</td><td>96</td><td></td><td>paypal</td></tr>
+		<tr><td>18 mars 2008</td><td>29</td><td></td><td>paypal</td></tr>
+		<tr><td>19 mars 2008</td><td>50</td><td></td><td>chèque</td></tr>
+		<tr><td>01 avril 2008</td><td>10</td><td></td><td>chèque</td></tr>
+		<tr><td>10 avril 2008</td><td>96</td><td></td><td>paypal</td></tr>
+		<tr><td>11 avril 2008</td><td>19</td><td></td><td>paypal</td></tr>
+		<tr><td>12 avril 2008</td><td>14</td><td></td><td>paypal</td></tr>
+		<tr><td>21 avril 2008</td><td>20</td><td></td><td>chèque</td></tr>
+		<tr><td>22 avril 2008</td><td>100</td><td></td><td>chèque</td></tr>
+		<tr><td>05 mai 2008</td><td>15</td><td></td><td>chèque</td></tr>
+		<tr><td>24 mai 2008</td><td>10</td><td></td><td>chèque</td></tr>
+		<tr><td>08 juin 2008</td><td>100</td><td></td><td>liquide</td></tr>
+		<tr><td>19 juin 2008</td><td>20</td><td></td><td>chèque</td></tr>
+		<tr><td>28 juin 2008</td><td>96</td><td></td><td>paypal</td></tr>
+	</tbody>
+
+</table>
+</div>
+<p>Les frais de Paypal sont déduits (environ 55 euros, ceci explique les montants de 96 au lieu de 100 euros, 19 au lieu de 20...). Les donations sont anonymes par défaut.</p>
+																														

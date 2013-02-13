@@ -1,0 +1,29 @@
+<h3>Glossaire des termes régulièrement rencontrés sur Refuge.info ou son forum</h3>
+<ul>
+<li>
+  [b]Page Internet[/b] : <strong>Est-ce utile de dire ici ce qu'est une page internet ? </strong>
+</li>
+<li>
+  [b]Point[/b]: Un objet du site ayant une latitude, une longitude et une altitude dont la [url=##autres_points]liste complète est ici[/url] et faisant l'objet d'une [b]page point[/b] pour le décrire
+</li>
+<li>
+  [b]Page d'un point[/b] : [url=##pages_points]Explications ici[/url] contient la fiche d'un point, les commentaires/photos liés à un point et une reprise du dernier message du forum de ce point.
+</li>
+<li>
+  [b]Fiche d'un point[/b] : [url=##fiches_points]Explications ici[/url]
+</li>
+<li>
+  [b]Mode d'emploi[/b] : ensemble des pages d'aide (vous êtes en train d'en lire une partie)
+</li>
+<li>
+  [b]Pages d'aide[/b] : Voir [b]Mode d'emploi[/b]
+</li>
+
+
+<li>
+  [b]PRC[/b]: Sigle du site Pyrenees-Refuges.Com (le site d'un collègue)
+</li>
+<li>
+  [b]WRI[/b]: Sigle de Www.Refuges.Info (ce site donc)
+</li>
+</ul>

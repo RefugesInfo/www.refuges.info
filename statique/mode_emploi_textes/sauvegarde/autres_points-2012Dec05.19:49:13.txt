@@ -1,0 +1,39 @@
+<h3>Les points géolocalisés de Refuges.info </h3>
+<p>
+	De la même manière que refuges.info référence des cabanes, des refuges non gardés et des gites, le site a été étendu pour
+	indiquer également d'autres points géographiques utiles comme les points d'eau, dont le principe est le même que les fiches refuges.
+</p>
+<p>
+	On trouve maintenant (Novembre 2012) sur le site refuges.info plus de 1400 points géolocalisés sur les 87 massifs  :
+</p>
+
+<p>
+<!-- 
+Commentaire : merci de respecter le format suivant pour la descriptions des catégories : fiche-<nom de la catégorie> 
+<nom de la catégorie> devant être le nom de la catégorie sans la moindre erreur d'orthographe ou retrait de lettre avec accents converti en la lettre seul (non accentuée), sans guillemet ou apostrophe et chaque espace remplacé par -
+Ceci car un lien direct (sur le type de point que c'est), dynamique existe depuis les pages des points du site vers ces pages
+-->
+<h4>Les principaux :</h4>
+	<p><ul>
+	<li>[url=##fiche-cabane-non-gardee]Cabanes non gardées[/url]</li>
+	<li>[url=##fiche-refuge-garde]Refuges gardés[/url]</li>
+	<li>[url=##fiche-gite-d-etape]Gites d'étape[/url]</li>
+</p>
+<p>
+<h4>Les points annexes pour le repérage</h4>
+	<p><ul>
+	<li>[url=##fiche-sommet]Sommets[/url]</li>
+	<li>[url=##fiche-lac]Lacs[/url]</li>
+	<li>[url=##fiche-point-d-eau]Sources et points d'eau[/url]</li>
+	<li>[url=##fiche-col]Cols[/url]</li>	
+        <li>[url=##fiche-point-de-passage]Points de passage[/url]</li>
+	<li>[url=##fiche-site-remarquable]Sites remarquables[/url]</li>
+	</ul>
+</p><h4>Gestion :</h4>
+	<ul>
+	<li>[url=##fiche-censure]Censuré[/url]</li>
+	</ul>
+</p>
+<p>
+	Avant de renseigner une fiche de ce type, merci de prendre connaissance [url=##que_mettre]de ce qui est souhaitable de mettre ou pas sur refuge.info[/url] ainsi que le cas correspondant à la fiche que vous souhaitez saisir :
+</p>

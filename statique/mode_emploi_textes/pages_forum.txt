@@ -1,0 +1,15 @@
+<h3>Les pages du forum dédiées aux points</h3>
+<p>
+	Les avis subjectifs sur les qualités ou les défauts d'un refuge, 
+	les questions concernant un refuge ou autre, les informations temporaires, les "j'ai perdu mon appareil photo" 
+	n'ont leur place que sur la page du [url=http://www.refuges.info/forum/viewforum.php?f=4]forum[/url] dédiée au point concerné et 
+	qui est accessible par un lien juste en dessous de la [url=##fiches_points]fiche de chaque point[/url].
+</p>
+<p>
+	Cette page est créée automatiquement lors de la création d'un point. Il est donc inutile d'aller la créer sur le forum.
+</p>
+<p>
+	Les règles habituelles de respect et de courtoisie s'appliquent sur le forum. 
+	Les [url=##moderateurs]modérateurs[/url] pouvant également modérer les discussions du forum donnant lieu à 
+	des débordements.
+</p>

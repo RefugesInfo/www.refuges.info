@@ -1,0 +1,61 @@
+<?php// Bloc HTML réalisant l'affichage de repli en cas de point demandé inexistant
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle 
+// $modele contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+
+// 17/10/11 Dominique : Création
+// 14/10/12 Dominique : Ajout points de la recherche sur nominatim.openstreetmap.org
+?>
+<div class="contenu">
+	<h4>
+	<?=$modele->nombre_points_sans_limite?> point<?=$modele->pluriel?> trouvé<?=$modele->pluriel?> <?=$modele->trop?> sur refuges.info
+	</h4>
+	<? // Parcours tous les refuges de la recherche
+	if (isset($modele->points)) {?>
+		<dl>
+			<? foreach ($modele->points as $point) { ?>
+				<dd class="fiche_cadre condense">
+				<em>
+					<a href="<?=lien_point_fast($point)?>">
+						<?=bbcode2html($point->nom)?>
+					</a>
+					<?=$html_annonce_fermeture?>
+				</em>
+				<?=bbcode2html($point->nom_type);?>
+				<? //afficher un lien vers le massif comprenant le point
+				if ($point->id_polygone!=$config['numero_massif_fictif']) {?>
+					dans le
+					<a href="<?=lien_polygone ($point->nom_massif, $point->id_polygone, "Massif")?>">
+						massif <?=$point->article_partitif_massif?> <?=$point->nom_massif?>
+					</a>
+					<? //Si elle/il est fermé, on l'indique directement rouge
+					if ($annonce_fermeture=texte_non_ouverte($point)) {?>
+						<strong>(<?=$annonce_fermeture?>)</strong>
+					<?}?>
+				<?}?>
+				</dd>
+			<?}?>
+		</dl>
+	<?}?>
+
+	<? // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
+	if ($modele->nbPointsOL) { ?>
+		<h4><?=$modele->nbPointsOL?> point<?if($modele->nbPointsOL>1)echo's'?> trouvé<?if($modele->nbPointsOL>1)echo's'?> dans la base <a href = "http://openstreetmap.org/">openstreetmap.org</a></h4>
+		<dl>
+			<? foreach ($modele->xmlOL as $point) { ?>
+				<dd class="fiche_cadre condense">
+				<em>
+					<a href="<?='/nav.php?zoom=13&lat='.$point['lat'].'&lon='.$point['lon']?>">
+						<?=$point['display_name']?>
+					</a>
+				</em>
+				(<?=$point['class']?>)
+				</dd>
+			<?}?>
+		</dl>
+	<?}?>
+
+</div>

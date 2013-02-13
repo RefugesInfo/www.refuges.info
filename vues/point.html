@@ -1,0 +1,328 @@
+<?// Bloc HTML réalisant l'affichage de la page d'un point
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+// $modele contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+
+// Inclue des différents blocs spécialisés
+// 17/10/11 Dominique : Création
+// Fusion par sly de tous les éléments du point sauf commentaires
+// 23/10/11 Dominique : Ajout de la partie commentaire, tant qu'on y est
+// 15/05/12 Dominique : Retour en templates simples
+// 26/06/12  Dominique : Introduction des traductions de coordonnées
+?>
+<div class="contenu">
+	<div class="fiche_cadre">
+<!--================================== PUBS pour les non connectés ================================-->
+	<?if (!auto_login_phpbb_users ()) {?>
+	<dl>
+	<dt>publicité:</dt><dd>
+	<?=bandeau_publicitaire();?>
+	</dd>
+	</dl>
+	<?}?>
+	
+<!--============================================ CARTE ============================================-->
+		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
+		if ($modele->mini_carte) {?>
+			<div style="float: right;">
+				<div id="vignette"></div>
+					<p id="agrandir_vignette">
+						<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
+							Utiliser le fond de carte <?=$modele->vignette[1]?><?=$modele->vignette[2]?>
+						</a>
+						<span id="p21781"></span>
+					</p>
+					<p>
+						<a href="/nav.php?lat=<?=$modele->latitude?>&amp;lon=<?=$modele->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+							Aller sur le présentoir à cartes
+						</a>
+					</p>
+			</div>
+		<?}?>
+		
+<!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
+		<?// Signaler les fiches censurées
+		if ($modele->nom_type == 'Censuré') {?>
+			<dd class="lien_ajout_commentaire">
+				<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$modele->id_point?>">
+					Cette fiche est censurée.
+				</a>
+				&nbsp; Elle n'est visible que des modérateurs
+			</dd>
+		<?}?>
+		<?// Si les droits sont suffisants, lien de modification
+		if ($modele->lien_modification) {?>
+			<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$modele->id_point?>">
+				[Modifier cette fiche]
+			</a>
+		<?}?>
+		
+<!--======================================== DESCRIPTIONS =========================================-->
+		<dl style="margin: 2px;">
+<!--========================================== FICHE DE ===========================================-->
+			<dt class="condense">
+				Fiche (n°<?=$modele->id_point?>) de:
+			</dt>
+			<dd class="condense">
+				<em><?=$modele->nom_debut_majuscule?></em>, 
+			</dd>
+			<dd class="condense">
+				<a href="<?=lien_mode_emploi("fiche-".replace_url($modele->nom_type))?>"><?=$modele->nom_type?><sup>?</sup></a>
+				<?php
+				//Si elle/il est fermé, on l'indique directement en haut en rouge
+				if ($modele->annonce_fermeture) {?>
+					<strong>(<?=$modele->annonce_fermeture?>)</strong>
+				<?}?>
+			</dd>
+<!--======================================== LOCALISATION =========================================-->
+			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+			<dt class="condense">Localisation:</dt>
+			<dd class="condense"><?=$modele->localisation?></dd>
+<!--===================================== PLACES POUR DORMIR ======================================-->
+			<?// Rajout de +ieurs blocs (proprio, acces, remark, pub, photos...) et d'un bloc "nb places" si necessaire
+			if ($modele->equivalent_places) {?>
+				<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+				<dt class="condense">
+					<?=$modele->equivalent_places?>:
+				</dt>
+				<dd class="condense">
+					<?echo bbcode2html ($modele->places)?>
+				</dd>
+			<?}?>
+			
+<!--===================================== SUR LE SITE DEPUIS ======================================-->
+			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+			<dt class="condense">Sur le site depuis:</dt>
+			<dd class="condense"><?echo date ("d/m/Y", $modele->date_insertion)?></dd>
+
+			<?// Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
+			if ($modele->date_derniere_modification != '0000-00-00') {?>
+				<dt class="condense">Dernière modification du </dt>
+				<dd class="condense"><?echo date ("d/m/Y",$modele->date_modif_timestamp)?>.</dd>
+			<?}
+
+			// Si le créateur de la fiche dispose d'un compte sur le forum on indique son compte sur le forum
+			// si celui-ci n'était pas connecté, on indique ce qu'il a mis dans le champs "auteur"
+			// sauf si il n'était ni connecté et il a laissé le champs "auteur" vide
+			if ($modele->nom_createur OR $modele->id_createur) { //Il était connecté ?>
+				<dt class="condense">Créateur de cette fiche:</dt>
+				<?if ($modele->id_createur != 0) {  // si le visiteur était loggué alors on fait un lien vers sa fiche utilisateur phpBB
+					$createur = infos_utilisateur ($modele->id_createur);
+				?>
+					<dd class="condense">
+						<a href="<?=$config['fiche_utilisateur'].$modele->id_createur?>">
+							<?echo bbcode2html ($createur->username)?>
+						</a>
+					</dd>
+				<?}else{?>
+					<dd class="condense"><?echo bbcode2html ($modele->nom_createur)?></dd>
+				<?}
+			}
+			?>
+			
+<!--========================================= COORDONNÉES =========================================-->
+			<dt>Coordonnées:</dt>
+			<dd>
+				Altitude: <em><?=$modele->altitude?>m,</em>
+				<?if (!$modele->mini_carte) {?>
+					<strong><?=$modele->nom_precision_gps?></strong>
+				<?}else{?>
+					<span id="coordonnees-value">
+						<span id="titre-lon">Longitude</span>: <em id="lon"><?=$modele->longitude?></em>
+						<span id="titre-lat">Latitude</span>: <em id="lat"><?=$modele->latitude?></em>,
+					</span>
+					<select id="select-projection">
+						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
+					</select>
+					<?if ($modele->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
+						<strong><?=$modele->nom_precision_gps?></strong>
+					<?}else{?>
+						<?=$modele->nom_precision_gps?>
+					<?}?>
+					(
+						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$modele->id_point?>">gpx</a>
+					,
+						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$modele->id_point?>">kml</a>
+					)
+				<?}?>
+			</dd>
+<!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
+			<?// Champs textes libres
+			if ($modele->equivalent_proprio) {?>
+				<dt><?=$modele->equivalent_proprio?>:</dt>
+				<dd><?echo bbcode2html($modele->proprio)?></dd>
+			<?}?>
+			
+<!--============================================ ACCÈS ============================================-->
+			<dt style="clear: left;">Accès:</dt>
+			<dd><?echo bbcode2html($modele->acces)?></dd>
+<!--========================================== REMARQUES ==========================================-->
+			<dt>Remarques:</dt>
+			<dd><?echo bbcode2html($modele->remark)?></dd>
+<!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
+			<?php if (isset($modele->infos_complementaires)) { ?>
+
+			<dt style='clear: left;'>Informations complémentaires:</dt>
+			<?php foreach ($modele->infos_complementaires as $champ => $val) {?>
+				<dd><?=$champ?>: <em><?=$val['valeur']?></em> <?php
+					if (isset($val['lien'])) 
+					{?><a href="<?=$val['lien']?>"><?=$val['texte_lien']?></a><?php } 
+				?></dd>
+			<?php
+			}
+			}?>
+			
+<!--===================================== POINTS À PROXIMITÉ ======================================-->
+			<?if ($modele->liste_proche->nombre_points!=0) {?>
+				<dt>Points à proximité:</dt><?
+				foreach ($modele->liste_proche->points as $this_proche) {
+					if ($this_proche->id_point!=$modele->id_point) {
+						$this_proche = $this_proche;
+						$distance=number_format($this_proche->distance/1000,"2",",","")."km";
+						?>
+						<dd>
+							<a href="<?echo lien_point_fast($this_proche)?>"><?=$this_proche->nom?></a>, 
+							<?=$this_proche->nom_type?> (altitude: <?=$this_proche->altitude?>m) situé(e) à <?=$distance?>
+						</dd>
+					<?}
+				}
+			}?>
+			
+<!--================================= Si message d'information à afficher =======================================-->
+			<?php if ($modele->message_information_polygone!="") 
+			{?>
+				<dt>Réglementation particulière :</dt><dd>
+				<?=$modele->message_information_polygone?>
+				</dd>
+			<?}?>
+			
+<!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
+			<!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
+			<?if (count ($modele->commentaire_avec_photo)) {?>
+				<dt>Photos:</dt> 
+				<dd>
+					<?foreach ($modele->commentaire_avec_photo AS $commentaire_avec_photo) {?>
+						<a href="#C<?=$commentaire_avec_photo->id_commentaire?>">
+							<img
+								height="50"
+								style="vertical-align: middle ;"
+								src="<?=$config['rep_web_photos_points'].$commentaire_avec_photo->id_commentaire?>.jpeg"
+								alt="photo miniature"
+							/>
+						</a>
+					<?}?>
+				</dd>
+			<?}?>
+			
+<!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
+			<dd class="lien_ajout_commentaire">
+				<a href="/point_ajout_commentaire.php?id_point=<?=$modele->id_point?>">
+					Ajouter un commentaire, une photo, une demande de correction
+				</a>
+			</dd>
+		</dl>
+	</div>
+<!--============================ POST LE PLUS RÉCENT DU FORUM D'UN POINT ===========================-->
+	<p>
+		<em>
+			Pour les discussions, les questions et les avis on vous conseille d'utiliser
+			<a href="<?=$modele->forum->lienforum?>">
+				le forum dédié à <?=$modele->nom?>
+			</a>
+			afin de laisser ces pages pour de l'information objective. 
+			De plus les utilisateurs du site qui "suivent" la discussion du forum seront prévenu par email
+			si vous mettez votre message là bas et non ici.
+		</em>
+	</p>
+
+	<?// si first=last, alors 1 seul post donc topic vide: yip
+	if ($modele->forum->topic_first_post_id != $modele->forum->topic_last_post_id) {?>
+		<div class="couleur_fond_amplifiee">
+			Dernier message du forum, le
+			<em>
+				<?echo strftime ('%A %e %B %Y à %H:%M',$modele->forum->post_time)?>
+			</em>:
+			<blockquote cite="<?=$modele->forum->lienforum?>">
+				<div>
+					<?echo bbcode2html ($modele->forum->post_text)?>
+				</div>
+			</blockquote>
+		</div>
+	<?}else{?>
+		<p>Le forum est vide, n'hésitez pas à y laisser le premier message!</p>
+	<?}?>
+		
+<!--========================================= COMMENTAIRES =========================================-->
+	<h5>Commentaires</h5>
+		<?
+		unset ($commentaire); // Car déjà utilisée et perturbe le déroulement de la boucle // Si si! (Dominique 27/05/2012)
+		if (count ($modele->commentaires)) { ?>
+			<ul class="comment2">
+			<?foreach ($modele->commentaires AS $commentaire) {?>
+			<li>
+				<a id="C<?=$commentaire->id_commentaire?>"></a><!-- ici l'id pour l'anchor des petites vignettes du haut -->
+				<div class="fauxfieldset">
+					<!-- juste après la date du commentaire avec heure et en français, grace a LOCALE, avec la 1ere lettre en majuscule -->
+					<p class='fauxfieldset-legend'><?echo ucfirst (strftime ("%A %e %B %Y à %H:%M", $commentaire->date_affichage))?>
+						<?if ($commentaire->auteur) {?>
+							par
+							<?if ($commentaire->id_createur != 0) {?>
+								<a href="<?=$config['fiche_utilisateur'].$commentaire->id_createur?>">
+									<?echo bbcode2html ($commentaire->auteur)?>
+								</a>
+							<?}else{?>
+								<?echo bbcode2html ($commentaire->auteur)?>
+							<?}
+						}?>
+					</p>
+					<a class="fauxfieldset-legend" style="display: block; float: right;" href="<?=$commentaire->lien_commentaire?>">
+						<?=$commentaire->texte_lien_commentaire?></a>
+					<hr class="spacer" /><!-- pour ne pas avoir la foto qui depasse -->
+					<?if ($commentaire->photo_existe) {?>
+						<div>
+							<a href="<?=$commentaire->urlimg.$commentaire->fin_du_lien?>.jpeg">
+								<img class="photos" src="<?=$commentaire->urlimg?>.jpeg" alt="Photo" />
+							</a>
+							<p class='text_sur_image'>
+								<?=$commentaire->date_photo_format_francais?>
+							</p>
+						</div>
+					<?}?>
+					
+					<?if ($commentaire->texte) {?>
+						<blockquote><p>
+							<?echo bbcode2html ($commentaire->texte)?>
+						</p></blockquote>
+					<?}?>
+					<hr class="spacer"/><!-- pour ne pas avoir la foto qui depasse -->
+				</div>
+			</li>
+		<?}?>
+	</ul>
+	<?} // fin du if(commentaires). un UL ne peut etre vide.?>
+
+<!--================== FIN DE LA PAGE DES POINTS - COMMENTAIRES DIVERS ET VARIÉS ===================-->
+	<p>
+		<a class="lien_ajout_commentaire" href="/point_ajout_commentaire.php?id_point=<?=$modele->id_point?>">
+			Ajouter un commentaire, une photo, une demande de correction
+		</a>
+	</p>
+	<p>
+		<strong>
+			Avertissement : Les informations fournies sont indicatives. 
+			Elles ne sauraient engager la responsabilité des gestionnaires ou des rédacteurs
+			dans l'hypothèse où les utilisateurs de ces informations 
+			n'observeraient pas les règles de prudence que la montagne impose. 
+			Soyez responsables
+		</strong>
+	</p>
+	<em>Page sous licence :
+		<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/fr/">
+			<img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/2.0/fr/88x31.png"/>
+		</a>
+	</em>
+<!--============================================= FIN ==============================================-->
+</div>

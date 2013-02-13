@@ -1,0 +1,29 @@
+<h3>propriétaire/gestionnaire de cabanes</h3>
+
+<p><strong>Mairies, Particuliers, ACCA, ONF ...</strong></p>
+ 	<h4>Demandez-nous un coup de main pour vos travaux!</h4>
+  	<p>
+	Le site compte une douzaine d'utilisateurs très réguliers, et plusieurs centaines de visiteurs réguliers. Nous pouvons relayer l'information, et vous rassembler quelques bras supplémentaires.
+	Depuis plusieurs années, les utilisateurs réguliers font des nettoyages, amènent du petit matériel (scies, balais...) voire font quelques petites réparations faciles. <b>La motivation est là</b> pour des travaux plus importants: grand nettoyage, refection ...
+	</p>
+	<p>
+	Vous pouvez laisser un message sur le forum.
+	Ceci dans un cadre bénévole bien entendu. Notre seule demande étant que la cabane puisse rester ouverte à tous.
+	</p>
+
+<h4>Exemples d'action :</h4>
+<ul>
+	<ul>
+		<li>Travaux d'entretien légér (par exemple réparations de porte
+			au [->45],
+			à la [->454],
+			au [->81],
+			remplacement de carreaux à la [->1273])
+		</li>
+	<li>Remplacement de matériel déféctueux et/ou absent
+		( déja 30 scies à buches 72cm, 15 pelles, 20 balais, fournitures diverses comme Livre d'Or, stylos, hachettes, porte-manteaux ...)
+	</li>
+	<li>Nettoyages <em>intégral</em> d'abris</li>
+	<li>Ces actions sont réalisées sur le temps et l'argent des bénévoles de ce site sans aucune aide, pour le respect du patrimoine que sont les cabanes en montagne</li>
+	</ul>
+</ul>

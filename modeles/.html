@@ -1,0 +1,78 @@
+<?// Bloc spécifique à la mage d'accueil == la carte des massifs
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+// $modele contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+// 24/10/11 Dominique : Création
+// 20/11/11 Dominique : Remplacement des tables par DIV + classe
+// 08/05/12 Dominique : Retour en templates simples
+// 12/07/12 Dominique : Enrichissement avec les news
+?>
+<div class="contenu">
+	<!-- PRESENTATION -->
+	<p>
+		Refuges.info est un site web personnel et non commercial qui regroupe et présente des informations sur de nombreux refuges de montagne, 
+		c'est un site collaboratif où les informations sont fournies, mises à jour et complétées par VOUS ! (c'est à dire les utilisateurs du site).
+		il a été créé pour compléter et corriger les informations disponibles sur d'autres supports, en particulier les pictogrammes "refuge" des cartes 
+		topographiques.<br>
+		<a id="mode_emploi_ferme" style="cursor:pointer" onclick="var e=document.getElementById('mode_emploi');e.style.display=e.style.display=='none'?'block':'none'"><b>En savoir plus...</b></a>
+	</p>
+	<div id="mode_emploi" style="display:none">
+		<p>Il <em>n'est le site officiel d'aucun refuge</em> et ne dispense pas de contacter le gardien ou le propriétaire directement.</p>
+		<ol>
+			<dl style='clear: both;'>
+				<dd>
+					<ul style='list-style: disc inside;'>
+					<li><em>Refuges.info</em>, c'est une base de données maintenue par les visiteurs dynamiquement</li>
+					<li>Si vous connaissez les coordonnées GPS du point à ajouter, <a href="/nav.php?cree">aller directement ici</a></li>
+					<li>Si vous ne connaissez pas les coordonnées GPS du point à ajouter, vous pouvez <a href="/nav.php?lat=45&amp;lon=6&amp;zoom=9">utiliser la carte</a> pour le pointer au mieux</li>
+					<li>Des photos et renseignements précis accompagnant les refuges ( pas toujours mais souvent :-)</li>
+					</ul>
+				</dd>
+			</dl>
+			</li>
+			<li><a href="./mode_emploi.php">Mode d'emploi</a></li>
+			<li><a href="./mode_emploi.php?page=qui_est_refuges.info">Qui est derrière refuges.info ?</a></li>
+			<li><a href="./mode_emploi.php?page=fonctionnement">Comment fonctionne refuges.info ?</a></li>
+			<li><a href="./mode_emploi.php?page=que_mettre">Que mettre ou ne pas mettre sur refuges.info ?</a></li>
+			<li><a href="./mode_emploi.php?page=participer">Comment participer sur refuges.info ?</a></li>
+			<li><a href="./mode_emploi.php?page=licence">Quelle est la licence du contenu de refuges.info ?</a></li>
+			<li><a href="./mode_emploi.php?page=pages_points">Que sont les "pages points" de refuges.info ?</a></li>
+			<li><a href="./mode_emploi.php?page=gestionnaires">Informations pour les propriétaires/gestionnaires de cabanes non gardées</a><i>(On peut vous aider!)</i></li>
+			<li><a href="./mode_emploi.php?page=prudence">Règles de prudence à observer vis à vis de l'information présente sur refuges.info</a></li>
+			<li><a href="./mode_emploi.php?page=autres_points">Description des différents type de point du site</a></li>
+		</ol>
+	</div>
+	
+	<!-- CARTE DES MASSIFS -->
+	<div class="tablo">
+		<h3>Massifs couverts</h3>
+		<div class="carte" id="accueil" width="300px"></div>
+	</div>
+	<div class="tablo">
+		<br>
+		<h5>Et encore...</h5>
+		<ul class="basdepage">
+			<?foreach ($modele->massifs AS $nom => $lien) {?>
+				<li>
+					<a href="<?=$lien?>"><?=$nom?></a>
+				</li>
+			<?}?>
+		</ul>
+	</div>
+	
+	<!-- NEWS -->
+	<div class="tablo">
+		<h4>Nouveaux points</h4>
+		<ul><?php affiche_news (3+$modele->commentaires,'points');?></ul>
+		<br>
+		<h4>Commentaires récents</h4>
+		<ul><?php affiche_news (7+$modele->commentaires,'commentaires');?>
+		<li><a href="/news.php"><b>En savoir plus...</b></a></li>
+		</ul>
+		<br>
+		<h4>Evolution du site</h4>
+		<ul><?php affiche_news (2+$modele->general,"general");?></ul>
+	</div>
+</div>

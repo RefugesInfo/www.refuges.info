@@ -1,0 +1,15 @@
+<h4>Edition des polygones</h4>
+<p><?=$modele->message?></p>
+
+<?foreach ($modele->liste_polygones AS $k => $v) {?>
+	<div class="tablo">
+		<p><b><?=$k?></b></p>
+		<?foreach ($v AS $kv => $vv) {?>
+			<p>
+				<a href="?page=edit_polygone&id_polygone=<?=$vv->id_polygone?>" title="Modifier <?=$kv?>">
+					<?=$kv?>
+				</a>
+			</p>
+		<?}?>
+	</div>
+<?}?>
