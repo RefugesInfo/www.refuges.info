@@ -75,7 +75,7 @@ if ($format_export == 'gpi') {
 	$url = str_replace ('gpi', 'gpx-garmin', 'http://'.$_SERVER ['HTTP_HOST'].$_SERVER ['REQUEST_URI']);
 	$name = rand (1, 2000);
 	file_put_contents ("./$name", url_get_contents ($url));
-	print shell_exec ("cat ./$name | ./gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -");
+	print shell_exec ("cat ./$name | gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -");
 	unlink ($name);
 
 	exit();

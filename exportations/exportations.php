@@ -56,7 +56,7 @@ if ($format_export=="gpi")
   $en_gpx=fichier_exportation($conditions,"gpx-garmin");
   $name=rand(1,2000);
   file_put_contents("./$name",$en_gpx->contenu);
-  $gpi=shell_exec("cat ./$name | ./gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -");
+  $gpi=shell_exec("cat ./$name | gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -");
   $infos_donnees_exportees->contenu=$gpi;
   $infos_donnees_exportees->nom_fichier=$en_gpx->nom_fichier;
   unlink($name);
