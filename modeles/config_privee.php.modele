@@ -1,0 +1,23 @@
+<?php
+/*************************************************
+Information de type privée à renseigner selon vos 
+paramètres locaux (données de type privées à ne pas publier)
+*************************************************/
+
+
+
+/******** Clés des contrats des cartes **********/
+// Clé google map (encore utile ?) -- sly 14/02/2013
+$config['gmaps_key']="";// Obsolète en GG V3
+
+// Clé api IGN à obtenir sur http://www.geoportail.fr
+$config['ign_key']=""; 
+
+// cartes anglaises 
+$config['os_key']=""; // http://openspace.ordnancesurvey.co.uk
+
+// Accès MySQL : réglages de production
+$config['utilisateur_mysql']="login";
+$config['mot_de_passe_mysql']="pass";
+$config['serveur_mysql']="localhost";
+$config['base_mysql']="refuges";
