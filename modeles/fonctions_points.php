@@ -15,8 +15,10 @@ il est fortement recommandé de n'utiliser plus que les fonctions
 ci-après pour récupérer les infos des points, en ajouter
 ou en modifier
 
+// 13/02/13 jmb NE PASSE PAS LA MIG PGSQL !!! faire une recherche sur "FIXME POSTGRESQL"
 
-**********************************************************************************************/
+
+/**********************************************************************************************/
 
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
@@ -200,9 +202,31 @@ return $html_construct;
 // Récupère le dernier post sur un forum d'un point
 // JMB : je rajoute les first et last topic, apparement, si egaux, alors le topicest vide
 // on affiche les commentaires+photos en plus
+//PDO jmb transform en PDO
 function infos_point_forum ($id) 
 {
-  global $config;
+	// faudra voir si ca vaudra le coup d'en faire une PDO prepared.
+	$q=" SELECT *
+			FROM phpbb_posts_text, phpbb_topics, phpbb_posts
+			WHERE phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id 
+				AND phpbb_topics.topic_id_point = $id
+				AND phpbb_posts.post_id = phpbb_posts_text.post_id
+			LIMIT 1
+";
+	// On envoie la requete
+	try {
+		$r = $pdo->query($q);
+	} catch( Exception $e ){
+		echo 'Erreur de requete  : infos_point_forum', $e->getMessage();
+	}
+
+	$result = $r->fetch();
+	$result->lienforum = $config['forum_refuge'].$result->topic_id;
+	
+	return $result;
+	
+/*	
+  global $config,$pdo;
   $r = sql_infos ("
   SELECT *
   FROM phpbb_posts_text, phpbb_topics, phpbb_posts
@@ -212,6 +236,7 @@ function infos_point_forum ($id)
   ");
   $r[0]->lienforum = $config['forum_refuge'].$r[0]->topic_id;
   return $r[0];
+  */
 }	
 
 /*****************************************************
@@ -235,15 +260,16 @@ auquel le point appartient sly 14/03/2010
 function infos_point($id_point)
 {
   // inutile de faire tout deux fois, j'utilise la fonction liste_points() (voir plus bas)
-  global $config;
+  global $config,$pdo;
   if (!is_numeric($id_point))
     return -1;
   $conditions->liste_id_point=$id_point;
   $conditions->modele=-1;
   $conditions->avec_infos_massif=1;
-  
+
   // récupération des infos du point
   $liste_un_seul_point=liste_points($conditions);
+//var_dump($liste_un_seul_point);
   if ($liste_un_seul_point->nombre_points!=1)
   { 
     // zut, on a rien trouvé, soit il n'existe pas, soit il est en cours de création
@@ -263,6 +289,8 @@ function infos_point($id_point)
   // recherche des différents polygones auquels appartienne le point
   // FIXME Cette particularité n'existe que lorsque on demande un point en particulier
   // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
+  
+  
   $query_polygones="SELECT polygones.*,polygone_type.* FROM polygones,appartenance_polygone,points,points_gps,polygone_type
   WHERE points.id_point=$id_point
   AND polygone_type.id_polygone_type=polygones.id_polygone_type
@@ -357,9 +385,11 @@ Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anorma
 Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon 
 *****************************************************/
 // retourne un objet indiquant l'erreur et le texte d'erreur
+// FIXME POSTGRESQL : les fct Within seront fixee toutes seule avec le VRAI postgis, pour l'instant, un point est parfois dans 2 massifs
+//PDO jmb
 function liste_points($conditions) 
 {
-  global $config;
+  global $config,$pdo;
   // condition de limite en nombre
   if ($conditions->limite!="")
   {
@@ -381,10 +411,14 @@ function liste_points($conditions)
   // condition sur l'appartenance à un polygone
   if($conditions->id_polygone!="")
   {
-    $tables_en_plus.=",appartenance_polygone,polygones";
-    $conditions_sql .= "AND appartenance_polygone.id_point_gps=points_gps.id_point_gps 
-    AND appartenance_polygone.id_polygone=polygones.id_polygone
-    AND polygones.id_polygone IN ($conditions->id_polygone)";
+	//GIS+ limitation à un seul poly !!
+    $tables_en_plus.=" JOIN polygones ON Within(points_gps.gis, ( SELECT polygones.gis FROM polygones WHERE id_polygone=$conditions->id_polygone ))";
+	//$conditions_sql .= "AND Within(points_gps.gis, ( SELECT polygones.gis FROM polygones WHERE id_polygone=$conditions->id_polygone )) ";
+//GIS-
+//    $tables_en_plus.=",appartenance_polygone,polygones";
+//    $conditions_sql .= "AND appartenance_polygone.id_point_gps=points_gps.id_point_gps 
+//    AND appartenance_polygone.id_polygone=polygones.id_polygone
+//    AND polygones.id_polygone IN ($conditions->id_polygone)";
   }
   elseif ($conditions->avec_infos_massif!="")
   {
@@ -393,156 +427,172 @@ function liste_points($conditions)
     // FIXME !! un JOIN truc bidule qui autorise une liaison vide serait top sly 03/11/2008
     // Pour l'instant, comme j'ai toujours pas résolu ça, un massif fictif nommé "nul part" sert à ranger les points
     // qui n'appartienne à aucun massif, donc tout roule. Mais je ne suis pas intelectuellement satisfait. sly 14/03/2010
-    $tables_en_plus.=",appartenance_polygone,polygones";
-    $conditions_sql .= "AND appartenance_polygone.id_point_gps=points_gps.id_point_gps 
-    AND appartenance_polygone.id_polygone=polygones.id_polygone
-    AND polygones.id_polygone_type=($config[id_massif])";
+//GIS-
+//    $tables_en_plus.=",appartenance_polygone,polygones";
+//    $conditions_sql .= "AND appartenance_polygone.id_point_gps=points_gps.id_point_gps 
+//    AND appartenance_polygone.id_polygone=polygones.id_polygone
+//    AND polygones.id_polygone_type=($config[id_massif])";
+	//GIS+
+    $tables_en_plus.=" JOIN polygones ON ( Within(points_gps.gis, polygones.gis ) AND polygones.id_polygone_type=".$config[id_massif].") ";
+	//$conditions_sql .= " AND polygones.id_polygone_type=".$config[id_massif]."
   }
-  
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
     if($conditions->type_point!="")
-    $conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
+		$conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n
+						AND Within(points_gps.gis, ( SELECT polygones.gis FROM polygones WHERE id_polygone=$conditions->id_polygone ) ";
     
     // conditions sur le nombre de places
     if($conditions->places_minimum!="")
-    $conditions_sql .= "\n AND points.places >= ".mysql_real_escape_string($conditions->places_minimum);
+		$conditions_sql .= "\n AND points.places >= ".mysql_real_escape_string($conditions->places_minimum);
     if($conditions->places_maximum!="")
-    $conditions_sql .= "\n AND points.places <= ".mysql_real_escape_string($conditions->places_maximum);
+		$conditions_sql .= "\n AND points.places <= ".mysql_real_escape_string($conditions->places_maximum);
     
     // conditions sur l'altitude
     if($conditions->altitude_minimum!="")
-    $conditions_sql .= "\n AND points_gps.altitude >= ".mysql_real_escape_string($conditions->altitude_minimum);
+		$conditions_sql .= "\n AND points_gps.altitude >= ".mysql_real_escape_string($conditions->altitude_minimum);
     if($conditions->altitude_maximum!="")
-    $conditions_sql .= "\n AND points_gps.altitude <= ".mysql_real_escape_string($conditions->altitude_maximum);
+		$conditions_sql .= "\n AND points_gps.altitude <= ".mysql_real_escape_string($conditions->altitude_maximum);
     
     //veut-on les points dont les coordonnées sont cachées ?
     if($conditions->pas_les_points_caches)
-    $conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config['id_coordonees_gps_fausses'];
+		$conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config['id_coordonees_gps_fausses'];
     
     //quelle condition sur la qualité supposée des GPS
     if($conditions->precision_gps!="")
-    $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
+		$conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
     
     //calcul selon la distance au point de référence
     if ($conditions->distance!="")
-  {
-    $donnees=explode(";",$conditions->distance);
-    //petit offset ridicule de quelques centimètres histoire d'éviter d'obtenir un NULL du coté de mysql
-    $latitude=$donnees[0]+0.0000001;
-    $longitude=$donnees[1];
-    $distance=$donnees[2];
-    $formule_magique="(6366000*acos(cos(RADIANS($latitude))*cos(RADIANS(points_gps.latitude))*cos(RADIANS(points_gps.longitude)-RADIANS($longitude))+sin(RADIANS($latitude)) *sin(RADIANS(points_gps.latitude))))";
-    $select_distance=",$formule_magique AS distance "; 
-    $conditions_sql.="\n AND $formule_magique<$distance";
+	{
+		$donnees=explode(";",$conditions->distance);
+		//petit offset ridicule de quelques centimètres histoire d'éviter d'obtenir un NULL du coté de mysql
+		$latitude=$donnees[0]+0.0000001;
+		$longitude=$donnees[1];
+		$distance=$donnees[2];
+		$formule_magique="(6366000*acos(cos(RADIANS($latitude))*cos(RADIANS(points_gps.latitude))*cos(RADIANS(points_gps.longitude)-RADIANS($longitude))+sin(RADIANS($latitude)) *sin(RADIANS(points_gps.latitude))))";
+		$select_distance=",$formule_magique AS distance "; 
+		$conditions_sql.="\n AND $formule_magique<$distance";
     
-    //Histoire d'accélérer la chose, on ajoute des conditions d'indexes qui sont plus efficace sur les latitude/longitude min/max
-    //La formule ci-après suppose que tout arc d'angle X sur terre à pour distance celui à l'équateur, c'est plus simple mais ça doit gaspiller énormément au niveau des pôles
-    //et un peu quand même à nos latitude, mais bon, mysql s'en sort bien, même sans les indexes, ça reste hyper rapide
-    $eloignement_maximum=360*$distance/(2*3.14159265*4004000);
+		//Histoire d'accélérer la chose, on ajoute des conditions d'indexes qui sont plus efficace sur les latitude/longitude min/max
+		//La formule ci-après suppose que tout arc d'angle X sur terre à pour distance celui à l'équateur, c'est plus simple mais ça doit gaspiller énormément au niveau des pôles
+		//et un peu quand même à nos latitude, mais bon, mysql s'en sort bien, même sans les indexes, ça reste hyper rapide
+		$eloignement_maximum=360*$distance/(2*3.14159265*4004000);
     
-    $conditions->latitude_minimum=$latitude-$eloignement_maximum;
-    $conditions->latitude_maximum=$latitude+$eloignement_maximum;
-    $conditions->longitude_minimum=$longitude-$eloignement_maximum;
-    $conditions->longitude_maximum=$longitude+$eloignement_maximum;
-  }
+		$conditions->latitude_minimum=$latitude-$eloignement_maximum;
+		$conditions->latitude_maximum=$latitude+$eloignement_maximum;
+		$conditions->longitude_minimum=$longitude-$eloignement_maximum;
+		$conditions->longitude_maximum=$longitude+$eloignement_maximum;
+	}
+	// conditions géographique sur les coordonnées GPS
+	if($conditions->latitude_minimum!="")
+		$conditions_sql.="\n AND points_gps.latitude>" . mysql_real_escape_string($conditions->latitude_minimum);
+	if($conditions->latitude_maximum!="")
+		$conditions_sql.="\n AND points_gps.latitude<" . mysql_real_escape_string($conditions->latitude_maximum);
+	if($conditions->longitude_minimum!="")
+		$conditions_sql.="\n AND points_gps.longitude>" . mysql_real_escape_string($conditions->longitude_minimum);
+	if($conditions->longitude_maximum!="")
+		$conditions_sql.="\n AND points_gps.longitude<" . mysql_real_escape_string($conditions->longitude_maximum);
   
-  // conditions géographique sur les coordonnées GPS
-  if($conditions->latitude_minimum!="")
-    $conditions_sql.="\n AND points_gps.latitude>" . mysql_real_escape_string($conditions->latitude_minimum);
-  if($conditions->latitude_maximum!="")
-    $conditions_sql.="\n AND points_gps.latitude<" . mysql_real_escape_string($conditions->latitude_maximum);
-  if($conditions->longitude_minimum!="")
-    $conditions_sql.="\n AND points_gps.longitude>" . mysql_real_escape_string($conditions->longitude_minimum);
-  if($conditions->longitude_maximum!="")
-    $conditions_sql.="\n AND points_gps.longitude<" . mysql_real_escape_string($conditions->longitude_maximum);
+	// condition restrictive sur des id_points particuliers
+	if($conditions->liste_id_point!="")
+		$conditions_sql.="\n AND points.id_point IN ($conditions->liste_id_point)";
   
-  // condition restrictive sur des id_points particuliers
-  if($conditions->liste_id_point!="")
-    $conditions_sql.="\n AND points.id_point IN ($conditions->liste_id_point)";
-  
-  //conditions sur la description (champ remark)
+	//conditions sur la description (champ remark)
     if($conditions->description!="")
-    $conditions_sql.="\n AND points.remark LIKE '%".mysql_real_escape_string($conditions->description)."%'";
+		$conditions_sql.="\n AND points.remark LIKE '%".mysql_real_escape_string($conditions->description)."%'";
     
     // cas spécial sur les modèle
     if ($conditions->modele==1)
-    $conditions_sql.="\n AND modele=1";
+		$conditions_sql.="\n AND modele=1";
     elseif($conditions->modele=="")
-    $conditions_sql.="\n AND modele!=1";
+		$conditions_sql.="\n AND modele!=1";
     else
-      $conditions_sql.="";
+		$conditions_sql.="";
     
     //prise en compte des conditions binaires
     if (isset($conditions->binaire))
-  {
-    foreach ($conditions->binaire as $champ => $valeur)
-      if ($valeur!='')
-      {
-	if ($valeur=='vide')
-	  $valeur='';
-	
-	$conditions_sql.="\n AND points.$champ='".mysql_real_escape_string($valeur)."'";
-      }
-  }
-  //prise en compte de la recherche sur le chauffage
-  if (isset($conditions->chauffage))
-  {
-    switch ($conditions->chauffage)
-    {
-      case 'chauffage':$conditions_sql.="\n AND (points.cheminee='oui' OR points.poele='oui')";break;
-      case 'cheminee':$conditions_sql.="\n AND points.cheminee='oui'";break;
-      case 'poele':$conditions_sql.="\n AND points.poele='oui'";break;
-    }
-  }
-  if ($conditions->non_utilisable=='oui')
-    $conditions_sql.="\n AND points.ferme!='non' AND points.ferme!=''";
-  if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND (points.ferme='non' OR points.ferme='')";
+	{
+		foreach ($conditions->binaire as $champ => $valeur)
+			if ($valeur!='')
+			{
+				if ($valeur=='vide')
+					$valeur='';
+			$conditions_sql.="\n AND points.$champ='".mysql_real_escape_string($valeur)."'";
+			}
+	}
+	//prise en compte de la recherche sur le chauffage
+	if (isset($conditions->chauffage))
+	{
+		switch ($conditions->chauffage)
+		{
+			case 'chauffage':$conditions_sql.="\n AND (points.cheminee='oui' OR points.poele='oui')";break;
+			case 'cheminee':$conditions_sql.="\n AND points.cheminee='oui'";break;
+			case 'poele':$conditions_sql.="\n AND points.poele='oui'";break;
+		}
+	}
+	if ($conditions->non_utilisable=='oui')
+		$conditions_sql.="\n AND points.ferme!='non' AND points.ferme!=''";
+	if ($conditions->ouvert=='oui')
+		$conditions_sql.="\n AND (points.ferme='non' OR points.ferme='')";
   
-  // Censure
-  if ($_SESSION['niveau_moderation']<1)
-    $conditions_sql.="\n AND (points.id_point_type!=26)";
-  
-  // recherche des infos "génériques" d'un point
-  $query_liste_points="
-  select SQL_CALC_FOUND_ROWS *,UNIX_TIMESTAMP(date_derniere_modification) as date_modif_timestamp$select_distance
-  FROM points,point_type,type_precision_gps,points_gps$tables_en_plus
+	// Censure
+	if ($_SESSION['niveau_moderation']<1)
+		$conditions_sql.="\n AND (points.id_point_type!=26)";
+
+	// recherche des infos "génériques" d'un point
+	//FIXME POSTGRESQL: SQL_CALC_FOUND_ROWS et TIMESTAMP ne passeront pas la migration
+	$query_liste_points="
+  SELECT SQL_CALC_FOUND_ROWS *,UNIX_TIMESTAMP(date_derniere_modification) as date_modif_timestamp$select_distance
+  FROM points NATURAL JOIN point_type NATURAL JOIN points_gps NATURAL JOIN type_precision_gps $tables_en_plus
   WHERE 
-  1=1
-  AND 	points_gps.id_point_gps = points.id_point_gps
-  AND	points.id_point_type=point_type.id_point_type
-  AND	points_gps.id_type_precision_gps=type_precision_gps.id_type_precision_gps
-  $conditions_sql $ordre $limite
+	1=1
+	$conditions_sql $ordre $limite
   ";
-  
-  //print($query_liste_points);
-  $res=mysql_query($query_liste_points);
-  // On va chercher le nombre de ligne qu'il y aurrait eu sans la LIMIT
-  $liste_points->nombre_points_sans_limite = mysql_result( mysql_query( "SELECT FOUND_ROWS();") , 0 );
-  $liste_points->nombre_points=mysql_num_rows($res);
-  $liste_points->requete=$query_liste_points;
+//echo "$query_liste_points";  
+
+//PDO-  
+//  //print($query_liste_points);
+//  $res=mysql_query($query_liste_points);
+//  // On va chercher le nombre de ligne qu'il y aurrait eu sans la LIMIT
+//  $liste_points->nombre_points_sans_limite = mysql_result( mysql_query( "SELECT FOUND_ROWS();") , 0 );
+//  $liste_points->nombre_points=mysql_num_rows($res);
+//  $liste_points->requete=$query_liste_points;
+	//PDO+
+	try {
+		$res = $pdo->query($query_liste_points);	
+	} catch( Exception $e ){
+		echo 'Erreur de requete MEGA requete liste_points : ', $e->getMessage();
+	}
+	$liste_points->nombre_points = $res->rowCount(); // marche pas selon la doc .........
+	$liste_points->nombre_points_sans_limite = $liste_points->nombre_points ; // FIXME POSTGRESQL DUR DUR AVEC PGSQL
+	$liste_points->requete=$query_liste_points;
+	
   $i=0;
-  
   //Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
   if ($liste_points->nombre_points!=0)
   {
-    while ($point=mysql_fetch_object($res))
+//PDO-
+//    while ($point=mysql_fetch_object($res))
+//PDO+
+//var_dump($res->debugDumpParams());
+	while ($point = $res->fetch())
     {
-      $liste_points->points->$i=$point;
-      // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
-      if ($conditions->avec_infos_massif!="")
-      {
-	$liste_points->points->$i->nom_massif=$point->nom_polygone;
-	$liste_points->points->$i->id_massif=$point->id_polygone;
-	$liste_points->points->$i->article_partitif_massif=$point->article_partitif;
-	if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
-	  $liste_points->points->$i->lien=lien_point_fast($point);
-      }
-      $i++;		
+		$liste_points->points->$i=$point;
+		// on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
+		if ($conditions->avec_infos_massif!="")
+		{
+			$liste_points->points->$i->nom_massif = $point->nom_polygone;
+			$liste_points->points->$i->id_massif  = $point->id_polygone;
+			$liste_points->points->$i->article_partitif_massif = $point->article_partitif;
+			if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
+				$liste_points->points->$i->lien=lien_point_fast($point);
+		}
+		$i++;		
     }
   }
   $liste_points->erreur=False;
   $liste_points->message="Liste retournée";
+//var_dump($liste_points);
   return $liste_points;
   
 }
@@ -559,6 +609,9 @@ très utilisé ?
 ********************************************/
 function forum_point_ajout( $id, $nom )
 {
+//PDO+
+	global $pdo;
+	
   // Dans le forum, nom toujours commençant par une majuscule
   $nom=mysql_real_escape_string(ucfirst($nom));
   /*** mise à jour des stats du forum - un sum() vous connaissez pas chez phpBB ? ***/
@@ -566,7 +619,11 @@ function forum_point_ajout( $id, $nom )
   `forum_topics` = forum_topics+1,
   `prune_next` = NULL
   WHERE `forum_id` = '4'";
-  mysql_query($query_update);
+//PDO-  
+//  mysql_query($query_update);
+	//PDO+
+	$pdo->exec($query_update);
+	
   /*** rajout du topic spécifique au point ( Le seul qui me semble logique ! )***/
   $query_insert="INSERT INTO `phpbb_topics` (
   `topic_id` , `forum_id` , `topic_title` , `topic_poster` , `topic_time` ,
@@ -578,8 +635,13 @@ function forum_point_ajout( $id, $nom )
   '0', '0', '0', '0',
   '0', '0', '0',
   '0', '$id' )";
-  mysql_query($query_insert);
-  $topic_id=mysql_insert_id();
+//PDO-
+//  mysql_query($query_insert);
+//  $topic_id=mysql_insert_id();
+	//PDO+
+	$res = $pdo->query($query_insert);
+	$topic_id = $pdo->lastInsertId(); //FIXME POSTGRESQL : necessite un sequence_name, voir doc PHP
+	
   
   /*** rajout d'un post fictif pour débuter le truc - je vois pas en quoi c'est nécessaire, le topic devrait pouvoir être vide**/
   $query_insert_post="INSERT INTO `phpbb_posts` (
@@ -590,8 +652,13 @@ function forum_point_ajout( $id, $nom )
   '', '$topic_id', '4', '-1', UNIX_TIMESTAMP( ) ,
   '00000000', 'refuges.info' , '1', '0',
   '1', '1', NULL , '0' )";
-  mysql_query($query_insert_post);
-  $last=mysql_insert_id();
+//PDO-
+//mysql_query($query_insert_post);
+//$last=mysql_insert_id();
+	//PDO+
+	$res = $pdo->query($query_insert_post);
+	$last = $pdo->lastInsertId(); //FIXME POSTGRESQL : necessite un sequence_name, voir doc PHP
+
   
   /*** rajout d'un post avec texte pour débuter le truc ( phpBB mal codé ? non ? ) ha ça oui ! **/
   $query_texte="INSERT INTO `phpbb_posts_text` (
@@ -599,12 +666,19 @@ function forum_point_ajout( $id, $nom )
   VALUES (
   '$last', '', '',
   '')";
-  mysql_query($query_texte);
+//PDO-
+//  mysql_query($query_texte);
+	//PDO+
+	$pdo->exec($query_texte);
+
   /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
   $query_update_topic="UPDATE phpbb_topics SET
   topic_first_post_id=$last,topic_last_post_id=$last
   WHERE topic_id=$topic_id";
-  mysql_query($query_update_topic);
+//PDO-
+//mysql_query($query_update_topic);
+	//PDO+
+	$pdo->exec($query_update_topic);
   
   return $topic_id ;
 }
@@ -619,13 +693,20 @@ le phpBB, donc duplication
 
 function forum_mise_a_jour_nom($id_point,$nom)
 {
+	global $pdo;
+
   // Dans le forum, nom toujours commençant par une majuscule
   $nom=mysql_real_escape_string(ucfirst($nom));
   
   $query="UPDATE `phpbb_topics`
   SET `topic_title`='$nom'
   WHERE `topic_id_point`=$id_point";
-  mysql_query($query);
+
+//PDO-
+//mysql_query($query);
+	//PDO+
+	$pdo->exec($query);
+
 }
 
 /********************************************************
@@ -646,7 +727,7 @@ qui ressemble à "erreur_un_truc"
 
 function modification_ajout_point($point)
 {
-  global $config;
+  global $config,$pdo;
   // désolé, le nom du point ne peut être vide
   if (trim($point->nom)=="")
     return "erreur_nom";
@@ -704,20 +785,30 @@ function modification_ajout_point($point)
   $champs_sql=trim($champs_sql,",");
   
   $query_finale="$insert_update points set $champs_sql $condition";
-  mysql_query($query_finale);
-  if ($point->id_point=="")
-    $point_en_cours=mysql_insert_id();
+//PDO-
+//mysql_query($query_finale);
+	//PDO+
+	$pdo->exec($query_finale);
+  if ($point->id_point=="") {
+//PDO-
+//    $point_en_cours=mysql_insert_id();
+	//PDO+
+	$point_en_cours = $pdo->lastInsertId(); //FIXME POSTGRESQL : necessite un sequence_name, voir doc PHP
+  }
   /********* la création ou mise à jour du forum point *************/
   
-  if ($point->id_point=="")
-    forum_point_ajout( $point_en_cours, $point->nom);
+	if ($point->id_point=="")
+		forum_point_ajout( $point_en_cours, $point->nom);
     else
-      forum_mise_a_jour_nom($point->id_point, $point->nom);
+		forum_mise_a_jour_nom($point->id_point, $point->nom);
       
-      /********* A quels polygones ce point appartient-t-il ? *************/
-      if ($point->id_point=="")
-	$point->id_point=$point_en_cours;
-      mettre_a_jour_appartenance_point($point->id_point);
+	/********* A quels polygones ce point appartient-t-il ? *************/
+	
+	if ($point->id_point=="")
+		$point->id_point=$point_en_cours;
+
+	//GIS-	 table plus necessaire
+	//mettre_a_jour_appartenance_point($point->id_point);
     
     // on retoure l'id du point (surtout utile si création)
     return $point->id_point;
@@ -734,38 +825,62 @@ Et je suis bien en peine pour trouver une combine pour la nettoyer
 
 function forum_supprime_topic($id_point)
 {
-  
+	global $pdo;
   /*** on va chercher l'id du topic qu'on veut virer ***/
   $query_recherche="SELECT * FROM `phpbb_topics` where topic_id_point=$id_point";
-  $res=mysql_query($query_recherche);
+//PDO-
+//$res=mysql_query($query_recherche);
+	//PDO+
+	$res = $pdo->query($query_recherche);
   
-  if (mysql_num_rows($res)>0) // y'avait rien ? bizarre
-  {
-    $topic=mysql_fetch_object($res);
+//PDO-
+//  if (mysql_num_rows($res)>0) // y'avait rien ? bizarre
+//  {
+//    $topic=mysql_fetch_object($res);
+	//PDO+
+	if ( $res->rowCount() > 0 ) // FIXME POSTGRESQL et MYSQL, pas fiable selon la doc ?!?!?
+	{
+    $topic=$res->fetch();
     
     /*** vu que chez phpBB un post est dans deux tables, juste avant de les virer je vais virer leurs "contenus" ***/
     $query_recherche="SELECT * FROM `phpbb_posts` WHERE topic_id=$topic->topic_id";
-    $res=mysql_query($query_recherche);
-    if (mysql_num_rows($res)>0)
-    {
-      while($posts_a_supprimer=mysql_fetch_object($res))
-	mysql_query("DELETE FROM `phpbb_posts_text` where post_id=$posts_a_supprimer->post_id");
-    }
-    
-    /*** Suppression des posts du topic**/
-    $query_supprime_post="DELETE FROM `phpbb_posts` WHERE topic_id=$topic->topic_id";
-    mysql_query($query_supprime_post);
-    
-    /*** Suppression du topic spécifique au point***/
-    $query_supprime="DELETE FROM `phpbb_topics` where topic_id=$topic->topic_id";
-    mysql_query($query_supprime);
+	//PDO+
+	$res = $pdo->query($query_recherche);
+	if ( $res->rowCount() > 0 ) // FIXME POSTGRESQL et MYSQL, pas fiable selon la doc ?!?!?
+		while ( $posts_a_supprimer = $res->fetch() )
+			$pdo->exec("DELETE FROM `phpbb_posts_text` where post_id=$posts_a_supprimer->post_id");
+	
+	/*** Suppression des posts du topic**/
+	$pdo->exec("DELETE FROM `phpbb_posts` WHERE topic_id=$topic->topic_id");
+	
+	/*** Suppression du topic spécifique au point***/
+	$pdo->exec("DELETE FROM `phpbb_topics` where topic_id=$topic->topic_id");
+	
+//PDO-	
+//    $res=mysql_query($query_recherche);
+//    if (mysql_num_rows($res)>0)
+//    {
+//      while($posts_a_supprimer=mysql_fetch_object($res))
+//	mysql_query("DELETE FROM `phpbb_posts_text` where post_id=$posts_a_supprimer->post_id");
+//    }
+//    
+//    /*** Suppression des posts du topic**/
+//    $query_supprime_post="DELETE FROM `phpbb_posts` WHERE topic_id=$topic->topic_id";
+//    mysql_query($query_supprime_post);
+//    
+//    /*** Suppression du topic spécifique au point***/
+//    $query_supprime="DELETE FROM `phpbb_topics` where topic_id=$topic->topic_id";
+//    mysql_query($query_supprime);
     
     /*** et pour finir mise à jour des stats du forum ***/
     $query_update="UPDATE `phpbb_forums` SET
     `forum_topics` = forum_topics-1,
 		    `prune_next` = NULL
 		    WHERE `forum_id` = '4'";
-		    mysql_query($query_update);
+	//PDO+
+	$pdo->exec($query_update);
+//PDO-
+//    mysql_query($query_update);
   }
 }
 
@@ -775,12 +890,18 @@ function forum_supprime_topic($id_point)
 *******************************************************/
 function suppression_point($id_point)
 {
-  
+	global $pdo;
   // a supprimer le refuge ET ses commentaires ET photos ! bug corrigé par sly
   $query_recherche_commentaires="SELECT id_commentaire FROM commentaires WHERE id_point=$id_point";
-  $commentaires_a_supprimer=mysql_query($query_recherche_commentaires) or die("$query_recherche_commentaires est mauvais");
-  while ($commentaire_suppr=mysql_fetch_object($commentaires_a_supprimer))
-  {
+
+	//PDO+
+	$commentaires_a_supprimer = $pdo->query($query_recherche_commentaires) ;
+	while ($commentaire_suppr = $commentaires_a_supprimer->fetch() )
+	{
+//PDO-
+//  $commentaires_a_supprimer=mysql_query($query_recherche_commentaires) or die("$query_recherche_commentaires est mauvais");
+//  while ($commentaire_suppr=mysql_fetch_object($commentaires_a_supprimer))
+//  {
     // FIXME : y'aurais moyen de faire plus rapide en créant la fonction qui va chercher un groupe de commentaire directement -- sly 05/01/2013
     $commentaire=infos_commentaire($commentaire_suppr->id_commentaire);
     suppression_commentaire($commentaire);
@@ -791,16 +912,27 @@ function suppression_point($id_point)
   // suite à la modification dans la base sur les coordonnées GPS, on va supprimer aussi des tables :
   // appartenance_polygone & point_gps si le point_gps n'est plus utilisé du tout
   $infos_point=infos_point($id_point);
-  $query_plusieurs="SELECT id_point FROM points WHERE id_point_gps=".$infos_point->id_point_gps;
-  $res=mysql_query($query_plusieurs);
-  if (mysql_num_rows($res)==1) // il n'y a qu'un seul point de la base donc on fait le nettoyage
-  {
-    mysql_query("DELETE FROM appartenance_polygone WHERE id_point_gps=".$infos_point->id_point_gps);
-    mysql_query("DELETE FROM points_gps WHERE id_point_gps=".$infos_point->id_point_gps);
-  }
-  
-  $query_delete="DELETE FROM points WHERE id_point=$id_point";
-  mysql_query($query_delete);
+
+	//PDO+
+	//jmb: condense en 1 requete
+	$del_si_uniq="DELETE FROM points_gps
+				WHERE 
+				( SELECT COUNT(*) FROM points WHERE id_point_gps=". $infos_point->id_point_gps ." ) = 1
+				AND id_point_gps=".$infos_point->id_point_gps ."
+				LIMIT 1 ";
+	$pdo->exec($del_si_uniq);  // supp de la table point_gps si un seul point est dessus
+	$pdo->exec("DELETE FROM points WHERE id_point=$id_point"); // supp le point de tt facon
+//PDO-
+//  $query_plusieurs="SELECT id_point FROM points WHERE id_point_gps=".$infos_point->id_point_gps;
+//  $res=mysql_query($query_plusieurs);
+//  if (mysql_num_rows($res)==1) // il n'y a qu'un seul point de la base donc on fait le nettoyage
+//  {
+//GIS-    mysql_query("DELETE FROM appartenance_polygone WHERE id_point_gps=".$infos_point->id_point_gps);
+//    mysql_query("DELETE FROM points_gps WHERE id_point_gps=".$infos_point->id_point_gps);
+//  }
+//  
+//  $query_delete="DELETE FROM points WHERE id_point=$id_point";
+//  mysql_query($query_delete);
   
   return TRUE; // pas d'échecs possibles ?
 }

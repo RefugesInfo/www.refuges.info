@@ -50,7 +50,8 @@ $config['rep_web_forum_photos']="/forum/photos-points/";
 // sly  27/04/06 je préfère me baser sur l'id pour le retrouver plutôt que son type ( que je viens d'ailleurs de modifier )
 $config['id_massif']="1"; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
 $config['id_carte']="3"; //sly : id du type de polygone correspondant aux 'cartes papier'
-
+$config['id_zone']="15"; // jmb : grandes zones, alpes, pyrenees ... c'est des gros carrés, ou des PETITS polys
+$config['zone_defaut']="Alpes" ; // jmb en fait ce sont les alpes de cehz nous
 
 // Catégorie "tout type de refuges"
 // certes une gestion par catégorie directement dans la base serait préférable, mais on a au plus 1 ou 2 catégorie donc, bon,

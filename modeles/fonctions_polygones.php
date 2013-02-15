@@ -4,6 +4,7 @@ Fonctions de gestion des polygones de notre base.
 liens vers eux, récupération, calculs de bbox, pré-calcul spatial
 gestion : modification/suppression/création
 06/11/10 Dominique bornes_polygone
+13/03/13 jmb PDO chamboulement PDO+ pour ajout et PDO-
 **********************************************************************************************/
 
 require_once ('config.php');
@@ -22,6 +23,8 @@ l'appeler directement serait une perte d'énergie pour un résultat qui se trouv
 Utilisez pluto la fonction infos_polygone() plus bas qui fourni ce résultat en même temps que les autres infos du polygone
 sly 20/11/10
 *****************************************************************************************************/
+//GIS-
+/*
 function calcul_bbox_polygone($id_polygone)
 {
   $query_bbox="SELECT max(latitude) as latitude_maximum, min(latitude) as latitude_minimum,
@@ -41,10 +44,12 @@ if (mysql_num_rows($res)!=1)
 $bbox_infos=mysql_fetch_object($res);
 return $bbox_infos;
 }
-
+*/
 /****************************************************************************************************
  Fonction de mise à jour de la BBOX d'un polygone (c'est à dire de ces bornes droite, gauche, haut et bas)
 ****************************************************************************************************/
+//GIS-
+/*
 function mise_a_jour_bbox_polygone($id_polygone)
 {
   $bbox_infos=calcul_bbox_polygone($id_polygone);
@@ -54,12 +59,15 @@ function mise_a_jour_bbox_polygone($id_polygone)
   where id_polygone=$id_polygone";
   mysql_query($query_mise_a_jour);
 }
+*/
 /*****************************************************************************************************
 Fonction qui copie les polygones de la base vers un format différent plus adapté au calcul d'appartenance 
 polygone la table s'appelle zzz_segments_polygones (zzz pour l'afficher à la fin et préciser que ce n'est qu'une table 
 de cache)
 sly 22/11/10
 *****************************************************************************************************/
+//GIS-
+/*
 function insertion_table_segments_polygones($id_polygone)
 {
   $poly=tableau_polygone($id_polygone);
@@ -95,17 +103,21 @@ function insertion_table_segments_polygones($id_polygone)
   $query_insert_segments.=trim($inserted_strings,",");
   mysql_query($query_insert_segments);
 } 
+*/
 /*****************************************************************************************************
 Fonction qui simplifie la maintenance est qui appelle les deux autres qui concerne les pré-calculs
 de polygones.
 Cette fonction doit être appelée à chaque fois qu'une modification a lieu sur un polygone
 
 *****************************************************************************************************/
+//GIS-
+/*
 function precalculs_polygones($id_polygone)
 {
   mise_a_jour_bbox_polygone($id_polygone);
   insertion_table_segments_polygones($id_polygone);
 }
+*/
 /****************************************************************************************************
 fonction de récupération des sommets ordonnés d'un polygone de la base
 au format :
@@ -122,7 +134,8 @@ Array
         ) 
 )
 ****************************************************************************************************/
-function tableau_polygone($id_polygone)
+//GIS-
+/*function tableau_polygone($id_polygone)
 {
 $query="SELECT latitude,longitude,points_gps.id_point_gps 
 		FROM points_gps,lien_polygone_gps
@@ -140,6 +153,7 @@ while($poly=mysql_fetch_object($re))
 mysql_free_result($re);
 return $polygone_gps;
 }
+*/
 
 
 /***********************************************************************************************                                                              
@@ -153,9 +167,26 @@ Maintenant, tout est fait dans mysql grace à la table qui représente les polyg
 ça va beaucoup, beaucoup plus vite.
 L'étape d'après est de ne plus avoir a gérer la table appartenance_polygone, mais tout faire directement à la volée
 **********************************************************************************************/
-
-function is_point_dans_polygone($x,$y,$id_polygone)
+//GIS typique un boulot pour le GIS, changement des entree
+function is_point_dans_polygone($id_pt_gps,$id_poly)
 {
+	global $pdo;
+	// faudra voir si ca vaudra le coup d'en faire une PDO prepared.
+	$q_in_poly=" SELECT Within( 
+		(SELECT gis FROM points_gps WHERE id_point_gps=$id_pt_gps),
+		(SELECT gis FROM polygones WHERE id_polygone=$id_poly) ) AS inpoly 
+	";
+	// On envoie la requete
+	try {
+		$r_in_poly = $pdo->query($q_in_poly);
+	} catch( Exception $e ){
+		echo 'Erreur de requete  : is_point_dans_polygone', $e->getMessage();
+	}
+	$result = $r_in_poly->fetch() ;
+	return $result->inpoly ;
+}
+
+/* function is_point_dans_polygone($x,$y,$id_polygone)
      $query_segments_avec_intersection="select count(id_polygone) as intersections from zzz_segments_polygones where 
     id_polygone=$id_polygone and longitude_p1<$x and longitude_p2>$x
     AND $y < ($x * (latitude_p2 - latitude_p1) + longitude_p2 * latitude_p1 - latitude_p2 * longitude_p1) / (longitude_p2 - longitude_p1) ";
@@ -168,13 +199,16 @@ function is_point_dans_polygone($x,$y,$id_polygone)
     return TRUE;
   else
     return FALSE;
-}
+*/
+
 
 /************************************************************
 Cette fonction, profitant de toute les autres, mets à jour
 pour un point la table d'appartenance polygone pour lui
 
 ************************************************************/
+// GIS- jmb ca part a l'eau avec GIS, du moins tant que ca rame pas trop
+/*
 function mettre_a_jour_appartenance_point($id_point,$dry_run=false)
 {
 	global $config;
@@ -234,6 +268,8 @@ function mettre_a_jour_appartenance_point($id_point,$dry_run=false)
 	}
 return TRUE;
 }
+*/
+
 /***********************************************************************************
 Cette fonction permet d'aller chercher toutes les infos d'un polygone
 - Elle prend en paramêtre l'id du polygone
@@ -241,10 +277,20 @@ Cette fonction permet d'aller chercher toutes les infos d'un polygone
 *nom_polygone
 *l'article partitif du polygone ( "de la" chartreuse ou "des" bauges...) pour un polygone 'massif'
 *etc...
+// PDO : jmb ca devient une requete pré-préparée
 ******************************************************************/
 function infos_polygone($id_polygone)
 {
-if (!is_numeric( $id_polygone))
+	global $pdo;
+	//PDO+ requete pre-preparee dans la bibliotheque du constructeur PDO (fct BDD)
+	$pdo->requetes->infos_poly->execute(array('idpoly'=>"$id_polygone"));
+
+	// detype object comme l'ancienne
+	return $pdo->requetes->infos_poly->fetch();
+}
+
+//PDO- ancienne fct
+/*if (!is_numeric( $id_polygone))
   return -1;
  $sql_query_polygone="SELECT *
      FROM polygone_type LEFT JOIN polygones
@@ -259,8 +305,8 @@ if (!is_numeric( $id_polygone))
 
  mysql_free_result($rq_polygone);
 
- return $polygone;
-}
+ return $polygone;*/
+
 
 /********************************************
 On génére une url vers la carte d'un polygone
@@ -271,47 +317,77 @@ function lien_polygone($nom_polygone,$id_polygone,$type="")
 // option facultative, sinon ce sera "massif" simplement
 if ($type=="")
 	$type="massif";
-   return "/nav/".replace_url($type)."/$id_polygone/".replace_url($nom_polygone)."/";
+	return "/nav/".replace_url($type)."/$id_polygone/".replace_url($nom_polygone)."/";
 }
 
 
 /**************************************************
 Donne un tableau de massifs non compris dans la zone
+//PDO+GIS jmb cette fonction est fait pour le GIS
+// TODO: que les zones soient des polygones ...
+// fonction a virer vu que c'est des ZONES qu'on veut et pas des MASSIFS (voir en dessous)
 *************************************************/
 function liste_autres_massifs ($zone_demandee) {
-	global $config, $zones, $zone;
+	global $config, $zones, $zone, $pdo;
 
+	
 	// Lecture de tous les massifs
+	// dont les polygones n'intersectent PAS celui de la zone
 	$q_select_mass= "
 		SELECT *
 		FROM polygones
-		WHERE id_polygone_type={$config["id_massif"]}
-			AND id_polygone != {$config['numero_polygone_fictif']}";
-	$r_select_mass= mysql_query($q_select_mass) or die("mauvaise requete dans GMcreemassifs: $q_select_mass");
+		WHERE id_polygone_type=".$config['id_massif']."
+			AND id_polygone != ".$config['numero_polygone_fictif']."
+			AND Disjoint(
+				gis,
+				(SELECT gis FROM polygones WHERE nom_polygone =  \"" .$zone_demandee."\"  )
+				)
+	";
 
-	// Ajoute les liens vers les autres zones
-	foreach ($zones as $nom => $c)
-		if ($nom == htmlspecialchars_decode ($zone_demandee) ||
-			!$zone && !$zone_demandee) // Par défaut, on affiche la première zone
-			$zone = $nom;
-		else
-			$r [$nom] = '?zone='.htmlspecialchars ($nom);
-
-	// Ajoute les liens vers les massifs qui ne sont pas dans une zone
-	while ($polygone = mysql_fetch_object($r_select_mass)) {
-		$in = false;
-		foreach ($zones as $c)
-		  if ($polygone->longitude_maximum   > $c [0] && // S'il est hors du périmètre de la zone
-		    $polygone->latitude_maximum  > $c [1] &&
-		    $polygone->longitude_minimum < $c [2] &&
-		    $polygone->latitude_minimum   < $c [3]
-		    )
-		    $in = true;
-		if (!$in)
-			$r [$polygone->nom_polygone] = lien_polygone ($polygone->nom_polygone, $polygone->id_polygone, 'Massif');
+	// On envoie la requete
+	try {
+		$r_select_mass = $pdo->query($q_select_mass);
+		// Traitement
+		// Ajoute les liens vers les massifs qui ne sont pas dans une zone
+		// bug en cours mais la resolution passe par des polygones, pas par du PHP.
+		while ($polygone = $r_select_mass->fetch()) 
+			$r[$polygone->nom_polygone] = lien_polygone ($polygone->nom_polygone, $polygone->id_polygone, 'Massif');
+		} catch( Exception $e ){
+		echo 'Erreur de requete liste_autre_massifs : ', $e->getMessage();
 	}
+
+	//tableau de tous les massif n'etant pas dans la zone (polygones normalement...)
 	return $r;
 }
+/**************************************************
+Donne un tableau de ZONES hormis celle donnée en param
+// TODO: que les zones soient des polygones ...
+*************************************************/
+function liste_autres_zones ($zone_demandee) {
+	global $config, $zones, $zone, $pdo;
+
+	//si pas de param, c'est qu'on veut les alpes de chez nous
+	if ( !$zone_demandee)
+		$zone_demandee = $config['zone_defaut'];
+	// faut arreter, ... , les zones c'est un ID eet c'est tout
+	$q_select_zone=" SELECT * FROM polygones WHERE id_polygone_type=".$config['id_zone']." AND nom_polygone !=  \"$zone_demandee\"" ;
+	// On envoie la requete
+	try {
+		$r_select_zone = $pdo->query($q_select_zone);
+	} catch( Exception $e ){
+		echo 'Erreur de requete liste_autres_zones : ', $e->getMessage();
+	}
+
+	// Traitement
+	// Ajoute les liens vers les massifs qui ne sont pas dans une zone
+	// bug en cours mais la resolution passe par des polygones, pas par du PHP.
+	while ($polygone = $r_select_zone->fetch()) 
+		$z[$polygone->nom_polygone] = lien_polygone ($polygone->nom_polygone, $polygone->id_polygone, 'Zone');
+
+	//tableau de tous les ZONES autre que la notre
+	return $z;
+}
+
 
 /**************************************************
 On génére une url vers la carte d'un polygone à partir de son id
@@ -342,15 +418,16 @@ des points qui appartiennent à un polygone devra être refait
 FIXME : Il faudrait aussi nettoyer la table point_gps des points rendu non 
 utilisés 19/04/2010 sly
 *************************************************/
+//GIS- jmb ca part a la trappe avec GIS
 //suppression des liaisons point du polygone
-function suppression_points_polygone($id_polygone)
-{
-if (!is_numeric($id_polygone))
-	return -1;
-$query="delete from lien_polygone_gps where id_polygone=$id_polygone";
-mysql_query($query);
-return 0;
-}
+//function suppression_points_polygone($id_polygone)
+//{
+//if (!is_numeric($id_polygone))
+//	return -1;
+//$query="delete from lien_polygone_gps where id_polygone=$id_polygone";
+//mysql_query($query);
+//return 0;
+//}
 
 //suppression juste du polygone
 function suppression_polygone($id_polygone)

@@ -16,11 +16,24 @@ require_once ("fonctions_affichage_points.php");
 require_once ("fonctions_points.php");
 
 function stat_site () {
-	global $config;
+	global $config,$pdo;
 	// Petits stats de début sur l'intégralité de la base
 	// donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
 	// les autres sont des sommets, des cols, des villes où autre
-	$query_nombre_refuge = "
+	
+	// PDO jmb re ecriture en une seule requete
+	// a passer en prepared ??
+	$q = "SELECT 
+			( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
+											AND (ferme='' or ferme='non')
+											AND points.modele != 1 )                                  AS nbrefuges,
+			( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
+			( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
+			( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
+	$res = $pdo->query($q);
+	return $res->fetch();
+			
+/*	$query_nombre_refuge = "
 		SELECT count(*) AS somme 
 		FROM points
 		WHERE id_point_type IN ({$config ['tout_type_refuge']})
@@ -41,8 +54,9 @@ function stat_site () {
 	$query_nombre_massifs = "SELECT count(*) FROM polygones WHERE id_polygone_type=1";
 	$r ['nbmassifs'] = mysql_result ($result=  mysql_query( $query_nombre_massifs), 0);
 	mysql_free_result ($result);
-	
+
 	return $r;
+*/
 }
 
 /****************************************
@@ -67,7 +81,7 @@ un tableau contenant les informations sly 20/12/2011
 
 function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 {
- global $config;
+ global $config,$pdo;
  // tableau de tableau contiendra toutes les news toutes catégories confondues
  $news_array = array() ;
 
@@ -78,26 +92,41 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
   {
     case "commentaires":
     $type_news="nouveau_commentaire";
+
     //FIXME ce format devrait un jour être une extension du système modulaire de recherche, mais pour l'instant il ne fait encore rien des commentaires (ou presque)
     // sly 18/05/2010
-    $query_news=
-		"SELECT commentaires.auteur,points.id_point,
-			points.nom,commentaires.id_commentaire,commentaires.photo_existe,
-			UNIX_TIMESTAMP(commentaires.date) as date
-        FROM commentaires, points
-        WHERE
-			".($vignette ? "commentaires.photo_existe = 1 AND" : "") ."
-		commentaires.id_point = points.id_point
-		AND
-		points.modele!=1
-		ORDER BY commentaires.date DESC
-        LIMIT 0,$nombre";
- 	$r_select_news = mysql_query($query_news);
-	while ($news = mysql_fetch_object($r_select_news))
+	//PDO passage de cette requete en prepared, car elle sert ailleurs aussi
+	//var_dump ( array("point"   => '',			"vignette"=> $vignette ? "AND commentaires.photo_existe = 1 " : '',
+	//														"limite"  => $nombre ) );
+	$pdo->requetes->liste_comments->bindValue('point', -1 , PDO::PARAM_INT ); // -1 = tous
+//	$pdo->requetes->liste_comments->bindValue('vignette', $vignette ? $vignette : -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+	$pdo->requetes->liste_comments->bindValue('vignette', -1, PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+	$pdo->requetes->liste_comments->bindValue('limite', $nombre, PDO::PARAM_INT); //ATTENTION LIMIT attent un INT, ce qui fait foirer la methode array
+
+	$pdo->requetes->liste_comments->execute();
+
+//    $query_news=
+//		"SELECT commentaires.auteur,points.id_point,
+//			points.nom,commentaires.id_commentaire,commentaires.photo_existe,
+//			UNIX_TIMESTAMP(commentaires.date) as date
+//       FROM commentaires, points
+//        WHERE
+//			".($vignette ? "commentaires.photo_existe = 1 AND" : "") ."
+//		commentaires.id_point = points.id_point
+//		AND
+//		points.modele!=1
+//		ORDER BY commentaires.date DESC
+//        LIMIT 0,$nombre";
+//PDO-
+// 	$r_select_news = mysql_query($query_news);
+//	while ($news = mysql_fetch_object($r_select_news))
+	//PDO+
+	while ( $news = $pdo->requetes->liste_comments->fetch() )
 	{
 		//résultat de mon commentaire d'avant, ici, on fait chauffer le CPU !
 		$point=infos_point($news->id_point);
 		$categorie="Commentaire";
+//		var_dump($point); 
 		$lien=lien_point_fast($point)."#C$news->id_commentaire";
 		$titre=$news->nom;
 		$texte="<i>$categorie </i>";
@@ -107,7 +136,8 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 			$texte.="de $news->auteur ";
 
 		// si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
-		if ($point->id_massif!=$config['numero_massif_fictif'])
+		// la ya un massif
+		if ($point->id_massif != $config['numero_massif_fictif'])
 		{
 			// Cosmétique, on ne place pas d'espace après un l'
 			if ($point->article_partitif_massif=="de l'")
@@ -115,11 +145,10 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 			else
 				$espace=" ";
 		
-			$lien_massif="dans  
-			<a href=\"".lien_polygone($point->nom_massif,$point->id_massif,"massif")."\">le massif
+			$lien_massif="dans <a href=\"".lien_polygone($point->nom_massif,$point->id_massif,"massif")."\">le massif
 			".$point->article_partitif_massif.$espace.$point->nom_massif."</a>";
 		}
-		else
+		else   // la ya pas de massif
 			$lien_massif="";
 
 		$texte.="sur <a href=\"$lien\">
@@ -130,7 +159,7 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 				"vignette"=>$config['rep_web_photos_points'].$news->id_commentaire."-vignette.jpeg",
 				"titre"=>$titre,"lien"=>$lien); 
 	}	
-	mysql_free_result($r_select_news);
+//PDO-	mysql_free_result($r_select_news);
    break;
  
 	case "refuges": $conditions->type_point=$config['tout_type_refuge'];
@@ -139,6 +168,7 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 	$conditions->limite=$nombre;
 	$conditions->avec_infos_massif=1;
 	$liste_points=liste_points($conditions);
+	
 	foreach($liste_points->points as $point)
 	{
 		$categorie="Ajout $point->article_partitif_point_type $point->nom_type";
@@ -180,9 +210,14 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 			commentaires.id_point = ".$config['numero_commentaires_generaux']."
 		ORDER BY date DESC
 		LIMIT 0,$nombre";
-	$r_select_news = mysql_query($query_news);
-	while ($news = mysql_fetch_object($r_select_news))
+//PDO-
+//	$r_select_news = mysql_query($query_news);
+//	while ($news = mysql_fetch_object($r_select_news))
+	//PDO+
+	$res = $pdo->query($query_news);
+	while ( $news = $res->fetch() )
 	{
+//var_dump($news);
 		$categorie="Générale";
 		$titre=$news->texte;
 		$texte="<i>$titre</i>";
@@ -192,13 +227,14 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 				"vignette"=>"",
 				"titre"=>$titre,"lien"=>$lien); 
 	}	
-	mysql_free_result($r_select_news);
+//PDO-	mysql_free_result($r_select_news);
     break;
   
     case "forums":
 	$type_news="nouveau_message_forum";
 // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
 //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
+// réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
     $query_news=
 		"SELECT
 			max(phpbb_posts.post_time) AS date,
@@ -215,8 +251,13 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 		GROUP BY topic_id
 		ORDER BY date DESC
 		LIMIT 0,$nombre";
-	$r_select_news = mysql_query($query_news);
-	while ($news = mysql_fetch_object($r_select_news))
+
+//PDO-
+//	$r_select_news = mysql_query($query_news);
+//	while ($news = mysql_fetch_object($r_select_news))
+	//PDO+
+	$res = $pdo->query($query_news);
+	while ( $news = $res->fetch() )
 	{
 		$lien="/forum/viewtopic.php?p=$news->post_id#$news->post_id";
 		$categorie="Sur le forum";
@@ -227,7 +268,7 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 				"vignette"=>"",
 				"titre"=>$titre,"lien"=>$lien); 
 	}
-  	mysql_free_result($r_select_news);
+//PDO-  	mysql_free_result($r_select_news);
 
     break;
 

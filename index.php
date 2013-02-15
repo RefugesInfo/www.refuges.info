@@ -24,16 +24,29 @@ $modele->titre = 'Carte et informations sur les refuges, cabanes et abris de mon
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
 
-$zones = Array ( //     [left, bottom, right, top]
-	'Alpes'            => Array (  5.5, 43.1, 11  ,  47.2),
-	'Alpes orientales' => Array ( 11  , 46  , 15  ,  47  ),
-	'Pyrénées'         => Array ( -1.5, 42  ,  2.7,  43.4),
-	'Massif Central'   => Array (  1.3, 43.5,  5  ,  46.5),
-);
-$modele->massifs = liste_autres_massifs ($_GET['zone']);
+//ce sont polygones maintenant
+//$zones = Array ( //     [left, bottom, right, top]
+//	'Alpes'            => Array (  5.5, 43.1, 11  ,  47.2),
+//	'Alpes orientales' => Array ( 11  , 46  , 15  ,  47  ),
+//	'Pyrénées'         => Array ( -1.5, 42  ,  2.7,  43.4),
+//	'Massif Central'   => Array (  1.3, 43.5,  5  ,  46.5),
+//	
+//);
+
+//=============  Zone TEST a la crado =======================
+$pdo->exec("INSERT INTO tmmp SET tt='ee'");
+
+echo $pdo->lastInsertId('id');
+//=============  Zone TEST a la crado =======================
+
+
+// on passe en param un string a peu pres utilisable
+// et ce sont des zones qu'on veut pas des massifs
+$modele->massifs = liste_autres_zones ( urldecode($_GET['zone']) );
 
 // Réinitialise les paramètres de réaffichage des pages suivantes, notamment la couche par défaut = Google
 setcookie ('Olparams', '', time() - 3600, '/');
+
 
 // News
 $modele->commentaires = $commentaires;
