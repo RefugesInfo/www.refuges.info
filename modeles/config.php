@@ -7,8 +7,8 @@ Constantes de configuration, plus propre qu'en dur
 require_once("config_privee.php");
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
-//$config['carte_base'] = 'maps.refuges.info';
-$config['carte_base'] = 'Google';
+$config['carte_base'] = 'maps.refuges.info';
+//$config['carte_base'] = 'Google';
 $config['cartes_vignettes'] = Array (
 //	'Pays'      => Array ('Carte initiale', 'article', 'Carte agrandie', échelle),
 	'France'    => Array ($config['carte_base'], ''      , 'IGN',          50000),
