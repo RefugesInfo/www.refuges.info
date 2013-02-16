@@ -25,8 +25,15 @@ A voir les autres polygones qui pourraient nous intéresser :
 - Forêt (Pour déterminer s'il y a plus de chance d'avoir du bois)
 - Autres points d'intérêts : camping/chambre d'hôtes/hôtels/arrêt bus/gare ?
 
-== Fonctionnement ==
+== Fonctionnement actuel ==
 
-1) import des données avec osm2pgsql
+1) import des données avec osm2pgsql dans des tables "à lui"
 2) nettoyage des trucs en trop pour alléger
-3) triffouillage selon notre propre besoin
+
+== Fonctionnement futur (peut-être ?) ==
+
+1) import des données avec osm2pgsql dans des tables "à lui"
+2) vidanges des polygones de nos bases à nous en provenance d'osm
+3) triffouillage selon notre propre besoin et adaptation des champs de la table
+4) copy des polygones qui nous intéressent depuis les tables osm2pgsql vers les notres
+5) supprimer les tables osm2pgsql qui n'auront finalement été que temporaire
