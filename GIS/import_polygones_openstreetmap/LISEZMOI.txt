@@ -1,0 +1,32 @@
+== objectif ==
+Ce dossier contient le nécessaire pour importer certaines données qui nous intéressent en provenance d'openstreetmap.
+
+== Dépendances ==
+Ces scripts ont besoin de l'utilitaire osm2pgsql qui peut soit être dans les paquets debian, soit être 
+compiler en suivant :
+http://wiki.openstreetmap.org/wiki/Osm2pgsql
+
+L'importation est un peu longue en générale, il est donc préférable de la
+lancer en ligne de commande afin d'avoir les résultats de l'importation à l'écran.
+
+J'ai opté pour un script php qui ne fait que appeler osm2pgsql mais permettant de récupérer les identifiants 
+pgsql de notre propre site 
+
+
+== Elements d'intérêt en provenance d'osm ==
+Voici le type d'éléments que l'on peut espérer récupérer :
+
+En premier lieu : 
+Départements/régions/réserves naturelles et parc nationaux
+
+A voir les autres polygones qui pourraient nous intéresser :
+- Communes (pour savoir laquelle contacté car une cabane s'y trouve)
+- Massifs/zone type pyrénées/alpes/massif central (pour ne pas forcément avoir à les saisir nous)
+- Forêt (Pour déterminer s'il y a plus de chance d'avoir du bois)
+- Autres points d'intérêts : camping/chambre d'hôtes/hôtels/arrêt bus/gare ?
+
+== Fonctionnement ==
+
+1) import des données avec osm2pgsql
+2) nettoyage des trucs en trop pour alléger
+3) triffouillage selon notre propre besoin

@@ -9,3 +9,10 @@ $config['utilisateur_mysql']="login";
 $config['mot_de_passe_mysql']="pass";
 $config['serveur_mysql']="localhost";
 $config['base_mysql']="refuges";
+
+// Accès à Postgresql
+
+$config['utilisateur_pgsql']=$config['utilisateur_mysql'];
+$config['mot_de_passe_pgsql']=$config['mot_de_passe_mysql'];
+$config['serveur_pgsql']=$config['serveur_mysql'];
+$config['base_pgsql']=$config['base_mysql'];
