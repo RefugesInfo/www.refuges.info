@@ -13,10 +13,12 @@
 // 04/10/11 Dominique : Gestion multicartes
 // 08/10/11 Dominique : Utilisation des templates
 // 08/05/12 Dominique : Retour en modeles simples
+// 15/02/13 jmb : page redondante avec NAV ? 
 
 require_once ("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_polygones.php");
+require_once ($config['chemin_modeles']."fonctions_bdd.php");
 
 $modele->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
@@ -42,9 +44,10 @@ $zones = Array ( //     [gauche, bas, droit, haut]
 $q_select_mass= "
 	SELECT *
 	FROM polygones
-	WHERE id_polygone_type={$config["id_massif"]}
-		AND id_polygone != {$config['numero_polygone_fictif']}";
-$r_select_mass= mysql_query($q_select_mass) or die("mauvaise requete dans GMcreemassifs: $q_select_mass");
+	WHERE id_polygone_type=".$config["id_massif"]."
+		AND id_polygone != ".$config['numero_polygone_fictif'];
+//echo $q_select_mass ;
+$r_select_mass = $pdo->query($q_select_mass) or die("mauvaise requete dans GMmasscreemassifs: $q_select_mass");
 
 // Ajoute les liens vers les autres zones
 foreach ($zones as $nom => $c)
@@ -55,7 +58,7 @@ foreach ($zones as $nom => $c)
 		$modele->massifs [$nom] = '?zone='.replace_url ($nom);
 
 // Ajoute les liens vers les massifs qui ne sont pas dans une zone
-while ($polygone = mysql_fetch_object($r_select_mass)) {
+while ($polygone = $r_select_mass->fetch()) {
 	$in = false;
 	foreach ($zones as $c)
 	  if (

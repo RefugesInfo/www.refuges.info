@@ -8,7 +8,7 @@ sly 23/11/2012
 require_once ('config.php');
 require_once ('fonctions_bdd.php');
 require_once ('fonctions_gestion_erreurs.php');
-require_once("fonctions_points.php");
+require_once ('fonctions_points.php');
 
 
 /* 
@@ -38,32 +38,63 @@ stdClass Object
 */
 function infos_commentaire($id_commentaire)
 {
-  global $config;
+  global $config,$pdo;
   if (!is_numeric($id_commentaire))
     return erreur("Id de commentaire invalide : $id_commentaire");
-  $res=mysql_query ("
-  SELECT *,UNIX_TIMESTAMP(date) AS date_unixtimestamp
-  FROM commentaires
-  WHERE id_commentaire=$id_commentaire
-  ");
-  if (mysql_num_rows($res)!=1)
-    return erreur("Le commentaire demandé est introuvable");
+//PDO-
+//  $res=mysql_query ("
+//  SELECT *,UNIX_TIMESTAMP(date) AS date_unixtimestamp
+//  FROM commentaires
+//  WHERE id_commentaire=$id_commentaire
+//  ");
+	//PDO+
+	// c'est une requete prepared PDO car elle est utilisee +ieurs fois un peu partout
+	$pdo->requetes->liste_comments->bindValue('comment', $id_commentaire , PDO::PARAM_INT ); // -1 = tous
+	$pdo->requetes->liste_comments->bindValue('point', -1 , PDO::PARAM_INT ); // -1 = tous
+	$pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+	$pdo->requetes->liste_comments->bindValue('limite', 1 , PDO::PARAM_INT); // 1 seul comment
 
-  $commentaire=mysql_fetch_object($res);
-  if ($commentaire->photo_existe)
-  {
-	foreach (array("reduite", "vignette", "originale") as $taille)
+	$pdo->requetes->liste_comments->execute();
+	
+	// vu l'absence de mysql_num_row compatible Mysql et PG, je prends les choses a l'inverse:
+	if ( $res = $pdo->requetes->liste_comments->fetch() )
 	{
-	if ($taille=="reduite")
-		$file=$config['rep_photos_points'].$id_commentaire.".jpeg";
-	else
-		$file=$config['rep_photos_points'].$id_commentaire."-$taille.jpeg";
-	if (is_file($file))
-		$commentaire->photo[$taille]=$file;
+		if ($commentaire->photo_existe)
+			foreach (array("reduite", "vignette", "originale") as $taille)
+			{
+				if ($taille=="reduite")
+					$file=$config['rep_photos_points'].$id_commentaire.".jpeg";
+				else
+					$file=$config['rep_photos_points'].$id_commentaire."-$taille.jpeg";
+				if (is_file($file))
+					$commentaire->photo[$taille]=$file;
+			}
+		return $commentaire;	
 	}
-  }
-return $commentaire;	
+	else
+		return erreur("Le commentaire demandé est introuvable");
+
+//	
+//  if (mysql_num_rows($res)!=1)
+//    return erreur("Le commentaire demandé est introuvable");
+//
+//  $commentaire=mysql_fetch_object($res);
+//  if ($commentaire->photo_existe)
+//  {
+//	foreach (array("reduite", "vignette", "originale") as $taille)
+//	{
+//	if ($taille=="reduite")
+//		$file=$config['rep_photos_points'].$id_commentaire.".jpeg";
+//	else
+//		$file=$config['rep_photos_points'].$id_commentaire."-$taille.jpeg";
+//	if (is_file($file))
+//		$commentaire->photo[$taille]=$file;
+//	}
+//  }
+//return $commentaire;	
 }
+
+
 /************
 Cette fonction peut sembler bourrine, mais c'est assez pratique à utiliser :
 On lui passe un objet "commentaire" et soit elle le créer s'il ne dispose pas d'id_commentaire
@@ -90,7 +121,7 @@ Possibilité d'ajouter une photo en provenance d'un autre site (pour éviter de 
 ************/
 function modification_ajout_commentaire($commentaire)
 {
-  global $config;  
+  global $config,$pdo;  
   $photo_valide=False;
   $point=infos_point($commentaire->id_point);
   if ($point==-1)
@@ -174,55 +205,59 @@ function modification_ajout_commentaire($commentaire)
 	
     // fait-on un updater ou un insert ?
     if ($mode=="modification")
-      $query_finale="update commentaires $query_insert_ajout where id_commentaire=$commentaire->id_commentaire";
+      $query_finale="UPDATE commentaires $query_insert_ajout WHERE id_commentaire=$commentaire->id_commentaire";
     else
-      $query_finale="insert into commentaires $query_insert_ajout";
+      $query_finale="INSERT INTO commentaires $query_insert_ajout";
     
     //print($query_finale);
-    $res=mysql_query($query_finale);
-    if (!$res)
-      return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré");
+	
+//PDO-    $res=mysql_query($query_finale);
+	//PDO+
+	$success = $pdo->exec($query_finale);
+    if (!$success)
+		return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré");
+	else
+		$commentaire->id_commentaire = $pdo->lastInsertId('commentaires_id_commentaire_seq'); // FIXME POSTGRESQL normalement c la bonne syntax compatible les 2 SGBD
+
     if ($mode=="ajout")
-    {
-      $commentaire->id_commentaire=mysql_insert_id();
-      $retour->message="commentaire ajouté";
-    }
+		$retour->message="commentaire ajouté";
     else
-      $retour->message="commentaire modifié";
-    $retour->erreur=False;
+		$retour->message="commentaire modifié";
+    
+	$retour->erreur=False;
 
     // On avait une photo valide sur le disque mais il est demandé qu'il n'y en ait pas, il faut donc faire le ménage
     if ($commentaire->photo_existe==0 and $photo_valide)
-      suppression_photos($commentaire);
+		suppression_photos($commentaire);
     
     // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo
     if ($traitement_photo)
     {
-      $photo_originale=$config['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
-      $vignette_photo = $config['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
-      $image_reduite=$config['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
-      if ( ($taille[0]>$config['largeur_max_photo']) OR ($taille[1]>$config['hauteur_max_photo']))
-      {
-	copy($commentaire->photo['originale'],$photo_originale);
-	$retour->message.=", la photo est grande (plus grande que "
-	.$config['largeur_max_photo'] . "x"
-	.$config['hauteur_max_photo']
-	."), elle est redimensionnée";
-	copy($commentaire->photo['originale'],$image_reduite);
-
-	redimensionnement_photo($image_reduite);
-	copy($image_reduite,$vignette_photo);
-	}
-      else
-	{
-		copy($commentaire->photo['originale'],$image_reduite);
-		copy($image_reduite,$vignette_photo);
-		$retour->message.=", photo ajoutée";
-	}
-      redimensionnement_photo($vignette_photo, 'vignette');
+		$photo_originale=$config['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
+		$vignette_photo = $config['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
+		$image_reduite=$config['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
+		if ( ($taille[0]>$config['largeur_max_photo']) OR ($taille[1]>$config['hauteur_max_photo']))
+		{
+			copy($commentaire->photo['originale'],$photo_originale);
+			$retour->message.=", la photo est grande (plus grande que "
+				.$config['largeur_max_photo'] . "x"
+				.$config['hauteur_max_photo']
+				."), elle est redimensionnée";
+			copy($commentaire->photo['originale'],$image_reduite);
+	
+			redimensionnement_photo($image_reduite);
+			copy($image_reduite,$vignette_photo);
+		}
+		else
+		{
+			copy($commentaire->photo['originale'],$image_reduite);
+			copy($image_reduite,$vignette_photo);
+			$retour->message.=", photo ajoutée";
+		}
+		redimensionnement_photo($vignette_photo, 'vignette');
     }
-  $retour->id_commentaire=$commentaire->id_commentaire;
-  return ($retour);
+	$retour->id_commentaire=$commentaire->id_commentaire;
+	return ($retour);
 }
 /*******************************************************/
 // fonction qui loguera TOUT TYPE de moderation
@@ -231,26 +266,27 @@ function modification_ajout_commentaire($commentaire)
 // 14/09/07 désactivé car jamais eu de problème de récupération
 // 03/08/2010 réactivée par endroit
 // ~2010 redésactivée à nouveau, il faudrait refaire ça en mieux
+//PDO/jmb : quite a desactiver, je commente tout c plus lisible
 /*******************************************************/
-function log_moderation($contenu,
-			$type_moderation,
-			$idpoint,
-			$moderateur)
-			//$type_moderation=$_GET['type'],
-			//$idpoint=$_GET['id_point_retour'],
-			//$moderateur=$_SESSION['id_moderateur'])
-{
-	$query_sauvegarde="
-		INSERT INTO logs_moderation
-		SET 
-			date_moderation=NOW(),
-			id_moderateur=$moderateur,
-			type_moderation='$type_moderation',
-			id_point=$idpoint,
-			contenu='".mysql_real_escape_string($contenu)."'";
-	//mysql_query($query_sauvegarde) or die("erreur requete $query_sauvegarde");
-	return true;
-}
+//function log_moderation($contenu,
+//			$type_moderation,
+//			$idpoint,
+//			$moderateur)
+//			//$type_moderation=$_GET['type'],
+//			//$idpoint=$_GET['id_point_retour'],
+//			//$moderateur=$_SESSION['id_moderateur'])
+//{
+//	$query_sauvegarde="
+//		INSERT INTO logs_moderation
+//		SET 
+//			date_moderation=NOW(),
+//			id_moderateur=$moderateur,
+//			type_moderation='$type_moderation',
+//			id_point=$idpoint,
+//			contenu='".mysql_real_escape_string($contenu)."'";
+//	//mysql_query($query_sauvegarde) or die("erreur requete $query_sauvegarde");
+//	return true;
+//}
 
 /****************************************
 Fonction qui écrit en TIMESTAMP une
@@ -271,28 +307,27 @@ function date_jjmmaaaa2TS($date_fr)
 // de nous remplir de commentaires
 function bloquage_internaute($code="")
 {
-// n'ayant pour l'instant plus de problème, je ne bloque plus personne sly 23/03/08
-return 0;
-// sinon, on refuse tout les gaoland
-$hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-if (ereg("^(.*)\.rev\.gaoland\.net$",$hostname))
-	return -1;
-else
+	// n'ayant pour l'instant plus de problème, je ne bloque plus personne sly 23/03/08
 	return 0;
-
+	// sinon, on refuse tout les gaoland
+	$hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+	if (ereg("^(.*)\.rev\.gaoland\.net$",$hostname))
+		return -1;
+	else
+		return 0;
 }
 
 function redimensionnement_photo($chemin_photo, $type = 'photo')
 {
-global $config;
+	global $config;
     $image=imagecreatefromjpeg($chemin_photo);//on chope le jpeg
     $x_image= ImageSX($image); // coord en X
     $y_image= ImageSY($image); //coord en Y
 
-        if (($x_image/$y_image)>=($config['largeur_max_'.$type]/$config['hauteur_max_'.$type]))
-            $zoom1=$config['largeur_max_'.$type]/$x_image;
-        else
-            $zoom1=$config['hauteur_max_'.$type]/$y_image;
+    if (($x_image/$y_image)>=($config['largeur_max_'.$type]/$config['hauteur_max_'.$type]))
+		$zoom1=$config['largeur_max_'.$type]/$x_image;
+    else
+		$zoom1=$config['hauteur_max_'.$type]/$y_image;
 
     $image2=imagecreatetruecolor($x_image*$zoom1,$y_image*$zoom1);
     imagecopyresampled ($image2, $image, 0,0, 0, 0,$x_image*$zoom1 ,$y_image*$zoom1,$x_image,$y_image);
@@ -304,23 +339,56 @@ global $config;
 
 //**********************************************************************************************
 // Récupère tous les commentaires d'un point
-function infos_commentaires ($id) {
-	return sql_infos ("
-		SELECT *,UNIX_TIMESTAMP(date) AS date_affichage
-		FROM commentaires
-		WHERE id_point=$id ORDER
-		BY date DESC
-	");
+//PDO jmb utilisation de la fct PDO
+//cela sert aussi a centraliser l'UNIXTIMESTAMP pas portable
+function infos_commentaires ($id)
+{
+	global $pdo;
+	$pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
+	$pdo->requetes->liste_comments->bindValue('point', $id , PDO::PARAM_INT ); // -1 = tous
+	$pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+	$pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
+
+	$pdo->requetes->liste_comments->execute();
+
+	while ( $res = $pdo->requetes->liste_comments->fetch() )
+		$r [] = $res;
+	
+	return $r ;
+
+	//PDO-
+	//return sql_infos ("
+	//	SELECT *,UNIX_TIMESTAMP(date) AS date_affichage
+	//	FROM commentaires
+	//	WHERE id_point=$id ORDER
+	//	BY date DESC
+	//");
 }
 
 /********** Liste des vignettes photos (clicable pour aller voir en grand)*************/
-function infos_vignettes ($id) {
-	return sql_infos ("
-		SELECT *
-		FROM commentaires
-		WHERE id_point='$id' AND photo_existe=1
-		ORDER BY date DESC
-	");
+//PDO jmb : la meme qu'au dessus ? pourkoi 2 fct ?
+// faudra fusionner non ?
+function infos_vignettes ($id)
+{
+	global $pdo;
+	$pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
+	$pdo->requetes->liste_comments->bindValue('point', $id , PDO::PARAM_INT ); // -1 = tous
+	$pdo->requetes->liste_comments->bindValue('vignette', 1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+	$pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
+
+	$pdo->requetes->liste_comments->execute();
+
+	while ( $res = $pdo->requetes->liste_comments->fetch() )
+		$r [] = $res;
+	
+	return $r ;
+
+	//	return sql_infos ("
+	//		SELECT *
+	//		FROM commentaires
+	//		WHERE id_point='$id' AND photo_existe=1
+	//		ORDER BY date DESC
+	//	");
 }
 
 /******************************************************
@@ -332,30 +400,30 @@ bien gros
 *******************************************************/
 function suppression_photos($commentaire)
 {
-  global $config;
-  if (isset($commentaire->photo) or $commentaire->photo_existe)
-  {
-      $commentaire->photo_existe=0;
-      if (isset($commentaire->photo))
+	global $config;
+	if (isset($commentaire->photo) or $commentaire->photo_existe)
 	{
-		$photos_a_supprimer=$commentaire->photo;
-		unset($commentaire->photo);
-	}
+		$commentaire->photo_existe=0;
+		if (isset($commentaire->photo))
+		{
+			$photos_a_supprimer=$commentaire->photo;
+			unset($commentaire->photo);
+		}
       
-      $retour=modification_ajout_commentaire($commentaire);
-      if ($retour->erreur)
-	return erreur($retour->message);
-      // On nous dit qu'il y a une photo mais en fait non ?
-      if (isset($photos_a_supprimer))
-      {
-      foreach ($photos_a_supprimer as $photo)
-	unlink($photo);
-      }
-}
-  else 
-	return (erreur("pas de photo dans ce commentaire"));
+		$retour=modification_ajout_commentaire($commentaire);
+		if ($retour->erreur)
+			return erreur($retour->message);
+		// On nous dit qu'il y a une photo mais en fait non ?
+		if (isset($photos_a_supprimer))
+		{
+			foreach ($photos_a_supprimer as $photo)
+				unlink($photo);
+		}
+	}
+	else 
+		return (erreur("pas de photo dans ce commentaire"));
 
-  return ok("photo supprimée");;
+	return ok("photo supprimée");;
 }
 
 /******************************************************
@@ -369,15 +437,17 @@ une ancienne version du commentaire d'id X... disons pas une priorité ;-) sly -
 *******************************************************/
 function suppression_commentaire($commentaire)
 {
-	global $config;
+	global $config,$pdo;
 	
 	/****** On supprime les photo (de différentes taille) si elle existe ******/
 	if ($commentaire->photo_existe)
 		suppression_photos($commentaire);
 	
-	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire";
-	$res=mysql_query($query_delete); 
-	if (!$res)
+	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire LIMIT 1";
+	//PDO-	$res=mysql_query($query_delete); 
+	//PDO+
+	$success = $pdo->exec($query_delete);
+	if (!$success)
 		return erreur("Suppression d'un commentaire inexistant: $query_delete");
 	else
 		return ok("Commentaire supprimé");
@@ -392,9 +462,9 @@ de YYYY:MM:JJ HH:mm:ss vers YYYY-MM-JJ
 ************************************************************************/
 function date_exif_a_mysql($date_exif)
 {
- $date_exif_sans_espace=str_replace(" ",":",$date_exif);
- $decoupe=explode(':',$date_exif_sans_espace);
- return("$decoupe[0]-$decoupe[1]-$decoupe[2]");
+	$date_exif_sans_espace=str_replace(" ",":",$date_exif);
+	$decoupe=explode(':',$date_exif_sans_espace);
+	return("$decoupe[0]-$decoupe[1]-$decoupe[2]");
 }
 /*******************************************************/
 // transfert le commentaire et la photo sur le forum
@@ -402,23 +472,33 @@ function date_exif_a_mysql($date_exif)
 /*******************************************************/
 function transfert_forum($commentaire)
 {
-    global $config;
+    global $config,$pdo;
 
     $querycom="SELECT * FROM phpbb_topics WHERE topic_id_point=$commentaire->id_point";
-    $res=mysql_query($querycom) or die("mauvaise requete: $querycom");
-    $forum=mysql_fetch_object($res);
+
+	//PDO-
+	//$res=mysql_query($querycom) or die("mauvaise requete: $querycom");
+    //$forum=mysql_fetch_object($res);
+	//PDO+
+	$res = $pdo->query($querycom);
+	$forum = $res->fetch() ;
 
     // dabord declarer le post
     $query_insert_post="
     	INSERT INTO phpbb_posts
-	SET
-		topic_id=$forum->topic_id ,
-		forum_id=$forum->forum_id ,
-		poster_id='-1',
-		post_time=$commentaire->date_unixtimestamp ,
-		post_username='".mysql_real_escape_string($commentaire->auteur)."'";
-    mysql_query($query_insert_post) or die("mauvaise requete: $query_insert_post");
-    $postid=mysql_insert_id(); // recupere le post_id
+		SET
+			topic_id=$forum->topic_id ,
+			forum_id=$forum->forum_id ,
+			poster_id='-1',
+			post_time=$commentaire->date_unixtimestamp ,
+			post_username='".mysql_real_escape_string($commentaire->auteur)."'";
+
+	//PDO-
+    //mysql_query($query_insert_post) or die("mauvaise requete: $query_insert_post");
+    //$postid=mysql_insert_id(); // recupere le post_id
+	//PDO+
+	$pdo->exec($query_insert_post);
+	$postid = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL ca devrait etre bon en PG mais mefiance...
 
     // ensuite entrer le texte du post
     // la folie bbcode: generer un rand sur 10 chiffres, et l'utiliser dans les balises...
@@ -431,35 +511,43 @@ function transfert_forum($commentaire)
 		post_text='";
     if ($commentaire->photo_existe) 
     {
-	// insere la balise bbcode pour la photo
-	$query_post_text.="[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
-	// et deplace la photo
-	rename($commentaire->photo['reduite'],$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
+		// insere la balise bbcode pour la photo
+		$query_post_text.="[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
+		// et deplace la photo
+		rename($commentaire->photo['reduite'],$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
     }
     // insere le texte du comment
     $query_post_text.=mysql_real_escape_string($commentaire->texte)."'";
-    mysql_query($query_post_text) or die("mauvaise requete: $query_post_text");
+
+	//PDO- mysql_query($query_post_text) or die("mauvaise requete: $query_post_text");
+	//PDO+
+	$pdo->exec($query_post_text);
+
 
     /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
     $query_update_topic="UPDATE phpbb_topics
-   			 SET
-    				topic_last_post_id=$postid
-    			 WHERE topic_id=$forum->topic_id
-			 LIMIT 1";
-    mysql_query($query_update_topic) or die("mauvaise requete: $query_update_topic");
+				SET
+					topic_last_post_id=$postid
+				WHERE topic_id=$forum->topic_id
+				LIMIT 1";
+
+	//PDO-	mysql_query($query_update_topic) or die("mauvaise requete: $query_update_topic");
+	//PDO+
+	$pdo->exec($query_update_topic);
 
     $retour=suppression_commentaire($commentaire);
     // Fin gros merdier forum
     //-------------------------
 
-    log_moderation("Transfert du commentaire $commentaire->id_commentaire vers le forum",
-    			"transfert_forum",
-			$commentaire->id_point,
-			$_SESSION["id_moderateur"]);
+	// fct desactivee en attendant des jours meilleurs
+    //log_moderation("Transfert du commentaire $commentaire->id_commentaire vers le forum",
+    //			"transfert_forum",
+	//		$commentaire->id_point,
+	//		$_SESSION["id_moderateur"]);
     if ($retour->erreur)
-	return erreur($retour->message.", mais la copie à réussie");
+		return erreur($retour->message.", mais la copie à réussie");
     else
-	return ok("Message transféré sur le forum");
+		return ok("Message transféré sur le forum");
 
 }
 ?>

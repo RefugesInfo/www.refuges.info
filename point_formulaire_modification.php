@@ -16,12 +16,16 @@
 // 15/04/11 Dominique : Passage en OL2.11
 // 28/05/12 Dominique : Utilisation des modeles
 
+
 require_once ("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_bdd.php");
 require_once ($config['chemin_modeles']."fonctions_points.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_polygones.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
+
+// Récupère les infos de type "méta informations" sur les points et les polygones
+$modele->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
 
 $vue->page_action="/point_modification.php";
 // 4 cas :
@@ -140,32 +144,37 @@ $boutton_actions="
 	";
 	
 /******** préparation de la listbox des types de points disponibles *****************/
-
-$type_selected[$point->id_point_type]=" selected=\"selected\"";
-$html_listbox="";
-$sql_point_possible="select * from point_type
-			ORDER BY importance desc";
-$query_point_possible=mysql_query($sql_point_possible);
-while ($type_possible=mysql_fetch_object($query_point_possible))
-      $html_listbox.="\n\t\t<option value=\"$type_possible->id_point_type\"".$type_selected[$type_possible->id_point_type].">$type_possible->nom_type</option>";
-mysql_free_result($query_point_possible);
-
+//
+//Plus besoin (PDO) voir le HTML pour + d infos
+//
+//
+//$type_selected[$point->id_point_type]=" selected=\"selected\"";
+//$html_listbox="";
+//$sql_point_possible="select * from point_type
+//			ORDER BY importance desc";
+//$query_point_possible=mysql_query($sql_point_possible);
+//while ($type_possible=mysql_fetch_object($query_point_possible))
+//      $html_listbox.="\n\t\t<option value=\"$type_possible->id_point_type\"".$type_selected[$type_possible->id_point_type].">$type_possible->nom_type</option>";
+//mysql_free_result($query_point_possible);
+//
 /******** Coordonnées du point *****************/
-
-		$requete_type_precision="SELECT * FROM type_precision_gps ORDER BY ordre";
-		$resultat=mysql_query($requete_type_precision);
-		
-		while ($liste_precision_gps=mysql_fetch_object($resultat))
-		{
-			if ($liste_precision_gps->id_type_precision_gps==$point->id_type_precision_gps)
-				$selected="selected='selected'";
-			else
-				$selected="";
-
-			$htmlconstruct_select.="\t\t<option $selected value='$liste_precision_gps->id_type_precision_gps'>$liste_precision_gps->nom_precision_gps</option>\n";
-		}
-		mysql_free_result($resultat);
-
+//
+//Plus besoin (PDO) voir le HTML pour + d infos
+//
+//		$requete_type_precision="SELECT * FROM type_precision_gps ORDER BY ordre";
+//		$resultat=mysql_query($requete_type_precision);
+//		
+//		while ($liste_precision_gps=mysql_fetch_object($resultat))
+//		{
+//			if ($liste_precision_gps->id_type_precision_gps==$point->id_type_precision_gps)
+//				$selected="selected='selected'";
+//			else
+//				$selected="";
+//
+//			$htmlconstruct_select.="\t\t<option $selected value='$liste_precision_gps->id_type_precision_gps'>$liste_precision_gps->nom_precision_gps</option>\n";
+//		}
+//		mysql_free_result($resultat);
+//
 //3 Champs text area similaires, on fait une boucle
 
 // tous les points n'ont pas forcément un propriétaire ( lac, sommet, etc. )

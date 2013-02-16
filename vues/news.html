@@ -7,9 +7,10 @@
 // $config les données communes à tout WRI
 
 // 24/10/11 Dominique : Création
-?>
+// 15/02/13 jmb : model->stat-> au lieu de array
+?> 
 <div class="contenu">
-	<h3><?=$modele->stat['nbrefuges']?> refuges, <?=$modele->stat['nbcomm']?> commentaires et <?=$modele->stat['nbphotos']?> photos</h3>
+	<h3><?=$modele->stat->nbrefuges?> refuges, <?=$modele->stat->nbcomm?> commentaires et <?=$modele->stat->nbphotos?> photos</h3>
 
 <!-- BLOC NEWS -->
     <h4>Evolution du site</h4>

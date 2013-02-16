@@ -8,6 +8,7 @@
 // 26/10/11 Dominique : Retour ici du code spécifique à la page qui avait été mis dans la bibliothèque
 // 20/11/11 Dominique : Quand on démasque le viseur, le replace au centre de la carte si celle-ci a bougé 
 // 12/05/12 Dominique : Retour en templates simples
+// 16/02/13 jmb : objectif fusion massif.php la dedans.
 ?>
 
 var map, layerMassifs, layerPoints, pos21781, lc;

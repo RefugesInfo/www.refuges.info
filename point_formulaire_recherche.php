@@ -15,11 +15,13 @@
 // 22/04/08 jmb : virage de la saloperie de pub google
 // 08/10/11 Dominique : Utilisation des templates
 // 28/05/12 Dominique : Utilisation des modeles simples
+// 15/02/13 jmb : ptite modif info_base
 
 require_once("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 
-$modele = infos_base ();
+// etait modele=info_base. plus coherent avec les aurt pages
+$modele->infos_base = infos_base ();
 $modele->titre = "Recherche de refuges/cabanes/gites";
 
 // On affiche le tout

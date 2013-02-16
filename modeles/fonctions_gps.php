@@ -97,14 +97,16 @@ $query_finale="$insert_update points_gps set $champs_sql $condition";
 //PDO-  mysql_query($query_finale);
 //PDO+
 $pdo->exec($query_finale);
-$pdo->lastInsertId('test_id_seq');
+$lastid = $pdo->lastInsertId('points_gps_id_points_gps_seq'); // FIXME POSTRESQL non en fait. ca devrait passer comme ca
 if ($point_gps->id_point_gps!="")
 	$id_point_gps=$point_gps->id_point_gps;
 else
-	$id_point_gps=mysql_insert_id();
+	$id_point_gps=$lastid ;
+//	$id_point_gps=mysql_insert_id();
 
 return $id_point_gps;
 }
+
 /********************************************************
 Fonction qui calcul la distance entre deux points gps
 Retourne la distance en metres entre deux points gps dont les coordonnées sont données
@@ -127,4 +129,8 @@ function calcul_distance_points($point1,$point2)
 {
 	return calcul_distance_gps($point1->latitude,$point1->longitude,$point2->latitude,$point2->longitude);
 }
+
+/***********************************************************
+
+***********************************************************/
 ?>

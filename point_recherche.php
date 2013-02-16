@@ -9,6 +9,7 @@
 
 // 30/05/12 Dominique : Retour en modeles simples
 // 14/10/12 Dominique : Ajout points de la recherche sur nominatim.openstreetmap.org
+// 15/02/13 jmb : cosmetique PHP + FIXME j'ai casse la recherche OSM !
 
 require_once("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
@@ -26,14 +27,16 @@ $conditions->avec_infos_massif=1;
 $conditions->id_polygone=$_POST['id_massif'];
 $conditions->type_point=$_POST['id_point_type'];
 
-// valeur spéciale indiquant qu'on veut les abris, refuges ou gites
-if ($conditions->type_point=="tout-refuge")
-	$conditions->type_point=$config['tout_type_refuge'];
-	
-// Condition pour ne pas retourner les abris non prévus pour dormir quand on demande une cabane non gardée sans précisé le nombre de place minimum
-if (($conditions->type_point==$config['id_cabane_gardee'] or $conditions->type_point==$config['tout_type_refuge']) and ($conditions->places_minimum==""))
-	$conditions->places_minimum=1;
-
+// jmb tout ca dans un switch
+switch ( $conditions->type_point ) {
+	case $config['id_cabane_gardee'] : // Condition pour ne pas retourner les abris non prévus pour dormir quand on demande une cabane non gardée sans précisé le nombre de place minimum
+	case $config['tout_type_refuge'] :
+		$conditions->places_minimum =='' ? $conditions->places_minimum = 1 : FALSE ;
+		break;
+	case "tout-refuge" :
+		$conditions->type_point=$config['tout_type_refuge']; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites
+		break;
+}
 
 if ($_POST['pas_limite']!=1)
 	$conditions->limite=$config['points_maximum_recherche'];
@@ -59,7 +62,10 @@ if ($conditions->limite!="" and $modele->nombre_points_sans_limite>$conditions->
 
 //-----------------------------------------------------------------------------------------------------
 // Recherche de points sur nominatim.openstreetmap.org
-$urlOL =
+// FIXME ca marche plus ! 
+//jmb j'ai tout casse, je laisse la fct http_build_qquery au specialiste
+// en attendant, desactive.
+/*$urlOL =
 	'http://nominatim.openstreetmap.org/search.php?'
 	.http_build_query (array (
 		'email' => 'sylvain@refuges.info',
@@ -86,10 +92,11 @@ $modele->xmlOL = simplexml_load_string ($cache);
 $modele->nbPointsOL = 0;
 foreach ($modele->xmlOL as $point)
 	$modele->nbPointsOL++;
-
+*/
 //-----------------------------------------------------------------------------------------------------
 // On affiche le tout
 $modele->type = 'point_recherche';
+
 require_once ($config['chemin_vues']."_entete.html");
 require_once ($config['chemin_vues']."$modele->type.html");
 require_once ($config['chemin_vues']."_pied.html");

@@ -98,12 +98,12 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 	//PDO passage de cette requete en prepared, car elle sert ailleurs aussi
 	//var_dump ( array("point"   => '',			"vignette"=> $vignette ? "AND commentaires.photo_existe = 1 " : '',
 	//														"limite"  => $nombre ) );
+	$pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
 	$pdo->requetes->liste_comments->bindValue('point', -1 , PDO::PARAM_INT ); // -1 = tous
-//	$pdo->requetes->liste_comments->bindValue('vignette', $vignette ? $vignette : -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-	$pdo->requetes->liste_comments->bindValue('vignette', -1, PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+	$pdo->requetes->liste_comments->bindValue('vignette', $vignette ? $vignette : -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
 	$pdo->requetes->liste_comments->bindValue('limite', $nombre, PDO::PARAM_INT); //ATTENTION LIMIT attent un INT, ce qui fait foirer la methode array
 
-	$pdo->requetes->liste_comments->execute();
+	$pdo->requetes->liste_comments->execute() or die ("prbleme dans PDO liste_comments $vignette $nombre");
 
 //    $query_news=
 //		"SELECT commentaires.auteur,points.id_point,

@@ -18,7 +18,13 @@
 // 04/10/11 Dominique : Gestion multicartes
 // 08/10/11 Dominique : Utilisation des templates
 // 08/05/12 Dominique : Retour en modeles simples
-
+// 15/02/13 jmb : nav/zone/id => affichage des sous-massifs de la zone, nav/massif/id => normal
+//			jmb: objectif : suppr page massif car elle redonde. modele->type_affichage
+//====================
+// Concept de Zone et Massifs :
+// Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
+// Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
+//===========================
 // Fonctions divers et avariées
 require_once ('modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_bdd.php");
@@ -35,6 +41,7 @@ $modele->infos_base = infos_base ();
 // typiquement:  /nav/Massif/34/Vercors/  pour le referenceement google
 $tableau_url = explode ('/',$_SERVER['PATH_INFO']);
 $modele->id_polygone = $tableau_url [2];
+$modele->type_affichage = $tableau_url [1]; // "zone" ou "massif". ca definit l'affichage qui suit
 
 // Les paramètres des layers points et massifs
 if ($modele->id_polygone)
@@ -52,7 +59,6 @@ if ($modele->id_polygone)
 		$conditions->limite = 120; 
 		$conditions->avec_liens=true;
 		$modele->liste=liste_points($conditions);
-		
 	}
 	else
 		$modele->titre="Polygone demandé incorrect ou multiple : $modele->id_polygone";

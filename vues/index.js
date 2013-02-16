@@ -9,6 +9,7 @@
 // 15/04/11 Dominique : Passage en OL2.11
 // 08/05/12 Dominique : Retour en templates simples
 // 12/07/12 Dominique : Enrichissement avec les news
+// 15/02/13 jmb : gestion des zones
 ?>
 
 // Crée la carte dés que la page est chargée
@@ -25,8 +26,12 @@ window.onload = function () {
 	});
 	
 	// Positionne la carte sur la zone donnée par le .PHP
-	var bornes = new OpenLayers.Bounds (<?=$zones[$zone][0]?>,<?=$zones[$zone][1]?>,<?=$zones[$zone][2]?>,<?=$zones[$zone][3]?>) // Forçage des bornes
+	// jmb, en attendant d'utiliser les polygones de zone (type 11 ( ou 15 ? disons 11). avec geophp/postgis ...
+	var bornes = new OpenLayers.Bounds ( 5.5, 43.1, 11  ,  47.2 ) // jmb,Forçage des bornes j'ai merde
 				.transform (map.displayProjection, map.getProjectionObject());
+
+//	var bornes = new OpenLayers.Bounds (<?=$zones[$zone][0]?>,<?=$zones[$zone][1]?>,<?=$zones[$zone][2]?>,<?=$zones[$zone][3]?>) // Forçage des bornes
+//				.transform (map.displayProjection, map.getProjectionObject());
 	map.setCenter (
 		bornes.getCenterLonLat (), 
 		map.getZoomForExtent (bornes)

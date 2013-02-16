@@ -18,6 +18,8 @@
  14/11/10 Dominique     | Introduction du format GML
  24/11/12 Dominique     | Séparation des points proches
  07/02/13 sly           | re--re-passage en UTF-8 pour le kml et le gpx suite à la convertion de notre base à cet encodage
+ 14/02/13 jmb			| PDO ...
+ 14/02/13 jmb			| ca fait assez peur. je m'en rendais pas compte en codant a la mano. on mets GeoPHP ?
 ***********************************************************************************************/
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
@@ -152,19 +154,24 @@ id_point;nom;type;massif;altitude;latitude;longitude;qualité GPS;nombre de plac
 //**********************************************************************************************
 function liste_icones_possibles()
 {
-  $q_select_type= "SELECT * FROM point_type";
-  $r_select_type= mysql_query($q_select_type) or die("mauvaise requete: $q_select_type");
-  while ($ptype = mysql_fetch_object($r_select_type))
-  {
-    if ($ptype->nom_icone!="")
-      $icones[]=$ptype->nom_icone;
-    if ($ptype->nom_icone_ferme!="")
-      $icones[]=$ptype->nom_icone_ferme;
-    if ($ptype->nom_icone_sommaire!="")
-      $icones[]=$ptype->nom_icone_sommaire;
-  }
-  
-  return $icones;
+	global $pdo;
+	$q_select_type= "SELECT * FROM point_type";
+	//PDO-
+	//$r_select_type= mysql_query($q_select_type) or die("mauvaise requete: $q_select_type");
+	//while ($ptype = mysql_fetch_object($r_select_type))
+	//PDO+
+	$res = $pdo->query($q_select_type);
+	while ( $ptype = $res->fetch() )
+	{
+		if ($ptype->nom_icone!="")
+			$icones[]=$ptype->nom_icone;
+		if ($ptype->nom_icone_ferme!="")
+			$icones[]=$ptype->nom_icone_ferme;
+		if ($ptype->nom_icone_sommaire!="")
+			$icones[]=$ptype->nom_icone_sommaire;
+	}
+
+	return $icones;
 }
 
 //**********************************************************************************************
@@ -462,16 +469,22 @@ return $xml;
  Fonction qui permet d'exporter en provenance de la base n'importe quel polygone au format GPX
  Le dernier point aura les même coordonnées que le premier point
 */
+//PDO GIS jmb + re ecriture SQL
+//FIXME Attention, ca a des chance de foirer pour les POLY avec INNER RING !!
 function export_polygone_gpx($id_polygone)
 {
-  if (!is_numeric($id_polygone))
-    return -1;
-  $query_liste="SELECT latitude,longitude
-  FROM points_gps,lien_polygone_gps 
-  where  
-  points_gps.id_point_gps=lien_polygone_gps.id_point_gps 
-  and lien_polygone_gps.id_polygone=$id_polygone 
-  order by ordre";
+	if (!is_numeric($id_polygone))
+		return -1;
+		ExteriorRing(gis)
+	//$query_liste="SELECT latitude,longitude
+	//	FROM points_gps,lien_polygone_gps 
+	//	where  
+	//points_gps.id_point_gps=lien_polygone_gps.id_point_gps 
+	//and lien_polygone_gps.id_polygone=$id_polygone 
+	//order by ordre";
+	
+	$query_liste="SELECT";
+					
   $res=mysql_query($query_liste);
   $xml=entete_gpx();
   $xml.="<trk>\n";

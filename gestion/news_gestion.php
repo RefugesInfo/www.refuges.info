@@ -14,7 +14,9 @@
 //*                        | -table comment incorrecte, paramètres GET non pris en compte,     *
 //*                        | -renvoi page d'index gestion non fait (prise en compte AUTH=1)    *
 //*                        |                                                                   *
+//* 16/02/13               |   jmb : PDO                                                       *
 //**********************************************************************************************
+
 
 
 //vérification des autorisations
@@ -42,7 +44,9 @@ if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
    {
      echo "La news en page de garde est enlevée<br>";
      $query_delete="DELETE FROM comment WHERE id=$id_news";
-     mysql_query($query_delete);
+	 //PDO-  mysql_query($query_delete);
+	 //PDO+
+	 $pdo->exec($query_delete);
    }
 
    if ($ajout==1)
@@ -61,7 +65,9 @@ if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
 
      //rff 21/03/06 : table 'comment' évoluée en 'commentaires'
      $sql_query_ajout="INSERT INTO commentaires(id_point,texte,date) VALUES (".$config['numero_commentaires_generaux'].",\"".$texte."\",NOW())";
-     mysql_query($sql_query_ajout)or die("insert_commentaires est mauvais");
+     //PDO- mysql_query($sql_query_ajout)or die("insert_commentaires est mauvais");
+	 //PDO+
+	 $pdo->exec($sql_query_ajout)or die("insert_commentaires est mauvais");
      echo "News générale : \"".texte."\" ajoutée<br>";
    }
 }

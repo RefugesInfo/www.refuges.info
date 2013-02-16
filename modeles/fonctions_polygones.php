@@ -134,8 +134,8 @@ Array
         ) 
 )
 ****************************************************************************************************/
-//GIS-
-/*function tableau_polygone($id_polygone)
+//GIS-    // FIXME  A SUPPRIMER
+function tableau_polygone($id_polygone)
 {
 $query="SELECT latitude,longitude,points_gps.id_point_gps 
 		FROM points_gps,lien_polygone_gps
@@ -153,7 +153,7 @@ while($poly=mysql_fetch_object($re))
 mysql_free_result($re);
 return $polygone_gps;
 }
-*/
+
 
 
 /***********************************************************************************************                                                              
@@ -283,7 +283,8 @@ function infos_polygone($id_polygone)
 {
 	global $pdo;
 	//PDO+ requete pre-preparee dans la bibliotheque du constructeur PDO (fct BDD)
-	$pdo->requetes->infos_poly->execute(array('idpoly'=>"$id_polygone"));
+	$pdo->requetes->infos_poly->bindValues('idpoly', $id_polygone, PDO::PARAM_INT );
+	$pdo->requetes->infos_poly->execute();
 
 	// detype object comme l'ancienne
 	return $pdo->requetes->infos_poly->fetch();
@@ -345,17 +346,13 @@ function liste_autres_massifs ($zone_demandee) {
 	";
 
 	// On envoie la requete
-	try {
-		$r_select_mass = $pdo->query($q_select_mass);
-		// Traitement
-		// Ajoute les liens vers les massifs qui ne sont pas dans une zone
-		// bug en cours mais la resolution passe par des polygones, pas par du PHP.
-		while ($polygone = $r_select_mass->fetch()) 
-			$r[$polygone->nom_polygone] = lien_polygone ($polygone->nom_polygone, $polygone->id_polygone, 'Massif');
-		} catch( Exception $e ){
-		echo 'Erreur de requete liste_autre_massifs : ', $e->getMessage();
-	}
-
+	$r_select_mass = $pdo->query($q_select_mass);
+	// Traitement
+	// Ajoute les liens vers les massifs qui ne sont pas dans une zone
+	// bug en cours mais la resolution passe par des polygones, pas par du PHP.
+	while ($polygone = $r_select_mass->fetch()) 
+		$r[$polygone->nom_polygone] = lien_polygone ($polygone->nom_polygone, $polygone->id_polygone, 'Massif');
+	
 	//tableau de tous les massif n'etant pas dans la zone (polygones normalement...)
 	return $r;
 }
@@ -432,13 +429,39 @@ utilisés 19/04/2010 sly
 //suppression juste du polygone
 function suppression_polygone($id_polygone)
 {
-if (!is_numeric($id_polygone))
-	return -1;
-$query="delete from polygones where id_polygone=$id_polygone";
-mysql_query($query);
-suppression_points_polygone($id_polygone);
-return 0;
+	global $pdo;
+	if (!is_numeric($id_polygone))
+		return -1;
+	$query="DELETE FROM polygones WHERE id_polygone=$id_polygone";
+	$pdo->exec($query) or die('pb lors suppr polygone '.$id_polygone) ;
+	//suppression_points_polygone($id_polygone);
+	return 0;
 }
 
+/*****************************************************
+// LISTE POLYGONES DANS POLYGONE
+// INPUT id_polygone du parent
+// INPUT type_polygone de(s) fils recherchés ( ou tous )
+// OUTPUT tableau de pointeurs de id_polygones, avec WKT
+***  jmb    **********************************************/
+//utile pour les zones qui contiennent des massifs
+function liste_polys_dans_poly( $idpere, $typefils = NULL )
+{
+	global $pdo;
+	$q = " SELECT id_polygone, id_polygone_type, article_partitif, nom_polygone, source, message_information_polygone, url_exterieure, AsWKT(gis) AS gis_wkt
+			FROM polygones AS fils
+			WHERE Intersects(
+								(SELECT gis FROM polygones WHERE id_polygone=$idpere),
+								fils.gis
+							)
+			";
+	if (is_numeric( $typefils ) )
+		$q .= "AND fils.id_polygone_type = $typefils";
+
+	$res = $pdo->query($q) ;
+	while( $fils[] = $res->fetch() ) ;
+
+	return $fils ;
+}
 
 ?>

@@ -34,11 +34,11 @@ if ($point!=-1)
       $modele->lettre_verification="";
     }
     else if (bloquage_internaute($_POST['comment_auteur']))  // utilisateur dont l'adresse IP est bannie
-      $model->banni=True;
+		$model->banni=True;
     else
     {
       // c'est quoi ça ?
-      set_magic_quotes_runtime(0);
+      //set_magic_quotes_runtime(0); //jmb deprecated PHP5.4.
       // Variables du commentaire à ajouter, presque plus de tests à faire, tout est dans la fonction d'ajout de
       // commentaires
       

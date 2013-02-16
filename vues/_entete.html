@@ -11,6 +11,7 @@
 // 17/10/11 Dominique : Création
 // 20/11/11 Dominique : Remplacement style don par classe
 // 08/05/12 Dominique : Retour en modeles simples
+// 15/02/13 jmb : redondance massifs/nav, repointage des liens vers NAV/ clarification zone/massif
 print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>");
 ?>
 
@@ -47,7 +48,7 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 	<body>
 		<div id="entete">
 			<div>
-				<?if (auto_login_phpbb_users ()) {?>
+				<?if ($_SESSION['niveau_moderation']>=1) {?>
 					<a href="/forum/profile.php?mode=editprofile" title="Modifier votre profil"><?echo ucfirst($_SESSION['login_utilisateur'])?></a>
 					<a href="<?=$config['lien_forum']?>login.php?logout=true">Se déconnecter</a>
 				<?} else {?>
@@ -115,8 +116,21 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 						</form>
 					</li>
 					<?}?>
-					<li><a href="/massifs.php">Massifs</a>
+					<li><a href="/massifs.php">Massifs</a> <!-- en fait c'est Zones zon affiche des sous massifs -->
 						<ul>
+							<li><a href="/nav/zone/460/Europe/" title="Retour à la page d'accueil et la carte des massifs">Europe</a></li> <!-- FIXME POSTGRESQL verfier l'ID de Europe -->
+							<li><a href="/nav/zone/352/Alpes/">Alpes occidentales</a></li>
+							<li><a href="/nav/zone/456e/Alpes-orientales/">Alpes orientales</a></li>
+							<li><a href="/nav/zone/50/Massif-Central/">Massif Central</a></li>
+							<li><a href="/nav/zone/351/Pyrenees/">Pyrénées</a></li>
+							<li><a href="/nav/massif/56/vosges/">Vosges</a></li>
+							<li><a href="/nav/massif/27/jura/">Jura</a></li>
+							<li><a href="/nav/massif/337/corse/">Corse</a></li>
+							<li><a href="/nav/massif/28/reunion/">Réunion</a></li>
+							<li><a href="/nav/massif/51/nouvelle-caledonie/">Nlle Calédonie</a></li>
+							<li><a href="/nav/massif/374/cordillere-des-andes/">Andes</a></li>
+
+							<!--
 							<li><a href="/massifs.php" title="Retour à la page d'accueil et la carte des massifs">Europe</a></li>
 							<li><a href="/massifs.php?zone=Alpes">Alpes</a></li>
 							<li><a href="/massifs.php?zone=Alpes-orientales">Alpes orientales</a></li>
@@ -128,6 +142,7 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 							<li><a href="/nav/massif/28/reunion/">Réunion</a></li>
 							<li><a href="/nav/massif/51/nouvelle-caledonie/">Nlle Calédonie</a></li>
 							<li><a href="/nav/massif/374/cordillere-des-andes/">Andes</a></li>
+							-->
 						</ul>
 					</li>
 					<li><a href="/nav.php">Cartes</a>
@@ -166,7 +181,7 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 					</li>
 					
 					<?if ($id == 'menu-scroll') {?>
-						<?if (auto_login_phpbb_users ()) {?>
+						<?if ($_SESSION['niveau_moderation']>=1) {?>
 							<li><a href="/gestion/" title="Zone de gestion pour les modérateurs">[<?=$_SESSION['login_utilisateur']?>]</a>
 								<?if (info_demande_correction ()) {?>
 									<a href="/gestion/?page=commentaires_attente_correction" title="Commentaires en attente de correction">*</a>

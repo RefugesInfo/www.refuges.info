@@ -4,19 +4,28 @@ Permettre à n'importe qui d'indiquer qu'un commentaire à pas, peu, un peu, ou 
 J'avais imaginé un système sophistiqué de scoring mais en fait c'est très peu utilisé, là ou
 c'est utile, c'est que si un internaute trouve un commentaire inutile ça l'indique à un modérateur
 **********************************************************************************************/
+// 15/02/13 jmb : PDO
+
 
 require_once ($config['chemin_modeles']."fonctions_affichage_points.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
+require_once ($config['chemin_modeles']."fonctions_bdd.php");
 
 $modele->description = $description;
 include ($config['chemin_vues']."_entete.html");
 
 print('<div class="contenu">');
 
-$query_commentaire="SELECT * FROM commentaires WHERE id_commentaire=".$_GET['id_commentaire'];
-$res=mysql_query($query_commentaire);
-$commentaire=mysql_fetch_object($res);
+//PDO-
+//$query_commentaire="SELECT * FROM commentaires WHERE id_commentaire=".$_GET['id_commentaire'];
+//$res=mysql_query($query_commentaire);
+//$commentaire=mysql_fetch_object($res);
+//PDO+  ya une fonction prepared pour ca
+$pdo->requetes->infos_comment->bindValues('comment', $_GET['id_commentaire'] , PDO::PARAM_INT );
+$pdo->requetes->infos_comment->execute() or die ('comment inexistant:'.$_GET['id_commentaire']);
+$commentaire = $pdo->requetes->infos_comment->fetch();
+
 $point=infos_point($commentaire->id_point);
 
 /**************************** l'action  ******************************/
@@ -28,8 +37,11 @@ if ($_POST['score']!="")
 {
 	if ($_POST['score']==2)
 		$en_plus=",demande_correction=1";
-	$query="UPDATE commentaires set qualite_supposee=(qualite_supposee+($_POST[score]))$en_plus where id_commentaire=".$_GET['id_commentaire'];
-	mysql_query($query);
+	//PDO-
+	//$query="UPDATE commentaires SET qualite_supposee=(qualite_supposee+($_POST[score]))$en_plus where id_commentaire=".$_GET['id_commentaire'];
+	//mysql_query($query);
+	//PDO+
+	$pdo->exec($query) or die ('update comment echec pour id :'.$_GET['id_commentaire']);
 	print('<p>
 	Merci pour votre aide au classement
 	</p>');

@@ -3,6 +3,8 @@
 Constantes de configuration, plus propre qu'en dur
 *************************************************/
 
+// 15/02/13 jmb : FIXME, passer les INT en INT sinon PGsql fera pouf !
+
 // Ce fichier est privée et contient des différentes clefs et mot de passe
 require_once("config_privee.php");
 
@@ -48,9 +50,9 @@ $config['rep_forum_photos']=$config['document_root']."/forum/photos-points/";
 $config['rep_web_forum_photos']="/forum/photos-points/"; 
 
 // sly  27/04/06 je préfère me baser sur l'id pour le retrouver plutôt que son type ( que je viens d'ailleurs de modifier )
-$config['id_massif']="1"; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
-$config['id_carte']="3"; //sly : id du type de polygone correspondant aux 'cartes papier'
-$config['id_zone']="15"; // jmb : grandes zones, alpes, pyrenees ... c'est des gros carrés, ou des PETITS polys
+$config['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
+$config['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
+$config['id_zone']=15; // jmb : grandes zones, alpes, pyrenees ... c'est des gros carrés, ou des PETITS polys A MERGER avec 11
 $config['zone_defaut']="Alpes" ; // jmb en fait ce sont les alpes de cehz nous
 
 // Catégorie "tout type de refuges"
@@ -59,9 +61,9 @@ $config['zone_defaut']="Alpes" ; // jmb en fait ce sont les alpes de cehz nous
 $config['tout_type_refuge']="7,9,10";
 
 // C'est clair que c'est nul, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'intéroger le bon id directement
-$config['id_cabane_gardee']="7";
-$config['id_refuge_garde']="10";
-$config['id_gite_etape']="9";
+$config['id_cabane_gardee']=7;  // passage en INT et plus STR
+$config['id_refuge_garde']=10; // passage en INT et plus STR
+$config['id_gite_etape']=9;// passage en INT et plus STR
 
 $config['champs_binaires_simples_points']=array('couvertures','eau_a_proximite','bois_a_proximite','latrines','sommaire','poele','cheminee','clef_a_recuperer');
 $config['champs_binaires_points']=array_merge(array('ferme','matelas'),$config['champs_binaires_simples_points']);

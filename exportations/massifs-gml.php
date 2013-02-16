@@ -8,6 +8,7 @@
 //*------------------------|-------------------------------------------------------------------*
 //* Modifications(date Nom)| Elements modifiés, ajoutés ou supprimés                           *
 //*------------------------|-------------------------------------------------------------------*
+// 14/02/13 jmb : BROKEN ! ne fonctionne plus suite a mon nettoyage dans les fct polys voir GIS et geoPHP
 //**********************************************************************************************
 
 require_once ("../modeles/config.php");
@@ -28,14 +29,14 @@ else {
 	if ($_GET['polygone_type'])
 		$polygone_type = $_GET['polygone_type'];
 	else
-		$polygone_type = $config['id_massif'];
-		
-	$condition="id_polygone_type = {$polygone_type} and id_polygone != {$config['numero_polygone_fictif']}";
+		$polygone_type = $config['id_massif'];	
+	//PDO-	$condition="id_polygone_type = {$polygone_type} and id_polygone != {$config['numero_polygone_fictif']}";}
 }
-$q_select_mass= "
-	SELECT *
-	FROM polygones
-	WHERE $condition"; 
+//PDO-  on utilise la fct prepared
+//$q_select_mass= "
+//	SELECT *
+//	FROM polygones
+//	WHERE $condition"; 
 
 //------------
 // Générateur de couleurs qui tournent autour du cercle colorimétrique
@@ -49,9 +50,17 @@ $a = 256 + $b; // +256 pour bénéficier du 0 à gauche quand on passe en hexad�
 
 //------------
 $xml_massifs = '';
-$r_select_mass= mysql_query($q_select_mass) or die("mauvaise requete dans GMcreemassifs: $q_select_mass");
+
+//PDO-
+//$r_select_mass= mysql_query($q_select_mass) or die("mauvaise requete dans GMcreemassifs: $q_select_mass");
+//if ($_GET['massif'] != 'null')
+//	while ($polygone = mysql_fetch_object($r_select_mass)) {
+//PDO+
+
+$pdo->requetes->liste_polys->bindValue('typepoly', $polygone_type , PDO::PARAM_INT );   // param_int CAPITAL pour PostGres
+$pdo->requetes->liste_polys->execute() or die("mauvaise requete dans PDO liste_polys avec param=$polygone_type");
 if ($_GET['massif'] != 'null')
-	while ($polygone = mysql_fetch_object($r_select_mass)) {
+	while ($polygone = $pdo->requetes->liste_polys->fetch() ) {
 		// Couleur attribuée autour du cercle des couleurs.
 		$cr = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul               )), -2);
 		$cv = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 2 * M_PI / 3)), -2);
@@ -101,9 +110,9 @@ $xml_massifs
 //------------
 // libère la boucle des massifs
 //------------
-mysql_free_result ($r_select_mass); 
+//PDO- mysql_free_result ($r_select_mass); 
 // fermeture cnx mysql
-if (is_resource($mysqlink))
-    mysql_close($mysqlink);
+//if (is_resource($mysqlink))
+//    mysql_close($mysqlink);
 
 ?>

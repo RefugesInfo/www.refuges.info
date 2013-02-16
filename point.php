@@ -22,6 +22,7 @@
 // 08/10/11 Dominique : Utilisation des templates
 // 26/05/12 Dominique : Retour en modeles simples
 // 09/11/12 Dominique : Inclusion de la censure
+// 14/02/13 jmb : PDO et consorts
 
 require_once ('modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
@@ -37,8 +38,8 @@ $array = explode ('/',$_SERVER['PATH_INFO']);
 $id_point = $array [1]; // $array [1] contient l'id du point
 $modele = infos_point ($id_point); // Recupere les donnees du point concerné, centralisé dans une fonction maintenant sly 30/10/2008
 // Les infos du point deviennent des membres du template ($modele->latitude ...)
-
 // Partie spécifique de la page
+
 if ($modele == -1) {
 	unset ($modele);
 	$modele->type = 'point_inexistant';
@@ -56,6 +57,7 @@ if ($modele == -1) {
 	$modele->commentaires           = infos_commentaires ($id_point);
 	$modele->commentaire_avec_photo = infos_vignettes ($id_point);
 	$modele->annonce_fermeture      = texte_non_ouverte ($modele);
+
 	/*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/
 	if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
 	{
@@ -93,6 +95,7 @@ if ($modele == -1) {
 			$_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $modele->id_createur
 		))
 		$modele->lien_modification=TRUE;
+//var_dump($_SESSION);
 
 	/*********** Préparation des infos complémentaires (c'est à dire les champs à cocher) ***/
 	// Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
@@ -139,7 +142,6 @@ if ($modele == -1) {
 			$commentaire = &$modele->commentaires[$nc]; // Pour faire les modifs dans le tableau et pas dans la variable de boucle
 			 // Préparation des données et affichage d'un commentaire de la fiche d'un point
 			// 17/10/11 / Dominique / Création
-
 			// ici le lien pour modérer ce commentaire
 			if (isset($_SESSION['id_utilisateur']) AND
 				( ($_SESSION['niveau_moderation']>=1) OR ($_SESSION['id_utilisateur']==$commentaire->id_createur))

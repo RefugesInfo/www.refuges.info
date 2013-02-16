@@ -34,9 +34,7 @@ $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
 //);
 
 //=============  Zone TEST a la crado =======================
-$pdo->exec("INSERT INTO tmmp SET tt='ee'");
 
-echo $pdo->lastInsertId('id');
 //=============  Zone TEST a la crado =======================
 
 

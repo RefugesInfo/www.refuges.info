@@ -46,7 +46,11 @@
 		<dd>	
 			<div class="libelle">Précision:</div>
 			<select <?=$disabled_field?> name="id_type_precision_gps">
-				<?=$htmlconstruct_select?>
+				<?	foreach ($modele->infos_base->type_precision AS $gps) { ?>
+						<option  value="<?=$gps->id_type_precision_gps?>">
+							<?=$gps->nom_precision_gps ?>
+						</option>
+					<?}?>
 			</select>
 		</dd>
 		<dt>informations de base:</dt>
@@ -56,7 +60,13 @@
 		</dd>
 		<dd>
 			<div class="libelle">Type de point:</div>
-			<select name='id_point_type'><?=$html_listbox?></select>
+			<select name='id_point_type'>
+					<?	foreach ($modele->infos_base->types_point AS $tp) { ?>
+						<option  value="<?=$tp->id_point_type?>">
+							<?=$tp->nom_type ?>
+						</option>
+					<?}?>
+			</select>
 			<a href="http://www.refuges.info/statique/mode_emploi.php?page=autres_points">
 				Explications plus précises sur les différents types de points
 			</a>
