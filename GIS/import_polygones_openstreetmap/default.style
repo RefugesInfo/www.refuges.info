@@ -3,9 +3,20 @@
 #celui-ci contient les niveau administratif (régions dép communes)
 node,way   admin_level  text         linear
 
+#info des objet qui peuvent nous être utiles
+node,way   name		text	     linear
+node,way   description  text	     linear
+node,way   regulation   text	     linear
+node,way   phone        text	     linear
+node,way   website      text	     linear
+
+
+
 #celui-ci contient les type de frontières (réserve nat, zone militaire, frontière administratives)
 node,way   boundary     text         linear
+node,way   leisure      text         linear
+
 
 #celui-ci contient les hôtels, camping)
 node,way   tourism      text         polygon
-way        way_area     real                # This is calculated during import
+#way        way_area     real                # This is calculated during import
