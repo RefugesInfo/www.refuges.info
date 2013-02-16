@@ -239,7 +239,7 @@ else // formulaire validé, affichage du lien et d'un blabla
 		}
 			
 		$options_lien="?limite=sans&amp;format=".$_POST['format']."&amp;liste_id_point_type=$liste_id_point_type&amp;liste_id_massif=$liste_id_massif" . $bbox;
-		$lien="http://www.refuges.info/exportations/exportations.php$options_lien";
+		$lien="http://".$config['nom_hote']."/exportations/exportations.php$options_lien";
 
 		print("
 				<a href='$lien'>

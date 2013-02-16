@@ -1,5 +1,5 @@
-<?php // Ecran d'accueil (massifs disponibles)
-// Accès par "http://www.refuges.info/
+<?php 
+// Ecran d'accueil (massifs disponibles)
 
 // Contient le code PHP de la page
 // Le code html est dans /vues/*.html
@@ -14,6 +14,7 @@
 // 08/10/11 Dominique : Utilisation des templates
 // 08/05/12 Dominique : Retour en modeles simples
 // 15/02/13 jmb : page redondante avec NAV ? 
+// --> Oui, clairement, il faut qu'on se débarrasse de ce trucs et que les zones soient des polygones comme les autres gérés par nav.php sly 16/02/2013
 
 require_once ("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");

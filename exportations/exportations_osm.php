@@ -2,7 +2,7 @@
 /**********************************************************************************************
 Renvoi un fichier au format gml contenant les données en provenance d'une copie partielle d'openstreetmap
 le lien d'accès à pour format :
-http://www.refuges.info/exportation/exportations_osm.php?format=kmz&
+http://<site>/exportation/exportations_osm.php?format=kmz&
 
 Openlayers est (sera) basé en partie sur cette adresse
 **********************************************************************************************/

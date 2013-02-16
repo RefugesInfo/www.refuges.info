@@ -2,7 +2,7 @@
 /**********************************************************************************************
 Renvoi un fichier au format souhaité contenant les données souhaitées en provenance de notre base
 le lien d'accès à pour format :
-http://www.refuges.info/exportation/exportations.php?format=kmz&
+http://<site>/exportation/exportations.php?format=kmz&
 Ne pas changer l'adresse à la légère :
 ATTENTION :Openlayers est basé sur cette adresse, l'export aussi,
 des sites partenaires aussi peut-être !

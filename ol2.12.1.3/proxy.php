@@ -38,10 +38,7 @@ if (count ($args))
 $purl = parse_url ($url); // On analyse l'url
 switch ($purl ['host']) // Liste des serveurs autorisés
 {
-//	case 'labs.metacarta.com':
 	case 'localhost':
-	case 'refuges.info':
-	case 'www.refuges.info':
 	case 'chemineur.fr':
 	case 'wmts.geo.admin.ch':
 		// C'est bon. On va chercher le contenu et on l'affiche

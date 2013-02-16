@@ -23,8 +23,8 @@
 			<year>2002</year>
 			<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 		</copyright>
-		<link href="http://www.refuges.info/">
-			<text>http://www.refuges.info/</text>
+		<link href="http://<?=$config['nom_hote']?>/">
+			<text>http://<?=$config['nom_hote']?>/</text>
 			<type>text/html</type>
 		</link>
 	</metadata>
@@ -39,7 +39,7 @@
 			<?if (!$simple) {?>
 				<src><?=$point->nom_precision_gps?></src>
 				<link href="<?=$point->url?>">
-					<text><?=$point->nom?> sur www.refuges.info</text>
+					<text><?=$point->nom?> sur <?=$config['nom_hote']?></text>
 					<type>text/html</type>
 				</link>
 				<type><?=$point->nom_type?></type>

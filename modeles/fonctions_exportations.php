@@ -185,7 +185,7 @@ function entete_kml()
 <kml xmlns=\"http://earth.google.com/kml/2.1\">
 <Document>
 	<name>".$config['nom_fichier_export'].".kml</name>
-	<description>Points provenants du site www.refuges.info</description>
+	<description>Points provenants du site ".$config['nom_hote']."</description>
 	<open>1</open>
 	<!-- Fin de l'entete KML ! -->
 	<!-- Place a la liste des Styles : -->
@@ -195,7 +195,7 @@ function entete_kml()
   // sly 30/10/10
   foreach (liste_icones_possibles() as $nom_icone)
   {
-    $lien_icone = "http://www.refuges.info".$config['url_chemin_icones'].$nom_icone . '.png';
+    $lien_icone = "http://".$config['nom_hote'].$config['url_chemin_icones'].$nom_icone . '.png';
 
     $tx = $ty = 16; // La plupart des icones
 	    
@@ -231,7 +231,7 @@ function placemark_kml($point)
   $_xml ="\n  <Placemark id='$point->id_point'>\n";
   $_xml .="    <name>".c($point->nom)."</name>\n";
   $_xml .="    <description><![CDATA[
-  <img src='http://www.refuges.info".$config['url_chemin_icones'].$point->nom_icone.".png' />
+  <img src='http://".$config['nom_hote'].$config['url_chemin_icones'].$point->nom_icone.".png' />
   (<em>".c($point->nom_type)."</em>) <br />
   <center><a href='$lien_url'>".c('Détails')."</a></center>
   ]]></description>\n";
@@ -358,7 +358,7 @@ function entete_gpx()
     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
 <metadata>
 	<name>'.$config['nom_fichier_export'].'.gpx</name>
-	<desc>Tout ou partie de la base de donnée de point GPS de www.refuges.info, contenant des points d\'intérêts du massif des alpes</desc>
+	<desc>Tout ou partie de la base de donnée de point GPS de '.$config['nom_hote'].', contenant des points d\'intérêts du massif des alpes</desc>
 	<author>
 		<name>Contributeurs refuges.info</name>
 	</author>
@@ -366,8 +366,8 @@ function entete_gpx()
 		<year>2002</year>
 		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 	</copyright>
-	<link href="http://www.refuges.info/">
-		<text>http://www.refuges.info/</text>
+	<link href="http://'.$config['nom_hote'].'/">
+		<text>http://'.$config['nom_hote'].'/</text>
 		<type>text/html</type>
 	</link>
 </metadata>
@@ -407,7 +407,7 @@ function waypoint_gpx($point,$format)
 	";
 	
 	//Je pousse peut-être la factorisation du code un peu loin, ça perd en lisibilité, mais c'est le format mutant entre gpx pour la carte googlemaps et l'export GPX sly 12/05/2010
-	$gpx_texte_lien="\t\t\t<text>".c($point->nom)." sur www.refuges.info</text>\n";
+	$gpx_texte_lien="\t\t\t<text>".c($point->nom)." sur ".$config['nom_hote']."</text>\n";
 	$gpx_massif="\t\t\t<massif>".c($point->nom_polygone)."</massif>\n";
 	$gpx_id_massif="\t\t\t<id_massif>$point->id_polygone</id_massif>\n";
 	$gpx_id_qualite_gpx="\t\t\t<id_qualite_gps>$point->id_type_precision_gps</id_qualite_gps>\n";
@@ -552,7 +552,7 @@ function fichier_exportation($conditions,$format)
 	  $contenu=entete_exportation($format);
 	  
 		// Dominique 24/11/12 Dédoublement des points proches
-		//DEBUG http://www.refuges.info/exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6		
+		//DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6		
 		if ($icones = $_GET ['icones']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
 			$delta_latitude  = ($conditions->latitude_maximum  - $conditions->latitude_minimum ) / $icones;
 			$delta_longitude = ($conditions->longitude_maximum - $conditions->longitude_minimum) / $icones;

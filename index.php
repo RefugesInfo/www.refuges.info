@@ -1,5 +1,5 @@
-<?php // Ecran d'accueil
-// Accès par "http://www.refuges.info/
+<?php 
+// Ecran d'accueil
 
 // Contient le code PHP de la page
 // Le code html est dans /vues/*.html

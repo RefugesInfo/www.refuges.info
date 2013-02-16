@@ -1,7 +1,8 @@
 <?php
 // Point d'entrée de la page "Fiche du point" qui s'occupe de présenter le point, sommet,
 // village et tout autre "type" possible de la base avec photos, nom, infos, commentaires, etc...
-// on peut accéder au point par http://www.refuges.info/point/183/ce/quon/veut/ ( pour le n°183 ). (sly)
+// on peut accéder au point par http://<site>/point/183/ce/quon/veut/ ( pour le n°183 ). (sly)
+// FIXME 16/02/2013: il faut en finir avec le Options +Multiviews merdique et peut performant, du rewrite et un vrai modèle MVC avec un seul script d'entrée à tous le site me semble la direction à prendre
 
 // Contient le code PHP de la page
 // Le code html est dans /vues/*.html
