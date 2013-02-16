@@ -25,9 +25,9 @@ function connexion_base()
 					PDO::MYSQL_ATTR_INIT_COMMAND    => "SET NAMES utf8"  // a changer pour pgsql
 		);
 		$pdo = new PDO(
-				"pgsql:host=".$config['serveur_mysql'] . ";dbname=" . $config['base_mysql'] ,
-				$config['utilisateur_mysql'],
-				$config['mot_de_passe_mysql'],
+				"pgsql:host=".$config['serveur_pgsql'] . ";dbname=" . $config['base_pgsql'] ,
+				$config['utilisateur_pgsql'],
+				$config['mot_de_passe_pgsql'],
 				$pdo_options );
 		// TOUTES les requetes seront renvoyees en fetch_object (resultat->columname)
 		$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
