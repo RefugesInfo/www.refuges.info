@@ -471,11 +471,15 @@ return $xml;
 */
 //PDO GIS jmb + re ecriture SQL
 //FIXME Attention, ca a des chance de foirer pour les POLY avec INNER RING !!
+
+// PAUSE ! Cette fonction à toute les chances de ne plus avoir besoin d'exister vu qu'elle ne servait qu'a construire nos polygones pour les retravailler
+// ailleurs, avec potGIS, on a toute les chances de ne plus en avoir besoin -- sly 16/02/13
+
 function export_polygone_gpx($id_polygone)
 {
 	if (!is_numeric($id_polygone))
 		return -1;
-		ExteriorRing(gis)
+		ExteriorRing(gis);
 	//$query_liste="SELECT latitude,longitude
 	//	FROM points_gps,lien_polygone_gps 
 	//	where  
