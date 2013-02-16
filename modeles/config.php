@@ -8,6 +8,15 @@ Constantes de configuration, plus propre qu'en dur
 // Ce fichier est privée et contient des différentes clefs et mot de passe
 require_once("config_privee.php");
 
+/******** Clés des contrats des cartes **********/
+// Dominique 09/05/2012. Déplacées de /includes/fonctions_gmaps.php
+$config['gmaps_key']="ABQIAAAAoB95UD1QkB41lW_FQfqr0RQDREnAL82o3PpQIQAJ4vsi_z1IzBREkfr_eRXtdSpzaacqidgpsTNaog";// Obsolète en GG V3
+
+$config['ign_key']="1575122885855346891"; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
+
+// cartes anglaises
+$config['os_key']="ev2w14tv2ez4wpypux2ael39"; // User cavailhezd / http://openspace.ordnancesurvey.co.uk
+
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['carte_base'] = 'maps.refuges.info';
 //$config['carte_base'] = 'Google';
