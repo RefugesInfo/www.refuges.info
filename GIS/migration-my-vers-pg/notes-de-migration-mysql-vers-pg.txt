@@ -1,0 +1,9 @@
+﻿Opération :
+Tentative de migration de la base mysql vers postgresql :
+
+* Dump du sql de prod de mysql + ré-import dans mysql
+* on vire les colonnes gis de points_gps et polygones
+* on dégage les tables zzz_segments... appartenance_polygone
+* on lance une conversion py-mysql2pgsql avec comme fichier : mysql2pgsql.yml ci présent
+* On vire les contraintes NOT NULL dans le .sql sur date_photo et date_derniere_modification
+* on dump dans psql : cat test.sql | psql refuges (avec l'utilisateur refuges)
