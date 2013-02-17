@@ -26,9 +26,9 @@ function connexion_base()
 					PDO::MYSQL_ATTR_INIT_COMMAND    => "SET NAMES utf8"  // a changer pour pgsql
 		);
 		$pdo = new PDO(
-				"mysql:host=".$config['serveur_mysql'] . ";dbname=" . $config['base_mysql'] ,
-				$config['utilisateur_mysql'],
-				$config['mot_de_passe_mysql'],
+				"pgsql:host=".$config['serveur_pgsql'] . ";dbname=" . $config['base_pgsql'] ,
+				$config['utilisateur_pgsql'],
+				$config['mot_de_passe_pgsql'],
 				$pdo_options );
 		// TOUTES les requetes seront renvoyees en fetch_object (resultat->columname)
 		$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
@@ -194,9 +194,15 @@ function pdo_biblio_init( $pdo )
 	// :point // -1 pour tout avoir, il faut un INT pas un STR !!!
 	// :vignette // -1 pour tout
 	// :limite // LIMIT
+<<<<<<< HEAD
 	$r="SELECT commentaires.auteur,texte,points.id_point,
 			points.nom,commentaires.id_commentaire,commentaires.photo_existe, date_photo,
 			UNIX_TIMESTAMP(commentaires.date) AS date
+=======
+	$r="SELECT commentaires.auteur,points.id_point,
+			points.nom,commentaires.id_commentaire,commentaires.photo_existe,
+			extract('epoch' from commentaires.date) as date
+>>>>>>> 3782188d115b5a43f0b4cef528f50466a01e9878
 		FROM commentaires LEFT JOIN points ON commentaires.id_point = points.id_point
         WHERE
 			points.modele!=1
@@ -216,7 +222,7 @@ function pdo_biblio_init( $pdo )
 				ELSE FALSE
 			END
 		ORDER BY commentaires.date DESC
-        LIMIT 0,:limite";
+        LIMIT :limite";
 	$biblio->liste_comments = $pdo->prepare($r);
 
 	
