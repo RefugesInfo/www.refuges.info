@@ -1,9 +1,20 @@
 ﻿Opération :
 Tentative de migration de la base mysql vers postgresql :
 
-* Dump du sql de prod de mysql + ré-import dans mysql
+* Dump du sql de prod de mysql 
+* Parce que l'outil d'ensuite ne gère pas bien les tinyint(1) en les remplaçant par des boolean dans postgresql et phpbb ne fonctionne plus
+on les remplaces par des int :
+cat dump.sql | sed s/"tinyint(.*)"/"int(11)"/g > refuges2.sql
+* ré-import dans mysql
 * on vire les colonnes gis de points_gps et polygones
-* on dégage les tables zzz_segments... appartenance_polygone
+* on dégage les tables zzz_segments et appartenance_polygone
+* de la table points_gps on vire ceux qui sont des points de polygones
 * on lance une conversion py-mysql2pgsql avec comme fichier : mysql2pgsql.yml ci présent
-* On vire les contraintes NOT NULL dans le .sql sur date_photo et date_derniere_modification
+
+Du fichier sql généré, il faut encore faire des modifs à la main :
+
+* On vire les contraintes NOT NULL dans le .sql sur date_photo et date_derniere_modification + remplacement des boolean
+que phpbb rentre en 0 ou 1 mais que l'outil de conversion à transformé en t ou f
+cat test.sql |sed s/"date_derniere_modification\" date NOT NULL"/"date_derniere_modification\" date"/ | sed s/"date_photo\" date NOT NULL"/"date_photo\" date"/> bool-to-int.sql 
+
 * on dump dans psql : cat test.sql | psql refuges (avec l'utilisateur refuges)
