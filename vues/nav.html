@@ -24,8 +24,8 @@
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 <!-- Un premier formulaire pour les consultations courantes -->
 <?php
-// les formulaires ne seront la QUE en mode massif, pas en zone 
-if ( $modele->type_affichage == "massif" )
+// les formulaires ne seront pas la en zone , ils sont presents pour le reste
+if ( $modele->type_affichage != "zone" )
 {
 
 ?>

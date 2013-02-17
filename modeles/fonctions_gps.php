@@ -36,33 +36,32 @@ Si on trouve un candidat, on ajoute rien, mais on renvoi son id
 ********************************************************/
 function modification_ajout_point_gps($point_gps,$id_polygone_type=-1)
 {
-global $config;
-//GIS : pas de champs gis car il ne faut pas qu'il soit traité a la chaine en foreach.
-$champs=array("longitude","latitude","altitude","acces","id_type_precision_gps");
+	global $config,$pdo;
+	//GIS : pas de champs gis car il ne faut pas qu'il soit traité a la chaine en foreach.
+	$champs = array("longitude","latitude","altitude","acces","id_type_precision_gps");
 
-// si on veut faire un ajout et que latitude ou longitude sont vide, on ne peut rien faire
-if ($point_gps->id_point_gps=="" AND ($point_gps->longitude=="" OR $point_gps->latitude=="") )
-	return -1;
+	// si on veut faire un ajout et que latitude ou longitude sont vide, on ne peut rien faire
+	if ($point_gps->id_point_gps=="" AND ($point_gps->longitude=="" OR $point_gps->latitude=="") )
+		return -1;
+//var_dump($point_gps);
+	// si aucune précision gps, on les suppose approximatives
+	if ($point_gps->id_type_precision_gps=="")
+		$point_gps->id_type_precision_gps=$config['id_coordonees_gps_approximative'];
+	foreach ($champs as $champ)
+		if (isset($point_gps->$champ))
+			$champs_sql.="\n$champ=".$pdo->quote($point_gps->$champ).",";
 
-// si aucune précision gps, on les suppose approximatives
-if ($point_gps->id_type_precision_gps=="")
-	$point_gps->id_type_precision_gps=$config['id_coordonees_gps_approximative'];
-foreach ($champs as $champ)
-{
-	if (isset($point_gps->$champ))
-	$champs_sql.="\n$champ='".mysql_real_escape_string($point_gps->$champ)."',";
-}
-// GIS+ : si les latlon ne sont pas nuls, enregistrement coord OpenGIS
-if (($point_gps->longitude!="" AND $point_gps->latitude!=""))
-	$champs_sql.="\ngis=GeomFromText('POINT($point_gps->longitude $point_gps->latitude),4326')";
+	// GIS+ : si les latlon ne sont pas nuls, enregistrement coord OpenGIS
+	if (($point_gps->longitude!="" AND $point_gps->latitude!=""))
+		$champs_sql.="\ngis =GeomFromText('POINT($point_gps->longitude $point_gps->latitude),4326')";
 
-// fait-on un updater ou un insert ?
-if ($point_gps->id_point_gps!="")
-{
-	$insert_update="UPDATE";
-	$condition="WHERE id_point_gps=$point_gps->id_point_gps";
-} else
-	$insert_update="INSERT INTO";
+	// fait-on un updater ou un insert ?
+	if ($point_gps->id_point_gps != "")
+	{
+		$insert_update="UPDATE";
+		$condition="WHERE id_point_gps=$point_gps->id_point_gps";
+	} else
+		$insert_update="INSERT INTO";
 
 //{
 //   // GIS- : pas necessaire ? uniquement pour les poly ?
@@ -89,22 +88,22 @@ if ($point_gps->id_point_gps!="")
 //	$insert_update="INSERT INTO";
 //}
 
-$champs_sql=trim($champs_sql,",");
+	$champs_sql = trim($champs_sql,",");
 
-// $condition est vide dans  le cas d'un INSERT
-$query_finale="$insert_update points_gps set $champs_sql $condition";
+	// $condition est vide dans  le cas d'un INSERT
+	$query_finale = "$insert_update points_gps SET $champs_sql $condition";
 
-//PDO-  mysql_query($query_finale);
-//PDO+
-$pdo->exec($query_finale);
-$lastid = $pdo->lastInsertId('points_gps_id_points_gps_seq'); // FIXME POSTRESQL non en fait. ca devrait passer comme ca
-if ($point_gps->id_point_gps!="")
-	$id_point_gps=$point_gps->id_point_gps;
-else
-	$id_point_gps=$lastid ;
-//	$id_point_gps=mysql_insert_id();
+	//PDO-  mysql_query($query_finale);
+	//PDO+
+	$pdo->exec($query_finale);
+	$lastid = $pdo->lastInsertId('points_gps_id_points_gps_seq'); // FIXME POSTRESQL non en fait. ca devrait passer comme ca
+	if ($point_gps->id_point_gps!="")
+		$id_point_gps = $point_gps->id_point_gps;
+	else
+		$id_point_gps = $lastid ;
+		//	$id_point_gps=mysql_insert_id();
 
-return $id_point_gps;
+	return $id_point_gps;
 }
 
 /********************************************************

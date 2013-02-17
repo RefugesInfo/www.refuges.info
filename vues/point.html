@@ -261,12 +261,12 @@
 		unset ($commentaire); // Car déjà utilisée et perturbe le déroulement de la boucle // Si si! (Dominique 27/05/2012)
 		if (count ($modele->commentaires)) { ?>
 			<ul class="comment2">
-			<?foreach ($modele->commentaires AS $commentaire) {?>
+			<?foreach ($modele->commentaires AS $commentaire) {  ?>
 			<li>
 				<a id="C<?=$commentaire->id_commentaire?>"></a><!-- ici l'id pour l'anchor des petites vignettes du haut -->
 				<div class="fauxfieldset">
 					<!-- juste après la date du commentaire avec heure et en français, grace a LOCALE, avec la 1ere lettre en majuscule -->
-					<p class='fauxfieldset-legend'><?echo ucfirst (strftime ("%A %e %B %Y à %H:%M", $commentaire->date_affichage))?>
+					<p class='fauxfieldset-legend'><?echo ucfirst (strftime ("%A %e %B %Y à %H:%M", $commentaire->date))?>
 						<?if ($commentaire->auteur) {?>
 							par
 							<?if ($commentaire->id_createur != 0) {?>

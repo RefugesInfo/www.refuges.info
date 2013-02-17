@@ -184,10 +184,10 @@ function insert_ou_recupere_tag($tag)
 //  $res=mysql_query($query_is_tag);
 	//PDO+  
 	//$res = $pdo->query($query_is_tag) ;
-	$tagk = mysql_real_escape_string($tag->k);
-	$tagv = mysql_real_escape_string($tag->v);
+	$tagk = $pdo->quote($tag->k);
+	$tagv = $pdo->quote($tag->v);
 	
-	$query_is_tag="SELECT id_osm_tag FROM osm_tags WHERE k='".$tagk."' AND v='".$tagv."'";
+	$query_is_tag="SELECT id_osm_tag FROM osm_tags WHERE k=".$tagk." AND v=".$tagv;
 	$res = $pdo->query($query_is_tag);
 	$row = $res->fetch() ;
 	if ( $row )   // ya bien 1 resultat
@@ -195,7 +195,7 @@ function insert_ou_recupere_tag($tag)
 	else
 	{
 		$query_insert_tag="INSERT INTO osm_tags
-						SET k='".$tagk."', v='".$tagv."'
+						SET k=".$tagk.", v=".$tagv."
 						LIMIT 1 ";
 						// RETURNING id // FIXME POSTGRESQL  lastinsertid
 		$res = $pdo->query($query_insert_tag);

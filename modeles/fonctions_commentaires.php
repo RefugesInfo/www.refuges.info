@@ -57,7 +57,7 @@ function infos_commentaire($id_commentaire)
 	$pdo->requetes->liste_comments->execute();
 	
 	// vu l'absence de mysql_num_row compatible Mysql et PG, je prends les choses a l'inverse:
-	if ( $res = $pdo->requetes->liste_comments->fetch() )
+	if ( $commentaire = $pdo->requetes->liste_comments->fetch() )
 	{
 		if ($commentaire->photo_existe)
 			foreach (array("reduite", "vignette", "originale") as $taille)
@@ -149,54 +149,58 @@ function modification_ajout_commentaire($commentaire)
     $commentaire->date_photo="0000-00-00"; // normalement, vu que l'objet n'a pas de chemin pour la photo, ça devrait déjà être 0, mais si quelqu'un veut le forcer à 1 : non
   }
   
-  if (!$photo_valide and trim($commentaire->texte)=="")
-    return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
+	if (!$photo_valide and trim($commentaire->texte)=="")
+		return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
   
     // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
     if (isset($commentaire->id_commentaire))
     { // On souhaite ajouter le commentaire
-    $old_commentaire=infos_commentaire($commentaire->id_commentaire);
-    if ($old_commentaire->erreur)
-      return erreur("Une modification d'un commentaire inexistant a été demandée");
-    if ($commentaire->photo['originale']!=$old_commentaire->photo['originale'])
-      $ajout_photo=True;
-    else
-      $ajout_photo=False;
-    $mode="modification";
+		$old_commentaire=infos_commentaire($commentaire->id_commentaire);
+		if ($old_commentaire->erreur)
+			return erreur("Une modification d'un commentaire inexistant a été demandée");
+		if ($commentaire->photo['originale']!=$old_commentaire->photo['originale'])
+			$ajout_photo=True;
+		else
+			$ajout_photo=False;
+		$mode="modification";
     }
     else
-      $mode="ajout";
-    $traitement_photo=($photo_valide and ($ajout_photo or $mode=="ajout"));
+		$mode="ajout";
+
+	$traitement_photo=($photo_valide and ($ajout_photo or $mode=="ajout"));
     if ($traitement_photo)
     {
-	$commentaire->photo_existe=1;
-	$exif_data = @exif_read_data ($commentaire->photo['originale']);
+		$commentaire->photo_existe=1;
+		$exif_data = @exif_read_data ($commentaire->photo['originale']);
       	$date_photos = $exif_data ['DateTimeOriginal'];
 	
-	// Testons si on a récupéré une date dans les infos exif de la photo
-	if (isset($date_photos))
-	  $commentaire->date_photo=date_exif_a_mysql($date_photos);
-	else
-	  $commentaire->date_photo="";
+		// Testons si on a récupéré une date dans les infos exif de la photo
+		if (isset($date_photos))
+			$commentaire->date_photo=date_exif_a_mysql($date_photos);
+		else
+			$commentaire->date_photo="";
     }
     // Quelques choix par défaut si c'est une création et que ça n'est pas précisé
-    if (!isset($commentaire->date))
-      $commentaire->date="NOW()";
-    else
-      $commentaire->date="'$commentaire->date'";
+	//jmb pb timestamp a pevoir avec PG, je vire
+    //if (!isset($commentaire->date))
+	//	$commentaire->date="NOW()";
+    //else
+	//	$commentaire->date="'$commentaire->date'";
     if (!is_numeric($commentaire->qualite_supposee))
-      $commentaire->qualite_supposee=0;
+		$commentaire->qualite_supposee=0;
     if (!is_numeric($commentaire->id_createur))
-      $commentaire->id_createur=0;
+		$commentaire->id_createur=0;
     if ($commentaire->demande_correction!=1)
-      $commentaire->demande_correction=0;
+		$commentaire->demande_correction=0;
     
     $query_insert_ajout ="
         SET
-        id_point = $commentaire->id_point,
-        date = $commentaire->date,
-        texte = '" . mysql_real_escape_string($commentaire->texte) . "',
-        auteur = '" . mysql_real_escape_string($commentaire->auteur) . "',
+        id_point = $commentaire->id_point,";
+	if ($mode=='ajout')
+		$query_insert_ajout .= 'date = NOW(),' ;
+    $query_insert_ajout .="
+        texte = " . $pdo->quote($commentaire->texte) . ",
+        auteur = " . $pdo->quote($commentaire->auteur) . ",
         demande_correction=$commentaire->demande_correction,
         id_createur=$commentaire->id_createur,
         qualite_supposee=$commentaire->qualite_supposee,
@@ -205,7 +209,7 @@ function modification_ajout_commentaire($commentaire)
 	
     // fait-on un updater ou un insert ?
     if ($mode=="modification")
-      $query_finale="UPDATE commentaires $query_insert_ajout WHERE id_commentaire=$commentaire->id_commentaire";
+      $query_finale="UPDATE commentaires $query_insert_ajout WHERE id_commentaire=$commentaire->id_commentaire LIMIT 1";
     else
       $query_finale="INSERT INTO commentaires $query_insert_ajout";
     
@@ -213,8 +217,7 @@ function modification_ajout_commentaire($commentaire)
 	
 //PDO-    $res=mysql_query($query_finale);
 	//PDO+
-	$success = $pdo->exec($query_finale);
-    if (!$success)
+    if ($pdo->exec($query_finale) === FALSE)
 		return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré");
 	else
 		$commentaire->id_commentaire = $pdo->lastInsertId('commentaires_id_commentaire_seq'); // FIXME POSTGRESQL normalement c la bonne syntax compatible les 2 SGBD
@@ -353,7 +356,7 @@ function infos_commentaires ($id)
 
 	while ( $res = $pdo->requetes->liste_comments->fetch() )
 		$r [] = $res;
-	
+
 	return $r ;
 
 	//PDO-
@@ -491,7 +494,7 @@ function transfert_forum($commentaire)
 			forum_id=$forum->forum_id ,
 			poster_id='-1',
 			post_time=$commentaire->date_unixtimestamp ,
-			post_username='".mysql_real_escape_string($commentaire->auteur)."'";
+			post_username=".$pdo->quote($commentaire->auteur);
 
 	//PDO-
     //mysql_query($query_insert_post) or die("mauvaise requete: $query_insert_post");
@@ -517,7 +520,7 @@ function transfert_forum($commentaire)
 		rename($commentaire->photo['reduite'],$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
     }
     // insere le texte du comment
-    $query_post_text.=mysql_real_escape_string($commentaire->texte)."'";
+    $query_post_text.=$pdo->quote($commentaire->texte);
 
 	//PDO- mysql_query($query_post_text) or die("mauvaise requete: $query_post_text");
 	//PDO+

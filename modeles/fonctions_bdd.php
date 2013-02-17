@@ -18,6 +18,7 @@ function connexion_base()
 	global $config;
 
 	//PDO+
+	//les try catch ne marchent pas
 	try {
 		
 		// Options de connection
@@ -193,9 +194,9 @@ function pdo_biblio_init( $pdo )
 	// :point // -1 pour tout avoir, il faut un INT pas un STR !!!
 	// :vignette // -1 pour tout
 	// :limite // LIMIT
-	$r="SELECT commentaires.auteur,points.id_point,
-			points.nom,commentaires.id_commentaire,commentaires.photo_existe,
-			UNIX_TIMESTAMP(commentaires.date) as date
+	$r="SELECT commentaires.auteur,texte,points.id_point,
+			points.nom,commentaires.id_commentaire,commentaires.photo_existe, date_photo,
+			UNIX_TIMESTAMP(commentaires.date) AS date
 		FROM commentaires LEFT JOIN points ON commentaires.id_point = points.id_point
         WHERE
 			points.modele!=1

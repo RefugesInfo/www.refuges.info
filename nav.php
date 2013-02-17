@@ -26,6 +26,7 @@
 // Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
 //===========================
 // Fonctions divers et avariées
+
 require_once ('modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_bdd.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
@@ -46,6 +47,7 @@ $modele->type_affichage = $tableau_url [1]; // "zone" ou "massif". ca definit l'
 // Les paramètres des layers points et massifs
 if ($modele->id_polygone)
 {
+
 	// Un retour à -1 indique un problème de récupération d'un seul polygone, soit on on en voulait plusieurs
 	if (($infos_polygone=infos_polygone ($modele->id_polygone))!=-1) 
 	{
@@ -62,6 +64,7 @@ if ($modele->id_polygone)
 	}
 	else
 		$modele->titre="Polygone demandé incorrect ou multiple : $modele->id_polygone";
+
 } else
     $modele->titre = "Navigation sur les photos satellite";
 

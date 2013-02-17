@@ -16,7 +16,7 @@ ci-après pour récupérer les infos des points, en ajouter
 ou en modifier
 
 // 13/02/13 jmb NE PASSE PAS LA MIG PGSQL !!! faire une recherche sur "FIXME POSTGRESQL"
-
+// 17/02/13 jmb pas mal de boulot sur la liste_point 
 
 
 /**********************************************************************************************/
@@ -266,7 +266,7 @@ function infos_point($id_point)
 
   // récupération des infos du point
   $liste_un_seul_point=liste_points($conditions);
-//var_dump($liste_un_seul_point);
+
   if ($liste_un_seul_point->nombre_points!=1)
   { 
     // zut, on a rien trouvé, soit il n'existe pas, soit il est en cours de création
@@ -404,11 +404,11 @@ function liste_points($conditions)
   global $config,$pdo;
   // condition de limite en nombre
   if ($conditions->limite!="")
-  {
-    if (!is_numeric ($conditions->limite))
-      return erreur("Le paramètre de limite \$conditions->limite est mal formé");
-    $limite="\nLIMIT 0,$conditions->limite";
-  }
+	if (!is_numeric ($conditions->limite))
+		return erreur("Le paramètre de limite \$conditions->limite est mal formé");
+	else
+		$limite="\nLIMIT 0,$conditions->limite";
+
   if ($conditions->ordre!="")
     $ordre="\nORDER BY $conditions->ordre";
   
@@ -418,7 +418,7 @@ function liste_points($conditions)
   
   // conditions sur le nom du point
   if($conditions->nom!="")
-    $conditions_sql .= " AND points.nom LIKE \"%".mysql_real_escape_string($conditions->nom)."%\" \n";
+    $conditions_sql .= " AND points.nom LIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
   
   // condition sur l'appartenance à un polygone
   if($conditions->id_polygone!="")
@@ -453,6 +453,14 @@ function liste_points($conditions)
 		$conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
 //						AND Within(points_gps.gis, ( SELECT polygones.gis FROM polygones WHERE id_polygone=$conditions->id_polygone ) ";
     
+	// jmb Reparation de la condition photo HS, en prod aussi:
+	if($conditions->photo != "")
+	{
+		$tables_en_plus .= " NATURAL JOIN commentaires ";
+		$conditions_sql .= "\n AND commentaires.photo_existe = 1 ";
+	}	
+	
+	
     // conditions sur le nombre de places
     if($conditions->places_minimum!="")
 		$conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
@@ -513,7 +521,7 @@ function liste_points($conditions)
   
 	//conditions sur la description (champ remark)
     if($conditions->description!="")
-		$conditions_sql.="\n AND points.remark LIKE '%".mysql_real_escape_string($conditions->description)."%'";
+		$conditions_sql.="\n AND points.remark LIKE ".$pdo->quote('%'.$conditions->description.'%');
     
     // cas spécial sur les modèle
     if ($conditions->modele==1)
@@ -557,7 +565,9 @@ function liste_points($conditions)
 	// recherche des infos "génériques" d'un point
 	//FIXME POSTGRESQL: SQL_CALC_FOUND_ROWS et TIMESTAMP ne passeront pas la migration
 	$query_liste_points="
-	SELECT SQL_CALC_FOUND_ROWS *,UNIX_TIMESTAMP(date_derniere_modification) as date_modif_timestamp$select_distance
+	SELECT SQL_CALC_FOUND_ROWS *,
+		UNIX_TIMESTAMP(date_derniere_modification) as date_modif_timestamp
+		$select_distance
 	FROM points NATURAL JOIN point_type NATURAL JOIN points_gps NATURAL JOIN type_precision_gps $tables_en_plus
 	WHERE 
 		1=1
@@ -566,7 +576,7 @@ function liste_points($conditions)
 	$ordre
 	$limite
   ";
-//echo $query_liste_points;
+
 //PDO-  
 //  //print($query_liste_points);
 //  $res=mysql_query($query_liste_points);
@@ -620,6 +630,7 @@ Non, vous ne révez pas, il y'a bien 5 requêtes là où je pense
 que une devrait suffir !
 phpBB serait il un brontosaure du web ? mal programmé mais finalement
 très utilisé ?
+// jmb: ouais. quelque modifs de typage en passant par PDO
 ********************************************/
 function forum_point_ajout( $id, $nom )
 {
@@ -627,7 +638,7 @@ function forum_point_ajout( $id, $nom )
 	global $pdo;
 	
   // Dans le forum, nom toujours commençant par une majuscule
-  $nom=mysql_real_escape_string(ucfirst($nom));
+  $nom=$pdo->quote(ucfirst($nom));
   /*** mise à jour des stats du forum - un sum() vous connaissez pas chez phpBB ? ***/
   $query_update="UPDATE `phpbb_forums` SET
   `forum_topics` = forum_topics+1,
@@ -639,46 +650,47 @@ function forum_point_ajout( $id, $nom )
 	$pdo->exec($query_update);
 	
   /*** rajout du topic spécifique au point ( Le seul qui me semble logique ! )***/
+  // tention a PGsql, ca peut merder
   $query_insert="INSERT INTO `phpbb_topics` (
-  `topic_id` , `forum_id` , `topic_title` , `topic_poster` , `topic_time` ,
+  `forum_id` , `topic_title` , `topic_poster` , `topic_time` ,
   `topic_views` , `topic_replies` , `topic_status` , `topic_vote` ,
   `topic_type` , `topic_first_post_id` , `topic_last_post_id` ,
   `topic_moved_id` , `topic_id_point` )
   VALUES (
-  '', '4', '$nom', '-1', unix_timestamp() ,
-  '0', '0', '0', '0',
-  '0', '0', '0',
-  '0', '$id' )";
+  4, $nom, -1, ". time()." ,
+  0, 0, 0, 0,
+  0, 0, 0,
+  0, $id )";
 //PDO-
 //  mysql_query($query_insert);
 //  $topic_id=mysql_insert_id();
 	//PDO+
 	$res = $pdo->query($query_insert);
-	$topic_id = $pdo->lastInsertId(); //FIXME POSTGRESQL : necessite un sequence_name, voir doc PHP
+	$topic_id = $pdo->lastInsertId('phpbb_topics_topic_id_seq'); //FIXME POSTGRESQL : ca devrait etre bon necessite un sequence_name, voir doc PHP
 	
   
   /*** rajout d'un post fictif pour débuter le truc - je vois pas en quoi c'est nécessaire, le topic devrait pouvoir être vide**/
   $query_insert_post="INSERT INTO `phpbb_posts` (
-  `post_id` , `topic_id` , `forum_id` , `poster_id` , `post_time` ,
+  `topic_id` , `forum_id` , `poster_id` , `post_time` ,
   `poster_ip` , `post_username` , `enable_bbcode` , `enable_html` ,
   `enable_smilies` , `enable_sig` , `post_edit_time` , `post_edit_count` )
   VALUES (
-  '', '$topic_id', '4', '-1', UNIX_TIMESTAMP( ) ,
-  '00000000', 'refuges.info' , '1', '0',
-  '1', '1', NULL , '0' )";
+  $topic_id, 4, -1, ".time()." ,
+  '00000000', 'refuges.info' , 1, 0,
+  1, 1, NULL , 0 )";
 //PDO-
 //mysql_query($query_insert_post);
 //$last=mysql_insert_id();
 	//PDO+
 	$res = $pdo->query($query_insert_post);
-	$last = $pdo->lastInsertId(); //FIXME POSTGRESQL : necessite un sequence_name, voir doc PHP
+	$last = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL : ca devrait passer necessite un sequence_name, voir doc PHP
 
   
   /*** rajout d'un post avec texte pour débuter le truc ( phpBB mal codé ? non ? ) ha ça oui ! **/
   $query_texte="INSERT INTO `phpbb_posts_text` (
   `post_id` , `bbcode_uid` , `post_subject` , `post_text` )
   VALUES (
-  '$last', '', '',
+  $last, '', '',
   '')";
 //PDO-
 //  mysql_query($query_texte);
@@ -710,10 +722,10 @@ function forum_mise_a_jour_nom($id_point,$nom)
 	global $pdo;
 
   // Dans le forum, nom toujours commençant par une majuscule
-  $nom=mysql_real_escape_string(ucfirst($nom));
+  $nom=$pdo->quote(ucfirst($nom));
   
   $query="UPDATE `phpbb_topics`
-  SET `topic_title`='$nom'
+  SET `topic_title`=$nom
   WHERE `topic_id_point`=$id_point";
 
 //PDO-
@@ -733,7 +745,7 @@ $point->champ est vide ("") il sera remis à zéro
 si
 $point->champ n'existe pas (isset()=FALSE on y touche pas)
 sly 02/11/2008
-
+jmb 17/02/13 PDO + ca deconne
 Le retour de cette fonction et l'id du point (qu'il soit créé ou modifier) si une erreur grave survient, rien n'est fait et un retour de type texte est envoyé
 qui ressemble à "erreur_un_truc"
 
@@ -741,86 +753,74 @@ qui ressemble à "erreur_un_truc"
 
 function modification_ajout_point($point)
 {
-  global $config,$pdo;
-  // désolé, le nom du point ne peut être vide
-  if (trim($point->nom)=="")
-    return "erreur_nom";
+	global $config,$pdo;
+	// désolé, le nom du point ne peut être vide
+	if (trim($point->nom)=="")
+		return "erreur_nom";
   
-  // désolé, les coordonnées ne peuvent être vide ou non numérique
-  if ($point->latitude=="" or $point->latitude=="")
-    return "erreur_latitude_vide";
-  if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
-    return "erreur_latitude_non_numerique";
-  
-  if ($point->id_point!="")
-  {
-    $infos_point_avant=infos_point($point->id_point);
-    if ($infos_point_avant==-1) // oulla on nous demande une modif mais il n'existe pas
-      return "erreur_point_inexistant";
+	// désolé, les coordonnées ne peuvent être vide ou non numérique
+	if ($point->latitude=="" or $point->latitude=="")
+		return "erreur_latitude_vide";
+	if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
+		return "erreur_latitude_non_numerique";
+	if ($point->id_point!="")  // update
+	{
+		$infos_point_avant = infos_point($point->id_point);
+//var_dump($infos_point_avant);
+		if ($infos_point_avant==-1) // oulla on nous demande une modif mais il n'existe pas
+			return "erreur_point_inexistant";
     
-    if ($point->id_point_gps=="")
-      $point->id_point_gps=$infos_point_avant->id_point_gps;
-  }
+		if ($point->id_point_gps=="")
+			$point->id_point_gps=$infos_point_avant->id_point_gps;
+	}
+
+	/********* les coordonnées du point dans la table points_gps *************/
+	// dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
+	$point->id_point_gps=modification_ajout_point_gps($point);
   
-  /********* les coordonnées du point dans la table points_gps *************/
-  // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
-  $point->id_point_gps=modification_ajout_point_gps($point);
   
+	/********* Les caractéristiques propres du point *************/
+	// champ ou il faut juste un set=nouvelle_valeur
+	foreach ($config['champs_simples_points'] as $champ)
+		if (isset($point->$champ))
+			$champs_sql.="\n$champ=".$pdo->quote($point->$champ).",";
+	
   
-  /********* Les caractéristiques propres du point *************/
-  // champ ou il faut juste un set=nouvelle_valeur
-  foreach ($config['champs_simples_points'] as $champ)
-  {
-    if (isset($point->$champ))
-      $champs_sql.="\n$champ='".mysql_real_escape_string($point->$champ)."',";
-  }
+	//cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
+	if (isset($point->site_officiel))
+		if (preg_match("/http\:\/\//",$point->site_officiel))
+			$champs_sql.="\nsite_officiel = ". $pdo->quote($point->site_officiel) .",";
+		elseif($point->site_officiel!="")
+			$champs_sql.="\nsite_officiel = ". $pdo->quote('http://'.$point->site_officiel) .",";
+		else
+			$champs_sql.="\nsite_officiel = ". $pdo->quote($point->site_officiel) .",";
   
-  //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
-  if (isset($point->site_officiel))
-  {
-    $site=mysql_real_escape_string($point->site_officiel);
-    if (preg_match("/http\:\/\//",$point->site_officiel))
-      $champs_sql.="\nsite_officiel='$site',";
-    elseif($point->site_officiel!="")
-      $champs_sql.="\nsite_officiel='http://$site',";
-    else
-      $champs_sql.="\nsite_officiel='$site',";
-  }
+	// On met à jour la date de dernière modification
+	$champs_sql.="\ndate_derniere_modification = NOW(),";
   
-  // On met à jour la date de dernière modification
-  $champs_sql.="\ndate_derniere_modification=NOW(),";
-  
-  // fait-on un updater ou un insert ?
-  if ($point->id_point!="")
-  {$insert_update="UPDATE";$condition="WHERE id_point=$point->id_point";}
-  else
-  {$insert_update="INSERT INTO";$champs_sql.="date_insertion=UNIX_TIMESTAMP(),";}
-  
-  $champs_sql=trim($champs_sql,",");
-  
-  $query_finale="$insert_update points set $champs_sql $condition";
-//PDO-
-//mysql_query($query_finale);
-	//PDO+
-	$pdo->exec($query_finale);
-  if ($point->id_point=="") {
-//PDO-
-//    $point_en_cours=mysql_insert_id();
-	//PDO+
-	$point_en_cours = $pdo->lastInsertId(); //FIXME POSTGRESQL : necessite un sequence_name, voir doc PHP
-  }
-  /********* la création ou mise à jour du forum point *************/
-  
+	// fait-on un updater ou un insert ?
 	if ($point->id_point=="")
-		forum_point_ajout( $point_en_cours, $point->nom);
+		{$insert_update="INSERT INTO";$champs_sql.="date_insertion=NOW() ";}
+	else
+		{$insert_update="UPDATE";$condition="WHERE id_point=$point->id_point";}
+  
+	$champs_sql=trim($champs_sql,",");
+  
+	$query_finale="$insert_update points SET $champs_sql $condition";
+echo $query_finale;
+	$pdo->exec($query_finale);
+
+	if ($point->id_point=="") 
+	{	// donc c etait un ajout
+		$point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME POSTGRESQL : ca devrait passer
+ 
+		/********* la création ou mise à jour du forum point *************/
+  		forum_point_ajout( $point_en_cours, $point->nom);
+	}
     else
 		forum_mise_a_jour_nom($point->id_point, $point->nom);
       
 	/********* A quels polygones ce point appartient-t-il ? *************/
-	
-	if ($point->id_point=="")
-		$point->id_point=$point_en_cours;
-
 	//GIS-	 table plus necessaire
 	//mettre_a_jour_appartenance_point($point->id_point);
     

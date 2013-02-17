@@ -31,7 +31,7 @@ $conditions->type_point=$_POST['id_point_type'];
 switch ( $conditions->type_point ) {
 	case $config['id_cabane_gardee'] : // Condition pour ne pas retourner les abris non prévus pour dormir quand on demande une cabane non gardée sans précisé le nombre de place minimum
 	case $config['tout_type_refuge'] :
-		$conditions->places_minimum =='' ? $conditions->places_minimum = 1 : FALSE ;
+		$conditions->places_minimum == '' ? $conditions->places_minimum = 1 : FALSE ;
 		break;
 	case "tout-refuge" :
 		$conditions->type_point=$config['tout_type_refuge']; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites

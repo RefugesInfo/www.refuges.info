@@ -12,6 +12,8 @@
 //*------------------------|-------------------------------------------------------------------*
 //* Modifications(date Nom)| Elements modifiés, ajoutés ou supprimés                           *
 //*------------------------|-------------------------------------------------------------------*
+//  17/02/13      jmb     Modif pour accepter *.refuges.info (suite au nouveau serveur)
+//							install de php5-curl qui ne l'etait pas
 //**********************************************************************************************
 
 /* This is a blind proxy that we use to get around browser
@@ -36,17 +38,20 @@ if (count ($args))
 /******************************************************************************/
 // Sécurité: on autorise le rebond que vers quelques sites identifiés pour éviter à n'importe qui de faire n'importe quoi
 $purl = parse_url ($url); // On analyse l'url
+
 switch ($purl ['host']) // Liste des serveurs autorisés
 {
-//	case 'labs.metacarta.com':
+	case 'labs.metacarta.com':
 	case 'localhost':
+	case '127.0.0.1':
 	case 'refuges.info':
-	case 'www.refuges.info':
+//	case 'www.refuges.info':
 	case 'chemineur.fr':
 	case 'wmts.geo.admin.ch':
-		// C'est bon. On va chercher le contenu et on l'affiche
-		
+	case (preg_match('/(.*).refuges.info/', $purl ['host']) ? true : false) :
+	// C'est bon. On va chercher le contenu et on l'affiche
 /******************************************************************************/
+
 		// Lit le contenu d'une URL distante
 		$ch = curl_init();  // Initialiser cURL.
 			curl_setopt ($ch, CURLOPT_URL, $url);  // Indiquer quel URL récupérer
@@ -56,7 +61,6 @@ switch ($purl ['host']) // Liste des serveurs autorisés
 				$cache = ob_get_contents ();  // Sauvegarder la 'cache' dans la variable $cache.
 			ob_end_clean();  // Vider le buffer.
 		curl_close ($ch);  // Fermer cURL.
-		
 /******************************************************************************/
 // Trace
 if(0) {
@@ -71,7 +75,6 @@ if(0) {
 		$charset = mb_detect_encoding ($cache, "UTF-8,ISO-8859-1,ISO-8859-5,ISO-8859-6,ISO-8859-7,ASCII,EUC-JP,JIS,SJIS,SHIFT_JIS,ISO-2022-JP,EUC-KR,ISO-2022-KR", true);
 //		header("Content-Type:text/html; charset=$charset");
 		header("Content-Type:text/html; charset=UTF-8");
-
 		// Envoie le résultat
 		print ($cache);
 	

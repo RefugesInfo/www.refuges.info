@@ -281,11 +281,12 @@ Cette fonction permet d'aller chercher toutes les infos d'un polygone
 ******************************************************************/
 function infos_polygone($id_polygone)
 {
+
 	global $pdo;
 	//PDO+ requete pre-preparee dans la bibliotheque du constructeur PDO (fct BDD)
-	$pdo->requetes->infos_poly->bindValues('idpoly', $id_polygone, PDO::PARAM_INT );
-	$pdo->requetes->infos_poly->execute();
 
+	$pdo->requetes->infos_poly->bindValue('idpoly', $id_polygone, PDO::PARAM_INT );
+	$a=$pdo->requetes->infos_poly->execute() or die ('infos_poly erreur sur le poly '.$id_polygone);
 	// detype object comme l'ancienne
 	return $pdo->requetes->infos_poly->fetch();
 }

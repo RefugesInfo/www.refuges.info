@@ -145,3 +145,158 @@ http://geocommons.com/overlays/119819 (KML countries)
 http://carmen.developpement-durable.gouv.fr/dl_direct.php?map=environnement.map&service_idx=25W&service=DownloadLayer
 http://carmen.developpement-durable.gouv.fr/dl_direct.php?map=NATURE_PAYSAGE_BIODIVERSITE_RA.map&service_idx=30&service=DownloadLayer
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  SELECT id_polygone AS polyid,
+           CONCAT(
+               'POLYGON((',
+               STRING_AGG( 
+                    ( SELECT CONCAT(points_gps.longitude, ' ', points_gps.latitude)
+                      FROM points_gps
+                      WHERE points_gps.id_point_gps=lien_polygone_gps.id_point_gps
+                    ) ORDER BY ordre ASC ),
+               '))'
+           ) AS polygps, COUNT(*) AS nbarretes
+FROM lien_polygone_gps
+GROUP BY id_polygone
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UPDATE polygones
+SET 
+geom=ST_GeomFromText(CONCAT('POLYGON((', polyentier.polygps ,')) ') , 4326 )
+FROM
+(
+SELECT idpoly, STRING_AGG(coord,',') AS polygps
+FROM
+(SELECT CONCAT(points_gps.longitude, ' ', points_gps.latitude) AS coord
+, lien_polygone_gps.id_polygone AS idpoly
+  FROM points_gps,lien_polygone_gps
+   WHERE points_gps.id_point_gps=lien_polygone_gps.id_point_gps
+AND lien_polygone_gps.id_polygone BETWEEN 20 AND 40
+                     ORDER BY lien_polygone_gps.ordre ASC
+
+) AS sub
+GROUP BY idpoly
+) AS polyentier
+
+WHERE polygones.id_polygone=polyentier.idpoly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UPDATE polygones
+SET 
+geom=ST_GeomFromText(CONCAT('LINESTRING(', polyentier.polygps ,') ') , 4326 )
+FROM
+(
+SELECT idpoly, STRING_AGG(coord,',') AS polygps
+FROM
+(SELECT CONCAT(points_gps.longitude, ' ', points_gps.latitude) AS coord
+, lien_polygone_gps.id_polygone AS idpoly
+  FROM points_gps,lien_polygone_gps
+   WHERE points_gps.id_point_gps=lien_polygone_gps.id_point_gps
+AND lien_polygone_gps.id_polygone BETWEEN 0 AND 30
+                     ORDER BY lien_polygone_gps.ordre ASC
+
+) AS sub
+GROUP BY idpoly
+) AS polyentier
+
+WHERE polygones.id_polygone=polyentier.idpoly
+Select AddGeometryColumn('polygones', 'geom', 4326, 'POLYGON' , 2)
+
+--------------------------------------
+// FAIS DES LINESTRING:
+UPDATE polygones
+SET 
+geomtemp=ST_GeomFromText(CONCAT('LINESTRING(', polyentier.polygps ,') ') , 4326 )
+FROM
+(
+SELECT idpoly, STRING_AGG(coord,',') AS polygps
+FROM
+(SELECT CONCAT(points_gps.longitude, ' ', points_gps.latitude) AS coord
+, lien_polygone_gps.id_polygone AS idpoly
+  FROM points_gps,lien_polygone_gps
+   WHERE points_gps.id_point_gps=lien_polygone_gps.id_point_gps
+AND lien_polygone_gps.id_polygone BETWEEN 20 AND 30
+                     ORDER BY lien_polygone_gps.ordre ASC
+
+) AS sub
+GROUP BY idpoly
+) AS polyentier
+
+WHERE polygones.id_polygone=polyentier.idpoly
+
+
+// FERME LES LINESTRING
+UPDATE polygones
+		SET geomtemp = ST_AddPoint(geomtemp, ST_StartPoint(geomtemp))
+		WHERE ST_IsClosed(geomtemp) = false;
+
+
+// CONVERTIT LES LINESTRING EN POLY
+UPDATE polygones
+		SET geom = ST_MakePolygon(geomtemp)
+
