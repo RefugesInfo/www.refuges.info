@@ -53,6 +53,9 @@ $config['404_page']=$config['document_root']."/statique/erreur_404.php";
 
 $config['textes_mode_emploi']=$config['document_root']."/statique/mode_emploi_textes/";
 
+// En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
+$config['nom_hote']=$_SERVER['SERVER_NAME'];
+
 //jmb 04/07 on continue avec des rep de moderation
 $config['rep_moder_photos_backup']=$config['document_root']."/gestion/sauvegardes-photos/"; 
 $config['rep_forum_photos']=$config['document_root']."/forum/photos-points/"; 

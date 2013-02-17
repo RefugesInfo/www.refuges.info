@@ -82,7 +82,7 @@ Que pensez vous du commentaire suivant : (votre avis sera étudié par un modér
 	</form>
 </p>
 <p>
-Vous pouvez aussi en savoir un peu plus sur <a href="'.lien_mode_emploi("que_mettre").'">que mettre ou ne pas mettre sur www.refuges.info</a>
+Vous pouvez aussi en savoir un peu plus sur <a href="'.lien_mode_emploi("que_mettre").'">que mettre ou ne pas mettre sur '.$config['nom_hote'].'</a>
 </p>
 
 

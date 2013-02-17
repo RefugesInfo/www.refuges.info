@@ -31,7 +31,7 @@ $listemass = str_replace( "-", ",", $listemass);
 $nbjours = $_GET["jours"] ;
 
 $datedeb = time() - $nbjours*24*60*60 ; // le RSS commencera il y a X jours
-$pointurl = "http://www.refuges.info/point/" ; // il ne reste plus que l'ID a concatener
+$pointurl = "http://".$config['nom_hote']."/point/" ; // il ne reste plus que l'ID a concatener
 $longdesc = 500 ; // longueur en char du champ description. apres c'est "(...)"
 
 
@@ -50,7 +50,7 @@ function affiche_item ($item)
 		<description>".stripslashes(htmlspecialchars($item["description"],0,"UTF-8"))."</description>
 		<pubDate>".date('r',$item["pubdate"])."</pubDate>
 		<category>".$item["category"]."</category>
-		<!-- <enclosure url='http://www.refuges.info/images/icones/abri.png'
+		<!-- <enclosure url='http://'.$config['nom_hote'].'/images/icones/abri.png'
 				length='178'
 				type='image/png' /> -->
 	</item> ";
@@ -83,13 +83,13 @@ function debut_flux ($types, $massifs, $date)
 <rss version='2.0' xmlns:dc='http://purl.org/dc/elements/1.1/'>
    <channel>
 	<title>Derniers messages sur refuges.info</title>
-	<link>http://www.refuges.info</link> <!-- ici lien vers la conf des flux -->
+	<link>http://".$config['nom_hote']."</link> <!-- ici lien vers la conf des flux -->
 	<language>fr</language>
 	<description>Flux RSS du site refuges.info concernant $typesentexte dans les massifs de $massifsentexte depuis le ".date("d/m/Y", $date)."</description>
 	<image>
-		<title>www.refuges.info</title>
-		<url>http://www.refuges.info/images/logorss.png</url>
-		<link>http://www.refuges.info</link>
+		<title>".$config['nom_hote']."</title>
+		<url>http://".$config['nom_hote']."/images/logorss.png</url>
+		<link>http://".$config['nom_hote']."</link>
 		<width>138</width>
 		<height>69</height>
 	</image>

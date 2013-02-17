@@ -80,7 +80,7 @@ if ($_GET['massif'] != 'null')
 		<massif>
 		  <nom>{$polygone->nom_polygone}</nom>
 		  <color>#$cb$cv$cr</color>
-		  <url>http://www.refuges.info" .lien_polygone($polygone->nom_polygone,$polygone->id_polygone,'Massif') ."</url>
+		  <url>http://".$config['nom_hote'].lien_polygone($polygone->nom_polygone,$polygone->id_polygone,'Massif') ."</url>
 		  <gml:Polygon>
 			<gml:LinearRing>
 			  <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">$xml_poly
@@ -102,7 +102,7 @@ echo
  xmlns:topp=\"http://www.openplans.org/topp\"
  xmlns:gml=\"http://www.opengis.net/gml\"
 >
-  <description>Limites de massifs montagneux provenants du site www.refuges.info</description>
+  <description>Limites de massifs montagneux provenants du site ".$config['nom_hote']."</description>
 $xml_massifs
 </wfs:FeatureCollection>
 ";

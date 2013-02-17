@@ -79,7 +79,7 @@ if ( (AUTH ==1) )
 	</form>
 
 <?php } ?>
-<h3>Liste des utilisateurs étant mieux que "normaux": (<a href="http://www.refuges.info/forum/groupcp.php?g=196">même liste que ici</a>)</h3>
+<h3>Liste des utilisateurs étant mieux que "normaux": (<a href="http://<?=$config['nom_hote']?>/forum/groupcp.php?g=196">même liste que ici</a>)</h3>
 <ul>
 <?php
 $query_users="SELECT user_level,username,user_id

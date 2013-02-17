@@ -19,7 +19,7 @@
 				<hotSpot x='0.5' y='0.5' xunits='fraction' yunits='fraction' />
 				<scale>1</scale>
 				<Icon>
-					<href>http://www.refuges.info/images/icones/<?=$type?>.png</href>
+					<href>http://<?=$config['nom_hote']?>/images/icones/<?=$type?>.png</href>
 					<w>16</w>
 					<h>16</h>
 				</Icon>
@@ -37,7 +37,7 @@
 				<name><?=$point->nom?></name>
 				<description>
 					<![CDATA[
-						<img src='http://www.refuges.info/images/icones/<?=$point->nom_icone?>.png' />
+						<img src='http://<?=$config['nom_hote']?>/images/icones/<?=$point->nom_icone?>.png' />
 						(<em><?=$type[0]->nom_type?></em>) <br />
 						<center><a href='<?=$point->url?>'>Détails</a></center>
 					]]>

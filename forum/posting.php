@@ -68,6 +68,7 @@ include($phpbb_root_path . 'includes/bbcode.'.$phpEx);
 include($phpbb_root_path . 'includes/functions_post.'.$phpEx);
 //C'est ici que se trouve la fonction qui permet de bloquer les chieurs qui rentre des messages sur 
 //le forum ou sur les commentaires du site
+require_once($phpbb_root_path . "../modeles/config.php");
 require_once($phpbb_root_path . "../modeles/fonctions_commentaires.php");
 require_once($phpbb_root_path . "../modeles/fonctions_mise_en_forme_texte.php");
 
@@ -677,7 +678,7 @@ Message :
 
 ##############################################################
 Vous pouvez le consulter en ligne à l'adresse :
-http://www.refuges.info/forum/viewforum.php?f=".$HTTP_POST_VARS['f']."
+http://".$config['nom_hote']."/forum/viewforum.php?f=".$HTTP_POST_VARS['f']."
 
 
 A notez que vous recevez ce message car vous avez (enfin, normalement) choisi
