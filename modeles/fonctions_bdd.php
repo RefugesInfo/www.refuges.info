@@ -194,15 +194,9 @@ function pdo_biblio_init( $pdo )
 	// :point // -1 pour tout avoir, il faut un INT pas un STR !!!
 	// :vignette // -1 pour tout
 	// :limite // LIMIT
-<<<<<<< HEAD
-	$r="SELECT commentaires.auteur,texte,points.id_point,
-			points.nom,commentaires.id_commentaire,commentaires.photo_existe, date_photo,
-			UNIX_TIMESTAMP(commentaires.date) AS date
-=======
 	$r="SELECT commentaires.auteur,points.id_point,
 			points.nom,commentaires.id_commentaire,commentaires.photo_existe,
 			extract('epoch' from commentaires.date) as date
->>>>>>> 3782188d115b5a43f0b4cef528f50466a01e9878
 		FROM commentaires LEFT JOIN points ON commentaires.id_point = points.id_point
         WHERE
 			points.modele!=1
