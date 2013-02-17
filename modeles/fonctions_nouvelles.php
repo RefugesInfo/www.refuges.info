@@ -103,7 +103,7 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 	$pdo->requetes->liste_comments->bindValue('vignette', $vignette ? $vignette : -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
 	$pdo->requetes->liste_comments->bindValue('limite', $nombre, PDO::PARAM_INT); //ATTENTION LIMIT attent un INT, ce qui fait foirer la methode array
 
-	$pdo->requetes->liste_comments->execute() or die ("prbleme dans PDO liste_comments $vignette $nombre");
+	$pdo->requetes->liste_comments->execute() or die ("problème dans PDO liste_comments $vignette $nombre");
 
 //    $query_news=
 //		"SELECT commentaires.auteur,points.id_point,
@@ -202,19 +202,22 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
     
     case "general":
     $query_news=
-		"SELECT UNIX_TIMESTAMP(date) as date,
+		"SELECT extract('epoch' from date) as date,
 			id_commentaire,
 			texte
 		FROM commentaires
 		WHERE
 			commentaires.id_point = ".$config['numero_commentaires_generaux']."
 		ORDER BY date DESC
-		LIMIT 0,$nombre";
+		LIMIT $nombre";
 //PDO-
 //	$r_select_news = mysql_query($query_news);
 //	while ($news = mysql_fetch_object($r_select_news))
 	//PDO+
 	$res = $pdo->query($query_news);
+/*	if ( ($all_news=$res->fetch())==False)
+	  die*/
+	//die($query_news);
 	while ( $news = $res->fetch() )
 	{
 //var_dump($news);

@@ -195,7 +195,7 @@ function pdo_biblio_init( $pdo )
 	// :limite // LIMIT
 	$r="SELECT commentaires.auteur,points.id_point,
 			points.nom,commentaires.id_commentaire,commentaires.photo_existe,
-			UNIX_TIMESTAMP(commentaires.date) as date
+			extract('epoch' from commentaires.date) as date
 		FROM commentaires LEFT JOIN points ON commentaires.id_point = points.id_point
         WHERE
 			points.modele!=1
@@ -215,7 +215,7 @@ function pdo_biblio_init( $pdo )
 				ELSE FALSE
 			END
 		ORDER BY commentaires.date DESC
-        LIMIT 0,:limite";
+        LIMIT :limite";
 	$biblio->liste_comments = $pdo->prepare($r);
 
 	
