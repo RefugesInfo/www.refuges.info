@@ -12,7 +12,6 @@ rajout du setlocale et déplacement dans un fichier config.php
 
 require_once ('config.php');
 require_once ("fonctions_polygones.php");
-require_once ("fonctions_affichage_points.php");
 require_once ("fonctions_points.php");
 
 function stat_site () {

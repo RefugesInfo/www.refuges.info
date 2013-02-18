@@ -5,7 +5,6 @@ de et vers HTML TXT
 ça gère aussi des format d'url, des gestion UTF8/ISO
 **********************************************************************************************/
 
-require_once("fonctions_affichage_points.php");
 require_once("fonctions_points.php");
 
 //lcfirst n'existe pas avant php 5.3, si n'existe pas, on la créé

@@ -11,6 +11,8 @@
 require_once ("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 
+$modele = new stdClass();
+
 $modele->titre = "Plan du site refuges.info";
 
 // On affiche le tout

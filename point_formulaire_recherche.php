@@ -21,6 +21,7 @@ require_once("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 
 // etait modele=info_base. plus coherent avec les aurt pages
+$modele = new stdClass();
 $modele->infos_base = infos_base ();
 $modele->titre = "Recherche de refuges/cabanes/gites";
 

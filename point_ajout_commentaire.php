@@ -10,6 +10,7 @@ require_once ($config['chemin_modeles']."fonctions_commentaires.php");
 require_once ($config['chemin_modeles']."fonctions_points.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
 
+$modele = new stdClass();
 setlocale(LC_TIME, "fr_FR");
 $commentaire->id_point=$_GET['id_point'];
 $point=infos_point($commentaire->id_point);

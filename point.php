@@ -37,6 +37,7 @@ require_once ($config['chemin_modeles']."fonctions_pubs.php");
 // Arguments de la page
 $array = explode ('/',$_SERVER['PATH_INFO']);
 $id_point = $array [1]; // $array [1] contient l'id du point
+$modele = new stdClass();
 $modele = infos_point ($id_point); // Recupere les donnees du point concerné, centralisé dans une fonction maintenant sly 30/10/2008
 // Les infos du point deviennent des membres du template ($modele->latitude ...)
 // Partie spécifique de la page

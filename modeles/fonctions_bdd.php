@@ -37,40 +37,18 @@ function connexion_base()
 		echo 'Echec de la connexion à la base de données erreur '.$e->getCode() ;
 		exit();
 	}
+}
 
-  //PDO-
-//    $link_mysql = mysql_connect ($config['serveur_mysql'],$config['utilisateur_mysql'],$config['mot_de_passe_mysql']) or die("pb a la connection mysql");
-//  mysql_select_db($config['base_mysql']);
-//  return $link_mysql;
-}
-/****************************************
-Retourne un tableau contenant le résultat de la requette
-***************************************/
-//PDO jmb c'etait pour une couche d'abstraction ? 
-/*
-function sql_infos ($q_select) 
-{
-	$r_select = mysql_query ($q_select) or die ('mauvaise requete: '.$q_select);
-	
-	while ($res = mysql_fetch_object ($r_select))
-	  $r [] = $res;
-	
-	mysql_free_result ($r_select);
-	
-	return $r;
-}
-*/
 /****************************************
 Fonction donnant plusieurs informations générales sur la base
 ***************************************/
-//PDO : 13/02/13 jmb abstraction PDO, ce seront des requete en prepare(). PDO+ = ajouts , PDO- = a virer
+//PDO : 13/02/13 jmb abstraction PDO, ce seront des requete en prepare()
 // reste que l'execute() de la couche PDO
 function infos_base () {
 	global $config,$pdo;
 
 	try {
 		$pdo->requetes->liste_polys->bindValue('typepoly', $config['id_massif'] , PDO::PARAM_INT );   // param_int CAPITAL pour PostGres
-//		$pdo->requetes->liste_polys->bindValue('typepoly', 1 , PDO::PARAM_INT );   // param_int CAPITAL pour PostGres
 		$pdo->requetes->liste_polys->execute() ;
 		while( $res = $pdo->requetes->liste_polys->fetch() )
 			$r->massifs[] = $res ;
@@ -94,40 +72,6 @@ function infos_base () {
 	}
 
 	return $r ;
-/*	
-	//remplissage de la combobox 'massifs'  (on laisse le massif 'nul part' qui contient des points hors massifs
-	$r->massifs = sql_infos ('
-		SELECT *
-		FROM polygones
-		WHERE polygones.id_polygone_type = '.$config['id_massif'].'
-		ORDER BY nom_polygone
-	');
-	
-
-
-	// Listage des types de points pour la combo box de recherche
-	$r->types_point = sql_infos ('
-		SELECT * 
-		FROM point_type 
-		ORDER BY importance DESC
-	');
-
-	// Uniquement les poinnts affichables
-	$r->types_point_affichables = sql_infos ('
-		SELECT * 
-		FROM point_type 
-		WHERE pas_afficher = 0
-		ORDER BY importance DESC
-	');
-
-	// Précision des points GPS
-	$r->type_precision = sql_infos ('
-		SELECT *
-		FROM type_precision_gps
-		ORDER BY id_type_precision_gps
-	');
-
-	return $r;*/
 }
 
 
@@ -135,7 +79,7 @@ function infos_base () {
 function pdo_biblio_init( $pdo )
 {
 	global $config;
-
+	$biblio = new stdClass();
 	//===== INFOS_POLY
 	// Donne Toutes les infos d'un polygone en joignant les 2 tables
 	// :idpoly // parametre du poly a querir
@@ -219,28 +163,11 @@ function pdo_biblio_init( $pdo )
         LIMIT :limite";
 	$biblio->liste_comments = $pdo->prepare($r);
 
-	
-	// Lecture de tous les massifs
-	// :type // de type 1 pour massifs 10 pour dept ...
-	// :fictif // le poly fictif 0 ?
-	//$pdo_biblio->massifs = $pdo->prepare('SELECT * FROM polygones WHERE id_polygone_type IN ( :type ) AND id_polygone!=:fictif ' );
-	//$biblio->massifs = $pdo->prepare('SELECT * FROM polygones WHERE id_polygone_type IN ( :type ) AND id_polygone!=:fictif ' );
-
-//	$q_select_mass= "
-//		SELECT *
-//		FROM polygones
-//		WHERE id_polygone_type={$config["id_massif"]}
-//			AND id_polygone != {$config['numero_polygone_fictif']}";
-//	$r_select_mass= mysql_query($q_select_mass) or die("mauvaise requete dans GMcreemassifs: $q_select_mass");
-
 	return $biblio;
 }
 
 
-//FIXME sly 24/11/2012, certes, si on inclue ce fichier de fonction, c'est pour se connecter à la base mysql
-//Donc on s'y connecte d'office, toutefois, une version proper serait que chaque fonction qui en a besoin
-// s'y connecte d'elle même
-//PDO+ on garde le lien BDD sous le coude
+// on garde le lien BDD sous le coude
 global $pdo;
 global $pdo_biblio;
 
@@ -248,9 +175,5 @@ $pdo = connexion_base();
 
 // peuple les pré-requetes dans $pdo->requetes
 $pdo->requetes= pdo_biblio_init( $pdo ) ;
-//var_dump($pdo->requetes);
-
-//PDO-  inutile ici, il est dans la conx_base.
-//mysql_query ( "SET NAMES utf8" );
 
 ?>

@@ -25,6 +25,7 @@ require_once ($config['chemin_modeles']."fonctions_polygones.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
+$modele = new stdClass();
 $modele->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
 
 $vue->page_action="/point_modification.php";

@@ -50,6 +50,7 @@ foreach ($config['champs_binaires_simples_points'] as $attribut_binaire )
 if ($conditions->non_utilisable!='oui')
 	$conditions->ouvert='oui';	
 
+$modele = new stdClass();
 $modele = liste_points ($conditions);
 $modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 

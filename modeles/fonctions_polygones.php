@@ -11,113 +11,7 @@ require_once ('config.php');
 require_once ("fonctions_bdd.php");
 require_once ('fonctions_mise_en_forme_texte.php');
 
-/*****************************************************************************************************
-On calcul la bbox d'un polygone de notre base.
-On donne à la fonction l'id_polygone et on récupère 
-$bbox->latitude_maximum
-$bbox->longitude_minimum
-$bbox->longitude_maximum
-$bbox->latitude_minimum
-note: cette fonction ne sert qu'a la suivante pour mettre à jour la bbox qui se trouve maintenant conservée dans la table des polygones
-l'appeler directement serait une perte d'énergie pour un résultat qui se trouve déjà dans la table.
-Utilisez pluto la fonction infos_polygone() plus bas qui fourni ce résultat en même temps que les autres infos du polygone
-sly 20/11/10
-*****************************************************************************************************/
-//GIS-
-/*
-function calcul_bbox_polygone($id_polygone)
-{
-  $query_bbox="SELECT max(latitude) as latitude_maximum, min(latitude) as latitude_minimum,
-        max(longitude) as longitude_maximum,min(longitude) as longitude_minimum
-	FROM polygones,lien_polygone_gps,points_gps
-	WHERE
-	polygones.id_polygone=lien_polygone_gps.id_polygone
-	AND
-	lien_polygone_gps.id_point_gps=points_gps.id_point_gps
-	AND
-	polygones.id_polygone=$id_polygone
-	GROUP BY polygones.id_polygone";
-	
-$res=mysql_query($query_bbox);
-if (mysql_num_rows($res)!=1)
-  return -1;
-$bbox_infos=mysql_fetch_object($res);
-return $bbox_infos;
-}
-*/
-/****************************************************************************************************
- Fonction de mise à jour de la BBOX d'un polygone (c'est à dire de ces bornes droite, gauche, haut et bas)
-****************************************************************************************************/
-//GIS-
-/*
-function mise_a_jour_bbox_polygone($id_polygone)
-{
-  $bbox_infos=calcul_bbox_polygone($id_polygone);
-  $query_mise_a_jour="
-  update polygones set latitude_minimum=$bbox_infos->latitude_minimum,latitude_maximum=$bbox_infos->latitude_maximum,
-  longitude_minimum=$bbox_infos->longitude_minimum,longitude_maximum=$bbox_infos->longitude_maximum
-  where id_polygone=$id_polygone";
-  mysql_query($query_mise_a_jour);
-}
-*/
-/*****************************************************************************************************
-Fonction qui copie les polygones de la base vers un format différent plus adapté au calcul d'appartenance 
-polygone la table s'appelle zzz_segments_polygones (zzz pour l'afficher à la fin et préciser que ce n'est qu'une table 
-de cache)
-sly 22/11/10
-*****************************************************************************************************/
-//GIS-
-/*
-function insertion_table_segments_polygones($id_polygone)
-{
-  $poly=tableau_polygone($id_polygone);
-  $points_polygone=count($poly);
-  $query_clean="delete from zzz_segments_polygones where id_polygone=$id_polygone";
-  mysql_query($query_clean);
-  $inserted_strings="";
 
-  for ($i=0;$i<$points_polygone;$i++)
-  {
-    // si dernier point, on s'intéresse au segment [n0]
-    if ($i==$points_polygone-1)
-      $next=0;		
-    else
-      $next=$i+1;
-    
-    $x1=$poly[$i]->x;
-    $x2=$poly[$next]->x;
-    $y1=$poly[$i]->y;
-    $y2=$poly[$next]->y;
-    
-    // On range dès le départ nos segments pour qu'ils soient tous dirigés vers la droite
-    if ($x1>$x2)
-    {
-      $temp=$x1;$x1=$x2;$x2=$temp;
-      $temp=$y1;$y1=$y2;$y2=$temp;
-    }
-    $inserted_strings.="($id_polygone,$y1,$x1,$y2,$x2),";
-  } 
-  $query_insert_segments="INSERT INTO zzz_segments_polygones (`id_polygone` ,`latitude_p1` ,`longitude_p1` ,`latitude_p2` ,`longitude_p2`) VALUES ";
-  
-// On enlève la , qui traine à la fin
-  $query_insert_segments.=trim($inserted_strings,",");
-  mysql_query($query_insert_segments);
-} 
-*/
-/*****************************************************************************************************
-Fonction qui simplifie la maintenance est qui appelle les deux autres qui concerne les pré-calculs
-de polygones.
-Cette fonction doit être appelée à chaque fois qu'une modification a lieu sur un polygone
-
-*****************************************************************************************************/
-//GIS-
-/*
-function precalculs_polygones($id_polygone)
-{
-  mise_a_jour_bbox_polygone($id_polygone);
-  insertion_table_segments_polygones($id_polygone);
-}
-*/
 /****************************************************************************************************
 fonction de récupération des sommets ordonnés d'un polygone de la base
 au format :
@@ -134,7 +28,7 @@ Array
         ) 
 )
 ****************************************************************************************************/
-//GIS-    // FIXME  A SUPPRIMER
+//GIS-    // FIXME  A SUPPRIMER/Convertir
 function tableau_polygone($id_polygone)
 {
 $query="SELECT latitude,longitude,points_gps.id_point_gps 
@@ -368,7 +262,7 @@ function liste_autres_zones ($zone_demandee) {
 	if ( !$zone_demandee)
 		$zone_demandee = $config['zone_defaut'];
 	// faut arreter, ... , les zones c'est un ID eet c'est tout
-	$q_select_zone=" SELECT * FROM polygones WHERE id_polygone_type=".$config['id_zone']." AND nom_polygone !=  \"$zone_demandee\"" ;
+	$q_select_zone=" SELECT * FROM polygones WHERE id_polygone_type=".$config['id_zone']." AND nom_polygone !=  '$zone_demandee'" ;
 	// On envoie la requete
 	try {
 		$r_select_zone = $pdo->query($q_select_zone);

@@ -81,80 +81,9 @@ switch( $_REQUEST["action"] )
 			suppression_point($_REQUEST['id_point']);
 		$html.="<h4>Le point choisi a été supprimé !</h4>";
 		break;
-} // fin du switch action
-		
-
-	// FIXME a partir d'ici le code n'est vraiment pas beau, il doit y avoir moyen de se passer
-	// du switch est de fusionner Ajouter et Modifier puisque la fonction modification_ajout_point fait déjà
-	// tout le boulot
-/*	function faire_boulot($point)
-	{
-	//var_dump($point);
-	
-		$retour=modification_ajout_point($point);
-		if ($retour=="erreur_nom")
-			$html.="<p><strong>Le nom du point ne peut être vide</strong></p>";
-		if ($retour=="erreur_point_inexistant")
-			$html.="<p><strong>Le point que vous tentez de modifier n'existe pas</strong></p>";
-		if ($retour=="erreur_latitude_vide" or $retour=="erreur_latitude_non_numerique")
-			$html.="<p><strong>Les coordonnées rentrées sont incorrecte, si vous rentrez des coordonnées approximatives, essayez de mettre une latitude et longitude approximative</strong></p>";
-
-		$ret->html=$html;
-		$ret->id_point=$retour;
-		return $ret;
-	}
-
-$texte_duplication="<p>
-<h5>Pour continuer :</h5>
-<a href='/point_formulaire_modification.php?dupliquer=$point->id_point'> Dupliquer un autre point d'information au MEME endroit</a></p>";
-switch ($_REQUEST["action"]) // le bouton ajouter ou modifier ou supprimer
-{
-  case 'Ajouter':
-    $html .= "<h3>Ajout d'un point</h3>";
-    // Etant donné que des robots, ou des peu scrupuleux remplissent avec des faux points, on les vire ici
-    if ( !isset($_SESSION['id_utilisateur']) AND ($_REQUEST['lettre_securite']!="d") )
-      $html.="<h4>! ERREUR ! vous n'avez pas rentré la lettre demandée</h4>";
-    else
-    {
-      $ret=faire_boulot($point);
-      if ($ret->html!="")
-	$html.=$ret->html;
-      else
-      {
-	$html.="<h4>Merci de votre contribution</h4>
-	<h5>le point vient d'être ajouté dans la base</h5>
-	<h5>le forum du point a été créé...</h5>\n";
-	$html.="<p><a href=\"".lien_point_lent($ret->id_point)."\">Cliquez ici pour voir la fiche qui vient d'etre ajouté</a></p>
-	$texte_duplication";
-      }
-    }
-    break;
-  case 'Modifier':
-
-    $ret=faire_boulot($point);
-    if ($ret->html!="")
-      $html.=$ret->html;
-    else
-    {
-      $html .= "<h3>Modification d'un point</h3>";
-      $html.="<h4>Merci de votre contribution</h4>
-      <h5>le point vient d'être modifié</h5>
-      <p><a href=\"".lien_point_lent($ret->id_point)."\">Cliquez ici pour revenir à la fiche modifiée</a></p>
-      $texte_duplication";
-    }
-    break;
-  case 'supprimer':
-    $html .= "<h3>Suppression d'un point</h3>";
-    suppression_point($_REQUEST['id_point']);
-    $html.="<h4>Le point choisi a été supprimé !</h4>";
-    break;
-} // fin du switch action
-*/
-  
+} 
 $html .="</div>";
 
 print($html);
-  // C'est enregistre, cassos. fini basta.
-
 require_once ($config['chemin_vues']."_pied.html");
 ?>  

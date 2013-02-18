@@ -15,6 +15,7 @@ require_once ($config['chemin_modeles']."fonctions_nouvelles.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 
 // Conteneur standard de l'entête et pied de page
+$modele = new stdClass();
 $modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 $modele->commentaires = $_GET['commentaires'];
 $modele->general = $_GET['general'];

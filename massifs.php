@@ -21,6 +21,7 @@ require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_polygones.php");
 require_once ($config['chemin_modeles']."fonctions_bdd.php");
 
+$modele = new stdClass();
 $modele->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
