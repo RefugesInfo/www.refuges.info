@@ -1,4 +1,4 @@
-﻿
+
 Ce Fichier ne couvre que 3 aspects:
 -PREPARATION DE LA BASE
 -CONVERSION DES DATA
@@ -12,6 +12,12 @@ Ce Fichier ne couvre que 3 aspects:
 
 ajout column gis in points_gps type POINT
 ajout column gis in polygones type POLYGON
+Avec postGIS : 
+ALTER TABLE polygones add column geometrie_polygone GEOMETRY;
+CREATE INDEX polygones_geometrie_polygone ON polygones USING gist (geometrie_polygone);
+
+ALTER TABLE points_gps add column geometrie_point_gps GEOMETRY;
+CREATE INDEX points_gps_geometrie_point_gps ON points_gps USING gist (geometrie_point_gps);
 
 //===================================
 // POLYGONES NON FERMES  
@@ -58,7 +64,7 @@ LIMIT 100 # pas necessaire mais c'est critique alors autant verifier(84 ajout no
 //====================================
 // PEUPLER LES POINTS
 // peupler gis, facile. la fct PHP d'ajout modif est maintenant censée le gerer
-UPDATE points_gps SET gis = PointFromText(CONCAT('POINT(',points_gps.longitude,' ',points_gps.latitude,')'));
+UPDATE points_gps SET gis = ST_PointFromText(CONCAT('POINT(',points_gps.longitude,' ',points_gps.latitude,')'));
 
 // fonctionne mais phpmyadmin affiche un blob: faire AsText(gis) et option=>MontrerlesBLOB
 // longitude en 1er, pour que X() et Y() soient coherents (X horizontal)
