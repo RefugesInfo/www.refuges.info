@@ -172,52 +172,20 @@ return $html;
 }
 
 //**********************************************************************************************
-// fonction plus rapide pour convertir les caractères "non xml-copain"
-function c($contenu)
-{
-//Dominique 2013 02 02: Enorme bidouille pour replier les caractères latin1_swedish_ci n'existant pas en ISO-8859-1
-$ISO_8859_1 = array (
-	'' => 'oe',
-	'' => 'OE',
-	'' => 'Y',
-	'' => 's',
-	'' => 'S',
-	'' => '"',
-	'' => '"',
-	'' => 'Euros',
-	'' => '...',
-	'' => '-',
-	'' => '-',
-	'' => '',
-	'' => "'",
-	'' => "'",
-	'' => '.',
-	'¤' => '.',
-	'«' => '<<',
-	'»' => '>>',
-	'¼' => '1/4',
-	'½' => '1/2',
-	'¾' => '3/4',
-	'' => '0/00',
-);
-$contenu = str_replace (array_keys ($ISO_8859_1), $ISO_8859_1, $contenu);
-
-return htmlspecialchars($contenu,ENT_NOQUOTES);
-}
-
-//**********************************************************************************************
 // Fonction permettant de retirer les tags bbcode de notre base pour certains export qui ne saurait quoi en faire
-function stripBBCode($text_to_search) {
+// FIXME : fusion avec bbcode2txt($string) ?
+function stripBBCode($text_to_search) 
+{
  $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
  $replace = '';
  return preg_replace($pattern, $replace, $text_to_search);
 }
 
 //**********************************************************************************************
-// fonction cumulative des deux précédentes
-function d($contenu)
+// fonction qui retire le bbcode et converti les caractères non compatible xml en entités xml 
+function c($contenu)
 {
-  return c(stripBBCode($contenu));
+  return htmlspecialchars(stripBBCode($contenu),0,"UTF-8");
 }
 
 // cela retire toute les balises BBcode pour faire quelque chose le plus lisible possible en mode texte pur
