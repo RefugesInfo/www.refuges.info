@@ -1,31 +1,20 @@
-<?php // Préparation d'une page HTML de type 'navigation satellite'
-// avec une zone de détermination de critères de choix (couches) et une fonction de zoomage.
-// Des critères tels que 'refuges', villes, apparaissent au dessus d'un fond de carte.
-// La page ainsi préparée comporte un script Java permettant la sélection des points chauds ("ex: refuges") de la carte
-// et renvoi vers un lien sur clic souris. Le déplacement de la souris sur le fond de carte provoque l'affichage des coordonnées du point.
+<?php 
+/***********************************************************************************************
+Préparation d'une page HTML de type 'navigation satellite'
+avec une zone de détermination de critères de choix (couches) et une fonction de zoomage.
+Des critères tels que 'refuges', villes, apparaissent au dessus d'un fond de carte.
+La page ainsi préparée comporte un script Java permettant la sélection des points chauds ("ex: refuges") de la carte
+et renvoi vers un lien sur clic souris. Le déplacement de la souris sur le fond de carte provoque l'affichage des coordonnées du point.
 
-// Contient le code PHP de la page
-// Le code html est dans /vues/*.html
-// Le code javascript est dans /vues/*.js
-// Les variables sont passées dans l'objet $modele->...
+Contient le code PHP de la page
+Le code html est dans /vues/*.html
+Le code javascript est dans /vues/*.js
+Les variables sont passées dans l'objet $modele->...
 
-// ??/11/07 jmb : nouvelle version, avec googlemaps toujours des bugs avec IE
-// 01/12/07 jmb : nlle version et chgt de nom (etait wms_nav2.php avant)
-// 24/07/08 jmb : mise en place $if_pub, censé transferer de la pub au header. + warning nouvelle caledonie
-// 25/09/09 : compatibilité : remplacement de long par lon dans l'URL
-// 27/11/10 Dominique : Passage à Openlayers
-// 20/12/10 Dominique : Retour en GoogleMap API V2
-// 04/10/11 Dominique : Gestion multicartes
-// 08/10/11 Dominique : Utilisation des templates
-// 08/05/12 Dominique : Retour en modeles simples
-// 15/02/13 jmb : nav/zone/id => affichage des sous-massifs de la zone, nav/massif/id => normal
-//			jmb: objectif : suppr page massif car elle redonde. modele->type_affichage
-//====================
-// Concept de Zone et Massifs :
-// Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
-// Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
-//===========================
-// Fonctions divers et avariées
+Concept de Zone et Massifs :
+Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
+Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
+************************************************************************************************/
 
 require_once ('modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_bdd.php");

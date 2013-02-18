@@ -6,9 +6,7 @@ Ce fichier regroupe les fonctions de gestion des autres fonctions d'une manière
 **********************************************************************************************/
 
 /*
-sly 24/11/2011 Oui je sais, c'est ridicule y'en a qu'une toute petite !
-elle est utilisée dans plusieurs autres fonctions pour quitter rapidement en fonction d'une erreur
-
+Fonction qu'on peut appeler pour retourner le fait qu'on soit en erreur+un message texte indiquant l'erreur
  */
 function erreur($texte)
 {
@@ -16,10 +14,9 @@ function erreur($texte)
   $retour->message=$texte;
   return $retour;
 }
-/*
-sly 24/11/2011 Oui je sais, c'est ridicule y'en a qu'une toute petite !
-elle est utilisée dans plusieurs autres fonctions pour quitter rapidement en fonction d'une erreur
 
+/*
+Fonction qu'on peut appeler pour retourner le fait que tout s'est bien passé avec en plus un message de retour
  */
 function ok($texte)
 {

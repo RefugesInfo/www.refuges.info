@@ -1,23 +1,18 @@
-<?php // Descriptif, licence, fonctionnement,... du site 
-// On appel le fichier sous forme  mode_emploi.php?page=truc 
+<?php 
+/*****************************************************
+Descriptif, licence, fonctionnement,... du site 
+On appel le fichier sous forme  mode_emploi.php?page=truc 
 
-// Contient les include de PHP, les déclarations et appels des blocs d'affichage et les passages de données entre ces programmes
-// Ne contient aucun traitement d'info ni balise HTML
-// Les fichiers réalisant l'affichage sont dans /vues/news.*
-
-// 2008 jmb : Création sur texte Nicolas Masson
-// 23/02/08 jmb : cosmetique H3 et H4
-// 03/2008 jmb : rajout "on fait des trucs" et header2
-// 23/10/2008 sly : page de re-subdivision sous forme de wiki manuel ;-)
-/* je dis pas que c'est une super idée, mais je tente, tout se trouve dans un sous repertoire avec les textes 
+Contient les include de PHP, les déclarations et appels des blocs d'affichage et les passages de données entre ces programmes
+Ne contient aucun traitement d'info ni balise HTML
+Les fichiers réalisant l'affichage sont dans /vues/news.*
+je dis pas que c'est une super idée, mais je tente, tout se trouve dans un sous repertoire avec les textes 
 ici c'est une sorte de metamoteur qui génère le tout
 ça ressemble à une sorte de "wiki" avec les tags phpBB et HTML autorisés + nos codes internes [->12] (lien vers un point de la base)
 c'est donc "un peu" plus rapide à écrire et disponible pour les modérateurs, les liens entres pages sont plus simples et centralisés
-*/
-// 24/10/2008 sly : finalement un quasi-vrai wiki sans historique que pour modérateurs
-// 05/11/11 Dominique : Passage en mode template
-// 30/05/2012 Dominique : passage en modele simple
 
+Finalement on passe à un quasi-vrai wiki sans historique que pour modérateurs
+*****************************************************/
 require_once ('../modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");

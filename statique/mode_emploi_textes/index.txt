@@ -42,4 +42,5 @@ Des photos et renseignements précis déposés par les internautes accompagnent 
  <li>[url=##glossaire]Glossaire des termes régulièrement rencontrés sur Refuge.info[/url]</li>
 </p>
 </ol>
+test
 </p>	

@@ -1,6 +1,9 @@
-<?php // Fonctions liées au mode d'emploi du site
-// Accés aux données : entrées / sorties / modifications des textes
-// fonction qui va chercher le texte du fichier correspondant à la page 
+<?php 
+/********************************************************************
+Fonctions liées au mode d'emploi du site
+Accés aux données : entrées / sorties / modifications des textes
+fonction qui va chercher le texte du fichier correspondant à la page 
+********************************************************************/
 
 require_once ('config.php');
 require_once ("fonctions_mise_en_forme_texte.php");
@@ -33,6 +36,7 @@ function ecrire_contenu($page,$contenu)
 	$fichier=$config['textes_mode_emploi'].$page.".txt";
 	$pointeur=fopen($fichier,"w");
 	fwrite($pointeur,$contenu);
+	chmod($fichier,0777);
 }
 
 function supprimer_page($page)
