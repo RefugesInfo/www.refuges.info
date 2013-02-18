@@ -341,7 +341,7 @@ class sql_db
 		{
 			if( preg_match("/^INSERT[\t\n ]+INTO[\t\n ]+([a-z0-9\_\-]+)/is", $this->last_query_text[$query_id], $tablename) )
 			{
-				$query = "select LASTVAL() as last_value;";//SELECT currval('" . $tablename[1] . "_id_seq') AS last_value";
+				$query = "select LASTVAL() as last_value;";
 				$temp_q_id =  @pg_exec($this->db_connect_id, $query);
 				if( !$temp_q_id )
 				{

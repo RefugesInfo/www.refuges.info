@@ -149,7 +149,7 @@ function info_demande_correction () {
 	// ici se trouve une petite alerte marquée par une étoile indiquant que dans le menu gestion y'a du boulot pour les modérateurs
 	// à regrouper à l'occassion dans une jolie fonction qui récapitule les différents besoin de modération sly 24/03/2008
 	$query="SELECT * FROM commentaires
-		WHERE (demande_correction!=0) OR (qualite_supposee<0) LIMIT 0,1";
+		WHERE (demande_correction!=0) OR (qualite_supposee<0) LIMIT 1";
 	//PDO-
 	//$res=mysql_query($query);
 	//if (mysql_num_rows($res)!=0)

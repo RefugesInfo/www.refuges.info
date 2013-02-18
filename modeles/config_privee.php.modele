@@ -4,15 +4,8 @@ Information de type privée à renseigner selon vos
 paramètres locaux (données de type privées à ne pas publier)
 *************************************************/
 
-// Accès MySQL : réglages de production
-$config['utilisateur_mysql']="login";
-$config['mot_de_passe_mysql']="pass";
-$config['serveur_mysql']="localhost";
-$config['base_mysql']="refuges";
-
 // Accès à Postgresql
-
-$config['utilisateur_pgsql']=$config['utilisateur_mysql'];
-$config['mot_de_passe_pgsql']=$config['mot_de_passe_mysql'];
-$config['serveur_pgsql']=$config['serveur_mysql'];
-$config['base_pgsql']=$config['base_mysql'];
+$config['utilisateur_pgsql']="login";
+$config['mot_de_passe_pgsql']="pass";
+$config['serveur_pgsql']="localhost";
+$config['base_pgsql']="refuges";
