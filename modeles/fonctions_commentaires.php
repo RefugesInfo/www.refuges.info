@@ -41,57 +41,33 @@ function infos_commentaire($id_commentaire)
   global $config,$pdo;
   if (!is_numeric($id_commentaire))
     return erreur("Id de commentaire invalide : $id_commentaire");
-//PDO-
-//  $res=mysql_query ("
-//  SELECT *,UNIX_TIMESTAMP(date) AS date_unixtimestamp
-//  FROM commentaires
-//  WHERE id_commentaire=$id_commentaire
-//  ");
-	//PDO+
-	// c'est une requete prepared PDO car elle est utilisee +ieurs fois un peu partout
-	$pdo->requetes->liste_comments->bindValue('comment', $id_commentaire , PDO::PARAM_INT ); // -1 = tous
-	$pdo->requetes->liste_comments->bindValue('point', -1 , PDO::PARAM_INT ); // -1 = tous
-	$pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-	$pdo->requetes->liste_comments->bindValue('limite', 1 , PDO::PARAM_INT); // 1 seul comment
-
-	$pdo->requetes->liste_comments->execute();
-	
-	// vu l'absence de mysql_num_row compatible Mysql et PG, je prends les choses a l'inverse:
-	if ( $commentaire = $pdo->requetes->liste_comments->fetch() )
-	{
-		if ($commentaire->photo_existe)
-			foreach (array("reduite", "vignette", "originale") as $taille)
-			{
-				if ($taille=="reduite")
-					$file=$config['rep_photos_points'].$id_commentaire.".jpeg";
-				else
-					$file=$config['rep_photos_points'].$id_commentaire."-$taille.jpeg";
-				if (is_file($file))
-					$commentaire->photo[$taille]=$file;
-			}
-		return $commentaire;	
-	}
+  
+  // c'est une requete prepared PDO car elle est utilisee +ieurs fois un peu partout
+  $pdo->requetes->liste_comments->bindValue('comment', $id_commentaire , PDO::PARAM_INT ); // -1 = tous
+  $pdo->requetes->liste_comments->bindValue('point', -1 , PDO::PARAM_INT ); // -1 = tous
+  $pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+  $pdo->requetes->liste_comments->bindValue('limite', 1 , PDO::PARAM_INT); // 1 seul comment
+  
+  $pdo->requetes->liste_comments->execute();
+  
+  // vu l'absence de mysql_num_row compatible Mysql et PG, je prends les choses a l'inverse:
+  if ( $commentaire = $pdo->requetes->liste_comments->fetch() )
+  {
+    if ($commentaire->photo_existe)
+      foreach (array("reduite", "vignette", "originale") as $taille)
+      {
+	if ($taille=="reduite")
+	  $file=$config['rep_photos_points'].$id_commentaire.".jpeg";
 	else
-		return erreur("Le commentaire demandé est introuvable");
+	  $file=$config['rep_photos_points'].$id_commentaire."-$taille.jpeg";
+	if (is_file($file))
+	  $commentaire->photo[$taille]=$file;
+      }
+      return $commentaire;	
+  }
+  else
+    return erreur("Le commentaire demandé est introuvable");
 
-//	
-//  if (mysql_num_rows($res)!=1)
-//    return erreur("Le commentaire demandé est introuvable");
-//
-//  $commentaire=mysql_fetch_object($res);
-//  if ($commentaire->photo_existe)
-//  {
-//	foreach (array("reduite", "vignette", "originale") as $taille)
-//	{
-//	if ($taille=="reduite")
-//		$file=$config['rep_photos_points'].$id_commentaire.".jpeg";
-//	else
-//		$file=$config['rep_photos_points'].$id_commentaire."-$taille.jpeg";
-//	if (is_file($file))
-//		$commentaire->photo[$taille]=$file;
-//	}
-//  }
-//return $commentaire;	
 }
 
 
@@ -350,26 +326,6 @@ function infos_commentaires ($id_point)
   $pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
   $pdo->requetes->liste_comments->bindValue('point', $id_point , PDO::PARAM_INT ); // -1 = tous
   $pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-  $pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
-  
-  $pdo->requetes->liste_comments->execute();
-  
-  while ( $res = $pdo->requetes->liste_comments->fetch() )
-    $r [] = $res;
-  
-  return $r ;
-}
-
-/********** Liste des vignettes photos (clicable pour aller voir en grand)*************/
-//PDO jmb : la meme qu'au dessus ? pourkoi 2 fct ?
-// faudra fusionner non ?
-// FIXME : a fusionner avec celle juste avant - sly
-function infos_vignettes ($id)
-{
-  global $pdo;
-  $pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
-  $pdo->requetes->liste_comments->bindValue('point', $id , PDO::PARAM_INT ); // -1 = tous
-  $pdo->requetes->liste_comments->bindValue('vignette', 1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
   $pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
   
   $pdo->requetes->liste_comments->execute();

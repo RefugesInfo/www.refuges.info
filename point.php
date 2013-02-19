@@ -1,29 +1,11 @@
 <?php
-// Point d'entrée de la page "Fiche du point" qui s'occupe de présenter le point, sommet,
-// village et tout autre "type" possible de la base avec photos, nom, infos, commentaires, etc...
-// on peut accéder au point par http://<site>/point/183/ce/quon/veut/ ( pour le n°183 ). (sly)
-// FIXME 16/02/2013: il faut en finir avec le Options +Multiviews merdique et peut performant, du rewrite et un vrai modèle MVC avec un seul script d'entrée à tous le site me semble la direction à prendre
+/***
+Point d'entrée de la page "Fiche du point" qui s'occupe de présenter le point, sommet,
+village et tout autre "type" possible de la base avec photos, nom, infos, commentaires, etc...
+on peut accéder au point par http://<site>/point/183/ce/quon/veut/ ( pour le n°183 ). (sly)
+FIXME 16/02/2013: il faut en finir avec le Options +Multiviews merdique et peut performant, du rewrite et un vrai modèle MVC avec un seul script d'entrée à tous le site me semble la direction à prendre
+***/
 
-// Contient le code PHP de la page
-// Le code html est dans /vues/*.html
-// Le code javascript est dans /vues/*.js
-// Les variables sont passées dans l'objet $modele->...
-
-// 21/03/06 rff : la table 'massifs' devient 'polygones' dans la base 'refuges'
-// 21/03/06 rff : Insertion infos de session : utile pour gestion du cache & menu gestion. Ajout layer 'polygones'
-// 21/03/06 rff : Ajout instr. de libération query sql libération query sql 
-// XX/03/08 jmb : gros travaux en cours. suppr nl2br() et plein de nettoyage pour du HTML propre
-// 03/05/08 jmb : mise en place pub rotative (et fonctions_pubs.php)
-// 03/07/08 jmb : remplacement P par BLOCKQUOTE dans le dernier mess forum
-// 15/03/10 sly : Il est recommandé de réfléchir à 2 fois avant de changer le nom de cette page car des liens externes pointent dessus !
-// 24/10/10 Dominique : Passage sur les cartes Openlayers
-// 20/12/10 Dominique : Retour en GoogleMap API V2
-// 14/09/11 Dominique : Gestion multicartes
-// 16/09/11 Dominique : Extraction des données EXIF
-// 08/10/11 Dominique : Utilisation des templates
-// 26/05/12 Dominique : Retour en modeles simples
-// 09/11/12 Dominique : Inclusion de la censure
-// 14/02/13 jmb : PDO et consorts
 
 require_once ('modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
@@ -55,7 +37,6 @@ else
 	$modele->localisation           = localisation ($modele->polygones);
 	$modele->forum                  = infos_point_forum ($id_point);
 	$modele->commentaires           = infos_commentaires ($id_point);
-	$modele->commentaire_avec_photo = infos_vignettes ($id_point);
 	$modele->annonce_fermeture      = texte_non_ouverte ($modele);
 
 	/*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/

@@ -204,7 +204,9 @@
 			<?if (count ($modele->commentaire_avec_photo)) {?>
 				<dt>Photos:</dt> 
 				<dd>
-					<?foreach ($modele->commentaire_avec_photo AS $commentaire_avec_photo) {?>
+					<?foreach ($modele->commentaires AS $commentaires) 
+					  if ($commentaires->photo_existe)
+					{?>
 						<a href="#C<?=$commentaire_avec_photo->id_commentaire?>">
 							<img
 								height="50"
