@@ -3,18 +3,15 @@
 Page de modification d'un point
 sly 26/11/2012 : FIXME à basculer sur le système des modèles (=séparation traitement/HTML)
 jmb 16/02/13 : un peu de re ecriture du bazar avec des gros Switch
-**********************************************************************************************/
 
-/*************************************
 3 cas pour arriver ici, toujours depuis point_formulaire_modification:
 -Creation d'un point
 -Modification d'un point
 -suppression d'un point
-*************************/
+**********************************************************************************************/
 
 require_once("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_affichage_points.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_vues']."_entete.html");
 

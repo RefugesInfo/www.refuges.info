@@ -1,22 +1,9 @@
 <?php
-//**********************************************************************************************
-//* Nom du module:         | commentaires_attente_correction.php                               *
-//* Date :                 |                                                                   *
-//* Créateur :             |                                                                   *
-//* Rôle du module :       | Visualition des commentaires comportant une demande de correction *
-//*                        | Sur la fiche point             .                                  *
-//*                        | Accès par : "./gestion/?page=commentaires_attente_correction"     *
-//*                        | Droits: modérateurs                                               *
-//*------------------------|-------------------------------------------------------------------*
-//* Modifications(date Nom)| Elements modifiés, ajoutés ou supprimés                           *
-//*------------------------|-------------------------------------------------------------------*
-//* 24/03/08 sly           | création initiale                                                 *
-//* 04/10/08 sly           | traitement également des commentaires dont un internaute pense    *
-//*                        | pense qu'il est sans intérêt                                      *
-//* 15/02/13 jmb           | migration PDO (Qu'est-ce que j'en chie !)
-//**********************************************************************************************
+/**********************************************************************************************
+Visualition des commentaires comportant une demande de correction sur la fiche point
+Accès par : "./gestion/?page=commentaires_attente_correction"
+**********************************************************************************************/
 
-require_once ($config['chemin_modeles']."fonctions_affichage_points.php");
 //vérification des autorisations
 if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
 {
@@ -28,8 +15,6 @@ if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
 		$liste_commentaires_traites=trim($liste_commentaires_traites,",");
 		$query_correction_faite="UPDATE commentaires set demande_correction=0,qualite_supposee=(qualite_supposee+4)
 				WHERE id_commentaire IN ($liste_commentaires_traites)";
-		//PDO- mysql_query($query_correction_faite);
-		//PDO+
 		$pdo->exec($query_correction_faite) or die ('erreur Update comment : '.$liste_commentaires_traites);
 	}
 
@@ -38,15 +23,11 @@ if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
 			FROM commentaires NATURAL LEFT JOIN points 
 			WHERE (demande_correction!=0 OR qualite_supposee<0)
 			ORDER BY demande_correction DESC";
-	//PDO-  $res=mysql_query($query);
-	//PDO+ reecriture SQL
 	$res = $pdo->query($query) ;
 
 	?>
 	<h4>Zone de modération des commentaires sur les fiches</h4>
 <?php
-//PDO- if (mysql_num_rows($res)!=0)
-//PDO+ on fait un do while car le NUMROWS ne fonctionne pas en PDO ...
 if ( $commentaires_attente_correction = $res->fetch() )
 {
 	print("
@@ -69,7 +50,6 @@ if ( $commentaires_attente_correction = $res->fetch() )
 	print("<form method=\"post\" action=\"./?page=commentaires_attente_correction\">");
 	$premier=TRUE;
 	//PDO+ on fait un do while car le NUMROWS ne fonctionne pas en PDO ...
-	//PDO-  while($commentaires_attente_correction=mysql_fetch_object($res))
 	do
 	{
 		if ($commentaires_attente_correction->demande_correction==1)

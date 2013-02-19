@@ -1,20 +1,14 @@
 <?php
-// Les resultats de la recherche. Ce fichier recupere les criteres en POST de point_formulaire_recherche.php 
-// ( une suite de fiche refuges, mais sans tous les détails )
+/**********************************************************************************************
+Les resultats de la recherche. Ce fichier recupere les criteres en POST de point_formulaire_recherche.php 
+( une suite de fiche refuges, mais sans tous les détails )
 
-// Contient le code PHP de la page
-// Le code html est dans /vues/*.html
-// Le code javascript est dans /vues/*.js
-// Les variables sont passées dans l'objet $modele->...
-
-// 30/05/12 Dominique : Retour en modeles simples
-// 14/10/12 Dominique : Ajout points de la recherche sur nominatim.openstreetmap.org
 // 15/02/13 jmb : cosmetique PHP + FIXME j'ai casse la recherche OSM !
+**********************************************************************************************/
 
 require_once("modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_affichage_points.php");
 require_once ($config['chemin_modeles']."fonctions_polygones.php");
 
 /************ Préparation des conditions de la recherche *******************/

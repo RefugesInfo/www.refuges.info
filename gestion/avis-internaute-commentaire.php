@@ -7,7 +7,6 @@ c'est utile, c'est que si un internaute trouve un commentaire inutile ça l'indi
 // 15/02/13 jmb : PDO
 
 
-require_once ($config['chemin_modeles']."fonctions_affichage_points.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
 require_once ($config['chemin_modeles']."fonctions_bdd.php");
