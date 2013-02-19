@@ -21,6 +21,7 @@ require_once ($config['chemin_modeles']."fonctions_exportations.php");
 // Peut-être au passage au tout OpenLayers il serait bien d'y passer sly 28/10/2010
 
 // MODIF DOMINIQUE : utilisé par OpenLayers
+$conditions = new stdClass;
 if (!$_GET["limite"])
 	$conditions->limite=120;
 else if ($_GET["limite"]!="sans")
@@ -39,7 +40,7 @@ if (isset ($_GET ['bbox']))
 
 $conditions->type_point=$_GET['liste_id_point_type'];
 $conditions->pas_les_points_caches=1;
-$conditions->ordre="point_type.importance DESC, points_gps.longitude DESC";
+$conditions->ordre="point_type.importance DESC";
 $conditions->liste_id_point=$_GET['liste_id_point'];
 $conditions->id_polygone=$_GET['liste_id_massif'];
 $conditions->avec_infos_massif=1;

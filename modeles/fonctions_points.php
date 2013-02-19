@@ -267,6 +267,9 @@ function infos_point($id_point)
 
   // récupération des infos du point
   $liste_un_seul_point=liste_points($conditions);
+  // Requête impossible à executer
+  if ($liste_un_seul_point->erreur)
+    return erreur($liste_un_seul_point->message);
   if ($liste_un_seul_point->nombre_points!=1)
     return erreur("Le point demandé est introuvable dans notre base"); // il n'existe vraiment pas
     
@@ -291,10 +294,8 @@ function infos_point($id_point)
   if ( ! ( $polygones_du_point = $res->fetch() ) ) 
     return $point; // pas de retour, numrow=0
   else
-    do     // on bosse
+    while ( $polygones_du_points = $res->fetch() )     // on bosse
     {
-      $point->latitude=round($point->latitude,5);
-      $point->longitude=round($point->longitude,5);
       $point->polygones[]=$polygones_du_points;
       
       // pour se simplifier la vie, si on tombe sur un massif, on en garde les infos
@@ -306,8 +307,7 @@ function infos_point($id_point)
 	$point->id_massif=$polygones_du_points->id_polygone;
 	$point->article_partitif_massif=$polygones_du_points->article_partitif;
       }
-      
-    } while ( $polygones_du_points = $res->fetch() ) ;
+    }
     return $point;
 }
 
@@ -389,7 +389,7 @@ function liste_points($conditions)
     if (!is_numeric ($conditions->limite))
       return erreur("Le paramètre de limite \$conditions->limite est mal formé");
     else
-      $limite="\nLIMIT 0,$conditions->limite";
+      $limite="\nLIMIT $conditions->limite";
     
     if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
@@ -470,18 +470,15 @@ function liste_points($conditions)
     $select_distance=",$calcul_distance AS distance "; 
     $conditions_sql.="\n AND $calcul_distance<$distance";
     $ordre="ORDER BY $calcul_distance";
-    
-    //SELECT nom FROM points,points_gps where points.id_point_gps=points_gps.id_point_gps and st_distance(st_transform(geom,900913),st_transform(ST_GeomFromText('POINT(7.13 47.854)',4326),900913))<5000 order by st_distance(st_transform(geom,900913),st_transform(ST_GeomFromText('POINT(7.13 47.854)',4326),900913)) limit 2;
   }
   // conditions géographique sur les coordonnées GPS
-  if($conditions->latitude_minimum!="")
-    $conditions_sql.="\n AND points_gps.latitude>" . $conditions->latitude_minimum;
-  if($conditions->latitude_maximum!="")
-    $conditions_sql.="\n AND points_gps.latitude<" . $conditions->latitude_maximum;
-  if($conditions->longitude_minimum!="")
-    $conditions_sql.="\n AND points_gps.longitude>" . $conditions->longitude_minimum;
-  if($conditions->longitude_maximum!="")
-    $conditions_sql.="\n AND points_gps.longitude<" . $conditions->longitude_maximum;
+  // FIXME... ou pas : on considère qu'une requête : tous les points dont la latitude est >50° n'est pas possible/souhaitable
+  // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
+  if($conditions->latitude_minimum!="" and $conditions->latitude_maximum!="" and $conditions->longitude_minimum!="" and $conditions->longitude_maximum!="")
+  {
+    $conditions_sql.="\n AND points_gps.geom && 
+    ST_GeomFromText(('LINESTRING($conditions->longitude_minimum $conditions->latitude_minimum,$conditions->longitude_maximum $conditions->latitude_maximum)'),4326)";
+  }
   
   // condition restrictive sur des id_points particuliers
   if($conditions->liste_id_point!="")
@@ -530,10 +527,8 @@ function liste_points($conditions)
   if ($_SESSION['niveau_moderation']<1)
     $conditions_sql.="\n AND (points.id_point_type!=26)";
   
-  // recherche des infos "génériques" d'un point
-  //FIXME POSTGRESQL: SQL_CALC_FOUND_ROWS et TIMESTAMP ne passeront pas la migration
   $query_liste_points="
-  SELECT *,
+  SELECT *,ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
     extract('epoch' from date_derniere_modification) as date_modif_timestamp
     $select_distance
   FROM points,point_type,points_gps,type_precision_gps$tables_en_plus
@@ -546,7 +541,8 @@ function liste_points($conditions)
   $limite
   ";
   
-  $res = $pdo->query($query_liste_points) or die( 'Erreur de requete MEGA requete liste_points '.$query_liste_points );
+  if ( ! ($res = $pdo->query($query_liste_points))) 
+    return erreur("Une erreur sur la requête est survenue");
   
   $liste_points = new stdClass();
   $point = new stdClass();

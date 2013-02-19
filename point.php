@@ -41,16 +41,10 @@ $modele = infos_point ($id_point); // Recupere les donnees du point concerné, c
 // Les infos du point deviennent des membres du template ($modele->latitude ...)
 // Partie spécifique de la page
 
-if ($modele == -1) 
-{
-	$modele = new stdClass();
-	$modele->type = 'point_inexistant';
-} 
+if ($modele->erreur) 
+  $modele->type = 'point_inexistant';
 else if ($modele->nom_type == 'Censuré' && $_SESSION['niveau_moderation']<1) 
-{
-	$modele = new stdClass();
-	$modele->type = 'point_censure';
-} 
+  $modele->type = 'point_censure';
 else 
 {
 	$modele->nom=bbcode2html($modele->nom);
@@ -177,7 +171,6 @@ else
 				$commentaire->urlimg = $config ['rep_web_photos_points'] .$commentaire->id_commentaire;
 			}
 		}
-		//print_r($commentaires);
 }
 
 /*********** On affiche le tout ***/

@@ -10,13 +10,14 @@ require_once ("fonctions_gestion_erreurs.php");
 
 function infos_utilisateur($user_id)
 {
+  global $pdo;
  $query="select * from phpbb_users where user_id=".$user_id;
- $res=mysql_query($query);
- if (mysql_num_rows($res)!=1)
+ $res=$pdo->query($query);
+ if (!$res->fetch())
    return erreur("Utilisateur inexistant");
  else
  {
-   $utilisateur=mysql_fetch_object($res);
+   $utilisateur=$polygones_du_points = $res->fetch();
    return $utilisateur;
  }
   

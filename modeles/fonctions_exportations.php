@@ -542,6 +542,8 @@ sly 30/10/10
 function fichier_exportation($conditions,$format) 
 {
 	  global $config;
+	  $resultat = new stdClass;
+	  
 	  //obtenir le tableau des points, selon les conditions
 	  $liste_points=liste_points($conditions); 
 	  //print_r($liste_points);
