@@ -36,39 +36,6 @@ stdClass Object
 
 )
 */
-function infos_commentaire($id_commentaire)
-{
-  global $config,$pdo;
-  if (!is_numeric($id_commentaire))
-    return erreur("Id de commentaire invalide : $id_commentaire");
-  
-  // c'est une requete prepared PDO car elle est utilisee +ieurs fois un peu partout
-  $pdo->requetes->liste_comments->bindValue('comment', $id_commentaire , PDO::PARAM_INT ); // -1 = tous
-  $pdo->requetes->liste_comments->bindValue('point', -1 , PDO::PARAM_INT ); // -1 = tous
-  $pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-  $pdo->requetes->liste_comments->bindValue('limite', 1 , PDO::PARAM_INT); // 1 seul comment
-  
-  $pdo->requetes->liste_comments->execute();
-  
-  // vu l'absence de mysql_num_row compatible Mysql et PG, je prends les choses a l'inverse:
-  if ( $commentaire = $pdo->requetes->liste_comments->fetch() )
-  {
-    if ($commentaire->photo_existe)
-      foreach (array("reduite", "vignette", "originale") as $taille)
-      {
-	if ($taille=="reduite")
-	  $file=$config['rep_photos_points'].$id_commentaire.".jpeg";
-	else
-	  $file=$config['rep_photos_points'].$id_commentaire."-$taille.jpeg";
-	if (is_file($file))
-	  $commentaire->photo[$taille]=$file;
-      }
-      return $commentaire;	
-  }
-  else
-    return erreur("Le commentaire demandé est introuvable");
-
-}
 
 
 /************
@@ -279,25 +246,69 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
     ImageDestroy($image);
 }
 
-//**********************************************************************************************
-// Récupère tous les commentaires d'un point
+/**********************************************************************************************
+Récupère un ensemble de commentaires en fonction des paramètres passer comme conditions
+$conditions->ids_point -> pour récupérer tous les commentaires d'un point particulier du site
+$conditions->ids_commentaires -> pour récupérer les commentaires dont les ids sont au format 45 ou 78,412,4
+$conditions->avec_photo -> pour ne prendre que ceux avec photo : True ou False (par défaut c'est tous)
+$conditions->limite -> pour imposer une limite au cas où
+A venir :
+$conditions->avec_modele=False -> pour ne pas avoir les commentaires sur les modèles (si si, les modèles ont aussi leurs commentaires) par défaut : True
+$conditions->ids_auteurs -> pour récupérer les commentaires dont l'auteur est id_auteur au format 4 ou 7,8,14
+$conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non authentifiés
+$conditions->texte -> condition sur le contenu du commentaire
+$conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
+**********************************************************************************************/
 
-function infos_commentaires ($id_point)
+function infos_commentaires ($conditions)
 {
   global $pdo;
-  $pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
-  $pdo->requetes->liste_comments->bindValue('point', $id_point , PDO::PARAM_INT ); // -1 = tous
-  $pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-  $pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
+  $conditions_sql="";
   
-  $pdo->requetes->liste_comments->execute();
+  // conditions de limite
+  if (is_numeric($conditions->limite))
+    $limite="LIMIT $conditions->limite";
+  else
+    $limite="LIMIT 100"; // limite de sécurité si on s'enballe
   
-  while ( $res = $pdo->requetes->liste_comments->fetch() )
-    $r [] = $res;
+  if ($conditions->ids_commentaires!="")
+    $conditions_sql.=" AND id_commentaire IN ($conditions->ids_commentaires)";
+  
+  if ($conditions->ids_points!="")
+    $conditions_sql.=" AND id_point in ($conditions->ids_points)";
+
+  if ($conditions->avec_photo)
+    $conditions_sql.=" AND photo_existe=1";
+  
+  if ($conditions->ids_auteurs!="")
+    $conditions_sql.=" AND id_point in ($conditions->ids_auteurs)";
+
+  $query="SELECT *,extract('epoch' from commentaires.date) as ts_unix_commentaire,extract('epoch' from commentaires.date_photo) as ts_unix_photo
+           FROM commentaires
+           WHERE 1=1
+             $conditions_sql
+           ORDER BY commentaires.date DESC
+           $limite";
+  
+  if ( ! ($res=$pdo->query($query))) 
+    return erreur("Une erreur sur la requête est survenue $query");
+
+  while ($commentaire = $res->fetch())
+  {
+    $r [] = $commentaire;
+  }
   
   return $r ;
 }
-
+// Un appel plus simple qui utilise le précédent
+function infos_commentaire($id_commentaire)
+{
+  $conditions->ids_commentaires=$id_commentaire;
+  $c=infos_commentaires ($conditions);
+  if ($c->erreur)
+    return erreur($c->texte);
+  return $c[0];
+}
 /******************************************************
 on lui passe un objet commentaire, il en retire les photos et 
 retourne le nouvel objet commentaire

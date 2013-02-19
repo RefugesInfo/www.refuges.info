@@ -100,7 +100,7 @@ switch($_REQUEST['type'])
 		</label>
 		<label>
 			date:
-			<input type='text' disabled='disabled' name='date' value='".date('d/m/Y H:i',$commentaire->date)."' size='16'/>
+			<input type='text' disabled='disabled' name='date' value='".date('d/m/Y H:i',$commentaire->ts_unix_commentaire)."' size='16'/>
 		</label>
 		<textarea name='comment' rows='10' cols='100'>".htmlspecialchars($commentaire->texte,0,"UTF-8")."</textarea>
 		<br />

@@ -82,7 +82,7 @@ function auto_login_phpbb_users()
     else
     {
       //pas de num row en PDO ..... relou .. celle la renvoie 0 ou 1
-      $query_verif="SELECT COUNT(*) AS auth FROM phpbb_users WHERE user_id=".$phpbb_user_data['userid']." AND user_password=\"".$phpbb_user_data['autologinid']."\"";
+      $query_verif="SELECT COUNT(*) AS auth FROM phpbb_users WHERE user_id=".$phpbb_user_data['userid']." AND user_password='".$phpbb_user_data['autologinid']."'";
       $res = $pdo->query($query_verif);
       $r = $res->fetch();
       if (  $r->auth == 0 )
