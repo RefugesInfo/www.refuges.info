@@ -67,19 +67,14 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
   {
     case "commentaires":
     $type_news="nouveau_commentaire";
+    $conditions_commentaires = new stdclass();
+    $conditions_commentaires->limite=$nombre;
+    $commentaires=infos_commentaires($conditions_commentaires);
 
-    //FIXME ce format devrait un jour être une extension du système modulaire de recherche, mais pour l'instant il ne fait encore rien des commentaires (ou presque)
-    // sly 18/05/2010
-    //PDO passage de cette requete en prepared, car elle sert ailleurs aussi
-    $pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
-    $pdo->requetes->liste_comments->bindValue('point', -1 , PDO::PARAM_INT ); // -1 = tous
-    $pdo->requetes->liste_comments->bindValue('vignette', $vignette ? $vignette : -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-    $pdo->requetes->liste_comments->bindValue('limite', $nombre, PDO::PARAM_INT); //ATTENTION LIMIT attent un INT, ce qui fait foirer la methode array
-    //$pdo->requetes->liste_comments->execute() or die ("problème dans PDO liste_comments $vignette $nombre");
-
-    while ( $news = $pdo->requetes->liste_comments->fetch() )
+    foreach ( $commentaires as $news )
     {
       //résultat de mon commentaire d'avant, ici, on fait chauffer le CPU !
+      //FIXME là, il faudrait éviter, dans une boucle de faire ces appels à infos_point pour + de perfs
       $point=infos_point($news->id_point);
       $categorie="Commentaire";
       $lien=lien_point_fast($point)."#C$news->id_commentaire";
@@ -109,8 +104,8 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
       $texte.="sur <a href=\"$lien\">
       $titre</a> 
       $lien_massif";
-      $news_array[] = array($news->date,"texte"=>$texte,
-			    "date"=>$news->date,"categorie"=>$categorie,
+      $news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
+			    "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
 			    "vignette"=>$config['rep_web_photos_points'].$news->id_commentaire."-vignette.jpeg",
 			    "titre"=>$titre,"lien"=>$lien); 
     }	
