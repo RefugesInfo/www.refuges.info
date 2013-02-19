@@ -43,7 +43,6 @@ function modification_ajout_point_gps($point_gps,$id_polygone_type=-1)
 	// si on veut faire un ajout et que latitude ou longitude sont vide, on ne peut rien faire
 	if ($point_gps->id_point_gps=="" AND ($point_gps->longitude=="" OR $point_gps->latitude=="") )
 		return -1;
-//var_dump($point_gps);
 	// si aucune précision gps, on les suppose approximatives
 	if ($point_gps->id_type_precision_gps=="")
 		$point_gps->id_type_precision_gps=$config['id_coordonees_gps_approximative'];
@@ -63,45 +62,17 @@ function modification_ajout_point_gps($point_gps,$id_polygone_type=-1)
 	} else
 		$insert_update="INSERT INTO";
 
-//{
-//   // GIS- : pas necessaire ? uniquement pour les poly ?
-//	// on va dire uniquement poly.
-//	if ($id_polygone_type!=-1) // Doit on vérifier l'existence du point à ajouter ?
-//	{
-//		// dû au type "double" je suis obligé de faire un encadrement
-//		$query_recherche_doublon="SELECT points_gps.id_point_gps
-//		FROM `points_gps`,lien_polygone_gps,polygones
-//		where 
-//		lien_polygone_gps.id_point_gps=points_gps.id_point_gps 
-//		and polygones.id_polygone=lien_polygone_gps.id_polygone 
-//		and longitude<($point_gps->longitude+0.00001) and longitude>($point_gps->longitude-0.00001)
-//		and latitude<($point_gps->latitude+0.00001) and latitude>($point_gps->latitude-0.00001)
-//		and polygones.id_polygone_type=$id_polygone_type";
-//
-//		$res=mysql_query($query_recherche_doublon);
-//		if (mysql_num_rows($res)>=1) // On a trouvé au moins un candidat, on le prend (la requête le sort plusieurs fois si il appartient à plus de zéro polygone, mais bon, ça nous va, c'est le même)
-//		{
-//			$point_gps_double=mysql_fetch_object($res);
-//			return $point_gps_double->id_point_gps;
-//		}
-//	}
-//	$insert_update="INSERT INTO";
-//}
-
 	$champs_sql = trim($champs_sql,",");
 
 	// $condition est vide dans  le cas d'un INSERT
 	$query_finale = "$insert_update points_gps SET $champs_sql $condition";
 
-	//PDO-  mysql_query($query_finale);
-	//PDO+
 	$pdo->exec($query_finale);
 	$lastid = $pdo->lastInsertId('points_gps_id_points_gps_seq'); // FIXME POSTRESQL non en fait. ca devrait passer comme ca
 	if ($point_gps->id_point_gps!="")
 		$id_point_gps = $point_gps->id_point_gps;
 	else
 		$id_point_gps = $lastid ;
-		//	$id_point_gps=mysql_insert_id();
 
 	return $id_point_gps;
 }
