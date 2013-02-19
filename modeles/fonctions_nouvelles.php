@@ -152,24 +152,19 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 	break;
     
     case "general":
-      $query_news=
-		"SELECT extract('epoch' from date) as date,
-			id_commentaire,
-			texte
-		FROM commentaires
-		WHERE
-			commentaires.id_point = ".$config['numero_commentaires_generaux']."
-		ORDER BY date DESC
-		LIMIT $nombre";
-      $res = $pdo->query($query_news);
-      while ( $news = $res->fetch() )
+      $conditions_commentaires_generaux = new stdClass;
+      $conditions_commentaires_generaux->ids_points=$config['numero_commentaires_generaux'];
+      $conditions_commentaires_generaux->limite=$nombre;
+      $commentaires=infos_commentaires($conditions_commentaires_generaux);
+
+      foreach ( $commentaires as $news)
       {
 	$categorie="Générale";
 	$titre=$news->texte;
 	$texte="<i>$titre</i>";
 	$lien="/news.php";
-	$news_array[] = array($news->date,"texte"=>$texte,
-	  "date"=>$news->date,"categorie"=>$categorie,
+	$news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
+	  "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
 	  "vignette"=>"",
 	  "titre"=>$titre,"lien"=>$lien); 
       }	
