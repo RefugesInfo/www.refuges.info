@@ -392,21 +392,19 @@ function liste_points($conditions)
   // condition sur l'appartenance à un polygone
   if($conditions->id_polygone!="")
   {
-    $tables_en_plus.=",polygones";
+    $tables_en_plus.=",points_gps,polygones";
     $conditions_sql .= "AND ST_Within(point_gps.geom,polygones.geom) 
       AND polygones.id_polygone IN ($conditions->id_polygone)";
   }
   elseif ($conditions->avec_infos_massif!="")
-  {
-    // FIXME !! cette partie de la requête a un gros défaut :
-    // si le point n'appartient à aucun massif, on ne le trouve pas
-    // un JOIN truc bidule qui autorise une liaison vide serait top sly 03/11/2008
-    // Pour l'instant, comme j'ai toujours pas résolu ça, un massif fictif nommé "nul part" sert à ranger les points
-    // qui n'appartienne à aucun massif, donc tout roule. Mais je ne suis pas intelectuellement satisfait. sly 14/03/2010
-    $tables_en_plus.=",polygones"; 
-    $conditions_sql.="AND ST_Within(points_gps.geom, polygones.geom ) 
-      AND polygones.id_polygone_type=".$config['id_massif'];
-  }
+    // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
+    // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
+    $tables_en_plus.=",points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) and id_polygone_type=1)"; 
+  else
+    //On ne veut aucune conditions ni info sur les polygones, on place cette table quand même pour récupérer 
+    //les coordonnées même si on se fiche de savoir dans quels polygones ils sont
+    $tables_en_plus.=",points_gps";
+  
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if($conditions->type_point!="")
     $conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
@@ -514,11 +512,12 @@ function liste_points($conditions)
   if ($_SESSION['niveau_moderation']<1)
     $conditions_sql.="\n AND (points.id_point_type!=26)";
   
+  // FIXME bidouille : la table 
   $query_liste_points="
   SELECT *,ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
     extract('epoch' from date_derniere_modification) as date_modif_timestamp
     $select_distance
-  FROM points,point_type,points_gps,type_precision_gps$tables_en_plus
+  FROM points,point_type,type_precision_gps$tables_en_plus
   WHERE 
     points.id_point_type=point_type.id_point_type
     AND points_gps.id_point_gps=points.id_point_gps

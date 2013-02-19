@@ -57,8 +57,8 @@ $modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les
 if ($modele->nombre_points_sans_limite>1)
 	$modele->pluriel="s";
 // Message indiquant qu'on a plus de point dans le résultat que la limite autorisée
-if ($conditions->limite!="" and $modele->nombre_points_sans_limite>$conditions->limite)
-	$modele->trop="Votre recherche contient trop de résultats seuls $conditions->limite sont affichés";
+if ($conditions->limite!="" and $modele->nombre_points_sans_limite>=$conditions->limite)
+	$modele->trop=". Votre recherche contient trop de résultats seuls $conditions->limite sont affichés.";
 
 //-----------------------------------------------------------------------------------------------------
 // Recherche de points sur nominatim.openstreetmap.org
