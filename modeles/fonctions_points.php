@@ -399,6 +399,8 @@ Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet-
 //PDO jmb
 //FIXME elle est executee 2 fois pour chaque points, 1 pour la fiche, 1 pour les points a proxi. trop de CPU
 //FIXME conditions binaires en bool ? pour + de rapidité
+//A mon avis ce serait se prendre la tête et risquer d'avoir un jour besoin de 2. ce sont des ints, donc traiter par le processeur
+//d'un seul coup -- sly
 function liste_points($conditions) 
 {
   global $config,$pdo;
