@@ -344,54 +344,40 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
 // Récupère tous les commentaires d'un point
 //PDO jmb utilisation de la fct PDO
 //cela sert aussi a centraliser l'UNIXTIMESTAMP pas portable
-function infos_commentaires ($id)
+function infos_commentaires ($id_point)
 {
-	global $pdo;
-	$pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
-	$pdo->requetes->liste_comments->bindValue('point', $id , PDO::PARAM_INT ); // -1 = tous
-	$pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-	$pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
-
-	$pdo->requetes->liste_comments->execute();
-
-	while ( $res = $pdo->requetes->liste_comments->fetch() )
-		$r [] = $res;
-
-	return $r ;
-
-	//PDO-
-	//return sql_infos ("
-	//	SELECT *,UNIX_TIMESTAMP(date) AS date_affichage
-	//	FROM commentaires
-	//	WHERE id_point=$id ORDER
-	//	BY date DESC
-	//");
+  global $pdo;
+  $pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
+  $pdo->requetes->liste_comments->bindValue('point', $id_point , PDO::PARAM_INT ); // -1 = tous
+  $pdo->requetes->liste_comments->bindValue('vignette', -1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+  $pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
+  
+  $pdo->requetes->liste_comments->execute();
+  
+  while ( $res = $pdo->requetes->liste_comments->fetch() )
+    $r [] = $res;
+  
+  return $r ;
 }
 
 /********** Liste des vignettes photos (clicable pour aller voir en grand)*************/
 //PDO jmb : la meme qu'au dessus ? pourkoi 2 fct ?
 // faudra fusionner non ?
+// FIXME : a fusionner avec celle juste avant - sly
 function infos_vignettes ($id)
 {
-	global $pdo;
-	$pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
-	$pdo->requetes->liste_comments->bindValue('point', $id , PDO::PARAM_INT ); // -1 = tous
-	$pdo->requetes->liste_comments->bindValue('vignette', 1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
-	$pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
-
-	$pdo->requetes->liste_comments->execute();
-
-	while ( $res = $pdo->requetes->liste_comments->fetch() )
-		$r [] = $res;
-	
-	return $r ;
-
-	//	return sql_infos ("
-	//		SELECT *
-	//		FROM commentaires
-	//		WHERE id_point='$id' AND photo_existe=1
-	//		ORDER BY date DESC
-	//	");
+  global $pdo;
+  $pdo->requetes->liste_comments->bindValue('comment', -1 , PDO::PARAM_INT ); // -1 = tous
+  $pdo->requetes->liste_comments->bindValue('point', $id , PDO::PARAM_INT ); // -1 = tous
+  $pdo->requetes->liste_comments->bindValue('vignette', 1 , PDO::PARAM_INT ); // 1 avec, -1 tous , 0 sans
+  $pdo->requetes->liste_comments->bindValue('limite', 100, PDO::PARAM_INT); // 100 c'est pas mal
+  
+  $pdo->requetes->liste_comments->execute();
+  
+  while ( $res = $pdo->requetes->liste_comments->fetch() )
+    $r [] = $res;
+  
+  return $r ;
 }
 
 /******************************************************
@@ -447,8 +433,6 @@ function suppression_commentaire($commentaire)
 		suppression_photos($commentaire);
 	
 	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire LIMIT 1";
-	//PDO-	$res=mysql_query($query_delete); 
-	//PDO+
 	$success = $pdo->exec($query_delete);
 	if (!$success)
 		return erreur("Suppression d'un commentaire inexistant: $query_delete");

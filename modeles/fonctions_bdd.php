@@ -4,21 +4,16 @@ Fonctions liées à l'accès à ou aux bases de données et quelques "helpers" p
 
 **********************************************************************************************/
 
-
-// jmb: pour suivre l'idee de sly: on deplace la conf
 require_once("config.php");
 
 /****************************************
 Fonction générique de connexion à la base
-elle renvois un lien de connexion vers mysql
-//PDO : 13/02/13 jmb abstraction PDO, pour remplacement. PDO+ = ajouts , PDO- = a virer
+elle renvois un lien de connexion de type $PDO
 ***************************************/
 function connexion_base()
 {
 	global $config;
 
-	//PDO+
-	//les try catch ne marchent pas
 	try {
 		
 		// Options de connection

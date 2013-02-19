@@ -118,10 +118,12 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
     
     case "refuges": $conditions->type_point=$config['tout_type_refuge'];
     case "points":
+      $conditions = new stdClass;
       $conditions->ordre="date_insertion DESC";
       $conditions->limite=$nombre;
       $conditions->avec_infos_massif=1;
-      //$liste_points=liste_points($conditions);
+      $liste_points=liste_points($conditions);
+      //print_r($liste_points);
       if (isset($liste_points))
 	foreach($liste_points->points as $point)
 	{
@@ -225,7 +227,8 @@ $tok = strtok(",");
 // ici je trie par ordre décroissant toutes les news confondues
 rsort($news_array);
 
- // AFFICHAGE
+// AFFICHAGE
+// FIXME : a convertir au modèle MVC
 if (!$rss)
 {
   for ($i = 0; $i < $nombre; $i++)

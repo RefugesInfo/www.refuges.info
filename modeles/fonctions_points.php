@@ -1,23 +1,13 @@
 <?php
 /**********************************************************************************************
-23/01/08 sly création initiale d'une fonction pour supprimer un point
-proprement ( commentaires, photos, forum, point lui même )
-On trouve aussi les fonctions liées aux points
+On trouve les fonctions liées aux points
 ( affichage, création forum, modifications, etc.)
-
-21/04/08 jmb changements dans presentation info generale point 'pour les coord en particulier)
-15/10/2011 Ajout de la fonction infos_comment_point
-18/10/11 / Dominique / Ajout des fonctions infos_commentaires infos_point_forum & infos_vignettes
 
 Depuis la plus grande complexistée du stockage des points
 GPS (voir fichier /ressources/a_lire.txt sur la structure de la base)
 il est fortement recommandé de n'utiliser plus que les fonctions
 ci-après pour récupérer les infos des points, en ajouter
 ou en modifier
-
-// 13/02/13 jmb NE PASSE PAS LA MIG PGSQL !!! faire une recherche sur "FIXME POSTGRESQL"
-// 17/02/13 jmb pas mal de boulot sur la liste_point 
-
 
 /**********************************************************************************************/
 
@@ -263,7 +253,6 @@ function infos_point($id_point)
     return erreur("id du point demandé mal formé");
   $conditions->liste_id_point=$id_point;
   $conditions->modele=-1;
-  $conditions->avec_infos_massif=1;
 
   // récupération des infos du point
   $liste_un_seul_point=liste_points($conditions);
@@ -373,10 +362,9 @@ FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reç
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
 Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon 
 *****************************************************/
-// retourne un objet indiquant l'erreur et le texte d'erreur
-// FIXME POSTGRESQL : les fct Within seront fixee toutes seule avec le VRAI postgis, pour l'instant, un point est parfois dans 2 massifs
-//PDO jmb
 //FIXME elle est executee 2 fois pour chaque points, 1 pour la fiche, 1 pour les points a proxi. trop de CPU
+// Certes, mais faire la méga maxi requête qui va chercher le point et les points à proximité pourrait finir par être
+// encore plus lourde que 2 et au final ingérable
 //FIXME conditions binaires en bool ? pour + de rapidité
 //A mon avis ce serait se prendre la tête et risquer d'avoir un jour besoin de 2. ce sont des ints, donc traiter par le processeur
 //d'un seul coup -- sly

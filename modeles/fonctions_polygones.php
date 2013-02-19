@@ -96,73 +96,7 @@ function is_point_dans_polygone($id_pt_gps,$id_poly)
 */
 
 
-/************************************************************
-Cette fonction, profitant de toute les autres, mets à jour
-pour un point la table d'appartenance polygone pour lui
 
-************************************************************/
-// GIS- jmb ca part a l'eau avec GIS, du moins tant que ca rame pas trop
-/*
-function mettre_a_jour_appartenance_point($id_point,$dry_run=false)
-{
-	global $config;
-	global $cache_polygones;
-
-	//$infos_point=infos_point($id_point); // Bizarrement cette fonction top moumoute top objet prend 30% du temps !
-	$qs="select points.id_point_gps,latitude,longitude from points_gps,points 
-	where points.id_point_gps=points_gps.id_point_gps and $id_point=id_point"; // ce truc basic 7%
-	$res=mysql_query($qs) or die ($qs);
-	$infos_point=mysql_fetch_object($res);
-	
-	$query_polygones_potentiels="
-	SELECT id_polygone,id_polygone_type
-	FROM polygones
-	WHERE
-	$infos_point->latitude < latitude_maximum and
-	$infos_point->latitude > latitude_minimum and
-	$infos_point->longitude < longitude_maximum and
-	$infos_point->longitude > longitude_minimum and
-	id_polygone!=0";
-	
-	$res_poly_pot=mysql_query($query_polygones_potentiels) or die($query_polygones_potentiels);
-	// on enlève les anciens
-	if (!$dry_run)
-		mysql_query("DELETE FROM appartenance_polygone WHERE id_point_gps=$infos_point->id_point_gps");
-
-	// balayage de la liste des polygones candidats pour ce point
-	$aucun_massif=true;
-	$polygone_auquels_il_appartient=array();
-	while($poly_possible=mysql_fetch_object($res_poly_pot))
-	{
-		$t=is_point_dans_polygone($infos_point->longitude,$infos_point->latitude,$poly_possible->id_polygone);
-		if ($t)
-		{
-			$polygone_auquels_il_appartient[]=$poly_possible->id_polygone;
-		
-			// Est-il au moins dans un massif répértorié du site ?
-			if ($poly_possible->id_polygone_type==1)
-				$aucun_massif=false;
-
-		}
-	}
-
-	// FIXME alors on lui attribue au moins le faux massif "nul-part" histoire de savoir où il est
-	// peut mieux faire comme technique mais plus simple dans plusieurs requêtes déjà existante sly  23-08-2009
-	if ($aucun_massif) 
-		$polygone_auquels_il_appartient[]=$config['numero_polygone_fictif'];
-		
-	foreach ($polygone_auquels_il_appartient as $id_polygone)
-	{
-		$query_insert="INSERT INTO appartenance_polygone 
-			set id_point_gps=$infos_point->id_point_gps,
-			id_polygone=$id_polygone";
-		if (!$dry_run)
-			mysql_query($query_insert);	
-  
-	}
-return TRUE;
-}
-*/
 
 /***********************************************************************************
 Cette fonction permet d'aller chercher toutes les infos d'un polygone
@@ -175,24 +109,16 @@ Cette fonction permet d'aller chercher toutes les infos d'un polygone
 ******************************************************************/
 function infos_polygone($id_polygone)
 {
-
-	global $pdo;
-	//PDO+ requete pre-preparee dans la bibliotheque du constructeur PDO (fct BDD)
-
-	$pdo->requetes->infos_poly->bindValue('idpoly', $id_polygone, PDO::PARAM_INT );
-	$a=$pdo->requetes->infos_poly->execute() or die ('infos_poly erreur sur le poly '.$id_polygone);
-	// detype object comme l'ancienne
-	return $pdo->requetes->infos_poly->fetch();
+  
+  global $pdo;
+  
+  $pdo->requetes->infos_poly->bindValue('idpoly', $id_polygone, PDO::PARAM_INT );
+  $a=$pdo->requetes->infos_poly->execute() or die ('infos_poly erreur sur le poly '.$id_polygone);
+  // detype object comme l'ancienne
+  return $pdo->requetes->infos_poly->fetch();
 }
 
-//PDO- ancienne fct
-/*if (!is_numeric( $id_polygone))
-  return -1;
- $sql_query_polygone="SELECT *
-     FROM polygone_type LEFT JOIN polygones
-     ON polygone_type.id_polygone_type = polygones.id_polygone_type WHERE id_polygone=$id_polygone";
-
- $rq_polygone=mysql_query($sql_query_polygone);
+/*
  if (!$rq_polygone)
    return -1;
  if (mysql_num_rows($rq_polygone)==0)
