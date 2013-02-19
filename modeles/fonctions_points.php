@@ -362,7 +362,7 @@ $condition->limite : nombre maximum d'enregistrement à aller chercher, par déf
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
 
-$conditions->distance=latitude,longitude,distance_max : Ne va chercher que les points se trouvant à une distance inférieure à distance_max en metres du point de référence
+$conditions->distance=latitude;longitude;distance_max : Ne va chercher que les points se trouvant à une distance inférieure à distance_max en metres du point de référence
 Cette option est très consommation de ressource, on choisira donc une distance moins grande que 20km sinon ça RAME ! l'attribut distance en metres sera retourné, sur lequel on peut d'ailleurs
 utiliser $conditions->ordre="distance DESC"
 sly : Et bé, je me demande comment j'ai pû pondre un truc pareil, cacher plusieurs champs dans un seul 

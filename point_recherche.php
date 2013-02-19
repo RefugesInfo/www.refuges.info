@@ -22,27 +22,32 @@ $conditions->id_polygone=$_POST['id_massif'];
 $conditions->type_point=$_POST['id_point_type'];
 
 // jmb tout ca dans un switch
-switch ( $conditions->type_point ) {
-	case $config['id_cabane_gardee'] : // Condition pour ne pas retourner les abris non prévus pour dormir quand on demande une cabane non gardée sans précisé le nombre de place minimum
-	case $config['tout_type_refuge'] :
-		$conditions->places_minimum == '' ? $conditions->places_minimum = 1 : FALSE ;
-		break;
-	case "tout-refuge" :
-		$conditions->type_point=$config['tout_type_refuge']; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites
-		break;
+switch ( $conditions->type_point ) 
+{
+  case $config['id_cabane_gardee'] : // Condition pour ne pas retourner les abris non prévus pour dormir quand on demande une cabane non gardée sans précisé le nombre de place minimum
+  case $config['tout_type_refuge'] :
+    $conditions->places_minimum == '' ? $conditions->places_minimum = 1 : FALSE ;
+    break;
+  case "tout-refuge" :
+    $conditions->type_point=$config['tout_type_refuge']; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites
+    break;
 }
 
 if ($_POST['pas_limite']!=1)
-	$conditions->limite=$config['points_maximum_recherche'];
+  $conditions->limite=$config['points_maximum_recherche'];
 
 //pour tous ceux là, on attend un 'oui', donc on peut gérer en tas, la recherche faisant une boucle sur $conditions->binaire
 foreach ($config['champs_binaires_simples_points'] as $attribut_binaire )
-	if (isset($_POST[$attribut_binaire]))
-		$conditions->binaire->$attribut_binaire=$_POST[$attribut_binaire];
-
+  if (isset($_POST[$attribut_binaire]))
+    $conditions->binaire->$attribut_binaire=$_POST[$attribut_binaire];
+  
 // par défaut, on ne veut pas les éléments fermés, sauf si on les voulait spécialement
 if ($conditions->non_utilisable!='oui')
-	$conditions->ouvert='oui';	
+  $conditions->ouvert='oui';	
+
+// FIXME : Quelqu'un s'en sert-il vraiment d'une recherche autour d'un couple de coordonnées gps ?
+if ($_POST['lat']!="" and $_POST['lon']!="" and $_POST['autour']!="")
+  $conditions->distance=$_POST['lat'].";".$_POST['lon'].";".$_POST['autour'];
 
 $modele = new stdClass();
 $modele = liste_points ($conditions);
