@@ -10,6 +10,7 @@ Fonction qu'on peut appeler pour retourner le fait qu'on soit en erreur+un messa
  */
 function erreur($texte)
 {
+  $retour = new stdClass();
   $retour->erreur=TRUE;
   $retour->message=$texte;
   return $retour;
@@ -20,6 +21,7 @@ Fonction qu'on peut appeler pour retourner le fait que tout s'est bien passé av
  */
 function ok($texte)
 {
+  $retour = new stdClass();
   $retour->erreur=False;
   $retour->message=$texte;
   return $retour;

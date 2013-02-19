@@ -28,10 +28,10 @@
 require_once ('modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_polygones.php");
-require_once ($config['chemin_modeles']."fonctions_utilisateurs.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
 require_once ($config['chemin_modeles']."fonctions_points.php");
 require_once ($config['chemin_modeles']."fonctions_pubs.php");
+require_once ($config['chemin_modeles']."fonctions_utilisateurs.php");
 
 // Arguments de la page
 $array = explode ('/',$_SERVER['PATH_INFO']);
@@ -41,13 +41,18 @@ $modele = infos_point ($id_point); // Recupere les donnees du point concerné, c
 // Les infos du point deviennent des membres du template ($modele->latitude ...)
 // Partie spécifique de la page
 
-if ($modele == -1) {
-	unset ($modele);
+if ($modele == -1) 
+{
+	$modele = new stdClass();
 	$modele->type = 'point_inexistant';
-} else if ($modele->nom_type == 'Censuré' && $_SESSION['niveau_moderation']<1) {
-	unset ($modele);
+} 
+else if ($modele->nom_type == 'Censuré' && $_SESSION['niveau_moderation']<1) 
+{
+	$modele = new stdClass();
 	$modele->type = 'point_censure';
-} else {
+} 
+else 
+{
 	$modele->nom=bbcode2html($modele->nom);
 	$modele->nom_debut_majuscule=ucfirst($modele->nom);
 	$modele->titre                  = "$modele->nom_debut_majuscule $modele->altitude m ($modele->nom_type)";
@@ -60,8 +65,9 @@ if ($modele == -1) {
 	$modele->annonce_fermeture      = texte_non_ouverte ($modele);
 
 	/*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/
-	if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
+	if (false)//($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
 	{
+	  $conditions = new stdClass;
 	  $conditions->avec_infos_massif=1;
 	  $conditions->limite=10;
 	  $conditions->ouvert='oui';
@@ -96,7 +102,6 @@ if ($modele == -1) {
 			$_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $modele->id_createur
 		))
 		$modele->lien_modification=TRUE;
-//var_dump($_SESSION);
 
 	/*********** Préparation des infos complémentaires (c'est à dire les champs à cocher) ***/
 	// Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
