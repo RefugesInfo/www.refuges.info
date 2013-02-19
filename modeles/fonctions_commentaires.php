@@ -157,11 +157,6 @@ function modification_ajout_commentaire($commentaire)
 			$commentaire->date_photo="";
     }
     // Quelques choix par défaut si c'est une création et que ça n'est pas précisé
-	//jmb pb timestamp a pevoir avec PG, je vire
-    //if (!isset($commentaire->date))
-	//	$commentaire->date="NOW()";
-    //else
-	//	$commentaire->date="'$commentaire->date'";
     if (!is_numeric($commentaire->qualite_supposee))
 		$commentaire->qualite_supposee=0;
     if (!is_numeric($commentaire->id_createur))
@@ -189,10 +184,6 @@ function modification_ajout_commentaire($commentaire)
     else
       $query_finale="INSERT INTO commentaires $query_insert_ajout";
     
-    //print($query_finale);
-	
-//PDO-    $res=mysql_query($query_finale);
-	//PDO+
     if ($pdo->exec($query_finale) === FALSE)
 		return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré");
 	else
@@ -238,34 +229,6 @@ function modification_ajout_commentaire($commentaire)
 	$retour->id_commentaire=$commentaire->id_commentaire;
 	return ($retour);
 }
-/*******************************************************/
-// fonction qui loguera TOUT TYPE de moderation
-// la plupart des champs sont connus lors de l'appel
-// seul contenu est alors donné
-// 14/09/07 désactivé car jamais eu de problème de récupération
-// 03/08/2010 réactivée par endroit
-// ~2010 redésactivée à nouveau, il faudrait refaire ça en mieux
-//PDO/jmb : quite a desactiver, je commente tout c plus lisible
-/*******************************************************/
-//function log_moderation($contenu,
-//			$type_moderation,
-//			$idpoint,
-//			$moderateur)
-//			//$type_moderation=$_GET['type'],
-//			//$idpoint=$_GET['id_point_retour'],
-//			//$moderateur=$_SESSION['id_moderateur'])
-//{
-//	$query_sauvegarde="
-//		INSERT INTO logs_moderation
-//		SET 
-//			date_moderation=NOW(),
-//			id_moderateur=$moderateur,
-//			type_moderation='$type_moderation',
-//			id_point=$idpoint,
-//			contenu='".mysql_real_escape_string($contenu)."'";
-//	//mysql_query($query_sauvegarde) or die("erreur requete $query_sauvegarde");
-//	return true;
-//}
 
 /****************************************
 Fonction qui écrit en TIMESTAMP une
@@ -311,15 +274,14 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
     $image2=imagecreatetruecolor($x_image*$zoom1,$y_image*$zoom1);
     imagecopyresampled ($image2, $image, 0,0, 0, 0,$x_image*$zoom1 ,$y_image*$zoom1,$x_image,$y_image);
 
-    imagejpeg($image2,$chemin_photo);//,$config['qualite_jpeg']);
+    imagejpeg($image2,$chemin_photo);
     ImageDestroy($image2);
     ImageDestroy($image);
 }
 
 //**********************************************************************************************
 // Récupère tous les commentaires d'un point
-//PDO jmb utilisation de la fct PDO
-//cela sert aussi a centraliser l'UNIXTIMESTAMP pas portable
+
 function infos_commentaires ($id_point)
 {
   global $pdo;
@@ -339,36 +301,35 @@ function infos_commentaires ($id_point)
 /******************************************************
 on lui passe un objet commentaire, il en retire les photos et 
 retourne le nouvel objet commentaire
-sly - 24-11-2012
-FIXME il est possible que fusionner ça dans la grosse fonction ajouter_modifier_commentaire soit plus logique, mais son code là haut et déjà
+il est possible que fusionner ça dans la grosse fonction ajouter_modifier_commentaire soit plus logique, mais son code là haut et déjà
 bien gros
 *******************************************************/
 function suppression_photos($commentaire)
 {
-	global $config;
-	if (isset($commentaire->photo) or $commentaire->photo_existe)
-	{
-		$commentaire->photo_existe=0;
-		if (isset($commentaire->photo))
-		{
-			$photos_a_supprimer=$commentaire->photo;
-			unset($commentaire->photo);
-		}
-      
-		$retour=modification_ajout_commentaire($commentaire);
-		if ($retour->erreur)
-			return erreur($retour->message);
-		// On nous dit qu'il y a une photo mais en fait non ?
-		if (isset($photos_a_supprimer))
-		{
-			foreach ($photos_a_supprimer as $photo)
-				unlink($photo);
-		}
-	}
-	else 
-		return (erreur("pas de photo dans ce commentaire"));
-
-	return ok("photo supprimée");;
+  global $config;
+  if (isset($commentaire->photo) or $commentaire->photo_existe)
+  {
+    $commentaire->photo_existe=0;
+    if (isset($commentaire->photo))
+    {
+      $photos_a_supprimer=$commentaire->photo;
+      unset($commentaire->photo);
+    }
+    
+    $retour=modification_ajout_commentaire($commentaire);
+    if ($retour->erreur)
+      return erreur($retour->message);
+    // On nous dit qu'il y a une photo mais en fait non ?
+    if (isset($photos_a_supprimer))
+    {
+      foreach ($photos_a_supprimer as $photo)
+	unlink($photo);
+    }
+  }
+  else 
+    return (erreur("pas de photo dans ce commentaire"));
+  
+  return ok("photo supprimée");
 }
 
 /******************************************************
@@ -415,82 +376,63 @@ function date_exif_a_mysql($date_exif)
 /*******************************************************/
 function transfert_forum($commentaire)
 {
-    global $config,$pdo;
-
-    $querycom="SELECT * FROM phpbb_topics WHERE topic_id_point=$commentaire->id_point";
-
-	//PDO-
-	//$res=mysql_query($querycom) or die("mauvaise requete: $querycom");
-    //$forum=mysql_fetch_object($res);
-	//PDO+
-	$res = $pdo->query($querycom);
-	$forum = $res->fetch() ;
-
-    // dabord declarer le post
-    $query_insert_post="
-    	INSERT INTO phpbb_posts
-		SET
-			topic_id=$forum->topic_id ,
-			forum_id=$forum->forum_id ,
-			poster_id='-1',
-			post_time=$commentaire->date_unixtimestamp ,
-			post_username=".$pdo->quote($commentaire->auteur);
-
-	//PDO-
-    //mysql_query($query_insert_post) or die("mauvaise requete: $query_insert_post");
-    //$postid=mysql_insert_id(); // recupere le post_id
-	//PDO+
-	$pdo->exec($query_insert_post);
-	$postid = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL ca devrait etre bon en PG mais mefiance...
-
-    // ensuite entrer le texte du post
-    // la folie bbcode: generer un rand sur 10 chiffres, et l'utiliser dans les balises...
-    $bbcodeuid = mt_rand( 1000000000, 9999999999 );
-    $query_post_text="
-	INSERT INTO phpbb_posts_text
-	SET
-		post_id=$postid,
-		bbcode_uid=$bbcodeuid, 
-		post_text='";
-    if ($commentaire->photo_existe) 
-    {
-		// insere la balise bbcode pour la photo
-		$query_post_text.="[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
-		// et deplace la photo
-		rename($commentaire->photo['reduite'],$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
-    }
-    // insere le texte du comment
-    $query_post_text.=$pdo->quote($commentaire->texte);
-
-	//PDO- mysql_query($query_post_text) or die("mauvaise requete: $query_post_text");
-	//PDO+
-	$pdo->exec($query_post_text);
+  global $config,$pdo;
+  
+  $querycom="SELECT * FROM phpbb_topics WHERE topic_id_point=$commentaire->id_point";
+  
+  $res = $pdo->query($querycom);
+  $forum = $res->fetch() ;
+  
+  // dabord declarer le post
+  $query_insert_post="
+  INSERT INTO phpbb_posts
+  SET
+  topic_id=$forum->topic_id ,
+  forum_id=$forum->forum_id ,
+    poster_id='-1',
+    post_time=$commentaire->date_unixtimestamp ,
+    post_username=".$pdo->quote($commentaire->auteur);
+  
+  $pdo->exec($query_insert_post);
+  $postid = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL ca devrait etre bon en PG mais mefiance...
+  
+  // ensuite entrer le texte du post
+  // la folie bbcode: generer un rand sur 10 chiffres, et l'utiliser dans les balises...
+  $bbcodeuid = mt_rand( 1000000000, 9999999999 );
+  $query_post_text="
+  INSERT INTO phpbb_posts_text
+  SET
+    post_id=$postid,
+    bbcode_uid=$bbcodeuid, 
+    post_text='";
+  if ($commentaire->photo_existe) 
+  {
+    // insere la balise bbcode pour la photo
+    $query_post_text.="[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
+    // et deplace la photo
+    rename($commentaire->photo['reduite'],$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
+  }
+  // insere le texte du comment
+  $query_post_text.=$pdo->quote($commentaire->texte);
+  
+  $pdo->exec($query_post_text);
 
 
     /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
     $query_update_topic="UPDATE phpbb_topics
-				SET
-					topic_last_post_id=$postid
-				WHERE topic_id=$forum->topic_id
-				LIMIT 1";
-
-	//PDO-	mysql_query($query_update_topic) or die("mauvaise requete: $query_update_topic");
-	//PDO+
-	$pdo->exec($query_update_topic);
+    SET
+      topic_last_post_id=$postid
+      WHERE topic_id=$forum->topic_id
+    LIMIT 1";
+    
+    $pdo->exec($query_update_topic);
 
     $retour=suppression_commentaire($commentaire);
-    // Fin gros merdier forum
-    //-------------------------
-
-	// fct desactivee en attendant des jours meilleurs
-    //log_moderation("Transfert du commentaire $commentaire->id_commentaire vers le forum",
-    //			"transfert_forum",
-	//		$commentaire->id_point,
-	//		$_SESSION["id_moderateur"]);
+    
     if ($retour->erreur)
-		return erreur($retour->message.", mais la copie à réussie");
+      return erreur($retour->message.", mais la copie à réussie");
     else
-		return ok("Message transféré sur le forum");
+      return ok("Message transféré sur le forum");
 
 }
 ?>
