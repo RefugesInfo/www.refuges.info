@@ -38,9 +38,9 @@ $array = explode ('/',$_SERVER['PATH_INFO']);
 $id_point = $array [1]; // $array [1] contient l'id du point
 $modele = new stdClass();
 $modele = infos_point ($id_point); // Recupere les donnees du point concerné, centralisé dans une fonction maintenant sly 30/10/2008
+
 // Les infos du point deviennent des membres du template ($modele->latitude ...)
 // Partie spécifique de la page
-
 if ($modele->erreur) 
   $modele->type = 'point_inexistant';
 else if ($modele->nom_type == 'Censuré' && $_SESSION['niveau_moderation']<1) 
@@ -59,7 +59,7 @@ else
 	$modele->annonce_fermeture      = texte_non_ouverte ($modele);
 
 	/*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/
-	if (false)//($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
+	if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
 	{
 	  $conditions = new stdClass;
 	  $conditions->avec_infos_massif=1;

@@ -270,8 +270,10 @@ function infos_point($id_point)
   // Requête impossible à executer
   if ($liste_un_seul_point->erreur)
     return erreur($liste_un_seul_point->message);
-  if ($liste_un_seul_point->nombre_points!=1)
+  if ($liste_un_seul_point->nombre_points==0)
     return erreur("Le point demandé est introuvable dans notre base"); // il n'existe vraiment pas
+  if ($liste_un_seul_point->nombre_points>1)
+    return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
     
     $i=0;
   $point=$liste_un_seul_point->points->$i;
@@ -282,32 +284,29 @@ function infos_point($id_point)
   // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
   // sauf sur les pages des points... doute... incertitude -- sly
   $query_polygones="SELECT nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
-	FROM polygones,polygone_type,points_gps,points
+	FROM polygones,polygone_type,points_gps
 	WHERE
 	  polygones.id_polygone_type=polygone_type.id_polygone_type
-	AND points_gps.id_point_gps = points.id_point_gps
 	AND ST_Within(points_gps.geom, polygones.geom) 
-	AND points.id_point=$id_point
+	AND points_gps.id_point_gps=$point->id_point_gps
 	ORDER BY polygone_type.ordre_taille DESC";
 
   $res = $pdo->query($query_polygones);
-  if ( ! ( $polygones_du_point = $res->fetch() ) ) 
-    return $point; // pas de retour, numrow=0
-  else
-    while ( $polygones_du_points = $res->fetch() )     // on bosse
+  if ( $polygones_du_point = $res->fetch() ) 
+    do
     {
-      $point->polygones[]=$polygones_du_points;
+      $point->polygones[]=$polygones_du_point;
       
       // pour se simplifier la vie, si on tombe sur un massif, on en garde les infos
       // sly Je sens qu'il y a moyen de faire mieux avec une fonction de cet objet qui irait chercher d'elle même
       // tous ce que l'on veut sur le massif qui se situe dans $point->polygones
-      if ($polygones_du_points->id_polygone_type==$config['id_massif'])
+      if ($polygones_du_point->id_polygone_type==$config['id_massif'])
       {
-	$point->nom_massif=$polygones_du_points->nom_polygone;
-	$point->id_massif=$polygones_du_points->id_polygone;
-	$point->article_partitif_massif=$polygones_du_points->article_partitif;
+	$point->nom_massif=$polygones_du_point->nom_polygone;
+	$point->id_massif=$polygones_du_point->id_polygone;
+	$point->article_partitif_massif=$polygones_du_point->article_partitif;
       }
-    }
+    } while ( $polygones_du_point = $res->fetch() ) ;    // on bosse
     return $point;
 }
 
@@ -422,7 +421,7 @@ function liste_points($conditions)
   }
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if($conditions->type_point!="")
-    $conditions_sql .="\n AND points.id_point_type IN (".$pdo->quote($conditions->type_point)." \n";
+    $conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
   
   // condition pour n'avoir que les points avec au moins un commentaire avec photo
   if($conditions->photo != "")
@@ -458,15 +457,15 @@ function liste_points($conditions)
   if ($conditions->distance!="")
   {
     $donnees=explode(";",$conditions->distance);
-    $latitude=$pdo->quote($donnees[0]);
-    $longitude=$pdo->quote($donnees[1]);
-    $distance=$pdo->quote($donnees[2], PDO::PARAM_INT);
+    $latitude=$donnees[0];
+    $longitude=$donnees[1];
+    $distance=$donnees[2];
     // FIXME : un problème de performance pourrait survenir le jour où on aura une grosse masse de point
     // car notre base GIS étant en lat/long et le calcul de distance ayant besoin d'une projection je la fait 
     // à la volée, mais aucun index ne peut alors être utilisé par postgis
     // option1 : avoir une géométrie en 900913 (mercator approximativement valable sur la terre)
     // option2: bidonner une estimation en lat/lon afin qu'il puisse utiliser un index
-    $calcul_distance=",st_distance(st_transform(geom,900913),st_transform(ST_GeomFromText('POINT($longitude $latitude)',4326),900913))";
+    $calcul_distance="st_distance(st_transform(points_gps.geom,900913),st_transform(ST_GeomFromText('POINT($longitude $latitude)',4326),900913))";
     $select_distance=",$calcul_distance AS distance "; 
     $conditions_sql.="\n AND $calcul_distance<$distance";
     $ordre="ORDER BY $calcul_distance";
