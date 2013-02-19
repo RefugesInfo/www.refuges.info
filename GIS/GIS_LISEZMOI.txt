@@ -11,13 +11,14 @@ Ce Fichier ne couvre que 3 aspects:
 // ETAPES REALISEES JUSQU4A PRESENT (sauf modifs de code PHP/html/js)
 
 ajout column gis in points_gps type POINT
-ajout column gis in polygones type POLYGON
+ajout column gis in polygones type MULTIPOLYGON (si on a fait une sauvegarde de dev, cette opération est inutile)
 Avec postGIS : 
-ALTER TABLE polygones add column geometrie_polygone GEOMETRY;
-CREATE INDEX polygones_geometrie_polygone ON polygones USING gist (geometrie_polygone);
+select AddGeometryColumn('points_gps', 'geom', 4326, 'POINT', 2);
+select AddGeometryColumn('polygones', 'geom', 4326, 'MULTIPOLYGON', 2);
 
-ALTER TABLE points_gps add column geometrie_point_gps GEOMETRY;
-CREATE INDEX points_gps_geometrie_point_gps ON points_gps USING gist (geometrie_point_gps);
+Ajouts des indexes :
+CREATE INDEX polygones_geom ON polygones USING gist (geom); 
+CREATE INDEX points_gps_geom ON points_gps USING gist (geom); 
 
 //===================================
 // POLYGONES NON FERMES  
