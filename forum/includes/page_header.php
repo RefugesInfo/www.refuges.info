@@ -29,7 +29,6 @@ define('HEADER_INC', TRUE);
 global $config; // Dominique 29/11/11 : Dans le cas ou page_header.php serait inclus dans une fonction (message_die())
 require_once ($config['chemin_modeles']."fonctions_pubs.php");
 require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_affichage_points.php");
 
 
 
