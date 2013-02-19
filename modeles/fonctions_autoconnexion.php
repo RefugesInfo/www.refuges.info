@@ -44,143 +44,117 @@ require_once ("fonctions_bdd.php");
 // on vide les traces qu'on a sur l'utilisateur
 function vider_session()
 {
-	unset($_SESSION['login_utilisateur']);
-	unset($_SESSION['password_utilisateur']);
-	unset($_SESSION['id_utilisateur']);
-	unset($_SESSION['niveau_moderation']);
+  foreach (array('login_utilisateur','password_utilisateur','id_utilisateur','niveau_moderation') as $variable)
+  {
+    if (isset($_SESSION[$variable]))
+      unset($_SESSION[$variable]);
+  }
 }
 
-
+/*** 
+Cette fonction a pour rôle "d'auto-connecter" les utilisateurs s'ils ont un cookie phpbb sur le reste du site wri
+elle est donc lancé sur chaque page qui pourrait nécessiter d'être connecté
+***/
 function auto_login_phpbb_users()
 {
-	global $pdo;
-	// etape 1) vérifions si la session est correct
-	// je suis sûr qu'au niveau sécurité c'est pas top, mais franchement, qui irait pirater le compte d'un utilisateur du forum ?
-	if (isset($_COOKIE['phpbb2mysql_sid']))
-	{
-		$query_connexion_temporaire="SELECT * FROM phpbb_sessions WHERE session_id='".$_COOKIE['phpbb2mysql_sid']."'";
-		//PDO-
-		//$res=mysql_query($query_connexion_temporaire);
-		// if (mysql_num_rows($res)==1)
-		//PDO+
-		$res = $pdo->query($query_connexion_temporaire) ;
-		if ( $user = $res->fetch() )
-		{
-			$authentifie=TRUE;
-			//$user=mysql_fetch_object($res);
-			$user_id=$user->session_user_id;
-		}
-		else
-			$authentifie=FALSE;
-	}
-	if (!$authentifie AND isset($_COOKIE['phpbb2mysql_data']))
-	{
-
-		// Etape 2) si c'est une connexion de type permanente avec le cookie phpbb2mysql_data, on vérifie que c'est bien lui
-		$phpbb_user_data=unserialize(stripslashes($_COOKIE['phpbb2mysql_data']));
-		if (!isset($phpbb_user_data['autologinid']) OR !isset($phpbb_user_data['userid']) )
-			$authentifie=FALSE;
-		else
-		{
-			//PDO- 
-			//$query_verif="SELECT * FROM phpbb_users where user_id=".$phpbb_user_data['userid']." AND user_password=\"".$phpbb_user_data['autologinid']."\"";
-			//$res=mysql_query($query_verif);
-			//if (mysql_num_rows($res)!=1 )
-			//PDO+  pas de num row en PDO ..... relou .. celle la renvoie 0 ou 1
-			$query_verif="SELECT COUNT(*) AS auth FROM phpbb_users WHERE user_id=".$phpbb_user_data['userid']." AND user_password=\"".$phpbb_user_data['autologinid']."\"";
-			$res = $pdo->query($query_verif);
-			$r = $res->fetch();
-			if (  $r->auth == 0 )
-				$authentifie=FALSE;
-			else
-				{$user_id=$phpbb_user_data['userid'];$authentifie=TRUE;}
-		}
-	}
-	if (!$authentifie OR ($user_id==-1) )
-		// cet utilisateur n'est pas ou plus connu du forum phpBB ou alors connecté en anonyme sur le forum
-		{vider_session();return FALSE;}
-	// allons chercher les infos de cet utilisateur
-	$query_infos="SELECT * FROM phpbb_users where user_id=$user_id";
-
-	//PDO-
-	//$res=mysql_query($query_infos);
-	//if (mysql_num_rows($res)!=1)
-	//PDO+
-	$res = $pdo->query($query_infos);
-	// ça ne devrait pas être possible puisqu'on à réussi à l'identifier, mais dans le doute
-	if ( ! $user = $res->fetch() )
-		{vider_session();return FALSE;}
-
-	//PDO- $user=mysql_fetch_object($res);
-	/* on rempli notre session */
-
-	$_SESSION['password_utilisateur']=$user->user_password;
-	$_SESSION['login_utilisateur']=$user->username;
-	$_SESSION['id_utilisateur']=$user->user_id;
-
-
-	// Attention, Fusion des droit forum avec droit du site
-	// Sauf que phpBB utilise une classification pas croissante
-	// chez phpBB :
-	// 0 = rien
-	// 1 = admin
-	// 2 = modérateur
-	// chez nous :
-	// 0 = rien
-	// 1 = modérateur
-	// 2 = programmeur
-	// 3 = admin
-	// sly 16/10/2008
-	switch ($user->user_level)
-	{
-		case 0:$_SESSION['niveau_moderation']=0;break;
-		case 1:$_SESSION['niveau_moderation']=3;break;
-		case 2:$_SESSION['niveau_moderation']=1;break;
-		// programmeur ça n'existe plus pour l'instant
-	}
-//var_dump($_SESSION);
-	return TRUE;
+  global $pdo;
+  // etape 1) vérifions si la session est correct
+  // je suis sûr qu'au niveau sécurité c'est pas top, mais franchement, qui irait pirater le compte d'un utilisateur du forum ?
+  if (isset($_COOKIE['phpbb2mysql_sid']))
+  {
+    $query_connexion_temporaire="SELECT * FROM phpbb_sessions WHERE session_id='".$_COOKIE['phpbb2mysql_sid']."'";
+    $res = $pdo->query($query_connexion_temporaire) ;
+    if ( $user = $res->fetch() )
+    {
+      $authentifie=TRUE;
+      $user_id=$user->session_user_id;
+    }
+    else
+      $authentifie=FALSE;
+  }
+  if (!$authentifie AND isset($_COOKIE['phpbb2mysql_data']))
+  {
+    
+    // Etape 2) si c'est une connexion de type permanente avec le cookie phpbb2mysql_data, on vérifie que c'est bien lui
+    $phpbb_user_data=unserialize(stripslashes($_COOKIE['phpbb2mysql_data']));
+    if (!isset($phpbb_user_data['autologinid']) OR !isset($phpbb_user_data['userid']) )
+      $authentifie=FALSE;
+    else
+    {
+      //pas de num row en PDO ..... relou .. celle la renvoie 0 ou 1
+      $query_verif="SELECT COUNT(*) AS auth FROM phpbb_users WHERE user_id=".$phpbb_user_data['userid']." AND user_password=\"".$phpbb_user_data['autologinid']."\"";
+      $res = $pdo->query($query_verif);
+      $r = $res->fetch();
+      if (  $r->auth == 0 )
+	$authentifie=FALSE;
+      else
+      {$user_id=$phpbb_user_data['userid'];$authentifie=TRUE;}
+    }
+  }
+  if (!$authentifie OR ($user_id==-1) )
+    // cet utilisateur n'est pas ou plus connu du forum phpBB ou alors connecté en anonyme sur le forum
+    {
+      vider_session();
+      return FALSE;
+    }
+    // allons chercher les infos de cet utilisateur
+    $query_infos="SELECT * FROM phpbb_users where user_id=$user_id";
+  
+  $res = $pdo->query($query_infos);
+  // ça ne devrait pas être possible puisqu'on à réussi à l'identifier, mais dans le doute
+  if ( ! $user = $res->fetch() )
+  {
+    vider_session();
+    return FALSE;
+  }
+  
+  /* on rempli notre session */
+  
+  $_SESSION['password_utilisateur']=$user->user_password;
+  $_SESSION['login_utilisateur']=$user->username;
+  $_SESSION['id_utilisateur']=$user->user_id;
+  
+  
+  /* Attention, Fusion des droit forum avec droit du site
+  Sauf que phpBB n'utilise pas une classification ordonnée, alors que la gestion se sert de ce fait car un admin 
+  a plus de droits qu'un modérateur qui a plus de droit qu'un utilisateur normal
+  chez phpBB :
+  0 = rien
+  1 = admin
+  2 = modérateur
+  chez nous :
+  0 = rien
+  1 = modérateur
+  2 = programmeur
+  3 = admin
+  */
+  switch ($user->user_level)
+  {
+    case 0:$_SESSION['niveau_moderation']=0;break;
+    case 1:$_SESSION['niveau_moderation']=3;break;
+    case 2:$_SESSION['niveau_moderation']=1;break;
+    // programmeur ça n'existe plus pour l'instant
+  }
+  return TRUE;
 }
 
-// 05/11/2011 Dominique
-// 15/02/13  jmb legere modif, car le numrows n'est plus possible
-function info_demande_correction () {
-	global $pdo;
-	// ici se trouve une petite alerte marquée par une étoile indiquant que dans le menu gestion y'a du boulot pour les modérateurs
-	// à regrouper à l'occassion dans une jolie fonction qui récapitule les différents besoin de modération sly 24/03/2008
-	$query="SELECT * FROM commentaires
-		WHERE (demande_correction!=0) OR (qualite_supposee<0) LIMIT 1";
-	//PDO-
-	//$res=mysql_query($query);
-	//if (mysql_num_rows($res)!=0)
-	//PDO+
-	$res = $pdo->query($query);
-	if ( $r = $res->fetch() ) 
-		return true;    // le fetch est possible, donc ya des trucs
-	else
-		return false;
+// Fonction qui va permettre ensuite d'afficher la "petite étoile :*" en haut à coté du nom du modérateur
+// Pour le prévenir si un commentaire est en attente avec une demande de correction
+// FIXME : cette fonction n'a rien à faire dans fonctions_autoconnexion.php
+function info_demande_correction () 
+{
+  global $pdo;
+  // ici se trouve une petite alerte marquée par une étoile indiquant que dans le menu gestion y'a du boulot pour les modérateurs
+  // à regrouper à l'occassion dans une jolie fonction qui récapitule les différents besoin de modération sly 24/03/2008
+  $query="SELECT * FROM commentaires
+  WHERE (demande_correction!=0) OR (qualite_supposee<0) LIMIT 1";
+  $res = $pdo->query($query);
+  if ( $r = $res->fetch() ) 
+  return true;    // le fetch est possible, donc ya des trucs
+  else
+    return false;
 }
 
-// fais le lien si il y a lieu.
-// sans ca, pas de SESSION ...
 auto_login_phpbb_users();
 
-/* A RETIRER (Voir qui utilise ?) Dominique 05/11/2011 */
-// 15/02/13 jmb: on va voir : mis en commentaires.
-// 15/02/13 jmb g compris: ca sert surtout a lancer la fct auto_login_phpbb_users, indispensable a la SESSION
-//if (auto_login_phpbb_users())
-//{
-//	// ici se trouve une petite alerte marquée par une étoile indiquant que dans le menu gestion y'a du boulot pour les modérateurs
-//	// à regrouper à l'occassion dans une jolie fonction qui récapitule les différents besoin de modération sly 24/03/2008
-//	$query="select * from commentaires
-//		where (demande_correction!=0) OR (qualite_supposee<0) LIMIT 0,1";
-//	$res=mysql_query($query);
-//	if (mysql_num_rows($res)!=0)
-//		$etoile=" *";
-//
-//	$texte_connexion="Zone Gestion [".$_SESSION['login_utilisateur'].$etoile."]";
-//	$lien_gestion="/gestion/";
-//}
-//else
-//	{$texte_connexion="Se connecter";$lien_gestion=$config['lien_forum']."login.php";}
 ?>
