@@ -20,6 +20,8 @@ Ajouts des indexes :
 CREATE INDEX polygones_geom ON polygones USING gist (geom); 
 CREATE INDEX points_gps_geom ON points_gps USING gist (geom); 
 
+Virer les champs : latitude,longitude de points_gps
+pour polygones : peut-être qu'on va garder celle de dev donc elle sera bonne
 //===================================
 // POLYGONES NON FERMES  
 // un POLYGON est ferme en standard OpenGIS.
