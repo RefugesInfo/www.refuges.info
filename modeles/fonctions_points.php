@@ -393,7 +393,7 @@ function liste_points($conditions)
   if($conditions->id_polygone!="")
   {
     $tables_en_plus.=",points_gps,polygones";
-    $conditions_sql .= "AND ST_Within(point_gps.geom,polygones.geom) 
+    $conditions_sql .= "AND ST_Within(points_gps.geom,polygones.geom) 
       AND polygones.id_polygone IN ($conditions->id_polygone)";
   }
   elseif ($conditions->avec_infos_massif!="")
