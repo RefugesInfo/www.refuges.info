@@ -42,29 +42,37 @@ Fonction donnant plusieurs informations générales sur la base
 function infos_base () {
 	global $config,$pdo;
 
-	try {
-		$pdo->requetes->liste_polys->bindValue('typepoly', $config['id_massif'] , PDO::PARAM_INT );   // param_int CAPITAL pour PostGres
-		$pdo->requetes->liste_polys->execute() ;
-		while( $res = $pdo->requetes->liste_polys->fetch() )
-			$r->massifs[] = $res ;
+	$sql = "SELECT *
+		FROM polygones
+		WHERE 
+			polygones.id_polygone_type = ".$config['id_massif']."
+			AND id_polygone != ".$config['numero_polygone_fictif']."
+		ORDER BY nom_polygone";
+	$q = $pdo->query( $sql );
+	while( $res = $q->fetch() )
+		$r->massifs[] = $res ;
 
-		$pdo->requetes->liste_points->bindValue('affichpas', -1, PDO::PARAM_INT );   // param_int CAPITAL pour PostGres
-		$pdo->requetes->liste_points->execute();  // tous les points
-		while( $res = $pdo->requetes->liste_points->fetch() )
-			$r->types_point[] = $res ;
+	$sql = "SELECT * 
+		FROM point_type 
+		ORDER BY importance DESC";  
+	$q = $pdo->query( $sql );
+	while( $res = $q->fetch() )
+		$r->types_point[] = $res ;
 
-		$pdo->requetes->liste_points->bindValue('affichpas', 0, PDO::PARAM_INT );  // param_int CAPITAL pour PostGres
-		$pdo->requetes->liste_points->execute();    // que les points affichables
-		while( $res = $pdo->requetes->liste_points->fetch() )
-			$r->types_point_affichables[] = $res ;
+	$sql = "SELECT * 
+		FROM point_type 
+		WHERE point_type.pas_afficher=0
+		ORDER BY importance DESC";  
+	$q = $pdo->query( $sql );
+	while( $res = $q->fetch() )
+		$r->types_point_affichables[] = $res ;
 
-		$pdo->requetes->liste_precisionsgps->execute();
-		while( $res = $pdo->requetes->liste_precisionsgps->fetch() )
-			$r->type_precision[] = $res ;
-
-	} catch( PDOException $e ){
-		echo 'Erreur de requete  : une des requetes info_base ', $e->getMessage();
-	}
+	$sql = "SELECT *
+		FROM type_precision_gps
+		ORDER BY ordre";
+	$q = $pdo->query( $sql );
+	while( $res = $q->fetch() )
+		$r->type_precision[] = $res ;
 
 	return $r ;
 }
@@ -74,7 +82,7 @@ function infos_base () {
 function pdo_biblio_init( $pdo )
 {
 	global $config;
-	$biblio = new stdClass();
+	$biblio = new stdClass(); //yip : c'est quoi ?
 	//===== INFOS_POLY
 	// Donne Toutes les infos d'un polygone en joignant les 2 tables
 	// :idpoly // parametre du poly a querir
@@ -164,7 +172,7 @@ function pdo_biblio_init( $pdo )
 
 // on garde le lien BDD sous le coude
 global $pdo;
-global $pdo_biblio;
+//global $pdo_biblio; 
 
 $pdo = connexion_base();
 

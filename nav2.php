@@ -17,7 +17,7 @@
 // 20/12/10 Dominique : Retour en GoogleMap API V2
 // 04/10/11 Dominique : Gestion multicartes
 // 08/10/11 Dominique : Utilisation des templates
-// 08/05/12 Dominique : Retour en modeles simples 
+// 08/05/12 Dominique : Retour en modeles simples  
 // 15/02/13 jmb : nav/zone/id => affichage des sous-massifs de la zone, nav/massif/id => normal
 //			jmb: objectif : suppr page massif car elle redonde. modele->type_affichage
 //====================
@@ -27,6 +27,7 @@
 //===========================
 // Fonctions divers et avariées
 
+
 require_once ('modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_bdd.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
@@ -34,7 +35,7 @@ require_once ($config['chemin_modeles']."fonctions_polygones.php");
 
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 // jmb: officiel TEMPORAIRE car je ne sais pas modifier la custom
-$modele->java_lib [] = '/OfficielOpenLayers.js';
+$modele->java_lib [] = '/ol.officiel/OpenLayers-2.12/OpenLayers.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $modele->infos_base = infos_base ();
@@ -42,8 +43,8 @@ $modele->infos_base = infos_base ();
 // l'URL d'appel de la page 
 // typiquement:  /nav/Massif/34/Vercors/  pour le referenceement google
 $tableau_url = explode ('/',$_SERVER['PATH_INFO']);
-$modele->id_polygone = $tableau_url [2];
-$modele->type_affichage = $tableau_url [1]; // "zone" ou "massif". ca definit l'affichage qui suit
+$modele->id_polygone = $tableau_url [1];
+$modele->type_affichage = $tableau_url [2]; // "zone" ou "massif". ca definit l'affichage qui suit
 
 // Les paramètres des layers points et massifs
 if ($modele->id_polygone)
@@ -75,7 +76,20 @@ $modele->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver le
 		? $HTTP_COOKIE_VARS ['liste_id_point_type']
 		: '7,10,9,23,6,3';
 
+//===============================  TRAVAUX YIP
+// ca passera en MVC ! c'est juste des tests !
+global $pdo ; $i=0;
+$res = $pdo->query(" SELECT * FROM polygone_type ORDER BY ordre_taille DESC"); 
+while ($p = $res->fetch() ) {
+	$t->$i->id_polygone_type = $p->id_polygone_type;
+	$t->$i->type_polygone = $p->type_polygone;
+	$t->$i->ordre_taille = $p->ordre_taille;
+	$i++;
+	}
+$modele->liste_types_polys = $t ;
 		
+//===================================================
+
 // On affiche le tout
 $modele->type = 'nav2';
 include ($config['chemin_vues']."_entete.html");

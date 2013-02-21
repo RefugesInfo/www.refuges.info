@@ -14,21 +14,19 @@
 // Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
 // Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
 //=========================== 
+//var_dump($infos_polygone);
+
+
 ?>
+
 <div class="contenu">
 	<!-- afficher le titre du massif (en mode massif) --> 
 	<h3 id="titrepage">
-		<?=$modele->titre?> ddddddddddddddddddddd(Maj+clic=nouvel onglet) :
+		<?=$modele->titre?> DEV Openlayers + WFS (filters) (Maj+clic=nouvel onglet) :
 	</h3>
 </div>
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 <!-- Un premier formulaire pour les consultations courantes -->
-<?php
-// les formulaires ne seront pas la en zone , ils sont presents pour le reste
-if ( $modele->type_affichage != "zone" )
-{
-
-?>
 <form
 	id="choix_legende"
 	style="float: left; width: 200px; <?if (isset ($_GET ['cree'])) {?>display:none;<?}?>"
@@ -37,16 +35,38 @@ if ( $modele->type_affichage != "zone" )
 	<?if (isset ($modele->id_polygone )) {?>
 		<fieldset>
 			<label>
-				<input name="id_massif"
+				<input name="id_poly"
 					type="checkbox"
 					checked="checked"
+					onclick="maj_carte();"
 					value="<?=$modele->id_polygone?>"
-					onclick="switch_massif(this)"
 				/>
-				<?=$infos_polygone->nom_polygone?> uniquement
+				Restreint a un polygone
 			</label>
 		</fieldset>
 	<?}?>
+	<fieldset>
+		<legend>afficher Polly ;)</legend>
+		<ul>
+			<?foreach ($modele->liste_types_polys AS $ptype) {?>
+				<li>
+					<label>
+						<input
+							name="id_polygone_type[]"
+							onclick="maj_carte();"
+							value="<?=$ptype->id_polygone_type?>"
+							type="checkbox"
+							<? //var_dump($ptype) ;
+							if ($ptype->ordre_taille - $infos_polygone->ordre_taille < 20) { ?>
+								checked="checked"
+							<?}?>
+						/>
+						<?=$ptype->type_polygone?>
+					</label>
+				</li>
+			<?}?>
+		</ul>
+	</fieldset>
 
 	<fieldset>
 		<legend>Points</legend>
@@ -56,12 +76,9 @@ if ( $modele->type_affichage != "zone" )
 					<label>
 						<input
 							name="id_point_type[]"
-							onclick="maj_carte()"
+							onclick="maj_carte();"
 							value="<?=$ptype->id_point_type?>"
 							type="checkbox"
-							<?if (strstr (",$modele->liste_id_point_type,", ",$ptype->id_point_type,")) {?>
-								checked="checked"
-							<?}?>
 						/>
 						<img
 							id="icone_<?=$ptype->id_point_type?>"
@@ -75,13 +92,15 @@ if ( $modele->type_affichage != "zone" )
 		</ul>
 	</fieldset>
 
+	<!--
 	<fieldset>
-		<legend>Couches</legend>
+		<legend>Points</legend>
 		<ul>
 			<div id="switch_nav"></div>
 		</ul>
 	</fieldset>
-
+	-->
+	
 	<!-- garde les coordonnee de la BBOX sous le coude pour l'export -->
 	<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$infos_polygone->latitude_minimum +0?>" /></p>
 	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$infos_polygone->latitude_maximum +0?>" /></p>
@@ -182,8 +201,6 @@ if ( $modele->type_affichage != "zone" )
     <?php } } ?>
   </noscript>
 <?php
-} // fin du Gros IF mode massif. si on est en mode zone, on affiche pas les formulaires ni rien
-else { ?> <div style="height: 80%;margin-left: 1px;"><? }  // je deteste ce bricolage CSS... en attendant mieux 
 ?>
 
   <!-- Et maintenant, la carte -->
