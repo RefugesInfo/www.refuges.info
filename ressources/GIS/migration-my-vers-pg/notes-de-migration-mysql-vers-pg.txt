@@ -1,4 +1,4 @@
-﻿Opération :
+Opération :
 Tentative de migration de la base mysql vers postgresql :
 
 * Dump du sql de prod de mysql 
@@ -18,3 +18,5 @@ que phpbb rentre en 0 ou 1 mais que l'outil de conversion à transformé en t ou
 cat test.sql |sed s/"date_derniere_modification\" date NOT NULL"/"date_derniere_modification\" date"/ | sed s/"date_photo\" date NOT NULL"/"date_photo\" date"/> bool-to-int.sql 
 
 * on dump dans psql : cat test.sql | psql refuges (avec l'utilisateur refuges)
+
+* Dans polygones (sauf si cette table n'est finalement pas re-dumpée) : enlever les contraintes "NOT NULL" sur source, message, url_exterieur et articles partitifs

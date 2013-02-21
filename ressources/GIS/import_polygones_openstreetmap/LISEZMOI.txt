@@ -25,12 +25,10 @@ A voir les autres polygones qui pourraient nous intéresser :
 - Forêt (Pour déterminer s'il y a plus de chance d'avoir du bois)
 - Autres points d'intérêts : camping/chambre d'hôtes/hôtels/arrêt bus/gare ?
 
+Voir le script import_osm.php pour voir comment est fait cette sélection
+
+
 == Fonctionnement actuel ==
-
-1) import des données avec osm2pgsql dans des tables "à lui"
-2) nettoyage des trucs en trop pour alléger
-
-== Fonctionnement futur (peut-être ?) ==
 
 1) import des données avec osm2pgsql dans des tables "à lui"
 2) vidanges des polygones de nos bases à nous en provenance d'osm
