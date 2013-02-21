@@ -17,6 +17,8 @@ require_once ('../modeles/config.php');
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
 
+$modele = new stdclass;
+
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (($_SESSION ['niveau_moderation'] >= 1) ) 
 {

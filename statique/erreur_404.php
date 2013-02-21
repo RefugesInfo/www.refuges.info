@@ -4,6 +4,7 @@
 require_once ("../modeles/config.php");
 require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 
+$modele = new stdclass;
 // Conteneur standard de l'entête et pied de page
 $modele->titre = "Erreur 404 - La page demandée est introuvable sur refuges.info";
 $modele->type = 'erreur_404'; // Le type

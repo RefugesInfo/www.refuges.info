@@ -38,7 +38,8 @@
 					<td>
 						<select name="id_massif">
 							<option value="">(tous)</option>
-							<?foreach ($modele->infos_base->massifs AS $m) {?>
+							<?php if (is_array($modele->infos_base->massifs))
+								foreach ($modele->infos_base->massifs AS $m) {?>
 								<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option>
 							<?}?>
 						</select>
@@ -53,7 +54,8 @@
 						<select name="id_point_type">
 							<option value="">(tous)</option>
 							<option value="tout-refuge" selected="selected">Tout type de refuge</option>
-							<?foreach ($modele->infos_base->types_point AS $t) {?>
+							<?php if (is_array($modele->infos_base->types_point)) 
+								foreach ($modele->infos_base->types_point AS $t) {?>
 								<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
 							<?}?>
 						</select>

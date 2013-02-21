@@ -28,7 +28,7 @@ passthru("osm2pgsql -c --number-processes 2 $params -C 800 -s -S ./default.style
 // suppression des reserves naturelles de la base
 $query_post_import[]="delete from polygones where id_polygone_type=12;";
 // copy de celles importées par osm2pgsql
-$query_post_import[]="insert into polygones (id_polygone_type,message_information_polygone,url_exterieure,nom_polygone,source,geom) select 12,\"description:restrictions\",website,name,'openstreetmap et contributeurs',ST_Multi(way) from osm_polygon where leisure='nature_reserve';";
+$query_post_import[]="insert into polygones (id_polygone_type,message_information_polygone,url_exterieure,nom_polygone,source,geom) select 12,\"description:restrictions\",website,name,'openstreetmap et contributeurs',ST_Multi(way) from osm_polygon where boundary='';";
 
 // suppression des tables "temporaires" de osm2pgsql
 $query_post_import[]="DROP table osm_line;";
