@@ -318,7 +318,7 @@ plutôt que de lui passer 50 champs, on ne lui passe qu'un seul, un object conte
 de conditions et donc plus facilement extensible
 voici les paramètres attendus de recherche :
 (tous facultatifs, ces conditions seront toutes vérifiées par un AND entre elles)
-$conditions->nom : recherche de type LIKE sur le champ
+$conditions->nom : recherche de type ILIKE sur le champ (ILIKE est insensible à la case en postgresql)
 $conditions->altitude_maximum
 $conditions->altitude_minimum
 $conditions->places_maximum
@@ -387,7 +387,7 @@ function liste_points($conditions)
   
   // conditions sur le nom du point
   if($conditions->nom!="")
-    $conditions_sql .= " AND points.nom LIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
+    $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
   
   // condition sur l'appartenance à un polygone
   if($conditions->id_polygone!="")
@@ -471,7 +471,7 @@ function liste_points($conditions)
   
   //conditions sur la description (champ remark)
   if($conditions->description!="")
-    $conditions_sql.="\n AND points.remark LIKE ".$pdo->quote('%'.$conditions->description.'%');
+    $conditions_sql.="\n AND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
   
   // cas spécial sur les modèle
   if ($conditions->modele==1)
