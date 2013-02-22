@@ -568,11 +568,9 @@ Non, vous ne révez pas, il y'a bien 5 requêtes là où je pense
 que une devrait suffir !
 phpBB serait il un brontosaure du web ? mal programmé mais finalement
 très utilisé ?
-// jmb: ouais. quelque modifs de typage en passant par PDO
 ********************************************/
 function forum_point_ajout( $id, $nom )
 {
-//PDO+
 	global $pdo;
 	
   // Dans le forum, nom toujours commençant par une majuscule
@@ -582,9 +580,6 @@ function forum_point_ajout( $id, $nom )
   `forum_topics` = forum_topics+1,
   `prune_next` = NULL
   WHERE `forum_id` = '4'";
-//PDO-  
-//  mysql_query($query_update);
-	//PDO+
 	$pdo->exec($query_update);
 	
   /*** rajout du topic spécifique au point ( Le seul qui me semble logique ! )***/
@@ -599,10 +594,7 @@ function forum_point_ajout( $id, $nom )
   0, 0, 0, 0,
   0, 0, 0,
   0, $id )";
-//PDO-
-//  mysql_query($query_insert);
-//  $topic_id=mysql_insert_id();
-	//PDO+
+	
 	$res = $pdo->query($query_insert);
 	$topic_id = $pdo->lastInsertId('phpbb_topics_topic_id_seq'); //FIXME POSTGRESQL : ca devrait etre bon necessite un sequence_name, voir doc PHP
 	
@@ -616,11 +608,8 @@ function forum_point_ajout( $id, $nom )
   $topic_id, 4, -1, ".time()." ,
   '00000000', 'refuges.info' , 1, 0,
   1, 1, NULL , 0 )";
-//PDO-
-//mysql_query($query_insert_post);
-//$last=mysql_insert_id();
-	//PDO+
-	$res = $pdo->query($query_insert_post);
+	
+$res = $pdo->query($query_insert_post);
 	$last = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL : ca devrait passer necessite un sequence_name, voir doc PHP
 
   
@@ -630,18 +619,12 @@ function forum_point_ajout( $id, $nom )
   VALUES (
   $last, '', '',
   '')";
-//PDO-
-//  mysql_query($query_texte);
-	//PDO+
 	$pdo->exec($query_texte);
 
   /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
   $query_update_topic="UPDATE phpbb_topics SET
   topic_first_post_id=$last,topic_last_post_id=$last
   WHERE topic_id=$topic_id";
-//PDO-
-//mysql_query($query_update_topic);
-	//PDO+
 	$pdo->exec($query_update_topic);
   
   return $topic_id ;
@@ -665,10 +648,6 @@ function forum_mise_a_jour_nom($id_point,$nom)
   $query="UPDATE `phpbb_topics`
   SET `topic_title`=$nom
   WHERE `topic_id_point`=$id_point";
-
-//PDO-
-//mysql_query($query);
-	//PDO+
 	$pdo->exec($query);
 
 }
@@ -704,7 +683,6 @@ function modification_ajout_point($point)
 	if ($point->id_point!="")  // update
 	{
 		$infos_point_avant = infos_point($point->id_point);
-//var_dump($infos_point_avant);
 		if ($infos_point_avant==-1) // oulla on nous demande une modif mais il n'existe pas
 			return "erreur_point_inexistant";
     
@@ -716,41 +694,40 @@ function modification_ajout_point($point)
 	// dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
 	$point->id_point_gps=modification_ajout_point_gps($point);
   
-  
 	/********* Les caractéristiques propres du point *************/
 	// champ ou il faut juste un set=nouvelle_valeur
 	foreach ($config['champs_simples_points'] as $champ)
 		if (isset($point->$champ))
-			$champs_sql.="\n$champ=".$pdo->quote($point->$champ).",";
+			$champs_sql[$champ]=$pdo->quote($point->$champ);
 	
   
 	//cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
 	if (isset($point->site_officiel))
 		if (preg_match("/http\:\/\//",$point->site_officiel))
-			$champs_sql.="\nsite_officiel = ". $pdo->quote($point->site_officiel) .",";
+			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
 		elseif($point->site_officiel!="")
-			$champs_sql.="\nsite_officiel = ". $pdo->quote('http://'.$point->site_officiel) .",";
+			$champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
 		else
-			$champs_sql.="\nsite_officiel = ". $pdo->quote($point->site_officiel) .",";
+			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
   
 	// On met à jour la date de dernière modification
-	$champs_sql.="\ndate_derniere_modification = NOW(),";
+	$champs_sql['date_derniere_modification'] = 'NOW()';
   
 	// fait-on un updater ou un insert ?
 	if ($point->id_point=="")
-		{$insert_update="INSERT INTO";$champs_sql.="date_insertion=NOW() ";}
+	{
+		$champs_sql['date_insertion']=time(); //FIXME : horreur, la date_insertion est un unix timestamp stocké dans un bigint ;-(
+		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
+	}
 	else
-		{$insert_update="UPDATE";$condition="WHERE id_point=$point->id_point";}
+		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
   
-	$champs_sql=trim($champs_sql,",");
-  
-	$query_finale="$insert_update points SET $champs_sql $condition";
-echo $query_finale;
-	$pdo->exec($query_finale);
+	if (!$pdo->exec($query_finale))
+		return erreur("Requête en erreur, impossible à executer : $query_finale");
 
 	if ($point->id_point=="") 
 	{	// donc c etait un ajout
-		$point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME POSTGRESQL : ca devrait passer
+		$point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
  
 		/********* la création ou mise à jour du forum point *************/
   		forum_point_ajout( $point_en_cours, $point->nom);
@@ -758,10 +735,6 @@ echo $query_finale;
     else
 		forum_mise_a_jour_nom($point->id_point, $point->nom);
       
-	/********* A quels polygones ce point appartient-t-il ? *************/
-	//GIS-	 table plus necessaire
-	//mettre_a_jour_appartenance_point($point->id_point);
-    
     // on retoure l'id du point (surtout utile si création)
     return $point->id_point;
 }

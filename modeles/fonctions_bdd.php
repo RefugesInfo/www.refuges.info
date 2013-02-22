@@ -168,7 +168,44 @@ function pdo_biblio_init( $pdo )
 
 	return $biblio;
 }
+/*
+Avec Postgresql impossible de ré-utiliser une forme commune de requête entre un update et un insert, c'est devenu tellement relou que j'ai fais 
+cette fonction pour construire la requête
+$table = le nom de la table dans laquelle on veut mettre à jour un enregistrement ou inserer un enregistrement
+$champs_valeur = un array associatif avec comme clef, le champ à mettre à jour, sa valeur la valeur à mettre à jour
+$update_ou_insert = soit 'update' soit 'insert'
+$condition = la clause, dans le cas d'un update indiquant quel enregistrement à mettre à jour genre 'id_point=5'
 
+*/
+function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition="")
+{
+	if ($update_ou_insert == "update") // Un UPDATE
+	{
+		foreach ($champs_valeur as $champ_sql => $valeur)
+			$sql_update.="\n$champ_sql=$valeur,";
+		$sql_update = trim($sql_update,",");
+		$query="UPDATE $table SET 
+		  $sql_update
+		WHERE 
+		  $condition";
+	} 
+	else // un INSERT
+	{
+		foreach ($champs_valeur as $champ_sql => $valeur)
+		{
+			$liste_champs.="$champ_sql,";
+			$liste_valeurs.="$valeur,";
+		}
+		$liste_champs = trim($liste_champs,",");
+		$liste_valeurs = trim($liste_valeurs,",");
+		
+		$query="INSERT INTO $table
+		  ($liste_champs)
+		VALUES
+		  ($liste_valeurs)";
+	}
+	return $query;
+}
 
 // on garde le lien BDD sous le coude
 global $pdo;

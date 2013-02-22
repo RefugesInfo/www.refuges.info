@@ -20,3 +20,6 @@ cat test.sql |sed s/"date_derniere_modification\" date NOT NULL"/"date_derniere_
 * on dump dans psql : cat test.sql | psql refuges (avec l'utilisateur refuges)
 
 * Dans polygones (sauf si cette table n'est finalement pas re-dumpée) : enlever les contraintes "NOT NULL" sur source, message, url_exterieur et articles partitifs
+
+* on vire le champs id_exterieur,source_exterieur de la table points
+* On autorise la valeure 'null' pour presque tous les champs de points

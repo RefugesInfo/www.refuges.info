@@ -10,6 +10,7 @@ Afin de simplifier l'appel aux ajouts, modifications, suppressions
 */
 require_once ('config.php');
 require_once ('fonctions_bdd.php');
+require_once ("fonctions_gestion_erreurs.php");
 
 
 /********************************************************
@@ -22,53 +23,41 @@ id_point_gps,longitude,latitude,altitude,access et id_type_precision_gps
 Tout est facultatif, ne sera mis à jour que ce qui est présent
 le reste sera présuposé si non présent
 en cas d'ajout : longitude,latitude sont obligatoires
-sly 02/11/2008
-
-Ajout du 04/03/2009 sly
-Nouveau paramêtre facultatif qui permet de dire si une recherche d'existence doit être faite, et si oui sur la base 
-de quelles données.
-Ne marche que dans le cas des polygones, ça veut dire qu'on va tenter d'utiliser le même point pour former un ou plusieurs polygones 
-de même type afin d'éviter d'avoir des points superposés et double.
-si -1, alors on s'en fiche on ajoute le point même s'il est déjà là.
-Si on trouve un candidat, on ajoute rien, mais on renvoi son id
-//10/02/13 : jmb : rajout du champs OpenGIS, prevoir suppression § polygones.
-//14/02/13 : jmb : PDO
 ********************************************************/
-function modification_ajout_point_gps($point_gps,$id_polygone_type=-1)
+function modification_ajout_point_gps($point_gps)
 {
 	global $config,$pdo;
-	//GIS : pas de champs gis car il ne faut pas qu'il soit traité a la chaine en foreach.
-	$champs = array("longitude","latitude","altitude","acces","id_type_precision_gps");
 
 	// si on veut faire un ajout et que latitude ou longitude sont vide, on ne peut rien faire
 	if ($point_gps->id_point_gps=="" AND ($point_gps->longitude=="" OR $point_gps->latitude=="") )
-		return -1;
+		return erreur("Impossible d'ajouter le point, longitude ou/et latitude n'ont pas été donné");
 	// si aucune précision gps, on les suppose approximatives
 	if ($point_gps->id_type_precision_gps=="")
 		$point_gps->id_type_precision_gps=$config['id_coordonees_gps_approximative'];
+	// si aucune altitude, on la suppose à -1
+	if ($point_gps->altitude=="")
+		$point_gps->altitude=-1;
+	
+	// On prépare notre tableau contenant tous les champs à mettre à jour
+	//GIS : pas de champs gis car il ne faut pas qu'il soit traité a la chaine en foreach.
+	$champs = array("altitude","acces","id_type_precision_gps");
 	foreach ($champs as $champ)
 		if (isset($point_gps->$champ))
-			$champs_sql.="\n$champ=".$pdo->quote($point_gps->$champ).",";
-
+			$champs_sql[$champ]=$pdo->quote($point_gps->$champ);
 	// GIS+ : si les latlon ne sont pas nuls, enregistrement coord OpenGIS
 	if (($point_gps->longitude!="" AND $point_gps->latitude!=""))
-		$champs_sql.="\ngis =GeomFromText('POINT($point_gps->longitude $point_gps->latitude),4326')";
+		$champs_sql['geom']="ST_GeomFromText('POINT($point_gps->longitude $point_gps->latitude)',4326)";
 
-	// fait-on un updater ou un insert ?
-	if ($point_gps->id_point_gps != "")
-	{
-		$insert_update="UPDATE";
-		$condition="WHERE id_point_gps=$point_gps->id_point_gps";
-	} else
-		$insert_update="INSERT INTO";
+	// fait-on un updater ou un insert ? -> avec posgresql et être compatible, impossible de reprendre la même forme pour la requête
+	if ($point_gps->id_point_gps != "") // Un UPDATE
+		$query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'update',"id_point_gps=$point_gps->id_point_gps");
+	else // un INSERT
+		$query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'insert');
 
-	$champs_sql = trim($champs_sql,",");
-
-	// $condition est vide dans  le cas d'un INSERT
-	$query_finale = "$insert_update points_gps SET $champs_sql $condition";
-
-	$pdo->exec($query_finale);
-	$lastid = $pdo->lastInsertId('points_gps_id_points_gps_seq'); // FIXME POSTRESQL non en fait. ca devrait passer comme ca
+	
+	if (!$pdo->exec($query_finale))
+		return erreur("Impossible d'executer la requête car mal formée : $query_finale");
+	$lastid = $pdo->lastInsertId('points_gps_id_point_gps_seq'); // FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
 	if ($point_gps->id_point_gps!="")
 		$id_point_gps = $point_gps->id_point_gps;
 	else
