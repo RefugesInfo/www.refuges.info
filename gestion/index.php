@@ -15,17 +15,9 @@ require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
 $modele->titre="Zone de gestion";
 $olVersion = 'ol2.12.1.3';
 
-// Ou là la ! Je n'ai pas le temps pour l'instant, mais il faudra standardiser tout ça à le rentrée // Dominique 22/07/12
+// FIXME : Ou là la ! Je n'ai pas le temps pour l'instant, mais il faudra standardiser tout ça à le rentrée // Dominique 22/07/12
 // Il faut faire ça ici, dans le fichier général de gestion car ça doit être fait avant d'appeler l'entête
 // jmb je commente tout ce qui est edition de poly
-//if ($_GET['page']=="edit_polygone") {
-//	$modele->java_lib [] = "http://maps.google.com/maps/api/js?v=3&amp;sensor=false";
-//	$modele->java_lib [] = "/$olVersion/OpenLayers.js";
-//	$modele->java_lib [] = "/$olVersion/Editor.js";
-//	$modele->id_polygone = $_GET['id_polygone'];
-//	$modele->type = 'edit_polygone'; // Pour ajouter edit_polygone.js
-//	$hauteur_contenu = ' style="height:100%"'; // Pour que la carte prennne toute la hauteur de la page
-//}
 
 include ($config['chemin_vues']."_entete.html");
 
@@ -56,7 +48,6 @@ if (isset($_SESSION['id_utilisateur']) )
 					</ul>");
 
 			//pour les programmeurs
-			//rff 21/03/06 : intro gestion cache session
 			case 2 :
 				print("
 					<h4>Programmeurs</h4>
@@ -75,16 +66,7 @@ if (isset($_SESSION['id_utilisateur']) )
 						<li><a href='./?page=commentaires_attente_correction'>Voir les commentaires en attente d'une correction</a></li>
 						<li><a href='./?page=modifier_modeles'>Modifier les modèles de points</a> (le pré-remplissage des champs lors d'un ajout de point)</li>
 						<li><a href='./?page=news_gestion&amp;ajout=1'>Ajout d'une news général</a> (En haut de la page nouvelles)</li>
-						<!-- on trouvera des poly tout faits ailleurs (OSM) -->
-						<!--	<li><a href='./?page=cree_polygone'>Créer un nouveau polygone</a></li> -->
 						<li><a href='./?page=import_polygone'>Importer un polygone dans la base</a></li>
-						<!-- plus necessaire en GIS -->
-						<!--	<li><a href='./?page=export_polygone'>Exporter un polygone de la base au format gpx</a></li> -->
-						<!--	<li><a href='./?page=edit_polygone'>Editeur graphique de polygones</a></li> -->
-						<!-- cela se resume a supprimer un row PGsql. trop de boulot ailleurs pour garder une page dediée pour ca  -->
-						<!--    <li><a href='./?page=suppression_polygone'>Supprimer un polygone de la base</a></li> -->
-						<!-- plus necessaire en GIS -->
-						<!--    <li><a href='./?page=calcul_appartenance_polygone'>Recalcul de l'appartenance de tous les points de la base à un ou plusieurs polygones</a> (centaine de secondes)</li> -->
 					</ul>");
 	
 			// Pour tous les utilisateurs
@@ -92,7 +74,6 @@ if (isset($_SESSION['id_utilisateur']) )
 				print("
 					<h4>Pour tout le monde</h4>
 					<ul>
-						<!--<li><a href='./?page=mes_contributions'>Trouver tous mes commentaires sur le site</a></li>-->
 						<li><a href='./?page=moderateurs'>Connaître les moderateurs du site</a></li>
 					</ul>"); // pas de risque la page est mutante
 		
@@ -113,19 +94,14 @@ if (isset($_SESSION['id_utilisateur']) )
 			case "calcul_appartenance_polygone" :
 			case "moderateurs" :
 			case "news_gestion" :
-			//case "gestion_caches_point" :
 			case "verif_massif" :
 			case "moderation" :
 			case "moderation2" :
 			case "modifier_modeles" :
 			case "commentaires_attente_correction" :
-			case "mes_contributions" :
 			case "import_polygone" :
-			//case "export_polygone" :
-			//case "cree_polygone" :
-			//case "edit_polygone" :
-			//case "suppression_polygone" : 
-				include("$page.php");
+			include("$page.php");
+			default: break;
 		}
 	}
 }
