@@ -2,8 +2,10 @@
 /*************************************************
 Constantes de configuration, plus propre qu'en dur
 *************************************************/
-
 // 15/02/13 jmb : FIXME, passer les INT en INT sinon PGsql fera pouf !
+
+// Permet d'ajouter le chemin dans lequel se trouve le config.php au path de recherche, ainsi, il suffit d'inclure le config.php afin de pouvoir faire des require_once('modele.php');
+ini_set('include_path',ini_get('include_path').':'.__DIR__.':');
 
 // Ce fichier est privée et contient des différentes clefs et mot de passe
 require_once("config_privee.php");
@@ -109,6 +111,13 @@ $config['id_forum_moderateur']=7;
 $config['id_forum_developpement']=2;
 $config['encodage_exportation']="utf-8";
 $config['encodage_des_contenu_web']=$config['encodage_exportation'];
+
+/********** URLs d'accès aux données openstreetmap ************/
+
+$config['xapi_url_poi']="http://api.openstreetmap.fr/osm2node?";
+$config['overpass_api']="http://api.openstreetmap.fr/oapi/interpreter";
+//Autre serveur de backup :
+//$config['overpass_api']="http://http://www.overpass-api.de/api/interpreter";
 
 
 /******** Nom du fichier contenant les points exportés **********/

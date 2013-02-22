@@ -1,3 +1,6 @@
+FIXME : ce fichier n'est valable que pour l'ancien schéma avant le passage à PG les élémnents concernant les géométries oont changées et la doc est
+FIXME :à mettre à jour
+
 Ce fichier texte, non protégé et accessible aussi par Internet tente d'être une première approche pour qui voudrait
 comprendre comment marche le site refuges.info au niveau logiciel.
 

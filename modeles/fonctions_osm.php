@@ -12,7 +12,6 @@ require_once ('fonctions_mise_en_forme_texte.php');
 require_once ("fonctions_gestion_erreurs.php");
 require_once ("fonctions_exportations.php");
 
-$config['xapi_url_poi']="http://api.openstreetmap.fr/osm2node?";
 $tags_cache=array();
 
 /*
