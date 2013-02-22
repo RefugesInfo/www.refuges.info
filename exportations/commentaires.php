@@ -11,9 +11,9 @@
 //**********************************************************************************************
 
 require_once ("../modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_bdd.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
+require_once ("fonctions_bdd.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_polygones.php");
 
 $q_commentaires= "SELECT * FROM commentaires";
 $r_commentaires= mysql_query($q_commentaires) or die("mauvaise requete: $q_commentaires");

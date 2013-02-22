@@ -9,7 +9,7 @@
 // 14/07/12 Dominique : Création
 
 require_once ("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_autoconnexion.php");
 
 $modele = new stdClass();
 

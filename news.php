@@ -11,8 +11,8 @@
 // 30/05/12 Dominique : Retour en modeles simples
 
 require_once ("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_nouvelles.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_nouvelles.php");
+require_once ("fonctions_autoconnexion.php");
 
 // Conteneur standard de l'entête et pied de page
 $modele = new stdClass();

@@ -18,11 +18,11 @@
 
 
 require_once ("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_bdd.php");
-require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
-require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
+require_once ("fonctions_bdd.php");
+require_once ("fonctions_points.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_polygones.php");
+require_once ("fonctions_mode_emploi.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $modele = new stdClass();

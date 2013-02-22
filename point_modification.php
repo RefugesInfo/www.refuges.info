@@ -11,8 +11,8 @@ jmb 16/02/13 : un peu de re ecriture du bazar avec des gros Switch
 **********************************************************************************************/
 
 require_once("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_points.php");
+require_once ("fonctions_autoconnexion.php");
 require_once ($config['chemin_vues']."_entete.html");
 
 $html="<div class=\"contenu\">

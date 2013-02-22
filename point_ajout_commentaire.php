@@ -4,10 +4,10 @@ Pour ajouter un commentaire rattaché à un point
 **********************************************************************************************/
 
 require_once("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_commentaires.php");
-require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_commentaires.php");
+require_once ("fonctions_points.php");
+require_once ("fonctions_mode_emploi.php");
 
 $modele = new stdClass();
 setlocale(LC_TIME, "fr_FR");

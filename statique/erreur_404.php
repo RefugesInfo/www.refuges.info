@@ -2,7 +2,7 @@
 // 10/07/2012 création d'une page d'erreur pour page non retrouvée plus sexy
 
 require_once ("../modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_autoconnexion.php");
 
 $modele = new stdclass;
 // Conteneur standard de l'entête et pied de page

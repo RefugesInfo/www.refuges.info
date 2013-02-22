@@ -10,7 +10,7 @@ des sites partenaires aussi peut-être !
 **********************************************************************************************/
 
 require_once ("../modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_exportations.php");
+require_once ("fonctions_exportations.php");
 
 //Nous allons récupérer la liste des points souhaités en fonction des paramètres demandés
 //Pour des raisons de performance de la carte gmaps qui ne demande pas de limite, on ne donne 

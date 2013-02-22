@@ -14,8 +14,8 @@ c'est donc "un peu" plus rapide à écrire et disponible pour les modérateurs, 
 Finalement on passe à un quasi-vrai wiki sans historique que pour modérateurs
 *****************************************************/
 require_once ('../modeles/config.php');
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_mode_emploi.php");
 
 $modele = new stdclass;
 

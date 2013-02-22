@@ -12,9 +12,9 @@
 //**********************************************************************************************
 
 require_once ("../modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_bdd.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
+require_once ("fonctions_bdd.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_polygones.php");
 
 // Si on demande -1 (code spécial pour tous les massifs) ou rien alors on veut tous les massifs de la base dans la bbox
 if (isset($_GET['massif']) and $_GET['massif']!="-1")

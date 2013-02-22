@@ -8,12 +8,12 @@ FIXME 16/02/2013: il faut en finir avec le Options +Multiviews merdique et peut 
 
 
 require_once ('modeles/config.php');
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
-require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
-require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_pubs.php");
-require_once ($config['chemin_modeles']."fonctions_utilisateurs.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_polygones.php");
+require_once ("fonctions_mode_emploi.php");
+require_once ("fonctions_points.php");
+require_once ("fonctions_pubs.php");
+require_once ("fonctions_utilisateurs.php");
 
 // Arguments de la page
 $array = explode ('/',$_SERVER['PATH_INFO']);

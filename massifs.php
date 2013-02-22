@@ -17,9 +17,9 @@
 // --> Oui, clairement, il faut qu'on se débarrasse de ce trucs et que les zones soient des polygones comme les autres gérés par nav.php sly 16/02/2013
 
 require_once ("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
-require_once ($config['chemin_modeles']."fonctions_bdd.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_polygones.php");
+require_once ("fonctions_bdd.php");
 
 $modele = new stdClass();
 $modele->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';

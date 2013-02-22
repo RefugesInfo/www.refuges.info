@@ -17,9 +17,9 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 ************************************************************************************************/
 
 require_once ('modeles/config.php');
-require_once ($config['chemin_modeles']."fonctions_bdd.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
+require_once ("fonctions_bdd.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_polygones.php");
 
 $modele = new stdClass();
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';

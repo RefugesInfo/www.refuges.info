@@ -4,7 +4,7 @@ Formulaire de recherche
 ***/
 
 require_once("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_autoconnexion.php");
 
 // etait modele=info_base. plus coherent avec les aurt pages
 $modele = new stdClass();

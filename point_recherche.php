@@ -7,9 +7,9 @@ Les resultats de la recherche. Ce fichier recupere les criteres en POST de point
 **********************************************************************************************/
 
 require_once("modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
-require_once ($config['chemin_modeles']."fonctions_points.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
+require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_points.php");
+require_once ("fonctions_polygones.php");
 
 /************ Préparation des conditions de la recherche *******************/
 // tous ceux dont le name du formulaire correspondent à la condition sur le champs en base du même nom

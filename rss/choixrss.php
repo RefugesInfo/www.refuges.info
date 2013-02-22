@@ -5,8 +5,8 @@ Page de choix du flux rss
 **********************************************************************************************/
 
 require_once ('../modeles/config.php');
-require_once ($config['chemin_modeles']."fonctions_bdd.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_bdd.php");
+require_once ("fonctions_autoconnexion.php");
 $modele->titre="Formulaire de choix du flux rss de refuges.info";
 $modele->description = $description;
 include ($config['chemin_vues']."_entete.html");

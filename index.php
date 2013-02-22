@@ -9,9 +9,9 @@ Les variables sont passées dans l'objet $modele->...
 *******************************************************************************/
 
 require_once ('modeles/config.php');
-require_once ($config['chemin_modeles']."fonctions_nouvelles.php");
-require_once ($config['chemin_modeles']."fonctions_polygones.php");
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_nouvelles.php");
+require_once ("fonctions_polygones.php");
+require_once ("fonctions_autoconnexion.php");
 
 $modele = new stdClass();
 $modele->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';

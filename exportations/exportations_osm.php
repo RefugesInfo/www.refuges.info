@@ -8,8 +8,8 @@ Openlayers est (sera) basé en partie sur cette adresse
 **********************************************************************************************/
 
 require_once ("../modeles/config.php");
-require_once ($config['chemin_modeles']."fonctions_exportations.php");
-require_once ($config['chemin_modeles']."fonctions_osm.php");
+require_once ("fonctions_exportations.php");
+require_once ("fonctions_osm.php");
 
 $config['nom_fichier_export']="sans-espece-d-importance";
 // MODIF DOMINIQUE : utilisé par OpenLayers
