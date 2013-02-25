@@ -39,14 +39,14 @@ $modele->quoi = $_GET ['quoi']
 $conditions = new stdclass();
 $conditions->limite=5;
 $conditions->avec_photo=True;
+$conditions->avec_infos_point=True;
 $commentaires=infos_commentaires($conditions);
 
 foreach ( $commentaires as $commentaire )
 {
-  $point=infos_point($commentaire->id_point); // FIXME il faudrait vraiment que la fonction infos_commentaires puisse renvoyer des infos du point, sinon c'est moultes requêtes en trop
   $vignette = new stdClass();
-  $vignette->lien=lien_point_fast($point,true)."#C$commentaire->id_commentaire";
-  $vignette->titre=$point->nom;
+  $vignette->lien=lien_point_fast($commentaire,true)."#C$commentaire->id_commentaire";
+  $vignette->titre=$commentaire->nom;
   $vignette->lien_photo=$commentaire->lien_photo['vignette'];
   $modele->vignettes[]=$vignette;
 }

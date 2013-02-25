@@ -59,6 +59,10 @@ function affiche_news($nombre,$type,$rss=FALSE)
  global $config,$pdo;
  // tableau de tableau contiendra toutes les news toutes catégories confondues
  $news_array = array() ;
+ if ($rss)
+   $lien_absolu=True;
+ else
+   $lien_absolu=False;
 
  $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
  while ($tok) // vrai tant qu'il reste une categorie a rajouter
@@ -69,14 +73,13 @@ function affiche_news($nombre,$type,$rss=FALSE)
     $type_news="nouveau_commentaire";
     $conditions_commentaires = new stdclass();
     $conditions_commentaires->limite=$nombre;
+    $conditions_commentaires->avec_infos_point=True;
     $commentaires=infos_commentaires($conditions_commentaires);
     foreach ( $commentaires as $commentaire )
     {
-      //FIXME là, il faudrait éviter, dans une boucle de faire ces appels à infos_point pour + de perfs
-      $point=infos_point($commentaire->id_point);
       $categorie="Commentaire";
-      $lien=lien_point_fast($point)."#C$commentaire->id_commentaire";
-      $titre=$point->nom;
+      $lien=lien_point_fast($commentaire,$lien_absolu)."#C$commentaire->id_commentaire";
+      $titre=$commentaire->nom;
       $texte="<i>$categorie </i>";
       if ($commentaire->photo_existe)
 	$texte.="+<img src=\"/images/icones/photo.png\" alt=\"commentaire avec photo\" /> ";
@@ -85,16 +88,16 @@ function affiche_news($nombre,$type,$rss=FALSE)
       
       // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
       // la ya un massif
-      if ($point->id_massif != $config['numero_massif_fictif'])
+      if (isset($commentaire->id_polygone))
       {
 	// Cosmétique, on ne place pas d'espace après un l'
-	if ($point->article_partitif_massif=="de l'")
+	if ($commentaire->article_partitif=="de l'")
 	  $espace="";
 	else
 	  $espace=" ";
 	
-	$lien_massif="dans <a href=\"".lien_polygone($point->nom_massif,$point->id_massif,"massif")."\">le massif
-	".$point->article_partitif_massif.$espace.$point->nom_massif."</a>";
+	$lien_massif="dans <a href=\"".lien_polygone($commentaire->nom_massif,$commentaire->id_polygone,"massif")."\">le massif
+	".$commentaire->article_partitif.$espace.$commentaire->nom_massif."</a>";
       }
       else   // la ya pas de massif
 	$lien_massif="";
@@ -114,12 +117,11 @@ function affiche_news($nombre,$type,$rss=FALSE)
       $conditions->limite=$nombre;
       $conditions->avec_infos_massif=1;
       $liste_points=liste_points($conditions);
-      //print_r($liste_points);
       if (isset($liste_points))
 	foreach($liste_points->points as $point)
 	{
 	  $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
-	  $lien=lien_point_fast($point);
+	  $lien=lien_point_fast($point,$lien_absolu);
 	  $titre=$point->nom;
 	  
 	  // si le point n'appartient à aucun massif, pas de lien vers le massif

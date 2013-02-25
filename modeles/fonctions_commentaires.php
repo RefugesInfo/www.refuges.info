@@ -230,6 +230,7 @@ $conditions->ids_auteurs -> pour récupérer les commentaires dont l'auteur est 
 $conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non authentifiés
 $conditions->texte -> condition sur le contenu du commentaire
 $conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
+$conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
 
 Renvoi un tableau contenant des objets commentaires sous cette forme :
 stdClass Object
@@ -287,10 +288,22 @@ function infos_commentaires ($conditions)
   if ($conditions->ids_auteurs!="")
     $conditions_sql.=" AND id_point in ($conditions->ids_auteurs)";
 
-  $query="SELECT *,extract('epoch' from commentaires.date) as ts_unix_commentaire,extract('epoch' from commentaires.date_photo) as ts_unix_photo
-           FROM commentaires
+  // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
+  // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
+  if ($conditions->avec_infos_point)
+  {
+    $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
+
+    $condition_en_plus=" AND points.id_point=commentaires.id_point 
+			 AND points_gps.id_point_gps=points.id_point_gps
+			 AND point_type.id_point_type=points.id_point_type";
+    $champ_en_plus=",nom,points.id_point,nom_type,nom_polygone as nom_massif,article_partitif";
+  }
+
+  $query="SELECT *,extract('epoch' from commentaires.date) as ts_unix_commentaire,extract('epoch' from commentaires.date_photo) as ts_unix_photo$champ_en_plus
+           FROM commentaires$table_en_plus
            WHERE 1=1
-             $conditions_sql
+             $conditions_sql$condition_en_plus
            ORDER BY commentaires.date DESC
            $limite";
   
