@@ -10,8 +10,10 @@ $config['mot_de_passe_pgsql']="pass";
 $config['serveur_pgsql']="localhost";
 $config['base_pgsql']="refuges";
 
-// Possible de l'activer pour les zones de développement
-//ini_set('error_reporting', E_ALL ^ E_NOTICE);
-
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 //$config['debug']=true;
+
+// Possible de l'activer pour les zones de développement, actif des que le debug l'est
+if ($config['debug'])
+  ini_set('error_reporting', E_ALL ^ E_NOTICE);
+
