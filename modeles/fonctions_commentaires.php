@@ -68,7 +68,7 @@ function modification_ajout_commentaire($commentaire)
   $photo_valide=False;
   $point=infos_point($commentaire->id_point);
   if ($point==-1)
-    return erreur("Le commentaire ne correspond à aucun point du site");
+    return erreur("Le commentaire ne correspond à aucun point du site","Id : \"$commentaire->id_point\" donné");
   // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
   // On dirait que le commentaire dispose bien d'une photo
   if (isset($commentaire->photo['originale']))
@@ -152,7 +152,7 @@ function modification_ajout_commentaire($commentaire)
       $query_finale="INSERT INTO commentaires $query_insert_ajout";
     
     if ($pdo->exec($query_finale) === FALSE)
-		return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré");
+		return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
 	else
 		$commentaire->id_commentaire = $pdo->lastInsertId('commentaires_id_commentaire_seq'); // FIXME POSTGRESQL normalement c la bonne syntax compatible les 2 SGBD
 
@@ -362,8 +362,9 @@ function suppression_commentaire($commentaire)
 	
 	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire LIMIT 1";
 	$success = $pdo->exec($query_delete);
+	
 	if (!$success)
-		return erreur("Suppression d'un commentaire inexistant: $query_delete");
+		return erreur("Suppression d'un commentaire inexistant",$query_delete);
 	else
 		return ok("Commentaire supprimé");
 		
@@ -404,7 +405,8 @@ function transfert_forum($commentaire)
     post_time=$commentaire->date_unixtimestamp ,
     post_username=".$pdo->quote($commentaire->auteur);
   
-  $pdo->exec($query_insert_post);
+  if (!$pdo->exec($query_insert_post))
+    return erreur("Transfert vers le forum échoué",$query_insert_post);
   $postid = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL ca devrait etre bon en PG mais mefiance...
   
   // ensuite entrer le texte du post

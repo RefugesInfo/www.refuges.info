@@ -10,6 +10,7 @@ require_once ("fonctions_points.php");
 require_once ("fonctions_mode_emploi.php");
 
 $modele = new stdClass();
+$commentaire = new stdClass();
 setlocale(LC_TIME, "fr_FR");
 $commentaire->id_point=$_GET['id_point'];
 $point=infos_point($commentaire->id_point);
@@ -64,7 +65,7 @@ if ($point!=-1)
   
   $quel_point="$point->article_defini $point->nom_type : $point->nom";
   $modele->titre="Ajout d'un commentaire sur $quel_point";
-  $modele->lien_point=lien_point_lent($id_point);
+  $modele->lien_point=lien_point_fast($point);
   $modele->lien_texte_retour="Retour à $quel_point";
   $modele->point_existe=True;
   $modele->commentaire=$commentaire;
