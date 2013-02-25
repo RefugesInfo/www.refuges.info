@@ -71,19 +71,18 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
     $conditions_commentaires->limite=$nombre;
     $commentaires=infos_commentaires($conditions_commentaires);
 
-    foreach ( $commentaires as $news )
+    foreach ( $commentaires as $commentaire )
     {
-      //résultat de mon commentaire d'avant, ici, on fait chauffer le CPU !
       //FIXME là, il faudrait éviter, dans une boucle de faire ces appels à infos_point pour + de perfs
-      $point=infos_point($news->id_point);
+      $point=infos_point($commentaire->id_point);
       $categorie="Commentaire";
-      $lien=lien_point_fast($point)."#C$news->id_commentaire";
-      $titre=$news->nom;
+      $lien=lien_point_fast($point)."#C$commentaire->id_commentaire";
+      $titre=$point->nom;
       $texte="<i>$categorie </i>";
-      if ($news->photo_existe)
+      if ($commentaire->photo_existe)
 	$texte.="+<img src=\"/images/icones/photo.png\" alt=\"commentaire avec photo\" /> ";
-      if ($news->auteur!="")
-	$texte.="de $news->auteur ";
+      if ($commentaire->auteur!="")
+	$texte.="de $commentaire->auteur ";
       
       // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
       // la ya un massif
@@ -101,12 +100,11 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
       else   // la ya pas de massif
 	$lien_massif="";
       
-      $texte.="sur <a href=\"$lien\">
-      $titre</a> 
+      $texte.="sur <a href=\"$lien\">$titre</a> 
       $lien_massif";
-      $news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
-			    "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
-			    "vignette"=>$config['rep_web_photos_points'].$news->id_commentaire."-vignette.jpeg",
+      $news_array[] = array($commentaire->ts_unix_commentaire,"texte"=>$texte,
+			    "date"=>$commentaire->ts_unix_commentaire,"categorie"=>$categorie,
+			    "vignette"=>$config['rep_web_photos_points'].$commentaire->id_commentaire."-vignette.jpeg",
 			    "titre"=>$titre,"lien"=>$lien); 
     }	
     break;
