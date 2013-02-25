@@ -18,6 +18,7 @@ $modele->titre = 'Carte et informations sur les refuges, cabanes et abris de mon
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
 
+
 // on passe en param un string a peu pres utilisable
 // et ce sont des zones qu'on veut pas des massifs
 $modele->massifs = liste_autres_zones ( urldecode($_GET['zone']) );
@@ -33,6 +34,22 @@ $modele->general = $general;
 $modele->quoi = $_GET ['quoi']
 			  ? $_GET ['quoi']
 			  : 'commentaires,points,forums';
+			  
+// Liste des photos récentes
+$conditions = new stdclass();
+$conditions->limite=5;
+$conditions->avec_photo=True;
+$commentaires=infos_commentaires($conditions);
+
+foreach ( $commentaires as $commentaire )
+{
+  $point=infos_point($commentaire->id_point); // FIXME il faudrait vraiment que la fonction infos_commentaires puisse renvoyer des infos du point, sinon c'est moultes requêtes en trop
+  $vignette = new stdClass();
+  $vignette->lien=lien_point_fast($point,true)."#C$commentaire->id_commentaire";
+  $vignette->titre=$point->nom;
+  $vignette->lien_photo=$commentaire->lien_photo['vignette'];
+  $modele->vignettes[]=$vignette;
+}
 
 // On affiche le tout
 $modele->type = 'index';

@@ -24,10 +24,13 @@ Lien plus simple à utiliser maintenant ! sur la base
 de l'objet point "habituel" et plus rapide que celui du dessous
 car requête de moins
 *************************************************************/
-function lien_point_fast($point)
+function lien_point_fast($point,$local=false)
 {
- // jmb: j'essaie de virer les reference au nom pour que ca reste dynamique
- return "http://".$_SERVER["HTTP_HOST"]."/point/$point->id_point/".replace_url($point->nom_type)."/".replace_url($point->nom_massif)."/".replace_url($point->nom)."/";
+  if ($local)
+    $url_complete="";
+  else
+    $url_complete="http://".$_SERVER["HTTP_HOST"];
+  return "$url_complete/point/$point->id_point/".replace_url($point->nom_type)."/".replace_url($point->nom_massif)."/".replace_url($point->nom)."/";
 }
 
 /****************************************
@@ -38,8 +41,8 @@ pour des longues listes ( car requete SQL oblige )
 function lien_point_lent($id_point)
 {
   $point=infos_point($id_point);
-  if ($point==-1)
-    return -1;
+  if ($point->erreur)
+    return erreur($point->message);
   return (lien_point_fast($point));
 }
 
@@ -193,7 +196,6 @@ return $html_construct;
 // Récupère le dernier post sur un forum d'un point
 // JMB : je rajoute les first et last topic, apparement, si egaux, alors le topicest vide
 // on affiche les commentaires+photos en plus
-//PDO jmb transform en PDO
 function infos_point_forum ($id) 
 {
 	global $pdo;
@@ -211,19 +213,7 @@ function infos_point_forum ($id)
 	$result->lienforum = $config['forum_refuge'].$result->topic_id;
 	
 	return $result;
-	
-/*	
-  global $config,$pdo;
-  $r = sql_infos ("
-  SELECT *
-  FROM phpbb_posts_text, phpbb_topics, phpbb_posts
-  WHERE phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id 
-  AND phpbb_topics.topic_id_point = $id
-  AND phpbb_posts.post_id = phpbb_posts_text.post_id
-  ");
-  $r[0]->lienforum = $config['forum_refuge'].$r[0]->topic_id;
-  return $r[0];
-  */
+
 }	
 
 /*****************************************************
@@ -250,7 +240,7 @@ function infos_point($id_point)
   global $config,$pdo;
   $conditions = new stdClass();
   if (!is_numeric($id_point))
-    return erreur("id du point demandé mal formé");
+    return erreur("id du point demandé mal formé","id du point demandé : $id_point");
   $conditions->liste_id_point=$id_point;
   $conditions->modele=-1;
 
@@ -260,7 +250,7 @@ function infos_point($id_point)
   if ($liste_un_seul_point->erreur)
     return erreur($liste_un_seul_point->message);
   if ($liste_un_seul_point->nombre_points==0)
-    return erreur("Le point demandé est introuvable dans notre base"); // il n'existe vraiment pas
+    return erreur("Le point demandé est introuvable dans notre base","id du point demandé : $id_point".var_export($liste_un_seul_point,true));
   if ($liste_un_seul_point->nombre_points>1)
     return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
     
@@ -295,7 +285,7 @@ function infos_point($id_point)
 	$point->id_massif=$polygones_du_point->id_polygone;
 	$point->article_partitif_massif=$polygones_du_point->article_partitif;
       }
-    } while ( $polygones_du_point = $res->fetch() ) ;    // on bosse
+    } while ( $polygones_du_point = $res->fetch() ) ;
     return $point;
 }
 

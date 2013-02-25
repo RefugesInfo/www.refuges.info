@@ -32,7 +32,7 @@
 		<div class="carte" id="accueil"></div>
 		<h5>Et encore...</h5>
 		<ul class="basdepage">
-			<?foreach ($modele->massifs AS $nom => $lien) {?>
+			<?php if (isset($modele->massifs)) foreach ($modele->massifs AS $nom => $lien) {?>
 				<li>
 					<a href="<?=$lien?>"><?=$nom?></a>
 				</li>
@@ -45,7 +45,14 @@
 		<h4><?=$modele->stat->nbphotos?> photos</h4>
 		<br/>
 		<ul>
-			<?php affiche_news (5+$modele->commentaires,'commentaires',false,true);?>
+			<?php if (isset($modele->vignettes)) 
+				foreach ($modele->vignettes as $vignette) {?>
+			<li>
+				<a href="<?=$vignette->lien?>" title="<?=$vignette->titre?>">
+					<img alt="photo" src="<?=$vignette->lien_photo?>" />
+				</a>
+			</li>
+			<?php } ?>
 		</ul>
 	</div>
 

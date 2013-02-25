@@ -54,7 +54,7 @@ FIXME: la prochaine étape est de ne générer aucun HTML ici, mais transmettre 
 un tableau contenant les informations sly 20/12/2011
 ***************************************/
 
-function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
+function affiche_news($nombre,$type,$rss=FALSE)
 {
  global $config,$pdo;
  // tableau de tableau contiendra toutes les news toutes catégories confondues
@@ -70,7 +70,6 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
     $conditions_commentaires = new stdclass();
     $conditions_commentaires->limite=$nombre;
     $commentaires=infos_commentaires($conditions_commentaires);
-
     foreach ( $commentaires as $commentaire )
     {
       //FIXME là, il faudrait éviter, dans une boucle de faire ces appels à infos_point pour + de perfs
@@ -104,7 +103,6 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
       $lien_massif";
       $news_array[] = array($commentaire->ts_unix_commentaire,"texte"=>$texte,
 			    "date"=>$commentaire->ts_unix_commentaire,"categorie"=>$categorie,
-			    "vignette"=>$config['rep_web_photos_points'].$commentaire->id_commentaire."-vignette.jpeg",
 			    "titre"=>$titre,"lien"=>$lien); 
     }	
     break;
@@ -144,7 +142,6 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 	  $lien_massif";
 	  $news_array[] = array($point->date_insertion,"texte"=>$texte,
 				"date"=>$point->date_insertion,"categorie"=>$categorie,
-				"vignette"=>"",
 				"titre"=>$titre,"lien"=>$lien); 
 	}
 	break;
@@ -163,44 +160,28 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 	$lien="/news.php";
 	$news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
 	  "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
-	  "vignette"=>"",
 	  "titre"=>$titre,"lien"=>$lien); 
       }	
     break;
   
     case "forums":
 	$type_news="nouveau_message_forum";
-// Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
-//AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
-// réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
-    $query_news=
-		"SELECT
-			max(phpbb_posts.post_time) AS date,
-			phpbb_posts.topic_id,
-			phpbb_topics.topic_title,
-			max(phpbb_posts_text.post_id) AS post_id
-		FROM phpbb_posts_text, phpbb_topics, phpbb_posts
-    		WHERE
-    		phpbb_posts_text.post_text!=''
-		AND phpbb_topics.topic_id = phpbb_posts.topic_id
-		AND phpbb_posts_text.post_id = phpbb_posts.post_id
-		AND phpbb_topics.forum_id not in ($config[id_forum_moderateur],$config[id_forum_developpement])
-		GROUP BY phpbb_posts.topic_id,phpbb_topics.topic_title
-		ORDER BY date DESC
-		LIMIT $nombre";
+	$conditions_messages_forum = new stdclass();
+	$conditions_messages_forum->limite=$nombre;
+	$conditions_messages_forum->sauf_ids_forum=$config['id_forum_moderateur'].",".$config['id_forum_developpement'];
+        $conditions_messages_forum->ordre="ORDER BY date DESC";
 
-    $res = $pdo->query($query_news);
-    while ( $news = $res->fetch() )
-    {
-      $lien="/forum/viewtopic.php?p=$news->post_id#$news->post_id";
-      $categorie="Sur le forum";
-      $titre=$news->topic_title;
-      $texte="$categorie : <a href=\"$lien\">$titre</a>";
-      $news_array[] = array($news->date,"texte"=>$texte,
-        "date"=>$news->date,"categorie"=>$categorie,
-        "vignette"=>"",
-        "titre"=>$titre,"lien"=>$lien); 
-    }
+        $commentaires_forum=messages_du_forum($conditions_messages_forum);
+        foreach ( $commentaires_forum as $commentaire_forum)
+        {
+          $lien="/forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+          $categorie="Sur le forum";
+          $titre=$commentaire_forum->topic_title;
+          $texte="$categorie : <a href=\"$lien\">$titre</a>";
+          $news_array[] = array($commentaire_forum->date,"texte"=>$texte,
+            "date"=>$commentaire_forum->date,"categorie"=>$categorie,
+            "titre"=>$titre,"lien"=>$lien); 
+        }
     break;
 
     default:
@@ -211,7 +192,6 @@ function affiche_news($nombre,$type,$rss=FALSE,$vignette=FALSE)
 
 $tok = strtok(","); 
 }
-
 // ici je trie par ordre décroissant toutes les news confondues
 rsort($news_array);
 
@@ -220,15 +200,8 @@ rsort($news_array);
 if (!$rss)
 {
   for ($i = 0; $i < $nombre; $i++)
-    if ($vignette) {
-      print("\n<li><a href=\"".$news_array[$i]['lien']."\" title=\"".$news_array[$i]['titre']."\"><img alt=\"photo\" src=\"".$news_array[$i]['vignette']."\" /></a></li>");
-    }
-    else
-    { // évidement pas de miracles, avant on préparait le format plus haut maintenant c'est ici !
-    print("\n<li><em>".date("d/m/y", $news_array[$i]['date'])."</em>&nbsp;");
-  print($news_array[$i]['texte']."</li>");
+    print("\n<li><em>".date("d/m/y", $news_array[$i]['date'])."</em>&nbsp;".$news_array[$i]['texte']."</li>");
   
-}
 // et le reste du tableau ben il sert a rien...
 return 0;
 }

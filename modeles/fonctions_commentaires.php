@@ -10,34 +10,6 @@ require_once ('fonctions_bdd.php');
 require_once ('fonctions_gestion_erreurs.php');
 require_once ('fonctions_points.php');
 
-
-/* 
-Cette fonctions renvoi un objet avec les infos d'un commentaire et une liste des photos qui lui correspondent
-si photo il y a + un timestampunix de sa date, format :
-stdClass Object
-(
-    [id_commentaire] => 16357
-    [date] => 2012-11-24 06:23:51
-    [id_point] => 1
-    [texte] => coucou
-    [auteur] => moi
-    [photo_existe] => 1
-    [date_photo] => 2012-11-28
-    [demande_correction] => 1
-    [qualite_supposee] => 0
-    [id_createur] => 3
-    [date_unixtimestamp] => 1353734631
-    [photo] => Array
-        (
-            [reduite] => /home/sites/www.refuges.info/photos_points/16357.jpeg
-            [vignette] => /home/sites/www.refuges.info/photos_points/16357-vignette.jpeg
-            [originale] => /home/sites/www.refuges.info/photos_points/16357-originale.jpeg
-        )
-
-)
-*/
-
-
 /************
 Cette fonction peut sembler bourrine, mais c'est assez pratique à utiliser :
 On lui passe un objet "commentaire" et soit elle le créer s'il ne dispose pas d'id_commentaire
@@ -258,11 +230,43 @@ $conditions->ids_auteurs -> pour récupérer les commentaires dont l'auteur est 
 $conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non authentifiés
 $conditions->texte -> condition sur le contenu du commentaire
 $conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
+
+Renvoi un tableau contenant des objets commentaires sous cette forme :
+stdClass Object
+(
+    [id_commentaire] => 16693
+    [date] => 2013-02-11 17:19:50
+    [id_point] => 3445
+    [texte] => Une autre vue de la cabane.
+blabla
+    [auteur] => cassandre
+    [photo_existe] => 1
+    [date_photo] => 2011-11-12
+    [demande_correction] => 0
+    [qualite_supposee] => 0
+    [id_createur] => 496
+    [ts_unix_commentaire] => 1360599590
+    [ts_unix_photo] => 1321052400
+    [photo] => Array
+        (
+            [reduite] => /home/users/sly/www.refuges.info//photos_points/16693.jpeg
+            [vignette] => /home/users/sly/www.refuges.info//photos_points/16693-vignette.jpeg
+            [originale] => /home/users/sly/www.refuges.info//photos_points/16693-originale.jpeg
+        )
+
+    [lien_photo] => Array
+        (
+            [reduite] => /photos_points/16693.jpeg
+            [vignette] => /photos_points/16693-vignette.jpeg
+            [originale] => /photos_points/16693-originale.jpeg
+        )
+
+)
 **********************************************************************************************/
 
 function infos_commentaires ($conditions)
 {
-  global $pdo;
+  global $pdo,$config;
   $conditions_sql="";
   
   // conditions de limite
@@ -295,6 +299,23 @@ function infos_commentaires ($conditions)
 
   while ($commentaire = $res->fetch())
   {
+    if ($commentaire->photo_existe)
+    {
+    	// Remplissage de l'objet avec les photos disponibles pour ce commentaire, s'il y en a et si elle existe sur le disque
+    	// Le problème venant du fait que tous les commentaires n'ont pas eu leur vignette de créée, et pas tous on une photo à la taille d'origine (historique wri)
+	foreach (array("reduite", "vignette", "originale") as $taille)
+	{
+	  if ($taille=="reduite")
+	    $nom_fichier=$commentaire->id_commentaire.".jpeg";
+	  else
+	    $nom_fichier=$commentaire->id_commentaire."-$taille.jpeg";
+	  if (is_file($config['rep_photos_points'].$nom_fichier))
+	  {
+	    $commentaire->photo[$taille]=$config['rep_photos_points'].$nom_fichier;
+	    $commentaire->lien_photo[$taille]=$config['rep_web_photos_points'].$nom_fichier;
+	  }
+	}
+    }
     $r [] = $commentaire;
   }
   
@@ -447,5 +468,44 @@ function transfert_forum($commentaire)
     else
       return ok("Message transféré sur le forum");
 
+}
+/************************************************************************
+Derniers messages du forum
+$conditions->limite : nombre maximum de messages retournés
+$conditions->ordre : exempple "ORDER BY date DESC"
+$conditions->ids_forum : (5 ou 4,7,8)
+$conditions->sauf_ids_forum : (5 ou 4,7,8)
+************************************************************************/
+function messages_du_forum($conditions)
+{
+  global $pdo;
+  if (isset($conditions->ids_forum))
+    $quels_ids="AND phpbb_topics.forum_id in ($conditions->ids_forum)";
+  if (isset($conditions->sauf_ids_forum))
+    $quels_ids="AND phpbb_topics.forum_id not in ($conditions->sauf_ids_forum)";
+    
+    // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
+    //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
+    // réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
+    $query_messages_du_forum=
+		"SELECT
+			max(phpbb_posts.post_time) AS date,
+			phpbb_posts.topic_id,
+			phpbb_topics.topic_title,
+			max(phpbb_posts_text.post_id) AS post_id
+		FROM phpbb_posts_text, phpbb_topics, phpbb_posts
+    		WHERE
+    		phpbb_posts_text.post_text!=''
+		AND phpbb_topics.topic_id = phpbb_posts.topic_id
+		AND phpbb_posts_text.post_id = phpbb_posts.post_id
+		$quels_ids
+		GROUP BY phpbb_posts.topic_id,phpbb_topics.topic_title
+		$conditions->ordre
+		LIMIT $conditions->limite";
+
+    if (! ($res=$pdo->query($query_messages_du_forum)))
+    	return erreur("Impossible d'obtenir les derniers messages du forum".$query_messages_du_forum);
+    else
+      return $res->fetch();
 }
 ?>
