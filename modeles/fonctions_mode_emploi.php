@@ -3,6 +3,8 @@
 Fonctions liées au mode d'emploi du site
 Accés aux données : entrées / sorties / modifications des textes
 fonction qui va chercher le texte du fichier correspondant à la page 
+FIXME : c'était une mauvaise idée de passer par des fichiers : les datas texte c'est 
+FIXME : très bien dans la base de donnée, à convertir dès qu'un peu de temps
 ********************************************************************/
 
 require_once ('config.php');

@@ -1,28 +1,9 @@
 <?php
-//**********************************************************************************************
-//* Nom du module:         | formulaire_exportations.php                                       *
-//* Date :                 |                                                                   *
-//* Créateur :             |                                                                   *
-//* Rôle du module :       | Préparer un lien d'exportation direct de nos données              *
-//*                        | vers plein de formats pour être ré-utiliser                       *
-//*                        | Le traitement proprement dit est dans exportations.php            *
-//*                        | voir aussi le fichier exportations.php                          *
-//*------------------------|-------------------------------------------------------------------*
-//* Modifications(date Nom)| Elements modifiés, ajoutés ou supprimés                           *
-//*------------------------|-------------------------------------------------------------------*
-//* 12/01/06  tivencent    | Module de création du formulaire en vue de l'exportation          * 
-//*                        | vers GoogleEarth appel vers le module "export_google.php"ncent    *
-//* 05/11/07 sly           | première version, en reprenant le code de tivincent               *
-//*                        |                                                                   *
-//* 17/11/07 jmb 		| ajout des balises <label>, pour un cochage + facile *
-//*				| remplacement de '-' par ',' dans l'URL pour un decodage SQL plus direct, valide RFC *
-//* 23/02/08 jmb     | passage en fieldset/legend, en list, en button et en cosmetiques divers. ca se vera plus qd on changera de CSS
-//* 				| également des modifs pour XHTML strict
-//*				| rajout d'un morceau BoundaryBox qd on vient du navigateur
-//* 03/2008	jmb	Décoration, H4/H5 au lieu de H2 et <abbr>
-// 31/05/2012: Dominique: appel des entete & pied du répertoire template
-//**********************************************************************************************
-
+/**********************************************************************************************
+Préparer un lien d'exportation direct de nos données vers plein de formats pour être 
+ré-utiliser.
+Le traitement proprement dit est dans exportations.php 
+**********************************************************************************************/
 
 require_once ("../modeles/config.php");
 require_once ("fonctions_mode_emploi.php");
@@ -30,6 +11,7 @@ require_once ("fonctions_bdd.php");
 require_once ("fonctions_exportations.php");
 require_once ("fonctions_autoconnexion.php");
 
+$modele = new stdclass;
 $formats="";
 foreach ($config['formats_exportation'] as $formats_possibles)
   if ($formats_possibles['interne']==false)
