@@ -225,6 +225,7 @@
 		</dl>
 	</div>
 <!--============================ POST LE PLUS RÉCENT DU FORUM D'UN POINT ===========================-->
+	<?php if (isset($modele->forum)) { ?>
 	<p>
 		<em>
 			Pour les discussions, les questions et les avis on vous conseille d'utiliser
@@ -253,7 +254,7 @@
 	<?}else{?>
 		<p>Le forum est vide, n'hésitez pas à y laisser le premier message!</p>
 	<?}?>
-		
+	<?php } ?>
 <!--========================================= COMMENTAIRES =========================================-->
 	<h5>Commentaires</h5>
 		<?php

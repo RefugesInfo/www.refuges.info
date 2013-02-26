@@ -143,7 +143,7 @@ return $annonce_fermeture;
 // Récupère le dernier post sur un forum d'un point
 // JMB : je rajoute les first et last topic, apparement, si egaux, alors le topicest vide
 // on affiche les commentaires+photos en plus
-function infos_point_forum ($id) 
+function infos_point_forum ($point) 
 {
   global $pdo,$config;
   // faudra voir si ca vaudra le coup d'en faire une PDO prepared.
@@ -152,7 +152,7 @@ function infos_point_forum ($id)
        WHERE 
          phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id 
        AND 
-         phpbb_topics.topic_id_point = $id
+         phpbb_topics.topic_id_point = $point->id_point
        AND 
          phpbb_posts.post_id = phpbb_posts_text.post_id
        LIMIT 1";
@@ -164,7 +164,8 @@ function infos_point_forum ($id)
   if (isset($result->topic_id))
     $result->lienforum=$config['forum_refuge'].$result->topic_id;
   else
-    return erreur("Le forum du point $id ne semble pas exister","$q n'a retourné aucun enregistrement");
+    if ($point->modele!=1) // Si c'est un modèle de point, il n'a pas de forum
+      return erreur("Le forum du point \"$point->nom\" (id=$point->id_point) ne semble pas exister","$q n'a retourné aucun enregistrement");
   
   return $result;
 
@@ -508,18 +509,18 @@ function modification_ajout_point($point)
   global $config,$pdo;
   // désolé, le nom du point ne peut être vide
   if (trim($point->nom)=="")
-    return "erreur_nom";
+    return erreur("En ajout comme en modification, le nom du point ne peut être vide");
   
   // désolé, les coordonnées ne peuvent être vide ou non numérique
   if ($point->latitude=="" or $point->latitude=="")
-    return "erreur_latitude_vide";
+    return erreur("En ajout comme en modification, ni la latitude ni la longitude ne peuvent être vides");
   if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
-    return "erreur_latitude_non_numerique";
+    return erreur("En ajout comme en modification, la latitude et la longitude doivent utiliser un format valide");
   if ($point->id_point!="")  // update
   {
     $infos_point_avant = infos_point($point->id_point);
-    if ($infos_point_avant==-1) // oulla on nous demande une modif mais il n'existe pas
-      return "erreur_point_inexistant";
+    if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
+      return erreur("Erreur de modification du point : $infos_point_avant->message");
     
     if ($point->id_point_gps=="")
       $point->id_point_gps=$infos_point_avant->id_point_gps;
@@ -560,15 +561,15 @@ function modification_ajout_point($point)
     if (!$pdo->exec($query_finale))
       return erreur("Requête en erreur, impossible à executer : $query_finale");
     
-    if ($point->id_point=="") 
-    {	// donc c etait un ajout
-    $point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
-    
-    /********* la création ou mise à jour du forum point *************/
-    forum_point_ajout($point);
-}
-else
-  forum_mise_a_jour_nom($point);
+    if ($point->id_point=="")  // donc c etait un ajout
+    {	
+      $point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
+      
+      /********* la création du forum point *************/
+      forum_point_ajout($point);
+    }
+    else
+      forum_mise_a_jour_nom($point); // La mise à jour du nom du forum
   
   // on retoure l'id du point (surtout utile si création)
   return $point->id_point;
@@ -657,7 +658,7 @@ function forum_mise_a_jour_nom($point)
   $nom=$pdo->quote(ucfirst($point->nom));
   
   $query="UPDATE phpbb_topics
-  SET topic_title=$point->nom
+  SET topic_title=".$pdo->quote($point->nom)."
   WHERE topic_id_point=$point->id_point";
   $pdo->exec($query);
 }

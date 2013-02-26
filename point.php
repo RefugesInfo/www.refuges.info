@@ -35,7 +35,8 @@ else
   $modele->description            = "fiche d'information sur : $modele->nom_debut_majuscule, $modele->nom_type, altitude $modele->altitude avec commentaires et photos";
   $modele->type                   = 'point'; // Le template
   $modele->localisation           = localisation ($modele->polygones);
-  $modele->forum                  = infos_point_forum ($id_point);
+  if ($modele->modele!=1)
+    $modele->forum                  = infos_point_forum ($modele);
   $conditions_commentaires = new stdClass();
   $conditions_commentaires->ids_points = $id_point;
   $tous_commentaires              = infos_commentaires ($conditions_commentaires);
@@ -55,17 +56,18 @@ else
   
   /***********  détermination si le point se situe dans un polygone pour lequel un message est à faire passer *******/
   // L'utilisation principal est le message de réglementation de la réserve naturelle
-  foreach ($modele->polygones as $polygone)
-  {
-    if ($polygone->message_information_polygone!="")
+  if (count($modele->polygones))
+    foreach ($modele->polygones as $polygone)
     {
-      $texte_a_remplacer=array("##type_point##","##nom_polygone##","##article_partitif##");
-      $nom_type_point="$modele->article_demonstratif ".strtolower($modele->nom_type);
-      $texte_de_remplacement=array($nom_type_point,$polygone->nom_polygone,$polygone->article_partitif);
-      $modele->message_information_polygone=bbcode2html(ucfirst(str_replace($texte_a_remplacer,$texte_de_remplacement,$polygone->message_information_polygone)));
+      if ($polygone->message_information_polygone!="")
+      {
+	$texte_a_remplacer=array("##type_point##","##nom_polygone##","##article_partitif##");
+	$nom_type_point="$modele->article_demonstratif ".strtolower($modele->nom_type);
+	$texte_de_remplacement=array($nom_type_point,$polygone->nom_polygone,$polygone->article_partitif);
+	$modele->message_information_polygone=bbcode2html(ucfirst(str_replace($texte_a_remplacer,$texte_de_remplacement,$polygone->message_information_polygone)));
+      }
     }
-  }
-
+    
 /*********** Détermination de la carte à afficher ***/
 if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses']) { // Si les coordonnées du point sont fausse, pas besoin de carte
   $modele->mini_carte=TRUE;

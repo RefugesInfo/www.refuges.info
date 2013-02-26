@@ -55,7 +55,7 @@ foreach ($commentaires_attente_correction as $commentaire_attente_correction)
   $cause="apporte peut-être de l'information";
   elseif ($commentaire_attente_correction->qualite_supposee<0)
   {
-    $cause="n'a peut-être aucun intérêt selon un internaute (qualité supposée : $commentaires_attente_correction->qualite_supposee)";
+    $cause="n'a peut-être aucun intérêt selon un internaute (qualité supposée : $commentaire_attente_correction->qualite_supposee)";
     if ($premier)
     {
       $premier=FALSE;

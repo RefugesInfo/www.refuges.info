@@ -40,7 +40,7 @@ if ( isset($_REQUEST["id_point"]) )
 	if ($point->erreur) 
 		erreur_on_arrete("<h3>problème : $point->message</h3>");
 
-	$modele->localisation = localisation ($point->polygones);
+	$modele->localisation = localisation ($point->polygones); // FIXME : la fonction localisation n'est pas faite pour ça voyons !
 	$modele->serie = param_cartes ($modele->localisation);
 
 	// il existe, le niveau de droit est-il suffisent ?

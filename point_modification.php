@@ -36,7 +36,8 @@ switch( $_REQUEST["action"] )
     if ($_REQUEST["action"] == 'Ajouter')
     {
       // Etant donné que des robots, ou des peu scrupuleux remplissent avec des faux points, on les vire ici
-      if ( !isset($_SESSION['id_utilisateur']) AND ($_REQUEST['lettre_securite']!="d") ) {
+      if ( !isset($_SESSION['id_utilisateur']) AND ($_REQUEST['lettre_securite']!="d") ) 
+      {
 	$html .= "<h4>! ERREUR ! vous n'avez pas rentré la lettre demandée</h4>";
 	break; // break le switch, au dessus des if
       }
@@ -57,10 +58,8 @@ switch( $_REQUEST["action"] )
       case "erreur_latitude_non_numerique" :
 	$html .= "<p><strong>Les coordonnées rentrées sont incorrecte, si vous rentrez des coordonnées approximatives, essayez de mettre une latitude et longitude approximative</strong></p>"; break;
     }
-    //$ret->id_point = $retour; // id du point modifie/supprime
     $retourid = $retour; // id du point modifie/supprime
     
-    // Blahblah
     $html.="<h4>Merci de votre contribution</h4>
     <h5>le point est ";
     if ( isset($verbe) ) 

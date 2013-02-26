@@ -218,7 +218,7 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
 
 /**********************************************************************************************
 Récupère un ensemble de commentaires en fonction des paramètres passer comme conditions
-$conditions->ids_point -> pour récupérer tous les commentaires d'un point particulier du site
+$conditions->ids_points -> pour récupérer tous les commentaires d'un point particulier du site
 $conditions->ids_commentaires -> pour récupérer les commentaires dont les ids sont au format 45 ou 78,412,4
 $conditions->avec_photo -> pour ne prendre que ceux avec photo : True ou False (par défaut c'est tous)
 $conditions->limite -> pour imposer une limite au cas où
@@ -346,6 +346,7 @@ function infos_commentaire($id_commentaire)
 {
   $conditions = new stdClass;
   $conditions->ids_commentaires=$id_commentaire;
+  $conditions->avec_infos_point=True;
   $c=infos_commentaires ($conditions);
   if ($c->erreur)
     return erreur($c->texte);
