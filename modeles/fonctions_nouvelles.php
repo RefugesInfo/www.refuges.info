@@ -120,9 +120,9 @@ function affiche_news($nombre,$type,$rss=FALSE)
       $conditions->ordre="date_insertion DESC";
       $conditions->limite=$nombre;
       $conditions->avec_infos_massif=1;
-      $liste_points=liste_points($conditions);
-      if (isset($liste_points))
-	foreach($liste_points->points as $point)
+      $points=infos_points($conditions);
+      if (count($points)!=0)
+	foreach($points as $point)
 	{
 	  $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
 	  $lien=lien_point_fast($point,$lien_absolu);

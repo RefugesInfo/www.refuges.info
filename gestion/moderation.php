@@ -69,10 +69,6 @@ switch($_REQUEST['type'])
 	break;
   case "suppression_photo":
 	$retour=suppression_photos($commentaire);
-	log_moderation("suppression de la photo associée au commentaire $commentaire->id_commentaire",
-			"suppression_photo",
-			$commentaire->id_point,
-			$_SESSION["id_moderateur"]);
 	print("<h4>$retour->message</h4>");
   break;
 

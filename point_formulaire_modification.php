@@ -63,12 +63,11 @@ elseif ( isset($_REQUEST["id_point_type"]))
   $conditions = new stdClass;
   $conditions->type_point=$_REQUEST["id_point_type"];
   $conditions->modele=1;
-  $mod=liste_points($conditions);
-  $zero="0";
-  if ($mod->nombre_points!=1)
+  $points_modele=infos_points($conditions);
+  if (count($points_modele)!=1)
     print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
   else
-    $point=$mod->points->$zero;
+    $point=$points_modele[0];
   
   // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
   $point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat

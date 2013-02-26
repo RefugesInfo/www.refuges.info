@@ -515,133 +515,132 @@ sly 30/10/10
 */
 function fichier_exportation($conditions,$format) 
 {
-	  global $config;
-	  $resultat = new stdClass;
-	  
-	  //obtenir le tableau des points, selon les conditions
-	  $liste_points=liste_points($conditions); 
-	  //print_r($liste_points);
-	  //Nombre de point récupéré(s), on va permettre de faire du comsétique avec le bon nom de fichier si un seul
-	  $i=0;
-	  if ($liste_points->nombre_points==1)
-		$resultat->nom_fichier=replace_url($liste_points->points->$i->nom);
-	  else
-		$resultat->nom_fichier=$config['nom_fichier_export'];
-	  
-	  /** selon le type, en créer le bon entête de fichier **/
-	  $contenu=entete_exportation($format);
-	  
-		// Dominique 24/11/12 Dédoublement des points proches
-		//DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6		
-		if ($icones = $_GET ['icones']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
-			$delta_latitude  = ($conditions->latitude_maximum  - $conditions->latitude_minimum ) / $icones;
-			$delta_longitude = ($conditions->longitude_maximum - $conditions->longitude_minimum) / $icones;
-
-			if ($delta_latitude and $delta_longitude and isset($liste_points->points)) // S'il y a un BBOX
-				foreach ($liste_points->points as $a => $p)
-					for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b
-						$dlat = $liste_points->points->$a->latitude  - $liste_points->points->$b->latitude;
-						$dlon = $liste_points->points->$a->longitude - $liste_points->points->$b->longitude;
-						if ($dlat / $delta_latitude * $dlat / $delta_latitude + $dlon / $delta_longitude * $dlon / $delta_longitude < 1) {
-							if ($dlat < 0) // $b a une plus grande latitude
-								$deplacement_latitude = $dlat + $delta_latitude;
-							else // $a a une plus grande latitude
-								$deplacement_latitude = $dlat - $delta_latitude;
-
-							if ($dlon < 0)  // $b a une plus grande longitude
-								$deplacement_longitude = $dlon + $delta_longitude;
-							else // $a a une plus grande longitude
-								$deplacement_longitude = $dlon - $delta_longitude;
-								
-							$liste_points->points->$a->latitude  -= $deplacement_latitude  / 2;
-							$liste_points->points->$b->latitude  += $deplacement_latitude  / 2;
-							$liste_points->points->$a->longitude -= $deplacement_longitude / 3;
-							$liste_points->points->$b->longitude += $deplacement_longitude / 3;
-						}
-					}
-		}
-
-	  $kml_folder="";
-	  
-	//------------------------------------------
-	if ($liste_points->nombre_points>0) // si nous n'avons aucun point dans la recherche, on renvoi un fichier valide, mais sans les points dedans
-	{
-	  foreach ($liste_points->points as $point)
-	  {
-		// Petite bidouille un peu séciale, dans le mode carte, on souhaite changer les icônes de certains point dont les critères justifie une icone différente
-		// sly 12/05/2010
-		// FIXME : On notera un défaut lorsque l'abri est sommaire ET détruit il faudrait une 3ème combinaison d'icône
-		// sly 30/10/10
-		
-		// S'il est sommaire ou qu'il n'a aucune place pour dormir et qu'il a l'icone pour ça
-		if ( ($point->sommaire=='oui') OR ($point->places==0) AND $point->nom_icone_sommaire!='')
-		  $point->nom_icone=$point->nom_icone_sommaire;
-
-		// Si le point est "fermé" ou "détruit" ou "ruines" et qu'il a une icone spéciale "fermée" on la choisie 
-		if ($point->ferme!='non' and $point->ferme!='' AND $point->nom_icone_ferme!='')
-		  $point->nom_icone=$point->nom_icone_ferme;
-		
-	   
-		switch ($format)
-		{
-	//------------------------------------------
-		  case "kmz":case "kml":
-		// Dans le cas du kml/kmz, on arrange les points par "dossier"
-		// c'est un conteneur xml qui permet une légende plus claire de GoogleEarth
-		if ($point->nom_type!=$kml_folder)
-		{ // visiblement on change de dossier
-		if ($kml_folder!="") // si ce n'est pas le premier dossier, on ferme le précédent
-		  $contenu.="</Folder>\r\n";
-		// on créer le nouveau dossier
-		$contenu.="<Folder><name>$point->nom_type</name>\r\n<open>0</open>";
-		// on met à jour notre variable pour pas créer un nouveau dossier à chaque fois
-		$kml_folder=$point->nom_type;
-		}
-		$contenu.=placemark_kml($point);
-		break;
-	//------------------------------------------
-		  case "gml":
-
-		$contenu.=feature_gml($point,$format);
-		break;
-	//------------------------------------------
-		  case "gpx-garmin":case "gpx":case "gpx-carte":
-		$contenu.=waypoint_gpx($point,$format);
-		break;
-	//------------------------------------------
-		  case "csv":
-		$contenu.=csv_export_line($point);
-		break;
-	//------------------------------------------
-		}
-		$last_point=$point;
+  global $config;
+  $resultat = new stdClass;
+  
+  //obtenir le tableau des points, selon les conditions
+  $points=infos_points($conditions); 
+  //Nombre de point récupéré(s), on va permettre de faire du cosmétique avec le bon nom de fichier si un seul
+  $i=0;
+  if (count($points)==1)
+    $resultat->nom_fichier=replace_url($points[0]->nom);
+  else
+    $resultat->nom_fichier=$config['nom_fichier_export'];
+  
+  /** selon le type, en créer le bon entête de fichier **/
+  $contenu=entete_exportation($format);
+  
+  // Dominique 24/11/12 Dédoublement des points proches
+  //DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6		
+  if ($icones = $_GET ['icones']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
+    $delta_latitude  = ($conditions->latitude_maximum  - $conditions->latitude_minimum ) / $icones;
+    $delta_longitude = ($conditions->longitude_maximum - $conditions->longitude_minimum) / $icones;
+    
+    if ($delta_latitude and $delta_longitude and count($points)!=0) // S'il y a un BBOX
+      foreach ($points as $point)
+	for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b
+	  $dlat = $point->latitude  - $point->latitude;
+	  $dlon = $point->longitude - $point->longitude;
+	  if ($dlat / $delta_latitude * $dlat / $delta_latitude + $dlon / $delta_longitude * $dlon / $delta_longitude < 1) {
+	    if ($dlat < 0) // $b a une plus grande latitude
+	      $deplacement_latitude = $dlat + $delta_latitude;
+	    else // $a a une plus grande latitude
+	      $deplacement_latitude = $dlat - $delta_latitude;
+	    
+	    if ($dlon < 0)  // $b a une plus grande longitude
+	      $deplacement_longitude = $dlon + $delta_longitude;
+	    else // $a a une plus grande longitude
+	      $deplacement_longitude = $dlon - $delta_longitude;
+	    
+	    $point->latitude  -= $deplacement_latitude  / 2;
+	    $point->latitude  += $deplacement_latitude  / 2;
+	    $point->longitude -= $deplacement_longitude / 3;
+	    $point->longitude += $deplacement_longitude / 3;
 	  }
 	}
+  }
+  
+  $kml_folder="";
+  
+  //------------------------------------------
+  if (count($points)>0) // si nous n'avons aucun point dans la recherche, on renvoi un fichier valide, mais sans les points dedans
+  {
+    foreach ($points as $point)
+    {
+      // Petite bidouille un peu séciale, dans le mode carte, on souhaite changer les icônes de certains point dont les critères justifie une icone différente
+      // sly 12/05/2010
+      // FIXME : On notera un défaut lorsque l'abri est sommaire ET détruit il faudrait une 3ème combinaison d'icône
+      // sly 30/10/10
+      
+      // S'il est sommaire ou qu'il n'a aucune place pour dormir et qu'il a l'icone pour ça
+      if ( ($point->sommaire=='oui') OR ($point->places==0) AND $point->nom_icone_sommaire!='')
+	$point->nom_icone=$point->nom_icone_sommaire;
+      
+      // Si le point est "fermé" ou "détruit" ou "ruines" et qu'il a une icone spéciale "fermée" on la choisie 
+      if ($point->ferme!='non' and $point->ferme!='' AND $point->nom_icone_ferme!='')
+	$point->nom_icone=$point->nom_icone_ferme;
+      
+      
+      switch ($format)
+      {
 	//------------------------------------------
-	  /*** ici on s'occupe des choses à faire en fin de fichier ***/
-	  
-	  if ($format=="kmz" or $format=="kml")
-	  {
-		$contenu.="</Folder>\r\n</Document>\r\n</kml>";
-		
-		// si c'est du kmz, alors on compresse la sortie
-		if ($format=="kmz")
-		{
-		  $zip = new zipfile() ; //on crée un fichier zip
-		  $zip->addfile($contenu, $resultat->nom_fichier.".kml") ; //on ajoute le fichier
-		  $contenu = $zip->file() ; //on associe l'archive
-		}
+	case "kmz":case "kml":
+	  // Dans le cas du kml/kmz, on arrange les points par "dossier"
+	  // c'est un conteneur xml qui permet une légende plus claire de GoogleEarth
+	  if ($point->nom_type!=$kml_folder)
+	  { // visiblement on change de dossier
+	  if ($kml_folder!="") // si ce n'est pas le premier dossier, on ferme le précédent
+	    $contenu.="</Folder>\r\n";
+	  // on créer le nouveau dossier
+	  $contenu.="<Folder><name>$point->nom_type</name>\r\n<open>0</open>";
+	  // on met à jour notre variable pour pas créer un nouveau dossier à chaque fois
+	  $kml_folder=$point->nom_type;
 	  }
+	  $contenu.=placemark_kml($point);
+	  break;
+	  //------------------------------------------
+	case "gml":
 	  
-	  elseif ($format=="gml")
-		$contenu.="\n</wfs:FeatureCollection>";
-		
-	  // les formats fournissant du gpx, se terminent tous par cette simple balise
-	  elseif ($config['formats_exportation'][$format]['extension_fichier'] =="gpx")
-		$contenu.="</gpx>";
-	  
-	  $resultat->contenu=$contenu;
-	  return $resultat;
+	  $contenu.=feature_gml($point,$format);
+	  break;
+	  //------------------------------------------
+	case "gpx-garmin":case "gpx":case "gpx-carte":
+	  $contenu.=waypoint_gpx($point,$format);
+	  break;
+	  //------------------------------------------
+	case "csv":
+	  $contenu.=csv_export_line($point);
+	  break;
+	  //------------------------------------------
+      }
+      $last_point=$point;
+    }
+  }
+  //------------------------------------------
+  /*** ici on s'occupe des choses à faire en fin de fichier ***/
+  
+  if ($format=="kmz" or $format=="kml")
+  {
+    $contenu.="</Folder>\r\n</Document>\r\n</kml>";
+    
+    // si c'est du kmz, alors on compresse la sortie
+    if ($format=="kmz")
+    {
+      $zip = new zipfile() ; //on crée un fichier zip
+      $zip->addfile($contenu, $resultat->nom_fichier.".kml") ; //on ajoute le fichier
+      $contenu = $zip->file() ; //on associe l'archive
+    }
+  }
+  
+  elseif ($format=="gml")
+    $contenu.="\n</wfs:FeatureCollection>";
+  
+  // les formats fournissant du gpx, se terminent tous par cette simple balise
+  elseif ($config['formats_exportation'][$format]['extension_fichier'] =="gpx")
+    $contenu.="</gpx>";
+  
+  $resultat->contenu=$contenu;
+  return $resultat;
 }
 
 ?>

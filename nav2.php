@@ -58,11 +58,12 @@ if ($modele->id_polygone)
 		
 		// A confirmer les avantages et inconvéniens, la liste des refuges dans le massif pour les personnes ne disposant pas de js
 		// Mais également utile au référencement
+		$conditions = new stdClass;
 		$conditions->id_polygone=$modele->id_polygone;
 		$conditions->avec_infos_massif=1;
 		$conditions->limite = 120; 
 		$conditions->avec_liens=true;
-		$modele->liste=liste_points($conditions);
+		$modele->liste=infos_points($conditions);
 	}
 	else
 		$modele->titre="Polygone demandé incorrect ou multiple : $modele->id_polygone";

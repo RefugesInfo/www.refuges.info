@@ -50,7 +50,7 @@ else
     $conditions->ouvert='oui';
     $conditions->distance="$modele->latitude;$modele->longitude;5000";
     $conditions->ordre="distance ASC";
-    $modele->liste_proche=liste_points($conditions);
+    $modele->points_proches=infos_points($conditions);
   }
   
   /***********  détermination si le point se situe dans un polygone pour lequel un message est à faire passer *******/

@@ -157,12 +157,12 @@ function infos_point_forum ($id)
          phpbb_posts.post_id = phpbb_posts_text.post_id
        LIMIT 1";
   // On envoie la requete
-  $r = $pdo->query($q) or die ('Erreur de requete  : infos_point_forum : $q');
-  
+  $r = $pdo->query($q);
+  if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
   
   $result = $r->fetch();
   if (isset($result->topic_id))
-    $result->lien=$config['forum_refuge'].$result->topic_id;
+    $result->lienforum=$config['forum_refuge'].$result->topic_id;
   else
     return erreur("Le forum du point $id ne semble pas exister","$q n'a retourné aucun enregistrement");
   
@@ -190,26 +190,26 @@ auquel le point appartient sly 14/03/2010
 *****************************************************/
 function infos_point($id_point)
 {
-  // inutile de faire tout deux fois, j'utilise la fonction liste_points() (voir plus bas)
+  // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config,$pdo;
   $conditions = new stdClass();
   if (!is_numeric($id_point))
     return erreur("id du point demandé mal formé","id du point demandé : $id_point");
-  $conditions->liste_id_point=$id_point;
+  $conditions->ids_points=$id_point;
   $conditions->modele=-1;
 
   // récupération des infos du point
-  $liste_un_seul_point=liste_points($conditions);
+  $points=infos_points($conditions);
   // Requête impossible à executer
-  if ($liste_un_seul_point->erreur)
-    return erreur($liste_un_seul_point->message);
-  if ($liste_un_seul_point->nombre_points==0)
-    return erreur("Le point demandé est introuvable dans notre base","id du point demandé : $id_point".var_export($liste_un_seul_point,true));
-  if ($liste_un_seul_point->nombre_points>1)
+  if ($points->erreur)
+    return erreur($points->message);
+  if (count($points)==0)
+    return erreur("Le point demandé est introuvable dans notre base","id du point demandé : $id_point".var_export($points,true));
+  if (count($points)>1)
     return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
     
     $i=0;
-  $point=$liste_un_seul_point->points->$i;
+  $point=$points[0];
   
   // recherche des différents polygones auquels appartienne le point
   // FIXME Cette particularité n'existe que lorsque on demande un point en particulier
@@ -229,16 +229,6 @@ function infos_point($id_point)
     do
     {
       $point->polygones[]=$polygones_du_point;
-      
-      // pour se simplifier la vie, si on tombe sur un massif, on en garde les infos
-      // sly Je sens qu'il y a moyen de faire mieux avec une fonction de cet objet qui irait chercher d'elle même
-      // tous ce que l'on veut sur le massif qui se situe dans $point->polygones
-      if ($polygones_du_point->id_polygone_type==$config['id_massif'])
-      {
-	$point->nom_massif=$polygones_du_point->nom_polygone;
-	$point->id_massif=$polygones_du_point->id_polygone;
-	$point->article_partitif_massif=$polygones_du_point->article_partitif;
-      }
     } while ( $polygones_du_point = $res->fetch() ) ;
     return $point;
 }
@@ -247,12 +237,10 @@ function infos_point($id_point)
 Cette fonction récupère sous la forme de plusieurs objets des points de la base qui satisfont des conditions.
 En gros, c'est la fonction qui construit la requête SQL de plusieurs bras de long, va chercher, et renvoi le résultat.
 
-retourne un objet:
+retourne un tableau de points:
 on accède sous la forme 
-$liste_points->nombre_points_sans_limite : le nombre de résultat issue de la requête s'il n'y avait pas eu le LIMIT
-$liste_points->requete : la requête qui a été exécutée, (utile pour debug)
-$liste_point->points : L'ensemble des points retournés (on y accède sous la forme $liste_point->points->$i->propriété du point $i
-$liste_points->nombre_points : le nombre d'objets "point" renvoyés par la requête
+foreach ($points as $point)
+  print($point->nom);
 
 c'est une fonction de centralisation est utilisée pour l'instant par 
 l'exportation, la recherche, les nouvelles et le flux RSS
@@ -273,7 +261,7 @@ $conditions->latitude_maximum
 $conditions->longitude_minimum
 $conditions->longitude_maximum
 $conditions->id_polygone : points appartenant à ce polygone
-$conditions->liste_id_point : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
+$conditions->ids_points : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
 $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veut quand même, par défaut : FALSE
 $conditions->chauffage : soit "chauffage" pour demander poële ou cheminée ou "poele" ou "cheminee"
@@ -312,7 +300,7 @@ Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet-
 //FIXME conditions binaires en bool ? pour + de rapidité
 //A mon avis ce serait se prendre la tête et risquer d'avoir un jour besoin de 2. ce sont des ints, donc traiter par le processeur
 //d'un seul coup -- sly
-function liste_points($conditions) 
+function infos_points($conditions) 
 {
   global $config,$pdo;
   // condition de limite en nombre
@@ -415,8 +403,8 @@ function liste_points($conditions)
   }
   
   // condition restrictive sur des id_points particuliers
-  if($conditions->liste_id_point!="")
-    $conditions_sql.="\n AND points.id_point IN ($conditions->liste_id_point)";
+  if($conditions->ids_points!="")
+    $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
   
   //conditions sur la description (champ remark)
   if($conditions->description!="")
@@ -461,8 +449,7 @@ function liste_points($conditions)
   if ($_SESSION['niveau_moderation']<1)
     $conditions_sql.="\n AND (points.id_point_type!=26)";
   
-  // FIXME bidouille : la table 
-  $query_liste_points="
+  $query_points="
   SELECT *,ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
     extract('epoch' from date_derniere_modification) as date_modif_timestamp
     $select_distance
@@ -476,38 +463,116 @@ function liste_points($conditions)
   $limite
   ";
   
-  if ( ! ($res = $pdo->query($query_liste_points))) 
-    return erreur("Une erreur sur la requête est survenue");
+  if ( ! ($res = $pdo->query($query_points))) 
+    return erreur("Une erreur sur la requête est survenue",$query_points);
   
-  $liste_points = new stdClass();
   $point = new stdClass();
-  $liste_points->points = new stdClass();
-  $liste_points->requete=$query_liste_points;
   
   $i=0;
   //Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
   while ($point = $res->fetch())
   {
-    $liste_points->points->$i=$point;
+    $points[$i]=$point;
     // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
+    // FIXME : Encore cette spécificité liée au massif qu'il faudrait généraliser
     if ($conditions->avec_infos_massif!="")
     {
-      $liste_points->points->$i->nom_massif = $point->nom_polygone;
-      $liste_points->points->$i->id_massif  = $point->id_polygone;
-      $liste_points->points->$i->article_partitif_massif = $point->article_partitif;
+      $points[$i]->nom_massif = $point->nom_polygone;
+      $points[$i]->id_massif  = $point->id_polygone;
+      $points[$i]->article_partitif_massif = $point->article_partitif;
       if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
-	$liste_points->points->$i->lien=lien_point_fast($point);
+	$points[$i]->lien=lien_point_fast($point);
     }
     $i++;		
   }
-  $liste_points->nombre_points = $i; // marche pas selon la doc .........
-  $liste_points->nombre_points_sans_limite = $i ; // FIXME POSTGRESQL DUR DUR AVEC PGSQL
-  
-  $liste_points->erreur=False;
-  $liste_points->message="Liste retournée";
-  return $liste_points;
+  return $points;
 }
+/********************************************************
+Fonction qui permet, en fonction de l'object $point passé en paramêtre la mise à jour OU la création si :
+$point->id_point==""
+Les autres champ, classiques, comme la sortie de la fonction infos_point($id_point) servirons pour la création ou la mise à jour.
+Le minimum vital est que $point->nom ne soit pas vide et que les coordonées latitude et longitude soient données
+tout est facultatif (ou presque) mais si :
+$point->champ est vide ("") il sera remis à zéro
+si
+$point->champ n'existe pas (isset()=FALSE on y touche pas)
+sly 02/11/2008
+jmb 17/02/13 PDO + ca deconne
+Le retour de cette fonction et l'id du point (qu'il soit créé ou modifier) si une erreur grave survient, rien n'est fait et un retour de type texte est envoyé
+qui ressemble à "erreur_un_truc"
+
+********************************************************/
+
+function modification_ajout_point($point)
+{
+  global $config,$pdo;
+  // désolé, le nom du point ne peut être vide
+  if (trim($point->nom)=="")
+    return "erreur_nom";
   
+  // désolé, les coordonnées ne peuvent être vide ou non numérique
+  if ($point->latitude=="" or $point->latitude=="")
+    return "erreur_latitude_vide";
+  if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
+    return "erreur_latitude_non_numerique";
+  if ($point->id_point!="")  // update
+  {
+    $infos_point_avant = infos_point($point->id_point);
+    if ($infos_point_avant==-1) // oulla on nous demande une modif mais il n'existe pas
+      return "erreur_point_inexistant";
+    
+    if ($point->id_point_gps=="")
+      $point->id_point_gps=$infos_point_avant->id_point_gps;
+  }
+  
+  /********* les coordonnées du point dans la table points_gps *************/
+  // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
+  $point->id_point_gps=modification_ajout_point_gps($point);
+  
+  /********* Les caractéristiques propres du point *************/
+  // champ ou il faut juste un set=nouvelle_valeur
+  foreach ($config['champs_simples_points'] as $champ)
+    if (isset($point->$champ))
+      $champs_sql[$champ]=$pdo->quote($point->$champ);
+    
+    
+    //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
+    if (isset($point->site_officiel))
+      if (preg_match("/http\:\/\//",$point->site_officiel))
+      $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
+    elseif($point->site_officiel!="")
+      $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
+    else
+      $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
+    
+    // On met à jour la date de dernière modification
+    $champs_sql['date_derniere_modification'] = 'NOW()';
+    
+    // fait-on un updater ou un insert ?
+    if ($point->id_point=="")
+    {
+      $champs_sql['date_insertion']=time(); //FIXME : horreur, la date_insertion est un unix timestamp stocké dans un bigint ;-(
+      $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
+    }
+    else
+      $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
+    
+    if (!$pdo->exec($query_finale))
+      return erreur("Requête en erreur, impossible à executer : $query_finale");
+    
+    if ($point->id_point=="") 
+    {	// donc c etait un ajout
+    $point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
+    
+    /********* la création ou mise à jour du forum point *************/
+    forum_point_ajout($point);
+}
+else
+  forum_mise_a_jour_nom($point);
+  
+  // on retoure l'id du point (surtout utile si création)
+  return $point->id_point;
+}  
 /*****************************************************
 Dans le cas d'un nouveau point, creation d'un topic dans forum correspondant.
 (C'est du copier coller de ce qu'il y avait dans point.php)
@@ -515,53 +580,53 @@ id et nom du point en question (nouveau point ?)
 renvoie le topic_id
 Non, vous ne rêvez pas, il y'a bien 5 requêtes au total
 ********************************************/
-function forum_point_ajout( $id, $nom )
+function forum_point_ajout( $point )
 {
-	global $pdo;
-	
+  global $pdo;
+  
   // Dans le forum, nom toujours commençant par une majuscule
-  $nom=$pdo->quote(ucfirst($nom));
+  $nom=$pdo->quote(ucfirst($point->nom));
   /*** mise à jour des stats du forum - un sum() vous connaissez pas chez phpBB ? ***/
-  $query_update="UPDATE `phpbb_forums` SET
-  `forum_topics` = forum_topics+1,
-  `prune_next` = NULL
-  WHERE `forum_id` = '4'";
-	$pdo->exec($query_update);
+  $query_update="UPDATE phpbb_forums SET
+  forum_topics = forum_topics+1,
+  prune_next = NULL
+  WHERE forum_id = '4'";
+  $pdo->exec($query_update);
 	
   /*** rajout du topic spécifique au point ( Le seul qui me semble logique ! )***/
   // tention a PGsql, ca peut merder
-  $query_insert="INSERT INTO `phpbb_topics` (
-  `forum_id` , `topic_title` , `topic_poster` , `topic_time` ,
-  `topic_views` , `topic_replies` , `topic_status` , `topic_vote` ,
-  `topic_type` , `topic_first_post_id` , `topic_last_post_id` ,
-  `topic_moved_id` , `topic_id_point` )
+  $query_insert="INSERT INTO phpbb_topics (
+  forum_id , topic_title , topic_poster , topic_time ,
+  topic_views , topic_replies , topic_status , topic_vote ,
+  topic_type , topic_first_post_id , topic_last_post_id ,
+  topic_moved_id , topic_id_point )
   VALUES (
   4, $nom, -1, ". time()." ,
   0, 0, 0, 0,
   0, 0, 0,
-  0, $id )";
+  0, $point->id_point )";
 	
-	$res = $pdo->query($query_insert);
-	$topic_id = $pdo->lastInsertId('phpbb_topics_topic_id_seq'); //FIXME POSTGRESQL : ca devrait etre bon necessite un sequence_name, voir doc PHP
+  $res = $pdo->query($query_insert);
+  $topic_id = $pdo->lastInsertId('phpbb_topics_topic_id_seq'); //FIXME POSTGRESQL : ca devrait etre bon necessite un sequence_name, voir doc PHP
 	
   
   /*** rajout d'un post fictif pour débuter le truc - je vois pas en quoi c'est nécessaire, le topic devrait pouvoir être vide**/
-  $query_insert_post="INSERT INTO `phpbb_posts` (
-  `topic_id` , `forum_id` , `poster_id` , `post_time` ,
-  `poster_ip` , `post_username` , `enable_bbcode` , `enable_html` ,
-  `enable_smilies` , `enable_sig` , `post_edit_time` , `post_edit_count` )
+  $query_insert_post="INSERT INTO phpbb_posts (
+  topic_id , forum_id , poster_id , post_time ,
+  poster_ip , post_username , enable_bbcode , enable_html ,
+  enable_smilies , enable_sig , post_edit_time , post_edit_count )
   VALUES (
   $topic_id, 4, -1, ".time()." ,
   '00000000', 'refuges.info' , 1, 0,
   1, 1, NULL , 0 )";
 	
-$res = $pdo->query($query_insert_post);
-	$last = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL : ca devrait passer necessite un sequence_name, voir doc PHP
+  $res = $pdo->query($query_insert_post);
+  $last = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL : ca devrait passer necessite un sequence_name, voir doc PHP
 
   
   /*** rajout d'un post avec texte pour débuter le truc ( phpBB mal codé ? non ? ) ha ça oui ! **/
-  $query_texte="INSERT INTO `phpbb_posts_text` (
-  `post_id` , `bbcode_uid` , `post_subject` , `post_text` )
+  $query_texte="INSERT INTO phpbb_posts_text (
+  post_id , bbcode_uid , post_subject , post_text )
   VALUES (
   $last, '', '',
   '')";
@@ -584,107 +649,19 @@ Certes un joli id de liaison serait plus propre, mais il faudrait bidouiller sal
 le phpBB, donc duplication
 ********************************************************/
 
-function forum_mise_a_jour_nom($id_point,$nom)
+function forum_mise_a_jour_nom($point)
 {
-	global $pdo;
-
+  global $pdo;
+  
   // Dans le forum, nom toujours commençant par une majuscule
-  $nom=$pdo->quote(ucfirst($nom));
+  $nom=$pdo->quote(ucfirst($point->nom));
   
-  $query="UPDATE `phpbb_topics`
-  SET `topic_title`=$nom
-  WHERE `topic_id_point`=$id_point";
-	$pdo->exec($query);
-
+  $query="UPDATE phpbb_topics
+  SET topic_title=$point->nom
+  WHERE topic_id_point=$point->id_point";
+  $pdo->exec($query);
 }
 
-/********************************************************
-Fonction qui permet, en fonction de l'object $point passé en paramêtre la mise à jour OU la création si :
-$point->id_point==""
-Les autres champ, classiques, comme la sortie de la fonction infos_point($id_point) servirons pour la création ou la mise à jour.
-Le minimum vital est que $point->nom ne soit pas vide et que les coordonées latitude et longitude soient données
-tout est facultatif (ou presque) mais si :
-$point->champ est vide ("") il sera remis à zéro
-si
-$point->champ n'existe pas (isset()=FALSE on y touche pas)
-sly 02/11/2008
-jmb 17/02/13 PDO + ca deconne
-Le retour de cette fonction et l'id du point (qu'il soit créé ou modifier) si une erreur grave survient, rien n'est fait et un retour de type texte est envoyé
-qui ressemble à "erreur_un_truc"
-
-********************************************************/
-
-function modification_ajout_point($point)
-{
-	global $config,$pdo;
-	// désolé, le nom du point ne peut être vide
-	if (trim($point->nom)=="")
-		return "erreur_nom";
-  
-	// désolé, les coordonnées ne peuvent être vide ou non numérique
-	if ($point->latitude=="" or $point->latitude=="")
-		return "erreur_latitude_vide";
-	if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
-		return "erreur_latitude_non_numerique";
-	if ($point->id_point!="")  // update
-	{
-		$infos_point_avant = infos_point($point->id_point);
-		if ($infos_point_avant==-1) // oulla on nous demande une modif mais il n'existe pas
-			return "erreur_point_inexistant";
-    
-		if ($point->id_point_gps=="")
-			$point->id_point_gps=$infos_point_avant->id_point_gps;
-	}
-
-	/********* les coordonnées du point dans la table points_gps *************/
-	// dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
-	$point->id_point_gps=modification_ajout_point_gps($point);
-  
-	/********* Les caractéristiques propres du point *************/
-	// champ ou il faut juste un set=nouvelle_valeur
-	foreach ($config['champs_simples_points'] as $champ)
-		if (isset($point->$champ))
-			$champs_sql[$champ]=$pdo->quote($point->$champ);
-	
-  
-	//cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
-	if (isset($point->site_officiel))
-		if (preg_match("/http\:\/\//",$point->site_officiel))
-			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-		elseif($point->site_officiel!="")
-			$champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
-		else
-			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-  
-	// On met à jour la date de dernière modification
-	$champs_sql['date_derniere_modification'] = 'NOW()';
-  
-	// fait-on un updater ou un insert ?
-	if ($point->id_point=="")
-	{
-		$champs_sql['date_insertion']=time(); //FIXME : horreur, la date_insertion est un unix timestamp stocké dans un bigint ;-(
-		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
-	}
-	else
-		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
-  
-	if (!$pdo->exec($query_finale))
-		return erreur("Requête en erreur, impossible à executer : $query_finale");
-
-	if ($point->id_point=="") 
-	{	// donc c etait un ajout
-		$point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
- 
-		/********* la création ou mise à jour du forum point *************/
-  		forum_point_ajout( $point_en_cours, $point->nom);
-	}
-    else
-		forum_mise_a_jour_nom($point->id_point, $point->nom);
-      
-    // on retoure l'id du point (surtout utile si création)
-    return $point->id_point;
-}
-  
 /********************************************************
 Toujours pour simplifier encore la maintenance, si on supprime un point, on nettoye
 le topic du forum qui correspond, ça reprend casi la même chose que l'ajout 
@@ -694,87 +671,71 @@ alors la photo se retrouve seule et oubliée dans /forum/photos-points/
 Et je suis bien en peine pour trouver une combine pour la nettoyer
 ********************************************************/
 
-function forum_supprime_topic($id_point)
+function forum_supprime_topic($point)
 {
   global $pdo;
   /*** on va chercher l'id du topic qu'on veut virer ***/
-  $query_recherche="SELECT * FROM `phpbb_topics` where topic_id_point=$id_point";
+  $query_recherche="SELECT * FROM phpbb_topics where topic_id_point=$point->id_point";
   $res = $pdo->query($query_recherche);
-  if ($res)
+  $topic=$res->fetch();
+  if ($topic)
   {
-    $topic=$res->fetch();
     /*** vu que chez phpBB un post est dans deux tables, juste avant de les virer je vais virer leurs "contenus" ***/
-    $query_recherche="SELECT * FROM `phpbb_posts` WHERE topic_id=$topic->topic_id";
+    $query_recherche="SELECT * FROM phpbb_posts WHERE topic_id=$topic->topic_id";
     $res = $pdo->query($query_recherche);
+
     while ( $posts_a_supprimer = $res->fetch() )
-      $pdo->exec("DELETE FROM `phpbb_posts_text` where post_id=$posts_a_supprimer->post_id");
+      $pdo->exec("DELETE FROM phpbb_posts_text where post_id=$posts_a_supprimer->post_id");
     
     /*** Suppression des posts du topic**/
-    $pdo->exec("DELETE FROM `phpbb_posts` WHERE topic_id=$topic->topic_id");
+    $pdo->exec("DELETE FROM phpbb_posts WHERE topic_id=$topic->topic_id");
     
     /*** Suppression du topic spécifique au point***/
-    $pdo->exec("DELETE FROM `phpbb_topics` where topic_id=$topic->topic_id");
+    $pdo->exec("DELETE FROM phpbb_topics where topic_id=$topic->topic_id");
     
     
     /*** et pour finir mise à jour des stats du forum ***/
-    $query_update="UPDATE `phpbb_forums` SET
-    `forum_topics` = forum_topics-1,
-    `prune_next` = NULL
-    WHERE `forum_id` = '4'";
+    $query_update="UPDATE phpbb_forums SET
+    forum_topics = forum_topics-1,
+    prune_next = NULL
+    WHERE forum_id = '4'";
     $pdo->exec($query_update);
   }
+  else
+    return erreur("Le point ne dispose pas de forum !",$query_recherche." n'a rien retourné");
 }
 
 /*******************************************************
-* on lui passe un $id_point et ça supprime tout proprement
+* on lui passe un objet $point et ça supprime tout proprement
 * commentaires, photos, forum, points, points_gps 
 *******************************************************/
-function suppression_point($id_point)
+function suppression_point($point)
 {
-	global $pdo;
+  global $pdo;
+  $conditions = new stdClass;
   // a supprimer le refuge ET ses commentaires ET photos ! bug corrigé par sly
-  $query_recherche_commentaires="SELECT id_commentaire FROM commentaires WHERE id_point=$id_point";
+  $conditions->ids_points=$point->id_point;
+  $commentaires_a_supprimer=infos_commentaires($conditions);
+  if (isset($commentaires_a_supprimer))
+    foreach ($commentaires_a_supprimer as  $commentaire_a_supprimer)
+      suppression_commentaire($commentaire_a_supprimer);
 
-	//PDO+
-	$commentaires_a_supprimer = $pdo->query($query_recherche_commentaires) ;
-	while ($commentaire_suppr = $commentaires_a_supprimer->fetch() )
-	{
-//PDO-
-//  $commentaires_a_supprimer=mysql_query($query_recherche_commentaires) or die("$query_recherche_commentaires est mauvais");
-//  while ($commentaire_suppr=mysql_fetch_object($commentaires_a_supprimer))
-//  {
-    // FIXME : y'aurais moyen de faire plus rapide en créant la fonction qui va chercher un groupe de commentaire directement -- sly 05/01/2013
-    $commentaire=infos_commentaire($commentaire_suppr->id_commentaire);
-    suppression_commentaire($commentaire);
-  }
   // suppression dans le forum
-  forum_supprime_topic($id_point);
+  forum_supprime_topic($point);
   
-  // suite à la modification dans la base sur les coordonnées GPS, on va supprimer aussi des tables :
-  // appartenance_polygone & point_gps si le point_gps n'est plus utilisé du tout
-  $infos_point=infos_point($id_point);
+  // suite à la modification dans la base sur les coordonnées GPS, on va supprimer aussi de la table :
+  // point_gps si le point_gps n'est plus utilisé du tout
+  
+  $del_si_uniq="
+  DELETE FROM points_gps
+  WHERE 
+    ( SELECT COUNT(*) FROM points WHERE id_point_gps=$point->id_point_gps) = 1
+  AND 
+   id_point_gps=$point->id_point_gps
+  LIMIT 1 ";
+  $pdo->exec($del_si_uniq);  // supp de la table point_gps si un seul point est dessus
+  $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de tt facon
 
-	//PDO+
-	//jmb: condense en 1 requete
-	$del_si_uniq="DELETE FROM points_gps
-				WHERE 
-				( SELECT COUNT(*) FROM points WHERE id_point_gps=". $infos_point->id_point_gps ." ) = 1
-				AND id_point_gps=".$infos_point->id_point_gps ."
-				LIMIT 1 ";
-	$pdo->exec($del_si_uniq);  // supp de la table point_gps si un seul point est dessus
-	$pdo->exec("DELETE FROM points WHERE id_point=$id_point"); // supp le point de tt facon
-//PDO-
-//  $query_plusieurs="SELECT id_point FROM points WHERE id_point_gps=".$infos_point->id_point_gps;
-//  $res=mysql_query($query_plusieurs);
-//  if (mysql_num_rows($res)==1) // il n'y a qu'un seul point de la base donc on fait le nettoyage
-//  {
-//GIS-    mysql_query("DELETE FROM appartenance_polygone WHERE id_point_gps=".$infos_point->id_point_gps);
-//    mysql_query("DELETE FROM points_gps WHERE id_point_gps=".$infos_point->id_point_gps);
-//  }
-//  
-//  $query_delete="DELETE FROM points WHERE id_point=$id_point";
-//  mysql_query($query_delete);
-  
   return TRUE; // pas d'échecs possibles ?
 }
   ?>

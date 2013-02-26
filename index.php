@@ -35,21 +35,12 @@ $modele->quoi = $_GET ['quoi']
 			  ? $_GET ['quoi']
 			  : 'commentaires,points,forums';
 			  
-// Liste des photos récentes
+// Préparation de la liste des photos récentes
 $conditions = new stdclass();
 $conditions->limite=5;
 $conditions->avec_photo=True;
 $conditions->avec_infos_point=True;
-$commentaires=infos_commentaires($conditions);
-
-foreach ( $commentaires as $commentaire )
-{
-  $vignette = new stdClass();
-  $vignette->lien=lien_point_fast($commentaire,true)."#C$commentaire->id_commentaire";
-  $vignette->titre=$commentaire->nom;
-  $vignette->lien_photo=$commentaire->lien_photo['vignette'];
-  $modele->vignettes[]=$vignette;
-}
+$modele->photos_recentes=infos_commentaires($conditions);
 
 // On affiche le tout
 $modele->type = 'index';

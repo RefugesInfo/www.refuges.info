@@ -329,10 +329,10 @@ function infos_commentaires ($conditions)
 	  $commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
 	}
     }
-    $r [] = $commentaire;
+    $commentaires [] = $commentaire;
   }
   
-  return $r ;
+  return $commentaires ;
 }
 // Un appel plus simple qui utilise le précédent
 function infos_commentaire($id_commentaire)
@@ -393,7 +393,7 @@ function suppression_commentaire($commentaire)
 	
 	/****** On supprime les photo (de différentes taille) si elle existe ******/
 	if ($commentaire->photo_existe)
-		suppression_photos($commentaire);
+		$retour=suppression_photos($commentaire);
 	
 	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire";
 	$success = $pdo->exec($query_delete);

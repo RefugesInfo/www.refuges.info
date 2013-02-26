@@ -51,7 +51,7 @@ if ($_POST['lat']!="" and $_POST['lon']!="" and $_POST['autour']!="")
   $conditions->distance=$_POST['lat'].";".$_POST['lon'].";".$_POST['autour'];
 
 $modele = new stdClass();
-$modele = liste_points ($conditions);
+$modele->points = infos_points ($conditions);
 $modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 
 // Mise au pluriel s'il y a plusieurs points

@@ -45,11 +45,11 @@
 		<h4><?=$modele->stat->nbphotos?> photos</h4>
 		<br/>
 		<ul>
-			<?php if (isset($modele->vignettes)) 
-				foreach ($modele->vignettes as $vignette) {?>
+			<?php if (isset($modele->photos_recentes)) 
+				foreach ($modele->photos_recentes as $vignette) {?>
 			<li>
-				<a href="<?=$vignette->lien?>" title="<?=$vignette->titre?>">
-					<img alt="photo" src="<?=$vignette->lien_photo?>" />
+				<a href="<?=(lien_point_fast($vignette,true)."#C$vignette->id_commentaire")?>" title="<?=$vignette->nom?>">
+					<img alt="photo" src="<?=$vignette->lien_photo['vignette']?>" />
 				</a>
 			</li>
 			<?php } ?>

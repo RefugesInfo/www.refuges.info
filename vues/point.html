@@ -176,16 +176,15 @@
 			}?>
 			
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
-			<?if ($modele->liste_proche->nombre_points!=0) {?>
+			<?if (count($modele->points_proches)!=0) {?>
 				<dt>Points à proximité:</dt><?
-				foreach ($modele->liste_proche->points as $this_proche) {
-					if ($this_proche->id_point!=$modele->id_point) {
-						$this_proche = $this_proche;
-						$distance=number_format($this_proche->distance/1000,"2",",","")."km";
+				foreach ($modele->points_proches as $point_proche) {
+					if ($point_proche->id_point!=$modele->id_point) {
+						$distance=number_format($point_proche->distance/1000,"2",",","")."km";
 						?>
 						<dd>
-							<a href="<?echo lien_point_fast($this_proche)?>"><?=$this_proche->nom?></a>, 
-							<?=$this_proche->nom_type?> (altitude: <?=$this_proche->altitude?>m) situé(e) à <?=$distance?>
+							<a href="<?echo lien_point_fast($point_proche)?>"><?=$point_proche->nom?></a>, 
+							<?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$distance?>
 						</dd>
 					<?}
 				}
