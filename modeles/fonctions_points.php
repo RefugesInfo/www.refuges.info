@@ -383,21 +383,26 @@ function liste_points($conditions)
   
   //calcul selon la distance au point de référence
   // fourni sous la forme lat;lon;metres (45;5;5000) pour 5km
-  // FIXME a ré-ecrire avec un vrai GIS
   if ($conditions->distance!="")
   {
     $donnees=explode(";",$conditions->distance);
     $latitude=$donnees[0];
     $longitude=$donnees[1];
     $distance=$donnees[2];
-    // FIXME : un problème de performance pourrait survenir le jour où on aura une grosse masse de point
-    // car notre base GIS étant en lat/long et le calcul de distance ayant besoin d'une projection je la fait 
-    // à la volée, mais aucun index ne peut alors être utilisé par postgis
-    // option1 : avoir une géométrie en 900913 (mercator approximativement valable sur la terre)
-    // option2: bidonner une estimation en lat/lon afin qu'il puisse utiliser un index
-    $calcul_distance="st_distance(st_transform(points_gps.geom,900913),st_transform(ST_GeomFromText('POINT($longitude $latitude)',4326),900913))";
+    // Notre base étant en lat/lon, quand on veut calculer une distance, c'est avec des coordonnées projectées
+    // Je choisi la projection sphérical mercator de google qui ne règle in fine pas le problème qu'aucune projection (?)
+    // ne peut conserver les distances à travers la terre, il faudrait utiliser le type "geography" de postgis qui choisi
+    // dynamiquement la meilleure projection selon l'endroit du globe. Mais je ne sais pas m'en servir, donc cette solution
+    // marche a peu prêt bien sous les latitudes françaises et du quartier proche
+    $geom_point="ST_GeomFromText('POINT($longitude $latitude)',4326)";
+    $geom_point_mercator="st_transform($geom_point,900913)";
+    $calcul_distance="st_distance(st_transform(points_gps.geom,900913),$geom_point_mercator)";
     $select_distance=",$calcul_distance AS distance "; 
-    $conditions_sql.="\n AND $calcul_distance<$distance";
+    // Changement de projection à s'arracher les cheveux : on souhaite les autres points de notre base à une distance en metres
+    // d'un point de référence en lat/lon je projete donc ce point pour créer un buffer d'un rayon (en metres) autour de notre choix
+    // que je reprojette en lat/lon pour que postgis puisse faire usage de son indexe qui est sur des géométries lat/lon
+    // et je met comme conditions que les autres points soient dans ce buffer. Ouf.
+    $conditions_sql.="\n AND ST_within(points_gps.geom,st_transform(st_buffer($geom_point_mercator,$distance),4326))";
     $ordre="ORDER BY $calcul_distance";
   }
   // conditions géographique sur les coordonnées GPS

@@ -281,8 +281,8 @@
 					<hr class="spacer" />
 					<?if ($commentaire->photo_existe) {?>
 						<div>
-							<a href="<?=$commentaire->urlimg.$commentaire->fin_du_lien?>.jpeg">
-								<img class="photos" src="<?=$commentaire->urlimg?>.jpeg" alt="Photo" />
+							<a href="<?=$commentaire->lien_photo['originale']?>">
+								<img class="photos" src="<?=$commentaire->lien_photo['reduite']?>" alt="Photo" />
 							</a>
 							<p class='text_sur_image'>
 								<?=$commentaire->date_photo_format_francais?>

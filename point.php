@@ -145,20 +145,11 @@ if (count ($tous_commentaires))
       // Si, selon la base une photo existe, on va l'afficher
       if ($commentaire->photo_existe) 
       {
-	// si la photo originale est présente ( après avril 2007 en gros ) on prépare un lien vers la photo "en grand"
-	// sinon tant pis on fait un lien vers elle même 
-	// ( question d'érgonomie, l'internaute ne pourrait pas comprendre que des fois ça clique des fois non )
-	if (is_file($config['rep_photos_points'].$commentaire->id_commentaire.'-originale.jpeg'))
-	  $commentaire->fin_du_lien = '-originale';
-	else
-	  $commentaire->fin_du_lien = '';
-	
-	if ($commentaire->date_photo != '0000-00-00')
+	if (isset($commentaire->date_photo))
 	  $commentaire->date_photo_format_francais=strftime ("%d/%m/%Y", $commentaire->ts_unix_photo);
 	else
 	  $commentaire->date_photo_format_francais = '';
-	$commentaire->urlimg = $config ['rep_web_photos_points'] .$commentaire->id_commentaire;
-	// On garde une copie des commentairs avec photo pour nous fournir la liste des petite vignettes
+	// On garde une copie des commentaires avec photos pour nous fournir la liste des petite vignettes
 	$modele->commentaires_avec_photo[]=$commentaire;
       }
       

@@ -322,6 +322,12 @@ function infos_commentaires ($conditions)
 	    $commentaire->lien_photo[$taille]=$config['rep_web_photos_points'].$nom_fichier;
 	  }
 	}
+	// Ce cas peut exister quand la photo originale est la même que la réduite (déjà suffisament petite, ou raisons historiques)
+	if (!isset($commentaire->photo['originale']))
+	{
+	  $commentaire->photo['originale']=$commentaire->photo['reduite'];
+	  $commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
+	}
     }
     $r [] = $commentaire;
   }
