@@ -39,9 +39,13 @@ function modification_ajout_commentaire($commentaire)
   global $config,$pdo;  
   $retour = new stdClass;
   $photo_valide=False;
-  $point=infos_point($commentaire->id_point);
-  if ($point==-1)
-    return erreur("Le commentaire ne correspond à aucun point du site","Id : \"$commentaire->id_point\" donné");
+  
+  if ($commentaire->id_point>=0) // Si négatif, c'est une "news générale"
+  {
+    $point=infos_point($commentaire->id_point);
+    if ($point->erreur)
+      return erreur("Le commentaire ne peut être ajouté car : $point->message","Id : \"$commentaire->id_point\" donné");
+  }
   // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
   // On dirait que le commentaire dispose bien d'une photo
   if (isset($commentaire->photo['originale']))
@@ -225,6 +229,7 @@ $conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non
 $conditions->texte -> condition sur le contenu du commentaire
 $conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
+$conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
 
 Renvoi un tableau contenant des objets commentaires sous cette forme :
 stdClass Object
@@ -281,7 +286,9 @@ function infos_commentaires ($conditions)
   
   if ($conditions->ids_auteurs!="")
     $conditions_sql.=" AND id_point in ($conditions->ids_auteurs)";
-
+  if ($conditions->demande_correction)
+    $conditions_sql.=" AND (demande_correction!=0 OR qualite_supposee<0)";
+  
   // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
   // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
   if ($conditions->avec_infos_point)

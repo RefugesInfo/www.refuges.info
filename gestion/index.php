@@ -41,19 +41,12 @@ if (isset($_SESSION['id_utilisateur']) )
 		switch ( $_SESSION['niveau_moderation'] )
 		{
 			// pour les admins
-			case 3 :
-				print("
-					<h4>Administrateurs</h4>
-					<ul>
-						<li><a href='./?page=moderateurs'>Gestion des moderateurs</a></li>
-					</ul>");
-
+			case 3 : ;
 			//pour les programmeurs
 			case 2 :
 				print("
 					<h4>Programmeurs</h4>
 					<ul>
-						<li><a href='./?page=verif_massif'>Vérification de la cohérence des massifs</a> (le chevauchement des massifs)</li>
 						<li><a href='/$olVersion/build/build.php'>Compression de la librairie OpenLayers</a> aprés modification des sources (dizaine de secondes)</li>
 					</ul>
 					");
@@ -67,7 +60,6 @@ if (isset($_SESSION['id_utilisateur']) )
 						<li><a href='./?page=commentaires_attente_correction'>Voir les commentaires en attente d'une correction</a></li>
 						<li><a href='./?page=modifier_modeles'>Modifier les modèles de points</a> (le pré-remplissage des champs lors d'un ajout de point)</li>
 						<li><a href='./?page=news_gestion&amp;ajout=1'>Ajout d'une news général</a> (En haut de la page nouvelles)</li>
-						<li><a href='./?page=import_polygone'>Importer un polygone dans la base</a></li>
 					</ul>");
 	
 			// Pour tous les utilisateurs
@@ -75,12 +67,10 @@ if (isset($_SESSION['id_utilisateur']) )
 				print("
 					<h4>Pour tout le monde</h4>
 					<ul>
-						<li><a href='./?page=moderateurs'>Connaître les moderateurs du site</a></li>
+					  <li>
+					    <a href='".$config['lien_forum']."login.php?logout=true'>Se déconnecter</a>
+					  </li>
 					</ul>"); // pas de risque la page est mutante
-		
-			// pour tout le monde	
-			default :
-				print("<p><a href='".$config['lien_forum']."login.php?logout=true'>Se déconnecter</a></p>");
 		}
 	}
 	else   // il y a un param PAGE
