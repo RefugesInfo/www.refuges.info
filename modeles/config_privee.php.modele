@@ -11,9 +11,12 @@ $config['serveur_pgsql']="localhost";
 $config['base_pgsql']="refuges";
 
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
-//$config['debug']=true;
+// + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
+$config['debug']=false;
 
-// Possible de l'activer pour les zones de développement, actif des que le debug l'est
-if ($config['debug'])
+// Le forum est bourré de warning que je ne compte pas vraiment reprendre
+if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))
+{
   ini_set('error_reporting', E_ALL ^ E_NOTICE);
-
+  ini_set('display_errors', '1');
+}
