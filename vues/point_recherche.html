@@ -29,7 +29,7 @@
 				<? //afficher un lien vers le massif comprenant le point
 				if ($point->id_polygone!=$config['numero_massif_fictif']) {?>
 					dans le
-					<a href="<?=lien_polygone ($point->nom_massif, $point->id_polygone, "Massif")?>">
+					<a href="<?=lien_polygone ($point)?>">
 						massif <?=$point->article_partitif_massif?> <?=$point->nom_massif?>
 					</a>
 					<? //Si elle/il est fermé, on l'indique directement rouge

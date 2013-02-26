@@ -12,6 +12,7 @@ Chantier d'avenir : passer en MVC
 require_once ("../modeles/config.php");
 require_once ("fonctions_autoconnexion.php");
 
+$modele = new stdClass;
 $modele->titre="Zone de gestion";
 $olVersion = 'ol2.12.1.3';
 

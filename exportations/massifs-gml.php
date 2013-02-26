@@ -30,13 +30,7 @@ else {
 		$polygone_type = $_GET['polygone_type'];
 	else
 		$polygone_type = $config['id_massif'];	
-	//PDO-	$condition="id_polygone_type = {$polygone_type} and id_polygone != {$config['numero_polygone_fictif']}";}
 }
-//PDO-  on utilise la fct prepared
-//$q_select_mass= "
-//	SELECT *
-//	FROM polygones
-//	WHERE $condition"; 
 
 //------------
 // Générateur de couleurs qui tournent autour du cercle colorimétrique
@@ -51,11 +45,6 @@ $a = 256 + $b; // +256 pour bénéficier du 0 à gauche quand on passe en hexad�
 //------------
 $xml_massifs = '';
 
-//PDO-
-//$r_select_mass= mysql_query($q_select_mass) or die("mauvaise requete dans GMcreemassifs: $q_select_mass");
-//if ($_GET['massif'] != 'null')
-//	while ($polygone = mysql_fetch_object($r_select_mass)) {
-//PDO+
 
 $pdo->requetes->liste_polys->bindValue('typepoly', $polygone_type , PDO::PARAM_INT );   // param_int CAPITAL pour PostGres
 $pdo->requetes->liste_polys->execute() or die("mauvaise requete dans PDO liste_polys avec param=$polygone_type");
@@ -68,7 +57,7 @@ if ($_GET['massif'] != 'null')
 		$no_coul += $pas;
 
 		// récupération du polygone avec la nouvelle fonction sly 01/11/2008
-		$polygone_coordonnees=tableau_polygone($polygone->id_polygone);
+		//FIXME : à convertir GIS $polygone_coordonnees=tableau_polygone($polygone->id_polygone);
 		$xml_poly = '';
 		if ($polygone_coordonnees)
 			foreach ($polygone_coordonnees as $sommet_polygone)
@@ -80,7 +69,7 @@ if ($_GET['massif'] != 'null')
 		<massif>
 		  <nom>{$polygone->nom_polygone}</nom>
 		  <color>#$cb$cv$cr</color>
-		  <url>http://".$config['nom_hote'].lien_polygone($polygone->nom_polygone,$polygone->id_polygone,'Massif') ."</url>
+		  <url>http://".$config['nom_hote'].lien_polygone($polygone) ."</url>
 		  <gml:Polygon>
 			<gml:LinearRing>
 			  <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">$xml_poly
@@ -94,7 +83,7 @@ if ($_GET['massif'] != 'null')
 
 //------------
 // Génération du fichier XML
-//------------
+// A convertir (ou pas) au MVC
 echo
 "<?xml version=\"1.0\" encoding=\"".$config['encodage_exportation']."\"?>
 <wfs:FeatureCollection
@@ -107,12 +96,5 @@ $xml_massifs
 </wfs:FeatureCollection>
 ";
 
-//------------
-// libère la boucle des massifs
-//------------
-//PDO- mysql_free_result ($r_select_mass); 
-// fermeture cnx mysql
-//if (is_resource($mysqlink))
-//    mysql_close($mysqlink);
 
 ?>

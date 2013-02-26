@@ -1,25 +1,20 @@
 <?php
-
 /**********************************************************************************************
- Rôle du module :       |                                                                   
-                        | ensemble de fonctions utilisables pour exporter des points de la  
-                        | base dans différents formats                                      
- 05/11/07 sly           | Et rangement dans des fonctions et modularisation du tout         
- 17/11/2007 jmb         | tvx compatibilité feedvalidator.org, dans le but d'importer le    
-                        | format KML dans le nav sat                                        
-                        | modif fct c() et rajout de cette fct c() un peu partout           
-                        | rajout d'un ID dans Placemark                                     
-                        | passage des styles dans l'entete pour accelerer                   
- 27/11/2007 jmb         | entete GPX passé de ISO-8859 a utf8                               
- 04/12/07 sly           | re-passage en iso-8859-1 pour le kml et le gpx                    
- 04/12/07 sly           | les formats gpx sont maintenant mieux supporté un peu partout     
- 10/10/10 Dominique     | Ajouts pour affichage d'une couche KML sur Openlayers             
- 24/10/10 Dominique     | Changements dans le format KML -IconStyle- pour s'adapter à la taille des icones -gx:w- ...
- 14/11/10 Dominique     | Introduction du format GML
- 24/11/12 Dominique     | Séparation des points proches
- 07/02/13 sly           | re--re-passage en UTF-8 pour le kml et le gpx suite à la convertion de notre base à cet encodage
- 14/02/13 jmb			| PDO ...
- 14/02/13 jmb			| ca fait assez peur. je m'en rendais pas compte en codant a la mano. on mets GeoPHP ?
+ensemble de fonctions utilisables pour exporter des points de la  
+base dans différents formats et rangement dans des fonctions et modularisation du tout         
+tvx compatibilité feedvalidator.org, dans le but d'importer le    
+format KML dans le nav sat modif fct c() et rajout de cette fct c() un peu partout           
+rajout d'un ID dans Placemark passage des styles dans l'entete pour accelerer                   
+entete GPX passé de ISO-8859 a utf8 re-passage en iso-8859-1 pour le kml et le gpx                    
+les formats gpx sont maintenant mieux supporté un peu partout     
+Ajouts pour affichage d'une couche KML sur Openlayers             
+Changements dans le format KML -IconStyle- pour s'adapter à la taille des icones -gx:w- ...
+Introduction du format GML
+Séparation des points proches
+re--re-passage en UTF-8 pour le kml et le gpx suite à la convertion de notre base à cet encodage
+
+14/02/13 jmb-> ca fait assez peur. je m'en rendais pas compte en codant a la mano. on mets GeoPHP ?
+Pas d'avis tranché -- sly
 ***********************************************************************************************/
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
@@ -103,15 +98,6 @@ Cette version, par rapport à la version complète n'inclus que peu d'informatio
 latitude, longitude, altitude, nom du point
 </p>");
 
-// Sauf erreur le format gpx-carte était utilisé par google maps, qui n'est plus utilisé, donc peut-être à nettoyer ?
-// sly 2011-07-26
-//------------------------------------------ Pareil que le gpx simplifié
-//$config['formats_exportation']['gpx-carte']=$config['formats_exportation']['gpx-garmin'];
-
-//------------------------------------------ Sauf qu'on ne veut pas le proposer dans le menu de choix
-//$config['formats_exportation']['gpx-carte']['interne']=true;
-
-//------------------------------------------
 $config['formats_exportation']['gpi']=array(
 "description_courte"=>"Garmin points d'intérêts",
 "extension_fichier"=>"gpi",
@@ -156,10 +142,6 @@ function liste_icones_possibles()
 {
 	global $pdo;
 	$q_select_type= "SELECT * FROM point_type";
-	//PDO-
-	//$r_select_type= mysql_query($q_select_type) or die("mauvaise requete: $q_select_type");
-	//while ($ptype = mysql_fetch_object($r_select_type))
-	//PDO+
 	$res = $pdo->query($q_select_type);
 	while ( $ptype = $res->fetch() )
 	{
@@ -469,9 +451,7 @@ return $xml;
  Fonction qui permet d'exporter en provenance de la base n'importe quel polygone au format GPX
  Le dernier point aura les même coordonnées que le premier point
 */
-//PDO GIS jmb + re ecriture SQL
 //FIXME Attention, ca a des chance de foirer pour les POLY avec INNER RING !!
-
 // PAUSE ! Cette fonction à toute les chances de ne plus avoir besoin d'exister vu qu'elle ne servait qu'a construire nos polygones pour les retravailler
 // ailleurs, avec potGIS, on a toute les chances de ne plus en avoir besoin -- sly 16/02/13
 
@@ -480,12 +460,6 @@ function export_polygone_gpx($id_polygone)
 	if (!is_numeric($id_polygone))
 		return -1;
 		ExteriorRing(gis);
-	//$query_liste="SELECT latitude,longitude
-	//	FROM points_gps,lien_polygone_gps 
-	//	where  
-	//points_gps.id_point_gps=lien_polygone_gps.id_point_gps 
-	//and lien_polygone_gps.id_polygone=$id_polygone 
-	//order by ordre";
 	
 	$query_liste="SELECT";
 					

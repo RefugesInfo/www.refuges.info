@@ -28,7 +28,7 @@ require_once ("fonctions_mode_emploi.php");
 $modele = new stdClass();
 $modele->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
 
-$vue->page_action="/point_modification.php";
+$modele->page_action="/point_modification.php";
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
 // ou si les droits sont insuffisants
@@ -37,8 +37,8 @@ if ( isset($_REQUEST["id_point"]) )
 	// on charge
 	$point=infos_point($_REQUEST['id_point']);
 	// Merde stop, le point n'existe pas
-	if ($point==-1) 
-		erreur_on_arrete("<h3>problème ? vous essayez de modifier un point qui n'existe pas ?</h3>");
+	if ($point->erreur) 
+		erreur_on_arrete("<h3>problème : $point->message</h3>");
 
 	$modele->localisation = localisation ($point->polygones);
 	$modele->serie = param_cartes ($modele->localisation);
@@ -49,7 +49,7 @@ if ( isset($_REQUEST["id_point"]) )
 		<a href=\"".$config['connexion_forum']."\">Connexion forum</a>");
 
 	// boutton en plus
-	$boutton_supprimer="<a href=\"$vue->page_action?action=supprimer&amp;id_point=$point->id_point\"><strong>Suppression de la fiche</strong></a>";
+	$boutton_supprimer="<a href=\"$modele->page_action?action=supprimer&amp;id_point=$point->id_point\"><strong>Suppression de la fiche</strong></a>";
 
 	//cosmétique
 	$icone="&amp;iconecenter=ne_sait_pas";
@@ -60,29 +60,30 @@ if ( isset($_REQUEST["id_point"]) )
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
 elseif ( isset($_REQUEST["id_point_type"]))  
 {
-	$conditions->type_point=$_REQUEST["id_point_type"];
-	$conditions->modele=1;
-	$mod=liste_points($conditions);
-	$zero="0";
-	if ($mod->nombre_points!=1)
-		print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
-	else
-		$point=$mod->points->$zero;
-
-	// on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
-	$point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
-	$point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
-	$modele->serie [1] = 20000; // Echèle de la carte
-
-	// on force l'id du point à vide histoire de ne pas modifier le modèle
-	$point->id_point="";
-
-	// cosmétique
-	$icone="&amp;iconecenter=".$point->nom_icone;
-	$action="Ajout";
-	$verbe="Ajouter";
-//	$etape="<h4>Étape 3/3</h4>";
-	$etape="
+  $conditions = new stdClass;
+  $conditions->type_point=$_REQUEST["id_point_type"];
+  $conditions->modele=1;
+  $mod=liste_points($conditions);
+  $zero="0";
+  if ($mod->nombre_points!=1)
+    print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
+  else
+    $point=$mod->points->$zero;
+  
+  // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
+  $point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
+  $point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
+  $modele->serie [1] = 20000; // Echèle de la carte
+  
+  // on force l'id du point à vide histoire de ne pas modifier le modèle
+  unset($point->id_point);
+  
+  // cosmétique
+  $icone="&amp;iconecenter=".$point->nom_icone;
+  $action="Ajout";
+  $verbe="Ajouter";
+  //	$etape="<h4>Étape 3/3</h4>";
+  $etape="
 <h5>Licence des contenus</h5>
 	{$config['message_licence']}
 <h5>Que mettre ou ne pas mettre ?</h5>
@@ -95,89 +96,57 @@ elseif ( isset($_REQUEST["id_point_type"]))
 	Rien d'obligatoire mais essayez d'être précis ne laissez pas les valeurs par défaut; au pire, remplacez par un blanc.
 </p>
 ";
-	if (!isset($_SESSION['id_utilisateur']))
-	{
-	  $etape.="
-	<h5>Non connecté ?</h5>
-	<p>
-		Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche	
-	</p>
-	";
-	}
+  if (!isset($_SESSION['id_utilisateur']))
+  {
+    $etape.="
+    <h5>Non connecté ?</h5>
+    <p>
+    Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche	
+    </p>
+    ";
+  }
 }
 // 3) on veut dupliquer l'actuel mais garder les mêmes coordonnées
 elseif ( isset($_REQUEST["dupliquer"]))
 {
-	$conditions->type_point=$_REQUEST["dupliquer"];
-	$point=infos_point($_REQUEST["dupliquer"]);
-	// on force l'id du point à vide histoire de ne pas modifier la copie
-	$point->id_point="";
-	$point->nom="";
-	$point->proprio="";
-	$point->proprio="";
-	$point->remark="";
-	$point->id_point_type="";
-	$point->article_partitif_point_type=""; 
-	$point->nom_type="";
-	// paramètre caché du point_gps
-	$deja_point_gps.="<input type='hidden' name='id_point_gps' value='$point->id_point_gps' />";
-
-	// cosmétique
-	$disabled_field=" style=\"background-color: #e3d4d4\" onFocus=\"javascript: this.blur()\"";
-	$action="Copie avec coordonnées identiques";
-	$verbe="Ajouter";
-	$icone="&amp;iconecenter=".$point->nom_icone;
-	$etape="<h4>Étape 1/2</h4>";
+  $conditions->type_point=$_REQUEST["dupliquer"];
+  $point=infos_point($_REQUEST["dupliquer"]);
+  // on force l'id du point à vide histoire de ne pas modifier la copie
+  unset($point->id_point);
+  unset($point->nom);
+  unset($point->proprio);
+  unset($point->remark);
+  unset($point->id_point_type);
+  unset($point->article_partitif_point_type); 
+  unset($point->nom_type);
+  // paramètre caché du point_gps
+  $deja_point_gps.="<input type='hidden' name='id_point_gps' value='$point->id_point_gps' />";
+  
+  // cosmétique
+  $disabled_field=" style=\"background-color: #e3d4d4\" onFocus=\"javascript: this.blur()\"";
+  $action="Copie avec coordonnées identiques";
+  $verbe="Ajouter";
+  $icone="&amp;iconecenter=".$point->nom_icone;
+  $etape="<h4>Étape 1/2</h4>";
 }
 // 4) On ne devrait pas arriver en direct sur ce formulaire
 else
-	erreur_on_arrete("<h3>Vous n'auriez pas dû arriver sur cette page en direct</h3>");
+  erreur_on_arrete("<h3>Vous n'auriez pas dû arriver sur cette page en direct</h3>");
 
 /******** Formulaire de modification/création/suppression *****************/
 
 /******** Boutons répétés en haut et en bas *****************/
+if (isset($point->id_point))
+  $deja_point="<input type='hidden' name='id_point' value='$point->id_point' />";
 $boutton_actions="
 	Validation:
-		$deja_point_gps<input type='hidden' name='id_point' value='$point->id_point' />
+		$deja_point_gps$deja_point
  		<input type='submit' name='action' value='$verbe' />
 		<input type='reset' value='Recommencer' />
 		$boutton_supprimer
 	";
-	
-/******** préparation de la listbox des types de points disponibles *****************/
-//
-//Plus besoin (PDO) voir le HTML pour + d infos
-//
-//
-//$type_selected[$point->id_point_type]=" selected=\"selected\"";
-//$html_listbox="";
-//$sql_point_possible="select * from point_type
-//			ORDER BY importance desc";
-//$query_point_possible=mysql_query($sql_point_possible);
-//while ($type_possible=mysql_fetch_object($query_point_possible))
-//      $html_listbox.="\n\t\t<option value=\"$type_possible->id_point_type\"".$type_selected[$type_possible->id_point_type].">$type_possible->nom_type</option>";
-//mysql_free_result($query_point_possible);
-//
-/******** Coordonnées du point *****************/
-//
-//Plus besoin (PDO) voir le HTML pour + d infos
-//
-//		$requete_type_precision="SELECT * FROM type_precision_gps ORDER BY ordre";
-//		$resultat=mysql_query($requete_type_precision);
-//		
-//		while ($liste_precision_gps=mysql_fetch_object($resultat))
-//		{
-//			if ($liste_precision_gps->id_type_precision_gps==$point->id_type_precision_gps)
-//				$selected="selected='selected'";
-//			else
-//				$selected="";
-//
-//			$htmlconstruct_select.="\t\t<option $selected value='$liste_precision_gps->id_type_precision_gps'>$liste_precision_gps->nom_precision_gps</option>\n";
-//		}
-//		mysql_free_result($resultat);
-//
-//3 Champs text area similaires, on fait une boucle
 
+//3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( lac, sommet, etc. )
 if ($point->equivalent_proprio!="")
   $textes_area[$point->equivalent_proprio]="proprio";

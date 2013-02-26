@@ -52,6 +52,10 @@ A disposition : commentaires,refuges,points,general,forums
 maintenir l'idée de tout regrouper dans un tableau qu'on tri ensuite
 FIXME: la prochaine étape est de ne générer aucun HTML ici, mais transmettre au nouveau modèle mvc 
 un tableau contenant les informations sly 20/12/2011
+Conseils d'utilisation : cette fonction n'a de sens que lorsqu'elle mélange plusieurs sources de nature différentes
+(comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher certains commentaires, la fonctions
+infos_commentaires( ) est à mon avis plus appropriée
+
 ***************************************/
 
 function affiche_news($nombre,$type,$rss=FALSE)
@@ -96,7 +100,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	else
 	  $espace=" ";
 	
-	$lien_massif="dans <a href=\"".lien_polygone($commentaire->nom_massif,$commentaire->id_polygone,"massif")."\">le massif
+	$lien_massif="dans <a href=\"".lien_polygone($commentaire,$lien_absolu)."\">le massif
 	".$commentaire->article_partitif.$espace.$commentaire->nom_massif."</a>";
       }
       else   // la ya pas de massif
@@ -134,7 +138,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	      $espace=" ";
 	    
 	    $lien_massif="dans le 
-	    <a href=\"".lien_polygone($point->nom_massif,$point->id_massif,$point->type_polygone)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
+	    <a href=\"".lien_polygone($point,$lien_absolu)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
 	  }
 	  else
 	    $lien_massif="";

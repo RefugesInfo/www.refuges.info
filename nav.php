@@ -29,10 +29,10 @@ $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
 $modele->infos_base = infos_base ();
 						
 // l'URL d'appel de la page 
-// typiquement:  /nav/Massif/34/Vercors/  pour le referenceement google
+// typiquement:  /nav/34/massif/Vercors/  pour le referenceement google
 $tableau_url = explode ('/',$_SERVER['PATH_INFO']);
-$modele->id_polygone = $tableau_url [2];
-$modele->type_affichage = $tableau_url [1]; // "zone" ou "massif". ca definit l'affichage qui suit
+$modele->id_polygone = $tableau_url [1];
+$modele->type_affichage = $tableau_url [2]; // "zone" ou "massif". ca definit l'affichage qui suit
 
 // Les paramètres des layers points et massifs
 if ($modele->id_polygone)

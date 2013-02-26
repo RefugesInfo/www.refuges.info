@@ -13,6 +13,7 @@ require_once ("fonctions_polygones.php");
 
 /************ Préparation des conditions de la recherche *******************/
 // tous ceux dont le name du formulaire correspondent à la condition sur le champs en base du même nom
+$conditions = new stdClass;
 foreach ($_POST as $champ => $valeur)
 	$conditions->$champ=trim($valeur);
 
@@ -45,7 +46,7 @@ foreach ($config['champs_binaires_simples_points'] as $attribut_binaire )
 if ($conditions->non_utilisable!='oui')
   $conditions->ouvert='oui';	
 
-// FIXME : Quelqu'un s'en sert-il vraiment d'une recherche autour d'un couple de coordonnées gps ?
+// Recherche autour d'un couple de coordonnées gps
 if ($_POST['lat']!="" and $_POST['lon']!="" and $_POST['autour']!="")
   $conditions->distance=$_POST['lat'].";".$_POST['lon'].";".$_POST['autour'];
 

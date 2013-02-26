@@ -37,6 +37,7 @@ Possibilité d'ajouter une photo en provenance d'un autre site (pour éviter de 
 function modification_ajout_commentaire($commentaire)
 {
   global $config,$pdo;  
+  $retour = new stdClass;
   $photo_valide=False;
   $point=infos_point($commentaire->id_point);
   if ($point==-1)
@@ -55,118 +56,111 @@ function modification_ajout_commentaire($commentaire)
     $photo_valide=True;
   }
   else if (isset($commentaire->photo['reduite']))
-  { // On a pas (ou plus) la photo originale, mais on a quand même la réduite
+   // On a pas (ou plus) la photo originale, mais on a quand même la réduite
     $commentaire->photo_existe=1; // normalement, vu que l'objet n'a pas de chemin pour la photo, ça devrait déjà être 0, mais si quelqu'un veut le forcer à 1 : non
+  else
+    $commentaire->photo_existe=0; 
+  
+  if (!$photo_valide and trim($commentaire->texte)=="")
+    return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
+  
+  // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
+  if (isset($commentaire->id_commentaire))
+  { // On souhaite ajouter le commentaire
+  $old_commentaire=infos_commentaire($commentaire->id_commentaire);
+  if ($old_commentaire->erreur)
+    return erreur("Une modification d'un commentaire inexistant a été demandée");
+  if ($commentaire->photo['originale']!=$old_commentaire->photo['originale'])
+    $ajout_photo=True;
+  else
+    $ajout_photo=False;
+  $mode="modification";
   }
   else
+    $mode="ajout";
+  
+  $traitement_photo=($photo_valide and ($ajout_photo or $mode=="ajout"));
+  if ($traitement_photo)
   {
-    $commentaire->photo_existe=0; // normalement, vu que l'objet n'a pas de chemin pour la photo, ça devrait déjà être 0, mais si quelqu'un veut le forcer à 1 : non
-    $commentaire->date_photo="0000-00-00"; // normalement, vu que l'objet n'a pas de chemin pour la photo, ça devrait déjà être 0, mais si quelqu'un veut le forcer à 1 : non
+    $commentaire->photo_existe=1;
+    $exif_data = @exif_read_data ($commentaire->photo['originale']);
+    $date_photos = $exif_data ['DateTimeOriginal'];
+    
+    // Testons si on a récupéré une date dans les infos exif de la photo
+    if (isset($date_photos))
+      $commentaire->date_photo=date_exif_a_mysql($date_photos);
   }
+  // Quelques choix par défaut si c'est une création et que ça n'est pas précisé
+  if (!is_numeric($commentaire->qualite_supposee))
+    $commentaire->qualite_supposee=0;
+  if (!is_numeric($commentaire->id_createur))
+    $commentaire->id_createur=0;
+  if ($commentaire->demande_correction!=1)
+    $commentaire->demande_correction=0;
   
-	if (!$photo_valide and trim($commentaire->texte)=="")
-		return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
+   
+  $champs_sql['id_point'] = $commentaire->id_point;
+  if ($mode=='ajout')
+    $champs_sql['date'] = "NOW()";
+  $champs_sql['texte'] = $pdo->quote($commentaire->texte);
+  $champs_sql['auteur'] = $pdo->quote($commentaire->auteur);
+  $champs_sql['demande_correction']=$commentaire->demande_correction;
+  $champs_sql['id_createur']=$commentaire->id_createur;
+  $champs_sql['qualite_supposee']=$commentaire->qualite_supposee;
+  $champs_sql['photo_existe']=$commentaire->photo_existe;
+  if (isset($date_photos))
+    $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo);
+	
+  // fait-on un update ou un insert ?
+  if ($mode=="modification")
+    $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'update',"id_commentaire=$commentaire->id_commentaire");
+  else
+    $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'insert');
   
-    // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
-    if (isset($commentaire->id_commentaire))
-    { // On souhaite ajouter le commentaire
-		$old_commentaire=infos_commentaire($commentaire->id_commentaire);
-		if ($old_commentaire->erreur)
-			return erreur("Une modification d'un commentaire inexistant a été demandée");
-		if ($commentaire->photo['originale']!=$old_commentaire->photo['originale'])
-			$ajout_photo=True;
-		else
-			$ajout_photo=False;
-		$mode="modification";
-    }
-    else
-		$mode="ajout";
+  if (!$pdo->exec($query_finale))
+    return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
+  else
+    $commentaire->id_commentaire = $pdo->lastInsertId('commentaires_id_commentaire_seq'); // FIXME POSTGRESQL normalement c la bonne syntax compatible les 2 SGBD
 
-	$traitement_photo=($photo_valide and ($ajout_photo or $mode=="ajout"));
-    if ($traitement_photo)
+  if ($mode=="ajout")
+    $retour->message="commentaire ajouté";
+  else
+    $retour->message="commentaire modifié";
+  
+  $retour->erreur=False;
+
+  // On avait une photo valide sur le disque mais il est demandé qu'il n'y en ait pas, il faut donc faire le ménage
+  if ($commentaire->photo_existe==0 and $photo_valide)
+    suppression_photos($commentaire);
+    
+  // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo
+  if ($traitement_photo)
+  {
+    $photo_originale=$config['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
+    $vignette_photo = $config['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
+    $image_reduite=$config['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
+    if ( ($taille[0]>$config['largeur_max_photo']) OR ($taille[1]>$config['hauteur_max_photo']))
     {
-		$commentaire->photo_existe=1;
-		$exif_data = @exif_read_data ($commentaire->photo['originale']);
-      	$date_photos = $exif_data ['DateTimeOriginal'];
-	
-		// Testons si on a récupéré une date dans les infos exif de la photo
-		if (isset($date_photos))
-			$commentaire->date_photo=date_exif_a_mysql($date_photos);
-		else
-			$commentaire->date_photo="";
+      copy($commentaire->photo['originale'],$photo_originale);
+      $retour->message.=", la photo est grande (plus grande que "
+      .$config['largeur_max_photo'] . "x"
+      .$config['hauteur_max_photo']
+      ."), elle est redimensionnée";
+      copy($commentaire->photo['originale'],$image_reduite);
+      
+      redimensionnement_photo($image_reduite);
+      copy($image_reduite,$vignette_photo);
     }
-    // Quelques choix par défaut si c'est une création et que ça n'est pas précisé
-    if (!is_numeric($commentaire->qualite_supposee))
-		$commentaire->qualite_supposee=0;
-    if (!is_numeric($commentaire->id_createur))
-		$commentaire->id_createur=0;
-    if ($commentaire->demande_correction!=1)
-		$commentaire->demande_correction=0;
-    
-    $query_insert_ajout ="
-        SET
-        id_point = $commentaire->id_point,";
-	if ($mode=='ajout')
-		$query_insert_ajout .= 'date = NOW(),' ;
-    $query_insert_ajout .="
-        texte = " . $pdo->quote($commentaire->texte) . ",
-        auteur = " . $pdo->quote($commentaire->auteur) . ",
-        demande_correction=$commentaire->demande_correction,
-        id_createur=$commentaire->id_createur,
-        qualite_supposee=$commentaire->qualite_supposee,
-        photo_existe=$commentaire->photo_existe,
-        date_photo='$commentaire->date_photo' ";
-	
-    // fait-on un updater ou un insert ?
-    if ($mode=="modification")
-      $query_finale="UPDATE commentaires $query_insert_ajout WHERE id_commentaire=$commentaire->id_commentaire LIMIT 1";
     else
-      $query_finale="INSERT INTO commentaires $query_insert_ajout";
-    
-    if ($pdo->exec($query_finale) === FALSE)
-		return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
-	else
-		$commentaire->id_commentaire = $pdo->lastInsertId('commentaires_id_commentaire_seq'); // FIXME POSTGRESQL normalement c la bonne syntax compatible les 2 SGBD
-
-    if ($mode=="ajout")
-		$retour->message="commentaire ajouté";
-    else
-		$retour->message="commentaire modifié";
-    
-	$retour->erreur=False;
-
-    // On avait une photo valide sur le disque mais il est demandé qu'il n'y en ait pas, il faut donc faire le ménage
-    if ($commentaire->photo_existe==0 and $photo_valide)
-		suppression_photos($commentaire);
-    
-    // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo
-    if ($traitement_photo)
     {
-		$photo_originale=$config['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
-		$vignette_photo = $config['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
-		$image_reduite=$config['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
-		if ( ($taille[0]>$config['largeur_max_photo']) OR ($taille[1]>$config['hauteur_max_photo']))
-		{
-			copy($commentaire->photo['originale'],$photo_originale);
-			$retour->message.=", la photo est grande (plus grande que "
-				.$config['largeur_max_photo'] . "x"
-				.$config['hauteur_max_photo']
-				."), elle est redimensionnée";
-			copy($commentaire->photo['originale'],$image_reduite);
-	
-			redimensionnement_photo($image_reduite);
-			copy($image_reduite,$vignette_photo);
-		}
-		else
-		{
-			copy($commentaire->photo['originale'],$image_reduite);
-			copy($image_reduite,$vignette_photo);
-			$retour->message.=", photo ajoutée";
-		}
-		redimensionnement_photo($vignette_photo, 'vignette');
+      copy($commentaire->photo['originale'],$image_reduite);
+      copy($image_reduite,$vignette_photo);
+      $retour->message.=", photo ajoutée";
     }
-	$retour->id_commentaire=$commentaire->id_commentaire;
-	return ($retour);
+    redimensionnement_photo($vignette_photo, 'vignette');
+  }
+  $retour->id_commentaire=$commentaire->id_commentaire;
+  return ($retour);
 }
 
 /****************************************
@@ -337,6 +331,7 @@ function infos_commentaires ($conditions)
 // Un appel plus simple qui utilise le précédent
 function infos_commentaire($id_commentaire)
 {
+  $conditions = new stdClass;
   $conditions->ids_commentaires=$id_commentaire;
   $c=infos_commentaires ($conditions);
   if ($c->erreur)
@@ -394,7 +389,7 @@ function suppression_commentaire($commentaire)
 	if ($commentaire->photo_existe)
 		suppression_photos($commentaire);
 	
-	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire LIMIT 1";
+	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire";
 	$success = $pdo->exec($query_delete);
 	
 	if (!$success)

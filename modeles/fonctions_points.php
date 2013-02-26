@@ -62,7 +62,7 @@ foreach ($polygones as $polygone)
 {
 	if ($polygone->id_polygone!=$config['numero_polygone_fictif']) // seulement si c'est pas le polygone fourre-tout
 	{
-		$lien=lien_polygone($polygone->nom_polygone,$polygone->id_polygone,$polygone->type_polygone);
+		$lien=lien_polygone($polygone,True);
 		if ($polygone->url_exterieure!="" AND $polygone->source!="")
 		  $lien_externe="(<a href='$polygone->url_exterieure'>$polygone->source</a>)";
 		else
@@ -117,21 +117,6 @@ function param_cartes_vignettes ($modele) {
 	return $carte;
 }
 
-//**********************************************************************************************
-//* Nom de la fonction:    | presentation_infos_point_court                                    *
-//* Date :                 |                                                                   *
-//* Créateur :             |                                                                   *
-//* Rôle de la fonction:   | Utilisée dans la recherche pour afficher une ligne par point      *
-//*------------------------|-------------------------------------------------------------------*
-//* Paramétres(Nom E/S)    | Rôle                                                              *
-//*------------------------|-------------------------------------------------------------------*
-//* $point           E     | objet contenant les informations du point                         *
-//*                        | Voir la logique objet de ce type dans le fichier de documentation *
-//*------------------------|-------------------------------------------------------------------*
-//* Modifications(date Nom)| Elements modifiés, ajoutés ou supprimés                           *
-//*------------------------|-------------------------------------------------------------------*
-//**********************************************************************************************
-
 // Par choix, la notion de fermeture dans la base est enregistrée en un seul champ pour tous les cas 
 // (ruines, détruite, fermée) car ces trois états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
 // le texte en utilisant la table point_type, donc en dur dans le code si autre que "", "non" ou "oui"
@@ -153,48 +138,6 @@ else
   return "";
 return $annonce_fermeture;
 }
-function presentation_infos_point_court($point)
-{
-global $config;
-$lien_point_debut="<a href=\"".lien_point_fast($point)."\">";$lien_point_fin="</a>";
-
-//Si elle/il est fermé, on l'indique directement en haut en rouge
-$annonce_fermeture=texte_non_ouverte($point);
-if ($annonce_fermeture!="")
-	$html_annonce_fermeture="<strong>($annonce_fermeture)</strong>";
-else
-	$html_annonce_fermeture="";
-// lien de modif  uniquement si le visiteur est un modérateur 
-// ou si c'est cet utilisateur du forum qui a rentré le point
-$html_construct .= "
-<dd class='fiche_cadre condense'>
-  <em><a href=\"".
-	  lien_point_fast($point).//->nom,$point->nom_polygone,$point->id_point,$point->nom_type).
-	  "\">".bbcode2html($point->nom)."</a>$html_annonce_fermeture";
-
-// Un bouton "modifier" cette fiche pour : les modérateurs, ou celui qui a rentré cette fiche si elle n'a pas été modifiée depuis
-if (isset($_SESSION['id_utilisateur'])
-	AND ( ($_SESSION['niveau_moderation']>=1) OR ($_SESSION['id_utilisateur']==$point->id_createur))
-	)
-  $lien_modifier="
-  <a class='groupir' style='font-size: smaller ;' href='/point_formulaire_modification.php?id_point=".$point->id_point."'>[Modifier]</a>";
-else
-  $lien_modifier="";
-
-$html_construct .="</em> $lien_modifier, ".bbcode2html($point->nom_type);
-			
-//afficher un lien vers le massif comprenant le point
-if ($point->id_polygone!=$config['numero_massif_fictif'])
-	$html_construct .= " dans le <a href=\"".lien_polygone($point->nom_massif,$point->id_polygone,"Massif")
-	."\">Massif ".$point->article_partitif_massif." ".$point->nom_massif
-	."</a>";
-		
-$html_construct .= "
-</dd>
-";
-
-return $html_construct; 
-}
 
 //**********************************************************************************************
 // Récupère le dernier post sur un forum d'un point
@@ -202,21 +145,28 @@ return $html_construct;
 // on affiche les commentaires+photos en plus
 function infos_point_forum ($id) 
 {
-	global $pdo;
-	// faudra voir si ca vaudra le coup d'en faire une PDO prepared.
-	$q=" SELECT *
-			FROM phpbb_posts_text, phpbb_topics, phpbb_posts
-			WHERE phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id 
-				AND phpbb_topics.topic_id_point = $id
-				AND phpbb_posts.post_id = phpbb_posts_text.post_id
-			LIMIT 1";
-	// On envoie la requete
-	$r = $pdo->query($q) or die ('Erreur de requete  : infos_point_forum : $q');
-
-	$result = $r->fetch();
-	$result->lienforum = $config['forum_refuge'].$result->topic_id;
-	
-	return $result;
+  global $pdo,$config;
+  // faudra voir si ca vaudra le coup d'en faire une PDO prepared.
+  $q=" SELECT *
+       FROM phpbb_posts_text, phpbb_topics, phpbb_posts
+       WHERE 
+         phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id 
+       AND 
+         phpbb_topics.topic_id_point = $id
+       AND 
+         phpbb_posts.post_id = phpbb_posts_text.post_id
+       LIMIT 1";
+  // On envoie la requete
+  $r = $pdo->query($q) or die ('Erreur de requete  : infos_point_forum : $q');
+  
+  
+  $result = $r->fetch();
+  if (isset($result->topic_id))
+    $result->lien=$config['forum_refuge'].$result->topic_id;
+  else
+    return erreur("Le forum du point $id ne semble pas exister","$q n'a retourné aucun enregistrement");
+  
+  return $result;
 
 }	
 
@@ -558,10 +508,7 @@ Dans le cas d'un nouveau point, creation d'un topic dans forum correspondant.
 (C'est du copier coller de ce qu'il y avait dans point.php)
 id et nom du point en question (nouveau point ?)
 renvoie le topic_id
-Non, vous ne révez pas, il y'a bien 5 requêtes là où je pense
-que une devrait suffir !
-phpBB serait il un brontosaure du web ? mal programmé mais finalement
-très utilisé ?
+Non, vous ne rêvez pas, il y'a bien 5 requêtes au total
 ********************************************/
 function forum_point_ajout( $id, $nom )
 {
@@ -744,62 +691,32 @@ Et je suis bien en peine pour trouver une combine pour la nettoyer
 
 function forum_supprime_topic($id_point)
 {
-	global $pdo;
+  global $pdo;
   /*** on va chercher l'id du topic qu'on veut virer ***/
   $query_recherche="SELECT * FROM `phpbb_topics` where topic_id_point=$id_point";
-//PDO-
-//$res=mysql_query($query_recherche);
-	//PDO+
-	$res = $pdo->query($query_recherche);
-  
-//PDO-
-//  if (mysql_num_rows($res)>0) // y'avait rien ? bizarre
-//  {
-//    $topic=mysql_fetch_object($res);
-	//PDO+
-	if ( $res->rowCount() > 0 ) // FIXME POSTGRESQL et MYSQL, pas fiable selon la doc ?!?!?
-	{
+  $res = $pdo->query($query_recherche);
+  if ($res)
+  {
     $topic=$res->fetch();
-    
     /*** vu que chez phpBB un post est dans deux tables, juste avant de les virer je vais virer leurs "contenus" ***/
     $query_recherche="SELECT * FROM `phpbb_posts` WHERE topic_id=$topic->topic_id";
-	//PDO+
-	$res = $pdo->query($query_recherche);
-	if ( $res->rowCount() > 0 ) // FIXME POSTGRESQL et MYSQL, pas fiable selon la doc ?!?!?
-		while ( $posts_a_supprimer = $res->fetch() )
-			$pdo->exec("DELETE FROM `phpbb_posts_text` where post_id=$posts_a_supprimer->post_id");
-	
-	/*** Suppression des posts du topic**/
-	$pdo->exec("DELETE FROM `phpbb_posts` WHERE topic_id=$topic->topic_id");
-	
-	/*** Suppression du topic spécifique au point***/
-	$pdo->exec("DELETE FROM `phpbb_topics` where topic_id=$topic->topic_id");
-	
-//PDO-	
-//    $res=mysql_query($query_recherche);
-//    if (mysql_num_rows($res)>0)
-//    {
-//      while($posts_a_supprimer=mysql_fetch_object($res))
-//	mysql_query("DELETE FROM `phpbb_posts_text` where post_id=$posts_a_supprimer->post_id");
-//    }
-//    
-//    /*** Suppression des posts du topic**/
-//    $query_supprime_post="DELETE FROM `phpbb_posts` WHERE topic_id=$topic->topic_id";
-//    mysql_query($query_supprime_post);
-//    
-//    /*** Suppression du topic spécifique au point***/
-//    $query_supprime="DELETE FROM `phpbb_topics` where topic_id=$topic->topic_id";
-//    mysql_query($query_supprime);
+    $res = $pdo->query($query_recherche);
+    while ( $posts_a_supprimer = $res->fetch() )
+      $pdo->exec("DELETE FROM `phpbb_posts_text` where post_id=$posts_a_supprimer->post_id");
+    
+    /*** Suppression des posts du topic**/
+    $pdo->exec("DELETE FROM `phpbb_posts` WHERE topic_id=$topic->topic_id");
+    
+    /*** Suppression du topic spécifique au point***/
+    $pdo->exec("DELETE FROM `phpbb_topics` where topic_id=$topic->topic_id");
+    
     
     /*** et pour finir mise à jour des stats du forum ***/
     $query_update="UPDATE `phpbb_forums` SET
     `forum_topics` = forum_topics-1,
-		    `prune_next` = NULL
-		    WHERE `forum_id` = '4'";
-	//PDO+
-	$pdo->exec($query_update);
-//PDO-
-//    mysql_query($query_update);
+    `prune_next` = NULL
+    WHERE `forum_id` = '4'";
+    $pdo->exec($query_update);
   }
 }
 

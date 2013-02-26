@@ -13,8 +13,8 @@ cat dump.sql | sed s/"tinyint(.*)"/"int(11)"/g > refuges2.sql
 
 Du fichier sql généré, il faut encore faire des modifs à la main :
 
-* On vire les contraintes NOT NULL dans le .sql sur date_photo et date_derniere_modification + remplacement des boolean
 que phpbb rentre en 0 ou 1 mais que l'outil de conversion à transformé en t ou f
+(1)
 cat test.sql |sed s/"date_derniere_modification\" date NOT NULL"/"date_derniere_modification\" date"/ | sed s/"date_photo\" date NOT NULL"/"date_photo\" date"/> bool-to-int.sql 
 
 * on dump dans psql : cat test.sql | psql refuges (avec l'utilisateur refuges)
@@ -23,3 +23,19 @@ cat test.sql |sed s/"date_derniere_modification\" date NOT NULL"/"date_derniere_
 
 * on vire le champs id_exterieur,source_exterieur de la table points
 * On autorise la valeure 'null' pour presque tous les champs de points
+
+* Gestion des contraintes "NOT NULL" qui ne devrait pas l'être chez nous :
+(on peut soit faire ça après l'import, soit avant dans le dump sql directement mais c'est un peu à la main
+comme fait avant (1))
+
+ALTER TABLE commentaires ALTER COLUMN auteur DROP NOT NULL;
+ALTER TABLE points ALTER COLUMN nom_createur DROP NOT NULL;
+ALTER TABLE points ALTER COLUMN site_officiel DROP NOT NULL;
+ALTER TABLE points ALTER COLUMN remark DROP NOT NULL;
+ALTER TABLE points ALTER COLUMN site_officiel DROP NOT NULL;
+ALTER TABLE points ALTER COLUMN proprio DROP NOT NULL;
+
+
+
+
+

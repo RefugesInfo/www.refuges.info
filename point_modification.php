@@ -29,6 +29,7 @@ switch( $_REQUEST["action"] )
 		// si l'id_point peut être vide, cela indiquera une création 
 		// ATTENTION BIDOULLE si on fait attention à ce que le nom des champs correspondent, on gagne du temps avec :
 		// Il y aura bien quelques trucs en trop, mais la fonction modification ne s'en servira pas
+		$point = new stdClass;
 		foreach ($_REQUEST as $nom => $value)
 			$point->$nom=stripslashes(trim($value));
 
