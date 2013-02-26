@@ -36,12 +36,13 @@ On génére une url vers la carte d'un polygone
 *********************************************/
 function lien_polygone($polygone,$local=True)
 {
+  global $config;
   if (!isset($polygone->type_polygone))
     $polygone->type_polygone="massif";
   if ($local)
     $url_complete="";
   else
-    $url_complete="http://".$_SERVER["HTTP_HOST"];
+    $url_complete="http://".$config['nom_hote'];
  
 return "$url_complete/nav/$polygone->id_polygone/".replace_url($polygone->type_polygone)."/".replace_url($polygone->nom_polygone)."/";
 }

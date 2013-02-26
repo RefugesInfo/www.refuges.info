@@ -29,7 +29,7 @@ function lien_point_fast($point,$local=false)
   if ($local)
     $url_complete="";
   else
-    $url_complete="http://".$_SERVER["HTTP_HOST"];
+    $url_complete="http://".$config['nom_hote'];
   if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
   else

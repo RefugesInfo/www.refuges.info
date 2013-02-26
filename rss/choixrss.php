@@ -7,6 +7,7 @@ Page de choix du flux rss
 require_once ('../modeles/config.php');
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
+$modele = new stdclass;
 $modele->titre="Formulaire de choix du flux rss de refuges.info";
 $modele->description = $description;
 include ($config['chemin_vues']."_entete.html");
@@ -38,11 +39,11 @@ var urssform = document.getElementById('urss');
 		FROM point_type
 		WHERE id_point_type>1
 		ORDER BY id_point_type";
-	$r = mysql_query($q) or die("erreur dans $q");
+	$r = $pdo->query($q) or die("erreur dans $q");
 	
 	print("\n<ul>");
-	while ($ptype = mysql_fetch_array($r))
-		print("\n  <li style='display: inline; display: inline-block; width: 13em; white-space: nowrap;'><label><input type='checkbox' name='listeobjets_cb' value='".$ptype['id_point_type']."' checked='checked' />".$ptype['nom_type']." &nbsp;</label></li>");
+	while ($ptype = $r->fetch())
+		print("\n  <li style='display: inline; display: inline-block; width: 13em; white-space: nowrap;'><label><input type='checkbox' name='listeobjets_cb' value='$ptype->id_point_type' checked='checked' />$ptype->nom_type &nbsp;</label></li>");
 	print("\n</ul>");
    ?>
  </fieldset>
@@ -66,11 +67,11 @@ var urssform = document.getElementById('urss');
    	$q = "SELECT id_polygone, nom_polygone
 		FROM polygones
 		WHERE id_polygone_type=1 order by nom_polygone";
-	$r = mysql_query($q) or die("erreur dans $q");
+	$r = $pdo->query($q) or die("erreur dans $q");
 
 	print("\n<ul>");
-	while ($massif = mysql_fetch_array($r))
-		print("\n  <li style='display: inline; display: inline-block; width: 13em; white-space: nowrap;'><label><input type='checkbox' name='listemassifs_cb' value='".$massif["id_polygone"]."' checked='checked' />".$massif["nom_polygone"]." &nbsp;</label></li>");
+	while ($massif = $r->fetch())
+		print("\n  <li style='display: inline; display: inline-block; width: 13em; white-space: nowrap;'><label><input type='checkbox' name='listemassifs_cb' value='$massif->id_polygone' checked='checked' />$massif->nom_polygone &nbsp;</label></li>");
 	print("\n</ul>");
    ?>
  </fieldset>
