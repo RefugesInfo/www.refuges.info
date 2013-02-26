@@ -509,13 +509,13 @@ function modification_ajout_point($point)
   global $config,$pdo;
   // désolé, le nom du point ne peut être vide
   if (trim($point->nom)=="")
-    return erreur("En ajout comme en modification, le nom du point ne peut être vide");
+    return erreur("Le nom ne peut être vide");
   
   // désolé, les coordonnées ne peuvent être vide ou non numérique
   if ($point->latitude=="" or $point->latitude=="")
-    return erreur("En ajout comme en modification, ni la latitude ni la longitude ne peuvent être vides");
+    return erreur("Ni la latitude ni la longitude ne peuvent être vides");
   if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
-    return erreur("En ajout comme en modification, la latitude et la longitude doivent utiliser un format valide");
+    return erreur("La latitude ou la longitude doivent utiliser un format valide : ex: 45.789");
   if ($point->id_point!="")  // update
   {
     $infos_point_avant = infos_point($point->id_point);
@@ -559,7 +559,7 @@ function modification_ajout_point($point)
       $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
     
     if (!$pdo->exec($query_finale))
-      return erreur("Requête en erreur, impossible à executer : $query_finale");
+      return erreur("Requête en erreur, impossible à executer",$query_finale);
     
     if ($point->id_point=="")  // donc c etait un ajout
     {	

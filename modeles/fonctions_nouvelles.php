@@ -61,6 +61,7 @@ infos_commentaires( ) est à mon avis plus appropriée
 function affiche_news($nombre,$type,$rss=FALSE)
 {
  global $config,$pdo;
+ $conditions = new stdClass;
  // tableau de tableau contiendra toutes les news toutes catégories confondues
  $news_array = array() ;
  if ($rss)
@@ -116,7 +117,6 @@ function affiche_news($nombre,$type,$rss=FALSE)
     
     case "refuges": $conditions->type_point=$config['tout_type_refuge'];
     case "points":
-      $conditions = new stdClass;
       $conditions->ordre="date_insertion DESC";
       $conditions->limite=$nombre;
       $conditions->avec_infos_massif=1;
@@ -175,24 +175,21 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	$conditions_messages_forum = new stdclass();
 	$conditions_messages_forum->limite=$nombre;
 	$conditions_messages_forum->sauf_ids_forum=$config['id_forum_moderateur'].",".$config['id_forum_developpement'];
-        $conditions_messages_forum->ordre="ORDER BY date DESC";
 
         $commentaires_forum=messages_du_forum($conditions_messages_forum);
-        foreach ( $commentaires_forum as $commentaire_forum)
-        {
-          $lien="/forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
-          $categorie="Sur le forum";
-          $titre=$commentaire_forum->topic_title;
-          $texte="$categorie : <a href=\"$lien\">$titre</a>";
-          $news_array[] = array($commentaire_forum->date,"texte"=>$texte,
-            "date"=>$commentaire_forum->date,"categorie"=>$categorie,
-            "titre"=>$titre,"lien"=>$lien); 
-        }
+	//print_r($commentaires_forum);die();
+	if (count($commentaires_forum)>0)
+	  foreach ( $commentaires_forum as $commentaire_forum)
+	  {
+	    $lien="/forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+	    $categorie="Sur le forum";
+	    $titre=$commentaire_forum->topic_title;
+	    $texte="$categorie : <a href=\"$lien\">$titre</a>";
+	    $news_array[] = array($commentaire_forum->date,"texte"=>$texte,
+				  "date"=>$commentaire_forum->date,"categorie"=>$categorie,
+				  "titre"=>$titre,"lien"=>$lien); 
+	  }
     break;
-
-    default:
-	break;
-
   }
 
 

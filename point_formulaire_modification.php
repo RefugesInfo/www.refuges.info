@@ -72,7 +72,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
   // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
   $point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
   $point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
-  $modele->serie [1] = 20000; // Echèle de la carte
+  $modele->serie [1] = 20000; // Echelle de la carte
   
   // on force l'id du point à vide histoire de ne pas modifier le modèle
   unset($point->id_point);
@@ -108,7 +108,6 @@ elseif ( isset($_REQUEST["id_point_type"]))
 // 3) on veut dupliquer l'actuel mais garder les mêmes coordonnées
 elseif ( isset($_REQUEST["dupliquer"]))
 {
-  $conditions->type_point=$_REQUEST["dupliquer"];
   $point=infos_point($_REQUEST["dupliquer"]);
   // on force l'id du point à vide histoire de ne pas modifier la copie
   unset($point->id_point);

@@ -494,18 +494,21 @@ function transfert_forum($commentaire)
 /************************************************************************
 Derniers messages du forum
 $conditions->limite : nombre maximum de messages retournés
-$conditions->ordre : exempple "ORDER BY date DESC"
+$conditions->ordre : exemple "ORDER BY date"
 $conditions->ids_forum : (5 ou 4,7,8)
 $conditions->sauf_ids_forum : (5 ou 4,7,8)
 ************************************************************************/
 function messages_du_forum($conditions)
 {
   global $pdo;
+  $quels_ids="";
   if (isset($conditions->ids_forum))
-    $quels_ids="AND phpbb_topics.forum_id in ($conditions->ids_forum)";
+    $quels_ids.="AND phpbb_topics.forum_id in ($conditions->ids_forum)";
   if (isset($conditions->sauf_ids_forum))
-    $quels_ids="AND phpbb_topics.forum_id not in ($conditions->sauf_ids_forum)";
-    
+    $quels_ids.="AND phpbb_topics.forum_id not in ($conditions->sauf_ids_forum)";
+  if ( !isset($conditions->ordre))
+    $conditions->ordre="ORDER BY date DESC";
+  
     // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
     //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
     // réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
@@ -526,8 +529,12 @@ function messages_du_forum($conditions)
 		LIMIT $conditions->limite";
 
     if (! ($res=$pdo->query($query_messages_du_forum)))
-    	return erreur("Impossible d'obtenir les derniers messages du forum".$query_messages_du_forum);
+    	return erreur("Impossible d'obtenir les derniers messages du forum",$query_messages_du_forum);
     else
-      return $res->fetch();
+    {
+      while ($message_du_forum = $res->fetch())
+	$messages_du_forum[]=$message_du_forum;
+    }
+    return $messages_du_forum;
 }
 ?>

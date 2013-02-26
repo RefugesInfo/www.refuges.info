@@ -61,9 +61,10 @@
 		<dd>
 			<div class="libelle">Type de point:</div>
 			<select name='id_point_type'>
-					<?	foreach ($modele->infos_base->types_point AS $tp) { ?>
-						<option  value="<?=$tp->id_point_type?>">
-							<?=$tp->nom_type ?>
+					<?php foreach ($modele->infos_base->types_point AS $type_point) { ?>
+					<?php if ($type_point->id_point_type==$point->id_point_type) $selected="selected=\"selected\""; else $selected="";?>
+						<option  value="<?=$type_point->id_point_type?>" <?=$selected?>>
+							<?=$type_point->nom_type?>
 						</option>
 					<?}?>
 			</select>

@@ -45,30 +45,25 @@ switch( $_REQUEST["action"] )
       $point->id_createur = isset($_SESSION['id_utilisateur']) ? $_SESSION['id_utilisateur'] : 0 ;
     }
     
-    // fais le boulot
+    // modification ou création du point
     $retour = modification_ajout_point($point);
     
-    switch ($retour) 
+    if ($retour->erreur) 
+	$html .= "<p><strong>$retour->message</strong></p>";
+    else
     {
-      case "erreur_nom" :
-	$html .= "<p><strong>Le nom du point ne peut être vide</strong></p>"; break;
-      case "erreur_point_inexistant" :
-	$html .= "<p><strong>Le point que vous tentez de modifier n'existe pas</strong></p>"; break;
-      case "erreur_latitude_vide" :
-      case "erreur_latitude_non_numerique" :
-	$html .= "<p><strong>Les coordonnées rentrées sont incorrecte, si vous rentrez des coordonnées approximatives, essayez de mettre une latitude et longitude approximative</strong></p>"; break;
+      $retourid = $retour; // id du point modifié/supprimé
+      
+      $html.="<h4>Merci de votre contribution</h4>
+      <h5>le point est ";
+      if ( isset($verbe) ) 
+	$html.=$verbe;
+      $html.="dans la base</h5>";
+      $html.="<p><a href=\"".lien_point_lent($retourid)."\">Cliquez ici pour voir la fiche</a></p>";
+      $html.="<p>
+      <h5>Pour continuer :</h5>
+      <a href='/point_formulaire_modification.php?dupliquer=$retourid'> Dupliquer un autre point d'information au même endroit</a></p>";
     }
-    $retourid = $retour; // id du point modifie/supprime
-    
-    $html.="<h4>Merci de votre contribution</h4>
-    <h5>le point est ";
-    if ( isset($verbe) ) 
-      $html.=$verbe;
-    $html.="dans la base</h5>";
-    $html.="<p><a href=\"".lien_point_lent($retourid)."\">Cliquez ici pour voir la fiche</a></p>";
-    $html.="<p>
-    <h5>Pour continuer :</h5>
-    <a href='/point_formulaire_modification.php?dupliquer=$point->id_point'> Dupliquer un autre point d'information au MEME endroit</a></p>";
     break;
   case 'supprimer':
     $html .= "<h3>Suppression d'un point</h3>";
