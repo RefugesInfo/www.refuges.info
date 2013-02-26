@@ -426,8 +426,8 @@ function waypoint_gpx($point,$format)
     // si le champ cmt dépasse 100 le reste sera tronqué par gpsbabel, donc mettre en début de champ
     // les informations les plus importantes
     $version_complete="
-    <cmt>$point->nom_type,$ferme_texte ".$point->altitude."m : ".d($point->remark)."</cmt>
-    <desc>".d($point->remark)."</desc>"; // A noter que ce champs est inutile car le garmin ne dispose que de deux champs (nom et description) et seul la balise cmt est convertie par gpsbabel
+    <cmt>$point->nom_type,$ferme_texte ".$point->altitude."m : ".c($point->remark)."</cmt>
+    <desc>".c($point->remark)."</desc>"; // A noter que ce champs est inutile car le garmin ne dispose que de deux champs (nom et description) et seul la balise cmt est convertie par gpsbabel
     $nom="$point->nom"; // Le champ name semble limité à 30 caractères environ ce qui devrait suffire pour la plupart
   }
   

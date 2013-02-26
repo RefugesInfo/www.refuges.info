@@ -99,7 +99,7 @@
 			<dd class="condense"><?echo date ("d/m/Y", $modele->date_insertion)?></dd>
 
 			<?// Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
-			if ($modele->date_derniere_modification != '0000-00-00') {?>
+			if (isset($modele->date_derniere_modification)) {?>
 				<dt class="condense">Dernière modification du </dt>
 				<dd class="condense"><?echo date ("d/m/Y",$modele->date_modif_timestamp)?>.</dd>
 			<?}
@@ -114,11 +114,11 @@
 				?>
 					<dd class="condense">
 						<a href="<?=$config['fiche_utilisateur'].$modele->id_createur?>">
-							<?echo bbcode2html ($createur->username)?>
+							<?=bbcode2html ($createur->username)?>
 						</a>
 					</dd>
 				<?}else{?>
-					<dd class="condense"><?echo bbcode2html ($modele->nom_createur)?></dd>
+					<dd class="condense"><?=bbcode2html ($modele->nom_createur)?></dd>
 				<?}
 			}
 			?>

@@ -28,16 +28,18 @@ print("<h3>$modele->titre</h3>");
 if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 {
   print("<h4>Veuillez préciser les options pour l'exportation</h4>");
-  $query_dossier = "Select id_point_type,nom_type,importance from point_type order by importance desc";
-  $result_dossier = mysql_query($query_dossier) or die("Impossible d'interroger la base de données");
-
+  //FIXME : fait à l'arrache
+  $query_dossier = "Select id_point_type,nom_type,importance from point_type where nom_type!='censuré' order by importance desc";
+  $res=$pdo->query($query_dossier);
+  
+    
   //Ecriture du formulaire HTML pour les cases à cocher
   $form_points="<form id='choix' method='post' action='".$_SERVER['SCRIPT_NAME']."'>";
 	
   // Choix des types de points 
   $form_points.="<fieldset><legend>Choix des points de la base a exporter</legend>";
   $form_points.="<ul>";
-  while ($row = mysql_fetch_object($result_dossier)) {
+  while ($row = $res->fetch()) {
     $form_points.="
 			<li style='display: inline;
 						display: inline-block;
@@ -86,10 +88,10 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 			where 
 			id_polygone_type=".$config['id_massif']."
 			ORDER BY nom_polygone";
-  $result_dossier = mysql_query($query_dossier) or die("Impossible d'interroger la base de données");
+  $result_dossier = $res=$pdo->query($query_dossier) or die("Impossible d'interroger la base de données");
 
   print("\n<ul>");
-  while ($row = mysql_fetch_array($result_dossier)) 
+  while ($row = $res->fetch()) 
   {
     print("  
 			<li style='display: inline;
@@ -100,13 +102,13 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 					<input
 						type='checkbox'
 						name='id_massif[]'
-						value='$row[0]' ");
+						value='$row->id_polygone' ");
   if ( ! isset($_GET['id_massif']) )
     print(" checked='checked' "); // checked par defo
   else
     if ($_GET['id_massif'] == $row[0]) 
       print(" checked='checked' "); //checked seulement si bon massif
-    print("/>$row[1] &nbsp;
+    print("/>$row->nom_polygone &nbsp;
 				</label>
 			</li>");
   }

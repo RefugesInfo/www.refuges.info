@@ -8,19 +8,16 @@ aussi des utilisateurs du site
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_gestion_erreurs.php");
 
-function infos_utilisateur($user_id)
+function infos_utilisateur($id_utilisateur)
 {
   global $pdo;
- $query="select * from phpbb_users where user_id=".$user_id;
- $res=$pdo->query($query);
- if (!$res->fetch())
-   return erreur("Utilisateur inexistant");
- else
- {
-   $utilisateur=$polygones_du_points = $res->fetch();
-   return $utilisateur;
- }
-  
+  $query="select * from phpbb_users where user_id=".$id_utilisateur;
+  $res=$pdo->query($query);
+  $utilisateur=$res->fetch();
+  if (!$utilisateur)
+    return erreur("Utilisateur inexistant",$query);
+  else
+    return $utilisateur;
 }
 
 ?>
