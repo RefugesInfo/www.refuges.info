@@ -117,7 +117,7 @@ $config['encodage_des_contenu_web']=$config['encodage_exportation'];
 $config['xapi_url_poi']="http://api.openstreetmap.fr/osm2node?";
 $config['overpass_api']="http://api.openstreetmap.fr/oapi/interpreter";
 //Autre serveur de backup :
-//$config['overpass_api']="http://http://www.overpass-api.de/api/interpreter";
+$config['overpass_api']="http://www.overpass-api.de/api/interpreter";
 
 
 /******** Nom du fichier contenant les points exportés **********/
