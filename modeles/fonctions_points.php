@@ -211,7 +211,7 @@ function infos_point($id_point)
   // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
   // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
   // sauf sur les pages des points... doute... incertitude -- sly
-  $query_polygones="SELECT nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
+  $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
 	FROM polygones,polygone_type,points_gps
 	WHERE
 	  polygones.id_polygone_type=polygone_type.id_polygone_type

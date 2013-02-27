@@ -191,12 +191,23 @@
 			}?>
 			
 <!--================================= Si message d'information à afficher =======================================-->
-			<?php if ($modele->message_information_polygone!="") 
-			{?>
-				<dt>Réglementation particulière :</dt><dd>
-				<?=$modele->message_information_polygone?>
-				</dd>
-			<?}?>
+			<?php if (isset($modele->polygone_avec_information)) {?>
+                          <dt>Réglementation particulière :</dt>
+                            <dd>
+                              <?=$modele->nom_debut_majuscule?> est situé dans
+                                <?php if (isset($modele->polygone_avec_information->site_web)) {?>
+                                  <a href="<?=$modele->polygone_avec_information->site_web?>">
+                                <?php } ?>
+                                  <?=$modele->polygone_avec_information->nom_polygone?>
+                                <?php if (isset($modele->polygone_avec_information->site_web)) {?>
+                                  </a>.<br />
+                                <?php } ?>
+                                <?=$modele->polygone_avec_information->message_information_polygone?>
+                              <?php if (isset($modele->polygone_avec_information->url_exterieure)) {?>
+                                (Plus d'information sur <a href="<?=$modele->polygone_avec_information->url_exterieure?>">cette réglementation</a>)
+                              <?php } ?>
+                          </dd>
+			<?php } ?>
 			
 <!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
 			<!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
