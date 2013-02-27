@@ -61,15 +61,8 @@ if(!isset($polygones))
 	return "";
 foreach ($polygones as $polygone)
 {
-	if ($polygone->id_polygone!=$config['numero_polygone_fictif']) // seulement si c'est pas le polygone fourre-tout
-	{
-		$lien=lien_polygone($polygone,True);
-		if ($polygone->url_exterieure!="" AND $polygone->source!="")
-		  $lien_externe="(<a href='$polygone->url_exterieure'>$polygone->source</a>)";
-		else
-		  $lien_externe="";
-		$html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."$lien_externe</a> >";
-	}
+  $lien=lien_polygone($polygone,True);
+  $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> >";
 }
 return trim($html,">");
 }
