@@ -535,12 +535,11 @@ function fichier_exportation($conditions,$format)
   if ($icones = $_GET ['icones']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
     $delta_latitude  = ($conditions->latitude_maximum  - $conditions->latitude_minimum ) / $icones;
     $delta_longitude = ($conditions->longitude_maximum - $conditions->longitude_minimum) / $icones;
-    
     if ($delta_latitude and $delta_longitude and count($points)!=0) // S'il y a un BBOX
-      foreach ($points as $point)
+      foreach ($points as $a => $p)
 	for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b
-	  $dlat = $point->latitude  - $point->latitude;
-	  $dlon = $point->longitude - $point->longitude;
+	  $dlat = $points[$a]->latitude - $points[$b]->latitude;
+	  $dlon = $points[$a]->longitude - $points[$b]->longitude;
 	  if ($dlat / $delta_latitude * $dlat / $delta_latitude + $dlon / $delta_longitude * $dlon / $delta_longitude < 1) {
 	    if ($dlat < 0) // $b a une plus grande latitude
 	      $deplacement_latitude = $dlat + $delta_latitude;
@@ -552,10 +551,10 @@ function fichier_exportation($conditions,$format)
 	    else // $a a une plus grande longitude
 	      $deplacement_longitude = $dlon - $delta_longitude;
 	    
-	    $point->latitude  -= $deplacement_latitude  / 2;
-	    $point->latitude  += $deplacement_latitude  / 2;
-	    $point->longitude -= $deplacement_longitude / 3;
-	    $point->longitude += $deplacement_longitude / 3;
+	    $points[$a]->latitude  -= $deplacement_latitude  / 2;
+	    $points[$b]->latitude  += $deplacement_latitude  / 2;
+	    $points[$a]->longitude -= $deplacement_longitude / 3;
+	    $points[$b]->longitude += $deplacement_longitude / 3;
 	  }
 	}
   }

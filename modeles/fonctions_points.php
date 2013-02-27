@@ -26,6 +26,7 @@ car requête de moins
 *************************************************************/
 function lien_point_fast($point,$local=false)
 {
+  global $config;
   if ($local)
     $url_complete="";
   else

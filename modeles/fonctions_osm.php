@@ -5,6 +5,8 @@ Fonctions pour gérer les points supplémentaires en provenance d'openstreetmap 
 - import
 - insertion
 sly 29/11/2012
+NOTE: Il y a 50% de chance que je ne récupère que 50% du code et 50% de chance que je ne récupère que 10% du code
+avant de trop retoucher tout ça, on va peut-être attendre que je me décide ;-) -- sly
 **********************************************************************************************/
 require_once ('config.php');
 require_once ("fonctions_bdd.php");
@@ -52,6 +54,10 @@ function recuperation_poi_osm($conditions_recherche)
 
 	//PDO+
 	// reecriture de la requete avec des JOIN
+	//Note : a calculer, mais avec un select * imbriqué sans conditions, je pense que tu récupères les 14000 tags
+	//de la base ! On gagner en effet en taille de requête, mais pas sûr du tout qu'on y gagne en vitesse
+	// la fonction "explain" de postresql (explain select * blabla) donne un aperçu des indexes utilisés et 
+	// des opérations de parcours systèmatique
 	$query_recherche="SELECT *
 						FROM
 								osm_pois AS poi

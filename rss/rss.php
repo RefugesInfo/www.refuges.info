@@ -41,19 +41,20 @@ $longdesc = 500 ; // longueur en char du champ description. apres c'est "(...)"
 // A ADAPTER SUIVANT la version de RSS 1.0, 2.0 ou Atom
 function affiche_item ($item)
 {
-	// la fonction mt_rand sert juste a avoir un GUID unique...........
-	return "
-	<item>
-		<title>".stripslashes(htmlspecialchars($item["title"],0,"UTF-8"))."</title>
-		<link>".$item["link"]."</link>
-		<guid>".$item["link"]."/".mt_rand(1,1000)."</guid>
-		<description>".stripslashes(htmlspecialchars($item["description"],0,"UTF-8"))."</description>
-		<pubDate>".date('r',$item["pubdate"])."</pubDate>
-		<category>".$item["category"]."</category>
-		<!-- <enclosure url='http://'.$config['nom_hote'].'/images/icones/abri.png'
-				length='178'
-				type='image/png' /> -->
-	</item> ";
+  global $config;
+  // la fonction mt_rand sert juste a avoir un GUID unique...........
+  return "
+  <item>
+    <title>".stripslashes(htmlspecialchars($item["title"],0,"UTF-8"))."</title>
+      <link>".$item["link"]."</link>
+      <guid>".$item["link"]."/".mt_rand(1,1000)."</guid>
+      <description>".stripslashes(htmlspecialchars($item["description"],0,"UTF-8"))."</description>
+      <pubDate>".date('r',$item["pubdate"])."</pubDate>
+      <category>".$item["category"]."</category>
+      <!-- <enclosure url='http://".$config['nom_hote']."/images/icones/abri.png'
+        length='178'
+        type='image/png' /> -->
+  </item> ";
 }
 
 //------------------------
