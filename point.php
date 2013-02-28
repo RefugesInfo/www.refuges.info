@@ -34,7 +34,9 @@ else
   $modele->titre                  = "$modele->nom_debut_majuscule $modele->altitude m ($modele->nom_type)";
   $modele->description            = "fiche d'information sur : $modele->nom_debut_majuscule, $modele->nom_type, altitude $modele->altitude avec commentaires et photos";
   $modele->type                   = 'point'; // Le template
-  $modele->localisation           = localisation ($modele->polygones);
+  foreach (array("administrative","montagnarde") as $categorie)
+    if (($loc=localisation ($modele->polygones,$categorie))!="")
+      $modele->localisation[$categorie] = localisation ($modele->polygones,$categorie);
   if ($modele->modele!=1)
     $modele->forum                  = infos_point_forum ($modele);
   $conditions_commentaires = new stdClass();

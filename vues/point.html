@@ -77,10 +77,6 @@
 					<strong>(<?=$modele->annonce_fermeture?>)</strong>
 				<?}?>
 			</dd>
-<!--======================================== LOCALISATION =========================================-->
-			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
-			<dt class="condense">Localisation:</dt>
-			<dd class="condense"><?=$modele->localisation?></dd>
 <!--===================================== PLACES POUR DORMIR ======================================-->
 			<?// Rajout de +ieurs blocs (proprio, acces, remark, pub, photos...) et d'un bloc "nb places" si necessaire
 			if ($modele->equivalent_places) {?>
@@ -149,6 +145,13 @@
 					)
 				<?}?>
 			</dd>
+<!--======================================== LOCALISATION =========================================-->
+                        <?php if (isset($modele->localisation))
+                              foreach ($modele->localisation as $categorie_localisation => $localisation) { ?>
+			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+			<dt class="condense">Localisation <?=$categorie_localisation?>:</dt>
+			<dd class="condense"><?=$localisation?></dd>
+			<?php } ?>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
 			<?// Champs textes libres
 			if ($modele->equivalent_proprio) {?>

@@ -51,9 +51,11 @@ function lien_point_lent($id_point)
   return (lien_point_fast($point));
 }
 
-// fonction simple qui renvois une chaine avec liens au format :
-// Pays > Massif > Département > carte topographique > (communes ?) > (parc protégé ?)
-function localisation($polygones)
+/* fonction simple qui renvois une chaine avec liens au format :
+ Pays + Massif + Département + carte topographique + (communes ?) + (parc protégé ?)
+On peut lui passer un paramètre additionnel indiquant quelle meta-categorie traiter
+*/
+function localisation($polygones,$categorie="")
 {
 global $config;
 $html="";
@@ -61,14 +63,18 @@ if(!isset($polygones))
 	return "";
 foreach ($polygones as $polygone)
 {
-  $lien=lien_polygone($polygone,True);
-  $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> >";
+  if (isset($polygone->categorie_polygone_type) and $polygone->categorie_polygone_type==$categorie)
+  {
+    $lien=lien_polygone($polygone,True);
+    $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> +";
+  }
 }
-return trim($html,">");
+return trim($html,"+");
 }
 
 // Définit la carte et l'échèle suivant la présence d'une zone dans la chaine de localisation
 // Dominique 28/05/2012
+// FIXME -> oulla qu'est-ce que c'est que cette tambouille, convertir en utilisant infos_point et mettre ces infos en base -- sly
 function param_cartes ($localisation) {
 	$series = Array (
 		'France'    => Array ('Maps.Refuges.info',          50000), // Inhibition temporaire, l'API ne fonctionnat plus / Dominique 30/08/2012
@@ -79,6 +85,7 @@ function param_cartes ($localisation) {
 		'Argentina' => Array ('OpenCycleMap', 50000),
 		'Autres'    => Array ('Google',      100000),
 	);
+	return $series ['France']; // par défaut
 
 	// Il doit y avoir mieux que ce découpage :
 	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $localisation));
@@ -89,11 +96,11 @@ function param_cartes ($localisation) {
 	return $series ['Autres']; // par défaut
 }
 // Dominique 11/09/2012 utilisation des paramètres de /includes/config.php
+// FIXME : idem
 function param_cartes_vignettes ($modele) {
 	global $config;
-	// TODO: Il doit y avoir mieux que ce charcutage :
+/*	// TODO: Il doit y avoir mieux que ce charcutage :
 	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $modele->localisation));
-	$carte = $config['cartes_vignettes'] ['Autres']; // par défaut
 	foreach ($chploc AS $loc)
 		if (isset ($config['cartes_vignettes'] [$loc]))
 			$carte =  $config['cartes_vignettes'] [$loc];
@@ -105,9 +112,10 @@ function param_cartes_vignettes ($modele) {
 		$modele->latitude  <  33
 		)
 		foreach ($carte AS $k => $v)
-			if ($v == 'maps.refuges.info')
+			if ($v == 'maps.refuges.info')*/
 				$carte [$k] = 'OpenCycleMap';
 
+	$carte = $config['cartes_vignettes'] ['Autres']; // par défaut
 	return $carte;
 }
 
