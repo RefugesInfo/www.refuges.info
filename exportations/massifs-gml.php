@@ -15,22 +15,8 @@ require_once ("../modeles/config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_polygones.php");
+require_once ("fonctions_gestion_erreurs.php");
 
-// Si on demande -1 (code spécial pour tous les massifs) ou rien alors on veut tous les massifs de la base dans la bbox
-if (isset($_GET['massif']) and $_GET['massif']!="-1")
-{
-	//Evitons de récupérer une merde depuis la variable $_GET['massif'] (injections SQL par exemple)
-	//On autorise soit rien, soit un id, soit une suite d'id comme ça : 12,45,78
-	if (!preg_match("/[\-0-9,]*/",$_GET['massif']))
-		die("Paramètres GET massif mal formé");
-	$condition="id_polygone IN ({$_GET['massif']})";
-}
-else {
-	if ($_GET['polygone_type'])
-		$polygone_type = $_GET['polygone_type'];
-	else
-		$polygone_type = $config['id_massif'];	
-}
 
 //------------
 // Générateur de couleurs qui tournent autour du cercle colorimétrique
@@ -45,24 +31,49 @@ $a = 256 + $b; // +256 pour bénéficier du 0 à gauche quand on passe en hexad�
 //------------
 $xml_massifs = '';
 
+//FIXME à l'arrache pour réparer : à bouger proprement dans une fonction ou dans une vue ou faire autrement ! -- sly
 
-$pdo->requetes->liste_polys->bindValue('typepoly', $polygone_type , PDO::PARAM_INT );   // param_int CAPITAL pour PostGres
-$pdo->requetes->liste_polys->execute() or die("mauvaise requete dans PDO liste_polys avec param=$polygone_type");
+// Ici on a demandé un nombre fini de massif solitaires
+if (isset($_GET['massif']))
+{
+  if (!verifi_multiple_intiers($_GET['massif'])) die("Paramètres GET massif mal formé");
+    $condition="id_polygone IN ({$_GET['massif']})";
+    $query="select id_polygone,nom_polygone,st_asgml(geom) as poly_gml 
+            from polygones
+            where 
+              $condition;";
+}
+else // ici on demande tous les massif dans le point de vue
+{
+  if ($_GET['polygone_type'])
+          $polygone_type = $_GET['polygone_type'];
+  else
+          $polygone_type = $config['id_massif'];	
+// FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME !!!!!!!!
+// j'ai vérifié l'ancien code : argh ! Le paramètre bbox est complètement ignoré : on récupère tous les massifs de la base (et en plus 2 fois à cause d'un bug coté OL)
+// ça se corrige bien avec GIS, mais avant de changer ici, on va attendre le voir l'avenir de ce code -- sly
+$query="select id_polygone,nom_polygone,st_asgml(geom) as poly_gml 
+          from polygones
+          where 
+            id_polygone_type=".$config['id_massif'];
+}
+$res=$pdo->query($query);
 if ($_GET['massif'] != 'null')
-	while ($polygone = $pdo->requetes->liste_polys->fetch() ) {
+	while ($polygone = $res->fetch() ) 
+        {
 		// Couleur attribuée autour du cercle des couleurs.
 		$cr = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul               )), -2);
 		$cv = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 2 * M_PI / 3)), -2);
 		$cb = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 4 * M_PI / 3)), -2);
 		$no_coul += $pas;
-
-		// récupération du polygone avec la nouvelle fonction sly 01/11/2008
-		//FIXME : à convertir GIS $polygone_coordonnees=tableau_polygone($polygone->id_polygone);
-		$xml_poly = '';
-		if ($polygone_coordonnees)
-			foreach ($polygone_coordonnees as $sommet_polygone)
-				$xml_poly .= "\n            $sommet_polygone->x,$sommet_polygone->y" ;
-
+              
+                // FIXME : grosse bidouille, il faudrait carrément laisser ça à postgis entièrement par la fonction st_asgml() puis rajouter nous même les infos en plus dont on a besoin
+                $gml_to_xml=@simplexml_load_string($polygone->poly_gml);
+                $z="gml:polygonMember";
+                $x="gml:Polygon";
+                $y="gml:outerBoundaryIs";
+                $w="gml:LinearRing";
+                $v="gml:coordinates";
 		// Génération d'1 massif
 		$xml_massifs .= "
 	  <gml:featureMember>
@@ -72,7 +83,7 @@ if ($_GET['massif'] != 'null')
 		  <url>http://".$config['nom_hote'].lien_polygone($polygone) ."</url>
 		  <gml:Polygon>
 			<gml:LinearRing>
-			  <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">$xml_poly
+			  <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">".$gml_to_xml->$z->$x->$y->$w->$v."
 			  </gml:coordinates>
 			</gml:LinearRing>
 		  </gml:Polygon>

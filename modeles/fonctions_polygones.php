@@ -22,12 +22,13 @@ Cette fonction permet d'aller chercher toutes les infos d'un polygone
 function infos_polygone($id_polygone)
 {
   global $pdo;
-  
-  $pdo->requetes->infos_poly->bindValue('idpoly', $id_polygone, PDO::PARAM_INT );
-  if(!$pdo->requetes->infos_poly->execute())
-    return erreur('infos_poly erreur sur le poly ',"Problème de requêtre pour trovuer le polygone n°$id_polygone");
-  // detype object comme l'ancienne
-  return $pdo->requetes->infos_poly->fetch();
+  $r="SELECT id_polygone,id_polygone_type,article_partitif,nom_polygone,source,message_information_polygone,url_exterieure
+          FROM polygones
+          WHERE 
+                  id_polygone = $id_polygone
+  ";
+  $res=$pdo->query($r);
+  return $res->fetch();
 }
 
 
@@ -38,13 +39,15 @@ function lien_polygone($polygone,$local=True)
 {
   global $config;
   if (!isset($polygone->type_polygone))
-    $polygone->type_polygone="massif";
+    $type_polygone="massif";
+  else
+    $type_polygone=$polygone->type_polygone;
   if ($local)
     $url_complete="";
   else
     $url_complete="http://".$config['nom_hote'];
  
-return "$url_complete/nav/$polygone->id_polygone/".replace_url($polygone->type_polygone)."/".replace_url($polygone->nom_polygone)."/";
+return "$url_complete/nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/";
 }
 
 
@@ -61,7 +64,7 @@ function liste_autres_massifs ($zone_demandee) {
 	// Lecture de tous les massifs
 	// dont les polygones n'intersectent PAS celui de la zone
 	$q_select_mass= "
-		SELECT *
+		SELECT id_polygone,id_polygone_type,article_partitif,nom_polygone,source,message_information_polygone,url_exterieure
 		FROM polygones
 		WHERE id_polygone_type=".$config['id_massif']."
 			AND id_polygone != ".$config['numero_polygone_fictif']."

@@ -44,4 +44,14 @@ function ok($texte)
   $retour->message=$texte;
   return $retour;
 }
+/*
+Fonction qui vérifie que le paramètre passé (string) est bien au format int ou int,int,int : "7" ou "5,4,7" répond : true, sinon false : "2.3" "5 ; delete * from..."
+*/
+function verifi_multiple_intiers($string)
+{
+  if (preg_match("/[\-0-9,]*/",$string))
+    return True;
+  else
+    return False;
+}
 ?>

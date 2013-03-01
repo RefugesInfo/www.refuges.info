@@ -50,7 +50,6 @@ function infos_base () {
 		FROM polygones
 		WHERE 
 			polygones.id_polygone_type = ".$config['id_massif']."
-			AND id_polygone != ".$config['numero_polygone_fictif']."
 		ORDER BY nom_polygone";
 	$q = $pdo->query( $sql );
 	while( $res = $q->fetch() )

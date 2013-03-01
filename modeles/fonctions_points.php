@@ -319,7 +319,9 @@ function infos_points($conditions)
     /******** Liste des conditions de type WHERE *******/
     $conditions_sql="";
   $tables_en_plus="";
-  
+  if (isset($conditions->ids_points))
+    if (!verifi_multiple_intiers($conditions->ids_points))
+      return erreur("Le paramètre donnée pour les ids n'est pas valide");
   // conditions sur le nom du point
   if($conditions->nom!="")
     $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
