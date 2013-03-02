@@ -12,23 +12,108 @@ require_once ("fonctions_bdd.php");
 require_once ('fonctions_mise_en_forme_texte.php');
 
 /***********************************************************************************
-Cette fonction permet d'aller chercher toutes les infos d'un polygone
-- Elle prend en paramêtre l'id du polygone
-- Elle renvoi un objet contenant :
-*nom_polygone
-*l'article partitif du polygone ( "de la" chartreuse ou "des" bauges...) pour un polygone 'massif'
-*etc...
+Cette fonction permet d'aller chercher un ou plusieurs polygones
+$conditions->ids_polygones = 5 ou 4,7,8
+$conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
+   La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
+$conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
+$conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
+$conditions->id_polygone_type = 7 (un entier, l'id de type de polygone)
+Retour :
+Array
+(
+    [0] => stdClass Object
+        (
+            [site_web] => 
+            [url_exterieure] => 
+            [message_information_polygone] => 
+            [source] => 
+            [nom_polygone] => Chartreuse
+            [article_partitif] => de la
+            [id_polygone_type] => 1
+            [id_polygone] => 2
+            [geometrie_gml] => <gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.72,45.18 5.92,45.289999999999999 6.04,45.479999999999997 5.88,45.579999999999998 5.77,45.420000000000002 5.75,45.380000000000003 5.7,45.390000000000001 5.6,45.32 5.72,45.18</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>
+        )
+
+)
+
 ******************************************************************/
-function infos_polygone($id_polygone)
+function infos_polygones($conditions)
 {
-  global $pdo;
-  $r="SELECT id_polygone,id_polygone_type,article_partitif,nom_polygone,source,message_information_polygone,url_exterieure
+  global $pdo,$config;
+  $conditions_sql="";
+  
+  // Conditions sur les ids des polygones
+  if (isset($conditions->ids_polygones))
+    if (!verifi_multiple_intiers($conditions->ids_polygones))
+      return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
+  else
+    $conditions_sql.=" AND id_polygone in ($conditions->ids_polygones)";
+  
+  if (is_numeric($conditions->limite))
+    $limite="LIMIT $conditions->limite";
+
+  if (is_numeric($conditions->id_polygone_type))
+    $conditions_sql.=" AND id_polygone_type = $conditions->id_polygone_type";
+
+  // Ne prenons que les polygones qui intersectent une bbox
+  if (isset($conditions->bbox))
+  {
+    $bbox=explode(",",$conditions->bbox);
+    $conditions_sql.=" AND geom && 
+    ST_GeomFromText(('LINESTRING($bbox[0] $bbox[1],$bbox[2] $bbox[3])'),4326)";
+  }
+  
+  // Récupération ou non de la géométrie du polygone (un peu l'usine, mais récupérer 30000 points en trop alors qu'on veut
+  // juste le nom c'est dommage
+  $champs="";
+  $colonnes=colonnes_table('polygones');
+  foreach ($colonnes as $colonne)
+    if ($colonne->column_name!='geom')
+      $champs.="$colonne->column_name,";
+  $champs=trim($champs,",");
+  
+  if (isset($conditions->avec_geometrie))
+    $champs_geometry=",st_as$conditions->avec_geometrie(geom) as geometrie_$conditions->avec_geometrie";
+  else
+    $champs_geometry="";
+
+    
+  $query="SELECT $champs$champs_geometry
           FROM polygones
-          WHERE 
-                  id_polygone = $id_polygone
+          WHERE 1=1
+            $conditions_sql
+          $limite
   ";
-  $res=$pdo->query($r);
-  return $res->fetch();
+  $res=$pdo->query($query);
+  while ($polygone=$res->fetch())
+    $polygones[]=$polygone;
+  return $polygones;
+}
+/***********************************************************************************
+Cette fonction permet d'aller chercher toutes les infos d'un polygone
+Retour :
+stdClass Object
+(
+[site_web] => 
+[url_exterieure] => 
+[message_information_polygone] => 
+[source] => 
+[nom_polygone] => Chartreuse
+[article_partitif] => de la
+[id_polygone_type] => 1
+[id_polygone] => 2
+[geometrie_gml] => <gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.72,45.18 5.92,45.289999999999999 6.04,45.479999999999997 5.88,45.579999999999998 5.77,45.420000000000002 5.75,45.380000000000003 5.7,45.390000000000001 5.6,45.32 5.72,45.18</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>
+)
+************************************************************************************/
+function infos_polygone($id_polygone,$avec_geometrie=False)
+{
+  $conditions = new stdClass;
+  $conditions->ids_polygones=$id_polygone;
+  if (!$avec_geometrie)
+    $conditions->avec_geometrie=$avec_geometrie;
+  $poly=infos_polygones($conditions);
+  return $poly[0];
 }
 
 

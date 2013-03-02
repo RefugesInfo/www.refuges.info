@@ -209,6 +209,18 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
 	}
 	return $query;
 }
+// Et une autre fonction postgresql spécifique pour obtenir les noms des colonnes d'une table
+function colonnes_table($table)
+{
+  global $pdo;
+  $res=$pdo->query("select column_name 
+                    from information_schema.columns 
+                    where 
+                      table_name='$table'");
+  while ($colonne=$res->fetch())
+    $r[]=$colonne;
+  return $r;
+}
 
 // on garde le lien BDD sous le coude
 global $pdo;
