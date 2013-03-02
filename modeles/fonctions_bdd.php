@@ -37,24 +37,12 @@ function connexion_base()
 /****************************************
 Fonction donnant plusieurs informations générales sur la base
 FIXME sly : cette fonction n'est à mon avis pas à la bonne place, rempli des tableaux là où
-on a pas forcément besoin de tout. Peut-être une variante modulaire ? passer a pdo_biblio_init( $pdo ) ci après ?
+on a pas forcément besoin de tout. Peut-être une variante modulaire ? 
+passer a pdo_biblio_init( $pdo ) ci après ?
 ***************************************/
-//PDO : 13/02/13 jmb abstraction PDO, ce seront des requete en prepare()
-// reste que l'execute() de la couche PDO
 function infos_base () {
 	global $config,$pdo;
 	
-	// On évite "*" pour les polygones car il y a des mastoques géométries maintenant
-	// Déjà que cette requête va chercher tous les polygones, qui vont être de plus en plus nombreux...
-	$sql = "SELECT id_polygone,id_polygone_type,article_partitif,nom_polygone,source,message_information_polygone,url_exterieure
-		FROM polygones
-		WHERE 
-			polygones.id_polygone_type = ".$config['id_massif']."
-		ORDER BY nom_polygone";
-	$q = $pdo->query( $sql );
-	while( $res = $q->fetch() )
-		$r->massifs[] = $res ;
-
 	$sql = "SELECT * 
 		FROM point_type 
 		ORDER BY importance DESC";  

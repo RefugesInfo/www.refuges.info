@@ -19,6 +19,8 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->id_polygone_type = 7 (un entier, l'id de type de polygone)
+$conditions->avec_bbox_geometrie=True; -> renvoi un champ bbox contenant chaque polygone au format "ouest,sud,est,nord"
+
 Retour :
 Array
 (
@@ -54,8 +56,17 @@ function infos_polygones($conditions)
     $limite="LIMIT $conditions->limite";
 
   if (is_numeric($conditions->id_polygone_type))
-    $conditions_sql.=" AND id_polygone_type = $conditions->id_polygone_type";
-
+    $conditions_sql.=" AND polygone_type.id_polygone_type = $conditions->id_polygone_type";
+  
+  $champs_geometry="";
+  if ($conditions->avec_bbox_geometrie)
+  {
+    $box="ST_box2d(geom)";
+    $champs_geometry.=",st_xmin($box) as ouest,
+                     st_xmax($box) as est,
+                     st_ymin($box) as sud,
+                     st_ymax($box) as nord";
+  }
   // Ne prenons que les polygones qui intersectent une bbox
   if (isset($conditions->bbox))
   {
@@ -70,24 +81,31 @@ function infos_polygones($conditions)
   $colonnes=colonnes_table('polygones');
   foreach ($colonnes as $colonne)
     if ($colonne->column_name!='geom')
-      $champs.="$colonne->column_name,";
+      $champs.="polygones.$colonne->column_name,";
   $champs=trim($champs,",");
   
-  if (isset($conditions->avec_geometrie))
-    $champs_geometry=",st_as$conditions->avec_geometrie(geom) as geometrie_$conditions->avec_geometrie";
+  if ($conditions->avec_geometrie)
+    $champs_geometry.=",st_as$conditions->avec_geometrie(geom) as geometrie_$conditions->avec_geometrie";
   else
-    $champs_geometry="";
+    $champs_geometry.="";
 
     
-  $query="SELECT $champs$champs_geometry
-          FROM polygones
-          WHERE 1=1
+  $query="SELECT polygone_type.type_polygone,polygone_type.categorie_polygone_type,$champs$champs_geometry
+          FROM polygones,polygone_type
+          WHERE 
+            polygones.id_polygone_type=polygone_type.id_polygone_type
             $conditions_sql
           $limite
   ";
   $res=$pdo->query($query);
+  if (!$res)
+    return erreur("Requête impossible",$query);
   while ($polygone=$res->fetch())
+  {
+    if ($conditions->avec_bbox_geometrie)
+      $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord";
     $polygones[]=$polygone;
+  }
   return $polygones;
 }
 /***********************************************************************************

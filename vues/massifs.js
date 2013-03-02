@@ -27,7 +27,7 @@ window.onload = function () {
 	});
 	
 	// Positionne la carte sur la zone donnée par le .PHP
-	var bornes = new OpenLayers.Bounds (<?=$zones[$zone][0]?>,<?=$zones[$zone][1]?>,<?=$zones[$zone][2]?>,<?=$zones[$zone][3]?>) // Forçage des bornes
+	var bornes = new OpenLayers.Bounds (<?=$modele->bbox?>) // Forçage des bornes
 				.transform (map.displayProjection, map.getProjectionObject());
 	map.setCenter (
 		bornes.getCenterLonLat (), 

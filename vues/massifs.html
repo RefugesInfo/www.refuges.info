@@ -25,9 +25,9 @@
 	<div class="tablo">
 		<ul class="basdepage">
 			<li><b>Et encore...</b></li>
-			<?foreach ($modele->massifs AS $nom => $lien) {?>
+			<?foreach ($modele->polygones AS $nom_polygone => $lien) {?>
 				<li>
-					<a href="<?=$lien?>"><?=$nom?></a>
+					<a href="<?=$lien?>"><?=$nom_polygone?></a>
 				</li>
 			<?}?>
 		</ul>

@@ -48,6 +48,8 @@ foreach ($polygones as $polygone )
   $no_coul += $pas;
   
   $polygone_export = new stdClass;
+  //On pourrait tout aussi bien envoyer tous les champs du polygone donc de notre base directement
+  // mais ça ferait des trucs un peu inutile donc sélection :
   $polygone_export->feature_name="massif";
   $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
   $polygone_export->proprietes['color']="#$cb$cv$cr";
