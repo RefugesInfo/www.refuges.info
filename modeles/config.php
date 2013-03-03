@@ -11,7 +11,13 @@ ini_set('include_path',ini_get('include_path').':'.__DIR__.':');
 require_once("config_privee.php");
 
 /******** Clés des contrats des cartes **********/
-$config['ign_key']="ev2w14tv2ez4wpypux2ael39"; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
+// Dominique 09/05/2012. Déplacées de /includes/fonctions_gmaps.php
+$config['gmaps_key']="ABQIAAAAoB95UD1QkB41lW_FQfqr0RQDREnAL82o3PpQIQAJ4vsi_z1IzBREkfr_eRXtdSpzaacqidgpsTNaog";// Obsolète en GG V3
+
+$config['ign_key']="1575122885855346891"; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
+
+// cartes anglaises
+$config['os_key']="ev2w14tv2ez4wpypux2ael39"; // User cavailhezd / http://openspace.ordnancesurvey.co.uk
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['carte_base'] = 'maps.refuges.info';
@@ -61,8 +67,8 @@ $config['rep_web_forum_photos']="/forum/photos-points/";
 $config['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
 $config['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
 $config['id_zone']=11; // jmb : grandes zones, alpes, pyrenees ... 
-$config['zone_defaut']="Alpes" ; // jmb en fait ce sont les alpes de cehz nous
-$config['id_zone_defaut']=352; // sly en fait ce sont les alpes de chez nous
+$config['id_zone_defaut']=352; // sly en fait ce sont les alpes
+$config['id_zone_accueil']=3304; // sly en fait ce sont les alpes de chez nous
 
 // Catégorie "tout type de refuges"
 // certes une gestion par catégorie directement dans la base serait préférable, mais on a au plus 1 ou 2 catégorie donc, bon,

@@ -19,7 +19,7 @@ $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false'
 $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
 
 $conditions_notre_zone = new stdClass;
-$conditions_notre_zone->ids_polygones=$config['id_zone_defaut'];
+$conditions_notre_zone->ids_polygones=$config['id_zone_accueil'];
 $conditions_notre_zone->avec_bbox_geometrie=True;
 
 $polygones=infos_polygones($conditions_notre_zone);
@@ -30,8 +30,9 @@ $conditions = new stdClass;
 $conditions->id_polygone_type=$config['id_zone'];
 $zones=infos_polygones($conditions);
 // Ajoute les liens vers les autres zones
-foreach ($zones as $zone) // FIXME ce preg_replace est complètement ridicule mais sautera avec fusion massif/nav
-  $modele->zones [$zone->nom_polygone] = preg_replace("/nav/","massifs",lien_polygone($zone))."?mode_affichage=zone";
+if ($zones)
+  foreach ($zones as $zone) // FIXME ce foreach et preg_replace sont complètement ridicule mais sautero avec fusion massif/nav
+    $modele->zones [$zone->nom_polygone] = preg_replace("/nav/","massifs",lien_polygone($zone))."?mode_affichage=zone";
 
 
 // Réinitialise les paramètres de réaffichage des pages suivantes, notamment la couche par défaut = Google

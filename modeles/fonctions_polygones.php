@@ -37,10 +37,16 @@ Array
             [id_polygone_type] => 1
             [id_polygone] => 2
             [geometrie_gml] => <gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.72,45.18 5.92,45.289999999999999 6.04,45.479999999999997 5.88,45.579999999999998 5.77,45.420000000000002 5.75,45.380000000000003 5.7,45.390000000000001 5.6,45.32 5.72,45.18</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>
+
+En option si $conditions->avec_bbox_geometrie=True:
+            [nord] => 47.1
+            [ouest] => 2
+            [est] => 6
+            [sud] => 45
+            [bbox] => 2,45,6,47.1
         )
-
+    [1] etc.
 )
-
 ******************************************************************/
 function infos_polygones($conditions)
 {
