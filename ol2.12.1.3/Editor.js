@@ -1,4 +1,4 @@
-/* Librairie minifiée Openlayers générée sur www.refuges.info le Tue, 12 Feb 2013 19:39:49 +0100
+/* Librairie minifiée Openlayers générée sur dom.refuges.info le Sun, 03 Mar 2013 21:08:08 +0100
 
 © Dominique Cavailhez août 2012.
 Published under the Clear BSD license.
