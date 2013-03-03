@@ -1,9 +1,11 @@
-== qu'est ce que refuges.info ? ==
+qu'est ce que refuges.info ?
+============================
 
 Le mieux, c'est d'aller voir : http://www.refuges.info
 Le code source est sous licence WFTPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
 
-== installation ==
+installation
+============
 
 Pour installer et coder le site de www.refuges.info vous avez besoin :
 
@@ -19,7 +21,7 @@ https://github.com/sletuffe/www.refuges.info
 
 * Code 
 Pour télécharger la dernière version de développement :
- $ git clone git://github.com/sletuffe/www.refuges.info.git
+   git clone git://github.com/sletuffe/www.refuges.info.git
 Le code du site se retrouve dans un dossier nommé www.refuges.info
 
 * Postgresql
@@ -38,17 +40,18 @@ une doc (pas totalement à jour le 03/03/2013) explique notre base dans
 /forum/photos-points
 /statique/mode_emploi_textes
 
-== Quelques commandes utiles de git adaptées à refuges.info ==
+Quelques commandes utiles de git adaptées à refuges.info
+========================================================
 (Valable sous linux, mais sans doute ailleurs aussi)
 
 Avoir une copie complète de la dernière version du code :
- $ git clone git://github.com/sletuffe/www.refuges.info.git
+  git clone git://github.com/sletuffe/www.refuges.info.git
 
 Placez vous ensuite dans le dossier créé :
- $ cd www.refuges.info
+  cd www.refuges.info
 
 Avant de faire des ajouts, synchro avec la dernière version
- $ git pull
+  git pull
  Already up-to-date.
 
 
