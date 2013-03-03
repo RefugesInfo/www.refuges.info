@@ -36,7 +36,7 @@ else // sinon on choisi les massifs uniquement
 if (isset($_GET['bbox']))
   $conditions->bbox=$_GET['bbox'];
 
-$conditions->avec_geometrie='gml';
+$conditions->avec_geometrie='gmlol';
 $polygones=infos_polygones($conditions);
 
 foreach ($polygones as $polygone ) 
@@ -54,7 +54,7 @@ foreach ($polygones as $polygone )
   $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
   $polygone_export->proprietes['color']="#$cb$cv$cr";
   $polygone_export->proprietes['url']=lien_polygone($polygone,False);
-  $polygone_export->geometrie_gml=$polygone->geometrie_gml;
+  $polygone_export->geometrie_gml=$polygone->geometrie_gmlol;
 
   $modele->features[]=$polygone_export;
 }
