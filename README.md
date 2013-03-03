@@ -83,7 +83,7 @@ git clone <votre login>@github.com/sletuffe/www.refuges.info.git
 cd www.refuges.info
 ```
 
-* Avant de faire des ajouts, synchro avec la dernière version
+* Avant de faire des ajouts, synchro avec la dernière version (si des changements sont fait chez vous depuis, le système tente de fusionner lui même, s'il n'y arrive pas il vous l'indique)
 
 ```
 git pull
