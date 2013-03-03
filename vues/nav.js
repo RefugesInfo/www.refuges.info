@@ -93,19 +93,14 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 		new OpenLayers.Layer.Google.Terrain      ('Google'),
 		new OpenLayers.Layer.Google              ('Google map',    {visibility: false}),
 		new OpenLayers.Layer.Google.Photo        ('Google photo',  {visibility: false}),
-//		new OpenLayers.Layer.Google.Hybrid       ('Google hybrid', {visibility: false}),
 		new OpenLayers.Layer.IGN                 ('IGN',           '<?=$config['ign_key'];?>'),
 		new OpenLayers.Layer.IGN.Photo           ('IGN photo',     '<?=$config['ign_key'];?>'),
 
-// Si on ajoute ces couches, ne pas oublier de remettre le new OpenLayers.Control.MousePosition
 		new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
-//		new OpenLayers.Layer.SwissTopo.Siegfried ('Suisse 1949'),
-//		new OpenLayers.Layer.SwissTopo.Dufour    ('Suisse 1864'),
-//		new OpenLayers.Layer.SwissTopo.Photo     ('SwissTopo photo'),
 
 		new OpenLayers.Layer.IGM                 ('Italie'),
 		new OpenLayers.Layer.IDEE                ('Espagne'),
-//		new OpenLayers.Layer.OS                  ('Angleterre', '<?=$config['os_key'];?>'), // UK Ordnance Survey Layer
+		new OpenLayers.Layer.OB                  ('Germanie'),
 		new OpenLayers.Layer.OSM                 ('OSM'),
 		new OpenLayers.Layer.WRI                 ('Maps.Refuges.info'),
 		new OpenLayers.Layer.Velo                ('OpenCycleMap')
