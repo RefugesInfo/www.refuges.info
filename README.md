@@ -57,6 +57,11 @@ chmod 777 /statique/mode_emploi_textes
 Quelques commandes utiles de git adaptées à refuges.info
 ========================================================
 (Valable sous linux, mais sans doute ailleurs aussi)
+Rappelez vous qu'avant de détruire quelque chose avec git, faut vraiment y aller avec des options toutes bizarres du style "--force" ou "--force-je-suis-sur"
+les commandes de bases ne détruisent rien, jamais !
+Il arrive cependant qu'on perde des fichiers, au sens propre ;-) c'est à dire qu'ils n'ont pas disparus, c'est juste qu'ils ont été déplacés
+dans les méandres de git et de son dossier caché .git, mais avec la bonne commande, tout revient, donc pas de panique, tentez !
+En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivés sur github et chez chaque développeur
 
 * Avoir une copie complète de la dernière version du code sans être développeur de refuges.info
 
