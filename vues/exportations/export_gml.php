@@ -16,7 +16,8 @@
 <name><?=$modele->nom_fichier_export?>.gml</name>
 <description><?=$modele->description?></description>
 	
-	<?if ($modele->pois) 
+	<?php // FIXME : tout ça peut être fusionné avec celui plus bas depuis que GIS gère tout lui même
+	if ($modele->pois) 
 	foreach ($modele->pois as $types => $points)
 	foreach ($points as $point) {?>
 		<gml:featureMember>
@@ -35,7 +36,7 @@
 		</gml:featureMember>
 	<?}?>
 <?php 
-// Punaise, impossible d'avior une indentation propre du gml avec ces imbrications
+// Punaise, impossible d'avoir une indentation propre du gml avec ces imbrications if et foreach
 if ($modele->features) 
   foreach ($modele->features as $feature) { ?>
   <gml:featureMember>
@@ -51,7 +52,10 @@ if ($modele->features)
   
   <?}?>
 	
-	<?if ($trk) foreach ($trk AS $seg) {?>
+	<?php
+	// FIXME : des linestrings ? quelles lignes strings ?
+	// FIXME : tout ça peut être fusionné avec celui plus bas depuis que GIS gère tout lui même
+	if ($trk) foreach ($trk AS $seg) {?>
 		<gml:featureMember>
 			<trk>
 				<name><?=$seg['name']?></name>

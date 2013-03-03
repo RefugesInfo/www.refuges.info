@@ -21,7 +21,7 @@ $b = ($ymin + $ymax) / 2; // Coefs du calcul
 $a = 256 + $b; // +256 pour bénéficier du 0 à gauche quand on passe en hexadécimal
 
 $conditions = new stdClass;
-$modele = new stdClass();
+$modele = new stdClass;
 
 // Ici on a demandé un nombre fini de massif solitaires
 if (isset($_GET['massif']))
