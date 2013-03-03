@@ -32,9 +32,9 @@
 		<div class="carte" id="accueil"></div>
 		<h5>Et encore...</h5>
 		<ul class="basdepage">
-			<?php if (isset($modele->massifs)) foreach ($modele->massifs AS $nom => $lien) {?>
+			<?php if (isset($modele->zones)) foreach ($modele->zones AS $nom_zone => $lien) {?>
 				<li>
-					<a href="<?=$lien?>"><?=$nom?></a>
+					<a href="<?=$lien?>"><?=$nom_zone?></a>
 				</li>
 			<?}?>
 		</ul>

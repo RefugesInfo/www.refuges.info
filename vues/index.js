@@ -26,12 +26,9 @@ window.onload = function () {
 	});
 	
 	// Positionne la carte sur la zone donnée par le .PHP
-	// jmb, en attendant d'utiliser les polygones de zone (type 11 ( ou 15 ? disons 11). avec geophp/postgis ...
-	var bornes = new OpenLayers.Bounds ( 5.5, 43.1, 11  ,  47.2 ) // jmb,Forçage des bornes j'ai merde
+	var bornes = new OpenLayers.Bounds ( <?=$modele->bbox?> ) 
 				.transform (map.displayProjection, map.getProjectionObject());
 
-//	var bornes = new OpenLayers.Bounds (<?=$zones[$zone][0]?>,<?=$zones[$zone][1]?>,<?=$zones[$zone][2]?>,<?=$zones[$zone][3]?>) // Forçage des bornes
-//				.transform (map.displayProjection, map.getProjectionObject());
 	map.setCenter (
 		bornes.getCenterLonLat (), 
 		map.getZoomForExtent (bornes)

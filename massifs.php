@@ -50,7 +50,7 @@ $conditions->id_polygone_type=$config['id_zone'];
 $zones=infos_polygones($conditions);
 // Ajoute les liens vers les autres zones
 foreach ($zones as $zone) // FIXME ce preg_replace est complètement ridicule mais sautera avec fusion massif/nav
-  $modele->polygones [$zone->nom_polygone] = preg_replace("/nav/","massifs",lien_polygone($zone))."?mode_affichage=zone";
+  $modele->zones [$zone->nom_polygone] = preg_replace("/nav/","massifs",lien_polygone($zone))."?mode_affichage=zone";
 
 // Réinitialise les paramètres de réaffichage des pages suivantes, notamment la couche par défaut = Google
 setcookie ('Olparams', '', time() - 3600, '/');
