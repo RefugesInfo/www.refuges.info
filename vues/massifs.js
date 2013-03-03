@@ -18,7 +18,6 @@ window.onload = function () {
 			new OpenLayers.Control.Navigation(),
 			new OpenLayers.Control.PanZoom (),
 			new OpenLayers.Control.MousePosition (),
-//			new OpenLayers.Control.PermalinkCookies (), // Pour forcer le passage à GG quand on va vers un massif
 			new OpenLayers.Control.Attribution()
 		],
 		layers: [
@@ -27,7 +26,7 @@ window.onload = function () {
 	});
 	
 	// Positionne la carte sur la zone donnée par le .PHP
-	var bornes = new OpenLayers.Bounds (<?=$modele->bbox?>) // Forçage des bornes
+	var bornes = new OpenLayers.Bounds (<?=$modele->bbox?>) 
 				.transform (map.displayProjection, map.getProjectionObject());
 	map.setCenter (
 		bornes.getCenterLonLat (), 

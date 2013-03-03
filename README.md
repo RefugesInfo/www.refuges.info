@@ -63,13 +63,13 @@ Il arrive cependant qu'on perde des fichiers, au sens propre ;-) c'est à dire q
 dans les méandres de git et de son dossier caché .git, mais avec la bonne commande, tout revient, donc pas de panique, tentez !
 En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivés sur github et chez chaque développeur
 
-* Avoir une copie complète de la dernière version du code sans être développeur de refuges.info
+* Avoir une copie complète de la dernière version du code
 
 ```
-git clone git://github.com/sletuffe/www.refuges.info.git
+git clone https://github.com/sletuffe/www.refuges.info.git
 ```
 
-* Avant toute modification, dites à git qui vous êtes
+* Avant toute modification, dites à git qui vous êtes et ou ce trouve la branche master principale
 
 ```
 git config --global user.name "<votre login github>"
@@ -77,13 +77,6 @@ git config --global user.name "<votre login github>"
 git config --global user.email <votre email sur github>
 
 ```
-
-* Avoir une copie complète de la dernière version du code si vous êtes développeur de refuges.info
-
-```
-git clone <votre login>@github.com/sletuffe/www.refuges.info.git
-```
-
 * Placez vous ensuite dans le dossier créé :
 
 ```
@@ -115,14 +108,33 @@ git add .
 ```
 
 * Enregistrer localement le commit (votre éditeur de texte favoris sous linux s'ouvre pour indiquer les changements réalisés et vous demande un message de commit : sur le serveur refuges.info, par défaut c'est joue qui s'ouvre, faites ctrl+K puis x pour sauver et quitter
+
 ```
 git commit -a
 ```
 
 * Mettre sur github
+
 ```
 git push
 ```
+* Notez que pour éviter d'avoir à taper votre mot de passe à chaque fois (relou) vous pouvez générer une clef ssh et l'ajouter
+a votre profil github 
+```
+ssh-keygen -t rsa 
+```
+ne rentrez aucun mot de passe pour protéger la clef elle même sinon il faudra taper le mot de passe pour dévérouiller la clef
+qui sert à économiser le mot de passe à taper ;-)
+Votre clé publique se trouve ici $HOME/.ssh/id_rsa.pub (le contenu est en texte et peut se copier coller sur votre profil github)
+
+Ensuite (il doit y avoir une commande pour le faire mais je l'ignore) on peut éditer le fichier de config de git pour refuges.info
+dans www.refuges.info/.git/config et remplacer le paramètre url pour mettre :
+* url = <votre login>@github.com:sletuffe/www.refuges.info.git
+
+FIXME: y'a encore un truc qui m'échappe avec git, chez moi c'est marqué "git@github.com:sletuffe/www.refuges.info.git" mais mon user c'est "sletuffe"
+et pourtant, ça marche sans mot de passe en prenant bien ma clef... je pige pas
+
+
 
 
 
