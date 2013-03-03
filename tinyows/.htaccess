@@ -1,4 +1,0 @@
-Options +ExecCGI
-AddHandler cgi-script cgi 
-#SetEnv TINYOWS_CONFIG_FILE ${DOCUMENT_ROOT}/tinyows/config.xml
-SetEnv TINYOWS_CONFIG_FILE /home/users/yip/www.refuges.info/tinyows/config.xml
