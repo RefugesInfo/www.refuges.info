@@ -22,6 +22,7 @@ https://github.com/sletuffe/www.refuges.info
 * Code 
 
 Pour télécharger la dernière version de développement :
+
 ```
 git clone git://github.com/sletuffe/www.refuges.info.git
 ```
@@ -64,6 +65,7 @@ git clone git://github.com/sletuffe/www.refuges.info.git
 ```
 
 * Avant toute modification, dites à git qui vous êtes
+
 ```
 git config --global user.name "<votre login github>"
 
