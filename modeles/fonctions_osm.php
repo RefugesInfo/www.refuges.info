@@ -35,7 +35,7 @@ function recuperation_poi_osm($conditions_recherche)
   // ~4 tag par point, on prend un poil au dessus, et on limite en php ensuite
   //jmb: la x5  plus necessaire avec la nouvelle requete. le php non plus.
 	if (isset($conditions_recherche->limite))
-		$limite_sql="LIMIT 0,$conditions_recherche->limite";
+		$limite_sql="LIMIT $conditions_recherche->limite";
     //$limite=5*$conditions_recherche->limite;
     //$limite_sql="LIMIT 0,$limite";
 
@@ -55,7 +55,7 @@ function recuperation_poi_osm($conditions_recherche)
 	//PDO+
 	// reecriture de la requete avec des JOIN
 	//Note : a calculer, mais avec un select * imbriqué sans conditions, je pense que tu récupères les 14000 tags
-	//de la base ! On gagner en effet en taille de requête, mais pas sûr du tout qu'on y gagne en vitesse
+	//de la base ! On gagne en effet en taille de requête, mais pas sûr du tout qu'on y gagne en vitesse
 	// la fonction "explain" de postresql (explain select * blabla) donne un aperçu des indexes utilisés et 
 	// des opérations de parcours systèmatique
 	$query_recherche="SELECT *
@@ -111,6 +111,7 @@ function recuperation_poi_osm($conditions_recherche)
 //jmb: simplifie grace a la nouvell requete
 //PDO-  while ($point=mysql_fetch_object($res))
 //PDO+
+
 	while ( $point = $res->fetch() )
 	{
 		$id=$point->id_osm_poi;
@@ -121,49 +122,50 @@ function recuperation_poi_osm($conditions_recherche)
 		//	$compte++;
 		//	if ($compte==$conditions_recherche->limite)
 		//		break;
-		//}
-		
-		$points[$id]->site='osm'; // Dominique: permet de rechercher les icones et styles correspondantes à OSM
-		$points[$id]->latitude=$point->latitude;
-		$points[$id]->longitude=$point->longitude;
+		//}$point_osm
+		$point_osm = new stdClass;
+		$point_osm->site='osm'; // Dominique: permet de rechercher les icones et styles correspondantes à OSM
+		$point_osm->latitude=$point->latitude;
+		$point_osm->longitude=$point->longitude;
 
 		//jmb: dans un switch case pour + de lisibilite, le "k" n'est pas important
 		switch( $point->v ) {
-			case "hotel":       $points[$id]->nom_icone="hotel";   break;
-			case "camp_site":   $points[$id]->nom_icone="camping"; break;
+			case "hotel":       $point_osm->nom_icone="hotel";   break;
+			case "camp_site":   $point_osm->nom_icone="camping"; break;
 			case "supermarket":
-			case "convenience": $points[$id]->nom_icone="superette"; break;
-			case "guest_house": $points[$id]->nom_icone="chambre-hotes"; break;
+			case "convenience": $point_osm->nom_icone="superette"; break;
+			case "guest_house": $point_osm->nom_icone="chambre-hotes"; break;
 		}
 		switch( $point->k ) {
-			case "name":           $points[$id]->nom=$point->v;         break;
-			case "phone":          $points[$id]->telephone=$point->v;   break;
-			case "website":        $points[$id]->site_web=$point->v;    break;
-			case "description":    $points[$id]->description=$point->v; break;
-			case "opening_hours":  $points[$id]->horaires_ouvertures=$point->v; break;  //FIXME en anglais
+			case "name":           $point_osm->nom=$point->v;         break;
+			case "phone":          $point_osm->telephone=$point->v;   break;
+			case "website":        $point_osm->site_web=$point->v;    break;
+			case "description":    $point_osm->description=$point->v; break;
+			case "opening_hours":  $point_osm->horaires_ouvertures=$point->v; break;  //FIXME en anglais
 		}
+	$points[$id]=$point_osm;
 	} //fin du swith resultat
 	
 /*		if ($point->k=="tourism" and $point->v=="hotel")
-			$points[$id]->nom_icone="hotel";
+			$point_osm->nom_icone="hotel";
 		elseif($point->k=="tourism" and $point->v=="camp_site")
-			$points[$id]->nom_icone="camping";
+			$point_osm->nom_icone="camping";
     elseif($point->k=="shop" and ($point->v=="supermarket" or $point->v=="convenience" ))
-      $points[$id]->nom_icone="superette";
+      $point_osm->nom_icone="superette";
     elseif($point->k=="tourism" and $point->v=="guest_house")
-      $points[$id]->nom_icone="chambre-hotes";
+      $point_osm->nom_icone="chambre-hotes";
     else
       ;
     if ($point->k=="name")
-      $points[$id]->nom=$point->v;
+      $point_osm->nom=$point->v;
     if ($point->k=="phone")
-      $points[$id]->telephone=$point->v;
+      $point_osm->telephone=$point->v;
     if ($point->k=="website")
-      $points[$id]->site_web=$point->v;
+      $point_osm->site_web=$point->v;
     if ($point->k=="description")
-      $points[$id]->description=$point->v;
+      $point_osm->description=$point->v;
     if ($point->k=="opening_hours") 
-      $points[$id]->horaires_ouvertures=$point->v; // FIXME : à convertir en français
+      $point_osm->horaires_ouvertures=$point->v; // FIXME : à convertir en français
       $old_id=$id;
 */
   
