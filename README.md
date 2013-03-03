@@ -35,10 +35,12 @@ une doc (pas totalement à jour le 03/03/2013) explique notre base dans
 
 * Configuration des fichiers
 
-** dans /modeles/
--> copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée
-```cd modeles ; cp config_privee.php.modele config_privee.php```
-** Créez et donnez tous les droits à l'utilisateur qui fait tourner apache au dossiers et fichiers contenus dans :
+ * dans /modeles/
+copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée
+```cd modeles
+cp config_privee.php.modele config_privee.php
+```
+ * Créez et donnez tous les droits à l'utilisateur qui fait tourner apache au dossiers et fichiers contenus dans :
 /photos_points
 /forum/photos-points
 /statique/mode_emploi_textes
@@ -48,13 +50,16 @@ Quelques commandes utiles de git adaptées à refuges.info
 (Valable sous linux, mais sans doute ailleurs aussi)
 
 * Avoir une copie complète de la dernière version du code :
-```git clone git://github.com/sletuffe/www.refuges.info.git```
+```git clone git://github.com/sletuffe/www.refuges.info.git
+```
 
 * Placez vous ensuite dans le dossier créé :
-```cd www.refuges.info```
+```cd www.refuges.info
+```
 
 * Avant de faire des ajouts, synchro avec la dernière version
 ```git pull
- Already up-to-date.```
+Already up-to-date.
+```
 
 
