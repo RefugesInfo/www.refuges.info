@@ -1,6 +1,3 @@
-FIXME : ce fichier n'est valable que pour l'ancien schéma avant le passage à PG les élémnents concernant les géométries oont changées et la doc est
-FIXME :à mettre à jour
-
 Ce fichier texte, non protégé et accessible aussi par Internet tente d'être une première approche pour qui voudrait
 comprendre comment marche le site refuges.info au niveau logiciel.
 
@@ -8,7 +5,7 @@ Comme le code est sous WTFPL (voir fichier licence.txt), il n'y a pas de problè
 Cependant, merci de n'indiquer ici aucun mot de passe du site.
 création le 28/10/2008 par sly sylvain@refuges.info
 
-Dernière modification 04/11/2010 - sly
+Dernière modification 03/03/2013 - sly
 
 Structure SQL
 -------------
@@ -24,7 +21,7 @@ de notre base.
 * Une gestion de configuration permet aux utilisateurs d'être prévenu à la création d'un nouveau sujet
 
 !! ATENTION !!
-Le site et le forum ne sont plus disociables car les utilisateurs du forum sont ceux utilisés par le site
+Le site et le forum ne sont pas disociables car les utilisateurs du forum sont ceux utilisés par le site
 
 commentaires
 ===========
@@ -82,161 +79,50 @@ la table des polygones du site (les massifs, les cartes géographiques, pays, d�
 * article_partitif -> pour faire du français (massif des belledonnes mais massif de la chartreuse, y'a un bug quand même avec le massif du massif central ;-))
 * nom_polygone -> son nom
 * source : un champ texte pour dire où cela a été pris (vide=fait à la main, non vide=source (swisstopo, OSM, ..)
-* url_exterieure -> une URL externe pour avoir plus d'infos 
+* url_exterieure -> une URL externe pour avoir des informations sur la réglemenation particulière à suivre quand on se trouve dans ce polygone 
+* site_web -> Url vers une information globale sur ce polygone
+* message_information_polygone -> un message texte indiquant un résumé simple des restrictions s'appliquant (pas de feu, pas de bicouac, : utile pour les réserves)
+* geom -> la géométrie GIS du polygone de type MULTIPOLYGON
 
 polygone_type
 =============
 catégorie des types de polygones possible du site  (massif, carte géographique, pays, départements...)
 * id_polygone_type -> identifiant unique
-* art_dem_poly -> du français, (cette carte, mais ce massif)
+* art_dem_poly -> du français "article démonstratif", (cette carte, mais ce massif)
+* art_def_poly -> du français, "article définitif" (la carte, mais le massif)
 * type_polygone, le nom du type "massif" "carte"..
 * ordre_taille -> Je ne sais pas à quoi ça sert
+* categorie_polygone_type -> une catégorie de polygone en texte libre (actuellement "montagnarde" et "administrative")
 
 type_precision_gps
 ==================
 les catégories possibles pour un point GPS ( lue sur une carte, pris sur le terrain, au pif,...)
 
-A partir du 29/10/2008 j'ai ajouté :
-
 points_gps
 ==========
-C'est une table qui va stocker Toutes les coordonnées de tout point gps de la base
+C'est une table qui va stocker Toutes les coordonnées de tout point de la base
 les points et les polygones y feront référence (ouais, grosse usine à gaz en perspective, mais on apprend ça à l'école : aucune redondance de champs dans une base de donnée)
 * id_point_gps : son id
-* latitude : en degré décimaux : obligatoire !
-* longitude : en degré décimaux : obligatoire !
 * altitude : facultatif
 * accès : facultatif = manière physique d'accéder à ce point (du texte de blabla)
 * id_type_precision_gps : la qualité du relevé de ce point (selon table type_precision_gps)
 * a venir peut être : la source/identifiant unique externe des coordonnées de ce point pour importer les données des autres ?
-
+* geom -> la géométrie GIS du point de type POINT
 lien_polygone_gps
 =================
 la table de liaison entre les polygones et les points_gps
 * ordre : le champ (entier) permettant de mettre dans l'ordre les points du polygone
-
-appartenance_polygone
-====================
-cette table donne le(s) polygone(s) dans la surface duquel se trouve un point_gps
-* son id
-* id_point_gps : l'id du point concerné
-* id_polygone : l'id du polygone auquel le point appartient
-Cette table serait inutile dans le cas d'une base géospatiale type postgis, mais dans notre cas, précalcul oblige, et c'est super long !!!
 
 code php
 --------
 Je n'ai pas grand chose à dire sur le code, la pluspart du temps il est bien commenté et ça doit suffire
 
 
-Annexe 1 Structure de donnée de l'object point dans le code
------------------------------------------------------------
+Annexe 1 Structure de donnée des object point, polygone, commentaire dans le code
+----------------------------------------------------------------------------------
 Dans le code, j'utilise souvent la notion de pseudo object afin de transmettre comme structure de donnée 
 les infos sur un point de la base, comme c'est un peu dur à imaginer à quoi il ressemble, voici un élément
 
-stdClass Object
-(
-    [id_point] => 436
-    [id_point_gps] => 2453
-    [nom] => Cabane-en-Plein-Vent
-    [id_point_type] => 25
-    [places] => 0
-    [remark] => Grand luxe et tout confort :
-Bât-flanc superposé avec matelas, couvertures, draps, oreillers (les lits étaient faits).
-Cuisine avec bouteille de gaz et vaiselle.
-Table et bancs
-Quelques provisions.
-
-[b] CABANE FERMEE [/b]
-    [proprio] => 
-    [date_insertion] => 1109589226
-    [auteur_derniere_modification] => 
-    [date_derniere_modification] => 0000-00-00
-    [id_auteur_derniere_modification] => 0
-    [modele] => 0
-    [article_demonstratif] => cette
-    [article_defini] => la
-    [article_partitif_point_type] => d'une
-    [nom_type] => Cabane fermée
-    [equivalent_places] => 
-    [equivalent_proprio] => Propriétaires :
-    [equivalent_orientation] => 
-    [nom_icone] => cabane_fermee
-    [ech_max] => 200
-    [importance] => 90
-    [id_type_precision_gps] => 5
-    [nom_precision_gps] => Coordonnées cachées
-    [ordre] => 1
-    [latitude] => 45.1686
-    [longitude] => 5.6814
-    [altitude] => 0
-    [acces] => ### ATTENTION ###
-A la demande d'une majorité d'utilisateurs du site, le positionnement et l'accès à cette cabane ne figureront plus et ne doivent plus figurer sur cette fiche refuge.
-Les coordonnées GPS sont donc volontairement fausses, et tout commentaire expliquant comme s'y rendre sera supprimé.
-Je vous invite à voir le débat sur le forum pour plus d'explications
-## ATTENTION ## 
-
-    [date_modif_timestamp] => 0
-    [polygones] => Array
-        (
-            [0] => stdClass Object
-                (
-                    [id_polygone] => 37
-                    [id_polygone_type] => 6
-                    [article_partitif] => :
-                    [nom_polygone] => France
-                    [source] => 
-                    [url_exterieure] => 
-                    [art_dem_poly] => ce
-                    [art_def_poly] => le
-                    [type_polygone] => Pays
-                    [ordre_taille] => 5
-                )
-
-            [1] => stdClass Object
-                (
-                    [id_polygone] => 329
-                    [id_polygone_type] => 10
-                    [article_partitif] => de l'
-                    [nom_polygone] => Isère
-                    [source] => 
-                    [url_exterieure] => 
-                    [art_dem_poly] => ce
-                    [art_def_poly] => le
-                    [type_polygone] => Département
-                    [ordre_taille] => 4
-                )
-
-            [2] => stdClass Object
-                (
-                    [id_polygone] => 4
-                    [id_polygone_type] => 1
-                    [article_partitif] => du
-                    [nom_polygone] => Vercors
-                    [source] => 
-                    [url_exterieure] => 
-                    [art_dem_poly] => ce
-                    [art_def_poly] => le
-                    [type_polygone] => Massif
-                    [ordre_taille] => 3
-                )
-
-        )
-
-    [massif] => stdClass Object
-        (
-            [id_polygone] => 4
-            [id_polygone_type] => 1
-            [article_partitif] => du
-            [nom_polygone] => Vercors
-            [source] => 
-            [url_exterieure] => 
-            [art_dem_poly] => ce
-            [art_def_poly] => le
-            [type_polygone] => Massif
-            [ordre_taille] => 3
-        )
-
-)
-
+Voir en en-tête de fonction (dans /modeles) les éléments de chaque objet
 
 
