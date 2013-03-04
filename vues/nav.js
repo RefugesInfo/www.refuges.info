@@ -175,13 +175,8 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 
 	// Position et zoom de la carte
 	// Si un massif est visé, on s'accorde sur ses limites
-	if (<?echo isset ($infos_polygone->longitude_minimum) ? 'true' : 'false'?>) {
-		var b = new OpenLayers.Bounds (
-			<?=$infos_polygone->longitude_minimum+0?>,
-			<?=$infos_polygone->latitude_minimum +0?>,
-			<?=$infos_polygone->longitude_maximum+0?>,
-			<?=$infos_polygone->latitude_maximum +0?>
-		) // Forçage de bornes
+	if (<?echo isset ($infos_polygone->bbox) ? 'true' : 'false'?>) {
+		var b = new OpenLayers.Bounds (<?=$infos_polygone->bbox?>) // Forçage de bornes
 		.transform (
 			new OpenLayers.Projection ('EPSG:4326'), // Données en °
 			map.getProjectionObject()
