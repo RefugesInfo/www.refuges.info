@@ -97,7 +97,7 @@ function infos_polygones($conditions)
                  st_xmin($box) as ouest,
                  st_xmax($box) as est,
                  st_ymin($box) as sud,
-                 st_ymax($box) as nord
+                 st_ymax($box) as nord,
                  $champs
                  $champs_geometry
           FROM polygones,polygone_type
