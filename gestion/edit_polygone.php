@@ -7,7 +7,9 @@
 
 // 21/07/12 Dominique : Création
 
-require_once("../modeles/fonctions_polygones.php");
+require_once ("../modeles/config.php");
+require_once ("fonctions_polygones.php");
+require_once ("fonctions_meta_donnees.php");
 
 // Création d'un nouveau polygone
 if ($_POST['creer'] && $_POST['name'] && $_POST['type']) {

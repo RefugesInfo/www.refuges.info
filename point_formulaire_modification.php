@@ -23,6 +23,7 @@ require_once ("fonctions_points.php");
 require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mode_emploi.php");
+require_once ("fonctions_meta_donnees.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $modele = new stdClass();

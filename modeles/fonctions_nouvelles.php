@@ -22,7 +22,6 @@ function stat_site ()
   // les autres sont des sommets, des cols, des villes où autre
   
   // PDO jmb re ecriture en une seule requete
-  // a passer en prepared ??
   $q = "SELECT 
   ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
   AND (ferme='' or ferme='non')

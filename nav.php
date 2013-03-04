@@ -19,6 +19,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 require_once ('modeles/config.php');
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_meta_donnees.php");
 require_once ("fonctions_polygones.php");
 
 $modele = new stdClass();

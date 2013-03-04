@@ -148,7 +148,6 @@ return $annonce_fermeture;
 function infos_point_forum ($point) 
 {
   global $pdo,$config;
-  // faudra voir si ca vaudra le coup d'en faire une PDO prepared.
   $q=" SELECT *
        FROM phpbb_posts_text, phpbb_topics, phpbb_posts
        WHERE 
