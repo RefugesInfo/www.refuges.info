@@ -21,7 +21,6 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->id_polygone_type = 7 (un entier, l'id de type de polygone)
-$conditions->avec_bbox_geometrie=True; -> renvoi un champ bbox contenant chaque polygone au format "ouest,sud,est,nord"
 
 Retour :
 Array
@@ -37,8 +36,6 @@ Array
             [id_polygone_type] => 1
             [id_polygone] => 2
             [geometrie_gml] => <gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.72,45.18 5.92,45.289999999999999 6.04,45.479999999999997 5.88,45.579999999999998 5.77,45.420000000000002 5.75,45.380000000000003 5.7,45.390000000000001 5.6,45.32 5.72,45.18</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>
-
-En option si $conditions->avec_bbox_geometrie=True:
             [nord] => 47.1
             [ouest] => 2
             [est] => 6
@@ -66,15 +63,6 @@ function infos_polygones($conditions)
   if (is_numeric($conditions->id_polygone_type))
     $conditions_sql.=" AND polygone_type.id_polygone_type = $conditions->id_polygone_type";
   
-  $champs_geometry="";
-  if ($conditions->avec_bbox_geometrie)
-  {
-    $box="ST_box2d(geom)";
-    $champs_geometry.=",st_xmin($box) as ouest,
-                     st_xmax($box) as est,
-                     st_ymin($box) as sud,
-                     st_ymax($box) as nord";
-  }
   // Ne prenons que les polygones qui intersectent une bbox
   if (isset($conditions->bbox))
   {
@@ -103,8 +91,15 @@ function infos_polygones($conditions)
   else
     $champs_geometry.="";
 
-    
-  $query="SELECT polygone_type.type_polygone,polygone_type.categorie_polygone_type,$champs$champs_geometry
+  $box="ST_box2d(geom)";
+  $query="SELECT polygone_type.type_polygone,
+                 polygone_type.categorie_polygone_type,
+                 st_xmin($box) as ouest,
+                 st_xmax($box) as est,
+                 st_ymin($box) as sud,
+                 st_ymax($box) as nord
+                 $champs
+                 $champs_geometry
           FROM polygones,polygone_type
           WHERE 
             polygones.id_polygone_type=polygone_type.id_polygone_type
@@ -116,8 +111,7 @@ function infos_polygones($conditions)
     return erreur("Requête impossible",$query);
   while ($polygone=$res->fetch())
   {
-    if ($conditions->avec_bbox_geometrie)
-      $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord";
+    $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord";
     $polygones[]=$polygone;
   }
   return $polygones;
@@ -127,16 +121,22 @@ Cette fonction permet d'aller chercher toutes les infos d'un polygone
 Retour :
 stdClass Object
 (
-[site_web] => 
-[url_exterieure] => 
-[message_information_polygone] => 
-[source] => 
-[nom_polygone] => Chartreuse
-[article_partitif] => de la
-[id_polygone_type] => 1
-[id_polygone] => 2
-[geometrie_gml] => <gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.72,45.18 5.92,45.289999999999999 6.04,45.479999999999997 5.88,45.579999999999998 5.77,45.420000000000002 5.75,45.380000000000003 5.7,45.390000000000001 5.6,45.32 5.72,45.18</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>
+  [site_web] => 
+  [url_exterieure] => 
+  [message_information_polygone] => 
+  [source] => 
+  [nom_polygone] => Chartreuse
+  [article_partitif] => de la
+  [id_polygone_type] => 1
+  [id_polygone] => 2
+  [geometrie_gml] => <gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.72,45.18 5.92,45.289999999999999 6.04,45.479999999999997 5.88,45.579999999999998 5.77,45.420000000000002 5.75,45.380000000000003 5.7,45.390000000000001 5.6,45.32 5.72,45.18</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>
+  [nord] => 47.1
+  [ouest] => 2
+  [est] => 6
+  [sud] => 45
+  [bbox] => 2,45,6,47.1
 )
+Si $avec_geometrie vaut gml/kml/svg/text/...  (voir fonction avant) la géométrie est retournée. Ce n'est pas systématique pour des raisons de performances
 ************************************************************************************/
 function infos_polygone($id_polygone,$avec_geometrie=False)
 {

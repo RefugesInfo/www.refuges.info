@@ -20,8 +20,6 @@ $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
 
 $conditions_notre_zone = new stdClass;
 $conditions_notre_zone->ids_polygones=$config['id_zone_accueil'];
-$conditions_notre_zone->avec_bbox_geometrie=True;
-
 $polygones=infos_polygones($conditions_notre_zone);
 $modele->bbox=$polygones[0]->bbox;
 

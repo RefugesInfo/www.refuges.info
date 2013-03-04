@@ -36,7 +36,6 @@ if (!is_numeric($modele->id_polygone))
 
 $conditions_notre_zone = new stdClass;
 $conditions_notre_zone->ids_polygones=$modele->id_polygone;
-$conditions_notre_zone->avec_bbox_geometrie=True;
 
 $polygones=infos_polygones($conditions_notre_zone);
 $modele->bbox=$polygones[0]->bbox;
