@@ -7,6 +7,11 @@ Fonctions pour gérer les points supplémentaires en provenance d'openstreetmap 
 sly 29/11/2012
 NOTE: Il y a 50% de chance que je ne récupère que 50% du code et 50% de chance que je ne récupère que 10% du code
 avant de trop retoucher tout ça, on va peut-être attendre que je me décide ;-) -- sly
+Une des options envisagées serait :
+- comme pour les polygones en provenance d'osm, utiliser un outil tout fait : osm2pgsql (il nous construirait du GIS directement)
+Au prix de quelques bidouilles à prévoir pour soit le convertir dans un format plus simple d'utilisation, soit faire des requêtes qui tapent directement
+dans les tables produites par osm2pgsql
+
 **********************************************************************************************/
 require_once ('config.php');
 require_once ("fonctions_bdd.php");
