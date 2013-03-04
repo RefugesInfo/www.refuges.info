@@ -137,6 +137,40 @@ FIXME: y'a encore un truc qui m'échappe avec git, chez moi c'est marqué "git@g
 et pourtant, ça marche sans mot de passe en prenant bien ma clef... je pige pas
 
 
+Doc dédiée aux développeurs ayant accès à la machine wri
+========================================================
 
+* pour développer sur votre zone
+ * Serveur ftp ou sftp ou ssh : www.refuges.info (en mode développement uniquement avant la migration : n.refuges.info)
+ * login  / mot de passe : le votre ;-)
 
+* accès ssh 
+ * Sous Linux/OSX : ssh login@n.refuges.info
+ * Sous windows, télécharger putty http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe puis renseigner le serveur (et mode ssh port 22)
+
+* Pour tous les commandes de base sous linux:
+
+```
+ls -> liste les fichiers/dossiers
+ll -> liste les fichiers/dossiers en mode lisible
+cd www.refuges.info -> pour rentrer dans votre zone de développement
+git <options> -> pour taper des commandes git relatives à wri
+cd .. -> revenir dossier d'avant
+cd .. puis ll -> voir les dossiers des autres développeurs
+cd yip/www.refuges.info puis cp nav4.php ~ -> piquer à yip le fichier nav4.php qu'il a oublié de mettre sur github et le mettre chez soi
+```
+
+* pour gérer la mise en live de la dernière version
+ * login ssh pour se connecter sur le site actif : refuges
+ * serveur : www.refuges.info  (en mode développement uniquement avant la migration : n.refuges.info)
+
+```
+cd www.refuges.info
+git pull
+```
+(on ne touche pas aux fichiers en prod, là seule commande à connaître est "git pull" pour mettre la dernière version)
+
+* accès postgresql
+ * http://n.refuges.info/phppgadmin/
+(Notez qu'il n'y a qu'une seule base de donnée commune à tous les projets, si besoin, j'en ai créé une autre si on veut faire des modifs profondent de structure SQL)
 
