@@ -27,20 +27,20 @@ Array
 (
     [0] => stdClass Object
         (
-            [site_web] => 
-            [url_exterieure] => 
-            [message_information_polygone] => 
-            [source] => 
+            [site_web] =>   --> une URL pointant sur des infos concernant le polygone
+            [url_exterieure] => --> une URL pointant sur des infos concernant les restrictions liées à la présence dans ce polygone
+            [message_information_polygone] => --> texte indiquant les restrictions liées à la présence dans ce polygone
+            [source] => --> si provenance extérieure
             [nom_polygone] => Chartreuse
             [article_partitif] => de la
             [id_polygone_type] => 1
             [id_polygone] => 2
             [geometrie_gml] => <gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.72,45.18 5.92,45.289999999999999 6.04,45.479999999999997 5.88,45.579999999999998 5.77,45.420000000000002 5.75,45.380000000000003 5.7,45.390000000000001 5.6,45.32 5.72,45.18</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>
-            [nord] => 47.1
+            [nord] => 47.1 --> La latitude du point le plus au nord du polygone
             [ouest] => 2
             [est] => 6
             [sud] => 45
-            [bbox] => 2,45,6,47.1
+            [bbox] => 2,45,6,47.1 --> une variante groupant ceux d'avant pour un accès plus rapide
         )
     [1] etc.
 )

@@ -254,20 +254,24 @@ de conditions et donc plus facilement extensible
 voici les paramètres attendus de recherche :
 (tous facultatifs, ces conditions seront toutes vérifiées par un AND entre elles)
 $conditions->nom : recherche de type ILIKE sur le champ (ILIKE est insensible à la case en postgresql)
-$conditions->altitude_maximum
-$conditions->altitude_minimum
+$conditions->type_point : liste d'id dans notre base des points type ex: 12 ou 12,13,14
 $conditions->places_maximum
 $conditions->places_minimum
-$conditions->type_point : liste d'id dans notre base des points type ex: 12 ou 12,13,14
-$conditions->latitude_minimum
-$conditions->latitude_maximum
-$conditions->longitude_minimum
-$conditions->longitude_maximum
+
+$conditions->sud : Les points situés au Nord de cette latitude (Notez que ces 4 paramètres qui forment une bbox doivent tous être présents, ou aucuns
+$conditions->nord : les points situés au Sud de cette latitude
+$conditions->ouest : ...
+$conditions->est : ... 
+$conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
+$conditions->altitude_maximum
+$conditions->altitude_minimum
+
 $conditions->id_polygone : points appartenant à ce polygone
 $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
 $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veut quand même, par défaut : FALSE
 $conditions->chauffage : soit "chauffage" pour demander poële ou cheminée ou "poele" ou "cheminee"
+
 $conditions->binaire->couvertures : "oui" ou "vide"
 $conditions->binaire->eau_a_proximite : "oui" ou "vide"
 $conditions->binaire->bois_a_proximite : "oui" ou "vide"
@@ -401,10 +405,19 @@ function infos_points($conditions)
   // conditions géographique sur les coordonnées GPS
   // FIXME... ou pas : on considère qu'une requête : tous les points dont la latitude est >50° n'est pas possible/souhaitable
   // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
-  if($conditions->latitude_minimum!="" and $conditions->latitude_maximum!="" and $conditions->longitude_minimum!="" and $conditions->longitude_maximum!="")
+  // Par simplification, on peut aussi passer par ->bbox une bbox au format OL : ouest,sud,est,nord
+  if( ($conditions->sud!="" and $conditions->nord!="" and $conditions->ouest!="" and $conditions->est!="") or isset($conditions->bbox))
   {
+    if (isset ($conditions->bbox))
+    {
+      $bbox=explode(",",$conditions->bbox);
+      $conditions->sud=$bbox [1];
+      $conditions->nord=$bbox [3];
+      $conditions->ouest=$bbox [0];
+      $conditions->est=$bbox [2];
+    }
     $conditions_sql.="\n AND points_gps.geom && 
-    ST_GeomFromText(('LINESTRING($conditions->longitude_minimum $conditions->latitude_minimum,$conditions->longitude_maximum $conditions->latitude_maximum)'),4326)";
+    ST_GeomFromText(('LINESTRING($conditions->ouest $conditions->sud,$conditions->est $conditions->nord)'),4326)";
   }
   
   // condition restrictive sur des id_points particuliers

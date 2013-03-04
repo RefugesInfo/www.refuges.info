@@ -533,8 +533,8 @@ function fichier_exportation($conditions,$format)
   // Dominique 24/11/12 Dédoublement des points proches
   //DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6		
   if ($icones = $_GET ['icones']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
-    $delta_latitude  = ($conditions->latitude_maximum  - $conditions->latitude_minimum ) / $icones;
-    $delta_longitude = ($conditions->longitude_maximum - $conditions->longitude_minimum) / $icones;
+    $delta_latitude  = ($conditions->nord  - $conditions->sud ) / $icones;
+    $delta_longitude = ($conditions->est - $conditions->ouest) / $icones;
     if ($delta_latitude and $delta_longitude and count($points)!=0) // S'il y a un BBOX
       foreach ($points as $a => $p)
 	for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b

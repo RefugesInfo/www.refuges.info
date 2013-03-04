@@ -29,13 +29,15 @@ else if ($_GET["limite"]!="sans")
 	
 // DOMINIQUE : Ajout du paramètre bbox au format utilisé par OpenLayers
 // SLY : remplacement de l'ancien format pour ne garder que celui d'openlayers : &bbox=ouest,sud,est,nord
+// Note : on pourrait passer directement la bbox vu que infos_points peut la gérer directement, mais la procédure d'exportation à parfois besoin de faire des décallages
+// de coordonnées pour l'affichage auquel cas, elle a besoin d'avoir le détail nord/ouest/sud/est
 if (isset ($_GET ['bbox']))
 {
   $bbox=explode(",",$_GET ['bbox']);
-  $conditions->latitude_minimum=$bbox [1];
-  $conditions->latitude_maximum=$bbox [3];
-  $conditions->longitude_minimum=$bbox [0];
-  $conditions->longitude_maximum=$bbox [2];
+  $conditions->sud=$bbox [1];
+  $conditions->nord=$bbox [3];
+  $conditions->ouest=$bbox [0];
+  $conditions->est=$bbox [2];
 }
 
 $conditions->type_point=$_GET['liste_id_point_type'];

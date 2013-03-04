@@ -126,24 +126,24 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 	");
 
   // zone BBOX a exporter seulement si present en GET (on viendrait du navigator)
-  if(isset($_GET["latitude_minimum"]) )
+  if(isset($_GET["sud"]) )
   {
     print("
 			<fieldset><legend>Limites (en degrés décimaux WGS84)</legend>
 				<table>
 					<tr>
 						<td></td>
-						<td style='text-align: center;'><input name='latitude_maximum' id='bbox_latmax' type='text' size='4' value='" .$_GET["latitude_maximum"]. "' /></td>
+						<td style='text-align: center;'><input name='nord' id='bbox_latmax' type='text' size='4' value='" .$_GET["nord"]. "' /></td>
 						<td></td>
 					</tr>
 					<tr style='height: 4em;'>
-						<td><input name='longitude_minimum' id='bbox_lngmin' type='text' size='4' value='" .$_GET["longitude_minimum"]. "' /></td>
+						<td><input name='ouest' id='bbox_lngmin' type='text' size='4' value='" .$_GET["ouest"]. "' /></td>
 						<td style='background-color: #A6CEE7;'>Zone à exporter</td>
-						<td><input name='longitude_maximum' id='bbox_lngmax' type='text' size='4' value='" .$_GET["longitude_maximum"]. "' /></td>
+						<td><input name='est' id='bbox_lngmax' type='text' size='4' value='" .$_GET["est"]. "' /></td>
 					</tr>
 					<tr>
 						<td></td>
-						<td style='text-align: center;'><input name='latitude_minimum' id='bbox_latmin' type='text' size='4' value='" .$_GET["latitude_minimum"]. "' /></td>
+						<td style='text-align: center;'><input name='sud' id='bbox_latmin' type='text' size='4' value='" .$_GET["sud"]. "' /></td>
 						<td></td>
 					</tr>
 				</table>
@@ -215,9 +215,9 @@ else // formulaire validé, affichage du lien et d'un blabla
 		$liste_id_massif=trim($liste_id_massif,",");
 
 		// limiter à une bbox (si demandé depuis les cartes)
-		if(isset($_POST['latitude_minimum']) ) {
-			$bbox = "&amp;bbox=" . $_POST['longitude_minimum'] . ",". $_POST['latitude_minimum'] ;
-			$bbox .= "," . $_POST['longitude_maximum'] . "," . $_POST['latitude_maximum'] ;
+		if(isset($_POST['sud']) ) {
+			$bbox = "&amp;bbox=" . $_POST['ouest'] . ",". $_POST['sud'] ;
+			$bbox .= "," . $_POST['est'] . "," . $_POST['nord'] ;
 		} else {
 			$bbox = "";
 		}

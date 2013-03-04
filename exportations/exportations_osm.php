@@ -22,10 +22,10 @@ else
 if (isset ($_GET ['bbox']))
 {
   $bbox=explode(",",$_GET ['bbox']);
-  $conditions->latitude_minimum=$bbox [1];
-  $conditions->latitude_maximum=$bbox [3];
-  $conditions->longitude_minimum=$bbox [0];
-  $conditions->longitude_maximum=$bbox [2];
+  $conditions->sud=$bbox [1];
+  $conditions->nord=$bbox [3];
+  $conditions->ouest=$bbox [0];
+  $conditions->est=$bbox [2];
 }
 
 //Tout, mais à sélectionner par la requête par la suite

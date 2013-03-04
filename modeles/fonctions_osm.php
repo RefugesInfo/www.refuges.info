@@ -23,7 +23,10 @@ On lui passe l'objet $conditions_recherche contenant :
 ->v la valeur de la clé (hotel, drinking_water)
 Une connaissance des tags osm est nécessaire, Utilisez préférablement la fonction appelant celle-ci qui est 
 "simplifiée"
-->bbox La bbox sous la forme de l'objet bbox habituel avec : ->latitude_maximum, ->longitude_minimum, ...
+->nord
+->ouest
+->sud
+->est, pour ne chercher les points osm que dans ce rectangle
 Le nombre d'objet à récupérer au maximum (optionnel)
 ->limite
 */
@@ -65,10 +68,10 @@ function recuperation_poi_osm($conditions_recherche)
 								(SELECT * FROM osm_tags NATURAL JOIN osm_pois_tags) AS tag
 						WHERE 
 							$tag_condition
-							AND longitude<$conditions_recherche->longitude_maximum
-							AND longitude>$conditions_recherche->longitude_minimum
-							AND latitude<$conditions_recherche->latitude_maximum
-							AND latitude>$conditions_recherche->latitude_minimum
+							AND longitude<$conditions_recherche->est
+							AND longitude>$conditions_recherche->est
+							AND latitude<$conditions_recherche->nord
+							AND latitude>$conditions_recherche->sud
 							$limite_sql";						
 //PDO-	
 /*
@@ -95,10 +98,10 @@ function recuperation_poi_osm($conditions_recherche)
   osm_pois2.id_osm_poi=osm_pois_tags2.id_osm_poi AND
   osm_pois_tags2.id_osm_tag=osm_tags2.id_osm_tag AND
   
-  osm_pois2.longitude<$conditions_recherche->longitude_maximum AND
-  osm_pois2.longitude>$conditions_recherche->longitude_minimum AND
-  osm_pois2.latitude<$conditions_recherche->latitude_maximum AND
-  osm_pois2.latitude>$conditions_recherche->latitude_minimum
+  osm_pois2.longitude<$conditions_recherche->est AND
+  osm_pois2.longitude>$conditions_recherche->est AND
+  osm_pois2.latitude<$conditions_recherche->nord AND
+  osm_pois2.latitude>$conditions_recherche->sud
   $limite_sql";
 */
 //die($query_recherche);
@@ -231,7 +234,7 @@ function insert_ou_recupere_tag($tag)
 On lui donne une bbox object en paramètre et elle insère dans les tables osm
 
 bbox doit être composé de ces 4 champs là :
-$bbox->latitude_minimum $bbox->latitude_maximum $bbox->longitude_maximum $bbox->longitude_minimum
+$bbox->sud $bbox->nord $bbox->est $bbox->est
 On peut par exemple lui envoyer un object polygone qui contient tout ça
 et des conditions xapi, résultat :
 "*[tourism=hotel][bbox=6.5,45.5,7,46]"
@@ -242,7 +245,7 @@ function importation_osm_poi($bbox,$xapi_condition)
 {
   global $config,$pdo;
   global $tags_cache;
-  $xapi_p=fopen($config['xapi_url_poi'].$xapi_condition."[bbox=$bbox->longitude_minimum,$bbox->latitude_minimum,$bbox->longitude_maximum,$bbox->latitude_maximum]","r");
+  $xapi_p=fopen($config['xapi_url_poi'].$xapi_condition."[bbox=$bbox->est,$bbox->sud,$bbox->est,$bbox->nord]","r");
   if (!$xapi_p)
     die("Connexion impossible");
   $osm_xml="";
