@@ -39,25 +39,26 @@ if (isset($_GET['bbox']))
 $conditions->avec_geometrie='gmlol';
 $polygones=infos_polygones($conditions);
 
-foreach ($polygones as $polygone ) 
-{
-  // Couleur attribuée autour du cercle des couleurs.
-  $cr = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul               )), -2);
-  $cv = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 2 * M_PI / 3)), -2);
-  $cb = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 4 * M_PI / 3)), -2);
-  $no_coul += $pas;
+if ($polygones)
+  foreach ($polygones as $polygone ) 
+  {
+    // Couleur attribuée autour du cercle des couleurs.
+    $cr = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul               )), -2);
+    $cv = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 2 * M_PI / 3)), -2);
+    $cb = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 4 * M_PI / 3)), -2);
+    $no_coul += $pas;
+    
+    $polygone_export = new stdClass;
+    //On pourrait tout aussi bien envoyer tous les champs du polygone donc de notre base directement
+    // mais ça ferait des trucs un peu inutile donc sélection :
+    $polygone_export->feature_name="massif";
+    $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
+    $polygone_export->proprietes['color']="#$cb$cv$cr";
+    $polygone_export->proprietes['url']=lien_polygone($polygone,False);
+    $polygone_export->geometrie_gml=$polygone->geometrie_gmlol;
   
-  $polygone_export = new stdClass;
-  //On pourrait tout aussi bien envoyer tous les champs du polygone donc de notre base directement
-  // mais ça ferait des trucs un peu inutile donc sélection :
-  $polygone_export->feature_name="massif";
-  $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
-  $polygone_export->proprietes['color']="#$cb$cv$cr";
-  $polygone_export->proprietes['url']=lien_polygone($polygone,False);
-  $polygone_export->geometrie_gml=$polygone->geometrie_gmlol;
-
-  $modele->features[]=$polygone_export;
-}
+    $modele->features[]=$polygone_export;
+  }
 
 $modele->content_type="UTF-8";
 $modele->nom_fichier_export="polygones";
