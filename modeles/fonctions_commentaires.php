@@ -410,7 +410,7 @@ function suppression_commentaire($commentaire)
 	/****** On supprime les photo (de différentes taille) si elle existe ******/
 	if ($commentaire->photo_existe)
 		$retour=suppression_photos($commentaire);
-	
+	print_r($commentaire); die();
 	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire";
 	$success = $pdo->exec($query_delete);
 	
@@ -449,12 +449,9 @@ function transfert_forum($commentaire)
   // dabord declarer le post
   $query_insert_post="
   INSERT INTO phpbb_posts
-  SET
-  topic_id=$forum->topic_id ,
-  forum_id=$forum->forum_id ,
-    poster_id='-1',
-    post_time=$commentaire->date_unixtimestamp ,
-    post_username=".$pdo->quote($commentaire->auteur);
+    (topic_id,forum_id,poster_id,post_time,post_username)
+  VALUES
+    ($forum->topic_id ,$forum->forum_id ,-1,$commentaire->ts_unix_commentaire , ".$pdo->quote($commentaire->auteur).")";
   
   if (!$pdo->exec($query_insert_post))
     return erreur("Transfert vers le forum échoué",$query_insert_post);
@@ -463,31 +460,33 @@ function transfert_forum($commentaire)
   // ensuite entrer le texte du post
   // la folie bbcode: generer un rand sur 10 chiffres, et l'utiliser dans les balises...
   $bbcodeuid = mt_rand( 1000000000, 9999999999 );
-  $query_post_text="
-  INSERT INTO phpbb_posts_text
-  SET
-    post_id=$postid,
-    bbcode_uid=$bbcodeuid, 
-    post_text='";
   if ($commentaire->photo_existe) 
   {
     // insere la balise bbcode pour la photo
     $query_post_text.="[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
-    // et deplace la photo
-    rename($commentaire->photo['reduite'],$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
+    // et deplace la photo, question historique, on peut avoir la réduite et/ou l'originale
+    if (isset($commentaire->photo['reduite']))
+      $photo_a_conserver=$commentaire->photo['reduite'];
+    elseif (isset($commentaire->photo['originale']))
+      $photo_a_conserver=$commentaire->photo['originale'];
+     
+    copy($photo_a_conserver,$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
   }
-  // insere le texte du comment
-  $query_post_text.=$pdo->quote($commentaire->texte);
+  $query_post_text="
+  INSERT INTO phpbb_posts_text
+    (post_id,bbcode_uid,post_text)
+  VALUES
+    ($postid,$bbcodeuid,".$pdo->quote($commentaire->texte).")";
   
-  $pdo->exec($query_post_text);
-
+  $res=$pdo->exec($query_post_text);
+  if (!$res)
+    return erreur("Ajout du commentaire dans le forum échouée",$query_post_text);
 
     /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
     $query_update_topic="UPDATE phpbb_topics
     SET
       topic_last_post_id=$postid
-      WHERE topic_id=$forum->topic_id
-    LIMIT 1";
+      WHERE topic_id=$forum->topic_id";
     
     $pdo->exec($query_update_topic);
 
