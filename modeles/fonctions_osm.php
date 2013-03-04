@@ -69,7 +69,7 @@ function recuperation_poi_osm($conditions_recherche)
 						WHERE 
 							$tag_condition
 							AND longitude<$conditions_recherche->est
-							AND longitude>$conditions_recherche->est
+							AND longitude>$conditions_recherche->ouest
 							AND latitude<$conditions_recherche->nord
 							AND latitude>$conditions_recherche->sud
 							$limite_sql";						
@@ -110,7 +110,8 @@ function recuperation_poi_osm($conditions_recherche)
 //  $compte=0;
 	//PDO+
 	$res = $pdo->query($query_recherche);
-
+        if (!$res)
+          return erreur("Execution requête impossible",$query_recherche);
 //jmb: simplifie grace a la nouvell requete
 //PDO-  while ($point=mysql_fetch_object($res))
 //PDO+

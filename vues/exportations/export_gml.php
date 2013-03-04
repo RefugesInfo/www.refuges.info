@@ -18,8 +18,9 @@
 	
 	<?php // FIXME : tout ça peut être fusionné avec celui plus bas depuis que GIS gère tout lui même
 	if ($modele->pois) 
-	foreach ($modele->pois as $types => $points)
-	foreach ($points as $point) {?>
+	  foreach ($modele->pois as $types => $points)
+	    if ($points)
+	      foreach ($points as $point) {?>
 		<gml:featureMember>
 			<point>
 				<nom><?=c($point->nom)?></nom>
