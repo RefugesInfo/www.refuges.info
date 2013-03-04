@@ -70,7 +70,7 @@ function modification_ajout_commentaire($commentaire)
   
   // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
   if (isset($commentaire->id_commentaire))
-  { // On souhaite ajouter le commentaire
+  { // On souhaite modifier le commentaire
   $old_commentaire=infos_commentaire($commentaire->id_commentaire);
   if ($old_commentaire->erreur)
     return erreur("Une modification d'un commentaire inexistant a été demandée");
