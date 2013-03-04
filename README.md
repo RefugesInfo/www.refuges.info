@@ -69,7 +69,7 @@ En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivé
 git clone https://github.com/sletuffe/www.refuges.info.git
 ```
 
-* Avant toute modification, dites à git qui vous êtes et ou ce trouve la branche master principale
+* Avant toute modification, dites à git qui vous êtes
 
 ```
 git config --global user.name "<votre login github>"
@@ -107,7 +107,7 @@ git add <le fichier ou le dossier>
 git add . 
 ```
 
-* Enregistrer localement le commit (votre éditeur de texte favoris sous linux s'ouvre pour indiquer les changements réalisés et vous demande un message de commit : sur le serveur refuges.info, par défaut c'est joue qui s'ouvre, faites ctrl+K puis x pour sauver et quitter
+* Enregistrer localement le commit (votre éditeur de texte favoris sous linux s'ouvre pour indiquer les changements réalisés et vous demande un message de commit : sur le serveur refuges.info, par défaut c'est joe qui s'ouvre, faites ctrl+k puis x pour sauver et quitter
 
 ```
 git commit -a
@@ -120,9 +120,11 @@ git push
 ```
 * Notez que pour éviter d'avoir à taper votre mot de passe à chaque fois (relou) vous pouvez générer une clef ssh et l'ajouter
 a votre profil github 
+
 ```
 ssh-keygen -t rsa 
 ```
+
 ne rentrez aucun mot de passe pour protéger la clef elle même sinon il faudra taper le mot de passe pour dévérouiller la clef
 qui sert à économiser le mot de passe à taper ;-)
 Votre clé publique se trouve ici $HOME/.ssh/id_rsa.pub (le contenu est en texte et peut se copier coller sur votre profil github)
