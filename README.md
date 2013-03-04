@@ -94,14 +94,14 @@ remote: Compressing objects: 100% (12/12), done.
 (...) -> téléchargement des éléments de la dernière version
 ```
 
-* Modifier du code existant, puis, une fois satisfait, enregistrement locale dans la base git
+* Modifier du code existant, puis, une fois satisfait, enregistrement dans votre base git de votre dossier
  * Si vous ajouter un fichier ou dossier nouveau que vous voulez rendre disponible :
 
 ```
 git add <le fichier ou le dossier>
 ```
 
- * si vous en avez plein et que vous voulez tout envoyer ce qui est ajouté
+ * si vous en avez plein et que vous voulez tout envoyer ce qui est ajouté (ou que vous ne vous rappelez plus tellement vous en avez créé !)
 
 ```
 git add . 
@@ -156,9 +156,11 @@ ll -> liste les fichiers/dossiers en mode lisible
 cd www.refuges.info -> pour rentrer dans votre zone de développement
 git <options> -> pour taper des commandes git relatives à wri
 cd .. -> revenir dossier d'avant
-cd .. puis ll -> voir les dossiers des autres développeurs
-cd yip/www.refuges.info puis cp nav4.php ~ -> piquer à yip le fichier nav4.php qu'il a oublié de mettre sur github et le mettre chez soi
 ```
+* Sur le serveur : 
+ * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
+ * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur http://<login>.refuges.info
+ * /home/sites/refuges/www.refuges.info/ -> la version (bientôt) live contrôlable par l'utilisateur "refuges"
 
 * pour gérer la mise en live de la dernière version
  * login ssh pour se connecter sur le site actif : refuges
