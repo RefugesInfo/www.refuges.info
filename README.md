@@ -131,7 +131,7 @@ Votre clé publique se trouve ici $HOME/.ssh/id_rsa.pub (le contenu est en texte
 
 Ensuite (il doit y avoir une commande pour le faire mais je l'ignore) on peut éditer le fichier de config de git pour refuges.info
 dans www.refuges.info/.git/config et remplacer le paramètre url pour mettre :
-* url = <votre login>@github.com:sletuffe/www.refuges.info.git
+* url = "votre login"@github.com:sletuffe/www.refuges.info.git
 
 FIXME: y'a encore un truc qui m'échappe avec git, chez moi c'est marqué "git@github.com:sletuffe/www.refuges.info.git" mais mon user c'est "sletuffe"
 et pourtant, ça marche sans mot de passe en prenant bien ma clef... je pige pas
