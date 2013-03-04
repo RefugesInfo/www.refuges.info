@@ -13,7 +13,8 @@ require_once ('fonctions_mise_en_forme_texte.php');
 
 /***********************************************************************************
 Cette fonction permet d'aller chercher un ou plusieurs polygones
-$conditions->ids_polygones = 5 ou 4,7,8
+$conditions->ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id est cette liste
+$conditions->non_ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id n'est pas dans cette liste
 $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    FIXME : un code spécial "gmlol" va bidouiller car notre version de OL ne peut gérer les multipolygones
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
@@ -54,8 +55,15 @@ function infos_polygones($conditions)
   if (isset($conditions->ids_polygones))
     if (!verifi_multiple_intiers($conditions->ids_polygones))
       return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
-  else
-    $conditions_sql.=" AND id_polygone in ($conditions->ids_polygones)";
+    else
+      $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
+  
+  // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
+  if (isset($conditions->non_ids_polygones))
+    if (!verifi_multiple_intiers($conditions->non_ids_polygones))
+      return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
+    else
+      $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
   
   if (is_numeric($conditions->limite))
     $limite="LIMIT $conditions->limite";
@@ -84,9 +92,9 @@ function infos_polygones($conditions)
   {
     // FIXME : notre OL ne sait pas gérer les multipolygon, on bidouille en ne prenant que le 1
     if ($conditions->avec_geometrie="gmlol")
-    $champs_geometry.=",st_asGML(st_geometryn(geom,1)) as geometrie_gmlol";
+    $champs_geometry.=",st_asGML(st_geometryn(geom,1)) AS geometrie_gmlol";
     else
-      $champs_geometry.=",st_as$conditions->avec_geometrie(geom) as geometrie_$conditions->avec_geometrie";
+      $champs_geometry.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
   }
   else
     $champs_geometry.="";

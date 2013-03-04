@@ -45,6 +45,7 @@ $modele->bbox=$polygones[0]->bbox;
 $conditions = new stdClass;
 
 // liens vers les autres zones
+$conditions->non_ids_polygones=$modele->id_polygone;
 $conditions->id_polygone_type=$config['id_zone'];
 $zones=infos_polygones($conditions);
 // Ajoute les liens vers les autres zones
