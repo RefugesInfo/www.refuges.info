@@ -83,15 +83,12 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
   print("<fieldset><legend>Choix des massifs de la base a exporter :</legend>");
 
   // Creation d'une case à cocher pour chaque type massif
-  $query_dossier = "Select id_polygone,nom_polygone 
-			from polygones
-			where 
-			id_polygone_type=".$config['id_massif']."
-			ORDER BY nom_polygone";
-  $result_dossier = $res=$pdo->query($query_dossier) or die("Impossible d'interroger la base de données");
+  $conditions = new stdClass;
+  $conditions->id_polygone_type=$config['id_massif'];
+  $massifs=infos_polygones($conditions);
 
   print("\n<ul>");
-  while ($row = $res->fetch()) 
+  foreach ($massifs as $massif)
   {
     print("  
 			<li style='display: inline;
@@ -102,13 +99,13 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 					<input
 						type='checkbox'
 						name='id_massif[]'
-						value='$row->id_polygone' ");
+						value='$massif->id_polygone' ");
   if ( ! isset($_GET['id_massif']) )
     print(" checked='checked' "); // checked par defo
   else
-    if ($_GET['id_massif'] == $row[0]) 
+    if ($_GET['id_massif'] == $massif[0]) 
       print(" checked='checked' "); //checked seulement si bon massif
-    print("/>$row->nom_polygone &nbsp;
+    print("/>$massif->nom_polygone &nbsp;
 				</label>
 			</li>");
   }

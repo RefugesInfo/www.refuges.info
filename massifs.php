@@ -46,7 +46,7 @@ $conditions = new stdClass;
 
 // liens vers les autres zones
 $conditions->non_ids_polygones=$modele->id_polygone;
-$conditions->id_polygone_type=$config['id_zone'];
+$conditions->ids_polygone_type=$config['id_zone'];
 $zones=infos_polygones($conditions);
 // Ajoute les liens vers les autres zones
 foreach ($zones as $zone) // FIXME ce preg_replace est complètement ridicule mais sautera avec fusion massif/nav

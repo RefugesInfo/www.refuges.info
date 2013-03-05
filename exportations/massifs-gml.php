@@ -29,9 +29,9 @@ if (isset($_GET['massif']))
 
 // ici on nous précise un type de polygones à récupérer
 if (isset($_GET['polygone_type']))
-  $conditions->id_polygone_type = $_GET['polygone_type'];
+  $conditions->ids_polygone_type = $_GET['polygone_type'];
 else // sinon on choisi les massifs uniquement
-  $conditions->id_polygone_type = $config['id_massif'];
+  $conditions->ids_polygone_type = $config['id_massif'];
 
 if (isset($_GET['bbox']))
   $conditions->bbox=$_GET['bbox'];
