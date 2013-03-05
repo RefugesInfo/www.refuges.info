@@ -39,7 +39,7 @@ une doc (pas totalement à jour le 03/03/2013) explique notre base dans /ressour
 
  * dans /modeles/
 copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée
-
+ * A la racine : renommer le fichier htaccess.modele.txt en .htaccess (et décommenter la dernière ligne si vous voulez que les erreurs php s'affiche à l'écran)
 ```
 cd modeles
 cp config_privee.php.modele config_privee.php
