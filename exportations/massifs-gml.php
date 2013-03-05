@@ -26,13 +26,14 @@ $modele = new stdClass;
 // Ici on a demandé un nombre fini de massif solitaires
 if (isset($_GET['massif']))
   $conditions->ids_polygones=$_GET['massif'];
-
-// ici on nous précise un type de polygones à récupérer
-if (isset($_GET['polygone_type']))
-  $conditions->ids_polygone_type = $_GET['polygone_type'];
-else // sinon on choisi les massifs uniquement
-  $conditions->ids_polygone_type = $config['id_massif'];
-
+else
+{
+  // ici on nous précise un type de polygones à récupérer
+  if (isset($_GET['polygone_type']))
+    $conditions->ids_polygone_type = $_GET['polygone_type'];
+  else // sinon on choisi les massifs uniquement
+    $conditions->ids_polygone_type = $config['id_massif'];
+}
 if (isset($_GET['bbox']))
   $conditions->bbox=$_GET['bbox'];
 

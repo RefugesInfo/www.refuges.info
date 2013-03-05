@@ -54,6 +54,7 @@ function lien_point_lent($id_point)
 /* fonction simple qui renvois une chaine avec liens au format :
  Pays + Massif + Département + carte topographique + (communes ?) + (parc protégé ?)
 On peut lui passer un paramètre additionnel indiquant quelle meta-categorie traiter
+FIXME : cette fonction ne devrait pas générer du HTML, et donc, elle devient en gros inutile ou presque
 */
 function localisation($polygones,$categorie="")
 {
@@ -66,7 +67,10 @@ foreach ($polygones as $polygone)
   if (isset($polygone->categorie_polygone_type) and $polygone->categorie_polygone_type==$categorie)
   {
     $lien=lien_polygone($polygone,True);
-    $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> +";
+    if ($categorie=="administrative") // FIXME : gros hack : certains polygones administratif sont si gros, qu'il ne vaut mieux pas faire un lien vers eux
+      $html.=" ".ucfirst($polygone->nom_polygone)." +";
+    else
+      $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> +";
   }
 }
 return trim($html,"+");
