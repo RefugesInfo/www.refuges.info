@@ -38,8 +38,8 @@
 					<td>
 						<select name="id_massif">
 							<option value="">(tous)</option>
-							<?php if (is_array($modele->infos_base->massifs))
-								foreach ($modele->infos_base->massifs AS $m) {?>
+							<?php if (is_array($modele->massifs))
+								foreach ($modele->massifs AS $m) {?>
 								<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option>
 							<?}?>
 						</select>

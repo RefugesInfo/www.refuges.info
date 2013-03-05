@@ -21,7 +21,7 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gmlol
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
-$conditions->id_polygone_type = 7 (un entier, l'id de type de polygone)
+$conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
 
 Retour :
 Array
@@ -68,8 +68,11 @@ function infos_polygones($conditions)
   if (is_numeric($conditions->limite))
     $limite="LIMIT $conditions->limite";
 
-  if (is_numeric($conditions->id_polygone_type))
-    $conditions_sql.=" AND polygone_type.id_polygone_type = $conditions->id_polygone_type";
+  if (isset($conditions->ids_polygone_type))
+    if (!verifi_multiple_intiers($conditions->ids_polygone_type))
+      return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
+    else
+      $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
   
   // Ne prenons que les polygones qui intersectent une bbox
   if (isset($conditions->bbox))
