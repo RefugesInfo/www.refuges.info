@@ -14,11 +14,6 @@ require_once ("fonctions_autoconnexion.php");
 
 $modele = new stdClass;
 $modele->titre="Zone de gestion";
-$olVersion = 'ol2.12.1.3';
-
-// FIXME : Ou là la ! Je n'ai pas le temps pour l'instant, mais il faudra standardiser tout ça à le rentrée // Dominique 22/07/12
-// Il faut faire ça ici, dans le fichier général de gestion car ça doit être fait avant d'appeler l'entête
-// jmb je commente tout ce qui est edition de poly
 
 include ($config['chemin_vues']."_entete.html");
 
@@ -47,7 +42,7 @@ if (isset($_SESSION['id_utilisateur']) )
 				print("
 					<h4>Programmeurs</h4>
 					<ul>
-						<li><a href='/$olVersion/build/build.php'>Compression de la librairie OpenLayers</a> aprés modification des sources (dizaine de secondes)</li>
+						<li><a href='".$config['chemin_openlayers']."build/build.php'>Compression de la librairie OpenLayers</a> aprés modification des sources (dizaine de secondes)</li>
 					</ul>
 					");
 	

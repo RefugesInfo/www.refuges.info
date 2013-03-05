@@ -1,4 +1,0 @@
-/*DCM++ © Dominique Cavailhez 2012
-Ajout de cadre.png
-Ajout de viseur.png
-Ajout des fichiers de gray.tar

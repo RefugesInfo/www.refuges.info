@@ -67,7 +67,7 @@ else
 if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses']) { // Si les coordonnées du point sont fausse, pas besoin de carte
   $modele->mini_carte=TRUE;
   $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
-  $modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
+  $modele->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
   $modele->vignette = param_cartes_vignettes ($modele);
 }
 

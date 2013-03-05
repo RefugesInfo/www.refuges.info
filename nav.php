@@ -24,7 +24,7 @@ require_once ("fonctions_polygones.php");
 
 $modele = new stdClass();
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
-$modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
+$modele->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $modele->infos_base = infos_base ();

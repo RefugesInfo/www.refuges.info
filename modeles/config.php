@@ -14,6 +14,7 @@ require_once("config_privee.php");
 $config['ign_key']="ev2w14tv2ez4wpypux2ael39"; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
+$config['chemin_openlayers']='/ol2.12.dc/'; 
 $config['carte_base'] = 'maps.refuges.info';
 //$config['carte_base'] = 'Google';
 $config['cartes_vignettes'] = Array (

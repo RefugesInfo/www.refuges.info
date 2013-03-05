@@ -1,0 +1,47 @@
+© Dominique Cavailhez août 2012.
+Published under the Clear BSD license.
+See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license
+
+Contains portions of:
+
+-- OpenLayers.js -- OpenLayers Map Viewer Library -- http://openlayers.org/
+Copyright 2005-2012 OpenLayers Contributors. All rights reserved. See authors.txt for full list.
+http://svn.openlayers.org/trunk/openlayers/license.txt
+
+-- Prototype.js: -- Prototype JavaScript framework, version 1.4.0
+(c) 2005 Sam Stephenson <sam@conio.net> http://prototype.conio.net/
+Prototype is freely distributable under the terms of an MIT-style license.
+
+-- XMLHttpRequest.js -- <http://code.google.com/p/xmlhttprequest/>
+Copyright 2007 Sergey Ilinsky (http://www.ilinsky.com)
+Licensed under the Apache License, Version 2.0 (the "License") http://www.apache.org/licenses/LICENSE-2.0
+
+-- proj4js.js -- Javascript reprojection library. 
+Authors: Mike Adair madairATdmsolutions.ca, Richard Greenwood richATgreenwoodmap.com, Didier Richard didier.richardATign.fr, Stephen Irons
+License: LGPL as per: http://www.gnu.org/copyleft/lesser.html 
+Note: This program is an almost direct port of the C library Proj4.
+
+-- Library compression uses @package JSMin
+Copyright 2002 Douglas Crockford <douglas@crockford.com> (jsmin.c)& 2008 Ryan Grove <ryan@wonko.com> (PHP port)
+
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+THESE SOFTWARES ARE PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE.

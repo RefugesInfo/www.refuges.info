@@ -245,7 +245,7 @@ if (!isset($_SESSION['id_utilisateur']))
 // ===================================
 
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
-$modele->java_lib [] = '/ol2.12.1.3/OpenLayers.js';
+$modele->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 
 // On affiche le tout
 $modele->type = 'point_formulaire_modification';
