@@ -88,7 +88,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
       if ($commentaire->photo_existe)
 	$texte.="+<img src=\"/images/icones/photo.png\" alt=\"commentaire avec photo\" /> ";
       if ($commentaire->auteur!="")
-	$texte.="de $commentaire->auteur ";
+	$texte.="de ".bbcode2html($commentaire->auteur)." ";
       
       // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
       // la ya un massif
