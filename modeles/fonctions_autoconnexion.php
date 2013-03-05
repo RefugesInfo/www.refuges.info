@@ -33,6 +33,7 @@ l'idéal serait sûrement de vider la session au niveau du forum
 
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
+require_once ("fonctions_gestion_erreurs.php");
 
 			
 /*** 
@@ -63,7 +64,8 @@ function auto_login_phpbb_users()
   if (isset($_COOKIE['phpbb2mysql_sid']))
   {
     $query_connexion_temporaire="SELECT * FROM phpbb_sessions WHERE session_id='".$_COOKIE['phpbb2mysql_sid']."'";
-    $res = $pdo->query($query_connexion_temporaire) ;
+    if (! ($res = $pdo->query($query_connexion_temporaire)))
+      return erreur("Problème dans la requête pour vous connecter automatiquement",$query_connexion_temporaire);
     if ( $user = $res->fetch() )
     {
       $authentifie=TRUE;
@@ -154,7 +156,6 @@ function info_demande_correction ()
   else
     return false;
 }
-
 auto_login_phpbb_users();
 
 ?>

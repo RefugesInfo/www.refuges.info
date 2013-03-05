@@ -27,8 +27,9 @@ if ( !defined('IN_PHPBB') )
 
 define('HEADER_INC', TRUE);
 global $config; // Dominique 29/11/11 : Dans le cas ou page_header.php serait inclus dans une fonction (message_die())
-require_once ($config['chemin_modeles']."fonctions_pubs.php");
-require_once ($config['chemin_modeles']."fonctions_points.php");
+global $pdo; // Même principe que si avant
+require_once ("fonctions_pubs.php");
+require_once ("fonctions_points.php");
 
 
 
@@ -483,7 +484,7 @@ else
 }
 header ('Expires: 0');
 header ('Pragma: no-cache');
-require_once ($config['chemin_modeles']."fonctions_autoconnexion.php");
+require_once ("fonctions_autoconnexion.php");
 
 // 05/11/2011 Dominique : modif appel
 // 31/05/2012 Dominique : passage en template simple

@@ -17,8 +17,9 @@ function erreur($texte,$seulement_avec_debug="")
   
   if ($config['debug'])
   {
-   if ($pdo->errorInfo())
-    $erreur_pdo="Erreur PDO : ".var_export($pdo->errorInfo(),true);
+    if (isset($pdo))
+      if ($pdo->errorInfo())
+	$erreur_pdo="Erreur PDO : ".var_export($pdo->errorInfo(),true);
     
     print("<pre>
     Mode debug actif : 
