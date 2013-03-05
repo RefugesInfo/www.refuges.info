@@ -373,8 +373,11 @@ on lui passe un objet commentaire, il en retire les photos et
 retourne le nouvel objet commentaire
 il est possible que fusionner ça dans la grosse fonction ajouter_modifier_commentaire soit plus logique, mais son code là haut et déjà
 bien gros
+On peut "forcer" la suppression de la photo, même si cela pourait produire un commentaire sans photos et sans texte
+Ce n'est pas souhaitable lorsque un commentaire est modifié en vu d'être gardé, mais si le but c'est au final la suppression
+du commentaire, ça l'est.
 *******************************************************/
-function suppression_photos($commentaire)
+function suppression_photos($commentaire,$force=False)
 {
   global $config;
   if (isset($commentaire->photo) or $commentaire->photo_existe)
@@ -385,25 +388,26 @@ function suppression_photos($commentaire)
       $photos_a_supprimer=$commentaire->photo;
       unset($commentaire->photo);
     }
-    
-    $retour=modification_ajout_commentaire($commentaire);
+    if (!$force)
+    {
+      $retour=modification_ajout_commentaire($commentaire);
     if ($retour->erreur)
-      return erreur($retour->message);
+      return erreur($retour->message); // Sans doute que supprimer sa photo en ferait un commentaire totalement vide, ce n'est pas un bug, mais on ne fait rien quand même
+    }
     // On nous dit qu'il y a une photo mais en fait non ?
     if (isset($photos_a_supprimer))
-    {
       foreach ($photos_a_supprimer as $photo)
-	unlink($photo);
-    }
+	if (is_file($photo))
+	  unlink($photo);
   }
   else 
-    return (erreur("pas de photo dans ce commentaire"));
+    return erreur("pas de photo dans ce commentaire");
   
   return ok("photo supprimée");
 }
 
 /******************************************************
-on lui passe un $id_commentaire et ça supprime le commentaire et la photo
+on lui passe un $commentaire et ça supprime le commentaire et la photo
 
 Comme vous pouvez le voir, il n'y a strictement aucune sauvegarde , c'est un peu dangereux en cas de vandalisme, 
 mais tout copier à tout copier à coté, c'est lourd. Je pense évoluer vers un champ nommé "suppression" 
@@ -417,8 +421,7 @@ function suppression_commentaire($commentaire)
 	
 	/****** On supprime les photo (de différentes taille) si elle existe ******/
 	if ($commentaire->photo_existe)
-		$retour=suppression_photos($commentaire);
-	print_r($commentaire); die();
+		$retour=suppression_photos($commentaire,True);
 	$query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire";
 	$success = $pdo->exec($query_delete);
 	
@@ -471,7 +474,7 @@ function transfert_forum($commentaire)
   if ($commentaire->photo_existe) 
   {
     // insere la balise bbcode pour la photo
-    $query_post_text.="[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
+    $commentaire->texte.="[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
     // et deplace la photo, question historique, on peut avoir la réduite et/ou l'originale
     if (isset($commentaire->photo['reduite']))
       $photo_a_conserver=$commentaire->photo['reduite'];
