@@ -306,10 +306,18 @@ function infos_commentaires ($conditions)
     $condition_en_plus=" AND points.id_point=commentaires.id_point 
 			 AND points_gps.id_point_gps=points.id_point_gps
 			 AND point_type.id_point_type=points.id_point_type";
-    $champ_en_plus=",nom,points.id_point,nom_type,nom_polygone as nom_massif,article_partitif";
+    $champ_en_plus.=",points.*,";
+    // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
+    // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
+    $champ_en_plus.=colonnes_table('polygones',False);
+			 
   }
-
-  $query="SELECT *,extract('epoch' from commentaires.date) as ts_unix_commentaire,extract('epoch' from commentaires.date_photo) as ts_unix_photo$champ_en_plus
+   
+  $query="SELECT 
+             extract('epoch' from commentaires.date) as ts_unix_commentaire,
+             extract('epoch' from commentaires.date_photo) as ts_unix_photo,
+             commentaires.*
+             $champ_en_plus
            FROM commentaires$table_en_plus
            WHERE 1=1
              $conditions_sql$condition_en_plus

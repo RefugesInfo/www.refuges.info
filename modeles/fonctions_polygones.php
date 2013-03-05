@@ -79,15 +79,6 @@ function infos_polygones($conditions)
     ST_GeomFromText(('LINESTRING($bbox[0] $bbox[1],$bbox[2] $bbox[3])'),4326)";
   }
   
-  // Récupération ou non de la géométrie du polygone (un peu l'usine, mais récupérer 30000 points en trop alors qu'on veut
-  // juste le nom c'est dommage
-  $champs="";
-  $colonnes=colonnes_table('polygones');
-  foreach ($colonnes as $colonne)
-    if ($colonne->column_name!='geom')
-      $champs.="polygones.$colonne->column_name,";
-  $champs=trim($champs,",");
-  
   if ($conditions->avec_geometrie)
   {
     // FIXME : notre OL ne sait pas gérer les multipolygon, on bidouille en ne prenant que le 1
@@ -106,7 +97,7 @@ function infos_polygones($conditions)
                  st_xmax($box) as est,
                  st_ymin($box) as sud,
                  st_ymax($box) as nord,
-                 $champs
+                 ".colonnes_table('polygones',True)."
                  $champs_geometry
           FROM polygones,polygone_type
           WHERE 

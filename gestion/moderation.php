@@ -12,10 +12,9 @@ if (AUTH!=1)
 
 // si nous n'avons pas un modérateur, nous vérifions si il s'agit bien de son commentaire
 $commentaire=infos_commentaire($_REQUEST['id_commentaire']);
-//var_dump($commentaire);
 
 if ($commentaire->erreur)
-  die("Ce commentaire n'existe pas il semblerait");
+  die($commentaire->message);
 
 if ($commentaire->id_createur==$_SESSION['id_utilisateur'])
   $autorisation=True;

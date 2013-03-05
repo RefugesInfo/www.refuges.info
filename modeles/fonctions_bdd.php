@@ -72,8 +72,14 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
 	}
 	return $query;
 }
-// Et une autre fonction postgresql spécifique pour obtenir les noms des colonnes d'une table
-function colonnes_table($table)
+/* Et une autre fonction postgresql spécifique pour obtenir les noms des colonnes d'une table
+FIXME : ça risque d'être trop souvent appelé, le mettre dans un tableau global pourrait être plus économe... à voir
+c'est pas non plus la requête qui consomme beaucoup -- sly
+Le but est le suivant : Les géométries GIS peuvent être énormes, et d'habitude, je mets "select *" car c'est bien plus
+simple que de lister tous les champs, qui en plus, pourraient augmenter en nombre. Mais là, surtout avec les polygones énormes
+il vaut mieux pouvoir enlever la colonne "geom" si demandée (ce qui sera quasi tout le temps le cas, mais je préfère être générique)
+*/
+function colonnes_table($table,$renvoyer_aussi_colonne_geometrie=True)
 {
   global $pdo;
   $res=$pdo->query("select column_name 
@@ -81,7 +87,9 @@ function colonnes_table($table)
                     where 
                       table_name='$table'");
   while ($colonne=$res->fetch())
-    $r[]=$colonne;
+    if ($renvoyer_aussi_colonne_geometrie or $colonne->column_name!="geom")
+      $r.="$table.$colonne->column_name,";
+  $r=trim($r,",");
   return $r;
 }
 

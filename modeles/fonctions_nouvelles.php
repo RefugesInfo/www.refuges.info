@@ -101,7 +101,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	  $espace=" ";
 	
 	$lien_massif="dans <a href=\"".lien_polygone($commentaire,$lien_absolu)."\">le massif
-	".$commentaire->article_partitif.$espace.$commentaire->nom_massif."</a>";
+	".$commentaire->article_partitif.$espace.$commentaire->nom_polygone."</a>";
       }
       else   // la ya pas de massif
 	$lien_massif="";
