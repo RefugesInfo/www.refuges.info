@@ -34,16 +34,16 @@ if ( $modele->type_affichage != "zone" )
 	style="float: left; width: 200px; <?if (isset ($_GET ['cree'])) {?>display:none;<?}?>"
 	action="/exportations/formulaire_exportations.php"
 >
-	<?if (isset ($modele->id_polygone )) {?>
+	<?if (isset ($modele->polygone->id_polygone )) {?>
 		<fieldset>
 			<label>
 				<input name="id_massif"
 					type="checkbox"
 					checked="checked"
-					value="<?=$modele->id_polygone?>"
+					value="<?=$modele->polygone->id_polygone?>"
 					onclick="switch_massif(this)"
 				/>
-				<?=$infos_polygone->nom_polygone?> uniquement
+				<?=$modele->polygone->nom_polygone?> uniquement
 			</label>
 		</fieldset>
 	<?}?>
@@ -83,10 +83,10 @@ if ( $modele->type_affichage != "zone" )
 	</fieldset>
 
 	<!-- garde les coordonnee de la BBOX sous le coude pour l'export -->
-	<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$infos_polygone->latitude_minimum +0?>" /></p>
-	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$infos_polygone->latitude_maximum +0?>" /></p>
-	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$infos_polygone->longitude_minimum+0?>" /></p>
-	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$infos_polygone->longitude_maximum+0?>" /></p>
+	<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$modele->polygone->sud?>" /></p>
+	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$modele->polygone->nord?>" /></p>
+	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$modele->polygone->ouest?>" /></p>
+	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$modele->polygone->est?>" /></p>
 
 	<!-- Cadre pour exporter la vue, appelle la page "exportations.php" avec les param en GET -->
 	<fieldset>
@@ -168,19 +168,6 @@ if ( $modele->type_affichage != "zone" )
 </form>
 <div style="height: 80%;margin-left: 210px;"><?/* "Réserve" l'espace qui va bien à gauche. Pas beau mais j'ai pas trouvé mieux */?>
   <!-- Pour les internautes n'ayant pas javascript d'activé -->
-  <noscript>
-    <p>
-    Vous ne semblez pas avoir activé javascript dans votre navigateur, mais notre site utilise une carte glissante entièrement
-    en javascript, ça ne va pas être pratique pour vous ! Il vous reste le mode "recherche".
-    </p>
-    <?php if (isset($modele->liste->points)) { ?>
-    <p>
-    Mais nous vous proposons quand même la liste des points de ce massif les uns à la suite des autres.
-    </p>
-    <?php foreach ($modele->liste->points as $point) { ?>
-    <a href="<?=$point->lien?>"><?=ucfirst($point->nom)?> (<?=$point->nom_type?>)</a><br />
-    <?php } } ?>
-  </noscript>
 <?php
 } // fin du Gros IF mode massif. si on est en mode zone, on affiche pas les formulaires ni rien
 else { ?> <div style="height: 80%;margin-left: 1px;"><? }  // je deteste ce bricolage CSS... en attendant mieux 

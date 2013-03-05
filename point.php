@@ -48,7 +48,7 @@ else
   if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
   {
     $conditions = new stdClass;
-    $conditions->avec_infos_massif=1;
+    $conditions->avec_infos_massif=True;
     $conditions->limite=10;
     $conditions->ouvert='oui';
     $conditions->distance="$modele->latitude;$modele->longitude;5000";

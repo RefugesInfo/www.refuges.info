@@ -32,33 +32,26 @@ $modele->infos_base = infos_base ();
 // l'URL d'appel de la page 
 // typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referenceement google
 $tableau_url = explode ('/',$_SERVER['PATH_INFO']);
-$modele->id_polygone = $tableau_url [1];
+$id_polygone = $tableau_url [1];
 $modele->type_affichage = $_GET['mode_affichage']; // "zone" ou "massif". ca definit l'affichage qui suit
 
+$polygone = new stdClass;
+$polygone->id_polygone=0; // Par défaut si aucun polygone n'est trouvé ou demandé
 // Les paramètres des layers points et massifs
-if ($modele->id_polygone)
+if ($id_polygone)
 {
-
-	// Un retour à -1 indique un problème de récupération d'un seul polygone, soit on on en voulait plusieurs
-	if (($infos_polygone=infos_polygone ($modele->id_polygone))!=-1) 
-	{
-		$modele->titre="Cartes des refuges, sommets et sources/point d'eau dans $infos_polygone->art_def_poly $infos_polygone->type_polygone $infos_polygone->article_partitif $infos_polygone->nom_polygone";
-		$modele->description = $modele->titre.". Possibilité de naviguer sur une carte avec image satellite, cartes IGN, googlemaps...";
-		
-		// A confirmer les avantages et inconvéniens, la liste des refuges dans le massif pour les personnes ne disposant pas de js
-		// Mais également utile au référencement
-		$conditions = new stdClass;
-		$conditions->id_polygone=$modele->id_polygone;
-		$conditions->avec_infos_massif=1;
-		$conditions->limite = 120; 
-		$conditions->avec_liens=true;
-		$modele->liste=infos_points($conditions);
-	}
-	else
-		$modele->titre="Polygone demandé incorrect ou multiple : $modele->id_polygone";
-
-} else
-    $modele->titre = "Navigation sur les photos satellite";
+  $polygone=infos_polygone ($id_polygone);
+  if (!$polygone->erreur) 
+  {
+    $modele->titre="Cartes des refuges, sommets et sources/point d'eau dans $infos_polygone->art_def_poly $infos_polygone->type_polygone $infos_polygone->article_partitif $infos_polygone->nom_polygone";
+    $modele->description = $modele->titre.". Possibilité de naviguer sur une carte avec image satellite, cartes IGN, googlemaps...";
+  }
+  else
+    $modele->titre="Polygone demandé incorrect : $polygone->message";
+} 
+else
+  $modele->titre = "Navigation sur les photos satellite";
+$modele->polygone=$polygone;
 
 $modele->viseur = isset ($_GET ['cree']); // Si le paramètre cree est déclaré, le menu de création est ouvert / Pour le lien "Ajouter un refuge" en bas de page
 $modele->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver les checks mémorisés dans un cookie

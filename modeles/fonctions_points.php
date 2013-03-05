@@ -265,6 +265,10 @@ $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,no
 $conditions->altitude_maximum
 $conditions->altitude_minimum
 
+$conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
+   La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
+   la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
+
 $conditions->id_polygone : points appartenant à ce polygone
 $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
@@ -283,8 +287,8 @@ $conditions->binaire->xxxxx : (Le champ de la table point et vérifier à oui da
 $condition->non_utilisable : on chercher ferme!='non' et !=''
 $condition->ouvert : si 'oui', on ne veut que les points ayant ferme='non' ou ferme=''
 
-$conditions->modele : 1 si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
-$condition->avec_infos_massif : 1 si on veut les infos du massif auquel le point appartient, par défaut : sans
+$conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
+$condition->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
 $condition->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
@@ -300,12 +304,13 @@ FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reç
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
 Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon 
 *****************************************************/
-//FIXME elle est executee 2 fois pour chaque points, 1 pour la fiche, 1 pour les points a proxi. trop de CPU
+// FIXME elle est executee 2 fois pour chaque points, 1 pour la fiche, 1 pour les points a proxi. trop de CPU
 // Certes, mais faire la méga maxi requête qui va chercher le point et les points à proximité pourrait finir par être
 // encore plus lourde que 2 et au final ingérable
-//FIXME conditions binaires en bool ? pour + de rapidité
-//A mon avis ce serait se prendre la tête et risquer d'avoir un jour besoin de 2. ce sont des ints, donc traiter par le processeur
-//d'un seul coup -- sly
+// FIXME conditions binaires en bool ? pour + de rapidité
+// Actuellement, ça peut être "oui" "non" ou Null (ou "") Y'aurais peut-être moyen en effet d'être plus économe -- sly
+
+
 function infos_points($conditions) 
 {
   global $config,$pdo;
@@ -335,11 +340,15 @@ function infos_points($conditions)
     $tables_en_plus.=",points_gps,polygones";
     $conditions_sql .= "AND ST_Within(points_gps.geom,polygones.geom) 
       AND polygones.id_polygone IN ($conditions->id_polygone)";
+    $champs_polygones=",".colonnes_table('polygones',False);
   }
-  elseif ($conditions->avec_infos_massif!="")
+  elseif ($conditions->avec_infos_massif)
+  {
     // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
     // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
     $tables_en_plus.=",points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) and id_polygone_type=1)"; 
+    $champs_polygones=",".colonnes_table('polygones',False);
+  }
   else
     //On ne veut aucune conditions ni info sur les polygones, on place cette table quand même pour récupérer 
     //les coordonnées même si on se fiche de savoir dans quels polygones ils sont
@@ -467,9 +476,14 @@ function infos_points($conditions)
     $conditions_sql.="\n AND (points.id_point_type!=26)";
   
   $query_points="
-  SELECT *,ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
-    extract('epoch' from date_derniere_modification) as date_modif_timestamp
-    $select_distance
+  SELECT points.*,
+         points_gps.*,
+         type_precision_gps.*,
+         point_type.*,
+         ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
+         extract('epoch' from date_derniere_modification) as date_modif_timestamp
+         $select_distance
+         $champs_polygones
   FROM points,point_type,type_precision_gps$tables_en_plus
   WHERE 
     points.id_point_type=point_type.id_point_type
@@ -479,28 +493,24 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
-  
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   
-  $point = new stdClass();
-  
-  $i=0;
   //Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
+  $point = new stdClass();
   while ($point = $res->fetch())
   {
-    $points[$i]=$point;
     // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
     // FIXME : Encore cette spécificité liée au massif qu'il faudrait généraliser
     if ($conditions->avec_infos_massif!="")
     {
-      $points[$i]->nom_massif = $point->nom_polygone;
-      $points[$i]->id_massif  = $point->id_polygone;
-      $points[$i]->article_partitif_massif = $point->article_partitif;
+      $point->nom_massif = $point->nom_polygone;
+      $point->id_massif  = $point->id_polygone;
+      $point->article_partitif_massif = $point->article_partitif;
       if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
-	$points[$i]->lien=lien_point_fast($point);
+	$point->lien=lien_point_fast($point);
     }
-    $i++;		
+    $points[]=$point;
   }
   return $points;
 }

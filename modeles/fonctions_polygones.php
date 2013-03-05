@@ -97,7 +97,7 @@ function infos_polygones($conditions)
                  st_xmax($box) as est,
                  st_ymin($box) as sud,
                  st_ymax($box) as nord,
-                 ".colonnes_table('polygones',True)."
+                 ".colonnes_table('polygones',False)."
                  $champs_geometry
           FROM polygones,polygone_type
           WHERE 
@@ -137,11 +137,11 @@ stdClass Object
 )
 Si $avec_geometrie vaut gml/kml/svg/text/...  (voir fonction avant) la géométrie est retournée. Ce n'est pas systématique pour des raisons de performances
 ************************************************************************************/
-function infos_polygone($id_polygone,$avec_geometrie=False)
+function infos_polygone($id_polygone,$avec_geometrie="aucune")
 {
   $conditions = new stdClass;
   $conditions->ids_polygones=$id_polygone;
-  if (!$avec_geometrie)
+  if ($avec_geometrie!="aucune")
     $conditions->avec_geometrie=$avec_geometrie;
   $poly=infos_polygones($conditions);
   return $poly[0];

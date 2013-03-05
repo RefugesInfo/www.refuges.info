@@ -12,8 +12,8 @@
 ?>
 
 var map, layerMassifs, layerPoints, pos21781, lc;
-var arg_massifs = '?massif=<? if($modele->id_polygone) echo "$modele->id_polygone"; else echo 0;?>';
-var arg_points  = '<? if($modele->id_polygone) echo "&liste_id_massif=$modele->id_polygone" ?>';
+var arg_massifs = '?massif=<?=$modele->polygone->id_polygone?>';
+var arg_points  = '<?php if(isset($modele->polygone->id_polygone)) echo "&liste_id_massif=".$modele->polygone->id_polygone; ?>';
 var limite = 
 	'<?=$_GET['limite']?>'
 		? '&limite=<?=$_GET['limite']?>'
@@ -175,8 +175,8 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 
 	// Position et zoom de la carte
 	// Si un massif est visé, on s'accorde sur ses limites
-	if (<?echo isset ($infos_polygone->bbox) ? 'true' : 'false'?>) {
-		var b = new OpenLayers.Bounds (<?=$infos_polygone->bbox?>) // Forçage de bornes
+	if (<?echo isset ($modele->polygone->bbox) ? 'true' : 'false'?>) {
+		var b = new OpenLayers.Bounds (<?=$modele->polygone->bbox?>) 
 		.transform (
 			new OpenLayers.Projection ('EPSG:4326'), // Données en °
 			map.getProjectionObject()
@@ -210,10 +210,10 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 function switch_massif (combo) {
 	var idmassif;
 	if (combo.checked) {
-		idmassif = 0<?=$modele->id_polygone?>; 
+		idmassif = 0<?=$modele->polygone->id_polygone?>; 
 		document.getElementById ('titrepage') .firstChild.nodeValue = "<?echo addslashes($modele->titre)?>"; 
-		arg_massifs = '?massif=<?=$modele->id_polygone?>';
-		arg_points = '&liste_id_massif=<?=$modele->id_polygone?>';
+		arg_massifs = '?massif=<?=$modele->polygone->id_polygone?>';
+		arg_points = '&liste_id_massif=<?=$modele->polygone->id_polygone?>';
 	} else {
 		document.getElementById ('titrepage') .firstChild.nodeValue = "Navigation sur les cartes"; 
 		arg_massifs = '?massif=0';
