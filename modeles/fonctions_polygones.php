@@ -108,7 +108,6 @@ function infos_polygones($conditions)
             $conditions_sql
           $limite
   ";
-  print($query);
   $res=$pdo->query($query);
   if (!$res)
     return erreur("Requête impossible",$query);
