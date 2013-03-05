@@ -84,7 +84,7 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 
   // Creation d'une case à cocher pour chaque type massif
   $conditions = new stdClass;
-  $conditions->id_polygone_type=$config['id_massif'];
+  $conditions->ids_polygone_type=$config['id_massif'];
   $massifs=infos_polygones($conditions);
 
   print("\n<ul>");

@@ -10,6 +10,160 @@ require_once ('fonctions_bdd.php');
 require_once ('fonctions_gestion_erreurs.php');
 require_once ('fonctions_points.php');
 
+
+/**********************************************************************************************
+Récupère un ensemble de commentaires en fonction des paramètres passer comme conditions
+$conditions->ids_points -> pour récupérer tous les commentaires d'un point particulier du site
+$conditions->ids_commentaires -> pour récupérer les commentaires dont les ids sont au format 45 ou 78,412,4
+$conditions->avec_photo -> pour ne prendre que ceux avec photo : True ou False (par défaut c'est tous)
+$conditions->limite -> pour imposer une limite au cas où
+A venir :
+$conditions->avec_modele=False -> pour ne pas avoir les commentaires sur les modèles (si si, les modèles ont aussi leurs commentaires) par défaut : True
+$conditions->ids_auteurs -> pour récupérer les commentaires dont l'auteur est id_auteur au format 4 ou 7,8,14
+$conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non authentifiés
+$conditions->texte -> condition sur le contenu du commentaire
+$conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
+$conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
+$conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
+
+Renvoi un tableau contenant des objets commentaires sous cette forme :
+stdClass Object
+(
+    [id_commentaire] => 16693
+    [date] => 2013-02-11 17:19:50
+    [id_point] => 3445
+    [texte] => Une autre vue de la cabane.
+blabla
+    [auteur] => cassandre
+    [photo_existe] => 1
+    [date_photo] => 2011-11-12
+    [demande_correction] => 0
+    [qualite_supposee] => 0
+    [id_createur] => 496
+    [ts_unix_commentaire] => 1360599590
+    [ts_unix_photo] => 1321052400
+    [photo] => Array
+        (
+            [reduite] => /home/users/sly/www.refuges.info//photos_points/16693.jpeg
+            [vignette] => /home/users/sly/www.refuges.info//photos_points/16693-vignette.jpeg
+            [originale] => /home/users/sly/www.refuges.info//photos_points/16693-originale.jpeg
+        )
+
+    [lien_photo] => Array
+        (
+            [reduite] => /photos_points/16693.jpeg
+            [vignette] => /photos_points/16693-vignette.jpeg
+            [originale] => /photos_points/16693-originale.jpeg
+        )
+
+)
+**********************************************************************************************/
+
+function infos_commentaires ($conditions)
+{
+  global $pdo,$config;
+  $conditions_sql="";
+  
+  // conditions de limite
+  if (is_numeric($conditions->limite))
+    $limite="LIMIT $conditions->limite";
+  else
+    $limite="LIMIT 100"; // limite de sécurité si on s'enballe
+  
+  if (isset($conditions->ids_points))
+    if (!verifi_multiple_intiers($conditions->ids_points))
+      return erreur("Le paramètre donné pour les ids des points n'est pas valide","Reçu : $conditions->ids_points");
+      
+  if (isset($conditions->ids_commentaires))
+    if (!verifi_multiple_intiers($conditions->ids_commentaires))
+      return erreur("Le paramètre donné pour les ids n'est pas valide","Reçu : $conditions->ids_commentaires");
+ 
+  if ($conditions->ids_commentaires!="")
+    $conditions_sql.=" AND id_commentaire IN ($conditions->ids_commentaires)";
+  
+  if ($conditions->ids_points!="")
+    $conditions_sql.=" AND id_point in ($conditions->ids_points)";
+
+  if ($conditions->avec_photo)
+    $conditions_sql.=" AND photo_existe=1";
+  
+  if ($conditions->ids_auteurs!="")
+    $conditions_sql.=" AND id_point in ($conditions->ids_auteurs)";
+  if ($conditions->demande_correction)
+    $conditions_sql.=" AND (demande_correction!=0 OR qualite_supposee<0)";
+  
+  // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
+  // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
+  if ($conditions->avec_infos_point)
+  {
+    $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
+
+    $condition_en_plus=" AND points.id_point=commentaires.id_point 
+			 AND points_gps.id_point_gps=points.id_point_gps
+			 AND point_type.id_point_type=points.id_point_type";
+    $champ_en_plus.=",points.*,";
+    // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
+    // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
+    $champ_en_plus.=colonnes_table('polygones',False);
+			 
+  }
+   
+  $query="SELECT 
+             extract('epoch' from commentaires.date) as ts_unix_commentaire,
+             extract('epoch' from commentaires.date_photo) as ts_unix_photo,
+             commentaires.*
+             $champ_en_plus
+           FROM commentaires$table_en_plus
+           WHERE 1=1
+             $conditions_sql$condition_en_plus
+           ORDER BY commentaires.date DESC
+           $limite";
+  
+  if ( ! ($res=$pdo->query($query))) 
+    return erreur("Une erreur sur la requête est survenue $query");
+
+  while ($commentaire = $res->fetch())
+  {
+    if ($commentaire->photo_existe)
+    {
+    	// Remplissage de l'objet avec les photos disponibles pour ce commentaire, s'il y en a et si elle existe sur le disque
+    	// Le problème venant du fait que tous les commentaires n'ont pas eu leur vignette de créée, et pas tous on une photo à la taille d'origine (historique wri)
+	foreach (array("reduite", "vignette", "originale") as $taille)
+	{
+	  if ($taille=="reduite")
+	    $nom_fichier=$commentaire->id_commentaire.".jpeg";
+	  else
+	    $nom_fichier=$commentaire->id_commentaire."-$taille.jpeg";
+	  if (is_file($config['rep_photos_points'].$nom_fichier))
+	  {
+	    $commentaire->photo[$taille]=$config['rep_photos_points'].$nom_fichier;
+	    $commentaire->lien_photo[$taille]=$config['rep_web_photos_points'].$nom_fichier;
+	  }
+	}
+	// Ce cas peut exister quand la photo originale est la même que la réduite (déjà suffisament petite, ou raisons historiques)
+	if (!isset($commentaire->photo['originale']))
+	{
+	  $commentaire->photo['originale']=$commentaire->photo['reduite'];
+	  $commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
+	}
+    }
+    $commentaires [] = $commentaire;
+  }
+  
+  return $commentaires ;
+}
+// Un appel plus simple qui utilise le précédent
+function infos_commentaire($id_commentaire)
+{
+  $conditions = new stdClass;
+  $conditions->ids_commentaires=$id_commentaire;
+  $conditions->avec_infos_point=True;
+  $c=infos_commentaires ($conditions);
+  if ($c->erreur)
+    return erreur($c->texte);
+  return $c[0];
+}
+
 /************
 Cette fonction peut sembler bourrine, mais c'est assez pratique à utiliser :
 On lui passe un objet "commentaire" et soit elle le créer s'il ne dispose pas d'id_commentaire
@@ -216,158 +370,6 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
     ImageDestroy($image);
 }
 
-/**********************************************************************************************
-Récupère un ensemble de commentaires en fonction des paramètres passer comme conditions
-$conditions->ids_points -> pour récupérer tous les commentaires d'un point particulier du site
-$conditions->ids_commentaires -> pour récupérer les commentaires dont les ids sont au format 45 ou 78,412,4
-$conditions->avec_photo -> pour ne prendre que ceux avec photo : True ou False (par défaut c'est tous)
-$conditions->limite -> pour imposer une limite au cas où
-A venir :
-$conditions->avec_modele=False -> pour ne pas avoir les commentaires sur les modèles (si si, les modèles ont aussi leurs commentaires) par défaut : True
-$conditions->ids_auteurs -> pour récupérer les commentaires dont l'auteur est id_auteur au format 4 ou 7,8,14
-$conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non authentifiés
-$conditions->texte -> condition sur le contenu du commentaire
-$conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
-$conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
-$conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
-
-Renvoi un tableau contenant des objets commentaires sous cette forme :
-stdClass Object
-(
-    [id_commentaire] => 16693
-    [date] => 2013-02-11 17:19:50
-    [id_point] => 3445
-    [texte] => Une autre vue de la cabane.
-blabla
-    [auteur] => cassandre
-    [photo_existe] => 1
-    [date_photo] => 2011-11-12
-    [demande_correction] => 0
-    [qualite_supposee] => 0
-    [id_createur] => 496
-    [ts_unix_commentaire] => 1360599590
-    [ts_unix_photo] => 1321052400
-    [photo] => Array
-        (
-            [reduite] => /home/users/sly/www.refuges.info//photos_points/16693.jpeg
-            [vignette] => /home/users/sly/www.refuges.info//photos_points/16693-vignette.jpeg
-            [originale] => /home/users/sly/www.refuges.info//photos_points/16693-originale.jpeg
-        )
-
-    [lien_photo] => Array
-        (
-            [reduite] => /photos_points/16693.jpeg
-            [vignette] => /photos_points/16693-vignette.jpeg
-            [originale] => /photos_points/16693-originale.jpeg
-        )
-
-)
-**********************************************************************************************/
-
-function infos_commentaires ($conditions)
-{
-  global $pdo,$config;
-  $conditions_sql="";
-  
-  // conditions de limite
-  if (is_numeric($conditions->limite))
-    $limite="LIMIT $conditions->limite";
-  else
-    $limite="LIMIT 100"; // limite de sécurité si on s'enballe
-  
-  if (isset($conditions->ids_points))
-    if (!verifi_multiple_intiers($conditions->ids_points))
-      return erreur("Le paramètre donné pour les ids des points n'est pas valide","Reçu : $conditions->ids_points");
-      
-  if (isset($conditions->ids_commentaires))
-    if (!verifi_multiple_intiers($conditions->ids_commentaires))
-      return erreur("Le paramètre donné pour les ids n'est pas valide","Reçu : $conditions->ids_commentaires");
- 
-  if ($conditions->ids_commentaires!="")
-    $conditions_sql.=" AND id_commentaire IN ($conditions->ids_commentaires)";
-  
-  if ($conditions->ids_points!="")
-    $conditions_sql.=" AND id_point in ($conditions->ids_points)";
-
-  if ($conditions->avec_photo)
-    $conditions_sql.=" AND photo_existe=1";
-  
-  if ($conditions->ids_auteurs!="")
-    $conditions_sql.=" AND id_point in ($conditions->ids_auteurs)";
-  if ($conditions->demande_correction)
-    $conditions_sql.=" AND (demande_correction!=0 OR qualite_supposee<0)";
-  
-  // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
-  // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
-  if ($conditions->avec_infos_point)
-  {
-    $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
-
-    $condition_en_plus=" AND points.id_point=commentaires.id_point 
-			 AND points_gps.id_point_gps=points.id_point_gps
-			 AND point_type.id_point_type=points.id_point_type";
-    $champ_en_plus.=",points.*,";
-    // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
-    // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
-    $champ_en_plus.=colonnes_table('polygones',False);
-			 
-  }
-   
-  $query="SELECT 
-             extract('epoch' from commentaires.date) as ts_unix_commentaire,
-             extract('epoch' from commentaires.date_photo) as ts_unix_photo,
-             commentaires.*
-             $champ_en_plus
-           FROM commentaires$table_en_plus
-           WHERE 1=1
-             $conditions_sql$condition_en_plus
-           ORDER BY commentaires.date DESC
-           $limite";
-  
-  if ( ! ($res=$pdo->query($query))) 
-    return erreur("Une erreur sur la requête est survenue $query");
-
-  while ($commentaire = $res->fetch())
-  {
-    if ($commentaire->photo_existe)
-    {
-    	// Remplissage de l'objet avec les photos disponibles pour ce commentaire, s'il y en a et si elle existe sur le disque
-    	// Le problème venant du fait que tous les commentaires n'ont pas eu leur vignette de créée, et pas tous on une photo à la taille d'origine (historique wri)
-	foreach (array("reduite", "vignette", "originale") as $taille)
-	{
-	  if ($taille=="reduite")
-	    $nom_fichier=$commentaire->id_commentaire.".jpeg";
-	  else
-	    $nom_fichier=$commentaire->id_commentaire."-$taille.jpeg";
-	  if (is_file($config['rep_photos_points'].$nom_fichier))
-	  {
-	    $commentaire->photo[$taille]=$config['rep_photos_points'].$nom_fichier;
-	    $commentaire->lien_photo[$taille]=$config['rep_web_photos_points'].$nom_fichier;
-	  }
-	}
-	// Ce cas peut exister quand la photo originale est la même que la réduite (déjà suffisament petite, ou raisons historiques)
-	if (!isset($commentaire->photo['originale']))
-	{
-	  $commentaire->photo['originale']=$commentaire->photo['reduite'];
-	  $commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
-	}
-    }
-    $commentaires [] = $commentaire;
-  }
-  
-  return $commentaires ;
-}
-// Un appel plus simple qui utilise le précédent
-function infos_commentaire($id_commentaire)
-{
-  $conditions = new stdClass;
-  $conditions->ids_commentaires=$id_commentaire;
-  $conditions->avec_infos_point=True;
-  $c=infos_commentaires ($conditions);
-  if ($c->erreur)
-    return erreur($c->texte);
-  return $c[0];
-}
 /******************************************************
 on lui passe un objet commentaire, il en retire les photos et 
 retourne le nouvel objet commentaire

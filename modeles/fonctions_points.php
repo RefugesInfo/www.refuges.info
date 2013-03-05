@@ -19,226 +19,6 @@ require_once ("fonctions_gps.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mise_en_forme_texte.php");
 
-/**************************************************************
-Lien plus simple à utiliser maintenant ! sur la base
-de l'objet point "habituel" et plus rapide que celui du dessous
-car requête de moins
-*************************************************************/
-function lien_point_fast($point,$local=false)
-{
-  global $config;
-  if ($local)
-    $url_complete="";
-  else
-    $url_complete="http://".$config['nom_hote'];
-  if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
-    $info_massif=replace_url($point->nom_massif)."/";
-  else
-    $info_massif="";
-  return "$url_complete/point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
-}
-
-/****************************************
-On génére une url vers le point juste à partir de son id
-Attention c'est moins performant à ne pas trop utiliser
-pour des longues listes ( car requete SQL oblige )
-***************************************/
-function lien_point_lent($id_point)
-{
-  $point=infos_point($id_point);
-  if ($point->erreur)
-    return erreur($point->message);
-  return (lien_point_fast($point));
-}
-
-/* fonction simple qui renvois une chaine avec liens au format :
- Pays + Massif + Département + carte topographique + (communes ?) + (parc protégé ?)
-On peut lui passer un paramètre additionnel indiquant quelle meta-categorie traiter
-FIXME : cette fonction ne devrait pas générer du HTML, et donc, elle devient en gros inutile ou presque
-*/
-function localisation($polygones,$categorie="")
-{
-global $config;
-$html="";
-if(!isset($polygones))
-	return "";
-foreach ($polygones as $polygone)
-{
-  if (isset($polygone->categorie_polygone_type) and $polygone->categorie_polygone_type==$categorie)
-  {
-    $lien=lien_polygone($polygone,True);
-    if ($categorie=="administrative") // FIXME : gros hack : certains polygones administratif sont si gros, qu'il ne vaut mieux pas faire un lien vers eux
-      $html.=" ".ucfirst($polygone->nom_polygone)." +";
-    else
-      $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> +";
-  }
-}
-return trim($html,"+");
-}
-
-// Définit la carte et l'échèle suivant la présence d'une zone dans la chaine de localisation
-// Dominique 28/05/2012
-// FIXME -> oulla qu'est-ce que c'est que cette tambouille, convertir en utilisant infos_point et mettre ces infos en base -- sly
-function param_cartes ($localisation) {
-	$series = Array (
-		'France'    => Array ('Maps.Refuges.info',          50000), // Inhibition temporaire, l'API ne fonctionnat plus / Dominique 30/08/2012
-		'Suisse'    => Array ('Google',       50000, 'SwissTopo'), // Par défaut on affiche GG, sur demande SwT
-		'Italie'    => Array ('Italie',      100000),
-		'Espagne'   => Array ('Espagne',      25000),
-		'Andorre'   => Array ('IGN',          25000),
-		'Argentina' => Array ('OpenCycleMap', 50000),
-		'Autres'    => Array ('Google',      100000),
-	);
-	return $series ['France']; // par défaut
-
-	// Il doit y avoir mieux que ce découpage :
-	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $localisation));
-	foreach ($chploc AS $loc)
-		if (isset ($series [$loc]))
-			return $series [$loc];
-			
-	return $series ['Autres']; // par défaut
-}
-// Dominique 11/09/2012 utilisation des paramètres de /includes/config.php
-// FIXME : idem
-function param_cartes_vignettes ($modele) {
-	global $config;
-/*	// TODO: Il doit y avoir mieux que ce charcutage :
-	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $modele->localisation));
-	foreach ($chploc AS $loc)
-		if (isset ($config['cartes_vignettes'] [$loc]))
-			$carte =  $config['cartes_vignettes'] [$loc];
-	
-	// Attention, MRI ne couvre pas toute la planette
-	//TODO : il faudrait systématiser pour toutes les cartes
-	if ($modele->longitude < -25 ||
-		$modele->longitude >  45 ||
-		$modele->latitude  <  33
-		)
-		foreach ($carte AS $k => $v)
-			if ($v == 'maps.refuges.info')*/
-				$carte [$k] = 'OpenCycleMap';
-
-	$carte = $config['cartes_vignettes'] ['Autres']; // par défaut
-	return $carte;
-}
-
-// Par choix, la notion de fermeture dans la base est enregistrée en un seul champ pour tous les cas 
-// (ruines, détruite, fermée) car ces trois états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
-// le texte en utilisant la table point_type, donc en dur dans le code si autre que "", "non" ou "oui"
-function texte_non_ouverte($point)
-{
-//Si elle/il est fermé, on l'indique directement en haut en rouge
-if ($point->equivalent_ferme!="")
-{
-  if ($point->ferme=='oui')
-    $annonce_fermeture="$point->equivalent_ferme";
-  elseif($point->ferme=='ruine')
-    $annonce_fermeture="En ruine";
-  elseif($point->ferme=='detruit')
-    $annonce_fermeture="Détruit(e)";
-  else
-    return "";
-  }
-else
-  return "";
-return $annonce_fermeture;
-}
-
-//**********************************************************************************************
-// Récupère le dernier post sur un forum d'un point
-// JMB : je rajoute les first et last topic, apparement, si egaux, alors le topicest vide
-// on affiche les commentaires+photos en plus
-function infos_point_forum ($point) 
-{
-  global $pdo,$config;
-  $q=" SELECT *
-       FROM phpbb_posts_text, phpbb_topics, phpbb_posts
-       WHERE 
-         phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id 
-       AND 
-         phpbb_topics.topic_id_point = $point->id_point
-       AND 
-         phpbb_posts.post_id = phpbb_posts_text.post_id
-       LIMIT 1";
-  // On envoie la requete
-  $r = $pdo->query($q);
-  if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
-  
-  $result = $r->fetch();
-  if (isset($result->topic_id))
-    $result->lienforum=$config['forum_refuge'].$result->topic_id;
-  else
-    if ($point->modele!=1) // Si c'est un modèle de point, il n'a pas de forum
-      return erreur("Le forum du point \"$point->nom\" (id=$point->id_point) ne semble pas exister","$q n'a retourné aucun enregistrement");
-  
-  return $result;
-
-}	
-
-/*****************************************************
-Cette fonction retourne sous la forme d'un object
-toutes les caractéristiques d'un point
-Voir a_lire.txt annexe 1 dans ressources pour voir un example d'élément
-
-retourne -1 si le point n'est pas trouvé
-on accède sous la forme :
-$infos_point->champ
-un array est disponible sous la forme 
-$infos_point->polygones[$i]->champ
-( polygones triés par importance pays>département>massif>carte>parc
-pour obtenir la liste des polygones auquels ce point appartient
-Pour simplifier $infos_point->massif contient les infos du polygone massif auquel le
-point appartient )
-FIXME: cette histoire de $infos_point->massif est qu'historiquement on s'intéresse plus aux massifs
-que aux pays/départements/autres/ une version plus logique devrait laisser tomber ça et indiquer lequel des $infos_point->polygones[$i] est le massif
-auquel le point appartient sly 14/03/2010
-*****************************************************/
-function infos_point($id_point)
-{
-  // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
-  global $config,$pdo;
-  $conditions = new stdClass();
-  if (!is_numeric($id_point))
-    return erreur("id du point demandé mal formé","id du point demandé : $id_point");
-  $conditions->ids_points=$id_point;
-  $conditions->modele=-1;
-
-  // récupération des infos du point
-  $points=infos_points($conditions);
-  // Requête impossible à executer
-  if ($points->erreur)
-    return erreur($points->message);
-  if (count($points)==0)
-    return erreur("Le point demandé est introuvable dans notre base","id du point demandé : $id_point".var_export($points,true));
-  if (count($points)>1)
-    return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
-    
-    $i=0;
-  $point=$points[0];
-  
-  // recherche des différents polygones auquels appartienne le point
-  // FIXME Cette particularité n'existe que lorsque on demande un point en particulier
-  // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
-  // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
-  // sauf sur les pages des points... doute... incertitude -- sly
-  $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
-	FROM polygones,polygone_type,points_gps
-	WHERE
-	  polygones.id_polygone_type=polygone_type.id_polygone_type
-	AND ST_Within(points_gps.geom, polygones.geom) 
-	AND points_gps.id_point_gps=$point->id_point_gps
-	ORDER BY polygone_type.ordre_taille DESC";
-
-  $res = $pdo->query($query_polygones);
-  if ( $polygones_du_point = $res->fetch() ) 
-    do
-    {
-      $point->polygones[]=$polygones_du_point;
-    } while ( $polygones_du_point = $res->fetch() ) ;
-    return $point;
-}
-
 /*****************************************************
 Cette fonction récupère sous la forme de plusieurs objets des points de la base qui satisfont des conditions.
 En gros, c'est la fonction qui construit la requête SQL de plusieurs bras de long, va chercher, et renvoi le résultat.
@@ -518,6 +298,226 @@ function infos_points($conditions)
   }
   return $points;
 }
+/**************************************************************
+Lien plus simple à utiliser maintenant ! sur la base
+de l'objet point "habituel" et plus rapide que celui du dessous
+car requête de moins
+*************************************************************/
+function lien_point_fast($point,$local=false)
+{
+  global $config;
+  if ($local)
+    $url_complete="";
+  else
+    $url_complete="http://".$config['nom_hote'];
+  if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
+    $info_massif=replace_url($point->nom_massif)."/";
+  else
+    $info_massif="";
+  return "$url_complete/point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
+}
+
+/****************************************
+On génére une url vers le point juste à partir de son id
+Attention c'est moins performant à ne pas trop utiliser
+pour des longues listes ( car requete SQL oblige )
+***************************************/
+function lien_point_lent($id_point)
+{
+  $point=infos_point($id_point);
+  if ($point->erreur)
+    return erreur($point->message);
+  return (lien_point_fast($point));
+}
+
+/* fonction simple qui renvois une chaine avec liens au format :
+ Pays + Massif + Département + carte topographique + (communes ?) + (parc protégé ?)
+On peut lui passer un paramètre additionnel indiquant quelle meta-categorie traiter
+FIXME : cette fonction ne devrait pas générer du HTML, et donc, elle devient en gros inutile ou presque
+*/
+function localisation($polygones,$categorie="")
+{
+global $config;
+$html="";
+if(!isset($polygones))
+	return "";
+foreach ($polygones as $polygone)
+{
+  if (isset($polygone->categorie_polygone_type) and $polygone->categorie_polygone_type==$categorie)
+  {
+    $lien=lien_polygone($polygone,True);
+    if ($categorie=="administrative") // FIXME : gros hack : certains polygones administratif sont si gros, qu'il ne vaut mieux pas faire un lien vers eux
+      $html.=" ".ucfirst($polygone->nom_polygone)." +";
+    else
+      $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> +";
+  }
+}
+return trim($html,"+");
+}
+
+// Définit la carte et l'échèle suivant la présence d'une zone dans la chaine de localisation
+// Dominique 28/05/2012
+// FIXME -> oulla qu'est-ce que c'est que cette tambouille, convertir en utilisant infos_point et mettre ces infos en base -- sly
+function param_cartes ($localisation) {
+	$series = Array (
+		'France'    => Array ('Maps.Refuges.info',          50000), // Inhibition temporaire, l'API ne fonctionnat plus / Dominique 30/08/2012
+		'Suisse'    => Array ('Google',       50000, 'SwissTopo'), // Par défaut on affiche GG, sur demande SwT
+		'Italie'    => Array ('Italie',      100000),
+		'Espagne'   => Array ('Espagne',      25000),
+		'Andorre'   => Array ('IGN',          25000),
+		'Argentina' => Array ('OpenCycleMap', 50000),
+		'Autres'    => Array ('Google',      100000),
+	);
+	return $series ['France']; // par défaut
+
+	// Il doit y avoir mieux que ce découpage :
+	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $localisation));
+	foreach ($chploc AS $loc)
+		if (isset ($series [$loc]))
+			return $series [$loc];
+			
+	return $series ['Autres']; // par défaut
+}
+// Dominique 11/09/2012 utilisation des paramètres de /includes/config.php
+// FIXME : idem
+function param_cartes_vignettes ($modele) {
+	global $config;
+/*	// TODO: Il doit y avoir mieux que ce charcutage :
+	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $modele->localisation));
+	foreach ($chploc AS $loc)
+		if (isset ($config['cartes_vignettes'] [$loc]))
+			$carte =  $config['cartes_vignettes'] [$loc];
+	
+	// Attention, MRI ne couvre pas toute la planette
+	//TODO : il faudrait systématiser pour toutes les cartes
+	if ($modele->longitude < -25 ||
+		$modele->longitude >  45 ||
+		$modele->latitude  <  33
+		)
+		foreach ($carte AS $k => $v)
+			if ($v == 'maps.refuges.info')*/
+				$carte [$k] = 'OpenCycleMap';
+
+	$carte = $config['cartes_vignettes'] ['Autres']; // par défaut
+	return $carte;
+}
+
+// Par choix, la notion de fermeture dans la base est enregistrée en un seul champ pour tous les cas 
+// (ruines, détruite, fermée) car ces trois états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
+// le texte en utilisant la table point_type, donc en dur dans le code si autre que "", "non" ou "oui"
+function texte_non_ouverte($point)
+{
+//Si elle/il est fermé, on l'indique directement en haut en rouge
+if ($point->equivalent_ferme!="")
+{
+  if ($point->ferme=='oui')
+    $annonce_fermeture="$point->equivalent_ferme";
+  elseif($point->ferme=='ruine')
+    $annonce_fermeture="En ruine";
+  elseif($point->ferme=='detruit')
+    $annonce_fermeture="Détruit(e)";
+  else
+    return "";
+  }
+else
+  return "";
+return $annonce_fermeture;
+}
+
+//**********************************************************************************************
+// Récupère le dernier post sur un forum d'un point
+// JMB : je rajoute les first et last topic, apparement, si egaux, alors le topicest vide
+// on affiche les commentaires+photos en plus
+function infos_point_forum ($point) 
+{
+  global $pdo,$config;
+  $q=" SELECT *
+       FROM phpbb_posts_text, phpbb_topics, phpbb_posts
+       WHERE 
+         phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id 
+       AND 
+         phpbb_topics.topic_id_point = $point->id_point
+       AND 
+         phpbb_posts.post_id = phpbb_posts_text.post_id
+       LIMIT 1";
+  // On envoie la requete
+  $r = $pdo->query($q);
+  if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
+  
+  $result = $r->fetch();
+  if (isset($result->topic_id))
+    $result->lienforum=$config['forum_refuge'].$result->topic_id;
+  else
+    if ($point->modele!=1) // Si c'est un modèle de point, il n'a pas de forum
+      return erreur("Le forum du point \"$point->nom\" (id=$point->id_point) ne semble pas exister","$q n'a retourné aucun enregistrement");
+  
+  return $result;
+
+}	
+
+/*****************************************************
+Cette fonction retourne sous la forme d'un object
+toutes les caractéristiques d'un point
+Voir a_lire.txt annexe 1 dans ressources pour voir un example d'élément
+
+retourne -1 si le point n'est pas trouvé
+on accède sous la forme :
+$infos_point->champ
+un array est disponible sous la forme 
+$infos_point->polygones[$i]->champ
+( polygones triés par importance pays>département>massif>carte>parc
+pour obtenir la liste des polygones auquels ce point appartient
+Pour simplifier $infos_point->massif contient les infos du polygone massif auquel le
+point appartient )
+FIXME: cette histoire de $infos_point->massif est qu'historiquement on s'intéresse plus aux massifs
+que aux pays/départements/autres/ une version plus logique devrait laisser tomber ça et indiquer lequel des $infos_point->polygones[$i] est le massif
+auquel le point appartient sly 14/03/2010
+*****************************************************/
+function infos_point($id_point)
+{
+  // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
+  global $config,$pdo;
+  $conditions = new stdClass();
+  if (!is_numeric($id_point))
+    return erreur("id du point demandé mal formé","id du point demandé : $id_point");
+  $conditions->ids_points=$id_point;
+  $conditions->modele=-1;
+
+  // récupération des infos du point
+  $points=infos_points($conditions);
+  // Requête impossible à executer
+  if ($points->erreur)
+    return erreur($points->message);
+  if (count($points)==0)
+    return erreur("Le point demandé est introuvable dans notre base","id du point demandé : $id_point".var_export($points,true));
+  if (count($points)>1)
+    return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
+    
+    $i=0;
+  $point=$points[0];
+  
+  // recherche des différents polygones auquels appartienne le point
+  // FIXME Cette particularité n'existe que lorsque on demande un point en particulier
+  // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
+  // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
+  // sauf sur les pages des points... doute... incertitude -- sly
+  $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
+	FROM polygones,polygone_type,points_gps
+	WHERE
+	  polygones.id_polygone_type=polygone_type.id_polygone_type
+	AND ST_Within(points_gps.geom, polygones.geom) 
+	AND points_gps.id_point_gps=$point->id_point_gps
+	ORDER BY polygone_type.ordre_taille DESC";
+
+  $res = $pdo->query($query_polygones);
+  if ( $polygones_du_point = $res->fetch() ) 
+    do
+    {
+      $point->polygones[]=$polygones_du_point;
+    } while ( $polygones_du_point = $res->fetch() ) ;
+    return $point;
+}
+
 /********************************************************
 Fonction qui permet, en fonction de l'object $point passé en paramêtre la mise à jour OU la création si :
 $point->id_point==""

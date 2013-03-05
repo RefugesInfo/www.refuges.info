@@ -40,7 +40,7 @@ if (isset ($_GET ['bbox']))
   $conditions->est=$bbox [2];
 }
 
-$conditions->type_point=$_GET['liste_id_point_type'];
+$conditions->ids_type_point=$_GET['liste_id_point_type'];
 $conditions->pas_les_points_caches=1;
 $conditions->ordre="point_type.importance DESC";
 $conditions->liste_id_point=$_GET['liste_id_point'];
