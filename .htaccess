@@ -11,3 +11,5 @@ RewriteCond %{HTTP_HOST} ^refuges.info$ [NC]
 RewriteRule ^(.*)$ http://www.refuges.info/$1 [L,R=301]
 
 
+#A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error
+#php_value display_errors 1
