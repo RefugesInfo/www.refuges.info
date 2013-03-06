@@ -54,6 +54,18 @@ chmod 777 /forum/photos-points
 chmod 777 /statique/mode_emploi_textes
 ```
 
+* En alternative, si vous développez sur le serveur de refuges.info, vous pouvez faire un lien symbolique vers les informations en production
+
+```
+ln /home/sites/refuges/www.refuges.info/statique/mode_emploi_textes/ -s 
+
+cd forum ; ln /home/sites/refuges/www.refuges.info/forum/photos-points -s ; cd ..
+
+cd statique ; ln /home/sites/refuges/www.refuges.info/statique/mode_emploi_textes -s ; cd ..
+```
+
+
+
 Quelques commandes utiles de git adaptées à refuges.info
 ========================================================
 (Valable sous linux, mais sans doute ailleurs aussi)
