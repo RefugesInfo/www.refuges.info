@@ -33,6 +33,7 @@ window.onload = function () {
 lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la carte pour les couches de base
 			new OpenLayers.Control.LayerSwitcher ({ // Un deuxième, externe, pour les overlays
 				div: OpenLayers.Util.getElement('switch_nav'),
+				ascending: false
 			}),
 			new OpenLayers.Control.ScaleLine ({geodesic: true}), // L'échelle n'est pas la bonne pour les projections de type mercator. En effet, dans cette projection, le rapport nombre pixel/distance réél augmente quand on se rapproche des pôles.Pour corriger ça, un simple geodesic:yes fais l'affaire (SLY 29/11/2010)
 			new OpenLayers.Control.MousePosition ({
