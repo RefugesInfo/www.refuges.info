@@ -14,16 +14,18 @@ function connexion_base()
 {
 	global $config;
 
-	try {
+	try 
+	{
 		$pdo = new PDO(
 				"pgsql:host=".$config['serveur_pgsql'] . ";dbname=" . $config['base_pgsql'] ,
 				$config['utilisateur_pgsql'],
-				$config['mot_de_passe_pgsql'],
-				$pdo_options );
+				$config['mot_de_passe_pgsql']);
 		// TOUTES les requetes seront renvoyees en fetch_object (resultat->columname)
 		$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 		return $pdo;
-	} catch(Exception $e) {
+	} 
+	catch(Exception $e) 
+	{
 		echo 'Echec de la connexion à la base de données erreur '.$e->getCode() ;
 		exit();
 	}
