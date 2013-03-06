@@ -15,11 +15,6 @@ function connexion_base()
 	global $config;
 
 	try {
-		
-		// Options de connection
-		$pdo_options = array(
-					PDO::MYSQL_ATTR_INIT_COMMAND    => "SET NAMES utf8"  // a changer pour pgsql
-		);
 		$pdo = new PDO(
 				"pgsql:host=".$config['serveur_pgsql'] . ";dbname=" . $config['base_pgsql'] ,
 				$config['utilisateur_pgsql'],
