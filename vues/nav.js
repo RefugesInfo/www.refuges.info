@@ -135,11 +135,12 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 			styleName: 'Massifs', 
 			visibility: <?=$modele->massifs?>
 		}),
-		layerPoints = new OpenLayers.Layer.GMLSLD ('Points', {	
-			urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$modele->liste_id_point_type?>' + arg_points + limite,
+		new OpenLayers.Layer.GMLSLD ('Hôtels', {	
+			urlGML: '/exportations/exportations_osm.php?' + arg_points + limite,
 			projection: 'EPSG:4326', // Le GML est fourni en degminsec
 			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points'
+			styleName: 'Points',
+			visibility: false
 		}),
 		new OpenLayers.Layer.GMLSLD ('Pyrenees-Refuges.Com', {	
 			urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php&site=prc',
@@ -162,6 +163,12 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 			styleName: 'Points',
 			visibility: false
 		}),
+		layerPoints = new OpenLayers.Layer.GMLSLD ('Refuges.info', {	
+			urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$modele->liste_id_point_type?>' + arg_points + limite,
+			projection: 'EPSG:4326', // Le GML est fourni en degminsec
+			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+			styleName: 'Points'
+		}),
 		layerViseur = new OpenLayers.Layer.ImgDrag ('Viseur', {
 			img: OpenLayers._getScriptLocation() + 'img/viseur.png', h: 30, l: 30, 
 			pos: map.getCenter (), 
@@ -171,13 +178,6 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 				projected: 'proj-' // ces champs seront visibles et donneront la valeur projetée
 			},
 			displayInLayerSwitcher: false
-		}),
-		new OpenLayers.Layer.GMLSLD ('Hôtels', {	
-			urlGML: '/exportations/exportations_osm.php?' + arg_points + limite,
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points',
-			visibility: false
 		})
 	]);
 
