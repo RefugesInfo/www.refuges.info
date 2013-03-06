@@ -1,5 +1,0 @@
-<h4>les points de passage</h4>
-<p>sont des éléments caractéristiques du terrain en faisant des points de passage pour les randonneurs quasi obligatoire pour traverser un obstacle</p>
-
-<h5>Exemples</h5>
-<p>Les pas, les passages techniques, les cols [u]pédestres[/u], les zones sécurisées étant ce que vise ce type de point.</p>

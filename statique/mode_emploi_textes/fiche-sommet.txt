@@ -1,4 +1,0 @@
-<h3>Les sommets</h3>
-<p>
-Tout point culminant d'une zone peut être rentré. Il est préférable cependant qu'il aide au repérage sur la carte des refuges où qu'il soit en lien avec une course réalisable depuis un refuge.
-</p>

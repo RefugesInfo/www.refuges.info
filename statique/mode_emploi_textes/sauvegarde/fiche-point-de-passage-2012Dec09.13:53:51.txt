@@ -1,5 +1,0 @@
-<h4>les points de passage</h4>
-<p>Les <em>points de passage</em> sont des éléments caractéristiques du terrain qui en font des lieux de passage pour les randonneurs, quasi obligatoires afin de franchir, traverser ou contourner un obstacle</p>
-
-<h5>Exemples</h5>
-<p>Les pas (nombreux exemples en Chartreuse ou Vercors, notamment), les passages techniques, les cols [u]pédestres[/u], les zones sécurisées étant ce que vise ce type de point sur Refuges.info.</p>
