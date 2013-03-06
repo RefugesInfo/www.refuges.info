@@ -75,6 +75,8 @@ c'est pas non plus la requête qui consomme beaucoup -- sly
 Le but est le suivant : Les géométries GIS peuvent être énormes, et d'habitude, je mets "select *" car c'est bien plus
 simple que de lister tous les champs, qui en plus, pourraient augmenter en nombre. Mais là, surtout avec les polygones énormes
 il vaut mieux pouvoir enlever la colonne "geom" si demandée (ce qui sera quasi tout le temps le cas, mais je préfère être générique)
+
+Cette fonction retourne les champs sous la forme d'une chaine au format "table.champ1,table.champ2"
 */
 function colonnes_table($table,$renvoyer_aussi_colonne_geometrie=True)
 {
