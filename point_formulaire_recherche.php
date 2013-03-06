@@ -17,6 +17,8 @@ $modele->titre = "Recherche de refuges/cabanes/gites";
 $conditions_polygones->ids_polygone_type=$config['id_massif'];
 $modele->massifs=infos_polygones($conditions_polygones);
 
+$conditions_polygones->ids_polygone_type=$config['id_zone'];
+$modele->zones=infos_polygones($conditions_polygones);
 
 // On affiche le tout
 $modele->type = 'point_formulaire_recherche';

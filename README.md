@@ -1,4 +1,4 @@
-qu'est ce que refuges.info ?
+Qu'est ce que refuges.info ?
 ============================
 
 Le mieux, c'est d'aller voir : http://www.refuges.info

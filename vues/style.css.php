@@ -213,6 +213,11 @@ LI {
 FORM { /* les formulaires, dans le navigateur ou dans la recherche */
   padding: 2px;
   }
+LABEL {
+	margin-left: 10px;
+	border-bottom: 1px solid #<?=$couleur_decoration_titres?>;
+	border-left: 1px solid #<?=$couleur_decoration_titres?>;
+  }
 LEGEND , .fauxfieldset-legend {
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;

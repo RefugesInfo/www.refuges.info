@@ -9,191 +9,148 @@
 // 17/10/11 Dominique : Création
 // 15/02/13 jmb : legere modifs "info_base"
 ?>
+<script>
+	function toggle_hidden(el_name) {
+	
+		switch ( document.getElementsByName(el_name)[0].value ) {
+			case "" :
+				document.getElementById(el_name).style.visibility = "visible";
+				document.getElementsByName(el_name)[0].value = "oui" ;
+				document.getElementById(el_name).checked = "checked" ;
+				break ;
+			case "oui" :
+				document.getElementsByName(el_name)[0].value = "non" ;
+				document.getElementById(el_name).checked = "" ;
+				break ;
+			case "non" :
+				document.getElementsByName(el_name)[0].value = "";
+				//document.getElementById(el_name).style.background = "#ddd";
+				//document.getElementsByName(el_name)[0].disabled = true ;
+				document.getElementById(el_name).style.visibility = "hidden";
+				break ;
+		}
+//		document.getElementsByName(el_name)
+//		console.log(document.getElementsByName(el_name)[0].value);
+//		el_name.checked = true;
+	}
+</script>
 <div class="contenu">
 	<!-- =========================== -->
 	<h3><?=$modele->titre?></h3>
 	<h4>Rechercher sur ce site</h4>
-	<p>
-		Tous les champs sont facultatifs.
-	</p>
+
 	<!-- =========================== -->
 	<form method="post" action="./point_recherche.php">
+		<!-- =========================== -->
 		<fieldset>
-			<legend>Options de recherche</legend>
-			<table>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Nom: 
-					</td>
-					<td>
-						<input type="text" name="nom" />&nbsp;ex "jasse" ou "la pra"
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Massif: 
-					</td>
-					<td>
-						<select name="id_massif">
-							<option value="">(tous)</option>
-							<?php if (is_array($modele->massifs))
-								foreach ($modele->massifs AS $m) {?>
-								<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option>
-							<?}?>
-						</select>
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Points à rechercher
-					</td>
-					<td>
-						<select name="id_point_type">
-							<option value="">(tous)</option>
-							<option value="tout-refuge" selected="selected">Tout type de refuge</option>
-							<?php if (is_array($modele->infos_base->types_point)) 
-								foreach ($modele->infos_base->types_point AS $t) {?>
-								<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
-							<?}?>
-						</select>
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Nombre de places compris entre&nbsp;:
-					</td>
-					<td>
-						<input type="text" name="places_minimum" maxlength="3" size="3" />
-						et
-						<input type="text" name="places_maximum" maxlength="3" size="3" />
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Altitude entre :
-					</td>
-					<td>
-						<input type="text" name="altitude_minimum" maxlength="4" size="4" />
-						m et 
-						<input type="text" name="altitude_maximum" maxlength="4" size="4" />m
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Précision des coordonnéés GPS :
-					</td>
-					<td>
-						<select name="precision_gps">
-							<option value="">(Peu importe)</option>
-							<option value="1,2">Prises sur une carte ou le terrain</option>
-							<?foreach ($modele->infos_base->type_precision AS $p) {?>
-								<option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
-							<?}?>
-						</select>
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Coordonnées GPS :
-					</td>
-					<td>
-						<label>Latitude:<input type="text" name="lat" maxlength="10" size="8" /></label>
-						<label>Longitude:<input type="text" name="lon" maxlength="10" size="8" /></label>
-						et
-						<label><input type="text" name="autour" maxlength="6" size="4" value="1000" />m autour</label>
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Le champ remarques contient: 
-					</td>
-					<td>
-						<input type="text" name="description" />
-						&nbsp; exemple "scie", "table", etc.
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Uniquement les refuges avec photo:
-					</td>
-					<td>
-						<input type="checkbox" name="photo" value="foto" />
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Moyen de chauffage :
-					</td>
-					<td>
-						Poële ou cheminée:<input type="radio" name="chauffage" value="chauffage" />
-						&nbsp; &nbsp; Cheminée:<input type="radio" name="chauffage" value="cheminee" />
-						&nbsp; &nbsp; Poële:<input type="radio" name="chauffage" value="poele" />
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Attributs divers :
-					</td>
-					<td>
-						Couvertures:<input type="checkbox" name="couvertures" value="oui" />
-						&nbsp; &nbsp; Eau à proximité:<input type="checkbox" name="eau_a_proximite" value="oui" />
-						&nbsp; &nbsp; Bois à proximité:<input type="checkbox" name="bois_a_proximite" value="oui" />
-						&nbsp; &nbsp; Latrines:<input type="checkbox" name="latrines" value="oui" />
-						&nbsp; &nbsp; Non utilisable:<input type="checkbox" name="non_utilisable" value="oui" />
-						&nbsp; &nbsp; Lui manque un mur:<input type="checkbox" name="sommaire" value="oui" />
-						&nbsp; &nbsp; Clef à récupérer:<input type="checkbox" name="clef_a_recuperer" value="oui" />
-					</td>
-				</tr>
-				<?php 
-				// Ces options sont juste inutiles et confusionne M. tout le monde, je les gardes pour les modérateurs
-				if (isset($_SESSION['id_utilisateur']) AND ($_SESSION['niveau_moderation'] >= 1))
-				{  ?>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Option modérateur, état inconnu de :
-					</td>
-					<td>
-						Cheminée:<input type="checkbox" name="cheminee" value="vide" />
-						&nbsp; &nbsp; Poële:<input type="checkbox" name="poele" value="vide" />
-						&nbsp; &nbsp; Couvertures: <input type="checkbox" name="couvertures" value="vide" />
-						&nbsp; &nbsp; Eau à proximité:<input type="checkbox" name="eau_a_proximite" value="vide" />
-						&nbsp; &nbsp; Bois à proximité:<input type="checkbox" name="bois_a_proximite" value="vide" />
-						&nbsp; &nbsp; Latrines: <input type="checkbox" name="latrines" value="vide" />
-						&nbsp; &nbsp; Non utilisable:<input type="checkbox" name="non_utilisable" value="vide" />
-						&nbsp; &nbsp; Lui manque un mur:<input type="checkbox" name="sommaire" value="vide" />
-					</td>
-				</tr>
-				<?php } ?>
-				<!-- =========================== -->
-				<tr>
-					<td>
-						Ne pas limiter le nombre de résultat
-					</td>
-					<td>
-						<input type="checkbox" name="pas_limite" value="1" />
-					</td>
-				</tr>
-				<!-- =========================== -->
-				<tr>
-					<td colspan="2">
-						<input type="submit" name="recherche" value="chercher!" />
-						<!--<input type="submit" name="carte" value="Afficher sur une carte (non fonctionnel)" />-->
-					</td>
-				</tr>
-				<!-- =========================== -->
-			</table>
+			<legend>Nom</legend>
+			<input type="text" name="nom" title="tout ou partie du nom, par exemple 'jasse' ou 'la pra'" />
+			<!-- =========================== -->
+			<select name="id_point_type" title="type d'hébergement, gîte, cabane ...">
+				<option value="">(tous)</option>
+				<option value="tout-refuge" selected="selected">Tout type de refuge</option>
+				<?php if (is_array($modele->infos_base->types_point)) 
+					foreach ($modele->infos_base->types_point AS $t) {?>
+						<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
+					<?}?>
+			</select>
+		</fieldset>
+		<!-- =========================== -->
+		<fieldset>
+			<legend>Localisation</legend>
+			<p>Massif: 
+				<select name="id_massif" title="Massif ou Zone contenant l'hébergement">
+					<option value="">(partout)</option>
+					<?php
+						// Ca se complique avec les zones.
+						// pour chaque zone, on fait un OPTGROUP, et dedans on reparcours les massifs.
+						
+						foreach ($modele->zones as $z) { ?>
+							<optgroup label="<?=$z->nom_polygone?>">
+							<option value="<?=$z->id_polygone?>">(toute la région <?=$z->nom_polygone?>)</option>
+							<?php 
+							foreach ($modele->massifs AS $m) 
+								if( $m->id_zone == $z->id_polygone ) { ?>
+									<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option> <?php
+								} 
+							?></optgroup><?php
+						}
+					?>
+				</select>
+			</p>
+			<!-- =========================== -->
+			<p>
+				Altitude entre :
+				<input type="text" name="altitude_minimum" maxlength="4" size="4" title="Altitude minimum" />
+				m et 
+				<input type="text" name="altitude_maximum" maxlength="4" size="4" title="Altitude maximum" />m
+			</p>
+			<!-- =========================== -->
+			<p>
+				Précision des coordonnéés GPS :
+				<select name="precision_gps" title="Un positionnement précis est-il indispensable ?">
+					<option value="">(Peu importe)</option>
+					<option value="1,2">Prises sur une carte ou le terrain</option>
+					<?foreach ($modele->infos_base->type_precision AS $p) {?>
+						<option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
+					<?}?>
+				</select>
+			</p>
+			<!-- =========================== -->
+			<p>
+				Coordonnées GPS (WGS84) :
+				<label>Latitude:<input type="text" name="lat" maxlength="10" size="8" /></label>
+				<label>Longitude:<input type="text" name="lon" maxlength="10" size="8" /></label>
+				<label>dans un rayon de<input type="text" name="autour" maxlength="6" size="4" value="1000" /></label>mètres autour
+			</p>
+		</fieldset>
+		<!-- =========================== -->
+		<fieldset>
+			<legend>Confort</legend>
+			<label>Couvertures<input type="checkbox" id="couvertures" onClick="toggle_hidden('couvertures');" style="visibility: hidden" /><input type="hidden" name="couvertures" value="" /></label>
+			<label>Eau à proximité<input type="checkbox" id="eau_a_proximite" onClick="toggle_hidden('eau_a_proximite');" style="visibility: hidden" /><input type="hidden" name="eau_a_proximite" value="" /></label>
+			<label>Bois à proximité<input type="checkbox" id="bois_a_proximite" onClick="toggle_hidden('bois_a_proximite');" style="visibility: hidden" /><input type="hidden" name="bois_a_proximite" value="" /></label>
+			<label>Latrines<input type="checkbox" id="latrines" onClick="toggle_hidden('latrines');" style="visibility: hidden" /><input type="hidden" name="latrines" value="" /></label>
+			<label>Abri sommaire:<input type="checkbox" id="sommaire" onClick="toggle_hidden('sommaire');" style="visibility: hidden" /><input type="hidden" name="sommaire" value="" /></label>
+		<!-- =========================== -->
+			<p>
+				Nombre de places compris entre&nbsp;:
+				<input type="text" name="places_minimum" maxlength="3" size="3" />
+				et
+				<input type="text" name="places_maximum" maxlength="3" size="3" />
+			</p>
+			<!-- =========================== -->
+			<p>
+				Moyen de chauffage :
+				<label>Poële ou cheminée:<input type="radio" name="chauffage" value="chauffage" /></label>
+				<label>Cheminée:<input type="radio" name="chauffage" value="cheminee" /></label>
+				<label>Poële:<input type="radio" name="chauffage" value="poele" /></label>
+				<label>Non renseigné:<input type="radio" name="chauffage" value="" checked="checked" /></label>
+			</p>
+			<!-- =========================== -->
+			<p>
+				Le champ remarques contient: 
+				<input type="text" name="description" title="exemple: scie, table ..." />
+			</p>
+		</fieldset>
+
+		<fieldset>
+			<legend>Attributs divers</legend>
+			<label>Utilisable<input type="checkbox" id="ouvert" onClick="toggle_hidden('ouvert');" checked="checked" /><input type="hidden" name="ouvert" value="oui" /></label>
+			<label>Clef à récupérer<input type="checkbox" id="clef_a_recuperer" onClick="toggle_hidden('clef_a_recuperer');" style="visibility: hidden" /><input type="hidden" name="clef_a_recuperer" value="" /></label>
+		</fieldset>
+
+		<!-- =========================== -->
+		<fieldset>
+			<legend>Résultats</legend>
+			<label title="Si cette case est cochée, la recherche se limitera aux X premiers résultats">Limiter le nombre de résultat aux <?=$config['points_maximum_recherche']?> premiers
+				<input type="checkbox" name="limite" value="1" checked="checked" /></label>
+			<!-- =========================== -->
+			<p>
+				<input type="submit" name="recherche" value="chercher!" />
+			</p>
+			<!--<input type="submit" name="carte" value="Afficher sur une carte (non fonctionnel)" />-->
+			<!-- =========================== -->
 		</fieldset>
 	</form> 
 	<!-- =========================== -->

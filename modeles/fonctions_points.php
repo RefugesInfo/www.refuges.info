@@ -99,11 +99,11 @@ function infos_points($conditions)
 {
   global $config,$pdo;
   // condition de limite en nombre
-  if ($conditions->limite!="")
-    if (!is_numeric ($conditions->limite))
-      return erreur("Le paramètre de limite \$conditions->limite est mal formé");
-    else
-      $limite="\nLIMIT $conditions->limite";
+	if ($conditions->limite!="")
+		if (!is_numeric ($conditions->limite))
+			return erreur("Le paramètre de limite \$conditions->limite est mal formé");
+		else
+			$limite="\nLIMIT $conditions->limite";
     
     if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
@@ -130,25 +130,22 @@ function infos_points($conditions)
   {
     // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
     // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
-    $tables_en_plus.=",points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) and id_polygone_type=1)"; 
+    $tables_en_plus.=",points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) and id_polygone_type=".$config['id_massif'].")"; 
     $champs_polygones=",".colonnes_table('polygones',False);
   }
   else
     //On ne veut aucune conditions ni info sur les polygones, on place cette table quand même pour récupérer 
     //les coordonnées même si on se fiche de savoir dans quels polygones ils sont
     $tables_en_plus.=",points_gps";
+
+	// on restreint a cette geometrie (un texte "ST machin en fait")
+	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
+	if($conditions->geometrie != "")
+		$conditions_sql .= "AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
   
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if($conditions->type_point!="")
     $conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
-  
-  // condition pour n'avoir que les points avec au moins un commentaire avec photo
-  if($conditions->photo != "")
-  {
-    $tables_en_plus .= ",commentaires ";
-    $conditions_sql .= "\n AND commentaires.photo_existe = 1 
-    AND points.id_point=commentaires.id_point";
-  }	
   
   // conditions sur le nombre de places
   if($conditions->places_minimum!="")
@@ -172,6 +169,7 @@ function infos_points($conditions)
   
   //calcul selon la distance au point de référence
   // fourni sous la forme lat;lon;metres (45;5;5000) pour 5km
+// voir conditions->geometrie
   if ($conditions->distance!="")
   {
     $donnees=explode(";",$conditions->distance);
@@ -194,10 +192,13 @@ function infos_points($conditions)
     $conditions_sql.="\n AND ST_within(points_gps.geom,st_transform(st_buffer($geom_point_mercator,$distance),4326))";
     $ordre="ORDER BY $calcul_distance";
   }
+
   // conditions géographique sur les coordonnées GPS
   // FIXME... ou pas : on considère qu'une requête : tous les points dont la latitude est >50° n'est pas possible/souhaitable
   // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
   // Par simplification, on peut aussi passer par ->bbox une bbox au format OL : ouest,sud,est,nord
+// voir conditions->geometrie
+
   if( ($conditions->sud!="" and $conditions->nord!="" and $conditions->ouest!="" and $conditions->est!="") or isset($conditions->bbox))
   {
     if (isset ($conditions->bbox))
@@ -277,6 +278,7 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
+  
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   

@@ -22,6 +22,8 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
+//FIXME jmb : BBOX ne veut plus rien dire a l'heure du GIS. BBOX + nord/sud/est/ouest ca redonde un peu.
+// jmb: ajout du champ "nom_zone"
 
 Retour :
 Array
@@ -33,6 +35,7 @@ Array
             [message_information_polygone] => --> texte indiquant les restrictions liées à la présence dans ce polygone
             [source] => --> si provenance extérieure
             [nom_polygone] => Chartreuse
+			[id_zone] => 351  // 351 est le poly des Alpes (je crois)   
             [article_partitif] => de la
             [id_polygone_type] => 1
             [id_polygone] => 2
@@ -93,13 +96,21 @@ function infos_polygones($conditions)
   else
     $champs_geometry.="";
 
+	// jmb: nom de la zone auquel le poly appartient.
+	$champs_geometry.=", 
+		(SELECT id_polygone
+			FROM polygones AS zones
+			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+		) AS id_zone ";
+	
+	//FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
   $box="ST_box2d(geom)";
   $query="SELECT polygone_type.type_polygone,
                  polygone_type.categorie_polygone_type,
-                 st_xmin($box) as ouest,
-                 st_xmax($box) as est,
-                 st_ymin($box) as sud,
-                 st_ymax($box) as nord,
+                 st_xmin($box) AS ouest,
+                 st_xmax($box) AS est,
+                 st_ymin($box) AS sud,
+                 st_ymax($box) AS nord,
                  ".colonnes_table('polygones',False)."
                  $champs_geometry
           FROM polygones,polygone_type
@@ -108,6 +119,7 @@ function infos_polygones($conditions)
             $conditions_sql
           $limite
   ";
+
   $res=$pdo->query($query);
   if (!$res)
     return erreur("Requête impossible",$query);
