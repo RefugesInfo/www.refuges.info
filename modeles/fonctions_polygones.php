@@ -77,12 +77,14 @@ function infos_polygones($conditions)
     else
       $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
   
-  // Ne prenons que les polygones qui intersectent une bbox
-  if (isset($conditions->bbox))
+  // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
+  if (isset($conditions->geometrie))
   {
-    $bbox=explode(",",$conditions->bbox);
-    $conditions_sql.=" AND geom && 
-    ST_GeomFromText(('LINESTRING($bbox[0] $bbox[1],$bbox[2] $bbox[3])'),4326)";
+//    $bbox=explode(",",$conditions->bbox);
+//    $conditions_sql.=" AND geom && 
+//    ST_GeomFromText(('LINESTRING($bbox[0] $bbox[1],$bbox[2] $bbox[3])'),4326)";
+// intersects une linestring ? et le milieu ?
+	$conditions_sql.=" AND geom && ". $conditions->geometrie ;
   }
   
   if ($conditions->avec_geometrie)
@@ -183,20 +185,48 @@ return "$url_complete/nav/$polygone->id_polygone/".replace_url($type_polygone)."
 }
 
 
-/*************************************************
-Ces fonctions s'occupent de supprimer un polygone de la base
-FIXME : ne sert actuellement nulle part
-*************************************************/
+/********************************************
+Cree un objet geometrie a utiliser dans le SQL PostGIS
 
-//suppression juste du polygone
-function suppression_polygone($id_polygone)
+Par exemple, cree un Polygone avec une bbox ou un massif, cree un cercle avec un point et un rayon.
+
+$params  contient les coordonnées
+$type est le type de geometrie a creer : "cercle", "polygone", "bboxOL" (pleonasme: une bbox c'est un polygone)
+
+Elle renvoie une chaine de texte a utiliser en SQL, par exemple:
+WHERE Within(geom, cree_geometrie(...)  )
+*********************************************/
+function cree_geometrie( $params , $type )
 {
-	global $pdo;
-	if (!is_numeric($id_polygone))
-		return -1;
-	$query="DELETE FROM polygones WHERE id_polygone=$id_polygone";
-	$pdo->exec($query) or die('pb lors suppr polygone '.$id_polygone) ;
-	return 0;
+	switch ($type) {
+		
+		case 'bboxOL':
+			//bbox OL: ouest,sud,est,nord
+			// mise en forme avec des points, des vrais
+			list($ouest,$sud,$est,$nord) = explode(",",$params);
+			//$ouest = $params[0]; $sud = $params[1]; $est = $params[2]; $nord = $params[3];
+			$geotexte = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
+			break;
+
+		case 'polygone':
+			//FIXME check les params: [0]->lat, [0]->lon , [1].....
+			$geotexte = "FIXME";
+			break;
+
+		case 'cercle':
+			//FIXME check les params: lat, lon, et rayon
+			$lat = $params['lat'];
+			$lon = $params['lon'];
+			$ray = $params['rayon'] ;
+			// au depart on a du 4326 en degres. Transform vers 900913 en metres. application du Buffer en metres. Retransformation en 4326.
+			// Vu qu'on parle en metres et pas en degrés, c'est necessaire.
+			$geotexte = "ST_Transform(ST_Buffer(ST_Transform(ST_GeomFromText('POINT($lon $lat)',4326),900913),$ray),4326)";
+			break;
+
+		default:
+			$geotexte = "mauvais type de geometrie";
+	}
+	return $geotexte ;
 }
 
 ?>

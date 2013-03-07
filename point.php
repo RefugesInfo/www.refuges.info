@@ -51,7 +51,11 @@ else
     $conditions->avec_infos_massif=True;
     $conditions->limite=10;
     $conditions->ouvert='oui';
-    $conditions->distance="$modele->latitude;$modele->longitude;5000";
+	
+	$g = [ 'lat' => $modele->latitude, 'lon' => $modele->longitude , 'rayon' => 5000 ];
+	$conditions->geometrie = cree_geometrie( $g , 'cercle' );
+    //$conditions->distance="$modele->latitude;$modele->longitude;5000";
+
     $conditions->ordre="distance ASC";
     $modele->points_proches=infos_points($conditions);
   }

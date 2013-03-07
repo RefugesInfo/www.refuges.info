@@ -140,8 +140,10 @@ function infos_points($conditions)
 
 	// on restreint a cette geometrie (un texte "ST machin en fait")
 	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
-	if($conditions->geometrie != "")
+	if($conditions->geometrie != "") {
 		$conditions_sql .= "AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
+		$select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+	}
   
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if($conditions->type_point!="")
@@ -170,7 +172,7 @@ function infos_points($conditions)
   //calcul selon la distance au point de référence
   // fourni sous la forme lat;lon;metres (45;5;5000) pour 5km
 // voir conditions->geometrie
-  if ($conditions->distance!="")
+/*  if ($conditions->distance!="")
   {
     $donnees=explode(";",$conditions->distance);
     $latitude=$donnees[0];
@@ -192,7 +194,7 @@ function infos_points($conditions)
     $conditions_sql.="\n AND ST_within(points_gps.geom,st_transform(st_buffer($geom_point_mercator,$distance),4326))";
     $ordre="ORDER BY $calcul_distance";
   }
-
+*/
   // conditions géographique sur les coordonnées GPS
   // FIXME... ou pas : on considère qu'une requête : tous les points dont la latitude est >50° n'est pas possible/souhaitable
   // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
