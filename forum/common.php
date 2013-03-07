@@ -26,7 +26,6 @@ if ( !defined('IN_PHPBB') )
 
 //
 error_reporting  (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
-set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
 
 // The following code (unsetting globals) was contributed by Matt Kavanagh
 
@@ -101,71 +100,71 @@ else if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_gl
 }
 
 //
-// addslashes to vars if magic_quotes_gpc is off
+// pg_escape_string  to vars if magic_quotes_gpc is off
 // this is a security precaution to prevent someone
 // trying to break out of a SQL statement.
 //
-if( !get_magic_quotes_gpc() )
+if( true )
 {
-	if( is_array($HTTP_GET_VARS) )
+  if( is_array($HTTP_GET_VARS) )
+  {
+    while( list($k, $v) = each($HTTP_GET_VARS) )
+    {
+      if( is_array($HTTP_GET_VARS[$k]) )
+      {
+	while( list($k2, $v2) = each($HTTP_GET_VARS[$k]) )
 	{
-		while( list($k, $v) = each($HTTP_GET_VARS) )
-		{
-			if( is_array($HTTP_GET_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_GET_VARS[$k]) )
-				{
-					$HTTP_GET_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_GET_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_GET_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_GET_VARS);
+	  $HTTP_GET_VARS[$k][$k2] = pg_escape_string ($v2);
 	}
-
-	if( is_array($HTTP_POST_VARS) )
+	@reset($HTTP_GET_VARS[$k]);
+      }
+      else
+      {
+	$HTTP_GET_VARS[$k] = pg_escape_string ($v);
+      }
+    }
+    @reset($HTTP_GET_VARS);
+  }
+  
+  if( is_array($HTTP_POST_VARS) )
+  {
+    while( list($k, $v) = each($HTTP_POST_VARS) )
+    {
+      if( is_array($HTTP_POST_VARS[$k]) )
+      {
+	while( list($k2, $v2) = each($HTTP_POST_VARS[$k]) )
 	{
-		while( list($k, $v) = each($HTTP_POST_VARS) )
-		{
-			if( is_array($HTTP_POST_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_POST_VARS[$k]) )
-				{
-					$HTTP_POST_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_POST_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_POST_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_POST_VARS);
+	  $HTTP_POST_VARS[$k][$k2] = pg_escape_string ($v2);
 	}
-
-	if( is_array($HTTP_COOKIE_VARS) )
+	@reset($HTTP_POST_VARS[$k]);
+      }
+      else
+      {
+	$HTTP_POST_VARS[$k] = pg_escape_string ($v);
+      }
+    }
+    @reset($HTTP_POST_VARS);
+  }
+  
+  if( is_array($HTTP_COOKIE_VARS) )
+  {
+    while( list($k, $v) = each($HTTP_COOKIE_VARS) )
+    {
+      if( is_array($HTTP_COOKIE_VARS[$k]) )
+      {
+	while( list($k2, $v2) = each($HTTP_COOKIE_VARS[$k]) )
 	{
-		while( list($k, $v) = each($HTTP_COOKIE_VARS) )
-		{
-			if( is_array($HTTP_COOKIE_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_COOKIE_VARS[$k]) )
-				{
-					$HTTP_COOKIE_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_COOKIE_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_COOKIE_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_COOKIE_VARS);
+	  $HTTP_COOKIE_VARS[$k][$k2] = pg_escape_string ($v2);
 	}
+	@reset($HTTP_COOKIE_VARS[$k]);
+      }
+      else
+      {
+	$HTTP_COOKIE_VARS[$k] = pg_escape_string ($v);
+      }
+    }
+    @reset($HTTP_COOKIE_VARS);
+  }
 }
 
 //

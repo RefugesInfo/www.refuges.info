@@ -25,6 +25,7 @@ $conditions->texte -> condition sur le contenu du commentaire
 $conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
 $conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
+$conditions->avec_commentaires_modele=True -> Très spécifique, pour avoir aussi les commentaires sur les modeles de points, le par défaut est non mais ça n'a de sens qu'avec $conditions->avec_infos_point=True
 
 Renvoi un tableau contenant des objets commentaires sous cette forme :
 stdClass Object
@@ -94,18 +95,20 @@ function infos_commentaires ($conditions)
   
   // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
   // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
-  if ($conditions->avec_infos_point)
+  if ($conditions->avec_infos_point or $conditions->avec_commentaires_modele)
   {
     $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
 
-    $condition_en_plus=" AND points.id_point=commentaires.id_point 
+    $condition_en_plus.=" AND points.id_point=commentaires.id_point 
 			 AND points_gps.id_point_gps=points.id_point_gps
 			 AND point_type.id_point_type=points.id_point_type";
     $champ_en_plus.=",points.*,";
     // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
     // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
     $champ_en_plus.=colonnes_table('polygones',False);
-			 
+
+    if (!$conditions->avec_commentaires_modele)
+      $condition_en_plus.=" AND modele!=1 ";
   }
    
   $query="SELECT 

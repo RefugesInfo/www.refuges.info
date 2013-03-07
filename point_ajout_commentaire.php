@@ -31,11 +31,11 @@ if ($point!=-1)
     // peut être un robot ?
     if ( ($modele->lettre_verification!="f") AND !isset($_SESSION['id_utilisateur']) )
     {
-      $model->erreur_captcha=True;
+      $modele->erreur_captcha=True;
       $modele->lettre_verification="";
     }
     else if (bloquage_internaute($_POST['comment_auteur']))  // utilisateur dont l'adresse IP est bannie
-		$model->banni=True;
+		$modele->banni=True;
     else
     {
       // c'est quoi ça ?
