@@ -662,9 +662,9 @@ else if ( $submit || $confirm )
 			  else {$table="";$conditions_join="";$condition_groupe="";}
 			// on prend tout seul qui veulent reçevoir une alerte quand nouveau message
 			$query_qui_veut="SELECT * from phpbb_users$table where $conditions_join user_notify_new_topic=1 $condition_groupe";
-			$res=mysql_query($query_qui_veut);
+			$res=pg_query($query_qui_veut);
 			mb_internal_encoding('utf-8');
-			while($user_a_prevenir=mysql_fetch_object($res))
+			while($user_a_prevenir=pg_fetch_object($res))
 			{
 				$titre_email=mb_encode_mimeheader(stripslashes("Nouveau sujet sur le forum refuges.info : ".$HTTP_POST_VARS['subject']),"utf-8","Q");
 				$contenu_message=stripslashes("Bonjour $user_a_prevenir->username, 
