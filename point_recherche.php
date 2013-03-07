@@ -53,9 +53,13 @@ foreach ($_POST as $champ => $valeur)
 					case "tout-refuge" :
 						$conditions->type_point = $config['tout_type_refuge']; break; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites 
 				}
+			default:
+				$conditions->$champ=trim($valeur); break;
 		}
 	
 }
+//var_dump($_POST);
+//var_dump($conditions);
 //	if ( !empty($valeur) )
 //		$conditions->$champ=trim($valeur);
 

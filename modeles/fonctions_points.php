@@ -200,7 +200,7 @@ function infos_points($conditions)
   // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
   // Par simplification, on peut aussi passer par ->bbox une bbox au format OL : ouest,sud,est,nord
 // voir conditions->geometrie
-
+/*
   if( ($conditions->sud!="" and $conditions->nord!="" and $conditions->ouest!="" and $conditions->est!="") or isset($conditions->bbox))
   {
     if (isset ($conditions->bbox))
@@ -214,7 +214,7 @@ function infos_points($conditions)
     $conditions_sql.="\n AND points_gps.geom && 
     ST_GeomFromText(('LINESTRING($conditions->ouest $conditions->sud,$conditions->est $conditions->nord)'),4326)";
   }
-  
+*/
   // condition restrictive sur des id_points particuliers
   if($conditions->ids_points!="")
     $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
