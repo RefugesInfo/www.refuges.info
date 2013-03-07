@@ -11,30 +11,7 @@ require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_points.php");
 require_once ("fonctions_polygones.php");
 
-function cree_geometrie( $params , $type )
-{
-	switch ($type) {
-		case 'polygone':
-			//FIXME check les params: [0]->lat, [0]->lon , [1].....
-			if ( sizeof($params) > 2 ) 
-			$geotexte = "FIXME";
-			break;
-		case 'cercle':
-			//FIXME check les params: lat, lon, et rayon
-//			Transform(ST_Buffer(Transform(GeomFromText('LINESTRING(-76.543 42.567, -76.012 42.345, -75.890 42.445, -75.543 42.330)'), 900913), 300.0), 4326) AS buffer_shape
 
-			$lat = $params->centre['lat'];
-			$lon = $params->centre['lon'];
-			$ray = $params->rayon ;
-			// au depart on a du 4326 en degres. Transform vers 900913 en metres. application du Buffer en metres. Retransformation en 4326.
-			$geotexte = "Transform(ST_Buffer(Transform(ST_GeomFromText('POINT($lon $lat)',4326),900913),$ray),4326)";
-			break;
-		default:
-			$geotexte = "mauvais type de geometrie";
-	}
-//	var_dump($geotexte);
-	return $geotexte ;
-}
 /************ Préparation des conditions de la recherche *******************/
 // tous ceux dont le name du formulaire correspondent à la condition sur le champs en base du même nom
 $conditions = new stdClass;
@@ -61,10 +38,10 @@ foreach ($_POST as $champ => $valeur)
 			
 			case ( 'lat' && !empty($_POST['lon']) && !empty($_POST['autour']) ):  // on demande un positionnement GPS. 
 				// la distance n'est qu'un polygone
-				$g = new stdClass();
-				$g->centre = array( 'lat' => $_POST['lat'], 'lon' => $_POST['lon'] );
-				$g->rayon  = $_POST['autour'] ;
+				
+				$g = [ 'lat' => $_POST['lat'], 'lon' => $_POST['lon'] , 'rayon' => $_POST['autour'] ];
 				$conditions->geometrie = cree_geometrie( $g , 'cercle' );
+				$conditions->ordre = "distance";
 				break;
 			
 			case 'id_point_type':
