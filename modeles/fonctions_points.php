@@ -99,7 +99,7 @@ function infos_points($conditions)
 {
   global $config,$pdo;
   // condition de limite en nombre
-	if ($conditions->limite!="")
+	if (!empty($conditions->limite))
 		if (!is_numeric ($conditions->limite))
 			return erreur("Le paramètre de limite \$conditions->limite est mal formé");
 		else
