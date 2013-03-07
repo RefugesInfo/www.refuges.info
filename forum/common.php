@@ -100,7 +100,7 @@ else if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_gl
 }
 
 //
-// pg_escape_string  to vars if magic_quotes_gpc is off
+// addslashes  to vars if magic_quotes_gpc is off
 // this is a security precaution to prevent someone
 // trying to break out of a SQL statement.
 //
@@ -114,13 +114,13 @@ if( true )
       {
 	while( list($k2, $v2) = each($HTTP_GET_VARS[$k]) )
 	{
-	  $HTTP_GET_VARS[$k][$k2] = pg_escape_string ($v2);
+	  $HTTP_GET_VARS[$k][$k2] = addslashes ($v2);
 	}
 	@reset($HTTP_GET_VARS[$k]);
       }
       else
       {
-	$HTTP_GET_VARS[$k] = pg_escape_string ($v);
+	$HTTP_GET_VARS[$k] = addslashes ($v);
       }
     }
     @reset($HTTP_GET_VARS);
@@ -134,13 +134,13 @@ if( true )
       {
 	while( list($k2, $v2) = each($HTTP_POST_VARS[$k]) )
 	{
-	  $HTTP_POST_VARS[$k][$k2] = pg_escape_string ($v2);
+	  $HTTP_POST_VARS[$k][$k2] = addslashes ($v2);
 	}
 	@reset($HTTP_POST_VARS[$k]);
       }
       else
       {
-	$HTTP_POST_VARS[$k] = pg_escape_string ($v);
+	$HTTP_POST_VARS[$k] = addslashes ($v);
       }
     }
     @reset($HTTP_POST_VARS);
@@ -154,13 +154,13 @@ if( true )
       {
 	while( list($k2, $v2) = each($HTTP_COOKIE_VARS[$k]) )
 	{
-	  $HTTP_COOKIE_VARS[$k][$k2] = pg_escape_string ($v2);
+	  $HTTP_COOKIE_VARS[$k][$k2] = addslashes ($v2);
 	}
 	@reset($HTTP_COOKIE_VARS[$k]);
       }
       else
       {
-	$HTTP_COOKIE_VARS[$k] = pg_escape_string ($v);
+	$HTTP_COOKIE_VARS[$k] = addslashes ($v);
       }
     }
     @reset($HTTP_COOKIE_VARS);

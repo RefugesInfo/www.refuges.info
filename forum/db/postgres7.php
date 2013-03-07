@@ -121,7 +121,11 @@ class sql_db
 		if( $query != "" )
 		{
 			$this->num_queries++;
-
+			// FIXME je la sens pas des masses cette manière d'enlêver le addslashes des requêtes, si un \" se trouve ailleurs on est mal, il faudrait
+			// pouvoir uniquement les enlever des champs texte :
+			// genre select \" from coucou where 'test\"' deviendrait : select \" from coucou where 'test"'
+			// Bref, ne s'occuper que de ce qui est entre '' et qui est vraiment pour insérer une string
+                        $query=stripslashes($query);
 			$query = preg_replace("/LIMIT ([0-9]+),([ 0-9]+)/", "LIMIT \\2 OFFSET \\1", $query);
 
 			if( $transaction == BEGIN_TRANSACTION && !$this->in_transaction )
