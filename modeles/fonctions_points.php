@@ -281,7 +281,6 @@ function infos_points($conditions)
   $limite
   ";
 
-var_dump($query_points);
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   
