@@ -33,9 +33,6 @@ foreach ($_POST as $champ => $valeur)
 			case 'id_massif':
 				$conditions->id_polygone = $valeur; break ;
 			
-			case 'ouvert':
-				$conditions->ouvert = $valeur ; break;
-			
 			case ( 'lat' && !empty($_POST['lon']) && !empty($_POST['autour']) ):  // on demande un positionnement GPS. 
 				// la distance n'est qu'un polygone
 				
@@ -53,7 +50,8 @@ foreach ($_POST as $champ => $valeur)
 					case "tout-refuge" :
 						$conditions->type_point = $config['tout_type_refuge']; break; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites 
 				}
-			default:
+
+			default:  // tous les autres cas: nom, ouvert, places ...
 				$conditions->$champ=trim($valeur); break;
 		}
 	

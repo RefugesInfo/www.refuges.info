@@ -23,7 +23,7 @@ require_once ("fonctions_exportations.php");
 // MODIF DOMINIQUE : utilisé par OpenLayers
 $conditions = new stdClass;
 if (!$_GET["limite"])
-	$conditions->limite=120;
+	$conditions->limite=300;
 else if ($_GET["limite"]!="sans")
 	$conditions->limite = $_GET ["limite"]; 
 	

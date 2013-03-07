@@ -210,7 +210,7 @@ LI {
   }
 
 /*====== FORMULAIRES======*/
-FORM { /* les formulaires, dans le navigateur ou dans la recherche */
+FORM { /* les formulaires, dans le Navigateur ou dans la recherche */
   padding: 2px;
   }
 /*LABEL {
@@ -218,6 +218,10 @@ FORM { /* les formulaires, dans le navigateur ou dans la recherche */
 	border-bottom: 1px solid #<?=$couleur_decoration_titres?>;
 	border-left: 1px solid #<?=$couleur_decoration_titres?>;
   }*/
+.tristate {
+	/*visibility: hidden;*/
+	/*margin: 30px;*/
+}
 LEGEND , .fauxfieldset-legend {
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;
