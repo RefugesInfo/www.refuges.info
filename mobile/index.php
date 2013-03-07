@@ -52,7 +52,7 @@ $modele->photos_recentes=infos_commentaires($conditions);
 
 // On affiche le tout
 $modele->type = 'index';
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$modele->type.html");
-include ($config['chemin_vues']."_pied.html");
+include ("vues/_entete.html");
+include ("vues/$modele->type.html");
+include ("vues/_pied.html");
 ?>
