@@ -151,6 +151,11 @@
 			<legend>Résultats</legend>
 			<label title="Si cette case est cochée, la recherche se limitera aux X premiers résultats">Limiter le nombre de résultat aux <?=$config['points_maximum_recherche']?> premiers
 				<input type="checkbox" name="limite" value="1" checked="checked" /></label>
+			<p>
+				Tri des résultats:
+				<label>"Montagne"<input type="radio" name="avec_liste_polygones" value="montagnarde" title="Résultats triés par Zones->Massifs->Reserves" checked="checked" /></label>
+				<label>"Administratif"<input type="radio" name="avec_liste_polygones" value="administrative" title="Résultats triés par Pays->Région->Département" />(A éviter, temps de calcul très long !)</label>
+			</p>
 			<!-- =========================== -->
 			<p>
 				<input type="submit" name="recherche" value="chercher!" />

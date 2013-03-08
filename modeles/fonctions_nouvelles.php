@@ -116,7 +116,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
     
     case "refuges": $conditions->type_point=$config['tout_type_refuge'];
     case "points":
-      $conditions->ordre="date_insertion DESC";
+      $conditions->ordre="date_creation_timestamp DESC";
       $conditions->limite=$nombre;
       $conditions->avec_infos_massif=1;
       $points=infos_points($conditions);
@@ -145,8 +145,8 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	  $texte="$categorie : 
 	  <a href=\"$lien\">$titre</a>
 	  $lien_massif";
-	  $news_array[] = array($point->date_insertion,"texte"=>$texte,
-				"date"=>$point->date_insertion,"categorie"=>$categorie,
+	  $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
+				"date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
 				"titre"=>$titre,"lien"=>$lien); 
 	}
 	break;

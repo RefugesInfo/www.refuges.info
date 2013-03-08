@@ -285,7 +285,8 @@ function infos_points($conditions)
          type_precision_gps.*,
          point_type.*,
          ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
-         extract('epoch' from date_derniere_modification) as date_modif_timestamp
+         extract('epoch' from date_derniere_modification) as date_modif_timestamp,
+		 extract('epoch' from date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
   FROM points,point_type,type_precision_gps$tables_en_plus
@@ -557,73 +558,74 @@ qui ressemble à "erreur_un_truc"
 
 function modification_ajout_point($point)
 {
-  global $config,$pdo;
-  // désolé, le nom du point ne peut être vide
-  if (trim($point->nom)=="")
-    return erreur("Le nom ne peut être vide");
+	global $config,$pdo;
+	// désolé, le nom du point ne peut être vide
+	if ( trim($point->nom) =="" )
+		return erreur("Le nom ne peut être vide");
   
-  // désolé, les coordonnées ne peuvent être vide ou non numérique
-  if ($point->latitude=="" or $point->latitude=="")
-    return erreur("Ni la latitude ni la longitude ne peuvent être vides");
-  if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
-    return erreur("La latitude ou la longitude doivent utiliser un format valide : ex: 45.789");
-  if ($point->id_point!="")  // update
-  {
-    $infos_point_avant = infos_point($point->id_point);
-    if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
-      return erreur("Erreur de modification du point : $infos_point_avant->message");
+	// désolé, les coordonnées ne peuvent être vide ou non numérique
+	if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
+		return erreur("La latitude ou la longitude doivent utiliser un format valide : ex: 45.789");
+
+    //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
+	if( !empty($point->site_officiel) )
+		if ( strpos($point->site_officiel, "http://") === FALSE)
+			$champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
+		else
+			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
+
+	// On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
+	$champs_sql['date_derniere_modification'] = 'NOW()';
+
+	/********* les coordonnées du point dans la table points_gps *************/
+	// dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
+	$point->id_point_gps=modification_ajout_point_gps($point);
+
+	/********* Les caractéristiques propres du point *************/
+	// champ ou il faut juste un set=nouvelle_valeur
+	foreach ($config['champs_simples_points'] as $champ)
+		if (isset($point->$champ))
+			$champs_sql[$champ]=$pdo->quote($point->$champ);
+	
+//	var_dump($point);
+	if ( !empty($point->id_point) )  // update
+	{
+		$infos_point_avant = infos_point($point->id_point);
+		if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
+			return erreur("Erreur de modification du point : $infos_point_avant->message");
     
-    if ($point->id_point_gps=="")
-      $point->id_point_gps=$infos_point_avant->id_point_gps;
-  }
-  
-  /********* les coordonnées du point dans la table points_gps *************/
-  // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
-  $point->id_point_gps=modification_ajout_point_gps($point);
-  
-  /********* Les caractéristiques propres du point *************/
-  // champ ou il faut juste un set=nouvelle_valeur
-  foreach ($config['champs_simples_points'] as $champ)
-    if (isset($point->$champ))
-      $champs_sql[$champ]=$pdo->quote($point->$champ);
-    
+		if ( empty($point->id_point_gps) )
+			$point->id_point_gps = $infos_point_avant->id_point_gps;
+		
+		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
+	}
+	else  // INSERT
+		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
     
     //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
-    if (isset($point->site_officiel))
-      if (preg_match("/http\:\/\//",$point->site_officiel))
-      $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-    elseif($point->site_officiel!="")
-      $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
-    else
-      $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-    
-    // On met à jour la date de dernière modification
-    $champs_sql['date_derniere_modification'] = 'NOW()';
-    
-    // fait-on un updater ou un insert ?
-    if ($point->id_point=="")
-    {
-      $champs_sql['date_insertion']=time(); //FIXME : horreur, la date_insertion est un unix timestamp stocké dans un bigint ;-(
-      $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
-    }
-    else
-      $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
-    
+/*    if (isset($point->site_officiel))
+		if (preg_match("/http\:\/\//",$point->site_officiel))
+			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
+		elseif( !empty($point->site_officiel) )
+			$champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
+		else
+			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);  */
+  
     if (!$pdo->exec($query_finale))
-      return erreur("Requête en erreur, impossible à executer",$query_finale);
+		return erreur("Requête en erreur, impossible à executer",$query_finale);
     
     if ($point->id_point=="")  // donc c etait un ajout
     {	
-      $point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
+		$point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
       
-      /********* la création du forum point *************/
-      forum_point_ajout($point);
+		/********* la création du forum point *************/
+		forum_point_ajout($point);
     }
     else
-      forum_mise_a_jour_nom($point); // La mise à jour du nom du forum
+		forum_mise_a_jour_nom($point); // La mise à jour du nom du forum
   
-  // on retoure l'id du point (surtout utile si création)
-  return $point->id_point;
+	// on retoure l'id du point (surtout utile si création)
+	return $point->id_point;
 }  
 /*****************************************************
 Dans le cas d'un nouveau point, creation d'un topic dans forum correspondant.
