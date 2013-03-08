@@ -23,23 +23,17 @@
 		<meta name="robots" content="all" />
 		<meta name="robots" content="index,follow" />
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config[encodage_des_contenu_web]?>" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-		<?if (count ($modele->java_lib))
-			foreach ($modele->java_lib as $js_lib) {?>
-				<script type="text/javascript" src="<?=$js_lib?>"></script>
-		<?	}?>
 		<link type="text/css" rel="stylesheet" href="styles/style.css" />
-		<?if (count ($modele->css))
-			foreach ($modele->css as $css) {?>
-				<link type="text/css" rel="stylesheet" href="<?=$css?>" />
-		<?	}?>
-		<?if (file_exists ("vues/$modele->type.js")) {?>
-			<script type="text/javascript">
-			//<![CDATA[
-				<?include ("vues/$modele->type.js")?>
-			//]]>
-			</script>
+		<?if ($modele->type == 'index') {?>
+			<link rel="stylesheet" href="./leaflet/leaflet.css" />
+			<!--[if lte IE 8]><link rel="stylesheet" href="./leaflet/leaflet.ie.css" /><![endif]-->
+
+			<script src="./leaflet/leaflet.js"></script>
 		<?}?>
+
+		<script src="./js/<?=$modele->type?>.js"></script>
 	</head>
 
 	<body>
