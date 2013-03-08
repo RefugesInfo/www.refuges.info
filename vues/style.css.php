@@ -190,8 +190,9 @@ DT { /* listes, de definitions */
 DL > DL { /* decale les elements imbriques de 1em */
   padding-left: 1em;
   }
-DL.collapsable:before {
-  content: "ee";
+DT > BUTTON {
+  font-size: 60%;
+  padding: 0px ;
   }
 LI {
   margin-bottom:3px;

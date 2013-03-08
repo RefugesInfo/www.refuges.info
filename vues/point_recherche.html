@@ -37,8 +37,10 @@ function inverse_visibility_voisins( id_element )
 	
 	if (isset($modele->points)) {
 	
-	
-		//$liste = new stdClass;
+		if(isset($modele->limite_atteinte) ) { ?>
+			<h5>La limite a été atteinte. seuls les <?=$modele->limite_atteinte?> premiers points sont affichés.</h5>
+		<? }
+			
 		$arbre = array();
 		foreach ($modele->points as $point) {
 		

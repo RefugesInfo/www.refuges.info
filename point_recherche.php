@@ -101,12 +101,19 @@ $modele = new stdClass();
 //======================================
 // C'est LA que ca cherche
 $modele->points = infos_points ($conditions);
-$modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 
+//en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on la atteinte ........
+ if (!empty($conditions->limite) && sizeof($modele->points) == $conditions->limite)
+	$modele->limite_atteinte = $conditions->limite;
+
+$modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
+	
+
+//$modele->limite = $conditions->limite ; // il n'y a plus moyen de savoir si on a atteind la limite avec PG. du moins pas simplement.
 //var_dump($modele);
 // Mise au pluriel s'il y a plusieurs points
-if ($modele->nombre_points_sans_limite>1)
-	$modele->pluriel="s";
+//if ($modele->nombre_points_sans_limite>1)
+//	$modele->pluriel="s";
 // Message indiquant qu'on a plus de point dans le résultat que la limite autorisée
 // FIXME HS en pgsql
 //if ($conditions->limite!="" and $modele->nombre_points_sans_limite>=$conditions->limite)
