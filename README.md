@@ -153,11 +153,11 @@ Doc dédiée aux développeurs ayant accès à la machine wri
 ========================================================
 
 * pour développer sur votre zone
- * Serveur ftp ou sftp ou ssh : www.refuges.info (en mode développement uniquement avant la migration : n.refuges.info)
+ * Serveur ftp ou sftp ou ssh : www.refuges.info
  * login  / mot de passe : le votre ;-)
 
 * accès ssh 
- * Sous Linux/OSX : ssh login@n.refuges.info
+ * Sous Linux/OSX : ssh login@www.refuges.info
  * Sous windows, télécharger putty http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe puis renseigner le serveur (et mode ssh port 22)
 
 * Pour tous les commandes de base sous linux:
@@ -172,11 +172,11 @@ cd .. -> revenir dossier d'avant
 * Sur le serveur : 
  * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
  * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur http://<login>.refuges.info
- * /home/sites/refuges/www.refuges.info/ -> la version (bientôt) live contrôlable par l'utilisateur "refuges"
+ * /home/sites/refuges/www.refuges.info/ -> la version live contrôlable par l'utilisateur "refuges"
 
 * pour gérer la mise en live de la dernière version
  * login ssh pour se connecter sur le site actif : refuges
- * serveur : www.refuges.info  (en mode développement uniquement avant la migration : n.refuges.info)
+ * serveur : www.refuges.info
 
 ```
 cd www.refuges.info
@@ -185,6 +185,6 @@ git pull
 (on ne touche pas aux fichiers en prod, là seule commande à connaître est "git pull" pour mettre la dernière version)
 
 * accès postgresql
- * http://n.refuges.info/phppgadmin/
-(Notez qu'il n'y a qu'une seule base de donnée commune à tous les projets, si besoin, j'en ai créé une autre si on veut faire des modifs profondent de structure SQL)
+ * http://www.refuges.info/phppgadmin/
+Notez qu'il n'y a une base de production qui s'appelle "refuges" et une, copie, qui s'appelle "test" accessible avec le même utilisateur et même mot de passe que l'autre.
 
