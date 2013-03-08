@@ -115,11 +115,11 @@ function infos_points($conditions)
     if (!verifi_multiple_intiers($conditions->ids_points))
       return erreur("Le paramètre donnée pour les ids n'est pas valide");
   // conditions sur le nom du point
-  if($conditions->nom!="")
+  if( !empty($conditions->nom) )
     $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
   
   // condition sur l'appartenance à un polygone
-  if($conditions->id_polygone!="")
+  if( !empty($conditions->id_polygone) )
   {
     $tables_en_plus.=",points_gps,polygones";
     $conditions_sql .= "AND ST_Within(points_gps.geom,polygones.geom) 
@@ -138,27 +138,44 @@ function infos_points($conditions)
     //les coordonnées même si on se fiche de savoir dans quels polygones ils sont
     $tables_en_plus.=",points_gps";
 
+  if (!empty($conditions->avec_liste_polygones) )
+  {
+	// Jointure pour la liste des polygones auquels appartient le point
+			
+	$tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
+	FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
+	WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
+	GROUP BY pgps.id_point_gps ) As liste_polys";
+	
+	$champs_polygones.=",liste_polys.liste_polygones";
+	
+	$conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
+	
+  }
+	//  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
+
+
 	// on restreint a cette geometrie (un texte "ST machin en fait")
 	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
-	if($conditions->geometrie != "") {
-		$conditions_sql .= "AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
+	if( !empty($conditions->geometrie) ) {
+		$conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
 		$select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
 	}
   
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
-  if($conditions->type_point!="")
+  if( !empty($conditions->type_point) )
     $conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
   
   // conditions sur le nombre de places
-  if($conditions->places_minimum!="")
+  if( !empty($conditions->places_minimum) )
     $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
   if($conditions->places_maximum!="")
     $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
   
   // conditions sur l'altitude
-  if($conditions->altitude_minimum!="")
+  if( !empty($conditions->altitude_minimum) )
     $conditions_sql .= "\n AND points_gps.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
-  if($conditions->altitude_maximum!="")
+  if( !empty($conditions->altitude_maximum) )
     $conditions_sql .= "\n AND points_gps.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
   
   //veut-on les points dont les coordonnées sont cachées ?
@@ -166,7 +183,7 @@ function infos_points($conditions)
     $conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config['id_coordonees_gps_fausses'];
   
   //quelle condition sur la qualité supposée des GPS
-  if($conditions->precision_gps!="")
+  if( !empty($conditions->precision_gps) )
     $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
   
   //calcul selon la distance au point de référence
@@ -280,7 +297,7 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
-
+//var_dump($query_points);
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   

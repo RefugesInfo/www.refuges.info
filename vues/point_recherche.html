@@ -9,24 +9,103 @@
 // 17/10/11 Dominique : Création
 // 14/10/12 Dominique : Ajout points de la recherche sur nominatim.openstreetmap.org
 ?>
+<script>
+
+function inverse_visibility_voisins( id_element )
+{
+	var node = document.getElementById(id_element).firstChild;
+	node = node.nextSibling;
+	while (node) {
+		if ( node.style ) {
+			if ( node.style.display != "none" ) {
+				node.style.display = "none";
+			} else {
+				node.style.display = ""; // pas de display, donc ca affiche
+			}
+		}
+		node = node.nextSibling;
+	} 
+}
+
+</script>
 
 <div class="contenu">
 	<h4>
-	<?=$modele->nombre_points_sans_limite?> point<?=$modele->pluriel?> trouvé<?=$modele->pluriel?> sur refuges.info<?=$modele->trop?> 
+	Recherche sur refuges.info<?=$modele->trop?> 
 	</h4>
 	<? // Parcours tous les refuges de la recherche
-	if (isset($modele->points)) {?>
-		<dl>
-			<? foreach ($modele->points as $point) { ?>
-				<dd class="fiche_cadre condense">
+	
+	if (isset($modele->points)) {
+	
+	
+		//$liste = new stdClass;
+		$arbre = array();
+		foreach ($modele->points as $point) {
+		
+			$polys = explode(",",$point->liste_polygones);
+
+			$commun = array_intersect_assoc($arbre, $polys) ; // renvoie la partie commune des 2 arborescence. le debut quoi.
+			// le nombre de fermeture, c'est la difference entre l'arbre d'avant, et la partie commune, si c'est  =<0,  ya rien a fermer.
+			$nombre_branches_a_fermer = sizeof($arbre) - sizeof($commun); 
+			
+			for( $i=0 ;$i< $nombre_branches_a_fermer; $i++ ) { ?>
+				</dl> <? }
+						
+			$branches_a_creer = array_diff_assoc($polys, $commun) ;
+			foreach ($branches_a_creer as $branche) { 
+				$id = rand(100000,999999); // faire un id au pif. c'est crade mais c'est court. avec $branche ya un risque de doublons
+				$info = infos_polygone($branche);
+				?><dl id="<?=$id?>"><dt><button type="button" onClick="inverse_visibility_voisins(<?=$id?>);">[-]</button><a href="<?=lien_polygone ($info)?>"> <?=$info->nom_polygone?> </a> (<?=$info->type_polygone?>)</dt> <?				
+			}
+				
+			$arbre = $polys;
+
+			?>
+			<dd class="fiche_cadre condense">
 				<em>
 					<a href="<?=lien_point_fast($point)?>">
 						<?=bbcode2html($point->nom)?>
 					</a>
 					<?=$html_annonce_fermeture?>
 				</em>
-				<?=bbcode2html($point->nom_type);?>
-				<? //afficher un lien vers le massif comprenant le point
+				<?=bbcode2html($point->nom_type);
+				if ($annonce_fermeture=texte_non_ouverte($point)) {?>
+					<strong>(<?=$annonce_fermeture?>)</strong>
+				<?}?>
+			</dd><?
+		}
+		for( $i=0 ;$i< sizeof($arbre); $i++ ) { ?>
+				</dl> <? }
+	}
+	
+	?><h4>Meme chose, presentation differente</h4><?
+	
+	if (isset($modele->points)) {?>
+		<dl>
+			<? foreach ($modele->points as $point) {?>
+				<!-- Listes de zones en DT -->
+				<dd class="fiche_cadre condense">
+					<em>
+						<a href="<?=lien_point_fast($point)?>">
+							<?=bbcode2html($point->nom)?>
+						</a>
+						<?=$html_annonce_fermeture?>
+					</em>
+					<?=bbcode2html($point->nom_type);?>
+					<? //afficher un lien vers le massif comprenant le point
+					if (!empty($point->liste_polygones))
+					{
+						$polys = explode(",",$point->liste_polygones);
+						foreach( $polys AS $poly ) {
+							$info = infos_polygone($poly);
+							?>|<a href="<?=lien_polygone ($info)?>"> <?=$info->nom_polygone?> </a>| <?
+						}
+					}	
+					if ($annonce_fermeture=texte_non_ouverte($point)) {?>
+						<strong>(<?=$annonce_fermeture?>)</strong>
+					<?}
+
+/*					
 				if ($point->id_polygone!=$config['numero_massif_fictif']) {?>
 					dans le
 					<a href="<?=lien_polygone ($point)?>">
@@ -36,9 +115,10 @@
 					if ($annonce_fermeture=texte_non_ouverte($point)) {?>
 						<strong>(<?=$annonce_fermeture?>)</strong>
 					<?}?>
-				<?}?>
+					<?}*/?>
 				</dd>
-			<?}?>
+			<?}
+		?>
 		</dl>
 	<?}?>
 

@@ -187,6 +187,12 @@ DT { /* listes, de definitions */
   font-weight: bold;
   margin-top:4px;
   }
+DL > DL { /* decale les elements imbriques de 1em */
+  padding-left: 1em;
+  }
+DL.collapsable:before {
+  content: "ee";
+  }
 LI {
   margin-bottom:3px;
   }
@@ -213,15 +219,6 @@ LI {
 FORM { /* les formulaires, dans le Navigateur ou dans la recherche */
   padding: 2px;
   }
-/*LABEL {
-	margin-left: 10px;
-	border-bottom: 1px solid #<?=$couleur_decoration_titres?>;
-	border-left: 1px solid #<?=$couleur_decoration_titres?>;
-  }*/
-.tristate {
-	/*visibility: hidden;*/
-	/*margin: 30px;*/
-}
 LEGEND , .fauxfieldset-legend {
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;

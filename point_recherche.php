@@ -18,6 +18,11 @@ $conditions = new stdClass;
 $conditions->binaire = new stdClass;
 
 $conditions->avec_infos_massif=1;
+$conditions->avec_liste_polygones="montagnarde";
+
+// trie par polygones, autrement dit par massifs
+// utile pour faire des listes séparées (TODO)
+$conditions->ordre="liste_polygones"; 
 
 foreach ($_POST as $champ => $valeur)
 {
@@ -98,6 +103,7 @@ $modele = new stdClass();
 $modele->points = infos_points ($conditions);
 $modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 
+//var_dump($modele);
 // Mise au pluriel s'il y a plusieurs points
 if ($modele->nombre_points_sans_limite>1)
 	$modele->pluriel="s";
