@@ -498,20 +498,12 @@ function transfert_forum($commentaire)
   if (!$res)
     return erreur("Ajout du commentaire dans le forum échouée",$query_post_text);
 
-    /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
-    $query_update_topic="UPDATE phpbb_topics
-    SET
-      topic_last_post_id=$postid
-      WHERE topic_id=$forum->topic_id";
+  $retour=suppression_commentaire($commentaire);
     
-    $pdo->exec($query_update_topic);
-
-    $retour=suppression_commentaire($commentaire);
-    
-    if ($retour->erreur)
-      return erreur($retour->message.", mais la copie à réussie");
-    else
-      return ok("Message transféré sur le forum");
+  if ($retour->erreur)
+    return erreur($retour->message.", mais la copie à réussie");
+  else
+    return ok("Message transféré sur le forum");
 
 }
 /************************************************************************
