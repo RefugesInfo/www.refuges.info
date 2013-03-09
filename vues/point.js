@@ -40,7 +40,7 @@ window.onload = function () {
 		],
 		layers: [
 			new OpenLayers.Layer.Google.Terrain ('Google'),
-			new OpenLayers.Layer.Google         ('Google map',   {visibility: false}), // Cachée au début sinon, apparait fugitivement
+//			new OpenLayers.Layer.Google         ('Google map',   {visibility: false}), // Cachée au début sinon, apparait fugitivement
 			new OpenLayers.Layer.Google.Photo   ('Google photo', {visibility: false}), // Cachée au début sinon, apparait fugitivement
 			new OpenLayers.Layer.OSM            ('OSM'),
 			new OpenLayers.Layer.WRI            ('maps.refuges.info'),
@@ -48,7 +48,8 @@ window.onload = function () {
 			new OpenLayers.Layer.IGN            ('IGN', '<?=$config["ign_key"]?>'),
 			new OpenLayers.Layer.SwissTopo      ('SwissTopo'),
 			new OpenLayers.Layer.IGM            ('Italie'),
-			new OpenLayers.Layer.IDEE           ('Espagne')
+			new OpenLayers.Layer.IDEE           ('Espagne'),
+			new OpenLayers.Layer.OB             ('Germanie')
 		]
 	});
 	// Les overlays (une fois que la carte est initialisée

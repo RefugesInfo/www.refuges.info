@@ -44,7 +44,8 @@ window.onload = function () {
 		new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
 		new OpenLayers.Layer.SwissTopo.Photo     ('SwissTopo image'),
 		new OpenLayers.Layer.IGM                 ('Italie'),
-		new OpenLayers.Layer.IDEE                ('Espagne')
+		new OpenLayers.Layer.IDEE                ('Espagne'),
+		new OpenLayers.Layer.OB                  ('Germanie')
 	]);
 	/*
 	var displayPosition = new OpenLayers.Position ({
