@@ -144,7 +144,9 @@ function infos_points($conditions)
   if (!empty($conditions->avec_liste_polygones) )
   {
     // Jointure pour la liste des polygones auquels appartient le point
-    
+    // Whaaa ouch, qu'est-ce que c'est que cette requête imbriquée qui concatène des chaines, et ça marche assez vite ce truc ?
+    // bigre, et y'avait pas moyen de faire un join ? (Oui je sais, ça sort forcément les points en plusieurs exemplaires, mais ça se retraite)
+    // sly
     $tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
                FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
                WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
