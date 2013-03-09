@@ -77,6 +77,9 @@ $condition->limite : nombre maximum d'enregistrement à aller chercher, par déf
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
 
+$conditions->retourner_distance : True (par défaut False) N'a de sens que si on a demandé à ce que les points soient dans un polygone auquel cas la distance au centre est calculée puis renvoyée dans "distance"
+$conditions->ordonner_par_distance : True (par défaut False) n'ait actif qu'avec le précédent, les points sont retournés ordonnés par distance décroissante
+
 $conditions->distance=latitude;longitude;distance_max : Ne va chercher que les points se trouvant à une distance inférieure à distance_max en metres du point de référence
 Cette option est très consommation de ressource, on choisira donc une distance moins grande que 20km sinon ça RAME ! l'attribut distance en metres sera retourné, sur lequel on peut d'ailleurs
 utiliser $conditions->ordre="distance DESC"
@@ -140,27 +143,29 @@ function infos_points($conditions)
 
   if (!empty($conditions->avec_liste_polygones) )
   {
-	// Jointure pour la liste des polygones auquels appartient le point
-			
-	$tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
-	FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
-	WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-	GROUP BY pgps.id_point_gps ) As liste_polys";
+    // Jointure pour la liste des polygones auquels appartient le point
+    
+    $tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
+               FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
+               WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
+               GROUP BY pgps.id_point_gps ) As liste_polys";
+	       //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
+	       
+	       $champs_polygones.=",liste_polys.liste_polygones";
 	
-	$champs_polygones.=",liste_polys.liste_polygones";
-	
-	$conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
-	
+	       $conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
   }
-	//  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
-
-
-	// on restreint a cette geometrie (un texte "ST machin en fait")
-	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
-	if( !empty($conditions->geometrie) ) {
-		$conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
-		$select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
-	}
+  // on restreint a cette geometrie (un texte "ST machin en fait")
+  // cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
+  if( !empty($conditions->geometrie) ) {
+    $conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
+    if ($conditions->retourner_distance)
+    {
+      $select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+      if ($conditions->ordonner_par_distance)
+	$ordre="ORDER BY distance DESC";
+    }
+  }
   
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if( !empty($conditions->type_point) )
@@ -186,52 +191,6 @@ function infos_points($conditions)
   if( !empty($conditions->precision_gps) )
     $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
   
-  //calcul selon la distance au point de référence
-  // fourni sous la forme lat;lon;metres (45;5;5000) pour 5km
-// voir conditions->geometrie
-/*  if ($conditions->distance!="")
-  {
-    $donnees=explode(";",$conditions->distance);
-    $latitude=$donnees[0];
-    $longitude=$donnees[1];
-    $distance=$donnees[2];
-    // Notre base étant en lat/lon, quand on veut calculer une distance, c'est avec des coordonnées projectées
-    // Je choisi la projection sphérical mercator de google qui ne règle in fine pas le problème qu'aucune projection (?)
-    // ne peut conserver les distances à travers la terre, il faudrait utiliser le type "geography" de postgis qui choisi
-    // dynamiquement la meilleure projection selon l'endroit du globe. Mais je ne sais pas m'en servir, donc cette solution
-    // marche a peu prêt bien sous les latitudes françaises et du quartier proche
-    $geom_point="ST_GeomFromText('POINT($longitude $latitude)',4326)";
-    $geom_point_mercator="st_transform($geom_point,900913)";
-    $calcul_distance="st_distance(st_transform(points_gps.geom,900913),$geom_point_mercator)";
-    $select_distance=",$calcul_distance AS distance "; 
-    // Changement de projection à s'arracher les cheveux : on souhaite les autres points de notre base à une distance en metres
-    // d'un point de référence en lat/lon je projete donc ce point pour créer un buffer d'un rayon (en metres) autour de notre choix
-    // que je reprojette en lat/lon pour que postgis puisse faire usage de son indexe qui est sur des géométries lat/lon
-    // et je met comme conditions que les autres points soient dans ce buffer. Ouf.
-    $conditions_sql.="\n AND ST_within(points_gps.geom,st_transform(st_buffer($geom_point_mercator,$distance),4326))";
-    $ordre="ORDER BY $calcul_distance";
-  }
-*/
-  // conditions géographique sur les coordonnées GPS
-  // FIXME... ou pas : on considère qu'une requête : tous les points dont la latitude est >50° n'est pas possible/souhaitable
-  // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
-  // Par simplification, on peut aussi passer par ->bbox une bbox au format OL : ouest,sud,est,nord
-// voir conditions->geometrie
-/*
-  if( ($conditions->sud!="" and $conditions->nord!="" and $conditions->ouest!="" and $conditions->est!="") or isset($conditions->bbox))
-  {
-    if (isset ($conditions->bbox))
-    {
-      $bbox=explode(",",$conditions->bbox);
-      $conditions->sud=$bbox [1];
-      $conditions->nord=$bbox [3];
-      $conditions->ouest=$bbox [0];
-      $conditions->est=$bbox [2];
-    }
-    $conditions_sql.="\n AND points_gps.geom && 
-    ST_GeomFromText(('LINESTRING($conditions->ouest $conditions->sud,$conditions->est $conditions->nord)'),4326)";
-  }
-*/
   // condition restrictive sur des id_points particuliers
   if($conditions->ids_points!="")
     $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
