@@ -30,6 +30,7 @@ window.onload = function () {
 	//		new OpenLayers.Layer.SwissTopo.Photo     ('SwissTopo photo'),
 			new OpenLayers.Layer.IGM                 ('Italie'),
 			new OpenLayers.Layer.IDEE                ('Espagne'),
+			new OpenLayers.Layer.OB                  ('Germanie'),
 			new OpenLayers.Layer.OSM                 ('OSM'),
 			new OpenLayers.Layer.WRI                 ('Maps.Refuges.info'),
 			new OpenLayers.Layer.Velo                ('OpenCycleMap'),

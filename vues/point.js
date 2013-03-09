@@ -48,7 +48,8 @@ window.onload = function () {
 			new OpenLayers.Layer.IGN            ('IGN', '<?=$config["ign_key"]?>'),
 			new OpenLayers.Layer.SwissTopo      ('SwissTopo'),
 			new OpenLayers.Layer.IGM            ('Italie'),
-			new OpenLayers.Layer.IDEE           ('Espagne')
+			new OpenLayers.Layer.IDEE           ('Espagne'),
+			new OpenLayers.Layer.OB             ('Germanie')
 		]
 	});
 	// Les overlays (une fois que la carte est initialisée
