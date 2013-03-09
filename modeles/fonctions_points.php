@@ -147,10 +147,17 @@ function infos_points($conditions)
     // Whaaa ouch, qu'est-ce que c'est que cette requête imbriquée qui concatène des chaines, et ça marche assez vite ce truc ?
     // bigre, et y'avait pas moyen de faire un join ? (Oui je sais, ça sort forcément les points en plusieurs exemplaires, mais ça se retraite)
     // sly
-    $tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
-               FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
-               WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-               GROUP BY pgps.id_point_gps ) As liste_polys";
+    $tables_en_plus.=",
+                 (
+                   SELECT pgps.id_point_gps, 
+                          STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
+                   FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
+                   WHERE 
+                     ST_Within(pgps.geom, pg.geom) 
+                   AND 
+                     pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
+                   GROUP BY pgps.id_point_gps 
+                  ) As liste_polys";
 	       //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
 	       
 	       $champs_polygones.=",liste_polys.liste_polygones";
@@ -260,7 +267,6 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
-
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   
