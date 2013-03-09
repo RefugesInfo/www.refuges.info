@@ -36,7 +36,7 @@ foreach ($_POST as $champ => $valeur)
 				$conditions->limite=$config['points_maximum_recherche']; break ;
 			
 			case 'id_massif':
-				$conditions->id_polygone = $valeur; break ;
+				$conditions->ids_polygones = $valeur; break ;
 			
 			case ( 'lat' && !empty($_POST['lon']) && !empty($_POST['autour']) ):  // on demande un positionnement GPS. 
 				// la distance n'est qu'un polygone
@@ -61,13 +61,7 @@ foreach ($_POST as $champ => $valeur)
 		}
 	
 }
-//var_dump($_POST);
-//var_dump($conditions);
-//	if ( !empty($valeur) )
-//		$conditions->$champ=trim($valeur);
 
-//$conditions->id_polygone=$_POST['id_massif'];
-//$conditions->type_point=$_POST['id_point_type'];
 
 // jmb tout ca dans un switch
 /*switch ( $conditions->type_point ) 

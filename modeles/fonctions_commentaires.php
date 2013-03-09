@@ -72,11 +72,11 @@ function infos_commentaires ($conditions)
     $limite="LIMIT 100"; // limite de sécurité si on s'enballe
   
   if (isset($conditions->ids_points))
-    if (!verifi_multiple_intiers($conditions->ids_points))
+    if (!verifi_multiple_entiers($conditions->ids_points))
       return erreur("Le paramètre donné pour les ids des points n'est pas valide","Reçu : $conditions->ids_points");
       
   if (isset($conditions->ids_commentaires))
-    if (!verifi_multiple_intiers($conditions->ids_commentaires))
+    if (!verifi_multiple_entiers($conditions->ids_commentaires))
       return erreur("Le paramètre donné pour les ids n'est pas valide","Reçu : $conditions->ids_commentaires");
  
   if ($conditions->ids_commentaires!="")

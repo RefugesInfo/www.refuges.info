@@ -49,7 +49,7 @@ $conditions->type_point=$_GET['liste_id_point_type'];
 $conditions->pas_les_points_caches=1;
 $conditions->ordre="point_type.importance DESC";
 $conditions->ids_points=$_GET['liste_id_point'];
-$conditions->id_polygone=$_GET['liste_id_massif'];
+$conditions->ids_polygones=$_GET['liste_id_massif'];
 $conditions->avec_infos_massif=True;
 
 $format_export=$_GET['format'];
