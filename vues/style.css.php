@@ -217,10 +217,19 @@ LI {
   }
 
 /*====== FORMULAIRES======*/
-FORM { /* les formulaires, dans le Navigateur ou dans la recherche */
-  padding: 2px;
+FORM LABEL {
+  clear: left;
+  float: left;
   }
-LEGEND , .fauxfieldset-legend {
+LABEL[title]:after, LEGEND[title]:after {
+  content: url(/images/tooltip.png);
+  }
+FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
+  float: left;
+  border: none;
+  }
+
+.fauxfieldset-legend {
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;
   font-weight: bold;
