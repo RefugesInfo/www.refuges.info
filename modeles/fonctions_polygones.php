@@ -57,7 +57,7 @@ function infos_polygones($conditions)
   // Conditions sur les ids des polygones
   if (isset($conditions->ids_polygones))
     if (!verifi_multiple_entiers($conditions->ids_polygones))
-      return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
+      return erreur("Le paramètre donné pour le ou les ids n'est pas valide : $conditions->ids_polygones");
     else
       $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
   
@@ -161,6 +161,8 @@ function infos_polygone($id_polygone,$avec_geometrie="aucune")
   if ($avec_geometrie!="aucune")
     $conditions->avec_geometrie=$avec_geometrie;
   $poly=infos_polygones($conditions);
+  if ($poly->erreur)
+    return erreur($poly->message);
   return $poly[0];
 }
 

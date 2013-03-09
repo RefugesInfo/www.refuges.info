@@ -80,16 +80,8 @@ $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche 
 $conditions->retourner_distance : True (par défaut False) N'a de sens que si on a demandé à ce que les points soient dans un polygone auquel cas la distance au centre est calculée puis renvoyée dans "distance"
 $conditions->ordonner_par_distance : True (par défaut False) n'ait actif qu'avec le précédent, les points sont retournés ordonnés par distance décroissante
 
-$conditions->distance=latitude;longitude;distance_max : Ne va chercher que les points se trouvant à une distance inférieure à distance_max en metres du point de référence
-Cette option est très consommation de ressource, on choisira donc une distance moins grande que 20km sinon ça RAME ! l'attribut distance en metres sera retourné, sur lequel on peut d'ailleurs
-utiliser $conditions->ordre="distance DESC"
-sly : Et bé, je me demande comment j'ai pû pondre un truc pareil, cacher plusieurs champs dans un seul 
-c'est relou à gérer, j'aurais mieux fais de choisir 3 champs distincts genre ->latitude_recherche
-->longitude_recherche et ->distance_recherche, dur de tout changer maintenant
-
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
-Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
-Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon 
+C'est de mieux en mieux, il doit encore en rester quelques uns
 *****************************************************/
 // FIXME elle est executee 2 fois pour chaque points, 1 pour la fiche, 1 pour les points a proxi. trop de CPU
 // Certes, mais faire la méga maxi requête qui va chercher le point et les points à proximité pourrait finir par être
