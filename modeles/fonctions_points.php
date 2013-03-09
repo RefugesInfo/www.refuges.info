@@ -270,10 +270,11 @@ function infos_points($conditions)
       case 'poele':$conditions_sql.="\n AND points.poele='oui'";break;
     }
   }
+  // remplacé par ouvert FIXME, a supprimer un jour
   if ($conditions->non_utilisable=='oui')
-    $conditions_sql.="\n AND points.ferme!='non' AND points.ferme!=''";
+    $conditions_sql.="\n AND LENGTH(points.ferme) > 0 ";
   if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND (points.ferme='non' OR points.ferme='')";
+    $conditions_sql.="\n AND points.ferme=''  "; 
   
   // Censure
   if ($_SESSION['niveau_moderation']<1)
@@ -427,23 +428,25 @@ function param_cartes_vignettes ($modele) {
 // Par choix, la notion de fermeture dans la base est enregistrée en un seul champ pour tous les cas 
 // (ruines, détruite, fermée) car ces trois états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
 // le texte en utilisant la table point_type, donc en dur dans le code si autre que "", "non" ou "oui"
+// jmb un truc simple:
+//  '' = ouvert,  '%' = raison de la fermeture  
 function texte_non_ouverte($point)
 {
-//Si elle/il est fermé, on l'indique directement en haut en rouge
-if ($point->equivalent_ferme!="")
-{
-  if ($point->ferme=='oui')
-    $annonce_fermeture="$point->equivalent_ferme";
-  elseif($point->ferme=='ruine')
-    $annonce_fermeture="En ruine";
-  elseif($point->ferme=='detruit')
-    $annonce_fermeture="Détruit(e)";
-  else
-    return "";
-  }
-else
-  return "";
-return $annonce_fermeture;
+	//Si elle/il est fermé, on l'indique directement en haut en rouge
+	$p = $point->ferme;
+	switch ($point->ferme) {
+		case '':
+			return "";
+		case 'ruine':
+			return "En ruine"; 
+		case 'detruit':
+			return "Détruit(e)"; 
+		case 'oui':
+		case ( !empty($point->ferme) );
+			return $point->equivalent_ferme ; 
+		default:
+			return ""; // tous les autres cas, normalement on arrive pas la
+	}
 }
 
 //**********************************************************************************************

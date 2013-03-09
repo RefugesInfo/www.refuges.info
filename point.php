@@ -88,37 +88,43 @@ if (isset($_SESSION['id_utilisateur']) AND (
 $champs=array_merge($config['champs_binaires_points'],array('site_officiel'));
 foreach ($champs as $champ) 
 {
-  $champ_equivalent = "equivalent_$champ";
-  // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour un sommet)
-  if ($modele->$champ_equivalent!="") 
-  {
-    // C'est tellement pas clair ce champs, qu'on ajoute un lien pour expliciter ou on ne dit rien si la cabane est "normale"
-    if ($champ=='sommaire')
-    {
-      if ($modele->$champ=="oui")
-	$val=array('valeur'=> $modele->$champ, 'lien' => lien_mode_emploi("fiche-cabane-non-gardee"), 'texte_lien'=> "(Plus de détail sur ce que cela signifie)");
-    }
-    // Un peu spécial aussi car lien externe
-    elseif($champ=='site_officiel')
-    {
-      if ($modele->$champ!="")
-	$val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
-    }
-    else
-    {
-      if ($modele->$champ=="") 
-	$modele->$champ="<strong>Inconnu</strong>";
-      $val=array('valeur'=> $modele->$champ);
-    }
+	$champ_equivalent = "equivalent_$champ";
+	// Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour un sommet)
+	if ($modele->$champ_equivalent!="") 
+	{
+		// C'est tellement pas clair ce champs, qu'on ajoute un lien pour expliciter ou on ne dit rien si la cabane est "normale"
+		if ($champ=='sommaire')
+		{
+			if ($modele->$champ=="oui")
+				$val=array('valeur'=> $modele->$champ, 'lien' => lien_mode_emploi("fiche-cabane-non-gardee"), 'texte_lien'=> "(Plus de détail sur ce que cela signifie)");
+		}
+		// Un peu spécial aussi car lien externe
+		elseif($champ=='site_officiel')
+		{
+			if ($modele->$champ!="")
+				$val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
+		}
+		elseif($champ=='ferme')
+		{	// jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
+			if ( empty($modele->$champ) )
+				$modele->$champ = "non";
+			$val=array('valeur'=> $modele->$champ);
+		}
+		else
+		{
+			if ($modele->$champ=="") 
+				$modele->$champ="<strong>Inconnu</strong>";
+			$val=array('valeur'=> $modele->$champ);
+		}
     
-    if (isset($val))
-      $modele->infos_complementaires[$modele->$champ_equivalent]=$val;
+		if (isset($val))
+			$modele->infos_complementaires[$modele->$champ_equivalent]=$val;
     
-    // Cas particulier : si matelas=yes, on indique combien de place à la ligne juste en dessous
-    if ($champ=='matelas' and $modele->$champ=='oui')
-      $modele->infos_complementaires['Places sur Matelas']=array('valeur'=>$modele->places_matelas);   
-  }
-  unset($val);
+		// Cas particulier : si matelas=yes, on indique combien de place à la ligne juste en dessous
+		if ($champ=='matelas' and $modele->$champ=='oui')
+			$modele->infos_complementaires['Places sur Matelas']=array('valeur'=>$modele->places_matelas);   
+	}
+	unset($val);
 }
 /*********** Préparation des infos des commentaires ***/
 if (count ($tous_commentaires))

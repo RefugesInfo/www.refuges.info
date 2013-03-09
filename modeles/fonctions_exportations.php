@@ -303,8 +303,11 @@ function csv_export_line($point)
   $nom_type=str_replace($separateur,"\\".$separateur,$point->nom_type);
   $nom_polygone=str_replace($separateur,"\\".$separateur,$point->nom_polygone);
   $nom_precision_gps=str_replace($separateur,"\\".$separateur,$point->nom_precision_gps);
-/*DC 02/01/2011 Conversion des points fermés*/      if ($point->ferme!='non' and $point->ferme!='')
-      $nom_type.=" fermé(e)";
+/*DC 02/01/2011 Conversion des points fermés*/     
+	//jmb 03/13: fonction qui renvoie la raison de la fermeture (et n'est plus dependante de la BDD)
+	//if ($point->ferme!='non' and $point->ferme!='')
+	//    $nom_type.=" fermé(e)";
+	$nom_type.= texte_non_ouverte($point) ;
 
   $ligne=$point->id_point.$separateur.$nom.$separateur.$nom_type.$separateur.$nom_polygone;
   $ligne.=$separateur.$point->altitude.$separateur.$point->latitude.$separateur.$point->longitude;
@@ -418,12 +421,14 @@ function waypoint_gpx($point,$format)
      stockage de garmin ne permet pas de conserver l'altitude ni des champs trop longs !!
      La conversion du format gpx par gpsbabel utilise les champs name, positions et cmt, pour mapsource, je ne sais pas  17/11/10 sly 
   */
+  //jmb: utilisation de la fonction qui renvoie la raison de la fermeture, ou chaine vide si ouvert
   else if($format=="gpx-garmin")
   {
-    if ($point->ferme!='non' and $point->ferme!='')
-      $ferme_texte=" fermé(e)";
-    else
-      $ferme_texte="";
+	$ferme_texte = texte_non_ouverte($point) ;
+    //if ( $point->ferme!='')
+    //  $ferme_texte=" fermé(e)";
+    //else
+    //  $ferme_texte="";
     // si le champ cmt dépasse 100 le reste sera tronqué par gpsbabel, donc mettre en début de champ
     // les informations les plus importantes
     $version_complete="
@@ -580,7 +585,7 @@ function fichier_exportation($conditions,$format)
 	$point->nom_icone=$point->nom_icone_sommaire;
       
       // Si le point est "fermé" ou "détruit" ou "ruines" et qu'il a une icone spéciale "fermée" on la choisie 
-      if ($point->ferme!='non' and $point->ferme!='' AND $point->nom_icone_ferme!='')
+      if ( !empty($point->ferme) AND !empty($point->nom_icone_ferme) )
 	$point->nom_icone=$point->nom_icone_ferme;
       
       

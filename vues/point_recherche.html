@@ -71,6 +71,7 @@ function inverse_visibility_voisins( id_element )
 					<?=$html_annonce_fermeture?>
 				</em>
 				<?=bbcode2html($point->nom_type);
+				//var_dump($point->equivalent_ferme);
 				if ($annonce_fermeture=texte_non_ouverte($point)) {?>
 					<strong>(<?=$annonce_fermeture?>)</strong>
 				<?}?>

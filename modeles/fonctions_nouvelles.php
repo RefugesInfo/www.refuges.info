@@ -16,21 +16,21 @@ require_once ("fonctions_points.php");
 
 function stat_site () 
 {
-  global $config,$pdo;
-  // Petits stats de début sur l'intégralité de la base
-  // donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
-  // les autres sont des sommets, des cols, des villes où autre
+	global $config,$pdo;
+	// Petits stats de début sur l'intégralité de la base
+	// donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
+	// les autres sont des sommets, des cols, des villes où autre
   
-  // PDO jmb re ecriture en une seule requete
-  $q = "SELECT 
-  ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
-  AND (ferme='' or ferme='non')
-  AND points.modele != 1 )                                  AS nbrefuges,
-  ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
-  ( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
-  ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
-  $res = $pdo->query($q);
-  return $res->fetch();
+	// PDO jmb re ecriture en une seule requete
+	$q = "SELECT 
+			( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
+			AND ferme=''
+			AND points.modele != 1 )                                  AS nbrefuges,
+	( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
+	( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
+	( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
+	$res = $pdo->query($q);
+	return $res->fetch();
 }
 
 /****************************************

@@ -149,7 +149,7 @@ $boutton_actions="
 
 //3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( lac, sommet, etc. )
-if ($point->equivalent_proprio!="")
+if ( !empty($point->equivalent_proprio) )
 	$textes_area[$point->equivalent_proprio]="proprio";
 
 //ils ont en revanche tous un accès et un champ remarques
@@ -195,28 +195,29 @@ elseif (!isset($_REQUEST['id_point']))
 			unset($checked_html);
 			$checked_html[$point->$champ]=$checked;
 
-			// le par défaut et ouvert si on ne sait pas pour l'état fermé
-			if ($champ=="ferme" and $point->$champ=="")
-			  $checked_html['non']=$checked;
-
 			$option=array('' => 'ne sait pas','oui' => 'oui', 'non' => 'non');
+
 			if ($champ=="ferme")
 			{
-			  $option['ruine']='En ruine';
-			  $option['detruit']='Détruit(e)';
+				$option['ruine']='En ruine';
+				$option['detruit']='Détruit(e)';
+				// le par défaut et ouvert si on ne sait pas pour l'état fermé
+				if( empty($point->ferme) )
+					$checked_html['non']=$checked;
 			}
+			
 			foreach ($option as $nom_variable => $texte)
-			  $html_info_complementaires.="&nbsp; &nbsp; $texte:<input ".$checked_html[$nom_variable]." name='$champ' type='radio' value='$nom_variable'/>";
+				$html_info_complementaires.="&nbsp; &nbsp; $texte:<input ".$checked_html[$nom_variable]." name='$champ' type='radio' value='$nom_variable'/>";
 
 			// "Abri sommaire" n'étant pas clair, et l'expliquer prenant de la place
 			// je fais une exception que je ne peux afficher comme les autres
 			if ($champ=='sommaire')
 			     $html_info_complementaires.="<a href=\"/statique/mode_emploi.php?page=fiche-cabane-non-gardee\">(Plus de détail sur ce que cela signifie)</a>";
+
 			// cas particuliers des matelas, si on dispose de l'info on peut indique le nombre de place sur matelas
+			// FIXME matelas redonde avec nbplaces matelas.
 			if ($champ=='matelas')
-			{
 				$html_info_complementaires.=" Nombre de places sur matelas: <input name='places_matelas' type='text' value='$point->places_matelas'/>";
-			}
 		}
 	$html_info_complementaires .="</dd>\n";
 	}
