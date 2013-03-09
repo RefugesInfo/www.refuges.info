@@ -48,11 +48,9 @@ function ok($texte)
 /*
 Fonction qui vérifie que le paramètre passé (string) est bien au format int ou int,int,int : "7" ou "5,4,7" répond : true, sinon false : "2.3" "5 ; delete * from..."
 */
-function verifi_multiple_entiers($string)
+function verifi_multiple_intiers($string)
 {
-  if (is_null($string))
-    return False;
-  if (preg_match("/[0-9][0-9,]*/",$string)) // FIXME : "8," ne devrait pas être accepté seul 45,78,1,23 devrait l'être
+  if (preg_match("/[\-0-9,]*/",$string))
     return True;
   else
     return False;

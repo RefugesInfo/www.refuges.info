@@ -11,11 +11,8 @@
 ?>
 <script>
 	function toggle_hidden(el_name) {
-	
 		switch ( document.getElementsByName(el_name)[0].value ) {
 			case "" :
-				//document.getElementById(el_name).readonly = true ;
-				//document.getElementById(el_name).style.visibility = "visible";
 				document.getElementById(el_name).style.outline = "medium ridge";
 				document.getElementsByName(el_name)[0].value = "oui" ;
 				document.getElementById(el_name).checked = true ;
@@ -26,18 +23,10 @@
 				break ;
 			case "non" :
 				document.getElementsByName(el_name)[0].value = "" ;
-				//document.getElementById(el_name).style.background = "#ddd";
 				document.getElementById(el_name).checked = false ;
 				document.getElementById(el_name).style.outline = "" ;
-				//document.getElementById(el_name).disabled = true ;
-				//document.getElementById(el_name).style.visibility = "hidden";
-				//document.getElementById(el_name).style.outline = "hidden";
-				//document.getElementById(el_name).parentNode.replaceChild(document.createElement("span"), document.getElementById(el_name));
 				break ;
 		}
-//		document.getElementsByName(el_name)
-//		console.log(document.getElementsByName(el_name)[0].value);
-//		el_name.checked = true;
 	}
 </script>
 <div class="contenu">
@@ -47,12 +36,18 @@
 
 	<!-- =========================== -->
 	<form method="post" action="./point_recherche.php">
-		<!-- =========================== -->
-		<fieldset>
-			<legend>Nom</legend>
-			<input type="text" name="nom" title="tout ou partie du nom, par exemple 'jasse' ou 'la pra'" />
-			<!-- =========================== -->
-			<select name="id_point_type" title="type d'hébergement, gîte, cabane ...">
+
+<!-- ========== PREMIER GROUPE: CRITERES COMMUNS ================= -->
+<fieldset>
+	<legend>Aucun champs n'est obligatoire. Cependant, si la requête est trop large, ce la peut prendre un certain temps</legend>
+
+	<fieldset>
+		<!--<legend>Critères principaux</legend>-->
+		<label title="tout ou partie du nom, par exemple 'jasse' ou 'la pra'" >Nom
+			<input type="text" name="nom"/>
+		</label>
+		<label title="type d'hébergement, gîte, cabane ...">Type
+			<select name="id_point_type">
 				<option value="">(tous)</option>
 				<option value="tout-refuge" selected="selected">Tout type de refuge</option>
 				<?php if (is_array($modele->infos_base->types_point)) 
@@ -60,109 +55,166 @@
 						<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
 					<?}?>
 			</select>
-		</fieldset>
-		<!-- =========================== -->
-		<fieldset>
-			<legend>Localisation</legend>
-			<p>Massif: 
-				<select name="id_massif" title="Massif ou Zone contenant l'hébergement">
-					<option value="">(partout)</option>
-					<?php
-						// Ca se complique avec les zones.
-						// pour chaque zone, on fait un OPTGROUP, et dedans on reparcours les massifs.
-						
-						foreach ($modele->zones as $z) { ?>
-							<optgroup label="<?=$z->nom_polygone?>">
-							<option value="<?=$z->id_polygone?>">(toute la région <?=$z->nom_polygone?>)</option>
-							<?php 
-							foreach ($modele->massifs AS $m) 
-								if( $m->id_zone == $z->id_polygone ) { ?>
-									<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option> <?php
-								} 
-							?></optgroup><?php
-						}
-					?>
-				</select>
-			</p>
-			<!-- =========================== -->
-			<p>
-				Altitude entre :
-				<input type="text" name="altitude_minimum" maxlength="4" size="4" title="Altitude minimum" />
-				m et 
-				<input type="text" name="altitude_maximum" maxlength="4" size="4" title="Altitude maximum" />m
-			</p>
-			<!-- =========================== -->
-			<p>
-				Précision des coordonnéés GPS :
-				<select name="precision_gps" title="Un positionnement précis est-il indispensable ?">
-					<option value="">(Peu importe)</option>
-					<option value="1,2">Prises sur une carte ou le terrain</option>
-					<?foreach ($modele->infos_base->type_precision AS $p) {?>
-						<option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
-					<?}?>
-				</select>
-			</p>
-			<!-- =========================== -->
-			<p>
-				Coordonnées GPS (WGS84) :
-				<label>Latitude:<input type="text" name="lat" maxlength="10" size="8" /></label>
-				<label>Longitude:<input type="text" name="lon" maxlength="10" size="8" /></label>
-				<label>dans un rayon de<input type="text" name="autour" maxlength="6" size="4" value="1000" /></label>mètres autour
-			</p>
-		</fieldset>
-		<!-- =========================== -->
-		<fieldset>
-			<legend>Confort</legend>
-			<label>Couvertures<input type="checkbox" id="couvertures" onClick="toggle_hidden('couvertures');" /><input type="hidden" name="couvertures" value="" /></label>
-			<label>Eau à proximité<input type="checkbox" id="eau_a_proximite" onClick="toggle_hidden('eau_a_proximite');" /><input type="hidden" name="eau_a_proximite" value="" /></label>
-			<label>Bois à proximité<input type="checkbox" id="bois_a_proximite" onClick="toggle_hidden('bois_a_proximite');" /><input type="hidden" name="bois_a_proximite" value="" /></label>
-			<label>Latrines<input type="checkbox" id="latrines" onClick="toggle_hidden('latrines');" /><input type="hidden" name="latrines" value="" /></label>
-			<label>Abri sommaire:<input type="checkbox" id="sommaire" onClick="toggle_hidden('sommaire');" /><input type="hidden" name="sommaire" value="" /></label>
-		<!-- =========================== -->
-			<p>
-				Nombre de places compris entre&nbsp;:
-				<input type="text" name="places_minimum" maxlength="3" size="3" />
-				et
-				<input type="text" name="places_maximum" maxlength="3" size="3" />
-			</p>
-			<!-- =========================== -->
-			<p>
-				Moyen de chauffage :
-				<label>Poële ou cheminée:<input type="radio" name="chauffage" value="chauffage" /></label>
-				<label>Cheminée:<input type="radio" name="chauffage" value="cheminee" /></label>
-				<label>Poële:<input type="radio" name="chauffage" value="poele" /></label>
-				<label>Non renseigné:<input type="radio" name="chauffage" value="" checked="checked" /></label>
-			</p>
-			<!-- =========================== -->
-			<p>
-				Le champ remarques contient: 
-				<input type="text" name="description" title="exemple: scie, table ..." />
-			</p>
-		</fieldset>
+		</label>
+		<label title="Massif ou Zone contenant l'hébergement recherché">Massif: 
+			<select name="id_massif">
+				<option value="">(partout)</option>
+				<?php
+					// Ca se complique avec les zones.
+					// pour chaque zone, on fait un OPTGROUP, et dedans on reparcours les massifs.
+				
+					foreach ($modele->zones as $z) { ?>
+						<optgroup label="<?=$z->nom_polygone?>">
+						<option value="<?=$z->id_polygone?>">(toute la région <?=$z->nom_polygone?>)</option>
+						<?php 
+						foreach ($modele->massifs AS $m) 
+							if( $m->id_zone == $z->id_polygone ) { ?>
+								<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option> <?php
+							} 
+						?></optgroup><?php
+					}
+				?>
+			</select>
+		</label>
+		<label title="exemple: scie, table ..." >
+			Le champ remarques contient 
+			<input type="text" name="description"/>
+		</label>
+	</fieldset>
+	<!-- =========================== -->
+	<fieldset>
+		<legend title="Si la case est entourée d'un cadre, le critère est obligatoire. Si elle est simple, le critère est annulé" >Attributs divers</legend>
+		<label>
+			<input type="checkbox" id="couvertures" onClick="toggle_hidden('couvertures');" /><input type="hidden" name="couvertures" value="" />
+			Couvertures
+		</label>
+		<label>
+			<input type="checkbox" id="eau_a_proximite" onClick="toggle_hidden('eau_a_proximite');" /><input type="hidden" name="eau_a_proximite" value="" />
+			Eau à proximité
+		</label>
+		<label>
+			<input type="checkbox" id="bois_a_proximite" onClick="toggle_hidden('bois_a_proximite');" /><input type="hidden" name="bois_a_proximite" value="" />
+			Bois à proximité
+		</label>
+		<label>
+			<input type="checkbox" id="latrines" onClick="toggle_hidden('latrines');" /><input type="hidden" name="latrines" value="" />
+			Latrines
+		</label>
+		<label>
+			<input type="checkbox" id="sommaire" onClick="toggle_hidden('sommaire');" /><input type="hidden" name="sommaire" value="" />
+			Abri sommaire
+		</label>
+		<label>
+			<input type="checkbox" id="clef_a_recuperer" onClick="toggle_hidden('clef_a_recuperer');" /><input type="hidden" name="clef_a_recuperer" value="" />
+			Clef à récupérer
+		</label>
+	</fieldset>
+	<!-- =========================== -->
+	<fieldset>
+		<legend title="Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes peuvent toujours venir à l'improviste" >Nombre de places</legend>
+		<label>
+			<input type="text" name="places_minimum" maxlength="3" size="3" />
+			minimum
+		</label>
+		<label>
+			<input type="text" name="places_maximum" maxlength="3" size="3" />
+			maximum
+		</label>
+	</fieldset>
+	<!-- =========================== -->
+	<fieldset>
+		<legend title="Restreindre à une altitude en mètres, par exemple 1500 à 2000" >Altitude</legend>
+		<label>
+			<input type="text" name="altitude_minimum" maxlength="4" size="4" />
+			minimum
+		</label>
+		<label>
+			<input type="text" name="altitude_maximum" maxlength="4" size="4" />
+			maximum
+		</label>
+	</fieldset>
+	<!-- =========================== -->
+	<fieldset>
+		<legend title="Concerne surtout les cabanes" >Moyen de chauffage</legend>
+		<label>
+			<input type="radio" name="chauffage" value="chauffage" />
+			Poële ou cheminée
+		</label>
+		<label>
+			<input type="radio" name="chauffage" value="cheminee" />
+			Cheminée
+		</label>
+		<label>
+			<input type="radio" name="chauffage" value="poele" />
+			Poële
+		</label>
+		<label>
+			<input type="radio" name="chauffage" value="" checked="checked" />
+			Non renseigné
+		</label>
+	</fieldset>
+	<!-- =========================== -->
+</fieldset>
 
-		<fieldset>
-			<legend>Attributs divers</legend>
-			<label>Utilisable<input type="checkbox" id="ouvert" onClick="toggle_hidden('ouvert');" checked="checked" /><input type="hidden" name="ouvert" value="oui" /></label>
-			<label>Clef à récupérer<input type="checkbox" id="clef_a_recuperer" onClick="toggle_hidden('clef_a_recuperer');" /><input type="hidden" name="clef_a_recuperer" value="" /></label>
-		</fieldset>
+<!-- ========== DEUXIEME GROUPE: MODERATION ================= -->
+<fieldset>
+	<legend title="Ce cadre n'est pas affiché au 'grand public'">Critères de Modération</legend>
+	<fieldset>
+		<legend title="en Degrés Decimaux (DD.DDDD) norme WGS84">Recherche par coordonnées GPS</legend>
+		<label><input type="text" name="lat" maxlength="10" size="8" />Latitude</label>
+		<label><input type="text" name="lon" maxlength="10" size="8" />Longitude</label>
+		<label><input type="text" name="autour" maxlength="6" size="4" value="1000" />Rayon (en mètres)</label>
+	</fieldset>
+	<!-- =========================== -->
+	<fieldset>
+		<legend>Tri des résultats</legend>
+		<label title="Résultats triés par Zones->Massifs->Reserves">
+			<input type="radio" name="avec_liste_polygones" value="montagnarde" checked="checked" />
+			"Montagne"
+		</label>
+		<label title="Résultats triés par Pays->Région->Département">
+			<input type="radio" name="avec_liste_polygones" value="administrative" />
+			"Administratif"(A éviter, temps de calcul très long !)
+		</label>
+	</fieldset>
+	<!-- =========================== -->
+	<fieldset>
+		<label title="Un positionnement précis est-il indispensable ?">Précision des coordonnéés GPS :
+			<select name="precision_gps" >
+			<option value="">(Peu importe)</option>
+			<option value="1,2">Prises sur une carte ou le terrain</option>
+			<?foreach ($modele->infos_base->type_precision AS $p) {?>
+				<option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
+				<?}?>
+			</select>
+		</label>
+		<label title="Le point est ouvert">
+			<input type="checkbox" id="ouvert" onClick="toggle_hidden('ouvert');" checked="checked" /><input type="hidden" name="ouvert" value="oui" />
+			Utilisable (ouvert)
+		</label>
+	</fieldset>
+</fieldset>
 
-		<!-- =========================== -->
+<!-- ========== TROISIEME GROUPE: RESULTATS ================= -->
+<fieldset>
+	<legend>Résultats</legend>
 		<fieldset>
-			<legend>Résultats</legend>
-			<label title="Si cette case est cochée, la recherche se limitera aux X premiers résultats">Limiter le nombre de résultat aux <?=$config['points_maximum_recherche']?> premiers
-				<input type="checkbox" name="limite" value="1" checked="checked" /></label>
-			<p>
-				Tri des résultats:
-				<label>"Montagne"<input type="radio" name="avec_liste_polygones" value="montagnarde" title="Résultats triés par Zones->Massifs->Reserves" checked="checked" /></label>
-				<label>"Administratif"<input type="radio" name="avec_liste_polygones" value="administrative" title="Résultats triés par Pays->Région->Département" />(A éviter, temps de calcul très long !)</label>
-			</p>
-			<!-- =========================== -->
-			<p>
-				<input type="submit" name="recherche" value="chercher!" />
-			</p>
+			<label title="Si cette case est cochée, la recherche se limitera aux X premiers résultats">
+				<input type="checkbox" name="limite" value="1" checked="checked" />
+				Limiter le nombre de résultat aux <?=$config['points_maximum_recherche']?> premiers
+			</label>
+			<label title="En plus des résultats de WRI, inclure les points OpenStreetMap">
+				<input type="checkbox" name="osmpois" value="1" disabled="disabled" />
+				Inclut les points OpenStreetMap ( non fonctionnel pour l'instant )
+			</label>
+		</fieldset>
+		<label>
+			<input type="submit" name="recherche" value="chercher!" />
+		</label>
 			<!--<input type="submit" name="carte" value="Afficher sur une carte (non fonctionnel)" />-->
-			<!-- =========================== -->
-		</fieldset>
+</fieldset>
+<!-- =========================== -->
+			
 	</form> 
 	<!-- =========================== -->
 	<h4>Rechercher dans les Pyrénées ?</h4>

@@ -129,7 +129,7 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 			displayInLayerSwitcher: false, 
 			visibility: !<?=$modele->massifs?>
 		}),
-		new OpenLayers.Layer.GMLSLD ('Massifs', {	
+		layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {	
 			urlGML: '/exportations/massifs-gml.php',
 			projection: 'EPSG:4326', // Le GML est fourni en degminsec
 			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
@@ -168,8 +168,7 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 			urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$modele->liste_id_point_type?>' + arg_points + limite,
 			projection: 'EPSG:4326', // Le GML est fourni en degminsec
 			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points', 
-			visibility: !<?=$modele->massifs?>
+			styleName: 'Points'
 		}),
 		layerViseur = new OpenLayers.Layer.ImgDrag ('Viseur', {
 			img: OpenLayers._getScriptLocation() + 'img/viseur.png', h: 30, l: 30, 

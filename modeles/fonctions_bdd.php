@@ -40,6 +40,12 @@ $update_ou_insert = soit 'update' soit 'insert'
 $condition = la clause, dans le cas d'un update indiquant quel enregistrement à mettre à jour genre 'id_point=5'
 
 */
+// bonne idée la centralisation des UPDATE/INSERT
+// TODO (jmb) Faire un UPSERT a la place, pas de differenciation dans tous les appelants,
+// ils fournissent l'objet, et on se demerde pour savoir.
+// la difference serait faite ici: pas de condition => INSERT.
+// c'est quasiment tout fait puisque $condition="". 
+// la requete PDO devrait etre aussi lancee ici, et renvoyer l'ID
 function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition="")
 {
 	if ($update_ou_insert == "update") // Un UPDATE

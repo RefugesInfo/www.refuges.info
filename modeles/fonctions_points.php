@@ -53,7 +53,7 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 
-$conditions->ids_polygones : id des polygones auxquels les points doivent appartenir: 12 ou 12,13,14
+$conditions->id_polygone : points appartenant à ce polygone
 $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
 $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veut quand même, par défaut : FALSE
@@ -77,11 +77,16 @@ $condition->limite : nombre maximum d'enregistrement à aller chercher, par déf
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
 
-$conditions->retourner_distance : True (par défaut False) N'a de sens que si on a demandé à ce que les points soient dans un polygone auquel cas la distance au centre est calculée puis renvoyée dans "distance"
-$conditions->ordonner_par_distance : True (par défaut False) n'ait actif qu'avec le précédent, les points sont retournés ordonnés par distance décroissante
+$conditions->distance=latitude;longitude;distance_max : Ne va chercher que les points se trouvant à une distance inférieure à distance_max en metres du point de référence
+Cette option est très consommation de ressource, on choisira donc une distance moins grande que 20km sinon ça RAME ! l'attribut distance en metres sera retourné, sur lequel on peut d'ailleurs
+utiliser $conditions->ordre="distance DESC"
+sly : Et bé, je me demande comment j'ai pû pondre un truc pareil, cacher plusieurs champs dans un seul 
+c'est relou à gérer, j'aurais mieux fais de choisir 3 champs distincts genre ->latitude_recherche
+->longitude_recherche et ->distance_recherche, dur de tout changer maintenant
 
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
-C'est de mieux en mieux, il doit encore en rester quelques uns
+Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
+Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon 
 *****************************************************/
 // FIXME elle est executee 2 fois pour chaque points, 1 pour la fiche, 1 pour les points a proxi. trop de CPU
 // Certes, mais faire la méga maxi requête qui va chercher le point et les points à proximité pourrait finir par être
@@ -107,18 +112,18 @@ function infos_points($conditions)
     $conditions_sql="";
   $tables_en_plus="";
   if (isset($conditions->ids_points))
-    if (!verifi_multiple_entiers($conditions->ids_points))
+    if (!verifi_multiple_intiers($conditions->ids_points))
       return erreur("Le paramètre donnée pour les ids n'est pas valide");
   // conditions sur le nom du point
   if( !empty($conditions->nom) )
     $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
   
   // condition sur l'appartenance à un polygone
-  if( verifi_multiple_entiers($conditions->ids_polygones) )
+  if( !empty($conditions->id_polygone) )
   {
     $tables_en_plus.=",points_gps,polygones";
     $conditions_sql .= "AND ST_Within(points_gps.geom,polygones.geom) 
-    AND polygones.id_polygone IN ($conditions->ids_polygones)";
+      AND polygones.id_polygone IN ($conditions->id_polygone)";
     $champs_polygones=",".colonnes_table('polygones',False);
   }
   elseif ($conditions->avec_infos_massif)
@@ -135,38 +140,27 @@ function infos_points($conditions)
 
   if (!empty($conditions->avec_liste_polygones) )
   {
-    // Jointure pour la liste des polygones auquels appartient le point
-    // Whaaa ouch, qu'est-ce que c'est que cette requête imbriquée qui concatène des chaines, et ça marche assez vite ce truc ?
-    // bigre, et y'avait pas moyen de faire un join ? (Oui je sais, ça sort forcément les points en plusieurs exemplaires, mais ça se retraite)
-    // sly
-    $tables_en_plus.=",
-                 (
-                   SELECT pgps.id_point_gps, 
-                          STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
-                   FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
-                   WHERE 
-                     ST_Within(pgps.geom, pg.geom) 
-                   AND 
-                     pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-                   GROUP BY pgps.id_point_gps 
-                  ) As liste_polys";
-	       //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
-	       
-	       $champs_polygones.=",liste_polys.liste_polygones";
+	// Jointure pour la liste des polygones auquels appartient le point
+			
+	$tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
+	FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
+	WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
+	GROUP BY pgps.id_point_gps ) As liste_polys";
 	
-	       $conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
+	$champs_polygones.=",liste_polys.liste_polygones";
+	
+	$conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
+	
   }
-  // on restreint a cette geometrie (un texte "ST machin en fait")
-  // cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
-  if( !empty($conditions->geometrie) ) {
-    $conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
-    if ($conditions->retourner_distance)
-    {
-      $select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
-      if ($conditions->ordonner_par_distance)
-	$ordre="ORDER BY distance DESC";
-    }
-  }
+	//  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
+
+
+	// on restreint a cette geometrie (un texte "ST machin en fait")
+	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
+	if( !empty($conditions->geometrie) ) {
+		$conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
+		$select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+	}
   
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if( !empty($conditions->type_point) )
@@ -192,6 +186,52 @@ function infos_points($conditions)
   if( !empty($conditions->precision_gps) )
     $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
   
+  //calcul selon la distance au point de référence
+  // fourni sous la forme lat;lon;metres (45;5;5000) pour 5km
+// voir conditions->geometrie
+/*  if ($conditions->distance!="")
+  {
+    $donnees=explode(";",$conditions->distance);
+    $latitude=$donnees[0];
+    $longitude=$donnees[1];
+    $distance=$donnees[2];
+    // Notre base étant en lat/lon, quand on veut calculer une distance, c'est avec des coordonnées projectées
+    // Je choisi la projection sphérical mercator de google qui ne règle in fine pas le problème qu'aucune projection (?)
+    // ne peut conserver les distances à travers la terre, il faudrait utiliser le type "geography" de postgis qui choisi
+    // dynamiquement la meilleure projection selon l'endroit du globe. Mais je ne sais pas m'en servir, donc cette solution
+    // marche a peu prêt bien sous les latitudes françaises et du quartier proche
+    $geom_point="ST_GeomFromText('POINT($longitude $latitude)',4326)";
+    $geom_point_mercator="st_transform($geom_point,900913)";
+    $calcul_distance="st_distance(st_transform(points_gps.geom,900913),$geom_point_mercator)";
+    $select_distance=",$calcul_distance AS distance "; 
+    // Changement de projection à s'arracher les cheveux : on souhaite les autres points de notre base à une distance en metres
+    // d'un point de référence en lat/lon je projete donc ce point pour créer un buffer d'un rayon (en metres) autour de notre choix
+    // que je reprojette en lat/lon pour que postgis puisse faire usage de son indexe qui est sur des géométries lat/lon
+    // et je met comme conditions que les autres points soient dans ce buffer. Ouf.
+    $conditions_sql.="\n AND ST_within(points_gps.geom,st_transform(st_buffer($geom_point_mercator,$distance),4326))";
+    $ordre="ORDER BY $calcul_distance";
+  }
+*/
+  // conditions géographique sur les coordonnées GPS
+  // FIXME... ou pas : on considère qu'une requête : tous les points dont la latitude est >50° n'est pas possible/souhaitable
+  // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
+  // Par simplification, on peut aussi passer par ->bbox une bbox au format OL : ouest,sud,est,nord
+// voir conditions->geometrie
+/*
+  if( ($conditions->sud!="" and $conditions->nord!="" and $conditions->ouest!="" and $conditions->est!="") or isset($conditions->bbox))
+  {
+    if (isset ($conditions->bbox))
+    {
+      $bbox=explode(",",$conditions->bbox);
+      $conditions->sud=$bbox [1];
+      $conditions->nord=$bbox [3];
+      $conditions->ouest=$bbox [0];
+      $conditions->est=$bbox [2];
+    }
+    $conditions_sql.="\n AND points_gps.geom && 
+    ST_GeomFromText(('LINESTRING($conditions->ouest $conditions->sud,$conditions->est $conditions->nord)'),4326)";
+  }
+*/
   // condition restrictive sur des id_points particuliers
   if($conditions->ids_points!="")
     $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
@@ -259,6 +299,7 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
+
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   

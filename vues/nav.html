@@ -34,7 +34,7 @@ if ( $modele->type_affichage != "zone" )
 	style="float: left; width: 200px; <?if (isset ($_GET ['cree'])) {?>display:none;<?}?>"
 	action="/exportations/formulaire_exportations.php"
 >
-	<?if (isset ($modele->polygone->id_polygone) && $modele->massifs == 'false') {?>
+	<?if (isset ($modele->polygone->id_polygone )) {?>
 		<fieldset>
 			<label>
 				<input name="id_massif"
