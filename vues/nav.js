@@ -129,7 +129,7 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 			displayInLayerSwitcher: false, 
 			visibility: !<?=$modele->massifs?>
 		}),
-		layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {	
+		new OpenLayers.Layer.GMLSLD ('Massifs', {	
 			urlGML: '/exportations/massifs-gml.php',
 			projection: 'EPSG:4326', // Le GML est fourni en degminsec
 			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
