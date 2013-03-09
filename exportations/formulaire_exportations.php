@@ -86,6 +86,8 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
   $conditions = new stdClass;
   $conditions->ids_polygone_type=$config['id_massif'];
   $massifs=infos_polygones($conditions);
+  if ($massifs->erreur)
+    die($massifs->message);
 
   print("\n<ul>");
   foreach ($massifs as $massif)
@@ -103,7 +105,7 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
   if ( ! isset($_GET['id_massif']) )
     print(" checked='checked' "); // checked par defo
   else
-    if ($_GET['id_massif'] == $massif[0]) 
+    if ($_GET['id_massif'] == $massif->id_polygone) 
       print(" checked='checked' "); //checked seulement si bon massif
     print("/>$massif->nom_polygone &nbsp;
 				</label>
