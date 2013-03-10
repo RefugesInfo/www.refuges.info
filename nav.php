@@ -34,7 +34,6 @@ $modele->infos_base = infos_base ();
 $tableau_url = explode ('/',$_SERVER['PATH_INFO']);
 $id_polygone = $tableau_url [1];
 $modele->type_affichage = $_GET['mode_affichage']; // "zone" ou "massif". ca definit l'affichage qui suit
-$modele->massifs = isset ($_GET['massifs']) ? 'true' : 'false';
 
 $polygone = new stdClass;
 $polygone->id_polygone=0; // Par défaut si aucun polygone n'est trouvé ou demandé

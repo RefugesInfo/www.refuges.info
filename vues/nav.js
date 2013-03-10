@@ -103,7 +103,7 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 		new OpenLayers.Layer.IDEE                ('Espagne'),
 		new OpenLayers.Layer.OB                  ('Germanie'),
 		new OpenLayers.Layer.OSM                 ('OSM'),
-		new OpenLayers.Layer.WRI                 ('Maps.Refuges.info'),
+		new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
 		new OpenLayers.Layer.Velo                ('OpenCycleMap')
 	]);
 	
@@ -120,67 +120,70 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 				: 'none';		}
 
 	// Ajoute les couches vectorielles avec controle
-	map.addLayers ([
-		layerMassifs = new OpenLayers.Layer.GMLSLD ('Massif', {	
-			urlGML: '/exportations/massifs-gml.php' + arg_massifs,
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Massif', 
-			displayInLayerSwitcher: false, 
-			visibility: !<?=$modele->massifs?>
-		}),
-		layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {	
-			urlGML: '/exportations/massifs-gml.php',
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Massifs', 
-			visibility: <?=$modele->massifs?>
-		}),
-		new OpenLayers.Layer.GMLSLD ('Hôtels', {	
-			urlGML: '/exportations/exportations_osm.php?' + arg_points + limite,
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points',
-			visibility: false
-		}),
-		new OpenLayers.Layer.GMLSLD ('Pyrenees-Refuges.Com', {	
-			urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php&site=prc',
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points',
-			visibility: false
-		}),
-		new OpenLayers.Layer.GMLSLD ('Camptocamp.org', {	
-			urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php&site=c2c',
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points',
-			visibility: false
-		}),
-		new OpenLayers.Layer.GMLSLD ('Chemineur', {	
-			urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php',
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points',
-			visibility: false
-		}),
-		layerPoints = new OpenLayers.Layer.GMLSLD ('Refuges.info', {	
-			urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$modele->liste_id_point_type?>' + arg_points + limite,
-			projection: 'EPSG:4326', // Le GML est fourni en degminsec
-			urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-			styleName: 'Points'
-		}),
-		layerViseur = new OpenLayers.Layer.ImgDrag ('Viseur', {
-			img: OpenLayers._getScriptLocation() + 'img/viseur.png', h: 30, l: 30, 
-			pos: map.getCenter (), 
-			prefixeId: {
-				titre: 'titre-',
-				decimal: '', // Ces champs seront masqués et remonterons la position du point à créer
-				projected: 'proj-' // ces champs seront visibles et donneront la valeur projetée
-			},
-			displayInLayerSwitcher: false
-		})
-	]);
+	if ('<?=$modele->type_affichage?>' == 'zone')
+		map.addLayers ([
+			layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {	
+				urlGML: '/exportations/massifs-gml.php',
+				projection: 'EPSG:4326', // Le GML est fourni en degminsec
+				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+				styleName: 'Massifs'
+				
+			})
+		]);
+	else
+		map.addLayers ([
+			layerMassifs = new OpenLayers.Layer.GMLSLD ('Massif', {	
+				urlGML: '/exportations/massifs-gml.php' + arg_massifs,
+				projection: 'EPSG:4326', // Le GML est fourni en degminsec
+				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+				styleName: 'Massif',
+				displayInLayerSwitcher: false
+			}),
+			new OpenLayers.Layer.GMLSLD ('Hôtels', {	
+				urlGML: '/exportations/exportations_osm.php?' + arg_points + limite,
+				projection: 'EPSG:4326', // Le GML est fourni en degminsec
+				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+				styleName: 'Points',
+				visibility: false
+			}),
+			new OpenLayers.Layer.GMLSLD ('Pyrenees-Refuges.Com', {	
+				urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php&site=prc',
+				projection: 'EPSG:4326', // Le GML est fourni en degminsec
+				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+				styleName: 'Points',
+				visibility: false
+			}),
+			new OpenLayers.Layer.GMLSLD ('Camptocamp.org', {	
+				urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php&site=c2c',
+				projection: 'EPSG:4326', // Le GML est fourni en degminsec
+				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+				styleName: 'Points',
+				visibility: false
+			}),
+			new OpenLayers.Layer.GMLSLD ('Chemineur', {	
+				urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php',
+				projection: 'EPSG:4326', // Le GML est fourni en degminsec
+				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+				styleName: 'Points',
+				visibility: false
+			}),
+			layerPoints = new OpenLayers.Layer.GMLSLD ('Refuges.info', {	
+				urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$modele->liste_id_point_type?>' + arg_points + limite,
+				projection: 'EPSG:4326', // Le GML est fourni en degminsec
+				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
+				styleName: 'Points'
+			}),
+			layerViseur = new OpenLayers.Layer.ImgDrag ('Viseur', {
+				img: OpenLayers._getScriptLocation() + 'img/viseur.png', h: 30, l: 30, 
+				pos: map.getCenter (), 
+				prefixeId: {
+					titre: 'titre-',
+					decimal: '', // Ces champs seront masqués et remonterons la position du point à créer
+					projected: 'proj-' // ces champs seront visibles et donneront la valeur projetée
+				},
+				displayInLayerSwitcher: false
+			})
+		]);
 
 	// Position et zoom de la carte
 	// Si un massif est visé, on s'accorde sur ses limites

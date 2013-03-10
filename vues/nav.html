@@ -25,16 +25,13 @@
 <!-- Un premier formulaire pour les consultations courantes -->
 <?php
 // les formulaires ne seront pas la en zone , ils sont presents pour le reste
-if ( $modele->type_affichage != "zone" )
-{
-
-?>
+if ( $modele->type_affichage != "zone" ){?>
 <form
 	id="choix_legende"
 	style="float: left; width: 200px; <?if (isset ($_GET ['cree'])) {?>display:none;<?}?>"
 	action="/exportations/formulaire_exportations.php"
 >
-	<?if (isset ($modele->polygone->id_polygone )) {?>
+	<?if (isset ($modele->polygone->nom_polygone )) {?>
 		<fieldset>
 			<label>
 				<input name="id_massif"
