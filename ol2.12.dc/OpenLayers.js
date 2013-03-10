@@ -1,4 +1,4 @@
-/* Librairie minifiée Openlayers générée sur localhost le Tue, 05 Mar 2013 08:21:35 +0100
+/* Librairie minifiée Openlayers générée sur localhost le Sun, 10 Mar 2013 12:45:17 +0100
 
 © Dominique Cavailhez août 2012.
 Published under the Clear BSD license.
@@ -1874,14 +1874,14 @@ var ctrl=new OpenLayers.Control.DragFeature(this,{onDrag:function(feature){var l
 feature.layer.setValues(ll.clone().transform(feature.layer.map.getProjectionObject(),feature.layer.map.displayProjection));}});map.addControl(ctrl);ctrl.activate();for(l in this.idll)
 if(this.el.projected[l]){this.el.projected[l].owner=this;this.el.projected[l].onchange=function(e){var unformat=this.owner.find(this.owner.unformat,this.owner.projectionType);var ll=new OpenLayers.LonLat(unformat(this.owner.el.projected.lon.value),unformat(this.owner.el.projected.lat.value));if(Proj4js.defs[this.owner.projectionType])
 ll.transform(new OpenLayers.Projection(this.owner.projectionType),new OpenLayers.Projection('EPSG:4326'));this.owner.setValues(ll);this.owner.recentre();}}},centre:function(){var ll=this.map.getCenter().transform(this.map.getProjectionObject(),this.map.displayProjection);this.setPosition(ll);this.setValues(ll);},recentre:function(){this.map.setCenter(this.getPosition().transform(this.map.displayProjection,this.map.getProjectionObject()));},efface:function(){this.el.projected.lon.value='';this.el.projected.lat.value='';},CLASS_NAME:"OpenLayers.Layer.ImgDrag"});
-OpenLayers.Layer.GMLSLD=OpenLayers.Class(OpenLayers.Layer.VectorClickHover,{layers:[],sldFiles:[],bbBoxRatio:1,initialize:function(name,options){OpenLayers.Util.extend(this,options);if(OpenLayers.Layer.GMLSLD.prototype.layers[options.urlSLD]==undefined){OpenLayers.Layer.GMLSLD.prototype.layers[options.urlSLD]=[];OpenLayers.Request.GET({url:options.urlSLD,scope:this,success:function(sldFile){OpenLayers.Layer.GMLSLD.prototype.sldFiles[options.urlSLD]=sldFile;var layers=OpenLayers.Layer.GMLSLD.prototype.layers[options.urlSLD];for(i in layers)
+OpenLayers.Layer.GMLSLD=OpenLayers.Class(OpenLayers.Layer.VectorClickHover,{layers:[],sldFiles:[],bbBoxRatio:1,initialize:function(name,options){OpenLayers.Util.extend(this,options);if(OpenLayers.Layer.GMLSLD.prototype.layers[options.urlSLD]==undefined){OpenLayers.Layer.GMLSLD.prototype.layers[options.urlSLD]=[];OpenLayers.Request.GET({url:options.urlSLD,scope:this,async:false,success:function(sldFile){OpenLayers.Layer.GMLSLD.prototype.sldFiles[options.urlSLD]=sldFile;var layers=OpenLayers.Layer.GMLSLD.prototype.layers[options.urlSLD];for(i in layers)
 layers[i].setStyle(sldFile);},failure:function(){alert('Echec chargement de la feuille de style SLD '+options.urlSLD);}});}
 OpenLayers.Layer.Vector.prototype.initialize.call(this,name,OpenLayers.Util.extend(options,{protocol:new OpenLayers.Protocol.HTTP({url:this.urlGML,format:new OpenLayers.Format.GML()}),strategies:[new OpenLayers.Strategy.BBOX({ratio:this.bbBoxRatio,resFactor:1})]}));if(OpenLayers.Layer.GMLSLD.prototype.sldFiles[options.urlSLD])
 this.setStyle(sldFile);else
 OpenLayers.Layer.GMLSLD.prototype.layers[options.urlSLD].push(this);},setStyle:function(sldFile){var format=new OpenLayers.Format.SLD().read(sldFile.responseXML||sldFile.responseText).namedLayers[this.styleName];var style=new Array();if(typeof format=='object'&&typeof format.userStyles=='object')
 for(i in format.userStyles)
 if(typeof format.userStyles[i]=='object')
-style[format.userStyles[i].name]=format.userStyles[i];this.styleMap=new OpenLayers.StyleMap(style);this.redraw();},CLASS_NAME:"OpenLayers.Layer.GMLSLD"});
+style[format.userStyles[i].name]=format.userStyles[i];this.styleMap=new OpenLayers.StyleMap(style);},CLASS_NAME:"OpenLayers.Layer.GMLSLD"});
 OpenLayers.Layer.Velo=OpenLayers.Class(OpenLayers.Layer.OSM,{url:'http://a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png',initialize:function(name){OpenLayers.Layer.XYZ.prototype.initialize.call(this,name,null,{numZoomLevels:19});},attribution:'<a class="DCattribution" style="color:white;background-color:#666" href="http://opencyclemap.org/">Opencyclemap.Org</a>&nbsp;'+
 OpenLayers.Layer.OSM.prototype.attribution,CLASS_NAME:"OpenLayers.Layer.Velo"});
 OpenLayers.Layer.WRI=OpenLayers.Class(OpenLayers.Layer.OSM,{url:'http://maps.refuges.info/hiking/${z}/${x}/${y}.png',initialize:function(name){OpenLayers.Layer.XYZ.prototype.initialize.call(this,name,null,{numZoomLevels:18});},attribution:'<a class="DCattribution" style="background-color:#F2F2F2" href="http://maps.refuges.info">Refuges.Info</a>&nbsp;'+
