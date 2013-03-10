@@ -48,7 +48,7 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 	<body>
 		<div id="entete">
 			<div>
-				<?if ($_SESSION['niveau_moderation']>=1) {?>
+				<?if ($_SESSION['id_utilisateur']>=1) {?>
 					<a href="/forum/profile.php?mode=editprofile" title="Modifier votre profil"><?echo ucfirst($_SESSION['login_utilisateur'])?></a>
 					<a href="<?=$config['lien_forum']?>login.php?logout=true">Se déconnecter</a>
 				<?} else {?>
