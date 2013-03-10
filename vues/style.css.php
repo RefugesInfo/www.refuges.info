@@ -234,6 +234,11 @@ FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
   border: thin solid black ;
   font-weight: bold;
   }
+/* Cas particulier pour OL qui a des labels non standards */
+DIV#switch_nav LABEL {
+  float: none;
+  clear: none;
+  }
 
 /*==========DIVERS=======*/
 IMG { /* images sans bordures */
