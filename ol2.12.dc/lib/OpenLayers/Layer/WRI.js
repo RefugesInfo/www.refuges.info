@@ -35,3 +35,7 @@ OpenLayers.Layer.WRI = OpenLayers.Class(OpenLayers.Layer.OSM, {
 
     CLASS_NAME: "OpenLayers.Layer.WRI"
 });
+ 
+OpenLayers.Layer.MRI = OpenLayers.Class(OpenLayers.Layer.WRI, {
+    CLASS_NAME: "OpenLayers.Layer.MRI"
+});

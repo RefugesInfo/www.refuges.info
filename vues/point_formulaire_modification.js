@@ -37,7 +37,7 @@ window.onload = function () {
 		new OpenLayers.Layer.Google              ('Google map',   {visibility: false}),
 		new OpenLayers.Layer.Google.Photo        ('Google photo', {visibility: false}),
 		new OpenLayers.Layer.OSM                 ('OSM'),
-		new OpenLayers.Layer.WRI                 ('Maps.Refuges.info'),
+		new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
 		new OpenLayers.Layer.Velo                ('OpenCycleMap'),
 		new OpenLayers.Layer.IGN                 ('IGN',       '<?=$config['ign_key'];?>'),
 		new OpenLayers.Layer.IGN.Photo           ('IGN photo', '<?=$config['ign_key'];?>'),

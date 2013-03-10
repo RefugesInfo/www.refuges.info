@@ -335,7 +335,7 @@ OpenLayers.Control.SelectFeature = OpenLayers.Class(OpenLayers.Control, {
 /*DCM*/		this.handlers.feature.evt.ctrlKey ||
 /*DCM*/		this.handlers.feature.evt.altKey)
 /*DCM*/		this.onShiftClick.call(this.scope, feature);
-/*DCM*/	else
+//*DCM*/	else
         if(!this.hover) {
             var selected = (OpenLayers.Util.indexOf(
                 feature.layer.selectedFeatures, feature) > -1);
