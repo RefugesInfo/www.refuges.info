@@ -157,7 +157,16 @@
 </fieldset>
 
 <!-- ========== DEUXIEME GROUPE: MODERATION ================= -->
-<fieldset>
+<?php
+// attention, les champs sont simplement hidden , mais sont transmits dans le source. 
+// jusqu'a present ya rien de critique dans ces champs.
+ $visible = '';
+ if (!(isset($_SESSION['id_utilisateur']) AND $_SESSION['niveau_moderation'] >= 1))
+	$visible = " style='display: none;'" ;
+ ?>
+
+
+<fieldset<?=$visible?>>
 	<legend title="Ce cadre n'est pas affiché au 'grand public'">Critères de Modération</legend>
 	<fieldset>
 		<legend title="en Degrés Decimaux (DD.DDDD) norme WGS84">Recherche par coordonnées GPS</legend>
