@@ -209,7 +209,8 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 			9
 		);
 
-	invit_cree (<?=$modele->viseur?>);
+	if ('<?=$modele->type_affichage?>' != 'zone')
+		invit_cree (<?=$modele->viseur?>);
 	if (window.FileReader) {
 		window.document.getElementById('GPX').addEventListener('change', loadGPX, false);
 		window.document.getElementById('loadGPX').style.display = 'block';
