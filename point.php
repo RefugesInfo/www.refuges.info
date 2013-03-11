@@ -81,7 +81,7 @@ else
 	// Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
 
 	// Voici tous ceux qui nous intéresse (FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer ça directement de la base, mais bon... usine à gaz : bof)
-	$champs=array_merge($config['champs_binaires_points'],array('site_officiel'));
+	$champs=array_merge($config['champs_binaires_simples_points'],array('site_officiel'));
 	foreach ($champs as $champ) 
 	{
 		$champ_equivalent = "equivalent_$champ";
@@ -100,11 +100,9 @@ else
 				if ($modele->$champ!="")
 					$val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
 			}
-			elseif($champ=='ferme')
-			{	// jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
-				if ( empty($modele->$champ) )
-					$modele->$champ = "non";
-				$val=array('valeur'=> $modele->$champ);
+			elseif($champ=='ferme') // On ne souhaite pas afficher son état fermé ou pas car c'est déjà indiqué en rouge à coté de son nom
+			{
+				unset($val);
 			}
 			else
 			{

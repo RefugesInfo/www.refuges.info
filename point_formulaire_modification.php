@@ -201,9 +201,6 @@ elseif (!isset($_REQUEST['id_point']))
 			{
 				$option['ruine']='En ruine';
 				$option['detruit']='Détruit(e)';
-				// le par défaut et ouvert si on ne sait pas pour l'état fermé
-				if( empty($point->ferme) )
-					$checked_html['non']=$checked;
 			}
 			
 			foreach ($option as $nom_variable => $texte)
