@@ -42,7 +42,7 @@ switch( $_REQUEST["action"] )
 				break; // break le switch, au dessus des if
 			}
 			$verbe = 'ajouté ' ;
-			$point->id_createur = isset($_SESSION['id_utilisateur']) ? $_SESSION['id_utilisateur'] : 0 ;
+			//$point->id_createur = isset($_SESSION['id_utilisateur']) ? $_SESSION['id_utilisateur'] : 0 ;
 		}
     
         // crade, mais trop de retard. verrai ca plus tard.

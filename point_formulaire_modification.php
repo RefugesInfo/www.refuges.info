@@ -213,8 +213,11 @@ foreach ($textes_area as $libelle => $nom_variable)
 }
 
 if (isset($_SESSION['id_utilisateur']))
-	$modele->auteur_modification=$_SESSION['login_utilisateur'];
-
+{
+	$modele->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
+    $modele->champs->invisibles->id_createur = new stdClass;
+    $modele->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
+}
 /******** Les informations complétaires (booléens, détails) *****************/
 
 foreach($config['champs_binaires_simples_points'] as $champ)
