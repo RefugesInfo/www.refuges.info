@@ -197,27 +197,45 @@ DT > BUTTON {
 LI {
   margin-bottom:3px;
   }
-/* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
-.libelle { 
+
+  /*====== FORMULAIRES======*/
+  /* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
+/*.libelle { 
   float:left;
   width:150px;
   font-size: 13px;
+  }*/
+FORM#form_point FIELDSET {
+  border: none;  /* pour les allergiques aux barrieres ;) */
   }
-.textarea {
-  float:left;
-  width:650px;
-  height:170px;
-  }
-.lien_syntaxe { 
+FORM#form_point.lien_syntaxe { 
   float:left;
   width:150px;
   }
-.big_one {
+FORM#form_point DIV.booleen {
+  width: 350px;
+  text-align: right;
+  }
+FORM#form_point .booleen LABEL {
+  clear: none;
+  float: none;
+  width: 300px;
+  }
+FORM#form_point TEXTAREA {
+  clear: both;
+  float: left;
+  width:650px;
+  height:170px;
+  }
+FORM#form_point LABEL.textarea  SPAN {
+  clear: both;
   float:left;
   }
+/*.big_one {
+  float:left;
+  }*/
 
-/*====== FORMULAIRES======*/
-FORM LABEL {
+FORM LABEL, FORM SPAN {
   clear: left;
   float: left;
   }
@@ -227,6 +245,17 @@ LABEL[title]:after, LEGEND[title]:after {
 FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
   float: left;
   border: none;
+  }
+FORM .champs_null_masque>INPUT { /* couleur de la case "champ null" et masquee par defo */
+  outline : red solid 2px ;
+  float: left;
+  display: none;
+  }
+FORM .champs_null_masque > INPUT:checked  + *  INPUT { /* desactive les INPUT qui suivent */
+  visibility: hidden;
+  }
+FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon endroit */
+  clear: none;
   }
 
 .fauxfieldset-legend {

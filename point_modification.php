@@ -45,7 +45,11 @@ switch( $_REQUEST["action"] )
 			$point->id_createur = isset($_SESSION['id_utilisateur']) ? $_SESSION['id_utilisateur'] : 0 ;
 		}
     
-		// modification ou création du point
+        // crade, mais trop de retard. verrai ca plus tard.
+        if ( ! is_numeric($point->places_matelas))
+            $point->places_matelas = "NULL";
+
+        // modification ou création du point
 		$retour = modification_ajout_point($point);
     
 		if ($retour->erreur) 

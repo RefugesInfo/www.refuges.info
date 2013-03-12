@@ -81,38 +81,52 @@ else
 	// Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
 
 	// Voici tous ceux qui nous intéresse (FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer ça directement de la base, mais bon... usine à gaz : bof)
-	$champs=array_merge($config['champs_binaires_points'],array('site_officiel'));
+	$champs=array_merge($config['champs_binaires_points'],array('site_officiel'),array('places_matelas'));
 	foreach ($champs as $champ) 
 	{
 		$champ_equivalent = "equivalent_$champ";
 		// Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour un sommet)
 		if ($modele->$champ_equivalent!="") 
 		{
-			// C'est tellement pas clair ce champs, qu'on ajoute un lien pour expliciter ou on ne dit rien si la cabane est "normale"
-			if ($champ=='sommaire')
-			{
-				if ($modele->$champ=="oui")
-					$val=array('valeur'=> $modele->$champ, 'lien' => lien_mode_emploi("fiche-cabane-non-gardee"), 'texte_lien'=> "(Plus de détail sur ce que cela signifie)");
-			}
-			// Un peu spécial aussi car lien externe
-			elseif($champ=='site_officiel')
-			{
-				if ($modele->$champ!="")
-					$val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
-			}
-			elseif($champ=='ferme')
-			{	// jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
-				if ( empty($modele->$champ) )
-					$modele->$champ = "non";
-				$val=array('valeur'=> $modele->$champ);
-			}
-			else
-			{
-				if ($modele->$champ=="") 
-					$modele->$champ="<strong>Inconnu</strong>";
-				$val=array('valeur'=> $modele->$champ);
-			}
-    
+            switch ($champ)
+            {
+                //case 'sommaire': // un autre nomSVP, mais pas un pansement en code... on mets abri sommaire et voila.
+                    //if ($modele->$champ=="oui")
+					//$val=array('valeur'=> $modele->$champ, 'lien' => lien_mode_emploi("fiche-cabane-non-gardee"), 'texte_lien'=> "(Plus de détail sur ce que cela signifie)");
+                //    break;
+                case 'site_officiel':
+                    if ($modele->$champ!="")
+                        $val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
+                    break;
+                case 'ferme':  // jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
+                    if ( empty($modele->$champ) )
+                        $modele->$champ = "non";
+                    $val=array('valeur'=> $modele->$champ);
+                    break;
+                
+                case (in_array($champ, $config['champs_binaires_simples_points'] ) ):  // vrais Bools
+                    if($modele->$champ === TRUE)
+                        $val = array('valeur'=> 'Oui');
+                    if($modele->$champ === FALSE)
+                        $val = array('valeur'=> 'Non');
+                    if($modele->$champ === NULL)
+                        $val = array('valeur'=> '<strong>Inconnu</strong>');
+                    break;
+
+                case 'matelas':
+                    break; // a virer plus tard. remplace par places_matelas.
+                  
+                case 'places_matelas':
+                    if ($modele->$champ!="")
+                        $val=array('valeur'=> $modele->$champ);
+                    break;
+                
+                default:
+                    if ($modele->$champ=="") 
+                        $modele->$champ="<strong>Inconnu</strong>";
+                    $val=array('valeur'=> $modele->$champ);
+            }            
+
 			if (isset($val))
 				$modele->infos_complementaires[$modele->$champ_equivalent]=$val;
     
@@ -122,7 +136,7 @@ else
 		}
 		unset($val);
 	}
-
+//var_dump($modele);
 	/*********** Préparation des infos des commentaires ***/
 	//if (count ($tous_commentaires)) // plus necessaire, tablo vide est bien géré par foreach.
 	foreach ($tous_commentaires AS $commentaire)

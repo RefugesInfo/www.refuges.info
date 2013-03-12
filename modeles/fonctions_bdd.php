@@ -48,7 +48,7 @@ $condition = la clause, dans le cas d'un update indiquant quel enregistrement à
 // la requete PDO devrait etre aussi lancee ici, et renvoyer l'ID
 function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition="")
 {
-	if ($update_ou_insert == "update") // Un UPDATE
+/*	if ($update_ou_insert == "update") // Un UPDATE
 	{
 		foreach ($champs_valeur as $champ_sql => $valeur)
 			$sql_update.="\n$champ_sql=$valeur,";
@@ -60,6 +60,7 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
 	} 
 	else // un INSERT
 	{
+
 		foreach ($champs_valeur as $champ_sql => $valeur)
 		{
 			$liste_champs.="$champ_sql,";
@@ -72,8 +73,21 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
 		  ($liste_champs)
 		VALUES
 		  ($liste_valeurs)";
+	}*/
+
+    // Regroupement : un pas vers l'UPSERT
+    foreach ($champs_valeur as $champ_sql => $valeur)
+	{
+		$liste_champs[]  = $champ_sql;
+		$liste_valeurs[] = $valeur;
 	}
-	return $query;
+
+    if( $condition )
+        $query = "UPDATE $table SET (".implode(',',$liste_champs).") = (".implode(',',$liste_valeurs).") WHERE $condition";
+    else
+        $query = "INSERT INTO $table (".implode(',',$liste_champs).") VALUES (".implode(',',$liste_valeurs).")";
+
+    return $query;
 }
 /* Et une autre fonction postgresql spécifique pour obtenir les noms des colonnes d'une table
 FIXME : ça risque d'être trop souvent appelé, le mettre dans un tableau global pourrait être plus économe... à voir

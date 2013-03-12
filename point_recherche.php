@@ -21,19 +21,20 @@ $conditions->avec_infos_massif=1;
 $conditions->avec_liste_polygones="montagnarde";
 
 // trie par polygones, autrement dit par massifs
-// utile pour faire des listes séparées (TODO)
+// utile pour faire des listes séparées 
 $conditions->ordre="liste_polygones"; 
+
 
 foreach ($_POST as $champ => $valeur)
 {
-	if( ! empty($valeur) ) 
+	if( ! empty($valeur) )
 		switch ($champ) 
 		{
-			case ( in_array($champ, $config['champs_binaires_simples_points'] ) ) :
-				$conditions->binaire->$champ = $valeur;   break;
+//			case ( in_array($champ, $config['champs_binaires_simples_points'] ) ) :
+//				$conditions->binaire->$champ = $valeur;   break;
 	
-			case 'limite':
-				$conditions->limite=$config['points_maximum_recherche']; break ;
+//			case 'limite':
+//				$conditions->limite=$config['points_maximum_recherche']; break ;
 			
 			case 'id_massif':
 				$conditions->id_polygone = $valeur; break ;
@@ -48,20 +49,33 @@ foreach ($_POST as $champ => $valeur)
 			
 			case 'id_point_type':
 				$conditions->type_point = $valeur ;
-				switch ( $valeur )  {
-					case $config['id_cabane_gardee'] : // Condition pour ne pas retourner les abris non prévus pour dormir quand on demande une cabane non gardée sans précisé le nombre de place minimum
-					case $config['tout_type_refuge'] :
-						$conditions->places_minimum == '' ? $conditions->places_minimum = 1 : FALSE ;  break;
-					case "tout-refuge" :
-						$conditions->type_point = $config['tout_type_refuge']; break; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites 
-				}
+				if ( $valeur == $config['id_cabane_gardee'] OR $valeur == $config['tout_type_refuge'] )
+					if ( empty($conditions->places_minimum) )
+						$conditions->places_minimum = 1 ;
+				break;
+//					$conditions->places_minimum == '' ? $conditions->places_minimum = 1 : FALSE ;
+//				switch ( $valeur )  {
+//					case $config['id_cabane_gardee'] : // Condition pour ne pas retourner les abris non prévus pour dormir quand on demande une cabane non gardée sans précisé le nombre de place minimum
+//					case $config['tout_type_refuge'] :
+//						$conditions->places_minimum == '' ? $conditions->places_minimum = 1 : FALSE ;  break;
+//					case "tout-refuge" :
+//						$conditions->type_point = $config['tout_type_refuge']; break; // valeur spéciale indiquant qu'on veut les abris, refuges ou gites 
+//				}
 
+			case 'champs_binaires':
+				foreach ( $valeur as $c )
+					$conditions->binaire->$c = true ; break;
+
+			case 'champs_null':
+				foreach ( $valeur as $c )
+					$conditions->binaire->$c = NULL ; break; // TODO, ne pas restreindre aux champs binaires.
+				
 			default:  // tous les autres cas: nom, ouvert, places ...
 				$conditions->$champ=trim($valeur); break;
 		}
-	
+
 }
-//var_dump($_POST);
+//print_r(var_dump($_POST));
 //var_dump($conditions);
 //	if ( !empty($valeur) )
 //		$conditions->$champ=trim($valeur);

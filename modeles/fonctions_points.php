@@ -107,13 +107,18 @@ function infos_points($conditions)
     
     if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
-    
+
+	  
+//var_dump($conditions);
     /******** Liste des conditions de type WHERE *******/
     $conditions_sql="";
   $tables_en_plus="";
-  if (isset($conditions->ids_points))
+  if (!empty($conditions->ids_points))
     if (!verifi_multiple_intiers($conditions->ids_points))
       return erreur("Le paramètre donnée pour les ids n'est pas valide");
+	else
+		$conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
+
   // conditions sur le nom du point
   if( !empty($conditions->nom) )
     $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
@@ -121,22 +126,23 @@ function infos_points($conditions)
   // condition sur l'appartenance à un polygone
   if( !empty($conditions->id_polygone) )
   {
-    $tables_en_plus.=",points_gps,polygones";
-    $conditions_sql .= "AND ST_Within(points_gps.geom,polygones.geom) 
-      AND polygones.id_polygone IN ($conditions->id_polygone)";
+    $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->id_polygone)   ) ";
+//    $conditions_sql .= "AND ST_Within(points_gps.geom,polygones.geom) 
+//      AND polygones.id_polygone IN ($conditions->id_polygone)";
     $champs_polygones=",".colonnes_table('polygones',False);
   }
   elseif ($conditions->avec_infos_massif)
   {
     // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
     // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
-    $tables_en_plus.=",points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) and id_polygone_type=".$config['id_massif'].")"; 
+    $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) AND id_polygone_type=".$config['id_massif'].")"; 
     $champs_polygones=",".colonnes_table('polygones',False);
   }
-  else
-    //On ne veut aucune conditions ni info sur les polygones, on place cette table quand même pour récupérer 
-    //les coordonnées même si on se fiche de savoir dans quels polygones ils sont
-    $tables_en_plus.=",points_gps";
+//  else
+//    //On ne veut aucune conditions ni info sur les polygones, on place cette table quand même pour récupérer 
+//    //les coordonnées même si on se fiche de savoir dans quels polygones ils sont
+//    $tables_en_plus.=",points_gps";
+//jmb: vu qu'elle est indispensable, je la met en dur en bas.
 
   if (!empty($conditions->avec_liste_polygones) )
   {
@@ -145,15 +151,13 @@ function infos_points($conditions)
 	$tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
 	FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
 	WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-	GROUP BY pgps.id_point_gps ) As liste_polys";
+	GROUP BY pgps.id_point_gps ) AS liste_polys";
 	
 	$champs_polygones.=",liste_polys.liste_polygones";
 	
 	$conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
-	
   }
 	//  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
-
 
 	// on restreint a cette geometrie (un texte "ST machin en fait")
 	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
@@ -165,12 +169,14 @@ function infos_points($conditions)
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if( !empty($conditions->type_point) )
     $conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
+  elseif (empty($_SESSION['niveau_moderation'])) // Censure
+    $conditions_sql .="\n AND (points.id_point_type!=26)";
   
-  // conditions sur le nombre de places
   if( !empty($conditions->places_minimum) )
     $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
-  if($conditions->places_maximum!="")
+  if( !empty($conditions->places_maximum) )
     $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
+  if( isset($conditions->places) &&  $conditions->places == NULL)
   
   // conditions sur l'altitude
   if( !empty($conditions->altitude_minimum) )
@@ -232,12 +238,9 @@ function infos_points($conditions)
     ST_GeomFromText(('LINESTRING($conditions->ouest $conditions->sud,$conditions->est $conditions->nord)'),4326)";
   }
 */
-  // condition restrictive sur des id_points particuliers
-  if($conditions->ids_points!="")
-    $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
   
   //conditions sur la description (champ remark)
-  if($conditions->description!="")
+  if( !empty($conditions->description) )
     $conditions_sql.="\n AND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
   
   // cas spécial sur les modèle
@@ -250,7 +253,12 @@ function infos_points($conditions)
   
   //prise en compte des conditions binaires
   //jmb si isset a oui, faut vraiment "oui" pas '' (avant il faisait les 2)
-  if (isset($conditions->binaire))
+  //TODO, transformer les champs binaires en ... binaires
+  if (isset($conditions->binaire))      // binaire est construit a part, pas de SQL injection possible normalement
+	foreach ($conditions->binaire as $champ => $valeur) 
+	  $conditions_sql.="\n AND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
+	
+/*  if (isset($conditions->binaire))
   {
     foreach ($conditions->binaire as $champ => $valeur)
       if ($valeur!='')
@@ -260,14 +268,15 @@ function infos_points($conditions)
 	$conditions_sql.="\n AND points.$champ=".$pdo->quote($valeur, PDO::PARAM_INT)."";
       }
   }
+*/
   //prise en compte de la recherche sur le chauffage
   if (isset($conditions->chauffage))
   {
     switch ($conditions->chauffage)
     {
-      case 'chauffage':$conditions_sql.="\n AND (points.cheminee='oui' OR points.poele='oui')";break;
-      case 'cheminee':$conditions_sql.="\n AND points.cheminee='oui'";break;
-      case 'poele':$conditions_sql.="\n AND points.poele='oui'";break;
+      case 'chauffage':$conditions_sql.="\n AND (points.cheminee OR points.poele)";break;
+      case 'cheminee':$conditions_sql.="\n AND points.cheminee IS TRUE";break;
+      case 'poele':$conditions_sql.="\n AND points.poele IS TRUE ";break;
     }
   }
   // remplacé par ouvert FIXME, a supprimer un jour
@@ -276,30 +285,26 @@ function infos_points($conditions)
   if ($conditions->ouvert=='oui')
     $conditions_sql.="\n AND points.ferme=''  "; 
   
-  // Censure
-  if ($_SESSION['niveau_moderation']<1)
-    $conditions_sql.="\n AND (points.id_point_type!=26)";
-  
+  // jmb je suppr type_precision_gps qui sert a rien          type_precision_gps.*,    AND points_gps.id_type_precision_gps=type_precision_gps.id_type_precision_gps
+  // je suppr aussi la jointure point_type. pas utilisee
+
   $query_points="
   SELECT points.*,
          points_gps.*,
-         type_precision_gps.*,
-         point_type.*,
+		 point_type.*, -- cette jointure ne sert QUE pour le tri par importance. on passe les 120 a 300 et on gagne une jointure?
          ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
          extract('epoch' from date_derniere_modification) as date_modif_timestamp,
 		 extract('epoch' from date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
-  FROM points,point_type,type_precision_gps$tables_en_plus
+  FROM points NATURAL JOIN points_gps NATURAL JOIN point_type $tables_en_plus
   WHERE 
-    points.id_point_type=point_type.id_point_type
-    AND points_gps.id_point_gps=points.id_point_gps
-    AND points_gps.id_type_precision_gps=type_precision_gps.id_type_precision_gps
+     1=1
     $conditions_sql 
   $ordre
   $limite
   ";
-
+//print_r($query_points);
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   
@@ -309,6 +314,9 @@ function infos_points($conditions)
   {
     // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
     // FIXME : Encore cette spécificité liée au massif qu'il faudrait généraliser
+	// jmb: ce n'est pas le boulot de infos_points de donner les noms et adjectifs des massifs.
+	// l'appelant devrait appeler infos_polygone avec l'ID plus tard.
+	// pas le boulot non plus de infos_points de donner les liens
     if ($conditions->avec_infos_massif!="")
     {
       $point->nom_massif = $point->nom_polygone;
@@ -588,9 +596,16 @@ function modification_ajout_point($point)
 	// champ ou il faut juste un set=nouvelle_valeur
 	foreach ($config['champs_simples_points'] as $champ)
 		if (isset($point->$champ))
+            if($point->$champ  == "NULL")
+                $champs_sql[$champ]= "NULL";
+            else
 			$champs_sql[$champ]=$pdo->quote($point->$champ);
-	
-//	var_dump($point);
+
+    // Les bools n'ont pas besoin de quote (avec ca foire d'ailleurs)
+    //foreach($config['champs_binaires_simples_points'] as $champ) // des bool, des vrais
+    //    if (isset($point->$champ))
+    //        $champs_sql[$champ]=$point->$champ;*/
+    
 	if ( !empty($point->id_point) )  // update
 	{
 		$infos_point_avant = infos_point($point->id_point);
@@ -599,7 +614,6 @@ function modification_ajout_point($point)
     
 		if ( empty($point->id_point_gps) )
 			$point->id_point_gps = $infos_point_avant->id_point_gps;
-		
 		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
 	}
 	else  // INSERT

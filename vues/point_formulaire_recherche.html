@@ -9,25 +9,22 @@
 // 17/10/11 Dominique : Création
 // 15/02/13 jmb : legere modifs "info_base"
 ?>
-<script>
-	function toggle_hidden(el_name) {
-		switch ( document.getElementsByName(el_name)[0].value ) {
-			case "" :
-				document.getElementById(el_name).style.outline = "medium ridge";
-				document.getElementsByName(el_name)[0].value = "oui" ;
-				document.getElementById(el_name).checked = true ;
-				break ;
-			case "oui" :
-				document.getElementsByName(el_name)[0].value = "non" ;
-				document.getElementById(el_name).checked = false ;
-				break ;
-			case "non" :
-				document.getElementsByName(el_name)[0].value = "" ;
-				document.getElementById(el_name).checked = false ;
-				document.getElementById(el_name).style.outline = "" ;
-				break ;
+<script type="text/javascript">
+	
+	function show_boxes(el_name, coche) {
+	var groupedecases = document.getElementsByName(el_name);
+		switch (coche) {
+			case true:
+				for (var c=0 ; c < groupedecases.length ; c++ )
+					groupedecases[c].style.display= 'inline';
+				break;
+			case false:
+				for (var c=0 ; c < groupedecases.length ; c++ )
+					groupedecases[c].style.display= 'none';
+				break;
 		}
 	}
+		
 </script>
 <div class="contenu">
 	<!-- =========================== -->
@@ -43,13 +40,16 @@
 
 	<fieldset>
 		<!--<legend>Critères principaux</legend>-->
-		<label title="tout ou partie du nom, par exemple 'jasse' ou 'la pra'" >Nom
-			<input type="text" name="nom"/>
-		</label>
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="nom" />
+			<label title="tout ou partie du nom, par exemple 'jasse' ou 'la pra'" >Nom
+				<input type="text" name="nom"/>
+			</label>
+		</span>
 		<label title="type d'hébergement, gîte, cabane ...">Type
 			<select name="id_point_type">
 				<option value="">(tous)</option>
-				<option value="tout-refuge" selected="selected">Tout type de refuge</option>
+				<option value="<?=$config['tout_type_refuge']?>" selected="selected">Tout type de refuge</option>
 				<?php if (is_array($modele->infos_base->types_point)) 
 					foreach ($modele->infos_base->types_point AS $t) {?>
 						<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
@@ -76,38 +76,65 @@
 				?>
 			</select>
 		</label>
-		<label title="exemple: scie, table ..." >
-			Le champ remarques contient 
-			<input type="text" name="description"/>
-		</label>
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="remark" />
+			<label title="exemple: scie, table ..." >
+				Le champ remarques contient 
+				<input type="text" name="description"/>
+			</label>
+		</span>
 	</fieldset>
 	<!-- =========================== -->
 	<fieldset>
-		<legend title="Si la case est entourée d'un cadre, le critère est obligatoire. Si elle est simple, le critère est annulé" >Attributs divers</legend>
-		<label>
-			<input type="checkbox" id="couvertures" onClick="toggle_hidden('couvertures');" /><input type="hidden" name="couvertures" value="" />
-			Couvertures
-		</label>
-		<label>
-			<input type="checkbox" id="eau_a_proximite" onClick="toggle_hidden('eau_a_proximite');" /><input type="hidden" name="eau_a_proximite" value="" />
-			Eau à proximité
-		</label>
-		<label>
-			<input type="checkbox" id="bois_a_proximite" onClick="toggle_hidden('bois_a_proximite');" /><input type="hidden" name="bois_a_proximite" value="" />
-			Bois à proximité
-		</label>
-		<label>
-			<input type="checkbox" id="latrines" onClick="toggle_hidden('latrines');" /><input type="hidden" name="latrines" value="" />
-			Latrines
-		</label>
-		<label>
-			<input type="checkbox" id="sommaire" onClick="toggle_hidden('sommaire');" /><input type="hidden" name="sommaire" value="" />
-			Abri sommaire
-		</label>
-		<label>
-			<input type="checkbox" id="clef_a_recuperer" onClick="toggle_hidden('clef_a_recuperer');" /><input type="hidden" name="clef_a_recuperer" value="" />
-			Clef à récupérer
-		</label>
+		<legend title="coché : Avec, décoché: Peu importe" >Attributs divers</legend>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="couvertures" />
+			<label>
+				<input type="checkbox" name="champs_binaires[]" value="couvertures" />
+				Couvertures
+			</label>
+		</span>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="eau_a_proximite" />
+			<label>
+				<input type="checkbox" name="champs_binaires[]" value="eau_a_proximite" />
+				Eau à proximité
+			</label>
+		</span>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="bois_a_proximite" />
+			<label>
+				<input type="checkbox" name="champs_binaires[]" value="bois_a_proximite" />
+				Bois à proximité
+			</label>
+		</span>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="latrines" />
+			<label>
+				<input type="checkbox" name="champs_binaires[]" value="latrines" />
+				Latrines
+			</label>
+		</span>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="sommaire" />
+			<label>
+				<input type="checkbox" name="champs_binaires[]" value="sommaire" />
+				Abri sommaire
+			</label>
+		</span>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="clef_a_recuperer" />
+			<label>
+				<input type="checkbox" name="champs_binaires[]" value="clef_a_recuperer" />
+				Clef à récupérer
+			</label>
+		</span>
 	</fieldset>
 	<!-- =========================== -->
 	<fieldset>
@@ -135,19 +162,28 @@
 	</fieldset>
 	<!-- =========================== -->
 	<fieldset>
-		<legend title="Concerne surtout les cabanes" >Moyen de chauffage</legend>
+		<legend title="Concerne surtout les cabanes">Moyen de chauffage</legend>
 		<label>
 			<input type="radio" name="chauffage" value="chauffage" />
 			Poële ou cheminée
 		</label>
-		<label>
-			<input type="radio" name="chauffage" value="cheminee" />
-			Cheminée
-		</label>
-		<label>
-			<input type="radio" name="chauffage" value="poele" />
-			Poële
-		</label>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="cheminee" />
+			<label>
+				<input type="radio" name="chauffage" value="cheminee" />
+				Cheminée
+			</label>
+		</span>
+
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="poele" />
+			<label>
+				<input type="radio" name="chauffage" value="poele" />
+				Poële
+			</label>
+		</span>
+
 		<label>
 			<input type="radio" name="chauffage" value="" checked="checked" />
 			Non renseigné
@@ -170,8 +206,14 @@
 	<legend title="Ce cadre n'est pas affiché au 'grand public'">Critères de Modération</legend>
 	<fieldset>
 		<legend title="en Degrés Decimaux (DD.DDDD) norme WGS84">Recherche par coordonnées GPS</legend>
-		<label><input type="text" name="lat" maxlength="10" size="8" />Latitude</label>
-		<label><input type="text" name="lon" maxlength="10" size="8" />Longitude</label>
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="lat" />
+				<label><input type="text" name="lat" maxlength="10" size="8" />Latitude</label>
+		</span>
+		<span class="champs_null_masque">
+			<input type="checkbox" name="champs_null[]" value="lon" />
+				<label><input type="text" name="lon" maxlength="10" size="8" />Longitude</label>
+		</span>
 		<label><input type="text" name="autour" maxlength="6" size="4" value="1000" />Rayon (en mètres)</label>
 	</fieldset>
 	<!-- =========================== -->
@@ -198,8 +240,12 @@
 			</select>
 		</label>
 		<label title="Le point est ouvert">
-			<input type="checkbox" id="ouvert" onClick="toggle_hidden('ouvert');" checked="checked" /><input type="hidden" name="ouvert" value="oui" />
+			<input type="checkbox" name="ouvert" value="oui" checked="checked" />
 			Utilisable (ouvert)
+		</label>
+		<label title="Selectionner les champs avec valeur 'Inconnu', cocher les cases rouges">
+			<input type="checkbox" onchange="show_boxes('champs_null[]',this.checked);" />
+			Selectionner champs Inconnus
 		</label>
 	</fieldset>
 </fieldset>
@@ -209,7 +255,7 @@
 	<legend>Résultats</legend>
 		<fieldset>
 			<label title="Si cette case est cochée, la recherche se limitera aux X premiers résultats">
-				<input type="checkbox" name="limite" value="1" checked="checked" />
+				<input type="checkbox" name="limite" value="<?=$config['points_maximum_recherche']?>" checked="checked" />
 				Limiter le nombre de résultat aux <?=$config['points_maximum_recherche']?> premiers
 			</label>
 			<label title="En plus des résultats de WRI, inclure les points OpenStreetMap">
@@ -217,6 +263,7 @@
 				Inclut les points OpenStreetMap ( non fonctionnel pour l'instant )
 			</label>
 		</fieldset>
+
 		<label>
 			<input type="submit" name="recherche" value="chercher!" />
 		</label>

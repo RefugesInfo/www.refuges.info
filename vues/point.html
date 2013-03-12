@@ -169,7 +169,7 @@
 			<?php if (isset($modele->infos_complementaires)) { ?>
 
 			<dt style='clear: left;'>Informations complémentaires:</dt>
-			<?php foreach ($modele->infos_complementaires as $champ => $val) {?>
+			<?php foreach ($modele->infos_complementaires as $champ => $val) { ?>
 				<dd><?=$champ?>: <em><?=$val['valeur']?></em> <?php
 					if (isset($val['lien'])) 
 					{?><a href="<?=$val['lien']?>"><?=$val['texte_lien']?></a><?php } 

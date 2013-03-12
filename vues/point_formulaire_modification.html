@@ -11,79 +11,176 @@
 
 <div class="contenu">
 	<h3><?=$action?> <?=$point->article_partitif_point_type?> <?=$point->nom_type?></h3>
-	<?=$etape?>
+	<?
+  if (isset($modele->etapes))
+  { ?>
+    <dl> <?
+    foreach ($modele->etapes as $etape)
+    {
+      // les etapes en listes DT, plus approprié, le style au besoin en CSS
+      ?>
+      <dt><?=$etape->titre?></dt>
+      <dd><?=$etape->texte?></dd>
+    <?}?>
+    </dl>  <?
+  }
+//var_dump($point);
+//var_dump($modele);
 
-	<?// Si on a une latitude et une longitude, on peut afficher notre carte, sinon autant pas montrer une carte bidon sly 04/05/2010
+// Si on a une latitude et une longitude, on peut afficher notre carte, sinon autant pas montrer une carte bidon sly 04/05/2010
 	if ($point->latitude!="" and $point->longitude!="") {?>
 		<div class="carte_edit" id="carte-edit"></div>
 	<?}?>
-	<form method="post" action="<?=$modele->page_action?>">
-	<dl>
-		<dt><?=$boutton_actions?></dt>
-		<dt>Coordonnées:</dt>
-		<dd>
-			<p class="libelle">Position:</p>
+	<form id="form_point" method="post" action="<?=$modele->page_action?>">
+		<div><?
+    foreach ($modele->champs->boutons as $bouton) { ?>
+      <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
+        <?=$bouton->label?>
+      </button>
+    <?}?>
+    </div>
+    <!-- Champs masques -->
+    <?
+    foreach ($modele->champs->invisibles as $nom => $params)
+    { ?>
+      <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
+    <?}?>
+	<fieldset>
+		<legend>Coordonnées</legend>
+
+			<fieldset>
+				<legend>Position</legend>
 			
-			<span id="titre-lon">Longitude</span>:
-			<input <?=$disabled_field?> type="text" id="proj-lon" name="longitude" size="12" maxlength="12" value="<?=$point->longitude?>" />
-			<input type="text" id="lon" name="longitude" style="display:none" value="<?=$point->longitude?>" />
+				<label id="titre-lon">Longitude
+					<input type="text" id="proj-lon" name="longitude" size="12" maxlength="12" value="<?=$point->longitude?>" />
+				</label>
+				<input type="hidden" id="lon" name="longitude" value="<?=$point->longitude?>" />
 			
-			<span id="titre-lat">Latitude</span>:
-			<input <?=$disabled_field?> type="text" id="proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$point->latitude?>" />
-			<input type="text" id="lat" name="latitude" style="display:none" value="<?=$point->latitude?>" />
+				<label id="titre-lat">Latitude
+					<input type="text" id="proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$point->latitude?>" />
+				</label>
+				<input type="hidden" id="lat" name="latitude" value="<?=$point->latitude?>" />
 			
-			<select id="select-projection">
-				<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
-			</select>
+				<label>
+					<select id="select-projection">
+						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
+					</select>
+				</label>
+				<span><a onclick="viseur.centre()" href="#" title="Remettre le viseur au centre actuel de la carte">Recentrer le viseur sur la carte</a></span>
+				<span>Degrés décimaux WGS84 ex: 45.2356 et -5.2354. Déplacez le viseur pour modifier la position (n'oubliez pas de valider).</span>
+				<label>Précision
+					<select name="id_type_precision_gps">
+					<?	foreach ($modele->infos_base->type_precision AS $gps) { ?>
+							<option  value="<?=$gps->id_type_precision_gps?>"<?=($gps->id_type_precision_gps==$point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
+								<?=$gps->nom_precision_gps ?>
+							</option>
+						<?}?>
+					</select>
+				</label>
+			</fieldset>
 			
-			<p><a onclick="viseur.centre()" href="#" title="Remettre le viseur au centre actuel de la carte">Recentrer le viseur sur la carte</a></p>
-			<p>Degrés décimaux WGS84 ex: 45.2356 et -5.2354. Déplacez le viseur pour modifier la position (n'oubliez pas de valider).</p>
-		</dd>
-		<dd>
-			<div class="libelle">altitude:</div>
-			<input <?=$disabled_field?> type="text" name="altitude" size="6" value="<?=$point->altitude?>" />m
-		</dd>
-		<dd>	
-			<div class="libelle">Précision:</div>
-			<select <?=$disabled_field?> name="id_type_precision_gps">
-				<?	foreach ($modele->infos_base->type_precision AS $gps) { ?>
-						<option  value="<?=$gps->id_type_precision_gps?>">
-							<?=$gps->nom_precision_gps ?>
-						</option>
-					<?}?>
-			</select>
-		</dd>
-		<dt>informations de base:</dt>
-		<dd>
-			<div class="libelle">nom:</div>
-			<input size="40" type="text" name="nom" value="<?echo htmlentities($point->nom,ENT_QUOTES,"UTF-8")?>" />
-		</dd>
-		<dd>
-			<div class="libelle">Type de point:</div>
-			<select name='id_point_type'>
+			<label>altitude (mètres)
+				<input type="text" name="altitude" size="6" value="<?=$point->altitude?>" />
+			</label>
+
+		</fieldset>
+		
+	<fieldset>
+		<legend>informations de base:</legend>
+			<label>nom
+				<input size="40" type="text" name="nom" value="<?echo htmlentities($point->nom,ENT_QUOTES,"UTF-8")?>" />
+			</label>
+			<label>Type de point
+				<select name='id_point_type'>
 					<?php foreach ($modele->infos_base->types_point AS $type_point) { ?>
-					<?php if ($type_point->id_point_type==$point->id_point_type) $selected="selected=\"selected\""; else $selected="";?>
-						<option  value="<?=$type_point->id_point_type?>" <?=$selected?>>
+						<option  value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$point->id_point_type)? 'selected="selected"' : '' ;?>>
 							<?=$type_point->nom_type?>
 						</option>
 					<?}?>
-			</select>
+				</select>
+			</label>
 			<a href="http://www.refuges.info/statique/mode_emploi.php?page=autres_points">
 				Explications plus précises sur les différents types de points
 			</a>
-		</dd>
 
 		<?// tous les points n'ont pas de raison d'avoir ce champ ( lac, sommets, etc.)
 		if ($point->equivalent_places!="") {?>
-			<dd>
-				<div class="libelle"><?=$point->equivalent_places?>:</div>
+			<label><?=$point->equivalent_places?>
 				<input type="text" name="places" size="8" value="<?=$point->places?>" />
-			</dd>
+			</label>
 		<?}?>
-		<dt>Champs déscriptifs:</dt>
+	</fieldset>
+	<fieldset>
+		<legend>Champs déscriptifs:</legend>
+		<span><?=$config[lien_syntaxe]?></span>
+<?php
+	//var_dump($modele->champs);
+	foreach ($modele->champs->textareas as $tx_nom => $tx_params)
+  {	?>
+		<label class="textarea"><span><?=$tx_params->label?></span>
+			<textarea class="textarea" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
+		</label>
+		
+	<?}?>
+	</fieldset>
+		<fieldset>
+			<legend>Informations Complémentaires</legend>
+	<?php
+	foreach ($modele->champs->bools as $boule_nom => $boule_params)
+	{
+		if(!isset($boule_params->valeur))
+			$boule_params->valeur = null;
+		?>
+			<div class="booleen">
+				<?=$boule_params->label?>: 
+				<label>ne sait pas<input type="radio" name="<?=$boule_nom?>" value="NULL" <?=($boule_params->valeur===null)?'checked="checked"':'';?>/></label>
+				<label>oui<input type="radio" name="<?=$boule_nom?>" value="TRUE" <?=($boule_params->valeur===true)?'checked="checked"':'';?>/></label>
+				<label>non<input type="radio" name="<?=$boule_nom?>" value="FALSE" <?=($boule_params->valeur===false)?'checked="checked"':'';?>/></label>
+			</div>
+	<?}
+		if (!empty($point->equivalent_site_officiel) )
+		{ ?>
+			<label><?=$point->equivalent_site_officiel?>
+				<input name="site_officiel" size="70" type="text" value="<?=htmlspecialchars($point->site_officiel,0,'UTF-8')?>" />
+			</label>
+		<?}
+		if (!empty($modele->champs->ferme->options) )
+		{ ?>
+      <div class="booleen"> 
+        <?=$modele->champs->ferme->label?> :<?
+        foreach ($modele->champs->ferme->options as $option_key => $option_val)
+        { ?>
+          <label><?=$option_val?>
+            <input type="radio" name="ferme" value="<?=$option_key?>"<?=($modele->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
+          </label>
+      <?}?>
+      </div>
+		<?}
+      	if (!empty($modele->champs->places_matelas->label) )
+		{ ?>
+        
+          <label title="<?=$modele->champs->places_matelas->aide?>"><?=$modele->champs->places_matelas->label?> 
+            <input type="text" size="3" name="places_matelas" value="<?=$modele->champs->places_matelas->valeur?>" />
+          </label>
+      <?}?>
+		
+	</fieldset>
 
-		<?=$htmlconstruct?>
-		<dt style='clear: both;'><?=$boutton_actions?></dt>
-	</dl>
+
+		<?php
+	if (!isset($_SESSION['id_utilisateur']))
+	{?>
+	<fieldset>
+		<legend title="Ces informations ne seraient pas demandées si vous étiez inscrit sur le site">Gestion</legend>
+		<label>Mettez votre nom ou pseudo (facultatif)
+			<input type="text" name="nom_createur" maxlength="40" size="41" value="<?=htmlspecialchars($nom_createur,ENT_QUOTES,'UTF-8')?>" />
+		</label>
+		<label title="Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne vienne pas jusqu'ici">
+			Entrez la lettre <strong>d</strong>
+			<input name="lettre_securite" type="text" size="1" />
+		</label>
+	</fieldset>
+	<?}?>
+
 	</form>
 </div>

@@ -30,10 +30,10 @@ window.onload = function () {
 				.transform (map.displayProjection, map.getProjectionObject());
 
 	map.setCenter (
-		bornes.getCenterLonLat (), 
+		bornes.getCenterLonLat (),
 		map.getZoomForExtent (bornes)
 	);
-	
+
 	// Ajoute les couches vectorielles avec controle
 	map.addLayers ([
 		new OpenLayers.Layer.GMLSLD ('Massifs', {	
