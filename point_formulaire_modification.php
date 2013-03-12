@@ -224,7 +224,10 @@ foreach($config['champs_binaires_simples_points'] as $champ)
 		{
 			$modele->champs->bools->$champ = new stdClass ;
 			$modele->champs->bools->$champ->label = $point->$champ_equivalent ;
-      $modele->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
+            $modele->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
+            // le cas Sommaire... que je virerai bien mais qui est la juste pour la demo
+            if ($champ=="sommaire")
+                $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même va sûrement changer)";
     }
 }
 
@@ -232,8 +235,8 @@ foreach($config['champs_binaires_simples_points'] as $champ)
 if ( !empty($point->equivalent_ferme) )
 {
   $modele->champs->ferme->label = $point->equivalent_ferme ;
-  $modele->champs->ferme->options = array('' => 'non','oui' => 'oui', 'detruit' => 'Détruit(e)','ruine' => 'En ruine');
-  $modele->champs->ferme->valeur = (string) $point->ferme ; // retourne "" si existe pas
+  $modele->champs->ferme->options = array('NULL' => 'ne sait pas','' => 'non','oui' => 'oui', 'detruit' => 'Détruit(e)','ruine' => 'En ruine');
+  $modele->champs->ferme->valeur = is_null($point->ferme)? "NULL":$point->ferme ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 //combine matelas
 if ( !empty($point->equivalent_places_matelas) )

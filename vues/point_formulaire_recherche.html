@@ -9,30 +9,14 @@
 // 17/10/11 Dominique : Création
 // 15/02/13 jmb : legere modifs "info_base"
 ?>
-<script type="text/javascript">
-	
-	function show_boxes(el_name, coche) {
-	var groupedecases = document.getElementsByName(el_name);
-		switch (coche) {
-			case true:
-				for (var c=0 ; c < groupedecases.length ; c++ )
-					groupedecases[c].style.display= 'inline';
-				break;
-			case false:
-				for (var c=0 ; c < groupedecases.length ; c++ )
-					groupedecases[c].style.display= 'none';
-				break;
-		}
-	}
-		
-</script>
+
 <div class="contenu">
 	<!-- =========================== -->
 	<h3><?=$modele->titre?></h3>
 	<h4>Rechercher sur ce site</h4>
 
 	<!-- =========================== -->
-	<form method="post" action="./point_recherche.php">
+	<form class="wri" method="post" action="./point_recherche.php">
 
 <!-- ========== PREMIER GROUPE: CRITERES COMMUNS ================= -->
 <fieldset>

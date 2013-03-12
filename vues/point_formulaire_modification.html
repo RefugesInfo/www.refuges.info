@@ -31,7 +31,7 @@
 	if ($point->latitude!="" and $point->longitude!="") {?>
 		<div class="carte_edit" id="carte-edit"></div>
 	<?}?>
-	<form id="form_point" method="post" action="<?=$modele->page_action?>">
+	<form class="wri" id="form_point" method="post" action="<?=$modele->page_action?>">
 		<div><?
     foreach ($modele->champs->boutons as $bouton) { ?>
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
@@ -118,7 +118,7 @@
 	foreach ($modele->champs->textareas as $tx_nom => $tx_params)
   {	?>
 		<label class="textarea"><span><?=$tx_params->label?></span>
-			<textarea class="textarea" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
+			<textarea class="textarea" rows="5" cols="80" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
 		</label>
 		
 	<?}?>
@@ -126,17 +126,17 @@
 		<fieldset>
 			<legend>Informations Complémentaires</legend>
 	<?php
-	foreach ($modele->champs->bools as $boule_nom => $boule_params)
+	foreach ($modele->champs->bools as $nom => $params)
 	{
-		if(!isset($boule_params->valeur))
-			$boule_params->valeur = null;
+		if(!isset($params->valeur))
+			$params->valeur = null;
 		?>
-			<div class="booleen">
-				<?=$boule_params->label?>: 
-				<label>ne sait pas<input type="radio" name="<?=$boule_nom?>" value="NULL" <?=($boule_params->valeur===null)?'checked="checked"':'';?>/></label>
-				<label>oui<input type="radio" name="<?=$boule_nom?>" value="TRUE" <?=($boule_params->valeur===true)?'checked="checked"':'';?>/></label>
-				<label>non<input type="radio" name="<?=$boule_nom?>" value="FALSE" <?=($boule_params->valeur===false)?'checked="checked"':'';?>/></label>
-			</div>
+			<fieldset class="booleen">
+				<legend<?=(isset($params->aide))? ' title="'.$params->aide.'"':'';?>><?=$params->label?></legend>
+				<label>ne sait pas<input type="radio" name="<?=$nom?>" value="NULL" <?=($params->valeur===null)?'checked="checked"':'';?>/></label>
+				<label>oui<input type="radio" name="<?=$nom?>" value="TRUE" <?=($params->valeur===true)?'checked="checked"':'';?>/></label>
+				<label>non<input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>/></label>
+			</fieldset>
 	<?}
 		if (!empty($point->equivalent_site_officiel) )
 		{ ?>
@@ -146,15 +146,15 @@
 		<?}
 		if (!empty($modele->champs->ferme->options) )
 		{ ?>
-      <div class="booleen"> 
-        <?=$modele->champs->ferme->label?> :<?
+      <fieldset class="booleen"> 
+        <legend><?=$modele->champs->ferme->label?></legend> <?
         foreach ($modele->champs->ferme->options as $option_key => $option_val)
         { ?>
           <label><?=$option_val?>
             <input type="radio" name="ferme" value="<?=$option_key?>"<?=($modele->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
           </label>
       <?}?>
-      </div>
+      </fieldset>
 		<?}
       	if (!empty($modele->champs->places_matelas->label) )
 		{ ?>

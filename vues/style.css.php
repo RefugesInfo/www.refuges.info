@@ -200,11 +200,7 @@ LI {
 
   /*====== FORMULAIRES======*/
   /* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
-/*.libelle { 
-  float:left;
-  width:150px;
-  font-size: 13px;
-  }*/
+
 FORM#form_point FIELDSET {
   border: none;  /* pour les allergiques aux barrieres ;) */
   }
@@ -212,14 +208,22 @@ FORM#form_point.lien_syntaxe {
   float:left;
   width:150px;
   }
-FORM#form_point DIV.booleen {
-  width: 350px;
+FORM#form_point .booleen {
+  clear: left;
+  float:left;
+  width: 500px;
   text-align: right;
+  padding: 1px;
+  }
+FORM#form_point .booleen LEGEND {
+  clear: left;
+  float:left;
   }
 FORM#form_point .booleen LABEL {
   clear: none;
   float: none;
-  width: 300px;
+  /*width: 400px;*/
+  padding-left: 10px;
   }
 FORM#form_point TEXTAREA {
   clear: both;
@@ -231,15 +235,12 @@ FORM#form_point LABEL.textarea  SPAN {
   clear: both;
   float:left;
   }
-/*.big_one {
-  float:left;
-  }*/
 
-FORM LABEL, FORM SPAN {
+FORM.wri LABEL, FORM.wri SPAN { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
   clear: left;
   float: left;
   }
-LABEL[title]:after, LEGEND[title]:after {
+FORM LABEL[title]:after, FORM LEGEND[title]:after {  /* combine pour exclure OL , leurs LABEL ne sont pas dans des FORM */
   content: url(/images/tooltip.png);
   }
 FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
