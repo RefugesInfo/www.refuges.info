@@ -62,6 +62,7 @@ if ( isset($_REQUEST["id_point"]) )
   $modele->champs->boutons->suppr->type = "submit";
   $modele->champs->boutons->suppr->valeur = "supprimer";
   $modele->champs->boutons->suppr->label = "Suppression de la fiche";
+  $modele->champs->boutons->suppr->js_onclick = "confirmation(this, 'SUPPRIMER')";
   
 	//$boutton_supprimer="<a href=\"$modele->page_action?action=supprimer&amp;id_point=$point->id_point\"><strong>Suppression de la fiche</strong></a>";
 
@@ -143,7 +144,7 @@ elseif ( isset($_REQUEST["dupliquer"]))
   $modele->champs->boutons->dupliquer->nom = "Dupliquer";
   $modele->champs->boutons->dupliquer->type = "submit";
   $modele->champs->boutons->dupliquer->valeur = "Ajouter";
-  $modele->champs->boutons->suppr->label = "Copie avec coordonnées identiques";
+  $modele->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
 
 	//$deja_point_gps.="<input type='hidden' name='id_point_gps' value='$point->id_point_gps' />";
   

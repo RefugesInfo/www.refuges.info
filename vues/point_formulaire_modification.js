@@ -81,3 +81,11 @@ window.onload = function () {
 		})
 	]);
 }
+
+
+function confirmation(bouton, action) {
+  if (confirm("Vous êtes sûr de vouloir "+action+" le point ?")) {
+    bouton.submit();
+  }
+  return false;
+}
