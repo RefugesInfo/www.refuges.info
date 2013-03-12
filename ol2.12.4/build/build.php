@@ -13,11 +13,13 @@ $openLayersJs = explode ('/*SPLIT*/', file_get_contents ('../lib/OpenLayers.js')
 
 // Fichier lib/OpenLayers.js tronqué (pour inclusion du code aprés minification)
 $fp = fopen ('OpenLayers.tmp', 'wb');
-fwrite ($fp, "/* Fichier temporaire généré automatiquement par build.php. Ne pas modifier */\n");
-fwrite ($fp, "var OpenLayers={singleFile:true};\n");
-fwrite ($fp, $openLayersJs[0]);
-fwrite ($fp, $openLayersJs[4]);
+$nbcar_ecrits = 0;
+$nbcar_ecrits += fwrite ($fp, "/* Fichier temporaire généré automatiquement par build.php. Ne pas modifier */\n");
+$nbcar_ecrits += fwrite ($fp, "var OpenLayers={singleFile:true};\n");
+$nbcar_ecrits += fwrite ($fp, $openLayersJs[0]);
+$nbcar_ecrits += fwrite ($fp, $openLayersJs[4]);
 fclose ($fp);
+echo "OpenLayers.tmp : $nbcar_ecrits caractères écrits<br>";
 
 // Liste de tous les fichiers à inclure
 eval ('$files ["../OpenLayers.js"] = Array ("../build/OpenLayers.tmp", ' .$openLayersJs[2] .');');
@@ -33,8 +35,9 @@ $carspe = array (
 	'Ã ' => '@uAG@',
 	'Ã©' => '@uEE@',
 	'Ã¨' => '@uEG@',
-	'Â°' => '@uDG@',
 	'Ã¹' => '@uUG@',
+	'Ëš' => '@uDG@',
+	'@pad@' => '@pad@',
 );
 $specar = array_flip ($carspe);
 
@@ -75,14 +78,16 @@ foreach ($files AS $fn => $fs) {
 	// Ecriture de la lib en 1 seule fois pour minimiser la durée d'indisponibilité
 	$log .= "Écriture $fn ".strlen($ol)." octets<hr>\n";
 	$fp = fopen ($fn, 'wb');
-	fwrite ($fp, $ol);
+	$nbcar_ecrits = fwrite ($fp, $ol);
 	fclose ($fp);
+	echo "$fn : $nbcar_ecrits caractères écrits<br>";
 }
 
 $elapsed = time () - $deb;
 echo "<b>OpenLayers.js généré en $elapsed s " .date('r') ."</b><br>\nModifications par rapport à OpenLayers-$openLayersVersion:<hr>$log";
 $fpl = fopen ('build.log.html', 'w');
-fwrite ($fpl, "<b>Openlayers.js généré sur {$_SERVER['SERVER_NAME']} le " .date('r') 
+$nbcar_ecrits = fwrite ($fpl, "<b>Openlayers.js généré sur {$_SERVER['SERVER_NAME']} le " .date('r') 
 	."</b><br>\nModifications par rapport à OpenLayers-$openLayersVersion:<hr>\n$log");
 fclose ($fpl);
+echo "build.log.html : $nbcar_ecrits caractères écrits<br>";
 ?>

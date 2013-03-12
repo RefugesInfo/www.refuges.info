@@ -35,6 +35,7 @@ OpenLayers.Layer.IDEE = OpenLayers.Class(OpenLayers.Layer.WMS, {
 			{
 				buffer: 0,
 				maxExtent: new OpenLayers.Bounds (-100000, 3950000, 1150000, 4900000),
+				validExtent: new OpenLayers.Bounds (-9.3, 36, 4.3, 43.8) .transform ('EPSG:4326', 'EPSG:23030'),
 				projection: 'EPSG:23030',
 				resolutions: [1800,900,450,225,120,50,25,10,4.5,3,2],
 				attribution:

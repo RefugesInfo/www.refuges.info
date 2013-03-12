@@ -69,7 +69,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 			var s = Math.round((mf-m)*60);
 			if (s==60) {m++; s=0;}
 			if (m==60) {d++; m=0;}
-			return "" + d + '°' + (m < 10 ? '0' : '') + m + "'" + (s < 10 ? '0' : '') + s + '"';
+			return '' + d + '˚' + (m < 10 ? '0' : '') + m + "'" + (s < 10 ? '0' : '') + s + '"';
 		}
 	},
 	unformat: {
@@ -80,7 +80,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 			return v;
 		},
 		degminsec: function (v) {
-			var vs = v.replace(/'|"/g,'°').split('°');
+			var vs = v.replace(/'|"/g,'˚').split('˚');
 			return vs[0]/1 + vs[1]/60 + vs[2]/3600;
 		}
 	},

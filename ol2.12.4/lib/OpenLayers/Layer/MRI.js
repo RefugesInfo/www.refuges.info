@@ -12,30 +12,29 @@
  */
 
 /**
- * Class: OpenLayers.Layer.WRI
+ * Class: OpenLayers.Layer.MRI
  * Create a maps.refuges.info layer
  *
  * Inherits from:
  *  - <OpenLayers.Layer.OSM>
  */
- 
-OpenLayers.Layer.WRI = OpenLayers.Class(OpenLayers.Layer.OSM, {
+
+OpenLayers.Layer.MRI = OpenLayers.Class(OpenLayers.Layer.OSM, {
 
 	url: 'http://maps.refuges.info/hiking/${z}/${x}/${y}.png',
-	
-    initialize: function(name) { // OpenLayers.Layer.OSM ne comporte pas de méthode initialize, 
+
+    initialize: function (name) { // OpenLayers.Layer.OSM ne comporte pas de méthode initialize,
         OpenLayers.Layer.XYZ.prototype.initialize.call( //il faut donc appeler la classe dont il hérite
-			this, name, null, {numZoomLevels: 18} // Il faut forcer zoom comme ça, sinon XYZ.initialize l'écrase
+			this, name, null, {
+				validExtent: new OpenLayers.Bounds (-25, 33, 45, 72) .transform ('EPSG:4326', 'EPSG:900913'),
+				numZoomLevels: 18 // Il faut forcer zoom comme ça, sinon XYZ.initialize l'écrase
+			}
 		);
     },
-	
+
 	attribution:
 		'<a class="DCattribution" style="background-color:#F2F2F2" href="http://maps.refuges.info">Refuges.Info</a>&nbsp;'+
 		OpenLayers.Layer.OSM.prototype.attribution,
 
-    CLASS_NAME: "OpenLayers.Layer.WRI"
-});
- 
-OpenLayers.Layer.MRI = OpenLayers.Class(OpenLayers.Layer.WRI, {
     CLASS_NAME: "OpenLayers.Layer.MRI"
 });

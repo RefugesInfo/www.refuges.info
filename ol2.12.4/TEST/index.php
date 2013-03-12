@@ -1,7 +1,11 @@
-<!--DCM++ © Dominique Cavailhez 2012-->
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<title>Test de la librairie modifiée Openlayers</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+
 		<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
 		<script type="text/javascript" src="../lib/OpenLayers.js"></script>
 		<script type="text/javascript">
@@ -25,65 +29,51 @@
 								lat: 45.2,
 								scale: 500000
 							},
-							force: { // Les paramètres forcés dans tous les cas sauf quand on a des arguments de permalink dans l'url
+							WWWforce: { // Les paramètres forcés dans tous les cas sauf quand on a des arguments de permalink dans l'url
 								baseLayer: 'OSM'
 							}
 						}),
 						new OpenLayers.Control.Attribution ()
 					],
 					layers: [
-						new OpenLayers.Layer.Google.Terrain      ('Google'),
-						new OpenLayers.Layer.Google              ('Google map',    {visibility: false}), // Cachées au début sinon, apparaissent fugitivement
-						new OpenLayers.Layer.Google.Photo        ('Google photo',  {visibility: false}),
-						new OpenLayers.Layer.Google.Hybrid       ('Google hybrid', {visibility: false}),
-						
-						
-						new OpenLayers.Layer.OB( "OberBayern"),
-						
-						new OpenLayers.Layer.XYZ( "ESRI",
-//                    "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/${z}/${y}/${x}",   
-       "http://at0.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}",
-                    {sphericalMercator: true} ),
-						/*
-						new OpenLayers.Layer.XYZ( "OberBayern", 
-        // $serveur IN 0 1 2 3 
-        // $mapstyle IN 
-                      
-                     su ou t (Summer) 
-                     wi (Winter) 
-                     h (Hybrid) 
-                     a (LuftBild) 
-         // $x $y $z   Google coordinates comme d'hab. 
-						*/
-
-						
-						
-						
 						new OpenLayers.Layer.OSM                 ('OSM'),
 						new OpenLayers.Layer.Velo                ('OpenCycleMap'),
-						new OpenLayers.Layer.WRI                 ('maps.refuges.info'),
-						
-						// Demander une clé de production sur: http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
-						// localhost    : rjvdd0zkal6czbu4mop37x7r
-						// refuges.info : ev2w14tv2ez4wpypux2ael39
-						// chemineur.fr : y07s87qyij0i6yhj8nzi66ww
+						new OpenLayers.Layer.MRI                 ('Maps.Refuges.Info'),
+	
 						new OpenLayers.Layer.IGN                 ('IGN',          'rjvdd0zkal6czbu4mop37x7r'),
 						new OpenLayers.Layer.IGN.Photo           ('IGN photo',    'rjvdd0zkal6czbu4mop37x7r'),
 						new OpenLayers.Layer.IGN.Cadastre        ('IGN Cadastre', 'rjvdd0zkal6czbu4mop37x7r'),
 						
-						// Automatiquement autorisé sur //localhost
-						// Demande pour autoriser le domaine à accéder aux données:
-						// http://swisstopo.admin.ch/internet/swisstopo/fr/home/products/services/web_services/webaccess.html => Accès au formulaire de commande
 						new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
 						new OpenLayers.Layer.SwissTopo.Siegfried ('Swiss 1949'),
 						new OpenLayers.Layer.SwissTopo.Dufour    ('Swiss 1864'),
 						new OpenLayers.Layer.SwissTopo.Photo     ('Swiss photo'),
 						
+						// Automatiquement autorisé sur //localhost
+						// Demande pour autoriser le domaine à accéder aux données:
+						// http://swisstopo.admin.ch/internet/swisstopo/fr/home/products/services/web_services/webaccess.html => Accès au formulaire de commande
+						
 						new OpenLayers.Layer.IDEE                ('EspaÃ±a'), 
 						new OpenLayers.Layer.IGM                 ('Italia'),
 						
+						new OpenLayers.Layer.Google.Terrain      ('Google'),
+						new OpenLayers.Layer.Google              ('Google map',    {visibility: false}), // Cachées au début sinon, apparaissent fugitivement
+						new OpenLayers.Layer.Google.Photo        ('Google photo',  {visibility: false}),
+						new OpenLayers.Layer.Google.Hybrid       ('Google hybrid', {visibility: false}),
+						
+						new OpenLayers.Layer.OB( "OberBayern"),
+						new OpenLayers.Layer.XYZ( "ESRI",
+//                    "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/${z}/${y}/${x}",   
+       "http://at0.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}",
+                    {sphericalMercator: true} ),
+						
+					
+						// Demander une clé de production sur: http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
+						// localhost    : rjvdd0zkal6czbu4mop37x7r
+						// refuges.info : ev2w14tv2ez4wpypux2ael39
+						// chemineur.fr : y07s87qyij0i6yhj8nzi66ww
 						// chemineur.fr : CBE047F823B5E83CE0405F0ACA6042AB
-						new OpenLayers.Layer.OS                  ('Great Britain', 'CBE047F823B5E83CE0405F0ACA6042AB') // UK Ordonance Survey Layer
+//						new OpenLayers.Layer.OS                  ('Great Britain', 'CBE047F823B5E83CE0405F0ACA6042AB') // UK Ordonance Survey Layer
 					],
 					numZoomLevels: 22
 				});
@@ -108,7 +98,7 @@
 						idSelect: 'select-proj',
 						displayInLayerSwitcher: false
 					}),
-					new OpenLayers.Layer.GMLSLD ('WRI', { // Une couche au format GML et sa feuille de style SDL avec des actions de survol et de click
+					new OpenLayers.Layer.GMLSLD ('MRI', { // Une couche au format GML et sa feuille de style SDL avec des actions de survol et de click
 						urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://www.refuges.info/exportations/exportations.php?format=gml',
 						projection: 'EPSG:4326',
 						urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
@@ -153,11 +143,11 @@
 						new OpenLayers.Layer.Google              ('Google map',    {visibility: false}), // Cachées au début sinon, apparaissent fugitivement
 						new OpenLayers.Layer.Google.Photo        ('Google photo',  {visibility: false}),
 						new OpenLayers.Layer.OSM                 ('OSM'),
-						new OpenLayers.Layer.WRI                 ('maps.refuges.info'),
+						new OpenLayers.Layer.MRI                 ('maps.refuges.info'),
 						new OpenLayers.Layer.IGN                 ('IGN', 'rjvdd0zkal6czbu4mop37x7r'),
 //						new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
 						// Les couches superposées
-						new OpenLayers.Layer.GMLSLD ('WRI', {	
+						new OpenLayers.Layer.GMLSLD ('MRI', {	
 							urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://www.refuges.info/exportations/exportations.php?format=gml',
 							projection: 'EPSG:4326',
 							urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
@@ -188,7 +178,7 @@
 		</script>
 	</head>
 	<body style="margin:0;padding:0">
-		<div id="map" style="height:50%;width:50%"></div>
+		<div id="map" style="height:400px;width:600px"></div>
 		<p>
 			<span id="titre-lon">Longitude</span>: <em id="long">xxxx</em>
 			<span id="titre-lat">Latitude</span>: <em id="lati">yyyy</em>,
