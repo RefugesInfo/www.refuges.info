@@ -48,7 +48,7 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 	<body>
 		<div id="entete">
 			<div>
-				<?if ($_SESSION['niveau_moderation']>=1) {?>
+				<?if ($_SESSION['id_utilisateur']>=1) {?>
 					<a href="/forum/profile.php?mode=editprofile" title="Modifier votre profil"><?echo ucfirst($_SESSION['login_utilisateur'])?></a>
 					<a href="<?=$config['lien_forum']?>login.php?logout=true">Se déconnecter</a>
 				<?} else {?>
@@ -118,11 +118,10 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 					<?}?>
 					<li>Zones couvertes
 						<ul>
-						  <li><a href="/nav/352?massifs">Alpes</a></li>
-						  <li><a href="/nav/50?massifs">Massif Central</a></li>
-						  <li><a href="/nav/351?massifs">Pyrénées</a></li>
-						  <li><a href="/nav/747?massifs">Vosges</a></li>
-						  <li><a href="/nav/27">Jura</a></li>
+						  <li><a href="/nav/352?mode_affichage=zone">Alpes</a></li>
+						  <li><a href="/nav/50?mode_affichage=zone">Massif Central</a></li>
+						  <li><a href="/nav/351?mode_affichage=zone">Pyrénées</a></li>
+						  <li><a href="/nav/747?mode_affichage=zone">Jura-Vosges</a></li>
 						  <li><a href="/nav/337">Corse</a></li>
 						  <li><a href="/nav/28">Réunion</a></li>
 						  <li><a href="/nav/51">Nlle Calédonie</a></li>

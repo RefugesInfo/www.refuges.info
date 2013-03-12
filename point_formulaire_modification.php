@@ -246,9 +246,6 @@ if ( !empty($point->equivalent_places_matelas) )
 			{
 				$option['ruine']='En ruine';
 				$option['detruit']='Détruit(e)';
-				// le par défaut et ouvert si on ne sait pas pour l'état fermé
-				if( empty($point->ferme) )
-					$checked_html['non']=$checked;
 			}
 
 */

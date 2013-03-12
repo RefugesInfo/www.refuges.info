@@ -99,9 +99,10 @@ else
                         $val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
                     break;
                 case 'ferme':  // jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
-                    if ( empty($modele->$champ) )
-                        $modele->$champ = "non";
-                    $val=array('valeur'=> $modele->$champ);
+                    //if ( empty($modele->$champ) )
+                    //    $modele->$champ = "non";
+                    //$val=array('valeur'=> $modele->$champ);
+                    unset(val);
                     break;
                 
                 case (in_array($champ, $config['champs_binaires_simples_points'] ) ):  // vrais Bools

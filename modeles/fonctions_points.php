@@ -77,13 +77,6 @@ $condition->limite : nombre maximum d'enregistrement à aller chercher, par déf
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
 
-$conditions->distance=latitude;longitude;distance_max : Ne va chercher que les points se trouvant à une distance inférieure à distance_max en metres du point de référence
-Cette option est très consommation de ressource, on choisira donc une distance moins grande que 20km sinon ça RAME ! l'attribut distance en metres sera retourné, sur lequel on peut d'ailleurs
-utiliser $conditions->ordre="distance DESC"
-sly : Et bé, je me demande comment j'ai pû pondre un truc pareil, cacher plusieurs champs dans un seul 
-c'est relou à gérer, j'aurais mieux fais de choisir 3 champs distincts genre ->latitude_recherche
-->longitude_recherche et ->distance_recherche, dur de tout changer maintenant
-
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
 Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon 
@@ -148,16 +141,25 @@ function infos_points($conditions)
   {
 	// Jointure pour la liste des polygones auquels appartient le point
 			
-	$tables_en_plus.=",(SELECT pgps.id_point_gps, STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
-	FROM polygones pg NATURAL JOIN polygone_type pty, points_gps pgps
-	WHERE ST_Within(pgps.geom, pg.geom) AND pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-	GROUP BY pgps.id_point_gps ) AS liste_polys";
+	$tables_en_plus.=",(
+                            SELECT 
+                              pgps.id_point_gps, 
+                              STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
+                            FROM 
+                              polygones pg NATURAL JOIN polygone_type pty, 
+                              points_gps pgps
+                            WHERE 
+                              ST_Within(pgps.geom, pg.geom) 
+                              AND 
+                              pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
+                            GROUP BY pgps.id_point_gps 
+                           ) As liste_polys";
+                          //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
 	
 	$champs_polygones.=",liste_polys.liste_polygones";
 	
 	$conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
   }
-	//  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
 
 	// on restreint a cette geometrie (un texte "ST machin en fait")
 	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
@@ -288,6 +290,11 @@ function infos_points($conditions)
   // jmb je suppr type_precision_gps qui sert a rien          type_precision_gps.*,    AND points_gps.id_type_precision_gps=type_precision_gps.id_type_precision_gps
   // je suppr aussi la jointure point_type. pas utilisee
 
+  // FIXME ne devrait pas $etre dans les modeles, et si une fonction voulait permettre un export à quelqu'un de non connecté ? -- sly
+  // Censure
+  if ($_SESSION['niveau_moderation']<1)
+    $conditions_sql.="\n AND (points.id_point_type!=26)";
+  
   $query_points="
   SELECT points.*,
          points_gps.*,
