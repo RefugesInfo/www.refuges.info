@@ -102,7 +102,7 @@ else
                     //if ( empty($modele->$champ) )
                     //    $modele->$champ = "non";
                     //$val=array('valeur'=> $modele->$champ);
-                    unset(val);
+                    unset($val);
                     break;
                 
                 case (in_array($champ, $config['champs_binaires_simples_points'] ) ):  // vrais Bools
