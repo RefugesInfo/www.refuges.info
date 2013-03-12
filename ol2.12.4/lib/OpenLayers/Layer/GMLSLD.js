@@ -31,7 +31,6 @@ OpenLayers.Layer.GMLSLD = OpenLayers.Class (OpenLayers.Layer.VectorClickHover, {
 			
 			OpenLayers.Request.GET({
 				url: options.urlSLD,
-				async: false,
 				scope: this,
 				success: function (sldFile) { // Le fichier est chargé
 					// On stocke la feuille de style pour les couches qui seront déclarées plus tard
@@ -82,7 +81,6 @@ OpenLayers.Layer.GMLSLD = OpenLayers.Class (OpenLayers.Layer.VectorClickHover, {
 							format .userStyles [i];
 							
 		this.styleMap = new OpenLayers.StyleMap (style); // On met le style à jour
-//		this.redraw (); // Et on réaffiche parceque ça ne marche pas à chaque fois // DCM TODO : éviter de demander 2 fois les couches au serveur
     },
 
     CLASS_NAME: "OpenLayers.Layer.GMLSLD"

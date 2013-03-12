@@ -54,6 +54,7 @@ OpenLayers.Layer.IGN = OpenLayers.Class(OpenLayers.Layer.WMTS, {
 					matrixSet: 'PM',
 					style: 'normal',
 					projection: 'EPSG:900913',
+					validExtent: new OpenLayers.Bounds (-4.8, 38.8, 8.2, 51.1) .transform ('EPSG:4326', 'EPSG:900913'),
 					maxZoomLevel: this. maxZoomLevel,
 					attribution:
 						'<a href="http://geoportail.fr" title="Acc&egrave;s IGN">'+

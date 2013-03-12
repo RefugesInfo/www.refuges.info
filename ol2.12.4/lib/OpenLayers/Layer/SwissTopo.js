@@ -65,6 +65,7 @@ OpenLayers.Layer.SwissTopo = OpenLayers.Class(OpenLayers.Layer.WMTS, {
 			matrixSet: '21781',
 			projection: 'EPSG:21781',
 			maxExtent: new OpenLayers.Bounds(420000, 30000, 900000, 350000),
+			validExtent: new OpenLayers.Bounds (6, 45.86, 10.5, 47.8) .transform ('EPSG:4326', 'EPSG:21781'),
 			units: 'm',
 			resolutions: this.resolutions, // Seules ces résolutions sont affichées
 			matrixIds: capa.matrixIds,

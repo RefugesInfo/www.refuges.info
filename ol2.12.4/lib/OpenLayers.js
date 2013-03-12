@@ -410,7 +410,7 @@
 /*DCM*/         "OpenLayers/Layer/GMLSLD.js",
 
 /*DCM*/         "OpenLayers/Layer/Velo.js",
-/*DCM*/         "OpenLayers/Layer/WRI.js",
+/*DCM*/         "OpenLayers/Layer/MRI.js",
 /*DCM*/         "OpenLayers/Layer/Googles.js",
 
 /*DCM*/         "OpenLayers/Layer/IGN.js", // France
@@ -419,25 +419,25 @@
 /*DCM*/         "OpenLayers/Layer/IGM.js", // Italie
 /*DCM*/         "OpenLayers/Layer/IDEE.js", // Espagne
 /*DCM*/         "../proj4js-1.1.0/lib/defs/EPSG23030.js", // Pour IDEE
-/*DCM*/         "OpenLayers/Layer/OS.js", // UK Ordnance Survey 
-/*DCM*/         "../proj4js-1.1.0/lib/defs/EPSG27700.js", // Pour OS
+//*DCM*/         "OpenLayers/Layer/OS.js", // UK Ordnance Survey 
+//*DCM*/         "../proj4js-1.1.0/lib/defs/EPSG27700.js", // Pour OS
 
 /*EDITOR*/
-                "OpenLayers/Handler/Path.js",
-                "OpenLayers/Handler/Keyboard.js",
-                "OpenLayers/Control/Snapping.js",
-                "OpenLayers/Control/DrawFeature.js",
-                "OpenLayers/Control/ModifyFeature.js",
-                "OpenLayers/Strategy/Fixed.js",
-                "OpenLayers/Strategy/Save.js",
+//                "OpenLayers/Handler/Path.js",
+//                "OpenLayers/Handler/Keyboard.js",
+//                "OpenLayers/Control/Snapping.js",
+//                "OpenLayers/Control/DrawFeature.js",
+//                "OpenLayers/Control/ModifyFeature.js",
+//                "OpenLayers/Strategy/Fixed.js",
+//                "OpenLayers/Strategy/Save.js",
 
-/*DCM*/         "OpenLayers/Control/DrawFeaturePath.js",
-/*DCM*/         "OpenLayers/Control/CutFeature.js",
-/*DCM*/         "OpenLayers/Control/SaveFeature.js",
-/*DCM*/         "OpenLayers/Control/LoadFeature.js",
-/*DCM*/         "OpenLayers/Control/DownloadFeature.js",
-/*DCM*/         "OpenLayers/Control/VisuGPXViewFeature.js",
-/*DCM*/         "OpenLayers/Layer/Editor.js",
+//*DCM*/         "OpenLayers/Control/DrawFeaturePath.js",
+//*DCM*/         "OpenLayers/Control/CutFeature.js",
+//*DCM*/         "OpenLayers/Control/SaveFeature.js",
+//*DCM*/         "OpenLayers/Control/LoadFeature.js",
+//*DCM*/         "OpenLayers/Control/DownloadFeature.js",
+//*DCM*/         "OpenLayers/Control/VisuGPXViewFeature.js",
+//*DCM*/         "OpenLayers/Layer/Editor.js",
 
 /*SPLIT*/
 /*DCM*/			''

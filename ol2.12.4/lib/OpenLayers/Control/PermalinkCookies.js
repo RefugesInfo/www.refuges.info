@@ -27,7 +27,7 @@ OpenLayers.Control.PermalinkCookies = OpenLayers.Class(OpenLayers.Control.Permal
 		var params = OpenLayers.Control.Permalink.prototype.createParams.apply (this, arguments);
 		
 		if (this.map.baseLayer) {
-			// Ajoute un paramètre d'échelle qui permet de retrouver la bonne échèle quelque soir le nombre de couches de la carte
+			// Ajoute un paramètre d'échelle qui permet de retrouver la bonne échèle quelque soit le nombre de couches de la carte
 			params.scale = 
 				Math.round (
 					OpenLayers.Util.getScaleFromResolution (
