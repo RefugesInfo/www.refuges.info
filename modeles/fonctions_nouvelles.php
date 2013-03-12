@@ -21,10 +21,10 @@ function stat_site ()
 	// donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
 	// les autres sont des sommets, des cols, des villes où autre
   
-	// PDO jmb re ecriture en une seule requete
+	// PDO jmb re ecriture en une seule requete 
 	$q = "SELECT 
 			( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
-			AND ferme=''
+			AND (ferme='' OR ferme IS NULL)
 			AND points.modele != 1 )                                  AS nbrefuges,
 	( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
 	( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
