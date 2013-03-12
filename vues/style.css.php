@@ -202,7 +202,7 @@ LI {
   /* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
 
 FORM#form_point FIELDSET {
-  border: none;  /* pour les allergiques aux barrieres ;) */
+  border: thin solid transparent;  /* pour les allergiques aux barrieres ;) */
   }
 FORM#form_point.lien_syntaxe { 
   float:left;
@@ -236,7 +236,16 @@ FORM#form_point LABEL.textarea  SPAN {
   float:left;
   }
 
-FORM.wri LABEL, FORM.wri SPAN { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
+FORM#form_export LABEL {
+  clear: none;
+  float: left;
+  width: 16em;
+  }
+#form_export FIELDSET FIELDSET:hover {  /* deco sur le fieldset actif, pour bien le differencier des autres */
+  border: thin dotted black;
+  }
+
+FORM.wri SPAN , FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
   clear: left;
   float: left;
   }
@@ -245,7 +254,7 @@ FORM LABEL[title]:after, FORM LEGEND[title]:after {  /* combine pour exclure OL 
   }
 FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
   float: left;
-  border: none;
+  border: thin solid transparent;
   }
 FORM .champs_null_masque>INPUT { /* couleur de la case "champ null" et masquee par defo */
   outline : red solid 2px ;
