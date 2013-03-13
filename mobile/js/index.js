@@ -21,6 +21,8 @@ window.onload = function () {
 	    maxZoom: 18
 	}).addTo(map);
 
+	L.geoJson(pointsWRI).addTo(map);
+
 	function onLocationFound(e) {
     var radius = e.accuracy / 2;
 

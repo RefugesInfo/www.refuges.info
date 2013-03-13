@@ -311,7 +311,7 @@ function feature_gml($point)
 function entete_geojson()
 {
   return "
-  var bicycleRental = {
+  var pointsWRI = {
     \"type\": \"FeatureCollection\",
     \"features\": [
 ";
@@ -334,8 +334,8 @@ function feature_geojson($point)
             },
             \"type\": \"Feature\",
             \"properties\": {
-                \"nom\": \"".c($point->nom)."\"
-                \"url\": \"".lien_point_fast($point) ."\"
+                \"nom\": \"".c($point->nom)."\",
+                \"url\": \"".lien_point_fast($point) ."\",
                 \"type\": \"$point->nom_icone\"
             },
         },
