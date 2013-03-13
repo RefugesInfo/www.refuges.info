@@ -170,7 +170,10 @@ class emailer
 		{
 			$this->subject = (($this->subject != '') ? $this->subject : 'No Subject');
 		}
-
+		
+		// sly's hack, adaptons, pour le sujet, un encodage utf-8
+		mb_internal_encoding("UTF-8");
+		$this->subject = mb_encode_mimeheader($this->subject,"utf-8","B");
 		if (preg_match('#^(Charset:(.*?))$#m', $this->msg, $match))
 		{
 			$this->encoding = (trim($match[2]) != '') ? trim($match[2]) : trim($lang['ENCODING']);
