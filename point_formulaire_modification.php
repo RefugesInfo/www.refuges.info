@@ -212,7 +212,9 @@ foreach ($textes_area as $libelle => $nom_variable)
 	$modele->champs->textareas->$nom_variable->valeur=htmlspecialchars($point->$nom_variable,0,"UTF-8");
 }
 
-if (isset($_SESSION['id_utilisateur']))
+// BUG: ecrasement du createur de la fiche en cas de modif
+//var_dump($point);
+if (isset($_SESSION['id_utilisateur']) && empty($point->nom_createur) )
 {
 	$modele->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
     $modele->champs->invisibles->id_createur = new stdClass;
