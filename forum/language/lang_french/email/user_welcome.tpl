@@ -1,17 +1,17 @@
 Subject: Bienvenue sur les forums de {SITENAME}
-Charset: iso-8859-1
+Charset: utf-8
 
 {WELCOME_MSG}
 
-Vous êtes prié de conserver cet e-mail dans vos archives. Voici les informations concernant votre compte:
+Vous Ãªtes priÃ© de conserver cet e-mail dans vos archives. Voici les informations concernant votre compte:
 
 ----------------------------
 Nom d'utilisateur: {USERNAME}
 Mot de passe: {PASSWORD}
 ----------------------------
 
-Veuillez ne pas oublier votre mot de passe étant donné qu'il est crypté dans notre base de données et que nous ne pourrons pas le retrouver pour vous. Toutefois, si vous oubliez votre mot de passe, vous pourrez en demander un nouveau qui sera activé de la même manière que ce compte.
+Veuillez ne pas oublier votre mot de passe Ã©tant donnÃ© qu'il est cryptÃ© dans notre base de donnÃ©es et que nous ne pourrons pas le retrouver pour vous. Toutefois, si vous oubliez votre mot de passe, vous pourrez en demander un nouveau qui sera activÃ© de la mÃªme maniÃ¨re que ce compte.
 
-Merci de vous être enregistré.
+Merci de vous Ãªtre enregistrÃ©.
 
 {EMAIL_SIG}

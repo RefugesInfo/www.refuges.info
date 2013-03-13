@@ -1,5 +1,5 @@
 Subject: A request to join your group has been made
-Charset: iso-8859-1
+Charset: utf-8
 
 Dear {GROUP_MODERATOR},
 

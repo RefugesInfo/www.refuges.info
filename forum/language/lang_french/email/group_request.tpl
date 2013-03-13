@@ -1,10 +1,10 @@
-Subject: Une demande pour rejoindre votre groupe a été formulée
-Charset: iso-8859-1
+Subject: Une demande pour rejoindre votre groupe a Ã©tÃ© formulÃ©e
+Charset: utf-8
 
 Cher {GROUP_MODERATOR},
 
-Un utilisateur demande à adhérer un groupe duquel vous êtes modérateur sur {SITENAME}.
-Pour approuver/désapprouver cette demande pour l'adhésion au groupe, veuillez cliquer sur le lien suivant:
+Un utilisateur demande Ã  adhÃ©rer un groupe duquel vous Ãªtes modÃ©rateur sur {SITENAME}.
+Pour approuver/dÃ©sapprouver cette demande pour l'adhÃ©sion au groupe, veuillez cliquer sur le lien suivant:
 
 {U_GROUPCP}
 

@@ -1,12 +1,12 @@
-Subject: Un nouveau message privé vient d'arriver
-Charset: iso-8859-1
+Subject: Un nouveau message privÃ© vient d'arriver
+Charset: utf-8
 
 Bonjour {USERNAME},
 
-Vous avez reçu un nouveau message privé sur votre compte sur "{SITENAME}" et avez demandé à être averti dans ce cas. Vous pouvez voir votre nouveau message en cliquant sur le lien suivant:
+Vous avez reÃ§u un nouveau message privÃ© sur votre compte sur "{SITENAME}" et avez demandÃ© Ã  Ãªtre averti dans ce cas. Vous pouvez voir votre nouveau message en cliquant sur le lien suivant:
 
 {U_INBOX}
 
-Rappelez-vous que vous pouvez choisir de ne plus être averti de l'arrivée de nouveaux messages privés en modifiant l'option appropriée dans votre profil.
+Rappelez-vous que vous pouvez choisir de ne plus Ãªtre averti de l'arrivÃ©e de nouveaux messages privÃ©s en modifiant l'option appropriÃ©e dans votre profil.
 
 {EMAIL_SIG}
