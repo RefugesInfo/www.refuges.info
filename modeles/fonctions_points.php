@@ -38,6 +38,7 @@ voici les paramètres attendus de recherche :
 (tous facultatifs, ces conditions seront toutes vérifiées par un AND entre elles)
 $conditions->nom : recherche de type ILIKE sur le champ (ILIKE est insensible à la case en postgresql)
 $conditions->type_point : liste d'id dans notre base des points type ex: 12 ou 12,13,14
+$conditions->ids_types_point : IDEM que avant, le tant de la migration vers ce format (pour cohérence avec les autres conditions sur ids de ce type)
 $conditions->places_maximum
 $conditions->places_minimum
 
@@ -168,9 +169,13 @@ function infos_points($conditions)
 		$select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
 	}
   
-  // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
+  // FIXME : Temporaire, à faire disparaitre lorsque la migration avec ce format sera terminée
   if( !empty($conditions->type_point) )
-    $conditions_sql .="\n AND points.id_point_type IN ($conditions->type_point) \n";
+      $conditions->ids_types_point=$conditions->type_point;
+  
+  // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
+  if( !empty($conditions->ids_types_point) )
+    $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
   elseif (empty($_SESSION['niveau_moderation'])) // Censure
     $conditions_sql .="\n AND (points.id_point_type!=26)";
   

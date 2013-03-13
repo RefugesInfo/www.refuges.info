@@ -59,7 +59,7 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 				<form method="post" action="/point_recherche.php">
 				<div>
 					<input type="text" name="nom" size="35" value="Recherche de refuge par le nom" onfocus="javascript:this.value=''" />
-					<input type="hidden" name="id_point_type" value="tout-refuge" />
+					<input type="hidden" name="ids_types_point" value="<?=$config['tout_type_refuge']?>" />
 					<input type="image" src="/images/loupe.png" title="Lancer la recherche" />
 				</div>
 				</form>
