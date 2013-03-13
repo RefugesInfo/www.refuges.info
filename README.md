@@ -173,16 +173,30 @@ cd .. -> revenir dossier d'avant
  * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
  * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur http://<login>.refuges.info
  * /home/sites/refuges/www.refuges.info/ -> la version live contrôlable par l'utilisateur "refuges"
+ * /home/sites/refuges/dev.refuges.info/ -> la version "pré-prod" contrôlable par l'utilisateur "refuges"
 
-* pour gérer la mise en live de la dernière version
+* pour gérer la mise en live de la dernière version sur la pré-prod
  * login ssh pour se connecter sur le site actif : refuges
  * serveur : www.refuges.info
 
 ```
-cd www.refuges.info
+cd dev.refuges.info
 git pull
 ```
-(on ne touche pas aux fichiers en prod, là seule commande à connaître est "git pull" pour mettre la dernière version)
+La dernière version de la branche de développement nommée "dev" doit alors être rapatriée et testée sur http://dev.refuges.info
+
+mise en prod (après de nombreux tests validés sur la zone dev.refuges.info !):
+ * login ssh pour se connecter sur le site actif : refuges
+ * serveur : www.refuges.info
+ 
+Attention : pensez bien que dev et www n'utilise pas forcément le même format de la base de donnée, bien penser à propager les
+changements à ce niveau là !
+ 
+```
+cd www.refuges.info
+git pull origin dev
+```
+(on ne touche pas aux fichiers en prod)
 
 * accès postgresql
  * http://www.refuges.info/phppgadmin/
