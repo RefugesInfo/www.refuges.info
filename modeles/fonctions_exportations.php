@@ -137,6 +137,18 @@ Il s'agit en fait d'un fichier texte dont les champs de données sont séparés 
 id_point;nom;type;massif;altitude;latitude;longitude;qualité GPS;nombre de place
 </p>");
 
+//------------------------------------------
+// Léo 13/03/2013 - Compatibilité Leaflet
+$config['formats_exportation']['geojson']=array(
+"description_courte"=>"GeoJSON",
+"extension_fichier"=>"js",
+"content_type"=>"application/javascript",
+"interne"=>false,
+"description"=>"<h4>Le format <abbr title='Geographic JavaScript Object Notation'>GeoJSON</abbr></h4>
+<p>
+Le format \"GeoJSON\" est un format spécialement concu pour contenir des données Géographiques, il est utilisé particulièrement par des applications codées en JavaScript, qui sont par exemple la version mobile de ce site.
+</p>");
+
 
 //**********************************************************************************************
 function liste_icones_possibles()
@@ -290,6 +302,43 @@ function feature_gml($point)
       </gml:Point>
     </point_wri>
   </gml:featureMember>
+";
+}
+
+
+//**********************************************************************************************
+// retourne l'entête GeoJSON
+function entete_geojson()
+{
+  return "
+  var bicycleRental = {
+    \"type\": \"FeatureCollection\",
+    \"features\": [
+";
+}
+
+
+//**********************************************************************************************
+//retourne une entité GeoJSON correspondant à un point
+//$point est un objet contenant toute les propriétés du point
+function feature_geojson($point)
+{
+  return "
+        {
+            \"geometry\": {
+                \"type\": \"Point\",
+                \"coordinates\": [
+                    $point->longitude,
+                    $point->latitude
+                ]
+            },
+            \"type\": \"Feature\",
+            \"properties\": {
+                \"nom\": \"".c($point->nom)."\"
+                \"url\": \"".lien_point_fast($point) ."\"
+                \"type\": \"$point->nom_icone\"
+            },
+        },
 ";
 }
 
@@ -494,6 +543,8 @@ function entete_exportation($format)
     $output=entete_kml();
   elseif ($format=="gml") // Dominique
     $output=entete_gml();
+  elseif ($format=="geojson") // Leo
+    $output=entete_geojson();
   elseif($format=="gpx-garmin" or $format=="gpx" or $format=="gpx-carte")
     $output=entete_gpx();
   elseif($format=="csv")
@@ -606,6 +657,11 @@ function fichier_exportation($conditions,$format)
 	  
 	  $contenu.=feature_gml($point,$format);
 	  break;
+    //------------------------------------------
+  case "geojson":
+    
+    $contenu.=feature_geojson($point,$format);
+    break;
 	  //------------------------------------------
 	case "gpx-garmin":case "gpx":case "gpx-carte":
 	  $contenu.=waypoint_gpx($point,$format);
@@ -637,6 +693,10 @@ function fichier_exportation($conditions,$format)
   
   elseif ($format=="gml")
     $contenu.="\n</wfs:FeatureCollection>";
+
+
+  elseif ($format=="geojson")
+    $contenu.="\t\t\t]\n\t};";
   
   // les formats fournissant du gpx, se terminent tous par cette simple balise
   elseif ($config['formats_exportation'][$format]['extension_fichier'] =="gpx")
