@@ -1,12 +1,12 @@
-Charset: iso-8859-1
+Charset: utf-8
 
-Ce qui suit est un email qui vous a été envoyé par un administrateur de "{SITENAME}". Si ce message est du spam, contient des commentaires abusifs ou autre chose que vous trouvez offensif, veuillez contacter le webmestre de ce forum à l'adresse suivante:
+Ce qui suit est un email qui vous a Ã©tÃ© envoyÃ© par un administrateur de "{SITENAME}". Si ce message est du spam, contient des commentaires abusifs ou autre chose que vous trouvez offensif, veuillez contacter le webmestre de ce forum Ã  l'adresse suivante:
 
 {BOARD_EMAIL}
 
-Incluez cet email en entier (plus particulièrement les en-têtes). 
+Incluez cet email en entier (plus particuliÃ¨rement les en-tÃªtes). 
 
-Message qui vous a été envoyé:
+Message qui vous a Ã©tÃ© envoyÃ©:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 {MESSAGE}

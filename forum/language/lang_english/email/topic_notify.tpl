@@ -1,5 +1,5 @@
 Subject: Topic Reply Notification - {TOPIC_TITLE}
-Charset: iso-8859-1
+Charset: utf-8
 
 Hello {USERNAME},
 

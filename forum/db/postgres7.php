@@ -121,12 +121,14 @@ class sql_db
 		if( $query != "" )
 		{
 			$this->num_queries++;
-			// FIXME je la sens pas des masses cette manière d'enlêver le addslashes des requêtes, si un \" se trouve ailleurs on est mal, il faudrait
+			// FIXME je la sens pas des masses cette maniÃ¨re d'enlÃªver le addslashes des requÃªtes, si un \" se trouve ailleurs on est mal, il faudrait
 			// pouvoir uniquement les enlever des champs texte :
 			// genre select \" from coucou where 'test\"' deviendrait : select \" from coucou where 'test"'
-			// Bref, ne s'occuper que de ce qui est entre '' et qui est vraiment pour insérer une string
-                        $query=stripslashes($query);
+			// Bref, ne s'occuper que de ce qui est entre '' et qui est vraiment pour insÃ©rer une string
+			$query=stripslashes($query);
 			$query = preg_replace("/LIMIT ([0-9]+),([ 0-9]+)/", "LIMIT \\2 OFFSET \\1", $query);
+            // Transformation des LIKE en ILIKE
+            $query = preg_replace("/ LIKE/", " ILIKE", $query);
 
 			if( $transaction == BEGIN_TRANSACTION && !$this->in_transaction )
 			{

@@ -1,8 +1,8 @@
-Subject: Compte activé
-Charset: iso-8859-1
+Subject: Compte activÃ©
+Charset: utf-8
 
 Hello {USERNAME},
 
-Votre compte sur "{SITENAME}" vient d'être activé; vous pouvez vous connecter en utilisant vos nom d'utilisateur et mot de passe que vous avez reçu dans un précédent e-mail.
+Votre compte sur "{SITENAME}" vient d'Ãªtre activÃ©; vous pouvez vous connecter en utilisant vos nom d'utilisateur et mot de passe que vous avez reÃ§u dans un prÃ©cÃ©dent e-mail.
 
 {EMAIL_SIG}

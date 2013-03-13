@@ -1,9 +1,9 @@
-Subject: Votre demande a été approuvée
-Charset: iso-8859-1
+Subject: Votre demande a Ã©tÃ© approuvÃ©e
+Charset: utf-8
 
-Félicitations,
+FÃ©licitations,
 
-Votre demande d'adhésion au groupe "{GROUP_NAME}" sur {SITENAME} a été approuvée.
+Votre demande d'adhÃ©sion au groupe "{GROUP_NAME}" sur {SITENAME} a Ã©tÃ© approuvÃ©e.
 Cliquez sur le lien suivant pour voir les effectifs de votre groupe.
 
 {U_GROUPCP}
