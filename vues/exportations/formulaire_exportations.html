@@ -1,0 +1,130 @@
+<?php
+
+?>
+<div class="contenu">
+<!-- =========================== -->
+<!-- ======= BARATIN ===== -->
+<h3><?=$modele->titre?></h3> 
+<?php
+if (isset($modele->etapes))
+{ ?>
+    <dl> <?
+    foreach ($modele->etapes as $etape)
+    { ?>
+      <dt><?=$etape->titre?></dt>
+      <dd><?=$etape->texte?></dd>
+    <?}?>
+   </dl>  <?
+} 
+// Formulaire avec le bazar QUE si on a pas de validation
+if ( !isset($_POST['validation']) )
+{ ?>
+
+<!-- ======= FORMULAIRE ===== -->
+
+  <form class="wri" id='form_export' method='post' action="<?=$_SERVER['SCRIPT_NAME']?>">
+    <fieldset id="types_point">
+        <legend>Choix des points de la base a exporter
+            <button type='button' onclick="checkboites('types_point',true); return false;">✓</button>
+            <button type='button' onclick="checkboites('types_point',false); return false;">✗</button>
+        </legend>
+        <?php
+        foreach ($modele->points as $point) { ?>
+        <label>
+           <input type='checkbox' name='id_point_type[]' value='<?=$point->id_point_type?>'<?=($point->checked?' checked="checked"':'');?> />
+           <img src="/images/icones/<?=$point->nom_icone?>.png" alt="icone de <?=$point->nom_type?>" />
+           <?=$point->nom_type?>
+        </label>
+        <?}?>
+    </fieldset>
+    
+    <!-- Choix des zones massifs -->
+    <fieldset id="liste_massifs">
+        <legend>Choix des Massifs de la base a exporter
+            <button type='button' onclick="checkboites('liste_massifs',true); return false;">✓</button>
+            <button type='button' onclick="checkboites('liste_massifs',false); return false;">✗</button>
+        </legend>
+        <?php
+        // je laisse tomber l'algo qui gere un nombre d'arborescence variable.
+        // c'est pas encore supporte par infos_polygone.
+        // on fait donc un truc dout simple avec id_zone, qui lui existe déjà.
+        // Attention ! ca suppose que les massifs sont triés par id_zone ! voir requete.
+        $idzone=0; // au depart, ya pas de zone
+        foreach ($modele->massifs as $poly) { 
+            if($idzone != $poly->id_zone) { 
+                if($idzone != 0) { ?>
+                    </fieldset>
+                    <!-- fin de la zone -->
+                <?}
+                $idzone=$poly->id_zone;
+                ?>
+                    <!-- nouvelle zone -->
+                    <fieldset id="<?=$idzone?>">
+                        <legend>
+                            <?=$poly->nom_zone?>
+                            <button type='button' onclick="checkboites(<?=$idzone?>,true); return false;">✓</button>
+                            <button type='button' onclick="checkboites(<?=$idzone?>,false); return false;">✗</button>
+</legend>
+            <?}?>
+                        <label>
+                            <input type='checkbox' name='id_massif[]' value='<?=$poly->id_polygone?>'<?=($poly->checked?' checked="checked"':'');?> />
+                            <?=$poly->nom_polygone?>
+                        </label>
+        <?}?>
+                   <!-- fin de la derniere zone -->
+                    </fieldset>
+    </fieldset>
+    <!--  BBOX si un parametre GET a ete passe -->
+    <!-- une selection a main levée par OL seriat plus adaptée -->
+    <?php
+    if ( isset($modele->bbox) ) { ?>
+    <fieldset>
+        <legend>Limites (en degrés décimaux WGS84)</legend>
+        <table>
+            <tr>
+				<td></td>
+				<td style='text-align: center;'><input name='nord' id='bbox_latmax' type='text' size='4' value='<?=$modele->bbox->nord?>' /></td>
+				<td></td>
+			</tr>
+			<tr style='height: 4em;'>
+				<td><input name='ouest' id='bbox_lngmin' type='text' size='4' value='<?=$modele->bbox->ouest?>' /></td>
+				<td style='background-color: #A6CEE7;'>Zone à exporter</td>
+				<td><input name='est' id='bbox_lngmax' type='text' size='4' value='<?=$modele->bbox->est?>' /></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style='text-align: center;'><input name='sud' id='bbox_latmin' type='text' size='4' value='<?=$modele->bbox->sud?>' /></td>
+				<td></td>
+			</tr>
+		</table>
+    </fieldset>
+    <?}?>
+    <!-- Format d'export, KML GPX ... -->
+    <fieldset>
+        <legend>Choix du format d'exportation</legend>
+		<select name="format"> <?
+			foreach ($config['formats_exportation'] as $clef=>$formats_possibles)
+			  if ($formats_possibles['interne']==false) { ?>
+                <option value="<?=$clef?>"><?=$formats_possibles[description_courte]?></option>
+              <?}?>
+        </select> 
+        <input type='submit' name='validation' value='Obtenir le lien' />
+	</fieldset>
+    
+  </form>
+  <!-- ======= FIN FORMULAIRE ====== -->
+<?
+} // fin du if Validation
+else
+{?>
+    <p>
+        <?=$modele->lien_export->description?>
+    </p>
+    <? if (isset($modele->lien_export->url)) { ?>
+    <p>
+        <a href="<?=$modele->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour récupérer les données</a>
+    </p>
+    <?}?>
+<?}?>
+
+</div>
