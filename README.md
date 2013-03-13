@@ -75,11 +75,13 @@ Il arrive cependant qu'on perde des fichiers, au sens propre ;-) c'est à dire q
 dans les méandres de git et de son dossier caché .git, mais avec la bonne commande, tout revient, donc pas de panique, tentez !
 En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivés sur github et chez chaque développeur
 
-* Avoir une copie complète de la dernière version du code
+* Avoir une copie complète de la dernière version en cours de développement du code (pas forcément stable)
 
 ```
-git clone https://github.com/sletuffe/www.refuges.info.git
+git clone https://github.com/sletuffe/www.refuges.info.git -b dev
 ```
+(enlevez "-b dev" pour avoir la version stable)
+
 
 * Avant toute modification, dites à git qui vous êtes
 
@@ -151,6 +153,20 @@ et pourtant, ça marche sans mot de passe en prenant bien ma clef... je pige pas
 
 Doc dédiée aux développeurs ayant accès à la machine wri
 ========================================================
+
+* commandes git utiles 
+ * Pour passer sur la version de développement
+```
+git fetch origin dev
+git checkout dev
+```
+ * Pour passer sur la branche stable
+ ```
+git fetch origin master
+git checkout master
+```
+(ne faites pas de push sur la version stable, sauf résolution de bugs critiques)
+
 
 * pour développer sur votre zone
  * Serveur ftp ou sftp ou ssh : www.refuges.info
