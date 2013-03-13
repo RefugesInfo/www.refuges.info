@@ -206,7 +206,7 @@ function modification_ajout_commentaire($commentaire)
 	global $config,$pdo;  
 	$retour = new stdClass;
 	$photo_valide=False; 
-  
+
 	if ($commentaire->id_point>=0) // Si négatif, c'est une "news générale"
 	{
 		$point=infos_point($commentaire->id_point);
@@ -275,6 +275,9 @@ function modification_ajout_commentaire($commentaire)
 	//if ($mode=='ajout')
 		//$champs_sql['date'] = "NOW()"; // redondant avec le default PGSQL now()
    
+    // jmb fait bugger les commentaire.
+    // Si c'est unset, faut laisser unset et laisser agir les defaults PGsql.
+    /*
 	$champs_sql['id_point'] = $commentaire->id_point;
 	$champs_sql['texte'] = $pdo->quote($commentaire->texte);
 	$champs_sql['auteur'] = $pdo->quote($commentaire->auteur);
@@ -282,9 +285,20 @@ function modification_ajout_commentaire($commentaire)
 	$champs_sql['id_createur']=$commentaire->id_createur;
 	$champs_sql['qualite_supposee']=$commentaire->qualite_supposee;
 	$champs_sql['photo_existe']=$commentaire->photo_existe;
+*/
+    // reparation crado:
+    isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
+    isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
+    isset($commentaire->auteur) ? $champs_sql['auteur']=$pdo->quote($commentaire->auteur):false;
+    isset($commentaire->demande_correction) ? $champs_sql['demande_correction']=$commentaire->demande_correction:false;
+    isset($commentaire->id_createur) ? $champs_sql['id_createur']=$commentaire->id_createur:false;
+    isset($commentaire->qualite_supposee) ? $champs_sql['qualite_supposee']=$commentaire->qualite_supposee:false;
+    isset($commentaire->photo_existe) ? $champs_sql['photo_existe']=$commentaire->photo_existe:false;
+    
+    
 	if (isset($date_photos))
 		$champs_sql['date_photo']=$pdo->quote($commentaire->date_photo);
-	
+
 	// fait-on un update ou un insert ?
 	// FIXME  faire un upsert. voir "requete_modification_ou_ajout_generique"
 	if ($mode=="modification")
