@@ -303,13 +303,14 @@ function infos_points($conditions)
   $query_points="
   SELECT points.*,
          points_gps.*,
+         type_precision_gps.*,
 		 point_type.*, -- cette jointure ne sert QUE pour le tri par importance. on passe les 120 a 300 et on gagne une jointure?
          ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
          extract('epoch' from date_derniere_modification) as date_modif_timestamp,
 		 extract('epoch' from date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
-  FROM points NATURAL JOIN points_gps NATURAL JOIN point_type $tables_en_plus
+  FROM points NATURAL JOIN points_gps NATURAL JOIN type_precision_gps NATURAL JOIN point_type $tables_en_plus
   WHERE 
      1=1
     $conditions_sql 

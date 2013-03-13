@@ -84,8 +84,8 @@ elseif ( isset($_REQUEST["id_point_type"]))
 	else
 		$point=$points_modele[0];
   
-	// on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
-	$point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
+    // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
+    $point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
 	$point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
 	$modele->serie [1] = 20000; // Echelle de la carte
   
@@ -118,6 +118,14 @@ elseif ( isset($_REQUEST["id_point_type"]))
     $modele->etapes->guest->titre = "Non connecté ?";
     $modele->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
 	}
+    else
+    {
+        // BUG: ecrasement du createur de la fiche en cas de modif
+        $modele->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
+        $modele->champs->invisibles->id_createur = new stdClass;
+        $modele->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
+    }
+
 }
 // 3) on veut dupliquer l'actuel mais garder les mêmes coordonnées
 elseif ( isset($_REQUEST["dupliquer"]))
@@ -212,12 +220,6 @@ foreach ($textes_area as $libelle => $nom_variable)
 	$modele->champs->textareas->$nom_variable->valeur=htmlspecialchars($point->$nom_variable,0,"UTF-8");
 }
 
-if (isset($_SESSION['id_utilisateur']))
-{
-	$modele->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
-    $modele->champs->invisibles->id_createur = new stdClass;
-    $modele->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
-}
 /******** Les informations complétaires (booléens, détails) *****************/
 
 foreach($config['champs_binaires_simples_points'] as $champ)
