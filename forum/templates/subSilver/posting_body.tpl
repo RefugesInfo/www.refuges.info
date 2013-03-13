@@ -288,7 +288,7 @@ function storeCaret(textEl) {
 	<tr> 
 	  <td class="row1" width="22%"><span class="gen"><b>{L_SUBJECT}</b></span></td>
 	  <td class="row2" width="78%"> <span class="gen"> 
-		<input type="text" name="subject" size="45" maxlength="60" style="width:450px" tabindex="2" class="post" value="{SUBJECT}" />
+		<input type="text" name="subject" size="45" maxlength="90" style="width:450px" tabindex="2" class="post" value="{SUBJECT}" />
 		</span> </td>
 	</tr>
 	<tr> 
