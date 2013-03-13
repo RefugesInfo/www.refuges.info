@@ -25,8 +25,8 @@ if ( !isset($_POST['validation']) )
   <form class="wri" id='form_export' method='post' action="<?=$_SERVER['SCRIPT_NAME']?>">
     <fieldset id="types_point">
         <legend>Choix des points de la base a exporter
-            <button type='button' onclick="checkboites('types_point',true); return false;">✓</button>
-            <button type='button' onclick="checkboites('types_point',false); return false;">✗</button>
+            <button type='button' onclick="checkboites('types_point',true); return false;">☒</button>
+            <button type='button' onclick="checkboites('types_point',false); return false;">☐</button>
         </legend>
         <?php
         foreach ($modele->points as $point) { ?>
@@ -41,8 +41,8 @@ if ( !isset($_POST['validation']) )
     <!-- Choix des zones massifs -->
     <fieldset id="liste_massifs">
         <legend>Choix des Massifs de la base a exporter
-            <button type='button' onclick="checkboites('liste_massifs',true); return false;">✓</button>
-            <button type='button' onclick="checkboites('liste_massifs',false); return false;">✗</button>
+            <button type='button' onclick="checkboites('liste_massifs',true); return false;">☒</button>
+            <button type='button' onclick="checkboites('liste_massifs',false); return false;">☐</button>
         </legend>
         <?php
         // je laisse tomber l'algo qui gere un nombre d'arborescence variable.
@@ -62,8 +62,8 @@ if ( !isset($_POST['validation']) )
                     <fieldset id="<?=$idzone?>">
                         <legend>
                             <?=$poly->nom_zone?>
-                            <button type='button' onclick="checkboites(<?=$idzone?>,true); return false;">✓</button>
-                            <button type='button' onclick="checkboites(<?=$idzone?>,false); return false;">✗</button>
+                            <button type='button' onclick="checkboites(<?=$idzone?>,true); return false;">☒</button>
+                            <button type='button' onclick="checkboites(<?=$idzone?>,false); return false;">☐</button>
 </legend>
             <?}?>
                         <label>
