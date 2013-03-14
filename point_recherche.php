@@ -65,7 +65,7 @@ foreach ($_POST as $champ => $valeur)
 $modele = new stdClass();
 //======================================
 // C'est LA que ca cherche
-//$modele->points = infos_points ($conditions);
+$modele->points = infos_points ($conditions);
 
 //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on la atteinte ........
  if (!empty($conditions->limite) && sizeof($modele->points) == $conditions->limite)
