@@ -77,11 +77,13 @@ Il arrive cependant qu'on perde des fichiers, au sens propre ;-) c'est à dire q
 dans les méandres de git et de son dossier caché .git, mais avec la bonne commande, tout revient, donc pas de panique, tentez !
 En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivés sur github et chez chaque développeur
 
-* Avoir une copie complète de la dernière version du code
+* Avoir une copie complète de la dernière version en cours de développement du code (pas forcément stable)
 
 ```
-git clone https://github.com/sletuffe/www.refuges.info.git
+git clone https://github.com/sletuffe/www.refuges.info.git -b dev
 ```
+(enlevez "-b dev" pour avoir la version stable)
+
 
 * Avant toute modification, dites à git qui vous êtes
 
@@ -154,6 +156,20 @@ et pourtant, ça marche sans mot de passe en prenant bien ma clef... je pige pas
 Doc dédiée aux développeurs ayant accès à la machine wri
 ========================================================
 
+* commandes git utiles 
+ * Pour passer sur la version de développement
+```
+git fetch origin dev
+git checkout dev
+```
+ * Pour passer sur la branche stable
+ ```
+git fetch origin master
+git checkout master
+```
+(ne faites pas de push sur la version stable, sauf résolution de bugs critiques)
+
+
 * pour développer sur votre zone
  * Serveur ftp ou sftp ou ssh : www.refuges.info
  * login  / mot de passe : le votre ;-)
@@ -175,16 +191,30 @@ cd .. -> revenir dossier d'avant
  * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
  * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur http://<login>.refuges.info
  * /home/sites/refuges/www.refuges.info/ -> la version live contrôlable par l'utilisateur "refuges"
+ * /home/sites/refuges/dev.refuges.info/ -> la version "pré-prod" contrôlable par l'utilisateur "refuges"
 
-* pour gérer la mise en live de la dernière version
+* pour gérer la mise en live de la dernière version sur la pré-prod
  * login ssh pour se connecter sur le site actif : refuges
  * serveur : www.refuges.info
 
 ```
-cd www.refuges.info
+cd dev.refuges.info
 git pull
 ```
-(on ne touche pas aux fichiers en prod, là seule commande à connaître est "git pull" pour mettre la dernière version)
+La dernière version de la branche de développement nommée "dev" doit alors être rapatriée et testée sur http://dev.refuges.info
+
+mise en prod (après de nombreux tests validés sur la zone dev.refuges.info !):
+ * login ssh pour se connecter sur le site actif : refuges
+ * serveur : www.refuges.info
+ 
+Attention : pensez bien que dev et www n'utilise pas forcément le même format de la base de donnée, bien penser à propager les
+changements à ce niveau là !
+ 
+```
+cd www.refuges.info
+git pull origin dev
+```
+(on ne touche pas aux fichiers en prod)
 
 * accès postgresql
  * http://www.refuges.info/phppgadmin/

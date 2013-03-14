@@ -118,13 +118,21 @@ else
                     break; // a virer plus tard. remplace par places_matelas.
                   
                 case 'places_matelas':
-                    if ($modele->$champ!="")
+                    if($modele->$champ == -1)
+                        $val=array('valeur'=> 'Sans');
+                    elseif($modele->$champ === 0)
+                        $val=array('valeur'=> 'Avec, en nombre inconnu');
+                    elseif($modele->$champ === NULL )
+                        $val=array('valeur'=> '<strong>Inconnu</strong>');
+                    else
                         $val=array('valeur'=> $modele->$champ);
                     break;
                 
                 default:
                     if ($modele->$champ=="") 
                         $modele->$champ="<strong>Inconnu</strong>";
+                    elseif ($modele->$champ < 0) 
+                        $val=array('valeur'=> 'Sans');
                     $val=array('valeur'=> $modele->$champ);
             }            
 
@@ -137,7 +145,6 @@ else
 		}
 		unset($val);
 	}
-//var_dump($modele);
 	/*********** Préparation des infos des commentaires ***/
 	//if (count ($tous_commentaires)) // plus necessaire, tablo vide est bien géré par foreach.
 	foreach ($tous_commentaires AS $commentaire)

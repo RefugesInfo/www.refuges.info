@@ -152,11 +152,37 @@
       </fieldset>
 		<?}
       	if (!empty($modele->champs->places_matelas->label) )
-		{ ?>
-        
-          <label title="<?=$modele->champs->places_matelas->aide?>"><?=$modele->champs->places_matelas->label?> 
+		{
+            // rendre le champs invisible si l'option etait "ne sait pas" ou "ya pas"
+            if ( is_int($modele->champs->places_matelas->valeur) && $modele->champs->places_matelas->valeur >= 0 ) // est 0 ou N 
+                $visible = 'visible';
+            else                              // NULL ou -1
+                $visible = 'hidden';
+            ?>
+          <fieldset class="booleen"> 
+            <legend><?=$modele->champs->places_matelas->label?></legend> 
+                <label>ne sait pas
+                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($modele->champs->places_matelas->valeur===NULL)?' checked="checked"':'';?> />
+                </label>
+                <label>sans
+                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','-1');" <?=($modele->champs->places_matelas->valeur=="-1")?' checked="checked"':'';?> />
+                </label>
+                <label>avec
+                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','visible','');" <?=($visible == 'visible')?' checked="checked"':'';?> />
+                </label>
+                <label>
+                    <input type="text" id="places_matelas" size="4" name="places_matelas"
+                            value="<?=($modele->champs->places_matelas->valeur===0)?'':$modele->champs->places_matelas->valeur;?>"
+                            style="visibility: <?=$visible?>;"
+                            title="<?=$modele->champs->places_matelas->aide?>"
+                    />
+                </label>
+          </fieldset>
+          
+<!--          <label title="<?=$modele->champs->places_matelas->aide?>"><?=$modele->champs->places_matelas->label?> 
             <input type="text" size="3" name="places_matelas" value="<?=$modele->champs->places_matelas->valeur?>" />
           </label>
+     -->
       <?}?>
 		
 	</fieldset>

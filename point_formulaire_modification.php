@@ -44,33 +44,34 @@ $modele->page_action="/point_modification.php";
 // ou si les droits sont insuffisants
 if ( isset($_REQUEST["id_point"]) )  
 {
-	if ( $_SESSION['niveau_moderation']<1 AND $_SESSION['id_utilisateur']!=$point->id_createur ) 
-		erreur_on_arrete("Désolé, mais pour cette opération vous devez être modérateur du site et connecté au forum <a href=\"".$config['connexion_forum']."\">Connexion forum</a>");
+    if ( $_SESSION['niveau_moderation']<1 AND $_SESSION['id_utilisateur']!=$point->id_createur ) 
+          erreur_on_arrete("Désolé, mais pour cette opération vous devez être modérateur du site et connecté au forum <a href=\"".$config['connexion_forum']."\">Connexion forum</a>");
 
-	// on charge
-	$point=infos_point($_REQUEST['id_point']);
-	// Merde stop, le point n'existe pas
-	if ($point->erreur) 
-		erreur_on_arrete("<strong>problème : $point->message</strong>");
+    // on charge
+    $point=infos_point($_REQUEST['id_point']);
+    // Merde stop, le point n'existe pas
+    if ($point->erreur) 
+        erreur_on_arrete("<strong>problème : $point->message</strong>");
 
-	$modele->localisation = localisation ($point->polygones); // FIXME : la fonction localisation n'est pas faite pour ça voyons !
-	$modele->serie = param_cartes ($modele->localisation);
+    $modele->localisation = localisation ($point->polygones); // FIXME : la fonction localisation n'est pas faite pour ça voyons !
+    $modele->serie = param_cartes ($modele->localisation);
 
-	// boutton en plus
-  $modele->champs->boutons->suppr = new stdClass;
-  $modele->champs->boutons->suppr->nom = "action";
-  $modele->champs->boutons->suppr->type = "submit";
-  $modele->champs->boutons->suppr->valeur = "supprimer";
-  $modele->champs->boutons->suppr->label = "Suppression de la fiche";
-  $modele->champs->boutons->suppr->js_onclick = "confirmation(this, 'SUPPRIMER')";
-  
-	//$boutton_supprimer="<a href=\"$modele->page_action?action=supprimer&amp;id_point=$point->id_point\"><strong>Suppression de la fiche</strong></a>";
+    // bug du point_gps recree a chaque fois: il faut le transmettre en invisible.
+    $modele->champs->invisibles->id_point_gps = new stdClass;
+    $modele->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
 
-	//cosmétique
-	$icone="&amp;iconecenter=ne_sait_pas";
-	$action="Modification";
-	$verbe="Modifier";
-	//$etape="";
+    // boutton supprimer 
+    $bouton_suppr = new stdClass;
+    $bouton_suppr->nom = "action";
+    $bouton_suppr->type = "submit";
+    $bouton_suppr->valeur = "supprimer";
+    $bouton_suppr->label = "Suppression de la fiche";
+    $bouton_suppr->js_onclick = "confirmation(this, 'SUPPRIMER')";
+    
+    //cosmétique
+    $icone="&amp;iconecenter=ne_sait_pas";
+    $action="Modification";
+    $verbe="Modifier";
 }
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
 elseif ( isset($_REQUEST["id_point_type"]))  
@@ -130,40 +131,29 @@ elseif ( isset($_REQUEST["id_point_type"]))
 // 3) on veut dupliquer l'actuel mais garder les mêmes coordonnées
 elseif ( isset($_REQUEST["dupliquer"]))
 {
-	$point=infos_point($_REQUEST["dupliquer"]);
-
-  $modele->etapes->unsurdeux = new stdClass;
-  $modele->etapes->unsurdeux->titre = "Etape 1 / 2";
-  $modele->etapes->unsurdeux->texte = "(Opération en deux étapes)";
-
-	// on force l'id du point à vide histoire de ne pas modifier la copie
-	unset($point->id_point);
-	unset($point->nom);
-	unset($point->proprio);
-	unset($point->remark);
-	unset($point->id_point_type);
-	unset($point->article_partitif_point_type); 
-	unset($point->nom_type);
-  
-  $modele->champs->invisibles->id_point_gps = new stdClass;
-  $modele->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
-
-  $modele->champs->boutons->dupliquer = new stdClass;
-  $modele->champs->boutons->dupliquer->nom = "Dupliquer";
-  $modele->champs->boutons->dupliquer->type = "submit";
-  $modele->champs->boutons->dupliquer->valeur = "Ajouter";
-  $modele->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
-
-	//$deja_point_gps.="<input type='hidden' name='id_point_gps' value='$point->id_point_gps' />";
-  
-	// cosmétique
-	//$disabled_field=" style=\"background-color: #e3d4d4\" onFocus=\"javascript: this.blur()\"";
-  
-
-//	$action="Copie avec coordonnées identiques";
-//	$verbe="Ajouter";
-//	$icone="&amp;iconecenter=".$point->nom_icone;
-
+        $point=infos_point($_REQUEST["dupliquer"]);
+        
+        $modele->etapes->unsurdeux = new stdClass;
+        $modele->etapes->unsurdeux->titre = "Etape 1 / 2";
+        $modele->etapes->unsurdeux->texte = "(Opération en deux étapes)";
+        
+        // on force l'id du point à vide histoire de ne pas modifier la copie
+        unset($point->id_point);
+        unset($point->nom);
+        unset($point->proprio);
+        unset($point->remark);
+        unset($point->id_point_type);
+        unset($point->article_partitif_point_type); 
+        unset($point->nom_type);
+        
+        $modele->champs->invisibles->id_point_gps = new stdClass;
+        $modele->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
+        
+        $modele->champs->boutons->dupliquer = new stdClass;
+        $modele->champs->boutons->dupliquer->nom = "Dupliquer";
+        $modele->champs->boutons->dupliquer->type = "submit";
+        $modele->champs->boutons->dupliquer->valeur = "Ajouter";
+        $modele->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
 }
 // 4) On ne devrait pas arriver en direct sur ce formulaire
 else
@@ -178,25 +168,25 @@ if (isset($point->id_point))
   $modele->champs->invisibles->id_point->valeur = $point->id_point;
 }
 
-$modele->champs->boutons->valider = new stdClass;
-$modele->champs->boutons->valider->nom = "action";
-$modele->champs->boutons->valider->type = "submit";
-$modele->champs->boutons->valider->valeur = $verbe;
-$modele->champs->boutons->valider->label = $verbe;
+$bouton_valider = new stdClass;
+$bouton_valider->nom = "action";
+$bouton_valider->type = "submit";
+$bouton_valider->valeur = $verbe;
+$bouton_valider->label = $verbe;
 
-$modele->champs->boutons->reset = new stdClass;
-$modele->champs->boutons->reset->nom = "reset";
-$modele->champs->boutons->reset->type = "reset";
-$modele->champs->boutons->reset->valeur = "Recommencer";
-$modele->champs->boutons->reset->label = "Recommencer";
+$bouton_reset = new stdClass;
+$bouton_reset->nom = "reset";
+$bouton_reset->type = "reset";
+$bouton_reset->valeur = "Recommencer";
+$bouton_reset->label = "Recommencer";
 
-//$boutton_actions="
-//	Validation:
-//		$deja_point_gps$deja_point
-// 		<input type='submit' name='action' value='$verbe' />
-//		<input type='reset' value='Recommencer' />
-//		$boutton_supprimer
-//";
+// Gestion de l'ordre des boutons modifier/valider/supprimer 
+// FIXME : voir dupliquer ? car c'est bizarre l'ancienne méthode de modifier d'abord pour "dupliquer")
+$modele->champs->boutons->valider=$bouton_valider;
+$modele->champs->boutons->reset=$bouton_reset;
+
+if (isset($bouton_suppr))
+    $modele->champs->boutons->suppr=$bouton_suppr;
 
 //3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( lac, sommet, etc. )
@@ -233,7 +223,7 @@ foreach($config['champs_binaires_simples_points'] as $champ)
             $modele->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
             // le cas Sommaire... que je virerai bien mais qui est la juste pour la demo
             if ($champ=="sommaire")
-                $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même va sûrement changer)";
+                $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même peut changer)";
     }
 }
 
@@ -248,66 +238,10 @@ if ( !empty($point->equivalent_ferme) )
 if ( !empty($point->equivalent_places_matelas) )
 {
   $modele->champs->places_matelas->label = $point->equivalent_places_matelas ;
-  $modele->champs->places_matelas->aide = "Laisser vide si il n'y a pas de matelas disponible";
-  $modele->champs->places_matelas->valeur = (string) $point->places_matelas ; // retourne "" si existe pas
+  $modele->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
+  $modele->champs->places_matelas->valeur = $point->places_matelas ; // retourne "" si existe pas
 }
-/*if ($champ=="ferme")
-			{
-				$option['ruine']='En ruine';
-				$option['detruit']='Détruit(e)';
-			}
 
-*/
-			//if(!is_null($point->$champ))
-			//	$modele->champs->bools->$champ->valeur = $point->$champ; // a venir TRUE or FALSE
-			//else
-			//	$modele->champs->bools->$champ->valeur = NULL;
-
-			//unset($checked_html);
-			//$checked_html[$point->$champ]=$checked;
-
-			//$modele->champs->bools->$champ->checked = $point->$champ // true false ou null
-			//$option=array('' => 'ne sait pas','oui' => 'oui', 'non' => 'non');
-			
-			//foreach ($option as $nom_variable => $texte)
-			//	$html_info_complementaires.="&nbsp; &nbsp; $texte:<input ".$checked_html[$nom_variable]." name='$champ' type='radio' value='$nom_variable'/>";
-
-			// "Abri sommaire" n'étant pas clair, et l'expliquer prenant de la place
-			// je fais une exception que je ne peux afficher comme les autres
-			//if ($champ=='sommaire')
-			//     $html_info_complementaires.="<a href=\"/statique/mode_emploi.php?page=fiche-cabane-non-gardee\">(Plus de détail sur ce que cela signifie)</a>";
-
-			// cas particuliers des matelas, si on dispose de l'info on peut indique le nombre de place sur matelas
-			// FIXME matelas redonde avec nbplaces matelas.
-			//if ($champ=='matelas')
-			//	$html_info_complementaires.=" Nombre de places sur matelas: <input name='places_matelas' type='text' value='$point->places_matelas'/>";
-		
-	//$html_info_complementaires .="</dd>\n";
-	
-	//if ($point->equivalent_site_officiel!="")
-	//  $html_info_complementaires .="\t\t<dd style='clear: both;' class=\"big_one\"> <div class=\"libelle\">$point->equivalent_site_officiel:</div> <input name='site_officiel' size='70' type='text' value='".htmlspecialchars($point->site_officiel,0,"UTF-8")."'/></dd>";
-
-	//$htmlconstruct.=$html_info_complementaires;
-/******** Détail de gestion, code anti-robot, auteur *****************/
-
-// si la personne n'est pas modérateur, on demande un code visuel anti-robot. sly
-/*if (!isset($_SESSION['id_utilisateur']))
-{
-	// Si pas connecté, on demande un nom d'auteur
-	$htmlconstruct .="
-	<dt style='clear: both;'>Gestion:</dt>
-		<dd>Mettez votre nom ou pseudo (facultatif) :<input type=\"text\" name=\"nom_createur\" maxlength=\"40\" size=\"41\" value=\"".htmlspecialchars($nom_createur,ENT_QUOTES,"UTF-8")."\" /></dd>
-	";
-	// ansi qu'un code anti-robot
-	$htmlconstruct.="
-	<dd>
-	<fieldset><legend>Protection anti-Spam</legend>
-		<label><input name=\"lettre_securite\" type=\"text\" size=\"1\" />Entrez la lettre <strong>d</strong></label>
-	</fieldset>
-	</dd>
-	";
-}
-*/
 // ===================================
 
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
