@@ -66,7 +66,6 @@ if ( isset($_REQUEST["id_point"]) )
     $bouton_suppr->type = "submit";
     $bouton_suppr->valeur = "supprimer";
     $bouton_suppr->label = "Suppression de la fiche";
-    $bouton_suppr->js_onclick = "confirmation(this, 'SUPPRIMER')";
     
     //cosmétique
     $icone="&amp;iconecenter=ne_sait_pas";
@@ -239,7 +238,7 @@ if ( !empty($point->equivalent_places_matelas) )
 {
   $modele->champs->places_matelas->label = $point->equivalent_places_matelas ;
   $modele->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
-  $modele->champs->places_matelas->valeur = $point->places_matelas ; // retourne "" si existe pas
+  $modele->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
 }
 
 // ===================================

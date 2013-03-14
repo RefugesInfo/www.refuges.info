@@ -31,10 +31,10 @@
 	if ($point->latitude!="" and $point->longitude!="") {?>
 		<div class="carte_edit" id="carte-edit"></div>
 	<?}?>
-	<form class="wri" id="form_point" method="post" action="<?=$modele->page_action?>">
+	<form class="wri" id="form_point" method="post" onsubmit="return validation();" action="<?=$modele->page_action?>">
 		<div><?
-    foreach ($modele->champs->boutons as $bouton) { ?>
-      <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>"<?=(isset($bouton->js_onclick)?' onclick="'.$bouton->js_onclick.';"':'');?>>
+    foreach ($modele->champs->boutons as $bouton) { ?> 
+      <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
         <?=$bouton->label?>
       </button>
     <?}?>
@@ -158,11 +158,12 @@
                 $visible = 'visible';
             else                              // NULL ou -1
                 $visible = 'hidden';
+            
             ?>
           <fieldset class="booleen"> 
             <legend><?=$modele->champs->places_matelas->label?></legend> 
                 <label>ne sait pas
-                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($modele->champs->places_matelas->valeur===NULL)?' checked="checked"':'';?> />
+                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($modele->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
                 </label>
                 <label>sans
                     <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','-1');" <?=($modele->champs->places_matelas->valeur=="-1")?' checked="checked"':'';?> />
@@ -172,7 +173,7 @@
                 </label>
                 <label>
                     <input type="text" id="places_matelas" size="4" name="places_matelas"
-                            value="<?=($modele->champs->places_matelas->valeur===0)?'':$modele->champs->places_matelas->valeur;?>"
+                            value="<?=$modele->champs->places_matelas->valeur?>"
                             style="visibility: <?=$visible?>;"
                             title="<?=$modele->champs->places_matelas->aide?>"
                     />

@@ -83,11 +83,20 @@ window.onload = function () {
 }
 
 
-function confirmation(bouton, action) {
-  if (confirm("Vous êtes sûr de vouloir "+action+" le point ?")) {
-    bouton.submit();
-  }
-  return false;
+function validation() {
+    // variable choix est a "supprimer" "ajouter"...
+    // elle est mise en place par les boutons
+    switch ( choix )
+    {
+        case 'supprimer':
+            return confirm("Etes vous sur de SUPPRIMER la fiche ?");
+        case 'Ajouter':
+        case 'Modifier':
+            // valide les champs
+            return true;
+        default:
+            return true;
+    }
 }
 
 function affiche_et_set( el , affiche, valeur ) {
