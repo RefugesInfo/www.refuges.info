@@ -46,8 +46,8 @@ switch( $_REQUEST["action"] )
 		}
     
         // crade, mais trop de retard. verrai ca plus tard.
-        if ( ! is_numeric($point->places_matelas))
-            $point->places_matelas = "NULL";
+        if ( !is_numeric($point->places_matelas) && $point->places_matelas != "NULL" )
+            $point->places_matelas = "0" ; // bug : cast d'une string vers 0
 
         // modification ou création du point
 		$retour = modification_ajout_point($point);

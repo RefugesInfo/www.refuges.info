@@ -607,18 +607,13 @@ function modification_ajout_point($point)
 
 	/********* Les caractéristiques propres du point *************/
 	// champ ou il faut juste un set=nouvelle_valeur
-	foreach ($config['champs_simples_points'] as $champ)
+   	foreach ($config['champs_simples_points'] as $champ)
 		if (isset($point->$champ))
             if($point->$champ  == "NULL")
                 $champs_sql[$champ]= "NULL";
             else
 			$champs_sql[$champ]=$pdo->quote($point->$champ);
 
-    // Les bools n'ont pas besoin de quote (avec ca foire d'ailleurs)
-    //foreach($config['champs_binaires_simples_points'] as $champ) // des bool, des vrais
-    //    if (isset($point->$champ))
-    //        $champs_sql[$champ]=$point->$champ;*/
-    
 	if ( !empty($point->id_point) )  // update
 	{
 		$infos_point_avant = infos_point($point->id_point);

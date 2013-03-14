@@ -233,7 +233,7 @@ foreach($config['champs_binaires_simples_points'] as $champ)
             $modele->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
             // le cas Sommaire... que je virerai bien mais qui est la juste pour la demo
             if ($champ=="sommaire")
-                $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même va sûrement changer)";
+                $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même peut changer)";
     }
 }
 
@@ -248,8 +248,8 @@ if ( !empty($point->equivalent_ferme) )
 if ( !empty($point->equivalent_places_matelas) )
 {
   $modele->champs->places_matelas->label = $point->equivalent_places_matelas ;
-  $modele->champs->places_matelas->aide = "Laisser vide si il n'y a pas de matelas disponible";
-  $modele->champs->places_matelas->valeur = (string) $point->places_matelas ; // retourne "" si existe pas
+  $modele->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
+  $modele->champs->places_matelas->valeur = $point->places_matelas ; // retourne "" si existe pas
 }
 /*if ($champ=="ferme")
 			{
