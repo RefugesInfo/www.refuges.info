@@ -145,7 +145,6 @@ else
 		}
 		unset($val);
 	}
-var_dump($modele);
 	/*********** Préparation des infos des commentaires ***/
 	//if (count ($tous_commentaires)) // plus necessaire, tablo vide est bien géré par foreach.
 	foreach ($tous_commentaires AS $commentaire)

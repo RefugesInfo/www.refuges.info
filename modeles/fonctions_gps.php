@@ -48,7 +48,6 @@ function modification_ajout_point_gps($point_gps)
 	if (($point_gps->longitude!="" AND $point_gps->latitude!=""))
 		$champs_sql['geom']="ST_GeomFromText('POINT($point_gps->longitude $point_gps->latitude)',4326)";
 
-    var_dump($point_gps);
 	// fait-on un updater ou un insert ? -> avec posgresql et être compatible, impossible de reprendre la même forme pour la requête
 	if ($point_gps->id_point_gps != "") // Un UPDATE
 		$query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'update',"id_point_gps=$point_gps->id_point_gps");
