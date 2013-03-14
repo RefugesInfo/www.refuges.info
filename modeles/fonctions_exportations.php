@@ -334,7 +334,7 @@ function feature_geojson($point)
             },
             \"type\": \"Feature\",
             \"properties\": {
-                \"nom\": \"".c($point->nom)."\",
+                \"nom\": \"".str_replace('"','\"',$point->nom)."\",
                 \"url\": \"".lien_point_fast($point) ."\",
                 \"type\": \"$point->nom_icone\"
             },
@@ -569,12 +569,13 @@ function fichier_exportation($conditions,$format)
 {
   global $config;
   $resultat = new stdClass;
-  
+
   // pour rationaliser, infos_points prends une geometrie plutot qu'une bbox
   if ( isset($conditions->bbox) )
 		$conditions->geometrie = cree_geometrie($conditions->bbox, 'bboxOL');
   //obtenir le tableau des points, selon les conditions
   $points=infos_points($conditions); 
+
   //Nombre de point récupéré(s), on va permettre de faire du cosmétique avec le bon nom de fichier si un seul
   $i=0;
   if (count($points)==1)
