@@ -115,6 +115,9 @@ $config['overpass_api']="http://api.openstreetmap.fr/oapi/interpreter";
 //Autre serveur de backup :
 $config['overpass_api']="http://www.overpass-api.de/api/interpreter";
 
+$config['url_nominatim']="http://nominatim.openstreetmap.org/";
+$config['url_appel_nominatim']=$config['url_nominatim'] . "search.php?";
+$config['email_contact_nominatim']="sylvain@refuges.info";
 
 /******** Nom du fichier contenant les points exportés **********/
 $config['nom_fichier_export']="refuge-info";

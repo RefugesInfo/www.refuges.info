@@ -126,17 +126,17 @@ function inverse_visibility_voisins( id_element )
 	<?}?>
 
 	<? // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
-	if ($modele->nbPointsOL) { ?>
-		<h4><?=$modele->nbPointsOL?> point<?if($modele->nbPointsOL>1)echo's'?> trouvé<?if($modele->nbPointsOL>1)echo's'?> dans la base <a href = "http://openstreetmap.org/">openstreetmap.org</a></h4>
+	if ($modele->nominatim->nb_points) { ?>
+		<h4>Recherche dans la base <a href="http://openstreetmap.org/">OpenStreetMap</a> : <?=$modele->nominatim->nb_points?> point<?=$modele->nominatim->pluriel?> trouvé<?=$modele->nominatim->pluriel?> avec <a href="<?=$modele->nominatim->url_site?>">Nominatim</a></h4>
 		<dl>
-			<? foreach ($modele->xmlOL as $point) { ?>
+			<? foreach ($modele->nominatim->xml as $points_nominatim) { ?>
 				<dd class="fiche_cadre condense">
 				<em>
-					<a href="<?='/nav.php?zoom=13&lat='.$point['lat'].'&lon='.$point['lon']?>">
-						<?=$point['display_name']?>
+					<a href="<?='/nav.php?zoom=13&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
+						<?=$points_nominatim['display_name']?>
 					</a>
 				</em>
-				(<?=$point['class']?>)
+				(<?=$points_nominatim['class']?>)
 				</dd>
 			<?}?>
 		</dl>
