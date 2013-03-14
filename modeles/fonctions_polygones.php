@@ -23,7 +23,8 @@ $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
 //FIXME jmb : BBOX ne veut plus rien dire a l'heure du GIS. BBOX + nord/sud/est/ouest ca redonde un peu.
-// jmb: ajout du champ "nom_zone"
+// jmb: ajout du champ "nom_zone" (id plutot?)
+//jmb: ajout de condition Ordre, comme infos_points
 
 Retour :
 Array
@@ -71,6 +72,9 @@ function infos_polygones($conditions)
   if (is_numeric($conditions->limite))
     $limite="LIMIT $conditions->limite";
 
+  if (!empty($conditions->ordre))
+    $ordre="ORDER BY $conditions->ordre";
+
   if (isset($conditions->ids_polygone_type))
     if (!verifi_multiple_intiers($conditions->ids_polygone_type))
       return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
@@ -99,11 +103,18 @@ function infos_polygones($conditions)
     $champs_geometry.="";
 
 	// jmb: nom de la zone auquel le poly appartient.
+    // jmb: le nom aussi si ca peut eviter un appel de plue.
+    // jmb: tout ca est crado. mais c'est 1000x plus rapide.
 	$champs_geometry.=", 
 		(SELECT id_polygone
 			FROM polygones AS zones
 			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
-		) AS id_zone ";
+		) AS id_zone ,
+        (SELECT nom_polygone
+			FROM polygones AS zones
+			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+		) AS nom_zone 
+        ";
 	
 	//FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
   $box="ST_box2d(geom)";
@@ -119,6 +130,7 @@ function infos_polygones($conditions)
           WHERE 
             polygones.id_polygone_type=polygone_type.id_polygone_type
             $conditions_sql
+          $ordre
           $limite
   ";
 

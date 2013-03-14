@@ -1,0 +1,109 @@
+<b>Openlayers.js généré sur localhost le Tue, 12 Mar 2013 21:09:16 +0100</b><br>
+Modifications par rapport à OpenLayers-2.12:<hr>
+<b>../build/OpenLayers.tmp</b><br>
+21++/if (navigator.userAgent.search (/bot|crawl|mediapartners/i) != -1) return; // Ne lance pas OL si l'agent est un robot<hr>
+<b>OpenLayers/Map.js</b><br>
+<i></i><br>
+<i></i><br>
+1232++/			var previeousProjection = this.getProjection();<br>
+1234++/			this.resolutions = this.baseLayer.resolutions;<br>
+<i></i><br>
+1248++/				var p = new OpenLayers.Projection (previeousProjection);<br>
+1249++/				var n = new OpenLayers.Projection (this.getProjection());<br>
+1250++/				// Recentrer la page<br>
+1251++/				if (previeousProjection &amp;&amp;<br>
+1252++/					previeousProjection != this.getProjection())<br>
+1253++/					center.transform (p ,n);<br>
+1254++/				// Recentrer les points dans les layers &quot;Vector&quot;<br>
+1255++/				for (l in this.layers)<br>
+1256++/					for (f in this.layers[l].features)<br>
+1257++/						if (this.layers[l].features [f] .geometry)<br>
+1258++/							this.layers[l].features [f] .geometry.transform (p ,n);<hr>
+<b>OpenLayers/Layer.js</b><br>
+<i></i><br>
+<i></i><br>
+774---/         var resolution = this.map.getResolution();<br>
+775++/         var resolution = OpenLayers.Util.getResolutionFromScale (this.map.getScale(), this.units);<hr>
+<b>OpenLayers/Layer/OSM.js</b><br>
+62++/transitionEffect: &quot;resize&quot;,<hr>
+<b>OpenLayers/Layer/OB.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Handler/Feature.js</b><br>
+295++<hr>
+<b>OpenLayers/Control/DragFeature.js</b><br>
+157++/             dblclick: this.dblclickFeature,<br>
+351++/	dblclickFeature: function(feature) {<br>
+352++/		this.onDblClick (this.handlers.feature.evt);<br>
+353++/	},<hr>
+<b>OpenLayers/Control/SelectFeature.js</b><br>
+116++/	onShiftClick: function() {},<br>
+205++/	if (this.hoverSelect) {<br>
+206++/		callbacks.over = this.hoverSelectFeature;<br>
+207++/	}<br>
+334++/	if (this.handlers.feature.evt.shiftKey ||<br>
+335++/		this.handlers.feature.evt.ctrlKey ||<br>
+336++/		this.handlers.feature.evt.altKey)<br>
+337++/		this.onShiftClick.call(this.scope, feature);<br>
+424++/	hoverSelectFeature: function(feature) {<br>
+425++/		if (this.hoverSelect &amp;&amp;<br>
+426++/			!this.handlers.feature.evt.shiftKey &amp;&amp;<br>
+427++/			!this.handlers.feature.evt.ctrlKey &amp;&amp;<br>
+428++/			!this.handlers.feature.evt.altKey &amp;&amp;<br>
+429++/			feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString') {<br>
+430++/			for (i in feature.layer.selectedFeatures)<br>
+431++<br>
+432++/			if (OpenLayers.Util.indexOf (feature.layer.selectedFeatures, feature) == -1)<br>
+433++<br>
+434++/		}<br>
+435++/	},<hr>
+<b>OpenLayers/Renderer/Elements.js</b><br>
+740++/			else options.isFilled = true; // Afficher les points en externalGraphic sur Opera (les titres)<hr>
+<b>OpenLayers/Renderer/VML.js</b><br>
+857++/ if (style.labelOutlineColor)<br>
+858++/     textbox.style.backgroundColor = style.labelOutlineColor;<hr>
+<b>OpenLayers/Protocol/HTTP.js</b><br>
+514++<hr>
+<b>OpenLayers/Style.js</b><br>
+<i>http://trac.osgeo.org/openlayers/ticket/2551 : Apply text symbolizer properties</i><br>
+220++/  // apply text symbolizer if present<br>
+221++/  if (typeof rule.symbolizer[&quot;Text&quot;] === &quot;object&quot;)<br>
+222++/      OpenLayers.Util.applyDefaults (symbolizer,rule.symbolizer[&quot;Text&quot;]);<br>
+444++<br>
+445++/		return value.replace(/[\x00-\x1F\x7F]/g,''); // Sinon, risque de bug dans Opera<br>
+446++/	else<hr>
+<b>OpenLayers/Format/SLD/v1.js</b><br>
+<i>Arguments manquants</i><br>
+518++/  &quot;font-color&quot;: &quot;fontColor&quot;,<br>
+<i>From ticket/2349</i><br>
+521++/  &quot;label-background-color&quot;: &quot;labelBackgroundColor&quot;,<br>
+522++/  &quot;label-x-offset&quot;: &quot;labelXOffset&quot;,<br>
+523++/  &quot;label-y-offset&quot;: &quot;labelYOffset&quot;,<br>
+<i>From ticket/2965</i><br>
+526++/  &quot;font-stroke-color&quot;: &quot;fontStrokeColor&quot;,<br>
+527++/  &quot;font-stroke-width&quot;: &quot;fontStrokeWidth&quot;,<br>
+528++/  &quot;cursor&quot;: &quot;cursor&quot;,<br>
+529++/  &quot;label-outline-color&quot;: &quot;labelOutlineColor&quot;,<br>
+530++/  &quot;label-outline-width&quot;: &quot;labelOutlineWidth&quot;,<hr>
+<b>OpenLayers/Util/Cookies.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Control/ArgParserCookies.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Control/PermalinkCookies.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Control/LayerSwitcherConditional.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Control/FullScreen.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Control/GPS.js</b>: <i>nouveau fichier</i><hr>
+<b>../proj4js-1.1.0/lib/proj4js-combined.js</b><br>
+615++/alert('Projection manquante: '+this.srsCode);<br>
+1507++<hr>
+<b>OpenLayers/Layer/VectorClickHover.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/Img.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/ImgPosition.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/ImgDrag.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/GMLSLD.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/Velo.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/MRI.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/Googles.js</b>: <i>nouveau fichier</i><br>
+<i></i><br>
+<i>TODO ??? OpenLayers.Layer.Google.prototype.MIN_ZOOM_LEVEL = 2;</i><hr>
+<b>OpenLayers/Layer/IGN.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/SwissTopo.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/IGM.js</b>: <i>nouveau fichier</i><hr>
+<b>OpenLayers/Layer/IDEE.js</b>: <i>nouveau fichier</i><hr>
+Écriture ../OpenLayers.js 557299 octets<hr>

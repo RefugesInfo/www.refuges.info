@@ -16,21 +16,21 @@ require_once ("fonctions_points.php");
 
 function stat_site () 
 {
-  global $config,$pdo;
-  // Petits stats de début sur l'intégralité de la base
-  // donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
-  // les autres sont des sommets, des cols, des villes où autre
+	global $config,$pdo;
+	// Petits stats de début sur l'intégralité de la base
+	// donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
+	// les autres sont des sommets, des cols, des villes où autre
   
-  // PDO jmb re ecriture en une seule requete
-  $q = "SELECT 
-  ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
-  AND (ferme='' or ferme='non')
-  AND points.modele != 1 )                                  AS nbrefuges,
-  ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
-  ( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
-  ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
-  $res = $pdo->query($q);
-  return $res->fetch();
+	// PDO jmb re ecriture en une seule requete 
+	$q = "SELECT 
+			( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
+			AND (ferme='' OR ferme IS NULL)
+			AND points.modele != 1 )                                  AS nbrefuges,
+	( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
+	( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
+	( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
+	$res = $pdo->query($q);
+	return $res->fetch();
 }
 
 /****************************************
@@ -116,7 +116,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
     
     case "refuges": $conditions->type_point=$config['tout_type_refuge'];
     case "points":
-      $conditions->ordre="date_insertion DESC";
+      $conditions->ordre="date_creation_timestamp DESC";
       $conditions->limite=$nombre;
       $conditions->avec_infos_massif=1;
       $points=infos_points($conditions);
@@ -145,8 +145,8 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	  $texte="$categorie : 
 	  <a href=\"$lien\">$titre</a>
 	  $lien_massif";
-	  $news_array[] = array($point->date_insertion,"texte"=>$texte,
-				"date"=>$point->date_insertion,"categorie"=>$categorie,
+	  $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
+				"date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
 				"titre"=>$titre,"lien"=>$lien); 
 	}
 	break;

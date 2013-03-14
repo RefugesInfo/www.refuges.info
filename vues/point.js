@@ -43,7 +43,7 @@ window.onload = function () {
 			new OpenLayers.Layer.Google         ('Google map',   {visibility: false}), // Cachée au début sinon, apparait fugitivement
 			new OpenLayers.Layer.Google.Photo   ('Google photo', {visibility: false}), // Cachée au début sinon, apparait fugitivement
 			new OpenLayers.Layer.OSM            ('OSM'),
-			new OpenLayers.Layer.WRI            ('maps.refuges.info'),
+			new OpenLayers.Layer.MRI            ('maps.refuges.info'),
 			new OpenLayers.Layer.Velo           ('OpenCycleMap'),
 			new OpenLayers.Layer.IGN            ('IGN', '<?=$config["ign_key"]?>'),
 			new OpenLayers.Layer.SwissTopo      ('SwissTopo'),

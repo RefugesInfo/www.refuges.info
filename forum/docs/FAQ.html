@@ -89,9 +89,9 @@ h3 {font-size:12pt;}
 
 <li><b>I am seeing &amp;#nnnn; sequences output instead of what I typed!</b></li>
 
-<p>To enable compliance with HTML and XHTML specifications as well as enabling browsers to automatically support a users selected language we enable a <i>charset</i> tag to be output to the browser. This identifies the primary character set the user has selected, eg. iso-8859-1 for Western European languages (English, German, French, etc.), windows-1251 for Cyrillic alphabets (Russian, Bulgarian, etc.) and so on. The downside to doing this is that most modern browsers (such as Internet Explorer) convert any character not present in that character set into what are termed <i>Numerical Character References</i> or NCR's. These take the form of &amp;#nnnn; where nnnn is the hexadecimal number of that characters UNICODE reference.</p>
+<p>To enable compliance with HTML and XHTML specifications as well as enabling browsers to automatically support a users selected language we enable a <i>charset</i> tag to be output to the browser. This identifies the primary character set the user has selected, eg. utf-8 for Western European languages (English, German, French, etc.), windows-1251 for Cyrillic alphabets (Russian, Bulgarian, etc.) and so on. The downside to doing this is that most modern browsers (such as Internet Explorer) convert any character not present in that character set into what are termed <i>Numerical Character References</i> or NCR's. These take the form of &amp;#nnnn; where nnnn is the hexadecimal number of that characters UNICODE reference.</p>
 
-<p>Unfortunately PHP (which effectively supports only iso-8859-1 at this time) does not appear to attempt to process this data back into normal characters. Therefore phpBB treats them as text the user has entered and wishes to <i>see</i>. phpBB enables this  by turning the &amp; into &amp;amp;. This results in the characters appearing as they do. Although we could ignore &amp;#nnnn; (there are pro's and of course con's to doing so) at present we don't.</p>
+<p>Unfortunately PHP (which effectively supports only utf-8 at this time) does not appear to attempt to process this data back into normal characters. Therefore phpBB treats them as text the user has entered and wishes to <i>see</i>. phpBB enables this  by turning the &amp; into &amp;amp;. This results in the characters appearing as they do. Although we could ignore &amp;#nnnn; (there are pro's and of course con's to doing so) at present we don't.</p>
 
 <p>If you are finding this to be problem the solution is to remove the <pre>charset={S_CONTENT_ENCODING}</pre> text from <b>all</b> the _header.tpl template files in all templates. The downside to this is a users browser will not automatically switch its charset to that selected by the user (however this is unlikely to be a big problem since users typically run their browser by default in the language they wish to use). Alternatively you can modify the $lang['ENCODING'] entry in the appropriate language file. Until PHP (and all browsers!) trully support UNICODE these problems will persist across all boards.</p></li>
 
@@ -193,7 +193,7 @@ Feel free to search our community forum for the information you require. <b>PLEA
 
 <h2><u>Copyright and disclaimer</u></h2>
 
-<p>This application is opensource software released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_new">GPL</a>. Please see source code and the Docs directory for more details. This package and its contents are Copyright © 2002 <a href="http://www.phpbb.com/" target="_new">phpBB Group</a>, All Rights Reserved.</p>
+<p>This application is opensource software released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_new">GPL</a>. Please see source code and the Docs directory for more details. This package and its contents are Copyright ÃÂ© 2002 <a href="http://www.phpbb.com/" target="_new">phpBB Group</a>, All Rights Reserved.</p>
 <!-- END DOCUMENT -->
 
 				</td>

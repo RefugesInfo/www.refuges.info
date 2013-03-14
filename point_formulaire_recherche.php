@@ -14,6 +14,9 @@ $conditions_polygones = new stdClass;
 $modele->infos_base = infos_base ();
 $modele->titre = "Recherche de refuges/cabanes/gites";
 
+// preparation de la liste deroulante des massifs:
+// on va faire que 2 niveau, en dur.
+// j'aurais put utiliser toute la chaine montagnarde. mais bon.
 $conditions_polygones->ids_polygone_type=$config['id_massif'];
 $modele->massifs=infos_polygones($conditions_polygones);
 

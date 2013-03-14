@@ -37,7 +37,7 @@ window.onload = function () {
 		new OpenLayers.Layer.Google              ('Google map',   {visibility: false}),
 		new OpenLayers.Layer.Google.Photo        ('Google photo', {visibility: false}),
 		new OpenLayers.Layer.OSM                 ('OSM'),
-		new OpenLayers.Layer.WRI                 ('Maps.Refuges.info'),
+		new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
 		new OpenLayers.Layer.Velo                ('OpenCycleMap'),
 		new OpenLayers.Layer.IGN                 ('IGN',       '<?=$config['ign_key'];?>'),
 		new OpenLayers.Layer.IGN.Photo           ('IGN photo', '<?=$config['ign_key'];?>'),
@@ -80,4 +80,28 @@ window.onload = function () {
 			}*/
 		})
 	]);
+}
+
+
+function validation() {
+    // variable choix est a "supprimer" "ajouter"...
+    // elle est mise en place par les boutons
+    switch ( choix )
+    {
+        case 'supprimer':
+            return confirm("Etes vous sur de SUPPRIMER la fiche ?");
+        case 'Ajouter':
+        case 'Modifier':
+            // valide les champs
+            return true;
+        default:
+            return true;
+    }
+}
+
+function affiche_et_set( el , affiche, valeur ) {
+  document.getElementById(el).style.visibility = affiche ;
+  document.getElementById(el).value = valeur ;
+  
+  return false;
 }

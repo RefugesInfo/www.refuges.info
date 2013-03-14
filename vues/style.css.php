@@ -187,41 +187,96 @@ DT { /* listes, de definitions */
   font-weight: bold;
   margin-top:4px;
   }
+DL > DL { /* decale les elements imbriques de 1em */
+  padding-left: 1em;
+  }
+DT > BUTTON {
+  font-size: 60%;
+  padding: 0px ;
+  }
 LI {
   margin-bottom:3px;
   }
-/* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
-.libelle { 
+
+  /*====== FORMULAIRES======*/
+  /* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
+
+FORM#form_point FIELDSET {
+  border: thin solid transparent;  /* pour les allergiques aux barrieres ;) */
+  }
+FORM#form_point.lien_syntaxe { 
   float:left;
   width:150px;
-  font-size: 13px;
   }
-.textarea {
+FORM#form_point .booleen {
+  clear: left;
   float:left;
+  width: 500px;
+  text-align: right;
+  padding: 1px;
+  }
+FORM#form_point .booleen LEGEND {
+  clear: left;
+  float:left;
+  }
+FORM#form_point .booleen LABEL {
+  clear: none;
+  float: none;
+  /*width: 400px;*/
+  padding-left: 10px;
+  }
+FORM#form_point TEXTAREA {
+  clear: both;
+  float: left;
   width:650px;
   height:170px;
   }
-.lien_syntaxe { 
-  float:left;
-  width:150px;
-  }
-.big_one {
+FORM#form_point LABEL.textarea  SPAN {
+  clear: both;
   float:left;
   }
 
-/*====== FORMULAIRES======*/
-FORM { /* les formulaires, dans le navigateur ou dans la recherche */
-  padding: 2px;
+FORM#form_export LABEL {
+  clear: none;
+  float: left;
+  width: 16em;
   }
-/*LABEL {
-	margin-left: 10px;
-	border-bottom: 1px solid #<?=$couleur_decoration_titres?>;
-	border-left: 1px solid #<?=$couleur_decoration_titres?>;
-  }*/
-LEGEND , .fauxfieldset-legend {
+#form_export FIELDSET FIELDSET:hover {  /* deco sur le fieldset actif, pour bien le differencier des autres */
+  border: thin dotted black;
+  }
+
+FORM.wri SPAN , FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
+  clear: left;
+  float: left;
+  }
+FORM LABEL[title]:after, FORM LEGEND[title]:after {  /* combine pour exclure OL , leurs LABEL ne sont pas dans des FORM */
+  content: url(/images/tooltip.png);
+  }
+FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
+  float: left;
+  border: thin solid transparent;
+  }
+FORM .champs_null_masque>INPUT { /* couleur de la case "champ null" et masquee par defo */
+  outline : red solid 2px ;
+  float: left;
+  display: none;
+  }
+FORM .champs_null_masque > INPUT:checked  + *  INPUT { /* desactive les INPUT qui suivent */
+  visibility: hidden;
+  }
+FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon endroit */
+  clear: none;
+  }
+
+.fauxfieldset-legend {
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;
   font-weight: bold;
+  }
+/* Cas particulier pour OL qui a des labels non standards */
+DIV#switch_nav LABEL {
+  float: none;
+  clear: none;
   }
 
 /*==========DIVERS=======*/

@@ -92,7 +92,7 @@
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
 			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
 			<dt class="condense">Sur le site depuis:</dt>
-			<dd class="condense"><?echo date ("d/m/Y", $modele->date_insertion)?></dd>
+			<dd class="condense"><?echo date ("d/m/Y", $modele->date_creation_timestamp)?></dd>
 
 			<?// Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
 			if (isset($modele->date_derniere_modification)) {?>
@@ -121,6 +121,16 @@
 			
 <!--========================================= COORDONNÉES =========================================-->
 			<dt>Coordonnées:</dt>
+            <dd>
+                <span>
+                Précision:
+                <?if ($modele->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
+						<strong><?=$modele->nom_precision_gps?></strong>
+				<?}else{?>
+						<?=$modele->nom_precision_gps?>
+					<?}?>
+                </span>
+            </dd>
 			<dd>
 				Altitude: <em><?=$modele->altitude?>m,</em>
 				<?if (!$modele->mini_carte) {?>
@@ -128,16 +138,12 @@
 				<?}else{?>
 					<span id="coordonnees-value">
 						<span id="titre-lon">Longitude</span>: <em id="lon"><?=$modele->longitude?></em>
-						<span id="titre-lat">Latitude</span>: <em id="lat"><?=$modele->latitude?></em>,
+						<span id="titre-lat">Latitude</span>: <em id="lat"><?=$modele->latitude?></em>
 					</span>
 					<select id="select-projection">
 						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
 					</select>
-					<?if ($modele->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
-						<strong><?=$modele->nom_precision_gps?></strong>
-					<?}else{?>
-						<?=$modele->nom_precision_gps?>
-					<?}?>
+					
 					(
 						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$modele->id_point?>">gpx</a>
 					,
@@ -169,7 +175,7 @@
 			<?php if (isset($modele->infos_complementaires)) { ?>
 
 			<dt style='clear: left;'>Informations complémentaires:</dt>
-			<?php foreach ($modele->infos_complementaires as $champ => $val) {?>
+			<?php foreach ($modele->infos_complementaires as $champ => $val) { ?>
 				<dd><?=$champ?>: <em><?=$val['valeur']?></em> <?php
 					if (isset($val['lien'])) 
 					{?><a href="<?=$val['lien']?>"><?=$val['texte_lien']?></a><?php } 

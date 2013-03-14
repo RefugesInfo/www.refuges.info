@@ -38,8 +38,11 @@ if (isset ($_GET['bbox']))
   $conditions->nord=$bbox [3];
   $conditions->ouest=$bbox [0];
   $conditions->est=$bbox [2];
-}
+	// jmb: conditions->geometrie contient la BBOX de recherche
+	// en theorie, il faudrait supprimer le nord/sud/est/ouest, mais j'ai fait assez de conneries aujourdhui
+	$conditions->geometrie = cree_geometrie($_GET['bbox'], 'bboxOL');
 
+}
 
 
 $conditions->type_point=$_GET['liste_id_point_type'];
