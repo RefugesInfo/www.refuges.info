@@ -310,10 +310,9 @@ function feature_gml($point)
 // retourne l'entête GeoJSON
 function entete_geojson()
 {
-  return "
-  var pointsWRI = {
+  return "{
     \"type\": \"FeatureCollection\",
-    \"features\": [
+    \"features\": [    
 ";
 }
 
@@ -323,8 +322,7 @@ function entete_geojson()
 //$point est un objet contenant toute les propriétés du point
 function feature_geojson($point)
 {
-  return "
-        {
+  return "{
             \"geometry\": {
                 \"type\": \"Point\",
                 \"coordinates\": [
@@ -337,7 +335,7 @@ function feature_geojson($point)
                 \"nom\": \"".str_replace('"','\"',$point->nom)."\",
                 \"url\": \"".lien_point_fast($point) ."\",
                 \"type\": \"$point->nom_icone\"
-            },
+            }
         },
 ";
 }
@@ -702,7 +700,7 @@ function fichier_exportation($conditions,$format)
 
 
   elseif ($format=="geojson")
-    $contenu.="\t\t\t]\n\t};";
+    $contenu=substr($contenu,0,-3)."\t\t\t]\n\t}";
   
   // les formats fournissant du gpx, se terminent tous par cette simple balise
   elseif ($config['formats_exportation'][$format]['extension_fichier'] =="gpx")
