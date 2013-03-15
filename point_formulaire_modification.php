@@ -53,8 +53,7 @@ if ( isset($_REQUEST["id_point"]) )
     if ($point->erreur) 
         erreur_on_arrete("<strong>problème : $point->message</strong>");
 
-    $modele->localisation = localisation ($point->polygones); // FIXME : la fonction localisation n'est pas faite pour ça voyons !
-    $modele->serie = param_cartes ($modele->localisation);
+    $modele->serie = param_cartes ($point);
 
     // bug du point_gps recree a chaque fois: il faut le transmettre en invisible.
     $modele->champs->invisibles->id_point_gps = new stdClass;

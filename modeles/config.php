@@ -1,8 +1,11 @@
 <?php
-/*************************************************
-Constantes de configuration, plus propre qu'en dur
-*************************************************/
-// 15/02/13 jmb : FIXME, passer les INT en INT sinon PGsql fera pouf !
+/**
+Fichier regroupant les paramètres + config du site
+des dossiers, des chemins, des options par défaut, etc.
+tout dans un gros tableau $config qu'il suffit de récupérer en déclarant 
+global $config; dans les fonctions
+
+**/
 
 // Permet d'ajouter le chemin dans lequel se trouve le config.php au path de recherche, ainsi, il suffit d'inclure le config.php afin de pouvoir faire des require_once('modele.php');
 ini_set('include_path',ini_get('include_path').':'.__DIR__.':');
@@ -17,15 +20,22 @@ $config['ign_key']="ev2w14tv2ez4wpypux2ael39"; // ID contrat 0004365 / Expire le
 $config['chemin_openlayers']='/ol2.12.4/'; 
 $config['carte_base'] = 'maps.refuges.info';
 //$config['carte_base'] = 'Google';
-$config['cartes_vignettes'] = Array (
-//	'Pays'      => Array ('Carte initiale', 'article', 'Carte agrandie', échelle),
-	'France'    => Array ($config['carte_base'], ''      , 'IGN',          50000),
-	'Suisse'    => Array ($config['carte_base'], ''      , 'SwissTopo',    50000),
-	'Italie'    => Array ($config['carte_base'], 'de l\'', 'Italie',      100000),
-	'Espagne'   => Array ($config['carte_base'], 'de l\'', 'Espagne',      25000),
-	'Andorre'   => Array ($config['carte_base'], ''      , 'IGN',          25000),
-//	'Argentina' => Array ('Google'          , ''      , 'OpenCycleMap', 50000),
-	'Autres'    => Array ($config['carte_base'], ''      , 'OpenCycleMap', 50000),
+
+/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve (utilisé pour les vignettes
+des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
+le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap 
+car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
+
+$config['fournisseurs_fond_carte'] = 
+Array 
+(
+     // nom pays chez OSM                ?                   français  Nom layer      échelle 
+     'France métropolitaine'=> Array ($config['carte_base'], ''      , 'IGN',          50000),
+     'Schweiz'              => Array ($config['carte_base'], ''      , 'SwissTopo',    50000),
+     'Italia'               => Array ($config['carte_base'], 'de l\'', 'Italie',      100000),
+     'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',      25000),
+     'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',          25000),
+     'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap', 50000), // dans les autres cas
 );
 
 // voici les mensurations des taille des photos afficher sur le site ( pour éviter une guirlande )
@@ -71,9 +81,9 @@ $config['id_zone_accueil']=3304; // sly en fait ce sont les alpes de chez nous
 $config['tout_type_refuge']="7,9,10";
 
 // C'est clair que c'est nul, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'intéroger le bon id directement
-$config['id_cabane_gardee']=7;  // passage en INT et plus STR
-$config['id_refuge_garde']=10; // passage en INT et plus STR
-$config['id_gite_etape']=9;// passage en INT et plus STR
+$config['id_cabane_gardee']=7; 
+$config['id_refuge_garde']=10; 
+$config['id_gite_etape']=9;
 
 $config['champs_binaires_simples_points']=array('couvertures','eau_a_proximite','bois_a_proximite','latrines','sommaire','poele','cheminee','clef_a_recuperer');
 $config['champs_binaires_points']=array_merge(array('ferme','matelas'),$config['champs_binaires_simples_points']);
@@ -82,8 +92,10 @@ $config['champs_simples_points']=array_merge(array("nom","places","remark","prop
 // les numéros d'id spéciaux qu'on trouve dans les bases
 // avec ça c'est une news générale
 $config['numero_commentaires_generaux']=-2;
+
 // ça, c'est le polygone "qui n'existe pas" et qui contient les points dans aucuns polygone de même type, 
 // on pourrait appeler ça "la vallée" pour les massif, le néant pour les cartes
+//FIXME : sauf erreur, ce truc n'a plus de raison d'exister -- sly 15/03/2013
 $config['numero_polygone_fictif']=$config['numero_massif_fictif']=0;
 
 //nombre maximum de point que peut sortir la recherche

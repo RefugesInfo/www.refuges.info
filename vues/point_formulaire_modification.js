@@ -20,8 +20,8 @@ window.onload = function () {
 				force: {
 					lat: <?=$point->latitude?>, 
 					lon: <?=$point->longitude?>, 
-					scale: <?=$modele->serie[1]?>,
-					baseLayer: 'Google'
+					scale: <?=$modele->serie[3]?>,
+					baseLayer: '<?=$modele->serie[2]?>'
 				}
 			}),
 			new OpenLayers.Control.LayerSwitcherConditional (),
