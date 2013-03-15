@@ -63,9 +63,11 @@ switch( $_REQUEST["action"] )
 				$html.=$verbe;
 			$html.="dans la base</h5>";
 			$html.="<p><a href=\"".lien_point_lent($retourid)."\">Cliquez ici pour voir la fiche</a></p>";
+			/* COMMENTÉ TEMPORAIREMENT : sera ré-activé, d'une autre façon sans doute, sur la zone dev -- sly
 			$html.="<p>
 			<h5>Pour continuer :</h5>
 			<a href='/point_formulaire_modification.php?dupliquer=$retourid'> Dupliquer un autre point d'information au même endroit</a></p>";
+                        */
 		}
 		break;
 

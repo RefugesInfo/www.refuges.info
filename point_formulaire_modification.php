@@ -53,8 +53,7 @@ if ( isset($_REQUEST["id_point"]) )
     if ($point->erreur) 
         erreur_on_arrete("<strong>problème : $point->message</strong>");
 
-    $modele->localisation = localisation ($point->polygones); // FIXME : la fonction localisation n'est pas faite pour ça voyons !
-    $modele->serie = param_cartes ($modele->localisation);
+    $modele->serie = param_cartes ($point);
 
     // bug du point_gps recree a chaque fois: il faut le transmettre en invisible.
     $modele->champs->invisibles->id_point_gps = new stdClass;
@@ -66,7 +65,6 @@ if ( isset($_REQUEST["id_point"]) )
     $bouton_suppr->type = "submit";
     $bouton_suppr->valeur = "supprimer";
     $bouton_suppr->label = "Suppression de la fiche";
-    $bouton_suppr->js_onclick = "confirmation(this, 'SUPPRIMER')";
     
     //cosmétique
     $icone="&amp;iconecenter=ne_sait_pas";
@@ -88,8 +86,9 @@ elseif ( isset($_REQUEST["id_point_type"]))
     // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
     $point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
 	$point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
-	$modele->serie [1] = 20000; // Echelle de la carte
-  
+    
+    // ça me semble le moins pire de proposer le fond spécial saisie "google photos" par défaut
+	$modele->serie = $config['fournisseurs_fond_carte']['Saisie'];
 	// on force l'id du point à vide histoire de ne pas modifier le modèle
 	unset($point->id_point);
   
@@ -239,7 +238,7 @@ if ( !empty($point->equivalent_places_matelas) )
 {
   $modele->champs->places_matelas->label = $point->equivalent_places_matelas ;
   $modele->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
-  $modele->champs->places_matelas->valeur = $point->places_matelas ; // retourne "" si existe pas
+  $modele->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
 }
 
 // ===================================

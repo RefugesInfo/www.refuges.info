@@ -377,7 +377,7 @@ function lien_point_lent($id_point)
 /* fonction simple qui renvois une chaine avec liens au format :
  Pays + Massif + Département + carte topographique + (communes ?) + (parc protégé ?)
 On peut lui passer un paramètre additionnel indiquant quelle meta-categorie traiter
-FIXME : cette fonction ne devrait pas générer du HTML, et donc, elle devient en gros inutile ou presque
+FIXME : cette fonction ne devrait pas générer du HTML, juste renvoyer les infos pour que les vues s'en occupent
 */
 function localisation($polygones,$categorie="")
 {
@@ -399,52 +399,21 @@ foreach ($polygones as $polygone)
 return trim($html,"+");
 }
 
-// Définit la carte et l'échèle suivant la présence d'une zone dans la chaine de localisation
-// Dominique 28/05/2012
-// FIXME -> oulla qu'est-ce que c'est que cette tambouille, convertir en utilisant infos_point et mettre ces infos en base -- sly
-function param_cartes ($localisation) {
-	$series = Array (
-		'France'    => Array ('Maps.Refuges.info',          50000), // Inhibition temporaire, l'API ne fonctionnat plus / Dominique 30/08/2012
-		'Suisse'    => Array ('Google',       50000, 'SwissTopo'), // Par défaut on affiche GG, sur demande SwT
-		'Italie'    => Array ('Italie',      100000),
-		'Espagne'   => Array ('Espagne',      25000),
-		'Andorre'   => Array ('IGN',          25000),
-		'Argentina' => Array ('OpenCycleMap', 50000),
-		'Autres'    => Array ('Google',      100000),
-	);
-	return $series ['France']; // par défaut
-
-	// Il doit y avoir mieux que ce découpage :
-	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $localisation));
-	foreach ($chploc AS $loc)
-		if (isset ($series [$loc]))
-			return $series [$loc];
-			
-	return $series ['Autres']; // par défaut
+// Définit la carte et l'échelle suivant la présence du point dans un des polygones connus pour avoir un fond de carte
+// adapté
+function param_cartes ($point) 
+{
+    global $config;
+    // Pour chaque polygones auquel appartient le point, on cherche voir s'il existe un fournisseur de fond de carte "recommandé"
+    // Si plusieurs sont possible, le premier trouvé est renvoyé
+    foreach ($point->polygones as $polygone)
+        foreach ($config['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
+            if ($polygone->nom_polygone==$nom_pays)
+                return $choix_carte;
+    // aucun n'a été trouvé
+    return $config['fournisseurs_fond_carte']['Autres'];
 }
-// Dominique 11/09/2012 utilisation des paramètres de /includes/config.php
-// FIXME : idem
-function param_cartes_vignettes ($modele) {
-	global $config;
-/*	// TODO: Il doit y avoir mieux que ce charcutage :
-	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $modele->localisation));
-	foreach ($chploc AS $loc)
-		if (isset ($config['cartes_vignettes'] [$loc]))
-			$carte =  $config['cartes_vignettes'] [$loc];
-	
-	// Attention, MRI ne couvre pas toute la planette
-	//TODO : il faudrait systématiser pour toutes les cartes
-	if ($modele->longitude < -25 ||
-		$modele->longitude >  45 ||
-		$modele->latitude  <  33
-		)
-		foreach ($carte AS $k => $v)
-			if ($v == 'maps.refuges.info')*/
-				$carte [$k] = 'OpenCycleMap';
 
-	$carte = $config['cartes_vignettes'] ['Autres']; // par défaut
-	return $carte;
-}
 
 // Par choix, la notion de fermeture dans la base est enregistrée en un seul champ pour tous les cas 
 // (ruines, détruite, fermée) car ces trois états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
