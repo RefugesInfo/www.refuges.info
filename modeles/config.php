@@ -36,6 +36,7 @@ Array
      'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',      25000),
      'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',          25000),
      'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap', 50000), // dans les autres cas
+     'Saisie'               => Array ($config['carte_base'], ''      , 'Google photo', 20000), // cas spécial pour la saisie de point
 );
 
 // voici les mensurations des taille des photos afficher sur le site ( pour éviter une guirlande )

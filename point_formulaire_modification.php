@@ -86,8 +86,9 @@ elseif ( isset($_REQUEST["id_point_type"]))
     // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
     $point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
 	$point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
-	$modele->serie [1] = 20000; // Echelle de la carte
-  
+    
+    // ça me semble le moins pire de proposer le fond spécial saisie "google photos" par défaut
+	$modele->serie = $config['fournisseurs_fond_carte']['Saisie'];
 	// on force l'id du point à vide histoire de ne pas modifier le modèle
 	unset($point->id_point);
   
