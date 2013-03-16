@@ -8,7 +8,7 @@ global $config; dans les fonctions
 **/
 
 // Permet d'ajouter le chemin dans lequel se trouve le config.php au path de recherche, ainsi, il suffit d'inclure le config.php afin de pouvoir faire des require_once('modele.php');
-ini_set('include_path',ini_get('include_path').':'.__DIR__.':');
+ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.__DIR__.PATH_SEPARATOR);
 
 // Ce fichier est privée et contient des différentes clefs et mot de passe
 require_once("config_privee.php");
