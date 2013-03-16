@@ -98,7 +98,7 @@ function stateChanged() {
 					popupAnchor: [0, 0]
 				});
 				plotmark.setIcon(cabaneIcon); // On applique notre icone juste créé
-				plotmark.bindPopup('<a href="' + plotlist.features[i].properties.url + '">' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
+				plotmark.bindPopup('<a href="#" onclick="document.getElementById(\'carte\').style.display = \'none\';document.getElementById(\'infosPoint\').style.display = \'block\';">' + plotlist.features[i].properties.url + '<br/>' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
 				plotlayers.push(plotmark);
 			}
 		}

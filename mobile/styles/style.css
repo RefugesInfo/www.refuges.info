@@ -67,12 +67,12 @@ nav a:hover {
 	background: #cccccc;
 }
 
-section, #carte {
-	height: 100%;
+section {
+	height: 90%;
 }
 
-#map {
-	height: 90%;
+#carte, #map {
+	height: 100%;
 }
 
 footer {
