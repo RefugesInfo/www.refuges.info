@@ -6,7 +6,7 @@
 
 // 14/03/2013 Léo - Création
 
-/************************* DÉBUT FICHIER *************************/
+/************************* FONCTIONS CARTE *************************/
 
 // Les variables necessaires au bon fonctionnement du truc
 var map;
@@ -98,7 +98,7 @@ function stateChanged() {
 					popupAnchor: [0, 0]
 				});
 				plotmark.setIcon(cabaneIcon); // On applique notre icone juste créé
-				plotmark.bindPopup('<a href="#" onclick="document.getElementById(\'carte\').style.display = \'none\';document.getElementById(\'infosPoint\').style.display = \'block\';">' + plotlist.features[i].properties.url + '<br/>' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
+				plotmark.bindPopup('<a href="#" onclick="toogleMap();">' + plotlist.features[i].properties.url + '<br/>' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
 				plotlayers.push(plotmark);
 			}
 		}
@@ -113,3 +113,21 @@ function removeMarkers() {
 	plotlayers=[];
 }
 
+/************************* FONCTIONS POINTS *************************/
+
+
+// Fonction appelée au avant d'ajouter les marqueurs fournis par AJAX pour enlever les précédents
+function toogleMap() {
+	var carte = document.getElementById('carte');
+	var points = document.getElementById('infosPoint');
+
+	if(points.style.display == 'none') {
+		points.style.display = 'block';
+		carte.style.display = 'none';
+	}
+	else if(carte.style.display == 'none') {
+		points.style.display = 'none';
+		carte.style.display = 'block';
+	}
+	else {}
+}

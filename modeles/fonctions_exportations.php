@@ -334,7 +334,8 @@ function feature_geojson($point)
             \"properties\": {
                 \"nom\": \"".str_replace('"','\"',$point->nom)."\",
                 \"url\": \"".lien_point_fast($point) ."\",
-                \"type\": \"$point->nom_icone\"
+                \"type\": \"$point->nom_icone\",
+                \"id_point\": \"$point->id_point\"
             }
         },
 ";
