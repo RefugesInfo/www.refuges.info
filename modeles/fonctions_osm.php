@@ -66,7 +66,10 @@ function recuperation_poi_osm($conditions_recherche)
 	//de la base ! On gagne en effet en taille de requête, mais pas sûr du tout qu'on y gagne en vitesse
 	// la fonction "explain" de postresql (explain select * blabla) donne un aperçu des indexes utilisés et 
 	// des opérations de parcours systèmatique
+    // FIXME Quand on passera au schéma créé ou copié ce sera grandement simplifié
+    // FIXME 2 : En fait, cette requête ne marche pas car elle ne renvoi pas toutes les propriétées
 	$query_recherche="SELECT *
+	                         ,st_asgml(ST_GeomFromText(concat('POINT(',longitude,' ',latitude,')'),4326)) as geometrie_gml
 						FROM
 								osm_pois AS poi
 								NATURAL JOIN 
@@ -78,64 +81,17 @@ function recuperation_poi_osm($conditions_recherche)
 							AND latitude<$conditions_recherche->nord
 							AND latitude>$conditions_recherche->sud
 							$limite_sql";						
-//PDO-	
-/*
-  $query_recherche=
-"SELECT osm_pois2.id_osm_poi,
-		osm_pois2.latitude,
-		osm_pois2.longitude,
-		osm_tags2.k,
-		osm_tags2.v
-  FROM osm_tags,
-		osm_pois_tags,
-		osm_pois,
-		osm_tags as osm_tags2,
-		osm_pois_tags as osm_pois_tags2,
-		osm_pois as osm_pois2 
-  WHERE 
-  
-  $tag_condition AND
-  osm_tags.id_osm_tag=osm_pois_tags.id_osm_tag AND 
-  
-  osm_pois_tags.id_osm_poi=osm_pois.id_osm_poi AND 
-  osm_pois.id_osm_poi=osm_pois2.id_osm_poi AND
-  
-  osm_pois2.id_osm_poi=osm_pois_tags2.id_osm_poi AND
-  osm_pois_tags2.id_osm_tag=osm_tags2.id_osm_tag AND
-  
-  osm_pois2.longitude<$conditions_recherche->est AND
-  osm_pois2.longitude>$conditions_recherche->est AND
-  osm_pois2.latitude<$conditions_recherche->nord AND
-  osm_pois2.latitude>$conditions_recherche->sud
-  $limite_sql";
-*/
-//die($query_recherche);
-//PDO-
-//	$res=mysql_query($query_recherche);
-//  $compte=0;
-	//PDO+
+
 	$res = $pdo->query($query_recherche);
         if (!$res)
           return erreur("Execution requête impossible",$query_recherche);
-//jmb: simplifie grace a la nouvell requete
-//PDO-  while ($point=mysql_fetch_object($res))
-//PDO+
 
 	while ( $point = $res->fetch() )
 	{
 		$id=$point->id_osm_poi;
     
-		//jmb: simplifie grace a la nouvell requete
-		//if ($id!=$old_id) // BIDOUILLE de la limite : on vient de trouver un nouveau point correspondant
-		//{
-		//	$compte++;
-		//	if ($compte==$conditions_recherche->limite)
-		//		break;
-		//}$point_osm
 		$point_osm = new stdClass;
-		$point_osm->site='osm'; // Dominique: permet de rechercher les icones et styles correspondantes à OSM
-		$point_osm->latitude=$point->latitude;
-		$point_osm->longitude=$point->longitude;
+		$point_osm->geometrie_gml=$point->geometrie_gml;
 
 		//jmb: dans un switch case pour + de lisibilite, le "k" n'est pas important
 		switch( $point->v ) {
@@ -153,30 +109,7 @@ function recuperation_poi_osm($conditions_recherche)
 			case "opening_hours":  $point_osm->horaires_ouvertures=$point->v; break;  //FIXME en anglais
 		}
 	$points[$id]=$point_osm;
-	} //fin du swith resultat
-	
-/*		if ($point->k=="tourism" and $point->v=="hotel")
-			$point_osm->nom_icone="hotel";
-		elseif($point->k=="tourism" and $point->v=="camp_site")
-			$point_osm->nom_icone="camping";
-    elseif($point->k=="shop" and ($point->v=="supermarket" or $point->v=="convenience" ))
-      $point_osm->nom_icone="superette";
-    elseif($point->k=="tourism" and $point->v=="guest_house")
-      $point_osm->nom_icone="chambre-hotes";
-    else
-      ;
-    if ($point->k=="name")
-      $point_osm->nom=$point->v;
-    if ($point->k=="phone")
-      $point_osm->telephone=$point->v;
-    if ($point->k=="website")
-      $point_osm->site_web=$point->v;
-    if ($point->k=="description")
-      $point_osm->description=$point->v;
-    if ($point->k=="opening_hours") 
-      $point_osm->horaires_ouvertures=$point->v; // FIXME : à convertir en français
-      $old_id=$id;
-*/
+	} 
   
   return $points;
 }
@@ -188,52 +121,34 @@ On lui passe $tag->k (clé du tag) et $tag->v (valeur du tag)
 */
 function insert_ou_recupere_tag($tag)
 {
-  // J'ai pas réussi à le passer par référence lui, je pige pas
-  global $tags_cache,$pdo;
- // déjà dans le cache ?
- if (isset($tags_cache[$tag->k][$tag->v]))
- return $tags_cache[$tag->k][$tag->v];
-  // test s'il n'y est pas déjà
-  //
-//PDO-
-//  $query_is_tag="select id_osm_tag from osm_tags where k='".mysql_real_escape_string($tag->k)."' and v='".mysql_real_escape_string($tag->v)."'";
-//  $res=mysql_query($query_is_tag);
-	//PDO+  
-	//$res = $pdo->query($query_is_tag) ;
-	$tagk = $pdo->quote($tag->k);
-	$tagv = $pdo->quote($tag->v);
-	
-	$query_is_tag="SELECT id_osm_tag FROM osm_tags WHERE k=".$tagk." AND v=".$tagv;
-	$res = $pdo->query($query_is_tag);
-	$row = $res->fetch() ;
-	if ( $row )   // ya bien 1 resultat
-		$idrow = $row->id_osm_tag ;
-	else
-	{
-		$query_insert_tag="INSERT INTO osm_tags
-						SET k=".$tagk.", v=".$tagv."
-						LIMIT 1 ";
-						// RETURNING id // FIXME POSTGRESQL  lastinsertid
-		$res = $pdo->query($query_insert_tag);
-		$res->fetch();
-		$idrow = $res->lastInsertId();  // MySQL ONLY
-		//$idrow=$res->fetch()->id POSTGRESQL
-	}
-	//Mise en cache
-	$tags_cache[$tag->k][$tag->v]=$idrow;
-	return $idrow ;
-
-//  if (mysql_num_rows($res)==1)
-//    $tag_present=mysql_fetch_object($res);
-//  else
-//  {
-//    $query_insert_tag="Insert into osm_tags set k='".mysql_real_escape_string($tag->k)."', v='".mysql_real_escape_string($tag->v)."'";
-//    mysql_query($query_insert_tag);
-//    $tag_present->id_osm_tag=mysql_insert_id();
-//  }
-//  //Mise en cache
-//  $tags_cache[$tag->k][$tag->v]=$tag_present->id_osm_tag;
-//  return $tag_present->id_osm_tag;
+    // J'ai pas réussi à le passer par référence lui, je pige pas
+    global $tags_cache,$pdo;
+    // déjà dans le cache ?
+    if (isset($tags_cache[$tag->k][$tag->v]))
+        return $tags_cache[$tag->k][$tag->v];
+    // test s'il n'y est pas déjà
+    $tagk = $pdo->quote($tag->k);
+    $tagv = $pdo->quote($tag->v);
+    
+    $query_is_tag="SELECT id_osm_tag FROM osm_tags WHERE k=".$tagk." AND v=".$tagv;
+    $res = $pdo->query($query_is_tag);
+    $row = $res->fetch() ;
+    if ( $row )   // ya bien 1 resultat
+        $idrow = $row->id_osm_tag ;
+    else
+    {
+        $query_insert_tag="INSERT INTO osm_tags
+        SET k=".$tagk.", v=".$tagv."
+        LIMIT 1 ";
+        // RETURNING id // FIXME POSTGRESQL  lastinsertid
+        $res = $pdo->query($query_insert_tag);
+        $res->fetch();
+        $idrow = $res->lastInsertId();  // MySQL ONLY
+        //$idrow=$res->fetch()->id POSTGRESQL
+    }
+    //Mise en cache
+    $tags_cache[$tag->k][$tag->v]=$idrow;
+    return $idrow ;
 }
 
 /*
@@ -281,7 +196,6 @@ function importation_osm_poi($bbox,$xapi_condition)
   }
   else
     return erreur("Aucun POI récupéré depuis OSM");
-  //print_r($pois_osm);
   foreach ($pois_osm as $id_poi => $poi)
   {
     foreach ($poi['tags'] as $tag)
@@ -289,15 +203,10 @@ function importation_osm_poi($bbox,$xapi_condition)
     $sql_values_poi.="($id_poi,$poi[latitude],$poi[longitude]),";
   }
   $insert_poi="INSERT IGNORE INTO osm_pois (id_osm_poi,latitude,longitude) VALUES ".trim($sql_values_poi,",");
-//PDO-  mysql_query($insert_poi);
-	//PDO+
 	$pdo->exec($insert_poi);
   print($insert_poi."\n");
   $insert_poi_tags="INSERT IGNORE INTO osm_pois_tags (id_osm_poi,id_osm_tag) VALUES ".trim($sql_values_tags_poi,",");
-//PDO-  mysql_query($insert_poi_tags);
-	//PDO+
 	$pdo->exec($insert_poi_tags);
-//print($insert_poi_tags."\n");
   return ok("Poi OSM importés avec succès (on espère)");
 }
 

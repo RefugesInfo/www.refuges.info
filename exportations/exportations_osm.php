@@ -38,8 +38,21 @@ $conditions->tag_condition[]['shop']='convenience';
 
 
 /*** Appel à la fonction principal qui nous fourni nos informations ***/
-$modele->pois [] = recuperation_poi_osm ($conditions);
-//print_r($modele->osm_pois);
+$points_osm = recuperation_poi_osm ($conditions);
+if ($points_osm)
+  foreach ($points_osm as $point_osm ) 
+  {
+    $point_osm_export = new stdClass;
+    // On pourrait tout aussi bien envoyer tous les champs mais ça ferait des trucs un peu inutile donc sélection :
+    $point_osm_export->feature_name="point";
+    $point_osm_export->proprietes['nom']="bug";
+    $point_osm_export->proprietes['url']=$point_osm->site_web;
+    $point_osm_export->proprietes['type']="osm/".c($point_osm->nom_icone);
+    $point_osm_export->geometrie_gml=$point_osm->geometrie_gml;
+    $point_osm_export->proprietes['site']='osm'; // Dominique: permet de rechercher les icones et styles correspondantes à OSM
+  
+    $modele->features[]=$point_osm_export;
+  }
 //---------------------------------------------------------------------------------------
 // On affiche tout ça avec le template correspondant au format
 $modele->nom_fichier_export = "pour_openlayers";

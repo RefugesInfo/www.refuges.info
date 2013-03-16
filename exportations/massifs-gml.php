@@ -36,7 +36,6 @@ else
 }
 if (isset($_GET['bbox']))
 	$conditions->geometrie = cree_geometrie($_GET['bbox'], 'bboxOL' ) ;
-//  $conditions->bbox=$_GET['bbox'];
 $conditions->avec_geometrie='gmlol';
 $polygones=infos_polygones($conditions);
 

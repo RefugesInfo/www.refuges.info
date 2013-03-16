@@ -15,27 +15,6 @@
 >
 <name><?=$modele->nom_fichier_export?>.gml</name>
 <description><?=$modele->description?></description>
-	
-	<?php // FIXME : tout ça peut être fusionné avec celui plus bas depuis que GIS gère tout lui même
-	if ($modele->pois) 
-	  foreach ($modele->pois as $types => $points)
-	    if ($points)
-	      foreach ($points as $point) {?>
-		<gml:featureMember>
-			<point>
-				<nom><?=c($point->nom)?></nom>
-				<site><?=c($point->site)?></site>
-				<type><?=c($point->nom_icone)?></type>
-				<url><?=$point->url?></url>
-				<gml:Point>
-					<gml:coordinates decimal="." cs="," ts=" ">
-						<?=$point->longitude?>,<?=$point->latitude?>
-
-					</gml:coordinates>
-				</gml:Point>
-			</point>
-		</gml:featureMember>
-	<?}?>
 <?php 
 // Punaise, impossible d'avoir une indentation propre du gml avec ces imbrications if et foreach
 if ($modele->features) 
@@ -52,25 +31,4 @@ if ($modele->features)
   </gml:featureMember>
   
   <?}?>
-	
-	<?php
-	// FIXME : des linestrings ? quelles lignes strings ?
-	// FIXME : tout ça peut être fusionné avec celui plus bas depuis que GIS gère tout lui même
-	if ($trk) foreach ($trk AS $seg) {?>
-		<gml:featureMember>
-			<trk>
-				<name><?=$seg['name']?></name>
-				<color>
-					<?echo $seg['color'] ? $seg['color'] : 'red'?>
-				</color>
-				<gml:LineString>
-					<url><?=$seg['url']?></url>
-					<gml:coordinates>
-						<?foreach ($seg['trkpt'] AS $point) echo $point['lon'].','.$point['lat'].' '?>
-					</gml:coordinates>
-				</gml:LineString>
-			</trk>
-		</gml:featureMember>
-	<?}?>
-	
 </wfs:FeatureCollection>

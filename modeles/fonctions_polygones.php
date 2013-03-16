@@ -52,60 +52,53 @@ Array
 ******************************************************************/
 function infos_polygones($conditions)
 {
-  global $pdo,$config;
-  $conditions_sql="";
-  
-  // Conditions sur les ids des polygones
-  if (isset($conditions->ids_polygones))
-    if (!verifi_multiple_intiers($conditions->ids_polygones))
-      return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
-    else
-      $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
-  
-  // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
-  if (isset($conditions->non_ids_polygones))
-    if (!verifi_multiple_intiers($conditions->non_ids_polygones))
-      return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
-    else
-      $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
-  
-  if (is_numeric($conditions->limite))
-    $limite="LIMIT $conditions->limite";
-
-  if (!empty($conditions->ordre))
-    $ordre="ORDER BY $conditions->ordre";
-
-  if (isset($conditions->ids_polygone_type))
-    if (!verifi_multiple_intiers($conditions->ids_polygone_type))
-      return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
-    else
-      $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
-  
-  // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
-  if (isset($conditions->geometrie))
-  {
-//    $bbox=explode(",",$conditions->bbox);
-//    $conditions_sql.=" AND geom && 
-//    ST_GeomFromText(('LINESTRING($bbox[0] $bbox[1],$bbox[2] $bbox[3])'),4326)";
-// intersects une linestring ? et le milieu ?
-	$conditions_sql.=" AND geom && ". $conditions->geometrie ;
-  }
-  
-  if ($conditions->avec_geometrie)
-  {
-    // FIXME : notre OL ne sait pas gérer les multipolygon, on bidouille en ne prenant que le 1
-    if ($conditions->avec_geometrie="gmlol")
-    $champs_geometry.=",st_asGML(st_geometryn(geom,1)) AS geometrie_gmlol";
-    else
-      $champs_geometry.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
-  }
-  else
-    $champs_geometry.="";
+    global $pdo,$config;
+    $conditions_sql="";
+    $champs_en_plus="";
+    
+    // Conditions sur les ids des polygones
+    if (isset($conditions->ids_polygones))
+        if (!verifi_multiple_intiers($conditions->ids_polygones))
+            return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
+        else
+            $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
+        
+        // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
+    if (isset($conditions->non_ids_polygones))
+        if (!verifi_multiple_intiers($conditions->non_ids_polygones))
+            return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
+        else
+            $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
+        
+    if (is_numeric($conditions->limite))
+        $limite="LIMIT $conditions->limite";
+        
+    if (!empty($conditions->ordre))
+        $ordre="ORDER BY $conditions->ordre";
+    
+    if (isset($conditions->ids_polygone_type))
+        if (!verifi_multiple_intiers($conditions->ids_polygone_type))
+            return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
+        else
+            $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
+        
+    // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
+    if (isset($conditions->geometrie))
+        $conditions_sql.=" AND geom && ". $conditions->geometrie ;
+    
+    if ($conditions->avec_geometrie)
+    {
+        // FIXME : notre OL ne sait pas gérer les multipolygon, on bidouille en ne prenant que le 1
+        if ($conditions->avec_geometrie="gmlol")
+            $champs_en_plus.=",st_asGML(st_geometryn(geom,1)) AS geometrie_gmlol";
+        else
+            $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+    }
 
 	// jmb: nom de la zone auquel le poly appartient.
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
-	$champs_geometry.=", 
+	$champs_en_plus.=", 
 		(SELECT id_polygone
 			FROM polygones AS zones
 			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
@@ -125,7 +118,7 @@ function infos_polygones($conditions)
                  st_ymin($box) AS sud,
                  st_ymax($box) AS nord,
                  ".colonnes_table('polygones',False)."
-                 $champs_geometry
+                 $champs_en_plus
           FROM polygones,polygone_type
           WHERE 
             polygones.id_polygone_type=polygone_type.id_polygone_type
