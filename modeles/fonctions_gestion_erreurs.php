@@ -15,7 +15,7 @@ function erreur($texte,$seulement_avec_debug="")
 {
   global $config,$pdo;
   
-  if ($config['debug'])
+  if ($config['debug'] and $seulement_avec_debug!="") // Si aucun deuxième paramètre n'a été donné, c'est une erreur mais pas un bug
   {
     if (isset($pdo))
       if ($pdo->errorInfo())

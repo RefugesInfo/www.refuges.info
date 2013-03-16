@@ -86,10 +86,10 @@ $config['id_cabane_gardee']=7;
 $config['id_refuge_garde']=10; 
 $config['id_gite_etape']=9;
 
+// Champs valables pour les points classés par spécificité (permet de dynamiquement gérer le formulaire de saisie et d'affichage)
 $config['champs_binaires_simples_points']=array('couvertures','eau_a_proximite','bois_a_proximite','latrines','sommaire','poele','cheminee','clef_a_recuperer');
 $config['champs_binaires_points']=array_merge(array('ferme','matelas'),$config['champs_binaires_simples_points']);
-$config['champs_simples_points']=array_merge(array("nom","places","remark","proprio","id_point_type","id_createur","modele","id_point_gps",'places_matelas','nom_createur'),$config['champs_binaires_points']);
-
+$config['champs_simples_points']=array_merge(array("censure","nom","places","remark","proprio","id_point_type","id_createur","modele","id_point_gps",'places_matelas','nom_createur'),$config['champs_binaires_points']);
 // les numéros d'id spéciaux qu'on trouve dans les bases
 // avec ça c'est une news générale
 $config['numero_commentaires_generaux']=-2;

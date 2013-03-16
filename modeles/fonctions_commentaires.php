@@ -25,7 +25,9 @@ $conditions->texte -> condition sur le contenu du commentaire
 $conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
 $conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
+
 $conditions->avec_commentaires_modele=True -> Très spécifique, pour avoir aussi les commentaires sur les modeles de points, le par défaut est non mais ça n'a de sens qu'avec $conditions->avec_infos_point=True
+$conditions->avec_points_censure=True : Par défaut, False : les commentaires des points censurés ne sont pas retournés
 
 Renvoi un tableau contenant des objets commentaires sous cette forme :
 stdClass Object
@@ -114,6 +116,8 @@ function infos_commentaires ($conditions)
 
 		if (!$conditions->avec_commentaires_modele)
 			$condition_en_plus.=" AND modele!=1 ";
+        if (!$conditions->avec_points_censure)
+           $condition_en_plus.=" AND censure=False "; 
 	}
    
 	$query="SELECT 

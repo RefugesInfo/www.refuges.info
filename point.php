@@ -16,19 +16,27 @@ require_once ("fonctions_points.php");
 require_once ("fonctions_pubs.php");
 require_once ("fonctions_utilisateurs.php");
 
+$modele = new stdClass();
+$condition = new stdClass();
+
 // Arguments de la page
 $array = explode ('/',$_SERVER['PATH_INFO']);
 $id_point = $array [1]; // $array [1] contient l'id du point
-$modele = new stdClass();
+
 // FIXME je trouverais plus claire de mettre le point dans $modele->point pour éviter d'écraser d'autre propriété du modèle
-$modele = infos_point ($id_point);
+
+// On indique de manière bien évidente aux modérateur que cette fiche est censurée
+if ($_SESSION['niveau_moderation']>=1)
+    $meme_si_censure=True;
+else
+    $meme_si_censure=False;
+
+$modele = infos_point ($id_point,$meme_si_censure);
 
 // Les infos du point deviennent des membres du template ($modele->latitude ...)
 // Partie spécifique de la page
 if ($modele->erreur) 
-    $modele->type = 'point_inexistant';
-else if ($modele->nom_type == 'Censuré' && $_SESSION['niveau_moderation']<1) 
-    $modele->type = 'point_censure';
+    $modele->type = 'point_en_erreur';
 else // le point est valide. faut bosser.
 {
     $modele->nom=bbcode2html($modele->nom);
@@ -47,6 +55,7 @@ else // le point est valide. faut bosser.
     $tous_commentaires = infos_commentaires ($conditions_commentaires);
     $modele->annonce_fermeture = texte_non_ouverte ($modele);
 
+
     /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/
     if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
     {
@@ -57,7 +66,6 @@ else // le point est valide. faut bosser.
         
         $g = [ 'lat' => $modele->latitude, 'lon' => $modele->longitude , 'rayon' => 5000 ];
         $conditions->geometrie = cree_geometrie( $g , 'cercle' );
-        //$conditions->distance="$modele->latitude;$modele->longitude;5000";
         
         $conditions->ordre="distance ASC";
         $modele->points_proches=infos_points($conditions);
@@ -83,8 +91,11 @@ else // le point est valide. faut bosser.
     /*********** Préparation des infos complémentaires (c'est à dire les champs à cocher) ***/
     // Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
     
-    // Voici tous ceux qui nous intéresse (FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer ça directement de la base, mais bon... usine à gaz : bof)
-    $champs=array_merge($config['champs_binaires_points'],array('site_officiel'),array('places_matelas'));
+    // Voici tous ceux qui nous intéresse 
+    // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer 
+    // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
+    $champs=array_merge($config['champs_binaires_points'],array('places_matelas'),array('site_officiel'));
+   
     foreach ($champs as $champ) 
     {
         $champ_equivalent = "equivalent_$champ";
@@ -94,17 +105,11 @@ else // le point est valide. faut bosser.
             switch ($champ)
             {
                 //case 'sommaire': // un autre nomSVP, mais pas un pansement en code... on mets abri sommaire et voila.
-                //if ($modele->$champ=="oui")
-                //$val=array('valeur'=> $modele->$champ, 'lien' => lien_mode_emploi("fiche-cabane-non-gardee"), 'texte_lien'=> "(Plus de détail sur ce que cela signifie)");
-                //    break;
                 case 'site_officiel':
                     if ($modele->$champ!="")
                         $val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
                     break;
                 case 'ferme':  // jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
-                    //if ( empty($modele->$champ) )
-                    //    $modele->$champ = "non";
-                    //$val=array('valeur'=> $modele->$champ);
                     unset($val);
                     break;
                     

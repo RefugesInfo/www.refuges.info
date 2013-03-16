@@ -47,8 +47,11 @@ if ( isset($_REQUEST["id_point"]) )
     if ( $_SESSION['niveau_moderation']<1 AND $_SESSION['id_utilisateur']!=$point->id_createur ) 
           erreur_on_arrete("Désolé, mais pour cette opération vous devez être modérateur du site et connecté au forum <a href=\"".$config['connexion_forum']."\">Connexion forum</a>");
 
-    // on charge
-    $point=infos_point($_REQUEST['id_point']);
+    if ($_SESSION['niveau_moderation']>=1)
+        $meme_si_censure=True;
+    else
+        $meme_si_censure=False;
+    $point=infos_point($_REQUEST['id_point'],$meme_si_censure);
     // Merde stop, le point n'existe pas
     if ($point->erreur) 
         erreur_on_arrete("<strong>problème : $point->message</strong>");
@@ -211,20 +214,31 @@ foreach ($textes_area as $libelle => $nom_variable)
 
 /******** Les informations complétaires (booléens, détails) *****************/
 
+// Seuls les modérateurs peuvent passer un point en censuré
+// Je met ce champs dans le lot des "booléens" par simplicité, mais "ignore si c'est censuré" n'aura pas de sens
+if ($_SESSION['niveau_moderation']>=1)
+{
+    $modele->champs->bools->censure = new stdClass ;
+    $modele->champs->bools->censure->label = "Censurer ce point" ;
+    $modele->champs->bools->censure->valeur = $point->censure;
+    $modele->champs->bools->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
+}
+
 foreach($config['champs_binaires_simples_points'] as $champ)
 {
-		// nouveauté, ne crée les bool QUE si il y a un champ_equivalent.
-		$champ_equivalent="equivalent_$champ";
-		if ( !empty($point->$champ_equivalent) )
-		{
-			$modele->champs->bools->$champ = new stdClass ;
-			$modele->champs->bools->$champ->label = $point->$champ_equivalent ;
-            $modele->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
-            // le cas Sommaire... que je virerai bien mais qui est la juste pour la demo
-            if ($champ=="sommaire")
-                $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même peut changer)";
+    // nouveauté, ne crée les bool QUE si il y a un champ_equivalent.
+    $champ_equivalent="equivalent_$champ";
+    if ( !empty($point->$champ_equivalent) )
+    {
+        $modele->champs->bools->$champ = new stdClass ;
+        $modele->champs->bools->$champ->label = $point->$champ_equivalent ;
+        $modele->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
+        // le cas Sommaire... que je virerai bien mais qui est la juste pour la demo
+        if ($champ=="sommaire")
+            $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même peut changer)";
     }
 }
+
 
 //combine fermé
 if ( !empty($point->equivalent_ferme) )
@@ -258,6 +272,7 @@ include ($config['chemin_vues']."_pied.html");
 function erreur_on_arrete($texte)
 {
 	global $config;
+    $modele = new stdClass;
 	$modele->texte = $texte;
 	$modele->type = 'point_formulaire_modification_erreur';
 	include ($config['chemin_vues']."_entete.html");

@@ -45,7 +45,7 @@
 		
 <!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
 		<?// Signaler les fiches censurées
-		if ($modele->nom_type == 'Censuré') {?>
+		if ($modele->censure) {?>
 			<dd class="lien_ajout_commentaire">
 				<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$modele->id_point?>">
 					Cette fiche est censurée.
