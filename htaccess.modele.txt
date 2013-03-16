@@ -2,9 +2,12 @@
 
 AddDefaultCharset UTF-8
 
+
 ErrorDocument 404 /statique/erreur_404.php
 
 Options +Multiviews
+php_value short_open_tag = 1
+
 
 RewriteEngine On
 
