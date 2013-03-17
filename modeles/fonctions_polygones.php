@@ -16,9 +16,8 @@ Cette fonction permet d'aller chercher un ou plusieurs polygones
 $conditions->ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id est cette liste
 $conditions->non_ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id n'est pas dans cette liste
 $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
-   FIXME : un code spécial "gmlol" va bidouiller car notre version de OL ne peut gérer les multipolygones
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
-   la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gmlol
+   la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
@@ -88,15 +87,9 @@ function infos_polygones($conditions)
         $conditions_sql.=" AND geom && ". $conditions->geometrie ;
     
     if ($conditions->avec_geometrie)
-    {
-        // FIXME : notre OL ne sait pas gérer les multipolygon, on bidouille en ne prenant que le 1
-        if ($conditions->avec_geometrie=="gmlol")
-            $champs_en_plus.=",st_asGML(st_geometryn(geom,1)) AS geometrie_gmlol";
-        else
-            $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
-    }
+        $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
 
-	// jmb: nom de la zone auquel le poly appartient.
+    // jmb: nom de la zone auquel le poly appartient.
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
     // sly: faire que cette requête un peu plus lourde ne soit pas systématiquement utilisée, sauf demande
