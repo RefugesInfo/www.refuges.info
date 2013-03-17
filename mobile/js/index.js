@@ -48,6 +48,10 @@ function initmap(){
 	map.attributionControl.setPrefix(''); // On enlève le crédit vers leaflet
 	map.addLayer(MRI); // On ajoute le calque MRI à la carte
 
+	// Ajout de l'icone fullscreen
+	var fullScreen = new L.Control.FullScreen(); 
+	map.addControl(fullScreen);
+
 	// Action en cas des évenements suivant
 	map.on('locationerror', onLocationError);
 	map.on('locationfound', onLocationFound);

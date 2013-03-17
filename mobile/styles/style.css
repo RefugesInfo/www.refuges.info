@@ -71,6 +71,8 @@ section {
 	height: 90%;
 }
 
+.leaflet-control-zoom-fullscreen { background-image: url(../leaflet/images/icon-fullscreen.png); }
+
 #carte, #map {
 	height: 100%;
 }
