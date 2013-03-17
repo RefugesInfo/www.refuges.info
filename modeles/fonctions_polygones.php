@@ -22,6 +22,7 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
+$conditions->avec_zone_parente=True : renvoi la zone dans laquelle se trouve la polygone (par défaut False)
 //FIXME jmb : BBOX ne veut plus rien dire a l'heure du GIS. BBOX + nord/sud/est/ouest ca redonde un peu.
 // jmb: ajout du champ "nom_zone" (id plutot?)
 //jmb: ajout de condition Ordre, comme infos_points
@@ -98,15 +99,25 @@ function infos_polygones($conditions)
 	// jmb: nom de la zone auquel le poly appartient.
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
-	$champs_en_plus.=", 
-		(SELECT id_polygone
-			FROM polygones AS zones
-			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
-		) AS id_zone ,
-        (SELECT nom_polygone
-			FROM polygones AS zones
-			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
-		) AS nom_zone 
+    // sly: faire que cette requête un peu plus lourde ne soit pas systématiquement utilisée, sauf demande
+    if ($conditions->avec_zone_parente)
+        $champs_en_plus.=", 
+        (
+          SELECT id_polygone
+          FROM polygones AS zones
+          WHERE 
+            zones.id_polygone_type=".$config['id_zone']." 
+            AND 
+            ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+        ) AS id_zone ,
+        (
+          SELECT nom_polygone
+          FROM polygones AS zones
+          WHERE 
+            zones.id_polygone_type=".$config['id_zone']." 
+            AND 
+            ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+        ) AS nom_zone 
         ";
 	
 	//FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
@@ -126,7 +137,6 @@ function infos_polygones($conditions)
           $ordre
           $limite
   ";
-
   $res=$pdo->query($query);
   if (!$res)
     return erreur("Requête impossible",$query);

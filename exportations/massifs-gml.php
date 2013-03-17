@@ -55,7 +55,7 @@ if ($polygones)
     $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
     $polygone_export->proprietes['color']="#$cb$cv$cr";
     $polygone_export->proprietes['url']=lien_polygone($polygone,False);
-    $polygone_export->geometrie_gml=$polygone->geometrie_gmlol;
+    $polygone_export->geometrie_gml=$polygone->geometrie_gml;
   
     $modele->features[]=$polygone_export;
   }

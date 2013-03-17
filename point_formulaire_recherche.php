@@ -18,9 +18,11 @@ $modele->titre = "Recherche de refuges/cabanes/gites";
 // on va faire que 2 niveau, en dur.
 // j'aurais put utiliser toute la chaine montagnarde. mais bon.
 $conditions_polygones->ids_polygone_type=$config['id_massif'];
+$conditions_polygones->avec_zone_parente=True;
 $modele->massifs=infos_polygones($conditions_polygones);
 
 $conditions_polygones->ids_polygone_type=$config['id_zone'];
+$conditions_polygones->avec_zone_parente=False;
 $modele->zones=infos_polygones($conditions_polygones);
 
 // On affiche le tout
