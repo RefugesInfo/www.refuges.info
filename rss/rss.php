@@ -62,22 +62,6 @@ function affiche_item ($item)
 // A ADAPTER SUIVANT la version de RSS 1.0, 2.0 ou Atom
 function debut_flux ($types, $massifs, $date)
 {
-	// recup des vrais noms des points
-// 	$q = " SELECT nom_type
-// 		FROM point_type
-// 		WHERE id_point_type IN ($types) ";
-// 	$rs = mysql_query($q) or die("mauvaise requete: $q");
-// 	while( $typ = mysql_fetch_assoc($rs) )
-// 		$typesentexte .= pos($typ) . ", " ;
-// 
-// 	// recup des vrais noms des massifs
-// 	$q = " SELECT nom_polygone
-// 		FROM polygones
-// 		WHERE id_polygone IN ($massifs) ";
-// 	$rs = mysql_query($q) or die("mauvaise requete: $q");
-// 	while( $mass = mysql_fetch_assoc($rs) )
-// 		$massifsentexte .= pos($mass) . ", " ;
-
 	return
 "<?xml version='1.0' encoding='UTF-8' ?>
 <?xml-stylesheet type='text/xsl' href='rss.xsl' ?>
