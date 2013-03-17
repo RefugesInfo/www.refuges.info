@@ -61,7 +61,7 @@ function supprimer_page($page)
 {
     global $config,$pdo;
     $page=$pdo->quote($page);
-    $query="delete from pages_wiki where page='$page'";
+    $query="delete from pages_wiki where nom_page=$page";
     $res=$pdo->query($query);
     if (!$res)
         return erreur("Requête SQL impossible à executer",$query);
