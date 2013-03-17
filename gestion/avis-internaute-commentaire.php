@@ -10,8 +10,8 @@ require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_mode_emploi.php");
 require_once ("fonctions_bdd.php");
 
-$modele = new stdclass;
-$modele->description = $description;
+$vue = new stdclass;
+$vue->description = $description;
 include ($config['chemin_vues']."_entete.html");
 
 print('<div class="contenu">');

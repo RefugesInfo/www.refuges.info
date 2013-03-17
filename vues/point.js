@@ -1,7 +1,7 @@
 <?// Script lié à la page point
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 19/10/11 Sly : Invention des "templates" js
@@ -15,7 +15,7 @@ window.onload = function () {
 	// Initialise le convertisseur de projections
 /*
 	var displayPosition = new OpenLayers.Position ({
-		position: new OpenLayers.LonLat (<?=$modele->longitude?>, <?=$modele->latitude?>)
+		position: new OpenLayers.LonLat (<?=$vue->longitude?>, <?=$vue->latitude?>)
 	});
 */
 	
@@ -26,10 +26,10 @@ window.onload = function () {
 			new OpenLayers.Control.PanZoom (),
 			new OpenLayers.Control.PermalinkCookies (null, null, {
 				force: {
-					lon: <?=$modele->longitude?>,
-					lat: <?=$modele->latitude?>,
-					scale: <?=$modele->vignette[3]?>,
-					baseLayer: '<?=$modele->vignette[0]?>'
+					lon: <?=$vue->longitude?>,
+					lat: <?=$vue->latitude?>,
+					scale: <?=$vue->vignette[3]?>,
+					baseLayer: '<?=$vue->vignette[0]?>'
 				}
 			}),
 			new OpenLayers.Control.LayerSwitcherConditional (),
@@ -67,17 +67,6 @@ window.onload = function () {
 			displayInLayerSwitcher: false
 		})
 	]);
-/*
-	// inclure le cadre aprés la création de la carte car la position est maintenant définie.
-	// Ne pas le mettre dans addLayersListened car le cadre n'est pas déplaçable
-	map.addLayers ([
-	]);
-	// TODO Bon, là, c'est super redondant: mais il y avait un gros bug / Dominique 2012/09/12
-	map.setCenter (
-		new OpenLayers.LonLat (<?=$modele->longitude?>, <?=$modele->latitude?>)
-			.transform (map.displayProjection, map.getProjectionObject())
-	);
-*/
 }
 
 // Actions de la page
@@ -88,7 +77,7 @@ function agrandir_vignette () {
 		agrandir_vignette.style.display = 'none';
 		
 	// On positionne la couche de second choix
-	var layers_alternate = map.getLayersByName ('<?=$modele->vignette[2]?>');
+	var layers_alternate = map.getLayersByName ('<?=$vue->vignette[2]?>');
 	if (layers_alternate.length)
 		map.setBaseLayer (layers_alternate [0]);
 	

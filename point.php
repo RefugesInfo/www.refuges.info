@@ -16,14 +16,14 @@ require_once ("fonctions_points.php");
 require_once ("fonctions_pubs.php");
 require_once ("fonctions_utilisateurs.php");
 
-$modele = new stdClass();
+$vue = new stdClass();
 $condition = new stdClass();
 
 // Arguments de la page
 $array = explode ('/',$_SERVER['PATH_INFO']);
 $id_point = $array [1]; // $array [1] contient l'id du point
 
-// FIXME je trouverais plus claire de mettre le point dans $modele->point pour éviter d'écraser d'autre propriété du modèle
+// FIXME je trouverais plus claire de mettre le point dans $vue->point pour éviter d'écraser d'autre propriété du modèle
 
 // On indique de manière bien évidente aux modérateur que cette fiche est censurée
 if ($_SESSION['niveau_moderation']>=1)
@@ -31,62 +31,62 @@ if ($_SESSION['niveau_moderation']>=1)
 else
     $meme_si_censure=False;
 
-$modele = infos_point ($id_point,$meme_si_censure);
+$vue = infos_point ($id_point,$meme_si_censure);
 
-// Les infos du point deviennent des membres du template ($modele->latitude ...)
+// Les infos du point deviennent des membres du template ($vue->latitude ...)
 // Partie spécifique de la page
-if ($modele->erreur) 
-    $modele->type = 'point_en_erreur';
+if ($vue->erreur) 
+    $vue->type = 'point_en_erreur';
 else // le point est valide. faut bosser.
 {
-    $modele->nom=bbcode2html($modele->nom);
-    $modele->nom_debut_majuscule = ucfirst($modele->nom);
-    $modele->titre = "$modele->nom_debut_majuscule $modele->altitude m ($modele->nom_type)";
-    $modele->description = "fiche d'information sur : $modele->nom_debut_majuscule, $modele->nom_type, altitude $modele->altitude avec commentaires et photos";
-    $modele->type = 'point'; // Le template
+    $vue->nom=bbcode2html($vue->nom);
+    $vue->nom_debut_majuscule = ucfirst($vue->nom);
+    $vue->titre = "$vue->nom_debut_majuscule $vue->altitude m ($vue->nom_type)";
+    $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $vue->nom_type, altitude $vue->altitude avec commentaires et photos";
+    $vue->type = 'point'; // Le template
     foreach (array("administrative","montagnarde") as $categorie)
-        if (($loc=localisation ($modele->polygones,$categorie))!="")
-            $modele->localisation[$categorie] = localisation ($modele->polygones,$categorie);
+        if (($loc=localisation ($vue->polygones,$categorie))!="")
+            $vue->localisation[$categorie] = localisation ($vue->polygones,$categorie);
     
-    if ($modele->modele!=1)
-    $modele->forum = infos_point_forum ($modele);
+    if ($vue->modele!=1)
+    $vue->forum = infos_point_forum ($vue);
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;
     $tous_commentaires = infos_commentaires ($conditions_commentaires);
-    $modele->annonce_fermeture = texte_non_ouverte ($modele);
+    $vue->annonce_fermeture = texte_non_ouverte ($vue);
 
 
     /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/
-    if ($modele->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
+    if ($vue->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
     {
         $conditions = new stdClass;
         $conditions->avec_infos_massif=True;
         $conditions->limite=10;
         $conditions->ouvert='oui';
         
-        $g = [ 'lat' => $modele->latitude, 'lon' => $modele->longitude , 'rayon' => 5000 ];
+        $g = [ 'lat' => $vue->latitude, 'lon' => $vue->longitude , 'rayon' => 5000 ];
         $conditions->geometrie = cree_geometrie( $g , 'cercle' );
         
         $conditions->ordre="distance ASC";
-        $modele->points_proches=infos_points($conditions);
+        $vue->points_proches=infos_points($conditions);
         
         /*********** Détermination de la carte à afficher ***/
-        $modele->mini_carte=TRUE;
-        $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
-        $modele->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
-        $modele->vignette = param_cartes ($modele);
+        $vue->mini_carte=TRUE;
+        $vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
+        $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
+        $vue->vignette = param_cartes ($vue);
     }
     
     /***********  détermination si le point se situe dans un polygone pour lequel un message est à faire passer *******/
     // L'utilisation principal est le message de réglementation de la réserve naturelle
-    if (count($modele->polygones))
-        foreach ($modele->polygones as $polygone)
+    if (count($vue->polygones))
+        foreach ($vue->polygones as $polygone)
             if ($polygone->message_information_polygone!="")
-                $modele->polygone_avec_information=$polygone;
+                $vue->polygone_avec_information=$polygone;
             
     /*********** Préparation de la présentation du point ***/
-    if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $modele->id_createur ))
-        $modele->lien_modification=TRUE;
+    if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $vue->id_createur ))
+        $vue->lien_modification=TRUE;
             
     /*********** Préparation des infos complémentaires (c'est à dire les champs à cocher) ***/
     // Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
@@ -100,25 +100,25 @@ else // le point est valide. faut bosser.
     {
         $champ_equivalent = "equivalent_$champ";
         // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour un sommet)
-        if ($modele->$champ_equivalent!="") 
+        if ($vue->$champ_equivalent!="") 
         {
             switch ($champ)
             {
                 //case 'sommaire': // un autre nomSVP, mais pas un pansement en code... on mets abri sommaire et voila.
                 case 'site_officiel':
-                    if ($modele->$champ!="")
-                        $val=array('valeur'=> '', 'lien' => $modele->$champ, 'texte_lien'=> $modele->nom_debut_majuscule);
+                    if ($vue->$champ!="")
+                        $val=array('valeur'=> '', 'lien' => $vue->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
                     break;
                 case 'ferme':  // jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
                     unset($val);
                     break;
                     
                 case (in_array($champ, $config['champs_binaires_simples_points'] ) ):  // vrais Bools
-                    if($modele->$champ === TRUE)
+                    if($vue->$champ === TRUE)
                         $val = array('valeur'=> 'Oui');
-                    if($modele->$champ === FALSE)
+                    if($vue->$champ === FALSE)
                         $val = array('valeur'=> 'Non');
-                    if($modele->$champ === NULL)
+                    if($vue->$champ === NULL)
                         $val = array('valeur'=> '<strong>Inconnu</strong>');
                     break;
                     
@@ -126,30 +126,30 @@ else // le point est valide. faut bosser.
                     break; // a virer plus tard. remplace par places_matelas.
                     
                 case 'places_matelas':
-                    if($modele->$champ == -1)
+                    if($vue->$champ == -1)
                         $val=array('valeur'=> 'Sans');
-                    elseif($modele->$champ === 0)
+                    elseif($vue->$champ === 0)
                         $val=array('valeur'=> 'Avec, en nombre inconnu');
-                    elseif($modele->$champ === NULL )
+                    elseif($vue->$champ === NULL )
                         $val=array('valeur'=> '<strong>Inconnu</strong>');
                     else
-                        $val=array('valeur'=> $modele->$champ);
+                        $val=array('valeur'=> $vue->$champ);
                     break;
                     
                 default:
-                    if ($modele->$champ=="") 
-                        $modele->$champ="<strong>Inconnu</strong>";
-                    elseif ($modele->$champ < 0) 
+                    if ($vue->$champ=="") 
+                        $vue->$champ="<strong>Inconnu</strong>";
+                    elseif ($vue->$champ < 0) 
                         $val=array('valeur'=> 'Sans');
-                    $val=array('valeur'=> $modele->$champ);
+                    $val=array('valeur'=> $vue->$champ);
             }            
             
             if (isset($val))
-                $modele->infos_complementaires[$modele->$champ_equivalent]=$val;
+                $vue->infos_complementaires[$vue->$champ_equivalent]=$val;
             
             // Cas particulier : si matelas=yes, on indique combien de place à la ligne juste en dessous
-            if ($champ=='matelas' and $modele->$champ=='oui')
-                $modele->infos_complementaires['Places sur Matelas']=array('valeur'=>$modele->places_matelas);   
+            if ($champ=='matelas' and $vue->$champ=='oui')
+                $vue->infos_complementaires['Places sur Matelas']=array('valeur'=>$vue->places_matelas);   
         }
         unset($val);
     }
@@ -181,15 +181,15 @@ else // le point est valide. faut bosser.
             else
                 $commentaire->date_photo_format_francais = '';
             // On garde une copie des commentaires avec photos pour nous fournir la liste des petite vignettes
-            $modele->commentaires_avec_photo[]=$commentaire;
+            $vue->commentaires_avec_photo[]=$commentaire;
         }
         
-        $modele->commentaires[]=$commentaire;
+        $vue->commentaires[]=$commentaire;
     }
 }
 
 /*********** On affiche le tout ***/
 include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$modele->type.html");
+include ($config['chemin_vues']."$vue->type.html");
 include ($config['chemin_vues']."_pied.html");
 ?>

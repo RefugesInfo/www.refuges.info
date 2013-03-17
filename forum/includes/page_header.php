@@ -488,9 +488,9 @@ require_once ("fonctions_autoconnexion.php");
 
 // 05/11/2011 Dominique : modif appel
 // 31/05/2012 Dominique : passage en template simple
-$modele = new stdclass;
-$modele->titre = $page_title;
-$modele->css [] = '/forum/style-forum.css';
+$vue = new stdclass;
+$vue->titre = $page_title;
+$vue->css [] = '/forum/style-forum.css';
 require_once ($config['chemin_vues']."_entete.html");
 
 $template->pparse('overall_header');

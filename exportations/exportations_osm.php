@@ -51,15 +51,15 @@ if ($points_osm)
     $point_osm_export->geometrie_gml=$point_osm->geometrie_gml;
     $point_osm_export->proprietes['site']='osm'; // Dominique: permet de rechercher les icones et styles correspondantes à OSM
   
-    $modele->features[]=$point_osm_export;
+    $vue->features[]=$point_osm_export;
   }
 //---------------------------------------------------------------------------------------
 // On affiche tout ça avec le template correspondant au format
-$modele->nom_fichier_export = "pour_openlayers";
-$modele->type="export_gml";
-$modele->content_type="UTF-8";
-$modele->description = "Licence ODBL, copyright Openstreetmap.org et contributeurs";
-include ($config['chemin_vues']."exportations/$modele->type.php");
+$vue->nom_fichier_export = "pour_openlayers";
+$vue->type="export_gml";
+$vue->content_type="UTF-8";
+$vue->description = "Licence ODBL, copyright Openstreetmap.org et contributeurs";
+include ($config['chemin_vues']."exportations/$vue->type.php");
 
 
 

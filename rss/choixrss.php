@@ -7,9 +7,9 @@ Page de choix du flux rss
 require_once ('../modeles/config.php');
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
-$modele = new stdclass;
-$modele->titre="Formulaire de choix du flux rss de refuges.info";
-$modele->description = $description;
+$vue = new stdclass;
+$vue->titre="Formulaire de choix du flux rss de refuges.info";
+$vue->description = $description;
 include ($config['chemin_vues']."_entete.html");
 ?>
 

@@ -3,7 +3,7 @@
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle 
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 17/10/11 Dominique : Création
@@ -31,18 +31,18 @@ function inverse_visibility_voisins( id_element )
 
 <div class="contenu">
 	<h4>
-	Recherche sur refuges.info<?=$modele->trop?> 
+	Recherche sur refuges.info<?=$vue->trop?> 
 	</h4>
 	<? // Parcours tous les refuges de la recherche
 	
-	if (isset($modele->points)) {
+	if (isset($vue->points)) {
 	
-		if(isset($modele->limite_atteinte) ) { ?>
-			<h5>La limite a été atteinte. seuls les <?=$modele->limite_atteinte?> premiers points sont affichés.</h5>
+		if(isset($vue->limite_atteinte) ) { ?>
+			<h5>La limite a été atteinte. seuls les <?=$vue->limite_atteinte?> premiers points sont affichés.</h5>
 		<? }
 			
 		$arbre = array();
-		foreach ($modele->points as $point) {
+		foreach ($vue->points as $point) {
 		
 			$polys = explode(",",$point->liste_polygones);
 
@@ -83,9 +83,9 @@ function inverse_visibility_voisins( id_element )
 	
 	?><h4>Meme chose, presentation differente</h4><?
 	
-	if (isset($modele->points)) {?>
+	if (isset($vue->points)) {?>
 		<dl>
-			<? foreach ($modele->points as $point) {?>
+			<? foreach ($vue->points as $point) {?>
 			
 				<dd class="fiche_cadre condense">
 					<em>
@@ -126,10 +126,10 @@ function inverse_visibility_voisins( id_element )
 	<?}?>
 
 	<? // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
-	if ($modele->nominatim->nb_points) { ?>
-		<h4>Recherche dans la base <a href="http://openstreetmap.org/">OpenStreetMap</a> : <?=$modele->nominatim->nb_points?> point<?=$modele->nominatim->pluriel?> trouvé<?=$modele->nominatim->pluriel?> avec <a href="<?=$modele->nominatim->url_site?>">Nominatim</a></h4>
+	if ($vue->nominatim->nb_points) { ?>
+		<h4>Recherche dans la base <a href="http://openstreetmap.org/">OpenStreetMap</a> : <?=$vue->nominatim->nb_points?> point<?=$vue->nominatim->pluriel?> trouvé<?=$vue->nominatim->pluriel?> avec <a href="<?=$vue->nominatim->url_site?>">Nominatim</a></h4>
 		<dl>
-			<? foreach ($modele->nominatim->xml as $points_nominatim) { ?>
+			<? foreach ($vue->nominatim->xml as $points_nominatim) { ?>
 				<dd class="fiche_cadre condense">
 				<em>
 					<a href="<?='/nav.php?zoom=13&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">

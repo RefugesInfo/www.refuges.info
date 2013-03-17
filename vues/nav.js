@@ -1,7 +1,7 @@
 <?// Code Javascript de la page des cartes
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 17/10/11 Dominique : Création
@@ -12,8 +12,8 @@
 ?>
 
 var map, layerMassifs, layerPoints, pos21781, lc;
-var arg_massifs = '?massif=<?=$modele->polygone->id_polygone?>';
-var arg_points  = '<?php if(isset($modele->polygone->id_polygone)) echo "&liste_id_massif=".$modele->polygone->id_polygone; ?>';
+var arg_massifs = '?massif=<?=$vue->polygone->id_polygone?>';
+var arg_points  = '<?php if(isset($vue->polygone->id_polygone)) echo "&liste_id_massif=".$vue->polygone->id_polygone; ?>';
 var limite = 
 	'<?=$_GET['limite']?>'
 		? '&limite=<?=$_GET['limite']?>'
@@ -120,7 +120,7 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 				: 'none';		}
 
 	// Ajoute les couches vectorielles avec controle
-	if ('<?=$modele->type_affichage?>' == 'zone')
+	if ('<?=$vue->type_affichage?>' == 'zone')
 		map.addLayers ([
 			layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {	
 				urlGML: '/exportations/massifs-gml.php',
@@ -168,7 +168,7 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 				visibility: false
 			}),
 			layerPoints = new OpenLayers.Layer.GMLSLD ('Refuges.info', {	
-				urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$modele->liste_id_point_type?>' + arg_points + limite,
+				urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$vue->liste_id_point_type?>' + arg_points + limite,
 				projection: 'EPSG:4326', // Le GML est fourni en degminsec
 				urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
 				styleName: 'Points'
@@ -187,8 +187,8 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 
 	// Position et zoom de la carte
 	// Si un massif est visé, on s'accorde sur ses limites
-	if (<?echo isset ($modele->polygone->bbox) ? 'true' : 'false'?>) {
-		var b = new OpenLayers.Bounds (<?=$modele->polygone->bbox?>) 
+	if (<?echo isset ($vue->polygone->bbox) ? 'true' : 'false'?>) {
+		var b = new OpenLayers.Bounds (<?=$vue->polygone->bbox?>) 
 		.transform (
 			new OpenLayers.Projection ('EPSG:4326'), // Données en °
 			map.getProjectionObject()
@@ -209,8 +209,8 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 			9
 		);
 
-	if ('<?=$modele->type_affichage?>' != 'zone')
-		invit_cree (<?=$modele->viseur?>);
+	if ('<?=$vue->type_affichage?>' != 'zone')
+		invit_cree (<?=$vue->viseur?>);
 	if (window.FileReader) {
 		window.document.getElementById('GPX').addEventListener('change', loadGPX, false);
 		window.document.getElementById('loadGPX').style.display = 'block';
@@ -223,10 +223,10 @@ lc =		new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la 
 function switch_massif (combo) {
 	var idmassif;
 	if (combo.checked) {
-		idmassif = 0<?=$modele->polygone->id_polygone?>; 
-		document.getElementById ('titrepage') .firstChild.nodeValue = "<?echo addslashes($modele->titre)?>"; 
-		arg_massifs = '?massif=<?=$modele->polygone->id_polygone?>';
-		arg_points = '&liste_id_massif=<?=$modele->polygone->id_polygone?>';
+		idmassif = 0<?=$vue->polygone->id_polygone?>; 
+		document.getElementById ('titrepage') .firstChild.nodeValue = "<?echo addslashes($vue->titre)?>"; 
+		arg_massifs = '?massif=<?=$vue->polygone->id_polygone?>';
+		arg_points = '&liste_id_massif=<?=$vue->polygone->id_polygone?>';
 	} else {
 		document.getElementById ('titrepage') .firstChild.nodeValue = "Navigation sur les cartes"; 
 		arg_massifs = '?massif=0';

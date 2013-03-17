@@ -1,7 +1,7 @@
 <?// Script lié à la page de modification de fiche
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 ?>

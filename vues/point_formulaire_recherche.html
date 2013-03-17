@@ -3,7 +3,7 @@
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 17/10/11 Dominique : Création
@@ -12,7 +12,7 @@
 
 <div class="contenu">
 	<!-- =========================== -->
-	<h3><?=$modele->titre?></h3>
+	<h3><?=$vue->titre?></h3>
 	<h4>Rechercher sur ce site</h4>
 
 	<!-- =========================== -->
@@ -34,8 +34,8 @@
 			<select name="id_point_type">
 				<option value="">(tous)</option>
 				<option value="<?=$config['tout_type_refuge']?>" selected="selected">Tout type de refuge</option>
-				<?php if (is_array($modele->infos_base->types_point)) 
-					foreach ($modele->infos_base->types_point AS $t) {?>
+				<?php if (is_array($vue->infos_base->types_point)) 
+					foreach ($vue->infos_base->types_point AS $t) {?>
 						<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
 					<?}?>
 			</select>
@@ -47,11 +47,11 @@
 					// Ca se complique avec les zones.
 					// pour chaque zone, on fait un OPTGROUP, et dedans on reparcours les massifs.
 				
-					foreach ($modele->zones as $z) { ?>
+					foreach ($vue->zones as $z) { ?>
 						<optgroup label="<?=$z->nom_polygone?>">
 						<option value="<?=$z->id_polygone?>">(toute la région <?=$z->nom_polygone?>)</option>
 						<?php 
-						foreach ($modele->massifs AS $m) 
+						foreach ($vue->massifs AS $m) 
 							if( $m->id_zone == $z->id_polygone ) { ?>
 								<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option> <?php
 							} 
@@ -218,7 +218,7 @@
 			<select name="precision_gps" >
 			<option value="">(Peu importe)</option>
 			<option value="1,2">Prises sur une carte ou le terrain</option>
-			<?foreach ($modele->infos_base->type_precision AS $p) {?>
+			<?foreach ($vue->infos_base->type_precision AS $p) {?>
 				<option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
 				<?}?>
 			</select>

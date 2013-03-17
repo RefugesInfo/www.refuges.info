@@ -9,7 +9,7 @@ require_once ("fonctions_commentaires.php");
 require_once ("fonctions_points.php");
 require_once ("fonctions_mode_emploi.php");
 
-$modele = new stdClass();
+$vue = new stdClass();
 $commentaire = new stdClass();
 setlocale(LC_TIME, "fr_FR");
 $commentaire->id_point=$_GET['id_point'];
@@ -17,7 +17,7 @@ $point=infos_point($commentaire->id_point);
 if ($point!=-1)
 {
   if (!isset($_SESSION['id_utilisateur']))
-    $modele->non_connecte=True;
+    $vue->non_connecte=True;
   $commentaire->auteur=$_SESSION['login_utilisateur'];
   
   // on vient de valider notre formulaire, faisons le nécessaire
@@ -26,16 +26,16 @@ if ($point!=-1)
     $commentaire->texte=stripslashes($_POST['comment_texte']);
     $commentaire->auteur=stripslashes($_POST['comment_auteur']);
     $commentaire->texte_propre=htmlspecialchars($commentaire->texte,0,"UTF-8");
-    $modele->lettre_verification=$_POST["lettre_verification"];
+    $vue->lettre_verification=$_POST["lettre_verification"];
 
     // peut être un robot ?
-    if ( ($modele->lettre_verification!="f") AND !isset($_SESSION['id_utilisateur']) )
+    if ( ($vue->lettre_verification!="f") AND !isset($_SESSION['id_utilisateur']) )
     {
-      $modele->erreur_captcha=True;
-      $modele->lettre_verification="";
+      $vue->erreur_captcha=True;
+      $vue->lettre_verification="";
     }
     else if (bloquage_internaute($_POST['comment_auteur']))  // utilisateur dont l'adresse IP est bannie
-		$modele->banni=True;
+		$vue->banni=True;
     else
     {
       // c'est quoi ça ?
@@ -48,10 +48,10 @@ if ($point!=-1)
       $commentaire->demande_correction=$_POST['demande_correction'];
       $commentaire->id_createur=$_SESSION['id_utilisateur'];
       // Transmission des info en cas d'erreur au modèle
-      $modele->messages=modification_ajout_commentaire($commentaire);
+      $vue->messages=modification_ajout_commentaire($commentaire);
       
       // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
-      if (!$modele->messages->erreur)
+      if (!$vue->messages->erreur)
 	$commentaire->texte_propre="";
 
       // Nettoyage de la photo envoyée qu'elle fût ou non insérer correctement comme commentaire
@@ -61,20 +61,20 @@ if ($point!=-1)
   }
   // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
   if ( !isset($_SESSION['id_utilisateur']) )
-    $modele->captcha=True;
+    $vue->captcha=True;
   
   $quel_point="$point->article_defini $point->nom_type : $point->nom";
-  $modele->titre="Ajout d'un commentaire sur $quel_point";
-  $modele->lien_point=lien_point_fast($point);
-  $modele->lien_texte_retour="Retour à $quel_point";
-  $modele->point_existe=True;
-  $modele->commentaire=$commentaire;
+  $vue->titre="Ajout d'un commentaire sur $quel_point";
+  $vue->lien_point=lien_point_fast($point);
+  $vue->lien_texte_retour="Retour à $quel_point";
+  $vue->point_existe=True;
+  $vue->commentaire=$commentaire;
 }
 else
-  $modele->point_existe=False;
+  $vue->point_existe=False;
 
-$modele->type = 'point_ajout_commentaire'; // Le type
+$vue->type = 'point_ajout_commentaire'; // Le type
 include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$modele->type.html");
+include ($config['chemin_vues']."$vue->type.html");
 include ($config['chemin_vues']."_pied.html");
 ?> 

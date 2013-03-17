@@ -1,7 +1,7 @@
 <?// Script lié à la page de modification de fiche
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 29/10/11 Dominique : Création
@@ -20,8 +20,8 @@ window.onload = function () {
 				force: {
 					lat: <?=$point->latitude?>, 
 					lon: <?=$point->longitude?>, 
-					scale: <?=$modele->serie[3]?>,
-					baseLayer: '<?=$modele->serie[2]?>'
+					scale: <?=$vue->serie[3]?>,
+					baseLayer: '<?=$vue->serie[2]?>'
 				}
 			}),
 			new OpenLayers.Control.LayerSwitcherConditional (),

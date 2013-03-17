@@ -4,12 +4,12 @@
 <div class="contenu">
 <!-- =========================== -->
 <!-- ======= BARATIN ===== -->
-<h3><?=$modele->titre?></h3> 
+<h3><?=$vue->titre?></h3> 
 <?php
-if (isset($modele->etapes))
+if (isset($vue->etapes))
 { ?>
     <dl> <?
-    foreach ($modele->etapes as $etape)
+    foreach ($vue->etapes as $etape)
     { ?>
       <dt><?=$etape->titre?></dt>
       <dd><?=$etape->texte?></dd>
@@ -29,7 +29,7 @@ if ( !isset($_POST['validation']) )
             <button type='button' onclick="checkboites('types_point',false); return false;">☐</button>
         </legend>
         <?php
-        foreach ($modele->points as $point) { ?>
+        foreach ($vue->points as $point) { ?>
         <label>
            <input type='checkbox' name='id_point_type[]' value='<?=$point->id_point_type?>'<?=($point->checked?' checked="checked"':'');?> />
            <img src="/images/icones/<?=$point->nom_icone?>.png" alt="icone de <?=$point->nom_type?>" />
@@ -50,7 +50,7 @@ if ( !isset($_POST['validation']) )
         // on fait donc un truc dout simple avec id_zone, qui lui existe déjà.
         // Attention ! ca suppose que les massifs sont triés par id_zone ! voir requete.
         $idzone=0; // au depart, ya pas de zone
-        foreach ($modele->massifs as $poly) { 
+        foreach ($vue->massifs as $poly) { 
             if($idzone != $poly->id_zone) { 
                 if($idzone != 0) { ?>
                     </fieldset>
@@ -77,23 +77,23 @@ if ( !isset($_POST['validation']) )
     <!--  BBOX si un parametre GET a ete passe -->
     <!-- une selection a main levée par OL seriat plus adaptée -->
     <?php
-    if ( isset($modele->bbox) ) { ?>
+    if ( isset($vue->bbox) ) { ?>
     <fieldset>
         <legend>Limites (en degrés décimaux WGS84)</legend>
         <table>
             <tr>
 				<td></td>
-				<td style='text-align: center;'><input name='nord' id='bbox_latmax' type='text' size='4' value='<?=$modele->bbox->nord?>' /></td>
+				<td style='text-align: center;'><input name='nord' id='bbox_latmax' type='text' size='4' value='<?=$vue->bbox->nord?>' /></td>
 				<td></td>
 			</tr>
 			<tr style='height: 4em;'>
-				<td><input name='ouest' id='bbox_lngmin' type='text' size='4' value='<?=$modele->bbox->ouest?>' /></td>
+				<td><input name='ouest' id='bbox_lngmin' type='text' size='4' value='<?=$vue->bbox->ouest?>' /></td>
 				<td style='background-color: #A6CEE7;'>Zone à exporter</td>
-				<td><input name='est' id='bbox_lngmax' type='text' size='4' value='<?=$modele->bbox->est?>' /></td>
+				<td><input name='est' id='bbox_lngmax' type='text' size='4' value='<?=$vue->bbox->est?>' /></td>
 			</tr>
 			<tr>
 				<td></td>
-				<td style='text-align: center;'><input name='sud' id='bbox_latmin' type='text' size='4' value='<?=$modele->bbox->sud?>' /></td>
+				<td style='text-align: center;'><input name='sud' id='bbox_latmin' type='text' size='4' value='<?=$vue->bbox->sud?>' /></td>
 				<td></td>
 			</tr>
 		</table>
@@ -118,11 +118,11 @@ if ( !isset($_POST['validation']) )
 else
 {?>
     <p>
-        <?=$modele->lien_export->description?>
+        <?=$vue->lien_export->description?>
     </p>
-    <? if (isset($modele->lien_export->url)) { ?>
+    <? if (isset($vue->lien_export->url)) { ?>
     <p>
-        <a href="<?=$modele->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour récupérer les données</a>
+        <a href="<?=$vue->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour récupérer les données</a>
     </p>
     <?}?>
 <?}?>

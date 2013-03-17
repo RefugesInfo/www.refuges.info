@@ -21,7 +21,7 @@ $b = ($ymin + $ymax) / 2; // Coefs du calcul
 $a = 256 + $b; // +256 pour bénéficier du 0 à gauche quand on passe en hexadécimal
 
 $conditions = new stdClass;
-$modele = new stdClass;
+$vue = new stdClass;
 
 // Ici on a demandé un nombre fini de massif solitaires
 if (isset($_GET['massif']))
@@ -57,15 +57,15 @@ if ($polygones)
     $polygone_export->proprietes['url']=lien_polygone($polygone,False);
     $polygone_export->geometrie_gml=$polygone->geometrie_gml;
   
-    $modele->features[]=$polygone_export;
+    $vue->features[]=$polygone_export;
   }
 
-$modele->content_type="UTF-8";
-$modele->nom_fichier_export="polygones";
-$modele->description="Limites de massifs montagneux provenants du site ".$config['nom_hote'];
+$vue->content_type="UTF-8";
+$vue->nom_fichier_export="polygones";
+$vue->description="Limites de massifs montagneux provenants du site ".$config['nom_hote'];
 // On affiche le tout
-$modele->type = 'exportations/export_gml';
+$vue->type = 'exportations/export_gml';
 
-include ($config['chemin_vues']."$modele->type.php");
+include ($config['chemin_vues']."$vue->type.php");
 
 ?>

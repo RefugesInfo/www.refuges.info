@@ -26,19 +26,19 @@ require_once ("fonctions_mode_emploi.php");
 require_once ("fonctions_meta_donnees.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
-$modele = new stdClass();
-$modele->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
-$modele->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut
-$modele->champs = new stdClass(); // contiendra TOUS les champs de formulaire qui seront passés au V de MVC (je yip suis converti)
-$modele->champs->invisibles = new stdClass ;  // champs invisibles a passer quand meme (ancien id ...)
-$modele->champs->textareas = new stdClass ;
-$modele->champs->boutons = new stdClass ; // Modifier, supprimer...
-$modele->champs->bools = new stdClass(); // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
-$modele->champs->ferme = new stdClass(); // traite en cas particulier, trop specifique
-$modele->champs->places_matelas = new stdClass(); // traite en cas particulier, trop specifique, la suppression me demange
+$vue = new stdClass();
+$vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
+$vue->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut
+$vue->champs = new stdClass(); // contiendra TOUS les champs de formulaire qui seront passés au V de MVC (je yip suis converti)
+$vue->champs->invisibles = new stdClass ;  // champs invisibles a passer quand meme (ancien id ...)
+$vue->champs->textareas = new stdClass ;
+$vue->champs->boutons = new stdClass ; // Modifier, supprimer...
+$vue->champs->bools = new stdClass(); // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
+$vue->champs->ferme = new stdClass(); // traite en cas particulier, trop specifique
+$vue->champs->places_matelas = new stdClass(); // traite en cas particulier, trop specifique, la suppression me demange
 
 
-$modele->page_action="/point_modification.php";
+$vue->page_action="/point_modification.php";
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
 // ou si les droits sont insuffisants
@@ -56,11 +56,11 @@ if ( isset($_REQUEST["id_point"]) )
     if ($point->erreur) 
         erreur_on_arrete("<strong>problème : $point->message</strong>");
 
-    $modele->serie = param_cartes ($point);
+    $vue->serie = param_cartes ($point);
 
     // bug du point_gps recree a chaque fois: il faut le transmettre en invisible.
-    $modele->champs->invisibles->id_point_gps = new stdClass;
-    $modele->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
+    $vue->champs->invisibles->id_point_gps = new stdClass;
+    $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
 
     // boutton supprimer 
     $bouton_suppr = new stdClass;
@@ -91,7 +91,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
 	$point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
     
     // ça me semble le moins pire de proposer le fond spécial saisie "google photos" par défaut
-	$modele->serie = $config['fournisseurs_fond_carte']['Saisie'];
+	$vue->serie = $config['fournisseurs_fond_carte']['Saisie'];
 	// on force l'id du point à vide histoire de ne pas modifier le modèle
 	unset($point->id_point);
   
@@ -102,31 +102,31 @@ elseif ( isset($_REQUEST["id_point_type"]))
 	//	$etape="<h4>Étape 3/3</h4>";
  
   
-  $modele->etapes->licence = new stdClass;
-  $modele->etapes->licence->titre = "Licence des contenus";
-  $modele->etapes->licence->texte = "<p>L'information que vous allez rentrer <a href=\"".lien_mode_emploi("restriction_licence")."\">sera soumise à la licence creative commons by-sa</a></p>";
+  $vue->etapes->licence = new stdClass;
+  $vue->etapes->licence->titre = "Licence des contenus";
+  $vue->etapes->licence->texte = "<p>L'information que vous allez rentrer <a href=\"".lien_mode_emploi("restriction_licence")."\">sera soumise à la licence creative commons by-sa</a></p>";
   
-  $modele->etapes->quoimettre = new stdClass;
-  $modele->etapes->quoimettre->titre = "Que mettre ou ne pas mettre ?";
-  $modele->etapes->quoimettre->texte = "Tout ne trouve pas sa place sur le site, merci de prendre connaissance de
+  $vue->etapes->quoimettre = new stdClass;
+  $vue->etapes->quoimettre->titre = "Que mettre ou ne pas mettre ?";
+  $vue->etapes->quoimettre->texte = "Tout ne trouve pas sa place sur le site, merci de prendre connaissance de
                                     <a href='" .lien_mode_emploi('que_mettre') ."'>ce qui est attendu ou pas sur le site</a>";
 
-  $modele->etapes->saisie = new stdClass;
-  $modele->etapes->saisie->titre = "Saisie";
-  $modele->etapes->saisie->texte = "Rien d'obligatoire mais essayez d'être précis ne laissez pas les valeurs par défaut; au pire, remplacez par un blanc.";
+  $vue->etapes->saisie = new stdClass;
+  $vue->etapes->saisie->titre = "Saisie";
+  $vue->etapes->saisie->texte = "Rien d'obligatoire mais essayez d'être précis ne laissez pas les valeurs par défaut; au pire, remplacez par un blanc.";
 
 	if (!isset($_SESSION['id_utilisateur']))
 	{
-    $modele->etapes->guest = new stdClass;
-    $modele->etapes->guest->titre = "Non connecté ?";
-    $modele->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
+    $vue->etapes->guest = new stdClass;
+    $vue->etapes->guest->titre = "Non connecté ?";
+    $vue->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
 	}
     else
     {
         // BUG: ecrasement du createur de la fiche en cas de modif
-        $modele->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
-        $modele->champs->invisibles->id_createur = new stdClass;
-        $modele->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
+        $vue->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
+        $vue->champs->invisibles->id_createur = new stdClass;
+        $vue->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
     }
 
 }
@@ -135,9 +135,9 @@ elseif ( isset($_REQUEST["dupliquer"]))
 {
         $point=infos_point($_REQUEST["dupliquer"]);
         
-        $modele->etapes->unsurdeux = new stdClass;
-        $modele->etapes->unsurdeux->titre = "Etape 1 / 2";
-        $modele->etapes->unsurdeux->texte = "(Opération en deux étapes)";
+        $vue->etapes->unsurdeux = new stdClass;
+        $vue->etapes->unsurdeux->titre = "Etape 1 / 2";
+        $vue->etapes->unsurdeux->texte = "(Opération en deux étapes)";
         
         // on force l'id du point à vide histoire de ne pas modifier la copie
         unset($point->id_point);
@@ -148,14 +148,14 @@ elseif ( isset($_REQUEST["dupliquer"]))
         unset($point->article_partitif_point_type); 
         unset($point->nom_type);
         
-        $modele->champs->invisibles->id_point_gps = new stdClass;
-        $modele->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
+        $vue->champs->invisibles->id_point_gps = new stdClass;
+        $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
         
-        $modele->champs->boutons->dupliquer = new stdClass;
-        $modele->champs->boutons->dupliquer->nom = "Dupliquer";
-        $modele->champs->boutons->dupliquer->type = "submit";
-        $modele->champs->boutons->dupliquer->valeur = "Ajouter";
-        $modele->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
+        $vue->champs->boutons->dupliquer = new stdClass;
+        $vue->champs->boutons->dupliquer->nom = "Dupliquer";
+        $vue->champs->boutons->dupliquer->type = "submit";
+        $vue->champs->boutons->dupliquer->valeur = "Ajouter";
+        $vue->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
 }
 // 4) On ne devrait pas arriver en direct sur ce formulaire
 else
@@ -166,8 +166,8 @@ else
 /******** Boutons répétés en haut et en bas *****************/
 if (isset($point->id_point))
 {
-  $modele->champs->invisibles->id_point = new stdClass;
-  $modele->champs->invisibles->id_point->valeur = $point->id_point;
+  $vue->champs->invisibles->id_point = new stdClass;
+  $vue->champs->invisibles->id_point->valeur = $point->id_point;
 }
 
 $bouton_valider = new stdClass;
@@ -184,11 +184,11 @@ $bouton_reset->label = "Recommencer";
 
 // Gestion de l'ordre des boutons modifier/valider/supprimer 
 // FIXME : voir dupliquer ? car c'est bizarre l'ancienne méthode de modifier d'abord pour "dupliquer")
-$modele->champs->boutons->valider=$bouton_valider;
-$modele->champs->boutons->reset=$bouton_reset;
+$vue->champs->boutons->valider=$bouton_valider;
+$vue->champs->boutons->reset=$bouton_reset;
 
 if (isset($bouton_suppr))
-    $modele->champs->boutons->suppr=$bouton_suppr;
+    $vue->champs->boutons->suppr=$bouton_suppr;
 
 //3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( lac, sommet, etc. )
@@ -203,13 +203,13 @@ $textes_area["remarques"]="remark";
 /******** Les champs libres *****************/
 foreach ($textes_area as $libelle => $nom_variable)
 {
-	$modele->champs->textareas->$nom_variable = new stdClass;
+	$vue->champs->textareas->$nom_variable = new stdClass;
 	// kesasko ?
 	if ($nom_variable=="acces")
-		$modele->champs->textareas->$nom_variable->disable = true; // c'est koi ?
+		$vue->champs->textareas->$nom_variable->disable = true; // c'est koi ?
 	
-	$modele->champs->textareas->$nom_variable->label=$libelle ; // faudra mettreca dans un LABEL
-	$modele->champs->textareas->$nom_variable->valeur=htmlspecialchars($point->$nom_variable,0,"UTF-8");
+	$vue->champs->textareas->$nom_variable->label=$libelle ; // faudra mettreca dans un LABEL
+	$vue->champs->textareas->$nom_variable->valeur=htmlspecialchars($point->$nom_variable,0,"UTF-8");
 }
 
 /******** Les informations complétaires (booléens, détails) *****************/
@@ -218,10 +218,10 @@ foreach ($textes_area as $libelle => $nom_variable)
 // Je met ce champs dans le lot des "booléens" par simplicité, mais "ignore si c'est censuré" n'aura pas de sens
 if ($_SESSION['niveau_moderation']>=1)
 {
-    $modele->champs->bools->censure = new stdClass ;
-    $modele->champs->bools->censure->label = "Censurer ce point" ;
-    $modele->champs->bools->censure->valeur = $point->censure;
-    $modele->champs->bools->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
+    $vue->champs->bools->censure = new stdClass ;
+    $vue->champs->bools->censure->label = "Censurer ce point" ;
+    $vue->champs->bools->censure->valeur = $point->censure;
+    $vue->champs->bools->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
 }
 
 foreach($config['champs_binaires_simples_points'] as $champ)
@@ -230,12 +230,12 @@ foreach($config['champs_binaires_simples_points'] as $champ)
     $champ_equivalent="equivalent_$champ";
     if ( !empty($point->$champ_equivalent) )
     {
-        $modele->champs->bools->$champ = new stdClass ;
-        $modele->champs->bools->$champ->label = $point->$champ_equivalent ;
-        $modele->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
+        $vue->champs->bools->$champ = new stdClass ;
+        $vue->champs->bools->$champ->label = $point->$champ_equivalent ;
+        $vue->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
         // le cas Sommaire... que je virerai bien mais qui est la juste pour la demo
         if ($champ=="sommaire")
-            $modele->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même peut changer)";
+            $vue->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même peut changer)";
     }
 }
 
@@ -243,29 +243,29 @@ foreach($config['champs_binaires_simples_points'] as $champ)
 //combine fermé
 if ( !empty($point->equivalent_ferme) )
 {
-  $modele->champs->ferme->label = $point->equivalent_ferme ;
-  $modele->champs->ferme->options = array('NULL' => 'ne sait pas','' => 'non','oui' => 'oui', 'detruit' => 'Détruit(e)','ruine' => 'En ruine');
-  $modele->champs->ferme->valeur = is_null($point->ferme)? "NULL":$point->ferme ; // retourne "NULL" si ca vaut NULL (au lieu de"")
+  $vue->champs->ferme->label = $point->equivalent_ferme ;
+  $vue->champs->ferme->options = array('NULL' => 'ne sait pas','' => 'non','oui' => 'oui', 'detruit' => 'Détruit(e)','ruine' => 'En ruine');
+  $vue->champs->ferme->valeur = is_null($point->ferme)? "NULL":$point->ferme ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 //combine matelas
 if ( !empty($point->equivalent_places_matelas) )
 {
-  $modele->champs->places_matelas->label = $point->equivalent_places_matelas ;
-  $modele->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
-  $modele->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
+  $vue->champs->places_matelas->label = $point->equivalent_places_matelas ;
+  $vue->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
+  $vue->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
 }
 
 // ===================================
 
-$modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
-$modele->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
+$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
+$vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
-$modele->lien_bbcode = lien_mode_emploi("syntaxe_bbcode");
-$modele->lien_aide_points = lien_mode_emploi("autres_points");
+$vue->lien_bbcode = lien_mode_emploi("syntaxe_bbcode");
+$vue->lien_aide_points = lien_mode_emploi("autres_points");
 // On affiche le tout
-$modele->type = 'point_formulaire_modification';
+$vue->type = 'point_formulaire_modification';
 include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$modele->type.html");
+include ($config['chemin_vues']."$vue->type.html");
 include ($config['chemin_vues']."_pied.html");
 
 // ===================================
@@ -274,11 +274,11 @@ include ($config['chemin_vues']."_pied.html");
 function erreur_on_arrete($texte)
 {
 	global $config;
-    $modele = new stdClass;
-	$modele->texte = $texte;
-	$modele->type = 'point_formulaire_modification_erreur';
+    $vue = new stdClass;
+	$vue->texte = $texte;
+	$vue->type = 'point_formulaire_modification_erreur';
 	include ($config['chemin_vues']."_entete.html");
-	include ($config['chemin_vues']."$modele->type.html");
+	include ($config['chemin_vues']."$vue->type.html");
 	include ($config['chemin_vues']."_pied.html");
 	die(); // peut être moyen de faire mieux mais bon, gros problème donc on se tire
 }

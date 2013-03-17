@@ -15,7 +15,6 @@ Finalement on passe à un quasi-vrai wiki sans historique que pour modérateurs
 *****************************************************/
 require_once ("fonctions_mode_emploi.php");
 
-$modele = new stdclass;
 $nom_page=$controlleur->url_decoupee[2];
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (($_SESSION ['niveau_moderation'] >= 1) ) 
@@ -52,6 +51,7 @@ elseif($_GET['form_modifier']==1 and $_SESSION ['niveau_moderation'] >= 1)
     $vue->type="mode_emploi_modification";
     $vue->contenu_a_modifier=htmlspecialchars($page->contenu,0,"UTF-8");
     $vue->lien_validation=lien_mode_emploi($nom_page);
+    $vue->lien_bbocode=lien_mode_emploi('syntaxe_bbcode');
     
 }
 else // affichage de la page

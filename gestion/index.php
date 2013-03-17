@@ -12,8 +12,8 @@ Chantier d'avenir : passer en MVC
 require_once ("../modeles/config.php");
 require_once ("fonctions_autoconnexion.php");
 
-$modele = new stdClass;
-$modele->titre="Zone de gestion";
+$vue = new stdClass;
+$vue->titre="Zone de gestion";
 
 include ($config['chemin_vues']."_entete.html");
 

@@ -1,15 +1,8 @@
-<?// Script lié à la page d'acceuil
-
+<?php
+// Script lié à la page d'acceuil
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
-// $modele contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $vue contient les données passées par le fichier PHP
 
-// 17/10/11 Dominique : Création
-// 23/10/11 Dominique : Retour ici du code spécifique à la page qui avait été mis dans la bibliothèque
-// 15/04/11 Dominique : Passage en OL2.11
-// 08/05/12 Dominique : Retour en templates simples
-// 12/07/12 Dominique : Enrichissement avec les news
-// 15/02/13 jmb : gestion des zones
 ?>
 
 // Crée la carte dés que la page est chargée
@@ -26,7 +19,7 @@ window.onload = function () {
 	});
 	
 	// Positionne la carte sur la zone donnée par le .PHP
-	var bornes = new OpenLayers.Bounds ( <?=$modele->bbox?> ) 
+	var bornes = new OpenLayers.Bounds ( <?=$vue->bbox?> ) 
 				.transform (map.displayProjection, map.getProjectionObject());
 
 	map.setCenter (

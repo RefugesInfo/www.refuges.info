@@ -1,11 +1,11 @@
 <?php
-	header("Content-disposition: attachment; filename='$nom_fichier_export.gpx");
-	header("Content-Type: text/xml; charset=$modele->content_type");
+	header("Content-disposition: attachment; filename='$vue->nom_fichier_export.gpx");
+	header("Content-Type: text/xml; charset=$vue->content_type");
 	header("Content-Transfer-Encoding: binary");
 	header("Pragma: no-cache");
 	header("Expires: 0");
 ?>
-<?='<?'?>xml version="1.0" encoding="<?php$modele->content_type?>" standalone="no"?>
+<?='<?'?>xml version="1.0" encoding="<?php$vue->content_type?>" standalone="no"?>
 <gpx
  xmlns="http://www.topografix.com/GPX/1/1"
  creator="refuges.info"
@@ -14,7 +14,7 @@
  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
 >
 	<metadata>
-		<name><?=$nom_fichier_export?>.gpx</name>
+		<name><?=$vue->nom_fichier_export?>.gpx</name>
 		<desc><?=$description?></desc>
 		<author>
 			<name>Contributeurs refuges.info</name>

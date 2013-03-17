@@ -1,9 +1,9 @@
 <div class="contenu">
-<?php if ($modele->point_existe) { ?>
-  <h3><?=$modele->titre?></h3>
-  <h4><a href="<?=$modele->lien_point?>"><?=$modele->lien_texte_retour?></a></h4>
+<?php if ($vue->point_existe) { ?>
+  <h3><?=$vue->titre?></h3>
+  <h4><a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a></h4>
   <p>
-  <?php if ($modele->non_connecte) { ?>
+  <?php if ($vue->non_connecte) { ?>
     Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
     Bien que nous autorisons les contributions anonymes, ils vous est recommandé de vous connecter sur le forum et/ou de créer un compte
     afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config['connexion_forum']?>">Connexion</a><br /><br />
@@ -19,30 +19,30 @@
     <strong>Banni !</strong>
     Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
     vous pouvez en parler ici : <a href="/forum/viewtopic.php?t=671">Sur le forum</a><br /><br />
-  <?php } if ($modele->messages->erreur) { ?>
-    <strong><?=$modele->messages->message?></strong>
-  <?php } elseif (isset($modele->messages->erreur)) { ?>
-    <?=$modele->messages->message?>.<br /><br />
+  <?php } if ($vue->messages->erreur) { ?>
+    <strong><?=$vue->messages->message?></strong>
+  <?php } elseif (isset($vue->messages->erreur)) { ?>
+    <?=$vue->messages->message?>.<br /><br />
   <?php } ?>
   </p>
   <div class="com">
-  <form id="comment" method="post" action="/point_ajout_commentaire.php?id_point=<?=$modele->commentaire->id_point?>" enctype="multipart/form-data">
+  <form id="comment" method="post" action="/point_ajout_commentaire.php?id_point=<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
     <fieldset><legend style="font-size: 1.2em;">Rajouter une information ou une précision</legend>
-    <textarea name="comment_texte" cols="120" rows="8"><?=$modele->commentaire->texte_propre?></textarea><?=$config['lien_syntaxe']?>
+    <textarea name="comment_texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre?></textarea><?=$config['lien_syntaxe']?>
 
 	<br />
 	<label>auteur:</label>
-		<input type="text" value="<?=$modele->commentaire->auteur?>" name="comment_auteur" maxlength="120" size="40" />(facultatif)
+		<input type="text" value="<?=$vue->commentaire->auteur?>" name="comment_auteur" maxlength="120" size="40" />(facultatif)
 	<br />
 
 	<label>Une photo ? (format JPEG)</label>
 		<input type="file" name="comment_photo" size="15" value=""/>(facultatif)
 	<br />
-	<?php if ($modele->captcha) { ?>
+	<?php if ($vue->captcha) { ?>
 	<fieldset>
 		<legend>Protection anti-spam</legend>
 		Merci de simplement écrire la lettre "f" dans la case<br />
-		<input type="text" name="lettre_verification" value="<?=$modele->lettre_verification?>"/>
+		<input type="text" name="lettre_verification" value="<?=$vue->lettre_verification?>"/>
 		Ceci afin d'éviter les messages indésirables automatiques (désolé)
 	</fieldset>
 	<?}?>

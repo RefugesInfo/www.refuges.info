@@ -3,7 +3,7 @@
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 17/10/11 Dominique : Création
@@ -18,29 +18,29 @@
 <div class="contenu">
 	<!-- afficher le titre du massif (en mode massif) -->
 	<h3 id="titrepage">
-		<?=$modele->titre?> (Maj+clic=nouvel onglet) :
+		<?=$vue->titre?> (Maj+clic=nouvel onglet) :
 	</h3>
 </div>
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 <!-- Un premier formulaire pour les consultations courantes -->
 <?php
 // les formulaires ne seront pas la en zone , ils sont presents pour le reste
-if ( $modele->type_affichage != "zone" ){?>
+if ( $vue->type_affichage != "zone" ){?>
 <form
 	id="choix_legende"
 	style="float: left; width: 200px; <?if (isset ($_GET ['cree'])) {?>display:none;<?}?>"
 	action="/exportations/formulaire_exportations.php"
 >
-	<?if (isset ($modele->polygone->nom_polygone )) {?>
+	<?if (isset ($vue->polygone->nom_polygone )) {?>
 		<fieldset>
 			<label>
 				<input name="id_massif"
 					type="checkbox"
 					checked="checked"
-					value="<?=$modele->polygone->id_polygone?>"
+					value="<?=$vue->polygone->id_polygone?>"
 					onclick="switch_massif(this)"
 				/>
-				<?=$modele->polygone->nom_polygone?> uniquement
+				<?=$vue->polygone->nom_polygone?> uniquement
 			</label>
 		</fieldset>
 	<?}?>
@@ -48,7 +48,7 @@ if ( $modele->type_affichage != "zone" ){?>
 	<fieldset>
 		<legend>Points</legend>
 		<ul>
-			<?foreach ($modele->infos_base->types_point_affichables AS $ptype) {?>
+			<?foreach ($vue->infos_base->types_point_affichables AS $ptype) {?>
 				<li>
 					<label>
 						<input
@@ -56,7 +56,7 @@ if ( $modele->type_affichage != "zone" ){?>
 							onclick="maj_carte()"
 							value="<?=$ptype->id_point_type?>"
 							type="checkbox"
-							<?if (strstr (",$modele->liste_id_point_type,", ",$ptype->id_point_type,")) {?>
+							<?if (strstr (",$vue->liste_id_point_type,", ",$ptype->id_point_type,")) {?>
 								checked="checked"
 							<?}?>
 						/>
@@ -80,10 +80,10 @@ if ( $modele->type_affichage != "zone" ){?>
 	</fieldset>
 
 	<!-- garde les coordonnee de la BBOX sous le coude pour l'export -->
-	<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$modele->polygone->sud?>" /></p>
-	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$modele->polygone->nord?>" /></p>
-	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$modele->polygone->ouest?>" /></p>
-	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$modele->polygone->est?>" /></p>
+	<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$vue->polygone->sud?>" /></p>
+	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$vue->polygone->nord?>" /></p>
+	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
+	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
 
 	<!-- Cadre pour exporter la vue, appelle la page "exportations.php" avec les param en GET -->
 	<fieldset>
@@ -144,7 +144,7 @@ if ( $modele->type_affichage != "zone" ){?>
 			</li>
 			<li>
 				<a title="Voir la liste des types de points possibles"
-				   href="<?=$modele->lien_mode_emploi?>"
+				   href="<?=$vue->lien_mode_emploi?>"
 				>
 					Types de points
 				</a>
@@ -152,7 +152,7 @@ if ( $modele->type_affichage != "zone" ){?>
 			<li>
 				<select name="id_point_type">
 					<?// Calcul de la liste déroulante pour le menu
-					foreach ($modele->infos_base->types_point_affichables AS $pa) { ?>
+					foreach ($vue->infos_base->types_point_affichables AS $pa) { ?>
 						<option  value="<?=$pa->id_point_type?>">
 							<?=$pa->nom_type?>
 						</option>

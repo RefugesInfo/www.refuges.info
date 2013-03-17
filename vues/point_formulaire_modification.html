@@ -3,7 +3,7 @@
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 27/05/12 Dominique : Création
@@ -12,10 +12,10 @@
 <div class="contenu">
 	<h3><?=$action?> <?=$point->article_partitif_point_type?> <?=$point->nom_type?></h3>
 	<?
-  if (isset($modele->etapes))
+  if (isset($vue->etapes))
   { ?>
     <dl> <?
-    foreach ($modele->etapes as $etape)
+    foreach ($vue->etapes as $etape)
     {
       // les etapes en listes DT, plus approprié, le style au besoin en CSS
       ?>
@@ -24,16 +24,14 @@
     <?}?>
     </dl>  <?
   }
-//var_dump($point);
-//var_dump($modele);
 
 // Si on a une latitude et une longitude, on peut afficher notre carte, sinon autant pas montrer une carte bidon sly 04/05/2010
 	if ($point->latitude!="" and $point->longitude!="") {?>
 		<div class="carte_edit" id="carte-edit"></div>
 	<?}?>
-	<form class="wri" id="form_point" method="post" onsubmit="return validation();" action="<?=$modele->page_action?>">
+	<form class="wri" id="form_point" method="post" onsubmit="return validation();" action="<?=$vue->page_action?>">
 		<div><?
-    foreach ($modele->champs->boutons as $bouton) { ?> 
+    foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
         <?=$bouton->label?>
       </button>
@@ -41,7 +39,7 @@
     </div>
     <!-- Champs masques -->
     <?
-    foreach ($modele->champs->invisibles as $nom => $params)
+    foreach ($vue->champs->invisibles as $nom => $params)
     { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
     <?}?>
@@ -68,7 +66,7 @@
             <span>Degrés décimaux WGS84 ex: 45.2356 et -5.2354. Déplacez le viseur pour modifier la position (n'oubliez pas de valider).</span>
             <label>Précision
                 <select name="id_type_precision_gps">
-                <?	foreach ($modele->infos_base->type_precision AS $gps) { ?>
+                <?	foreach ($vue->infos_base->type_precision AS $gps) { ?>
                         <option  value="<?=$gps->id_type_precision_gps?>"<?=($gps->id_type_precision_gps==$point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
                             <?=$gps->nom_precision_gps ?>
                         </option>
@@ -88,14 +86,14 @@
 			</label>
 			<label>Type de point
 				<select name='id_point_type'>
-					<?php foreach ($modele->infos_base->types_point AS $type_point) { ?>
+					<?php foreach ($vue->infos_base->types_point AS $type_point) { ?>
 						<option  value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$point->id_point_type)? 'selected="selected"' : '' ;?>>
 							<?=$type_point->nom_type?>
 						</option>
 					<?}?>
 				</select>
 			</label>
-			<a href="<?=$modele->lien_aide_points?>">
+			<a href="<?=$vue->lien_aide_points?>">
 				Explications plus précises sur les différents types de points
 			</a>
 
@@ -108,9 +106,9 @@
 	</fieldset>
 	<fieldset>
 		<legend>Champs déscriptifs:</legend>
-		<span><a href="<?=$modele->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
+		<span><a href="<?=$vue->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
 <?php
-	foreach ($modele->champs->textareas as $tx_nom => $tx_params)
+	foreach ($vue->champs->textareas as $tx_nom => $tx_params)
   {	?>
 		<label class="textarea"><span><?=$tx_params->label?></span>
 			<textarea class="textarea" rows="5" cols="80" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
@@ -121,7 +119,7 @@
 		<fieldset>
 			<legend>Informations Complémentaires</legend>
 	<?php
-	foreach ($modele->champs->bools as $nom => $params)
+	foreach ($vue->champs->bools as $nom => $params)
 	{
 		if(!isset($params->valeur))
 			$params->valeur = null;
@@ -139,43 +137,43 @@
 				<input name="site_officiel" size="70" type="text" value="<?=htmlspecialchars($point->site_officiel,0,'UTF-8')?>" />
 			</label>
 		<?}
-		if (!empty($modele->champs->ferme->options) )
+		if (!empty($vue->champs->ferme->options) )
 		{ ?>
       <fieldset class="booleen"> 
-        <legend><?=$modele->champs->ferme->label?></legend> <?
-        foreach ($modele->champs->ferme->options as $option_key => $option_val)
+        <legend><?=$vue->champs->ferme->label?></legend> <?
+        foreach ($vue->champs->ferme->options as $option_key => $option_val)
         { ?>
           <label><?=$option_val?>
-            <input type="radio" name="ferme" value="<?=$option_key?>"<?=($modele->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
+            <input type="radio" name="ferme" value="<?=$option_key?>"<?=($vue->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
           </label>
       <?}?>
       </fieldset>
 		<?}
-      	if (!empty($modele->champs->places_matelas->label) )
+      	if (!empty($vue->champs->places_matelas->label) )
 		{
             // rendre le champs invisible si l'option etait "ne sait pas" ou "ya pas"
-            if ( is_int($modele->champs->places_matelas->valeur) && $modele->champs->places_matelas->valeur >= 0 ) // est 0 ou N 
+            if ( is_int($vue->champs->places_matelas->valeur) && $vue->champs->places_matelas->valeur >= 0 ) // est 0 ou N 
                 $visible = 'visible';
             else                              // NULL ou -1
                 $visible = 'hidden';
             
             ?>
           <fieldset class="booleen"> 
-            <legend><?=$modele->champs->places_matelas->label?></legend> 
+            <legend><?=$vue->champs->places_matelas->label?></legend> 
                 <label>ne sait pas
-                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($modele->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
+                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($vue->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
                 </label>
                 <label>sans
-                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','-1');" <?=($modele->champs->places_matelas->valeur=="-1")?' checked="checked"':'';?> />
+                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','-1');" <?=($vue->champs->places_matelas->valeur=="-1")?' checked="checked"':'';?> />
                 </label>
                 <label>avec
                     <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','visible','');" <?=($visible == 'visible')?' checked="checked"':'';?> />
                 </label>
                 <label>
                     <input type="text" id="places_matelas" size="4" name="places_matelas"
-                            value="<?=$modele->champs->places_matelas->valeur?>"
+                            value="<?=$vue->champs->places_matelas->valeur?>"
                             style="visibility: <?=$visible?>;"
-                            title="<?=$modele->champs->places_matelas->aide?>"
+                            title="<?=$vue->champs->places_matelas->aide?>"
                     />
                 </label>
           </fieldset>
@@ -199,7 +197,7 @@
 	</fieldset>
 	<?}?>
 		<div><?
-    foreach ($modele->champs->boutons as $bouton) { ?>
+    foreach ($vue->champs->boutons as $bouton) { ?>
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
         <?=$bouton->label?>
       </button>

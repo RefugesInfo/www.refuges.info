@@ -62,14 +62,14 @@ foreach ($_POST as $champ => $valeur)
         
 }
 
-$modele = new stdClass();
+$vue = new stdClass();
 //======================================
 // C'est LA que ca cherche
-$modele->points = infos_points ($conditions);
+$vue->points = infos_points ($conditions);
 
 //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on la atteinte ........
- if (!empty($conditions->limite) && sizeof($modele->points) == $conditions->limite)
-	$modele->limite_atteinte = $conditions->limite;
+ if (!empty($conditions->limite) && sizeof($vue->points) == $conditions->limite)
+	$vue->limite_atteinte = $conditions->limite;
 
  
 //-----------------------------------------------------------------------------------------------------
@@ -105,15 +105,15 @@ if ($nominatim->nb_points>1)
     $nominatim->pluriel="s";
 
 $nominatim->url_site=$config['url_nominatim'];
-$modele->nominatim=$nominatim;
+$vue->nominatim=$nominatim;
 
-$modele->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
+$vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 	
 
 // On affiche le tout
-$modele->type = 'point_recherche';
+$vue->type = 'point_recherche';
 
 require_once ($config['chemin_vues']."_entete.html");
-require_once ($config['chemin_vues']."$modele->type.html");
+require_once ($config['chemin_vues']."$vue->type.html");
 require_once ($config['chemin_vues']."_pied.html");
 ?> 
