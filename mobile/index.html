@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+	<head>
+		<title>Cabanes et abris de montagne</title>
+		<link rel="shortcut icon" href="/images/favicon.ico" />
+		<meta name="robots" content="all" />
+		<meta name="robots" content="index,follow" />
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<link type="text/css" rel="stylesheet" href="styles/style.css" />
+		<link rel="stylesheet" href="./leaflet/leaflet.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="./leaflet/leaflet.ie.css" /><![endif]-->
+		<script src="./leaflet/leaflet.js"></script>
+		<script src="./leaflet/leaflet.fullscreen.js"></script>
+		<script src="./js/index.js"></script>
+	</head>
+
+	<body>
+		<header>
+			<a href="/mobile"><img alt="Entete" src="images/Entete_mobile.png" /></a>
+			<img alt="Entete_fin" src="images/Entete_mobile_droite.png" />
+			<div></div>
+		</header>
+		
+		<nav>
+			<a href="./">Carte</a><a href="./recherche.php">Recherche</a>
+		</nav>
+		
+		<div id="fin-entete"></div>
+
+		<!-- Contenu du site web -->
+
+		<section>
+			<article id="carte">
+				<div id="map"></div>
+				<script type='text/javascript'>
+				initmap();
+				</script>
+
+			</article>
+			<article id="infosPoint" style="display:none;">
+				<a style="float:right;" href="#" onclick="toogleMap();">Retour carte</a>
+				<h3>Infos sur le point</h3>
+				<p><b>TODO</b> Afficher les données du point cliqué, ici et en joli !</p>
+			</article>
+		</section>
+
+		<footer>
+			<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.fr">
+				<img src="./images/licence.png" alt="CC BY SA 2.0" />
+			</a>
+			-
+			<a href="/statique/mode_emploi.php?page=licence" title="Version ordinateur">
+				Plus d'infos sur la licence
+			</a>
+		</footer>
+	</body>
+</html>
