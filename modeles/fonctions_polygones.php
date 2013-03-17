@@ -89,7 +89,7 @@ function infos_polygones($conditions)
     if ($conditions->avec_geometrie)
     {
         // FIXME : notre OL ne sait pas gérer les multipolygon, on bidouille en ne prenant que le 1
-        if ($conditions->avec_geometrie="gmlol")
+        if ($conditions->avec_geometrie=="gmlol")
             $champs_en_plus.=",st_asGML(st_geometryn(geom,1)) AS geometrie_gmlol";
         else
             $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
