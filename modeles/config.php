@@ -57,9 +57,7 @@ $config['chemin_controlleurs']=$config['document_root']."controlleurs/";
 $config['url_chemin_icones']="/images/icones/";
 $config['chemin_icones']=$config['document_root'].$config['url_chemin_icones'];
 
-$config['404_page']=$config['document_root']."/statique/erreur_404.php";
-
-$config['textes_mode_emploi']=$config['document_root']."/statique/mode_emploi_textes/";
+$config['base_mode_emploi']="/mode_emploi/";
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
 $config['nom_hote']=$_SERVER['HTTP_HOST'];
@@ -134,13 +132,6 @@ $config['email_contact_nominatim']="sylvain@refuges.info";
 
 /******** Nom du fichier contenant les points exportés **********/
 $config['nom_fichier_export']="refuge-info";
-
-$config['message_licence']="
-<p>
-	L'information que vous allez rentrer <a href=\"/statique/mode_emploi.php?page=restriction_licence\">sera soumise à la licence creative commons by-sa</a>
-</p>
-";
-$config['lien_syntaxe']="<a href=\"/statique/mode_emploi.php?page=syntaxe_bbcode\">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)";
 
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");

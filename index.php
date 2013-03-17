@@ -12,6 +12,7 @@ require_once ('modeles/config.php');
 require_once ("fonctions_nouvelles.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_autoconnexion.php");
+require_once ("fonctions_mode_emploi.php");
 
 $modele = new stdClass;
 $modele->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
@@ -49,7 +50,7 @@ $conditions->limite=5;
 $conditions->avec_photo=True;
 $conditions->avec_infos_point=True;
 $modele->photos_recentes=infos_commentaires($conditions);
-
+$modele->lien_mode_emploi=lien_mode_emploi();
 // On affiche le tout
 $modele->type = 'index';
 include ($config['chemin_vues']."_entete.html");

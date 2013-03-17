@@ -104,7 +104,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
   
   $modele->etapes->licence = new stdClass;
   $modele->etapes->licence->titre = "Licence des contenus";
-  $modele->etapes->licence->texte = $config['message_licence'];
+  $modele->etapes->licence->texte = "<p>L'information que vous allez rentrer <a href=\"".lien_mode_emploi("restriction_licence")."\">sera soumise à la licence creative commons by-sa</a></p>";
   
   $modele->etapes->quoimettre = new stdClass;
   $modele->etapes->quoimettre->titre = "Que mettre ou ne pas mettre ?";
@@ -259,7 +259,9 @@ if ( !empty($point->equivalent_places_matelas) )
 
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $modele->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
-
+// sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
+$modele->lien_bbcode = lien_mode_emploi("syntaxe_bbcode");
+$modele->lien_aide_points = lien_mode_emploi("autres_points");
 // On affiche le tout
 $modele->type = 'point_formulaire_modification';
 include ($config['chemin_vues']."_entete.html");

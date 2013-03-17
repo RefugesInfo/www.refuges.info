@@ -18,7 +18,7 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 	<head>
-		<title><?=$modele->titre ? $modele->titre : 'Cabanes et abris de montagne'?></title>
+		<title><?=$vue->titre?><?=$modele->titre?></title>
 		<link rel="shortcut icon" href="/images/favicon.ico" />
 		<meta name="robots" content="all" />
 		<meta name="robots" content="index,follow" />
@@ -96,8 +96,8 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 						<ul>
 							<li><a
 						href="/nav.php?cree=&amp;lat=47&amp;lon=6&amp;scale=10000000&amp;baseLayer=Google" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a></li>
-							<li><a href="/statique/mode_emploi.php?page=que_mettre" title="Que mettre ou ne pas mettre sur le site refuges.info ?">Que mettre ?</a></li>
-							<li><a href="/statique/mode_emploi.php?page=autres_points" title="Description des différents type de point du site">Types de points</a></li>
+							<li><a href="/mode_emploi/que_mettre" title="Que mettre ou ne pas mettre sur le site refuges.info ?">Que mettre ?</a></li>
+							<li><a href="/mode_emploi/autres_points" title="Description des différents type de point du site">Types de points</a></li>
 						</ul>
 					</li>
 					<li><a href="/point_formulaire_recherche.php">Recherche</a>
@@ -151,16 +151,16 @@ print("<?xml version=\"1.0\" encoding=\"$config[encodage_des_contenu_web]\" ?>")
 							<li><a href="/forum/privmsg.php?folder=inbox" title="Votre boite aux lettres personelle">Messages</a></li>
 						</ul>
 					</li>
-					<li><a href="/statique/mode_emploi.php">Mode d'Emploi</a>
+					<li><a href="/mode_emploi/">Mode d'Emploi</a>
 						<ul>
-							<li><a href="/statique/mode_emploi.php" title="Licence, fonctionnement, liens divers">Mode d'Emploi</a></li>
-							<li><a href="/statique/mode_emploi.php?page=licence" title="Quelle est la licence du contenu de refuges.info ?">Licence des contenus</a></li>
-							<li><a href="/statique/mode_emploi.php?page=fonctionnement" title="Comment fonctionne refuges.info ?">Fonctionnement</a></li>
-							<li><a href="/statique/mode_emploi.php?page=participer" title="Comment participer sur le site www.refuges.info ?">Contribuer</a></li>
-							<li><a href="/statique/mode_emploi.php?page=prudence" title="Règles de prudence à observer vis à vis de l'information présente sur refuges.info">Règles de prudence</a></li>
-							<li><a href="/statique/mode_emploi.php?page=qui_est_refuges.info" title="Qui est derrière www.refuges.info ?">Qui sommes nous ?</a></li>
-							<li><a href="/statique/mode_emploi.php?page=liens">Liens</a></li>
-							<li><a href="/statique/mode_emploi.php?page=don">Faire un don</a></li>
+							<li><a href="/mode_emploi/" title="Licence, fonctionnement, liens divers">Mode d'Emploi</a></li>
+							<li><a href="/mode_emploi/licence" title="Quelle est la licence du contenu de refuges.info ?">Licence des contenus</a></li>
+							<li><a href="/mode_emploi/fonctionnement" title="Comment fonctionne refuges.info ?">Fonctionnement</a></li>
+							<li><a href="/mode_emploi/participer" title="Comment participer sur le site www.refuges.info ?">Contribuer</a></li>
+							<li><a href="/mode_emploi/prudence" title="Règles de prudence à observer vis à vis de l'information présente sur refuges.info">Règles de prudence</a></li>
+							<li><a href="/mode_emploi/qui_est_refuges.info" title="Qui est derrière www.refuges.info ?">Qui sommes nous ?</a></li>
+							<li><a href="/mode_emploi/liens">Liens</a></li>
+							<li><a href="/mode_emploi/don">Faire un don</a></li>
 						</ul>
 					</li>
 					

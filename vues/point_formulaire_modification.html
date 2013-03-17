@@ -95,7 +95,7 @@
 					<?}?>
 				</select>
 			</label>
-			<a href="http://www.refuges.info/statique/mode_emploi.php?page=autres_points">
+			<a href="<?=$modele->lien_aide_points?>">
 				Explications plus précises sur les différents types de points
 			</a>
 
@@ -108,7 +108,7 @@
 	</fieldset>
 	<fieldset>
 		<legend>Champs déscriptifs:</legend>
-		<span><?=$config[lien_syntaxe]?></span>
+		<span><a href="<?=$modele->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
 <?php
 	foreach ($modele->champs->textareas as $tx_nom => $tx_params)
   {	?>
@@ -179,11 +179,6 @@
                     />
                 </label>
           </fieldset>
-          
-<!--          <label title="<?=$modele->champs->places_matelas->aide?>"><?=$modele->champs->places_matelas->label?> 
-            <input type="text" size="3" name="places_matelas" value="<?=$modele->champs->places_matelas->valeur?>" />
-          </label>
-     -->
       <?}?>
 		
 	</fieldset>

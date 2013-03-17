@@ -1,0 +1,20 @@
+<div class="contenu">
+		<p>
+			<form method="post" action="<?=$vue->lien_validation?>">
+				<textarea cols="150" rows="20" name="texte"><?=$vue->contenu_a_modifier?></textarea>
+				<br />
+				<input name="modification" type="submit" value="Modifier"/>
+			</form>
+		</p>
+		<p>
+			Un lien vers une autre page du mode d'emploi : [url=##nom_page]la bas c'est cool[/url]<br />
+			BBcode : <?=$config['lien_syntaxe']?><br />
+			[->5656] Lien automatique vers la page d'un point en particulier du site<br />
+			Le reste, ce sont les balises HTML :<br />
+			- &lt;h3&gt;Mon gros titre&lt;/h3&gt;<br />
+			- &lt;h4&gt;Mon titre moyen&lt;/h4&gt;<br />
+			- &lt;p&gt;Mon paragraphe&lt;/p&gt;<br />
+			(Prendre les autres pages comme exemple)
+			
+		</p>
+</div>

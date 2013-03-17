@@ -21,6 +21,7 @@ require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_meta_donnees.php");
 require_once ("fonctions_polygones.php");
+require_once ("fonctions_mode_emploi.php");
 
 $modele = new stdClass();
 $modele->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
@@ -60,6 +61,7 @@ $modele->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver le
 		: '7,10,9,23,6,3';
 
 		
+$modele->lien_mode_emploi=lien_mode_emploi();
 // On affiche le tout
 $modele->type = 'nav';
 include ($config['chemin_vues']."_entete.html");

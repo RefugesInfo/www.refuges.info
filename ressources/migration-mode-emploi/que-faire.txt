@@ -1,0 +1,15 @@
+Mode d'emploi :
+** NORMALEMENT, tout est déjà bon, dossier et fichier à détruire dans 1 mois quand tout est ok **
+C'est utile uniquement si quelqu'un veut reprendre la migration depuis les fichiers s'ils ont été re-touchés depuis
+
+(dumper la base "pages_wiki" depuis dev pour la re-créer en prod, ou :
+CREATE TABLE pages_wiki (
+    nom_page character varying(200) NOT NULL,
+    date timestamp without time zone DEFAULT now() NOT NULL,
+    contenu text
+);
+
+Pour la remplir en provenance des fichiers textes si elle a été vidée depuis dev par erreur :
+
+cd www.refuges.info/statique/mode_emploi_textes
+for x in *.txt ; do date=`stat -c %y $x | cut -f1 -d\.` ; page=`echo $x | sed s/.txt//` ; echo "INSERT into pages_wiki (nom_page,date,contenu) VALUES ('$page','$date','`cat $x | sed s/\'/\'\'/g`')" | psql test; done

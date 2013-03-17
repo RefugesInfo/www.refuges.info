@@ -3,3 +3,6 @@
 - Supprimer le type de point "censuré" de la table point_type
 - créer une colonne "censure" dans la table point type boolean, default=false
 - Vérifier s'il existe des points de type "censuré" (id=26) et leur placer le champs censure à true
+
+mode d'emploi : 
+après la mise en place de dev, supprimer le dossier+fichiers /statique/mode_emploi_textes

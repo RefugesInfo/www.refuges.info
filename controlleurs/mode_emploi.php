@@ -13,46 +13,56 @@ c'est donc "un peu" plus rapide à écrire et disponible pour les modérateurs, 
 
 Finalement on passe à un quasi-vrai wiki sans historique que pour modérateurs
 *****************************************************/
-require_once ('../modeles/config.php');
-require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_mode_emploi.php");
 
 $modele = new stdclass;
-
+$nom_page=$controlleur->url_decoupee[2];
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (($_SESSION ['niveau_moderation'] >= 1) ) 
 {
 	if (isset($_POST ['modification']))
-	{
-		ecrire_contenu ($_GET ['page'], stripslashes ($_POST ['texte']));
-		ecrire_contenu ("./sauvegarde/".$_GET ['page'].date('-YMd.H:i:s'), stripslashes ($_POST ['texte']));
-	}
+		ecrire_contenu ($nom_page, $_POST ['texte']);
 	if ($_GET ['supprimer'] == 1)
-		supprimer_page($_GET ['page']);
+		supprimer_page($nom_page);
 }
 
-if ($_GET ['page'] == '')
-	$_GET ['page'] = 'index';
+if ($nom_page == '')
+	$nom_page = 'index';
 
 // Conteneur standard de l'entête et pied de page
-unset ($page);
-$modele->titre = "Mode d'emploi de refuges.info ".$_GET['page'];
-$modele->contenu  = htmlspecialchars(recupere_contenu($_GET['page']),0,"UTF-8");
-$modele->html =  genere_contenu ($_GET ['page']);
+$page =  recupere_contenu ($nom_page);
 
+$vue->titre = "Mode d'emploi de refuges.info $nom_page";
+$vue->nom_page= $nom_page;
 // La page n'existe pas (ou pas encore !)
-if (!$modele->html)
+if ($page->erreur and $_GET['form_modifier']!=1)
 {
-	header("HTTP/1.0 404 Not Found");
-	$modele->html="Erreur 404 - La page demandée est introuvable sur refuges.info";
-	if (($_SESSION ['niveau_moderation'] >= 1) )
-		$modele->html.=", toutefois, vous pouvez la créér si besoin car vous êtes modérateur";
+    header("HTTP/1.0 404 Not Found");
+    $vue->type="page_introuvable";
+    $vue->titre=$page->message;
+    if ($_SESSION ['niveau_moderation'] >= 1)
+    {
+        $vue->contenu="Toutefois, vous pouvez la créér si besoin car vous êtes modérateur en : ";
+        $vue->lien_special=lien_mode_emploi($vue->nom_page)."?form_modifier=1";
+        $vue->titre_lien="Cliquant ici";
+    }
+} // Un modérateur a demandé à la modifier
+elseif($_GET['form_modifier']==1 and $_SESSION ['niveau_moderation'] >= 1)
+{
+    $vue->type="mode_emploi_modification";
+    $vue->contenu_a_modifier=htmlspecialchars($page->contenu,0,"UTF-8");
+    $vue->lien_validation=lien_mode_emploi($nom_page);
+    
 }
-else
-	$modele->date_fichier=date("d/m/Y",date_modif_contenu($_GET ['page']));
+else // affichage de la page
+{
+    if ($_SESSION ['niveau_moderation'] >= 1)
+        $vue->montrer_lien_admin=True;
+    if ($nom_page!='index')
+        $vue->lien_retour_index=lien_mode_emploi();
+        
+	$vue->date=date("d/m/Y",$page->ts_unix_page);
+    $vue->contenu_html  = $page->contenu_html; 
+}
 
-$modele->type = 'mode_emploi'; // Le type
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$modele->type.html");
-include ($config['chemin_vues']."_pied.html");
 ?>
