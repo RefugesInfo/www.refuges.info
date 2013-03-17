@@ -1,4 +1,4 @@
-/* Librairie minifiée Openlayers générée sur localhost le Tue, 12 Mar 2013 21:08:34 +0100
+/* Librairie minifiée Openlayers générée sur localhost le Sun, 17 Mar 2013 10:19:54 +0000
 
 © Dominique Cavailhez août 2012.
 Published under the Clear BSD license.
@@ -1035,6 +1035,7 @@ return intersect;},distanceTo:function(geometry,options){var edge=!(options&&opt
 return result;},CLASS_NAME:"OpenLayers.Geometry.Polygon"});OpenLayers.Geometry.Polygon.createRegularPolygon=function(origin,radius,sides,rotation){var angle=Math.PI*((1/sides)-(1/2));if(rotation){angle+=(rotation/180)*Math.PI;}
 var rotatedAngle,x,y;var points=[];for(var i=0;i<sides;++i){rotatedAngle=angle+(i*2*Math.PI/sides);x=origin.x+(radius*Math.cos(rotatedAngle));y=origin.y+(radius*Math.sin(rotatedAngle));points.push(new OpenLayers.Geometry.Point(x,y));}
 var ring=new OpenLayers.Geometry.LinearRing(points);return new OpenLayers.Geometry.Polygon([ring]);};
+OpenLayers.Geometry.MultiPolygon=OpenLayers.Class(OpenLayers.Geometry.Collection,{componentTypes:["OpenLayers.Geometry.Polygon"],CLASS_NAME:"OpenLayers.Geometry.MultiPolygon"});
 OpenLayers.Renderer=OpenLayers.Class({container:null,root:null,extent:null,locked:false,size:null,resolution:null,map:null,featureDx:0,initialize:function(containerID,options){this.container=OpenLayers.Util.getElement(containerID);OpenLayers.Util.extend(this,options);},destroy:function(){this.container=null;this.extent=null;this.size=null;this.resolution=null;this.map=null;},supported:function(){return false;},setExtent:function(extent,resolutionChanged){this.extent=extent.clone();if(this.map.baseLayer&&this.map.baseLayer.wrapDateLine){var ratio=extent.getWidth()/this.map.getExtent().getWidth(),extent=extent.scale(1/ratio);this.extent=extent.wrapDateLine(this.map.getMaxExtent()).scale(ratio);}
 if(resolutionChanged){this.resolution=null;}
 return true;},setSize:function(size){this.size=size.clone();this.resolution=null;},getResolution:function(){this.resolution=this.resolution||this.map.getResolution();return this.resolution;},drawFeature:function(feature,style){if(style==null){style=feature.style;}

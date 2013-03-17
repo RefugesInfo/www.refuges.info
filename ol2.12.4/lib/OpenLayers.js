@@ -253,7 +253,7 @@
                 "OpenLayers/Geometry/LinearRing.js",
                 "OpenLayers/Geometry/Polygon.js",
 //                "OpenLayers/Geometry/MultiLineString.js",
-//                "OpenLayers/Geometry/MultiPolygon.js",
+                "OpenLayers/Geometry/MultiPolygon.js",
                 "OpenLayers/Renderer.js",
                 "OpenLayers/Renderer/Elements.js",
                 "OpenLayers/Renderer/SVG.js",
