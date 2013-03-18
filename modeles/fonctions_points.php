@@ -110,8 +110,8 @@ function infos_points($conditions)
         
     /******** Liste des conditions de type WHERE *******/
     if (!empty($conditions->ids_points))
-        if (!verifi_multiple_intiers($conditions->ids_points))
-            return erreur("Le paramètre donnée pour les ids n'est pas valide");
+        if (!verif_multiples_entiers($conditions->ids_points))
+            return erreur("Le paramètre donnée pour les ids des points n'est pas valide");
         else
             $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
         
@@ -122,8 +122,13 @@ function infos_points($conditions)
     // condition sur l'appartenance à un polygone
     if( !empty($conditions->id_polygone) )
     {
-        $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->id_polygone)   ) ";
-        $champs_polygones=",".colonnes_table('polygones',False);
+        if (!verif_multiples_entiers($conditions->id_polygone))
+            return erreur("Le paramètre donné pour les ids des polygones n'est pas valide","$conditions->id_polygone");
+        else
+        {
+            $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->id_polygone)   ) ";
+            $champs_polygones=",".colonnes_table('polygones',False);
+        }
     }
     elseif ($conditions->avec_infos_massif)
     {
@@ -253,7 +258,7 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
-//print_r($query_points);
+print_r($query_points);
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   

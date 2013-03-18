@@ -61,17 +61,21 @@ $format_export=$_GET['format'];
 */
 if ($format_export=="gpi")
 {
-  $en_gpx=fichier_exportation($conditions,"gpx-garmin");
+  $infos_donnees_exportees=fichier_exportation($conditions,"gpx-garmin");
+  if ($infos_donnees_exportees->erreur)
+      break;
   $name=rand(1,2000);
-  file_put_contents("./$name",$en_gpx->contenu);
+  file_put_contents("./$name",$infos_donnees_exportees->contenu);
   $gpi=shell_exec("cat ./$name | gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -");
   $infos_donnees_exportees->contenu=$gpi;
-  $infos_donnees_exportees->nom_fichier=$en_gpx->nom_fichier;
   unlink($name);
 }
 else
   /*** Appel à la fonction principal qui nous fourni notre fichier, selon le format ***/
   $infos_donnees_exportees=fichier_exportation($conditions,$format_export);
+
+if ($infos_donnees_exportees->erreur)
+    die("Paramètres demandés incorrects : $infos_donnees_exportees->message");
 
 // Nos données ne changent pas toutes les secondes, on peut autoriser le client à faire un peu de cache pour accélérer
 $secondes_de_cache = 60;

@@ -528,7 +528,9 @@ function fichier_exportation($conditions,$format)
   if ( isset($conditions->bbox) )
 		$conditions->geometrie = cree_geometrie($conditions->bbox, 'bboxOL');
   //obtenir le tableau des points, selon les conditions
-  $points=infos_points($conditions); 
+  $points=infos_points($conditions);
+  if ($points->erreur)
+      return erreur($points->message);
   //Nombre de point récupéré(s), on va permettre de faire du cosmétique avec le bon nom de fichier si un seul
   $i=0;
   if (count($points)==1)

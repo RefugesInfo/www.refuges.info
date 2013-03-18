@@ -58,14 +58,14 @@ function infos_polygones($conditions)
     
     // Conditions sur les ids des polygones
     if (isset($conditions->ids_polygones))
-        if (!verifi_multiple_intiers($conditions->ids_polygones))
+        if (!verif_multiples_entiers($conditions->ids_polygones))
             return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
         else
             $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
         
         // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
     if (isset($conditions->non_ids_polygones))
-        if (!verifi_multiple_intiers($conditions->non_ids_polygones))
+        if (!verif_multiples_entiers($conditions->non_ids_polygones))
             return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
         else
             $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
@@ -77,7 +77,7 @@ function infos_polygones($conditions)
         $ordre="ORDER BY $conditions->ordre";
     
     if (isset($conditions->ids_polygone_type))
-        if (!verifi_multiple_intiers($conditions->ids_polygone_type))
+        if (!verif_multiples_entiers($conditions->ids_polygone_type))
             return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
         else
             $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
