@@ -148,15 +148,19 @@ Doc dédiée aux développeurs ayant accès à la machine wri
 
 * commandes git utiles 
  * Pour passer sur la version de développement
+
 ```
 git fetch origin dev --> facultatif si vous avez déjà cloner depuis dev
 git checkout dev
 ```
+
  * Pour passer sur la branche stable
- ```
+
+```
 git fetch origin master
 git checkout master
 ```
+
 (ne faites pas de push sur la version stable, sauf résolution de bugs critiques)
 
 
@@ -177,6 +181,7 @@ cd www.refuges.info -> pour rentrer dans votre zone de développement
 git <options> -> pour taper des commandes git relatives à wri
 cd .. -> revenir dossier d'avant
 ```
+
 * Sur le serveur : 
  * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
  * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur http://<login>.refuges.info
@@ -191,6 +196,7 @@ cd .. -> revenir dossier d'avant
 cd dev.refuges.info
 git pull
 ```
+
 La dernière version de la branche de développement nommée "dev" doit alors être rapatriée et testée sur http://dev.refuges.info
 
 mise en prod (après de nombreux tests validés sur la zone dev.refuges.info !):
