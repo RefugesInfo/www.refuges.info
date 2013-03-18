@@ -2,7 +2,7 @@ Qu'est ce que refuges.info ?
 ============================
 
 Le mieux, c'est d'aller voir : http://www.refuges.info
-Le code source est sous licence WFTPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
+Le code source est sous licence WTFPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
 
 installation
 ============
