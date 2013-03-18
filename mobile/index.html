@@ -31,7 +31,7 @@
 
 		<!-- Contenu du site web -->
 
-		<section>
+		<section id="main">
 			<article id="carte">
 				<div id="map"></div>
 				<script type='text/javascript'>
@@ -41,8 +41,9 @@
 			</article>
 			<article id="infosPoint" style="display:none;">
 				<a style="float:right;" href="#" onclick="toogleMap();">Retour carte</a>
-				<h3>Infos sur le point</h3>
-				<p><b>TODO</b> Afficher les données du point cliqué, ici et en joli !</p>
+				<h3><span id="titrePoint">Veuillez Patienter, chargement en cours...</span><span id="idPoint"></span><span id="typePoint"></span></h3>
+				<p id="coordPoint"></p>
+				<p id="rmqPoint"></p>
 			</article>
 		</section>
 

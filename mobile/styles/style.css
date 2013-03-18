@@ -10,6 +10,8 @@ Sommaire :
  6. Pied de page
 ***********************************************************************************************/
 
+
+/*************************************** ZONE  GÉNÉRALE ***************************************/
 * {
 	margin: 0;
 	padding: 0;
@@ -67,9 +69,7 @@ nav a:hover {
 	background: #cccccc;
 }
 
-section {
-	height: 90%;
-}
+/*************************************** ZONE de la CARTE ***************************************/
 
 .leaflet-control-zoom-fullscreen { background-image: url(../leaflet/images/icon-fullscreen.png); }
 

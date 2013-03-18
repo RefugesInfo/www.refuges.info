@@ -24,6 +24,8 @@ function initmap(){
 		return;
 	}
 
+	document.getElementById('main').style.height = '90%';
+	
 	// On créé notre carte vierge
 	map = new L.Map('map');
 
@@ -102,7 +104,7 @@ function stateChanged() {
 					popupAnchor: [0, 0]
 				});
 				plotmark.setIcon(cabaneIcon); // On applique notre icone juste créé
-				plotmark.bindPopup('<a href="#" onclick="toogleMap();">' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
+				plotmark.bindPopup('<a href="#" onclick="affichePoint(' + plotlist.features[i].properties.id_point + ');">' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
 				plotlayers.push(plotmark);
 			}
 		}
@@ -120,18 +122,50 @@ function removeMarkers() {
 /************************* FONCTIONS POINTS *************************/
 
 
-// Fonction appelée au avant d'ajouter les marqueurs fournis par AJAX pour enlever les précédents
+// Fonction appelée lors d'un clic sur point pour afficher les caractéristiques
+function affichePoint(idpoint) {
+	toogleMap();
+
+	// On prépare l'adresse à télécharger, avec l'id du point.
+	var msg='../point.php/' + idpoint + '/?format=geojson';
+
+	// Requete AJAX
+	ajaxRequest.onreadystatechange = pointRecu; // Si on a récupéré le fichier, on apelle pointRecu();
+	ajaxRequest.open('GET', msg, true); //  On apelle le fichier.
+	ajaxRequest.send(null); 
+}
+
+// Fonction lancée quand AJAX à retourné quelque chose
+function pointRecu() {
+	// Si AJAX à bien retourné ce que l'on attendais
+	if (ajaxRequest.readyState==4) {
+		if (ajaxRequest.status==200) {
+			point=eval("(" + ajaxRequest.responseText + ")"); // On enregistre la variable GeoJSON en local
+			document.getElementById('titrePoint').innerHTML = point.properties.nom;
+			document.getElementById('idPoint').innerHTML = " (Point n° " + point.properties.id + ") ";
+			document.getElementById('typePoint').innerHTML = point.properties.type;
+			document.getElementById('coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
+			document.getElementById('rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
+		}
+	}
+}
+
+// Fonction appeler pour basculer carte/infos points
 function toogleMap() {
 	var carte = document.getElementById('carte');
+	var main = document.getElementById('main');
 	var points = document.getElementById('infosPoint');
 
 	if(points.style.display == 'none') {
 		points.style.display = 'block';
 		carte.style.display = 'none';
+		main.style.height = '';
 	}
 	else if(carte.style.display == 'none') {
 		points.style.display = 'none';
 		carte.style.display = 'block';
+		main.style.height = '90%';
+		document.getElementById('titrePoint').innerHTML = "Veuillez Patienter, chargement en cours...";
 	}
 	else {}
 }
