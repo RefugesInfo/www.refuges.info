@@ -1,5 +1,4 @@
 <div class="contenu">
-<?php if ($vue->point_existe) { ?>
   <h3><?=$vue->titre?></h3>
   <h4><a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a></h4>
   <p>
@@ -77,7 +76,4 @@
 			<li>Cette information doit être utile et objective. Pour une appréciation, direction <a href="<?php print($config['forum_refuge'].$point->topic_id); ?>">le forum</a></li>
 		</ul>
 </div>
-<?php } else {?> 
-<strong>Le point sur lequel vous voulez ajouter un commentaire ne semble pas exister</strong>
-<?php } ?>
 </div>

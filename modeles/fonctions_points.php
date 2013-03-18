@@ -321,7 +321,7 @@ function infos_point($id_point,$meme_si_censure=False)
   if ($points->erreur)
     return erreur($points->message);
   if (count($points)==0)
-    return erreur("Le point demandé est introuvable dans notre base","id du point demandé : $id_point, retour :".var_export($points,true));
+    return erreur("Le point demandé est introuvable dans notre base");
   if (count($points)>1)
     return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
     

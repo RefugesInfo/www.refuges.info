@@ -31,8 +31,11 @@ $vue = infos_point ($id_point,$meme_si_censure);
 
 // Les infos du point deviennent des membres du template ($vue->latitude ...)
 // Partie spécifique de la page
-if ($vue->erreur) 
-    $vue->type = 'point_en_erreur';
+if ($vue->erreur)
+{
+    $vue->type="acces_interdit";
+    $vue->contenu=$vue->message;
+}
 else // le point est valide. faut bosser.
 {
     $vue->nom=bbcode2html($vue->nom);

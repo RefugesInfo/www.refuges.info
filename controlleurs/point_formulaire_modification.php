@@ -17,16 +17,13 @@
 // 28/05/12 Dominique : Utilisation des modeles
 
 
-require_once ("modeles/config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_points.php");
-require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mode_emploi.php");
 require_once ("fonctions_meta_donnees.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
-$vue = new stdClass();
 $vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
 $vue->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut
 $vue->champs = new stdClass(); // contiendra TOUS les champs de formulaire qui seront passés au V de MVC (je yip suis converti)
@@ -37,24 +34,36 @@ $vue->champs->bools = new stdClass(); // seulement les vrais bools TRUE FALSE NU
 $vue->champs->ferme = new stdClass(); // traite en cas particulier, trop specifique
 $vue->champs->places_matelas = new stdClass(); // traite en cas particulier, trop specifique, la suppression me demange
 
-
-$vue->page_action="/point_modification.php";
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
 // ou si les droits sont insuffisants
 if ( isset($_REQUEST["id_point"]) )  
 {
     if ( $_SESSION['niveau_moderation']<1 AND $_SESSION['id_utilisateur']!=$point->id_createur ) 
-          erreur_on_arrete("Désolé, mais pour cette opération vous devez être modérateur du site et connecté au forum <a href=\"".$config['connexion_forum']."\">Connexion forum</a>");
+    {
+          $vue->type="acces_interdit";
+          $vue->titre="Permissions insuffisantes";
+          $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur ou le créateur de cette fiche et être connecté au forum :";
+          $vue->titre_lien="Connexion forum";
+          $vue->lien_special=$config['connexion_forum'];
+          return "";
+    }
 
     if ($_SESSION['niveau_moderation']>=1)
         $meme_si_censure=True;
     else
         $meme_si_censure=False;
     $point=infos_point($_REQUEST['id_point'],$meme_si_censure);
-    // Merde stop, le point n'existe pas
+    
+    // Stop, le point n'existe pas
     if ($point->erreur) 
-        erreur_on_arrete("<strong>problème : $point->message</strong>");
+    {    
+          header("HTTP/1.0 404 Not Found");
+          $vue->type="page_introuvable";
+          $vue->titre="Point inexistant";
+          $vue->contenu=$point->message;
+          return "";
+    }
 
     $vue->serie = param_cartes ($point);
 
@@ -159,7 +168,12 @@ elseif ( isset($_REQUEST["dupliquer"]))
 }
 // 4) On ne devrait pas arriver en direct sur ce formulaire
 else
-	erreur_on_arrete("<h3>Vous n'auriez pas dû arriver sur cette page en direct</h3>");
+{    
+      header("HTTP/1.0 404 Not Found");
+      $vue->type="page_introuvable";
+      $vue->titre="Vous n'auriez pas dû arriver sur cette page en direct";
+      return "";
+}
 
 /******** Formulaire de modification/création/suppression *****************/
 
@@ -262,24 +276,5 @@ $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_mode_emploi("syntaxe_bbcode");
 $vue->lien_aide_points = lien_mode_emploi("autres_points");
-// On affiche le tout
-$vue->type = 'point_formulaire_modification';
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$vue->type.html");
-include ($config['chemin_vues']."_pied.html");
 
-// ===================================
-// fonction pour mourrir sur un message d'erreur ;-)
-// TODO: Tout ça est à reprendre...
-function erreur_on_arrete($texte)
-{
-	global $config;
-    $vue = new stdClass;
-	$vue->texte = $texte;
-	$vue->type = 'point_formulaire_modification_erreur';
-	include ($config['chemin_vues']."_entete.html");
-	include ($config['chemin_vues']."$vue->type.html");
-	include ($config['chemin_vues']."_pied.html");
-	die(); // peut être moyen de faire mieux mais bon, gros problème donc on se tire
-}
 ?>

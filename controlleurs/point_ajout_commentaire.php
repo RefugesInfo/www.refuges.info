@@ -3,18 +3,15 @@
 Pour ajouter un commentaire rattaché à un point
 **********************************************************************************************/
 
-require_once("modeles/config.php");
-require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_commentaires.php");
 require_once ("fonctions_points.php");
 require_once ("fonctions_mode_emploi.php");
 
-$vue = new stdClass();
 $commentaire = new stdClass();
 setlocale(LC_TIME, "fr_FR");
 $commentaire->id_point=$_GET['id_point'];
 $point=infos_point($commentaire->id_point);
-if ($point!=-1)
+if (!$point->erreur)
 {
   if (!isset($_SESSION['id_utilisateur']))
     $vue->non_connecte=True;
@@ -70,11 +67,10 @@ if ($point!=-1)
   $vue->point_existe=True;
   $vue->commentaire=$commentaire;
 }
-else
-  $vue->point_existe=False;
-
-$vue->type = 'point_ajout_commentaire'; // Le type
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$vue->type.html");
-include ($config['chemin_vues']."_pied.html");
+else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans le vent !
+{  
+    header("HTTP/1.0 404 Not Found");
+    $vue->type="page_introuvable";
+    $vue->titre="Impossible d'ajouter un commentaire car : $point->message";
+}
 ?> 

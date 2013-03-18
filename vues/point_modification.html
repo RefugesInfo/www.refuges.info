@@ -1,0 +1,16 @@
+<div class="contenu">
+  <h3>Modification d'un point</h3>
+  <?php if ($vue->erreur) { ?>
+      <p>
+         <strong><?=$vue->erreur?></strong>
+      </p>
+  <?php } else { ?>
+     <h4>Merci de votre contribution</h4>
+     <h5>le point est <?=$vue->verbe?> dans la base</h5>
+  <?php } ?>
+<p>
+    <?php if ($vue->lien_point) { ?>
+        <a href="<?=$vue->lien_point?>">Cliquez ici pour voir ou retourner à la fiche</a>
+    <?php } ?>
+</p>
+</div>		

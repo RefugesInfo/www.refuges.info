@@ -1,13 +1,9 @@
 <?php
-/**********************************************************************************************
+/********************************************************************************************************
 Les resultats de la recherche. Ce fichier recupere les criteres en POST de point_formulaire_recherche.php 
 ( une suite de fiche refuges, mais sans tous les détails )
+********************************************************************************************************/
 
-// 15/02/13 jmb : cosmetique PHP + FIXME j'ai casse la recherche OSM !
-**********************************************************************************************/
-
-require_once("modeles/config.php");
-require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_points.php");
 require_once ("fonctions_polygones.php");
 
@@ -62,7 +58,6 @@ foreach ($_POST as $champ => $valeur)
         
 }
 
-$vue = new stdClass();
 //======================================
 // C'est LA que ca cherche
 $vue->points = infos_points ($conditions);
@@ -108,12 +103,4 @@ $nominatim->url_site=$config['url_nominatim'];
 $vue->nominatim=$nominatim;
 
 $vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
-	
-
-// On affiche le tout
-$vue->type = 'point_recherche';
-
-require_once ($config['chemin_vues']."_entete.html");
-require_once ($config['chemin_vues']."$vue->type.html");
-require_once ($config['chemin_vues']."_pied.html");
 ?> 

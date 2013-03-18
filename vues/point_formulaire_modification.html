@@ -29,7 +29,7 @@
 	if ($point->latitude!="" and $point->longitude!="") {?>
 		<div class="carte_edit" id="carte-edit"></div>
 	<?}?>
-	<form class="wri" id="form_point" method="post" onsubmit="return validation();" action="<?=$vue->page_action?>">
+	<form class="wri" id="form_point" method="post" onsubmit="return validation();" action="/point_modification.php">
 		<div><?
     foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">

@@ -32,6 +32,11 @@ switch ($controlleur->url_decoupee[1])
     case "mode_emploi": $vue->type=$controlleur->type="mode_emploi"; break;
     case "nouvelles": case "news": case "news.php" : $vue->type=$controlleur->type="nouvelles"; break;
     case "index": case "index.php" : case "" : $vue->type=$controlleur->type="index"; break;
+    case "point_ajout_commentaire.php" : case "point_ajout_commentaire" : $vue->type=$controlleur->type="point_ajout_commentaire"; break;
+    case "point_recherche.php" : case "point_recherche" : $vue->type=$controlleur->type="point_recherche"; break;
+    case "point_formulaire_recherche.php" : case "point_formulaire_recherche" : $vue->type=$controlleur->type="point_formulaire_recherche"; break;
+    case "point_formulaire_modification.php" : case "point_formulaire_modification" : $vue->type=$controlleur->type="point_formulaire_modification"; break;
+    case "point_modification.php" : case "point_modification" : $vue->type=$controlleur->type="point_modification"; break;
     default : $vue->type=$controlleur->type="page_introuvable"; break;
 }
 

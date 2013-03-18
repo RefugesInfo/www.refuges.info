@@ -1,0 +1,11 @@
+<p>
+    <?=$vue->titre?>
+</p>	
+<?php if ($vue->contenu) { ?>
+<p>
+    <?=$vue->contenu?>
+    <?php if ($vue->lien_special) { ?>
+    <a href="<?=$vue->lien_special?>"><?=$vue->titre_lien?></a>
+    <?php } ?>
+</p>
+<?php } ?>
