@@ -30,6 +30,8 @@ switch ($controlleur->url_decoupee[1])
     case "point": $vue->type=$controlleur->type="point"; break;
     case "nav": $vue->type=$controlleur->type="nav"; break;
     case "mode_emploi": $vue->type=$controlleur->type="mode_emploi"; break;
+    case "nouvelles": case "news": case "news.php" : $vue->type=$controlleur->type="nouvelles"; break;
+    case "index": case "index.php" : case "" : $vue->type=$controlleur->type="index"; break;
     default : $vue->type=$controlleur->type="page_introuvable"; break;
 }
 
