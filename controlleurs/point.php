@@ -8,20 +8,16 @@ du rewrite et un vrai modèle MVC avec un seul script d'entrée à tous le site 
 ***/
 
 
-require_once ('modeles/config.php');
-require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mode_emploi.php");
 require_once ("fonctions_points.php");
 require_once ("fonctions_pubs.php");
 require_once ("fonctions_utilisateurs.php");
 
-$vue = new stdClass();
 $condition = new stdClass();
 
 // Arguments de la page
-$array = explode ('/',$_SERVER['PATH_INFO']);
-$id_point = $array [1]; // $array [1] contient l'id du point
+$id_point = $controlleur->url_decoupee[2]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
 
 // FIXME je trouverais plus claire de mettre le point dans $vue->point pour éviter d'écraser d'autre propriété du modèle
 
@@ -188,8 +184,4 @@ else // le point est valide. faut bosser.
     }
 }
 
-/*********** On affiche le tout ***/
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$vue->type.html");
-include ($config['chemin_vues']."_pied.html");
 ?>

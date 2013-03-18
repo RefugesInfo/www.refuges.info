@@ -16,24 +16,19 @@ Massif (1): classique : un poly qui entoure tous les points, possibilité de jou
 Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
 ************************************************************************************************/
 
-require_once ('modeles/config.php');
 require_once ("fonctions_bdd.php");
-require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_meta_donnees.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mode_emploi.php");
 
-$vue = new stdClass();
 $vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
 						
-// l'URL d'appel de la page 
-// typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referenceement google
-$tableau_url = explode ('/',$_SERVER['PATH_INFO']);
-$id_polygone = $tableau_url [1];
+// typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referenceement google, c'est le controlleur.php qui passe ce tableau
+$id_polygone = $controlleur->url_decoupee[2];;
 $vue->type_affichage = $_GET['mode_affichage']; // "zone" ou "massif". ca definit l'affichage qui suit
 
 $polygone = new stdClass;
@@ -62,9 +57,4 @@ $vue->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver les c
 
 		
 $vue->lien_mode_emploi=lien_mode_emploi();
-// On affiche le tout
-$vue->type = 'nav';
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$vue->type.html");
-include ($config['chemin_vues']."_pied.html");
 ?>

@@ -14,7 +14,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /controlleur.php [L]
 
-Options +Multiviews
 php_value short_open_tag 1
 
 #A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error

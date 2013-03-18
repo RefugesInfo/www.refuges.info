@@ -27,6 +27,8 @@ $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 // de n'autoriser que ceux que l'on veut
 switch ($controlleur->url_decoupee[1])
 {
+    case "point": $vue->type=$controlleur->type="point"; break;
+    case "nav": $vue->type=$controlleur->type="nav"; break;
     case "mode_emploi": $vue->type=$controlleur->type="mode_emploi"; break;
     default : $vue->type=$controlleur->type="page_introuvable"; break;
 }
