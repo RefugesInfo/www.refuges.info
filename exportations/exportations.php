@@ -58,17 +58,26 @@ $format_export=$_GET['format'];
  on laisse gpsbabel faire la conversion, je pourrais l'incorporer à la fonction elle même qui ferait alors un très
  joli appel à elle-même, mais pour des raisons de chemins d'accès à gpsbabel ça ne marcherait de toute façon pas
  partout sly 30/10/10
+ sly : FIXME : je vais peut-être changer d'avis vu comment ce code grossi
 */
 if ($format_export=="gpi")
 {
-  $infos_donnees_exportees=fichier_exportation($conditions,"gpx-garmin");
-  if ($infos_donnees_exportees->erreur)
-      break;
-  $name=rand(1,2000);
-  file_put_contents("./$name",$infos_donnees_exportees->contenu);
-  $gpi=shell_exec("cat ./$name | gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -");
-  $infos_donnees_exportees->contenu=$gpi;
-  unlink($name);
+    $infos_donnees_exportees=fichier_exportation($conditions,"gpx-garmin");
+    if (!$infos_donnees_exportees->erreur)
+    {
+        // On va éviter de passer par un fichier local car c'est une plaie pour plusieurs raisons
+        $descriptorspec = array(
+        0 => array("pipe", "r"), // stdin is a pipe that the child will read from
+        1 => array("pipe", "w"), // stdout is a pipe that the child will write to
+        );
+        $process = proc_open("gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -", $descriptorspec, $pipes);
+        // On lui passe en entré notre gpx
+        fwrite($pipes[0], $infos_donnees_exportees->contenu);
+        fclose($pipes[0]);
+        $osm_node_only="";
+        $infos_donnees_exportees->contenu=stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+    }
 }
 else
   /*** Appel à la fonction principal qui nous fourni notre fichier, selon le format ***/
