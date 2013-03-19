@@ -3,7 +3,7 @@
 // Modif des commentaires
 //----------------------------------------
 
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ($config['chemin_modeles']."fonctions_commentaires.php");
 require_once ($config['chemin_modeles']."fonctions_mode_emploi.php");
 //Pas d'accès direct à la page !

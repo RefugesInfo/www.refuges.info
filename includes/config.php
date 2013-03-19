@@ -9,7 +9,7 @@ global $config; dans les fonctions
 
 // Permet d'ajouter le chemin dans lequel se trouve le config.php au path de recherche, ainsi, il suffit d'inclure le config.php afin de pouvoir faire des require_once('modele.php');
 // J'inclus également le fichier /includes + /modeles donc
-ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.__DIR__.PATH_SEPARATOR.__DIR__."/../includes/".PATH_SEPARATOR);
+ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.__DIR__.PATH_SEPARATOR.__DIR__."/../modeles/".PATH_SEPARATOR);
 
 /** Auto chargement des déclarations de classes
     les classes ModeleClasse sont déclarées dans modeles/Classe.php

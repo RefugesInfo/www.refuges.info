@@ -4,7 +4,7 @@ Page de choix du flux rss
 06/12/2012 ça ne marche plus ;-(
 **********************************************************************************************/
 
-require_once ('../modeles/config.php');
+require_once ('../includes/config.php');
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
 $vue = new stdclass;

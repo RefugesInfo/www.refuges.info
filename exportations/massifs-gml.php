@@ -3,7 +3,7 @@
 Prend en paramètre massif.php?bbox=une bbox&massif=(des ids de polygones 5 ou 7,8)&polygone_type=(un type de polygone)
 */
 
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_polygones.php");

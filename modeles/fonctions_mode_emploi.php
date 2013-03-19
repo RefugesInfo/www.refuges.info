@@ -7,7 +7,7 @@ FIXME : c'était une mauvaise idée de passer par des fichiers : les datas texte
 FIXME : très bien dans la base de donnée, à convertir dès qu'un peu de temps
 ********************************************************************/
 
-require_once ('config.php');
+require_once ("config.php");
 require_once ("fonctions_mise_en_forme_texte.php");
 require_once ("fonctions_bdd.php");
 

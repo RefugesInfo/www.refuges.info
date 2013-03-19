@@ -13,7 +13,7 @@ Au prix de quelques bidouilles à prévoir pour soit le convertir dans un format
 dans les tables produites par osm2pgsql
 
 **********************************************************************************************/
-require_once ('config.php');
+require_once ("config.php");
 require_once ("fonctions_bdd.php");
 require_once ('fonctions_mise_en_forme_texte.php');
 require_once ("fonctions_gestion_erreurs.php");

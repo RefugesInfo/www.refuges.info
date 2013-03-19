@@ -8,7 +8,7 @@ Afin de simplifier l'appel aux ajouts, modifications, suppressions
 // 10/02/13 jmb : modif de la fonction "modification_ajout_point" pour OpenGIS
 
 */
-require_once ('config.php');
+require_once ("config.php");
 require_once ('fonctions_bdd.php');
 require_once ("fonctions_gestion_erreurs.php");
 
