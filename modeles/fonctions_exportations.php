@@ -19,7 +19,7 @@ Pas d'avis tranché -- sly
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_mise_en_forme_texte.php");
-require_once ("fonctions_zip.php");
+//require_once ("fonctions_zip.php");
 require_once ("fonctions_polygones.php");
 
 /* Tableau de définition des formats et de leur caractéristiques, sur-ajoutés, à la variable $config
