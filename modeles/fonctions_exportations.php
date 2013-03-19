@@ -27,6 +27,8 @@ L'ordre d'apparition donnera l'ordre dans le menu de sélection de l'exportation
 Si interne est placé à true, ce format ne sera pas proposé dans nos interfaces de sélection à l'export mais reste disponible
 de façon "intere", c'est dire pour un usage javascript ou pour partenaire
 sly 17/11/10
+sly FIXME : passons au modèle MVC et toute la description devrait aller dans le formulaire en html, c'est pas
+comme si on en ajoutait tous les jours !
 */
 //------------------------------------------
 $config['formats_exportation']['kmz']=array(
