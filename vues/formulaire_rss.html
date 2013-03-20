@@ -1,18 +1,3 @@
-<?php
-/**********************************************************************************************
-Page de choix du flux rss
-06/12/2012 ça ne marche plus ;-(
-**********************************************************************************************/
-
-require_once ('../modeles/config.php');
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_autoconnexion.php");
-$vue = new stdclass;
-$vue->titre="Formulaire de choix du flux rss de refuges.info";
-$vue->description = $description;
-include ($config['chemin_vues']."_entete.html");
-?>
-
 <form id='urss' method='get' action='rss.php'>
 
 <script type='text/javascript'>
@@ -108,7 +93,3 @@ var urssform = document.getElementById('urss');
  " />
 </fieldset>
 </form>
-
-<?php
-include ($config['chemin_vues']."_pied.html");
-?>
