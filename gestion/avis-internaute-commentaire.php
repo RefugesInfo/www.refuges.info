@@ -5,7 +5,7 @@ J'avais imaginé un système sophistiqué de scoring mais en fait c'est très pe
 c'est utile, c'est que si un internaute trouve un commentaire inutile ça l'indique à un modérateur
 **********************************************************************************************/
 // FIXME : à passer en MVC
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_mode_emploi.php");
 require_once ("fonctions_bdd.php");

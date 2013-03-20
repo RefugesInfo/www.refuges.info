@@ -5,7 +5,7 @@ ré-utiliser.
 Le traitement proprement dit est dans exportations.php 
 **********************************************************************************************/
 
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ("fonctions_mode_emploi.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_exportations.php");

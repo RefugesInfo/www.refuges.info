@@ -9,7 +9,7 @@ Chantier d'avenir : passer en MVC
 					un peu de re  ecriture PHP aussi (big switch)
 ***********************************************************************************************/
 
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ("fonctions_autoconnexion.php");
 
 $vue = new stdClass;

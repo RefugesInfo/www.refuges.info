@@ -10,7 +10,7 @@ rajout du setlocale et déplacement dans un fichier config.php
 24/10/11 Dominique : Ajout de stat_site() pour compatibilité MVC
 ****************************************************************************************************/
 
-require_once ('config.php');
+require_once ("config.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_points.php");
 

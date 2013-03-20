@@ -9,7 +9,7 @@ des sites partenaires aussi peut-être !
 
 **********************************************************************************************/
 
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ("fonctions_exportations.php");
 
 //Nous allons récupérer la liste des points souhaités en fonction des paramètres demandés

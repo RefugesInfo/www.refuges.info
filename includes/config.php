@@ -9,7 +9,19 @@ global $config; dans les fonctions
 
 // Permet d'ajouter le chemin dans lequel se trouve le config.php au path de recherche, ainsi, il suffit d'inclure le config.php afin de pouvoir faire des require_once('modele.php');
 // J'inclus également le fichier /includes + /modeles donc
-ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.__DIR__.PATH_SEPARATOR.__DIR__."/../includes/".PATH_SEPARATOR);
+ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.__DIR__.PATH_SEPARATOR.__DIR__."/../modeles/".PATH_SEPARATOR);
+
+/** Auto chargement des déclarations de classes
+    les classes ModeleClasse sont déclarées dans modeles/Classe.php
+    les classes ControleurClasse sont déclarése dans controleurs/Classe.php
+    les autres classes Classe sont déclarées dans includes/Classe.php
+**/
+spl_autoload_register(function ($class) {
+	if (preg_match ('/([A-Z][a-z]+)(.*)/', $class, $c))
+        require_once '../'.strtolower($c[1]).'s/'.$c[2].'.php';
+    else
+        require_once '../includes/'.$class.'.php';
+});
 
 // Ce fichier est privée et contient des différentes clefs et mot de passe
 require_once("config_privee.php");

@@ -8,7 +8,7 @@ Il s'occupe alors d'analyser l'url pour en déterminer ce qui doit être fait, a
 selon cette url puis ouvrir les vues, toujours selon cet url.
 
 *******************************************************************************/
-require_once ('./modeles/config.php');
+require_once ('./includes/config.php');
 require_once ("fonctions_autoconnexion.php");
 
 // Analyse de l'url (basique pour l'instant pourrait être étendu ultérieurement selon les besoins)
