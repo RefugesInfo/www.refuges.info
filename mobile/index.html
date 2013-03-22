@@ -18,9 +18,7 @@
 
 	<body>
 		<header>
-			<a href="/mobile"><img alt="Entete" src="images/Entete_mobile.png" /></a>
-			<img alt="Entete_fin" src="images/Entete_mobile_droite.png" />
-			<div></div>
+			<p id="header">Refuges.info <span id="wri">WRI</span></p>
 		</header>
 		
 		<!-- Contenu du site web -->
@@ -28,8 +26,8 @@
 		<section>
 			<!-- Partie accueil -->
 			<article id="index">
-				<p>Choisir une option :</p>
-				<p><a href="#" onclick="displayBlock('carte');">Afficher la carte</a></p>
+				<p>Refuges.info vous permet d'afficher sur une carte, des refuges, abris et autres points d'intérêt pour les randonneurs. Ils vous est alors possible de cliquer sur un point pour avoir des informations pratiques sur celui-ci.</p>
+				<p><a class="btnbleu" href="#" onclick="displayBlock('carte');">Afficher la carte</a></p>
 			</article>
 			<!-- Partie carte -->
 			<article id="carte" style="display:none;">
@@ -38,27 +36,15 @@
 			</article>
 			<!-- Partie patienter -->
 			<article id="patientez" style="display:none;">
-				<p>Veuillez patienter</p>
+				<div class="loading-wrap">
+					<div class="triangle1"></div>
+					<div class="triangle2"></div>
+					<div class="triangle3"></div>
+				</div>
 			</article>
 			<!-- Partie infoPoint -->
 			<article id="infosPoint" style="display:none;">
-				<a class="retour" href="#" onclick="displayBlock('carte');">Retour carte</a>
-				<h3><span id="titrePoint"></span><span id="idPoint"></span><span id="typePoint"></span></h3>
-				<p id="coordPoint"></p>
-				<p id="proprioPoint"></p>
-				<p id="accesPoint"></p>
-				<p id="rmqPoint"></p>
-				<p><b>Informations complémentaires :</b><br />
-					<span id="couverturePoint"></span>
-					<span id="eauPoint"></span>
-					<span id="boisPoint"></span>
-					<span id="latrinePoint"></span>
-					<span id="manquemurPoint"></span>
-					<span id="poelePoint"></span>
-					<span id="chemineePoint"></span>
-					<span id="clefPoint"></span>
-					<span id="matelasPoint"></span>
-					<span id="ravitaillementeauPoint"></span></p>
+				<!-- Tout est géré par un innerHTML -->
 			</article>
 		</section>
 
