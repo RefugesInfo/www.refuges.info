@@ -69,6 +69,22 @@ nav a:hover {
 	background: #cccccc;
 }
 
+.retour {
+	text-decoration: none;
+	padding: 4px;
+	z-index: 1;
+	color: #c1c1c1;
+	background: #212121;
+	border-top: #777777 solid 1px;
+	border-right: #777777 solid 1px;
+	border-top-right-radius: 5px;
+	box-shadow: black 0px 0px 5px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	max-width: 40%;
+}
+
 /*************************************** ZONE de la CARTE ***************************************/
 
 .leaflet-control-zoom-fullscreen { background-image: url(../leaflet/images/icon-fullscreen.png); }

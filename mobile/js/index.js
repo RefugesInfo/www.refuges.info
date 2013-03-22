@@ -13,6 +13,7 @@ var map;
 var ajaxRequest;
 var plotlist;
 var plotlayers=[];
+var init = 0;
 
 
 // Fonction lancée dès que le <div> map est chargé
@@ -124,7 +125,7 @@ function removeMarkers() {
 
 // Fonction appelée lors d'un clic sur point pour afficher les caractéristiques
 function affichePoint(idpoint) {
-	toogleMap();
+	displayBlock('patientez');
 
 	// On prépare l'adresse à télécharger, avec l'id du point.
 	var msg='../point.php/' + idpoint + '/?format=geojson';
@@ -146,26 +147,65 @@ function pointRecu() {
 			document.getElementById('typePoint').innerHTML = point.properties.type;
 			document.getElementById('coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
 			document.getElementById('rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
+			displayBlock('points');
 		}
 	}
 }
 
-// Fonction appeler pour basculer carte/infos points
-function toogleMap() {
+// Fonction appeler pour basculer entre les vues
+function displayBlock(bloc) {
 	var carte = document.getElementById('carte');
-	var main = document.getElementById('main');
+	var index = document.getElementById('index');
+	var patientez = document.getElementById('patientez');
 	var points = document.getElementById('infosPoint');
+	var header = document.getElementById('header');
+	var nav = document.getElementById('nav');
+	var footer = document.getElementById('footer');
+	var main = document.getElementById('main');
 
-	if(points.style.display == 'none') {
-		points.style.display = 'block';
-		carte.style.display = 'none';
-		main.style.height = '';
-	}
-	else if(carte.style.display == 'none') {
+
+	if(bloc == 'carte') {
+		if (init!=1) {
+			initmap();
+			init = 1;
+		}
 		points.style.display = 'none';
 		carte.style.display = 'block';
-		main.style.height = '90%';
-		document.getElementById('titrePoint').innerHTML = "Veuillez Patienter, chargement en cours...";
+		nav.style.display = 'none';
+		header.style.display = 'none';
+		footer.style.display = 'none';
+		index.style.display = 'none';
+		patientez.style.display = 'none';
+		main.style.height = '100%';
 	}
-	else {}
+	else if(bloc == 'patientez') {
+		points.style.display = 'none';
+		carte.style.display = 'none';
+		nav.style.display = 'none';
+		header.style.display = 'none';
+		footer.style.display = 'none';
+		index.style.display = 'none';
+		patientez.style.display = 'none';
+		main.style.height = '100%';
+	}
+	else if(bloc == 'points') {
+		points.style.display = 'block';
+		carte.style.display = 'none';
+		nav.style.display = 'none';
+		header.style.display = 'none';
+		footer.style.display = 'none';
+		index.style.display = 'none';
+		patientez.style.display = 'none';
+		main.style.height = '';
+	}
+	else {
+		points.style.display = 'none';
+		carte.style.display = 'none';
+		nav.style.display = 'block';
+		header.style.display = 'block';
+		footer.style.display = 'block';
+		index.style.display = 'block';
+		patientez.style.display = 'none';
+		main.style.height = '';
+	}
 }

@@ -17,37 +17,43 @@
 	</head>
 
 	<body>
-		<header>
+		<header id="header">
 			<a href="/mobile"><img alt="Entete" src="images/Entete_mobile.png" /></a>
 			<img alt="Entete_fin" src="images/Entete_mobile_droite.png" />
 			<div></div>
 		</header>
 		
-		<nav>
+		<nav id="nav">
 			<a href="./">Carte</a><a href="./recherche.php">Recherche</a>
 		</nav>
 		
-		<div id="fin-entete"></div>
-
 		<!-- Contenu du site web -->
 
 		<section id="main">
-			<article id="carte">
-				<div id="map"></div>
-				<script type='text/javascript'>
-				initmap();
-				</script>
-
+			<!-- Partie accueil -->
+			<article id="index">
+				<p>Choisir une option :</p>
+				<p><a href="#" onclick="displayBlock('carte');">Afficher la carte</a></p>
 			</article>
+			<!-- Partie carte -->
+			<article id="carte" style="display:none;">
+				<a class="retour" href="#" onclick="displayBlock('index');">Menu Principal</a>
+				<div id="map"></div>
+			</article>
+			<!-- Partie patienter -->
+			<article id="patientez" style="display:none;">
+				<p>Veuillez patienter</p>
+			</article>
+			<!-- Partie infoPoint -->
 			<article id="infosPoint" style="display:none;">
-				<a style="float:right;" href="#" onclick="toogleMap();">Retour carte</a>
-				<h3><span id="titrePoint">Veuillez Patienter, chargement en cours...</span><span id="idPoint"></span><span id="typePoint"></span></h3>
+				<a class="retour" href="#" onclick="displayBlock('carte');">Retour carte</a>
+				<h3><span id="titrePoint"></span><span id="idPoint"></span><span id="typePoint"></span></h3>
 				<p id="coordPoint"></p>
 				<p id="rmqPoint"></p>
 			</article>
 		</section>
 
-		<footer>
+		<footer id="footer">
 			<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.fr">
 				<img src="./images/licence.png" alt="CC BY SA 2.0" />
 			</a>
