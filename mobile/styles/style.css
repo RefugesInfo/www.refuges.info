@@ -47,28 +47,6 @@ header img{
 	margin-bottom: -6px;
 }
 
-nav {
-	width: 100%;
-	padding: 1px 0;
-	background: #dddddd;
-	border-bottom: 1px solid #515151;
-
-}
-
-nav a {
-	padding: 1px 15px;
-	text-align: center;
-	border-right: 1px solid #bbbbbb;
-	font-variant: small-caps;
-	font-weight: bold;
-	color: #444444;
-	text-decoration: none;
-}
-
-nav a:hover {
-	background: #cccccc;
-}
-
 .retour {
 	text-decoration: none;
 	padding: 4px;
@@ -99,7 +77,7 @@ footer {
 	text-align: center;
 	padding-top: 2px;
 	height: 18px;
-	position: relative;
+	position: fixed;
 	bottom: 0;
 	width: 100%;
 	font-size: 10px;

@@ -17,19 +17,15 @@
 	</head>
 
 	<body>
-		<header id="header">
+		<header>
 			<a href="/mobile"><img alt="Entete" src="images/Entete_mobile.png" /></a>
 			<img alt="Entete_fin" src="images/Entete_mobile_droite.png" />
 			<div></div>
 		</header>
 		
-		<nav id="nav">
-			<a href="./">Carte</a><a href="./recherche.php">Recherche</a>
-		</nav>
-		
 		<!-- Contenu du site web -->
 
-		<section id="main">
+		<section>
 			<!-- Partie accueil -->
 			<article id="index">
 				<p>Choisir une option :</p>
@@ -49,11 +45,24 @@
 				<a class="retour" href="#" onclick="displayBlock('carte');">Retour carte</a>
 				<h3><span id="titrePoint"></span><span id="idPoint"></span><span id="typePoint"></span></h3>
 				<p id="coordPoint"></p>
+				<p id="proprioPoint"></p>
+				<p id="accesPoint"></p>
 				<p id="rmqPoint"></p>
+				<p><b>Informations complémentaires :</b><br />
+					<span id="couverturePoint"></span>
+					<span id="eauPoint"></span>
+					<span id="boisPoint"></span>
+					<span id="latrinePoint"></span>
+					<span id="manquemurPoint"></span>
+					<span id="poelePoint"></span>
+					<span id="chemineePoint"></span>
+					<span id="clefPoint"></span>
+					<span id="matelasPoint"></span>
+					<span id="ravitaillementeauPoint"></span></p>
 			</article>
 		</section>
 
-		<footer id="footer">
+		<footer>
 			<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.fr">
 				<img src="./images/licence.png" alt="CC BY SA 2.0" />
 			</a>

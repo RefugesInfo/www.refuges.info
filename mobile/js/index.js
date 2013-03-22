@@ -24,8 +24,6 @@ function initmap(){
 		alert ("Ce navigateur ne semble pas suporter la technologie AJAX... Vous devrez peut-être le mettre à jour...");
 		return;
 	}
-
-	document.getElementById('main').style.height = '90%';
 	
 	// On créé notre carte vierge
 	map = new L.Map('map');
@@ -142,11 +140,26 @@ function pointRecu() {
 	if (ajaxRequest.readyState==4) {
 		if (ajaxRequest.status==200) {
 			point=eval("(" + ajaxRequest.responseText + ")"); // On enregistre la variable GeoJSON en local
-			document.getElementById('titrePoint').innerHTML = point.properties.nom;
-			document.getElementById('idPoint').innerHTML = " (Point n° " + point.properties.id + ") ";
-			document.getElementById('typePoint').innerHTML = point.properties.type;
-			document.getElementById('coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
-			document.getElementById('rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
+			document.querySelector('#titrePoint').innerHTML = point.properties.nom;
+			document.querySelector('#idPoint').innerHTML = " (Point n° " + point.properties.id + ") ";
+			document.querySelector('#typePoint').innerHTML = point.properties.type;
+			document.querySelector('#coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
+			document.querySelector('#rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
+			document.querySelector('#proprioPoint').innerHTML = "<b>" + point.properties.annonce_proprio + " :</b><br />" + point.properties.proprio;
+			document.querySelector('#accesPoint').innerHTML = "<b>Accès :</b><br />" + point.properties.acces;
+			if (point.properties.couvertures != undefined) { document.querySelector('#couverturePoint').innerHTML = "Couvertures : " + point.properties.couvertures + "<br />"; }
+			if (point.properties.eau_a_proximite != undefined) { document.querySelector('#eauPoint').innerHTML = "Eau à proximité : " + point.properties.eau_a_proximite + "<br />"; }
+			if (point.properties.bois_a_proximite != undefined) { document.querySelector('#boisPoint').innerHTML = "Bois à proximité : " + point.properties.bois_a_proximite + "<br />"; }
+			if (point.properties.latrines != undefined) { document.querySelector('#latrinePoint').innerHTML = "Latrines : " + point.properties.latrines + "<br />"; }
+			if (point.properties.manque_un_mur != undefined) { document.querySelector('#manquemurPoint').innerHTML = "Manque un mur : " + point.properties.manque_un_mur + "<br />"; }
+			if (point.properties.poele != undefined) { document.querySelector('#poelePoint').innerHTML = "Poêle : " + point.properties.poele + "<br />"; }
+			if (point.properties.cheminee != undefined) { document.querySelector('#chemineePoint').innerHTML = "Cheminée : " + point.properties.cheminee + "<br />"; }
+			if (point.properties.clef_a_recuperer != undefined) { document.querySelector('#clefPoint').innerHTML = "Clé à récupérer : " + point.properties.clef_a_recuperer + "<br />"; }
+			if (point.properties.places_sur_matelas != undefined) { document.querySelector('#matelasPoint').innerHTML = "Places sur matelas : " + point.properties.places_sur_matelas + "<br />"; }
+			if (point.properties.ravitaillement_en_eau_possible != undefined) { document.querySelector('#ravitaillementeauPoint').innerHTML = "Ravitaillement en eau possible : " + point.properties.ravitaillement_en_eau_possible + "<br />"; }
+			if (point.properties.site_officiel != undefined) { document.querySelector('#sitewebPoint').innerHTML = "Site officiel : " + point.properties.site_officiel + "<br />"; }
+			if (point.properties.id_pp_0 != undefined) {
+				document.querySelector('#pp0Point').innerHTML = ""; }
 			displayBlock('points');
 		}
 	}
@@ -154,44 +167,41 @@ function pointRecu() {
 
 // Fonction appeler pour basculer entre les vues
 function displayBlock(bloc) {
-	var carte = document.getElementById('carte');
-	var index = document.getElementById('index');
-	var patientez = document.getElementById('patientez');
-	var points = document.getElementById('infosPoint');
-	var header = document.getElementById('header');
-	var nav = document.getElementById('nav');
-	var footer = document.getElementById('footer');
-	var main = document.getElementById('main');
+	var carte = document.querySelector('#carte');
+	var index = document.querySelector('#index');
+	var patientez = document.querySelector('#patientez');
+	var points = document.querySelector('#infosPoint');
+	var header = document.querySelector('header');
+	var footer = document.querySelector('footer');
+	var main = document.querySelector('section');
 
 
 	if(bloc == 'carte') {
-		if (init!=1) {
-			initmap();
-			init = 1;
-		}
 		points.style.display = 'none';
 		carte.style.display = 'block';
-		nav.style.display = 'none';
 		header.style.display = 'none';
 		footer.style.display = 'none';
 		index.style.display = 'none';
 		patientez.style.display = 'none';
 		main.style.height = '100%';
+		if (init!=1) {
+			initmap();
+			init = 1;
+		}
+		map.invalidateSize();
 	}
 	else if(bloc == 'patientez') {
 		points.style.display = 'none';
 		carte.style.display = 'none';
-		nav.style.display = 'none';
 		header.style.display = 'none';
 		footer.style.display = 'none';
 		index.style.display = 'none';
-		patientez.style.display = 'none';
+		patientez.style.display = 'block';
 		main.style.height = '100%';
 	}
 	else if(bloc == 'points') {
 		points.style.display = 'block';
 		carte.style.display = 'none';
-		nav.style.display = 'none';
 		header.style.display = 'none';
 		footer.style.display = 'none';
 		index.style.display = 'none';
@@ -201,7 +211,6 @@ function displayBlock(bloc) {
 	else {
 		points.style.display = 'none';
 		carte.style.display = 'none';
-		nav.style.display = 'block';
 		header.style.display = 'block';
 		footer.style.display = 'block';
 		index.style.display = 'block';
