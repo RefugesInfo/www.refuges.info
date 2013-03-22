@@ -183,8 +183,13 @@ else // le point est valide. faut bosser.
     }
 }
 
-/*********** On affiche le tout ***/
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$modele->type.html");
-include ($config['chemin_vues']."_pied.html");
+if ($_GET['format']=="geojson") {
+	include ($config['chemin_vues']."$modele->type.geojson");
+}
+else {
+	/*********** On affiche le tout ***/
+	include ($config['chemin_vues']."_entete.html");
+	include ($config['chemin_vues']."$modele->type.html");
+	include ($config['chemin_vues']."_pied.html");
+}
 ?>

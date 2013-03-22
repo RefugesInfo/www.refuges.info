@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+	<head>
+		<title>Cabanes et abris de montagne</title>
+		<link rel="shortcut icon" href="/images/favicon.ico" />
+		<meta name="robots" content="all" />
+		<meta name="robots" content="index,follow" />
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<link type="text/css" rel="stylesheet" href="styles/style.css" />
+		<link rel="stylesheet" href="./leaflet/leaflet.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="./leaflet/leaflet.ie.css" /><![endif]-->
+		<script src="./leaflet/leaflet.js"></script>
+		<script src="./leaflet/leaflet.fullscreen.js"></script>
+		<script src="./js/index.js"></script>
+	</head>
+
+	<body>
+		<header>
+			<p id="header">Refuges.info <span id="wri">WRI</span></p>
+		</header>
+		
+		<!-- Contenu du site web -->
+
+		<section>
+			<!-- Partie accueil -->
+			<article id="index">
+				<p>Refuges.info vous permet d'afficher sur une carte, des refuges, abris et autres points d'intérêt pour les randonneurs. Ils vous est alors possible de cliquer sur un point pour avoir des informations pratiques sur celui-ci.</p>
+				<a class="btnbleu" href="#" onclick="displayBlock('carte');">Afficher la carte</a>
+			</article>
+			<!-- Partie carte -->
+			<article id="carte" style="display:none;">
+				<a class="retour" href="#" onclick="displayBlock('index');">Menu Principal</a>
+				<div id="map"></div>
+			</article>
+			<!-- Partie patienter -->
+			<article id="patientez" style="display:none;">
+				<div class="loading-wrap">
+					<div class="triangle1"></div>
+					<div class="triangle2"></div>
+					<div class="triangle3"></div>
+				</div>
+			</article>
+			<!-- Partie infoPoint -->
+			<article id="infosPoint" style="display:none;">
+				<!-- Tout est géré par un innerHTML -->
+			</article>
+		</section>
+
+		<footer>
+			<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.fr">
+				<img src="./images/licence.png" alt="CC BY SA 2.0" />
+			</a>
+			-
+			<a href="/statique/mode_emploi.php?page=licence" title="Version ordinateur">
+				Plus d'infos sur la licence
+			</a>
+		</footer>
+	</body>
+</html>
