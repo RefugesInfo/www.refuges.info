@@ -6,6 +6,7 @@
 
 /**
  * @requires OpenLayers/Layer/Vector.js
+ * @requires OpenLayers/Geometry/Point.js
  */
 
 /**

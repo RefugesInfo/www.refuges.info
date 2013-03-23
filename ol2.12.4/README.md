@@ -42,11 +42,14 @@ Il est inclu par le seul appel à <script type="text/javascript" src="http://refu
 	
 Cette bibliothèque est compressée par jsmin et GZIPpé par l'APPACHE du serveur
 	Génération de la bibiothèque en 1 seul fichier ninifié
-	Appeler http://refuges.info/olX/build/build.php
+	Appeler http://refuges.info/olX/build/index.php
 	Ceci crée http://refuges.info/olX/OpenLayers.js
+	Ceci crée http://refuges.info/olX/lib/OpenLayers.js
 	Et un fichier de trace de génération http://refuges.info/olX/build/build.log.html
 		Ce fichier liste les modifications par rapport à la livraison OL d'origine
-		
+
+Ce builder inclue les classes correspondantes aux objets Openlayers et proj4js utilisées dans ../vues/*.js, sinon dans TEST/index.php
+
 Pour debugger, il faut inclure <script type="text/javascript" src="http://refuges.info/olX/lib/OpenLayers.js"></script>
 	Cette bibiothèque inclue les fichiers unitaires et non compressés de lib/... 
 	Elle est beaucoup plus lente mais permet de debugger dans les fichiers d'origine plus lisibles

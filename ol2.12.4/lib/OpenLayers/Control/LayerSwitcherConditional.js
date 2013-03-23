@@ -5,9 +5,7 @@
 
 /** 
  * @requires OpenLayers/Control/LayerSwitcher.js
- * @requires OpenLayers/Control.js
- * @requires OpenLayers/Lang.js
- * @requires Rico/Corner.js
+ * @requires OpenLayers/Projection.js
  */
 
 /**

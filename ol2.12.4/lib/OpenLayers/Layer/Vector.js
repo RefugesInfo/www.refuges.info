@@ -10,6 +10,9 @@
  * @requires OpenLayers/Feature/Vector.js
  * @requires OpenLayers/Console.js
  * @requires OpenLayers/Lang.js
+ 
+ * @requires OpenLayers/Renderer/SVG.js
+ * @requires OpenLayers/Renderer/VML.js
  */
 
 /**

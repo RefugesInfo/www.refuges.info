@@ -9,10 +9,7 @@
 
 /**
  * @requires OpenLayers/Layer/Google.js
- * @requires OpenLayers/Layer/SphericalMercator.js
- * @requires OpenLayers/Layer/EventPane.js
- * @requires OpenLayers/Layer/FixedZoomLevels.js
- * @requires OpenLayers/Lang.js
+ * @requires OpenLayers/Layer/Google/v3.js
  */
 
 /**

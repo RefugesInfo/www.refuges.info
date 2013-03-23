@@ -6,6 +6,20 @@
 
 /**
  * @requires OpenLayers/Layer/Vector.js
+ * @requires OpenLayers/Format/GML.js
+ * @requires OpenLayers/Control/Panel.js
+ * @requires OpenLayers/Control/SaveFeature.js
+ * @requires OpenLayers/Control/DownloadFeature.js
+ * @requires OpenLayers/Control/LoadFeature.js
+ * @requires OpenLayers/Strategy/Save.js
+ * @requires OpenLayers/StyleMap.js
+ * @requires OpenLayers/Protocol/HTTP.js
+ * @requires OpenLayers/Strategy/Fixed.js
+ * @requires OpenLayers/Control/CutFeature.js
+ * @requires OpenLayers/Control/ModifyFeature.js
+ * @requires OpenLayers/Control/DrawFeaturePath.js
+ * @requires OpenLayers/Control/Navigation.js
+ * @requires OpenLayers/Control/Snapping.js
  */
 
 /**

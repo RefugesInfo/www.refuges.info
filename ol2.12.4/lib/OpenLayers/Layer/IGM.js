@@ -6,6 +6,8 @@
 
 /**
  * @requires OpenLayers/Layer/WMS.js
+ * @requires OpenLayers/BaseTypes/Bounds.js
+ * @requires OpenLayers/BaseTypes/Size.js
  */
 
 /**

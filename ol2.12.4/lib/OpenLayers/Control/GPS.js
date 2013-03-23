@@ -6,9 +6,11 @@
  */
 
 /**
- * @requires OpenLayers/Control.js
- * @requires OpenLayers.Control.Panel.js
- * @requires OpenLayers.Control.Geolocate.js
+ * @requires OpenLayers/Control/Geolocate.js
+ * @requires OpenLayers/Layer/Vector.js
+ * @requires OpenLayers/Feature/Vector.js
+ * @requires OpenLayers/Geometry/Point.js
+ * @requires OpenLayers/Control/Panel.js
  */
 
 /**

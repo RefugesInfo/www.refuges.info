@@ -5,8 +5,6 @@
 /**
  * @requires OpenLayers/Control/Permalink.js
  * @requires OpenLayers/Control/ArgParserCookies.js
- * @requires OpenLayers/Control/ArgParser.js
- * @requires OpenLayers/Util/Cookies.js
  */
 
 /**

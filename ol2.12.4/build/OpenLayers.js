@@ -1,5 +1,3 @@
-/* Fichier temporaire généré automatiquement par build.php. Ne pas modifier */
-var OpenLayers={singleFile:true};
 /* Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -120,6 +118,36 @@ var OpenLayers={singleFile:true};
         ImgPath : ''
     };
 
+    /**
+     * OpenLayers.singleFile is a flag indicating this file is being included
+     * in a Single File Library build of the OpenLayers Library.
+     * 
+     * When we are *not* part of a SFL build we dynamically include the
+     * OpenLayers library code.
+     * 
+     * When we *are* part of a SFL build we do not dynamically include the 
+     * OpenLayers library code as it will be appended at the end of this file.
+     */
+    if(!singleFile) {
+        if (!jsFiles) {
+            jsFiles = [
+@@@''
+            ]; // etc.
+        }
+
+        // use "parser-inserted scripts" for guaranteed execution order
+        // http://hsivonen.iki.fi/script-execution/
+        var scriptTags = new Array(jsFiles.length);
+        var host = OpenLayers._getScriptLocation() + "lib/";
+        for (var i=0, len=jsFiles.length; i<len; i++) {
+/*DCM*/   if (jsFiles[i]) // Evite le dernier tag vide
+            scriptTags[i] = "<script src='" + host + jsFiles[i] +
+                                   "'></script>"; 
+        }
+        if (scriptTags.length > 0) {
+            document.write(scriptTags.join(""));
+        }
+    }
 })();
 
 /**

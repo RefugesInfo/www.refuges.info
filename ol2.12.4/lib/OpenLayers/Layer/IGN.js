@@ -6,6 +6,7 @@
 
 /**
  * @requires OpenLayers/Layer/WMTS.js
+ * @requires OpenLayers/Bounds.js
  */
 
 /**

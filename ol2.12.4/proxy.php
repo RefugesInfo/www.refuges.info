@@ -13,6 +13,8 @@
 //* Modifications(date Nom)| Elements modifiés, ajoutés ou supprimés                           *
 //*------------------------|-------------------------------------------------------------------*
 //**********************************************************************************************
+  ini_set('error_reporting', E_ALL ^ E_NOTICE);
+  ini_set('display_errors', '1');
 
 /* This is a blind proxy that we use to get around browser
 restrictions that prevent the Javascript from loading pages not on the
@@ -21,6 +23,8 @@ efficient, it might break some sites, and it's a security risk because
 people can use this proxy to browse the web and possibly do bad stuff
 with it.  It only loads pages via http, but it can load any
 content type. It supports only GET requests. */
+echo 'extension_loaded '.extension_loaded ('mbstring.dll').'2';
+phpinfo();
 
 /******************************************************************************/
 // Traitement des arguments
