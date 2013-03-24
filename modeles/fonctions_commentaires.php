@@ -17,17 +17,20 @@ $conditions->ids_points -> pour récupérer tous les commentaires d'un point par
 $conditions->ids_commentaires -> pour récupérer les commentaires dont les ids sont au format 45 ou 78,412,4
 $conditions->avec_photo -> pour ne prendre que ceux avec photo : True ou False (par défaut c'est tous)
 $conditions->limite -> pour imposer une limite au cas où
-A venir :
+
 $conditions->avec_modele=False -> pour ne pas avoir les commentaires sur les modèles (si si, les modèles ont aussi leurs commentaires) par défaut : True
 $conditions->ids_auteurs -> pour récupérer les commentaires dont l'auteur est id_auteur au format 4 ou 7,8,14
 $conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non authentifiés
 $conditions->texte -> condition sur le contenu du commentaire
-$conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
 $conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
 
 $conditions->avec_commentaires_modele=True -> Très spécifique, pour avoir aussi les commentaires sur les modeles de points, le par défaut est non mais ça n'a de sens qu'avec $conditions->avec_infos_point=True
 $conditions->avec_points_censure=True : Par défaut, False : les commentaires des points censurés ne sont pas retournés
+
+!! A CODER ? !!
+$conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
+
 
 Renvoi un tableau contenant des objets commentaires sous cette forme :
 stdClass Object

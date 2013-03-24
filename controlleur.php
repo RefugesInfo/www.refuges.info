@@ -39,6 +39,7 @@ switch ($controlleur->url_decoupee[1])
     case "point_modification.php" : case "point_modification" : $vue->type=$controlleur->type="point_modification"; break;
     case "rss" : case "rss.php" : $vue->type=$controlleur->type="rss"; break;
     case "formulaire_rss.php" : case "formulaire_rss" : $vue->type=$controlleur->type="formulaire_rss"; break;
+    case "avis-internaute-commentaire" : $vue->type=$controlleur->type="avis-internaute-commentaire"; break;
     default : $vue->type=$controlleur->type="page_introuvable"; break;
 }
 

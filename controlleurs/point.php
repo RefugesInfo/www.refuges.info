@@ -33,7 +33,7 @@ $vue = infos_point ($id_point,$meme_si_censure);
 // Partie spécifique de la page
 if ($vue->erreur)
 {
-    $vue->type="acces_interdit";
+    $vue->type="page_simple";
     $vue->contenu=$vue->message;
 }
 else // le point est valide. faut bosser.
@@ -168,7 +168,7 @@ else // le point est valide. faut bosser.
         else 
         {
             // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
-            $commentaire->lien_commentaire = '/gestion/avis-internaute-commentaire.php?id_commentaire='.$commentaire->id_commentaire;
+            $commentaire->lien_commentaire = "/avis-internaute-commentaire/$commentaire->id_commentaire/";
             $commentaire->texte_lien_commentaire = 'Que pensez vous de ce commentaire ?';
         }
         

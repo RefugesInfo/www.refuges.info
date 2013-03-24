@@ -51,6 +51,7 @@ Fonction qui vérifie que le paramètre passé (string) est bien au format int o
 function verif_multiples_entiers($string)
 {
   // Un pro de l'expression régulière pour me faire celle-ci en un coup ? 
+  // FIXME 9,,8 est retourné comme valable alors que l'on ne voudrait pas
   if (preg_match("/[0-9][0-9,]*[0-9]/",$string) or preg_match("/[0-9][0-9]*/",$string)) 
     return True;
   else

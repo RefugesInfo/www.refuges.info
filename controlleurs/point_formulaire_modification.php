@@ -41,11 +41,11 @@ if ( isset($_REQUEST["id_point"]) )
 {
     if ( $_SESSION['niveau_moderation']<1 AND $_SESSION['id_utilisateur']!=$point->id_createur ) 
     {
-          $vue->type="acces_interdit";
+          $vue->type="page_simple";
           $vue->titre="Permissions insuffisantes";
           $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur ou le créateur de cette fiche et être connecté au forum :";
           $vue->titre_lien="Connexion forum";
-          $vue->lien_special=$config['connexion_forum'];
+          $vue->lien=$config['connexion_forum'];
           return "";
     }
 
