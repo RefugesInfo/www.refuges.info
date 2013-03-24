@@ -112,7 +112,7 @@ function infos_commentaires ($conditions)
 		$condition_en_plus.=" AND points.id_point=commentaires.id_point 
 			 AND points_gps.id_point_gps=points.id_point_gps
 			 AND point_type.id_point_type=points.id_point_type";
-		$champ_en_plus.=",points.*,";
+		$champ_en_plus.=",points.*,point_type.*,";
 		// Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
 		// ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
 		$champ_en_plus.=colonnes_table('polygones',False);
@@ -181,6 +181,8 @@ function infos_commentaire($id_commentaire)
   $c=infos_commentaires ($conditions);
   if ($c->erreur)
     return erreur($c->texte);
+  if (count($c)!=1)
+      return erreur("un seul commentaire demandé mais $c trouvés");
   return $c[0];
 }
 

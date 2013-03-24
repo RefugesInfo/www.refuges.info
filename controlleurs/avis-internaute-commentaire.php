@@ -7,24 +7,18 @@ c'est utile, c'est que si un internaute trouve un commentaire inutile ça l'indi
 require_once ("fonctions_mode_emploi.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_commentaires.php");
-if (verif_multiples_entiers($controlleur->url_decoupee[2]))
-    die("bon :".$controlleur->url_decoupee[2]);
-else
-    die("pas bon :".$controlleur->url_decoupee[2]);
+
 $vue->description = $description;
-$conditions= new stdClass;
-$conditions->avec_infos_point=True;
-$conditions->ids_commentaires=$controlleur->url_decoupee[2];
-$commentaires=infos_commentaires($conditions);
-if ($commentaires->erreur)
+$commentaire=infos_commentaire($controlleur->url_decoupee[2]);
+
+if ($commentaire->erreur)
 {
     $vue->type="page_introuvable";
-    $vue->contenu=$commentaires->message;
+    $vue->titre=$commentaire->message;
             
 }
 else
 {
-    $commentaire=$commentaires[0];
     $vue->commentaire=$commentaire;
     $vue->commentaire->lien=lien_point_fast($commentaire,True);
     

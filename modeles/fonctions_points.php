@@ -357,6 +357,8 @@ function infos_point($id_point,$meme_si_censure=False)
 Lien plus simple à utiliser maintenant ! sur la base
 de l'objet point "habituel" et plus rapide que celui du dessous
 car requête de moins
+FIXME uniformiser l'appel au $point->nom_massif qui devrait être atteignable dans 
+$point->polygones[$x]->nom_polygone
 *************************************************************/
 function lien_point_fast($point,$local=false)
 {
@@ -365,6 +367,7 @@ function lien_point_fast($point,$local=false)
     $url_complete="";
   else
     $url_complete="http://".$config['nom_hote'];
+  
   if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
   else
