@@ -135,7 +135,7 @@ function infos_commentaires ($conditions)
            $limite";
 
 	if ( ! ($res=$pdo->query($query))) 
-		return erreur("Une erreur sur la requête est survenue $query");
+		return erreur("Une erreur sur la requête est survenue",$query);
 
 	//jmb: renvoie un tablo vide, au lieu d'un NULL si pas de comment, => les appelants n'ont plus a tester.
 	$commentaires = array() ;
