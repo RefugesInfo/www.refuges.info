@@ -3,11 +3,8 @@
 Je vais tenter de regrouper les fonctions de manipulation des coordonnées GPS de la table 
 points_gps et de leurs liens avec les autres tables. 
 Afin de simplifier l'appel aux ajouts, modifications, suppressions
-**************************************************************************************************
+***************************************************************************************************/
 
-// 10/02/13 jmb : modif de la fonction "modification_ajout_point" pour OpenGIS
-
-*/
 require_once ("config.php");
 require_once ('fonctions_bdd.php');
 require_once ("fonctions_gestion_erreurs.php");
@@ -60,7 +57,7 @@ function modification_ajout_point_gps($point_gps)
 	if (!$pdo->exec($query_finale))
 		return erreur("Impossible d'executer la requête car mal formée : $query_finale");
         
-        if ($point_gps->id_point_gps == "") // On avait donc demander un INSERT, on récupère l'id inséré
+        if ($point_gps->id_point_gps == "") // On avait donc demandé un INSERT, on récupère l'id inséré
             $id_point_gps = $pdo->lastInsertId();
 	
         return $id_point_gps;
@@ -89,7 +86,4 @@ function calcul_distance_points($point1,$point2)
 	return calcul_distance_gps($point1->latitude,$point1->longitude,$point2->latitude,$point2->longitude);
 }
 
-/***********************************************************
-
-***********************************************************/
 ?>

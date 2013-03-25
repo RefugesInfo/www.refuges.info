@@ -15,7 +15,7 @@ require_once ("config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_gestion_erreurs.php");
 require_once ("fonctions_commentaires.php");
-require_once ("fonctions_gps.php");
+require_once ("points_gps.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mise_en_forme_texte.php");
 
