@@ -235,11 +235,8 @@ function infos_points($conditions)
   if ($conditions->non_utilisable=='oui')
     $conditions_sql.="\n AND LENGTH(points.ferme) > 0 ";
   if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND points.ferme=''  "; 
+    $conditions_sql.="\n AND points.ferme in ('','non',NULL)  "; 
   
-  // jmb je suppr type_precision_gps qui sert a rien          type_precision_gps.*,    AND points_gps.id_type_precision_gps=type_precision_gps.id_type_precision_gps
-  // je suppr aussi la jointure point_type. pas utilisee
-
   $query_points="
   SELECT points.*,
          points_gps.*,
