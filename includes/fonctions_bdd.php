@@ -48,33 +48,6 @@ $condition = la clause, dans le cas d'un update indiquant quel enregistrement à
 // la requete PDO devrait etre aussi lancee ici, et renvoyer l'ID
 function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition="")
 {
-/*	if ($update_ou_insert == "update") // Un UPDATE
-	{
-		foreach ($champs_valeur as $champ_sql => $valeur)
-			$sql_update.="\n$champ_sql=$valeur,";
-		$sql_update = trim($sql_update,",");
-		$query="UPDATE $table SET 
-		  $sql_update
-		WHERE 
-		  $condition";
-	} 
-	else // un INSERT
-	{
-
-		foreach ($champs_valeur as $champ_sql => $valeur)
-		{
-			$liste_champs.="$champ_sql,";
-			$liste_valeurs.="$valeur,";
-		}
-		$liste_champs = trim($liste_champs,",");
-		$liste_valeurs = trim($liste_valeurs,",");
-		
-		$query="INSERT INTO $table
-		  ($liste_champs)
-		VALUES
-		  ($liste_valeurs)";
-	}*/
-
     // Regroupement : un pas vers l'UPSERT
     foreach ($champs_valeur as $champ_sql => $valeur)
 	{
