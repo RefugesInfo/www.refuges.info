@@ -50,20 +50,20 @@ function modification_ajout_point_gps($point_gps)
 
 	// fait-on un updater ou un insert ? -> avec posgresql et être compatible, impossible de reprendre la même forme pour la requête
 	if ($point_gps->id_point_gps != "") // Un UPDATE
-		$query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'update',"id_point_gps=$point_gps->id_point_gps");
+        {
+            $query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'update',"id_point_gps=$point_gps->id_point_gps");
+            $id_point_gps = $point_gps->id_point_gps;
+        }
 	else // un INSERT
-		$query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'insert');
-
+            $query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'insert');
 	
 	if (!$pdo->exec($query_finale))
 		return erreur("Impossible d'executer la requête car mal formée : $query_finale");
-	$lastid = $pdo->lastInsertId();
-	if ($point_gps->id_point_gps!="")
-		$id_point_gps = $point_gps->id_point_gps;
-	else
-		$id_point_gps = $lastid ;
-
-	return $id_point_gps;
+        
+        if ($point_gps->id_point_gps == "") // On avait donc demander un INSERT, on récupère l'id inséré
+            $id_point_gps = $pdo->lastInsertId();
+	
+        return $id_point_gps;
 }
 
 /********************************************************

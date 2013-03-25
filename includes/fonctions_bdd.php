@@ -15,7 +15,10 @@ class PDO_wri extends PDO
 {
     function lastInsertId ($string=Null)
     {
-        $res=$this->query("select LASTVAL() as last_id;");
+        $q="select LASTVAL() as last_id;";
+        $res=$this->query($q);
+        if (!$res)
+            return erreur("Impossible de récupérer le dernier id créé",$q);
         $id=$res->fetch();
         return $id->last_id;
     }
