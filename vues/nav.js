@@ -30,7 +30,9 @@ window.onload = function () {
         controls: [
             new OpenLayers.Control.PanZoomBar (), // Grande barre de zoom
             new OpenLayers.Control.PermalinkCookies (), // Ne doit pas être en premier
-lc =        new OpenLayers.Control.LayerSwitcherConditional (), // Un premier dans la carte pour les couches de base
+lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dans la carte pour les couches de base
+                ascending: true
+            }),
             new OpenLayers.Control.LayerSwitcher ({ // Un deuxième, externe, pour les overlays
                 div: OpenLayers.Util.getElement('switch_nav'),
                 ascending: false
