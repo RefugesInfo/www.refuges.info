@@ -1,28 +1,14 @@
-<?php
-
-?>
 <div class="contenu">
 <!-- =========================== -->
 <!-- ======= BARATIN ===== -->
 <h3><?=$vue->titre?></h3> 
-<?php
-if (isset($vue->etapes))
-{ ?>
-    <dl> <?
-    foreach ($vue->etapes as $etape)
-    { ?>
-      <dt><?=$etape->titre?></dt>
-      <dd><?=$etape->texte?></dd>
-    <?}?>
-   </dl>  <?
-} 
-// Formulaire avec le bazar QUE si on a pas de validation
-if ( !isset($_POST['validation']) )
-{ ?>
-
+    <dl> 
+      <dt>Options d'exportations</dt>
+      <dd>Veuillez préciser les options des points et des massifs</dd>
+   </dl>
 <!-- ======= FORMULAIRE ===== -->
 
-  <form class="wri" id='form_export' method='post' action="<?=$_SERVER['SCRIPT_NAME']?>">
+  <form class="wri" id='form_export' method='post' action="/formulaire_exportations/">
     <fieldset id="types_point">
         <legend>Choix des points de la base a exporter
             <button type='button' onclick="checkboites('types_point',true); return false;">☒</button>
@@ -112,19 +98,4 @@ if ( !isset($_POST['validation']) )
 	</fieldset>
     
   </form>
-  <!-- ======= FIN FORMULAIRE ====== -->
-<?
-} // fin du if Validation
-else
-{?>
-    <p>
-        <?=$vue->lien_export->description?>
-    </p>
-    <? if (isset($vue->lien_export->url)) { ?>
-    <p>
-        <a href="<?=$vue->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour récupérer les données</a>
-    </p>
-    <?}?>
-<?}?>
-
 </div>
