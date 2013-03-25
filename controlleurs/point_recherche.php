@@ -27,7 +27,7 @@ foreach ($_POST as $champ => $valeur)
         switch ($champ) 
         {
             case 'id_massif':
-                $conditions->id_polygone = $valeur; break ;
+                $conditions->ids_polygones = $valeur; break ;
                 
             case ( 'lat' && !empty($_POST['lon']) && !empty($_POST['autour']) ):  // on demande un positionnement GPS. 
                 // la distance n'est qu'un polygone

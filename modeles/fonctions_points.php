@@ -54,7 +54,7 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 
-$conditions->id_polygone : points appartenant à ce polygone
+$conditions->ids_polygones : points appartenant à ce ou ces polygones
 $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
 $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veut quand même, par défaut : FALSE
@@ -123,13 +123,13 @@ function infos_points($conditions)
         $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
   
     // condition sur l'appartenance à un polygone
-    if( !empty($conditions->id_polygone) )
+    if( !empty($conditions->ids_polygones) )
     {
-        if (!verif_multiples_entiers($conditions->id_polygone))
-            return erreur("Le paramètre donné pour les ids des polygones n'est pas valide","$conditions->id_polygone");
+        if (!verif_multiples_entiers($conditions->ids_polygones))
+            return erreur("Le paramètre donné pour les ids des polygones n'est pas valide","$conditions->ids_polygones");
         else
         {
-            $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->id_polygone)   ) ";
+            $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
             $champs_polygones=",".colonnes_table('polygones',False);
         }
     }
