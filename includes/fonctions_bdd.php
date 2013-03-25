@@ -7,7 +7,9 @@ Fonctions liées à l'accès à ou aux bases de données et quelques "helpers" p
 require_once("config.php");
 
 /*
-Extend qui nous permet de récupérer le last inserted ID sans être obligé de sécifier à chaque fois, et en restant dans la compatibilité avec PDO
+Extension de la classe qui nous permet de récupérer le last inserted ID sans être obligé de spécifier à chaque fois la séquence postgresql, 
+et en restant dans la compatibilité avec PDO.
+J'en profite pour faire que cette classe se connecte avec les identifiants wri
 */
 class PDO_wri extends PDO
 {
@@ -17,30 +19,22 @@ class PDO_wri extends PDO
         $id=$res->fetch();
         return $id->last_id;
     }
-}
-/****************************************
-Fonction générique de connexion à la base
-elle renvois un lien de connexion de type $PDO
-***************************************/
-function connexion_base()
-{
-	global $config;
-
-	try 
-	{
-		$pdo = new PDO_wri(
+    function __construct()
+    {
+        global $config;
+        try
+        {
+        parent::__construct(
 				"pgsql:host=".$config['serveur_pgsql'] . ";dbname=" . $config['base_pgsql'] ,
 				$config['utilisateur_pgsql'],
 				$config['mot_de_passe_pgsql']);
-		// TOUTES les requetes seront renvoyees en fetch_object (resultat->columname)
-		$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-		return $pdo;
-	} 
+	$this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+        }
 	catch(Exception $e) 
-	{
-		echo 'Echec de la connexion à la base de données erreur '.$e->getCode() ;
-		exit();
-	}
+        {
+		return erreur('Echec de la connexion à la base de données erreur ',$e->getCode());
+        }
+    }
 }
 
 /*
@@ -98,7 +92,7 @@ function colonnes_table($table,$renvoyer_aussi_colonne_geometrie=True)
 }
 
 // Vu qu'on inclus ce fichier, c'est qu'on a besoin d'une connexion, chaque appelant pourrait la faire, mais c'est plus lourd
-$pdo = connexion_base();
+$pdo = new PDO_wri();
 
 
 ?>
