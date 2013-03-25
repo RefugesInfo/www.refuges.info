@@ -353,13 +353,12 @@ function infos_point($id_point,$meme_si_censure=False)
     } while ( $polygones_du_point = $res->fetch() ) ;
     return $point;
 }
-/**************************************************************
-Lien plus simple à utiliser maintenant ! sur la base
-de l'objet point "habituel" et plus rapide que celui du dessous
+/******************************************************************************************************************************
+Lien plus simple à utiliser maintenant ! sur la base de l'objet point "habituel" et plus rapide que celui du dessous
 car requête de moins
-FIXME uniformiser l'appel au $point->nom_massif qui devrait être atteignable dans 
+FIXME uniformiser l'appel au $point->nom_massif qui devrait être atteignable dans un truc de ce style :
 $point->polygones[$x]->nom_polygone
-*************************************************************/
+*******************************************************************************************************************************/
 function lien_point_fast($point,$local=false)
 {
   global $config;
@@ -370,16 +369,17 @@ function lien_point_fast($point,$local=false)
   
   if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
+  elseif (isset($point->nom_polygone)) // FIXME : des fois c'est dans nom_massif, des fois nom_polygone, il faudrait uniformiser
+    $info_massif=replace_url($point->nom_polygone)."/";
   else
     $info_massif="";
   return "$url_complete/point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
 }
 
-/****************************************
-On génére une url vers le point juste à partir de son id
-Attention c'est moins performant à ne pas trop utiliser
+/******************************************************************************************************************************
+On génére une url vers le point juste à partir de son id Attention c'est moins performant à ne pas trop utiliser
 pour des longues listes ( car requete SQL oblige )
-***************************************/
+******************************************************************************************************************************/
 function lien_point_lent($id_point)
 {
   $point=infos_point($id_point);
