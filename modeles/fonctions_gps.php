@@ -57,7 +57,7 @@ function modification_ajout_point_gps($point_gps)
 	
 	if (!$pdo->exec($query_finale))
 		return erreur("Impossible d'executer la requête car mal formée : $query_finale");
-	$lastid = $pdo->lastInsertId('points_gps_id_point_gps_seq'); // FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
+	$lastid = $pdo->lastInsertId();
 	if ($point_gps->id_point_gps!="")
 		$id_point_gps = $point_gps->id_point_gps;
 	else

@@ -6,6 +6,18 @@ Fonctions liées à l'accès à ou aux bases de données et quelques "helpers" p
 
 require_once("config.php");
 
+/*
+Extend qui nous permet de récupérer le last inserted ID sans être obligé de sécifier à chaque fois, et en restant dans la compatibilité avec PDO
+*/
+class PDO_wri extends PDO
+{
+    function lastInsertId ($string=Null)
+    {
+        $res=$this->query("select LASTVAL() as last_id;");
+        $id=$res->fetch();
+        return $id->last_id;
+    }
+}
 /****************************************
 Fonction générique de connexion à la base
 elle renvois un lien de connexion de type $PDO
@@ -16,7 +28,7 @@ function connexion_base()
 
 	try 
 	{
-		$pdo = new PDO(
+		$pdo = new PDO_wri(
 				"pgsql:host=".$config['serveur_pgsql'] . ";dbname=" . $config['base_pgsql'] ,
 				$config['utilisateur_pgsql'],
 				$config['mot_de_passe_pgsql']);

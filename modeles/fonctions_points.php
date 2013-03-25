@@ -557,7 +557,7 @@ function modification_ajout_point($point)
     
     if ($point->id_point=="")  // donc c etait un ajout
     {	
-		$point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
+		$point->id_point = $pdo->lastInsertId();
       
 		/********* la création du forum point *************/
 		forum_point_ajout($point);
@@ -602,7 +602,7 @@ function forum_point_ajout( $point )
   0, $point->id_point )";
 	
   $res = $pdo->query($query_insert);
-  $topic_id = $pdo->lastInsertId('phpbb_topics_topic_id_seq'); //FIXME POSTGRESQL : ca devrait etre bon necessite un sequence_name, voir doc PHP
+  $topic_id = $pdo->lastInsertId();
 	
   
   /*** rajout d'un post fictif pour débuter le truc - je vois pas en quoi c'est nécessaire, le topic devrait pouvoir être vide**/
@@ -616,7 +616,7 @@ function forum_point_ajout( $point )
   1, 1, NULL , 0 )";
 	
   $res = $pdo->query($query_insert_post);
-  $last = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL : ca devrait passer necessite un sequence_name, voir doc PHP
+  $last = $pdo->lastInsertId();
 
   
   /*** rajout d'un post avec texte pour débuter le truc ( phpBB mal codé ? non ? ) ha ça oui ! **/

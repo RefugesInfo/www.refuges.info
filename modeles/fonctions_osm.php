@@ -12,6 +12,9 @@ Une des options envisagées serait :
 Au prix de quelques bidouilles à prévoir pour soit le convertir dans un format plus simple d'utilisation, soit faire des requêtes qui tapent directement
 dans les tables produites par osm2pgsql
 
+FIXME sly : je me suis décidé je laisse tomber 90% de ce code, et j'importerais avec osm2pgsql, seul la fonction de recuperation_poi_osm va rester et encore
+elle est à refaire en fonction d'un nouveau schéma plus simple de base de donnée
+
 **********************************************************************************************/
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
