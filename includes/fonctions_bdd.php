@@ -24,15 +24,15 @@ class PDO_wri extends PDO
         global $config;
         try
         {
-        parent::__construct(
+            parent::__construct(
 				"pgsql:host=".$config['serveur_pgsql'] . ";dbname=" . $config['base_pgsql'] ,
 				$config['utilisateur_pgsql'],
 				$config['mot_de_passe_pgsql']);
-	$this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+            $this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
         }
 	catch(Exception $e) 
         {
-		return erreur('Echec de la connexion à la base de données erreur ',$e->getCode());
+            return erreur('Echec de la connexion à la base de données erreur ',$e->getCode());
         }
     }
 }
