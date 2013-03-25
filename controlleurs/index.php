@@ -13,7 +13,7 @@ require_once ("fonctions_polygones.php");
 require_once ("fonctions_mode_emploi.php");
 
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
-$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
+//$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 
 $conditions_notre_zone = new stdClass;
@@ -30,17 +30,14 @@ if ($zones)
   foreach ($zones as $zone) // FIXME ce foreach et preg_replace sont complètement ridicule mais sautero avec fusion massif/nav
     $vue->zones [$zone->nom_polygone] = lien_polygone($zone)."?mode_affichage=zone";
 
-// Réinitialise les paramètres de réaffichage des pages suivantes, notamment la couche par défaut = Google
-setcookie ('Olparams', '', time() - 3600, '/');
-
 // News
 $vue->commentaires = $commentaires;
 $vue->stat = stat_site ();
 $vue->general = $general;
 $vue->quoi = $_GET ['quoi']
-			  ? $_GET ['quoi']
-			  : 'commentaires,points,forums';
-			  
+              ? $_GET ['quoi']
+              : 'commentaires,points,forums';
+
 // Préparation de la liste des photos récentes
 $conditions = new stdclass();
 $conditions->limite=5;

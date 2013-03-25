@@ -22,7 +22,6 @@ window.onload = function () {
                     lon: <?=$vue->longitude?>,
                     lat: <?=$vue->latitude?>,
                     scale: <?=$vue->vignette[3]?>,
-                    baseLayer: '<?=$vue->vignette[0]?>'
                 }
             }),
             new OpenLayers.Control.LayerSwitcherConditional (),
@@ -32,12 +31,9 @@ window.onload = function () {
             new OpenLayers.Control.Attribution ()
         ],
         layers: [
-            new OpenLayers.Layer.Google.Terrain ('Google'),
-            new OpenLayers.Layer.Google         ('Google map',   {visibility: false}), // Cachée au début sinon, apparait fugitivement
-            new OpenLayers.Layer.Google.Photo   ('Google photo', {visibility: false}), // Cachée au début sinon, apparait fugitivement
-            new OpenLayers.Layer.OSM            ('OSM'),
             new OpenLayers.Layer.MRI            ('maps.refuges.info'),
             new OpenLayers.Layer.Velo           ('OpenCycleMap'),
+            new OpenLayers.Layer.OSM            ('OSM'),
             new OpenLayers.Layer.IGN            ('IGN', '<?=$config["ign_key"]?>'),
             new OpenLayers.Layer.SwissTopo      ('SwissTopo'),
             new OpenLayers.Layer.IGM            ('Italie'),

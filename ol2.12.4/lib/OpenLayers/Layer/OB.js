@@ -19,26 +19,28 @@
  
 OpenLayers.Layer.OB = OpenLayers.Class(OpenLayers.Layer.OSM, {
 
-	url:  [
-		'http://at0.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
-		'http://at1.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
-		'http://at2.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
-		'http://at3.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
-	],
-	
+    url: [
+        'http://at0.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
+        'http://at1.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
+        'http://at2.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
+        'http://at3.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=oberbayern&MapStyle=KOMPASS&TileX=${x}&TileY=${y}&ZoomLevel=${z}',
+    ],
+
     initialize: function(name) { // OpenLayers.Layer.OSM ne comporte pas de méthode initialize, 
         OpenLayers.Layer.XYZ.prototype.initialize.call( //il faut donc appeler la classe dont il hérite
-			this, name, null, {numZoomLevels: 16} // Il faut forcer zoom comme ça, sinon XYZ.initialize l'écrase
-		);
+            this, name, null, {numZoomLevels: 16} // Il faut forcer zoom comme ça, sinon XYZ.initialize l'écrase
+        );
     },
-	
-	attribution:
-		'<a href="http://maps.oberbayern.de/" title="Source" style="position:relative;bottom:-10px;">'+
-			'<img src="http://maps.hubermedia.de/samples/oberbayern.png" />'+
-		'</a> '+
-		'<a href="http://oberbayern.de/de/impressum">'+
-			'Conditions d\'utilisations'+
-		'</a>',
+
+    validExtent: new OpenLayers.Bounds (9.5, 46.3, 17, 49) .transform ('EPSG:4326', 'EPSG:900913'),
+
+    attribution:
+        '<a href="http://maps.oberbayern.de/" title="Source" style="position:relative;bottom:-10px;">'+
+            '<img src="http://maps.hubermedia.de/samples/oberbayern.png" />'+
+        '</a> '+
+        '<a href="http://oberbayern.de/de/impressum">'+
+            'Conditions d\'utilisations'+
+        '</a>',
 
     CLASS_NAME: "OpenLayers.Layer.OB"
 });
