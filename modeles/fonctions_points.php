@@ -80,6 +80,9 @@ $condition->limite : nombre maximum d'enregistrement à aller chercher, par déf
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
 
+$conditions->geometrie : Ne renvoir que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
+$conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
+
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
 Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon 
@@ -166,7 +169,11 @@ function infos_points($conditions)
     if( !empty($conditions->geometrie) ) 
     {
         $conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
-        $select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+        if ($conditions->avec_distance)
+        {
+            $select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+            $ordre = "ORDER BY distance DESC";
+        }
     }
     
     // FIXME : Temporaire, à faire disparaitre lorsque la migration avec ce format sera terminée
@@ -241,7 +248,7 @@ function infos_points($conditions)
   SELECT points.*,
          points_gps.*,
          type_precision_gps.*,
-		 point_type.*, -- cette jointure ne sert QUE pour le tri par importance. on passe les 120 a 300 et on gagne une jointure?
+		 point_type.*,
          ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
          extract('epoch' from date_derniere_modification) as date_modif_timestamp,
 		 extract('epoch' from date_creation) as date_creation_timestamp

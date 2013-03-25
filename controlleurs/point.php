@@ -66,7 +66,7 @@ else // le point est valide. faut bosser.
         $g = [ 'lat' => $vue->latitude, 'lon' => $vue->longitude , 'rayon' => 5000 ];
         $conditions->geometrie = cree_geometrie( $g , 'cercle' );
         
-        $conditions->ordre="distance ASC";
+        $conditions->avec_distance=True;
         $vue->points_proches=infos_points($conditions);
         
         /*********** Détermination de la carte à afficher ***/
