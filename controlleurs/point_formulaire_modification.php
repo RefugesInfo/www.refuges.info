@@ -39,7 +39,44 @@ $vue->champs->places_matelas = new stdClass(); // traite en cas particulier, tro
 // ou si les droits sont insuffisants
 if ( isset($_REQUEST["id_point"]) )  
 {
-    if ( $_SESSION['niveau_moderation']<1 AND $_SESSION['id_utilisateur']!=$point->id_createur ) 
+    // Si c'est un modérateur, il peut voir la fiche même si elle est censurée
+    if ($_SESSION['niveau_moderation']>=1)
+        $meme_si_censure=True;
+    else
+        $meme_si_censure=False;
+    $point=infos_point($_REQUEST['id_point'],$meme_si_censure);
+    // Stop, le point n'existe pas (ou est censuré et il ne faut pas dire que c'est le cas)
+    if ($point->erreur) 
+    {    
+        header("HTTP/1.0 404 Not Found");
+        $vue->type="page_introuvable";
+        $vue->titre="Point inexistant";
+        $vue->contenu=$point->message;
+        return "";
+    }
+    
+    // Soit on est avec un modérateur soit le créateur de la fiche
+    if ( $_SESSION['niveau_moderation']>=1 or $_SESSION['id_utilisateur']==$point->id_createur ) 
+    {
+        $vue->serie = param_cartes ($point);
+        
+        // bug du point_gps recree a chaque fois: il faut le transmettre en invisible.
+        $vue->champs->invisibles->id_point_gps = new stdClass;
+        $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
+        
+        // boutton supprimer 
+        $bouton_suppr = new stdClass;
+        $bouton_suppr->nom = "action";
+        $bouton_suppr->type = "submit";
+        $bouton_suppr->valeur = "supprimer";
+        $bouton_suppr->label = "Suppression de la fiche";
+        
+        //cosmétique
+        $icone="&amp;iconecenter=ne_sait_pas";
+        $action="Modification";
+        $verbe="Modifier";
+    }
+    else // Ni modérateur, ni créateur on l'informe que ses droits sont insuffisants
     {
           $vue->type="page_simple";
           $vue->titre="Permissions insuffisantes";
@@ -48,40 +85,6 @@ if ( isset($_REQUEST["id_point"]) )
           $vue->lien=$config['connexion_forum'];
           return "";
     }
-
-    if ($_SESSION['niveau_moderation']>=1)
-        $meme_si_censure=True;
-    else
-        $meme_si_censure=False;
-    $point=infos_point($_REQUEST['id_point'],$meme_si_censure);
-    
-    // Stop, le point n'existe pas
-    if ($point->erreur) 
-    {    
-          header("HTTP/1.0 404 Not Found");
-          $vue->type="page_introuvable";
-          $vue->titre="Point inexistant";
-          $vue->contenu=$point->message;
-          return "";
-    }
-
-    $vue->serie = param_cartes ($point);
-
-    // bug du point_gps recree a chaque fois: il faut le transmettre en invisible.
-    $vue->champs->invisibles->id_point_gps = new stdClass;
-    $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
-
-    // boutton supprimer 
-    $bouton_suppr = new stdClass;
-    $bouton_suppr->nom = "action";
-    $bouton_suppr->type = "submit";
-    $bouton_suppr->valeur = "supprimer";
-    $bouton_suppr->label = "Suppression de la fiche";
-    
-    //cosmétique
-    $icone="&amp;iconecenter=ne_sait_pas";
-    $action="Modification";
-    $verbe="Modifier";
 }
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
 elseif ( isset($_REQUEST["id_point_type"]))  
