@@ -280,7 +280,7 @@ function infos_points($conditions)
       $point->id_massif  = $point->id_polygone;
       $point->article_partitif_massif = $point->article_partitif;
       if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
-	$point->lien=lien_point_fast($point);
+          $point->lien=lien_point_fast($point);
     }
     // Ici, petite particularité sur les points censurés, par défaut, on ne veut pas les renvoyer, mais on veut quand 
     // même, si un seul a été demandé, pouvoir dire qu'il est censuré, donc on va le chercher en base mais on renvoi une erreur 
@@ -298,7 +298,6 @@ Cette fonction retourne sous la forme d'un object
 toutes les caractéristiques d'un point
 Voir a_lire.txt annexe 1 dans ressources pour voir un example d'élément
 
-retourne -1 si le point n'est pas trouvé
 on accède sous la forme :
 $infos_point->champ
 un array est disponible sous la forme 
@@ -310,14 +309,16 @@ point appartient )
 FIXME: cette histoire de $infos_point->massif est qu'historiquement on s'intéresse plus aux massifs
 que aux pays/départements/autres/ une version plus logique devrait laisser tomber ça et indiquer lequel des $infos_point->polygones[$i] est le massif
 auquel le point appartient sly 14/03/2010
+
+FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui fait la même chose que celle avant, à part cette histoire de polygones.
+Mais postgis étant super rapide, je pense que l'on peut peut fusioner
+
 *****************************************************/
 function infos_point($id_point,$meme_si_censure=False)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config,$pdo;
   $conditions = new stdClass();
-  if (!is_numeric($id_point))
-    return erreur("id du point demandé mal formé","id du point demandé : $id_point");
   $conditions->ids_points=$id_point;
   $conditions->modele=-1;
   if ($meme_si_censure)
@@ -353,7 +354,8 @@ function infos_point($id_point,$meme_si_censure=False)
   if ( $polygones_du_point = $res->fetch() ) 
     do
     {
-      $point->polygones[]=$polygones_du_point;
+        $polygones_du_point->lien_polygone=lien_polygone($polygones_du_point,True);
+        $point->polygones[]=$polygones_du_point;
     } while ( $polygones_du_point = $res->fetch() ) ;
     return $point;
 }
@@ -390,31 +392,6 @@ function lien_point_lent($id_point)
   if ($point->erreur)
     return erreur($point->message);
   return (lien_point_fast($point));
-}
-
-/* fonction simple qui renvois une chaine avec liens au format :
- Pays + Massif + Département + carte topographique + (communes ?) + (parc protégé ?)
-On peut lui passer un paramètre additionnel indiquant quelle meta-categorie traiter
-FIXME : cette fonction ne devrait pas générer du HTML, juste renvoyer les infos pour que les vues s'en occupent
-*/
-function localisation($polygones,$categorie="")
-{
-global $config;
-$html="";
-if(!isset($polygones))
-	return "";
-foreach ($polygones as $polygone)
-{
-  if (isset($polygone->categorie_polygone_type) and $polygone->categorie_polygone_type==$categorie)
-  {
-    $lien=lien_polygone($polygone,True);
-    if ($categorie=="administrative") // FIXME : gros hack : certains polygones administratif sont si gros, qu'il ne vaut mieux pas faire un lien vers eux
-      $html.=" ".ucfirst($polygone->nom_polygone)." +";
-    else
-      $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> +";
-  }
-}
-return trim($html,"+");
 }
 
 // Définit la carte et l'échelle suivant la présence du point dans un des polygones connus pour avoir un fond de carte

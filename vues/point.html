@@ -80,7 +80,7 @@
 <!--===================================== PLACES POUR DORMIR ======================================-->
 			<?// Rajout de +ieurs blocs (proprio, acces, remark, pub, photos...) et d'un bloc "nb places" si necessaire
 			if ($vue->equivalent_places) {?>
-				<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+				<dt/>
 				<dt class="condense">
 					<?=$vue->equivalent_places?>:
 				</dt>
@@ -90,7 +90,7 @@
 			<?}?>
 			
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
-			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+			<dt/>
 			<dt class="condense">Sur le site depuis:</dt>
 			<dd class="condense"><?echo date ("d/m/Y", $vue->date_creation_timestamp)?></dd>
 
@@ -152,11 +152,27 @@
 				<?}?>
 			</dd>
 <!--======================================== LOCALISATION =========================================-->
-                        <?php if (isset($vue->localisation))
-                              foreach ($vue->localisation as $categorie_localisation => $localisation) { ?>
-			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
-			<dt class="condense">Localisation <?=$categorie_localisation?>:</dt>
-			<dd class="condense"><?=$localisation?></dd>
+                        <?php foreach ($vue->localisation as $categorie_polygone => $polygones) { ?>
+			<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
+			<dd class="condense">
+                            <?php foreach ($polygones as $key => $polygone) { ?>
+                                <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
+                                  <?php if ($polygone->site_web) { ?>
+                                    <a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
+                                 <?php } else { ?>
+                                    <?=$polygone->nom_polygone?>
+                                 <?php } ?>
+                                    <?php if ($polygone->avec_lien_carte) { ?>
+                                    
+                                    <sup>
+                                        <a href="<?=$polygone->lien_polygone?>">carte</a>
+                                    </sup>
+                                   <?php } ?>
+                                <?=$virgule?>
+                            <?php } ?>
+                        
+                        <dt />
+                        </dd>
 			<?php } ?>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
 			<?// Champs textes libres
