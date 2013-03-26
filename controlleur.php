@@ -47,9 +47,14 @@ switch ($controlleur->url_decoupee[1])
 // On appel le controlleur adapté
 include ($config['chemin_controlleurs'].$controlleur->type.".php");
 
-// Et les vues, notez que le controlleur peut avoir changé le type de la vue définie par défaut ci-avant selon son besoin
-// Le controlleur est en charge de remplir l'objet "vue" afin que la vue s'adapte
-include ($config['chemin_vues']."_entete.html");
-include ($config['chemin_vues']."$vue->type.html");
-include ($config['chemin_vues']."_pied.html");
+
+if ($_GET['format']=="geojson" && $vue->type=="point") {
+    include ($config['chemin_vues']."$vue->type.geojson");
+}
+else {
+    /*********** On affiche le tout ***/
+    include ($config['chemin_vues']."_entete.html");
+    include ($config['chemin_vues']."$vue->type.html");
+    include ($config['chemin_vues']."_pied.html");
+}
 ?>
