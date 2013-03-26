@@ -49,24 +49,18 @@ les categories: séparées par "," comme "general" pour uniquement news general
 A disposition : commentaires,refuges,points,general,forums
 
 maintenir l'idée de tout regrouper dans un tableau qu'on tri ensuite
-FIXME: la prochaine étape est de ne générer aucun HTML ici, mais transmettre au nouveau modèle mvc 
-un tableau contenant les informations sly 20/12/2011
 Conseils d'utilisation : cette fonction n'a de sens que lorsqu'elle mélange plusieurs sources de nature différentes
-(comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher certains commentaires, la fonctions
-infos_commentaires( ) est à mon avis plus appropriée
+(comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher certains commentaires ou certains points, les fonctions
+infos_xxxx( ) est à mon avis plus appropriées et performantes
 
 ***************************************/
 
-function affiche_news($nombre,$type,$rss=FALSE)
+function nouvelles($nombre,$type,$lien_locaux=True)
 {
  global $config,$pdo;
  $conditions = new stdClass;
  // tableau de tableau contiendra toutes les news toutes catégories confondues
  $news_array = array() ;
- if ($rss)
-   $lien_absolu=True;
- else
-   $lien_absolu=False;
 
  $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
  while ($tok) // vrai tant qu'il reste une categorie a rajouter
@@ -82,7 +76,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
     foreach ( $commentaires as $commentaire )
     {
       $categorie="Commentaire";
-      $lien=lien_point_fast($commentaire,$lien_absolu)."#C$commentaire->id_commentaire";
+      $lien=lien_point_fast($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
       $titre=$commentaire->nom;
       $texte="<i>$categorie </i>";
       if ($commentaire->photo_existe)
@@ -100,14 +94,14 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	else
 	  $espace=" ";
 	
-	$lien_massif="dans <a href=\"".lien_polygone($commentaire,$lien_absolu)."\">le massif
+	$lien_massif="dans <a href=\"".lien_polygone($commentaire,$lien_locaux)."\">le massif
 	".$commentaire->article_partitif.$espace.$commentaire->nom_polygone."</a>";
       }
       else   // la ya pas de massif
 	$lien_massif="";
       
       $texte.="sur <a href=\"$lien\">$titre</a> 
-      $lien_massif";
+      $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
       $news_array[] = array($commentaire->ts_unix_commentaire,"texte"=>$texte,
 			    "date"=>$commentaire->ts_unix_commentaire,"categorie"=>$categorie,
 			    "titre"=>$titre,"lien"=>$lien); 
@@ -116,15 +110,15 @@ function affiche_news($nombre,$type,$rss=FALSE)
     
     case "refuges": $conditions->type_point=$config['tout_type_refuge'];
     case "points":
-      $conditions->ordre="date_creation_timestamp DESC";
+      $conditions->ordre="date_creation DESC";
       $conditions->limite=$nombre;
-      $conditions->avec_infos_massif=1;
+      $conditions->avec_infos_massif=True;
       $points=infos_points($conditions);
       if (count($points)!=0)
 	foreach($points as $point)
 	{
 	  $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
-	  $lien=lien_point_fast($point,$lien_absolu);
+	  $lien=lien_point_fast($point,$lien_locaux);
 	  $titre=$point->nom;
 	  
 	  // si le point n'appartient à aucun massif, pas de lien vers le massif
@@ -137,14 +131,14 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	      $espace=" ";
 	    
 	    $lien_massif="dans le 
-	    <a href=\"".lien_polygone($point,$lien_absolu)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
+	    <a href=\"".lien_polygone($point,$lien_locaux)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
 	  }
 	  else
 	    $lien_massif="";
 	  
 	  $texte="$categorie : 
 	  <a href=\"$lien\">$titre</a>
-	  $lien_massif";
+	  $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
 	  $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
 				"date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
 				"titre"=>$titre,"lien"=>$lien); 
@@ -161,7 +155,7 @@ function affiche_news($nombre,$type,$rss=FALSE)
       {
 	$categorie="Générale";
 	$titre=$news->texte;
-	$texte="<i>$titre</i>";
+	$texte="<i>$titre</i>";// FIXME mieux vaudrait revoir le format du tableau sans HTML
 	$lien="/news.php";
 	$news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
 	  "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
@@ -176,14 +170,13 @@ function affiche_news($nombre,$type,$rss=FALSE)
 	$conditions_messages_forum->sauf_ids_forum=$config['id_forum_moderateur'].",".$config['id_forum_developpement'];
 
         $commentaires_forum=messages_du_forum($conditions_messages_forum);
-	//print_r($commentaires_forum);die();
 	if (count($commentaires_forum)>0)
 	  foreach ( $commentaires_forum as $commentaire_forum)
 	  {
 	    $lien="/forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
 	    $categorie="Sur le forum";
 	    $titre=$commentaire_forum->topic_title;
-	    $texte="$categorie : <a href=\"$lien\">$titre</a>";
+	    $texte="$categorie : <a href=\"$lien\">$titre</a>"; // FIXME mieux vaudrait revoir le format du tableau sans HTML
 	    $news_array[] = array($commentaire_forum->date,"texte"=>$texte,
 				  "date"=>$commentaire_forum->date,"categorie"=>$categorie,
 				  "titre"=>$titre,"lien"=>$lien); 
@@ -196,19 +189,17 @@ $tok = strtok(",");
 }
 // ici je trie par ordre décroissant toutes les news confondues
 rsort($news_array);
-
-// AFFICHAGE
-// FIXME : a convertir au modèle MVC
-if (!$rss)
+$nb=0;
+// Et je ne prends que les $nombre première ou toutes s'il y en a moins que $nombre
+foreach ($news_array as $nouvelle)
 {
-  for ($i = 0; $i < $nombre; $i++)
-    print("\n<li><em>".date("d/m/y", $news_array[$i]['date'])."</em>&nbsp;".$news_array[$i]['texte']."</li>");
-  
-// et le reste du tableau ben il sert a rien...
-return 0;
+    $nouvelle['date_formatee']=date("d/m/y", $nouvelle['date']);
+    $nouvelles[]=$nouvelle;
+    $nb++;
+    if ($nb>=$nombre)
+        break;
 }
-else
-	return $news_array;
+return $nouvelles;
 }
 
 ?>

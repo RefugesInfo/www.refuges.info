@@ -164,6 +164,7 @@ function infos_commentaires ($conditions)
 				$commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
 			}
 		}
+		$commentaire->date_formatee=date("d/m/y", $commentaire->ts_unix_commentaire);
 		$commentaires [] = $commentaire;
 	}
   

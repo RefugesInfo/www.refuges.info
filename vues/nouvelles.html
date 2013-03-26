@@ -15,21 +15,31 @@
 <!-- BLOC NEWS -->
     <h4>Evolution du site</h4>
     <ul>
-        <?php affiche_news (3+$vue->general,"general");?>
+        <?php foreach ($vue->nouvelles_generales as $nouvelle) { ?>
+            <li>
+                <em><?=$nouvelle->date_formatee?></em>
+                &nbsp;<?=$nouvelle->texte?>
+            </li>
+        <?php } ?>
     </ul>
-    <a href="/news.php?general=10">(Voir les plus anciennes)</a>
+    <a href="/nouvelles/?general=10">(Voir les plus anciennes)</a>
 
     <h4>Les nouvelles</h4>
     <ul>
-        <?php affiche_news (15+$vue->commentaires,$vue->quoi);?>
+        <?php foreach ($vue->nouvelles as $nouvelle) { ?>
+            <li>
+                <em><?=$nouvelle['date_formatee']?></em>
+                &nbsp;<?=$nouvelle['texte']?>
+            </li>
+        <?php } ?>
     </ul>
-    <a href="/news.php?commentaires=50&amp;quoi=<?=$_GET['quoi']?>">(Voir les plus anciennes)</a> -
-    <a href="/news.php?quoi=points">Points</a> -
-    <a href="/news.php?quoi=refuges">Refuges</a> -
-    <a href="/news.php?quoi=commentaires">Commentaires</a> -
-    <a href="/news.php?quoi=forums">Forum</a> -
-    <a href="/news.php?quoi=commentaires,points">Tout sauf forum</a> -
-    <a href="/news.php">Tout</a>
+    <a href="/nouvelles/?nombre=50&amp;quoi=<?=$_GET['quoi']?>">(Voir les plus anciennes)</a> -
+    <a href="/nouvelles/?quoi=points">Points</a> -
+    <a href="/nouvelles/?quoi=refuges">Refuges</a> -
+    <a href="/nouvelles/?quoi=commentaires">Commentaires</a> -
+    <a href="/nouvelles/?quoi=forums">Forum</a> -
+    <a href="/nouvelles/?quoi=commentaires,points">Tout sauf forum</a> -
+    <a href="/nouvelles/">Tout</a>
 <!-- FIN BLOC NEWS -->
 
 	<h4>

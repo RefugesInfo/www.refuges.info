@@ -60,17 +60,39 @@
 	<div class="tablo" style="float:none;padding-left:15px">
 		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges</h4>
 		<ul>
-			<?php affiche_news (3+$vue->commentaires,'points');?>
+                    <?php foreach ($vue->nouveaux_points as $nouveau_point) { ?>
+                        <li>
+                            <em><?=$nouveau_point->date_formatee?></em>
+                            &nbsp;Ajout <?=$nouveau_point->article_partitif_point_type?> <?=$nouveau_point->nom_type?> : 
+                                <a href="<?=lien_point_fast($nouveau_point)?>"><?=$nouveau_point->nom?></a>
+                                <?php if (isset($nouveau_point->id_massif)) { ?>
+                                dans le 
+                                <a href="<?=lien_polygone($nouveau_point,True)?>">massif <?=$nouveau_point->article_partitif_massif?> <?=$nouveau_point->nom_massif?></a>
+                                <?php } ?>
+                        </li>
+                    <?php } ?>
 			<li><a href="/point_formulaire_recherche.php" title="Recherche d'un points de refuges.info par le nom"><b>Recherche...</b></a></li>
 		</ul>
 		<br/>
 		<h4><?=$vue->stat->nbcomm?> commentaires</h4>
 		<ul>
-			<?php affiche_news (10+$vue->commentaires,'commentaires');?>
-			<li><a href="/news.php" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>
+                    <?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>
+                        <li>
+                            <em><?=$nouveau_commentaire['date_formatee']?></em>
+                            &nbsp;<?=$nouveau_commentaire['texte']?>
+                        </li>
+                    <?php } ?>
+                        <li><a href="/nouvelles/" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>
 		</ul>
 		<br/>
 		<h4>Evolution du site</h4>
-		<ul><?php affiche_news (2+$vue->general,"general");?></ul>
+		<ul>
+                <?php foreach ($vue->nouvelles_generales as $nouvelle) { ?>
+                    <li>
+                        <em><?=$nouvelle->date_formatee?></em>
+                        &nbsp;<?=$nouvelle->texte?>
+                    </li>
+                <?php } ?>
+                </ul>
 	</div>
 </div>
