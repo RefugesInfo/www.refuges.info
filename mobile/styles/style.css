@@ -79,7 +79,7 @@ header {
 	background: -moz-linear-gradient(top, #55AACC, #4488AA);
 	display: block;
 	width: 90%;
-	margin: 15px auto;
+	margin: 15px auto 50px auto;
 }
 
 .btnbleu:hover {
@@ -260,7 +260,7 @@ footer a img {
 #idPoint {
 	font-family: monospace;
 	float: right;
-	padding-top: 3px;
+	text-align: right;
 }
 
 #typePoint {
@@ -285,6 +285,12 @@ footer a img {
 	margin: 15px 0 0 0;
 	z-index: 1;
 	padding: 5px;
+}
+
+#commentairesPoint img {
+	max-width: 100%;
+	margin: 5px 0;
+	box-shadow: 0 0 3px black;
 }
 
 #com0Point, #com1Point, #com2Point, #com3Point, #com4Point {

@@ -15,6 +15,9 @@ var plotlist;
 var plotlayers=[];
 var init = 0;
 
+//Les tests effectués en permanence dès le chargement de la page
+document.querySelector('#affichecarte').addEventListener("click", function(){displayBlock('carte')});
+document.querySelector('#afficheindex').addEventListener("click", function(){displayBlock('index')});
 
 // Fonction lancée dès que le <div> map est chargé
 function initmap(){
@@ -140,14 +143,17 @@ function pointRecu() {
 	if (ajaxRequest.readyState==4) {
 		if (ajaxRequest.status==200) {
 			point=eval("(" + ajaxRequest.responseText + ")"); // On enregistre la variable GeoJSON en local
-			document.querySelector('#infosPoint').innerHTML = '<a class="retour" href="#" onclick="displayBlock(\'carte\');">Retour carte</a><span id="titrePoint"></span><div id="fichePoint"><span id="typePoint"></span><span id="idPoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /><span id="couverturePoint"></span><span id="eauPoint"></span><span id="boisPoint"></span><span id="latrinePoint"></span><span id="manquemurPoint"></span><span id="poelePoint"></span><span id="chemineePoint"></span><span id="clefPoint"></span><span id="matelasPoint"></span><span id="ravitaillementeauPoint"></span><span id="sitewebPoint"></span></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
+			document.querySelector('#infosPoint').innerHTML = '<a class="retour" href="#" onclick="displayBlock(\'carte\');">Retour carte</a><span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /><span id="couverturePoint"></span><span id="eauPoint"></span><span id="boisPoint"></span><span id="latrinePoint"></span><span id="manquemurPoint"></span><span id="poelePoint"></span><span id="chemineePoint"></span><span id="clefPoint"></span><span id="matelasPoint"></span><span id="ravitaillementeauPoint"></span><span id="sitewebPoint"></span></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
 			document.querySelector('#titrePoint').innerHTML = point.properties.nom;
-			document.querySelector('#idPoint').innerHTML = " (Point n°" + point.properties.id + ") ";
-			document.querySelector('#typePoint').innerHTML = point.properties.type;
+			document.querySelector('#idPoint').innerHTML = "(Point n°" + point.properties.id + ")<br />Édité le " + point.properties.derniere_modif;
+			document.querySelector('#typePoint').innerHTML = point.properties.type + "<br />" + point.properties.nb_places + " place(s)";
 			document.querySelector('#coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
 			document.querySelector('#rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
+			if (point.properties.remarques == "") {removeElement("rmqPoint"); }
 			document.querySelector('#proprioPoint').innerHTML = "<b>" + point.properties.annonce_proprio + " :</b><br />" + point.properties.proprio;
+			if (point.properties.annonce_proprio == "" || point.properties.proprio == "") {removeElement("proprioPoint"); }
 			document.querySelector('#accesPoint').innerHTML = "<b>Accès :</b><br />" + point.properties.acces;
+			if (point.properties.acces == "") {removeElement("accesPoint"); }
 			if (point.properties.couvertures != undefined) { document.querySelector('#couverturePoint').innerHTML = "Couvertures : " + point.properties.couvertures + "<br />"; }
 			if (point.properties.eau_a_proximite != undefined) { document.querySelector('#eauPoint').innerHTML = "Eau à proximité : " + point.properties.eau_a_proximite + "<br />"; }
 			if (point.properties.bois_a_proximite != undefined) { document.querySelector('#boisPoint').innerHTML = "Bois à proximité : " + point.properties.bois_a_proximite + "<br />"; }
@@ -159,14 +165,17 @@ function pointRecu() {
 			if (point.properties.places_sur_matelas != undefined) { document.querySelector('#matelasPoint').innerHTML = "Places sur matelas : " + point.properties.places_sur_matelas + "<br />"; }
 			if (point.properties.ravitaillement_en_eau_possible != undefined) { document.querySelector('#ravitaillementeauPoint').innerHTML = "Ravitaillement en eau possible : " + point.properties.ravitaillement_en_eau_possible + "<br />"; }
 			if (point.properties.site_officiel != undefined) { document.querySelector('#sitewebPoint').innerHTML = "Site officiel : " + point.properties.site_officiel + "<br />"; }
+			if (point.properties.acces == "" && point.properties.couvertures == "" && point.properties.eau_a_proximite == "" && point.properties.bois_a_proximite == "" && point.properties.latrines == "" && point.properties.manque_un_mur == "" && point.properties.poele == "" && point.properties.cheminee == "" && point.properties.clef_a_recuperer == "" && point.properties.places_sur_matelas == "" && point.properties.ravitaillement_en_eau_possible == "" && point.properties.site_officiel == "") {removeElement("infoscompPoint"); }
 			if (point.properties.id_pp_0 != undefined) { document.querySelector('#pp0Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_0 + ');">' + point.properties.nom_pp_0 + '</a> — ' + point.properties.type_pp_0 + ' à ' + point.properties.distance_pp_0 + '<br />'; }
 			if (point.properties.id_pp_1 != undefined) { document.querySelector('#pp1Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_1 + ');">' + point.properties.nom_pp_1 + '</a> — ' + point.properties.type_pp_1 + ' à ' + point.properties.distance_pp_1 + '<br />'; }
 			if (point.properties.id_pp_2 != undefined) { document.querySelector('#pp2Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_2 + ');">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
-			if (point.properties.com_0 != undefined) { document.querySelector('#com0Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_0 + ' par ' + point.properties.auteur_com_0 + '</p><br /><p class="com">' + point.properties.com_0 + '<br /><a href="' + point.properties.photo_com_0 + '"><img src="' + point.properties.miniature_com_0 + '" /></a></p>'; }
-			if (point.properties.com_1 != undefined) { document.querySelector('#com1Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_1 + ' par ' + point.properties.auteur_com_1 + '</p><br /><p class="com">' + point.properties.com_1 + '<br /><a href="' + point.properties.photo_com_1 + '"><img src="' + point.properties.miniature_com_1 + '" /></a></p>'; }
-			if (point.properties.com_2 != undefined) { document.querySelector('#com2Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_2 + ' par ' + point.properties.auteur_com_2 + '</p><br /><p class="com">' + point.properties.com_2 + '<br /><a href="' + point.properties.photo_com_2 + '"><img src="' + point.properties.miniature_com_2 + '" /></a></p>'; }
-			if (point.properties.com_3 != undefined) { document.querySelector('#com3Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_3 + ' par ' + point.properties.auteur_com_3 + '</p><br /><p class="com">' + point.properties.com_3 + '<br /><a href="' + point.properties.photo_com_3 + '"><img src="' + point.properties.miniature_com_3 + '" /></a></p>'; }
-			if (point.properties.com_4 != undefined) { document.querySelector('#com4Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_4 + ' par ' + point.properties.auteur_com_4 + '</p><br /><p class="com">' + point.properties.com_4 + '<br /><a href="' + point.properties.photo_com_4 + '"><img src="' + point.properties.miniature_com_4 + '" /></a></p>'; }
+			if (point.properties.id_pp_0 == undefined && ppoint.properties.id_pp_1 == undefined && point.properties.id_pp_2 == undefined) {removeElement("pointsprochesPoint"); }
+			if (point.properties.com_0 != undefined) { document.querySelector('#com0Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_0 + ' par ' + point.properties.auteur_com_0 + '</p><br /><p class="com">' + point.properties.com_0 + '<br /><a href="..' + point.properties.photo_com_0 + '"><img src="..' + point.properties.miniature_com_0 + '" /></a></p>'; } else { removeElement("com0Point"); }
+			if (point.properties.com_1 != undefined) { document.querySelector('#com1Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_1 + ' par ' + point.properties.auteur_com_1 + '</p><br /><p class="com">' + point.properties.com_1 + '<br /><a href="..' + point.properties.photo_com_1 + '"><img src="..' + point.properties.miniature_com_1 + '" /></a></p>'; } else { removeElement("com1Point"); }
+			if (point.properties.com_2 != undefined) { document.querySelector('#com2Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_2 + ' par ' + point.properties.auteur_com_2 + '</p><br /><p class="com">' + point.properties.com_2 + '<br /><a href="..' + point.properties.photo_com_2 + '"><img src="..' + point.properties.miniature_com_2 + '" /></a></p>'; } else { removeElement("com2Point"); }
+			if (point.properties.com_3 != undefined) { document.querySelector('#com3Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_3 + ' par ' + point.properties.auteur_com_3 + '</p><br /><p class="com">' + point.properties.com_3 + '<br /><a href="..' + point.properties.photo_com_3 + '"><img src="..' + point.properties.miniature_com_3 + '" /></a></p>'; } else { removeElement("com3Point"); }
+			if (point.properties.com_4 != undefined) { document.querySelector('#com4Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_4 + ' par ' + point.properties.auteur_com_4 + '</p><br /><p class="com">' + point.properties.com_4 + '<br /><a href="..' + point.properties.photo_com_4 + '"><img src="..' + point.properties.miniature_com_4 + '" /></a></p>'; } else { removeElement("com4Point"); }
+			if (point.properties.com_0 == undefined && point.properties.com_1 == undefined && point.properties.com_2 == undefined && point.properties.com_3 == undefined && point.properties.com_4 == undefined) {removeElement("commentairesPoint"); }
 			displayBlock('points');
 		}
 	}
@@ -224,4 +233,10 @@ function displayBlock(bloc) {
 		patientez.style.display = 'none';
 		main.style.height = '';
 	}
+}
+
+// Fonction appelée pour effacer un élément
+function removeElement(id) {
+  var element = document.getElementById(id);
+  element.parentNode.removeChild(element);
 }

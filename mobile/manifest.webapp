@@ -1,23 +1,20 @@
 {
   "name": "Refuges",
   "description": "Affichage d'informations sur les refuges européens sur un fond de carte OpenStreetMap, les données sur les refuges proviennent de refuges.info.",
-  "launch_path": "/index.html",
+  "launch_path": "/mobile/index.html",
   "icons": {
-    "60": "/images/icon60.png",
-    "64": "/images/icon64.png"
+    "60": "/mobile/images/icon60.png",
+    "64": "/mobile/images/icon64.png",
+    "128": "/mobile/images/icon128.png"
   },
   "developer": {
     "name": "WRI team",
     "url": "http://www.refuges.info"
   },
-  "fullscreen": "true",
   "permissions": {
-    "systemXHR": {
-      "description": "Requis pour télécharger les données en provenance de www.refuges.info"
-    },
     "geolocation": {
       "description": "Requis pour afficher la carte"
     }
   },
-  "type": "privileged"
+  "fullscreen": "true"
 }
