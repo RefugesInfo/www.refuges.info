@@ -269,11 +269,13 @@ function infos_points($conditions)
   $point = new stdClass();
   while ($point = $res->fetch())
   {
-    // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
-    // FIXME : Encore cette spécificité liée au massif qu'il faudrait généraliser
+        // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
+        // FIXME : Encore cette spécificité liée au massif qu'il faudrait généraliser
 	// jmb: ce n'est pas le boulot de infos_points de donner les noms et adjectifs des massifs.
 	// l'appelant devrait appeler infos_polygone avec l'ID plus tard.
+	// Note sly : Le problème est que ça peut obliger à des centaines de requêtes pour rie, l'avantage d'un join ici, c'est qu'on récupère tout ça directement !
 	// pas le boulot non plus de infos_points de donner les liens
+	// Note sly : Ce besoin était tellement récurrent, que j'ai opté pour la factorisation, même si ça congère aux liens une place pas idéalement adaptée
     if ($conditions->avec_infos_massif!="")
     {
       $point->nom_massif = $point->nom_polygone;
@@ -285,6 +287,7 @@ function infos_points($conditions)
     // Ici, petite particularité sur les points censurés, par défaut, on ne veut pas les renvoyer, mais on veut quand 
     // même, si un seul a été demandé, pouvoir dire qu'il est censuré, donc on va le chercher en base mais on renvoi une erreur 
     // s'il est censuré
+    // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de censurés
     if (!$point->censure or $conditions->avec_points_censure) // On renvoi ce point, soit il n'est pas censuré, soit on a demandé aussi les points censurés
         $points[]=$point;
     elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est censuré on retourne le mesage d'erreur
