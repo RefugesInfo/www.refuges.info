@@ -74,6 +74,7 @@ $conditions->ouvert : si 'oui', on ne veut que les points ayant ferme='non' ou f
 
 $conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
 $conditions->avec_points_censure=True : Par défaut, False : les points censurés ne sont pas retournés
+$conditions->uniquement_points_censure=True : ne retourner que les points censurés (utiles uniquement pour les modérateurs)
 
 $conditions->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
 $conditions->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
@@ -210,6 +211,12 @@ function infos_points($conditions)
     if( !empty($conditions->description) )
         $conditions_sql.="\n AND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
   
+    if ($conditions->uniquement_points_censure)
+    {
+        $conditions_sql.="\n AND censure=True";
+        $conditions->avec_points_censure=True;
+    }
+        
     // cas spécial sur les modèle
     if ($conditions->modele==1)
         $conditions_sql.="\n AND modele=1";
