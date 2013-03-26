@@ -288,7 +288,7 @@ function infos_points($conditions)
     if (!$point->censure or $conditions->avec_points_censure) // On renvoi ce point, soit il n'est pas censuré, soit on a demandé aussi les points censurés
         $points[]=$point;
     elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est censuré on retourne le mesage d'erreur
-        return erreur("Ce point est censuré, il ne peut être affiché");
+        return erreur("Ce point est censuré, seul un modérateur peut agir sur lui");
   }
   return $points;
 }
@@ -388,7 +388,7 @@ pour des longues listes ( car requete SQL oblige )
 ******************************************************************************************************************************/
 function lien_point_lent($id_point)
 {
-  $point=infos_point($id_point);
+  $point=infos_point($id_point,True);
   if ($point->erreur)
     return erreur($point->message);
   return (lien_point_fast($point));
@@ -518,7 +518,7 @@ function modification_ajout_point($point)
 
 	if ( !empty($point->id_point) )  // update
 	{
-		$infos_point_avant = infos_point($point->id_point);
+		$infos_point_avant = infos_point($point->id_point,true);
 		if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
 			return erreur("Erreur de modification du point : $infos_point_avant->message");
     
