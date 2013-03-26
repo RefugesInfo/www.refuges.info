@@ -69,14 +69,14 @@ $conditions->binaire->sommaire : "oui" ou "vide"
 $conditions->binaire->site_officiel : "oui" ou "vide"
 $conditions->binaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
 
-$condition->non_utilisable : on chercher ferme!='non' et !=''
-$condition->ouvert : si 'oui', on ne veut que les points ayant ferme='non' ou ferme=''
+$conditions->non_utilisable : on chercher ferme!='non' et !=''
+$conditions->ouvert : si 'oui', on ne veut que les points ayant ferme='non' ou ferme=''
 
 $conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
 $conditions->avec_points_censure=True : Par défaut, False : les points censurés ne sont pas retournés
 
-$condition->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
-$condition->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
+$conditions->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
+$conditions->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
 
@@ -276,14 +276,16 @@ function infos_points($conditions)
 	// Note sly : Le problème est que ça peut obliger à des centaines de requêtes pour rie, l'avantage d'un join ici, c'est qu'on récupère tout ça directement !
 	// pas le boulot non plus de infos_points de donner les liens
 	// Note sly : Ce besoin était tellement récurrent, que j'ai opté pour la factorisation, même si ça congère aux liens une place pas idéalement adaptée
-    if ($conditions->avec_infos_massif!="")
+    if ($conditions->avec_infos_massif)
     {
-      $point->nom_massif = $point->nom_polygone;
-      $point->id_massif  = $point->id_polygone;
-      $point->article_partitif_massif = $point->article_partitif;
-      if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
-          $point->lien=lien_point_fast($point);
+        $point->nom_massif = $point->nom_polygone;
+        $point->id_massif  = $point->id_polygone;
+        $point->article_partitif_massif = $point->article_partitif;
+        if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
+            $point->lien=lien_point_fast($point);
     }
+    $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
+
     // Ici, petite particularité sur les points censurés, par défaut, on ne veut pas les renvoyer, mais on veut quand 
     // même, si un seul a été demandé, pouvoir dire qu'il est censuré, donc on va le chercher en base mais on renvoi une erreur 
     // s'il est censuré
@@ -368,10 +370,10 @@ car requête de moins
 FIXME uniformiser l'appel au $point->nom_massif qui devrait être atteignable dans un truc de ce style :
 $point->polygones[$x]->nom_polygone
 *******************************************************************************************************************************/
-function lien_point_fast($point,$local=false)
+function lien_point_fast($point,$lien_local=false)
 {
   global $config;
-  if ($local)
+  if ($lien_local)
     $url_complete="";
   else
     $url_complete="http://".$config['nom_hote'];
