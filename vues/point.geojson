@@ -3,7 +3,7 @@
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // 18/03/2013 Creation
@@ -11,7 +11,7 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: attachment; filename=point_$modele->id_point.geojson");
+header("Content-disposition: attachment; filename=point_$vue->id_point.geojson");
 header("Content-Type: application/javascript; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
@@ -22,24 +22,24 @@ header("Cache-Control: max-age=$secondes_de_cache");
 { "type": "Feature",
 	"geometry": {
 		"type": "Point",
-		"coordinates": [<?=$modele->longitude?>, <?=$modele->latitude?>, <?=$modele->altitude?>]
+		"coordinates": [<?=$vue->longitude?>, <?=$vue->latitude?>, <?=$vue->altitude?>]
 	},
 	"properties": {
-		"id": "<?=$modele->id_point?>",
-		"nom": "<?echo str_replace('"','\"',$modele->nom_debut_majuscule)?>",
-		"type": "<?=$modele->nom_type?>",
-		"annonce_fermeture": "<?echo str_replace('"','\"',$modele->annonce_fermeture)?>",
-		"nb_places": "<?echo str_replace('"','\"',bbcode2html ($modele->places))?>",
-		"derniere_modif": "<? if (isset($modele->date_derniere_modification)) { echo date ("d/m/Y",$modele->date_modif_timestamp); } else { echo date ("d/m/Y", $modele->date_creation_timestamp); } ?>",
-		"precision_gps": "<?=$modele->nom_precision_gps?>",
-		"annonce_proprio": "<?=$modele->equivalent_proprio?>",
-		"proprio": "<?echo str_replace('"','\"',bbcode2html($modele->proprio))?>",
-		"acces": "<?echo str_replace('"','\"',bbcode2html($modele->acces))?>",
-		"remarques": "<?echo str_replace('"','\"',bbcode2html($modele->remark))?>",<?
+		"id": "<?=$vue->id_point?>",
+		"nom": "<?echo str_replace('"','\"',$vue->nom_debut_majuscule)?>",
+		"type": "<?=$vue->nom_type?>",
+		"annonce_fermeture": "<?echo str_replace('"','\"',$vue->annonce_fermeture)?>",
+		"nb_places": "<?echo str_replace('"','\"',bbcode2html ($vue->places))?>",
+		"derniere_modif": "<? if (isset($vue->date_derniere_modification)) { echo date ("d/m/Y",$vue->date_modif_timestamp); } else { echo date ("d/m/Y", $vue->date_creation_timestamp); } ?>",
+		"precision_gps": "<?=$vue->nom_precision_gps?>",
+		"annonce_proprio": "<?=$vue->equivalent_proprio?>",
+		"proprio": "<?echo str_replace('"','\"',bbcode2html($vue->proprio))?>",
+		"acces": "<?echo str_replace('"','\"',bbcode2html($vue->acces))?>",
+		"remarques": "<?echo str_replace('"','\"',bbcode2html($vue->remark))?>",<?
 
 		// Informations complémentaires
-		if (isset($modele->infos_complementaires)) { 
-			foreach ($modele->infos_complementaires as $champ => $val){ 
+		if (isset($vue->infos_complementaires)) { 
+			foreach ($vue->infos_complementaires as $champ => $val){ 
 				$champ = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($champ, ENT_COMPAT, 'UTF-8')); // On enlève tous les accents
 				$champ = preg_replace('/[^a-zA-Z0-9]/',"_", $champ); // on remplace tout ce qu'il reste par des _
 				$champ = mb_strtolower($champ); // on met tout en minuscule
@@ -48,10 +48,10 @@ header("Cache-Control: max-age=$secondes_de_cache");
 		}
 
 		// 3 premiers points proches
-		if (count($modele->points_proches)!=0) {
+		if (count($vue->points_proches)!=0) {
 			$cnt = 0;
-			foreach ($modele->points_proches as $point_proche) {
-				if ($point_proche->id_point!=$modele->id_point) {
+			foreach ($vue->points_proches as $point_proche) {
+				if ($point_proche->id_point!=$vue->id_point) {
 					$distance=number_format($point_proche->distance/1000,"2",",","")."km";
 					echo("\n\t\t\"distance_pp_$cnt\": \"".$distance."\","); 
 					echo("\n\t\t\"id_pp_$cnt\": \"".$point_proche->id_point."\",");
@@ -66,9 +66,9 @@ header("Cache-Control: max-age=$secondes_de_cache");
 		}
 
 		// 5 derniers commentaires
-		if (count ($modele->commentaires)) {
+		if (count ($vue->commentaires)) {
 			$cnt = 0;
-			foreach ($modele->commentaires AS $commentaire) { 
+			foreach ($vue->commentaires AS $commentaire) { 
 				echo("\n\t\t\"date_com_$cnt\": \"".$commentaire->date_commentaire_format_francais."\",");
 				echo("\n\t\t\"auteur_com_$cnt\": \"".str_replace('"','\"',$commentaire->auteur)."\",");
 				echo("\n\t\t\"com_$cnt\": \"".str_replace('"','\"',$commentaire->texte)."\",");
