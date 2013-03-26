@@ -7,6 +7,7 @@
  * @requires OpenLayers/Protocol.js
  * @requires OpenLayers/Feature/Vector.js
  * @requires OpenLayers/Format/GeoJSON.js
+ * @requires OpenLayers/Format/QueryStringFilter.js
  */
 
 /**

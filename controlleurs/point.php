@@ -68,7 +68,7 @@ else // le point est valide. faut bosser.
         $conditions->limite=10;
         $conditions->ouvert='oui';
         
-        $g = [ 'lat' => $vue->latitude, 'lon' => $vue->longitude , 'rayon' => 5000 ];
+        $g = array ( 'lat' => $vue->latitude, 'lon' => $vue->longitude , 'rayon' => 5000 );
         $conditions->geometrie = cree_geometrie( $g , 'cercle' );
         
         $conditions->avec_distance=True;
