@@ -1,0 +1,106 @@
+<?php
+/********************************************************************************************************
+Les resultats de la recherche. Ce fichier recupere les criteres en POST de point_formulaire_recherche.php 
+( une suite de fiche refuges, mais sans tous les détails )
+********************************************************************************************************/
+
+require_once ("fonctions_points.php");
+require_once ("fonctions_polygones.php");
+
+
+/************ Préparation des conditions de la recherche *******************/
+// tous ceux dont le name du formulaire correspondent à la condition sur le champs en base du même nom
+$conditions = new stdClass;
+$conditions->binaire = new stdClass;
+
+$conditions->avec_infos_massif=1;
+$conditions->avec_liste_polygones="montagnarde";
+
+// trie par polygones, autrement dit par massifs
+// utile pour faire des listes séparées 
+$conditions->ordre="liste_polygones"; 
+
+
+foreach ($_POST as $champ => $valeur)
+{
+    if( ! empty($valeur) )
+        switch ($champ) 
+        {
+            case 'id_massif':
+                $conditions->ids_polygones = $valeur; break ;
+                
+            case ( 'lat' && !empty($_POST['lon']) && !empty($_POST['autour']) ):  // on demande un positionnement GPS. 
+                // la distance n'est qu'un polygone
+                
+                $g = [ 'lat' => $_POST['lat'], 'lon' => $_POST['lon'] , 'rayon' => $_POST['autour'] ];
+                $conditions->geometrie = cree_geometrie( $g , 'cercle' );
+                $conditions->ordre = "distance";
+                break;
+                
+            case 'id_point_type':
+                $conditions->type_point = $valeur ;
+                if ( $valeur == $config['id_cabane_gardee'] OR $valeur == $config['tout_type_refuge'] )
+                    if ( empty($conditions->places_minimum) )
+                        $conditions->places_minimum = 1 ;
+                    break;
+                
+            case 'champs_binaires':
+                foreach ( $valeur as $c )
+                    $conditions->binaire->$c = true ; break;
+                
+            case 'champs_null':
+                foreach ( $valeur as $c )
+                    $conditions->binaire->$c = NULL ; break; // TODO, ne pas restreindre aux champs binaires.
+                    
+            default:  // tous les autres cas: nom, ouvert, places ...
+                $conditions->$champ=trim($valeur); break;
+        }
+        
+}
+
+//======================================
+// C'est LA que ca cherche
+$vue->points = infos_points ($conditions);
+
+//en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on la atteinte ........
+ if (!empty($conditions->limite) && sizeof($vue->points) == $conditions->limite)
+	$vue->limite_atteinte = $conditions->limite;
+
+ 
+//-----------------------------------------------------------------------------------------------------
+// Recherche de points sur nominatim.openstreetmap.org
+$nominatim = new stdClass();
+
+$appel_nominatim = $config['url_appel_nominatim'] .http_build_query 
+(
+    array 
+    (
+    'email' => $config['email_contact_nominatim'],
+    'format' => 'xml',
+    'countrycodes' => 'fr,ch,it,es',
+    'accept-language' => 'fr',
+    'q' => $_POST['nom'],
+    'limit' => 20,
+    )
+);
+// Récupération du contenu à l'aide de cURL
+$ch = curl_init(); // Initialiser cURL.
+curl_setopt ($ch, CURLOPT_URL, $appel_nominatim);
+curl_setopt ($ch, CURLOPT_HEADER, 0); // Ne pas inclure l'header dans la réponse.
+ob_start (); // Commencer à 'cache' l'output.
+$r = curl_exec ($ch); // Exécuter la requète.
+$cache = ob_get_contents (); // Sauvegarder le contenu du fichier dans la variable $cache.
+ob_end_clean(); // Vider le buffer.
+curl_close ($ch); // Fermer cURL.
+
+// Extraction de l'arbre xml
+$nominatim->xml = simplexml_load_string ($cache);
+$nominatim->nb_points = count($nominatim->xml);
+if ($nominatim->nb_points>1)
+    $nominatim->pluriel="s";
+
+$nominatim->url_site=$config['url_nominatim'];
+$vue->nominatim=$nominatim;
+
+$vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
+?> 

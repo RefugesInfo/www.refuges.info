@@ -9,7 +9,7 @@ des sites partenaires aussi peut-être !
 
 **********************************************************************************************/
 
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ("fonctions_exportations.php");
 
 //Nous allons récupérer la liste des points souhaités en fonction des paramètres demandés
@@ -49,7 +49,7 @@ $conditions->type_point=$_GET['liste_id_point_type'];
 $conditions->pas_les_points_caches=1;
 $conditions->ordre="point_type.importance DESC";
 $conditions->ids_points=$_GET['liste_id_point'];
-$conditions->id_polygone=$_GET['liste_id_massif'];
+$conditions->ids_polygones=$_GET['liste_id_massif'];
 $conditions->avec_infos_massif=True;
 
 $format_export=$_GET['format'];
@@ -58,20 +58,33 @@ $format_export=$_GET['format'];
  on laisse gpsbabel faire la conversion, je pourrais l'incorporer à la fonction elle même qui ferait alors un très
  joli appel à elle-même, mais pour des raisons de chemins d'accès à gpsbabel ça ne marcherait de toute façon pas
  partout sly 30/10/10
+ sly : FIXME : je vais peut-être changer d'avis vu comment ce code grossi
 */
 if ($format_export=="gpi")
 {
-  $en_gpx=fichier_exportation($conditions,"gpx-garmin");
-  $name=rand(1,2000);
-  file_put_contents("./$name",$en_gpx->contenu);
-  $gpi=shell_exec("cat ./$name | gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -");
-  $infos_donnees_exportees->contenu=$gpi;
-  $infos_donnees_exportees->nom_fichier=$en_gpx->nom_fichier;
-  unlink($name);
+    $infos_donnees_exportees=fichier_exportation($conditions,"gpx-garmin");
+    if (!$infos_donnees_exportees->erreur)
+    {
+        // On va éviter de passer par un fichier local car c'est une plaie pour plusieurs raisons
+        $descriptorspec = array(
+        0 => array("pipe", "r"), // stdin is a pipe that the child will read from
+        1 => array("pipe", "w"), // stdout is a pipe that the child will write to
+        );
+        $process = proc_open("gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -", $descriptorspec, $pipes);
+        // On lui passe en entré notre gpx
+        fwrite($pipes[0], $infos_donnees_exportees->contenu);
+        fclose($pipes[0]);
+        $osm_node_only="";
+        $infos_donnees_exportees->contenu=stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+    }
 }
 else
   /*** Appel à la fonction principal qui nous fourni notre fichier, selon le format ***/
   $infos_donnees_exportees=fichier_exportation($conditions,$format_export);
+
+if ($infos_donnees_exportees->erreur)
+    die("Paramètres demandés incorrects : $infos_donnees_exportees->message");
 
 // Nos données ne changent pas toutes les secondes, on peut autoriser le client à faire un peu de cache pour accélérer
 $secondes_de_cache = 60;

@@ -2,7 +2,7 @@
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 // 24/10/11 Dominique : Création
 // 20/11/11 Dominique : Remplacement des tables par DIV + classe
@@ -21,18 +21,18 @@
 		(c'est à dire les utilisateurs du site).<br/>
 		Il a été créé pour compléter et corriger les informations disponibles sur d'autres supports,
 		en particulier les pictogrammes "refuge" et "abris" des
-		<a href="/nav.php?baseLayer=IGN&amp;lat=46&amp;lon=3&amp;scale=3000000">cartes topographiques</a>.<br/>
-		<a id="mode_emploi_ferme" href="/statique/mode_emploi.php" title="Mode d'emploi du site"><b>En savoir plus...</b></a>
+		<a href="/nav?baseLayer=IGN&amp;lat=46&amp;lon=3&amp;scale=3000000">cartes topographiques</a>.<br/>
+		<a id="mode_emploi_ferme" href="<?=$vue->lien_mode_emploi?>" title="Mode d'emploi du site"><b>En savoir plus...</b></a>
 	</p>
 	
 	<!-- CARTE DES MASSIFS -->
 	<div class="tablo">
-		<h4><?=$modele->stat->nbmassifs?> massifs</h4>
+		<h4><?=$vue->stat->nbmassifs?> massifs</h4>
 		<div>Passez la souris et cliquez sur un massif</div>
 		<div class="carte" id="accueil"></div>
 		<h5>Et encore...</h5>
 		<ul class="basdepage">
-			<?php if (isset($modele->zones)) foreach ($modele->zones AS $nom_zone => $lien) {?>
+			<?php if (isset($vue->zones)) foreach ($vue->zones AS $nom_zone => $lien) {?>
 				<li>
 					<a href="<?=$lien?>"><?=$nom_zone?></a>
 				</li>
@@ -42,11 +42,11 @@
 	
 	<!-- PHOTOS -->
 	<div class="tablo" style="float:right">
-		<h4><?=$modele->stat->nbphotos?> photos</h4>
+		<h4><?=$vue->stat->nbphotos?> photos</h4>
 		<br/>
 		<ul>
-			<?php if (isset($modele->photos_recentes)) 
-				foreach ($modele->photos_recentes as $vignette) {?>
+			<?php if (isset($vue->photos_recentes)) 
+				foreach ($vue->photos_recentes as $vignette) {?>
 			<li>
 				<a href="<?=(lien_point_fast($vignette,true)."#C$vignette->id_commentaire")?>" title="<?=$vignette->nom?>">
 					<img alt="photo" src="<?=$vignette->lien_photo['vignette']?>" />
@@ -58,19 +58,19 @@
 
 	<!-- NEWS -->
 	<div class="tablo" style="float:none;padding-left:15px">
-		<h4><?=$modele->stat->nbrefuges?> cabanes et refuges</h4>
+		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges</h4>
 		<ul>
-			<?php affiche_news (3+$modele->commentaires,'points');?>
+			<?php affiche_news (3+$vue->commentaires,'points');?>
 			<li><a href="/point_formulaire_recherche.php" title="Recherche d'un points de refuges.info par le nom"><b>Recherche...</b></a></li>
 		</ul>
 		<br/>
-		<h4><?=$modele->stat->nbcomm?> commentaires</h4>
+		<h4><?=$vue->stat->nbcomm?> commentaires</h4>
 		<ul>
-			<?php affiche_news (10+$modele->commentaires,'commentaires');?>
+			<?php affiche_news (10+$vue->commentaires,'commentaires');?>
 			<li><a href="/news.php" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>
 		</ul>
 		<br/>
 		<h4>Evolution du site</h4>
-		<ul><?php affiche_news (2+$modele->general,"general");?></ul>
+		<ul><?php affiche_news (2+$vue->general,"general");?></ul>
 	</div>
 </div>

@@ -5,7 +5,7 @@
  * full text of the license. */
 
 /**
- * @requires OpenLayers/Control/Navigation.js
+ * @requires OpenLayers/Control.js
  */
 
 /**

@@ -7,7 +7,7 @@ gestion : modification/suppression/création
 13/03/13 jmb PDO chamboulement PDO+ pour ajout et PDO-
 **********************************************************************************************/
 
-require_once ('config.php');
+require_once ("config.php");
 require_once ("fonctions_bdd.php");
 require_once ('fonctions_mise_en_forme_texte.php');
 
@@ -16,12 +16,12 @@ Cette fonction permet d'aller chercher un ou plusieurs polygones
 $conditions->ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id est cette liste
 $conditions->non_ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id n'est pas dans cette liste
 $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
-   FIXME : un code spécial "gmlol" va bidouiller car notre version de OL ne peut gérer les multipolygones
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
-   la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gmlol
+   la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
+$conditions->avec_zone_parente=True : renvoi la zone dans laquelle se trouve la polygone (par défaut False)
 //FIXME jmb : BBOX ne veut plus rien dire a l'heure du GIS. BBOX + nord/sud/est/ouest ca redonde un peu.
 // jmb: ajout du champ "nom_zone" (id plutot?)
 //jmb: ajout de condition Ordre, comme infos_points
@@ -52,68 +52,65 @@ Array
 ******************************************************************/
 function infos_polygones($conditions)
 {
-  global $pdo,$config;
-  $conditions_sql="";
-  
-  // Conditions sur les ids des polygones
-  if (isset($conditions->ids_polygones))
-    if (!verifi_multiple_intiers($conditions->ids_polygones))
-      return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
-    else
-      $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
-  
-  // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
-  if (isset($conditions->non_ids_polygones))
-    if (!verifi_multiple_intiers($conditions->non_ids_polygones))
-      return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
-    else
-      $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
-  
-  if (is_numeric($conditions->limite))
-    $limite="LIMIT $conditions->limite";
+    global $pdo,$config;
+    $conditions_sql="";
+    $champs_en_plus="";
+    
+    // Conditions sur les ids des polygones
+    if (isset($conditions->ids_polygones))
+        if (!verif_multiples_entiers($conditions->ids_polygones))
+            return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
+        else
+            $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
+        
+        // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
+    if (isset($conditions->non_ids_polygones))
+        if (!verif_multiples_entiers($conditions->non_ids_polygones))
+            return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
+        else
+            $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
+        
+    if (is_numeric($conditions->limite))
+        $limite="LIMIT $conditions->limite";
+        
+    if (!empty($conditions->ordre))
+        $ordre="ORDER BY $conditions->ordre";
+    
+    if (isset($conditions->ids_polygone_type))
+        if (!verif_multiples_entiers($conditions->ids_polygone_type))
+            return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
+        else
+            $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
+        
+    // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
+    if (isset($conditions->geometrie))
+        $conditions_sql.=" AND geom && ". $conditions->geometrie ;
+    
+    if ($conditions->avec_geometrie)
+        $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
 
-  if (!empty($conditions->ordre))
-    $ordre="ORDER BY $conditions->ordre";
-
-  if (isset($conditions->ids_polygone_type))
-    if (!verifi_multiple_intiers($conditions->ids_polygone_type))
-      return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
-    else
-      $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
-  
-  // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
-  if (isset($conditions->geometrie))
-  {
-//    $bbox=explode(",",$conditions->bbox);
-//    $conditions_sql.=" AND geom && 
-//    ST_GeomFromText(('LINESTRING($bbox[0] $bbox[1],$bbox[2] $bbox[3])'),4326)";
-// intersects une linestring ? et le milieu ?
-	$conditions_sql.=" AND geom && ". $conditions->geometrie ;
-  }
-  
-  if ($conditions->avec_geometrie)
-  {
-    // FIXME : notre OL ne sait pas gérer les multipolygon, on bidouille en ne prenant que le 1
-    if ($conditions->avec_geometrie="gmlol")
-    $champs_geometry.=",st_asGML(st_geometryn(geom,1)) AS geometrie_gmlol";
-    else
-      $champs_geometry.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
-  }
-  else
-    $champs_geometry.="";
-
-	// jmb: nom de la zone auquel le poly appartient.
+    // jmb: nom de la zone auquel le poly appartient.
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
-	$champs_geometry.=", 
-		(SELECT id_polygone
-			FROM polygones AS zones
-			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
-		) AS id_zone ,
-        (SELECT nom_polygone
-			FROM polygones AS zones
-			WHERE zones.id_polygone_type=".$config['id_zone']." AND ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
-		) AS nom_zone 
+    // sly: faire que cette requête un peu plus lourde ne soit pas systématiquement utilisée, sauf demande
+    if ($conditions->avec_zone_parente)
+        $champs_en_plus.=", 
+        (
+          SELECT id_polygone
+          FROM polygones AS zones
+          WHERE 
+            zones.id_polygone_type=".$config['id_zone']." 
+            AND 
+            ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+        ) AS id_zone ,
+        (
+          SELECT nom_polygone
+          FROM polygones AS zones
+          WHERE 
+            zones.id_polygone_type=".$config['id_zone']." 
+            AND 
+            ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+        ) AS nom_zone 
         ";
 	
 	//FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
@@ -125,7 +122,7 @@ function infos_polygones($conditions)
                  st_ymin($box) AS sud,
                  st_ymax($box) AS nord,
                  ".colonnes_table('polygones',False)."
-                 $champs_geometry
+                 $champs_en_plus
           FROM polygones,polygone_type
           WHERE 
             polygones.id_polygone_type=polygone_type.id_polygone_type
@@ -133,7 +130,6 @@ function infos_polygones($conditions)
           $ordre
           $limite
   ";
-
   $res=$pdo->query($query);
   if (!$res)
     return erreur("Requête impossible",$query);

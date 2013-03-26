@@ -19,7 +19,7 @@ Pas d'avis tranché -- sly
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_mise_en_forme_texte.php");
-require_once ("fonctions_zip.php");
+//require_once ("fonctions_zip.php");
 require_once ("fonctions_polygones.php");
 
 /* Tableau de définition des formats et de leur caractéristiques, sur-ajoutés, à la variable $config
@@ -27,6 +27,8 @@ L'ordre d'apparition donnera l'ordre dans le menu de sélection de l'exportation
 Si interne est placé à true, ce format ne sera pas proposé dans nos interfaces de sélection à l'export mais reste disponible
 de façon "intere", c'est dire pour un usage javascript ou pour partenaire
 sly 17/11/10
+sly FIXME : passons au modèle MVC et toute la description devrait aller dans le formulaire en html, c'est pas
+comme si on en ajoutait tous les jours !
 */
 //------------------------------------------
 $config['formats_exportation']['kmz']=array(
@@ -578,8 +580,9 @@ function fichier_exportation($conditions,$format)
   if ( isset($conditions->bbox) )
 		$conditions->geometrie = cree_geometrie($conditions->bbox, 'bboxOL');
   //obtenir le tableau des points, selon les conditions
-  $points=infos_points($conditions); 
-
+  $points=infos_points($conditions);
+  if ($points->erreur)
+      return erreur($points->message);
   //Nombre de point récupéré(s), on va permettre de faire du cosmétique avec le bon nom de fichier si un seul
   $i=0;
   if (count($points)==1)

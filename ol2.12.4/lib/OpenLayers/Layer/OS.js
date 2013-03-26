@@ -6,8 +6,11 @@
 
 /**
  * @requires OpenLayers/Layer/WMS.js
- * @requires proj4js-combined.js
- * @requires proj4js-1.1.0/lib/defs/EPSG27700.js
+ * @requires OpenLayers/BaseTypes/Bounds.js
+ * @requires OpenLayers/Projection.js
+ * @requires OpenLayers/BaseTypes/Size.js
+ * @requires ../proj4js-1.1.0/lib/proj4js-combined.js
+ * @requires ../proj4js-1.1.0/lib/defs/EPSG27700.js
  */
 
 /**

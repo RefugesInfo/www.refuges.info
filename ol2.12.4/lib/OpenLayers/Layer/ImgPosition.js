@@ -6,7 +6,10 @@
 
 /**
  * @requires OpenLayers/Layer/Img.js
- * @requires proj4js-1.1.0/lib/defs/UTM.js
+ * @requires OpenLayers/BaseTypes/Bounds.js
+ * @requires OpenLayers/Projection.js
+ * @requires ../proj4js-1.1.0/lib/proj4js-combined.js
+ * @requires ../proj4js-1.1.0/lib/defs/UTM.js
  */
 
 /**

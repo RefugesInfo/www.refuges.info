@@ -2,16 +2,20 @@
 
 AddDefaultCharset UTF-8
 
-ErrorDocument 404 /statique/erreur_404.php
-
-Options +Multiviews
-
 RewriteEngine On
-
 # pas de refuges.info, on redirige vers le www
 RewriteCond %{HTTP_HOST} ^refuges.info$ [NC]
 RewriteRule ^(.*)$ http://www.refuges.info/$1 [L,R=301]
 
+#Ces règles de rewrite permettent de faire atterrir tous les appels sur /controlleur.php
+#Sauf ceux pour lesquels il existe un fichier réél ou un dossier
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /controlleur.php [L]
+
+php_value short_open_tag 1
 
 #A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error
 #php_value display_errors 1
+

@@ -1,0 +1,29 @@
+<div class="contenu">
+    <h4>Merci de nous aider dans notre tâche de classement des commentaires utiles et moins utiles.</h4>
+    <p>
+    Que pensez vous du commentaire suivant : (votre avis sera étudié par un modérateur qui prendra sa décision)
+    </p>
+    <p>
+        <i><?=$vue->commentaire->texte?></i>
+    </p>
+<p>
+	<form method="post" action="/avis-internaute-commentaire/<?=$vue->commentaire->id_commentaire?>/" />
+	<ul>
+		<li><input type="radio" name="score" value="2" />Très utile : ses informations devraient être rajoutées dans la fiche en haut !</li>
+		<li><input type="radio" name="score" value="1" />Utile : Il est bien là où il est, ça rajoute quelque chose</li>
+		<li><input type="radio" name="score" value="-1" />Peu utile : Il est subjectif du style "Il est bien, pas bien, etc." autant le mettre ailleurs ou il fait doublons avec un autre</li>
+		<li><input type="radio" name="score" value="-2" />Pas utile du tout : Il n'a rien a voir avec le point dont il parle (photos de fleurs, chamois, copains entre eux,...)</li>
+		<li>Finalement, je n'en pense rien, je retourne sur <a href="<?=$vue->commentaire->lien?>">la fiche de <?=$vue->commentaire->nom?></a></li>
+		<br />
+		<?php if ($vue->test_anti_robot) { ?>
+		<li>Contre les robots merci d'écrire la lettre f ici :<input type="text" name="anti_robot" /></li>
+        <?php } ?>
+	</ul>
+	<input type="submit" name="valider" value="Valider mon avis" />
+	</form>
+</p>
+<p>
+Vous pouvez aussi en savoir un peu plus sur <a href="<?=$vue->lien_que_mettre?>">que mettre ou ne pas mettre sur <?=$config['nom_hote']?></a>
+</p>
+</div>
+

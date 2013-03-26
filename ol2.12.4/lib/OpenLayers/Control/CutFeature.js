@@ -6,6 +6,8 @@
 
 /**
  * @requires OpenLayers/Control/ModifyFeature.js
+ * @requires OpenLayers/Feature/Vector.js
+ * @requires OpenLayers/Geometry/LineString.js
  */
 
 /**

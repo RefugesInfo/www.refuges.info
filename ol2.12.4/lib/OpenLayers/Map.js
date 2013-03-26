@@ -669,6 +669,7 @@ OpenLayers.Map = OpenLayers.Class({
                 this.setCenter(options.center, options.zoom);
             }
         }
+/*DCM*/ this.initialized = true;
     },
 
     /** 
@@ -1056,7 +1057,7 @@ OpenLayers.Map = OpenLayers.Class({
             this.addLayer(layers[i]);
         }
     },
-	
+
     /** 
      * APIMethod: removeLayer
      * Removes a layer from the map by removing its visual element (the 
@@ -1209,9 +1210,11 @@ OpenLayers.Map = OpenLayers.Class({
      * newBaseLayer - {<OpenLayers.Layer>}
      */
     setBaseLayer: function(newBaseLayer) {
-        
-        if (newBaseLayer != this.baseLayer) {
-          
+
+//DCM// if (newBaseLayer != this.baseLayer) {
+/*DCM*/ if (newBaseLayer != this.baseLayer &&
+/*DCM*/     !this.events.triggerEvent("isinvalidbaselayer", {layer: newBaseLayer})) {
+
             // ensure newBaseLayer is already loaded
             if (OpenLayers.Util.indexOf(this.layers, newBaseLayer) != -1) {
 
@@ -1228,10 +1231,10 @@ OpenLayers.Map = OpenLayers.Class({
 
                 // set new baselayer
 //DCM           Patch © Dominique Cavailhez 2012 / use multiple projection baseLayers 
-//DCM  			Récupère les projections au changement de baseLayer
-/*DCM*/			var previeousProjection = this.getProjection();
+//DCM           Récupère les projections au changement de baseLayer
+/*DCM*/         var previeousProjection = this.getProjection();
                 this.baseLayer = newBaseLayer;
-/*DCM*/			this.resolutions = this.baseLayer.resolutions;
+/*DCM*/         this.resolutions = this.baseLayer.resolutions;
 
                 if(!this.allOverlays || this.baseLayer.visibility) {
                     this.baseLayer.setVisibility(true);
@@ -1245,17 +1248,17 @@ OpenLayers.Map = OpenLayers.Class({
                 // recenter the map
                 if (center != null) {
 //DCM           Patch © Dominique Cavailhez 2012 / use multiple projection baselayers 
-/*DCM*/				var p = new OpenLayers.Projection (previeousProjection);
-/*DCM*/				var n = new OpenLayers.Projection (this.getProjection());
-/*DCM*/				// Recentrer la page
-/*DCM*/				if (previeousProjection &&
-/*DCM*/					previeousProjection != this.getProjection())
-/*DCM*/					center.transform (p ,n);
-/*DCM*/				// Recentrer les points dans les layers "Vector"
-/*DCM*/				for (l in this.layers)
-/*DCM*/					for (f in this.layers[l].features)
-/*DCM*/						if (this.layers[l].features [f] .geometry)
-/*DCM*/							this.layers[l].features [f] .geometry.transform (p ,n);
+/*DCM*/             var p = new OpenLayers.Projection (previeousProjection);
+/*DCM*/             var n = new OpenLayers.Projection (this.getProjection());
+/*DCM*/             // Recentrer la page
+/*DCM*/             if (previeousProjection &&
+/*DCM*/                 previeousProjection != this.getProjection())
+/*DCM*/                 center.transform (p ,n);
+/*DCM*/             // Recentrer les points dans les layers "Vector"
+/*DCM*/             for (l in this.layers)
+/*DCM*/                 for (f in this.layers[l].features)
+/*DCM*/                     if (this.layers[l].features [f] .geometry)
+/*DCM*/                         this.layers[l].features [f] .geometry.transform (p ,n);
                     // new zoom level derived from old scale
                     var newZoom = this.getZoomForResolution(
                         newResolution || this.resolution, true

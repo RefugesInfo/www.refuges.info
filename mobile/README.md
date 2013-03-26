@@ -13,3 +13,5 @@ Cette application utilise des requêtes AJAX entre hôtes (ce qui est bloqué pa
 Voici une liste des modifications effectuées quand on héberge cette application sur le serveur de WRI :
 
  * Dans /js/index.js, enlever tous les liens absolu et mettre des liens relatifs vers ../
+ * Un .htaccess ajoute le bon content-type
+ * Enfever les lignes de privilège dans le manifest.webapp

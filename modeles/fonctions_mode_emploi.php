@@ -7,63 +7,66 @@ FIXME : c'était une mauvaise idée de passer par des fichiers : les datas texte
 FIXME : très bien dans la base de donnée, à convertir dès qu'un peu de temps
 ********************************************************************/
 
-require_once ('config.php');
+require_once ("config.php");
 require_once ("fonctions_mise_en_forme_texte.php");
+require_once ("fonctions_bdd.php");
 
 // Fonction pour réaliser un lien vers une page du mode d'emploi 
 function lien_mode_emploi($page="index")
 {
-	return "/statique/mode_emploi.php?page=".strtolower($page);
+    global $config;
+    $base=$config['base_mode_emploi'];
+    if ($page=="")
+        return $base;
+    return $base.strtolower($page)."/";
 }
-
 
 function recupere_contenu($page)
 {
-	global $config;
-	// lieu du fichier texte correspondant à la page souhaitée
-	$fichier=$config['textes_mode_emploi'].$page.".txt";
-	if (!is_file($fichier))
-		return FALSE;
-	$pointeur=fopen($fichier,"r");
-	if (filesize($fichier))
-		$contenu=fread($pointeur,filesize($fichier));
-	return $contenu;
+    global $config,$pdo;
+    $page=$pdo->quote($page);
+    $query="SELECT *,extract('epoch' from date) as ts_unix_page
+              FROM pages_wiki 
+              WHERE nom_page=$page order by date desc limit 1";
+    $res=$pdo->query($query);
+    if (!$res)
+        return erreur("Requête SQL impossible à executer",$query);
+    
+    $page=$res->fetch();
+    if (!$page)
+        return erreur("Cette page du wiki n'existe pas");
+    // gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
+    $page->contenu_html=str_replace("##",lien_mode_emploi(""),$page->contenu);
+    // conversion bbcode
+    $page->contenu_html=trim(bbcode2html($page->contenu_html,TRUE));
+    return $page;
 }
 
 // fonction qui va ré-écrire le contenu de la page
 function ecrire_contenu($page,$contenu)
 {
-	global $config;
-	// lieu du fichier texte correspondant à la page souhaitée
-	$fichier=$config['textes_mode_emploi'].$page.".txt";
-	$pointeur=fopen($fichier,"w");
-	fwrite($pointeur,$contenu);
-	chmod($fichier,0777);
+	global $config,$pdo;
+    $page=$pdo->quote($page);
+    $contenu=$pdo->quote($contenu);
+    $query="insert into pages_wiki (nom_page,contenu) VALUES ($page,$contenu)";
+    $res=$pdo->query($query);
+    if (!$res)
+        return erreur("Requête SQL impossible à executer",$query);
+   
+    return ok("Page mise à jour, et ancienne verson conservée");
 }
 
+// Supprime la page et toute ses anciennes versions
 function supprimer_page($page)
 {
-        global $config;
-        // lieu du fichier texte correspondant ` la page souhaitie
-        $fichier=$config['textes_mode_emploi'].$page.".txt";                           
-        @unlink($fichier);
+    global $config,$pdo;
+    $page=$pdo->quote($page);
+    $query="delete from pages_wiki where nom_page=$page";
+    $res=$pdo->query($query);
+    if (!$res)
+        return erreur("Requête SQL impossible à executer",$query);
+    
+    return ok("Page supprimée et tout ses anciennes versions");
 }
 
-// recréer les liens internes au mode d'emploi au format [url=##page][/url] (page étant la page texte à afficher)
-// traite le phpBB code mais en autorisant le HTML (paramètre TRUE)
-function genere_contenu($page)
-{
-	if( ($contenu=recupere_contenu($page))==FALSE)
-		return FALSE;
-	// gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
-	$contenu=str_replace("##","./mode_emploi.php?page=",$contenu);
-	// conversion bbcode
-	$html=bbcode2html($contenu,TRUE);
-	return trim($html);
-}
-function date_modif_contenu($page)
-{
-	global $config;
-	return filemtime($config['textes_mode_emploi'].$page.".txt");
-}
 ?>

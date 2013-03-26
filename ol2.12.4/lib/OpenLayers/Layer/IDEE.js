@@ -6,8 +6,9 @@
 
 /**
  * @requires OpenLayers/Layer/WMS.js
- * @requires proj4js-combined.js
- * @requires proj4js-1.1.0/lib/defs/EPSG23030.js
+ * @requires OpenLayers/BaseTypes/Bounds.js
+ * @requires ../proj4js-1.1.0/lib/proj4js-combined.js
+ * @requires ../proj4js-1.1.0/lib/defs/EPSG23030.js
 */
 
 /**

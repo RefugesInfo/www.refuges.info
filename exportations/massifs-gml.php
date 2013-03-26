@@ -3,7 +3,7 @@
 Prend en paramètre massif.php?bbox=une bbox&massif=(des ids de polygones 5 ou 7,8)&polygone_type=(un type de polygone)
 */
 
-require_once ("../modeles/config.php");
+require_once ("../includes/config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_autoconnexion.php");
 require_once ("fonctions_polygones.php");
@@ -21,7 +21,7 @@ $b = ($ymin + $ymax) / 2; // Coefs du calcul
 $a = 256 + $b; // +256 pour bénéficier du 0 à gauche quand on passe en hexadécimal
 
 $conditions = new stdClass;
-$modele = new stdClass;
+$vue = new stdClass;
 
 // Ici on a demandé un nombre fini de massif solitaires
 if (isset($_GET['massif']))
@@ -36,8 +36,7 @@ else
 }
 if (isset($_GET['bbox']))
 	$conditions->geometrie = cree_geometrie($_GET['bbox'], 'bboxOL' ) ;
-//  $conditions->bbox=$_GET['bbox'];
-$conditions->avec_geometrie='gmlol';
+$conditions->avec_geometrie='gml';
 $polygones=infos_polygones($conditions);
 
 if ($polygones)
@@ -56,17 +55,17 @@ if ($polygones)
     $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
     $polygone_export->proprietes['color']="#$cb$cv$cr";
     $polygone_export->proprietes['url']=lien_polygone($polygone,False);
-    $polygone_export->geometrie_gml=$polygone->geometrie_gmlol;
+    $polygone_export->geometrie_gml=$polygone->geometrie_gml;
   
-    $modele->features[]=$polygone_export;
+    $vue->features[]=$polygone_export;
   }
 
-$modele->content_type="UTF-8";
-$modele->nom_fichier_export="polygones";
-$modele->description="Limites de massifs montagneux provenants du site ".$config['nom_hote'];
+$vue->content_type="UTF-8";
+$vue->nom_fichier_export="polygones";
+$vue->description="Limites de massifs montagneux provenants du site ".$config['nom_hote'];
 // On affiche le tout
-$modele->type = 'exportations/export_gml';
+$vue->type = 'exportations/export_gml';
 
-include ($config['chemin_vues']."$modele->type.php");
+include ($config['chemin_vues']."$vue->type.php");
 
 ?>

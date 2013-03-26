@@ -15,7 +15,7 @@ require_once ("config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_gestion_erreurs.php");
 require_once ("fonctions_commentaires.php");
-require_once ("fonctions_gps.php");
+require_once ("points_gps.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mise_en_forme_texte.php");
 
@@ -54,7 +54,7 @@ $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 
-$conditions->id_polygone : points appartenant à ce polygone
+$conditions->ids_polygones : points appartenant à ce ou ces polygones
 $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
 $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veut quand même, par défaut : FALSE
@@ -73,10 +73,15 @@ $condition->non_utilisable : on chercher ferme!='non' et !=''
 $condition->ouvert : si 'oui', on ne veut que les points ayant ferme='non' ou ferme=''
 
 $conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
+$conditions->avec_points_censure=True : Par défaut, False : les points censurés ne sont pas retournés
+
 $condition->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
 $condition->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 $conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
+
+$conditions->geometrie : Ne renvoir que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
+$conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
 
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
@@ -91,58 +96,56 @@ Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet-
 
 function infos_points($conditions) 
 {
-  global $config,$pdo;
-  // condition de limite en nombre
-	if (!empty($conditions->limite))
-		if (!is_numeric ($conditions->limite))
-			return erreur("Le paramètre de limite \$conditions->limite est mal formé");
-		else
-			$limite="\nLIMIT $conditions->limite";
-    
-    if ($conditions->ordre!="")
-      $ordre="\nORDER BY $conditions->ordre";
-
-	  
-//var_dump($conditions);
-    /******** Liste des conditions de type WHERE *******/
+    global $config,$pdo;
+    $champs_en_plus="";
     $conditions_sql="";
-  $tables_en_plus="";
-  if (!empty($conditions->ids_points))
-    if (!verifi_multiple_intiers($conditions->ids_points))
-      return erreur("Le paramètre donnée pour les ids n'est pas valide");
-	else
-		$conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
-
-  // conditions sur le nom du point
-  if( !empty($conditions->nom) )
-    $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
+    $tables_en_plus="";
+    
+    // condition de limite en nombre
+    if (!empty($conditions->limite))
+        if (!is_numeric ($conditions->limite))
+            return erreur("Le paramètre de limite \$conditions->limite est mal formé");
+        else
+            $limite="\nLIMIT $conditions->limite";
+        
+        if ($conditions->ordre!="")
+            $ordre="\nORDER BY $conditions->ordre";
+        
+    /******** Liste des conditions de type WHERE *******/
+    if (!empty($conditions->ids_points))
+        if (!verif_multiples_entiers($conditions->ids_points))
+            return erreur("Le paramètre donnée pour les ids des points n'est pas valide");
+        else
+            $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
+        
+    // conditions sur le nom du point
+    if( !empty($conditions->nom) )
+        $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
   
-  // condition sur l'appartenance à un polygone
-  if( !empty($conditions->id_polygone) )
-  {
-    $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->id_polygone)   ) ";
-//    $conditions_sql .= "AND ST_Within(points_gps.geom,polygones.geom) 
-//      AND polygones.id_polygone IN ($conditions->id_polygone)";
-    $champs_polygones=",".colonnes_table('polygones',False);
-  }
-  elseif ($conditions->avec_infos_massif)
-  {
-    // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
-    // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
-    $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) AND id_polygone_type=".$config['id_massif'].")"; 
-    $champs_polygones=",".colonnes_table('polygones',False);
-  }
-//  else
-//    //On ne veut aucune conditions ni info sur les polygones, on place cette table quand même pour récupérer 
-//    //les coordonnées même si on se fiche de savoir dans quels polygones ils sont
-//    $tables_en_plus.=",points_gps";
-//jmb: vu qu'elle est indispensable, je la met en dur en bas.
-
-  if (!empty($conditions->avec_liste_polygones) )
-  {
-	// Jointure pour la liste des polygones auquels appartient le point
-			
-	$tables_en_plus.=",(
+    // condition sur l'appartenance à un polygone
+    if( !empty($conditions->ids_polygones) )
+    {
+        if (!verif_multiples_entiers($conditions->ids_polygones))
+            return erreur("Le paramètre donné pour les ids des polygones n'est pas valide","$conditions->ids_polygones");
+        else
+        {
+            $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
+            $champs_polygones=",".colonnes_table('polygones',False);
+        }
+    }
+    elseif ($conditions->avec_infos_massif)
+    {
+        // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
+        // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
+        $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) AND id_polygone_type=".$config['id_massif'].")"; 
+        $champs_polygones=",".colonnes_table('polygones',False);
+    }
+    
+    if (!empty($conditions->avec_liste_polygones) )
+    {
+        // Jointure pour la liste des polygones auquels appartient le point
+        // sly : FIXME : Cette sous requête est particulièrement couteuse en ressources, il faudrait trouver une technique pour faire ça en JOIN
+        $tables_en_plus.=",(
                             SELECT 
                               pgps.id_point_gps, 
                               STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
@@ -156,108 +159,65 @@ function infos_points($conditions)
                             GROUP BY pgps.id_point_gps 
                            ) As liste_polys";
                           //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
-	
-	$champs_polygones.=",liste_polys.liste_polygones";
-	
-	$conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
-  }
-
-	// on restreint a cette geometrie (un texte "ST machin en fait")
-	// cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
-	if( !empty($conditions->geometrie) ) {
-		$conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
-		$select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
-	}
-  
-  // FIXME : Temporaire, à faire disparaitre lorsque la migration avec ce format sera terminée
-  if( !empty($conditions->type_point) )
-      $conditions->ids_types_point=$conditions->type_point;
-  
-  // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
-  if( !empty($conditions->ids_types_point) )
-    $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
-  elseif (empty($_SESSION['niveau_moderation'])) // Censure
-    $conditions_sql .="\n AND (points.id_point_type!=26)";
-  
-  if( !empty($conditions->places_minimum) )
-    $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
-  if( !empty($conditions->places_maximum) )
-    $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
-  if( isset($conditions->places) &&  $conditions->places == NULL)
-  
-  // conditions sur l'altitude
-  if( !empty($conditions->altitude_minimum) )
-    $conditions_sql .= "\n AND points_gps.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
-  if( !empty($conditions->altitude_maximum) )
-    $conditions_sql .= "\n AND points_gps.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
-  
-  //veut-on les points dont les coordonnées sont cachées ?
-  if($conditions->pas_les_points_caches)
-    $conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config['id_coordonees_gps_fausses'];
-  
-  //quelle condition sur la qualité supposée des GPS
-  if( !empty($conditions->precision_gps) )
-    $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
-  
-  //calcul selon la distance au point de référence
-  // fourni sous la forme lat;lon;metres (45;5;5000) pour 5km
-// voir conditions->geometrie
-/*  if ($conditions->distance!="")
-  {
-    $donnees=explode(";",$conditions->distance);
-    $latitude=$donnees[0];
-    $longitude=$donnees[1];
-    $distance=$donnees[2];
-    // Notre base étant en lat/lon, quand on veut calculer une distance, c'est avec des coordonnées projectées
-    // Je choisi la projection sphérical mercator de google qui ne règle in fine pas le problème qu'aucune projection (?)
-    // ne peut conserver les distances à travers la terre, il faudrait utiliser le type "geography" de postgis qui choisi
-    // dynamiquement la meilleure projection selon l'endroit du globe. Mais je ne sais pas m'en servir, donc cette solution
-    // marche a peu prêt bien sous les latitudes françaises et du quartier proche
-    $geom_point="ST_GeomFromText('POINT($longitude $latitude)',4326)";
-    $geom_point_mercator="st_transform($geom_point,900913)";
-    $calcul_distance="st_distance(st_transform(points_gps.geom,900913),$geom_point_mercator)";
-    $select_distance=",$calcul_distance AS distance "; 
-    // Changement de projection à s'arracher les cheveux : on souhaite les autres points de notre base à une distance en metres
-    // d'un point de référence en lat/lon je projete donc ce point pour créer un buffer d'un rayon (en metres) autour de notre choix
-    // que je reprojette en lat/lon pour que postgis puisse faire usage de son indexe qui est sur des géométries lat/lon
-    // et je met comme conditions que les autres points soient dans ce buffer. Ouf.
-    $conditions_sql.="\n AND ST_within(points_gps.geom,st_transform(st_buffer($geom_point_mercator,$distance),4326))";
-    $ordre="ORDER BY $calcul_distance";
-  }
-*/
-  // conditions géographique sur les coordonnées GPS
-  // FIXME... ou pas : on considère qu'une requête : tous les points dont la latitude est >50° n'est pas possible/souhaitable
-  // Ces conditions sur les fonctions sont pour demander une bbox, pas "toute la terre", c'est donc tout, ou rien
-  // Par simplification, on peut aussi passer par ->bbox une bbox au format OL : ouest,sud,est,nord
-// voir conditions->geometrie
-/*
-  if( ($conditions->sud!="" and $conditions->nord!="" and $conditions->ouest!="" and $conditions->est!="") or isset($conditions->bbox))
-  {
-    if (isset ($conditions->bbox))
-    {
-      $bbox=explode(",",$conditions->bbox);
-      $conditions->sud=$bbox [1];
-      $conditions->nord=$bbox [3];
-      $conditions->ouest=$bbox [0];
-      $conditions->est=$bbox [2];
+                          
+         $champs_polygones.=",liste_polys.liste_polygones";
+         $conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
     }
-    $conditions_sql.="\n AND points_gps.geom && 
-    ST_GeomFromText(('LINESTRING($conditions->ouest $conditions->sud,$conditions->est $conditions->nord)'),4326)";
-  }
-*/
+    
+    // on restreint a cette geometrie (un texte "ST machin en fait")
+    // cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
+    if( !empty($conditions->geometrie) ) 
+    {
+        $conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
+        if ($conditions->avec_distance)
+        {
+            $select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+            $ordre = "ORDER BY distance DESC";
+        }
+    }
+    
+    // FIXME : Temporaire, à faire disparaitre lorsque la migration avec ce format sera terminée
+    if( !empty($conditions->type_point) )
+        $conditions->ids_types_point=$conditions->type_point;
   
-  //conditions sur la description (champ remark)
-  if( !empty($conditions->description) )
-    $conditions_sql.="\n AND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
+    // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
+    if( !empty($conditions->ids_types_point) )
+        $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
+    elseif (empty($_SESSION['niveau_moderation'])) // Censure
+        $conditions_sql .="\n AND (points.id_point_type!=26)";
+    
+    if( !empty($conditions->places_minimum) )
+        $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
+    if( !empty($conditions->places_maximum) )
+        $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
+    if( isset($conditions->places) &&  $conditions->places == NULL)
+        
+    // conditions sur l'altitude
+    if( !empty($conditions->altitude_minimum) )
+        $conditions_sql .= "\n AND points_gps.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
+    if( !empty($conditions->altitude_maximum) )
+        $conditions_sql .= "\n AND points_gps.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
   
-  // cas spécial sur les modèle
-  if ($conditions->modele==1)
-    $conditions_sql.="\n AND modele=1";
-  elseif($conditions->modele=="")
-    $conditions_sql.="\n AND modele!=1";
-  else
-    $conditions_sql.="";
+    //veut-on les points dont les coordonnées sont cachées ?
+    if($conditions->pas_les_points_caches)
+        $conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config['id_coordonees_gps_fausses'];
+    
+    //quelle condition sur la qualité supposée des GPS
+    if( !empty($conditions->precision_gps) )
+        $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
+    
+    //conditions sur la description (champ remark)
+    if( !empty($conditions->description) )
+        $conditions_sql.="\n AND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
   
+    // cas spécial sur les modèle
+    if ($conditions->modele==1)
+        $conditions_sql.="\n AND modele=1";
+    elseif($conditions->modele=="")
+        $conditions_sql.="\n AND modele!=1";
+    else
+        $conditions_sql.="";
+    
   //prise en compte des conditions binaires
   //jmb si isset a oui, faut vraiment "oui" pas '' (avant il faisait les 2)
   //TODO, transformer les champs binaires en ... binaires
@@ -265,17 +225,9 @@ function infos_points($conditions)
 	foreach ($conditions->binaire as $champ => $valeur) 
 	  $conditions_sql.="\n AND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
 	
-/*  if (isset($conditions->binaire))
-  {
-    foreach ($conditions->binaire as $champ => $valeur)
-      if ($valeur!='')
-      {
-	if ($valeur=='vide')
-	  $valeur='';
-	$conditions_sql.="\n AND points.$champ=".$pdo->quote($valeur, PDO::PARAM_INT)."";
-      }
-  }
-*/
+    if ($conditions->avec_geometrie)
+        $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+
   //prise en compte de la recherche sur le chauffage
   if (isset($conditions->chauffage))
   {
@@ -290,26 +242,19 @@ function infos_points($conditions)
   if ($conditions->non_utilisable=='oui')
     $conditions_sql.="\n AND LENGTH(points.ferme) > 0 ";
   if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND points.ferme=''  "; 
-  
-  // jmb je suppr type_precision_gps qui sert a rien          type_precision_gps.*,    AND points_gps.id_type_precision_gps=type_precision_gps.id_type_precision_gps
-  // je suppr aussi la jointure point_type. pas utilisee
-
-  // FIXME ne devrait pas $etre dans les modeles, et si une fonction voulait permettre un export à quelqu'un de non connecté ? -- sly
-  // Censure
-  if ($_SESSION['niveau_moderation']<1)
-    $conditions_sql.="\n AND (points.id_point_type!=26)";
+    $conditions_sql.="\n AND points.ferme in ('','non',NULL)  "; 
   
   $query_points="
   SELECT points.*,
          points_gps.*,
          type_precision_gps.*,
-		 point_type.*, -- cette jointure ne sert QUE pour le tri par importance. on passe les 120 a 300 et on gagne une jointure?
+		 point_type.*,
          ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
          extract('epoch' from date_derniere_modification) as date_modif_timestamp,
 		 extract('epoch' from date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
+         $champs_en_plus
   FROM points NATURAL JOIN points_gps NATURAL JOIN type_precision_gps NATURAL JOIN point_type $tables_en_plus
   WHERE 
      1=1
@@ -317,7 +262,6 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
-//print_r($query_points);
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
   
@@ -336,17 +280,91 @@ function infos_points($conditions)
       $point->id_massif  = $point->id_polygone;
       $point->article_partitif_massif = $point->article_partitif;
       if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
-	$point->lien=lien_point_fast($point);
+          $point->lien=lien_point_fast($point);
     }
-    $points[]=$point;
+    // Ici, petite particularité sur les points censurés, par défaut, on ne veut pas les renvoyer, mais on veut quand 
+    // même, si un seul a été demandé, pouvoir dire qu'il est censuré, donc on va le chercher en base mais on renvoi une erreur 
+    // s'il est censuré
+    if (!$point->censure or $conditions->avec_points_censure) // On renvoi ce point, soit il n'est pas censuré, soit on a demandé aussi les points censurés
+        $points[]=$point;
+    elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est censuré on retourne le mesage d'erreur
+        return erreur("Ce point est censuré, seul un modérateur peut agir sur lui");
   }
   return $points;
 }
-/**************************************************************
-Lien plus simple à utiliser maintenant ! sur la base
-de l'objet point "habituel" et plus rapide que celui du dessous
+
+/*****************************************************
+Cette fonction retourne sous la forme d'un object
+toutes les caractéristiques d'un point
+Voir a_lire.txt annexe 1 dans ressources pour voir un example d'élément
+
+on accède sous la forme :
+$infos_point->champ
+un array est disponible sous la forme 
+$infos_point->polygones[$i]->champ
+( polygones triés par importance pays>département>massif>carte>parc
+pour obtenir la liste des polygones auquels ce point appartient
+Pour simplifier $infos_point->massif contient les infos du polygone massif auquel le
+point appartient )
+FIXME: cette histoire de $infos_point->massif est qu'historiquement on s'intéresse plus aux massifs
+que aux pays/départements/autres/ une version plus logique devrait laisser tomber ça et indiquer lequel des $infos_point->polygones[$i] est le massif
+auquel le point appartient sly 14/03/2010
+
+FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui fait la même chose que celle avant, à part cette histoire de polygones.
+Mais postgis étant super rapide, je pense que l'on peut peut fusioner
+
+*****************************************************/
+function infos_point($id_point,$meme_si_censure=False)
+{
+  // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
+  global $config,$pdo;
+  $conditions = new stdClass();
+  $conditions->ids_points=$id_point;
+  $conditions->modele=-1;
+  if ($meme_si_censure)
+     $conditions-> avec_points_censure=True;
+
+  // récupération des infos du point
+  $points=infos_points($conditions);
+  // Requête impossible à executer
+  if ($points->erreur)
+    return erreur($points->message);
+  if (count($points)==0)
+    return erreur("Le point demandé est introuvable dans notre base");
+  if (count($points)>1)
+    return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
+    
+    $i=0;
+  $point=$points[0];
+  
+  // recherche des différents polygones auquels appartienne le point
+  // FIXME Cette particularité n'existe que lorsque on demande un point en particulier
+  // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
+  // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
+  // sauf sur les pages des points... doute... incertitude -- sly
+  $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
+    FROM polygones,polygone_type,points_gps
+    WHERE
+      polygones.id_polygone_type=polygone_type.id_polygone_type
+    AND ST_Within(points_gps.geom, polygones.geom) 
+    AND points_gps.id_point_gps=$point->id_point_gps
+    ORDER BY polygone_type.ordre_taille DESC";
+
+  $res = $pdo->query($query_polygones);
+  if ( $polygones_du_point = $res->fetch() ) 
+    do
+    {
+        $polygones_du_point->lien_polygone=lien_polygone($polygones_du_point,True);
+        $point->polygones[]=$polygones_du_point;
+    } while ( $polygones_du_point = $res->fetch() ) ;
+    return $point;
+}
+/******************************************************************************************************************************
+Lien plus simple à utiliser maintenant ! sur la base de l'objet point "habituel" et plus rapide que celui du dessous
 car requête de moins
-*************************************************************/
+FIXME uniformiser l'appel au $point->nom_massif qui devrait être atteignable dans un truc de ce style :
+$point->polygones[$x]->nom_polygone
+*******************************************************************************************************************************/
 function lien_point_fast($point,$local=false)
 {
   global $config;
@@ -354,97 +372,43 @@ function lien_point_fast($point,$local=false)
     $url_complete="";
   else
     $url_complete="http://".$config['nom_hote'];
+  
   if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
+  elseif (isset($point->nom_polygone)) // FIXME : des fois c'est dans nom_massif, des fois nom_polygone, il faudrait uniformiser
+    $info_massif=replace_url($point->nom_polygone)."/";
   else
     $info_massif="";
   return "$url_complete/point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
 }
 
-/****************************************
-On génére une url vers le point juste à partir de son id
-Attention c'est moins performant à ne pas trop utiliser
+/******************************************************************************************************************************
+On génére une url vers le point juste à partir de son id Attention c'est moins performant à ne pas trop utiliser
 pour des longues listes ( car requete SQL oblige )
-***************************************/
+******************************************************************************************************************************/
 function lien_point_lent($id_point)
 {
-  $point=infos_point($id_point);
+  $point=infos_point($id_point,True);
   if ($point->erreur)
     return erreur($point->message);
   return (lien_point_fast($point));
 }
 
-/* fonction simple qui renvois une chaine avec liens au format :
- Pays + Massif + Département + carte topographique + (communes ?) + (parc protégé ?)
-On peut lui passer un paramètre additionnel indiquant quelle meta-categorie traiter
-FIXME : cette fonction ne devrait pas générer du HTML, et donc, elle devient en gros inutile ou presque
-*/
-function localisation($polygones,$categorie="")
+// Définit la carte et l'échelle suivant la présence du point dans un des polygones connus pour avoir un fond de carte
+// adapté
+function param_cartes ($point) 
 {
-global $config;
-$html="";
-if(!isset($polygones))
-	return "";
-foreach ($polygones as $polygone)
-{
-  if (isset($polygone->categorie_polygone_type) and $polygone->categorie_polygone_type==$categorie)
-  {
-    $lien=lien_polygone($polygone,True);
-    if ($categorie=="administrative") // FIXME : gros hack : certains polygones administratif sont si gros, qu'il ne vaut mieux pas faire un lien vers eux
-      $html.=" ".ucfirst($polygone->nom_polygone)." +";
-    else
-      $html.=" <a href=\"$lien\">".ucfirst($polygone->nom_polygone)."</a> +";
-  }
-}
-return trim($html,"+");
+    global $config;
+    // Pour chaque polygones auquel appartient le point, on cherche voir s'il existe un fournisseur de fond de carte "recommandé"
+    // Si plusieurs sont possible, le premier trouvé est renvoyé
+    foreach ($point->polygones as $polygone)
+        foreach ($config['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
+            if ($polygone->nom_polygone==$nom_pays)
+                return $choix_carte;
+    // aucun n'a été trouvé
+    return $config['fournisseurs_fond_carte']['Autres'];
 }
 
-// Définit la carte et l'échèle suivant la présence d'une zone dans la chaine de localisation
-// Dominique 28/05/2012
-// FIXME -> oulla qu'est-ce que c'est que cette tambouille, convertir en utilisant infos_point et mettre ces infos en base -- sly
-function param_cartes ($localisation) {
-	$series = Array (
-		'France'    => Array ('Maps.Refuges.info',          50000), // Inhibition temporaire, l'API ne fonctionnat plus / Dominique 30/08/2012
-		'Suisse'    => Array ('Google',       50000, 'SwissTopo'), // Par défaut on affiche GG, sur demande SwT
-		'Italie'    => Array ('Italie',      100000),
-		'Espagne'   => Array ('Espagne',      25000),
-		'Andorre'   => Array ('IGN',          25000),
-		'Argentina' => Array ('OpenCycleMap', 50000),
-		'Autres'    => Array ('Google',      100000),
-	);
-	return $series ['France']; // par défaut
-
-	// Il doit y avoir mieux que ce découpage :
-	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $localisation));
-	foreach ($chploc AS $loc)
-		if (isset ($series [$loc]))
-			return $series [$loc];
-			
-	return $series ['Autres']; // par défaut
-}
-// Dominique 11/09/2012 utilisation des paramètres de /includes/config.php
-// FIXME : idem
-function param_cartes_vignettes ($modele) {
-	global $config;
-/*	// TODO: Il doit y avoir mieux que ce charcutage :
-	$chploc = explode (' ', str_replace (Array ('<', '>'), ' ', $modele->localisation));
-	foreach ($chploc AS $loc)
-		if (isset ($config['cartes_vignettes'] [$loc]))
-			$carte =  $config['cartes_vignettes'] [$loc];
-	
-	// Attention, MRI ne couvre pas toute la planette
-	//TODO : il faudrait systématiser pour toutes les cartes
-	if ($modele->longitude < -25 ||
-		$modele->longitude >  45 ||
-		$modele->latitude  <  33
-		)
-		foreach ($carte AS $k => $v)
-			if ($v == 'maps.refuges.info')*/
-				$carte [$k] = 'OpenCycleMap';
-
-	$carte = $config['cartes_vignettes'] ['Autres']; // par défaut
-	return $carte;
-}
 
 // Par choix, la notion de fermeture dans la base est enregistrée en un seul champ pour tous les cas 
 // (ruines, détruite, fermée) car ces trois états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
@@ -501,68 +465,6 @@ function infos_point_forum ($point)
 
 }	
 
-/*****************************************************
-Cette fonction retourne sous la forme d'un object
-toutes les caractéristiques d'un point
-Voir a_lire.txt annexe 1 dans ressources pour voir un example d'élément
-
-retourne -1 si le point n'est pas trouvé
-on accède sous la forme :
-$infos_point->champ
-un array est disponible sous la forme 
-$infos_point->polygones[$i]->champ
-( polygones triés par importance pays>département>massif>carte>parc
-pour obtenir la liste des polygones auquels ce point appartient
-Pour simplifier $infos_point->massif contient les infos du polygone massif auquel le
-point appartient )
-FIXME: cette histoire de $infos_point->massif est qu'historiquement on s'intéresse plus aux massifs
-que aux pays/départements/autres/ une version plus logique devrait laisser tomber ça et indiquer lequel des $infos_point->polygones[$i] est le massif
-auquel le point appartient sly 14/03/2010
-*****************************************************/
-function infos_point($id_point)
-{
-  // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
-  global $config,$pdo;
-  $conditions = new stdClass();
-  if (!is_numeric($id_point))
-    return erreur("id du point demandé mal formé","id du point demandé : $id_point");
-  $conditions->ids_points=$id_point;
-  $conditions->modele=-1;
-
-  // récupération des infos du point
-  $points=infos_points($conditions);
-  // Requête impossible à executer
-  if ($points->erreur)
-    return erreur($points->message);
-  if (count($points)==0)
-    return erreur("Le point demandé est introuvable dans notre base","id du point demandé : $id_point".var_export($points,true));
-  if (count($points)>1)
-    return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
-    
-    $i=0;
-  $point=$points[0];
-  
-  // recherche des différents polygones auquels appartienne le point
-  // FIXME Cette particularité n'existe que lorsque on demande un point en particulier
-  // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
-  // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
-  // sauf sur les pages des points... doute... incertitude -- sly
-  $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
-	FROM polygones,polygone_type,points_gps
-	WHERE
-	  polygones.id_polygone_type=polygone_type.id_polygone_type
-	AND ST_Within(points_gps.geom, polygones.geom) 
-	AND points_gps.id_point_gps=$point->id_point_gps
-	ORDER BY polygone_type.ordre_taille DESC";
-
-  $res = $pdo->query($query_polygones);
-  if ( $polygones_du_point = $res->fetch() ) 
-    do
-    {
-      $point->polygones[]=$polygones_du_point;
-    } while ( $polygones_du_point = $res->fetch() ) ;
-    return $point;
-}
 
 /********************************************************
 Fonction qui permet, en fonction de l'object $point passé en paramêtre la mise à jour OU la création si :
@@ -616,7 +518,7 @@ function modification_ajout_point($point)
 
 	if ( !empty($point->id_point) )  // update
 	{
-		$infos_point_avant = infos_point($point->id_point);
+		$infos_point_avant = infos_point($point->id_point,true);
 		if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
 			return erreur("Erreur de modification du point : $infos_point_avant->message");
     
@@ -627,21 +529,12 @@ function modification_ajout_point($point)
 	else  // INSERT
 		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
     
-    //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
-/*    if (isset($point->site_officiel))
-		if (preg_match("/http\:\/\//",$point->site_officiel))
-			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-		elseif( !empty($point->site_officiel) )
-			$champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
-		else
-			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);  */
-  
     if (!$pdo->exec($query_finale))
 		return erreur("Requête en erreur, impossible à executer",$query_finale);
     
     if ($point->id_point=="")  // donc c etait un ajout
     {	
-		$point->id_point = $pdo->lastInsertId('points_id_point_seq'); //FIXME c'est un peu relou de devoir spécifier la séquence : ni portable ni fiable si on la change
+		$point->id_point = $pdo->lastInsertId();
       
 		/********* la création du forum point *************/
 		forum_point_ajout($point);
@@ -686,7 +579,7 @@ function forum_point_ajout( $point )
   0, $point->id_point )";
 	
   $res = $pdo->query($query_insert);
-  $topic_id = $pdo->lastInsertId('phpbb_topics_topic_id_seq'); //FIXME POSTGRESQL : ca devrait etre bon necessite un sequence_name, voir doc PHP
+  $topic_id = $pdo->lastInsertId();
 	
   
   /*** rajout d'un post fictif pour débuter le truc - je vois pas en quoi c'est nécessaire, le topic devrait pouvoir être vide**/
@@ -700,7 +593,7 @@ function forum_point_ajout( $point )
   1, 1, NULL , 0 )";
 	
   $res = $pdo->query($query_insert_post);
-  $last = $pdo->lastInsertId('phpbb_posts_post_id_seq'); //FIXME POSTGRESQL : ca devrait passer necessite un sequence_name, voir doc PHP
+  $last = $pdo->lastInsertId();
 
   
   /*** rajout d'un post avec texte pour débuter le truc ( phpBB mal codé ? non ? ) ha ça oui ! **/

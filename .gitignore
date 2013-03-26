@@ -1,8 +1,6 @@
 photos_points
 forum/photos-points
-modeles/config_privee.php
-tinyows/config.xml
+includes/config_privee.php
 robots.txt
-.htaccess
-statique/mode_emploi_textes
+/.htaccess
 forum/images/avatars

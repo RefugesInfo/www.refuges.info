@@ -7,7 +7,7 @@
 
 /**
  * @requires OpenLayers/Control.js
- * @requires OpenLayers.Control.Panel.js
+ * @requires OpenLayers/Control/Panel.js
  */
 
 /**

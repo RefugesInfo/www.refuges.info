@@ -3,7 +3,9 @@
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license. */
 
 /**
- * @requires OpenLayers/Control/Navigation.js
+ * @requires OpenLayers/Control.js
+ * @requires OpenLayers/Format/GPX.js
+ * @requires OpenLayers/Projection.js
  */
 
 /**

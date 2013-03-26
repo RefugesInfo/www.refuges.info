@@ -1,0 +1,10 @@
+(et accessoirement fichier à supprimer avant de mettre en prod)
+
+- Supprimer le type de point "censuré" de la table point_type
+- créer une colonne "censure" dans la table point type boolean, default=false
+- Vérifier s'il existe des points de type "censuré" (id=26) et leur placer le champs censure à true
+
+mode d'emploi : 
+avant la mise en place de dev par "git pull origin dev", supprimer le dossier+fichiers /statique/mode_emploi_textes
+(le dossier statique n'existant plus)
+Toutes les tables sont déjà en place

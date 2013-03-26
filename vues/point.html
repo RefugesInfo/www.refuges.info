@@ -3,7 +3,7 @@
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $modele contient les données passées par le fichier PHP
+// $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
 // Inclue des différents blocs spécialisés
@@ -26,17 +26,17 @@
 	
 <!--============================================ CARTE ============================================-->
 		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
-		if ($modele->mini_carte) {?>
+		if ($vue->mini_carte) {?>
 			<div style="float: right;">
 				<div id="vignette"></div>
 					<p id="agrandir_vignette">
 						<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
-							Utiliser le fond de carte <?=$modele->vignette[1]?><?=$modele->vignette[2]?>
+							Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
 						</a>
 						<span id="p21781"></span>
 					</p>
 					<p>
-						<a href="/nav.php?lat=<?=$modele->latitude?>&amp;lon=<?=$modele->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+						<a href="/nav?lat=<?=$vue->latitude?>&amp;lon=<?=$vue->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
 							Aller sur le présentoir à cartes
 						</a>
 					</p>
@@ -45,17 +45,17 @@
 		
 <!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
 		<?// Signaler les fiches censurées
-		if ($modele->nom_type == 'Censuré') {?>
+		if ($vue->censure) {?>
 			<dd class="lien_ajout_commentaire">
-				<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$modele->id_point?>">
+				<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$vue->id_point?>">
 					Cette fiche est censurée.
 				</a>
 				&nbsp; Elle n'est visible que des modérateurs
 			</dd>
 		<?}?>
 		<?// Si les droits sont suffisants, lien de modification
-		if ($modele->lien_modification) {?>
-			<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$modele->id_point?>">
+		if ($vue->lien_modification) {?>
+			<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$vue->id_point?>">
 				[Modifier cette fiche]
 			</a>
 		<?}?>
@@ -64,57 +64,57 @@
 		<dl style="margin: 2px;">
 <!--========================================== FICHE DE ===========================================-->
 			<dt class="condense">
-				Fiche (n°<?=$modele->id_point?>) de:
+				Fiche (n°<?=$vue->id_point?>) de:
 			</dt>
 			<dd class="condense">
-				<em><?=$modele->nom_debut_majuscule?></em>, 
+				<em><?=$vue->nom_debut_majuscule?></em>, 
 			</dd>
 			<dd class="condense">
-				<a href="<?=lien_mode_emploi("fiche-".replace_url($modele->nom_type))?>"><?=$modele->nom_type?><sup>?</sup></a>
+				<a href="<?=lien_mode_emploi("fiche-".replace_url($vue->nom_type))?>"><?=$vue->nom_type?><sup>?</sup></a>
 				<?php
 				//Si elle/il est fermé, on l'indique directement en haut en rouge
-				if ($modele->annonce_fermeture) {?>
-					<strong>(<?=$modele->annonce_fermeture?>)</strong>
+				if ($vue->annonce_fermeture) {?>
+					<strong>(<?=$vue->annonce_fermeture?>)</strong>
 				<?}?>
 			</dd>
 <!--===================================== PLACES POUR DORMIR ======================================-->
 			<?// Rajout de +ieurs blocs (proprio, acces, remark, pub, photos...) et d'un bloc "nb places" si necessaire
-			if ($modele->equivalent_places) {?>
-				<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+			if ($vue->equivalent_places) {?>
+				<dt/>
 				<dt class="condense">
-					<?=$modele->equivalent_places?>:
+					<?=$vue->equivalent_places?>:
 				</dt>
 				<dd class="condense">
-					<?echo bbcode2html ($modele->places)?>
+					<?echo bbcode2html ($vue->places)?>
 				</dd>
 			<?}?>
 			
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
-			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
+			<dt/>
 			<dt class="condense">Sur le site depuis:</dt>
-			<dd class="condense"><?echo date ("d/m/Y", $modele->date_creation_timestamp)?></dd>
+			<dd class="condense"><?echo date ("d/m/Y", $vue->date_creation_timestamp)?></dd>
 
 			<?// Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
-			if (isset($modele->date_derniere_modification)) {?>
+			if (isset($vue->date_derniere_modification)) {?>
 				<dt class="condense">Dernière modification du </dt>
-				<dd class="condense"><?echo date ("d/m/Y",$modele->date_modif_timestamp)?>.</dd>
+				<dd class="condense"><?echo date ("d/m/Y",$vue->date_modif_timestamp)?>.</dd>
 			<?}
 
 			// Si le créateur de la fiche dispose d'un compte sur le forum on indique son compte sur le forum
 			// si celui-ci n'était pas connecté, on indique ce qu'il a mis dans le champs "auteur"
 			// sauf si il n'était ni connecté et il a laissé le champs "auteur" vide
-			if ($modele->nom_createur OR $modele->id_createur) { //Il était connecté ?>
+			if ($vue->nom_createur OR $vue->id_createur) { //Il était connecté ?>
 				<dt class="condense">Créateur de cette fiche:</dt>
-				<?if ($modele->id_createur != 0) {  // si le visiteur était loggué alors on fait un lien vers sa fiche utilisateur phpBB
-					$createur = infos_utilisateur ($modele->id_createur);
+				<?if ($vue->id_createur != 0) {  // si le visiteur était loggué alors on fait un lien vers sa fiche utilisateur phpBB
+					$createur = infos_utilisateur ($vue->id_createur);
 				?>
 					<dd class="condense">
-						<a href="<?=$config['fiche_utilisateur'].$modele->id_createur?>">
+						<a href="<?=$config['fiche_utilisateur'].$vue->id_createur?>">
 							<?=bbcode2html ($createur->username)?>
 						</a>
 					</dd>
 				<?}else{?>
-					<dd class="condense"><?=bbcode2html ($modele->nom_createur)?></dd>
+					<dd class="condense"><?=bbcode2html ($vue->nom_createur)?></dd>
 				<?}
 			}
 			?>
@@ -124,58 +124,74 @@
             <dd>
                 <span>
                 Précision:
-                <?if ($modele->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
-						<strong><?=$modele->nom_precision_gps?></strong>
+                <?if ($vue->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
+						<strong><?=$vue->nom_precision_gps?></strong>
 				<?}else{?>
-						<?=$modele->nom_precision_gps?>
+						<?=$vue->nom_precision_gps?>
 					<?}?>
                 </span>
             </dd>
 			<dd>
-				Altitude: <em><?=$modele->altitude?>m,</em>
-				<?if (!$modele->mini_carte) {?>
-					<strong><?=$modele->nom_precision_gps?></strong>
+				Altitude: <em><?=$vue->altitude?>m,</em>
+				<?if (!$vue->mini_carte) {?>
+					<strong><?=$vue->nom_precision_gps?></strong>
 				<?}else{?>
 					<span id="coordonnees-value">
-						<span id="titre-lon">Longitude</span>: <em id="lon"><?=$modele->longitude?></em>
-						<span id="titre-lat">Latitude</span>: <em id="lat"><?=$modele->latitude?></em>
+						<span id="titre-lon">Longitude</span>: <em id="lon"><?=$vue->longitude?></em>
+						<span id="titre-lat">Latitude</span>: <em id="lat"><?=$vue->latitude?></em>
 					</span>
 					<select id="select-projection">
 						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
 					</select>
 					
 					(
-						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$modele->id_point?>">gpx</a>
+						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->id_point?>">gpx</a>
 					,
-						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$modele->id_point?>">kml</a>
+						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->id_point?>">kml</a>
 					)
 				<?}?>
 			</dd>
 <!--======================================== LOCALISATION =========================================-->
-                        <?php if (isset($modele->localisation))
-                              foreach ($modele->localisation as $categorie_localisation => $localisation) { ?>
-			<dt/><?/* pour aller à la ligne sans violer XHTML STRICT */?>
-			<dt class="condense">Localisation <?=$categorie_localisation?>:</dt>
-			<dd class="condense"><?=$localisation?></dd>
+                        <?php foreach ($vue->localisation as $categorie_polygone => $polygones) { ?>
+			<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
+			<dd class="condense">
+                            <?php foreach ($polygones as $key => $polygone) { ?>
+                                <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
+                                  <?php if ($polygone->site_web) { ?>
+                                    <a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
+                                 <?php } else { ?>
+                                    <?=$polygone->nom_polygone?>
+                                 <?php } ?>
+                                    <?php if ($polygone->avec_lien_carte) { ?>
+                                    
+                                    <sup>
+                                        <a href="<?=$polygone->lien_polygone?>">carte</a>
+                                    </sup>
+                                   <?php } ?>
+                                <?=$virgule?>
+                            <?php } ?>
+                        
+                        <dt />
+                        </dd>
 			<?php } ?>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
 			<?// Champs textes libres
-			if ($modele->equivalent_proprio) {?>
-				<dt><?=$modele->equivalent_proprio?>:</dt>
-				<dd><?echo bbcode2html($modele->proprio)?></dd>
+			if ($vue->equivalent_proprio) {?>
+				<dt><?=$vue->equivalent_proprio?>:</dt>
+				<dd><?echo bbcode2html($vue->proprio)?></dd>
 			<?}?>
 			
 <!--============================================ ACCÈS ============================================-->
 			<dt style="clear: left;">Accès:</dt>
-			<dd><?echo bbcode2html($modele->acces)?></dd>
+			<dd><?echo bbcode2html($vue->acces)?></dd>
 <!--========================================== REMARQUES ==========================================-->
 			<dt>Remarques:</dt>
-			<dd><?echo bbcode2html($modele->remark)?></dd>
+			<dd><?echo bbcode2html($vue->remark)?></dd>
 <!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
-			<?php if (isset($modele->infos_complementaires)) { ?>
+			<?php if (isset($vue->infos_complementaires)) { ?>
 
 			<dt style='clear: left;'>Informations complémentaires:</dt>
-			<?php foreach ($modele->infos_complementaires as $champ => $val) { ?>
+			<?php foreach ($vue->infos_complementaires as $champ => $val) { ?>
 				<dd><?=$champ?>: <em><?=$val['valeur']?></em> <?php
 					if (isset($val['lien'])) 
 					{?><a href="<?=$val['lien']?>"><?=$val['texte_lien']?></a><?php } 
@@ -185,10 +201,10 @@
 			}?>
 			
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
-			<?if (count($modele->points_proches)!=0) {?>
+			<?if (count($vue->points_proches)!=0) {?>
 				<dt>Points à proximité:</dt><?
-				foreach ($modele->points_proches as $point_proche) {
-					if ($point_proche->id_point!=$modele->id_point) {
+				foreach ($vue->points_proches as $point_proche) {
+					if ($point_proche->id_point!=$vue->id_point) {
 						$distance=number_format($point_proche->distance/1000,"2",",","")."km";
 						?>
 						<dd>
@@ -200,30 +216,30 @@
 			}?>
 			
 <!--================================= Si message d'information à afficher =======================================-->
-			<?php if (isset($modele->polygone_avec_information)) {?>
+			<?php if (isset($vue->polygone_avec_information)) {?>
                           <dt>Réglementation particulière :</dt>
                             <dd>
-                              <?=$modele->nom_debut_majuscule?> est situé dans
-                                <?php if (isset($modele->polygone_avec_information->site_web)) {?>
-                                  <a href="<?=$modele->polygone_avec_information->site_web?>">
+                              <?=$vue->nom_debut_majuscule?> est situé dans
+                                <?php if (isset($vue->polygone_avec_information->site_web)) {?>
+                                  <a href="<?=$vue->polygone_avec_information->site_web?>">
                                 <?php } ?>
-                                  <?=$modele->polygone_avec_information->nom_polygone?>
-                                <?php if (isset($modele->polygone_avec_information->site_web)) {?>
+                                  <?=$vue->polygone_avec_information->nom_polygone?>
+                                <?php if (isset($vue->polygone_avec_information->site_web)) {?>
                                   </a>.<br />
                                 <?php } ?>
-                                <?=$modele->polygone_avec_information->message_information_polygone?>
-                              <?php if (isset($modele->polygone_avec_information->url_exterieure)) {?>
-                                (Plus d'information sur <a href="<?=$modele->polygone_avec_information->url_exterieure?>">cette réglementation</a>)
+                                <?=$vue->polygone_avec_information->message_information_polygone?>
+                              <?php if (isset($vue->polygone_avec_information->url_exterieure)) {?>
+                                (Plus d'information sur <a href="<?=$vue->polygone_avec_information->url_exterieure?>">cette réglementation</a>)
                               <?php } ?>
                           </dd>
 			<?php } ?>
 			
 <!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
 			<!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
-			<?if (count ($modele->commentaires_avec_photo)) {?>
+			<?if (count ($vue->commentaires_avec_photo)) {?>
 				<dt>Photos:</dt> 
 				<dd>
-					<?php foreach ($modele->commentaires_avec_photo AS $commentaire_avec_photo) { ?>
+					<?php foreach ($vue->commentaires_avec_photo AS $commentaire_avec_photo) { ?>
 						<a href="#C<?=$commentaire_avec_photo->id_commentaire?>">
 							<img
 								height="50"
@@ -238,19 +254,19 @@
 			
 <!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
 			<dd class="lien_ajout_commentaire">
-				<a href="/point_ajout_commentaire.php?id_point=<?=$modele->id_point?>">
+				<a href="/point_ajout_commentaire.php?id_point=<?=$vue->id_point?>">
 					Ajouter un commentaire, une photo, une demande de correction
 				</a>
 			</dd>
 		</dl>
 	</div>
 <!--============================ POST LE PLUS RÉCENT DU FORUM D'UN POINT ===========================-->
-	<?php if (isset($modele->forum)) { ?>
+	<?php if (isset($vue->forum)) { ?>
 	<p>
 		<em>
 			Pour les discussions, les questions et les avis on vous conseille d'utiliser
-			<a href="<?=$modele->forum->lienforum?>">
-				le forum dédié à <?=$modele->nom?>
+			<a href="<?=$vue->forum->lienforum?>">
+				le forum dédié à <?=$vue->nom?>
 			</a>
 			afin de laisser ces pages pour de l'information objective. 
 			De plus les utilisateurs du site qui "suivent" la discussion du forum seront prévenu par email
@@ -259,15 +275,15 @@
 	</p>
 
 	<?// si first=last, alors 1 seul post donc topic vide: yip
-	if ($modele->forum->topic_first_post_id != $modele->forum->topic_last_post_id) {?>
+	if ($vue->forum->topic_first_post_id != $vue->forum->topic_last_post_id) {?>
 		<div class="couleur_fond_amplifiee">
 			Dernier message du forum, le
 			<em>
-				<?echo strftime ('%A %e %B %Y à %H:%M',$modele->forum->post_time)?>
+				<?echo strftime ('%A %e %B %Y à %H:%M',$vue->forum->post_time)?>
 			</em>:
-			<blockquote cite="<?=$modele->forum->lienforum?>">
+			<blockquote cite="<?=$vue->forum->lienforum?>">
 				<div>
-					<?echo bbcode2html ($modele->forum->post_text)?>
+					<?echo bbcode2html ($vue->forum->post_text)?>
 				</div>
 			</blockquote>
 		</div>
@@ -278,9 +294,9 @@
 <!--========================================= COMMENTAIRES =========================================-->
 	<h5>Commentaires</h5>
 		<?php
-		if (count ($modele->commentaires)) { ?>
+		if (count ($vue->commentaires)) { ?>
 			<ul class="comment2">
-			<?foreach ($modele->commentaires AS $commentaire) {  ?>
+			<?foreach ($vue->commentaires AS $commentaire) {  ?>
 			<li>
 				<a id="C<?=$commentaire->id_commentaire?>"></a><!-- ici l'id pour l'anchor des petites vignettes du haut -->
 				<div class="fauxfieldset">
@@ -324,7 +340,7 @@
 
 <!--================== FIN DE LA PAGE DES POINTS - COMMENTAIRES DIVERS ET VARIÉS ===================-->
 	<p>
-		<a class="lien_ajout_commentaire" href="/point_ajout_commentaire.php?id_point=<?=$modele->id_point?>">
+		<a class="lien_ajout_commentaire" href="/point_ajout_commentaire.php?id_point=<?=$vue->id_point?>">
 			Ajouter un commentaire, une photo, une demande de correction
 		</a>
 	</p>

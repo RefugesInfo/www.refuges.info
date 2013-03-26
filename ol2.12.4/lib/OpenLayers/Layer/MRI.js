@@ -6,9 +6,7 @@
 
 /**
  * @requires OpenLayers/Layer/OSM.js
- * @requires OpenLayers/Layer/XYZ.js
- * @requires OpenLayers/Layer/Grid.js
- * @requires OpenLayers/Tile/Image.js
+ * @requires OpenLayers/BaseTypes/Bounds.js
  */
 
 /**

@@ -629,7 +629,10 @@ $pagination = ( $highlight != '' ) ? generate_pagination("viewtopic.$phpEx?" . P
 	// forum_id=4 est le forum des refuges, le topic 537 etant le message d'introduction du forum
 
 	if (  $forum_id == 4 and  $_GET['t']!=537)
-		$lien_retour_fiche="</a> &nbsp; <a href=\"".lien_point_lent($forum_topic_data['topic_id_point'])."\">(Cliquer ici pour retourner sur la fiche de $topic_title)";
+    {
+        $point=infos_point($forum_topic_data['topic_id_point'],True);
+		$lien_retour_fiche="</a> &nbsp; <a href=\"".lien_point_fast($point)."\">(Cliquer ici pour retourner sur la fiche de $topic_title)";
+    }
 	else
 		$lien_retour_fiche="";
 

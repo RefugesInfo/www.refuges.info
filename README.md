@@ -2,9 +2,9 @@ Qu'est ce que refuges.info ?
 ============================
 
 Le mieux, c'est d'aller voir : http://www.refuges.info
-Le code source est sous licence WFTPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
+Le code source est sous licence WTFPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
 
-installation
+Installation
 ============
 
 Pour installer et coder le site de www.refuges.info vous avez besoin :
@@ -25,8 +25,9 @@ Pour télécharger la dernière version de développement :
 
 ```
 git clone git://github.com/sletuffe/www.refuges.info.git
+cd www.refuges.info
 ```
-Le code du site se retrouve dans un dossier nommé www.refuges.info
+Le code du site se retrouve dans un dossier nommé www.refuges.info (toutes les commandes d'après sont à faire depuis ce dossier)
 
 * Postgresql
 
@@ -37,34 +38,25 @@ une doc (pas totalement à jour le 03/03/2013) explique notre base dans /ressour
 
 * Configuration des fichiers
 
- * dans /modeles/
+ * dans /includes/
 copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée
  * A la racine : renommer le fichier htaccess.modele.txt en .htaccess (et décommenter la dernière ligne si vous voulez que les erreurs php s'affiche à l'écran)
 ```
-cd modeles
-cp config_privee.php.modele config_privee.php
+cp includes/config_privee.php.modele includes/config_privee.php
+vi includes/config_privee.php -> editer le fichier pour vos paramètres à vous
 ```
  * Créez et donnez tous les droits à l'utilisateur qui fait tourner apache au dossiers et fichiers contenus dans :
  
 ```
-chmod 777 /photos_points
+mkdir photos_points
+chmod 777 photos_points
 
-chmod 777 /forum/photos-points
+mkdir forum/photos-points
+chmod 777 forum/photos-points
 
-chmod 777 /statique/mode_emploi_textes
+mkdir forum/images/avatars
+chmod 777 forum/images/avatars
 ```
-
-* En alternative, si vous développez sur le serveur de refuges.info, vous pouvez faire un lien symbolique vers les informations en production
-
-```
-ln /home/sites/refuges/www.refuges.info/statique/mode_emploi_textes/ -s 
-
-cd forum ; ln /home/sites/refuges/www.refuges.info/forum/photos-points -s ; cd ..
-
-cd statique ; ln /home/sites/refuges/www.refuges.info/statique/mode_emploi_textes -s ; cd ..
-```
-
-
 
 Quelques commandes utiles de git adaptées à refuges.info
 ========================================================
@@ -75,7 +67,7 @@ Il arrive cependant qu'on perde des fichiers, au sens propre ;-) c'est à dire q
 dans les méandres de git et de son dossier caché .git, mais avec la bonne commande, tout revient, donc pas de panique, tentez !
 En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivés sur github et chez chaque développeur
 
-* Avoir une copie complète de la dernière version en cours de développement du code (pas forcément stable)
+* Avoir une copie complète de la dernière version en cours de développement du code (pas forcément stable mais la dernière version)
 
 ```
 git clone https://github.com/sletuffe/www.refuges.info.git -b dev
@@ -156,15 +148,19 @@ Doc dédiée aux développeurs ayant accès à la machine wri
 
 * commandes git utiles 
  * Pour passer sur la version de développement
+
 ```
-git fetch origin dev
+git fetch origin dev --> facultatif si vous avez déjà cloner depuis dev
 git checkout dev
 ```
+
  * Pour passer sur la branche stable
- ```
+
+```
 git fetch origin master
 git checkout master
 ```
+
 (ne faites pas de push sur la version stable, sauf résolution de bugs critiques)
 
 
@@ -185,6 +181,7 @@ cd www.refuges.info -> pour rentrer dans votre zone de développement
 git <options> -> pour taper des commandes git relatives à wri
 cd .. -> revenir dossier d'avant
 ```
+
 * Sur le serveur : 
  * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
  * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur http://<login>.refuges.info
@@ -199,6 +196,7 @@ cd .. -> revenir dossier d'avant
 cd dev.refuges.info
 git pull
 ```
+
 La dernière version de la branche de développement nommée "dev" doit alors être rapatriée et testée sur http://dev.refuges.info
 
 mise en prod (après de nombreux tests validés sur la zone dev.refuges.info !):
@@ -206,7 +204,7 @@ mise en prod (après de nombreux tests validés sur la zone dev.refuges.info !):
  * serveur : www.refuges.info
  
 Attention : pensez bien que dev et www n'utilise pas forcément le même format de la base de donnée, bien penser à propager les
-changements à ce niveau là !
+changements à ce niveau là et en discuter avec les autres avant de le faire !
  
 ```
 cd www.refuges.info

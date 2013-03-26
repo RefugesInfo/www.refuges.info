@@ -6,6 +6,7 @@
 
 /**
  * @requires OpenLayers/Control/DrawFeature.js
+ * @requires OpenLayers/Handler/Path.js
  */
 
 /**
