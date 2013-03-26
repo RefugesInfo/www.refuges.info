@@ -49,6 +49,7 @@ $conditions_commentaires_generaux->limite=2;
 $vue->nouvelles_generales=infos_commentaires($conditions_commentaires_generaux);
 
 // Préparation de la liste des nouveaux commentaires
+// ici, on pourrait vraiment se passer de la fonction nouvelles et ansi de pas dépendre d'un truc qui génère du HTML
 $vue->nouveaux_commentaires=nouvelles(9,"commentaires");
 
 // Préparation de la liste des nouveaux points rentrés
