@@ -285,7 +285,7 @@ function infos_points($conditions)
     // Ici, petite particularité sur les points censurés, par défaut, on ne veut pas les renvoyer, mais on veut quand 
     // même, si un seul a été demandé, pouvoir dire qu'il est censuré, donc on va le chercher en base mais on renvoi une erreur 
     // s'il est censuré
-    if ( (isset($point->censure) and  !$point->censure) or $conditions->avec_points_censure) // On renvoi ce point, soit il n'est pas censuré, soit on a demandé aussi les points censurés
+    if (!$point->censure or $conditions->avec_points_censure) // On renvoi ce point, soit il n'est pas censuré, soit on a demandé aussi les points censurés
         $points[]=$point;
     elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est censuré on retourne le mesage d'erreur
         return erreur("Ce point est censuré, seul un modérateur peut agir sur lui");
