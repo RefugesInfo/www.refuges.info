@@ -196,13 +196,16 @@ $tok = strtok(",");
 }
 // ici je trie par ordre décroissant toutes les news confondues
 rsort($news_array);
-
 // AFFICHAGE
 // FIXME : a convertir au modèle MVC
 if (!$rss)
 {
-  for ($i = 0; $i < $nombre; $i++)
-    print("\n<li><em>".date("d/m/y", $news_array[$i]['date'])."</em>&nbsp;".$news_array[$i]['texte']."</li>");
+    // Gestion du cas ou le tableau disposerait de moins d'enregistrements que le $nombre demandés
+    // $nombre_choix devient le min(
+    $nombre_total = count($news_array);
+
+    for ($i = 0; $i < min($nombre_total,$nombre); $i++)
+        print("\n<li><em>".date("d/m/y", $news_array[$i]['date'])."</em>&nbsp;".$news_array[$i]['texte']."</li>");
   
 // et le reste du tableau ben il sert a rien...
 return 0;
