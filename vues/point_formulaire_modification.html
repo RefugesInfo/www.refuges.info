@@ -118,6 +118,13 @@
 	</fieldset>
 		<fieldset>
 			<legend>Informations Complémentaires</legend>
+			<?php if ($vue->champs->censure->actif) { ?>
+			<fieldset class="booleen">
+				<legend<?=(isset($vue->champs->censure->aide))? ' title="'.$vue->champs->censure->aide.'"':'';?>><?=$vue->champs->censure->label?></legend>
+				<label>oui<input type="radio" name="censure" value="TRUE" <?=($vue->champs->censure->valeur===true)?'checked="checked"':'';?>/></label>
+				<label>non<input type="radio" name="censure" value="FALSE" <?=($vue->champs->censure->valeur===false)?'checked="checked"':'';?>/></label>
+			</fieldset>
+			<?php } ?>
 	<?php
 	foreach ($vue->champs->bools as $nom => $params)
 	{

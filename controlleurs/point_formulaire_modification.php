@@ -231,13 +231,14 @@ foreach ($textes_area as $libelle => $nom_variable)
 /******** Les informations complétaires (booléens, détails) *****************/
 
 // Seuls les modérateurs peuvent passer un point en censuré
-// Je met ce champs dans le lot des "booléens" par simplicité, mais "ignore si c'est censuré" n'aura pas de sens
+// ce n'est pas tout à fait un champ trinaire comme les autres (true, false, null) car on ne peut pas "pas savoir"
 if ($_SESSION['niveau_moderation']>=1)
 {
-    $vue->champs->bools->censure = new stdClass ;
-    $vue->champs->bools->censure->label = "Censurer ce point" ;
-    $vue->champs->bools->censure->valeur = $point->censure;
-    $vue->champs->bools->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
+    $vue->champs->censure = new stdClass ;
+    $vue->champs->censure->actif = True ;
+    $vue->champs->censure->valeur = $point->censure;
+    $vue->champs->censure->label="Censurer ce point";
+    $vue->champs->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
 }
 
 foreach($config['champs_binaires_simples_points'] as $champ)

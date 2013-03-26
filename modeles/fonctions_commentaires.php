@@ -107,20 +107,20 @@ function infos_commentaires ($conditions)
 	// Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
 	if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele)
 	{
-		$table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
+            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
 
-		$condition_en_plus.=" AND points.id_point=commentaires.id_point 
-			 AND points_gps.id_point_gps=points.id_point_gps
-			 AND point_type.id_point_type=points.id_point_type";
-		$champ_en_plus.=",points.*,point_type.*,";
-		// Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
-		// ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
-		$champ_en_plus.=colonnes_table('polygones',False);
+            $condition_en_plus.=" AND points.id_point=commentaires.id_point 
+                     AND points_gps.id_point_gps=points.id_point_gps
+                     AND point_type.id_point_type=points.id_point_type";
+            $champ_en_plus.=",points.*,point_type.*,";
+            // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
+            // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
+            $champ_en_plus.=colonnes_table('polygones',False);
 
-		if (!$conditions->avec_commentaires_modele)
-			$condition_en_plus.=" AND modele!=1 ";
-        if (!$conditions->avec_points_censure)
-           $condition_en_plus.=" AND (censure=False or censure=Null) "; 
+            if (!$conditions->avec_commentaires_modele)
+                    $condition_en_plus.=" AND modele!=1 ";
+            if (!$conditions->avec_points_censure)
+                 $condition_en_plus.=" AND (censure=False) "; 
 	}
    
 	$query="SELECT 
