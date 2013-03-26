@@ -44,7 +44,7 @@ function initmap(){
 	function onLocationError(e) {
 		alert(e.message); // On explique que l'erreur au visiteur
 	}
-	map.locate({watch: true, setView: true, maxZoom: 14}); // On demande de géolocalisé, en continu, avec un zoom de 14 sur notre position
+	map.locate({setView: true, maxZoom: 14}); // On demande de géolocalisé, en continu, avec un zoom de 14 sur notre position
 
 	map.attributionControl.setPrefix(''); // On enlève le crédit vers leaflet
 	map.addLayer(MRI); // On ajoute le calque MRI à la carte
@@ -97,7 +97,7 @@ function stateChanged() {
 				plotmark.data=plotlist.features[i]; // Useless ?
 				// Une variable contenant le style du marqueur
 				var cabaneIcon = L.icon({
-					iconUrl: '../images/icones/' + plotlist.features[i].properties.type + '.png', // On télécharge la bonne image de marqueur
+					iconUrl: './images/icones/' + plotlist.features[i].properties.type + '.png', // On télécharge la bonne image de marqueur
 					iconSize: [16, 16],
 					iconAnchor: [8, 8],
 					popupAnchor: [0, 0]
