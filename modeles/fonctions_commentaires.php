@@ -120,7 +120,7 @@ function infos_commentaires ($conditions)
 		if (!$conditions->avec_commentaires_modele)
 			$condition_en_plus.=" AND modele!=1 ";
         if (!$conditions->avec_points_censure)
-           $condition_en_plus.=" AND censure=False "; 
+           $condition_en_plus.=" AND (censure=False or censure=Null) "; 
 	}
    
 	$query="SELECT 
