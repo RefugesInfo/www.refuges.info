@@ -22,39 +22,80 @@ $sans_parametres=explode ('?',$controlleur->url_complete);
 $controlleur->url_base=$sans_parametres[0];
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 
+// Par défaut, on veut un en-tête et pied de page html, mais dans de rare cas (point-geojson) on ne veut pas
+// le débat étant à poursuivre ici : http://www.refuges.info/forum/viewtopic.php?t=5294
+$avec_entete_et_pied=True;
 // On pourrait être tenté de faire une conversion direct de url vers controlleur, mais si un filou commence à indiquer
 // n'importe quelle url, il pourrait réussir à ouvrir des trucs pas souhaités, avec une liste, on s'assure
 // de n'autoriser que ceux que l'on veut
 switch ($controlleur->url_decoupee[1])
 {
-    case "point": $vue->type=$controlleur->type="point"; break;
-    case "nav": $vue->type=$controlleur->type="nav"; break;
-    case "mode_emploi": $vue->type=$controlleur->type="mode_emploi"; break;
-    case "nouvelles": case "news": case "news.php" : $vue->type=$controlleur->type="nouvelles"; break; // FIXME d'ici ~1an on passera à "nouvelles" uniquement
-    case "index": case "index.php" : case "" : $vue->type=$controlleur->type="index"; break;
-    case "point_ajout_commentaire.php" : case "point_ajout_commentaire" : $vue->type=$controlleur->type="point_ajout_commentaire"; break;
-    case "point_recherche.php" : case "point_recherche" : $vue->type=$controlleur->type="point_recherche"; break;
-    case "point_formulaire_recherche.php" : case "point_formulaire_recherche" : $vue->type=$controlleur->type="point_formulaire_recherche"; break;
-    case "point_formulaire_modification.php" : case "point_formulaire_modification" : $vue->type=$controlleur->type="point_formulaire_modification"; break;
-    case "point_modification.php" : case "point_modification" : $vue->type=$controlleur->type="point_modification"; break;
-    case "rss" : case "rss.php" : $vue->type=$controlleur->type="rss"; break;
-    case "formulaire_rss.php" : case "formulaire_rss" : $vue->type=$controlleur->type="formulaire_rss"; break;
-    case "avis-internaute-commentaire" : $vue->type=$controlleur->type="avis-internaute-commentaire"; break;
-    case "formulaire_exportations" : $vue->type=$controlleur->type="formulaire_exportations"; break;
-    default : $vue->type=$controlleur->type="page_introuvable"; break;
+    case "point":
+        $controlleur->type="point";
+        break;
+    case "point-geojson":
+        $controlleur->type="point";
+        $vue->template="point.geojson";
+        $avec_entete_et_pied=False;
+        break;
+    case "nav":
+        $controlleur->type="nav";
+        break;
+    case "mode_emploi":
+        $controlleur->type="mode_emploi";
+        break;
+    case "nouvelles": case "news.php" :// FIXME d'ici ~1an on passera à "nouvelles" uniquement
+        $controlleur->type="nouvelles";
+        break;
+    case "index": case "index.php" : case "" :
+        $controlleur->type="index";
+        break;
+    case "point_ajout_commentaire" :
+        $controlleur->type="point_ajout_commentaire";
+        break;
+    case "point_recherche.php" : case "point_recherche" :
+        $controlleur->type="point_recherche";
+        break;
+    case "point_formulaire_recherche.php" : case "point_formulaire_recherche" :
+        $controlleur->type="point_formulaire_recherche";
+        break;
+    case "point_formulaire_modification.php" : case "point_formulaire_modification" :
+        $controlleur->type="point_formulaire_modification";
+        break;
+    case "point_modification.php" : case "point_modification" :
+        $controlleur->type="point_modification";
+        break;
+    case "rss" : case "rss.php" :
+        $controlleur->type="rss";
+        break;
+    case "formulaire_rss.php" : case "formulaire_rss" : 
+        $controlleur->type="formulaire_rss";
+        break;
+    case "avis-internaute-commentaire" : 
+        $controlleur->type="avis-internaute-commentaire"; 
+        break;
+    case "formulaire_exportations" : 
+        $controlleur->type="formulaire_exportations"; 
+        break;
+    default : 
+        $controlleur->type="page_introuvable"; 
+    break;
 }
 
-// On appel le controlleur adapté
+// Petite factorisation, dans la majorité des cas, la vue porte le nom du controlleur + .html ... mais pas toujours
+if (!isset($vue->type))
+    $vue->type=$controlleur->type;
+
+// On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config['chemin_controlleurs'].$controlleur->type.".php");
 
-
-if ($_GET['format']=="geojson" && $vue->type=="point") {
-    include ($config['chemin_vues']."$vue->type.geojson");
-}
-else {
-    /*********** On affiche le tout ***/
+// On affiche le tout
+if ($avec_entete_et_pied)
     include ($config['chemin_vues']."_entete.html");
-    include ($config['chemin_vues']."$vue->type.html");
+// Là, c'est bidouille compatibilité avec avant, je pense que chaque controlleur devrait pouvoir décider de la vue sans que soit imposée l'extension
+if (!isset($vue->template))
+    $vue->template=$vue->type.".html";
+include ($config['chemin_vues'].$vue->template);
+if ($avec_entete_et_pied)
     include ($config['chemin_vues']."_pied.html");
-}
 ?>
