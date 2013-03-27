@@ -15,10 +15,6 @@ var plotlist;
 var plotlayers=[];
 var init = 0;
 
-//Les tests effectués en permanence dès le chargement de la page
-document.querySelector('#affichecarte').addEventListener("click", function(){displayBlock('carte')});
-document.querySelector('#afficheindex').addEventListener("click", function(){displayBlock('index')});
-
 // Fonction lancée dès que le <div> map est chargé
 function initmap(){
 	// On teste que le navigateur soit compatible AJAX
@@ -36,18 +32,12 @@ function initmap(){
 	var MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 14, attribution: MRIAttrib}); // Création du calque de tuiles nommé MRI
 
 	map.setView(new L.LatLng(47, 2),6); // Par défaut on affiche la France entière
-	askForPlots(); // Et on affiche les refuges
 
 	// Fonction lancée quand la géolocalisation a marché
 	function onLocationFound(e) {
 	    L.marker(e.latlng).addTo(map); // On ajoute un marqueur indiquant notre position (bleu par défaut)
-		askForPlots(); // On affiche les refuges dans cette aire
 	}
-	// Fonction lancée quand la géolocalisation a échoué
-	function onLocationError(e) {
-		alert(e.message); // On explique que l'erreur au visiteur
-	}
-	map.locate({setView: true, maxZoom: 14}); // On demande de géolocalisé, en continu, avec un zoom de 14 sur notre position
+	map.locate({setView: true, maxZoom: 14}); // On demande de géolocalisé, avec un zoom de 14 sur notre position
 
 	map.attributionControl.setPrefix(''); // On enlève le crédit vers leaflet
 	map.addLayer(MRI); // On ajoute le calque MRI à la carte
@@ -55,9 +45,9 @@ function initmap(){
 	// Ajout de l'icone fullscreen
 	var fullScreen = new L.Control.FullScreen(); 
 	map.addControl(fullScreen);
+	L.control.scale({position: 'topright'}).addTo(map);
 
 	// Action en cas des évenements suivant
-	map.on('locationerror', onLocationError);
 	map.on('locationfound', onLocationFound);
 	map.on('moveend', onMapMove);
 }
@@ -95,9 +85,6 @@ function stateChanged() {
 			removeMarkers(); // On enlève tous les points actuels
 			for (i=0;i<plotlist.features.length;i++) { // Pour chaque point (ligne GeoJSON)
 				var plotll = new L.LatLng(plotlist.features[i].geometry.coordinates[1],plotlist.features[i].geometry.coordinates[0]); // On enregistre ses coordonnées
-				var plotmark = new L.Marker(plotll); // On créé un marqueur (bleu par défaut)
-				map.addLayer(plotmark); // On ajoute un calque pour ce marqueur
-				plotmark.data=plotlist.features[i]; // Useless ?
 				// Une variable contenant le style du marqueur
 				var cabaneIcon = L.icon({
 					iconUrl: './images/icones/' + plotlist.features[i].properties.type + '.png', // On télécharge la bonne image de marqueur
@@ -105,7 +92,9 @@ function stateChanged() {
 					iconAnchor: [8, 8],
 					popupAnchor: [0, 0]
 				});
-				plotmark.setIcon(cabaneIcon); // On applique notre icone juste créé
+				var plotmark = new L.Marker(plotll, {icon: cabaneIcon}); // On créé un marqueur (bleu par défaut)
+				map.addLayer(plotmark); // On ajoute un calque pour ce marqueur
+				plotmark.data=plotlist.features[i]; // Useless ?
 				plotmark.bindPopup('<a href="#" onclick="affichePoint(' + plotlist.features[i].properties.id_point + ');">' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
 				plotlayers.push(plotmark);
 			}
@@ -143,38 +132,38 @@ function pointRecu() {
 	if (ajaxRequest.readyState==4) {
 		if (ajaxRequest.status==200) {
 			point=eval("(" + ajaxRequest.responseText + ")"); // On enregistre la variable GeoJSON en local
-			document.querySelector('#infosPoint').innerHTML = '<a class="retour" href="#" onclick="displayBlock(\'carte\');">Retour carte</a><span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /><span id="couverturePoint"></span><span id="eauPoint"></span><span id="boisPoint"></span><span id="latrinePoint"></span><span id="manquemurPoint"></span><span id="poelePoint"></span><span id="chemineePoint"></span><span id="clefPoint"></span><span id="matelasPoint"></span><span id="ravitaillementeauPoint"></span><span id="sitewebPoint"></span></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
-			document.querySelector('#titrePoint').innerHTML = point.properties.nom;
-			document.querySelector('#idPoint').innerHTML = "(Point n°" + point.properties.id + ")<br />Édité le " + point.properties.derniere_modif;
-			document.querySelector('#typePoint').innerHTML = point.properties.type + "<br />" + point.properties.nb_places + " place(s)";
-			document.querySelector('#coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
-			document.querySelector('#rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
+			document.getElementById('infosPoint').innerHTML = '<a class="retour" href="#" onclick="displayBlock(\'carte\');">Retour carte</a><span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /><span id="couverturePoint"></span><span id="eauPoint"></span><span id="boisPoint"></span><span id="latrinePoint"></span><span id="manquemurPoint"></span><span id="poelePoint"></span><span id="chemineePoint"></span><span id="clefPoint"></span><span id="matelasPoint"></span><span id="ravitaillementeauPoint"></span><span id="sitewebPoint"></span></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
+			document.getElementById('titrePoint').innerHTML = point.properties.nom;
+			document.getElementById('idPoint').innerHTML = "(Point n°<a href='http://www.refuges.info/point/" + point.properties.id + "' title='Informations détaillées sur le point, version PC'>" + point.properties.id + "</a>)<br />Édité le " + point.properties.derniere_modif;
+			document.getElementById('typePoint').innerHTML = point.properties.type + "<br />" + point.properties.nb_places + " place(s)";
+			document.getElementById('coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
+			document.getElementById('rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
 			if (point.properties.remarques == "") {removeElement("rmqPoint"); }
-			document.querySelector('#proprioPoint').innerHTML = "<b>" + point.properties.annonce_proprio + " :</b><br />" + point.properties.proprio;
+			document.getElementById('proprioPoint').innerHTML = "<b>" + point.properties.annonce_proprio + " :</b><br />" + point.properties.proprio;
 			if (point.properties.annonce_proprio == "" || point.properties.proprio == "") {removeElement("proprioPoint"); }
-			document.querySelector('#accesPoint').innerHTML = "<b>Accès :</b><br />" + point.properties.acces;
+			document.getElementById('accesPoint').innerHTML = "<b>Accès :</b><br />" + point.properties.acces;
 			if (point.properties.acces == "") {removeElement("accesPoint"); }
-			if (point.properties.couvertures != undefined) { document.querySelector('#couverturePoint').innerHTML = "Couvertures : " + point.properties.couvertures + "<br />"; }
-			if (point.properties.eau_a_proximite != undefined) { document.querySelector('#eauPoint').innerHTML = "Eau à proximité : " + point.properties.eau_a_proximite + "<br />"; }
-			if (point.properties.bois_a_proximite != undefined) { document.querySelector('#boisPoint').innerHTML = "Bois à proximité : " + point.properties.bois_a_proximite + "<br />"; }
-			if (point.properties.latrines != undefined) { document.querySelector('#latrinePoint').innerHTML = "Latrines : " + point.properties.latrines + "<br />"; }
-			if (point.properties.manque_un_mur != undefined) { document.querySelector('#manquemurPoint').innerHTML = "Manque un mur : " + point.properties.manque_un_mur + "<br />"; }
-			if (point.properties.poele != undefined) { document.querySelector('#poelePoint').innerHTML = "Poêle : " + point.properties.poele + "<br />"; }
-			if (point.properties.cheminee != undefined) { document.querySelector('#chemineePoint').innerHTML = "Cheminée : " + point.properties.cheminee + "<br />"; }
-			if (point.properties.clef_a_recuperer != undefined) { document.querySelector('#clefPoint').innerHTML = "Clé à récupérer : " + point.properties.clef_a_recuperer + "<br />"; }
-			if (point.properties.places_sur_matelas != undefined) { document.querySelector('#matelasPoint').innerHTML = "Places sur matelas : " + point.properties.places_sur_matelas + "<br />"; }
-			if (point.properties.ravitaillement_en_eau_possible != undefined) { document.querySelector('#ravitaillementeauPoint').innerHTML = "Ravitaillement en eau possible : " + point.properties.ravitaillement_en_eau_possible + "<br />"; }
-			if (point.properties.site_officiel != undefined) { document.querySelector('#sitewebPoint').innerHTML = "Site officiel : " + point.properties.site_officiel + "<br />"; }
+			if (point.properties.couvertures != undefined) { document.getElementById('couverturePoint').innerHTML = "Couvertures : " + point.properties.couvertures + "<br />"; }
+			if (point.properties.eau_a_proximite != undefined) { document.getElementById('eauPoint').innerHTML = "Eau à proximité : " + point.properties.eau_a_proximite + "<br />"; }
+			if (point.properties.bois_a_proximite != undefined) { document.getElementById('boisPoint').innerHTML = "Bois à proximité : " + point.properties.bois_a_proximite + "<br />"; }
+			if (point.properties.latrines != undefined) { document.getElementById('latrinePoint').innerHTML = "Latrines : " + point.properties.latrines + "<br />"; }
+			if (point.properties.manque_un_mur != undefined) { document.getElementById('manquemurPoint').innerHTML = "Manque un mur : " + point.properties.manque_un_mur + "<br />"; }
+			if (point.properties.poele != undefined) { document.getElementById('poelePoint').innerHTML = "Poêle : " + point.properties.poele + "<br />"; }
+			if (point.properties.cheminee != undefined) { document.getElementById('chemineePoint').innerHTML = "Cheminée : " + point.properties.cheminee + "<br />"; }
+			if (point.properties.clef_a_recuperer != undefined) { document.getElementById('clefPoint').innerHTML = "Clé à récupérer : " + point.properties.clef_a_recuperer + "<br />"; }
+			if (point.properties.places_sur_matelas != undefined) { document.getElementById('matelasPoint').innerHTML = "Places sur matelas : " + point.properties.places_sur_matelas + "<br />"; }
+			if (point.properties.ravitaillement_en_eau_possible != undefined) { document.getElementById('ravitaillementeauPoint').innerHTML = "Ravitaillement en eau possible : " + point.properties.ravitaillement_en_eau_possible + "<br />"; }
+			if (point.properties.site_officiel != undefined) { document.getElementById('sitewebPoint').innerHTML = "Site officiel : " + point.properties.site_officiel + "<br />"; }
 			if (point.properties.acces == "" && point.properties.couvertures == "" && point.properties.eau_a_proximite == "" && point.properties.bois_a_proximite == "" && point.properties.latrines == "" && point.properties.manque_un_mur == "" && point.properties.poele == "" && point.properties.cheminee == "" && point.properties.clef_a_recuperer == "" && point.properties.places_sur_matelas == "" && point.properties.ravitaillement_en_eau_possible == "" && point.properties.site_officiel == "") {removeElement("infoscompPoint"); }
-			if (point.properties.id_pp_0 != undefined) { document.querySelector('#pp0Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_0 + ');">' + point.properties.nom_pp_0 + '</a> — ' + point.properties.type_pp_0 + ' à ' + point.properties.distance_pp_0 + '<br />'; }
-			if (point.properties.id_pp_1 != undefined) { document.querySelector('#pp1Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_1 + ');">' + point.properties.nom_pp_1 + '</a> — ' + point.properties.type_pp_1 + ' à ' + point.properties.distance_pp_1 + '<br />'; }
-			if (point.properties.id_pp_2 != undefined) { document.querySelector('#pp2Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_2 + ');">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
+			if (point.properties.id_pp_0 != undefined) { document.getElementById('pp0Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_0 + ');">' + point.properties.nom_pp_0 + '</a> — ' + point.properties.type_pp_0 + ' à ' + point.properties.distance_pp_0 + '<br />'; }
+			if (point.properties.id_pp_1 != undefined) { document.getElementById('pp1Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_1 + ');">' + point.properties.nom_pp_1 + '</a> — ' + point.properties.type_pp_1 + ' à ' + point.properties.distance_pp_1 + '<br />'; }
+			if (point.properties.id_pp_2 != undefined) { document.getElementById('pp2Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_2 + ');">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
 			if (point.properties.id_pp_0 == undefined && point.properties.id_pp_1 == undefined && point.properties.id_pp_2 == undefined) {removeElement("pointsprochesPoint"); }
-			if (point.properties.com_0 != undefined) { document.querySelector('#com0Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_0 + ' par ' + point.properties.auteur_com_0 + '</p><br /><p class="com">' + point.properties.com_0 + '<br /><a href="..' + point.properties.photo_com_0 + '"><img src="..' + point.properties.miniature_com_0 + '" /></a></p>'; } else { removeElement("com0Point"); }
-			if (point.properties.com_1 != undefined) { document.querySelector('#com1Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_1 + ' par ' + point.properties.auteur_com_1 + '</p><br /><p class="com">' + point.properties.com_1 + '<br /><a href="..' + point.properties.photo_com_1 + '"><img src="..' + point.properties.miniature_com_1 + '" /></a></p>'; } else { removeElement("com1Point"); }
-			if (point.properties.com_2 != undefined) { document.querySelector('#com2Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_2 + ' par ' + point.properties.auteur_com_2 + '</p><br /><p class="com">' + point.properties.com_2 + '<br /><a href="..' + point.properties.photo_com_2 + '"><img src="..' + point.properties.miniature_com_2 + '" /></a></p>'; } else { removeElement("com2Point"); }
-			if (point.properties.com_3 != undefined) { document.querySelector('#com3Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_3 + ' par ' + point.properties.auteur_com_3 + '</p><br /><p class="com">' + point.properties.com_3 + '<br /><a href="..' + point.properties.photo_com_3 + '"><img src="..' + point.properties.miniature_com_3 + '" /></a></p>'; } else { removeElement("com3Point"); }
-			if (point.properties.com_4 != undefined) { document.querySelector('#com4Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_4 + ' par ' + point.properties.auteur_com_4 + '</p><br /><p class="com">' + point.properties.com_4 + '<br /><a href="..' + point.properties.photo_com_4 + '"><img src="..' + point.properties.miniature_com_4 + '" /></a></p>'; } else { removeElement("com4Point"); }
+			if (point.properties.com_0 != undefined) { document.getElementById('com0Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_0 + ' par ' + point.properties.auteur_com_0 + '</p><br /><p class="com">' + point.properties.com_0 + '<br /><a href="..' + point.properties.photo_com_0 + '"><img src="..' + point.properties.miniature_com_0 + '" /></a></p>'; } else { removeElement("com0Point"); }
+			if (point.properties.com_1 != undefined) { document.getElementById('com1Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_1 + ' par ' + point.properties.auteur_com_1 + '</p><br /><p class="com">' + point.properties.com_1 + '<br /><a href="..' + point.properties.photo_com_1 + '"><img src="..' + point.properties.miniature_com_1 + '" /></a></p>'; } else { removeElement("com1Point"); }
+			if (point.properties.com_2 != undefined) { document.getElementById('com2Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_2 + ' par ' + point.properties.auteur_com_2 + '</p><br /><p class="com">' + point.properties.com_2 + '<br /><a href="..' + point.properties.photo_com_2 + '"><img src="..' + point.properties.miniature_com_2 + '" /></a></p>'; } else { removeElement("com2Point"); }
+			if (point.properties.com_3 != undefined) { document.getElementById('com3Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_3 + ' par ' + point.properties.auteur_com_3 + '</p><br /><p class="com">' + point.properties.com_3 + '<br /><a href="..' + point.properties.photo_com_3 + '"><img src="..' + point.properties.miniature_com_3 + '" /></a></p>'; } else { removeElement("com3Point"); }
+			if (point.properties.com_4 != undefined) { document.getElementById('com4Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_4 + ' par ' + point.properties.auteur_com_4 + '</p><br /><p class="com">' + point.properties.com_4 + '<br /><a href="..' + point.properties.photo_com_4 + '"><img src="..' + point.properties.miniature_com_4 + '" /></a></p>'; } else { removeElement("com4Point"); }
 			if (point.properties.com_0 == undefined && point.properties.com_1 == undefined && point.properties.com_2 == undefined && point.properties.com_3 == undefined && point.properties.com_4 == undefined) {removeElement("commentairesPoint"); }
 			displayBlock('points');
 		}
@@ -183,10 +172,10 @@ function pointRecu() {
 
 // Fonction appeler pour basculer entre les vues
 function displayBlock(bloc) {
-	var carte = document.querySelector('#carte');
-	var index = document.querySelector('#index');
-	var patientez = document.querySelector('#patientez');
-	var points = document.querySelector('#infosPoint');
+	var carte = document.getElementById('carte');
+	var index = document.getElementById('index');
+	var patientez = document.getElementById('patientez');
+	var points = document.getElementById('infosPoint');
 	var header = document.querySelector('header');
 	var footer = document.querySelector('footer');
 	var main = document.querySelector('section');

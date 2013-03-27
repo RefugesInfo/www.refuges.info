@@ -15,7 +15,6 @@ Sommaire :
 * {
 	margin: 0;
 	padding: 0;
-	font-family: sans-serif;
 }
 
 html {
@@ -26,6 +25,7 @@ body {
 	height: 100%;
 	min-width: 320px;
 	background: #dedede;
+	font-family: sans-serif;
 }
 
 /*************************************** PAGE de l'INDEX ***************************************/
@@ -123,7 +123,7 @@ footer a img {
 .retour {
 	text-decoration: none;
 	padding: 4px;
-	z-index: 8;
+	z-index: 1001;
 	color: #fbfbfb;
 	background: #212121;
 	text-shadow: 0px 1px 0px rgba(255,255,255,0.2);
