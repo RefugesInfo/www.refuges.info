@@ -129,7 +129,7 @@ function affichePoint(idpoint) {
 	displayBlock('patientez');
 
 	// On prépare l'adresse à télécharger, avec l'id du point.
-	var msg='../point/' + idpoint + '/?format=geojson';
+	var msg='../point-geojson/' + idpoint;
 
 	// Requete AJAX
 	ajaxRequest.onreadystatechange = pointRecu; // Si on a récupéré le fichier, on apelle pointRecu();

@@ -6,6 +6,7 @@
 /**
  * @requires OpenLayers/Protocol.js
  * @requires OpenLayers/Request/XMLHttpRequest.js
+ * @requires OpenLayers/Format/QueryStringFilter.js
  */
 
 /**

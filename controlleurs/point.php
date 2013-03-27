@@ -19,15 +19,21 @@ $condition = new stdClass();
 // Arguments de la page
 $id_point = $controlleur->url_decoupee[2]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
 
-// FIXME je trouverais plus claire de mettre le point dans $vue->point pour éviter d'écraser d'autre propriété du modèle
-
 // On indique de manière bien évidente aux modérateur que cette fiche est censurée
 if ($_SESSION['niveau_moderation']>=1)
     $meme_si_censure=True;
 else
     $meme_si_censure=False;
 
+// FIXME je trouverais plus clair de mettre le point dans $vue->point pour éviter d'écraser d'autre propriété du modèle
+// sly : FIXME ouais grave; obligé de bidouiller pour rétablir ce que infos_point écrase !
+$ancienne_vue = new stdClass;
+foreach ($vue as $cle => $val)
+    $ancienne_vue->$cle=$val;
 $vue = infos_point ($id_point,$meme_si_censure);
+
+foreach ($ancienne_vue as $cle => $val)
+    $vue->$cle=$val;
 
 // Les infos du point deviennent des membres du template ($vue->latitude ...)
 // Partie spécifique de la page
@@ -42,7 +48,6 @@ else // le point est valide. faut bosser.
     $vue->nom_debut_majuscule = ucfirst($vue->nom);
     $vue->titre = "$vue->nom_debut_majuscule $vue->altitude m ($vue->nom_type)";
     $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $vue->nom_type, altitude $vue->altitude avec commentaires et photos";
-    $vue->type = 'point'; // Le template
     foreach ($vue->polygones as $polygone)
     {
         if (isset($polygone->categorie_polygone_type))
@@ -68,7 +73,7 @@ else // le point est valide. faut bosser.
         $conditions->limite=10;
         $conditions->ouvert='oui';
         
-        $g = [ 'lat' => $vue->latitude, 'lon' => $vue->longitude , 'rayon' => 5000 ];
+        $g = array ( 'lat' => $vue->latitude, 'lon' => $vue->longitude , 'rayon' => 5000 );
         $conditions->geometrie = cree_geometrie( $g , 'cercle' );
         
         $conditions->avec_distance=True;
