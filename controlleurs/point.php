@@ -27,6 +27,7 @@ else
 
 // FIXME je trouverais plus clair de mettre le point dans $vue->point pour éviter d'écraser d'autre propriété du modèle
 // sly : FIXME ouais grave; obligé de bidouiller pour rétablir ce que infos_point écrase !
+$ancienne_vue = new stdClass;
 foreach ($vue as $cle => $val)
     $ancienne_vue->$cle=$val;
 $vue = infos_point ($id_point,$meme_si_censure);
