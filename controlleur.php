@@ -14,7 +14,8 @@ require_once ("fonctions_autoconnexion.php");
 // Analyse de l'url (basique pour l'instant pourrait être étendu ultérieurement selon les besoins)
 $controlleur = new stdClass;
 $vue = new stdClass;
-// Je doute qu'avoir l'url complète serve ?
+
+// On garde dans $controlleur l'url complète d'appel, au cas où
 $controlleur->url_complete=$_SERVER['REQUEST_URI'];
 $sans_parametres=explode ('?',$controlleur->url_complete);
 
