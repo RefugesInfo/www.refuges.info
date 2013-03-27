@@ -17,7 +17,7 @@
 
 	<body>
 		<header>
-			<p id="header">Refuges.info <span id="wri">WRI</span></p>
+			<p id="header">Refuges.info</p>
 		</header>
 		
 		<!-- Contenu du site web -->
@@ -26,7 +26,30 @@
 			<!-- Partie accueil -->
 			<article id="index">
 				<p>Refuges.info vous permet d'afficher sur une carte, des refuges, abris et autres points d'intérêt pour les randonneurs. Ils vous est alors possible de cliquer sur un point pour avoir des informations pratiques sur celui-ci.</p>
-				<a class="btnbleu" href="#" onclick="displayBlock('carte')">Afficher la carte</a>
+				<a class="btnbleu" id="affichecarte" href="#" onclick="displayBlock('carte')">Afficher la carte</a>
+				<a class="btnbleu" id="afficheaide" href="#" onclick="displayBlock('aide')">Afficher l'aide</a>
+			</article>
+			<!-- Partie d'aide -->
+			<article id="aide" style="display:none;">
+				<h3>Légende de la carte :</h3>
+				<ul>
+					<li><div class="titreliste"><img src="./images/icones/cabane.png"> Cabane non gardée</div><p>Une cabane non gardée est un abris dans lequel la possibilité de passer une nuit est envisageable, cependant rien n'y est assuré, aucune garantie de le trouver ouvert, dans des conditions décentes ne peut être fournie. <i>Note : Les locaux (bergers par exemple) ont la priorité dans ces cabanes.</i></p></li>
+					<li><div class="titreliste"><img src="./images/icones/abri_sommaire.png"> Abris sommaire</div><p>Un abri somaire est une cabane non gardée jugée en trop mauvaise état pour y passer la nuit, elle peux servir en cas d'urgences (intempéries…)</p></li>
+					<li><div class="titreliste"><img src="./images/icones/cabane_fermee.png"> Cabane fermée</div></li>
+					<li><div class="titreliste"><img src="./images/icones/refuge_garde.png"> Refuge gardé</div><p>Un refuge gardé vous assure une nuit dans un bâtiment de qualitée géré par du personnel. Vous pouvez en général y dormir et y manger, en échange d'un paiement. Il est conseiller d'appeler au préalable pour réserver.</p></li>
+					<li><div class="titreliste"><img src="./images/icones/refuge_ferme.png"> Refuge fermé</div></li>
+					<li><div class="titreliste"><img src="./images/icones/gite.png"> Gîte</div><p>Un gîte d'étape fournit l'essentiel pour passer la nuit dans les conditions idéales. Vous aurez un service de qualité pour un prix généralement inférieur à une nuit en hôtel.</p></li>
+					<li><div class="titreliste"><img src="./images/icones/gite_ferme.png"> Gîte fermé</div></li>
+					<li><div class="titreliste"><img src="./images/icones/point_eau.png"> Point d'eau</div><p>Un point d'eau, ou une source, offre l'eau vitale au randonneur. Il est conseillé de traiter cette eau avec des pastilles adéquates (type micropur) car elle n'est pas forcement potable.</p></li>
+					<li><div class="titreliste"><img src="./images/icones/lac.png"> Lac</div></li>
+					<li><div class="titreliste"><img src="./images/icones/col.png"> Point de passage</div><p>Point de passage fréquent de randonneur souvent du fait du relief (par exemple les cols).</p></li>
+					<li><div class="titreliste"><img src="./images/icones/sommet.png"> Sommet</div></li>
+					<li><div class="titreliste"><img src="./images/icones/site.png"> Site remarquable</div></li>
+				</ul>
+				<br>
+				<p class="sautdeligne"></p>
+				<a class="retour" href="#" onclick="displayBlock('index')">Menu Principal</a>
+				<a class="suivant" href="#" onclick="displayBlock('carte')">La Carte</a>				
 			</article>
 			<!-- Partie carte -->
 			<article id="carte" style="display:none;">

@@ -174,6 +174,7 @@ function pointRecu() {
 function displayBlock(bloc) {
 	var carte = document.getElementById('carte');
 	var index = document.getElementById('index');
+	var aide = document.getElementById('aide');
 	var patientez = document.getElementById('patientez');
 	var points = document.getElementById('infosPoint');
 	var header = document.querySelector('header');
@@ -187,6 +188,7 @@ function displayBlock(bloc) {
 		header.style.display = 'none';
 		footer.style.display = 'none';
 		index.style.display = 'none';
+		aide.style.display = 'none';
 		patientez.style.display = 'none';
 		main.style.height = '100%';
 		if (init!=1) {
@@ -201,6 +203,7 @@ function displayBlock(bloc) {
 		header.style.display = 'none';
 		footer.style.display = 'none';
 		index.style.display = 'none';
+		aide.style.display = 'none';
 		patientez.style.display = 'block';
 		main.style.height = '100%';
 	}
@@ -210,6 +213,17 @@ function displayBlock(bloc) {
 		header.style.display = 'none';
 		footer.style.display = 'none';
 		index.style.display = 'none';
+		aide.style.display = 'none';
+		patientez.style.display = 'none';
+		main.style.height = '';
+	}
+	else if(bloc == 'aide') {
+		points.style.display = 'none';
+		carte.style.display = 'none';
+		header.style.display = 'block';
+		footer.style.display = 'none';
+		index.style.display = 'none';
+		aide.style.display = 'block';
 		patientez.style.display = 'none';
 		main.style.height = '';
 	}
@@ -219,6 +233,7 @@ function displayBlock(bloc) {
 		header.style.display = 'block';
 		footer.style.display = 'block';
 		index.style.display = 'block';
+		aide.style.display = 'none';
 		patientez.style.display = 'none';
 		main.style.height = '';
 	}
