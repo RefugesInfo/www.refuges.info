@@ -9,7 +9,7 @@ require_once ("fonctions_mode_emploi.php");
 
 $commentaire = new stdClass();
 setlocale(LC_TIME, "fr_FR");
-$commentaire->id_point=$_GET['id_point'];
+$commentaire->id_point=$controlleur->url_decoupee[2];
 $point=infos_point($commentaire->id_point);
 if (!$point->erreur)
 {
