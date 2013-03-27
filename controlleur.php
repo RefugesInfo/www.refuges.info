@@ -24,7 +24,7 @@ $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 
 // Par défaut, on veut un en-tête et pied de page html, mais dans de rare cas (point-geojson) on ne veut pas
 // le débat étant à poursuivre ici : http://www.refuges.info/forum/viewtopic.php?t=5294
-$avec_entete_et_pied=True;
+$controlleur->avec_entete_et_pied=True;
 // On pourrait être tenté de faire une conversion direct de url vers controlleur, mais si un filou commence à indiquer
 // n'importe quelle url, il pourrait réussir à ouvrir des trucs pas souhaités, avec une liste, on s'assure
 // de n'autoriser que ceux que l'on veut
@@ -36,7 +36,7 @@ switch ($controlleur->url_decoupee[1])
     case "point-geojson":
         $controlleur->type="point";
         $vue->template="point.geojson";
-        $avec_entete_et_pied=False;
+        $controlleur->avec_entete_et_pied=False;
         break;
     case "nav":
         $controlleur->type="nav";
@@ -90,12 +90,12 @@ if (!isset($vue->type))
 include ($config['chemin_controlleurs'].$controlleur->type.".php");
 
 // On affiche le tout
-if ($avec_entete_et_pied)
+if ($controlleur->avec_entete_et_pied)
     include ($config['chemin_vues']."_entete.html");
 // Là, c'est bidouille compatibilité avec avant, je pense que chaque controlleur devrait pouvoir décider de la vue sans que soit imposée l'extension
 if (!isset($vue->template))
     $vue->template=$vue->type.".html";
 include ($config['chemin_vues'].$vue->template);
-if ($avec_entete_et_pied)
+if ($controlleur->avec_entete_et_pied)
     include ($config['chemin_vues']."_pied.html");
 ?>
