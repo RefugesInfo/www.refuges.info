@@ -109,8 +109,6 @@ function infos_points($conditions)
         else
             $limite="\nLIMIT $conditions->limite";
         
-        if ($conditions->ordre!="")
-            $ordre="\nORDER BY $conditions->ordre";
         
     /******** Liste des conditions de type WHERE *******/
     if (!empty($conditions->ids_points))
@@ -250,6 +248,8 @@ function infos_points($conditions)
     $conditions_sql.="\n AND LENGTH(points.ferme) > 0 ";
   if ($conditions->ouvert=='oui')
     $conditions_sql.="\n AND points.ferme in ('','non',NULL)  "; 
+  if ($conditions->ordre!="")
+      $ordre="\nORDER BY $conditions->ordre";
   
   $query_points="
   SELECT points.*,
