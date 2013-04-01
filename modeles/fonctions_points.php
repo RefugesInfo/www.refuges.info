@@ -173,7 +173,7 @@ function infos_points($conditions)
         if ($conditions->avec_distance)
         {
             $select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
-            $ordre = "ORDER BY distance DESC";
+            $ordre = "ORDER BY distance";
         }
     }
     
