@@ -187,7 +187,8 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
 
     // Position et zoom de la carte
     // Si un massif est visé, on s'accorde sur ses limites
-    if (<?echo isset ($vue->polygone->bbox) ? 'true' : 'false'?>) {
+    if (<?echo isset ($vue->polygone->bbox) ? 'true' : 'false'?> &&
+        !OpenLayers.Util.getParameters (window.location.href).lon) { // Sauf s'il y a un permalink
         var b = new OpenLayers.Bounds (<?=$vue->polygone->bbox?>) 
         .transform (
             new OpenLayers.Projection ('EPSG:4326'), // Données en °

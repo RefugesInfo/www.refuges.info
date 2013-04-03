@@ -1,4 +1,4 @@
-/* Librairie minifiée Openlayers générée sur 127.0.0.2 le Tue, 26 Mar 2013 22:05:58 +0100
+/* Librairie minifiée Openlayers générée sur 127.0.0.2 le Wed, 03 Apr 2013 19:51:16 +0200
 
 © Dominique Cavailhez août 2012.
 Published under the Clear BSD license.
@@ -1442,14 +1442,12 @@ expire=new Date();document.cookie='Ol'+escape(nom)+'='+escape(valeur)+';path=/'
 +(expire?';expires='+new Date(new Date().getTime()+expire*1000).toGMTString():'');}
 OpenLayers.Util.readCookie=function(nom,defaut){var nom='Ol'+escape(nom);var deb=OpenLayers.Util.initialCookies.indexOf(nom+'=');if(deb>=0){deb+=nom.length+1;var fin=OpenLayers.Util.initialCookies.indexOf(';',deb);if(fin<0)fin=OpenLayers.Util.initialCookies.length;return unescape(OpenLayers.Util.initialCookies.substring(deb,fin));}
 return typeof defaut=='undefined'?null:defaut;}
-OpenLayers.Control.ArgParserCookies=OpenLayers.Class(OpenLayers.Control.ArgParser,{scale:null,baseLayer:null,getParameters:function(url){this.params={zoom:6,lat:47,lon:2,layers:'B'};var plc=this.map.getControlsByClass('OpenLayers.Control.PermalinkCookies');if(plc.length&&plc[0].defaut)
-OpenLayers.Util.extend(this.params,plc[0].defaut);OpenLayers.Util.extend(this.params,this.defaut);var cookies=OpenLayers.Util.readCookie('params');if(cookies)
-OpenLayers.Util.extend(this.params,OpenLayers.Util.getParameters('?'+cookies));var args=OpenLayers.Util.getParameters(window.location.href);OpenLayers.Util.extend(this.params,args);if(plc.length&&plc[0].force)
-OpenLayers.Util.extend(this.params,plc[0].force);OpenLayers.Util.extend(this.params,this.force);this.map.events.register('isinvalidbaselayer',this,this.isinvalidbaselayer);return this.params;},isinvalidbaselayer:function(args){if(this.map.initialized){this.map.events.unregister('isinvalidbaselayer',this,this.isinvalidbaselayer);return false;}
-var extent=args.layer.validExtent?args.layer.validExtent:args.layer.maxExtent;var pos=new OpenLayers.LonLat(this.params.lon,this.params.lat).transform('EPSG:4326',args.layer.projection);return!extent.containsLonLat(pos);},configureLayers:function(){if(this.params.baseLayer){for(var i=0,len=this.map.layers.length;i<len;i++)
-if(this.map.layers[i].isBaseLayer&&this.map.layers[i].name==this.params.baseLayer){this.map.setBaseLayer(this.map.layers[i]);this.map.events.unregister('addlayer',this,this.configureLayers);}}
+OpenLayers.Control.ArgParserCookies=OpenLayers.Class(OpenLayers.Control.ArgParser,{scale:null,baseLayer:null,params:{defaut:{zoom:6,lat:47,lon:2,layers:'B'},cookie:OpenLayers.Util.getParameters('?'+OpenLayers.Util.readCookie('params')),permalink:OpenLayers.Util.getParameters(window.location.href)},getParameters:function(url){var plc=this.map.getControlsByClass('OpenLayers.Control.PermalinkCookies');if(plc.length)
+OpenLayers.Util.extend(this.params,plc[0]);OpenLayers.Util.extend(this.params.defaut,this.params.cookie);OpenLayers.Util.extend(this.params.defaut,this.params.permalink);this.map.events.register('isinvalidbaselayer',this,this.isinvalidbaselayer);return this.params.defaut;},isinvalidbaselayer:function(args){if(this.map.initialized){this.map.events.unregister('isinvalidbaselayer',this,this.isinvalidbaselayer);return false;}
+var extent=args.layer.validExtent?args.layer.validExtent:args.layer.maxExtent;var pos=new OpenLayers.LonLat(this.params.defaut.lon,this.params.defaut.lat).transform('EPSG:4326',args.layer.projection);return!extent.containsLonLat(pos);},configureLayers:function(){if(this.params.defaut.baseLayer){for(var i=0,len=this.map.layers.length;i<len;i++)
+if(this.map.layers[i].isBaseLayer&&this.map.layers[i].name==this.params.defaut.baseLayer){this.map.setBaseLayer(this.map.layers[i]);this.map.events.unregister('addlayer',this,this.configureLayers);}}
 else
-OpenLayers.Control.ArgParser.prototype.configureLayers.apply(this,arguments);},setCenter:function(map){if(this.map.baseLayer&&this.params.scale){var resolution=OpenLayers.Util.getResolutionFromScale(this.params.scale,this.map.baseLayer.units);this.zoom=this.map.getZoomForResolution(resolution,true);}
+OpenLayers.Control.ArgParser.prototype.configureLayers.apply(this,arguments);},setCenter:function(map){if(this.map.baseLayer&&this.params.defaut.scale){var resolution=OpenLayers.Util.getResolutionFromScale(this.params.defaut.scale,this.map.baseLayer.units);this.zoom=this.map.getZoomForResolution(resolution,true);}
 OpenLayers.Control.ArgParser.prototype.setCenter.apply(this,arguments);},CLASS_NAME:"OpenLayers.Control.ArgParserCookies"});
 OpenLayers.Control.PermalinkCookies=OpenLayers.Class(OpenLayers.Control.Permalink,{argParserClass:OpenLayers.Control.ArgParserCookies,createParams:function(center,zoom,layers){var params=OpenLayers.Control.Permalink.prototype.createParams.apply(this,arguments);if(this.map.baseLayer){params.scale=Math.round(OpenLayers.Util.getScaleFromResolution(this.map.baseLayer.resolutions[this.map.zoom],this.map.baseLayer.units));params.baseLayer=this.map.baseLayer.name;}
 OpenLayers.Util.writeCookie('params',OpenLayers.Util.getParameterString(params));return params;},CLASS_NAME:"OpenLayers.Control.PermalinkCookies"});
