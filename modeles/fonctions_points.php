@@ -105,7 +105,7 @@ function infos_points($conditions)
     // condition de limite en nombre
     if (!empty($conditions->limite))
         if (!is_numeric ($conditions->limite))
-            return erreur("Le paramètre de limite \$conditions->limite est mal formé","reçu : $conditions->limite");
+            return erreur("Le paramètre de limite \$conditions->limite est mal formé, reçu : $conditions->limite");
         else
             $limite="\nLIMIT $conditions->limite";
         
@@ -113,7 +113,7 @@ function infos_points($conditions)
     /******** Liste des conditions de type WHERE *******/
     if (!empty($conditions->ids_points))
         if (!verif_multiples_entiers($conditions->ids_points))
-            return erreur("Le paramètre donnée pour les ids des points n'est pas valide","reçu : $conditions->ids_points");
+            return erreur("Le paramètre donnée pour les ids des points n'est pas valide, reçu : $conditions->ids_points");
         else
             $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
         
@@ -125,7 +125,7 @@ function infos_points($conditions)
     if( !empty($conditions->ids_polygones) )
     {
         if (!verif_multiples_entiers($conditions->ids_polygones))
-            return erreur("Le paramètre donné pour les ids des polygones n'est pas valide","reçu : $conditions->ids_polygones");
+            return erreur("Le paramètre donné pour les ids des polygones n'est pas valide, reçu : $conditions->ids_polygones");
         else
         {
             $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
@@ -178,7 +178,7 @@ function infos_points($conditions)
     // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
     if( !empty($conditions->ids_types_point) )
         if (!verif_multiples_entiers($conditions->ids_types_point))
-            return erreur("Le paramètre donné pour les ids des types de points n'est pas valide","reçu : $conditions->ids_types_point");
+            return erreur("Le paramètre donné pour les ids des types de points n'est pas valide, reçu : $conditions->ids_types_point");
         else 
             $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
     
