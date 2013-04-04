@@ -89,7 +89,7 @@ if ( isset($_REQUEST["id_point"]) )
 elseif ( isset($_REQUEST["id_point_type"]))  
 {
 	$conditions = new stdClass;
-	$conditions->type_point=$_REQUEST["id_point_type"];
+	$conditions->ids_types_point=$_REQUEST["id_point_type"];
 	$conditions->modele=1;
 	$points_modele=infos_points($conditions);
 	if (count($points_modele)!=1)
