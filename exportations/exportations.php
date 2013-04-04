@@ -44,8 +44,9 @@ if (isset ($_GET['bbox']))
 
 }
 
-
-$conditions->type_point=$_GET['liste_id_point_type'];
+// FIXME sly : Si les paramètres en GET était synchro avec ceux de $conditions-> on aurait alors plus besoin de faire cette 
+// recopie
+$conditions->ids_types_point=$_GET['liste_id_point_type'];
 $conditions->pas_les_points_caches=1;
 $conditions->ordre="point_type.importance DESC";
 $conditions->ids_points=$_GET['liste_id_point'];
@@ -84,7 +85,7 @@ else
   $infos_donnees_exportees=fichier_exportation($conditions,$format_export);
 
 if ($infos_donnees_exportees->erreur)
-    die("Paramètres demandés incorrects : $infos_donnees_exportees->message");
+    die($infos_donnees_exportees->message);
 
 // Nos données ne changent pas toutes les secondes, on peut autoriser le client à faire un peu de cache pour accélérer
 $secondes_de_cache = 60;

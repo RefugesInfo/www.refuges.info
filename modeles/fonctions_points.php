@@ -175,15 +175,12 @@ function infos_points($conditions)
         }
     }
     
-    // FIXME : Temporaire, à faire disparaitre lorsque la migration avec ce format sera terminée
-    if( !empty($conditions->type_point) )
-        $conditions->ids_types_point=$conditions->type_point;
-  
     // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
     if( !empty($conditions->ids_types_point) )
-        $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
-    elseif (empty($_SESSION['niveau_moderation'])) // Censure
-        $conditions_sql .="\n AND (points.id_point_type!=26)";
+        if (!verif_multiples_entiers($conditions->ids_types_point))
+            return erreur("Le paramètre donné pour les ids des types de points n'est pas valide");
+        else 
+            $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
     
     if( !empty($conditions->places_minimum) )
         $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
