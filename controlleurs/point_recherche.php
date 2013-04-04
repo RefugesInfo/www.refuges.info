@@ -38,7 +38,7 @@ foreach ($_POST as $champ => $valeur)
                 break;
                 
             case 'id_point_type':
-                $conditions->type_point = $valeur ;
+                $conditions->ids_types_point = $valeur ;
                 if ( $valeur == $config['id_cabane_gardee'] OR $valeur == $config['tout_type_refuge'] )
                     if ( empty($conditions->places_minimum) )
                         $conditions->places_minimum = 1 ;

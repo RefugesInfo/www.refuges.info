@@ -37,8 +37,7 @@ de conditions et donc plus facilement extensible
 voici les paramètres attendus de recherche :
 (tous facultatifs, ces conditions seront toutes vérifiées par un AND entre elles)
 $conditions->nom : recherche de type ILIKE sur le champ (ILIKE est insensible à la case en postgresql)
-$conditions->type_point : liste d'id dans notre base des points type ex: 12 ou 12,13,14
-$conditions->ids_types_point : IDEM que avant, le tant de la migration vers ce format (pour cohérence avec les autres conditions sur ids de ce type)
+$conditions->ids_types_point : liste d'id dans notre base des points type ex: 12 ou 12,13,14
 $conditions->places_maximum
 $conditions->places_minimum
 

@@ -108,7 +108,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
     }	
     break;
     
-    case "refuges": $conditions->type_point=$config['tout_type_refuge'];
+    case "refuges": $conditions->ids_types_point=$config['tout_type_refuge'];
     case "points":
       $conditions->ordre="date_creation DESC";
       $conditions->limite=$nombre;
