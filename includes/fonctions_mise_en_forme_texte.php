@@ -15,24 +15,21 @@ function lcfirst( $str )
 }
 endif; 
 
-/****************************************
-Fonction d'aide au référencement
-les "-" c'est biens
-***************************************/
+/**
+Fonction d'aide au référencement mais aussi de simplification pour que les internautes puisse se passer des urls d'accès direct aux points (par exemple)
+qui soit d'elle même significative (plus que http://wri/point/456)
+**/
 function replace_url($str)
 {
     $str = retrait_accents($str);
     $str = preg_replace('/[^A-Za-z0-9_\s\'\"\-]/','',trim($str));
     $str = preg_replace('/[_\s\'\"]+/','-',$str);
-    // A décomenter et corriger 2 lignes au dessus si on souhaite accepter des URL avec caractères hors champs URL
-    // mais les encoder
-    //$str=rawurlencode($str);
     return $str;
 }
 
-/****************************************
+/**
 Fonction de suppression des accents
-***************************************/
+**/
 function retrait_accents($str)
 {
 $normalizeChars = array(
