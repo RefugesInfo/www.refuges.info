@@ -8,6 +8,8 @@ de et vers HTML TXT
 require_once("fonctions_points.php");
 
 //lcfirst n'existe pas avant php 5.3, si n'existe pas, on la créé
+//FIXME, je doute quand même que quelqu'un souhaite faire tourner wri sur une ancienne version comme ça, en plus, sauf erreur, je crois que plusieurs morceaux de code
+// par ailleurs ont besoin de 5.3, alors de toute façon... on la vire ?
 if ( false === function_exists('lcfirst') ):
 function lcfirst( $str )
 { 
