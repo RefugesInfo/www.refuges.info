@@ -246,9 +246,9 @@
 				<input type="checkbox" name="limite" value="<?=$config['points_maximum_recherche']?>" checked="checked" />
 				Limiter le nombre de résultat aux <?=$config['points_maximum_recherche']?> premiers
 			</label>
-			<label title="En plus des résultats de WRI, inclure les points OpenStreetMap">
-				<input type="checkbox" name="osmpois" value="1" disabled="disabled" />
-				Inclut les points OpenStreetMap ( non fonctionnel pour l'instant )
+			<label title="En plus des résultats de WRI, inclure les points OpenStreetMap grâce au service Nominatim">
+				<input type="checkbox" name="avec_point_osm" value="1" />
+				Inclut les points OpenStreetMap dont le nom est celui cherché
 			</label>
 		</fieldset>
 

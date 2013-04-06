@@ -69,38 +69,41 @@ $vue->points = infos_points ($conditions);
  
 //-----------------------------------------------------------------------------------------------------
 // Recherche de points sur nominatim.openstreetmap.org
-$nominatim = new stdClass();
 
-$appel_nominatim = $config['url_appel_nominatim'] .http_build_query 
-(
-    array 
+if ($_POST['avec_point_osm'])
+{
+    $nominatim = new stdClass();
+    $appel_nominatim = $config['url_appel_nominatim'] .http_build_query 
     (
-    'email' => $config['email_contact_nominatim'],
-    'format' => 'xml',
-    'countrycodes' => 'fr,ch,it,es',
-    'accept-language' => 'fr',
-    'q' => $_POST['nom'],
-    'limit' => 20,
-    )
-);
-// Récupération du contenu à l'aide de cURL
-$ch = curl_init(); // Initialiser cURL.
-curl_setopt ($ch, CURLOPT_URL, $appel_nominatim);
-curl_setopt ($ch, CURLOPT_HEADER, 0); // Ne pas inclure l'header dans la réponse.
-ob_start (); // Commencer à 'cache' l'output.
-$r = curl_exec ($ch); // Exécuter la requète.
-$cache = ob_get_contents (); // Sauvegarder le contenu du fichier dans la variable $cache.
-ob_end_clean(); // Vider le buffer.
-curl_close ($ch); // Fermer cURL.
-
-// Extraction de l'arbre xml
-$nominatim->xml = simplexml_load_string ($cache);
-$nominatim->nb_points = count($nominatim->xml);
-if ($nominatim->nb_points>1)
-    $nominatim->pluriel="s";
-
-$nominatim->url_site=$config['url_nominatim'];
-$vue->nominatim=$nominatim;
+        array 
+        (
+        'email' => $config['email_contact_nominatim'],
+        'format' => 'xml',
+        'countrycodes' => 'fr,ch,it,es',
+        'accept-language' => 'fr',
+        'q' => $_POST['nom'],
+        'limit' => 20,
+        )
+     );
+     // Récupération du contenu à l'aide de cURL
+     $ch = curl_init(); // Initialiser cURL.
+     curl_setopt ($ch, CURLOPT_URL, $appel_nominatim);
+     curl_setopt ($ch, CURLOPT_HEADER, 0); // Ne pas inclure l'header dans la réponse.
+     ob_start (); // Commencer à 'cache' l'output.
+     $r = curl_exec ($ch); // Exécuter la requète.
+     $cache = ob_get_contents (); // Sauvegarder le contenu du fichier dans la variable $cache.
+     ob_end_clean(); // Vider le buffer.
+     curl_close ($ch); // Fermer cURL.
+     
+     // Extraction de l'arbre xml
+     $nominatim->xml = simplexml_load_string ($cache);
+     $nominatim->nb_points = count($nominatim->xml);
+     if ($nominatim->nb_points>1)
+         $nominatim->pluriel="s";
+     
+     $nominatim->url_site=$config['url_nominatim'];
+     $vue->nominatim=$nominatim;
+}
 
 $vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 ?> 
