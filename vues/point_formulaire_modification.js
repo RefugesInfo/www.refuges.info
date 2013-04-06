@@ -17,7 +17,7 @@ window.onload = function () {
         controls: [
             new OpenLayers.Control.PanZoom (),
             new OpenLayers.Control.PermalinkCookies (null, null, {
-                force: {
+                cookie: {
                     lat: <?=$point->latitude?>, 
                     lon: <?=$point->longitude?>, 
                     scale: <?=$vue->serie[3]?>
