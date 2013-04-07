@@ -73,6 +73,7 @@ $vue->points = infos_points ($conditions);
 if ($_POST['avec_point_osm'])
 {
     $nominatim = new stdClass();
+    $vue->recherche_osm_active=True;
     $appel_nominatim = $config['url_appel_nominatim'] .http_build_query 
     (
         array 
