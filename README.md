@@ -214,6 +214,6 @@ git pull origin dev
 
 * accès postgresql
  * http://www.refuges.info/phppgadmin/
-Notez qu'il n'y a une base de production qui s'appelle "refuges" et une, copie, qui s'appelle "test" accessible avec le même utilisateur et même mot de passe que l'autre.
+Notez qu'il n'y a une base de production qui s'appelle "refuges" et une, (ancienne) copie, qui s'appelle "test" accessible avec le même utilisateur et même mot de passe que l'autre.
 
 
