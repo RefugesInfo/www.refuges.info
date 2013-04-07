@@ -55,7 +55,7 @@ switch ($periode)
 }
 
 // Variabilité du bandeau / Dominique 26/12/2008
-$bandeau = '/images/titrehorizontal_' .date ('m') .'.png';
+$bandeau = '/images/bandeau-haut/titrehorizontal_' .date ('m') .'.png';
 ?>
 /*==================================================================*/
 /* MISE EN PAGE GENERALE DES TYPES                                  */
