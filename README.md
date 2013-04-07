@@ -41,10 +41,12 @@ une doc (pas totalement à jour le 03/03/2013) explique notre base dans /ressour
  * dans /includes/
 copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée
  * A la racine : renommer le fichier htaccess.modele.txt en .htaccess (et décommenter la dernière ligne si vous voulez que les erreurs php s'affiche à l'écran)
+
 ```
 cp includes/config_privee.php.modele includes/config_privee.php
 vi includes/config_privee.php -> editer le fichier pour vos paramètres à vous
 ```
+
  * Créez et donnez tous les droits à l'utilisateur qui fait tourner apache au dossiers et fichiers contenus dans :
  
 ```
@@ -58,6 +60,8 @@ mkdir forum/images/avatars
 chmod 777 forum/images/avatars
 ```
 
+(Ces dossiers contiendront des données comme les photos des refuges ou des avatars chargés par les utilisateurs du forum)
+
 Quelques commandes utiles de git adaptées à refuges.info
 ========================================================
 (Valable sous linux, mais sans doute ailleurs aussi)
@@ -70,10 +74,11 @@ En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivé
 * Avoir une copie complète de la dernière version en cours de développement du code (pas forcément stable mais la dernière version)
 
 ```
-git clone https://github.com/sletuffe/www.refuges.info.git -b dev
+git clone https://github.com/sletuffe/www.refuges.info.git
 ```
-(enlevez "-b dev" pour avoir la version stable)
 
+Cette commande téléchargera et créera un dossier nommé www.refuges.info contenant la branche "dev" (développement) la plus récente de refuges.info, mais pas forcément
+celle en place sur www
 
 * Avant toute modification, dites à git qui vous êtes
 
