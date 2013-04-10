@@ -43,8 +43,6 @@ function initmap(){
 	map.addLayer(MRI); // On ajoute le calque MRI à la carte
 
 	// Ajout de l'icone fullscreen
-	var fullScreen = new L.Control.FullScreen(); 
-	map.addControl(fullScreen);
 	L.control.scale({position: 'topright'}).addTo(map);
 
 	// Action en cas des évenements suivant
