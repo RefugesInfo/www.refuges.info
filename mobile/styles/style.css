@@ -78,8 +78,11 @@ header {
 }
 
 #afficheaide {
-	background: -webkit-gradient(linear, 0 0, 0 100%, from(#77BBDD), to(#669FBB));
-	background: -moz-linear-gradient(top, #77BBDD, #669FBB);
+	opacity: 0.5;
+}
+
+#affichesite {
+	opacity: 0.5;
 	margin: 15px auto 50px auto;
 }
 
@@ -109,8 +112,6 @@ footer a img {
 }
 
 /*************************************** PAGE de la CARTE ***************************************/
-
-.leaflet-control-zoom-fullscreen { background-image: url(../leaflet/images/icon-fullscreen.png); }
 
 #carte, #map {
 	height: 100%;
