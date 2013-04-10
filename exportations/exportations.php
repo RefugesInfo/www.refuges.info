@@ -97,6 +97,7 @@ header("Content-Length: ".strlen($infos_donnees_exportees->contenu));
 header("Pragma: cache");
 header("Expires: $ts");
 header("Cache-Control: max-age=$secondes_de_cache");
+header("Access-Control-Allow-Origin: *");
 print($infos_donnees_exportees->contenu);
 
 
