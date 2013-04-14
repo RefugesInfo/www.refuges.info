@@ -304,6 +304,14 @@ A,a.mainmenu,a.nav,a.forumlink,a.cattitle,a.topictitle,a.postlink,a.gen,a.genmed
 A:visited {
   color : #<?=$couleur_lien_visite?>;
   }
+
+/*=========ADRESSES MAILS CODEES==========*/
+.mail {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  cursor: pointer;
+}
+
 /*=========INFOBULLES===========*/
 A.infobulle {
   position:relative;

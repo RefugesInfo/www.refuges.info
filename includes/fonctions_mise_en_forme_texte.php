@@ -133,7 +133,7 @@ $searcharray = array(
 		"<span style=\"color: $1\">$2</span>",
 		" - ",
 		"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
-		"<a href=\"mailto:$1\">$1</a>"
+		"$1" // Sera codé plus loin
 	);
 	$html = preg_replace($searcharray, $replacearray, $html); 
 
@@ -157,6 +157,45 @@ $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
 $urlauto_pattern = "/([ :\.;,\n])(www.\w\S*)/i";
 $urlauto_replace = "$1<a href=\"http://$2\">$2</a>";
 $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
+
+// Transformation des adresses mails de façon à ne pas qu'elles ne soient pompées par les robots
+// 1/ Le code ascii de chaque caractère est transformé par la formule: 'x' => 135 - ascii('x')
+// 2/ Les caractères sont envoyés et écrits de droite à gauche. Ils sont affichés dans le bon sens par la feuille style
+// 3/ Ils sont relus et inversés lors du click pour envoi de mail
+$occurences_trouvees=preg_match_all("([\w&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)*[\w]+)",$html,$occurence);
+if ($occurences_trouvees!=0)
+{
+	for ($x=0;$x<$occurences_trouvees;$x++)
+	{	
+        $c = strlen ($occurence[0][$x]);
+        $l = 2 * $c;
+        $code = '';
+        while ($c--)
+            $code .= 135 - ord ($occurence[0][$x] [$c]); // Génération de la chaine codée
+        // Code JS de décodage
+        $script = "<script>for(c='$code',i=0;a=135-c[i++]*10-c[i++],i<$l;)document.write('&#'+a+';')</script>";
+        // Code JS de récupération et inversion de l'adresse pour envoi du mail
+        $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
+        // Génération du tag complet
+		$html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
+	}
+}
+                if (0)
+                {
+                    for ($x=0;$x<$occurences_trouvees;$x++)
+                    {	
+                        $l = $c = strlen ($occurence[0][$x]);
+                        $code = '';
+                        while ($c--)
+                            $code .= chr (155-ord ($occurence[0][$x] [$c])); // Génération de la chaine codée
+                        // Code JS de décodage
+                        $script = "<script>for(i=0;i<$l;i++)document.write('&#'+(155    -'$code'.charCodeAt(i))+';')</script>";
+                        // Code JS de récupération et inversion de l'adresse pour envoi du mail
+                        $onclick = "location.href='mailto:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
+                        // Génération du tag complet
+                        $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
+                    }
+                }
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
 if (!$autoriser_html)
