@@ -658,6 +658,7 @@ if ($occurences_trouvees!=0)
         $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
         // Génération du tag complet
 		$ret=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$ret);
+	}
 }
 
 	// Remove our padding..
