@@ -180,22 +180,6 @@ if ($occurences_trouvees!=0)
 		$html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
 	}
 }
-                if (0)
-                {
-                    for ($x=0;$x<$occurences_trouvees;$x++)
-                    {	
-                        $l = $c = strlen ($occurence[0][$x]);
-                        $code = '';
-                        while ($c--)
-                            $code .= chr (155-ord ($occurence[0][$x] [$c])); // Génération de la chaine codée
-                        // Code JS de décodage
-                        $script = "<script>for(i=0;i<$l;i++)document.write('&#'+(155    -'$code'.charCodeAt(i))+';')</script>";
-                        // Code JS de récupération et inversion de l'adresse pour envoi du mail
-                        $onclick = "location.href='mailto:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
-                        // Génération du tag complet
-                        $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
-                    }
-                }
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
 if (!$autoriser_html)
