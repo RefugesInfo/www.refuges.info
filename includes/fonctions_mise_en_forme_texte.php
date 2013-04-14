@@ -162,15 +162,15 @@ $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
 // 1/ Le code ascii de chaque caractère est transformé par la formule: 'x' => 135 - ascii('x')
 // 2/ Les caractères sont envoyés et écrits de droite à gauche. Ils sont affichés dans le bon sens par la feuille style
 // 3/ Ils sont relus et inversés lors du click pour envoi de mail
-$occurences_trouvees=preg_match_all("([\w&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)*[\w]+)",$html,$occurence);
+$occurences_trouvees=preg_match_all("([\w_\-.]+@[\w\-.]+)",$html,$occurence);
 if ($occurences_trouvees!=0)
 {
 	for ($x=0;$x<$occurences_trouvees;$x++)
 	{	
         $c = strlen ($occurence[0][$x]);
-        $l = 2 * $c;
+        $l = 2 * $c + 1;
         $code = '';
-        while ($c--)
+        while ($c-- >= 0)
             $code .= 135 - ord ($occurence[0][$x] [$c]); // Génération de la chaine codée
         // Code JS de décodage
         $script = "<script>for(c='$code',i=0;a=135-c[i++]*10-c[i++],i<$l;)document.write('&#'+a+';')</script>";

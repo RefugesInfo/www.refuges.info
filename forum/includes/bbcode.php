@@ -648,17 +648,16 @@ if ($occurences_trouvees!=0)
 	for ($x=0;$x<$occurences_trouvees;$x++)
 	{	
         $c = strlen ($occurence[0][$x]);
-        $l = 2 * $c;
+        $l = 2 * $c + 1;
         $code = '';
-        while ($c--)
+        while ($c-- >= 0)
             $code .= 135 - ord ($occurence[0][$x] [$c]); // Génération de la chaine codée
         // Code JS de décodage
         $script = "<script>for(c='$code',i=0;a=135-c[i++]*10-c[i++],i<$l;)document.write('&#'+a+';')</script>";
         // Code JS de récupération et inversion de l'adresse pour envoi du mail
         $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
         // Génération du tag complet
-		$ret=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$ret);
-	}
+		$html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
 }
 
 	// Remove our padding..
