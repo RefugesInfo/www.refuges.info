@@ -460,7 +460,7 @@ function transfert_forum($commentaire)
 		INSERT INTO phpbb_posts
 			(topic_id,forum_id,poster_id,post_time,post_username)
 		VALUES
-			($forum->topic_id ,$forum->forum_id ,-1,$commentaire->ts_unix_commentaire , ".$pdo->quote($commentaire->auteur).")";
+			($forum->topic_id ,$forum->forum_id ,-1,$commentaire->ts_unix_commentaire , ".$pdo->quote(substr($commentaire->auteur,0,23)).")";
   
 	if (!$pdo->exec($query_insert_post))
 		return erreur("Transfert vers le forum échoué",$query_insert_post);
