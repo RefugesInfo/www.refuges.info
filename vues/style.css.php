@@ -54,27 +54,11 @@ switch ($periode)
     break;
 }
 
-// Variabilité du bandeau / Dominique 26/12/2008
-$bandeau = '/images/bandeau-haut/titrehorizontal_' .date ('m') .'.png';
 ?>
 /*==================================================================*/
 /* MISE EN PAGE GENERALE DES TYPES                                  */
 /*==================================================================*/
-
 /*=====GENERAL=======*/
-.image_haute {
-  z-index: 40000; /* Pour être au dessus du menu déroulant */
-  position: relative; /* Pour que z-index s'applique */
-  height: 50px;
-  display:block; /* Pour l'appliquer à un <a> */
-  background-image: url("<?=$bandeau?>");
-  background-repeat: no-repeat;
-  background-position: top left;
-}
-.image_haute:hover { /* Pour contrer la surcharge générale des <a> */
-  background-color: #<?=$couleur_fond?>;
-  text-decoration: none;
-}
 
 HTML {
   width: 100%; /* jmb 01/2008 , pour gmaps */
