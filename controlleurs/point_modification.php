@@ -29,7 +29,7 @@ function preparation_point()
         $point->places_matelas = "0" ; // bug : cast d'une string vers 0
     return $point;
 }  
-function getion_retour($retour,$vue)
+function gestion_retour($retour,$vue)
 {
     if ($retour->erreur) 
         $vue->erreur=$retour->message;
@@ -56,7 +56,7 @@ switch( $_REQUEST["action"] )
         $vue->verbe = "ajouté " ; // viendra s'accoller a "est <..> dans la base.... kes kon fait pas pour gagner du code
         $point=preparation_point();
         $retour = modification_ajout_point($point);
-        getion_retour($retour,$vue);
+        gestion_retour($retour,$vue);
         break;
     case 'Modifier' :
         $vue->verbe = "modifié ";
@@ -68,7 +68,7 @@ switch( $_REQUEST["action"] )
            )
         {
             $retour = modification_ajout_point($point);
-            getion_retour($retour,$vue);
+            gestion_retour($retour,$vue);
         }
         else
             $vue->erreur="Vous n'êtes ni modérateur, ni créateur de la fiche, vous n'avez pas l'autorisation de la modifier";
