@@ -37,11 +37,6 @@ function gestion_retour($retour,$vue)
     {
         $retourid = $retour; // id du point modifié/supprimé
         $vue->lien_point=lien_point_lent($retourid);
-        /* COMMENTÉ TEMPORAIREMENT : sera ré-activé, d'une autre façon sans doute, sur la zone dev -- sly
-        $html.="<p>
-        <h5>Pour continuer :</h5>
-        <a href='/point_formulaire_modification.php?dupliquer=$retourid'> Dupliquer un autre point d'information au même endroit</a></p>";
-        */
     } 
 }  
 switch( $_REQUEST["action"] )
