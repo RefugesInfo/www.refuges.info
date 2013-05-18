@@ -43,14 +43,14 @@ car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
 $config['fournisseurs_fond_carte'] = 
 Array 
 (
-     // nom pays chez OSM                ?                   français  Nom layer      échelle 
-     'France métropolitaine'=> Array ($config['carte_base'], ''      , 'IGN',          50000),
-     'Schweiz'              => Array ($config['carte_base'], ''      , 'SwissTopo',    50000),
-     'Italia'               => Array ($config['carte_base'], 'de l\'', 'Italie',      100000),
-     'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',      25000),
-     'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',          25000),
-     'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap', 50000), // dans les autres cas
-     'Saisie'               => Array ($config['carte_base'], ''      , 'Google photo', 20000), // cas spécial pour la saisie de point
+     // nom pays chez OSM                ?                   français  Nom layer           Échelle 
+     'France métropolitaine'=> Array ($config['carte_base'], ''      , 'IGN',               50000),
+     'Schweiz'              => Array ($config['carte_base'], ''      , 'SwissTopo',         50000),
+     'Italia'               => Array ($config['carte_base'], 'de l\'', 'Italie',           100000),
+     'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',           25000),
+     'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',               25000),
+     'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap',      50000), // dans les autres cas
+     'Saisie'               => Array ($config['carte_base'], ''      , 'Maps.Refuges.info', 20000), // cas spécial pour la saisie de point
 );
 
 // voici les mensurations des taille des photos afficher sur le site ( pour éviter une guirlande )

@@ -81,7 +81,7 @@ else // le point est valide. faut bosser.
         
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
-        $vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
+//        $vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
         $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
         $vue->vignette = param_cartes ($vue);
     }

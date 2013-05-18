@@ -21,7 +21,7 @@ require_once ("fonctions_meta_donnees.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_mode_emploi.php");
 
-$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
+//$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
@@ -40,7 +40,7 @@ if ($id_polygone)
   if (!$polygone->erreur) 
   {
     $vue->titre="Cartes des refuges, sommets et sources/point d'eau dans $infos_polygone->art_def_poly $infos_polygone->type_polygone $infos_polygone->article_partitif $infos_polygone->nom_polygone";
-    $vue->description = $vue->titre.". Possibilité de naviguer sur une carte avec image satellite, cartes IGN, googlemaps...";
+    $vue->description = $vue->titre.". Possibilité de naviguer sur une carte avec image satellite, cartes IGN, SwissTopo, Bings...";
   }
   else
     $vue->titre="Polygone demandé incorrect : $polygone->message";

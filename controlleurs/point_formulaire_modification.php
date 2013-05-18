@@ -274,7 +274,7 @@ if ( !empty($point->equivalent_places_matelas) )
 
 // ===================================
 
-$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
+//$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_mode_emploi("syntaxe_bbcode");
