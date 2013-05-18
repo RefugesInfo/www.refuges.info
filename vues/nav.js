@@ -103,6 +103,9 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
         new OpenLayers.Layer.IGM                 ('Italie'),
         new OpenLayers.Layer.IDEE                ('Espagne'),
         new OpenLayers.Layer.OB                  ('Autriche'),
+        new OpenLayers.Layer.Bing                ({name: 'Bing',        type: 'Road',             key: '<?=$config['bing_key'];?>'}),
+        new OpenLayers.Layer.Bing                ({name: 'Bing photo',  type: 'Aerial',           key: '<?=$config['bing_key'];?>'}),
+        new OpenLayers.Layer.Bing                ({name: 'Bing hybrid', type: 'AerialWithLabels', key: '<?=$config['bing_key'];?>'}),
         new OpenLayers.Layer.Google.Photo        ('Google photo', {visibility: false}),
         new OpenLayers.Layer.Google.Terrain      ('Google')
     ]);

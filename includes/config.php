@@ -27,7 +27,8 @@ spl_autoload_register(function ($class) {
 require_once("config_privee.php");
 
 /******** Clés des contrats des cartes **********/
-$config['ign_key']="ev2w14tv2ez4wpypux2ael39"; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
+$config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
+$config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['chemin_openlayers']='/ol2.12.4/'; 

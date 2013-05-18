@@ -248,6 +248,7 @@
 '../proj4js-1.1.0/lib/defs/EPSG23030.js',
 'OpenLayers/Layer/IDEE.js',
 'OpenLayers/Layer/OB.js',
+'OpenLayers/Layer/Bing.js',
 'OpenLayers/Layer/SphericalMercator.js',
 'OpenLayers/Layer/EventPane.js',
 'OpenLayers/Layer/FixedZoomLevels.js',
@@ -257,7 +258,7 @@
 'OpenLayers/Layer/Img.js',
 '../proj4js-1.1.0/lib/defs/UTM.js',
 'OpenLayers/Layer/ImgPosition.js',
-'OpenLayers/Control/Dragfeature.js',
+'OpenLayers/Control/DragFeature.js',
 'OpenLayers/Layer/ImgDrag.js',
 'OpenLayers/Format/GPX.js',
 ''

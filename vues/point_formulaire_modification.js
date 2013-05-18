@@ -43,6 +43,7 @@ window.onload = function () {
 //        new OpenLayers.Layer.IDEE                ('Espagne'),
 //        new OpenLayers.Layer.OB                  ('Autriche'),
 //        new OpenLayers.Layer.Google.Terrain      ('Google'),
+        new OpenLayers.Layer.Bing                ({name: 'Bing photo', type: 'Aerial', key: '<?=$config['bing_key'];?>'}),
         new OpenLayers.Layer.Google.Photo        ('Google photo', {visibility: false})
     ]);
 

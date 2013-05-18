@@ -1,13 +1,10 @@
-<b>Openlayers.js gÃ©nÃ©rÃ© sur 127.0.0.2 le Wed, 03 Apr 2013 19:51:16 +0200</b><br/>Modifications par rapport Ã OpenLayers-2.12:<hr/><b>OpenLayers/Map.js</b><br/>
+<b>Openlayers.js gÃ©nÃ©rÃ© sur dom.refuges.info le Sat, 18 May 2013 17:03:59 +0200</b><br/>Modifications par rapport Ã OpenLayers-2.12:<hr/><b>OpenLayers/Map.js</b><br/>
 672++/ this.initialized = true;<br/>
 1214---/ if (newBaseLayer != this.baseLayer) {<br/>
 1215++/ if (newBaseLayer != this.baseLayer &amp;&amp;<br/>
 1216++/     !this.events.triggerEvent(&quot;isinvalidbaselayer&quot;, {layer: newBaseLayer})) {<br/>
-<i>Patch © Dominique Cavailhez 2012 / use multiple projection baseLayers</i><br/>
-<i>Récupère les projections au changement de baseLayer</i><br/>
 1235++/         var previeousProjection = this.getProjection();<br/>
 1237++/         this.resolutions = this.baseLayer.resolutions;<br/>
-<i>Patch © Dominique Cavailhez 2012 / use multiple projection baselayers</i><br/>
 1251++/             var p = new OpenLayers.Projection (previeousProjection);<br/>
 1252++/             var n = new OpenLayers.Projection (this.getProjection());<br/>
 1253++/             // Recentrer la page<br/>
@@ -20,8 +17,6 @@
 1260++/                     if (this.layers[l].features [f] .geometry)<br/>
 1261++/                         this.layers[l].features [f] .geometry.transform (p ,n);
 <hr/><b>OpenLayers/Layer.js</b><br/>
-<i>Patch © Dominique Cavailhez 2012 / use multiple projection baselayers</i><br/>
-<i>ne marche pas si les unités de la couche ne sont pas égales à celles de la première couche chargée</i><br/>
 774---/         var resolution = this.map.getResolution();<br/>
 775++/         var resolution = OpenLayers.Util.getResolutionFromScale (this.map.getScale(), this.units);
 <hr/><b>OpenLayers/Layer/OSM.js</b><br/>
@@ -32,7 +27,7 @@
 220++/  // apply text symbolizer if present<br/>
 221++/  if (typeof rule.symbolizer[&quot;Text&quot;] === &quot;object&quot;)<br/>
 222++/      OpenLayers.Util.applyDefaults (symbolizer,rule.symbolizer[&quot;Text&quot;]);<br/>
-444++/	if(typeof value == 'string') // Purge des caractères spéciaux récupérés dans un fichier SLD<br/>
+444++<br/>
 445++/		return value.replace(/[\x00-\x1F\x7F]/g,''); // Sinon, risque de bug dans Opera<br/>
 446++/	else
 <hr/><b>OpenLayers/Renderer/Elements.js</b><br/>
@@ -41,7 +36,7 @@
 857++/ if (style.labelOutlineColor)<br/>
 858++/     textbox.style.backgroundColor = style.labelOutlineColor;
 <hr/><b>OpenLayers/Handler/Feature.js</b><br/>
-295++/		this.feature.evt = evt; // Pour récupérer les valeurs de shift, alt, ...
+295++
 <hr/><b>OpenLayers/Control/SelectFeature.js</b><br/>
 116++/	onShiftClick: function() {},<br/>
 205++/	if (this.hoverSelect) {<br/>
@@ -58,14 +53,14 @@
 428++/			!this.handlers.feature.evt.altKey &amp;&amp;<br/>
 429++/			feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString') {<br/>
 430++/			for (i in feature.layer.selectedFeatures)<br/>
-431++/				this.unselect (feature.layer.selectedFeatures [i]); // On désélectionne tout<br/>
+431++<br/>
 432++/			if (OpenLayers.Util.indexOf (feature.layer.selectedFeatures, feature) == -1)<br/>
-433++/				this.select (feature); // On sélectionne celle survolée<br/>
+433++<br/>
 434++/		}<br/>
 435++/	},
 <hr/><b>OpenLayers/Layer/VectorClickHover.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Protocol/HTTP.js</b><br/>
-515++/				finalResponse.priv = response.priv; // Exploitation des données de la réponse
+515++
 <hr/><b>OpenLayers/Format/SLD/v1.js</b><br/>
 <i>Arguments manquants</i><br/>
 518++/  &quot;font-color&quot;: &quot;fontColor&quot;,<br/>
@@ -90,17 +85,16 @@
 <hr/><b>OpenLayers/Layer/IGN.js</b>: <i>nouveau fichier</i>
 <hr/><b>../proj4js-1.1.0/lib/proj4js-combined.js</b><br/>
 615++/alert('Projection manquante: '+this.srsCode);<br/>
-1507++/  var bidon = false; // Instruction bidon ajoutée pour contourner un bug de l'interprèteur javascript de Opera
+1507++
 <hr/><b>OpenLayers/Layer/SwissTopo.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Layer/IGM.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Layer/IDEE.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Layer/OB.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Layer/Googles.js</b>: <i>nouveau fichier</i><br/>
-<i>TODO: intégrer script src=&quot;http://maps.google.com/maps/api/js?v=3&amp;amp;sensor=false&quot;</i><br/>
 <i>TODO ??? OpenLayers.Layer.Google.prototype.MIN_ZOOM_LEVEL = 2;</i>
 <hr/><b>OpenLayers/Layer/Img.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Layer/ImgPosition.js</b>: <i>nouveau fichier</i>
-<hr/><b>OpenLayers/Control/Dragfeature.js</b><br/>
+<hr/><b>OpenLayers/Control/DragFeature.js</b><br/>
 157++/             dblclick: this.dblclickFeature,<br/>
 351++/	dblclickFeature: function(feature) {<br/>
 352++/		this.onDblClick (this.handlers.feature.evt);<br/>

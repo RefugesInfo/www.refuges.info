@@ -7,7 +7,7 @@
 /**
  * @requires OpenLayers/Layer/VectorClickHover.js
  * @requires OpenLayers/Layer/ImgPosition.js
- * @requires OpenLayers/Control/Dragfeature.js
+ * @requires OpenLayers/Control/DragFeature.js
  * @requires OpenLayers/BaseTypes/LonLat.js
  * @requires OpenLayers/Projection.js
  * @requires ../proj4js-1.1.0/lib/proj4js-combined.js
