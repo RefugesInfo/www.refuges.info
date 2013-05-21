@@ -49,7 +49,6 @@ else
   $vue->titre = "Navigation sur les photos satellite";
 $vue->polygone=$polygone;
 
-$vue->viseur = isset ($_GET ['cree']); // Si le paramètre cree est déclaré, le menu de création est ouvert / Pour le lien "Ajouter un refuge" en bas de page
 $vue->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver les checks mémorisés dans un cookie
 		$HTTP_COOKIE_VARS ['liste_id_point_type']
 		? $HTTP_COOKIE_VARS ['liste_id_point_type']

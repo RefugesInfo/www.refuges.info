@@ -26,7 +26,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 if ( $vue->type_affichage != "zone" ){?>
 <form
 	id="choix_legende"
-	style="float: left; width: 200px; <?if (isset ($_GET ['cree'])) {?>display:none;<?}?>"
+	style="float: left; width: 200px;"
 	action="/formulaire_exportations/"
 >
 	<?if (isset ($vue->polygone->nom_polygone )) {?>
@@ -90,11 +90,6 @@ if ( $vue->type_affichage != "zone" ){?>
 		</label>
 	</fieldset>
 	
-	<fieldset>
-		<label id="invit_cree">
-			<input type="button" value="Créer un point" onclick="invit_cree(true)" />
-		</label>
-	</fieldset>
 <!-- Chargement d'un fichier GPX -->
 	<fieldset id="loadGPX" style="display:none;height:45px">
 		<legend>Trace GPS</legend>
@@ -107,60 +102,6 @@ if ( $vue->type_affichage != "zone" ){?>
 	
 </form>
 
-<!-- Un deuxième formulaire (caché au début) pour ajouter un point -->
-<form
-	id="cree_point"
-	style="float:left; width:200px; <?if (!isset ($_GET ['cree'])) {?>display:none;<?}?>"
-	action="/point_formulaire_modification.php" 
->
-	<fieldset>
-		<legend>Création</legend>
-		<ul>
-			<li>Faites glisser le viseur jaune sur la carte ou saisissez les coordonnées</li>
-			<li>
-				<span id="titre-lon">Longitude</span>:
-				<input name="proj-lon" id="proj-lon" type="text" size="5" />
-				<input name="lon" id="lon" type="text" style="display:none" />
-			</li>
-			<li>
-				<span id="titre-lat">Latitude</span>: 
-				<input name="proj-lat" id="proj-lat" type="text" size="6" />
-				<input name="lat" id="lat" type="text" style="display:none" />
-			</li>
-			<li>
-				<select id="select-projection" style="margin-left:-10px">
-					<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
-				</select>
-			</li>
-			<li>
-				<a onclick="layerViseur.centre()" href="#" title="Remettre le viseur au centre actuel de la carte">
-					Recentrer le viseur
-				</a>
-			</li>
-			<li>
-				<hr/>
-			</li>
-			<li>
-				<a title="Voir la liste des types de points possibles"
-				   href="<?=$vue->lien_mode_emploi?>"
-				>
-					Types de points
-				</a>
-			</li>
-			<li>
-				<select name="id_point_type">
-					<?// Calcul de la liste déroulante pour le menu
-					foreach ($vue->infos_base->types_point_affichables AS $pa) { ?>
-						<option  value="<?=$pa->id_point_type?>">
-							<?=$pa->nom_type?>
-						</option>
-					<?}?>
-				</select>
-			</li>
-		</ul>
-		<input type="submit" value="Créer le point" />
-	</fieldset>
-</form>
 <div style="height: 80%;margin-left: 210px;"><?/* "Réserve" l'espace qui va bien à gauche. Pas beau mais j'ai pas trouvé mieux */?>
   <!-- Pour les internautes n'ayant pas javascript d'activé -->
 <?php

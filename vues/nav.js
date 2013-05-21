@@ -213,8 +213,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
             9
         );
 
-    if ('<?=$vue->type_affichage?>' != 'zone')
-        invit_cree (<?=$vue->viseur?>);
+    layerViseur.setVisibility (false); // Rend le curseur invisible
     if (window.FileReader) {
         window.document.getElementById('GPX').addEventListener('change', loadGPX, false);
         window.document.getElementById('loadGPX').style.display = 'block';
@@ -256,16 +255,7 @@ function maj_carte () {
     layerPoints.protocol.options.url = '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=' + listePoints + arg_points + limite;
     layerPoints.refresh ();
 }
-/*************************************************************************************************************************************/
-// Masque ou Démasque le menu de création, affiche et positionne le viseur au centre
-function invit_cree (status) {
-    if (status) {
-        document.getElementById('choix_legende').style.display='none';
-        document.getElementById('cree_point'   ).style.display='';
-    }
-    layerViseur.setVisibility (status); // Rend le curseur visible
-    layerViseur.centre(); // Réinitialise les champs de saisie au centre de la carte
-}
+
 /*************************************************************************************************************************************/
 // Chargement d'un fichier GPX
 function loadGPX (evt) {
