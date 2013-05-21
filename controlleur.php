@@ -66,6 +66,9 @@ switch ($controlleur->url_decoupee[1])
     case "point_modification.php" : case "point_modification" :
         $controlleur->type="point_modification";
         break;
+    case "point_ajout" :
+        $controlleur->type="point_ajout_choix_type";
+        break;
     case "rss" : case "rss.php" :
         $controlleur->type="rss";
         break;

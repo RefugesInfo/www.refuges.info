@@ -8,7 +8,6 @@
 // 27/04/11 Dominique : Passage en OL2.11
 ?>
 var map, viseur; // L'objet de gestion de la carte
-
 window.onload = function () {
     // Crée la carte
     map = new OpenLayers.Map ('carte-edit', {
@@ -32,19 +31,10 @@ window.onload = function () {
     });
 
     map.addLayers ([
+        new OpenLayers.Layer.Bing                ({name: 'Bing photo', type: 'Aerial', key: '<?=$config['bing_key'];?>'}),
         new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
         new OpenLayers.Layer.Velo                ('OpenCycleMap'),
-        new OpenLayers.Layer.OSM                 ('OSM'),
-//        new OpenLayers.Layer.IGN                 ('IGN',       '<?=$config['ign_key'];?>'),
-        new OpenLayers.Layer.IGN.Photo           ('IGN photo', '<?=$config['ign_key'];?>'),
-//        new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
-        new OpenLayers.Layer.SwissTopo.Photo     ('SwissTopo image'),
-//        new OpenLayers.Layer.IGM                 ('Italie'),
-//        new OpenLayers.Layer.IDEE                ('Espagne'),
-//        new OpenLayers.Layer.OB                  ('Autriche'),
-//        new OpenLayers.Layer.Google.Terrain      ('Google'),
-//        new OpenLayers.Layer.Google.Photo        ('Google photo', {visibility: false}),
-        new OpenLayers.Layer.Bing                ({name: 'Bing photo', type: 'Aerial', key: '<?=$config['bing_key'];?>'})
+        new OpenLayers.Layer.OSM                 ('OSM')
     ]);
 
     map.addLayers ([

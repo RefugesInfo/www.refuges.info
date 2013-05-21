@@ -33,7 +33,6 @@ $config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['chemin_openlayers']='/ol2.12.4/'; 
 $config['carte_base'] = 'maps.refuges.info';
-//$config['carte_base'] = 'Google';
 
 /* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve (utilisé pour les vignettes
 des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
@@ -50,7 +49,8 @@ Array
      'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',           25000),
      'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',               25000),
      'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap',      50000), // dans les autres cas
-     'Saisie'               => Array ($config['carte_base'], ''      , 'Maps.Refuges.info', 20000), // cas spécial pour la saisie de point
+     'Saisie-modification'  => Array ($config['carte_base'], ''      , 'Maps.Refuges.info', 20000), // cas spécial pour la saisie de point
+     'Saisie-création'      => Array ($config['carte_base'], ''      , 'Bing photo',     20000000), // cas spécial pour la modification de point
 );
 
 // voici les mensurations des taille des photos afficher sur le site ( pour éviter une guirlande )

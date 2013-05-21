@@ -10,7 +10,6 @@
 ?>
 
 <div class="contenu">
-	<h3><?=$action?> <?=$point->article_partitif_point_type?> <?=$point->nom_type?></h3>
 	<?
   if (isset($vue->etapes))
   { ?>
@@ -24,11 +23,8 @@
     <?}?>
     </dl>  <?
   }
-
-// Si on a une latitude et une longitude, on peut afficher notre carte, sinon autant pas montrer une carte bidon sly 04/05/2010
-	if ($point->latitude!="" and $point->longitude!="") {?>
-		<div class="carte_edit" id="carte-edit"></div>
-	<?}?>
+?>
+	<div class="carte_edit" id="carte-edit"></div>
 	<form class="wri" id="form_point" method="post" onsubmit="return validation();" action="/point_modification.php">
 		<div><?
     foreach ($vue->champs->boutons as $bouton) { ?> 

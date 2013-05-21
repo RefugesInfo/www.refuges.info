@@ -594,8 +594,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     height: 280px;
   }
   #carte_edit, .carte_edit {
-    width:  400px; 
-    height: 400px; 
+    width:  450px; 
+    height: 500px; 
     float: right;
   }
   /*Externalise le sélecteur de couche de la carte nav*/

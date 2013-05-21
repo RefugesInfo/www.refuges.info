@@ -26,13 +26,13 @@ require_once ("fonctions_meta_donnees.php");
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
 $vue->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut
-$vue->champs = new stdClass(); // contiendra TOUS les champs de formulaire qui seront passés au V de MVC (je yip suis converti)
-$vue->champs->invisibles = new stdClass ;  // champs invisibles a passer quand meme (ancien id ...)
-$vue->champs->textareas = new stdClass ;
-$vue->champs->boutons = new stdClass ; // Modifier, supprimer...
-$vue->champs->bools = new stdClass(); // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
-$vue->champs->ferme = new stdClass(); // traite en cas particulier, trop specifique
-$vue->champs->places_matelas = new stdClass(); // traite en cas particulier, trop specifique, la suppression me demange
+$vue->champs = new stdClass; // contiendra TOUS les champs de formulaire qui seront passés au V de MVC (je yip suis converti)
+$vue->champs->invisibles = new stdClass;  // champs invisibles a passer quand meme (ancien id ...)
+$vue->champs->textareas = new stdClass;
+$vue->champs->boutons = new stdClass; // Modifier, supprimer...
+$vue->champs->bools = new stdClass; // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
+$vue->champs->ferme = new stdClass; // traite en cas particulier, trop specifique
+$vue->champs->places_matelas = new stdClass; // traite en cas particulier, trop specifique, la suppression me demange
 
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
@@ -74,6 +74,8 @@ if ( isset($_REQUEST["id_point"]) )
         $icone="&amp;iconecenter=ne_sait_pas";
         $action="Modification";
         $verbe="Modifier";
+
+        $vue->serie = $config['fournisseurs_fond_carte']['Saisie-modification'];    
     }
     else // Ni modérateur, ni créateur on l'informe que ses droits sont insuffisants
     {
@@ -88,50 +90,37 @@ if ( isset($_REQUEST["id_point"]) )
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
 elseif ( isset($_REQUEST["id_point_type"]))  
 {
-	$conditions = new stdClass;
-	$conditions->ids_types_point=$_REQUEST["id_point_type"];
-	$conditions->modele=1;
-	$points_modele=infos_points($conditions);
-	if (count($points_modele)!=1)
-		print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
-	else
-		$point=$points_modele[0];
-  
-    // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
-    $point->longitude=$_REQUEST["x"].$_REQUEST["lon"]; // Dominique: on essaye de standardiser le nom des paramètres à lon / lat
-	$point->latitude=$_REQUEST["y"].$_REQUEST["lat"];
+    $conditions = new stdClass;
+    $conditions->ids_types_point=$_REQUEST["id_point_type"];
+    $conditions->modele=1;
+    $points_modele=infos_points($conditions);
+    if (count($points_modele)!=1)
+        print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
+    else
+        $point=$points_modele[0];
     
-    // ça me semble le moins pire de proposer le fond spécial saisie "google photos" par défaut
-	$vue->serie = $config['fournisseurs_fond_carte']['Saisie'];
-	// on force l'id du point à vide histoire de ne pas modifier le modèle
-	unset($point->id_point);
-  
-	// cosmétique
-	$icone="&amp;iconecenter=".$point->nom_icone;
-	$action="Ajout";
-	$verbe="Ajouter";
-	//	$etape="<h4>Étape 3/3</h4>";
- 
-  
-  $vue->etapes->licence = new stdClass;
-  $vue->etapes->licence->titre = "Licence des contenus";
-  $vue->etapes->licence->texte = "<p>L'information que vous allez rentrer <a href=\"".lien_mode_emploi("restriction_licence")."\">sera soumise à la licence creative commons by-sa</a></p>";
-  
-  $vue->etapes->quoimettre = new stdClass;
-  $vue->etapes->quoimettre->titre = "Que mettre ou ne pas mettre ?";
-  $vue->etapes->quoimettre->texte = "Tout ne trouve pas sa place sur le site, merci de prendre connaissance de
-                                    <a href='" .lien_mode_emploi('que_mettre') ."'>ce qui est attendu ou pas sur le site</a>";
-
-  $vue->etapes->saisie = new stdClass;
-  $vue->etapes->saisie->titre = "Saisie";
-  $vue->etapes->saisie->texte = "Rien d'obligatoire mais essayez d'être précis ne laissez pas les valeurs par défaut; au pire, remplacez par un blanc.";
-
-	if (!isset($_SESSION['id_utilisateur']))
-	{
-    $vue->etapes->guest = new stdClass;
-    $vue->etapes->guest->titre = "Non connecté ?";
-    $vue->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
-	}
+    // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
+    $point->longitude=6;
+	$point->latitude=47;
+    
+    // on force l'id du point à vide histoire de ne pas modifier le modèle
+    unset($point->id_point);
+    
+    // cosmétique
+    $icone="&amp;iconecenter=".$point->nom_icone;
+    $action="Ajout";
+    $verbe="Ajouter";
+    
+    $vue->etapes->saisie = new stdClass;
+    $vue->etapes->saisie->titre = "Saisie";
+    $vue->etapes->saisie->texte = "Rien d'obligatoire mais essayez d'être précis ne laissez pas les valeurs par défaut; au pire, remplacez par un blanc.";
+    
+    if (!isset($_SESSION['id_utilisateur']))
+    {
+        $vue->etapes->guest = new stdClass;
+        $vue->etapes->guest->titre = "Non connecté ?";
+        $vue->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
+    }
     else
     {
         // BUG: ecrasement du createur de la fiche en cas de modif
@@ -139,53 +128,57 @@ elseif ( isset($_REQUEST["id_point_type"]))
         $vue->champs->invisibles->id_createur = new stdClass;
         $vue->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
     }
+    
+    $vue->serie = $config['fournisseurs_fond_carte']['Saisie-création'];    
 
 }
 // 3) on veut dupliquer l'actuel mais garder les mêmes coordonnées
 elseif ( isset($_REQUEST["dupliquer"]))
 {
-        $point=infos_point($_REQUEST["dupliquer"]);
-        
-        $vue->etapes->unsurdeux = new stdClass;
-        $vue->etapes->unsurdeux->titre = "Etape 1 / 2";
-        $vue->etapes->unsurdeux->texte = "(Opération en deux étapes)";
-        
-        // on force l'id du point à vide histoire de ne pas modifier la copie
-        unset($point->id_point);
-        unset($point->nom);
-        unset($point->proprio);
-        unset($point->remark);
-        unset($point->id_point_type);
-        unset($point->article_partitif_point_type); 
-        unset($point->nom_type);
-        
-        $vue->champs->invisibles->id_point_gps = new stdClass;
-        $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
-        
-        $vue->champs->boutons->dupliquer = new stdClass;
-        $vue->champs->boutons->dupliquer->nom = "Dupliquer";
-        $vue->champs->boutons->dupliquer->type = "submit";
-        $vue->champs->boutons->dupliquer->valeur = "Ajouter";
-        $vue->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
+    $point=infos_point($_REQUEST["dupliquer"]);
+    
+    $vue->etapes->unsurdeux = new stdClass;
+    $vue->etapes->unsurdeux->titre = "Etape 1 / 2";
+    $vue->etapes->unsurdeux->texte = "(Opération en deux étapes)";
+    
+    // on force l'id du point à vide histoire de ne pas modifier la copie
+    unset($point->id_point);
+    unset($point->nom);
+    unset($point->proprio);
+    unset($point->remark);
+    unset($point->id_point_type);
+    unset($point->article_partitif_point_type); 
+    unset($point->nom_type);
+    
+    $vue->champs->invisibles->id_point_gps = new stdClass;
+    $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
+    
+    $vue->champs->boutons->dupliquer = new stdClass;
+    $vue->champs->boutons->dupliquer->nom = "Dupliquer";
+    $vue->champs->boutons->dupliquer->type = "submit";
+    $vue->champs->boutons->dupliquer->valeur = "Ajouter";
+    $vue->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
+
+    $vue->serie = $config['fournisseurs_fond_carte']['Saisie-modification'];    
 }
-// 4) On ne devrait pas arriver en direct sur ce formulaire
+// 4) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
 {    
-      header("HTTP/1.0 404 Not Found");
-      $vue->type="page_introuvable";
-      $vue->titre="Vous n'auriez pas dû arriver sur cette page en direct";
-      return "";
+    header("HTTP/1.0 404 Not Found");
+    $vue->type="page_introuvable";
+    $vue->titre="Vous n'auriez pas dû arriver sur cette page de cette façon (formulaire précédent incomplet ?)";
+    return "";
 }
 
 /******** Formulaire de modification/création/suppression *****************/
 
-/******** Boutons répétés en haut et en bas *****************/
 if (isset($point->id_point))
 {
-  $vue->champs->invisibles->id_point = new stdClass;
-  $vue->champs->invisibles->id_point->valeur = $point->id_point;
+    $vue->champs->invisibles->id_point = new stdClass;
+    $vue->champs->invisibles->id_point->valeur = $point->id_point;
 }
 
+/******** Boutons répétés en haut et en bas FIXME devrait être dans $vue-> *****************/
 $bouton_valider = new stdClass;
 $bouton_valider->nom = "action";
 $bouton_valider->type = "submit";
@@ -209,7 +202,7 @@ if (isset($bouton_suppr))
 //3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( lac, sommet, etc. )
 if ( !empty($point->equivalent_proprio) )
-	$textes_area[$point->equivalent_proprio]="proprio";
+    $textes_area[$point->equivalent_proprio]="proprio";
 
 //ils ont en revanche tous un accès et un champ remarques
 $textes_area["accès"]="acces";
@@ -219,16 +212,16 @@ $textes_area["remarques"]="remark";
 /******** Les champs libres *****************/
 foreach ($textes_area as $libelle => $nom_variable)
 {
-	$vue->champs->textareas->$nom_variable = new stdClass;
-	// kesasko ?
-	if ($nom_variable=="acces")
-		$vue->champs->textareas->$nom_variable->disable = true; // c'est koi ?
-	
-	$vue->champs->textareas->$nom_variable->label=$libelle ; // faudra mettreca dans un LABEL
-	$vue->champs->textareas->$nom_variable->valeur=htmlspecialchars($point->$nom_variable,0,"UTF-8");
+    $vue->champs->textareas->$nom_variable = new stdClass;
+    // kesasko ?
+    if ($nom_variable=="acces")
+        $vue->champs->textareas->$nom_variable->disable = true; // c'est koi ?
+        
+    $vue->champs->textareas->$nom_variable->label=$libelle ; // faudra mettreca dans un LABEL
+    $vue->champs->textareas->$nom_variable->valeur=htmlspecialchars($point->$nom_variable,0,"UTF-8");
 }
 
-/******** Les informations complétaires (booléens, détails) *****************/
+/******** Les informations complémentaires (booléens, détails) *****************/
 
 // Seuls les modérateurs peuvent passer un point en censuré
 // ce n'est pas tout à fait un champ trinaire comme les autres (true, false, null) car on ne peut pas "pas savoir"
@@ -260,16 +253,16 @@ foreach($config['champs_binaires_simples_points'] as $champ)
 //combine fermé
 if ( !empty($point->equivalent_ferme) )
 {
-  $vue->champs->ferme->label = $point->equivalent_ferme ;
-  $vue->champs->ferme->options = array('NULL' => 'ne sait pas','' => 'non','oui' => 'oui', 'detruit' => 'Détruit(e)','ruine' => 'En ruine');
-  $vue->champs->ferme->valeur = is_null($point->ferme)? "NULL":$point->ferme ; // retourne "NULL" si ca vaut NULL (au lieu de"")
+    $vue->champs->ferme->label = $point->equivalent_ferme ;
+    $vue->champs->ferme->options = array('NULL' => 'ne sait pas','' => 'non','oui' => 'oui', 'detruit' => 'Détruit(e)','ruine' => 'En ruine');
+    $vue->champs->ferme->valeur = is_null($point->ferme)? "NULL":$point->ferme ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 //combine matelas
 if ( !empty($point->equivalent_places_matelas) )
 {
-  $vue->champs->places_matelas->label = $point->equivalent_places_matelas ;
-  $vue->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
-  $vue->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
+    $vue->champs->places_matelas->label = $point->equivalent_places_matelas ;
+    $vue->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
+    $vue->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
 }
 
 // ===================================

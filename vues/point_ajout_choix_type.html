@@ -1,0 +1,33 @@
+<div class="contenu">
+<h4><?=$vue->titre?></h4>
+<?php
+if (isset($vue->etapes))
+{ ?>
+<dl> <?php
+foreach ($vue->etapes as $etape)
+{
+    // les etapes en listes DT, plus approprié, le style au besoin en CSS
+    ?>
+    <dt><?=$etape->titre?></dt>
+    <dd><?=$etape->texte?></dd>
+    <?}?>
+    </dl>  
+<?php } ?>
+
+<h5>Vous souhaitez ajouter :</h5>
+<form id="cree_point" action="/point_formulaire_modification/"> 
+    <ul>
+         <?php
+         // Calcul de la liste déroulante pour le menu
+         $checked="checked=\"checked\""; // pour cocher la première option
+         foreach ($vue->infos_base->types_point_affichables AS $pa) { ?>
+             <li>
+                 <input type="radio" name="id_point_type" value="<?=$pa->id_point_type?>" <?=$checked?>/><?=$pa->nom_type?>
+             </li>
+         <?
+         $checked="";
+         }?>
+    </ul>
+<input type="submit" value="Passer à l'étape suivante" />
+</form> 
+</div>
