@@ -49,7 +49,7 @@ Array
      'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',           25000),
      'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',               25000),
      'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap',      50000), // dans les autres cas
-     'Saisie-modification'  => Array ($config['carte_base'], ''      , 'Maps.Refuges.info', 20000), // cas spécial pour la saisie de point
+     'Saisie-modification'  => Array ($config['carte_base'], ''      , 'Bing photo',        10000), // cas spécial pour la saisie de point
      'Saisie-création'      => Array ($config['carte_base'], ''      , 'Bing photo',     20000000), // cas spécial pour la modification de point
 );
 

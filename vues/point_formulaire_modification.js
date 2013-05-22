@@ -19,7 +19,8 @@ window.onload = function () {
                 cookie: {
                     lat: <?=$point->latitude?>, 
                     lon: <?=$point->longitude?>, 
-                    scale: <?=$vue->serie[3]?>
+                    scale: <?=$vue->serie[3]?>,
+                    baseLayer: '<?=$vue->serie[2]?>' 
                 }
             }),
             new OpenLayers.Control.LayerSwitcherConditional (),
