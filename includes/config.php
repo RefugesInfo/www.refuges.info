@@ -103,11 +103,6 @@ $config['champs_simples_points']=array_merge(array("censure","nom","places","rem
 // avec ça c'est une news générale
 $config['numero_commentaires_generaux']=-2;
 
-// ça, c'est le polygone "qui n'existe pas" et qui contient les points dans aucuns polygone de même type, 
-// on pourrait appeler ça "la vallée" pour les massif, le néant pour les cartes
-//FIXME : sauf erreur, ce truc n'a plus de raison d'exister -- sly 15/03/2013
-$config['numero_polygone_fictif']=$config['numero_massif_fictif']=0;
-
 //nombre maximum de point que peut sortir la recherche
 $config['points_maximum_recherche']=40;
 // c'est l'id pour lequel les coordonnées gps données sont volontairement fausses

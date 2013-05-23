@@ -110,40 +110,40 @@ function nouvelles($nombre,$type,$lien_locaux=True)
     
     case "refuges": $conditions->ids_types_point=$config['tout_type_refuge'];
     case "points":
-      $conditions->ordre="date_creation DESC";
-      $conditions->limite=$nombre;
-      $conditions->avec_infos_massif=True;
-      $points=infos_points($conditions);
-      if (count($points)!=0)
-	foreach($points as $point)
-	{
-	  $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
-	  $lien=lien_point_fast($point,$lien_locaux);
-	  $titre=$point->nom;
-	  
-	  // si le point n'appartient à aucun massif, pas de lien vers le massif
-	  if ($point->id_massif!=$config['numero_massif_fictif'])
-	  {
-	    // Cosmétique, on ne place pas d'espace après un l'
-	    if ($point->article_partitif_massif=="de l'")
-	      $espace="";
-	    else
-	      $espace=" ";
-	    
-	    $lien_massif="dans le 
-	    <a href=\"".lien_polygone($point,$lien_locaux)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
-	  }
-	  else
-	    $lien_massif="";
-	  
-	  $texte="$categorie : 
-	  <a href=\"$lien\">$titre</a>
-	  $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
-	  $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
-				"date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
-				"titre"=>$titre,"lien"=>$lien); 
-	}
-	break;
+        $conditions->ordre="date_creation DESC";
+        $conditions->limite=$nombre;
+        $conditions->avec_infos_massif=True;
+        $points=infos_points($conditions);
+        if (count($points)!=0)
+            foreach($points as $point)
+            {
+                $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
+                $lien=lien_point_fast($point,$lien_locaux);
+                $titre=$point->nom;
+                
+                // si le point n'appartient à aucun massif, pas de lien vers le massif
+                if (isset($point->id_massif))
+                {
+                    // Cosmétique, on ne place pas d'espace après un l'
+                    if ($point->article_partitif_massif=="de l'")
+                        $espace="";
+                    else
+                        $espace=" ";
+                    
+                    $lien_massif="dans le 
+                    <a href=\"".lien_polygone($point,$lien_locaux)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
+                }
+                else
+                    $lien_massif="";
+                
+                $texte="$categorie : 
+                <a href=\"$lien\">$titre</a>
+                $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
+                $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
+                                      "date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
+                                      "titre"=>$titre,"lien"=>$lien); 
+            }
+         break;
     
     case "general":
       $conditions_commentaires_generaux = new stdClass;
