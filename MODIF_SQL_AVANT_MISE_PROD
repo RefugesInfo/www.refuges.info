@@ -1,9 +1,0 @@
-dumper la table type_precision_gps de la base "test" dans la base "refuges"
-
-puis lancer ça :
-
-update points_gps set id_type_precision_gps=9 where id_type_precision_gps in (2,3)
-
-qui placera la précision "inconnue" pour toutes les précisions que l'ont
-peut juger maintenant comme litigieuse (copie ign, copie google maps, ou
-récupérer d'un autre site comme le géoportail, donc douteux)
