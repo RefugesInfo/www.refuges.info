@@ -23,16 +23,13 @@ spl_autoload_register(function ($class) {
         require_once '../includes/'.$class.'.php';
 });
 
-// Ce fichier est privée et contient des différentes clefs et mot de passe
-require_once("config_privee.php");
-
 /******** Clés des contrats des cartes **********/
 $config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
 $config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['chemin_openlayers']='/ol2.12.4/'; 
-$config['carte_base'] = 'maps.refuges.info';
+$config['carte_base'] = 'OpenCycleMap';
 
 /* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve (utilisé pour les vignettes
 des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
@@ -149,3 +146,8 @@ $config['nom_fichier_export']="refuge-info";
 
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");
+
+// Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
+// il est volontairement placé à la fin pour que les variables ci-avant puissent par exemple être sur-chargées si on souhaite
+// un autre comportement
+require_once("config_privee.php");
