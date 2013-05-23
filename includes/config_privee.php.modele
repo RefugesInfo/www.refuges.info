@@ -29,3 +29,5 @@ if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))
   ini_set('error_reporting', E_ALL ^ E_NOTICE);
   ini_set('display_errors', '1');
 }
+
+?>
