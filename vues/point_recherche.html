@@ -30,7 +30,7 @@ function inverse_visibility_voisins( id_element )
 <div class="contenu">
     <?php // Parcours tous les refuges de la recherche
     if (isset($vue->points)) { ?>
-	<h4>Recherche sur refuges.info<?=$vue->trop?></h4>
+	<h4>Recherche sur refuges.info (<?=$vue->nombre_points?> retournés)<?=$vue->trop?></h4>
 	
 		<?php if(isset($vue->limite_atteinte) ) { ?>
 			<h5>La limite a été atteinte. seuls les <?=$vue->limite_atteinte?> premiers points sont affichés.</h5>

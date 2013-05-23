@@ -62,10 +62,10 @@ foreach ($_POST as $champ => $valeur)
 // C'est LA que ca cherche
 $vue->points = infos_points ($conditions);
 
-//en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on la atteinte ........
- if (!empty($conditions->limite) && sizeof($vue->points) == $conditions->limite)
+$vue->nombre_points=sizeof($vue->points);
+//en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on l'a atteinte ........
+ if (!empty($conditions->limite) && $vue->nombre_points == $conditions->limite)
 	$vue->limite_atteinte = $conditions->limite;
-
  
 //-----------------------------------------------------------------------------------------------------
 // Recherche de points sur nominatim.openstreetmap.org

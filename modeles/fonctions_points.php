@@ -278,7 +278,7 @@ function infos_points($conditions)
 	// l'appelant devrait appeler infos_polygone avec l'ID plus tard.
 	// Note sly : Le problème est que ça peut obliger à des centaines de requêtes pour rie, l'avantage d'un join ici, c'est qu'on récupère tout ça directement !
 	// pas le boulot non plus de infos_points de donner les liens
-	// Note sly : Ce besoin était tellement récurrent, que j'ai opté pour la factorisation, même si ça congère aux liens une place pas idéalement adaptée
+	// Note sly : Ce besoin était tellement récurrent, que j'ai opté pour la factorisation, mais j'avoue qu'un lien vers le point peut se voir comme une présentation d'info tout comme une info elle même
     if ($conditions->avec_infos_massif)
     {
         $point->nom_massif = $point->nom_polygone;
