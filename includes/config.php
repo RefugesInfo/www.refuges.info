@@ -29,6 +29,9 @@ $config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['chemin_openlayers']='/ol2.12.4/'; 
+
+// Notez que pour l'instant, suite à une histoire de layers déclaré ou pas dans openlayers, ce paramètre ne sera pas pris en compte partout
+// sauf si il vaut maps.refuges.info ou OpenCycleMap
 $config['carte_base'] = 'maps.refuges.info';
 
 /* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve (utilisé pour les vignettes

@@ -11,10 +11,17 @@ window.onload = function () {
         displayProjection: new OpenLayers.Projection ('EPSG:4326'), // Données en °
         controls: [
             new OpenLayers.Control.Navigation(),
-            new OpenLayers.Control.Attribution()
+            new OpenLayers.Control.Attribution(),
+            new OpenLayers.Control.PanZoom (),
+            new OpenLayers.Control.PermalinkCookies (null, null, {
+                cookie: {
+                    baseLayer: '<?=$config['carte_base']?>'
+                }
+            })
         ],
         layers: [
-            new OpenLayers.Layer.MRI ('Maps.Refuges.info')
+            new OpenLayers.Layer.MRI ('Maps.Refuges.info'),
+            new OpenLayers.Layer.Velo ('OpenCycleMap')
         ]
     });
     
