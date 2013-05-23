@@ -22,6 +22,7 @@ window.onload = function () {
                     lon: <?=$vue->longitude?>,
                     lat: <?=$vue->latitude?>,
                     scale: <?=$vue->vignette[3]?>,
+                    baseLayer: '<?=$config['carte_base']?>'
                 }
             }),
             new OpenLayers.Control.LayerSwitcherConditional (),
