@@ -106,7 +106,7 @@ if ( $vue->type_affichage == '' ){?>
 	</fieldset>
 
 <!-- Edition du massif -->
-<?if ($_SESSION['niveau_moderation']>=1) {?>
+<?if ($_SESSION['niveau_moderation']>=1 && $vue->polygone->id_polygone) {?>
 	<fieldset id="editGPX">
 		<legend>Edition</legend>
 		<label>
