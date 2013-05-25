@@ -29,7 +29,11 @@ window.onload = function () {
         numZoomLevels: 22,
         controls: [
             new OpenLayers.Control.PanZoomBar (), // Grande barre de zoom
-            new OpenLayers.Control.PermalinkCookies (), // Ne doit pas être en premier
+            new OpenLayers.Control.PermalinkCookies (null, null, { // Ne doit pas être en premier
+                'defaut': {
+                    baseLayer: '<?=$config['carte_base']?>'
+                }
+            }),
 lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dans la carte pour les couches de base
                 ascending: true
             }),

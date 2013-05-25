@@ -46,9 +46,11 @@ OpenLayers.Control.ArgParserCookies = OpenLayers.Class(OpenLayers.Control.ArgPar
     getParameters: function(url) {
         // Ecrase avec les params déclarés dans le PermalinkCookies
         var plc = this.map.getControlsByClass ('OpenLayers.Control.PermalinkCookies');
-        if (plc.length)
-            OpenLayers.Util.extend (this.params, plc[0]);
-
+        if (plc.length) {
+            OpenLayers.Util.extend (this.params.defaut,    plc[0].defaut);
+            OpenLayers.Util.extend (this.params.cookie,    plc[0].cookie);
+            OpenLayers.Util.extend (this.params.permalink, plc[0].permalink);
+        }
         OpenLayers.Util.extend (this.params.defaut, this.params.cookie);
         OpenLayers.Util.extend (this.params.defaut, this.params.permalink);
 
