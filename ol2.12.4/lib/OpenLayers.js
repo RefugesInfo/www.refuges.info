@@ -4,8 +4,10 @@
  * full text of the license. */
 
 /* 
+ * @requires OpenLayers/Util.js
  * @requires OpenLayers/BaseTypes.js
  * @requires OpenLayers/Lang/en.js
+ * @requires OpenLayers/Lang/fr.js
  * @requires OpenLayers/Console.js
  */
  
@@ -131,8 +133,8 @@
     if(!singleFile) {
         if (!jsFiles) {
             jsFiles = [
-'OpenLayers/BaseTypes/Class.js',
 'OpenLayers/BaseTypes.js',
+'OpenLayers/BaseTypes/Class.js',
 'OpenLayers/BaseTypes/Bounds.js',
 'OpenLayers/BaseTypes/Element.js',
 'OpenLayers/BaseTypes/LonLat.js',
@@ -141,10 +143,14 @@
 'OpenLayers/Console.js',
 'OpenLayers/Lang.js',
 'OpenLayers/Util.js',
+'OpenLayers/Lang/en.js',
+'OpenLayers/Lang/fr.js',
+'OpenLayers/Projection.js',
+'OpenLayers/Feature.js',
+'OpenLayers/Feature/Vector.js',
 'OpenLayers/Events.js',
 'OpenLayers/Animation.js',
 'OpenLayers/Tween.js',
-'OpenLayers/Projection.js',
 'OpenLayers/Map.js',
 'OpenLayers/Control.js',
 'OpenLayers/Handler.js',
@@ -156,6 +162,13 @@
 'OpenLayers/Handler/Click.js',
 'OpenLayers/Control/Navigation.js',
 'OpenLayers/Control/Attribution.js',
+'OpenLayers/Events/buttonclick.js',
+'OpenLayers/Control/PanZoom.js',
+'OpenLayers/Control/ArgParser.js',
+'OpenLayers/Control/Permalink.js',
+'OpenLayers/Util/Cookies.js',
+'OpenLayers/Control/ArgParserCookies.js',
+'OpenLayers/Control/PermalinkCookies.js',
 'OpenLayers/Layer.js',
 'OpenLayers/Layer/HTTPRequest.js',
 'OpenLayers/Tile.js',
@@ -164,9 +177,8 @@
 'OpenLayers/Layer/XYZ.js',
 'OpenLayers/Layer/OSM.js',
 'OpenLayers/Layer/MRI.js',
+'OpenLayers/Layer/Velo.js',
 'OpenLayers/Renderer.js',
-'OpenLayers/Feature.js',
-'OpenLayers/Feature/Vector.js',
 'OpenLayers/Style.js',
 'OpenLayers/StyleMap.js',
 'OpenLayers/Renderer/Elements.js',
@@ -221,14 +233,7 @@
 'OpenLayers/Format/SLD/v1.js',
 'OpenLayers/Format/SLD/v1_0_0.js',
 'OpenLayers/Layer/GMLSLD.js',
-'OpenLayers/Events/buttonclick.js',
-'OpenLayers/Control/PanZoom.js',
 'OpenLayers/Control/PanZoomBar.js',
-'OpenLayers/Control/ArgParser.js',
-'OpenLayers/Control/Permalink.js',
-'OpenLayers/Util/Cookies.js',
-'OpenLayers/Control/ArgParserCookies.js',
-'OpenLayers/Control/PermalinkCookies.js',
 'OpenLayers/Control/LayerSwitcher.js',
 'OpenLayers/Control/LayerSwitcherConditional.js',
 'OpenLayers/Control/ScaleLine.js',
@@ -237,7 +242,6 @@
 'OpenLayers/Control/Panel.js',
 'OpenLayers/Control/GPS.js',
 'OpenLayers/Control/FullScreen.js',
-'OpenLayers/Layer/Velo.js',
 'OpenLayers/Layer/WMTS.js',
 'OpenLayers/Layer/IGN.js',
 '../proj4js-1.1.0/lib/proj4js-combined.js',
@@ -255,12 +259,26 @@
 'OpenLayers/Layer/Google/v3.js',
 'OpenLayers/Layer/Googles.js',
 'OpenLayers/Layer/Bing.js',
+'OpenLayers/Control/SaveFeature.js',
+'OpenLayers/Format/GPX.js',
+'OpenLayers/Control/DownloadFeature.js',
+'OpenLayers/Control/LoadFeature.js',
+'OpenLayers/Strategy/Save.js',
+'OpenLayers/Strategy/Fixed.js',
+'OpenLayers/Control/DragFeature.js',
+'OpenLayers/Handler/Keyboard.js',
+'OpenLayers/Control/ModifyFeature.js',
+'OpenLayers/Control/CutFeature.js',
+'OpenLayers/Control/DrawFeature.js',
+'OpenLayers/Handler/Point.js',
+'OpenLayers/Handler/Path.js',
+'OpenLayers/Control/DrawFeaturePath.js',
+'OpenLayers/Control/Snapping.js',
+'OpenLayers/Layer/Editor.js',
 'OpenLayers/Layer/Img.js',
 '../proj4js-1.1.0/lib/defs/UTM.js',
 'OpenLayers/Layer/ImgPosition.js',
-'OpenLayers/Control/DragFeature.js',
 'OpenLayers/Layer/ImgDrag.js',
-'OpenLayers/Format/GPX.js',
 ''
             ]; // etc.
         }

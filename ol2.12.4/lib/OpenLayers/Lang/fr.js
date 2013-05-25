@@ -16,23 +16,23 @@
 OpenLayers.Lang["fr"] = OpenLayers.Util.applyDefaults({
 
 //<<DCM  infobules de l'éditeur de traces
-	'SaveFeature': "Sauvegarder les modifications du tracé",
-	'VisuGPXViewFeature': "Voir le tracé sur http://VisuGPX.com",
-	'DownloadFeature': "Charger les traces dans un fichier GPX",
-	'LoadFeature': "Ajouter un fichier GPX",
-	'CutFeature': "Couper un segment en 2: Survoler le segment puis cliquer sur un sommet ou le milieu du segment à supprimer\n\n"+
+	'SaveFeature': "Sauvegarder les modifications du tracé:\nSélectionner ce contrôle",
+	'VisuGPXViewFeature': "Voir le tracé sur http://VisuGPX.com:\nSélectionner ce contrôle",
+	'DownloadFeature': "Charger les traces dans un fichier GPX:\nSélectionner ce contrôle",
+	'LoadFeature': "Ajouter un fichier GPX:\nSélectionner ce contrôle",
+	'CutFeature': "Couper un segment en 2:\nSélectionner ce contrôle\nSurvoler le segment puis cliquer sur un sommet ou le milieu du segment à supprimer\n\n"+
 		"Coler 2 segments: survoler le premier, appuyer la touche SHIFT et cliquer simultanément le segment à coler\n\n"+
 		"Supprimer un segment: Survoler le segment puis appuyer sur la touche D",
-	'ModifyFeature': "Modifier un segment: Survoler le segment pour le sélectionner\n\n"+
+	'ModifyFeature': "Modifier un segment:\nSélectionner ce contrôle\nSurvoler le segment pour le sélectionner\n\n"+
 		"Déplacer un sommet: Cliquer sur le sommet, maintenir et faire glisser\n\n"+
 		"Ajouter un sommet: Cliquer et faire glisser le milieu d un segment\n\n"+
 		"Supprimer un sommet: Double cliquer sur le sommet\n"+
 		"Ou le survoler puis appuyer sur la touche D",
-	'DrawFeaturePath': "Ajouter un segment: Cliquer à l'emplacement du début, sur chaque point intermédiaire, double cliquer à la fin\n\n"+
+	'DrawFeaturePath': "Ajouter un segment:\nSélectionner ce contrôle\nCliquer à l'emplacement du début, sur chaque point intermédiaire, double cliquer à la fin\n\n"+
 		"Etendre un segment: Cliquer sur une extrémité, sur chaque point intermédiaire, double cliquer à la fin\n\n"+
 		"Joindre deux segments: Cliquer sur une extrémité, double cliquer sur l'autre\n\n"+
 		"Dessiner un tracé: Enfoncer et maintenir la touche SHIFT, cliquer à l'emplacement du début et déplacer le curseur",
-	'Navigation': "Naviguer sur la carte",
+	'Navigation': "Naviguer sur la carte:\nSélectionner ce contrôle\nCliquer et déplacer",
 	
 	'uploadSuccess': "Modifications enregistrées",
 	'uploadFailure': "Erreur lors de l'enregistrement des modifications",

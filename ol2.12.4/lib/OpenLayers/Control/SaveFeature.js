@@ -27,17 +27,18 @@ OpenLayers.Control.SaveFeature = OpenLayers.Class(OpenLayers.Control, {
      */
     activate: function () {
         var r = OpenLayers.Control.prototype.activate.apply(this,arguments);
-		
-		// On force l'upload pour tous les segments
-		// Sinon, seuls les segments créés ou modifiés sont remontés et on ne sait pas lesquels ont été supprimés
-		for (f = 0; f < this.layer.features.length; f++)
-			this.layer.features[f].state = OpenLayers.State.INSERT; 
-			
-		this.layer.saveStrategy.save ();
-		this.deactivate(); // Aucune raison de le laisser sélecté quand le save est fait
-		
-		return r;
+        
+        // On force l'upload pour tous les segments
+        // Sinon, seuls les segments créés ou modifiés sont remontés et on ne sait pas lesquels ont été supprimés
+        for (f = 0; f < this.layer.features.length; f++)
+            this.layer.features[f].state = OpenLayers.State.INSERT; 
+
+        this.layer.saveStrategy.save ();
+        this.deactivate(); // Aucune raison de le laisser sélecté quand le save est fait
+        this.layer.map.zoomToExtent (this.layer.getDataExtent ()); // On recadre sur l'ensemble des features au cas ou il y aurait des égarés loin
+        
+        return r;
     },
 
-	CLASS_NAME: "OpenLayers.Control.SaveFeature"
+    CLASS_NAME: "OpenLayers.Control.SaveFeature"
 });

@@ -18,6 +18,7 @@ require 'jsmin-1.1.1.php';
 $dir = '../../vues'; // Si inclu dans refuges.info
 if (!is_dir ($dir)) $dir = '../TEST'; // Sinon, la page de test
 
+// Liste des classes qui sont dans un fichier dont le nom est différent de la classe
 $estDans = array (
     'OpenLayers/Bounds.js' => 'OpenLayers/BaseTypes/Bounds.js',
     'OpenLayers/Class.js' => 'OpenLayers/BaseTypes/Class.js',
@@ -53,19 +54,20 @@ $olmin = "/* Librairie minifiée Openlayers générée sur {$_SERVER['SERVER_NAME']}
         .compress ($ollib [0])
         .compress ($ollib [1]);
 
-foreach (scandir ($dir) AS $f)
-    if (is_file ($dir.'/'.$f)) {
-        $fc = file_get_contents ($dir.'/'.$f);
-        
-        // pour @requires OpenLayers/Xxx/Yxx.js
-        $fc = str_replace ('requires', 'new', $fc); 
-        $fc = str_replace ('/', '.', $fc);
-        $fc = str_replace ('.js', '', $fc);
-        
-        preg_match_all ('/new ([A-Z|a-z|\.]*)/', $fc, $fcs);
-        foreach ($fcs[1] AS $classe)
-            addFile (str_replace ('.', '/', $classe).'.js');
-    }
+foreach (array ('.', $dir) AS $d)
+    foreach (scandir ($d) AS $f)
+        if (is_file ($d.'/'.$f)) {
+            $fc = file_get_contents ($d.'/'.$f);
+            
+            // pour @rëquires OpenLayers/Xxx/Yxx.js
+            $fc = str_replace ('requires', 'new', $fc); 
+            $fc = str_replace ('/', '.', $fc);
+            $fc = str_replace ('.js', '', $fc);
+            
+            preg_match_all ('/new ([A-Z|a-z|\.]*)/', $fc, $fcs);
+            foreach ($fcs[1] AS $classe)
+                addFile (str_replace ('.', '/', $classe).'.js');
+        }
 
 // Ecriture des lib en 1 seule fois pour minimiser la durée d'indisponibilité
 $ollib [] = $ollib [1]; // On ajoute la fin du fichier

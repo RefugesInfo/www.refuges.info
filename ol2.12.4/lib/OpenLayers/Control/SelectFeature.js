@@ -113,7 +113,7 @@ OpenLayers.Control.SelectFeature = OpenLayers.Class(OpenLayers.Control, {
      * {Function} Optional function to be called when the SHIFT key is pressed & a feature clicked.
      *     The function should expect to be called with a feature.
      */
-/*DCM*/	onShiftClick: function() {},
+/*DCM*/ onShiftClick: function() {},
 
     /**
      * APIProperty: onUnselect
@@ -202,9 +202,9 @@ OpenLayers.Control.SelectFeature = OpenLayers.Class(OpenLayers.Control, {
             callbacks.over = this.overFeature;
             callbacks.out = this.outFeature;
         }
-/*DCM*/	if (this.hoverSelect) {
-/*DCM*/		callbacks.over = this.hoverSelectFeature;
-/*DCM*/	}
+/*DCM*/ if (this.hoverSelect) {
+/*DCM*/     callbacks.over = this.hoverSelectFeature;
+/*DCM*/ }
         this.callbacks = OpenLayers.Util.extend(callbacks, this.callbacks);
         this.handlers = {
             feature: new OpenLayers.Handler.Feature(
@@ -331,10 +331,10 @@ OpenLayers.Control.SelectFeature = OpenLayers.Class(OpenLayers.Control, {
      * feature - {<OpenLayers.Feature.Vector>} 
      */
     clickFeature: function(feature) {
-/*DCM*/	if (this.handlers.feature.evt.shiftKey ||
-/*DCM*/		this.handlers.feature.evt.ctrlKey ||
-/*DCM*/		this.handlers.feature.evt.altKey)
-/*DCM*/		this.onShiftClick.call(this.scope, feature);
+/*DCM*/ if (this.handlers.feature.evt.shiftKey ||
+/*DCM*/     this.handlers.feature.evt.ctrlKey ||
+/*DCM*/     this.handlers.feature.evt.altKey)
+/*DCM*/     this.onShiftClick.call(this.scope, feature);
         if(!this.hover) {
             var selected = (OpenLayers.Util.indexOf(
                 feature.layer.selectedFeatures, feature) > -1);
@@ -421,18 +421,36 @@ OpenLayers.Control.SelectFeature = OpenLayers.Class(OpenLayers.Control, {
      * Parameters:
      * feature - {<OpenLayers.Feature.Vector>} 
      */
-/*DCM*/	hoverSelectFeature: function(feature) {
-/*DCM*/		if (this.hoverSelect &&
-/*DCM*/			!this.handlers.feature.evt.shiftKey &&
-/*DCM*/			!this.handlers.feature.evt.ctrlKey &&
-/*DCM*/			!this.handlers.feature.evt.altKey &&
-/*DCM*/			feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString') {
-/*DCM*/			for (i in feature.layer.selectedFeatures)
-/*DCM*/				this.unselect (feature.layer.selectedFeatures [i]); // On désélectionne tout
-/*DCM*/			if (OpenLayers.Util.indexOf (feature.layer.selectedFeatures, feature) == -1)
-/*DCM*/				this.select (feature); // On sélectionne celle survolée
-/*DCM*/		}
-/*DCM*/	},
+/*DCM*/ hoverSelectFeature: function(feature) {
+/*DCM*/     if (this.hoverSelect &&
+/*DCM*/         !this.handlers.feature.evt.shiftKey &&
+/*DCM*/         !this.handlers.feature.evt.ctrlKey &&
+/*DCM*/         !this.handlers.feature.evt.altKey &&
+/*DCM*/         feature.geometry.CLASS_NAME != 'OpenLayers.Geometry.Point') { // Ne pas sélectionner les points de manipulation de la ligne. TODO: voir si on peut faire plus logique
+
+/*DCM*/         for (f in feature.layer.selectedFeatures)
+/*DCM*/            this.unselect (feature.layer.selectedFeatures [f]); // On désélectionne tout
+
+/*DCM*/         // Si c'est un multipolygone, on le découpe en plusieurs lignes
+/*DCM*/         if (feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.MultiPolygon') {
+/*DCM*/             for (c in feature.geometry.components)
+/*DCM*/             if (feature.geometry.components[c].CLASS_NAME == 'OpenLayers.Geometry.Polygon') {
+/*DCM*/                 var l = new OpenLayers.Feature.Vector (
+/*DCM*/                     new OpenLayers.Geometry.LineString()
+/*DCM*/                 );
+/*DCM*/                 for (cc in  feature.geometry.components[c].components)
+/*DCM*/                     for (ccc in  feature.geometry.components[c].components[cc].components)
+/*DCM*/                         l.geometry.addComponent(feature.geometry.components[c].components[cc].components[ccc], 0); // On les insère dans la nouvelle ligne
+/*DCM*/                 this.layer.addFeatures([l]); // On ajoute la ligne à la couche
+/*DCM*/             }
+/*DCM*/             feature.destroy(); // Et on détruit le multipolygone
+/*DCM*/         }
+
+/*DCM*/      // On sélectionne le feature survolé
+/*DCM*/      else if (OpenLayers.Util.indexOf (feature.layer.selectedFeatures, feature) == -1)
+/*DCM*/             this.select (feature);
+/*DCM*/     }
+/*DCM*/ },
 
     /**
      * Method: outFeature

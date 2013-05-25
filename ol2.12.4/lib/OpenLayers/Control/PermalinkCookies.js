@@ -15,6 +15,24 @@
  *  - <OpenLayers.Permalink>
  */
 
+/**
+ * Les paramètres sont pris par ordre de priorité : permalink, cookie, defaut
+ * new OpenLayers.Control.PermalinkCookies ({ // Un lien permalink conservé dans un cookie qui reporte les paramètres d'une page à l'autre
+ *     defaut: { // La position par défaut s'il n'y a pas de cookie ou de permalink
+ *         lon: 5.7,
+ *         lat: 45.2,
+ *         scale: 500000,
+ *         baseLayer: 'OSM'
+ *     },
+ *     cookie: { // Ecrase la valeur du cookie
+ *         lon: 5.7, ...
+ *     },
+ *     permalink: { // Ecrase la valeur du permalink
+ *         lon: 5.7, ...
+ *     }
+ * }),
+**/
+
 OpenLayers.Control.PermalinkCookies = OpenLayers.Class(OpenLayers.Control.Permalink, {
 
     /**

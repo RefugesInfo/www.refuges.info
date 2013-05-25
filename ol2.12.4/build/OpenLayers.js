@@ -4,8 +4,10 @@
  * full text of the license. */
 
 /* 
+ * @requires OpenLayers/Util.js
  * @requires OpenLayers/BaseTypes.js
  * @requires OpenLayers/Lang/en.js
+ * @requires OpenLayers/Lang/fr.js
  * @requires OpenLayers/Console.js
  */
  

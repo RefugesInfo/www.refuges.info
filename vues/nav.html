@@ -16,20 +16,25 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 <div class="contenu">
 	<!-- afficher le titre du massif (en mode massif) -->
 	<h3 id="titrepage">
-		<?=$vue->titre?> (Maj+clic=nouvel onglet) :
+        <?if ($vue->type_affichage == 'edit') {?>
+            Edition des contours du massif <?=$vue->polygone->nom_polygone?> :
+            Sélectionner "Modifier un segment" en haut à droite de la carte
+        <?}else{?>
+            <?=$vue->titre?> (Maj+clic=nouvel onglet) :
+        <?}?>
 	</h3>
 </div>
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 <!-- Un premier formulaire pour les consultations courantes -->
 <?php
 // les formulaires ne seront pas la en zone , ils sont presents pour le reste
-if ( $vue->type_affichage != "zone" ){?>
+if ( $vue->type_affichage == '' ){?>
 <form
 	id="choix_legende"
 	style="float: left; width: 200px;"
 	action="/formulaire_exportations/"
 >
-	<?if (isset ($vue->polygone->nom_polygone )) {?>
+	<?if (isset ($vue->polygone->nom_polygone)) {?>
 		<fieldset>
 			<label>
 				<input name="id_massif"
@@ -89,7 +94,7 @@ if ( $vue->type_affichage != "zone" ){?>
 			<input type="submit" value="Exporter la vue actuelle" />
 		</label>
 	</fieldset>
-	
+
 <!-- Chargement d'un fichier GPX -->
 	<fieldset id="loadGPX" style="display:none;height:45px">
 		<legend>Trace GPS</legend>
@@ -99,7 +104,17 @@ if ( $vue->type_affichage != "zone" ){?>
 			<input type="file" id="GPX" style="opacity:0;filter:alpha(opacity=0);width:100px;position:relative;top:-20px" />
 		</label>
 	</fieldset>
-	
+
+<!-- Edition du massif -->
+<?if ($_SESSION['niveau_moderation']>=1) {?>
+	<fieldset id="editGPX">
+		<legend>Edition</legend>
+		<label>
+            <a href="/nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit">Modifier les contours de <?=$vue->polygone->nom_polygone?></a>
+		</label>
+	</fieldset>
+<?}?>
+
 </form>
 
 <div style="height: 80%;margin-left: 210px;"><?/* "Réserve" l'espace qui va bien à gauche. Pas beau mais j'ai pas trouvé mieux */?>
