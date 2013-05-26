@@ -122,11 +122,13 @@ function addFile ($fileName) {
 function compress ($js) {
     // Pour remplacer provisoirement les caractères qui ne passent pas dans le compresseur
     $carspe = array (
+        'ô' => '@OC@',
         'à' => '@AG@',
         'é' => '@EE@',
         'è' => '@EG@',
         'ù' => '@UG@',
         '°' => '@DG@',
+        'Ã´' => '@uOC@',
         'Ã ' => '@uAG@',
         'Ã©' => '@uEE@',
         'Ã¨' => '@uEG@',

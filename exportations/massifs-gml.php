@@ -12,7 +12,7 @@ require_once ("fonctions_gestion_erreurs.php");
 // Si on a des infos remontées, on les mémorise
 if ($data = file_get_contents ('php://input')) { // Récupération du flux en méthode PUT
     $FeatureCollection = simplexml_load_string (str_replace (array ('gml:', 'feature:'), '', $data));
-    
+
     // Polygones
     foreach ($FeatureCollection as $featureMember)
     foreach ($featureMember     as $features)
@@ -23,22 +23,28 @@ if ($data = file_get_contents ('php://input')) { // Récupération du flux en m�
     foreach ($Polygon           as $outerBoundaryIs)
     foreach ($outerBoundaryIs   as $LinearRing)
     foreach ($LinearRing        as $coordinates)
-        $coord [] = (string) $coordinates;
+        $polygons [] = geom_polygon ($coordinates);
 
-    // LineStrings
+    // LineStrings (c'est sous cette forme que l'éditeur rend les polygones créés ou modifiés
     foreach ($FeatureCollection as $features)
     foreach ($features          as $attributes)
     foreach ($attributes        as $geometry)
     foreach ($geometry          as $LineString)
     foreach ($LineString        as $coordinates)
     if ((string) $coordinates)
-        $coord [] = (string) $coordinates;
+        $polygons [] = geom_polygon ($coordinates);
 
-    //=======================================================================================================
-    //DOMINIQUE: TOTO: C'est là que je requiers l'aide des spacialistes PG pour remonter ce tablo dans la base
-    file_put_contents ('trace.log', var_export ($coord, true));
-    // Chaque ligne du tablo contient la liste des coordonnées d'un polygone
-    //=======================================================================================================
+    $query = "UPDATE polygones SET (geom) = (ST_GeomFromText('MULTIPOLYGON(" .implode (',', $polygons). ")',4326)) WHERE id_polygone=".$_GET['massif'];
+    if (!$pdo->exec($query)) {
+        header('HTTP/1.0 500 '.$pdo->errorInfo()[2]);
+        exit;
+    }
+}
+function geom_polygon ($c) {
+    $c = str_replace (',', ';', $c);
+    $c = str_replace (' ', ',', $c);
+    $c = str_replace (';', ' ', $c);
+    return "(($c))";
 }
     
 // Maintenant, on s'occupe du flux descendant
