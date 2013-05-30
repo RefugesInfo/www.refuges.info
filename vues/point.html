@@ -47,10 +47,9 @@
 		<?// Signaler les fiches censurées
 		if ($vue->censure) {?>
 			<dd class="lien_ajout_commentaire">
-				<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$vue->id_point?>">
-					Cette fiche est censurée.
-				</a>
-				&nbsp; Elle n'est visible que des modérateurs
+				<strong class="warning">
+					Cette fiche n'est visible que des modérateurs
+				</strong>
 			</dd>
 		<?}?>
 		<?// Si les droits sont suffisants, lien de modification
