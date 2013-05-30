@@ -24,6 +24,7 @@ if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
   
   $conditions_attente_correction->demande_correction=True;
   $conditions_attente_correction->avec_infos_point=True;
+  $conditions_attente_correction->avec_points_censure=True;
   $commentaires_attente_correction=infos_commentaires($conditions_attente_correction);
 ?>
 	<h4>Zone de modération des commentaires sur les fiches</h4>
