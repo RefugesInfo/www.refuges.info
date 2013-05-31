@@ -174,11 +174,13 @@ function infos_commentaires ($conditions)
 
 // Un appel plus simple qui utilise le précédent
 // jmb , comme infos_point, je vois pas l'interet, les fonctions pointS et sommentaireS savent gerer les cas unique
-function infos_commentaire($id_commentaire)
+// sly : totalement d'accord sur le principe, j'ai juste voulu reproduire l'appel historique qui récupére un commentaire à partir de son id
+function infos_commentaire($id_commentaire,$meme_si_censure=False)
 {
   $conditions = new stdClass;
   $conditions->ids_commentaires=$id_commentaire;
   $conditions->avec_infos_point=True;
+  $conditions->avec_points_censure=$meme_si_censure;
   $c=infos_commentaires ($conditions);
   if ($c->erreur)
     return erreur($c->texte);
@@ -219,9 +221,9 @@ function modification_ajout_commentaire($commentaire)
     
     if ($commentaire->id_point>=0) // Si négatif, c'est une "news générale"
     {
-            $point=infos_point($commentaire->id_point);
+            $point=infos_point($commentaire->id_point,True);
             if ($point->erreur)
-                    return erreur("Le commentaire ne peut être ajouté car : $point->message","Id : \"$commentaire->id_point\" donné");
+                    return erreur("Le commentaire ne peut être ajouté car : $point->message","Id du point: \"$commentaire->id_point\"");
     }
     // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
     // On dirait que le commentaire dispose bien d'une photo
@@ -248,7 +250,7 @@ function modification_ajout_commentaire($commentaire)
     // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
     if (isset($commentaire->id_commentaire))
     { // On souhaite modifier le commentaire
-            $old_commentaire=infos_commentaire($commentaire->id_commentaire);
+            $old_commentaire=infos_commentaires($commentaire->id_commentaire,True);
             if ($old_commentaire->erreur)
                     return erreur("Une modification d'un commentaire inexistant a été demandée");
             if ($commentaire->photo['originale']!=$old_commentaire->photo['originale'])
@@ -298,7 +300,7 @@ function modification_ajout_commentaire($commentaire)
     
     if (!$pdo->exec($query_finale))
             return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
-    else
+    elseif ($mode!="modification")
             $commentaire->id_commentaire = $pdo->lastInsertId();
     
     if ($mode=="ajout")
@@ -555,35 +557,5 @@ function messages_du_forum($conditions)
     return $messages_du_forum;
 
 }
-
-
-///************************************************************************
-//Converti d'une date au format exif (trouvée dans les photos jpeg)
-//vers un format MySQL
-//de YYYY:MM:JJ HH:mm:ss vers YYYY-MM-JJ
-//************************************************************************/
-// jmb: abandon, seulement utilisee dans infos_comment. 
-//function date_exif_a_mysql($date_exif)
-//{
-//	$date_exif_sans_espace=str_replace(" ",":",$date_exif);
-//	$decoupe=explode(':',$date_exif_sans_espace);
-//	return("$decoupe[0]-$decoupe[1]-$decoupe[2]");
-//}
-
-///****************************************
-//Fonction qui écrit en TIMESTAMP une
-//date venant JJ/MM/AAAA hh:mm
-//qui est le format plus "humain" demandé au modérateurs lorsqu'ils 
-//veulent modifier la date d'un commentaire
-// ***************************************/
-// jmb: inutilise ? et je vois pas par quoi c'est remplace d'ailleurs
-//function date_jjmmaaaa2TS($date_fr)
-//{
-//	//-----------------------
-//	// remplace la fonction strtotime, qui reconnait MM/JJ/AAAA
-//	list($jour, $mois, $annee, $heure, $minute) = split('[/ :-]', $date_fr) ;
-//	$ts = mktime($heure, $minute, 59, $mois, $jour, $annee);
-//	return ( $ts );
-//}
 
 ?>

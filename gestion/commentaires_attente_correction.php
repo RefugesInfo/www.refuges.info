@@ -15,10 +15,20 @@ if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
   {
     foreach ($_POST['commentaires_corriges'] as $id_commentaire)
     {
-      $commentaire=infos_commentaire($id_commentaire);
-      $commentaire->demande_correction=0;
-      $commentaire->qualite_supposee+=4;
-      modification_ajout_commentaire($commentaire);
+      $conditions->avec_points_censure=True; // Ici, en secteur modération, il est possible qu'un modérateur souhaite modifier le commentaire d'une fiche censurée
+      $conditions->ids_commentaires=$id_commentaire;
+      $commentaires=infos_commentaires($conditions);
+      if ($commentaires->erreur)
+          print($commentaires->message);
+      else
+      {
+          $commentaire=$commentaires[0]; // On est censé récupérer qu'un seul commentaire vu qu'on a donner qu'une condition l'id
+          $commentaire->demande_correction=0; 
+          $commentaire->qualite_supposee+=4;
+          $retour=modification_ajout_commentaire($commentaire);
+          if ($retour->erreur)
+              print($retour->message);
+      }
     }
   }
   

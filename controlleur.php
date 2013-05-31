@@ -96,9 +96,11 @@ include ($config['chemin_controlleurs'].$controlleur->type.".php");
 // On affiche le tout
 if ($controlleur->avec_entete_et_pied)
     include ($config['chemin_vues']."_entete.html");
+    
 // Là, c'est bidouille compatibilité avec avant, je pense que chaque controlleur devrait pouvoir décider de la vue sans que soit imposée l'extension
 if (!isset($vue->template))
     $vue->template=$vue->type.".html";
+    
 include ($config['chemin_vues'].$vue->template);
 if ($controlleur->avec_entete_et_pied)
     include ($config['chemin_vues']."_pied.html");
