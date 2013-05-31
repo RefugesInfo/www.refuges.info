@@ -11,7 +11,7 @@ if (AUTH!=1)
 	die("<h3>Accès non autorisé</h3>");
 
 // si nous n'avons pas un modérateur, nous vérifions si il s'agit bien de son commentaire
-$commentaire=infos_commentaire($_REQUEST['id_commentaire']);
+$commentaire=infos_commentaire($_REQUEST['id_commentaire'],True);
 
 if ($commentaire->erreur)
   die($commentaire->message);

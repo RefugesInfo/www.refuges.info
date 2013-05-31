@@ -230,7 +230,7 @@ if ($_SESSION['niveau_moderation']>=1)
     $vue->champs->censure = new stdClass ;
     $vue->champs->censure->actif = True ;
     $vue->champs->censure->valeur = $point->censure;
-    $vue->champs->censure->label="Censurer ce point";
+    $vue->champs->censure->label="Cacher ce point";
     $vue->champs->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
 }
 
