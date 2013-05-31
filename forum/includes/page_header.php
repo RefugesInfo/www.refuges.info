@@ -486,9 +486,18 @@ header ('Expires: 0');
 header ('Pragma: no-cache');
 require_once ("fonctions_autoconnexion.php");
 
+// On gère l'éventuel connexion automatique de l'internaute (En réalité, le forum s'en charge lui même vu que ce sont ses cookies, mais cela nous permet de changer le bandeau wri indiquant qu'on est connecté)
+auto_login_phpbb_users();
+
 // 05/11/2011 Dominique : modif appel
 // 31/05/2012 Dominique : passage en template simple
 $vue = new stdclass;
+
+// vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
+if ($_SESSION['niveau_moderation']>=1)
+    $vue->demande_correction=info_demande_correction ();
+    
+
 $vue->titre = $page_title;
 $vue->css [] = '/forum/style-forum.css';
 require_once ($config['chemin_vues']."_entete.html");

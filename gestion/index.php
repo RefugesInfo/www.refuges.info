@@ -7,13 +7,18 @@ Chantier d'avenir : passer en MVC
 // 15/02/13 jmb : suppression de certaines fonctionnalités (polygones) . on pourra les remettre, eventuellement, + tard
 // 15/02/13 jmb : l'avenir n'est pas vraiment a ce qu'on gere nous meme ces choses. Il y a plein de boulot plus urgent
                     un peu de re  ecriture PHP aussi (big switch)
+
 ***********************************************************************************************/
 
 require_once ("../includes/config.php");
 require_once ("fonctions_autoconnexion.php");
+auto_login_phpbb_users();
 
 $vue = new stdClass;
 $vue->titre="Zone de gestion";
+
+if ($_SESSION['niveau_moderation']>=1)
+    $vue->demande_correction=info_demande_correction ();
 
 include ($config['chemin_vues']."_entete.html");
 

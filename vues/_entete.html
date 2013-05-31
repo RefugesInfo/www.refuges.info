@@ -172,7 +172,7 @@
 					<?} else if ($_SESSION['niveau_moderation']>=1) {?>
 						<li>
 							<a href="/gestion/" title="Zone de gestion pour les modérateurs">Gestion</a>
-							<?if (info_demande_correction ()) {?>
+							<?if ($vue->demande_correction) {?>
 								<a href="/gestion/?page=commentaires_attente_correction" title="Commentaires en attente d'une correction">*</a>
 							<?}?>
 							<? // Ajout d'un lien de test pour Dominique seulement....

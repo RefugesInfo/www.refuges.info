@@ -90,8 +90,15 @@ switch ($controlleur->url_decoupee[1])
 if (!isset($vue->type))
     $vue->type=$controlleur->type;
 
+// On gère l'éventuel connexion automatique de l'internaute
+auto_login_phpbb_users();
+
 // On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config['chemin_controlleurs'].$controlleur->type.".php");
+
+// et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
+if ($_SESSION['niveau_moderation']>=1)
+    $vue->demande_correction=info_demande_correction ();
 
 // On affiche le tout
 if ($controlleur->avec_entete_et_pied)

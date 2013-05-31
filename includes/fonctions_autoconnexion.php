@@ -156,6 +156,5 @@ function info_demande_correction ()
   else
     return false;
 }
-auto_login_phpbb_users();
 
 ?>
