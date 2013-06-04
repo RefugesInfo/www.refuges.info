@@ -16,7 +16,7 @@ $commentaire=infos_commentaire($_REQUEST['id_commentaire'],True);
 if ($commentaire->erreur)
   die($commentaire->message);
 
-if ($commentaire->id_createur==$_SESSION['id_utilisateur'])
+if ($commentaire->id_createur_commentaire==$_SESSION['id_utilisateur'])
   $autorisation=True;
 else if ($_SESSION['niveau_moderation']>=1)
   $autorisation=TRUE;
@@ -42,13 +42,12 @@ switch($_REQUEST['type'])
   break;
 
   case "modification":
-    $commentaire->texte=stripslashes($_REQUEST["comment"]);
-    $commentaire->auteur=stripslashes($_REQUEST["auteur"]);
+    $commentaire->texte=stripslashes($_REQUEST["texte"]);
+    $commentaire->auteur_commentaire=stripslashes($_REQUEST["auteur_commentaire"]);
     //On suppose qu'après modification par qui que ce soit, on ne veut plus forcément prévenir un modérateur
     //et si c'est le modérateur qui fait la modif, on suppose qu'il à fait la correction.
     $commentaire->demande_correction=0;
     $retour=modification_ajout_commentaire($commentaire);
-//var_dump($commentaire);
     print("<h4>$retour->message</h4>");
   break;
 
@@ -91,13 +90,13 @@ switch($_REQUEST['type'])
 		<input type='hidden' name='page' value='moderation' /> <!-- pour qu'il re appelle la page de moderation -->
 		<label>
 			auteur:
-			<input type='text' name='auteur' value='$commentaire->auteur' />
+			<input type='text' name='auteur_commentaire' value='$commentaire->auteur_commentaire' />
 		</label>
 		<label>
 			date:
 			<input type='text' disabled='disabled' name='date' value='".date('d/m/Y H:i',$commentaire->ts_unix_commentaire)."' size='16'/>
 		</label>
-		<textarea name='comment' rows='10' cols='100'>".htmlspecialchars($commentaire->texte,0,"UTF-8")."</textarea>
+		<textarea name='texte' rows='10' cols='100'>".htmlspecialchars($commentaire->texte,0,"UTF-8")."</textarea>
 		<br />
 
 		<!-- tout cela n'est ptet pas necessaire -->

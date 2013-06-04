@@ -165,8 +165,8 @@ else // le point est valide. faut bosser.
     /*********** Préparation des infos des commentaires ***/
     foreach ($tous_commentaires AS $commentaire)
     {
-        $commentaire->texte=bbcode2html($commentaire->texte);
-        $commentaire->auteur=bbcode2html($commentaire->auteur);
+        $commentaire->texte_affichage=bbcode2html($commentaire->texte);
+        $commentaire->auteur_commentaire_affichage=bbcode2html($commentaire->auteur_commentaire);
         $commentaire->date_commentaire_format_francais=strftime ("%A %e %B %Y à %H:%M", $commentaire->ts_unix_commentaire);
         // Préparation des données et affichage d'un commentaire de la fiche d'un point
         // ici le lien pour modérer ce commentaire

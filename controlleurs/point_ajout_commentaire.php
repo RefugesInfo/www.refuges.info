@@ -13,59 +13,57 @@ $commentaire->id_point=$controlleur->url_decoupee[2];
 $point=infos_point($commentaire->id_point);
 if (!$point->erreur)
 {
-  if (!isset($_SESSION['id_utilisateur']))
-    $vue->non_connecte=True;
-  $commentaire->auteur=$_SESSION['login_utilisateur'];
-  
-  // on vient de valider notre formulaire, faisons le nécessaire
-  if ($_POST['action']!="") 
-  {
-    $commentaire->texte=stripslashes($_POST['comment_texte']);
-    $commentaire->auteur=stripslashes($_POST['comment_auteur']);
-    $commentaire->texte_propre=htmlspecialchars($commentaire->texte,0,"UTF-8");
-    $vue->lettre_verification=$_POST["lettre_verification"];
-
-    // peut être un robot ?
-    if ( ($vue->lettre_verification!="f") AND !isset($_SESSION['id_utilisateur']) )
+    if (!isset($_SESSION['id_utilisateur']))
+        $vue->non_connecte=True;
+    $commentaire->auteur_commentaire=$_SESSION['login_utilisateur'];
+    
+    // on vient de valider notre formulaire, faisons le nécessaire
+    if ($_POST['action']!="") 
     {
-      $vue->erreur_captcha=True;
-      $vue->lettre_verification="";
+        $commentaire->texte=stripslashes($_POST['texte']);
+        $commentaire->auteur_commentaire=stripslashes($_POST['auteur_commentaire']);
+        $commentaire->texte_propre=htmlspecialchars($commentaire->texte,0,"UTF-8");
+        $vue->lettre_verification=$_POST["lettre_verification"];
+        
+        // peut être un robot ?
+        if ( ($vue->lettre_verification!="f") AND !isset($_SESSION['id_utilisateur']) )
+        {
+            $vue->erreur_captcha=True;
+            $vue->lettre_verification="";
+        }
+        else if (bloquage_internaute($_POST['auteur_commentaire']))  // utilisateur dont l'adresse IP est bannie
+            $vue->banni=True;
+        else
+        {
+            // Variables du commentaire à ajouter, presque plus de tests à faire, tout est dans la fonction d'ajout de
+            // commentaires
+            
+            if (is_uploaded_file  ( $file_path=$_FILES['comment_photo']['tmp_name']  ) )
+                $commentaire->photo['originale']=$file_path;
+            $commentaire->demande_correction=$_POST['demande_correction'];
+            $commentaire->id_createur_commentaire=$_SESSION['id_utilisateur'];
+            // Transmission des info en cas d'erreur au modèle
+            $vue->messages=modification_ajout_commentaire($commentaire);
+            
+            // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
+            if (!$vue->messages->erreur)
+                $commentaire->texte_propre="";
+            
+            // Nettoyage de la photo envoyée qu'elle fût ou non insérer correctement comme commentaire
+            if (is_uploaded_file  ( $file_path))
+                unlink($file_path);
+        }
     }
-    else if (bloquage_internaute($_POST['comment_auteur']))  // utilisateur dont l'adresse IP est bannie
-		$vue->banni=True;
-    else
-    {
-      // c'est quoi ça ?
-      //set_magic_quotes_runtime(0); //jmb deprecated PHP5.4.
-      // Variables du commentaire à ajouter, presque plus de tests à faire, tout est dans la fonction d'ajout de
-      // commentaires
-      
-      if (is_uploaded_file  ( $file_path=$_FILES['comment_photo']['tmp_name']  ) )
-	$commentaire->photo['originale']=$file_path;
-      $commentaire->demande_correction=$_POST['demande_correction'];
-      $commentaire->id_createur=$_SESSION['id_utilisateur'];
-      // Transmission des info en cas d'erreur au modèle
-      $vue->messages=modification_ajout_commentaire($commentaire);
-      
-      // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
-      if (!$vue->messages->erreur)
-	$commentaire->texte_propre="";
-
-      // Nettoyage de la photo envoyée qu'elle fût ou non insérer correctement comme commentaire
-      if (is_uploaded_file  ( $file_path))
-	unlink($file_path);
-    }
-  }
-  // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
-  if ( !isset($_SESSION['id_utilisateur']) )
-    $vue->captcha=True;
+    // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
+    if ( !isset($_SESSION['id_utilisateur']) )
+        $vue->captcha=True;
   
-  $quel_point="$point->article_defini $point->nom_type : $point->nom";
-  $vue->titre="Ajout d'un commentaire sur $quel_point";
-  $vue->lien_point=lien_point_fast($point);
-  $vue->lien_texte_retour="Retour à $quel_point";
-  $vue->point_existe=True;
-  $vue->commentaire=$commentaire;
+    $quel_point="$point->article_defini $point->nom_type : $point->nom";
+    $vue->titre="Ajout d'un commentaire sur $quel_point";
+    $vue->lien_point=lien_point_fast($point);
+    $vue->lien_texte_retour="Retour à $quel_point";
+    $vue->point_existe=True;
+    $vue->commentaire=$commentaire;
 }
 else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans le vent !
 {  

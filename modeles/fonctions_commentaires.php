@@ -19,8 +19,8 @@ $conditions->avec_photo -> pour ne prendre que ceux avec photo : True ou False (
 $conditions->limite -> pour imposer une limite au cas où
 
 $conditions->avec_modele=False -> pour ne pas avoir les commentaires sur les modèles (si si, les modèles ont aussi leurs commentaires) par défaut : True
-$conditions->ids_auteurs -> pour récupérer les commentaires dont l'auteur est id_auteur au format 4 ou 7,8,14
-$conditions->auteur -> condition sur le champ "auteur" pour les utilisateurs non authentifiés
+$conditions->ids_createurs_commentaires -> pour récupérer les commentaires de(s) l'auteur(s) d'id donnés au format 4 ou 7,8,14
+$conditions->auteur_commentaire -> condition sur le champ "auteur_commentaire" pour les utilisateurs non authentifiés
 $conditions->texte -> condition sur le contenu du commentaire
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
 $conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
@@ -40,12 +40,12 @@ stdClass Object
     [id_point] => 3445
     [texte] => Une autre vue de la cabane.
 blabla
-    [auteur] => cassandre
+    [auteur_commentaire] => cassandre
     [photo_existe] => 1
     [date_photo] => 2011-11-12
     [demande_correction] => 0
     [qualite_supposee] => 0
-    [id_createur] => 496
+    [id_createur_commentaire] => 496
     [ts_unix_commentaire] => 1360599590
     [ts_unix_photo] => 1321052400
     [photo] => Array
@@ -93,8 +93,8 @@ function infos_commentaires ($conditions)
 	if ($conditions->avec_photo)
 		$conditions_sql.=" AND photo_existe=1";
   
-	if ($conditions->ids_auteurs!="")
-		$conditions_sql.=" AND id_point in ($conditions->ids_auteurs)";
+	if ($conditions->ids_createurs_commentaires!="")
+		$conditions_sql.=" AND id_createur_commentaire in ($conditions->ids_createurs_commentaires)";
   
 	if ($conditions->demande_correction)
 		$conditions_sql.=" AND (demande_correction!=0 OR qualite_supposee<0)";
@@ -281,9 +281,9 @@ function modification_ajout_commentaire($commentaire)
     // reparation crado:
     isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
     isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
-    isset($commentaire->auteur) ? $champs_sql['auteur']=$pdo->quote($commentaire->auteur):false;
+    isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
     isset($commentaire->demande_correction) ? $champs_sql['demande_correction']=$commentaire->demande_correction:false;
-    isset($commentaire->id_createur) ? $champs_sql['id_createur']=$commentaire->id_createur:false;
+    isset($commentaire->id_createur_commentaire) ? $champs_sql['id_createur_commentaire']=$commentaire->id_createur_commentaire:false;
     isset($commentaire->qualite_supposee) ? $champs_sql['qualite_supposee']=$commentaire->qualite_supposee:false;
     isset($commentaire->photo_existe) ? $champs_sql['photo_existe']=$commentaire->photo_existe:false;
     
@@ -457,12 +457,14 @@ function transfert_forum($commentaire)
 	$res = $pdo->query($querycom);
 	$forum = $res->fetch() ;
   
+    if ($commentaire->id_createur_commentaire<=0)
+        $commentaire->id_createur_commentaire=-1;
 	// dabord declarer le post
 	$query_insert_post="
 		INSERT INTO phpbb_posts
 			(topic_id,forum_id,poster_id,post_time,post_username)
 		VALUES
-			($forum->topic_id ,$forum->forum_id ,-1,$commentaire->ts_unix_commentaire , ".$pdo->quote(substr($commentaire->auteur,0,23)).")";
+			($forum->topic_id ,$forum->forum_id ,$commentaire->id_createur_commentaire,$commentaire->ts_unix_commentaire , ".$pdo->quote(substr($commentaire->auteur_commentaire,0,23)).")";
   
 	if (!$pdo->exec($query_insert_post))
 		return erreur("Transfert vers le forum échoué",$query_insert_post);

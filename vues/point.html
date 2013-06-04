@@ -300,14 +300,14 @@
 				<a id="C<?=$commentaire->id_commentaire?>"></a><!-- ici l'id pour l'anchor des petites vignettes du haut -->
 				<div class="fauxfieldset">
 					<p class='fauxfieldset-legend'><?=$commentaire->date_commentaire_format_francais?>
-						<?if ($commentaire->auteur) {?>
+						<?if ($commentaire->auteur_commentaire_affichage) {?>
 							par
-							<?if ($commentaire->id_createur != 0) {?>
-								<a href="<?=$config['fiche_utilisateur'].$commentaire->id_createur?>">
-									<?=$commentaire->auteur?>
+							<?if ($commentaire->id_createur_commentaire != 0) {?>
+								<a href="<?=$config['fiche_utilisateur'].$commentaire->id_createur_commentaire?>">
+									<?=$commentaire->auteur_commentaire_affichage?>
 								</a>
 							<?}else{?>
-								<?=$commentaire->auteur?>
+								<?=$commentaire->auteur_commentaire_affichage?>
 							<?}
 						}?>
 					</p>
