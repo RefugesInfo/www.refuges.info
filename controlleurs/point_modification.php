@@ -45,7 +45,7 @@ switch( $_REQUEST["action"] )
         // Etant donné que des robots, ou des peu scrupuleux remplissent avec des faux points, on les vire ici
         if ( !isset($_SESSION['id_utilisateur']) AND ($_REQUEST['lettre_securite']!="d") ) 
         {
-            $vue->erreur = "! ERREUR ! vous n'avez pas rentré la lettre demandée";
+            $vue->erreur = "ERREUR: vous n'avez pas rentré la lettre demandée";
             break; // on sort, on ne passe pas à "modifier" qui est l'action groupée
         }
         $vue->verbe = "ajouté " ; // viendra s'accoller a "est <..> dans la base.... kes kon fait pas pour gagner du code
@@ -55,14 +55,16 @@ switch( $_REQUEST["action"] )
         break;
     case 'Modifier' :
         $vue->verbe = "modifié ";
-        $point=preparation_point();
+        $ancien_point=infos_point($_REQUEST['id_point']); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
+        $nouveau_point=preparation_point();
+        
         // modification uniquement si modérateur ou créateur de la fiche
         if ( $_SESSION['niveau_moderation']>=1 
               or 
-              (isset($_SESSION['id_utilisateur']) and $_SESSION['id_utilisateur']==$point->id_createur )
+              (isset($_SESSION['id_utilisateur']) and $_SESSION['id_utilisateur']==$ancien_point->id_createur )
            )
         {
-            $retour = modification_ajout_point($point);
+            $retour = modification_ajout_point($nouveau_point);
             gestion_retour($retour,$vue);
         }
         else
