@@ -74,7 +74,10 @@ function infos_polygones($conditions)
         $limite="LIMIT $conditions->limite";
         
     if (!empty($conditions->ordre))
-        $ordre="ORDER BY $conditions->ordre";
+        $ordre_champ="$conditions->ordre";
+    else
+        $ordre_champ="nom_polygone ASC";
+    $ordre="ORDER BY $ordre_champ";
     
     if (isset($conditions->ids_polygone_type))
         if (!verif_multiples_entiers($conditions->ids_polygone_type))
