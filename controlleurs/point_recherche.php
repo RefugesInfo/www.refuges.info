@@ -20,7 +20,9 @@ $conditions->avec_liste_polygones="montagnarde";
 // utile pour faire des listes séparées 
 $conditions->ordre="liste_polygones"; 
 
-
+// FIXME sly : Mon rêve serait de déplacer ce bloc foreach dans une fonction générique que l'on puisse appeler 
+// à chaque fois que l'on veut des points que les conditions soient reçues par GET ou POST. Une Sorte d'API de récupération
+// donc les paramètres de recherche et conditions soient homogène sur tout le site
 foreach ($_POST as $champ => $valeur)
 {
     if( ! empty($valeur) )
