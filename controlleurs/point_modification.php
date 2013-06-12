@@ -48,13 +48,12 @@ switch( $_REQUEST["action"] )
             $vue->erreur = "ERREUR: vous n'avez pas rentré la lettre demandée";
             break; // on sort, on ne passe pas à "modifier" qui est l'action groupée
         }
-        $vue->verbe = "ajouté " ; // viendra s'accoller a "est <..> dans la base.... kes kon fait pas pour gagner du code
         $point=preparation_point();
         $retour = modification_ajout_point($point);
         gestion_retour($retour,$vue);
+        $vue->message="Le point a bien été ajouté";
         break;
     case 'Modifier' :
-        $vue->verbe = "modifié ";
         $ancien_point=infos_point($_REQUEST['id_point']); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
         $nouveau_point=preparation_point();
         
@@ -66,6 +65,7 @@ switch( $_REQUEST["action"] )
         {
             $retour = modification_ajout_point($nouveau_point);
             gestion_retour($retour,$vue);
+            $vue->message="Le point a bien été modifié";
         }
         else
             $vue->erreur="Vous n'êtes ni modérateur, ni créateur de la fiche, vous n'avez pas l'autorisation de la modifier";
@@ -73,8 +73,11 @@ switch( $_REQUEST["action"] )
     
     case 'supprimer':
             $point=infos_point($_REQUEST['id_point']);
-            suppression_point($point);
-            $vue->verbe="supprimé";
+            $resultat_suppression=suppression_point($point);
+            if ($resultat_suppression->erreur)
+                $vue->erreur=$resultat_suppression->message;
+            else
+                $vue->message=$resultat_suppression->message; // Il pourra y avoir des messages sur mesures (genre "le point a été supprimé mais il n'y avait pas de commentaires")
             break;
 } 
 

@@ -340,7 +340,7 @@ function infos_point($id_point,$meme_si_censure=False)
   if (count($points)==0)
     return erreur("Le point demandé est introuvable dans notre base");
   if (count($points)>1)
-    return erreur("Ben ça alors ? on a récupérer plus de 1 point, pas prévu..."); 
+    return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu..."); 
     
     $i=0;
   $point=$points[0];
@@ -693,7 +693,12 @@ function suppression_point($point)
 {
   global $pdo;
   $conditions = new stdClass;
-  // a supprimer le refuge ET ses commentaires ET photos ! bug corrigé par sly
+  // On vérifie que le $point passé existe bien dans notre base, qu'il a donc un id et que cela correspond bien à un seul point
+  // toujours présent, sinon, on ne tente rien
+  $point_test=infos_point($point->id_point);
+  if ($point_test->erreur)
+      return erreur($point_test->message);
+
   $conditions->ids_points=$point->id_point;
   $commentaires_a_supprimer=infos_commentaires($conditions);
   if (isset($commentaires_a_supprimer))
@@ -716,6 +721,6 @@ function suppression_point($point)
   $pdo->exec($del_si_uniq);  // supp de la table point_gps si un seul point est dessus
   $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de tt facon
 
-  return TRUE; // pas d'échecs possibles ?
+  return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés"); 
 }
   ?>

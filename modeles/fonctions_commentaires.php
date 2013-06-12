@@ -13,7 +13,7 @@ require_once ('fonctions_points.php');
 
 /**********************************************************************************************
 Récupère un ensemble de commentaires en fonction des paramètres passer comme conditions
-$conditions->ids_points -> pour récupérer tous les commentaires d'un point particulier du site
+$conditions->ids_points -> pour récupérer tous les commentaires d'un ou plusieurs point(s) particulier(s) du site format 45 ou 78,412,4
 $conditions->ids_commentaires -> pour récupérer les commentaires dont les ids sont au format 45 ou 78,412,4
 $conditions->avec_photo -> pour ne prendre que ceux avec photo : True ou False (par défaut c'est tous)
 $conditions->limite -> pour imposer une limite au cas où
@@ -158,7 +158,7 @@ function infos_commentaires ($conditions)
 				}
 			}
 			// Ce cas peut exister quand la photo originale est la même que la réduite (déjà suffisament petite, ou raisons historiques)
-			if (!isset($commentaire->photo['originale']))
+			if (!isset($commentaire->photo['originale']) and isset($commentaire->photo['reduite']))
 			{
 				$commentaire->photo['originale']=$commentaire->photo['reduite'];
 				$commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
@@ -402,14 +402,14 @@ function suppression_photos($commentaire,$force=False)
     if (!$force)
     {
       $retour=modification_ajout_commentaire($commentaire);
-    if ($retour->erreur)
-      return erreur($retour->message); // Sans doute que supprimer sa photo en ferait un commentaire totalement vide, ce n'est pas un bug, mais on ne fait rien quand même
+      if ($retour->erreur)
+          return erreur($retour->message); // Sans doute que supprimer sa photo en ferait un commentaire totalement vide, ce n'est pas un bug, mais on ne fait rien quand même
     }
     // On nous dit qu'il y a une photo mais en fait non ?
     if (isset($photos_a_supprimer))
       foreach ($photos_a_supprimer as $photo)
-	if (is_file($photo))
-	  unlink($photo);
+          if (is_file($photo))
+              unlink($photo);
   }
   else 
     return erreur("pas de photo dans ce commentaire");
