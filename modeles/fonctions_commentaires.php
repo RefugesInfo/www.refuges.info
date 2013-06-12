@@ -185,7 +185,7 @@ function infos_commentaire($id_commentaire,$meme_si_censure=False)
   if ($c->erreur)
     return erreur($c->texte);
   if (count($c)!=1)
-      return erreur("un seul commentaire demandé mais $c trouvés");
+      return erreur("un commentaire demandé mais ".count($c)." trouvés");
   return $c[0];
 }
 
