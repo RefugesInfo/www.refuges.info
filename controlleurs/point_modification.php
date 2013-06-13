@@ -72,7 +72,7 @@ switch( $_REQUEST["action"] )
         break;
     
     case 'supprimer':
-            $point=infos_point($_REQUEST['id_point']);
+            $point=infos_point($_REQUEST['id_point'],True);
             $resultat_suppression=suppression_point($point);
             if ($resultat_suppression->erreur)
                 $vue->erreur=$resultat_suppression->message;
