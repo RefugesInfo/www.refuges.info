@@ -104,8 +104,10 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
         new OpenLayers.Layer.OSM                 ('OSM'),
         new OpenLayers.Layer.IGN                 ('IGN',       '<?=$config['ign_key'];?>'),
         new OpenLayers.Layer.IGN.Photo           ('IGN photo', '<?=$config['ign_key'];?>'),
-        new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
-        new OpenLayers.Layer.SwissTopo.Photo     ('SwissTopo image'),
+        <?if ($config['SwissTopo']){?>
+            new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
+            new OpenLayers.Layer.SwissTopo.Photo     ('SwissTopo image'),
+        <?}?>
         new OpenLayers.Layer.IGM                 ('Italie'),
         new OpenLayers.Layer.IDEE                ('Espagne'),
         new OpenLayers.Layer.OB                  ('Autriche'),
