@@ -34,7 +34,7 @@ window.onload = function () {
     map.addLayers ([
         new OpenLayers.Layer.Bing                ({name: 'Bing photo', type: 'Aerial', key: '<?=$config['bing_key'];?>'}),
         new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
-        new OpenLayers.Layer.Velo                ('OpenCycleMap'),
+        new OpenLayers.Layer.OCM.Outdoors        ('OpenCycleMap'),
         new OpenLayers.Layer.OSM                 ('OSM')
     ]);
 

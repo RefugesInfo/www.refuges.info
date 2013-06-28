@@ -33,7 +33,7 @@ window.onload = function () {
         ],
         layers: [
             new OpenLayers.Layer.MRI            ('maps.refuges.info'),
-            new OpenLayers.Layer.Velo           ('OpenCycleMap'),
+            new OpenLayers.Layer.OCM.Outdoors   ('OpenCycleMap'),
             new OpenLayers.Layer.OSM            ('OSM'),
             new OpenLayers.Layer.IGN            ('IGN', '<?=$config["ign_key"]?>'),
             new OpenLayers.Layer.SwissTopo      ('SwissTopo'),

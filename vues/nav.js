@@ -100,7 +100,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
 
     map.addLayers ([
         new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
-        new OpenLayers.Layer.Velo                ('OpenCycleMap'),
+        new OpenLayers.Layer.OCM.Outdoors        ('OpenCycleMap'),
         new OpenLayers.Layer.OSM                 ('OSM'),
         new OpenLayers.Layer.IGN                 ('IGN',       '<?=$config['ign_key'];?>'),
         new OpenLayers.Layer.IGN.Photo           ('IGN photo', '<?=$config['ign_key'];?>'),

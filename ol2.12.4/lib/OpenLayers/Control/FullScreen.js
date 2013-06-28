@@ -11,7 +11,7 @@
  */
 
 /**
- * Class: OpenLayers.Control.FullScreen 
+ * Class: OpenLayers.Control.FullScreen
  * Create a control to switch a map to full screen mode
  *
  * Inherits from:
@@ -20,22 +20,22 @@
 
 OpenLayers.Control.FullScreen = OpenLayers.Class(OpenLayers.Control, {
 
-    /** 
-     * APIProperty: type 
+    /**
+     * APIProperty: type
      * {Number} Controls can have a 'type'. The type determines the type of
      * interactions which are possible with them when they are placed in an
-     * <OpenLayers.Control.Panel>. 
+     * <OpenLayers.Control.Panel>.
      */
     type: OpenLayers.Control.TYPE_TOGGLE,
 
-    /** 
+    /**
      * Method: setMap
      * Set the map property for the control. This is done through an accessor
-     * so that subclasses can override this and take special action once 
-     * they have their map variable set. 
+     * so that subclasses can override this and take special action once
+     * they have their map variable set.
      *
      * Parameters:
-     * map - {<OpenLayers.Map>} 
+     * map - {<OpenLayers.Map>}
      */
     setMap: function(map) {
         OpenLayers.Control.prototype.setMap.apply(this, arguments);
@@ -53,24 +53,25 @@ OpenLayers.Control.FullScreen = OpenLayers.Class(OpenLayers.Control, {
      * Explicitly activates a control and it's associated
      * handler if one has been set.  Controls can be
      * deactivated by calling the deactivate() method.
-     * 
+     *
      * Returns:
      * {Boolean}  True if the control was successfully activated or
      *            false if the control was already active.
      */
     activate: function() {
         if (OpenLayers.Control.prototype.activate.apply(this, arguments)) {
-			var divs = document.getElementsByTagName('div');
-			for (var i in divs)
-				if (divs[i].className == 'olMap')
-					OpenLayers.Element.addClass (
-						divs[i], 
-						divs[i].id == this.map.div.id
-							? 'fullscreen'
-							: 'offscreen'
-					);
-			document.getElementsByTagName('body')[0].style.overflow= 'hidden';
-			this.map.updateSize();
+            var divs = document.getElementsByTagName('div');
+            for (var i in divs)
+                if (divs[i].className &&
+                    divs[i].className.split(' ').indexOf('olMap') != -1) // En cas de plusieurs classes sur le div carte
+                    OpenLayers.Element.addClass (
+                        divs[i],
+                        divs[i].id == this.map.div.id
+                            ? 'fullscreen'
+                            : 'offscreen' // En cas de plusieurs cartes
+                    );
+            document.getElementsByTagName('body')[0].style.overflow= 'hidden';
+            this.map.updateSize();
             return true;
         } else {
             return false;
@@ -81,19 +82,19 @@ OpenLayers.Control.FullScreen = OpenLayers.Class(OpenLayers.Control, {
      * APIMethod: deactivate
      * Deactivates a control and it's associated handler if any.  The exact
      * effect of this depends on the control itself.
-     * 
+     *
      * Returns:
      * {Boolean} True if the control was effectively deactivated or false
      *           if the control was already inactive.
      */
     deactivate: function() {
         if (OpenLayers.Control.prototype.deactivate.apply(this, arguments)) {
-			var divs = document.getElementsByTagName('div');
-			for (var i in divs)
-				OpenLayers.Element.removeClass (divs[i], 'offscreen');
+            var divs = document.getElementsByTagName('div');
+            for (var i in divs)
+                OpenLayers.Element.removeClass (divs[i], 'offscreen'); // En cas de plusieurs cartes
 
-            OpenLayers.Element.removeClass(this.map.div, 'fullscreen');
-			document.getElementsByTagName('body')[0].style.overflow= 'auto';
+            OpenLayers.Element.removeClass(this.map.div, 'fullscreen'); // Celle là
+            document.getElementsByTagName('body')[0].style.overflow= 'auto';
             this.map.updateSize();
             return true;
         } else {
@@ -106,7 +107,7 @@ OpenLayers.Control.FullScreen = OpenLayers.Class(OpenLayers.Control, {
 
 
 /**
- * Class: OpenLayers.Control.FullScreenPanel 
+ * Class: OpenLayers.Control.FullScreenPanel
  * Create the panel to handle OpenLayers.Control.FullScreen
  *
  * Inherits from:
@@ -119,7 +120,7 @@ OpenLayers.Control.FullScreenPanel = OpenLayers.Class(OpenLayers.Control.Panel, 
      * Property: displayClass
      * {Sting} class to display the panel
      */
-	displayClass: 'olControlFullScreenPanel',
+    displayClass: 'olControlFullScreenPanel',
 
     /**
      * Constructor: OpenLayers.Control.Panel
@@ -127,12 +128,12 @@ OpenLayers.Control.FullScreenPanel = OpenLayers.Class(OpenLayers.Control.Panel, 
      */
     initialize: function(options) {
         OpenLayers.Control.Panel.prototype.initialize.apply(this, arguments);
-		
-		this.addControls([
-			new OpenLayers.Control.FullScreen({
-				title: OpenLayers.i18n('fullScreen')
-			})
-		]);
+
+        this.addControls([
+            new OpenLayers.Control.FullScreen({
+                title: OpenLayers.i18n('fullScreen')
+            })
+        ]);
     },
 
     CLASS_NAME: "OpenLayers.Control.FullScreenPanel"

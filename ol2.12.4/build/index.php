@@ -30,13 +30,19 @@ $estDans = array (
     
     'OpenLayers/Layer/IGN/Photo.js' => 'OpenLayers/Layer/IGN.js',
     'OpenLayers/Layer/IGN/Cadastre.js' => 'OpenLayers/Layer/IGN.js',
+    
     'OpenLayers/Layer/SwissTopo/Siegfried.js' => 'OpenLayers/Layer/SwissTopo.js',
     'OpenLayers/Layer/SwissTopo/Dufour.js' => 'OpenLayers/Layer/SwissTopo.js',
     'OpenLayers/Layer/SwissTopo/Photo.js' => 'OpenLayers/Layer/SwissTopo.js',
+    
     'OpenLayers/Layer/Google/Terrain.js' => 'OpenLayers/Layer/Googles.js',
     'OpenLayers/Layer/Google/Photo.js' => 'OpenLayers/Layer/Googles.js',
     'OpenLayers/Layer/Google/Hybrid.js' => 'OpenLayers/Layer/Googles.js',
     'OpenLayers/Layer/Google/Terrain.js' => 'OpenLayers/Layer/Googles.js',
+    
+    'OpenLayers/Layer/OCM/Transport.js' => 'OpenLayers/Layer/OCM.js',
+    'OpenLayers/Layer/OCM/Landscape.js' => 'OpenLayers/Layer/OCM.js',
+    'OpenLayers/Layer/OCM/Outdoors.js' => 'OpenLayers/Layer/OCM.js',
     
     'OpenLayers/Control/GPSPanel.js' => 'OpenLayers/Control/GPS.js',
     'OpenLayers/Control/FullScreenPanel.js' => 'OpenLayers/Control/FullScreen.js',

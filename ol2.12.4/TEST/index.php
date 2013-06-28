@@ -37,8 +37,11 @@
                         new OpenLayers.Control.Attribution ()
                     ],
                     layers: [
-                        new OpenLayers.Layer.MRI                 ('Maps.Refuges.Info'),
-                        new OpenLayers.Layer.Velo                ('OpenCycleMap'),
+//                        new OpenLayers.Layer.MRI                 ('Maps.Refuges.Info'),
+                        new OpenLayers.Layer.OCM                 ('OpenCycleMap'),
+                        new OpenLayers.Layer.OCM.Transport       ('Transport'),
+                        new OpenLayers.Layer.OCM.Landscape       ('Landscape'),
+                        new OpenLayers.Layer.OCM.Outdoors        ('Outdoors'),
                         new OpenLayers.Layer.OSM                 ('OSM'),
     
                         new OpenLayers.Layer.IGN                 ('IGN',          'rjvdd0zkal6czbu4mop37x7r'),
