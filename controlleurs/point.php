@@ -48,6 +48,7 @@ else // le point est valide. faut bosser.
     $vue->nom_debut_majuscule = ucfirst($vue->nom);
     $vue->titre = "$vue->nom_debut_majuscule $vue->altitude m ($vue->nom_type)";
     $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $vue->nom_type, altitude $vue->altitude avec commentaires et photos";
+    $vue->lien_explication_publicite=lien_mode_emploi($config['mode_enploi_publicite']);
     foreach ($vue->polygones as $polygone)
     {
         if (isset($polygone->categorie_polygone_type))

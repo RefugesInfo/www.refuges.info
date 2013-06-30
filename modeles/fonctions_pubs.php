@@ -46,15 +46,14 @@ function bandeau_publicitaire($taille = "normal")
 	$pub_google="<script type=\"text/javascript\"><!--
 	google_ad_client = \"ca-pub-3240407130303272\";
 	/* horizontal-long */
-	google_ad_slot = \"8041836363\";
-	google_ad_width = 728;
-	google_ad_height = 90;
+    google_ad_slot = \"2316397000\";
+    google_ad_width = 970;
+    google_ad_height = 90;
 	//-->
 	</script>
 	<script type=\"text/javascript\"
 	src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">
 	</script>";
-
 	return $pub_google;
 }
 
