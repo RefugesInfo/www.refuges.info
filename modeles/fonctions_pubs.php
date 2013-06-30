@@ -45,7 +45,6 @@ function bandeau_publicitaire($taille = "normal")
 	// mais environ 40 ans pour rembourser la prune IGN
 	$pub_google="<script type=\"text/javascript\"><!--
 	google_ad_client = \"ca-pub-3240407130303272\";
-	/* horizontal-long */
     google_ad_slot = \"2316397000\";
     google_ad_width = 970;
     google_ad_height = 90;
