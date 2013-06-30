@@ -21,7 +21,7 @@ window.onload = function () {
         ],
         layers: [
             new OpenLayers.Layer.MRI ('Maps.Refuges.info'),
-            new OpenLayers.Layer.Velo ('OpenCycleMap')
+            new OpenLayers.Layer.OCM.Outdoors ('OpenCycleMap')
         ]
     });
     
