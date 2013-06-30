@@ -23,36 +23,6 @@ spl_autoload_register(function ($class) {
         require_once '../includes/'.$class.'.php';
 });
 
-/******** Clés des contrats des cartes **********/
-$config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
-$config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
-
-/******** Paramètrage des cartes vignettes des fiches de points **********/
-$config['chemin_openlayers']='/ol2.12.4/'; 
-
-// Notez que pour l'instant, suite à une histoire de layers déclaré ou pas dans openlayers, ce paramètre ne sera pas pris en compte partout
-// sauf si il vaut maps.refuges.info ou OpenCycleMap
-$config['carte_base'] = 'maps.refuges.info';
-
-/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve (utilisé pour les vignettes
-des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
-le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap 
-car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
-
-$config['fournisseurs_fond_carte'] = 
-Array 
-(
-     // nom pays chez OSM                ?                   français  Nom layer           Échelle 
-     'France métropolitaine'=> Array ($config['carte_base'], ''      , 'IGN',               50000),
-     'Schweiz'              => Array ($config['carte_base'], ''      , 'SwissTopo',         50000),
-     'Italia'               => Array ($config['carte_base'], 'de l\'', 'Italie',           100000),
-     'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',           25000),
-     'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',               25000),
-     'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap',      50000), // dans les autres cas
-     'Saisie-modification'  => Array ($config['carte_base'], ''      , 'Bing photo',        10000), // cas spécial pour la saisie de point
-     'Saisie-création'      => Array ($config['carte_base'], ''      , 'Bing photo',     20000000), // cas spécial pour la modification de point
-);
-
 // voici les mensurations des taille des photos afficher sur le site ( pour éviter une guirlande )
 $config['largeur_max_photo']=700;
 $config['hauteur_max_photo']=600;
@@ -145,7 +115,40 @@ $config['nom_fichier_export']="refuge-info";
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");
 
+/******** Clés des contrats des cartes **********/
+$config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
+$config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
+
+/******** Paramètrage des cartes vignettes des fiches de points **********/
+$config['chemin_openlayers']='/ol2.12.4/'; 
+
+// Notez que pour l'instant, suite à une histoire de layers déclaré ou pas dans openlayers, ce paramètre ne sera pas pris en compte partout
+// sauf si il vaut maps.refuges.info ou OpenCycleMap
+$config['carte_base'] = 'maps.refuges.info';
+
+// FIXME
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
-// il est volontairement placé à la fin pour que les variables ci-avant puissent par exemple être sur-chargées si on souhaite
+// il est volontairement placé "presque*" à la fin pour que les variables ci-avant puissent par exemple être sur-chargées si on souhaite
 // un autre comportement
+// Le problème c'est que le tableau ci-après re-fait appel à la variable $config['carte_base'] que j'aimerais pouvoir surcharger dans 
+// config_privee.php, c'est donc un peu merdique comme méthode, mais j'ai pas trouvé mieux
 require_once("config_privee.php");
+
+/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve (utilisé pour les vignettes
+des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
+le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap 
+car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
+
+$config['fournisseurs_fond_carte'] = 
+Array 
+(
+     // nom pays chez OSM                ?                   français  Nom layer           Échelle 
+     'France métropolitaine'=> Array ($config['carte_base'], ''      , 'IGN',               50000),
+     'Schweiz'              => Array ($config['carte_base'], ''      , 'SwissTopo',         50000),
+     'Italia'               => Array ($config['carte_base'], 'de l\'', 'Italie',           100000),
+     'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',           25000),
+     'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',               25000),
+     'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap',      50000), // dans les autres cas
+     'Saisie-modification'  => Array ($config['carte_base'], ''      , 'Bing photo',        10000), // cas spécial pour la saisie de point
+     'Saisie-création'      => Array ($config['carte_base'], ''      , 'Bing photo',     20000000), // cas spécial pour la modification de point
+);
