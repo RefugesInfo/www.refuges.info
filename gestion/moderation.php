@@ -38,6 +38,12 @@ if ($vue->erreur=="")
     switch($_REQUEST['type'])
     {
         case "transfert_forum":
+            // D'abord on le modifie si des changements ont été faits
+            $commentaire->texte=stripslashes($_REQUEST["texte"]);
+            $commentaire->auteur_commentaire=stripslashes($_REQUEST["auteur_commentaire"]);
+            $retour=modification_ajout_commentaire($commentaire);
+            
+            // ensuite on le transfert sur le forum
             $retour=transfert_forum($commentaire);
             print("<h4>$retour->message</h4>");
             break;
@@ -58,6 +64,9 @@ if ($vue->erreur=="")
             break; 
             
         case "transfert_autre_point":
+            // On le modifie si des changements ont été faits, puis on change d'id point pour le transférer vers une autre fiche
+            $commentaire->texte=stripslashes($_REQUEST["texte"]);
+            $commentaire->auteur_commentaire=stripslashes($_REQUEST["auteur_commentaire"]);
             $commentaire->id_point=$_REQUEST['id_autre_point'];
             $retour=modification_ajout_commentaire($commentaire);
             if ($retour->erreur)
