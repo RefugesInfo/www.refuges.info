@@ -32,14 +32,6 @@ foreach ($_POST as $champ => $valeur)
                 $conditions->ids_polygones = $valeur; 
                 break ;
                 
-            case ( 'lat' && !empty($_POST['lon']) && !empty($_POST['autour']) ):  // on demande un positionnement GPS. 
-                // la distance n'est qu'un polygone
-                
-                $g = array ( 'lat' => $_POST['lat'], 'lon' => $_POST['lon'] , 'rayon' => $_POST['autour'] );
-                $conditions->geometrie = cree_geometrie( $g , 'cercle' );
-                $conditions->ordre = "distance";
-                break;
-                
             case 'id_point_type':
                 $conditions->ids_types_point = $valeur ;
                 break;
