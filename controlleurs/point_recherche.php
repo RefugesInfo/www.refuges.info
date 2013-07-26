@@ -29,7 +29,8 @@ foreach ($_POST as $champ => $valeur)
         switch ($champ) 
         {
             case 'id_massif':
-                $conditions->ids_polygones = $valeur; break ;
+                $conditions->ids_polygones = $valeur; 
+                break ;
                 
             case ( 'lat' && !empty($_POST['lon']) && !empty($_POST['autour']) ):  // on demande un positionnement GPS. 
                 // la distance n'est qu'un polygone
@@ -45,18 +46,20 @@ foreach ($_POST as $champ => $valeur)
                 
             case 'champs_binaires':
                 foreach ( $valeur as $c )
-                    $conditions->binaire->$c = true ; break;
+                    $conditions->binaire->$c = true ; 
+                break;
                 
             case 'champs_null':
                 foreach ( $valeur as $c )
-                    $conditions->binaire->$c = NULL ; break; // TODO, ne pas restreindre aux champs binaires.
-                    
-            default:  // tous les autres cas: nom, ouvert, places ...
-                $conditions->$champ=trim($valeur); break;
+                    $conditions->binaire->$c = NULL ; 
+                break; // TODO, ne pas restreindre aux champs binaires.
+                
+            default:  // tous les autres cas: nom, ouvert, places on repositionne comme condition la valeur telle qu'elle était dans le formulaire
+                $conditions->$champ=trim($valeur); 
+                break;
         }
         
 }
-
 //======================================
 // C'est LA que ca cherche
 $vue->points = infos_points ($conditions);

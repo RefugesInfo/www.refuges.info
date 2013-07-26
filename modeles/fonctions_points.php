@@ -63,13 +63,13 @@ $conditions->binaire->couvertures : "oui" ou "vide"
 $conditions->binaire->eau_a_proximite : "oui" ou "vide"
 $conditions->binaire->bois_a_proximite : "oui" ou "vide"
 $conditions->binaire->latrines : "oui" ou "vide"
-$conditions->binaire->ferme : "oui" ou "vide"
 $conditions->binaire->sommaire : "oui" ou "vide"
 $conditions->binaire->site_officiel : "oui" ou "vide"
 $conditions->binaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
 
-$conditions->non_utilisable : on chercher ferme!='non' et !=''
-$conditions->ouvert : si 'oui', on ne veut que les points ayant ferme='non' ou ferme=''
+FIXME : 2 conditions pour faire presque la même chose, je me demande s'il n'y a pas matière à simplifier :
+$conditions->binaire->ferme : "oui" ou "vide"
+$conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
 
 $conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
 $conditions->avec_points_censure=True : Par défaut, False : les points censurés ne sont pas retournés
@@ -239,11 +239,11 @@ function infos_points($conditions)
       case 'poele':$conditions_sql.="\n AND points.poele IS TRUE ";break;
     }
   }
-  // remplacé par ouvert FIXME, a supprimer un jour
-  if ($conditions->non_utilisable=='oui')
-    $conditions_sql.="\n AND LENGTH(points.ferme) > 0 ";
+  // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
+  if ($conditions->ouvert=='non')
+    $conditions_sql.="\n AND points.ferme is not null and points.ferme != '' ";
   if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND points.ferme in ('','non',NULL)  "; 
+    $conditions_sql.="\n AND (points.ferme is null or points.ferme = '' )  "; 
   if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
   
@@ -267,7 +267,6 @@ function infos_points($conditions)
   ";
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
-  
   //Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
   $point = new stdClass();
   while ($point = $res->fetch())
