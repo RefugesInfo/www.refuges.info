@@ -1,4 +1,3 @@
-
 <?php
 /**********************************************************************************************
 Ensemble des fonctions permettant des manipulations des utilisateurs du forum, qui sont

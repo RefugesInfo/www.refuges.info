@@ -57,149 +57,152 @@ infos_xxxx( ) est à mon avis plus appropriées et performantes
 
 function nouvelles($nombre,$type,$lien_locaux=True)
 {
- global $config,$pdo;
- $conditions = new stdClass;
- // tableau de tableau contiendra toutes les news toutes catégories confondues
- $news_array = array() ;
-
- $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
- while ($tok) // vrai tant qu'il reste une categorie a rajouter
- {
-  switch ($tok) 
-  {
-    case "commentaires":
-    $type_news="nouveau_commentaire";
-    $conditions_commentaires = new stdclass();
-    $conditions_commentaires->limite=$nombre;
-    $conditions_commentaires->avec_infos_point=True;
-    $commentaires=infos_commentaires($conditions_commentaires);
-    foreach ( $commentaires as $commentaire )
+    global $config,$pdo;
+    $conditions = new stdClass;
+    // tableau de tableau contiendra toutes les news toutes catégories confondues
+    $news_array = array() ;
+    
+    $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
+    while ($tok) // vrai tant qu'il reste une categorie a rajouter
     {
-      $categorie="Commentaire";
-      $lien=lien_point_fast($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
-      $titre=$commentaire->nom;
-      $texte="<i>$categorie </i>";
-      if ($commentaire->photo_existe)
-	$texte.="+<img src=\"/images/icones/photo.png\" alt=\"commentaire avec photo\" /> ";
-      if ($commentaire->auteur!="")
-	$texte.="de ".bbcode2html($commentaire->auteur)." ";
-      
-      // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
-      // la ya un massif
-      if (isset($commentaire->id_polygone))
-      {
-	// Cosmétique, on ne place pas d'espace après un l'
-	if ($commentaire->article_partitif=="de l'")
-	  $espace="";
-	else
-	  $espace=" ";
-	
-	$lien_massif="dans <a href=\"".lien_polygone($commentaire,$lien_locaux)."\">le massif
-	".$commentaire->article_partitif.$espace.$commentaire->nom_polygone."</a>";
-      }
-      else   // la ya pas de massif
-	$lien_massif="";
-      
-      $texte.="sur <a href=\"$lien\">$titre</a> 
-      $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
-      $news_array[] = array($commentaire->ts_unix_commentaire,"texte"=>$texte,
-			    "date"=>$commentaire->ts_unix_commentaire,"categorie"=>$categorie,
-			    "titre"=>$titre,"lien"=>$lien); 
-    }	
-    break;
-    
-    case "refuges": $conditions->ids_types_point=$config['tout_type_refuge'];
-    case "points":
-        $conditions->ordre="date_creation DESC";
-        $conditions->limite=$nombre;
-        $conditions->avec_infos_massif=True;
-        $points=infos_points($conditions);
-        if (count($points)!=0)
-            foreach($points as $point)
-            {
-                $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
-                $lien=lien_point_fast($point,$lien_locaux);
-                $titre=$point->nom;
-                
-                // si le point n'appartient à aucun massif, pas de lien vers le massif
-                if (isset($point->id_massif))
+        switch ($tok) 
+        {
+            case "commentaires":
+                $type_news="nouveau_commentaire";
+                $conditions_commentaires = new stdclass();
+                $conditions_commentaires->limite=$nombre;
+                $conditions_commentaires->avec_infos_point=True;
+                $commentaires=infos_commentaires($conditions_commentaires);
+                foreach ( $commentaires as $commentaire )
                 {
-                    // Cosmétique, on ne place pas d'espace après un l'
-                    if ($point->article_partitif_massif=="de l'")
-                        $espace="";
-                    else
-                        $espace=" ";
+                    $categorie="Commentaire";
+                    $lien=lien_point_fast($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
+                    $titre=$commentaire->nom;
+                    $texte="$categorie";
+                    if ($commentaire->photo_existe)
+                        $texte.="+photo";
+                    if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire==0)
+                        $texte.=" de ".bbcode2html($commentaire->auteur_commentaire)." ";
+                    else if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire!=0)
+                        $texte.=" de <a href=\"".$config['fiche_utilisateur']."$commentaire->id_createur_commentaire\">".bbcode2html($commentaire->auteur_commentaire)."</a> ";
                     
-                    $lien_massif="dans le 
-                    <a href=\"".lien_polygone($point,$lien_locaux)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
-                }
-                else
-                    $lien_massif="";
+                    
+                    // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
+                    // la ya un massif
+                    if (isset($commentaire->id_polygone))
+                    {
+                        // Cosmétique, on ne place pas d'espace après un l'
+                        if ($commentaire->article_partitif=="de l'")
+                            $espace="";
+                        else
+                            $espace=" ";
+                        
+                        $lien_massif="dans <a href=\"".lien_polygone($commentaire,$lien_locaux)."\">le massif
+                        ".$commentaire->article_partitif.$espace.$commentaire->nom_polygone."</a>";
+                    }
+                    else   // la ya pas de massif
+                        $lien_massif="";
+                    
+                    $texte.=" sur <a href=\"$lien\">$titre</a> 
+                    $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
+                    $news_array[] = array($commentaire->ts_unix_commentaire,"texte"=>$texte,
+                                          "date"=>$commentaire->ts_unix_commentaire,"categorie"=>$categorie,
+                                          "titre"=>$titre,"lien"=>$lien); 
+                }	
+                break;
                 
-                $texte="$categorie : 
-                <a href=\"$lien\">$titre</a>
-                $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
-                $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
-                                      "date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
-                                      "titre"=>$titre,"lien"=>$lien); 
-            }
-         break;
-    
-    case "general":
-      $conditions_commentaires_generaux = new stdClass;
-      $conditions_commentaires_generaux->ids_points=$config['numero_commentaires_generaux'];
-      $conditions_commentaires_generaux->limite=$nombre;
-      $commentaires=infos_commentaires($conditions_commentaires_generaux);
-
-      foreach ( $commentaires as $news)
-      {
-	$categorie="Générale";
-	$titre=$news->texte;
-	$texte="<i>$titre</i>";// FIXME mieux vaudrait revoir le format du tableau sans HTML
-	$lien="/news.php";
-	$news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
-	  "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
-	  "titre"=>$titre,"lien"=>$lien); 
-      }	
-    break;
-  
-    case "forums":
-	$type_news="nouveau_message_forum";
-	$conditions_messages_forum = new stdclass();
-	$conditions_messages_forum->limite=$nombre;
-	$conditions_messages_forum->sauf_ids_forum=$config['id_forum_moderateur'].",".$config['id_forum_developpement'];
-
-        $commentaires_forum=messages_du_forum($conditions_messages_forum);
-	if (count($commentaires_forum)>0)
-	  foreach ( $commentaires_forum as $commentaire_forum)
-	  {
-	    $lien="/forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
-	    $categorie="Sur le forum";
-	    $titre=$commentaire_forum->topic_title;
-	    $texte="$categorie : <a href=\"$lien\">$titre</a>"; // FIXME mieux vaudrait revoir le format du tableau sans HTML
-	    $news_array[] = array($commentaire_forum->date,"texte"=>$texte,
-				  "date"=>$commentaire_forum->date,"categorie"=>$categorie,
-				  "titre"=>$titre,"lien"=>$lien); 
-	  }
-    break;
-  }
-
-
-$tok = strtok(","); 
-}
-// ici je trie par ordre décroissant toutes les news confondues
-rsort($news_array);
-$nb=0;
-// Et je ne prends que les $nombre première ou toutes s'il y en a moins que $nombre
-foreach ($news_array as $nouvelle)
-{
-    $nouvelle['date_formatee']=date("d/m/y", $nouvelle['date']);
-    $nouvelles[]=$nouvelle;
-    $nb++;
-    if ($nb>=$nombre)
-        break;
-}
-return $nouvelles;
+            case "refuges": $conditions->ids_types_point=$config['tout_type_refuge'];
+            case "points":
+                $conditions->ordre="date_creation DESC";
+                $conditions->limite=$nombre;
+                $conditions->avec_infos_massif=True;
+                $points=infos_points($conditions);
+                if (count($points)!=0)
+                    foreach($points as $point)
+                    {
+                        $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
+                        $lien=lien_point_fast($point,$lien_locaux);
+                        $titre=$point->nom;
+                        
+                        // si le point n'appartient à aucun massif, pas de lien vers le massif
+                        if (isset($point->id_massif))
+                        {
+                            // Cosmétique, on ne place pas d'espace après un l'
+                            if ($point->article_partitif_massif=="de l'")
+                                $espace="";
+                            else
+                                $espace=" ";
+                            
+                            $lien_massif="dans le 
+                            <a href=\"".lien_polygone($point,$lien_locaux)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
+                        }
+                        else
+                            $lien_massif="";
+                        
+                        $texte="$categorie : 
+                        <a href=\"$lien\">$titre</a>
+                        $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
+                        $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
+                                              "date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
+                                              "titre"=>$titre,"lien"=>$lien); 
+                    }
+                    break;
+                    
+            case "general":
+                $conditions_commentaires_generaux = new stdClass;
+                $conditions_commentaires_generaux->ids_points=$config['numero_commentaires_generaux'];
+                $conditions_commentaires_generaux->limite=$nombre;
+                $commentaires=infos_commentaires($conditions_commentaires_generaux);
+                
+                foreach ( $commentaires as $news)
+                {
+                    $categorie="Générale";
+                    $titre=$news->texte;
+                    $texte=$titre;// FIXME mieux vaudrait revoir le format du tableau sans HTML
+                    $lien="/news.php";
+                    $news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
+                                          "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
+                                          "titre"=>$titre,"lien"=>$lien); 
+                }	
+                break;
+                
+            case "forums":
+                $type_news="nouveau_message_forum";
+                $conditions_messages_forum = new stdclass();
+                $conditions_messages_forum->limite=$nombre;
+                $conditions_messages_forum->sauf_ids_forum=$config['id_forum_moderateur'].",".$config['id_forum_developpement'];
+                
+                $commentaires_forum=messages_du_forum($conditions_messages_forum);
+                if (count($commentaires_forum)>0)
+                    foreach ( $commentaires_forum as $commentaire_forum)
+                    {
+                        $lien="/forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+                        $categorie="Sur le forum";
+                        $titre=$commentaire_forum->topic_title;
+                        $texte="$categorie : <a href=\"$lien\">$titre</a>"; // FIXME mieux vaudrait revoir le format du tableau sans HTML
+                        $news_array[] = array($commentaire_forum->date,"texte"=>$texte,
+                                              "date"=>$commentaire_forum->date,"categorie"=>$categorie,
+                                              "titre"=>$titre,"lien"=>$lien); 
+                    }
+                    break;
+        }
+        
+        
+        $tok = strtok(","); 
+    }
+    // ici je trie par ordre décroissant toutes les news confondues
+    rsort($news_array);
+    $nb=0;
+    // Et je ne prends que les $nombre première ou toutes s'il y en a moins que $nombre
+    foreach ($news_array as $nouvelle)
+    {
+        $nouvelle['date_formatee']=date("d/m/y", $nouvelle['date']);
+        $nouvelles[]=$nouvelle;
+        $nb++;
+        if ($nb>=$nombre)
+            break;
+    }
+    return $nouvelles;
 }
 
 ?>
