@@ -51,7 +51,7 @@ A disposition : commentaires,refuges,points,general,forums
 maintenir l'idée de tout regrouper dans un tableau qu'on tri ensuite
 Conseils d'utilisation : cette fonction n'a de sens que lorsqu'elle mélange plusieurs sources de nature différentes
 (comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher certains commentaires ou certains points, les fonctions
-infos_xxxx( ) est à mon avis plus appropriées et performantes
+infos_xxxx( ) sont à mon avis plus appropriées et performantes
 
 ***************************************/
 

@@ -203,7 +203,6 @@
 		<label title="Un positionnement précis est-il indispensable ?">Provenance des coordonnéés GPS :
 			<select name="precision_gps" >
 			<option value="">(Peu importe)</option>
-			<option value="1,2">Prises sur une carte ou le terrain</option>
 			<?foreach ($vue->infos_base->type_precision AS $p) {?>
 				<option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
 				<?}?>
