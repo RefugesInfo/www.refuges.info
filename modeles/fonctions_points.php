@@ -63,7 +63,7 @@ $conditions->binaire->couvertures : "oui" ou "vide"
 $conditions->binaire->eau_a_proximite : "oui" ou "vide"
 $conditions->binaire->bois_a_proximite : "oui" ou "vide"
 $conditions->binaire->latrines : "oui" ou "vide"
-$conditions->binaire->sommaire : "oui" ou "vide"
+$conditions->binaire->manque_un_mur : "oui" ou "vide"
 $conditions->binaire->site_officiel : "oui" ou "vide"
 $conditions->binaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
 

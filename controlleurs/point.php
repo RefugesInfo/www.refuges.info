@@ -114,7 +114,6 @@ else // le point est valide. faut bosser.
         {
             switch ($champ)
             {
-                //case 'sommaire': // un autre nomSVP, mais pas un pansement en code... on mets abri sommaire et voila.
                 case 'site_officiel':
                     if ($vue->$champ!="")
                         $val=array('valeur'=> '', 'lien' => $vue->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);

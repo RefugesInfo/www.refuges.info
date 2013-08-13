@@ -243,9 +243,6 @@ foreach($config['champs_binaires_simples_points'] as $champ)
         $vue->champs->bools->$champ = new stdClass ;
         $vue->champs->bools->$champ->label = $point->$champ_equivalent ;
         $vue->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
-        // le cas Sommaire... que je virerai bien mais qui est la juste pour la demo
-        if ($champ=="sommaire")
-            $vue->champs->bools->$champ->aide = "Signifie que cet un abri très 'sommaire', trop rustique pour y passer une nuit 'volontairement'...(ce qui est bien entendu subjectif, la définition elle-même peut changer)";
     }
 }
 
