@@ -195,7 +195,7 @@ FORM#form_point.lien_syntaxe {
 FORM#form_point .booleen {
   clear: left;
   float:left;
-  width: 500px;
+  width: 700px; 
   text-align: right;
   padding: 1px;
   }

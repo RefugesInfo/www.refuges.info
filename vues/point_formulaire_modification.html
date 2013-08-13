@@ -11,7 +11,7 @@
 
 <div class="contenu">
 	<?
-  if (isset($vue->etapes))
+  if (!count($vue->etapes))
   { ?>
     <dl> <?
     foreach ($vue->etapes as $etape)
@@ -33,12 +33,14 @@
       </button>
     <?}?>
     </div>
+    <div>
     <!-- Champs masques -->
     <?
     foreach ($vue->champs->invisibles as $nom => $params)
     { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
     <?}?>
+    </div>
 	<fieldset>
 		<legend>Coordonnées</legend>
         <fieldset>
@@ -88,10 +90,10 @@
 						</option>
 					<?}?>
 				</select>
+                        <a href="<?=$vue->lien_aide_points?>">
+                                Explications plus précises sur les différents types de points
+                        </a>
 			</label>
-			<a href="<?=$vue->lien_aide_points?>">
-				Explications plus précises sur les différents types de points
-			</a>
 
 		<?// tous les points n'ont pas de raison d'avoir ce champ ( lac, sommets, etc.)
 		if ($point->equivalent_places!="") {?>
@@ -101,94 +103,88 @@
 		<?}?>
 	</fieldset>
 	<fieldset>
-		<legend>Champs déscriptifs:</legend>
 		<span><a href="<?=$vue->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
-<?php
-	foreach ($vue->champs->textareas as $tx_nom => $tx_params)
-  {	?>
+<?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
 		<label class="textarea"><span><?=$tx_params->label?></span>
 			<textarea class="textarea" rows="5" cols="80" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
 		</label>
 		
-	<?}?>
+<?}?>
 	</fieldset>
-		<fieldset>
-			<legend>Informations Complémentaires</legend>
-			<?php if ($vue->champs->censure->actif) { ?>
-			<fieldset class="booleen">
-				<legend<?=(isset($vue->champs->censure->aide))? ' title="'.$vue->champs->censure->aide.'"':'';?>><?=$vue->champs->censure->label?></legend>
-				<label>oui<input type="radio" name="censure" value="TRUE" <?=($vue->champs->censure->valeur===true)?'checked="checked"':'';?>/></label>
-				<label>non<input type="radio" name="censure" value="FALSE" <?=($vue->champs->censure->valeur===false)?'checked="checked"':'';?>/></label>
-			</fieldset>
-			<?php } ?>
-	<?php
-	foreach ($vue->champs->bools as $nom => $params)
-	{
-		if(!isset($params->valeur))
-			$params->valeur = null;
-		?>
-			<fieldset class="booleen">
-				<legend<?=(isset($params->aide))? ' title="'.$params->aide.'"':'';?>><?=$params->label?></legend>
-				<label>ne sait pas<input type="radio" name="<?=$nom?>" value="NULL" <?=($params->valeur===null)?'checked="checked"':'';?>/></label>
-				<label>oui<input type="radio" name="<?=$nom?>" value="TRUE" <?=($params->valeur===true)?'checked="checked"':'';?>/></label>
-				<label>non<input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>/></label>
-			</fieldset>
-	<?}
-		if (!empty($point->equivalent_site_officiel) )
-		{ ?>
-			<label><?=$point->equivalent_site_officiel?>
-				<input name="site_officiel" size="70" type="text" value="<?=htmlspecialchars($point->site_officiel,0,'UTF-8')?>" />
-			</label>
-		<?}
-		if (!empty($vue->champs->ferme->options) )
-		{ ?>
-      <fieldset class="booleen"> 
-        <legend><?=$vue->champs->ferme->label?></legend> <?
-        foreach ($vue->champs->ferme->options as $option_key => $option_val)
-        { ?>
-          <label><?=$option_val?>
-            <input type="radio" name="ferme" value="<?=$option_key?>"<?=($vue->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
-          </label>
-      <?}?>
-      </fieldset>
-		<?}
-      	if (!empty($vue->champs->places_matelas->label) )
-		{
-            // rendre le champs invisible si l'option etait "ne sait pas" ou "ya pas"
-            if ( is_int($vue->champs->places_matelas->valeur) && $vue->champs->places_matelas->valeur >= 0 ) // est 0 ou N 
-                $visible = 'visible';
-            else                              // NULL ou -1
-                $visible = 'hidden';
-            
-            ?>
-          <fieldset class="booleen"> 
-            <legend><?=$vue->champs->places_matelas->label?></legend> 
-                <label>ne sait pas
-                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($vue->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
-                </label>
-                <label>sans
-                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','-1');" <?=($vue->champs->places_matelas->valeur=="-1")?' checked="checked"':'';?> />
-                </label>
-                <label>avec
-                    <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','visible','');" <?=($visible == 'visible')?' checked="checked"':'';?> />
-                </label>
-                <label>
-                    <input type="text" id="places_matelas" size="4" name="places_matelas"
-                            value="<?=$vue->champs->places_matelas->valeur?>"
-                            style="visibility: <?=$visible?>;"
-                            title="<?=$vue->champs->places_matelas->aide?>"
-                    />
-                </label>
-          </fieldset>
-      <?}?>
-		
-	</fieldset>
+      
+      
+    <fieldset>
+                        <legend>Informations Complémentaires</legend>
+                        <?php if ($vue->champs->censure->actif) { ?>
+                        <fieldset class="booleen">
+                                <legend<?=(isset($vue->champs->censure->aide))? ' title="'.$vue->champs->censure->aide.'"':'';?>><?=$vue->champs->censure->label?></legend>
+                                <label>oui<input type="radio" name="censure" value="TRUE" <?=($vue->champs->censure->valeur===true)?'checked="checked"':'';?>/></label>
+                                <label>non<input type="radio" name="censure" value="FALSE" <?=($vue->champs->censure->valeur===false)?'checked="checked"':'';?>/></label>
+                        </fieldset>
+                <?php } ?>
 
+                <?php if (!empty($vue->champs->ferme->options) )  { ?>
+                <fieldset class="booleen"> 
+                  <legend><?=$vue->champs->ferme->label?> :</legend> 
+                  
+                  <? foreach ($vue->champs->ferme->options as $option_key => $option_val) { ?>
+                    <label><?=$option_val?>
+                      <input type="radio" name="ferme" value="<?=$option_key?>"<?=($vue->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
+                    </label>
+                  <?}?>
+                </fieldset>
+                <?php } ?>
 
-		<?php
-	if (!isset($_SESSION['id_utilisateur']))
-	{?>
-	<fieldset>
+                <?php if (!empty($vue->champs->places_matelas->label) ) {
+                // rendre le champs invisible si l'option etait "ne sait pas" ou "ya pas"
+                if ( is_int($vue->champs->places_matelas->valeur) && $vue->champs->places_matelas->valeur >= 0 ) // est 0 ou N 
+                    $visible = 'visible';
+                else                              // NULL ou -1
+                    $visible = 'hidden';
+                }
+                ?>
+                <fieldset class="booleen"> 
+                  <legend><?=$vue->champs->places_matelas->label?> :</legend> 
+                    <label>ne sait pas
+                        <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($vue->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
+                    </label>
+                    <label>sans
+                        <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','-1');" <?=($vue->champs->places_matelas->valeur=="-1")?' checked="checked"':'';?> />
+                    </label>
+                    <label>avec
+                        <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','visible','');" <?=($visible == 'visible')?' checked="checked"':'';?> />
+                    </label>
+                    <label>
+                        <input type="text" id="places_matelas" size="4" name="places_matelas"
+                                value="<?=$vue->champs->places_matelas->valeur?>"
+                                style="visibility: <?=$visible?>;"
+                                title="<?=$vue->champs->places_matelas->aide?>"
+                        />
+                    </label>
+                </fieldset>
+
+                
+                <?php foreach ($vue->champs->bools as $nom => $params) { ?>
+                <fieldset class="booleen">
+                        <legend<?=(isset($params->aide))? ' title="'.$params->aide.'"':'';?>><?=$params->label?> :</legend>
+                        <label>ne sait pas<input type="radio" name="<?=$nom?>" value="NULL" <?=($params->valeur===null)?'checked="checked"':'';?>/></label>
+                        <label>oui<input type="radio" name="<?=$nom?>" value="TRUE" <?=($params->valeur===true)?'checked="checked"':'';?>/></label>
+                        <label>non<input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>/></label>
+                </fieldset>
+                <?php } ?>
+                <fieldset class="booleen">
+                <?php if (!empty($point->equivalent_site_officiel) ) { ?>
+                        <legend><?=$point->equivalent_site_officiel?> :</legend>
+                        <label>
+                                <input name="site_officiel" size="50" type="text" value="<?=htmlspecialchars($point->site_officiel,0,'UTF-8')?>" />
+                        </label>
+                </fieldset>
+    </fieldset>
+                <?php } ?>
+
+                                
+                <?php if (!isset($_SESSION['id_utilisateur'])) { ?>
+                <fieldset>
 		<legend title="Ces informations ne seraient pas demandées si vous étiez inscrit sur le site">Gestion</legend>
 		<label>Mettez votre nom ou pseudo (facultatif)
 			<input type="text" name="nom_createur" maxlength="40" size="41" value="<?=htmlspecialchars($nom_createur,ENT_QUOTES,'UTF-8')?>" />
@@ -197,15 +193,16 @@
 			Entrez la lettre <strong>d</strong>
 			<input name="lettre_securite" type="text" size="1" />
 		</label>
-	</fieldset>
-	<?}?>
-		<div><?
-    foreach ($vue->champs->boutons as $bouton) { ?>
-      <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
-        <?=$bouton->label?>
-      </button>
-    <?}?>
-    </div>
-
+                </fieldset>
+                <?}?>
+                
+                
+		<div>
+		<?php foreach ($vue->champs->boutons as $bouton) { ?>
+                  <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
+                    <?=$bouton->label?>
+                  </button>
+                <?}?>
+                </div>
 	</form>
 </div>
