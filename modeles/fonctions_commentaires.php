@@ -459,12 +459,16 @@ function transfert_forum($commentaire)
   
     if ($commentaire->id_createur_commentaire<=0)
         $commentaire->id_createur_commentaire=-1;
-	// dabord declarer le post
+	// d'abord declarer le post
+    // note sly 17/08/2013 : j'ajoute un "_" à la suite du nom de l'auteur, c'est un peu curieux, mais ça permet de réduire
+    // les chances qu'on le confondent avec un utilisateur du forum portant le même nom exactement
+    // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
+    
 	$query_insert_post="
 		INSERT INTO phpbb_posts
 			(topic_id,forum_id,poster_id,post_time,post_username)
 		VALUES
-			($forum->topic_id ,$forum->forum_id ,$commentaire->id_createur_commentaire,$commentaire->ts_unix_commentaire , ".$pdo->quote(substr($commentaire->auteur_commentaire,0,23)).")";
+			($forum->topic_id ,$forum->forum_id ,$commentaire->id_createur_commentaire,$commentaire->ts_unix_commentaire , ".$pdo->quote(substr($commentaire->auteur_commentaire,0,22)."_").")";
   
 	if (!$pdo->exec($query_insert_post))
 		return erreur("Transfert vers le forum échoué",$query_insert_post);
