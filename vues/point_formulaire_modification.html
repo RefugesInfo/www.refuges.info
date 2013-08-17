@@ -114,8 +114,7 @@
       
       
     <fieldset>
-                        <legend>Informations Complémentaires</legend>
-                        <?php if ($vue->champs->censure->actif) { ?>
+                <?php if ($vue->champs->censure->actif) { ?>
                         <fieldset class="booleen">
                                 <legend<?=(isset($vue->champs->censure->aide))? ' title="'.$vue->champs->censure->aide.'"':'';?>><?=$vue->champs->censure->label?></legend>
                                 <label>oui<input type="radio" name="censure" value="TRUE" <?=($vue->champs->censure->valeur===true)?'checked="checked"':'';?>/></label>
@@ -143,6 +142,8 @@
                     $visible = 'hidden';
                 }
                 ?>
+                
+                <?php if (!empty($point->equivalent_matelas) ) { ?>
                 <fieldset class="booleen"> 
                   <legend><?=$vue->champs->places_matelas->label?> :</legend> 
                     <label>ne sait pas
@@ -162,7 +163,7 @@
                         />
                     </label>
                 </fieldset>
-
+                <?php } ?>
                 
                 <?php foreach ($vue->champs->bools as $nom => $params) { ?>
                 <fieldset class="booleen">
