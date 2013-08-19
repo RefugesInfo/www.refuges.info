@@ -185,7 +185,6 @@ function infos_points($conditions)
         $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
     if( !empty($conditions->places_maximum) )
         $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
-    if( isset($conditions->places) &&  $conditions->places == NULL)
         
     // conditions sur l'altitude
     if( !empty($conditions->altitude_minimum) )
