@@ -33,7 +33,7 @@
 				<sld:PointSymbolizer>
 					<sld:Graphic>
 						<sld:ExternalGraphic>
-							<sld:OnlineResource xlink:href="http://www.refuges.info/images/icones/${type}.png" />
+							<sld:OnlineResource xlink:href="../images/icones/${type}.png" />
 							<sld:Format>image/png</sld:Format>
 						</sld:ExternalGraphic>
 						<sld:Opacity>1</sld:Opacity>
