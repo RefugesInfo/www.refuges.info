@@ -489,6 +489,7 @@ function waypoint_gpx($point,$format)
   
   $waypoint="
   <wpt lat=\"$point->latitude\" lon=\"$point->longitude\">
+  <sym>$point->symbole</sym>
   <ele>$point->altitude</ele>
   <name>".c($nom)."</name>$version_complete
   </wpt>
