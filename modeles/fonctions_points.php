@@ -68,7 +68,7 @@ $conditions->binaire->site_officiel : "oui" ou "vide"
 $conditions->binaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
 
 FIXME : 2 conditions pour faire presque la même chose, je me demande s'il n'y a pas matière à simplifier :
-$conditions->binaire->ferme : "oui" ou "vide"
+$conditions->conditions_utilisation : ouverture, fermeture, clef_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
 $conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
 
 $conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
@@ -240,9 +240,9 @@ function infos_points($conditions)
   }
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
   if ($conditions->ouvert=='non')
-    $conditions_sql.="\n AND points.ferme is not null and points.ferme != '' ";
+    $conditions_sql.="\n AND points.conditions_utilisation in ('fermeture','detruit') ";
   if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND (points.ferme is null or points.ferme = '' )  "; 
+    $conditions_sql.="\n AND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','clef_a_recuperer') )  "; 
   if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
   
@@ -416,25 +416,22 @@ function param_cartes ($point)
 }
 
 
-// Par choix, la notion de fermeture dans la base est enregistrée en un seul champ pour tous les cas 
-// (ruines, détruite, fermée) car ces trois états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
-// le texte en utilisant la table point_type, donc en dur dans le code si autre que "", "non" ou "oui"
-// jmb un truc simple:
-//  '' = ouvert,  '%' = raison de la fermeture  
+// Par choix, la notion d'utilisabilité dans la base est enregistrée en un seul champ pour tous les cas 
+// (détruite, fermée, ouverte, besoin de récupérer la clé) car ces états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
+// le texte en utilisant la table point_type, donc en dur dans le code
 function texte_non_ouverte($point)
 {
 	//Si elle/il est fermé, on l'indique directement en haut en rouge
-	$p = $point->ferme;
-	switch ($point->ferme) {
-		case '':
-			return "";
-		case 'ruine':
-			return "En ruine"; 
+        $p = $point->conditions_utilisation;
+	switch ($point->conditions_utilisation) 
+	{
+		case 'clef_a_recuperer':
+			return "Cléf à récupérer avant";
 		case 'detruit':
 			return "Détruit(e)"; 
-		case 'oui':
-		case ( !empty($point->ferme) );
-			return $point->equivalent_ferme ; 
+		case 'fermeture':
+		        return "Fermée";
+			
 		default:
 			return ""; // tous les autres cas, normalement on arrive pas la
 	}
@@ -742,7 +739,7 @@ function choix_icone($point)
     if ( $point->clef_a_recuperer AND $point->nom_type=="cabane non gardée" )
         $nom_icone="cabane_cle";
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( ($point->ferme=="oui" or $point->ferme=="detruit" or $point->ferme=="ruine") 
+    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") 
           AND 
           ($point->nom_type=="cabane non gardée" or $point->nom_type=="gîte d'étape" or $point->nom_type=="refuge gardé")
        )

@@ -122,15 +122,13 @@
                         </fieldset>
                 <?php } ?>
 
-                <?php if (!empty($vue->champs->ferme->options) )  { ?>
+                <?php if (!empty($vue->champs->conditions_utilisation) )  { ?>
                 <fieldset class="booleen"> 
-                  <legend><?=$vue->champs->ferme->label?> :</legend> 
+                  <legend>Utilisation :</legend> 
                   
-                  <? foreach ($vue->champs->ferme->options as $option_key => $option_val) { ?>
                     <label><?=$option_val?>
                       <input type="radio" name="ferme" value="<?=$option_key?>"<?=($vue->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
                     </label>
-                  <?}?>
                 </fieldset>
                 <?php } ?>
 

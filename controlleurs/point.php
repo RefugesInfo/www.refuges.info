@@ -98,13 +98,13 @@ else // le point est valide. faut bosser.
     if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $vue->id_createur ))
         $vue->lien_modification=TRUE;
             
-    /*********** Préparation des infos complémentaires (c'est à dire les champs à cocher) ***/
+    /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
     // Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
     
     // Voici tous ceux qui nous intéresse 
     // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer 
     // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
-    $champs=array_merge($config['champs_binaires_points'],array('places_matelas'),array('site_officiel'));
+    $champs=array_merge($config['champs_choix_multiples_points'],array('site_officiel'));
    
     foreach ($champs as $champ) 
     {
@@ -118,11 +118,11 @@ else // le point est valide. faut bosser.
                     if ($vue->$champ!="")
                         $val=array('valeur'=> '', 'lien' => $vue->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
                     break;
-                case 'ferme':  // jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
-                    unset($val);
+                case 'conditions_utilisation':  // jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
+                    unset($val);$vue->champs->conditions_utilisation
                     break;
                     
-                case (in_array($champ, $config['champs_binaires_simples_points'] ) ):  // vrais Bools
+                case (in_array($champ, $config['champs_binaires_points'] ) ):  // vrais Bools
                     if($vue->$champ === TRUE)
                         $val = array('valeur'=> 'Oui');
                     if($vue->$champ === FALSE)
@@ -130,9 +130,6 @@ else // le point est valide. faut bosser.
                     if($vue->$champ === NULL)
                         $val = array('valeur'=> '<strong>Inconnu</strong>');
                     break;
-                    
-                case 'matelas':
-                    break; // a virer plus tard. remplace par places_matelas.
                     
                 case 'places_matelas':
                     if($vue->$champ == -1)
