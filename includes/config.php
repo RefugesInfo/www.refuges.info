@@ -72,8 +72,10 @@ $config['id_gite_etape']=9;
 
 // Champs valables pour les points classés par spécificité (permet de dynamiquement gérer le formulaire de saisie et d'affichage)
 // FIXME sly 13/08/2013 : on pourrait presque aller les chercher dans la base directement, mais on perdrait la possiblité de changer l'ordre facilement. A voir le pour et le contre
-$config['champs_binaires_simples_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite','clef_a_recuperer');
-$config['champs_binaires_points']=array_merge(array('ferme','matelas'),$config['champs_binaires_simples_points']);
+$config['champs_binaires_simples_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite');
+
+// FIXME : le nom champs_binaires_points est incorrect, ces deux champs ne sont pas binaires, leur seul particularité c'est d'être à choix multiples, mais pas binaires
+$config['champs_binaires_points']=array_merge(array('conditions_utilisation','matelas'),$config['champs_binaires_simples_points']);
 $config['champs_simples_points']=array_merge(array("censure","nom","places","remark","proprio","id_point_type","id_createur","modele","id_point_gps",'places_matelas','nom_createur'),$config['champs_binaires_points']);
 // les numéros d'id spéciaux qu'on trouve dans les bases
 // avec ça c'est une news générale

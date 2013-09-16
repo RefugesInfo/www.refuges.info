@@ -20,14 +20,6 @@ function infos_base () {
 	while( $res = $q->fetch() )
 		$r->types_point[] = $res ;
 
-	$sql = "SELECT * 
-		FROM point_type 
-		WHERE point_type.pas_afficher=0
-		ORDER BY importance DESC";  
-	$q = $pdo->query( $sql );
-	while( $res = $q->fetch() )
-		$r->types_point_affichables[] = $res ;
-
 	$sql = "SELECT *
 		FROM type_precision_gps
 		ORDER BY ordre";
@@ -38,5 +30,20 @@ function infos_base () {
 	return $r ;
 }
 
+function types_point_affichables() 
+{
+    global $pdo;
 
+    $sql = "SELECT * 
+            FROM point_type 
+            WHERE point_type.pas_afficher=0
+            ORDER BY importance DESC";  
+    $q = $pdo->query( $sql );
+    while( $res = $q->fetch() )
+    {
+            $res->icone=replace_url($res->nom_type);
+            $r[] = $res ;
+    }
+  return ($r);
+  }
 ?>

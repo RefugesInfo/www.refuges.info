@@ -631,20 +631,7 @@ function fichier_exportation($conditions,$format)
   {
     foreach ($points as $point)
     {
-      // Petite bidouille un peu séciale, dans le mode carte, on souhaite changer les icônes de certains point dont les critères justifie une icone différente
-      // sly 12/05/2010
-      // FIXME : On notera un défaut lorsqu'il manque un mur à l'abri ET qu'il est détruit il faudrait une 3ème combinaison d'icône
-      // sly 30/10/10
-      // FIXME 18/07/2013 : c'est franchement de la magouille cette histoire, il faudrait stoquer quelque part une sorte de style interne (css, xml, pseudo-sql) 
-      // qui dit "si gite et si ferme alors icone truc" et un joli wraper choisir_icone($point) nous sortirait l'icone à afficher
-      
-      // S'il manque un mur ou qu'il n'a aucune place pour dormir et qu'il a l'icone pour ça
-      if ( ($point->manque_un_mur OR $point->places==0) AND $point->nom_icone_manque_un_mur!='' )
-	$point->nom_icone=$point->nom_icone_manque_un_mur;
-
-      // Si le point est "fermé" ou "détruit" ou "ruines" et qu'il a une icone spéciale "fermée" on la choisie 
-      if ( !empty($point->ferme) AND !empty($point->nom_icone_ferme) )
-	$point->nom_icone=$point->nom_icone_ferme;
+	$point->nom_icone=choix_icone($point);
       
       switch ($format)
       {

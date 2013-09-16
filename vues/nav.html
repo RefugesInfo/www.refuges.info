@@ -51,24 +51,24 @@ if ( $vue->type_affichage == '' ){?>
 	<fieldset>
 		<legend>Points</legend>
 		<ul>
-			<?foreach ($vue->infos_base->types_point_affichables AS $ptype) {?>
+			<?foreach ($vue->types_point_affichables AS $type_affichable) {?>
 				<li>
 					<label>
 						<input
 							name="id_point_type[]"
 							onclick="maj_carte()"
-							value="<?=$ptype->id_point_type?>"
+							value="<?=$type_affichable->id_point_type?>"
 							type="checkbox"
-							<?if (strstr (",$vue->liste_id_point_type,", ",$ptype->id_point_type,")) {?>
+							<?if (strstr (",$vue->liste_id_point_type,", ",$type_affichable->id_point_type,")) {?>
 								checked="checked"
 							<?}?>
 						/>
 						<img
-							id="icone_<?=$ptype->id_point_type?>"
-							src="<?=$config['url_chemin_icones'].$ptype->nom_icone?>.png"
-							alt="icone de <?=$ptype->nom_type?>"
+							id="icone_<?=$type_affichable->id_point_type?>"
+							src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
+							alt="icone de <?=$type_affichable->nom_type?>"
 						/>
-						<?=$ptype->nom_type?>
+						<?=$type_affichable->nom_type?>
 					</label>
 				</li>
 			<?}?>

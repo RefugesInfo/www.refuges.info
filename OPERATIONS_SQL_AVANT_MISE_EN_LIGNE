@@ -1,0 +1,24 @@
+de la table point_type (la gestion du choix des icones ne se fait plus dans la table mais dans une fonction php avec des if)
+
+Supprimer les colonnes nom_icone, nom_icone_ferme, nom_icone_manque_un_mur et equivalent_clef_a_recuperer
+(à faire à la main dans phppgadmin)
+
+
+"clé à récupérer" n'est plus une propriété orthogonale de l'état d'ouverture/détuit ou non de la cabane
+
+-> distinguer les ruines ne sert à rien, on groupe tout dans "detruit"
+update points set ferme='detruit' where ferme='ruine'
+
+-> oui n'est plus assez clair pour l'état utilisable, on le rend explicite avec le mot clé "fermeture"
+update points set ferme='fermeture' where ferme='oui'
+
+-> quand les clef sont à récupérer, c'est maintenant une propriété du champs "ferme" qu'il faudra d'ailleure renomer
+update points set ferme='cle_a_recuperer' where clef_a_recuperer='t'
+
+-> quand c'est 'ouvert' (le par défaut, on le rend explicite)
+update points set ferme='ouverture' where ferme=''
+
+-> on renomme ce champ en "conditions_utilisation" dont le défaut est :
+'ouverture'::character varying
+et le commentaire :
+ouverture ou fermeture ou detruit ou clef_a_recuperer

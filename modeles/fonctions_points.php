@@ -721,4 +721,33 @@ function suppression_point($point)
 
   return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés"); 
 }
-  ?>
+
+/*******************************************************
+Cette fonction retourne le nom de l'icone (sans le chemin ni l'extention)
+de l'icone à utiliser sur une carte de refuges.info 
+Elle n'est qu'une solution intermédiaire avant un éventuel système plus flexible
+de style permettant de choisir l'icone selon les critères d'un point
+
+*******************************************************/
+function choix_icone($point)
+{
+    // par défaut, et sauf modification ultérieure, le nom de l'icone à choisir porte, par défaut, le nom du type de point (dans une version convertie sans accents,guillemet ou espace)
+    $nom_icone=replace_url($point->nom_type);
+    
+    // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
+    if ( ($point->manque_un_mur OR $point->places==0) AND $point->nom_type=="cabane non gardée" )
+        $nom_icone="abri";
+
+    // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
+    if ( $point->clef_a_recuperer AND $point->nom_type=="cabane non gardée" )
+        $nom_icone="cabane_cle";
+    // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
+    if ( ($point->ferme=="oui" or $point->ferme=="detruit" or $point->ferme=="ruine") 
+          AND 
+          ($point->nom_type=="cabane non gardée" or $point->nom_type=="gîte d'étape" or $point->nom_type=="refuge gardé")
+       )
+        $nom_icone="inutilisable";
+        
+    return $nom_icone;
+}
+?>
