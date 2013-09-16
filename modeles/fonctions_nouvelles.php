@@ -11,6 +11,7 @@ rajout du setlocale et déplacement dans un fichier config.php
 ****************************************************************************************************/
 
 require_once ("config.php");
+require_once ("fonctions_bdd.php");
 require_once ("fonctions_polygones.php");
 require_once ("fonctions_points.php");
 
@@ -20,11 +21,11 @@ function stat_site ()
 	// Petits stats de début sur l'intégralité de la base
 	// donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
 	// les autres sont des sommets, des cols, des villes où autre
-  
+        // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
 	// PDO jmb re ecriture en une seule requete 
 	$q = "SELECT 
 			( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
-			AND (ferme='' OR ferme IS NULL)
+			AND (conditions_utilisation='ouverture' OR conditions_utilisation='cle_a_recuperer')
 			AND points.modele != 1 )                                  AS nbrefuges,
 	( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
 	( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
