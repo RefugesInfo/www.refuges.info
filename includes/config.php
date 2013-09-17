@@ -69,12 +69,13 @@ $config['tout_type_refuge']="7,9,10";
 $config['id_cabane_gardee']=7; 
 $config['id_refuge_garde']=10; 
 $config['id_gite_etape']=9;
+$config['point_d_eau']=23;
 
 // Champs valables pour les points classés par spécificité (permet de dynamiquement gérer le formulaire de saisie et d'affichage)
 // FIXME sly 13/08/2013 : on pourrait presque aller les chercher dans la base directement, mais on perdrait la possiblité de changer l'ordre facilement. A voir le pour et le contre
 $config['champs_binaires_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite');
-$config['champs_choix_multiples_points']=array_merge(array('conditions_utilisation','matelas'),$config['champs_binaires_points']);
-$config['champs_simples_points']=array_merge(array("censure","nom","places","remark","proprio","id_point_type","id_createur","modele","id_point_gps",'places_matelas','nom_createur'),$config['champs_binaires_points']);
+$config['champs_choix_multiples_points']=array_merge(array('conditions_utilisation','places_matelas'),$config['champs_binaires_points']);
+$config['champs_simples_points']=array_merge(array("censure","nom","places","remark","proprio","id_point_type","id_createur","modele","id_point_gps",'places_matelas','nom_createur'),$config['champs_choix_multiples_points']);
 
 // les numéros d'id spéciaux qu'on trouve dans les bases
 // avec ça c'est une news générale

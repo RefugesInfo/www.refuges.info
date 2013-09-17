@@ -104,7 +104,7 @@ else // le point est valide. faut bosser.
     // Voici tous ceux qui nous intéresse 
     // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer 
     // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
-    $champs=array_merge($config['champs_choix_multiples_points'],array('site_officiel'));
+    $champs=array_merge(array('places_matelas'),$config['champs_binaires_points'],array('site_officiel'));
    
     foreach ($champs as $champ) 
     {
@@ -118,19 +118,7 @@ else // le point est valide. faut bosser.
                     if ($vue->$champ!="")
                         $val=array('valeur'=> '', 'lien' => $vue->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
                     break;
-                case 'conditions_utilisation':  // jmb Hack paske j'ai merdé en supprimant la possibilité de Fermé = Inconnu
-                    unset($val);$vue->champs->conditions_utilisation
-                    break;
-                    
-                case (in_array($champ, $config['champs_binaires_points'] ) ):  // vrais Bools
-                    if($vue->$champ === TRUE)
-                        $val = array('valeur'=> 'Oui');
-                    if($vue->$champ === FALSE)
-                        $val = array('valeur'=> 'Non');
-                    if($vue->$champ === NULL)
-                        $val = array('valeur'=> '<strong>Inconnu</strong>');
-                    break;
-                    
+                   
                 case 'places_matelas':
                     if($vue->$champ == -1)
                         $val=array('valeur'=> 'Sans');
@@ -141,21 +129,20 @@ else // le point est valide. faut bosser.
                     else
                         $val=array('valeur'=> $vue->$champ);
                     break;
-                    
-                default:
-                    if ($vue->$champ=="") 
-                        $vue->$champ="<strong>Inconnu</strong>";
-                    elseif ($vue->$champ < 0) 
-                        $val=array('valeur'=> 'Sans');
-                    $val=array('valeur'=> $vue->$champ);
+
+                default: // Pour tous les boolééns restant
+                    if($vue->$champ === TRUE)
+                        $val = array('valeur'=> 'Oui');
+                    if($vue->$champ === FALSE)
+                        $val = array('valeur'=> 'Non');
+                    if($vue->$champ === NULL)
+                        $val = array('valeur'=> '<strong>Inconnu</strong>');
+                    break;
             }            
             
             if (isset($val))
                 $vue->infos_complementaires[$vue->$champ_equivalent]=$val;
             
-            // Cas particulier : si matelas=yes, on indique combien de place à la ligne juste en dessous
-            if ($champ=='matelas' and $vue->$champ=='oui')
-                $vue->infos_complementaires['Places sur Matelas']=array('valeur'=>$vue->places_matelas);   
         }
         unset($val);
     }

@@ -44,7 +44,7 @@ class PDO_wri extends PDO
 Avec Postgresql impossible de ré-utiliser une forme commune de requête entre un update et un insert, c'est 
 devenu tellement relou que j'ai fais cette fonction pour construire la requête
 $table = le nom de la table dans laquelle on veut mettre à jour un enregistrement ou inserer un enregistrement
-$champs_valeur = un array associatif avec comme clef, le champ à mettre à jour, sa valeur la valeur à mettre à jour
+$champs_valeur = un array associatif avec comme cle, le champ à mettre à jour, sa valeur la valeur à mettre à jour
 $update_ou_insert = soit 'update' soit 'insert'
 $condition = la clause, dans le cas d'un update indiquant quel enregistrement à mettre à jour genre 'id_point=5'
 

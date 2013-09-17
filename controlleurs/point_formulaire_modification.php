@@ -31,7 +31,7 @@ $vue->champs->invisibles = new stdClass;  // champs invisibles a passer quand me
 $vue->champs->textareas = new stdClass;
 $vue->champs->boutons = new stdClass; // Modifier, supprimer...
 $vue->champs->bools = new stdClass; // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
-$vue->champs->ferme = new stdClass; // traite en cas particulier, trop specifique
+$vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
 $vue->champs->places_matelas = new stdClass; // traite en cas particulier, trop specifique, la suppression me demange
 
 // 4 cas :
@@ -234,7 +234,7 @@ if ($_SESSION['niveau_moderation']>=1)
     $vue->champs->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
 }
 
-foreach($config['champs_binaires_simples_points'] as $champ)
+foreach($config['champs_binaires_points'] as $champ)
 {
     // nouveauté, ne crée les bool QUE si il y a un champ_equivalent.
     $champ_equivalent="equivalent_$champ";
@@ -246,13 +246,14 @@ foreach($config['champs_binaires_simples_points'] as $champ)
     }
 }
 
-
-//combine fermé
-if ( !empty($point->equivalent_ferme) )
+//spécificité du cas des conditions d'utilisation de la cabane (clé à récup, ouvert tout le temps, fermée tout le temps, ou détruite)
+if ( !empty($point->equivalent_conditions_utilisation) )
 {
-    $vue->champs->ferme->label = $point->equivalent_ferme ;
-    $vue->champs->ferme->options = array('NULL' => 'ne sait pas','' => 'non','oui' => 'oui', 'detruit' => 'Détruit(e)','ruine' => 'En ruine');
-    $vue->champs->ferme->valeur = is_null($point->ferme)? "NULL":$point->ferme ; // retourne "NULL" si ca vaut NULL (au lieu de"")
+    if ($point->id_point_type==$config['point_d_eau'])
+        $vue->champs->conditions_utilisation->options = array('ouverture' => 'Coule', 'NULL' => 'Ne sait pas','detruit' => 'Détruite','fermeture' => $point->equivalent_conditions_utilisation);
+    else
+        $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
+    $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 //combine matelas
 if ( !empty($point->equivalent_places_matelas) )

@@ -71,7 +71,7 @@
 			<dd class="condense">
 				<a href="<?=lien_mode_emploi("fiche-".replace_url($vue->nom_type))?>"><?=$vue->nom_type?><sup>?</sup></a>
 				<?php
-				//Si elle/il est fermé, on l'indique directement en haut en rouge
+				//Si elle/il est fermé, détruit, ou besoin de la clé pour rentrer on l'indique directement en haut en rouge
 				if ($vue->annonce_fermeture) {?>
 					<strong>(<?=$vue->annonce_fermeture?>)</strong>
 				<?}?>

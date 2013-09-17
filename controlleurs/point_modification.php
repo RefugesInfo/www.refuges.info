@@ -56,7 +56,6 @@ switch( $_REQUEST["action"] )
     case 'Modifier' :
         $ancien_point=infos_point($_REQUEST['id_point'],True); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
         $nouveau_point=preparation_point();
-        
         // modification uniquement si modérateur ou créateur de la fiche
         if ( $_SESSION['niveau_moderation']>=1 
               or 

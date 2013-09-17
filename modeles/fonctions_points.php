@@ -68,7 +68,7 @@ $conditions->binaire->site_officiel : "oui" ou "vide"
 $conditions->binaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
 
 FIXME : 2 conditions pour faire presque la même chose, je me demande s'il n'y a pas matière à simplifier :
-$conditions->conditions_utilisation : ouverture, fermeture, clef_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
+$conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
 $conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
 
 $conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
@@ -242,7 +242,7 @@ function infos_points($conditions)
   if ($conditions->ouvert=='non')
     $conditions_sql.="\n AND points.conditions_utilisation in ('fermeture','detruit') ";
   if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','clef_a_recuperer') )  "; 
+    $conditions_sql.="\n AND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  "; 
   if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
   
@@ -421,16 +421,19 @@ function param_cartes ($point)
 // le texte en utilisant la table point_type, donc en dur dans le code
 function texte_non_ouverte($point)
 {
+    global $config;
 	//Si elle/il est fermé, on l'indique directement en haut en rouge
-        $p = $point->conditions_utilisation;
 	switch ($point->conditions_utilisation) 
 	{
-		case 'clef_a_recuperer':
-			return "Cléf à récupérer avant";
+		case 'cle_a_recuperer':
+			return "Clé à récupérer avant";
 		case 'detruit':
-			return "Détruit(e)"; 
+            if ($point->id_point_type==$config['id_cabane_gardee'])
+                return "Détruite";
+            else
+                return "Détruit";
 		case 'fermeture':
-		        return "Fermée";
+		        return $point->equivalent_conditions_utilisation; 
 			
 		default:
 			return ""; // tous les autres cas, normalement on arrive pas la
@@ -517,7 +520,7 @@ function modification_ajout_point($point)
             if($point->$champ  == "NULL")
                 $champs_sql[$champ]= "NULL";
             else
-			$champs_sql[$champ]=$pdo->quote($point->$champ);
+                $champs_sql[$champ]=$pdo->quote($point->$champ);
 
 	if ( !empty($point->id_point) )  // update
 	{
@@ -736,7 +739,7 @@ function choix_icone($point)
         $nom_icone="abri";
 
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( $point->clef_a_recuperer AND $point->nom_type=="cabane non gardée" )
+    if ( $point->conditions_utilisation=='cle_a_recuperer' AND $point->nom_type=="cabane non gardée" )
         $nom_icone="cabane_cle";
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
     if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") 

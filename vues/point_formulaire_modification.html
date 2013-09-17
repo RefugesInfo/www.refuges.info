@@ -124,11 +124,12 @@
 
                 <?php if (!empty($vue->champs->conditions_utilisation) )  { ?>
                 <fieldset class="booleen"> 
-                  <legend>Utilisation :</legend> 
-                  
+                  <legend>État :</legend> 
+                  <?php foreach ( $vue->champs->conditions_utilisation->options as $option_key => $option_val) { ?>
                     <label><?=$option_val?>
-                      <input type="radio" name="ferme" value="<?=$option_key?>"<?=($vue->champs->ferme->valeur==$option_key)?' checked="checked"':'';?> />
+                      <input type="radio" name="conditions_utilisation" value="<?=$option_key?>"<?=($vue->champs->conditions_utilisation->valeur==$option_key)?' checked="checked"':'';?> />
                     </label>
+                  <?php } ?>
                 </fieldset>
                 <?php } ?>
 
@@ -141,7 +142,7 @@
                 }
                 ?>
                 
-                <?php if (!empty($point->equivalent_matelas) ) { ?>
+                <?php if (!empty($vue->champs->places_matelas->label) ) { ?>
                 <fieldset class="booleen"> 
                   <legend><?=$vue->champs->places_matelas->label?> :</legend> 
                     <label>ne sait pas
