@@ -118,7 +118,7 @@ function infos_points($conditions)
         
     // conditions sur le nom du point
     if( !empty($conditions->nom) )
-        $conditions_sql .= " AND points.nom ILIKE ".$pdo->quote('%'.$conditions->nom.'%') ;
+        $conditions_sql .= " AND unaccent(points.nom) ILIKE unaccent(".$pdo->quote('%'.$conditions->nom.'%').")";
   
     // condition sur l'appartenance à un polygone
     if( !empty($conditions->ids_polygones) )
