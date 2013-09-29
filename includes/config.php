@@ -78,7 +78,7 @@ $config['champs_choix_multiples_points']=array_merge(array('conditions_utilisati
 $config['champs_simples_points']=array_merge(array("censure","nom","places","remark","proprio","id_point_type","id_createur","modele","id_point_gps",'places_matelas','nom_createur'),$config['champs_choix_multiples_points']);
 
 // les numéros d'id spéciaux qu'on trouve dans les bases
-// avec ça c'est une news générale
+// Les "nouvelles" du sites, qui ne se rapport à aucun point du site, sont stoquées comme commentaire dont l'id_point vaut cette valeur :
 $config['numero_commentaires_generaux']=-2;
 
 //nombre maximum de point que peut sortir la recherche

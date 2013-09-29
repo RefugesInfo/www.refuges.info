@@ -219,7 +219,7 @@ function modification_ajout_commentaire($commentaire)
     $retour = new stdClass;
     $photo_valide=False; 
     
-    if ($commentaire->id_point>=0) // Si négatif, c'est une "news générale"
+    if ($commentaire->id_point!=$config['numero_commentaires_generaux'])
     {
             $point=infos_point($commentaire->id_point,True);
             if ($point->erreur)

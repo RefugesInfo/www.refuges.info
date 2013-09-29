@@ -326,6 +326,8 @@ function infos_point($id_point,$meme_si_censure=False)
   global $config,$pdo;
   $conditions = new stdClass();
   $conditions->ids_points=$id_point;
+  if (empty($id_point))
+      return erreur("Il semblerait que vous n'avez pas renseigné le n°du point");
   $conditions->modele=-1;
   if ($meme_si_censure)
      $conditions->avec_points_censure=True;
@@ -336,7 +338,7 @@ function infos_point($id_point,$meme_si_censure=False)
   if ($points->erreur)
     return erreur($points->message);
   if (count($points)==0)
-    return erreur("Le point demandé est introuvable dans notre base");
+    return erreur("Le numéro de point demandé \"$conditions->ids_points\" est introuvable dans notre base");
   if (count($points)>1)
     return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu..."); 
     

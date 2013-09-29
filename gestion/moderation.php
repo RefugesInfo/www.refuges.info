@@ -68,12 +68,16 @@ if ($vue->erreur=="")
             $commentaire->texte=stripslashes($_REQUEST["texte"]);
             $commentaire->auteur_commentaire=stripslashes($_REQUEST["auteur_commentaire"]);
             $commentaire->id_point=$_REQUEST['id_autre_point'];
-            $retour=modification_ajout_commentaire($commentaire);
-            if ($retour->erreur)
-                $message=$retour->message;
+            // FIXME sly : bidouille juste parce que j'ai voulu mettre "nouvelles globales" et "commentaires" au même endroit, je ferais mieux
+            // de coller ça ailleurs (genre une page wiki libre de modification pour les modérateurs)
+            if ($commentaire->id_point==$config['numero_commentaires_generaux'])
+                $retour->message=$commentaire->id_point." est une valeur spéciale interdite";
             else
-                $message="ce commentaire a été déplacé sur la fiche de <a href='".lien_point_lent($commentaire->id_point)."'>Ce point</a>";
-            print("<h4>$message</h4>");
+                $retour=modification_ajout_commentaire($commentaire);
+            if (!$retour->erreur)
+                $retour->message="ce commentaire a été déplacé sur la fiche de <a href='".lien_point_lent($commentaire->id_point)."'>Ce point</a>";
+             }
+            print("<h4>$retour->message</h4>");
             break;
         case "suppression_photo":
             $retour=suppression_photos($commentaire);
@@ -82,6 +86,7 @@ if ($vue->erreur=="")
             
         default:
             // affichage du formulaire de modif
+            // FIXME sly : à convertir en template MVC
             echo "
             <p>
             Vous entrez dans la zone de modération qui va vous permettre de modifier un commentaire ou de le déplacer vers le forum dans la section correspondant au point
