@@ -27,7 +27,7 @@ if ( !$autorisation )
     $vue->erreur="Impossible d'accéder à cette page vous n'y êtes pas autorisé";
 else
 	echo "<h3>Modération des commentaires</h3>\n";
-
+$retour = new stdclass;
 // on vient ici par 3 moyens:
 //	  -type=transfert
 //	  -type=modif
@@ -71,13 +71,16 @@ if ($vue->erreur=="")
             // FIXME sly : bidouille juste parce que j'ai voulu mettre "nouvelles globales" et "commentaires" au même endroit, je ferais mieux
             // de coller ça ailleurs (genre une page wiki libre de modification pour les modérateurs)
             if ($commentaire->id_point==$config['numero_commentaires_generaux'])
-                $retour->message=$commentaire->id_point." est une valeur spéciale interdite";
+                $message=$commentaire->id_point." est une valeur spéciale interdite";
             else
+            {
                 $retour=modification_ajout_commentaire($commentaire);
-            if (!$retour->erreur)
-                $retour->message="ce commentaire a été déplacé sur la fiche de <a href='".lien_point_lent($commentaire->id_point)."'>Ce point</a>";
-             }
-            print("<h4>$retour->message</h4>");
+                if (!$retour->erreur)
+                        $message="ce commentaire a été déplacé sur la fiche de <a href='".lien_point_lent($commentaire->id_point)."'>Ce point</a>";
+                else
+                        $message=$retour->message;
+            }
+            print("<h4>$message</h4>");
             break;
         case "suppression_photo":
             $retour=suppression_photos($commentaire);
