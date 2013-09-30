@@ -329,6 +329,7 @@ function infos_point($id_point,$meme_si_censure=False)
   if (empty($id_point))
       return erreur("Il semblerait que vous n'avez pas renseigné le n°du point");
   $conditions->modele=-1;
+  $conditions->avec_infos_massif=True;
   if ($meme_si_censure)
      $conditions->avec_points_censure=True;
 
