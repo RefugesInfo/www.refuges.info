@@ -25,8 +25,10 @@ function stat_site ()
 	// PDO jmb re ecriture en une seule requete 
 	$q = "SELECT 
 			( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
-			AND (conditions_utilisation='ouverture' OR conditions_utilisation='cle_a_recuperer')
-			AND points.modele != 1 )                                  AS nbrefuges,
+ 			AND conditions_utilisation not in ('detruit','fermeture')
+			AND points.modele <> 1 
+			AND points.censure <> TRUE
+			)                                  AS nbrefuges,
 	( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
 	( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
 	( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
