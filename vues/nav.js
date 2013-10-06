@@ -166,13 +166,6 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
                     styleName: 'Massif',
                     displayInLayerSwitcher: false
                 }),
-                new OpenLayers.Layer.GMLSLD ('Hôtels', {    
-                    urlGML: '/exportations/exportations_osm.php?' + arg_points + limite,
-                    projection: 'EPSG:4326', // Le GML est fourni en degminsec
-                    urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-                    styleName: 'Points',
-                    visibility: false
-                }),
                 new OpenLayers.Layer.GMLSLD ('Pyrenees-Refuges.Com', {    
                     urlGML: OpenLayers._getScriptLocation() + 'proxy.php?url=http://chemineur.fr/prod/chem/gml.php&site=prc',
                     projection: 'EPSG:4326', // Le GML est fourni en degminsec
