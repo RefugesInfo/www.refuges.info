@@ -20,7 +20,7 @@
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_points.php");
 require_once ("fonctions_polygones.php");
-require_once ("fonctions_mode_emploi.php");
+require_once ("wiki.php");
 require_once ("fonctions_meta_donnees.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
@@ -268,7 +268,7 @@ if ( !empty($point->equivalent_places_matelas) )
 //$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
-$vue->lien_bbcode = lien_mode_emploi("syntaxe_bbcode");
-$vue->lien_aide_points = lien_mode_emploi("autres_points");
+$vue->lien_bbcode = lien_wiki("syntaxe_bbcode");
+$vue->lien_aide_points = lien_wiki("autres_points");
 
 ?>

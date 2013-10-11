@@ -10,6 +10,7 @@ selon cette url puis ouvrir les vues, toujours selon cet url.
 *******************************************************************************/
 require_once ('./includes/config.php');
 require_once ("fonctions_autoconnexion.php");
+require_once ("wiki.php");
 
 // Analyse de l'url (basique pour l'instant pourrait être étendu ultérieurement selon les besoins)
 $controlleur = new stdClass;
@@ -42,8 +43,8 @@ switch ($controlleur->url_decoupee[1])
     case "nav":
         $controlleur->type="nav";
         break;
-    case "mode_emploi":
-        $controlleur->type="mode_emploi";
+    case "wiki":
+        $controlleur->type="wiki";
         break;
     case "nouvelles": case "news.php" :// FIXME d'ici ~1an on passera à "nouvelles" uniquement
         $controlleur->type="nouvelles";
@@ -102,8 +103,11 @@ if ($_SESSION['niveau_moderation']>=1)
 
 // On affiche le tout
 if ($controlleur->avec_entete_et_pied)
+{
+   	$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
     include ($config['chemin_vues']."_entete.html");
-    
+}	
+
 // Là, c'est bidouille compatibilité avec avant, je pense que chaque controlleur devrait pouvoir décider de la vue sans que soit imposée l'extension
 if (!isset($vue->template))
     $vue->template=$vue->type.".html";

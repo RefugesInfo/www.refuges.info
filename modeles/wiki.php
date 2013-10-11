@@ -1,10 +1,8 @@
 <?php 
 /********************************************************************
-Fonctions liées au mode d'emploi du site
-Accés aux données : entrées / sorties / modifications des textes
-fonction qui va chercher le texte du fichier correspondant à la page 
-FIXME : c'était une mauvaise idée de passer par des fichiers : les datas texte c'est 
-FIXME : très bien dans la base de donnée, à convertir dès qu'un peu de temps
+Fonctions liées au wiki du site (tout type de page que les modérateurs peuvent écrire)
+Accés aux données : entrées / sorties / modifications des textes / formatage pour affichage
+
 ********************************************************************/
 
 require_once ("config.php");
@@ -12,10 +10,10 @@ require_once ("fonctions_mise_en_forme_texte.php");
 require_once ("fonctions_bdd.php");
 
 // Fonction pour réaliser un lien vers une page du mode d'emploi 
-function lien_mode_emploi($page="index")
+function lien_wiki($page="index")
 {
     global $config;
-    $base=$config['base_mode_emploi'];
+    $base=$config['base_wiki'];
     if ($page=="")
         return $base;
     return $base.strtolower($page)."/";
@@ -36,7 +34,7 @@ function recupere_contenu($page)
     if (!$page)
         return erreur("Cette page du wiki n'existe pas");
     // gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
-    $page->contenu_html=str_replace("##",lien_mode_emploi(""),$page->contenu);
+    $page->contenu_html=str_replace("##",lien_wiki(""),$page->contenu);
     // conversion bbcode
     $page->contenu_html=trim(bbcode2html($page->contenu_html,TRUE));
     return $page;
@@ -68,5 +66,10 @@ function supprimer_page($page)
     
     return ok("Page supprimée et tout ses anciennes versions");
 }
-
+function prepare_lien_wiki_du_bandeau()
+{
+    foreach (array("index","licence","prudence","qui_est_refuges.info","liens","don","mentions-legales") as $nom_lien)
+        $lien_wiki[$nom_lien]=lien_wiki($nom_lien);
+    return $lien_wiki;
+}
 ?>

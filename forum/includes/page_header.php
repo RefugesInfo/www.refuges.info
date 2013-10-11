@@ -30,6 +30,7 @@ global $config; // Dominique 29/11/11 : Dans le cas ou page_header.php serait in
 global $pdo; // Même principe que si avant
 require_once ("fonctions_pubs.php");
 require_once ("fonctions_points.php");
+require_once ("wiki.php");
 
 
 
@@ -500,6 +501,8 @@ if ($_SESSION['niveau_moderation']>=1)
 
 $vue->titre = $page_title;
 $vue->css [] = '/forum/style-forum.css';
+$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
+
 require_once ($config['chemin_vues']."_entete.html");
 
 $template->pparse('overall_header');

@@ -5,7 +5,7 @@ Pour ajouter un commentaire rattaché à un point
 
 require_once ("fonctions_commentaires.php");
 require_once ("fonctions_points.php");
-require_once ("fonctions_mode_emploi.php");
+require_once ("wiki.php");
 
 $commentaire = new stdClass();
 setlocale(LC_TIME, "fr_FR");
@@ -64,6 +64,8 @@ if (!$point->erreur)
     $vue->lien_texte_retour="Retour à $quel_point";
     $vue->point_existe=True;
     $vue->commentaire=$commentaire;
+    $vue->lien_wiki_que_mettre=lien_wiki('que_mettre');
+    $vue->lien_wiki_restriction_licence=lien_wiki('restriction_licence');
 }
 else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans le vent !
 {  

@@ -12,6 +12,8 @@ Chantier d'avenir : passer en MVC
 
 require_once ("../includes/config.php");
 require_once ("fonctions_autoconnexion.php");
+require_once ("wiki.php");
+
 auto_login_phpbb_users();
 
 $vue = new stdClass;
@@ -20,6 +22,8 @@ $vue->titre="Zone de gestion";
 if ($_SESSION['niveau_moderation']>=1)
     $vue->demande_correction=info_demande_correction ();
 
+// FIXME : Cette bidouille ne serait pas nécessaire si la gestion était au format MVC
+$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
 include ($config['chemin_vues']."_entete.html");
 
 print("<div class=\"contenu\"$hauteur_contenu>");
@@ -83,15 +87,11 @@ if (isset($_SESSION['id_utilisateur']) )
         DEFINE('AUTH',1);
         switch($page)
         {
-            case "calcul_appartenance_polygone" :
-            case "moderateurs" :
             case "news_gestion" :
             case "verif_massif" :
             case "moderation" :
-            case "moderation2" :
             case "modifier_modeles" :
             case "commentaires_attente_correction" :
-            case "import_polygone" :
             include("$page.php");
             default: break;
         }

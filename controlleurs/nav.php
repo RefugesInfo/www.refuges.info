@@ -19,7 +19,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_meta_donnees.php");
 require_once ("fonctions_polygones.php");
-require_once ("fonctions_mode_emploi.php");
+require_once ("wiki.php");
 
 //$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
@@ -56,6 +56,5 @@ $vue->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver les c
 		? $HTTP_COOKIE_VARS ['liste_id_point_type']
 		: '7,10,9,23,6,3';
 
-		
-$vue->lien_mode_emploi=lien_mode_emploi();
+$vue->lien_legende_carte=lien_wiki('legende_carte');
 ?>

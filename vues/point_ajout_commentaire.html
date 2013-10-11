@@ -58,13 +58,13 @@
 		<p>
 			Vous ne devez en aucun cas insérer un texte ou une <strong>photo qui ne vous appartient pas</strong>.
 		</p>
-		<p>
-			Une copie d'un autre site, le scan d'un journal ou livre <strong>ne peut pas</strong> trouver sa place sur ce site.
-		</p>
-		<p>
-			<?=$config['message_licence']?>
-		</p>
-	<h4>Rappels: <a href="<?=lien_mode_emploi('que_mettre')?>">voir ce que vous pouvez ou non mettre sur le site</a></h1>
+        <p>
+            Une copie d'un autre site, le scan d'un journal ou livre <strong>ne peut pas</strong> trouver sa place sur ce site.
+        </p>
+        <p>
+            Le commentaire et/ou la photo que vous ajoutez sera soumise à la <a href="<?=$vue->lien_wiki_restriction_licence?>">licence creative commons by-sa</a>.
+        </p>
+	<h4>Rappels: <a href="<?=$vue->lien_wiki_que_mettre?>">voir ce que vous pouvez ou non mettre sur le site</a></h1>
 		<ul>
 			<?php
 			if ($point->equivalent_proprio!="")

@@ -9,7 +9,7 @@ du rewrite et un vrai modèle MVC avec un seul script d'entrée à tous le site 
 
 
 require_once ("fonctions_polygones.php");
-require_once ("fonctions_mode_emploi.php");
+require_once ("wiki.php");
 require_once ("fonctions_points.php");
 require_once ("fonctions_pubs.php");
 require_once ("fonctions_utilisateurs.php");
@@ -46,9 +46,10 @@ else // le point est valide. faut bosser.
 {
     $vue->nom=bbcode2html($vue->nom);
     $vue->nom_debut_majuscule = ucfirst($vue->nom);
+    $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($vue->nom_type));
     $vue->titre = "$vue->nom_debut_majuscule $vue->altitude m ($vue->nom_type)";
     $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $vue->nom_type, altitude $vue->altitude avec commentaires et photos";
-    $vue->lien_explication_publicite=lien_mode_emploi($config['mode_enploi_publicite']);
+    $vue->lien_explication_publicite=lien_wiki("publicite");
     foreach ($vue->polygones as $polygone)
     {
         if (isset($polygone->categorie_polygone_type))

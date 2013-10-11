@@ -10,7 +10,7 @@ Les variables sont passées dans l'objet $vue->...
 
 require_once ("fonctions_nouvelles.php");
 require_once ("fonctions_polygones.php");
-require_once ("fonctions_mode_emploi.php");
+require_once ("wiki.php");
 
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
@@ -40,7 +40,7 @@ $conditions->limite=5;
 $conditions->avec_photo=True;
 $conditions->avec_infos_point=True;
 $vue->photos_recentes=infos_commentaires($conditions);
-$vue->lien_mode_emploi=lien_mode_emploi();
+$vue->lien_a_propos_site=lien_wiki("index");
 
 // Préparation de la liste des nouvelles générales
 $conditions_commentaires_generaux = new stdClass;

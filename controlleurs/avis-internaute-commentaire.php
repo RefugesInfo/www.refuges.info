@@ -4,7 +4,7 @@ Permettre à n'importe qui d'indiquer qu'un commentaire à pas, peu, un peu, ou 
 J'avais imaginé un système sophistiqué de scoring mais en fait c'est très peu utilisé, là ou
 c'est utile, c'est que si un internaute trouve un commentaire inutile ça l'indique à un modérateur
 **********************************************************************************************/
-require_once ("fonctions_mode_emploi.php");
+require_once ("wiki.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_commentaires.php");
 
@@ -44,7 +44,7 @@ else
     }
     else
     {
-        $vue->lien_que_mettre=lien_mode_emploi("que_mettre");
+        $vue->lien_que_mettre=lien_wiki("que_mettre");
         if (!isset($_SESSION['id_utilisateur']))
             $vue->test_anti_robot=True;
     }

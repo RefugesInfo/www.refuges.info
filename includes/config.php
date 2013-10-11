@@ -42,8 +42,7 @@ $config['url_chemin_icones']="/images/icones/";
 $config['chemin_icones']=$config['document_root'].$config['url_chemin_icones'];
 
 // Lien direct vers le mode d'emploi
-$config['base_mode_emploi']="/mode_emploi/";
-$config['mode_enploi_publicite']="publicite";
+$config['base_wiki']="/wiki/";
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
 $config['nom_hote']=$_SERVER['HTTP_HOST'];

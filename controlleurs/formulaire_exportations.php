@@ -5,7 +5,7 @@ ré-utiliser.
 Le traitement proprement dit est dans exportations.php 
 **********************************************************************************************/
 
-require_once ("fonctions_mode_emploi.php");
+require_once ("wiki.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_exportations.php");
 require_once ("fonctions_meta_donnees.php");
@@ -72,8 +72,7 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 else // formulaire validé, affichage du lien et d'un blabla
 {
     $vue->lien_export = new stdClass; // contiendra: URL, description ...
-
-    $vue->lien_licence = lien_mode_emploi("licence");
+    $vue->lien_licence = lien_wiki("licence");
 
     if ($_POST['id_point_type']=="" OR $_POST['id_massif']=="")
         $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ??";
