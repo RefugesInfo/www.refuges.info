@@ -59,20 +59,12 @@ if ( count($commentaires_attente_correction)!=0 )
 </p>
 ");
 print("<form method=\"post\" action=\"./?page=commentaires_attente_correction\">");
-$premier=TRUE;
 foreach ($commentaires_attente_correction as $commentaire_attente_correction)
 {
   if ($commentaire_attente_correction->demande_correction==1)
-  $cause="apporte peut-être de l'information";
-  elseif ($commentaire_attente_correction->qualite_supposee<0)
-  {
-    $cause="n'a peut-être aucun intérêt selon un internaute (qualité supposée : $commentaire_attente_correction->qualite_supposee)";
-    if ($premier)
-    {
-      $premier=FALSE;
-      echo "<hr />";
-    }
-  }
+      $cause="apporte peut-être de l'information";
+  elseif ($commentaire_attente_correction->demande_correction==-1)
+    $cause="n'a peut-être aucun intérêt selon un internaute";
   else
     $cause="";
   print("<a href=\"".lien_point_lent($commentaire_attente_correction->id_point)."#C$commentaire_attente_correction->id_commentaire\">

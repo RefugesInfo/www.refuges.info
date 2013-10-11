@@ -23,7 +23,7 @@ $conditions->ids_createurs_commentaires -> pour récupérer les commentaires de(
 $conditions->auteur_commentaire -> condition sur le champ "auteur_commentaire" pour les utilisateurs non authentifiés
 $conditions->texte -> condition sur le contenu du commentaire
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
-$conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou qualite_supposee<0)
+$conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou -1)
 
 $conditions->avec_commentaires_modele=True -> Très spécifique, pour avoir aussi les commentaires sur les modeles de points, le par défaut est non mais ça n'a de sens qu'avec $conditions->avec_infos_point=True
 $conditions->avec_points_censure=True : Par défaut, False : les commentaires des points censurés ne sont pas retournés
@@ -44,7 +44,6 @@ blabla
     [photo_existe] => 1
     [date_photo] => 2011-11-12
     [demande_correction] => 0
-    [qualite_supposee] => 0
     [id_createur_commentaire] => 496
     [ts_unix_commentaire] => 1360599590
     [ts_unix_photo] => 1321052400
@@ -97,7 +96,7 @@ function infos_commentaires ($conditions)
 		$conditions_sql.=" AND id_createur_commentaire in ($conditions->ids_createurs_commentaires)";
   
 	if ($conditions->demande_correction)
-		$conditions_sql.=" AND (demande_correction!=0 OR qualite_supposee<0)";
+		$conditions_sql.=" AND demande_correction!=0";
   
 	// On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
 	// FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
@@ -275,18 +274,16 @@ function modification_ajout_commentaire($commentaire)
             if (isset($date_photos))
                     $commentaire->date_photo = str_replace(':','/', strstr($date_photos,' ',true) ) ;
     }
-    if ($commentaire->demande_correction!=1) // ??
-            $commentaire->demande_correction=0;
   
     // reparation crado:
     isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
     isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
     isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
-    isset($commentaire->demande_correction) ? $champs_sql['demande_correction']=$commentaire->demande_correction:false;
     isset($commentaire->id_createur_commentaire) ? $champs_sql['id_createur_commentaire']=$commentaire->id_createur_commentaire:false;
-    isset($commentaire->qualite_supposee) ? $champs_sql['qualite_supposee']=$commentaire->qualite_supposee:false;
     isset($commentaire->photo_existe) ? $champs_sql['photo_existe']=$commentaire->photo_existe:false;
     
+    if (is_numeric($commentaire->demande_correction))
+        $champs_sql['demande_correction']=$commentaire->demande_correction;
     
     if (isset($date_photos))
             $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo);

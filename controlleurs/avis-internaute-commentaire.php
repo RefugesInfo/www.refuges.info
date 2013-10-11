@@ -29,9 +29,7 @@ else
         // Si l'internaute est connecté au forum ou qu'il a saisi la lettre anti-robot
         if (isset($_SESSION['id_utilisateur']) or $_POST['anti_robot']=="f")
         {
-            $commentaire->qualite_supposee+=$_POST['score'];
-            if ($_POST['score']>1)
-                $commentaire->demande_correction=1;
+            $commentaire->demande_correction=$_POST['demande_correction'];
             modification_ajout_commentaire($commentaire);
             $vue->titre="Merci pour votre aide au classement";
         }

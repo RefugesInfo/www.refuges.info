@@ -34,6 +34,7 @@ l'idéal serait sûrement de vider la session au niveau du forum
 require_once ("config.php");
 require_once ("fonctions_bdd.php");
 require_once ("fonctions_gestion_erreurs.php");
+require_once ("fonctions_commentaires.php");
 
 			
 /*** 
@@ -145,16 +146,14 @@ function auto_login_phpbb_users()
 // FIXME : cette fonction n'a rien à faire dans fonctions_autoconnexion.php
 function info_demande_correction () 
 {
-  global $pdo;
-  // ici se trouve une petite alerte marquée par une étoile indiquant que dans le menu gestion y'a du boulot pour les modérateurs
-  // à regrouper à l'occassion dans une jolie fonction qui récapitule les différents besoin de modération sly 24/03/2008
-  $query="SELECT * FROM commentaires
-  WHERE (demande_correction!=0) OR (qualite_supposee<0) LIMIT 1";
-  $res = $pdo->query($query);
-  if ( $r = $res->fetch() ) 
-  return true;    // le fetch est possible, donc ya des trucs
-  else
-    return false;
+    $conditions_attente_correction = new stdclass;
+    $conditions_attente_correction->demande_correction=True;
+    $conditions_attente_correction->avec_points_censure=True;
+    $commentaires_attente_correction=infos_commentaires($conditions_attente_correction);
+    if (count($commentaires_attente_correction)>0)
+        return true;
+    else
+        return false;
 }
 
 ?>
