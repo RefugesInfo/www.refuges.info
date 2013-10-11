@@ -23,7 +23,9 @@ $conditions->ordre="liste_polygones";
 // FIXME sly : Mon rêve serait de déplacer ce bloc foreach dans une fonction générique que l'on puisse appeler 
 // à chaque fois que l'on veut des points que les conditions soient reçues par GET ou POST. Une Sorte d'API de récupération
 // donc les paramètres de recherche et conditions soient homogène sur tout le site
-foreach ($_POST as $champ => $valeur)
+if (!empty($_REQUEST))
+{
+foreach ($_REQUEST as $champ => $valeur)
 {
     if( ! empty($valeur) )
         switch ($champ) 
@@ -51,7 +53,7 @@ foreach ($_POST as $champ => $valeur)
                 break;
         }
         
-}
+}	
 //======================================
 // C'est LA que ca cherche
 $vue->points = infos_points ($conditions);
@@ -60,7 +62,7 @@ $vue->nombre_points=sizeof($vue->points);
 //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on l'a atteinte ........
  if (!empty($conditions->limite) && $vue->nombre_points == $conditions->limite)
 	$vue->limite_atteinte = $conditions->limite;
- 
+}
 //-----------------------------------------------------------------------------------------------------
 // Recherche de points sur nominatim.openstreetmap.org
 
