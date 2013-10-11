@@ -82,6 +82,10 @@ $config['numero_commentaires_generaux']=-2;
 
 //nombre maximum de point que peut sortir la recherche
 $config['points_maximum_recherche']=40;
+
+// nombre de point renvoyé par défaut, par l'API (/exportations/)
+$config['defaut_max_nombre_point']; // NicoM : pourquoi 120 ? sly: pourquoi pas 120 ? NicoM : ben 121 c'est 11^2
+
 // c'est l'id pour lequel les coordonnées gps données sont volontairement fausses
 $config['id_coordonees_gps_fausses']=5;
 // c'est l'id pour lequel les coordonnées gps données sont approximatives

@@ -25,16 +25,15 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 
     // LES TYPES DE POINTS ====================================
     $types_de_point = infos_base()->types_point ;
-  
-    // faudrait normaliser tout ça
-    foreach ( $types_de_point AS $index => $point ) 
+  $vue->types_de_point=new stdClass;
+    foreach ( $types_de_point AS $index => $type_de_point ) 
     {
-        $vue->points->$index = new stdClass;
-        $vue->points->$index->nom_type = $point->nom_type;
-        $vue->points->$index->nom_icone = $point->nom_icone;
-        $vue->points->$index->id_point_type = $point->id_point_type;
-        if (in_array($point->id_point_type, (array) $_GET['id_point_type']) OR $point->importance > 62)
-            $vue->points->$index->checked = true;
+        $objet_vide=new stdClass;
+        $vue->types_de_point->$index = $objet_vide;
+        $vue->types_de_point->$index->nom_type = $type_de_point->nom_type;
+        $vue->types_de_point->$index->id_point_type = $type_de_point->id_point_type;
+        if (in_array($type_de_point->id_point_type, (array) $_GET['id_point_type']) OR $type_de_point->importance > 62)
+            $vue->types_de_point->$index->checked = true;
     }
 
     // LES MASSIFS/ZONES ======================================
