@@ -17,9 +17,9 @@ $point->id_point_gps==""
 Les champs attendus sont :
 id_point_gps,longitude,latitude,altitude,access et id_type_precision_gps
 
-Tout est facultatif, ne sera mis à jour que ce qui est présent
+Tout est facultatif sauf latitude et longitude, ne sera mis à jour que ce qui est présent
 le reste sera présuposé si non présent
-en cas d'ajout : longitude,latitude sont obligatoires
+
 ********************************************************/
 function modification_ajout_point_gps($point_gps)
 {
@@ -37,9 +37,6 @@ function modification_ajout_point_gps($point_gps)
     if ($point_gps->longitude>180 or $point_gps->longitude<-180)
         return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
 
-	// si on veut faire un ajout et que latitude ou longitude sont vide, on ne peut rien faire
-	if ($point_gps->id_point_gps=="" AND ($point_gps->longitude=="" OR $point_gps->latitude=="") )
-		return erreur("Impossible d'ajouter le point, longitude ou/et latitude n'ont pas été donné");
 	// si aucune précision gps, on les suppose approximatives
 	if ($point_gps->id_type_precision_gps=="")
 		$point_gps->id_type_precision_gps=$config['id_coordonees_gps_approximative'];

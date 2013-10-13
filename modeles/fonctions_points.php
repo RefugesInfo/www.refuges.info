@@ -506,14 +506,12 @@ function modification_ajout_point($point)
 		else
 			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
 
+    if (isset($point->places) and (!is_numeric($point->places) or ($point->places<0)))
+        return erreur("Le nombre de place doit être un entier positif ou nul, reçu : $point->places");
+
 	// On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
 	$champs_sql['date_derniere_modification'] = 'NOW()';
 
-	/********* les coordonnées du point dans la table points_gps *************/
-	// dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
-	$point->id_point_gps=modification_ajout_point_gps($point);
-    if ($point->id_point_gps->erreur)
-        return erreur($point->id_point_gps->message);
     
 	/********* Les caractéristiques propres du point *************/
 	// champ ou il faut juste un set=nouvelle_valeur
@@ -524,15 +522,19 @@ function modification_ajout_point($point)
             else
                 $champs_sql[$champ]=$pdo->quote($point->$champ);
 
-	if ( !empty($point->id_point) )  // update
-	{
-		$infos_point_avant = infos_point($point->id_point,true);
-		if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
-			return erreur("Erreur de modification du point : $infos_point_avant->message");
+    /********* les coordonnées du point dans la table points_gps *************/
+    // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet
+    $point->id_point_gps=modification_ajout_point_gps($point);
+    if ($point->id_point_gps->erreur)
+        return erreur($point->id_point_gps->message);
     
-		if ( empty($point->id_point_gps) )
-			$point->id_point_gps = $infos_point_avant->id_point_gps;
-		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
+    if ( !empty($point->id_point) )  // update
+    {
+        $infos_point_avant = infos_point($point->id_point,true);
+        if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
+            return erreur("Erreur de modification du point : $infos_point_avant->message");
+
+        $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
 	}
 	else  // INSERT
 		$query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
