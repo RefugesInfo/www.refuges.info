@@ -90,13 +90,6 @@ if ( $vue->type_affichage == '' ){?>
 	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
 	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
 
-	<!-- Cadre pour exporter la vue, appelle la page "exportations.php" avec les param en GET -->
-	<fieldset>
-		<label>
-			<input type="submit" value="Exporter la vue actuelle" />
-		</label>
-	</fieldset>
-
 <!-- Chargement d'un fichier GPX -->
 	<fieldset id="loadGPX" style="display:none;height:45px">
 		<legend>Trace GPS</legend>
