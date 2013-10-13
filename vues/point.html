@@ -151,7 +151,7 @@
 				<?}?>
 			</dd>
 <!--======================================== LOCALISATION =========================================-->
-                        <?php foreach ($vue->localisation as $categorie_polygone => $polygones) { ?>
+                        <?php if ($vue->localisation) foreach ($vue->localisation as $categorie_polygone => $polygones) { ?>
 			<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
 			<dd class="condense">
                             <?php foreach ($polygones as $key => $polygone) { ?>

@@ -410,10 +410,11 @@ function param_cartes ($point)
     global $config;
     // Pour chaque polygones auquel appartient le point, on cherche voir s'il existe un fournisseur de fond de carte "recommandé"
     // Si plusieurs sont possible, le premier trouvé est renvoyé
-    foreach ($point->polygones as $polygone)
-        foreach ($config['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
-            if ($polygone->nom_polygone==$nom_pays)
-                return $choix_carte;
+    if ($point->polygones)
+        foreach ($point->polygones as $polygone)
+            foreach ($config['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
+    if ($polygone->nom_polygone==$nom_pays)
+        return $choix_carte;
     // aucun n'a été trouvé
     return $config['fournisseurs_fond_carte']['Autres'];
 }
@@ -499,9 +500,17 @@ function modification_ajout_point($point)
 		return erreur("Le nom ne peut être vide");
   
 	// désolé, les coordonnées ne peuvent être vide ou non numérique
-	if (!is_numeric($point->latitude) or !is_numeric($point->longitude))
-		return erreur("La latitude ou la longitude doivent utiliser un format valide : ex: 45.789");
+    $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
+	if (!is_numeric($point->latitude))
+        return erreur("La latitude $erreur_coordonnee $point->latitude");
+    if (!is_numeric($point->longitude))
+        return erreur("La longitude $erreur_coordonnee $point->longitude");
 
+    if ($point->latitude>180 or $point->latitude<-180)
+        return erreur("La latitude du point doit être comprise entre -180 et 180 (degrés)");
+    if ($point->longitude>180 or $point->longitude<-180)
+        return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
+    
     //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
 	if( !empty($point->site_officiel) )
 		if ( strpos($point->site_officiel, "http://") === FALSE)

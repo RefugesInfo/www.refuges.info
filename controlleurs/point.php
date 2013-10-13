@@ -50,15 +50,16 @@ else // le point est valide. faut bosser.
     $vue->titre = "$vue->nom_debut_majuscule $vue->altitude m ($vue->nom_type)";
     $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $vue->nom_type, altitude $vue->altitude avec commentaires et photos";
     $vue->lien_explication_publicite=lien_wiki("publicite");
-    foreach ($vue->polygones as $polygone)
-    {
-        if (isset($polygone->categorie_polygone_type))
+    if ($vue->polygones)
+        foreach ($vue->polygones as $polygone)
         {
-            if ($polygone->categorie_polygone_type=="montagnarde")
-                $polygone->avec_lien_carte=True;
-            $vue->localisation[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
+            if (isset($polygone->categorie_polygone_type))
+            {
+                if ($polygone->categorie_polygone_type=="montagnarde")
+                    $polygone->avec_lien_carte=True;
+                $vue->localisation[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
+            }
         }
-    }
     if ($vue->modele!=1)
     $vue->forum = infos_point_forum ($vue);
     $conditions_commentaires = new stdClass();
