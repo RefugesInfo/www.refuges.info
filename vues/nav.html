@@ -63,12 +63,14 @@ if ( $vue->type_affichage == '' ){?>
 								checked="checked"
 							<?}?>
 						/>
-						<img
-							id="icone_<?=$type_affichable->id_point_type?>"
-							src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
-							alt="icone de <?=$type_affichable->nom_type?>"
-						/>
-						<?=$type_affichable->nom_type?>
+						<span onmouseover="wiki(this,'/wiki/fiche-<?=$type_affichable->icone?>?head=no')">
+                            <img
+                                id="icone_<?=$type_affichable->id_point_type?>"
+                                src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
+                                alt="icone de <?=$type_affichable->nom_type?>"
+                            />
+                            <?=$type_affichable->nom_type?>
+						</span>
 					</label>
 				</li>
 			<?}?>
