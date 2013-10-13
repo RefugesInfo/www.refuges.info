@@ -23,9 +23,10 @@ require_once ("fonctions_exportations.php");
 $conditions = new stdClass;
 if (!$_GET["limite"])
 	$conditions->limite=$config['defaut_max_nombre_point'];
-else ($_GET["limite"]!="sans")
+elseif ($_GET["limite"]!="sans")
 	$conditions->limite = $_GET ["limite"]; 
-	
+// si code spécial &limite=sans alors pas de limite	du tout (genre ça peut faire 3000 points ou plus cette histoire !)
+
 // DOMINIQUE : Ajout du paramètre bbox au format utilisé par OpenLayers
 // SLY : remplacement de l'ancien format pour ne garder que celui d'openlayers : &bbox=ouest,sud,est,nord
 // Note : on pourrait passer directement la bbox vu que infos_points peut la gérer directement, mais la procédure d'exportation à parfois besoin de faire des décallages
