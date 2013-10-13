@@ -122,7 +122,7 @@
                         </fieldset>
                 <?php } ?>
 
-                <?php if (!empty($vue->champs->conditions_utilisation) )  { ?>
+                <?php if ($vue->champs->conditions_utilisation) { ?>
                 <fieldset class="booleen"> 
                   <legend>État :</legend> 
                   <?php foreach ( $vue->champs->conditions_utilisation->options as $option_key => $option_val) { ?>

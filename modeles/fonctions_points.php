@@ -498,18 +498,6 @@ function modification_ajout_point($point)
 	// désolé, le nom du point ne peut être vide
 	if ( trim($point->nom) =="" )
 		return erreur("Le nom ne peut être vide");
-  
-	// désolé, les coordonnées ne peuvent être vide ou non numérique
-    $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
-	if (!is_numeric($point->latitude))
-        return erreur("La latitude $erreur_coordonnee $point->latitude");
-    if (!is_numeric($point->longitude))
-        return erreur("La longitude $erreur_coordonnee $point->longitude");
-
-    if ($point->latitude>90 or $point->latitude<-90)
-        return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
-    if ($point->longitude>180 or $point->longitude<-180)
-        return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
     
     //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
 	if( !empty($point->site_officiel) )
@@ -524,7 +512,9 @@ function modification_ajout_point($point)
 	/********* les coordonnées du point dans la table points_gps *************/
 	// dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet uniquement
 	$point->id_point_gps=modification_ajout_point_gps($point);
-
+    if ($point->id_point_gps->erreur)
+        return erreur($point->id_point_gps->message);
+    
 	/********* Les caractéristiques propres du point *************/
 	// champ ou il faut juste un set=nouvelle_valeur
    	foreach ($config['champs_simples_points'] as $champ)

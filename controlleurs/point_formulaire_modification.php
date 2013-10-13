@@ -31,7 +31,6 @@ $vue->champs->invisibles = new stdClass;  // champs invisibles a passer quand me
 $vue->champs->textareas = new stdClass;
 $vue->champs->boutons = new stdClass; // Modifier, supprimer...
 $vue->champs->bools = new stdClass; // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
-$vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
 $vue->champs->places_matelas = new stdClass; // traite en cas particulier, trop specifique, la suppression me demange
 
 // 4 cas :
@@ -249,6 +248,8 @@ foreach($config['champs_binaires_points'] as $champ)
 //spécificité du cas des conditions d'utilisation de la cabane (clé à récup, ouvert tout le temps, fermée tout le temps, ou détruite)
 if ( !empty($point->equivalent_conditions_utilisation) )
 {
+    $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
+
     if ($point->id_point_type==$config['point_d_eau'])
         $vue->champs->conditions_utilisation->options = array('ouverture' => 'Coule', 'NULL' => 'Ne sait pas','detruit' => 'Détruite','fermeture' => $point->equivalent_conditions_utilisation);
     else

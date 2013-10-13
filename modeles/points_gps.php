@@ -24,6 +24,18 @@ en cas d'ajout : longitude,latitude sont obligatoires
 function modification_ajout_point_gps($point_gps)
 {
 	global $config,$pdo;
+    
+    // désolé, les coordonnées ne peuvent être vide ou non numérique
+    $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
+    if (!is_numeric($point_gps->latitude))
+        return erreur("La latitude $erreur_coordonnee $point_gps->latitude");
+    if (!is_numeric($point_gps->longitude))
+        return erreur("La longitude $erreur_coordonnee $point_gps->longitude");
+
+    if ($point_gps->latitude>90 or $point_gps->latitude<-90)
+        return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
+    if ($point_gps->longitude>180 or $point_gps->longitude<-180)
+        return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
 
 	// si on veut faire un ajout et que latitude ou longitude sont vide, on ne peut rien faire
 	if ($point_gps->id_point_gps=="" AND ($point_gps->longitude=="" OR $point_gps->latitude=="") )
@@ -31,9 +43,18 @@ function modification_ajout_point_gps($point_gps)
 	// si aucune précision gps, on les suppose approximatives
 	if ($point_gps->id_type_precision_gps=="")
 		$point_gps->id_type_precision_gps=$config['id_coordonees_gps_approximative'];
-	// si aucune altitude, on la suppose à -1
-	if ($point_gps->altitude=="")
-		$point_gps->altitude=-1;
+
+    // si aucune altitude, on la suppose à 0
+    if (!isset($point_gps->altitude))
+        $point_gps->altitude=0;
+    //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
+    if (!is_numeric($point_gps->altitude))
+        return erreur("L'altitude du point doit être un nombre, reçu : $point_gps->altitude");
+
+    //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
+    if ($point_gps->altitude>8848 or $point_gps->altitude<-50)
+        return erreur("$point_gps->altitude"."m comme altitude du point, vraiment ?");
+		
 	
 	// On prépare notre tableau contenant tous les champs à mettre à jour
 	//GIS : pas de champs gis car il ne faut pas qu'il soit traité a la chaine en foreach.
@@ -55,7 +76,7 @@ function modification_ajout_point_gps($point_gps)
             $query_finale=requete_modification_ou_ajout_generique('points_gps',$champs_sql,'insert');
 	
 	if (!$pdo->exec($query_finale))
-		return erreur("Impossible d'executer la requête car mal formée : $query_finale");
+		return erreur("Erreur inconnue sur la requête SQL",$query_finale);
         
         if ($point_gps->id_point_gps == "") // On avait donc demandé un INSERT, on récupère l'id inséré
             $id_point_gps = $pdo->lastInsertId();
