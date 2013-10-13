@@ -24,7 +24,6 @@ if ( (AUTH ==1) AND ($_SESSION['niveau_moderation']>=1) )
       {
           $commentaire=$commentaires[0]; // On est censé récupérer qu'un seul commentaire vu qu'on a donner qu'une condition l'id
           $commentaire->demande_correction=0; 
-          $commentaire->qualite_supposee+=4;
           $retour=modification_ajout_commentaire($commentaire);
           if ($retour->erreur)
               print($retour->message);
@@ -62,9 +61,9 @@ print("<form method=\"post\" action=\"./?page=commentaires_attente_correction\">
 foreach ($commentaires_attente_correction as $commentaire_attente_correction)
 {
   if ($commentaire_attente_correction->demande_correction==1)
-      $cause="apporte peut-être de l'information";
+      $cause="apporte peut-être de l'information à la fiche (selon un internaute)";
   elseif ($commentaire_attente_correction->demande_correction==-1)
-    $cause="n'a peut-être aucun intérêt selon un internaute";
+    $cause="n'a peut-être aucun intérêt (selon un internaute)";
   else
     $cause="";
   print("<a href=\"".lien_point_lent($commentaire_attente_correction->id_point)."#C$commentaire_attente_correction->id_commentaire\">

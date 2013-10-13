@@ -20,13 +20,10 @@ require_once ("fonctions_exportations.php");
 //et que par défaut il n'y ait pas de limite justement
 // Peut-être au passage au tout OpenLayers il serait bien d'y passer sly 28/10/2010
 
-// MODIF DOMINIQUE : utilisé par OpenLayers
 $conditions = new stdClass;
 if (!$_GET["limite"])
 	$conditions->limite=$config['defaut_max_nombre_point'];
-	
-	
-else if ($_GET["limite"]!="sans")
+else ($_GET["limite"]!="sans")
 	$conditions->limite = $_GET ["limite"]; 
 	
 // DOMINIQUE : Ajout du paramètre bbox au format utilisé par OpenLayers
@@ -40,9 +37,9 @@ if (isset ($_GET['bbox']))
   $conditions->nord=$bbox [3];
   $conditions->ouest=$bbox [0];
   $conditions->est=$bbox [2];
-	// jmb: conditions->geometrie contient la BBOX de recherche
-	// en theorie, il faudrait supprimer le nord/sud/est/ouest, mais j'ai fait assez de conneries aujourdhui
-	$conditions->geometrie = cree_geometrie($_GET['bbox'], 'bboxOL');
+  // jmb: conditions->geometrie contient la BBOX de recherche
+  // en theorie, il faudrait supprimer le nord/sud/est/ouest, mais j'ai fait assez de conneries aujourdhui
+  $conditions->geometrie = cree_geometrie($_GET['bbox'], 'bboxOL');
 
 }
 
