@@ -23,6 +23,7 @@ require_once ("wiki.php");
 
 //$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
+$vue->java_lib [] = '/vues/wiki.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
