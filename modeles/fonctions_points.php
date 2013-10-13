@@ -506,8 +506,8 @@ function modification_ajout_point($point)
     if (!is_numeric($point->longitude))
         return erreur("La longitude $erreur_coordonnee $point->longitude");
 
-    if ($point->latitude>180 or $point->latitude<-180)
-        return erreur("La latitude du point doit être comprise entre -180 et 180 (degrés)");
+    if ($point->latitude>90 or $point->latitude<-90)
+        return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
     if ($point->longitude>180 or $point->longitude<-180)
         return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
     

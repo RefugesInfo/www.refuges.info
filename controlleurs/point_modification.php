@@ -51,11 +51,7 @@ switch( $_REQUEST["action"] )
         $point=preparation_point();
         $retour = modification_ajout_point($point);
         gestion_retour($retour,$vue);
-        //FIXME sly: y'a peut-être mieux à faire que "back du navigateur" en re-proposant le formulaire avec le champs en erreur surligné en rouge
-        if ($vue->erreur)
-            $vue->erreur.=" <br />(Vous pouvez retourner corriger le problème en utilisant le bouton retour de votre navigateur)";
-        else
-            $vue->message="Le point a bien été ajouté";
+        $vue->message="Le point a bien été ajouté";
         break;
     case 'Modifier' :
         $ancien_point=infos_point($_REQUEST['id_point'],True); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
@@ -83,5 +79,4 @@ switch( $_REQUEST["action"] )
                 $vue->message=$resultat_suppression->message; // Il pourra y avoir des messages sur mesures (genre "le point a été supprimé mais il n'y avait pas de commentaires")
             break;
 } 
-
 ?>  
