@@ -1,11 +1,6 @@
 <div class="contenu">
-    <?// lien pour un retour vers l'index du "wiki"
-    if ($vue->lien_retour_index) {?>
-        <a href="<?=$vue->lien_retour_index?>">Retour à l'index du mode d'emploi</a>
-        <?php }?>
     <?php // lien modifier, uniquement pour les modérateurs
     if ($vue->montrer_lien_admin) {?>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="/wiki/<?=$vue->titre?>?form_modifier=1">
             Modifier cette page
         </a> /

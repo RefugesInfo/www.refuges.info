@@ -19,8 +19,8 @@ window.onload = function () {
             new OpenLayers.Control.PanZoom (),
             new OpenLayers.Control.PermalinkCookies (null, null, {
                 cookie: {
-                    lon: <?=$vue->longitude?>,
-                    lat: <?=$vue->latitude?>,
+                    lon: <?=$vue->point->longitude?>,
+                    lat: <?=$vue->point->latitude?>,
                     scale: <?=$vue->vignette[3]?>,
                     baseLayer: '<?=$config['carte_base']?>'
                 }

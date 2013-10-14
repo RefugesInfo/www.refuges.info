@@ -3,8 +3,8 @@
 Formulaire de recherche
 ***/
 
-require_once ("fonctions_polygones.php");
-require_once ("fonctions_meta_donnees.php");
+require_once ("polygone.php");
+require_once ("meta_donnee.php");
 
 $conditions_polygones = new stdClass;
 $vue->infos_base = infos_base ();

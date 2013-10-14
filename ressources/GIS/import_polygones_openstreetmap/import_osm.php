@@ -13,7 +13,7 @@ http://wiki.openstreetmap.org/wiki/Overpass_API uniquement sur les "zones qui no
 FIXME: question à se poser : ce truc est relativement indépendant de wri, dois-je l'inclure dans les modeles ? sachant que ça ne s'appel pas par le web de toute façon ?
 */
 require_once("../../../includes/config.php");
-require_once("fonctions_bdd.php");
+require_once("bdd.php");
 $overpass_query_template='<osm-script timeout="1800" element-limit="1073741824">
 <union>
 <query type="relation">

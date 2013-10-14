@@ -10,8 +10,8 @@ jmb 16/02/13 : un peu de re ecriture du bazar avec des gros Switch
 -suppression d'un point
 **********************************************************************************************/
 
-require_once ("fonctions_points.php");
-require_once ("fonctions_autoconnexion.php");
+require_once ("point.php");
+require_once ("autoconnexion.php");
 
 // Je ne sais pas dans quel fichier mettre cette fonction, elle ne sert que à la saisie d'un point et uniquement ici en gros
 function preparation_point()

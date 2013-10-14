@@ -8,8 +8,8 @@ Le code javascript est dans /vues/*.js
 Les variables sont passées dans l'objet $vue->...
 *******************************************************************************/
 
-require_once ("fonctions_nouvelles.php");
-require_once ("fonctions_polygones.php");
+require_once ("nouvelle.php");
+require_once ("polygone.php");
 require_once ("wiki.php");
 
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
@@ -39,7 +39,13 @@ $conditions = new stdclass();
 $conditions->limite=5;
 $conditions->avec_photo=True;
 $conditions->avec_infos_point=True;
-$vue->photos_recentes=infos_commentaires($conditions);
+$commentaires_avec_photos_recentes=infos_commentaires($conditions);
+foreach ($commentaires_avec_photos_recentes as $commentaire_avec_photo_recente)
+{
+    $commentaire_avec_photo_recente->lien=lien_point($commentaire_avec_photo_recente)."#C$vignette->id_commentaire";
+    $vue->photos_recentes[]=$commentaire_avec_photo_recente;
+}
+
 $vue->lien_a_propos_site=lien_wiki("index");
 
 // Préparation de la liste des nouvelles générales
@@ -57,5 +63,11 @@ $conditions_nouveaux_points = new stdClass;
 $conditions_nouveaux_points->limite=3;
 $conditions_nouveaux_points->avec_infos_massif=True;
 $conditions_nouveaux_points->ordre="date_creation DESC";
-$vue->nouveaux_points=infos_points($conditions_nouveaux_points);
+$nouveaux_points=infos_points($conditions_nouveaux_points);
+foreach ($nouveaux_points as $nouveau_point)
+{
+    $nouveau_point->lien=lien_point($nouveau_point);
+    $vue->nouveaux_points[]=$nouveau_point;
+}
+
 ?>

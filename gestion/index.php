@@ -11,7 +11,7 @@ Chantier d'avenir : passer en MVC
 ***********************************************************************************************/
 
 require_once ("../includes/config.php");
-require_once ("fonctions_autoconnexion.php");
+require_once ("autoconnexion.php");
 require_once ("wiki.php");
 
 auto_login_phpbb_users();
@@ -27,7 +27,7 @@ $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
 include ($config['chemin_vues']."_entete.html");
 
 print("<div class=\"contenu\"$hauteur_contenu>");
-// fonctions_autoconnexion.php ayant déjà fait le boulot il n'y a plus qu'a vérifier
+// autoconnexion.php ayant déjà fait le boulot il n'y a plus qu'a vérifier
 // qu'on est avec quelqu'un du forum et ayant un niveau modérateur au minimum
 // l'évolution est de permettre à tout utilisateur de venir ici en présentant les 
 // choix selon ces droits

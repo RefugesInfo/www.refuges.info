@@ -5,7 +5,7 @@ de et vers HTML TXT
 ça gère aussi des format d'url, des gestion UTF8/ISO
 **********************************************************************************************/
 
-require_once("fonctions_points.php");
+require_once("point.php");
 
 //lcfirst n'existe pas avant php 5.3, si n'existe pas, on la créé
 //FIXME, je doute quand même que quelqu'un souhaite faire tourner wri sur une ancienne version comme ça, en plus, sauf erreur, je crois que plusieurs morceaux de code
@@ -71,7 +71,7 @@ if ($occurences_trouvees!=0)
 	for ($x=0;$x<$occurences_trouvees;$x++)
 	{	
 		$point=infos_point($occurence[1][$x]);
-		$texte=str_replace($occurence[0][$x],"[url=".lien_point_fast($point)."]$point->nom[/url]",$texte);
+		$texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
 	}
 }
 

@@ -8,8 +8,8 @@ gestion : modification/suppression/création
 **********************************************************************************************/
 
 require_once ("config.php");
-require_once ("fonctions_bdd.php");
-require_once ('fonctions_mise_en_forme_texte.php');
+require_once ("bdd.php");
+require_once ('mise_en_forme_texte.php');
 
 /***********************************************************************************
 Cette fonction permet d'aller chercher un ou plusieurs polygones

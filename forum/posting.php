@@ -69,8 +69,8 @@ include($phpbb_root_path . 'includes/functions_post.'.$phpEx);
 //C'est ici que se trouve la fonction qui permet de bloquer les chieurs qui rentre des messages sur 
 //le forum ou sur les commentaires du site
 require_once($phpbb_root_path . "../includes/config.php");
-require_once($phpbb_root_path . "../modeles/fonctions_commentaires.php");
-require_once($phpbb_root_path . "../includes/fonctions_mise_en_forme_texte.php");
+require_once($phpbb_root_path . "../modeles/commentaire.php");
+require_once($phpbb_root_path . "../includes/mise_en_forme_texte.php");
 
 //
 // Check and set various parameters

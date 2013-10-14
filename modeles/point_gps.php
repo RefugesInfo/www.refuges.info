@@ -6,8 +6,8 @@ Afin de simplifier l'appel aux ajouts, modifications, suppressions
 ***************************************************************************************************/
 
 require_once ("config.php");
-require_once ('fonctions_bdd.php');
-require_once ("fonctions_gestion_erreurs.php");
+require_once ('bdd.php');
+require_once ("gestion_erreur.php");
 
 
 /********************************************************

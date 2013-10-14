@@ -17,11 +17,11 @@
 // 28/05/12 Dominique : Utilisation des modeles
 
 
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_points.php");
-require_once ("fonctions_polygones.php");
+require_once ("bdd.php");
+require_once ("point.php");
+require_once ("polygone.php");
 require_once ("wiki.php");
-require_once ("fonctions_meta_donnees.php");
+require_once ("meta_donnee.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML

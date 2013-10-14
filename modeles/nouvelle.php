@@ -11,9 +11,9 @@ rajout du setlocale et déplacement dans un fichier config.php
 ****************************************************************************************************/
 
 require_once ("config.php");
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_polygones.php");
-require_once ("fonctions_points.php");
+require_once ("bdd.php");
+require_once ("polygone.php");
+require_once ("point.php");
 
 function stat_site () 
 {
@@ -79,7 +79,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                 foreach ( $commentaires as $commentaire )
                 {
                     $categorie="Commentaire";
-                    $lien=lien_point_fast($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
+                    $lien=lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
                     $titre=$commentaire->nom;
                     $texte="$categorie";
                     if ($commentaire->photo_existe)
@@ -124,7 +124,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                     foreach($points as $point)
                     {
                         $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
-                        $lien=lien_point_fast($point,$lien_locaux);
+                        $lien=lien_point($point,$lien_locaux);
                         $titre=$point->nom;
                         
                         // si le point n'appartient à aucun massif, pas de lien vers le massif

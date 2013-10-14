@@ -6,9 +6,9 @@ Le traitement proprement dit est dans exportations.php
 **********************************************************************************************/
 
 require_once ("wiki.php");
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_exportations.php");
-require_once ("fonctions_meta_donnees.php");
+require_once ("bdd.php");
+require_once ("exportation.php");
+require_once ("meta_donnee.php");
 
 $formats="";
 foreach ($config['formats_exportation'] as $formats_possibles)

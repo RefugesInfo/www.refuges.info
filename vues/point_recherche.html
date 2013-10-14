@@ -60,7 +60,7 @@ function inverse_visibility_voisins( id_element )
 			?>
 			<dd class="fiche_cadre condense">
 				<em>
-					<a href="<?=lien_point_fast($point)?>">
+					<a href="<?=$point->lien?>">
 						<?=bbcode2html($point->nom)?>
 					</a>
 					<?=$html_annonce_fermeture?>
@@ -82,7 +82,7 @@ function inverse_visibility_voisins( id_element )
 			
 				<dd class="fiche_cadre condense">
 					<em>
-						<a href="<?=lien_point_fast($point)?>">
+						<a href="<?=$point->lien?>">
 							<?=bbcode2html($point->nom)?>
 						</a>
 						<?=$html_annonce_fermeture?>

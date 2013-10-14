@@ -3,7 +3,7 @@
 Visualition des commentaires comportant une demande de correction sur la fiche point
 Accès par : "./gestion/?page=commentaires_attente_correction"
 **********************************************************************************************/
-require_once("fonctions_commentaires.php");
+require_once("commentaire.php");
 
 $conditions = new stdclass;
 $conditions_attente_correction = new stdclass;

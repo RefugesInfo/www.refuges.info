@@ -6,8 +6,8 @@ Accés aux données : entrées / sorties / modifications des textes / formatage 
 ********************************************************************/
 
 require_once ("config.php");
-require_once ("fonctions_mise_en_forme_texte.php");
-require_once ("fonctions_bdd.php");
+require_once ("mise_en_forme_texte.php");
+require_once ("bdd.php");
 
 // Fonction pour réaliser un lien vers une page du mode d'emploi 
 function lien_wiki($page="index")

@@ -28,8 +28,8 @@ if ( !defined('IN_PHPBB') )
 define('HEADER_INC', TRUE);
 global $config; // Dominique 29/11/11 : Dans le cas ou page_header.php serait inclus dans une fonction (message_die())
 global $pdo; // Même principe que si avant
-require_once ("fonctions_pubs.php");
-require_once ("fonctions_points.php");
+require_once ("pub.php");
+require_once ("point.php");
 require_once ("wiki.php");
 
 
@@ -485,7 +485,7 @@ else
 }
 header ('Expires: 0');
 header ('Pragma: no-cache');
-require_once ("fonctions_autoconnexion.php");
+require_once ("autoconnexion.php");
 
 // On gère l'éventuel connexion automatique de l'internaute (En réalité, le forum s'en charge lui même vu que ce sont ses cookies, mais cela nous permet de changer le bandeau wri indiquant qu'on est connecté)
 auto_login_phpbb_users();

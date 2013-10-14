@@ -18,8 +18,8 @@
 // devrait être faisable sans trop de douleur - sly 24/09/2009  
 
 require_once ('../includes/config.php');
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_nouvelles.php");
+require_once ("bdd.php");
+require_once ("nouvelle.php");
 
 
 $listetypes = $_GET["listeobjets"] ;
