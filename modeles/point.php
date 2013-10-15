@@ -525,8 +525,13 @@ function modification_ajout_point($point)
 	// On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
 	$champs_sql['date_derniere_modification'] = 'NOW()';
 
+    /********* les coordonnées du point dans la table points_gps *************/
+    // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet
+    $point->id_point_gps=modification_ajout_point_gps($point);
+    if ($point->id_point_gps->erreur) // si on a la moindre erreur sur la gestion des coordonnées de notre point, on abandonne
+        return erreur($point->id_point_gps->message);
     
-	/********* Les caractéristiques propres du point *************/
+	/********* Préparation des champs à mettre à jour, tous ceuex qui sont dans $point->xx ET dans $config['champs_simples_points'] *************/
 	// champ ou il faut juste un set=nouvelle_valeur
    	foreach ($config['champs_simples_points'] as $champ)
 		if (isset($point->$champ))
@@ -535,12 +540,6 @@ function modification_ajout_point($point)
             else
                 $champs_sql[$champ]=$pdo->quote($point->$champ);
 
-    /********* les coordonnées du point dans la table points_gps *************/
-    // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet
-    $point->id_point_gps=modification_ajout_point_gps($point);
-    if ($point->id_point_gps->erreur)
-        return erreur($point->id_point_gps->message);
-    
     if ( !empty($point->id_point) )  // update
     {
         $infos_point_avant = infos_point($point->id_point,true);

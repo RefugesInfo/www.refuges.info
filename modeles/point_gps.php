@@ -75,7 +75,7 @@ function modification_ajout_point_gps($point_gps)
 	if (!$pdo->exec($query_finale))
 		return erreur("Erreur inconnue sur la requête SQL",$query_finale);
         
-        if ($point_gps->id_point_gps == "") // On avait donc demandé un INSERT, on récupère l'id inséré
+        if (empty($point_gps->id_point_gps)) // On avait donc demandé un INSERT, on récupère l'id inséré
             $id_point_gps = $pdo->lastInsertId();
 	
         return $id_point_gps;

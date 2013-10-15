@@ -101,7 +101,7 @@ else // le point est valide. faut bosser.
             
     /*********** Préparation de la présentation du point ***/
     if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur ))
-        $point->lien_modification=TRUE;
+        $vue->lien_modification=TRUE;
             
     /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
     // Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
@@ -121,7 +121,7 @@ else // le point est valide. faut bosser.
             {
                 case 'site_officiel':
                     if ($point->$champ!="")
-                        $val=array('valeur'=> '', 'lien' => $point->$champ, 'texte_lien'=> $point->nom_debut_majuscule);
+                        $val=array('valeur'=> '', 'lien' => $vue->point->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
                     break;
                    
                 case 'places_matelas':
@@ -146,7 +146,7 @@ else // le point est valide. faut bosser.
             }            
             
             if (isset($val))
-                $point->infos_complementaires[$point->$champ_equivalent]=$val;
+                $vue->infos_complementaires[$point->$champ_equivalent]=$val;
             
         }
         unset($val);

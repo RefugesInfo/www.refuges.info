@@ -190,7 +190,7 @@
 			<?php if (isset($vue->infos_complementaires)) { ?>
 
 			<dt style='clear: left;'>Informations complémentaires:</dt>
-			<?php foreach ($vue->point->infos_complementaires as $champ => $val) { ?>
+			<?php foreach ($vue->infos_complementaires as $champ => $val) { ?>
 				<dd><?=$champ?>: <em><?=$val['valeur']?></em> <?php
 					if (isset($val['lien'])) 
 					{?><a href="<?=$val['lien']?>"><?=$val['texte_lien']?></a><?php } 

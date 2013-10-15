@@ -35,14 +35,16 @@ function gestion_retour($retour,$vue)
         $vue->erreur=$retour->message;
     else
     {
-        $retourid = $retour; // id du point modifié/supprimé
-        $vue->lien_point=lien_point_lent($retourid);
+        $point_apres_modif=infos_point($retour,true);
+        if ($point_apres_modif->erreur) // Cela ne devrait pas arriver si la fonction avant "modification_ajout_point" a bien fait son boulot
+            $vue->erreur=$point_apres_modif->message;
+        $vue->lien_point=lien_point($point_apres_modif);
     } 
 }  
 switch( $_REQUEST["action"] )
 {
     case 'Ajouter' :
-        // Etant donné que des robots, ou des peu scrupuleux remplissent avec des faux points, on les vire ici
+        // Il faut soit être identifié, soit avoir rentré la bonne lettre anti-robot
         if ( !isset($_SESSION['id_utilisateur']) AND ($_REQUEST['lettre_securite']!="d") ) 
         {
             $vue->erreur = "ERREUR: vous n'avez pas rentré la lettre demandée";
