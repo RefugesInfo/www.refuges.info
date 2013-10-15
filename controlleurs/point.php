@@ -50,18 +50,18 @@ else // le point est valide. faut bosser.
             {
                 if ($polygone->categorie_polygone_type=="montagnarde")
                     $polygone->avec_lien_carte=True;
-                $point->localisation[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
+                $vue->localisation_point[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
             }
         }
     if ($point->modele!=1)
-    $point->forum = infos_point_forum ($point);
+    $vue->forum_point = infos_point_forum ($point);
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;
     $tous_commentaires = infos_commentaires ($conditions_commentaires);
     $vue->annonce_fermeture = texte_non_ouverte ($point);
 
 
-    /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/
+    /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" et de l'affichage de la carte ***/
     if ($point->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
     {
         $conditions = new stdClass;
@@ -80,9 +80,9 @@ else // le point est valide. faut bosser.
                 //On ne veut pas dans les points proches le point lui même
                 if ($point_proche->id_point!=$point->id_point)
                 {
-                    $point->points_proches=$point_proche;
-                    $point->points_proches->lien=lien_point($point_proche);
-                    $point->points_proches->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
+                    $point_proche->lien=lien_point($point_proche);
+                    $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
+                    $vue->points_proches[]=$point_proche;
                 }
             }
             
@@ -185,5 +185,4 @@ else // le point est valide. faut bosser.
         $vue->commentaires[]=$commentaire;
     }
 }
-
 ?>

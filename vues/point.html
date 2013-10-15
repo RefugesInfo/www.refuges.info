@@ -151,7 +151,7 @@
 				<?}?>
 			</dd>
 <!--======================================== LOCALISATION =========================================-->
-                        <?php if ($vue->localisation) foreach ($vue->localisation as $categorie_polygone => $polygones) { ?>
+                        <?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
 			<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
 			<dd class="condense">
                             <?php foreach ($polygones as $key => $polygone) { ?>
@@ -257,11 +257,11 @@
 		</dl>
 	</div>
 <!--============================ POST LE PLUS RÉCENT DU FORUM D'UN POINT ===========================-->
-	<?php if (isset($vue->forum)) { ?>
+	<?php if (isset($vue->forum_point)) { ?>
 	<p>
 		<em>
 			Pour les discussions, les questions et les avis on vous conseille d'utiliser
-			<a href="<?=$vue->forum->lienforum?>">
+			<a href="<?=$vue->forum_point->lienforum?>">
 				le forum dédié à <?=$vue->nom?>
 			</a>
 			afin de laisser ces pages pour de l'information objective. 
@@ -271,15 +271,15 @@
 	</p>
 
 	<?// si first=last, alors 1 seul post donc topic vide: yip
-	if ($vue->forum->topic_first_post_id != $vue->forum->topic_last_post_id) {?>
+	if ($vue->forum_point->topic_first_post_id != $vue->forum_point->topic_last_post_id) {?>
 		<div class="couleur_fond_amplifiee">
 			Dernier message du forum, le
 			<em>
 				<?echo strftime ('%A %e %B %Y à %H:%M',$vue->forum->post_time)?>
 			</em>:
-			<blockquote cite="<?=$vue->forum->lienforum?>">
+			<blockquote cite="<?=$vue->forum_point->lienforum?>">
 				<div>
-					<?echo bbcode2html ($vue->forum->post_text)?>
+					<?echo bbcode2html ($vue->forum_point->post_text)?>
 				</div>
 			</blockquote>
 		</div>
