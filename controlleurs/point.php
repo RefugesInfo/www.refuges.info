@@ -55,6 +55,7 @@ else // le point est valide. faut bosser.
         }
     if ($point->modele!=1)
     $vue->forum_point = infos_point_forum ($point);
+    $vue->forum_point->date_humaine=strftime ('%A %e %B %Y à %H:%M',$vue->forum_point->post_time);
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;
     $tous_commentaires = infos_commentaires ($conditions_commentaires);

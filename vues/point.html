@@ -275,7 +275,7 @@
 		<div class="couleur_fond_amplifiee">
 			Dernier message du forum, le
 			<em>
-				<?echo strftime ('%A %e %B %Y à %H:%M',$vue->forum->post_time)?>
+				<?=$vue->forum_point->date_humaine?>
 			</em>:
 			<blockquote cite="<?=$vue->forum_point->lienforum?>">
 				<div>
