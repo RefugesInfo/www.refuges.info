@@ -17,10 +17,9 @@ re--re-passage en UTF-8 pour le kml et le gpx suite à la convertion de notre ba
 Pas d'avis tranché -- sly
 ***********************************************************************************************/
 require_once ("config.php");
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_mise_en_forme_texte.php");
-//require_once ("fonctions_zip.php");
-require_once ("fonctions_polygones.php");
+require_once ("bdd.php");
+require_once ("mise_en_forme_texte.php");
+require_once ("polygone.php");
 
 /* Tableau de définition des formats et de leur caractéristiques, sur-ajoutés, à la variable $config
 L'ordre d'apparition donnera l'ordre dans le menu de sélection de l'exportation
@@ -222,7 +221,7 @@ function entete_kml()
 function placemark_kml($point)
 {
   global $config;
-  $lien_url = lien_point_fast($point);
+  $lien_url = lien_point($point);
   
   //Creation du XML pour un point 
   $_xml ="\n  <Placemark id='$point->id_point'>\n";
@@ -297,7 +296,7 @@ function feature_gml($point)
       <nom>".c($point->nom)."</nom>
       <type>$point->nom_icone</type>
       <massif>$point->nom_polygone</massif>
-      <url>" .lien_point_fast ($point) ."</url>
+      <url>" .lien_point ($point) ."</url>
       <altitude>$point->altitude</altitude>
       <gml:Point>
         <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">$point->longitude,$point->latitude</gml:coordinates>
@@ -335,7 +334,7 @@ function feature_geojson($point)
             \"type\": \"Feature\",
             \"properties\": {
                 \"nom\": \"".str_replace('"','\"',$point->nom)."\",
-                \"url\": \"".lien_point_fast($point) ."\",
+                \"url\": \"".lien_point($point) ."\",
                 \"type\": \"$point->nom_icone\",
                 \"id_point\": \"$point->id_point\"
             }
@@ -431,7 +430,7 @@ function waypoint_gpx($point,$format)
   if ($format=="gpx" or $format=="gpx-carte")
   {
     //FIXME : on n'utilise plus google API sly 09/11/12: Le mode carte est envoyé à l'API googlemaps du site, pour une bonne réactivité, il faut le minimum d'info nécessaire sly 12/05/2010
-    $lien=lien_point_fast($point );
+    $lien=lien_point($point );
     $version_complete="";
 
     if ($format=="gpx") // tout ça est inutile et alourdi dans le mode carte googlemaps

@@ -3,8 +3,8 @@
 Pour ajouter un commentaire rattaché à un point
 **********************************************************************************************/
 
-require_once ("fonctions_commentaires.php");
-require_once ("fonctions_points.php");
+require_once ("commentaire.php");
+require_once ("point.php");
 require_once ("wiki.php");
 
 $commentaire = new stdClass();
@@ -60,7 +60,7 @@ if (!$point->erreur)
   
     $quel_point="$point->article_defini $point->nom_type : $point->nom";
     $vue->titre="Ajout d'un commentaire sur $quel_point";
-    $vue->lien_point=lien_point_fast($point);
+    $vue->lien_point=lien_point($point);
     $vue->lien_texte_retour="Retour à $quel_point";
     $vue->point_existe=True;
     $vue->commentaire=$commentaire;

@@ -4,7 +4,7 @@
 //----------------------------------------
 
 require_once ("../includes/config.php");
-require_once ("fonctions_commentaires.php");
+require_once ("commentaire.php");
 //Pas d'accès direct à la page !
 if (AUTH!=1)
 	die("<h3>Accès non autorisé</h3>");

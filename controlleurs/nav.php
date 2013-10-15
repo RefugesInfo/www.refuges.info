@@ -16,13 +16,14 @@ Massif (1): classique : un poly qui entoure tous les points, possibilité de jou
 Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
 ************************************************************************************************/
 
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_meta_donnees.php");
-require_once ("fonctions_polygones.php");
+require_once ("bdd.php");
+require_once ("meta_donnee.php");
+require_once ("polygone.php");
 require_once ("wiki.php");
 
 //$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
+$vue->java_lib [] = '/vues/wiki.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();

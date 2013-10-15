@@ -36,7 +36,7 @@
 						<span id="p21781"></span>
 					</p>
 					<p>
-						<a href="/nav?lat=<?=$vue->latitude?>&amp;lon=<?=$vue->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+						<a href="/nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
 							Aller sur le présentoir à cartes
 						</a>
 					</p>
@@ -45,7 +45,7 @@
 		
 <!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
 		<?// Signaler les fiches censurées
-		if ($vue->censure) {?>
+		if ($vue->point->censure) {?>
 			<dd class="lien_ajout_commentaire">
 				<strong class="warning">
 					Cette fiche n'est visible que des modérateurs
@@ -54,7 +54,7 @@
 		<?}?>
 		<?// Si les droits sont suffisants, lien de modification
 		if ($vue->lien_modification) {?>
-			<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$vue->id_point?>">
+			<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
 				[Modifier cette fiche]
 			</a>
 		<?}?>
@@ -63,13 +63,13 @@
 		<dl style="margin: 2px;">
 <!--========================================== FICHE DE ===========================================-->
 			<dt class="condense">
-				Fiche (n°<?=$vue->id_point?>) de:
+				Fiche (n°<?=$vue->point->id_point?>) de:
 			</dt>
 			<dd class="condense">
 				<em><?=$vue->nom_debut_majuscule?></em>, 
 			</dd>
 			<dd class="condense">
-				<a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->nom_type?><sup>?</sup></a>
+				<a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?><sup>?</sup></a>
 				<?php
 				//Si elle/il est fermé, détruit, ou besoin de la clé pour rentrer on l'indique directement en haut en rouge
 				if ($vue->annonce_fermeture) {?>
@@ -78,42 +78,42 @@
 			</dd>
 <!--===================================== PLACES POUR DORMIR ======================================-->
 			<?// Rajout de +ieurs blocs (proprio, acces, remark, pub, photos...) et d'un bloc "nb places" si necessaire
-			if ($vue->equivalent_places) {?>
+			if ($vue->point->equivalent_places) {?>
 				<dt/>
 				<dt class="condense">
-					<?=$vue->equivalent_places?>:
+					<?=$vue->point->equivalent_places?>:
 				</dt>
 				<dd class="condense">
-					<?echo bbcode2html ($vue->places)?>
+					<?echo bbcode2html ($vue->point->places)?>
 				</dd>
 			<?}?>
 			
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
 			<dt/>
 			<dt class="condense">Sur le site depuis:</dt>
-			<dd class="condense"><?echo date ("d/m/Y", $vue->date_creation_timestamp)?></dd>
+			<dd class="condense"><?=date ("d/m/Y", $vue->point->date_creation_timestamp)?></dd>
 
 			<?// Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
-			if (isset($vue->date_derniere_modification)) {?>
+			if (isset($vue->point->date_derniere_modification)) {?>
 				<dt class="condense">Dernière modification du </dt>
-				<dd class="condense"><?echo date ("d/m/Y",$vue->date_modif_timestamp)?>.</dd>
+				<dd class="condense"><?echo date ("d/m/Y",$vue->point->date_modif_timestamp)?>.</dd>
 			<?}
 
 			// Si le créateur de la fiche dispose d'un compte sur le forum on indique son compte sur le forum
 			// si celui-ci n'était pas connecté, on indique ce qu'il a mis dans le champs "auteur"
 			// sauf si il n'était ni connecté et il a laissé le champs "auteur" vide
-			if ($vue->nom_createur OR $vue->id_createur) { //Il était connecté ?>
+			if ($vue->point->nom_createur OR $vue->point->id_createur) { //Il était connecté ?>
 				<dt class="condense">Créateur de cette fiche:</dt>
-				<?if ($vue->id_createur != 0) {  // si le visiteur était loggué alors on fait un lien vers sa fiche utilisateur phpBB
-					$createur = infos_utilisateur ($vue->id_createur);
+				<?if ($vue->point->id_createur != 0) {  // si le visiteur était loggué alors on fait un lien vers sa fiche utilisateur phpBB
+					$createur = infos_utilisateur ($vue->point->id_createur);
 				?>
 					<dd class="condense">
-						<a href="<?=$config['fiche_utilisateur'].$vue->id_createur?>">
+						<a href="<?=$config['fiche_utilisateur'].$vue->point->id_createur?>">
 							<?=bbcode2html ($createur->username)?>
 						</a>
 					</dd>
 				<?}else{?>
-					<dd class="condense"><?=bbcode2html ($vue->nom_createur)?></dd>
+					<dd class="condense"><?=bbcode2html ($vue->point->nom_createur)?></dd>
 				<?}
 			}
 			?>
@@ -123,17 +123,17 @@
             <dd>
                 <span>
                 Provenance:
-                <?if ($vue->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
-						<strong><?=$vue->nom_precision_gps?></strong>
+                <?if ($vue->point->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
+						<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
-						<?=$vue->nom_precision_gps?>
+						<?=$vue->point->nom_precision_gps?>
 					<?}?>
                 </span>
             </dd>
 			<dd>
-				Altitude: <em><?=$vue->altitude?>m,</em>
+				Altitude: <em><?=$vue->point->altitude?>m,</em>
 				<?if (!$vue->mini_carte) {?>
-					<strong><?=$vue->nom_precision_gps?></strong>
+					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 					<span id="coordonnees-value">
 						<span id="titre-lon">Longitude</span>: <em id="lon"><?=$vue->longitude?></em>
@@ -144,9 +144,9 @@
 					</select>
 					
 					(
-						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->id_point?>">gpx</a>
+						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
 					,
-						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->id_point?>">kml</a>
+						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
 					)
 				<?}?>
 			</dd>
@@ -175,17 +175,17 @@
 			<?php } ?>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
 			<?// Champs textes libres
-			if ($vue->equivalent_proprio) {?>
-				<dt><?=$vue->equivalent_proprio?>:</dt>
-				<dd><?echo bbcode2html($vue->proprio)?></dd>
+			if ($vue->point->equivalent_proprio) {?>
+				<dt><?=$vue->point->equivalent_proprio?>:</dt>
+				<dd><?echo bbcode2html($vue->point->proprio)?></dd>
 			<?}?>
 			
 <!--============================================ ACCÈS ============================================-->
 			<dt style="clear: left;">Accès:</dt>
-			<dd><?echo bbcode2html($vue->acces)?></dd>
+			<dd><?echo bbcode2html($vue->point->acces)?></dd>
 <!--========================================== REMARQUES ==========================================-->
 			<dt>Remarques:</dt>
-			<dd><?echo bbcode2html($vue->remark)?></dd>
+			<dd><?echo bbcode2html($vue->point->remark)?></dd>
 <!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
 			<?php if (isset($vue->infos_complementaires)) { ?>
 
@@ -200,18 +200,15 @@
 			}?>
 			
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
-			<?if (count($vue->points_proches)!=0) {?>
+			<?if (count($vue->points_proches)) {?>
 				<dt>Points à proximité:</dt><?
 				foreach ($vue->points_proches as $point_proche) {
-					if ($point_proche->id_point!=$vue->id_point) {
-						$distance=number_format($point_proche->distance/1000,"2",",","")."km";
 						?>
 						<dd>
-							<a href="<?echo lien_point_fast($point_proche)?>"><?=$point_proche->nom?></a>, 
-							<?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$distance?>
+							<a href="<?=$point_proche->lien?>"><?=$point_proche->nom?></a>, 
+							<?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$point_proche->distance_au_point?>
 						</dd>
-					<?}
-				}
+				<?}
 			}?>
 			
 <!--================================= Si message d'information à afficher =======================================-->

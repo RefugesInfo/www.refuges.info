@@ -325,6 +325,13 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   position: relative; top: 15px;
 }
 
+/*=========WIKIS SURGISSANTS==========*/
+.wiki {
+	border: 5px solid #<?=$couleur_decoration_titres?>;
+	background-color: #f8fff4;
+    z-index: 500000;
+}
+
 /*==================================================================*/
 /*  ENTETE DE PAGE : Logo, identification & recherche               */
 /*==================================================================*/

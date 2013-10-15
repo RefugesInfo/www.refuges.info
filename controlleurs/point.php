@@ -8,11 +8,11 @@ du rewrite et un vrai modèle MVC avec un seul script d'entrée à tous le site 
 ***/
 
 
-require_once ("fonctions_polygones.php");
+require_once ("polygone.php");
 require_once ("wiki.php");
-require_once ("fonctions_points.php");
-require_once ("fonctions_pubs.php");
-require_once ("fonctions_utilisateurs.php");
+require_once ("point.php");
+require_once ("pub.php");
+require_once ("utilisateur.php");
 
 $condition = new stdClass();
 
@@ -25,79 +25,82 @@ if ($_SESSION['niveau_moderation']>=1)
 else
     $meme_si_censure=False;
 
-// FIXME je trouverais plus clair de mettre le point dans $vue->point pour éviter d'écraser d'autre propriété du modèle
-// sly : FIXME ouais grave; obligé de bidouiller pour rétablir ce que infos_point écrase !
-$ancienne_vue = new stdClass;
-foreach ($vue as $cle => $val)
-    $ancienne_vue->$cle=$val;
-$vue = infos_point ($id_point,$meme_si_censure);
-
-foreach ($ancienne_vue as $cle => $val)
-    $vue->$cle=$val;
-
-// Les infos du point deviennent des membres du template ($vue->latitude ...)
+$point = infos_point ($id_point,$meme_si_censure);
 // Partie spécifique de la page
-if ($vue->erreur)
+if ($point->erreur)
 {
     $vue->type="page_simple";
-    $vue->contenu=$vue->message;
+    $vue->contenu=$point->message;
 }
 else // le point est valide. faut bosser.
 {
-    $vue->nom=bbcode2html($vue->nom);
-    $vue->nom_debut_majuscule = ucfirst($vue->nom);
-    $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($vue->nom_type));
-    $vue->titre = "$vue->nom_debut_majuscule $vue->altitude m ($vue->nom_type)";
-    $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $vue->nom_type, altitude $vue->altitude avec commentaires et photos";
+    // Les infos du point deviennent des membres de $vue ($vue->point->latitude ...)
+    $vue->point=$point;
+    
+    $vue->nom=bbcode2html($point->nom);
+    $vue->nom_debut_majuscule = ucfirst($point->nom);
+    $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
+    $vue->titre = "$point->nom_debut_majuscule $point->altitude m ($point->nom_type)";
+    $vue->description = "fiche d'information sur : $point->nom_debut_majuscule, $point->nom_type, altitude $point->altitude avec commentaires et photos";
     $vue->lien_explication_publicite=lien_wiki("publicite");
-    if ($vue->polygones)
-        foreach ($vue->polygones as $polygone)
+    if ($point->polygones)
+        foreach ($point->polygones as $polygone)
         {
             if (isset($polygone->categorie_polygone_type))
             {
                 if ($polygone->categorie_polygone_type=="montagnarde")
                     $polygone->avec_lien_carte=True;
-                $vue->localisation[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
+                $point->localisation[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
             }
         }
-    if ($vue->modele!=1)
-    $vue->forum = infos_point_forum ($vue);
+    if ($point->modele!=1)
+    $point->forum = infos_point_forum ($point);
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;
     $tous_commentaires = infos_commentaires ($conditions_commentaires);
-    $vue->annonce_fermeture = texte_non_ouverte ($vue);
+    $vue->annonce_fermeture = texte_non_ouverte ($point);
 
 
     /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" ***/
-    if ($vue->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
+    if ($point->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
     {
         $conditions = new stdClass;
         $conditions->avec_infos_massif=True;
         $conditions->limite=10;
         $conditions->ouvert='oui';
         
-        $g = array ( 'lat' => $vue->latitude, 'lon' => $vue->longitude , 'rayon' => 5000 );
+        $g = array ( 'lat' => $point->latitude, 'lon' => $point->longitude , 'rayon' => 5000 );
         $conditions->geometrie = cree_geometrie( $g , 'cercle' );
         
         $conditions->avec_distance=True;
-        $vue->points_proches=infos_points($conditions);
-        
+        $points_proches=infos_points($conditions);
+        if (count($points_proches))
+            foreach ($points_proches as $point_proche) 
+            {
+                //On ne veut pas dans les points proches le point lui même
+                if ($point_proche->id_point!=$point->id_point)
+                {
+                    $point->points_proches=$point_proche;
+                    $point->points_proches->lien=lien_point($point_proche);
+                    $point->points_proches->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
+                }
+            }
+            
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
-//        $vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
         $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
-        $vue->vignette = param_cartes ($vue);
+        $vue->vignette = param_cartes ($point);
     }
     
     /***********  détermination si le point se situe dans un polygone pour lequel un message est à faire passer *******/
     // L'utilisation principal est le message de réglementation de la réserve naturelle
-    if (count($vue->polygones))
-        foreach ($vue->polygones as $polygone)
+    if (count($point->polygones))
+        foreach ($point->polygones as $polygone)
             if ($polygone->message_information_polygone!="")
-                $vue->polygone_avec_information=$polygone;
+                $point->polygone_avec_information=$polygone;
             
     /*********** Préparation de la présentation du point ***/
-    if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $vue->id_createur ))
+    if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur ))
         $vue->lien_modification=TRUE;
             
     /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
@@ -112,38 +115,38 @@ else // le point est valide. faut bosser.
     {
         $champ_equivalent = "equivalent_$champ";
         // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour un sommet)
-        if ($vue->$champ_equivalent!="") 
+        if ($point->$champ_equivalent!="") 
         {
             switch ($champ)
             {
                 case 'site_officiel':
-                    if ($vue->$champ!="")
-                        $val=array('valeur'=> '', 'lien' => $vue->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
+                    if ($point->$champ!="")
+                        $val=array('valeur'=> '', 'lien' => $vue->point->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
                     break;
                    
                 case 'places_matelas':
-                    if($vue->$champ == -1)
+                    if($point->$champ == -1)
                         $val=array('valeur'=> 'Sans');
-                    elseif($vue->$champ === 0)
+                    elseif($point->$champ === 0)
                         $val=array('valeur'=> 'Avec, en nombre inconnu');
-                    elseif($vue->$champ === NULL )
+                    elseif($point->$champ === NULL )
                         $val=array('valeur'=> '<strong>Inconnu</strong>');
                     else
-                        $val=array('valeur'=> $vue->$champ);
+                        $val=array('valeur'=> $point->$champ);
                     break;
 
                 default: // Pour tous les boolééns restant
-                    if($vue->$champ === TRUE)
+                    if($point->$champ === TRUE)
                         $val = array('valeur'=> 'Oui');
-                    if($vue->$champ === FALSE)
+                    if($point->$champ === FALSE)
                         $val = array('valeur'=> 'Non');
-                    if($vue->$champ === NULL)
+                    if($point->$champ === NULL)
                         $val = array('valeur'=> '<strong>Inconnu</strong>');
                     break;
             }            
             
             if (isset($val))
-                $vue->infos_complementaires[$vue->$champ_equivalent]=$val;
+                $vue->infos_complementaires[$point->$champ_equivalent]=$val;
             
         }
         unset($val);

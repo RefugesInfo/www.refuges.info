@@ -44,17 +44,14 @@ elseif($_GET['form_modifier']==1 and $_SESSION ['niveau_moderation'] >= 1)
     $vue->contenu_a_modifier=htmlspecialchars($page->contenu,0,"UTF-8");
     $vue->lien_validation=lien_wiki($nom_page);
     $vue->lien_bbocode=lien_wiki('syntaxe_bbcode');
-    
 }
 else // affichage de la page
 {
     if ($_SESSION ['niveau_moderation'] >= 1)
         $vue->montrer_lien_admin=True;
-    if ($nom_page!='index')
-        $vue->lien_retour_index=lien_wiki();
-        
+    $controlleur->avec_entete_et_pied = $_GET ['head'] != 'no';
+
 	$vue->date=date("d/m/Y",$page->ts_unix_page);
     $vue->contenu_html  = $page->contenu_html; 
 }
-
 ?>

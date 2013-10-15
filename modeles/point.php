@@ -12,12 +12,12 @@ ou en modifier
 /**********************************************************************************************/
 
 require_once ("config.php");
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_gestion_erreurs.php");
-require_once ("fonctions_commentaires.php");
-require_once ("points_gps.php");
-require_once ("fonctions_polygones.php");
-require_once ("fonctions_mise_en_forme_texte.php");
+require_once ("bdd.php");
+require_once ("gestion_erreur.php");
+require_once ("commentaire.php");
+require_once ("point_gps.php");
+require_once ("polygone.php");
+require_once ("mise_en_forme_texte.php");
 
 /*****************************************************
 Cette fonction récupère sous la forme de plusieurs objets des points de la base qui satisfont des conditions.
@@ -78,7 +78,6 @@ $conditions->uniquement_points_censure=True : ne retourner que les points censur
 $conditions->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
 $conditions->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
-$conditions->avec_liens : True si on veut avior en retour un lien vers la fiche du point renvoyé dans ->lien
 
 $conditions->geometrie : Ne renvoir que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
 $conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
@@ -182,15 +181,28 @@ function infos_points($conditions)
             $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
     
     if( !empty($conditions->places_minimum) )
-        $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
+        if( is_numeric($conditions->places_minimum) )
+            $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
+        else
+            return erreur("Le nombre de place minimum doit être un nombre entier, reçu : $conditions->places_minimum");
     if( !empty($conditions->places_maximum) )
-        $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
+        if( is_numeric($conditions->places_maximum) )
+            $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
+        else
+            return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
         
     // conditions sur l'altitude
     if( !empty($conditions->altitude_minimum) )
-        $conditions_sql .= "\n AND points_gps.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
+        if( is_numeric($conditions->altitude_minimum) )
+            $conditions_sql .= "\n AND points_gps.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
+        else
+            return erreur("L'altitude minimum doit être un nombre entier, reçu : $conditions->altitude_minimum");
     if( !empty($conditions->altitude_maximum) )
-        $conditions_sql .= "\n AND points_gps.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
+        if( is_numeric($conditions->altitude_maximum) )
+            $conditions_sql .= "\n AND points_gps.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
+        else
+            return erreur("L'altitude maximum doit être un nombre entier, reçu : $conditions->altitude_maximum");
+            
   
     //veut-on les points dont les coordonnées sont cachées ?
     if($conditions->pas_les_points_caches)
@@ -266,24 +278,25 @@ function infos_points($conditions)
   ";
   if ( ! ($res = $pdo->query($query_points))) 
     return erreur("Une erreur sur la requête est survenue",$query_points);
+  
   //Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
   $point = new stdClass();
   while ($point = $res->fetch())
   {
       // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
-      // FIXME : Encore cette spécificité liée au massif qu'il faudrait généraliser
+      // FIXME sly : Encore cette spécificité liée au massif qu'il faudrait généraliser
       // jmb: ce n'est pas le boulot de infos_points de donner les noms et adjectifs des massifs.
       // l'appelant devrait appeler infos_polygone avec l'ID plus tard.
-      // Note sly : Le problème est que ça peut obliger à des centaines de requêtes pour rie, l'avantage d'un join ici, c'est qu'on récupère tout ça directement !
+      // Note sly : Le problème est que ça peut obliger à des centaines de requêtes ! (cf la recherche, les nouvelles,etc.), 
+      // l'avantage d'un join ici, c'est qu'on récupère tout ça en une seule requête !
+      // définitivement non, le SQL n'est pas orienté objet !
       // pas le boulot non plus de infos_points de donner les liens
-      // Note sly : Ce besoin était tellement récurrent, que j'ai opté pour la factorisation, mais j'avoue qu'un lien vers le point peut se voir comme une présentation d'info tout comme une info elle même
+      // FIXME sly : d'accord avec ça, charge à l'appelant de faire l'appel à lien_point($point);
       if ($conditions->avec_infos_massif)
       {
           $point->nom_massif = $point->nom_polygone;
           $point->id_massif  = $point->id_polygone;
           $point->article_partitif_massif = $point->article_partitif;
-          if ($conditions->avec_liens) // Cette option est sans effet sans la demande des massifs
-              $point->lien=lien_point_fast($point);
       }
       $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
   
@@ -374,7 +387,7 @@ car requête de moins
 FIXME uniformiser l'appel au $point->nom_massif qui devrait être atteignable dans un truc de ce style :
 $point->polygones[$x]->nom_polygone
 *******************************************************************************************************************************/
-function lien_point_fast($point,$lien_local=false)
+function lien_point($point,$lien_local=false)
 {
   global $config;
   if ($lien_local)
@@ -400,7 +413,7 @@ function lien_point_lent($id_point)
   $point=infos_point($id_point,True);
   if ($point->erreur)
     return erreur($point->message);
-  return (lien_point_fast($point));
+  return (lien_point($point));
 }
 
 // Définit la carte et l'échelle suivant la présence du point dans un des polygones connus pour avoir un fond de carte
@@ -512,8 +525,13 @@ function modification_ajout_point($point)
 	// On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
 	$champs_sql['date_derniere_modification'] = 'NOW()';
 
+    /********* les coordonnées du point dans la table points_gps *************/
+    // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet
+    $point->id_point_gps=modification_ajout_point_gps($point);
+    if ($point->id_point_gps->erreur) // si on a la moindre erreur sur la gestion des coordonnées de notre point, on abandonne
+        return erreur($point->id_point_gps->message);
     
-	/********* Les caractéristiques propres du point *************/
+	/********* Préparation des champs à mettre à jour, tous ceuex qui sont dans $point->xx ET dans $config['champs_simples_points'] *************/
 	// champ ou il faut juste un set=nouvelle_valeur
    	foreach ($config['champs_simples_points'] as $champ)
 		if (isset($point->$champ))
@@ -522,12 +540,6 @@ function modification_ajout_point($point)
             else
                 $champs_sql[$champ]=$pdo->quote($point->$champ);
 
-    /********* les coordonnées du point dans la table points_gps *************/
-    // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet
-    $point->id_point_gps=modification_ajout_point_gps($point);
-    if ($point->id_point_gps->erreur)
-        return erreur($point->id_point_gps->message);
-    
     if ( !empty($point->id_point) )  // update
     {
         $infos_point_avant = infos_point($point->id_point,true);

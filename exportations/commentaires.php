@@ -1,9 +1,9 @@
 <?php
-// Exporte les données des commentaires (pour usage dans Chemineur)
-// Format barbare et purement proriètaire Chemineur
+// Exporte les donnees des commentaires (pour usage dans Chemineur)
+// Format barbare et purement proritaire Chemineur
 
 require_once ("../includes/config.php");
-require_once ("fonctions_exportations.php");
+require_once ("exportation.php");
 
 $query = "SELECT * FROM commentaires";
 

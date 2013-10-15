@@ -5,7 +5,9 @@ Comme le code est sous WTFPL (voir fichier licence.txt), il n'y a pas de problè
 Cependant, merci de n'indiquer ici aucun mot de passe du site.
 création le 28/10/2008 par sly sylvain@refuges.info
 
-Dernière modification 03/03/2013 - sly
+Historique et dernières modifications visible ici :
+https://github.com/sletuffe/www.refuges.info/blob/dev/ressources/principe_fonctionnement_refuges.info.txt
+
 
 Structure SQL
 -------------
@@ -115,14 +117,87 @@ la table de liaison entre les polygones et les points_gps
 
 code php
 --------
-Je n'ai pas grand chose à dire sur le code, la pluspart du temps il est bien commenté et ça doit suffire
+
+Modèle MVC
+----------
+
+Depuis début 2013, on a entreprit un nettoyage de fond du code afin de tenter de mieux ranger les fichiers, les fonctions, mieux définir et mieux factoriser
+afin de s'y retrouver (et préparer l'avenir) au fûr et à mesure que la taille du code grandie.
+
+On a choisi quelque chose au plus proche de "Modèle, Vue, Controlleurs"
+http://fr.wikipedia.org/wiki/Modèle-vue-contrôleur
+Les grands axes de notre choix de rangement sont :
+
+Le dossier /modeles -> on trouve les modeles (des fonctions et des classes pour manipuler, récupérer, modifier les données de la base)
+Le dossier /vues -> les vues (templates html, css, gml, xml, js, gpx, formulaires html)
+Le dossier /controlleurs -> les controlleurs (qui font un peu le lien entre les deux précédents)
+Le fichier /controlleur.php -> C'est le chef d'orchestre qui fait correspondre une URL du site vers un controlleur, 
+il gère les pages non trouvées, inclus, si besoin, les menus que l'on retrouve partout et lance des traitements dont 
+tous les controlleurs ont besoin. (Idéalement, ça pourrait être lui qui appel de manière générique une gestion de cache)
+
+Le dossier /includes contient la config.php du site et quelques fonctions génériques de mise en forme, traitement d'erreur qui ne 
+trouverait pas leur place dans le modèle.
+
+Par soucis de simplicité et pour s'y retrouver, le nom des vues, modeles et controlleurs sont(seront) les mêmes dès que possible, ainsi, pour la page 
+qui affiche un point, on trouvera par exemple :
+/controlleurs/point.php
+/modeles/point.php
+/vues/point.html
+/vue/point.js
 
 
-Annexe 1 Structure de donnée des object point, polygone, commentaire dans le code
-----------------------------------------------------------------------------------
+Notez qu'en octobre 2013 ont est encore très loin d'avoir terminé ! Outre les modules externes comme OL et le forum phpBB
+qui n'y passeront sans doute jamais, il reste plusieurs modules du site qu'on a toujours pas passé sous ce format.
+
+Une API pour refuges.info
+-------------------------
+pourquoi faire ?
+----------------
+Nous utilisons une carte interactive sur notre site (avec openlayers) et le besoin que la partie javascript intérroge 
+notre base existe depuis longtemps, nous avons donc codé une sorte d'API assez spécifique au besoin d'affichage sur carte, et 
+conçue dans le but de bien marcher avec openlayer.
+Par la suite, une version mobile du site a été créé qui devrait pouvoir s'installer de manière indépendante comme application html5
+et là, c'est un peu la bidouille pour l'instant. 
+Des sites partenaires (comme chemineur.fr) intègrent ou synchronisent nos contenus (points, commentaires et photos) et pour l'instant
+c'est un peu fait de bric et de broc
+
+Pour tout ça, une API unique (assez stable) fournissant points et commentaires pourrait vraiment servir
+
+existant (que j’appellerais API version 1)
+------------------------------------------
+L'existant, c'est l'appel à:
+/exportation/exportations.php
+ça n'exporte que des points (pas les commentaires ni photos) et les paramètres sont passés en GET, 
+le résultat se fait en gml, gpx, json, kml selon le paramètre demandé &format=gml
+exemple :
+http://www.refuges.info/exportations/exportations.php?liste_id_point=33&format=gml
+
+La doc de cette API n'est documentée nulle part (ce qui faudrait faire) ainsi qu'une uniformisation avec notre API
+interne de récupération d'info pour factoriser ce code.
+L'ajout de la récupération des commentaires serait un vrai plus.
+Le débat peut continuer ici :
+http://www.refuges.info/forum/viewtopic.php?t=5259
+
+
+Structure de donnée des objects point, polygone, commentaire dans le code
+------------------------------------------------------------------------
 Dans le code, j'utilise souvent la notion de pseudo object afin de transmettre comme structure de donnée 
-les infos sur un point de la base, comme c'est un peu dur à imaginer à quoi il ressemble, voici un élément
+les infos sur un point de la base, comme c'est un peu dur à imaginer à quoi ressemble chaque "objet", vous trouverez en début
+de fonction qui sert à les charger une print_r de sa structure.
 
-Voir en en-tête de fonction (dans /modeles) les éléments de chaque objet
+note sur la programmation orienté objet : le code n'utilise pas ce type de programmation, mais quelque chose qui commence
+à s'en rapprocher, les divers "objets" du site (points, commentaires, utilisateurs, polygones,...) sont de simples structures
+de donnée que l'on retrouve tout au long du code est que l'on peut manipuler, non pas avec des méthodes de la classe, mais 
+avec des fonctions procédurales qui prennent en paramètre l'objet.
+
+On retrouve donc des :
+$point1 = new stdclass;
+$point1 = infos_point($id_point1);
+$point1->nom="nouveau nom";
+modifier_point($point1);
 
 
+là où on aurait pû trouver, en objet, quelque chose comme :
+$point1 = new point($id_point1);
+$point1->nom="nouveau nom";
+$point1->enregistrement();

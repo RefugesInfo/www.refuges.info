@@ -5,8 +5,8 @@ J'avais imaginé un système sophistiqué de scoring mais en fait c'est très pe
 c'est utile, c'est que si un internaute trouve un commentaire inutile ça l'indique à un modérateur
 **********************************************************************************************/
 require_once ("wiki.php");
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_commentaires.php");
+require_once ("bdd.php");
+require_once ("commentaire.php");
 
 $vue->description = $description;
 $commentaire=infos_commentaire($controlleur->url_decoupee[2]);
@@ -20,7 +20,7 @@ if ($commentaire->erreur)
 else
 {
     $vue->commentaire=$commentaire;
-    $vue->commentaire->lien=lien_point_fast($commentaire,True);
+    $vue->commentaire->lien=lien_point($commentaire,True);
     
     /**************************** l'action  ******************************/
     if ($_POST['valider']!="")

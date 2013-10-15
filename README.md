@@ -62,6 +62,11 @@ chmod 777 forum/images/avatars
 
 (Ces dossiers contiendront des données comme les photos des refuges ou des avatars chargés par les utilisateurs du forum)
 
+Pour en savoir plus sur les détails techniques
+==============================================
+Les explications sur la structure de la base de données, la structure du code le type de fonctions (mais pas encore la liste des fonctions) vous pouvez vous reporter au fichier :
+/ressources/principe_fonctionnement_refuges.info.txt
+
 Quelques commandes utiles de git adaptées à refuges.info
 ========================================================
 (Valable sous linux, mais sans doute ailleurs aussi)

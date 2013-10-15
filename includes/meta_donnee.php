@@ -5,7 +5,7 @@ Fonctions fournissant un accès aux données sur les données principales (que s
 **********************************************************************************************/
 
 require_once("config.php");
-require_once("fonctions_bdd.php");
+require_once("bdd.php");
 
 /****************************************
 Fonction donnant plusieurs informations générales sur la base

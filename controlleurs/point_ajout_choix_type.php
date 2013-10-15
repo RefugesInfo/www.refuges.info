@@ -5,9 +5,9 @@ de point l'internaute souhaite rentrer (cabane, sommet, ...) et ainsi, lui prép
 son choix
 ********************************************************************************************************/
 
-require_once ("fonctions_points.php");
+require_once ("point.php");
 require_once ("wiki.php");
-require_once ("fonctions_meta_donnees.php");
+require_once ("meta_donnee.php");
 
 $vue->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut
 $vue->infos_base = infos_base (); // pour récupérer les types de points possibles

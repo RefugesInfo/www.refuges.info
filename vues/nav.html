@@ -63,12 +63,14 @@ if ( $vue->type_affichage == '' ){?>
 								checked="checked"
 							<?}?>
 						/>
-						<img
-							id="icone_<?=$type_affichable->id_point_type?>"
-							src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
-							alt="icone de <?=$type_affichable->nom_type?>"
-						/>
-						<?=$type_affichable->nom_type?>
+						<span onmouseover="wiki(this,'/wiki/fiche-<?=$type_affichable->icone?>?head=no')">
+                            <img
+                                id="icone_<?=$type_affichable->id_point_type?>"
+                                src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
+                                alt="icone de <?=$type_affichable->nom_type?>"
+                            />
+                            <?=$type_affichable->nom_type?>
+						</span>
 					</label>
 				</li>
 			<?}?>
@@ -89,13 +91,6 @@ if ( $vue->type_affichage == '' ){?>
 	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$vue->polygone->nord?>" /></p>
 	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
 	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
-
-	<!-- Cadre pour exporter la vue, appelle la page "exportations.php" avec les param en GET -->
-	<fieldset>
-		<label>
-			<input type="submit" value="Exporter la vue actuelle" />
-		</label>
-	</fieldset>
 
 <!-- Chargement d'un fichier GPX -->
 	<fieldset id="loadGPX" style="display:none;height:45px">

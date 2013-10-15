@@ -17,7 +17,7 @@
 //* 16/02/13               |   jmb : PDO                                                       *
 //**********************************************************************************************
 
-require_once("fonctions_commentaires.php");
+require_once("commentaire.php");
 
 
 //vérification des autorisations

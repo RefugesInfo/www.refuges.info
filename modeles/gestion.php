@@ -6,7 +6,7 @@ je le garde toutefois car il y aurait bien des choses en provenance de la zone d
 sly 24/11/2012
 **********************************************************************************************/
 require_once("config.php");
-require_once("fonctions_bdd.php");
+require_once("bdd.php");
 
 
 

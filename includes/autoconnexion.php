@@ -32,9 +32,9 @@ l'idéal serait sûrement de vider la session au niveau du forum
 *********************************************************************************************/
 
 require_once ("config.php");
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_gestion_erreurs.php");
-require_once ("fonctions_commentaires.php");
+require_once ("bdd.php");
+require_once ("gestion_erreur.php");
+require_once ("commentaire.php");
 
 			
 /*** 
@@ -143,7 +143,7 @@ function auto_login_phpbb_users()
 
 // Fonction qui va permettre ensuite d'afficher la "petite étoile :*" en haut à coté du nom du modérateur
 // Pour le prévenir si un commentaire est en attente avec une demande de correction
-// FIXME : cette fonction n'a rien à faire dans fonctions_autoconnexion.php
+// FIXME : cette fonction n'a rien à faire dans autoconnexion.php
 function info_demande_correction () 
 {
     $conditions_attente_correction = new stdclass;

@@ -4,8 +4,8 @@ Ensemble des fonctions permettant des manipulations des utilisateurs du forum, q
 aussi des utilisateurs du site
 **********************************************************************************************/
 
-require_once ("fonctions_bdd.php");
-require_once ("fonctions_gestion_erreurs.php");
+require_once ("bdd.php");
+require_once ("gestion_erreur.php");
 
 function infos_utilisateur($id_utilisateur)
 {

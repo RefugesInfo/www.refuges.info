@@ -1,15 +1,3 @@
-<?// Bloc spécifique à la mage d'accueil == la carte des massifs
-// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
-// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
-// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
-// 24/10/11 Dominique : Création
-// 20/11/11 Dominique : Remplacement des tables par DIV + classe
-// 08/05/12 Dominique : Retour en templates simples
-// 12/07/12 Dominique : Enrichissement avec les news 
-// 14/02/13 jmb : modele->stat passe maintenant un OBJ
-?>
 <div class="contenu">
 	<!-- PRESENTATION   -->
 
@@ -48,7 +36,7 @@
 			<?php if (isset($vue->photos_recentes)) 
 				foreach ($vue->photos_recentes as $vignette) {?>
 			<li>
-				<a href="<?=(lien_point_fast($vignette,true)."#C$vignette->id_commentaire")?>" title="<?=$vignette->nom?>">
+				<a href="<?=$vignette->lien?>" title="<?=$vignette->nom?>">
 					<img alt="photo" src="<?=$vignette->lien_photo['vignette']?>" />
 				</a>
 			</li>
@@ -64,7 +52,7 @@
                         <li>
                             <em><?=$nouveau_point->date_formatee?></em>
                             &nbsp;Ajout <?=$nouveau_point->article_partitif_point_type?> <?=$nouveau_point->nom_type?> : 
-                                <a href="<?=lien_point_fast($nouveau_point)?>"><?=$nouveau_point->nom?></a>
+                                <a href="<?=$nouveau_point->lien?>"><?=$nouveau_point->nom?></a>
                                 <?php if (isset($nouveau_point->id_massif)) { ?>
                                 dans le 
                                 <a href="<?=lien_polygone($nouveau_point,True)?>">massif <?=$nouveau_point->article_partitif_massif?> <?=$nouveau_point->nom_massif?></a>

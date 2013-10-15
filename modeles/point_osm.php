@@ -17,10 +17,10 @@ elle est à refaire en fonction d'un nouveau schéma plus simple de base de donn
 
 **********************************************************************************************/
 require_once ("config.php");
-require_once ("fonctions_bdd.php");
-require_once ('fonctions_mise_en_forme_texte.php');
-require_once ("fonctions_gestion_erreurs.php");
-require_once ("fonctions_exportations.php");
+require_once ("bdd.php");
+require_once ('mise_en_forme_texte.php');
+require_once ("gestion_erreur.php");
+require_once ("exportation.php");
 
 $tags_cache=array();
 

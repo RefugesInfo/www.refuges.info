@@ -6,8 +6,8 @@ Afin de simplifier l'appel aux ajouts, modifications, suppressions
 ***************************************************************************************************/
 
 require_once ("config.php");
-require_once ('fonctions_bdd.php');
-require_once ("fonctions_gestion_erreurs.php");
+require_once ('bdd.php');
+require_once ("gestion_erreur.php");
 
 
 /********************************************************
@@ -75,7 +75,7 @@ function modification_ajout_point_gps($point_gps)
 	if (!$pdo->exec($query_finale))
 		return erreur("Erreur inconnue sur la requête SQL",$query_finale);
         
-        if ($point_gps->id_point_gps == "") // On avait donc demandé un INSERT, on récupère l'id inséré
+        if (empty($point_gps->id_point_gps)) // On avait donc demandé un INSERT, on récupère l'id inséré
             $id_point_gps = $pdo->lastInsertId();
 	
         return $id_point_gps;

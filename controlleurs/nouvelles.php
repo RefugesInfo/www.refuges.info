@@ -7,8 +7,8 @@ Les variables sont passées dans l'objet $vue->...
 */
 
 
-require_once ("fonctions_nouvelles.php");
-require_once ("fonctions_commentaires.php");
+require_once ("nouvelle.php");
+require_once ("commentaire.php");
 
 $vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 if (isset($_GET['nombre']) and is_numeric($_GET['nombre']))

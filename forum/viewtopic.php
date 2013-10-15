@@ -631,7 +631,7 @@ $pagination = ( $highlight != '' ) ? generate_pagination("viewtopic.$phpEx?" . P
 	if (  $forum_id == 4 and  $_GET['t']!=537)
     {
         $point=infos_point($forum_topic_data['topic_id_point'],True);
-		$lien_retour_fiche="</a> &nbsp; <a href=\"".lien_point_fast($point)."\">(Cliquer ici pour retourner sur la fiche de $topic_title)";
+		$lien_retour_fiche="</a> &nbsp; <a href=\"".lien_point($point)."\">(Cliquer ici pour retourner sur la fiche de $topic_title)";
     }
 	else
 		$lien_retour_fiche="";
