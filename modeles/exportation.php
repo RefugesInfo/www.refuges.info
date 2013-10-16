@@ -596,31 +596,32 @@ function fichier_exportation($conditions,$format)
   
   // Dominique 24/11/12 Dédoublement des points proches
   //DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6		
-  if ($icones = $_GET ['icones']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
-    $delta_latitude  = ($conditions->nord  - $conditions->sud ) / $icones;
-    $delta_longitude = ($conditions->est - $conditions->ouest) / $icones;
+  if ($_GET ['w'] && $_GET ['h']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
+    // Deltas de latitude & longitude corresponant à 12 px de large et haut = 16px * sqrt(2)
+    $delta_latitude  = ($conditions->nord  - $conditions->sud) / ($_GET ['h'] / 12); // 12 = 
+    $delta_longitude = ($conditions->est - $conditions->ouest) / ($_GET ['w'] / 12);
     if ($delta_latitude and $delta_longitude and count($points)!=0) // S'il y a un BBOX
       foreach ($points as $a => $p)
-	for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b
-	  $dlat = $points[$a]->latitude - $points[$b]->latitude;
-	  $dlon = $points[$a]->longitude - $points[$b]->longitude;
-	  if ($dlat / $delta_latitude * $dlat / $delta_latitude + $dlon / $delta_longitude * $dlon / $delta_longitude < 1) {
-	    if ($dlat < 0) // $b a une plus grande latitude
-	      $deplacement_latitude = $dlat + $delta_latitude;
-	    else // $a a une plus grande latitude
-	      $deplacement_latitude = $dlat - $delta_latitude;
-	    
-	    if ($dlon < 0)  // $b a une plus grande longitude
-	      $deplacement_longitude = $dlon + $delta_longitude;
-	    else // $a a une plus grande longitude
-	      $deplacement_longitude = $dlon - $delta_longitude;
-	    
-	    $points[$a]->latitude  -= $deplacement_latitude  / 2;
-	    $points[$b]->latitude  += $deplacement_latitude  / 2;
-	    $points[$a]->longitude -= $deplacement_longitude / 3;
-	    $points[$b]->longitude += $deplacement_longitude / 3;
-	  }
-	}
+        for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b
+          $delta_lat = $points[$a]->latitude  - $points[$b]->latitude;
+          $delta_lon = $points[$a]->longitude - $points[$b]->longitude;
+          if ($delta_lat / $delta_latitude * $delta_lat / $delta_latitude + $delta_lon / $delta_longitude * $delta_lon / $delta_longitude < 1) {
+            if ($delta_lat < 0) // $b a une plus grande latitude
+              $deplacement_latitude = $delta_lat + $delta_latitude; // Déplacement à 45° le plus proche de la réalité
+            else // $a a une plus grande latitude
+              $deplacement_latitude = $delta_lat - $delta_latitude;
+            
+            if ($delta_lon < 0)  // $b a une plus grande longitude
+              $deplacement_longitude = $delta_lon + $delta_longitude;
+            else // $a a une plus grande longitude
+              $deplacement_longitude = $delta_lon - $delta_longitude;
+            
+            $points[$a]->latitude  -= $deplacement_latitude  / 2;
+            $points[$b]->latitude  += $deplacement_latitude  / 2;
+            $points[$a]->longitude -= $deplacement_longitude / 3;
+            $points[$b]->longitude += $deplacement_longitude / 3;
+          }
+        }
   }
   
   $kml_folder="";

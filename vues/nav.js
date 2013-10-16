@@ -188,7 +188,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
                     visibility: false
                 }),
                 layerPoints = new OpenLayers.Layer.GMLSLD ('Refuges.info', {    
-                    urlGML: '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=<?=$vue->liste_id_point_type?>' + arg_points + limite,
+                    urlGML: '/exportations/exportations.php?format=gml&liste_id_point_type=<?=$vue->liste_id_point_type?>' + arg_points + limite,
                     projection: 'EPSG:4326', // Le GML est fourni en degminsec
                     urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
                     styleName: 'Points'
@@ -272,7 +272,7 @@ function maj_carte () {
     // C'est pas beau: on écrase la valeur interne pour que la modif de paramètre soit pérène lors des appels bbox
     layerMassifs.protocol.options.url = '/exportations/massifs-gml.php' + arg_massifs;
     layerMassifs.refresh ();
-    layerPoints.protocol.options.url = '/exportations/exportations.php?format=gml&icones=140&liste_id_point_type=' + listePoints + arg_points + limite;
+    layerPoints.protocol.options.url = '/exportations/exportations.php?format=gml&liste_id_point_type=' + listePoints + arg_points + limite;
     layerPoints.refresh ();
 }
 
