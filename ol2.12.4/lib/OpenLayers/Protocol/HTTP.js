@@ -198,18 +198,19 @@ OpenLayers.Protocol.HTTP = OpenLayers.Class(OpenLayers.Protocol, {
         var readWithPOST = (options.readWithPOST !== undefined) ?
                            options.readWithPOST : this.readWithPOST;
         var resp = new OpenLayers.Protocol.Response({requestType: "read"});
+        options.params.size = options.scope.layer.map.size.w + ',' + options.scope.layer.map.size.w; //DCM ajout de la taille du <DIV> dans les paramètres de la requette
         if(readWithPOST) {
             var headers = options.headers || {};
             headers["Content-Type"] = "application/x-www-form-urlencoded";
             resp.priv = OpenLayers.Request.POST({
-                url: options.url /*DCM*/ + '&w=' + options.scope.layer.map.size.w + '&h=' + options.scope.layer.map.size.h,
+                url: options.url,
                 callback: this.createCallback(this.handleRead, resp, options),
                 data: OpenLayers.Util.getParameterString(options.params),
                 headers: headers
             });
         } else {
             resp.priv = OpenLayers.Request.GET({
-                url: options.url /*DCM*/ + '&w=' + options.scope.layer.map.size.w + '&h=' + options.scope.layer.map.size.h,
+                url: options.url,
                 callback: this.createCallback(this.handleRead, resp, options),
                 params: options.params,
                 headers: options.headers

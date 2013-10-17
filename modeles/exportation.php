@@ -595,11 +595,12 @@ function fichier_exportation($conditions,$format)
   $contenu=entete_exportation($format);
   
   // Dominique 24/11/12 Dédoublement des points proches
-  //DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6		
-  if ($_GET ['w'] && $_GET ['h']) { // Nombres d'icones qui, mises côte à côte, remplissent la largeur de la carte
+  //DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6&size=w,h
+  if ($_GET ['size']) { // Taille du div d'affichage
+    $size = explode ($_GET ['size'])
     // Deltas de latitude & longitude corresponant à 12 px de large et haut = 16px * sqrt(2)
-    $delta_latitude  = ($conditions->nord  - $conditions->sud) / ($_GET ['h'] / 12); // 12 = 
-    $delta_longitude = ($conditions->est - $conditions->ouest) / ($_GET ['w'] / 12);
+    $delta_longitude = ($conditions->est - $conditions->ouest) / ($size [0] / 12);
+    $delta_latitude  = ($conditions->nord  - $conditions->sud) / ($size [0] / 12);
     if ($delta_latitude and $delta_longitude and count($points)!=0) // S'il y a un BBOX
       foreach ($points as $a => $p)
         for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b
