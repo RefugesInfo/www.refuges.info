@@ -600,7 +600,7 @@ function fichier_exportation($conditions,$format)
     $size = explode ($_GET ['size'])
     // Deltas de latitude & longitude corresponant à 12 px de large et haut = 16px * sqrt(2)
     $delta_longitude = ($conditions->est - $conditions->ouest) / ($size [0] / 12);
-    $delta_latitude  = ($conditions->nord  - $conditions->sud) / ($size [0] / 12);
+    $delta_latitude  = ($conditions->nord  - $conditions->sud) / ($size [1] / 12);
     if ($delta_latitude and $delta_longitude and count($points)!=0) // S'il y a un BBOX
       foreach ($points as $a => $p)
         for ($b=0; $b<$a; $b++) {// Pour toutes les paires de points $a, $b
