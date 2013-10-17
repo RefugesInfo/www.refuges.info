@@ -597,7 +597,7 @@ function fichier_exportation($conditions,$format)
   // Dominique 24/11/12 Dédoublement des points proches
   //DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6&size=w,h
   if ($_GET ['size']) { // Taille du div d'affichage
-    $size = explode ($_GET ['size']);
+    $size = explode (',', $_GET ['size']);
     // Deltas de latitude & longitude corresponant à 12 px de large et haut = 16px * sqrt(2)
     $delta_longitude = ($conditions->est - $conditions->ouest) / ($size [0] / 12);
     $delta_latitude  = ($conditions->nord  - $conditions->sud) / ($size [1] / 12);
