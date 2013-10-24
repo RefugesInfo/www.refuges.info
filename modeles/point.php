@@ -766,4 +766,13 @@ function choix_icone($point)
         
     return $nom_icone;
 }
+function chemin_icone($nom_icone,$absolu=true)
+{
+    global $config;
+    if ($absolu)
+        $url_et_host='http://'.$config['nom_hote'];
+    else
+        $url_et_host='';
+    return $url_et_host.$config['url_chemin_icones'].$nom_icone.'.png';
+}
 ?>

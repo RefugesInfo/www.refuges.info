@@ -154,20 +154,16 @@ Le format \"GeoJSON\" est un format spécialement concu pour contenir des donné
 //**********************************************************************************************
 function liste_icones_possibles()
 {
-	global $pdo;
-	$q_select_type= "SELECT * FROM point_type";
-	$res = $pdo->query($q_select_type);
-	while ( $ptype = $res->fetch() )
-	{
-		if ($ptype->nom_icone!="")
-			$icones[]=$ptype->nom_icone;
-		if ($ptype->nom_icone_ferme!="")
-			$icones[]=$ptype->nom_icone_ferme;
-		if ($ptype->nom_icone_manque_un_mur!="")
-			$icones[]=$ptype->nom_icone_manque_un_mur;
-	}
-
-	return $icones;
+    global $config;
+    $dossier_icones = opendir($config['chemin_icones']) or erreur('Je ne trouve pas les icones',"la recherche a eu lieu dans ".$config['chemin_icones']);
+    while($entree = @readdir($dossier_icones)) 
+    {
+        if (is_file($config['chemin_icones'].'/'.$entree)) 
+            if (preg_match('/.png/',$entree))
+                $icones[]=preg_replace("/.png/","",$entree);
+    }
+    closedir($dossier_icones);
+    return $icones;
 }
 
 //**********************************************************************************************
@@ -189,7 +185,10 @@ function entete_kml()
 
   // création de liste des styles pour chaque icone possible, le nom du style est #icone_(nom de l'image)
   // sly 30/10/10
-  foreach (liste_icones_possibles() as $nom_icone)
+  $icones_possibles=liste_icones_possibles();
+  if ($icones_possibles->erreur)
+      die(erreur($icones_possibles->message));
+  foreach ($icones_possibles as $nom_icone)
   {
     $lien_icone = "http://".$config['nom_hote'].$config['url_chemin_icones'].$nom_icone . '.png';
 
@@ -227,7 +226,7 @@ function placemark_kml($point)
   $_xml ="\n  <Placemark id='$point->id_point'>\n";
   $_xml .="    <name>".c($point->nom)."</name>\n";
   $_xml .="    <description><![CDATA[
-  <img src='http://".$config['nom_hote'].$config['url_chemin_icones'].$point->nom_icone.".png' />
+  <img src='".chemin_icone(choix_icone($point))."' />
   (<em>".c($point->nom_type)."</em>) <br />
   <center><a href='$lien_url'>".c('Détails')."</a></center>
   ]]></description>\n";
