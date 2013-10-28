@@ -1,0 +1,15 @@
+Cet outils en ligne de commande à pour but de détecter, sur le site de
+refuges.info les liens qui pointent vers des page en erreur (404 500
+résolution dns impossible, 301, etc.)
+
+Il y a besoin de l'outil "linkchecker"
+
+et on lance simplement :
+./recuperation-liste.sh
+pour extraire un fichier temporaire au format csv
+puis on executre 
+./lien-erreur-liste-lisible.sh
+pour en avoir une version plus compréhensible
+
+le 1er outils tourne plus ou moins à l'infini, par un ctrl+c on le coupe quand il
+a tester genre 10000 pages et le résultat est sorti à l'écran
