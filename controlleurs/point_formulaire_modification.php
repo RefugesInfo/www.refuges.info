@@ -163,8 +163,7 @@ elseif ( isset($_REQUEST["dupliquer"]))
 // 4) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
 {    
-    header("HTTP/1.0 404 Not Found");
-    $vue->type="page_introuvable";
+    $vue->type="page_simple";
     $vue->titre="Vous n'auriez pas dû arriver sur cette page de cette façon (formulaire précédent incomplet ?)";
     return "";
 }
