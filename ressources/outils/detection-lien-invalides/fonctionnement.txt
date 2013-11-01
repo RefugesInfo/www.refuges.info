@@ -5,7 +5,7 @@ résolution dns impossible, 301, etc.)
 Il y a besoin de l'outil "linkchecker"
 
 et on lance simplement :
-./recuperation-liste.sh
+./recuperation-liste-csv.sh
 pour extraire un fichier temporaire au format csv
 puis on executre 
 ./lien-erreur-liste-lisible.sh
