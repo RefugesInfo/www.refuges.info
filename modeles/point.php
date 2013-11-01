@@ -491,7 +491,7 @@ function infos_point_forum ($point)
 
 /********************************************************
 Fonction qui permet, en fonction de l'object $point passé en paramêtre la mise à jour OU la création si :
-$point->id_point==""
+$point->id_point=="" ou not set
 Les autres champ, classiques, comme la sortie de la fonction infos_point($id_point) servirons pour la création ou la mise à jour.
 Le minimum vital est que $point->nom ne soit pas vide et que les coordonées latitude et longitude soient données
 tout est facultatif (ou presque) mais si :
@@ -500,8 +500,8 @@ si
 $point->champ n'existe pas (isset()=FALSE on y touche pas)
 sly 02/11/2008
 jmb 17/02/13 PDO + ca deconne
-Le retour de cette fonction et l'id du point (qu'il soit créé ou modifier) si une erreur grave survient, rien n'est fait et un retour de type texte est envoyé
-qui ressemble à "erreur_un_truc"
+Le retour de cette fonction et l'id du point (qu'il soit créé ou modifié) 
+Si une erreur grave survient, rien n'est fait et un retour par la fonction erreur() est fait. 
 
 ********************************************************/
 
@@ -512,13 +512,18 @@ function modification_ajout_point($point)
 	if ( trim($point->nom) =="" )
 		return erreur("Le nom ne peut être vide");
     
-    //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
-	if( !empty($point->site_officiel) )
-		if ( strpos($point->site_officiel, "http://") === FALSE)
-			$champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
-		else
-			$champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-
+    if( isset($point->site_officiel) )
+    {
+        // Pensez bien qu'un modérateur puisse vouloir remettre à "" le site n'existant plus
+        if ($point->site_officiel=="")
+            $champs_sql['site_officiel'] = $pdo->quote("");
+        //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
+        elseif ( strpos($point->site_officiel, "http://") === FALSE)
+            $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
+        else
+            $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
+    }
+        
     if (isset($point->places) and (!is_numeric($point->places) or ($point->places<0)))
         return erreur("Le nombre de place doit être un entier positif ou nul, reçu : $point->places");
 
