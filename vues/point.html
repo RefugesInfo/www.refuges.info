@@ -201,12 +201,12 @@
 			
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
 			<?if (count($vue->points_proches)) {?>
-				<dt>Points à proximité:</dt><?
+				<dt>Points à proximité (distance à vol d'oiseau):</dt><?
 				foreach ($vue->points_proches as $point_proche) {
 						?>
 						<dd>
 							<a href="<?=$point_proche->lien?>"><?=$point_proche->nom?></a>, 
-							<?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$point_proche->distance_au_point?>
+							<?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$point_proche->distance_au_point?>km
 						</dd>
 				<?}
 			}?>
