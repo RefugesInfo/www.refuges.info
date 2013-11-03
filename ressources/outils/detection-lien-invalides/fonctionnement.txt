@@ -5,10 +5,10 @@ résolution dns impossible, 301, etc.)
 Il y a besoin de l'outil "linkchecker"
 
 et on lance simplement :
-./recuperation-liste-csv.sh
+./recuperation-liste-csv.sh > liste-en-csv.txt
 pour extraire un fichier temporaire au format csv
 puis on executre 
-./lien-erreur-liste-lisible.sh
+./lien-erreur-liste-lisible.sh ./liste-en-csv.txt
 pour en avoir une version plus compréhensible
 
 le 1er outils tourne plus ou moins à l'infini, par un ctrl+c on le coupe quand il
