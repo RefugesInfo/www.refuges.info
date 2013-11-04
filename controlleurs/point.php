@@ -98,7 +98,7 @@ else // le point est valide. faut bosser.
     if (count($point->polygones))
         foreach ($point->polygones as $polygone)
             if ($polygone->message_information_polygone!="")
-                $point->polygone_avec_information=$polygone;
+                $vue->polygone_avec_information=$polygone;
             
     /*********** Préparation de la présentation du point ***/
     if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur ))
