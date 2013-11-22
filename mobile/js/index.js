@@ -27,9 +27,11 @@ function initmap(){
 	// On créé notre carte vierge
 	map = new L.Map('map');
 
-	var MRIUrl='http://maps.refuges.info/hiking/{z}/{x}/{y}.png'; // Serveur de tuiles MRI
-	var MRIAttrib='&copy; Contributeurs d\'<a href="http://openstreetmap.org">OpenStreetMap</a>'; // Petit texte de crédit en bas à droite
-	var MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 14, attribution: MRIAttrib}); // Création du calque de tuiles nommé MRI
+//	var MRIUrl='http://maps.refuges.info/hiking/{z}/{x}/{y}.png'; // Serveur de tuiles MRI
+//	var MRIAttrib='&copy; Contributeurs d\'<a href="http://openstreetmap.org">OpenStreetMap</a>'; // Petit texte de crédit en bas à droite
+	var MRIUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'; // Serveur de tuiles Thunderforest
+	var MRIAttrib='Tuiles &copy; <a target="_blank" href="http://thunderforest.com">Thunderforest.com</a>. Données &copy; Contributeurs d\'<a target="_blank" href="http://openstreetmap.org">OpenStreetMap</a>'; // Petit texte de crédit en bas à droite
+	var MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 14, attribution: MRIAttrib, noWrap: true}); // Création du calque de tuiles nommé MRI
 
 	map.setView(new L.LatLng(47, 2),6); // Par défaut on affiche la France entière
 
