@@ -23,20 +23,20 @@ header("Cache-Control: max-age=$secondes_de_cache");
 { "type": "Feature",
 	"geometry": {
 		"type": "Point",
-		"coordinates": [<?=$vue->longitude?>, <?=$vue->latitude?>, <?=$vue->altitude?>]
+		"coordinates": [<?=$vue->point->longitude?>, <?=$vue->point->latitude?>, <?=$vue->point->altitude?>]
 	},
 	"properties": {
 		"id": "<?=$vue->point->id_point?>",
 		"nom": "<?echo str_replace('"','\"',$vue->nom_debut_majuscule)?>",
-		"type": "<?=$vue->nom_type?>",
+		"type": "<?=$vue->point->nom_type?>",
 		"annonce_fermeture": "<?echo str_replace('"','\"',$vue->annonce_fermeture)?>",
-		"nb_places": "<?echo str_replace('"','\"',bbcode2html ($vue->places))?>",
-		"derniere_modif": "<? if (isset($vue->date_derniere_modification)) { echo date ("d/m/Y",$vue->date_modif_timestamp); } else { echo date ("d/m/Y", $vue->date_creation_timestamp); } ?>",
-		"precision_gps": "<?=$vue->nom_precision_gps?>",
-		"annonce_proprio": "<?=$vue->equivalent_proprio?>",
-		"proprio": "<?echo str_replace('"','\"',bbcode2html($vue->proprio))?>",
-		"acces": "<?echo str_replace('"','\"',bbcode2html($vue->acces))?>",
-		"remarques": "<?echo str_replace('"','\"',bbcode2html($vue->remark))?>",<?
+		"nb_places": "<?echo str_replace('"','\"',bbcode2html ($vue->point->places))?>",
+		"derniere_modif": "<? if (isset($vue->point->date_derniere_modification)) { echo date ("d/m/Y",$vue->point->date_modif_timestamp); } else { echo date ("d/m/Y", $vue->point->date_creation_timestamp); } ?>",
+		"precision_gps": "<?=$vue->point->nom_precision_gps?>",
+		"annonce_proprio": "<?=$vue->point->equivalent_proprio?>",
+		"proprio": "<?echo str_replace('"','\"',bbcode2html($vue->point->proprio))?>",
+		"acces": "<?echo str_replace('"','\"',bbcode2html($vue->point->acces))?>",
+		"remarques": "<?echo str_replace('"','\"',bbcode2html($vue->point->remark))?>",<?
 
 		// Informations complémentaires
 		if (isset($vue->infos_complementaires)) { 
@@ -71,8 +71,8 @@ header("Cache-Control: max-age=$secondes_de_cache");
 			$cnt = 0;
 			foreach ($vue->commentaires AS $commentaire) { 
 				echo("\n\t\t\"date_com_$cnt\": \"".$commentaire->date_commentaire_format_francais."\",");
-				echo("\n\t\t\"auteur_com_$cnt\": \"".str_replace('"','\"',$commentaire->auteur)."\",");
-				echo("\n\t\t\"com_$cnt\": \"".str_replace('"','\"',$commentaire->texte)."\",");
+				echo("\n\t\t\"auteur_com_$cnt\": \"".str_replace('"','\"',$commentaire->auteur_commentaire_affichage)."\",");
+				echo("\n\t\t\"com_$cnt\": \"".str_replace('"','\"',$commentaire->texte_affichage)."\",");
 				if ($commentaire->photo_existe) {
 					echo("\n\t\t\"photo_com_$cnt\": \"".$commentaire->lien_photo['originale']."\",");
 					echo("\n\t\t\"miniature_com_$cnt\": \"".$commentaire->lien_photo['reduite']."\",");
