@@ -96,7 +96,7 @@ header("Cache-Control: max-age=$secondes_de_cache");
 			foreach ($vue->commentaires AS $commentaire) { 
 				echo("\n\t\t\"date_com_$cnt\": \"".$commentaire->date_commentaire_format_francais."\",");
 				echo("\n\t\t\"auteur_com_$cnt\": \"".str_replace('"','\"',$commentaire->auteur_commentaire_affichage)."\",");
-				echo("\n\t\t\"com_$cnt\": \"".str_replace('"','\"',$commentaire->texte_affichage)."\",");
+				echo("\n\t\t\"com_$cnt\": \"".str_replace('"','\"',liensnt(liensinternes($commentaire->texte_affichage)))."\",");
 				if ($commentaire->photo_existe) {
 					echo("\n\t\t\"photo_com_$cnt\": \"".$commentaire->lien_photo['originale']."\",");
 					echo("\n\t\t\"miniature_com_$cnt\": \"".$commentaire->lien_photo['reduite']."\",");
