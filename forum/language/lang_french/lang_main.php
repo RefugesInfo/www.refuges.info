@@ -154,7 +154,7 @@ $lang['Search_unanswered'] = 'Voir les messages sans réponses';
 $lang['Register'] = 'S\'enregistrer';
 $lang['Profile'] = 'Profil';
 $lang['Edit_profile'] = 'Editer votre profil';
-$lang['Search'] = 'Rechercher';
+$lang['Search'] = 'Recherche forum';
 $lang['Memberlist'] = 'Liste des Membres';
 $lang['FAQ'] = 'FAQ';
 $lang['BBCode_guide'] = 'Guide du BBCode';
@@ -758,7 +758,7 @@ $lang['View_Information'] = 'Voir les Informations';
 //
 // Search
 //
-$lang['Search_query'] = 'Rechercher';
+$lang['Search_query'] = 'Recherche sur le forum';
 $lang['Search_options'] = 'Options de Recherche';
 
 $lang['Search_keywords'] = 'Recherche par Mots-clés';
