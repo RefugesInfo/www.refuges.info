@@ -31,7 +31,7 @@
  on peut la changer manuellement, ou, plus tard, préparer un pool de question
  dernière modif 15/04/2011
 */
-$clef_visuel='r';
+$clef_visuel='b';
 
 // Hack dominique : table des chaines interdites dans les posts
 // 14/04/2011, mis à jour liste par sly le lendemain
@@ -1178,7 +1178,7 @@ $template->assign_vars(array(
 /**BEGIN of added mod to visual securty against spam bots **/	
 	'L_CONFIRM_CODE_IMPAIRED'	=> sprintf($lang['Confirm_code_impaired'], '<a href="mailto:' . $board_config['board_email'] . '">', '</a>'),
 	'L_CONFIRM_CODE' => $lang['Confirm_code'],
-	'KEY'							=> 'Quelle est la première lettre du mot "refuge" ?',
+	'KEY'							=> 'Quelle est la première lettre de la couleur du cheval blanc d\'Henry IV ?',
 	'MESSAGE_KEY'				=> $lang['Message_key'],
 
 	'L_CONFIRM_CODE_EXPLAIN' => $lang['Confirm_code_explain'],

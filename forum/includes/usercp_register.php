@@ -42,7 +42,7 @@
 $lettres="abcdefghjkmnopqrstuvwxyz";
 $clef_visuel=$lettres[rand(1,26)];
 */
-$clef_visuel="r";
+$clef_visuel="b";
 
 // Fichtre, des spammeurs arrivent ` passer, tentons de comprendre comment :
 //if (isset($_POST) && count($_POST)!=0)  
@@ -1108,7 +1108,7 @@ else
 
 		'L_CONFIRM_CODE_IMPAIRED'	=> sprintf($lang['Confirm_code_impaired'], '<a href="mailto:' . $board_config['board_email'] . '">', '</a>'), 
 		'L_CONFIRM_CODE'			=> $lang['Confirm_code'], 
-		'KEY'							=> 'Quelle est la première lettre du mot "refuge" ?',
+		'KEY'							=> 'Quelle est la première lettre de la couleur du cheval blanc d\'Henry IV ?',
 		'MESSAGE_KEY'				=> $lang['Message_key'],
 		'L_CONFIRM_CODE_EXPLAIN'	=> $lang['Confirm_code_explain'], 
 
