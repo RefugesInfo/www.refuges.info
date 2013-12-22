@@ -11,7 +11,7 @@
 // 16/02/13 jmb : objectif fusion massif.php la dedans.
 ?>
 
-var map, layerMassifs, layerPoints, pos21781, lc;
+var map, layerMassifs, editor, layerPoints, pos21781, lc;
 var arg_massifs = '?massif=<?=$vue->polygone->id_polygone?>';
 var arg_points  = '<?php if(isset($vue->polygone->id_polygone)) echo "&liste_id_massif=".$vue->polygone->id_polygone; ?>';
 var limite = 
@@ -142,6 +142,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
                 })
             ]);
         <?break;
+
         case 'edit':?>
             map.addLayers ([
                 layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {    
@@ -151,12 +152,17 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
                     styleName: 'Massif'
                     
                 }),
-                new OpenLayers.Layer.Editor (
+                editor = new OpenLayers.Layer.Editor (
                     'Editeur', 
                     '/exportations/massifs-gml.php' + arg_massifs // Source GML permettant la lecture/ecriture
                 )
             ]);
+            // Active automatiquement le contrôle de déplacement
+            for (c in editor.panel.controls)
+                if (editor.panel.controls[c].CLASS_NAME == 'OpenLayers.Control.' + <?=$polygone->ouest ? "'ModifyFeature'" : "'DrawFeaturePath'" ?>)
+                    editor.panel.controls[c].activate();
         <?break;
+
         default:?>
             map.addLayers ([
                 layerMassifs = new OpenLayers.Layer.GMLSLD ('Massif', {    

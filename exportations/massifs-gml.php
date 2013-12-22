@@ -10,7 +10,8 @@ require_once ("polygone.php");
 require_once ("gestion_erreur.php");
 
 // Si on a des infos remontées, on les mémorise
-if ($data = file_get_contents ('php://input')) { // Récupération du flux en méthode PUT
+if ($data = file_get_contents ('php://input')) // Récupération du flux en méthode PUT
+{
     $FeatureCollection = simplexml_load_string (str_replace (array ('gml:', 'feature:'), '', $data));
 
     // Polygones
@@ -44,9 +45,21 @@ function geom_polygon ($c) {
     $c = str_replace (',', ';', $c);
     $c = str_replace (' ', ',', $c);
     $c = str_replace (';', ' ', $c);
+
+    // On ferme le polygone si ce n'est pas le cas
+    if ($c)
+    {
+        $cs = explode (',', $c);
+        if ($cs[0] != $cs[count($cs)-1])
+        {
+            $cs [] = $cs[0];
+            $c = implode (',', $cs);
+        }
+    }
+
     return "(($c))";
 }
-    
+
 // Maintenant, on s'occupe du flux descendant
 
 // Générateur de couleurs qui tournent autour du cercle colorimétrique
@@ -87,16 +100,19 @@ if ($polygones)
     $cb = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 4 * M_PI / 3)), -2);
     $no_coul += $pas;
     
-    $polygone_export = new stdClass;
-    //On pourrait tout aussi bien envoyer tous les champs du polygone donc de notre base directement
-    // mais ça ferait des trucs un peu inutile donc sélection :
-    $polygone_export->feature_name="massif";
-    $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
-    $polygone_export->proprietes['color']="#$cb$cv$cr";
-    $polygone_export->proprietes['url']=lien_polygone($polygone,False);
-    $polygone_export->geometrie_gml=$polygone->geometrie_gml;
-  
-    $vue->features[]=$polygone_export;
+    if ($polygone->geometrie_gml) // On n'envoie pas les polygones vides
+    {
+        $polygone_export = new stdClass;
+        //On pourrait tout aussi bien envoyer tous les champs du polygone donc de notre base directement
+        // mais ça ferait des trucs un peu inutile donc sélection :
+        $polygone_export->feature_name="massif";
+        $polygone_export->proprietes['nom']=c($polygone->nom_polygone);
+        $polygone_export->proprietes['color']="#$cb$cv$cr";
+        $polygone_export->proprietes['url']=lien_polygone($polygone,False);
+        $polygone_export->geometrie_gml=$polygone->geometrie_gml;
+      
+        $vue->features[]=$polygone_export;
+    }
   }
 
 $vue->content_type="UTF-8";

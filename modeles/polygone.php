@@ -138,7 +138,10 @@ function infos_polygones($conditions)
     return erreur("Requête impossible",$query);
   while ($polygone=$res->fetch())
   {
-    $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord";
+    if ($polygone->ouest && $polygone->sud && $polygone->est && $polygone->nord)
+        $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord";
+    else
+        $polygone->bbox="-5,42,8,51";
     $polygones[]=$polygone;
   }
   return $polygones;
@@ -195,6 +198,60 @@ function lien_polygone($polygone,$local=True)
 return "$url_complete/nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/";
 }
 
+/********************************************
+Récupère les soumissions du formulaire de
+modification de paramètres de massifs
+*********************************************/
+function edit_info_polygone()
+{
+    global $pdo;
+    if (!$_SESSION['niveau_moderation'])
+        return null;
+
+    if ($_POST['renommer'])
+    {
+        $query_update = "UPDATE polygones SET article_partitif	= '{$_POST['article_partitif']}', nom_polygone = '{$_POST['nom_polygone']}' WHERE id_polygone = {$_POST['id_polygone']}";
+        $res = $pdo->query($query_update);
+        if (!$res)
+            echo erreur("Requête impossible",$query_update);
+    }
+
+    if ($_POST['creer'])
+    {
+        // On commence par chercher s'il existe déjà un polygone homonyme
+        $query_no = "SELECT id_polygone FROM polygones WHERE nom_polygone = '{$_POST['nom_polygone']}'";
+        $res=$pdo->query($query_no);
+        if (!$res)
+            echo erreur("Requête impossible",$query_no);
+
+        if (!$new_poly=$res->fetch())
+        {
+            // Alors, on le crée
+            $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone) VALUES (1, '{$_POST['article_partitif']}', '{$_POST['nom_polygone']}')";
+            $res=$pdo->query($query_cree);
+            if (!$res)
+                echo erreur("Requête impossible",$query_cree);
+
+            // Maintenant, on rècupère le n° du polygone créé
+            $res=$pdo->query($query_no);
+            if (!$res)
+                echo erreur("Requête impossible",$query_no);
+            else
+                $new_poly=$res->fetch();
+        }
+        // Et donc, on va voir ce polygone
+        return $new_poly->id_polygone;
+    }
+
+    if ($_POST['supprimer'])
+    {
+        $query_delate = "DELETE FROM polygones WHERE id_polygone = {$_POST['id_polygone']}";
+        $res = $pdo->query($query_delate);
+        if (!$res)
+            echo erreur("Requête impossible",$query_delate);
+    }
+    return null;
+}
 
 /********************************************
 Cree un objet geometrie a utiliser dans le SQL PostGIS

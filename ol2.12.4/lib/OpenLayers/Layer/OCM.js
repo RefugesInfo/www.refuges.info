@@ -49,7 +49,7 @@ OpenLayers.Layer.OCM.Transport = OpenLayers.Class(OpenLayers.Layer.OCM, {
 
     attribution:
         '<b>Thunderforest Transport Map</b><br />A global public transport map<br /><br />'
-        + '<a href="http://www.thunderforest.com">Developer Information</a><img class="tf-logo" src="/images/tf-logo-36-inv.png"/>',
+        + '<a href="http://www.thunderforest.com">Developer Information</a><img class="tf-logo" src="http://opencyclemap.org/images/tf-logo-36-inv.png"/>',
 
     CLASS_NAME: 'OpenLayers.Layer.OCM.Transport'
 });
@@ -60,7 +60,7 @@ OpenLayers.Layer.OCM.Landscape = OpenLayers.Class(OpenLayers.Layer.OCM, {
 
     attribution:
         '<b>Thunderforest Landscape Map</b><br />A map style highlightning the landscape environment<br /><br />'
-        + '<a href="http://www.thunderforest.com">Developer Information</a><img class="tf-logo" src="/images/tf-logo-36-inv.png"/>',
+        + '<a href="http://www.thunderforest.com">Developer Information</a><img class="tf-logo" src="http://opencyclemap.org/images/tf-logo-36-inv.png"/>',
 
     CLASS_NAME: 'OpenLayers.Layer.OCM.Landscape'
 });
@@ -71,7 +71,7 @@ OpenLayers.Layer.OCM.Outdoors = OpenLayers.Class(OpenLayers.Layer.OCM, {
 
     attribution:
         '<b>Thunderforest Outdoors Map</b><br />A world-wide map for outdoor activities<br /><br />'
-        + '<a href="http://www.thunderforest.com">Developer Information</a><img class="tf-logo" src="/images/tf-logo-36-inv.png"/>',
+        + '<a href="http://www.thunderforest.com">Developer Information</a><img class="tf-logo" src="http://opencyclemap.org/images/tf-logo-36-inv.png"/>',
 
     CLASS_NAME: 'OpenLayers.Layer.OCM.Outdoors'
 });
