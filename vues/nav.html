@@ -123,8 +123,8 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
                                 <input type="text" name="article_partitif" value="<?=$vue->polygone->article_partitif?>" /><br>
                                 <input type="text" name="nom_polygone" value="<?=$vue->polygone->nom_polygone?>" /><br>
                                 <input type="submit" name="renommer" value="Renommer" /><br /><hr />
-                                <?if (!$_POST['test_supprimer']) {?>
-                                    <input type="submit" name="test_supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" />
+                                <?if (!$_GET['test_supprimer']) {?>
+                                    <p><a href="?test_supprimer=1">Supprimer le massif</a></p>
                                 <?}else{?>
                                     <b><p style="color:red">ATTENTION: Ceci va supprimer définitivement le massif "<?=$vue->polygone->nom_polygone?>"</p>
                                     <p style="color:red">Aucune restoration ne sera possible</p></b>
@@ -135,16 +135,20 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
                     </form>
                 </fieldset>
             <?}else{?>
+                <?if (!$_GET['test_creer']) {?>
+                    <p><a href="?test_creer=1">Créer un massif</a></p>
+                <?}else{?>
                 <fieldset>
-                    <legend>Créer un massif</legend>
-                    <form method="post" action="?mode_affichage=edit" >
-                        <label>
-                            <input type="text" name="article_partitif" value="du" /><br>
-                            <input type="text" name="nom_polygone" value="nom du massif"><br>
-                            <input type="submit" name="creer" value="Créer">
-                        </label>
-                    </form>
-                </fieldset>
+                        <legend>Créer un massif</legend>
+                        <form method="post" action="?mode_affichage=edit" >
+                            <label>
+                                Article: <input type="text" name="article_partitif" value="du" /><br>
+                                Nom du massif: <input type="text" name="nom_polygone" value=""><br>
+                                <input type="submit" name="creer" value="Créer">
+                            </label>
+                        </form>
+                    </fieldset>
+                <?}?>
             <?}?>
         <?}?>
     </div>
