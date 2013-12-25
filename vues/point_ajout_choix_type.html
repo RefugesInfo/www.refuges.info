@@ -22,7 +22,8 @@ foreach ($vue->etapes as $etape)
          $checked="checked=\"checked\""; // pour cocher la première option
          foreach ($vue->types_point_affichables AS $pa) { ?>
              <li>
-                 <input type="radio" name="id_point_type" value="<?=$pa->id_point_type?>" <?=$checked?>/><?=$pa->nom_type?>
+                 <input type="radio" name="id_point_type" value="<?=$pa->id_point_type?>" <?=$checked?>/>
+                 <a href="<?=$pa->lien_wiki_type_point?>"><?=$pa->nom_type?><sup>?</sup></a>
              </li>
          <?
          $checked="";

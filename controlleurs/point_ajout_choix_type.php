@@ -12,8 +12,12 @@ require_once ("meta_donnee.php");
 $vue->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut
 $vue->infos_base = infos_base (); // pour récupérer les types de points possibles
 
-$vue->types_point_affichables=types_point_affichables();
-
+$liste_types_point_ajoutables=types_point_affichables();
+foreach ($liste_types_point_ajoutables as $pa)
+{
+    $pa->lien_wiki_type_point=lien_wiki("fiche-".replace_url($pa->nom_type));
+    $vue->types_point_affichables[]=$pa;
+}
 $vue->etapes->licence = new stdClass;
 $vue->etapes->licence->titre = "Licence des contenus";
 $vue->etapes->licence->texte = "<p>L'information que vous allez rentrer <a href=\"".lien_wiki("restriction_licence")."\">sera soumise à la licence creative commons by-sa</a></p>";
