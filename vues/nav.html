@@ -120,7 +120,9 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
                         <!-- Edition du massif -->
                             <label>
                                 <input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
-                                <input type="text" name="article_partitif" value="<?=$vue->polygone->article_partitif?>" /><br>
+                                Article partitif (max 20 car)
+                                <input type="text" name="article_partitif" maxlength="20" value="<?=$vue->polygone->article_partitif?>" /><br>
+                                Nom du massif
                                 <input type="text" name="nom_polygone" value="<?=$vue->polygone->nom_polygone?>" /><br>
                                 <input type="submit" name="renommer" value="Renommer" /><br /><hr />
                                 <?if (!$_GET['test_supprimer']) {?>
