@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license. */
 
@@ -16,9 +16,9 @@
  */
 
 /**
- * Les paramètres sont pris par ordre de priorité : permalink, cookie, defaut
- * new OpenLayers.Control.PermalinkCookies ({ // Un lien permalink conservé dans un cookie qui reporte les paramètres d'une page à l'autre
- *     defaut: { // La position par défaut s'il n'y a pas de cookie ou de permalink
+ * Les paramÃ¨tres sont pris par ordre de prioritÃ© : permalink, cookie, defaut
+ * new OpenLayers.Control.PermalinkCookies ({ // Un lien permalink conservÃ© dans un cookie qui reporte les paramÃ¨tres d'une page Ã  l'autre
+ *     defaut: { // La position par dÃ©faut s'il n'y a pas de cookie ou de permalink
  *         lon: 5.7,
  *         lat: 45.2,
  *         scale: 500000,
@@ -38,14 +38,14 @@ OpenLayers.Control.PermalinkCookies = OpenLayers.Class(OpenLayers.Control.Permal
     /**
      * APIProperty: argParserClass
      * {Class} The ArgParser control class (not instance) to use with this control.
-     * Pour récupérer les valeurs des cookies, va utiliser ce parser à la place de OpenLayers.Control.ArgParser
+     * Pour rÃ©cupÃ©rer les valeurs des cookies, va utiliser ce parser Ã  la place de OpenLayers.Control.ArgParser
      */
     argParserClass: OpenLayers.Control.ArgParserCookies, 
 
     /**
      * APIMethod: createParams
      * Creates the parameters that need to be encoded into the permalink url.
-     * Enregistre les paramètres de la carte dans des cookies à chaque changement de lat lon zoom & layer
+     * Enregistre les paramÃ¨tres de la carte dans des cookies Ã  chaque changement de lat lon zoom & layer
      * 
      * Parameters:
      * center - {<OpenLayers.LonLat>} center to encode in the permalink.
@@ -62,7 +62,7 @@ OpenLayers.Control.PermalinkCookies = OpenLayers.Class(OpenLayers.Control.Permal
         var params = OpenLayers.Control.Permalink.prototype.createParams.apply (this, arguments);
         
         if (this.map.baseLayer) {
-            // Ajoute un paramètre d'échelle qui permet de retrouver la bonne échèle quelque soit le nombre de couches de la carte
+            // Ajoute un paramÃ¨tre d'Ã©chelle qui permet de retrouver la bonne Ã©chÃ¨le quelque soit le nombre de couches de la carte
             params.scale = 
                 Math.round (
                     OpenLayers.Util.getScaleFromResolution (
@@ -70,8 +70,8 @@ OpenLayers.Control.PermalinkCookies = OpenLayers.Class(OpenLayers.Control.Permal
                         this.map.baseLayer.units
                     )
                 );
-            // Ajoute le nom de la couche de base, en clair (si la page suivante n'a pas la même liste de couches)
-            params.baseLayer = this.map.baseLayer.name; // La dernière base utilisée
+            // Ajoute le nom de la couche de base, en clair (si la page suivante n'a pas la mÃªme liste de couches)
+            params.baseLayer = this.map.baseLayer.name; // La derniÃ¨re base utilisÃ©e
         }
 
         // En plus d'afficher un permalink, l'enregistre dans un cookie

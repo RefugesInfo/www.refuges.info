@@ -2,10 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 	<head>
-		<title>GÃ©nÃ©ration optimisÃ©e de la librairie Openlayers modifiÃ©e</title>
+		<title>Génération optimisée de la librairie Openlayers modifiée</title>
 		<link rel="shortcut icon" href="/images/favicon.ico" />
 		<meta name="robots" content="none" />
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta http-equiv="Content-Type" content="text/html;charset=windows-1252" />
 	</head>
 	<body>
 <?php
@@ -49,8 +49,8 @@ $estDans = array (
 );
 
 // Récupèrer les entête & pied de Openlayers.js
-$log = "<b>Openlayers.js gÃ©nÃ©rÃ© sur ".$_SERVER['SERVER_NAME']." le " .date('r')."</b><br/>"
-."Modifications par rapport Ã OpenLayers-2.12:";
+$log = "<b>Openlayers.js généré sur ".$_SERVER['SERVER_NAME']." le " .date('r')."</b><br/>"
+."Modifications par rapport à OpenLayers-2.12:";
 
 $ollib = explode ('@@@', file_get_contents ('OpenLayers.js'));
 
@@ -98,7 +98,7 @@ function addFile ($fileName) {
         $olmin .= compress ($fc);
 		$o = '';
 		foreach (explode ("\n", "\n$fc") AS $k => $v) {
-            $t = htmlspecialchars (trim (substr ($v, 6)));
+            $t = htmlspecialchars (trim (substr ($v, 7)));
 			switch (substr ($v, 0, 7)) {
                 case '//DCM  ': // Introduction de la modif
                     if ($t)
@@ -108,10 +108,10 @@ function addFile ($fileName) {
                     $o .= ": <i>nouveau fichier</i>";
                     break;
                 case '//DCM//': // Lignes supprimées
-                    $o .= "<br/>\n$k---$t";
+                    $o .= "<br/>\n$k--- $t";
                     break;
                 case '/*DCM*/': // Ligne ajoutée
-                    $o .= "<br/>\n$k++$t";
+                    $o .= "<br/>\n$k++ $t";
                     break;
                 case '//DCM<<': // Lignes ajoutées
                     $o .= "<br/>\nPlusieurs lignes ajoutées: $t";
@@ -126,20 +126,26 @@ function addFile ($fileName) {
 }
 //------------------------------------------------------------------------------------------------
 function compress ($js) {
-    // Pour remplacer provisoirement les caractères qui ne passent pas dans le compresseur
+    // Pour remplacer provisoirement les caractÃƒÂ¨res qui ne passent pas dans le compresseur
     $carspe = array (
-        'ô' => '@OC@',
-        'à' => '@AG@',
-        'é' => '@EE@',
-        'è' => '@EG@',
-        'ù' => '@UG@',
-        '°' => '@DG@',
-        'Ã´' => '@uOC@',
-        'Ã ' => '@uAG@',
-        'Ã©' => '@uEE@',
-        'Ã¨' => '@uEG@',
-        'Ã¹' => '@uUG@',
-        'Ëš' => '@uDG@',
+        'Ã´' => '@OC@',
+        'Ã ' => '@AG@',
+        'Ã©' => '@EE@',
+        'Ã¨' => '@EG@',
+        'Ã¹' => '@UG@',
+        'Â°' => '@DG@',
+        'ô' => '@aOC@', // Ansi
+        'à' => '@aAG@',
+        'é' => '@aEE@',
+        'è' => '@aEG@',
+        'ù' => '@aUG@',
+        '°' => '@aDG@',
+        'ÃƒÂ´' => '@uOC@', // UTF8 sans BOM
+        'ÃƒÂ ' => '@uAG@',
+        'ÃƒÂ©' => '@uEE@',
+        'ÃƒÂ¨' => '@uEG@',
+        'ÃƒÂ¹' => '@uUG@',
+        'Ã‹Å¡' => '@uDG@',
         '@pad@' => '@pad@',
     );
     $specar = array_flip ($carspe);

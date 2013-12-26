@@ -1,19 +1,10 @@
 <?php //DCM++ Syntaxe proxy.php?bbox=7.18,45.57,14.13,47.83&url=serveur_kml&....
-//**********************************************************************************************
-//* Nom du module:         | proxy.php                                                         *
-//* Date :                 | 27/10/2010                                                        *
-//* Créateur :             | Dominique                                                         *
-//* Rôle du module :       | Interroge un serveur distant et renvoie les données               *
-//*                        | Permer d'accéder à des flux d'autres serveurs (KLM, ...)          *
-//*                        | Ce proxy est rendu nécéssaire par le fait que la requette         *
-//*                        | Httprequest utilisée pour rapatrier les cartes ne peut accéder    *
-//*                        | pour des raisons de sécurité au serveur ayant affiché la page     *
-//*                        | principale.                                                       *
-//*------------------------|-------------------------------------------------------------------*
-//* Modifications(date Nom)| Elements modifiés, ajoutés ou supprimés                           *
-//*------------------------|-------------------------------------------------------------------*
-//**********************************************************************************************
-
+/*DCM++ Â© Dominique Cavailhez 2012
+ * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
+ * full text of the license. */
+ 
 /* This is a blind proxy that we use to get around browser
 restrictions that prevent the Javascript from loading pages not on the
 same server as the Javascript.  This has several problems: it's less
@@ -31,12 +22,12 @@ unset ($args ['url']); // On le retire de la liste des arguments
 $url .= '?args';
 if (count ($args))
     foreach ($args AS $k => $v)
-        $url .= '&' .$k .'=' .$v; // On ajoute les arguments restants à l'ulr finale
+        $url .= '&' .$k .'=' .$v; // On ajoute les arguments restants Ã  l'ulr finale
 
 /******************************************************************************/
-// Sécurité: on autorise le rebond que vers quelques sites identifiés pour éviter à n'importe qui de faire n'importe quoi
+// SÃ©curitÃ©: on autorise le rebond que vers quelques sites identifiÃ©s pour Ã©viter Ã  n'importe qui de faire n'importe quoi
 $purl = parse_url ($url); // On analyse l'url
-switch ($purl ['host']) // Liste des serveurs autorisés
+switch ($purl ['host']) // Liste des serveurs autorisÃ©s
 {
 //    case 'labs.metacarta.com':
     case 'localhost':
@@ -49,10 +40,10 @@ switch ($purl ['host']) // Liste des serveurs autorisés
 /******************************************************************************/
         // Lit le contenu d'une URL distante
         $ch = curl_init();  // Initialiser cURL.
-            curl_setopt ($ch, CURLOPT_URL, $url);  // Indiquer quel URL récupérer
-            curl_setopt ($ch, CURLOPT_HEADER, 0);  // Ne pas inclure l'header dans la réponse.
-            ob_start ();  // Commencer à 'cache' l'output.
-                curl_exec ($ch);  // Exécuter la requète.
+            curl_setopt ($ch, CURLOPT_URL, $url);  // Indiquer quel URL rÃ©cupÃ©rer
+            curl_setopt ($ch, CURLOPT_HEADER, 0);  // Ne pas inclure l'header dans la rÃ©ponse.
+            ob_start ();  // Commencer Ã  'cache' l'output.
+                curl_exec ($ch);  // ExÃ©cuter la requÃ¨te.
                 $cache = ob_get_contents ();  // Sauvegarder la 'cache' dans la variable $cache.
             ob_end_clean();  // Vider le buffer.
         curl_close ($ch);  // Fermer cURL.
@@ -67,17 +58,17 @@ if(0) {
 }
 /******************************************************************************/
         // Il faut forcer le charset dans le header car Openlayers ne va lire le type qu'ici et ignore les balise META
-        // LE correctif qui tue proposé par SLY aprés une lute mémorable avec les charsets
+        // LE correctif qui tue proposÃ© par SLY aprÃ©s une lute mÃ©morable avec les charsets
         $charset = mb_detect_encoding ($cache, "UTF-8,ISO-8859-1,ISO-8859-5,ISO-8859-6,ISO-8859-7,ASCII,EUC-JP,JIS,SJIS,SHIFT_JIS,ISO-2022-JP,EUC-KR,ISO-2022-KR", true);
 //        header("Content-Type:text/html; charset=$charset");
         header("Content-Type:text/html; charset=ISO-8859-1");
 
-        // Envoie le résultat
+        // Envoie le rÃ©sultat
         print ($cache);
 
 /******************************************************************************/
         break;
     default:
-        print ('Serveur ' .$purl ['host'] .' non autorisé');
+        print ('Serveur ' .$purl ['host'] .' non autorisÃ©');
 }
 ?>

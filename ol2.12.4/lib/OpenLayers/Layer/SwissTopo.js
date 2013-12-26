@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -19,7 +19,8 @@
  *  - <OpenLayers.Layer.WMTS>
  * 
  * Doc sur: http://swisstopo.admin.ch/internet/swisstopo/fr/home/products/services/web_services/webaccess.html
- * Demande pour autoriser le domaine à accéder aux données: même lien => Accès au formulaire de commande
+ * Demande pour autoriser le domaine Ã  accÃ©der aux donnÃ©es: mÃªme lien => AccÃ¨s au formulaire de commande
+ * Automatiquement autorisÃ© sur //localhost
  */
 OpenLayers.Layer.SwissTopo = OpenLayers.Class(OpenLayers.Layer.WMTS, {
 
@@ -68,7 +69,7 @@ OpenLayers.Layer.SwissTopo = OpenLayers.Class(OpenLayers.Layer.WMTS, {
 			maxExtent: new OpenLayers.Bounds(420000, 30000, 900000, 350000),
 			validExtent: new OpenLayers.Bounds (6, 45.86, 10.5, 47.8) .transform ('EPSG:4326', 'EPSG:21781'),
 			units: 'm',
-			resolutions: this.resolutions, // Seules ces résolutions sont affichées
+			resolutions: this.resolutions, // Seules ces rÃ©solutions sont affichÃ©es
 			matrixIds: capa.matrixIds,
 			requestEncoding: 'REST',
 			style: 'default', // must be provided
@@ -77,7 +78,7 @@ OpenLayers.Layer.SwissTopo = OpenLayers.Class(OpenLayers.Layer.WMTS, {
 			formatSuffix: this.format,
 			attribution:
 				'<a style="text-decoration:none;padding:0px 4px 2px 4px;color:black;font-size:12;font-family:Arial black;color:white;background-color:red"'+
-					' title"Accés SwissTopo"'+
+					' title"AccÃ©s SwissTopo"'+
 					' href="http://map.geo.admin.ch">'+
 					'&copy; SwissTopo'+
 				'</a> '+

@@ -1,8 +1,8 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license.
  * DCM++ FROM: http://fredj.github.com/openlayers-fullscreen/examples/fullscreen.html
- * Nécéssite quelques ajouts dans theme/default/styles.css
+ * NÃ©cÃ©ssite quelques ajouts dans theme/default/styles.css
  */
 
 /**
@@ -93,7 +93,7 @@ OpenLayers.Control.FullScreen = OpenLayers.Class(OpenLayers.Control, {
             for (var i in divs)
                 OpenLayers.Element.removeClass (divs[i], 'offscreen'); // En cas de plusieurs cartes
 
-            OpenLayers.Element.removeClass(this.map.div, 'fullscreen'); // Celle là
+            OpenLayers.Element.removeClass(this.map.div, 'fullscreen'); // Celle lÃ 
             document.getElementsByTagName('body')[0].style.overflow= 'auto';
             this.map.updateSize();
             return true;

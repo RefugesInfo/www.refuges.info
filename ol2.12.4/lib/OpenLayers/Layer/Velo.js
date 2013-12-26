@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license. */
 
@@ -18,9 +18,9 @@ OpenLayers.Layer.Velo = OpenLayers.Class(OpenLayers.Layer.OSM, {
 
 	url: 'http://a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png',
 
-    initialize: function(name) { // OpenLayers.Layer.OSM ne comporte pas de méthode initialize,
-        OpenLayers.Layer.XYZ.prototype.initialize.call( // il faut donc appeler la classe dont il hérite
-			this, name, null, {numZoomLevels: 19} // Il faut forcer zoom comme ça, sinon XYZ.initialize l'écrase
+    initialize: function(name) { // OpenLayers.Layer.OSM ne comporte pas de mÃ©thode initialize,
+        OpenLayers.Layer.XYZ.prototype.initialize.call( // il faut donc appeler la classe dont il hÃ©rite
+			this, name, null, {numZoomLevels: 19} // Il faut forcer zoom comme Ã§a, sinon XYZ.initialize l'Ã©crase
 		);
     },
 	

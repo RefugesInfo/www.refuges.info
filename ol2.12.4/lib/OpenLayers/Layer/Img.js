@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -20,21 +20,21 @@
 OpenLayers.Layer.Img = OpenLayers.Class (OpenLayers.Layer.Vector, {
 
     initialize: function (name, options) {
-		OpenLayers.Util.extend (this, options); // Mémorise les options
-        OpenLayers.Layer.Vector.prototype.initialize.apply (this, arguments); // Initialise la classe héritée
+		OpenLayers.Util.extend (this, options); // MÃ©morise les options
+        OpenLayers.Layer.Vector.prototype.initialize.apply (this, arguments); // Initialise la classe hÃ©ritÃ©e
 	},
 
 	setMap: function  (map) {
         OpenLayers.Layer.Vector.prototype.setMap.apply (this, arguments);
 		
-		// pos = option donnée en projection courante de la carte | en options.proj
+		// pos = option donnÃ©e en projection courante de la carte | en options.proj
 		if (this.proj)
-			this.pos = this.pos.transform ( // qu'on ramène en projection courante de la carte
+			this.pos = this.pos.transform ( // qu'on ramÃ¨ne en projection courante de la carte
 				this.proj,
 				map.getProjectionObject ()
 			);
 		
-		// On insère l'image
+		// On insÃ¨re l'image
 		this.addFeatures (new OpenLayers.Feature.Vector (
 			new OpenLayers.Geometry.Point (this.pos.lon, this.pos.lat),
 			null,
@@ -45,16 +45,16 @@ OpenLayers.Layer.Img = OpenLayers.Class (OpenLayers.Layer.Vector, {
 			}
 		));
 		
-		this.position = this.pos.transform ( // this.position en degminsec (on doit le figer là car la projection de la carte peut changer)
+		this.position = this.pos.transform ( // this.position en degminsec (on doit le figer lÃ  car la projection de la carte peut changer)
 			map.getProjectionObject (),
 			'EPSG:4326');
     },
 
 	// Change la position du curseur
-	setPosition: function  (ll) { // ll en degrés décimaux
+	setPosition: function  (ll) { // ll en degrÃ©s dÃ©cimaux
 		this.features[0].move (new OpenLayers.LonLat (0,0)); // Il faut repartir de 0
 		this.features[0].move (ll.clone().transform (
-			this.map.displayProjection, // Transforme les coordonnées de travail (celles de la première carte)
+			this.map.displayProjection, // Transforme les coordonnÃ©es de travail (celles de la premiÃ¨re carte)
 			this.map.getProjectionObject () // En celles courantes sur le site
 		));
 	},

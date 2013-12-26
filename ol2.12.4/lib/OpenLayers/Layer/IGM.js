@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -30,7 +30,7 @@ OpenLayers.Layer.IGM = OpenLayers.Class(OpenLayers.Layer.WMS, {
      * {Array} the resolutions provided by the servers
      */
 	resolutions: [
-/* TODO: les grandes échèles
+/* TODO: les grandes Ã©chÃ¨les
 		1.40625,
 		0.703125,
 		0.3515625,
@@ -87,7 +87,7 @@ OpenLayers.Layer.IGM = OpenLayers.Class(OpenLayers.Layer.WMS, {
      */
     moveTo: function(bounds, zoomChanged, dragging) {
 		if(zoomChanged) {
-/* TODO pour mettre la carte expérimentale OSM format WMS pour les grandes échèles
+/* TODO pour mettre la carte expÃ©rimentale OSM format WMS pour les grandes Ã©chÃ¨les
 			if (this.map.zoom < 11) {
 				this.url = 'http://129.206.228.72/cached/osm?';
 				this.params.LAYERS= 'osm_auto:all';

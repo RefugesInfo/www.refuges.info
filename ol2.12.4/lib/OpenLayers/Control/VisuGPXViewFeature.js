@@ -1,4 +1,4 @@
-/*DCM++ © Florent Coste 2012.
+/*DCM++ ¬© Florent Coste 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license. */
 
@@ -29,7 +29,7 @@ OpenLayers.Control.VisuGPXViewFeature = OpenLayers.Class(OpenLayers.Control, {
      */
     activate: function () {
         var r = OpenLayers.Control.prototype.activate.apply(this,arguments);
-		if (typeof this.form == 'undefined') { // On crÈe le formulaire une fois seulement
+		if (typeof this.form == 'undefined') { // On cr√©e le formulaire une fois seulement
 			this.form = document.createElement ('form');
 			this.form.name = 'visugpx';
 			this.form.method = 'POST';
@@ -65,11 +65,11 @@ OpenLayers.Control.VisuGPXViewFeature = OpenLayers.Class(OpenLayers.Control, {
 		
 		this.textarea.value =
 			format.write (this.layer.features) 
-				.replace(/\n/g,''). replace(/>/g,'>\n') // InsËre des cÈsure de lignes pour rendre le fichier plus lisible
-				.replace(/gpx\:/gi,''); // Chrome rajoute un gpx: en prefixe dans les tag XML. Pas trouvÈ de facon propre de fixer Áa, autrement que en faisant un beau replace ! 
+				.replace(/\n/g,''). replace(/>/g,'>\n') // Ins√®re des c√©sure de lignes pour rendre le fichier plus lisible
+				.replace(/gpx\:/gi,''); // Chrome rajoute un gpx: en prefixe dans les tag XML. Pas trouv√© de facon propre de fixer √ßa, autrement que en faisant un beau replace ! 
 
 		this.form.submit();
-		this.deactivate(); // Aucune raison de le laisser sÈlectÈ quand le save est fait
+		this.deactivate(); // Aucune raison de le laisser s√©lect√© quand le save est fait
 		
 		return r;
     },

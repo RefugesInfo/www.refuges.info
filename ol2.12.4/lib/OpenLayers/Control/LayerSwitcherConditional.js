@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
  * full text of the license. */
@@ -22,20 +22,20 @@ OpenLayers.Control.LayerSwitcherConditional =
     setMap: function(map) {
         OpenLayers.Control.LayerSwitcher.prototype.setMap.apply(this, arguments);
 
-		this.map.events.on({ // Pour recalculer les contrôles à chaque fois que quelque chose change
-			buttonclick: this.greySwitcher, // N'importe quoi qui clique (y compris l'ouverture du pavé des couches)
+		this.map.events.on({ // Pour recalculer les contrÃ´les Ã  chaque fois que quelque chose change
+			buttonclick: this.greySwitcher, // N'importe quoi qui clique (y compris l'ouverture du pavÃ© des couches)
 			moveend:     this.greySwitcher, // Un zoom par molette par exemple (ou le setCenter initial)
 			scope:       this
 		});
     },
 
 	greySwitcher: function() {
-		this.div.className = 'olControlLayerSwitcher olControlNoSelect'; // Pour récupérer les styles du contrôle d'origine
+		this.div.className = 'olControlLayerSwitcher olControlNoSelect'; // Pour rÃ©cupÃ©rer les styles du contrÃ´le d'origine
 		
 		var mapext = this.map.getExtent();
 		if (!mapext) return;
 
-		var refprj = new OpenLayers.Projection ('EPSG:4326'); // DC TODO Curieusement, ça ne marche pas si on ne ramène pas à EPSG:4326
+		var refprj = new OpenLayers.Projection ('EPSG:4326'); // DC TODO Curieusement, Ã§a ne marche pas si on ne ramÃ¨ne pas Ã  EPSG:4326
 		var mapprj = this.map.getProjectionObject();
 		mapext = mapext.transform (mapprj, refprj);
 
@@ -59,7 +59,7 @@ OpenLayers.Control.LayerSwitcherConditional =
 				layerEntry.inputElem.title =
 				layerEntry.labelSpan.title = 'Couche non disponible ' + (
 					contains
-						? 'à cette échelle'
+						? 'Ã  cette Ã©chelle'
 						: 'sur cette zone'
 				);
 			}

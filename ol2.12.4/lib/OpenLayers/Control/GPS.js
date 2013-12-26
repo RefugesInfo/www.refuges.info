@@ -1,8 +1,8 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license.
  * DCM++ FROM: http://openlayers.org/dev/examples/geolocation.html
- * Nécéssite quelques ajouts dans theme/default/styles.css
+ * NÃ©cÃ©ssite quelques ajouts dans theme/default/styles.css
  */
 
 /**
@@ -113,7 +113,7 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
         }
         this.vector.removeAllFeatures();
         this.vector.addFeatures([
-            new OpenLayers.Feature.Vector( // Une croix rouge à l'emplacement lgéoocalisé
+            new OpenLayers.Feature.Vector( // Une croix rouge Ã  l'emplacement lgÃ©oocalisÃ©
                 e.point,
                 {},
                 {
@@ -124,7 +124,7 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
                     pointRadius: 10
                 }
             ),
-            new OpenLayers.Feature.Vector( // Un cercle gris de zone de précision
+            new OpenLayers.Feature.Vector( // Un cercle gris de zone de prÃ©cision
                 OpenLayers.Geometry.Polygon.createRegularPolygon(
                     new OpenLayers.Geometry.Point(e.point.x, e.point.y),
                     e.position.coords.accuracy/2,
@@ -142,7 +142,7 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
         if (!this.iteration++) // Lorsqu'on active le controle
             this.map.zoomTo (Math.min ( // On remet au max du zoom possible
                 this.map.getZoomForExtent (this.vector.getDataExtent()),
-                16 // Sans toutefois aller trop prés
+                16 // Sans toutefois aller trop prÃ©s
             ));
     },
 

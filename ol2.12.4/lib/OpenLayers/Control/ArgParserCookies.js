@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license. */
 
@@ -19,8 +19,8 @@
 
 OpenLayers.Control.ArgParserCookies = OpenLayers.Class(OpenLayers.Control.ArgParser, {
 
-    // Paramètres invariants suivant les couches présentes sur les différentes cartes
-    scale: null, // L'échèle en clair
+    // ParamÃ¨tres invariants suivant les couches prÃ©sentes sur les diffÃ©rentes cartes
+    scale: null, // L'Ã©chÃ¨le en clair
     baseLayer: null, // La couche de base en clair
     params: {
         defaut: {
@@ -44,7 +44,7 @@ OpenLayers.Control.ArgParserCookies = OpenLayers.Class(OpenLayers.Control.ArgPar
      * Method: getParameters
      */    
     getParameters: function(url) {
-        // Ecrase avec les params déclarés dans le PermalinkCookies
+        // Ecrase avec les params dÃ©clarÃ©s dans le PermalinkCookies
         var plc = this.map.getControlsByClass ('OpenLayers.Control.PermalinkCookies');
         if (plc.length) {
             OpenLayers.Util.extend (this.params.defaut,    plc[0].defaut);
@@ -62,11 +62,11 @@ OpenLayers.Control.ArgParserCookies = OpenLayers.Class(OpenLayers.Control.ArgPar
 
     /**
      * Method: getParameters
-     * Appelé lors de l'initialisation des layers, choisit la première couche valide
+     * AppelÃ© lors de l'initialisation des layers, choisit la premiÃ¨re couche valide
      */    
     isinvalidbaselayer: function (args) {
         if (this.map.initialized) {
-            // Enlève l'écouteur quand l'initialisation est finie
+            // EnlÃ¨ve l'Ã©couteur quand l'initialisation est finie
             this.map.events.unregister ('isinvalidbaselayer', this, this.isinvalidbaselayer);
             return false;
         }
@@ -83,16 +83,16 @@ OpenLayers.Control.ArgParserCookies = OpenLayers.Class(OpenLayers.Control.ArgPar
      * As soon as all the layers are loaded, cycle through them and hide or show them. 
      */
     configureLayers: function() {
-        // Les paramètres scale & baseLayer, indépendants des couches, ont priorité
+        // Les paramÃ¨tres scale & baseLayer, indÃ©pendants des couches, ont prioritÃ©
         if (this.params.defaut.baseLayer) {
             for (var i=0, len=this.map.layers.length; i<len; i++)
                 if (this.map.layers[i].isBaseLayer &&
-                    this.map.layers[i].name == this.params.defaut.baseLayer) { // Quand on a trouvé la bonne baseLayer
-                    this.map.setBaseLayer (this.map.layers[i]); // On la paramètre
-                    this.map.events.unregister('addlayer', this, this.configureLayers); // Et on arrête là
+                    this.map.layers[i].name == this.params.defaut.baseLayer) { // Quand on a trouvÃ© la bonne baseLayer
+                    this.map.setBaseLayer (this.map.layers[i]); // On la paramÃ¨tre
+                    this.map.events.unregister('addlayer', this, this.configureLayers); // Et on arrÃªte lÃ 
                 }
         }
-        else // Si on n'a pas de paramètre, on fait comme d'habitude
+        else // Si on n'a pas de paramÃ¨tre, on fait comme d'habitude
             OpenLayers.Control.ArgParser.prototype.configureLayers.apply(this, arguments);
     },
 
@@ -102,8 +102,8 @@ OpenLayers.Control.ArgParserCookies = OpenLayers.Class(OpenLayers.Control.ArgPar
      *   ...and remove the handler.
      */
     setCenter: function(map) {
-        // Réinitialise le zoom avec l'échele de la carte mémorisée (si toutes les cartes n'ont pas les mêmes résolutions)
-        // Ce calcul est fait ici car la baselayer est définie
+        // RÃ©initialise le zoom avec l'Ã©chele de la carte mÃ©morisÃ©e (si toutes les cartes n'ont pas les mÃªmes rÃ©solutions)
+        // Ce calcul est fait ici car la baselayer est dÃ©finie
         if (this.map.baseLayer && this.params.defaut.scale) {
             var resolution = OpenLayers.Util.getResolutionFromScale (this.params.defaut.scale, this.map.baseLayer.units);
             this.zoom = this.map.getZoomForResolution (resolution, true);

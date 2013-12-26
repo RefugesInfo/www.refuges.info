@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license. */
 
@@ -21,21 +21,21 @@
 
     popup: null, // Popup remanent (1 par couche)
 
- // Quand la couche est ajoutée à la carte, ajoute également les écouteurs de click & hover
+ // Quand la couche est ajoutÃ©e Ã  la carte, ajoute Ã©galement les Ã©couteurs de click & hover
     setMap: function (map) {
         OpenLayers.Layer.Vector.prototype.setMap.apply (this, arguments);
 
-        // Ajoute l'écouteur de survol
-        if (!map.hoverListener) { // Un seul écouteur par carte
+        // Ajoute l'Ã©couteur de survol
+        if (!map.hoverListener) { // Un seul Ã©couteur par carte
             map.hoverListener = new OpenLayers.Control.SelectFeature (
                 [this], {
                     hover: true,
-                    highlightOnly: true, // Permet la coexistence des écouteurs hover & click http://trac.osgeo.org/openlayers/ticket/1596  OpenLayers-2.10/examples/highlight-feature.html
+                    highlightOnly: true, // Permet la coexistence des Ã©couteurs hover & click http://trac.osgeo.org/openlayers/ticket/1596  OpenLayers-2.10/examples/highlight-feature.html
                     eventListeners: {
                         featurehighlighted: function (e) {
                             if (e.feature.attributes.url)
                                 e.feature.layer.map.div.style.cursor = 'pointer';
-                            e.feature.layer.map.clickListener.unselectAll (); // Rend service aux écouteurs de clicks
+                            e.feature.layer.map.clickListener.unselectAll (); // Rend service aux Ã©couteurs de clicks
                         },
                         featureunhighlighted: function (e) {
                             e.feature.layer.map.div.style.cursor = 'default';
@@ -46,12 +46,12 @@
             map.addControl (map.hoverListener);
             map.hoverListener .activate();
         } else { // On y attache les autres couches
-            map.hoverListener.layers.push (this); // Ajoute celle ci à la liste
-            map.hoverListener.setLayer (map.hoverListener.layers); // Réinitialise la liste
+            map.hoverListener.layers.push (this); // Ajoute celle ci Ã  la liste
+            map.hoverListener.setLayer (map.hoverListener.layers); // RÃ©initialise la liste
         }
 
-        // Ajoute l'écouteur de click (obligatoirement aprés celui de survol)
-        if (!map.clickListener) { // Un seul écouteur par carte
+        // Ajoute l'Ã©couteur de click (obligatoirement aprÃ©s celui de survol)
+        if (!map.clickListener) { // Un seul Ã©couteur par carte
             map.clickListener = new OpenLayers.Control.SelectFeature (
                 [this], {
                     clickout: true,
@@ -72,7 +72,7 @@
                         }
                         // utilise l'attribut du feature GML: <url>http://...</url>
                         if (e.attributes.url) {
-                            if (e.evt.shiftKey || e.evt.ctrlKey) // Shift + Click lance le lien dans une nouvelle fenêtre
+                            if (e.evt.shiftKey || e.evt.ctrlKey) // Shift + Click lance le lien dans une nouvelle fenÃªtre
                                 window.open (e.attributes.url);
                             else
                                 document.location.href = e.attributes.url;
@@ -83,8 +83,8 @@
             map.addControl (map.clickListener);
             map.clickListener .activate();
         } else { // On y attache les autres couches
-            map.clickListener.layers.push (this); // Ajoute celle ci à la liste
-            map.clickListener.setLayer (map.clickListener.layers); // Réinitialise la liste
+            map.clickListener.layers.push (this); // Ajoute celle ci Ã  la liste
+            map.clickListener.setLayer (map.clickListener.layers); // RÃ©initialise la liste
         }
     },
 

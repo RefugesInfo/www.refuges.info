@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -21,11 +21,11 @@ OpenLayers.Layer.MRI = OpenLayers.Class(OpenLayers.Layer.OSM, {
 
 	url: 'http://maps.refuges.info/hiking/${z}/${x}/${y}.png',
 
-    initialize: function (name) { // OpenLayers.Layer.OSM ne comporte pas de méthode initialize,
-        OpenLayers.Layer.XYZ.prototype.initialize.call( //il faut donc appeler la classe dont il hérite
+    initialize: function (name) { // OpenLayers.Layer.OSM ne comporte pas de mÃ©thode initialize,
+        OpenLayers.Layer.XYZ.prototype.initialize.call( //il faut donc appeler la classe dont il hÃ©rite
 			this, name, null, {
 				validExtent: new OpenLayers.Bounds (-25, 33, 45, 72) .transform ('EPSG:4326', 'EPSG:900913'),
-				numZoomLevels: 18 // Il faut forcer zoom comme ça, sinon XYZ.initialize l'écrase
+				numZoomLevels: 18 // Il faut forcer zoom comme Ã§a, sinon XYZ.initialize l'Ã©crase
 			}
 		);
     },

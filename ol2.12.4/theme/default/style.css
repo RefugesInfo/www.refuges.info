@@ -312,21 +312,21 @@ div.olControlSaveFeaturesItemInactive {
  */
 .olControlLayerSwitcher {
     position: absolute;
-    top: 25px;
+    top: 0; /*DCM*/
     right: 0;
     width: 13em; /*DCM*/
     font-family: sans-serif;
     font-weight: bold;
-    margin-top: 3px;
+    margin-top: 0; /*DCM*/
     margin-left: 3px;
-    margin-bottom: 3px;
+    margin-bottom: 0; /*DCM*/
     font-size: smaller;
     color: white;
     background-color: transparent;
 }
 
 .olControlLayerSwitcher .layersDiv {
-    padding-top: 5px;
+    padding-top: 2px; /*DCM*/
     padding-left: 10px;
     padding-bottom: 5px;
     padding-right: 10px;
@@ -335,9 +335,9 @@ div.olControlSaveFeaturesItemInactive {
 
 .olControlLayerSwitcher .layersDiv .baseLbl,
 .olControlLayerSwitcher .layersDiv .dataLbl {
-    margin-top: 3px;
+    margin-top: 0; /*DCM*/
     margin-left: 3px;
-    margin-bottom: 3px;
+    margin-bottom: 0; /*DCM*/
 }
 
 .olControlLayerSwitcher .layersDiv .baseLayersDiv,
@@ -393,7 +393,7 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 }
 /* positions */
 .olControlEditingToolbar {
-    right: 28px; /*DCM*/
+    right: 50px; /*DCM*/
     top: 3px;    /*DCM*/
 }
 .olControlNavToolbar {
@@ -486,8 +486,8 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 /*DCM Full screen & GPS*/
 .olControlFullScreenPanel{
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 5px;
+    right: 25px;
 }
 .olControlGPSPanel{
     position: absolute;
@@ -509,7 +509,7 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
     left: 0;
     top: 0;
     background: #ccc;
-    z-index: 1000000; /* Pour être au dessus des autres applications */
+    z-index: 1000000; /* Pour être au dessus des autres applications quand full screen */
 }
 .olMap.offscreen  {
     display: none;

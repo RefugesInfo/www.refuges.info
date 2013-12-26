@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez / Florent Coste 2012
+/*DCM++ Â© Dominique Cavailhez / Florent Coste 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -34,7 +34,7 @@ OpenLayers.Control.DownloadFeature = OpenLayers.Class(OpenLayers.Control, {
 		for (f = 0; f < this.layer.features.length; f++)
 			this.layer.features[f].state = OpenLayers.State.INSERT; 
 
-		if (typeof this.form == 'undefined') { // On crée le formulaire une fois seulement
+		if (typeof this.form == 'undefined') { // On crÃ©e le formulaire une fois seulement
 			this.form = document.createElement ('form');
 			this.form.method = 'POST';
 			this.form.action = OpenLayers._getScriptLocation() + 'services/echo-file.php?filename=trace.gpx';

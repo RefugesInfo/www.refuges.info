@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -13,7 +13,7 @@
 
 /**
  * Class: OpenLayers.Layer.IDEE
- * Instances of the IDEE class allow viewing maps of Infraestructura de Datos Espaciales de España
+ * Instances of the IDEE class allow viewing maps of Infraestructura de Datos Espaciales de EspaÃ±a
  * IDEE Espana
  * From : http://mapa.ign.gob.ar/docs/OpenLayers
  * 

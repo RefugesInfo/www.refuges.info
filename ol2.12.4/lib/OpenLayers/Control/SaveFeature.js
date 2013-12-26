@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -29,13 +29,13 @@ OpenLayers.Control.SaveFeature = OpenLayers.Class(OpenLayers.Control, {
         var r = OpenLayers.Control.prototype.activate.apply(this,arguments);
         
         // On force l'upload pour tous les segments
-        // Sinon, seuls les segments créés ou modifiés sont remontés et on ne sait pas lesquels ont été supprimés
+        // Sinon, seuls les segments crÃ©Ã©s ou modifiÃ©s sont remontÃ©s et on ne sait pas lesquels ont Ã©tÃ© supprimÃ©s
         for (f = 0; f < this.layer.features.length; f++)
             this.layer.features[f].state = OpenLayers.State.INSERT; 
 
         this.layer.saveStrategy.save ();
-        this.deactivate(); // Aucune raison de le laisser sélecté quand le save est fait
-        this.layer.map.zoomToExtent (this.layer.getDataExtent ()); // On recadre sur l'ensemble des features au cas ou il y aurait des égarés loin
+        this.deactivate(); // Aucune raison de le laisser sÃ©lectÃ© quand le save est fait
+        this.layer.map.zoomToExtent (this.layer.getDataExtent ()); // On recadre sur l'ensemble des features au cas ou il y aurait des Ã©garÃ©s loin
         
         return r;
     },

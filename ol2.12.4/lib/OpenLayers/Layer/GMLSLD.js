@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -29,7 +29,7 @@ OpenLayers.Layer.GMLSLD = OpenLayers.Class (OpenLayers.Layer.VectorClickHover, {
      * {Float} This specifies the ratio of the size of the visiblity of the Vector Layer features to the size of the map.
      *
      */   
-    bbBoxRatio: 1, // par défaut, on va demander seulement les points situés dans la zone affichée pour optimiser le nb de points visibles
+    bbBoxRatio: 1, // par dÃ©faut, on va demander seulement les points situÃ©s dans la zone affichÃ©e pour optimiser le nb de points visibles
 
     /**
      * Constructor: OpenLayers.Layer.GMLSLD
@@ -49,20 +49,20 @@ OpenLayers.Layer.GMLSLD = OpenLayers.Class (OpenLayers.Layer.VectorClickHover, {
         OpenLayers.Request.GET ({ // Charge la feuille de style
             url: options.urlSLD,
             scope: this,
-            success: function (sldFile) { // Le fichier est chargé
+            success: function (sldFile) { // Le fichier est chargÃ©
                 var format = // Extrait les styles du fichier SLD.
                     new OpenLayers.Format.SLD ()
                     .read (sldFile.responseXML || sldFile.responseText)
                     .namedLayers [this.styleName];
                 var style = new Array ();
-                if (typeof format == 'object' && // Teste l'existence des balises à chaque niveau pour éviter de planter
+                if (typeof format == 'object' && // Teste l'existence des balises Ã  chaque niveau pour Ã©viter de planter
                     typeof format.userStyles == 'object')
                         for (i in format .userStyles)
-                            if (typeof format .userStyles [i] == 'object') // DCM 10/04/2011 plus sécure et compatible mootools
+                            if (typeof format .userStyles [i] == 'object') // DCM 10/04/2011 plus sÃ©cure et compatible mootools
                                 style [format .userStyles [i].name] =
                                     format .userStyles [i];
                                     
-                this.styleMap = new OpenLayers.StyleMap (style); // On met le style à jour
+                this.styleMap = new OpenLayers.StyleMap (style); // On met le style Ã  jour
                 for (i in this.features) // Et on reaffiche les features (sans recharger la couche, ce qui appelle le serveur)
                     this.drawFeature (this.features[i], this.selectStyle);
             },
@@ -79,7 +79,7 @@ OpenLayers.Layer.GMLSLD = OpenLayers.Class (OpenLayers.Layer.VectorClickHover, {
                 }),
                 strategies: [new OpenLayers.Strategy.BBOX ({ // new OpenLayers.Strategy.Fixed ()
                     ratio: this.bbBoxRatio,
-                    resFactor: 1 // Une demande sera effectuée au serveur pour chaque déplacement ou zoom de afficheur, sinon on n'ajoute pas de point quand on zoom in
+                    resFactor: 1 // Une demande sera effectuÃ©e au serveur pour chaque dÃ©placement ou zoom de afficheur, sinon on n'ajoute pas de point quand on zoom in
                 })]
             })
         );

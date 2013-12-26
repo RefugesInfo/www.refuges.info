@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -64,13 +64,27 @@ OpenLayers.Layer.Editor = OpenLayers.Class(OpenLayers.Layer.Vector, {
         new OpenLayers.Control.DownloadFeature (),
         new OpenLayers.Control.LoadFeature ()
     ],
-    
+
     /**
      * Property: format
      * {<OpenLayers.Bounds>}
      * Cumulated bounds
      */
     bounds: null,
+
+    /**
+     * Property: layers
+     * {[<OpenLayers.Layer.Vector>]}
+     * List of background layers to include to the editor
+     */
+    layers: [],
+
+    /**
+     * Property: snap
+     * {[<OpenLayers.Layer.Vector>]}
+     * List of objects for configuring target layers for snapping control
+     */
+    snap: [],
 
     /**
      * Constructor: OpenLayers.Layer.Editor
@@ -86,16 +100,16 @@ OpenLayers.Layer.Editor = OpenLayers.Class(OpenLayers.Layer.Vector, {
      */
     initialize: function (name, url, options) {
         OpenLayers.Util.extend (this, options);
-        
-        // Initialisation de la stratégie de sauvegarde
+
+        // Initialisation de la stratÃ©gie de sauvegarde
         this.saveStrategy = new OpenLayers.Strategy.Save();
         this.saveStrategy.events.register ('success', null, function () {
             alert (OpenLayers.i18n('uploadSuccess'));
-            this.layer.refresh (); // Va rechercher le résultat sur le serveur et le réaffiche pour être sur qu'on a bien enregistré
+            this.layer.refresh (); // Va rechercher le rÃ©sultat sur le serveur et le rÃ©affiche pour Ãªtre sur qu'on a bien enregistrÃ©
         });
         this.saveStrategy.events.register ('fail', null, function (e) {
             alert (OpenLayers.i18n('uploadFailure') +"\nError "+ e.response.priv.status +" : "+ e.response.priv.statusText +"\n"+ e.response.priv.responseText);
-            // Nécéssite le patch finalResponse.priv = response.priv; en ligne 504 de lib/Openlayers/Protocol/HTTP.js
+            // NÃ©cÃ©ssite le patch finalResponse.priv = response.priv; en ligne 504 de lib/Openlayers/Protocol/HTTP.js
         });
 
         OpenLayers.Layer.Vector.prototype.initialize.call (this, name || this.name, {
@@ -108,7 +122,7 @@ OpenLayers.Layer.Editor = OpenLayers.Class(OpenLayers.Layer.Vector, {
                     fillOpacity: 0.4, 
                     pointRadius: 6
                 },
-                'temporary': { // Création d'une trace
+                'temporary': { // CrÃ©ation d'une trace
                     strokeColor: 'red',
                     strokeWidth: 3,
                     cursor: 'pointer',
@@ -144,10 +158,10 @@ OpenLayers.Layer.Editor = OpenLayers.Class(OpenLayers.Layer.Vector, {
      */
     addControls: function (controls) {
         var newControls = [];
-        for (c in controls) 
+        for (var c = 0; c < controls.length; c++)
             if (!controls[c].notApplicable) {
                 controls[c].layer = this;
-                controls[c].title = OpenLayers.i18n(controls[c].CLASS_NAME .replace('OpenLayers.Control.','')); // Pour le popup aide à l'utilisation
+                controls[c].title = OpenLayers.i18n(controls[c].CLASS_NAME .replace('OpenLayers.Control.','')); // Pour le popup aide Ã  l'utilisation
                 newControls.push (controls[c]);
             }
         this.panel.addControls (newControls);
@@ -167,17 +181,24 @@ OpenLayers.Layer.Editor = OpenLayers.Class(OpenLayers.Layer.Vector, {
         OpenLayers.Layer.Vector.prototype.setMap.apply(this, arguments);
 
         // Add the editing tools to a panel
-         map.addControl  (this.panel);
-        this.addControls (this.controls); // Les contrôles paramètrables
+        map.addControl   (this.panel);
+        this.addControls (this.controls); // Les contrÃ´les paramÃ¨trables
         this.addControls ([ // Les controles de base
             new OpenLayers.Control.CutFeature (this), // Du dernier au premier
             new OpenLayers.Control.ModifyFeature (this),
             new OpenLayers.Control.DrawFeaturePath (this),
             new OpenLayers.Control.Navigation ()
         ]);
-        
+
+        if (this.layers.length)
+            map.addLayers (this.layers);
+
         // Configure the snapping agent
-        var snap = new OpenLayers.Control.Snapping ({layer: this});
+        this.snap.push (this);
+        var snap = new OpenLayers.Control.Snapping ({
+            layer: this,
+            targets: this.snap
+        });
         map.addControl (snap);
         snap.activate ();
     },

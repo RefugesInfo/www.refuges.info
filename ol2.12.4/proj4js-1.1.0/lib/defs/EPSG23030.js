@@ -1,4 +1,4 @@
-//DCM++ © Dominique Cavailhez 2012
+//DCM++ Â© Dominique Cavailhez 2012
 // IDEE Espana
 // From : http://mapa.ign.gob.ar/docs/OpenLayers
 

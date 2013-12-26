@@ -154,7 +154,10 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
                 }),
                 editor = new OpenLayers.Layer.Editor (
                     'Editeur', 
-                    '/exportations/massifs-gml.php' + arg_massifs // Source GML permettant la lecture/ecriture
+                    '/exportations/massifs-gml.php' + arg_massifs, // Source GML permettant la lecture/ecriture
+                    {
+                        snap: [layerMassifs]
+                    }
                 )
             ]);
             // Active automatiquement le contrôle de déplacement

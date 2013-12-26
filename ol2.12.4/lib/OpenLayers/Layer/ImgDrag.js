@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -16,7 +16,7 @@
 
 /**
  * Class: OpenLayers.Layer.ImgDrag
- * Crée un layer vector contenant une image déplaçable qui met à jour des champs lon/lat avec sélection du type de coordonnée
+ * CrÃ©e un layer vector contenant une image dÃ©plaÃ§able qui met Ã  jour des champs lon/lat avec sÃ©lection du type de coordonnÃ©e
  *
  * Inherits from:
  *  - <OpenLayers.Layer.ImgPosition>
@@ -24,30 +24,30 @@
 
 OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenLayers.Layer.VectorClickHover, {
 	
-	// Change la position affichée
- 	setValues: function (ll) { // ll en degrés décimaux
+	// Change la position affichÃ©e
+ 	setValues: function (ll) { // ll en degrÃ©s dÃ©cimaux
 		this.position = ll;
 		this.setPosition (ll); // La carte
-		this.drawSelect (); // Le sélecteur
+		this.drawSelect (); // Le sÃ©lecteur
 		this.drawValues (); // Les champs
 	},
 
-	// Quand la couche est ajoutée à la carte, ajoute également l'écouteur de drag
+	// Quand la couche est ajoutÃ©e Ã  la carte, ajoute Ã©galement l'Ã©couteur de drag
 	setMap: function  (map) {
         OpenLayers.Layer.ImgPosition.prototype.setMap.apply (this, arguments);
 		
-		// Lie la couche à'écouteur de click s'il a été défini avant (sinon, celui ci n'est plus activé)
+		// Lie la couche Ã 'Ã©couteur de click s'il a Ã©tÃ© dÃ©fini avant (sinon, celui ci n'est plus activÃ©)
 		if (map.clickListener) {
 			map.clickListener.layers.push (this);
 			map.clickListener.setLayer (map.clickListener.layers);
 		}
 		
-		// Crée l'écouteur de déplacement
+		// CrÃ©e l'Ã©couteur de dÃ©placement
 		var ctrl = new OpenLayers.Control.DragFeature (this, {
-			onDrag: function (feature) { // On a déplacé l'image
+			onDrag: function (feature) { // On a dÃ©placÃ© l'image
 				var ll = feature.geometry.getBounds().getCenterLonLat()
 				feature.layer.setValues (ll.clone().transform (
-					feature.layer.map.getProjectionObject (), // Transforme les coordonnées de travail (celles de la première carte)
+					feature.layer.map.getProjectionObject (), // Transforme les coordonnÃ©es de travail (celles de la premiÃ¨re carte)
 					feature.layer.map.displayProjection       // En celles courantes sur le site
 				));
 			}
@@ -55,7 +55,7 @@ OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenL
 		map.addControl (ctrl);
 		ctrl.activate ();
 		
-		// Initialise les écouteurs sur l'entrée de données dans les champs de saisie
+		// Initialise les Ã©couteurs sur l'entrÃ©e de donnÃ©es dans les champs de saisie
 		for (l in this.idll)
 			if (this.el.projected[l]) {
 				this.el.projected[l].owner = this; // Pour retrouver le contexte lors du callback
@@ -66,7 +66,7 @@ OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenL
 						unformat (this.owner.el.projected.lat.value)
 					);
 					if (Proj4js.defs [this.owner.projectionType])
-						ll.transform ( // On renvoie les nouvelles coordonnées en lonlat décimal
+						ll.transform ( // On renvoie les nouvelles coordonnÃ©es en lonlat dÃ©cimal
 							new OpenLayers.Projection (this.owner.projectionType),
 							new OpenLayers.Projection ('EPSG:4326')
 						);
@@ -77,19 +77,19 @@ OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenL
 	},
 	
 	//-------------------------------------------------------------
-	// Fonctions à appeler de l'extérieur
+	// Fonctions Ã  appeler de l'extÃ©rieur
 	
-	// Centre l'image au centre de la partie visualisée de la carte
+	// Centre l'image au centre de la partie visualisÃ©e de la carte
 	centre: function  () {
 		var ll = this.map.getCenter ().transform (
-			this.map.getProjectionObject (), // Transforme les coordonnées de travail (celles de la première carte)
+			this.map.getProjectionObject (), // Transforme les coordonnÃ©es de travail (celles de la premiÃ¨re carte)
 			this.map.displayProjection // En celles courantes sur le site
 		);
 		this.setPosition (ll); // De l'image
-		this.setValues   (ll); // Des champs d'édition 
+		this.setValues   (ll); // Des champs d'Ã©dition 
 	},
 	
-	// Centre la partie visualisée de la carte sur l'image
+	// Centre la partie visualisÃ©e de la carte sur l'image
 	recentre: function  () {
 		this.map.setCenter (this.getPosition ().transform (
 			this.map.displayProjection,

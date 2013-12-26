@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -19,8 +19,8 @@
  * Inherits from:
  *  - <OpenLayers.Layer.WMS>
  *
- * clé sur: https://openspace.ordnancesurvey.co.uk/osmapapi/register.do
- * doc sur http://ordnancesurvey.co.uk/oswebsite/web-services/os-openspace/api/index.html
+ * ClÃ© sur: https://openspace.ordnancesurvey.co.uk/osmapapi/register.do
+ * Doc sur http://ordnancesurvey.co.uk/oswebsite/web-services/os-openspace/api/index.html
  * UK Ordonance Survey require the 'attribution', or copyright message, in their T&C for using the service.
  */
 OpenLayers.Layer.OS = OpenLayers.Class(OpenLayers.Layer.WMS, {

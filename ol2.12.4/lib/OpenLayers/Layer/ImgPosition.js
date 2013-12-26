@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -14,7 +14,7 @@
 
 /**
  * Class: OpenLayers.Layer.ImgPosition
- * Crée un layer vector et qui met à jour des champs lon/lat avec sélection du type de coordonnée
+ * CrÃ©e un layer vector et qui met Ã  jour des champs lon/lat avec sÃ©lection du type de coordonnÃ©e
  *
  * Inherits from:
  *  - <OpenLayers.Layer.Img>
@@ -51,7 +51,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 		'EPSG:21781': {lon: 'x', lat: 'y'}
 	},
 	format: {
-		defaut: function (v) { // Prend la partie entière est ajoute un blanc aprés les milliers
+		defaut: function (v) { // Prend la partie entiÃ¨re est ajoute un blanc aprÃ©s les milliers
 			v = Math.abs (v);
 			if (v < 1000) return v;
 			var m = Math.floor (v / 1000); 
@@ -72,18 +72,18 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 			var s = Math.round((mf-m)*60);
 			if (s==60) {m++; s=0;}
 			if (m==60) {d++; m=0;}
-			return '' + d + 'Ëš' + (m < 10 ? '0' : '') + m + "'" + (s < 10 ? '0' : '') + s + '"';
+			return '' + d + 'Â°' + (m < 10 ? '0' : '') + m + "'" + (s < 10 ? '0' : '') + s + '"';
 		}
 	},
 	unformat: {
-		defaut: function (v) { // Juste enlever les séparateurs de miliers
+		defaut: function (v) { // Juste enlever les sÃ©parateurs de miliers
 			return v.replace(/ |\.|,/g,'');
 		},
 		decimal: function (v) {
 			return v;
 		},
 		degminsec: function (v) {
-			var vs = v.replace(/'|"/g,'Ëš').split('Ëš');
+			var vs = v.replace(/'|"/g,'Â°').split('Â°');
 			return vs[0]/1 + vs[1]/60 + vs[2]/3600;
 		}
 	},
@@ -98,12 +98,12 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 	},
 	idSelect: 'select-projection',
 	projectionType: 'decimal',
-	position: null, // Toujours exprimé en format EPSG:4326
+	position: null, // Toujours exprimÃ© en format EPSG:4326
 
     initialize: function (name, options) {
-        OpenLayers.Layer.Img.prototype.initialize.apply (this, arguments); // Initialise la classe héritée
+        OpenLayers.Layer.Img.prototype.initialize.apply (this, arguments); // Initialise la classe hÃ©ritÃ©e
 		
-		// Détection des éléments html concernés
+		// DÃ©tection des Ã©lÃ©ments html concernÃ©s
 		this.el = {};
 		for (e in this.prefixeId)
 			this.el [e] = {
@@ -112,7 +112,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 			};
 		this.elSelect = document.getElementById (this.idSelect);
 
-		// Initialise les écouteurs du select
+		// Initialise les Ã©couteurs du select
 		if (this.elSelect) {
 			this.elSelect.owner = this; // Pour retrouver le contexte lors du callback
 			this.elSelect.onchange = function (e) {
@@ -130,14 +130,14 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 		this.drawValues ();
 	},
 
-	// Réécrit les options du sélecteur de type de projection
+	// RÃ©Ã©crit les options du sÃ©lecteur de type de projection
  	drawSelect: function () {
 		if (this.elSelect) {
 			// On efface tout le contenu
 			while (this.elSelect.hasChildNodes())
 				this.elSelect.removeChild (this.elSelect.firstChild);       
 		
-			// On initialise la liste de séléction avec les projections disponibles pour ce point
+			// On initialise la liste de sÃ©lÃ©ction avec les projections disponibles pour ce point
 			for (i in this.projections)
 				if (!this.bounds [i] ||
 					 this.bounds [i].contains (this.position.lon, this.position.lat)
@@ -149,12 +149,12 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 					option.appendChild (document.createTextNode (this.projections [i]));
 					this.elSelect.appendChild (option);
 				}
-			this.projectionType = this.elSelect.value; // Permet de récupérer la projection si la position est sortie de la zone de validité
+			this.projectionType = this.elSelect.value; // Permet de rÃ©cupÃ©rer la projection si la position est sortie de la zone de validitÃ©
 		}
 	},
 	
  	drawValues: function () { // Ecrit tous les champs
-		// Prépare ce qu'il y a a afficher
+		// PrÃ©pare ce qu'il y a a afficher
 		var data = {
 			titre:  this.find (this.titles, this.projectionType),
 			decimal: this.position,
@@ -167,7 +167,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 		}
 		var format = {
 			projected: this.find (this.format, this.projectionType),
-			decimal: this.format.decimal // Pour enregistrer les points avec 5 décimales
+			decimal: this.format.decimal // Pour enregistrer les points avec 5 dÃ©cimales
 		}
 		// Balaye tous les champs
 		for (e in this.prefixeId)
@@ -193,7 +193,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 				return s [i];
 			else if (!r)
 				r = s [i];
-		return r; // Sinon, retourne la première valeur
+		return r; // Sinon, retourne la premiÃ¨re valeur
 	},
 
     CLASS_NAME: "OpenLayers.Layer.ImgPosition"

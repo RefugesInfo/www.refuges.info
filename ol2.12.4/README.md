@@ -69,6 +69,9 @@ taille police massifs sous IE
 /*************************************************************************************************************************************/
 TODO
 
+Bouton chargement fichier et gen GPS sur les cartes
+Bouton de recherche nom sur la carte
+Sortie du mode full screen avec ESCAPE
 NON IMPLEMENTE: http://trac.osgeo.org/openlayers/ticket/1704 : Malformed URI sequence in Firefox when using special characters in url
 http://webglearth.org/ OL 3D
 OpenLayers.ProxyHost = "proxy.cgi?url=";

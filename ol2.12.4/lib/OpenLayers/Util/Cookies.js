@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Published under the Clear BSD license.
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the full text of the license. */
  
@@ -6,10 +6,10 @@
  * Namespace: Util
  */
 
-// On mémorise le contenu des cookies à l'entrée de la page, sinon ils sont écrasés
+// On mÃ©morise le contenu des cookies Ã  l'entrÃ©e de la page, sinon ils sont Ã©crasÃ©s
 OpenLayers.Util.initialCookies = document.cookie;
 
-OpenLayers.Util.writeCookie = function (nom, valeur, expire) { // "expire" en secondes aprés le temps présent
+OpenLayers.Util.writeCookie = function (nom, valeur, expire) { // "expire" en secondes aprÃ©s le temps prÃ©sent
 	if (typeof expire == 'undefined')
 		expire = false;
 	if (expire == true)

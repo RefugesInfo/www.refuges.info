@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -20,7 +20,7 @@
 
 OpenLayers.Control.LoadFeature = OpenLayers.Class(OpenLayers.Control, {
 
-	notApplicable: !window.FileReader, // Ce contrôle n'est pas utilisable sur les explorateurs n'implémentant pas FileReader (IE < 9)
+	notApplicable: !window.FileReader, // Ce contrÃ´le n'est pas utilisable sur les explorateurs n'implÃ©mentant pas FileReader (IE < 9)
 
     /**
      * APIMethod: activate
@@ -32,15 +32,15 @@ OpenLayers.Control.LoadFeature = OpenLayers.Class(OpenLayers.Control, {
     activate: function () {
         var r = OpenLayers.Control.prototype.activate.apply(this,arguments);
 		
-		if (typeof this.input == 'undefined') { // On crée le formulaire une fois seulement
+		if (typeof this.input == 'undefined') { // On crÃ©e le formulaire une fois seulement
 			this.input = document.createElement ('input');
 			this.input.type = 'file';
 			this.input.style.display = 'none';
-			this.input.control = this; // Pour référence dans le callback
-			this.input.onchange = function() {this.control.getFiles(this)}; // Procédure de callback
-			this.map.div.appendChild(this.input); // On appelle le selécteur de fichier
+			this.input.control = this; // Pour rÃ©fÃ©rence dans le callback
+			this.input.onchange = function() {this.control.getFiles(this)}; // ProcÃ©dure de callback
+			this.map.div.appendChild(this.input); // On appelle le selÃ©cteur de fichier
 		}
-		this.input.click(); // On passe au choix du fichier immédiatement
+		this.input.click(); // On passe au choix du fichier immÃ©diatement
 		
 		return r;
     },
@@ -56,9 +56,9 @@ OpenLayers.Control.LoadFeature = OpenLayers.Class(OpenLayers.Control, {
 				alert ('Failed to load file');
 			else  {
 				var fr = new FileReader();
-				fr.control = this; // Pour référence dans le callback
-				fr.onload = function (e) {this.control.getFile (e)}; // Procédure de callback
-				fr.readAsText (e.files[i]); // On lance la lecture des fichiers sélectionnés
+				fr.control = this; // Pour rÃ©fÃ©rence dans le callback
+				fr.onload = function (e) {this.control.getFile (e)}; // ProcÃ©dure de callback
+				fr.readAsText (e.files[i]); // On lance la lecture des fichiers sÃ©lectionnÃ©s
 			}
     },
 	
@@ -74,7 +74,7 @@ OpenLayers.Control.LoadFeature = OpenLayers.Class(OpenLayers.Control, {
 		});
 		this.layer.addFeatures (format.read (e.target.result));
 		
-		// On recadre à chaque fichier car on ne sait pas si c'est le dernier
+		// On recadre Ã  chaque fichier car on ne sait pas si c'est le dernier
 		this.map.zoomToExtent (this.layer.getDataExtent ()); 
 	},
 

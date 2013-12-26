@@ -1,4 +1,4 @@
-/*DCM++ © Dominique Cavailhez 2012.
+/*DCM++ Â© Dominique Cavailhez 2012
  * Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
@@ -16,8 +16,8 @@
  * Inherits from:
  *  - <OpenLayers.Layer.WMTS>
  *
- * Clé V3 développement sur: http://api.ign.fr
- * Clé V3 production sur: http://pro.ign.fr/api-web => Service en ligne => Service en ligne => S'ABONNER
+ * ClÃ© V3 dÃ©veloppement sur: http://api.ign.fr
+ * ClÃ© V3 production sur: http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
  * Doc sur http://api.ign.fr/jsp/site/Portal.jsp?page_id=6&document_id=80&dossier_id=53
  */
 OpenLayers.Layer.IGN = OpenLayers.Class(OpenLayers.Layer.WMTS, {
