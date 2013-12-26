@@ -216,7 +216,7 @@ function edit_info_polygone()
         $query_update = "UPDATE polygones SET article_partitif	= '{$_POST['article_partitif']}', nom_polygone = '{$_POST['nom_polygone']}' WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_update);
         if (!$res)
-            echo erreur('Requête impossible: '.$query_update);
+            erreur('Requête impossible: '.$query_update);
     }
 
     if ($_POST['creer'])
@@ -225,7 +225,7 @@ function edit_info_polygone()
         $query_no = "SELECT id_polygone FROM polygones WHERE nom_polygone = '{$_POST['nom_polygone']}'";
         $res=$pdo->query($query_no);
         if (!$res)
-            echo erreur('Requête impossible: '.$query_no);
+            erreur('Requête impossible: '.$query_no);
 
         if (!$new_poly=$res->fetch())
         {
@@ -233,12 +233,12 @@ function edit_info_polygone()
             $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone) VALUES (1, '{$_POST['article_partitif']}', '{$_POST['nom_polygone']}')";
             $res=$pdo->query($query_cree);
             if (!$res)
-                echo erreur('Requête impossible: '.$query_cree);
+                erreur('Requête impossible: '.$query_cree);
 
             // Maintenant, on rècupère le n° du polygone créé
             $res=$pdo->query($query_no);
             if (!$res)
-                echo erreur('Requête impossible: '.$query_no);
+                erreur('Requête impossible: '.$query_no);
             else
                 $new_poly=$res->fetch();
         }
@@ -251,7 +251,7 @@ function edit_info_polygone()
         $query_delate = "DELETE FROM polygones WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_delate);
         if (!$res)
-            echo erreur('Requête impossible: '.$query_delate);
+            erreur('Requête impossible: '.$query_delate);
     }
     return null;
 }
