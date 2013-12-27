@@ -208,12 +208,23 @@ function edit_info_polygone()
     if (!$_SESSION['niveau_moderation'])
         return null;
 
-    if (strlen ($_POST['article_partitif']) > 20)
-        echo 'Article partitif trop long (max = 20 caractères): '.$_POST['article_partitif'];
+    // On échappe les simples quotes
+    $article_partitif = str_replace ("'", "''", $_POST ['article_partitif']);
+    $nom_polygone     = str_replace ("'", "''", $_POST ['nom_polygone']);
+
+    if (isset ($_POST ['nom_polygone']) && strlen ($nom_polygone) == 0) {
+        echo 'Nom de massif vide';
+        exit;
+    }
+
+    if (strlen ($article_partitif) > 20) {
+        echo 'Article partitif trop long (max = 20 caractères): '.$article_partitif;
+        exit;
+    }
 
     if ($_POST['renommer'])
     {
-        $query_update = "UPDATE polygones SET article_partitif	= '{$_POST['article_partitif']}', nom_polygone = '{$_POST['nom_polygone']}' WHERE id_polygone = {$_POST['id_polygone']}";
+        $query_update = "UPDATE polygones SET article_partitif	= '$article_partitif', nom_polygone = '$nom_polygone' WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_update);
         if (!$res)
             erreur('Requête impossible',$query_update);
@@ -222,7 +233,7 @@ function edit_info_polygone()
     if ($_POST['creer'])
     {
         // On commence par chercher s'il existe déjà un polygone homonyme
-        $query_no = "SELECT id_polygone FROM polygones WHERE nom_polygone = '{$_POST['nom_polygone']}'";
+        $query_no = "SELECT id_polygone FROM polygones WHERE nom_polygone = '$nom_polygone'";
         $res=$pdo->query($query_no);
         if (!$res)
             erreur('Requête impossible',$query_no);
@@ -230,7 +241,7 @@ function edit_info_polygone()
         if (!$new_poly=$res->fetch())
         {
             // Alors, on le crée
-            $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone) VALUES (1, '{$_POST['article_partitif']}', '{$_POST['nom_polygone']}')";
+            $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone) VALUES (1, '$article_partitif', '$nom_polygone')";
             $res=$pdo->query($query_cree);
             if (!$res)
                 erreur('Requête impossible',$query_cree);
