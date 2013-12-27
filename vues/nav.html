@@ -85,7 +85,9 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
             <fieldset>
                 <legend>Couches</legend>
                 <ul>
-                    <div id="switch_nav"></div>
+                    <li>
+                        <div id="switch_nav"></div>
+                    </li>
                 </ul>
             </fieldset>
 
@@ -140,15 +142,13 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
                 <?if (!$_GET['test_creer']) {?>
                     <p><a href="?test_creer=1">Créer un massif</a></p>
                 <?}else{?>
-                <fieldset>
+                    <fieldset>
                         <legend>Créer un massif</legend>
-                        <form method="post" action="?mode_affichage=edit" >
-                            <label>
+                            <form method="post" action="?mode_affichage=edit" >
                                 Article: <input type="text" name="article_partitif" value="du" /><br>
                                 Nom du massif: <input type="text" name="nom_polygone" value=""><br>
                                 <input type="submit" name="creer" value="Créer">
-                            </label>
-                        </form>
+                            </form>
                     </fieldset>
                 <?}?>
             <?}?>
