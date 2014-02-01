@@ -1,4 +1,4 @@
-/* Librairie minifiée Openlayers générée sur 127.0.0.1 le Thu, 26 Dec 2013 19:51:34 +0100
+/* Librairie minifiée Openlayers générée sur 127.0.0.1 le Sat, 01 Feb 2014 21:54:49 +0100
 
 © Dominique Cavailhez août 2012.
 Published under the Clear BSD license.
@@ -2123,8 +2123,9 @@ el.innerHTML=val;}}},find:function(s,m){var r=null;for(i in s)
 if(i==m)
 return s[i];else if(!r)
 r=s[i];return r;},CLASS_NAME:"OpenLayers.Layer.ImgPosition"});
-OpenLayers.Layer.ImgDrag=OpenLayers.Class(OpenLayers.Layer.ImgPosition,OpenLayers.Layer.VectorClickHover,{setValues:function(ll){this.position=ll;this.setPosition(ll);this.drawSelect();this.drawValues();},setMap:function(map){OpenLayers.Layer.ImgPosition.prototype.setMap.apply(this,arguments);if(map.clickListener){map.clickListener.layers.push(this);map.clickListener.setLayer(map.clickListener.layers);}
+OpenLayers.Layer.ImgDrag=OpenLayers.Class(OpenLayers.Layer.ImgPosition,OpenLayers.Layer.VectorClickHover,{setValues:function(ll,ds){this.position=ll;this.setPosition(ll);if(ds!=undefined)
+this.drawSelect();this.drawValues();},setMap:function(map){OpenLayers.Layer.ImgPosition.prototype.setMap.apply(this,arguments);if(map.clickListener){map.clickListener.layers.push(this);map.clickListener.setLayer(map.clickListener.layers);}
 var ctrl=new OpenLayers.Control.DragFeature(this,{onDrag:function(feature){var ll=feature.geometry.getBounds().getCenterLonLat()
-feature.layer.setValues(ll.clone().transform(feature.layer.map.getProjectionObject(),feature.layer.map.displayProjection));}});map.addControl(ctrl);ctrl.activate();for(l in this.idll)
+feature.layer.setValues(ll.clone().transform(feature.layer.map.getProjectionObject(),feature.layer.map.displayProjection),true);}});map.addControl(ctrl);ctrl.activate();for(l in this.idll)
 if(this.el.projected[l]){this.el.projected[l].owner=this;this.el.projected[l].onchange=function(e){var unformat=this.owner.find(this.owner.unformat,this.owner.projectionType);var ll=new OpenLayers.LonLat(unformat(this.owner.el.projected.lon.value),unformat(this.owner.el.projected.lat.value));if(Proj4js.defs[this.owner.projectionType])
 ll.transform(new OpenLayers.Projection(this.owner.projectionType),new OpenLayers.Projection('EPSG:4326'));this.owner.setValues(ll);this.owner.recentre();}}},centre:function(){var ll=this.map.getCenter().transform(this.map.getProjectionObject(),this.map.displayProjection);this.setPosition(ll);this.setValues(ll);},recentre:function(){this.map.setCenter(this.getPosition().transform(this.map.displayProjection,this.map.getProjectionObject()));},efface:function(){this.el.projected.lon.value='';this.el.projected.lat.value='';},CLASS_NAME:"OpenLayers.Layer.ImgDrag"});

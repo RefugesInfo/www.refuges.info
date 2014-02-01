@@ -25,10 +25,11 @@
 OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenLayers.Layer.VectorClickHover, {
 	
 	// Change la position affichée
- 	setValues: function (ll) { // ll en degrés décimaux
+ 	setValues: function (ll, ds) { // ll en degrés décimaux
 		this.position = ll;
 		this.setPosition (ll); // La carte
-		this.drawSelect (); // Le sélecteur
+        if (ds != undefined)
+            this.drawSelect (); // Le sélecteur
 		this.drawValues (); // Les champs
 	},
 
@@ -49,7 +50,7 @@ OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenL
 				feature.layer.setValues (ll.clone().transform (
 					feature.layer.map.getProjectionObject (), // Transforme les coordonnées de travail (celles de la première carte)
 					feature.layer.map.displayProjection       // En celles courantes sur le site
-				));
+				), true);
 			}
 		});
 		map.addControl (ctrl);
