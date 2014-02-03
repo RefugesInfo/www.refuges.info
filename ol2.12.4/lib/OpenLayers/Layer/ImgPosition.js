@@ -51,7 +51,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 		'EPSG:21781': {lon: 'x', lat: 'y'}
 	},
 	format: {
-		defaut: function (v) { // Prend la partie entière est ajoute un blanc aprés les milliers
+		defaut: function (v) { // Prend la partie entière et insére un blanc avant les milliers
 			v = Math.abs (v);
 			if (v < 1000) return v;
 			var m = Math.floor (v / 1000); 
@@ -76,15 +76,18 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 		}
 	},
 	unformat: {
-		defaut: function (v) { // Juste enlever les séparateurs de miliers
-			return v.replace(/ |\.|,/g,'');
+		defaut: function (v) {
+			v = v.replace(/ /g,''); // Juste enlever les séparateurs de miliers
+			v = v.replace(/,/g,'.').split('.'); // Et ne garder que ce qui est devant la , ou le .
+			return '0' + v [0];
 		},
 		decimal: function (v) {
-			return v;
+			v = v.replace(/,/g,'.'); // Au cas où il y aurait une , à la place du .
+			return '0' + v;
 		},
 		degminsec: function (v) {
-			var vs = v.replace(/'|"/g,'°').split('°');
-			return vs[0]/1 + vs[1]/60 + vs[2]/3600;
+			v = v.replace(/'|"/g,'°').split('°');
+			return '0' + (v[0]/1 + v[1]/60 + v[2]/3600);
 		}
 	},
 	prefixeId: {
