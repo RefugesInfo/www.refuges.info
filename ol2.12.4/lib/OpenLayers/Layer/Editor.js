@@ -43,27 +43,21 @@ OpenLayers.Layer.Editor = OpenLayers.Class(OpenLayers.Layer.Vector, {
      * {Array(<OpenLayers.Format>)}
      * Default format
      */
-    format: new OpenLayers.Format.GML (),
+    format: null,
 
     /**
      * Property: panel
      * {[<OpenLayers.Control.Panel>]}
      * Editor's panel
      */
-    panel: new OpenLayers.Control.Panel ({
-        displayClass: 'olControlEditingToolbar'
-    }),
+    panel: null,
 
     /**
      * Property: controls
      * {[<OpenLayers.Control>]}
      * Controls to be added to the editor
      */
-    controls: [
-        new OpenLayers.Control.SaveFeature (), // Dans l'ordre inverse
-        new OpenLayers.Control.DownloadFeature (),
-        new OpenLayers.Control.LoadFeature ()
-    ],
+    controls: null,
 
     /**
      * Property: format
@@ -111,6 +105,16 @@ OpenLayers.Layer.Editor = OpenLayers.Class(OpenLayers.Layer.Vector, {
             alert (OpenLayers.i18n('uploadFailure') +"\nError "+ e.response.priv.status +" : "+ e.response.priv.statusText +"\n"+ e.response.priv.responseText);
             // Nécéssite le patch finalResponse.priv = response.priv; en ligne 504 de lib/Openlayers/Protocol/HTTP.js
         });
+        // Initialisations
+        this.format = new OpenLayers.Format.GML ();
+        this.panel = new OpenLayers.Control.Panel ({
+            displayClass: 'olControlEditingToolbar'
+        });
+        this.controls = [
+            new OpenLayers.Control.SaveFeature (), // Dans l'ordre inverse
+            new OpenLayers.Control.DownloadFeature (),
+            new OpenLayers.Control.LoadFeature ()
+        ];
 
         OpenLayers.Layer.Vector.prototype.initialize.call (this, name || this.name, {
             styleMap: new OpenLayers.StyleMap({

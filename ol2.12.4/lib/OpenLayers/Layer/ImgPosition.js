@@ -53,7 +53,7 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 	format: {
 		defaut: function (v) { // Prend la partie entière et insére un blanc avant les milliers
 			v = Math.abs (v);
-			if (v < 1000) return v;
+			if (v < 1000) return Math.round (v);
 			var m = Math.floor (v / 1000); 
 			var u = Math.round (v - m * 1000);
 			if (u < 10) u = '00' + u;
@@ -78,8 +78,8 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 	unformat: {
 		defaut: function (v) {
 			v = v.replace(/ /g,''); // Juste enlever les séparateurs de miliers
-			v = v.replace(/,/g,'.').split('.'); // Et ne garder que ce qui est devant la , ou le .
-			return '0' + v [0];
+			v = v.replace(/,/g,'.'); // Au cas où il y aurait une , à la place du .
+			return '0' + v;
 		},
 		decimal: function (v) {
 			v = v.replace(/,/g,'.'); // Au cas où il y aurait une , à la place du .
