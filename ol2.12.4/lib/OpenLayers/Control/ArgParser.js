@@ -120,7 +120,8 @@ OpenLayers.Control.ArgParser = OpenLayers.Class(OpenLayers.Control, {
                                          this.configureLayers);
                 this.configureLayers();
             }
-            if (args.lat && args.lon) {
+//DCM       if (args.lat && args.lon) {
+/*DCM*/     if (args.lat != undefined && args.lon != undefined) {
                 this.center = new OpenLayers.LonLat(parseFloat(args.lon),
                                                     parseFloat(args.lat));
                 if (args.zoom) {

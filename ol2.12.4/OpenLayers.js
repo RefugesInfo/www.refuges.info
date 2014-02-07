@@ -1,4 +1,4 @@
-/* Librairie minifiée Openlayers générée sur 127.0.0.1 le Fri, 07 Feb 2014 18:45:41 +0100
+/* Librairie minifiée Openlayers générée sur 127.0.0.1 le Fri, 07 Feb 2014 21:02:29 +0100
 
 © Dominique Cavailhez août 2012.
 Published under the Clear BSD license.
@@ -601,7 +601,7 @@ OpenLayers.Control.ArgParser=OpenLayers.Class(OpenLayers.Control,{center:null,zo
 return parameters;},setMap:function(map){OpenLayers.Control.prototype.setMap.apply(this,arguments);for(var i=0,len=this.map.controls.length;i<len;i++){var control=this.map.controls[i];if((control!=this)&&(control.CLASS_NAME=="OpenLayers.Control.ArgParser")){if(control.displayProjection!=this.displayProjection){this.displayProjection=control.displayProjection;}
 break;}}
 if(i==this.map.controls.length){var args=this.getParameters();if(args.layers){this.layers=args.layers;this.map.events.register('addlayer',this,this.configureLayers);this.configureLayers();}
-if(args.lat&&args.lon){this.center=new OpenLayers.LonLat(parseFloat(args.lon),parseFloat(args.lat));if(args.zoom){this.zoom=parseFloat(args.zoom);}
+if(args.lat!=undefined&&args.lon!=undefined){this.center=new OpenLayers.LonLat(parseFloat(args.lon),parseFloat(args.lat));if(args.zoom){this.zoom=parseFloat(args.zoom);}
 this.map.events.register('changebaselayer',this,this.setCenter);this.setCenter();}}},setCenter:function(){if(this.map.baseLayer){this.map.events.unregister('changebaselayer',this,this.setCenter);if(this.displayProjection){this.center.transform(this.displayProjection,this.map.getProjectionObject());}
 this.map.setCenter(this.center,this.zoom);}},configureLayers:function(){if(this.layers.length==this.map.layers.length){this.map.events.unregister('addlayer',this,this.configureLayers);for(var i=0,len=this.layers.length;i<len;i++){var layer=this.map.layers[i];var c=this.layers.charAt(i);if(c=="B"){this.map.setBaseLayer(layer);}else if((c=="T")||(c=="F")){layer.setVisibility(c=="T");}}}},CLASS_NAME:"OpenLayers.Control.ArgParser"});
 OpenLayers.Control.Permalink=OpenLayers.Class(OpenLayers.Control,{argParserClass:OpenLayers.Control.ArgParser,element:null,anchor:false,base:'',displayProjection:null,initialize:function(element,base,options){if(element!==null&&typeof element=='object'&&!OpenLayers.Util.isElement(element)){options=element;this.base=document.location.href;OpenLayers.Control.prototype.initialize.apply(this,[options]);if(this.element!=null){this.element=OpenLayers.Util.getElement(this.element);}}
