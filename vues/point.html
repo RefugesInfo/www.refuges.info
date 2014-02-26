@@ -136,8 +136,8 @@
 					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 					<span id="coordonnees-value">
-						<span id="titre-lon">Longitude</span>: <em id="lon"><?=$vue->longitude?></em>
-						<span id="titre-lat">Latitude</span>: <em id="lat"><?=$vue->latitude?></em>
+						<span id="titre-lon">Longitude</span>: <em id="lon"></em>
+						<span id="titre-lat">Latitude</span>: <em id="lat"></em>
 					</span>
 					<select id="select-projection">
 						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
@@ -147,6 +147,8 @@
 						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
 					,
 						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
+					,
+						<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>,<?=$vue->point->altitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
 					)
 				<?}?>
 			</dd>
