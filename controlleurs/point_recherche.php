@@ -66,12 +66,13 @@ if (!empty($_REQUEST))
     {
         $vue->nombre_points=sizeof($points);
         
-        // FIXME sly : et allé, c'est beau l'abstraction en couche mais pour une recherche, on en est à 3 (4?) fois le parcours des résultats
-        foreach ($points as $point)
-        {
-            $point->lien=lien_point($point);
-            $vue->points[]=$point;
-        }
+        // FIXME sly : et aller, c'est beau l'abstraction en couche mais pour une recherche, on en est à 3 (4?) fois le parcours des résultats
+        if (isset($points))
+            foreach ($points as $point)
+            {
+                $point->lien=lien_point($point);
+                $vue->points[]=$point;
+            }
         //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on l'a atteinte ........
         if (!empty($conditions->limite) && $vue->nombre_points == $conditions->limite)
             $vue->limite_atteinte = $conditions->limite;
