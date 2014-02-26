@@ -46,7 +46,8 @@ function inverse_visibility_voisins( id_element )
 			$nombre_branches_a_fermer = sizeof($arbre) - sizeof($commun); 
 			
 			for( $i=0 ;$i< $nombre_branches_a_fermer; $i++ ) { ?>
-				</dl> <? }
+				</dl> 
+			<? }
 						
 			$branches_a_creer = array_diff_assoc($polys, $commun) ;
 			foreach ($branches_a_creer as $branche) { 
@@ -66,7 +67,6 @@ function inverse_visibility_voisins( id_element )
 					<?=$html_annonce_fermeture?>
 				</em>
 				<?=bbcode2html($point->nom_type);
-				//var_dump($point->equivalent_ferme);
 				if ($annonce_fermeture=texte_non_ouverte($point)) {?>
 					<strong>(<?=$annonce_fermeture?>)</strong>
 				<?}?>
@@ -75,7 +75,7 @@ function inverse_visibility_voisins( id_element )
 		for( $i=0 ;$i< sizeof($arbre); $i++ ) { ?>
 				</dl> <? } ?>
 	
-	<h4>Meme chose, presentation differente</h4>
+	<h4>Même chose, présentation différente</h4>
 	
 		<dl>
 			<? foreach ($vue->points as $point) {?>
@@ -114,7 +114,7 @@ function inverse_visibility_voisins( id_element )
 			<? foreach ($vue->nominatim->xml as $points_nominatim) { ?>
 				<dd class="fiche_cadre condense">
 				<em>
-					<a href="<?='/nav?zoom=13&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
+					<a href="<?='/nav?scale=25000&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
 						<?=$points_nominatim['display_name']?>
 					</a>
 				</em>
