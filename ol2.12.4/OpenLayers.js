@@ -1,4 +1,4 @@
-/* Librairie minifiée Openlayers générée sur 127.0.0.1 le Fri, 07 Feb 2014 21:02:29 +0100
+/* Librairie minifiée Openlayers générée sur 127.0.0.1 le Wed, 26 Feb 2014 20:07:08 +0100
 
 © Dominique Cavailhez août 2012.
 Published under the Clear BSD license.
@@ -622,7 +622,9 @@ expire=new Date();document.cookie='Ol'+escape(nom)+'='+escape(valeur)+';path=/'
 OpenLayers.Util.readCookie=function(nom,defaut){var nom='Ol'+escape(nom);var deb=OpenLayers.Util.initialCookies.indexOf(nom+'=');if(deb>=0){deb+=nom.length+1;var fin=OpenLayers.Util.initialCookies.indexOf(';',deb);if(fin<0)fin=OpenLayers.Util.initialCookies.length;return unescape(OpenLayers.Util.initialCookies.substring(deb,fin));}
 return typeof defaut=='undefined'?null:defaut;}
 OpenLayers.Control.ArgParserCookies=OpenLayers.Class(OpenLayers.Control.ArgParser,{scale:null,baseLayer:null,params:{defaut:{zoom:6,lat:47,lon:2,layers:'B'},cookie:OpenLayers.Util.getParameters('?'+OpenLayers.Util.readCookie('params')),permalink:OpenLayers.Util.getParameters(window.location.href)},getParameters:function(url){var plc=this.map.getControlsByClass('OpenLayers.Control.PermalinkCookies');if(plc.length){OpenLayers.Util.extend(this.params.defaut,plc[0].defaut);OpenLayers.Util.extend(this.params.cookie,plc[0].cookie);OpenLayers.Util.extend(this.params.permalink,plc[0].permalink);}
-OpenLayers.Util.extend(this.params.defaut,this.params.cookie);OpenLayers.Util.extend(this.params.defaut,this.params.permalink);this.map.events.register('isinvalidbaselayer',this,this.isinvalidbaselayer);return this.params.defaut;},isinvalidbaselayer:function(args){if(this.map.initialized){this.map.events.unregister('isinvalidbaselayer',this,this.isinvalidbaselayer);return false;}
+if(this.params.cookie.zoom)
+delete this.params.defaut.scale;OpenLayers.Util.extend(this.params.defaut,this.params.cookie);if(this.params.permalink.zoom)
+delete this.params.defaut.scale;OpenLayers.Util.extend(this.params.defaut,this.params.permalink);this.map.events.register('isinvalidbaselayer',this,this.isinvalidbaselayer);return this.params.defaut;},isinvalidbaselayer:function(args){if(this.map.initialized){this.map.events.unregister('isinvalidbaselayer',this,this.isinvalidbaselayer);return false;}
 var extent=args.layer.validExtent?args.layer.validExtent:args.layer.maxExtent;var pos=new OpenLayers.LonLat(this.params.defaut.lon,this.params.defaut.lat).transform('EPSG:4326',args.layer.projection);return!extent.containsLonLat(pos);},configureLayers:function(){if(this.params.defaut.baseLayer){for(var i=0,len=this.map.layers.length;i<len;i++)
 if(this.map.layers[i].isBaseLayer&&this.map.layers[i].name==this.params.defaut.baseLayer){this.map.setBaseLayer(this.map.layers[i]);this.map.events.unregister('addlayer',this,this.configureLayers);}}
 else
