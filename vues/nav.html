@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Bloc HTML réalisant l'affichage de la page des cartes
 
 Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
@@ -28,7 +28,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
                 / Cliquer sur la disquette pour enregistrer
             </span>
         <?}else{?>
-            <?=$vue->titre?> (Maj+clic=nouvel onglet) :
+            <?=$vue->titre?>
         <?}?>
 	</h3>
 </div>
@@ -153,6 +153,9 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
                 <?}?>
             <?}?>
         <?}?>
+        <p>Maj + click icône: ouvre dans une nouvelle fenêtre</p>
+        <p>Ctrl + click icône: ouvre dans un nouvel onglet</p>
+        <p>Maj + click icône: ouvre dans un nouvel onglet et l'affiche</p>
     </div>
 
     <div style="height: 80%;margin-left: 210px;"><?/* "Réserve" l'espace qui va bien à gauche. Pas beau mais j'ai pas trouvé mieux */?>
