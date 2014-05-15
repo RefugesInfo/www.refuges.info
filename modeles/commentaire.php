@@ -274,7 +274,6 @@ function modification_ajout_commentaire($commentaire)
             // tout autant que les 00000000000 ou n'importe quoi qui ne ressemble pas à "2014:04:14 12:45:78" -- sly
             if (preg_match('/^([0-9]{4}):([0-9]{2}):([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/', $date_photo, $m) == 1 && checkdate($m[2], $m[3], $m[1])) 
                     $commentaire->date_photo = "$m[1]-$m[2]-$m[3] $m[4]:$m[5]:$m[6]";
-            print($date_photo.$commentaire->date_photo);
     }
   
     // reparation crado:
