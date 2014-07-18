@@ -266,16 +266,18 @@ function modification_ajout_commentaire($commentaire)
     {
             $commentaire->photo_existe=1;
             $exif_data = @exif_read_data ($commentaire->photo['originale']);
-            $date_photos = $exif_data ['DateTimeOriginal'];
+            $date_photo = $exif_data ['DateTimeOriginal'];
     
             // Testons si on a récupéré une date dans les infos exif de la photo
             // jmb tant que les photos ne sont QUE dans les commentaires
-            // jmb abandon de date_exif_a_mysql, pas utilisée ailleurs et ultra courte ?
-            if (isset($date_photos))
-                    $commentaire->date_photo = str_replace(':','/', strstr($date_photos,' ',true) ) ;
+            // certains appareils photo pas à l'heure enregistrent quand même une date parfois au format "0000:00:00 00:00:00" qui est manifestement invalide, j'ajoute un test plus poussé (mais un peu compliqué) pour éviter aussi les 32 Mars
+            // tout autant que les 00000000000 ou n'importe quoi qui ne ressemble pas à "2014:04:14 12:45:78" -- sly
+            if (preg_match('/^([0-9]{4}):([0-9]{2}):([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/', $date_photo, $m) == 1 && checkdate($m[2], $m[3], $m[1])) 
+                    $commentaire->date_photo = "$m[1]-$m[2]-$m[3] $m[4]:$m[5]:$m[6]";
     }
   
     // reparation crado:
+    // FIXME, tout correspond, y'a pas moyen de faire un foreach sur $commentaire et remplir les champs SQL ?
     isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
     isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
     isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
@@ -285,7 +287,7 @@ function modification_ajout_commentaire($commentaire)
     if (is_numeric($commentaire->demande_correction))
         $champs_sql['demande_correction']=$commentaire->demande_correction;
     
-    if (isset($date_photos))
+    if (isset($commentaire->date_photo))
             $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo);
     
     // fait-on un update ou un insert ?

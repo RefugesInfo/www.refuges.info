@@ -8,7 +8,7 @@
         <meta http-equiv="Content-Script-Type" content="text/javascript" />
 
         <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
-        <script type="text/javascript" src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript" src="../lib/OpenLayers.js?<?=filemtime('../lib/OpenLayers.js')?>"></script>
         <script type="text/javascript">
 
             var map, mri, massifs, cadre, viseur, editeur, displayPosition;

@@ -51,7 +51,11 @@ OpenLayers.Control.ArgParserCookies = OpenLayers.Class(OpenLayers.Control.ArgPar
             OpenLayers.Util.extend (this.params.cookie,    plc[0].cookie);
             OpenLayers.Util.extend (this.params.permalink, plc[0].permalink);
         }
+        if (this.params.cookie.zoom)
+            delete this.params.defaut.scale;
         OpenLayers.Util.extend (this.params.defaut, this.params.cookie);
+        if (this.params.permalink.zoom)
+            delete this.params.defaut.scale;
         OpenLayers.Util.extend (this.params.defaut, this.params.permalink);
 
         // Evite de restituer une couche hors de ses bornes

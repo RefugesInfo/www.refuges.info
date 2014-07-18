@@ -1,4 +1,4 @@
-<b>Openlayers.js généré sur 127.0.0.1 le Sat, 01 Feb 2014 21:54:49 +0100</b><br/>Modifications par rapport à OpenLayers-2.12:<hr/><b>OpenLayers/Map.js</b><br/>
+<b>Openlayers.js généré sur 127.0.0.1 le Wed, 26 Feb 2014 20:07:08 +0100</b><br/>Modifications par rapport à OpenLayers-2.12:<hr/><b>OpenLayers/Map.js</b><br/>
 672++ this.initialized = true;<br/>
 1214--- if (newBaseLayer != this.baseLayer) {<br/>
 1215++ if (newBaseLayer != this.baseLayer &amp;&amp;<br/>
@@ -16,6 +16,9 @@
 1259++ for (f in this.layers[l].features)<br/>
 1260++ if (this.layers[l].features [f] .geometry)<br/>
 1261++ this.layers[l].features [f] .geometry.transform (p ,n);
+<hr/><b>OpenLayers/Control/ArgParser.js</b><br/>
+<i>if (args.lat &amp;&amp; args.lon) {</i><br/>
+124++ if (args.lat != undefined &amp;&amp; args.lon != undefined) {
 <hr/><b>OpenLayers/Util/Cookies.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Control/ArgParserCookies.js</b>: <i>nouveau fichier</i>
 <hr/><b>OpenLayers/Control/PermalinkCookies.js</b>: <i>nouveau fichier</i>

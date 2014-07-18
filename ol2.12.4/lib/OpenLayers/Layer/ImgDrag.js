@@ -25,10 +25,10 @@
 OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenLayers.Layer.VectorClickHover, {
 	
 	// Change la position affichée
- 	setValues: function (ll, ds) { // ll en degrés décimaux
+ 	setValues: function (ll, nolselectchange) { // ll en degrés décimaux
 		this.position = ll;
 		this.setPosition (ll); // La carte
-        if (ds != undefined)
+        if (nolselectchange == undefined)
             this.drawSelect (); // Le sélecteur
 		this.drawValues (); // Les champs
 	},
@@ -50,7 +50,7 @@ OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenL
 				feature.layer.setValues (ll.clone().transform (
 					feature.layer.map.getProjectionObject (), // Transforme les coordonnées de travail (celles de la première carte)
 					feature.layer.map.displayProjection       // En celles courantes sur le site
-				), true);
+				));
 			}
 		});
 		map.addControl (ctrl);
@@ -71,7 +71,7 @@ OpenLayers.Layer.ImgDrag = OpenLayers.Class (OpenLayers.Layer.ImgPosition, OpenL
 							new OpenLayers.Projection (this.owner.projectionType),
 							new OpenLayers.Projection ('EPSG:4326')
 						);
-					this.owner.setValues (ll);
+					this.owner.setValues (ll, true);
 					this.owner.recentre (); // Recentre la carte sur la nouvelle position
 				}
 			}

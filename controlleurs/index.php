@@ -13,7 +13,7 @@ require_once ("polygone.php");
 require_once ("wiki.php");
 
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
-$vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js';
+$vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
 
 $conditions_notre_zone = new stdClass;
 $conditions_notre_zone->ids_polygones=$config['id_zone_accueil'];
