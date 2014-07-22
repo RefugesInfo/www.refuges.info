@@ -36,26 +36,35 @@
 			<article id="aide" style="display:none;">
 				<h3>Légende de la carte :</h3>
 				<ul>
-					<li><div class="titreliste"><img src="./images/icones/abri.png"> Abri</div><p>Un abri un bâtiment comportant au moins un toit permettant d'être au sec, il peut très bien lui manquer un mur ou plus.</i></p></li>
-					<li><div class="titreliste"><img src="./images/icones/bivouac.png"> Bivouac</div><p>Une aire de bivouac est un espace aproprié pour planter une tente, pour une nuit seulement dans la plupart des cas, c'est souvent une zone définie à l'intérieur d'un parc national où bivouaquer est réglementé.</p></li>
-					<li><div class="titreliste"><img src="./images/icones/cabane-non-gardee.png"> Cabane</div><p>Un cabane non gardée est une cabane fermée où il est possible de se mettre à l'abris, parfois de dormir. Ouverte par simple générosité, il n'y a aucune garantie de la voir ouverte.</p></li>
-					<li><div class="titreliste"><img src="./images/icones/cabane_cle.png"> Cabane fermée</div></li>
-					<li><div class="titreliste"><img src="./images/icones/refuge-garde.png"> Refuge gardé</div><p>Un refuge gardé vous assure une nuit dans un bâtiment de qualitée géré par du personnel. Vous pouvez en général y dormir et y manger, en échange d'un paiement. Il est conseiller d'appeler au préalable pour réserver.</p></li>
-					<li><div class="titreliste"><img src="./images/icones/gite-d-etape.png"> Gîte</div><p>Un gîte d'étape fournit l'essentiel pour passer la nuit dans les conditions idéales. Vous aurez un service de qualité pour un prix généralement inférieur à une nuit en hôtel.</p></li>
-					<li><div class="titreliste"><img src="./images/icones/inutilisable.png"> Inutilisable</div></li>
-					<li><div class="titreliste"><img src="./images/icones/lac.png"> Lac</div></li>
-					<li><div class="titreliste"><img src="./images/icones/point-d-eau.png"> Point d'eau</div></li>
-					<li><div class="titreliste"><img src="./images/icones/point-de-passage.png"> Point de passage</div><p>Point de passage fréquent de randonneur souvent du fait du relief (par exemple les cols).</p></li>
-					<li><div class="titreliste"><img src="./images/icones/sommet.png"> Sommet</div></li>
-				</ul>
-				<br>
-				<p class="sautdeligne"></p>
-				<a class="retour" href="#" onclick="displayBlock('index')">Menu Principal</a>
-				<a class="suivant" href="#" onclick="displayBlock('carte')">La Carte</a>				
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/abri.png"> Abri</div><p>Un abri est une construction sommaire où aucune place n'est prévue pour dormir. L'isolation y est médiocre voire nulle, mais un abri peut servir pour se réfugier des intempéries.</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/bivouac.png"> Bivouac</div><p>Une aire de bivouac est un espace aproprié pour planter une tente, pour une nuit seulement dans la plupart des cas, c'est souvent une zone définie à l'intérieur d'un parc national où bivouaquer est réglementé.</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/cabane-non-gardee.png"> Cabane</div><p>Un cabane non gardée est une cabane fermée où il est possible de se mettre à l'abri, et de passer une nuit. Ouverte par simple générosité, il n'y a aucune garantie de la voir ouverte le jour de votre passage.</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/cabane_cle.png"> Cabane dont il faut la clé</div><p>Cabane où l'accès est réglementé par le propriétaire au le responsable à qui il faut demander la clé au préalable. L'accès y est gratuit mais il est impératif de prévoir à l'avance. La marche à suivre est dans la description de la cabane.</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/gite-d-etape.png"> Gîte</div><p>Un gîte d'étape fournit l'essentiel pour passer la nuit dans les conditions idéales. Vous aurez un service de qualité pour un prix généralement inférieur à une nuit en hôtel.</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/inutilisable.png"> Cabane inutilisable</div><p>Détruite ou fermée à clé, vous ne pouvez pas compter sur cette cabane pour y dormir ou vous y abriter.</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/lac.png"> Lac</div></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/point-d-eau.png"> Point d'eau</div></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/point-de-passage.png"> Point de passage</div><p>Point de passage fréquent de randonneur souvent du fait du relief (par exemple les cols).</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/refuge-garde.png"> Refuge gardé</div><p>Un refuge gardé vous assure une nuit dans un bâtiment de qualitée géré par du personnel. Vous pouvez en général y dormir et y manger, en échange d'un paiement. Il est conseiller d'appeler au préalable pour réserver. Une partie est obligatoirement ouverte toute l'année.</p></li>
+					<li class="blocklist"><div class="titreliste"><img src="./images/icones/sommet.png"> Sommet</div></li>
+				</ul>		
 			</article>
 			<!-- Partie carte -->
 			<article id="carte" style="display:none;">
-				<a class="retour" href="#" onclick="displayBlock('index')">Menu Principal</a>
+				<div id="map"></div>
+			</article>
+			<!-- Partie licence -->
+			<article id="licence" style="display:none;">
+				<h3>Licence et crédits :</h3>
+				<ul>
+					<li class="blocklist"><div class="titreliste">Carte</div><p>La carte est issue des données OpenStreetMap :
+						<ul><li>Données : &copy; Contributeurs d'OpenStreetMap sous licence ODbL</li>
+							<li>Tuiles : &copy; Thunderforest.com sous licence CC-BY-SA 2.0</li></ul></p></li>
+					<li class="blocklist"><div class="titreliste">Images</div><p>Les images utilisées sur ce sites sont les réalisations de :
+						<ul><li>Dominique pour les icônes de la carte</li>
+							<li>Sagive SEO pour la texture gris foncé</li>
+							<li>Haris Šumić pour la texture gris clair</li></ul></p></li>
+				</ul>
 				<div id="map"></div>
 			</article>
 			<!-- Partie patienter -->
@@ -73,13 +82,13 @@
 		</section>
 
 		<footer>
-			<a target="_blank" href="http://creativecommons.org/licenses/by-sa/2.0/deed.fr">
-				<img src="./images/licence.png" alt="CC BY SA 2.0" />
-			</a>
-			-
-			<a target="_blank" href="/wiki/licence/" title="Version ordinateur">
-				Plus d'infos sur la licence
-			</a>
+			<ul>
+				<li><a href="#" onclick="displayBlock('index')"><img src="images/menu_accueil.svg"></a></li>
+				<li><a href="#" onclick="displayBlock('carte')"><img src="images/menu_carte.svg"></a></li>
+				<li><a href="#" onclick="displayBlock('aide')"><img src="images/menu_aide.svg"></a></li>
+				<li><a href="#" onclick=""><img src="images/menu_parametres.svg"></a></li>
+				<li><a href="#" onclick=""><img src="images/menu_licence.svg"></a></li>
+			</ul>
 		</footer>
 
 		<script src="./js/index.js"></script>

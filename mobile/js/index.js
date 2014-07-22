@@ -132,7 +132,7 @@ function pointRecu() {
 	if (ajaxRequest.readyState==4) {
 		if (ajaxRequest.status==200) {
 			point=eval("(" + ajaxRequest.responseText + ")"); // On enregistre la variable GeoJSON en local
-			document.getElementById('infosPoint').innerHTML = '<a class="retour" href="#" onclick="displayBlock(\'carte\');">Retour carte</a><span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /><span id="couverturePoint"></span><span id="eauPoint"></span><span id="boisPoint"></span><span id="latrinePoint"></span><span id="manquemurPoint"></span><span id="poelePoint"></span><span id="chemineePoint"></span><span id="clefPoint"></span><span id="matelasPoint"></span><span id="ravitaillementeauPoint"></span><span id="sitewebPoint"></span></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
+			document.getElementById('infosPoint').innerHTML = '<span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /><span id="couverturePoint"></span><span id="eauPoint"></span><span id="boisPoint"></span><span id="latrinePoint"></span><span id="manquemurPoint"></span><span id="poelePoint"></span><span id="chemineePoint"></span><span id="clefPoint"></span><span id="matelasPoint"></span><span id="ravitaillementeauPoint"></span><span id="sitewebPoint"></span></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
 			document.getElementById('titrePoint').innerHTML = point.properties.nom;
 			document.getElementById('idPoint').innerHTML = "(Point n°<a target=\"_blank\" href='http://www.refuges.info/point/" + point.properties.id + "' title='Informations détaillées sur le point, version PC'>" + point.properties.id + "</a>)<br />Édité le " + point.properties.derniere_modif;
 			document.getElementById('typePoint').innerHTML = point.properties.type + "<br />" + point.properties.nb_places + " place(s)";
@@ -196,7 +196,6 @@ function displayBlock(bloc) {
 		points.style.display = 'none';
 		carte.style.display = 'block';
 		header.style.display = 'none';
-		footer.style.display = 'none';
 		index.style.display = 'none';
 		aide.style.display = 'none';
 		patientez.style.display = 'none';
@@ -211,7 +210,6 @@ function displayBlock(bloc) {
 		points.style.display = 'none';
 		carte.style.display = 'none';
 		header.style.display = 'none';
-		footer.style.display = 'none';
 		index.style.display = 'none';
 		aide.style.display = 'none';
 		patientez.style.display = 'block';
@@ -221,7 +219,6 @@ function displayBlock(bloc) {
 		points.style.display = 'block';
 		carte.style.display = 'none';
 		header.style.display = 'none';
-		footer.style.display = 'none';
 		index.style.display = 'none';
 		aide.style.display = 'none';
 		patientez.style.display = 'none';
@@ -231,7 +228,6 @@ function displayBlock(bloc) {
 		points.style.display = 'none';
 		carte.style.display = 'none';
 		header.style.display = 'block';
-		footer.style.display = 'none';
 		index.style.display = 'none';
 		aide.style.display = 'block';
 		patientez.style.display = 'none';
@@ -241,7 +237,6 @@ function displayBlock(bloc) {
 		points.style.display = 'none';
 		carte.style.display = 'none';
 		header.style.display = 'block';
-		footer.style.display = 'block';
 		index.style.display = 'block';
 		aide.style.display = 'none';
 		patientez.style.display = 'none';
