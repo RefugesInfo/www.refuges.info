@@ -18,15 +18,23 @@
 	</head>
 
 	<body>
-		<header>
+		<header style="display:none;">
 			<p id="header">Refuges.info</p>
 		</header>
 		
 		<!-- Contenu du site web -->
 
 		<section>
+			<!-- Partie patienter -->
+			<article id="patientez">
+				<div class="loading-wrap">
+					<div class="triangle1"></div>
+					<div class="triangle2"></div>
+					<div class="triangle3"></div>
+				</div>
+			</article>
 			<!-- Partie accueil -->
-			<article id="index">
+			<article id="index" style="display:none;">
 				<p>Refuges.info vous permet d'afficher sur une carte, des refuges, abris et autres points d'intérêt pour les randonneurs. Ils vous est alors possible de cliquer sur un point pour avoir des informations pratiques sur celui-ci.</p>
 				<a class="btnbleu" id="affichecarte" href="#" onclick="displayBlock('carte')">Afficher la carte</a>
 				<a class="btnbleu" id="afficheaide" href="#" onclick="displayBlock('aide')">Afficher l'aide</a>
@@ -67,21 +75,13 @@
 				</ul>
 				<div id="map"></div>
 			</article>
-			<!-- Partie patienter -->
-			<article id="patientez" style="display:none;">
-				<div class="loading-wrap">
-					<div class="triangle1"></div>
-					<div class="triangle2"></div>
-					<div class="triangle3"></div>
-				</div>
-			</article>
 			<!-- Partie infoPoint -->
 			<article id="infosPoint" style="display:none;">
 				<!-- Tout est géré par un innerHTML -->
 			</article>
 		</section>
 
-		<footer>
+		<footer style="display:none;">
 			<ul>
 				<li><a href="#" onclick="displayBlock('index')"><img src="images/menu_accueil.svg"></a></li>
 				<li><a href="#" onclick="displayBlock('carte')"><img src="images/menu_carte.svg"></a></li>

@@ -238,6 +238,7 @@ function displayBlock(bloc) {
 		carte.style.display = 'none';
 		header.style.display = 'block';
 		index.style.display = 'block';
+		footer.style.display = 'block';
 		aide.style.display = 'none';
 		patientez.style.display = 'none';
 		main.style.height = '';
@@ -249,3 +250,7 @@ function removeElement(id) {
   var element = document.getElementById(id);
   element.parentNode.removeChild(element);
 }
+
+$(window).load(function() { 
+   displayBlock('index');
+});
