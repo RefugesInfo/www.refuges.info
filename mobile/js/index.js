@@ -43,7 +43,7 @@ function initmap(){
 	map.addLayer(MRI); // On ajoute le calque MRI à la carte
 
 	// Ajout de l'icone fullscreen
-	L.control.scale({position: 'topright'}).addTo(map);
+	L.control.scale().addTo(map);
 
 	// Action en cas des évenements suivant
 	map.on('locationfound', onLocationFound);
@@ -183,11 +183,13 @@ function displayBlock(bloc) {
 	var carte = document.getElementById('carte');
 	var index = document.getElementById('index');
 	var aide = document.getElementById('aide');
+	var parametres = document.getElementById('parametres');
+	var licence = document.getElementById('licence');
 	var patientez = document.getElementById('patientez');
 	var points = document.getElementById('infosPoint');
 	var header = document.querySelector('header');
 	var footer = document.querySelector('footer');
-	var main = document.querySelector('section');
+	var section = document.querySelector('section');
 
 
 	if(bloc == 'carte') {
@@ -196,8 +198,10 @@ function displayBlock(bloc) {
 		header.style.display = 'none';
 		index.style.display = 'none';
 		aide.style.display = 'none';
+		parametres.style.display = 'none';
+		licence.style.display = 'none';
 		patientez.style.display = 'none';
-		main.style.height = '100%';
+		section.style.height = '100%';
 		if (init!=1) {
 			initmap();
 			init = 1;
@@ -210,8 +214,10 @@ function displayBlock(bloc) {
 		header.style.display = 'none';
 		index.style.display = 'none';
 		aide.style.display = 'none';
+		parametres.style.display = 'none';
+		licence.style.display = 'none';
 		patientez.style.display = 'block';
-		main.style.height = '100%';
+		section.style.height = '';
 	}
 	else if(bloc == 'points') {
 		points.style.display = 'block';
@@ -219,8 +225,10 @@ function displayBlock(bloc) {
 		header.style.display = 'none';
 		index.style.display = 'none';
 		aide.style.display = 'none';
+		parametres.style.display = 'none';
+		licence.style.display = 'none';
 		patientez.style.display = 'none';
-		main.style.height = '';
+		section.style.height = '';
 	}
 	else if(bloc == 'aide') {
 		points.style.display = 'none';
@@ -228,8 +236,32 @@ function displayBlock(bloc) {
 		header.style.display = 'block';
 		index.style.display = 'none';
 		aide.style.display = 'block';
+		parametres.style.display = 'none';
+		licence.style.display = 'none';
 		patientez.style.display = 'none';
-		main.style.height = '';
+		section.style.height = '';
+	}
+	else if(bloc == 'parametres') {
+		points.style.display = 'none';
+		carte.style.display = 'none';
+		header.style.display = 'block';
+		index.style.display = 'none';
+		aide.style.display = 'none';
+		parametres.style.display = 'block';
+		licence.style.display = 'none';
+		patientez.style.display = 'none';
+		section.style.height = '';
+	}
+	else if(bloc == 'licence') {
+		points.style.display = 'none';
+		carte.style.display = 'none';
+		header.style.display = 'block';
+		index.style.display = 'none';
+		aide.style.display = 'none';
+		parametres.style.display = 'none';
+		licence.style.display = 'block';
+		patientez.style.display = 'none';
+		section.style.height = '';
 	}
 	else {
 		points.style.display = 'none';
@@ -238,8 +270,10 @@ function displayBlock(bloc) {
 		index.style.display = 'block';
 		footer.style.display = 'block';
 		aide.style.display = 'none';
+		parametres.style.display = 'none';
+		licence.style.display = 'none';
 		patientez.style.display = 'none';
-		main.style.height = '';
+		section.style.height = '';
 	}
 }
 

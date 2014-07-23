@@ -60,21 +60,22 @@ footer li {
 }
 
 footer li a {
+	display: block;
 	width: 100%;
 	position: relative;
 	height: 100%;
 	text-align: center;
+	fill: white;
+}
+
+footer li a:hover {
+	fill: #00caf2;
 }
 
 footer li a svg {
 	height: 28px;
 	width: 28px;
 	margin-top: 6px;
-	fill: white;
-}
-
-footer li a svg:hover {
-	fill: #00caf2;
 }
 
 article:not(#carte) {
@@ -109,6 +110,13 @@ article:not(#carte) {
 @keyframes lienhover
 {
 	100% {background-color: #00B5D9; box-shadow: 0 0 5px black; text-shadow: 1px 1px 0 black;}
+}
+
+#externalLinkIcon {
+	float: right;
+	fill: white;
+	height: 50px;
+	margin: -12px;
 }
 
 /*************************************** PAGE de la CARTE ***************************************/
