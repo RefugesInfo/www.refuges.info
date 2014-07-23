@@ -28,15 +28,8 @@ body {
 	font-family: sans-serif;
 }
 
-section {
-	padding-bottom: 40px;
-}
-
-/*************************************** PAGE de l'INDEX ***************************************/
-
 header, #titrePoint {
 	background: url('../images/grey_dark.png') #555;
-	width: 100%;
 	min-height: 50px;
 	box-shadow: inset 0 10px 15px rgba(150,150,150,0.5), 0 0 10px black;
 	border-bottom: 1px solid #ccc;
@@ -45,7 +38,49 @@ header, #titrePoint {
 	font-variant: small-caps;
 	font-weight: lighter;
 	text-shadow: 0 0 3px black;
+	padding: 0 15px;
 }
+
+footer {
+	background: rgba(0,0,0,0.85);
+	width: 100%;
+	height: 40px;
+	box-shadow: 0 -1px 0 black;
+	border-top: 1px solid #aaa;
+	position: fixed;
+	bottom: 0;
+}
+
+footer li {
+	width: 20%;
+	height: 100%;
+	float: left;
+	list-style: none;
+	text-align: center;
+}
+
+footer li a {
+	width: 100%;
+	position: relative;
+	height: 100%;
+	text-align: center;
+}
+
+footer li a img {
+	height: 24px;
+	margin-top: 8px;
+	fill: red;
+}
+
+footer li a img *:hover {
+	fill: white;
+}
+
+article:not(#carte) {
+	padding: 10px 15px 51px 15px;
+}
+
+/*************************************** PAGE de l'INDEX ***************************************/
 
 #index p {
 	text-shadow: 0px 1px 0px rgba(255,255,255,1);
@@ -89,45 +124,11 @@ header, #titrePoint {
 	margin: 15px auto 50px auto;
 }
 
-footer {
-	background: url('../images/grey_dark.png') #555;
-	width: 100%;
-	height: 40px;
-	box-shadow: inset 0 15px 20px rgba(50,50,50,0.5), 0 0 10px black;
-	border-top: 1px solid #ccc;
-	position: fixed;
-	bottom: 0;
-}
-
-footer li {
-	width: 20%;
-	height: 100%;
-	float: left;
-	list-style: none;
-	text-align: center;
-}
-
-footer li a {
-	width: 100%;
-	position: relative;
-	height: 100%;
-	text-align: center;
-}
-
-footer li a img {
-	height: 32px;
-	margin-top: 4px;
-}
-
-footer li a img *:hover {
-	fill: white;
-}
 
 /*************************************** PAGE de la CARTE ***************************************/
 
 #carte {
-	height: 100%;
-	margin-bottom: 40px;
+	height: calc(100% - 41px);
 }
 
 #map {
@@ -248,6 +249,7 @@ footer li a img *:hover {
 	margin-top: 15px;
 	box-shadow: 0 0 3px #333333;
 	background: #cecece;
+	list-style: none;
 }
 
 .titreliste {
@@ -265,20 +267,21 @@ footer li a img *:hover {
 }
 
 #aide > ul > li > * {
-		padding: 5px;
+	padding: 5px;
 }
 
 /*************************************** PAGE d'INFOS sur un POINT ***************************************/
 
 #titrePoint {
 	display: block;
+	margin: -10px -15px 0 -15px;
 }
 
 #fichePoint {
 	background: #cdcdcd;
 	box-shadow: #aaaaaa 0 2px 5px;
 	padding: 3px;
-	margin-bottom: 15px;
+	margin: 0 -15px 15px -15px;
 }
 
 #idPoint {
@@ -290,6 +293,11 @@ footer li a img *:hover {
 #typePoint {
 	text-shadow: 0px 1px 0px rgba(255,255,255,1);
 	font-weight: bold;
+	text-transform: lowercase;
+}
+
+#typePoint:first-letter {
+	text-transform: uppercase;
 }
 
 #coordPoint, #rmqPoint, #proprioPoint, #accesPoint, #infoscompPoint, #pointsprochesPoint {
@@ -306,7 +314,7 @@ footer li a img *:hover {
 	background: #cdcdcd;
 	box-shadow: #aaaaaa 0 -3px 3px;
 	display: block;
-	margin: 15px 0 0 0;
+	margin: 15px -15px -10px -15px;
 	z-index: 1;
 	padding: 5px;
 }
