@@ -49,6 +49,7 @@ footer {
 	border-top: 1px solid #aaa;
 	position: fixed;
 	bottom: 0;
+	z-index: 100;
 }
 
 footer li {
@@ -101,6 +102,12 @@ article:not(#carte) {
 	padding: 15px;
 	margin: 10px 0;
 	font-size: 20px;
+	text-shadow: 1px 1px 0 black;
+}
+
+.btn span {
+	position: relative;
+	z-index: 2;
 }
 
 .btn:hover {
@@ -109,14 +116,20 @@ article:not(#carte) {
 
 @keyframes lienhover
 {
-	100% {background-color: #00B5D9; box-shadow: 0 0 5px black; text-shadow: 1px 1px 0 black;}
+	100% {background-color: #00B5D9; box-shadow: 0 0 5px black;}
 }
 
 #externalLinkIcon {
+	position: relative;
+	z-index: 1;
 	float: right;
-	fill: white;
+	fill: #aaa;
 	height: 50px;
-	margin: -12px;
+	margin: -12px -12px 0 -40px;
+}
+
+.clear {
+	clear: both;
 }
 
 /*************************************** PAGE de la CARTE ***************************************/
