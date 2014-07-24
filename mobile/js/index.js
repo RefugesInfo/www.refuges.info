@@ -44,10 +44,11 @@ function initmap(){
 
 	// Ajout de l'icone fullscreen
 	L.control.scale().addTo(map);
-
+	
 	// Action en cas des évenements suivant
 	map.on('locationfound', onLocationFound);
 	map.on('moveend', onMapMove);
+	onMapMove();
 }
 
 // Fonction lancée quand on veux afficher les points des refuges
