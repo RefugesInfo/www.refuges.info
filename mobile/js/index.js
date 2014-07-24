@@ -94,7 +94,9 @@ function stateChanged() {
 				var plotmark = new L.Marker(plotll, {icon: cabaneIcon}); // On créé un marqueur (bleu par défaut)
 				map.addLayer(plotmark); // On ajoute un calque pour ce marqueur
 				plotmark.data=plotlist.features[i]; // Useless ?
-				plotmark.bindPopup('<a href="#" onclick="affichePoint(' + plotlist.features[i].properties.id_point + ');">' + plotlist.features[i].properties.nom + '</a>'); // On ajoute au marqueur un popup contenant le lien
+				var popup = new L.Rrose({autoPan: false})
+				    .setContent('<a href="#" onclick="affichePoint(' + plotlist.features[i].properties.id_point + ');">' + plotlist.features[i].properties.nom + '</a>');
+				plotmark.bindPopup(popup); // On ajoute au marqueur un popup contenant le lien
 				plotlayers.push(plotmark);
 			}
 		}
