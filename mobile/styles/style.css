@@ -128,10 +128,6 @@ article:not(#carte) {
 	margin: -12px -12px 0 -40px;
 }
 
-.clear {
-	clear: both;
-}
-
 /*************************************** PAGE de la CARTE ***************************************/
 
 #carte {
