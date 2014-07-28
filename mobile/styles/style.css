@@ -6,8 +6,10 @@ Sommaire :
  2. Menu
  3. Contenu
  4. Carte
- 5. Infos point
- 6. Pied de page
+ 5. Aide
+ 6. Licence
+ 7. Infos point
+ 8. Pied de page
 ***********************************************************************************************/
 
 
@@ -24,25 +26,66 @@ html {
 body {
 	height: 100%;
 	min-width: 320px;
-	background: #dedede;
-	font-family: sans-serif;
+	background: url('../images/grey_light.png') #dedede;
+	font-family: 'Open Sans', 'Fira Sans', sans-serif;
 }
 
-/*************************************** PAGE de l'INDEX ***************************************/
-
-header {
-	background: #331900;
-	width: 100%;
-	height: 50px;
-	border-bottom: 6px solid #55AACC;
-}
-
-#header {
+header, #titrePoint {
+	background: url('../images/grey_dark.png') #555;
+	min-height: 50px;
+	box-shadow: inset 0 10px 15px rgba(150,150,150,0.5), 0 0 10px black;
+	border-bottom: 1px solid #ccc;
 	color: #fbfbfb;
 	font-size: 45px;
 	font-variant: small-caps;
 	font-weight: lighter;
+	text-shadow: 0 0 3px black;
+	padding: 0 15px;
 }
+
+footer {
+	background: rgba(0,0,0,0.85);
+	width: 100%;
+	height: 40px;
+	box-shadow: 0 -1px 0 black;
+	border-top: 1px solid #aaa;
+	position: fixed;
+	bottom: 0;
+	z-index: 100;
+}
+
+footer li {
+	width: 20%;
+	height: 100%;
+	float: left;
+	list-style: none;
+	text-align: center;
+}
+
+footer li a {
+	display: block;
+	width: 100%;
+	position: relative;
+	height: 100%;
+	text-align: center;
+	fill: white;
+}
+
+footer li a:hover {
+	fill: #00caf2;
+}
+
+footer li a svg {
+	height: 28px;
+	width: 28px;
+	margin-top: 6px;
+}
+
+article:not(#carte) {
+	padding: 10px 15px 51px 15px;
+}
+
+/*************************************** PAGE de l'INDEX ***************************************/
 
 #index p {
 	text-shadow: 0px 1px 0px rgba(255,255,255,1);
@@ -53,100 +96,48 @@ header {
 
 }
 
-.btnbleu {
-	color: #ffffff;
-	font-size: 20px;
-	padding-top: 6px;
-	padding-right: 12px;
-	padding-bottom: 6px;
-	padding-left: 12px;
-	text-decoration: none;
-	border-radius: 15px;
-	box-shadow: 0px 1px 3px #666666;
-	text-shadow: 1px 1px 3px #666666;
-	border: solid #55AACC 1px;
-	background: -webkit-gradient(linear, 0 0, 0 100%, from(#55AACC), to(#4488AA));
-	background: -moz-linear-gradient(top, #55AACC, #4488AA);
+.btn {
+	background-color: #666;
+	color: white;
 	display: block;
-	width: 90%;
-	margin: 15px auto;
-}
-
-.btnbleu:hover {
-	background: -webkit-gradient(linear, 0 0, 0 100%, from(#4488AA), to(#337788));
-	background: -moz-linear-gradient(top, #4488AA, #337788);
-}
-
-#afficheaide {
-	opacity: 0.5;
-}
-
-#affichesite {
-	opacity: 0.5;
-	margin: 15px auto 50px auto;
-}
-
-footer {
-	padding: 5px 0 2px 0;
-	text-align: center;
-	height: 18px;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	font-size: 10px;
-	color: #fbfbfb;
-	vertical-align: middle;
-	background: #331900;
-	width: 100%;
-	border-top: 6px solid #55AACC;
-}
-
-footer a {
 	text-decoration: none;
-	vertical-align: middle;
-	color: #fbfbfb;
+	padding: 15px;
+	margin: 10px 0;
+	font-size: 20px;
+	text-shadow: 1px 1px 0 black;
 }
 
-footer a img {
-	vertical-align: middle;
+.btn span {
+	position: relative;
+	z-index: 2;
+}
+
+.btn:hover {
+	animation: lienhover ease-in-out both 300ms;
+}
+
+@keyframes lienhover
+{
+	100% {background-color: #00B5D9; box-shadow: 0 0 5px black;}
+}
+
+#externalLinkIcon {
+	position: relative;
+	z-index: 1;
+	float: right;
+	fill: #aaa;
+	height: 50px;
+	margin: -12px -12px 0 -40px;
 }
 
 /*************************************** PAGE de la CARTE ***************************************/
 
-#carte, #map {
+#carte {
+	height: calc(100% - 41px);
+}
+
+#map {
 	height: 100%;
-}
-
-.retour {
-	text-decoration: none;
-	padding: 4px;
-	z-index: 1001;
-	color: #fbfbfb;
-	background: #212121;
-	text-shadow: 0px 1px 0px rgba(255,255,255,0.2);
-	border-top: #777777 solid 1px;
-	border-right: #777777 solid 1px;
-	border-top-right-radius: 5px;
-	box-shadow: black 0px 0px 5px;
-	position: fixed;
-	bottom: 0;
-	left: 0;
-}
-
-.suivant {
-	text-decoration: none;
-	padding: 4px;
-	z-index: 1001;
-	color: #fbfbfb;
-	background: #212121;
-	text-shadow: 0px 1px 0px rgba(255,255,255,0.2);
-	border-top: #777777 solid 1px;
-	border-left: #777777 solid 1px;
-	border-top-left-radius: 5px;
-	box-shadow: black 0px 0px 5px;
-	position: fixed;
-	bottom: 0;
-	right: 0;
 }
 
 /*************************************** PAGE de CHARGEMENT ***************************************/
@@ -170,7 +161,7 @@ footer a img {
 	border-width: 0 20px 30px 20px;
 	border-style: solid;
 	border-color: transparent;
-	border-bottom-color: #67cbf0;
+	border-bottom-color: #00caf2;
 	height: 0; width: 0;
 	position: absolute;
 	left: 10px; top: -10px;
@@ -228,25 +219,25 @@ footer a img {
 @-moz-keyframes fadecolor
 {
 	0% {border-bottom-color: #eee;}
-	100%{border-bottom-color: #67cbf0;}
+	100%{border-bottom-color: #00caf2;}
 }
 
 @-webkit-keyframes fadecolor
 {
 	0% {border-bottom-color: #eee;}
-	100%{border-bottom-color: #67cbf0;}
+	100%{border-bottom-color: #00caf2;}
 }
 
 @-ms-keyframes fadecolor
 {
 	0% {border-bottom-color: #eee;}
-	100%{border-bottom-color: #67cbf0;}
+	100%{border-bottom-color: #00caf2;}
 }		
 
 @keyframes fadecolor
 {
 	0% {border-bottom-color: #eee;}
-	100%{border-bottom-color: #67cbf0;}
+	100%{border-bottom-color: #00caf2;}
 }
 
 /*************************************** PAGE d'AIDE ***************************************/
@@ -255,17 +246,18 @@ footer a img {
 	margin: 15px;
 }
 
-#aide ul, #aide ul li {
+#aide > ul, #aide > ul > li {
 	width: 100%;
 }
 
-#aide ul li {
+#aide > ul > li {
 	margin-top: 15px;
 	box-shadow: 0 0 3px #333333;
 	background: #cecece;
+	list-style: none;
 }
 
-.titreliste {
+#aide .titreliste {
 	vertical-align: middle;
 	font-weight: bold;
 	padding: 5px 10px;
@@ -275,30 +267,51 @@ footer a img {
 	background: linear-gradient(to bottom,  #cccccc 0%,#bbbbbb 100%);
 }
 
-#aide ul li p {
-	padding: 5px;
+#aide > ul > li > p:first-of-type {
 	border-top: 1px solid #eeeeee;
+}
+
+#aide > ul > li > * {
+	padding: 5px;
+}
+
+/*************************************** PAGE de LICENCE ***************************************/
+
+#licence h3 {
+	margin: 15px;
+}
+
+#licence ul {
+	margin: 5px 0 5px 5px;
+}
+
+#licence .titreliste {
+	vertical-align: middle;
+	font-weight: bold;
+	padding: 5px 10px;
+	background: #cccccc;
+	margin: 20px -15px 10px -25px;
+	background: -moz-linear-gradient(top,  #cccccc 0%, #bbbbbb 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cccccc), color-stop(100%,#bbbbbb));
+	background: linear-gradient(to bottom,  #cccccc 0%,#bbbbbb 100%);
+}
+
+#licence > ul > li {
+	list-style: none;
 }
 
 /*************************************** PAGE d'INFOS sur un POINT ***************************************/
 
 #titrePoint {
-	width: 100%;
 	display: block;
-	background: #331900;
-	min-height: 50px;
-	border-bottom: 6px solid #55AACC;
-	color: #fbfbfb;
-	font-size: 45px;
-	font-variant: small-caps;
-	font-weight: lighter;
+	margin: -10px -15px 0 -15px;
 }
 
 #fichePoint {
 	background: #cdcdcd;
 	box-shadow: #aaaaaa 0 2px 5px;
 	padding: 3px;
-	margin-bottom: 15px;
+	margin: 0 -15px 15px -15px;
 }
 
 #idPoint {
@@ -310,6 +323,11 @@ footer a img {
 #typePoint {
 	text-shadow: 0px 1px 0px rgba(255,255,255,1);
 	font-weight: bold;
+	text-transform: lowercase;
+}
+
+#typePoint:first-letter {
+	text-transform: uppercase;
 }
 
 #coordPoint, #rmqPoint, #proprioPoint, #accesPoint, #infoscompPoint, #pointsprochesPoint {
@@ -326,7 +344,7 @@ footer a img {
 	background: #cdcdcd;
 	box-shadow: #aaaaaa 0 -3px 3px;
 	display: block;
-	margin: 15px 0 0 0;
+	margin: 15px -15px -10px -15px;
 	z-index: 1;
 	padding: 5px;
 }
@@ -347,13 +365,4 @@ footer a img {
 .legendecom {
 	font-size: 75%;
 	font-style: italic;
-}
-
-.sautdeligne {
-	background: #cdcdcd;
-	box-shadow: #cdcdcd 0 -3px 3px;
-	z-index: 2;
-	display: block;
-	margin: -5px 0 0 0;
-	height: 35px;
 }
