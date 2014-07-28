@@ -6,8 +6,10 @@ Sommaire :
  2. Menu
  3. Contenu
  4. Carte
- 5. Infos point
- 6. Pied de page
+ 5. Aide
+ 6. Licence
+ 7. Infos point
+ 8. Pied de page
 ***********************************************************************************************/
 
 
@@ -255,7 +257,7 @@ article:not(#carte) {
 	list-style: none;
 }
 
-.titreliste {
+#aide .titreliste {
 	vertical-align: middle;
 	font-weight: bold;
 	padding: 5px 10px;
@@ -271,6 +273,31 @@ article:not(#carte) {
 
 #aide > ul > li > * {
 	padding: 5px;
+}
+
+/*************************************** PAGE de LICENCE ***************************************/
+
+#licence h3 {
+	margin: 15px;
+}
+
+#licence ul {
+	margin: 5px 0 5px 5px;
+}
+
+#licence .titreliste {
+	vertical-align: middle;
+	font-weight: bold;
+	padding: 5px 10px;
+	background: #cccccc;
+	margin: 20px -15px 10px -25px;
+	background: -moz-linear-gradient(top,  #cccccc 0%, #bbbbbb 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cccccc), color-stop(100%,#bbbbbb));
+	background: linear-gradient(to bottom,  #cccccc 0%,#bbbbbb 100%);
+}
+
+#licence > ul > li {
+	list-style: none;
 }
 
 /*************************************** PAGE d'INFOS sur un POINT ***************************************/
