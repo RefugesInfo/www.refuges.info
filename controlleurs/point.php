@@ -1,10 +1,6 @@
 <?php
 /***
-Point d'entrée de la page "Fiche du point" qui s'occupe de présenter le point, sommet,
-village et tout autre "type" possible de la base avec photos, nom, infos, commentaires, etc...
-on peut accéder au point par http://<site>/point/183/ce/quon/veut/ ( pour le n°183 ). (sly)
-FIXME 16/02/2013: il faut en finir avec le Options +Multiviews merdique et peu performant, 
-du rewrite et un vrai modèle MVC avec un seul script d'entrée à tous le site me semble la direction à prendre
+Contrôleur qui prépare la vue pour les pages des points
 ***/
 
 
@@ -38,12 +34,16 @@ else // le point est valide. faut bosser.
     $vue->point=$point;
     
     $vue->nom=bbcode2html($point->nom);
-    $vue->nom_debut_majuscule = ucfirst($point->nom);
+    $vue->proprio=bbcode2html($point->proprio);
+    $vue->acces=bbcode2html($point->acces);
+    $vue->remark=bbcode2html($point->remark);
+    $vue->nom_debut_majuscule = bbcode2html(ucfirst($point->nom));
     $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
     $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $point->nom_type, altitude $point->altitude avec commentaires et photos";
     $vue->lien_explication_publicite=lien_wiki("publicite");
+    
     if ($point->polygones)
         foreach ($point->polygones as $polygone)
         {
@@ -56,6 +56,8 @@ else // le point est valide. faut bosser.
         }
     if ($point->modele!=1)
     $vue->forum_point = infos_point_forum ($point);
+    $vue->forum_point->post_text_propre=bbcode2html($vue->forum_point->post_text);
+    
     $vue->forum_point->date_humaine=strftime ('%A %e %B %Y à %H:%M',$vue->forum_point->post_time);
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;

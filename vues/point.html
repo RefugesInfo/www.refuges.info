@@ -77,14 +77,14 @@
 				<?}?>
 			</dd>
 <!--===================================== PLACES POUR DORMIR ======================================-->
-			<?// Rajout de +ieurs blocs (proprio, acces, remark, pub, photos...) et d'un bloc "nb places" si necessaire
+			<?// Rajout de plusieurs blocs (propriétaire, accès, remarques, pub, photos...) et d'un bloc "places prévues pour dormir" si necessaire
 			if ($vue->point->equivalent_places) {?>
 				<dt/>
 				<dt class="condense">
 					<?=$vue->point->equivalent_places?>:
 				</dt>
 				<dd class="condense">
-					<?echo bbcode2html ($vue->point->places)?>
+					<?=($vue->point->places)?>
 				</dd>
 			<?}?>
 			
@@ -179,15 +179,15 @@
 			<?// Champs textes libres
 			if ($vue->point->equivalent_proprio) {?>
 				<dt><?=$vue->point->equivalent_proprio?>:</dt>
-				<dd><?echo bbcode2html($vue->point->proprio)?></dd>
+				<dd><?=$vue->proprio?></dd>
 			<?}?>
 			
 <!--============================================ ACCÈS ============================================-->
 			<dt style="clear: left;">Accès:</dt>
-			<dd><?echo bbcode2html($vue->point->acces)?></dd>
+			<dd><?=$vue->acces?></dd>
 <!--========================================== REMARQUES ==========================================-->
 			<dt>Remarques:</dt>
-			<dd><?echo bbcode2html($vue->point->remark)?></dd>
+			<dd><?=$vue->remark?></dd>
 <!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
 			<?php if (isset($vue->infos_complementaires)) { ?>
 
@@ -281,7 +281,7 @@
 			</em>:
 			<blockquote cite="<?=$vue->forum_point->lienforum?>">
 				<div>
-					<?echo bbcode2html ($vue->forum_point->post_text)?>
+				<?=$vue->forum_point->post_text_propre?>
 				</div>
 			</blockquote>
 		</div>
