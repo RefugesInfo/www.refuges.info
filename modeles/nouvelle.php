@@ -54,7 +54,10 @@ A disposition : commentaires,refuges,points,general,forums
 maintenir l'idée de tout regrouper dans un tableau qu'on tri ensuite
 Conseils d'utilisation : cette fonction n'a de sens que lorsqu'elle mélange plusieurs sources de nature différentes
 (comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher certains commentaires ou certains points, les fonctions
-infos_xxxx( ) sont à mon avis plus appropriées et performantes
+infos_xxxx( ) sont plus appropriées et performantes
+
+FIXME: il reste un peu de html en dur dans cette fonction (et de mise en forme bbcode2html), il faudrait en faire un vrai retour par
+array/object et ce serait au controleur/la vue de s'occuper de la mise en forme
 
 ***************************************/
 
@@ -80,7 +83,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                 {
                     $categorie="Commentaire";
                     $lien=lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
-                    $titre=$commentaire->nom;
+                    $titre=bbcode2html($commentaire->nom);
                     $texte="$categorie";
                     if ($commentaire->photo_existe)
                         $texte.="+photo";
@@ -125,7 +128,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                     {
                         $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
                         $lien=lien_point($point,$lien_locaux);
-                        $titre=$point->nom;
+                        $titre=bbcode2html($point->nom);
                         
                         // si le point n'appartient à aucun massif, pas de lien vers le massif
                         if (isset($point->id_massif))
@@ -160,7 +163,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                 foreach ( $commentaires as $news)
                 {
                     $categorie="Générale";
-                    $titre=$news->texte;
+                    $titre=bbcode2html($news->texte);
                     $texte=$titre;// FIXME mieux vaudrait revoir le format du tableau sans HTML
                     $lien="/news.php";
                     $news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
@@ -197,9 +200,11 @@ function nouvelles($nombre,$type,$lien_locaux=True)
     rsort($news_array);
     $nb=0;
     // Et je ne prends que les $nombre première ou toutes s'il y en a moins que $nombre
+    // FIXME c'est à faire dans le controleur ça, pas dans le modèle
     foreach ($news_array as $nouvelle)
     {
         $nouvelle['date_formatee']=date("d/m/y", $nouvelle['date']);
+        $nouvelle['titre']=bbcode2html($nouvelle['titre']);
         $nouvelles[]=$nouvelle;
         $nb++;
         if ($nb>=$nombre)
