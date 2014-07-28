@@ -13,9 +13,11 @@ $commentaire->id_point=$controlleur->url_decoupee[2];
 $point=infos_point($commentaire->id_point);
 if (!$point->erreur)
 {
-    if (!isset($_SESSION['id_utilisateur']))
+    if (!isset($_SESSION['id_utilisateur'])) // non connecté ? un message d'information s'affichera, et on présentera un CAPTCHA
+    {
         $vue->non_connecte=True;
-    $commentaire->auteur_commentaire=$_SESSION['login_utilisateur'];
+        $vue->captcha=True;
+    }
     
     // on vient de valider notre formulaire, faisons le nécessaire
     if ($_POST['action']!="") 
@@ -55,8 +57,6 @@ if (!$point->erreur)
         }
     }
     // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
-    if ( !isset($_SESSION['id_utilisateur']) )
-        $vue->captcha=True;
   
     $quel_point="$point->article_defini $point->nom_type : $point->nom";
     $vue->titre="Ajout d'un commentaire sur $quel_point";

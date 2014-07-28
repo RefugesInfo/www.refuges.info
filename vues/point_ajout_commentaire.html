@@ -27,13 +27,14 @@
   <div class="com">
   <form id="comment" method="post" action="/point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
     <textarea name="texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre?></textarea><?=$config['lien_syntaxe']?>
+    <br />
 
-	<br />
+    <?php if ($vue->non_connecte) { ?>
 	<label>auteur:</label>
-		<input type="text" value="<?=$vue->commentaire->auteur_commentaire?>" name="auteur_commentaire" maxlength="120" size="40" />(facultatif)
+		<input type="text" value="" name="auteur_commentaire" maxlength="120" size="40" />(facultatif)
 	<br />
-
-	<label>Une photo ? (format JPEG)</label>
+    <?php } ?>
+	<label>Une photo ? (format jpeg)</label>
 		<input type="file" name="comment_photo" size="15" value=""/>(facultatif)
 	<p>
           <input type="checkbox" name="demande_correction" value="1"/>
