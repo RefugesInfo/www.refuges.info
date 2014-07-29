@@ -32,31 +32,26 @@ $controlleur->avec_entete_et_pied=True;
 // de n'autoriser que ceux que l'on veut
 switch ($controlleur->url_decoupee[1])
 {
-    case "point":
-        $controlleur->type="point";
+    // sly: Pour toutes ces routes, on est dans un cas simple, l'url correspond au controlleur du même nom, factorisation !
+    case "point" :
+    case "nav" :
+    case "wiki" :
+    case "nouvelles" :
+    case "point_ajout_commentaire" :
+    case "point_recherche" :
+    case "rss" :
+    case "formulaire_rss" :
+    case "avis-internaute-commentaire" :
+    case "formulaire_exportations" :
+        $controlleur->type=$controlleur->url_decoupee[1];
         break;
     case "point-geojson":
         $controlleur->type="point";
         $vue->template="point.geojson";
         $controlleur->avec_entete_et_pied=False;
         break;
-    case "nav":
-        $controlleur->type="nav";
-        break;
-    case "wiki":
-        $controlleur->type="wiki";
-        break;
-    case "nouvelles": case "news.php" :// FIXME d'ici ~1an on passera à "nouvelles" uniquement
-        $controlleur->type="nouvelles";
-        break;
-    case "index": case "index.php" : case "" :
+    case "index": case "" :
         $controlleur->type="index";
-        break;
-    case "point_ajout_commentaire" :
-        $controlleur->type="point_ajout_commentaire";
-        break;
-    case "point_recherche.php" : case "point_recherche" :
-        $controlleur->type="point_recherche";
         break;
     case "point_formulaire_recherche.php" : case "point_formulaire_recherche" :
         $controlleur->type="point_formulaire_recherche";
@@ -70,20 +65,9 @@ switch ($controlleur->url_decoupee[1])
     case "point_ajout" :
         $controlleur->type="point_ajout_choix_type";
         break;
-    case "rss" : case "rss.php" :
-        $controlleur->type="rss";
-        break;
-    case "formulaire_rss.php" : case "formulaire_rss" : 
-        $controlleur->type="formulaire_rss";
-        break;
-    case "avis-internaute-commentaire" : 
-        $controlleur->type="avis-internaute-commentaire"; 
-        break;
-    case "formulaire_exportations" :
-        $controlleur->type="formulaire_exportations";
-        break;
     case "test" :
-        $controlleur->type="test";$controlleur->avec_entete_et_pied=false;
+        $controlleur->type="test";
+        $controlleur->avec_entete_et_pied=false;
         break;
     default : 
         $controlleur->type="page_introuvable"; 
