@@ -2,6 +2,7 @@
 /**********************************************************************************************
 Visualition des commentaires comportant une demande de correction sur la fiche point
 Accès par : "./gestion/?page=commentaires_attente_correction"
+FIXME: à convertir au modèle MVC
 **********************************************************************************************/
 require_once("commentaire.php");
 
@@ -67,7 +68,7 @@ foreach ($commentaires_attente_correction as $commentaire_attente_correction)
   else
     $cause="";
   print("<a href=\"".lien_point_lent($commentaire_attente_correction->id_point)."#C$commentaire_attente_correction->id_commentaire\">
-  Le commentaire de \"".bbcode2html($commentaire_attente_correction->auteur)."\" sur la fiche 
+  Le commentaire de \"".bbcode2html($commentaire_attente_correction->auteur_commentaire)."\" sur la fiche 
   $commentaire_attente_correction->nom</a> $cause
   <input type=\"checkbox\" name=\"commentaires_corriges[]\" value=\"$commentaire_attente_correction->id_commentaire\"><br />");
 }

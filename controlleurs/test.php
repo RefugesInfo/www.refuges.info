@@ -14,7 +14,7 @@ require_once ("point.php");
 require_once ("utilisateur.php");
 
 print("<pre>");
-$conditions->ids_commentaires = 16282;
+$conditions->ids_commentaires = 16758;
 print_r(infos_commentaires($conditions));
 print("</pre>");
 

@@ -20,7 +20,7 @@ $conditions->limite -> pour imposer une limite au cas où
 
 $conditions->avec_modele=False -> pour ne pas avoir les commentaires sur les modèles (si si, les modèles ont aussi leurs commentaires) par défaut : True
 $conditions->ids_createurs_commentaires -> pour récupérer les commentaires de(s) l'auteur(s) d'id donnés au format 4 ou 7,8,14
-$conditions->auteur_commentaire -> condition sur le champ "auteur_commentaire" pour les utilisateurs non authentifiés
+$conditions->auteur_commentaire -> condition sur le champ "auteur_commentaire" pour les utilisateurs non authentifiés FIXME: un peu ridicule, ça devrait marcher dans tous les cas, anonyme ou authentifié
 $conditions->texte -> condition sur le contenu du commentaire
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
 $conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou -1)
@@ -44,7 +44,7 @@ blabla
     [photo_existe] => 1
     [date_photo] => 2011-11-12
     [demande_correction] => 0
-    [id_createur_commentaire] => 496
+    [id_createur_commentaire] => 496 --> 0 si non authentifié
     [ts_unix_commentaire] => 1360599590
     [ts_unix_photo] => 1321052400
     [photo] => Array
@@ -125,14 +125,13 @@ function infos_commentaires ($conditions)
 	$query="SELECT 
              extract('epoch' from commentaires.date) as ts_unix_commentaire,
              extract('epoch' from commentaires.date_photo) as ts_unix_photo,
-             commentaires.*
+             commentaires.*,COALESCE(phpbb_users.username,auteur_commentaire) as auteur_commentaire
              $champ_en_plus
-           FROM commentaires$table_en_plus
+             FROM commentaires LEFT join phpbb_users on commentaires.id_createur_commentaire = phpbb_users.user_id$table_en_plus
            WHERE 1=1
              $conditions_sql$condition_en_plus
            ORDER BY commentaires.date DESC
            $limite";
-
 	if ( ! ($res=$pdo->query($query))) 
 		return erreur("Une erreur sur la requête est survenue",$query);
 

@@ -106,9 +106,10 @@ if ($vue->erreur=="")
             <form method='POST'>
             <input type='hidden' name='page' value='moderation' /> <!-- pour qu'il re appelle la page de moderation -->
             <label>
-            auteur:
-            <input type='text' name='auteur_commentaire' value='$commentaire->auteur_commentaire' />
-            </label>
+            ";
+            if ($commentaire->id_createur_commentaire==0) // seulement modifiable si n'était pas authentifié'
+                echo "auteur:<input type='text' name='auteur_commentaire' value='$commentaire->auteur_commentaire' />";
+            echo "</label>
             <label>
             date:
             <input type='text' disabled='disabled' name='date' value='".date('d/m/Y H:i',$commentaire->ts_unix_commentaire)."' size='16'/>
@@ -133,8 +134,8 @@ if ($vue->erreur=="")
             echo "
             </form>
             <p>
-            'suppression' entraine la suppression de la photo.
-            'transfert_forum' entraîne le déplacement de la photo vers le forum ET prends en compte les modifications
+            'suppression' entraine également la suppression de la photo.<br />
+            'transfert_forum' entraîne aussi le déplacement de la photo vers le forum
             </p>
             <!--<a href=\"./?page=moderation&amp;type=suppression&amp;vider=1&amp;id_commentaire=".$_REQUEST['id_commentaire']."&amp;id_point_retour=".$_REQUEST['id_point_retour']."\">supprimer le commentaire</a>-->";
             
