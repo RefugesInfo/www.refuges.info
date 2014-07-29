@@ -99,21 +99,17 @@
 				<dd class="condense"><?echo date ("d/m/Y",$vue->point->date_modif_timestamp)?>.</dd>
 			<?}
 
-			// Si le créateur de la fiche dispose d'un compte sur le forum on indique son compte sur le forum
-			// si celui-ci n'était pas connecté, on indique ce qu'il a mis dans le champs "auteur"
-			// sauf si il n'était ni connecté et il a laissé le champs "auteur" vide
-			if ($vue->point->nom_createur OR $vue->point->id_createur) { //Il était connecté ?>
+			// créateur de fiche
+			if ($vue->nom_createur!="") { ?>
 				<dt class="condense">Créateur de cette fiche:</dt>
-				<?if ($vue->point->id_createur != 0) {  // si le visiteur était loggué alors on fait un lien vers sa fiche utilisateur phpBB
-					$createur = infos_utilisateur ($vue->point->id_createur);
-				?>
+				<?if ($vue->point->id_createur != 0) { ?>
 					<dd class="condense">
 						<a href="<?=$config['fiche_utilisateur'].$vue->point->id_createur?>">
-							<?=bbcode2html ($createur->username)?>
+							<?=$vue->nom_createur?>
 						</a>
 					</dd>
-				<?}else{?>
-					<dd class="condense"><?=bbcode2html ($vue->point->nom_createur)?></dd>
+				<?php } else { ?>
+				<dd class="condense"><?=$vue->nom_createur?></dd>
 				<?}
 			}
 			?>
