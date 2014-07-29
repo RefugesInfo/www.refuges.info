@@ -54,7 +54,7 @@
                             &nbsp;Ajout <?=$nouveau_point->article_partitif_point_type?> <?=$nouveau_point->nom_type?>
                             <?php if ($nouveau_point->nom_createur!="") { 
                                 if ($nouveau_point->id_createur==0) { ?>
-                                    par $nouveau_point->nom_createur
+                                    par <?=$nouveau_point->nom_createur?>
                                 <?php } else { ?>
                                 par <a href="<?=$config['fiche_utilisateur'].$point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
                                 <?php } ?>
