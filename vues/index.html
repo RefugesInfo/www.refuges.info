@@ -81,13 +81,6 @@
 		</ul>
 		<br/>
 		<h4>Evolution du site</h4>
-		<ul>
-                <?php foreach ($vue->nouvelles_generales as $nouvelle) { ?>
-                    <li>
-                        <em><?=$nouvelle->date_formatee?></em>
-                        &nbsp;<?=$nouvelle->texte?>
-                    </li>
-                <?php } ?>
-                </ul>
+		<?=$vue->nouvelles_generales?>
 	</div>
 </div>

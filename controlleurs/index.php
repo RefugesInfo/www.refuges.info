@@ -55,7 +55,7 @@ $conditions_commentaires_generaux->ids_points=$config['numero_commentaires_gener
 $conditions_commentaires_generaux->limite=2;
 $vue->nouvelles_generales=infos_commentaires($conditions_commentaires_generaux);
 
-// Préparation de la liste des nouveaux commentaires
+// FIXME: Préparation de la liste des nouveaux commentaires
 // ici, on pourrait vraiment se passer de la fonction nouvelles et ansi de pas dépendre d'un truc qui génère du HTML
 $vue->nouveaux_commentaires=nouvelles(9,"commentaires");
 
@@ -71,5 +71,7 @@ foreach ($nouveaux_points as $nouveau_point)
     $nouveau_point->nom=bbcode2html($nouveau_point->nom);
     $vue->nouveaux_points[]=$nouveau_point;
 }
+$page_nouvelles=recupere_contenu("nouvelles_generales");
+$vue->nouvelles_generales=$page_nouvelles->contenu_html;
 
 ?>
