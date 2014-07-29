@@ -91,6 +91,7 @@ else // le point est valide. faut bosser.
                 if ($point_proche->id_point!=$point->id_point)
                 {
                     $point_proche->lien=lien_point($point_proche);
+                    $point_proche->nom=bbcode2html($point_proche->nom);
                     $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
                     $vue->points_proches[]=$point_proche;
                 }

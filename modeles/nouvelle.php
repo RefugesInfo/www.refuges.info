@@ -127,6 +127,15 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                     foreach($points as $point)
                     {
                         $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
+                        if ($point->nom_createur!="")
+                        {
+                            $nom_createur=bbcode2html($point->nom_createur);
+                            if ($point->id_createur==0)
+                                $categorie.=" par $nom_createur";
+                            else
+                                $categorie.=" par <a href=\"".$config['fiche_utilisateur']."$point->id_createur\">$nom_createur</a>";
+                        }
+                            
                         $lien=lien_point($point,$lien_locaux);
                         $titre=bbcode2html($point->nom);
                         
