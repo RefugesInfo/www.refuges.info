@@ -64,7 +64,7 @@ if (isset($_SESSION['id_utilisateur']) )
                     <ul>
                         <li><a href='./?page=commentaires_attente_correction'>Voir les commentaires en attente d'une correction</a></li>
                         <li><a href='./?page=modifier_modeles'>Modifier les modèles de points</a> (le pré-remplissage des champs lors d'un ajout de point)</li>
-                        <li><a href='./?page=news_gestion&amp;ajout=1'>Ajout d'une news général</a> (En haut de la page nouvelles)</li>
+                        <li><a href=\"".lien_wiki('contenus_speciaux')."\"> Liste des contenus spéciaux</a></li>
                         <li><a href='../nav?test_creer=1'>Créer un massif</a></li>
                     </ul>");
     
@@ -88,7 +88,6 @@ if (isset($_SESSION['id_utilisateur']) )
         DEFINE('AUTH',1);
         switch($page)
         {
-            case "news_gestion" :
             case "verif_massif" :
             case "moderation" :
             case "modifier_modeles" :

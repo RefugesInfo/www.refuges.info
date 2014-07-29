@@ -9,14 +9,9 @@ $config['utilisateur_pgsql']="login";
 $config['mot_de_passe_pgsql']="pass";
 $config['serveur_pgsql']="localhost";
 
-$config['base_pgsql']="refuges";
-
-// Info pour développeurs afin de les informer qu'une base "test" est à disposition sur WRI, rien ne change ci-avant, juste décommenter ça :
-// ATTENTION ATTENTION : si vous activer cette base sur serveur wri, mais sans changer les dossiers photos+mode emploi
-// vous allez créer une incohérence voir supprimer ou remplacer des photos live !!
-// Donc pas de photos, ou supprimer votre lien symbolique vers photo + photo du forum
-// $config['base_pgsql']="test";
-
+// Info pour développeurs de notre équipe, la base de prod s'appelle "refuges" mais il n'est pas recommandé de bosser dessus, donc test, c'est bien !
+// a noter que les photos qui sont des fichiers sur le disque risque fort de ne plus s'afficher, mais c'est en quelque sorte "logique"
+$config['base_pgsql']="test";
 
 
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();

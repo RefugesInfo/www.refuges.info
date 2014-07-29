@@ -57,7 +57,7 @@ $config['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant au
 $config['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
 $config['id_zone']=11; // jmb : grandes zones, alpes, pyrenees ... 
 $config['id_zone_defaut']=352; // sly en fait ce sont les alpes
-$config['id_zone_accueil']=3304; // sly en fait ce sont les alpes de chez nous
+$config['id_zone_accueil']=3304; // sly en fait ce sont les alpes françaises
 
 // Catégorie "tout type de refuges"
 // certes une gestion par catégorie directement dans la base serait préférable, mais on a au plus 1 ou 2 catégorie donc, bon,
@@ -77,14 +77,12 @@ $config['champs_choix_multiples_points']=array_merge(array('conditions_utilisati
 $config['champs_simples_points']=array_merge(array("censure","nom","places","remark","proprio","id_point_type","id_createur","modele","id_point_gps",'places_matelas','nom_createur'),$config['champs_choix_multiples_points']);
 
 // les numéros d'id spéciaux qu'on trouve dans les bases
-// Les "nouvelles" du sites, qui ne se rapport à aucun point du site, sont stoquées comme commentaire dont l'id_point vaut cette valeur :
-$config['numero_commentaires_generaux']=-2;
 
 //nombre maximum de point que peut sortir la recherche
 $config['points_maximum_recherche']=40;
 
 // nombre de point renvoyé par défaut, par l'API (/exportations/)
-$config['defaut_max_nombre_point']=121; // NicoM : pourquoi 120 ? sly: pourquoi pas 120 ? NicoM : ben 121 c'est 11^2
+$config['defaut_max_nombre_point']=121; // NicoM : pourquoi 120 ? sly: pourquoi pas 120 ? NicoM : ben 121 c'est 11^2 sly: alors va pour 121 !
 
 // c'est l'id pour lequel les coordonnées gps données sont volontairement fausses
 $config['id_coordonees_gps_fausses']=5;
@@ -134,8 +132,8 @@ $config['chemin_openlayers']='/ol2.12.4/';
 // sauf si il vaut maps.refuges.info ou OpenCycleMap
 $config['carte_base'] = 'maps.refuges.info';
 
-// FIXME
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
+// que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore
 // il est volontairement placé "presque*" à la fin pour que les variables ci-avant puissent par exemple être sur-chargées si on souhaite
 // un autre comportement
 // Le problème c'est que le tableau ci-après re-fait appel à la variable $config['carte_base'] que j'aimerais pouvoir surcharger dans 

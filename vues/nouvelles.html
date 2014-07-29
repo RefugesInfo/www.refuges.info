@@ -13,16 +13,10 @@
 	<h3><?=$vue->stat->nbrefuges?> refuges, <?=$vue->stat->nbcomm?> commentaires et <?=$vue->stat->nbphotos?> photos</h3>
 
 <!-- BLOC NEWS -->
-    <h4>Evolution du site</h4>
-    <ul>
-        <?php foreach ($vue->nouvelles_generales as $nouvelle) { ?>
-            <li>
-                <em><?=$nouvelle->date_formatee?></em>
-                &nbsp;<?=$nouvelle->texte?>
-            </li>
-        <?php } ?>
-    </ul>
-    <a href="/nouvelles/?general=10">(Voir les plus anciennes)</a>
+    <h4>Nouvelles du site</h4>
+    <p>
+        <?=$vue->nouvelles_generales?>
+    </p>
 
     <h4>Les nouvelles</h4>
     <ul>

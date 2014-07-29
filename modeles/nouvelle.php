@@ -41,15 +41,13 @@ Fonction d'accès aux nouvelles
 elle renvoi un tableau avec :
 - les commentaires ajoutés sur les points
 - les points ajoutés avec un lien
-- les news d'info générale sur le site
 - les derniers messages sur les forums
 - un mix (new)
 - le titre de la liste (new) (pas pu faire autrement pour la liste)
 
 elle prends 2 paramêtres,$nombre news, categorie(s) de news a chercher 
-les categories: séparées par "," comme "general" pour uniquement news general
-    "forum,refuges" pour les nouveaux messages forum et les nouveaux refuges a la fois
-A disposition : commentaires,refuges,points,general,forums
+les categories: séparées par "," comme "forum,refuges" pour les nouveaux messages forum et les nouveaux refuges a la fois
+A disposition : commentaires,refuges,points,forums
 
 maintenir l'idée de tout regrouper dans un tableau qu'on tri ensuite
 Conseils d'utilisation : cette fonction n'a de sens que lorsqu'elle mélange plusieurs sources de nature différentes
@@ -162,24 +160,6 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                                               "titre"=>$titre,"lien"=>$lien); 
                     }
                     break;
-                    
-            case "general":
-                $conditions_commentaires_generaux = new stdClass;
-                $conditions_commentaires_generaux->ids_points=$config['numero_commentaires_generaux'];
-                $conditions_commentaires_generaux->limite=$nombre;
-                $commentaires=infos_commentaires($conditions_commentaires_generaux);
-                
-                foreach ( $commentaires as $news)
-                {
-                    $categorie="Générale";
-                    $titre=bbcode2html($news->texte);
-                    $texte=$titre;// FIXME mieux vaudrait revoir le format du tableau sans HTML
-                    $lien="/news.php";
-                    $news_array[] = array($news->ts_unix_commentaire,"texte"=>$texte,
-                                          "date"=>$news->ts_unix_commentaire,"categorie"=>$categorie,
-                                          "titre"=>$titre,"lien"=>$lien); 
-                }	
-                break;
                 
             case "forums":
                 $type_news="nouveau_message_forum";
