@@ -79,8 +79,11 @@ switch ($controlleur->url_decoupee[1])
     case "avis-internaute-commentaire" : 
         $controlleur->type="avis-internaute-commentaire"; 
         break;
-    case "formulaire_exportations" : 
-        $controlleur->type="formulaire_exportations"; 
+    case "formulaire_exportations" :
+        $controlleur->type="formulaire_exportations";
+        break;
+    case "test" :
+        $controlleur->type="test";$controlleur->avec_entete_et_pied=false;
         break;
     default : 
         $controlleur->type="page_introuvable"; 
