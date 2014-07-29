@@ -16,6 +16,7 @@ $config['base_pgsql']="test";
 
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 // + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
+// sert aussi à afficher les lien de validation xhtml en bas de page (histoire de ne pas ennuier tout le monde avec ça)
 $config['debug']=false;
 
 // Le forum est bourré de warning que je ne compte pas vraiment reprendre
