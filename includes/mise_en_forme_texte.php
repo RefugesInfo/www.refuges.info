@@ -77,10 +77,10 @@ if ($occurences_trouvees!=0)
 
 /** étape 2 
 on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
-sauf si on veut expréssément autoriser une entrée en HTML 
+sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
 **/
 if (!$autoriser_html)
-	$html=htmlspecialchars($texte,0,"UTF-8");
+    $html=htmlspecialchars($texte,ENT_QUOTES,"UTF-8");
 else
 	$html=$texte;
 
