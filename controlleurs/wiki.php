@@ -43,7 +43,7 @@ elseif($_GET['form_modifier']==1 and $_SESSION ['niveau_moderation'] >= 1)
     $vue->type="wiki_modification";
     $vue->contenu_a_modifier=htmlspecialchars($page->contenu,0,"UTF-8");
     $vue->lien_validation=lien_wiki($nom_page);
-    $vue->lien_bbocode=lien_wiki('syntaxe_bbcode');
+    $vue->lien_bbcode=lien_wiki('syntaxe_bbcode');
 }
 else // affichage de la page
 {
