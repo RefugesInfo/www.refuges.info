@@ -21,7 +21,6 @@ require_once ("meta_donnee.php");
 require_once ("polygone.php");
 require_once ("wiki.php");
 
-//$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
 $vue->java_lib [] = '/vues/wiki.js';
 
@@ -46,7 +45,7 @@ if ($id_polygone)
   $polygone=infos_polygone ($id_polygone);
   if (!$polygone->erreur) 
   {
-    $vue->titre="Cartes des refuges, sommets et sources/point d'eau dans $infos_polygone->art_def_poly $infos_polygone->type_polygone $infos_polygone->article_partitif $infos_polygone->nom_polygone";
+      $vue->titre="Cartes des refuges, sommets et sources/point d'eau dans $polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
     $vue->description = $vue->titre.". Possibilité de naviguer sur une carte avec image satellite, cartes IGN, SwissTopo, Bings...";
   }
   else
