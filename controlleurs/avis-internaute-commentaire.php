@@ -8,7 +8,6 @@ require_once ("wiki.php");
 require_once ("bdd.php");
 require_once ("commentaire.php");
 
-$vue->description = $description;
 $commentaire=infos_commentaire($controlleur->url_decoupee[2]);
 
 if ($commentaire->erreur)

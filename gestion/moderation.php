@@ -100,7 +100,7 @@ if ($vue->erreur=="")
                 src='".$config['rep_web_photos_points'].$commentaire->id_commentaire.".jpeg'
                 alt='photo liée au commentaire'
                 width='200px' /><br />\n";
-            echo nl2br($commentaire->texte)."</blockquote>\n";
+            echo nl2br(htmlspecialchars($commentaire->texte,ENT_QUOTES,"UTF-8"))."</blockquote>\n";
             // formulaire qui contient uniquement le comment
             echo "
             <form method='POST'>

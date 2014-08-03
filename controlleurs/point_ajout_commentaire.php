@@ -58,7 +58,7 @@ if (!$point->erreur)
     }
     // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
   
-    $quel_point="$point->article_defini $point->nom_type : $point->nom";
+  $quel_point="$point->article_defini $point->nom_type : ".htmlspecialchars($point->nom,ENT_QUOTES,"UTF-8");
     $vue->titre="Ajout d'un commentaire sur $quel_point";
     $vue->lien_point=lien_point($point);
     $vue->lien_texte_retour="Retour à $quel_point";

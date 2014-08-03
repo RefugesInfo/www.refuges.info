@@ -91,7 +91,7 @@ if ($_SESSION['niveau_moderation']>=1)
 // On affiche le tout
 if ($controlleur->avec_entete_et_pied)
 {
-   	$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
+    $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
     include ($config['chemin_vues']."_entete.html");
 }	
 

@@ -9,6 +9,7 @@ require_once ("wiki.php");
 require_once ("point.php");
 require_once ("pub.php");
 require_once ("utilisateur.php");
+require_once ("mise_en_forme_texte.php");
 
 $condition = new stdClass();
 
@@ -47,8 +48,8 @@ else // le point est valide. faut bosser.
     $vue->nom_debut_majuscule = bbcode2html(ucfirst($point->nom));
     $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
-    $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
-    $vue->description = "fiche d'information sur : $vue->nom_debut_majuscule, $point->nom_type, altitude $point->altitude avec commentaires et photos";
+    $vue->titre = protege("$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)");
+    $vue->description = protege("fiche d'information sur : $vue->nom_debut_majuscule, $point->nom_type, altitude $point->altitude avec commentaires et photos");
     $vue->lien_explication_publicite=lien_wiki("publicite");
     
     if ($point->polygones)

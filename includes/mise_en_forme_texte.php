@@ -47,6 +47,16 @@ $normalizeChars = array(
 return strtr($str, $normalizeChars);
 }
 /**********************************************************************************************
+ Répétitivement, on a besoin de protéger une exportation vers du xml/html, cette fonction protège les
+ caractères
+**********************************************************************************************/
+
+function protege($texte)
+{
+    global $config;
+    return htmlspecialchars($texte,ENT_QUOTES,$config['encodage_des_contenu_web']);
+}
+/**********************************************************************************************
 Afin d'éviter le cross site scripting et permettre de mettre un peu de mise en page 
 un peu partour sur le site (forum, points commentaire,s mode d'emploi, cette fonction convertit
 du format bbcode interne vers html
@@ -80,9 +90,9 @@ on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
 sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
 **/
 if (!$autoriser_html)
-    $html=htmlspecialchars($texte,ENT_QUOTES,"UTF-8");
+    $html=protege($texte);
 else
-	$html=$texte;
+    $html=$texte;
 
 // gestion de la majorité des tag bbcode
 $searcharray = array(

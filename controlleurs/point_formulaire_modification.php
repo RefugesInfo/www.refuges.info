@@ -22,6 +22,7 @@ require_once ("point.php");
 require_once ("polygone.php");
 require_once ("wiki.php");
 require_once ("meta_donnee.php");
+require_once ("mise_en_forme_texte.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
@@ -122,7 +123,6 @@ elseif ( isset($_REQUEST["id_point_type"]))
     }
     else
     {
-        // BUG: ecrasement du createur de la fiche en cas de modif
         $vue->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
         $vue->champs->invisibles->id_createur = new stdClass;
         $vue->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
@@ -132,6 +132,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
 
 }
 // 3) on veut dupliquer l'actuel mais garder les mêmes coordonnées
+// sly 08/2014 : Ce code est inactif car inutilisé par l'interface, il marchait en 2012, mais maintenant... mystère
 elseif ( isset($_REQUEST["dupliquer"]))
 {
     $point=infos_point($_REQUEST["dupliquer"]);
@@ -270,5 +271,8 @@ $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");
 $vue->lien_aide_points = lien_wiki("autres_points");
+// En mode modification, on peut récupéer toutes les infos du point à modifier dans $vue->point->$propriété
+$point->nom_protege=protege($point->nom);
+$vue->point=$point;
 
 ?>

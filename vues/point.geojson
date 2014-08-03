@@ -65,7 +65,7 @@ header("Cache-Control: max-age=$secondes_de_cache");
 		// Informations complémentaires
 		if (isset($vue->infos_complementaires)) { 
 			foreach ($vue->infos_complementaires as $champ => $val){ 
-				$champ = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($champ, ENT_COMPAT, 'UTF-8')); // On enlève tous les accents
+                            $champ = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', protege($champ)); // On enlève tous les accents
 				$champ = preg_replace('/[^a-zA-Z0-9]/',"_", $champ); // on remplace tout ce qu'il reste par des _
 				$champ = mb_strtolower($champ); // on met tout en minuscule
 				echo("\n\t\t\"".$champ."\": \"".$val['valeur'].$val['lien']."\","); 

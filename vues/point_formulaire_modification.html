@@ -80,7 +80,7 @@
 	<fieldset>
 		<legend>Informations de base:</legend>
 			<label>Nom
-				<input size="40" type="text" name="nom" value="<?echo htmlentities($point->nom,ENT_QUOTES,"UTF-8")?>" />
+			<input size="40" type="text" name="nom" value="$vue->point->nom_protege?>" />
 			</label>
 			<label>Type de point
 				<select name='id_point_type'>

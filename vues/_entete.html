@@ -17,7 +17,7 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config[encodage_des_contenu_web]?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 		<meta http-equiv="Content-Script-Type" content="text/javascript" />
-		<meta name="description" content="<?=$vue->description ? htmlentities($vue->description,ENT_COMPAT,$config[encodage_des_contenu_web]) : 'Base de donnee de refuges, abris, gites, sommets et divers points en montagne ...avec cartes satellite, descriptions et coordonnees GPS'?>" />
+		<meta name="description" content="<?=$vue->description?>" />
 
 		<?if (count ($vue->java_lib))
 			foreach ($vue->java_lib as $js_lib) {?>

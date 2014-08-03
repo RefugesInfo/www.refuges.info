@@ -9,6 +9,7 @@ require_once ("config.php");
 require_once ('bdd.php');
 require_once ('gestion_erreur.php');
 require_once ('point.php');
+require_once ("mise_en_forme_texte.php");
 
 
 /**********************************************************************************************
@@ -491,7 +492,7 @@ function transfert_forum($commentaire)
 		INSERT INTO phpbb_posts_text
 			(post_id,bbcode_uid,post_text)
 		VALUES
-			($postid,$bbcodeuid,".$pdo->quote($commentaire->texte).")";
+		($postid,$bbcodeuid,".$pdo->quote(protege($commentaire->texte)).")";
   
 	$res=$pdo->exec($query_post_text);
 	if (!$res)
