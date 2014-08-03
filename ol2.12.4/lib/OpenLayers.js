@@ -246,6 +246,7 @@
 'OpenLayers/Control/Panel.js',
 'OpenLayers/Control/GPS.js',
 'OpenLayers/Control/FullScreen.js',
+'OpenLayers/Layer/OSMFR.js',
 'OpenLayers/Layer/WMTS.js',
 'OpenLayers/Layer/IGN.js',
 '../proj4js-1.1.0/lib/proj4js-combined.js',
