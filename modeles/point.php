@@ -583,8 +583,6 @@ function forum_point_ajout( $point )
 {
   global $pdo;
   
-  // Dans le forum, nom toujours commençant par une majuscule
-  $nom=$pdo->quote(ucfirst($point->nom));
   /*** mise à jour des stats du forum - un sum() vous connaissez pas chez phpBB ? ***/
   $query_update="UPDATE phpbb_forums SET
   forum_topics = forum_topics+1,
@@ -594,6 +592,9 @@ function forum_point_ajout( $point )
 	
   /*** rajout du topic spécifique au point ( Le seul qui me semble logique ! )***/
   // tention a PGsql, ca peut merder
+  // Dans le forum, nom toujours commençant par une majuscule et on vérifie à bien convertir ça en entité html (phpbb ne pourrait il pas le faire à la volée ?)
+  $nom=$pdo->quote(htmlentities(ucfirst($point->nom),ENT_QUOTES ));
+  die($nom);
   $query_insert="INSERT INTO phpbb_topics (
   forum_id , topic_title , topic_poster , topic_time ,
   topic_views , topic_replies , topic_status , topic_vote ,
