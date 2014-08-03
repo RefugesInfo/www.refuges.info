@@ -27,6 +27,7 @@ window.onload = function () {
             new OpenLayers.Control.MousePosition (),
             new OpenLayers.Control.ScaleLine ({geodesic: true}), // L'échelle n'est pas la bonne pour les projections de type mercator. En effet, dans cette projection, le rapport nombre pixel/distance réél augmente quand on se rapproche des pôles.Pour corriger ça, un simple geodesic:yes fais l'affaire (SLY 29/11/2010)
             new OpenLayers.Control.Navigation (),
+            new OpenLayers.Control.GPSPanel(),
             new OpenLayers.Control.Attribution ()
         ]
     });

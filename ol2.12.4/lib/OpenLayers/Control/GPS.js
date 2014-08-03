@@ -32,24 +32,6 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
     type: OpenLayers.Control.TYPE_TOGGLE,
 
     /**
-     * Property: iteration
-     * {Integer} The number of position updates
-     */
-    iteration: 0,
-
-    /**
-     * Property: timerId
-     * {Integer} The window timer ID for location refresh
-     */
-    timerId: 0,
-
-    /**
-     * Property: timerPeriod
-     * {Integer} The delay (in milliseconds) between 2 location refresh
-     */
-    timerPeriod: 5000,
-
-    /**
      * APIProperty: vector
      * Layer for GPS features display
      * <OpenLayers.Layer.Vector>.
@@ -72,14 +54,8 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
             return false;
         }
         this.events.register ("locationupdated", this, this.locationUpdated);
-        this.iteration = 0;
-        if (OpenLayers.Control.Geolocate.prototype.activate.apply(this, arguments)) {
-            this.timerId = window.setInterval (
-                OpenLayers.Function.bind (this.getCurrentLocation, this),
-                this.timerPeriod
-            );
-        } else
-            return false;
+        if (OpenLayers.Control.Geolocate.prototype.activate.apply(this, arguments))
+			OpenLayers.Function.bind (this.getCurrentLocation, this);
     },
 
     /**
@@ -92,7 +68,6 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
      *           if the control was already inactive.
      */
     deactivate: function() {
-        window.clearInterval (this.timerId);
         this.events.remove ("locationupdated");
 
         if (OpenLayers.Control.prototype.deactivate.apply(this, arguments)) {
@@ -139,11 +114,7 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
                 }
             )
         ]);
-        if (!this.iteration++) // Lorsqu'on active le controle
-            this.map.zoomTo (Math.min ( // On remet au max du zoom possible
-                this.map.getZoomForExtent (this.vector.getDataExtent()),
-                16 // Sans toutefois aller trop prés
-            ));
+		this.deactivate (); // On localise une fois seulement
     },
 
     /**

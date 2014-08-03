@@ -282,6 +282,7 @@
 'OpenLayers/Layer/Editor.js',
 'OpenLayers/Layer/Img.js',
 '../proj4js-1.1.0/lib/defs/UTM.js',
+'../proj4js-1.1.0/lib/defs/LAMBERT.js',
 'OpenLayers/Layer/ImgPosition.js',
 'OpenLayers/Layer/ImgDrag.js',
 ''

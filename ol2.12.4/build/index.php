@@ -28,6 +28,8 @@ $estDans = array (
     'OpenLayers/Pixel.js' => 'OpenLayers/BaseTypes/Pixel.js',
     'OpenLayers/Size.js' => 'OpenLayers/BaseTypes/Size.js',
     
+    'OpenLayers/Layer/IGN/Standard.js' => 'OpenLayers/Layer/IGN.js',
+    'OpenLayers/Layer/IGN/Classique.js' => 'OpenLayers/Layer/IGN.js',
     'OpenLayers/Layer/IGN/Photo.js' => 'OpenLayers/Layer/IGN.js',
     'OpenLayers/Layer/IGN/Cadastre.js' => 'OpenLayers/Layer/IGN.js',
     

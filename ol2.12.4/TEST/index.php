@@ -90,6 +90,7 @@
                         new OpenLayers.Layer.Google              ('Google map',    {visibility: false}), // Cachées au début sinon, apparaissent fugitivement
                         new OpenLayers.Layer.Google.Photo        ('Google photo',  {visibility: false}),
                         new OpenLayers.Layer.OSM                 ('OSM'),
+                        new OpenLayers.Layer.OSMFR               ('OSMFR'),
                         new OpenLayers.Layer.MRI                 ('maps.refuges.info'),
                         new OpenLayers.Layer.IGN                 ('IGN', 'rjvdd0zkal6czbu4mop37x7r'),
 //                        new OpenLayers.Layer.SwissTopo           ('SwissTopo'),

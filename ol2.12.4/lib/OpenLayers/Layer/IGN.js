@@ -33,13 +33,13 @@ OpenLayers.Layer.IGN = OpenLayers.Class(OpenLayers.Layer.WMTS, {
      * {String} The format of the layer distributed
      */
 	format: 'image/jpeg',
-	
+
     /** 
      * APIProperty: maxZoomLevel
 	 * Low limit of zoom, depending on the layer
      */
 	maxZoomLevel: 18,
-	
+
     /**
      * Constructor: OpenLayers.Layer.IGN
      * Create a new IGN layer.
@@ -76,6 +76,52 @@ OpenLayers.Layer.IGN = OpenLayers.Class(OpenLayers.Layer.WMTS, {
 
 
 /**
+ * Class: OpenLayers.Layer.IGN.Classique
+ * Instances of the IGN WMTS API V3 for the 1 : 25 000 display
+ * 
+ * Inherits from:
+ *  - <OpenLayers.Layer.IGN>
+ *
+ */
+OpenLayers.Layer.IGN.Classique = OpenLayers.Class(OpenLayers.Layer.IGN, {
+
+    /**
+     * APIProperty: layer
+     * {String} The layer name of the WMTS service is distributed by IGN
+     */
+	layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE',
+
+    CLASS_NAME: "OpenLayers.Layer.IGN.Classique"
+});
+
+
+/**
+ * Class: OpenLayers.Layer.IGN.Standard
+ * Instances of the IGN WMTS API V3 for the 1 : 25 000 display
+ * 
+ * Inherits from:
+ *  - <OpenLayers.Layer.IGN>
+ *
+ */
+OpenLayers.Layer.IGN.Standard = OpenLayers.Class(OpenLayers.Layer.IGN, {
+
+    /**
+     * APIProperty: layer
+     * {String} The layer name of the WMTS service is distributed by IGN
+     */
+	layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD',
+
+    /** 
+     * APIProperty: maxZoomLevel
+	 * Low limit of zoom, depending on the layer
+     */
+	maxZoomLevel: 19,
+
+    CLASS_NAME: "OpenLayers.Layer.IGN.Standard"
+});
+
+
+/**
  * Class: OpenLayers.Layer.IGN.Photo
  * Instances of the IGN WMTS API V3 for the photo layer
  * 
@@ -84,19 +130,19 @@ OpenLayers.Layer.IGN = OpenLayers.Class(OpenLayers.Layer.WMTS, {
  *
  */
 OpenLayers.Layer.IGN.Photo = OpenLayers.Class(OpenLayers.Layer.IGN, {
-	
+
     /**
      * APIProperty: layer
      * {String} The layer name of the WMTS service is distributed by IGN
      */
 	layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-	
+
     /** 
      * APIProperty: maxZoomLevel
 	 * Low limit of zoom, depending on the layer
      */
 	maxZoomLevel: 19,
-	
+
     CLASS_NAME: "OpenLayers.Layer.IGN.Photo"
 });
 
@@ -110,7 +156,7 @@ OpenLayers.Layer.IGN.Photo = OpenLayers.Class(OpenLayers.Layer.IGN, {
  *
  */
 OpenLayers.Layer.IGN.Cadastre = OpenLayers.Class(OpenLayers.Layer.IGN, {
-	
+
     /**
      * APIProperty: layer
      * {String} The layer name of the WMTS service is distributed by IGN
@@ -122,12 +168,12 @@ OpenLayers.Layer.IGN.Cadastre = OpenLayers.Class(OpenLayers.Layer.IGN, {
      * {String} The format of the layer distributed by IGN
      */
 	format: 'image/png',
-	
+
     /** 
      * APIProperty: maxZoomLevel
 	 * Low limit of zoom, depending on the layer
      */
 	maxZoomLevel: 20,
-	
+
     CLASS_NAME: "OpenLayers.Layer.IGN.Cadastre"
 });

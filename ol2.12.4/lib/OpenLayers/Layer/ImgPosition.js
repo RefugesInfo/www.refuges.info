@@ -10,6 +10,7 @@
  * @requires OpenLayers/Projection.js
  * @requires ../proj4js-1.1.0/lib/proj4js-combined.js
  * @requires ../proj4js-1.1.0/lib/defs/UTM.js
+ * @requires ../proj4js-1.1.0/lib/defs/LAMBERT.js
  */
 
 /**
@@ -23,8 +24,9 @@
 OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 
 	projections: {
-		decimal:   'Degrés décimaux',
-		degminsec: 'Deg Min Sec',
+		decimal:      'Degrés décimaux',
+		degmin:       'Deg Min',
+		degminsec:    'Deg Min Sec',
 		'EPSG:21781': 'SwissGrid(CH1903/NV03)',
 		'EPSG:32630': 'UTM 30N (France ouest)',
 		'EPSG:32631': 'UTM 31N (France centre)',
@@ -52,42 +54,57 @@ OpenLayers.Layer.ImgPosition = OpenLayers.Class (OpenLayers.Layer.Img, {
 	},
 	format: {
 		defaut: function (v) { // Prend la partie entière et insére un blanc avant les milliers
-			v = Math.abs (v);
-			if (v < 1000) return Math.round (v);
-			var m = Math.floor (v / 1000); 
-			var u = Math.round (v - m * 1000);
-			if (u < 10) u = '00' + u;
-			else if (u < 100) u = '0' + u;
-			if (u==1000) {m++; u='000';}
-			return '' + m + ' ' + u;
+			if (v < 1000)
+				return Math.round (v);
+			var mm = Math.floor (v / 1000000); 
+			var m = Math.floor ((v - mm * 1000000) / 1000); 
+			var u = Math.round (v - mm * 1000000 - m * 1000);
+			if (u >= 1000)
+				{m++; u-=1000;}
+			if (m >= 1000)
+				{mm++; m-=1000;}
+			return (mm     == 0 ? '' : mm + ' ')
+			     + (mm + m == 0 ? '' : (m < 100 ? '0' : '') + (m < 10 ? '0' : '') + m + ' ')
+				 +                     (u < 100 ? '0' : '') + (u < 10 ? '0' : '') + u;
 		},
 		decimal: function (v) {
 			return Math.round (v * 100000) / 100000;
 		},
+		degmin: function (v) {
+			var d = Math.floor (Math.abs (v));
+			var m = Math.round ((Math.abs (v) - d)*60 * 1000) / 1000;
+			if (m>=60)
+				{d++; m-=60;}
+			return (v < 0 ? '-' : '') + d + '°' + (m < 10 ? '0' : '') + m + "'";
+		},
 		degminsec: function (v) {
-			v = Math.abs (v);
-			var d = Math.floor (v);
-			var mf = (v-d)*60;
-			var m = Math.floor(mf);
-			var s = Math.round((mf-m)*60);
-			if (s==60) {m++; s=0;}
-			if (m==60) {d++; m=0;}
-			return '' + d + '°' + (m < 10 ? '0' : '') + m + "'" + (s < 10 ? '0' : '') + s + '"';
+			var d = Math.floor (Math.abs (v));
+			var mf = (Math.abs (v) - d)*60;
+			var m = Math.floor (mf);
+			var s = Math.round ((mf - m) * 600) / 10;
+			if (s>=60)
+				{m++; s-=60;}
+			if (m>=60)
+				{d++; m-=60;}
+			return (v < 0 ? '-' : '') + d + '°' + (m < 10 ? '0' : '') + m + "'" + (s < 10 ? '0' : '') + s + '"';
 		}
 	},
 	unformat: {
 		defaut: function (v) {
-			v = v.replace(/ /g,''); // Juste enlever les séparateurs de miliers
+			v = v.replace(/\s/g,''); // Juste enlever les séparateurs de miliers
 			v = v.replace(/,/g,'.'); // Au cas où il y aurait une , à la place du .
-			return '0' + v;
+			return v.length ? v : 0;
 		},
 		decimal: function (v) {
-			v = v.replace(/,/g,'.'); // Au cas où il y aurait une , à la place du .
-			return '0' + v;
+			return OpenLayers.Layer.ImgPosition.prototype.unformat.defaut (v);
+		},
+		degmin: function (v) {
+			return OpenLayers.Layer.ImgPosition.prototype.unformat.degminsec (v);
 		},
 		degminsec: function (v) {
-			v = v.replace(/'|"/g,'°').split('°');
-			return '0' + (v[0]/1 + v[1]/60 + v[2]/3600);
+			va = OpenLayers.Layer.ImgPosition.prototype.unformat.defaut (v.replace(/-/g,'')) + '°0°';
+			vs = va.replace(/'|"/g,'°').split('°');
+			return (v[0] == '-' ? -1 : 1) * (parseFloat (vs[0]) + parseFloat (0 + vs[1]) / 60 +parseFloat (0 + vs[2]) / 3600);
 		}
 	},
 	prefixeId: {

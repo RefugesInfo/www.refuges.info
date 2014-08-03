@@ -52,9 +52,11 @@ OpenLayers.Map.Standard = OpenLayers.Class(OpenLayers.Map, {
         ];
         if (key.IGN != undefined && key.IGN)
             baseLayers = baseLayers.concat ([
-                new OpenLayers.Layer.IGN                 ('IGN',          key.IGN),
-                new OpenLayers.Layer.IGN.Photo           ('IGN photo',    key.IGN),
-                new OpenLayers.Layer.IGN.Cadastre        ('IGN cadastre', key.IGN)
+                new OpenLayers.Layer.IGN             ('IGN',           key.IGN),
+                new OpenLayers.Layer.IGN.Classique   ('IGN classique', key.IGN),
+                new OpenLayers.Layer.IGN.Standard    ('IGN Standard',  key.IGN),
+                new OpenLayers.Layer.IGN.Photo       ('IGN photo',     key.IGN),
+                new OpenLayers.Layer.IGN.Cadastre    ('IGN cadastre',  key.IGN)
             ]);
         baseLayers = baseLayers.concat ([
             new OpenLayers.Layer.SwissTopo           ('SwissTopo'),

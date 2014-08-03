@@ -35,7 +35,9 @@ window.onload = function () {
             new OpenLayers.Layer.MRI            ('maps.refuges.info'),
             new OpenLayers.Layer.OCM.Outdoors   ('OpenCycleMap'),
             new OpenLayers.Layer.OSM            ('OSM'),
-            new OpenLayers.Layer.IGN            ('IGN', '<?=$config["ign_key"]?>'),
+            new OpenLayers.Layer.IGN            ('IGN',           '<?=$config["ign_key"]?>'),
+            new OpenLayers.Layer.IGN.Standard   ('IGN Standard',  '<?=$config['ign_key'];?>'),
+            new OpenLayers.Layer.IGN.Classique  ('IGN Classique', '<?=$config['ign_key'];?>'),
             new OpenLayers.Layer.SwissTopo      ('SwissTopo'),
             new OpenLayers.Layer.IGM            ('Italie'),
             new OpenLayers.Layer.IDEE           ('Espagne')

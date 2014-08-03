@@ -102,8 +102,10 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
         new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
         new OpenLayers.Layer.OCM.Outdoors        ('OpenCycleMap'),
         new OpenLayers.Layer.OSMFR               ('OSM'),
-        new OpenLayers.Layer.IGN                 ('IGN',       '<?=$config['ign_key'];?>'),
-        new OpenLayers.Layer.IGN.Photo           ('IGN photo', '<?=$config['ign_key'];?>'),
+        new OpenLayers.Layer.IGN                 ('IGN',           '<?=$config['ign_key'];?>'),
+        new OpenLayers.Layer.IGN.Standard        ('IGN Standard',  '<?=$config['ign_key'];?>'),
+        new OpenLayers.Layer.IGN.Classique       ('IGN Classique', '<?=$config['ign_key'];?>'),
+        new OpenLayers.Layer.IGN.Photo           ('IGN photo',     '<?=$config['ign_key'];?>'),
         <?if ($config['SwissTopo']){?>
             new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
             new OpenLayers.Layer.SwissTopo.Photo     ('SwissTopo image'),
