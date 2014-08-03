@@ -483,8 +483,11 @@ function infos_point_forum ($point)
   else
     if ($point->modele!=1) // Si c'est un modèle de point, il n'a pas de forum
       return erreur("Le forum du point \"$point->nom\" (id=$point->id_point) ne semble pas exister","$q n'a retourné aucun enregistrement");
-  
-  return $result;
+
+    // sly : C'est un peu relou de faire ça, mais phpbb ne stoque pas les messages tels qu'ils ont été saisie puis après les travaille à l'affichage, non !
+    // il stoque ça avec des entités html ! Alors comme je préfère faire les traitements de mon choix, je décode pour créer mon objet
+    $result->post_text=htmlspecialchars_decode($result->post_text,ENT_QUOTES);
+    return $result;
 
 }	
 
