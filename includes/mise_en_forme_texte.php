@@ -203,10 +203,12 @@ function stripBBCode($text_to_search)
 }
 
 //**********************************************************************************************
-// fonction qui retire le bbcode et converti les caractères non compatible xml en entités xml 
+// fonction qui retire le bbcode et converti les caractères non compatible xml en entités xml
+// le nom ultra court s'explique par le fait que tout particulièrement dans les exports cette fonction est utilisé
+// sly 2014 : pour une myriade de variable, question de lisibilité, c($titre) est plus lisible mais moins compréhensible
 function c($contenu)
 {
-  return htmlspecialchars(stripBBCode($contenu),0,"UTF-8");
+  return protege(stripBBCode($contenu));
 }
 
 // cela retire toute les balises BBcode pour faire quelque chose le plus lisible possible en mode texte pur

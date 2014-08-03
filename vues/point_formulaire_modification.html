@@ -11,7 +11,7 @@
 
 <div class="contenu">
 	<?
-  if (!count($vue->etapes))
+	if (!count($vue->etapes))
   { ?>
     <dl> <?
     foreach ($vue->etapes as $etape)
@@ -47,13 +47,13 @@
             <legend>Position</legend>
             <label>
                 <span id="titre-lon">Longitude</span>
-                <input type="text" id="proj-lon" name="longitude" size="12" maxlength="12" value="<?=$point->longitude?>" />
-                <input type="hidden" id="lon" name="longitude" value="<?=$point->longitude?>" />
+                <input type="text" id="proj-lon" name="longitude" size="12" maxlength="12" value="<?=$vue->point->longitude?>" />
+                <input type="hidden" id="lon" name="longitude" value="<?=$vue->point->longitude?>" />
             </label>
             <label>
                 <span id="titre-lat">Latitude</span>
-                <input type="text" id="proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$point->latitude?>" />
-                <input type="hidden" id="lat" name="latitude" value="<?=$point->latitude?>" />
+                <input type="text" id="proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$vue->point->latitude?>" />
+                <input type="hidden" id="lat" name="latitude" value="<?=$vue->point->latitude?>" />
             </label>
             <label>
                 <select id="select-projection">
@@ -65,7 +65,7 @@
             <label>Provenance
                 <select name="id_type_precision_gps">
                 <?	foreach ($vue->infos_base->type_precision AS $gps) { ?>
-                        <option  value="<?=$gps->id_type_precision_gps?>"<?=($gps->id_type_precision_gps==$point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
+                        <option  value="<?=$gps->id_type_precision_gps?>"<?=($gps->id_type_precision_gps==$vue->point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
                             <?=$gps->nom_precision_gps ?>
                         </option>
                     <?}?>
@@ -73,7 +73,7 @@
             </label>
         </fieldset>
         <label>Altitude
-            <input type="text" name="altitude" size="6" value="<?=$point->altitude?>" />m
+            <input type="text" name="altitude" size="6" value="<?=$vue->point->altitude?>" />m
         </label>
 	</fieldset>
 		
@@ -85,7 +85,7 @@
 			<label>Type de point
 				<select name='id_point_type'>
 					<?php foreach ($vue->infos_base->types_point AS $type_point) { ?>
-						<option  value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$point->id_point_type)? 'selected="selected"' : '' ;?>>
+						<option  value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$vue->point->id_point_type)? 'selected="selected"' : '' ;?>>
 							<?=$type_point->nom_type?>
 						</option>
 					<?}?>
@@ -96,9 +96,9 @@
 			</label>
 
 		<?// tous les points n'ont pas de raison d'avoir ce champ ( lac, sommets, etc.)
-		if ($point->equivalent_places!="") {?>
-			<label><?=$point->equivalent_places?>
-				<input type="text" name="places" size="8" value="<?=$point->places?>" />
+		if ($vue->point->equivalent_places!="") {?>
+			<label><?=$vue->point->equivalent_places?>
+				<input type="text" name="places" size="8" value="<?=$vue->point->places?>" />
 			</label>
 		<?}?>
 	</fieldset>
@@ -173,10 +173,10 @@
                 </fieldset>
                 <?php } ?>
                 <fieldset class="booleen">
-                <?php if (!empty($point->equivalent_site_officiel) ) { ?>
-                        <legend><?=$point->equivalent_site_officiel?> :</legend>
+                <?php if (!empty($vue->point->equivalent_site_officiel) ) { ?>
+                        <legend><?=$vue->point->equivalent_site_officiel?> :</legend>
                         <label>
-                                <input name="site_officiel" size="50" type="text" value="<?=htmlspecialchars($point->site_officiel,0,'UTF-8')?>" />
+                                <input name="site_officiel" size="50" type="text" value="<?=$vue->point->site_officiel?>" />
                         </label>
                 </fieldset>
     </fieldset>
@@ -187,7 +187,7 @@
                 <fieldset>
 		<legend title="Ces informations ne seraient pas demandées si vous étiez inscrit sur le site">Gestion</legend>
 		<label>Mettez votre nom ou pseudo (facultatif)
-			<input type="text" name="nom_createur" maxlength="40" size="41" value="<?=htmlspecialchars($nom_createur,ENT_QUOTES,'UTF-8')?>" />
+			<input type="text" name="nom_createur" maxlength="40" size="41" value="<?=$vue->point->$nom_createur?>" />
 		</label>
 		<label title="Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne vienne pas jusqu'ici">
 			Entrez la lettre <strong>d</strong>

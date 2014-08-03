@@ -217,7 +217,7 @@ foreach ($textes_area as $libelle => $nom_variable)
         $vue->champs->textareas->$nom_variable->disable = true; // c'est koi ?
         
     $vue->champs->textareas->$nom_variable->label=$libelle ; // faudra mettreca dans un LABEL
-    $vue->champs->textareas->$nom_variable->valeur=htmlspecialchars($point->$nom_variable,0,"UTF-8");
+    $vue->champs->textareas->$nom_variable->valeur=protege($point->$nom_variable);
 }
 
 /******** Les informations complémentaires (booléens, détails) *****************/
@@ -264,15 +264,19 @@ if ( !empty($point->equivalent_places_matelas) )
     $vue->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
 }
 
-// ===================================
+// ===========================================
+// Préparation de la $vue commune à chaque cas
 
 //$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");
 $vue->lien_aide_points = lien_wiki("autres_points");
-// En mode modification, on peut récupéer toutes les infos du point à modifier dans $vue->point->$propriété
-$point->nom_protege=protege($point->nom);
+
+// En mode modification, on peut récupéer toutes les infos du point à modifier dans $vue->point->$propriété, ça peut contenir des tas de caractères douteux
+$point->nom=protege($point->nom);
+$point->site_officiel=protege($point->site_officiel);
+$point->nom_createur=protege($point->nom_createur);
 $vue->point=$point;
 
 ?>

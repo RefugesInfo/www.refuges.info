@@ -5,6 +5,8 @@
 
 require_once ("../includes/config.php");
 require_once ("commentaire.php");
+require_once ("mise_en_forme_texte.php");
+
 //Pas d'accès direct à la page !
 if (AUTH!=1)
 	die("<h3>Accès non autorisé</h3>");
@@ -100,7 +102,7 @@ if ($vue->erreur=="")
                 src='".$config['rep_web_photos_points'].$commentaire->id_commentaire.".jpeg'
                 alt='photo liée au commentaire'
                 width='200px' /><br />\n";
-            echo nl2br(htmlspecialchars($commentaire->texte,ENT_QUOTES,"UTF-8"))."</blockquote>\n";
+            echo nl2br(protege($commentaire->texte)."</blockquote>\n";
             // formulaire qui contient uniquement le comment
             echo "
             <form method='POST'>
@@ -114,7 +116,7 @@ if ($vue->erreur=="")
             date:
             <input type='text' disabled='disabled' name='date' value='".date('d/m/Y H:i',$commentaire->ts_unix_commentaire)."' size='16'/>
             </label>
-            <textarea name='texte' rows='10' cols='100'>".htmlspecialchars($commentaire->texte,0,"UTF-8")."</textarea>
+            <textarea name='texte' rows='10' cols='100'>".protege($commentaire->texte)."</textarea>
             <br />
             
             <!-- tout cela n'est ptet pas necessaire -->

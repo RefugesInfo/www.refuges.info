@@ -6,6 +6,7 @@ contenu non dynamiquement généré
 Finalement on passe à un quasi-vrai wiki avec historique (approximatif) que pour modérateurs
 *****************************************************/
 require_once ("wiki.php");
+require_once ("mise_en_forme_texte.php");
 
 $nom_page=$controlleur->url_decoupee[2];
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
@@ -41,7 +42,7 @@ if ($page->erreur and $_GET['form_modifier']!=1)
 elseif($_GET['form_modifier']==1 and $_SESSION ['niveau_moderation'] >= 1)
 {
     $vue->type="wiki_modification";
-    $vue->contenu_a_modifier=htmlspecialchars($page->contenu,0,"UTF-8");
+    $vue->contenu_a_modifier=protege($page->contenu);
     $vue->lien_validation=lien_wiki($nom_page);
     $vue->lien_bbcode=lien_wiki('syntaxe_bbcode');
 }

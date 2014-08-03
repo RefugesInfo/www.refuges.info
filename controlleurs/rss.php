@@ -15,11 +15,13 @@
 // les points ou les massif qui intéresse
 // toutes les requêtes n'étant plus valables vue le changement profond de la base
 // Mais il s'avère que les news sont très proche de ce besoin, la fusion
-// devrait être faisable sans trop de douleur - sly 24/09/2009  
+// devrait être faisable sans trop de douleur - sly 24/09/2009
+// 2014 : un sondage sur le forum révèle que peu d'utilisateur serait intéressé par un flux rss, est-ce que ça vaut le coup ?
 
 require_once ('../includes/config.php');
 require_once ("bdd.php");
 require_once ("nouvelle.php");
+require_once ("mise_en_forme_texte.php");
 
 
 $listetypes = $_GET["listeobjets"] ;
@@ -45,10 +47,10 @@ function affiche_item ($item)
   // la fonction mt_rand sert juste a avoir un GUID unique...........
   return "
   <item>
-    <title>".stripslashes(htmlspecialchars($item["title"],0,"UTF-8"))."</title>
+    <title>".stripslashes(protege($item["title"])."</title>
       <link>".$item["link"]."</link>
       <guid>".$item["link"]."/".mt_rand(1,1000)."</guid>
-      <description>".stripslashes(htmlspecialchars($item["description"],0,"UTF-8"))."</description>
+      <description>".stripslashes(protege($item["description"])."</description>
       <pubDate>".date('r',$item["pubdate"])."</pubDate>
       <category>".$item["category"]."</category>
       <!-- <enclosure url='http://".$config['nom_hote']."/images/icones/abri.png'

@@ -6,6 +6,7 @@ Pour ajouter un commentaire rattaché à un point
 require_once ("commentaire.php");
 require_once ("point.php");
 require_once ("wiki.php");
+require_once ("mise_en_forme_texte.php");
 
 $commentaire = new stdClass();
 setlocale(LC_TIME, "fr_FR");
@@ -24,7 +25,7 @@ if (!$point->erreur)
     {
         $commentaire->texte=stripslashes($_POST['texte']);
         $commentaire->auteur_commentaire=stripslashes($_POST['auteur_commentaire']);
-        $commentaire->texte_propre=htmlspecialchars($commentaire->texte,0,"UTF-8");
+        $commentaire->texte_propre=protege($commentaire->texte);
         $vue->lettre_verification=$_POST["lettre_verification"];
         
         // peut être un robot ?
@@ -58,7 +59,7 @@ if (!$point->erreur)
     }
     // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
   
-  $quel_point="$point->article_defini $point->nom_type : ".htmlspecialchars($point->nom,ENT_QUOTES,"UTF-8");
+  $quel_point="$point->article_defini $point->nom_type : ".protege($point->nom);
     $vue->titre="Ajout d'un commentaire sur $quel_point";
     $vue->lien_point=lien_point($point);
     $vue->lien_texte_retour="Retour à $quel_point";
