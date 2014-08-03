@@ -7,16 +7,6 @@ de et vers HTML TXT
 
 require_once("point.php");
 
-//lcfirst n'existe pas avant php 5.3, si n'existe pas, on la créé
-//FIXME, je doute quand même que quelqu'un souhaite faire tourner wri sur une ancienne version comme ça, en plus, sauf erreur, je crois que plusieurs morceaux de code
-// par ailleurs ont besoin de 5.3, alors de toute façon... on la vire ?
-if ( false === function_exists('lcfirst') ):
-function lcfirst( $str )
-{ 
-	return (string)(strtolower(substr($str,0,1)).substr($str,1));
-}
-endif; 
-
 /**
 Fonction d'aide au référencement mais aussi de simplification pour que les internautes puisse se passer des urls d'accès direct aux points (par exemple)
 qui soit d'elle même significative (plus que http://wri/point/456)
