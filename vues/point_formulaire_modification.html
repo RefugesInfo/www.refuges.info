@@ -24,9 +24,9 @@
     </dl>  <?
   }
 ?>
-	<div class="carte_edit" id="carte-edit"></div>
-	<form class="wri" id="form_point" method="post" onsubmit="return validation();" action="/point_modification.php">
-		<div><?
+    <div class="carte_edit" id="carte-edit"></div>
+    <form class="wri" id="form_point" method="post" onsubmit="return validation();" action="/point_modification.php">
+    <div><?
     foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
         <?=$bouton->label?>
@@ -34,24 +34,22 @@
     <?}?>
     </div>
     <div>
-    <!-- Champs masques -->
+    <!-- Champs cachés -->
     <?
     foreach ($vue->champs->invisibles as $nom => $params)
     { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
     <?}?>
     </div>
-	<fieldset>
-		<legend>Coordonnées</legend>
+    <h4>Coordonnées</h4>
         <fieldset>
-            <legend>Position</legend>
             <label>
-                <span id="titre-lon">Longitude</span>
+                <span id="titre-lon">Longitude</span> :
                 <input type="text" id="proj-lon" name="longitude" size="12" maxlength="12" value="<?=$vue->point->longitude?>" />
                 <input type="hidden" id="lon" name="longitude" value="<?=$vue->point->longitude?>" />
             </label>
             <label>
-                <span id="titre-lat">Latitude</span>
+                <span id="titre-lat">Latitude</span> :
                 <input type="text" id="proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$vue->point->latitude?>" />
                 <input type="hidden" id="lat" name="latitude" value="<?=$vue->point->latitude?>" />
             </label>
@@ -64,86 +62,85 @@
             <span>Degrés décimaux WGS84 ex: 45.2356 et -5.2354. Déplacez le viseur pour modifier la position (n'oubliez pas de valider).</span>
             <label>Provenance
                 <select name="id_type_precision_gps">
-                <?	foreach ($vue->infos_base->type_precision AS $gps) { ?>
-                        <option  value="<?=$gps->id_type_precision_gps?>"<?=($gps->id_type_precision_gps==$vue->point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
-                            <?=$gps->nom_precision_gps ?>
-                        </option>
-                    <?}?>
+                <?php foreach ($vue->infos_base->type_precision AS $gps) { ?>
+                    <option  value="<?=$gps->id_type_precision_gps?>"<?=($gps->id_type_precision_gps==$vue->point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
+                        <?=$gps->nom_precision_gps ?>
+                    </option>
+                <?}?>
                 </select>
             </label>
+            <label>
+                Altitude :
+                <input type="text" name="altitude" size="6" value="<?=$vue->point->altitude?>" />m
+            </label>
         </fieldset>
-        <label>Altitude
-            <input type="text" name="altitude" size="6" value="<?=$vue->point->altitude?>" />m
-        </label>
-	</fieldset>
-		
-	<fieldset>
-		<legend>Informations de base:</legend>
-			<label>Nom
-			<input size="40" type="text" name="nom" value="<?=$vue->point->nom?>" />
-			</label>
-			<label>Type de point
-				<select name='id_point_type'>
-					<?php foreach ($vue->infos_base->types_point AS $type_point) { ?>
-						<option  value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$vue->point->id_point_type)? 'selected="selected"' : '' ;?>>
-							<?=$type_point->nom_type?>
-						</option>
-					<?}?>
-				</select>
-                        <a href="<?=$vue->lien_aide_points?>">
-                                Explications plus précises sur les différents types de points
-                        </a>
-			</label>
+            
+    <h4>Informations de base:</h4>
+        <fieldset>
+            <label>
+                Nom :
+                <input size="40" type="text" name="nom" value="<?=$vue->point->nom?>" />
+            </label>
+            <label>Type de point
+                <select name='id_point_type'>
+                <?php foreach ($vue->infos_base->types_point AS $type_point) { ?>
+                    <option  value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$vue->point->id_point_type)? 'selected="selected"' : '' ;?>>
+                        <?=$type_point->nom_type?>
+                    </option>
+                <?}?>
+                </select>
+                <a href="<?=$vue->lien_aide_points?>">
+                    Explications plus précises sur les différents types de points
+                </a>
+            </label>
 
-		<?// tous les points n'ont pas de raison d'avoir ce champ ( lac, sommets, etc.)
-		if ($vue->point->equivalent_places!="") {?>
-			<label><?=$vue->point->equivalent_places?>
-				<input type="text" name="places" size="8" value="<?=$vue->point->places?>" />
-			</label>
-		<?}?>
-	</fieldset>
-	<fieldset>
-		<span><a href="<?=$vue->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
-<?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
-		<label class="textarea"><span><?=$tx_params->label?></span>
-			<textarea class="textarea" rows="5" cols="80" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
-		</label>
-		
-<?}?>
-	</fieldset>
-      
-      
-    <fieldset>
-                <?php if ($vue->champs->censure->actif) { ?>
-                        <fieldset class="booleen">
-                                <legend<?=(isset($vue->champs->censure->aide))? ' title="'.$vue->champs->censure->aide.'"':'';?>><?=$vue->champs->censure->label?></legend>
-                                <label>oui<input type="radio" name="censure" value="TRUE" <?=($vue->champs->censure->valeur===true)?'checked="checked"':'';?>/></label>
-                                <label>non<input type="radio" name="censure" value="FALSE" <?=($vue->champs->censure->valeur===false)?'checked="checked"':'';?>/></label>
-                        </fieldset>
-                <?php } ?>
-
-                <?php if ($vue->champs->conditions_utilisation) { ?>
-                <fieldset class="booleen"> 
-                  <legend>État :</legend> 
-                  <?php foreach ( $vue->champs->conditions_utilisation->options as $option_key => $option_val) { ?>
-                    <label><?=$option_val?>
-                      <input type="radio" name="conditions_utilisation" value="<?=$option_key?>"<?=($vue->champs->conditions_utilisation->valeur==$option_key)?' checked="checked"':'';?> />
+            <?php // tous les points n'ont pas de raison d'avoir ce champ ( lac, sommets, etc.)
+                if ($vue->point->equivalent_places!="") {?>
+                    <label><?=$vue->point->equivalent_places?> :
+                        <input type="text" name="places" size="8" value="<?=$vue->point->places?>" />
                     </label>
-                  <?php } ?>
-                </fieldset>
-                <?php } ?>
+            <?}?>
+        </fieldset>
+        <fieldset>
+                <span><a href="<?=$vue->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
+                    <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
+                    <label class="textarea"><span><?=$tx_params->label?></span>
+                        <textarea class="textarea" rows="5" cols="80" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
+                    </label>
+		
+<?php } ?>
+        </fieldset>
+    <h4>Informations complémentaires</h4>
+	
+	<?php if ($vue->champs->censure->actif) { ?>
+	<fieldset class="booleen">
+	    <legend<?=(isset($vue->champs->censure->aide))? ' title="'.$vue->champs->censure->aide.'"':'';?>><?=$vue->champs->censure->label?></legend>
+	        <label>oui<input type="radio" name="censure" value="TRUE" <?=($vue->champs->censure->valeur===true)?'checked="checked"':'';?>/></label>
+	        <label>non<input type="radio" name="censure" value="FALSE" <?=($vue->champs->censure->valeur===false)?'checked="checked"':'';?>/></label>
+	</fieldset>
+	<?php } ?>
 
-                <?php if (!empty($vue->champs->places_matelas->label) ) {
-                // rendre le champs invisible si l'option etait "ne sait pas" ou "ya pas"
-                if ( is_int($vue->champs->places_matelas->valeur) && $vue->champs->places_matelas->valeur >= 0 ) // est 0 ou N 
-                    $visible = 'visible';
-                else                              // NULL ou -1
-                    $visible = 'hidden';
-                }
-                ?>
+	<?php if ($vue->champs->conditions_utilisation) { ?>
+	<fieldset class="booleen">
+	    <legend>État :</legend>
+	    <?php foreach ( $vue->champs->conditions_utilisation->options as $option_key => $option_val) { ?>
+	        <label><?=$option_val?>
+                      <input type="radio" name="conditions_utilisation" value="<?=$option_key?>"<?=($vue->champs->conditions_utilisation->valeur==$option_key)?' checked="checked"':'';?> />
+                </label>
+            <?php } ?>
+         </fieldset>
+         <?php } ?>
+
+         <?php if (!empty($vue->champs->places_matelas->label) ) {
+             // rendre le champs invisible si l'option etait "ne sait pas" ou "ya pas"
+             if ( is_int($vue->champs->places_matelas->valeur) && $vue->champs->places_matelas->valeur >= 0 ) // est 0 ou N
+                 $visible = 'visible';
+             else                     // NULL ou -1
+                 $visible = 'hidden';
+         } ?>
                 
-                <?php if (!empty($vue->champs->places_matelas->label) ) { ?>
-                <fieldset class="booleen"> 
+         <?php if (!empty($vue->champs->places_matelas->label) ) { ?>
+         <fieldset class="booleen">
                   <legend><?=$vue->champs->places_matelas->label?> :</legend> 
                     <label>ne sait pas
                         <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($vue->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
@@ -172,37 +169,37 @@
                         <label>non<input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>/></label>
                 </fieldset>
                 <?php } ?>
-                <fieldset class="booleen">
                 <?php if (!empty($vue->point->equivalent_site_officiel) ) { ?>
+                <fieldset class="booleen">
                         <legend><?=$vue->point->equivalent_site_officiel?> :</legend>
                         <label>
                                 <input name="site_officiel" size="50" type="text" value="<?=$vue->point->site_officiel?>" />
                         </label>
                 </fieldset>
-    </fieldset>
                 <?php } ?>
-
-                                
+                
                 <?php if (!isset($_SESSION['id_utilisateur'])) { ?>
-                <fieldset>
-		<legend title="Ces informations ne seraient pas demandées si vous étiez inscrit sur le site">Gestion</legend>
-		<label>Mettez votre nom ou pseudo (facultatif)
-			<input type="text" name="nom_createur" maxlength="40" size="41" value="<?=$vue->point->$nom_createur?>" />
-		</label>
-		<label title="Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne vienne pas jusqu'ici">
-			Entrez la lettre <strong>d</strong>
-			<input name="lettre_securite" type="text" size="1" />
-		</label>
+                <h4>Questions pour les contributeurs anonymes</h4>
+                <fieldset class="booleen">
+                    <legend>Votre nom ou pseudo (facultatif) :</legend>
+                    <label>
+                        <input type="text" name="nom_createur" maxlength="40" size="41" value="" />
+                    </label>
+                </fieldset>
+                <fieldset class="booleen">
+                    <label title="Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne vienne pas jusqu'ici">
+                        Entrez la lettre <strong>d</strong>
+                        <input name="lettre_securite" type="text" size="1" />
+                    </label>
                 </fieldset>
                 <?}?>
                 
-                
-		<div>
-		<?php foreach ($vue->champs->boutons as $bouton) { ?>
+                <fieldset class="booleen">
+                <?php foreach ($vue->champs->boutons as $bouton) { ?>
                   <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
                     <?=$bouton->label?>
                   </button>
                 <?}?>
-                </div>
+                </fieldset>
 	</form>
 </div>

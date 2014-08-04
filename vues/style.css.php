@@ -138,6 +138,7 @@ H3 { /* titres de pages */
 H4 { /* sous titres */
   padding-top: 4px; /* sous FF, la padding par defo est immense */
   padding-bottom: 2px;
+  clear:left;
   padding-left: 10px;
   font-size: large;
   margin: 0px; /* sous FF, la padding par defo est immense */
