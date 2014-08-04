@@ -58,7 +58,7 @@ $conditions_commentaires_generaux->limite=2;
 $vue->nouvelles_generales=infos_commentaires($conditions_commentaires_generaux);
 
 // FIXME: Préparation de la liste des nouveaux commentaires
-// ici, on pourrait vraiment se passer de la fonction nouvelles et ansi de pas dépendre d'un truc qui génère du HTML
+// ici, on pourrait vraiment se passer de la fonction nouvelles et ainsi de pas dépendre d'un truc qui génère du HTML
 $vue->nouveaux_commentaires=nouvelles(9,"commentaires");
 
 // Préparation de la liste des nouveaux points rentrés

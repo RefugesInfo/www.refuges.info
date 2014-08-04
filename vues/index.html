@@ -56,7 +56,7 @@
                                 if ($nouveau_point->id_createur==0) { ?>
                                     par <?=$nouveau_point->nom_createur?>
                                 <?php } else { ?>
-                                par <a href="<?=$config['fiche_utilisateur'].$point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
+                                par <a href="<?=$config['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
                                 <?php } ?>
                             <?php } ?>
                                 : <a href="<?=$nouveau_point->lien?>"><?=$nouveau_point->nom?></a>
