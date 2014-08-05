@@ -59,132 +59,99 @@
 			</div>
 			<a href="/"><img alt="Photo d'ambiance" src="<?='/images/bandeau-haut/titrehorizontal_'.date ('m').'.png'?>" /></a>
 		</div>
-		
-		<?foreach (array ('menu-normal', 'menu-scroll') AS $id) {?>
-			<div id="<?=$id?>" class="menu">
-				<ul>
-					<li><a href="/">Accueil</a></li>
-					<li><a href="/nouvelles/">Nouvelles</a>
-						<ul>
-							<li><a href="/nouvelles/" title="Les entrées les plus récentes">Toutes</a></li>
-							<li><a href="/nouvelles/?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
-							<li><a href="/nouvelles/?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
-							<li><a href="/nouvelles/?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
-							<li><a href="/nouvelles/?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
-							<li><a href="/formulaire_rss/">Flux RSS</a></li>
-						</ul>
-					</li>
-					<li><a href="/point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
-					</li>
-					<li><a href="/point_formulaire_recherche/">Recherche</a>
-						<ul>
-							<li><a href="/point_formulaire_recherche/" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
-							<li><a href="/formulaire_exportations/" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
-						</ul>
-					</li>
-					<?if ($id == 'menu-scroll') {?>
+
+		<div id="menu-normal" class="menu">
+			<ul>
+				<li><a id="lien-mobile" href="/mobile" title="Passer sur la version mobile">MOBILE</a></li>
+				<li><a href="/">Accueil</a></li>
+				<li><a href="/nouvelles/">Nouvelles</a>
+					<ul>
+						<li><a href="/nouvelles/" title="Les entrées les plus récentes">Toutes</a></li>
+						<li><a href="/nouvelles/?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
+						<li><a href="/nouvelles/?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
+						<li><a href="/nouvelles/?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
+						<li><a href="/nouvelles/?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
+						<li><a href="/formulaire_rss/">Flux RSS</a></li>
+					</ul>
+				</li>
+				<li><a href="/point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
+				</li>
+				<li><a href="/point_formulaire_recherche/">Recherche</a>
+					<ul>
+						<li><a href="/point_formulaire_recherche/" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
+						<li><a href="/formulaire_exportations/" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
+					</ul>
+				</li>
+				<li>Zones couvertes
+					<ul>
+					  <li><a href="/nav/352?mode_affichage=zone">Alpes</a></li>
+					  <li><a href="/nav/50?mode_affichage=zone">Massif Central</a></li>
+					  <li><a href="/nav/351?mode_affichage=zone">Pyrénées</a></li>
+											  <li><a href="/nav/747?mode_affichage=zone">Vosges</a></li>
+											  <li><a href="/nav/27">Jura</a></li>
+					  <li><a href="/nav/337">Corse</a></li>
+					  <li><a href="/nav/28">Réunion</a></li>
+					  <li><a href="/nav/51">Nlle Calédonie</a></li>
+					  <li><a href="/nav/374">Andes</a></li>
+					</ul>
+				</li>
+				<li><a href="/nav">Cartes</a>
+					<ul>
+						<li><a href="/nav/">Cartes</a></li>
+						<li><a href="/nav?baseLayer=Maps.Refuges.info">Randonnée</a></li>
+						<li><a href="/nav?baseLayer=IGN&amp;lat=46&amp;lon=3&amp;scale=3000000">IGN</a></li>
+						<li><a href="/nav?baseLayer=SwissTopo&amp;lat=46.8&amp;lon=8.3&amp;scale=1500000">SwissTopo</a></li>
+						<li><a href="/nav?baseLayer=Germanie&amp;lat=48&amp;lon=14&amp;scale=3000000">Autriche</a></li>
+						<li><a href="/nav?baseLayer=Italie&amp;lat=45.1&amp;lon=7.6&amp;zoom=0">Italie</a></li>
+						<li><a href="/nav?baseLayer=Espagne&amp;lat=41&amp;lon=-2&amp;scale=2500000">Espagne</a></li>
+					</ul>
+				</li>
+				<li><a href="/forum">Forums</a>
+					<ul>
+						<li><a href="/forum">Tous</a></li>
+						<li><a href="/forum/viewforum.php?f=1" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">La vie du site</a></li>
+						<li><a href="/forum/viewforum.php?f=2" title="Forum de discussion sur le développement et les défauts logiciles du site">Développement</a></li>
+						<li><a href="/forum/viewforum.php?f=6" title="Forum d'échange sur les offres et demandes d'emploi en refuge">Emplois</a></li>
+						<li><a href="/forum/viewforum.php?f=5" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">Divers</a></li>
+						<li><a href="/forum/privmsg.php?folder=inbox" title="Votre boite aux lettres personelle">Messages</a></li>
+					</ul>
+				</li>
+				<li><a href="<?=$vue->lien_wiki["index"]?>">A propos du site</a>
+					<ul>
+						<li><a href="<?=$vue->lien_wiki["index"]?>">A propos</a></li>
+						<li><a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">Licence des contenus</a></li>
+						<li><a href="<?=$vue->lien_wiki["prudence"]?>" title="Règles de prudence à observer vis à vis de l'information présente sur refuges.info">Règles de prudence</a></li>
+						<li><a href="<?=$vue->lien_wiki["qui_est_refuges.info"]?>" title="Qui est derrière www.refuges.info ?">Qui sommes nous ?</a></li>
+						<li><a href="<?=$vue->lien_wiki["liens"]?>">Liens</a></li>
+						<li><a href="<?=$vue->lien_wiki["don"]?>">Faire un don</a></li>
+						<li><a href="<?=$vue->lien_wiki["mentions-legales"]?>">Mentions Légales</a></li>
+					</ul>
+				</li>
+				
+				<? if ($_SESSION['niveau_moderation']>=1) {?>
 					<li>
-						<form method="post" action="/point_recherche/">
-							<div>
-								<input type="text" name="nom" size="10" title="Recherche rapide sur le site: Cliquez ici, entrez tout ou partie du nom d'une cabane ou refuge et tappez &lt;ENTREE&gt;" />
-								<input type="hidden" name="ids_types_point" value="7,9,10" />
-                						<input type="hidden" name="avec_point_osm" value="1" />
-							</div>
-						</form>
-					</li>
-					<?}?>
-					<li>Zones couvertes
-						<ul>
-						  <li><a href="/nav/352?mode_affichage=zone">Alpes</a></li>
-						  <li><a href="/nav/50?mode_affichage=zone">Massif Central</a></li>
-						  <li><a href="/nav/351?mode_affichage=zone">Pyrénées</a></li>
-                                                  <li><a href="/nav/747?mode_affichage=zone">Vosges</a></li>
-                                                  <li><a href="/nav/27">Jura</a></li>
-						  <li><a href="/nav/337">Corse</a></li>
-						  <li><a href="/nav/28">Réunion</a></li>
-						  <li><a href="/nav/51">Nlle Calédonie</a></li>
-						  <li><a href="/nav/374">Andes</a></li>
-						</ul>
-					</li>
-					<li><a href="/nav">Cartes</a>
-						<ul>
-							<li><a href="/nav/">Cartes</a></li>
-							<li><a href="/nav?baseLayer=Maps.Refuges.info">Randonnée</a></li>
-							<li><a href="/nav?baseLayer=IGN&amp;lat=46&amp;lon=3&amp;scale=3000000">IGN</a></li>
-							<li><a href="/nav?baseLayer=SwissTopo&amp;lat=46.8&amp;lon=8.3&amp;scale=1500000">SwissTopo</a></li>
-							<li><a href="/nav?baseLayer=Germanie&amp;lat=48&amp;lon=14&amp;scale=3000000">Autriche</a></li>
-							<li><a href="/nav?baseLayer=Italie&amp;lat=45.1&amp;lon=7.6&amp;zoom=0">Italie</a></li>
-							<li><a href="/nav?baseLayer=Espagne&amp;lat=41&amp;lon=-2&amp;scale=2500000">Espagne</a></li>
-						</ul>
-					</li>
-					<li><a href="/forum">Forums</a>
-						<ul>
-							<li><a href="/forum">Tous</a></li>
-							<li><a href="/forum/viewforum.php?f=1" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">La vie du site</a></li>
-							<li><a href="/forum/viewforum.php?f=2" title="Forum de discussion sur le développement et les défauts logiciles du site">Développement</a></li>
-							<li><a href="/forum/viewforum.php?f=6" title="Forum d'échange sur les offres et demandes d'emploi en refuge">Emplois</a></li>
-							<li><a href="/forum/viewforum.php?f=5" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">Divers</a></li>
-							<li><a href="/forum/privmsg.php?folder=inbox" title="Votre boite aux lettres personelle">Messages</a></li>
-						</ul>
-					</li>
-					<li><a href="<?=$vue->lien_wiki["index"]?>">A propos du site</a>
-						<ul>
-							<li><a href="<?=$vue->lien_wiki["index"]?>">A propos</a></li>
-							<li><a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">Licence des contenus</a></li>
-							<li><a href="<?=$vue->lien_wiki["prudence"]?>" title="Règles de prudence à observer vis à vis de l'information présente sur refuges.info">Règles de prudence</a></li>
-							<li><a href="<?=$vue->lien_wiki["qui_est_refuges.info"]?>" title="Qui est derrière www.refuges.info ?">Qui sommes nous ?</a></li>
-							<li><a href="<?=$vue->lien_wiki["liens"]?>">Liens</a></li>
-							<li><a href="<?=$vue->lien_wiki["don"]?>">Faire un don</a></li>
-							<li><a href="<?=$vue->lien_wiki["mentions-legales"]?>">Mentions Légales</a></li>
-						</ul>
-					</li>
-					
-					<?if ($id == 'menu-scroll') {?>
-						<?if ($_SESSION['niveau_moderation']>=1) {?>
-							<li><a href="/gestion/" title="Zone de gestion pour les modérateurs">[<?=$_SESSION['login_utilisateur']?>]</a>
-								<?if (info_demande_correction ()) {?>
-									<a href="/gestion/?page=commentaires_attente_correction" title="Commentaires en attente de correction">*</a>
-								<?}?>
-								<ul>
-									<li><a href="/forum/profile.php?mode=editprofile" title="Modifier votre profil">Profil</a></li>
-									<li><a href="<?=$config['lien_forum']?>login.php?logout=true">Se déconnecter</a></li>
-									<li><a href="/gestion/">Zone Gestion</a></li>
-									<li><a href="/gestion/?page=commentaires_attente_correction" title="Commentaires en attente de correction">Corrections</a></li>
-								</ul>
-							</li>
-						<?} else {?>
-							<li>
-								<a href="<?=$config['lien_forum']?>login.php" title="Zone de gestion pour les modérateurs">Se connecter</a>
-								<ul>
-									<li><a href="<?=$config['lien_forum']?>profile.php?mode=register" title="Créer un nouvel utilisateur">S'enregistrer</a></li>
-								</ul>
-							</li>
+						<a href="/gestion/" title="Zone de gestion pour les modérateurs">Gestion</a>
+						<?if ($vue->demande_correction) {?>
+							<a href="/gestion/?page=commentaires_attente_correction" title="Commentaires en attente d'une correction">*</a>
 						<?}?>
-					<?} else if ($_SESSION['niveau_moderation']>=1) {?>
-						<li>
-							<a href="/gestion/" title="Zone de gestion pour les modérateurs">Gestion</a>
-							<?if ($vue->demande_correction) {?>
-								<a href="/gestion/?page=commentaires_attente_correction" title="Commentaires en attente d'une correction">*</a>
-							<?}?>
-							<? // Ajout d'un lien de test pour Dominique seulement....
-							if ($_SESSION['login_utilisateur'] == 'Dominique') {
-								$request = explode ('/', $_SERVER['REQUEST_URI']);
-									$url = explode ('?', $request [1]);
-									if (!$url [0]) $url [0] = 'index.php';
-										$urls = explode ('.', $url [0]);
-											$urls [0] .= '-TEST';
-										$url [0] = implode ('.', $urls);
-									$request [1] = implode ('?', $url);
-								$uri = implode ('/', $request);
-								if (file_exists ($urls [0] .'.php')) {?>
-									<a href="<?=$uri?>">.</a>
-								<?}
-							}?>
-						</li>
-					<?}?>
-				</ul>
-			</div>
-		<?}?>
-		
+						<? // Ajout d'un lien de test pour Dominique seulement....
+						if ($_SESSION['login_utilisateur'] == 'Dominique') {
+							$request = explode ('/', $_SERVER['REQUEST_URI']);
+								$url = explode ('?', $request [1]);
+								if (!$url [0]) $url [0] = 'index.php';
+									$urls = explode ('.', $url [0]);
+										$urls [0] .= '-TEST';
+									$url [0] = implode ('.', $urls);
+								$request [1] = implode ('?', $url);
+							$uri = implode ('/', $request);
+							if (file_exists ($urls [0] .'.php')) {?>
+								<a href="<?=$uri?>">.</a>
+							<?}
+						}?>
+					</li>
+				<?}?>
+			</ul>
+		</div>
+
 		<?/* Juste pour que les repliements de la ligne de menus sur une page étroite ne bavent pas sur la page */?>
 		<div id="fin-entete"></div>

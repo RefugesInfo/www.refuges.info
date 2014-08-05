@@ -32,11 +32,40 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
     type: OpenLayers.Control.TYPE_TOGGLE,
 
     /**
-     * APIProperty: vector
-     * Layer for GPS features display
-     * <OpenLayers.Layer.Vector>.
+     * Property: nbIteration
+     * {Integer} The number of position updates to be done when activated. 0 for loop
      */
-    vector: null,
+    nbIteration: 0,
+
+    /**
+     * Property: iteration
+     * {Integer} The number of position updates left to be done
+     */
+    iteration: 0,
+
+    /**
+     * Property: timerId
+     * {Integer} The window timer ID for location refresh
+     */
+    timerId: 0,
+
+    /**
+     * Property: timerPeriod
+     * {Integer} The delay (in milliseconds) between 2 location refresh
+     */
+    timerPeriod: 5000,
+
+    /**
+     * Property: timerPeriod
+     * {Integer} The delay (in milliseconds) between 2 location refresh
+     */
+    timerPeriod: 5000,
+
+    /**
+     * Property: callBack
+     * function (OpenLayers.Geometry.Point) To be called eachtime location is completed
+     */
+    callBack: function () {},
 
     /**
      * APIMethod: activate
@@ -54,8 +83,14 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
             return false;
         }
         this.events.register ("locationupdated", this, this.locationUpdated);
-        if (OpenLayers.Control.Geolocate.prototype.activate.apply(this, arguments))
-			OpenLayers.Function.bind (this.getCurrentLocation, this);
+        this.iteration = this.nbIteration;
+        if (OpenLayers.Control.Geolocate.prototype.activate.apply(this, arguments)) {
+            this.timerId = window.setInterval (
+                OpenLayers.Function.bind (this.getCurrentLocation, this),
+                this.timerPeriod
+            );
+        } else
+            return false;
     },
 
     /**
@@ -68,6 +103,7 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
      *           if the control was already inactive.
      */
     deactivate: function() {
+        window.clearInterval (this.timerId);
         this.events.remove ("locationupdated");
 
         if (OpenLayers.Control.prototype.deactivate.apply(this, arguments)) {
@@ -88,7 +124,7 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
         }
         this.vector.removeAllFeatures();
         this.vector.addFeatures([
-            new OpenLayers.Feature.Vector( // Une croix rouge à l'emplacement lgéoocalisé
+            new OpenLayers.Feature.Vector( // Une croix rouge à l'emplacement géolocalisé
                 e.point,
                 {},
                 {
@@ -114,7 +150,9 @@ OpenLayers.Control.GPS = OpenLayers.Class(OpenLayers.Control.Geolocate, {
                 }
             )
         ]);
-		this.deactivate (); // On localise une fois seulement
+		this.callBack (new OpenLayers.Geometry.Point(e.point.x, e.point.y));
+		if (!--this.iteration) // On arrête le timer aprés nbIteration
+			window.clearInterval (this.timerId);
     },
 
     /**
@@ -162,13 +200,18 @@ OpenLayers.Control.GPSPanel = OpenLayers.Class(OpenLayers.Control.Panel, {
      * Constructor: OpenLayers.Control.Panel
      * Create a new control panel.
      */
-    initialize: function(options) {
+    initialize: function(panelOptions, GPSoptions) {
         OpenLayers.Control.Panel.prototype.initialize.apply(this, arguments);
 
         this.addControls([
-            new OpenLayers.Control.GPS({
-                title: OpenLayers.i18n('gpscontrol')
-            })
+            new OpenLayers.Control.GPS(
+				OpenLayers.Util.extend(
+					{
+						title: OpenLayers.i18n('gpscontrol')
+					},
+					GPSoptions
+				)
+			)
         ]);
     },
 
