@@ -1,6 +1,6 @@
 <?php
 /********************************************************************************************************
-Les resultats de la recherche. Ce fichier recupere les criteres en POST de point_formulaire_recherche.php 
+Les resultats de la recherche. Ce fichier recupere les criteres en POST du formulaire
 ( une suite de fiche refuges, mais sans tous les détails )
 ********************************************************************************************************/
 

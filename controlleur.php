@@ -27,6 +27,7 @@ $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 // Par défaut, on veut un en-tête et pied de page html, mais dans de rare cas (point-geojson) on ne veut pas
 // le débat étant à poursuivre ici : http://www.refuges.info/forum/viewtopic.php?t=5294
 $controlleur->avec_entete_et_pied=True;
+
 // On pourrait être tenté de faire une conversion direct de url vers controlleur, mais si un filou commence à indiquer
 // n'importe quelle url, il pourrait réussir à ouvrir des trucs pas souhaités, avec une liste, on s'assure
 // de n'autoriser que ceux que l'on veut
@@ -43,6 +44,7 @@ switch ($controlleur->url_decoupee[1])
     case "formulaire_rss" :
     case "avis-internaute-commentaire" :
     case "formulaire_exportations" :
+    case "point_formulaire_recherche" :
         $controlleur->type=$controlleur->url_decoupee[1];
         break;
     case "point-geojson":
@@ -52,9 +54,6 @@ switch ($controlleur->url_decoupee[1])
         break;
     case "index": case "" :
         $controlleur->type="index";
-        break;
-    case "point_formulaire_recherche.php" : case "point_formulaire_recherche" :
-        $controlleur->type="point_formulaire_recherche";
         break;
     case "point_formulaire_modification.php" : case "point_formulaire_modification" :
         $controlleur->type="point_formulaire_modification";
