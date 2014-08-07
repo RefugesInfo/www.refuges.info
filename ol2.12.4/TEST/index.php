@@ -11,7 +11,7 @@
         <script type="text/javascript" src="../lib/OpenLayers.js?<?=filemtime('../lib/OpenLayers.js')?>"></script>
         <script type="text/javascript">
 
-            var map, mri, massifs, cadre, viseur, editeur, displayPosition;
+            var map, mri, massifs, cadre, viseur, editeur, displayPosition, gps;
             window.onload = function () {
                 // Crée la carte
                 map = new OpenLayers.Map.Standard ('map', {
@@ -19,13 +19,14 @@
                         lon: 5.7,
                         lat: 45.2,
                         scale: 500000
-                    },
+                    }/*,
                     WWpermalink: { // Les paramètres forcés dans tous les cas sauf quand on a des arguments de permalink dans l'url
                         baseLayer: 'OSM',
                         scale: 500000
-                    }
+                    }*/
                 },{
-                    IGN: 'rjvdd0zkal6czbu4mop37x7r',
+//                    IGN: 'yd57ffn2xx6s42llfz3ibr93', // Localhost 8/9/10 2014. Mais pas de scan expert
+                    IGN: 'y07s87qyij0i6yhj8nzi66ww', // Chemineur
                     Bing: 'AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf',
                     OS: 'CBE047F823B5E83CE0405F0ACA6042AB',
                     OB: true,
@@ -74,6 +75,10 @@
 //                        new OpenLayers.Control.LayerSwitcher ({
 //                            div: OpenLayers.Util.getElement('externSwitcher')
 //                        }),
+						new OpenLayers.Control.GPSPanel(null, {nbIteration: 1, callBack: function (p) {
+/*DCMM*/{var v=p,r='';for(i in v)r+=i+'='+(typeof v[i]=='function'?'function':typeof v[i]+' '+v[i]+' '+(v[i]&&v[i].CLASS_NAME?'('+v[i].CLASS_NAME+')':''))+"\n";alert(r)}
+						
+						}}),
                         new OpenLayers.Control.FullScreenPanel(),
                         new OpenLayers.Control.Attribution (),
                         new OpenLayers.Control.ArgParserCookies ({
@@ -90,9 +95,8 @@
                         new OpenLayers.Layer.Google              ('Google map',    {visibility: false}), // Cachées au début sinon, apparaissent fugitivement
                         new OpenLayers.Layer.Google.Photo        ('Google photo',  {visibility: false}),
                         new OpenLayers.Layer.OSM                 ('OSM'),
-                        new OpenLayers.Layer.OSMFR               ('OSMFR'),
                         new OpenLayers.Layer.MRI                 ('maps.refuges.info'),
-                        new OpenLayers.Layer.IGN                 ('IGN', 'rjvdd0zkal6czbu4mop37x7r'),
+                        new OpenLayers.Layer.IGN                 ('IGN', 'y07s87qyij0i6yhj8nzi66ww'),
 //                        new OpenLayers.Layer.SwissTopo           ('SwissTopo'),
                         // Les couches superposées
                         new OpenLayers.Layer.GMLSLD ('MRI', {    
@@ -104,6 +108,20 @@
                     ]
                 });
 //add_edit ();
+            }
+            function localise () {
+				var geo = new OpenLayers.Control.Geolocate ({
+					map: map
+				});
+				geo.events.register ("locationupdated", this, function (e) {
+					this.map.setCenter (e.point.transform (
+						this.map.displayProjection,
+						this.map.getProjectionObject ()
+					));
+					map.zoomToScale(2000);
+					viseur.centre();
+				});
+				geo.activate ();
             }
             function add_edit () {
                 editeur = new OpenLayers.Layer.Editor (
@@ -156,6 +174,9 @@
             <a onclick="viseur.recentre()" style="cursor:pointer">Recentrer la carte sur le viseur</a>
         </p>
         <p>
+            <a onclick="localise()" style="cursor:pointer">Crée un point à la position GPS</a>
+        </p>
+        <p>
             <a onclick="viseur.efface()" style="cursor:pointer">Efface la position</a>
         </p>
         <hr/>
@@ -172,7 +193,7 @@
         <div id="map2" style="height:300px;width:400px"></div>
         <div id="externSwitcher"></div>
         
-        <h1>Test d'une page avec scrool</h1>
+        <h1>Test d'une page avec scroll</h1>
         <img class="photos" src="http://www.refuges.info/photos_points/16512.jpeg" alt="Photo" />
         <img class="photos" src="http://www.refuges.info/photos_points/16511.jpeg" alt="Photo" />
     </body>

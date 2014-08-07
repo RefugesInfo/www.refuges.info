@@ -8,7 +8,7 @@
  * @requires OpenLayers/Map.js
  * @requires OpenLayers/Layer/MRI.js
  * @requires OpenLayers/Layer/OSM.js
- * @requires OpenLayers/Layer/OSM.js
+ * @requires OpenLayers/Layer/OSMFR.js
  * @requires OpenLayers/Layer/OCM.js
  * @requires OpenLayers/Layer/SwissTopo.js
  * @requires OpenLayers/Layer/IDEE.js
@@ -45,6 +45,7 @@ OpenLayers.Map.Standard = OpenLayers.Class(OpenLayers.Map, {
         var baseLayers = [
             new OpenLayers.Layer.MRI                 ('Refuges.Info'),
             new OpenLayers.Layer.OSM                 ('OSM'),
+            new OpenLayers.Layer.OSMFR               ('OSM-FR'),
             new OpenLayers.Layer.OCM                 ('OpenCycleMap'),
             new OpenLayers.Layer.OCM.Transport       ('Transport'),
             new OpenLayers.Layer.OCM.Landscape       ('Landscape'),

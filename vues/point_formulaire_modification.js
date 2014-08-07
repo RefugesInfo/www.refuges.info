@@ -61,6 +61,20 @@ window.onload = function () {
     ]);
 }
 
+function localise () {
+	var geo = new OpenLayers.Control.Geolocate ({
+		map: map
+	});
+	geo.events.register ("locationupdated", this, function (e) {
+		this.map.setCenter (e.point.transform (
+			this.map.displayProjection,
+			this.map.getProjectionObject ()
+		));
+		map.zoomToScale(2000);
+		viseur.centre();
+	});
+	geo.activate ();
+}
 
 function validation() {
     // variable choix est a "supprimer" "ajouter"...
@@ -81,6 +95,5 @@ function validation() {
 function affiche_et_set( el , affiche, valeur ) {
   document.getElementById(el).style.visibility = affiche ;
   document.getElementById(el).value = valeur ;
-  
   return false;
 }
