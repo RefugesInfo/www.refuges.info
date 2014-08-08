@@ -375,6 +375,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* ========== MENU DÉROULANT FIXE EN HAUT DE PAGE ========== */
   .menu UL {
+    z-index: 20000; /* Pour être au dessus du menu surgissant */
     clear: left;
     white-space: nowrap;
     display: block;
