@@ -462,12 +462,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	  display: none;
     }
   }
-  @media (max-width: 1400px) {
-    #lien-mobile {
-      background-color: black;
-      color: white;
-    }
-  }
 
 /* ==========MENU DU BAS ==========        */
 /* en bas, il y a un gros div "basdepage" qui englobe la fin */
