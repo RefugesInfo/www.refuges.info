@@ -386,7 +386,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #menu-normal > UL {
     border-top: solid 2px #<?=$couleur_decoration_titres?>;
   }
-  
+
 /* 2/ Paramétrage du menu surgissant et fixe en haut de fenetre */
   #menu-scroll {
     z-index: 10000; /* Au dessus du reste de la page mais en dessous du haut */
@@ -403,7 +403,12 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #menu-scroll:hover > UL {
     display: block;
   }
-  
+  @media (max-width: 1400px) {
+    #menu-scroll {
+	  display: none;
+    }
+  }
+
 /* Paramétrage commun aux deux menus */
   .menu UL {
     clear: left;
