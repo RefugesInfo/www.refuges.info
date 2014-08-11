@@ -374,8 +374,38 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /*==================================================================*/
 
 /* ========== MENU DÉROULANT FIXE EN HAUT DE PAGE ========== */
-  .menu UL {
+
+/* Permet de gérer 2 menus identiques: */
+
+/* 1/ Paramétrage du menu permanent en haut de page */
+  #menu-normal  {
     z-index: 20000; /* Pour être au dessus du menu surgissant */
+    position: relative; /* Pour que z-index s'applique */
+    width: 100%;
+  }
+  #menu-normal > UL {
+    border-top: solid 2px #<?=$couleur_decoration_titres?>;
+  }
+  
+/* 2/ Paramétrage du menu surgissant et fixe en haut de fenetre */
+  #menu-scroll {
+    z-index: 10000; /* Au dessus du reste de la page mais en dessous du haut */
+    position: fixed; top: 0;
+    height: 22px; /* Réserve un espace où rien n'est affiché mais qui est sensible à la souris */
+    width: 100%;
+  }
+  #menu-scroll:hover {
+    z-index: 30000;
+  }
+  #menu-scroll > UL {
+    display: none;
+  }
+  #menu-scroll:hover > UL {
+    display: block;
+  }
+  
+/* Paramétrage commun aux deux menus */
+  .menu UL {
     clear: left;
     white-space: nowrap;
     display: block;
