@@ -403,11 +403,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #menu-scroll:hover > UL {
     display: block;
   }
-  @media (max-width: 1000px) {
-    #menu-scroll {
-	  display: none;
-    }
-  }
 
 /* Paramétrage commun aux deux menus */
   .menu UL {
