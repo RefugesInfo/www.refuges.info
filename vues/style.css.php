@@ -403,7 +403,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #menu-scroll:hover > UL {
     display: block;
   }
-  @media (max-width: 800px) {
+  @media (max-width: 1000px) {
     #menu-scroll {
 	  display: none;
     }
@@ -491,11 +491,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
   #fin-entete {
     clear: both;
-  }
-  @media all and (min-width: 800px) {
-    #lien-mobile {
-	  display: none;
-    }
   }
 
 /* ==========MENU DU BAS ==========        */
