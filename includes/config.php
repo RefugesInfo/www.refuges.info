@@ -119,7 +119,7 @@ $config['email_contact_nominatim']="sylvain@refuges.info";
 $config['nom_fichier_export']="refuge-info";
 
 // indispensable pour avoir les affichage de date en french et en UTF-8
-setlocale(LC_ALL, "fr_FR.UTF-8");
+setlocale(LC_TIME, "fr_FR.UTF-8");
 mb_internal_encoding("UTF-8");
 
 /******** Clés des contrats des cartes **********/
