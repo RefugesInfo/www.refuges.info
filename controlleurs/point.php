@@ -45,7 +45,7 @@ else // le point est valide. faut bosser.
     $vue->proprio=bbcode2html($point->proprio);
     $vue->acces=bbcode2html($point->acces);
     $vue->remark=bbcode2html($point->remark);
-    $vue->nom_debut_majuscule = bbcode2html(ucfirst($point->nom));
+    $vue->nom_debut_majuscule = bbcode2html(mb_ucfirst($point->nom));
     $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
