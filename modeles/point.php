@@ -659,7 +659,7 @@ function forum_mise_a_jour_nom($point)
   $nom=$pdo->quote(ucfirst($point->nom));
   
   $query="UPDATE phpbb_topics
-  SET topic_title=".$pdo->quote($point->nom)."
+  SET topic_title=".$pdo->quote(ucfirst($point->nom))."
   WHERE topic_id_point=$point->id_point";
   $pdo->exec($query);
 }
