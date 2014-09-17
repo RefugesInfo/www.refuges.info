@@ -45,7 +45,7 @@ else // le point est valide. faut bosser.
     $vue->proprio=bbcode2html($point->proprio);
     $vue->acces=bbcode2html($point->acces);
     $vue->remark=bbcode2html($point->remark);
-    $vue->nom_debut_majuscule = bbcode2html(ucfirst($point->nom));
+    $vue->nom_debut_majuscule = bbcode2html(mb_ucfirst($point->nom));
     $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
@@ -93,7 +93,7 @@ else // le point est valide. faut bosser.
                 if ($point_proche->id_point!=$point->id_point)
                 {
                     $point_proche->lien=lien_point($point_proche);
-                    $point_proche->nom=bbcode2html($point_proche->nom);
+                    $point_proche->nom=mb_ucfirst(bbcode2html($point_proche->nom));
                     $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
                     $vue->points_proches[]=$point_proche;
                 }
@@ -167,7 +167,7 @@ else // le point est valide. faut bosser.
     /*********** Préparation des infos des commentaires ***/
     foreach ($tous_commentaires AS $commentaire)
     {
-        $commentaire->texte_affichage=bbcode2html($commentaire->texte);
+        $commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
         $commentaire->auteur_commentaire_affichage=bbcode2html($commentaire->auteur_commentaire);
         $commentaire->date_commentaire_format_francais=strftime ("%A %e %B %Y à %H:%M", $commentaire->ts_unix_commentaire);
         // Préparation des données et affichage d'un commentaire de la fiche d'un point

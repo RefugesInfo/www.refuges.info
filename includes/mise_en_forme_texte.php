@@ -55,7 +55,7 @@ retourne : le code en HTML
 21/03/08 sly création initiale de la fonction
 26/05/08 jmb correction bug des multiples [b] (rajout d'un ? pour une regex ungreedy)
 **********************************************************************************************/
-function bbcode2html($texte,$autoriser_html=FALSE)
+function bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE)
 {
 
 /** étape 1 
@@ -84,58 +84,76 @@ if (!$autoriser_html)
 else
     $html=$texte;
 
+//Voir : http://www.refuges.info/forum/viewtopic.php?t=6174 expliquant pourquoi, dans certains cas, nous ne voulons pas supporter la balise img
+if ($autoriser_balise_img)
+{
+    $search_img=array(
+        "/\[img:(.*)\](.+?)\[\/img:(.*)\]/s",
+        "/\[img\](.+?)\[\/img\]/s");
+    $replace_img=array(
+            "<img src=\"$2\" alt=\"image\" />",
+            "<img src=\"$1\" alt=\"image\" />");
+}
+else
+{
+    $search_img=array();
+    $replace_img=array();
+}
+
 // gestion de la majorité des tag bbcode
-$searcharray = array(
-		"/\[img:(.*)\](.+?)\[\/img:(.*)\]/s",
-		"/\[img\](.+?)\[\/img\]/s",
-		"/\[url:(.*)\](.+?)\[\/url:(.*)\]/s",
-		"/\[url\](.+?)\[\/url\]/s",
-		"/\[url=(.+?):(.*)\](.+?)\[\/url:(.*)\]/s",
-		"/\[url=(.+?)\](.+?)\[\/url\]/s",
-		"/\[b:(.*)\](.+?)\[\/b:(.*)\]/s",
-		"/\[b\](.*?)\[\/b\]/s",
-		"/\[i:(.*)\](.+?)\[\/i:(.*)\]/s",
-		"/\[i\](.+?)\[\/i\]/s",
-		"/\[u:(.*)\](.+?)\[\/u:(.*)\]/s",
-		"/\[u\](.+?)\[\/u\]/s",
-		"/\[code:([^\].]*)\](.+?)\[\/code:([^\].]*)\]/s",
-		"/\[code\](.+?)\[\/code\]/s",
-		"/\[quote:([^\].]*)\](.+?)\[\/quote:([^\].]*)\]/s",
-		"/\[quote\](.+?)\[\/quote\]/s",
-		"/\[quote=(.+?):(.*)\](.+?)\[\/quote:(.*)\]/s",
-		"/\[quote=(.+?)\](.+?)\[\/quote\]/s",
-		"/\[color=(.+?):(.*)\](.+?)\[\/color:(.*)\]/s",
-		"/\[color=(.+?)\](.+?)\[\/color\]/s",
-		"/:([a-z]+):/",
-		"/\[t\]/",
-		"/\[email\](.+?)\[\/email\]/"
-	);
-	$replacearray = array(
-		"<img src=\"$2\" alt=\"image\" />",
-		"<img src=\"$1\" alt=\"image\" />",
-		"<a href=\"$2\">$2</a>",
-		"<a href=\"$1\">$1</a>",
-		"<a href=\"$2\">$3</a>",
-		"<a href=\"$1\">$2</a>",
-		"<em>$2</em>",
-		"<em>$1</em>",
-		"<i>$2</i>",
-		"<i>$1</i>",
-		"<u>$2</u>",
-		"<u>$1</u>",
-		"<code>$2</code>",
-		"<code>$1</code>",
-		"<blockquote><p>$2</p></blockquote>",
-		"<blockquote><p>$1</p></blockquote>",
-		"<blockquote><p>$2</p></blockquote>",
-		"<blockquote><p>$1</p></blockquote>",
-		"<span style=\"color: $1\">$3</span>",
-		"<span style=\"color: $1\">$2</span>",
-		" - ",
-		"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
-		"$1" // Sera codé plus loin
-	);
-	$html = preg_replace($searcharray, $replacearray, $html); 
+$searcharray =
+array_merge($search_img,
+        array(
+        "/\[url:(.*)\](.+?)\[\/url:(.*)\]/s",
+        "/\[url\](.+?)\[\/url\]/s",
+        "/\[url=(.+?):(.*)\](.+?)\[\/url:(.*)\]/s",
+        "/\[url=(.+?)\](.+?)\[\/url\]/s",
+        "/\[b:(.*)\](.+?)\[\/b:(.*)\]/s",
+        "/\[b\](.*?)\[\/b\]/s",
+        "/\[i:(.*)\](.+?)\[\/i:(.*)\]/s",
+        "/\[i\](.+?)\[\/i\]/s",
+        "/\[u:(.*)\](.+?)\[\/u:(.*)\]/s",
+        "/\[u\](.+?)\[\/u\]/s",
+        "/\[code:([^\].]*)\](.+?)\[\/code:([^\].]*)\]/s",
+        "/\[code\](.+?)\[\/code\]/s",
+        "/\[quote:([^\].]*)\](.+?)\[\/quote:([^\].]*)\]/s",
+        "/\[quote\](.+?)\[\/quote\]/s",
+        "/\[quote=(.+?):(.*)\](.+?)\[\/quote:(.*)\]/s",
+        "/\[quote=(.+?)\](.+?)\[\/quote\]/s",
+        "/\[color=(.+?):(.*)\](.+?)\[\/color:(.*)\]/s",
+        "/\[color=(.+?)\](.+?)\[\/color\]/s",
+        "/:([a-z]+):/",
+        "/\[t\]/",
+        "/\[email\](.+?)\[\/email\]/"
+        )
+);
+$replacearray =
+array_merge($replace_img,
+        array(
+        "<a href=\"$2\">$2</a>",
+        "<a href=\"$1\">$1</a>",
+        "<a href=\"$2\">$3</a>",
+        "<a href=\"$1\">$2</a>",
+        "<em>$2</em>",
+        "<em>$1</em>",
+        "<i>$2</i>",
+        "<i>$1</i>",
+        "<u>$2</u>",
+        "<u>$1</u>",
+        "<code>$2</code>",
+        "<code>$1</code>",
+        "<blockquote><p>$2</p></blockquote>",
+        "<blockquote><p>$1</p></blockquote>",
+        "<blockquote><p>$2</p></blockquote>",
+        "<blockquote><p>$1</p></blockquote>",
+        "<span style=\"color: $1\">$3</span>",
+        "<span style=\"color: $1\">$2</span>",
+        " - ",
+        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+        "$1" // Sera codé plus loin
+        )
+);
+$html = preg_replace($searcharray, $replacearray, $html);
 
 // transformation automatique des url
 // le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
