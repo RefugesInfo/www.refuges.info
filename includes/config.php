@@ -120,6 +120,7 @@ $config['nom_fichier_export']="refuge-info";
 
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");
+mb_internal_encoding("UTF-8");
 
 /******** Clés des contrats des cartes **********/
 $config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders

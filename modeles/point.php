@@ -596,7 +596,7 @@ function forum_point_ajout( $point )
   /*** rajout du topic spécifique au point ( Le seul qui me semble logique ! )***/
   // tention a PGsql, ca peut merder
   // Dans le forum, nom toujours commençant par une majuscule et on vérifie à bien convertir ça en entité html (phpbb ne pourrait il pas le faire à la volée ?) et enfin, la taille du champs est de 90 caractères max
-  $nom=$pdo->quote(substr(protege(ucfirst($point->nom)),0,89));
+  $nom=$pdo->quote(substr(protege(mb_ucfirst($point->nom)),0,89));
   $query_insert="INSERT INTO phpbb_topics (
   forum_id , topic_title , topic_poster , topic_time ,
   topic_views , topic_replies , topic_status , topic_vote ,
@@ -656,10 +656,10 @@ function forum_mise_a_jour_nom($point)
   global $pdo;
   
   // Dans le forum, nom toujours commençant par une majuscule
-  $nom=$pdo->quote(ucfirst($point->nom));
+  $nom=$pdo->quote(mb_ucfirst($point->nom));
   
   $query="UPDATE phpbb_topics
-  SET topic_title=".$pdo->quote($point->nom)."
+  SET topic_title=".$pdo->quote(mb_ucfirst($point->nom))."
   WHERE topic_id_point=$point->id_point";
   $pdo->exec($query);
 }

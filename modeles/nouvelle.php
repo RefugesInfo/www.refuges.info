@@ -153,7 +153,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                             $lien_massif="";
                         
                         $texte="$categorie : 
-                        <a href=\"$lien\">$titre</a>
+                        <a href=\"$lien\">".mb_ucfirst($titre)."</a>
                         $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
                         $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
                                               "date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
