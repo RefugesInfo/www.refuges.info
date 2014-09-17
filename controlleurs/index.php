@@ -70,7 +70,7 @@ $nouveaux_points=infos_points($conditions_nouveaux_points);
 foreach ($nouveaux_points as $nouveau_point)
 {
     $nouveau_point->lien=lien_point($nouveau_point);
-    $nouveau_point->nom=bbcode2html($nouveau_point->nom);
+    $nouveau_point->nom=mb_ucfirst(bbcode2html($nouveau_point->nom));
     $vue->nouveaux_points[]=$nouveau_point;
 }
 $page_nouvelles=recupere_contenu("nouvelles_generales");
