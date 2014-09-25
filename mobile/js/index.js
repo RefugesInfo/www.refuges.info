@@ -29,7 +29,7 @@ function initmap(){
 
 //	var MRIUrl='http://maps.refuges.info/hiking/{z}/{x}/{y}.png'; // Serveur de tuiles MRI
 	var MRIUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'; // Serveur de tuiles Thunderforest
-	var MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 14, noWrap: true}); // Création du calque de tuiles nommé MRI
+	var MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé MRI
 
 	map.setView(new L.LatLng(47, 2),6); // Par défaut on affiche la France entière
 
