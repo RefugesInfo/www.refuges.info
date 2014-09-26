@@ -195,8 +195,12 @@ if ($occurences_trouvees!=0)
         // Code JS de récupération et inversion de l'adresse pour envoi du mail
         $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
         // Génération du tag complet
-		$html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
-	}
+        global $vue;
+        if ($vue->template == "point.geojson")
+            $html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$html);
+        else
+            $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
+    }
 }
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
