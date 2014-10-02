@@ -133,7 +133,7 @@ function pointRecu() {
 	if (ajaxRequest.readyState==4) {
 		if (ajaxRequest.status==200) {
 			point=eval("(" + ajaxRequest.responseText + ")"); // On enregistre la variable GeoJSON en local
-			document.getElementById('infosPoint').innerHTML = '<span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /><span id="couverturePoint"></span><span id="eauPoint"></span><span id="boisPoint"></span><span id="latrinePoint"></span><span id="manquemurPoint"></span><span id="poelePoint"></span><span id="chemineePoint"></span><span id="clefPoint"></span><span id="matelasPoint"></span><span id="ravitaillementeauPoint"></span><span id="sitewebPoint"></span></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
+			document.getElementById('infosPoint').innerHTML = '<span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p><div id="com0Point"></div><div id="com1Point"></div><div id="com2Point"></div><div id="com3Point"></div><div id="com4Point"></div></div><p class="sautdeligne"></p>';
 			document.getElementById('titrePoint').innerHTML = point.properties.nom;
 			document.getElementById('idPoint').innerHTML = "(Point n°<a target=\"_blank\" href='http://www.refuges.info/point/" + point.properties.id + "' title='Informations détaillées sur le point, version PC'>" + point.properties.id + "</a>)<br />Édité le " + point.properties.derniere_modif;
 			document.getElementById('typePoint').innerHTML = point.properties.type + "<br />" + point.properties.nb_places + " place(s)";
@@ -144,18 +144,20 @@ function pointRecu() {
 			if (point.properties.annonce_proprio == "" || point.properties.proprio == "") {removeElement("proprioPoint"); }
 			document.getElementById('accesPoint').innerHTML = "<b>Accès :</b><br />" + point.properties.acces;
 			if (point.properties.acces == "") {removeElement("accesPoint"); }
-			if (point.properties.couvertures != undefined) { document.getElementById('couverturePoint').innerHTML = "Couvertures : " + point.properties.couvertures + "<br />"; }
-			if (point.properties.eau_a_proximite != undefined) { document.getElementById('eauPoint').innerHTML = "Eau à proximité : " + point.properties.eau_a_proximite + "<br />"; }
-			if (point.properties.bois_a_proximite != undefined) { document.getElementById('boisPoint').innerHTML = "Bois à proximité : " + point.properties.bois_a_proximite + "<br />"; }
-			if (point.properties.latrines != undefined) { document.getElementById('latrinePoint').innerHTML = "Latrines : " + point.properties.latrines + "<br />"; }
-			if (point.properties.manque_un_mur != undefined) { document.getElementById('manquemurPoint').innerHTML = "Manque un mur : " + point.properties.manque_un_mur + "<br />"; }
-			if (point.properties.poele != undefined) { document.getElementById('poelePoint').innerHTML = "Poêle : " + point.properties.poele + "<br />"; }
-			if (point.properties.cheminee != undefined) { document.getElementById('chemineePoint').innerHTML = "Cheminée : " + point.properties.cheminee + "<br />"; }
-			if (point.properties.clef_a_recuperer != undefined) { document.getElementById('clefPoint').innerHTML = "Clé à récupérer : " + point.properties.clef_a_recuperer + "<br />"; }
-			if (point.properties.places_sur_matelas != undefined) { document.getElementById('matelasPoint').innerHTML = "Places sur matelas : " + point.properties.places_sur_matelas + "<br />"; }
-			if (point.properties.ravitaillement_en_eau_possible != undefined) { document.getElementById('ravitaillementeauPoint').innerHTML = "Ravitaillement en eau possible : " + point.properties.ravitaillement_en_eau_possible + "<br />"; }
-			if (point.properties.site_officiel != undefined) { document.getElementById('sitewebPoint').innerHTML = "Site officiel : " + '<a href="' + point.properties.site_officiel + '" target="_blank">' + point.properties.nom + "</a><br />"; }
-			if (point.properties.acces == "" && point.properties.couvertures == "" && point.properties.eau_a_proximite == "" && point.properties.bois_a_proximite == "" && point.properties.latrines == "" && point.properties.manque_un_mur == "" && point.properties.poele == "" && point.properties.cheminee == "" && point.properties.clef_a_recuperer == "" && point.properties.places_sur_matelas == "" && point.properties.ravitaillement_en_eau_possible == "" && point.properties.site_officiel == "") {removeElement("infoscompPoint"); }
+			
+			// Infos complémentaires, elle sont ajoutés à la suite du titre en gras si elles sont existantes
+			if (point.properties.couvertures != undefined) { $( "#infoscompPoint" ).append( "<span id=\"couverturePoint\">Couvertures : " + point.properties.couvertures + "<br /></span>" ); }
+			if (point.properties.eau_a_proximite != undefined) { $( "#infoscompPoint" ).append( "<span id=\"eauPoint\">Eau à proximité : " + point.properties.eau_a_proximite + "<br /></span>" ); }
+			if (point.properties.bois_a_proximite != undefined) { $( "#infoscompPoint" ).append( "<span id=\"boisPoint\">Bois à proximité : " + point.properties.bois_a_proximite + "<br /></span>" ); }
+			if (point.properties.latrines != undefined) { $( "#infoscompPoint" ).append( "<span id=\"latrinePoint\">Latrines : " + point.properties.latrines + "<br /></span>" ); }
+			if (point.properties.manque_un_mur != undefined) { $( "#infoscompPoint" ).append( "<span id=\"manquemurPoint\">Manque un mur : " + point.properties.manque_un_mur + "<br /></span>" ); }
+			if (point.properties.poele != undefined) { $( "#infoscompPoint" ).append( "<span id=\"poelePoint\">Poêle : " + point.properties.poele + "<br /></span>" ); }
+			if (point.properties.cheminee != undefined) { $( "#infoscompPoint" ).append( "<span id=\"chemineePoint\">Cheminée : " + point.properties.cheminee + "<br /></span>" ); }
+			if (point.properties.clef_a_recuperer != undefined) { $( "#infoscompPoint" ).append( "<span id=\"clefPoint\">Clé à récupérer : " + point.properties.clef_a_recuperer + "<br /></span>" ); }
+			if (point.properties.places_sur_matelas != undefined) { $( "#infoscompPoint" ).append( "<span id=\"matelasPoint\">Places sur matelas : " + point.properties.places_sur_matelas + "<br /></span>" ); }
+			if (point.properties.ravitaillement_en_eau_possible != undefined) { $( "#infoscompPoint" ).append( "<span id=\"ravitaillementeauPoint\">Ravitaillement en eau possible : " + point.properties.ravitaillement_en_eau_possible + "<br /></span>" ); }
+			if (point.properties.site_officiel != undefined) { $( "#infoscompPoint" ).append( "<span id=\"sitewebPoint\">Site officiel : " + '<a href="' + point.properties.site_officiel + '" target="_blank">' + point.properties.nom + "</a><br /></span>" ); }
+			
 			if (point.properties.id_pp_0 != undefined) { document.getElementById('pp0Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_0 + ');">' + point.properties.nom_pp_0 + '</a> — ' + point.properties.type_pp_0 + ' à ' + point.properties.distance_pp_0 + '<br />'; }
 			if (point.properties.id_pp_1 != undefined) { document.getElementById('pp1Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_1 + ');">' + point.properties.nom_pp_1 + '</a> — ' + point.properties.type_pp_1 + ' à ' + point.properties.distance_pp_1 + '<br />'; }
 			if (point.properties.id_pp_2 != undefined) { document.getElementById('pp2Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_2 + ');">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
@@ -176,12 +178,22 @@ function pointRecu() {
 			if (point.properties.com_4 != undefined) { document.getElementById('com4Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_4 + ' par ' + point.properties.auteur_com_4 + '</p><br /><p class="com">' + point.properties.com_4 + '<br />';
 				if (point.properties.photo_com_4 != undefined) { document.getElementById('com4Point').innerHTML += '<a target="_blank" data-lightbox="photoCom" href="..' + point.properties.photo_com_4 + '"><img src="..' + point.properties.miniature_com_4 + '" /></a>'; }
 				document.getElementById('com4Point').innerHTML += '</p>'; } else { removeElement("com4Point"); }
+			clearBlocsVides(point);
 			displayBlock('points');
 		}
 	}
 }
 
-// Fonction appeler pour basculer entre les vues
+function clearBlocsVides(point) {
+	// Effacer les infos complémentaires s'il y en a aucune
+	infosComp = document.getElementById('infoscompPoint').innerHTML;
+	if (infosComp == "<b>Informations complémentaires :</b><br>") {
+		$("#infoscompPoint").remove();
+	}
+}
+
+
+// Fonction appelée pour basculer entre les vues
 function displayBlock(bloc) {
 	var carte = document.getElementById('carte');
 	var index = document.getElementById('index');
