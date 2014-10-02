@@ -185,8 +185,6 @@ function pointRecu() {
 				}
 				commentaire += '</p></div>';
 				$("#commentairesPoint").append(commentaire);
-
-				
 			}
 
 			//if (point.properties.com_0 != undefined) { document.getElementById('com0Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_0 + ' par ' + point.properties.auteur_com_0 + '</p><br /><p class="com">' + point.properties.com_0 + '<br />';
@@ -215,6 +213,10 @@ function clearBlocsVides(point) {
 	infosComp = document.getElementById('infoscompPoint').innerHTML;
 	if (infosComp == "<b>Informations complémentaires :</b><br>") {
 		$("#infoscompPoint").remove();
+	}
+	commentaires = document.getElementById('commentairesPoint').innerHTML;
+	if (commentaires == "<p><b>Commentaires :</b></p>") {
+		$("#commentairesPoint").remove();
 	}
 }
 
