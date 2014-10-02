@@ -418,6 +418,27 @@ if ( isset($HTTP_POST_VARS['submit']) )
 		}
 	}
 
+//<<Filtrage géographique
+	if ($config ['filtre_geo']) {
+		$iploc = file_get_contents ('http://www.geoplugin.net/json.gp?ip='.$_SERVER['REMOTE_ADDR']);
+		preg_match_all('/"geoplugin_([a-z]+)":"([0-9.]+)"/i',$iploc , $iplocs);
+		foreach ($iplocs [1] AS $k => $v)
+			$iplocsa [$v] = $iplocs [2] [$k];
+		$iplocsa ['longitude'] += 360; // Pour que le range puisse être autour du 0 !
+//		unset ($_POST ['new_password']);
+//		unset ($_POST ['password_confirm']);
+		$ll = explode (' ', $config ['filtre_geo']);
+		if (      $ll[0] > $iplocsa ['latitude' ] || $iplocsa ['latitude' ] >       $ll[1] ||
+			360 + $ll[2] > $iplocsa ['longitude'] || $iplocsa ['longitude'] > 360 + $ll[3] ||
+			$_POST ['language'] != 'french')
+		{
+			file_put_contents ('register-fail.log', date('r').$iploc."\n".var_export($_SERVER,true)."\n".var_export($_POST,true)."\n\n", FILE_APPEND);
+			$error = TRUE;
+			$error_msg .= 'Unauthorized registration';
+		}
+	}
+//>>Filtrage géographique
+
 	$username_sql = '';
 	if ( $board_config['allow_namechange'] || $mode == 'register' )
 	{
