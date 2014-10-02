@@ -187,28 +187,13 @@ function pointRecu() {
 				$("#commentairesPoint").append(commentaire);
 			}
 
-			//if (point.properties.com_0 != undefined) { document.getElementById('com0Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_0 + ' par ' + point.properties.auteur_com_0 + '</p><br /><p class="com">' + point.properties.com_0 + '<br />';
-			//	if (point.properties.photo_com_0 != undefined) { document.getElementById('com0Point').innerHTML += '<a target="_blank" data-lightbox="photoCom" href="..' + point.properties.photo_com_0 + '"><img src="..' + point.properties.miniature_com_0 + '" /></a>'; }
-			//	document.getElementById('com0Point').innerHTML += '</p>'; } else { removeElement("com0Point"); }
-			//if (point.properties.com_1 != undefined) { document.getElementById('com1Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_1 + ' par ' + point.properties.auteur_com_1 + '</p><br /><p class="com">' + point.properties.com_1 + '<br />';
-			//	if (point.properties.photo_com_1 != undefined) { document.getElementById('com1Point').innerHTML += '<a target="_blank" data-lightbox="photoCom" href="..' + point.properties.photo_com_1 + '"><img src="..' + point.properties.miniature_com_1 + '" /></a>'; }
-			//	document.getElementById('com1Point').innerHTML += '</p>'; } else { removeElement("com1Point"); }
-			//if (point.properties.com_2 != undefined) { document.getElementById('com2Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_2 + ' par ' + point.properties.auteur_com_2 + '</p><br /><p class="com">' + point.properties.com_2 + '<br />';
-			//	if (point.properties.photo_com_2 != undefined) { document.getElementById('com2Point').innerHTML += '<a target="_blank" data-lightbox="photoCom" href="..' + point.properties.photo_com_2 + '"><img src="..' + point.properties.miniature_com_2 + '" /></a>'; }
-			//	document.getElementById('com2Point').innerHTML += '</p>'; } else { removeElement("com2Point"); }
-			//if (point.properties.com_3 != undefined) { document.getElementById('com3Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_3 + ' par ' + point.properties.auteur_com_3 + '</p><br /><p class="com">' + point.properties.com_3 + '<br />';
-			//	if (point.properties.photo_com_3 != undefined) { document.getElementById('com3Point').innerHTML += '<a target="_blank" data-lightbox="photoCom" href="..' + point.properties.photo_com_3 + '"><img src="..' + point.properties.miniature_com_3 + '" /></a>'; }
-			//	document.getElementById('com3Point').innerHTML += '</p>'; } else { removeElement("com3Point"); }
-			//if (point.properties.com_4 != undefined) { document.getElementById('com4Point').innerHTML = '<p class="legendecom">' + point.properties.date_com_4 + ' par ' + point.properties.auteur_com_4 + '</p><br /><p class="com">' + point.properties.com_4 + '<br />';
-			//	if (point.properties.photo_com_4 != undefined) { document.getElementById('com4Point').innerHTML += '<a target="_blank" data-lightbox="photoCom" href="..' + point.properties.photo_com_4 + '"><img src="..' + point.properties.miniature_com_4 + '" /></a>'; }
-			//	document.getElementById('com4Point').innerHTML += '</p>'; } else { removeElement("com4Point"); }
-			clearBlocsVides(point);
+			clearBlocsVides();
 			displayBlock('points');
 		}
 	}
 }
 
-function clearBlocsVides(point) {
+function clearBlocsVides() {
 	// Effacer les infos complémentaires s'il y en a aucune
 	infosComp = document.getElementById('infoscompPoint').innerHTML;
 	if (infosComp == "<b>Informations complémentaires :</b><br>") {
