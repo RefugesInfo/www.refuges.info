@@ -163,7 +163,7 @@ function pointRecu() {
 			if (point.properties.id_pp_2 != undefined) { document.getElementById('pp2Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_2 + ');">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
 			if (point.properties.id_pp_0 == undefined && point.properties.id_pp_1 == undefined && point.properties.id_pp_2 == undefined) {removeElement("pointsprochesPoint"); }
 			// À remplacer par un foreach quand j'aurais le temps
-			for (i=0;i<10;i++) {
+			for (i=0;i<50;i++) {
 				var contenu = eval('point.properties.com_' + i);
 				var date = eval('point.properties.date_com_' + i);
 				var auteur = eval('point.properties.auteur_com_' + i);
