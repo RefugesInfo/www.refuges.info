@@ -305,12 +305,14 @@ article:not(#carte) {
 #titrePoint {
 	display: block;
 	margin: -10px -15px 0 -15px;
+	z-index: 15;
+	position: relative;
 }
 
 #fichePoint {
-	background: #cdcdcd;
+	background: #bbbbbb;
 	box-shadow: #aaaaaa 0 2px 5px;
-	padding: 3px;
+	padding: 10px 5px 5px 5px;
 	margin: 0 -15px 15px -15px;
 	min-height: 28px;
 }
@@ -324,17 +326,13 @@ article:not(#carte) {
 #typePoint {
 	text-shadow: 0px 1px 0px rgba(255,255,255,1);
 	font-weight: bold;
-	text-transform: lowercase;
-}
-
-#typePoint:first-letter {
-	text-transform: uppercase;
 }
 
 #coordPoint, #rmqPoint, #proprioPoint, #accesPoint, #infoscompPoint, #pointsprochesPoint {
 	width: 95%;
-	background: #cdcdcd;
-	box-shadow: #aaaaaa 0 0px 5px;
+	background: #D1EEEE;
+	box-shadow: 0 0 5px blue, inset 0 0 1px #222;
+	border: 2px solid #00caf2;
 	border-radius: 5px;
 	display: block;
 	margin: 15px auto;
@@ -357,13 +355,18 @@ article:not(#carte) {
 }
 
 #com0Point, #com1Point, #com2Point, #com3Point, #com4Point {
-	border: 1px solid #aaaaaa;
+	border: 1px solid #777;
 	background: #c5c5c5;
-	margin: 4px;
+	margin: 15px 0;
 	padding: 5px;
 }
 
 .legendecom {
 	font-size: 75%;
 	font-style: italic;
+	background: #555;
+	color: white;
+	padding: 5px;
+	margin: -5px -5px 5px -5px;
+	border-bottom: 2px solid #eee;
 }
