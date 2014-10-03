@@ -312,6 +312,7 @@ article:not(#carte) {
 	box-shadow: #aaaaaa 0 2px 5px;
 	padding: 3px;
 	margin: 0 -15px 15px -15px;
+	min-height: 28px;
 }
 
 #idPoint {

@@ -136,7 +136,7 @@ function pointRecu() {
 			document.getElementById('infosPoint').innerHTML = '<span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /></p><p id="pointsprochesPoint"><b>Points proches :</b><br /><span id="pp0Point"></span><span id="pp1Point"></span><span id="pp2Point"></span></p><div id="commentairesPoint"><p><b>Commentaires :</b></p></div><p class="sautdeligne"></p>';
 			document.getElementById('titrePoint').innerHTML = point.properties.nom;
 			document.getElementById('idPoint').innerHTML = "(Point n°<a target=\"_blank\" href='http://www.refuges.info/point/" + point.properties.id + "' title='Informations détaillées sur le point, version PC'>" + point.properties.id + "</a>)<br />Édité le " + point.properties.derniere_modif;
-			document.getElementById('typePoint').innerHTML = point.properties.type + "<br />" + point.properties.nb_places + " place(s)";
+			document.getElementById('typePoint').innerHTML = "<p>" + point.properties.type + "</p><span id=\"nbPlaces\">" + point.properties.nb_places + " place(s)</span>";
 			document.getElementById('coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
 			document.getElementById('rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
 			document.getElementById('proprioPoint').innerHTML = "<b>" + point.properties.annonce_proprio + " :</b><br />" + point.properties.proprio;
@@ -158,8 +158,7 @@ function pointRecu() {
 			if (point.properties.id_pp_0 != undefined) { document.getElementById('pp0Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_0 + ');">' + point.properties.nom_pp_0 + '</a> — ' + point.properties.type_pp_0 + ' à ' + point.properties.distance_pp_0 + '<br />'; }
 			if (point.properties.id_pp_1 != undefined) { document.getElementById('pp1Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_1 + ');">' + point.properties.nom_pp_1 + '</a> — ' + point.properties.type_pp_1 + ' à ' + point.properties.distance_pp_1 + '<br />'; }
 			if (point.properties.id_pp_2 != undefined) { document.getElementById('pp2Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_2 + ');">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
-			if (point.properties.id_pp_0 == undefined && point.properties.id_pp_1 == undefined && point.properties.id_pp_2 == undefined) {removeElement("pointsprochesPoint"); }
-			// À remplacer par un foreach quand j'aurais le temps
+			// On affiche les derniers commentaires
 			for (i=0;i<50;i++) {
 				var contenu = eval('point.properties.com_' + i);
 				var date = eval('point.properties.date_com_' + i);
@@ -167,7 +166,7 @@ function pointRecu() {
 				var photo = eval('point.properties.photo_com_' + i);
 				var miniature = eval('point.properties.miniature_com_' + i);
 
-				if (date == undefined) { break; }
+				if (date == undefined) { break; } // Si il n'y a plus de commentaire on quitte
 				
 				commentaire = '<div id="com' + i + 'Point"><p class="legendecom">' + date;
 				if (auteur != "") {
@@ -208,6 +207,13 @@ function clearBlocsVides() {
 	if (point.properties.annonce_proprio == "" || point.properties.proprio == "") { $("#proprioPoint").remove(); }
 	if (point.properties.acces == "") { $("#accesPoint").remove(); }
 
+	// Effacer les points proches si aucun
+	if (point.properties.id_pp_0 == undefined && point.properties.id_pp_1 == undefined && point.properties.id_pp_2 == undefined) { $("#pointsprochesPoint").remove(); }
+
+	// Effacer les places dispo pour sommets, col, lac, sources.
+	if (point.properties.type == "lac" || point.properties.type == "point de passage" || point.properties.type == "sommet" || point.properties.type == "point d'eau" ) {
+		$("#nbPlaces").remove();
+	}
 }
 
 
