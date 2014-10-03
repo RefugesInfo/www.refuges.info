@@ -139,11 +139,8 @@ function pointRecu() {
 			document.getElementById('typePoint').innerHTML = point.properties.type + "<br />" + point.properties.nb_places + " place(s)";
 			document.getElementById('coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.properties.precision_gps + "<br />&nbsp;<i>Altitude</i> : " + point.geometry.coordinates[2] + "m, <i>Longitude</i> : " + point.geometry.coordinates[0] + ", <i>Latitude</i> : " + point.geometry.coordinates[1];
 			document.getElementById('rmqPoint').innerHTML = "<b>Remarques :</b><br />" + point.properties.remarques;
-			if (point.properties.remarques == "") {removeElement("rmqPoint"); }
 			document.getElementById('proprioPoint').innerHTML = "<b>" + point.properties.annonce_proprio + " :</b><br />" + point.properties.proprio;
-			if (point.properties.annonce_proprio == "" || point.properties.proprio == "") {removeElement("proprioPoint"); }
 			document.getElementById('accesPoint').innerHTML = "<b>Accès :</b><br />" + point.properties.acces;
-			if (point.properties.acces == "") {removeElement("accesPoint"); }
 			
 			// Infos complémentaires, elle sont ajoutés à la suite du titre en gras si elles sont existantes
 			if (point.properties.couvertures != undefined) { $( "#infoscompPoint" ).append( "<span id=\"couverturePoint\">Couvertures : " + point.properties.couvertures + "<br /></span>" ); }
@@ -199,10 +196,18 @@ function clearBlocsVides() {
 	if (infosComp == "<b>Informations complémentaires :</b><br>") {
 		$("#infoscompPoint").remove();
 	}
+	
+	// Effacer les commentaires
 	commentaires = document.getElementById('commentairesPoint').innerHTML;
 	if (commentaires == "<p><b>Commentaires :</b></p>") {
 		$("#commentairesPoint").remove();
 	}
+	
+	// Effacer les trois gros blocs
+	if (point.properties.remarques == "") { $("#rmqPoint").remove(); }
+	if (point.properties.annonce_proprio == "" || point.properties.proprio == "") { $("#proprioPoint").remove(); }
+	if (point.properties.acces == "") { $("#accesPoint").remove(); }
+
 }
 
 
