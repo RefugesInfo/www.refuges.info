@@ -1,4 +1,4 @@
-<?// Bloc GeoJSON réalisant l'export de la page d'un point
+<?// Bloc JSON réalisant l'export de la page d'un point
 
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
@@ -35,7 +35,7 @@ function liensnt($texte) {
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: attachment; filename=point_$vue->id_point.geojson");
+header("Content-disposition: attachment; filename=point_$vue->id_point.json");
 header("Content-Type: application/javascript; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");

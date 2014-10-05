@@ -24,7 +24,7 @@ $sans_parametres=explode ('?',$controlleur->url_complete);
 $controlleur->url_base=$sans_parametres[0];
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 
-// Par défaut, on veut un en-tête et pied de page html, mais dans de rare cas (point-geojson) on ne veut pas
+// Par défaut, on veut un en-tête et pied de page html, mais dans de rare cas (point-json) on ne veut pas
 // le débat étant à poursuivre ici : http://www.refuges.info/forum/viewtopic.php?t=5294
 $controlleur->avec_entete_et_pied=True;
 
@@ -47,9 +47,9 @@ switch ($controlleur->url_decoupee[1])
     case "point_formulaire_recherche" :
         $controlleur->type=$controlleur->url_decoupee[1];
         break;
-    case "point-geojson":
+    case "point-json":
         $controlleur->type="point";
-        $vue->template="point.geojson";
+        $vue->template="point.json";
         $controlleur->avec_entete_et_pied=False;
         break;
     case "index": case "" :
