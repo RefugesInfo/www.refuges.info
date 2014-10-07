@@ -95,7 +95,7 @@ function stateChanged() {
 				map.addLayer(plotmark); // On ajoute un calque pour ce marqueur
 				plotmark.data=plotlist.features[i]; // Useless ?
 				var popup = new L.Rrose({autoPan: false})
-				    .setContent('<a href="#" onclick="affichePoint(' + plotlist.features[i].properties.id_point + ');">' + plotlist.features[i].properties.nom + '</a>');
+				    .setContent('<a href="#pt' + plotlist.features[i].properties.id_point + '">' + plotlist.features[i].properties.nom + '</a>');
 				plotmark.bindPopup(popup); // On ajoute au marqueur un popup contenant le lien
 				plotlayers.push(plotmark);
 			}
@@ -155,9 +155,9 @@ function pointRecu() {
 			if (point.properties.ravitaillement_en_eau_possible != undefined) { $( "#infoscompPoint" ).append( "<span id=\"ravitaillementeauPoint\">Ravitaillement en eau possible : " + point.properties.ravitaillement_en_eau_possible + "<br /></span>" ); }
 			if (point.properties.site_officiel != undefined) { $( "#infoscompPoint" ).append( "<span id=\"sitewebPoint\">Site officiel : " + '<a href="' + point.properties.site_officiel + '" target="_blank">' + point.properties.nom + "</a><br /></span>" ); }
 			
-			if (point.properties.id_pp_0 != undefined) { document.getElementById('pp0Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_0 + ');">' + point.properties.nom_pp_0 + '</a> — ' + point.properties.type_pp_0 + ' à ' + point.properties.distance_pp_0 + '<br />'; }
-			if (point.properties.id_pp_1 != undefined) { document.getElementById('pp1Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_1 + ');">' + point.properties.nom_pp_1 + '</a> — ' + point.properties.type_pp_1 + ' à ' + point.properties.distance_pp_1 + '<br />'; }
-			if (point.properties.id_pp_2 != undefined) { document.getElementById('pp2Point').innerHTML = '<a href="#" onclick="affichePoint(' + point.properties.id_pp_2 + ');">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
+			if (point.properties.id_pp_0 != undefined) { document.getElementById('pp0Point').innerHTML = '<a href="#pt' + point.properties.id_pp_0 + '">' + point.properties.nom_pp_0 + '</a> — ' + point.properties.type_pp_0 + ' à ' + point.properties.distance_pp_0 + '<br />'; }
+			if (point.properties.id_pp_1 != undefined) { document.getElementById('pp1Point').innerHTML = '<a href="#pt' + point.properties.id_pp_1 + '">' + point.properties.nom_pp_1 + '</a> — ' + point.properties.type_pp_1 + ' à ' + point.properties.distance_pp_1 + '<br />'; }
+			if (point.properties.id_pp_2 != undefined) { document.getElementById('pp2Point').innerHTML = '<a href="#pt' + point.properties.id_pp_2 + '">' + point.properties.nom_pp_2 + '</a> — ' + point.properties.type_pp_2 + ' à ' + point.properties.distance_pp_2 + '<br />'; }
 			// On affiche les derniers commentaires
 			for (i=0;i<50;i++) {
 				var contenu = eval('point.properties.com_' + i);
@@ -322,6 +322,6 @@ function removeElement(id) {
   element.parentNode.removeChild(element);
 }
 
-$(window).load(function() { 
+$(window).load(function() {
    displayBlock('index');
 });
