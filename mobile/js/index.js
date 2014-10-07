@@ -17,13 +17,6 @@ var init = 0;
 
 // Fonction lancée dès que le <div> map est chargé
 function initmap(){
-	// On teste que le navigateur soit compatible AJAX
-	ajaxRequest=GetXmlHttpObject();
-	if (ajaxRequest==null) {
-		alert ("Ce navigateur ne semble pas supporter la technologie AJAX... Vous devrez peut-être le mettre à jour...");
-		return;
-	}
-	
 	// On créé notre carte vierge
 	map = new L.Map('map');
 
@@ -316,26 +309,40 @@ function displayBlock(bloc) {
 	}
 }
 
-window.onload = changeBlock;
+$(window).load(function() {
+	// On teste que le navigateur soit compatible AJAX
+	ajaxRequest=GetXmlHttpObject();
+	if (ajaxRequest==null) {
+		alert ("Ce navigateur ne semble pas supporter la technologie AJAX... Vous devrez peut-être le mettre à jour...");
+		return;
+	}
+	
+	changeBlock();
+});
 
 window.onhashchange = changeBlock;
 
 function changeBlock() {
-	switch (location.hash) {
-		case "#help":
-			displayBlock('aide')
-			break;
-		case "#settings":
-			displayBlock('parametres')
-			break;
-		case "#map":
-			displayBlock('carte')
-			break;
-		case "#license":
-			displayBlock('licence')
-			break;
-		default:
-			displayBlock('index')
-			break;			
+	if (location.hash.substring(0,3) == "#pt") {
+		affichePoint(location.hash.substring(3));
+	}
+	else {
+		switch (location.hash) {
+			case "#help":
+				displayBlock('aide');
+				break;
+			case "#settings":
+				displayBlock('parametres');
+				break;
+			case "#map":
+				displayBlock('carte');
+				break;
+			case "#license":
+				displayBlock('licence');
+				break;
+			default:
+				displayBlock('index');
+				break;
+		}
 	}
 }
