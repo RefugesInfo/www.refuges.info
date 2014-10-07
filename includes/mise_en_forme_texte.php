@@ -7,6 +7,7 @@ de et vers HTML TXT
 
 require_once("point.php");
 
+
 /**
 Fonction d'aide au référencement mais aussi de simplification pour que les internautes puisse se passer des urls d'accès direct aux points (par exemple)
 qui soit d'elle même significative (plus que http://wri/point/456)
@@ -68,10 +69,18 @@ $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
 
 if ($occurences_trouvees!=0)
 {
-	for ($x=0;$x<$occurences_trouvees;$x++)
-	{	
+    	for ($x=0;$x<$occurences_trouvees;$x++)
+	{	// Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
+		// Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
+		// Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
 		$point=infos_point($occurence[1][$x]);
-		$texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+	        global $vue;
+		if ($vue->template != "point.json") {
+		    $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+		} else {
+		    $texte=str_replace($occurence[0][$x],"[--".$occurence[1][$x]."]",$texte);
+		}
+	
 	}
 }
 
@@ -194,8 +203,8 @@ if ($occurences_trouvees!=0)
         $script = "<script>for(c='$code',i=0;a=135-c[i++]*10-c[i++],i<$l;)document.write('&#'+a+';')</script>";
         // Code JS de récupération et inversion de l'adresse pour envoi du mail
         $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
+	global $vue;
         // Génération du tag complet
-        global $vue;
         if ($vue->template == "point.json")
             $html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$html);
         else
