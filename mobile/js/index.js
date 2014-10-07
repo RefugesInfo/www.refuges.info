@@ -230,6 +230,7 @@ function displayBlock(bloc) {
 	var footer = document.querySelector('footer');
 	var section = document.querySelector('section');
 
+	footer.style.display = 'block';
 
 	if(bloc == 'carte') {
 		points.style.display = 'none';
@@ -307,7 +308,6 @@ function displayBlock(bloc) {
 		carte.style.display = 'none';
 		header.style.display = 'block';
 		index.style.display = 'block';
-		footer.style.display = 'block';
 		aide.style.display = 'none';
 		parametres.style.display = 'none';
 		licence.style.display = 'none';
@@ -316,12 +316,26 @@ function displayBlock(bloc) {
 	}
 }
 
-// Fonction appelée pour effacer un élément
-function removeElement(id) {
-  var element = document.getElementById(id);
-  element.parentNode.removeChild(element);
-}
+window.onload = changeBlock;
 
-$(window).load(function() {
-   displayBlock('index');
-});
+window.onhashchange = changeBlock;
+
+function changeBlock() {
+	switch (location.hash) {
+		case "#help":
+			displayBlock('aide')
+			break;
+		case "#settings":
+			displayBlock('parametres')
+			break;
+		case "#map":
+			displayBlock('carte')
+			break;
+		case "#license":
+			displayBlock('licence')
+			break;
+		default:
+			displayBlock('index')
+			break;			
+	}
+}
