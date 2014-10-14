@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Documentation API refuges.info</title>
+        <meta charset=utf-8 />
+        <link rel="stylesheet" type="text/css" media="all" href="style.css" />
+    </head>
+    
+    <body>
+        <header><p>API Refuges<span class="small">.info</span></p></header>
+        
+        <section id="intro">
+            <h1>Introduction à l'API</h1>
+            <p>
+                <a href="http://www.refuges.info">Refuges.info</a>
+                est un service web personnel et non commercial permettant de se renseigner sur les hébergements de montagnes destinés aux randonneurs.
+                Ce service est collaboratif et les informations sur les refuges (coordonnées, commentaires et discussions) ont été renseignées par
+                l'ensemble des utilisateur du service.
+            </p>
+            <p>
+                L'<b>API Refuges</b> permet de recevoir dans de nombreux formats une liste de points, des informations détaillées sur un point
+                ou encore les résultats de requêtes spéciales telles que la recherche de points ou les nouvelles contributions.
+                L'API est disponible en <b>lecture seule</b> uniquement, et aucune autentification ou clé d'API n'est requise.
+            </p>
+            <p>
+                Les données du site Refuges.info sous sont licence <a href="http://creativecommons.org/licenses/by-sa/2.0/deed.fr">CC By-Sa 2.0</a>, cependant l'API permet aussi de retourner des données
+                provenant d'OpenStreetMap via sa fonction de recherche, ces données sont sous licence <a href="http://opendatacommons.org/licenses/odbl/">OBdL</a>.
+                Plus d'informations sur <a href="http://www.refuges.info/wiki/licence/">la licence des contenus</a>,
+                <a href="http://www.openstreetmap.org/copyright">la licence d'OpenStreetMap</a>,
+                et <a href="https://github.com/sletuffe/www.refuges.info">le code source du site</a> ou vous pouvez contribuer avec plaisir.
+            </p>
+        </section>
+        
+        <section id="sommaire">
+            <h1>Sommaire de l'API</h1>
+            
+            <h2>Export d'une liste de points</h2>
+            <ul>
+                <li><a href="#/api/bbox"><span class="methode">GET</span> <span class="url">/api/bbox</span></a> &mdash; <span class="description">Export des points contenus dans une bbox</span></li>
+                <li><a href="#/api/massif"><span class="methode">GET</span> <span class="url">/api/massif</span></a> &mdash; <span class="description">Export des points contenus dans un massif</span></li>
+            </ul>
+
+            <h2>Informations détaillées sur un point</h2>
+            <ul>
+                <li><a href="#/api/point"><span class="methode">GET</span> <span class="url">/api/point</span></a> &mdash; <span class="description">Export des informations détaillées sur un point</span></li>
+            </ul>
+
+            <h2>Requêtes à la base de donnée</h2>
+            <ul>
+                <li><a href="#/api/recherche"><span class="methode">GET</span> <span class="url">/api/recherche</span></a> &mdash; <span class="description">Recherche d'un point de la base de données</span></li>
+                <li><a href="#/api/contributions"><span class="methode">GET</span> <span class="url">/api/contributions</span></a> &mdash; <span class="description">Export de la liste des dernières contributions</span></li>
+            </ul>
+        </section>
+        
+        <section>
+            <h1>Export d'une liste de points</h1>
+            
+            <h2 id="/api/bbox">Sélection de la zone via une bbox</h2>
+            <p>
+                En cours de développement
+            </p>
+            
+            <h2 id="/api/massif">Sélection de la zone via des massifs</h2>
+            <p>
+                En cours de développement
+            </p>
+        </section>
+
+        <section>
+            <h1 id="/api/point">Informations détaillées sur un point</h1>
+            <p>
+                En cours de développement
+            </p>
+        </section>
+                
+        <section>
+            <h1>Requêtes à la base de donnée</h1>
+            
+            <h2 id="/api/recherche">Recherche dans la base de données</h2>
+            <p>
+                En cours de développement
+            </p>
+            <h2 id="/api/contributions">Dernières contributions</h2>
+            <p>
+                En cours de développement
+            </p>
+        </section>
+        
+        <footer></footer>
+    </body>
+</html>

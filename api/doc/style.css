@@ -1,0 +1,103 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: 'Open Sans', 'Liberation Sans', sans-serif;
+    color: #222222;
+    background: #eeeeee;
+    padding: 40px 0 0 0;
+}
+
+header {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 5px 15px;
+    margin: 0 auto 15px auto;
+    background: #cccccc;
+    font-weight: lighter;
+    font-size: 2em;
+    color: black;
+    text-shadow: 1px 1px 0 white;
+    border-bottom:  1px solid #999999;
+    box-shadow: 0 1px 0 white;
+}
+
+header .small {
+    color: #666666;
+    font-style: italic;
+    font-size: 0.75em;
+    text-shadow: none;
+}
+
+section a {
+    font-weight: bold;
+    text-decoration: none;
+    color: #222288;
+}
+
+section a:hover {
+    color: #6666ee;
+}
+
+section h1 {
+    color: #444444;
+    background: #dddddd;
+    padding: 2px 15px;
+    margin: 40px auto 20px auto;
+    font-size: 1.25em;
+    border-bottom: 1px solid #bbbbbb;
+    border-top: 1px solid #bbbbbb;
+}
+
+section h2 {
+    color: #444444;
+    background: #e6e6e6;
+    padding: 2px 15px;
+    margin: 20px auto;
+    font-size: 0.9em;
+    border-bottom: 1px solid #cccccc;
+    border-top: 1px solid #cccccc;
+}
+
+section p {
+    margin: 10px 10px;
+    font-size: 0.9em;
+}
+
+section ul {
+    padding: 0 5px 0 30px;
+}
+
+section li {
+    margin: 10px;
+    list-style: square outside url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAGCAYAAAAPDoR2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAE9JREFUeNpiZACCmTNnlgMpEBYE4j1AnA4E95igEh1QCRBwAeJVIAYTlIMOjIGaXJiQdGAAkORqLOL3gHbuYQISnUBOJ5LEWSB2BTEAAgwAZ3QTP9kTSvEAAAAASUVORK5CYII=');
+}
+
+.methode {
+    z-index: 1;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    padding-right: 5px;
+}
+
+.url {
+    background: #ddd;
+    box-shadow: inset 0 0 1px white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 3px 4px 1px 4px;
+    margin: 2px 0;
+    font-family: 'Liberation Mono';
+    font-weight: normal;
+    font-size: 0.8em;
+}
+
+.description {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #555;
+}
