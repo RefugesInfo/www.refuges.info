@@ -84,22 +84,22 @@ section a:hover {
 
 section h1 {
     color: #444444;
-    background: #dddddd;
+    background: #B2C9D7;
     padding: 2px 15px;
     margin: 40px auto 20px auto;
     font-size: 1.25em;
-    border-bottom: 1px solid #bbbbbb;
-    border-top: 1px solid #bbbbbb;
+    border-bottom: 1px solid #739BC0;
+    border-top: 1px solid #739BC0;
 }
 
 section h2 {
     color: #444444;
-    background: #e6e6e6;
+    background: #D6DFE8;
     padding: 2px 15px;
     margin: 20px auto;
     font-size: 0.9em;
-    border-bottom: 1px solid #cccccc;
-    border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #A9BADB;
+    border-top: 1px solid #A9BADB;
 }
 
 section p {
@@ -114,6 +114,34 @@ section ul {
 section li {
     margin: 10px;
     list-style: square outside url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAGCAYAAAAPDoR2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAE9JREFUeNpiZACCmTNnlgMpEBYE4j1AnA4E95igEh1QCRBwAeJVIAYTlIMOjIGaXJiQdGAAkORqLOL3gHbuYQISnUBOJ5LEWSB2BTEAAgwAZ3QTP9kTSvEAAAAASUVORK5CYII=');
+}
+
+section table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 95%;
+    margin: 20px auto;
+    font-size: 0.9em;
+}
+
+section th {
+    color: #444;
+    border: 1px solid #bbb;
+    background: #d5d5d5;
+    padding: 5px;
+}
+
+section td {
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+section tr:nth-child(odd) {
+        background: #e6e6e6;
+}
+
+section td:first-child {
+        font-weight: bold;
 }
 
 .methode {
@@ -132,11 +160,32 @@ section li {
     margin: 2px 0;
     font-family: 'Liberation Mono', monospace;
     font-weight: normal;
-    font-size: 0.8em;
+    font-size: 0.9em;
+    white-space : nowrap;
 }
 
 .description {
     font-style: italic;
     font-size: 0.9em;
     color: #555;
+}
+
+.req {
+    background: #B1221C;
+    padding: 0 2px;
+    margin-right: 5px;
+    text-shadow: 1px 1px 0 #222;
+    font-variant: small-caps;
+    font-weight: bold;
+    color: white;
+}
+
+.opt {
+    background: #677E52;
+    padding: 0 2px;
+    margin-right: 5px;
+    text-shadow: 1px 1px 0 #222;
+    font-variant: small-caps;
+    font-weight: bold;
+    color: white;
 }

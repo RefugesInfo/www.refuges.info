@@ -97,7 +97,48 @@
         <section>
             <h1 id="/api/point">Informations détaillées sur un point</h1>
             <p>
-                En cours de développement
+                La requête <a href="#/api/point"><span class="methode">GET</span><span class="url">/api/point</span></a> permet de retourner les informations détaillées d'un point
+                de la base de donnée à partir de son <b>ID</b>. Les paramètres sont définis
+                dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
+                <table>
+                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr>
+                        <td>id</td>
+                        <td><span class="req">Requis</span> L'id du point dont on veut des informations</td>
+                        <td>Aucune</td>
+                        <td><span class="url">2536</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>format</td>
+                        <td><span class="opt">Optionnel</span> Le format de l'export.</td>
+                        <td><span class="url">json</span></td>
+                        <td><span class="url">json</span>, <span class="url">pdf</span></td>
+                    </tr>
+                    <tr>
+                        <td>format_texte</td>
+                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite. Concerne tous les champs où le contributeur peut ajouter un texte libre (accès, remarque...). Incompatible avec l'export au <b>format</b> pdf.</td>
+                        <td><span class="url">bbcode</span></td>
+                        <td><span class="url">bbcode</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
+                    </tr>
+                    <tr>
+                        <td>nb_coms</td>
+                        <td><span class="opt">Optionnel</span> Nombre de commentaires maximum à retourner. Retourne aucun commentaire pour <span class="url">0</span>. Retourne les n commentaires les plus récents.</td>
+                        <td><span class="url">5</span></td>
+                        <td><span class="url">18</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>nb_points_proches</td>
+                        <td><span class="opt">Optionnel</span> Nombre de points proches à retourner. Retourne les n points les plus proches, dans un rayon de 5 km autour du point.</td>
+                        <td><span class="url">3</span></td>
+                        <td><span class="url">6</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>fond_carto</td>
+                        <td><span class="opt">Optionnel</span> Sélection du fond de carte à adopter pour l'export quand le <b>format</b> est pdf. Cette liste est dans un premier temps limités à des fonds libres de droits.</td>
+                        <td><span class="url">mri</span></td>
+                        <td><span class="url">mri</span>, <span class="url">outdoor_tf</span>, <span class="url">osm_fr</span></td>
+                    </tr>
+                </table>
             </p>
         </section>
                 
