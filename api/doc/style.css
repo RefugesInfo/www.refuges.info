@@ -61,9 +61,8 @@ header input[type=text]:focus {
 header input[type=submit] {
     background: #bbb;
     color: black;
-    box-shadow: inset 0 0 1px black;
-    border: 1px solid #ccc;
-    border-left: none;
+    box-shadow: inset 0 0 1px #ccc;
+    border: 1px solid #777;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
     margin: 0;
