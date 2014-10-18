@@ -1,0 +1,12 @@
+RewriteEngine On
+
+
+# On redirige tout vers routing.php qui s'occupe de tout faire
+RewriteBase /api/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /api/routing.php [L]
+
+<Files doc/mails.txt>
+    Deny from all
+</Files> 
