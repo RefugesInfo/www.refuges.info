@@ -12,6 +12,7 @@
  * 
 **************************************************/
 
+require_once ('../includes/config.php');
 
 // Cible sera le contenu de l'URL entre /api/ et ?argument=
 $cible = str_replace('/api/','',$_SERVER['REQUEST_URI']); // On enlève le /api/ qui traine
@@ -20,10 +21,10 @@ $cible = str_replace('?','',$cible); // On enlève le ? (implique pas de ? dans 
 
 switch ($cible) {
     case 'point':
-        
+        include('controlleur/point.php');
         break;
     default:
-        Header('Location:doc/');
+        header('Location:doc/');
         //echo $cible;
         break;
 }
