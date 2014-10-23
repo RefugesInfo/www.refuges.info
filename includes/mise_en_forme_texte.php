@@ -56,7 +56,7 @@ retourne : le code en HTML
 21/03/08 sly création initiale de la fonction
 26/05/08 jmb correction bug des multiples [b] (rajout d'un ? pour une regex ungreedy)
 **********************************************************************************************/
-function bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE)
+function bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE,$crypter_texte_sensible=TRUE)
 {
 
 /** étape 1 
@@ -74,13 +74,7 @@ if ($occurences_trouvees!=0)
 		// Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
 		// Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
 		$point=infos_point($occurence[1][$x]);
-	        global $vue;
-		if ($vue->template != "point.json") {
-		    $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
-		} else {
-		    $texte=str_replace($occurence[0][$x],"[--".$occurence[1][$x]."]",$texte);
-		}
-	
+	        $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
 	}
 }
 
@@ -203,13 +197,26 @@ if ($occurences_trouvees!=0)
         $script = "<script>for(c='$code',i=0;a=135-c[i++]*10-c[i++],i<$l;)document.write('&#'+a+';')</script>";
         // Code JS de récupération et inversion de l'adresse pour envoi du mail
         $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
-	global $vue;
         // Génération du tag complet
-        if ($vue->template == "point.json")
+        if (!$crypter_texte_sensible)
             $html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$html);
-        else
-            $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
+	else
+	    $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
 	}
+}
+
+// On affiche les numéros de téléphone à l'envers
+if ($crypter_texte_sensible)
+{
+    $occurences_trouvees=preg_match_all("/(0[0-9]([-. ]?[0-9]{2}){4})/",$html,$occurence);
+    if ($occurences_trouvees!=0)
+    {
+	for ($x=0;$x<$occurences_trouvees;$x++)
+	{	
+	    $reverse = strrev($occurence[0][$x]);
+	    $html=str_replace($occurence[0][$x],"<span class=\"mail\">$reverse</span>",$html);
+	}
+    }
 }
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
@@ -265,6 +272,151 @@ function bbcode2txt($string)
     $string = preg_replace("#\[img\|right\](.+?)\[/img\]#is", "\\1", $string);
   }
   return $string;
+}
+
+// Cette fonction permet de convertir du bbcode en markdown (pour les balises connues)
+
+function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=TRUE)
+{
+    
+    /** étape 1 
+    nouvelle fonction qui permet de faire des liens internes entre les fiches :
+    [->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
+    point destination
+    **/
+    
+    $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
+    if ($occurences_trouvees!=0)
+    {
+	    for ($x=0;$x<$occurences_trouvees;$x++)
+	    {
+		    $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+	    }
+    }
+    
+    /** étape 2 
+    on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
+    sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
+    **/
+    if (!$autoriser_html)
+	$html=protege($texte);
+    else
+	$html=$texte;
+    
+    // gestion de la majorité des tag bbcode
+    $searcharray =
+	    array(
+	    "/\[url:(.*)\](.+?)\[\/url:(.*)\]/s",
+	    "/\[url\](.+?)\[\/url\]/s",
+	    "/\[url=(.+?):(.*)\](.+?)\[\/url:(.*)\]/s",
+	    "/\[url=(.+?)\](.+?)\[\/url\]/s",
+	    "/\[b:(.*)\](.+?)\[\/b:(.*)\]/s",
+	    "/\[b\](.*?)\[\/b\]/s",
+	    "/\[i:(.*)\](.+?)\[\/i:(.*)\]/s",
+	    "/\[i\](.+?)\[\/i\]/s",
+	    "/\[u:(.*)\](.+?)\[\/u:(.*)\]/s",
+	    "/\[u\](.+?)\[\/u\]/s",
+	    "/\[img:(.*)\](.+?)\[\/img:(.*)\]/s",
+	    "/\[img\](.+?)\[\/img\]/s",
+	    "/\[code:([^\].]*)\](.+?)\[\/code:([^\].]*)\]/s",
+	    "/\[code\](.+?)\[\/code\]/s",
+	    "/\[quote:([^\].]*)\](.+?)\[\/quote:([^\].]*)\]/s",
+	    "/\[quote\](.+?)\[\/quote\]/s",
+	    "/\[quote=(.+?):(.*)\](.+?)\[\/quote:(.*)\]/s",
+	    "/\[quote=(.+?)\](.+?)\[\/quote\]/s",
+	    "/\[color=(.+?):(.*)\](.+?)\[\/color:(.*)\]/s",
+	    "/\[color=(.+?)\](.+?)\[\/color\]/s",
+	    "/:([a-z]+):/",
+	    "/\[t\]/",
+	    "/\[email\](.+?)\[\/email\]/",
+	    "/(0[0-9]([-. ]?[0-9]{2}){4})/" // Pour les numéros de téléphone
+	    );
+    $replacearray =
+	    array(
+	    "[$1]($2)",
+	    "[$1]($1)",
+	    "[$3]($2)",
+	    "[$1]($2)",
+	    "**$2**",
+	    "**$1**",
+	    "*$2*",
+	    "*$1*",
+	    "$2",
+	    "$1",
+	    "![image]($2)",
+	    "![image]($1)",
+	    "<code>$2</code>",
+	    "<code>$1</code>",
+	    "<blockquote>$2</blockquote>",
+	    "<blockquote>$1</blockquote>",
+	    "<blockquote>$2</blockquote>",
+	    "<blockquote>$1</blockquote>",
+	    "$3",
+	    "$2",
+	    " - ",
+	    "    ",
+	    "<sensible>$1</sensible>", // Sera codé plus loin
+	    "<sensible>$1</sensible>" // Sera codé plus loin
+	    );
+    $html = preg_replace($searcharray, $replacearray, $html);
+    
+    // transformation automatique des url
+
+    // au format http://truc 
+    $urlauto_pattern = "/([ :\.;,\n])(http:\/\/\w\S*)/i";
+    $urlauto_replace = "$1[$2]($2)";
+    $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
+    
+    // au format www.
+    $urlauto_pattern = "/([ :\.;,\n])(www.\w\S*)/i";
+    $urlauto_replace = "$1[$2](http://$2)";
+    $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
+    
+    // Gestion du texte sensible
+    if($autoriser_texte_sensible) {
+	$html = preg_replace("/<sensible>(.*)<\/sensible>/","$1",$html);
+    }
+    else {
+	$html = preg_replace("/<sensible>(.*)<\/sensible>/","",$html);
+    }
+    
+    // Gestion des codes en bloc
+    $occurences_trouvees=preg_match_all("/<code>.*<\/code>/s",$texte,$occurence);
+    if ($occurences_trouvees!=0)
+    {
+	for ($x=0;$x<$occurences_trouvees;$x++)
+	{
+	    $occurence_temp=$occurence[0][$x];
+	    $occurence_temp=preg_replace("/^<code>/","\n    ",$occurence_temp);
+	    $occurence_temp=preg_replace("/<\/code>$/","\n",$occurence_temp);
+	    $occurence_temp=preg_replace("/\n/","\n    ",$occurence_temp);
+	    $html=str_replace($occurence[0][$x],$occurence_temp,$html);
+	}
+    }
+
+    // Gestion des citations en bloc
+    $occurences_trouvees=preg_match_all("/<blockquote>.*<\/blockquote>/s",$texte,$occurence);
+    if ($occurences_trouvees!=0)
+    {
+	for ($x=0;$x<$occurences_trouvees;$x++)
+	{
+	    $occurence_temp=$occurence[0][$x];
+	    $occurence_temp=preg_replace("/^<blockquote>/","\n> ",$occurence_temp);
+	    $occurence_temp=preg_replace("/<\/blockquote>$/","\n",$occurence_temp);
+	    $occurence_temp=preg_replace("/\n/","\n> ",$occurence_temp);
+	    $html=str_replace($occurence[0][$x],$occurence_temp,$html);
+	}
+    }
+    
+    // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
+    if (!$autoriser_html)
+    {
+	    $html = str_replace("\r\n", "<br />", $html);
+	    $html = str_replace("\n", "<br />", $html);
+	    $html = str_replace("\r", "<br />", $html);
+	    $html = str_replace("  ", " &nbsp;", $html);
+    }
+    return $html;
 }
 
 /* ucfirst( ) does not work well with UTF-8 this is it's multibyte replacement */

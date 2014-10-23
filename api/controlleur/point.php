@@ -7,6 +7,16 @@
  * http://leo.refuges.info/api/point?id=2777 : coordonnées cachées
 ********************************************/
 include_once("point.php");
+include_once("mise_en_forme_texte.php");
+
+/****************************************/
+// Ça permet de mettre convertir tout un objet
+function updatebbcode2html(&$html) { $html=bbcode2html($html,0,1,0); }
+function updatebbcode2markdown(&$html) { $html=bbcode2markdown($html); }
+function updatebbcode2txt(&$html) { $html=bbcode2txt($html); } 
+ 
+/****************************************/
+
 
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
@@ -20,22 +30,22 @@ $req->carto = $_GET['fond_carto'];
 // Ici c'est les valeurs possibles
 $val = new stdClass();
 $val->format = array("json","pdf");
-$val->format_txt = array("bbcode","markdown","html");
+$val->format_txt = array("bbcode","texte","markdown","html");
 $val->carto = array("mri","outdoor_tf","osm_fr");
 
 // On teste chaque champ pour voir si la valeur est correcte, sinon valeur par défaut
-if(!in_array($req_format->format,$val->format)) { $req->format = "json"; }
-if(!in_array($req_format->format_txt,$val->format_txt)) { $req->format_txt = "bbcode"; }
-if(!in_array($req_format->carto,$val->carto)) { $req->carto = "mri"; }
+if(!in_array($req->format,$val->format)) { $req->format = "json"; }
+if(!in_array($req->format_txt,$val->format_txt)) { $req->format_txt = "bbcode"; }
+if(!in_array($req->carto,$val->carto)) { $req->carto = "mri"; }
 if(!is_numeric($req->nb_coms)) { $req->nb_coms = 5; }
 if(!is_numeric($req->nb_pp)) { $req->nb_pp = 3; }
 
 // On récupère les infos du point
 $pointBrut = new stdClass();
 $pointBrut = infos_point($req->id);
-$point = new stdClass();
 
 // La on met en forme l'objet, c'est assez gros :
+$point = new stdClass();
 $point->id = $pointBrut->id_point;
 $point->id_gps = $pointBrut->id_point_gps;
 $point->nom = $pointBrut->nom;
@@ -85,11 +95,19 @@ $point->info_comp['bois']['valeur'] = $pointBrut->bois_a_proximite;
 $point->info_comp['eau']['nom'] = $pointBrut->equivalent_eau_a_proximite;
 $point->info_comp['eau']['valeur'] = $pointBrut->eau_a_proximite;
 
+unset($pointBrut);
 
-print_r($req);
-echo "\r\n\r\n<br><br>\r\n\r\n";
-print_r($pointBrut);
-echo "\r\n\r\n<br><br>\r\n\r\n";
+// On transforme le texte dans la correcte syntaxe
+if($req->format_txt == "texte") {
+    array_walk_recursive($point, 'updatebbcode2txt');
+}
+elseif($req->format_txt == "html") {
+    array_walk_recursive($point, 'updatebbcode2html');
+}
+elseif($req->format_txt == "markdown") {
+    array_walk_recursive($point, 'updatebbcode2markdown');
+}
+
 print_r($point);
 
 ?>
