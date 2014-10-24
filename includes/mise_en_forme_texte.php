@@ -200,8 +200,8 @@ if ($occurences_trouvees!=0)
         // Génération du tag complet
         if (!$crypter_texte_sensible)
             $html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$html);
-	else
-	    $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
+        else
+            $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
 	}
 }
 
