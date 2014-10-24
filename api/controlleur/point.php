@@ -178,6 +178,8 @@ unset($conditions);
 unset($commentaire);
 unset($tous_commentaires);
 
+/****************************** FORMATAGE DU TEXTE ******************************/
+
 // On transforme le texte dans la correcte syntaxe
 if($req->format_txt == "texte") {
     array_walk_recursive($point, 'updatebbcode2txt');
@@ -188,8 +190,14 @@ elseif($req->format_txt == "html") {
 elseif($req->format_txt == "markdown") {
     array_walk_recursive($point, 'updatebbcode2markdown');
 }
-array_walk_recursive($point, 'updatebool2char');
+array_walk_recursive($point, 'updatebool2char'); // Remplace les False et True en 0 ou 1
 
-print_r($point);
+/****************************** FORMAT VUE ******************************/
+
+switch ($req->format) {
+    default:
+        include('./vue/point.json');
+        break;
+}
 
 ?>

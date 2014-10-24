@@ -1,0 +1,15 @@
+<?php
+
+$secondes_de_cache = 60;
+$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+header("Content-disposition: attachment; filename=point_$vue->id_point.json");
+header("Content-Type: application/javascript; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=$secondes_de_cache");
+
+echo json_encode($point);
+
+?>
