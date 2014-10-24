@@ -118,6 +118,10 @@ $config['email_contact_nominatim']="sylvain@refuges.info";
 /******** Nom du fichier contenant les points exportés **********/
 $config['nom_fichier_export']="refuge-info";
 
+/******** Paramètres de l'API **********/
+$config['autoriser_CORS']=TRUE; // Autoriser les requêtes AJAX sur notre API
+
+
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");
 mb_internal_encoding("UTF-8");

@@ -29,7 +29,7 @@ $req->carto = $_GET['fond_carto'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("json","pdf");
+$val->format = array("json","xml");
 $val->format_txt = array("bbcode","texte","markdown","html");
 $val->carto = array("mri","outdoor_tf","osm_fr");
 
@@ -195,6 +195,9 @@ array_walk_recursive($point, 'updatebool2char'); // Remplace les False et True e
 /****************************** FORMAT VUE ******************************/
 
 switch ($req->format) {
+    case 'xml':
+        include('./vue/point.xml');
+        break;
     default:
         include('./vue/point.json');
         break;
