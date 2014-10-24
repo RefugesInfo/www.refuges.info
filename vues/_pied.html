@@ -16,13 +16,16 @@
 		<div id="basdepage">
 			<a id="lien-mobile" href="/mobile" title="Passer sur l'application mobile">
 				Version mobile
-			</a>
+			</a> &mdash; 
+			<a id="lien-api" href="/api" title="API">
+				API développeurs
+			</a> &mdash; 
 			<a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">
 				<img src="/images/copyleft.png" alt="Copyleft" />
 				Licence des contenus
 			</a>
 			<?php if ($config['debug']) { ?>
-			<a href="http://validator.w3.org/check?uri=referer">
+			&mdash; <a href="http://validator.w3.org/check?uri=referer">
 				<img src="/images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
 			</a>
 			<a href="http://jigsaw.w3.org/css-validator/check/referer">
