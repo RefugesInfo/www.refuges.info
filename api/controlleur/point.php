@@ -8,12 +8,14 @@
 ********************************************/
 include_once("point.php");
 include_once("mise_en_forme_texte.php");
+require_once("utilisateur.php");
 
 /****************************************/
 // Ça permet de mettre convertir tout un objet
 function updatebbcode2html(&$html) { $html=bbcode2html($html,0,1,0); }
 function updatebbcode2markdown(&$html) { $html=bbcode2markdown($html); }
-function updatebbcode2txt(&$html) { $html=bbcode2txt($html); } 
+function updatebbcode2txt(&$html) { $html=bbcode2txt($html); }
+function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html===TRUE) { $html='1'; } } 
  
 /****************************************/
 
@@ -49,11 +51,12 @@ $point = new stdClass();
 $point->id = $pointBrut->id_point;
 $point->id_gps = $pointBrut->id_point_gps;
 $point->nom = $pointBrut->nom;
-if($pointBrut->id_type_precision_gps != 5) {
+// On affiche les coordonnées que si elles ne sont pas cachées
+if($pointBrut->id_type_precision_gps != $config['id_coordonees_gps_fausses']) {
     $point->coord['long'] = $pointBrut->longitude;
     $point->coord['lat'] = $pointBrut->latitude;
-    $point->coord['alt'] = $pointBrut->altitude;
 }
+$point->coord['alt'] = $pointBrut->altitude;
 $point->coord['precision']['nom'] = $pointBrut->nom_precision_gps;
 $point->coord['precision']['type'] = $pointBrut->id_type_precision_gps;
 $point->type['id'] = $pointBrut->id_point_type;
@@ -67,9 +70,13 @@ $point->acces['valeur'] = $pointBrut->acces;
 $point->proprio['nom'] = $pointBrut->equivalent_proprio;
 $point->proprio['valeur'] = $pointBrut->proprio;
 $point->etat['id'] = $pointBrut->conditions_utilisation;
-$point->etat['valeur'] = $pointBrut->equivalent_conditions_utilisation;
+$point->etat['valeur'] = texte_non_ouverte($pointBrut);
 $point->createur['id'] = $pointBrut->id_createur;
-$point->createur['nom'] = $pointBrut->nom_createur;
+// info sur le créateur de la fiche (authentifié ou non)
+if ($pointBrut->id_createur==0) // non authentifié
+	$point->createur['nom']=$pointBrut->nom_createur;
+else
+	$point->createur['nom'] = infos_utilisateur($pointBrut->id_createur)->username;
 $point->date['derniere_modif'] -> $pointBrut->date_derniere_modification;
 $point->date['creation'] -> $pointBrut->date_creation;
 $point->article['demonstratif'] = $pointBrut->article_demonstratif;
@@ -86,8 +93,13 @@ $point->info_comp['poele']['valeur'] = $pointBrut->poele;
 $point->info_comp['couvertures']['nom'] = $pointBrut->equivalent_couvertures;
 $point->info_comp['couvertures']['valeur'] = $pointBrut->couvertures;
 $point->info_comp['places_matelas']['nom'] = $pointBrut->equivalent_places_matelas;
-$point->info_comp['places_matelas']['valeur'] = $pointBrut->matelas;
 $point->info_comp['places_matelas']['nb'] = $pointBrut->places_matelas;
+if($pointBrut->places_matelas == -1)
+	$point->info_comp['places_matelas']['valeur'] = "Sans";
+elseif($pointBrut->places_matelas === 0)
+	$point->info_comp['places_matelas']['valeur'] = "Avec, en nombre inconnu";
+else
+	$point->info_comp['places_matelas']['valeur'] = $pointBrut->matelas;
 $point->info_comp['latrines']['nom'] = $pointBrut->equivalent_latrines;
 $point->info_comp['latrines']['valeur'] = $pointBrut->latrines;
 $point->info_comp['bois']['nom'] = $pointBrut->equivalent_bois_a_proximite;
@@ -107,6 +119,7 @@ elseif($req->format_txt == "html") {
 elseif($req->format_txt == "markdown") {
     array_walk_recursive($point, 'updatebbcode2markdown');
 }
+array_walk_recursive($point, 'updatebool2char');
 
 print_r($point);
 
