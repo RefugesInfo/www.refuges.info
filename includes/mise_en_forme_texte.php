@@ -179,6 +179,23 @@ $urlauto_pattern = "/([ :\.;,\n])(www.\w\S*)/i";
 $urlauto_replace = "$1<a href=\"http://$2\">$2</a>";
 $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
 
+// On affiche les numéros de téléphone à l'envers
+if ($crypter_texte_sensible)
+{
+    $occurences_trouvees=preg_match_all("/(0[0-9]([-. ]?[0-9]{2}){4})/",$html,$occurence);
+    if ($occurences_trouvees!=0)
+    {
+	for ($x=0;$x<$occurences_trouvees;$x++)
+	{	
+	    $reverse = strrev($occurence[0][$x]);
+	    $html=str_replace($occurence[0][$x],"<span class=\"mail\">$reverse</span>",$html);
+	}
+    }
+}
+
+unset($occurences_trouvees);
+unset($occurence);
+
 // Transformation des adresses mails de façon à ne pas qu'elles ne soient pompées par les robots
 // 1/ Le code ascii de chaque caractère est transformé par la formule: 'x' => 135 - ascii('x')
 // 2/ Les caractères sont envoyés et écrits de droite à gauche. Ils sont affichés dans le bon sens par la feuille style
@@ -203,20 +220,6 @@ if ($occurences_trouvees!=0)
         else
             $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
 	}
-}
-
-// On affiche les numéros de téléphone à l'envers
-if ($crypter_texte_sensible)
-{
-    $occurences_trouvees=preg_match_all("/(0[0-9]([-. ]?[0-9]{2}){4})/",$html,$occurence);
-    if ($occurences_trouvees!=0)
-    {
-	for ($x=0;$x<$occurences_trouvees;$x++)
-	{	
-	    $reverse = strrev($occurence[0][$x]);
-	    $html=str_replace($occurence[0][$x],"<span class=\"mail\">$reverse</span>",$html);
-	}
-    }
 }
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
