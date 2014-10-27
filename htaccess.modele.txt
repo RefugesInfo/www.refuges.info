@@ -9,7 +9,6 @@ RewriteRule ^(.*)$ http://www.refuges.info/$1 [L,R=301]
 
 #Ces règles de rewrite permettent de faire atterrir tous les appels sur /controlleur.php
 #Sauf ceux pour lesquels il existe un fichier réél ou un dossier
-RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . ./routage.php [L]
