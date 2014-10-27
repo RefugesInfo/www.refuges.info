@@ -7,8 +7,9 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^refuges.info$ [NC]
 RewriteRule ^(.*)$ http://www.refuges.info/$1 [L,R=301]
 
-#Ces règles de rewrite permettent de faire atterrir tous les appels sur /controlleur.php
-#Sauf ceux pour lesquels il existe un fichier réél ou un dossier
+#Ces règles de rewrite permettent de faire atterrir tous les appels sur
+#l'unique point d'entrée du site (moins le forum et de vieux truc non
+#converti) sauf ceux pour lesquels il existe un fichier réél ou un dossier
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . ./routage.php [L]
