@@ -5,32 +5,36 @@ des dossiers, des chemins, des options par défaut, etc.
 tout dans un gros tableau $config qu'il suffit de récupérer en déclarant 
 global $config; dans les fonctions
 
+un require_once("../emplacement/du/fichier/config.php") est la seule inclusion avec chemin d'accès nécessaire dans un programme non contrôlé par /routage.php
+à partir de là tout peut s'inclure par require_once("modele.php")
+Si vous êtes en train d'écrire un contrôleur et une règle de routage, cette inclusion du config est inutile car déjà faite
+
 **/
 
-// Ce bloque gère la détection automatique de chemin et où on peut trouver les différent dossier du projet wri
+// Ce bloc gère la détection automatique des chemins et où on peut trouver les différent dossiers du projet wri
 
-// Il doit s'agir du nom du dossier dans lequel on se trouve par rapport à la racine du projet wri, soit "includes" si personne ne le change
+// Il doit s'agir du nom du dossier dans lequel se trouve ce fichier config.php par rapport à la racine du projet wri, soit "includes" si personne ne le change
 $config['includes_directory']=basename(__DIR__);
 
 // Ceci est le chemin d'accès physique au / du projet wri
-$config['project_root']=str_replace($config['includes_directory'],"",__DIR__);
+$config['racine_projet']=str_replace($config['includes_directory'],"",__DIR__);
 
 // Ceci est le chemin relatif à la racine web d'accès au projet wri (/ si on est à la racine ou /mon/installation/ par exemple)
-$config['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config['project_root']);
+$config['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config['racine_projet']);
 
 $config['rep_web_photos_points']=$config['sous_dossier_installation']."photos_points/";
-$config['rep_photos_points']=$config['project_root']."photos_points/";
-$config['chemin_vues']=$config['project_root']."vues/";
-$config['chemin_modeles']=$config['project_root']."modeles/";
-$config['chemin_controlleurs']=$config['project_root']."controlleurs/";
+$config['rep_photos_points']=$config['racine_projet']."photos_points/";
+$config['chemin_vues']=$config['racine_projet']."vues/";
+$config['chemin_modeles']=$config['racine_projet']."modeles/";
+$config['chemin_controlleurs']=$config['racine_projet']."controlleurs/";
 
 $config['url_chemin_icones']=$config['sous_dossier_installation']."images/icones/";
-$config['chemin_icones']=$config['project_root']."images/icones/";
+$config['chemin_icones']=$config['racine_projet']."images/icones/";
 
 //jmb 04/07 on continue avec des rep de moderation
-$config['rep_moder_photos_backup']=$config['project_root']."gestion/sauvegardes-photos/";
-$config['rep_forum_photos']=$config['project_root']."forum/photos-points/";
-$config['rep_web_forum_photos']=$config['project_root']."forum/photos-points/";
+$config['rep_moder_photos_backup']=$config['racine_projet']."gestion/sauvegardes-photos/";
+$config['rep_forum_photos']=$config['racine_projet']."forum/photos-points/";
+$config['rep_web_forum_photos']=$config['racine_projet']."forum/photos-points/";
 
 // Lien direct vers le mode d'emploi
 $config['base_wiki']=$config['sous_dossier_installation']."wiki/";
@@ -39,7 +43,7 @@ $config['base_wiki']=$config['sous_dossier_installation']."wiki/";
 $config['lien_forum']=$config['sous_dossier_installation']."forum/";
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
-$config['chemin_openlayers']=$config['project_root']."ol2.12.4/";
+$config['chemin_openlayers']=$config['racine_projet']."ol2.12.4/";
 $config['url_chemin_openlayers']=$config['sous_dossier_installation']."ol2.12.4/";
 
 // Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
