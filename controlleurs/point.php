@@ -14,7 +14,7 @@ require_once ("mise_en_forme_texte.php");
 $condition = new stdClass();
 
 // Arguments de la page
-$id_point = $controlleur->url_decoupee[2]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
+$id_point = $controlleur->url_decoupee[1]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
 
 // On indique de manière bien évidente aux modérateur que cette fiche est censurée
 if ($_SESSION['niveau_moderation']>=1)
@@ -101,7 +101,7 @@ else // le point est valide. faut bosser.
             
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
-        $vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
+        $vue->java_lib [] = $config['url_chemin_openlayers'].'OpenLayers.js?'.filemtime($config['chemin_openlayers'].'OpenLayers.js');
         $vue->vignette = param_cartes ($point);
     }
     

@@ -6,7 +6,7 @@
 
 // ouais ben désolé, t'as qu'a permettre un mécanisme de réutilisation des codes pour éviter de les dupliquer !
 // sly 25/07/2012
-require($_SERVER["DOCUMENT_ROOT"] . "/includes/config.php");
+require("../includes/config.php");
 
 
 $dbms = 'postgres';

@@ -33,7 +33,7 @@ $controlleur->avec_entete_et_pied=True;
 // On pourrait être tenté de faire une conversion direct de url vers controlleur, mais si un filou commence à indiquer
 // n'importe quelle url, il pourrait réussir à ouvrir des trucs pas souhaités, avec une liste, on s'assure
 // de n'autoriser que ceux que l'on a
-switch ($controlleur->url_decoupee[1])
+switch ($controlleur->url_decoupee[0])
 {
     // sly: Pour toutes ces routes, on est dans un cas simple, l'url correspond au controlleur du même nom, factorisation !
     case "point" :
@@ -47,7 +47,7 @@ switch ($controlleur->url_decoupee[1])
     case "avis-internaute-commentaire" :
     case "formulaire_exportations" :
     case "point_formulaire_recherche" :
-        $controlleur->type=$controlleur->url_decoupee[1];
+        $controlleur->type=$controlleur->url_decoupee[0];
         break;
     case "point-json":
         $controlleur->type="point";

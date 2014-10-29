@@ -8,7 +8,7 @@ require_once ("wiki.php");
 require_once ("bdd.php");
 require_once ("commentaire.php");
 
-$commentaire=infos_commentaire($controlleur->url_decoupee[2]);
+$commentaire=infos_commentaire($controlleur->url_decoupee[1]);
 
 if ($commentaire->erreur)
 {

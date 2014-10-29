@@ -33,13 +33,14 @@ $config['rep_forum_photos']=$config['project_root']."forum/photos-points/";
 $config['rep_web_forum_photos']=$config['project_root']."forum/photos-points/";
 
 // Lien direct vers le mode d'emploi
-$config['base_wiki']=$config['project_root']."wiki/";
+$config['base_wiki']=$config['sous_dossier_installation']."wiki/";
 
 // des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
-$config['lien_forum']=$config['project_root']."forum/";
+$config['lien_forum']=$config['sous_dossier_installation']."forum/";
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
-$config['chemin_openlayers']=$config['project_root']."ol2.12.4/"; 
+$config['chemin_openlayers']=$config['project_root']."ol2.12.4/";
+$config['url_chemin_openlayers']=$config['sous_dossier_installation']."ol2.12.4/";
 
 // Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
 // afin de pouvoir faire des require_once('modele.php');

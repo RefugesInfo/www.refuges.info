@@ -30,7 +30,7 @@ $vue->infos_base = infos_base ();
 $vue->types_point_affichables=types_point_affichables();
 
 // typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referenceement google, c'est le controlleur.php qui passe ce tableau
-$id_polygone = $controlleur->url_decoupee[2];
+$id_polygone = $controlleur->url_decoupee[1];
 $vue->type_affichage = $_GET['mode_affichage']; // "zone" ou "massif". ca definit l'affichage qui suit
 
 //Récupère les soumissions du formulaire de modification de paramètres de massifs

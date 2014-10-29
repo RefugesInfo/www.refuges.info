@@ -391,9 +391,9 @@ function lien_point($point,$lien_local=false)
 {
   global $config;
   if ($lien_local)
-    $url_complete="";
+      $url_complete=$config['sous_dossier_installation'];
   else
-    $url_complete="http://".$config['nom_hote'];
+      $url_complete="http://".$config['nom_hote'].$config['sous_dossier_installation'];
   
   if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
@@ -401,7 +401,7 @@ function lien_point($point,$lien_local=false)
     $info_massif=replace_url($point->nom_polygone)."/";
   else
     $info_massif="";
-  return "$url_complete/point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
+  return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
 }
 
 /******************************************************************************************************************************

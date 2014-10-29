@@ -16,7 +16,7 @@ setlocale(LC_TIME, "fr_FR");
 if ( $_SESSION['niveau_moderation']>=1 )
     $conditions_commentaire->avec_points_censure=True;
     
-$commentaire->id_point=$controlleur->url_decoupee[2];
+$commentaire->id_point=$controlleur->url_decoupee[1];
 $conditions_commentaire->ids_points=$commentaire->id_point;
 $p=infos_points($conditions_commentaire);
 $point=$p[0];
