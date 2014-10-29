@@ -15,7 +15,7 @@ $config['includes_directory']=basename(__DIR__);
 // Ceci est le chemin d'accès physique au / du projet wri
 $config['project_root']=str_replace($config['includes_directory'],"",__DIR__);
 
-// Ceci est le chemin relatif à la racine web d'accès au projet wri
+// Ceci est le chemin relatif à la racine web d'accès au projet wri (/ si on est à la racine ou /mon/installation/ par exemple)
 $config['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config['project_root']);
 
 $config['rep_web_photos_points']=$config['sous_dossier_installation']."photos_points/";

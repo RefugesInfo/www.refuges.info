@@ -21,8 +21,8 @@ require_once ("meta_donnee.php");
 require_once ("polygone.php");
 require_once ("wiki.php");
 
-$vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
-$vue->java_lib [] = '/vues/wiki.js';
+$vue->java_lib [] = $config['url_chemin_openlayers'].'OpenLayers.js?'.filemtime($config['chemin_openlayers'].'OpenLayers.js');
+$vue->java_lib [] = $config['sous_dossier_installation'].'vues/wiki.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
