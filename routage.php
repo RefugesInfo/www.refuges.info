@@ -23,10 +23,8 @@ $controlleur->url_complete=$_SERVER['REQUEST_URI'];
 $sans_parametres=explode ('?',$controlleur->url_complete);
 
 // Uniquement /point/5/toto/sfsdf (pas les ?toto=coucou...) et pas le sous dossier dans lequel wri pourrait être installé
-$sous_dossier_installation=str_replace($_SERVER['DOCUMENT_ROOT'],"",dirname(__FILE__));
-$controlleur->url_base=str_replace($sous_dossier_installation,"",$sans_parametres[0]);
+$controlleur->url_base=str_replace($config['sous_dossier_installation'],"",$sans_parametres[0]);
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
-
 
 // Par défaut, on veut un en-tête et pied de page html, mais dans de rare cas (point-json) on ne veut pas
 // le débat étant à poursuivre ici : http://www.refuges.info/forum/viewtopic.php?t=5294

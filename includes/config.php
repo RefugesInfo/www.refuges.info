@@ -7,9 +7,44 @@ global $config; dans les fonctions
 
 **/
 
-// Permet d'ajouter le chemin dans lequel se trouve le config.php au path de recherche, ainsi, il suffit d'inclure le config.php afin de pouvoir faire des require_once('modele.php');
-// J'inclus également le fichier /includes + /modeles donc
-ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.__DIR__.PATH_SEPARATOR.__DIR__."/../modeles/".PATH_SEPARATOR);
+// Ce bloque gère la détection automatique de chemin et où on peut trouver les différent dossier du projet wri
+
+// Il doit s'agir du nom du dossier dans lequel on se trouve par rapport à la racine du projet wri, soit "includes" si personne ne le change
+$config['includes_directory']=basename(__DIR__);
+
+// Ceci est le chemin d'accès physique au / du projet wri
+$config['project_root']=str_replace($config['includes_directory'],"",__DIR__);
+
+// Ceci est le chemin relatif à la racine web d'accès au projet wri
+$config['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config['project_root']);
+
+$config['rep_web_photos_points']=$config['sous_dossier_installation']."photos_points/";
+$config['rep_photos_points']=$config['project_root']."photos_points/";
+$config['chemin_vues']=$config['project_root']."vues/";
+$config['chemin_modeles']=$config['project_root']."modeles/";
+$config['chemin_controlleurs']=$config['project_root']."controlleurs/";
+
+$config['url_chemin_icones']=$config['sous_dossier_installation']."images/icones/";
+$config['chemin_icones']=$config['project_root']."images/icones/";
+
+//jmb 04/07 on continue avec des rep de moderation
+$config['rep_moder_photos_backup']=$config['project_root']."gestion/sauvegardes-photos/";
+$config['rep_forum_photos']=$config['project_root']."forum/photos-points/";
+$config['rep_web_forum_photos']=$config['project_root']."forum/photos-points/";
+
+// Lien direct vers le mode d'emploi
+$config['base_wiki']=$config['project_root']."wiki/";
+
+// des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
+$config['lien_forum']=$config['project_root']."forum/";
+
+/******** Paramètrage des cartes vignettes des fiches de points **********/
+$config['chemin_openlayers']=$config['project_root']."ol2.12.4/"; 
+
+// Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
+// afin de pouvoir faire des require_once('modele.php');
+// ATTENTION ! on pourait être tenté de faire de même pour les controlleurs et les vues, mais les conflits en nom identiques seraient trop important
+ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.$config['chemin_modeles'].PATH_SEPARATOR.__DIR__);
 
 /** Auto chargement des déclarations de classes
     les classes ModeleClasse sont déclarées dans modeles/Classe.php
@@ -20,7 +55,7 @@ spl_autoload_register(function ($class) {
 	if (preg_match ('/([A-Z][a-z]+)(.*)/', $class, $c))
         require_once '../'.strtolower($c[1]).'s/'.$c[2].'.php';
     else
-        require_once '../includes/'.$class.'.php';
+        require_once __DIR__.'/'.$class.'.php';
 });
 
 // voici les mensurations des taille des photos afficher sur le site ( pour éviter une guirlande )
@@ -30,27 +65,9 @@ $config['largeur_max_vignette']=140;
 $config['hauteur_max_vignette']=140*3/4;
 $config['qualite_jpeg']=80;
 
-//sly 27/04/06 quelques variable afin d'éviter de mettre des chemins un peu partout
-$config['document_root']=$_SERVER['DOCUMENT_ROOT']."/";
-$config['rep_web_photos_points']="/photos_points/";
-$config['rep_photos_points']=$config['document_root'].$config['rep_web_photos_points']; 
-$config['chemin_vues']=$config['document_root']."vues/"; 
-$config['chemin_modeles']=$config['document_root']."modeles/"; 
-$config['chemin_controlleurs']=$config['document_root']."controlleurs/"; 
-
-$config['url_chemin_icones']="/images/icones/";
-$config['chemin_icones']=$config['document_root'].$config['url_chemin_icones'];
-
-// Lien direct vers le mode d'emploi
-$config['base_wiki']="/wiki/";
-
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
 $config['nom_hote']=$_SERVER['HTTP_HOST'];
 
-//jmb 04/07 on continue avec des rep de moderation
-$config['rep_moder_photos_backup']=$config['document_root']."/gestion/sauvegardes-photos/"; 
-$config['rep_forum_photos']=$config['document_root']."/forum/photos-points/"; 
-$config['rep_web_forum_photos']="/forum/photos-points/"; 
 
 // sly  27/04/06 je préfère me baser sur l'id pour le retrouver plutôt que son type ( que je viens d'ailleurs de modifier )
 $config['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
@@ -90,8 +107,6 @@ $config['id_coordonees_gps_fausses']=5;
 $config['id_coordonees_gps_approximative']=4;
 
 /********** truc sur le Forum ************/
-// des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
-$config['lien_forum']="/forum/";
 // lien direct pour se connecter, ou créer un compte sur le forum
 $config['connexion_forum']=$config['lien_forum']."login.php";
 // lien vers le profil d'un utilisateur
@@ -126,8 +141,6 @@ mb_internal_encoding("UTF-8");
 $config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
 $config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
 
-/******** Paramètrage des cartes vignettes des fiches de points **********/
-$config['chemin_openlayers']='/ol2.12.4/'; 
 
 // Notez que pour l'instant, suite à une histoire de layers déclaré ou pas dans openlayers, ce paramètre ne sera pas pris en compte partout
 // sauf si il vaut maps.refuges.info ou OpenCycleMap
