@@ -14,22 +14,22 @@
 // 03/02/13 Dominique : Ajout du valideur validome.org
 ?>
 		<div id="basdepage">
-			<a id="lien-mobile" href="mobile" title="Passer sur l'application mobile">
+			<a id="lien-mobile" href="<?=$config[sous_dossier_installation]?>mobile" title="Passer sur l'application mobile">
 				Version mobile
 			</a>
 			<a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">
-				<img src="images/copyleft.png" alt="Copyleft" />
+				<img src="<?=$config[sous_dossier_installation]?>images/copyleft.png" alt="Copyleft" />
 				Licence des contenus
 			</a>
 			<?php if ($config['debug']) { ?>
 			<a href="http://validator.w3.org/check?uri=referer">
-				<img src="images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
+				<img src="<?=$config[sous_dossier_installation]?>images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
 			</a>
 			<a href="http://jigsaw.w3.org/css-validator/check/referer">
-				<img src="images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1" />
+				<img src="<?=$config[sous_dossier_installation]?>images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1" />
 			</a>
 			<a href="http://www.validome.org/referer">
-				<img src="images/valide/xhtml_1_0.gif" alt="Valid XHTML 1.0" />
+				<img src="<?=$config[sous_dossier_installation]?>images/valide/xhtml_1_0.gif" alt="Valid XHTML 1.0" />
 			</a>
 			<?php } ?>
 		</div>

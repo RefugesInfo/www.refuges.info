@@ -500,7 +500,7 @@ if ($_SESSION['niveau_moderation']>=1)
     
 
 $vue->titre = $page_title;
-$vue->css [] = '/forum/style-forum.css';
+$vue->css [] = 'style-forum.css';
 $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
 
 require_once ($config['chemin_vues']."_entete.html");
