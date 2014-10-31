@@ -51,7 +51,7 @@ window.onload = function () {
             displayInLayerSwitcher: false
         }),
         new OpenLayers.Layer.GMLSLD         ('WRI', {    
-            urlGML: '<?=$config[sous_dossier_installation]?>exportations/exportations.php?format=gml',
+            urlGML: '<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gml',
             projection: 'EPSG:4326',
             urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
             styleName: 'Points',

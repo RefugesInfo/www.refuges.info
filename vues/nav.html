@@ -36,7 +36,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 
 <?php if ( $vue->type_affichage == '' ){?>
     <div style="float: left; width: 200px;">
-        <form id="choix_legende" action="<?=$config[sous_dossier_installation]?>formulaire_exportations/" >
+        <form id="choix_legende" action="<?=$config['sous_dossier_installation']?>formulaire_exportations/" >
             <?if (isset ($vue->polygone->nom_polygone)) {?>
                 <fieldset>
                     <label>
@@ -113,7 +113,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
             <?if ($vue->polygone->id_polygone) {?>
                 <fieldset>
                     <legend>Edition</legend>
-                    <form method="post" action="<?=$config[sous_dossier_installation]?>?mode_affichage=edit" >
+                    <form method="post" action="<?=$config['sous_dossier_installation']?>?mode_affichage=edit" >
                         <label>
                             <input type="submit" name="modifier" value="Modifier les contours" />
                         </label>
@@ -144,7 +144,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
                 <?}else{?>
                     <fieldset>
                         <legend>Créer un massif</legend>
-                            <form method="post" action="<?=$config[sous_dossier_installation]?>?mode_affichage=edit" >
+                            <form method="post" action="<?=$config['sous_dossier_installation']?>?mode_affichage=edit" >
                                 Article: <input type="text" name="article_partitif" value="du" /><br>
                                 Nom du massif: <input type="text" name="nom_polygone" value=""><br>
                                 <input type="submit" name="creer" value="Créer">

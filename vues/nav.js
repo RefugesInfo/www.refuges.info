@@ -137,7 +137,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
         case 'zone':?>
             map.addLayers ([
                 layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {    
-                    urlGML: '<?=$config[sous_dossier_installation]?>exportations/massifs-gml.php',
+                    urlGML: '<?=$config['sous_dossier_installation']?>exportations/massifs-gml.php',
                     projection: 'EPSG:4326', // Le GML est fourni en degminsec
                     urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
                     styleName: 'Massifs'
@@ -148,7 +148,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
         case 'edit':?>
             map.addLayers ([
                 layerMassifs = new OpenLayers.Layer.GMLSLD ('Massifs', {    
-                    urlGML: '<?=$config[sous_dossier_installation]?>exportations/massifs-gml.php',
+                    urlGML: '<?=$config['sous_dossier_installation']?>exportations/massifs-gml.php',
                     projection: 'EPSG:4326', // Le GML est fourni en degminsec
                     urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
                     styleName: 'Massif'
@@ -171,7 +171,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
         default:?>
             map.addLayers ([
                 layerMassifs = new OpenLayers.Layer.GMLSLD ('Massif', {    
-                    urlGML: '<?=$config[sous_dossier_installation]?>exportations/massifs-gml.php' + arg_massifs,
+                    urlGML: '<?=$config['sous_dossier_installation']?>exportations/massifs-gml.php' + arg_massifs,
                     projection: 'EPSG:4326', // Le GML est fourni en degminsec
                     urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
                     styleName: 'Massif',
@@ -199,7 +199,7 @@ lc =        new OpenLayers.Control.LayerSwitcherConditional ({ // Un premier dan
                     visibility: false
                 }),
                 layerPoints = new OpenLayers.Layer.GMLSLD ('Refuges.info', {    
-                    urlGML: '<?=$config[sous_dossier_installation]?>exportations/exportations.php?format=gml&liste_id_point_type=<?=$vue->liste_id_point_type?>' + arg_points + limite,
+                    urlGML: '<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gml&liste_id_point_type=<?=$vue->liste_id_point_type?>' + arg_points + limite,
                     projection: 'EPSG:4326', // Le GML est fourni en degminsec
                     urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
                     styleName: 'Points'
