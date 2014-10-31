@@ -23,7 +23,6 @@ require_once ("bdd.php");
 require_once ("nouvelle.php");
 require_once ("mise_en_forme_texte.php");
 
-
 $listetypes = $_GET["listeobjets"] ;
 $listetypes = str_replace( "-", ",", $listetypes ) ;
 
@@ -35,8 +34,6 @@ $nbjours = $_GET["jours"] ;
 $datedeb = time() - $nbjours*24*60*60 ; // le RSS commencera il y a X jours
 $pointurl = "http://".$config['nom_hote']."/point/" ; // il ne reste plus que l'ID a concatener
 $longdesc = 500 ; // longueur en char du champ description. apres c'est "(...)"
-
-
 
 //---------------------
 // fonction qui prend un item en tablo et renvoie le XML

@@ -45,6 +45,8 @@ $config['lien_forum']=$config['sous_dossier_installation']."forum/";
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['chemin_openlayers']=$config['racine_projet']."ol2.12.4/";
 $config['url_chemin_openlayers']=$config['sous_dossier_installation']."ol2.12.4/";
+$config['chemin_leaflet']=$config['racine_projet'].'/Leaflet/';
+$config['url_chemin_leaflet']=$config['sous_dossier_installation'].'/Leaflet/';
 
 // Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
 // afin de pouvoir faire des require_once('modele.php');

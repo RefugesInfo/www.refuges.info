@@ -99,7 +99,7 @@ if ($polygones)
     $cv = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 2 * M_PI / 3)), -2);
     $cb = substr (dechex ($a + $b * cos (M_PI * $no_coul / $nb_coul + 4 * M_PI / 3)), -2);
     $no_coul += $pas;
-    
+
     if ($polygone->geometrie_gml) // On n'envoie pas les polygones vides
     {
         $polygone_export = new stdClass;

@@ -23,26 +23,24 @@
 	</dd>
 	</dl>
 	<?}?>
-	
 <!--============================================ CARTE ============================================-->
 		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
 		if ($vue->mini_carte) {?>
 			<div style="float: right;">
-				<div id="vignette"></div>
-					<p id="agrandir_vignette">
-						<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
-							Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
-						</a>
-						<span id="p21781"></span>
-					</p>
-					<p>
-						<a href="<?=$config['sous_dossier_installation']?>nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
-							Aller sur le présentoir à cartes
-						</a>
-					</p>
+			<div id="vignette"></div>
+				<p id="agrandir_vignette">
+					<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
+						Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
+					</a>
+					<span id="p21781"></span>
+				</p>
+				<p>
+					<a href="<?=$config['sous_dossier_installation']?>nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+						Aller sur le présentoir à cartes
+					</a>
+				</p>
 			</div>
 		<?}?>
-		
 <!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
 		<?// Signaler les fiches censurées
 		if ($vue->point->censure) {?>
@@ -58,7 +56,6 @@
 				[Modifier cette fiche]
 			</a>
 		<?}?>
-		
 <!--======================================== DESCRIPTIONS =========================================-->
 		<dl style="margin: 2px;">
 <!--========================================== FICHE DE ===========================================-->
@@ -87,7 +84,6 @@
 					<?=($vue->point->places)?>
 				</dd>
 			<?}?>
-			
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
 			<dt/>
 			<dt class="condense">Sur le site depuis:</dt>
@@ -113,7 +109,6 @@
 				<?}
 			}
 			?>
-			
 <!--========================================= COORDONNÉES =========================================-->
 			<dt>Coordonnées:</dt>
             <dd>
@@ -138,7 +133,6 @@
 					<select id="select-projection">
 						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
 					</select>
-					
 					(
 						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
 					,
@@ -149,27 +143,26 @@
 				<?}?>
 			</dd>
 <!--======================================== LOCALISATION =========================================-->
-                        <?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
-			<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
-			<dd class="condense">
-                            <?php foreach ($polygones as $key => $polygone) { ?>
-                                <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
-                                  <?php if ($polygone->site_web) { ?>
-                                    <a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
-                                 <?php } else { ?>
-                                    <?=$polygone->nom_polygone?>
-                                 <?php } ?>
-                                    <?php if ($polygone->avec_lien_carte) { ?>
-                                    
-                                    <sup>
-                                        <a href="<?=$polygone->lien_polygone?>">carte</a>
-                                    </sup>
-                                   <?php } ?>
-                                <?=$virgule?>
-                            <?php } ?>
-                        
-                        <dt />
-                        </dd>
+			<?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
+				<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
+					<dd class="condense">
+						<?php foreach ($polygones as $key => $polygone) { ?>
+							<?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
+							  <?php if ($polygone->site_web) { ?>
+								<a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
+							 <?php } else { ?>
+								<?=$polygone->nom_polygone?>
+							 <?php } ?>
+								<?php if ($polygone->avec_lien_carte) { ?>
+								
+								<sup>
+									<a href="<?=$polygone->lien_polygone?>">carte</a>
+								</sup>
+							   <?php } ?>
+							<?=$virgule?>
+						<?php } ?>
+					<dt />
+				</dd>
 			<?php } ?>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
 			<?// Champs textes libres
@@ -177,7 +170,6 @@
 				<dt><?=$vue->point->equivalent_proprio?>:</dt>
 				<dd><?=$vue->proprio?></dd>
 			<?}?>
-			
 <!--============================================ ACCÈS ============================================-->
 			<dt style="clear: left;">Accès:</dt>
 			<dd><?=$vue->acces?></dd>
@@ -196,7 +188,6 @@
 			<?php
 			}
 			}?>
-			
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
 			<?if (count($vue->points_proches)) {?>
 				<dt>Points à proximité (distance à vol d'oiseau):</dt><?
@@ -208,7 +199,6 @@
 						</dd>
 				<?}
 			}?>
-			
 <!--================================= Si message d'information à afficher =======================================-->
 			<?php if (isset($vue->polygone_avec_information)) {?>
                           <dt>Réglementation particulière :</dt>
@@ -227,7 +217,6 @@
                               <?php } ?>
                           </dd>
 			<?php } ?>
-			
 <!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
 			<!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
 			<?if (count ($vue->commentaires_avec_photo)) {?>
@@ -245,7 +234,6 @@
 					<?php } ?>
 				</dd>
 			<?}?>
-			
 <!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
 			<dd class="lien_ajout_commentaire">
 				<a href="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">

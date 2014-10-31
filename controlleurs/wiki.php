@@ -5,6 +5,7 @@ contenu non dynamiquement généré
 
 Finalement on passe à un quasi-vrai wiki avec historique (approximatif) que pour modérateurs
 *****************************************************/
+
 require_once ("wiki.php");
 require_once ("mise_en_forme_texte.php");
 
