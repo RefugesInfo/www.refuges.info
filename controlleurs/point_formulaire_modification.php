@@ -268,7 +268,7 @@ if ( !empty($point->equivalent_places_matelas) )
 // Préparation de la $vue commune à chaque cas
 
 //$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
-$vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
+$vue->java_lib [] = $config['url_chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");
 $vue->lien_aide_points = lien_wiki("autres_points");

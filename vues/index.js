@@ -37,7 +37,7 @@ window.onload = function () {
     // Ajoute les couches vectorielles avec controle
     map.addLayers ([
         new OpenLayers.Layer.GMLSLD ('Massifs', {    
-            urlGML: '/exportations/massifs-gml.php',
+            urlGML: 'exportations/massifs-gml.php',
             projection: 'EPSG:4326', // Le GML est fourni en degminsec
             urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
             styleName: 'Massifs'

@@ -36,7 +36,7 @@
 						<span id="p21781"></span>
 					</p>
 					<p>
-						<a href="/nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+						<a href="nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
 							Aller sur le présentoir à cartes
 						</a>
 					</p>
@@ -54,7 +54,7 @@
 		<?}?>
 		<?// Si les droits sont suffisants, lien de modification
 		if ($vue->lien_modification) {?>
-			<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
+			<a class="groupir" style="font-size: smaller ;" href="point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
 				[Modifier cette fiche]
 			</a>
 		<?}?>
@@ -140,9 +140,9 @@
 					</select>
 					
 					(
-						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
+						<a href="exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
 					,
-						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
+						<a href="exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
 					,
 						<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
 					)
@@ -248,7 +248,7 @@
 			
 <!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
 			<dd class="lien_ajout_commentaire">
-				<a href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
+				<a href="point_ajout_commentaire/<?=$vue->point->id_point?>">
 					Ajouter un commentaire, une photo, une demande de correction
 				</a>
 			</dd>
@@ -334,7 +334,7 @@
 
 <!--================== FIN DE LA PAGE DES POINTS - COMMENTAIRES DIVERS ET VARIÉS ===================-->
 	<p>
-		<a class="lien_ajout_commentaire" href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
+		<a class="lien_ajout_commentaire" href="point_ajout_commentaire/<?=$vue->point->id_point?>">
 			Ajouter un commentaire, une photo, une demande de correction
 		</a>
 	</p>

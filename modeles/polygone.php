@@ -195,7 +195,7 @@ function lien_polygone($polygone,$local=True)
   else
     $url_complete="http://".$config['nom_hote'];
  
-return "$url_complete/nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/";
+return "$url_complete{$config['sous_dossier_installation']}nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/";
 }
 
 /********************************************

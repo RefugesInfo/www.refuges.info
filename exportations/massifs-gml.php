@@ -110,7 +110,8 @@ if ($polygones)
         $polygone_export->proprietes['color']="#$cb$cv$cr";
         $polygone_export->proprietes['url']=lien_polygone($polygone,False);
         $polygone_export->geometrie_gml=$polygone->geometrie_gml;
-      
+        $polygone_export->geometrie_geojson = '['.str_replace(' ','],[',strip_tags($polygone->geometrie_gml).']');
+
         $vue->features[]=$polygone_export;
     }
   }
@@ -118,9 +119,8 @@ if ($polygones)
 $vue->content_type="UTF-8";
 $vue->nom_fichier_export="polygones";
 $vue->description="Limites de massifs montagneux provenants du site ".$config['nom_hote'];
+
 // On affiche le tout
-$vue->type = 'exportations/export_gml';
-
+$vue->type = 'exportations/export_'.($_GET['format'] ? $_GET['format'] : 'gml');
 include ($config['chemin_vues']."$vue->type.php");
-
 ?>

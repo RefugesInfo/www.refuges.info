@@ -234,7 +234,7 @@ FORM.wri SPAN , FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum 
   float: left;
   }
 FORM LABEL[title]:after, FORM LEGEND[title]:after {  /* combine pour exclure OL , leurs LABEL ne sont pas dans des FORM */
-  content: url(/images/tooltip.png);
+  content: url(../images/tooltip.png);
   }
 FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
   float: left;
