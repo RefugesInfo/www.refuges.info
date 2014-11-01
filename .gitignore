@@ -1,6 +1,6 @@
 # Lorsque la ligne commence par "/" cela permet de cibler un fichier bien particulier de wri
 # Lorsque la ligne ne commence pas par un "/" tous les fichiers de wri portant ce nom seront ignorés
-/photos_points
+/photos_points/*
 /forum/photos-points
 /includes/config_privee.php
 /.htaccess
