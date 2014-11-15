@@ -4,7 +4,6 @@ Permettre à n'importe qui d'indiquer qu'un commentaire à pas, peu, un peu, ou 
 J'avais imaginé un système sophistiqué de scoring mais en fait c'est très peu utilisé, là ou
 c'est utile, c'est que si un internaute trouve un commentaire inutile ça l'indique à un modérateur
 **********************************************************************************************/
-
 require_once ("wiki.php");
 require_once ("bdd.php");
 require_once ("commentaire.php");

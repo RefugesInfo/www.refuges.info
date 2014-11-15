@@ -6,6 +6,7 @@ Le code javascript est dans /vues/*.js
 Les variables sont passées dans l'objet $vue->...
 */
 
+
 require_once ("nouvelle.php");
 require_once ("commentaire.php");
 require_once ("wiki.php");

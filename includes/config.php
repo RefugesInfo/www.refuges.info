@@ -45,8 +45,8 @@ $config['lien_forum']=$config['sous_dossier_installation']."forum/";
 /******** Paramètrage des cartes vignettes des fiches de points **********/
 $config['chemin_openlayers']=$config['racine_projet']."ol2.12.4/";
 $config['url_chemin_openlayers']=$config['sous_dossier_installation']."ol2.12.4/";
-$config['chemin_leaflet']=$config['racine_projet'].'/Leaflet/';
-$config['url_chemin_leaflet']=$config['sous_dossier_installation'].'/Leaflet/';
+$config['chemin_leaflet']=$config['racine_projet'].'leaflet/';
+$config['url_chemin_leaflet']=$config['sous_dossier_installation'].'leaflet/';
 
 // Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
 // afin de pouvoir faire des require_once('modele.php');
@@ -145,7 +145,7 @@ setlocale(LC_TIME, "fr_FR.UTF-8");
 mb_internal_encoding("UTF-8");
 
 /******** Clés des contrats des cartes **********/
-$config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
+$config['ign_key']='w7b9fddebwo1jrxq8gpf8rtc'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
 $config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
 
 

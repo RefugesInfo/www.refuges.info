@@ -7,6 +7,7 @@ Les resultats de la recherche. Ce fichier recupere les criteres en POST du formu
 require_once ("point.php");
 require_once ("polygone.php");
 
+
 /************ Préparation des conditions de la recherche *******************/
 // tous ceux dont le name du formulaire correspondent à la condition sur le champs en base du même nom
 $conditions = new stdClass;

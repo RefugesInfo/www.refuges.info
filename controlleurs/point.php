@@ -100,7 +100,8 @@ else // le point est valide. faut bosser.
             
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
-        $vue->java_lib [] = $config['url_chemin_openlayers'].'OpenLayers.js?'.filemtime($config['chemin_openlayers'].'OpenLayers.js');
+		$vue->java_lib [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+		$vue->css      [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
         $vue->vignette = param_cartes ($point);
     }
     

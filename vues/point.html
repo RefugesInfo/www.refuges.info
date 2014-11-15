@@ -7,11 +7,6 @@
 // $config les données communes à tout WRI
 
 // Inclue des différents blocs spécialisés
-// 17/10/11 Dominique : Création
-// Fusion par sly de tous les éléments du point sauf commentaires
-// 23/10/11 Dominique : Ajout de la partie commentaire, tant qu'on y est
-// 15/05/12 Dominique : Retour en templates simples
-// 26/06/12  Dominique : Introduction des traductions de coordonnées
 ?>
 <div class="contenu">
 	<div class="fiche_cadre">
@@ -27,7 +22,7 @@
 		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
 		if ($vue->mini_carte) {?>
 			<div style="float: right;">
-			<div id="vignette"></div>
+				<div id="vignette"></div>
 				<p id="agrandir_vignette">
 					<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
 						Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
@@ -56,6 +51,7 @@
 				[Modifier cette fiche]
 			</a>
 		<?}?>
+
 <!--======================================== DESCRIPTIONS =========================================-->
 		<dl style="margin: 2px;">
 <!--========================================== FICHE DE ===========================================-->
@@ -127,12 +123,10 @@
 					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 					<span id="coordonnees-value">
-						<span id="titre-lon">Longitude</span>: <em id="lon"></em>
-						<span id="titre-lat">Latitude</span>: <em id="lat"></em>
+						<span id="titre-lng">Longitude</span>: <em id="aff-lng"><?=$vue->point->longitude?></em>
+						<span id="titre-lat">Latitude</span>: <em id="aff-lat"><?=$vue->point->latitude?></em>
 					</span>
-					<select id="select-projection">
-						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
-					</select>
+					<select id="select-projection"></select>
 					(
 						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
 					,
@@ -234,6 +228,7 @@
 					<?php } ?>
 				</dd>
 			<?}?>
+
 <!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
 			<dd class="lien_ajout_commentaire">
 				<a href="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
