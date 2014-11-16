@@ -268,8 +268,12 @@ IMG { /* images sans bordures */
   border: 0px;
   margin: 0px;
   padding: 0px;
+  max-width: 100%;
   }
 
+TEXTAREA {
+  max-width: 100%;
+}
 /*=========LIENS==========*/
 A:hover { /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;
@@ -605,6 +609,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     width:  450px; 
     height: 500px; 
     float: right;
+    max-width: 100%;
   }
   /*Externalise le sélecteur de couche de la carte nav*/
   #carte_nav .baseLbl, #carte_nav .dataLbl , #carte_nav .dataLayersDiv,

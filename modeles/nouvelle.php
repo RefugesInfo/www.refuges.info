@@ -171,7 +171,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                 if (count($commentaires_forum)>0)
                     foreach ( $commentaires_forum as $commentaire_forum)
                     {
-                        $lien="/forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+                        $lien=$config['sous_dossier_installation']."forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
                         $categorie="Sur le forum";
                         $titre=$commentaire_forum->topic_title;
                         $texte="$categorie : <a href=\"$lien\">$titre</a>"; // FIXME mieux vaudrait revoir le format du tableau sans HTML
