@@ -569,6 +569,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     float: left; 
     margin: 1px; 
     position: relative; 
+    max-width: 99.8%;
   }
   .text_sur_image {
     position:relative;
