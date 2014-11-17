@@ -5,9 +5,10 @@
 // $config les données communes à tout WRI
 ?>
 
-var map,
-	curseur,
-	baseLayers = {
+var map, curseur;
+
+window.addEventListener('load', function() {
+	var baseLayers = {
 		'Bing photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
 		'Maps.Refuges.Info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="http://maps.refuges.info">Refuges.Info</a>'
@@ -20,7 +21,6 @@ var map,
 		})
 	};
 
-window.addEventListener('load', function() {
 	map = new L.Map('carte-edit', {
 		fullscreenControl: true,
 		scaleControl: true,

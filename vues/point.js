@@ -5,7 +5,10 @@
 // $config les données communes à tout WRI
 ?>
 
-var baseLayers = {
+var map, layerSwitcher;
+
+window.addEventListener('load', function() {
+	var baseLayers = {
 		'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="http://maps.refuges.info">Refuges.Info</a>'
 		}),
@@ -22,11 +25,7 @@ var baseLayers = {
 		'Espagne': new L.TileLayer.WMS.IDEE(),
 		'Italie': new L.TileLayer.WMS.IGM(),
 		'Photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
-	},
-	map,
-	layerSwitcher;
-
-window.addEventListener('load', function() {
+	};
 	map = new L.Map.MultiCRS('vignette', {
 		fullscreenControl: true,
 		scaleControl: true,

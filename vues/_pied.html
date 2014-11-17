@@ -33,5 +33,9 @@
 			</a>
 			<?php } ?>
 		</div>
+		<?if (count ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la poge, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
+			foreach ($vue->java_lib_foot as $js_lib) {?>
+				<script type="text/javascript" src="<?=$js_lib?>"></script>
+		<?	}?>
 	</body>
 </html>

@@ -268,7 +268,6 @@ IMG { /* images sans bordures */
   border: 0px;
   margin: 0px;
   padding: 0px;
-  max-width: 100%;
   }
 
 TEXTAREA {

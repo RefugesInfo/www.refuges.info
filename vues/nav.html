@@ -35,7 +35,7 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 
 <?php if ( $vue->type_affichage == '' ){?>
-    <div style="float: left; width: 200px;">
+    <div class="choix_legende">
         <form id="choix_legende" action="<?=$config['sous_dossier_installation']?>formulaire_exportations/" >
             <?if (isset ($vue->polygone->nom_polygone)) {?>
                 <fieldset>
