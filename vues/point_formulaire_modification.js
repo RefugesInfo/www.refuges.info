@@ -10,15 +10,15 @@ var map, curseur;
 window.addEventListener('load', function() {
 	var baseLayers = {
 		'Bing photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
-		'Maps.Refuges.Info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://maps.refuges.info">Refuges.Info</a>'
-		}),
-		'OpenCycleMap': L.tileLayer('http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://www.openstreetmap.org">OpenCycleMap</a>'
-		}),
-		'OSM': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-		})
+		'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
+                }),
+                'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
+                }),
+                'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
+                }),
 	};
 
 	map = new L.Map('carte-edit', {
