@@ -582,6 +582,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /*                              CARTES                              */
 /*==================================================================*/
 
+  .choix_legende {
+    float: left;
+    width: 200px;
+  }
   .carte /* utilisé par TOUTES les images cartes */
    {
     background-image: url(../images/sablier.png);
