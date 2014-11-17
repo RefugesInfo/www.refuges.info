@@ -84,8 +84,48 @@
             <h1>Export d'une liste de points</h1>
             
             <h2 id="/api/bbox">Sélection de la zone via une bbox</h2>
+
             <p>
-                En cours de développement
+                La requête <a href="#/api/bbox"><span class="methode">GET</span><span class="url">/api/bbox</span></a> permet de retourner une liste de points au sein d'une bbox. Il est ici impossible d'exporter les commentaires ou les messages du forum. Les paramètres sont définis dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
+                <table>
+                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr>
+                        <td>bbox</td>
+                        <td><span class="req">Requis</span> Les dimensions de la bbox à exporter : min lat, min long, max lat, max long. Il est possible de sélectionner la planète entière via la valeur <span class="url">world</span>.</td>
+                        <td>Aucune</td>
+                        <td><span class="url">-13.00,44.05,17.00,49.79</span>, <span class="url">world</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>format</td>
+                        <td><span class="opt">Optionnel</span> Le format de l'export.</td>
+                        <td><span class="url">geojson</span></td>
+                        <td><span class="url">geojson</span>, <span class="url">kmz</span>, <span class="url">kml</span>, <span class="url">gml</span>, <span class="url">gpx</span>, <span class="url">gpi</span>, <span class="url">csv</span></td>
+                    </tr>
+                    <tr>
+                        <td>format_texte</td>
+                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
+                        <td><span class="url">bbcode</span></td>
+                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
+                    </tr>
+                    <tr>
+                        <td>nb_points</td>
+                        <td><span class="opt">Optionnel</span> Nombre de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, sommets, cols...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).</td>
+                        <td><span class="url">121</span></td>
+                        <td><span class="url">1500</span>,<span class="url">all</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>detail</td>
+                        <td><span class="opt">Optionnel</span> Les détails du point, par défaut uniquement long, lat, altitude, nom, type, id.</td>
+                        <td><span class="url">simple</span></td>
+                        <td><span class="url">simple</span>, <span class="url">complet</span></td>
+                    </tr>
+                    <tr>
+                        <td>type_points</td>
+                        <td><span class="opt">Optionnel</span> Les types de point à exporter, parmis la liste suivante : <span class="url">cabane</span>, <span class="url">refuge</span>, <span class="url">gite</span>, <span class="url">pt_eau</span>, <span class="url">sommet</span>, <span class="url">pt_passage</span>, <span class="url">bivouac</span> et <span class="url">lac</span>. La valeur <span class="url">all</span> sélectionne tous les types.</td>
+                        <td><span class="url">all</span></td>
+                        <td><span class="url">all</span>, <span class="url">cabane,refuge,gite</span>...</td>
+                    </tr>
+                </table>
             </p>
             
             <h2 id="/api/massif">Sélection de la zone via des massifs</h2>
@@ -141,7 +181,7 @@
 -->                </table>
             </p>
             <p>
-                Notons que lorsque les variables bolléennes, sont à 1 pour VRAI et 0 pour FAUX (par exemple pour les informations complémentaires). Lorsqu'une variable est non définie (NULL),
+                Notons que lorsque les variables booléennes, sont à 1 pour VRAI et 0 pour FAUX (par exemple pour les informations complémentaires). Lorsqu'une variable est non définie (NULL),
                 c'est tout simplement que nous le champ n'a pas de valeur car il n'a pas lieu d'être (couvertures pour un sommet par exemple) ou que la valeur est inconnue.
             </p>
             <p>
