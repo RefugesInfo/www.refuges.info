@@ -144,11 +144,6 @@ $config['nom_fichier_export']="refuge-info";
 setlocale(LC_TIME, "fr_FR.UTF-8");
 mb_internal_encoding("UTF-8");
 
-/******** Clés des contrats des cartes **********/
-$config['ign_key']='w7b9fddebwo1jrxq8gpf8rtc'; // ID contrat 0004365 / Expire le 31/08/2013 / http://professionnels.ign.fr/user/393960/orders
-$config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
-
-
 // Notez que pour l'instant, suite à une histoire de layers déclaré ou pas dans openlayers, ce paramètre ne sera pas pris en compte partout
 // sauf si il vaut maps.refuges.info ou OpenCycleMap
 $config['carte_base'] = 'maps.refuges.info';
