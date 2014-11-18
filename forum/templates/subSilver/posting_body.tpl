@@ -387,7 +387,7 @@ function storeCaret(textEl) {
 		  </tr>
 		  <tr> 
 			<td colspan="9"> <span class="gensmall"> 
-			  <input type="text" name="helpbox" size="45" maxlength="100" style="width:450px; font-size:10px" class="helpline" value="{L_STYLES_TIP}" />
+			  <input type="text" name="helpbox" size="45" maxlength="100" style="width:450px; font-size:13px" class="helpline" value="{L_STYLES_TIP}" />
 			  </span></td>
 		  </tr>
 		  <tr> 
