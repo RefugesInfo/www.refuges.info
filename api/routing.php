@@ -23,6 +23,9 @@ switch ($cible) {
     case 'point':
         include('controlleur/point.php');
         break;
+    case 'bbox':
+        include('controlleur/bbox.php');
+        break;
     default:
         header('Location:doc/');
         //echo $cible;
