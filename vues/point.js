@@ -28,7 +28,6 @@ window.addEventListener('load', function() {
 	};
 	map = new L.Map.MultiCRS('vignette', {
 		fullscreenControl: true,
-		scaleControl: true,
 		center: new L.LatLng(<?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
 		zoom: 13,
 		layers: [
@@ -58,6 +57,7 @@ window.addEventListener('load', function() {
 	});
 
 	layerSwitcher = L.control.layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+	map.addControl(new L.Control.Scale());
 });
 
 // Actions de la page

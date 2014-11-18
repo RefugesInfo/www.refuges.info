@@ -23,7 +23,6 @@ window.addEventListener('load', function() {
 
 	map = new L.Map('carte-edit', {
 		fullscreenControl: true,
-		scaleControl: true,
 		center: new L.LatLng( <?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
 		zoom: 13,
 		layers: [
@@ -58,4 +57,5 @@ window.addEventListener('load', function() {
 
 	map.addControl(new L.Control.Layers(baseLayers)); // Le controle de changement de couche de carte avec la liste des cartes dispo
 	map.addControl(new L.Control.Gps());
+	map.addControl(new L.Control.Scale());
 });
