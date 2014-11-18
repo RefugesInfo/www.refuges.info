@@ -131,7 +131,7 @@ a.postlink:hover { text-decoration: underline; color : #DD6900}
 
 /* Quote & Code blocks */
 .code {
-	font-family: Courier, 'Courier New', sans-serif; font-size: 11px; color: #006600;
+	font-family: Courier, 'Courier New', sans-serif; font-size: 14px; color: #006600;
 	background-color: #FAFAFA; border: #D1D7DC; border-style: solid;
 	border-left-width: 1px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px
 }
@@ -150,7 +150,7 @@ a.copyright:hover { color: #000000; text-decoration: underline;}
 /* Form elements */
 input,textarea, select {
 	color : #000000;
-	font: normal 11px Verdana, Arial, Helvetica, sans-serif;
+	font: normal 14px Verdana, Arial, Helvetica, sans-serif;
 	border-color : #000000;
 }
 
