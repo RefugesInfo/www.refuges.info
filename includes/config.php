@@ -120,7 +120,7 @@ $config['nom_fichier_export']="refuge-info";
 
 /******** Paramètres de l'API **********/
 $config['autoriser_CORS']=TRUE; // Autoriser les requêtes AJAX sur notre API
-
+$config['copyright_API']="The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0";
 
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");

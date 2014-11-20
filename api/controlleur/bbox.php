@@ -151,20 +151,23 @@ foreach ($pts_bruts as $pt) {
     }
     $i++;
 }
+$nbpts = $i;
+unset($pts_bruts, $i);
 
 /****************************** FORMATAGE DU TEXTE ******************************/
 
+
 // On transforme le texte dans la correcte syntaxe
 if($req->format_txt == "texte") {
-    array_walk_recursive($point, 'updatebbcode2txt');
+    array_walk_recursive($pts, 'updatebbcode2txt');
 }
 elseif($req->format_txt == "html") {
-    array_walk_recursive($point, 'updatebbcode2html');
+    array_walk_recursive($pts, 'updatebbcode2html');
 }
 elseif($req->format_txt == "markdown") {
-    array_walk_recursive($point, 'updatebbcode2markdown');
+    array_walk_recursive($pts, 'updatebbcode2markdown');
 }
-array_walk_recursive($point, 'updatebool2char'); // Remplace les False et True en 0 ou 1
+array_walk_recursive($pts, 'updatebool2char'); // Remplace les False et True en 0 ou 1
 
 /****************************** FORMAT VUE ******************************/
 
