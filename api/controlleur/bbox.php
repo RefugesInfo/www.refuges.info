@@ -173,7 +173,7 @@ array_walk_recursive($pts, 'updatebool2char'); // Remplace les False et True en 
 
 switch ($req->format) {
     case 'geojson':
-        include('./vue/liste.geojson');
+        include('./vue/liste.json');
         break;
     case 'kmz':
         include('./vue/liste.kmz');
