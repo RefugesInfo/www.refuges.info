@@ -68,13 +68,10 @@ unset($type_pt);
 $params = new stdClass();
 
 if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à postgis
-    $temp = explode(",", $req->bbox);
-    $params->sud=$temp [2];
-    $params->nord=$temp [3];
-    $params->ouest=$temp [0];
-    $params->est=$temp [1];
+    list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
+    $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
 }
-unset($temp);
+unset($ouest,$sud,$est,$nord);
 $params->pas_les_points_caches=1;
 $params->ordre="point_type.importance DESC";
 if($req->nb_pts != "all") {
@@ -84,10 +81,9 @@ if($req->type_pts != "all") {
     $params->ids_types_point = str_replace($val->type_pts, $val->type_pts_id, $req->type_pts);
 }
 
-print_r($params);
+$pts_bruts = infos_points($params);
 
-echo "<br>\r\n\r\n\r\n\r\n\r\n<br>";
 
-print_r(infos_points($params));
+print_r($pts_bruts);
 
 ?>
