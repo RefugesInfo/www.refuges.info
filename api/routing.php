@@ -21,7 +21,7 @@ $cible = str_replace('?','',$cible); // On enlève le ? (implique pas de ? dans 
 
 switch ($cible) {
     case 'bbox': case 'point':
-        include('controlleur/bbox.php');
+        include($config['chemin_controlleurs'].'api.points.ctl.php');
         break;
     default:
         header('Location:doc/');

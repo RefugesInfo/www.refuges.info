@@ -340,31 +340,31 @@ unset($pts_bruts, $i);
 
 switch ($req->format) {
     case 'geojson':
-        include('./vue/liste.json');
+        include('../vues/api/points.vue.json');
         break;
-    case 'kmz':
-        include('./vue/liste.kmz');
-        break;
+    // case 'kmz':
+    //     include('../vues/api/points.vue.kmz');
+    //     break;
     case 'kml':
-        include('./vue/liste.kml');
+        include('../vues/api/points.vue.kml');
         break;
-    case 'gml':
-        include('./vue/liste.gml');
-        break;
-    case 'gpx':
-        include('./vue/liste.gpx');
-        break;
-    case 'gpi':
-        include('./vue/liste.gpi');
-        break;
-    case 'csv':
-        include('./vue/liste.csv');
-        break;
+    // case 'gml':
+    //     include('../vues/api/points.vue.gml');
+    //     break;
+    // case 'gpx':
+    //     include('../vues/api/points.vue.gpx');
+    //     break;
+    // case 'gpi':
+    //     include('../vues/api/points.vue.gpi');
+    //     break;
+    // case 'csv':
+    //     include('../vues/api/points.vue.csv');
+    //     break;
     case 'xml':
-        include('./vue/liste.xml');
+        include('../vues/api/points.vue.xml');
         break;
     default:
-        include('./vue/liste.json');
+        include('../vues/api/points.vue.json');
         break;
 }
 
