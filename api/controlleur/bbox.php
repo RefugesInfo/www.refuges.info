@@ -20,65 +20,158 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
+$req->page = $cible;
 $req->bbox = $_GET['bbox'];
+$req->id = $_GET['id'];
 $req->format = $_GET['format'];
-$req->format_txt = $_GET['format_texte'];
-$req->nb_pts = $_GET['nb_points'];
+$req->format_texte = $_GET['format_texte'];
+$req->nb_points = $_GET['nb_points'];
 $req->detail = $_GET['detail'];
-$req->type_pts = $_GET['type_points'];
+$req->nb_coms = $_GET['nb_coms'];
+$req->nb_points_proches = $_GET['nb_points_proches'];
+$req->type_points = $_GET['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "gpi", "csv");
-$val->format_txt = array("bbcode", "texte", "markdown", "html");
+$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "gpi", "csv", "xml"/*, "yaml"*/);
+$val->format_texte = array("bbcode", "texte", "markdown", "html");
 $val->detail = array("simple", "complet");
-$val->type_pts = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac");
-$val->type_pts_id = array(7, 10, 9, 23, 6, 3, 19, 16);
+$val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac");
+$val->type_points_id = array(7, 10, 9, 23, 6, 3, 19, 16);
+
+/****************************** VALEURS PAR DÉFAUT - PARAMS FACULTATIFS ******************************/
+
 
 // On teste chaque champ pour voir si la valeur est correcte, sinon valeur par défaut
-if(!in_array($req->format,$val->format)) { $req->format = "geojson"; }
-if(!in_array($req->format_txt,$val->format_txt)) { $req->format_txt = "bbcode"; }
-if(!in_array($req->detail,$val->detail)) { $req->detail = "simple"; }
-if(!is_numeric($req->nb_pts) && $req->nb_pts!="all") { $req->nb_pts = 121; }
+if(!in_array($req->format,$val->format)) {
+    switch ($req->page) {
+        case 'bbox':
+            $req->format = "geojson";
+            break;
+        case 'point':
+            $req->format = "geojson";
+            break;
+        default:
+            $req->format = "geojson";
+            break;
+    }
+}
+if(!in_array($req->format_texte,$val->format_texte)) {
+    switch ($req->page) {
+        case 'bbox':
+            $req->format_texte = "bbcode";
+            break;
+        case 'point':
+            $req->format_texte = "bbcode";
+            break;
+        default:
+            $req->format_texte = "texte";
+            break;
+    }
+}
+if(!in_array($req->detail,$val->detail)) {
+    switch ($req->page) {
+        case 'bbox':
+            $req->detail = "simple";
+            break;
+        case 'point':
+            $req->detail = "complet";
+            break;
+        default:
+            $req->detail = "simple";
+            break;
+    }
+}
+if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
+    switch ($req->page) {
+        case 'bbox':
+            $req->nb_points = 121;
+            break;
+        case 'point':
+            $req->nb_points = 1;
+            break;
+        default:
+            $req->nb_points = "all";
+            break;
+    }
+}
+if(!is_numeric($req->nb_coms)) {
+    switch ($req->page) {
+        case 'bbox':
+            $req->nb_coms = 0;
+            break;
+        case 'point':
+            $req->nb_coms = 5;
+            break;
+        default:
+            $req->nb_coms = 0;
+            break;
+    }
+}
+if(!is_numeric($req->nb_points_proches) || $req->page!="point") { // On empêche le retour de points quand on a plusieurs points proches
+    switch ($req->page) {
+        case 'bbox':
+            $req->nb_points_proches = 0;
+            break;
+        case 'point':
+            $req->nb_points_proches = 3;
+            break;
+        default:
+            $req->nb_points_proches = 0;
+            break;
+    }
+}
+// On vérifie que les types de points sont ok, sinon on met all comme valeur
+if($req->page!="point") {
+    $temp = explode(",", $req->type_points);
+    foreach ($temp as $type_pt) {
+        if(!in_array($type_pt,$val->type_points)) { $req->type_points = "all"; break; }
+    }
+    unset($type_pt);
+}
+else {
+    $req->type_points = "all";
+}
+
 // On vérifie que la bbox est correcte
 $temp = explode(",", $req->bbox);
-if(!((count($temp)==4 &&
+if($req->page == "bbox" &&
+    !((count($temp)==4 &&
     is_numeric($temp[0]) &&
     is_numeric($temp[1]) &&
     is_numeric($temp[2]) &&
-    is_numeric($temp[3]) &&
-    $temp[0] >= -180 &&
-    $temp[1] <= 180 &&
-    $temp[2] >= -90 &&
-    $temp[3] <= 90 &&
-    $temp[0] < $temp[1] &&
-    $temp[2] < $temp[3]) ||
+    is_numeric($temp[3])) ||
     $req->bbox == "world")) {
     exit ("Error : wrong bbox parameter");
 }
-// On vérifie que les types de points sont ok, sinon on met all comme valeur
-$temp = explode(",", $req->type_pts);
-foreach ($temp as $type_pt) {
-    if(!in_array($type_pt,$val->type_pts)) { $req->type_pts = "all"; break; }
-}
-unset($type_pt);
+
 
 /****************************** REQUÊTE RÉCUPÉRATION PTS ******************************/
 
 $params = new stdClass();
 
-if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à postgis
-    list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
-    $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
+switch ($req->page) {
+    case 'bbox':
+        if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à postgis
+            list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
+            $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
+        }
+        unset($ouest,$sud,$est,$nord);
+        $params->pas_les_points_caches=1;
+        $params->ordre="point_type.importance DESC";
+        break;
+    case 'point':
+        $params->ids_points = intval($req->id);
+        break;
+    default:
+        break;
 }
-unset($ouest,$sud,$est,$nord);
-$params->pas_les_points_caches=1;
-$params->ordre="point_type.importance DESC";
-if($req->nb_pts != "all") {
-    $params->limite = $req->nb_pts;
+
+if($req->nb_points != "all") {
+    $params->limite = $req->nb_points;
 }
-if($req->type_pts != "all") {
-    $params->ids_types_point = str_replace($val->type_pts, $val->type_pts_id, $req->type_pts);
+if($req->type_points != "all") {
+    $params->ids_types_point = str_replace($val->type_points, $val->type_points_id, $req->type_points);
 }
 
 $pts_bruts = new stdClass();
@@ -94,8 +187,11 @@ foreach ($pts_bruts as $pt) {
     $pts->$i->id = $pt->id_point;
     $pts->$i->id_gps = $pt->id_point_gps;
     $pts->$i->nom = $pt->nom;
-    $pts->$i->coord['long'] = $pt->longitude;
-    $pts->$i->coord['lat'] = $pt->latitude;
+    // On affiche les coordonnées que si elles ne sont pas cachées
+    if($pt->id_type_precision_gps != $config['id_coordonees_gps_fausses']) {
+        $pts->$i->coord['long'] = $pt->longitude;
+        $pts->$i->coord['lat'] = $pt->latitude;
+    }
     $pts->$i->coord['alt'] = $pt->altitude;
     $pts->$i->type['id'] = $pt->id_point_type;
     $pts->$i->type['valeur'] = $pt->nom_type;
@@ -149,27 +245,98 @@ foreach ($pts_bruts as $pt) {
         $pts->$i->info_comp['eau']['nom'] = $pt->equivalent_eau_a_proximite;
         $pts->$i->info_comp['eau']['valeur'] = $pt->eau_a_proximite;
     }
+
+    /****************************** POINTS PROCHES ******************************/
+
+    if ($pt->id_type_precision_gps != $config['id_coordonees_gps_fausses'] &&
+        $req->nb_points_proches != 0)
+    {
+        $conditions = new stdClass;
+        $conditions->limite = $req->nb_pp+1; // Parce que le point que l'on observe est retourné en premier
+        $conditions->ouvert = 'oui';
+        
+        $g = array ( 'lat' => $pt->latitude, 'lon' => $pt->longitude , 'rayon' => 5000 );
+        $conditions->geometrie = cree_geometrie( $g , 'cercle' );
+        $conditions->avec_distance=True;
+
+        $points_proches=infos_points($conditions);
+        
+        if (count($points_proches))
+        $k=0;
+        foreach ($points_proches as $point_proche) 
+        {
+            //On ne veut pas dans les points proches le point lui même
+            if ($point_proche->id_point!=$point->id)
+            {
+            $pts->$i->pp[$k]['id']=$point_proche->id_point;
+            $pts->$i->pp[$k]['nom']=$point_proche->nom;
+            $pts->$i->pp[$k]['alt']=$point_proche->altitude;
+            $pts->$i->pp[$k]['type']['id']=$point_proche->id_point_type;
+            $pts->$i->pp[$k]['type']['valeur']=$point_proche->nom_type;
+            $pts->$i->pp[$k]['distance']=$point_proche->distance;
+            $k++;
+            }
+        }
+        $pts->$i->pp[nb] = $k;
+
+        unset($conditions);
+        unset($point_proche);
+        unset($points_proches);
+    }
+
+    /****************************** COMMENTAIRES ******************************/
+
+    $conditions = new stdClass();
+    $conditions->ids_points = $pt->id_point;
+    $conditions->limite = $req->nb_coms;
+    $tous_commentaires = infos_commentaires ($conditions);
+
+    $k=0;
+    foreach ($tous_commentaires AS $commentaire)
+    {
+        $pts->$i->coms[$k]['id'] = $commentaire->id_commentaire;
+        $pts->$i->coms[$k]['date'] = $commentaire->date;
+        $pts->$i->coms[$k]['createur']['id'] = $commentaire->id_createur_commentaire;
+        // info sur l'auteur du commentaire (authentifié ou non)
+        if ($commentaire->id_createur_commentaire==0) // non authentifié
+        $pts->$i->coms[$k]['createur']['nom']=$commentaire->auteur_commentaire;
+        else
+        $pts->$i->coms[$k]['createur']['nom'] = infos_utilisateur($commentaire->id_createur_commentaire)->username;
+        $pts->$i->coms[$k]['texte'] = $commentaire->texte;
+        $pts->$i->coms[$k]['photo']['nb'] = $commentaire->photo_existe;
+        $pts->$i->coms[$k]['photo']['date'] = $commentaire->date_photo;
+        $pts->$i->coms[$k]['photo']['reduite'] = $commentaire->reduite;
+        $pts->$i->coms[$k]['photo']['originale'] = $commentaire->originale;
+        $k++;
+    }
+    $pts->$i->coms['nb'] = $k;
+
+    unset($conditions);
+    unset($commentaire);
+    unset($tous_commentaires);
+
+    /****************************** FORMATAGE DU TEXTE ******************************/
+
+    // On transforme le texte dans la correcte syntaxe
+    if($req->format_texte == "texte") {
+        array_walk_recursive($pts->$i, 'updatebbcode2txt');
+    }
+    elseif($req->format_texte == "html") {
+        array_walk_recursive($pts->$i, 'updatebbcode2html');
+    }
+    elseif($req->format_texte == "markdown") {
+        array_walk_recursive($pts->$i, 'updatebbcode2markdown');
+    }
+    array_walk_recursive($pts->$i, 'updatebool2char'); // Remplace les False et True en 0 ou 1
+
+
     $i++;
 }
 $nbpts = $i;
 unset($pts_bruts, $i);
 
-/****************************** FORMATAGE DU TEXTE ******************************/
-
-
-// On transforme le texte dans la correcte syntaxe
-if($req->format_txt == "texte") {
-    array_walk_recursive($pts, 'updatebbcode2txt');
-}
-elseif($req->format_txt == "html") {
-    array_walk_recursive($pts, 'updatebbcode2html');
-}
-elseif($req->format_txt == "markdown") {
-    array_walk_recursive($pts, 'updatebbcode2markdown');
-}
-array_walk_recursive($pts, 'updatebool2char'); // Remplace les False et True en 0 ou 1
-
 /****************************** FORMAT VUE ******************************/
+
 
 switch ($req->format) {
     case 'geojson':
@@ -193,8 +360,11 @@ switch ($req->format) {
     case 'csv':
         include('./vue/liste.csv');
         break;
+    case 'xml':
+        include('./vue/liste.xml');
+        break;
     default:
-        include('./vue/liste.geojson');
+        include('./vue/liste.json');
         break;
 }
 

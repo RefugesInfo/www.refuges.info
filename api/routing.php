@@ -20,10 +20,7 @@ $cible = str_replace($_SERVER['QUERY_STRING'],'',$cible); // On enlève ce qu'il
 $cible = str_replace('?','',$cible); // On enlève le ? (implique pas de ? dans les noms de fichiers)
 
 switch ($cible) {
-    case 'point':
-        include('controlleur/point.php');
-        break;
-    case 'bbox':
+    case 'bbox': case 'point':
         include('controlleur/bbox.php');
         break;
     default:

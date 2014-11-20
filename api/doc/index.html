@@ -100,13 +100,19 @@
                         <td>format</td>
                         <td><span class="opt">Optionnel</span> Le format de l'export.</td>
                         <td><span class="url">geojson</span></td>
-                        <td><span class="url">geojson</span>, <span class="url">kmz</span>, <span class="url">kml</span>, <span class="url">gml</span>, <span class="url">gpx</span>, <span class="url">gpi</span>, <span class="url">csv</span></td>
+                        <td><span class="url">geojson</span>, <span class="url">kmz</span>, <span class="url">kml</span>, <span class="url">gml</span>, <span class="url">gpx</span>, <span class="url">gpi</span>, <span class="url">csv</span>, <span class="url">xml</span>, <span class="url">rss</span></td>
                     </tr>
                     <tr>
                         <td>format_texte</td>
                         <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
                         <td><span class="url">bbcode</span></td>
                         <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
+                    </tr>
+                    <tr>
+                        <td>nb_coms</td>
+                        <td><span class="opt">Optionnel</span> Nombre de commentaires maximum à retourner. Retourne aucun commentaire pour <span class="url">0</span>. Retourne les n commentaires les plus récents.</td>
+                        <td><span class="url">0</span></td>
+                        <td><span class="url">18</span>...</td>
                     </tr>
                     <tr>
                         <td>nb_points</td>
@@ -161,11 +167,11 @@
                         <td>format</td>
                         <td><span class="opt">Optionnel</span> Le format de l'export.</td>
                         <td><span class="url">json</span></td>
-                        <td><span class="url">json</span>, <span class="url">xml</span>, <span class="url">yaml</span><!--, <span class="url">pdf</span>--></td>
+                        <td><span class="url">geojson</span>, <span class="url">kmz</span>, <span class="url">kml</span>, <span class="url">gml</span>, <span class="url">gpx</span>, <span class="url">gpi</span>, <span class="url">csv</span>, <span class="url">xml</span>, <span class="url">rss</span></td>
                     </tr>
                     <tr>
                         <td>format_texte</td>
-                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.<!-- Incompatible avec l'export au <b>format</b> pdf.--></td>
+                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
                         <td><span class="url">bbcode</span></td>
                         <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
                     </tr>
@@ -181,13 +187,13 @@
                         <td><span class="url">3</span></td>
                         <td><span class="url">6</span>...</td>
                     </tr>
-<!--                    <tr>
-                        <td>fond_carto</td>
-                        <td><span class="opt">Optionnel</span> Sélection du fond de carte à adopter pour l'export quand le <b>format</b> est pdf. Cette liste est dans un premier temps limités à des fonds libres de droits.</td>
-                        <td><span class="url">mri</span></td>
-                        <td><span class="url">mri</span>, <span class="url">outdoor_tf</span>, <span class="url">osm_fr</span></td>
+                    <tr>
+                        <td>detail</td>
+                        <td><span class="opt">Optionnel</span> Les détails du point, par défaut uniquement long, lat, altitude, nom, type, id.</td>
+                        <td><span class="url">complet</span></td>
+                        <td><span class="url">simple</span>, <span class="url">complet</span></td>
                     </tr>
--->                </table>
+                </table>
             </p>
             <p>
                 Notons que lorsque les variables booléennes, sont à 1 pour VRAI et 0 pour FAUX (par exemple pour les informations complémentaires). Lorsqu'une variable est non définie (NULL), c'est tout simplement que nous le champ n'a pas de valeur car il n'a pas lieu d'être (couvertures pour un sommet par exemple) ou que la valeur est inconnue.

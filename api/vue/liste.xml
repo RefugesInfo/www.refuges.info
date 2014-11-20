@@ -2,14 +2,17 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-//header("Content-disposition: attachment; filename=point_$point->id.yaml");
-header("Content-Type: application/yaml; UTF-8"); // rajout du charset
+//header("Content-disposition: attachment; filename=point_$point->id.xml");
+header("Content-Type: application/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
 if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
-echo yaml_emit($point);
+include("./vendors/xml.class.php");
+
+$xmlOutput = new XMLSerializer;
+echo $xmlOutput->generateValidXmlFromObj($pts);
 
 ?>
