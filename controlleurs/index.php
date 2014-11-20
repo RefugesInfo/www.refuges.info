@@ -15,7 +15,8 @@ require_once ("wiki.php");
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
 $vue->description='Base de donnee de refuges, abris, gites, sommets et divers points en montagne avec cartes satellite, descriptions et coordonnees GPS';
 
-$vue->java_lib [] = $config['chemin_openlayers'].'OpenLayers.js?'.filemtime('.'.$config['chemin_openlayers'].'OpenLayers.js');
+$vue->java_lib_foot [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+$vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
 
 $conditions_notre_zone = new stdClass;
 $conditions_notre_zone->ids_polygones=$config['id_zone_accueil'];

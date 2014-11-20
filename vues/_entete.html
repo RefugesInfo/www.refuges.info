@@ -11,22 +11,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 	<head>
 		<title><?=$vue->titre?></title>
-		<link rel="shortcut icon" href="/images/favicon.ico" />
+		<link rel="shortcut icon" href="<?=$config['sous_dossier_installation']?>images/favicon.ico" />
 		<meta name="robots" content="all" />
 		<meta name="robots" content="index,follow" />
+		<meta name="description" content="<?=$vue->description?>" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config[encodage_des_contenu_web]?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
-		<meta http-equiv="Content-Script-Type" content="text/javascript" />
-		<meta name="description" content="<?=$vue->description?>" />
-
-		<?if (count ($vue->java_lib))
-			foreach ($vue->java_lib as $js_lib) {?>
-				<script type="text/javascript" src="<?=$js_lib?>"></script>
-		<?	}?>
-		<link type="text/css" rel="stylesheet" href="/vues/style.css.php" />
+		<link type="text/css" rel="stylesheet" href="<?=$config['sous_dossier_installation']?>vues/style.css.php" />
 		<?if (count ($vue->css))
 			foreach ($vue->css as $css) {?>
 				<link type="text/css" rel="stylesheet" href="<?=$css?>" />
+		<?	}?>
+
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<script type="text/javascript">
+			var key = {
+				ign:  '<?=$config['ign_key']?>',
+				bing: '<?=$config['bing_key']?>',
+			};
+		</script>
+		<?if (count ($vue->java_lib))
+			foreach ($vue->java_lib as $js_lib) {?>
+				<script type="text/javascript" src="<?=$js_lib?>"></script>
 		<?	}?>
 		<?if (file_exists ("vues/$vue->type.js")) {?>
 			<script type="text/javascript">
@@ -41,23 +48,23 @@
 		<div id="entete">
 			<div>
 				<?if ($_SESSION['id_utilisateur']>=1) {?>
-					<a href="/forum/profile.php?mode=editprofile" title="Modifier votre profil"><?=$_SESSION['login_utilisateur']?></a>
+					<a href="<?=$config['sous_dossier_installation']?>forum/profile.php?mode=editprofile" title="Modifier votre profil"><?=$_SESSION['login_utilisateur']?></a>
 					<a href="<?=$config['lien_forum']?>login.php?logout=true">Se déconnecter</a>
 				<?} else {?>
 					<a href="<?=$config['lien_forum']?>profile.php?mode=register" title="Pour créer un compte">S'inscrire</a>
 					<a href="<?=$config['lien_forum']?>login.php" title="Si vous avez déjà un compte">Connexion</a>
 				<?}?>
 				
-				<form method="post" action="/point_recherche/">
+				<form method="post" action="<?=$config['sous_dossier_installation']?>point_recherche/">
 				<div>
 					<input type="text" name="nom" size="35" value="Recherche de refuge par le nom" onfocus="javascript:this.value=''" />
                     <input type="hidden" name="ids_types_point" value="<?=$config['tout_type_refuge']?>" />
                     <input type="hidden" name="avec_point_osm" value="1" />
-					<input type="image" src="/images/loupe.png" title="Lancer la recherche" />
+					<input type="image" src="<?=$config['sous_dossier_installation']?>images/loupe.png" title="Lancer la recherche" />
 				</div>
 				</form>
 			</div>
-			<a href="/"><img alt="Photo d'ambiance" src="<?='/images/bandeau-haut/titrehorizontal_'.date ('m').'.png'?>" /></a>
+			<a href="<?=$config['sous_dossier_installation']?>"><img alt="Photo d'ambiance" src="<?=$config['sous_dossier_installation']?>images/bandeau-haut/titrehorizontal_<?=date('m')?>.png" /></a>
 		</div>
 
 		<? // Barres de menus
@@ -71,57 +78,57 @@
 		foreach ($menus AS $id) {?>
 			<div id="<?=$id?>" class="menu">
 				<ul>
-					<li><a href="/">Accueil</a></li>
-					<li><a href="/nouvelles/">Nouvelles</a>
+					<li><a href="<?=$config['sous_dossier_installation']?>">Accueil</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/">Nouvelles</a>
 						<ul>
-							<li><a href="/nouvelles/" title="Les entrées les plus récentes">Toutes</a></li>
-							<li><a href="/nouvelles/?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
-							<li><a href="/nouvelles/?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
-							<li><a href="/nouvelles/?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
-							<li><a href="/nouvelles/?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
-							<li><a href="/formulaire_rss/">Flux RSS</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/" title="Les entrées les plus récentes">Toutes</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>formulaire_rss/">Flux RSS</a></li>
 						</ul>
 					</li>
-					<li><a href="/point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
+					<li><a href="<?=$config['sous_dossier_installation']?>point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
 					</li>
-					<li><a href="/point_formulaire_recherche/">Recherche</a>
+					<li><a href="<?=$config['sous_dossier_installation']?>point_formulaire_recherche/">Recherche</a>
 						<ul>
-							<li><a href="/point_formulaire_recherche/" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
-							<li><a href="/formulaire_exportations/" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>point_formulaire_recherche/" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>formulaire_exportations/" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
 						</ul>
 					</li>
 					<li>Zones couvertes
 						<ul>
-						  <li><a href="/nav/352?mode_affichage=zone">Alpes</a></li>
-						  <li><a href="/nav/50?mode_affichage=zone">Massif Central</a></li>
-						  <li><a href="/nav/351?mode_affichage=zone">Pyrénées</a></li>
-												  <li><a href="/nav/747?mode_affichage=zone">Vosges</a></li>
-												  <li><a href="/nav/27">Jura</a></li>
-						  <li><a href="/nav/337">Corse</a></li>
-						  <li><a href="/nav/28">Réunion</a></li>
-						  <li><a href="/nav/51">Nlle Calédonie</a></li>
-						  <li><a href="/nav/374">Andes</a></li>
+						  <li><a href="<?=$config['sous_dossier_installation']?>nav/352?mode_affichage=zone">Alpes</a></li>
+						  <li><a href="<?=$config['sous_dossier_installation']?>nav/50?mode_affichage=zone">Massif Central</a></li>
+						  <li><a href="<?=$config['sous_dossier_installation']?>nav/351?mode_affichage=zone">Pyrénées</a></li>
+												  <li><a href="<?=$config['sous_dossier_installation']?>nav/747?mode_affichage=zone">Vosges</a></li>
+												  <li><a href="<?=$config['sous_dossier_installation']?>nav/27">Jura</a></li>
+						  <li><a href="<?=$config['sous_dossier_installation']?>nav/337">Corse</a></li>
+						  <li><a href="<?=$config['sous_dossier_installation']?>nav/28">Réunion</a></li>
+						  <li><a href="<?=$config['sous_dossier_installation']?>nav/51">Nlle Calédonie</a></li>
+						  <li><a href="<?=$config['sous_dossier_installation']?>nav/374">Andes</a></li>
 						</ul>
 					</li>
-					<li><a href="/nav">Cartes</a>
+					<li><a href="<?=$config['sous_dossier_installation']?>nav">Cartes</a>
 						<ul>
-							<li><a href="/nav/">Cartes</a></li>
-							<li><a href="/nav?baseLayer=Maps.Refuges.info">Randonnée</a></li>
-							<li><a href="/nav?baseLayer=IGN&amp;lat=46&amp;lon=3&amp;scale=3000000">IGN</a></li>
-							<li><a href="/nav?baseLayer=SwissTopo&amp;lat=46.8&amp;lon=8.3&amp;scale=1500000">SwissTopo</a></li>
-							<li><a href="/nav?baseLayer=Germanie&amp;lat=48&amp;lon=14&amp;scale=3000000">Autriche</a></li>
-							<li><a href="/nav?baseLayer=Italie&amp;lat=45.1&amp;lon=7.6&amp;zoom=0">Italie</a></li>
-							<li><a href="/nav?baseLayer=Espagne&amp;lat=41&amp;lon=-2&amp;scale=2500000">Espagne</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/">Cartes</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav?baseLayer=Maps.Refuges.info">Randonnée</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav?baseLayer=IGN&amp;lat=46&amp;lon=3&amp;scale=3000000">IGN</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav?baseLayer=SwissTopo&amp;lat=46.8&amp;lon=8.3&amp;scale=1500000">SwissTopo</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav?baseLayer=Germanie&amp;lat=48&amp;lon=14&amp;scale=3000000">Autriche</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav?baseLayer=Italie&amp;lat=45.1&amp;lon=7.6&amp;zoom=0">Italie</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav?baseLayer=Espagne&amp;lat=41&amp;lon=-2&amp;scale=2500000">Espagne</a></li>
 						</ul>
 					</li>
-					<li><a href="/forum">Forums</a>
+					<li><a href="<?=$config['sous_dossier_installation']?>forum">Forums</a>
 						<ul>
-							<li><a href="/forum">Tous</a></li>
-							<li><a href="/forum/viewforum.php?f=1" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">La vie du site</a></li>
-							<li><a href="/forum/viewforum.php?f=2" title="Forum de discussion sur le développement et les défauts logiciles du site">Développement</a></li>
-							<li><a href="/forum/viewforum.php?f=6" title="Forum d'échange sur les offres et demandes d'emploi en refuge">Emplois</a></li>
-							<li><a href="/forum/viewforum.php?f=5" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">Divers</a></li>
-							<li><a href="/forum/privmsg.php?folder=inbox" title="Votre boite aux lettres personelle">Messages</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>forum">Tous</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>forum/viewforum.php?f=1" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">La vie du site</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>forum/viewforum.php?f=2" title="Forum de discussion sur le développement et les défauts logiciles du site">Développement</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>forum/viewforum.php?f=6" title="Forum d'échange sur les offres et demandes d'emploi en refuge">Emplois</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>forum/viewforum.php?f=5" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">Divers</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>forum/privmsg.php?folder=inbox" title="Votre boite aux lettres personelle">Messages</a></li>
 						</ul>
 					</li>
 					<li><a href="<?=$vue->lien_wiki["index"]?>">A propos du site</a>
@@ -138,9 +145,9 @@
 					
 					<? if ($_SESSION['niveau_moderation']>=1) {?>
 						<li>
-							<a href="/gestion/" title="Zone de gestion pour les modérateurs">Gestion</a>
+							<a href="<?=$config['sous_dossier_installation']?>gestion/" title="Zone de gestion pour les modérateurs">Gestion</a>
 							<?if ($vue->demande_correction) {?>
-								<a href="/gestion/?page=commentaires_attente_correction" title="Commentaires en attente d'une correction">*</a>
+								<a href="<?=$config['sous_dossier_installation']?>gestion/?page=commentaires_attente_correction" title="Commentaires en attente d'une correction">*</a>
 							<?}?>
 							<? // Ajout d'un lien de test pour Dominique seulement....
 							if ($_SESSION['login_utilisateur'] == 'Dominique') {

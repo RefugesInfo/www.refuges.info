@@ -26,4 +26,13 @@ if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))
   ini_set('display_errors', '1');
 }
 
+// Choix locaux à changer
+//$config['carte_base'] = 'OpenCycleMap';
+//$config['carte_base'] = 'maps.refuges.info';
+$config['SwissTopo'] = true;
+$config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2016 / http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
+$config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
+
+// Filtrage géographique des inscriptions
+$config['filtre_geo'] = '40 52 -5 10'; // Zone autorisée: latitude_min latitude_max longitude_min longitude_max
 ?>

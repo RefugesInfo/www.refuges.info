@@ -3,97 +3,59 @@
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
 // $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
-
-// 29/10/11 Dominique : Création
-// 27/04/11 Dominique : Passage en OL2.11
 ?>
-var map, viseur; // L'objet de gestion de la carte
-window.onload = function () {
-    // Crée la carte
-    map = new OpenLayers.Map ('carte-edit', {
-        displayProjection: new OpenLayers.Projection ('EPSG:4326'), // Pour le permalink et les cookies en degminsec
-        numZoomLevels: 20,
-        controls: [
-            new OpenLayers.Control.PanZoom (),
-            new OpenLayers.Control.PermalinkCookies (null, null, {
-                cookie: {
-                    lat: <?=$point->latitude?>, 
-                    lon: <?=$point->longitude?>, 
-                    scale: <?=$vue->serie[3]?>,
-                    baseLayer: '<?=$vue->serie[2]?>' 
-                }
-            }),
-            new OpenLayers.Control.LayerSwitcherConditional (),
-            new OpenLayers.Control.MousePosition (),
-            new OpenLayers.Control.ScaleLine ({geodesic: true}), // L'échelle n'est pas la bonne pour les projections de type mercator. En effet, dans cette projection, le rapport nombre pixel/distance réél augmente quand on se rapproche des pôles.Pour corriger ça, un simple geodesic:yes fais l'affaire (SLY 29/11/2010)
-            new OpenLayers.Control.Navigation (),
-            new OpenLayers.Control.GPSPanel(),
-            new OpenLayers.Control.Attribution ()
-        ]
-    });
 
-    map.addLayers ([
-        new OpenLayers.Layer.Bing                ({name: 'Bing photo', type: 'Aerial', key: '<?=$config['bing_key'];?>'}),
-        new OpenLayers.Layer.MRI                 ('Maps.Refuges.info'),
-        new OpenLayers.Layer.OCM.Outdoors        ('OpenCycleMap'),
-        new OpenLayers.Layer.OSM                 ('OSM')
-    ]);
+var map, curseur;
 
-    map.addLayers ([
-        new OpenLayers.Layer.GMLSLD ('WRI', {    
-            urlGML: '/exportations/exportations.php?format=gml',
-            projection: 'EPSG:4326',
-            urlSLD: OpenLayers._getScriptLocation() + 'refuges-info-sld.xml',
-            styleName: 'Points',
-            displayInLayerSwitcher: false, 
-            visibility: true
-        }),
-        viseur = new OpenLayers.Layer.ImgDrag ('Viseur', {
-            img: OpenLayers._getScriptLocation() + 'img/viseur.png', h: 30, l: 30, 
-            pos: map.getCenter (), 
-            prefixeId: {
-                titre: 'titre-',
-                decimal: '', // Ces champs seront masqués et remonterons la position du point à créer
-                projected: 'proj-', // ces champs seront visibles et donneront la valeur projetée
-            },
-            displayInLayerSwitcher: false
-        })
-    ]);
-}
+window.addEventListener('load', function() {
+	var baseLayers = {
+		'Bing photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
+		'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
+                }),
+                'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
+                }),
+                'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
+                }),
+	};
 
-function localise () {
-	var geo = new OpenLayers.Control.Geolocate ({
-		map: map
+	map = new L.Map('carte-edit', {
+		fullscreenControl: true,
+		center: new L.LatLng( <?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
+		zoom: 13,
+		layers: [
+			baseLayers['Bing photo'], // Le fond de carte visible
+
+			new L.GeoJSON.ajax( // Les points d'intérêt WRI
+				'<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=geojson', {
+					bbox: true,
+					icon: function(feature) {
+						return {
+							url: '/images/icones/' + feature.properties.type + '.png',
+							size: L.Browser.mobile ? 32 : 16
+						}
+					}
+				}
+			),
+
+			curseur = new L.Marker.Position( // Le pointeur à déplacer
+				new L.LatLng(<?=$vue->point->latitude?>, <?=$vue->point->longitude?>), {
+					prefixe: 'curseur-',
+					draggable: true,
+					riseOnHover: true, // The marker will get on top of others when you hover the mouse over it.
+					icon: L.icon({
+						iconUrl: '<?=$config['sous_dossier_installation']?>images/curseur.png',
+						iconSize: [30, 30],
+						iconAnchor: [15, 15]
+					}),
+				}
+			)
+		],
 	});
-	geo.events.register ("locationupdated", this, function (e) {
-		this.map.setCenter (e.point.transform (
-			this.map.displayProjection,
-			this.map.getProjectionObject ()
-		));
-		map.zoomToScale(2000);
-		viseur.centre();
-	});
-	geo.activate ();
-}
 
-function validation() {
-    // variable choix est a "supprimer" "ajouter"...
-    // elle est mise en place par les boutons
-    switch ( choix )
-    {
-        case 'supprimer':
-            return confirm("Etes vous sur de SUPPRIMER la fiche ?");
-        case 'Ajouter':
-        case 'Modifier':
-            // valide les champs
-            return true;
-        default:
-            return true;
-    }
-}
-
-function affiche_et_set( el , affiche, valeur ) {
-  document.getElementById(el).style.visibility = affiche ;
-  document.getElementById(el).value = valeur ;
-  return false;
-}
+	map.addControl(new L.Control.Layers(baseLayers)); // Le controle de changement de couche de carte avec la liste des cartes dispo
+	map.addControl(new L.Control.Gps());
+	map.addControl(new L.Control.Scale());
+});

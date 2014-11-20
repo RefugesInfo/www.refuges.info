@@ -7,11 +7,6 @@
 // $config les données communes à tout WRI
 
 // Inclue des différents blocs spécialisés
-// 17/10/11 Dominique : Création
-// Fusion par sly de tous les éléments du point sauf commentaires
-// 23/10/11 Dominique : Ajout de la partie commentaire, tant qu'on y est
-// 15/05/12 Dominique : Retour en templates simples
-// 26/06/12  Dominique : Introduction des traductions de coordonnées
 ?>
 <div class="contenu">
 	<div class="fiche_cadre">
@@ -23,26 +18,24 @@
 	</dd>
 	</dl>
 	<?}?>
-	
 <!--============================================ CARTE ============================================-->
 		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
 		if ($vue->mini_carte) {?>
 			<div style="float: right;">
 				<div id="vignette"></div>
-					<p id="agrandir_vignette">
-						<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
-							Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
-						</a>
-						<span id="p21781"></span>
-					</p>
-					<p>
-						<a href="/nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
-							Aller sur le présentoir à cartes
-						</a>
-					</p>
+				<p id="agrandir_vignette">
+					<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
+						Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
+					</a>
+					<span id="p21781"></span>
+				</p>
+				<p>
+					<a href="<?=$config['sous_dossier_installation']?>nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+						Aller sur le présentoir à cartes
+					</a>
+				</p>
 			</div>
 		<?}?>
-		
 <!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
 		<?// Signaler les fiches censurées
 		if ($vue->point->censure) {?>
@@ -54,11 +47,11 @@
 		<?}?>
 		<?// Si les droits sont suffisants, lien de modification
 		if ($vue->lien_modification) {?>
-			<a class="groupir" style="font-size: smaller ;" href="/point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
+			<a class="groupir" style="font-size: smaller ;" href="<?=$config['sous_dossier_installation']?>point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
 				[Modifier cette fiche]
 			</a>
 		<?}?>
-		
+
 <!--======================================== DESCRIPTIONS =========================================-->
 		<dl style="margin: 2px;">
 <!--========================================== FICHE DE ===========================================-->
@@ -87,7 +80,6 @@
 					<?=($vue->point->places)?>
 				</dd>
 			<?}?>
-			
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
 			<dt/>
 			<dt class="condense">Sur le site depuis:</dt>
@@ -113,7 +105,6 @@
 				<?}
 			}
 			?>
-			
 <!--========================================= COORDONNÉES =========================================-->
 			<dt>Coordonnées:</dt>
             <dd>
@@ -132,44 +123,43 @@
 					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 					<span id="coordonnees-value">
-						<span id="titre-lon">Longitude</span>: <em id="lon"></em>
-						<span id="titre-lat">Latitude</span>: <em id="lat"></em>
+						<span id="titre-lng">Longitude</span>: <em id="aff-lng"><?=$vue->point->longitude?></em>
+						<span id="titre-lat">Latitude</span>: <em id="aff-lat"><?=$vue->point->latitude?></em>
 					</span>
-					<select id="select-projection">
-						<option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
-					</select>
-					
+					<select id="select-projection"></select>
 					(
-						<a href="/exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
+						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
 					,
-						<a href="/exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
+						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
 					,
-						<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
+						<a href="<?=$config['sous_dossier_installation']?>geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
 					)
 				<?}?>
 			</dd>
+			<dd>
+				<strong>Attention:</strong> Ces coordonnées sont relatives à l'éllipsoïde WGS84. Il se peut qu'elles ne correspondent pas à d'anciennes cartes. Consultez le cartouche de la carte.
+            </dd>
 <!--======================================== LOCALISATION =========================================-->
-                        <?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
-			<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
-			<dd class="condense">
-                            <?php foreach ($polygones as $key => $polygone) { ?>
-                                <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
-                                  <?php if ($polygone->site_web) { ?>
-                                    <a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
-                                 <?php } else { ?>
-                                    <?=$polygone->nom_polygone?>
-                                 <?php } ?>
-                                    <?php if ($polygone->avec_lien_carte) { ?>
-                                    
-                                    <sup>
-                                        <a href="<?=$polygone->lien_polygone?>">carte</a>
-                                    </sup>
-                                   <?php } ?>
-                                <?=$virgule?>
-                            <?php } ?>
-                        
-                        <dt />
-                        </dd>
+			<?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
+				<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
+					<dd class="condense">
+						<?php foreach ($polygones as $key => $polygone) { ?>
+							<?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
+							  <?php if ($polygone->site_web) { ?>
+								<a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
+							 <?php } else { ?>
+								<?=$polygone->nom_polygone?>
+							 <?php } ?>
+								<?php if ($polygone->avec_lien_carte) { ?>
+								
+								<sup>
+									<a href="<?=$polygone->lien_polygone?>">carte</a>
+								</sup>
+							   <?php } ?>
+							<?=$virgule?>
+						<?php } ?>
+					<dt />
+				</dd>
 			<?php } ?>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
 			<?// Champs textes libres
@@ -177,7 +167,6 @@
 				<dt><?=$vue->point->equivalent_proprio?>:</dt>
 				<dd><?=$vue->proprio?></dd>
 			<?}?>
-			
 <!--============================================ ACCÈS ============================================-->
 			<dt style="clear: left;">Accès:</dt>
 			<dd><?=$vue->acces?></dd>
@@ -196,7 +185,6 @@
 			<?php
 			}
 			}?>
-			
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
 			<?if (count($vue->points_proches)) {?>
 				<dt>Points à proximité (distance à vol d'oiseau):</dt><?
@@ -208,7 +196,6 @@
 						</dd>
 				<?}
 			}?>
-			
 <!--================================= Si message d'information à afficher =======================================-->
 			<?php if (isset($vue->polygone_avec_information)) {?>
                           <dt>Réglementation particulière :</dt>
@@ -227,7 +214,6 @@
                               <?php } ?>
                           </dd>
 			<?php } ?>
-			
 <!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
 			<!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
 			<?if (count ($vue->commentaires_avec_photo)) {?>
@@ -245,10 +231,10 @@
 					<?php } ?>
 				</dd>
 			<?}?>
-			
+
 <!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
 			<dd class="lien_ajout_commentaire">
-				<a href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
+				<a href="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
 					Ajouter un commentaire, une photo, une demande de correction
 				</a>
 			</dd>
@@ -334,7 +320,7 @@
 
 <!--================== FIN DE LA PAGE DES POINTS - COMMENTAIRES DIVERS ET VARIÉS ===================-->
 	<p>
-		<a class="lien_ajout_commentaire" href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
+		<a class="lien_ajout_commentaire" href="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
 			Ajouter un commentaire, une photo, une demande de correction
 		</a>
 	</p>
@@ -349,7 +335,7 @@
 	</p>
 	<em>Page sous licence :
 		<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/fr/">
-			<img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/2.0/fr/88x31.png"/>
+			<img alt="Creative Commons License" src="<?=$config['sous_dossier_installation']?>images/logo-licence-cc-by-sa.png"/>
 		</a>
 	</em>
 <!--============================================= FIN ==============================================-->

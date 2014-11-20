@@ -17,7 +17,7 @@
   <?php } if ($model->banni) { ?>
     <strong>Banni !</strong>
     Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
-    vous pouvez en parler ici : <a href="/forum/viewtopic.php?t=671">Sur le forum</a><br /><br />
+    vous pouvez en parler ici : <a href="<?=$config['sous_dossier_installation']?>forum/viewtopic.php?t=671">Sur le forum</a><br /><br />
   <?php } if ($vue->messages->erreur) { ?>
     <strong><?=$vue->messages->message?></strong>
   <?php } elseif (isset($vue->messages->erreur)) { ?>
@@ -25,7 +25,7 @@
   <?php } ?>
   </p>
   <div class="com">
-  <form id="comment" method="post" action="/point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
+  <form id="comment" method="post" action="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
     <textarea name="texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre?></textarea><?=$config['lien_syntaxe']?>
     <br />
 

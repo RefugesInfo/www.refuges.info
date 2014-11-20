@@ -222,6 +222,8 @@ while ( $row = $db->sql_fetchrow($result) )
 {
 	$board_config[$row['config_name']] = $row['config_value'];
 }
+$board_config['server_name'] = $_SERVER['SERVER_NAME'];
+$board_config['script_path'] = str_replace($_SERVER['DOCUMENT_ROOT'],'',__DIR__);
 
 if (file_exists('install') || file_exists('contrib'))
 {

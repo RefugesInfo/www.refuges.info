@@ -8,7 +8,7 @@ Finalement on passe à un quasi-vrai wiki avec historique (approximatif) que pou
 require_once ("wiki.php");
 require_once ("mise_en_forme_texte.php");
 
-$nom_page=$controlleur->url_decoupee[2];
+$nom_page=$controlleur->url_decoupee[1];
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (($_SESSION ['niveau_moderation'] >= 1) ) 
 {

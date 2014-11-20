@@ -234,7 +234,7 @@ FORM.wri SPAN , FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum 
   float: left;
   }
 FORM LABEL[title]:after, FORM LEGEND[title]:after {  /* combine pour exclure OL , leurs LABEL ne sont pas dans des FORM */
-  content: url(/images/tooltip.png);
+  content: url(../images/tooltip.png);
   }
 FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
   float: left;
@@ -270,6 +270,9 @@ IMG { /* images sans bordures */
   padding: 0px;
   }
 
+TEXTAREA {
+  max-width: 100%;
+}
 /*=========LIENS==========*/
 A:hover { /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;
@@ -566,6 +569,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     float: left; 
     margin: 1px; 
     position: relative; 
+    max-width: 99.8%;
   }
   .text_sur_image {
     position:relative;
@@ -579,6 +583,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /*                              CARTES                              */
 /*==================================================================*/
 
+  .choix_legende {
+    float: left;
+    width: 200px;
+  }
   .carte /* utilisé par TOUTES les images cartes */
    {
     background-image: url(../images/sablier.png);
@@ -605,6 +613,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     width:  450px; 
     height: 500px; 
     float: right;
+    max-width: 100%;
   }
   /*Externalise le sélecteur de couche de la carte nav*/
   #carte_nav .baseLbl, #carte_nav .dataLbl , #carte_nav .dataLayersDiv,

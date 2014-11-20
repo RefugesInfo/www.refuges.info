@@ -224,10 +224,10 @@ function placemark_kml($point)
   
   //Creation du XML pour un point 
   $_xml ="\n  <Placemark id='$point->id_point'>\n";
-  $_xml .="    <name>".c($point->nom)."</name>\n";
+  $_xml .="    <name>".c(mb_ucfirst($point->nom))."</name>\n";
   $_xml .="    <description><![CDATA[
   <img src='".chemin_icone(choix_icone($point))."' />
-  (<em>".c($point->nom_type)."</em>) <br />
+  (<em>".c(mb_ucfirst($point->nom_type))."</em>) <br />
   <center><a href='$lien_url'>".c('Détails')."</a></center>
   ]]></description>\n";
   
@@ -292,7 +292,7 @@ function feature_gml($point)
   return "
   <gml:featureMember>
     <point_wri>
-      <nom>".c($point->nom)."</nom>
+      <nom>".c(mb_ucfirst($point->nom))."</nom>
       <type>$point->nom_icone</type>
       <massif>$point->nom_polygone</massif>
       <url>" .lien_point ($point) ."</url>
@@ -332,7 +332,7 @@ function feature_geojson($point)
             },
             \"type\": \"Feature\",
             \"properties\": {
-                \"nom\": \"".str_replace('"','\"',$point->nom)."\",
+                \"nom\": \"".str_replace('"','\"',mb_ucfirst($point->nom))."\",
                 \"url\": \"".lien_point($point) ."\",
                 \"type\": \"$point->nom_icone\",
                 \"id_point\": \"$point->id_point\"
@@ -347,7 +347,7 @@ function feature_geojson($point)
 function csv_export_line($point)
 {
   $separateur=";";
-  $nom=str_replace($separateur,"\\".$separateur,$point->nom);
+  $nom=str_replace($separateur,"\\".$separateur,mb_ucfirst($point->nom));
   $nom_type=str_replace($separateur,"\\".$separateur,$point->nom_type);
   $nom_polygone=str_replace($separateur,"\\".$separateur,$point->nom_polygone);
   $nom_precision_gps=str_replace($separateur,"\\".$separateur,$point->nom_precision_gps);
@@ -372,7 +372,7 @@ function csv_export_line($point)
 function poi_export_line($point)
 {
   $separateur=",";
-  $nom=str_replace($separateur,"\\".$separateur,$point->nom);
+  $nom=str_replace($separateur,"\\".$separateur,mb_ucfirst($point->nom));
   $nom_type=str_replace($separateur,"\\".$separateur,$point->nom_type);
   
   $nom_long=substr($nom."-".$nom_type,0,30);
@@ -441,7 +441,7 @@ function waypoint_gpx($point,$format)
 	";
 	
 	//Je pousse peut-être la factorisation du code un peu loin, ça perd en lisibilité, mais c'est le format mutant entre gpx pour la carte googlemaps et l'export GPX sly 12/05/2010
-	$gpx_texte_lien="\t\t\t<text>".c($point->nom)." sur ".$config['nom_hote']."</text>\n";
+	$gpx_texte_lien="\t\t\t<text>".c(mb_ucfrst($point->nom))." sur ".$config['nom_hote']."</text>\n";
 	$gpx_massif="\t\t\t<massif>".c($point->nom_polygone)."</massif>\n";
 	$gpx_id_massif="\t\t\t<id_massif>$point->id_polygone</id_massif>\n";
 	$gpx_id_qualite_gpx="\t\t\t<id_qualite_gps>$point->id_type_precision_gps</id_qualite_gps>\n";
@@ -462,7 +462,7 @@ function waypoint_gpx($point,$format)
 	\t\t<id_point>$point->id_point</id_point>
 	\t\t$gpx_massif$gpx_id_massif$gpx_id_qualite_gpx$gpx_nombre_place$gpx_renseignements$gpx_id_point_type$gpx_icone\t\t\t</extensions>";
 	
-    $nom="$point->nom";
+    $nom=mb_ucfirst($point->nom);
 
   }
   /* Ce format, destiné au terminaux garmin, utilise des champs de manière détourné car le format de 
@@ -482,7 +482,7 @@ function waypoint_gpx($point,$format)
     $version_complete="
     <cmt>$point->nom_type,$ferme_texte ".$point->altitude."m : ".c($point->remark)."</cmt>
     <desc>".c($point->remark)."</desc>"; // A noter que ce champs est inutile car le garmin ne dispose que de deux champs (nom et description) et seul la balise cmt est convertie par gpsbabel
-    $nom="$point->nom"; // Le champ name semble limité à 30 caractères environ ce qui devrait suffire pour la plupart
+    $nom=mb_ucfirst($point->nom); // Le champ name semble limité à 30 caractères environ ce qui devrait suffire pour la plupart
   }
   
   $waypoint="

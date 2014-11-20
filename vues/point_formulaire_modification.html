@@ -25,7 +25,7 @@
   }
 ?>
     <div class="carte_edit" id="carte-edit"></div>
-    <form class="wri" id="form_point" method="post" onsubmit="return validation();" action="/point_modification.php">
+    <form class="wri" id="form_point" method="post" onsubmit="return validation();" action="<?=$config['sous_dossier_installation']?>point_modification.php">
     <div><?
     foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
@@ -44,24 +44,25 @@
     <h4>Coordonnées</h4>
         <fieldset>
             <label>
-                <span id="titre-lon">Longitude</span> :
-                <input type="text" id="proj-lon" name="longitude" size="12" maxlength="12" value="<?=$vue->point->longitude?>" />
-                <input type="hidden" id="lon" name="longitude" value="<?=$vue->point->longitude?>" />
+                <span id="curseur-titre-lng">Longitude</span> :
+                <input type="text" id="curseur-proj-lng" name="longitude" size="12" maxlength="12" value="<?=$vue->point->longitude?>" />
+                <input type="hidden" id="curseur-lng" name="longitude" value="<?=$vue->point->longitude?>" />
             </label>
             <label>
-                <span id="titre-lat">Latitude</span> :
-                <input type="text" id="proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$vue->point->latitude?>" />
-                <input type="hidden" id="lat" name="latitude" value="<?=$vue->point->latitude?>" />
+                <span id="curseur-titre-lat">Latitude</span> :
+                <input type="text" id="curseur-proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$vue->point->latitude?>" />
+                <input type="hidden" id="curseur-lat" name="latitude" value="<?=$vue->point->latitude?>" />
             </label>
             <label>
-                <select id="select-projection">
-                    <option>Degrés décimaux</option><?/* Initialise le champ au chargement de la page. Sera écrasé par innerHTML */?>
-                </select>
+                <select id="curseur-select-projection"></select> Déplacez le viseur pour modifier la position (n'oubliez pas de valider).
             </label>
-            <span><a onclick="viseur.centre()" href="#" title="Remettre le viseur au centre actuel de la carte">Recentrer le viseur sur la carte</a></span>
-            <span><a onclick="viseur.recentre()" href="#" title="Remettre le viseur au centre actuel de la carte">Recentrer la carte sur le viseur</a></span>
-            <span><a onclick="localise()" href="#" title="Mettre le viseur à la position physique du mobile ou de l'ordinateur">Aller à la position du GPS</a></span>
-            <span>Degrés décimaux WGS84 ex: 45.2356 et -5.2354. Déplacez le viseur pour modifier la position (n'oubliez pas de valider).</span>
+            <label>
+				<strong>Attention:</strong> Ces coordonnées sont relatives à l'éllipsoïde WGS84. Il se peut qu'elles ne correspondent pas à d'anciennes cartes. Consultez le cartouche de la carte.
+            </label>
+            <label>
+				<span><a onclick="curseur.setLatLng(map.getCenter())" href="#">Remettre le viseur au centre actuel de la carte</a></span>
+				<br />&nbsp;
+           </label>
             <label>Provenance
                 <select name="id_type_precision_gps">
                 <?php foreach ($vue->infos_base->type_precision AS $gps) { ?>

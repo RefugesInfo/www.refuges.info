@@ -52,7 +52,7 @@ if (isset($_SESSION['id_utilisateur']) )
                 print("
                     <h4>Programmeurs</h4>
                     <ul>
-                        <li><a href='".$config['chemin_openlayers']."build/build.php'>Compression de la librairie OpenLayers</a> aprés modification des sources (dizaine de secondes)</li>
+                        <li><a href='".$config['url_chemin_openlayers']."build/build.php'>Compression de la librairie OpenLayers</a> aprés modification des sources (dizaine de secondes)</li>
                     </ul>
                     ");
 */

@@ -7,7 +7,7 @@
         <i><?=$vue->commentaire->texte?></i>
     </p>
 <p>
-	<form method="post" action="/avis-internaute-commentaire/<?=$vue->commentaire->id_commentaire?>/" />
+	<form method="post" action="<?=$config['sous_dossier_installation']?>avis-internaute-commentaire/<?=$vue->commentaire->id_commentaire?>/" />
 	<ul>
 		<li><input type="radio" name="demande_correction" value="1" />Très utile : ses informations devraient être rajoutées dans la fiche en haut !</li>
 		<li><input type="radio" name="demande_correction" value="-1" />Peu/pas utile : Il n'a rien a voir avec le point ou il est subjectif du style "Il est bien, pas bien, etc."</li>
