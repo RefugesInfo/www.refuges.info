@@ -2,7 +2,7 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-//header("Content-disposition: attachment; filename=bbox.json");
+//header("Content-disposition: attachment; filename=points.json");
 header("Content-Type: application/json; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");

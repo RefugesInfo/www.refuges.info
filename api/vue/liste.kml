@@ -1,0 +1,61 @@
+<?php
+
+$secondes_de_cache = 60;
+$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+header("Content-disposition: attachment; filename=points.kml");
+header("Content-Type: application/vnd.google-earth.kml; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=$secondes_de_cache");
+
+?>
+<?='<?'?>xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+<Document>
+	<name>points.kml</name>
+	<description><?=$config['copyright_API']?></description>
+	
+	<!-- Liste des POINTS -->
+	<Folder><name>Points</name>
+	<open>0</open>
+	
+	<?foreach ($pts AS $point) {?>
+		<Placemark id='<?=$point->id?>'>
+			<name><?=$point->nom?></name>
+			<description>
+<?php
+$pt_lien = new stdClass();
+$pt_lien->id_point = $point->id;
+$pt_lien->nom_type = $point->type['valeur'];
+$pt_lien->nom = $point->nom;
+$point->lien = lien_point($pt_lien);
+unset($pt_lien);
+?>
+				<![CDATA[
+					(<em><?=$point->type['valeur']?></em>) <br />
+					<center><a href='<?=$point->lien?>'>Détails</a></center>
+				]]>
+			</description>
+			<LookAt>
+				<longitude><?=$point->coord['long']?></longitude>
+				<latitude><?=$point->coord['lat']?></latitude>
+				<range>7200</range>
+				<tilt>40</tilt>
+				<heading>50</heading>
+			</LookAt>
+			<Point>
+				<coordinates><?=$point->coord['long']?>,<?=$point->coord['lat']?>,0</coordinates>
+			</Point>
+			<ExtendedData>
+				<Data name="url">
+				<value><?=$point->lien?></value>
+				</Data>
+			</ExtendedData>
+		</Placemark>
+	<?}?>
+	</Folder>
+
+</Document>
+</kml>
