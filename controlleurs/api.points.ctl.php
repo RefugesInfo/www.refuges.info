@@ -20,7 +20,7 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
-$req->page = $cible;
+$req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
 $req->bbox = $_GET['bbox'];
 $req->id = $_GET['id'];
 $req->format = $_GET['format'];
@@ -33,7 +33,7 @@ $req->type_points = $_GET['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "gpi", "csv", "xml"/*, "yaml"*/);
+$val->format = array("geojson", "kmz", "kml",/* "gml", "gpx", "gpi", "csv",*/ "xml"/*, "yaml", "rss"*/);
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
 $val->detail = array("simple", "complet");
 $val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac");
@@ -337,15 +337,11 @@ unset($pts_bruts, $i);
 
 /****************************** FORMAT VUE ******************************/
 
-
 switch ($req->format) {
     case 'geojson':
         include('../vues/api/points.vue.json');
         break;
-    // case 'kmz':
-    //     include('../vues/api/points.vue.kmz');
-    //     break;
-    case 'kml':
+    case 'kml': case 'kmz':
         include('../vues/api/points.vue.kml');
         break;
     // case 'gml':

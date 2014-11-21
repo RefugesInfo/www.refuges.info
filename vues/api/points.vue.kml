@@ -2,60 +2,71 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: attachment; filename=points.kml");
-header("Content-Type: application/vnd.google-earth.kml; UTF-8"); // rajout du charset
+header("Content-disposition: attachment; filename=points.$req->format");
+header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
 if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
-?>
-<?='<?'?>xml version="1.0" encoding="utf-8"?>
-<kml xmlns="http://earth.google.com/kml/2.1">
-<Document>
-	<name>points.kml</name>
-	<description><?=$config['copyright_API']?></description>
+
+$kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
+$kml .= "<kml xmlns=\"http://earth.google.com/kml/2.1\">\r\n";
+$kml .= "<Document>\r\n";
+$kml .= "	<name>points.kml</name>\r\n";
+$kml .= "	<description>$config[copyright_API]</description>\r\n\r\n";
 	
-	<!-- Liste des POINTS -->
-	<Folder><name>Points</name>
-	<open>0</open>
+$kml .= "	<!-- Liste des POINTS -->\r\n";
+$kml .= "	<Folder><name>Points</name>\r\n";
+$kml .= "	<open>0</open>\r\n\r\n";
 	
-	<?foreach ($pts AS $point) {?>
-		<Placemark id='<?=$point->id?>'>
-			<name><?=$point->nom?></name>
-			<description>
-<?php
+foreach ($pts AS $point) {
+$kml .= "		<Placemark id='$point->id'>\r\n";
+$kml .= "			<name>$point->nom</name>\r\n";
+$kml .= "			<description>\r\n";
+
 $pt_lien = new stdClass();
 $pt_lien->id_point = $point->id;
 $pt_lien->nom_type = $point->type['valeur'];
 $pt_lien->nom = $point->nom;
 $point->lien = lien_point($pt_lien);
 unset($pt_lien);
-?>
-				<![CDATA[
-					(<em><?=$point->type['valeur']?></em>) <br />
-					<center><a href='<?=$point->lien?>'>Détails</a></center>
-				]]>
-			</description>
-			<LookAt>
-				<longitude><?=$point->coord['long']?></longitude>
-				<latitude><?=$point->coord['lat']?></latitude>
-				<range>7200</range>
-				<tilt>40</tilt>
-				<heading>50</heading>
-			</LookAt>
-			<Point>
-				<coordinates><?=$point->coord['long']?>,<?=$point->coord['lat']?>,0</coordinates>
-			</Point>
-			<ExtendedData>
-				<Data name="url">
-				<value><?=$point->lien?></value>
-				</Data>
-			</ExtendedData>
-		</Placemark>
-	<?}?>
-	</Folder>
 
-</Document>
-</kml>
+$kml .= "				<![CDATA[\r\n";
+$kml .= "					(<em>".$point->type['valeur']."</em>) <br />\r\n";
+$kml .= "					<center><a href='$point->lien'>Détails</a></center>\r\n";
+$kml .= "				]]>\r\n";
+$kml .= "			</description>\r\n";
+$kml .= "			<LookAt>\r\n";
+$kml .= "				<longitude>".$point->coord['long']."</longitude>\r\n";
+$kml .= "				<latitude>".$point->coord['lat']."</latitude>\r\n";
+$kml .= "				<range>7200</range>\r\n";
+$kml .= "				<tilt>40</tilt>\r\n";
+$kml .= "				<heading>50</heading>\r\n";
+$kml .= "			</LookAt>\r\n";
+$kml .= "			<Point>\r\n";
+$kml .= "				<coordinates>".$point->coord['long'].",".$point->coord['lat'].",0</coordinates>\r\n";
+$kml .= "			</Point>\r\n";
+$kml .= "			<ExtendedData>\r\n";
+$kml .= "				<Data name=\"url\">\r\n";
+$kml .= "				<value>$point->lien</value>\r\n";
+$kml .= "				</Data>\r\n";
+$kml .= "			</ExtendedData>\r\n";
+$kml .= "		</Placemark>\r\n\r\n";
+}
+$kml .= "	</Folder>\r\n\r\n";
+
+$kml .= "</Document>\r\n";
+$kml .= "</kml>\r\n";
+
+if ($req->format=="kmz")
+{
+	$zip = new zipfile() ; //on crée un fichier zip
+	$zip->addfile($kml, "points.kml") ; //on ajoute le fichier
+	$kmz = $zip->file() ; //on associe l'archive
+	echo $kmz;
+}
+else {
+	echo $kml;
+}
