@@ -33,7 +33,7 @@ $req->type_points = $_GET['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("geojson", "kmz", "kml",/* "gml", "gpx", "gpi", "csv",*/ "xml"/*, "yaml", "rss"*/);
+$val->format = array("geojson", "kmz", "kml", "gml",/* "gpx", "gpi", "csv",*/ "xml"/*, "yaml", "rss"*/);
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
 $val->detail = array("simple", "complet");
 $val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac");
@@ -344,9 +344,9 @@ switch ($req->format) {
     case 'kml': case 'kmz':
         include('../vues/api/points.vue.kml');
         break;
-    // case 'gml':
-    //     include('../vues/api/points.vue.gml');
-    //     break;
+    case 'gml':
+        include('../vues/api/points.vue.gml');
+        break;
     // case 'gpx':
     //     include('../vues/api/points.vue.gpx');
     //     break;
