@@ -18,23 +18,23 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 	<name>points.gml</name>
 	<description>$config[copyright_API]</description>\r\n";
 
-foreach ($pts as $pt) {
-	$pt_lien = new stdClass();
-	$pt_lien->id_point = $pt->id;
-	$pt_lien->nom_type = $pt->type['valeur'];
-	$pt_lien->nom = $pt->nom;
-	$pt->lien = lien_point($pt_lien);
+foreach ($points as $point) {
+	$point_lien = new stdClass();
+	$point_lien->id_point = $point->id;
+	$point_lien->nom_type = $point->type['valeur'];
+	$point_lien->nom = $point->nom;
+	$point->lien = lien_point($point_lien);
 
-	unset($pt_lien);
+	unset($point_lien);
 	echo "	<gml:featureMember>
 		<point_wri>
-			<nom>".$pt->nom."</nom>
-			<type>".$pt->type['valeur']."</type>
-			<icone>".$pt->type['icone']."</icone>
-			<url>".$pt->lien."</url>
-			<altitude>".$pt->coord['alt']."</altitude>
+			<nom>".$point->nom."</nom>
+			<type>".$point->type['valeur']."</type>
+			<icone>".$point->type['icone']."</icone>
+			<url>".$point->lien."</url>
+			<altitude>".$point->coord['alt']."</altitude>
 			<gml:Point>
-				<gml:coordinates decimal=\".\" cs=\",\" ts=\" \">".$pt->coord['long'].",".$pt->coord['lat']."</gml:coordinates>
+				<gml:coordinates decimal=\".\" cs=\",\" ts=\" \">".$point->coord['long'].",".$point->coord['lat']."</gml:coordinates>
 			</gml:Point>
 		</point_wri>
 	</gml:featureMember>\r\n";

@@ -13,6 +13,7 @@ header("Cache-Control: max-age=$secondes_de_cache");
 include("xml.class.php");
 
 $xmlOutput = new XMLSerializer;
-echo $xmlOutput->generateValidXmlFromObj($pts);
+$points->copyright = $config[copyright_API];
+echo $xmlOutput->generateValidXmlFromObj($points);
 
 ?>

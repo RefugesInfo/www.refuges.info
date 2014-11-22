@@ -21,21 +21,21 @@ echo '",
 	"features": [';
 
 $j = 0;
-foreach ($pts as $pt) {
+foreach ($points as $point) {
 	$j++;
 	echo "\r\n\t".'{'."\r\n\t\t".'"type": "Feature",
-		"id": '.$pt->id.',
+		"id": '.$point->id.',
 		"properties":'."\r\n\t\t\t";
-	echo json_encode($pt);
+	echo json_encode($point);
 	echo ",\r\n\t\t".'"geometry": {
 			"type": "Point",
 			"coordinates": ['."\r\n";
-	echo "\t\t\t\t".$pt->coord['long'].",\r\n";
-	echo "\t\t\t\t".$pt->coord['lat']."\r\n";
+	echo "\t\t\t\t".$point->coord['long'].",\r\n";
+	echo "\t\t\t\t".$point->coord['lat']."\r\n";
 	echo "\t\t\t]
 		}
 	}";
-	if ($j != $nbpts) echo ",";
+	if ($j != $nombre_points) echo ",";
 	else echo "\r\n\t]\r\n";
 }
 

@@ -1,0 +1,71 @@
+<?php
+
+$secondes_de_cache = 60;
+$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+header("Content-disposition: filename=points.gpx");
+//header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
+header("Content-Type: application/xml; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=$secondes_de_cache");
+
+
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
+<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"refuges.info\" version=\"1.1\" 
+    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
+    xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">
+<metadata>
+	<name>points.gpx</name>
+	<desc>$config[copyright_API]</desc>
+	<author>
+		<name>Contributeurs refuges.info</name>
+	</author>
+	<copyright author=\"Contributeurs refuges.info\">
+		<year>2014</year>
+		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
+	</copyright>
+	<link href=\"http://$config[nom_hote]/\">
+		<text>http://$config[nom_hote]/</text>
+		<type>text/html</type>
+	</link>
+</metadata>\r\n";
+
+
+foreach ($points AS $point) {
+	echo "<wpt lat=\"".$point->coord['lat']."\" lon=\"".$point->coord['long']."\">\r\n";
+	echo "	<ele>".$point->coord['alt']."</ele>\r\n";
+	echo "	<name>".$point->nom."</name>\r\n";
+	echo "	<type>".$point->type['valeur']."</type>\r\n";
+		
+	if ($req->detail == "complet") {
+		echo "	<cmt>".$point->acces['nom']." : ".$point->acces['valeur']."</cmt>\r\n";
+		echo "	<desc>".$point->remarque['nom']." : ".$point->remarque['valeur']."</desc>\r\n";
+		echo "	<src>".$point->coord['precision']['nom']."</src>\r\n";
+
+		$point_lien = new stdClass();
+		$point_lien->id_point = $point->id;
+		$point_lien->nom_type = $point->type['valeur'];
+		$point_lien->nom = $point->nom;
+		$point->lien = lien_point($point_lien);
+		unset($point_lien);
+
+		echo "	<link href=\"$point->lien\">\r\n";
+		echo "		<text>$point->nom sur $config[nom_hote]</text>\r\n";
+		echo "		<type>text/html</type>\r\n";
+		echo "	</link>\r\n";
+		echo "	<extensions>\r\n";
+		echo "		<id_point>$point->id</id_point>\r\n";
+		echo "		<id_qualite_gps>".$point->coord['precision']['type']."</id_qualite_gps>\r\n";
+		echo "		<nombre_place>".$point->places['nom']." : ".$point->places['valeur']."</nombre_place>\r\n";
+		echo "		<renseignements>".$point->proprio['nom']." : ".$point->proprio['valeur']."</renseignements>\r\n";
+		echo "		<id_type_point>".$point->type['id']."</id_type_point>\r\n";
+		echo "	</extensions>\r\n";
+	}
+	echo "</wpt>\r\n";
+}
+
+echo "</gpx>";
+
+?>
