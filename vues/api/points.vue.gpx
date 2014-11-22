@@ -2,9 +2,9 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: filename=points.gpx");
-//header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
-header("Content-Type: application/xml; UTF-8"); // rajout du charset
+header("Content-disposition: filename=points.$req->format");
+if ($req->format == "gpx") header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
+else if ($req->format == "gpi") header("Content-Type: application/binary; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
@@ -17,7 +17,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">
 <metadata>
-	<name>points.gpx</name>
+	<name>points.$req->format</name>
 	<desc>$config[copyright_API]</desc>
 	<author>
 		<name>Contributeurs refuges.info</name>
