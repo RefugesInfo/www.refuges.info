@@ -1,0 +1,27 @@
+<?php
+
+$secondes_de_cache = 60;
+$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+header("Content-disposition: filename=points.csv");
+header("Content-Type: text/csv; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=$secondes_de_cache");
+
+$separateur=";";
+
+echo "#".$config[copyright_API]."\r\n";
+echo "id_point".$separateur."nom".$separateur."type".$separateur."altitude".$separateur."latitude".$separateur."longitude".$separateur."état".$separateur."nombre de place".$separateur."lien\r\n";
+
+foreach ($points AS $point) {
+	$point_lien = new stdClass();
+	$point_lien->id_point = $point->id;
+	$point_lien->nom_type = $point->type['valeur'];
+	$point_lien->nom = $point->nom;
+	$point->lien = lien_point($point_lien);
+	unset($point_lien);
+	
+	echo $point->id.$separateur.$point->nom.$separateur.$point->type['valeur'].$separateur.$point->coord['alt'].$separateur.$point->coord['lat'].$separateur.$point->coord['long'].$separateur.$point->etat['valeur'].$separateur.$point->places['valeur'].$separateur.$point->lien."\r\n";
+}
