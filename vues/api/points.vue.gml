@@ -30,6 +30,7 @@ foreach ($pts as $pt) {
 		<point_wri>
 			<nom>".$pt->nom."</nom>
 			<type>".$pt->type['valeur']."</type>
+			<icone>".$pt->type['icone']."</icone>
 			<url>".$pt->lien."</url>
 			<altitude>".$pt->coord['alt']."</altitude>
 			<gml:Point>

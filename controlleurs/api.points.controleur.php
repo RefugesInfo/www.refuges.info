@@ -7,6 +7,7 @@
  * http://leo.refuges.info/api/bbox?bbox=5.5,6.5,45.1,45.6 : Un bout d'alpes
 ********************************************/
 include_once("point.php");
+include_once("api.php");
 include_once("mise_en_forme_texte.php");
 include_once("utilisateur.php");
 
@@ -195,6 +196,7 @@ foreach ($pts_bruts as $pt) {
     $pts->$i->coord['alt'] = $pt->altitude;
     $pts->$i->type['id'] = $pt->id_point_type;
     $pts->$i->type['valeur'] = $pt->nom_type;
+    $pts->$i->type['icone'] = choix_icone($pt);
     $pts->$i->places['nom'] = $pt->equivalent_places;
     $pts->$i->places['valeur'] = $pt->places;
     $pts->$i->etat['id'] = $pt->conditions_utilisation;
