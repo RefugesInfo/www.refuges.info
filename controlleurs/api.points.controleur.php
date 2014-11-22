@@ -23,6 +23,7 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 $req = new stdClass();
 $req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
 $req->bbox = $_GET['bbox'];
+$req->massif = $_GET['massif'];
 $req->id = $_GET['id'];
 $req->format = $_GET['format'];
 $req->format_texte = $_GET['format_texte'];
@@ -49,6 +50,9 @@ if(!in_array($req->format,$val->format)) {
         case 'bbox':
             $req->format = "geojson";
             break;
+        case 'massif':
+            $req->format = "geojson";
+            break;
         case 'point':
             $req->format = "geojson";
             break;
@@ -60,6 +64,9 @@ if(!in_array($req->format,$val->format)) {
 if(!in_array($req->format_texte,$val->format_texte)) {
     switch ($req->page) {
         case 'bbox':
+            $req->format_texte = "bbcode";
+            break;
+        case 'massif':
             $req->format_texte = "bbcode";
             break;
         case 'point':
@@ -75,6 +82,9 @@ if(!in_array($req->detail,$val->detail)) {
         case 'bbox':
             $req->detail = "simple";
             break;
+        case 'massif':
+            $req->detail = "simple";
+            break;
         case 'point':
             $req->detail = "complet";
             break;
@@ -86,6 +96,9 @@ if(!in_array($req->detail,$val->detail)) {
 if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
     switch ($req->page) {
         case 'bbox':
+            $req->nb_points = 121;
+            break;
+        case 'massif':
             $req->nb_points = 121;
             break;
         case 'point':
@@ -101,6 +114,9 @@ if(!is_numeric($req->nb_coms)) {
         case 'bbox':
             $req->nb_coms = 0;
             break;
+        case 'massif':
+            $req->nb_coms = 0;
+            break;
         case 'point':
             $req->nb_coms = 5;
             break;
@@ -112,6 +128,9 @@ if(!is_numeric($req->nb_coms)) {
 if(!is_numeric($req->nb_points_proches) || $req->page!="point") { // On empêche le retour de points quand on a plusieurs points proches
     switch ($req->page) {
         case 'bbox':
+            $req->nb_points_proches = 0;
+            break;
+        case 'massif':
             $req->nb_points_proches = 0;
             break;
         case 'point':
@@ -144,7 +163,11 @@ if($req->page == "bbox" &&
     $req->bbox == "world")) {
     exit ("Error : wrong bbox parameter");
 }
-
+// On vérifie que la liste de massif est correcte
+$temp = explode(",", $req->massif);
+foreach ($temp as $massif) {
+    if(!is_numeric($massif)) { exit ("Error : wrong massif id"); }
+}
 
 /****************************** REQUÊTE RÉCUPÉRATION PTS ******************************/
 
@@ -157,6 +180,11 @@ switch ($req->page) {
             $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
         }
         unset($ouest,$sud,$est,$nord);
+        $params->pas_les_points_caches=1;
+        $params->ordre="point_type.importance DESC";
+        break;
+    case 'massif':
+        $params->ids_polygones = $req->massif;
         $params->pas_les_points_caches=1;
         $params->ordre="point_type.importance DESC";
         break;

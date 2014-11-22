@@ -20,7 +20,7 @@ $cible = str_replace($_SERVER['QUERY_STRING'],'',$cible); // On enlève ce qu'il
 $cible = str_replace('?','',$cible); // On enlève le ? (implique pas de ? dans les noms de fichiers)
 
 switch ($cible) {
-    case 'bbox': case 'point':
+    case 'bbox': case 'point': case 'massif':
         include($config['chemin_controlleurs'].'api.points.controleur.php');
         break;
     default:

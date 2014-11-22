@@ -56,6 +56,7 @@ foreach ($points AS $point) {
 	unset($point_lien);
 
 	$kml .= "				<![CDATA[\r\n";
+	$kml .= "					<img src=\"http://$config[nom_hote]/images/icones/".$point->type['icone'].".png\" />\r\n";
 	$kml .= "					(<em>".$point->type['valeur']."</em>) <br />\r\n";
 	$kml .= "					<center><a href='$point->lien'>Détails</a></center>\r\n";
 	$kml .= "				]]>\r\n";
