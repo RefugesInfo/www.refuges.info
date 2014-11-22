@@ -1,0 +1,57 @@
+<?
+
+$secondes_de_cache = 60;
+$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+header("Content-disposition: filename=points.rss");
+header("Content-Type: application/xml; UTF-8"); // rajout du charset
+//header("Content-Type: application/rss+xml; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=$secondes_de_cache");
+
+
+$rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
+$rss .= "<rss version=\"2.0\">\r\n";
+$rss .= "<channel>\r\n";
+$rss .= "	<title>Refuges.info</title>\r\n";
+$rss .= "	<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "	<description>$config[copyright_API]</description>\r\n";
+$rss .= "	<language>fr</language>\r\n";
+$rss .= "	<image>\r\n";
+$rss .= "		<url>http://$config[nom_hote]/mobile/images/icone.svg</url>\r\n";
+$rss .= "		<title>Refuges.info</title>\r\n";
+$rss .= "		<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "		<height>64</height>\r\n";
+$rss .= "		<width>64</width>\r\n";
+$rss .= "	</image>\r\n";
+
+foreach ($points AS $point) {
+	$point_lien = new stdClass();
+	$point_lien->id_point = $point->id;
+	$point_lien->nom_type = $point->type['valeur'];
+	$point_lien->nom = $point->nom;
+	$point->lien = lien_point($point_lien);
+	unset($point_lien);
+
+	$rss .= "	<item>\r\n";
+	$rss .= "		<title>$point->nom</title>\r\n";
+	$rss .= "		<link>$point->lien</link>\r\n";
+	$rss .= "		<pubDate>".$point->date['derniere_modif']." GMT</pubDate>\r\n";
+	$rss .= "		<description><![CDATA[
+			<b>Type</b> : ".$point->type['valeur']."<br>\r\n";
+	if($req->detail == "complet")
+		$rss .= "			<b>".$point->remarque['nom']."</b> : ".$point->remarque['valeur']."<br>
+			<b>".$point->proprio['nom']."</b> : ".$point->proprio['valeur']."<br>
+			<b>".$point->acces['nom']."</b> : ".$point->acces['valeur']."\r\n";
+	$rss .= "			]]></description>\r\n";
+	$rss .= "	</item>\r\n"; 
+}
+
+$rss .= '</channel>';
+$rss .= '</rss>';
+
+echo $rss;
+
+?>

@@ -34,7 +34,7 @@ $req->type_points = $_GET['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "gpi", "csv", "xml"/*, "yaml", "rss"*/);
+$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "gpi", "csv", "xml"/*, "yaml"*/, "rss");
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
 $val->detail = array("simple", "complet");
 $val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac");
@@ -200,7 +200,8 @@ foreach ($points_bruts as $point) {
     $points->$i->places['valeur'] = $point->places;
     $points->$i->etat['id'] = $point->conditions_utilisation;
     $points->$i->etat['valeur'] = texte_non_ouverte($point);
-    // On rajoute des informations complémentaires si on demande détaillé
+    $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
+   // On rajoute des informations complémentaires si on demande détaillé
     if($req->detail == "complet") {
         $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
         $points->$i->coord['precision']['type'] = $point->id_type_precision_gps;
@@ -216,7 +217,6 @@ foreach ($points_bruts as $point) {
             $points->$i->createur['nom']=$point->nom_createur;
         else
             $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
-        $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
         $points->$i->date['creation'] = $point->date_creation;
         $points->$i->article['demonstratif'] = $point->article_demonstratif;
         $points->$i->article['defini'] = $point->article_defini;
@@ -356,6 +356,9 @@ switch ($req->format) {
         break;
     case 'xml':
         include('../vues/api/points.vue.xml');
+        break;
+    case 'rss':
+        include('../vues/api/points.vue.rss');
         break;
     default:
         include('../vues/api/points.vue.json');
