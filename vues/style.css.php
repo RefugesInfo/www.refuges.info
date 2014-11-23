@@ -336,7 +336,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /*=========PUBLICITE==========*/
-@media screen and (min-width: 940px) {
+@media screen and (max-width: 940px) {
   .publicite {
     display: none;
   }
