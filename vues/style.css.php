@@ -335,6 +335,12 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     z-index: 500000;
 }
 
+/*=========PUBLICITE==========*/
+@media screen and (min-width: 940px) {
+  .publicite {
+    display: none;
+  }
+}
 /*==================================================================*/
 /*  ENTETE DE PAGE : Logo, identification & recherche               */
 /*==================================================================*/
@@ -666,4 +672,26 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     height: 80%;
 /*    margin-left: 210px;*/
   }
-  #acc
+  #accueil {
+    width:  300px;
+    height: 320px;
+  }
+  #massifs {
+    width:  800px;
+    height: 600px;
+  }
+  #vignette { /* utilisé par les petites des fiches points */
+    width:  280px;
+    height: 280px;
+  }
+  #carte_edit, .carte_edit {
+    width:  450px; 
+    height: 500px; 
+    float: right;
+    max-width: 100%;
+  }
+  /*Externalise le sélecteur de couche de la carte nav*/
+  #carte_nav .baseLbl, #carte_nav .dataLbl , #carte_nav .dataLayersDiv,
+  #switch_nav .baseLbl, #switch_nav .baseLayersDiv, #switch_nav .dataLbl {
+	display: none;
+  }
