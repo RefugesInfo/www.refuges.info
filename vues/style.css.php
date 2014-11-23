@@ -407,7 +407,20 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     display: block;
   }
 
-/* Paramétrage commun aux deux menus */
+  #fin-entete {
+    clear: both;
+  }
+
+/* ==========MENU POUR ECRANS ========== */
+/* Paramétrage commun aux deux menus en mode ecran large */
+@media screen and (min-width: 641px) {
+  /* On inhibe les affichages non souhaités */
+  .menu > a,
+  .menu span,
+  .mobile-only {
+    display: none;
+  }
+
   .menu UL {
     clear: left;
     white-space: nowrap;
@@ -487,11 +500,67 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     background-color: white;
     background-image: none;
   }
-  #fin-entete {
-    clear: both;
+}
+
+/* ==========MENU POUR MOBILES ========== */
+/* Menu simplifié pour petits écrans */
+ 
+@media screen and (max-width: 640px) {
+  /* On inhibe les affichages non souhaités */
+  .screen-only,
+  #entete,
+  #menu-scroll,
+  .menu > ul {
+    display: none;
+    height: auto;
   }
 
-/* ==========MENU DU BAS ==========        */
+  #menu-normal {
+    width:98%;
+  }
+  .menu {
+    border: solid 2px #<?=$couleur_decoration_titres?>;
+    padding: 2px;
+	font-size: 18px;
+  }
+  .menu > span {
+    float: right;
+	padding: 0 30px;
+    cursor: pointer;
+  }
+  .menu span::after { /* Les 3 bandes signalant l'ouverture du menu */
+    content: "";
+    position: absolute;
+    height: 0;
+    top: 4px;
+    right: 5px;
+    box-shadow: 0 0px 0 1px black, 0 7px 0 1px black, 0 14px 0 1px black;
+    width: 16px;
+  }
+  .menu ul {
+    display: none;
+    text-align: left;
+    padding: 0;
+    font-weight: normal;
+	border: none !important;
+  }
+  .deroule > ul {
+    display: block;
+  }
+  .menu > ul > li {
+    border-top: solid 2px #<?=$couleur_decoration_titres?>;
+	text-align: left;
+  }
+  .menu ul li span {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  .menu ul li ul {
+    padding-left: 10px;
+  }
+}
+
+/* ==========MENU DU BAS ========== */
 /* en bas, il y a un gros div "basdepage" qui englobe la fin */
   #basdepage {
     clear: both;
@@ -528,7 +597,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     padding-right: 0.5em; 
     padding-left: 0.5em;
   }
-  
+
 /*==================================================================*/
 /* LA PAGES DES MASSIFS (Accueil)                                   */
 /*==================================================================*/
@@ -538,7 +607,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     vertical-align: top;
     float: left; /* pour IE7 */
   }
-  
+
 /*==================================================================*/
 /* LES PAGES POINTS                                                 */
 /*==================================================================*/
@@ -597,26 +666,4 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     height: 80%;
 /*    margin-left: 210px;*/
   }
-  #accueil {
-    width:  300px;
-    height: 320px;
-  }
-  #massifs {
-    width:  800px;
-    height: 600px;
-  }
-  #vignette { /* utilisé par les petites des fiches points */
-    width:  280px;
-    height: 280px;
-  }
-  #carte_edit, .carte_edit {
-    width:  450px; 
-    height: 500px; 
-    float: right;
-    max-width: 100%;
-  }
-  /*Externalise le sélecteur de couche de la carte nav*/
-  #carte_nav .baseLbl, #carte_nav .dataLbl , #carte_nav .dataLayersDiv,
-  #switch_nav .baseLbl, #switch_nav .baseLayersDiv, #switch_nav .dataLbl {
-	display: none;
-  }
+  #acc
