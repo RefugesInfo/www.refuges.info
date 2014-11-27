@@ -166,7 +166,7 @@ if($req->page == "bbox" &&
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
 foreach ($temp as $massif) {
-    if(!is_numeric($massif)) { exit ("Error : wrong massif id"); }
+    if($req->page == "massif" && !is_numeric($massif)) { exit ("Error : wrong massif id"); }
 }
 
 /****************************** REQUÊTE RÉCUPÉRATION PTS ******************************/

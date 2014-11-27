@@ -61,6 +61,11 @@ $vue->nouvelles_generales=infos_commentaires($conditions_commentaires_generaux);
 // FIXME: Préparation de la liste des nouveaux commentaires
 // ici, on pourrait vraiment se passer de la fonction nouvelles et ainsi de pas dépendre d'un truc qui génère du HTML
 $vue->nouveaux_commentaires=nouvelles(9,"commentaires");
+foreach ($vue->nouveaux_commentaires as $id => $nouvelle)
+{
+	$vue->nouveaux_commentaires[$id]['date_formatee']=date("d/m/y", $nouvelle['date']);
+	$vue->nouveaux_commentaires[$id]['titre']=bbcode2html($nouvelle['titre']);
+}
 
 // Préparation de la liste des nouveaux points rentrés
 $conditions_nouveaux_points = new stdClass;

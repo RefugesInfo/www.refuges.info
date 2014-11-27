@@ -29,7 +29,6 @@ $conditions->demande_correction=True -> pour récupérer les commentaires en att
 $conditions->avec_commentaires_modele=True -> Très spécifique, pour avoir aussi les commentaires sur les modeles de points, le par défaut est non mais ça n'a de sens qu'avec $conditions->avec_infos_point=True
 $conditions->avec_points_censure=True : Par défaut, False : les commentaires des points censurés ne sont pas retournés
 
-!! A CODER ? !!
 $conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
 
 
@@ -98,14 +97,14 @@ function infos_commentaires ($conditions)
   
 	if ($conditions->demande_correction)
 		$conditions_sql.=" AND demande_correction!=0";
-  
+  	    	  
 	// On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
 	// FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
 	// jmb ca fait un job de trop pour cette fonction. faudrait pourtant bien appeler infos_points pour etre coherent.
 	// ou alors que cette fonction ET infos _points appellent une fonction d'appartenance. Le code ne serait plus en double.
 	// ca rajoute une fonction, mais ca reduit ici, et ca reduit la bas.
 	// Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
-	if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele)
+	if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele OR isset($conditions->ids_polygones))
 	{
             $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
 
@@ -121,6 +120,8 @@ function infos_commentaires ($conditions)
                     $condition_en_plus.=" AND modele!=1 ";
             if (!$conditions->avec_points_censure)
                  $condition_en_plus.=" AND (censure=False) "; 
+             if (isset($conditions->ids_polygones))
+                 $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) "; 
 	}
    
 	$query="SELECT 
@@ -133,9 +134,10 @@ function infos_commentaires ($conditions)
              $conditions_sql$condition_en_plus
            ORDER BY commentaires.date DESC
            $limite";
+
 	if ( ! ($res=$pdo->query($query))) 
 		return erreur("Une erreur sur la requête est survenue",$query);
-
+		
 	//jmb: renvoie un tablo vide, au lieu d'un NULL si pas de comment, => les appelants n'ont plus a tester.
 	$commentaires = array() ;
 	while ($commentaire = $res->fetch())

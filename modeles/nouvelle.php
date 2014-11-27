@@ -45,9 +45,11 @@ elle renvoi un tableau avec :
 - un mix (new)
 - le titre de la liste (new) (pas pu faire autrement pour la liste)
 
-elle prends 2 paramêtres,$nombre news, categorie(s) de news a chercher 
-les categories: séparées par "," comme "forum,refuges" pour les nouveaux messages forum et les nouveaux refuges a la fois
-A disposition : commentaires,refuges,points,forums
+elle prends 3 paramêtres,$nombre news, categorie(s) de news a chercher et $id_massif 
+ * Les categories: séparées par "," comme "forum,refuges" pour les nouveaux messages forum et les nouveaux refuges a la fois
+   A disposition : commentaires,refuges,points,forums
+ * L'ID du massif n'est effectif que sur les commentaires et les points (pas sur le forum)
+   Possibilité de mettre une liste d'ids séparés par une virgule
 
 maintenir l'idée de tout regrouper dans un tableau qu'on tri ensuite
 Conseils d'utilisation : cette fonction n'a de sens que lorsqu'elle mélange plusieurs sources de nature différentes
@@ -59,7 +61,7 @@ array/object et ce serait au controleur/la vue de s'occuper de la mise en forme
 
 ***************************************/
 
-function nouvelles($nombre,$type,$lien_locaux=True)
+function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
 {
     global $config,$pdo;
     $conditions = new stdClass;
@@ -76,6 +78,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                 $conditions_commentaires = new stdclass();
                 $conditions_commentaires->limite=$nombre;
                 $conditions_commentaires->avec_infos_point=True;
+                if($id_massif!="") $conditions_commentaires->ids_polygones=$id_massif;
                 $commentaires=infos_commentaires($conditions_commentaires);
                 foreach ( $commentaires as $commentaire )
                 {
@@ -120,6 +123,7 @@ function nouvelles($nombre,$type,$lien_locaux=True)
                 $conditions->ordre="date_creation DESC";
                 $conditions->limite=$nombre;
                 $conditions->avec_infos_massif=True;
+                if($id_massif!="") $conditions->ids_polygones=$id_massif;
                 $points=infos_points($conditions);
                 if (count($points)!=0)
                     foreach($points as $point)
@@ -192,8 +196,6 @@ function nouvelles($nombre,$type,$lien_locaux=True)
     // FIXME c'est à faire dans le controleur ça, pas dans le modèle
     foreach ($news_array as $nouvelle)
     {
-        $nouvelle['date_formatee']=date("d/m/y", $nouvelle['date']);
-        $nouvelle['titre']=bbcode2html($nouvelle['titre']);
         $nouvelles[]=$nouvelle;
         $nb++;
         if ($nb>=$nombre)
@@ -201,5 +203,4 @@ function nouvelles($nombre,$type,$lien_locaux=True)
     }
     return $nouvelles;
 }
-
 ?>

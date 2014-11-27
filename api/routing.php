@@ -23,6 +23,9 @@ switch ($cible) {
     case 'bbox': case 'point': case 'massif':
         include($config['chemin_controlleurs'].'api.points.controleur.php');
         break;
+    case 'contributions':
+        include($config['chemin_controlleurs'].'api.contributions.controleur.php');
+        break;
     default:
         header('Location:doc/');
         //echo $cible;

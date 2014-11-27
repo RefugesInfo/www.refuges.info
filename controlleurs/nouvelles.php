@@ -22,6 +22,12 @@ $types_nouvelles = $_GET ['quoi']
 			  ? $_GET ['quoi']
 			  : 'commentaires,points,forums';
 $vue->nouvelles = nouvelles ($nombre,$types_nouvelles);
+foreach ($vue->nouvelles as $id => $nouvelle)
+{
+	$vue->nouvelles[$id]['date_formatee']=date("d/m/y", $nouvelle['date']);
+	$vue->nouvelles[$id]['titre']=bbcode2html($nouvelle['titre']);
+	echo $nouvelle['titre']."\t\t\t => \t\t\t".$vue->nouvelles[$id]['titre']."<br>";
+}
 $page_nouvelles=recupere_contenu("nouvelles_generales");
 $vue->nouvelles_generales=$page_nouvelles->contenu_html;
 ?>
