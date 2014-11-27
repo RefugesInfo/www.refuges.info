@@ -84,15 +84,15 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 {
                     $news_array[$i]['date'] = $commentaire->ts_unix_commentaire;
                     $news_array[$i]['categorie']="Commentaire";
-                    $news_array[$i]['lien']="http://".$_SERVER['SERVER_NAME'].$config['sous_dossier_installation'].lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
+                    $news_array[$i]['lien']=lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
                     $news_array[$i]['titre']=$commentaire->nom;
                     if ($commentaire->photo_existe)
                         $news_array[$i]['photo']="1";
-                    if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire==0)
+                    if ($commentaire->auteur_commentaire!="")
+                    {
                         $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
-                    else if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire!=0) {
-                        $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
-						$news_array[$i]['lien_auteur'] = "http://".$_SERVER['SERVER_NAME'].$config['fiche_utilisateur'].$commentaire->id_createur_commentaire;
+						if ($commentaire->id_createur_commentaire!=0)
+							$news_array[$i]['lien_auteur'] = "http://".$_SERVER['SERVER_NAME'].$config['fiche_utilisateur'].$commentaire->id_createur_commentaire;
 					}
                     // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
                     // la ya un massif
@@ -103,7 +103,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                             $espace="";
                         else
                             $espace=" ";
-                        $news_array[$i]['lien_massif']="http://".$_SERVER['SERVER_NAME'].$config['sous_dossier_installation'].lien_polygone($commentaire,$lien_locaux);
+                        $news_array[$i]['lien_massif']=lien_polygone($commentaire,$lien_locaux);
                         $news_array[$i]['partitif_massif'] = $commentaire->article_partitif.$espace;
                         $news_array[$i]['massif'] = $commentaire->nom_polygone;
                     } 
@@ -121,19 +121,20 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 if (count($points)!=0)
                     foreach($points as $point)
                     {
-                        $categorie="Ajout $point->article_partitif_point_type $point->nom_type";
+                        $news_array[$i]['categorie']="Point";
                         if ($point->nom_createur!="")
                         {
-                            $nom_createur=bbcode2html($point->nom_createur);
-                            if ($point->id_createur==0)
-                                $categorie.=" par $nom_createur";
-                            else
-                                $categorie.=" par <a href=\"".$config['fiche_utilisateur']."$point->id_createur\">$nom_createur</a>";
+                            $news_array[$i]['auteur']=$point->nom_createur;
+                            if ($point->id_createur!=0)
+                                $news_array[$i]['lien_auteur'] =  "http://".$_SERVER['SERVER_NAME'].$config['fiche_utilisateur'].$point->id_createur;
                         }
-                            
-                        $lien=lien_point($point,$lien_locaux);
-                        $titre=bbcode2html($point->nom);
                         
+                        $news_array[$i]['lien']=lien_point($point,$lien_locaux);
+                        $news_array[$i]['titre']=$point->nom;
+                        $news_array[$i]['partitif_point']=$point->article_partitif_point_type;
+                        $news_array[$i]['type_point']=$point->nom_type;
+                        $news_array[$i]['date']=$point->date_creation_timestamp;
+
                         // si le point n'appartient à aucun massif, pas de lien vers le massif
                         if (isset($point->id_massif))
                         {
@@ -142,19 +143,11 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                                 $espace="";
                             else
                                 $espace=" ";
-                            
-                            $lien_massif="dans le 
-                            <a href=\"".lien_polygone($point,$lien_locaux)."\">massif $point->article_partitif_massif$espace$point->nom_massif</a>";
+							$news_array[$i]['lien_massif']=lien_polygone($point,$lien_locaux);
+							$news_array[$i]['partitif_massif'] = $point->article_partitif.$espace;
+							$news_array[$i]['massif'] = $point->nom_polygone;
                         }
-                        else
-                            $lien_massif="";
-                        
-                        $texte="$categorie : 
-                        <a href=\"$lien\">".mb_ucfirst($titre)."</a>
-                        $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
-                        $news_array[] = array($point->date_creation_timestamp,"texte"=>$texte,
-                                              "date"=>$point->date_creation_timestamp,"categorie"=>$categorie,
-                                              "titre"=>$titre,"lien"=>$lien); 
+						$i++;
                     }
                     break;
                 
@@ -167,13 +160,11 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 if (count($commentaires_forum)>0)
                     foreach ( $commentaires_forum as $commentaire_forum)
                     {
-                        $lien=$config['sous_dossier_installation']."forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
-                        $categorie="Sur le forum";
-                        $titre=$commentaire_forum->topic_title;
-                        $texte="$categorie : <a href=\"$lien\">$titre</a>"; // FIXME mieux vaudrait revoir le format du tableau sans HTML
-                        $news_array[] = array($commentaire_forum->date,"texte"=>$texte,
-                                              "date"=>$commentaire_forum->date,"categorie"=>$categorie,
-                                              "titre"=>$titre,"lien"=>$lien); 
+                        $news_array[$i]['lien']=$config['sous_dossier_installation']."forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+                        $news_array[$i]['categorie']="Forum";
+                        $news_array[$i]['titre']=$commentaire_forum->topic_title;
+                        $news_array[$i]['date']=$commentaire_forum->date;
+                        $i++;
                     }
                     break;
         }
@@ -223,7 +214,7 @@ function texte_nouvelles($nouvelles) {
 					if (isset($nouvelle['lien_auteur']))
 						$texte .= "[/url]";
 				}
-				$texte .= " sur [url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
+				$texte .= " sur [url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
 				if (isset($nouvelle['massif']))
 					$texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
 				break;
@@ -238,7 +229,7 @@ function texte_nouvelles($nouvelles) {
 						$texte .= "[/url]";
 				}
 				$texte .= " : ";
-				$texte .= "[url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
+				$texte .= "[url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
 				if (isset($nouvelle['massif']))
 					$texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
 				break;
