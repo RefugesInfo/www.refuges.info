@@ -106,7 +106,11 @@ function infos_commentaires ($conditions)
 	// Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
 	if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele OR isset($conditions->ids_polygones))
 	{
-            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
+            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom)";
+            if(!isset($conditions->ids_polygones))
+                $table_en_plus.=" AND polygones.id_polygone_type=".$config['id_massif'].")";
+            else
+                $table_en_plus.=")";
 
             $condition_en_plus.=" AND points.id_point=commentaires.id_point 
                      AND points_gps.id_point_gps=points.id_point_gps

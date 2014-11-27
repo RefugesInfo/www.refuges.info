@@ -1,0 +1,58 @@
+<?
+
+$secondes_de_cache = 60;
+$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+header("Content-disposition: filename=contributions.rss");
+header("Content-Type: application/xml; UTF-8"); // rajout du charset
+//header("Content-Type: application/rss+xml; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=$secondes_de_cache");
+
+
+$rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
+$rss .= "<rss version=\"2.0\">\r\n";
+$rss .= "<channel>\r\n";
+$rss .= "	<title>Refuges.info</title>\r\n";
+$rss .= "	<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "	<description>$config[copyright_API]</description>\r\n";
+$rss .= "	<language>fr</language>\r\n";
+$rss .= "	<image>\r\n";
+$rss .= "		<url>http://$config[nom_hote]/mobile/images/icone.svg</url>\r\n";
+$rss .= "		<title>Refuges.info</title>\r\n";
+$rss .= "		<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "		<height>64</height>\r\n";
+$rss .= "		<width>64</width>\r\n";
+$rss .= "	</image>\r\n";
+
+foreach ($news AS $nouvelle) {
+	$rss .= "	<item>\r\n";
+	$rss .= "		<title>$nouvelle[categorie] : $nouvelle[titre]</title>\r\n";
+	$rss .= "		<link>$nouvelle[lien]</link>\r\n";
+	$rss .= "		<pubDate>".date(r,$nouvelle['date'])." GMT</pubDate>\r\n";
+	$rss .= "		<description><![CDATA[
+			<b><big>$nouvelle[texte]</big></b><br>\r\n";
+	switch ($nouvelle['categorie']) {
+		case 'Commentaire':
+			$rss .= "			<p style='color:grey;'>$nouvelle[commentaire]";
+			if ($nouvelle['photo']) {
+				$rss .= "<br><a href='$nouvelle[photo_originale]'><img src='$nouvelle[photo_mini]' /></a>";
+			}
+			$rss .= "</p>\r\n";
+			break;
+		case 'Point':
+			$rss .= "			<p style='color:grey;'><b>Remarques :</b> $nouvelle[remarques]<br><b>Accès :</b> $nouvelle[acces]</p>";
+			break;
+	}
+	$rss .= "			]]></description>\r\n";
+	$rss .= "	</item>\r\n"; 
+}
+
+$rss .= '</channel>';
+$rss .= '</rss>';
+
+echo $rss;
+
+?>

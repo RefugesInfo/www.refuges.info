@@ -270,7 +270,47 @@
             </p>
             <h2 id="/api/contributions">Dernières contributions</h2>
             <p>
-                En cours de développement
+                La requête <a href="#/api/contributions"><span class="methode">GET</span><span class="url">/api/contributions</span></a> permet de retourner les dernières contributions sur refuges.info.
+                <table>
+                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr>
+                        <td>type</td>
+                        <td><span class="opt">Optionnel</span> Le ou les types de contributions à lister, à choisir parmis <span class="url">points</span> (tous les ajouts de points), <span class="url">refuges</span> (tous les ajouts de points pouvant servir d'abris, exclut donc lac, sources...), <span class="url">commentaires</span> et <span class="url">forum</span> (ne concerne pas le forum de développement).</td>
+                        <td><span class="url">points,commentaires</span></td>
+                        <td><span class="url">points,commentaires,forum</span>, <span class="url">forum</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>format</td>
+                        <td><span class="opt">Optionnel</span> Le format de l'export.</td>
+                        <td><span class="url">json</span></td>
+                        <td><span class="url">json</span>, <span class="url">csv</span>, <span class="url">xml</span>, <span class="url">rss</span></td>
+                    </tr>
+                    <tr>
+                        <td>format_texte</td>
+                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
+                        <td><span class="url">bbcode</span></td>
+                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
+                    </tr>
+                    <tr>
+                        <td>nombre</td>
+                        <td><span class="opt">Optionnel</span> Le nombre de contributions à retourner, bloqué à 100 (nous contacter si ce n'est pas suffisant).</td>
+                        <td><span class="url">15</span></td>
+                        <td><span class="url">42</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>massif</td>
+                        <td><span class="opt">Optionnel</span> L'id du ou des massif(s) à exporter (ces ids peuvent être récupérés via la requête <a href="#/api/polygones"><span class="methode">GET</span><span class="url">/api/polygones</span></a>). Les ids sont séparés par des virgules lorsqu'ils sont plusieurs.</td>
+                        <td>Tous les massifs</td>
+                        <td><span class="url">8,9,11</span>, <span class="url">352</span>...</td>
+                    </tr>
+                </table>
+            </p>
+            <p>
+                Notons que lorsque les variables booléennes, sont à 1 pour VRAI et 0 pour FAUX (par exemple pour les informations complémentaires). Lorsqu'une variable est non définie (NULL), c'est tout simplement que nous le champ n'a pas de valeur car il n'a pas lieu d'être (couvertures pour un sommet par exemple) ou que la valeur est inconnue.
+            </p>
+            <p>
+                Voici un exemple de requête : 
+                <a class="url" href="../contributions?format=rss&format_texte=html&massif=351">api/contributions?format=rss&format_texte=html&massif=351</a>
             </p>
             <h2 id="/api/polygones">Polygones de la base de donnée (massifs, parcs, cartes...)</h2>
             <p>

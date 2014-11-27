@@ -17,13 +17,88 @@ function updatebbcode2txt(&$html) { $html=bbcode2txt($html); }
 function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html===TRUE) { $html='1'; } }
 /****************************************/
 
-$news = nouvelles(5,"points","",False);
-echo "<!-- DOCTYPE --><html><body><pre>";
-print_r ($news);
-echo "</pre><p style='color: #c1c1c1; background: #212121;'>";
-$toto = texte_nouvelles($news);
-foreach ($toto as $value) {
-	echo bbcode2html($value['texte'])."<br>";
+// Dans un premier temps on met en place l'objet contenant la requête
+$req = new stdClass();
+$req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
+$req->type = $_GET['type'];
+$req->format = $_GET['format'];
+$req->format_texte = $_GET['format_texte'];
+$req->nombre = $_GET['nombre'];
+$req->massif = $_GET['massif'];
+
+// Ici c'est les valeurs possibles
+$val = new stdClass();
+$val->format = array("json", "csv", "xml", "rss");
+$val->format_texte = array("bbcode", "texte", "markdown", "html");
+$val->type = array("commentaires", "points", "refuges", "forum");
+
+
+/****************************** VALEURS PAR DÉFAUT - PARAMS FACULTATIFS ******************************/
+
+
+// On teste chaque champ pour voir si la valeur est correcte, sinon valeur par défaut
+if(!in_array($req->format,$val->format))
+    $req->format = "json";
+if(!in_array($req->format_texte,$val->format_texte))
+    $req->format = "bbcode";
+// On vérifie que les types sont ok
+$temp = explode(",", $req->type);
+foreach ($temp as $type) {
+    if(!in_array($type,$val->type)) { $req->type = "points,commentaires"; break; }
 }
-echo"</p></body></html>";
+// On vérifie que le nom est correct, ou pas trop élevé
+if(!is_numeric($req->nombre))
+	$req->nombre = 15;
+elseif ($req->nombre > 100)
+	$req->nombre = 100;
+// On vérifie que la liste de massif est correcte
+$temp = explode(",", $req->massif);
+foreach ($temp as $massif) {
+    if(!is_numeric($massif)) { $req->massif = ""; }
+}
+
+/****************************** REQUÊTE RÉCUPÉRATION NOUVELLES ******************************/
+
+$news = nouvelles($req->nombre,$req->type,$req->massif,False);
+$news = texte_nouvelles($news); // On ajoute le texte
+foreach ($news as $id => $nouvelle)
+{
+	$news[$id]['date_formatee']=date("d/m/y", $nouvelle['date']);
+}
+
+/****************************** FORMATAGE DU TEXTE ******************************/
+
+// On transforme le texte dans la correcte syntaxe
+if($req->format_texte == "texte") {
+    array_walk_recursive($news, 'updatebbcode2txt');
+}
+elseif($req->format_texte == "html") {
+    array_walk_recursive($news, 'updatebbcode2html');
+}
+elseif($req->format_texte == "markdown") {
+    array_walk_recursive($news, 'updatebbcode2markdown');
+}
+array_walk_recursive($news, 'updatebool2char'); // Remplace les False et True en 0 ou 1
+
+
+/****************************** FORMAT VUE ******************************/
+
+switch ($req->format) {
+    case 'json':
+        include('../vues/api/contributions.vue.json');
+        break;
+    case 'xml':
+        include('../vues/api/contributions.vue.xml');
+        break;
+    case 'csv':
+        include('../vues/api/contributions.vue.csv');
+        break;
+    case 'rss':
+        include('../vues/api/contributions.vue.rss');
+        break;
+    default:
+        include('../vues/api/contributions.vue.json');
+        break;
+}
+
 ?>

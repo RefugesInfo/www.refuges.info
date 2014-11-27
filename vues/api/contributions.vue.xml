@@ -2,7 +2,7 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: filename=points.xml");
+header("Content-disposition: filename=contributions.xml");
 header("Content-Type: application/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
@@ -13,7 +13,7 @@ header("Cache-Control: max-age=$secondes_de_cache");
 include("xml.class.php");
 
 $xmlOutput = new XMLSerializer;
-$points->copyright = $config[copyright_API];
-echo $xmlOutput->generateValidXmlFromObj($points);
+$news['copyright'] = $config[copyright_API];
+echo $xmlOutput->generateValidXmlFromArray($news);
 
 ?>

@@ -2,18 +2,16 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: filename=points.xml");
-header("Content-Type: application/xml; UTF-8"); // rajout du charset
+header("Content-disposition: filename=contributions.json");
+header("Content-Type: application/json; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
 if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
-include("xml.class.php");
+$news['copyright'] = $config[copyright_API];
+echo json_encode($news);
 
-$xmlOutput = new XMLSerializer;
-$points->copyright = $config[copyright_API];
-echo $xmlOutput->generateValidXmlFromObj($points);
 
 ?>

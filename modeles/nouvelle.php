@@ -86,8 +86,12 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                     $news_array[$i]['categorie']="Commentaire";
                     $news_array[$i]['lien']=lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
                     $news_array[$i]['titre']=$commentaire->nom;
-                    if ($commentaire->photo_existe)
+                    $news_array[$i]['commentaire']=$commentaire->texte;
+                    if ($commentaire->photo_existe) {
                         $news_array[$i]['photo']="1";
+                        $news_array[$i]['photo_mini']=$commentaire->lien_photo['reduite'];
+                        $news_array[$i]['photo_originale']=$commentaire->lien_photo['originale'];
+                    }
                     if ($commentaire->auteur_commentaire!="")
                     {
                         $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
@@ -133,6 +137,8 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         $news_array[$i]['titre']=$point->nom;
                         $news_array[$i]['partitif_point']=$point->article_partitif_point_type;
                         $news_array[$i]['type_point']=$point->nom_type;
+                        $news_array[$i]['remarques']=$point->remark;
+                        $news_array[$i]['acces']=$point->acces;
                         $news_array[$i]['date']=$point->date_creation_timestamp;
 
                         // si le point n'appartient à aucun massif, pas de lien vers le massif

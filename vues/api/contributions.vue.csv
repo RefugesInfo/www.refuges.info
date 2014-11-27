@@ -1,0 +1,20 @@
+<?php
+
+$secondes_de_cache = 60;
+$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+header("Content-disposition: filename=contributions.csv");
+header("Content-Type: text/csv; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=$secondes_de_cache");
+
+$separateur=";";
+
+echo "#".$config[copyright_API]."\r\n";
+echo "date".$separateur."categorie".$separateur."lien".$separateur."titre".$separateur."auteur\r\n";
+
+foreach ($news AS $nouvelle) {
+	echo $nouvelle['date'].$separateur.'"'.$nouvelle['categorie'].'"'.$separateur.'"'.$nouvelle['lien'].'"'.$separateur.'"'.$nouvelle['titre'].'"'.$separateur.'"'.$nouvelle['auteur'].'"'."\r\n";
+}
