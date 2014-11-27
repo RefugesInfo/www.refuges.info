@@ -49,8 +49,8 @@ foreach ($commentaires_avec_photos_recentes as $commentaire_avec_photo_recente)
     $commentaire_avec_photo_recente->nom=bbcode2html($commentaire_avec_photo_recente->nom);
     $vue->photos_recentes[]=$commentaire_avec_photo_recente;
 }
-
-$vue->lien_a_propos_site=lien_wiki("index");
+$contenu_accueil=recupere_contenu("contenu_accueil");
+$vue->contenu_accueil=$contenu_accueil->contenu_html;
 
 // Préparation de la liste des nouvelles générales
 $conditions_commentaires_generaux = new stdClass;
