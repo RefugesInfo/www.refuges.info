@@ -17,7 +17,7 @@ function updatebbcode2txt(&$html) { $html=bbcode2txt($html); }
 function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html===TRUE) { $html='1'; } }
 /****************************************/
 
-$news = nouvelles(2,"commentaires");
+$news = nouvelles(15,"commentaires");
 echo "<!-- DOCTYPE --><html><body><pre>";
 print_r ($news);
 echo "</pre><pre style='color: #c1c1c1; background: #212121;'>";

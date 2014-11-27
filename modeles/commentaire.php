@@ -106,14 +106,11 @@ function infos_commentaires ($conditions)
 	// Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
 	if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele OR isset($conditions->ids_polygones))
 	{
-            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom))";
+            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
 
             $condition_en_plus.=" AND points.id_point=commentaires.id_point 
                      AND points_gps.id_point_gps=points.id_point_gps
                      AND point_type.id_point_type=points.id_point_type";
-            
-            if(isset($conditions->ids_polygones))
-				$condition_en_plus .= " AND polygones.id_polygone_type=".$config['id_massif'];
                      
             $champ_en_plus.=",points.*,point_type.*,";
             // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
@@ -124,7 +121,7 @@ function infos_commentaires ($conditions)
                     $condition_en_plus.=" AND modele!=1 ";
             if (!$conditions->avec_points_censure)
                  $condition_en_plus.=" AND (censure=False) "; 
-             if (isset($conditions->ids_polygones))
+            if (isset($conditions->ids_polygones))
                  $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) "; 
 	}
    
@@ -138,7 +135,6 @@ function infos_commentaires ($conditions)
              $conditions_sql$condition_en_plus
            ORDER BY commentaires.date DESC
            $limite";
-
 	if ( ! ($res=$pdo->query($query))) 
 		return erreur("Une erreur sur la requête est survenue",$query);
 		

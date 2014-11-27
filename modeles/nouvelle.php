@@ -75,7 +75,6 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
         switch ($tok) 
         {
             case "commentaires":
-                $type_news="nouveau_commentaire";
                 $conditions_commentaires = new stdclass();
                 $conditions_commentaires->limite=$nombre;
                 $conditions_commentaires->avec_infos_point=True;
@@ -83,7 +82,6 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 $commentaires=infos_commentaires($conditions_commentaires);
                 foreach ( $commentaires as $commentaire )
                 {
-                    $news_array[$i][0] = $commentaire->ts_unix_commentaire;
                     $news_array[$i]['date'] = $commentaire->ts_unix_commentaire;
                     $news_array[$i]['categorie']="Commentaire";
                     $news_array[$i]['lien']="http://".$_SERVER['SERVER_NAME'].$config['sous_dossier_installation'].lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
@@ -92,9 +90,10 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         $news_array[$i]['photo']="1";
                     if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire==0)
                         $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
-                    else if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire!=0)
+                    else if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire!=0) {
                         $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
 						$news_array[$i]['lien_auteur'] = "http://".$_SERVER['SERVER_NAME'].$config['fiche_utilisateur'].$commentaire->id_createur_commentaire;
+					}
                     // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
                     // la ya un massif
                     if (isset($commentaire->id_polygone))
@@ -104,7 +103,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                             $espace="";
                         else
                             $espace=" ";
-                        $news_array[$i]['lien_massif']=lien_polygone($commentaire,$lien_locaux);
+                        $news_array[$i]['lien_massif']="http://".$_SERVER['SERVER_NAME'].$config['sous_dossier_installation'].lien_polygone($commentaire,$lien_locaux);
                         $news_array[$i]['partitif_massif'] = $commentaire->article_partitif.$espace;
                         $news_array[$i]['massif'] = $commentaire->nom_polygone;
                     } 
@@ -160,7 +159,6 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                     break;
                 
             case "forums":
-                $type_news="nouveau_message_forum";
                 $conditions_messages_forum = new stdclass();
                 $conditions_messages_forum->limite=$nombre;
                 $conditions_messages_forum->sauf_ids_forum=$config['id_forum_moderateur'].",".$config['id_forum_developpement'];
@@ -184,7 +182,14 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
         $tok = strtok(","); 
     }
     // ici je trie par ordre décroissant toutes les news confondues
-    rsort($news_array);
+    function cmp($a, $b)
+	{
+		if ($a['date'] == $b['date']) {
+			return 0;
+		}
+		return ($a['date'] < $b['date']) ? 1 : -1;
+	}
+    usort($news_array,"cmp");
     $nb=0;
     // Et je ne prends que les $nombre première ou toutes s'il y en a moins que $nombre
     // FIXME c'est à faire dans le controleur ça, pas dans le modèle
