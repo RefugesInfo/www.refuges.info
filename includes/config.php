@@ -117,7 +117,7 @@ $config['id_coordonees_gps_approximative']=4;
 // lien direct pour se connecter, ou créer un compte sur le forum
 $config['connexion_forum']=$config['lien_forum']."login.php";
 // lien vers le profil d'un utilisateur
-$config['fiche_utilisateur']=$config['lien_forum']."profile.php?mode=viewprofile&amp;u=";
+$config['fiche_utilisateur']=$config['lien_forum']."profile.php?mode=viewprofile&u=";
 $config['forum_refuge']=$config['lien_forum']."viewtopic.php?t=";
 
 // l'id des modérateurs du forum, pour qu'ils puissent devenir modérateur du site

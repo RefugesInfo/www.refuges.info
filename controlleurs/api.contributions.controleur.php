@@ -20,7 +20,10 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 $news = nouvelles(5,"points","",False);
 echo "<!-- DOCTYPE --><html><body><pre>";
 print_r ($news);
-echo "</pre><pre style='color: #c1c1c1; background: #212121;'>";
-print_r (texte_nouvelles($news));
-echo"</pre></body></html>";
+echo "</pre><p style='color: #c1c1c1; background: #212121;'>";
+$toto = texte_nouvelles($news);
+foreach ($toto as $value) {
+	echo bbcode2html($value['texte'])."<br>";
+}
+echo"</p></body></html>";
 ?>
