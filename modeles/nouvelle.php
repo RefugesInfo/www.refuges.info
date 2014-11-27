@@ -68,6 +68,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
     // tableau de tableau contiendra toutes les news toutes catégories confondues
     $news_array = array() ;
     
+    $i = 0;    
     $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
     while ($tok) // vrai tant qu'il reste une categorie a rajouter
     {
@@ -82,18 +83,18 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 $commentaires=infos_commentaires($conditions_commentaires);
                 foreach ( $commentaires as $commentaire )
                 {
-                    $categorie="Commentaire";
-                    $lien=lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
-                    $titre=bbcode2html($commentaire->nom);
-                    $texte="$categorie";
+                    $news_array[$i][0] = $commentaire->ts_unix_commentaire;
+                    $news_array[$i]['date'] = $commentaire->ts_unix_commentaire;
+                    $news_array[$i]['categorie']="Commentaire";
+                    $news_array[$i]['lien']="http://".$_SERVER['SERVER_NAME'].$config['sous_dossier_installation'].lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
+                    $news_array[$i]['titre']=$commentaire->nom;
                     if ($commentaire->photo_existe)
-                        $texte.="+photo";
+                        $news_array[$i]['photo']="1";
                     if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire==0)
-                        $texte.=" de ".bbcode2html($commentaire->auteur_commentaire)." ";
+                        $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
                     else if ($commentaire->auteur_commentaire!="" and $commentaire->id_createur_commentaire!=0)
-                        $texte.=" de <a href=\"".$config['fiche_utilisateur']."$commentaire->id_createur_commentaire\">".bbcode2html($commentaire->auteur_commentaire)."</a> ";
-                    
-                    
+                        $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
+						$news_array[$i]['lien_auteur'] = "http://".$_SERVER['SERVER_NAME'].$config['fiche_utilisateur'].$commentaire->id_createur_commentaire;
                     // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
                     // la ya un massif
                     if (isset($commentaire->id_polygone))
@@ -103,18 +104,11 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                             $espace="";
                         else
                             $espace=" ";
-                        
-                        $lien_massif="dans <a href=\"".lien_polygone($commentaire,$lien_locaux)."\">le massif
-                        ".$commentaire->article_partitif.$espace.$commentaire->nom_polygone."</a>";
-                    }
-                    else   // la ya pas de massif
-                        $lien_massif="";
-                    
-                    $texte.=" sur <a href=\"$lien\">$titre</a> 
-                    $lien_massif";// FIXME mieux vaudrait revoir le format du tableau sans HTML
-                    $news_array[] = array($commentaire->ts_unix_commentaire,"texte"=>$texte,
-                                          "date"=>$commentaire->ts_unix_commentaire,"categorie"=>$categorie,
-                                          "titre"=>$titre,"lien"=>$lien); 
+                        $news_array[$i]['lien_massif']=lien_polygone($commentaire,$lien_locaux);
+                        $news_array[$i]['partitif_massif'] = $commentaire->article_partitif.$espace;
+                        $news_array[$i]['massif'] = $commentaire->nom_polygone;
+                    } 
+					$i++;
                 }	
                 break;
                 
@@ -202,5 +196,50 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
             break;
     }
     return $nouvelles;
+}
+
+// Cette fonction retourne un texte en bbcode à insérer par la suite dans les vues du site
+
+function texte_nouvelles($nouvelles) {
+	foreach($nouvelles as $key => $nouvelle) {
+		switch ($nouvelle['categorie']) {
+			case 'Forum':
+				$texte = "Sur le forum : [url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
+				break;
+			case 'Commentaire':
+				$texte = "Commentaire";
+				if ($nouvelle['photo'])
+					$texte .= " et photo";
+				if (isset($nouvelle['auteur'])) {
+					$texte .= " de ";
+					if (isset($nouvelle['lien_auteur']))
+						$texte .= "[url=".$nouvelle['lien_auteur']."]";
+					$texte .= $nouvelle['auteur'];
+					if (isset($nouvelle['lien_auteur']))
+						$texte .= "[/url]";
+				}
+				$texte .= " sur [url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
+				if (isset($nouvelle['massif']))
+					$texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
+				break;
+			case 'Point':
+				$texte = "Ajout ".$nouvelle['partitif_point']." ".$nouvelle['type_point'];
+				if (isset($nouvelle['auteur'])) {
+					$texte .= " par ";
+					if (isset($nouvelle['lien_auteur']))
+						$texte .= "[url=".$nouvelle['lien_auteur']."]";
+					$texte .= $nouvelle['auteur'];
+					if (isset($nouvelle['lien_auteur']))
+						$texte .= "[/url]";
+				}
+				$texte .= " : ";
+				$texte .= "[url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
+				if (isset($nouvelle['massif']))
+					$texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
+				break;
+		}
+		$nouvelles[$key]['texte'] = $texte;
+	}
+	return $nouvelles;
 }
 ?>
