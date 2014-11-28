@@ -49,7 +49,7 @@ if ($vue->mini_carte) {
 						icon: function(feature) {
 							return {
 								url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type + '.png',
-								size: L.Browser.mobile ? 32 : 16
+								size: 16
 							}
 						}
 					}
