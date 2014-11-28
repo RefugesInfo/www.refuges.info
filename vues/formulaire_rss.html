@@ -1,95 +1,69 @@
-<form id='urss' method='get' action='rss.php'>
+<div class="contenu">
+<script type="text/javascript"><? include ($config['chemin_vues']."formulaire_exportations.js");?></script>
+<!-- =========================== -->
+<!-- ======= BARATIN ===== -->
+<h3><?=$vue->titre?></h3> 
+    <dl> 
+      <dt>Options pour le flux RSS</dt>
+      <dd>Veuillez préciser les options des nouvelles et des massifs</dd>
+   </dl>
+<!-- ======= FORMULAIRE ===== -->
 
-<script type='text/javascript'>
-var urssform = document.getElementById('urss');
-</script>
+  <form class="wri" id='form_export' method='post' action="<?=$config['sous_dossier_installation']?>formulaire_rss/">
+    <fieldset id="types_nouvelles">
+        <legend>Choix des nouvelles à afficher
+            <button type='button' onclick="checkboites('types_nouvelles',true); return false;">☒</button>
+            <button type='button' onclick="checkboites('types_nouvelles',false); return false;">☐</button>
+        </legend>
+        <?php
+        $index = 0;
+        while ($index < sizeof($vue->types_de_nouvelles->checked)) { 
+            $type_nouvelle = $vue->types_de_nouvelles;?>
+        <label>
+           <input type='checkbox' name='id_nouvelle_type[]' value='<?=$type_nouvelle->id_nouvelle_type[$index]?>'<?=($type_nouvelle->checked[$index]?' checked="checked"':'');?> />
+           <?=$type_nouvelle->nom_type[$index]?>
+        </label>
+        <?$index++; }?>
+    </fieldset>
+    
+    <!-- Choix des zones massifs -->
+    <fieldset id="liste_massifs">
+        <legend>Choix des Massifs de la base a exporter
+            <button type='button' onclick="checkboites('liste_massifs',true); return false;">☒</button>
+            <button type='button' onclick="checkboites('liste_massifs',false); return false;">☐</button>
+        </legend>
+        <?php
+        // je laisse tomber l'algo qui gere un nombre d'arborescence variable.
+        // c'est pas encore supporte par infos_polygone.
+        // on fait donc un truc dout simple avec id_zone, qui lui existe déjà.
+        // Attention ! ca suppose que les massifs sont triés par id_zone ! voir requete.
+        $idzone=0; // au depart, ya pas de zone
+        foreach ($vue->massifs as $poly) { 
+            if($idzone != $poly->id_zone) { 
+                if($idzone != 0) { ?>
+                    </fieldset>
+                    <!-- fin de la zone -->
+                <?}
+                $idzone=$poly->id_zone;
+                ?>
+                    <!-- nouvelle zone -->
+                    <fieldset id="<?=$idzone?>">
+                        <legend>
+                            <?=$poly->nom_zone?>
+                            <button type='button' onclick="checkboites(<?=$idzone?>,true); return false;">☒</button>
+                            <button type='button' onclick="checkboites(<?=$idzone?>,false); return false;">☐</button>
+</legend>
+            <?}?>
+                        <label>
+                            <input type='checkbox' name='id_massif[]' value='<?=$poly->id_polygone?>'<?=($poly->checked?' checked="checked"':'');?> />
+                            <?=$poly->nom_polygone?>
+                        </label>
+        <?}?>
+                   <!-- fin de la derniere zone -->
+                    </fieldset>
+    </fieldset>
 
- <fieldset>
-  <legend>Objets concernés</legend>
-   <button type='button' onclick='
-	for ( var i = 0; i<urssform.listeobjets_cb.length ; i++ )
-	{
-		urssform.listeobjets_cb[i].checked = true;
-	}
-   '>Tout cocher</button>
-   <button type='button' onclick='
-	for ( var i = 0; i < urssform.listeobjets_cb.length ; i++ )
-	{
-		urssform.listeobjets_cb[i].checked = false;
-	}
-   '>Tout décocher</button>
-   <br />
-   <?php
-   	$q = "SELECT id_point_type, nom_type
-		FROM point_type
-		WHERE id_point_type>1
-		ORDER BY id_point_type";
-	$r = $pdo->query($q) or die("erreur dans $q");
-	
-	print("\n<ul>");
-	while ($ptype = $r->fetch())
-		print("\n  <li style='display: inline; display: inline-block; width: 13em; white-space: nowrap;'><label><input type='checkbox' name='listeobjets_cb' value='$ptype->id_point_type' checked='checked' />$ptype->nom_type &nbsp;</label></li>");
-	print("\n</ul>");
-   ?>
- </fieldset>
-
- <fieldset>
-  <legend>Massifs concernés</legend>
-   <button type='button' onclick='
-	for ( var i = 0; i < urssform.listemassifs_cb.length ; i++ )
-	{
-		urssform.listemassifs_cb[i].checked = true;
-	}
-   '>Tout cocher</button>
-   <button type='button' onclick='
-	for ( var i = 0; i < urssform.listemassifs_cb.length ; i++ )
-	{
-		urssform.listemassifs_cb[i].checked = false;
-	}
-   '>Tout décocher</button>
-   <br />
-   <?php
-   	$q = "SELECT id_polygone, nom_polygone
-		FROM polygones
-		WHERE id_polygone_type=1 order by nom_polygone";
-	$r = $pdo->query($q) or die("erreur dans $q");
-
-	print("\n<ul>");
-	while ($massif = $r->fetch())
-		print("\n  <li style='display: inline; display: inline-block; width: 13em; white-space: nowrap;'><label><input type='checkbox' name='listemassifs_cb' value='$massif->id_polygone' checked='checked' />$massif->nom_polygone &nbsp;</label></li>");
-	print("\n</ul>");
-   ?>
- </fieldset>
-
- <fieldset>
-  <legend>Nombre de jours</legend>
-   <label><input type='radio' name='jours' value='2' />2&nbsp;&nbsp;&nbsp;</label>
-   <label><input type='radio' name='jours' value='5' checked='checked' />5&nbsp;&nbsp;&nbsp;</label>
-   <label><input type='radio' name='jours' value='10' />10&nbsp;&nbsp;&nbsp;</label>
- </fieldset>
-
-<fieldset><legend>Obtenir le lien</legend>
- <input type='hidden' name='listeobjets' value='' />
- <input type='hidden' name='listemassifs' value='' />
- <input type='submit' value='Creer mon flux RSS' onclick="
-	urssform.listeobjets.value = '0' ;
-	urssform.listemassifs.value = '0' ;
-	for ( var i = 0; i < urssform.listeobjets_cb.length ; i++ )
-	{
-		if (urssform.listeobjets_cb[i].checked == true) {
-			urssform.listeobjets.value += '-' ;
-			urssform.listeobjets.value += urssform.listeobjets_cb[i].value ;
-		}
-		urssform.listeobjets_cb[i].checked = false;
-	}
-	for ( var i = 0; i < urssform.listemassifs_cb.length ; i++ )
-	{
-		if (urssform.listemassifs_cb[i].checked == true) {
-			urssform.listemassifs.value += '-' ;
-			urssform.listemassifs.value += urssform.listemassifs_cb[i].value ;
-		}
-		urssform.listemassifs_cb[i].checked = false;
-	}
- " />
-</fieldset>
-</form>
+    <input type='submit' name='validation' value='Obtenir le lien' />
+    
+  </form>
+</div>

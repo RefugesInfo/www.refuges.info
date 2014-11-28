@@ -43,7 +43,6 @@ switch ($controlleur->url_decoupee[0])
     case "nouvelles" :
     case "point_ajout_commentaire" :
     case "point_recherche" :
-    case "rss" :
     case "formulaire_rss" :
     case "avis-internaute-commentaire" :
     case "formulaire_exportations" :

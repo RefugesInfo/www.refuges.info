@@ -1,0 +1,19 @@
+<div class="contenu">
+<h3>Lien vers le flux RSS demandé</h3> 
+    <dl> 
+      <dt>Licence</dt>
+      <dd><a href="<?=$vue->lien_licence?>">Voir les détails sur la licence de refuges.info</a></dd>
+   </dl>
+    <dl> 
+      <dt>Flus RSS demandé</dt>
+      <dd>Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)</dd>
+   </dl>
+    <p>
+        <?=$vue->lien_export->description?>
+    </p>
+    <? if (isset($vue->lien_export->url)) { ?>
+    <p>
+        <a href="<?=$vue->lien_export->url?>" alt="lien vers le flux">Cliquez ici pour accéder au flux RSS</a>
+    </p>
+    <?}?>
+</div>
