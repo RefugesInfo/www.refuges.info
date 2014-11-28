@@ -527,7 +527,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   .menu {
     border: solid 2px #<?=$couleur_decoration_titres?>;
     padding: 2px;
-	font-size: 18px;
+	font-size: 16px;
   }
   .menu > span {
     float: right;
@@ -558,8 +558,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	text-align: left;
   }
   .menu ul li span {
-    margin-left: 10px;
     cursor: pointer;
+	font-size: 18px;
   }
   .menu ul li ul {
     padding-left: 10px;
@@ -640,6 +640,11 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     display: inline;
     margin: 1px 5px 1px 0px;
   }
+@media screen and (min-width: 641px) {
+  .container_carte {
+    float: right;
+  }
+}
   .photos {
     float: left; 
     margin: 1px; 
