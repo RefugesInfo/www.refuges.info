@@ -54,7 +54,7 @@ else // formulaire validé, affichage du lien et d'un blabla
         $liste_id_nouvelle_type = implode(',',$_POST['id_nouvelle_type']);
         $liste_id_massif = implode(',',$_POST['id_massif']);
     
-        $options_lien="format=rss&amp;format_texte=html&amp;type=$liste_id_nouvelles_type&amp;massif=$liste_id_massif";
+        $options_lien="format=rss&amp;format_texte=html&amp;type=$liste_id_nouvelle_type&amp;massif=$liste_id_massif";
     
         $vue->lien_export->url = "http://".$config['nom_hote']."/api/contributions?$options_lien";
     } 
