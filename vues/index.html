@@ -38,6 +38,8 @@
 
 	<!-- NEWS -->
 	<div class="tablo" style="float:none;padding-left:15px">
+		<?=$vue->nouvelles_generales?>
+
 		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges</h4>
 		<ul>
                     <?php foreach ($vue->nouveaux_points as $nouveau_point) { ?>
@@ -72,6 +74,5 @@
                         <li><a href="<?=$config['sous_dossier_installation']?>nouvelles/" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>
 		</ul>
 		<br/>
-		<?=$vue->nouvelles_generales?>
 	</div>
 </div>
