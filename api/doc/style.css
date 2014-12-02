@@ -188,3 +188,7 @@ section td:first-child {
     font-weight: bold;
     color: white;
 }
+
+.travaux {
+	opacity: 0.3;
+}
