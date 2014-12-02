@@ -10,16 +10,31 @@ require_once ("mise_en_forme_texte.php");
 require_once ("bdd.php");
 
 // Fonction pour réaliser un lien vers une page du mode d'emploi 
-function lien_wiki($page="index")
+function lien_wiki($page="/")
 {
     global $config;
-    $base=$config['base_wiki'];
-    if ($page=="")
-        return $base;
-    return $base.strtolower($page)."/";
+    return $config['base_wiki'].strtolower($page);
 }
 
-function recupere_contenu($page)
+// retourne plus simplement le contenu de la page wiki concernée au format html (le bbcode a été converti en html)
+function wiki_page_html($page)
+{
+    global $config,$pdo;
+    $contenu_page=wiki_page_brut($page);
+    if ($contenu_page->erreur)
+        return "Contenu inexistant";
+    else
+    {
+            // gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
+            $contenu_html=str_replace("##",lien_wiki(""),$contenu_page->contenu);
+            // conversion bbcode
+            $contenu_html=trim(bbcode2html($contenu_html,TRUE));
+            return $contenu_html;
+    }
+}
+
+// Récupération en format brut
+function wiki_page_brut($page)
 {
     global $config,$pdo;
     $page=$pdo->quote($page);
@@ -33,10 +48,6 @@ function recupere_contenu($page)
     $page=$res->fetch();
     if (!$page)
         return erreur("Cette page du wiki n'existe pas");
-    // gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
-    $page->contenu_html=str_replace("##",lien_wiki(""),$page->contenu);
-    // conversion bbcode
-    $page->contenu_html=trim(bbcode2html($page->contenu_html,TRUE));
     return $page;
 }
 
