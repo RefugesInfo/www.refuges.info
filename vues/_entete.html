@@ -30,6 +30,14 @@
 				ign:  '<?=$config['ign_key']?>',
 				bing: '<?=$config['bing_key']?>',
 			};
+			// Utilisé dans les menus pour mobile
+			// Si Ajoute la classe c si elle n'est pas attribuée à l'élémént HTML e et vice versa
+			function flip(e, c) {
+				var cs = e.className.split(' '),
+					f = cs.indexOf(c);
+				cs.splice(f, f >= 0, f < 0 ? c : '');
+				e.className = cs.join(' ').trim();
+			}
 		</script>
 		<?if (count ($vue->java_lib))
 			foreach ($vue->java_lib as $js_lib) {?>
@@ -77,9 +85,18 @@
 
 		foreach ($menus AS $id) {?>
 			<div id="<?=$id?>" class="menu">
+				<a href="<?=$config['sous_dossier_installation']?>" title="Retour à l'accueil">Refuges.info</a>
+				<span onclick="flip(this.parentNode,'deroule')">Menu</span>
 				<ul>
 					<li><a href="<?=$config['sous_dossier_installation']?>">Accueil</a></li>
+					<li class="mobile-only"><a href="<?=$config['sous_dossier_installation']?>forum/login.php">Connexion</a>
+						<span onclick="flip(this.parentNode,'deroule')" title="Inscriptions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+						<ul>
+							<li><a href="<?=$config['sous_dossier_installation']?>forum/profile.php?mode=register" title="Les entrées les plus récentes">Inscriptions</a></li>
+						</ul>
+					</li>
 					<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/">Nouvelles</a>
+						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
 							<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/" title="Les entrées les plus récentes">Toutes</a></li>
 							<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
@@ -92,25 +109,28 @@
 					<li><a href="<?=$config['sous_dossier_installation']?>point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
 					</li>
 					<li><a href="<?=$config['sous_dossier_installation']?>point_formulaire_recherche/">Recherche</a>
+						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
 							<li><a href="<?=$config['sous_dossier_installation']?>point_formulaire_recherche/" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
 							<li><a href="<?=$config['sous_dossier_installation']?>formulaire_exportations/" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
 						</ul>
 					</li>
 					<li>Zones couvertes
+						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
-						  <li><a href="<?=$config['sous_dossier_installation']?>nav/352?mode_affichage=zone">Alpes</a></li>
-						  <li><a href="<?=$config['sous_dossier_installation']?>nav/50?mode_affichage=zone">Massif Central</a></li>
-						  <li><a href="<?=$config['sous_dossier_installation']?>nav/351?mode_affichage=zone">Pyrénées</a></li>
-												  <li><a href="<?=$config['sous_dossier_installation']?>nav/747?mode_affichage=zone">Vosges</a></li>
-												  <li><a href="<?=$config['sous_dossier_installation']?>nav/27">Jura</a></li>
-						  <li><a href="<?=$config['sous_dossier_installation']?>nav/337">Corse</a></li>
-						  <li><a href="<?=$config['sous_dossier_installation']?>nav/28">Réunion</a></li>
-						  <li><a href="<?=$config['sous_dossier_installation']?>nav/51">Nlle Calédonie</a></li>
-						  <li><a href="<?=$config['sous_dossier_installation']?>nav/374">Andes</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/352?mode_affichage=zone">Alpes</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/50?mode_affichage=zone">Massif Central</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/351?mode_affichage=zone">Pyrénées</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/747?mode_affichage=zone">Vosges</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/27">Jura</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/337">Corse</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/28">Réunion</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/51">Nlle Calédonie</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/374">Andes</a></li>
 						</ul>
 					</li>
 					<li><a href="<?=$config['sous_dossier_installation']?>nav">Cartes</a>
+						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
 							<li><a href="<?=$config['sous_dossier_installation']?>nav/">Cartes</a></li>
 							<li><a href="<?=$config['sous_dossier_installation']?>nav?baseLayer=Maps.Refuges.info">Randonnée</a></li>
@@ -122,6 +142,7 @@
 						</ul>
 					</li>
 					<li><a href="<?=$config['sous_dossier_installation']?>forum">Forums</a>
+						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
 							<li><a href="<?=$config['sous_dossier_installation']?>forum">Tous</a></li>
 							<li><a href="<?=$config['sous_dossier_installation']?>forum/viewforum.php?f=1" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">La vie du site</a></li>
@@ -132,6 +153,7 @@
 						</ul>
 					</li>
 					<li><a href="<?=$vue->lien_wiki["index"]?>">A propos du site</a>
+						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
 							<li><a href="<?=$vue->lien_wiki["index"]?>">A propos</a></li>
 							<li><a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">Licence des contenus</a></li>

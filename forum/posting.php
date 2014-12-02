@@ -872,11 +872,12 @@ else
 	}
 	else if ( $mode == 'quote' || $mode == 'editpost' )
 	{
-		$subject = ( $post_data['first_post'] ) ? $post_info['topic_title'] : $post_info['post_subject'];
 		$message = $post_info['post_text'];
 
 		if ( $mode == 'editpost' )
 		{
+			$subject = ( $post_data['first_post'] ) ? $post_info['topic_title'] : $post_info['post_subject'];
+			
 			$attach_sig = ( $post_info['enable_sig'] && $post_info['user_sig'] != '' ) ? TRUE : 0; 
 			$user_sig = $post_info['user_sig'];
 
@@ -888,6 +889,7 @@ else
 		{
 			$attach_sig = ( $userdata['user_attachsig'] ) ? TRUE : 0;
 			$user_sig = $userdata['user_sig'];
+			$subject = "";
 		}
 
 		if ( $post_info['bbcode_uid'] != '' )

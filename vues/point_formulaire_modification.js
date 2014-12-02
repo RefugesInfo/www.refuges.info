@@ -34,7 +34,7 @@ window.addEventListener('load', function() {
 					icon: function(feature) {
 						return {
 							url: '/images/icones/' + feature.properties.type + '.png',
-							size: L.Browser.mobile ? 32 : 16
+							size: 16
 						}
 					}
 				}

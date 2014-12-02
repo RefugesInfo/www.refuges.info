@@ -29,6 +29,7 @@ foreach ($vue->nouvelles as $id => $nouvelle)
 	$vue->nouvelles[$id]['titre']=bbcode2html($nouvelle['titre']);
 	$vue->nouvelles[$id]['texte']=bbcode2html($nouvelle['texte']);
 }
-$page_nouvelles=recupere_contenu("nouvelles_generales");
-$vue->nouvelles_generales=$page_nouvelles->contenu_html;
+
+$vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
+
 ?>

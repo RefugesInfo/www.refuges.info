@@ -5,12 +5,12 @@
             Modifier cette page
         </a> /
         Suppression de cette page sans confirmation :
-        <a href="<?=$config['sous_dossier_installation']?>?supprimer=1">
+        <a href="<?=$config['sous_dossier_installation']?>wiki/<?=$vue->titre?>?supprimer=1">
             <strong>pouf !</strong>
         </a>
     <?php } ?>
 
         Date de dernière modification de cette page: <?=$vue->date?>
-  <br />
+        <br /><br />
   <?=$vue->contenu_html?>
 </div>

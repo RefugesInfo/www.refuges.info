@@ -11,49 +11,32 @@
 <div class="contenu">
 	<div class="fiche_cadre">
 <!--================================== PUBS pour les non connectés ================================-->
-	<?if (!auto_login_phpbb_users ()) {?>
-	<dl>
-	<dt>publicité (<a href="<?=$vue->lien_explication_publicite?>">Voir comment la supprimer</a>):</dt><dd>
-	<?=bandeau_publicitaire();?>
-	</dd>
-	</dl>
-	<?}?>
-<!--============================================ CARTE ============================================-->
-		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
-		if ($vue->mini_carte) {?>
-			<div style="float: right;">
-				<div id="vignette"></div>
-				<p id="agrandir_vignette">
-					<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
-						Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
-					</a>
-					<span id="p21781"></span>
-				</p>
-				<p>
-					<a href="<?=$config['sous_dossier_installation']?>nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
-						Aller sur le présentoir à cartes
-					</a>
-				</p>
-			</div>
+		<?if (!auto_login_phpbb_users ()) {?>
+			<dl class="publicite">
+				<dt>publicité (<a href="<?=$vue->lien_explication_publicite?>">Voir comment la supprimer</a>):</dt>
+				<dd><?=bandeau_publicitaire();?></dd>
+			</dl>
 		<?}?>
-<!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
-		<?// Signaler les fiches censurées
-		if ($vue->point->censure) {?>
-			<dd class="lien_ajout_commentaire">
-				<strong class="warning">
-					Cette fiche n'est visible que des modérateurs
-				</strong>
-			</dd>
-		<?}?>
-		<?// Si les droits sont suffisants, lien de modification
-		if ($vue->lien_modification) {?>
-			<a class="groupir" style="font-size: smaller ;" href="<?=$config['sous_dossier_installation']?>point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
-				[Modifier cette fiche]
-			</a>
-		<?}?>
-
 <!--======================================== DESCRIPTIONS =========================================-->
+		<div>
 		<dl style="margin: 2px;">
+<!--=========================== LIEN DE MODIFICATION (POUR MODERATEURS) ===========================-->
+			<?// Signaler les fiches censurées
+			if ($vue->point->censure) {?>
+				<dd class="lien_ajout_commentaire">
+					<strong class="warning">
+						Cette fiche n'est visible que des modérateurs
+					</strong>
+				</dd>
+			<?}?>
+			<?// Si les droits sont suffisants, lien de modification
+			if ($vue->lien_modification) {?>
+				<dd>
+					<a class="groupir" style="font-size: smaller ;" href="<?=$config['sous_dossier_installation']?>point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
+						[Modifier cette fiche]
+					</a>
+				</dd>
+			<?}?>
 <!--========================================== FICHE DE ===========================================-->
 			<dt class="condense">
 				Fiche (n°<?=$vue->point->id_point?>) de:
@@ -69,6 +52,86 @@
 					<strong>(<?=$vue->annonce_fermeture?>)</strong>
 				<?}?>
 			</dd>
+		</dl>
+		</div>
+<!--============================================ CARTE ============================================-->
+		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
+		if ($vue->mini_carte) {?>
+			<div class="container_carte">
+				<div id="vignette"></div>
+				<div id="agrandir_vignette">
+					<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
+						Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
+					</a>
+					<span id="p21781"></span>
+				</div>
+				<div>
+					<a href="<?=$config['sous_dossier_installation']?>nav?lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+						Aller sur le présentoir à cartes
+					</a>
+				</div>
+			</div>
+		<?}?>
+		<div>
+		<dl style="margin: 2px;">
+<!--========================================= COORDONNÉES =========================================-->
+			<dt>Coordonnées:</dt>
+            <dd>
+                <span>
+                Provenance:
+                <?if ($vue->point->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
+						<strong><?=$vue->point->nom_precision_gps?></strong>
+				<?}else{?>
+						<?=$vue->point->nom_precision_gps?>
+					<?}?>
+                </span>
+            </dd>
+			<dd>
+				Altitude: <em><?=$vue->point->altitude?>m,</em>
+				<?if (!$vue->mini_carte) {?>
+					<strong><?=$vue->point->nom_precision_gps?></strong>
+				<?}else{?>
+					<span id="coordonnees-value">
+						<span id="titre-lng">Longitude</span>: <em id="aff-lng"><?=$vue->point->longitude?></em>
+						<span id="titre-lat">Latitude</span>: <em id="aff-lat"><?=$vue->point->latitude?></em>
+					</span>
+					<select id="select-projection"></select>
+					(
+						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
+					,
+						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
+					,
+						<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
+					)
+				<?}?>
+			</dd>
+			<?if ($vue->mini_carte) {?>
+				<dd>
+					<strong>Attention:</strong> Ces coordonnées sont relatives à l'éllipsoïde WGS84. Il se peut qu'elles ne correspondent pas à d'anciennes cartes. Consultez le cartouche de la carte.
+				</dd>
+			<?}?>
+<!--======================================== LOCALISATION =========================================-->
+			<?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
+				<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
+					<dd class="condense">
+						<?php foreach ($polygones as $key => $polygone) { ?>
+							<?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
+							  <?php if ($polygone->site_web) { ?>
+								<a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
+							 <?php } else { ?>
+								<?=$polygone->nom_polygone?>
+							 <?php } ?>
+								<?php if ($polygone->avec_lien_carte) { ?>
+								
+								<sup>
+									<a href="<?=$polygone->lien_polygone?>">carte</a>
+								</sup>
+							   <?php } ?>
+							<?=$virgule?>
+						<?php } ?>
+					<dt />
+				</dd>
+			<?php } ?>
 <!--===================================== PLACES POUR DORMIR ======================================-->
 			<?// Rajout de plusieurs blocs (propriétaire, accès, remarques, pub, photos...) et d'un bloc "places prévues pour dormir" si necessaire
 			if ($vue->point->equivalent_places) {?>
@@ -105,62 +168,6 @@
 				<?}
 			}
 			?>
-<!--========================================= COORDONNÉES =========================================-->
-			<dt>Coordonnées:</dt>
-            <dd>
-                <span>
-                Provenance:
-                <?if ($vue->point->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
-						<strong><?=$vue->point->nom_precision_gps?></strong>
-				<?}else{?>
-						<?=$vue->point->nom_precision_gps?>
-					<?}?>
-                </span>
-            </dd>
-			<dd>
-				Altitude: <em><?=$vue->point->altitude?>m,</em>
-				<?if (!$vue->mini_carte) {?>
-					<strong><?=$vue->point->nom_precision_gps?></strong>
-				<?}else{?>
-					<span id="coordonnees-value">
-						<span id="titre-lng">Longitude</span>: <em id="aff-lng"><?=$vue->point->longitude?></em>
-						<span id="titre-lat">Latitude</span>: <em id="aff-lat"><?=$vue->point->latitude?></em>
-					</span>
-					<select id="select-projection"></select>
-					(
-						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
-					,
-						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
-					,
-						<a href="<?=$config['sous_dossier_installation']?>geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
-					)
-				<?}?>
-			</dd>
-			<dd>
-				<strong>Attention:</strong> Ces coordonnées sont relatives à l'éllipsoïde WGS84. Il se peut qu'elles ne correspondent pas à d'anciennes cartes. Consultez le cartouche de la carte.
-            </dd>
-<!--======================================== LOCALISATION =========================================-->
-			<?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
-				<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
-					<dd class="condense">
-						<?php foreach ($polygones as $key => $polygone) { ?>
-							<?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des template quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
-							  <?php if ($polygone->site_web) { ?>
-								<a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
-							 <?php } else { ?>
-								<?=$polygone->nom_polygone?>
-							 <?php } ?>
-								<?php if ($polygone->avec_lien_carte) { ?>
-								
-								<sup>
-									<a href="<?=$polygone->lien_polygone?>">carte</a>
-								</sup>
-							   <?php } ?>
-							<?=$virgule?>
-						<?php } ?>
-					<dt />
-				</dd>
-			<?php } ?>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
 			<?// Champs textes libres
 			if ($vue->point->equivalent_proprio) {?>
@@ -239,6 +246,7 @@
 				</a>
 			</dd>
 		</dl>
+		</div>
 	</div>
 <!--============================ POST LE PLUS RÉCENT DU FORUM D'UN POINT ===========================-->
 	<?php if (isset($vue->forum_point)) { ?>
