@@ -1,6 +1,6 @@
 <?php
 // Exporte les donnees des commentaires (pour usage dans Chemineur)
-// Format barbare et purement proritaire Chemineur
+// Format barbare et purement proritaire Chemineur 
 
 require_once ("../includes/config.php");
 require_once ("exportation.php");
