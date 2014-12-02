@@ -27,9 +27,10 @@ function wiki_page_html($page)
     {
             // gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
             $contenu_html=str_replace("##",$config['base_wiki'],$contenu_page->contenu);
+            //spécial commentaires inventés par sly à enlever (peut être mieux directement dans bbcode2html ?)
+            $contenu_html=preg_replace("/\[c\].*\[\/c\]/s","",$contenu_html);
             // conversion bbcode
             $contenu_html=trim(bbcode2html($contenu_html,TRUE));
-
             // ceci a pour but de simplifier l'écriture du wiki pour les non informaticiens (un retour ligne, ben, ça retourne à la ligne !)
             $contenu_html=nl2br($contenu_html,false);
             // et des espaces rajoutés en rab feront vraiment des espaces
