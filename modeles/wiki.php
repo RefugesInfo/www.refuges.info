@@ -26,9 +26,19 @@ function wiki_page_html($page)
     else
     {
             // gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
-            $contenu_html=str_replace("##",lien_wiki(""),$contenu_page->contenu);
+            $contenu_html=str_replace("##",$config['base_wiki'],$contenu_page->contenu);
             // conversion bbcode
             $contenu_html=trim(bbcode2html($contenu_html,TRUE));
+
+            // ceci a pour but de simplifier l'écriture du wiki pour les non informaticiens (un retour ligne, ben, ça retourne à la ligne !)
+            $contenu_html=nl2br($contenu_html,false);
+            // et des espaces rajoutés en rab feront vraiment des espaces
+            $contenu_html=str_replace("   ","&nbsp;&nbsp;",$contenu_html);
+
+            // Toutefois, notre style css fait que les titres <hx> sont déjà précédés et suivi d'un retour ligne forcé, ça en ferait donc beaucoup dans le cas
+            // où on souhaite garder lisible notre saisie, j'enlève donc celui qui précède et qui suit
+            $contenu_html=preg_replace("/<\/h([1-9])><br>/","</h$1>\n",$contenu_html);
+            $contenu_html=preg_replace("/<br>\r\n<h([1-9])>/","\n<h$1>",$contenu_html);
             return $contenu_html;
     }
 }
