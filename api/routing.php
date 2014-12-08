@@ -26,6 +26,9 @@ switch ($cible) {
     case 'contributions':
         include($config['chemin_controlleurs'].'api.contributions.controleur.php');
         break;
+    case 'polygones':
+        include($config['chemin_controlleurs'].'api.polygones.controleur.php');
+        break;
     default:
         header('Location:doc/');
         //echo $cible;
