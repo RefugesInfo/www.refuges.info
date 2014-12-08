@@ -24,11 +24,12 @@ $j = 0;
 foreach ($polygones as $polygone) {
 	$j++;
 	echo "\r\n\t".'{'."\r\n\t\t".'"type": "Feature",
-		"id": '.$polygone->id.',';
-	echo ",\r\n\t\t".'"geometry": '.$polygone->geometrie.'}';
+		"id": '.$polygone->id;
+	echo ",\r\n\t\t".'"geometry": '.$polygone->geometrie;
 	echo ",\r\n\t\t".'"properties":'."\r\n\t\t\t";
 	unset ($polygone->geometrie);
 	echo json_encode($polygone);
+	echo "\r\n\t".'}';
 	if ($j != $nombre_polygones) echo ",";
 	else echo "\r\n\t]\r\n";
 }
