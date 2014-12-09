@@ -53,4 +53,15 @@ function verif_multiples_entiers($string)
 {
     return preg_match ('/^-?\d+(,-?\d+)*$/', $string);
 }
+
+// petit débugger basique, on l'appel par d($variable1,$variable2) et il balance tout à l'écran en à peu près lisible
+function d($a,$b=null,$c=null,$d=null)
+{
+	print("<pre>");
+	print_r($a);
+	print_r($c);
+	print_r($b);
+	print_r(debug_backtrace());
+	die("</pre>");
+}
 ?>
