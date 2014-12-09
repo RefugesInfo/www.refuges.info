@@ -49,8 +49,7 @@ foreach ($commentaires_avec_photos_recentes as $commentaire_avec_photo_recente)
     $commentaire_avec_photo_recente->nom=bbcode2html($commentaire_avec_photo_recente->nom);
     $vue->photos_recentes[]=$commentaire_avec_photo_recente;
 }
-
-$vue->lien_a_propos_site=lien_wiki("index");
+$vue->contenu_accueil=wiki_page_html("contenu_accueil");
 
 // Préparation de la liste des nouvelles générales
 $conditions_commentaires_generaux = new stdClass;
@@ -80,7 +79,6 @@ foreach ($nouveaux_points as $nouveau_point)
     $nouveau_point->nom=mb_ucfirst(bbcode2html($nouveau_point->nom));
     $vue->nouveaux_points[]=$nouveau_point;
 }
-$page_nouvelles=recupere_contenu("nouvelles_generales");
-$vue->nouvelles_generales=$page_nouvelles->contenu_html;
+$vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
 
 ?>
