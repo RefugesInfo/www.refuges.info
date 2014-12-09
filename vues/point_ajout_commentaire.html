@@ -71,7 +71,7 @@
 			if ($point->equivalent_proprio!="")
 				print("<li>le site n'a aucun rapport avec les propriétaires ou gérants de $point->article_demonstratif $point->nom_type (inutile de leur laisser un message ici)</li>");
 			?>
-			<li>Cette information doit être utile et objective. Pour une appréciation, direction <a href="<?php print($config['forum_refuge'].$point->topic_id); ?>">le forum</a></li>
+			<li>Cette information doit être utile et objective. Pour une appréciation, direction <a href="<?=$vue->lien_forum_point?>">le forum</a></li>
 		</ul>
 </div>
 </div>
