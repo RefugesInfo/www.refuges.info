@@ -6,7 +6,6 @@ son choix
 ********************************************************************************************************/
 
 require_once ("point.php");
-require_once ("wiki.php");
 require_once ("meta_donnee.php");
 
 $vue->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut

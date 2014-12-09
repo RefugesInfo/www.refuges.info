@@ -13,6 +13,7 @@ selon cette url puis ouvrir les vues, toujours selon cet url.
 require_once ('./includes/config.php');
 require_once ("autoconnexion.php");
 require_once ("wiki.php");
+require_once ("gestion_erreur.php");
 
 // Analyse de l'url (basique pour l'instant pourrait être étendu ultérieurement selon les besoins)
 $controlleur = new stdClass;

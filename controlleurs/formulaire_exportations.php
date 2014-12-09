@@ -5,7 +5,6 @@ ré-utiliser.
 Le traitement proprement dit est dans exportations.php 
 **********************************************************************************************/
 
-require_once ("wiki.php");
 require_once ("bdd.php");
 require_once ("exportation.php");
 require_once ("meta_donnee.php");

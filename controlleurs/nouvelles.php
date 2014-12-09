@@ -9,7 +9,6 @@ Les variables sont passées dans l'objet $vue->...
 
 require_once ("nouvelle.php");
 require_once ("commentaire.php");
-require_once ("wiki.php");
 
 $vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
 if (isset($_GET['nombre']) and is_numeric($_GET['nombre']))
