@@ -10,7 +10,8 @@ require_once ("polygone.php");
 require_once ("gestion_erreur.php");
 
 // Si on a des infos remontées, on les mémorise
-if ($data = file_get_contents ('php://input')) // Récupération du flux en méthode PUT
+if ($_SESSION['niveau_moderation'] >= 1 &&
+	$data = file_get_contents ('php://input')) // Récupération du flux en méthode PUT
 {
     $FeatureCollection = simplexml_load_string (str_replace (array ('gml:', 'feature:'), '', $data));
 
