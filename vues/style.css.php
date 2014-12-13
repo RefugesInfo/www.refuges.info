@@ -689,6 +689,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     width:  280px;
     height: 280px;
   }
+  #vignette-agrandie {
+    width:  400px;
+    height: 400px;
+  }
   #carte_edit, .carte_edit {
     width:  450px; 
     height: 500px; 
@@ -700,3 +704,22 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #switch_nav .baseLbl, #switch_nav .baseLayersDiv, #switch_nav .dataLbl {
 	display: none;
   }
+@media screen and (max-width: 640px) {
+  #vignette,
+  #vignette-agrandie {
+    width: 100%;
+    min-width: 450px;
+  }
+}
+@media screen and (max-width: 550px) {
+  #vignette,
+  #vignette-agrandie {
+    min-width: 300px;
+  }
+}
+@media screen and (max-width: 450px) {
+ .tablo,
+  #accueil {
+    width: 100%;
+  }
+}

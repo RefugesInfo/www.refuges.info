@@ -5,7 +5,7 @@
 // $config les données communes à tout WRI
 ?>
 
-var map, curseur;
+var map, curseur, gps;
 
 window.addEventListener('load', function() {
 	var baseLayers = {
@@ -56,6 +56,10 @@ window.addEventListener('load', function() {
 	});
 
 	map.addControl(new L.Control.Layers(baseLayers)); // Le controle de changement de couche de carte avec la liste des cartes dispo
-	map.addControl(new L.Control.Gps());
+	gps = new L.Control.Gps();
+	map.addControl(gps);
+	gps.on ('gpslocated', function (args){
+		curseur.setLatLng(args.latlng);
+	});
 	map.addControl(new L.Control.Scale());
 });
