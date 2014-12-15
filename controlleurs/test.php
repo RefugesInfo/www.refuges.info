@@ -7,7 +7,6 @@ http://dev.refuges.info/test
 
 
 **********************************************************************************************/
-require_once ("wiki.php");
 require_once ("bdd.php");
 require_once ("commentaire.php");
 require_once ("point.php");
@@ -15,7 +14,7 @@ require_once ("utilisateur.php");
 
 print("<pre>");
 $conditions->ids_commentaires = 16758;
-print_r(infos_commentaires($conditions));
+d(infos_commentaires($conditions));
 print("</pre>");
 
 exit();

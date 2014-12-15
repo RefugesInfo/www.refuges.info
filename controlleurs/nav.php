@@ -19,7 +19,6 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 require_once ("bdd.php");
 require_once ("meta_donnee.php");
 require_once ("polygone.php");
-require_once ("wiki.php");
 
 $vue->java_lib [] = $config['url_chemin_openlayers'].'OpenLayers.js?'.filemtime($config['chemin_openlayers'].'OpenLayers.js');
 $vue->java_lib [] = $config['sous_dossier_installation'].'vues/wiki.js';

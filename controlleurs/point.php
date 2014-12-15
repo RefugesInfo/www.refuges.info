@@ -4,7 +4,6 @@ Contrôleur qui prépare la vue pour les pages des points
 ***/
 
 require_once ("polygone.php");
-require_once ("wiki.php");
 require_once ("point.php");
 require_once ("pub.php");
 require_once ("utilisateur.php");

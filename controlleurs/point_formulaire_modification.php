@@ -20,7 +20,6 @@
 require_once ("bdd.php");
 require_once ("point.php");
 require_once ("polygone.php");
-require_once ("wiki.php");
 require_once ("meta_donnee.php");
 require_once ("mise_en_forme_texte.php");
 

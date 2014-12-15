@@ -71,11 +71,15 @@ if ($vue->mini_carte) {
 
 		// On redimensionne ca carte
 		var mapp = document.getElementById('vignette'),
-			centre = map.getCenter();
-		mapp.style.width = mapp.style.height = '400px';
-		map.panBy([-60, -60], {
-			animate: false
-		});
+			l1 = mapp.clientWidth,
+			h1 = mapp.clientHeight;
+		mapp.id = 'vignette-agrandie';
+		var l2 = mapp.clientWidth,
+			h2 = mapp.clientHeight;
+		map.panBy(
+			[(l1-l2)/2, (h1-h2)/2], // Remet le cadre au centre de la nouvelle carte plus grande
+			{animate: false}
+		);
 
 		// On positionne la couche de second choix
 		var oldLayerId, newLayerId;

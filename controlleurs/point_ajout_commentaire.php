@@ -5,7 +5,6 @@ Pour ajouter un commentaire rattaché à un point
 
 require_once ("commentaire.php");
 require_once ("point.php");
-require_once ("wiki.php");
 require_once ("mise_en_forme_texte.php");
 
 $commentaire = new stdClass();
