@@ -30,7 +30,7 @@ $req->massif = $_GET['massif'];
 $val = new stdClass();
 $val->format = array("json", "csv", "xml", "rss");
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
-$val->type = array("commentaires", "points", "refuges", "forum");
+$val->type = array("commentaires", "points", "refuges", "forums");
 
 
 /****************************** VALEURS PAR DÉFAUT - PARAMS FACULTATIFS ******************************/
