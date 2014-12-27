@@ -43,12 +43,17 @@ if ($vue->mini_carte) {
 					}
 				),
 				new L.GeoJSON.ajax( // Les points d'intérêt WRI
-					'<?=$config['sous_dossier_installation']?>exportations/exportations.php', {
-						argsGeoJson: {format: 'geojson'},
+					'<?=$config['sous_dossier_installation']?>api/bbox', {
+						argsGeoJson: {
+							type_points: 'all'
+						},
 						bbox: true,
+						url: function(feature) {
+							return '<?=$config['sous_dossier_installation']?>point/' + feature.properties.id;
+						},
 						icon: function(feature) {
 							return {
-								url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type + '.png',
+								url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 								size: 16
 							}
 						}

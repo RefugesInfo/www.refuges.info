@@ -36,9 +36,8 @@ foreach ($points as $point) {
 		}
 	}";
 	if ($j != $nombre_points) echo ",";
-	else echo "\r\n\t]\r\n";
 }
 
-echo "}";
+echo "\r\n\t]\r\n}";
 
 ?>

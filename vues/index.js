@@ -6,16 +6,22 @@
 
 // Crée la carte dés que la page est chargée
 window.addEventListener('load', function() {
-	var bboxs = [<?=$vue->bbox?>]; // Bbox au format Openlayers
+	var bboxs = [ <?=$vue->bbox?> ]; // Bbox au format Openlayers
 	new L.Map('accueil', {
 		zoomControl: false,
 		layers: [
 			new L.TileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png'),
 			new L.GeoJSON.ajax( // Les massifs WRI
-				'<?=$config['sous_dossier_installation']?>exportations/massifs-gml.php?format=geojson', {
+				'<?=$config['sous_dossier_installation']?>api/polygones', {
+					argsGeoJson: {
+						type_polygon: 1
+					},
+					url: function(feature) {
+						return feature.properties.lien;
+					},
 					style: function(feature) {
 						return {
-							color: feature.properties.color,
+							color: feature.properties.couleur,
 							weight: 2,
 							opacity: 0.5
 						}

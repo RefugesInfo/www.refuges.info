@@ -21,6 +21,8 @@ require_once ("meta_donnee.php");
 require_once ("polygone.php");
 
 $vue->java_lib [] = $config['url_chemin_openlayers'].'OpenLayers.js?'.filemtime($config['chemin_openlayers'].'OpenLayers.js');
+//$vue->java_lib [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+//$vue->css      [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
 $vue->java_lib [] = $config['sous_dossier_installation'].'vues/wiki.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
@@ -28,9 +30,9 @@ $vue->infos_base = infos_base ();
 
 $vue->types_point_affichables=types_point_affichables();
 
-// typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referenceement google, c'est le controlleur.php qui passe ce tableau
+// typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referencement google, c'est le controlleur.php qui passe ce tableau
 $id_polygone = $controlleur->url_decoupee[1];
-$vue->type_affichage = $_GET['mode_affichage']; // "zone" ou "massif". ca definit l'affichage qui suit
+$vue->mode_affichage = $_GET['mode_affichage']; // "zone", "massif" ou "edit". ca definit l'affichage qui suit
 
 //Récupère les soumissions du formulaire de modification de paramètres de massifs
 if ($id_polygone_edit = edit_info_polygone())

@@ -29,11 +29,14 @@ window.addEventListener('load', function() {
 			baseLayers['Bing photo'], // Le fond de carte visible
 
 			new L.GeoJSON.ajax( // Les points d'intérêt WRI
-				'<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=geojson', {
+				'<?=$config['sous_dossier_installation']?>api/bbox', {
+					argsGeoJson: {
+						type_points: 'all'
+					},
 					bbox: true,
 					icon: function(feature) {
 						return {
-							url: '/images/icones/' + feature.properties.type + '.png',
+							url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 							size: 16
 						}
 					}
