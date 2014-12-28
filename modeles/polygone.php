@@ -18,10 +18,11 @@ $conditions->non_ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont 
 $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
+$conditions->intersection = id_poly -> Sélectionne tous les polynomes ayant une intersection avec le polynome id_poly
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
-$conditions->avec_zone_parente=True : renvoi la zone dans laquelle se trouve la polygone (par défaut False)
+$conditions->avec_zone_parente=True : renvoi la zone dans laquelle se trouve le polygone (par défaut False)
 //FIXME jmb : BBOX ne veut plus rien dire a l'heure du GIS. BBOX + nord/sud/est/ouest ca redonde un peu.
 // jmb: ajout du champ "nom_zone" (id plutot?)
 //jmb: ajout de condition Ordre, comme infos_points
@@ -55,6 +56,7 @@ function infos_polygones($conditions)
     global $pdo,$config;
     $conditions_sql="";
     $champs_en_plus="";
+    $table_en_plus="";
     
     // Conditions sur les ids des polygones
     if (isset($conditions->ids_polygones))
@@ -84,14 +86,18 @@ function infos_polygones($conditions)
             return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
         else
             $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
-        
+
     // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
     if (isset($conditions->geometrie))
-        $conditions_sql.=" AND geom && ". $conditions->geometrie ;
-    
-    if ($conditions->avec_geometrie)
-        $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+        $conditions_sql.=" AND polygones.geom && ". $conditions->geometrie ;
 
+    if ($conditions->avec_geometrie)
+        $champs_en_plus.=",st_as$conditions->avec_geometrie(polygones.geom) AS geometrie_$conditions->avec_geometrie";
+
+    if ($conditions->intersection) {
+        $table_en_plus.=",polygones AS zones ";
+        $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND zones.id_polygone = ". $conditions->intersection ;
+	}
     // jmb: nom de la zone auquel le poly appartient.
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
@@ -117,7 +123,7 @@ function infos_polygones($conditions)
         ";
 	
 	//FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
-  $box="ST_box2d(geom)";
+  $box="ST_box2d(polygones.geom)";
   $query="SELECT polygone_type.type_polygone,
                  polygone_type.categorie_polygone_type,
                  st_xmin($box) AS ouest,
@@ -126,7 +132,7 @@ function infos_polygones($conditions)
                  st_ymax($box) AS nord,
                  ".colonnes_table('polygones',False)."
                  $champs_en_plus
-          FROM polygones,polygone_type
+          FROM polygones,polygone_type $table_en_plus
           WHERE 
             polygones.id_polygone_type=polygone_type.id_polygone_type
             $conditions_sql

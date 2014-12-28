@@ -16,14 +16,17 @@ window.addEventListener('load', function() {
 					argsGeoJson: {
 						type_polygon: 1
 					},
+					bbox: true, // Optimise la gestion des couleurs
 					url: function(feature) {
 						return feature.properties.lien;
 					},
 					style: function(feature) {
 						return {
-							color: feature.properties.couleur,
-							weight: 2,
-							opacity: 0.5
+							color: 'black',
+							fillColor: feature.properties.couleur,
+							weight: 1,
+							opacity: 0.5,
+							fillOpacity: 0.3
 						}
 					}
 				}

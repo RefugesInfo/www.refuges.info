@@ -23,6 +23,7 @@ $req->format = $_GET['format'];
 $req->massif = $_GET['massif'];
 $req->type_polygones = $_GET['type_polygon'];
 $req->bbox = $_GET['bbox'];
+$req->intersection = $_GET['intersection'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
@@ -68,6 +69,7 @@ if($req->massif != "")
 if($req->type_polygones != "")
 	$params->ids_polygone_type=$req->type_polygones;
 $params->avec_geometrie=$req->format;
+$params->intersection=$req->intersection;
 
 $polygones_bruts = new stdClass();
 $polygones = new stdClass();
@@ -75,13 +77,21 @@ $polygones = new stdClass();
 $polygones_bruts=infos_polygones($params);
 
 /****************************** INFOS GÉNÉRALES ******************************/
+// Générateur de couleurs qui tournent autour du cercle colorimétrique
+$lum = 0xC0 / 2; // Luminance constante pour un meilleur contraste
+$nb_coul =  count ($polygones_bruts); // Pour répartir les couleurs
+// Incrément des couleurs pour ne pas avoir de couleurs proches pour des massifs de n° proches
+for ($pas = (int)($nb_coul/6+1); $nb_coul%$pas == 0; $pas++); // Le premier non diviseur de nb_coul > nb_coul / 6
+$pas_angulaire = $pas * 2*M_PI / $nb_coul;
 
 $i = 0;
 foreach($polygones_bruts as $polygone)
 {
 	$polygones->$i = new stdClass();
-	// génère une couleur aléatoire
-	$couleur = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+	$couleur = '#';
+		for ($c = 0; $c < 2*M_PI; $c += 2*M_PI/3) // Chacune des 3 couleurs primaires
+			$couleur .= substr (dechex (0x100 + $lum * (1 + cos ($i * $pas_angulaire + $c))), -2);
+			// +0x100 pour bénéficier du 0 à gauche quand on passe en hexadécimal
 	$polygones->$i->nom = $polygone->nom_polygone;
 	$polygones->$i->id = $polygone->id_polygone;
 	$polygones->$i->type['id'] = $polygone->id_polygone_type;
