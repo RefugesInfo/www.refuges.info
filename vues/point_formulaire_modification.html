@@ -57,7 +57,7 @@
                 <select id="curseur-select-projection"></select> Déplacez le viseur pour modifier la position (n'oubliez pas de valider).
             </label>
             <label>
-				<strong>Attention:</strong> Ces coordonnées sont relatives à l'éllipsoïde WGS84. Il se peut qu'elles ne correspondent pas à d'anciennes cartes. Consultez le cartouche de la carte.
+				<strong>Attention:</strong> Ces coordonnées sont relatives à l'ellipsoïde WGS84. Il se peut qu'elles ne correspondent pas pour d'anciennes cartes. Consultez le cartouche de la carte pour vérifier son ellipsoïde de référence.
             </label>
             <label>
 				<span><a onclick="curseur.setLatLng(map.getCenter())" href="#">Remettre le viseur au centre actuel de la carte</a></span>
@@ -99,6 +99,12 @@
                     Explications plus précises sur les différents types de points
                 </a>
             </label>
+
+			<?php if ($_SESSION['niveau_moderation']>=1) {?>
+				<label>Créateur de cette fiche: ID =
+					<input size="4" type="text" name="id_createur" value="<?=$vue->point->id_createur?>" />
+				</label>
+            <?}?>
 
             <?php // tous les points n'ont pas de raison d'avoir ce champ ( lac, sommets, etc.)
                 if ($vue->point->equivalent_places!="") {?>

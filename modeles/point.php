@@ -99,6 +99,7 @@ function infos_points($conditions)
     $champs_en_plus="";
     $conditions_sql="";
     $tables_en_plus="";
+	$points = [];
     
     // condition de limite en nombre
     if (!empty($conditions->limite))
