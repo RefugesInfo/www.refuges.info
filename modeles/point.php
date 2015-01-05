@@ -41,11 +41,6 @@ $conditions->ids_types_point : liste d'id dans notre base des points type ex: 12
 $conditions->places_maximum
 $conditions->places_minimum
 
-$conditions->sud : Les points situés au Nord de cette latitude (Notez que ces 4 paramètres qui forment une bbox doivent tous être présents, ou aucuns
-$conditions->nord : les points situés au Sud de cette latitude
-$conditions->ouest : ...
-$conditions->est : ... 
-$conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->altitude_maximum
 $conditions->altitude_minimum
 
