@@ -20,11 +20,11 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
 $req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
-$req->type = $_GET['type'];
-$req->format = $_GET['format'];
-$req->format_texte = $_GET['format_texte'];
-$req->nombre = $_GET['nombre'];
-$req->massif = $_GET['massif'];
+$req->type = $_REQUEST['type'];
+$req->format = $_REQUEST['format'];
+$req->format_texte = $_REQUEST['format_texte'];
+$req->nombre = $_REQUEST['nombre'];
+$req->massif = $_REQUEST['massif'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();

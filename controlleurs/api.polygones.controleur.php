@@ -19,11 +19,11 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
 $req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
-$req->format = $_GET['format'];
-$req->massif = $_GET['massif'];
-$req->type_polygones = $_GET['type_polygon'];
-$req->bbox = $_GET['bbox'];
-$req->intersection = $_GET['intersection'];
+$req->format = $_REQUEST['format'];
+$req->massif = $_REQUEST['massif'];
+$req->type_polygones = $_REQUEST['type_polygon'];
+$req->bbox = $_REQUEST['bbox'];
+$req->intersection = $_REQUEST['intersection'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();

@@ -22,16 +22,16 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
 $req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
-$req->bbox = $_GET['bbox'];
-$req->massif = $_GET['massif'];
-$req->id = $_GET['id'];
-$req->format = $_GET['format'];
-$req->format_texte = $_GET['format_texte'];
-$req->nb_points = $_GET['nb_points'];
-$req->detail = $_GET['detail'];
-$req->nb_coms = $_GET['nb_coms'];
-$req->nb_points_proches = $_GET['nb_points_proches'];
-$req->type_points = $_GET['type_points'];
+$req->bbox = $_REQUEST['bbox'];
+$req->massif = $_REQUEST['massif'];
+$req->id = $_REQUEST['id'];
+$req->format = $_REQUEST['format'];
+$req->format_texte = $_REQUEST['format_texte'];
+$req->nb_points = $_REQUEST['nb_points'];
+$req->detail = $_REQUEST['detail'];
+$req->nb_coms = $_REQUEST['nb_coms'];
+$req->nb_points_proches = $_REQUEST['nb_points_proches'];
+$req->type_points = $_REQUEST['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
