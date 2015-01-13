@@ -103,6 +103,17 @@ else
     $replace_img=array();
 }
 
+// transformation automatique des chaine de caractère ressemblant à une url vers le BBcode des URLs
+// le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
+// et éviter de retransformer celles contenant du bbcode
+// exemple : coucouwww.coucou ne sera pas transformé
+// il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
+// au format http://truc ou https://bidule ou www. 
+
+$urlauto_pattern = "/([ :\.;,\n])(www.\w\S*|http[s]?:\/\/\w\S*)/i";
+$urlauto_replace = "$1[url=http://$2]$2[/url]";
+$html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
+
 // gestion de la majorité des tag bbcode
 $searcharray =
 array_merge($search_img,
@@ -158,31 +169,12 @@ array_merge($replace_img,
 );
 $html = preg_replace($searcharray, $replacearray, $html);
 
-// transformation automatique des url
-// le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
-// et éviter de retransformer celles contenant du bbcode
-// exemple : coucouwww.coucou ne sera pas transformé
-// [url=http://www ne le sera pas non plus
-// il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
-// peut-être faudrait il en fait faire une négation comme : tout SAUF quand le caractère précédent est une lettre ou un "=" ? sly 26/03/2008
-
-// FIXME Je pense qu'il ne faudrait pas passer ça en HTML directement, mais en bbcode et laisser faire la routine
-// si dessus sly 27/06/2008
-
-// au format http://truc 
-$urlauto_pattern = "/([ :\.;,\n])(http:\/\/\w\S*)/i";
-$urlauto_replace = "$1<a href=\"$2\">$2</a>";
-$html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
-
-// au format www.
-$urlauto_pattern = "/([ :\.;,\n])(www.\w\S*)/i";
-$urlauto_replace = "$1<a href=\"http://$2\">$2</a>";
-$html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
-
 // On affiche les numéros de téléphone à l'envers
 if ($crypter_texte_sensible)
 {
-    $occurences_trouvees=preg_match_all("/(0[0-9]([-. ]?[0-9]{2}){4})/",$html,$occurence);
+		// Regexp méga tordue pour éviter de matcher 0012345678912211564 qui n'est pas un n° de téléphone. Matcher quand même !0479333333! ou (0479333333) mais pas A0479333333;
+		// FIXME: ça ne match plus les numéros suisses et formats internationnaux (enfin, ça les matchaient pas avant non plus) sly 01/2015
+    $occurences_trouvees=preg_match_all("/[^0-9A-Za-z](0[0-9]([-. ]?[0-9]{2}){4})[^0-9]/",$html,$occurence);
     if ($occurences_trouvees!=0)
     {
 	for ($x=0;$x<$occurences_trouvees;$x++)
