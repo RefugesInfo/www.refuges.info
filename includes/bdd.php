@@ -5,6 +5,7 @@ Fonctions liées à l'accès à ou aux bases de données et quelques "helpers" p
 **********************************************************************************************/
 
 require_once("config.php");
+require_once("gestion_erreur.php");
 
 /*
 Extension de la classe qui nous permet de récupérer le last inserted ID sans être obligé de spécifier à chaque fois la séquence postgresql, 
