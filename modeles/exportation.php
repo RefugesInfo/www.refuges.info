@@ -441,7 +441,7 @@ function waypoint_gpx($point,$format)
 	";
 	
 	//Je pousse peut-être la factorisation du code un peu loin, ça perd en lisibilité, mais c'est le format mutant entre gpx pour la carte googlemaps et l'export GPX sly 12/05/2010
-	$gpx_texte_lien="\t\t\t<text>".c(mb_ucfrst($point->nom))." sur ".$config['nom_hote']."</text>\n";
+	$gpx_texte_lien="\t\t\t<text>".c(mb_ucfirst($point->nom))." sur ".$config['nom_hote']."</text>\n";
 	$gpx_massif="\t\t\t<massif>".c($point->nom_polygone)."</massif>\n";
 	$gpx_id_massif="\t\t\t<id_massif>$point->id_polygone</id_massif>\n";
 	$gpx_id_qualite_gpx="\t\t\t<id_qualite_gps>$point->id_type_precision_gps</id_qualite_gps>\n";
