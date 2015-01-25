@@ -145,7 +145,10 @@ if(!is_numeric($req->nb_points_proches) || $req->page!="point") { // On empêche
 if($req->page!="point") {
     $temp = explode(",", $req->type_points);
     foreach ($temp as $type_point) {
-        if(!in_array($type_point,$val->type_points)) { $req->type_points = "all"; break; }
+        if (!in_array($type_point,$val->type_points) &&
+			!in_array($type_point,$val->type_points_id)) {
+			$req->type_points = "all"; break;
+		}
     }
 }
 else {

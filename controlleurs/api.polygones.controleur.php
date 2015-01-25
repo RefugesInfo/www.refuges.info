@@ -98,7 +98,10 @@ foreach($polygones_bruts as $polygone)
 	$polygones->$i->type['type'] = $polygone->type_polygone;
 	$polygones->$i->type['categorie'] = $polygone->categorie_polygone_type;
 	$geo = "geometrie_".$req->format;
-	$polygones->$i->geometrie = $polygone->$geo;
+	$polygones->$i->geometrie =
+		$_GET['type_geom']=='polylines'
+			? str_replace (array('MultiPolygon','[[[[',']]]]'), array('MultiLineString','[[[',']]]'), $polygone->$geo)
+			: $polygone->$geo;
 	$polygones->$i->partitif = $polygone->article_partitif;
 	$polygones->$i->bbox = $polygone->bbox;
 	$polygones->$i->lien = lien_polygone($polygone,False);

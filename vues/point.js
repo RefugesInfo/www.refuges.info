@@ -94,7 +94,7 @@ if ($vue->mini_carte) {
 			if (layerSwitcher._layers[l].name == '<?=$vue->vignette[2]?>')
 				newLayerId = l;
 		}
-		if (oldLayerId && newLayerId) {
+		if (oldLayerId && newLayerId && oldLayerId != newLayerId) {
 			map.removeLayer(layerSwitcher._layers[oldLayerId].layer);
 			map.addLayer(layerSwitcher._layers[newLayerId].layer);
 		}

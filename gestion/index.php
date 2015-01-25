@@ -65,7 +65,7 @@ if (isset($_SESSION['id_utilisateur']) )
                         <li><a href='./?page=commentaires_attente_correction'>Voir les commentaires en attente d'une correction</a></li>
                         <li><a href='./?page=modifier_modeles'>Modifier les modèles de points</a> (le pré-remplissage des champs lors d'un ajout de point)</li>
                         <li><a href=\"".lien_wiki('contenus_speciaux')."\"> Liste des contenus spéciaux</a></li>
-                        <li><a href='../nav?test_creer=1'>Créer un massif</a></li>
+                        <li><a href='../nav/0?mode_affichage=edit'>Créer un massif</a></li>
                     </ul>");
     
             // Pour tous les utilisateurs
