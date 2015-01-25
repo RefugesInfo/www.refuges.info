@@ -74,7 +74,7 @@ if ($vue->mini_carte) {
 		if (agrandir_vignette)
 			agrandir_vignette.style.display = 'none';
 
-		// On redimensionne ca carte
+		// On redimensionne la carte
 		var mapp = document.getElementById('vignette'),
 			l1 = mapp.clientWidth,
 			h1 = mapp.clientHeight;
