@@ -673,10 +673,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     background-position: center center;
     background-repeat: no-repeat;
   }
-  #carte_nav {
-    height: 80%;
-/*    margin-left: 210px;*/
-  }
   #accueil {
     width:  300px;
     height: 320px;
@@ -699,10 +695,35 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     float: right;
     max-width: 100%;
   }
+  #nav_bloc_carte {
+    height: 50%;
+    width: 98.4%;
+    margin: 0 0.8%;
+  }
+  .nav_bloc {
+    padding: 0 0.7%;
+  }
+  @media screen and (min-width: 1200px) {
+    #nav_bloc_carte {
+    float: right;
+    height: 80%;
+    width: 80%;
+    }
+  }
+  @media screen and (min-width: 700px) and (max-width: 1199px) {
+    #nav_bloc_carte {
+    height: 70%;
+    width: 98.4%;
+    }
+    .nav_bloc {
+    display: table-cell;
+    width: 33%;
+    }
+  }
   /*Externalise le sélecteur de couche de la carte nav*/
   #carte_nav .baseLbl, #carte_nav .dataLbl , #carte_nav .dataLayersDiv,
   #switch_nav .baseLbl, #switch_nav .baseLayersDiv, #switch_nav .dataLbl {
-	display: none;
+    display: none;
   }
 @media screen and (max-width: 640px) {
   #vignette,

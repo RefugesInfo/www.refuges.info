@@ -153,7 +153,7 @@ Une API pour refuges.info
 -------------------------
 pourquoi faire ?
 ----------------
-Nous utilisons une carte interactive sur notre site (avec openlayers) et le besoin que la partie javascript intérroge 
+Nous utilisons une carte interactive sur notre site (avec Leaflet) et le besoin que la partie javascript intérroge 
 notre base existe depuis longtemps, nous avons donc codé une sorte d'API assez spécifique au besoin d'affichage sur carte, et 
 conçue dans le but de bien marcher avec openlayer.
 Par la suite, une version mobile du site a été créé qui devrait pouvoir s'installer de manière indépendante comme application html5

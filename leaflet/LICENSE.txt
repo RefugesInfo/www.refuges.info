@@ -1,7 +1,7 @@
 Copyright (c) 2014, Dominique Cavailhez
 All rights reserved.
 
-The source of this software is available at : https://github.com/Dominique92/Leaflet-MultiMaps
+The source of this software is available at : https://github.com/Dominique92/MyLeaflet
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

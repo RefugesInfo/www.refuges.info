@@ -45,17 +45,8 @@ if (isset($_SESSION['id_utilisateur']) )
         switch ( $_SESSION['niveau_moderation'] )
         {
             // pour les admins
-            case 3 : ;
-            //pour les programmeurs
-            case 2 :
-/*
-                print("
-                    <h4>Programmeurs</h4>
-                    <ul>
-                        <li><a href='".$config['url_chemin_openlayers']."build/build.php'>Compression de la librairie OpenLayers</a> aprés modification des sources (dizaine de secondes)</li>
-                    </ul>
-                    ");
-*/
+            case 3 :
+
             // pour tout modérateur
             //TODO : centraliser le niveau d'autorisation, sinon, il faut régler séparément chaque fichier gestion/*.php
             case 1 :

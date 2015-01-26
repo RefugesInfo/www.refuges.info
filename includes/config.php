@@ -43,8 +43,6 @@ $config['base_wiki']=$config['sous_dossier_installation']."wiki/";
 $config['lien_forum']=$config['sous_dossier_installation']."forum/";
 
 /******** Paramètrage des cartes vignettes des fiches de points **********/
-$config['chemin_openlayers']=$config['racine_projet']."ol2.12.4/";
-$config['url_chemin_openlayers']=$config['sous_dossier_installation']."ol2.12.4/";
 $config['chemin_leaflet']=$config['racine_projet'].'leaflet/';
 $config['url_chemin_leaflet']=$config['sous_dossier_installation'].'leaflet/';
 

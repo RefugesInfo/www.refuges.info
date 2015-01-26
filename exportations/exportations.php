@@ -4,8 +4,7 @@ Renvoi un fichier au format souhaité contenant les données souhaitées en prov
 le lien d'accès à pour format :
 http://<site>/exportation/exportations.php?format=kmz&
 Ne pas changer l'adresse à la légère :
-ATTENTION :Openlayers est basé sur cette adresse, l'export aussi,
-des sites partenaires aussi peut-être !
+ATTENTION : des sites partenaires sont peut-être basés sur cette adresse!
 
 **********************************************************************************************/
 
@@ -15,10 +14,6 @@ require_once ("exportation.php");
 //Nous allons récupérer la liste des points souhaités en fonction des paramètres demandés
 //Pour des raisons de performance de la carte gmaps qui ne demande pas de limite, on ne donne 
 //qu'un nombre limité de points, les exportations devront penser à passer &limite=sans pour tout avoir
-//sly 
-//Pour plus de flexibilité, il me semblerait plus logique de laisser le soin aux applications de faire elles même leur choix de limite
-//et que par défaut il n'y ait pas de limite justement
-// Peut-être au passage au tout OpenLayers il serait bien d'y passer sly 28/10/2010
 
 $conditions = new stdClass;
 if (!$_GET["limite"])

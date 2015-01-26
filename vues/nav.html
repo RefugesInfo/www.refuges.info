@@ -10,23 +10,14 @@ $config les données communes à tout WRI
 
 Concept de Zone et Massifs :
 Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
-Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
+Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
 */
 ?>
 <div class="contenu">
 	<!-- afficher le titre du massif (en mode massif) -->
 	<h3 id="titrepage">
-        <?if ($vue->type_affichage == 'edit') {?>
+        <?if ($vue->mode_affichage == 'edit') {?>
             Edition des contours du massif "<?=$vue->polygone->nom_polygone?>"
-            <span style="font-size: 14px;font-weight: normal;">
-                <?if ($polygone->ouest){?>
-                    Cliquer sur un sommet et le déplacer
-                <?}else{?>
-                    Cliquer pour définir le contour /
-                    Double-cliquer pour terminer
-                <?}?>
-                / Cliquer sur la disquette pour enregistrer
-            </span>
         <?}else{?>
             <?=$vue->titre?>
         <?}?>
@@ -34,135 +25,121 @@ Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut c
 </div>
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 
-<?php if ( $vue->type_affichage == '' ){?>
-    <div class="choix_legende">
-        <form id="choix_legende" action="<?=$config['sous_dossier_installation']?>formulaire_exportations/" >
-            <?if (isset ($vue->polygone->nom_polygone)) {?>
-                <fieldset>
-                    <label>
-                        <input name="id_massif"
-                            type="checkbox"
-                            checked="checked"
-                            value="<?=$vue->polygone->id_polygone?>"
-                            onclick="switch_massif(this)"
-                        />
-                        <?=$vue->polygone->nom_polygone?> uniquement
-                    </label>
-                </fieldset>
-            <?}?>
+<div id="nav_bloc_carte"></div>
 
-            <fieldset>
-                <legend>Points</legend>
-                <ul>
-                    <?foreach ($vue->types_point_affichables AS $type_affichable) {?>
-                        <li>
-                            <label>
-                                <input
-                                    name="id_point_type[]"
-                                    onclick="maj_carte()"
-                                    value="<?=$type_affichable->id_point_type?>"
-                                    type="checkbox"
-                                    <?if (strstr (",$vue->liste_id_point_type,", ",$type_affichable->id_point_type,")) {?>
-                                        checked="checked"
-                                    <?}?>
-                                />
-                                <span onmouseover="wiki(this,'/wiki/fiche-<?=$type_affichable->icone?>?head=no')">
-                                    <img
-                                        id="icone_<?=$type_affichable->id_point_type?>"
-                                        src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
-                                        alt="icone de <?=$type_affichable->nom_type?>"
-                                    />
-                                    <?=$type_affichable->nom_type?>
-                                </span>
-                            </label>
-                        </li>
-                    <?}?>
-                    <li><a href="<?=$vue->lien_legende_carte?>">légende</a></li>
-                </ul>
-                
-            </fieldset>
-
-            <fieldset>
-                <legend>Couches</legend>
-                <ul>
-                    <li>
-                        <div id="switch_nav"></div>
-                    </li>
-                </ul>
-            </fieldset>
-
-            <!-- garde les coordonnee de la BBOX sous le coude pour l'export -->
-            <p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$vue->polygone->sud?>" /></p>
-            <p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$vue->polygone->nord?>" /></p>
-            <p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
-            <p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
-
-            <!-- Chargement d'un fichier GPX -->
-            <fieldset id="loadGPX" style="display:none;height:45px">
-                <legend>Trace GPS</legend>
-                <label>
-                    <input type="button" value="Charger un fichier GPX" /><?/* Bouton visible, inactif */?>
-                    <?/* Suivi d'un vrai bouton, actif, invisible car il n'est pas customisable */?>
-                    <?/* Ceci est rendu nécéssaire parce qu'on ne peut charger un fichier qu'en utilisant un input type="file" */?>
-                    <input type="file" id="GPX" style="opacity:0;filter:alpha(opacity=0);width:100px;position:relative;top:-20px" />
-                </label>
-            </fieldset>
-        </form>
-
-        <?if ($_SESSION['niveau_moderation']>=1) {?>
-            <?if ($vue->polygone->id_polygone) {?>
-                <fieldset>
-                    <legend>Edition</legend>
-                    <form method="post" action="?mode_affichage=edit" >
-                        <label>
-                            <input type="submit" name="modifier" value="Modifier les contours" />
-                        </label>
-                    </form><br /><hr />
-                    <form method="post" action="<?=$_SERVER['REQUEST_URI']?>" >
-                        <!-- Edition du massif -->
-                            <label>
-                                <input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
-                                Article partitif (max 20 car)
-                                <input type="text" name="article_partitif" maxlength="20" value="<?=$vue->polygone->article_partitif?>" /><br>
-                                Nom du massif
-                                <input type="text" name="nom_polygone" value="<?=$vue->polygone->nom_polygone?>" /><br>
-                                <input type="submit" name="renommer" value="Renommer" /><br /><hr />
-                                <?if (!$_GET['test_supprimer']) {?>
-                                    <p><a href="?test_supprimer=1">Supprimer le massif</a></p>
-                                <?}else{?>
-                                    <b><p style="color:red">ATTENTION: Ceci va supprimer définitivement le massif "<?=$vue->polygone->nom_polygone?>"</p>
-                                    <p style="color:red">Aucune restauration ne sera possible</p></b>
-                                    <input style="color:red;background-color:yellow" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" /><br />&nbsp;
-                                    <input type="submit" name="annuler" value="Annuler" />
-                                <?}?>
-                            </label>
-                    </form>
-                </fieldset>
-            <?}else{?>
-                <?if (!$_GET['test_creer']) {?>
-                    <p><a href="?test_creer=1">Créer un massif</a></p>
-                <?}else{?>
-                    <fieldset>
-                        <legend>Créer un massif</legend>
-                            <form method="post" action="<?=$config['sous_dossier_installation']?>?mode_affichage=edit" >
-                                Article: <input type="text" name="article_partitif" value="du" /><br>
-                                Nom du massif: <input type="text" name="nom_polygone" value=""><br>
-                                <input type="submit" name="creer" value="Créer">
-                            </form>
-                    </fieldset>
-                <?}?>
-            <?}?>
-        <?}?>
-        <p>Maj + click icône: ouvre dans une nouvelle fenêtre et l'affiche</p>
-        <p>Ctrl + click icône: ouvre dans un nouvel onglet et reste sur la carte</p>
-        <p>Maj + Ctrl + click icône: ouvre dans un nouvel onglet et l'affiche</p>
-    </div>
-
-    <div style="height: 80%;margin-left: 210px;"><?/* "Réserve" l'espace qui va bien à gauche. Pas beau mais j'ai pas trouvé mieux */?>
-<?}else{?>
-    <div style="height: 80%;margin-left: 1px;"><?/* Je deteste ce bricolage CSS... en attendant mieux */?>
+	<?if (!$vue->mode_affichage ){?>
+		<div class="nav_bloc" <?if (!$vue->polygone->nom_polygone ){?>style="display:none"<?}?>>
+			<fieldset>
+			<legend>Limites</legend>
+				<label>
+					<input name="id_massif"
+						type="checkbox"
+<?if ( $vue->polygone->id_polygone ){?>
+						checked="checked"
 <?}?>
-    <!-- Et maintenant, la carte -->
-    <div id="carte_nav" style="height: 100%" />
-</div>
- 
+						value="<?=$vue->polygone->id_polygone?>"
+						onclick="switch_massif(this)"
+					/>
+					<?=$vue->polygone->nom_polygone?> uniquement
+				</label>
+			</fieldset>
+		</div>
+	<?}?>
+
+	<div class="nav_bloc">
+<?if ( !$vue->mode_affichage ){?>
+		<fieldset>
+			<legend>Points</legend>
+			<ul>
+				<?foreach ($vue->types_point_affichables AS $type_affichable) {?>
+					<li>
+						<label>
+							<input
+								name="id_point_type[]"
+								onclick="maj_carte()"
+								value="<?=$type_affichable->id_point_type?>"
+								type="checkbox"
+								<?if (strstr (",$vue->liste_id_point_type,", ",$type_affichable->id_point_type,")) {?>
+									checked="checked"
+								<?}?>
+							/>
+							<span>
+								<img
+									id="icone_<?=$type_affichable->id_point_type?>"
+									src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
+									alt="icone de <?=$type_affichable->nom_type?>"
+								/>
+								<?=$type_affichable->nom_type?>
+							</span>
+						</label>
+					</li>
+				<?}?>
+				<li><a href="<?=$vue->lien_legende_carte?>">légende</a></li>
+			</ul>
+		</fieldset>
+<?}?>
+
+		<!-- garde les coordonnee de la BBOX sous le coude pour l'export
+		<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$vue->polygone->sud?>" /></p>
+		<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$vue->polygone->nord?>" /></p>
+		<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
+		<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
+ -->
+
+<?php if ( !$vue->mode_affichage && $_SESSION['niveau_moderation']>=1 ) {?>
+		<fieldset>
+			<legend>Modification</legend>
+			<label>
+				<a href="?mode_affichage=edit"><?= $vue->polygone->id_polygone ? 'Modifier le' : 'Créer un'?> massif</a>
+			</label>
+		</fieldset>
+<?}?>
+
+<?php if ( $vue->mode_affichage == 'edit' && $_SESSION['niveau_moderation']>=1 ) {?>
+		<form method="post" action="<?=$config['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit" >
+			<fieldset>
+				<legend><?=$vue->polygone->id_polygone ? 'Edition' : 'Création'?></legend>
+				<!-- Edition du massif -->
+				<label>
+						<input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
+						Nom du massif
+						<input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone?>" style="float:right" /><br/><br/>
+						Article partitif (max 20 car)
+						<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" style="float:right" /><br/><br/>
+						<span id="changed" style="display:none"><i>Modifications polygone</i></span>
+						<input type="hidden" name="contour_polygone" id="contour_polygone" value="<?=$vue->coordonnees_polygones?>" />
+						<br/><br/>
+						<input type="submit" name="enregistrer" value="Enregistrer" />
+						<p><a href="?" title="Sans sauvegarder">Quiter le mode édition</a></p>
+				</label>
+		   </fieldset>
+
+			<?if ($vue->polygone->id_polygone) {?>
+				<fieldset>
+					<legend>Suppression</legend>
+					<label>
+						<?if (!$_GET['test_supprimer']) {?>
+							<p><a href="<?=$config['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit&amp;test_supprimer=1">Supprimer le massif</a></p>
+						<?}else{?>
+								<b><p style="color:red">ATTENTION: Ceci va supprimer définitivement le massif "<?=$vue->polygone->nom_polygone?>"</p>
+								<p style="color:red">Aucune restauration ne sera possible</p></b>
+								<input type="submit" name="annuler" value="Annuler" style="float:right" />
+								<input style="color:red;background-color:yellow" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" /><br />&nbsp;
+						<?}?>
+					</label>
+				</fieldset>
+			<?}?>
+		</form>
+		<div id="help-edit"></div>
+<?}else
+	foreach (array (
+		      'Click'        => '',
+		'Maj + Ctrl + Click' => ' dans un nouvel onglet',
+		      'Ctrl + Click' => ' dans un nouvel onglet mais reste sur la carte',
+		'Maj + Click'        => ' dans une nouvelle fenêtre',
+	) AS $k => $v)
+		echo $vue->mode_affichage
+			? "<p>$k massif: affiche le massif$v.</p>"
+			: "<p>$k icône: affiche le point$v.</p>";
+?>
+	</div>

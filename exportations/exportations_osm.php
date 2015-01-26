@@ -3,8 +3,8 @@
 Renvoi un fichier au format gml contenant les données en provenance d'une copie partielle d'openstreetmap
 le lien d'accès à pour format :
 http://<site>/exportation/exportations_osm.php?format=kmz&
+ATTENTION : des sites partenaires sont peut-être basés sur cette adresse!
 
-Openlayers est (sera) basé en partie sur cette adresse
 **********************************************************************************************/
 
 require_once ("../includes/config.php");
@@ -12,7 +12,6 @@ require_once ("exportation.php");
 require_once ("point_osm.php");
 $conditions = new stdClass;
 $config['nom_fichier_export']="sans-espece-d-importance";
-// MODIF DOMINIQUE : utilisé par OpenLayers
 if (isset($_GET["limite"]))
   $conditions->limite = $_GET ["limite"]; 
 else

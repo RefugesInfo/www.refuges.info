@@ -20,16 +20,14 @@ require_once ("bdd.php");
 require_once ("meta_donnee.php");
 require_once ("polygone.php");
 
-$vue->java_lib [] = $config['url_chemin_openlayers'].'OpenLayers.js?'.filemtime($config['chemin_openlayers'].'OpenLayers.js');
-//$vue->java_lib [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
-//$vue->css      [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
+$vue->java_lib [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+$vue->css      [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
 $vue->java_lib [] = $config['sous_dossier_installation'].'vues/wiki.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
 
 $vue->types_point_affichables=types_point_affichables();
-
 // typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referencement google, c'est le controlleur.php qui passe ce tableau
 $id_polygone = $controlleur->url_decoupee[1];
 $vue->mode_affichage = $_GET['mode_affichage']; // "zone", "massif" ou "edit". ca definit l'affichage qui suit
@@ -55,6 +53,18 @@ if ($id_polygone)
 else
   $vue->titre = "Navigation sur les photos satellite";
 $vue->polygone=$polygone;
+
+// Les coordonnées des polygones à éditer
+$params = new stdClass();
+$params->ids_polygones = $id_polygone;
+$params->avec_geometrie = 'geojson';
+$params->intersection = NULL;
+$polygones_bruts=infos_polygones($params);
+$vue->coordonnees_polygones = str_replace (
+	array ('{"type":"MultiPolygon","coordinates":', '[[[', ']]]', '}'),
+	array ('','[[',']]',''),
+	$polygones_bruts[0]->geometrie_geojson
+);
 
 $vue->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver les checks mémorisés dans un cookie
 		$HTTP_COOKIE_VARS ['liste_id_point_type']
