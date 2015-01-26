@@ -81,32 +81,33 @@ $polygones_bruts=infos_polygones($params);
 $lum = 0xC0 / 2; // Luminance constante pour un meilleur contraste
 $nb_coul =  count ($polygones_bruts); // Pour répartir les couleurs
 // Incrément des couleurs pour ne pas avoir de couleurs proches pour des massifs de n° proches
-for ($pas = (int)($nb_coul/6+1); $nb_coul%$pas == 0; $pas++); // Le premier non diviseur de nb_coul > nb_coul / 6
-$pas_angulaire = $pas * 2*M_PI / $nb_coul;
-
-$i = 0;
-foreach($polygones_bruts as $polygone)
-{
-	$polygones->$i = new stdClass();
-	$couleur = '#';
-		for ($c = 0; $c < 2*M_PI; $c += 2*M_PI/3) // Chacune des 3 couleurs primaires
-			$couleur .= substr (dechex (0x100 + $lum * (1 + cos ($i * $pas_angulaire + $c))), -2);
-			// +0x100 pour bénéficier du 0 à gauche quand on passe en hexadécimal
-	$polygones->$i->nom = $polygone->nom_polygone;
-	$polygones->$i->id = $polygone->id_polygone;
-	$polygones->$i->type['id'] = $polygone->id_polygone_type;
-	$polygones->$i->type['type'] = $polygone->type_polygone;
-	$polygones->$i->type['categorie'] = $polygone->categorie_polygone_type;
-	$geo = "geometrie_".$req->format;
-	$polygones->$i->geometrie =
-		$_GET['type_geom']=='polylines'
-			? str_replace (array('MultiPolygon','[[[[',']]]]'), array('MultiLineString','[[[',']]]'), $polygone->$geo)
-			: $polygone->$geo;
-	$polygones->$i->partitif = $polygone->article_partitif;
-	$polygones->$i->bbox = $polygone->bbox;
-	$polygones->$i->lien = lien_polygone($polygone,False);
-	$polygones->$i->couleur = $couleur;
-	$i++;
+if ($nb_coul) {
+	for ($pas = (int)($nb_coul/6+1); $nb_coul%$pas == 0; $pas++); // Le premier non diviseur de nb_coul > nb_coul / 6
+	$pas_angulaire = $pas * 2*M_PI / $nb_coul;
+	$i = 0;
+	foreach($polygones_bruts as $polygone)
+	{
+		$polygones->$i = new stdClass();
+		$couleur = '#';
+			for ($c = 0; $c < 2*M_PI; $c += 2*M_PI/3) // Chacune des 3 couleurs primaires
+				$couleur .= substr (dechex (0x100 + $lum * (1 + cos ($i * $pas_angulaire + $c))), -2);
+				// +0x100 pour bénéficier du 0 à gauche quand on passe en hexadécimal
+		$polygones->$i->nom = $polygone->nom_polygone;
+		$polygones->$i->id = $polygone->id_polygone;
+		$polygones->$i->type['id'] = $polygone->id_polygone_type;
+		$polygones->$i->type['type'] = $polygone->type_polygone;
+		$polygones->$i->type['categorie'] = $polygone->categorie_polygone_type;
+		$geo = "geometrie_".$req->format;
+		$polygones->$i->geometrie =
+			$_GET['type_geom']=='polylines'
+				? str_replace (array('MultiPolygon','[[[[',']]]]'), array('MultiLineString','[[[',']]]'), $polygone->$geo)
+				: $polygone->$geo;
+		$polygones->$i->partitif = $polygone->article_partitif;
+		$polygones->$i->bbox = $polygone->bbox;
+		$polygones->$i->lien = lien_polygone($polygone,False);
+		$polygones->$i->couleur = $couleur;
+		$i++;
+	}
 }
 $nombre_polygones = $i;
 

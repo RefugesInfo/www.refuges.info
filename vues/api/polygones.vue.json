@@ -31,9 +31,8 @@ foreach ($polygones as $polygone) {
 	echo json_encode($polygone);
 	echo "\r\n\t".'}';
 	if ($j != $nombre_polygones) echo ",";
-	else echo "\r\n\t]\r\n";
 }
 
-echo "}";
+echo "\r\n\t]\r\n}";
 
 ?>
