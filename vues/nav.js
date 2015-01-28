@@ -74,7 +74,6 @@ var map,
 <?}else{?>
 			argsGeoJson: {
 				massif: '<?=$vue->polygone->id_polygone?>',
-				type_polygon: 1,
 				type_geom: 'polylines'
 			},
 			style: function(feature) {
@@ -130,7 +129,6 @@ var map,
 window.addEventListener('load', function() {
 	map = new L.Map.MultiCRS('nav_bloc_carte', {
 		fullscreenControl: true,
-		scaleControl: true,
 		center: new L.LatLng(45.6, 6.7),
 		zoom: 6,
 		layers: [
@@ -150,13 +148,13 @@ window.addEventListener('load', function() {
 	]);
 <?}?>
 
-	var ctrlLayers = new L.Control.Layers(baseLayers);
-	map.addControl(ctrlLayers); // Le controle de changement de couche de carte avec la liste des cartes dispo
-	map.addControl(new L.Control.Permalink({text: 'Permalink', layers: ctrlLayers}));
-	map.addControl(new L.Control.Coordinates());
+	var ctrlLayers = new L.Control.Layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+	new L.Control.Permalink({text: 'Permalink', layers: ctrlLayers}).addTo(map);
+	new L.Control.Scale().addTo(map);
+	new L.Control.Coordinates().addTo(map);
 
 	<?if ( $vue->mode_affichage != 'zone' ){?>
-		map.addControl(new L.Control.Gps());
+		new L.Control.Gps().addTo(map);
 		var fl = L.Control.fileLayerLoad().addTo(map);
 	<?}
 	if ( $vue->mode_affichage == 'edit' ){?>
