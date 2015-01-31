@@ -458,13 +458,13 @@ function transfert_forum($commentaire)
 	$res = $pdo->query($querycom);
 	$forum = $res->fetch() ;
   
-    if ($commentaire->id_createur_commentaire<=0)
-        $commentaire->id_createur_commentaire=-1;
-	// d'abord declarer le post
-    // note sly 17/08/2013 : j'ajoute un "_" à la suite du nom de l'auteur, c'est un peu curieux, mais ça permet de réduire
-    // les chances qu'on le confondent avec un utilisateur du forum portant le même nom exactement
-    // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
-    
+        if ($commentaire->id_createur_commentaire<=0)
+            $commentaire->id_createur_commentaire=-1;
+
+        // d'abord declarer le post
+        // note sly 17/08/2013 : j'ajoute un "_" à la suite du nom de l'auteur, c'est un peu curieux, mais ça permet de réduire
+        // les chances qu'on le confondent avec un utilisateur du forum portant le même nom exactement
+        // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
 	$query_insert_post="
 		INSERT INTO phpbb_posts
 			(topic_id,forum_id,poster_id,post_time,post_username)
@@ -481,13 +481,14 @@ function transfert_forum($commentaire)
 	if ($commentaire->photo_existe) 
 	{
 		// insere la balise bbcode pour la photo
-		$commentaire->texte.="\n[img:$bbcodeuid]http://".$config['nom_hote'].$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
+		$commentaire->texte.="\n[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
 		// et deplace la photo, question historique, on peut avoir la réduite et/ou l'originale
 		if (isset($commentaire->photo['reduite']))
 			$photo_a_conserver=$commentaire->photo['reduite'];
 		elseif (isset($commentaire->photo['originale']))
 			$photo_a_conserver=$commentaire->photo['originale'];
-     
+
+                // On pourrait se dire que déplacer c'est plus simple. Oui, en effet, mais je préfère profiter de la fonction "suppression_commentaire" toute faite. Et donc faire une copie à cet endroit.
 		copy($photo_a_conserver,$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
 	}
 	$query_post_text="

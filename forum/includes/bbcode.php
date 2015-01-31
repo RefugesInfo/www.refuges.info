@@ -285,6 +285,10 @@ function bbencode_first_pass($text, $uid)
 	// [img]image_url_here[/img] code..
 	$text = preg_replace("#\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
 
+	// [img]/local/image_url_here.jpeg[/img] code..
+	// refuges.info sly's hack : support d'image locales pour ne pas obligatoirement pointer en http://www.refuges.info/prout
+	$text = preg_replace("#\[img\]((/))([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+        
 	// Remove our padding from the string..
 	return substr($text, 1);;
 

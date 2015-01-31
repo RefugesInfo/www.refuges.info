@@ -34,7 +34,7 @@ $config['chemin_icones']=$config['racine_projet']."images/icones/";
 //jmb 04/07 on continue avec des rep de moderation
 $config['rep_moder_photos_backup']=$config['racine_projet']."gestion/sauvegardes-photos/";
 $config['rep_forum_photos']=$config['racine_projet']."forum/photos-points/";
-$config['rep_web_forum_photos']=$config['racine_projet']."forum/photos-points/";
+$config['rep_web_forum_photos']=$config['sous_dossier_installation']."forum/photos-points/";
 
 // Lien direct vers le mode d'emploi
 $config['base_wiki']=$config['sous_dossier_installation']."wiki/";
