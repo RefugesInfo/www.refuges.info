@@ -1,4 +1,7 @@
 <?php
+/***
+ * FIXME: A refaire au format MVC, là, c'est non fonctionnel vue que j'ai sauvegardé ça de coté dans le dossier des vues
+ */
 
 $list = fopen("mails.txt", "a");
 

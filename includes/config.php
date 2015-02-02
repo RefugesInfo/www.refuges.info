@@ -27,6 +27,7 @@ $config['rep_photos_points']=$config['racine_projet']."photos_points/";
 $config['chemin_vues']=$config['racine_projet']."vues/";
 $config['chemin_modeles']=$config['racine_projet']."modeles/";
 $config['chemin_controlleurs']=$config['racine_projet']."controlleurs/";
+$config['chemin_routes']=$config['racine_projet']."routes/";
 
 $config['url_chemin_icones']=$config['sous_dossier_installation']."images/icones/";
 $config['chemin_icones']=$config['racine_projet']."images/icones/";
@@ -51,7 +52,7 @@ $config['url_chemin_leaflet']=$config['sous_dossier_installation'].'leaflet/';
 // Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
 // afin de pouvoir faire des require_once('modele.php');
 // ATTENTION ! on pourait être tenté de faire de même pour les controlleurs et les vues, mais les conflits en nom identiques seraient trop important
-ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.$config['chemin_modeles'].PATH_SEPARATOR.__DIR__);
+ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.$config['chemin_modeles'].PATH_SEPARATOR.$config['chemin_routes'].PATH_SEPARATOR.__DIR__);
 
 /** Auto chargement des déclarations de classes
     les classes ModeleClasse sont déclarées dans modeles/Classe.php

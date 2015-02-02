@@ -12,7 +12,7 @@ RewriteRule ^(.*)$ http://www.refuges.info/$1 [L,R=301]
 #converti) sauf ceux pour lesquels il existe un fichier réél ou un dossier
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . ./routage.php [L]
+RewriteRule . ./index.php [L]
 
 php_value short_open_tag 1
 

@@ -1,5 +1,0 @@
-<?php
-
-Header('Location:doc/');
-
-?>

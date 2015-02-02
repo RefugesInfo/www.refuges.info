@@ -5,4 +5,4 @@
 /includes/config_privee.php
 /.htaccess
 /forum/images/avatars
-/api/doc/mails.txt # Fichier contenant les mails de la newsletter API
+/vues/api/doc/mails.txt # Fichier contenant les mails de la newsletter API

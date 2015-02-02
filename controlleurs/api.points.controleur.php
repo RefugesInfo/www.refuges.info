@@ -371,28 +371,28 @@ unset($points_bruts, $i);
 
 switch ($req->format) {
     case 'geojson':
-        include('../vues/api/points.vue.json');
+        include($config['chemin_vues'].'/api/points.vue.json');
         break;
     case 'kml': case 'kmz':
-        include('../vues/api/points.vue.kml');
+        include($config['chemin_vues'].'/api/points.vue.kml');
         break;
     case 'gml':
-        include('../vues/api/points.vue.gml');
+        include($config['chemin_vues'].'/api/points.vue.gml');
         break;
     case 'gpx': case 'gpi':
-        include('../vues/api/points.vue.gpx');
+        include($config['chemin_vues'].'/api/points.vue.gpx');
         break;
     case 'csv':
-        include('../vues/api/points.vue.csv');
+        include($config['chemin_vues'].'/api/points.vue.csv');
         break;
     case 'xml':
-        include('../vues/api/points.vue.xml');
+        include($config['chemin_vues'].'/api/points.vue.xml');
         break;
     case 'rss':
-        include('../vues/api/points.vue.rss');
+        include($config['chemin_vues'].'/api/points.vue.rss');
         break;
     default:
-        include('../vues/api/points.vue.json');
+        include($config['chemin_vues'].'/api/points.vue.json');
         break;
 }
 
