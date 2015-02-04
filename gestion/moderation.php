@@ -96,15 +96,16 @@ if ($vue->erreur=="")
             Vous entrez dans la zone de modération qui va vous permettre de modifier un commentaire ou de le déplacer vers le forum dans la section correspondant au point
             </p>
             <h4>le commentaire est :</h4>
-            <blockquote>";
+            ";
             if ($commentaire->photo_existe==1)
                 echo "<img
                 src='".$config['rep_web_photos_points'].$commentaire->id_commentaire.".jpeg'
                 alt='photo liée au commentaire'
                 width='200px' /><br />\n";
-            echo nl2br(protege($commentaire->texte))."</blockquote>\n";
+            echo bbcode2html($commentaire->texte)."\n";
             // formulaire qui contient uniquement le comment
             echo "
+            <h4>Moderation :</h4>
             <form method='POST'>
             <input type='hidden' name='page' value='moderation' /> <!-- pour qu'il re appelle la page de moderation -->
             <label>
