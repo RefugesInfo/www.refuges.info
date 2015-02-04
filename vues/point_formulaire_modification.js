@@ -66,3 +66,9 @@ window.addEventListener('load', function() {
 	});
 	map.addControl(new L.Control.Scale());
 });
+
+function affiche_et_set( el , affiche, valeur ) {
+    document.getElementById(el).style.visibility = affiche ;
+    document.getElementById(el).value = valeur ;
+    return false;
+}
