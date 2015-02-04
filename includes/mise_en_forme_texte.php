@@ -118,6 +118,7 @@ $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
 $searcharray =
 array_merge($search_img,
         array(
+        "/\[url=(\/.+?)\](.+?)\[\/url\]/s", // Cas spécial des urls relatives à la racine genre [url=/forum]form[/forum] qui doivent pointer vers /sous-dossier/forum
         "/\[url\](http[s]?:\/\/.+?)\[\/url\]/s",
         "/\[url=(http[s]?:\/\/.+?)\](.+?)\[\/url\]/s",
         "/\[url\](.+?)\[\/url\]/s",
@@ -144,6 +145,7 @@ array_merge($search_img,
 $replacearray =
 array_merge($replace_img,
         array(
+        "<a href=\"".$config['sous_dossier_installation']."$1\">$2</a>",
         "<a href=\"$1\">$1</a>",
         "<a href=\"$1\">$2</a>",
         "<a href=\"http://$1\">$1</a>",
