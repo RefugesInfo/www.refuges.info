@@ -110,17 +110,17 @@ else
 // il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
 // au format http://truc ou https://bidule ou www. 
 
-$urlauto_pattern = "/([ :\.;,\n])(www.\w\S*|http[s]?:\/\/\w\S*)/i";
-$urlauto_replace = "$1[url=http://$2]$2[/url]";
+$urlauto_pattern = "/([ :\.;,\n\*])(www.\w\S*|http[s]?:\/\/\w\S*)/i";
+$urlauto_replace = "$1[url=$2]$2[/url]";
 $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
 
 // gestion de la majorité des tag bbcode
 $searcharray =
 array_merge($search_img,
         array(
-        "/\[url:(.*)\](.+?)\[\/url:(.*)\]/s",
+        "/\[url\](http[s]?:\/\/.+?)\[\/url\]/s",
+        "/\[url=(http[s]?:\/\/.+?)\](.+?)\[\/url\]/s",
         "/\[url\](.+?)\[\/url\]/s",
-        "/\[url=(.+?):(.*)\](.+?)\[\/url:(.*)\]/s",
         "/\[url=(.+?)\](.+?)\[\/url\]/s",
         "/\[b:(.*)\](.+?)\[\/b:(.*)\]/s",
         "/\[b\](.*?)\[\/b\]/s",
@@ -144,10 +144,10 @@ array_merge($search_img,
 $replacearray =
 array_merge($replace_img,
         array(
-        "<a href=\"$2\">$2</a>",
         "<a href=\"$1\">$1</a>",
-        "<a href=\"$2\">$3</a>",
         "<a href=\"$1\">$2</a>",
+        "<a href=\"http://$1\">$1</a>",
+        "<a href=\"http://$1\">$2</a>",
         "<em>$2</em>",
         "<em>$1</em>",
         "<i>$2</i>",
@@ -168,20 +168,19 @@ array_merge($replace_img,
         )
 );
 $html = preg_replace($searcharray, $replacearray, $html);
-
 // On affiche les numéros de téléphone à l'envers
 if ($crypter_texte_sensible)
 {
-		// Regexp méga tordue pour éviter de matcher 0012345678912211564 qui n'est pas un n° de téléphone. Matcher quand même !0479333333! ou (0479333333) mais pas A0479333333;
-		// FIXME: ça ne match plus les numéros suisses et formats internationnaux (enfin, ça les matchaient pas avant non plus) sly 01/2015
+    // Regexp méga tordue pour éviter de matcher 0012345678912211564 qui n'est pas un n° de téléphone. Matcher quand même !0479333333! ou (0479333333) mais pas A0479333333;
+    // FIXME: ça ne match plus les numéros suisses et formats internationnaux (enfin, ça les matchaient pas avant non plus) sly 01/2015
     $occurences_trouvees=preg_match_all("/[^0-9A-Za-z](0[0-9]([-. ]?[0-9]{2}){4})[^0-9]/",$html,$occurence);
     if ($occurences_trouvees!=0)
     {
-	for ($x=0;$x<$occurences_trouvees;$x++)
-	{	
-	    $reverse = strrev($occurence[0][$x]);
-	    $html=str_replace($occurence[0][$x],"<span class=\"mail\">$reverse</span>",$html);
-	}
+        for ($x=0;$x<$occurences_trouvees;$x++)
+        {
+            $reverse = strrev($occurence[0][$x]);
+            $html=str_replace($occurence[0][$x],"<span class=\"mail\">$reverse</span>",$html);
+        }
     }
 }
 
@@ -217,9 +216,9 @@ if ($occurences_trouvees!=0)
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
 if (!$autoriser_html)
 {
-	$html = str_replace("\r\n", "<br />", $html);
-	$html = str_replace("\n", "<br />", $html);
-	$html = str_replace("\r", "<br />", $html);
+    $html = str_replace("\r\n", "<br>\r\n", $html);
+    $html = str_replace("\n", "<br>\n", $html);
+    $html = str_replace("\r", "<br>\r", $html);
 	$html = str_replace("  ", " &nbsp;", $html);
 }
 return $html;
