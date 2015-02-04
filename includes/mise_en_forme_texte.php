@@ -169,6 +169,7 @@ array_merge($replace_img,
         "$1" // Sera codé plus loin
         )
 );
+
 $html = preg_replace($searcharray, $replacearray, $html);
 // On affiche les numéros de téléphone à l'envers
 if ($crypter_texte_sensible)
@@ -218,10 +219,8 @@ if ($occurences_trouvees!=0)
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
 if (!$autoriser_html)
 {
-    $html = str_replace("\r\n", "<br>\r\n", $html);
-    $html = str_replace("\n", "<br>\n", $html);
-    $html = str_replace("\r", "<br>\r", $html);
-	$html = str_replace("  ", " &nbsp;", $html);
+    $html = str_replace(array("\r\n","\n","\r"), "<br>", $html);
+    $html = str_replace("  ", " &nbsp;", $html);
 }
 return $html;
 }
