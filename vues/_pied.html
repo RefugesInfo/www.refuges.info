@@ -8,15 +8,15 @@
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 ?>
-		<?if (count ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la poge, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
+		<?if (count ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
 			foreach ($vue->java_lib_foot as $js_lib) {?>
 				<script type="text/javascript" src="<?=$js_lib?>"></script>
 		<?	}?>
 		<div id="basdepage">
-			<a id="lien-mobile" href="<?=$config['sous_dossier_installation']?>mobile" title="Passer sur l'application mobile">
+			<a id="lien-mobile" href="<?=$config['sous_dossier_installation']?>mobile/" title="Passer sur l'application mobile">
 				Version mobile
 			</a> &mdash; 
-			<a id="lien-api" href="<?=$config['sous_dossier_installation']?>api" title="API">
+			<a id="lien-api" href="<?=$config['sous_dossier_installation']?>api/doc/" title="API">
 				API développeurs
 			</a> &mdash; 
 			<a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">
