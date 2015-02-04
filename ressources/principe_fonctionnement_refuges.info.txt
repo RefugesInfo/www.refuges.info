@@ -130,23 +130,23 @@ Les grands axes de notre choix de rangement sont :
 
 Le dossier /modeles -> on trouve les modeles (des fonctions et des classes pour manipuler, récupérer, modifier les données de la base)
 Le dossier /vues -> les vues (templates html, css, gml, xml, js, gpx, formulaires html)
-Le dossier /controlleurs -> les controlleurs (qui font un peu le lien entre les deux précédents)
-Le fichier /controlleur.php -> C'est le chef d'orchestre qui fait correspondre une URL du site vers un controlleur, 
+Le dossier /controlleurs -> les controlleurs qui font le lien entre les deux précédents
+Le dossier /routes -> les "routes" qui listent pour chaque URL appelée quel contrôleur doit être contacté.
+Le fichier /index.php -> C'est le chef d'orchestre qui fait correspondre une URL du site vers un controlleur,
 il gère les pages non trouvées, inclus, si besoin, les menus que l'on retrouve partout et lance des traitements dont 
 tous les controlleurs ont besoin. (Idéalement, ça pourrait être lui qui appel de manière générique une gestion de cache)
 
 Le dossier /includes contient la config.php du site et quelques fonctions génériques de mise en forme, traitement d'erreur qui ne 
 trouverait pas leur place dans le modèle.
 
-Par soucis de simplicité et pour s'y retrouver, le nom des vues, modeles et controlleurs sont(seront) les mêmes dès que possible, ainsi, pour la page 
-qui affiche un point, on trouvera par exemple :
+Exemple, pour afficher la fiche d'un 'point, on trouvera par exemple :
 /controlleurs/point.php
 /modeles/point.php
 /vues/point.html
 /vue/point.js
 
 
-Notez qu'en octobre 2013 ont est encore très loin d'avoir terminé ! Outre les modules externes comme OL et le forum phpBB
+Notez qu'en 2015 ont est loin d'avoir terminé ! Outre les modules externes comme Leaflet et le forum phpBB
 qui n'y passeront sans doute jamais, il reste plusieurs modules du site qu'on a toujours pas passé sous ce format.
 
 Une API pour refuges.info
