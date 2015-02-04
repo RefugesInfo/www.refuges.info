@@ -54,14 +54,14 @@ function verif_multiples_entiers($string)
     return preg_match ('/^-?\d+(,-?\d+)*$/', $string);
 }
 
-// petit débugger basique, on l'appel par d($variable1,$variable2) et il balance tout à l'écran en à peu près lisible
-function d($a,$b=null,$c=null,$d=null)
+// petit débuggeur basique, on l'appel par d($variable1,$variable2) et il balance tout en à peu près lisible
+function d($a=null,$b=null,$c=null,$d=null)
 {
-	print("<pre>");
-	print_r($a);
-	print_r($c);
-	print_r($b);
-	print_r(debug_backtrace());
+	print("<pre>"); // Pour la lisibilité, et que les retour ligne sont affichés
+	foreach (array('a','b','c','d') as $var ) // Pour toutes les variables qu'on a passées de a à d, factorisation du code
+            if (!is_null($$var))
+                print(htmlspecialchars(print_r($$var,True))."\n------------------------------------------------------------------------------------------------\n"); // O peut un print_r des variables (des fois que ça soit des arrays) et on veut le résultat brut lisible dans un navigateur
+        print(htmlspecialchars(print_r(debug_backtrace(),True)));
 	die("</pre>");
 }
 ?>
