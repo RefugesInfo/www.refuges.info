@@ -119,8 +119,8 @@ $searcharray =
 array_merge($search_img,
         array(
         "/\[url=(\/.+?)\](.+?)\[\/url\]/s", // Cas spécial des urls relatives à la racine genre [url=/forum]form[/forum] qui doivent pointer vers /sous-dossier/forum
-        "/\[url\](http[s]?:\/\/.+?)\[\/url\]/s",
-        "/\[url=(http[s]?:\/\/.+?)\](.+?)\[\/url\]/s",
+        "/\[url\](http[s]?:\/\/.+?)\[\/url\]/i",
+        "/\[url=(http[s]?:\/\/.+?)\](.+?)\[\/url\]/i",
         "/\[url\](.+?)\[\/url\]/s",
         "/\[url=(.+?)\](.+?)\[\/url\]/s",
         "/\[b:(.*)\](.+?)\[\/b:(.*)\]/s",
