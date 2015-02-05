@@ -269,7 +269,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 			for($i = 0; $i < count($split_search); $i++)
 			{
-				if (preg_match('#^[\*%]+$#', trim($split_search[$i])) || preg_match('#^[^\*]{1,2}$#', str_replace(array('*', '%'), '', trim($split_search[$i]))))
+				if (preg_match('#^[\*%]+$#', trim($split_search[$i])) || preg_match('#^[^\*]{1}$#', str_replace(array('*', '%'), '', trim($split_search[$i]))))
 				{
 					$split_search[$i] = '';
 					continue;
