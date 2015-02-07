@@ -99,8 +99,7 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
-					size: 16
+					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png'
 				}
 			}
 		}
@@ -117,8 +116,7 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
-					size: L.Browser.mobile ? 32 : 16
+					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png'
 				}
 			}
 		}
