@@ -38,7 +38,7 @@ switch ($controlleur->url_decoupee[0])
     case "nouvelles" :
     case "point_ajout_commentaire" :
     case "point_recherche" :
-    case "avis-internaute-commentaire" :
+    case "avis_internaute_commentaire" :
     case "formulaire_exportations" :
     case "point_formulaire_recherche" :
         auto_login_phpbb_users();

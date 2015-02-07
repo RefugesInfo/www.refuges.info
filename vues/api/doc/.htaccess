@@ -1,0 +1,4 @@
+<Files "mails.txt>
+    Deny from all
+</Files> 
+
