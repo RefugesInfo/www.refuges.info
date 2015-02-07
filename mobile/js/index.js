@@ -105,7 +105,7 @@ function affichePoint(idpoint) {
 	var msg='../api/point?id=' + idpoint + "&format_texte=html";
 
 	// Requete AJAX
-	$.get(msg)
+	$.ajax(msg)
 	.done(function(data) { 
 		pointRecu(data); 
 	})
@@ -116,8 +116,9 @@ function affichePoint(idpoint) {
 
 // Fonction qui retourne Oui ou Non au lieu du code binaire
 function on(val) {
-	if (val == 1) return "Oui";
-	else if (val == 0) return "Non";
+	if (val === "1") return "Oui";
+	else if (val === "0") return "Non";
+	else if (val === null) return "<i>Non renseigné</i>";
 	else return val;
 
 }
