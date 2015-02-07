@@ -14,16 +14,16 @@ include_once("utilisateur.php");
 /****************************************/
 // Ça permet de mettre convertir tout un objet
 function updatebbcode2html(&$html) {
-    if ($html != FALSE && $html != TRUE && $html != NULL)
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL)) 
         $html=bbcode2html($html,0,1,0); 
 }
 function updatebbcode2markdown(&$html) {
-    if ($html != FALSE && $html != TRUE && $html != NULL)
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL))
         $html=bbcode2markdown($html);
 }
 function updatebbcode2txt(&$html) {
-    if ($html != FALSE && $html != TRUE && $html != NULL)
-            $html=bbcode2txt($html);
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL))
+        $html=bbcode2txt($html);
 }
 function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html===TRUE) { $html='1'; } }
 /****************************************/
