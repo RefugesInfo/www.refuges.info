@@ -346,8 +346,8 @@ foreach ($points_bruts as $point) {
         $points->$i->coms[$k]['texte'] = $commentaire->texte;
         $points->$i->coms[$k]['photo']['nb'] = $commentaire->photo_existe;
         $points->$i->coms[$k]['photo']['date'] = $commentaire->date_photo;
-        $points->$i->coms[$k]['photo']['reduite'] = $commentaire->reduite;
-        $points->$i->coms[$k]['photo']['originale'] = $commentaire->originale;
+        $points->$i->coms[$k]['photo']['reduite'] = $commentaire->lien_photo['reduite'];
+        $points->$i->coms[$k]['photo']['originale'] = $commentaire->lien_photo['originale'];
         $k++;
     }
     $points->$i->coms['nb'] = $k;
