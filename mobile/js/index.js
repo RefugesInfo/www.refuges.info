@@ -138,7 +138,7 @@ function pointRecu(point) {
 	
 	// Infos complémentaires, elle sont ajoutés à la suite du titre
 	$.each(point.info_comp, function(info_comp_name, info_comp) {
-		if (info_comp.valeur != "") {
+		if (info_comp.nom != "") {
 			$( "#infoscompPoint" ).append("<span id=\"" + info_comp_name + "Point\">" +
 				info_comp.nom + " : ");
 			if(info_comp_name == "site_officiel")
