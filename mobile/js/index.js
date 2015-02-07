@@ -145,9 +145,12 @@ function pointRecu(point) {
 		if (info_comp.nom != "") {
 			$( "#infoscompPoint" ).append("<span id=\"" + info_comp_name + "Point\">" +
 				info_comp.nom + " : ");
-			if(info_comp_name == "site_officiel")
-				$( "#infoscompPoint" ).append("<a target=\"_blank\" href=\"" + info_comp.valeur + "\">" +
-					point.nom + "</a>");
+			if(info_comp_name == "site_officiel") {
+				if(info_comp.valeur != "")
+					$( "#infoscompPoint" ).append("<a target=\"_blank\" href=\"" + info_comp.valeur + "\">" + point.nom + "</a>");
+				else
+					$( "#infoscompPoint" ).append("<i>Non renseigné</i>");
+			}
 			else
 				$( "#infoscompPoint" ).append(on(info_comp.valeur));
 			$( "#infoscompPoint" ).append("<br /></span>");
