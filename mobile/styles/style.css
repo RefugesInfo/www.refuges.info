@@ -367,6 +367,6 @@ article:not(#carte) {
 	background: #555;
 	color: white;
 	padding: 5px;
-	margin: -5px -5px 5px -5px;
+	margin: 15px -5px 5px -5px;
 	border-bottom: 2px solid #eee;
 }
