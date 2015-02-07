@@ -127,14 +127,18 @@ function on(val) {
 function pointRecu(point) {
 	// Si AJAX à bien retourné ce que l'on attendais
 	point = point.features[0].properties;
-	document.getElementById('infosPoint').innerHTML = '<span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /></p><p id="pointsprochesPoint"><b>Points proches :</b><br /></p><div id="commentairesPoint"><p><b>Commentaires :</b></p></div><p class="sautdeligne"></p>';
-	document.getElementById('titrePoint').innerHTML = point.nom;
-	document.getElementById('idPoint').innerHTML = "(Point n°<a target=\"_blank\" href='http://www.refuges.info/point/" + point.id + "' title='Informations détaillées sur le point, version PC'>" + point.id + "</a>)<br />Édité le " + point.date.derniere_modif;
-	document.getElementById('typePoint').innerHTML = "<p>" + point.type.valeur + "</p><span id=\"nbPlaces\">" + point.places.valeur + " " + point.places.nom + "</span>";
-	document.getElementById('coordPoint').innerHTML = "<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.coord.precision.nom + "<br />&nbsp;<i>Altitude</i> : " + point.coord.alt + "m, <i>Longitude</i> : " + point.coord.long + ", <i>Latitude</i> : " + point.coord.lat;
-	document.getElementById('rmqPoint').innerHTML = "<b>" + point.remarque.nom + " :</b><br />" + point.remarque.valeur;
-	document.getElementById('proprioPoint').innerHTML = "<b>" + point.proprio.nom + " :</b><br />" + point.proprio.valeur;
-	document.getElementById('accesPoint').innerHTML = "<b>" + point.acces.nom + " :</b><br />" + point.acces.valeur;
+	$('#infosPoint').html('<span id="titrePoint"></span><div id="fichePoint"><span id="idPoint"></span><span id="typePoint"></span></div><p id="coordPoint"></p><p id="proprioPoint"></p><p id="accesPoint"></p><p id="rmqPoint"></p><p id="infoscompPoint"><b>Informations complémentaires :</b><br /></p><p id="pointsprochesPoint"><b>Points proches :</b><br /></p><div id="commentairesPoint"><p><b>Commentaires :</b></p></div><p class="sautdeligne"></p>');
+	$('#titrePoint').html(point.nom);
+	$('#idPoint').html("(Point n°<a target=\"_blank\" href='http://www.refuges.info/point/" + point.id + "' title='Informations détaillées sur le point, version PC'>" + point.id + "</a>)<br />Édité le ");
+	if(point.date.derniere_modif === null)
+		$('#idPoint').append(point.date.creation);
+	else
+		$('#idPoint').append(point.date.derniere_modif);
+	$('#typePoint').html("<p>" + point.type.valeur + "</p><span id=\"nbPlaces\">" + point.places.valeur + " " + point.places.nom + "</span>");
+	$('#coordPoint').html("<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.coord.precision.nom + "<br />&nbsp;<i>Altitude</i> : " + point.coord.alt + "m, <i>Longitude</i> : " + point.coord.long + ", <i>Latitude</i> : " + point.coord.lat);
+	$('#rmqPoint').html("<b>" + point.remarque.nom + " :</b><br />" + point.remarque.valeur);
+	$('#proprioPoint').html("<b>" + point.proprio.nom + " :</b><br />" + point.proprio.valeur);
+	$('#accesPoint').html("<b>" + point.acces.nom + " :</b><br />" + point.acces.valeur);
 	
 	// Infos complémentaires, elle sont ajoutés à la suite du titre
 	$.each(point.info_comp, function(info_comp_name, info_comp) {
@@ -178,7 +182,7 @@ function pointRecu(point) {
 
 function clearBlocsVides(point) {
 	// Effacer les infos complémentaires s'il y en a aucune
-	infosComp = document.getElementById('infoscompPoint').innerHTML;
+	infosComp = $('#infoscompPoint').html();
 	if (infosComp == "<b>Informations complémentaires :</b><br>") {
 		$("#infoscompPoint").remove();
 	}
@@ -204,29 +208,29 @@ function clearBlocsVides(point) {
 
 // Fonction appelée pour basculer entre les vues
 function displayBlock(bloc) {
-	var carte = document.getElementById('carte');
-	var index = document.getElementById('index');
-	var aide = document.getElementById('aide');
-	var parametres = document.getElementById('parametres');
-	var licence = document.getElementById('licence');
-	var patientez = document.getElementById('patientez');
-	var points = document.getElementById('infosPoint');
-	var header = document.querySelector('header');
-	var footer = document.querySelector('footer');
-	var section = document.querySelector('section');
+	var carte = $('#carte');
+	var index = $('#index');
+	var aide = $('#aide');
+	var parametres = $('#parametres');
+	var licence = $('#licence');
+	var patientez = $('#patientez');
+	var points = $('#infosPoint');
+	var header = $('header');
+	var footer = $('footer');
+	var section = $('section');
 
-	footer.style.display = 'block';
+	footer.css('display', 'block');
 
 	if(bloc == 'carte') {
-		points.style.display = 'none';
-		carte.style.display = 'block';
-		header.style.display = 'none';
-		index.style.display = 'none';
-		aide.style.display = 'none';
-		parametres.style.display = 'none';
-		licence.style.display = 'none';
-		patientez.style.display = 'none';
-		section.style.height = '100%';
+		points.css('display', 'none');
+		carte.css('display', 'block');
+		header.css('display', 'none');
+		index.css('display', 'none');
+		aide.css('display', 'none');
+		parametres.css('display', 'none');
+		licence.css('display', 'none');
+		patientez.css('display', 'none');
+		section.css('height', '100%');
 		if (init!=1) {
 			initmap();
 			init = 1;
@@ -234,70 +238,70 @@ function displayBlock(bloc) {
 		map.invalidateSize();
 	}
 	else if(bloc == 'patientez') {
-		points.style.display = 'none';
-		carte.style.display = 'none';
-		header.style.display = 'none';
-		index.style.display = 'none';
-		aide.style.display = 'none';
-		parametres.style.display = 'none';
-		licence.style.display = 'none';
-		patientez.style.display = 'block';
-		section.style.height = '';
+		points.css('display', 'none');
+		carte.css('display', 'none');
+		header.css('display', 'none');
+		index.css('display', 'none');
+		aide.css('display', 'none');
+		parametres.css('display', 'none');
+		licence.css('display', 'none');
+		patientez.css('display', 'block');
+		section.css('height', '');
 	}
 	else if(bloc == 'points') {
-		points.style.display = 'block';
-		carte.style.display = 'none';
-		header.style.display = 'none';
-		index.style.display = 'none';
-		aide.style.display = 'none';
-		parametres.style.display = 'none';
-		licence.style.display = 'none';
-		patientez.style.display = 'none';
-		section.style.height = '';
+		points.css('display', 'block');
+		carte.css('display', 'none');
+		header.css('display', 'none');
+		index.css('display', 'none');
+		aide.css('display', 'none');
+		parametres.css('display', 'none');
+		licence.css('display', 'none');
+		patientez.css('display', 'none');
+		section.css('height', '');
 	}
 	else if(bloc == 'aide') {
-		points.style.display = 'none';
-		carte.style.display = 'none';
-		header.style.display = 'block';
-		index.style.display = 'none';
-		aide.style.display = 'block';
-		parametres.style.display = 'none';
-		licence.style.display = 'none';
-		patientez.style.display = 'none';
-		section.style.height = '';
+		points.css('display', 'none');
+		carte.css('display', 'none');
+		header.css('display', 'block');
+		index.css('display', 'none');
+		aide.css('display', 'block');
+		parametres.css('display', 'none');
+		licence.css('display', 'none');
+		patientez.css('display', 'none');
+		section.css('height', '');
 	}
 	else if(bloc == 'parametres') {
-		points.style.display = 'none';
-		carte.style.display = 'none';
-		header.style.display = 'block';
-		index.style.display = 'none';
-		aide.style.display = 'none';
-		parametres.style.display = 'block';
-		licence.style.display = 'none';
-		patientez.style.display = 'none';
-		section.style.height = '';
+		points.css('display', 'none');
+		carte.css('display', 'none');
+		header.css('display', 'block');
+		index.css('display', 'none');
+		aide.css('display', 'none');
+		parametres.css('display', 'block');
+		licence.css('display', 'none');
+		patientez.css('display', 'none');
+		section.css('height', '');
 	}
 	else if(bloc == 'licence') {
-		points.style.display = 'none';
-		carte.style.display = 'none';
-		header.style.display = 'block';
-		index.style.display = 'none';
-		aide.style.display = 'none';
-		parametres.style.display = 'none';
-		licence.style.display = 'block';
-		patientez.style.display = 'none';
-		section.style.height = '';
+		points.css('display', 'none');
+		carte.css('display', 'none');
+		header.css('display', 'block');
+		index.css('display', 'none');
+		aide.css('display', 'none');
+		parametres.css('display', 'none');
+		licence.css('display', 'block');
+		patientez.css('display', 'none');
+		section.css('height', '');
 	}
 	else {
-		points.style.display = 'none';
-		carte.style.display = 'none';
-		header.style.display = 'block';
-		index.style.display = 'block';
-		aide.style.display = 'none';
-		parametres.style.display = 'none';
-		licence.style.display = 'none';
-		patientez.style.display = 'none';
-		section.style.height = '';
+		points.css('display', 'none');
+		carte.css('display', 'none');
+		header.css('display', 'block');
+		index.css('display', 'block');
+		aide.css('display', 'none');
+		parametres.css('display', 'none');
+		licence.css('display', 'none');
+		patientez.css('display', 'none');
+		section.css('height', '');
 	}
 }
 
