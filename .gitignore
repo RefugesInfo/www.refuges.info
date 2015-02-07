@@ -6,3 +6,5 @@
 /.htaccess
 /forum/images/avatars
 /vues/api/doc/mails.txt # Fichier contenant les mails de la newsletter API
+*.sublime-workspace
+*.sublime-project
