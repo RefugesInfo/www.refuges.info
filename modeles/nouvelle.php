@@ -16,26 +16,26 @@ require_once ("polygone.php");
 require_once ("point.php");
 require_once ("utilisateur.php");
 
-function stat_site () 
-{
-	global $config,$pdo;
-	// Petits stats de début sur l'intégralité de la base
-	// donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
-	// les autres sont des sommets, des cols, des villes où autre
-        // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
-	// PDO jmb re ecriture en une seule requete 
-	$q = "SELECT 
-			( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
- 			AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
-			AND points.modele <> 1 
-			AND points.censure <> TRUE
-			)                                  AS nbrefuges,
-	( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
-	( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
-	( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
-	$res = $pdo->query($q);
-	return $res->fetch();
-}
+  function stat_site ()
+  {
+    global $config,$pdo;
+    // Petits stats de début sur l'intégralité de la base
+    // donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
+    // les autres sont des sommets, des cols, des villes où autre
+          // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
+    // PDO jmb re ecriture en une seule requete
+    $q = "SELECT
+        ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
+        AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
+        AND points.modele <> 1
+        AND points.censure <> TRUE
+        )                                  AS nbrefuges,
+    ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
+    ( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
+    ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
+    $res = $pdo->query($q);
+    return $res->fetch();
+  }
 
 /****************************************
 Fonction d'accès aux nouvelles
@@ -98,7 +98,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
                         if ($commentaire->id_createur_commentaire!=0)
                         {
-	                        $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
+                          $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
                           $news_array[$i]['lien_auteur'] = lien_utilisateur($utilisateur,$lien_locaux);
                         }
                     }
@@ -151,16 +151,16 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         // si le point n'appartient à aucun massif, pas de lien vers le massif
                         if (isset($point->id_massif))
                         {
-                            // Cosmétique, on ne place pas d'espace après un l'
-                            if ($point->article_partitif_massif=="de l'")
-                                $espace="";
-                            else
-                                $espace=" ";
-							$news_array[$i]['lien_massif']=lien_polygone($point,$lien_locaux);
-							$news_array[$i]['partitif_massif'] = $point->article_partitif.$espace;
-							$news_array[$i]['massif'] = $point->nom_polygone;
+                          // Cosmétique, on ne place pas d'espace après un l'
+                          if ($point->article_partitif_massif=="de l'")
+                            $espace="";
+                          else
+                            $espace=" ";
+                          $news_array[$i]['lien_massif']=lien_polygone($point,$lien_locaux);
+                          $news_array[$i]['partitif_massif'] = $point->article_partitif.$espace;
+                          $news_array[$i]['massif'] = $point->nom_polygone;
                         }
-						$i++;
+                        $i++;
                     }
                     break;
                 
@@ -191,12 +191,12 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
     }
     // ici je trie par ordre décroissant toutes les news confondues
     function cmp($a, $b)
-	{
-		if ($a['date'] == $b['date']) {
-			return 0;
-		}
-		return ($a['date'] < $b['date']) ? 1 : -1;
-	}
+    {
+      if ($a['date'] == $b['date']) {
+      return 0;
+    }
+    return ($a['date'] < $b['date']) ? 1 : -1;
+    }
     usort($news_array,"cmp");
     $nb=0;
     // Et je ne prends que les $nombre première ou toutes s'il y en a moins que $nombre
@@ -214,45 +214,45 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
 // Cette fonction retourne un texte en bbcode à insérer par la suite dans les vues du site
 
 function texte_nouvelles($nouvelles) {
-	foreach($nouvelles as $key => $nouvelle) {
-		switch ($nouvelle['categorie']) {
-			case 'Forum':
-				$texte = "Sur le forum : [url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
-				break;
-			case 'Commentaire':
-				$texte = "Commentaire";
-				if ($nouvelle['photo'])
-					$texte .= " et photo";
-				if (isset($nouvelle['auteur'])) {
-					$texte .= " de ";
-					if (isset($nouvelle['lien_auteur']))
-						$texte .= "[url=".$nouvelle['lien_auteur']."]";
-					$texte .= $nouvelle['auteur'];
-					if (isset($nouvelle['lien_auteur']))
-						$texte .= "[/url]";
-				}
-				$texte .= " sur [url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
-				if (isset($nouvelle['massif']))
-					$texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
-				break;
-			case 'Point':
-				$texte = "Ajout ".$nouvelle['partitif_point']." ".$nouvelle['type_point'];
-				if (isset($nouvelle['auteur'])) {
-					$texte .= " par ";
-					if (isset($nouvelle['lien_auteur']))
-						$texte .= "[url=".$nouvelle['lien_auteur']."]";
-					$texte .= $nouvelle['auteur'];
-					if (isset($nouvelle['lien_auteur']))
-						$texte .= "[/url]";
-				}
-				$texte .= " : ";
-				$texte .= "[url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
-				if (isset($nouvelle['massif']))
-					$texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
-				break;
-		}
-		$nouvelles[$key]['texte'] = $texte;
-	}
-	return $nouvelles;
+  foreach($nouvelles as $key => $nouvelle) {
+    switch ($nouvelle['categorie']) {
+      case 'Forum':
+        $texte = "Sur le forum : [url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
+        break;
+      case 'Commentaire':
+        $texte = "Commentaire";
+        if ($nouvelle['photo'])
+          $texte .= " et photo";
+        if (isset($nouvelle['auteur'])) {
+          $texte .= " de ";
+          if (isset($nouvelle['lien_auteur']))
+            $texte .= "[url=".$nouvelle['lien_auteur']."]";
+          $texte .= $nouvelle['auteur'];
+          if (isset($nouvelle['lien_auteur']))
+            $texte .= "[/url]";
+        }
+        $texte .= " sur [url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
+        if (isset($nouvelle['massif']))
+          $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
+        break;
+      case 'Point':
+        $texte = "Ajout ".$nouvelle['partitif_point']." ".$nouvelle['type_point'];
+        if (isset($nouvelle['auteur'])) {
+          $texte .= " par ";
+          if (isset($nouvelle['lien_auteur']))
+            $texte .= "[url=".$nouvelle['lien_auteur']."]";
+          $texte .= $nouvelle['auteur'];
+          if (isset($nouvelle['lien_auteur']))
+            $texte .= "[/url]";
+        }
+        $texte .= " : ";
+        $texte .= "[url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
+        if (isset($nouvelle['massif']))
+          $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
+        break;
+    }
+    $nouvelles[$key]['texte'] = $texte;
+  }
+  return $nouvelles;
 }
 ?>

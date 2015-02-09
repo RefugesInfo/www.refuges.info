@@ -1,4 +1,4 @@
-<?php 
+<?php
 /********************************************************************
 Fonctions liées au wiki du site (tout type de page que les modérateurs peuvent écrire)
 Accés aux données : entrées / sorties / modifications des textes / formatage pour affichage
@@ -23,7 +23,7 @@ function wiki_page_html($page)
     $contenu_page=wiki_page_brut($page);
     if ($contenu_page->erreur)
         return "Contenu inexistant";
-        
+
     // conversion bbcode
     $contenu_html=bbcode2html($contenu_page->contenu,True);
 
@@ -44,12 +44,12 @@ function wiki_page_brut($page)
     global $config,$pdo;
     $page=$pdo->quote($page);
     $query="SELECT *,extract('epoch' from date) as ts_unix_page
-              FROM pages_wiki 
+              FROM pages_wiki
               WHERE nom_page=$page order by date desc limit 1";
     $res=$pdo->query($query);
     if (!$res)
         return erreur("Requête SQL impossible à executer",$query);
-    
+
     $page=$res->fetch();
     if (!$page)
         return erreur("Cette page du wiki n'existe pas");
@@ -59,14 +59,14 @@ function wiki_page_brut($page)
 // fonction qui va ré-écrire le contenu de la page
 function ecrire_contenu($page,$contenu)
 {
-	global $config,$pdo;
+  global $config,$pdo;
     $page=$pdo->quote($page);
     $contenu=$pdo->quote($contenu);
     $query="insert into pages_wiki (nom_page,contenu) VALUES ($page,$contenu)";
     $res=$pdo->query($query);
     if (!$res)
         return erreur("Requête SQL impossible à executer",$query);
-   
+
     return ok("Page mise à jour, et ancienne verson conservée");
 }
 
@@ -79,7 +79,7 @@ function supprimer_page($page)
     $res=$pdo->query($query);
     if (!$res)
         return erreur("Requête SQL impossible à executer",$query);
-    
+
     return ok("Page supprimée et tout ses anciennes versions");
 }
 function prepare_lien_wiki_du_bandeau()

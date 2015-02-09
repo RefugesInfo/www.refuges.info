@@ -37,7 +37,7 @@ Array
             [message_information_polygone] => --> texte indiquant les restrictions liées à la présence dans ce polygone
             [source] => --> si provenance extérieure
             [nom_polygone] => Chartreuse
-			[id_zone] => 351  // 351 est le poly des Alpes (je crois)   
+      [id_zone] => 351  // 351 est le poly des Alpes (je crois)
             [article_partitif] => de la
             [id_polygone_type] => 1
             [id_polygone] => 2
@@ -57,30 +57,30 @@ function infos_polygones($conditions)
     $conditions_sql="";
     $champs_en_plus="";
     $table_en_plus="";
-    
+
     // Conditions sur les ids des polygones
     if (isset($conditions->ids_polygones))
         if (!verif_multiples_entiers($conditions->ids_polygones))
             return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
         else
             $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
-        
+
         // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
     if (isset($conditions->non_ids_polygones))
         if (!verif_multiples_entiers($conditions->non_ids_polygones))
             return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
         else
             $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
-        
+
     if (is_numeric($conditions->limite))
         $limite="LIMIT $conditions->limite";
-        
+
     if (!empty($conditions->ordre))
         $ordre_champ="$conditions->ordre";
     else
         $ordre_champ="nom_polygone ASC";
     $ordre="ORDER BY $ordre_champ";
-    
+
     if (isset($conditions->ids_polygone_type))
         if (!verif_multiples_entiers($conditions->ids_polygone_type))
             return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
@@ -97,32 +97,32 @@ function infos_polygones($conditions)
     if ($conditions->intersection) {
         $table_en_plus.=",polygones AS zones ";
         $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND zones.id_polygone = ". $conditions->intersection ;
-	}
+  }
     // jmb: nom de la zone auquel le poly appartient.
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
     // sly: faire que cette requête un peu plus lourde ne soit pas systématiquement utilisée, sauf demande
     if ($conditions->avec_zone_parente)
-        $champs_en_plus.=", 
+        $champs_en_plus.=",
         (
           SELECT id_polygone
           FROM polygones AS zones
-          WHERE 
-            zones.id_polygone_type=".$config['id_zone']." 
-            AND 
+          WHERE
+            zones.id_polygone_type=".$config['id_zone']."
+            AND
             ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
         ) AS id_zone ,
         (
           SELECT nom_polygone
           FROM polygones AS zones
-          WHERE 
-            zones.id_polygone_type=".$config['id_zone']." 
-            AND 
+          WHERE
+            zones.id_polygone_type=".$config['id_zone']."
+            AND
             ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
-        ) AS nom_zone 
+        ) AS nom_zone
         ";
-	
-	//FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
+
+  //FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
   $box="ST_box2d(polygones.geom)";
   $query="SELECT polygone_type.type_polygone,
                  polygone_type.categorie_polygone_type,
@@ -133,7 +133,7 @@ function infos_polygones($conditions)
                  ".colonnes_table('polygones',False)."
                  $champs_en_plus
           FROM polygones,polygone_type $table_en_plus
-          WHERE 
+          WHERE
             polygones.id_polygone_type=polygone_type.id_polygone_type
             $conditions_sql
           $ordre
@@ -157,10 +157,10 @@ Cette fonction permet d'aller chercher toutes les infos d'un polygone
 Retour :
 stdClass Object
 (
-  [site_web] => 
-  [url_exterieure] => 
-  [message_information_polygone] => 
-  [source] => 
+  [site_web] =>
+  [url_exterieure] =>
+  [message_information_polygone] =>
+  [source] =>
   [nom_polygone] => Chartreuse
   [article_partitif] => de la
   [id_polygone_type] => 1
@@ -217,29 +217,29 @@ function edit_info_polygone()
     $article_partitif = str_replace ("'", "''", $_POST ['article_partitif']);
     $nom_polygone     = str_replace ("'", "''", $_POST ['nom_polygone']);
 
-	// Champ POST contour_polygone de la forme [[[-6.1,47.2],[-7.3,46.4],[-4.5,45.6],[-4.7,47.8],[-6.9,47.0]]]
-	if ($_POST['contour_polygone']) {
-		eval ('$pcp = '.$_POST['contour_polygone'].';');
-		if ($pcp) {
-			foreach ($pcp as $k => $v) {
-				$pcps = $vvs = [];
-				foreach ($v as $kv => $vv)
-					if (count ($vv) == 2) {
-						$pcps [] = $vv[0].' '.$vv[1];
-						$vvs [] = $vv;
-					}
-				// Referme le polygone si les 2 bouts ne sont pas identiques
-				$last = count ($pcps) - 1;
-				$d1 = hypot($vvs[0][0]-$vvs[1][0], $vvs[0][1]-$vvs[1][1]); // Distance du premier au second point
-				$dlast = hypot($vvs[0][0]-$vvs[$last][0], $vvs[0][1]-$vvs[$last][1]); // Distance du premier au dernier point
-				if ($dlast / $d1 < .1) // Si la distance 1er dernier < 0.1 du 1er au 2em
-					$pcps [$last] = $pcps [0]; // On écrase le dernier
-				else
-					$pcps [] = $pcps [0]; // On ajoute un dernier = au premier
-				$contour_polygone [] = '('.implode (',', $pcps).')';
-			}
-		}
-	}
+  // Champ POST contour_polygone de la forme [[[-6.1,47.2],[-7.3,46.4],[-4.5,45.6],[-4.7,47.8],[-6.9,47.0]]]
+  if ($_POST['contour_polygone']) {
+    eval ('$pcp = '.$_POST['contour_polygone'].';');
+    if ($pcp) {
+      foreach ($pcp as $k => $v) {
+        $pcps = $vvs = [];
+        foreach ($v as $kv => $vv)
+          if (count ($vv) == 2) {
+            $pcps [] = $vv[0].' '.$vv[1];
+            $vvs [] = $vv;
+          }
+        // Referme le polygone si les 2 bouts ne sont pas identiques
+        $last = count ($pcps) - 1;
+        $d1 = hypot($vvs[0][0]-$vvs[1][0], $vvs[0][1]-$vvs[1][1]); // Distance du premier au second point
+        $dlast = hypot($vvs[0][0]-$vvs[$last][0], $vvs[0][1]-$vvs[$last][1]); // Distance du premier au dernier point
+        if ($dlast / $d1 < .1) // Si la distance 1er dernier < 0.1 du 1er au 2em
+          $pcps [$last] = $pcps [0]; // On écrase le dernier
+        else
+          $pcps [] = $pcps [0]; // On ajoute un dernier = au premier
+        $contour_polygone [] = '('.implode (',', $pcps).')';
+      }
+    }
+  }
 
     if (isset ($_POST ['nom_polygone']) && strlen ($nom_polygone) == 0) {
         echo 'Nom de massif vide';
@@ -254,16 +254,16 @@ function edit_info_polygone()
     if ($_POST['enregistrer'] && $_POST['id_polygone'])
     {
         $query_update = "UPDATE polygones SET "
-			."article_partitif	= '$article_partitif', "
-			."nom_polygone = '$nom_polygone', "
-			."geom = ST_GeomFromText('MULTIPOLYGON((" .implode (',', $contour_polygone). "))',4326) "
-			."WHERE id_polygone = {$_POST['id_polygone']}";
+      ."article_partitif	= '$article_partitif', "
+      ."nom_polygone = '$nom_polygone', "
+      ."geom = ST_GeomFromText('MULTIPOLYGON((" .implode (',', $contour_polygone). "))',4326) "
+      ."WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_update);
         if (!$res)
             erreur('Requête impossible',$query_update);
     }
 
-	// Création
+  // Création
     if ($_POST['enregistrer'] && $_POST['id_polygone'] == 0 && $contour_polygone)
     {
         // On commence par chercher s'il existe déjà un polygone homonyme
@@ -276,7 +276,7 @@ function edit_info_polygone()
         {
             // Alors, on le crée
             $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone, geom) ".
-				"VALUES (1, '$article_partitif', '$nom_polygone', ST_GeomFromText('MULTIPOLYGON((" .implode (',', $contour_polygone). "))',4326))";
+        "VALUES (1, '$article_partitif', '$nom_polygone', ST_GeomFromText('MULTIPOLYGON((" .implode (',', $contour_polygone). "))',4326))";
             $res=$pdo->query($query_cree);
             if (!$res)
                 erreur('Requête impossible',$query_cree);
@@ -315,34 +315,34 @@ WHERE Within(geom, cree_geometrie(...)  )
 *********************************************/
 function cree_geometrie( $params , $type )
 {
-	switch ($type) {
-		
-		case 'bboxOL':
-			//bbox OL: ouest,sud,est,nord
-			// mise en forme avec des points, des vrais
-			list($ouest,$sud,$est,$nord) = explode(",",$params);
-			$geotexte = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
-			break;
+  switch ($type) {
 
-		case 'polygone':
-			//FIXME check les params: [0]->lat, [0]->lon , [1].....
-			$geotexte = "FIXME";
-			break;
+    case 'bboxOL':
+      //bbox OL: ouest,sud,est,nord
+      // mise en forme avec des points, des vrais
+      list($ouest,$sud,$est,$nord) = explode(",",$params);
+      $geotexte = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
+      break;
 
-		case 'cercle':
-			//FIXME check les params: lat, lon, et rayon
-			$lat = $params['lat'];
-			$lon = $params['lon'];
-			$rayon = $params['rayon'] ;
-			// au depart on a du 4326 en degres. Transform vers 900913 en metres. application du Buffer en metres. Retransformation en 4326.
-			// Vu qu'on parle en metres et pas en degrés, c'est necessaire.
-			$geotexte = "ST_Transform(ST_Buffer(ST_Transform(ST_GeomFromText('POINT($lon $lat)',4326),900913),$rayon),4326)";
-			break;
+    case 'polygone':
+      //FIXME check les params: [0]->lat, [0]->lon , [1].....
+      $geotexte = "FIXME";
+      break;
 
-		default:
-			$geotexte = "mauvais type de geometrie";
-	}
-	return $geotexte ;
+    case 'cercle':
+      //FIXME check les params: lat, lon, et rayon
+      $lat = $params['lat'];
+      $lon = $params['lon'];
+      $rayon = $params['rayon'] ;
+      // au depart on a du 4326 en degres. Transform vers 900913 en metres. application du Buffer en metres. Retransformation en 4326.
+      // Vu qu'on parle en metres et pas en degrés, c'est necessaire.
+      $geotexte = "ST_Transform(ST_Buffer(ST_Transform(ST_GeomFromText('POINT($lon $lat)',4326),900913),$rayon),4326)";
+      break;
+
+    default:
+      $geotexte = "mauvais type de geometrie";
+  }
+  return $geotexte ;
 }
 
 ?>

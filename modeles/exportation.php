@@ -1,13 +1,13 @@
 <?php
 /**********************************************************************************************
-ensemble de fonctions utilisables pour exporter des points de la  
-base dans différents formats et rangement dans des fonctions et modularisation du tout         
-tvx compatibilité feedvalidator.org, dans le but d'importer le    
-format KML dans le nav sat modif fct c() et rajout de cette fct c() un peu partout           
-rajout d'un ID dans Placemark passage des styles dans l'entete pour accelerer                   
-entete GPX passé de ISO-8859 a utf8 re-passage en iso-8859-1 pour le kml et le gpx                    
-les formats gpx sont maintenant mieux supporté un peu partout     
-Ajouts pour affichage d'une couche KML sur Openlayers             
+ensemble de fonctions utilisables pour exporter des points de la
+base dans différents formats et rangement dans des fonctions et modularisation du tout
+tvx compatibilité feedvalidator.org, dans le but d'importer le
+format KML dans le nav sat modif fct c() et rajout de cette fct c() un peu partout
+rajout d'un ID dans Placemark passage des styles dans l'entete pour accelerer
+entete GPX passé de ISO-8859 a utf8 re-passage en iso-8859-1 pour le kml et le gpx
+les formats gpx sont maintenant mieux supporté un peu partout
+Ajouts pour affichage d'une couche KML sur Openlayers
 Changements dans le format KML -IconStyle- pour s'adapter à la taille des icones -gx:w- ...
 Introduction du format GML
 Séparation des points proches
@@ -156,9 +156,9 @@ function liste_icones_possibles()
 {
     global $config;
     $dossier_icones = opendir($config['chemin_icones']) or erreur('Je ne trouve pas les icones',"la recherche a eu lieu dans ".$config['chemin_icones']);
-    while($entree = @readdir($dossier_icones)) 
+    while($entree = @readdir($dossier_icones))
     {
-        if (is_file($config['chemin_icones'].'/'.$entree)) 
+        if (is_file($config['chemin_icones'].'/'.$entree))
             if (preg_match('/.png/',$entree))
                 $icones[]=preg_replace("/.png/","",$entree);
     }
@@ -170,17 +170,17 @@ function liste_icones_possibles()
 // retourne l'entête xml pour un kml de googleearth
 function entete_kml()
 {
-  // En-tete du fichier kml   
+  // En-tete du fichier kml
   global $config;
 
   $_xml_tete  ="<?xml version=\"1.0\" encoding=\"".$config['encodage_exportation']."\"?>
 <kml xmlns=\"http://earth.google.com/kml/2.1\">
 <Document>
-	<name>".$config['nom_fichier_export'].".kml</name>
-	<description>Points provenants du site ".$config['nom_hote']."</description>
-	<open>1</open>
-	<!-- Fin de l'entete KML ! -->
-	<!-- Place a la liste des Styles : -->
+  <name>".$config['nom_fichier_export'].".kml</name>
+  <description>Points provenants du site ".$config['nom_hote']."</description>
+  <open>1</open>
+  <!-- Fin de l'entete KML ! -->
+  <!-- Place a la liste des Styles : -->
 ";
 
   // création de liste des styles pour chaque icone possible, le nom du style est #icone_(nom de l'image)
@@ -193,24 +193,24 @@ function entete_kml()
     $lien_icone = "http://".$config['nom_hote'].$config['url_chemin_icones'].$nom_icone . '.png';
 
     $tx = $ty = 16; // La plupart des icones
-	    
+
   $_xml_tete .= "
-	<Style id='icone_$nom_icone'>
-		<IconStyle>
-		<hotSpot x='0.5' y='0.5' xunits='fraction' yunits='fraction' />
-		<scale>1</scale>
-			<Icon>
-				<href>$lien_icone</href>
-				<w>$tx</w>
-				<h>$ty</h>
-			</Icon>
-   		</IconStyle>
-   	</Style>";
+  <Style id='icone_$nom_icone'>
+    <IconStyle>
+    <hotSpot x='0.5' y='0.5' xunits='fraction' yunits='fraction' />
+    <scale>1</scale>
+      <Icon>
+        <href>$lien_icone</href>
+        <w>$tx</w>
+        <h>$ty</h>
+      </Icon>
+      </IconStyle>
+    </Style>";
   }
   $_xml_tete .= "
   <!-- Fin des Styles ! -->
   <!-- Place a la liste des POINTS : -->";
-  
+
   return $_xml_tete;
 }
 
@@ -221,8 +221,8 @@ function placemark_kml($point)
 {
   global $config;
   $lien_url = lien_point($point);
-  
-  //Creation du XML pour un point 
+
+  //Creation du XML pour un point
   $_xml ="\n  <Placemark id='$point->id_point'>\n";
   $_xml .="    <name>".c(mb_ucfirst($point->nom))."</name>\n";
   $_xml .="    <description><![CDATA[
@@ -230,14 +230,14 @@ function placemark_kml($point)
   (<em>".c(mb_ucfirst($point->nom_type))."</em>) <br />
   <center><a href='$lien_url'>".c('Détails')."</a></center>
   ]]></description>\n";
-  
+
   //CAMERA : basique pour le moment, à améliorer
   $lon_cam = $point->longitude+0.0002;     //on se decale un peu
   $lat_cam = $point->latitude+0.0008;
   $range_cam = $point->altitude + 5500; // on se place 5500mau dessus du point
   $tilt_cam  = 40;              // on prend de l'angle autour de la verticale
   $heading_cam  = 50;           // on prend de l'angle autour de l'horizontale
-  
+
   $_xml .= "    <LookAt>\n";
   $_xml .= "     <longitude>$lon_cam</longitude>\n";
   $_xml .= "     <latitude>$lat_cam</latitude>\n";
@@ -245,14 +245,14 @@ function placemark_kml($point)
   $_xml .= "     <tilt>$tilt_cam</tilt>\n";
   $_xml .= "     <heading>$heading_cam</heading>\n";
   $_xml .= "    </LookAt>\n";
-  
+
   // pointeur vers l'icone defini dans l'entete
   $_xml .= "    <styleUrl>#icone_$point->nom_icone</styleUrl>\n";
-  
+
   $_xml .= "    <Point>\n
      <coordinates>$point->longitude,$point->latitude,0</coordinates>\n
     </Point>\n";
-  
+
   // DOMINIQUE 10/10/10 : Ajout du paramètre lien au format utilisé par OpenLayers couche KML
   $_xml .= "
   <ExtendedData>
@@ -260,7 +260,7 @@ function placemark_kml($point)
       <value>$lien_url</value>
      </Data>
     </ExtendedData>\n";
-	
+
   $_xml .= "   </Placemark>\n\n";
   return $_xml;
 }
@@ -272,7 +272,7 @@ function entete_gml($encodage="",$credit="Points provenants du site www.refuges.
 
   global $config;
   if ($encodage=="")
-  	$encodage=$config['encodage_exportation'];
+    $encodage=$config['encodage_exportation'];
   return "<?xml version=\"1.0\" encoding=\"$encodage\"?>
 <wfs:FeatureCollection
  xmlns:wfs=\"http://www.opengis.net/wfs\"
@@ -312,7 +312,7 @@ function entete_geojson()
 {
   return "{
     \"type\": \"FeatureCollection\",
-    \"features\": [    
+    \"features\": [
 ";
 }
 
@@ -351,11 +351,11 @@ function csv_export_line($point)
   $nom_type=str_replace($separateur,"\\".$separateur,$point->nom_type);
   $nom_polygone=str_replace($separateur,"\\".$separateur,$point->nom_polygone);
   $nom_precision_gps=str_replace($separateur,"\\".$separateur,$point->nom_precision_gps);
-/*DC 02/01/2011 Conversion des points fermés*/     
-	//jmb 03/13: fonction qui renvoie la raison de la fermeture (et n'est plus dependante de la BDD)
-	//if ($point->ferme!='non' and $point->ferme!='')
-	//    $nom_type.=" fermé(e)";
-	$nom_type.= texte_non_ouverte($point) ;
+/*DC 02/01/2011 Conversion des points fermés*/
+  //jmb 03/13: fonction qui renvoie la raison de la fermeture (et n'est plus dependante de la BDD)
+  //if ($point->ferme!='non' and $point->ferme!='')
+  //    $nom_type.=" fermé(e)";
+  $nom_type.= texte_non_ouverte($point) ;
 
   $ligne=$point->id_point.$separateur.$nom.$separateur.$nom_type.$separateur.$nom_polygone;
   $ligne.=$separateur.$point->altitude.$separateur.$point->latitude.$separateur.$point->longitude;
@@ -374,7 +374,7 @@ function poi_export_line($point)
   $separateur=",";
   $nom=str_replace($separateur,"\\".$separateur,mb_ucfirst($point->nom));
   $nom_type=str_replace($separateur,"\\".$separateur,$point->nom_type);
-  
+
   $nom_long=substr($nom."-".$nom_type,0,30);
   $ligne=$point->longitude.$separateur.$point->latitude;
   $ligne.=$separateur.substr($nom,0,10).$separateur.$nom_long."\r\n";
@@ -387,26 +387,26 @@ function entete_gpx()
 {
   global $config;
   $output='<?xml version="1.0" encoding="'.$config['encodage_exportation'].'" standalone="no"?>
-<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="refuges.info" version="1.1" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="refuges.info" version="1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
 <metadata>
-	<name>'.$config['nom_fichier_export'].'.gpx</name>
-	<desc>Tout ou partie de la base de donnée de point GPS de '.$config['nom_hote'].', contenant des points d\'intérêts du massif des alpes</desc>
-	<author>
-		<name>Contributeurs refuges.info</name>
-	</author>
-	<copyright author="Contributeurs refuges.info">
-		<year>2002</year>
-		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
-	</copyright>
-	<link href="http://'.$config['nom_hote'].'/">
-		<text>http://'.$config['nom_hote'].'/</text>
-		<type>text/html</type>
-	</link>
+  <name>'.$config['nom_fichier_export'].'.gpx</name>
+  <desc>Tout ou partie de la base de donnée de point GPS de '.$config['nom_hote'].', contenant des points d\'intérêts du massif des alpes</desc>
+  <author>
+    <name>Contributeurs refuges.info</name>
+  </author>
+  <copyright author="Contributeurs refuges.info">
+    <year>2002</year>
+    <license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
+  </copyright>
+  <link href="http://'.$config['nom_hote'].'/">
+    <text>http://'.$config['nom_hote'].'/</text>
+    <type>text/html</type>
+  </link>
 </metadata>
 ';
-return $output; 
+return $output;
 }
 
 /***********************************************************************************************
@@ -417,7 +417,7 @@ return $output;
  "gpx-garmin" pour fichier très léger suffisant pour les gps
  "gpx-carte" pour la carte de refuges.info qui l'utilise, sans envoyer trop de truc inutile
  GPX documentation : http://www.topografix.com/GPX/1/1/
- 
+
  FIXME le format gpx-carte ne servant plus il faudrait simplifier le code après :
 ***********************************************************************************************/
 function waypoint_gpx($point,$format)
@@ -434,45 +434,45 @@ function waypoint_gpx($point,$format)
 
     if ($format=="gpx") // tout ça est inutile et alourdi dans le mode carte googlemaps
     {
-	$version_complete="
-	<cmt>Acces : ".c($point->acces)."</cmt>
-	<desc>".c($point->remark)."</desc>
-	<src>".c($point->nom_precision_gps)."</src>
-	";
-	
-	//Je pousse peut-être la factorisation du code un peu loin, ça perd en lisibilité, mais c'est le format mutant entre gpx pour la carte googlemaps et l'export GPX sly 12/05/2010
-	$gpx_texte_lien="\t\t\t<text>".c(mb_ucfirst($point->nom))." sur ".$config['nom_hote']."</text>\n";
-	$gpx_massif="\t\t\t<massif>".c($point->nom_polygone)."</massif>\n";
-	$gpx_id_massif="\t\t\t<id_massif>$point->id_polygone</id_massif>\n";
-	$gpx_id_qualite_gpx="\t\t\t<id_qualite_gps>$point->id_type_precision_gps</id_qualite_gps>\n";
-	$gpx_nombre_place="\t\t\t<nombre_place>$point->places</nombre_place>\n";
-	$gpx_renseignements="\t\t\t<renseignements>".c($point->proprio)."</renseignements>\n";
-	$gpx_id_point_type="\t\t\t<id_type_point>$point->id_point_type</id_type_point>\n";
+  $version_complete="
+  <cmt>Acces : ".c($point->acces)."</cmt>
+  <desc>".c($point->remark)."</desc>
+  <src>".c($point->nom_precision_gps)."</src>
+  ";
+
+  //Je pousse peut-être la factorisation du code un peu loin, ça perd en lisibilité, mais c'est le format mutant entre gpx pour la carte googlemaps et l'export GPX sly 12/05/2010
+  $gpx_texte_lien="\t\t\t<text>".c(mb_ucfirst($point->nom))." sur ".$config['nom_hote']."</text>\n";
+  $gpx_massif="\t\t\t<massif>".c($point->nom_polygone)."</massif>\n";
+  $gpx_id_massif="\t\t\t<id_massif>$point->id_polygone</id_massif>\n";
+  $gpx_id_qualite_gpx="\t\t\t<id_qualite_gps>$point->id_type_precision_gps</id_qualite_gps>\n";
+  $gpx_nombre_place="\t\t\t<nombre_place>$point->places</nombre_place>\n";
+  $gpx_renseignements="\t\t\t<renseignements>".c($point->proprio)."</renseignements>\n";
+  $gpx_id_point_type="\t\t\t<id_type_point>$point->id_point_type</id_type_point>\n";
     }
     elseif($format=="gpx-carte")
       // Ce tag permet de préciser dans le gpx, dans les extensions de la norme, l'icône que la carte doit afficher
       $gpx_icone="\t<icone>$point->nom_icone</icone>\n";
-    
+
     $version_complete.="
-	<link href=\"$lien\">
-	$gpx_texte_lien\t\t<type>text/html</type>
-	</link>
-	\t<type>".c($point->nom_type)."</type>
-	\t\t<extensions>
-	\t\t<id_point>$point->id_point</id_point>
-	\t\t$gpx_massif$gpx_id_massif$gpx_id_qualite_gpx$gpx_nombre_place$gpx_renseignements$gpx_id_point_type$gpx_icone\t\t\t</extensions>";
-	
+  <link href=\"$lien\">
+  $gpx_texte_lien\t\t<type>text/html</type>
+  </link>
+  \t<type>".c($point->nom_type)."</type>
+  \t\t<extensions>
+  \t\t<id_point>$point->id_point</id_point>
+  \t\t$gpx_massif$gpx_id_massif$gpx_id_qualite_gpx$gpx_nombre_place$gpx_renseignements$gpx_id_point_type$gpx_icone\t\t\t</extensions>";
+
     $nom=mb_ucfirst($point->nom);
 
   }
-  /* Ce format, destiné au terminaux garmin, utilise des champs de manière détourné car le format de 
+  /* Ce format, destiné au terminaux garmin, utilise des champs de manière détourné car le format de
      stockage de garmin ne permet pas de conserver l'altitude ni des champs trop longs !!
-     La conversion du format gpx par gpsbabel utilise les champs name, positions et cmt, pour mapsource, je ne sais pas  17/11/10 sly 
+     La conversion du format gpx par gpsbabel utilise les champs name, positions et cmt, pour mapsource, je ne sais pas  17/11/10 sly
   */
   //jmb: utilisation de la fonction qui renvoie la raison de la fermeture, ou chaine vide si ouvert
   else if($format=="gpx-garmin")
   {
-	$ferme_texte = texte_non_ouverte($point) ;
+  $ferme_texte = texte_non_ouverte($point) ;
     //if ( $point->ferme!='')
     //  $ferme_texte=" fermé(e)";
     //else
@@ -484,7 +484,7 @@ function waypoint_gpx($point,$format)
     <desc>".c($point->remark)."</desc>"; // A noter que ce champs est inutile car le garmin ne dispose que de deux champs (nom et description) et seul la balise cmt est convertie par gpsbabel
     $nom=mb_ucfirst($point->nom); // Le champ name semble limité à 30 caractères environ ce qui devrait suffire pour la plupart
   }
-  
+
   $waypoint="
   <wpt lat=\"$point->latitude\" lon=\"$point->longitude\">
   <ele>$point->altitude</ele>
@@ -512,12 +512,12 @@ return $xml;
 
 function export_polygone_gpx($id_polygone)
 {
-	if (!is_numeric($id_polygone))
-		return -1;
-		ExteriorRing(gis);
-	
-	$query_liste="SELECT";
-					
+  if (!is_numeric($id_polygone))
+    return -1;
+    ExteriorRing(gis);
+
+  $query_liste="SELECT";
+
   $res=mysql_query($query_liste);
   $xml=entete_gpx();
   $xml.="<trk>\n";
@@ -538,7 +538,7 @@ function export_polygone_gpx($id_polygone)
   $xml.="</trk>\n";
   $xml.="</gpx>\n";
   return $xml;
-  
+
 }
 
 //**********************************************************************************************
@@ -565,19 +565,19 @@ function entete_exportation($format)
 }
 
 /***********************************************************************************************
-Fonction qui retourne le fichier complet à exporter selon les paramètres de l'objet $conditions qui est un objet de 
+Fonction qui retourne le fichier complet à exporter selon les paramètres de l'objet $conditions qui est un objet de
 recherche de points.
 $format est le format choisi (voir tableau $config['formats_exportation'] plus haut dans ce fichier
 sly 30/10/10
 */
-function fichier_exportation($conditions,$format) 
+function fichier_exportation($conditions,$format)
 {
   global $config;
   $resultat = new stdClass;
 
   // pour rationaliser, infos_points prends une geometrie plutot qu'une bbox
   if ( isset($conditions->bbox) )
-		$conditions->geometrie = cree_geometrie($conditions->bbox, 'bboxOL');
+    $conditions->geometrie = cree_geometrie($conditions->bbox, 'bboxOL');
   //obtenir le tableau des points, selon les conditions
   $points=infos_points($conditions);
   //print_r($points);erreur("","f");die();
@@ -589,10 +589,10 @@ function fichier_exportation($conditions,$format)
     $resultat->nom_fichier=replace_url($points[0]->nom);
   else
     $resultat->nom_fichier=$config['nom_fichier_export'];
-  
+
   /** selon le type, en créer le bon entête de fichier **/
   $contenu=entete_exportation($format);
-  
+
   // Dominique 24/11/12 Dédoublement des points proches
   //DEBUG /exportations/exportations.php?format=gml&debug=oui&bbox=5,45,5.5,45.6&size=w,h
   if ($_GET ['size']) { // Taille du div d'affichage
@@ -610,12 +610,12 @@ function fichier_exportation($conditions,$format)
               $deplacement_latitude = $delta_lat + $delta_latitude; // Déplacement à 45° le plus proche de la réalité
             else // $a a une plus grande latitude
               $deplacement_latitude = $delta_lat - $delta_latitude;
-            
+
             if ($delta_lon < 0)  // $b a une plus grande longitude
               $deplacement_longitude = $delta_lon + $delta_longitude;
             else // $a a une plus grande longitude
               $deplacement_longitude = $delta_lon - $delta_longitude;
-            
+
             $points[$a]->latitude  -= $deplacement_latitude  / 2;
             $points[$b]->latitude  += $deplacement_latitude  / 2;
             $points[$a]->longitude -= $deplacement_longitude / 3;
@@ -623,63 +623,63 @@ function fichier_exportation($conditions,$format)
           }
         }
   }
-  
+
   $kml_folder="";
-  
+
   //------------------------------------------
   if (count($points)>0) // si nous n'avons aucun point dans la recherche, on renvoi un fichier valide, mais sans les points dedans
   {
     foreach ($points as $point)
     {
-	$point->nom_icone=choix_icone($point);
-      
+  $point->nom_icone=choix_icone($point);
+
       switch ($format)
       {
-	//------------------------------------------
-	case "kmz":case "kml":
-	  // Dans le cas du kml/kmz, on arrange les points par "dossier"
-	  // c'est un conteneur xml qui permet une légende plus claire de GoogleEarth
-	  if ($point->nom_type!=$kml_folder)
-	  { // visiblement on change de dossier
-	  if ($kml_folder!="") // si ce n'est pas le premier dossier, on ferme le précédent
-	    $contenu.="</Folder>\r\n";
-	  // on créer le nouveau dossier
-	  $contenu.="<Folder><name>$point->nom_type</name>\r\n<open>0</open>";
-	  // on met à jour notre variable pour pas créer un nouveau dossier à chaque fois
-	  $kml_folder=$point->nom_type;
-	  }
-	  $contenu.=placemark_kml($point);
-	  break;
-	  //------------------------------------------
-	case "gml":
-	  
-	  $contenu.=feature_gml($point,$format);
-	  break;
+  //------------------------------------------
+  case "kmz":case "kml":
+    // Dans le cas du kml/kmz, on arrange les points par "dossier"
+    // c'est un conteneur xml qui permet une légende plus claire de GoogleEarth
+    if ($point->nom_type!=$kml_folder)
+    { // visiblement on change de dossier
+    if ($kml_folder!="") // si ce n'est pas le premier dossier, on ferme le précédent
+      $contenu.="</Folder>\r\n";
+    // on créer le nouveau dossier
+    $contenu.="<Folder><name>$point->nom_type</name>\r\n<open>0</open>";
+    // on met à jour notre variable pour pas créer un nouveau dossier à chaque fois
+    $kml_folder=$point->nom_type;
+    }
+    $contenu.=placemark_kml($point);
+    break;
+    //------------------------------------------
+  case "gml":
+
+    $contenu.=feature_gml($point,$format);
+    break;
     //------------------------------------------
   case "geojson":
-    
+
     $contenu.=feature_geojson($point,$format);
     break;
-	  //------------------------------------------
-	case "gpx-garmin":case "gpx":case "gpx-carte":
-	  $contenu.=waypoint_gpx($point,$format);
-	  break;
-	  //------------------------------------------
-	case "csv":
-	  $contenu.=csv_export_line($point);
-	  break;
-	  //------------------------------------------
+    //------------------------------------------
+  case "gpx-garmin":case "gpx":case "gpx-carte":
+    $contenu.=waypoint_gpx($point,$format);
+    break;
+    //------------------------------------------
+  case "csv":
+    $contenu.=csv_export_line($point);
+    break;
+    //------------------------------------------
       }
       $last_point=$point;
     }
   }
   //------------------------------------------
   /*** ici on s'occupe des choses à faire en fin de fichier ***/
-  
+
   if ($format=="kmz" or $format=="kml")
   {
     $contenu.="</Folder>\r\n</Document>\r\n</kml>";
-    
+
     // si c'est du kmz, alors on compresse la sortie
     if ($format=="kmz")
     {
@@ -688,18 +688,18 @@ function fichier_exportation($conditions,$format)
       $contenu = $zip->file() ; //on associe l'archive
     }
   }
-  
+
   elseif ($format=="gml")
     $contenu.="\n</wfs:FeatureCollection>";
 
 
   elseif ($format=="geojson")
     $contenu=substr($contenu,0,-3)."\t\t\t]\n\t}";
-  
+
   // les formats fournissant du gpx, se terminent tous par cette simple balise
   elseif ($config['formats_exportation'][$format]['extension_fichier'] =="gpx")
     $contenu.="</gpx>";
-  
+
   $resultat->contenu=$contenu;
   return $resultat;
 }

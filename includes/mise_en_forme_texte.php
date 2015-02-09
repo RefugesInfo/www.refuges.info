@@ -48,7 +48,7 @@ function protege($texte)
     return htmlspecialchars($texte,ENT_QUOTES,$config['encodage_des_contenu_web']);
 }
 /**********************************************************************************************
-Afin d'éviter le cross site scripting et permettre de mettre un peu de mise en page 
+Afin d'éviter le cross site scripting et permettre de mettre un peu de mise en page
 un peu partour sur le site (forum, points commentaire,s mode d'emploi, cette fonction convertit
 du format bbcode interne vers html
 $texte en bbcode + syntaxe interne
@@ -59,7 +59,7 @@ retourne : le code en HTML
 function bbcode2html($texte,$autoriser_html=False,$autoriser_balise_img=True,$crypter_texte_sensible=True)
 {
 global $config;
-/** étape 1 
+/** étape 1
 nouvelle fonction qui permet de faire des liens internes entre les fiches :
 [->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
 point destination
@@ -69,16 +69,16 @@ $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
 
 if ($occurences_trouvees!=0)
 {
-    	for ($x=0;$x<$occurences_trouvees;$x++)
-	{	// Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
-		// Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
-		// Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
-		$point=infos_point($occurence[1][$x]);
-	        $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
-	}
+      for ($x=0;$x<$occurences_trouvees;$x++)
+  {	// Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
+    // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
+    // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
+    $point=infos_point($occurence[1][$x]);
+          $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+  }
 }
 
-/** étape 2 
+/** étape 2
 on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
 sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
 **/
@@ -108,7 +108,7 @@ else
 // et éviter de retransformer celles contenant du bbcode
 // exemple : coucouwww.coucou ne sera pas transformé
 // il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
-// au format http://truc ou https://bidule ou www. 
+// au format http://truc ou https://bidule ou www.
 
 $urlauto_pattern = "/([ :\.;,\n\*])(www.\w\S*|http[s]?:\/\/\w\S*)/i";
 $urlauto_replace = "$1[url=$2]$2[/url]";
@@ -204,8 +204,8 @@ unset($occurence);
 $occurences_trouvees=preg_match_all("([\w_\-.]+@[\w\-.]+)",$html,$occurence);
 if ($occurences_trouvees!=0)
 {
-	for ($x=0;$x<$occurences_trouvees;$x++)
-	{	
+  for ($x=0;$x<$occurences_trouvees;$x++)
+  {
         $c = strlen ($occurence[0][$x]);
         $l = 2 * $c + 1;
         $code = '';
@@ -220,7 +220,7 @@ if ($occurences_trouvees!=0)
             $html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$html);
         else
             $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
-	}
+  }
 }
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
 $html = nl2br($html,False);
@@ -232,7 +232,7 @@ return $html;
 //**********************************************************************************************
 // Fonction permettant de retirer les tags bbcode de notre base pour certains export qui ne saurait quoi en faire
 // FIXME : fusion avec bbcode2txt($string) ?
-function stripBBCode($text_to_search) 
+function stripBBCode($text_to_search)
 {
  $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
  $replace = '';
@@ -277,157 +277,157 @@ function bbcode2txt($string)
 
 function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=TRUE)
 {
-    
-    /** étape 1 
+
+    /** étape 1
     nouvelle fonction qui permet de faire des liens internes entre les fiches :
     [->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
     point destination
     **/
-    
+
     $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
     if ($occurences_trouvees!=0)
     {
-	    for ($x=0;$x<$occurences_trouvees;$x++)
-	    {
-		    $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
-	    }
+      for ($x=0;$x<$occurences_trouvees;$x++)
+      {
+        $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+      }
     }
-    
-    /** étape 2 
+
+    /** étape 2
     on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
     sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
     **/
     if (!$autoriser_html)
-	$html=protege($texte);
+  $html=protege($texte);
     else
-	$html=$texte;
-    
+  $html=$texte;
+
     // gestion de la majorité des tag bbcode
     $searcharray =
-	    array(
-	    "/\[url:(.*)\](.+?)\[\/url:(.*)\]/s",
-	    "/\[url\](.+?)\[\/url\]/s",
-	    "/\[url=(.+?):(.*)\](.+?)\[\/url:(.*)\]/s",
-	    "/\[url=(.+?)\](.+?)\[\/url\]/s",
-	    "/\[b:(.*)\](.+?)\[\/b:(.*)\]/s",
-	    "/\[b\](.*?)\[\/b\]/s",
-	    "/\[i:(.*)\](.+?)\[\/i:(.*)\]/s",
-	    "/\[i\](.+?)\[\/i\]/s",
-	    "/\[u:(.*)\](.+?)\[\/u:(.*)\]/s",
-	    "/\[u\](.+?)\[\/u\]/s",
-	    "/\[img:(.*)\](.+?)\[\/img:(.*)\]/s",
-	    "/\[img\](.+?)\[\/img\]/s",
-	    "/\[code:([^\].]*)\](.+?)\[\/code:([^\].]*)\]/s",
-	    "/\[code\](.+?)\[\/code\]/s",
-	    "/\[quote:([^\].]*)\](.+?)\[\/quote:([^\].]*)\]/s",
-	    "/\[quote\](.+?)\[\/quote\]/s",
-	    "/\[quote=(.+?):(.*)\](.+?)\[\/quote:(.*)\]/s",
-	    "/\[quote=(.+?)\](.+?)\[\/quote\]/s",
-	    "/\[color=(.+?):(.*)\](.+?)\[\/color:(.*)\]/s",
-	    "/\[color=(.+?)\](.+?)\[\/color\]/s",
-	    "/:([a-z]+):/",
-	    "/\[t\]/",
-	    "/\[email\](.+?)\[\/email\]/",
-	    "/(0[0-9]([-. ]?[0-9]{2}){4})/" // Pour les numéros de téléphone
-	    );
+      array(
+      "/\[url:(.*)\](.+?)\[\/url:(.*)\]/s",
+      "/\[url\](.+?)\[\/url\]/s",
+      "/\[url=(.+?):(.*)\](.+?)\[\/url:(.*)\]/s",
+      "/\[url=(.+?)\](.+?)\[\/url\]/s",
+      "/\[b:(.*)\](.+?)\[\/b:(.*)\]/s",
+      "/\[b\](.*?)\[\/b\]/s",
+      "/\[i:(.*)\](.+?)\[\/i:(.*)\]/s",
+      "/\[i\](.+?)\[\/i\]/s",
+      "/\[u:(.*)\](.+?)\[\/u:(.*)\]/s",
+      "/\[u\](.+?)\[\/u\]/s",
+      "/\[img:(.*)\](.+?)\[\/img:(.*)\]/s",
+      "/\[img\](.+?)\[\/img\]/s",
+      "/\[code:([^\].]*)\](.+?)\[\/code:([^\].]*)\]/s",
+      "/\[code\](.+?)\[\/code\]/s",
+      "/\[quote:([^\].]*)\](.+?)\[\/quote:([^\].]*)\]/s",
+      "/\[quote\](.+?)\[\/quote\]/s",
+      "/\[quote=(.+?):(.*)\](.+?)\[\/quote:(.*)\]/s",
+      "/\[quote=(.+?)\](.+?)\[\/quote\]/s",
+      "/\[color=(.+?):(.*)\](.+?)\[\/color:(.*)\]/s",
+      "/\[color=(.+?)\](.+?)\[\/color\]/s",
+      "/:([a-z]+):/",
+      "/\[t\]/",
+      "/\[email\](.+?)\[\/email\]/",
+      "/(0[0-9]([-. ]?[0-9]{2}){4})/" // Pour les numéros de téléphone
+      );
     $replacearray =
-	    array(
-	    "[$1]($2)",
-	    "[$1]($1)",
-	    "[$3]($2)",
-	    "[$1]($2)",
-	    "**$2**",
-	    "**$1**",
-	    "*$2*",
-	    "*$1*",
-	    "$2",
-	    "$1",
-	    "![image]($2)",
-	    "![image]($1)",
-	    "<code>$2</code>",
-	    "<code>$1</code>",
-	    "<blockquote>$2</blockquote>",
-	    "<blockquote>$1</blockquote>",
-	    "<blockquote>$2</blockquote>",
-	    "<blockquote>$1</blockquote>",
-	    "$3",
-	    "$2",
-	    " - ",
-	    "    ",
-	    "<sensible>$1</sensible>", // Sera codé plus loin
-	    "<sensible>$1</sensible>" // Sera codé plus loin
-	    );
+      array(
+      "[$1]($2)",
+      "[$1]($1)",
+      "[$3]($2)",
+      "[$1]($2)",
+      "**$2**",
+      "**$1**",
+      "*$2*",
+      "*$1*",
+      "$2",
+      "$1",
+      "![image]($2)",
+      "![image]($1)",
+      "<code>$2</code>",
+      "<code>$1</code>",
+      "<blockquote>$2</blockquote>",
+      "<blockquote>$1</blockquote>",
+      "<blockquote>$2</blockquote>",
+      "<blockquote>$1</blockquote>",
+      "$3",
+      "$2",
+      " - ",
+      "    ",
+      "<sensible>$1</sensible>", // Sera codé plus loin
+      "<sensible>$1</sensible>" // Sera codé plus loin
+      );
     $html = preg_replace($searcharray, $replacearray, $html);
-    
+
     // transformation automatique des url
 
-    // au format http://truc 
+    // au format http://truc
     $urlauto_pattern = "/([ :\.;,\n])(http:\/\/\w\S*)/i";
     $urlauto_replace = "$1[$2]($2)";
     $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
-    
+
     // au format www.
     $urlauto_pattern = "/([ :\.;,\n])(www.\w\S*)/i";
     $urlauto_replace = "$1[$2](http://$2)";
     $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
-    
+
     // Gestion du texte sensible
     if($autoriser_texte_sensible) {
-	$html = preg_replace("/<sensible>(.*)<\/sensible>/","$1",$html);
+  $html = preg_replace("/<sensible>(.*)<\/sensible>/","$1",$html);
     }
     else {
-	$html = preg_replace("/<sensible>(.*)<\/sensible>/","",$html);
+  $html = preg_replace("/<sensible>(.*)<\/sensible>/","",$html);
     }
-    
+
     // Gestion des codes en bloc
     $occurences_trouvees=preg_match_all("/<code>.*<\/code>/s",$texte,$occurence);
     if ($occurences_trouvees!=0)
     {
-	for ($x=0;$x<$occurences_trouvees;$x++)
-	{
-	    $occurence_temp=$occurence[0][$x];
-	    $occurence_temp=preg_replace("/^<code>/","\n    ",$occurence_temp);
-	    $occurence_temp=preg_replace("/<\/code>$/","\n",$occurence_temp);
-	    $occurence_temp=preg_replace("/\n/","\n    ",$occurence_temp);
-	    $html=str_replace($occurence[0][$x],$occurence_temp,$html);
-	}
+  for ($x=0;$x<$occurences_trouvees;$x++)
+  {
+      $occurence_temp=$occurence[0][$x];
+      $occurence_temp=preg_replace("/^<code>/","\n    ",$occurence_temp);
+      $occurence_temp=preg_replace("/<\/code>$/","\n",$occurence_temp);
+      $occurence_temp=preg_replace("/\n/","\n    ",$occurence_temp);
+      $html=str_replace($occurence[0][$x],$occurence_temp,$html);
+  }
     }
 
     // Gestion des citations en bloc
     $occurences_trouvees=preg_match_all("/<blockquote>.*<\/blockquote>/s",$texte,$occurence);
     if ($occurences_trouvees!=0)
     {
-	for ($x=0;$x<$occurences_trouvees;$x++)
-	{
-	    $occurence_temp=$occurence[0][$x];
-	    $occurence_temp=preg_replace("/^<blockquote>/","\n> ",$occurence_temp);
-	    $occurence_temp=preg_replace("/<\/blockquote>$/","\n",$occurence_temp);
-	    $occurence_temp=preg_replace("/\n/","\n> ",$occurence_temp);
-	    $html=str_replace($occurence[0][$x],$occurence_temp,$html);
-	}
+  for ($x=0;$x<$occurences_trouvees;$x++)
+  {
+      $occurence_temp=$occurence[0][$x];
+      $occurence_temp=preg_replace("/^<blockquote>/","\n> ",$occurence_temp);
+      $occurence_temp=preg_replace("/<\/blockquote>$/","\n",$occurence_temp);
+      $occurence_temp=preg_replace("/\n/","\n> ",$occurence_temp);
+      $html=str_replace($occurence[0][$x],$occurence_temp,$html);
+  }
     }
-    
+
     // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
     if (!$autoriser_html)
     {
-	    $html = str_replace("\r\n", "<br />", $html);
-	    $html = str_replace("\n", "<br />", $html);
-	    $html = str_replace("\r", "<br />", $html);
-	    $html = str_replace("  ", " &nbsp;", $html);
+      $html = str_replace("\r\n", "<br />", $html);
+      $html = str_replace("\n", "<br />", $html);
+      $html = str_replace("\r", "<br />", $html);
+      $html = str_replace("  ", " &nbsp;", $html);
     }
     return $html;
 }
 
 /* ucfirst( ) does not work well with UTF-8 this is it's multibyte replacement */
-function mb_ucfirst($str, $encoding = "UTF-8", $lower_str_end = false) 
+function mb_ucfirst($str, $encoding = "UTF-8", $lower_str_end = false)
 {
       $first_letter = mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding);
       $str_end = "";
       if ($lower_str_end) {
-	$str_end = mb_strtolower(mb_substr($str, 1, mb_strlen($str, $encoding), $encoding), $encoding);
+  $str_end = mb_strtolower(mb_substr($str, 1, mb_strlen($str, $encoding), $encoding), $encoding);
       }
       else {
-	$str_end = mb_substr($str, 1, mb_strlen($str, $encoding), $encoding);
+  $str_end = mb_substr($str, 1, mb_strlen($str, $encoding), $encoding);
       }
       $str = $first_letter . $str_end;
       return $str;

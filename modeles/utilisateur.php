@@ -29,6 +29,6 @@ function lien_utilisateur($utilisateur,$local=True)
     $url_complete="";
   else
     $url_complete="http://".$config['nom_hote'];
-	return $url_complete.$config['fiche_utilisateur'].$utilisateur->user_id;
+  return $url_complete.$config['fiche_utilisateur'].$utilisateur->user_id;
 }
 ?>
