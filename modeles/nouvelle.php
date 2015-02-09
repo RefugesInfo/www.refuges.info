@@ -14,6 +14,7 @@ require_once ("config.php");
 require_once ("bdd.php");
 require_once ("polygone.php");
 require_once ("point.php");
+require_once ("utilisateur.php");
 
 function stat_site () 
 {
@@ -95,9 +96,12 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                     if ($commentaire->auteur_commentaire!="")
                     {
                         $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
-						if ($commentaire->id_createur_commentaire!=0)
-							$news_array[$i]['lien_auteur'] = "http://".$_SERVER['SERVER_NAME'].$config['fiche_utilisateur'].$commentaire->id_createur_commentaire;
-					}
+                        if ($commentaire->id_createur_commentaire!=0)
+                        {
+	                        $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
+                          $news_array[$i]['lien_auteur'] = lien_utilisateur($utilisateur,$lien_locaux);
+                        }
+                    }
                     // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
                     // la ya un massif
                     if (isset($commentaire->id_polygone))
@@ -111,7 +115,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         $news_array[$i]['partitif_massif'] = $commentaire->article_partitif.$espace;
                         $news_array[$i]['massif'] = $commentaire->nom_polygone;
                     } 
-					$i++;
+                    $i++;
                 }	
                 break;
                 
@@ -130,7 +134,10 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         {
                             $news_array[$i]['auteur']=$point->nom_createur;
                             if ($point->id_createur!=0)
-                                $news_array[$i]['lien_auteur'] =  "http://".$_SERVER['SERVER_NAME'].$config['fiche_utilisateur'].$point->id_createur;
+                            {
+		                            $utilisateur=infos_utilisateur($point->id_createur);
+                                $news_array[$i]['lien_auteur'] =  lien_utilisateur($utilisateur,$lien_locaux);
+                            }
                         }
                         
                         $news_array[$i]['lien']=lien_point($point,$lien_locaux);
@@ -166,11 +173,15 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 if (count($commentaires_forum)>0)
                     foreach ( $commentaires_forum as $commentaire_forum)
                     {
-                        $news_array[$i]['lien']=$config['sous_dossier_installation']."forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
-                        $news_array[$i]['categorie']="Forum";
-                        $news_array[$i]['titre']=$commentaire_forum->topic_title;
-                        $news_array[$i]['date']=$commentaire_forum->date;
-                        $i++;
+                      if ($lien_locaux)
+                        $url_complete="";
+                      else
+                      $url_complete="http://".$config['nom_hote'];
+                      $news_array[$i]['lien']=$url_complete.$config['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+                      $news_array[$i]['categorie']="Forum";
+                      $news_array[$i]['titre']=$commentaire_forum->topic_title;
+                      $news_array[$i]['date']=$commentaire_forum->date;
+                      $i++;
                     }
                     break;
         }

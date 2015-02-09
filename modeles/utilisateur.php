@@ -18,5 +18,17 @@ function infos_utilisateur($id_utilisateur)
   else
     return $utilisateur;
 }
-
+/**
+On génére une url vers la fiche d'un utilisateur (en fait, sont profil sur le forum
+si local est False un lien absolu sera généré
+**/
+function lien_utilisateur($utilisateur,$local=True)
+{
+  global $config;
+  if ($local)
+    $url_complete="";
+  else
+    $url_complete="http://".$config['nom_hote'];
+	return $url_complete.$config['fiche_utilisateur'].$utilisateur->user_id;
+}
 ?>
