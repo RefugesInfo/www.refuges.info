@@ -20,21 +20,21 @@ var map,
 
 	baseLayers = {
 		'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://maps.refuges.info">Refuges.Info</a>'
+			attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
 		}),
-		'OpenCycleMap': L.tileLayer('http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://www.openstreetmap.org">OpenCycleMap</a>'
+		'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
 		}),
-		'OSM': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+		'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
 		}),
 		'IGN': new L.TileLayer.IGN(),
-		'IGN Topo': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'),
-		'IGN Classique': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
-		'SwissTopo': new L.TileLayer.SwissTopo(),
-		'Espagne': new L.TileLayer.WMS.IDEE(),
-		'Italie': new L.TileLayer.WMS.IGM(),
-		'Photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
+					'IGN Topo': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'),
+								'IGN Classique': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
+											'SwissTopo': new L.TileLayer.SwissTopo(),
+														'Espagne': new L.TileLayer.WMS.IDEE(),
+																	'Italie': new L.TileLayer.WMS.IGM(),
+																				'Photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
 	},
 
 	massifLayer = new L.GeoJSON.ajax(
