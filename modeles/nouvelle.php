@@ -135,7 +135,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                             $news_array[$i]['auteur']=$point->nom_createur;
                             if ($point->id_createur!=0)
                             {
-		                            $utilisateur=infos_utilisateur($point->id_createur);
+                                $utilisateur=infos_utilisateur($point->id_createur);
                                 $news_array[$i]['lien_auteur'] =  lien_utilisateur($utilisateur,$lien_locaux);
                             }
                         }

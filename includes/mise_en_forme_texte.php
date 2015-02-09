@@ -223,8 +223,9 @@ if ($occurences_trouvees!=0)
 	}
 }
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
-$html = nl2br($html);
+$html = nl2br($html,False);
 $html = str_replace("  ", " &nbsp;", $html);
+
 return $html;
 }
 
