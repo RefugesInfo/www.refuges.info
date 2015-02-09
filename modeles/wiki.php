@@ -9,7 +9,7 @@ require_once ("config.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("bdd.php");
 
-// Fonction pour réaliser un lien vers une page du mode d'emploi 
+// Fonction pour réaliser un lien vers une page du wiki dont le nom est passé en paramètre
 function lien_wiki($page="/")
 {
     global $config;
@@ -24,16 +24,8 @@ function wiki_page_html($page)
     if ($contenu_page->erreur)
         return "Contenu inexistant";
         
-    // gestion des liens internes au format [url=##page]c'est là que ça se passe[/url]
-    $contenu_html=str_replace("##",$config['base_wiki'],$contenu_page->contenu);
-    //spécial commentaires inventés par sly à enlever (peut être mieux directement dans bbcode2html ?)
-    $contenu_html=preg_replace("/\[c\].*\[\/c\]/s","",$contenu_html);
     // conversion bbcode
-    $contenu_html=bbcode2html($contenu_html,TRUE);
-    // ceci a pour but de simplifier l'écriture du wiki pour les non informaticiens (un retour ligne, ben, ça retourne à la ligne !)
-    $contenu_html=nl2br($contenu_html,false);
-    // et des espaces rajoutés en rab feront vraiment des espaces
-    $contenu_html=str_replace("  ","&nbsp;&nbsp;",$contenu_html);
+    $contenu_html=bbcode2html($contenu_page->contenu,True);
 
     // Toutefois, notre style css fait que les titres <hx> sont déjà précédés et suivi d'un retour ligne forcé, ça en ferait donc beaucoup dans le cas
     // où on souhaite garder lisible notre saisie, j'enlève donc celui qui précède et qui suit

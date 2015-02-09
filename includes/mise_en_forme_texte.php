@@ -56,9 +56,9 @@ retourne : le code en HTML
 21/03/08 sly création initiale de la fonction
 26/05/08 jmb correction bug des multiples [b] (rajout d'un ? pour une regex ungreedy)
 **********************************************************************************************/
-function bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE,$crypter_texte_sensible=TRUE)
+function bbcode2html($texte,$autoriser_html=False,$autoriser_balise_img=True,$crypter_texte_sensible=True)
 {
-
+global $config;
 /** étape 1 
 nouvelle fonction qui permet de faire des liens internes entre les fiches :
 [->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
@@ -114,11 +114,13 @@ $urlauto_pattern = "/([ :\.;,\n\*])(www.\w\S*|http[s]?:\/\/\w\S*)/i";
 $urlauto_replace = "$1[url=$2]$2[/url]";
 $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
 
+// gestion des liens vers notre wiki au format [url=##page]c'est là que ça se passe[/url] on le repasse d'abord en bbcode plus classique avec url locale (qui tient compte de l'éventuel sous-dossier dans lequel on est installé
+$html=str_replace("url=##","url=".$config['base_wiki'],$html);
 // gestion de la majorité des tag bbcode
 $searcharray =
 array_merge($search_img,
         array(
-        "/\[url=(\/.+?)\](.+?)\[\/url\]/s", // Cas spécial des urls relatives à la racine genre [url=/forum]form[/forum] qui doivent pointer vers /sous-dossier/forum
+        "/\[url=\/(.+?)\](.+?)\[\/url\]/s", // Cas spécial des urls relatives à la racine genre [url=/forum]form[/forum] qui doivent pointer vers /sous-dossier/forum : A
         "/\[url\](http[s]?:\/\/.+?)\[\/url\]/i",
         "/\[url=(http[s]?:\/\/.+?)\](.+?)\[\/url\]/i",
         "/\[url\](.+?)\[\/url\]/s",
@@ -139,13 +141,14 @@ array_merge($search_img,
         "/\[color=(.+?)\](.+?)\[\/color\]/s",
         "/:([a-z]+):/",
         "/\[t\]/",
-        "/\[email\](.+?)\[\/email\]/"
+        "/\[email\](.+?)\[\/email\]/",
+        "/\[c\](.+?)\[\/c\]/s" // Inventé par sly pour placer un commentaire (ce qui se situe entre [c] et [/c] ne sera pas converti en html : C
         )
 );
 $replacearray =
 array_merge($replace_img,
         array(
-        "<a href=\"".$config['sous_dossier_installation']."$1\">$2</a>",
+        "<a href=\"".$config['sous_dossier_installation']."$1\">$2</a>", // A
         "<a href=\"$1\">$1</a>",
         "<a href=\"$1\">$2</a>",
         "<a href=\"http://$1\">$1</a>",
@@ -166,11 +169,15 @@ array_merge($replace_img,
         "<span style=\"color: $1\">$2</span>",
         " - ",
         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
-        "$1" // Sera codé plus loin
+        "$1", // Sera codé plus loin
+        "" // C
         )
 );
 
 $html = preg_replace($searcharray, $replacearray, $html);
+//d($html);
+
+
 // On affiche les numéros de téléphone à l'envers
 if ($crypter_texte_sensible)
 {
@@ -215,13 +222,9 @@ if ($occurences_trouvees!=0)
             $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
 	}
 }
-
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
-if (!$autoriser_html)
-{
-    $html = str_replace(array("\r\n","\n","\r"), "<br>", $html);
-    $html = str_replace("  ", " &nbsp;", $html);
-}
+$html = nl2br($html);
+$html = str_replace("  ", " &nbsp;", $html);
 return $html;
 }
 
