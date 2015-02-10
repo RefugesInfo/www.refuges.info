@@ -152,13 +152,14 @@ function bbencode_second_pass($text, $uid)
 	$text = bbencode_second_pass_code($text, $uid, $bbcode_tpl);
 
 	// [QUOTE] and [/QUOTE] for posting replies with quote, or just for quoting stuff.
-	$text = str_replace("[quote:$uid]", $bbcode_tpl['quote_open'], $text);
-	$text = str_replace("[/quote:$uid]", $bbcode_tpl['quote_close'], $text);
+	$text = str_replace(array("[quote:$uid]","[quote]"), $bbcode_tpl['quote_open'], $text);
+	$text = str_replace(array("[/quote:$uid]","[/quote]"), $bbcode_tpl['quote_close'], $text);
 
 	// New one liner to deal with opening quotes with usernames...
 	// replaces the two line version that I had here before..
 	$text = preg_replace("/\[quote:$uid=\"(.*?)\"\]/si", $bbcode_tpl['quote_username_open'], $text);
-
+	$text = preg_replace("/\[quote=\"(.*?)\"\]/si", $bbcode_tpl['quote_username_open'], $text);
+        
 	// [list] and [list=x] for (un)ordered lists.
 	// unordered lists
 	$text = str_replace("[list:$uid]", $bbcode_tpl['ulist_open'], $text);
@@ -171,24 +172,24 @@ function bbencode_second_pass($text, $uid)
 	$text = preg_replace("/\[list=([a1]):$uid\]/si", $bbcode_tpl['olist_open'], $text);
 
 	// colours
-	$text = preg_replace("/\[color=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", $bbcode_tpl['color_open'], $text);
-	$text = str_replace("[/color:$uid]", $bbcode_tpl['color_close'], $text);
+	$text = preg_replace(array("/\[color=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si","/\[color=(\#[0-9A-F]{6}|[a-z]+)\]/si"), $bbcode_tpl['color_open'], $text);
+	$text = str_replace(array("[/color:$uid]","[/color]"), $bbcode_tpl['color_close'], $text);
 
 	// size
-	$text = preg_replace("/\[size=([1-2]?[0-9]):$uid\]/si", $bbcode_tpl['size_open'], $text);
-	$text = str_replace("[/size:$uid]", $bbcode_tpl['size_close'], $text);
+	$text = preg_replace(array("/\[size=([1-2]?[0-9]):$uid\]/si","/\[size=([1-2]?[0-9])\]/si"), $bbcode_tpl['size_open'], $text);
+	$text = str_replace(array("[/size:$uid]","[/size]"), $bbcode_tpl['size_close'], $text);
 
 	// [b] and [/b] for bolding text.
-	$text = str_replace("[b:$uid]", $bbcode_tpl['b_open'], $text);
-	$text = str_replace("[/b:$uid]", $bbcode_tpl['b_close'], $text);
-
+	$text = str_replace(array("[b:$uid]","[b]"), $bbcode_tpl['b_open'], $text);
+	$text = str_replace(array("[/b:$uid]","[/b]"), $bbcode_tpl['b_close'], $text);
+        
 	// [u] and [/u] for underlining text.
-	$text = str_replace("[u:$uid]", $bbcode_tpl['u_open'], $text);
-	$text = str_replace("[/u:$uid]", $bbcode_tpl['u_close'], $text);
+	$text = str_replace(array("[u:$uid]","[u]"), $bbcode_tpl['u_open'], $text);
+	$text = str_replace(array("[/u:$uid]","[/u]"), $bbcode_tpl['u_close'], $text);
 
 	// [i] and [/i] for italicizing text.
-	$text = str_replace("[i:$uid]", $bbcode_tpl['i_open'], $text);
-	$text = str_replace("[/i:$uid]", $bbcode_tpl['i_close'], $text);
+	$text = str_replace(array("[i:$uid]","[i]"), $bbcode_tpl['i_open'], $text);
+	$text = str_replace(array("[/i:$uid]","[/i]"), $bbcode_tpl['i_close'], $text);
 
 	// Patterns and replacements for URL and email tags..
 	$patterns = array();
@@ -197,8 +198,10 @@ function bbencode_second_pass($text, $uid)
 	// [img]image_url_here[/img] code..
 	// This one gets first-passed..
 	$patterns[] = "#\[img:$uid\]([^?].*?)\[/img:$uid\]#i";
-	$replacements[] = $bbcode_tpl['img'];
-
+        $replacements[] = $bbcode_tpl['img'];
+        $patterns[] = "#\[img\]([^?].*?)\[/img\]#i";
+        $replacements[] = $bbcode_tpl['img'];
+        
 	// matches a [url]xxxx://www.phpbb.com[/url] code..
 	$patterns[] = "#\[url\]([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*?)\[/url\]#is";
 	$replacements[] = $bbcode_tpl['url1'];
@@ -207,10 +210,14 @@ function bbencode_second_pass($text, $uid)
 	$patterns[] = "#\[url\]((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*?)\[/url\]#is";
 	$replacements[] = $bbcode_tpl['url2'];
 
-	// [url=xxxx://www.phpbb.com]phpBB[/url] code..
-	$patterns[] = "#\[url=([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*?)\]([^?\n\r\t].*?)\[/url\]#is";
-	$replacements[] = $bbcode_tpl['url3'];
+        // [url=xxxx://www.phpbb.com]phpBB[/url] code..
+        $patterns[] = "#\[url=([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*?)\]([^?\n\r\t].*?)\[/url\]#is";
+        $replacements[] = $bbcode_tpl['url3'];
 
+        // [url=/wiki/index]voir l'aide[/url] code..
+        $patterns[] = "#\[url=(\/.*)\]([^?\n\r\t].*?)\[/url\]#is";
+        $replacements[] = $bbcode_tpl['url3'];
+        
 	// [url=www.phpbb.com]phpBB[/url] code.. (no xxxx:// prefix).
 	$patterns[] = "#\[url=((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*?)\]([^?\n\r\t].*?)\[/url\]#is";
 	$replacements[] = $bbcode_tpl['url4'];
