@@ -1095,10 +1095,8 @@ for($i = 0; $i < $total_posts; $i++)
 			$user_sig = ( $board_config['allow_bbcode'] ) ? bbencode_second_pass($user_sig, $user_sig_bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $user_sig);
 		}
 
-		if ( $bbcode_uid != '' )
-		{
-			$message = ( $board_config['allow_bbcode'] ) ? bbencode_second_pass($message, $bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $message);
-		}
+		//sly's hack : since we transfert from site to forum, even if the special "bbocde uid" isn't here we still should convert from bbcode to html
+                $message = ( $board_config['allow_bbcode'] ) ? bbencode_second_pass($message, $bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $message);
 	}
 
 	if ( $user_sig != '' )
