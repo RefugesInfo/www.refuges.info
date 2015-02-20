@@ -173,16 +173,15 @@ window.addEventListener('load', function() {
 });
 /*************************************************************************************************************************************/
 function switch_massif (combo) {
-    var idmassif;
     if (combo.checked) {
         document.getElementById ('titrepage') .firstChild.nodeValue = "<?echo addslashes($vue->titre)?>"; 
 		map.addLayer(massifLayer);
-		map.removeLayer(poiBbox);
+		map.removeLayer(poiLayer);
 		map.addLayer(poiLayer = poiMassif);
     } else {
         document.getElementById ('titrepage') .firstChild.nodeValue = "Navigation sur les cartes"; 
 		map.removeLayer(massifLayer);
-		map.removeLayer(poiMassif);
+		map.removeLayer(poiLayer);
 		map.addLayer(poiLayer = poiBbox);
     }
 }
