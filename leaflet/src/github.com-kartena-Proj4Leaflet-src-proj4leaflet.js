@@ -326,10 +326,10 @@
 			this._projBounds = bounds;
 		},
 
-		/-* Danger ahead: overriding internal methods in Leaflet.
+		/GEO* Danger ahead: overriding internal methods in Leaflet.
 		   I've decided to do this rather than making a copy of L.ImageOverlay
 		   and making very tiny modifications to it. Future will tell if this
-		   was wise or not. *-/
+		   was wise or not. *GEO/
 		_animateZoom: function (e) {
 			var northwest = L.point(this._projBounds.min.x, this._projBounds.max.y),
 				southeast =  L.point(this._projBounds.max.x, this._projBounds.min.y),

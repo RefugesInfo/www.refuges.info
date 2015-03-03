@@ -37,10 +37,10 @@ var map,
 			'Photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
 		},
 
-	massifLayer = new L.GeoJSON.ajax(
+	massifLayer = new L.GeoJSON.Ajax(
 		'<?=$config['sous_dossier_installation']?>api/polygones', {
 <?if ( $vue->mode_affichage == 'edit' ){?>
-			argsGeoJson: {
+			argsGeoJSON: {
 				type_polygon: 1,
 				type_geom: 'polylines', // La surface à l'intérieur des massifs reste cliquable
 				time: <?=time()?> // Inhibe le cache
@@ -55,7 +55,7 @@ var map,
 				}
 			}
 <?}else if ( $vue->mode_affichage == 'zone' ){?>
-			argsGeoJson: {
+			argsGeoJSON: {
 				type_polygon: 1,
 				intersection: '<?=$vue->polygone->id_polygone?>'
 			},
@@ -72,7 +72,7 @@ var map,
 				}
 			}
 <?}else{?>
-			argsGeoJson: {
+			argsGeoJSON: {
 				massif: '<?=$vue->polygone->id_polygone?>',
 				type_geom: 'polylines'
 			},
@@ -88,9 +88,9 @@ var map,
 		}
 	),
 
-	poiBbox = new L.GeoJSON.ajax( // Les points d'intérêt WRI en général
+	poiBbox = new L.GeoJSON.Ajax( // Les points d'intérêt WRI en général
 		'<?=$config['sous_dossier_installation']?>api/bbox', {
-			argsGeoJson: {
+			argsGeoJSON: {
 				type_points: 'all'
 			},
 			bbox: true,
@@ -105,9 +105,9 @@ var map,
 		}
 	),
 
-	poiMassif = new L.GeoJSON.ajax( // Les points d'intérêt WRI pour 1 massif
+	poiMassif = new L.GeoJSON.Ajax( // Les points d'intérêt WRI pour 1 massif
 		'<?=$config['sous_dossier_installation']?>api/massif', {
-			argsGeoJson: {
+			argsGeoJSON: {
 				type_points: 'all',
 				massif: arg_massifs
 			},
@@ -125,7 +125,7 @@ var map,
 	poiLayer = <?if ( $vue->polygone->id_polygone ) {?>poiMassif<?}else{?>poiBbox<?}?>;
 
 window.addEventListener('load', function() {
-	map = new L.Map.MultiCRS('nav_bloc_carte', {
+	map = new L.Map('nav_bloc_carte', {
 		fullscreenControl: true,
 		center: new L.LatLng(45.6, 6.7),
 		zoom: 6,
@@ -138,6 +138,7 @@ window.addEventListener('load', function() {
 <?}?>
 		]
 	});
+	new L.Control.geocoder().addTo(map);
 <?if ( $vue->polygone->bbox ){?>
 	var bboxs = [<?=$vue->polygone->bbox?>]; // BBox au format Openlayers
 	map.fitBounds([

@@ -11,9 +11,9 @@ window.addEventListener('load', function() {
 		zoomControl: false,
 		layers: [
 			new L.TileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png'),
-			new L.GeoJSON.ajax( // Les massifs WRI
+			new L.GeoJSON.Ajax( // Les massifs WRI
 				'<?=$config['sous_dossier_installation']?>api/polygones', {
-					argsGeoJson: {
+					argsGeoJSON: {
 						type_polygon: 1
 					},
 					bbox: true, // Optimise la gestion des couleurs

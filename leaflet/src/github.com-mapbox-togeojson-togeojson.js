@@ -1,4 +1,4 @@
-toGeoJSON = (function() {
+var toGeoJSON = (function() {
     'use strict';
 
     var removeSpace = (/\s*/g),
@@ -21,12 +21,12 @@ toGeoJSON = (function() {
     function norm(el) { if (el.normalize) { el.normalize(); } return el; }
     // cast array x into numbers
     function numarray(x) {
-        for (var j = 0, o = []; j < x.length; j++) o[j] = parseFloat(x[j]);
+        for (var j = 0, o = []; j < x.length; j++) { o[j] = parseFloat(x[j]); }
         return o;
     }
     function clean(x) {
         var o = {};
-        for (var i in x) if (x[i]) o[i] = x[i];
+        for (var i in x) { if (x[i]) { o[i] = x[i]; } }
         return o;
     }
     // get the content of a text node, if any
@@ -48,11 +48,14 @@ toGeoJSON = (function() {
     function coordPair(x) {
         var ll = [attrf(x, 'lon'), attrf(x, 'lat')],
             ele = get1(x, 'ele'),
+            // handle namespaced attribute in browser
+            heartRate = get1(x, 'gpxtpx:hr') || get1(x, 'hr'),
             time = get1(x, 'time');
-        if (ele) ll.push(parseFloat(nodeVal(ele)));
+        if (ele) { ll.push(parseFloat(nodeVal(ele))); }
         return {
             coordinates: ll,
-            time: time ? nodeVal(time) : null
+            time: time ? nodeVal(time) : null,
+            heartRate: heartRate ? parseFloat(nodeVal(heartRate)) : null
         };
     }
 
@@ -99,8 +102,8 @@ toGeoJSON = (function() {
             function kmlColor(v) {
                 var color, opacity;
                 v = v || "";
-                if (v.substr(0, 1) === "#") v = v.substr(1);
-                if (v.length === 6 || v.length === 3) color = v;
+                if (v.substr(0, 1) === "#") { v = v.substr(1); }
+                if (v.length === 6 || v.length === 3) { color = v; }
                 if (v.length === 8) {
                     opacity = parseInt(v.substr(0, 2), 16) / 255;
                     color = v.substr(2);
@@ -121,25 +124,25 @@ toGeoJSON = (function() {
             }
             function getGeometry(root) {
                 var geomNode, geomNodes, i, j, k, geoms = [], coordTimes = [];
-                if (get1(root, 'MultiGeometry')) return getGeometry(get1(root, 'MultiGeometry'));
-                if (get1(root, 'MultiTrack')) return getGeometry(get1(root, 'MultiTrack'));
-                if (get1(root, 'gx:MultiTrack')) return getGeometry(get1(root, 'gx:MultiTrack'));
+                if (get1(root, 'MultiGeometry')) { return getGeometry(get1(root, 'MultiGeometry')); }
+                if (get1(root, 'MultiTrack')) { return getGeometry(get1(root, 'MultiTrack')); }
+                if (get1(root, 'gx:MultiTrack')) { return getGeometry(get1(root, 'gx:MultiTrack')); }
                 for (i = 0; i < geotypes.length; i++) {
                     geomNodes = get(root, geotypes[i]);
                     if (geomNodes) {
                         for (j = 0; j < geomNodes.length; j++) {
                             geomNode = geomNodes[j];
-                            if (geotypes[i] == 'Point') {
+                            if (geotypes[i] === 'Point') {
                                 geoms.push({
                                     type: 'Point',
                                     coordinates: coord1(nodeVal(get1(geomNode, 'coordinates')))
                                 });
-                            } else if (geotypes[i] == 'LineString') {
+                            } else if (geotypes[i] === 'LineString') {
                                 geoms.push({
                                     type: 'LineString',
                                     coordinates: coord(nodeVal(get1(geomNode, 'coordinates')))
                                 });
-                            } else if (geotypes[i] == 'Polygon') {
+                            } else if (geotypes[i] === 'Polygon') {
                                 var rings = get(geomNode, 'LinearRing'),
                                     coords = [];
                                 for (k = 0; k < rings.length; k++) {
@@ -149,8 +152,8 @@ toGeoJSON = (function() {
                                     type: 'Polygon',
                                     coordinates: coords
                                 });
-                            } else if (geotypes[i] == 'Track' ||
-                                geotypes[i] == 'gx:Track') {
+                            } else if (geotypes[i] === 'Track' ||
+                                geotypes[i] === 'gx:Track') {
                                 var track = gxCoords(geomNode);
                                 geoms.push({
                                     type: 'LineString',
@@ -256,29 +259,40 @@ toGeoJSON = (function() {
                 gj.features.push(getPoint(waypoints[i]));
             }
             function getPoints(node, pointname) {
-                var pts = get(node, pointname), line = [], times = [],
+                var pts = get(node, pointname),
+                    line = [],
+                    times = [],
+                    heartRates = [],
                     l = pts.length;
-                if (l < 2) return;  // Invalid line in GeoJSON
+                if (l < 2) return {};  // Invalid line in GeoJSON
                 for (var i = 0; i < l; i++) {
                     var c = coordPair(pts[i]);
                     line.push(c.coordinates);
                     if (c.time) times.push(c.time);
+                    if (c.heartRate) heartRates.push(c.heartRate);
                 }
                 return {
                     line: line,
-                    times: times
+                    times: times,
+                    heartRates: heartRates
                 };
             }
             function getTrack(node) {
-                var segments = get(node, 'trkseg'), track = [], times = [], line;
+                var segments = get(node, 'trkseg'),
+                    track = [],
+                    times = [],
+                    heartRates = [],
+                    line;
                 for (var i = 0; i < segments.length; i++) {
                     line = getPoints(segments[i], 'trkpt');
                     if (line.line) track.push(line.line);
-                    if (line.times.length) times.push(line.times);
+                    if (line.times && line.times.length) times.push(line.times);
+                    if (line.heartRates && line.heartRates.length) heartRates.push(line.heartRates);
                 }
                 if (track.length === 0) return;
                 var properties = getProperties(node);
                 if (times.length) properties.coordTimes = track.length === 1 ? times[0] : times;
+                if (heartRates.length) properties.heartRates = track.length === 1 ? heartRates[0] : heartRates;
                 return {
                     type: 'Feature',
                     properties: properties,

@@ -4,22 +4,19 @@
  * Such layer needs to be declared with layer.options.crs = L.CRS.EPSG****;
  */
 
-L.Map.MultiCRS = L.Map.extend({
+L.Map.addInitHook(function() {
+	// We get CRS of initial layer if any
+	for (l in this.options.layers)
+		if (this.options.layers[l].options.crs)
+			this.options.crs = this.options.layers[l].options.crs;
 
-	initialize: function(id, options) { // (HTMLElement or String, Object)
-		// We get CRS of initial layer if any
-		for (l in options.layers)
-			if (options.layers[l].options.crs)
-				options.crs = options.layers[l].options.crs;
+	// Setup change map CRS if layer changed
+	this.on('baselayerchange', function(event) {
+		event.layer._map.setCRS(event.layer.options.crs);
+	});
+});
 
-		// Setup change map CRS if layer changed
-		this.on('baselayerchange', function(event) {
-			event.layer._map.setCRS(event.layer.options.crs);
-		});
-
-		L.Map.prototype.initialize.call(this, id, options);
-	},
-
+L.Map.include({
 	// Change map CRS
 	setCRS: function(crs) {
 		if (this.options.crs == crs)
