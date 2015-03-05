@@ -31,16 +31,11 @@ if (navigator.language || navigator.userLanguage == 'fr') {
 			}
 		});
 
-	if (L.Control.Geocoder)
-		L.Control.Geocoder = L.Control.Geocoder.extend({
+	if (L.Control.OSMGeocoder)
+		L.Control.OSMGeocoder = L.Control.OSMGeocoder.extend({
 			options: {
 				position: 'topleft',
-				title: 'Rechercher un lieu sur la carte',
-				placeholder: 'Nom du lieu',
-				errorMessage: 'Non trouvé.'
-			},
-			statics: {
-				TITLE: 'Charger un fichier GPX, KML, GeoJSON'
+				text: 'Chercher',
 			}
 		});
 

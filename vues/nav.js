@@ -138,7 +138,7 @@ window.addEventListener('load', function() {
 <?}?>
 		]
 	});
-	new L.Control.geocoder().addTo(map);
+	new L.Control.OSMGeocoder().addTo(map);
 <?if ( $vue->polygone->bbox ){?>
 	var bboxs = [<?=$vue->polygone->bbox?>]; // BBox au format Openlayers
 	map.fitBounds([

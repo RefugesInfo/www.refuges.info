@@ -65,7 +65,7 @@ window.addEventListener('load', function() {
 		curseur.setLatLng(args.latlng);
 	});
 	map.addControl(new L.Control.Scale());
-	new L.Control.geocoder().addTo(map);
+	new L.Control.OSMGeocoder().addTo(map);
 });
 
 function affiche_et_set( el , affiche, valeur ) {

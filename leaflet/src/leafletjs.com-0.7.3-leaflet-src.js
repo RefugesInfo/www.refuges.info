@@ -4179,6 +4179,7 @@ L.Map.include({
  * Popup extension to L.Marker, adding popup-related methods.
  */
 
+/*GEOoptim optimisation taille de la lib compressée
 L.Marker.include({
 	openPopup: function () {
 		if (this._popup && this._map && !this._map.hasLayer(this._popup)) {
@@ -4264,6 +4265,7 @@ L.Marker.include({
 		this._popup.setLatLng(e.latlng);
 	}
 });
+GEOoptim*/
 
 /*
  * L.LayerGroup is a class to combine several layers into one so that
@@ -7861,7 +7863,7 @@ L.Handler.MarkerDrag = L.Handler.extend({
 
 	_onDragStart: function () {
 		this._marker
-		    .closePopup()
+//GEOoptim optimisation taille de la lib compressée		    .closePopup()
 		    .fire('movestart')
 		    .fire('dragstart');
 	},
