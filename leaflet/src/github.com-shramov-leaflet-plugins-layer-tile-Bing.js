@@ -1,7 +1,3 @@
-/**
- * from https://github.com/shramov/leaflet-plugins layer/tile/Bing.js
- */
-
 L.BingLayer = L.TileLayer.extend({
 	options: {
 		subdomains: [0, 1, 2, 3],
@@ -111,7 +107,7 @@ L.BingLayer = L.TileLayer.extend({
 	},
 
 	onRemove: function(map) {
-		if(this._providers) //GEO bug quand clé inadéquate
+if(this._providers) //GEO bug when no key
 		for (var i = 0; i < this._providers.length; i++) {
 			var p = this._providers[i];
 			if (p.active && this._map.attributionControl) {

@@ -11,5 +11,5 @@ puis on executre
 ./lien-erreur-liste-lisible.sh ./liste-brute.csv > version-un-peu-plus-lisible-et-apres-nettoyage.txt
 pour en avoir une version plus compréhensible
 
-le 1er outils tourne plus ou moins à l'infini, par un ctrl+c on le coupe quand il
-a tester genre 10000 pages et le résultat est sorti à l'écran
+le 1er outils tourne presque une demi-heure pour ~180000 lien à tester, on
+peut aussi l'interrompre par ctrl+c à tout moment

@@ -1,16 +1,17 @@
 /*
  * Copyright (c) 2014 Dominique Cavailhez
- * Layer affichant des features obtenus en format JSON
+ * Display remote layers with geoJSON format
  *
- * Spécifications geoJson: http://geojson.org/geojson-spec.html
+ * geoJSON Spécifications: http://geojson.org/geojson-spec.html
+ * With the great help of https://github.com/LeOSW42
  */
 
-L.GeoJSON.ajax = L.GeoJSON.extend({
+L.GeoJSON.Ajax = L.GeoJSON.extend({
 	ajaxRequest: null,
 
-	initialize: function(urlGeoJson, options) {
-		if (urlGeoJson)
-			options.urlGeoJson = urlGeoJson;
+	initialize: function(urlGeoJSON, options) {
+		if (urlGeoJSON)
+			options.urlGeoJSON = urlGeoJSON;
 		// On initialise L.GeoJSON mais sans contenu puisqu'on ne l'obtiendra que plus tard par AJAX
 		L.GeoJSON.prototype.initialize.call(this, null, options);
 	},
@@ -18,7 +19,7 @@ L.GeoJSON.ajax = L.GeoJSON.extend({
 	onAdd: function(map) {
 		L.GeoJSON.prototype.onAdd.call(this, map);
 
-		// Quand on bouge une carte avec bbox, il faut recharger le geoJson à chaque fois
+		// Quand on bouge une carte avec bbox, il faut recharger le geoJSON à chaque fois
 		if (this.options.bbox)
 			map.on('moveend', this.reload, this);
 
@@ -26,23 +27,23 @@ L.GeoJSON.ajax = L.GeoJSON.extend({
 		this.reload();
 	},
 
-	reload: function(argsGeoJson) {
-		L.Util.extend(this.options.argsGeoJson, argsGeoJson); // On change éventuellement quelque chose
+	reload: function(argsGeoJSON) {
+		L.Util.extend(this.options.argsGeoJSON, argsGeoJSON); // On change éventuellement quelque chose
 
 		// On prépare l'adresse à télécharger, avec la bbox.
-		if (this.options.bbox) { // Les quatres angles de la vue courante (bbox à télécharger)
+		if (this.options.bbox && this._map) { // Les quatres angles de la vue courante (bbox à télécharger)
 			var bounds = this._map.getBounds();
 			if (bounds) {
 				var minll = bounds.getSouthWest();
 				var maxll = bounds.getNorthEast();
-				this.options.argsGeoJson['bbox'] = minll.lng + ',' + minll.lat + ',' + maxll.lng + ',' + maxll.lat;
+				this.options.argsGeoJSON['bbox'] = minll.lng + ',' + minll.lat + ',' + maxll.lng + ',' + maxll.lat;
 			}
 		}
 		var args = '';
-		if (this.options.argsGeoJson)
-			for (a in this.options.argsGeoJson)
-				if (this.options.argsGeoJson[a])
-					args += (args ? '&' : '?') + a + '=' + this.options.argsGeoJson[a];
+		if (this.options.argsGeoJSON)
+			for (a in this.options.argsGeoJSON)
+				if (this.options.argsGeoJSON[a])
+					args += (args ? '&' : '?') + a + '=' + this.options.argsGeoJSON[a];
 
 		// On prépare (une fois) l'objet request
 		if (!this.ajaxRequest) {
@@ -63,29 +64,30 @@ L.GeoJSON.ajax = L.GeoJSON.extend({
 				e.target.status == 200)
 				e.target.context.redraw(e.target.responseText);
 		}
-		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJson + args, true);
+		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJSON + args, true);
 		this.ajaxRequest.send(null);
 	},
 
 	redraw: function(geojson) {
 		// On vide la couche
 		for (l in this._layers)
-			this._map.removeLayer(this._layers[l]);
+			if (this._map)
+				this._map.removeLayer(this._layers[l]);
 
 		// On recharge les nouveaux features
 		try {
 			eval('this.addData([' + geojson + '])');
 		} catch (e) {
 			if (e instanceof SyntaxError) {
-				alert('Error on ' + this.options.urlGeoJson + ' : ' + geojson);
+				alert('Error on ' + this.options.urlGeoJSON + ' : ' + geojson);
 			}
 		}
 	},
 
 	options: {
 		proxy: '', // Eventuel proxy du lien du flux GeoJSON
-		urlGeoJson: null, // Lien du flux GeoJSON
-		argsGeoJson: {}, // Eventuels arguments du lien du flux GeoJSON
+		urlGeoJSON: null, // Lien du flux GeoJSON
+		argsGeoJSON: {}, // Eventuels arguments du lien du flux GeoJSON
 
 		// On initialise quelques comportements suivant les propriétés
 		onEachFeature: function(feature, layer) {

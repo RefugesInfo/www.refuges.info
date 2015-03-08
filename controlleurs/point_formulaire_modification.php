@@ -1,22 +1,5 @@
 <?php // Modification/création de fiche point
 
-// Contient le code PHP de la page
-
-// 21/03/06 rff Création : mysql_free_result et script php unique sans inclusions html (html renvoyé au client par commande echo. Anciennes balises php enlevées
-// 21/03/06 rff : Insertion infos de session : utile pour gestion du cache & menu gestion
-// 21/03/06 rff : la table 'massifs' devient 'polygones' dans la base 'refuges'
-// 21/03/06 rff : Ajout date du jour par défaut ds 'dernière visite'
-// 15/04/07 jmb : ajout de "auteur", et suppr des tables. conforme XHTML 1
-// 06/10/07 sly : Formulaire dynamique selon le type de point à ajouter/modifier
-// 06/03/08 jmb : new version avec déco
-// 03/07/08 jmb : déplacement du include header a la fin
-// 19/10/08 sly : remplacement de auteur et id_auteur par l'utilisateur a avoir fait
-// 24/10/10 Dominique : Passage sur les cartes Openlayers
-// 20/12/10 Dominique : Retour en GoogleMap API V2
-// 15/04/11 Dominique : Passage en OL2.11
-// 28/05/12 Dominique : Utilisation des modeles
-
-
 require_once ("bdd.php");
 require_once ("point.php");
 require_once ("polygone.php");
@@ -267,7 +250,7 @@ if ( !empty($point->equivalent_places_matelas) )
 // Préparation de la $vue commune à chaque cas
 
 //$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
-$vue->java_lib_foot [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+$vue->java_lib_foot [] = $config['url_chemin_leaflet'].($config['debug']?'src/':'').'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
 $vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");

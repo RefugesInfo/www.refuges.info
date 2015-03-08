@@ -7,8 +7,7 @@
  * plugins/GeometryUtil/dist/leaflet.geometryutil.js
  * plugins/Snap/leaflet.snap.js
  *
- * <layer>.options.editSnapable = true : sert de référence de collage
- * Spécifications geoJson: http://geojson.org/geojson-spec.html
+ * Pour qu'une couche serve de référence de collage, ajouter l'option: <layer>.options.editSnapable = true
  */
 
 L.Control.PolylineEditor = L.Control.extend({
@@ -37,7 +36,7 @@ L.Control.PolylineEditor = L.Control.extend({
 
 			// On converti en *LineString pour pouvoir éditer les segments
 			switch (input.type) {
-				case 'MultiPolygon':
+				case 'MultiPolygon'://DCMM TODO: enlever les formats geoJSON
 					var c = input.coordinates;
 					input.coordinates = [];
 					for (i in c)
@@ -196,6 +195,7 @@ L.Control.PolylineEditor = L.Control.extend({
 	addEdit: function(layer) {
 		// On ajoute des appels à _createMarker pour ces couches
 		if (layer.editing) {
+			layer.options.editing = {}; //DCMM TODO voir pourquoi (nouvelle version de draw)
 			layer.editing._snapper = new L.Handler.MarkerSnap(this._map);
 			layer.editing.enable();
 			layer.options.editSnapable = true;
@@ -205,8 +205,6 @@ L.Control.PolylineEditor = L.Control.extend({
 			this.addEdit(layer._layers[l]);
 	}
 });
-
-// Surcharge de L.Edit.Poly
 
 L.Edit.Poly.addInitHook(function() {
 	// Destruction de ligne

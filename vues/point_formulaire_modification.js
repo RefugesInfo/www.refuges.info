@@ -9,16 +9,16 @@ var map, curseur, gps;
 
 window.addEventListener('load', function() {
 	var baseLayers = {
-		'Bing photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
 		'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
-                }),
-                'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
-                }),
-                'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
-                }),
+				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
+		}),
+		'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
+		}),
+		'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
+		}),
+		'Bing photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
 	};
 
 	map = new L.Map('carte-edit', {
@@ -26,11 +26,11 @@ window.addEventListener('load', function() {
 		center: new L.LatLng( <?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
 		zoom: 13,
 		layers: [
-			baseLayers['Bing photo'], // Le fond de carte visible
+			baseLayers['maps.refuges.info'], // Le fond de carte visible
 
-			new L.GeoJSON.ajax( // Les points d'intérêt WRI
+			new L.GeoJSON.Ajax( // Les points d'intérêt WRI
 				'<?=$config['sous_dossier_installation']?>api/bbox', {
-					argsGeoJson: {
+					argsGeoJSON: {
 						type_points: 'all'
 					},
 					bbox: true,
@@ -65,6 +65,7 @@ window.addEventListener('load', function() {
 		curseur.setLatLng(args.latlng);
 	});
 	map.addControl(new L.Control.Scale());
+	new L.Control.OSMGeocoder().addTo(map);
 });
 
 function affiche_et_set( el , affiche, valeur ) {

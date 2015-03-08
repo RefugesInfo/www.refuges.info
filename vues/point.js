@@ -27,7 +27,7 @@ if ($vue->mini_carte) {
 			'Italie': new L.TileLayer.WMS.IGM(),
 			'Photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
 		};
-		map = new L.Map.MultiCRS('vignette', {
+		map = new L.Map('vignette', {
 			fullscreenControl: true,
 			center: new L.LatLng(<?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
 			zoom: 13,
@@ -42,9 +42,9 @@ if ($vue->mini_carte) {
 						}),
 					}
 				),
-				new L.GeoJSON.ajax( // Les points d'intérêt WRI
+				new L.GeoJSON.Ajax( // Les points d'intérêt WRI
 					'<?=$config['sous_dossier_installation']?>api/bbox', {
-						argsGeoJson: {
+						argsGeoJSON: {
 							type_points: 'all'
 						},
 						bbox: true,
