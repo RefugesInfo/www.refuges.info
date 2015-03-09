@@ -73,8 +73,7 @@ var map,
 			}
 <?}else{?>
 			argsGeoJSON: {
-				massif: '<?=$vue->polygone->id_polygone?>',
-				type_geom: 'polylines'
+				massif: '<?=$vue->polygone->id_polygone?>'
 			},
 			style: function(feature) {
 				return {
