@@ -42,9 +42,11 @@ $conditions->limite=5;
 $conditions->avec_photo=True;
 $conditions->avec_infos_point=True;
 $commentaires_avec_photos_recentes=infos_commentaires($conditions);
+// ce re-parcours du tableau à pour but de rajouter le lien et le nom formaté, on pourrait sans doute s'en passer en mettant $vue->photos_recentes=$commentaires_avec_photos_recentes mais il faudrait
+// alors déporter ces deux actions dans la vue. Hésitation entre rangement et factorisation. sly 2015
 foreach ($commentaires_avec_photos_recentes as $commentaire_avec_photo_recente)
 {
-    $commentaire_avec_photo_recente->lien=lien_point($commentaire_avec_photo_recente)."#C$vignette->id_commentaire";
+    $commentaire_avec_photo_recente->lien=lien_point($commentaire_avec_photo_recente)."#C$commentaire_avec_photo_recente->id_commentaire";
     $commentaire_avec_photo_recente->nom=bbcode2html($commentaire_avec_photo_recente->nom);
     $vue->photos_recentes[]=$commentaire_avec_photo_recente;
 }
