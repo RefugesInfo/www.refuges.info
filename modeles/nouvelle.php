@@ -166,7 +166,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 if (count($commentaires_forum)>0)
                     foreach ( $commentaires_forum as $commentaire_forum)
                     {
-                        $news_array[$i]['lien']=$config['sous_dossier_installation']."forum/viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+                        $news_array[$i]['lien']="http://".$_SERVER['SERVER_NAME'].$config['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
                         $news_array[$i]['categorie']="Forum";
                         $news_array[$i]['titre']=$commentaire_forum->topic_title;
                         $news_array[$i]['date']=$commentaire_forum->date;
