@@ -214,16 +214,45 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
 // Cette fonction retourne un texte en bbcode à insérer par la suite dans les vues du site
 
 function texte_nouvelles($nouvelles) {
-  foreach($nouvelles as $key => $nouvelle) {
-    switch ($nouvelle['categorie']) {
-      case 'Forum':
-        $texte = "Sur le forum : [url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
-        break;
-      case 'Commentaire':
-        $texte = "Commentaire";
-        if ($nouvelle['photo'])
-          $texte .= " et photo";
-        if (isset($nouvelle['auteur'])) {
-          $texte .= " de ";
-          if (isset($nouvelle['lien_auteur']))
-            $texte .= "[url=".$nouvelle['lien_auteur']."]"
+    foreach($nouvelles as $key => $nouvelle) {
+        switch ($nouvelle['categorie']) {
+            case 'Forum':
+                $texte = "Sur le forum : [url=".$nouvelle['lien']."]".$nouvelle['titre']."[/url]";
+                break;
+            case 'Commentaire':
+                $texte = "Commentaire";
+                if ($nouvelle['photo'])
+                    $texte .= " et photo";
+                if (isset($nouvelle['auteur'])) {
+                    $texte .= " de ";
+                    if (isset($nouvelle['lien_auteur']))
+                        $texte .= "[url=".$nouvelle['lien_auteur']."]";
+                    $texte .= $nouvelle['auteur'];
+                    if (isset($nouvelle['lien_auteur']))
+                        $texte .= "[/url]";
+                }
+                $texte .= " sur [url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
+                if (isset($nouvelle['massif']))
+                    $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
+                break;
+            case 'Point':
+                $texte = "Ajout ".$nouvelle['partitif_point']." ".$nouvelle['type_point'];
+                if (isset($nouvelle['auteur'])) {
+                    $texte .= " par ";
+                    if (isset($nouvelle['lien_auteur']))
+                        $texte .= "[url=".$nouvelle['lien_auteur']."]";
+                    $texte .= $nouvelle['auteur'];
+                    if (isset($nouvelle['lien_auteur']))
+                        $texte .= "[/url]";
+                }
+                $texte .= " : ";
+                $texte .= "[url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
+                if (isset($nouvelle['massif']))
+                    $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
+                break;
+        }
+        $nouvelles[$key]['texte'] = $texte;
+    }
+    return $nouvelles;
+}
+?>
