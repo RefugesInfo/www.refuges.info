@@ -23,6 +23,7 @@ $rss .= "	<image>\r\n";
 $rss .= "		<url>http://$config[nom_hote]/mobile/images/icone.svg</url>\r\n";
 $rss .= "		<title>Refuges.info</title>\r\n";
 $rss .= "		<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "		<guid>http://$config[nom_hote]/</guid>\r\n";
 $rss .= "		<height>64</height>\r\n";
 $rss .= "		<width>64</width>\r\n";
 $rss .= "	</image>\r\n";
