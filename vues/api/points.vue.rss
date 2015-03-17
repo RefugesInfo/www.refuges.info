@@ -38,7 +38,7 @@ foreach ($points AS $point) {
 	$rss .= "	<item>\r\n";
 	$rss .= "		<title>$point->nom</title>\r\n";
 	$rss .= "		<link>$point->lien</link>\r\n";
-	$rss .= "		<pubDate>".$point->date['derniere_modif']." GMT</pubDate>\r\n";
+	$rss .= "		<pubDate>".$point->date['derniere_modif']."</pubDate>\r\n";
 	$rss .= "		<description><![CDATA[
 			<b>Type</b> : ".$point->type['valeur']."<br>\r\n";
 	if($req->detail == "complet")
