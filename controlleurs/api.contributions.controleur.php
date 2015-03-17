@@ -49,7 +49,7 @@ $val->type = array("commentaires", "points", "refuges", "forums");
 if(!in_array($req->format,$val->format))
     $req->format = "json";
 if(!in_array($req->format_texte,$val->format_texte))
-    $req->format = "bbcode";
+    $req->format_texte = "bbcode";
 // On vérifie que les types sont ok
 $temp = explode(",", $req->type);
 foreach ($temp as $type) {
