@@ -13,10 +13,11 @@ header("Cache-Control: max-age=$secondes_de_cache");
 
 
 $rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
-$rss .= "<rss version=\"2.0\">\r\n";
+$rss .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
 $rss .= "<channel>\r\n";
 $rss .= "	<title>Refuges.info</title>\r\n";
 $rss .= "	<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "	<atom:link href=\"http://$config[nom_hote]".htmlspecialchars($_SERVER["REQUEST_URI"])."\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
 $rss .= "	<description>$config[copyright_API]</description>\r\n";
 $rss .= "	<language>fr</language>\r\n";
 $rss .= "	<image>\r\n";
@@ -31,7 +32,8 @@ foreach ($news AS $nouvelle) {
 	$rss .= "	<item>\r\n";
 	$rss .= "		<title>$nouvelle[categorie] : $nouvelle[titre]</title>\r\n";
 	$rss .= "		<link>$nouvelle[lien]</link>\r\n";
-	$rss .= "		<pubDate>".date(r,$nouvelle['date'])." GMT</pubDate>\r\n";
+	$rss .= "		<guid>$nouvelle[lien]</guid>\r\n";
+	$rss .= "		<pubDate>".date(r,$nouvelle['date'])."</pubDate>\r\n";
 	$rss .= "		<description><![CDATA[
 			<b><big>$nouvelle[texte]</big></b><br>\r\n";
 	switch ($nouvelle['categorie']) {

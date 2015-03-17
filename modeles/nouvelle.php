@@ -173,15 +173,15 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 if (count($commentaires_forum)>0)
                     foreach ( $commentaires_forum as $commentaire_forum)
                     {
-                      if ($lien_locaux)
-                        $url_complete="";
-                      else
-                      $url_complete="http://".$config['nom_hote'];
-                      $news_array[$i]['lien']=$url_complete.$config['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
-                      $news_array[$i]['categorie']="Forum";
-                      $news_array[$i]['titre']=$commentaire_forum->topic_title;
-                      $news_array[$i]['date']=$commentaire_forum->date;
-                      $i++;
+                        if ($lien_locaux)
+                            $url_complete="";
+                        else
+                            $url_complete="http://".$config['nom_hote'];
+                        $news_array[$i]['lien']=$url_complete.$config['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+                        $news_array[$i]['categorie']="Forum";
+                        $news_array[$i]['titre']=$commentaire_forum->topic_title;
+                        $news_array[$i]['date']=$commentaire_forum->date;
+                        $i++;
                     }
                     break;
         }
@@ -226,33 +226,4 @@ function texte_nouvelles($nouvelles) {
         if (isset($nouvelle['auteur'])) {
           $texte .= " de ";
           if (isset($nouvelle['lien_auteur']))
-            $texte .= "[url=".$nouvelle['lien_auteur']."]";
-          $texte .= $nouvelle['auteur'];
-          if (isset($nouvelle['lien_auteur']))
-            $texte .= "[/url]";
-        }
-        $texte .= " sur [url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
-        if (isset($nouvelle['massif']))
-          $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
-        break;
-      case 'Point':
-        $texte = "Ajout ".$nouvelle['partitif_point']." ".$nouvelle['type_point'];
-        if (isset($nouvelle['auteur'])) {
-          $texte .= " par ";
-          if (isset($nouvelle['lien_auteur']))
-            $texte .= "[url=".$nouvelle['lien_auteur']."]";
-          $texte .= $nouvelle['auteur'];
-          if (isset($nouvelle['lien_auteur']))
-            $texte .= "[/url]";
-        }
-        $texte .= " : ";
-        $texte .= "[url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
-        if (isset($nouvelle['massif']))
-          $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
-        break;
-    }
-    $nouvelles[$key]['texte'] = $texte;
-  }
-  return $nouvelles;
-}
-?>
+            $texte .= "[url=".$nouvelle['lien_auteur']."]"

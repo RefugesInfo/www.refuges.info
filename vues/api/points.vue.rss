@@ -13,16 +13,18 @@ header("Cache-Control: max-age=$secondes_de_cache");
 
 
 $rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
-$rss .= "<rss version=\"2.0\">\r\n";
+$rss .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
 $rss .= "<channel>\r\n";
 $rss .= "	<title>Refuges.info</title>\r\n";
 $rss .= "	<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "	<atom:link href=\"http://$config[nom_hote]".htmlspecialchars($_SERVER["REQUEST_URI"])."\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
 $rss .= "	<description>$config[copyright_API]</description>\r\n";
 $rss .= "	<language>fr</language>\r\n";
 $rss .= "	<image>\r\n";
 $rss .= "		<url>http://$config[nom_hote]/mobile/images/icone.svg</url>\r\n";
 $rss .= "		<title>Refuges.info</title>\r\n";
 $rss .= "		<link>http://$config[nom_hote]/</link>\r\n";
+$rss .= "		<guid>http://$config[nom_hote]/</guid>\r\n";
 $rss .= "		<height>64</height>\r\n";
 $rss .= "		<width>64</width>\r\n";
 $rss .= "	</image>\r\n";
@@ -38,7 +40,7 @@ foreach ($points AS $point) {
 	$rss .= "	<item>\r\n";
 	$rss .= "		<title>$point->nom</title>\r\n";
 	$rss .= "		<link>$point->lien</link>\r\n";
-	$rss .= "		<pubDate>".$point->date['derniere_modif']." GMT</pubDate>\r\n";
+	$rss .= "		<pubDate>".$point->date['derniere_modif']."</pubDate>\r\n";
 	$rss .= "		<description><![CDATA[
 			<b>Type</b> : ".$point->type['valeur']."<br>\r\n";
 	if($req->detail == "complet")
