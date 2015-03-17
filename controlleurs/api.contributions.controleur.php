@@ -94,19 +94,19 @@ array_walk_recursive($news, 'updatebool2char'); // Remplace les False et True en
 
 switch ($req->format) {
     case 'json':
-        include('../vues/api/contributions.vue.json');
+        include($config['chemin_vues'].'api/contributions.vue.json');
         break;
     case 'xml':
-        include('../vues/api/contributions.vue.xml');
+        include($config['chemin_vues'].'api/contributions.vue.xml');
         break;
     case 'csv':
-        include('../vues/api/contributions.vue.csv');
+        include($config['chemin_vues'].'api/contributions.vue.csv');
         break;
     case 'rss':
-        include('../vues/api/contributions.vue.rss');
+        include($config['chemin_vues'].'api/contributions.vue.rss');
         break;
     default:
-        include('../vues/api/contributions.vue.json');
+        include($config['chemin_vues'].'api/contributions.vue.json');
         break;
 }
 
