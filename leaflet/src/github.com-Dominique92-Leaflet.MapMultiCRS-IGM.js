@@ -23,6 +23,8 @@ L.TileLayer.WMS.IGM = L.TileLayer.WMS.extend({
 	},
 
 	onZoom: function() {
+		if (!this._map)
+			return;
 		// Il y a 3 sources de cartes IGM pour des définitions bien précises
 		var np = {
 			url: 'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/',

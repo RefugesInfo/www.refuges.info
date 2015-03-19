@@ -39,11 +39,11 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 				this.options.argsGeoJSON['bbox'] = minll.lng + ',' + minll.lat + ',' + maxll.lng + ',' + maxll.lat;
 			}
 		}
-		var args = '';
+		this.args = '';
 		if (this.options.argsGeoJSON)
 			for (a in this.options.argsGeoJSON)
 				if (this.options.argsGeoJSON[a])
-					args += (args ? '&' : '?') + a + '=' + this.options.argsGeoJSON[a];
+					this.args += (this.args ? '&' : '?') + a + '=' + this.options.argsGeoJSON[a];
 
 		// On prépare (une fois) l'objet request
 		if (!this.ajaxRequest) {
@@ -64,7 +64,7 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 				e.target.status == 200)
 				e.target.context.redraw(e.target.responseText);
 		}
-		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJSON + args, true);
+		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJSON + this.args, true);
 		this.ajaxRequest.send(null);
 	},
 
@@ -79,7 +79,7 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 			eval('this.addData([' + geojson + '])');
 		} catch (e) {
 			if (e instanceof SyntaxError) {
-				alert('Error on ' + this.options.urlGeoJSON + ' : ' + geojson);
+				alert('Json syntax error on ' + this.options.urlGeoJSON + this.args + ' :\n' + geojson);
 			}
 		}
 	},
