@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014 Dominique Cavailhez
  * Allow to use layers with different projections on the same map
- * Such layer needs to be declared with layer.options.crs = L.CRS.EPSG****;
+ * Such layer needs to be declared with layer.options.crs = L.CRS.EPSG****; // default EPSG3857
  */
 
 L.Map.addInitHook(function() {

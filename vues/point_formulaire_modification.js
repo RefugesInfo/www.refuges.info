@@ -34,6 +34,7 @@ window.addEventListener('load', function() {
 						type_points: 'all'
 					},
 					bbox: true,
+					degroup: 12,
 					icon: function(feature) {
 						return {
 							url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',

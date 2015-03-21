@@ -12,6 +12,7 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 	initialize: function(urlGeoJSON, options) {
 		if (urlGeoJSON)
 			options.urlGeoJSON = urlGeoJSON;
+
 		// On initialise L.GeoJSON mais sans contenu puisqu'on ne l'obtiendra que plus tard par AJAX
 		L.GeoJSON.prototype.initialize.call(this, null, options);
 	},
@@ -78,10 +79,16 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 		try {
 			eval('this.addData([' + geojson + '])');
 		} catch (e) {
-			if (e instanceof SyntaxError) {
+			if (e instanceof SyntaxError)
 				alert('Json syntax error on ' + this.options.urlGeoJSON + this.args + ' :\n' + geojson);
-			}
 		}
+
+		// Référence le layer geojson et la position initiale de chacun de ses sous layers
+		for (i in this._layers)
+			L.extend(this._layers[i], {
+				_geojson: this,
+				_ll_init: this._layers[i]._latlng
+			});
 	},
 
 	options: {
@@ -106,8 +113,35 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 				}));
 			}
 
-			// Etiquette au survol
 			layer.on('mouseover mousemove', function(e) {
+				// Dégroupage des marqueurs trop prés au survol
+				if (this._geojson &&
+					this._geojson.options.degroup && // Pour les couches dont options.degroup = distance en nb de pixels
+					this._latlng.equals(this._ll_init) // On ne touche pas si déjà shifté
+				) {
+					var xysi = this._map.latLngToLayerPoint(this._ll_init), // XY point survolé
+						dm = this._geojson.options.degroup;
+					for (p in this._geojson._layers) {
+						var point = this._geojson._layers[p]; // Les autres points
+						if (point._leaflet_id != this._leaflet_id) {
+							var xypi = this._map.latLngToLayerPoint(point._ll_init), // XY autre point
+								dp = xypi.distanceTo(xysi); // Distance du point p au point survolé
+							if (!dp) { // S'il est confondu, on ajoute simplement l'écart voulu vers la droite // TODO: si 3 points sont confondus !
+								xypi.x += dm;
+								point.setLatLng(this._map.layerPointToLatLng(xypi));
+							} else
+								point.setLatLng(
+									dp > dm ? point._ll_init // Si loin, on le remet à sa position initiale
+									: [ // Sinon, on ajoute au décalage
+										this._ll_init.lat + (point._ll_init.lat - this._ll_init.lat) * dm / dp,
+										this._ll_init.lng + (point._ll_init.lng - this._ll_init.lng) * dm / dp
+									]
+								);
+						}
+					}
+				}
+
+				// Etiquette au survol
 				var hover_bubble = new L.Rrose({
 						offset: new L.Point(-1, -3), // Evite que le curseur se retrouve sur le popup
 						closeButton: false,
@@ -115,11 +149,12 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 					})
 					.setContent(feature.properties.nom)
 					.setLatLng(e.latlng)
-					.openOn(e.target._map);
+					.openOn(this._map);
 			});
-			layer.on('mouseout', function(e) {
-				if (e.target._map)
-					e.target._map.closePopup()
+			layer.on('mouseout', function() {
+				// On retire l'étiquette au survol
+				if (this._map)
+					this._map.closePopup()
 			});
 
 			// Si le feature retourné par la requette ajax a une propriété url:
