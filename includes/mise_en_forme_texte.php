@@ -110,7 +110,7 @@ else
 // il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
 // au format http://truc ou https://bidule ou www.
 
-$urlauto_pattern = "/([> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.]+\w+)([\S< :\.;,\n\*\)\]]|\r\n)/i";
+$urlauto_pattern = "/([> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.-]+\w+)([\S< :\.;,\n\*\)\]]|\r\n)/i";
 $urlauto_replace = "$1[url=$2]$2[/url]$4";
 $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
 
