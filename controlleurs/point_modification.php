@@ -51,6 +51,8 @@ switch( $_REQUEST["action"] )
             break; // on sort, on ne passe pas à "modifier" qui est l'action groupée
         }
         $point=preparation_point();
+        if (isset($_SESSION['id_utilisateur']))
+            $point->id_createur=isset($_SESSION['id_utilisateur']);
         $retour = modification_ajout_point($point);
         gestion_retour($retour,$vue);
         $vue->message="Le point a bien été ajouté";

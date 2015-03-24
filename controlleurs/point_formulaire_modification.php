@@ -87,6 +87,8 @@ elseif ( isset($_REQUEST["id_point_type"]))
     
     // on force l'id du point à vide histoire de ne pas modifier le modèle
     unset($point->id_point);
+    // et pareil pour le créateur du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
+    unset($point->id_createur);
     
     // cosmétique
     $icone="&amp;iconecenter=".$point->nom_icone;
@@ -102,12 +104,6 @@ elseif ( isset($_REQUEST["id_point_type"]))
         $vue->etapes->guest = new stdClass;
         $vue->etapes->guest->titre = "Non connecté ?";
         $vue->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
-    }
-    else
-    {
-        $vue->auteur_modification=$_SESSION['login_utilisateur']; // sert a quoi ?
-        $vue->champs->invisibles->id_createur = new stdClass;
-        $vue->champs->invisibles->id_createur->valeur = $_SESSION['id_utilisateur'];
     }
     
     $vue->serie = $config['fournisseurs_fond_carte']['Saisie-création'];    

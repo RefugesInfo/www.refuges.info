@@ -100,7 +100,7 @@
                 </a>
             </label>
 
-			<?php if ($_SESSION['niveau_moderation']>=1) {?>
+            <?php if ($_SESSION['niveau_moderation']>=1 and $vue->point->id_point) {?>
 				<label>Créateur de cette fiche: ID =
 					<input size="4" type="text" name="id_createur" value="<?=$vue->point->id_createur?>" />
 				</label>
@@ -191,6 +191,7 @@
                 <?php } ?>
                 
                 <?php if (!isset($_SESSION['id_utilisateur'])) { ?>
+                <br style="clear: both;">
                 <h4>Questions pour les contributeurs anonymes</h4>
                 <fieldset class="booleen">
                     <legend>Votre nom ou pseudo (facultatif) :</legend>
