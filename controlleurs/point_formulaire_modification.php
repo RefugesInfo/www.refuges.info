@@ -109,37 +109,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
     $vue->serie = $config['fournisseurs_fond_carte']['Saisie-création'];    
 
 }
-// 3) on veut dupliquer l'actuel mais garder les mêmes coordonnées
-// sly 08/2014 : Ce code est inactif car inutilisé par l'interface, il marchait en 2012, mais maintenant... mystère
-elseif ( isset($_REQUEST["dupliquer"]))
-{
-    $point=infos_point($_REQUEST["dupliquer"]);
-    
-    $vue->etapes->unsurdeux = new stdClass;
-    $vue->etapes->unsurdeux->titre = "Etape 1 / 2";
-    $vue->etapes->unsurdeux->texte = "(Opération en deux étapes)";
-    
-    // on force l'id du point à vide histoire de ne pas modifier la copie
-    unset($point->id_point);
-    unset($point->nom);
-    unset($point->proprio);
-    unset($point->remark);
-    unset($point->id_point_type);
-    unset($point->article_partitif_point_type); 
-    unset($point->nom_type);
-    
-    $vue->champs->invisibles->id_point_gps = new stdClass;
-    $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
-    
-    $vue->champs->boutons->dupliquer = new stdClass;
-    $vue->champs->boutons->dupliquer->nom = "Dupliquer";
-    $vue->champs->boutons->dupliquer->type = "submit";
-    $vue->champs->boutons->dupliquer->valeur = "Ajouter";
-    $vue->champs->boutons->dupliquer->label = "Copie avec coordonnées identiques";
-
-    $vue->serie = $config['fournisseurs_fond_carte']['Saisie-modification'];    
-}
-// 4) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
+// 3) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
 {    
     $vue->type="page_simple";
