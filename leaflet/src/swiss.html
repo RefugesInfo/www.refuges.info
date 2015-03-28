@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Page de test acces à SwissTOPO</title>
+        <link rel="stylesheet" href="http://www.procrastinatio.org/examples/style.css" type="text/css">
+        <link href='http://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
+         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+        <!--[if lt IE 9]>
+            <link rel="stylesheet" href="http://www.procrastinatio.org/examples/lib/leaflet/leaflet.ie.css"/>
+        <![endif]-->
+
+    </head>
+    <body class="examples" onload="init()">
+        <h1 id="title">Leaflet with geo.admin.ch tiles (II)</h1>
+        <div id="tags">leaflet, projection,wtms,geoadmin,geojson,vector</div>
+        <div class="content">
+		<p>Based on: <a href="http://www.procrastinatio.org/examples/leaflet-projection-v2.html">http://www.procrastinatio.org/examples/leaflet-projection-v2.html</a></p>
+        <p id="shortdesc">
+            Using GeoAdmin WMTS tiles with the popular Leaflet library (II)</p>
+        <div id="map" class="smallmap"></div>
+        <div id="coords" style="height: 1em"></div>
+        <div id="docs">
+            <p>Now using the <a href="https://github.com/kartena/Proj4Leaflet/" target="_blank">Proj4Leaflet</a> library it is 
+            even easier to display geo.admin.ch WMTS tiles into the <a href="http://leafletjs.com/" target="_blank">Leaflet</a> framework, which is normally sperical mercator.</p>
+            <p>Using Leaflet v0.5, we can now display GeoJSON data, in this case, national parks, with nice popup if you click on theme
+            features</p>
+            <br />
+            <p>View the <a href="http://www.procrastinatio.org/examples/leaflet-projection-v2.js" target="_blank">leaflet-projection-v2.js</a> source to see how this is done.</p>
+        </div>
+        </div> 
+         <script src="http://www.procrastinatio.org/examples/data/paerke.js"></script>
+         <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js" type="text/javascript"></script>
+         <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js" type="text/javascript"> </script>
+    
+         <script src="http://www.procrastinatio.org/examples/lib/leaflet-0.5.js"></script>
+       
+         <script src="http://www.procrastinatio.org/examples/lib/kartena-proj4leaflets.js"></script>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        
+        <script src="http://www.procrastinatio.org/examples/leaflet-projection-v2.js"></script>
+        <script src="http://www.procrastinatio.org/examples/lib/_stats.js" type="text/javascript"></script>
+    </body>
+</html>
