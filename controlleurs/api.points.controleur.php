@@ -105,10 +105,8 @@ if(!in_array($req->detail,$val->detail)) {
 if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
     switch ($req->page) {
         case 'bbox':
-            $req->nb_points = 121;
-            break;
         case 'massif':
-            $req->nb_points = 121;
+            $req->nb_points = 250;
             break;
         case 'point':
             $req->nb_points = 1;
