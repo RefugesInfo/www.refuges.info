@@ -4,6 +4,10 @@
  (c) 2010-2011, CloudMade
 */
 (function (window, document, undefined) {
+
+if (navigator.userAgent.search (/arach|bot|crawl|curl|index|partner|rss|seek|search|scoot|spider|spyder|yandex/i) != -1) //GEO
+	return; //GEO Ne lance pas si l'agent est un robot
+
 var oldL = window.L,
     L = {};
 

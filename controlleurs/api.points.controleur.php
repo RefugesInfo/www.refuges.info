@@ -183,13 +183,14 @@ foreach ($temp as $massif) {
 
 $params = new stdClass();
 
+if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à postgis
+    list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
+    $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
+}
+unset($ouest,$sud,$est,$nord);
+
 switch ($req->page) {
     case 'bbox':
-        if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à postgis
-            list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
-            $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
-        }
-        unset($ouest,$sud,$est,$nord);
         $params->pas_les_points_caches=1;
         $params->ordre="point_type.importance DESC";
         break;
