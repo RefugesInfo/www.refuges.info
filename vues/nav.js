@@ -111,6 +111,7 @@ var map,
 				type_points: 'all',
 				massif: arg_massifs
 			},
+			bbox: true,
 			url: function(feature) {
 				return '<?=$config['sous_dossier_installation']?>point/' + feature.properties.id;
 			},
