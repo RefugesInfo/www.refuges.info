@@ -164,8 +164,10 @@ else {
 
 // On vérifie que la bbox est correcte
 $temp = explode(",", $req->bbox);
-if($req->page == "bbox" &&
-    !((count($temp)==4 &&
+if($req->bbox=="") {
+    $req->bbox="world";
+}
+else if(!((count($temp)==4 &&
     is_numeric($temp[0]) &&
     is_numeric($temp[1]) &&
     is_numeric($temp[2]) &&
@@ -173,6 +175,7 @@ if($req->page == "bbox" &&
     $req->bbox == "world")) {
     exit ("Error : wrong bbox parameter");
 }
+
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
 foreach ($temp as $massif) {
