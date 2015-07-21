@@ -59,8 +59,8 @@ var map,
 				type_polygon: 1,
 				intersection: '<?=$vue->polygone->id_polygone?>'
 			},
-			url: function(feature) {
-				return feature.properties.lien;
+			url: function(target) {
+				return target.feature.properties.lien;
 			},
 			style: function(feature) {
 				return {
@@ -94,8 +94,8 @@ var map,
 			},
 			bbox: true,
 			degroup: 12,
-			url: function(feature) {
-				return '<?=$config['sous_dossier_installation']?>point/' + feature.properties.id;
+			url: function(target) {
+				return '<?=$config['sous_dossier_installation']?>point/' + target.feature.properties.id;
 			},
 			icon: function(feature) {
 				return {
@@ -112,8 +112,8 @@ var map,
 				massif: arg_massifs
 			},
 			bbox: true,
-			url: function(feature) {
-				return '<?=$config['sous_dossier_installation']?>point/' + feature.properties.id;
+			url: function(target) {
+				return '<?=$config['sous_dossier_installation']?>point/' + target.feature.properties.id;
 			},
 			icon: function(feature) {
 				return {

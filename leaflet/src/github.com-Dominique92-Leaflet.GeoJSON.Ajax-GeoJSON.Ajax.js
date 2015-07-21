@@ -147,19 +147,31 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 						closeButton: false,
 						autoPan: false
 					})
-					.setContent(feature.properties.nom)
+					.setContent(feature.properties.nom) // TODO: ce serait préférable de mettre nom mais ruprure d'interface WRI
 					.setLatLng(e.latlng)
 					.openOn(this._map);
 			});
-			layer.on('mouseout', function() {
-				// On retire l'étiquette au survol
+
+			if (typeof this.hover == 'function')//TODO voir pourquoi pas if (typeof e.target._options == 'object'
+				// Action au survol
+				layer.on('mouseover', function(e) {
+					e.target._options.hover(e.target, 'in');
+			});
+
+			layer.on('mouseout', function(e) {
+				// On retire l'étiquette à la fin du survol
 				if (this._map)
-					this._map.closePopup()
+					this._map.closePopup();
+
+				// Action à la fin du survol
+				if (typeof e.target._options == 'object' &&
+					typeof e.target._options.hover == 'function')
+					e.target._options.hover(e.target, 'out');
 			});
 
 			// Si le feature retourné par la requette ajax a une propriété url:
 			if (typeof this.url == 'function') {
-				var url = this.url(feature);
+				var url = this.url(layer);
 				if (url)
 					layer.on('click', function(e) { // Va sur la page quand on clique sur le marqueur
 						if (e.originalEvent.shiftKey || e.originalEvent.ctrlKey) // Shift + Click lance le lien dans une nouvelle fenêtre

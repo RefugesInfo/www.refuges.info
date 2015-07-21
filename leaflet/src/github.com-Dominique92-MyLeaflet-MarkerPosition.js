@@ -4,37 +4,37 @@
  */
 
 /*
- * On commence par populer les classes L.CRS avec les projections manquantes
- * Et les projections avec les attributs:
- *	nom
- *	title (titre devant l'affichage d'une coordonnée)
- *	bounds (de validité de la projection)
- *	format (decimal -> chaine spécifique à un format)
- *	unformat (chaine spécifique à un format -> decimal)
+L.CRS.* = {
+	// leafler-src.js / L.CRS
+	latLngToPoint: function
+	pointToLatLng: function 
+	project: function (latlng)
+	scale: function (zoom)
+
+	// leafler-src.js / L.CRS.*
+	code: 'EPSG:3857'
+	projection: L.Projection.SphericalMercator,
+	transformation: new L.Transformation(...
+
+	// MarkerPosition.js
+	name: 'Deg Min Sec',
+	title (titre devant l'affichage d'une coordonnée)
+	bounds (de validité de la projection)
+	format (decimal -> chaine spécifique à un format)
+	unformat (chaine spécifique à un format -> decimal)
+}
  */
- 
+
 // Quelques formats d'affichage de la projection de base EPSG4326
 L.CRS.decimal = L.extend({}, L.CRS.EPSG4326, {
-	nom: 'Degrés décimaux',
-	title: {
-		lng: 'Longitude',
-		lat: 'Latitude'
-	},
+	name: 'Degrés décimaux',
 	format: function(v) {
 		return Math.round(v * 100000) / 100000;
-	},
-	unformat: function(v) {
-		v = v.replace(/\s/g, ''); // Juste enlever les séparateurs de miliers
-		v = v.replace(/,/g, '.'); // Au cas où il y aurait une , à la place du .
-		return v.length ? v : 0;
-	},
-	unproject: function(latlng) {
-		return this.projection.unproject(new L.Point(latlng.lng, latlng.lat));
 	}
 });
 
 L.CRS.degminsec = L.extend({}, L.CRS.decimal, {
-	nom: 'Deg Min Sec',
+	name: 'Deg Min Sec',
 	format: function(v) {
 		var d = Math.floor(Math.abs(v));
 		var mf = (Math.abs(v) - d) * 60;
@@ -51,14 +51,17 @@ L.CRS.degminsec = L.extend({}, L.CRS.decimal, {
 		return (v < 0 ? '-' : '') + d + '°' + (m < 10 ? '0' : '') + m + "'" + (s < 10 ? '0' : '') + s + '"';
 	},
 	unformat: function(v) {
-		va = L.CRS.decimal.unformat(v.replace(/-/g, '')) + '°0°';
+		va = '0' + v
+			.replace(/\s/g, '') // On purge les blancs
+			.replace(/,/g, '.') // Au cas où il y aurait une , à la place du .
+			.replace(/-/g, '') + '°0°';
 		vs = va.replace(/'|"/g, '°').split('°');
 		return (v[0] == '-' ? -1 : 1) * (parseFloat(vs[0]) + parseFloat(0 + vs[1]) / 60 + parseFloat(0 + vs[2]) / 3600);
 	}
 });
 
 L.CRS.degmin = L.extend({}, L.CRS.degminsec, {
-	nom: 'Deg Min',
+	name: 'Deg Min',
 	format: function(v) {
 		var d = Math.floor(Math.abs(v));
 		var m = Math.round((Math.abs(v) - d) * 60 * 1000) / 1000;
@@ -72,41 +75,24 @@ L.CRS.degmin = L.extend({}, L.CRS.degminsec, {
 
 // Les projections UTM
 for (var u = 28; u <= 35; u++)
-	L.CRS['EPSG326' + u] = L.extend({},
-		L.CRS.decimal, // On récupère les fonctions de base
-		new L.Proj.CRS('EPSG:326' + u, '+proj=utm +zone=' + u + ' +ellps=WGS84 +datum=WGS84 +units=m +no_defs'), {
+	L.CRS['EPSG326' + u] = L.extend(
+		new L.Proj.CRS(
+			'EPSG:326' + u,
+			'+proj=utm +zone=' + u + ' +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+		), {
 			bounds: L.bounds([6 * u - 186, 0], [6 * u - 180, 84]),
-			nom: 'UTM ' + u + 'N',
-			format: function(v) { // Prend la partie entière et insére un blanc avant les milliers
-				if (v < 1000)
-					return Math.round(v);
-				var mm = Math.floor(v / 1000000);
-				var m = Math.floor((v - mm * 1000000) / 1000);
-				var u = Math.round(v - mm * 1000000 - m * 1000);
-				if (u >= 1000) {
-					m++;
-					u -= 1000;
-				}
-				if (m >= 1000) {
-					mm++;
-					m -= 1000;
-				}
-				return (mm == 0 ? '' : mm + ' ') + (mm + m == 0 ? '' : (m < 100 ? '0' : '') + (m < 10 ? '0' : '') + m + ' ') + (u < 100 ? '0' : '') + (u < 10 ? '0' : '') + u;
-			},
-			unformat: L.CRS.decimal.unformat
+			name: 'UTM ' + u + 'N'
 		}
 	);
-L.CRS.EPSG32630.nom += ' (France ouest)';
-L.CRS.EPSG32631.nom += ' (France centre)';
-L.CRS.EPSG32632.nom += ' (France est)';
-L.CRS.EPSG32633.nom += ' (Autriche)';
+L.CRS.EPSG32630.name += ' (France ouest)';
+L.CRS.EPSG32631.name += ' (France centre)';
+L.CRS.EPSG32632.name += ' (France est)';
+L.CRS.EPSG32633.name += ' (Autriche)';
 
-/*
- * Et maintenant, le contrôle lui même
- */
+// Et maintenant, le contrôle lui même
 L.Marker.Position = L.Marker.extend({
 	options: {
-		projectionType: 'decimal',
+		projectionType: 'degminsec',
 
 		// Définition des id (= "prefixe+prefixeId+idll") des champs d'affichage et saisie
 		prefixe: '', // Permet de gérer plusieurs curseurs
@@ -161,8 +147,38 @@ L.Marker.Position = L.Marker.extend({
 
 	// Affiche la position du curseur dans les éléments DOM
 	affiche: function(coord, val) {
-		var proj = L.CRS[this.options.projectionType];
-		var pp = proj.project(this._latlng);
+		var proj = L.extend(
+			{ // Valeurs par défaut
+				title: {
+					lng: 'Longitude',
+					lat: 'Latitude'
+				},
+				format: function(v) { // Prend la partie entière et insére un blanc avant les milliers
+					if (v < 1000)
+						return Math.round(v);
+					var mm = Math.floor(v / 1000000);
+					var m = Math.floor((v - mm * 1000000) / 1000);
+					var u = Math.round(v - mm * 1000000 - m * 1000);
+					if (u >= 1000) {
+						m++;
+						u -= 1000;
+					}
+					if (m >= 1000) {
+						mm++;
+						m -= 1000;
+					}
+					return (mm == 0 ? '' : mm + ' ') + (mm + m == 0 ? '' : (m < 100 ? '0' : '') + (m < 10 ? '0' : '') + m + ' ') + (u < 100 ? '0' : '') + (u < 10 ? '0' : '') + u;
+				},
+				unformat: function(v) {
+					return '0' + v
+						.replace(/\s/g, '') // Juste enlever les séparateurs de miliers
+						.replace(/,/g, '.'); // Au cas où il y aurait une , à la place du .
+				}
+			},
+			L.CRS[this.options.projectionType]
+		);
+
+		var pp = proj.projection.project(this._latlng);
 		var ll = {
 			lng: pp.x,
 			lat: pp.y
@@ -171,7 +187,7 @@ L.Marker.Position = L.Marker.extend({
 		// Si changement de position: coord = lat | lng / val = valeur à assigner
 		if (coord) {
 			ll[coord] = proj.unformat(val);
-			this._latlng = proj.unproject(ll);
+			this._latlng = proj.projection.unproject(new L.Point(ll.lng, ll.lat));
 			this.setLatLng(this._latlng);
 		}
 		for (var l in this.options.idll) {
@@ -192,16 +208,17 @@ L.Marker.Position = L.Marker.extend({
 				this.selectprj.removeChild(this.selectprj.firstChild);
 
 			// On initialise la liste de séléction avec les projections disponibles pour ce point
+			var centre = new L.Point(this._latlng.lng, this._latlng.lat);
 			for (c in L.CRS)
 				if (L.CRS[c] &&
-					L.CRS[c].nom && (!L.CRS[c].bounds || // On affiche les projections qui n'ont pas de limite
-						L.CRS[c].bounds.contains(new L.Point(this._latlng.lng, this._latlng.lat))
+					L.CRS[c].name && (!L.CRS[c].bounds || // On affiche les projections qui n'ont pas de limite
+						L.CRS[c].bounds.contains(centre) // Ou celles qui sont dans les limite
 					)) {
 					var option = document.createElement('option');
 					option.value = c;
 					if (c == this.options.projectionType)
 						option.selected = 'selected';
-					option.appendChild(document.createTextNode(L.CRS[c].nom));
+					option.appendChild(document.createTextNode(L.CRS[c].name));
 					this.selectprj.appendChild(option);
 				}
 			this.options.projectionType = this.selectprj.value; // Permet de récupérer la projection si la position est sortie de la zone de validité

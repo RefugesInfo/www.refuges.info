@@ -32,7 +32,7 @@ var toGeoJSON = (function() {
     // get the content of a text node, if any
     function nodeVal(x) {
         if (x) { norm(x); }
-        return (x && x.firstChild && x.firstChild.nodeValue) || '';
+        return (x && x.textContent) || '';
     }
     // get one coordinate from a coordinate array, if any
     function coord1(v) { return numarray(v.replace(removeSpace, '').split(',')); }
@@ -50,8 +50,14 @@ var toGeoJSON = (function() {
             ele = get1(x, 'ele'),
             // handle namespaced attribute in browser
             heartRate = get1(x, 'gpxtpx:hr') || get1(x, 'hr'),
-            time = get1(x, 'time');
-        if (ele) { ll.push(parseFloat(nodeVal(ele))); }
+            time = get1(x, 'time'),
+            e;
+        if (ele) {
+            e = parseFloat(nodeVal(ele));
+            if (!isNaN(e)) {
+              ll.push(e);
+            }
+        }
         return {
             coordinates: ll,
             time: time ? nodeVal(time) : null,
@@ -69,6 +75,7 @@ var toGeoJSON = (function() {
 
     var serializer;
     if (typeof XMLSerializer !== 'undefined') {
+        /* istanbul ignore next */
         serializer = new XMLSerializer();
     // only require xmldom in a node environment
     } else if (typeof exports === 'object' && typeof process === 'object' && !process.browser) {
@@ -310,10 +317,9 @@ var toGeoJSON = (function() {
                     properties: getProperties(node),
                     geometry: {
                         type: 'LineString',
-                        coordinates: line
+                        coordinates: line.line
                     }
                 };
-                if (line.times.length) routeObj.geometry.times = line.times;
                 return routeObj;
             }
             function getPoint(node) {

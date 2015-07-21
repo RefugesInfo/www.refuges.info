@@ -5,7 +5,7 @@
 */
 (function (window, document, undefined) {
 
-if (navigator.userAgent.search (/arach|bot|crawl|curl|index|partner|rss|seek|search|scoot|spider|spyder|yandex/i) != -1) //GEO
+if (navigator.userAgent.search (/arach|archiver|bot|crawl|curl|factory|index|partner|rss|seek|search|semantic|scoot|spider|spyder|yandex/i) != -1) //GEO
 	return; //GEO Ne lance pas si l'agent est un robot
 
 var oldL = window.L,

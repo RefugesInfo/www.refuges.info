@@ -17,8 +17,8 @@ window.addEventListener('load', function() {
 						type_polygon: 1
 					},
 					bbox: true, // Optimise la gestion des couleurs
-					url: function(feature) {
-						return feature.properties.lien;
+					url: function(target) {
+						return target.feature.properties.lien;
 					},
 					style: function(feature) {
 						return {

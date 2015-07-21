@@ -49,8 +49,8 @@ if ($vue->mini_carte) {
 						},
 						bbox: true,
 						degroup: 12,
-						url: function(feature) {
-							return '<?=$config['sous_dossier_installation']?>point/' + feature.properties.id;
+						url: function(target) {
+							return '<?=$config['sous_dossier_installation']?>point/' + target.feature.properties.id;
 						},
 						icon: function(feature) {
 							return {

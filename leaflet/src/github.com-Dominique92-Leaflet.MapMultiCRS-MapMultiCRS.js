@@ -4,6 +4,11 @@
  * Such layer needs to be declared with layer.options.crs = L.CRS.EPSG****; // default EPSG3857
  */
 
+/*
+ * Based on layer.options.crs = L.CRS.EPSG...
+ * If none, EPSG3857 is assumed
+ */
+
 L.Map.addInitHook(function() {
 	// We get CRS of initial layer if any
 	for (l in this.options.layers)
@@ -19,6 +24,10 @@ L.Map.addInitHook(function() {
 L.Map.include({
 	// Change map CRS
 	setCRS: function(crs) {
+		if (!crs) // Défault
+			crs = L.CRS.EPSG3857;
+
+		// We do nothing if we already use this CRS
 		if (this.options.crs == crs)
 			return;
 
@@ -27,7 +36,7 @@ L.Map.include({
 			center = this.getCenter();
 
 		// We setup the map Coordinate Reference with the layer CRS
-		this.options.crs = crs ? crs : L.CRS.EPSG3857;
+		this.options.crs = crs;
 
 		// We search the new CRS zoom closest to the previous
 		var nw = bounds.getNorthWest(),
