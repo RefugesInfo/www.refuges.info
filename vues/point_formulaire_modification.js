@@ -49,6 +49,7 @@ window.addEventListener('load', function() {
 
 			curseur = new L.Marker.Position( // Le pointeur à déplacer
 				new L.LatLng(<?=$vue->point->latitude?>, <?=$vue->point->longitude?>), {
+					projectionType: 'decimal',
 					prefixe: 'curseur-',
 					draggable: true,
 					riseOnHover: true, // The marker will get on top of others when you hover the mouse over it.
