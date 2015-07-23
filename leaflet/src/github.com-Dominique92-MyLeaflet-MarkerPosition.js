@@ -92,7 +92,7 @@ L.CRS.EPSG32633.name += ' (Autriche)';
 // Et maintenant, le contrôle lui même
 L.Marker.Position = L.Marker.extend({
 	options: {
-		projectionType: 'degminsec',
+		projectionType: 'decimal',
 
 		// Définition des id (= "prefixe+prefixeId+idll") des champs d'affichage et saisie
 		prefixe: '', // Permet de gérer plusieurs curseurs
