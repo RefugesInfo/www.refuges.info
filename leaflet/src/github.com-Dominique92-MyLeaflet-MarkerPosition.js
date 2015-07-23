@@ -170,9 +170,12 @@ L.Marker.Position = L.Marker.extend({
 					return (mm == 0 ? '' : mm + ' ') + (mm + m == 0 ? '' : (m < 100 ? '0' : '') + (m < 10 ? '0' : '') + m + ' ') + (u < 100 ? '0' : '') + (u < 10 ? '0' : '') + u;
 				},
 				unformat: function(v) {
-					return '0' + v
-						.replace(/\s/g, '') // Juste enlever les séparateurs de miliers
-						.replace(/,/g, '.'); // Au cas où il y aurait une , à la place du .
+					if (!v)
+						return 0; // Cas du champ vide
+					else
+						return v
+							.replace(/\s/g, '') // Juste enlever les séparateurs de miliers
+							.replace(/,/g, '.'); // Au cas où il y aurait une , à la place du .
 				}
 			},
 			L.CRS[this.options.projectionType]

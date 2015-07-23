@@ -12,6 +12,9 @@ window.addEventListener('load', function() {
 		'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
 		}),
+		'OpenStreetMap-FR': L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
+		}),
 		'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
 		}),
