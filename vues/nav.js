@@ -108,6 +108,59 @@ var map,
 		}
 	),
 
+// Serveurs externes
+	poiPRC = new L.GeoJSON.Ajax(
+		'http://chemineur.fr/prod/chem/json.php', {
+			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
+			argsGeoJSON: {
+				site: 'prc',
+			},
+			degroup: 12,
+			bbox: true,
+			url: function(target) {
+				return 'http://www.pyrenees-refuges.com/fr/affiche.php?numenr=' + target.feature.properties.id;
+			},
+			icon: function(feature) {
+				return {
+					url: 'http://chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+				}
+			}
+		}
+	),
+	poiC2C = new L.GeoJSON.Ajax(
+		'http://chemineur.fr/prod/chem/json.php', {
+			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
+			argsGeoJSON: {
+				site: 'c2c',
+			},
+			degroup: 12,
+			bbox: true,
+			url: function(target) {
+				return 'http://www.camptocamp.org/huts/' + target.feature.properties.id;
+			},
+			icon: function(feature) {
+				return {
+					url: 'http://chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+				}
+			}
+		}
+	),
+	poiCHEM = new L.GeoJSON.Ajax(
+		'http://chemineur.fr/prod/chem/json.php', {
+			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
+			degroup: 12,
+			bbox: true,
+			url: function(target) {
+				return 'http://chemineur.fr/point/' + target.feature.properties.id;
+			},
+			icon: function(feature) {
+				return {
+					url: 'http://chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+				}
+			}
+		}
+	),
+
 	poiMassif = new L.GeoJSON.Ajax( // Les points d'intérêt WRI pour 1 massif
 		'<?=$config['sous_dossier_installation']?>api/massif', {
 			argsGeoJSON: {
@@ -205,4 +258,11 @@ function maj_carte () {
 				type_points: listePoints,
 				massif: arg_massifs
 	});
+}
+/*************************************************************************************************************************************/
+function couche_externe(e,l) {
+	if(e.checked)
+		map.addLayer(l);
+	else
+		map.removeLayer(l);
 }

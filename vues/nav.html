@@ -79,11 +79,44 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 		</fieldset>
 <?}?>
 
-		<!-- garde les coordonnee de la BBOX sous le coude pour l'export
-		<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$vue->polygone->sud?>" /></p>
-		<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$vue->polygone->nord?>" /></p>
-		<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
-		<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
+		<fieldset>
+			<legend>Autres sites</legend>
+			<ul>
+				<li>
+					<label>
+						<input
+							onclick="couche_externe(this, poiPRC)"
+							type="checkbox"
+						/>
+						<a href="http://www.pyrenees-refuges.com/" title="Cocher pour voir les points / cliquer 'Pyrénées refuges' pour voir le site">Pyrénées refuges</a>
+					</label>
+				</li>
+				<li>
+					<label>
+						<input
+							onclick="couche_externe(this, poiC2C)"
+							type="checkbox"
+						/>
+						<a href="http://www.camptocamp.org/" title="Cocher pour voir les points / cliquer 'Camp to Camp' pour voir le site">Camp to Camp</a>
+					</label>
+				</li>
+				<li>
+					<label>
+						<input
+							onclick="couche_externe(this, poiCHEM)"
+							type="checkbox"
+						/>
+						<a href="http://chemineur.fr/" title="Cocher pour voir les points / cliquer 'Chemineur' pour voir le site">Chemineur</a>
+					</label>
+				</li>
+			</ul>
+		</fieldset>
+
+<!-- garde les coordonnee de la BBOX sous le coude pour l'export
+<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$vue->polygone->sud?>" /></p>
+<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$vue->polygone->nord?>" /></p>
+<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
+<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
  -->
 
 <?php if ( !$vue->mode_affichage && $_SESSION['niveau_moderation']>=1 ) {?>
