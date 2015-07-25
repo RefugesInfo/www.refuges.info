@@ -35,6 +35,8 @@ switch ($purl ['host']) // Liste des serveurs autorisés
     case 'www.refuges.info':
     case 'dom.refuges.info':
     case 'chemineur.fr':
+    case 'v2.chemineur.fr':
+    case 'v3.chemineur.fr':
     case 'wmts.geo.admin.ch':
         // C'est bon. On va chercher le contenu et on l'affiche
 

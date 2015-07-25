@@ -110,7 +110,7 @@ var map,
 
 // Serveurs externes
 	poiPRC = new L.GeoJSON.Ajax(
-		'http://chemineur.fr/prod/chem/json.php', {
+		'http://v2.chemineur.fr/prod/chem/json.php', {
 			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
 			argsGeoJSON: {
 				site: 'prc',
@@ -122,13 +122,13 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: 'http://chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
 				}
 			}
 		}
 	),
 	poiC2C = new L.GeoJSON.Ajax(
-		'http://chemineur.fr/prod/chem/json.php', {
+		'http://v2.chemineur.fr/prod/chem/json.php', {
 			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
 			argsGeoJSON: {
 				site: 'c2c',
@@ -140,13 +140,13 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: 'http://chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
 				}
 			}
 		}
 	),
 	poiCHEM = new L.GeoJSON.Ajax(
-		'http://chemineur.fr/prod/chem/json.php', {
+		'http://v2.chemineur.fr/prod/chem/json.php', {
 			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
 			degroup: 12,
 			bbox: true,
@@ -155,7 +155,7 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: 'http://chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
 				}
 			}
 		}
@@ -266,3 +266,12 @@ function couche_externe(e,l) {
 	else
 		map.removeLayer(l);
 }
+// Pour bien gérer le retour sur la page sous chrome
+window.addEventListener('load', function() {
+	var extLayersCheckbox = {poiPRC:poiPRC, poiC2C:poiC2C, poiCHEM:poiCHEM};
+	for (var c in extLayersCheckbox) {
+		var ce = document.getElementById (c);
+		if (ce && ce.checked)
+			couche_externe(ce, extLayersCheckbox[c]);
+	}
+});
