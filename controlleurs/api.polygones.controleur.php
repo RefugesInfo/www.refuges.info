@@ -110,7 +110,7 @@ if ($nb_coul) {
 			$polygones->$i->type['categorie'] = $polygone->categorie_polygone_type;
 			$polygones->$i->geometrie =
 				$_GET['type_geom']=='polylines'
-					? str_replace (array('MultiPolygon','[[[[',']]]]'), array('MultiLineString','[[[',']]]'), $polygone->$geo)
+					? str_replace (array('MultiPolygon','[[[',']]]'), array('MultiLineString','[[',']]'), $polygone->$geo)
 					: $polygone->$geo;
 			$polygones->$i->partitif = $polygone->article_partitif;
 			$polygones->$i->bbox = $polygone->bbox;
