@@ -134,7 +134,10 @@ function pointRecu(point) {
 		$('#idPoint').append(point.date.creation);
 	else
 		$('#idPoint').append(point.date.derniere_modif);
-	$('#typePoint').html("<p>" + point.type.valeur + "</p><span id=\"nbPlaces\">" + point.places.valeur + " " + point.places.nom + "</span>");
+	if(point.etat.id != "fermeture")
+		$('#typePoint').html("<p>" + point.type.valeur + "</p><span id=\"nbPlaces\">" + point.places.valeur + " " + point.places.nom + "</span>");
+	else
+		$('#typePoint').html("<p>" + point.type.valeur + "</p><span id=\"nbPlaces\"><span class=\"red\">Attention : Ce point d'intérêt est fermé au public</span></span>");
 	$('#coordPoint').html("<b>Coordonnées :</b><br />&nbsp;<i>Précision</i> : " + point.coord.precision.nom + "<br />&nbsp;<i>Altitude</i> : " + point.coord.alt + "m, <i>Longitude</i> : " + point.coord.long + ", <i>Latitude</i> : " + point.coord.lat);
 	$('#rmqPoint').html("<b>" + point.remarque.nom + " :</b><br />" + point.remarque.valeur);
 	$('#proprioPoint').html("<b>" + point.proprio.nom + " :</b><br />" + point.proprio.valeur);

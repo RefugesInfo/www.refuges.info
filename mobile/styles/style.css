@@ -328,6 +328,14 @@ article:not(#carte) {
 	font-weight: bold;
 }
 
+.red {
+	color: red;
+}
+
+#typePoint > p:first-letter {
+	text-transform: uppercase;
+}
+
 #coordPoint, #rmqPoint, #proprioPoint, #accesPoint, #infoscompPoint, #pointsprochesPoint {
 	width: 95%;
 	background: #D1EEEE;
