@@ -160,7 +160,7 @@ function pointRecu(point) {
 	// Points proches
 	$.each(point.pp, function(pp_name, pp) {
 		if (pp_name != "nb")
-			$( "#pointsprochesPoint" ).append('<a href="#pt' + pp.id + '">' + pp.nom + '</a> —  à ' + pp.distance + '<br />');
+			$( "#pointsprochesPoint" ).append('<a href="#pt' + pp.id + '">' + pp.nom + '</a> —  à ' + (pp.distance/1000).toFixed(2) + ' km<br />');
 	});
 
 	// On affiche les derniers commentaires
