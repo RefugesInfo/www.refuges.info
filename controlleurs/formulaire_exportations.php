@@ -84,11 +84,11 @@ else // formulaire validé, affichage du lien et d'un blabla
     
         // limiter à une bbox (si demandé depuis les cartes)
         if(isset($_POST['sud']) ) 
-            $bbox = implode(',',array($_POST['ouest'], $_POST['sud'], $_POST['est'], $_POST['nord']) ) ;
+            $bbox = "&bbox=".implode(',',array($_POST['ouest'], $_POST['sud'], $_POST['est'], $_POST['nord']) ) ;
     
-        $options_lien="?limite=sans&amp;format=".$_POST['format']."&amp;liste_id_point_type=$liste_id_point_type&amp;liste_id_massif=$liste_id_massif" . (string) $bbox;
+        $options_lien="?nb_points=all&amp;format=".$_POST['format']."&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif".$bbox;
     
-        $vue->lien_export->url = "http://".$config['nom_hote']."/exportations/exportations.php$options_lien";
+        $vue->lien_export->url = "http://".$config['nom_hote']."/api/massif$options_lien";
     } 
     $vue->type="formulaire_exportations_validation";
 } // fin du else affichage lien
