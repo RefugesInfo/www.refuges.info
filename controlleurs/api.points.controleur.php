@@ -295,7 +295,7 @@ foreach ($points_bruts as $point) {
         $req->nb_points_proches != 0)
     {
         $conditions = new stdClass;
-        $conditions->limite = $req->nb_pp+1; // Parce que le point que l'on observe est retourné en premier
+        $conditions->limite = $req->nb_points_proches+1; // Parce que le point que l'on observe est retourné en premier
         $conditions->ouvert = 'oui';
         
         $g = array ( 'lat' => $point->latitude, 'lon' => $point->longitude , 'rayon' => 5000 );
@@ -303,24 +303,25 @@ foreach ($points_bruts as $point) {
         $conditions->avec_distance=True;
 
         $points_proches=infos_points($conditions);
-        
-        if (count($points_proches))
-        $k=0;
-        foreach ($points_proches as $point_proche) 
-        {
-            //On ne veut pas dans les points proches le point lui même
-            if ($point_proche->id_point!=$point->id)
+
+        if (count($points_proches)) {
+            $k=0;
+            foreach ($points_proches as $point_proche) 
             {
-            $points->$i->pp[$k]['id']=$point_proche->id_point;
-            $points->$i->pp[$k]['nom']=$point_proche->nom;
-            $points->$i->pp[$k]['alt']=$point_proche->altitude;
-            $points->$i->pp[$k]['type']['id']=$point_proche->id_point_type;
-            $points->$i->pp[$k]['type']['valeur']=$point_proche->nom_type;
-            $points->$i->pp[$k]['distance']=$point_proche->distance;
-            $k++;
+                //On ne veut pas dans les points proches le point lui même
+                if ($point_proche->id_point!=$point->id_point)
+                {
+                    $points->$i->pp[$k]['id']=$point_proche->id_point;
+                    $points->$i->pp[$k]['nom']=$point_proche->nom;
+                    $points->$i->pp[$k]['alt']=$point_proche->altitude;
+                    $points->$i->pp[$k]['type']['id']=$point_proche->id_point_type;
+                    $points->$i->pp[$k]['type']['valeur']=$point_proche->nom_type;
+                    $points->$i->pp[$k]['distance']=$point_proche->distance;
+                    $k++;
+                }
             }
+            $points->$i->pp[nb] = $k;
         }
-        $points->$i->pp[nb] = $k;
 
         unset($conditions);
         unset($point_proche);
