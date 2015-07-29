@@ -154,6 +154,12 @@ function pointRecu(point) {
 				else
 					$( "#infoscompPoint" ).append("<i>Non renseigné</i>");
 			}
+			if(info_comp_name == "places_matelas") {
+				if(info_comp.nb != -1)
+					$( "#infoscompPoint" ).append(info_comp.nb);
+				else
+					$( "#infoscompPoint" ).append(on(info_comp.valeur));
+			}
 			else
 				$( "#infoscompPoint" ).append(on(info_comp.valeur));
 			$( "#infoscompPoint" ).append("<br /></span>");
