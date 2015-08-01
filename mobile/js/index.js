@@ -150,11 +150,11 @@ function pointRecu(point) {
 				info_comp.nom + " : ");
 			if(info_comp_name == "site_officiel") {
 				if(info_comp.valeur != "")
-					$( "#infoscompPoint" ).append("<a target=\"_blank\" href=\"" + info_comp.valeur + "\">" + point.nom + "</a>");
+					$( "#infoscompPoint" ).append("<a target=\"_blank\" href=\"" + info_comp.url + "\">" + point.nom + "</a>");
 				else
 					$( "#infoscompPoint" ).append("<i>Non renseigné</i>");
 			}
-			if(info_comp_name == "places_matelas") {
+			else if(info_comp_name == "places_matelas") {
 				if(info_comp.nb != -1)
 					$( "#infoscompPoint" ).append(info_comp.nb);
 				else

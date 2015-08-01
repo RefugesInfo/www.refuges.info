@@ -13,16 +13,16 @@ include_once("utilisateur.php");
 
 /****************************************/
 // Ça permet de mettre convertir tout un objet
-function updatebbcode2html(&$html) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL)) 
+function updatebbcode2html(&$html, $key) {
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url') 
         $html=bbcode2html($html,0,1,0); 
 }
-function updatebbcode2markdown(&$html) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL))
+function updatebbcode2markdown(&$html, $key) {
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url')
         $html=bbcode2markdown($html);
 }
-function updatebbcode2txt(&$html) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL))
+function updatebbcode2txt(&$html, $key) {
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url')
         $html=bbcode2txt($html);
 }
 function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html===TRUE) { $html='1'; } }
@@ -264,6 +264,7 @@ foreach ($points_bruts as $point) {
         $points->$i->article['defini'] = $point->article_defini;
         $points->$i->article['partitif'] = $point->article_partitif_point_type;
         $points->$i->info_comp['site_officiel']['nom'] = $point->equivalent_site_officiel;
+        $points->$i->info_comp['site_officiel']['url'] = $point->site_officiel;
         $points->$i->info_comp['site_officiel']['valeur'] = $point->site_officiel;
         $points->$i->info_comp['manque_un_mur']['nom'] = $point->equivalent_manque_un_mur;
         $points->$i->info_comp['manque_un_mur']['valeur'] = $point->manque_un_mur;
@@ -372,7 +373,6 @@ foreach ($points_bruts as $point) {
         array_walk_recursive($points->$i, 'updatebbcode2markdown');
     }
     array_walk_recursive($points->$i, 'updatebool2char'); // Remplace les False et True en 0 ou 1
-
 
     $i++;
 }
