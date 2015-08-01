@@ -93,7 +93,6 @@ article:not(#carte) {
 	display: block;
 	width: 95%;
 	margin: 15px auto;
-
 }
 
 .btn {
@@ -105,6 +104,7 @@ article:not(#carte) {
 	margin: 10px 0;
 	font-size: 20px;
 	text-shadow: 1px 1px 0 black;
+	cursor: pointer;
 }
 
 .btn span {
@@ -114,6 +114,20 @@ article:not(#carte) {
 
 .btn:hover {
 	animation: lienhover ease-in-out both 300ms;
+}
+
+.btn.installed {
+	background-color: #999;
+}
+.btn.installed:hover {
+	animation: none;
+}
+
+.small {
+	background-color: #7b7b7b;
+	padding: 10px 15px;
+	margin: 10px 0;
+	font-size: 16px;
 }
 
 @keyframes lienhover
@@ -126,8 +140,8 @@ article:not(#carte) {
 	z-index: 1;
 	float: right;
 	fill: #aaa;
-	height: 50px;
-	margin: -12px -12px 0 -40px;
+	height: 34px;
+	margin: -8px -12px 0 -40px;
 }
 
 /*************************************** PAGE de la CARTE ***************************************/
