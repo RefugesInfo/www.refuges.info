@@ -10,6 +10,7 @@
 
 // Les variables necessaires au bon fonctionnement du truc
 var map;
+var oms;
 var ajaxRequest;
 var plotlayers=[];
 var init = 0;
@@ -19,8 +20,8 @@ function initmap(){
 	// On créé notre carte vierge
 	map = new L.Map('map');
 
-//	var MRIUrl='http://maps.refuges.info/hiking/{z}/{x}/{y}.png'; // Serveur de tuiles MRI
-	var MRIUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'; // Serveur de tuiles Thunderforest
+	var MRIUrl='http://maps.refuges.info/hiking/{z}/{x}/{y}.png'; // Serveur de tuiles MRI
+//	var MRIUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'; // Serveur de tuiles Thunderforest
 	var MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé MRI
 
 	map.setView(new L.LatLng(47, 2),6); // Par défaut on affiche la France entière
@@ -36,7 +37,11 @@ function initmap(){
 
 	// Ajout de l'icone fullscreen
 	L.control.scale().addTo(map);
-	
+	oms = new OverlappingMarkerSpiderfier(map, {nearbyDistance: 12, circleSpiralSwitchover: 6});
+	oms.addListener('spiderfy', function(markers) {
+		map.closePopup();
+	});
+
 	// Action en cas des évenements suivant
 	map.on('locationfound', onLocationFound);
 	map.on('moveend', onMapMove);
@@ -79,10 +84,10 @@ function stateChanged(plotlist) {
 		});
 		var plotmark = new L.Marker(plotll, {icon: cabaneIcon}); // On créé un marqueur (bleu par défaut)
 		map.addLayer(plotmark); // On ajoute un calque pour ce marqueur
-		var popup = new L.Rrose({autoPan: false})
-		.setContent('<a href="#pt' + plotlist.features[i].properties.id + '">' + plotlist.features[i].properties.nom + '</a>');
+		var popup = new L.Rrose({autoPan: false}).setContent('<a href="#pt' + plotlist.features[i].properties.id + '">' + plotlist.features[i].properties.nom + '</a>');
 		plotmark.bindPopup(popup); // On ajoute au marqueur un popup contenant le lien
 		plotlayers.push(plotmark);
+		oms.addMarker(plotmark);
 	}
 }
 
@@ -92,6 +97,7 @@ function removeMarkers() {
 		map.removeLayer(plotlayers[i]);
 	}
 	plotlayers=[];
+	oms.clearMarkers();
 }
 
 /************************* FONCTIONS POINTS *************************/
