@@ -17,6 +17,7 @@ var init = 0;
 var baseLayer;
 var Outdoors;
 var MRI;
+var IGN;
 
 // Fonction lancée dès que le <div> map est chargé
 function initmap(){
