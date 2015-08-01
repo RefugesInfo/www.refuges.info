@@ -7,9 +7,10 @@ Sommaire :
  3. Contenu
  4. Carte
  5. Aide
- 6. Licence
- 7. Infos point
- 8. Pied de page
+ 6. Paramètres
+ 7. Licence
+ 8. Infos point
+ 9. Pied de page
 ***********************************************************************************************/
 
 
@@ -289,14 +290,66 @@ article:not(#carte) {
 	padding: 5px;
 }
 
+/*************************************** PAGE d'AIDE ***************************************/
+
+
+#parametres h3 {
+	margin: 15px;
+}
+
+#parametres > ul, #parametres > ul > li {
+	width: 100%;
+}
+
+#parametres > ul > li {
+	margin-top: 15px;
+	box-shadow: 0 0 3px #333333;
+	background: #cecece;
+	list-style: none;
+}
+
+#parametres .titreliste {
+	vertical-align: middle;
+	font-weight: bold;
+	padding: 5px 10px;
+	background: #cccccc;
+	background: -moz-linear-gradient(top,  #cccccc 0%, #bbbbbb 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cccccc), color-stop(100%,#bbbbbb));
+	background: linear-gradient(to bottom,  #cccccc 0%,#bbbbbb 100%);
+}
+
+#parametres > ul > li > .liste > div:first-of-type {
+	border-top: 1px solid #eeeeee;
+}
+
+#parametres .selected {
+	background: #00caf2 !important;
+}
+
+#parametres .selector {
+	padding: 5px 10px;
+	cursor: pointer;
+}
+
+#parametres .selector:hover {
+	background: #bbbbbb;
+}
+
 /*************************************** PAGE de LICENCE ***************************************/
 
 #licence h3 {
 	margin: 15px;
 }
 
-#licence ul {
-	margin: 5px 0 5px 5px;
+#licence > ul, #licence > ul > li {
+	width: 100%;
+}
+
+#licence > ul > li {
+	margin-top: 15px;
+	box-shadow: 0 0 3px #333333;
+	background: #cecece;
+	list-style: none;
 }
 
 #licence .titreliste {
@@ -304,14 +357,21 @@ article:not(#carte) {
 	font-weight: bold;
 	padding: 5px 10px;
 	background: #cccccc;
-	margin: 20px -15px 10px -25px;
 	background: -moz-linear-gradient(top,  #cccccc 0%, #bbbbbb 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cccccc), color-stop(100%,#bbbbbb));
 	background: linear-gradient(to bottom,  #cccccc 0%,#bbbbbb 100%);
 }
 
-#licence > ul > li {
-	list-style: none;
+#licence > ul > li > .liste > div:first-of-type {
+	border-top: 1px solid #eeeeee;
+}
+
+#licence > ul > li > * {
+	padding: 5px;
+}
+
+#licence > ul > li > ul {
+	margin-left: 25px;
 }
 
 /*************************************** PAGE d'INFOS sur un POINT ***************************************/

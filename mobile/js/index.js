@@ -14,6 +14,9 @@ var oms;
 var ajaxRequest;
 var plotlayers=[];
 var init = 0;
+var baseLayer;
+var Outdoors;
+var MRI;
 
 // Fonction lancée dès que le <div> map est chargé
 function initmap(){
@@ -21,8 +24,13 @@ function initmap(){
 	map = new L.Map('map');
 
 	var MRIUrl='http://maps.refuges.info/hiking/{z}/{x}/{y}.png'; // Serveur de tuiles MRI
-//	var MRIUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'; // Serveur de tuiles Thunderforest
-	var MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé MRI
+	MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé MRI
+	var OutdoorsUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'; // Serveur de tuiles Thunderforest
+	Outdoors = new L.TileLayer(OutdoorsUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé Outdoors
+	var IGNKey = 'ev2w14tv2ez4wpypux2ael39';
+	var IGNUrl='http://wxs.ign.fr/'+IGNKey+'/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}'; // Serveur de tuiles IGN
+	IGN = new L.TileLayer(IGNUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé IGN
+
 
 	map.setView(new L.LatLng(47, 2),6); // Par défaut on affiche la France entière
 
@@ -37,9 +45,30 @@ function initmap(){
 
 	// Ajout de l'icone fullscreen
 	L.control.scale().addTo(map);
+
+	// Ajout du plugin qui dégroupe les points proches
 	oms = new OverlappingMarkerSpiderfier(map, {nearbyDistance: 12, circleSpiralSwitchover: 6});
 	oms.addListener('spiderfy', function(markers) {
 		map.closePopup();
+	});
+
+	$("#MRI").click(function() {
+		map.addLayer(MRI);
+		map.removeLayer(Outdoors);
+		map.removeLayer(IGN);
+		updateLayerSelector();
+	});
+	$("#Outdoors").click(function() {
+		map.addLayer(Outdoors);
+		map.removeLayer(MRI);
+		map.removeLayer(IGN);
+		updateLayerSelector();
+	});
+	$("#IGN").click(function() {
+		map.addLayer(IGN);
+		map.removeLayer(MRI);
+		map.removeLayer(Outdoors);
+		updateLayerSelector();
 	});
 
 	// Action en cas des évenements suivant
@@ -223,7 +252,6 @@ function clearBlocsVides(point) {
 	}
 }
 
-
 // Fonction appelée pour basculer entre les vues
 function displayBlock(bloc) {
 	var carte = $('#carte');
@@ -249,10 +277,6 @@ function displayBlock(bloc) {
 		licence.css('display', 'none');
 		patientez.css('display', 'none');
 		section.css('height', '100%');
-		if (init!=1) {
-			initmap();
-			init = 1;
-		}
 		map.invalidateSize();
 	}
 	else if(bloc == 'patientez') {
@@ -298,6 +322,7 @@ function displayBlock(bloc) {
 		licence.css('display', 'none');
 		patientez.css('display', 'none');
 		section.css('height', '');
+		updateLayerSelector();
 	}
 	else if(bloc == 'licence') {
 		points.css('display', 'none');
@@ -323,12 +348,6 @@ function displayBlock(bloc) {
 	}
 }
 
-$(window).load(function() {
-	changeBlock();
-});
-
-window.onhashchange = changeBlock;
-
 function changeBlock() {
 	if (location.hash.substring(0,3) == "#pt") {
 		affichePoint(location.hash.substring(3));
@@ -353,3 +372,31 @@ function changeBlock() {
 		}
 	}
 }
+
+function updateLayerSelector() {
+	if(map.hasLayer(MRI)) {
+		$('#MRI').addClass("selected");
+	}
+	else {
+		$('#MRI').removeClass("selected");
+	}
+	if(map.hasLayer(Outdoors)) {
+		$('#Outdoors').addClass("selected");
+	}
+	else {
+		$('#Outdoors').removeClass("selected");
+	}
+	if(map.hasLayer(IGN)) {
+		$('#IGN').addClass("selected");
+	}
+	else {
+		$('#IGN').removeClass("selected");
+	}
+}
+
+$(window).load(function() {
+	initmap();
+	changeBlock();
+});
+
+window.onhashchange = changeBlock;
