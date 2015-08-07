@@ -67,6 +67,7 @@ window.addEventListener('load', function() {
 	map.addControl(gps);
 	gps.on ('gpslocated', function (args){
 		curseur.setLatLng(args.latlng);
+		gps.deactivate();
 	});
 	map.addControl(new L.Control.Scale());
 	new L.Control.OSMGeocoder().addTo(map);
