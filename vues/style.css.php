@@ -706,18 +706,19 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   @media screen and (min-width: 1200px) {
     #nav_bloc_carte {
     float: right;
-    height: 80%;
     width: 80%;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
     }
   }
   @media screen and (min-width: 700px) and (max-width: 1199px) {
     #nav_bloc_carte {
-    height: 70%;
     width: 98.4%;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
     }
     .nav_bloc {
     display: table-cell;
     width: 33%;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
     }
   }
   /*Externalise le sélecteur de couche de la carte nav*/
