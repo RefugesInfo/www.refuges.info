@@ -675,23 +675,29 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
   #accueil {
     width:  300px;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
   }
   #massifs {
     width:  800px;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
   }
   #vignette { /* utilisé par les petites des fiches points */
     width:  280px;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
   }
   #vignette-agrandie {
     width:  400px;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
   }
   #carte_edit, .carte_edit {
     width:  450px; 
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
     float: right;
     max-width: 100%;
   }
   #nav_bloc_carte {
-    height: 50%;
+    width: 98.4%;
+	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
     margin: 0 0.8%;
   }
   .nav_bloc {
