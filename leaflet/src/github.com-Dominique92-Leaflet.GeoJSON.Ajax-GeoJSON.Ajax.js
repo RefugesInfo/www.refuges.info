@@ -69,7 +69,8 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 					e.target.status == 200) {
 					e.target.context.redraw(e.target.responseText);
 					e.target.context.actual = e.target.context.url; // On mémorise le flux demandé pour éviter de le demander plusiers fois.
-					}
+					e.target.context.responseText = e.target.responseText; // On mémorise aussi la réponse.
+				}
 			}
 			this.ajaxRequest.open('GET', this.url, true);
 			this.ajaxRequest.send(null);
