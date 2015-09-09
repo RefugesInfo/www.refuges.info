@@ -62,7 +62,7 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 		// On envoie la requete AJAX
 		this.url = this.options.proxy + this.options.urlGeoJSON + this.args;
 		if (this.url == this.actual) // TODO: Voir pourquoi le cache de l'explo n'a pas l'air de fonctionner: On refait le cache dans cette classe !
-			this.redraw(e.target.responseText);
+			this.redraw(this.responseText);
 		else {
 			this.ajaxRequest.onreadystatechange = function(e) {
 				if (e.target.readyState == 4 && // Si AJAX à bien retourné ce que l'on attendait

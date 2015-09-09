@@ -779,7 +779,7 @@ this.ajaxRequest=new XMLHttpRequest();else if(window.ActiveXObject)
 this.ajaxRequest=new ActiveXObject('Microsoft.XMLHTTP');else{alert('Ce navigateur ne supporte pas les requettes AJAX.');exit;}
 this.ajaxRequest.context=this;}
 this.url=this.options.proxy+this.options.urlGeoJSON+this.args;if(this.url==this.actual)
-this.redraw(e.target.responseText);else{this.ajaxRequest.onreadystatechange=function(e){if(e.target.readyState==4&&e.target.status==200){e.target.context.redraw(e.target.responseText);e.target.context.actual=e.target.context.url;}}
+this.redraw(this.responseText);else{this.ajaxRequest.onreadystatechange=function(e){if(e.target.readyState==4&&e.target.status==200){e.target.context.redraw(e.target.responseText);e.target.context.actual=e.target.context.url;}}
 this.ajaxRequest.open('GET',this.url,true);this.ajaxRequest.send(null);}},redraw:function(geojson){for(l in this._layers)
 if(this._map)
 this._map.removeLayer(this._layers[l]);try{eval('this.addData(['+geojson+'])');}catch(e){if(e instanceof SyntaxError)
