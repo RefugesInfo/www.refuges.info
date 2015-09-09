@@ -60,13 +60,20 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 		}
 
 		// On envoie la requete AJAX
-		this.ajaxRequest.onreadystatechange = function(e) {
-			if (e.target.readyState == 4 && // Si AJAX à bien retourné ce que l'on attendait
-				e.target.status == 200)
-				e.target.context.redraw(e.target.responseText);
+		this.url = this.options.proxy + this.options.urlGeoJSON + this.args;
+		if (this.url == this.actual) // TODO: Voir pourquoi le cache de l'explo n'a pas l'air de fonctionner: On refait le cache dans cette classe !
+			this.redraw(e.target.responseText);
+		else {
+			this.ajaxRequest.onreadystatechange = function(e) {
+				if (e.target.readyState == 4 && // Si AJAX à bien retourné ce que l'on attendait
+					e.target.status == 200) {
+					e.target.context.redraw(e.target.responseText);
+					e.target.context.actual = e.target.context.url; // On mémorise le flux demandé pour éviter de le demander plusiers fois.
+					}
+			}
+			this.ajaxRequest.open('GET', this.url, true);
+			this.ajaxRequest.send(null);
 		}
-		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJSON + this.args, true);
-		this.ajaxRequest.send(null);
 	},
 
 	redraw: function(geojson) {

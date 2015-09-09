@@ -86,9 +86,10 @@ if ($vue->mini_carte) {
 		var l2 = mapp.clientWidth,
 			h2 = mapp.clientHeight;
 		map.panBy(
-			[(l1-l2)/2, (h1-h2)/2], // Remet le cadre au centre de la nouvelle carte plus grande
+			[0, (h1-h2)/2], // Remet le cadre au centre de la nouvelle carte plus grande
 			{animate: false}
 		);
+		map.autoHeight ();
 
 		// On positionne la couche de second choix
 		var oldLayerId, newLayerId;

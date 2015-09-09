@@ -3,8 +3,8 @@
  * Traduction des textes apparaissant à l'exécution
  */
 
-// Fixe un bug de reconnaissance de path si leaflet.js n'est pas inclu directement
-L.Icon.Default.imagePath = L.Icon.Default.imagePath.replace(/(dist\/src|dist|src)/g, 'leafletjs.com/0.7.3');
+// Fixe un bug de reconnaissance de path si leaflet.js n'est pas inclus directement
+L.Icon.Default.imagePath = L.Icon.Default.imagePath.replace(/(dist\/src|dist|src)/g, 'leafletjs.com');
 
 // Style de base des polylines édités
 L.Polyline = L.Polyline.extend({

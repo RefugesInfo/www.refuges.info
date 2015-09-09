@@ -1,9 +1,9 @@
 var toGeoJSON = (function() {
     'use strict';
 
-    var removeSpace = (/\s*/g),
-        trimSpace = (/^\s*|\s*$/g),
-        splitSpace = (/\s+/);
+    var removeSpace = /\s*/g,
+        trimSpace = /^\s*|\s*$/g,
+        splitSpace = /\s+/;
     // generate a short, numeric hash of a string
     function okhash(x) {
         if (!x || !x.length) return 0;
@@ -55,7 +55,7 @@ var toGeoJSON = (function() {
         if (ele) {
             e = parseFloat(nodeVal(ele));
             if (!isNaN(e)) {
-              ll.push(e);
+                ll.push(e);
             }
         }
         return {
@@ -83,6 +83,8 @@ var toGeoJSON = (function() {
     }
     function xml2str(str) {
         // IE9 will create a new XMLSerializer but it'll crash immediately.
+        // This line is ignored because we don't run coverage tests in IE9
+        /* istanbul ignore next */
         if (str.xml !== undefined) return str.xml;
         return serializer.serializeToString(str);
     }
@@ -98,22 +100,26 @@ var toGeoJSON = (function() {
                 geotypes = ['Polygon', 'LineString', 'Point', 'Track', 'gx:Track'],
                 // all root placemarks in the file
                 placemarks = get(doc, 'Placemark'),
-                styles = get(doc, 'Style');
+                styles = get(doc, 'Style'),
+                styleMaps = get(doc, 'StyleMap');
 
             for (var k = 0; k < styles.length; k++) {
                 styleIndex['#' + attr(styles[k], 'id')] = okhash(xml2str(styles[k])).toString(16);
+            }
+            for (var l = 0; l < styleMaps.length; l++) {
+                styleIndex['#' + attr(styleMaps[l], 'id')] = okhash(xml2str(styleMaps[l])).toString(16);
             }
             for (var j = 0; j < placemarks.length; j++) {
                 gj.features = gj.features.concat(getPlacemark(placemarks[j]));
             }
             function kmlColor(v) {
                 var color, opacity;
-                v = v || "";
-                if (v.substr(0, 1) === "#") { v = v.substr(1); }
+                v = v || '';
+                if (v.substr(0, 1) === '#') { v = v.substr(1); }
                 if (v.length === 6 || v.length === 3) { color = v; }
                 if (v.length === 8) {
                     opacity = parseInt(v.substr(0, 2), 16) / 255;
-                    color = v.substr(2);
+                    color = '#'+v.substr(2);
                 }
                 return [color, isNaN(opacity) ? undefined : opacity];
             }
@@ -123,7 +129,7 @@ var toGeoJSON = (function() {
                 if (elems.length === 0) elems = get(root, 'gx:coord');
                 for (var i = 0; i < elems.length; i++) coords.push(gxCoord(nodeVal(elems[i])));
                 var timeElems = get(root, 'when');
-                for (var i = 0; i < timeElems.length; i++) times.push(nodeVal(timeElems[i]));
+                for (var j = 0; j < timeElems.length; j++) times.push(nodeVal(timeElems[j]));
                 return {
                     coords: coords,
                     times: times
@@ -188,6 +194,9 @@ var toGeoJSON = (function() {
 
                 if (!geomsAndTimes.geoms.length) return [];
                 if (name) properties.name = name;
+                if (styleUrl[0] !== '#') {
+                    styleUrl = '#' + styleUrl;
+                }
                 if (styleUrl && styleIndex[styleUrl]) {
                     properties.styleUrl = styleUrl;
                     properties.styleHash = styleIndex[styleUrl];
@@ -215,8 +224,8 @@ var toGeoJSON = (function() {
                         outline = nodeVal(get1(polyStyle, 'outline'));
                     if (pcolor) properties.fill = pcolor;
                     if (!isNaN(popacity)) properties['fill-opacity'] = popacity;
-                    if (fill) properties['fill-opacity'] = fill === "1" ? 1 : 0;
-                    if (outline) properties['stroke-opacity'] = outline === "1" ? 1 : 0;
+                    if (fill) properties['fill-opacity'] = fill === '1' ? 1 : 0;
+                    if (outline) properties['stroke-opacity'] = outline === '1' ? 1 : 0;
                 }
                 if (extendedData) {
                     var datas = get(extendedData, 'Data'),
@@ -311,7 +320,7 @@ var toGeoJSON = (function() {
             }
             function getRoute(node) {
                 var line = getPoints(node, 'rtept');
-                if (!line) return;
+                if (!line.line) return;
                 var routeObj = {
                     type: 'Feature',
                     properties: getProperties(node),

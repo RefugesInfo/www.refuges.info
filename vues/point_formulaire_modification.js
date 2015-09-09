@@ -70,6 +70,7 @@ window.addEventListener('load', function() {
 		gps.deactivate();
 	});
 	map.addControl(new L.Control.Scale());
+	L.Control.fileLayerLoad().addTo(map);
 	new L.Control.OSMGeocoder().addTo(map);
 });
 

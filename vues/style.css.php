@@ -675,29 +675,23 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
   #accueil {
     width:  300px;
-    height: 320px;
   }
   #massifs {
     width:  800px;
-    height: 600px;
   }
   #vignette { /* utilisé par les petites des fiches points */
     width:  280px;
-    height: 280px;
   }
   #vignette-agrandie {
     width:  400px;
-    height: 400px;
   }
   #carte_edit, .carte_edit {
     width:  450px; 
-    height: 500px; 
     float: right;
     max-width: 100%;
   }
   #nav_bloc_carte {
     height: 50%;
-    width: 98.4%;
     margin: 0 0.8%;
   }
   .nav_bloc {

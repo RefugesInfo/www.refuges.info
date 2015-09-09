@@ -60,11 +60,14 @@ if(0) {
         fclose ($f);
 }
 /******************************************************************************/
-        // Il faut forcer le charset dans le header car Openlayers ne va lire le type qu'ici et ignore les balise META
-        // LE correctif qui tue proposé par SLY aprés une lute mémorable avec les charsets
-        $charset = mb_detect_encoding ($cache, "UTF-8,ISO-8859-1,ISO-8859-5,ISO-8859-6,ISO-8859-7,ASCII,EUC-JP,JIS,SJIS,SHIFT_JIS,ISO-2022-JP,EUC-KR,ISO-2022-KR", true);
-//        header("Content-Type:text/html; charset=$charset");
-        header("Content-Type:text/html; charset=ISO-8859-1");
+		$secondes_de_cache = 60;
+		header("Content-disposition: filename=points.json");
+		header("Content-Type: application/json; UTF-8");
+		header("Content-Transfer-Encoding: binary");
+		header("Pragma: cache");
+		header("Expires: " . gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT");
+		if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+		header("Cache-Control: max-age=$secondes_de_cache");
 
         // Envoie le résultat
         print ($cache);

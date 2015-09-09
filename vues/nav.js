@@ -111,7 +111,6 @@ var map,
 // Serveurs externes
 	poiPRC = new L.GeoJSON.Ajax(
 		'http://v2.chemineur.fr/prod/chem/json.php', {
-			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
 			argsGeoJSON: {
 				site: 'prc',
 			},
@@ -129,7 +128,6 @@ var map,
 	),
 	poiC2C = new L.GeoJSON.Ajax(
 		'http://v2.chemineur.fr/prod/chem/json.php', {
-			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
 			argsGeoJSON: {
 				site: 'c2c',
 			},
@@ -147,7 +145,6 @@ var map,
 	),
 	poiCHEM = new L.GeoJSON.Ajax(
 		'http://v2.chemineur.fr/prod/chem/json.php', {
-			proxy: '<?=$config['sous_dossier_installation']?>leaflet/proxy.php?url=',
 			degroup: 12,
 			bbox: true,
 			url: function(target) {
