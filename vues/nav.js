@@ -181,30 +181,31 @@ var map,
 window.addEventListener('load', function() {
 	map = new L.Map('nav_bloc_carte', {
 		fullscreenControl: true,
-		center: new L.LatLng(45.6, 6.7),
-		zoom: 6,
 		layers: [
 			baseLayers[L.UrlUtil.queryParse(L.UrlUtil.hash()).layer] // Donné par le permalink #layer=NOM
-			|| baseLayers['<?=$config["carte_base"]?>'], // Sinon le fond de carte par défaut
-			massifLayer,
+				|| baseLayers['<?=$config["carte_base"]?>'], // Sinon le fond de carte par défaut
+			massifLayer
 <?if ( !$vue->mode_affichage ){?>
-			poiLayer
+			,poiLayer
 <?}?>
 		]
 	});
-	new L.Control.OSMGeocoder().addTo(map);
+
 <?if ( $vue->polygone->bbox ){?>
-	var bboxs = [<?=$vue->polygone->bbox?>]; // BBox au format Openlayers
-	map.fitBounds([
-		[bboxs[3], bboxs[0]], // Bbox au format Leaflet
-		[bboxs[1], bboxs[2]]
+	var bboxs = [<?=$vue->polygone->bbox?>]; // BBox au format Openlayers [left, bottom, right, top] = [west, south, east, north]
+	map.fitBounds([ // Bbox au format Leaflet
+		[bboxs[1], bboxs[0]], // South West
+		[bboxs[3], bboxs[2]]  // North East
 	]);
+<?}else{?>
+	map.setView([45.6, 6.7], 6);
 <?}?>
 
 	var ctrlLayers = new L.Control.Layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 	new L.Control.Permalink({text: 'Permalink', layers: ctrlLayers}).addTo(map);
 	new L.Control.Scale().addTo(map);
 	new L.Control.Coordinates().addTo(map);
+	new L.Control.OSMGeocoder().addTo(map);
 
 	<?if ( $vue->mode_affichage != 'zone' ){?>
 		new L.Control.Gps().addTo(map);
