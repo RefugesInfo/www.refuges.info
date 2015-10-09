@@ -147,8 +147,9 @@ $config['copyright_API']="The data included in this document is from www.refuges
 setlocale(LC_TIME, "fr_FR.UTF-8");
 mb_internal_encoding("UTF-8");
 
-// Notez que pour l'instant, suite à une histoire de layers déclaré ou pas dans openlayers, ce paramètre ne sera pas pris en compte partout
-// sauf si il vaut maps.refuges.info ou OpenCycleMap
+// Voici le fond de carte par défaut : 
+// Si vous voulez en changer ou avoir un autre pour le développement, sans avoir à mettre à jour sur git et faire des pirouettes, vous pouvez simplement modifier cette variable
+// située dans le fichier config_privee.php qui lui ne sera pas écrasé par le prochain git pull
 $config['carte_base'] = 'maps.refuges.info';
 
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
