@@ -16,6 +16,7 @@ $vue->description='Base de donnee de refuges, abris, gites, sommets et divers po
 
 $vue->java_lib_foot [] = $config['url_chemin_leaflet'].($config['debug']?'src/':'').'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
 $vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
+$vue->fond_carte_par_defaut= $config['carte_base'];
 
 $conditions_notre_zone = new stdClass;
 $conditions_notre_zone->ids_polygones=$config['id_zone_accueil'];

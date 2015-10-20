@@ -6,11 +6,22 @@
 
 // Crée la carte dés que la page est chargée
 window.addEventListener('load', function() {
+  var baseLayers = {
+    'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
+    }),
+    'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
+    }),
+    'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
+    })
+  };
 	var bboxs = [ <?=$vue->bbox?> ]; // Bbox au format Openlayers
 	new L.Map('accueil', {
 		zoomControl: false,
 		layers: [
-			new L.TileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png'),
+      baseLayers['<?=$vue->fond_carte_par_defaut?>'],
 			new L.GeoJSON.Ajax( // Les massifs WRI
 				'<?=$config['sous_dossier_installation']?>api/polygones', {
 					argsGeoJSON: {
