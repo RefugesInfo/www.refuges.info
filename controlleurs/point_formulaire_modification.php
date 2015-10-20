@@ -15,6 +15,7 @@ $vue->champs->textareas = new stdClass;
 $vue->champs->boutons = new stdClass; // Modifier, supprimer...
 $vue->champs->bools = new stdClass; // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
 $vue->champs->places_matelas = new stdClass; // traite en cas particulier, trop specifique, la suppression me demange
+$vue->fond_carte_par_defaut= $config['carte_base'];
 
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé

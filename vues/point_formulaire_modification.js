@@ -29,7 +29,7 @@ window.addEventListener('load', function() {
 		center: new L.LatLng( <?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
 		zoom: 13,
 		layers: [
-			baseLayers['maps.refuges.info'], // Le fond de carte visible
+					baseLayers['<?=$vue->fond_carte_par_defaut?>'], // Le fond de carte visible
 
 			new L.GeoJSON.Ajax( // Les points d'intérêt WRI
 				'<?=$config['sous_dossier_installation']?>api/bbox', {
