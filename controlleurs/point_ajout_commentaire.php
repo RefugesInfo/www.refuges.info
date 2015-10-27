@@ -41,6 +41,8 @@ if (!$point->erreur)
             $vue->erreur_captcha=True;
             $vue->lettre_verification="";
         }
+        else if (isset ($config['censure']) && preg_match ('/'.$config['censure'].'/i', retrait_accents ($commentaire->texte)))
+            $vue->censure=True;
         else if (bloquage_internaute($_POST['auteur_commentaire']))  // utilisateur dont l'adresse IP est bannie
             $vue->banni=True;
         else

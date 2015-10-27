@@ -14,10 +14,18 @@
     compliquer la tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. 
     Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a 
     toujours été d'être simple et rapide d'utilisation.<br /><br />
-  <?php } if ($model->banni) { ?>
+  <?php } if ($vue->banni) { ?>
     <strong>Banni !</strong>
     Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
     vous pouvez en parler ici : <a href="<?=$config['sous_dossier_installation']?>forum/viewtopic.php?t=671">Sur le forum</a><br /><br />
+  <?php } if ($vue->censure) { ?>
+	<div style="border:2px double red; background-color: yellow;">
+    <p><strong>CONTENU DE MESSAGE NON CONFORME AUX REGLES DU SITE !</strong></p>
+    <p>Votre message n'a pas été publié car il ne nous semble pas conforme aux <a href="<?=$config['sous_dossier_installation']?>wiki/cabane_principe_bonne_conduite">regles du site</a>:</p>
+	<p>En particulier, <strong>il est interdit de faire une réservation ou signaler aux autres que vous y serez</strong>
+	car dette pratique est contraire à l'esprit dans lequel ont été créés ces lieux.</p>
+	<p>Voir <a href="<?=$config['sous_dossier_installation']?>forum/viewtopic.php?t=37">la discussion à ce sujet sur le forum</a></p>
+	</div><br /><br />
   <?php } if ($vue->messages->erreur) { ?>
     <strong><?=$vue->messages->message?></strong>
   <?php } elseif (isset($vue->messages->erreur)) { ?>
