@@ -335,6 +335,14 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     z-index: 500000;
 }
 
+/*=========CENSURE==========*/
+.erreur_saisie {
+	border: 2px double red;
+	background-color: yellow;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
 /*=========PUBLICITE==========*/
 @media screen and (max-width: 940px) {
   .publicite {
