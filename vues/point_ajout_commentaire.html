@@ -6,12 +6,18 @@
     Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
     Bien que nous autorisons les contributions anonymes, ils vous est recommandé de vous connecter sur le forum et/ou de créer un compte
     afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config['connexion_forum']?>">Connexion</a><br /><br />
-  <?php } if ($vue->banni) { ?>
-	<div class="erreur_saisie">
-		<strong>Banni !</strong>
-		Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
-		vous pouvez en parler ici : <a href="<?=$config['sous_dossier_installation']?>forum/viewtopic.php?t=671">Sur le forum</a><br /><br />
-	</div>
+  <?php } if ($vue->erreur_captcha) { ?>
+    <strong>Mauvaise lettre !</strong>
+    Merci de recopier la lettre indiquée. ceci afin de lutter contre les message 
+    indésirables. Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la 
+    publicité pour des sites plus que douteux. Du coup, cette manoeuvre a pour but de leur 
+    compliquer la tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. 
+    Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a 
+    toujours été d'être simple et rapide d'utilisation.<br /><br />
+  <?php } if ($model->banni) { ?>
+    <strong>Banni !</strong>
+    Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
+    vous pouvez en parler ici : <a href="<?=$config['sous_dossier_installation']?>forum/viewtopic.php?t=671">Sur le forum</a><br /><br />
   <?php } if ($vue->messages->erreur) { ?>
     <strong><?=$vue->messages->message?></strong>
   <?php } elseif (isset($vue->messages->erreur)) { ?>
@@ -33,76 +39,39 @@
 	<p>
           <input type="checkbox" name="demande_correction" value="1"/>
           <label>Je souhaite prévenir un modérateur car mon commentaire apporte un complément à la partie supérieure de la fiche </label>
-	</p>
-	<?php if ($vue->captcha) { ?>
-		<?php if ($vue->erreur_captcha) { ?>
-			<div class="erreur_saisie">
-				<strong>Mauvaise lettre !</strong>
-				Merci de recopier la lettre indiquée. ceci afin de lutter contre les message 
-				indésirables. Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la 
-				publicité pour des sites plus que douteux. Du coup, cette manoeuvre a pour but de leur 
-				compliquer la tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. 
-				Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a 
-				toujours été d'être simple et rapide d'utilisation.
-		<?}?>
+        </p>
+        <?php if ($vue->captcha) { ?>
         <p>
-			Merci de simplement écrire la lettre "f" dans la case :
-			<input type="text" name="lettre_verification" value="<?=$vue->lettre_verification?>"/>
+		Merci de simplement écrire la lettre "f" dans la case :
+		<input type="text" name="lettre_verification" value="<?=$vue->lettre_verification?>"/>
+		<br />
 		(Ceci afin d'éviter les messages indésirables automatiques, désolé)
         </p>
-		<?php if ($vue->captcha) { ?>
-			</div>
-		<?}?>
-		<br />
 	<?}?>
 	
-	<?php if ($vue->censure) { ?>
-		<div class="erreur_saisie">
-		<p>
-			Votre message n'a pas été publié car il ne nous semble pas conforme aux
-			<a href="<?=$config['sous_dossier_installation']?>wiki/cabane_principe_bonne_conduite">regles du site</a>:
-		<br/>
-			En particulier, il est interdit de faire une réservation ou signaler aux autres que vous y serez
-			car dette pratique est contraire à l'esprit dans lequel ont été créés ces lieux.
-		<br/>
-			Voir <a href="<?=$config['sous_dossier_installation']?>forum/viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
-		</p>
-		<p>
-			Si ce n'est pas la cas, veuillez nous excuser et cliquer "Envoyer" de nouveau.
-		</p>
-		<input type="hidden" name="verif_censure" value="OK">
-	<?}?>
+
 	<input type="submit" name="action" value="Envoyer" />
-	<?php if ($vue->censure) { ?>
-		</div>
-	<?}else{?>
-		<input type="reset" value="Recommencer" />
-	<?}?>
+	<input type="reset" value="Recommencer" />
 </form>
 </div>
 
-	<h4>Rappels: <a href="<?=$vue->lien_wiki_que_mettre?>">voir ce que vous pouvez ou non mettre sur le site</a></h4>
-	<p>
-		Cette information doit être utile et objective. Pour une appréciation, direction <a href="<?=$vue->lien_forum_point?>">le forum</a>.
-	</p>
-	<p>
-		<strong>Vous ne pouvez pas faire une réservation ou signaler aux autres que vous y serez</strong> :
-		Les refuges gardés ont des numéros de téléphone pour réserver et les refuges non gardés sont ouverts à tous sans réservation.
-	</p>
-	<?php
-	if ($point->equivalent_proprio!="")
-		print("<p>Le site n'a aucun rapport avec les propriétaires ou gérants de $point->article_demonstratif $point->nom_type (inutile de leur laisser un message ici).</p>");
-	?>
-
-	<h4>Droits sur ce que vous allez mettre</h4>
-	<p>
-		Vous ne devez en aucun cas insérer un texte ou une <strong>photo qui ne vous appartient pas</strong>.
-	</p>
-	<p>
-		Une copie d'un autre site, le scan d'un journal ou livre <strong>ne peut pas</strong> trouver sa place sur ce site.
-	</p>
-	<p>
-		Le commentaire et/ou la photo que vous ajoutez sera soumise à la <a href="<?=$vue->lien_wiki_restriction_licence?>">licence creative commons by-sa</a>.
-	</p>
+		<h4>Droits sur ce que vous allez mettre</h1>
+		<p>
+			Vous ne devez en aucun cas insérer un texte ou une <strong>photo qui ne vous appartient pas</strong>.
+		</p>
+        <p>
+            Une copie d'un autre site, le scan d'un journal ou livre <strong>ne peut pas</strong> trouver sa place sur ce site.
+        </p>
+        <p>
+            Le commentaire et/ou la photo que vous ajoutez sera soumise à la <a href="<?=$vue->lien_wiki_restriction_licence?>">licence creative commons by-sa</a>.
+        </p>
+	<h4>Rappels: <a href="<?=$vue->lien_wiki_que_mettre?>">voir ce que vous pouvez ou non mettre sur le site</a></h1>
+		<ul>
+			<?php
+			if ($point->equivalent_proprio!="")
+				print("<li>le site n'a aucun rapport avec les propriétaires ou gérants de $point->article_demonstratif $point->nom_type (inutile de leur laisser un message ici)</li>");
+			?>
+			<li>Cette information doit être utile et objective. Pour une appréciation, direction <a href="<?=$vue->lien_forum_point?>">le forum</a></li>
+		</ul>
 </div>
 </div>
