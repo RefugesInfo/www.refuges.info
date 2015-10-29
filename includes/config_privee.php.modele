@@ -41,4 +41,7 @@ $config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR
 
 // Filtrage géographique des inscriptions
 $config['filtre_geo'] = '40 52 -5 10'; // Zone autorisée: latitude_min latitude_max longitude_min longitude_max
+
+// Censure des messages de réservation
+$config['censure']="reservat|reserver|fete|noel|l\'an|reveillon|prevenir|previen|groupe|decembre|janvier|\/12";
 ?>

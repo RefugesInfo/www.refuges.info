@@ -65,6 +65,8 @@ foreach ($commentaires_attente_correction as $commentaire_attente_correction)
       $cause="apporte peut-être de l'information à la fiche (selon un internaute)";
   elseif ($commentaire_attente_correction->demande_correction==-1)
     $cause="n'a peut-être aucun intérêt (selon un internaute)";
+  elseif ($commentaire_attente_correction->demande_correction==2)
+    $cause="contient un mot pouvant faire penser à une réservation";
   else
     $cause="";
   print("<a href=\"".lien_point_lent($commentaire_attente_correction->id_point)."#C$commentaire_attente_correction->id_commentaire\">

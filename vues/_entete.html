@@ -18,7 +18,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config[encodage_des_contenu_web]?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
-		<link type="text/css" rel="stylesheet" href="<?=$config['sous_dossier_installation']?>vues/style.css.php" />
+		<link type="text/css" rel="stylesheet" href="<?=$config['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config['racine_projet'].'vues/style.css.php')?>" />
 		<?if (count ($vue->css))
 			foreach ($vue->css as $css) {?>
 				<link type="text/css" rel="stylesheet" href="<?=$css?>" />

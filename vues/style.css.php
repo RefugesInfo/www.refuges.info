@@ -292,6 +292,13 @@ A:visited {
   color : #<?=$couleur_lien_visite?>;
   }
 
+/*=========ERREUR==========*/
+.erreur_saisie {
+	border: 2px double red;
+	background-color: yellow;
+	padding: 10px;
+}
+
 /*=========ADRESSES MAILS CODEES==========*/
 .mail {
   unicode-bidi: bidi-override;
@@ -640,11 +647,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     display: inline;
     margin: 1px 5px 1px 0px;
   }
-@media screen and (min-width: 641px) {
-  .container_carte {
-    float: right;
-  }
-}
   .photos {
     float: left; 
     margin: 1px; 
@@ -699,6 +701,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     width: 98.4%;
 	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
     margin: 0 0.8%;
+    max-height: calc(100% - 58px);
   }
   .nav_bloc {
     padding: 0 0.7%;
@@ -721,6 +724,14 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	/* La hauteur est automatiquement ajustée mar Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenetre */
     }
   }
+@media screen and (min-width: 641px) {
+  #nav_bloc_carte {
+    max-height: calc(100% - 128px);
+  }
+  .container_carte {
+    float: right;
+  }
+}
   /*Externalise le sélecteur de couche de la carte nav*/
   #carte_nav .baseLbl, #carte_nav .dataLbl , #carte_nav .dataLayersDiv,
   #switch_nav .baseLbl, #switch_nav .baseLayersDiv, #switch_nav .dataLbl {
