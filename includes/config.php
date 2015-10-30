@@ -140,6 +140,7 @@ $config['email_contact_nominatim']="sylvain@refuges.info";
 
 /********** Cartes vignettes, fond de carte ************/
 
+
 // Voici le fond de carte par défaut :
 // Si vous voulez en changer ou avoir un autre pour le développement, sans avoir à mettre à jour sur git et faire des pirouettes, vous pouvez simplement modifier cette variable
 // située dans le fichier config_privee.php qui lui ne sera pas écrasé par le prochain git pull
@@ -163,9 +164,8 @@ mb_internal_encoding("UTF-8");
 // Filtrage géographique des inscriptions
 $config['filtre_geo'] = '40 52 -5 10'; // Zone autorisée: latitude_min latitude_max longitude_min longitude_max
 
-// Censure des messages de réservation
-$config['censure']="reservat|reserver|fete|noel|l\'an|reveillon|prevenir|previen|groupe|decembre|janvier|\/12";
-
+// Censure des messages de réservation, à compléter dans config_privee.php si ça évolue trop souvent
+$config['censure']="reservat|reserver";
 
 // ************* développeurs debug & co
 
