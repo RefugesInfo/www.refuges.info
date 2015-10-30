@@ -9,39 +9,23 @@ $config['utilisateur_pgsql']="login";
 $config['mot_de_passe_pgsql']="pass";
 $config['serveur_pgsql']="localhost";
 
-// Info pour développeurs de notre équipe, la base de prod s'appelle "refuges" mais il n'est pas recommandé de bosser dessus, donc test, c'est bien !
+// Info pour développeurs de notre équipe, la base de prod s'appelle "refuges" mais il n'est pas recommandé de bosser dessus, donc test, c'est celle que j'ai dupliqué
+// et dans laquelle on peut bien faire tout ce qu'on veut sans risques.
 // a noter que les photos qui sont des fichiers sur le disque risque fort de ne plus s'afficher, mais c'est en quelque sorte "logique"
 $config['base_pgsql']="test";
 
+// infos privées qu'on ne veut pas divulger sur github et que vous devez remplir 
+$config['ign_key']='xxxx'; // http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
+$config['bing_key']='yyy'; // https://www.bingmapsportal.com
 
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 // + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
 // sert aussi à afficher les lien de validation xhtml en bas de page (histoire de ne pas ennuier tout le monde avec ça)
-$config['debug']=false;
+// par défaut à false, à mettre à décommenter pour les développeurs qui le veulent
+// $config['debug']=true;
 
-// Le forum est bourré de warning que je ne compte pas vraiment reprendre
-if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))
-{
-  ini_set('error_reporting', E_ALL ^ E_NOTICE);
-  ini_set('display_errors', '1');
-}
-
-// Voici le fond de carte qui s'affichera par défaut :
-
-
-// celui géré par sly basé sur openstreetmap :
-$config['carte_base'] = 'maps.refuges.info';
-// Un autre basé sur Openstreetmap orienté montagne/rando
+// Par défaut, le fond de carte est maps.refuges.info, décommenter ça permet de changer le par défaut
 //$config['carte_base'] = 'Outdoors';
 
-$config['SwissTopo'] = true;
 
-$config['ign_key']='ev2w14tv2ez4wpypux2ael39'; // ID contrat 0004365 / Expire le 31/08/2016 / http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
-$config['bing_key']='AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf'; // https://www.bingmapsportal.com
-
-// Filtrage géographique des inscriptions
-$config['filtre_geo'] = '40 52 -5 10'; // Zone autorisée: latitude_min latitude_max longitude_min longitude_max
-
-// Censure des messages de réservation
-$config['censure']="reservat|reserver|fete|noel|l\'an|reveillon|prevenir|previen|groupe|decembre|janvier|\/12";
 ?>
