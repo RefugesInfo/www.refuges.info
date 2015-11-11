@@ -97,9 +97,9 @@
 					</span>
 					<select id="select-projection"></select>
 					(
-						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=gpx&amp;liste_id_point=<?=$vue->point->id_point?>">gpx</a>
+						<a href="<?=$config['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">gpx</a>
 					,
-						<a href="<?=$config['sous_dossier_installation']?>exportations/exportations.php?format=kml&amp;liste_id_point=<?=$vue->point->id_point?>">kml</a>
+						<a href="<?=$config['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">kml</a>
 					,
 						<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
 					)
