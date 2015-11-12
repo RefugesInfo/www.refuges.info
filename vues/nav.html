@@ -25,10 +25,13 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 </div>
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 
-<div id="nav_bloc_carte"></div>
+<div id="nav_wrap_carte">
+	<div id="nav_bloc_carte">
+	</div>
+</div>
 
 	<?if (!$vue->mode_affichage ){?>
-		<div class="nav_bloc" <?if (!$vue->polygone->nom_polygone ){?>style="display:none"<?}?>>
+		<div class="nav_bloc_selecteur" <?if (!$vue->polygone->nom_polygone ){?>style="display:none"<?}?>>
 			<fieldset>
 			<legend>Limites</legend>
 				<label>
@@ -46,7 +49,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 		</div>
 	<?}?>
 
-	<div class="nav_bloc">
+	<div class="nav_bloc_selecteur">
 <?if ( !$vue->mode_affichage ){?>
 		<fieldset>
 			<legend>Points</legend>
