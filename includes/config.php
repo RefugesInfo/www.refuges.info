@@ -144,7 +144,8 @@ $config['email_contact_nominatim']="sylvain@refuges.info";
 // Voici le fond de carte par défaut :
 // Si vous voulez en changer ou avoir un autre pour le développement, sans avoir à mettre à jour sur git et faire des pirouettes, vous pouvez simplement modifier cette variable
 // située dans le fichier config_privee.php qui lui ne sera pas écrasé par le prochain git pull
-$config['carte_base'] = 'maps.refuges.info';
+$config['carte_base'] = 'Refuges.info-OSM';
+$config['carte_base_monde'] = 'France-OSM';
 
 // Pour avoir swisstopo je suppose ?
 $config['SwissTopo'] = true;
@@ -188,23 +189,25 @@ if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))
   ini_set('display_errors', '1');
 }
 
-/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve (utilisé pour les vignettes
-des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
-le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap 
+/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve
+utilisé pour les vignettes des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
+le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap
 car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
 
-$config['fournisseurs_fond_carte'] = 
-Array 
+$config['fournisseurs_fond_carte'] = Array 
 (
-     // nom pays chez OSM                ?                   français  Nom layer           Échelle 
-     'France métropolitaine'=> Array ($config['carte_base'], ''      , 'IGN',               50000),
-     'Schweiz'              => Array ($config['carte_base'], ''      , 'SwissTopo',         50000),
-     'Italia'               => Array ($config['carte_base'], 'de l\'', 'Italie',           100000),
-     'España'               => Array ($config['carte_base'], 'de l\'', 'Espagne',           25000),
-     'Andorra'              => Array ($config['carte_base'], ''      , 'IGN',               25000),
-     'Autres'               => Array ($config['carte_base'], ''      , 'OpenCycleMap',      50000), // dans les autres cas
-     'Saisie-modification'  => Array ($config['carte_base'], ''      , 'Bing photo',        10000), // cas spécial pour la saisie de point
-     'Saisie-création'      => Array ($config['carte_base'], ''      , 'Bing photo',     20000000), // cas spécial pour la modification de point
+// nom pays chez OSM               inutilisé       français  carte agrandie Échelle 
+  'France métropolitaine'=> Array (null,           ''      , 'France-IGN',    50000),
+  'Réunion'              => Array ('France-OSM',   ''      , 'France-IGN',    25000),
+  'Nouvelle Calédonie'   => Array ('France-OSM',   ''      , 'France-IGN',    25000),
+  'Andorra'              => Array (null,           ''      , 'France-IGN',    25000),
+  'Schweiz'              => Array (null,           ''      , 'SwissTopo',     50000),
+  'Österreich'           => Array (null,           ''      , 'Autriche-OB',   50000),
+  'Italia'               => Array (null,           'de l\'', 'Italie-IGM',   100000),
+  'España'               => Array (null,           'de l\'', 'Espagne-IDEE',  25000),
+  'Autres'               => Array ('France-OSM',   ''      , 'Outdoors-OSM',  50000), // dans les autres cas
+  'Saisie-modification'  => Array (null,           ''      , 'Photo-Bing',    10000), // cas spécial pour la saisie de point
+  'Saisie-création'      => Array (null,           ''      , 'Photo-Bing', 20000000), // cas spécial pour la modification de point
 );
 
 # NON NON : On ajoute rien après cette ligne (sauf si vous savez pourquoi), ajouter par contre tout ce que vous voulez avant le require_once("config_privee.php"); 15 lignes avant

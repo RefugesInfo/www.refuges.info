@@ -70,7 +70,6 @@ else // le point est valide. faut bosser.
     $tous_commentaires = infos_commentaires ($conditions_commentaires);
     $vue->annonce_fermeture = texte_non_ouverte ($point);
 
-
     /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" et de l'affichage de la carte ***/
     if ($point->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
     {
@@ -103,7 +102,7 @@ else // le point est valide. faut bosser.
 		$vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
         $vue->vignette = param_cartes ($point);
     }
-    
+
     /***********  détermination si le point se situe dans un polygone pour lequel un message est à faire passer *******/
     // L'utilisation principal est le message de réglementation de la réserve naturelle
     if (count($point->polygones))

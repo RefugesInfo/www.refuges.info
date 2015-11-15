@@ -3,22 +3,16 @@
  * Add references to many maps vendors
  */
 
+// Assignation du CRS à la couche UK-OS
+if (typeof L.OSOpenSpace != 'undefined')
+	L.TileLayer.OSOpenSpace.prototype.options.crs = L.OSOpenSpace.getCRS();
+
 L.Map.maps = function(name) {
 	if (typeof L.Map._maps == 'undefined') {
 		var maps = {
-			'Maps.Refuges.Info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
-			}),
-			'OpenStreetMap': L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
-			}),
-			'OpenStreetMap-FR': L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
-			}),
-			'MapQuest': L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
-				subdomains: '1234',
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>. Tiles courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'
-			}),
+			'OSM': new L.TileLayer.OSM(),
+			'OSM-FR': new L.TileLayer.OSM.FR(),
+			'Maps.Refuges.Info': new L.TileLayer.OSM.MRI(),
 
 			'IGN': new L.TileLayer.IGN(),
 			'IGN Photo': new L.TileLayer.IGN('ORTHOIMAGERY.ORTHOPHOTOS'),
@@ -31,9 +25,17 @@ L.Map.maps = function(name) {
 			'Swiss Siegfried': new L.TileLayer.SwissTopo('ch.swisstopo.hiks-siegfried'),
 			'Swiss Dufour': new L.TileLayer.SwissTopo('ch.swisstopo.hiks-dufour'),
 
+			'OSM-OB': new L.TileLayer.OSM.OB(),
+			'Autriche': new L.TileLayer.OSM.OB.Touristik(),
+			'OS-GB': new L.TileLayer.OSOpenSpace(key.os, {}), // Il faut mettre le {} sinon BUG
 			'Espagne': new L.TileLayer.WMS.IDEE(),
 			'Espagne photo': new L.TileLayer.WMS.IDEE.Photo(),
 			'Italie': new L.TileLayer.WMS.IGM(),
+
+			'MapQuest': L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
+				subdomains: '1234',
+				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>. Tiles courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'
+			}),
 
 			/* DCMM TODO Mapbox
 			'Mapbox':new L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
@@ -80,18 +82,7 @@ L.Map.maps = function(name) {
 		// Cartes ThunderForest
 		var ft = ['Landscape', 'Outdoors', 'Cycle', 'Transport'];
 		for (m in ft)
-			maps['OSM-' + ft[m]] =
-			new L.tileLayer('http://{s}.tile.thunderforest.com/' + ft[m].toLowerCase() + '/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & ' +
-					'<a href="http://www.thunderforest.com">Thunderforest ' + ft[m] + '</a>'
-			});
-
-		// Cartes Ordnance Survey: Britain's mapping agency
-		if (typeof L.OSOpenSpace != 'undefined' &&
-			typeof key != 'undefined' && typeof key.os != 'undefined') {
-			maps['OS-GB'] = new L.TileLayer.OSOpenSpace(key.os, {}); //DCMM BUG effet de bord sur les cartes thunderforest de tile = 200
-			maps['OS-GB'].options.crs = L.OSOpenSpace.getCRS();
-		}
+			maps['OSM-' + ft[m]] = new L.TileLayer.OSM[ft[m]]();
 
 		// On remet les couches dans l'ordre de leur nom
 		L.Map._maps = {};

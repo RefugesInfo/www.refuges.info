@@ -103,7 +103,6 @@ function infos_points($conditions)
         else
             $limite="\nLIMIT $conditions->limite";
 
-
     /******** Liste des conditions de type WHERE *******/
     if (!empty($conditions->ids_points))
         if (!verif_multiples_entiers($conditions->ids_points))
@@ -422,8 +421,8 @@ function param_cartes ($point)
     if ($point->polygones)
         foreach ($point->polygones as $polygone)
             foreach ($config['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
-    if ($polygone->nom_polygone==$nom_pays)
-        return $choix_carte;
+                if ($polygone->nom_polygone==$nom_pays)
+                    return $choix_carte;
     // aucun n'a été trouvé
     return $config['fournisseurs_fond_carte']['Autres'];
 }

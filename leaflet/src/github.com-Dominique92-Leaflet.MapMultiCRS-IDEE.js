@@ -6,25 +6,27 @@
  */
 
 L.TileLayer.WMS.IDEE = L.TileLayer.WMS.extend({
+    options: {
+        url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster',
+        layer: 'mtn_rasterizado',
+        attribution: '&copy; <a href="http://www.idee.es/">IDEE</a>'
+    },
 
-	initialize: function() {
-		L.TileLayer.WMS.prototype.initialize.call(this,
-			'http://www.idee.es/wms/MTN-Raster/MTN-Raster', {
-				layers: 'mtn_rasterizado',
-				attribution: '&copy; <a href="http://www.idee.es/">IDEE</a>'
-			}
-		);
-	}
+    initialize: function(options) {
+        L.setOptions(this, options);
+        L.TileLayer.WMS.prototype.initialize.call(this,
+            this.options.url, {
+                layers: this.options.layer,
+                attribution: this.options.attribution
+            }
+        );
+    }
 });
 
-L.TileLayer.WMS.IDEE.Photo = L.TileLayer.WMS.extend({
-
-	initialize: function() {
-		L.TileLayer.WMS.prototype.initialize.call(this,
-			'http://www.ign.es/wms-inspire/pnoa-ma', {
-				layers: 'OI.OrthoimageCoverage',
-				attribution: '&copy; <a href="http://www.ign.es/PNOA/">PNOA</a>'
-			}
-		);
-	}
+L.TileLayer.WMS.IDEE.Photo = L.TileLayer.WMS.IDEE.extend({
+    options: {
+        url: 'http://www.ign.es/wms-inspire/pnoa-ma',
+        layer: 'OI.OrthoimageCoverage',
+        attribution: '&copy; <a href="http://www.ign.es/PNOA/">PNOA</a>'
+    }
 });

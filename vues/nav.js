@@ -19,26 +19,19 @@ var map,
 	layerSwitcher,
 
 	baseLayers = {
-			'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
-			}),
-			'OpenStreetMap-FR': L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
-			}),
-			'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
-			}),
-			'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
-			}),
-			'IGN': new L.TileLayer.IGN(),
-			'IGN Topo': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'),
-			'IGN Classique': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
-			'SwissTopo': new L.TileLayer.SwissTopo(),
-			'Espagne': new L.TileLayer.WMS.IDEE(),
-			'Italie': new L.TileLayer.WMS.IGM(),
-			'Photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
-		},
+		'Refuges.info-OSM': new L.TileLayer.OSM.MRI(),
+		'France-OSM':    new L.TileLayer.OSM.FR(),
+		'Outdoors-OSM':  new L.TileLayer.OSM.Outdoors(),
+		'France-IGN':    new L.TileLayer.IGN(),
+		'Express-IGN':   new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
+		'SwissTopo':     new L.TileLayer.SwissTopo(),
+		'Autriche-OB':   new L.TileLayer.OSM.OB.Touristik(),
+		'Espagne-IDEE':  new L.TileLayer.WMS.IDEE(),
+		'Italie-IGM':    new L.TileLayer.WMS.IGM(),
+		'Angleterre-OS': new L.TileLayer.OSOpenSpace(key.os,{}),
+		'Photo-Bing':    new L.BingLayer(key.bing),
+		'Photos-IGN':    new L.TileLayer.IGN('ORTHOIMAGERY.ORTHOPHOTOS')
+	},
 
 	massifLayer = new L.GeoJSON.Ajax(
 		'<?=$config['sous_dossier_installation']?>api/polygones', {
@@ -183,7 +176,8 @@ window.addEventListener('load', function() {
 		fullscreenControl: true,
 		layers: [
 			baseLayers[L.UrlUtil.queryParse(L.UrlUtil.hash()).layer] // Donné par le permalink #layer=NOM
-				|| baseLayers['<?=$config["carte_base"]?>'], // Sinon le fond de carte par défaut
+				|| baseLayers['<?=$config["carte_base"]?>'] // Sinon le fond de carte par défaut
+				|| baseLayers[Object.keys(baseLayers)[0]], // Sinon la première couche définie
 			massifLayer
 <?if ( !$vue->mode_affichage ){?>
 			,poiLayer

@@ -15,7 +15,6 @@ L.CRS.EPSG21781 = L.extend(
 		}
 	), {
 		bounds: L.bounds([5.97, 45.83], [10.49, 47.81]),
-		name: 'SwissGrid(CH1903/NV03)',
 		title: {
 			lng: 'X', // Nom de la coordonnée pour affichage
 			lat: 'Y'

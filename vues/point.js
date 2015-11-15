@@ -4,38 +4,34 @@
 // $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
-if ($vue->mini_carte) {
-?>
+if ($vue->mini_carte) { ?>
 	var map, layerSwitcher;
 
 	window.addEventListener('load', function() {
 		var baseLayers = {
-			'maps.refuges.info': L.tileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
-			}),
-			'OpenStreetMap-FR': L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
-			}),
-			'OpenStreetMap': L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a>'
-			}),
-			'Outdoors': L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://www.thunderforest.com">Thunderforest</a>'
-			}),
-			'IGN': new L.TileLayer.IGN(),
-			'IGN Topo': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'),
-			'IGN Classique': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
-			'SwissTopo': new L.TileLayer.SwissTopo(),
-			'Espagne': new L.TileLayer.WMS.IDEE(),
-			'Italie': new L.TileLayer.WMS.IGM(),
-			'Photo': new L.BingLayer(key.bing), // Idem type:'Aerial'
+			'Refuges.info-OSM': new L.TileLayer.OSM.MRI(),
+			'France-OSM':    new L.TileLayer.OSM.FR(),
+			'Outdoors-OSM':  new L.TileLayer.OSM.Outdoors(),
+			'France-IGN':    new L.TileLayer.IGN(),
+			'Express-IGN':   new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
+			'SwissTopo':     new L.TileLayer.SwissTopo(),
+			'Autriche-OB':   new L.TileLayer.OSM.OB.Touristik(),
+			'Espagne-IDEE':  new L.TileLayer.WMS.IDEE(),
+			'Italie-IGM':    new L.TileLayer.WMS.IGM(),
+			'Angleterre-OS': new L.TileLayer.OSOpenSpace(key.os,{}),
+			'Photo-Bing':    new L.BingLayer(key.bing),
+			'Photos-IGN':    new L.TileLayer.IGN('ORTHOIMAGERY.ORTHOPHOTOS')
 		};
+
 		map = new L.Map('vignette', {
 			fullscreenControl: true,
 			center: new L.LatLng(<?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
 			zoom: 13,
 			layers: [
-				baseLayers['<?=$config["carte_base"]?>'], // Le fond de carte visible
+				baseLayers[L.UrlUtil.queryParse(L.UrlUtil.hash()).layer] // Donné par le permalink #layer=NOM
+					|| baseLayers['<?=$vue->vignette[0]?>'] // Sinon le fond de carte assigné à cette région par $config['fournisseurs_fond_carte']
+					|| baseLayers['<?=$config["carte_base"]?>'] // Sinon le fond de carte par défaut
+					|| baseLayers[Object.keys(baseLayers)[0]], // Sinon la première couche définie
 				new L.Marker.Position(
 					new L.LatLng(<?=$vue->point->latitude?>, <?=$vue->point->longitude?>), { // Un cadre
 						icon: L.icon({
