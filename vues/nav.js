@@ -19,18 +19,18 @@ var map,
 	layerSwitcher,
 
 	baseLayers = {
-		'Refuges.info-OSM': new L.TileLayer.OSM.MRI(),
-		'France-OSM':    new L.TileLayer.OSM.FR(),
-		'Outdoors-OSM':  new L.TileLayer.OSM.Outdoors(),
-		'France-IGN':    new L.TileLayer.IGN(),
-		'Express-IGN':   new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
-		'SwissTopo':     new L.TileLayer.SwissTopo(),
-		'Autriche-OB':   new L.TileLayer.OSM.OB.Touristik(),
-		'Espagne-IDEE':  new L.TileLayer.WMS.IDEE(),
-		'Italie-IGM':    new L.TileLayer.WMS.IGM(),
-		'Angleterre-OS': new L.TileLayer.OSOpenSpace(key.os,{}),
-		'Photo-Bing':    new L.BingLayer(key.bing),
-		'Photos-IGN':    new L.TileLayer.IGN('ORTHOIMAGERY.ORTHOPHOTOS')
+		'Refuges.info':new L.TileLayer.OSM.MRI(),
+		'OSM fr':      new L.TileLayer.OSM.FR(),
+		'Outdoors':    new L.TileLayer.OSM.Outdoors(),
+		'IGN':         new L.TileLayer.IGN(),
+		'IGN Express': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
+		'SwissTopo':   new L.TileLayer.SwissTopo(),
+		'Autriche':    new L.TileLayer.OSM.OB.Touristik(),
+		'Espagne':     new L.TileLayer.WMS.IDEE(),
+		'Italie':      new L.TileLayer.WMS.IGM(),
+		'Angleterre':  new L.TileLayer.OSOpenSpace(key.os,{}),
+		'Photo Bing':  new L.BingLayer(key.bing),
+		'Photo IGN':   new L.TileLayer.IGN('ORTHOIMAGERY.ORTHOPHOTOS')
 	},
 
 	massifLayer = new L.GeoJSON.Ajax(

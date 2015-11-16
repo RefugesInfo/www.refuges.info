@@ -144,8 +144,8 @@ $config['email_contact_nominatim']="sylvain@refuges.info";
 // Voici le fond de carte par défaut :
 // Si vous voulez en changer ou avoir un autre pour le développement, sans avoir à mettre à jour sur git et faire des pirouettes, vous pouvez simplement modifier cette variable
 // située dans le fichier config_privee.php qui lui ne sera pas écrasé par le prochain git pull
-$config['carte_base'] = 'Refuges.info-OSM';
-$config['carte_base_monde'] = 'France-OSM';
+$config['carte_base'] = 'Refuges.info';
+$config['carte_base_monde'] = 'OSM fr';
 
 // Pour avoir swisstopo je suppose ?
 $config['SwissTopo'] = true;
@@ -196,18 +196,16 @@ car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
 
 $config['fournisseurs_fond_carte'] = Array 
 (
-// nom pays chez OSM               inutilisé       français  carte agrandie Échelle 
-  'France métropolitaine'=> Array (null,           ''      , 'France-IGN',    50000),
-  'Réunion'              => Array ('France-OSM',   ''      , 'France-IGN',    25000),
-  'Nouvelle Calédonie'   => Array ('France-OSM',   ''      , 'France-IGN',    25000),
-  'Andorra'              => Array (null,           ''      , 'France-IGN',    25000),
-  'Schweiz'              => Array (null,           ''      , 'SwissTopo',     50000),
-  'Österreich'           => Array (null,           ''      , 'Autriche-OB',   50000),
-  'Italia'               => Array (null,           'de l\'', 'Italie-IGM',   100000),
-  'España'               => Array (null,           'de l\'', 'Espagne-IDEE',  25000),
-  'Autres'               => Array ('France-OSM',   ''      , 'Outdoors-OSM',  50000), // dans les autres cas
-  'Saisie-modification'  => Array (null,           ''      , 'Photo-Bing',    10000), // cas spécial pour la saisie de point
-  'Saisie-création'      => Array (null,           ''      , 'Photo-Bing', 20000000), // cas spécial pour la modification de point
+// Nom pays chez OSM               Vignette    Français  Carte agrandie Échelle 
+  'France métropolitaine'=> Array (null,       ''      , 'IGN',         50000),
+  'Réunion'              => Array ('OSM fr',   ''      , 'IGN',         25000),
+  'Nouvelle Calédonie'   => Array ('OSM fr',   ''      , 'IGN',         25000),
+  'Andorra'              => Array (null,       ''      , 'IGN',         25000),
+  'Schweiz'              => Array (null,       ''      , 'SwissTopo',   50000),
+  'Österreich'           => Array (null,       ''      , 'Autriche',    50000),
+  'Italia'               => Array (null,       'de l\'', 'Italie',     100000),
+  'España'               => Array (null,       'de l\'', 'Espagne',     25000),
+  'Autres'               => Array ('OSM fr',   ''      , 'Outdoors',    50000),
 );
 
 # NON NON : On ajoute rien après cette ligne (sauf si vous savez pourquoi), ajouter par contre tout ce que vous voulez avant le require_once("config_privee.php"); 15 lignes avant

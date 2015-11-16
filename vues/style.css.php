@@ -706,7 +706,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 /* Carte NAV présentation mobile horizontale */
-@media screen and (min-aspect-ratio: 1/1) and (max-height: 360px) {
+@media screen and (min-aspect-ratio: 1/1) and (max-height: 360px) and (min-width: 365px) {
   #nav_wrap_carte {
     float: right;
     width: 67%;
