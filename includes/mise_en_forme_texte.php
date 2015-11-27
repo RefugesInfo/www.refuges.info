@@ -175,27 +175,7 @@ array_merge($replace_img,
 );
 
 $html = preg_replace($searcharray, $replacearray, $html);
-//d($html);
 
-
-// On affiche les numéros de téléphone à l'envers
-if ($crypter_texte_sensible)
-{
-    // Regexp méga tordue pour éviter de matcher 0012345678912211564 qui n'est pas un n° de téléphone. Matcher quand même !0479333333! ou (0479333333) mais pas A0479333333;
-    // FIXME: ça ne match plus les numéros suisses et formats internationnaux (enfin, ça les matchaient pas avant non plus) sly 01/2015
-    $occurences_trouvees=preg_match_all("/[^0-9A-Za-z](0[0-9]([-. ]?[0-9]{2}){4})[^0-9]/",$html,$occurence);
-    if ($occurences_trouvees!=0)
-    {
-        for ($x=0;$x<$occurences_trouvees;$x++)
-        {
-            $reverse = strrev($occurence[0][$x]);
-            $html=str_replace($occurence[0][$x],"<span class=\"mail\">$reverse</span>",$html);
-        }
-    }
-}
-
-unset($occurences_trouvees);
-unset($occurence);
 
 // Transformation des adresses mails de façon à ne pas qu'elles ne soient pompées par les robots
 // 1/ Le code ascii de chaque caractère est transformé par la formule: 'x' => 135 - ascii('x')
