@@ -179,7 +179,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                             $url_complete="http://".$config['nom_hote'];
                         $news_array[$i]['lien']=$url_complete.$config['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
                         $news_array[$i]['categorie']="Forum";
-                        $news_array[$i]['titre']=$commentaire_forum->topic_title;
+                        $news_array[$i]['titre']=html_entity_decode ($commentaire_forum->topic_title);
                         $news_array[$i]['date']=$commentaire_forum->date;
                         $i++;
                     }
