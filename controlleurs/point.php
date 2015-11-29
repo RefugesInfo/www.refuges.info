@@ -53,7 +53,7 @@ else // le point est valide. faut bosser.
     if ($point->polygones)
         foreach ($point->polygones as $polygone)
         {
-            if (isset($polygone->categorie_polygone_type))
+            if (!empty($polygone->categorie_polygone_type)) // il existe des catégories "vide" elles sont des zone de positionnement de point de vu carte sans intérêt pour l'utilisateur final
             {
                 if ($polygone->categorie_polygone_type=="montagnarde")
                     $polygone->avec_lien_carte=True;
