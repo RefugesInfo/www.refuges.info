@@ -123,7 +123,7 @@ function infos_polygones($conditions)
         ";
 
   //FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
-  $box="ST_box2d(polygones.geom)";
+  $box="box2d(polygones.geom)";
   $query="SELECT polygone_type.type_polygone,
                  polygone_type.categorie_polygone_type,
                  st_xmin($box) AS ouest,
