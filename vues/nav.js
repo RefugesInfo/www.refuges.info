@@ -95,7 +95,8 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png'
+					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
+					size: 16
 				}
 			}
 		}
@@ -114,7 +115,8 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png',
+					size: 16
 				}
 			}
 		}
@@ -131,7 +133,8 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png',
+					size: 16
 				}
 			}
 		}
@@ -145,7 +148,8 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png'
+					url: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png',
+					size: 16
 				}
 			}
 		}
@@ -163,7 +167,8 @@ var map,
 			},
 			icon: function(feature) {
 				return {
-					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png'
+					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
+					size: 16
 				}
 			}
 		}
