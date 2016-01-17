@@ -91,7 +91,7 @@ var map,
 			bbox: true,
 			degroup: 12,
 			url: function(target) {
-				return '<?=$config['sous_dossier_installation']?>point/' + target.feature.properties.id;
+                            return target.feature.properties.lien;
 			},
 			icon: function(feature) {
 				return {

@@ -25,7 +25,6 @@ foreach ($points as $point) {
 	$j++;
 	echo "\r\n\t".'{'."\r\n\t\t".'"type": "Feature",
             "id": '.$point->id.',
-            "url": "'.$point->lien.'",
             "properties":'."\r\n\t\t\t";
 	echo json_encode($point);
 	echo ",\r\n\t\t".'"geometry": {
