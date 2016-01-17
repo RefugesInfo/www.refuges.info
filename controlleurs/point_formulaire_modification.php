@@ -78,13 +78,16 @@ elseif ( isset($_REQUEST["id_point_type"]))
     $conditions->modele=1;
     $points_modele=infos_points($conditions);
     if (count($points_modele)!=1)
+    {
         print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
+        $point = new stdClass;
+    }
     else
         $point=$points_modele[0];
     
     // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
     $point->longitude=6;
-	$point->latitude=47;
+    $point->latitude=47;
     
     // on force l'id du point à vide histoire de ne pas modifier le modèle
     unset($point->id_point);
