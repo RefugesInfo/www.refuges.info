@@ -43,14 +43,6 @@ foreach ($points AS $point) {
 		echo "	<cmt>".$point->acces['nom']." : ".$point->acces['valeur']."</cmt>\r\n";
 		echo "	<desc>".$point->remarque['nom']." : ".$point->remarque['valeur']."</desc>\r\n";
 		echo "	<src>".$point->coord['precision']['nom']."</src>\r\n";
-
-		$point_lien = new stdClass();
-		$point_lien->id_point = $point->id;
-		$point_lien->nom_type = $point->type['valeur'];
-		$point_lien->nom = $point->nom;
-		$point->lien = lien_point($point_lien);
-		unset($point_lien);
-
 		echo "	<link href=\"$point->lien\">\r\n";
 		echo "		<text>$point->nom sur $config[nom_hote]</text>\r\n";
 		echo "		<type>text/html</type>\r\n";

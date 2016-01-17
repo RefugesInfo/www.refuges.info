@@ -16,12 +16,5 @@ echo "#".$config[copyright_API]."\r\n";
 echo "id_point".$separateur."nom".$separateur."type".$separateur."altitude".$separateur."latitude".$separateur."longitude".$separateur."état".$separateur."nombre de place".$separateur."lien\r\n";
 
 foreach ($points AS $point) {
-	$point_lien = new stdClass();
-	$point_lien->id_point = $point->id;
-	$point_lien->nom_type = $point->type['valeur'];
-	$point_lien->nom = $point->nom;
-	$point->lien = lien_point($point_lien);
-	unset($point_lien);
-	
 	echo $point->id.$separateur.$point->nom.$separateur.$point->type['valeur'].$separateur.$point->coord['alt'].$separateur.$point->coord['lat'].$separateur.$point->coord['long'].$separateur.$point->etat['valeur'].$separateur.$point->places['valeur'].$separateur.$point->lien."\r\n";
 }

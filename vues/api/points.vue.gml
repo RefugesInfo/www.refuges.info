@@ -19,14 +19,8 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 	<description>$config[copyright_API]</description>\r\n";
 
 foreach ($points as $point) {
-	$point_lien = new stdClass();
-	$point_lien->id_point = $point->id;
-	$point_lien->nom_type = $point->type['valeur'];
-	$point_lien->nom = $point->nom;
-	$point->lien = lien_point($point_lien);
 
-	unset($point_lien);
-	echo "	<gml:featureMember>
+echo "	<gml:featureMember>
 		<point_wri>
 			<nom>".$point->nom."</nom>
 			<type>".$point->type['valeur']."</type>

@@ -47,14 +47,6 @@ foreach ($points AS $point) {
 	$kml .= "		<Placemark id='$point->id'>\r\n";
 	$kml .= "			<name>$point->nom</name>\r\n";
 	$kml .= "			<description>\r\n";
-
-	$point_lien = new stdClass();
-	$point_lien->id_point = $point->id;
-	$point_lien->nom_type = $point->type['valeur'];
-	$point_lien->nom = $point->nom;
-	$point->lien = lien_point($point_lien);
-	unset($point_lien);
-
 	$kml .= "				<![CDATA[\r\n";
 	$kml .= "					<img src=\"http://$config[nom_hote]/images/icones/".$point->type['icone'].".png\" />\r\n";
 	$kml .= "					(<em>".$point->type['valeur']."</em>) <br />\r\n";

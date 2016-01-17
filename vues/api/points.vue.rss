@@ -30,13 +30,6 @@ $rss .= "		<width>64</width>\r\n";
 $rss .= "	</image>\r\n";
 
 foreach ($points AS $point) {
-	$point_lien = new stdClass();
-	$point_lien->id_point = $point->id;
-	$point_lien->nom_type = $point->type['valeur'];
-	$point_lien->nom = $point->nom;
-	$point->lien = lien_point($point_lien);
-	unset($point_lien);
-
 	$rss .= "	<item>\r\n";
 	$rss .= "		<title>$point->nom</title>\r\n";
 	$rss .= "		<link>$point->lien</link>\r\n";

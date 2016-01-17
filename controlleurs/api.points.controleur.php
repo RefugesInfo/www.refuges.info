@@ -228,6 +228,7 @@ foreach ($points_bruts as $point) {
     $points->$i = new stdClass();
     $points->$i->id = $point->id_point;
     $points->$i->id_gps = $point->id_point_gps;
+    $points->$i->lien = lien_point($point);
     $points->$i->nom = $point->nom;
     // On affiche les coordonnées que si elles ne sont pas cachées
     if($point->id_type_precision_gps != $config['id_coordonees_gps_fausses']) {
