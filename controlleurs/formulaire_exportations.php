@@ -41,7 +41,7 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
   
     $conditions = new stdClass;
     $conditions->ids_polygone_type=$config['id_massif'];
-    $conditions->ordre = "id_zone"; // classe les massifs par zone
+    $conditions->ordre = "id_zone,nom_polygone"; // classe les massifs par zone
     $conditions->avec_zone_parente=True;
     $massifs=infos_polygones($conditions);
 
