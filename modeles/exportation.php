@@ -100,25 +100,6 @@ Cette version, par rapport à la version complète n'inclus que peu d'informatio
 latitude, longitude, altitude, nom du point
 </p>");
 
-$config['formats_exportation']['gpi']=array(
-"description_courte"=>"Garmin points d'intérêts",
-"extension_fichier"=>"gpi",
-"content_type"=>"application/binary",
-"interne"=>false,
-"description"=>"<h4>Le format <abbr title='Garmin Point of Interest'>GPI</abbr> pour GPS garmin</h4>
-<p>
-Le format \"gpi\" est un format spécifique à la gamme de terminaux GPS garmin
-</p>
-<h5>Dans ce format vous trouverez les données :</h5>
-<p>
-latitude,longitude,nom.
-</p>
-<p>
-Pour l'utiliser sur votre GPS garmin :<br />
-# Connecter le GPS en \"mass storage mode\" ( Ça devrait être quelque chose comme Setup->Interface->USB Mass Storage )<br />
-# Placer le fichier refuges.gpi dans le dossier poi dans le dossier garmin ( les créer s'ils n'existent pas )<br />
-</p>");
-
 //------------------------------------------
 $config['formats_exportation']['csv']=array(
 "description_courte"=>"csv (tableurs)",

@@ -3,8 +3,7 @@
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
 header("Content-disposition: filename=points.$req->format");
-if ($req->format == "gpx") header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
-else if ($req->format == "gpi") header("Content-Type: application/binary; UTF-8"); // rajout du charset
+header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");

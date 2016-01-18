@@ -49,7 +49,7 @@ $req->type_points = $_REQUEST['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("geojson", "kmz", "kml", "gml", "gpx"/*, "gpi"*/, "csv", "xml"/*, "yaml"*/, "rss");
+$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "csv", "xml"/*, "yaml"*/, "rss");
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
 $val->detail = array("simple", "complet");
 // FIXME sly : tout ça devrait être stocké dans la base de donnée
@@ -398,7 +398,7 @@ switch ($req->format) {
     case 'gml':
         include($config['chemin_vues'].'/api/points.vue.gml');
         break;
-    case 'gpx': case 'gpi':
+    case 'gpx':
         include($config['chemin_vues'].'/api/points.vue.gpx');
         break;
     case 'csv':
