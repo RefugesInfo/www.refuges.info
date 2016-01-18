@@ -19,3 +19,15 @@ php_value short_open_tag 1
 #A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error
 #php_value display_errors 1
 
+
+#C'est pas une nécessité, mais pour le css et le js ça accélère un peu le
+#chargement. Si le module n'existe pas avec apache, tant pis, on ne fera
+#rien
+<ifmodule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 2 hours"
+  ExpiresByType application/javascript "access plus 2 hours"
+  ExpiresByType image/png "access plus 2 hours"
+  ExpiresByType image/jpg "access plus 2 hours"
+  ExpiresByType image/jpeg "access plus 2 hours"
+</ifmodule>
