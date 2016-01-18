@@ -68,10 +68,5 @@ $vue->coordonnees_polygones = str_replace (
 	$polygones_bruts[0]->geometrie_geojson
 );
 
-$vue->liste_id_point_type = // Dominique 2010 12 05 / Ajout pour retrouver les checks mémorisés dans un cookie
-		$HTTP_COOKIE_VARS ['liste_id_point_type']
-		? $HTTP_COOKIE_VARS ['liste_id_point_type']
-		: '7,10,9,23,6,3';
-
 $vue->lien_legende_carte=lien_wiki('legende_carte');
 ?>
