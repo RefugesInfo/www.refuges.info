@@ -389,9 +389,6 @@ unset($points_bruts, $i);
 /****************************** FORMAT VUE ******************************/
 
 switch ($req->format) {
-    case 'geojson':
-        include($config['chemin_vues'].'/api/points.vue.json');
-        break;
     case 'kml': case 'kmz':
         include($config['chemin_vues'].'/api/points.vue.kml');
         break;
@@ -410,7 +407,7 @@ switch ($req->format) {
     case 'rss':
         include($config['chemin_vues'].'/api/points.vue.rss');
         break;
-    default:
+    case 'geojson': default:
         include($config['chemin_vues'].'/api/points.vue.json');
         break;
 }
