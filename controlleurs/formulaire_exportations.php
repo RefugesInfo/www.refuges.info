@@ -6,17 +6,11 @@ Le traitement proprement dit est dans exportations.php
 **********************************************************************************************/
 
 require_once ("bdd.php");
-require_once ("exportation.php");
 require_once ("meta_donnee.php");
-
-$formats="";
-foreach ($config['formats_exportation'] as $formats_possibles)
-  if ($formats_possibles['interne']==false)
-    $formats.=$formats_possibles['description_courte'].", ";
 
 $vue->titre="Téléchargement et exportation de la base refuges.info aux formats $formats";
 
-// comme on se "post" les informations à soit même, on vérifie dans quel cas on est
+// FIXME sly: à découper en deux fichiers pour plus de lisibilité comme on se "post" les informations à soit même, on vérifie dans quel cas on est
 if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 {
     $vue->points = new stdClass; // objet contenant les type de points (en tant quobjets eux memes)
@@ -60,14 +54,12 @@ else // formulaire validé, affichage du lien et d'un blabla
 {
     $vue->lien_export = new stdClass; // contiendra: URL, description ...
     $vue->lien_licence = lien_wiki("licence");
+    $vue->format=$_POST['format'];
 
     if ($_POST['id_point_type']=="" OR $_POST['id_massif']=="")
-        $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ??";
+        $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ?";
     else
     {
-        //ya plus de description ?
-        //$vue->lien_export->description= $config['formats_exportation'][$_POST['format']]['description'] ;
-    
         $liste_id_point_type = implode(',',$_POST['id_point_type']);
         $liste_id_massif = implode(',',$_POST['id_massif']);
     

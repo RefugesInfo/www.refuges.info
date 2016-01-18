@@ -6,14 +6,11 @@
    </dl>
     <dl> 
       <dt>Exportation demandée</dt>
-      <dd>Voici le lien permanent d'accès direct aux données</dd>
+      <dd>Voici le lien permanent d'accès direct aux données au format "<?=$vue->format?>"</dd>
    </dl>
+   <? if (isset($vue->lien_export->url)) { ?>
     <p>
-        <?=$vue->lien_export->description?>
-    </p>
-    <? if (isset($vue->lien_export->url)) { ?>
-    <p>
-        <a href="<?=$vue->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour récupérer les données</a>
+        <a href="<?=$vue->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour télécharger les données</a>
     </p>
     <?}?>
 </div>

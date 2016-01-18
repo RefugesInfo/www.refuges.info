@@ -61,15 +61,19 @@
     </fieldset>
     <!-- Format d'export, KML GPX ... -->
     <fieldset>
-        <legend>Choix du format d'exportation</legend>
-		<select name="format"> <?
-			foreach ($config['formats_exportation'] as $clef=>$formats_possibles)
-			  if ($formats_possibles['interne']==false) { ?>
-                <option value="<?=$clef?>"><?=$formats_possibles[description_courte]?></option>
-              <?}?>
-        </select> 
-        <input type='submit' name='validation' value='Obtenir le lien' />
-	</fieldset>
+    <legend>Choix du format d'exportation</legend>
+    <select name="format">
+        <option value="kmz">kmz (googlearth compressé)</option>
+        <option value="kml">kml (googlearth)</option>
+        <option value="gml">gml (Geography Markup Language)</option>
+        <option value="gpx">gpx (GPs eXchange format)</option>
+        <option value="gpx-garmin">gpx simplifié (GPs eXchange format)</option>
+        <option value="csv">csv (tableurs)</option>
+        <option value="geojson">GeoJSON</option>
+    </select> 
+    <input type='submit' name='validation' value='Obtenir le lien' />
+    <a href="<?=lien_wiki("format_exportation")?>">Plus de détail sur ces formats</a>
+    </fieldset>
     
   </form>
 </div>
