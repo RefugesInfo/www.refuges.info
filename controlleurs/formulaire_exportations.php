@@ -55,17 +55,6 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
         if ( !isset($_GET['id_massif']) OR  ( (array) $_GET['id_massif'] == $massif->id_polygone ) )
             $vue->massifs->$index->checked = true;
     }
-    
-    // LA BBOX au choix =========================================
-    // ca sert encore ?
-    if(isset($_GET["sud"]) ) 
-    {
-        $vue->bbox = new stdClass;
-        $vue->bbox->nord = $_GET["nord"];
-        $vue->bbox->sud = $_GET["sud"];
-        $vue->bbox->ouest = $_GET["ouest"];
-        $vue->bbox->est = $_GET["est"];
-    }
 }
 else // formulaire validé, affichage du lien et d'un blabla
 {
@@ -82,11 +71,7 @@ else // formulaire validé, affichage du lien et d'un blabla
         $liste_id_point_type = implode(',',$_POST['id_point_type']);
         $liste_id_massif = implode(',',$_POST['id_massif']);
     
-        // limiter à une bbox (si demandé depuis les cartes)
-        if(isset($_POST['sud']) ) 
-            $bbox = "&bbox=".implode(',',array($_POST['ouest'], $_POST['sud'], $_POST['est'], $_POST['nord']) ) ;
-    
-        $options_lien="?nb_points=all&amp;format=".$_POST['format']."&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif".$bbox;
+        $options_lien="?nb_points=all&amp;format=".$_POST['format']."&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
     
         $vue->lien_export->url = "http://".$config['nom_hote']."/api/massif$options_lien";
     } 

@@ -59,31 +59,6 @@
                    <!-- fin de la derniere zone -->
                     </fieldset>
     </fieldset>
-    <!--  BBOX si un parametre GET a ete passe -->
-    <!-- une selection a main levée par OL seriat plus adaptée -->
-    <?php
-    if ( isset($vue->bbox) ) { ?>
-    <fieldset>
-        <legend>Limites (en degrés décimaux WGS84)</legend>
-        <table>
-            <tr>
-				<td></td>
-				<td style='text-align: center;'><input name='nord' id='bbox_latmax' type='text' size='4' value='<?=$vue->bbox->nord?>' /></td>
-				<td></td>
-			</tr>
-			<tr style='height: 4em;'>
-				<td><input name='ouest' id='bbox_lngmin' type='text' size='4' value='<?=$vue->bbox->ouest?>' /></td>
-				<td style='background-color: #A6CEE7;'>Zone à exporter</td>
-				<td><input name='est' id='bbox_lngmax' type='text' size='4' value='<?=$vue->bbox->est?>' /></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td style='text-align: center;'><input name='sud' id='bbox_latmin' type='text' size='4' value='<?=$vue->bbox->sud?>' /></td>
-				<td></td>
-			</tr>
-		</table>
-    </fieldset>
-    <?}?>
     <!-- Format d'export, KML GPX ... -->
     <fieldset>
         <legend>Choix du format d'exportation</legend>
