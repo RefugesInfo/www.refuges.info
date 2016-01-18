@@ -25,7 +25,12 @@ function updatebbcode2txt(&$html, $key) {
     if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url')
         $html=bbcode2txt($html);
 }
-function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html===TRUE) { $html='1'; } }
+function updatebool2char(&$html) { 
+    if($html===FALSE) 
+        $html='0';  
+    elseif($html===TRUE) 
+        $html='1'; 
+}
 /****************************************/
 
 // Dans un premier temps on met en place l'objet contenant la requête
