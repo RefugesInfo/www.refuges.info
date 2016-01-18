@@ -47,8 +47,9 @@ $val = new stdClass();
 $val->format = array("geojson", "kmz", "kml", "gml", "gpx", "gpi", "csv", "xml"/*, "yaml"*/, "rss");
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
 $val->detail = array("simple", "complet");
-$val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac");
-$val->type_points_id = array(7, 10, 9, 23, 6, 3, 19, 16);
+// FIXME sly : tout ça devrait être stocké dans la base de donnée
+$val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac", "batiment_a_explorer");
+$val->type_points_id = array(7, 10, 9, 23, 6, 3, 19, 16, 28);
 
 /****************************** VALEURS PAR DÉFAUT - PARAMS FACULTATIFS ******************************/
 
