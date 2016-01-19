@@ -116,6 +116,7 @@ if ($nb_coul) {
 			$polygones->$i->bbox = $polygone->bbox;
 			$polygones->$i->lien = lien_polygone($polygone,False);
 			$polygones->$i->couleur = $couleur;
+			$polygones->$i->fillColor = $couleur; //DOM nom de propriete "standard"
 			$i++;
 		}
 	}

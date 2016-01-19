@@ -94,7 +94,7 @@ function infos_points($conditions)
     $champs_en_plus="";
     $conditions_sql="";
     $tables_en_plus="";
-  $points = [];
+    $points = [];
 
     // condition de limite en nombre
     if (!empty($conditions->limite))
@@ -256,6 +256,7 @@ function infos_points($conditions)
   $query_points="
   SELECT points.*,
          points_gps.*,
+         ST_AsGeoJSON(points_gps.geom) AS geojson,
          type_precision_gps.*,
          point_type.*,COALESCE(phpbb_users.username,nom_createur) as nom_createur,
          ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
