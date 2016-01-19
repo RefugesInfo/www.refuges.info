@@ -89,7 +89,7 @@ function infos_polygones($conditions)
 
     // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
     if (isset($conditions->geometrie))
-        $conditions_sql.=" AND polygones.geom && ". $conditions->geometrie ;
+        $conditions_sql.=" AND ST_Intersects(polygones.geom, {$conditions->geometrie})";
 
     if ($conditions->avec_geometrie)
         $champs_en_plus.=",st_as$conditions->avec_geometrie(polygones.geom,5) AS geometrie_$conditions->avec_geometrie";
