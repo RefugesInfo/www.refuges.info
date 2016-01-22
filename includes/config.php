@@ -88,10 +88,11 @@ $config['id_zone_accueil']=3304; // sly en fait ce sont les alpes françaises qu
 $config['tout_type_refuge']="7,9,10";
 
 // C'est clair que c'est nul, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'intéroger le bon id directement
-$config['id_cabane_gardee']=7; 
+$config['id_cabane_non_gardee']=7; 
 $config['id_refuge_garde']=10; 
 $config['id_gite_etape']=9;
 $config['point_d_eau']=23;
+$config['id_batiment_en_montagne']=28;
 
 // Champs valables pour les points classés par spécificité (permet de dynamiquement gérer le formulaire de saisie et d'affichage)
 // FIXME sly 13/08/2013 : on pourrait presque aller les chercher dans la base directement, mais on perdrait la possiblité de changer l'ordre facilement. A voir le pour et le contre

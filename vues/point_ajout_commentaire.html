@@ -63,7 +63,7 @@
 		Un commentaire sur une fiche doit être utile et objectif.
 		Si vous désirez poster une appréciation, faites le plutôt sur le <a href="<?=$vue->lien_forum_point?>">forum attaché à <?=$point->article_demonstratif.' '.$point->nom_type?></a>.
 	</p>
-	<?php if ($point->id_point_type==7) { ?>
+	<?php if ($point->id_point_type==$config['id_cabane_non_gardee']) { ?>
 		<p>
 			Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>
 			car cette pratique est contraire à l'esprit dans lequel <?=$point->article_demonstratif.' '.$point->nom_type?> à été créé.

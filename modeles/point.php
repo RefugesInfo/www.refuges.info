@@ -441,7 +441,7 @@ function texte_non_ouverte($point)
     case 'cle_a_recuperer':
       return "Clé à récupérer avant";
     case 'detruit':
-            if ($point->id_point_type==$config['id_cabane_gardee'])
+            if ($point->id_point_type==$config['id_cabane_non_gardee'])
                 return "Détruite";
             else
                 return "Détruit";
@@ -751,23 +751,29 @@ de style permettant de choisir l'icone selon les critères d'un point
 *******************************************************/
 function choix_icone($point)
 {
+    global $config;
     // par défaut, et sauf modification ultérieure, le nom de l'icone à choisir porte, par défaut, le nom du type de point (dans une version convertie sans accents,guillemet ou espace)
     $nom_icone=replace_url($point->nom_type);
 
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( ($point->manque_un_mur OR $point->places==0) AND $point->nom_type=="cabane non gardée" )
+    if ( ($point->manque_un_mur OR $point->places==0) AND $point->id_point_type==$config['id_cabane_non_gardee'] )
         $nom_icone="abri";
 
+    // les bâtiments en montagne sont des bâtiments situé en montgne dont on ne sait rien et qu'il faudrait explorer ou, si fermé dont on sait qu'ils ne peuvent servir
+    if ( ($point->conditions_utilisation=='fermeture' or $point->conditions_utilisation=="detruit") AND $point->id_point_type==$config['id_batiment_en_montagne'] )
+        $nom_icone="batiment-inutilisable";
+        
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( $point->conditions_utilisation=='cle_a_recuperer' AND $point->nom_type=="cabane non gardée" )
+    if ( $point->conditions_utilisation=='cle_a_recuperer' AND $point->id_point_type==$config['id_cabane_non_gardee'] )
         $nom_icone="cabane_cle";
-    // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
+        
+    // Pour les cabane/refuges/gites dans lesquelles on ne peut dormir (car fermées ou détruites)
     if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit")
           AND
-          ($point->nom_type=="cabane non gardée" or $point->nom_type=="gîte d'étape" or $point->nom_type=="refuge gardé")
+          ($point->id_point_type==$config['id_cabane_non_gardee'] or $point->id_point_type==$config['id_gite_etape'] or $point->id_point_type==$config['id_refuge_garde'])
        )
         $nom_icone="inutilisable";
-
+        
     return $nom_icone;
 }
 function chemin_icone($nom_icone,$absolu=true)
