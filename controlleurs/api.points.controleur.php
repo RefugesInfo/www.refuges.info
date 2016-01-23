@@ -235,9 +235,7 @@ foreach ($points_bruts as $point) {
     $points->$i->id = $point->id_point;
     $points->$i->id_gps = $point->id_point_gps;
     $points->$i->lien = lien_point($point);
-    $points->$i->url = lien_point($point); //DOM nom de propriete "standard"
     $points->$i->nom = $point->nom;
-    $points->$i->title = $point->nom; //DOM nom de propriete "standard"
     // On affiche les coordonnées que si elles ne sont pas cachées
     if($point->id_type_precision_gps != $config['id_coordonees_gps_fausses']) {
         $points->$i->coord['long'] = $point->longitude;
