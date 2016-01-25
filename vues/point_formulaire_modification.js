@@ -17,8 +17,7 @@ window.addEventListener('load', function() {
 			'Espagne':     new L.TileLayer.WMS.IDEE(),
 			'Italie':      new L.TileLayer.WMS.IGM(),
 			'Angleterre':  new L.TileLayer.OSOpenSpace(key.os,{}),
-			'Photo Bing':  new L.BingLayer(key.bing),
-			'Photo IGN':   new L.TileLayer.IGN('ORTHOIMAGERY.ORTHOPHOTOS')
+			'Photo Bing':  new L.BingLayer(key.bing)
 		};
 
 	map = new L.Map('carte-edit', {
