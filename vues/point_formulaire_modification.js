@@ -12,8 +12,6 @@ window.addEventListener('load', function() {
 			'Refuges.info':new L.TileLayer.OSM.MRI(),
 			'OSM fr':      new L.TileLayer.OSM.FR(),
 			'Outdoors':    new L.TileLayer.OSM.Outdoors(),
-			'IGN':         new L.TileLayer.IGN(),
-			'IGN Express': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
 			'SwissTopo':   new L.TileLayer.SwissTopo(),
 			'Autriche':    new L.TileLayer.OSM.OB.Touristik(),
 			'Espagne':     new L.TileLayer.WMS.IDEE(),
