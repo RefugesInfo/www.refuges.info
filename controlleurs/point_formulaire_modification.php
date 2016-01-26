@@ -38,7 +38,7 @@ if ( isset($_REQUEST["id_point"]) )
         return "";
     }
     // Soit on est avec un modérateur soit le créateur de la fiche
-    if ( $_SESSION['niveau_moderation']>=1 or (isset($_SESSION['id_utilisateur']) and $_SESSION['id_utilisateur']==$point->id_createur ) ) 
+    if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur OR $point->id_point_type == $config['id_batiment_en_montagne']) ) 
     {
         $vue->serie = param_cartes ($point);
         

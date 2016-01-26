@@ -59,14 +59,14 @@ switch( $_REQUEST["action"] )
         break;
     case 'Modifier' :
         $ancien_point=infos_point($_REQUEST['id_point'],True); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
-        $nouveau_point=preparation_point();
+        $point=preparation_point();
         // modification uniquement si modérateur ou créateur de la fiche
-        if ( $_SESSION['niveau_moderation']>=1 
-              or 
-              (isset($_SESSION['id_utilisateur']) and $_SESSION['id_utilisateur']==$ancien_point->id_createur )
-           )
+        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $ancien_point->id_createur OR $ancien_point->id_point_type == $config['id_batiment_en_montagne']) )
         {
-            $retour = modification_ajout_point($nouveau_point);
+            // sly 2016 : cas spécifique au batiment en montagne, le dernier modificateur en devient le créateur
+            if ($ancien_point->id_point_type == $config['id_batiment_en_montagne'])
+              $point->id_createur=$_SESSION['id_utilisateur'];
+            $retour = modification_ajout_point($point);
             gestion_retour($retour,$vue);
             $vue->message="Le point a bien été modifié";
         }
