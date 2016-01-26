@@ -67,7 +67,7 @@ foreach ($commentaires_attente_correction as $commentaire_attente_correction)
           break;
   case 2: $cause="contient un mot pouvant faire penser à une réservation";
           break;
-  case 3: $cause="concerne un ".$commentaire_attente_correction->nom_type;
+  case 3: $cause="concerne un ".$commentaire_attente_correction->nom_type." et n'a pas été traitée par un modérateur";
           break;
   default:$cause="";
   }
