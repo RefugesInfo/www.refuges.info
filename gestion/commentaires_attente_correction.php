@@ -52,8 +52,6 @@ if ( count($commentaires_attente_correction)!=0 )
 	</strong>
 	</p>
 <h4>Liste : (Cochez la case à droite retire le commentaire de la liste sans rien faire)</h4>
-<p>Plus la \"qualité supposée\" est basse plus cela veut dire que d'internautes ont jugés le commentaire inutile
-</p>
 <p>
 <strong>Pensez à bien les retirer de la liste une fois la correction faite</strong> 
 </p>
@@ -61,14 +59,18 @@ if ( count($commentaires_attente_correction)!=0 )
 print("<form method=\"post\" action=\"./?page=commentaires_attente_correction\">");
 foreach ($commentaires_attente_correction as $commentaire_attente_correction)
 {
-  if ($commentaire_attente_correction->demande_correction==1)
-      $cause="apporte peut-être de l'information à la fiche (selon un internaute)";
-  elseif ($commentaire_attente_correction->demande_correction==-1)
-    $cause="n'a peut-être aucun intérêt (selon un internaute)";
-  elseif ($commentaire_attente_correction->demande_correction==2)
-    $cause="contient un mot pouvant faire penser à une réservation";
-  else
-    $cause="";
+  switch ($commentaire_attente_correction->demande_correction)
+  {
+  case 1: $cause="apporte peut-être de l'information à la fiche (selon un internaute)";
+          break;
+  case -1:$cause="n'a peut-être aucun intérêt (selon un internaute)";
+          break;
+  case 2: $cause="contient un mot pouvant faire penser à une réservation";
+          break;
+  case 3: $cause="concerne un ".$commentaire_attente_correction->nom_type;
+          break;
+  default:$cause="";
+  }
   print("<a href=\"".lien_point_lent($commentaire_attente_correction->id_point)."#C$commentaire_attente_correction->id_commentaire\">
   Le commentaire de \"".bbcode2html($commentaire_attente_correction->auteur_commentaire)."\" sur la fiche 
   $commentaire_attente_correction->nom</a> $cause

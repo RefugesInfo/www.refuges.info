@@ -17,8 +17,7 @@ if ( $_SESSION['niveau_moderation']>=1 )
 
 $commentaire->id_point=$controlleur->url_decoupee[1];
 $conditions_commentaire->ids_points=$commentaire->id_point;
-$p=infos_points($conditions_commentaire);
-$point=$p[0];
+$point=infos_point($commentaire->id_point);
 if (!$point->erreur)
 {
     if (!isset($_SESSION['id_utilisateur'])) // non connecté ? un message d'information s'affichera, et on présentera un CAPTCHA
@@ -52,9 +51,13 @@ if (!$point->erreur)
                 $commentaire->photo['originale']=$file_path;
 
             $commentaire->demande_correction=$_POST['demande_correction'];
-			// Et si on trouve un mot clé censuré
-			if (isset ($config['censure']) && preg_match ('/'.$config['censure'].'/i', retrait_accents ($commentaire->texte)))
-				$commentaire->demande_correction=2;
+            // Et si on trouve un mot clé censuré
+            if (isset ($config['censure']) && preg_match ('/'.$config['censure'].'/i', retrait_accents ($commentaire->texte)))
+              $commentaire->demande_correction=2;
+
+            // Et si la fiche concerne un batiment en montagne, on le signale systématiquement à un modérateur
+            if ($point->id_point_type == $config['id_batiment_en_montagne'])
+              $commentaire->demande_correction=3;
 
             $commentaire->id_createur_commentaire=$_SESSION['id_utilisateur'];
             // Transmission des info en cas d'erreur au modèle
@@ -64,14 +67,14 @@ if (!$point->erreur)
             if (!$vue->messages->erreur)
                 $commentaire->texte_propre="";
 
-            // Nettoyage de la photo envoyée qu'elle fût ou non insérer correctement comme commentaire
+            // Nettoyage de la photo envoyée qu'elle fût ou non insérée correctement comme commentaire
             if (is_uploaded_file  ( $file_path))
                 unlink($file_path);
         }
     }
     // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
 
-  $quel_point="$point->article_defini $point->nom_type : ".protege($point->nom);
+    $quel_point="$point->article_defini $point->nom_type : ".protege($point->nom);
     $vue->titre="Ajout d'un commentaire sur $quel_point";
     $vue->lien_point=lien_point($point);
     $vue->lien_texte_retour="Retour à $quel_point";
