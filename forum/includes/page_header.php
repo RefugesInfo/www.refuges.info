@@ -28,7 +28,6 @@ if ( !defined('IN_PHPBB') )
 define('HEADER_INC', TRUE);
 global $config; // Dominique 29/11/11 : Dans le cas ou page_header.php serait inclus dans une fonction (message_die())
 global $pdo; // Même principe que si avant
-require_once ("pub.php");
 require_once ("point.php");
 require_once ("wiki.php");
 
@@ -385,8 +384,6 @@ $template->assign_vars(array(
 	'L_SEARCH_SELF' => $lang['Search_your_posts'],
 	'L_WHOSONLINE_ADMIN' => sprintf($lang['Admin_online_color'], '<span style="color:#' . $theme['fontcolor3'] . '">', '</span>'),
 	'L_WHOSONLINE_MOD' => sprintf($lang['Mod_online_color'], '<span style="color:#' . $theme['fontcolor2'] . '">', '</span>'),
-
-//	'BANDEAU_PUBLICITE' => bandeau_publicitaireXML('2'),
 	'BANDEAU_PUBLICITE' => '', //bandeau_publicitaire("petit"),
 	'U_SEARCH_UNANSWERED' => append_sid('search.'.$phpEx.'?search_id=unanswered'),
 	'U_SEARCH_SELF' => append_sid('search.'.$phpEx.'?search_id=egosearch'),
@@ -485,9 +482,12 @@ else
 }
 header ('Expires: 0');
 header ('Pragma: no-cache');
+
+// HACK : A partir d'ici, c'est le hack spécial bandeau de refuges.info, notre moteur MVC ferait tout ça de manière centralisé mais avant qu'on passe phpBB à ça, les poules auront des dents
+// donc on duplique
 require_once ("autoconnexion.php");
 
-// On gère l'éventuel connexion automatique de l'internaute (En réalité, le forum s'en charge lui même vu que ce sont ses cookies, mais cela nous permet de changer le bandeau wri indiquant qu'on est connecté)
+// On gère l'éventuelle connexion automatique de l'internaute (En réalité, le forum s'en charge lui même vu que ce sont ses cookies, mais cela nous permet de changer le bandeau wri indiquant qu'on est connecté)
 auto_login_phpbb_users();
 
 // 05/11/2011 Dominique : modif appel
@@ -502,6 +502,7 @@ if ($_SESSION['niveau_moderation']>=1)
 $vue->titre = $page_title;
 $vue->css [] = 'style-forum.css';
 $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
+$vue->zones=remplissage_zones_bandeau();
 
 require_once ($config['chemin_vues']."_entete.html");
 

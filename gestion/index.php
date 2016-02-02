@@ -14,6 +14,7 @@ require_once ("../includes/config.php");
 require_once ("autoconnexion.php");
 require_once ("wiki.php");
 
+// FIXME sly 2016 : Ces lignes ne seraient pas nécessaires si la gestion était au format MVC. Qui s'y colle ?
 auto_login_phpbb_users();
 
 $vue = new stdClass;
@@ -22,9 +23,11 @@ $vue->titre="Zone de gestion";
 if ($_SESSION['niveau_moderation']>=1)
     $vue->demande_correction=info_demande_correction ();
 
-// FIXME : Cette bidouille ne serait pas nécessaire si la gestion était au format MVC
 $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
+$vue->zones=remplissage_zones_bandeau();
 include ($config['chemin_vues']."_entete.html");
+
+// FIN FIXME
 
 print("<div class=\"contenu\"$hauteur_contenu>");
 // autoconnexion.php ayant déjà fait le boulot il n'y a plus qu'a vérifier

@@ -86,26 +86,16 @@ if (!isset($vue->type))
 // On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config['chemin_controlleurs'].$controlleur->type.".php");
 
-// La suite, c'est une somme de "par défaut" sauf si le controlleur a imposé ses choix
-
-// Ajoute les liens vers les autres zones
-$conditions = new stdClass;
-$conditions->ids_polygone_type=$config['id_zone'];
-$zones=infos_polygones($conditions);
-if ($zones)
-  foreach ($zones as $zone)
-    $vue->zones [ucfirst($zone->nom_polygone)] = lien_polygone($zone)."?mode_affichage=zone";
-
-// et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
-// FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
-// Si quelqu'un veut le bouger, il a mon feu vert -- sly
-if (isset ($_SESSION['niveau_moderation']) and $_SESSION['niveau_moderation']>=1)
-    $vue->demande_correction=info_demande_correction ();
-
-// On affiche le tout
-// FIXME : Chaque controlleur, ou mieux encore, chaque vue (un include ?) devrait être autonome pour dire s'il veut l'entête ou non
+// FIXME : Chaque controlleur, ou mieux encore, chaque vue (un include ?) devrait être autonome pour dire si il/elle veut l'entête ou non
 if ($controlleur->avec_entete_et_pied)
 {
+    // et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
+    // FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
+    // Si quelqu'un veut le bouger, il a mon feu vert -- sly
+    if (isset ($_SESSION['niveau_moderation']) and $_SESSION['niveau_moderation']>=1)
+        $vue->demande_correction=info_demande_correction ();
+
+    $vue->zones=remplissage_zones_bandeau();
     $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
     include ($config['chemin_vues']."_entete.html");
 }	
@@ -118,4 +108,5 @@ if (!isset($vue->template))
 include ($config['chemin_vues'].$vue->template);
 if ($controlleur->avec_entete_et_pied)
     include ($config['chemin_vues']."_pied.html");
+
 ?>
