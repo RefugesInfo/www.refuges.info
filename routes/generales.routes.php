@@ -86,7 +86,7 @@ if (!isset($vue->type))
 // On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config['chemin_controlleurs'].$controlleur->type.".php");
 
-// La suite, c'est une somme de "par défaut" sauf si le controlleur à imposer ses choix
+// La suite, c'est une somme de "par défaut" sauf si le controlleur a imposé ses choix
 
 // Ajoute les liens vers les autres zones
 $conditions = new stdClass;
@@ -103,7 +103,7 @@ if (isset ($_SESSION['niveau_moderation']) and $_SESSION['niveau_moderation']>=1
     $vue->demande_correction=info_demande_correction ();
 
 // On affiche le tout
-// FIXME : Chaque controlleur devrait être autonome pour dire s'il veut l'entête ou non
+// FIXME : Chaque controlleur, ou mieux encore, chaque vue (un include ?) devrait être autonome pour dire s'il veut l'entête ou non
 if ($controlleur->avec_entete_et_pied)
 {
     $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
@@ -114,7 +114,7 @@ if ($controlleur->avec_entete_et_pied)
 if (!isset($vue->template))
     $vue->template=$vue->type.".html";
 
-// FIXME : Chaque controlleur devrait être autonome pour dire s'il veut l'entête ou non et l'inclure lui même
+// FIXME : idem entête
 include ($config['chemin_vues'].$vue->template);
 if ($controlleur->avec_entete_et_pied)
     include ($config['chemin_vues']."_pied.html");
