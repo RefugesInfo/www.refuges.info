@@ -94,7 +94,7 @@ $conditions->ids_polygone_type=$config['id_zone'];
 $zones=infos_polygones($conditions);
 if ($zones)
   foreach ($zones as $zone)
-    $vue->zones [$zone->nom_polygone] = lien_polygone($zone)."?mode_affichage=zone";
+    $vue->zones [ucfirst($zone->nom_polygone)] = lien_polygone($zone)."?mode_affichage=zone";
 
 // et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
 // FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
