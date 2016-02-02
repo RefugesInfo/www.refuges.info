@@ -119,15 +119,11 @@
 					<li>Zones couvertes
 						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/352?mode_affichage=zone">Alpes</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/50?mode_affichage=zone">Massif Central</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/351?mode_affichage=zone">Pyrénées</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/747?mode_affichage=zone">Vosges</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/27">Jura</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/337">Corse</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/28">Réunion</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/51">Nlle Calédonie</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/374">Andes</a></li>
+							<?php if (isset($vue->zones)) foreach ($vue->zones AS $nom_zone => $lien) {?>
+								<li>
+									<a href="<?=$lien?>"><?=$nom_zone?></a>
+								</li>
+							<?}?>
 						</ul>
 					</li>
 					<li><a href="<?=$config['sous_dossier_installation']?>nav">Cartes</a>

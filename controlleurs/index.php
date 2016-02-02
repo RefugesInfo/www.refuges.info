@@ -23,16 +23,6 @@ $conditions_notre_zone->ids_polygones=$config['id_zone_accueil'];
 $polygones=infos_polygones($conditions_notre_zone);
 $vue->bbox=$polygones[0]->bbox;
 
-// liens vers les zones
-$conditions = new stdClass;
-$conditions->ids_polygone_type=$config['id_zone'];
-$zones=infos_polygones($conditions);
-
-// Ajoute les liens vers les autres zones
-if ($zones)
-  foreach ($zones as $zone)
-    $vue->zones [$zone->nom_polygone] = lien_polygone($zone)."?mode_affichage=zone";
-
 // Nouvelles
 $vue->commentaires = $commentaires;
 $vue->stat = stat_site ();
