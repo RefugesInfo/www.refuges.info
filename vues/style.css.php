@@ -662,6 +662,33 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 
 /*==================================================================*/
+/* LA METEO DES PAGES POINTS                                        */
+/*==================================================================*/
+#meteo {
+    clear: both;
+}
+#meteo div {
+	float: left;
+	background-color: white;
+	text-align: center;
+}
+#meteo> div {
+	border-top: 1px solid black;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+}
+#meteo> div:first-child {
+	border-left: 1px solid black;
+}
+#meteo img {
+	display: block;
+}
+#meteo p {
+	margin: 0;
+	padding: 0;
+}
+
+/*==================================================================*/
 /*                              CARTES                              */
 /*==================================================================*/
 .carte /* utilisé par TOUTES les images cartes */
