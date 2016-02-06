@@ -94,6 +94,16 @@ var map,
                             return target.feature.properties.lien;
 			},
 			icon: function(feature) {
+				// Ajout de l'altitude et du nb de places.
+				//DOM: Sera fait de façon plus logique dans une future version de Leaflet
+				var prop = [];
+				if (feature.properties.coord.alt)
+					prop.push (feature.properties.coord.alt+'m');
+				if (feature.properties.places.valeur)
+					prop.push (feature.properties.places.valeur+'c');
+				if(prop.length)
+					feature.properties.nom += '<div style=text-align:center>('+prop.join(' ')+')</div>';
+
 				return {
 					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 					size: 16
