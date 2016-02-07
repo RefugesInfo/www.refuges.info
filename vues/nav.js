@@ -100,9 +100,9 @@ var map,
 				if (feature.properties.coord.alt)
 					prop.push (feature.properties.coord.alt+'m');
 				if (feature.properties.places.valeur)
-					prop.push (feature.properties.places.valeur+'&#x1f6cf;');
+					prop.push (feature.properties.places.valeur+'<img src="<?=$config['sous_dossier_installation']?>images/lit.png"/>');
 				if(prop.length)
-					feature.properties.nom += '<div style=text-align:center>'+prop.join(' - ')+'</div>';
+					feature.properties.nom += '<div style=text-align:center>'+prop.join('</div> - <div style=text-align:center>')+'</div>';
 
 				return {
 					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
