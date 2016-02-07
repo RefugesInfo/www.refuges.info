@@ -102,7 +102,7 @@ var map,
 				if (feature.properties.places.valeur)
 					prop.push (feature.properties.places.valeur+'<img src="<?=$config['sous_dossier_installation']?>images/lit.png"/>');
 				if(prop.length)
-					feature.properties.nom += '<div style=text-align:center>'+prop.join(' - ')+'</div>';
+					feature.properties.nom += '<div style=text-align:center>'+prop.join(' ')+'</div>';
 
 				return {
 					url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
