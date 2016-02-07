@@ -58,9 +58,9 @@ if ($vue->mini_carte) { ?>
 							if (feature.properties.coord.alt)
 								prop.push (feature.properties.coord.alt+'m');
 							if (feature.properties.places.valeur)
-								prop.push (feature.properties.places.valeur+'c');
+								prop.push (feature.properties.places.valeur+'&#x1f6cf;');
 							if(prop.length)
-								feature.properties.nom += '<div style=text-align:center>('+prop.join(' ')+')</div>';
+								feature.properties.nom += '<div style=text-align:center>'+prop.join(' - ')+'</div>';
 
 							return {
 								url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
