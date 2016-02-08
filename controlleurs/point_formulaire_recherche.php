@@ -20,4 +20,7 @@ $vue->massifs=infos_polygones($conditions_polygones);
 $conditions_polygones->ids_polygone_type=$config['id_zone'];
 $conditions_polygones->avec_zone_parente=False;
 $vue->zones=infos_polygones($conditions_polygones);
+
+//d($vue->zones);
+
 ?>

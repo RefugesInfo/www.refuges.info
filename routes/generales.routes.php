@@ -95,7 +95,7 @@ if ($controlleur->avec_entete_et_pied)
     if (isset ($_SESSION['niveau_moderation']) and $_SESSION['niveau_moderation']>=1)
         $vue->demande_correction=info_demande_correction ();
 
-    $vue->zones=remplissage_zones_bandeau();
+    $vue->zones_pour_bandeau=remplissage_zones_bandeau();
     $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
     include ($config['chemin_vues']."_entete.html");
 }	

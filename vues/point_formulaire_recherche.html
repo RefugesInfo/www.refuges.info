@@ -49,7 +49,7 @@
 				
 					foreach ($vue->zones as $z) { ?>
 						<optgroup label="<?=$z->nom_polygone?>">
-						<option value="<?=$z->id_polygone?>">(toute la région <?=$z->nom_polygone?>)</option>
+						<option value="<?=$z->id_polygone?>">(toute la zone <?=$z->nom_polygone?>)</option>
 						<?php 
 						foreach ($vue->massifs AS $m) 
 							if( $m->id_zone == $z->id_polygone ) { ?>

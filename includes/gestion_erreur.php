@@ -60,7 +60,7 @@ function d($a=null,$b=null,$c=null,$d=null)
 	print("<pre>"); // Pour la lisibilité, et que les retour ligne sont affichés
 	foreach (array('a','b','c','d') as $var ) // Pour toutes les variables qu'on a passées de a à d, factorisation du code
             if (!is_null($$var))
-                print(htmlspecialchars(print_r($$var,True))."\n------------------------------------------------------------------------------------------------\n"); // O peut un print_r des variables (des fois que ça soit des arrays) et on veut le résultat brut lisible dans un navigateur
+                print(htmlspecialchars(print_r($$var,True))."\n------------------------------------Backtrace des appels :-----------------------------------\n"); // O peut un print_r des variables (des fois que ça soit des arrays) et on veut le résultat brut lisible dans un navigateur
         print(htmlspecialchars(print_r(debug_backtrace(),True)));
 	die("</pre>");
 }

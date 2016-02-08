@@ -12,7 +12,7 @@
 		<div class="carte" id="accueil"></div>
 		<h5>Et encore...</h5>
 		<ul class="basdepage">
-			<?php if (isset($vue->zones)) foreach ($vue->zones AS $nom_zone => $lien) {?>
+			<?php if (isset($vue->zones_pour_bandeau)) foreach ($vue->zones_pour_bandeau AS $nom_zone => $lien) {?>
 				<li>
 					<a href="<?=$lien?>"><?=$nom_zone?></a>
 				</li>
