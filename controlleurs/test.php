@@ -32,7 +32,7 @@ www.google.com
 ";
 $html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE,$crypter_texte_sensible=TRUE);
 
-d($texte,$html);
+d($_SERVER);
 
 
 exit();
