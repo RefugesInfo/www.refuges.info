@@ -43,12 +43,11 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				<?=$vue->polygone->nom_polygone?> uniquement
 			</label>
 		</fieldset>
-	<?}?>
-	<?if ( !$vue->mode_affichage ){?>
 		<fieldset>
 			<legend>Points</legend>
 			<ul>
-				<?foreach ($vue->types_point_affichables AS $type_affichable) {?>
+				<? $ktp = explode (',', $_COOKIE['type_points']); // lecture cookie type_points
+				foreach ($vue->types_point_affichables AS $type_affichable) {?>
 					<li>
 						<label>
 							<input
@@ -56,7 +55,10 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 								onclick="maj_carte()"
 								value="<?=$type_affichable->id_point_type?>"
 								type="checkbox"
-								checked="checked"
+								<?if (!isset ($_COOKIE['type_points']) ||
+									in_array ($type_affichable->id_point_type, $ktp)) {?>
+									checked="checked"
+								<?}?>
 							/>
 							<span>
 								<img
@@ -72,50 +74,43 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				<li><a href="<?=$vue->lien_legende_carte?>">légende</a></li>
 			</ul>
 		</fieldset>
+		<fieldset>
+			<legend>Autres sites</legend>
+			<ul>
+				<li>
+					<label>
+						<input
+							id="poiPRC"
+							onclick="couche_externe(this, poiPRC)"
+							type="checkbox"
+						/>
+						<a href="http://www.pyrenees-refuges.com/" title="Cocher pour voir les points / cliquer 'Pyrénées refuges' pour voir le site">Pyrénées refuges</a>
+					</label>
+				</li>
+				<li>
+					<label>
+						<input
+							id="poiC2C"
+							onclick="couche_externe(this, poiC2C)"
+							type="checkbox"
+						/>
+						<a href="http://www.camptocamp.org/" title="Cocher pour voir les points / cliquer 'Camp to Camp' pour voir le site">Camp to Camp</a>
+					</label>
+				</li>
+				<li>
+					<label>
+						<input
+							id="poiCHEM"
+							title="poiCHEM"
+							onclick="couche_externe(this, poiCHEM)"
+							type="checkbox"
+						/>
+						<a href="http://chemineur.fr/" title="Cocher pour voir les points / cliquer 'Chemineur' pour voir le site">Chemineur</a>
+					</label>
+				</li>
+			</ul>
+		</fieldset>
 	<?}?>
-	<fieldset>
-		<legend>Autres sites</legend>
-		<ul>
-			<li>
-				<label>
-					<input
-						id="poiPRC"
-						onclick="couche_externe(this, poiPRC)"
-						type="checkbox"
-					/>
-					<a href="http://www.pyrenees-refuges.com/" title="Cocher pour voir les points / cliquer 'Pyrénées refuges' pour voir le site">Pyrénées refuges</a>
-				</label>
-			</li>
-			<li>
-				<label>
-					<input
-						id="poiC2C"
-						onclick="couche_externe(this, poiC2C)"
-						type="checkbox"
-					/>
-					<a href="http://www.camptocamp.org/" title="Cocher pour voir les points / cliquer 'Camp to Camp' pour voir le site">Camp to Camp</a>
-				</label>
-			</li>
-			<li>
-				<label>
-					<input
-						id="poiCHEM"
-						title="poiCHEM"
-						onclick="couche_externe(this, poiCHEM)"
-						type="checkbox"
-					/>
-					<a href="http://chemineur.fr/" title="Cocher pour voir les points / cliquer 'Chemineur' pour voir le site">Chemineur</a>
-				</label>
-			</li>
-		</ul>
-	</fieldset>
-
-	<!-- garde les coordonnee de la BBOX sous le coude pour l'export
-	<p><input name="latitude_minimum" id="bbox_latmin" type="hidden" value="<?=$vue->polygone->sud?>" /></p>
-	<p><input name="latitude_maximum" id="bbox_latmax" type="hidden" value="<?=$vue->polygone->nord?>" /></p>
-	<p><input name="longitude_minimum" id="bbox_lngmin" type="hidden" value="<?=$vue->polygone->ouest?>" /></p>
-	<p><input name="longitude_maximum" id="bbox_lngmax" type="hidden" value="<?=$vue->polygone->est?>" /></p>
-	-->
 
 	<?php if ( !$vue->mode_affichage && $_SESSION['niveau_moderation']>=1 ) {?>
 		<fieldset>
@@ -125,6 +120,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 			</label>
 		</fieldset>
 	<?}?>
+
 	<?php if ( $vue->mode_affichage == 'edit' && $_SESSION['niveau_moderation']>=1 ) {?>
 		<form method="post" action="<?=$config['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit" >
 			<fieldset>
@@ -132,17 +128,18 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				<!-- Edition du massif -->
 				<label>
 					<input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
-					Nom du massif
-					<input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone?>" style="float:right" />
-					<br/><br/>
-					Article partitif (max 20 car)
-					<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" style="float:right" />
-					<br/><br/>
-					<span id="changed" style="display:none"><i>Modifications polygone</i></span>
-					<input type="hidden" name="contour_polygone" id="contour_polygone" value="<?=$vue->coordonnees_polygones?>" />
-					<br/><br/>
-					<input type="submit" name="enregistrer" value="Enregistrer" />
-					<p><a href="?" title="Sans sauvegarder">Quiter le mode édition</a></p>
+					<input type="hidden" name="json_polygones" id="edit-json" value='<?=$vue->json_polygones?>' />
+
+					<p>Nom du massif
+					<input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone?>" /></p><br/>
+
+					<p>Article partitif (max 20 car)
+					<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" /></p><br/>
+
+					<p><div id="edit-changed" style="display:none"><i style="color:red">Polygone modifié</i></div></p>
+
+					<input type="submit" name="enregistrer" value="Enregistrer" />&nbsp;
+					<a href="?" title="Sans sauvegarder">Quiter le mode édition sans enregistrer</a>
 				</label>
 			</fieldset>
 			<?if ($vue->polygone->id_polygone) {?>
@@ -167,6 +164,19 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					</label>
 				</fieldset>
 			<?}?>
+				<fieldset>
+					<legend>Edition</legend>
+					<label>
+						<p><u>Créer un polygone:</u> Cliquer sur le contrôle "polygone"</p>
+						<p><u>Supprimer un polygone:</u> Cliquer sur le contrôle "poubelle"</p>
+						<p><u>Ajouter un sommet:</u> Déplacer un marqueur au milieu d'un segment</p>
+						<p><u>Déplacer un sommet:</u> Le déplacer</p>
+						<p><u>Supprimer un sommet:</u> Cliquer une fois dessus</p>
+						<p><u>Découper un polygone:</u> Cliquer une fois sur un marqueur au milieu d'un segment</p>
+						<p><u>Fusionner deux lignes:</u> Joindre les extrémités</p>
+						<p><u>Fermer une ligne:</u> Joindre ses deux extrémités</p>
+					</label>
+				</fieldset>
 		</form>
 		<div id="help-edit"></div>
 	<?}else

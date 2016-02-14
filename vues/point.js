@@ -12,68 +12,76 @@ if ($vue->mini_carte) { ?>
 			'Refuges.info':new L.TileLayer.OSM.MRI(),
 			'OSM fr':      new L.TileLayer.OSM.FR(),
 			'Outdoors':    new L.TileLayer.OSM.Outdoors(),
-			'IGN':         new L.TileLayer.IGN(),
-			'IGN Express': new L.TileLayer.IGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
-			'SwissTopo':   new L.TileLayer.SwissTopo(),
-			'Autriche':    new L.TileLayer.OSM.OB.Touristik(),
+			'IGN':         new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
+			'IGN Express': new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
+			'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
+			'Autriche':    new L.TileLayer.Kompass({l:'Touristik'}),
 			'Espagne':     new L.TileLayer.WMS.IDEE(),
 			'Italie':      new L.TileLayer.WMS.IGM(),
-			'Angleterre':  new L.TileLayer.OSOpenSpace(key.os,{}),
-			'Photo Bing':  new L.BingLayer(key.bing),
-			'Photo IGN':   new L.TileLayer.IGN('ORTHOIMAGERY.ORTHOPHOTOS')
+			'Angleterre':  new L.TileLayer.OSOpenSpace('<?=$config['os_key']?>', {}),
+			'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'}),
+			'Photo IGN':   new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'ORTHOIMAGERY.ORTHOPHOTOS'})
 		};
 
 		map = new L.Map('vignette', {
-			fullscreenControl: true,
-			center: new L.LatLng(<?=$vue->point->latitude?> , <?=$vue->point->longitude?>),
-			zoom: 13,
 			layers: [
-				baseLayers[L.UrlUtil.queryParse(L.UrlUtil.hash()).layer] // Donné par le permalink #layer=NOM
-					|| baseLayers['<?=$vue->vignette[0]?>'] // Sinon le fond de carte assigné à cette région par $config['fournisseurs_fond_carte']
-					|| baseLayers['<?=$config["carte_base"]?>'] // Sinon le fond de carte par défaut
-					|| baseLayers[Object.keys(baseLayers)[0]], // Sinon la première couche définie
-				new L.Marker.Position(
-					new L.LatLng(<?=$vue->point->latitude?>, <?=$vue->point->longitude?>), { // Un cadre
-						icon: L.icon({
-							iconUrl: '<?=$config['sous_dossier_installation']?>images/cadre.png',
-							iconSize: [31, 43],
-							iconAnchor: [15, 21]
-						}),
-					}
-				),
-				new L.GeoJSON.Ajax( // Les points d'intérêt WRI
-					'<?=$config['sous_dossier_installation']?>api/bbox', {
-						argsGeoJSON: {
-							type_points: 'all'
-						},
-						bbox: true,
-						degroup: 12,
-						url: function(target) {
-							return target.feature.properties.lien;
-						},
-						icon: function(feature) {
-							// Ajout de l'altitude et du nb de places.
-							//DOM: Sera fait de façon plus logique dans une future version de Leaflet
-							var prop = [];
-							if (feature.properties.coord.alt)
-								prop.push (feature.properties.coord.alt+'m');
-							if (feature.properties.places.valeur)
-								prop.push (feature.properties.places.valeur+'<img src="<?=$config['sous_dossier_installation']?>images/lit.png"/>');
-							if(prop.length)
-								feature.properties.nom += '<div style=text-align:center>'+prop.join(' ')+'</div>';
-
-							return {
-								url: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
-								size: 16
-							}
-						}
-					}
-				)
+				baseLayers['<?=$vue->vignette[0]?>'] || // Le fond de carte assigné à cette région par $config['fournisseurs_fond_carte']
+				baseLayers['<?=$config["carte_base"]?>'] || // Sinon le fond de carte par défaut
+				baseLayers[Object.keys(baseLayers)[0]] // Sinon la première couche définie
 			]
 		});
 
-		layerSwitcher = L.control.layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
-		map.addControl(new L.Control.Scale());
+		// Cadre fixe marquant une position;
+		var cadre = new L.Marker([<?=$vue->point->latitude?>,<?=$vue->point->longitude?>], {
+			clickable: false, // Evite d'activer le curseur: pointeur
+			icon: L.icon({
+				iconUrl: '<?=$config['sous_dossier_installation']?>images/cadre.png',
+				iconAnchor: [15, 21]
+			})
+		})
+		.coordinates('position') // Affiche les coordonnées dans les éléments HTML id=position-*
+		.addTo(map);
+		// La carte est centrée autour
+		map.setView(cadre._latlng, 13, {reset: true});
+
+		new L.GeoJSON.Ajax( // Les points d'intérêt WRI
+			'<?=$config['sous_dossier_installation']?>api/bbox',
+			{
+				argsGeoJSON: {
+					type_points: 'all'
+				},
+				bbox: true,
+				style: function(feature) {
+					var prop = [];
+					if (feature.properties.coord.alt)
+						prop.push (feature.properties.coord.alt+'m');
+					if (feature.properties.places.valeur)
+						prop.push (feature.properties.places.valeur+'<img src="<?=$config['sous_dossier_installation']?>images/lit.png"/>');
+					return {
+						url: feature.properties.lien,
+						iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
+						iconAnchor: [8, 8],
+						title: feature.properties.nom +
+							(prop.length
+								? '<div style=text-align:center>'+prop.join(' ')+'</div>'
+								: ''
+							),
+						popupAnchor: [-1, -9],
+						degroup: 12 // Spread the icons when the cursor hovers on a busy area.
+					};
+				}
+			}
+		).addTo(map);
+
+		new L.Control.Fullscreen().addTo(map);
+
+		layerSwitcher = new L.Control.Layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+
+		new L.Control.Permalink.Cookies({ // Garde la mémoire des position, zoom, carte.
+			layers: layerSwitcher,
+			text: null, // Le contrôle n'apparait pas sur la carte car ça n'a pas de sens pour un point qui positionne lui même la carte
+			move: false // On n'itialise pas la carte avec le permalink: il est uniquement là pour enregistrer
+		}).addTo(map);
 	});
 
 	// Actions de la page
@@ -85,17 +93,8 @@ if ($vue->mini_carte) { ?>
 			agrandir_vignette.style.display = 'none';
 
 		// On redimensionne la carte
-		var mapp = document.getElementById('vignette'),
-			l1 = mapp.clientWidth,
-			h1 = mapp.clientHeight;
-		mapp.id = 'vignette-agrandie';
-		var l2 = mapp.clientWidth,
-			h2 = mapp.clientHeight;
-		map.panBy(
-			[0, (h1-h2)/2], // Remet le cadre au centre de la nouvelle carte plus grande
-			{animate: false}
-		);
-		map.autoHeight ();
+		document.getElementById('vignette').id = 'vignette-agrandie';
+		map.autoHeight();
 
 		// On positionne la couche de second choix
 		var oldLayerId, newLayerId;

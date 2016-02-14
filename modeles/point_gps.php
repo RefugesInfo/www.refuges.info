@@ -59,9 +59,6 @@ function modification_ajout_point_gps($point_gps)
   foreach ($champs as $champ)
     if (isset($point_gps->$champ))
       $champs_sql[$champ]=$pdo->quote($point_gps->$champ);
-  // GIS+ : si les latlon ne sont pas nuls, enregistrement coord OpenGIS
-  if (($point_gps->longitude!="" AND $point_gps->latitude!=""))
-    $champs_sql['geom']="ST_GeomFromText('POINT($point_gps->longitude $point_gps->latitude)',4326)";
 
   if (($point_gps->geojson!=""))
     $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point_gps->geojson'), 4326)";

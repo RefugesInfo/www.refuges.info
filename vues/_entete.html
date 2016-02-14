@@ -26,11 +26,6 @@
 
 		<meta http-equiv="Content-Script-Type" content="text/javascript" />
 		<script type="text/javascript">
-			var key = {
-				ign:  '<?=$config['ign_key']?>',
-				bing: '<?=$config['bing_key']?>',
-				os:   '<?=$config['os_key']?>',
-			};
 			// Utilisé dans les menus pour mobile
 			// Si Ajoute la classe c si elle n'est pas attribuée à l'élémént HTML e et vice versa
 			function flip(e, c) {
@@ -130,11 +125,11 @@
 						<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 						<ul>
 							<li><a href="<?=$config['sous_dossier_installation']?>nav">Cartes</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/MRI#layer=Maps.Refuges.info">Randonnée</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/IGN#layer=IGN&amp;lat=45&amp;lon=5&amp;zoom=7">IGN</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/STP#layer=SwissTopo&amp;lat=46.55&amp;lon=8.45&amp;zoom=15">SwissTopo</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/ITA#layer=Italie&amp;lat=45.5&amp;lon=9&amp;zoom=8">Italie</a></li>
-							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/ESP#layer=Espagne&amp;lat=42&amp;lon=0.5&amp;zoom=8">Espagne</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/MRI?layer=Maps.Refuges.info">Randonnée</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/IGN?layer=IGN&amp;lat=45&amp;lon=5&amp;zoom=7">IGN</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/STP?layer=SwissTopo&amp;lat=46.55&amp;lon=8.45&amp;zoom=8">SwissTopo</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/ITA?layer=Italie&amp;lat=45.5&amp;lon=9&amp;zoom=8">Italie</a></li>
+							<li><a href="<?=$config['sous_dossier_installation']?>nav/0/ESP?layer=Espagne&amp;lat=42&amp;lon=0.5&amp;zoom=8">Espagne</a></li>
 						</ul>
 					</li>
 					<li><a href="<?=$config['sous_dossier_installation']?>forum">Forums</a>

@@ -62,11 +62,7 @@ $params->ids_polygones = $id_polygone;
 $params->avec_geometrie = 'geojson';
 $params->intersection = NULL;
 $polygones_bruts=infos_polygones($params);
-$vue->coordonnees_polygones = str_replace (
-	array ('{"type":"MultiPolygon","coordinates":', '[[[', ']]]', '}'),
-	array ('','[[',']]',''),
-	$polygones_bruts[0]->geometrie_geojson
-);
+$vue->json_polygones = $polygones_bruts[0]->geometrie_geojson;
 
 $vue->lien_legende_carte=lien_wiki('legende_carte');
 ?>

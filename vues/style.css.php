@@ -359,6 +359,19 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	float: right;
 	margin: 2px 5%;
 }
+/* Réduction des marges du bandeau pour éviter de passer sur 2 lignes */
+@media screen and (max-width: 866px) {
+  #entete > DIV {
+	margin: 2px 0;
+  }
+}
+@media screen and (max-width: 800px) {
+  #entete > a,
+  #entete img {
+	max-width: 50%;
+	height: 50px;
+  }
+}
 #entete A, #entete SPAN {
 	font-size: 18px;
 	font-weight: bold;
@@ -725,6 +738,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 .nav_bloc_selecteur {
   padding: 0 0.7%;
+}
+.nav_bloc_selecteur p {
+	margin-top: 0;
+	margin-bottom: 5px;
 }
 /* Menu deplié */
 @media screen and (min-width: 641px) and (min-height: 361px) {

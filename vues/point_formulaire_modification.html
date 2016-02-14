@@ -40,27 +40,29 @@
     { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
     <?}?>
+	<input type="hidden" id="viseur-json" name="geojson" value='<?=$vue->point->geojson?>' />
     </div>
     <h4>Coordonnées</h4>
         <fieldset>
             <label>
-                <span id="curseur-titre-lng">Longitude</span> :
-                <input type="text" id="curseur-proj-lng" name="longitude" size="12" maxlength="12" value="<?=$vue->point->longitude?>" />
-                <input type="hidden" id="curseur-lng" name="longitude" value="<?=$vue->point->longitude?>" />
+                <span id="viseur-title-lng"></span> :
+                <input type="text" id="viseur-proj-lng" size="12" maxlength="12" />
             </label>
             <label>
-                <span id="curseur-titre-lat">Latitude</span> :
-                <input type="text" id="curseur-proj-lat" name="latitude"  size="12" maxlength="12" value="<?=$vue->point->latitude?>" />
-                <input type="hidden" id="curseur-lat" name="latitude" value="<?=$vue->point->latitude?>" />
+                <span id="viseur-title-lat"></span> :
+                <input type="text" id="viseur-proj-lat" size="12" maxlength="12" />
             </label>
             <label>
-                <select id="curseur-select-projection"></select> Déplacez le viseur pour modifier la position (n'oubliez pas de valider).
+                <select id="viseur-select"></select> Déplacez le viseur pour modifier la position (n'oubliez pas de valider).
             </label>
             <label>
 				<strong>Attention:</strong> Ces coordonnées sont relatives à l'ellipsoïde WGS84. Il se peut qu'elles ne correspondent pas pour d'anciennes cartes. Consultez le cartouche de la carte pour vérifier son ellipsoïde de référence.
             </label>
             <label>
-				<span><a onclick="curseur.setLatLng(map.getCenter())" href="#">Remettre le viseur au centre actuel de la carte</a></span>
+				<span><a onclick="viseur.setLatLng(map.getCenter())" href="#">Remettre le viseur au centre actuel de la carte</a></span>
+            </label>
+            <label>
+				<a onclick="map.panTo(viseur._latlng)" href="#">Recentrer la carte sur le viseur</a>
             </label>
             <label>
 				<span><a onclick="gps.activate()" href="#">Utiliser la position du GPS</a></span>

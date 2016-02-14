@@ -66,7 +66,7 @@
 					<span id="p21781"></span>
 				</div>
 				<div>
-					<a href="<?=$config['sous_dossier_installation']?>nav#lat=<?=$vue->point->latitude?>&amp;lon=<?=$vue->point->longitude?>&amp;zoom=13" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+					<a href="<?=$config['sous_dossier_installation']?>nav" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
 						Aller sur la page des cartes
 					</a>
 				</div>
@@ -92,10 +92,10 @@
 					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 					<span id="coordonnees-value">
-						<span id="titre-lng">Longitude</span>: <em id="aff-lng"><?=$vue->point->longitude?></em>
-						<span id="titre-lat">Latitude</span>: <em id="aff-lat"><?=$vue->point->latitude?></em>
+						<span id="position-title-lng">Longitude</span>: <em id="position-proj-lng"><?=$vue->point->longitude?></em>
+						<span id="position-title-lat">Latitude</span>: <em id="position-proj-lat"><?=$vue->point->latitude?></em>
 					</span>
-					<select id="select-projection"></select>
+					<select id="position-select"></select>
 					(
 						<a href="<?=$config['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">gpx</a>
 					,

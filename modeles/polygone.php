@@ -217,30 +217,6 @@ function edit_info_polygone()
     $article_partitif = str_replace ("'", "''", $_POST ['article_partitif']);
     $nom_polygone     = str_replace ("'", "''", $_POST ['nom_polygone']);
 
-  // Champ POST contour_polygone de la forme [[[-6.1,47.2],[-7.3,46.4],[-4.5,45.6],[-4.7,47.8],[-6.9,47.0]]]
-  if ($_POST['contour_polygone']) {
-    eval ('$pcp = '.$_POST['contour_polygone'].';');
-    if ($pcp) {
-      foreach ($pcp as $k => $v) {
-        $pcps = $vvs = [];
-        foreach ($v as $kv => $vv)
-          if (count ($vv) == 2) {
-            $pcps [] = $vv[0].' '.$vv[1];
-            $vvs [] = $vv;
-          }
-        // Referme le polygone si les 2 bouts ne sont pas identiques
-        $last = count ($pcps) - 1;
-        $d1 = hypot($vvs[0][0]-$vvs[1][0], $vvs[0][1]-$vvs[1][1]); // Distance du premier au second point
-        $dlast = hypot($vvs[0][0]-$vvs[$last][0], $vvs[0][1]-$vvs[$last][1]); // Distance du premier au dernier point
-        if ($dlast / $d1 < .1) // Si la distance 1er dernier < 0.1 du 1er au 2em
-          $pcps [$last] = $pcps [0]; // On écrase le dernier
-        else
-          $pcps [] = $pcps [0]; // On ajoute un dernier = au premier
-        $contour_polygone [] = '('.implode (',', $pcps).')';
-      }
-    }
-  }
-
     if (isset ($_POST ['nom_polygone']) && strlen ($nom_polygone) == 0) {
         echo 'Nom de massif vide';
         exit;
@@ -256,7 +232,7 @@ function edit_info_polygone()
         $query_update = "UPDATE polygones SET "
       ."article_partitif	= '$article_partitif', "
       ."nom_polygone = '$nom_polygone', "
-      ."geom = ST_GeomFromText('MULTIPOLYGON((" .implode (',', $contour_polygone). "))',4326) "
+      ."geom = ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326) "
       ."WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_update);
         if (!$res)
@@ -264,7 +240,7 @@ function edit_info_polygone()
     }
 
   // Création
-    if ($_POST['enregistrer'] && $_POST['id_polygone'] == 0 && $contour_polygone)
+    if ($_POST['enregistrer'] && $_POST['id_polygone'] == 0)
     {
         // On commence par chercher s'il existe déjà un polygone homonyme
         $query_no = "SELECT id_polygone FROM polygones WHERE nom_polygone = '$nom_polygone'";
@@ -276,7 +252,7 @@ function edit_info_polygone()
         {
             // Alors, on le crée
             $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone, geom) ".
-        "VALUES (1, '$article_partitif', '$nom_polygone', ST_GeomFromText('MULTIPOLYGON((" .implode (',', $contour_polygone). "))',4326))";
+        "VALUES (1, '$article_partitif', '$nom_polygone', ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326))";
             $res=$pdo->query($query_cree);
             if (!$res)
                 erreur('Requête impossible',$query_cree);
