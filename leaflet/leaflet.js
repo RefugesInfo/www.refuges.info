@@ -1,6 +1,6 @@
 /**
  * Integrated by Dominique Cavailhez (c) 2016
- * https://github.com/Dominique92/MyLeaflet
+ * https://github.com/Dominique92/MyLeaflet/tree/af67a323669dfdad425e2e5c78fa4948bd620edb
  * Includes part of :
 	https://github.com/Leaflet/Leaflet/tree/197f9d43b7bbc73c0492bf62cd666a5a98038098
 	https://github.com/Leaflet/Leaflet.fullscreen/tree/f5e76270ad40bb573bd11595f9069c3f15f8f286
