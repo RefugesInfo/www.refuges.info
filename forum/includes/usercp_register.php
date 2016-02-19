@@ -432,7 +432,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
 		{
 			//file_put_contents ('register-fail.log', date('r').$iploc."\n".var_export($_SERVER,true)."\n".var_export($_POST,true)."\n\n", FILE_APPEND);
 			$error = TRUE;
-			$error_msg .= 'Unauthorized registration';
+			$error_msg .= 'La provenance géographique de votre adresse réseau (Adresse IP) fait que notre antispam vous interdit l\'inscription. Il lui arrive de se tromper hélas. Pour obtenir un compte quand même merci de contacter sylvain@refuges.info';
 		}
 	}
 //>>Filtrage géographique
