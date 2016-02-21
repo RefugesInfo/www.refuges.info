@@ -98,8 +98,9 @@ else // le point est valide. faut bosser.
             
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
-		$vue->java_lib_foot [] = $config['url_chemin_leaflet'].($config['debug']?'src/':'').'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
 		$vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
+		$vue->java_lib_foot [] = $config['url_chemin_leaflet'].($config['debug']?'src/':'').'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+		$vue->java_lib_foot [] = $config['sous_dossier_installation'].'vues/cartes.js';
         $vue->vignette = param_cartes ($point);
     }
 

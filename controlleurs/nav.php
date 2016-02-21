@@ -23,6 +23,7 @@ require_once ("polygone.php");
 $vue->java_lib [] = $config['url_chemin_leaflet'].($config['debug']?'src/':'').'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
 $vue->css      [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
 $vue->java_lib [] = $config['sous_dossier_installation'].'vues/wiki.js';
+$vue->java_lib [] = $config['sous_dossier_installation'].'vues/cartes.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
