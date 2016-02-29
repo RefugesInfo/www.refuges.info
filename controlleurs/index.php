@@ -37,7 +37,7 @@ $commentaires_avec_photos_recentes=infos_commentaires($conditions);
 // alors déporter ces deux actions dans la vue. Hésitation entre rangement et factorisation. sly 2015
 foreach ($commentaires_avec_photos_recentes as $commentaire_avec_photo_recente)
 {
-    $commentaire_avec_photo_recente->lien=lien_point($commentaire_avec_photo_recente)."#C$commentaire_avec_photo_recente->id_commentaire";
+    $commentaire_avec_photo_recente->lien=lien_point($commentaire_avec_photo_recente,true)."#C$commentaire_avec_photo_recente->id_commentaire";
     $commentaire_avec_photo_recente->nom=bbcode2html($commentaire_avec_photo_recente->nom);
     $vue->photos_recentes[]=$commentaire_avec_photo_recente;
 }
@@ -67,7 +67,7 @@ $conditions_nouveaux_points->ordre="date_creation DESC";
 $nouveaux_points=infos_points($conditions_nouveaux_points);
 foreach ($nouveaux_points as $nouveau_point)
 {
-    $nouveau_point->lien=lien_point($nouveau_point);
+    $nouveau_point->lien=lien_point($nouveau_point,true);
     $nouveau_point->nom=mb_ucfirst(bbcode2html($nouveau_point->nom));
     $vue->nouveaux_points[]=$nouveau_point;
 }

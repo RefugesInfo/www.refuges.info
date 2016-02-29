@@ -148,7 +148,7 @@ array_merge($search_img,
 $replacearray =
 array_merge($replace_img,
         array(
-        "<a href=\"".$config['sous_dossier_installation']."$1\">$2</a>", // A
+        "<a href=\"/$1\">$2</a>", // A
         "<a href=\"$1\">$1</a>",
         "<a href=\"$1\">$2</a>",
         "<a href=\"http://$1\">$1</a>",

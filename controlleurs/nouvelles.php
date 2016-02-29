@@ -22,6 +22,7 @@ $types_nouvelles = $_GET ['quoi']
 			  : 'commentaires,points,forums';
 $vue->nouvelles = nouvelles ($nombre,$types_nouvelles);
 $vue->nouvelles = texte_nouvelles ($vue->nouvelles); // On ajoute le texte
+
 foreach ($vue->nouvelles as $id => $nouvelle)
 {
 	$vue->nouvelles[$id]['date_formatee']=date("d/m/y", $nouvelle['date']);
@@ -30,5 +31,6 @@ foreach ($vue->nouvelles as $id => $nouvelle)
 }
 
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
+
 
 ?>
