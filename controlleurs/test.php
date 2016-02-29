@@ -22,17 +22,11 @@ require_once ("gestion.php");
 require_once ("nouvelle.php");
 require_once ("point_gps.php");
 
-$texte="*https://www.google.fr
-http://www.google.fr
-www.google.com
-[url=https://www.google.de]la[/url]
-[url=www.google.de]la[/url]
-[url]www.google.uk[/url]
-[url=http://www.google.lt]ici[/url]
-";
 $html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE,$crypter_texte_sensible=TRUE);
 
-d($_SERVER);
+$point = infos_point(105);
+
+d(lien_point($point,True));
 
 
 exit();
