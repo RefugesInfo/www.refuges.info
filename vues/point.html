@@ -70,6 +70,9 @@
 						Aller sur la page des cartes
 					</a>
 				</div>
+				<div id="ajax-osm-status">
+					<div class="ajax-point-some">Les icônes bleues, pour information, n'ont pas de fiche.</div>
+				</div>
 			</div>
 		<?}?>
 		<div>
@@ -224,7 +227,7 @@
 <!--==================== AFFICHAGE DE LA METEO =====================-->
 				<dt>Météo:</dt> 
 				<dd>
-					<a onclick="meteo_run(this)" style="cursor:pointer" title="prevision-meteo.ch"><?=$vue->nom_debut_majuscule?></a>
+					<a onclick="meteo_run(this)" style="cursor:pointer" title="prevision-meteo.ch">Voir la météo autour de <?=$vue->nom_debut_majuscule?></a>
 				</dd>
 <!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
 			<!-- Liste des vignettes photos (clicable pour aller voir en grand) -->

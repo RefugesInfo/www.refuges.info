@@ -38,23 +38,31 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					type="checkbox"
 					<?if ( $vue->polygone->id_polygone ){?>checked="checked"<?}?>
 					value="<?=$vue->polygone->id_polygone?>"
-					onclick="switch_massif(this)"
+					onclick="switch_massif(this);maj_poi()"
 				/>
 				<?=$vue->polygone->nom_polygone?> uniquement
 			</label>
 		</fieldset>
 		<fieldset>
-			<legend>Points</legend>
+			<legend>
+				Points
+				<span id="ajax-poi-status">
+					<span class="ajax-nav-wait">(chargement...)</span>
+					<span class="ajax-nav-some">(chargé)</span>
+					<span class="ajax-nav-zero" title="Zoomer sur une plus large échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(zone vide)</span>
+					<span class="ajax-nav-error" title="Le navigateur a rencontré une erreur de réseau ou de programme.">(erreur)</span>
+				</span>
+			</legend>
 			<ul>
 				<? $ktp = explode (',', $_COOKIE['type_points']); // lecture cookie type_points
 				foreach ($vue->types_point_affichables AS $type_affichable) {?>
 					<li>
 						<label>
 							<input
-								name="id_point_type[]"
-								onclick="maj_carte()"
-								value="<?=$type_affichable->id_point_type?>"
 								type="checkbox"
+								name="point_type[]"
+								onclick="maj_poi()"
+								value="<?=$type_affichable->id_point_type?>"
 								<?if (!isset ($_COOKIE['type_points']) ||
 									in_array ($type_affichable->id_point_type, $ktp)) {?>
 									checked="checked"
@@ -71,43 +79,58 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 						</label>
 					</li>
 				<?}?>
-				<li><a href="<?=$vue->lien_legende_carte?>">légende</a></li>
+				<span id="check-types">
+					Tout
+					<input type="checkbox" name="check-types-input" onclick="maj_poi(true)" />
+				</span>
+				<li><a href="<?=$vue->lien_legende_carte?>">Légende</a></li>
 			</ul>
 		</fieldset>
-		<fieldset>
+		<fieldset class="nav-services">
+			<legend>
+				Services <a href="https://overpass-turbo.eu/" target=_blank title="Points de la base OpensStreetmap">&copy;</a>
+				<span id="ajax-osm-status">
+					<span class="ajax-nav-zoom" title="Zoomer sur une plus petite échelle pour voir les points.">(zone trop large)</span>
+					<span class="ajax-nav-wait">(chargement...)</span>
+					<span class="ajax-nav-some">(chargé)</span>
+					<span class="ajax-nav-zero" title="Zoomer sur une plus large échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(zone vide)</span>
+					<span class="ajax-nav-error" title="Le navigateur a rencontré une erreur de réseau ou de programme.">(erreur)</span>
+				</span>
+			</legend>
+			<ul>
+				<? foreach (array (
+					'H&ocirc;tels' => 'tourism~hotel',
+					'Campings' => 'tourism~camp_site',
+					'Alimentation' => 'shop~supermarket|convenience',
+					'Parkings' => 'amenity~parking',
+				) AS $k => $v) {?>
+					<li><label>
+						<input type="checkbox" name="osm-categories[]" value="<?=$v?>" onclick="poiOVER.reload()" />
+						<?=$k?>
+					</label></li>
+				<?}?>
+			</ul>
+		</fieldset>
+		<fieldset class="nav-sites">
 			<legend>Autres sites</legend>
 			<ul>
-				<li>
-					<label>
-						<input
-							id="poiPRC"
-							onclick="couche_externe(this, poiPRC)"
-							type="checkbox"
-						/>
-						<a href="http://www.pyrenees-refuges.com/" title="Cocher pour voir les points / cliquer 'Pyrénées refuges' pour voir le site">Pyrénées refuges</a>
-					</label>
-				</li>
-				<li>
-					<label>
-						<input
-							id="poiC2C"
-							onclick="couche_externe(this, poiC2C)"
-							type="checkbox"
-						/>
-						<a href="http://www.camptocamp.org/" title="Cocher pour voir les points / cliquer 'Camp to Camp' pour voir le site">Camp to Camp</a>
-					</label>
-				</li>
-				<li>
-					<label>
-						<input
-							id="poiCHEM"
-							title="poiCHEM"
-							onclick="couche_externe(this, poiCHEM)"
-							type="checkbox"
-						/>
-						<a href="http://chemineur.fr/" title="Cocher pour voir les points / cliquer 'Chemineur' pour voir le site">Chemineur</a>
-					</label>
-				</li>
+				<? foreach (array (
+					'poiPRC' => 'pyrenees-refuges.com',
+					'poiC2C' => 'camptocamp.org',
+					'poiCHEM' => 'chemineur.fr',
+				) AS $k => $v) {?>
+					<li><label>
+						<input type="checkbox" id="<?=$k?>" title="Cocher pour afficher les points <?=$v?> sur la carte" onclick="maj_autres_site(this, <?=$k?>)" />
+						<?=$v?>
+						<a href="http://www.<?=$v?>/" target="_blank" title="Points de <?=$v?>">&copy;</a>
+						<span id="ajax-<?=$k?>-status">
+							<span class="ajax-nav-wait">&bull;&nbsp;&bull;&nbsp;&bull;</span>
+							<span class="ajax-nav-some">chargé</span>
+							<span class="ajax-nav-zero" title="Zoomer sur une plus large échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(zone vide)</span>
+							<span class="ajax-nav-error" title="Le navigateur a rencontré une erreur de réseau ou de programme.">(erreur)</span>
+						</span>
+					</label></li>
+				<?}?>
 			</ul>
 		</fieldset>
 	<?}?>
@@ -136,10 +159,11 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					<p>Article partitif (max 20 car)
 					<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" /></p><br/>
 
-					<p><div id="edit-changed" style="display:none"><i style="color:red">Polygone modifié</i></div></p>
+					<p id="edit-changed" style="display:none"><i style="color:red">Polygone modifié</i></p>
 
-					<input type="submit" name="enregistrer" value="Enregistrer" />&nbsp;
-					<a href="?" title="Sans sauvegarder">Quiter le mode édition sans enregistrer</a>
+					<input type="submit" name="enregistrer" value="Enregistrer" />
+					<br/>ou<br/>
+					<p><a href=".">Quiter sans enregistrer</a></p>
 				</label>
 			</fieldset>
 			<?if ($vue->polygone->id_polygone) {?>
@@ -157,8 +181,9 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 								<p style="color:red">ATTENTION: Ceci va supprimer définitivement le massif "<?=$vue->polygone->nom_polygone?>"</p>
 								<p style="color:red">Aucune restauration ne sera possible</p>
 							</b>
-							<input type="submit" name="annuler" value="Annuler" style="float:right" />
-							<input style="color:red;background-color:yellow" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" />
+							<input class="bouton-supprimer" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" />
+							<br/>ou<br/>
+							<input type="submit" name="annuler" value="Annuler" />
 							<br />&nbsp;
 						<?}?>
 					</label>
@@ -167,27 +192,27 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				<fieldset>
 					<legend>Edition</legend>
 					<label>
-						<p><u>Créer un polygone:</u> Cliquer sur le contrôle "polygone"</p>
-						<p><u>Supprimer un polygone:</u> Cliquer sur le contrôle "poubelle"</p>
-						<p><u>Ajouter un sommet:</u> Déplacer un marqueur au milieu d'un segment</p>
-						<p><u>Déplacer un sommet:</u> Le déplacer</p>
-						<p><u>Supprimer un sommet:</u> Cliquer une fois dessus</p>
-						<p><u>Découper un polygone:</u> Cliquer une fois sur un marqueur au milieu d'un segment</p>
-						<p><u>Fusionner deux lignes:</u> Joindre les extrémités</p>
-						<p><u>Fermer une ligne:</u> Joindre ses deux extrémités</p>
+						<p><u>Créer un polygone:</u> Cliquer sur le contrôle "polygone" puis à l'emplacement du premier sommet...</p>
+						<p><u>Ajouter un sommet:</u> Déplacer un marqueur au milieu d'un côté.</p>
+						<p><u>Déplacer un sommet:</u> Le déplacer.
+						Les sommets déplacés "collent" aux sommets des autres massifs et prennent exactement leur position.</p>
+						<p><u>Supprimer un sommet:</u> Cliquer une fois dessus.</p>
+						<p><u>Supprimer un polygone:</u> Cliquer sur le contrôle "poubelle" puis sur un côté.</p>
+						<hr/>
+						<p>Pour une édition plus complexe, vous pouvez transformer vos polygones en lignes brisées.</p>
+						<p><u>Couper un polygone:</u> Cliquer une fois sur un marqueur au milieu d'un côté.
+						On obtient une ligne.</p>
+						<p><u>Etendre une ligne:</u> Cliquer sur le contrôle "ligne" puis sur l'extrémité à étendre...</p>
+						<p><u>Ajouter une ligne:</u> Cliquer sur le contrôle "ligne" puis à l'emplacement de la première exterémité...</p>
+						<p><u>Fusionner deux lignes:</u> Joindre une extrémité de chacune.</p>
+						<p><u>Fermer une ligne:</u> Joindre ses deux extrémités. On obtient un polygone.</p>
+						<hr/>
+						<p><u>Sauvegarder les modifications:</u> Cliquer sur le bouton "Enregistrer."</p>
+						<p><u>Note:</u> Lors de la sauvegarde les lignes seront refermées en ploygones.</p>
+						<p><u>Quiter sans enregistrer:</u> Cliquer sur "Quiter sans enregistrer".</p>
 					</label>
 				</fieldset>
 		</form>
 		<div id="help-edit"></div>
-	<?}else
-		foreach (array (
-			'Click'        => '',
-			'Maj + Ctrl + Click' => ' dans un nouvel onglet',
-			'Ctrl + Click' => ' dans un nouvel onglet mais reste sur la carte (Sauf Mozilla)',
-			'Maj + Click'        => ' dans une nouvelle fenêtre',
-		) AS $k => $v)
-			echo $vue->mode_affichage
-				? "<p>$k massif: affiche le massif$v.</p>"
-				: "<p>$k icône: affiche le point$v.</p>";
-	?>
+	<?}?>
 </div>

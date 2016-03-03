@@ -182,6 +182,8 @@ $config['debug']=false;
 // config_privee.php, c'est donc un peu merdique comme méthode, mais j'ai pas trouvé mieux
 require_once("config_privee.php");
 
+$config['chemin_leaflet'].=$config['debug']?'src/':'dist/';
+$config['url_chemin_leaflet'].=$config['debug']?'src/':'dist/';
 
 // Le forum est bourré de warning que je ne compte pas vraiment reprendre, oui, j'ai mis ça après le include de config_privee.php car si debug vaut true dans le config_privee mis avant, on ne peut pas le savoir
 if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))

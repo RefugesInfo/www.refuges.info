@@ -781,8 +781,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /* Carte de la page des points mobiles */
-#vignette,
-#vignette-agrandie {
+#vignette {
   width: 100%;
   min-width: 300px;
 /* Ne pas définir height pour que la hauteur soit automatiquement ajustée par Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenêtre */
@@ -790,10 +789,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /* Carte de la page des points écrans */
 @media screen and (min-width: 641px) {
   #vignette {
-    width: 280px;
-    min-width: auto;
-  }
-  #vignette-agrandie {
     width: 400px;
     min-width: auto;
   }
@@ -802,10 +797,75 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 
+.carte-point-etiquette .leaflet-rrose-content-wrapper,
+.carte-service-etiquette .leaflet-rrose-content-wrapper,
+.carte-site-etiquette .leaflet-rrose-content-wrapper {
+	border-radius: 5px;
+}
+.carte-point-etiquette .leaflet-rrose-content,
+.carte-service-etiquette .leaflet-rrose-content p,
+.carte-service-etiquette .leaflet-rrose-content,
+.carte-site-etiquette .leaflet-rrose-content {
+	margin: 1px;
+}
+.nav-services,
+.carte-service-etiquette .leaflet-rrose-content-wrapper,
+.carte-service-etiquette .leaflet-rrose-tip {
+	background-color: #def;
+}
+.nav-sites,
+.carte-site-etiquette .leaflet-rrose-content-wrapper,
+.carte-site-etiquette .leaflet-rrose-tip {
+	background-color: #efd;
+}
+
+#check-types {
+	float: right;
+	position: relative;
+	right: -10px;
+}
+#check-types input {
+	position: relative;
+	top: 3px;
+}
+/* Couche OSM OVERPASS */
+#ajax-poi-status *,
+#ajax-osm-status *,
+#ajax-poiCHEM-status *,
+#ajax-poiPRC-status *,
+#ajax-poiC2C-status * {
+	display: none;
+}
+.ajax-none .ajax-nav-none,
+.ajax-wait .ajax-nav-wait,
+.ajax-zoom .ajax-nav-zoom,
+.ajax-some .ajax-nav-some,
+.ajax-zero .ajax-nav-zero,
+.ajax-some .ajax-point-some {
+	display: initial !important;
+}
+.ajax-nav-some {
+	color:green;
+}
+.ajax-nav-wait,
+.ajax-nav-zero {
+	color:blue;
+}
+.ajax-nav-zoom,
+.ajax-nav-error {
+	color:red;
+}
+
 /* Carte formulaire de modification */
 #carte_edit, .carte_edit {
   width: 450px; 
 /* Ne pas définir height pour que la hauteur soit automatiquement ajustée par Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenêtre */
   float: right;
   max-width: 100%;
+}
+.bouton-supprimer {
+	wborder: 8px;
+	color: red;
+	background-color: yellow;
+	padding: 4px;
 }
