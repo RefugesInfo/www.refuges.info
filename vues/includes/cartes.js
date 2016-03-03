@@ -95,7 +95,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 				},
 		- Dans /vues/nav.js pour la page nav: 
 			<ul>
-				<? foreach (array (
+				< ? foreach (array (
 					'H&ocirc;tels' => 'tourism~hotel',
 					'Campings' => 'tourism~camp_site',
 					'Alimentation' => 'shop~supermarket|convenience',
