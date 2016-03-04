@@ -80,6 +80,7 @@ L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 <?if (strstr('nav|point',$vue->type)) {?>
 L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 	options: {
+		urlGeoJSON: '<?=$config['overpass_api']?>',
 		maxLatAperture: 0.5, // Largeur de la carte (en degrés latitude) en dessous de laquelle on recherche les points
 		timeout: 5, // En secondes, du serveur à partir duquel il abandonne la recherche et affiche la loupe rouge
 		idAjaxStatus: 'ajax-osm-status', // HTML id element owning the loading status display
