@@ -772,7 +772,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #nav_wrap_carte {
     float: right;
     width: 80%;
-    height: 100%;
   }
   #nav_bloc_carte {
     width: 98.4%;

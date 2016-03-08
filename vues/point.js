@@ -40,6 +40,8 @@ if ($vue->mini_carte) { ?>
 			},
 		}).addTo(map);
 
+		new L.Control.Scale().addTo(map);
+		new L.Control.Coordinates().addTo(map);
 		new L.Control.Fullscreen().addTo(map);
 		layerSwitcher = new L.Control.Layers.autoHeight(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 
