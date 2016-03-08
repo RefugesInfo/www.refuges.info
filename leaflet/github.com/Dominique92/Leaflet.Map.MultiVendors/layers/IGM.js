@@ -15,7 +15,7 @@ L.TileLayer.WMS.IGM = L.TileLayer.WMS.extend({
 
 	initialize: function() {
 		L.TileLayer.WMS.prototype.initialize.call(this,
-			'http://129.206.228.72/cached/osm?', { // Pour les grands zooms, il n'y a pas de carte IGM, donc on prend une carte OSM au même format WMS
+			'http://129.206.228.72/cached/osm?', { // Pour les grands zooms, il n'y a pas de carte IGM, donc on prend une carte OSM au mÃªme format WMS
 				crs: L.CRS.EPSG900913,
 				tileSize: 512 // Moins de filigranes
 			}
@@ -25,13 +25,13 @@ L.TileLayer.WMS.IGM = L.TileLayer.WMS.extend({
 	onAdd: function(map) {
 		L.TileLayer.WMS.prototype.onAdd.call(this, map);
 		map.on('zoomend', this._onZoom, this); // On ajoute une action sur chaque changement de zoom
-		this._onZoom(); // Et, pour bien commencer, on l'exécute au démarrage
+		this._onZoom(); // Et, pour bien commencer, on l'exÃ©cute au dÃ©marrage
 	},
 
 	_onZoom: function() {
 		if (!this._map)
 			return;
-		// Il y a 3 sources de cartes IGM pour des définitions bien précises
+		// Il y a 3 sources de cartes IGM pour des dÃ©finitions bien prÃ©cises
 		var np = {
 			url: 'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/',
 			urlExt: '',
@@ -52,9 +52,9 @@ L.TileLayer.WMS.IGM = L.TileLayer.WMS.extend({
 			np.layers = 'CB.IGM25000';
 		}
 
-		// Si les paramètres ont changé
+		// Si les paramÃ¨tres ont changÃ©
 		if (this.wmsParams.layers != np.layers) {
-			// On réinitialise les paramètres et on recharge la couche
+			// On rÃ©initialise les paramÃ¨tres et on recharge la couche
 			this._url = np.url + np.urlExt;
 			this.wmsParams.layers = np.layers;
 			this.redraw();

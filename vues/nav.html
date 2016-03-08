@@ -25,7 +25,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 </div>
 <!-- On sort de la page de contenu car pour la carte on ne veut pas les mêmes bordures ni les mêmes options que pour le texte -->
 
-<div id="nav_wrap_carte">
+<div id="nav_wrap_carte" class="nav_<?=$vue->mode_affichage?>">
 	<div id="nav_bloc_carte"></div>
 </div>
 
@@ -98,17 +98,38 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				</span>
 			</legend>
 			<ul>
-				<? foreach (array (
-					'H&ocirc;tels' => 'tourism~hotel',
-					'Campings' => 'tourism~camp_site',
-					'Alimentation' => 'shop~supermarket|convenience',
-					'Parkings' => 'amenity~parking',
-				) AS $k => $v) {?>
-					<li><label>
-						<input type="checkbox" name="osm-categories[]" value="<?=$v?>" onclick="poiOVER.reload()" />
-						<?=$k?>
-					</label></li>
-				<?}?>
+				<li><label>
+					<img
+						src="<?=$config['url_chemin_icones']?>hotel.png"
+						alt="icone de hotel"
+					/>
+					<input type="checkbox" name="osm-categories[]" value="tourism~hotel" onclick="poiOVER.reload()" />
+					Hôtel
+				</label></li>
+				<li><label>
+					<img
+						src="<?=$config['url_chemin_icones']?>camping.png"
+						alt="icone de camping"
+					/>
+					<input type="checkbox" name="osm-categories[]" value="tourism~camp_site" onclick="poiOVER.reload()" />
+					Campings
+				</label></li>
+				<li><label>
+					<img
+						src="<?=$config['url_chemin_icones']?>ravitaillement.png"
+						alt="icone de ravitaillement"
+					/>
+					<input type="checkbox" name="osm-categories[]" value="shop~supermarket|convenience" onclick="poiOVER.reload()" />
+					Alimentation
+				</label></li>
+				<li><label>
+					<img
+						src="<?=$config['url_chemin_icones']?>parking.png"
+						alt="icone de parking"
+					/>
+					<input type="checkbox" name="osm-categories[]" value="amenity~parking" onclick="poiOVER.reload()" />
+					Parkings
+				</label></li>
 			</ul>
 		</fieldset>
 		<fieldset class="nav-sites">

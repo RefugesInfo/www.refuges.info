@@ -1,4 +1,4 @@
-/**
+/*
  * Integrated by Dominique Cavailhez (c) 2016
  * https://github.com/Dominique92/MyLeaflet
  *
@@ -102,6 +102,7 @@ var js_list = [
 	'../github.com/Leaflet/Leaflet/src/control/Control.Attribution.js',
 	'../github.com/Leaflet/Leaflet/src/control/Control.Scale.js',
 	'../github.com/Leaflet/Leaflet/src/control/Control.Layers.js',
+	'../src/Leaflet.Control.Layers.autoHeight.js',
 
 	'../github.com/Leaflet/Leaflet/src/dom/PosAnimation.js', // Pour Map.PanAnimation.js
 	'../github.com/Leaflet/Leaflet/src/map/anim/Map.PanAnimation.js', // Nécéssaire pour zoom animé

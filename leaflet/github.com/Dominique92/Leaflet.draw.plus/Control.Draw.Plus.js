@@ -114,7 +114,7 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 
 	// Add a new feature
 	addLayer: function(layer) {
-		// Récurse in GeometryCollection
+		// RÃ©curse in GeometryCollection
 		if (layer._layers) {
 			for (l in layer._layers)
 				this.addLayer(layer._layers[l]);

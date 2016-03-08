@@ -4,7 +4,7 @@
  * Supported both on Leaflet V0.7 & V1.0
  *
  * Spanish maps
- * Instances of the WMS class allow viewing maps of Infraestructura de Datos Espaciales de España
+ * Instances of the WMS class allow viewing maps of Infraestructura de Datos Espaciales de EspaÃ±a
  * (c) http://www.idee.es
  *
  * Different layers:

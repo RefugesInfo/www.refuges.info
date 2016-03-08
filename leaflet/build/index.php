@@ -28,7 +28,7 @@ foreach ($gits[1] AS $g)
 	if (is_file ("../$g/CREDIT.txt"))
 		$gitsv[$g] = str_replace ('/commit/', '/tree/', file_get_contents ("../$g/CREDIT.txt"));
 
-$mini_js [] = "/**
+$mini_js [] = "/*
  * Integrated by Dominique Cavailhez (c) 2016
  * https://github.com/Dominique92/MyLeaflet
  * Includes part of :
@@ -80,7 +80,7 @@ foreach ($css_files[0] AS $css_file)
 	);
 
 echo "<div>Ecriture de ../dist/leaflet.css</div>";
-file_put_contents ('../dist/leaflet.css', "/**
+file_put_contents ('../dist/leaflet.css', "/*
  * Integrated by Dominique Cavailhez (c) 2016
  * https://github.com/Dominique92/MyLeaflet
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2014 Dominique Cavailhez
  * Tune the map height accordighly with map width (max window height)
  * Very important for low size mobiles

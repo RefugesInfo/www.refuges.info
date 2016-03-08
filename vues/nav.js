@@ -93,7 +93,7 @@ if (!$vue->mode_affichage) {?>
 	});
 	map.setView([45.6, 6.7], 6); // Position par défaut
 
-	var controlLayers = new L.Control.Layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+	var controlLayers = new L.Control.Layers.autoHeight(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 <?if (!strstr('zone|edit',$vue->mode_affichage)) {?>
 	new L.Control.Permalink.Cookies({
 		text: 'Permalien',

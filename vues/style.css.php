@@ -730,6 +730,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   width: 98.4%;
   max-height: calc(100% - 65px);
 }
+.nav_zone {
+  width: 100% !important;
+}
 #nav_bloc_carte {
   margin: 0 0.8%;
   width: 100%;

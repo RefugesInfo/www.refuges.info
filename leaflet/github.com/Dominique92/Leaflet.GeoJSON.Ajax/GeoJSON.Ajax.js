@@ -5,7 +5,7 @@
  *
  * Display remote layers with geoJSON format
  *
- * geoJSON Spécifications: http://geojson.org/geojson-spec.html
+ * geoJSON SpÃ©cifications: http://geojson.org/geojson-spec.html
  * With the great initial push from https://github.com/LeOSW42
  */
 
@@ -86,25 +86,28 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 
 	// Isolate too close markers when the mouse hover over the group.
 	_degroup: function(p1, delta) {
-		var ll1 = p1._latlng,
-			xy1 = this._map.latLngToLayerPoint(ll1); // XY point overflown.
-		for (l in this._layers) {
-			var p2 = this._layers[l]; // An other point.
-			if (!p2._lli) // Mem the initial position of each points.
-				p2._lli = p2._latlng;
-			if (p1._leaflet_id != p2._leaflet_id) {
-				var xy2 = this._map.latLngToLayerPoint(p2._lli), // XY other point.
-					dp = xy2.distanceTo(xy1); // Distance between the itarated point & the overflown point.
-				if (!dp) // If the 2 points are too close, we shift right one.
-					p2.setLatLng(this._map.layerPointToLatLng(xy2.add([delta, 0])));
-				else
-					p2.setLatLng(
-						dp > delta ? p2._lli // If it's far, we bring it at it initial position.
-						: [ // If not, we add to the existing shift.
-							ll1.lat + (p2._lli.lat - ll1.lat) * delta / dp,
-							ll1.lng + (p2._lli.lng - ll1.lng) * delta / dp
-						]
-					);
+		var ll1 = p1._latlng;
+		if (ll1) { // Only for markers
+			var xy1 = this._map.latLngToLayerPoint(ll1); // XY point overflown.
+			for (l in this._layers) {
+				var p2 = this._layers[l]; // An other point.
+				if (!p2._lli) // Mem the initial position of each points (_lli is local to this routine).
+					p2._lli = p2._latlng;
+				if (p2._latlng &&
+					p1._leaflet_id != p2._leaflet_id) {
+					var xy2 = this._map.latLngToLayerPoint(p2._lli), // XY other point.
+						dp = xy2.distanceTo(xy1); // Distance between the itarated point & the overflown point.
+					if (!dp) // If the 2 points are too close, we shift right one.
+						p2.setLatLng(this._map.layerPointToLatLng(xy2.add([delta, 0])));
+					else
+						p2.setLatLng(
+							dp > delta ? p2._lli // If it's far, we bring it at it initial position.
+							: [ // If not, we add to the existing shift.
+								ll1.lat + (p2._lli.lat - ll1.lat) * delta / dp,
+								ll1.lng + (p2._lli.lng - ll1.lng) * delta / dp
+							]
+						);
+				}
 			}
 		}
 	}
