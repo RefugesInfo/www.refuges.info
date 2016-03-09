@@ -86,7 +86,13 @@ if (!$vue->mode_affichage) {?>
 
 	map = new L.Map('nav_bloc_carte', {
 		layers: [
-				baseLayers['<?=$config["carte_base"]?>'] || // Sinon le fond de carte par défaut
+				baseLayers[
+<?if ($vue->mode_affichage == 'zone') {?>
+					'Outdoors'
+<?}else{?>
+					'<?=$config["carte_base"]?>'
+<?}?>
+				] || // Sinon le fond de carte par défaut
 				baseLayers[Object.keys(baseLayers)[0]], // Sinon la première couche définie
 			massifLayer
 		]
