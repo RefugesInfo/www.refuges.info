@@ -114,7 +114,7 @@ function inverse_visibility_voisins( id_element )
 			<? foreach ($vue->nominatim->xml as $points_nominatim) { ?>
 				<dd class="fiche_cadre condense">
 				<em>
-					<a href="<?=$config['sous_dossier_installation'].'nav#zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
+					<a href="<?=$config['sous_dossier_installation'].'nav?zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
 						<?=$points_nominatim['display_name']?>
 					</a>
 				</em>
