@@ -24,7 +24,7 @@ var baseLayers = {
 };
 <?}?>
 
-// Points d'interêt refuges.info
+// Points d'interÃªt refuges.info
 L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 	options: {
 		urlGeoJSON: '<?=$config['sous_dossier_installation']?>api/bbox',
@@ -54,7 +54,7 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 	}
 });
 
-// Points d'interêt via chemineur.fr
+// Points d'interÃªt via chemineur.fr
 <?if (strstr('nav',$vue->type)) {?>
 L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 	options: {
@@ -76,17 +76,17 @@ L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 });
 <?}?>
 
-// Points d'interêt OSM overpass
+// Points d'interÃªt OSM overpass
 <?if (strstr('nav|point',$vue->type)) {?>
 L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 	options: {
 		urlGeoJSON: '<?=$config['overpass_api']?>',
-		maxLatAperture: 0.5, // Largeur de la carte (en degrés latitude) en dessous de laquelle on recherche les points
-		timeout: 5, // En secondes, du serveur à partir duquel il abandonne la recherche et affiche la loupe rouge
+		maxLatAperture: 0.5, // Largeur de la carte (en degrÃ©s latitude) en dessous de laquelle on recherche les points
+		timeout: 5, // En secondes, du serveur Ã  partir duquel il abandonne la recherche et affiche la loupe rouge
 		idAjaxStatus: 'ajax-osm-status', // HTML id element owning the loading status display
 
 		/* Requette :
-		La définition des types de points à afficher se trouve:
+		La dÃ©finition des types de points Ã  afficher se trouve:
 		- Dans /vues/points.js pour la page point:
 			new L.GeoJSON.Ajax.OSM.services({
 				services: {
@@ -104,24 +104,24 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 				...
 		*/
 
-		// Traduction du nom des icônes (hotel & parking sont implicites)
+		// Traduction du nom des icÃ´nes (hotel & parking sont implicites)
 		icons: {
 			camp_site: 'camping',
 			supermarket: 'ravitaillement',
 			convenience: 'ravitaillement'
 		},
 
-		// Traduction du texte des étiquettes (en minuscule !)
+		// Traduction du texte des Ã©tiquettes (en minuscule !)
 		language: {
-			hotel: 'h&ocirc;tel',
+			hotel: 'hÃ´tel',
 			camp_site: 'camping',
 			convenience: 'alimentation',
-			supermarket: 'supermarch&egrave;'
+			supermarket: 'supermarchÃ©'
 		},
 
-		// Formatage de l'étiquette affichée au survol
-		label: function(data) { // Entrée: les données retournées par Overpass (corrigées pour certaines)
-			return { // Sortie: les lignes à écrire dans l'étiquette du point
+		// Formatage de l'Ã©tiquette affichÃ©e au survol
+		label: function(data) { // EntrÃ©e: les donnÃ©es retournÃ©es par Overpass (corrigÃ©es pour certaines)
+			return { // Sortie: les lignes Ã  Ã©crire dans l'Ã©tiquette du point
 				name: '<b>' + data.tags.name + '</b>',
 				description: [
 					data.type,
@@ -142,11 +142,11 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 				],
 				website: '<a href="' + data.tags.website + '" target="_blank">' + data.tags.website + '</a>'
 			};
-			// Les tableaux seront concaténés
-			// Les lignes correspondantes aux données inexistantes seront ignorées
+			// Les tableaux seront concatÃ©nÃ©s
+			// Les lignes correspondantes aux donnÃ©es inexistantes seront ignorÃ©es
 		},
 
-		// Style d'affichage des icônes
+		// Style d'affichage des icÃ´nes
 		style: function(feature) {
 			return {
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.icon + '.png',
