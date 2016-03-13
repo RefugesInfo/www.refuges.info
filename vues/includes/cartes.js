@@ -124,7 +124,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 			return { // Sortie: les lignes à écrire dans l'étiquette du point
 				name: '<b>' + data.tags.name + '</b>',
 				description: [
-					data.type,
+					data.icon,
 					'*'.repeat(data.tags.stars),
 					data.tags.rooms ? data.tags.rooms + ' chambres' : '',
 					data.tags.place ? data.tags.place + ' places' : '',

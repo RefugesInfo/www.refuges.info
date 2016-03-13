@@ -55,7 +55,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 		return {
 			name: '<b>' + t.name + '</b>',
 			description: [
-				data.type,
+				data.icon,
 				'*'.repeat(t.stars),
 				t.rooms ? t.rooms + ' rooms' : '',
 				t.place ? t.place + ' places' : '',
@@ -94,7 +94,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 					for (ti in t)
 						if (this.options.services[s].indexOf(ti) != -1 && t[ti] &&
 							this.options.services[s].indexOf(t[ti]) != -1)
-							icon = s;
+							d.icon = icon = s;
 
 						// Label text calculation
 				if (!t.phone)
@@ -105,9 +105,10 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 				if (t.website && t.website.search('http'))
 					t.website = 'http://' + t.website;
 
-				var label = this.label(d);
-				if (typeof this.options.label == 'function')
-					label = this.options.label(d, label);
+				var label =
+					typeof this.options.label == 'function'
+					? label = this.options.label(d, label)
+					: this.label(d);
 
 				var language = this.options.language, // Need this for local usage in function(m)
 					description = label.description.join(' ')
