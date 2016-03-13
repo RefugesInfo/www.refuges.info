@@ -14,6 +14,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 		bbox: true,
 		maxLatAperture: 0.25, // (Latitude degrees) The layer will only be displayed if it's zooms to less than this latitude aperture degrees.
 		timeout: 25, // Server timeout (seconds)
+		maxPoints: 500, // Nb max displayed points
 		services: {}, // Request data formating
 		icons: {}, // Icons name translation
 		language: {}, // label word translation
@@ -26,13 +27,8 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 			if (st.length) {
 				this.options.services = {};
 				for (var e = 0; e < st.length; e++)
-					if (st[e].checked) {
-						var val = st[e].value.split('~');
-						if (typeof this.options.services[val[0]] == 'undefined')
-							this.options.services[val[0]] = val[1];
-						else
-							this.options.services[val[0]] += '|' + val[1];
-					}
+					if (st[e].checked)
+						this.options.services[st[e].id] = st[e].value;
 			}
 
 			// No selection ?
@@ -42,8 +38,9 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 			var r = '[out:json][timeout:' + this.options.timeout + '];(\n',
 				b = this._map.getBounds(),
 				bbox = b._southWest.lat + ',' + b._southWest.lng + ',' + b._northEast.lat + ',' + b._northEast.lng;
+
 			for (var s in this.options.services) {
-				var x = '["' + s + '"~"' + this.options.services[s] + '"](' + bbox + ');\n';
+				var x = this.options.services[s] + '(' + bbox + ');\n';
 				r += 'node' + x + 'way' + x;
 			}
 			return {
@@ -83,67 +80,71 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 			this.elAjaxStatus.className = 'ajax-zoom';
 
 		var geoJson = []; // Prepare geoJson object for Leaflet.GeoJSON display
-		for (var e in data.elements) {
-			var d = data.elements[e],
-				t = d.tags,
-				icon = null;
 
-			// Find the right icon using services & icon options
-			for (s in this.options.services)
-				if (typeof t[s] == 'string' &&
-					this.options.services[s].search(t[s]) != -1) {
-					d.type = t[s];
-					icon = this.options.icons[t[s]] || t[s];
-				}
-			// Label text calculation
-			if (!t.phone)
-				t.phone = t['contact:phone'] || '';
-			delete t['contact:phone'];
+		if (data.elements.length > this.options.maxPoints)
+			this.elAjaxStatus.className = 'ajax-too';
+		else
+			for (var e in data.elements) {
+				var d = data.elements[e],
+					t = d.tags,
+					icon = null;
 
-			// Add sheme to website if necessary
-			if (t.website && t.website.search('http'))
-				t.website = 'http://' + t.website;
+				// Find the right icon using services & icon options
+				for (s in this.options.services)
+					for (ti in t)
+						if (this.options.services[s].indexOf(ti) != -1 && t[ti] &&
+							this.options.services[s].indexOf(t[ti]) != -1)
+							icon = s;
 
-			var label = this.label (d);
-			if (typeof this.options.label == 'function')
-				label = this.options.label (d, label);
+						// Label text calculation
+				if (!t.phone)
+					t.phone = t['contact:phone'] || '';
+				delete t['contact:phone'];
 
-			var language = this.options.language, // Need this for local usage in function(m)
-				description = label.description.join(' ')
-				.replace( // Word translation if necessary
-					new RegExp(Object.keys(language).join('|'), 'gi'),
-					function(m) {
-						return language[m.toLowerCase()];
-					}
-				),
-				popup = [
-					t.name ? label.name : '',
-					description.charAt(0).toUpperCase() + description.substr(1), // Uppercase the first letter
-					t.ele ? label.altitude : '',
-					t.phone ? label.phone : '',
-					t.email ? label.email : '',
-					t['addr:street'] ? label.address.join(' ') : '',
-					t.website ? label.website : '',
-					t.ext1, t.ext2, t.ext3 // User defined fields
-				];
+				// Add sheme to website if necessary
+				if (t.website && t.website.search('http'))
+					t.website = 'http://' + t.website;
 
-			if (d.center) // When item has a geometry, we need to get the center
-				Object.assign(d, d.center);
+				var label = this.label(d);
+				if (typeof this.options.label == 'function')
+					label = this.options.label(d, label);
 
-			if (d.type && d.lon && d.lat)
-				geoJson.push({
-					type: 'Feature',
-					id: d.id,
-					properties: {
-						icon: icon,
-						title: '<p>' + popup.join('</p><p>').replace('<p></p>','') + '</p>'
-					},
-					geometry: {
-						type: 'Point',
-						coordinates: [d.lon, d.lat]
-					}
-				});
-		}
+				var language = this.options.language, // Need this for local usage in function(m)
+					description = label.description.join(' ')
+					.replace( // Word translation if necessary
+						new RegExp(Object.keys(language).join('|'), 'gi'),
+						function(m) {
+							return language[m.toLowerCase()];
+						}
+					),
+					popup = [
+						t.name ? label.name : '',
+						description.charAt(0).toUpperCase() + description.substr(1), // Uppercase the first letter
+						t.ele ? label.altitude : '',
+						t.phone ? label.phone : '',
+						t.email ? label.email : '',
+						t['addr:street'] ? label.address.join(' ') : '',
+						t.website ? label.website : '',
+						t.ext1, t.ext2, t.ext3 // User defined fields
+					];
+
+				if (d.center) // When item has a geometry, we need to get the center
+					Object.assign(d, d.center);
+
+				if (d.type && d.lon && d.lat)
+					geoJson.push({
+						type: 'Feature',
+						id: d.id,
+						properties: {
+							icon: icon,
+							title: '<p>' + popup.join('</p><p>').replace('<p></p>', '') + '</p>'
+						},
+						geometry: {
+							type: 'Point',
+							coordinates: [d.lon, d.lat]
+						}
+					});
+			}
 		return geoJson;
 	},
 

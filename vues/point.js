@@ -33,10 +33,14 @@ if ($vue->mini_carte) { ?>
 
 		new L.GeoJSON.Ajax.wriPoi().addTo(map);
 		new L.GeoJSON.Ajax.OSM.services({
+			maxPoints: 30,
 			services: {
-				tourism: 'hotel|camp_site',
-				shop: 'supermarket|convenience',
-				amenity: 'parking'
+				// <NOM ICONE> = '<REQUETTE OVERPASS>'
+				hotel: '["tourism"~"hotel"]',
+				camping: '["tourism"~"camp_site"]',
+				ravitaillement: '["shop"~"supermarket|convenience"]',
+				parking: '["amenity"="parking"]["access"!="private"]',
+				bus: '["highway"="bus_stop"]'
 			},
 		}).addTo(map);
 
