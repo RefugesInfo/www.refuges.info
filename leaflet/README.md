@@ -2,7 +2,7 @@ Dominique92.MyLeaflet
 =====================
 
 Leaflet extensions for
-* multi vendors maps &amp; projections:
+* Multi vendors maps &amp; projections:
 ```
 - IGN France
 - SwissTopo
@@ -20,7 +20,7 @@ Leaflet extensions for
 
 DEMO
 ====
-[See a DEMO](http://dominique92.github.io/MyLeaflet/)
+[See a DEMO here](http://dominique92.github.io/MyLeaflet/)
 
 USAGE
 =====
@@ -29,16 +29,14 @@ USAGE
 	<link rel="stylesheet" href="dist/leaflet.css" />
 	<script src="dist/leaflet.js"></script>
 ```
+* Dist compressed files generation: run build/index.php
 
 * Include MyLeaflet for developpement (full sources):
 ```html
 	<link rel="stylesheet" href="src/leaflet.css" />
 	<script src="src/leaflet.js"></script>
 ```
-
-* Compressed files generation: run build/index.php
-
-* Tinny distribution: only copy dist/... files
+* For tinny distribution: only copy dist/... files
 
 FILES
 =====
@@ -48,8 +46,15 @@ FILES
 A CREDIT.txt file gives the github commit ref of each plugin.
 Some very few sources modifications are taged "GEO", "GEO optimisation" or "GEOmin".
 * /libs/... : Other extern libraries
-* /src/... : Other specific sources.
+* /src/... : Sources specific to MyLeaflet.
 * /src/leaflet.css /src/leaflet.js : List of source files, to be included for debug.
-* /examples/... : Extern demos.
+* /index.php : generic demo.
+* /examples/... : External demos.
 * /test/... : Debug test files or ongoing developments.
-* /index.php : Demo.
+
+Other Leaflet Plugins from this collection 
+==========================================
+* [Leaflet.GeoJSON.Ajax](https://github.com/Dominique92/Leaflet.GeoJSON.Ajax) remote GeoJSON & OSM overpass layers (Markers, Polylines, Polygons, ...).
+* [Leaflet.Map.MultiVendors](https://github.com/Dominique92/Leaflet.Map.MultiVendors) multi vendors maps & projections.
+* [Leaflet.draw.plus](https://github.com/Dominique92/Leaflet.draw.plus) on line markers, polylines & polygons editing.
+* [Leaflet.Permalink.Cookies](https://github.com/Dominique92/Leaflet.Permalink.Cookies) keeping permalink in cookies.

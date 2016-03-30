@@ -6,9 +6,8 @@
  */
 
 var js_list = [
-//	'../github.com/Leaflet/Leaflet/dist/leaflet-src.js', // FULL
 // V1.0: https://github.com/Leaflet/Leaflet/tree/master
-/* OPTIM */
+//	'../github.com/Leaflet/Leaflet/dist/leaflet-src.js', /* OPTIM LEAFLET KERNEL
 	// Dans l'ordre de leaflet-src.js
 	'../github.com/Leaflet/Leaflet/src/Leaflet.js',
 
@@ -112,7 +111,7 @@ var js_list = [
 //V1.0	'../github.com/Leaflet/Leaflet/src/map/anim/Map.FlyTo.js',
 
 	'../github.com/Leaflet/Leaflet/src/map/ext/Map.Geolocation.js', // Nécéssaire pour GPS
-/* OPTIM */
+/* FIN OPTIM LEAFLET KERNEL */
 
 	// Controles
 	'../github.com/Leaflet/Leaflet.fullscreen/dist/Leaflet.fullscreen.js', //V1.0 testé OK
@@ -134,6 +133,7 @@ var js_list = [
 	'../github.com/kartena/Proj4Leaflet/src/proj4leaflet.js', // 6k
 	'../github.com/Dominique92/Leaflet.Map.MultiVendors/MapMultiCRS.js',
 	'../github.com/tyrasd/togpx/togpx.js', // Converts GeoJSON to GPX.
+	'../github.com/Dominique92/Leaflet.Marker.coordinates/CRS.js',
 	'../github.com/Dominique92/Leaflet.Marker.coordinates/Marker.coordinates.js',
 
 	// Couches autres fournisseurs
@@ -159,14 +159,14 @@ var js_list = [
 // INSERER SUR DEMANDE	'../github.com/Dominique92/Leaflet.GeoJSON.Ajax/layers/GeoJSON.Ajax.WRI.js',
 
 	// Editeur
-//	'../github.com/Leaflet/Leaflet.draw/dist/leaflet.draw-src.js', // FULL
 // V1.0: https://github.com/Leaflet/Leaflet.draw/tree/leaflet-master
-/* OPTIM */
+//	'../github.com/Leaflet/Leaflet.draw/dist/leaflet.draw-src.js', /* OPTIM DRAW
 //	'../github.com/Leaflet/Leaflet.draw/src/Leaflet.draw.js',
 
 	'../github.com/Leaflet/Leaflet.draw/src/Toolbar.js',
 	'../github.com/Leaflet/Leaflet.draw/src/Tooltip.js',
 //	'../github.com/Leaflet/Leaflet.draw/src/ext/GeometryUtil.js',
+	'../github.com/Leaflet/Leaflet.draw/src/ext/TouchEvents.js',
 	'../github.com/Leaflet/Leaflet.draw/src/ext/LatLngUtil.js',
 	'../github.com/Leaflet/Leaflet.draw/src/ext/LineUtil.Intersect.js',
 	'../github.com/Leaflet/Leaflet.draw/src/ext/Polygon.Intersect.js', // Nécéssaire pour éditer les polygones
@@ -194,7 +194,7 @@ var js_list = [
 	'../github.com/Leaflet/Leaflet.draw/src/edit/handler/Edit.Marker.js',
 
 	'../src/lib/Leaflet-optim-stub.js', // Remplace certaines définitions de fonctions mamquantes suite aux optimisations
-/* OPTIM */
+/* FIN OPTIM DRAW */
 
 	'../github.com/makinacorpus/Leaflet.GeometryUtil/dist/leaflet.geometryutil.js', // A mettre sinon snap plante.
 	'../github.com/makinacorpus/Leaflet.Snap/leaflet.snap.js', //V1.0 ??

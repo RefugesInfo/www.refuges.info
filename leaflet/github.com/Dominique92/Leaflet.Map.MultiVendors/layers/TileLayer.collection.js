@@ -7,9 +7,8 @@
  */
 
 L.TileLayer.collection = function(name) {
-	var collection = L.TileLayer._collection;
-	if (typeof collection == 'undefined') { // Build it only once
-		collection = {
+	if (typeof this._col == 'undefined') { // Build it only once
+		this._col = {
 			'OSM': new L.TileLayer.OSM(),
 			'OSM-FR': new L.TileLayer.OSM.FR(),
 			'Maps.Refuges.Info': new L.TileLayer.OSM.MRI(),
@@ -20,12 +19,12 @@ L.TileLayer.collection = function(name) {
 		var ft = ['Landscape', 'Outdoors', 'Cycle', 'Transport'];
 		for (m in ft)
 			if (typeof L.TileLayer.OSM[ft[m]] != 'undefined')
-				collection['OSM-' + ft[m]] = new L.TileLayer.OSM[ft[m]]();
+				this._col['OSM-' + ft[m]] = new L.TileLayer.OSM[ft[m]]();
 
 		// France
 		if (typeof L.TileLayer.IGN != 'undefined' &&
 			typeof key != 'undefined' && typeof key.ign != 'undefined')
-			L.Util.extend(collection, {
+			L.Util.extend(this._col, {
 				'IGN':           new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
 				'IGN Photo':     new L.TileLayer.IGN({k: key.ign, l:'ORTHOIMAGERY.ORTHOPHOTOS'}),
 				'IGN Topo':      new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'}),
@@ -35,18 +34,18 @@ L.TileLayer.collection = function(name) {
 
 		// Espana
 		if (typeof L.TileLayer.WMS.IDEE != 'undefined')
-			L.Util.extend(collection, {
+			L.Util.extend(this._col, {
 				'Espagne': new L.TileLayer.WMS.IDEE(),
 				'Espagne photo': new L.TileLayer.WMS.IDEE.Photo()
 			});
 
 		// Italy
 		if (typeof L.TileLayer.WMS.IGM != 'undefined')
-			collection.Italie = new L.TileLayer.WMS.IGM();
+			this._col.Italie = new L.TileLayer.WMS.IGM();
 
 		// Swiss
 		if (typeof L.TileLayer.SwissTopo != 'undefined')
-			L.Util.extend(collection, {
+			L.Util.extend(this._col, {
 				'SwissTopo': new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
 //				'Swiss Siegfried': new L.TileLayer.SwissTopo({l:'ch.swisstopo.hiks-siegfried'}),
 //				'Swiss Dufour': new L.TileLayer.SwissTopo({l:'ch.swisstopo.hiks-dufour'}),
@@ -55,7 +54,7 @@ L.TileLayer.collection = function(name) {
 
 		// Austria
 		if (typeof L.TileLayer.Kompass != 'undefined')
-			L.Util.extend(collection, {
+			L.Util.extend(this._col, {
 				'Autriche': new L.TileLayer.Kompass({l:'Touristik'}),
 				'Kompass':  new L.TileLayer.Kompass({l:'OSM'})
 			});
@@ -63,16 +62,16 @@ L.TileLayer.collection = function(name) {
 		// OS-map (Great Britain)
 		if (typeof key != 'undefined' && typeof key.os != 'undefined') {
 			if (typeof L.TileLayer.OSOpenSpace != 'undefined')// For Leaflet V0.7
-				collection['OS-Great Britain'] = new L.TileLayer.OSOpenSpace(key.os, {}); // Il faut mettre le {} sinon BUG
+				this._col['OS-Great Britain'] = new L.TileLayer.OSOpenSpace(key.os, {}); // Il faut mettre le {} sinon BUG
 			else
 			if (typeof L.TileLayer.WMS.OS != 'undefined') // For Leaflet V1.0
-				collection['OS Great Britain'] = new L.TileLayer.WMS.OS({k:key.os});
+				this._col['OS Great Britain'] = new L.TileLayer.WMS.OS({k:key.os});
 		}
 
 		// MicroSoft
 		if (typeof L.BingLayer != 'undefined' &&
 			typeof key != 'undefined' && typeof key.bing != 'undefined')
-			L.Util.extend(collection, {
+			L.Util.extend(this._col, {
 				'Bing Road':   new L.BingLayer(key.bing, {type:'Road'}),
 				'Bing Photo':  new L.BingLayer(key.bing, {type:'Aerial'}),
 				'Bing Hybrid': new L.BingLayer(key.bing, {type:'AerialWithLabels'})
@@ -80,7 +79,7 @@ L.TileLayer.collection = function(name) {
 
 		// Google
 		if (typeof L.TileLayer.Google != 'undefined')
-			L.Util.extend(collection, {
+			L.Util.extend(this._col, {
 				'Google Road':    new L.TileLayer.Google({l:'m'}),
 				'Google Terrain': new L.TileLayer.Google({l:'p'}),
 				'Google Photo':   new L.TileLayer.Google({l:'s'}),
@@ -88,5 +87,5 @@ L.TileLayer.collection = function(name) {
 			});
 	}
 
-	return typeof collection[name] != 'undefined' ? collection[name] : collection;
+	return typeof this._col[name] != 'undefined' ? this._col[name] : this._col;
 };

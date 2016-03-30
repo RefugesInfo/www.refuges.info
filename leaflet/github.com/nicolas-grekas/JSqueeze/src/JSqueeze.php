@@ -1,6 +1,6 @@
 <?php // vi: set fenc=utf-8 ts=4 sw=4 et:
 /*
- * Copyright (C) 2015 Nicolas Grekas - p@tchwork.com
+ * Copyright (C) 2016 Nicolas Grekas - p@tchwork.com
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the (at your option):
@@ -401,6 +401,8 @@ class JSqueeze
         $code = strtr($code, "\x7F", ' ');
         $code = str_replace('- -', "-\x7F-", $code);
         $code = str_replace('+ +', "+\x7F+", $code);
+        $code = str_replace('get ', "get\x7F", $code);
+        $code = str_replace('set ', "set\x7F", $code);
         $code = preg_replace("'(\d)\s+\.\s*([a-zA-Z\$_[(])'", "$1\x7F.$2", $code);
         $code = preg_replace("# ([-!%&;<=>~:.^+|,()*?[\]{}/']+)#", '$1', $code);
         $code = preg_replace( "#([-!%&;<=>~:.^+|,()*?[\]{}/]+) #", '$1', $code);

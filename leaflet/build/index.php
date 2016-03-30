@@ -5,7 +5,7 @@ cp ('../LICENSE.txt', '../dist/LICENSE.txt');
 //----------------------------
 // Copy image files
 foreach (glob ('../src/images/*') AS $f)
-	cp ($f, '../dist/images/github.com-Dominique92-MyLeaflet-src-images-'.pathinfo ($f, PATHINFO_BASENAME));
+	cp ($f, '../dist/images/'.pathinfo ($f, PATHINFO_BASENAME));
 
 //----------------------------
 // Update plugins Dominique92

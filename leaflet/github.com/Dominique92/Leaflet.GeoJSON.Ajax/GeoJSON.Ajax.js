@@ -56,7 +56,7 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 
 			// Display a label when hover the feature.
 			if (style.title) {
-				var popupAnchor = style.popupAnchor || [0, 0];
+				var popupAnchor = style.popupAnchor || [0, -2];
 				new(L.Rrose || L.Popup)({
 					offset: new L.Point(popupAnchor[0], popupAnchor[1]), // Avoid to cover the marker with the popup.
 					className: style.labelClass ? style.labelClass : '',

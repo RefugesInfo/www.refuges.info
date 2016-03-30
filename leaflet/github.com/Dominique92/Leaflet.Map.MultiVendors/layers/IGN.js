@@ -6,7 +6,7 @@
  * Cartes françaises
  * Projections Lambert et couches IGN
  * Clé de développement (localhost) sur: http://api.ign.fr
- * Clé de production sur: http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
+ * Clé de production sur: http://pro.ign.fr/api-web => Service en ligne => Pour un site internet grand public => S'ABONNER
  * Doc sur http://api.ign.fr/jsp/site/Portal.jsp?page_id=6&document_id=80&dossier_id=53
  *
  * Layers (dépend de l'abonnement lié à votre clé)

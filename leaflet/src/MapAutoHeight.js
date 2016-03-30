@@ -5,7 +5,7 @@
  */
 
 L.Map.addInitHook(function() {
-	if (!this._container.offsetHeight) { // Set no height to the map <DIV> to activate MapAutoHeight
+	if (!this._container.innerHeight) { // Set no height to the map <DIV> to activate MapAutoHeight
 		this.autoHeight();// Execute during the init phase
 		L.DomEvent['on']( // Execute when the window resize
 			window, 'resize',

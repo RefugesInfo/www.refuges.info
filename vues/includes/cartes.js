@@ -88,22 +88,22 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 		// Traduction du nom des icônes (hotel & parking sont implicites)
 		icons: {
 			camp_site: 'camping',
-                        guest_house: 'hotel',
-                        chalet: 'hotel',
-                        hostel: 'hotel',
-                        supermarket: 'ravitaillement',
+			guest_house: 'hotel',
+			chalet: 'hotel',
+			hostel: 'hotel',
+			supermarket: 'ravitaillement',
 			convenience: 'ravitaillement'
 		},
 
 		// Traduction du texte des étiquettes (en minuscule !)
 		language: {
-                    hotel: 'hôtel',
-                    guest_house: 'chambre d\'hôte',
-                    chalet: 'gîte rural',
-                    hostel: 'auberge de jeunesse',
-                    camp_site: 'camping',
-                    convenience: 'alimentation',
-                    supermarket: 'supermarché'
+			hotel: 'hôtel',
+			guest_house: 'chambre d\'hôte',
+			chalet: 'gîte rural',
+			hostel: 'auberge de jeunesse',
+			camp_site: 'camping',
+			convenience: 'alimentation',
+			supermarket: 'supermarché'
 		},
 
 		// Formatage de l'étiquette affichée au survol
@@ -111,7 +111,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 			return { // Sortie: les lignes à écrire dans l'étiquette du point
 				name: '<b>' + data.tags.name + '</b>',
 				description: [
-					data.icon,
+					data.tag,
 					'*'.repeat(data.tags.stars),
 					data.tags.rooms ? data.tags.rooms + ' chambres' : '',
 					data.tags.place ? data.tags.place + ' places' : '',

@@ -3,6 +3,10 @@
  * Traduction des textes en français
  */
 
+L.myLeafletVersion = '0.2';
+
+L.Control.Scale.prototype.options.imperial = false;
+
 if (navigator.language || navigator.userLanguage == 'fr') {
 
 	// Textes des contrôles
@@ -60,6 +64,10 @@ if (navigator.language || navigator.userLanguage == 'fr') {
 				actions: {
 					title: 'Annuler le dessin',
 					text: 'Annuler'
+				},
+				finish: {
+					title: 'Finir le dessin',
+					text: 'Finir'
 				},
 				undo: {
 					title: 'Supprimer le dernier point',

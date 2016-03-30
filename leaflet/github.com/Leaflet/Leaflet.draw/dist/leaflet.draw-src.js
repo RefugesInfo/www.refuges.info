@@ -1359,7 +1359,8 @@ L.Edit.Poly = L.Handler.extend({
 		};
 
 		marker
-		    .on('click', onClick, this)
+			.on('click', this._cut, this) //GEO Cut a poly by clicking the middle marker
+//GEO		    .on('click', onClick, this)
 		    .on('dragstart', onDragStart, this)
 		    .on('dragend', onDragEnd, this);
 
