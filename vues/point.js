@@ -34,7 +34,7 @@ if ($vue->mini_carte) { ?>
 		new L.GeoJSON.Ajax.wriPoi().addTo(map);
 		new L.GeoJSON.Ajax.OSM.services({
 			services: {
-				tourism: 'hotel|camp_site',
+				tourism: 'hotel|camp_site|hostel|chalet',
 				shop: 'supermarket|convenience',
 				amenity: 'parking'
 			},

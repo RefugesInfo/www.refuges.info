@@ -85,38 +85,25 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 		timeout: 5, // En secondes, du serveur à partir duquel il abandonne la recherche et affiche la loupe rouge
 		idAjaxStatus: 'ajax-osm-status', // HTML id element owning the loading status display
 
-		/* Requette :
-		La définition des types de points à afficher se trouve:
-		- Dans /vues/points.js pour la page point:
-			new L.GeoJSON.Ajax.OSM.services({
-				services: {
-					tourism: 'hotel|camp_site',
-					shop: 'supermarket|convenience',
-					amenity: 'parking'
-				},
-		- Dans /vues/nav.js pour la page nav: 
-			<ul>
-				< ? foreach (array (
-					'H&ocirc;tels' => 'tourism~hotel',
-					'Campings' => 'tourism~camp_site',
-					'Alimentation' => 'shop~supermarket|convenience',
-					'Parkings' => 'amenity~parking',
-				...
-		*/
-
 		// Traduction du nom des icônes (hotel & parking sont implicites)
 		icons: {
 			camp_site: 'camping',
-			supermarket: 'ravitaillement',
+                        guest_house: 'hotel',
+                        chalet: 'hotel',
+                        hostel: 'hotel',
+                        supermarket: 'ravitaillement',
 			convenience: 'ravitaillement'
 		},
 
 		// Traduction du texte des étiquettes (en minuscule !)
 		language: {
-			hotel: 'hôtel',
-			camp_site: 'camping',
-			convenience: 'alimentation',
-			supermarket: 'supermarché'
+                    hotel: 'hôtel',
+                    guest_house: 'chambre d\'hôte',
+                    chalet: 'gîte rural',
+                    hostel: 'auberge de jeunesse',
+                    camp_site: 'camping',
+                    convenience: 'alimentation',
+                    supermarket: 'supermarché'
 		},
 
 		// Formatage de l'étiquette affichée au survol
