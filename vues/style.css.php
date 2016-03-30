@@ -843,6 +843,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 .ajax-zoom .ajax-nav-zoom,
 .ajax-some .ajax-nav-some,
 .ajax-zero .ajax-nav-zero,
+.ajax-too .ajax-nav-too,
 .ajax-some .ajax-point-some {
 	display: initial !important;
 }
@@ -854,6 +855,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	color:blue;
 }
 .ajax-nav-zoom,
+.ajax-nav-too,
 .ajax-nav-error {
 	color:red;
 }

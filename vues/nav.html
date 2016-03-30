@@ -50,6 +50,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					<span class="ajax-nav-wait">(chargement...)</span>
 					<span class="ajax-nav-some">(chargé)</span>
 					<span class="ajax-nav-zero" title="Zoomer sur une plus large échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(zone vide)</span>
+					<span class="ajax-nav-too" title="Zoomer sur une plus petite échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(trop de points)</span>
 					<span class="ajax-nav-error" title="Le navigateur a rencontré une erreur de réseau ou de programme.">(erreur)</span>
 				</span>
 			</legend>
@@ -94,29 +95,35 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					<span class="ajax-nav-wait">(chargement...)</span>
 					<span class="ajax-nav-some">(chargé)</span>
 					<span class="ajax-nav-zero" title="Zoomer sur une plus large échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(zone vide)</span>
+					<span class="ajax-nav-too" title="Zoomer sur une plus petite échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(trop de points)</span>
 					<span class="ajax-nav-error" title="Le navigateur a rencontré une erreur de réseau ou de programme.">(erreur)</span>
 				</span>
 			</legend>
 			<ul>
 				<li><label>
-					<input type="checkbox" name="osm-categories[]" value="tourism~hotel|guest_house|chalet|hostel" onclick="poiOVER.reload()" />
+                                        <input type="checkbox" name="osm-categories[]" id="hotel" value='["tourism"~"hotel|guest_house|chalet|hostel"]' onclick="poiOVER.reload()" />
 					<img src="<?=$config['url_chemin_icones']?>hotel.png" alt="icone de hotel" />
 					Hôtel
 				</label></li>
 				<li><label>
-					<input type="checkbox" name="osm-categories[]" value="tourism~camp_site" onclick="poiOVER.reload()" />
+					<input type="checkbox" name="osm-categories[]" id="camping" value='["tourism"~"camp_site"]' onclick="poiOVER.reload()" />
 					<img src="<?=$config['url_chemin_icones']?>camping.png" alt="icone de camping" />
 					Campings
 				</label></li>
 				<li><label>
-					<input type="checkbox" name="osm-categories[]" value="shop~supermarket|convenience" onclick="poiOVER.reload()" />
+					<input type="checkbox" name="osm-categories[]" id="ravitaillement" value='["shop"~"supermarket|convenience"]' onclick="poiOVER.reload()" />
 					<img src="<?=$config['url_chemin_icones']?>ravitaillement.png" alt="icone de ravitaillement" />
 					Alimentation
 				</label></li>
 				<li><label>
-					<input type="checkbox" name="osm-categories[]" value="amenity~parking" onclick="poiOVER.reload()" />
+					<input type="checkbox" name="osm-categories[]" id="parking" value='["amenity"="parking"]["access"!="private"]' onclick="poiOVER.reload()" />
 					<img src="<?=$config['url_chemin_icones']?>parking.png" alt="icone de parking" />
 					Parkings
+				</label></li>
+				<li><label>
+					<input type="checkbox" name="osm-categories[]" id="bus" value='["highway"="bus_stop"]' onclick="poiOVER.reload()" />
+					<img src="<?=$config['url_chemin_icones']?>bus.png" alt="icone d'arrêt de bus" />
+					Bus
 				</label></li>
 			</ul>
 		</fieldset>
@@ -136,6 +143,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 							<span class="ajax-nav-wait">&bull;&nbsp;&bull;&nbsp;&bull;</span>
 							<span class="ajax-nav-some">chargé</span>
 							<span class="ajax-nav-zero" title="Zoomer sur une plus large échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(zone vide)</span>
+							<span class="ajax-nav-too" title="Zoomer sur une plus petite échelle, déplacer la carte ou sélectionner d'autres types pour voir plus de points.">(trop de points)</span>
 							<span class="ajax-nav-error" title="Le navigateur a rencontré une erreur de réseau ou de programme.">(erreur)</span>
 						</span>
 					</label></li>
