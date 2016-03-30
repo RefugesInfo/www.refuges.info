@@ -117,7 +117,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 					data.tags.place ? data.tags.place + ' places' : '',
 					data.tags.capacity ? data.tags.capacity + ' places' : '',
 					'<a href="http://www.openstreetmap.org/' + (data.center ? 'way' : 'node') + '/' + data.id + '" target="_blank">&copy;</a>',
-                                        data.tags.description
+                                        data.tags.description ? '<br>' + data.tags.description : ''
 				],
 				altitude: data.tags.ele + ' m',
 				phone: '<a href="tel:' + data.tags.phone.replace(/[^0-9\+]+/ig, '') + '">' + data.tags.phone + '</a>',
