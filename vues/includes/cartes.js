@@ -85,7 +85,10 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 		timeout: 5, // En secondes, du serveur à partir duquel il abandonne la recherche et affiche la loupe rouge
 		idAjaxStatus: 'ajax-osm-status', // HTML id element owning the loading status display
 
-		// Traduction du nom des icônes (hotel & parking sont implicites)
+		// Traduction du nom des icônes (en minuscule !)
+		// Les clés du tableau ci dessous sont les <VALEUR> retournées par overpass dans la structure .tags = {"xxx": <VALEUR>}
+		// Les valeurs du tableau ci dessous sont les <NOM> des icones dans //WRI/images/icones/<NOM>.png
+		// hotel & parking sont implicites (traduits par eux même par défaut parcequepas dans le tableau)
 		icons: {
 			camp_site: 'camping',
 			guest_house: 'hotel',
@@ -96,6 +99,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 		},
 
 		// Traduction du texte des étiquettes (en minuscule !)
+		// Cette traduction est effectuée à la fin de la constitution du texte de l'étiquette et traduit aussi bien les infos overpass que les noms d'icônes que les textes ajoutés
 		language: {
 			hotel: 'hôtel',
 			guest_house: 'chambre d\'hôte',
@@ -103,7 +107,8 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 			hostel: 'auberge de jeunesse',
 			camp_site: 'camping',
 			convenience: 'alimentation',
-			supermarket: 'supermarché'
+			supermarket: 'supermarché',
+			bus_stop: 'arrêt de bus'
 		},
 
 		// Formatage de l'étiquette affichée au survol
@@ -137,7 +142,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 		// Style d'affichage des icônes
 		style: function(feature) {
 			return {
-				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.icon + '.png',
+				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.icon_name + '.png',
 				iconAnchor: [8, 4],
 				labelClass: 'carte-service-etiquette',
 				remanent: true,

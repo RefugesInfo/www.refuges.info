@@ -46,7 +46,7 @@ window.addEventListener('load', function() {
 		}
 	}).addTo(map);
 
-	var layerSwitcher = new L.Control.Layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+	var layerSwitcher = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 
 	new L.Control.Permalink.Cookies({ // Garde la mémoire des position, zoom, carte
 		layers: layerSwitcher,

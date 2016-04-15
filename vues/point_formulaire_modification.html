@@ -118,7 +118,7 @@
         <fieldset>
                 <span><a href="<?=$vue->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
                     <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
-                    <label class="textarea"><span><?=$tx_params->label?></span>
+                    <label class="textarea"><span><?=ucfirst($tx_params->label)?></span>
                         <textarea class="textarea" rows="5" cols="80" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
                     </label>
 		

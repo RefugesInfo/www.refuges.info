@@ -5,15 +5,16 @@
 
 L.Control.Permalink.Cookies = L.Control.Permalink.extend({
 
+	_pk: document.cookie.match(/permalink=([^;]+)/), // Mem here before it's corrupted by L.Control.Permalink._update_href
+
 	options: {
 		useAnchor: false, // Permalink URL use ? url?arg=value&... (not #)
 		move: true // Move the map to the position when initialising the control
 	},
 
 	onAdd: function(map) {
-		var kp = document.cookie.match(/permalink=([^;]+)/);
-		if (kp && !this._params.zoom) // Priority url arguments then cookies
-			this._params = L.UrlUtil.queryParse(kp[1]);
+		if (this._pk && !this._params.zoom) // Priority url arguments then cookies
+			this._params = L.UrlUtil.queryParse(this._pk[1]);
 
 		return L.Control.Permalink.prototype.onAdd.call(this, map);
 	},

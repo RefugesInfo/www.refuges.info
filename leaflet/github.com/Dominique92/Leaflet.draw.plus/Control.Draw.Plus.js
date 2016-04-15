@@ -6,20 +6,6 @@
  * Need https://github.com/Leaflet/Leaflet.draw and https://github.com/makinacorpus/Leaflet.Snap
  */
 
-// Poly edition style
-L.Util.extend(L.Polyline.prototype.options, {
-	weight: 4,
-	opacity: 1
-});
-
-// Basic display colors
-L.Util.extend(L.Draw.Polyline.prototype.options.shapeOptions, L.Polyline.prototype.options);
-L.Util.extend(L.Draw.Polygon.prototype.options.shapeOptions, L.Polygon.prototype.options);
-
-// Edition color
-L.Draw.Polyline.prototype.options.shapeOptions.color = 'red';
-L.Draw.Polygon.prototype.options.shapeOptions.color = 'red';
-
 L.Control.Draw.Plus = L.Control.Draw.extend({
 	snapLayers: new L.FeatureGroup(), // Container of layers used for snap
 	editLayers: new L.FeatureGroup(), // Container of editable layers
@@ -43,6 +29,10 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 	},
 
 	initialize: function(options) {
+		// Allign drawing style on display
+		L.Util.extend(L.Draw.Polyline.prototype.options.shapeOptions, L.Polyline.prototype.options);
+		L.Util.extend(L.Draw.Polygon.prototype.options.shapeOptions, L.Polygon.prototype.options);
+
 		options.edit = L.extend(this.options.edit, options.edit); // Init false non chosen options
 		options.draw = L.extend(this.options.draw, options.draw);
 		for (o in options.draw)
@@ -61,7 +51,7 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 		this.snapLayers.addTo(map); // Make all this visble
 
 		map.on('draw:created', function(e) {
-			e.layer.options.color = 'blue';
+//			e.layer.options.color = 'blue';
 			this.addLayer(e.layer);
 		}, this); // Add a new feature
 		map.on('draw:edited draw:deleted', this._optimPoly, this); // Finish modifications & upload
@@ -125,7 +115,7 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 		layer.on('mouseover mouseout', function(e) {
 			if (typeof e.target.setStyle == 'function')
 				e.target.setStyle({
-					color: e.type == 'mouseover' ? 'red' : 'blue'
+					color: e.type == 'mouseover' ? 'red' : L.Polyline.prototype.options.color
 				});
 		});
 

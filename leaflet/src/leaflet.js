@@ -101,7 +101,7 @@ var js_list = [
 	'../github.com/Leaflet/Leaflet/src/control/Control.Attribution.js',
 	'../github.com/Leaflet/Leaflet/src/control/Control.Scale.js',
 	'../github.com/Leaflet/Leaflet/src/control/Control.Layers.js',
-	'../src/Leaflet.Control.Layers.autoHeight.js',
+	'../src/Leaflet.Control.Layers.overflow.js',
 
 	'../github.com/Leaflet/Leaflet/src/dom/PosAnimation.js', // Pour Map.PanAnimation.js
 	'../github.com/Leaflet/Leaflet/src/map/anim/Map.PanAnimation.js', // Nécéssaire pour zoom animé
@@ -154,6 +154,7 @@ var js_list = [
 	'../github.com/mapbox/togeojson/togeojson.js', //V1.0 ??
 //	'../github.com/mapbox/leaflet-omnivore/leaflet-omnivore.js', // TBD KML/ ...
 	'../github.com/erictheise/rrose/leaflet.rrose-src.js', //V1.0 ??
+	'../github.com/Dominique92/Leaflet.GeoJSON.Ajax/GeoJSON.Style.js',
 	'../github.com/Dominique92/Leaflet.GeoJSON.Ajax/GeoJSON.Ajax.js',
 	'../github.com/Dominique92/Leaflet.GeoJSON.Ajax/layers/GeoJSON.Ajax.OSM.js',
 // INSERER SUR DEMANDE	'../github.com/Dominique92/Leaflet.GeoJSON.Ajax/layers/GeoJSON.Ajax.WRI.js',

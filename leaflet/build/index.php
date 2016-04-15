@@ -39,7 +39,7 @@ $mini_js [] = "/*
 foreach ($jsf[1] AS $fj) {
 	echo "<div>Compression de $fj</div>";
 	$mini_js [] = $js_compress->squeeze(
-		file_get_contents ($fj),
+		str_replace ('//DEBUG', '', file_get_contents ($fj)), // Remove lines between //DEBUG/* and //DEBUG*/
 		true,  // $singleLine
 		false, // $keepImportantComments
 		true   // $specialVarRx

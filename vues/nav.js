@@ -35,7 +35,6 @@ if (!$vue->mode_affichage) {?>
 					fillOpacity: 0,
 <?if ($vue->mode_affichage == 'zone') {?>
 					title: feature.properties.nom,
-					popupAnchor: [0, -5], // Pour ne pas que la souris marche dessus !
 					url: feature.properties.lien,
 					color: 'black',
 					weight: 1,
@@ -99,7 +98,7 @@ if (!$vue->mode_affichage) {?>
 	});
 	map.setView([45.6, 6.7], 6); // Position par défaut
 
-	var controlLayers = new L.Control.Layers.autoHeight(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+	var controlLayers = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 <?if ($vue->mode_affichage != 'edit') {?>
 	new L.Control.Permalink.Cookies({
 		text:

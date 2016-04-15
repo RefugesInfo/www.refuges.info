@@ -28,6 +28,9 @@ L.Marker.include({
 			latlng = marker._latlng,
 			typeCoordonnee = 'decimal'; // Valeur par défaut
 
+		if (!latlng)
+			return;
+
 		// Réécrit les options du sélecteur de type de projection
 		var selectEL = document.getElementById(this._elCoordinate+'-select');
 		if (selectEL) {
