@@ -4,7 +4,7 @@
  * in case of the layer list exceed the map height
  */
 
-L.Control.Layers.autoHeight = L.Control.Layers.extend({
+L.Control.Layers.overflow = L.Control.Layers.extend({
 
 	onAdd: function(map) {
 		L.Control.Layers.prototype.onAdd.call(this, map);
