@@ -140,7 +140,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 						id: d.id,
 						properties: {
 							icon_name: icon_name,
-							title: ('<p>' + popup.join('</p><p>') + '</p>').replace(/<p>\s*<\/p>/ig, '')
+							popup: ('<p>' + popup.join('</p><p>') + '</p>').replace(/<p>\s*<\/p>/ig, '')
 						},
 						geometry: {
 							type: 'Point',

@@ -41,7 +41,7 @@ window.addEventListener('load', function() {
 			return {
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 4],
-				title: feature.properties.nom
+				popup: feature.properties.nom
 			};
 		}
 	}).addTo(map);

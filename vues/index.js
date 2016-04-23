@@ -20,7 +20,7 @@ window.addEventListener('load', function() {
 					bbox: true, // Optimise la gestion des couleurs
 					style: function(feature) {
 						return {
-							title: feature.properties.nom,
+							popup: feature.properties.nom,
 							popupAnchor: [-1, -2],
 							url: feature.properties.lien,
 							color: 'black',

@@ -34,7 +34,7 @@ if (!$vue->mode_affichage) {?>
 					weight: 2,
 					fillOpacity: 0,
 <?if ($vue->mode_affichage == 'zone') {?>
-					title: feature.properties.nom,
+					popup: feature.properties.nom,
 					url: feature.properties.lien,
 					color: 'black',
 					weight: 1,

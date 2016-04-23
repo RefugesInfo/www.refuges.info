@@ -44,9 +44,9 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 				url: feature.properties.lien,
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 4],
-				title: '<a href="' + feature.properties.lien + '">' + feature.properties.nom + '</a>' +
+				popup: '<a href="' + feature.properties.lien + '">' + feature.properties.nom + '</a>' +
 					(prop.length ? '<div style=text-align:center>' + prop.join(' ') + '</div>' : ''),
-				labelClass: 'carte-point-etiquette',
+				popupClass: 'carte-point-etiquette',
 				remanent: true,
 				degroup: 12 // Spread the icons when the cursor hovers on a busy area.
 			};
@@ -64,10 +64,10 @@ L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 		idAjaxStatus: 'ajax-poiCHEM-status',
 		style: function(feature) {
 			return {
-				title: feature.properties.nom + ' <a href="' + this.options.urlRootRef + feature.properties.id + '" target="_blank">&copy;</a>',
+				popup: feature.properties.nom + ' <a href="' + this.options.urlRootRef + feature.properties.id + '" target="_blank">&copy;</a>',
 				iconUrl: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 4],
-				labelClass: 'carte-site-etiquette',
+				popupClass: 'carte-site-etiquette',
 				remanent: true,
 				degroup: 12
 			};
@@ -144,7 +144,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 			return {
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.icon_name + '.png',
 				iconAnchor: [8, 4],
-				labelClass: 'carte-service-etiquette',
+				popupClass: 'carte-service-etiquette',
 				remanent: true,
 				degroup: 12
 			};
