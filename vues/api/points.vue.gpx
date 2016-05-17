@@ -38,8 +38,8 @@ foreach ($points AS $point) {
 	$gpx .= "	<type>".$point->type['valeur']."</type>\r\n";
 		
 	if ($req->detail == "complet") {
-		$gpx .= "	<cmt>".$point->acces['nom']." : ".htmlentities($point->acces['valeur'])."</cmt>\r\n";
-		$gpx .= "	<desc>".$point->remarque['nom']." : ".htmlentities($point->remarque['valeur'])."</desc>\r\n";
+		$gpx .= "	<cmt>".$point->acces['nom']." : ".htmlspecialchars($point->acces['valeur'])."</cmt>\r\n";
+		$gpx .= "	<desc>".$point->remarque['nom']." : ".htmlspecialchars($point->remarque['valeur'])."</desc>\r\n";
 		$gpx .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
 		$gpx .= "	<link href=\"$point->lien\">\r\n";
 		$gpx .= "		<text>$point->nom sur $config[nom_hote]</text>\r\n";
@@ -49,7 +49,7 @@ foreach ($points AS $point) {
 		$gpx .= "		<id_point>$point->id</id_point>\r\n";
 		$gpx .= "		<id_qualite_gps>".$point->coord['precision']['type']."</id_qualite_gps>\r\n";
 		$gpx .= "		<nombre_place>".$point->places['nom']." : ".$point->places['valeur']."</nombre_place>\r\n";
-		$gpx .= "		<renseignements>".$point->proprio['nom']." : ".htmlentities($point->proprio['valeur'])."</renseignements>\r\n";
+		$gpx .= "		<renseignements>".$point->proprio['nom']." : ".htmlspecialchars($point->proprio['valeur'])."</renseignements>\r\n";
 		$gpx .= "		<id_type_point>".$point->type['id']."</id_type_point>\r\n";
 		$gpx .= "	</extensions>\r\n";
 	}

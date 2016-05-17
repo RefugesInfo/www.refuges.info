@@ -37,9 +37,9 @@ foreach ($points AS $point) {
 	$rss .= "		<description><![CDATA[
 			<b>Type</b> : ".$point->type['valeur']."<br>\r\n";
 	if($req->detail == "complet")
-		$rss .= "			<b>".$point->remarque['nom']."</b> : ".htmlentities($point->remarque['valeur'])."<br>
-			<b>".$point->proprio['nom']."</b> : ".htmlentities($point->proprio['valeur'])."<br>
-			<b>".$point->acces['nom']."</b> : ".htmlentities($point->acces['valeur'])."\r\n";
+		$rss .= "			<b>".$point->remarque['nom']."</b> : ".htmlspecialchars($point->remarque['valeur'])."<br>
+			<b>".$point->proprio['nom']."</b> : ".htmlspecialchars($point->proprio['valeur'])."<br>
+			<b>".$point->acces['nom']."</b> : ".htmlspecialchars($point->acces['valeur'])."\r\n";
 	$rss .= "			]]></description>\r\n";
 	$rss .= "	</item>\r\n"; 
 }
