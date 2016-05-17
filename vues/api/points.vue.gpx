@@ -10,7 +10,7 @@ header("Expires: $ts");
 if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
-$output = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
+$gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
 <gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"refuges.info\" version=\"1.1\" 
     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">
@@ -32,30 +32,32 @@ $output = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
 
 
 foreach ($points AS $point) {
-	$output .= "<wpt lat=\"".$point->coord['lat']."\" lon=\"".$point->coord['long']."\">\r\n";
-	$output .= "	<ele>".$point->coord['alt']."</ele>\r\n";
-	$output .= "	<name>".$point->nom."</name>\r\n";
-	$output .= "	<type>".$point->type['valeur']."</type>\r\n";
+	$gpx .= "<wpt lat=\"".$point->coord['lat']."\" lon=\"".$point->coord['long']."\">\r\n";
+	$gpx .= "	<ele>".$point->coord['alt']."</ele>\r\n";
+	$gpx .= "	<name>".$point->nom."</name>\r\n";
+	$gpx .= "	<type>".$point->type['valeur']."</type>\r\n";
 		
 	if ($req->detail == "complet") {
-		$output .= "	<cmt>".$point->acces['nom']." : ".htmlentities($point->acces['valeur'])."</cmt>\r\n";
-		$output .= "	<desc>".$point->remarque['nom']." : ".htmlentities($point->remarque['valeur'])."</desc>\r\n";
-		$output .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
-		$output .= "	<link href=\"$point->lien\">\r\n";
-		$output .= "		<text>$point->nom sur $config[nom_hote]</text>\r\n";
-		$output .= "		<type>text/html</type>\r\n";
-		$output .= "	</link>\r\n";
-		$output .= "	<extensions>\r\n";
-		$output .= "		<id_point>$point->id</id_point>\r\n";
-		$output .= "		<id_qualite_gps>".$point->coord['precision']['type']."</id_qualite_gps>\r\n";
-		$output .= "		<nombre_place>".$point->places['nom']." : ".$point->places['valeur']."</nombre_place>\r\n";
-		$output .= "		<renseignements>".$point->proprio['nom']." : ".htmlentities($point->proprio['valeur'])."</renseignements>\r\n";
-		$output .= "		<id_type_point>".$point->type['id']."</id_type_point>\r\n";
-		$output .= "	</extensions>\r\n";
+		$gpx .= "	<cmt>".$point->acces['nom']." : ".htmlentities($point->acces['valeur'])."</cmt>\r\n";
+		$gpx .= "	<desc>".$point->remarque['nom']." : ".htmlentities($point->remarque['valeur'])."</desc>\r\n";
+		$gpx .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
+		$gpx .= "	<link href=\"$point->lien\">\r\n";
+		$gpx .= "		<text>$point->nom sur $config[nom_hote]</text>\r\n";
+		$gpx .= "		<type>text/html</type>\r\n";
+		$gpx .= "	</link>\r\n";
+		$gpx .= "	<extensions>\r\n";
+		$gpx .= "		<id_point>$point->id</id_point>\r\n";
+		$gpx .= "		<id_qualite_gps>".$point->coord['precision']['type']."</id_qualite_gps>\r\n";
+		$gpx .= "		<nombre_place>".$point->places['nom']." : ".$point->places['valeur']."</nombre_place>\r\n";
+		$gpx .= "		<renseignements>".$point->proprio['nom']." : ".htmlentities($point->proprio['valeur'])."</renseignements>\r\n";
+		$gpx .= "		<id_type_point>".$point->type['id']."</id_type_point>\r\n";
+		$gpx .= "	</extensions>\r\n";
 	}
-	$output .= "</wpt>\r\n";
+	$gpx .= "</wpt>\r\n";
 }
 
-$output .= "</gpx>";
+$gpx .= "</gpx>";
+
+echo $gpx;
 
 ?>
