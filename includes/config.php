@@ -151,6 +151,26 @@ $config['carte_base_monde'] = 'OSM fr';
 // Pour avoir swisstopo je suppose ?
 $config['SwissTopo'] = true;
 
+
+/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve
+ * utilisé pour les vignettes des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
+ * le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap
+ * car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
+
+$config['fournisseurs_fond_carte'] = Array 
+(
+    // Nom pays chez OSM               Vignette    Français  Carte agrandie Échelle 
+    'France métropolitaine'=> Array (null,       ''      , 'IGN',         50000),
+    'Réunion'              => Array ('OSM fr',   ''      , 'IGN',         25000),
+    'Nouvelle Calédonie'   => Array ('OSM fr',   ''      , 'IGN',         25000),
+    'Andorra'              => Array (null,       ''      , 'IGN',         25000),
+    'Schweiz'              => Array (null,       ''      , 'SwissTopo',   50000),
+    'Österreich'           => Array (null,       ''      , 'Autriche',    50000),
+    'Italia'               => Array (null,       'de l\'', 'Italie',     100000),
+    'España'               => Array (null,       'de l\'', 'Espagne',     25000),
+    'Autres'               => Array ('OSM fr',   ''      , 'Outdoors',    50000),
+    );
+    
 /******** Nom du fichier contenant les points exportés **********/
 $config['nom_fichier_export']="refuge-info";
 
@@ -182,34 +202,23 @@ $config['debug']=false;
 // config_privee.php, c'est donc un peu merdique comme méthode, mais j'ai pas trouvé mieux
 require_once("config_privee.php");
 
+
+
+
+
+
+
+// *** NON NON : *** N'ajoutez rien après cette ligne sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant
+// mettez par contre tout ce que vous voulez avant le require_once("config_privee.php");
+
+
 $config['chemin_leaflet'].=$config['debug']?'src/':'dist/';
 $config['url_chemin_leaflet'].=$config['debug']?'src/':'dist/';
 
-// Le forum est bourré de warning que je ne compte pas vraiment reprendre, oui, j'ai mis ça après le include de config_privee.php car si debug vaut true dans le config_privee mis avant, on ne peut pas le savoir
+// Le forum est bourré de warning que je ne compte pas vraiment reprendre, oui, j'ai mis ça après le include de config_privee.php car si debug vaut true dans le config_privee mis avant, on ne veut quand même pas 
+// les warnings du forum qui remplissent l'écran
 if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))
 {
   ini_set('error_reporting', E_ALL ^ E_NOTICE);
   ini_set('display_errors', '1');
 }
-
-/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve
-utilisé pour les vignettes des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
-le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap
-car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
-
-$config['fournisseurs_fond_carte'] = Array 
-(
-// Nom pays chez OSM               Vignette    Français  Carte agrandie Échelle 
-  'France métropolitaine'=> Array (null,       ''      , 'IGN',         50000),
-  'Réunion'              => Array ('OSM fr',   ''      , 'IGN',         25000),
-  'Nouvelle Calédonie'   => Array ('OSM fr',   ''      , 'IGN',         25000),
-  'Andorra'              => Array (null,       ''      , 'IGN',         25000),
-  'Schweiz'              => Array (null,       ''      , 'SwissTopo',   50000),
-  'Österreich'           => Array (null,       ''      , 'Autriche',    50000),
-  'Italia'               => Array (null,       'de l\'', 'Italie',     100000),
-  'España'               => Array (null,       'de l\'', 'Espagne',     25000),
-  'Autres'               => Array ('OSM fr',   ''      , 'Outdoors',    50000),
-);
-
-# NON NON : On ajoute rien après cette ligne (sauf si vous savez pourquoi), ajouter par contre tout ce que vous voulez avant le require_once("config_privee.php"); 15 lignes avant
-
