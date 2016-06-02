@@ -205,7 +205,7 @@ if ( !empty($point->equivalent_conditions_utilisation) )
     if ($point->id_point_type==$config['point_d_eau'])
         $vue->champs->conditions_utilisation->options = array('ouverture' => 'Coule', 'NULL' => 'Ne sait pas','detruit' => 'Détruite','fermeture' => $point->equivalent_conditions_utilisation);
     else
-        $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
+        $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
     $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 //combine matelas
