@@ -110,9 +110,9 @@ function infos_points($conditions)
         else
             $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
 
-    // conditions sur le nom du point
+    // conditions sur le nom du point, on tente d'être tolérant en supportant les caractères non accentués, et les - , ou espaces de la même façon
     if( !empty($conditions->nom) )
-        $conditions_sql .= " AND unaccent(points.nom) ILIKE unaccent(".$pdo->quote('%'.$conditions->nom.'%').")";
+        $conditions_sql .= " AND unaccent(points.nom) ILIKE unaccent(".$pdo->quote('%'.str_replace(array('-',' '),'%',$conditions->nom).'%').")";
 
     // condition sur l'appartenance à un polygone
     if( !empty($conditions->ids_polygones) )
