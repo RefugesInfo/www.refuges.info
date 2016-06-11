@@ -773,7 +773,11 @@ function choix_icone($point)
           ($point->id_point_type==$config['id_cabane_non_gardee'] or $point->id_point_type==$config['id_gite_etape'] or $point->id_point_type==$config['id_refuge_garde'])
        )
         $nom_icone="inutilisable";
-        
+    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit")
+        AND
+        ($point->id_point_type==$config['point_d_eau'])
+       )
+        $nom_icone="ancien-point-d-eau";
     return $nom_icone;
 }
 function chemin_icone($nom_icone,$absolu=true)
