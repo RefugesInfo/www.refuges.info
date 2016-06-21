@@ -181,6 +181,9 @@ $config['copyright_API']="The data included in this document is from www.refuges
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");
 mb_internal_encoding("UTF-8");
+// Bidouille : les dates que nous avons dans notre base sont déjà en heure locale (de Paris) si j'indique ici Europe/Paris, lors de formatage de date en php, on se retrouve à ajouter une fois de trop 1h ou 2h
+// donc en lui disant "UTC" il ne fait pas d'ajout et nous laisse les heures comme elle devrait être
+date_default_timezone_set('UTC');
 
 // ************* anti-spam, boulets, réservateurs et autres personnes dont on doit se protéger
 // Filtrage géographique des inscriptions
