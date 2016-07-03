@@ -16,7 +16,8 @@ L.Control.Layers.overflow = L.Control.Layers.extend({
 	},
 
 	_autoHeight: function() {
-		this._baseLayersList.style.maxHeight = (this._map._container.offsetHeight - 86) + 'px';
-		this._baseLayersList.style.overflow = 'auto';
+		this._container.style.maxHeight = (this._map._container.offsetHeight - 86) + 'px';
+		this._container.style.overflowX = 'hidden';
+		this._container.style.overflowY = 'auto';
 	}
 });

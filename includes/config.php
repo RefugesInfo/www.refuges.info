@@ -130,12 +130,12 @@ $config['encodage_des_contenu_web']=$config['encodage_exportation'];
 
 /********** URLs d'accès aux données openstreetmap ************/
 
-$config['xapi_url_poi']="http://api.openstreetmap.fr/osm2node?";
-$config['overpass_api']="http://api.openstreetmap.fr/oapi/interpreter";
+$config['xapi_url_poi']="https://api.openstreetmap.fr/osm2node?";
+$config['overpass_api']="https://api.openstreetmap.fr/oapi/interpreter";
 //Autre serveur de backup :
-$config['overpass_api']="http://www.overpass-api.de/api/interpreter";
+$config['overpass_api']="https://www.overpass-api.de/api/interpreter";
 
-$config['url_nominatim']="http://nominatim.openstreetmap.org/";
+$config['url_nominatim']="https://nominatim.openstreetmap.org/";
 $config['url_appel_nominatim']=$config['url_nominatim'] . "search.php?";
 $config['email_contact_nominatim']="sylvain@refuges.info";
 

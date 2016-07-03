@@ -51,7 +51,6 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 		this.snapLayers.addTo(map); // Make all this visble
 
 		map.on('draw:created', function(e) {
-//			e.layer.options.color = 'blue';
 			this.addLayer(e.layer);
 		}, this); // Add a new feature
 		map.on('draw:edited draw:deleted', this._optimPoly, this); // Finish modifications & upload

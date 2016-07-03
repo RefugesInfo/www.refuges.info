@@ -36,7 +36,7 @@ L.Control.Permalink.Cookies = L.Control.Permalink.extend({
 	},
 
 	_update_href: function() {
-		document.cookie = "permalink=" + L.Util.getParamString(this._params).substring(1) + ';path=/';
+		document.cookie = 'permalink=' + L.Util.getParamString(this._params).substring(1) + ';path=/';
 		return L.Control.Permalink.prototype._update_href.call(this);
 	}
 });

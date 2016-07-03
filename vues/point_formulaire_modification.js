@@ -3,73 +3,70 @@
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
 // $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
+
+include ($config['racine_projet'].'vues/includes/cartes.js');
 ?>
 
-var map, viseur, gps;
+var map = new L.Map('carte-edit'),
+	viseur,
+	gps,
+	baseLayers = {
+	'Refuges.info':new L.TileLayer.OSM.MRI(),
+	'OSM fr':      new L.TileLayer.OSM.FR(),
+	'Outdoors':    new L.TileLayer.OSM.Outdoors(),
+	'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'})
+};
+baseLayers['<?=$vue->fond_carte_par_defaut?>'].addTo(map); // Le fond de carte visible
 
-window.addEventListener('load', function() {
-	<?php include ($config['racine_projet'].'vues/includes/cartes.js') ?>
+// Viseur déplaçable affichant sa position éditable.
+viseur = new L.Marker([], {
+	draggable: true,
+	zIndexOffset: 1000, // Passe au dessus des autres pictos
+	icon: L.icon({
+		iconUrl: '<?=$config['sous_dossier_installation']?>images/viseur.png',
+		iconAnchor: [15, 15]
+	}),
+})
+	.coordinates('viseur') // Lien avec le formulaire HTML
+	.addTo(map);
 
-	var baseLayers = {
-		'Refuges.info':new L.TileLayer.OSM.MRI(),
-		'OSM fr':      new L.TileLayer.OSM.FR(),
-		'Outdoors':    new L.TileLayer.OSM.Outdoors(),
-		'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'})
-	};
+map.setView(viseur._latlng, 13, { // Recentre la carte sur ce viseur
+	reset: true
+});
 
-	map = new L.Map('carte-edit');
-	baseLayers['<?=$vue->fond_carte_par_defaut?>'].addTo(map); // Le fond de carte visible
+new L.GeoJSON.Ajax.wriPoi ({ // Les points d'intérêt WRI, style simplifié
+	style: function(feature) {
+		return {
+			iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
+			iconAnchor: [8, 4],
+			popup: feature.properties.nom
+		};
+	}
+}).addTo(map);
 
-	// Viseur déplaçable affichant sa position éditable.
-	viseur = new L.Marker([], {
-		draggable: true,
-		zIndexOffset: 1000, // Passe au dessus des autres pictos
-		icon: L.icon({
-			iconUrl: '<?=$config['sous_dossier_installation']?>images/viseur.png',
-			iconAnchor: [15, 15]
-		}),
-	})
-		.coordinates('viseur') // Lien avec le formulaire HTML
-		.addTo(map);
+var layerSwitcher = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 
-	map.setView(viseur._latlng, 13, { // Recentre la carte sur ce viseur
+new L.Control.Permalink.Cookies({ // Garde la mémoire des position, zoom, carte
+	layers: layerSwitcher,
+	text: null, // Le contrôle n'apparait pas sur la carte
+	useAnchor: true // Pour ne pas mélanger le permalien cookies avec l'argument ?id_point_type=
+}).addTo(map);
+viseur.setLatLng(map.getCenter()); // Centrer le viseur au centre de la carte (position du cookie)
+
+new L.Control.Scale().addTo(map);
+new L.Control.Fullscreen().addTo(map);
+
+gps = new L.Control.Gps().addTo(map)
+gps.on('gpslocated', function(e) {
+	viseur.setLatLng(e.latlng); // Déplacement du viseur
+	e.target._map.setView(e.latlng, 16, {
 		reset: true
 	});
-
-	new L.GeoJSON.Ajax.wriPoi ({ // Les points d'intérêt WRI, style simplifié
-		style: function(feature) {
-			return {
-				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
-				iconAnchor: [8, 4],
-				popup: feature.properties.nom
-			};
-		}
-	}).addTo(map);
-
-	var layerSwitcher = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
-
-	new L.Control.Permalink.Cookies({ // Garde la mémoire des position, zoom, carte
-		layers: layerSwitcher,
-		text: null, // Le contrôle n'apparait pas sur la carte
-		useAnchor: true // Pour ne pas mélanger le permalien cookies avec l'argument ?id_point_type=
-	}).addTo(map);
-	viseur.setLatLng(map.getCenter()); // Centrer le viseur au centre de la carte (position du cookie)
-
-	new L.Control.Scale().addTo(map);
-	new L.Control.Fullscreen().addTo(map);
-
-	gps = new L.Control.Gps().addTo(map)
-	gps.on('gpslocated', function(e) {
-		viseur.setLatLng(e.latlng); // Déplacement du viseur
-		e.target._map.setView(e.latlng, 16, {
-			reset: true
-		});
-	});
-
-	new L.Control.OSMGeocoder({
-		position: 'topleft'
-	}).addTo(map);
 });
+
+new L.Control.OSMGeocoder({
+	position: 'topleft'
+}).addTo(map);
 
 function affiche_et_set( el , affiche, valeur ) {
     document.getElementById(el).style.visibility = affiche ;

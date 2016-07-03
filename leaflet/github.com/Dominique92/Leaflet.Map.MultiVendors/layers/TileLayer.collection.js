@@ -9,9 +9,9 @@
 L.TileLayer.collection = function(name) {
 	if (typeof this._col == 'undefined') { // Build it only once
 		this._col = {
-			'OSM': new L.TileLayer.OSM(),
+//			'OSM': new L.TileLayer.OSM(),
 			'OSM-FR': new L.TileLayer.OSM.FR(),
-			'Maps.Refuges.Info': new L.TileLayer.OSM.MRI(),
+			'Maps-refuges-info': new L.TileLayer.OSM.MRI(),
 			'Hike & Bike': new L.TileLayer.OSM.hikebike()
 		};
 
@@ -26,10 +26,11 @@ L.TileLayer.collection = function(name) {
 			typeof key != 'undefined' && typeof key.ign != 'undefined')
 			L.Util.extend(this._col, {
 				'IGN':           new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
-				'IGN Photo':     new L.TileLayer.IGN({k: key.ign, l:'ORTHOIMAGERY.ORTHOPHOTOS'}),
-				'IGN Topo':      new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'}),
-				'IGN Classique': new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
-				'IGN Cadastre':  new L.TileLayer.IGN({k: key.ign, l:'CADASTRALPARCELS.PARCELS'})
+				'IGN topo':      new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'}),
+				'IGN classique': new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
+//				'IGN plan':      new L.TileLayer.IGN({k: key.ign, l:'GEOGRAPHICALGRIDSYSTEMS.PLANIGN'}),
+				'IGN cadastre':  new L.TileLayer.IGN({k: key.ign, l:'CADASTRALPARCELS.PARCELS', f: 'png'}),
+				'IGN photo':     new L.TileLayer.IGN({k: key.ign, l:'ORTHOIMAGERY.ORTHOPHOTOS'})
 			});
 
 		// Espana
@@ -40,13 +41,13 @@ L.TileLayer.collection = function(name) {
 			});
 
 		// Italy
-		if (typeof L.TileLayer.WMS.IGM != 'undefined')
-			this._col.Italie = new L.TileLayer.WMS.IGM();
+//		if (typeof L.TileLayer.WMS.IGM != 'undefined')
+//			this._col.Italie = new L.TileLayer.WMS.IGM();
 
 		// Swiss
 		if (typeof L.TileLayer.SwissTopo != 'undefined')
 			L.Util.extend(this._col, {
-				'SwissTopo': new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
+				'SwissTopo': new L.TileLayer.SwissTopo.Extended(),
 //				'Swiss Siegfried': new L.TileLayer.SwissTopo({l:'ch.swisstopo.hiks-siegfried'}),
 //				'Swiss Dufour': new L.TileLayer.SwissTopo({l:'ch.swisstopo.hiks-dufour'}),
 				'Swiss Image': new L.TileLayer.SwissTopo({l:'ch.swisstopo.swissimage'})
@@ -55,12 +56,13 @@ L.TileLayer.collection = function(name) {
 		// Austria
 		if (typeof L.TileLayer.Kompass != 'undefined')
 			L.Util.extend(this._col, {
-				'Autriche': new L.TileLayer.Kompass({l:'Touristik'}),
-				'Kompass':  new L.TileLayer.Kompass({l:'OSM'})
+//				'Kompass':  new L.TileLayer.Kompass({l:'OSM'}),
+				'Autriche': new L.TileLayer.Kompass({l:'Touristik'})
 			});
 
 		// OS-map (Great Britain)
 		if (typeof key != 'undefined' && typeof key.os != 'undefined') {
+			L.TileLayer.OSOpenSpace.prototype._url = L.TileLayer.OSOpenSpace.prototype._url.replace('https', 'http') // Bugge à partir d'une page https
 			if (typeof L.TileLayer.OSOpenSpace != 'undefined')// For Leaflet V0.7
 				this._col['OS-Great Britain'] = new L.TileLayer.OSOpenSpace(key.os, {}); // Il faut mettre le {} sinon BUG
 			else
@@ -72,18 +74,18 @@ L.TileLayer.collection = function(name) {
 		if (typeof L.BingLayer != 'undefined' &&
 			typeof key != 'undefined' && typeof key.bing != 'undefined')
 			L.Util.extend(this._col, {
-				'Bing Road':   new L.BingLayer(key.bing, {type:'Road'}),
+//				'Bing Road':   new L.BingLayer(key.bing, {type:'Road'}),
 				'Bing Photo':  new L.BingLayer(key.bing, {type:'Aerial'}),
-				'Bing Hybrid': new L.BingLayer(key.bing, {type:'AerialWithLabels'})
+//				'Bing Hybrid': new L.BingLayer(key.bing, {type:'AerialWithLabels'})
 			});
 
 		// Google
 		if (typeof L.TileLayer.Google != 'undefined')
 			L.Util.extend(this._col, {
-				'Google Road':    new L.TileLayer.Google({l:'m'}),
+//				'Google Road':    new L.TileLayer.Google({l:'m'}),
 				'Google Terrain': new L.TileLayer.Google({l:'p'}),
-				'Google Photo':   new L.TileLayer.Google({l:'s'}),
-				'Google Hybride': new L.TileLayer.Google({l:'s,h'})
+//				'Google Hybride': new L.TileLayer.Google({l:'s,h'}),
+				'Google Photo':   new L.TileLayer.Google({l:'s'})
 			});
 	}
 

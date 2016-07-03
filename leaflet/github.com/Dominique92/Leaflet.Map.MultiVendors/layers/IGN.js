@@ -14,19 +14,21 @@
 	new L.TileLayer.IGN({k:'CLE_IGN', l:'ORTHOIMAGERY.ORTHOPHOTOS'}) : Photos
 	new L.TileLayer.IGN({k:'CLE_IGN', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'}) : TOP 25
 	new L.TileLayer.IGN({k:'CLE_IGN', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}) : Nouvelle présentation
-	new L.TileLayer.IGN({k:'CLE_IGN', l:'CADASTRALPARCELS.PARCELS'}) : Cadastre
+	new L.TileLayer.IGN({k:'CLE_IGN', l:'CADASTRALPARCELS.PARCELS', f: 'png'}) : Cadastre
  */
 
 L.TileLayer.IGN = L.TileLayer.extend({
 	options: {
 		l: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+		f: 'jpeg',
 		attribution: '&copy; <a href="http://www.ign.fr/">IGN</a>'
 	},
 	initialize: function(options) {
 		L.TileLayer.prototype.initialize.call(this,
-			"http://gpp3-wxs.ign.fr/{k}/wmts" +
+			"https://wxs.ign.fr/{k}/geoportail/wmts" +
 				"?LAYER={l}"+
-				"&FORMAT=image/jpeg"+
+				"&EXCEPTIONS=text/xml"+
+				"&FORMAT=image/{f}"+
 				"&SERVICE=WMTS"+
 				"&VERSION=1.0.0"+
 				"&REQUEST=GetTile"+

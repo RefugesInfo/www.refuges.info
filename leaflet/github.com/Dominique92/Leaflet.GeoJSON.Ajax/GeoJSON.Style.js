@@ -53,12 +53,24 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 				.setContent(style.popup)
 					.setLatLng(e.latlng)
 					.openOn(this._map);
-
+					
 				// Close the label when moving out of the marker
-				if (!style.remanent) {
+				if (style.remanent)
+					this.popupLatlng = e.latlng; // Mem the popup position to be able to delete it when moving far
+				else {
 					layer.off('mouseout', this._closePopup); // Only once
 					layer.on('mouseout', this._closePopup); // Use named function to not off all mouseout when layer off 'mouseout'
 				}
+			}
+		}, this);
+
+		// Close popups when moving > 150px far or leaving the map
+		this._map.on('mousemove mouseout', function(e) {
+			if (typeof this.popupLatlng == 'object') {
+				var popupXY = this._map.latLngToLayerPoint(this.popupLatlng),
+					dist = Math.hypot(popupXY.x - e.layerPoint.x, popupXY.y - e.layerPoint.y);
+				if (dist > 150 || e.type == 'mouseout')
+					this._map.closePopup();
 			}
 		}, this);
 
@@ -71,7 +83,7 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 					document.location.href = style.url;
 			});
 
-		// Isolate too close markers when the mouse hover over the group.
+		// Isolate too close markers when the mouse hovers over the group.
 		layer.on('mouseover', function(e) {
 			if (style.degroup)
 				this._degroup(layer, style.degroup);
