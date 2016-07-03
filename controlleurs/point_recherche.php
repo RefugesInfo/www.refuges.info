@@ -70,7 +70,7 @@ if (!empty($_REQUEST))
         if (isset($points))
             foreach ($points as $point)
             {
-                $point->lien=lien_point($point);
+                $point->lien=lien_point($point,true);
                 $vue->points[]=$point;
             }
         //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on l'a atteinte ........
