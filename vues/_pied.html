@@ -8,10 +8,6 @@
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 ?>
-		<?if (count ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
-			foreach ($vue->java_lib_foot as $js_lib) {?>
-				<script type="text/javascript" src="<?=$js_lib?>"></script>
-		<?	}?>
 		<div id="basdepage">
 			<a id="lien-mobile" href="<?=$config['sous_dossier_installation']?>mobile/" title="Passer sur l'application mobile">
 				Version mobile
@@ -35,5 +31,17 @@
 			</a>
 			<?php } ?>
 		</div>
+
+		<?if (count ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
+			foreach ($vue->java_lib_foot as $js_lib) {?>
+				<script type="text/javascript" src="<?=$js_lib?>"></script>
+		<?	}?>
+		<?if (file_exists ("vues/$vue->type.js")) {?>
+			<script type="text/javascript">
+			//<![CDATA[
+				<?include ("vues/$vue->type.js")?>
+			//]]>
+			</script>
+		<?}?>
 	</body>
 </html>

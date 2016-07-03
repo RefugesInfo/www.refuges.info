@@ -35,17 +35,6 @@
 				e.className = cs.join(' ').trim();
 			}
 		</script>
-		<?if (count ($vue->java_lib))
-			foreach ($vue->java_lib as $js_lib) {?>
-				<script type="text/javascript" src="<?=$js_lib?>"></script>
-		<?	}?>
-		<?if (file_exists ("vues/$vue->type.js")) {?>
-			<script type="text/javascript">
-			//<![CDATA[
-				<?include ("vues/$vue->type.js")?>
-			//]]>
-			</script>
-		<?}?>
 	</head>
 
 	<body>

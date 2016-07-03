@@ -55,12 +55,12 @@
 		</dl>
 		</div>
 <!--============================================ CARTE ============================================-->
-		<?// Veut-on une vignette point ? (oui sauf cas des coordonnées inconnues
+		<?// Veut-on une carte point ? (oui sauf cas des coordonnées inconnues
 		if ($vue->mini_carte) {?>
-			<div class="container_carte">
-				<div id="vignette"></div>
-				<div id="agrandir_vignette">
-					<a style="cursor:pointer" onclick="agrandir_vignette()" title="Agrandir la vignette et changer de fond de carte">
+			<div id="container-carte-point">
+				<div id="carte-point"></div>
+				<div id="agrandir-carte-point">
+					<a style="cursor:pointer" onclick="agrandir_carte_point()" title="Agrandir la carte-point et changer de fond de carte">
 						Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
 					</a>
 					<span id="p21781"></span>

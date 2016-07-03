@@ -219,7 +219,6 @@ if ( !empty($point->equivalent_places_matelas) )
 // ===========================================
 // Préparation de la $vue commune à chaque cas
 
-//$vue->java_lib [] = 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false';
 $vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
 $vue->java_lib_foot [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier

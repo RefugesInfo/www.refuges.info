@@ -151,14 +151,14 @@ H5 { /* sou-sou titre, pour l'instant que dans les fiches de refuges */
   margin-bottom:3px;
   padding-left: 10px;
   }
-h6 { /* utilisé dans la "FAQ" comme question */
+H6 { /* utilisé dans la "FAQ" comme question */
   margin-bottom: 0px;
   margin-top: 1em;
   font-size: 12px;
   font-weight: bold ;
-  font-size: medium; /* sinon H6 cest tout petit ... */
+  font-size: medium; /* sinon H6, c'est tout petit ... */
   }
-p {
+P {
   margin-bottom: 1em;
   }
 /*===== LISTES=====*/
@@ -283,7 +283,7 @@ J'intègre également les class des liens du forum
 en gros je veux tout de la même couleur
 */
 
-A,a.mainmenu,a.nav,a.forumlink,a.cattitle,a.topictitle,a.postlink,a.gen,a.genmed,a.gensmall {
+A,A.mainmenu,A.nav,A.forumlink,A.cattitle,A.topictitle,A.postlink,A.gen,A.genmed,A.gensmall {
   color : #<?=$couleur_lien?>; /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
   }
@@ -366,8 +366,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 @media screen and (max-width: 800px) {
-  #entete > a,
-  #entete img {
+  #entete > A,
+  #entete IMG {
 	max-width: 50%;
 	height: 50px;
   }
@@ -441,8 +441,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /* Paramétrage commun aux deux menus en mode ecran large */
 @media screen and (min-width: 641px) and (min-height: 361px) {
   /* On inhibe les affichages non souhaités */
-  .menu > a,
-  .menu span,
+  .menu > A,
+  .menu SPAN,
   .mobile-only {
     display: none;
   }
@@ -536,7 +536,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   .screen-only,
   #entete,
   #menu-scroll,
-  .menu > ul {
+  .menu > UL {
     display: none;
     height: auto;
   }
@@ -549,12 +549,12 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     padding: 2px;
 	font-size: 16px;
   }
-  .menu > span {
+  .menu > SPAN {
     float: right;
 	padding: 0 30px;
     cursor: pointer;
   }
-  .menu span::after { /* Les 3 bandes signalant l'ouverture du menu */
+  .menu SPAN::after { /* Les 3 bandes signalant l'ouverture du menu */
     content: "";
     position: absolute;
     height: 0;
@@ -563,25 +563,25 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     box-shadow: 0 0px 0 1px black, 0 7px 0 1px black, 0 14px 0 1px black;
     width: 16px;
   }
-  .menu ul {
+  .menu UL {
     display: none;
     text-align: left;
     padding: 0;
     font-weight: normal;
 	border: none !important;
   }
-  .deroule > ul {
+  .deroule > UL {
     display: block;
   }
-  .menu > ul > li {
+  .menu > UL > LI {
     border-top: solid 2px #<?=$couleur_decoration_titres?>;
 	text-align: left;
   }
-  .menu ul li span {
+  .menu UL LI SPAN {
     cursor: pointer;
 	font-size: 18px;
   }
-  .menu ul li ul {
+  .menu UL LI UL {
     padding-left: 10px;
   }
 }
@@ -693,10 +693,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 #meteo> div:first-child {
 	border-left: 1px solid black;
 }
-#meteo img {
+#meteo IMG {
 	display: block;
 }
-#meteo p {
+#meteo P {
 	margin: 0;
 	padding: 0;
 }
@@ -710,77 +710,68 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   background-position: center center;
   background-repeat: no-repeat;
 }
-#accueil_map { /* Carte de l'accueil */
+
+/* Carte de l'accueil */
+#carte-accueil {
   width:  300px;
   height:  300px;
 }
 @media screen and (max-width: 450px) {
  .tablo,
-  #accueil_map {
+  #carte-accueil {
     width: 100vw;
     height: 100vw;
   }
 }
+
 /* Carte NAV présentation mobile verticale */
-#nav_wrap_carte {
-  width: 98.4vw;
-  height: 98.4vw;
+#carte-nav {
+  width: 96vw;
+  height: 96vw;
   max-height: calc(100% - 65px); /* Pour ne pas trop déborder en bas */
-}
-.nav_zone {
-  width: 100% !important;
-}
-#nav_bloc_carte {
   margin: 0 0.8%;
-  width: 100vw;
-  height: 100vw;
-  max-height: 100%;
 }
-.nav_bloc_selecteur {
-  padding: 0 0.7%;
+#selecteur-carte-nav {
+  padding-left: 1px;
 }
-.nav_bloc_selecteur p {
-	margin-top: 0;
-	margin-bottom: 5px;
+#selecteur-carte-nav P {
+  margin-top: 0;
+  margin-bottom: 5px;
 }
 /* Menu deplié */
 @media screen and (min-width: 641px) and (min-height: 361px) {
-  #nav_wrap_carte {
+  #carte-nav {
     max-height: calc(100% - 126px);
   }
 }
 /* Carte NAV présentation mobile horizontale */
 @media screen and (min-aspect-ratio: 1/1) and (max-height: 360px) and (min-width: 365px) {
-  #nav_wrap_carte {
+  #carte-nav {
     float: right;
     width: 67%;
     max-height: calc(100% - 75px);
   }
-  #nav_bloc_carte {
-    width: 98.4%;
-  }
-  .nav_bloc_selecteur {
+  #selecteur-carte-nav {
     display: table-cell;
     width: 33%;
   }
 }
 /* Carte NAV présentation écrans */
 @media screen and (min-width: 800px) {
-  #nav_wrap_carte {
+  #carte-nav {
     float: right;
-    width: 80%;
+    width: 75vw;
+    height: 75vw;
   }
-  #nav_bloc_carte {
-    width: 98.4%;
-  }
-  .nav_bloc_selecteur {
+  #selecteur-carte-nav {
     display: table-cell;
     width: 33%;
+    padding-left: 5px;
   }
 }
 
 /* Carte de la page des points mobiles */
-#vignette {
+#carte-point {
   width: 100vw;
   height: 100vw;
   min-width: 300px;
@@ -788,22 +779,41 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 /* Carte de la page des points écrans */
 @media screen and (min-width: 641px) {
-  #vignette {
+  #container-carte-point {
+    float: right;
+  }
+  #carte-point {
     width: 400px;
     min-width: auto;
   }
-  .container_carte {
-    float: right;
+}
+/* Spécificité carte des zones */
+.nav_zone {
+  width: 100% !important;
+}
+/* Carte formulaire de modification */
+#carte-edit {
+  float: right;
+  width: 95vw;
+  height: 95vw;
+  max-height: 450px; 
+}
+/* Carte formulaire de modification présentation écrans */
+@media screen and (min-width: 800px) {
+  #carte-edit {
+    width: 450px; 
+    height: 450px; 
   }
 }
 
+/* Etiquette dans les cartes */
 .carte-point-etiquette .leaflet-rrose-content-wrapper,
 .carte-service-etiquette .leaflet-rrose-content-wrapper,
 .carte-site-etiquette .leaflet-rrose-content-wrapper {
 	border-radius: 5px;
 }
 .carte-point-etiquette .leaflet-rrose-content,
-.carte-service-etiquette .leaflet-rrose-content p,
+.carte-service-etiquette .leaflet-rrose-content P,
 .carte-service-etiquette .leaflet-rrose-content,
 .carte-site-etiquette .leaflet-rrose-content {
 	margin: 1px;
@@ -858,14 +868,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	color:red;
 }
 
-/* Carte formulaire de modification */
-#carte_edit, .carte_edit {
-  width: 450px; 
-  height: 450px; 
-  float: right;
-  max-width: 100vw;
-  max-height: 100vw;
-}
 .bouton-supprimer {
 	color: red;
 	background-color: yellow;
