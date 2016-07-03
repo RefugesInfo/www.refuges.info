@@ -29,16 +29,18 @@ L.CRS.EPSG21781 = L.extend(
 			lng: 'X', // Nom de la coordonnée pour affichage
 			lat: 'Y'
 		},
-		distance: function(a,b){return L.CRS.Earth.distance(a,b);}
+		distance: function(a, b) {
+			return L.CRS.Earth.distance(a, b);
+		}
 	}
 );
 
 // SwissTopo layer
 L.TileLayer.SwissTopo = L.TileLayer.extend({
 	options: {
-		l: 'ch.swisstopo.pixelkarte-farbe',
 		subdomains: '56789',
-		t: 20151231, // time
+		l: 'ch.swisstopo.pixelkarte-farbe',
+		f: 'jpeg',
 		crs: L.CRS.EPSG21781,
 		maxZoom: L.CRS.EPSG21781.options.resolutions.length - 1,
 		minZoom: 0,
@@ -48,8 +50,26 @@ L.TileLayer.SwissTopo = L.TileLayer.extend({
 	initialize: function(options) {
 		L.TileLayer.prototype.initialize.call(
 			this,
-			'http://wmts{s}.geo.admin.ch/1.0.0/{l}/default/{t}/21781/{z}/{y}/{x}.jpeg',
+			'https://wmts{s}.geo.admin.ch/1.0.0/{l}/default/current/21781/{z}/{y}/{x}.{f}',
 			options
 		);
+	}
+});
+
+// SwissTopo extended layer
+L.TileLayer.SwissTopo.Extended = L.TileLayer.SwissTopo.extend({
+	_update: function() {
+		if (this._map) {
+			this.options.l =
+				this._map._zoom < 24 ?
+				'ch.swisstopo.pixelkarte-farbe' :
+				'ch.swisstopo.landeskarte-farbe-10';
+
+			this.options.f =
+				this._map._zoom < 24 ?
+				'jpeg' :
+				'png';
+		}
+		L.TileLayer.prototype._update.call(this);
 	}
 });

@@ -7,7 +7,7 @@
 // Crée la carte dés que la page est chargée
 window.addEventListener('load', function() {
 	var bboxs = [<?=$vue->bbox?>]; // Bbox au format Openlayers
-	new L.Map('accueil', {
+	new L.Map('accueil_map', {
 		zoomControl: false,
 		layers: [
 			new L.TileLayer.OSM.MRI(),

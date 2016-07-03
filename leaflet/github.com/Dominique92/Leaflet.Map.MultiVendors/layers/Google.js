@@ -25,7 +25,7 @@ L.TileLayer.Google = L.TileLayer.extend({
 
 	initialize: function(options) {
 		L.TileLayer.prototype.initialize.call(this,
-			'http://{s}.google.com/vt/lyrs={l}&x={x}&y={y}&z={z}',
+			'https://{s}.google.com/vt/lyrs={l}&x={x}&y={y}&z={z}',
 			options
 		);
 	}

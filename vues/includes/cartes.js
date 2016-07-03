@@ -17,7 +17,6 @@ var baseLayers = {
 	'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
 	'Autriche':    new L.TileLayer.Kompass({l:'Touristik'}),
 	'Espagne':     new L.TileLayer.WMS.IDEE(),
-	'Italie':      new L.TileLayer.WMS.IGM(),
 	'Angleterre':  new L.TileLayer.OSOpenSpace('<?=$config['os_key']?>', {}),
 	'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'}),
 	'Photo IGN':   new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'ORTHOIMAGERY.ORTHOPHOTOS'})

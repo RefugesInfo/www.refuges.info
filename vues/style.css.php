@@ -710,33 +710,30 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   background-position: center center;
   background-repeat: no-repeat;
 }
-#accueil { /* Carte de l'accueil */
+#accueil_map { /* Carte de l'accueil */
   width:  300px;
-/* Ne pas définir height pour que la hauteur soit automatiquement ajustée par Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenêtre */
+  height:  300px;
 }
 @media screen and (max-width: 450px) {
  .tablo,
-  #accueil {
-    width: 100%;
+  #accueil_map {
+    width: 100vw;
+    height: 100vw;
   }
 }
-#massifs { /* Carte de la page des massifs */
-  width:  800px;
-/* Ne pas définir height pour que la hauteur soit automatiquement ajustée par Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenêtre */
-}
-
 /* Carte NAV présentation mobile verticale */
 #nav_wrap_carte {
-  width: 98.4%;
-  max-height: calc(100% - 65px);
+  width: 98.4vw;
+  height: 98.4vw;
+  max-height: calc(100% - 65px); /* Pour ne pas trop déborder en bas */
 }
 .nav_zone {
   width: 100% !important;
 }
 #nav_bloc_carte {
   margin: 0 0.8%;
-  width: 100%;
-/* Ne pas définir height pour que la hauteur soit automatiquement ajustée par Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenêtre */
+  width: 100vw;
+  height: 100vw;
   max-height: 100%;
 }
 .nav_bloc_selecteur {
@@ -784,9 +781,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* Carte de la page des points mobiles */
 #vignette {
-  width: 100%;
+  width: 100vw;
+  height: 100vw;
   min-width: 300px;
-/* Ne pas définir height pour que la hauteur soit automatiquement ajustée par Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenêtre */
+  max-height: 400px;
 }
 /* Carte de la page des points écrans */
 @media screen and (min-width: 641px) {
@@ -863,12 +861,12 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /* Carte formulaire de modification */
 #carte_edit, .carte_edit {
   width: 450px; 
-/* Ne pas définir height pour que la hauteur soit automatiquement ajustée par Leaflet.MapAutoHeight.js pour faire un carré ou entrer dans la fenêtre */
+  height: 450px; 
   float: right;
-  max-width: 100%;
+  max-width: 100vw;
+  max-height: 100vw;
 }
 .bouton-supprimer {
-	wborder: 8px;
 	color: red;
 	background-color: yellow;
 	padding: 4px;

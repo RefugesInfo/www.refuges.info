@@ -33,7 +33,7 @@ L.TileLayer.WMS.IDEE = L.TileLayer.WMS.extend({
 
 L.TileLayer.WMS.IDEE.Photo = L.TileLayer.WMS.IDEE.extend({
     options: {
-        url: 'http://www.ign.es/wms-inspire/pnoa-ma',
+        url: 'https://www.ign.es/wms-inspire/pnoa-ma',
         layer: 'OI.OrthoimageCoverage',
         attribution: '&copy; <a href="http://www.ign.es/PNOA/">PNOA</a>'
     }
