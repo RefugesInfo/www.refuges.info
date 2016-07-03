@@ -4,9 +4,9 @@
  * Supported both on Leaflet V0.7 & V1.0
  *
  * Display remote layers with geoJSON format
- * requires L.GeoJSON.Style
+ * Requires L.GeoJSON.Style
  *
- * geoJSON Spécifications: http://geojson.org/geojson-spec.html
+ * GeoJSON Spécifications: http://geojson.org/geojson-spec.html
  * With the great initial push from https://github.com/LeOSW42
  */
 
@@ -26,7 +26,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			options = options || urlGeoJSON; // Simplified call, with no urlGeoJSON
 
 		// L.GeoJSON init with blank content as we will get it later.
-		L.GeoJSON.prototype.initialize.call(this, null, options);
+		L.GeoJSON.Style.prototype.initialize.call(this, null, options);
 
 		// Change class of id="ajax-status" to class="ajax-<STATUS>"
 		// <STATUS> = none | zoom | wait | some | zero | error
@@ -48,7 +48,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 	},
 
 	onAdd: function(map) {
-		L.GeoJSON.prototype.onAdd.call(this, map);
+		L.GeoJSON.Style.prototype.onAdd.call(this, map);
 
 		this.reload(); // Load it at the beginning.
 
@@ -60,7 +60,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		this.elAjaxStatus.className = '';
 		this._map.off('moveend', this.reload, this);
 
-		L.GeoJSON.prototype.onRemove.call(this, map);
+		L.GeoJSON.Style.prototype.onRemove.call(this, map);
 	},
 
 	// Build the final url request to send to the server

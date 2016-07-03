@@ -33,17 +33,19 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 		bbox: true,
 		idAjaxStatus: 'ajax-poi-status', // HTML id element owning the loading status display
 		style: function(feature) {
-			var prop = [];
+			var referers = window.location.href.split("/"),
+				url_point = referers[0]+'//'+referers[2]+'/point/'+feature.properties.id,
+				prop = [];
 			if (feature.properties.coord.alt)
 				prop.push(feature.properties.coord.alt + 'm');
 			if (feature.properties.places.valeur)
 				prop.push(feature.properties.places.valeur + '<img src="' + '<?=$config['sous_dossier_installation']?>images/lit.png"/>');
 			this.options.disabled = !this.options.argsGeoJSON.type_points;
 			return {
-				url: feature.properties.lien,
+				url: url_point,
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 4],
-				popup: '<a href="' + feature.properties.lien + '">' + feature.properties.nom + '</a>' +
+				popup: '<a href="' + url_point+ '">' + feature.properties.nom + '</a>' +
 					(prop.length ? '<div style=text-align:center>' + prop.join(' ') + '</div>' : ''),
 				popupClass: 'carte-point-etiquette',
 				remanent: true,

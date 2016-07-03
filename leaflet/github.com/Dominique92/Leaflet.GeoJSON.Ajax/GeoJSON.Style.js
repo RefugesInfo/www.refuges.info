@@ -83,7 +83,7 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 					document.location.href = style.url;
 			});
 
-		// Isolate too close markers when the mouse hover over the group.
+		// Isolate too close markers when the mouse hovers over the group.
 		layer.on('mouseover', function(e) {
 			if (style.degroup)
 				this._degroup(layer, style.degroup);

@@ -48,7 +48,7 @@ foreach ($points AS $point) {
 	$kml .= "			<name>$point->nom</name>\r\n";
 	$kml .= "			<description>\r\n";
 	$kml .= "				<![CDATA[\r\n";
-	$kml .= "					<img src=\"http://$config[nom_hote]/images/icones/".$point->type['icone'].".png\" />\r\n";
+	$kml .= "					<img src=\"https://$config[nom_hote]/images/icones/".$point->type['icone'].".png\" />\r\n";
 	$kml .= "					(<em>".$point->type['valeur']."</em>) <br />\r\n";
 	$kml .= "					<center><a href='$point->lien'>Détails</a></center>\r\n";
 	$kml .= "				]]>\r\n";

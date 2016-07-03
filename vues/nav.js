@@ -29,13 +29,14 @@ if (!$vue->mode_affichage) {?>
 				time: <?=time()?> // Inhibe le cache
 			},
 			style: function(feature) {
+				var referers = window.location.href.split("/");						
 				return {
 					color: 'blue',
 					weight: 2,
 					fillOpacity: 0,
 <?if ($vue->mode_affichage == 'zone') {?>
 					popup: feature.properties.nom,
-					url: feature.properties.lien,
+					url: referers[0]+'//'+referers[2]+'/nav/'+feature.properties.id,
 					color: 'black',
 					weight: 1,
 					fillColor: feature.properties.couleur,

@@ -25,8 +25,8 @@ $gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
 		<year>2014</year>
 		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 	</copyright>
-	<link href=\"http://$config[nom_hote]/\">
-		<text>http://$config[nom_hote]/</text>
+	<link href=\"https://$config[nom_hote]/\">
+		<text>https://$config[nom_hote]/</text>
 		<type>text/html</type>
 	</link>
 </metadata>\r\n";
