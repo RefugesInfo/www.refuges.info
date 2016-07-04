@@ -10,7 +10,8 @@
 
 L.TileLayer.OSM = L.TileLayer.extend({
 	options: {
-		url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+		p: window.location.href.match(/[a-z]*/i)[0], // Use the same protocol than the referer.
+		url: '{p}://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
 	},
 	initialize: function(options) {
@@ -26,7 +27,7 @@ L.TileLayer.OSM = L.TileLayer.extend({
 
 L.TileLayer.OSM.FR = L.TileLayer.OSM.extend({
 	options: {
-		url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'
+		url: '{p}://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'
 	}
 });
 
@@ -40,7 +41,7 @@ L.TileLayer.OSM.MRI = L.TileLayer.OSM.extend({
 L.TileLayer.Kompass = L.TileLayer.OSM.extend({
 	options: {
 		l: 'Touristik',
-		url: 'http://ec{s}.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=kompass&MapStyle=KOMPASS%20{l}&TileX={x}&TileY={y}&ZoomLevel={z}',
+		url: 'http://ec{s}.cdn.ecmaps.de/WmsGateway.ashx.jpg?Experience=kompass&MapStyle=KOMPASS%20{l}&TileX={x}&TileY={y}&ZoomLevel={z}', // Not available via https
 		maxZoom: 15,
 		subdomains: '0123',
 		subAttribution: '<a href="http://www.kompass.de/livemap/">KOMPASS</a>'
@@ -49,7 +50,7 @@ L.TileLayer.Kompass = L.TileLayer.OSM.extend({
 
 L.TileLayer.OSM.hikebike = L.TileLayer.OSM.extend({
 	options: {
-		url: 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
+		url: 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png', // Not available via https
 		subdomains: 'abc',
 		maxZoom: 20,
 		subAttribution: '<a href="http://www.hikebikemap.org/">hikebikemap.org</a>'
@@ -58,7 +59,7 @@ L.TileLayer.OSM.hikebike = L.TileLayer.OSM.extend({
 
 L.TileLayer.OSM.hill = L.TileLayer.OSM.extend({
 	options: {
-		url: 'https://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png',
+		url: '{p}://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png',
 		subdomains: 'abc',
 		maxZoom: 15,
 		subAttribution: '<a href="https://wikitech.wikimedia.org">Wikimedia Tool Labs</a>'
@@ -70,7 +71,7 @@ var ft = ['Landscape', 'Outdoors', 'Cycle', 'Transport'];
 for (m in ft)
 	L.TileLayer.OSM[ft[m]] = L.TileLayer.OSM.extend({
 		options: {
-			url: 'https://{s}.tile.thunderforest.com/' + ft[m].toLowerCase() + '/{z}/{x}/{y}.png',
+			url: '{p}://{s}.tile.thunderforest.com/' + ft[m].toLowerCase() + '/{z}/{x}/{y}.png',
 			subAttribution: '<a href="http://www.thunderforest.com">Thunderforest ' + ft[m] + '</a>'
 		}
 	});

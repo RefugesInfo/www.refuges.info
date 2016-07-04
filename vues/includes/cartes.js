@@ -33,7 +33,7 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 		bbox: true,
 		idAjaxStatus: 'ajax-poi-status', // HTML id element owning the loading status display
 		style: function(feature) {
-			var referers = window.location.href.split("/"),
+			var referers = window.location.href.split('/'), // Use the same protocol than the referer.
 				url_point = referers[0]+'//'+referers[2]+'/point/'+feature.properties.id,
 				prop = [];
 			if (feature.properties.coord.alt)

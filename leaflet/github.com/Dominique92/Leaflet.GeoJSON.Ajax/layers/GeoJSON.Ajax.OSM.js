@@ -6,6 +6,9 @@
  * Ajax layers to access OpenStreetMap Overpass API http://wiki.openstreetmap.org/wiki/Overpass_API
  * Based on L.GeoJSON and L.GeoJSON.Ajax
  * With the great initial push from https://github.com/sletuffe
+ *
+ * http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide
+ * http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#By_tag_.28has-kv.29
  */
 
 L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({

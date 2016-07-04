@@ -19,24 +19,25 @@
 
 L.TileLayer.IGN = L.TileLayer.extend({
 	options: {
+		p: window.location.href.match(/[a-z]*/i)[0], // Use the same protocol than the referer.
 		l: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
 		f: 'jpeg',
 		attribution: '&copy; <a href="http://www.ign.fr/">IGN</a>'
 	},
 	initialize: function(options) {
 		L.TileLayer.prototype.initialize.call(this,
-			"https://wxs.ign.fr/{k}/geoportail/wmts" +
-				"?LAYER={l}"+
-				"&EXCEPTIONS=text/xml"+
-				"&FORMAT=image/{f}"+
-				"&SERVICE=WMTS"+
-				"&VERSION=1.0.0"+
-				"&REQUEST=GetTile"+
-				"&STYLE=normal"+
-				"&TILEMATRIXSET=PM"+
-				"&TILEMATRIX={z}"+
-				"&TILECOL={x}"+
-				"&TILEROW={y}",
+			'{p}://wxs.ign.fr/{k}/geoportail/wmts' +
+				'?LAYER={l}'+
+				'&EXCEPTIONS=text/xml'+
+				'&FORMAT=image/{f}'+
+				'&SERVICE=WMTS'+
+				'&VERSION=1.0.0'+
+				'&REQUEST=GetTile'+
+				'&STYLE=normal'+
+				'&TILEMATRIXSET=PM'+
+				'&TILEMATRIX={z}'+
+				'&TILECOL={x}'+
+				'&TILEROW={y}',
 			options
 		);
 	}

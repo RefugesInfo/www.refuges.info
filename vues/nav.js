@@ -28,7 +28,7 @@ if (!$vue->mode_affichage) {?>
 			time: <?=time()?> // Inhibe le cache
 		},
 		style: function(feature) {
-			var referers = window.location.href.split("/");						
+			var referers = window.location.href.split('/'); // Use the same protocol than the referer.
 			return {
 				color: 'blue',
 				weight: 2,

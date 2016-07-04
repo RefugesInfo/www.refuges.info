@@ -62,7 +62,9 @@ L.TileLayer.collection = function(name) {
 
 		// OS-map (Great Britain)
 		if (typeof key != 'undefined' && typeof key.os != 'undefined') {
-			L.TileLayer.OSOpenSpace.prototype._url = L.TileLayer.OSOpenSpace.prototype._url.replace('https', 'http') // Bugge à partir d'une page https
+				if (window.location.href[4] != 's') // Use the same protocol than the referer.
+			L.TileLayer.OSOpenSpace.prototype._url =
+				L.TileLayer.OSOpenSpace.prototype._url.replace('https', 'http');
 			if (typeof L.TileLayer.OSOpenSpace != 'undefined')// For Leaflet V0.7
 				this._col['OS-Great Britain'] = new L.TileLayer.OSOpenSpace(key.os, {}); // Il faut mettre le {} sinon BUG
 			else

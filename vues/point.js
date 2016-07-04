@@ -52,7 +52,7 @@ if ($vue->mini_carte) {
 	new L.Control.Permalink.Cookies({ // Garde la mémoire des position, zoom, carte.
 		layers: layerSwitcher,
 		text: null, // Le contrôle n'apparait pas sur la carte car ça n'a pas de sens pour un point qui positionne lui même la carte
-		move: false // On n'itialise pas la carte avec le permalink: il est uniquement là pour enregistrer
+		move: false // On n'initialise pas la carte avec le permalink: il est uniquement là pour enregistrer
 	}).addTo(map);
 
 	// Actions de la page

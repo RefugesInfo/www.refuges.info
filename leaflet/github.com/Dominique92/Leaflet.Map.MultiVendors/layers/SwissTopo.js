@@ -38,6 +38,7 @@ L.CRS.EPSG21781 = L.extend(
 // SwissTopo layer
 L.TileLayer.SwissTopo = L.TileLayer.extend({
 	options: {
+		p: window.location.href.match(/[a-z]*/i)[0], // Use the same protocol than the referer.
 		subdomains: '56789',
 		l: 'ch.swisstopo.pixelkarte-farbe',
 		f: 'jpeg',
@@ -50,7 +51,7 @@ L.TileLayer.SwissTopo = L.TileLayer.extend({
 	initialize: function(options) {
 		L.TileLayer.prototype.initialize.call(
 			this,
-			'https://wmts{s}.geo.admin.ch/1.0.0/{l}/default/current/21781/{z}/{y}/{x}.{f}',
+			'{p}://wmts{s}.geo.admin.ch/1.0.0/{l}/default/current/21781/{z}/{y}/{x}.{f}',
 			options
 		);
 	}
