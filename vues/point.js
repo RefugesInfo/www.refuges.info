@@ -57,6 +57,27 @@ if ($vue->mini_carte) {
 
 	// Actions de la page
 	function agrandir_carte_point() {
+		// On masque le contrôle puisqu'il a déjà été activé
+		var agrandir_vignette = document.getElementById('agrandir-carte-point');
+		if (agrandir_vignette)
+			agrandir_vignette.style.display = 'none';
+
+		// On redimensionne la carte
+		var mapp = document.getElementById('carte-point');
+		var l1 = mapp.clientWidth,
+			h1 = mapp.clientHeight;
+		mapp.style.width = '40vw';
+		mapp.style.height = '40vw';
+		mapp.style.minWidth = l1+'px';
+		mapp.style.minHeight = h1+'px';
+		mapp.style.maxHeight = 2*h1+'px';
+		var l2 = mapp.clientWidth,
+			h2 = mapp.clientHeight;
+		map.panBy(
+			[(h1-h2)/2, (h1-h2)/2], // Remet le cadre au centre de la nouvelle carte plus grande
+			{animate: false}
+		);
+
 		// On positionne la couche de second choix
 		var oldLayerId, newLayerId;
 		for (l in layerSwitcher._layers) {

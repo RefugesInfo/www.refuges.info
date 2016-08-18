@@ -166,7 +166,6 @@ $config['fournisseurs_fond_carte'] = Array
     'Andorra'              => Array (null,       ''      , 'IGN',         25000),
     'Schweiz'              => Array (null,       ''      , 'SwissTopo',   50000),
     'Österreich'           => Array (null,       ''      , 'Autriche',    50000),
-    'Italia'               => Array (null,       'de l\'', 'Italie',     100000),
     'España'               => Array (null,       'de l\'', 'Espagne',     25000),
     'Autres'               => Array ('OSM fr',   ''      , 'Outdoors',    50000),
     );
