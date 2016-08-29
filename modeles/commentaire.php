@@ -364,6 +364,18 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
 {
   global $config;
     $image=imagecreatefromjpeg($chemin_photo);//on chope le jpeg
+
+    // Detect orientation
+    $codes_angles = [
+        3 => 180,
+        6 => -90,
+        8 =>  90,
+    ];
+    $exif_data = exif_read_data ($chemin_photo);
+    $angle = @$codes_angles [$exif_data ['Orientation']];
+    if ($angle)
+        $image = imagerotate ($image, $angle, 0);
+
     $x_image= ImageSX($image); // coord en X
     $y_image= ImageSY($image); //coord en Y
 
