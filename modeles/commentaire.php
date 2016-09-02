@@ -254,10 +254,7 @@ function modification_ajout_commentaire($commentaire)
             $old_commentaire=infos_commentaires($commentaire->id_commentaire,True);
             if ($old_commentaire->erreur)
                     return erreur("Une modification d'un commentaire inexistant a été demandée");
-            if ($commentaire->photo['originale']!=$old_commentaire->photo['originale'])
-                    $ajout_photo=True;
-            else
-                    $ajout_photo=False;
+            $ajout_photo=!$commentaire->photo['originale'];
             $mode="modification";
     }
     else
