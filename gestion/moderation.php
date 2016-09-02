@@ -107,6 +107,7 @@ if ($vue->erreur=="")
 				<input type='radio' name='rotation' value='90'><img src='".$config['sous_dossier_installation']."images/270.png' /> &nbsp;\n
 				<input type='radio' name='rotation' value='180'><img src='".$config['sous_dossier_installation']."images/180.png' /> &nbsp;\n
 				<input type='radio' name='rotation' value='270'><img src='".$config['sous_dossier_installation']."images/90.png' />\n
+				(Ne pas oublier de rafraichir la page [F5] au retour sur la fiche)
 				<br />";
             echo bbcode2html($commentaire->texte)."\n";
             // formulaire qui contient uniquement le comment
