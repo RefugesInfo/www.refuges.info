@@ -278,6 +278,14 @@ function modification_ajout_commentaire($commentaire)
                     $commentaire->date_photo = "$m[1]-$m[2]-$m[3] $m[4]:$m[5]:$m[6]";
     }
 
+	// Rotation manuelle des photos
+	if ($_REQUEST['rotation']) {
+		$nom_fichier = $config['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
+		$image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
+		$image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
+		imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
+	}
+
     // reparation crado:
     // FIXME, tout correspond, y'a pas moyen de faire un foreach sur $commentaire et remplir les champs SQL ?
     isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;

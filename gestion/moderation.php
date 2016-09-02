@@ -95,18 +95,23 @@ if ($vue->erreur=="")
             <p>
             Vous entrez dans la zone de modération qui va vous permettre de modifier un commentaire ou de le déplacer vers le forum dans la section correspondant au point
             </p>
-            <h4>le commentaire est :</h4>
-            ";
+            <form method='POST'>
+            <h4>le commentaire est :</h4>";
             if ($commentaire->photo_existe==1)
                 echo "<img
                 src='".$config['rep_web_photos_points'].$commentaire->id_commentaire.".jpeg'
                 alt='photo liée au commentaire'
-                width='200px' /><br />\n";
+                width='200px' />\n
+				Rotation: &nbsp;\n
+				<input type='radio' name='rotation' value='0' checked='checked'>aucune &nbsp;\n
+				<input type='radio' name='rotation' value='90'><img src='".$config['sous_dossier_installation']."images/270.png' /> &nbsp;\n
+				<input type='radio' name='rotation' value='180'><img src='".$config['sous_dossier_installation']."images/180.png' /> &nbsp;\n
+				<input type='radio' name='rotation' value='270'><img src='".$config['sous_dossier_installation']."images/90.png' />\n
+				<br />";
             echo bbcode2html($commentaire->texte)."\n";
             // formulaire qui contient uniquement le comment
             echo "
             <h4>Moderation :</h4>
-            <form method='POST'>
             <input type='hidden' name='page' value='moderation' /> <!-- pour qu'il re appelle la page de moderation -->
             <label>
             ";
