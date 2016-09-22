@@ -13,7 +13,7 @@ L.Control.Permalink.Cookies = L.Control.Permalink.extend({
 	},
 
 	onAdd: function(map) {
-		if (this._pk && !this._params.zoom) // Priority url arguments then cookies
+		if (this._pk && !this._params.zoom) // Priority url arguments, then cookies
 			this._params = L.UrlUtil.queryParse(this._pk[1]);
 
 		return L.Control.Permalink.prototype.onAdd.call(this, map);

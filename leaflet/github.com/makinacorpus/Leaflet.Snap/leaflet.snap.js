@@ -74,9 +74,22 @@ L.Handler.MarkerSnap = L.Handler.extend({
             latlng = marker.getLatLng(),
             snaplist = [];
 
+        function isDifferentLayer(layer) {
+            if (layer.getLatLng) {
+                return L.stamp(marker) !== L.stamp(layer);
+            } else {
+                if (layer.editing && layer.editing._enabled) {
+                    var points = layer.editing._verticesHandlers[0]._markerGroup.getLayers();
+                    for(var i = 0, n = points.length; i < n; i++) {
+                        if (L.stamp(points[i]) === L.stamp(marker)) { return false; }
+                    }
+                }
+            }
+
+            return true;
+        }
+
         function processGuide(guide) {
-			if (marker._leaflet_id == guide._leaflet_id) //GEO a marker don't have to snap itself !
-				return; //GEO
             if ((guide._layers !== undefined) &&
                 (typeof guide.searchBuffer !== 'function')) {
                 // Guide is a layer group and has no L.LayerIndexMixin (from Leaflet.LayerIndex)
@@ -86,10 +99,14 @@ L.Handler.MarkerSnap = L.Handler.extend({
             }
             else if (typeof guide.searchBuffer === 'function') {
                 // Search snaplist around mouse
-                snaplist = snaplist.concat(guide.searchBuffer(latlng, this._buffer));
+                var nearlayers = guide.searchBuffer(latlng, this._buffer);
+                snaplist = snaplist.concat(nearlayers.filter(function(layer) {
+                    return isDifferentLayer(layer);
+                }));
             }
-            else if(!marker._poly || marker._poly._poly != guide) { //GEO polyline & polygons cannot snap themselves as it
-				snaplist.push(guide);
+            // Make sure the marker doesn't snap to itself or the associated polyline layer
+            else if (isDifferentLayer(guide)) {
+                snaplist.push(guide);
             }
         }
 
@@ -103,16 +120,7 @@ L.Handler.MarkerSnap = L.Handler.extend({
                                                  latlng,
                                                  this.options.snapDistance,
                                                  this.options.snapVertices);
-//GEO<< snap his own polyline / polygon
-		if(!closest && marker._poly) {
-			var copy = new L.Polyline (marker._poly._poly._latlngs, marker._poly._poly.options); // We clon the poly to avoid polluting it
-			copy._latlngs.splice(marker._index, 1);
-			// Find own poly* markers except itself
-			var closest = this._findClosestLayerSnap(this._map, [copy], latlng, this.options.snapDistance, true);
-			if (closest)
-				closest.layer = marker._poly;
-		}
-//GEO>>
+
         closest = closest || {layer: null, latlng: null};
         this._updateSnap(marker, closest.layer, closest.latlng);
     },
@@ -157,32 +165,120 @@ L.Handler.PolylineSnap = L.Edit.Poly.extend({
         this._snapper = new L.Handler.MarkerSnap(map, options);
         poly.on('remove', function() {
             that.disable();
-        })
+        });
     },
 
     addGuideLayer: function (layer) {
         this._snapper.addGuideLayer(layer);
     },
+    
+    _initHandlers: function () {
+        this._verticesHandlers = [];
+        for (var i = 0; i < this.latlngs.length; i++) {
+            this._verticesHandlers.push(new L.Edit.PolyVerticesEditSnap(this._poly, this.latlngs[i], this.options));
+        }
+    }
+});
 
+L.Edit.PolyVerticesEditSnap = L.Edit.PolyVerticesEdit.extend({
     _createMarker: function (latlng, index) {
-        var marker = L.Edit.Poly.prototype._createMarker.call(this, latlng, index);
-		marker._poly = this; //GEO owner's reference
+               var marker = L.Edit.PolyVerticesEdit.prototype._createMarker.call(this, latlng, index);
 
         // Treat middle markers differently
         var isMiddle = index === undefined;
         if (isMiddle) {
             // Snap middle markers, only once they were touched
             marker.on('dragstart', function () {
-                this._snapper.watchMarker(marker);
+                this._poly.snapediting._snapper.watchMarker(marker);
             }, this);
         }
         else {
-            this._snapper.watchMarker(marker);
+            this._poly.snapediting._snapper.watchMarker(marker);
         }
         return marker;
     }
 });
 
+L.EditToolbar.SnapEdit = L.EditToolbar.Edit.extend({
+    snapOptions: {
+        snapDistance: 15, // in pixels
+        snapVertices: true
+    },
+
+    initialize: function(map, options) {
+        L.EditToolbar.Edit.prototype.initialize.call(this, map, options);
+
+        if (options.snapOptions) {
+            L.Util.extend(this.snapOptions, options.snapOptions);
+        }
+
+        if (Array.isArray(this.snapOptions.guideLayers)) {
+            this._guideLayers = this.snapOptions.guideLayers;
+        } else if (options.guideLayers instanceof L.LayerGroup) {
+            this._guideLayers = this.snapOptions.guideLayers.getLayers();
+        } else {
+            this._guideLayers = [];
+        }
+    },
+
+    addGuideLayer: function(layer) {
+        var index = this._guideLayers.findIndex(function(guideLayer) {
+            return L.stamp(layer) === L.stamp(guideLayer);
+        });
+
+        if (index === -1) {
+            this._guideLayers.push(layer);
+            this._featureGroup.eachLayer(function(layer) {
+                if (layer.snapediting) { layer.snapediting._guides.push(layer); }
+            });
+        }
+    },
+
+    removeGuideLayer: function(layer) {
+      var index = this._guideLayers.findIndex(function(guideLayer) {
+          return L.stamp(layer) === L.stamp(guideLayer);
+      });
+
+      if (index !== -1) {
+          this._guideLayers.splice(index, 1);
+          this._featureGroup.eachLayer(function(layer) {
+              if (layer.snapediting) { layer.snapediting._guides.splice(index, 1); }
+          });
+      }
+    },
+
+    clearGuideLayers: function() {
+        this._guideLayers = [];
+        this._featureGroup.eachLayer(function(layer) {
+            if (layer.snapediting) { layer.snapediting._guides = []; }
+        });
+    },
+
+    _enableLayerEdit: function(e) {
+        L.EditToolbar.Edit.prototype._enableLayerEdit.call(this, e);
+
+        var layer = e.layer || e.target || e;
+
+        if (!layer.snapediting) {
+            if (layer.getLatLng) {
+                layer.snapediting = new L.Handler.MarkerSnap(layer._map, layer, this.snapOptions);
+            } else {
+                if (layer.editing) {
+                  layer.editing._verticesHandlers[0]._markerGroup.clearLayers();
+                  delete layer.editing;
+                }
+
+                layer.editing = layer.snapediting = new L.Handler.PolylineSnap(layer._map, layer, this.snapOptions);
+            }
+
+            for (var i = 0, n = this._guideLayers.length; i < n; i++) {
+                layer.snapediting.addGuideLayer(this._guideLayers[i]);
+            }
+        }
+
+        layer.snapediting.enable();
+    }
+});
 
 L.Draw.Feature.SnapMixin = {
     _snap_initialize: function () {
@@ -255,7 +351,7 @@ L.Draw.Feature.SnapMixin = {
 
     _snap_on_disabled: function () {
         delete this._snapper;
-    }
+    },
 };
 
 L.Draw.Feature.include(L.Draw.Feature.SnapMixin);

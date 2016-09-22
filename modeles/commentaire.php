@@ -305,14 +305,14 @@ function modification_ajout_commentaire($commentaire)
             $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'insert');
 
     if (!$pdo->exec($query_finale))
-            return erreur("problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
+            return erreur("Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
     elseif ($mode!="modification")
             $commentaire->id_commentaire = $pdo->lastInsertId();
 
     if ($mode=="ajout")
-            $retour->message="commentaire ajouté";
+            $retour->message="Commentaire ajouté";
     else
-            $retour->message="commentaire modifié";
+            $retour->message="Commentaire modifié";
 
     $retour->erreur=False;
 

@@ -7,6 +7,8 @@
  * Documentation & key: http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/products/services/web_services/webaccess.html
  * Always allowed on //localhost
  *
+ * Usage: new L.TileLayer.SwissTopo().addTo(map);
+ *
  * Different layers:
 	new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}) : Basic 2015
 	new L.TileLayer.SwissTopo({l:'ch.swisstopo.hiks-siegfried'}) : Siegfried historical 1870-1949
@@ -16,7 +18,7 @@
 
 // Switzerland Coordinate Reference System
 L.CRS.EPSG21781 = L.extend(
-	new L.Proj.CRS( // TODO DCMM GEO: partager le CRS ???
+	new L.Proj.CRS( // TBD: partager le CRS ???
 		'EPSG:21781',
 		'+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs', {
 			resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5],

@@ -44,7 +44,7 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 			return {
 				url: url_point,
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
-				iconAnchor: [8, 4],
+				iconAnchor: [8, 8],
 				popup: '<a href="' + url_point+ '">' + feature.properties.nom + '</a>' +
 					(prop.length ? '<div style=text-align:center>' + prop.join(' ') + '</div>' : ''),
 				popupClass: 'carte-point-etiquette',
@@ -67,7 +67,7 @@ L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 			return {
 				popup: feature.properties.nom + ' <a href="' + this.options.urlRootRef + feature.properties.id + '" target="_blank">&copy;</a>',
 				iconUrl: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png',
-				iconAnchor: [8, 4],
+				iconAnchor: [8, 8],
 				popupClass: 'carte-site-etiquette',
 				remanent: true,
 				degroup: 12
@@ -144,7 +144,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 		style: function(feature) {
 			return {
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.icon_name + '.png',
-				iconAnchor: [8, 4],
+				iconAnchor: [8, 8],
 				popupClass: 'carte-service-etiquette',
 				remanent: true,
 				degroup: 12

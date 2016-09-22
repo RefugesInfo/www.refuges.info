@@ -201,6 +201,7 @@ var toGeoJSON = (function() {
                     styleUrl = nodeVal(get1(root, 'styleUrl')),
                     description = nodeVal(get1(root, 'description')),
                     timeSpan = get1(root, 'TimeSpan'),
+                    timeStamp = get1(root, 'TimeStamp'),
                     extendedData = get1(root, 'ExtendedData'),
                     lineStyle = get1(root, 'LineStyle'),
                     polyStyle = get1(root, 'PolyStyle'),
@@ -233,6 +234,9 @@ var toGeoJSON = (function() {
                     var begin = nodeVal(get1(timeSpan, 'begin'));
                     var end = nodeVal(get1(timeSpan, 'end'));
                     properties.timespan = { begin: begin, end: end };
+                }
+                if (timeStamp) {
+                    properties.timestamp = nodeVal(get1(timeStamp, 'when'));
                 }
                 if (lineStyle) {
                     var linestyles = kmlColor(nodeVal(get1(lineStyle, 'color'))),
@@ -331,9 +335,11 @@ var toGeoJSON = (function() {
                     line;
                 for (var i = 0; i < segments.length; i++) {
                     line = getPoints(segments[i], 'trkpt');
-                    if (line.line) track.push(line.line);
-                    if (line.times && line.times.length) times.push(line.times);
-                    if (line.heartRates && line.heartRates.length) heartRates.push(line.heartRates);
+                    if (line) {
+                        if (line.line) track.push(line.line);
+                        if (line.times && line.times.length) times.push(line.times);
+                        if (line.heartRates && line.heartRates.length) heartRates.push(line.heartRates);
+                    }
                 }
                 if (track.length === 0) return;
                 var properties = getProperties(node);

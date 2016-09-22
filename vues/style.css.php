@@ -873,3 +873,47 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	background-color: yellow;
 	padding: 4px;
 }
+
+/* Format d'impression des cartes */
+@page {
+	margin: 0; 
+}
+@media print {
+	#entete,
+	#menu-normal,
+	#menu-scroll,
+	.contenu > *,
+	.fiche_cadre > *,
+	#selecteur-carte-nav,
+	#basdepage,
+	.leaflet-control,
+	.leaflet-control-attribution > a:first-child {
+		display: none;
+	}
+	html, body,
+	#carte-nav,
+	#carte-point {
+		position: absolute;
+		top: 0;
+		left: 0;
+		margin: 0;
+		width: 100%;
+		height: 100%;
+		max-height: 100%;
+	}
+	#contenu,
+	.fiche_cadre,
+	#container-carte-point,
+	#carte-point,
+	.leaflet-control-attribution {
+		margin: 0;
+		display: block;
+		height: 100%;
+	}
+	.contenu {
+		margin: 0;
+	}
+	.leaflet-control-attribution::first-letter {
+		color: transparent;
+	}
+}

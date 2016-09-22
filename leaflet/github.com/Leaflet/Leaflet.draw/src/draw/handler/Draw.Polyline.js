@@ -16,6 +16,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
+		touchIcon: new L.DivIcon({
+			iconSize: new L.Point(20, 20),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+		}),
 		guidelineDistance: 20,
 		maxGuideLineLength: 4000,
 		shapeOptions: {
@@ -26,12 +30,18 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			fill: false,
 			clickable: true
 		},
-		metric: true, // Whether to use the metric meaurement system or imperial
+		metric: true, // Whether to use the metric measurement system or imperial
+		feet: true, // When not metric, to use feet instead of yards for display.
 		showLength: true, // Whether to display distance in the tooltip
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
 	initialize: function (map, options) {
+		// if touch, switch to touch icon
+		if (L.Browser.touch) {
+			this.options.icon = this.options.touchIcon;
+		}
+
 		// Need to set this here to ensure the correct message is used.
 		this.options.drawError.message = L.drawLocal.draw.handlers.polyline.error;
 
@@ -75,13 +85,22 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
+			if (!L.Browser.touch) {
+				this._map.on('mouseup', this._onMouseUp, this); // Necessary for 0.7 compatibility
+			}
+
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
+				.on('mouseout', this._onMouseOut, this)
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.8 compatibility
+				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
 				.addTo(this._map);
 
 			this._map
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
-				.on('mouseup', this._onMouseUp, this)
+				.on('zoomlevelschange', this._onZoomEnd, this)
+				.on('click', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
@@ -103,7 +122,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._mouseMarker
 			.off('mousedown', this._onMouseDown, this)
-			.off('mouseup', this._onMouseUp, this);
+			.off('mouseout', this._onMouseOut, this)
+			.off('mouseup', this._onMouseUp, this)
+			.off('mousemove', this._onMouseMove, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
 
@@ -111,8 +132,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map
+			.off('mouseup', this._onMouseUp, this)
 			.off('mousemove', this._onMouseMove, this)
-			.off('zoomend', this._onZoomEnd, this);
+			.off('zoomlevelschange', this._onZoomEnd, this)
+			.off('zoomend', this._onZoomEnd, this)
+			.off('click', this._onTouch, this);
 	},
 
 	deleteLastVertex: function () {
@@ -155,8 +179,21 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
+	completeShape: function () {
+		if (this._markers.length <= 1) {
+			return;
+		}
+
+		this._fireCreatedEvent();
+		this.disable();
+
+		if (this.options.repeatMode) {
+			this.enable();
+		}
+	},
+
 	_finishShape: function () {
-		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
+		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[this._poly.getLatLngs().length - 1]);
 
 		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
 			this._showErrorTooltip();
@@ -177,12 +214,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onZoomEnd: function () {
-		this._updateGuide();
+		if (this._markers !== null) {
+			this._updateGuide();
+		}
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = e.layerPoint,
-			latlng = e.latlng;
+		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
+		var latlng = this._map.layerPointToLatLng(newPos);
 
 		// Save latlng
 		// should this be moved to _updateGuide() ?
@@ -200,6 +239,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
+		this._map.fire('draw:drawvertex', { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -227,6 +267,20 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._mouseDownOrigin = null;
 	},
 
+	_onTouch: function (e) {
+		// #TODO: use touchstart and touchend vs using click(touch start & end).
+		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
+			this._onMouseDown(e);
+			this._onMouseUp(e);
+		}
+	},
+
+	_onMouseOut: function () {
+		if (this._tooltip) {
+			this._tooltip._onMouseOut.call(this._tooltip);
+		}
+	},
+
 	_updateFinishHandler: function () {
 		var markerCount = this._markers.length;
 		// The last marker should have a click handler to close the polyline
@@ -252,7 +306,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_updateGuide: function (newPos) {
-		var markerCount = this._markers.length;
+		var markerCount = this._markers ? this._markers.length : 0;
 
 		if (markerCount > 0) {
 			newPos = newPos || this._map.latLngToLayerPoint(this._currentLatLng);
@@ -378,7 +432,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
 
-		return L.GeometryUtil.readableDistance(distance, this.options.metric);
+		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet);
 	},
 
 	_showErrorTooltip: function () {

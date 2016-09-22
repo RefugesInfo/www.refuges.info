@@ -32,7 +32,7 @@ var js_list = [
 //	'../github.com/Leaflet/Leaflet/src/geo/crs/CRS.Simple.js', // Pour panoramas
 //V1.0	'../github.com/Leaflet/Leaflet/src/geo/crs/CRS.Earth.js',
 	'../github.com/Leaflet/Leaflet/src/geo/crs/CRS.EPSG3857.js',
-	'../github.com/Leaflet/Leaflet/src/geo/crs/CRS.EPSG4326.js',
+	'../github.com/Leaflet/Leaflet/src/geo/crs/CRS.EPSG4326.js', // Utilisé par coordonnees
 
 	'../github.com/Leaflet/Leaflet/src/map/Map.js',
 
@@ -42,25 +42,25 @@ var js_list = [
 //V1.0	'../github.com/Leaflet/Leaflet/src/layer/tile/GridLayer.js',
 	'../github.com/Leaflet/Leaflet/src/layer/tile/TileLayer.js',
 	'../github.com/Leaflet/Leaflet/src/layer/tile/TileLayer.WMS.js',
-	'../github.com/Leaflet/Leaflet/src/layer/tile/TileLayer.Canvas.js',
+//	'../github.com/Leaflet/Leaflet/src/layer/tile/TileLayer.Canvas.js',
 
-	'../github.com/Leaflet/Leaflet/src/layer/ImageOverlay.js', // Pour draw
+//	'../github.com/Leaflet/Leaflet/src/layer/ImageOverlay.js', // Pour draw
 	'../github.com/Leaflet/Leaflet/src/layer/marker/Icon.js',
 	'../github.com/Leaflet/Leaflet/src/layer/marker/Icon.Default.js',
 	'../github.com/Leaflet/Leaflet/src/layer/marker/Marker.js',
 	'../github.com/Leaflet/Leaflet/src/layer/marker/DivIcon.js', // Pour draw
 
-//	'../github.com/Leaflet/Leaflet/src/layer/marker/Marker.Popup.js',
+	'../github.com/Leaflet/Leaflet/src/layer/marker/Marker.Popup.js', // Utilisé par draw
 	'../github.com/Leaflet/Leaflet/src/layer/Popup.js',
 //V1.0	'../github.com/Leaflet/Leaflet/src/layer/Layer.Popup.js',
 
 	'../github.com/Leaflet/Leaflet/src/layer/LayerGroup.js',
 	'../github.com/Leaflet/Leaflet/src/layer/FeatureGroup.js',
 	'../github.com/Leaflet/Leaflet/src/layer/vector/Path.js',
-	'../github.com/Leaflet/Leaflet/src/layer/vector/Path.SVG.js', // Nécéssaire pour switch poly*
+	'../github.com/Leaflet/Leaflet/src/layer/vector/Path.SVG.js', // Nécéssaire pour poly* (massifs)
 //	'../github.com/Leaflet/Leaflet/src/layer/vector/Path.Popup.js',
 //	'../github.com/Leaflet/Leaflet/src/layer/vector/Path.VML.js',
-	'../github.com/Leaflet/Leaflet/src/layer/vector/canvas/Path.Canvas.js',
+//	'../github.com/Leaflet/Leaflet/src/layer/vector/canvas/Path.Canvas.js',
 	'../github.com/Leaflet/Leaflet/src/geometry/LineUtil.js', // Dessine les Poly*
 	'../github.com/Leaflet/Leaflet/src/layer/vector/Polyline.js', // Dessine les Poly*
 	'../github.com/Leaflet/Leaflet/src/geometry/PolyUtil.js', // Dessine les Poly*
@@ -69,7 +69,7 @@ var js_list = [
 //	'../github.com/Leaflet/Leaflet/src/layer/vector/Rectangle.js',
 	'../github.com/Leaflet/Leaflet/src/layer/vector/Circle.js', // Utilisé par GPS
 	'../github.com/Leaflet/Leaflet/src/layer/vector/CircleMarker.js', // Utilisé par GPS
-	'../github.com/Leaflet/Leaflet/src/layer/vector/canvas/Polyline.Canvas.js',
+//	'../github.com/Leaflet/Leaflet/src/layer/vector/canvas/Polyline.Canvas.js', // Canvas fallback for vector rendering core (makes it work on Android 2+).
 //	'../github.com/Leaflet/Leaflet/src/layer/vector/canvas/Polygon.Canvas.js',
 //	'../github.com/Leaflet/Leaflet/src/layer/vector/canvas/Circle.Canvas.js',
 //	'../github.com/Leaflet/Leaflet/src/layer/vector/canvas/CircleMarker.Canvas.js',
@@ -90,7 +90,7 @@ var js_list = [
 //	'../github.com/Leaflet/Leaflet/src/map/handler/Map.Tap.js', // Non souhaité. Mobile hacks like quick taps and long hold.
 //	'../github.com/Leaflet/Leaflet/src/map/handler/Map.BoxZoom.js', // Non souhaité. Shift-drag zoom interaction to the map (zoom to a selected bounding box)
 //	'../github.com/Leaflet/Leaflet/src/map/handler/Map.Keyboard.js', // Non souhaité. Action des touches (mais pas escape full screen)
-	'../github.com/Leaflet/Leaflet/src/layer/marker/Marker.Drag.js', // A voir pour viseur et éditeur ???
+	'../github.com/Leaflet/Leaflet/src/layer/marker/Marker.Drag.js', // Utilisé par draw
 
 //V1.0	'../github.com/Leaflet/Leaflet/src/layer/vector/SVG.js', // Dessine les Poly*
 //V1.0	'../github.com/Leaflet/Leaflet/src/layer/vector/SVG.VML.js',
@@ -113,14 +113,17 @@ var js_list = [
 	'../github.com/Leaflet/Leaflet/src/map/ext/Map.Geolocation.js', // Nécéssaire pour GPS
 /* FIN OPTIM LEAFLET KERNEL */
 
+	'../src/lib/Leaflet-optim-stub.js', // Remplace certaines définitions de fonctions mamquantes suite aux optimisations
+
 	// Controles
 	'../github.com/Leaflet/Leaflet.fullscreen/dist/Leaflet.fullscreen.js', //V1.0 testé OK
+	'../github.com/rowanwins/leaflet-easyPrint/dist/leaflet.easyPrint.js', //V1.0 ?? à tester
 	'../github.com/MrMufflon/Leaflet.Coordinates/src/util/NumberFormatter.js', // Pour Coordinates
 	'../github.com/MrMufflon/Leaflet.Coordinates/src/Control.Coordinates.js', //V1.0 testé OK
 	'../github.com/stefanocudini/leaflet-gps/src/leaflet-gps.js', //work with Leaflet 1.0 beta
 	'../github.com/k4r573n/leaflet-control-osm-geocoder/Control.OSMGeocoder.js', //V1.0 testé OK
 	'../github.com/shramov/leaflet-plugins/control/Permalink.js', //V1.0 https://github.com/shramov/leaflet-plugins/tree/leaflet_one
-	'../github.com/shramov/leaflet-plugins/control/Permalink.Layer.js',
+	'../github.com/shramov/leaflet-plugins/control/Permalink.Layer.js', //V1.0 idem
 	'../github.com/Dominique92/Leaflet.Permalink.Cookies/Permalink.Cookies.js',
 	'../src/Leaflet.Control.Layers.args.js',
 	'../src/AntiBot.js',
@@ -139,7 +142,7 @@ var js_list = [
 	// Couches autres fournisseurs
 	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/OSM.js',
 	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/IGN.js',
-//	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/IGM.js',
+	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/IGM.js',
 	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/IDEE.js',
 	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/SwissTopo.js',
 	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/Google.js',
@@ -150,8 +153,8 @@ var js_list = [
 	'../github.com/Dominique92/Leaflet.Map.MultiVendors/layers/TileLayer.collection.js',
 
 	// Couches vectotielles
-	'../github.com/makinacorpus/Leaflet.FileLayer/leaflet.filelayer.js', //V1.0 ??
 	'../github.com/mapbox/togeojson/togeojson.js', //V1.0 ??
+	'../github.com/makinacorpus/Leaflet.FileLayer/src/leaflet.filelayer.js', //V1.0 ??
 //	'../github.com/mapbox/leaflet-omnivore/leaflet-omnivore.js', // TBD KML/ ...
 	'../github.com/erictheise/rrose/leaflet.rrose-src.js', //V1.0 ??
 	'../github.com/Dominique92/Leaflet.GeoJSON.Ajax/GeoJSON.Style.js',
@@ -193,21 +196,20 @@ var js_list = [
 //	'../github.com/Leaflet/Leaflet.draw/src/edit/handler/Edit.Circle.js',
 //	'../github.com/Leaflet/Leaflet.draw/src/edit/handler/Edit.Rectangle.js',
 	'../github.com/Leaflet/Leaflet.draw/src/edit/handler/Edit.Marker.js',
-
-	'../src/lib/Leaflet-optim-stub.js', // Remplace certaines définitions de fonctions mamquantes suite aux optimisations
 /* FIN OPTIM DRAW */
 
-	'../github.com/makinacorpus/Leaflet.GeometryUtil/dist/leaflet.geometryutil.js', // A mettre sinon snap plante.
-	'../github.com/makinacorpus/Leaflet.Snap/leaflet.snap.js', //V1.0 ??
+	'../src/lib/Leaflet-optim-stub-draw.js', // Remplace certaines définitions de fonctions mamquantes suite aux optimisations
+
+	'../github.com/makinacorpus/Leaflet.GeometryUtil/src/leaflet.geometryutil.js', // A mettre sinon snap plante.
+	'../github.com/makinacorpus/Leaflet.Snap/leaflet.snap.js', // Incompatible V1.0
 
 	'../github.com/Dominique92/Leaflet.draw.plus/Control.Draw.Plus.js',
-//	'../src/Leaflet.Control.GetGpxFile.js', // Inclure manuellement (en test)
+	'../src/Leaflet.Control.Click.js',
 
 	// Adaptations
 	'../src/locales.fr.js',
 ];
 /* php libs - pour import du github mais à ne pas insérer dans le .js
-	'../github.com/phayes/geoPHP/', // A inclure: editGPX
 	'../github.com/tubalmartin/YUI-CSS-compressor-PHP-port/', // Build: compresse css
 	'../github.com/nicolas-grekas/JSqueeze/', // Build: compresse js
 */
@@ -215,6 +217,6 @@ var js_list = [
 var scripts = document.getElementsByTagName('script'),
 	script = scripts[scripts.length - 1].src,
 	racineSources = script.substring(0, script.lastIndexOf('/')) + '/';
-   
+
 for (j in js_list)
 		document.write('<script src="' + racineSources + js_list[j] + '"></script>');

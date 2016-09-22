@@ -111,10 +111,14 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 	// Action when receiving data
 	_onreadystatechange: function(e) {
-		if (e.target.readyState < 4) // Still in progress
+//DEBUG/*
+		console.log('Ajax status : ' + e.target.readyState + '\n');
+//DEBUG*/
+
+		if (e.target.readyState < 3) // Connection in progress
 			;
 		else if (e.target.status == 200)
-			e.target.context.redraw(e.target.responseText);
+			e.target.context.redraw(e.target.responseText, e.target.status);
 		else if (typeof e.target.context['error' + e.target.status] == 'function')
 			e.target.context['error' + e.target.status].call(e.target.context);
 //DEBUG/*
@@ -123,26 +127,30 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 //DEBUG*/
 	},
 
-	redraw: function(json) {
-		// Empty the layer
-		for (l in this._layers)
-			if (this._map)
-				this._map.removeLayer(this._layers[l]);
-		this._layers = [];
-
+	redraw: function(json, status) {
 		if (json) {
 			try {
 				var js = JSON.parse(json); // Get json data
-			} catch (e) {
+			} catch (e) { // Error case
+				if (typeof status == 'undefined' || status == 4) {
 //DEBUG/*
-				console.log('Json syntax error on ' + this._getUrl() + ' :\n' + json);
+					console.log('Json syntax error on ' + this._getUrl() + ' :\n' + json);
 //DEBUG*/
-				this.elAjaxStatus.className = 'ajax-error';
+					this.elAjaxStatus.className = 'ajax-error';
+				}
 				return;
 			}
+
+			// Call virtual optional work on flow
 			js = this._tradJson.call(this, js);
 
-			// Add it to the layer
+			// Empty the layer
+			for (l in this._layers)
+				if (this._map)
+					this._map.removeLayer(this._layers[l]);
+			this._layers = [];
+
+			// Add the data to the layer
 			this.addData(js);
 
 			if (this.elAjaxStatus.className == 'ajax-wait')

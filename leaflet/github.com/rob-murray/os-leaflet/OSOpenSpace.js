@@ -101,7 +101,6 @@
     defaultLayerOptions: {
       maxZoom: null,
       minZoom: 0,
-      crs: L.OSOpenSpace.getCRS(), //GEO add CRS for multi-CRS switchlayer
       continuousWorld: true,
       worldCopyJump: false,
       tms: true,

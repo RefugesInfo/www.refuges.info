@@ -38,7 +38,7 @@ new L.GeoJSON.Ajax.wriPoi ({ // Les points d'intérêt WRI, style simplifié
 	style: function(feature) {
 		return {
 			iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
-			iconAnchor: [8, 4],
+			iconAnchor: [8, 8],
 			popup: feature.properties.nom
 		};
 	}

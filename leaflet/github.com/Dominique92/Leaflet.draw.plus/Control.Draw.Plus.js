@@ -45,58 +45,33 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 	},
 
 	onAdd: function(map) {
-		this.editToolbar = this._toolbars[Object.keys(this._toolbars)[1]]; // Find edit tool bar
-		this.editToolbar.options.featureGroup = this.editLayers; // Link the layers to edit
+		this._toolbars['edit'].options.featureGroup = this.editLayers; // Link the layers to edit
 		this.editLayers.addTo(this.snapLayers); // Cascade to snapLayers & add the map
 		this.snapLayers.addTo(map); // Make all this visble
 
+		// Add all new features to the map
 		map.on('draw:created', function(e) {
 			this.addLayer(e.layer);
-		}, this); // Add a new feature
-		map.on('draw:edited draw:deleted', this._optimPoly, this); // Finish modifications & upload
+			e.layer.on('deleted', this._optimSavGeom, this);
+		}, this);
 
+		// Read geoJson field to be edited
 		var ele = document.getElementById(this.options.entry),
 			elc = document.getElementById(this.options.changed);
 		if (ele) {
-			var elei = typeof ele.value != 'undefined' ? 'value' : 'innerHTML',
-				ljs = new L.GeoJSON(JSON.parse(ele[elei] || '{"type":"FeatureCollection","features":[]}'), this.options.jsonOptions)._layers;
+			var elei = typeof ele.value != 'undefined' ? 'value' : 'innerHTML';
 
-			// Read geoJson field to be edited
+			var ljs = new L.GeoJSON(
+				JSON.parse(ele[elei] || '{"type":"FeatureCollection","features":[]}'),
+				this.options.jsonOptions
+			)._layers;
 			for (l in ljs)
 				ljs[l].addTo(this);
-
-			// Write edited geoJson field
-			map.on('draw:edited', function() {
-				if (!this.options.editType)
-					ele[elei] = JSON.stringify(this.editLayers.toGeoJSON()); // Basic FeatureCollection output
-				else {
-					// Specific format filter / transformation
-					var p = [];
-					this.editLayers.eachLayer(function(l) {
-						if (this.options.editType == 'Marker') {
-							// Marker : Only the last point will be saved {"type":"Point","coordinates":[0,0]}
-							if (l._latlng)
-								p = l._latlng;
-						} else if (l._latlngs) {
-							if (this.options.editType.substring(0, 5) == 'Multi')
-							// MultiPolyline : All poly will be saved / converted  in {"type":"MultiLineString","coordinates":[[[[0,0],[0,0]]],[[[0,0],[0,0]]]]}
-							// MultiPolygon : All poly will be saved / converted  in {"type":"MultiPolygon","coordinates":[[[[0,0],[0,0]]],[[[0,0],[0,0]]]]}
-								p.push(l._latlngs);
-							else
-							// Polyline : Only the last poly will be saved / converted in {"type":"LineString","coordinates":[[0,0],[0,0]]}
-							// Polygon : Only the last poly will be saved / converted in {"type":"Polygon","coordinates":[[0,0],[0,0]]}
-								p = l._latlngs;
-						}
-					}, this);
-
-					ele[elei] = JSON.stringify(new L[this.options.editType](p).toGeoJSON().geometry);
-				}
-
-				// Unmask "changed" message
-				if (elc)
-					elc.style.display = '';
-			}, this);
 		}
+
+		// Finish modifications & upload
+		map.on('draw:created draw:editvertex', this._optimSavGeom, this);
+		this._optimSavGeom(); // Clean & rewrite json field at the init
 
 		return L.Control.Draw.prototype.onAdd.call(this, map);
 	},
@@ -133,19 +108,17 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 
 		// Close enables edit toolbar handlers & save changes
 		layer.on('deleted', function() {
-			for (m in this.editToolbar._modes)
-				this.editToolbar._modes[m].handler.disable();
+			for (m in this._toolbars['edit']._modes)
+				this._toolbars['edit']._modes[m].handler.disable();
+			this._optimSavGeom();
 		}, this);
-
-		// Fire the map to enable any changes uploads
-		layer.on('created edit dragend deleted', function() {
-			this._map.fire('draw:edited');
-		}, this);
-
-		layer.fire('created');
 	},
 
-	_optimPoly: function() {
+	_optimSavGeom: function() {
+		if (this._map.noOptim)
+			return;
+
+		// Optimize the edited layers
 		var ls = this.editLayers._layers;
 		for (il1 in ls) { // For all layers being edited
 			var ll1 = ls[il1]._latlngs;
@@ -153,15 +126,17 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 				// Transform polyline whose the 2 ends match into polygon
 				if (ll1[0].equals(ll1[ll1.length - 1])) {
 					this.editLayers.removeLayer(ls[il1]);
-					this._map.fire('draw:created', {
-						layer: new L.Polygon(ll1)
-					});
+					if (ll1.length > 2) // If at least a triangle. Otherwize delete it.
+						this._map.fire('draw:created', { // Create a Polygon
+							layer: new L.Polygon(ll1)
+						});
 				}
 				// Merge polylines having ends at the same position
 				for (il2 in ls) {
 					var ll2 = ls[il2]._latlngs,
 						lladd = null; // List of points to move to another polyline
-					if (ll2 && !ls[il2].options.fill && // The other is also a polyline
+					if (ls[il1] && // The first hasn't been deleted !
+						ll2 && !ls[il2].options.fill && // The 2nd is also a polyline
 						ls[il1]._leaflet_id < ls[il2]._leaflet_id) { // Only once each pair
 						if (ll1[0].equals(ll2[0])) {
 							ll1.reverse();
@@ -175,28 +150,70 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 							lladd = ll2.reverse();
 						}
 						if (lladd) {
-							ll1.pop(); // We remove the last point as it's already there
-							ls[il1]._latlngs = ll1.concat(lladd);
-							ls[il1].editing._poly.redraw(); // Redraw the lines
-							ls[il1].snapediting.updateMarkers(); // Redraw the markers
-							this.editLayers.removeLayer(ls[il2].editing._poly); // Erase the initial polyline
-							this._map.fire('draw:edited'); // Redo this until there are no more merge to do
+							lladd.shift(); // We avoid the first point as it's already on the first poly
+							var nll = ls[il1]._latlngs.concat(lladd); // We concatenate the 2 polys lls
+							this.addLayer(new L.Polyline(nll)); // Create a new poly
+							this.editLayers.removeLayer(ls[il1]); // Erase the initial polylines
+							this.editLayers.removeLayer(ls[il2]);
+							return this._optimSavGeom(); // Redo this until there are no more merge to do
 						}
 					}
 				}
 			}
 		}
+
+		// Save edited data to the json output field
+		var ele = document.getElementById(this.options.entry),
+			elc = document.getElementById(this.options.changed);
+		if (ele) {
+			var elei = typeof ele.value != 'undefined' ? 'value' : 'innerHTML';
+			if (!this.options.editType)
+				ele[elei] = JSON.stringify(this.editLayers.toGeoJSON()); // Basic FeatureCollection output
+			else {
+				// Specific format filter / transformation
+				var p = [];
+				this.editLayers.eachLayer(function(l) {
+					if (this.options.editType == 'Marker') {
+						// Marker : Only the last point will be saved {"type":"Point","coordinates":[0,0]}
+						if (l._latlng)
+							p = l._latlng;
+					} else if (l._latlngs) {
+						if (this.options.editType.substring(0, 5) == 'Multi')
+						// MultiPolyline : All poly will be saved / converted  in {"type":"MultiLineString","coordinates":[[[[0,0],[0,0]]],[[[0,0],[0,0]]]]}
+						// MultiPolygon : All poly will be saved / converted  in {"type":"MultiPolygon","coordinates":[[[[0,0],[0,0]]],[[[0,0],[0,0]]]]}
+							p.push(l._latlngs);
+						else
+						// Polyline : Only the last poly will be saved / converted in {"type":"LineString","coordinates":[[0,0],[0,0]]}
+						// Polygon : Only the last poly will be saved / converted in {"type":"Polygon","coordinates":[[0,0],[0,0]]}
+							p = l._latlngs;
+					}
+				}, this);
+
+				ele[elei] = JSON.stringify(new L[this.options.editType](p).toGeoJSON().geometry);
+			}
+		}
+
+		// Unmask "changed" message
+		if (elc)
+			elc.style.display = '';
 	}
 });
 
 // Cut a polyline by removing a segment whose the middle marker is cliqued
 // Cut a polygon by removing a segment whose the middle marker is cliqued & transform it into polyline
-// This needs modification of Leaflet.draw/src/edit/handler/Edit.Poly line 233 : .on('click', this._cut, this)
-L.Edit.Poly.include({
-	_cut: function(e) {
-		if (e.target._index)
-			return; // Did not click a middle marker !
 
+// Horible hack : modify onClick action on MiddleMarkers Leaflet.draw/Edit.Poly.js & generated files
+eval ('L.Edit.PolyVerticesEdit.prototype._createMiddleMarker = ' +
+	L.Edit.PolyVerticesEdit.prototype._createMiddleMarker.toString()
+		.replace (/'click', onClick, this|'click',[a-z],this/g, "'click',this._cut,this")
+);
+
+L.Edit.PolyVerticesEdit.include({
+	_cut: function(e) {
+		if (this._markers.length < 3) // Last segment
+			return;
+
+		// Find closest markers
 		var marker1, marker2;
 		for (m in this._markers)
 			if (this._markers[m]._middleRight && this._markers[m]._middleRight._leaflet_id == e.target._leaflet_id)
@@ -210,7 +227,7 @@ L.Edit.Poly.include({
 				ll.push(this._markers[(marker2._index + s) % this._markers.length]._latlng);
 
 			// And use these summits to create a new polyline
-			this._poly._map.fire('draw:created', {
+			this._poly._map.fire('draw:created', { // Create a new Polyline
 				layer: new L.Polyline(ll)
 			});
 			this._poly._map.removeLayer(this._poly); // Remove the old polygon
@@ -219,25 +236,27 @@ L.Edit.Poly.include({
 				this._poly._map.removeLayer(this._poly); // Just delete the poly
 			else if (!marker1._prev) // This is the first segment
 				this._onMarkerClick({
-				target: marker1,
-				remove: true // Just remove it
-			});
+					target: marker1,
+					remove: true // Just remove it
+				});
 			else if (!marker2._next) // This is the last segment
 				this._onMarkerClick({
-				target: marker2,
-				remove: true // Just remove it
-			});
+					target: marker2,
+					remove: true // Just remove it
+				});
 			else {
+				this._map.noOptim = true;
 				var ll = [];
 				while (m = this._markers[marker2._index]) { // Remove all the summits between the cut & the end line
 					ll.push(m._latlng);
 					this._onMarkerClick({
-						target: m,
-						remove: true
+						target: m
 					});
 				}
+				this._map.noOptim = false;
+
 				// And reuse these summits to create a new polyline
-				this._poly._map.fire('draw:created', {
+				this._poly._map.fire('draw:created', { // Create a new Polyline
 					layer: new L.Polyline(ll, this._poly.options)
 				});
 			}

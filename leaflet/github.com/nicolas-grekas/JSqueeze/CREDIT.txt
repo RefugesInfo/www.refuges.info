@@ -1,1 +1,1 @@
-https://github.com/nicolas-grekas/JSqueeze/commit/693d64850eab2ce6a7c8f7cf547e1ab46e69d542
+https://github.comjs-active-navigation-container

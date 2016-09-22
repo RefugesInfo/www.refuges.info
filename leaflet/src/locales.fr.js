@@ -38,15 +38,8 @@ if (navigator.language || navigator.userLanguage == 'fr') {
 	if (L.Control.FileLayerLoad)
 		L.Control.FileLayerLoad = L.Control.FileLayerLoad.extend({
 			statics: {
-				TITLE: 'Charger un fichier GPX, KML, GeoJSON',
+				TITLE: 'Importer un fichier GPX, KML, GeoJSON',
 				LABEL: '&#8657;'
-			}
-		});
-
-	if (L.Control.GetGpxFile)
-		L.Control.GetGpxFile = L.Control.GetGpxFile.extend({
-			statics: {
-				TITLE: 'Obtenir un fichier GPX, KML, GeoJSON'
 			}
 		});
 

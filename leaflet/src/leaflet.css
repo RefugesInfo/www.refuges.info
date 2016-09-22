@@ -5,6 +5,7 @@
 
 @import url("../github.com/Leaflet/Leaflet/dist/leaflet.css");
 @import url("../github.com/Leaflet/Leaflet.fullscreen/dist/leaflet.fullscreen.css");
+@import url("../github.com/rowanwins/leaflet-easyPrint/dist/easyPrint.css");
 @import url("../github.com/MrMufflon/Leaflet.Coordinates/src/Control.Coordinates.css");
 @import url("../github.com/MrMufflon/Leaflet.Coordinates/src/Control.Coordinates.ie.css");
 @import url("../github.com/k4r573n/leaflet-control-osm-geocoder/Control.OSMGeocoder.css");

@@ -7,6 +7,8 @@
  * Instances of the WMS class allow viewing maps of Infraestructura de Datos Espaciales de España
  * (c) http://www.idee.es
  *
+ * Usage: new L.TileLayer.WMS.IDEE().addTo(map);
+ *
  * Different layers:
 	new L.TileLayer.WMS.IDEE() : Basic
 	new L.TileLayer.WMS.IDEE.Photo() : Satellite

@@ -41,8 +41,8 @@ L.TileLayer.collection = function(name) {
 			});
 
 		// Italy
-//		if (typeof L.TileLayer.WMS.IGM != 'undefined')
-//			this._col.Italie = new L.TileLayer.WMS.IGM();
+		if (typeof L.TileLayer.WMS.IGM != 'undefined')
+			this._col.Italie = new L.TileLayer.WMS.IGM();
 
 		// Swiss
 		if (typeof L.TileLayer.SwissTopo != 'undefined')
@@ -63,12 +63,14 @@ L.TileLayer.collection = function(name) {
 		// OS-map (Great Britain)
 		if (typeof key != 'undefined' && typeof key.os != 'undefined') {
 				if (window.location.href[4] != 's') // Use the same protocol than the referer.
-			L.TileLayer.OSOpenSpace.prototype._url =
-				L.TileLayer.OSOpenSpace.prototype._url.replace('https', 'http');
-			if (typeof L.TileLayer.OSOpenSpace != 'undefined')// For Leaflet V0.7
+	
+
+			if (typeof L.TileLayer.OSOpenSpace != 'undefined') { // For Leaflet V0.7
+				L.TileLayer.OSOpenSpace.prototype.options.crs = L.OSOpenSpace.getCRS(); // Assign CRS to OS-UK layer options
+				L.TileLayer.OSOpenSpace.prototype._url = L.TileLayer.OSOpenSpace.prototype._url.replace('https', 'http'); // https adjustments
 				this._col['OS-Great Britain'] = new L.TileLayer.OSOpenSpace(key.os, {}); // Il faut mettre le {} sinon BUG
-			else
-			if (typeof L.TileLayer.WMS.OS != 'undefined') // For Leaflet V1.0
+			}
+			else if (typeof L.TileLayer.WMS.OS != 'undefined') // For Leaflet V1.0
 				this._col['OS Great Britain'] = new L.TileLayer.WMS.OS({k:key.os});
 		}
 
@@ -89,6 +91,11 @@ L.TileLayer.collection = function(name) {
 //				'Google Hybride': new L.TileLayer.Google({l:'s,h'}),
 				'Google Photo':   new L.TileLayer.Google({l:'s'})
 			});
+
+		// Rien
+		L.Util.extend(this._col, {
+			'Neutre': L.tileLayer('')
+		});
 	}
 
 	return typeof this._col[name] != 'undefined' ? this._col[name] : this._col;

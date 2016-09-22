@@ -1,19 +1,21 @@
 /*
  * Copyright (c) 2014 Dominique Cavailhez
  * https://github.com/Dominique92
- * Supportè sur Leaflet V0.7 & V1.0
+ * Supported both on Leaflet V0.7 & V1.0
  *
- * Cartes françaises
- * Projections Lambert et couches IGN
- * Clé de développement (localhost) sur: http://api.ign.fr
- * Clé de production sur: http://pro.ign.fr/api-web => Service en ligne => Pour un site internet grand public => S'ABONNER
- * Doc sur http://api.ign.fr/jsp/site/Portal.jsp?page_id=6&document_id=80&dossier_id=53
+ * French maps
+ * Lambert projections et IGN layers
+ * Developpement key (localhost): http://api.ign.fr
+ * Production key: http://pro.ign.fr/api-web => Service en ligne => Pour un site internet grand public => S'ABONNER
+ * IGN doc on http://api.ign.fr/jsp/site/Portal.jsp?page_id=6&document_id=80&dossier_id=53
  *
- * Layers (dépend de l'abonnement lié à votre clé)
+ * Usage: new L.TileLayer.IGN({k:'CLE_IGN').addTo(map);
+ *
+ * Available layers (ddpends on your IGN contract)
 	new L.TileLayer.IGN({k:'CLE_IGN', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}) : Normal
 	new L.TileLayer.IGN({k:'CLE_IGN', l:'ORTHOIMAGERY.ORTHOPHOTOS'}) : Photos
 	new L.TileLayer.IGN({k:'CLE_IGN', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'}) : TOP 25
-	new L.TileLayer.IGN({k:'CLE_IGN', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}) : Nouvelle présentation
+	new L.TileLayer.IGN({k:'CLE_IGN', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}) : New presentation
 	new L.TileLayer.IGN({k:'CLE_IGN', l:'CADASTRALPARCELS.PARCELS', f: 'png'}) : Cadastre
  */
 

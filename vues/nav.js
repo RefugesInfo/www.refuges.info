@@ -51,7 +51,7 @@ if (!$vue->mode_affichage) {?>
 wriPoi = new L.GeoJSON.Ajax.wriPoi({ // Les points choisis sur toute la carte
 	argsGeoJSON: {
 		type_points: '<?=$_COOKIE['type_points'] ? $_COOKIE['type_points'] : ''?>'
-	},
+	}
 });
 wriMassif = new L.GeoJSON.Ajax.wriPoi({ // Seulement les points dans un massif
 	urlGeoJSON: '<?=$config['sous_dossier_installation']?>api/massif',
@@ -124,6 +124,7 @@ new L.Control.Coordinates().addTo(map);
 
 <?if ( $vue->mode_affichage != 'zone' ){?>
 	new L.Control.Fullscreen().addTo(map);
+	new L.Control.EasyPrint({title: 'Imprimer la carte'}).addTo(map);
 	new L.Control.OSMGeocoder({
 		position: 'topleft'
 	}).addTo(map);
