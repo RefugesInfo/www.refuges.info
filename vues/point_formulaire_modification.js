@@ -46,13 +46,6 @@ new L.GeoJSON.Ajax.wriPoi ({ // Les points d'intérêt WRI, style simplifié
 
 var layerSwitcher = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 
-new L.Control.Permalink.Cookies({ // Garde la mémoire des position, zoom, carte
-	layers: layerSwitcher,
-	text: null, // Le contrôle n'apparait pas sur la carte
-	useAnchor: true // Pour ne pas mélanger le permalien cookies avec l'argument ?id_point_type=
-}).addTo(map);
-viseur.setLatLng(map.getCenter()); // Centrer le viseur au centre de la carte (position du cookie)
-
 new L.Control.Scale().addTo(map);
 new L.Control.Fullscreen().addTo(map);
 

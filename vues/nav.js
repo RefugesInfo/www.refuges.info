@@ -124,12 +124,12 @@ new L.Control.Coordinates().addTo(map);
 
 <?if ( $vue->mode_affichage != 'zone' ){?>
 	new L.Control.Fullscreen().addTo(map);
-	new L.Control.EasyPrint({title: 'Imprimer la carte'}).addTo(map);
 	new L.Control.OSMGeocoder({
 		position: 'topleft'
 	}).addTo(map);
 	new L.Control.Gps().addTo(map);
 	var fl = L.Control.fileLayerLoad().addTo(map);
+	new L.Control.EasyPrint({title: 'Imprimer la carte'}).addTo(map);
 <?}?>
 
 <?if ( !$vue->mode_affichage ){?>

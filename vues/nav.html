@@ -13,7 +13,7 @@ Massif (1): classique : un poly qui entoure tous les points, possibilité de jou
 Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
 */
 ?>
-<div class="contenu">
+<div class="contenu noprint">
 	<!-- afficher le titre du massif (en mode massif) -->
 	<h3 id="titrepage">
         <?if ($vue->mode_affichage == 'edit') {?>
@@ -26,7 +26,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 
 <div id="carte-nav" class="nav_<?=$vue->mode_affichage?>"></div>
 
-<div id="selecteur-carte-nav">
+<div id="selecteur-carte-nav noprint">
 	<?if (!$vue->mode_affichage ){?>
 		<fieldset <?if (!$vue->polygone->nom_polygone ){?>style="display:none"<?}?>>
 			<legend>Limites</legend>

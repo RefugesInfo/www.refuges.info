@@ -882,17 +882,17 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	#entete,
 	#menu-normal,
 	#menu-scroll,
-	.contenu > *,
-	.fiche_cadre > *,
-	#selecteur-carte-nav,
+	#fin-entete,
 	#basdepage,
 	.leaflet-control,
 	.leaflet-control-attribution > a:first-child {
 		display: none;
 	}
+	.noprint {
+		display: none !important;
+	}
 	html, body,
-	#carte-nav,
-	#carte-point {
+	#carte-nav {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -901,17 +901,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		height: 100%;
 		max-height: 100%;
 	}
-	#contenu,
-	.fiche_cadre,
-	#container-carte-point,
-	#carte-point,
 	.leaflet-control-attribution {
-		margin: 0;
 		display: block;
-		height: 100%;
-	}
-	.contenu {
-		margin: 0;
 	}
 	.leaflet-control-attribution::first-letter {
 		color: transparent;
