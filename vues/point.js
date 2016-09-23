@@ -31,7 +31,7 @@ if ($vue->mini_carte) {
 
 	map.setView(cadre._latlng, 13, {reset: true});
 
-	new L.GeoJSON.Ajax.wriPoi().addTo(map);
+	var wriPoi = new L.GeoJSON.Ajax.wriPoi().addTo(map);
 	new L.GeoJSON.Ajax.OSM.services({
 		maxPoints: 30,
 		services: {
@@ -47,6 +47,15 @@ if ($vue->mini_carte) {
 	new L.Control.Scale().addTo(map);
 	new L.Control.Coordinates().addTo(map);
 	new L.Control.Fullscreen().addTo(map);
+	new L.Control.Click(
+		function () {
+			return wriPoi._getUrl() + '&format=gpx&nb_points=all';
+		}, {
+			title: "Obtenir les points de refuges.info visibles sur la carte\n"+
+					"Pour charger le fichier sur un GARMIN, utlisez Basecamp",
+			label: '&#8659;'
+		}
+	).addTo(map);
 	new L.Control.EasyPrint({title: 'Imprimer la carte'}).addTo(map);
 	layerSwitcher = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 

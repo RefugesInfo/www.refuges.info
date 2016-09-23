@@ -129,6 +129,16 @@ new L.Control.Coordinates().addTo(map);
 	}).addTo(map);
 	new L.Control.Gps().addTo(map);
 	var fl = L.Control.fileLayerLoad().addTo(map);
+	new L.Control.Click(
+		function () {
+			return wriPoi._getUrl() + '&format=gpx&nb_points=all';
+		}, {
+			title: "Obtenir les points de refuges.info visibles sur la carte\n"+
+					"Pour charger le fichier sur un GARMIN, utlisez Basecamp\n"+
+					"Atention: le fichier peut être gros pour une grande carte",
+			label: '&#8659;'
+		}
+	).addTo(map);
 	new L.Control.EasyPrint({title: 'Imprimer la carte'}).addTo(map);
 <?}?>
 
