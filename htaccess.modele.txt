@@ -3,9 +3,15 @@
 AddDefaultCharset UTF-8
 
 RewriteEngine On
-# pas de refuges.info, on redirige vers le www
+# Ici on détecte si la connexion a lieu par http ou https et on stock dans la variable "proto"
+RewriteCond %{HTTPS} =on
+RewriteRule ^(.*)$ - [env=proto:https]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ - [env=proto:http]
+
+# On peut ensuite forcer la redirection de refuges.info vers www.refuges.info en préservant le protocol (http ou https)
 RewriteCond %{HTTP_HOST} ^refuges.info$ [NC]
-RewriteRule ^(.*)$ http://www.refuges.info/$1 [L,R=301]
+RewriteRule ^(.*)$ %{ENV:proto}://www.refuges.info/$1 [L,R=301]
 
 #Ces règles de rewrite permettent de faire atterrir tous les appels sur
 #l'unique point d'entrée du site (moins le forum et de vieux truc non
