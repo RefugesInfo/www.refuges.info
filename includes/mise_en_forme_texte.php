@@ -40,6 +40,8 @@ return strtr($str, $normalizeChars);
 /**********************************************************************************************
  Répétitivement, on a besoin de protéger une exportation vers du xml/html, cette fonction protège les
  caractères
+ FIXME:sly: un autre nom ne serait pas de refus, c'est trop confus "protege" ça oblige à retourner voir la fonction 
+ trop souvent
 **********************************************************************************************/
 
 function protege($texte)
@@ -56,7 +58,7 @@ retourne : le code en HTML
 21/03/08 sly création initiale de la fonction
 26/05/08 jmb correction bug des multiples [b] (rajout d'un ? pour une regex ungreedy)
 **********************************************************************************************/
-function bbcode2html($texte,$autoriser_html=False,$autoriser_balise_img=True,$crypter_texte_sensible=True)
+function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_img=True,$crypter_texte_sensible=True)
 {
 global $config;
 /** étape 1
@@ -65,7 +67,7 @@ nouvelle fonction qui permet de faire des liens internes entre les fiches :
 point destination
 **/
 
-$occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
+$occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte_avec_bbcode,$occurence);
 
 if ($occurences_trouvees!=0)
 {
@@ -74,18 +76,31 @@ if ($occurences_trouvees!=0)
     // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
     // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
     $point=infos_point($occurence[1][$x]);
-          $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+    $texte_avec_bbcode=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte_avec_bbcode);
   }
 }
 
-/** étape 2
-on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
-sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
-**/
+
+// transformation automatique des chaine de caractère ressemblant à une url vers le BBcode des URLs
+// le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
+// et éviter de retransformer celles contenant du bbcode
+// exemple : coucouwww.coucou ne sera pas transformé
+// il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
+// au format http://truc ou https://bidule ou www.
+$urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\?&=~-]+\w+)([\S< :\.;,\n\*\)\]]|\r\n|$)/i";
+$urlauto_replace = "$1[url=$2]$2[/url]$4";
+$texte_avec_bbcode_apres_detection_urls = preg_replace($urlauto_pattern,$urlauto_replace,$texte_avec_bbcode);
+// gestion des liens vers notre wiki au format [url=##page]c'est là que ça se passe[/url] on le repasse d'abord en bbcode plus classique avec url locale (qui tient compte de l'éventuel sous-dossier dans lequel on est installé
+$texte_avec_bbcode_apres_detection_urls=str_replace("url=##","url=".$config['base_wiki'],$texte_avec_bbcode_apres_detection_urls);
+
+/**
+ on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
+ sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
+ **/
 if (!$autoriser_html)
-    $html=protege($texte);
+    $texte_avec_protection_anti_injection_html_ou_pas=protege($texte_avec_bbcode_apres_detection_urls);
 else
-    $html=$texte;
+    $texte_avec_protection_anti_injection_html_ou_pas=$texte_avec_bbcode_apres_detection_urls;
 
 //Voir : http://www.refuges.info/forum/viewtopic.php?t=6174 expliquant pourquoi, dans certains cas, nous ne voulons pas supporter la balise img
 if ($autoriser_balise_img)
@@ -93,7 +108,7 @@ if ($autoriser_balise_img)
     $search_img=array(
         "/\[img:(.*)\](.+?)\[\/img:(.*)\]/s",
         "/\[img\](.+?)\[\/img\]/s");
-    $replace_img=array(
+        $replace_img=array(
             "<img src=\"$2\" alt=\"image\" />",
             "<img src=\"$1\" alt=\"image\" />");
 }
@@ -102,20 +117,6 @@ else
     $search_img=array();
     $replace_img=array();
 }
-
-// transformation automatique des chaine de caractère ressemblant à une url vers le BBcode des URLs
-// le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
-// et éviter de retransformer celles contenant du bbcode
-// exemple : coucouwww.coucou ne sera pas transformé
-// il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
-// au format http://truc ou https://bidule ou www.
-
-$urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\?&=~-]+\w+)([\S< :\.;,\n\*\)\]]|\r\n|$)/i";
-$urlauto_replace = "$1[url=$2]$2[/url]$4";
-$html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
-
-// gestion des liens vers notre wiki au format [url=##page]c'est là que ça se passe[/url] on le repasse d'abord en bbcode plus classique avec url locale (qui tient compte de l'éventuel sous-dossier dans lequel on est installé
-$html=str_replace("url=##","url=".$config['base_wiki'],$html);
 // gestion de la majorité des tag bbcode
 $searcharray =
 array_merge($search_img,
@@ -174,14 +175,14 @@ array_merge($replace_img,
         )
 );
 
-$html = preg_replace($searcharray, $replacearray, $html);
+$texte_avec_html = preg_replace($searcharray, $replacearray, $texte_avec_protection_anti_injection_html_ou_pas);
 
 
 // Transformation des adresses mails de façon à ne pas qu'elles ne soient pompées par les robots
 // 1/ Le code ascii de chaque caractère est transformé par la formule: 'x' => 135 - ascii('x')
 // 2/ Les caractères sont envoyés et écrits de droite à gauche. Ils sont affichés dans le bon sens par la feuille style
 // 3/ Ils sont relus et inversés lors du click pour envoi de mail
-$occurences_trouvees=preg_match_all("([\w_\-.]+@[\w\-.]+)",$html,$occurence);
+$occurences_trouvees=preg_match_all("([\w_\-.]+@[\w\-.]+)",$texte_avec_html,$occurence);
 if ($occurences_trouvees!=0)
 {
   for ($x=0;$x<$occurences_trouvees;$x++)
@@ -197,16 +198,16 @@ if ($occurences_trouvees!=0)
         $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
         // Génération du tag complet
         if (!$crypter_texte_sensible)
-            $html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$html);
+            $texte_avec_html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$texte_avec_html);
         else
-            $html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$html);
+            $texte_avec_html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$texte_avec_html);
   }
 }
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
-$html = nl2br($html,False);
-$html = str_replace("  ", " &nbsp;", $html);
+$texte_avec_html = nl2br($texte_avec_html,False);
+$texte_avec_html = str_replace("  ", " &nbsp;", $texte_avec_html);
 
-return $html;
+return $texte_avec_html;
 }
 
 //**********************************************************************************************
