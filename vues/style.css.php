@@ -726,6 +726,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* Carte NAV présentation mobile verticale */
 #carte-nav {
+  width: 75%; /* Support of non CSS3 browsers (Safari on Windows)*/
+  height: 75%;
   width: 96vw;
   height: 96vw;
   max-height: calc(100% - 65px); /* Pour ne pas trop déborder en bas */
@@ -772,10 +774,19 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* Carte de la page des points mobiles */
 #carte-point {
+  width: 50%; /* Support of non CSS3 browsers (Safari on Windows)*/
+  height: 380px;
   width: 100vw;
   height: 100vw;
   min-width: 300px;
   max-height: 400px;
+}
+/* Limite de largeur de l'attribution pour ne pas masquer l'échèle */
+#carte-point .leaflet-control-attribution {
+  max-width: 340px;
+}
+#carte-edit .leaflet-control-attribution {
+  max-width: 390px;
 }
 /* Carte de la page des points écrans */
 @media screen and (min-width: 641px) {
@@ -787,6 +798,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     min-width: auto;
   }
 }
+
 /* Spécificité carte des zones */
 .nav_zone {
   width: 100% !important;
@@ -806,18 +818,18 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 
+/* Cartes présentation full screen */
+.leaflet-fullscreen-on {
+  max-height: 100% !important;
+}
+@media screen and (device-width: 100vw) and (device-height: 100vh) { /* Cas du full screen / nécéssaire pour chrome */
+	#carte-nav, #carte-point, #carte-edit {
+		max-width: 100% !important;
+		max-height: 100% !important;
+	}
+}
+
 /* Etiquette dans les cartes */
-.carte-point-etiquette .leaflet-rrose-content-wrapper,
-.carte-service-etiquette .leaflet-rrose-content-wrapper,
-.carte-site-etiquette .leaflet-rrose-content-wrapper {
-	border-radius: 5px;
-}
-.carte-point-etiquette .leaflet-rrose-content,
-.carte-service-etiquette .leaflet-rrose-content P,
-.carte-service-etiquette .leaflet-rrose-content,
-.carte-site-etiquette .leaflet-rrose-content {
-	margin: 1px;
-}
 .nav-services,
 .carte-service-etiquette .leaflet-rrose-content-wrapper,
 .carte-service-etiquette .leaflet-rrose-tip {

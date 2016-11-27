@@ -1,13 +1,14 @@
-<?php
-/*
- * Copyright (c) 2016 Dominique Cavailhez
- * https://github.com/Dominique92/Leaflet.GeoJSON.Ajax
- *
- * Couches geoJson pour www.refuges.info
- */
-?>
+// Contient les déclarations communes aux cartes
 
+/* Super zoom pour les photos aériennes */
+L.BingLayer.prototype.options.maxNativeZoom = 18;
+L.BingLayer.prototype.options.maxZoom = 21;
+
+// Couches de base
 <?if (strstr('nav|point',$vue->type)) {?>
+if (typeof L.OSOpenSpace.TileLayer != 'undefined')
+	L.OSOpenSpace.TileLayer.prototype.options.crs = L.OSOpenSpace.CRS; // Assign CRS to OS-UK layer options
+
 var baseLayers = {
 	'Refuges.info':new L.TileLayer.OSM.MRI(),
 	'OSM fr':      new L.TileLayer.OSM.FR(),
@@ -17,7 +18,7 @@ var baseLayers = {
 	'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
 	'Autriche':    new L.TileLayer.Kompass({l:'Touristik'}),
 	'Espagne':     new L.TileLayer.WMS.IDEE(),
-	'Angleterre':  new L.TileLayer.OSOpenSpace('<?=$config['os_key']?>', {}),
+	'Angleterre':  new L.OSOpenSpace.TileLayer('<?=$config['os_key']?>'),
 	'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'}),
 	'Photo IGN':   new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'ORTHOIMAGERY.ORTHOPHOTOS'})
 };
@@ -33,8 +34,7 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 		bbox: true,
 		idAjaxStatus: 'ajax-poi-status', // HTML id element owning the loading status display
 		style: function(feature) {
-			var referers = window.location.href.split('/'), // Use the same protocol than the referer.
-				url_point = referers[0]+'//'+referers[2]+'/point/'+feature.properties.id,
+			var url_point = '<?=$config['sous_dossier_installation']?>point/'+feature.properties.id,
 				prop = [];
 			if (feature.properties.coord.alt)
 				prop.push(feature.properties.coord.alt + 'm');
@@ -45,10 +45,9 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 				url: url_point,
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 8],
-				popup: '<a href="' + url_point+ '">' + feature.properties.nom + '</a>' +
+				popup: feature.properties.nom +
 					(prop.length ? '<div style=text-align:center>' + prop.join(' ') + '</div>' : ''),
 				popupClass: 'carte-point-etiquette',
-				remanent: true,
 				degroup: 12 // Spread the icons when the cursor hovers on a busy area.
 			};
 		}
@@ -69,7 +68,6 @@ L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 				iconUrl: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 8],
 				popupClass: 'carte-site-etiquette',
-				remanent: true,
 				degroup: 12
 			};
 		}
@@ -146,7 +144,6 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.icon_name + '.png',
 				iconAnchor: [8, 8],
 				popupClass: 'carte-service-etiquette',
-				remanent: true,
 				degroup: 12
 			};
 		}

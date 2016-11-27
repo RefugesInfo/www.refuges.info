@@ -1,0 +1,2 @@
+https://github.com/rowanwins/leaflet-easyPrint/tree/gh-pages
+https://github.com/rowanwins/leaflet-easyPrint/commit/e58ac06ced046695685d21686b9de8d902f25959

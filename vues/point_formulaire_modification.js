@@ -11,11 +11,11 @@ var map = new L.Map('carte-edit'),
 	viseur,
 	gps,
 	baseLayers = {
-	'Refuges.info':new L.TileLayer.OSM.MRI(),
-	'OSM fr':      new L.TileLayer.OSM.FR(),
-	'Outdoors':    new L.TileLayer.OSM.Outdoors(),
-	'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'})
-};
+		'Refuges.info':new L.TileLayer.OSM.MRI(),
+		'OSM fr':      new L.TileLayer.OSM.FR(),
+		'Outdoors':    new L.TileLayer.OSM.Outdoors(),
+		'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'})
+	};
 baseLayers['<?=$vue->fond_carte_par_defaut?>'].addTo(map); // Le fond de carte visible
 
 // Viseur déplaçable affichant sa position éditable.
@@ -24,6 +24,7 @@ viseur = new L.Marker([], {
 	zIndexOffset: 1000, // Passe au dessus des autres pictos
 	icon: L.icon({
 		iconUrl: '<?=$config['sous_dossier_installation']?>images/viseur.png',
+		className: 'leaflet-move',
 		iconAnchor: [15, 15]
 	}),
 })
@@ -38,19 +39,20 @@ new L.GeoJSON.Ajax.wriPoi ({ // Les points d'intérêt WRI, style simplifié
 	style: function(feature) {
 		return {
 			iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
+			className: 'leaflet-grab',
 			iconAnchor: [8, 8],
 			popup: feature.properties.nom
 		};
 	}
 }).addTo(map);
 
-var layerSwitcher = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+var layerSwitcher = new L.Control.Layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 
 new L.Control.Scale().addTo(map);
 new L.Control.Fullscreen().addTo(map);
 
 gps = new L.Control.Gps().addTo(map)
-gps.on('gpslocated', function(e) {
+gps.on('gps:located', function(e) {
 	viseur.setLatLng(e.latlng); // Déplacement du viseur
 	e.target._map.setView(e.latlng, 16, {
 		reset: true

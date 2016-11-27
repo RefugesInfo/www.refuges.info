@@ -28,14 +28,13 @@ if (!$vue->mode_affichage) {?>
 			time: <?=time()?> // Inhibe le cache
 		},
 		style: function(feature) {
-			var referers = window.location.href.split('/'); // Use the same protocol than the referer.
 			return {
 				color: 'blue',
 				weight: 2,
 				fillOpacity: 0,
 <?if ($vue->mode_affichage == 'zone') {?>
 				popup: feature.properties.nom,
-				url: referers[0]+'//'+referers[2]+'/nav/'+feature.properties.id,
+				url: '<?=$config['sous_dossier_installation']?>nav/'+feature.properties.id,
 				color: 'black',
 				weight: 1,
 				fillColor: feature.properties.couleur,
@@ -98,19 +97,23 @@ map = new L.Map('carte-nav', {
 });
 map.setView([45.6, 6.7], 6); // Position par défaut
 
-var controlLayers = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+// Le controle de changement de couche de carte avec la liste des cartes dispo
+var controlLayers = new L.Control.Layers(baseLayers).addTo(map);
 <?if ($vue->mode_affichage != 'edit') {?>
-new L.Control.Permalink.Cookies({
-	text:
-<?if ($vue->mode_affichage == 'zone') {?>
-		'',
-<?}else{?>
-		'Permalien',
-<?}?>
-	layers:  controlLayers
-}).addTo(map);
+	new L.Control.Permalink.Cookies({
+		position: 'bottomright',
+		text:
+	<?if ($vue->mode_affichage == 'zone') {?>
+			'',
+	<?}else{?>
+			'Permalien',
+	<?}?>
+		layers: controlLayers
+	}).addTo(map);
 <?}?>
 
+// On zomm sur la carte à l'endroit qu'on veut montrer
+// A mettre après le permalink puisque c'est une priorité
 <?if ( $vue->polygone->bbox ){?>
 var bboxs = [<?=$vue->polygone->bbox?>]; // BBox au format Openlayers [left, bottom, right, top] = [west, south, east, north]
 map.fitBounds([ // Bbox au format Leaflet
@@ -120,15 +123,23 @@ map.fitBounds([ // Bbox au format Leaflet
 <?}?>
 
 new L.Control.Scale().addTo(map);
-new L.Control.Coordinates().addTo(map);
+
+new L.Control.Coordinates({
+	position:'bottomleft'
+}).addTo(map);
 
 <?if ( $vue->mode_affichage != 'zone' ){?>
 	new L.Control.Fullscreen().addTo(map);
+
 	new L.Control.OSMGeocoder({
 		position: 'topleft'
 	}).addTo(map);
+
 	new L.Control.Gps().addTo(map);
+
 	var fl = L.Control.fileLayerLoad().addTo(map);
+
+	// Récupérations des points sous forme de fichier GPX
 	new L.Control.Click(
 		function () {
 			return wriPoi._getUrl() + '&format=gpx&nb_points=all';
@@ -139,6 +150,8 @@ new L.Control.Coordinates().addTo(map);
 			label: '&#8659;'
 		}
 	).addTo(map);
+
+	// Impressions
 	new L.Control.EasyPrint({title: 'Imprimer la carte'}).addTo(map);
 <?}?>
 
@@ -148,6 +161,43 @@ new L.Control.Coordinates().addTo(map);
 <?}?>
 
 <?if ( $vue->mode_affichage == 'edit' ){?>
+	// Force la sortie sous forme de MultiPolygon (converti les PolyLine en Polygon)
+	// TODO: traiter le cas où il n'y a pas de Polygon et où la base devrait être geom=null
+	//    PB: remonter un champ vide donne une erreur sur geom = ST_SetSRID(ST_GeomFromGeoJSON(''), 4326) 
+	map.on('draw:entry-changed', function() {
+		var ele = document.getElementById('edit-json');
+		var geoJson = JSON.parse(ele.value);
+
+		// Collecte les lonlat[] des polygones & polynines présents dans l'éditeur
+		var p = [];
+		for (f in geoJson.features)
+			if (geoJson.features[f].geometry.coordinates[0].length > 2) // Polygon
+				p.push(geoJson.features[f].geometry.coordinates);
+			else // Polyline
+				p.push([geoJson.features[f].geometry.coordinates]);
+
+		// Referme chaque lonlat[] avant d'en faire des polygones
+		for (i in p)
+			for (j in p[i]) {
+				var pij0 = p[i][j][0],
+					pijn = p[i][j][p[i][j].length - 1];
+				if (pij0[0] != pijn[0] && pij0[1] != pijn[1])
+					p[i][j].push(p[i][j][0]);
+			}
+
+		ele.value = JSON.stringify({
+			type: 'MultiPolygon',
+			coordinates: p
+		});
+	});
+
+	// Charge les traces importées dans l'éditeur
+	fl.loader.on('data:loaded', function(args) {
+		this._map.fire('draw:created', { // Rend la trace éditable
+			layer: args.layer
+		});
+	}, fl);
+
 	// Editeur et aide de l'éditeur
 	var edit = new L.Control.Draw.Plus({
 		draw: {
@@ -156,15 +206,9 @@ new L.Control.Coordinates().addTo(map);
 		},
 		edit: {
 			remove: true
-		},
-		editType: 'MultiPolygon', // Force le format de sortie geoGson
+		}
 	}).addTo(map);
-	fl.loader.on ('data:loaded', function (args){
-		this._map.fire('draw:created', { // Rend la trace éditable
-			layer: args.layer
-		});
-	}, fl);
-	
+
 	massifLayer.addTo(edit.snapLayers); // Permet de "coller" aux tracés des autres massifs
 <?}?>
 maj_poi(); // Initialise la coche [de]cocher

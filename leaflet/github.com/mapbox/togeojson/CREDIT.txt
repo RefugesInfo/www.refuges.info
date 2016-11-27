@@ -1,1 +1,0 @@
-https://github.com/mapbox/togeojson/commit/46e3cafd346a203814900882b98c087d6df31bd7

@@ -1,1 +1,0 @@
-https://github.com/stefanocudini/leaflet-gps/commit/c7f00f2619a2f075bb8ae41541ec988734afe652
