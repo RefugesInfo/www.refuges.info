@@ -188,13 +188,16 @@ date_default_timezone_set('UTC');
 // Filtrage géographique des inscriptions
 //$config['filtre_geo'] = '40 52 -5 10'; // Zone autorisée: latitude_min latitude_max longitude_min longitude_max
 
-// Censure des messages de réservation, à compléter dans config_privee.php si ça évolue trop souvent
-$config['censure']="reservat|reserver";
+// Censure des messages de réservation (On peut aussi le compléter de la config_privee type $config['censure'].="|nombreux")
+$config['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
 
 // ************* développeurs debug & co
 
 // par défaut, pas d'information de debug, développeurs : changer cette variable dans le fichier config_privee.php si vous voulez plus de message en cas d'erreurs
 $config['debug']=false;
+
+
+
 
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
 // que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore
@@ -204,16 +207,10 @@ $config['debug']=false;
 // config_privee.php, c'est donc un peu merdique comme méthode, mais j'ai pas trouvé mieux
 require_once("config_privee.php");
 
-
-
-
-
-
-
-// *** NON NON : *** N'ajoutez rien après cette ligne sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant
+// *** NON NON : *** N'ajoutez rien après ce require_once("config_privee.php"); sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant
 // mettez par contre tout ce que vous voulez avant le require_once("config_privee.php");
 
-
+// Ceci est après l'inclusion de config_privee.php pour que l'on puisse tenir compte du mode debug que le developpeur peut s'il le souhaite activer
 $config['chemin_leaflet'].=$config['debug']?'src/':'dist/';
 $config['url_chemin_leaflet'].=$config['debug']?'src/':'dist/';
 
