@@ -1,7 +1,7 @@
 Qu'est ce que refuges.info ?
 ============================
 
-Le mieux, c'est d'aller voir : http://www.refuges.info
+Le mieux, c'est d'aller voir : https://www.refuges.info
 Le code source est sous licence WTFPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
 
 Installation
@@ -180,7 +180,7 @@ git checkout master
 
 * accès ssh 
  * Sous Linux/OSX : ssh login@www.refuges.info
- * Sous windows, télécharger putty http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe puis renseigner le serveur (et mode ssh port 22)
+ * Sous windows, télécharger putty https://the.earth.li/~sgtatham/putty/latest/x86/putty.exe puis renseigner le serveur (et mode ssh port 22)
 
 * Pour tous les commandes de base sous linux:
 
@@ -194,26 +194,18 @@ cd .. -> revenir dossier d'avant
 
 * Sur le serveur : 
  * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
- * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur http://<login>.refuges.info
+ * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur https://<login>.refuges.info
  * /home/sites/refuges/www.refuges.info/ -> la version live contrôlable par l'utilisateur "refuges"
- * /home/sites/refuges/dev.refuges.info/ -> la version "pré-prod" contrôlable par l'utilisateur "refuges"
 
-* pour gérer la mise en live de la dernière version sur la pré-prod
+* pour gérer la mise en live de la dernière version
  * login ssh pour se connecter sur le site actif : refuges
  * serveur : www.refuges.info
 
-```
-cd dev.refuges.info
-git pull
-```
-
-La dernière version de la branche de développement nommée "dev" doit alors être rapatriée et testée sur http://dev.refuges.info
-
-mise en prod (après de nombreux tests validés sur la zone dev.refuges.info !):
+mise en prod (après de nombreux tests validés sur sa propre zone !):
  * login ssh pour se connecter sur le site actif : refuges
  * serveur : www.refuges.info
  
-Attention : pensez bien que dev et www n'utilise pas forcément le même format de la base de donnée, bien penser à propager les
+Attention : pensez bien que www n'utilise pas forcément le même format de la base de donnée que votre zone de test, bien penser à propager les
 changements à ce niveau là et en discuter avec les autres avant de le faire !
  
 ```
@@ -223,5 +215,5 @@ git pull origin dev
 (on ne touche pas aux fichiers en prod)
 
 * accès postgresql
- * http://www.refuges.info/phppgadmin/
+ * https://www.refuges.info/phppgadmin/
 Notez qu'il n'y a une base de production qui s'appelle "refuges" et une, (ancienne) copie, qui s'appelle "test" accessible avec le même utilisateur et même mot de passe que l'autre.
