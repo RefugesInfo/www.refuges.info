@@ -386,10 +386,15 @@ $point->polygones[$x]->nom_polygone
 function lien_point($point,$lien_local=false)
 {
   global $config;
+  if (isset($_SERVER['HTTPS']))
+      $schema="https";
+  else
+      $schema="http";
+  
   if ($lien_local)
       $url_complete=$config['sous_dossier_installation'];
   else
-      $url_complete="http://".$config['nom_hote'].$config['sous_dossier_installation'];
+      $url_complete="$schema://".$config['nom_hote'].$config['sous_dossier_installation'];
 
   if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
@@ -783,8 +788,12 @@ function choix_icone($point)
 function chemin_icone($nom_icone,$absolu=true)
 {
     global $config;
+    if (isset($_SERVER['HTTPS']))
+        $schema="https";
+    else
+        $schema="http";
     if ($absolu)
-        $url_et_host='http://'.$config['nom_hote'];
+        $url_et_host="$schema://".$config['nom_hote'];
     else
         $url_et_host='';
     return $url_et_host.$config['url_chemin_icones'].$nom_icone.'.png';
