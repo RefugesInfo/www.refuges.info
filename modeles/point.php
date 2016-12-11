@@ -517,7 +517,7 @@ function modification_ajout_point($point)
         if ($point->site_officiel=="")
             $champs_sql['site_officiel'] = $pdo->quote("");
         //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
-        elseif ( strpos($point->site_officiel, "http://") === FALSE)
+        elseif ( !preg_match("/https?:\/\//",$point->site_officiel))
             $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
         else
             $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
