@@ -18,11 +18,10 @@ new L.Map('carte-accueil', {
 				},
 				bbox: true, // Optimise la gestion des couleurs
 				style: function(feature) {
-					var referers = window.location.href.split('/'); // Use the same protocol than the referer.					
 					return {
 						popup: feature.properties.nom,
-						popupAnchor: [-1, -2],
-						url: referers[0]+'//'+referers[2]+'/nav/'+feature.properties.id,
+						popupValidity: 0,
+						url: '<?=$config['sous_dossier_installation']?>nav/'+feature.properties.id,
 						color: 'black',
 						weight: 1,
 						opacity: 0.7,

@@ -25,7 +25,7 @@
   }
 ?>
     <div id="carte-edit"></div>
-    <form class="wri" id="form_point" method="post" onsubmit="return validation();" action="<?=$config['sous_dossier_installation']?>point_modification.php">
+    <form class="wri" id="form_point" method="post" action="<?=$config['sous_dossier_installation']?>point_modification.php">
     <div><?
     foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">

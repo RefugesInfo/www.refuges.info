@@ -1,0 +1,2 @@
+https://github.com/k4r573n/leaflet-control-osm-geocoder
+https://github.com/k4r573n/leaflet-control-osm-geocoder/commit/f833500063e165506503ee8aae997928052c3c4a

@@ -20,9 +20,9 @@ if ($vue->mini_carte) {
 
 	// Cadre fixe marquant une position;
 	var cadre = new L.Marker([<?=$vue->point->latitude?>,<?=$vue->point->longitude?>], {
-		clickable: false, // Evite d'activer le curseur: pointeur
 		icon: L.icon({
 			iconUrl: '<?=$config['sous_dossier_installation']?>images/cadre.png',
+			className: 'leaflet-grab',
 			iconAnchor: [15, 21]
 		})
 	})
@@ -57,7 +57,7 @@ if ($vue->mini_carte) {
 		}
 	).addTo(map);
 	new L.Control.EasyPrint({title: 'Imprimer la carte'}).addTo(map);
-	layerSwitcher = new L.Control.Layers.overflow(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
+	layerSwitcher = new L.Control.Layers(baseLayers).addTo(map); // Le controle de changement de couche de carte avec la liste des cartes dispo
 
 	new L.Control.Permalink.Cookies({ // Garde la mémoire des position, zoom, carte.
 		layers: layerSwitcher,
@@ -73,20 +73,20 @@ if ($vue->mini_carte) {
 			agrandir_vignette.style.display = 'none';
 
 		// On redimensionne la carte
-		var mapp = document.getElementById('carte-point');
-		var l1 = mapp.clientWidth,
-			h1 = mapp.clientHeight;
-		mapp.style.width = '40vw';
-		mapp.style.height = '40vw';
-		mapp.style.minWidth = l1+'px';
-		mapp.style.minHeight = h1+'px';
-		mapp.style.maxHeight = 2*h1+'px';
-		var l2 = mapp.clientWidth,
-			h2 = mapp.clientHeight;
+		var mc = map._container,
+			l1 = mc.clientWidth,
+			h1 = mc.clientHeight;
+		mc.style.width = '40vw';
+		mc.style.height = '40vw';
+		mc.style.minWidth = l1+'px';
+		mc.style.minHeight = h1+'px';
+		mc.style.maxHeight = 2*h1+'px';
+		var h2 = mc.clientHeight;
 		map.panBy(
-			[(h1-h2)/2, (h1-h2)/2], // Remet le cadre au centre de la nouvelle carte plus grande
+			[(h1-h2)/2, (h1-h2)/2], // Recentre la nouvelle carte, plus grande, sur le cadre
 			{animate: false}
 		);
+        map.invalidateSize(); // Reload missing tiles
 
 		// On positionne la couche de second choix
 		var oldLayerId, newLayerId;

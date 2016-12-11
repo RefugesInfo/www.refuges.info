@@ -1,1 +1,0 @@
-https://github.com/Leaflet/Leaflet.draw/commit/39a256e8dcc28a98908cd3f81ea2827b3f9a9c3d

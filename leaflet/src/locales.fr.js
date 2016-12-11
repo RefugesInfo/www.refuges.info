@@ -3,7 +3,7 @@
  * Traduction des textes en français
  */
 
-L.myLeafletVersion = '0.2';
+L.myLeafletVersion = '1.0';
 
 L.Control.Scale.prototype.options.imperial = false;
 

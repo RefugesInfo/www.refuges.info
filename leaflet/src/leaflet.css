@@ -3,13 +3,15 @@
  * https://github.com/Dominique92/MyLeaflet
  */
 
-@import url("../github.com/Leaflet/Leaflet/dist/leaflet.css");
-@import url("../github.com/Leaflet/Leaflet.fullscreen/dist/leaflet.fullscreen.css");
-@import url("../github.com/rowanwins/leaflet-easyPrint/dist/easyPrint.css");
-@import url("../github.com/MrMufflon/Leaflet.Coordinates/src/Control.Coordinates.css");
-@import url("../github.com/MrMufflon/Leaflet.Coordinates/src/Control.Coordinates.ie.css");
-@import url("../github.com/k4r573n/leaflet-control-osm-geocoder/Control.OSMGeocoder.css");
-@import url("../github.com/stefanocudini/leaflet-gps/src/leaflet-gps.css");
-@import url("../github.com/erictheise/rrose/leaflet.rrose.css");
-@import url("../github.com/Leaflet/Leaflet.draw/dist/leaflet.draw.css");
+@import url("../lib/Leaflet-master/dist/leaflet.css");
+@import url("../lib/Leaflet.fullscreen-gh-pages/dist/leaflet.fullscreen.css");
+@import url("../lib/leaflet-easyPrint-gh-pages/dist/easyPrint.css");
+@import url("../lib/Leaflet.Coordinates-master/src/Control.Coordinates.css");
+@import url("../lib/Leaflet.Coordinates-master/src/Control.Coordinates.ie.css");
+@import url("../lib/leaflet-control-osm-geocoder-master/Control.OSMGeocoder.css");
+@import url("../lib/leaflet-gps-master/src/leaflet-gps.css");
+@import url("../lib/rrose-master/leaflet.rrose.css");
+@import url("../lib/Leaflet.GeoJSON.Ajax-master/src/GeoJSON.Style.css");
+@import url("../lib/Leaflet.Marker.coordinates-master/src/Marker.coordinates.css");
+@import url("../lib/Leaflet.draw-master/src/leaflet.draw.css");
 @import url("../src/locales.css");

@@ -1,0 +1,2 @@
+https://github.com/Leaflet/Leaflet.fullscreen/tree/gh-pages
+https://github.com/Leaflet/Leaflet.fullscreen/commit/f5e76270ad40bb573bd11595f9069c3f15f8f286
