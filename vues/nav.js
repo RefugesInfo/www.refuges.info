@@ -34,7 +34,7 @@ if (!$vue->mode_affichage) {?>
 				fillOpacity: 0,
 <?if ($vue->mode_affichage == 'zone') {?>
 				popup: feature.properties.nom,
-				url: '<?=$config['sous_dossier_installation']?>nav/'+feature.properties.id,
+				url: feature.properties.lien,
 				color: 'black',
 				weight: 1,
 				fillColor: feature.properties.couleur,

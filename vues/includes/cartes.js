@@ -34,7 +34,7 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 		bbox: true,
 		idAjaxStatus: 'ajax-poi-status', // HTML id element owning the loading status display
 		style: function(feature) {
-			var url_point = '<?=$config['sous_dossier_installation']?>point/'+feature.properties.id,
+			var url_point = feature.properties.lien,
 				prop = [];
 			if (feature.properties.coord.alt)
 				prop.push(feature.properties.coord.alt + 'm');
