@@ -63,8 +63,10 @@ foreach ($nouveaux_points as $nouveau_point)
 {
     $nouveau_point->lien=lien_point($nouveau_point,true);
     $nouveau_point->nom=mb_ucfirst(bbcode2html($nouveau_point->nom));
+    $nouveau_point->nom_createur=bbcode2html($nouveau_point->nom_createur);
     $vue->nouveaux_points[]=$nouveau_point;
 }
+//d( $vue->nouveaux_points);
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
 
 ?>
