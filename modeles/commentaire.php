@@ -165,7 +165,12 @@ function infos_commentaires ($conditions)
         $commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
       }
     }
+    //FIXME sly 12/2016: question rangement propre, il ne devrait pas appartenir au modèle de faire de la mise en forme
     $commentaire->date_formatee=date("d/m/y", $commentaire->ts_unix_commentaire);
+    
+    // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
+    if (isset($commentaire->id_createur_commentaire))
+        $commentaire->auteur_commentaire=html_entity_decode($commentaire->auteur_commentaire);
     $commentaires [] = $commentaire;
   }
 
@@ -220,12 +225,9 @@ function modification_ajout_commentaire($commentaire)
     $retour = new stdClass;
     $photo_valide=False;
 
-    if ($commentaire->id_point!=$config['numero_commentaires_generaux'])
-    {
-            $point=infos_point($commentaire->id_point,True);
-            if ($point->erreur)
-                    return erreur("Le commentaire ne peut être ajouté car : $point->message","Id du point: \"$commentaire->id_point\"");
-    }
+    $point=infos_point($commentaire->id_point,True);
+    if ($point->erreur)
+            return erreur("Le commentaire ne peut être ajouté car : $point->message","Id du point: \"$commentaire->id_point\"");
     // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
     // On dirait que le commentaire dispose bien d'une photo
     if (isset($commentaire->photo['originale']))
