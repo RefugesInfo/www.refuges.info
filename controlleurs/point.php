@@ -27,18 +27,11 @@ if ($point->erreur)
     $vue->type="page_simple";
     $vue->contenu=$point->message;
 }
-else // le point est valide. faut bosser.
+else // le point est valide
 {
     // Les infos du point deviennent des membres de $vue ($vue->point->latitude ...)
     $vue->point=$point;
-    // info sur le créateur de la fiche (authentifié ou non)
-    $createur = new stdClass;
-    if ($point->id_createur==0) // non authentifié
-        $createur->username=$point->nom_createur;
-    else
-        $createur = infos_utilisateur ($point->id_createur);
-    $vue->nom_createur = bbcode2html($createur->username);
-    
+    $vue->nom_createur = bbcode2html($point->nom_createur);
     $vue->nom=bbcode2html($point->nom);
     $vue->proprio=bbcode2html($point->proprio);
     $vue->acces=bbcode2html($point->acces);

@@ -287,7 +287,7 @@ function infos_points($conditions)
       // l'avantage d'un join ici, c'est qu'on récupère tout ça en une seule requête !
       // définitivement non, le SQL n'est pas orienté objet !
       // pas le boulot non plus de infos_points de donner les liens
-      // FIXME sly : d'accord avec ça, charge à l'appelant de faire l'appel à lien_point($point);
+      // sly : d'accord avec ça, charge à l'appelant de faire l'appel à lien_point($point);
       if ($conditions->avec_infos_massif)
       {
           $point->nom_massif = $point->nom_polygone;
@@ -295,7 +295,10 @@ function infos_points($conditions)
           $point->article_partitif_massif = $point->article_partitif;
       }
       $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
-
+      // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
+      if (isset($point->id_createur))
+          $point->nom_createur=html_entity_decode($point->nom_createur);
+      
       // Ici, petite particularité sur les points censurés, par défaut, on ne veut pas les renvoyer, mais on veut quand
       // même, si un seul a été demandé, pouvoir dire qu'il est censuré, donc on va le chercher en base mais on renvoi une erreur
       // s'il est censuré
