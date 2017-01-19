@@ -29,7 +29,7 @@
 	</tr>
 	<!-- END switch_namechange_allowed -->
 	<tr> 
-		<td class="row1"><span class="gen">{L_EMAIL_ADDRESS}: *</span></td>
+	<td class="row1"><span class="gen">{L_EMAIL_ADDRESS}: *</span><div style="color:#BB1111;">Les emails du forum a destination de hotmail, live et outook sont souvent bloquées</div></td>
 		<td class="row2"><input type="text" class="post" style="width:200px" name="email" size="25" maxlength="255" value="{EMAIL}" /></td>
 	</tr>
 	<!-- BEGIN switch_edit_profile -->
