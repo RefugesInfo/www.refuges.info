@@ -1,2 +1,0 @@
-https://github.com/kartena/Proj4Leaflet/tree/leaflet-proj-refactor
-https://github.com/kartena/Proj4Leaflet/commit/3019d278b5d3e42a72b65142db2d5f0b06039b53
