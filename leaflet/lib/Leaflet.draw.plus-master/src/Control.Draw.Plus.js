@@ -152,10 +152,9 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 		// Optimize the edited layers
 		var ls = this.editLayers._layers;
 		if (!this._map.noOptim) // To optimize "cut" !!
-			for (var il1 in ls) // For all layers being edited
-				if (il1 && // Sometime, some blacks entries !
-					!ls[il1].options.fill) { // Only polylines
-					var ll1 = ls[il1]._latlngs;
+			for (var il1 in ls) { // For all layers being edited
+				var ll1 = ls[il1]._latlngs;
+				if (ll1 && !ls[il1].options.fill) { // Only polylines
 
 					// Transform polyline whose the 2 ends match into polygon
 					if (ll1[0].equals(ll1[ll1.length - 1]) && // The 2 ends match
@@ -169,9 +168,8 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 					for (var il2 in ls) {
 						var ll2 = ls[il2]._latlngs,
 							lladd = null; // List of points to move to another polyline
-						if (il1 && il2 && // Sometime, some blacks entries !
-							il1 < il2 && // Not the same & only once each pair
-							!ls[il2].options.fill) { // The 2nd is also a polyline
+						if (il1 < il2 && // Not the same & only once each pair
+							ll2 && !ls[il2].options.fill) { // The 2nd is also a polyline
 							if (ll1[0].equals(ll2[0])) {
 								ll1.reverse();
 								lladd = ll2;
@@ -193,6 +191,7 @@ L.Control.Draw.Plus = L.Control.Draw.extend({
 						}
 					}
 				}
+			}
 
 		// Save edited data to the json output field
 		var ele = document.getElementById(this.options.entry),

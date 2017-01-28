@@ -126,7 +126,7 @@ var deps = [
 //	'../lib/proj4js-master/dist/proj4-src.js', // FULL
 	'../src/proj4-OPTIM.js', // DCMM TODO OPTIM: construire automatiquement !
 //	'../lib/Proj4Leaflet-master/lib/proj4.js', // Ne marche pas (contient define...)
-	'../lib/Proj4Leaflet-leaflet-proj-refactor/src/proj4leaflet.js',
+	'../lib/Proj4Leaflet-master/src/proj4leaflet.js', // V1.0
 	'../lib/Leaflet.Map.MultiVendors-master/src/MapMultiCRS.js',
 	'../lib/Leaflet.Map.MultiVendors-master/src/layers/SwissTopo.js',
 	'../lib/os-leaflet-leaflet-1.0/OSOpenSpace.js',

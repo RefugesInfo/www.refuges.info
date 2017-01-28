@@ -32,7 +32,7 @@ L.TileLayer.OSM.FR = L.TileLayer.OSM.extend({
 
 L.TileLayer.OSM.MRI = L.TileLayer.OSM.extend({
 	options: {
-		url: 'http://maps.refuges.info/hiking/{z}/{x}/{y}.png',
+		url: '//maps.refuges.info/hiking/{z}/{x}/{y}.png',
 		subAttribution: '<a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
 	}
 });

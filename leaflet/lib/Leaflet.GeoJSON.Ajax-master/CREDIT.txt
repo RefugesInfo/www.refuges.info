@@ -1,1 +1,2 @@
 https://github.com/Dominique92/Leaflet.GeoJSON.Ajax
+https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/commit/9af9e61d83792b02cc25b18a879800e1a66b4f7d

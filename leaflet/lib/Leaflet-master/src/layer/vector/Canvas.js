@@ -31,6 +31,16 @@
  */
 
 L.Canvas = L.Renderer.extend({
+	getEvents: function () {
+		var events = L.Renderer.prototype.getEvents.call(this);
+		events.viewprereset = this._onViewPreReset;
+		return events;
+	},
+
+	_onViewPreReset: function () {
+		// Set a flag so that a viewprereset+moveend+viewreset only updates&redraws once
+		this._postponeUpdatePaths = true;
+	},
 
 	onAdd: function () {
 		L.Renderer.prototype.onAdd.call(this);
@@ -52,6 +62,8 @@ L.Canvas = L.Renderer.extend({
 	},
 
 	_updatePaths: function () {
+		if (this._postponeUpdatePaths) { return; }
+
 		var layer;
 		this._redrawBounds = null;
 		for (var id in this._layers) {
@@ -90,6 +102,15 @@ L.Canvas = L.Renderer.extend({
 
 		// Tell paths to redraw themselves
 		this.fire('update');
+	},
+
+	_reset: function () {
+		L.Renderer.prototype._reset.call(this);
+
+		if (this._postponeUpdatePaths) {
+			this._postponeUpdatePaths = false;
+			this._updatePaths();
+		}
 	},
 
 	_initPath: function (layer) {
@@ -177,6 +198,11 @@ L.Canvas = L.Renderer.extend({
 
 	_redraw: function () {
 		this._redrawRequest = null;
+
+		if (this._redrawBounds) {
+			this._redrawBounds.min._floor();
+			this._redrawBounds.max._ceil();
+		}
 
 		this._clear(); // clear layers in redraw bounds
 		this._draw(); // draw layers

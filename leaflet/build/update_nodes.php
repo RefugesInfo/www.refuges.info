@@ -7,7 +7,7 @@ $git = [
 
 	// CRS exotiques
 //	'proj4js/proj4js' => [''],
-	'kartena/Proj4Leaflet' => ['', 'leaflet-proj-refactor'], // For ll 0.7, 1.0 ==> TODO A SURVEILLER
+	'kartena/Proj4Leaflet' => [''/*, 'leaflet-proj-refactor'*/], // For ll 1.0, (TODO : 0.7 : https://github.com/kartena/Proj4Leaflet-master/releases/tag/0.7.2)
 //	'tyrasd/togpx' => [''],
 
 	// Couches autres fournisseurs
@@ -36,14 +36,14 @@ $git = [
 	// Editable (Evaluation ongoing)
 	'Leaflet/Leaflet.Editable' => ['leaflet0.7', ''], // For ll 0.7, 1.0
 
-	/* MyLeaflet / La source est dans lib
+	/* MyLeaflet / La source est dans lib */
+	/* Update uniquement le CREDIT */
 	'Dominique92/Leaflet.Permalink.Cookies' => [''],
 	'Dominique92/Leaflet.Map.MultiVendors' => [''],
 	'Dominique92/Leaflet.Marker.coordinates' => [''],
 	'Dominique92/Leaflet.GeoJSON.Ajax' => [''],
 	'Dominique92/Leaflet.draw.plus' => [''],
 	'Dominique92/MyLeaflet' => [''],
-	*/
 
 	// Tools
 	'tchwork/jsqueeze' => [''],
@@ -88,18 +88,16 @@ foreach ($git AS $k=>$v)
 			curl_close($ch);
 			fclose($zipResource);
 
-			if (!is_dir('../lib'))
-				mkdir('../lib');
-
 			// Unzip the file
 			$zip = new ZipArchive;
 			if($zip->open($zip_file) != 'true')
 				echo 'Error :- Unable to open the Zip File';
-			$zip->extractTo ('../lib');
+			if (!preg_match('/Dominique92/',$k))
+				$zip->extractTo ('../lib');
 			$zd = $zip->getNameIndex(0); // Archive directory_name/
 			$zip->close();
 
-			file_put_contents ("../lib/$zd./CREDIT.txt", "$g\nhttps://github.com".str_replace ('/tree/', '/commit/', $cs[1]));
+			file_put_contents ("../lib/$zd"."CREDIT.txt", "$g\nhttps://github.com".str_replace ('/tree/', '/commit/', $cs[1]));
 		}
 	}
 	echo"<pre style='background-color:white;color:black;font-size:14px;'>Erreur = ".var_export(error_get_last(),true).'</pre>';

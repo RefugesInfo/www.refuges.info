@@ -1,2 +1,2 @@
 https://github.com/Leaflet/Leaflet.draw
-https://github.com/Leaflet/Leaflet.draw/commit/123f2f8f9b412ad3bf87e38e582e0d24cb5e7289
+https://github.com/Leaflet/Leaflet.draw/commit/b1fc4a1b1e4137b0475c0dae528e1eaccd193185

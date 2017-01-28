@@ -16,7 +16,7 @@
 
 L.TileLayer.WMS.IDEE = L.TileLayer.WMS.extend({
     options: {
-        url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster', // Not available via https
+        url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster', // Not available over https
         layer: 'mtn_rasterizado',
 		crs: L.CRS.EPSG3857,
 		maxNativeZoom: 18,
