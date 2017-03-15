@@ -25,7 +25,7 @@ L.TileLayer.IGN = L.TileLayer.extend({
 		f: 'jpeg',
 		maxNativeZoom: 18,
 		maxZoom: 21,
-		errorTileUrl: 'http://www.ign.fr/sites/all/themes/ign_portail/logo.png',
+		errorTileUrl: 'https://cdn4.iconfinder.com/data/icons/dot/128/no_entry.png',
 		attribution: '&copy; <a href="http://www.ign.fr/">IGN</a>'
 	},
 

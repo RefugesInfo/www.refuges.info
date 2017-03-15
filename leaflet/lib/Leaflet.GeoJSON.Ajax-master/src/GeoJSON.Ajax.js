@@ -70,6 +70,10 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			? this.options.argsGeoJSON.call(this, this)
 			: this.options.argsGeoJSON;
 
+		// On a great https://github.com/BaDu-HSN idea: extends Add zoom param if necessary
+		if (this.options.zoom && this._map)
+			argsGeoJSON.zoom = this._map.getZoom();
+
 		// Add bbox param if necessary
 		if (this.options.bbox && this._map)
 			argsGeoJSON.bbox = this._map.getBounds().toBBoxString();

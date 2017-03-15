@@ -12,7 +12,7 @@ if (typeof L.OSOpenSpace.TileLayer != 'undefined')
 var baseLayers = {
 	'Refuges.info':new L.TileLayer.OSM.MRI(),
 	'OSM fr':      new L.TileLayer.OSM.FR(),
-	'Outdoors':    new L.TileLayer.OSM.Outdoors(),
+	'Outdoors':    new L.TileLayer.OSM.Outdoors({k: '<?=$config['thunderforest_key']?>'}),
 	'IGN':         new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
 	'IGN Express': new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
 	'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),

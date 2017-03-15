@@ -37,3 +37,8 @@
 .leaflet-marker-icon  {
 	outline: none;
 }
+
+/* Curseur easyprint*/
+.leaflet-control-easyPrint-button {
+	cursor: pointer;
+}

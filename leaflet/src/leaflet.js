@@ -11,108 +11,108 @@ var deps = [
 	// Paths relative to this file
 
 	// Core : The core of the library, including OOP, events, DOM facilities, basic units, projections (EPSG:3857 and EPSG:4326) and the base Map class.
-	'../lib/Leaflet-master/src/Leaflet.js',
+	'../lib/Leaflet-1.0.3/src/Leaflet.js',
 
-	'../lib/Leaflet-master/src/core/Util.js',
-	'../lib/Leaflet-master/src/core/Class.js',
-	'../lib/Leaflet-master/src/core/Events.js',
-	'../lib/Leaflet-master/src/core/Browser.js',
+	'../lib/Leaflet-1.0.3/src/core/Util.js',
+	'../lib/Leaflet-1.0.3/src/core/Class.js',
+	'../lib/Leaflet-1.0.3/src/core/Events.js',
+	'../lib/Leaflet-1.0.3/src/core/Browser.js',
 
-	'../lib/Leaflet-master/src/geometry/Point.js',
-	'../lib/Leaflet-master/src/geometry/Bounds.js',
-	'../lib/Leaflet-master/src/geometry/Transformation.js',
+	'../lib/Leaflet-1.0.3/src/geometry/Point.js',
+	'../lib/Leaflet-1.0.3/src/geometry/Bounds.js',
+	'../lib/Leaflet-1.0.3/src/geometry/Transformation.js',
 
-	'../lib/Leaflet-master/src/dom/DomUtil.js',
+	'../lib/Leaflet-1.0.3/src/dom/DomUtil.js',
 
-	'../lib/Leaflet-master/src/geo/LatLng.js',
-	'../lib/Leaflet-master/src/geo/LatLngBounds.js',
-	'../lib/Leaflet-master/src/geo/projection/Projection.LonLat.js',
-	'../lib/Leaflet-master/src/geo/projection/Projection.SphericalMercator.js',
-	'../lib/Leaflet-master/src/geo/crs/CRS.js',
-//	'../lib/Leaflet-master/src/geo/crs/CRS.Simple.js', // Pour panoramas
-	'../lib/Leaflet-master/src/geo/crs/CRS.Earth.js',
-	'../lib/Leaflet-master/src/geo/crs/CRS.EPSG3857.js',
-	'../lib/Leaflet-master/src/geo/crs/CRS.EPSG4326.js', // Pour marker.coordinate
+	'../lib/Leaflet-1.0.3/src/geo/LatLng.js',
+	'../lib/Leaflet-1.0.3/src/geo/LatLngBounds.js',
+	'../lib/Leaflet-1.0.3/src/geo/projection/Projection.LonLat.js',
+	'../lib/Leaflet-1.0.3/src/geo/projection/Projection.SphericalMercator.js',
+	'../lib/Leaflet-1.0.3/src/geo/crs/CRS.js',
+//	'../lib/Leaflet-1.0.3/src/geo/crs/CRS.Simple.js', // Pour panoramas
+	'../lib/Leaflet-1.0.3/src/geo/crs/CRS.Earth.js',
+	'../lib/Leaflet-1.0.3/src/geo/crs/CRS.EPSG3857.js',
+	'../lib/Leaflet-1.0.3/src/geo/crs/CRS.EPSG4326.js', // Pour marker.coordinate
 
-	'../lib/Leaflet-master/src/map/Map.js',
-	'../lib/Leaflet-master/src/layer/Layer.js',
+	'../lib/Leaflet-1.0.3/src/map/Map.js',
+	'../lib/Leaflet-1.0.3/src/layer/Layer.js',
 
-	'../lib/Leaflet-master/src/dom/DomEvent.js', // For Draggable.js
+	'../lib/Leaflet-1.0.3/src/dom/DomEvent.js', // For Draggable.js
 
-	'../lib/Leaflet-master/src/dom/PosAnimation.js', // Pour Map.PanAnimation.js // Zoom animé / utilisé par GPS
+	'../lib/Leaflet-1.0.3/src/dom/PosAnimation.js', // Pour Map.PanAnimation.js // Zoom animé / utilisé par GPS
 
 	// EPSG:3395 projection (used by some map providers).
-//	'../lib/Leaflet-master/src/geo/projection/Projection.Mercator.js', // wgs 84 / world mercator
-//	'../lib/Leaflet-master/src/geo/crs/CRS.EPSG3395.js', // wgs 84 / world mercator
+//	'../lib/Leaflet-1.0.3/src/geo/projection/Projection.Mercator.js', // wgs 84 / world mercator
+//	'../lib/Leaflet-1.0.3/src/geo/crs/CRS.EPSG3395.js', // wgs 84 / world mercator
 
-	'../lib/Leaflet-master/src/layer/tile/GridLayer.js', // Used as base class for grid-like layers like TileLayer.
-	'../lib/Leaflet-master/src/layer/tile/TileLayer.js', // The base class for displaying tile layers on the map.
-	'../lib/Leaflet-master/src/layer/tile/TileLayer.WMS.js', // WMS tile layer.
-//	'../lib/Leaflet-master/src/layer/ImageOverlay.js', // Used to display an image over a particular rectangular area of the map.
+	'../lib/Leaflet-1.0.3/src/layer/tile/GridLayer.js', // Used as base class for grid-like layers like TileLayer.
+	'../lib/Leaflet-1.0.3/src/layer/tile/TileLayer.js', // The base class for displaying tile layers on the map.
+	'../lib/Leaflet-1.0.3/src/layer/tile/TileLayer.WMS.js', // WMS tile layer.
+//	'../lib/Leaflet-1.0.3/src/layer/ImageOverlay.js', // Used to display an image over a particular rectangular area of the map.
 
 	// Markers to put on the map.
-	'../lib/Leaflet-master/src/layer/marker/Icon.js',
-	'../lib/Leaflet-master/src/layer/marker/Icon.Default.js',
-	'../lib/Leaflet-master/src/layer/marker/Marker.js',
+	'../lib/Leaflet-1.0.3/src/layer/marker/Icon.js',
+	'../lib/Leaflet-1.0.3/src/layer/marker/Icon.Default.js',
+	'../lib/Leaflet-1.0.3/src/layer/marker/Marker.js',
 
 	// Lightweight div-based icon for markers.
-	'../lib/Leaflet-master/src/layer/marker/DivIcon.js', // Pour draw ???
+	'../lib/Leaflet-1.0.3/src/layer/marker/DivIcon.js', // Pour draw ???
 
 	// Used to display the map popup (used mostly for binding HTML data to markers and paths on click).
-	'../lib/Leaflet-master/src/layer/DivOverlay.js',
-	'../lib/Leaflet-master/src/layer/Popup.js',
+	'../lib/Leaflet-1.0.3/src/layer/DivOverlay.js',
+	'../lib/Leaflet-1.0.3/src/layer/Popup.js',
 
-	'../lib/Leaflet-master/src/layer/Tooltip.js', // Used to display the map tooltip (used mostly for binding short descriptions to markers and paths on mouseover).
-	'../lib/Leaflet-master/src/layer/LayerGroup.js', // Allows grouping several layers to handle them as one.
-	'../lib/Leaflet-master/src/layer/FeatureGroup.js', // Extends LayerGroup with mouse events and bindPopup method shared between layers.
+	'../lib/Leaflet-1.0.3/src/layer/Tooltip.js', // Used to display the map tooltip (used mostly for binding short descriptions to markers and paths on mouseover).
+	'../lib/Leaflet-1.0.3/src/layer/LayerGroup.js', // Allows grouping several layers to handle them as one.
+	'../lib/Leaflet-1.0.3/src/layer/FeatureGroup.js', // Extends LayerGroup with mouse events and bindPopup method shared between layers.
 
 	// Vector rendering core.
-	'../lib/Leaflet-master/src/layer/vector/Renderer.js',
-	'../lib/Leaflet-master/src/layer/vector/Path.js',
-	'../lib/Leaflet-master/src/geometry/LineUtil.js',
-	'../lib/Leaflet-master/src/layer/vector/Polyline.js',
-	'../lib/Leaflet-master/src/geometry/PolyUtil.js',
-	'../lib/Leaflet-master/src/layer/vector/Polygon.js',
-//	'../lib/Leaflet-master/src/layer/vector/Rectangle.js',
-	'../lib/Leaflet-master/src/layer/vector/CircleMarker.js', // Utilisé par GPS // Circle overlays with a constant pixel radius.
-	'../lib/Leaflet-master/src/layer/vector/Circle.js', // Utilisé par GPS // Circle overlays (with radius in meters).
+	'../lib/Leaflet-1.0.3/src/layer/vector/Renderer.js',
+	'../lib/Leaflet-1.0.3/src/layer/vector/Path.js',
+	'../lib/Leaflet-1.0.3/src/geometry/LineUtil.js',
+	'../lib/Leaflet-1.0.3/src/layer/vector/Polyline.js',
+	'../lib/Leaflet-1.0.3/src/geometry/PolyUtil.js',
+	'../lib/Leaflet-1.0.3/src/layer/vector/Polygon.js',
+//	'../lib/Leaflet-1.0.3/src/layer/vector/Rectangle.js',
+	'../lib/Leaflet-1.0.3/src/layer/vector/CircleMarker.js', // Utilisé par GPS // Circle overlays with a constant pixel radius.
+	'../lib/Leaflet-1.0.3/src/layer/vector/Circle.js', // Utilisé par GPS // Circle overlays (with radius in meters).
 
 	'../src/stubs-geom.js', // Stubs for optimized geometries
 
-	'../lib/Leaflet-master/src/layer/vector/SVG.js', // Dessine les Poly* // SVG backend for vector layers.
-//	'../lib/Leaflet-master/src/layer/vector/SVG.VML.js', // VML fallback for vector layers in IE7-8.
-//	'../lib/Leaflet-master/src/layer/vector/Canvas.js', // Canvas backend for vector layers.
+	'../lib/Leaflet-1.0.3/src/layer/vector/SVG.js', // Dessine les Poly* // SVG backend for vector layers.
+//	'../lib/Leaflet-1.0.3/src/layer/vector/SVG.VML.js', // VML fallback for vector layers in IE7-8.
+//	'../lib/Leaflet-1.0.3/src/layer/vector/Canvas.js', // Canvas backend for vector layers.
 
-	'../lib/Leaflet-master/src/layer/GeoJSON.js', // GeoJSON layer, parses the data and adds corresponding layers above.
+	'../lib/Leaflet-1.0.3/src/layer/GeoJSON.js', // GeoJSON layer, parses the data and adds corresponding layers above.
 
 	// Makes the map draggable (by mouse or touch).
-	'../lib/Leaflet-master/src/dom/Draggable.js',
-	'../lib/Leaflet-master/src/core/Handler.js',
-	'../lib/Leaflet-master/src/map/handler/Map.Drag.js', // Déplace la carte
+	'../lib/Leaflet-1.0.3/src/dom/Draggable.js',
+	'../lib/Leaflet-1.0.3/src/core/Handler.js',
+	'../lib/Leaflet-1.0.3/src/map/handler/Map.Drag.js', // Déplace la carte
 
 	// Scroll wheel zoom and double click zoom on the map.
-//	'../lib/Leaflet-master/src/map/handler/Map.DoubleClickZoom.js', // Non souhaité
-	'../lib/Leaflet-master/src/map/handler/Map.ScrollWheelZoom.js', // OUI. Zoom avec la roulette
+//	'../lib/Leaflet-1.0.3/src/map/handler/Map.DoubleClickZoom.js', // Non souhaité
+	'../lib/Leaflet-1.0.3/src/map/handler/Map.ScrollWheelZoom.js', // OUI. Zoom avec la roulette
 
-//	'../lib/Leaflet-master/src/dom/DomEvent.DoubleTap.js', // Enables smooth touch zoom / tap / longhold / doubletap on iOS, IE10, Android.
-	'../lib/Leaflet-master/src/dom/DomEvent.Pointer.js', // Touch support for Internet Explorer and Windows-based devices.
-	'../lib/Leaflet-master/src/map/handler/Map.TouchZoom.js', // OUI. Pinch zoom on supported mobile browsers.
-//	'../lib/Leaflet-master/src/map/handler/Map.Tap.js', // Non souhaité. Mobile hacks like quick taps and long hold.
+//	'../lib/Leaflet-1.0.3/src/dom/DomEvent.DoubleTap.js', // Enables smooth touch zoom / tap / longhold / doubletap on iOS, IE10, Android.
+	'../lib/Leaflet-1.0.3/src/dom/DomEvent.Pointer.js', // Touch support for Internet Explorer and Windows-based devices.
+	'../lib/Leaflet-1.0.3/src/map/handler/Map.TouchZoom.js', // OUI. Pinch zoom on supported mobile browsers.
+//	'../lib/Leaflet-1.0.3/src/map/handler/Map.Tap.js', // Non souhaité. Mobile hacks like quick taps and long hold.
 
 	// Enables zooming to bounding box by shift-dragging the map.
-//	'../lib/Leaflet-master/src/map/handler/Map.BoxZoom.js', // Shift-drag zoom interaction to the map (zoom to a selected bounding box)
+//	'../lib/Leaflet-1.0.3/src/map/handler/Map.BoxZoom.js', // Shift-drag zoom interaction to the map (zoom to a selected bounding box)
 
-//	'../lib/Leaflet-master/src/map/handler/Map.Keyboard.js', // Enables keyboard pan/zoom when the map is focused. (but not escape full screen)
+//	'../lib/Leaflet-1.0.3/src/map/handler/Map.Keyboard.js', // Enables keyboard pan/zoom when the map is focused. (but not escape full screen)
 
 	// Makes markers draggable (by mouse or touch).
-	'../lib/Leaflet-master/src/layer/marker/Marker.Drag.js', // A voir pour viseur et éditeur ???
+	'../lib/Leaflet-1.0.3/src/layer/marker/Marker.Drag.js', // A voir pour viseur et éditeur ???
 
 	// Controls.
-	'../lib/Leaflet-master/src/control/Control.js',
-	'../lib/Leaflet-master/src/control/Control.Zoom.js', // Default zoom buttons on the map.
-	'../lib/Leaflet-master/src/control/Control.Attribution.js',
-	'../lib/Leaflet-master/src/control/Control.Scale.js',
-	'../lib/Leaflet-master/src/control/Control.Layers.js',	// Layer Switcher control.
+	'../lib/Leaflet-1.0.3/src/control/Control.js',
+	'../lib/Leaflet-1.0.3/src/control/Control.Zoom.js', // Default zoom buttons on the map.
+	'../lib/Leaflet-1.0.3/src/control/Control.Attribution.js',
+	'../lib/Leaflet-1.0.3/src/control/Control.Scale.js',
+	'../lib/Leaflet-1.0.3/src/control/Control.Layers.js',	// Layer Switcher control.
 /* END OPTIM LEAFLET KERNEL */
 
 	// Couches autres fournisseurs
@@ -129,7 +129,7 @@ var deps = [
 	'../lib/Proj4Leaflet-master/src/proj4leaflet.js', // V1.0
 	'../lib/Leaflet.Map.MultiVendors-master/src/MapMultiCRS.js',
 	'../lib/Leaflet.Map.MultiVendors-master/src/layers/SwissTopo.js',
-	'../lib/os-leaflet-leaflet-1.0/OSOpenSpace.js',
+	'../lib/os-leaflet-master/OSOpenSpace.js',
 	'../lib/leaflet-plugins-master/layer/tile/Bing.js',
 	'../lib/Leaflet.Map.MultiVendors-master/src/layers/TileLayer.collection.js',
 
