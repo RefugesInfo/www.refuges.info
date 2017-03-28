@@ -17,7 +17,7 @@ if ( $_SESSION['niveau_moderation']>=1 )
 
 $commentaire->id_point=$controlleur->url_decoupee[1];
 $conditions_commentaire->ids_points=$commentaire->id_point;
-$point=infos_point($commentaire->id_point);
+$point=infos_point($commentaire->id_point,true);
 if (!$point->erreur)
 {
     if (!isset($_SESSION['id_utilisateur'])) // non connecté ? un message d'information s'affichera, et on présentera un CAPTCHA
