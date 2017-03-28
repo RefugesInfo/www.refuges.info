@@ -32,7 +32,7 @@ L.TileLayer.OSM.FR = L.TileLayer.OSM.extend({
 
 L.TileLayer.OSM.MRI = L.TileLayer.OSM.extend({
 	options: {
-		url: 'http://maps.refuges.info/hiking/{z}/{x}/{y}.png',
+		url: '//maps.refuges.info/hiking/{z}/{x}/{y}.png',
 		subAttribution: '<a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
 	}
 });
@@ -66,11 +66,12 @@ L.TileLayer.OSM.hill = L.TileLayer.OSM.extend({
 });
 
 // Cartes ThunderForest
+// Create an account here to get an API KEY : https://manage.thunderforest.com
 var ft = ['Landscape', 'Outdoors', 'Cycle', 'Transport'];
 for (m in ft)
 	L.TileLayer.OSM[ft[m]] = L.TileLayer.OSM.extend({
 		options: {
-			url: '//{s}.tile.thunderforest.com/' + ft[m].toLowerCase() + '/{z}/{x}/{y}.png',
+			url: '//{s}.tile.thunderforest.com/' + ft[m].toLowerCase() + '/{z}/{x}/{y}.png?apikey={k}',
 			subAttribution: '<a href="http://www.thunderforest.com">Thunderforest ' + ft[m] + '</a>'
 		}
 	});

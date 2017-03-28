@@ -7,7 +7,7 @@
  * Lambert projections et IGN layers
  * Developpement key (localhost): http://api.ign.fr
  * Production key: http://professionnels.ign.fr
- * IGN doc on http://api.ign.fr/jsp/site/Portal.jsp?page_id=6&document_id=80&dossier_id=53
+ * IGN doc on http://api.ign.fr
  *
  * Usage: new L.TileLayer.IGN({k:'CLE_IGN').addTo(map);
  *
@@ -25,7 +25,7 @@ L.TileLayer.IGN = L.TileLayer.extend({
 		f: 'jpeg',
 		maxNativeZoom: 18,
 		maxZoom: 21,
-		errorTileUrl: 'http://www.ign.fr/sites/all/themes/ign_portail/logo.png',
+		errorTileUrl: 'https://cdn4.iconfinder.com/data/icons/dot/128/no_entry.png',
 		attribution: '&copy; <a href="http://www.ign.fr/">IGN</a>'
 	},
 

@@ -12,7 +12,7 @@ if (typeof L.OSOpenSpace.TileLayer != 'undefined')
 var baseLayers = {
 	'Refuges.info':new L.TileLayer.OSM.MRI(),
 	'OSM fr':      new L.TileLayer.OSM.FR(),
-	'Outdoors':    new L.TileLayer.OSM.Outdoors(),
+	'Outdoors':    new L.TileLayer.OSM.Outdoors({k: '<?=$config['thunderforest_key']?>'}),
 	'IGN':         new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
 	'IGN Express': new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
 	'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
@@ -58,14 +58,20 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 <?if (strstr('nav',$vue->type)) {?>
 L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: 'http://v2.chemineur.fr/prod/chem/json.php',
-		urlRootRef: 'http://chemineur.fr/point/',
+		urlGeoJSON: 'http://chemineur.fr/ext/Dominique92/GeoBB/gis.php',
+		argsGeoJSON: {
+			site: 'this',
+			poi: '3,8,16,20,23,28,30,40,44,64,58,62'
+		},
 		bbox: true,
 		idAjaxStatus: 'ajax-poiCHEM-status',
 		style: function(feature) {
+			var url = feature.properties.url;
+			delete feature.properties.url; // Avoid double action
 			return {
-				popup: feature.properties.nom + ' <a href="' + this.options.urlRootRef + feature.properties.id + '" target="_blank">&copy;</a>',
-				iconUrl: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.type.icone + '.png',
+				title: feature.properties.nom,
+				popup: feature.properties.nom + ' <a href="' + url + '" target="_blank">&copy;</a>',
+				iconUrl: feature.properties.icone,
 				iconAnchor: [8, 8],
 				popupClass: 'carte-site-etiquette',
 				degroup: 12

@@ -47,10 +47,13 @@ require ('../lib/jsqueeze-master/src/JSqueeze.php');
 $js_compress = new JSqueeze();
 
 // Liste des includes .js
-preg_match_all ('/\n\s*\'(([^\/]).+\.js)\'/', file_get_contents ('../src/leaflet.js'), $jsf);
+$lsrcs = file_get_contents ('../src/leaflet.js');
+preg_match_all ('/\n\s*\'(([^\/]).+\.js)\'/', $lsrcs, $jsf);
 
 // Liste des modules github inclus
-preg_match_all ('/\n\s*\'\.\.\/(lib\/[^\/]+)/', $ll=file_get_contents ('../src/leaflet.js'), $gits);
+$lsrcs .= "\n'../lib/MyLeaflet-master"; // Add self reference
+preg_match_all ('/\n\s*\'\.\.\/(lib\/[^\/]+)/', $lsrcs, $gits);
+
 foreach ($gits[1] AS $g)
 	if (is_file ("../$g/CREDIT.txt")) {
 		$gitsvs = explode ("\n", trim (file_get_contents ("../$g/CREDIT.txt")));
@@ -61,7 +64,7 @@ sort ($gitsv);
 $mini_js [] = "/*
  * Integrated by Dominique Cavailhez (c) 2016
  * https://github.com/Dominique92/MyLeaflet
- * Includes part of :
+ * Includes parts of :
 \t" .implode ("\n\t", $gitsv) ."
 */
 ";

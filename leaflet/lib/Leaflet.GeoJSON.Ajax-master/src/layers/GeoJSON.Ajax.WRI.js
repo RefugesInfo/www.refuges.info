@@ -45,15 +45,3 @@ L.GeoJSON.Ajax.WRImassifs = L.GeoJSON.Ajax.extend({
 		}
 	}
 });
-
-// http://chemineur.fr
-L.GeoJSON.Ajax.chemineur = L.GeoJSON.Ajax.extend({
-	options: {
-		urlGeoJSON: '//chemineur.fr/ext/Dominique92/GeoBB/gis.php',
-		argsGeoJSON: {
-			site: 'chemineur,camptocamp,pyrenees-refuges,refuges.info',
-			poi: '3,8,16,20,23,28,30,40,44,58,62,64'
-		},
-		bbox: true
-	}
-});

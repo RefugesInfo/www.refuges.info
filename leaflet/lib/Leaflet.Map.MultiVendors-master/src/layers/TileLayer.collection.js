@@ -19,7 +19,7 @@ L.TileLayer.collection = function(name) {
 		var ft = ['Landscape', 'Outdoors', 'Cycle', 'Transport'];
 		for (m in ft)
 			if (typeof L.TileLayer.OSM[ft[m]] != 'undefined')
-				this._col['OSM-' + ft[m]] = new L.TileLayer.OSM[ft[m]]();
+				this._col['OSM-' + ft[m]] = new L.TileLayer.OSM[ft[m]]({k: key.thunderforest});
 
 		// France
 		if (typeof L.TileLayer.IGN != 'undefined' &&

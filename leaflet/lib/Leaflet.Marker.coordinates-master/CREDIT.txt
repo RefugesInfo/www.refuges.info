@@ -1,1 +1,2 @@
 https://github.com/Dominique92/Leaflet.Marker.coordinates
+https://github.com/Dominique92/Leaflet.Marker.coordinates/commit/22e32460b86dc07142ce43b2bc1401fc468184d6

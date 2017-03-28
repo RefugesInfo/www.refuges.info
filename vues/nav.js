@@ -65,14 +65,16 @@ wriMassif = new L.GeoJSON.Ajax.wriPoi({ // Seulement les points dans un massif
 poiCHEM = new L.GeoJSON.Ajax.chem();
 poiPRC = new L.GeoJSON.Ajax.chem({
 	argsGeoJSON: {
-		site: 'prc'
+		site: 'pyrenees-refuges',
+		poi: '3,8,16,20,23,28,30,40,44,64,58,62'
 	},
 	idAjaxStatus: 'ajax-poiPRC-status',
 	urlRootRef: 'http://www.pyrenees-refuges.com/fr/affiche.php?numenr='
 });
 poiC2C = new L.GeoJSON.Ajax.chem({
 	argsGeoJSON: {
-		site: 'c2c'
+		site: 'camptocamp',
+		poi: '3,8,16,20,23,28,30,40,44,64,58,62'
 	},
 	idAjaxStatus: 'ajax-poiC2C-status',
 	urlRootRef: 'http://www.camptocamp.org/huts/'

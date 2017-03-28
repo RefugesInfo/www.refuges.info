@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<title>Leaflet extension for permalink in cookies</title>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
+
+	<!-- Leaflet kernel -->
+	<link  href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" rel="stylesheet"/>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+
+	<!-- This plugin & dependencies -->
+	<script src="../../leaflet-plugins-master/control/Permalink.js"></script><!-- Specific LL V0.7 -->
+	<script src="../../leaflet-plugins-master/control/Permalink.Layer.js"></script><!-- Specific LL V0.7 -->
+	<script src="../src/Permalink.Cookies.js"></script>
+</head>
+
+<body>
+	<p>Leaflet extension for keeping permalink in cookies while navigate on pages of the same domain.</p>
+	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> &#10144; <a href="..">See demo on Leaflet V1.0</a></p>
+	<p>Move &amp; zoom the map and reload it.</p>
+
+	<div id="map" style="width: 800px; height: 600px"></div>
+
+	<!-- Doc & debug -->
+	<p>See the javascript code of this demo <a href="../examples/index.js">here</a> and <a href="../src/Permalink.Cookies.js">here</a></p>
+	<p>Depends on <a href= "https://github.com/shramov/leaflet-plugins/tree/master/control">shramov/leaflet-plugins/control/</a>Permalink.js &amp; Permalink.Layer.js (branch "master")</p>
+	<p>Sources & docs on <a href= "https://github.com/Dominique92/Leaflet.Permalink.Cookies">Github Dominique92/Leaflet.Permalink.Cookies</a></p>
+
+	<a href="https://github.com/Dominique92/Leaflet.Permalink.Cookies"
+	   style="position:absolute;top:0;right:0"
+	   title="Sources & docs">
+		<img src="../../../examples/forkme.png" />
+	</a>
+	<a href="../../Leaflet.Marker.coordinates-master"
+	   style="position:absolute;top:150px;right:0;text-decoration:none;font-size:large"
+	   title="Next test">
+		&#10144;
+	</a>
+
+	<!-- Insert the javascript after all <div> are defined -->
+	<script src="../examples/index.js"></script>
+</body>
+</html>
