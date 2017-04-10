@@ -3,7 +3,7 @@
  * https://github.com/Dominique92/MyLeaflet
  */
 
-@import url("../lib/Leaflet-master/dist/leaflet.css");
+@import url("../lib/Leaflet-1.0.3/dist/leaflet.css");
 @import url("../lib/Leaflet.fullscreen-gh-pages/dist/leaflet.fullscreen.css");
 @import url("../lib/leaflet-easyPrint-gh-pages/dist/easyPrint.css");
 @import url("../lib/Leaflet.Coordinates-master/src/Control.Coordinates.css");

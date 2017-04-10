@@ -29,8 +29,8 @@ foreach ($css_files[0] AS $css_file) {
 		$css_compress->run (file_get_contents ($css_file))
 	);
 }
-cp ('../lib/Leaflet-master/dist/images/marker-shadow.png', '../dist/images/Leaflet-master-dist-images-marker-shadow.png');
-cp ('../lib/Leaflet-master/dist/images/marker-icon-2x.png', '../dist/images/Leaflet-master-dist-images-marker-icon-2x.png');
+cp ('../lib/Leaflet-1.0.3/dist/images/marker-shadow.png', '../dist/images/Leaflet-1.0.3-dist-images-marker-shadow.png');
+cp ('../lib/Leaflet-1.0.3/dist/images/marker-icon-2x.png', '../dist/images/Leaflet-1.0.3-dist-images-marker-icon-2x.png');
 
 echo "<div>Ecriture de ../dist/leaflet.css</div>";
 file_put_contents ('../dist/leaflet.css', "/*

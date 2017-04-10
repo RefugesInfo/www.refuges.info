@@ -1,2 +1,2 @@
 https://github.com/rob-murray/os-leaflet
-https://github.com/rob-murray/os-leaflet/commit/7e35760dc30ad48272ac36f6830a1f599a64823b
+https://github.com/rob-murray/os-leaflet/commit/9a7d11ed12b9421c55b99f871fe15018848d850d
