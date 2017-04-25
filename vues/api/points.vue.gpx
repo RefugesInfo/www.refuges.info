@@ -4,7 +4,6 @@ $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
 header("Content-disposition: filename=points.$req->format");
 if ($req->format == "gpx") header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
-else if ($req->format == "gpi") header("Content-Type: application/binary; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
@@ -12,9 +11,9 @@ if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 $gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
-<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"refuges.info\" version=\"1.1\" 
+<gpx xmlns=\"http://www.topografix.com/GPX/1/0\" creator=\"refuges.info\" version=\"1.1\" 
     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
-    xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">
+    xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">
 <metadata>
 	<name>points.gpx</name>
 	<desc>$config[copyright_API]</desc>
@@ -59,25 +58,5 @@ foreach ($points AS $point) {
 
 $gpx .= "</gpx>";
 
-
-if ($req->format=="gpi")
-{
-	// On va éviter de passer par un fichier local car c'est une plaie pour plusieurs raisons
-	$descriptorspec = array(
-		0 => array("pipe", "r"), // stdin is a pipe that the child will read from
-		1 => array("pipe", "w"), // stdout is a pipe that the child will write to
-	);
-	$process = proc_open("gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -", $descriptorspec, $pipes);
-	// On lui passe en entré notre gpx
-	fwrite($pipes[0], $gpx);
-	fclose($pipes[0]);
-	$gpi=stream_get_contents($pipes[1]);
-	fclose($pipes[1]);
-
-	echo $gpi;
-}
-else {
-	echo $gpx;
-}
-
+echo $gpx;
 ?>
