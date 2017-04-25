@@ -4,6 +4,7 @@ $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
 header("Content-disposition: filename=points.$req->format");
 if ($req->format == "gpx") header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
+else if ($req->format == "gpi") header("Content-Type: application/binary; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
@@ -58,5 +59,25 @@ foreach ($points AS $point) {
 
 $gpx .= "</gpx>";
 
-echo $gpx;
+
+if ($req->format=="gpi")
+{
+	// On va éviter de passer par un fichier local car c'est une plaie pour plusieurs raisons
+	$descriptorspec = array(
+		0 => array("pipe", "r"), // stdin is a pipe that the child will read from
+		1 => array("pipe", "w"), // stdout is a pipe that the child will write to
+	);
+	$process = proc_open("gpsbabel -w -r -t -i gpx -f - -o garmin_gpi -F -", $descriptorspec, $pipes);
+	// On lui passe en entré notre gpx
+	fwrite($pipes[0], $gpx);
+	fclose($pipes[0]);
+	$gpi=stream_get_contents($pipes[1]);
+	fclose($pipes[1]);
+
+	echo $gpi;
+}
+else {
+	echo $gpx;
+}
+
 ?>
