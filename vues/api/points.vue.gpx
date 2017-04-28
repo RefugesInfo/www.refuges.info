@@ -36,6 +36,7 @@ foreach ($points AS $point) {
 	$gpx .= "<wpt lat=\"".$point->coord['lat']."\" lon=\"".$point->coord['long']."\">\r\n";
 	$gpx .= "	<ele>".$point->coord['alt']."</ele>\r\n";
 	$gpx .= "	<name>".$point->nom."</name>\r\n";
+	$gpx .= "	<sym>".$point->sym."</sym>\r\n";
 	$gpx .= "	<type>".$point->type['valeur']."</type>\r\n";
 		
 	if ($req->detail == "complet") {
