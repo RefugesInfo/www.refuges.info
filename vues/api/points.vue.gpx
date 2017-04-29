@@ -40,8 +40,8 @@ foreach ($points AS $point) {
 	$gpx .= "	<type>".$point->type['valeur']."</type>\r\n";
 		
 	if ($req->detail == "complet") {
-		$gpx .= "	<cmt>".$point->acces['nom']." : ".htmlspecialchars($point->acces['valeur'])."</cmt>\r\n";
-		$gpx .= "	<desc>".$point->remarque['nom']." : ".htmlspecialchars($point->remarque['valeur'])."</desc>\r\n";
+		$gpx .= "	<desc>".$point->acces['nom']." : ".htmlspecialchars($point->acces['valeur'])."</desc>\r\n";
+		$gpx .= "	<cmt>".$point->remarque['nom']." : ".htmlspecialchars($point->remarque['valeur'])."</cmt>\r\n";
 		$gpx .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
 		$gpx .= "	<link href=\"$point->lien\">\r\n";
 		$gpx .= "		<text>$point->nom sur $config[nom_hote]</text>\r\n";
