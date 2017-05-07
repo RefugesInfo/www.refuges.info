@@ -17,14 +17,14 @@ Pour installer et coder le site de www.refuges.info vous avez besoin :
 * git
 
 Le code est publié sur github ici :
-https://github.com/sletuffe/www.refuges.info
+https://github.com/RefugesInfo/www.refuges.info
 
 * Code 
 
 Pour télécharger la dernière version de développement :
 
 ```
-git clone git://github.com/sletuffe/www.refuges.info.git
+git clone git://github.com/RefugesInfo/www.refuges.info.git
 cd www.refuges.info
 ```
 Le code du site se retrouve dans un dossier nommé www.refuges.info (toutes les commandes d'après sont à faire depuis ce dossier)
@@ -79,7 +79,7 @@ En plus, vous ne pouvez pas détruire les trucs des autres car ils sont archivé
 * Avoir une copie complète de la dernière version en cours de développement du code (pas forcément stable mais la dernière version)
 
 ```
-git clone https://github.com/sletuffe/www.refuges.info.git
+git clone https://github.com/RefugesInfo/www.refuges.info.git
 ```
 
 Cette commande téléchargera et créera un dossier nommé www.refuges.info contenant la branche "dev" (développement) la plus récente de refuges.info, mais pas forcément
@@ -147,9 +147,9 @@ Votre clé publique se trouve ici $HOME/.ssh/id_rsa.pub (le contenu est en texte
 
 Ensuite (il doit y avoir une commande pour le faire mais je l'ignore) on peut éditer le fichier de config de git pour refuges.info
 dans www.refuges.info/.git/config et remplacer le paramètre url pour mettre :
-* url = "votre login"@github.com:sletuffe/www.refuges.info.git
+* url = "votre login"@github.com:RefugesInfo/www.refuges.info.git
 
-FIXME: y'a encore un truc qui m'échappe avec git, chez moi c'est marqué "git@github.com:sletuffe/www.refuges.info.git" mais mon user c'est "sletuffe"
+FIXME: y'a encore un truc qui m'échappe avec git, chez moi c'est marqué "git@github.com:RefugesInfo/www.refuges.info.git" mais mon user c'est "sletuffe"
 et pourtant, ça marche sans mot de passe en prenant bien ma clef... je pige pas
 
 
