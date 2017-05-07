@@ -36,7 +36,7 @@ if ($vue->mini_carte) {
 		maxPoints: 30,
 		services: {
 			// <NOM ICONE> = '<REQUETTE OVERPASS>'
-			hotel: '["tourism"~"hotel|camp_site|hostel|chalet"]',
+			hotel: '["tourism"~"hotel|camp_site|hostel|chalet|apartment"]',
 			camping: '["tourism"~"camp_site"]',
 			ravitaillement: '["shop"~"supermarket|convenience"]',
 			parking: '["amenity"="parking"]["access"!="private"]',

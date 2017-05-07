@@ -99,6 +99,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 			guest_house: 'hotel',
 			chalet: 'hotel',
 			hostel: 'hotel',
+			apartment: 'hotel',
 			supermarket: 'ravitaillement',
 			convenience: 'ravitaillement'
 		},
@@ -109,7 +110,8 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 			hotel: 'hôtel',
 			guest_house: 'chambre d\'hôte',
 			chalet: 'gîte rural',
-			hostel: 'auberge de jeunesse',
+			apartement: 'meublé de tourisme',
+			hostel: 'auberge de jeunesse/gîte d\'étape',
 			camp_site: 'camping',
 			convenience: 'alimentation',
 			supermarket: 'supermarché',
