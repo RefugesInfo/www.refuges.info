@@ -96,15 +96,8 @@ if (!empty($_REQUEST))
              'limit' => 20,
              )
              );
-             // Récupération du contenu à l'aide de cURL
-             $ch = curl_init(); // Initialiser cURL.
-             curl_setopt ($ch, CURLOPT_URL, $appel_nominatim);
-             curl_setopt ($ch, CURLOPT_HEADER, 0); // Ne pas inclure l'header dans la réponse.
-             ob_start (); // Commencer à 'cache' l'output.
-             $r = curl_exec ($ch); // Exécuter la requète.
-             $cache = ob_get_contents (); // Sauvegarder le contenu du fichier dans la variable $cache.
-             ob_end_clean(); // Vider le buffer.
-             curl_close ($ch); // Fermer cURL.
+             // Récupération du contenu
+             $cache = file_get_contents ('http:'.$appel_nominatim);
              
              // Extraction de l'arbre xml
              $nominatim->xml = simplexml_load_string ($cache);
