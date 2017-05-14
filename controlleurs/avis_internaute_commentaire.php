@@ -11,9 +11,9 @@ $commentaire=infos_commentaire($controlleur->url_decoupee[1]);
 
 if ($commentaire->erreur)
 {
-    $vue->type="page_introuvable";
+    $vue->http_status_code = 404;
+    $vue->type = "page_simple";
     $vue->titre=$commentaire->message;
-            
 }
 else
 {

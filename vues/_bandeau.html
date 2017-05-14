@@ -1,1 +1,171 @@
-<!-- Fichier réservé pour l'intégration PhpBB V3.2 -->
+<?php
+// Affichage du bandeau d'une page du site
+// $vue contient les données passées par le fichier PHP
+// $config les données communes à tout WRI
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+?>
+<div id="entete">
+	<div>
+		<?if ($_SESSION['login_utilisateur']) {?>
+			<a href="<?=$config['lien_forum']?>ucp.php?mode=logout&sid=<?=$_COOKIE[$config['cookie_prefix'].'_sid']?>">Déconnexion</a>
+			<a href="<?=$config['lien_forum']?>ucp.php" title="Modifier votre profil"><?=$_SESSION['login_utilisateur']?></a> /
+			<a href="<?=$config['lien_forum']?>ucp.php?mode=reg_details&i=ucp_profile" title="Changer votre mot de passe">mdp</a>
+		<?} else {?>
+			<a href="<?=$config['lien_forum']?>ucp.php?mode=login" title="Si vous avez déjà un compte">Connexion</a>
+			<a href="<?=$config['lien_forum']?>ucp.php?mode=register" title="Créer un compte">Inscription</a> /
+			<a href="<?=$config['lien_forum']?>ucp.php?mode=sendpassword" title="Récupérer votre mot de passe">mdp</a>
+		<?}?>
+		
+		<form method="post" action="<?=$config['sous_dossier_installation']?>point_recherche/">
+		<div>
+			<input type="text" name="nom" size="35"
+				value="Recherche de refuge par le nom"
+				onfocus="javascript:if(this.value=='Recherche de refuge par le nom')this.value=''"
+			/>
+			<input type="hidden" name="ids_types_point" value="<?=$config['tout_type_refuge']?>" />
+			<input type="hidden" name="avec_point_osm" value="1" />
+			<input type="image" src="<?=$config['sous_dossier_installation']?>images/loupe.png" title="Lancer la recherche" alt="R" />
+		</div>
+		</form>
+	</div>
+	<a href="<?=$config['sous_dossier_installation']?>"><img alt="Photo d'ambiance" src="<?=$config['sous_dossier_installation']?>images/bandeau-haut/titrehorizontal_<?=date('m')?>.png" /></a>
+</div>
+
+<? // Barres de menus
+$menus = array ('menu-normal'); // On commence par la barre normale, dans tous les cas
+
+// Si ce n'est pas un mobile, on ajoute un menu surgissant quand la page est scrollée
+$agents_mobiles = "phone|iphone|itouch|ipod|ipad|symbian|android|htc_|htc-|palmos|blackberry|opera m|iemobile|windows ce|fennec|hiptop|kindle|mot |mot-|samsung|sony|ericsson|nokia|^sie-|nintendo|webos\/|pda;|avantgo|eudoraweb|minimo|netfront|brew|teleca|lg;|lge |wap;| wap ";
+if (!preg_match( "/$agents_mobiles/i", $_SERVER['HTTP_USER_AGENT']))
+	$menus [] = 'menu-scroll';
+
+foreach ($menus AS $id) {?>
+	<div id="<?=$id?>" class="menu">
+		<a href="<?=$config['sous_dossier_installation']?>" title="Retour à l'accueil">Refuges.info</a>
+		<span onclick="flip(this.parentNode,'deroule')">Menu</span>
+		<?if (!$_SESSION['login_utilisateur']) {?>
+			<a href="<?=$config['lien_forum']?>ucp.php?mode=login" style="float:right">Connexion</a>
+		<?}?>
+		<ul>
+			<li>
+				<a href="<?=$config['sous_dossier_installation']?>">Accueil</a>
+			</li>
+			<li class="mobile-only">
+				<?if ($_SESSION['id_utilisateur']>=1) {?>
+					<a href="<?=$config['lien_forum']?>ucp.php?mode=logout&sid=<?=$_COOKIE[$config['cookie_prefix'].'_sid']?>">Déconnexion</a>
+				<?} else {?>
+					<a href="<?=$config['lien_forum']?>ucp.php?mode=login">Connexion</a>
+					<span onclick="flip(this.parentNode,'deroule')" title="Inscription">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+				<?}?>
+				<ul>
+					<li><a href="<?=$config['lien_forum']?>ucp.php?mode=register" title="Les entrées les plus récentes">Inscription</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="<?=$config['sous_dossier_installation']?>nouvelles/">Nouvelles</a>
+				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+				<ul>
+					<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/" title="Les entrées les plus récentes">Toutes</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>formulaire_rss/">Flux RSS</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="<?=$config['sous_dossier_installation']?>point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
+			</li>
+			<li>
+				<a href="<?=$config['sous_dossier_installation']?>point_formulaire_recherche/">Recherche</a>
+				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+				<ul>
+					<li><a href="<?=$config['sous_dossier_installation']?>point_formulaire_recherche/" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>formulaire_exportations/" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
+				</ul>
+			</li>
+			<li>
+				<a>Zones couvertes</a>
+				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+				<ul>
+					<?php if (isset($vue->zones_pour_bandeau)) foreach ($vue->zones_pour_bandeau AS $nom_zone => $lien) {?>
+						<li>
+							<a href="<?=$lien?>"><?=$nom_zone?></a>
+						</li>
+					<?}?>
+				</ul>
+			</li>
+			<li>
+				<a href="<?=$config['sous_dossier_installation']?>nav">Cartes</a>
+				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+				<ul>
+					<li><a href="<?=$config['sous_dossier_installation']?>nav/0/MRI?layer=Refuges.info&amp;lat=45&amp;lon=5&amp;zoom=7">Randonnée</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nav?layer=OSM%20fr&amp;lat=45&amp;lon=5&amp;zoom=7">OSM</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nav/0/IGN?layer=IGN&amp;lat=45&amp;lon=5&amp;zoom=7">IGN</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nav/0/STP?layer=SwissTopo&amp;lat=46.55&amp;lon=8.45&amp;zoom=8">SwissTopo</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nav/0/ESP?layer=Espagne&amp;lat=42&amp;lon=0.5&amp;zoom=8">Espagne</a></li>
+					<li><a href="<?=$config['sous_dossier_installation']?>nav/0/ESP?layer=Photo%20Bing&amp;lat=47&amp;lon=3&amp;zoom=6">Satellite</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="<?=$config['lien_forum']?>">Forums</a>
+				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+				<ul>
+					<li><a href="<?=$config['lien_forum']?>">Tous</a></li>
+					<li><a href="<?=$config['lien_forum']?>viewforum.php?f=1" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">La vie du site</a></li>
+					<li><a href="<?=$config['lien_forum']?>viewforum.php?f=2" title="Forum de discussion sur le développement et les défauts logiciels du site">Développement</a></li>
+					<li><a href="<?=$config['lien_forum']?>viewforum.php?f=6" title="Forum d'échange sur les offres et demandes d'emploi en refuge">Emplois</a></li>
+					<li><a href="<?=$config['lien_forum']?>viewforum.php?f=5" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">Divers</a></li>
+					<li><a href="<?=$config['lien_forum']?>ucp.php?i=pm&folder=inbox" title="Votre boite aux lettres personelle">Messages</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="<?=$vue->lien_wiki["index"]?>">A propos du site</a>
+				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+				<ul>
+					<li><a href="<?=$vue->lien_wiki["index"]?>">A propos</a></li>
+					<li><a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">Licence des contenus</a></li>
+					<li><a href="<?=$vue->lien_wiki["prudence"]?>" title="Règles de prudence à observer vis à vis de l'information présente sur refuges.info">Règles de prudence</a></li>
+					<li><a href="<?=$vue->lien_wiki["qui_est_refuges.info"]?>" title="Qui est derrière www.refuges.info ?">Qui sommes nous ?</a></li>
+					<li><a href="<?=$vue->lien_wiki["liens"]?>">Liens</a></li>
+					<li><a href="<?=$vue->lien_wiki["don"]?>">Faire un don</a></li>
+					<li><a href="<?=$vue->lien_wiki["mentions-legales"]?>">Mentions Légales</a></li>
+				</ul>
+			</li>
+			
+			<? if ($_SESSION['niveau_moderation']>=1) {?>
+				<li style="max-width:90px">
+					<a>Gestion</a>
+					<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
+					<ul style="width:300px">
+						<li><a href='<?=$config['sous_dossier_installation']?>gestion/commentaires_attente_correction'>Commentaires en attente d'une correction</a></li>
+						<li><a href='<?=$config['sous_dossier_installation']?>gestion/modifier_modeles' title="Pré-remplissage des champs lors d'un ajout de point">Modifier les modèles de points</a></li>
+						<li><a href='<?=$config['sous_dossier_installation']?>wiki/contenus_speciaux'> Liste des contenus spéciaux</a></li>
+						<li><a href='<?=$config['sous_dossier_installation']?>nav/0?mode_affichage=edit'>Créer un massif</a></li>
+					</ul>
+				</li>
+				<li>
+					<?if ($vue->demande_correction) {?>
+						<a href="<?=$config['sous_dossier_installation']?>gestion/commentaires_attente_correction" title="Commentaires en attente d'une correction">*</a>
+					<?}?>
+				</li>
+			<?}?>
+		</ul>
+	</div>
+<?}?>
+
+<?/* Juste pour que les repliements de la ligne de menus sur une page étroite ne bavent pas sur la page */?>
+<div id="fin-entete"></div>
+
+<!-- A ENLEVER A TERME -->
+<?if (!$_SESSION['login_utilisateur']) {?>
+<div><b>
+	<p style="color:red; text-align:center; margin: 0">Nous avons procédé à une évolution conséquente du logiciel du forum.</p>
+	<p style="color:red; text-align:center; margin: 0">Si votre mot de passe ne fonctionne plus, récupérez le <a href="/forum/ucp.php?mode=sendpassword">ICI.</a></p>
+	<p style="color:red; text-align:center; margin: 0">Si vous êtes bloqués, envoyez moi un mail <a href="mailto:refuges@la-foret.info?subject=Compte%20refuges.info%20bloqué&body=Bonjour%0a%0aJe%20n&#39;arrive%20pas%20&agrave;%20me%20connecter%20ou%20&agrave;%20réinitialiser%20mon%20mot%20de%20passe%0aNom%20du%20compte:%20XXXXXXXXX">à cette adresse.</a></p>
+	<hr/>
+</b></div>
+<?}?>

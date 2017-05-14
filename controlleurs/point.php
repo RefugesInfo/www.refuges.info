@@ -55,9 +55,14 @@ else // le point est valide
         }
     if ($point->modele!=1)
     $vue->forum_point = infos_point_forum ($point);
-    $vue->forum_point->post_text_propre=bbcode2html($vue->forum_point->post_text);
-    
+    $vue->forum_point->post_text_propre = bbcode2html (preg_replace ('/<[^>]*>/i', '', $vue->forum_point->post_text));
+
+	//FIXME : Bon, C pa BO mais ça marche pour l'instant ! On passe temporairement en timezone Paris pour décoder l'heure du forum
+	// Pas sûr que ça marche encore en heure d'hiver !
+	date_default_timezone_set('Europe/Paris');
     $vue->forum_point->date_humaine=strftime ('%A %e %B %Y à %H:%M',$vue->forum_point->post_time);
+	date_default_timezone_set('UTC');
+
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;
     $tous_commentaires = infos_commentaires ($conditions_commentaires);
@@ -165,7 +170,7 @@ else // le point est valide
         // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire
         if (isset($_SESSION['id_utilisateur']) AND ( ($_SESSION['niveau_moderation']>=1) OR ($_SESSION['id_utilisateur']==$commentaire->id_createur_commentaire))) 
         {
-            $commentaire->lien_commentaire='/gestion/?page=moderation&amp;id_point_retour='.$commentaire->id_point.'&amp;id_commentaire='.$commentaire->id_commentaire;
+            $commentaire->lien_commentaire='/gestion/moderation?id_point_retour='.$commentaire->id_point.'&amp;id_commentaire='.$commentaire->id_commentaire;
             $commentaire->texte_lien_commentaire = 'Modifier';
         } 
         else 

@@ -18,7 +18,6 @@ var baseLayers = {
 	'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
 	'Autriche':    new L.TileLayer.Kompass({l:'Touristik'}),
 	'Espagne':     new L.TileLayer.WMS.IDEE(),
-	'Angleterre':  new L.OSOpenSpace.TileLayer('<?=$config['os_key']?>'),
 	'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'}),
 	'Photo IGN':   new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'ORTHOIMAGERY.ORTHOPHOTOS'})
 };
@@ -129,7 +128,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 					data.tags.place ? data.tags.place + ' places' : '',
 					data.tags.capacity ? data.tags.capacity + ' places' : '',
 					'<a href="http://www.openstreetmap.org/' + (data.center ? 'way' : 'node') + '/' + data.id + '" target="_blank">&copy;</a>',
-                                        data.tags.description ? '<br>' + data.tags.description : ''
+					data.tags.description ? '<br />' + data.tags.description : ''
 				],
 				altitude: data.tags.ele + ' m',
 				phone: '<a href="tel:' + data.tags.phone.replace(/[^0-9\+]+/ig, '') + '">' + data.tags.phone + '</a>',

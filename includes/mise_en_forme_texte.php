@@ -204,7 +204,7 @@ if ($occurences_trouvees!=0)
   }
 }
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
-$texte_avec_html = nl2br($texte_avec_html,False);
+$texte_avec_html = nl2br($texte_avec_html,true);
 $texte_avec_html = str_replace("  ", " &nbsp;", $texte_avec_html);
 
 return $texte_avec_html;

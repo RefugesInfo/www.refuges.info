@@ -1,0 +1,35 @@
+<?php
+// Affichage de l'entête des pages de refuges.info
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+?>
+<?='<?'?>xml version="1.0" encoding="<?=$config['encodage_des_contenu_web']?>"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+	<head>
+		<title><?=$vue->titre?></title>
+		<link rel="shortcut icon" href="<?=$config['sous_dossier_installation']?>images/favicon.png" />
+		<meta name="robots" content="all" />
+		<meta name="robots" content="index,follow" />
+		<meta name="description" content="<?=$vue->description?>" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config[encodage_des_contenu_web]?>" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<link type="text/css" rel="stylesheet" href="<?=$config['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config['racine_projet'].'vues/style.css.php')?>" />
+		<?if (count ($vue->css))
+			foreach ($vue->css as $css) {?>
+				<link type="text/css" rel="stylesheet" href="<?=$css?>" />
+		<?}?>
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	</head>
+
+	<body>
+		<?
+			include ($config['chemin_vues'].'_bandeau.html');
+			include ($config['chemin_vues'].$vue->type.'.html');
+			include ($config['chemin_vues'].'_pied.html');
+		?>
+	</body>
+</html>

@@ -1,0 +1,29 @@
+<div class="contenu">
+	<h3><a href="./">Retour</a>Zone de gestion</a></h3>
+
+	<h4>Zone de modération des commentaires sur les fiches</h4>
+	<p>Cette liste donne les commentaires qui sont susceptibles d'apporter de l'information à la fiche selon un internaute ou qui sont peu ou pas intéressantes selon un internaute.</p>
+	<p><strong>
+		Modérateurs, rappelez vous qu'il ne s'agit là que de l'avis d'internautes de passage,
+		il est tout à fait possible qu'aucune modification ne soit nécessaire.
+		Et je constate bien souvent que les commentaires jugés "non utiles" sont en fait
+		des commentaires qui ne plaisent pas à certains mais dont l'intérêt peut être réél.
+	</strong></p>
+
+	<h4>Liste : (Cochez la case à droite retire le commentaire de la liste sans rien faire)</h4>
+	<p><strong>Pensez à bien les retirer de la liste une fois la correction faite</strong></p>
+
+	<form method="post" action="commentaires_attente_correction">
+		<? foreach ($vue->commentaires_attente_correction as $c) { ?>
+			<div>
+				<a href="<?=lien_point_lent($c->id_point)?>#C<?=$c->id_commentaire?>">
+					Le commentaire de "<?=bbcode2html($c->auteur_commentaire)?>" sur la fiche <?=$c->nom?>
+				</a>
+				<?=sprintf($vue->liste_causes[$c->demande_correction], $c->nom_type)?>
+				<input type="checkbox" name="commentaires_corriges[]" value="<?=$c->id_commentaire?>">
+			</div>
+		<?}?>
+
+		<input type="submit" name="corrections_faites" value="Retirer ceux que j'ai coché de la liste">
+	</form>
+</div>

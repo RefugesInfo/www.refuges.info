@@ -19,13 +19,13 @@ $cible = str_replace('?','',$cible); // On enlève le ? (implique pas de ? dans 
 
 switch ($cible) {
     case 'bbox': case 'point': case 'massif':
-        include($config['chemin_controlleurs'].'api.points.controleur.php');
+        include($config['chemin_controlleurs'].'api/points.php');
         break;
     case 'contributions':
-        include($config['chemin_controlleurs'].'api.contributions.controleur.php');
+        include($config['chemin_controlleurs'].'api/contributions.php');
         break;
     case 'polygones':
-        include($config['chemin_controlleurs'].'api.polygones.controleur.php');
+        include($config['chemin_controlleurs'].'api/polygones.php');
         break;
     case 'doc':
         // Des fichiers html ou css simples, pas besoin d'un controler pour faire "include"

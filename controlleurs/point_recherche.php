@@ -97,7 +97,7 @@ if (!empty($_REQUEST))
              )
              );
              // Récupération du contenu
-             $cache = file_get_contents ('http:'.$appel_nominatim);
+             $cache = file_get_contents ($_SERVER['REQUEST_SCHEME'].':'.$appel_nominatim);
              
              // Extraction de l'arbre xml
              $nominatim->xml = simplexml_load_string ($cache);

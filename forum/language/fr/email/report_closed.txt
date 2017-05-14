@@ -1,0 +1,7 @@
+Subject: Fermeture de rapport - {POST_SUBJECT}
+
+Bonjour {USERNAME},
+
+Vous recevez cette notification car le rapport que vous avez émis concernant le message « {POST_SUBJECT} » du sujet « {TOPIC_TITLE} » sur « {SITENAME} » a été pris en charge par un modérateur ou un administrateur. Ce rapport est dorénavant clôturé. Si vous avez des questions supplémentaires, contactez {CLOSER_NAME} par message privé.
+
+{EMAIL_SIG}

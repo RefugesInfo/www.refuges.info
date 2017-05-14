@@ -258,14 +258,14 @@ function infos_points($conditions)
          points_gps.*,
          ST_AsGeoJSON(points_gps.geom) AS geojson,
          type_precision_gps.*,
-         point_type.*,COALESCE(phpbb_users.username,nom_createur) as nom_createur,
+         point_type.*,COALESCE(phpbb3_users.username,nom_createur) as nom_createur,
          ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
          extract('epoch' from date_derniere_modification) as date_modif_timestamp,
      extract('epoch' from date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
          $champs_en_plus
-         FROM points NATURAL JOIN points_gps NATURAL JOIN type_precision_gps NATURAL JOIN point_type LEFT join phpbb_users on points.id_createur = phpbb_users.user_id$tables_en_plus
+         FROM points NATURAL JOIN points_gps NATURAL JOIN type_precision_gps NATURAL JOIN point_type LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id$tables_en_plus
   WHERE
      1=1
     $conditions_sql
@@ -468,16 +468,11 @@ function texte_non_ouverte($point)
 function infos_point_forum ($point)
 {
   global $pdo,$config;
-  $q=" SELECT *
-       FROM phpbb_posts_text, phpbb_topics, phpbb_posts
-       WHERE
-         phpbb_posts_text.post_id = phpbb_topics.topic_last_post_id
-       AND
-         phpbb_topics.topic_id_point = $point->id_point
-       AND
-         phpbb_posts.post_id = phpbb_posts_text.post_id
-       LIMIT 1";
-  // On envoie la requete
+  $q="SELECT *
+      FROM phpbb3_topics AS t
+        JOIN phpbb3_posts AS p ON p.post_id = t.topic_last_post_id
+      WHERE t.topic_id = {$point->topic_id}
+      LIMIT 1";
   $r = $pdo->query($q);
   if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
 
@@ -543,7 +538,7 @@ function modification_ajout_point($point)
     if ($point->id_point_gps->erreur) // si on a la moindre erreur sur la gestion des coordonnées de notre point, on abandonne
         return erreur($point->id_point_gps->message);
 
-  /********* Préparation des champs à mettre à jour, tous ceuex qui sont dans $point->xx ET dans $config['champs_simples_points'] *************/
+  /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config['champs_simples_points'] *************/
   // champ ou il faut juste un set=nouvelle_valeur
     foreach ($config['champs_simples_points'] as $champ)
     if (isset($point->$champ))
@@ -559,165 +554,64 @@ function modification_ajout_point($point)
             return erreur("Erreur de modification du point : $infos_point_avant->message");
 
         $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
-  }
-  else  // INSERT
+        if (!$pdo->exec($query_finale))
+            return erreur("Requête en erreur, impossible à executer",$query_finale);
+
+        /********* Renommage du topic point dans le forum refuges *************/
+        // On appelle l'API WRI du forum qui renomme un topic
+        $rep = file_get_contents(
+          $config['url_api'],
+          false,
+          stream_context_create( ['http' => [
+            'method'  => 'POST',
+            'content' => http_build_query( [
+              'api' => 'renommer',
+              't' => $point->topic_id,
+              's' => $point->nom,
+            ]),
+          ]])
+        );
+        $json = json_decode($rep);
+        if (!is_object ($json))
+          return erreur( "Erreur renommage forum point<br/>$rep" );
+   }
+   else  // INSERT
+   {
+    // On appelle l'API WRI du forum qui crée un topic dans le forum refuges
+    $rep = file_get_contents(
+      $config['url_api'],
+      false,
+      stream_context_create( ['http' => [
+        'method'  => 'POST',
+        'content' => http_build_query( [
+          'api' => 'creer',
+          'f' => $config['forum_refuges'],
+          's' => $point->nom,
+        ]),
+      ]])
+    );
+    $json = json_decode($rep);
+    if (!is_object ($json))
+      return erreur( "Erreur création forum point<br/>".var_export($rep,true) );
+
+    $champs_sql['topic_id'] = $json->topic_id; // On note le topic_id dans la table point pour faire le lien
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
-
     if (!$pdo->exec($query_finale))
-    return erreur("Requête en erreur, impossible à executer",$query_finale);
+      return erreur("Requête en erreur, impossible à executer",$query_finale);
 
-    if ($point->id_point=="")  // donc c etait un ajout
-    {
     $point->id_point = $pdo->lastInsertId();
+  }
 
-    /********* la création du forum point *************/
-    forum_point_ajout($point);
-    }
-    else
-    forum_mise_a_jour_nom($point); // La mise à jour du nom du forum
-
-  // on retoure l'id du point (surtout utile si création)
+  // on retourne l'id du point (surtout utile si création)
   return $point->id_point;
 }
-/*****************************************************
-Dans le cas d'un nouveau point, creation d'un topic dans forum correspondant.
-(C'est du copier coller de ce qu'il y avait dans point.php)
-id et nom du point en question (nouveau point ?)
-renvoie le topic_id
-Non, vous ne rêvez pas, il y'a bien 5 requêtes au total
-********************************************/
-function forum_point_ajout( $point )
-{
-  global $pdo;
-
-  /*** mise à jour des stats du forum - un sum() vous connaissez pas chez phpBB ? ***/
-  $query_update="UPDATE phpbb_forums SET
-  forum_topics = forum_topics+1,
-  prune_next = NULL
-  WHERE forum_id = '4'";
-  $pdo->exec($query_update);
-
-  /*** rajout du topic spécifique au point ( Le seul qui me semble logique ! )***/
-  // tention a PGsql, ca peut merder
-  // Dans le forum, nom toujours commençant par une majuscule et on vérifie à bien convertir ça en entité html (phpbb ne pourrait il pas le faire à la volée ?) et enfin, la taille du champs est de 90 caractères max
-  $nom=$pdo->quote(substr(protege(mb_ucfirst($point->nom)),0,89));
-  $query_insert="INSERT INTO phpbb_topics (
-  forum_id , topic_title , topic_poster , topic_time ,
-  topic_views , topic_replies , topic_status , topic_vote ,
-  topic_type , topic_first_post_id , topic_last_post_id ,
-  topic_moved_id , topic_id_point )
-  VALUES (
-  4, $nom, -1, ". time()." ,
-  0, 0, 0, 0,
-  0, 0, 0,
-  0, $point->id_point )";
-
-  $res = $pdo->query($query_insert);
-  $topic_id = $pdo->lastInsertId();
-
-
-  /*** rajout d'un post fictif pour débuter le truc - je vois pas en quoi c'est nécessaire, le topic devrait pouvoir être vide**/
-  $query_insert_post="INSERT INTO phpbb_posts (
-  topic_id , forum_id , poster_id , post_time ,
-  poster_ip , post_username , enable_bbcode , enable_html ,
-  enable_smilies , enable_sig , post_edit_time , post_edit_count )
-  VALUES (
-  $topic_id, 4, -1, ".time()." ,
-  '00000000', 'refuges.info' , 1, 0,
-  1, 1, NULL , 0 )";
-
-  $res = $pdo->query($query_insert_post);
-  $last = $pdo->lastInsertId();
-
-
-  /*** rajout d'un post avec texte pour débuter le truc ( phpBB mal codé ? non ? ) ha ça oui ! **/
-  $query_texte="INSERT INTO phpbb_posts_text (
-  post_id , bbcode_uid , post_subject , post_text )
-  VALUES (
-  $last, '', '',
-  '')";
-  $pdo->exec($query_texte);
-
-  /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
-  $query_update_topic="UPDATE phpbb_topics SET
-  topic_first_post_id=$last,topic_last_post_id=$last
-  WHERE topic_id=$topic_id";
-  $pdo->exec($query_update_topic);
-
-  return $topic_id ;
-}
-
-/********************************************************
-Pour simplifier encore la maintenance, si on met à jour
-le nom d'un point du site, on met aussi à jour le topic forum
-correspondant.
-Certes un joli id de liaison serait plus propre, mais il faudrait bidouiller salement
-le phpBB, donc duplication
-********************************************************/
-
-function forum_mise_a_jour_nom($point)
-{
-  global $pdo;
-
-  // Dans le forum, nom toujours commençant par une majuscule
-  $nom=$pdo->quote(mb_ucfirst($point->nom));
-
-  $query="UPDATE phpbb_topics
-  SET topic_title=".$pdo->quote(mb_ucfirst($point->nom))."
-  WHERE topic_id_point=$point->id_point";
-  $pdo->exec($query);
-}
-
-/********************************************************
-Toujours pour simplifier encore la maintenance, si on supprime un point, on nettoye
-le topic du forum qui correspond, ça reprend casi la même chose que l'ajout
-mais en inverse ;-)
-FIXME : à noter un bug dans le cas ou une photo serait présente sur ce forum (par exemple en provenance historique du site par un transfert)
-alors la photo se retrouve seule et oubliée dans /forum/photos-points/
-Et je suis bien en peine pour trouver une combine pour la nettoyer
-********************************************************/
-
-function forum_supprime_topic($point)
-{
-  global $pdo;
-  /*** on va chercher l'id du topic qu'on veut virer ***/
-  $query_recherche="SELECT * FROM phpbb_topics where topic_id_point=$point->id_point";
-  $res = $pdo->query($query_recherche);
-  $topic=$res->fetch();
-  if ($topic)
-  {
-    /*** vu que chez phpBB un post est dans deux tables, juste avant de les virer je vais virer leurs "contenus" ***/
-    $query_recherche="SELECT * FROM phpbb_posts WHERE topic_id=$topic->topic_id";
-    $res = $pdo->query($query_recherche);
-
-    while ( $posts_a_supprimer = $res->fetch() )
-      $pdo->exec("DELETE FROM phpbb_posts_text where post_id=$posts_a_supprimer->post_id");
-
-    /*** Suppression des posts du topic**/
-    $pdo->exec("DELETE FROM phpbb_posts WHERE topic_id=$topic->topic_id");
-
-    /*** Suppression du topic spécifique au point***/
-    $pdo->exec("DELETE FROM phpbb_topics where topic_id=$topic->topic_id");
-
-
-    /*** et pour finir mise à jour des stats du forum ***/
-    $query_update="UPDATE phpbb_forums SET
-    forum_topics = forum_topics-1,
-    prune_next = NULL
-    WHERE forum_id = '4'";
-    $pdo->exec($query_update);
-  }
-  else
-    return erreur("Le point ne dispose pas de forum !",$query_recherche." n'a rien retourné");
-}
-
 /*******************************************************
 * on lui passe un objet $point et ça supprime tout proprement
 * commentaires, photos, forum, points, points_gps
 *******************************************************/
 function suppression_point($point)
 {
-  global $pdo;
+  global $pdo, $config;
   $conditions = new stdClass;
   // On vérifie que le $point passé existe bien dans notre base, qu'il a donc un id et que cela correspond bien à un seul point
   // toujours présent, sinon, on ne tente rien
@@ -731,8 +625,21 @@ function suppression_point($point)
     foreach ($commentaires_a_supprimer as  $commentaire_a_supprimer)
       suppression_commentaire($commentaire_a_supprimer);
 
-  // suppression dans le forum
-  forum_supprime_topic($point);
+  // On appelle l'API WRI du forum qui supprime un topic
+  $rep = file_get_contents(
+    $config['url_api'],
+    false,
+    stream_context_create( ['http' => [
+      'method'  => 'POST',
+      'content' => http_build_query( [
+        'api' => 'supprimer',
+        't' => $point->topic_id,
+      ]),
+    ]])
+  );
+  $json = json_decode($rep);
+  if (!is_object ($json))
+    return erreur( "Erreur suppresion sujet du forum<br/>$rep" );
 
   // suite à la modification dans la base sur les coordonnées GPS, on va supprimer aussi de la table :
   // point_gps si le point_gps n'est plus utilisé du tout

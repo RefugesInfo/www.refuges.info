@@ -10,7 +10,6 @@ d'un utilisateur est récupérée dans la table phpbb_users
 Ensuite sont stocké dans la session ( accessible par toutes
 les pages ):
 $_SESSION['login_utilisateur']
-$_SESSION['password_utilisateur'] (en md5 )
 $_SESSION['id_utilisateur'] ( celui de la table phpbb_users )
 $_SESSION['niveau_moderation'] ayant pour signification
 0 = utilisateur normal
@@ -46,7 +45,7 @@ require_once ("commentaire.php");
 // on vide les traces qu'on a sur l'utilisateur
 function vider_session()
 {
-  foreach (array('login_utilisateur','password_utilisateur','id_utilisateur','niveau_moderation') as $variable)
+  foreach (array('login_utilisateur','id_utilisateur','niveau_moderation') as $variable)
   {
     if (isset($_SESSION[$variable]))
       unset($_SESSION[$variable]);
@@ -59,85 +58,47 @@ elle est donc lancé sur chaque page qui pourrait nécessiter d'être connecté
 ***/
 function auto_login_phpbb_users()
 {
-  global $pdo;
-  // etape 1) vérifions si la session est correct
-  // je suis sûr qu'au niveau sécurité c'est pas top, mais franchement, qui irait pirater le compte d'un utilisateur du forum ?
-  if (isset($_COOKIE['phpbb2mysql_sid']))
-  {
-    $query_connexion_temporaire="SELECT * FROM phpbb_sessions WHERE session_id='".$_COOKIE['phpbb2mysql_sid']."'";
-    if (! ($res = $pdo->query($query_connexion_temporaire)))
-      return erreur("Problème dans la requête pour vous connecter automatiquement",$query_connexion_temporaire);
-    if ( $user = $res->fetch() )
-    {
-      $authentifie=TRUE;
-      $user_id=$user->session_user_id;
-    }
-    else
-      $authentifie=FALSE;
-  }
-  if (!$authentifie AND isset($_COOKIE['phpbb2mysql_data']))
-  {
-    
-    // Etape 2) si c'est une connexion de type permanente avec le cookie phpbb2mysql_data, on vérifie que c'est bien lui
-    $phpbb_user_data=unserialize(stripslashes($_COOKIE['phpbb2mysql_data']));
-    if (!isset($phpbb_user_data['autologinid']) OR !isset($phpbb_user_data['userid']) )
-      $authentifie=FALSE;
-    else
-    {
-      //pas de num row en PDO ..... relou .. celle la renvoie 0 ou 1
-      $query_verif="SELECT COUNT(*) AS auth FROM phpbb_users WHERE user_id=".$phpbb_user_data['userid']." AND user_password='".$phpbb_user_data['autologinid']."'";
-      $res = $pdo->query($query_verif);
-      $r = $res->fetch();
-      if (  $r->auth == 0 )
-	$authentifie=FALSE;
-      else
-      {$user_id=$phpbb_user_data['userid'];$authentifie=TRUE;}
-    }
-  }
-  if (!$authentifie OR ($user_id==-1) )
-    // cet utilisateur n'est pas ou plus connu du forum phpBB ou alors connecté en anonyme sur le forum
-    {
-      vider_session();
-      return FALSE;
-    }
-    // allons chercher les infos de cet utilisateur
-    $query_infos="SELECT * FROM phpbb_users where user_id=$user_id";
-  
-  $res = $pdo->query($query_infos);
-  // ça ne devrait pas être possible puisqu'on à réussi à l'identifier, mais dans le doute
-  if ( ! $user = $res->fetch() )
-  {
-    vider_session();
+  global $pdo, $user_data, $config;
+  vider_session();
+
+  $user_id = @$_COOKIE[$config['cookie_prefix'].'_u'];
+  if ($user_id <= 1) // Pas connecté ou anonymous
     return FALSE;
-  }
-  
+
+  $sql = "SELECT username, group_name, user_form_salt
+    FROM phpbb3_users AS u
+      JOIN phpbb3_sessions AS s ON u.user_id = s.session_user_id
+      JOIN phpbb3_groups AS g USING (group_id)
+    WHERE user_id = ".$user_id."
+      AND session_id = '".$_COOKIE[$config['cookie_prefix'].'_sid']."'";
+  $res = $pdo->query($sql);
+  if (!$res)
+    return FALSE;
+
+  $user_data = $res->fetch();
+  if (!$user_data)
+    return FALSE;
+
   /* on rempli notre session */
-  
-  $_SESSION['password_utilisateur']=$user->user_password;
-  $_SESSION['login_utilisateur']=$user->username;
-  $_SESSION['id_utilisateur']=$user->user_id;
-  
-  
-  /* Attention, Fusion des droit forum avec droit du site
-  Sauf que phpBB n'utilise pas une classification ordonnée, alors que la gestion se sert de ce fait car un admin 
-  a plus de droits qu'un modérateur qui a plus de droit qu'un utilisateur normal
-  chez phpBB :
-  0 = rien
-  1 = admin
-  2 = modérateur
-  chez nous :
-  0 = rien
-  1 = modérateur
-  2 = programmeur
-  3 = admin
-  */
-  switch ($user->user_level)
+  $_SESSION['id_utilisateur']=$user_id;
+  $_SESSION['login_utilisateur']=$user_data->username;
+
+  switch ($user_data->group_name)
   {
-    case 0:$_SESSION['niveau_moderation']=0;break;
-    case 1:$_SESSION['niveau_moderation']=3;break;
-    case 2:$_SESSION['niveau_moderation']=1;break;
-    // programmeur ça n'existe plus pour l'instant
+    case 'REGISTERED':
+    case 'REGISTERED_COPPA':
+    case 'NEWLY_REGISTERED':
+      $_SESSION['niveau_moderation']=0; break; // 0 = rien
+    case 'Modérateurs':
+    case 'GLOBAL_MODERATORS':
+      $_SESSION['niveau_moderation']=1; break; // 1 = modérateur
+    // 2 = programmeur, ça n'existe plus pour l'instant
+    case 'ADMINISTRATORS':
+      $_SESSION['niveau_moderation']=3; break; // 3 = admin
+    default:
+      return FALSE; // S'il n'y a un autre niveau (Bot, ...) on, préfère dire qu'on n'est pas connecté
   }
+
   return TRUE;
 }
 

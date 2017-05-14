@@ -1,6 +1,5 @@
 <?php
-// Affichage des données d'une page du site
-// Contient le pied des pages de refuges.info.
+// Affichage du bas d'une page du site
 // $vue contient les données passées par le fichier PHP
 // $config les données communes à tout WRI
 
@@ -8,40 +7,48 @@
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 ?>
-		<div id="basdepage">
-			<a id="lien-mobile" href="<?=$config['sous_dossier_installation']?>mobile/" title="Passer sur l'application mobile">
-				Version mobile
-			</a> &mdash; 
-			<a id="lien-api" href="<?=$config['sous_dossier_installation']?>api/doc/" title="API">
-				API développeurs
-			</a> &mdash; 
-			<a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">
-				<img src="<?=$config['sous_dossier_installation']?>images/copyleft.png" alt="Copyleft" />
-				Licence des contenus
-			</a>
-			<?php if ($config['debug']) { ?>
-			<a href="http://validator.w3.org/check?uri=referer">
-				<img src="<?=$config['sous_dossier_installation']?>images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
-			</a>
-			<a href="http://jigsaw.w3.org/css-validator/check/referer">
-				<img src="<?=$config['sous_dossier_installation']?>images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1" />
-			</a>
-			<a href="http://www.validome.org/referer">
-				<img src="<?=$config['sous_dossier_installation']?>images/valide/xhtml_1_0.gif" alt="Valid XHTML 1.0" />
-			</a>
-			<?php } ?>
-		</div>
+<div id="basdepage">
+	<a id="lien-mobile" href="<?=$config['sous_dossier_installation']?>mobile/" title="Passer sur l'application mobile">
+		Version mobile
+	</a> &mdash; 
+	<a id="lien-api" href="<?=$config['sous_dossier_installation']?>api/doc/" title="API">
+		API développeurs
+	</a> &mdash; 
+	<a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">
+		<img src="<?=$config['sous_dossier_installation']?>images/copyleft.png" alt="Copyleft" />
+		Licence des contenus
+	</a>
+	<?php if ($config['debug']) { ?>
+	<a href="http://validator.w3.org/check?uri=referer">
+		<img src="<?=$config['sous_dossier_installation']?>images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
+	</a>
+	<a href="http://jigsaw.w3.org/css-validator/check/referer">
+		<img src="<?=$config['sous_dossier_installation']?>images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1" />
+	</a>
+	<?php } ?>
+</div>
 
-		<?if (count ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
-			foreach ($vue->java_lib_foot as $js_lib) {?>
-				<script type="text/javascript" src="<?=$js_lib?>"></script>
-		<?	}?>
-		<?if (file_exists ("vues/$vue->type.js")) {?>
-			<script type="text/javascript">
-			//<![CDATA[
-				<?include ("vues/$vue->type.js")?>
-			//]]>
-			</script>
-		<?}?>
-	</body>
-</html>
+<?if (count ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
+	foreach ($vue->java_lib_foot as $js_lib) {?>
+		<script type="text/javascript" src="<?=$js_lib?>"></script>
+<?	}?>
+<?if (file_exists ("vues/$vue->type.js")) {?>
+	<script type="text/javascript">
+	//<![CDATA[
+		<?include ("vues/$vue->type.js")?>
+	//]]>
+	</script>
+<?}?>
+
+<script type="text/javascript">
+//<![CDATA[
+	// Utilisé dans les menus pour mobile
+	// Si Ajoute la classe c si elle n'est pas attribuée à l'élémént HTML e et vice versa
+	function flip(e, c) {
+		var cs = e.className.split(' '),
+			f = cs.indexOf(c);
+		cs.splice(f, f >= 0, f < 0 ? c : '');
+		e.className = cs.join(' ').trim();
+	}
+//]]>
+</script>

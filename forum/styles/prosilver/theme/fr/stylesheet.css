@@ -1,0 +1,20 @@
+/* Online image */
+.online { background-image: url("./icon_user_online.gif"); }
+
+.imageset.icon_user_online {
+	background-image: url("./icon_user_online.gif");
+	padding-left: 58px;
+	padding-top: 58px;
+}
+
+ul.topiclist.two-columns dt {
+	margin-right: -100px;
+}
+
+ul.topiclist.two-columns dt .list-inner {
+	margin-right: 100px;
+}
+
+.topiclist.two-columns dd.mark {
+	width: 100px;
+}

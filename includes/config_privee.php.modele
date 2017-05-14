@@ -17,7 +17,6 @@ $config['base_pgsql']="test";
 // infos privées qu'on ne veut pas divulger sur github et que vous devez remplir 
 $config['ign_key']='xxxx'; // http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
 $config['bing_key']='yyy'; // https://www.bingmapsportal.com
-$config['os_key']='zzz'; // http://www.ordnancesurvey.co.uk/business-and-government/products/os-openspace/
 $config['thunderforest_key']='kkk'; // https://manage.thunderforest.com
 
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();

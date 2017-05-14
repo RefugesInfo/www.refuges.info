@@ -14,19 +14,15 @@ Structure SQL
 Une première bonne étape est de comprendre la structure de la base de donnée et le pourquoi des champs et de ce qu'elle contient
 (Tout n'est pas présent, surtout dans le cas où le nom du champs se comprend de lui même)
 
-phpbb_* -> toutes les tables du forum phpBB
-=======
-Tout est d'origine ou presque à part :
-* phpbb_topics où un champ :
-topic_id_point a été rajouté pour faire la liaison entre un topic particulier du forum "forum sur les refuges" vers un point
-de notre base.
-* Une gestion de configuration permet aux utilisateurs d'être prévenu à la création d'un nouveau sujet
+phpbb3_* -> toutes les tables du forum phpBB (version 3.2 ou +)
+========
+Tout est d'origine ou presque. Ce qui a été ajouté est uniquement une extension au sens PhpBB 3.1+ dans /forum/ext/RefugesInfo/couplage/...
 
 !! ATENTION !!
 Le site et le forum ne sont pas disociables car les utilisateurs du forum sont ceux utilisés par le site
 
 commentaires
-===========
+============
 La table des commnentaires des internautes sur un point de la base
 * id_point : pour faire le lien vers la table point
 * demande_correction : un champ à 1 quand un modérateur doit être prévenu que ce commnetaire est jugé utile à la fiche par celui qui l'a mis
@@ -49,6 +45,7 @@ Cette notion de mutation des propriétés des points (icones, champs) est géré
 et/ou
 * id_auteur_derniere_modification, l'id de l'utilisateur qui a fait la dernière modif
 ( les autres champs se comprennent d'eux-même )
+* topic_id, lien vers le sujet du forum qui traite de ce point.
 
 
 point_type
@@ -121,7 +118,7 @@ code php
 Modèle MVC
 ----------
 
-Depuis début 2013, on a entreprit un nettoyage de fond du code afin de tenter de mieux ranger les fichiers, les fonctions, mieux définir et mieux factoriser
+Depuis début 2013, on a entrepris un nettoyage de fond du code afin de tenter de mieux ranger les fichiers, les fonctions, mieux définir et mieux factoriser
 afin de s'y retrouver (et préparer l'avenir) au fûr et à mesure que la taille du code grandie.
 
 On a choisi quelque chose au plus proche de "Modèle, Vue, Controlleurs"

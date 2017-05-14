@@ -12,13 +12,11 @@ rien de bien extraordinaire, faite votre propre vue si vous voulez plus compliqu
 **/
 ?>
 <p>
-    <?=$vue->titre?>
+	<?=$vue->titre?>
 </p>	
-<?php if ($vue->contenu or $vue->lien) { ?>
 <p>
-    <?=$vue->contenu?>
-    <?php if ($vue->lien) { ?>
-    <a href="<?=$vue->lien?>"><?=$vue->titre_lien?></a>
-    <?php } ?>
+	<?=$vue->contenu?>
+	<? if ($vue->lien){?>
+		<a href="<?=$vue->lien?>"><?=$vue->titre_lien?></a>
+	<?}?>
 </p>
-<?php } ?>

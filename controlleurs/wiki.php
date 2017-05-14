@@ -28,13 +28,13 @@ $vue->nom_page= $page;
 // La page n'existe pas (ou pas encore !)
 if ($contenu_brut->erreur and $_GET['form_modifier']!=1)
 {
-    header("HTTP/1.0 404 Not Found");
-    $vue->type="page_introuvable";
+    $vue->http_status_code = 404;
+    $vue->type = 'page_simple';
     $vue->titre=$contenu_brut->message;
     if ($_SESSION ['niveau_moderation'] >= 1)
     {
         $vue->contenu="Toutefois, vous pouvez la créér si besoin car vous êtes modérateur en : ";
-        $vue->lien_special=lien_wiki($page)."?form_modifier=1";
+        $vue->lien=lien_wiki($page)."?form_modifier=1";
         $vue->titre_lien="Cliquant ici";
     }
 } // Un modérateur a demandé à la modifier
@@ -49,7 +49,6 @@ else // affichage de la page
 {
     if ($_SESSION ['niveau_moderation'] >= 1)
         $vue->montrer_lien_admin=True;
-    $controlleur->avec_entete_et_pied = $_GET ['head'] != 'no';
 
 	$vue->date=date("d/m/Y",$contenu_brut->ts_unix_page);
     $vue->contenu_html  = wiki_page_html($page);

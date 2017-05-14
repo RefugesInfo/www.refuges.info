@@ -55,6 +55,73 @@ switch ($periode)
 }
 
 ?>
+
+/*==================================================================*/
+/* Modification du style du nouveau forum PhpBB3-prosilver          */
+/*==================================================================*/
+/* Pas de ligne vide en haut */
+#phpbb {
+	padding: 0;
+}
+/* Forum de la largeur de la page */
+#phpbb .wrap {
+	max-width: 100%;
+}
+
+#entete,
+.menu,
+#basdepage {
+	font-family: Times New Roman;
+}
+#basdepage {
+	font-size: 16px;
+}
+
+/* Titre des forums de refuges */
+#phpbb .section-viewtopic .topic-title a:first-child {
+	color: black !important;
+}
+#phpbb .wri-link {
+	font-size: 70%;
+}
+/* Zones masquées */
+#phpbb .headerbar,
+#phpbb .navbar .avatar {
+	display: none;
+}
+/* Personnalisation des couleurs */
+#phpbb .navbar,
+#phpbb #basdepage {
+  background-color: #<?=$couleur_fond?>;
+}
+#phpbb .headerbar, .forumbg,
+#phpbb .headerbar, .forabg,
+#phpbb h3 {
+	background-color: #<?=$couleur_lien?>;
+	background-image: none;
+}
+#phpbb .panel h3,
+#phpbb .alert_text h3,
+#phpbb .stat-block h3,
+#phpbb .stat-block h3 a,
+#phpbb .postbody h3 a {
+	color: white;
+}
+#phpbb .stat-block strong a {
+	color: #a00;
+}
+#phpbb .bg1,
+#phpbb .bg2,
+#phpbb .bg3,
+#phpbb .forabg .forums,
+#phpbb .forumbg .topics > li {
+	background-color: #<?=$couleur_fond?>;
+	background-image: none;
+}
+.avertissement {
+	color: red;
+}
+
 /*==================================================================*/
 /* MISE EN PAGE GENERALE DES TYPES                                  */
 /*==================================================================*/
@@ -343,7 +410,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /*=========PUBLICITE==========*/
-@media screen and (max-width: 940px), screen and (max-height: 550px) {
+@media screen and (max-width: 940px), screen and (max-device-height: 550px) {
   .publicite {
     display: none;
   }
@@ -354,6 +421,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 #entete {
 	position: relative;
 	z-index: 40000;
+	font-size: 13.33px;;
+	font-family: Arial;
 }
 #entete > DIV { /* Définit le bloc à positionner à droite */
 	float: right;
@@ -368,18 +437,18 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 @media screen and (max-width: 800px) {
   #entete > A,
   #entete IMG {
-	max-width: 50%;
 	height: 50px;
   }
 }
-#entete A, #entete SPAN {
+#entete A,
+#entete SPAN,
+#entete > A {
 	font-size: 18px;
 	font-weight: bold;
-	float: right;
-}
-#entete > A, #entete A:first-child {
-    color: #<?=$couleur_lien_visite?>;
 	float: none;
+}
+#entete DIV A:first-child {
+	float: right;
 }
 #entete FORM {
 	display: block;
@@ -388,6 +457,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     border: solid 1px #<?=$couleur_decoration_titres?>;
 	height: 18px;
 	position: relative; top: -3px;
+	width: 306px;
+	margin-top: 5px;
 }
 #entete A:hover {
     color: white;
@@ -439,7 +510,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* ==========MENU POUR ECRANS ========== */
 /* Paramétrage commun aux deux menus en mode ecran large */
-@media screen and (min-width: 641px) and (min-height: 361px) {
+@media screen and (min-width: 641px) and (min-device-height: 361px) {
   /* On inhibe les affichages non souhaités */
   .menu > A,
   .menu SPAN,
@@ -471,7 +542,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     height: 20px;
   }
   .menu UL LI UL {
-    position: relative; top: -500px; /* On le cache loin mais on ne fait pas display:none pour avoir la largeur max une fois montré */
+    position: relative; top: -5000px; /* On le cache loin mais on ne fait pas display:none pour avoir la largeur max une fois montré */
     left: 0;
       height: 0;
     padding: 0;
@@ -503,7 +574,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     padding: 0;
   }
   .menu UL LI UL LI:hover,
-  .menu UL A:hover {
+  .menu UL A:hover,
+  .menu UL DIV:hover {
     background-color: #<?=$couleur_decoration_titres?>;
     color: white;
     text-decoration: none;
@@ -531,7 +603,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /* ==========MENU POUR MOBILES ========== */
 /* Menu simplifié pour petits écrans */
  
-@media screen and (max-width: 640px), screen and (max-height: 360px) {
+@media screen and (max-width: 640px), screen and (max-device-height: 360px) {
   /* On inhibe les affichages non souhaités */
   .screen-only,
   #entete,
@@ -741,13 +813,13 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   margin-bottom: 5px;
 }
 /* Menu deplié */
-@media screen and (min-width: 641px) and (min-height: 361px) {
+@media screen and (min-width: 641px) and (min-device-height: 361px) {
   #carte-nav {
     max-height: calc(100% - 126px);
   }
 }
 /* Carte NAV présentation mobile horizontale */
-@media screen and (min-aspect-ratio: 1/1) and (max-height: 360px) and (min-width: 365px) {
+@media screen and (min-aspect-ratio: 1/1) and (min-width: 365px) and (max-device-height: 360px) {
   #carte-nav {
     float: right;
     width: 67%;

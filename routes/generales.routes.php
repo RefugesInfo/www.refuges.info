@@ -22,9 +22,9 @@ $controlleur->url_base=str_replace('RACINE'.$config['sous_dossier_installation']
 //DOM ajout de RACINE évite d'enlever tous les / quand sous_dossier_installation = /
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 
-// Par défaut, on veut un en-tête et pied de page html, mais dans de rare cas (point-json) on ne veut pas
-// le débat étant à poursuivre ici : http://www.refuges.info/forum/viewtopic.php?t=5294
-$controlleur->avec_entete_et_pied=True;
+// Par défaut, on veut un en-tête et pied de page html, => $vue->type.html sera affiché avec ce qui va bien autour
+// mais dans de rare cas (point-json) on ne veut pas => On remplacera $vue->template par le fichier tout seul
+$vue->template='_page.html';
 
 // On pourrait être tenté de faire une conversion direct de url vers controlleur, mais si un filou commence à indiquer
 // n'importe quelle url, il pourrait réussir à ouvrir des trucs pas souhaités, avec une liste, on s'assure
@@ -35,6 +35,7 @@ switch ($controlleur->url_decoupee[0])
     case "point" :
     case "nav" :
     case "wiki" :
+    case "vue" :
     case "nouvelles" :
     case "point_ajout_commentaire" :
     case "point_recherche" :
@@ -48,7 +49,6 @@ switch ($controlleur->url_decoupee[0])
     case "point-json":
         $controlleur->type="point";
         $vue->template="point.json";
-        $controlleur->avec_entete_et_pied=False;
         break;
     case "index": case "" :
         auto_login_phpbb_users();
@@ -68,14 +68,18 @@ switch ($controlleur->url_decoupee[0])
         break;
     case "test" :
         $controlleur->type="test";
-        $controlleur->avec_entete_et_pied=false;
+        break;
+    case "gestion" :
+        auto_login_phpbb_users();
+        require_once ("gestion.routes.php");
         break;
     case "api" :
         require_once ("api.routes.php");
         exit(0); // magouille car les routes de l'api ne fonctionnent pas tout à fait comme les autres, il faudrait pouvoir uniformiser et pour ça, être plus flexible sur la gestion routes + controlleurs + vues
         break;
     default : 
-        $controlleur->type="page_introuvable"; 
+        $vue->http_status_code = 403; // (uniquement affiché par page_simple)
+        $controlleur->type = 'page_simple';
     break;
 }
 
@@ -86,27 +90,14 @@ if (!isset($vue->type))
 // On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config['chemin_controlleurs'].$controlleur->type.".php");
 
-// FIXME : Chaque controlleur, ou mieux encore, chaque vue (un include ?) devrait être autonome pour dire si il/elle veut l'entête ou non
-if ($controlleur->avec_entete_et_pied)
-{
-    // et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
-    // FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
-    // Si quelqu'un veut le bouger, il a mon feu vert -- sly
-    if (isset ($_SESSION['niveau_moderation']) and $_SESSION['niveau_moderation']>=1)
-        $vue->demande_correction=info_demande_correction ();
+// et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
+// FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
+// Si quelqu'un veut le bouger, il a mon feu vert -- sly
+if (isset ($_SESSION['niveau_moderation']) and $_SESSION['niveau_moderation']>=1)
+	$vue->demande_correction=info_demande_correction ();
 
-    $vue->zones_pour_bandeau=remplissage_zones_bandeau();
-    $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
-    include ($config['chemin_vues']."_entete.html");
-}	
+$vue->zones_pour_bandeau=remplissage_zones_bandeau();
+$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
 
-// Là, c'est bidouille compatibilité avec avant, je pense que chaque controlleur devrait pouvoir décider de la vue sans que soit imposée l'extension
-if (!isset($vue->template))
-    $vue->template=$vue->type.".html";
-
-// FIXME : idem entête
 include ($config['chemin_vues'].$vue->template);
-if ($controlleur->avec_entete_et_pied)
-    include ($config['chemin_vues']."_pied.html");
-
 ?>

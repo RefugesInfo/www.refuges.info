@@ -1,0 +1,10 @@
+Subject: Une demande pour rejoindre votre groupe a été formulée
+
+Cher {USERNAME},
+
+Le membre « {REQUEST_USERNAME} » demande à adhérer au groupe « {GROUP_NAME} » que vous modérez sur « {SITENAME} ».
+Pour approuver/refuser cette demande d’adhésion au groupe, cliquez sur le lien suivant :
+
+{U_PENDING}
+
+{EMAIL_SIG}

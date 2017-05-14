@@ -30,9 +30,9 @@ if ( isset($_REQUEST["id_point"]) )
     $point=infos_point($_REQUEST['id_point'],$meme_si_censure);
     // Stop, le point n'existe pas (ou est censuré et il ne faut pas dire que c'est le cas)
     if ($point->erreur) 
-    {    
-        header("HTTP/1.0 404 Not Found");
-        $vue->type="page_introuvable";
+    {
+        $vue->http_status_code = 404;
+        $vue->type = "page_simple";
         $vue->titre="Point inexistant";
         $vue->contenu=$point->message;
         return "";

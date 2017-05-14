@@ -1,0 +1,5 @@
+services:
+    RefugesInfo.couplage.listener:
+        class: RefugesInfo\couplage\event\listener
+        tags:
+            - { name: event.listener }

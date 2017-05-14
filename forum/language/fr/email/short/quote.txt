@@ -1,0 +1,20 @@
+Subject: Notification de citation dans le sujet - {TOPIC_TITLE}
+
+Bonjour {USERNAME},
+
+Vous recevez cette notification car « {AUTHOR_NAME} » vous a cité dans le sujet « {TOPIC_TITLE} » sur « {SITENAME} ».
+
+Pour consulter le message cité, cliquez sur le lien suivant :
+{U_VIEW_POST}
+
+Pour consulter le sujet, cliquez sur le lien suivant :
+{U_TOPIC}
+
+Pour consulter le forum, cliquez sur le lien suivant :
+{U_FORUM}
+
+Si vous ne souhaitez plus recevoir de notifications des messages vous citant, veuillez modifier vos paramètres de notifications en cliquant sur le lien suivant :
+
+{U_NOTIFICATION_SETTINGS}
+
+{EMAIL_SIG}

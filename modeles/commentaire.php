@@ -128,9 +128,9 @@ function infos_commentaires ($conditions)
   $query="SELECT
              extract('epoch' from commentaires.date) as ts_unix_commentaire,
              extract('epoch' from commentaires.date_photo) as ts_unix_photo,
-             commentaires.*,COALESCE(phpbb_users.username,auteur_commentaire) as auteur_commentaire
+             commentaires.*,COALESCE(phpbb3_users.username,auteur_commentaire) as auteur_commentaire
              $champ_en_plus
-             FROM commentaires LEFT join phpbb_users on commentaires.id_createur_commentaire = phpbb_users.user_id$table_en_plus
+             FROM commentaires LEFT join phpbb3_users on commentaires.id_createur_commentaire = phpbb3_users.user_id$table_en_plus
            WHERE 1=1
              $conditions_sql$condition_en_plus
            ORDER BY commentaires.date DESC
@@ -155,7 +155,8 @@ function infos_commentaires ($conditions)
         if (is_file($config['rep_photos_points'].$nom_fichier))
         {
           $commentaire->photo[$taille]=$config['rep_photos_points'].$nom_fichier;
-          $commentaire->lien_photo[$taille]=$config['rep_web_photos_points'].$nom_fichier;
+          $commentaire->lien_photo[$taille]=$config['rep_web_photos_points'].$nom_fichier
+            .'?'.filemtime($commentaire->photo[$taille]); // Permet de recharger si on bascule laphoto par exemple
         }
       }
       // Ce cas peut exister quand la photo originale est la même que la réduite (déjà suffisament petite, ou raisons historiques)
@@ -277,13 +278,13 @@ function modification_ajout_commentaire($commentaire)
                     $commentaire->date_photo = "$m[1]-$m[2]-$m[3] $m[4]:$m[5]:$m[6]";
     }
 
-	// Rotation manuelle des photos
-	if ($_REQUEST['rotation']) {
-		$nom_fichier = $config['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
-		$image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
-		$image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
-		imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
-	}
+    // Rotation manuelle des photos
+    if ($_REQUEST['rotation']) {
+        $nom_fichier = $config['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
+        $image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
+        $image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
+        imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
+    }
 
     // reparation crado:
     // FIXME, tout correspond, y'a pas moyen de faire un foreach sur $commentaire et remplir les champs SQL ?
@@ -470,63 +471,51 @@ function suppression_commentaire($commentaire)
 /*******************************************************/
 function transfert_forum($commentaire)
 {
-  global $config,$pdo;
-
-  $querycom="SELECT * FROM phpbb_topics WHERE topic_id_point=$commentaire->id_point";
-
-  $res = $pdo->query($querycom);
-  $forum = $res->fetch() ;
-
-        if ($commentaire->id_createur_commentaire<=0)
-            $commentaire->id_createur_commentaire=-1;
-
-        // d'abord declarer le post
-        // note sly 17/08/2013 : j'ajoute un "_" à la suite du nom de l'auteur, c'est un peu curieux, mais ça permet de réduire
-        // les chances qu'on le confondent avec un utilisateur du forum portant le même nom exactement
-        // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
-  $query_insert_post="
-    INSERT INTO phpbb_posts
-      (topic_id,forum_id,poster_id,post_time,post_username)
-    VALUES
-      ($forum->topic_id ,$forum->forum_id ,$commentaire->id_createur_commentaire,$commentaire->ts_unix_commentaire , ".$pdo->quote(substr($commentaire->auteur_commentaire,0,22)."_").")";
-
-  if (!$pdo->exec($query_insert_post))
-    return erreur("Transfert vers le forum échoué",$query_insert_post);
-  $postid = $pdo->lastInsertId();
-
-  // ensuite entrer le texte du post
-  // la folie bbcode: generer un rand sur 10 chiffres, et l'utiliser dans les balises...
-  $bbcodeuid = mt_rand( 1000000000, 9999999999 );
+  global $config;
+  
   if ($commentaire->photo_existe)
   {
     // insere la balise bbcode pour la photo
-    $commentaire->texte.="\n[img:$bbcodeuid]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img:$bbcodeuid]\n";
+    $commentaire->texte.="\n[img]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img]";
     // et deplace la photo, question historique, on peut avoir la réduite et/ou l'originale
     if (isset($commentaire->photo['reduite']))
       $photo_a_conserver=$commentaire->photo['reduite'];
     elseif (isset($commentaire->photo['originale']))
       $photo_a_conserver=$commentaire->photo['originale'];
 
-                // On pourrait se dire que déplacer c'est plus simple. Oui, en effet, mais je préfère profiter de la fonction "suppression_commentaire" toute faite. Et donc faire une copie à cet endroit.
+    // On pourrait se dire que déplacer c'est plus simple. Oui, en effet, mais je préfère profiter de la fonction "suppression_commentaire" toute faite. Et donc faire une copie à cet endroit.
     copy($photo_a_conserver,$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
   }
-  $query_post_text="
-    INSERT INTO phpbb_posts_text
-      (post_id,bbcode_uid,post_text)
-    VALUES
-    ($postid,$bbcodeuid,".$pdo->quote(protege($commentaire->texte)).")";
 
-  $res=$pdo->exec($query_post_text);
-  if (!$res)
-    return erreur("Ajout du commentaire dans le forum échouée",$query_post_text);
+// note sly 17/08/2013 : j'ajoute un "_" à la suite du nom de l'auteur, c'est un peu curieux,
+// mais ça permet de réduire les chances qu'on le confonde avec un utilisateur du forum portant le même nom exactement
+// de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
+  $auteur = 'Anonyme';
+  if ($commentaire->auteur_commentaire)
+    $auteur = substr($commentaire->auteur_commentaire,0,22).'_';
+  while (strlen($auteur) < 3)  // La longueur minimum requise par PhpBB est de 3
+    $auteur .= '_';
 
-    /*** remise à jour du topic ( alors ici c'est le bouquet, un champ qui stoque le premier et le dernier post ?? )***/
-  $query_update_topic="UPDATE phpbb_topics
-      SET
-        topic_last_post_id=$postid
-      WHERE topic_id=$forum->topic_id";
-
-  $pdo->exec($query_update_topic);
+  // On appelle l'API WRI du forum qui cree un post
+  $rep = file_get_contents(
+    $config['url_api'],
+    false,
+    stream_context_create( ['http' => [
+      'method'  => 'POST',
+      'content' => http_build_query( [
+        'api' => 'transferer',
+        't' => $commentaire->topic_id,
+        's' => 'Transféré de la fiche',
+        'm' => $commentaire->texte,
+        'i' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID
+        'u' => $auteur,
+        'd' => $commentaire->date,
+      ]),
+    ]])
+  );
+  $json = json_decode($rep);
+  if (!is_object ($json))
+    return erreur( "Erreur création post du forum<br/>$rep" );
 
   $retour=suppression_commentaire($commentaire);
 
@@ -549,9 +538,9 @@ function messages_du_forum($conditions)
   global $pdo; $messages_du_forum= array();
   $quels_ids="";
   if (isset($conditions->ids_forum))
-    $quels_ids.="AND phpbb_topics.forum_id in ($conditions->ids_forum)";
+    $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
   if (isset($conditions->sauf_ids_forum))
-    $quels_ids.="AND phpbb_topics.forum_id not in ($conditions->sauf_ids_forum)";
+    $quels_ids.="AND phpbb3_topics.forum_id not in ($conditions->sauf_ids_forum)";
   if ( !isset($conditions->ordre))
     $conditions->ordre="ORDER BY date DESC";
 
@@ -560,17 +549,16 @@ function messages_du_forum($conditions)
     // réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
     $query_messages_du_forum=
     "SELECT
-      max(phpbb_posts.post_time) AS date,
-      phpbb_posts.topic_id,
-      phpbb_topics.topic_title,
-      max(phpbb_posts_text.post_id) AS post_id
-    FROM phpbb_posts_text, phpbb_topics, phpbb_posts
+      max(phpbb3_posts.post_time) AS date,
+      phpbb3_posts.topic_id,
+      phpbb3_topics.topic_title,
+      max(phpbb3_posts.post_id) AS post_id
+    FROM phpbb3_topics, phpbb3_posts
         WHERE
-        phpbb_posts_text.post_text!=''
-    AND phpbb_topics.topic_id = phpbb_posts.topic_id
-    AND phpbb_posts_text.post_id = phpbb_posts.post_id
+        phpbb3_posts.post_text!=''
+    AND phpbb3_topics.topic_id = phpbb3_posts.topic_id
     $quels_ids
-    GROUP BY phpbb_posts.topic_id,phpbb_topics.topic_title
+    GROUP BY phpbb3_posts.topic_id,phpbb3_topics.topic_title
     $conditions->ordre
     LIMIT $conditions->limite";
 

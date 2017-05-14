@@ -39,8 +39,15 @@ $config['rep_web_forum_photos']=$config['sous_dossier_installation']."forum/phot
 // Lien direct vers le mode d'emploi
 $config['base_wiki']=$config['sous_dossier_installation']."wiki/";
 
-// des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
+// On centralise ici tous les paramètres PhpBB qui sont figés
+// Des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
 $config['lien_forum']=$config['sous_dossier_installation']."forum/";
+$config['url_api']=$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$config['lien_forum'].'ext/RefugesInfo/couplage/api.php';
+// Il faut forcer le préfixe des noms de cookies du forum à 'phpbb3_wri'
+// TODO : On pourrait aussi aller le chercher dans phpbb3_config.cookie_name mais, bof, ça va plus vite de le fixer ici !
+$config['cookie_prefix']="phpbb3_wri";
+// On paramètre le numéro du forum qui contient les topics de discussion sur les fiches des points
+$config['forum_refuges']=4;
 
 // Paramètrage des cartes vignettes des fiches de points
 $config['chemin_leaflet']=$config['racine_projet'].'leaflet/';
@@ -74,7 +81,7 @@ $config['hauteur_max_vignette']=140*3/4;
 $config['qualite_jpeg']=80;
 
 
-/********** id internes liés à certains éléments remarqueable de la base. Merci d'éviter les numéros en dur dans le code, car si ça doit changer, c'est jeu de la fourmis ************/
+/********** id internes liés à certains éléments remarquables de la base. Merci d'éviter les numéros en dur dans le code, car si ça doit changer, c'est jeu de la fourmis ************/
 // sly  27/04/06 je préfère me baser sur l'id pour le retrouver plutôt que son type ( que je viens d'ailleurs de modifier )
 $config['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
 $config['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
@@ -119,7 +126,7 @@ $config['defaut_max_nombre_point']=121; // NicoM : pourquoi 120 ? sly: pourquoi 
 // lien direct pour se connecter, ou créer un compte sur le forum
 $config['connexion_forum']=$config['lien_forum']."login.php";
 // lien vers le profil d'un utilisateur
-$config['fiche_utilisateur']=$config['lien_forum']."profile.php?mode=viewprofile&u=";
+$config['fiche_utilisateur']=$config['lien_forum']."memberlist.php?mode=viewprofile&u=";
 $config['forum_refuge']=$config['lien_forum']."viewtopic.php?t=";
 
 // l'id des modérateurs du forum, pour qu'ils puissent devenir modérateur du site
@@ -214,9 +221,8 @@ require_once("config_privee.php");
 $config['chemin_leaflet'].=$config['debug']?'src/':'dist/';
 $config['url_chemin_leaflet'].=$config['debug']?'src/':'dist/';
 
-// Le forum est bourré de warning que je ne compte pas vraiment reprendre, oui, j'ai mis ça après le include de config_privee.php car si debug vaut true dans le config_privee mis avant, on ne veut quand même pas 
-// les warnings du forum qui remplissent l'écran
-if ($config['debug'] and !preg_match("/forum/",$_SERVER['REQUEST_URI']))
+//Note : le forum n'appelle plus ce fichier !
+if ($config['debug'])
 {
   ini_set('error_reporting', E_ALL ^ E_NOTICE);
   ini_set('display_errors', '1');

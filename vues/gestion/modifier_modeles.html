@@ -1,0 +1,9 @@
+<div class="contenu">
+	<h3><a href="./">Retour</a>&nbsp;Zone de gestion</h3>
+	<p>Ci jointe la liste des modèles existants pour les différents points de la base</p>
+	<ul>
+		<?php foreach ($vue->types_points as $id => $nom) { ?>
+			<li><a href="/point_formulaire_modification.php?id_point=<?=$id?>"><?=$nom?></a></li>
+		<?}?>
+	</ul>
+</div>

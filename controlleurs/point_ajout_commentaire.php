@@ -86,9 +86,9 @@ if (!$point->erreur)
     $vue->lien_forum_point=$config['forum_refuge'].$info_forum_point->topic_id;
 }
 else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans le vent !
-{  
-    header("HTTP/1.0 404 Not Found");
-    $vue->type="page_introuvable";
+{
+    $vue->http_status_code = 404;
+    $vue->type = "page_simple";
     $vue->titre="Impossible d'ajouter un commentaire car : $point->message";
 }
 ?> 
