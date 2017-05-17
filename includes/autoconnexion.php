@@ -66,18 +66,19 @@ function auto_login_phpbb_users()
     return FALSE;
 
   $sql = "SELECT username, group_name, user_form_salt
-    FROM phpbb3_users AS u
-      JOIN phpbb3_sessions AS s ON u.user_id = s.session_user_id
-      JOIN phpbb3_groups AS g USING (group_id)
-    WHERE user_id = ".$user_id."
-      AND session_id = '".$_COOKIE[$config['cookie_prefix'].'_sid']."'";
+    FROM phpbb3_users
+      JOIN phpbb3_groups USING (group_id)
+    WHERE user_id = ".$user_id;
   $res = $pdo->query($sql);
-  if (!$res)
+  if (!$res) {
+    echo $pdo->errorInfo()[2];
     return FALSE;
-
+  }
   $user_data = $res->fetch();
-  if (!$user_data)
+  if (!$user_data) {
+    echo $pdo->errorInfo()[2];
     return FALSE;
+  }
 
   /* on rempli notre session */
   $_SESSION['id_utilisateur']=$user_id;

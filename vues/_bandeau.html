@@ -159,13 +159,3 @@ foreach ($menus AS $id) {?>
 
 <?/* Juste pour que les repliements de la ligne de menus sur une page étroite ne bavent pas sur la page */?>
 <div id="fin-entete"></div>
-
-<!-- A ENLEVER A TERME -->
-<?if (!$_SESSION['login_utilisateur']) {?>
-<div><b>
-	<p style="color:red; text-align:center; margin: 0">Nous avons procédé à une évolution conséquente du logiciel du forum.</p>
-	<p style="color:red; text-align:center; margin: 0">Si votre mot de passe ne fonctionne plus, récupérez le <a href="/forum/ucp.php?mode=sendpassword">ICI.</a></p>
-	<p style="color:red; text-align:center; margin: 0">Si vous êtes bloqués, envoyez moi un mail <a href="mailto:refuges@la-foret.info?subject=Compte%20refuges.info%20bloqué&body=Bonjour%0a%0aJe%20n&#39;arrive%20pas%20&agrave;%20me%20connecter%20ou%20&agrave;%20réinitialiser%20mon%20mot%20de%20passe%0aNom%20du%20compte:%20XXXXXXXXX">à cette adresse.</a></p>
-	<hr/>
-</b></div>
-<?}?>

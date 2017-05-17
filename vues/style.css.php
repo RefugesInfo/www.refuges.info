@@ -104,7 +104,9 @@ switch ($periode)
 #phpbb .alert_text h3,
 #phpbb .stat-block h3,
 #phpbb .stat-block h3 a,
-#phpbb .postbody h3 a {
+#phpbb .postbody h3 a,
+#phpbb #postform .review,
+#phpbb #postform .review a {
 	color: white;
 }
 #phpbb .stat-block strong a {
