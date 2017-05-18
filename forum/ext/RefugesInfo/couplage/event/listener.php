@@ -50,6 +50,9 @@ class listener implements EventSubscriberInterface
 		global $template, $request;
 		$request->enable_super_globals();
 
+		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
+		$template->assign_var('STYLE_CSS_TIME', filemtime(__DIR__.'/../../../../../vues/style.css.php'));
+
 		// Les fichiers template du bandeau et du pied de page étant au format "MVC+template type refuges.info",
 		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant dans des variables des templates de PhpBB V3.2
 		$url_vue = 'http://'.$_SERVER['SERVER_NAME'].preg_replace('/forum.*/i','',$_SERVER['REQUEST_URI']).'vue/';
