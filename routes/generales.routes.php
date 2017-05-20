@@ -78,7 +78,7 @@ switch ($controlleur->url_decoupee[0])
         exit(0); // magouille car les routes de l'api ne fonctionnent pas tout à fait comme les autres, il faudrait pouvoir uniformiser et pour ça, être plus flexible sur la gestion routes + controlleurs + vues
         break;
     default : 
-        $vue->http_status_code = 403; // (uniquement affiché par page_simple)
+        $vue->http_status_code = 404; // (uniquement affiché par page_simple)
         $controlleur->type = 'page_simple';
     break;
 }
