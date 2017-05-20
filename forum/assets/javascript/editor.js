@@ -415,9 +415,9 @@ function getCaretPosition(txtarea) {
 			phpbb.showDragNDrop(textarea);
 		}
 
-		$('body').on('keydown', function (e) {
+		$('textarea').on('keydown', function (e) {
 			if (e.which === 13 && (e.metaKey || e.ctrlKey)) {
-				document.getElementsByName("post")[0].click();//DCMM MODIF DOM !!
+				$(this).closest('form').submit();
 			}
 		});
 	});
