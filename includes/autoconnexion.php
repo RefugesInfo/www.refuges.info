@@ -35,12 +35,12 @@ require_once ("bdd.php");
 require_once ("gestion_erreur.php");
 require_once ("commentaire.php");
 
-			
-/*** 
-	fonction de reconnaissance d'un utilisateur déjà connecté sur le forum, on lui épargne le double login 
-	On peut être connecté à phpBB de deux façon :
-	1) avec leur système interne de session ( Ils-n'auraient pas pu faire comme tout le monde chez phpBB ?? )
-	2) avec le cookie permanent
+
+/***
+    fonction de reconnaissance d'un utilisateur déjà connecté sur le forum, on lui épargne le double login
+    On peut être connecté à phpBB de deux façon :
+    1) avec leur système interne de session ( Ils-n'auraient pas pu faire comme tout le monde chez phpBB ?? )
+    2) avec le cookie permanent
 ***/
 // on vide les traces qu'on a sur l'utilisateur
 function vider_session()
@@ -52,7 +52,7 @@ function vider_session()
   }
 }
 
-/*** 
+/***
 Cette fonction a pour rôle "d'auto-connecter" les utilisateurs s'ils ont un cookie phpbb sur le reste du site wri
 elle est donc lancé sur chaque page qui pourrait nécessiter d'être connecté
 ***/
@@ -67,8 +67,12 @@ function auto_login_phpbb_users()
 
   $sql = "SELECT username, group_name, user_form_salt
     FROM phpbb3_users
+      JOIN phpbb3_sessions ON (session_user_id = user_id)
+      LEFT JOIN phpbb3_sessions_keys USING (user_id)
       JOIN phpbb3_groups USING (group_id)
-    WHERE user_id = ".$user_id;
+    WHERE user_id = ".$_COOKIE[$config['cookie_prefix'].'_u']."
+      AND (session_id = '".$_COOKIE[$config['cookie_prefix'].'_sid']."'
+           OR key_id = '".md5($_COOKIE[$config['cookie_prefix'].'_k'])."')";
   $res = $pdo->query($sql);
   if (!$res) {
     echo $pdo->errorInfo()[2];
@@ -86,27 +90,31 @@ function auto_login_phpbb_users()
 
   switch ($user_data->group_name)
   {
-    case 'REGISTERED':
-    case 'REGISTERED_COPPA':
-    case 'NEWLY_REGISTERED':
-      $_SESSION['niveau_moderation']=0; break; // 0 = rien
+    // 3 = admin
+    case 'ADMINISTRATORS':
+      $_SESSION['niveau_moderation']=3;
+      return TRUE;
+
+    // 2 = programmeur, ça n'existe plus pour l'instant
+
+    // 1 = modérateur
     case 'Modérateurs':
     case 'GLOBAL_MODERATORS':
-      $_SESSION['niveau_moderation']=1; break; // 1 = modérateur
-    // 2 = programmeur, ça n'existe plus pour l'instant
-    case 'ADMINISTRATORS':
-      $_SESSION['niveau_moderation']=3; break; // 3 = admin
-    default:
-      return FALSE; // S'il n'y a un autre niveau (Bot, ...) on, préfère dire qu'on n'est pas connecté
-  }
+      $_SESSION['niveau_moderation']=1;
+      return TRUE;
 
-  return TRUE;
+    // S'il n'y a un autre niveau (Bot, ...) on, préfère dire qu'on n'est pas connecté
+    // case 'REGISTERED':
+    // case 'REGISTERED_COPPA':
+    // case 'NEWLY_REGISTERED':
+  }
+  return FALSE;
 }
 
 // Fonction qui va permettre ensuite d'afficher la "petite étoile :*" en haut à coté du nom du modérateur
 // Pour le prévenir si un commentaire est en attente avec une demande de correction
 // FIXME : cette fonction n'a rien à faire dans autoconnexion.php
-function info_demande_correction () 
+function info_demande_correction ()
 {
     $conditions_attente_correction = new stdclass;
     $conditions_attente_correction->demande_correction=True;
