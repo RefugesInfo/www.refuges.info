@@ -23,14 +23,14 @@ Le site et le forum ne sont pas disociables car les utilisateurs du forum sont c
 
 commentaires
 ============
-La table des commnentaires des internautes sur un point de la base
+La table des commentaires des internautes sur un point de la base
 * id_point : pour faire le lien vers la table point
 * demande_correction : un champ à 1 quand un modérateur doit être prévenu que ce commnetaire est jugé utile à la fiche par celui qui l'a mis
 * qualite_supposee : un champ de type int qui indique la probable qualité d'un commentaire : démarre à 0 (-2, -1, +1 ou +2 si un internaute donne son avis +4 si un modérateur le juge utile )
 -- C'est un peu tordu comme méthode mais cela peut limiter un peu le nombre de controles à faire par les modérateurs en évitant qu'un commentaire jugé utiles par
 -- plein de gens ne soit considéré comme "non utile" par un seul.
 * auteur : le nom de l'auteur (c'est un champs laissé libre pour que les internautes non connectés puissent mettre ce qu'il veulent)
-* id_createur : Le numéro, dans la table phpbb_users de l'internaute, connecté ayant mis ce commentaire
+* id_createur : Le numéro, dans la table phpbb3_users de l'internaute, connecté ayant mis ce commentaire
 
 points
 ======

@@ -5,8 +5,8 @@ order deny,allow
 # Decommenter les deux lignes suivantes pour bloquer l'accès au site
 	#deny from all
 	#ErrorDocument 403 /maintenance.html
-allow from 2001:cb00:... # Mettre l'adresse du développeur ici
-allow from 2001:bc8:37ca:101::1 # Mettre l'adresse du serveur (pour les requettes AJAX intra-site)
+#allow from 2001:cb00:... # Mettre l'adresse du développeur ici
+#allow from 2001:bc8:37ca:101::1 # Mettre l'adresse du serveur (pour les requettes AJAX intra-site)
 <FilesMatch "^maintenance.html$">
 	Allow from all
 </FilesMatch>

@@ -63,7 +63,7 @@ ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.$config['chemin_mo
 
 /** Auto chargement des déclarations de classes
     les classes ModeleClasse sont déclarées dans modeles/Classe.php
-    les classes ControleurClasse sont déclarése dans controleurs/Classe.php
+    les classes ControleurClasse sont déclarées dans controleurs/Classe.php
     les autres classes Classe sont déclarées dans includes/Classe.php
 **/
 spl_autoload_register(function ($class) {
