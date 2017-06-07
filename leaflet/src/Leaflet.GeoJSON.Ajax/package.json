@@ -1,0 +1,24 @@
+{
+  "name": "Leaflet.GeoJSON.Ajax",
+  "version": "1.0.0",
+  "description": "Leaflet plugin for remote GeoJSON layers",
+  "directories": {
+    "lib": "src"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Dominique92/Leaflet.GeoJSON.Ajax"
+  },
+  "keywords": [
+    "leaflet",
+    "maps"
+  ],
+  "dependencies": {
+    "leaflet": "^1.0.3"
+  },
+  "devDependencies": {},
+  "author": "Dominique Cavailhez",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}

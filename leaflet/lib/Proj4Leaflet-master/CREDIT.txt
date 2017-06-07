@@ -1,2 +1,0 @@
-https://github.com/kartena/Proj4Leaflet
-https://github.com/kartena/Proj4Leaflet/commit/a71147055b60380b1e9e9db69df994221009d268

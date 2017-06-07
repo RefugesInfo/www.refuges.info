@@ -1,2 +1,0 @@
-https://github.com/Leaflet/Leaflet/tree/v1.0.3
-https://github.com/Leaflet/Leaflet/commit/ed36a04aefd12cb92c78074fe63a8e460db1d464

@@ -3,11 +3,9 @@
  * Traduction des textes en français
  */
 
-L.myLeafletVersion = '1.0';
+L.myLeafletVersion = '1.0.0';
 
 L.Control.Scale.prototype.options.imperial = false;
-
-L.Edit.PolyVerticesEdit.prototype.options.touchIcon.options.iconSize = new L.Point(8, 8);
 
 if (navigator.language || navigator.userLanguage == 'fr') {
 

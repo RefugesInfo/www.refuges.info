@@ -29,8 +29,8 @@ foreach ($css_files[0] AS $css_file) {
 		$css_compress->run (file_get_contents ($css_file))
 	);
 }
-cp ('../lib/Leaflet-1.0.3/dist/images/marker-shadow.png', '../dist/images/Leaflet-1.0.3-dist-images-marker-shadow.png');
-cp ('../lib/Leaflet-1.0.3/dist/images/marker-icon-2x.png', '../dist/images/Leaflet-1.0.3-dist-images-marker-icon-2x.png');
+cp ('../node_modules/leaflet/dist/images/marker-shadow.png',  '../dist/images/node_modules-leaflet-dist-images-marker-shadow.png');
+cp ('../node_modules/leaflet/dist/images/marker-icon-2x.png', '../dist/images/node_modules-leaflet-dist-images-marker-icon-2x.png');
 
 echo "<div>Ecriture de ../dist/leaflet.css</div>";
 file_put_contents ('../dist/leaflet.css', "/*
@@ -54,6 +54,7 @@ preg_match_all ('/\n\s*\'(([^\/]).+\.js)\'/', $lsrcs, $jsf);
 $lsrcs .= "\n'../lib/MyLeaflet-master"; // Add self reference
 preg_match_all ('/\n\s*\'\.\.\/(lib\/[^\/]+)/', $lsrcs, $gits);
 
+$gitsv = [];
 foreach ($gits[1] AS $g)
 	if (is_file ("../$g/CREDIT.txt")) {
 		$gitsvs = explode ("\n", trim (file_get_contents ("../$g/CREDIT.txt")));
@@ -63,9 +64,10 @@ sort ($gitsv);
 
 $mini_js [] = "/*
  * Integrated by Dominique Cavailhez (c) 2016
- * https://github.com/Dominique92/MyLeaflet
+ * https://github.com/Dominique92/MyLeaflet"
+.(count($gitsv)?"
  * Includes parts of :
-\t" .implode ("\n\t", $gitsv) ."
+\t" .implode ("\n\t", $gitsv) : "") ."
 */
 ";
 

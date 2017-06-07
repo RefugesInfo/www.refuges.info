@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<title>Leaflet Spain IDEE layer</title>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
+
+	<!-- Leaflet kernel -->
+	<link  href="https://npmcdn.com/leaflet/dist/leaflet.css" rel="stylesheet" />
+	<script src="https://npmcdn.com/leaflet/dist/leaflet-src.js"></script>
+
+	<script src="../src/layers/IDEE.js"></script>
+</head>
+
+<body>
+	<p>Leaflet plugin for Spain IDEE maps</p>
+	<p>This demo runs on Leaflet V<script>document.write(L.version)</script></p>
+
+	<div id="map" style="width: 800px; height: 600px"></div>
+
+	<!-- Doc & debug -->
+	<p>See the code of this layer <a href="../src/layers/IDEE.js">here</a></p>
+	<p>See the full code & docs on <a href= "https://github.com/Dominique92/Leaflet.Map.MultiVendors">Github Dominique92/Leaflet.Map.MultiVendors</a></p>
+
+	<a href="Italy-IGM.html"
+	   style="position:absolute;top:200px;right:0;text-decoration:none;font-size:large"
+	   title="Test IGM">
+		&#10144;
+	</a>
+
+	<!-- Insert the javascript after all <div> are defined -->
+	<script>
+		var layers = {
+			'IDEE': new L.TileLayer.WMS.IDEE(),
+			'IDEE photo': new L.TileLayer.WMS.IDEE.Photo()
+		};
+
+		var map = new L.Map('map', {
+			center: new L.LatLng(40, -3),
+			zoom: 6,
+			layers: [layers.IDEE]
+		});
+
+		new L.Control.Layers(layers).addTo(map);
+	</script>
+</body>
+</html>

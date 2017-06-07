@@ -1,0 +1,25 @@
+{
+  "name": "Leaflet.draw.plus",
+  "version": "1.0.0",
+  "description": "Leaflet plugin extension for remote GeoJSON layers",
+  "directories": {
+    "lib": "src"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Dominique92/Leaflet.draw.plus"
+  },
+  "keywords": [
+    "leaflet",
+    "maps"
+  ],
+  "dependencies": {
+    "leaflet": "^1.0.3",
+    "leaflet-draw": "^0.4.9",
+  },
+  "devDependencies": {},
+  "author": "Dominique Cavailhez",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}

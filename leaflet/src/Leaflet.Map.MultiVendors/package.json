@@ -1,0 +1,24 @@
+{
+  "name": "Leaflet.Map.MultiVendors",
+  "version": "1.0.0",
+  "description": "Leaflet plugin for multi vendors maps & projections",
+  "directories": {
+    "lib": "src"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Dominique92/Leaflet.Map.MultiVendors"
+  },
+  "keywords": [
+    "leaflet",
+    "maps"
+  ],
+  "dependencies": {
+    "leaflet": "^1.0.3"
+  },
+  "devDependencies": {},
+  "author": "Dominique Cavailhez",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}
