@@ -50,7 +50,7 @@
 						if ($nouveau_point->id_createur==0) { ?>
 							par <?=$nouveau_point->nom_createur?>
 						<?php } else { ?>
-						par <a href="<?=$config['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
+						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
 						<?}?>
 					<?}?>
 						: <a href="<?=$nouveau_point->lien?>"><?=$nouveau_point->nom?></a>
@@ -60,7 +60,7 @@
 						<?}?>
 				</li>
 			<?}?>
-			<li><a href="<?=$config['sous_dossier_installation']?>point_formulaire_recherche/" title="Recherche d'un points de refuges.info par le nom"><b>Recherche...</b></a></li>
+			<li><a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche/" title="Recherche d'un points de refuges.info par le nom"><b>Recherche...</b></a></li>
 		</ul>
 		<br/>
 		<h4><?=$vue->stat->nbcomm?> commentaires</h4>
@@ -71,7 +71,7 @@
 					&nbsp;<?=$nouveau_commentaire['texte']?>
 				</li>
 			<?}?>
-				<li><a href="<?=$config['sous_dossier_installation']?>nouvelles/" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>
+				<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>
 		</ul>
 		<br/>
 	</div>

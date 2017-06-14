@@ -7,13 +7,13 @@ header("Content-Type: application/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 include("xml.class.php");
 
 $xmlOutput = new XMLSerializer;
-$news['copyright'] = $config[copyright_API];
+$news['copyright'] = $config_wri[copyright_API];
 echo $xmlOutput->generateValidXmlFromArray($news);
 
 ?>

@@ -1,5 +1,5 @@
 <div class="contenu">
-<script type="text/javascript"><? include ($config['chemin_vues']."formulaire_exportations.js");?></script>
+<script type="text/javascript"><? include ($config_wri['chemin_vues']."formulaire_exportations.js");?></script>
 <!-- =========================== -->
 <!-- ======= BARATIN ===== -->
 <h3><?=$vue->titre?></h3> 
@@ -9,7 +9,7 @@
    </dl>
 <!-- ======= FORMULAIRE ===== -->
 
-  <form class="wri" id='form_export' method='post' action="<?=$config['sous_dossier_installation']?>formulaire_rss/">
+  <form class="wri" id='form_export' method='post' action="<?=$config_wri['sous_dossier_installation']?>formulaire_rss/">
     <fieldset id="types_nouvelles">
         <legend>Choix des nouvelles à afficher
             <button type='button' onclick="checkboites('types_nouvelles',true); return false;">☒</button>

@@ -246,7 +246,7 @@ foreach ($points_bruts as $point) {
 			$points->$i->sym = $point->symbole;
 	}
     // On affiche les coordonnées que si elles ne sont pas cachées
-    if($point->id_type_precision_gps != $config['id_coordonees_gps_fausses']) {
+    if($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses']) {
         $points->$i->coord['long'] = $point->longitude;
         $points->$i->coord['lat'] = $point->latitude;
     }
@@ -308,7 +308,7 @@ foreach ($points_bruts as $point) {
 
     /****************************** POINTS PROCHES ******************************/
 
-    if ($point->id_type_precision_gps != $config['id_coordonees_gps_fausses'] &&
+    if ($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses'] &&
         $req->nb_points_proches != 0)
     {
         $conditions = new stdClass;
@@ -399,25 +399,25 @@ unset($points_bruts, $i);
 
 switch ($req->format) {
     case 'kml': case 'kmz':
-        include($config['chemin_vues'].'/api/points.vue.kml');
+        include($config_wri['chemin_vues'].'/api/points.vue.kml');
         break;
     case 'gml':
-        include($config['chemin_vues'].'/api/points.vue.gml');
+        include($config_wri['chemin_vues'].'/api/points.vue.gml');
         break;
     case 'gpx': case 'gpi':
-        include($config['chemin_vues'].'/api/points.vue.gpx');
+        include($config_wri['chemin_vues'].'/api/points.vue.gpx');
         break;
     case 'csv':
-        include($config['chemin_vues'].'/api/points.vue.csv');
+        include($config_wri['chemin_vues'].'/api/points.vue.csv');
         break;
     case 'xml':
-        include($config['chemin_vues'].'/api/points.vue.xml');
+        include($config_wri['chemin_vues'].'/api/points.vue.xml');
         break;
     case 'rss':
-        include($config['chemin_vues'].'/api/points.vue.rss');
+        include($config_wri['chemin_vues'].'/api/points.vue.rss');
         break;
     case 'geojson': default:
-        include($config['chemin_vues'].'/api/points.vue.json');
+        include($config_wri['chemin_vues'].'/api/points.vue.json');
         break;
 }
 

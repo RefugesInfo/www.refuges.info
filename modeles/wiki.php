@@ -12,14 +12,14 @@ require_once ("bdd.php");
 // Fonction pour réaliser un lien vers une page du wiki dont le nom est passé en paramètre
 function lien_wiki($page="/")
 {
-    global $config;
-    return $config['base_wiki'].strtolower($page);
+    global $config_wri;
+    return $config_wri['base_wiki'].strtolower($page);
 }
 
 // retourne plus simplement le contenu de la page wiki concernée au format html (le bbcode a été converti en html)
 function wiki_page_html($page)
 {
-    global $config,$pdo;
+    global $config_wri,$pdo;
     $contenu_page=wiki_page_brut($page);
     if ($contenu_page->erreur)
         return "Contenu inexistant";
@@ -41,7 +41,7 @@ function wiki_page_html($page)
 // Récupération en format brut
 function wiki_page_brut($page)
 {
-    global $config,$pdo;
+    global $config_wri,$pdo;
     $page=$pdo->quote($page);
     $query="SELECT *,extract('epoch' from date) as ts_unix_page
               FROM pages_wiki
@@ -59,7 +59,7 @@ function wiki_page_brut($page)
 // fonction qui va ré-écrire le contenu de la page
 function ecrire_contenu($page,$contenu)
 {
-  global $config,$pdo;
+  global $config_wri,$pdo;
     $page=$pdo->quote($page);
     $contenu=$pdo->quote($contenu);
     $query="insert into pages_wiki (nom_page,contenu) VALUES ($page,$contenu)";
@@ -73,7 +73,7 @@ function ecrire_contenu($page,$contenu)
 // Supprime la page et toute ses anciennes versions
 function supprimer_page($page)
 {
-    global $config,$pdo;
+    global $config_wri,$pdo;
     $page=$pdo->quote($page);
     $query="delete from pages_wiki where nom_page=$page";
     $res=$pdo->query($query);

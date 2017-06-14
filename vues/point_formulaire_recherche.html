@@ -4,7 +4,7 @@
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 // $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
 // 17/10/11 Dominique : Création
 // 15/02/13 jmb : legere modifs "info_base"
@@ -16,7 +16,7 @@
 	<h4>Rechercher sur ce site</h4>
 
 	<!-- =========================== -->
-	<form class="wri" method="post" action="<?=$config['sous_dossier_installation']?>point_recherche">
+	<form class="wri" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
 
 <!-- ========== PREMIER GROUPE: CRITERES COMMUNS ================= -->
 <fieldset>
@@ -33,7 +33,7 @@
 		<label title="type d'hébergement, gîte, cabane ...">Type
 			<select name="id_point_type">
 				<option value="">(tous)</option>
-				<option value="<?=$config['tout_type_refuge']?>" selected="selected">Tout type de refuge</option>
+				<option value="<?=$config_wri['tout_type_refuge']?>" selected="selected">Tout type de refuge</option>
 				<?php if (is_array($vue->infos_base->types_point)) 
 					foreach ($vue->infos_base->types_point AS $t) {?>
 						<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
@@ -221,8 +221,8 @@
 	<legend>Résultats</legend>
 		<fieldset>
 			<label title="Si cette case est cochée, la recherche se limitera aux X premiers résultats">
-				<input type="checkbox" name="limite" value="<?=$config['points_maximum_recherche']?>" checked="checked" />
-				Limiter le nombre de résultat aux <?=$config['points_maximum_recherche']?> premiers
+				<input type="checkbox" name="limite" value="<?=$config_wri['points_maximum_recherche']?>" checked="checked" />
+				Limiter le nombre de résultat aux <?=$config_wri['points_maximum_recherche']?> premiers
 			</label>
 			<label title="En plus des résultats de WRI, inclure les points OpenStreetMap grâce au service Nominatim">
 				<input type="checkbox" name="avec_point_osm" value="1" />

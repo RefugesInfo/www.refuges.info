@@ -7,12 +7,12 @@ header("Content-Type: text/csv; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 $separateur=";";
 
-echo "#".$config[copyright_API]."\r\n";
+echo "#".$config_wri[copyright_API]."\r\n";
 echo "date".$separateur."categorie".$separateur."lien".$separateur."titre".$separateur."auteur\r\n";
 
 foreach ($news AS $nouvelle) {

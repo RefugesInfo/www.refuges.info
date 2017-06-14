@@ -14,12 +14,12 @@ require_once ("polygone.php");
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
 $vue->description='Base de donnee de refuges, abris, gites, sommets et divers points en montagne avec cartes satellite, descriptions et coordonnees GPS';
 
-$vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
-$vue->java_lib_foot [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
-$vue->fond_carte_par_defaut= $config['carte_base'];
+$vue->css           [] = $config_wri['url_chemin_leaflet'].'leaflet.css?'.filemtime($config_wri['chemin_leaflet'].'leaflet.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_leaflet'].'leaflet.js?' .filemtime($config_wri['chemin_leaflet'].'leaflet.js');
+$vue->fond_carte_par_defaut= $config_wri['carte_base'];
 
 $conditions_notre_zone = new stdClass;
-$conditions_notre_zone->ids_polygones=$config['id_zone_accueil'];
+$conditions_notre_zone->ids_polygones=$config_wri['id_zone_accueil'];
 $polygones=infos_polygones($conditions_notre_zone);
 $vue->bbox=$polygones[0]->bbox;
 

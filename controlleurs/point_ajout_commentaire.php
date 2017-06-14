@@ -52,11 +52,11 @@ if (!$point->erreur)
 
             $commentaire->demande_correction=$_POST['demande_correction'];
             // Et si on trouve un mot clé censuré
-            if (isset ($config['censure']) && preg_match ('/'.$config['censure'].'/i', retrait_accents ($commentaire->texte)))
+            if (isset ($config_wri['censure']) && preg_match ('/'.$config_wri['censure'].'/i', retrait_accents ($commentaire->texte)))
               $commentaire->demande_correction=2;
 
             // Et si la fiche concerne un batiment en montagne, on le signale systématiquement à un modérateur
-            if ($point->id_point_type == $config['id_batiment_en_montagne'])
+            if ($point->id_point_type == $config_wri['id_batiment_en_montagne'])
               $commentaire->demande_correction=3;
 
             $commentaire->id_createur_commentaire=$_SESSION['id_utilisateur'];
@@ -83,7 +83,7 @@ if (!$point->erreur)
     $vue->lien_wiki_que_mettre=lien_wiki('que_mettre');
     $vue->lien_wiki_restriction_licence=lien_wiki('restriction_licence');
     $info_forum_point=infos_point_forum($point);
-    $vue->lien_forum_point=$config['forum_refuge'].$info_forum_point->topic_id;
+    $vue->lien_forum_point=$config_wri['forum_refuge'].$info_forum_point->topic_id;
 }
 else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans le vent !
 {

@@ -29,9 +29,9 @@ $overpass_query_template='<osm-script timeout="1800" element-limit="1073741824">
 
 function requete_overpass_api($xml_query)
 {
-  global $config;
+  global $config_wri;
 
-  $ch = curl_init($config['overpass_api']);
+  $ch = curl_init($config_wri['overpass_api']);
   
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, "data=".$xml_query);
@@ -64,10 +64,10 @@ while ($bbox=$res->fetch())
   $bboxes[]=$bbox;
 
 $prefix="osm_temporaire";
-$params="-d ".$config['base_pgsql']." -H ".$config['serveur_pgsql']." -U ".$config['utilisateur_pgsql']."";
+$params="-d ".$config_wri['base_pgsql']." -H ".$config_wri['serveur_pgsql']." -U ".$config_wri['utilisateur_pgsql']."";
 
 // osm2pgsql n'accepte pas le mot de passe en paramètre, mais dans une variable d'environnement
-putenv("PGPASS=".$config['mot_de_passe_pgsql']);
+putenv("PGPASS=".$config_wri['mot_de_passe_pgsql']);
 
 // L'indexe et l'id dans notre base, les éléments d'après sont les critères OSM qui correspondent à nos types de polygones
 $conditions[12][]="<has-kv k=\"boundary\" v=\"national_park\"/>"; // parc nationnaux

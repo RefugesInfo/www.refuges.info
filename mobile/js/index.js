@@ -2,7 +2,7 @@
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
 // $modele contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
 // 14/03/2013 Léo - Création
 

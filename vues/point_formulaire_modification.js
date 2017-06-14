@@ -2,9 +2,9 @@
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
 // $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
-include ($config['racine_projet'].'vues/includes/cartes.js');
+include ($config_wri['racine_projet'].'vues/includes/cartes.js');
 ?>
 
 var map = new L.Map('carte-edit'),
@@ -14,7 +14,7 @@ var map = new L.Map('carte-edit'),
 		'Refuges.info':new L.TileLayer.OSM.MRI(),
 		'OSM fr':      new L.TileLayer.OSM.FR(),
 		'Outdoors':    new L.TileLayer.OSM.Outdoors(),
-		'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'})
+		'Photo Bing':  new L.BingLayer('<?=$config_wri['bing_key']?>', {type:'Aerial'})
 	};
 baseLayers['<?=$vue->fond_carte_par_defaut?>'].addTo(map); // Le fond de carte visible
 
@@ -23,7 +23,7 @@ viseur = new L.Marker([], {
 	draggable: true,
 	zIndexOffset: 1000, // Passe au dessus des autres pictos
 	icon: L.icon({
-		iconUrl: '<?=$config['sous_dossier_installation']?>images/viseur.png',
+		iconUrl: '<?=$config_wri['sous_dossier_installation']?>images/viseur.png',
 		className: 'leaflet-move',
 		iconAnchor: [15, 15]
 	}),
@@ -38,7 +38,7 @@ map.setView(viseur._latlng, 13, { // Recentre la carte sur ce viseur
 new L.GeoJSON.Ajax.wriPoi ({ // Les points d'intérêt WRI, style simplifié
 	style: function(feature) {
 		return {
-			iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
+			iconUrl: '<?=$config_wri['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 			className: 'leaflet-grab',
 			iconAnchor: [8, 8],
 			popup: feature.properties.nom

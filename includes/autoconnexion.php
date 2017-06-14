@@ -6,16 +6,12 @@ comme une session est démarrée, c'est à faire avant tout affichage
 
 Afin de simplifier grandement la gestion des utilisateurs
 Il n'y a plus de table moderateur, le niveau de moderation
-d'un utilisateur est récupérée dans la table phpbb_users
-Ensuite sont stocké dans la session ( accessible par toutes
-les pages ):
+est récupéré avec la fonction d'autorisatin de PhpBB
+Ensuite sont stocké dans la session ( accessible par toutes les pages ):
 $_SESSION['login_utilisateur']
 $_SESSION['id_utilisateur'] ( celui de la table phpbb_users )
 $_SESSION['niveau_moderation'] ayant pour signification
-0 = utilisateur normal
-1 = modérateur général du site
-2 = programmeur du site
-3 = administrateur du site
+Il n'y a que 2 niveaux dans WRI aujourd'hui : 0 = rien, >= 1 = tout
 
 REMARQUE :
 En lisant ce code vous allez vous dire qu'il est dommage
@@ -34,7 +30,7 @@ require_once ("config.php");
 require_once ("bdd.php");
 require_once ("gestion_erreur.php");
 require_once ("commentaire.php");
-
+require_once ("forum.php");
 
 /***
     fonction de reconnaissance d'un utilisateur déjà connecté sur le forum, on lui épargne le double login
@@ -42,15 +38,6 @@ require_once ("commentaire.php");
     1) avec leur système interne de session ( Ils-n'auraient pas pu faire comme tout le monde chez phpBB ?? )
     2) avec le cookie permanent
 ***/
-// on vide les traces qu'on a sur l'utilisateur
-function vider_session()
-{
-  foreach (array('login_utilisateur','id_utilisateur','niveau_moderation') as $variable)
-  {
-    if (isset($_SESSION[$variable]))
-      unset($_SESSION[$variable]);
-  }
-}
 
 /***
 Cette fonction a pour rôle "d'auto-connecter" les utilisateurs s'ils ont un cookie phpbb sur le reste du site wri
@@ -58,57 +45,21 @@ elle est donc lancé sur chaque page qui pourrait nécessiter d'être connecté
 ***/
 function auto_login_phpbb_users()
 {
-  global $pdo, $user_data, $config;
-  vider_session();
+  global $user, $auth; // Contexte PhpBB
 
-  $user_id = @$_COOKIE[$config['cookie_prefix'].'_u'];
-  if ($user_id <= 1) // Pas connecté ou anonymous
-    return FALSE;
+  unset($_SESSION['id_utilisateur']);
+  unset($_SESSION['login_utilisateur']);
+  unset($_SESSION['niveau_moderation']);
 
-  $sql = "SELECT username, group_name, user_form_salt
-    FROM phpbb3_users
-      JOIN phpbb3_sessions ON (session_user_id = user_id)
-      LEFT JOIN phpbb3_sessions_keys USING (user_id)
-      JOIN phpbb3_groups USING (group_id)
-    WHERE user_id = ".$_COOKIE[$config['cookie_prefix'].'_u']."
-      AND (session_id = '".$_COOKIE[$config['cookie_prefix'].'_sid']."'
-           OR key_id = '".md5($_COOKIE[$config['cookie_prefix'].'_k'])."')";
-  $res = $pdo->query($sql);
-  if (!$res) {
-    echo $pdo->errorInfo()[2];
-    return FALSE;
-  }
-  $user_data = $res->fetch();
-  if (!$user_data) {
-    echo $pdo->errorInfo()[2];
-    return FALSE;
-  }
+  if ($user->data['user_id'] <= ANONYMOUS)
+    return false;
 
   /* on rempli notre session */
-  $_SESSION['id_utilisateur']=$user_id;
-  $_SESSION['login_utilisateur']=$user_data->username;
-
-  switch ($user_data->group_name)
-  {
-    // 3 = admin
-    case 'ADMINISTRATORS':
-      $_SESSION['niveau_moderation']=3;
-      return TRUE;
-
-    // 2 = programmeur, ça n'existe plus pour l'instant
-
-    // 1 = modérateur
-    case 'Modérateurs':
-    case 'GLOBAL_MODERATORS':
-      $_SESSION['niveau_moderation']=1;
-      return TRUE;
-
-    // S'il n'y a un autre niveau (Bot, ...) on, préfère dire qu'on n'est pas connecté
-    // case 'REGISTERED':
-    // case 'REGISTERED_COPPA':
-    // case 'NEWLY_REGISTERED':
-  }
-  return FALSE;
+  $_SESSION['id_utilisateur'] = $user->data['user_id'];
+  $_SESSION['login_utilisateur']= $user->data['username'];
+  $_SESSION['niveau_moderation'] = $auth->acl_get('m_warn');
+  // m_warn est la seule autorisation moderateur ne dépendant pas d'un forum particulier
+  return true;
 }
 
 // Fonction qui va permettre ensuite d'afficher la "petite étoile :*" en haut à coté du nom du modérateur
@@ -128,10 +79,10 @@ function info_demande_correction ()
 // FIXME : pas mieux que info_demande_correction tout ça est lié au bandeau et devrait filer dans un autre fichier
 function remplissage_zones_bandeau()
 {
-    global $config;
+    global $config_wri;
     // Ajoute les liens vers les autres zones
     $conditions = new stdClass;
-    $conditions->ids_polygone_type=$config['id_zone'];
+    $conditions->ids_polygone_type=$config_wri['id_zone'];
     $zones=infos_polygones($conditions);
     if ($zones)
         foreach ($zones as $zone)

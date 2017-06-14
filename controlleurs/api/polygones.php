@@ -130,13 +130,13 @@ array_walk_recursive($polygones, 'updatebool2char'); // Remplace les False et Tr
 
 switch ($req->format) {
     case 'geojson':
-        include($config['chemin_vues'].'/api/polygones.vue.json');
+        include($config_wri['chemin_vues'].'/api/polygones.vue.json');
         break;
     case 'gml':
-        include($config['chemin_vues'].'/api/polygones.vue.gml');
+        include($config_wri['chemin_vues'].'/api/polygones.vue.gml');
         break;
     default:
-        include($config['chemin_vues'].'/api/polygones.vue.json');
+        include($config_wri['chemin_vues'].'/api/polygones.vue.json');
         break;
 }
 

@@ -5,11 +5,11 @@ Fichiers regroupant les fonctions sur les commentaires des points
 sly 23/11/2012
 **********************************************************************************************/
 
-require_once ("config.php");
+require_once ('config.php');
 require_once ('bdd.php');
 require_once ('gestion_erreur.php');
 require_once ('point.php');
-require_once ("mise_en_forme_texte.php");
+require_once ('mise_en_forme_texte.php');
 
 
 /**********************************************************************************************
@@ -66,7 +66,7 @@ blabla
 
 function infos_commentaires ($conditions)
 {
-  global $pdo,$config;
+  global $config_wri,$pdo;
   $conditions_sql="";
 
   // conditions de limite
@@ -106,7 +106,7 @@ function infos_commentaires ($conditions)
   // Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
   if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele OR isset($conditions->ids_polygones))
   {
-            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config['id_massif'].")";
+            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'].")";
 
             $condition_en_plus.=" AND points.id_point=commentaires.id_point
                      AND points_gps.id_point_gps=points.id_point_gps
@@ -152,10 +152,10 @@ function infos_commentaires ($conditions)
           $nom_fichier=$commentaire->id_commentaire.".jpeg";
         else
           $nom_fichier=$commentaire->id_commentaire."-$taille.jpeg";
-        if (is_file($config['rep_photos_points'].$nom_fichier))
+        if (is_file($config_wri['rep_photos_points'].$nom_fichier))
         {
-          $commentaire->photo[$taille]=$config['rep_photos_points'].$nom_fichier;
-          $commentaire->lien_photo[$taille]=$config['rep_web_photos_points'].$nom_fichier
+          $commentaire->photo[$taille]=$config_wri['rep_photos_points'].$nom_fichier;
+          $commentaire->lien_photo[$taille]=$config_wri['rep_web_photos_points'].$nom_fichier
             .'?'.filemtime($commentaire->photo[$taille]); // Permet de recharger si on bascule laphoto par exemple
         }
       }
@@ -222,7 +222,7 @@ Possibilité d'ajouter une photo en provenance d'un autre site (pour éviter de 
 ************/
 function modification_ajout_commentaire($commentaire)
 {
-    global $config,$pdo;
+    global $config_wri,$pdo;
     $retour = new stdClass;
     $photo_valide=False;
 
@@ -280,7 +280,7 @@ function modification_ajout_commentaire($commentaire)
 
     // Rotation manuelle des photos
     if ($_REQUEST['rotation']) {
-        $nom_fichier = $config['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
+        $nom_fichier = $config_wri['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
         $image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
         $image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
         imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
@@ -326,15 +326,15 @@ function modification_ajout_commentaire($commentaire)
     // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo
     if ($traitement_photo)
     {
-            $photo_originale=$config['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
-            $vignette_photo = $config['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
-            $image_reduite=$config['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
-            if ( ($taille[0]>$config['largeur_max_photo']) OR ($taille[1]>$config['hauteur_max_photo']))
+            $photo_originale=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
+            $vignette_photo = $config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
+            $image_reduite=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
+            if ( ($taille[0]>$config_wri['largeur_max_photo']) OR ($taille[1]>$config_wri['hauteur_max_photo']))
             {
                     copy($commentaire->photo['originale'],$photo_originale);
                     $retour->message.=", la photo est grande (plus grande que "
-                    .$config['largeur_max_photo'] . "x"
-                    .$config['hauteur_max_photo']
+                    .$config_wri['largeur_max_photo'] . "x"
+                    .$config_wri['hauteur_max_photo']
                     ."), elle est redimensionnée";
                     copy($commentaire->photo['originale'],$image_reduite);
 
@@ -370,7 +370,7 @@ function bloquage_internaute($code="")
 
 function redimensionnement_photo($chemin_photo, $type = 'photo')
 {
-  global $config;
+  global $config_wri;
     $image=imagecreatefromjpeg($chemin_photo);//on chope le jpeg
 
     // Detect orientation
@@ -387,10 +387,10 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
     $x_image= ImageSX($image); // coord en X
     $y_image= ImageSY($image); //coord en Y
 
-    if (($x_image/$y_image)>=($config['largeur_max_'.$type]/$config['hauteur_max_'.$type]))
-    $zoom1=$config['largeur_max_'.$type]/$x_image;
+    if (($x_image/$y_image)>=($config_wri['largeur_max_'.$type]/$config_wri['hauteur_max_'.$type]))
+    $zoom1=$config_wri['largeur_max_'.$type]/$x_image;
     else
-    $zoom1=$config['hauteur_max_'.$type]/$y_image;
+    $zoom1=$config_wri['hauteur_max_'.$type]/$y_image;
 
     $image2=imagecreatetruecolor($x_image*$zoom1,$y_image*$zoom1);
     imagecopyresampled ($image2, $image, 0,0, 0, 0,$x_image*$zoom1 ,$y_image*$zoom1,$x_image,$y_image);
@@ -411,7 +411,7 @@ du commentaire, ça l'est.
 *******************************************************/
 function suppression_photos($commentaire,$force=False)
 {
-  global $config;
+  global $config_wri;
   if (isset($commentaire->photo) or $commentaire->photo_existe)
   {
     $commentaire->photo_existe=0;
@@ -449,7 +449,7 @@ une ancienne version du commentaire d'id X... disons pas une priorité ;-) sly -
 *******************************************************/
 function suppression_commentaire($commentaire)
 {
-  global $config,$pdo;
+  global $config_wri,$pdo;
 
   /****** On supprime les photo (de différentes taille) si elle existe ******/
   if ($commentaire->photo_existe)
@@ -467,16 +467,16 @@ function suppression_commentaire($commentaire)
 
 /*******************************************************/
 // transfert le commentaire et la photo sur le forum
-// la photo dans le repertoire $config['rep_forum_photos']
+// la photo dans le repertoire $config_wri['rep_forum_photos']
 /*******************************************************/
 function transfert_forum($commentaire)
 {
-  global $config;
+  global $config_wri;
   
   if ($commentaire->photo_existe)
   {
     // insere la balise bbcode pour la photo
-    $commentaire->texte.="\n[img]".$config['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img]";
+    $commentaire->texte.="\n[img]".$config_wri['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img]";
     // et deplace la photo, question historique, on peut avoir la réduite et/ou l'originale
     if (isset($commentaire->photo['reduite']))
       $photo_a_conserver=$commentaire->photo['reduite'];
@@ -484,7 +484,7 @@ function transfert_forum($commentaire)
       $photo_a_conserver=$commentaire->photo['originale'];
 
     // On pourrait se dire que déplacer c'est plus simple. Oui, en effet, mais je préfère profiter de la fonction "suppression_commentaire" toute faite. Et donc faire une copie à cet endroit.
-    copy($photo_a_conserver,$config['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
+    copy($photo_a_conserver,$config_wri['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
   }
 
 // note sly 17/08/2013 : j'ajoute un "_" à la suite du nom de l'auteur, c'est un peu curieux,
@@ -496,27 +496,18 @@ function transfert_forum($commentaire)
   while (strlen($auteur) < 3)  // La longueur minimum requise par PhpBB est de 3
     $auteur .= '_';
 
-  // On appelle l'API WRI du forum qui cree un post
-  $rep = file_get_contents(
-    $config['url_api'],
-    false,
-    stream_context_create( ['http' => [
-      'method'  => 'POST',
-      'content' => http_build_query( [
-        'api' => 'transferer',
-        't' => $commentaire->topic_id,
-        's' => 'Transféré de la fiche',
-        'm' => $commentaire->texte,
-        'i' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID
-        'u' => $auteur,
-        'd' => $commentaire->date,
-      ]),
-    ]])
-  );
-  $json = json_decode($rep);
-  if (!is_object ($json))
-    return erreur( "Erreur création post du forum<br/>$rep" );
+  // On appelle la fonction du forum qui cree un post
+  forum_submit_post ([
+    'action' => 'reply',
+    'topic_id' => $commentaire->topic_id,
+    'topic_title' => 'Transféré de la fiche',
+    'message' => $commentaire->texte,
+    'topic_poster' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID
+    'username' => $auteur,
+    'post_time' => strtotime ($commentaire->date), // Recalcule suivant la timezone
+  ]);
 
+  // On s'occupe du commentaire
   $retour=suppression_commentaire($commentaire);
 
   if ($retour->erreur)

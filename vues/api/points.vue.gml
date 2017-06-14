@@ -7,7 +7,7 @@ header("Content-Type: text/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
@@ -16,7 +16,7 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 	xmlns:gml=\"http://www.opengis.net/gml\"
 	xmlns:topp=\"http://www.openplans.org/topp\">
 	<name>points.gml</name>
-	<description>$config[copyright_API]</description>\r\n";
+	<description>$config_wri[copyright_API]</description>\r\n";
 
 foreach ($points as $point) {
 

@@ -5,28 +5,28 @@ paramètres locaux (données de type privées à ne pas publier)
 *************************************************/
 
 // Accès à Postgresql
-$config['utilisateur_pgsql']="login";
-$config['mot_de_passe_pgsql']="pass";
-$config['serveur_pgsql']="localhost";
+$config_wri['utilisateur_pgsql']="login";
+$config_wri['mot_de_passe_pgsql']="pass";
+$config_wri['serveur_pgsql']="localhost";
 
 // Info pour développeurs de notre équipe, la base de prod s'appelle "refuges" mais il n'est pas recommandé de bosser dessus, donc test, c'est celle que j'ai dupliqué
 // et dans laquelle on peut bien faire tout ce qu'on veut sans risques.
 // a noter que les photos qui sont des fichiers sur le disque risque fort de ne plus s'afficher, mais c'est en quelque sorte "logique"
-$config['base_pgsql']="test";
+$config_wri['base_pgsql']="test";
 
 // infos privées qu'on ne veut pas divulger sur github et que vous devez remplir 
-$config['ign_key']='xxxx'; // http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
-$config['bing_key']='yyy'; // https://www.bingmapsportal.com
-$config['thunderforest_key']='kkk'; // https://manage.thunderforest.com
+$config_wri['ign_key']='xxxx'; // http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
+$config_wri['bing_key']='yyy'; // https://www.bingmapsportal.com
+$config_wri['thunderforest_key']='kkk'; // https://manage.thunderforest.com
 
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 // + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
 // sert aussi à afficher les lien de validation xhtml en bas de page (histoire de ne pas ennuier tout le monde avec ça)
 // par défaut à false, à mettre à décommenter pour les développeurs qui le veulent
-// $config['debug']=true;
+// $config_wri['debug']=true;
 
 // Par défaut, le fond de carte est maps.refuges.info, décommenter ça permet de changer le par défaut
-//$config['carte_base'] = 'Outdoors';
+//$config_wri['carte_base'] = 'Outdoors';
 
 
 ?>

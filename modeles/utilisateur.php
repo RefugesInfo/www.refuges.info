@@ -28,7 +28,7 @@ si local est False un lien absolu sera généré
 **/
 function lien_utilisateur($utilisateur,$local=True)
 {
-  global $config;
+  global $config_wri;
   if (isset($_SERVER['HTTPS']))
       $schema="https";
   else
@@ -37,7 +37,7 @@ function lien_utilisateur($utilisateur,$local=True)
   if ($local)
     $url_complete="";
   else
-    $url_complete="$schema://".$config['nom_hote'];
-  return $url_complete.$config['fiche_utilisateur'].$utilisateur->user_id;
+    $url_complete="$schema://".$config_wri['nom_hote'];
+  return $url_complete.$config_wri['fiche_utilisateur'].$utilisateur->user_id;
 }
 ?>

@@ -45,27 +45,34 @@ class listener implements EventSubscriberInterface
 		$vars['error'] = $error;
 	}
 
-	// Inclusion du bandeau
 	function page_footer () {
-		global $template, $request;
-		$request->enable_super_globals();
+		global $template, $request; // Contexte PhpBB
+		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
+
+		global $config_wri, $pdo; // Contexte WRI
+		include (__DIR__.'/../../../../../includes/config.php');
 
 		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
-		$template->assign_var('STYLE_CSS_TIME', filemtime(__DIR__.'/../../../../../vues/style.css.php'));
+		$template->assign_var('STYLE_CSS_TIME', filemtime($config_wri['chemin_vues'].'style.css.php'));
 
 		// Les fichiers template du bandeau et du pied de page étant au format "MVC+template type refuges.info",
-		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant dans des variables des templates de PhpBB V3.2
-		$url_vue = 'http://'.$_SERVER['SERVER_NAME'].preg_replace('/forum.*/i','',$_SERVER['REQUEST_URI']).'vue/';
+		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant
+		// dans des variables des templates de PhpBB V3.2
+		require_once ('wiki.php');
+		require_once ('autoconnexion.php');
+		auto_login_phpbb_users();
+		$vue = new \stdClass;
+		$vue->type = '';
+		$vue->java_lib_foot = [];
+		$vue->zones_pour_bandeau=remplissage_zones_bandeau();
+		$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
 
-		$template->assign_var('BANDEAU', file_get_contents(
-			$url_vue.'_bandeau',
-			false,
-			stream_context_create( ['http' => [
-				// On envoie les mêmes cookies pour avoir le bandeau correspondant à l'utilisateur
-				'header' =>'Cookie: '.http_build_query($_COOKIE, null, ';'),
-			]])
-		));
+		ob_start();
+		include ($config_wri['chemin_vues'].'_bandeau.html');
+		$template->assign_var('BANDEAU', ob_get_clean());
 
-		$template->assign_var('PIED', file_get_contents($url_vue.'_pied'));
+		ob_start();
+		include ($config_wri['chemin_vues'].'_pied.html');
+		$template->assign_var('PIED', ob_get_clean());
 	}
 }

@@ -18,6 +18,7 @@ require_once ("commentaire.php");
 require_once ("point_gps.php");
 require_once ("polygone.php");
 require_once ("mise_en_forme_texte.php");
+require_once ("forum.php");
 
 /*****************************************************
 Cette fonction récupère sous la forme de plusieurs objets des points de la base qui satisfont des conditions.
@@ -90,7 +91,7 @@ Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet-
 
 function infos_points($conditions)
 {
-    global $config,$pdo;
+    global $config_wri,$pdo;
     $champs_en_plus="";
     $conditions_sql="";
     $tables_en_plus="";
@@ -129,7 +130,7 @@ function infos_points($conditions)
     {
         // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
         // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
-        $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) AND id_polygone_type=".$config['id_massif'].")";
+        $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) AND id_polygone_type=".$config_wri['id_massif'].")";
         $champs_polygones=",".colonnes_table('polygones',False);
     }
 
@@ -201,7 +202,7 @@ function infos_points($conditions)
 
     //veut-on les points dont les coordonnées sont cachées ?
     if($conditions->pas_les_points_caches)
-        $conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config['id_coordonees_gps_fausses'];
+        $conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config_wri['id_coordonees_gps_fausses'];
 
     //quelle condition sur la qualité supposée des GPS
     if( !empty($conditions->precision_gps) )
@@ -335,7 +336,7 @@ Mais postgis étant super rapide, je pense que l'on peut peut fusioner
 function infos_point($id_point,$meme_si_censure=False)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
-  global $config,$pdo;
+  global $config_wri,$pdo;
   $conditions = new stdClass();
   $conditions->ids_points=$id_point;
   if (empty($id_point))
@@ -388,16 +389,16 @@ $point->polygones[$x]->nom_polygone
 *******************************************************************************************************************************/
 function lien_point($point,$lien_local=false)
 {
-  global $config;
+  global $config_wri;
   if (isset($_SERVER['HTTPS']))
       $schema="https";
   else
       $schema="http";
   
   if ($lien_local)
-      $url_complete=$config['sous_dossier_installation'];
+      $url_complete=$config_wri['sous_dossier_installation'];
   else
-      $url_complete="$schema://".$config['nom_hote'].$config['sous_dossier_installation'];
+      $url_complete="$schema://".$config_wri['nom_hote'].$config_wri['sous_dossier_installation'];
 
   if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
@@ -424,16 +425,16 @@ function lien_point_lent($id_point)
 // adapté
 function param_cartes ($point)
 {
-    global $config;
+    global $config_wri;
     // Pour chaque polygones auquel appartient le point, on cherche voir s'il existe un fournisseur de fond de carte "recommandé"
     // Si plusieurs sont possible, le premier trouvé est renvoyé
     if ($point->polygones)
         foreach ($point->polygones as $polygone)
-            foreach ($config['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
+            foreach ($config_wri['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
                 if ($polygone->nom_polygone==$nom_pays)
                     return $choix_carte;
     // aucun n'a été trouvé
-    return $config['fournisseurs_fond_carte']['Autres'];
+    return $config_wri['fournisseurs_fond_carte']['Autres'];
 }
 
 
@@ -442,14 +443,14 @@ function param_cartes ($point)
 // le texte en utilisant la table point_type, donc en dur dans le code
 function texte_non_ouverte($point)
 {
-    global $config;
+    global $config_wri;
   //Si elle/il est fermé, on l'indique directement en haut en rouge
   switch ($point->conditions_utilisation)
   {
     case 'cle_a_recuperer':
       return "Clé à récupérer avant";
     case 'detruit':
-            if ($point->id_point_type==$config['id_cabane_non_gardee'])
+            if ($point->id_point_type==$config_wri['id_cabane_non_gardee'])
                 return "Détruite";
             else
                 return "Détruit";
@@ -467,7 +468,7 @@ function texte_non_ouverte($point)
 // on affiche les commentaires+photos en plus
 function infos_point_forum ($point)
 {
-  global $pdo,$config;
+  global $config_wri,$pdo;
   $q="SELECT *
       FROM phpbb3_topics AS t
         JOIN phpbb3_posts AS p ON p.post_id = t.topic_last_post_id
@@ -478,7 +479,7 @@ function infos_point_forum ($point)
 
   $result = $r->fetch();
   if (isset($result->topic_id))
-    $result->lienforum=$config['forum_refuge'].$result->topic_id;
+    $result->lienforum=$config_wri['forum_refuge'].$result->topic_id;
   else
     if ($point->modele!=1) // Si c'est un modèle de point, il n'a pas de forum
       return erreur("Le forum du point \"$point->nom\" (id=$point->id_point) ne semble pas exister","$q n'a retourné aucun enregistrement");
@@ -509,7 +510,7 @@ Si une erreur grave survient, rien n'est fait et un retour par la fonction erreu
 
 function modification_ajout_point($point)
 {
-  global $config,$pdo;
+  global $config_wri,$pdo;
   // désolé, le nom du point ne peut être vide
   if ( trim($point->nom) =="" )
     return erreur("Le nom ne peut être vide");
@@ -538,9 +539,9 @@ function modification_ajout_point($point)
     if ($point->id_point_gps->erreur) // si on a la moindre erreur sur la gestion des coordonnées de notre point, on abandonne
         return erreur($point->id_point_gps->message);
 
-  /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config['champs_simples_points'] *************/
+  /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
   // champ ou il faut juste un set=nouvelle_valeur
-    foreach ($config['champs_simples_points'] as $champ)
+    foreach ($config_wri['champs_simples_points'] as $champ)
     if (isset($point->$champ))
             if($point->$champ  == "NULL")
                 $champs_sql[$champ]= "NULL";
@@ -558,46 +559,27 @@ function modification_ajout_point($point)
             return erreur("Requête en erreur, impossible à executer",$query_finale);
 
         /********* Renommage du topic point dans le forum refuges *************/
-        // On appelle l'API WRI du forum qui renomme un topic
-        $rep = file_get_contents(
-          $config['url_api'],
-          false,
-          stream_context_create( ['http' => [
-            'method'  => 'POST',
-            'content' => http_build_query( [
-              'api' => 'renommer',
-              't' => $point->topic_id,
-              's' => $point->nom,
-            ]),
-          ]])
-        );
-        $json = json_decode($rep);
-        if (!is_object ($json))
-          return erreur( "Erreur renommage forum point<br/>$rep" );
+        forum_submit_post ([
+            'action' => 'edit',
+            'topic_id' => $point->topic_id,
+            'topic_title' => $point->nom,
+        ]);
    }
    else  // INSERT
    {
-    // On appelle l'API WRI du forum qui crée un topic dans le forum refuges
-    $rep = file_get_contents(
-      $config['url_api'],
-      false,
-      stream_context_create( ['http' => [
-        'method'  => 'POST',
-        'content' => http_build_query( [
-          'api' => 'creer',
-          'f' => $config['forum_refuges'],
-          's' => $point->nom,
-        ]),
-      ]])
-    );
-    $json = json_decode($rep);
-    if (!is_object ($json))
-      return erreur( "Erreur création forum point<br/>".var_export($rep,true) );
+    // On appelle la fonction du forum qui crée un topic dans le forum refuges
+    $r = forum_submit_post ([
+        'action' => 'post',
+		'forum_id' => $config_wri['forum_refuges'],
+        'topic_title' => $point->nom,
+    ]);
+    if (!$r['topic_id'])
+        return erreur( "Erreur création forum point<br/>".var_export($r,true) );
 
-    $champs_sql['topic_id'] = $json->topic_id; // On note le topic_id dans la table point pour faire le lien
+    $champs_sql['topic_id'] = $r['topic_id']; // On note le topic_id dans la table point pour faire le lien
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
     if (!$pdo->exec($query_finale))
-      return erreur("Requête en erreur, impossible à executer",$query_finale);
+        return erreur("Requête en erreur, impossible à executer",$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
   }
@@ -611,7 +593,7 @@ function modification_ajout_point($point)
 *******************************************************/
 function suppression_point($point)
 {
-  global $pdo, $config;
+  global $config_wri,$pdo;
   $conditions = new stdClass;
   // On vérifie que le $point passé existe bien dans notre base, qu'il a donc un id et que cela correspond bien à un seul point
   // toujours présent, sinon, on ne tente rien
@@ -625,21 +607,8 @@ function suppression_point($point)
     foreach ($commentaires_a_supprimer as  $commentaire_a_supprimer)
       suppression_commentaire($commentaire_a_supprimer);
 
-  // On appelle l'API WRI du forum qui supprime un topic
-  $rep = file_get_contents(
-    $config['url_api'],
-    false,
-    stream_context_create( ['http' => [
-      'method'  => 'POST',
-      'content' => http_build_query( [
-        'api' => 'supprimer',
-        't' => $point->topic_id,
-      ]),
-    ]])
-  );
-  $json = json_decode($rep);
-  if (!is_object ($json))
-    return erreur( "Erreur suppresion sujet du forum<br/>$rep" );
+  // On appelle la fonction du forum qui supprime un topic
+  forum_delete_topic ($point->topic_id);
 
   // suite à la modification dans la base sur les coordonnées GPS, on va supprimer aussi de la table :
   // point_gps si le point_gps n'est plus utilisé du tout
@@ -666,46 +635,46 @@ de style permettant de choisir l'icone selon les critères d'un point
 *******************************************************/
 function choix_icone($point)
 {
-    global $config;
+    global $config_wri;
     // par défaut, et sauf modification ultérieure, le nom de l'icone à choisir porte, par défaut, le nom du type de point (dans une version convertie sans accents,guillemet ou espace)
     $nom_icone=replace_url($point->nom_type);
 
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( ($point->manque_un_mur OR $point->places==0) AND $point->id_point_type==$config['id_cabane_non_gardee'] )
+    if ( ($point->manque_un_mur OR $point->places==0) AND $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
         $nom_icone="abri";
 
     // les bâtiments en montagne sont des bâtiments situé en montgne dont on ne sait rien et qu'il faudrait explorer ou, si fermé dont on sait qu'ils ne peuvent servir
-    if ( ($point->conditions_utilisation=='fermeture' or $point->conditions_utilisation=="detruit") AND $point->id_point_type==$config['id_batiment_en_montagne'] )
+    if ( ($point->conditions_utilisation=='fermeture' or $point->conditions_utilisation=="detruit") AND $point->id_point_type==$config_wri['id_batiment_en_montagne'] )
         $nom_icone="batiment-inutilisable";
         
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( $point->conditions_utilisation=='cle_a_recuperer' AND $point->id_point_type==$config['id_cabane_non_gardee'] )
+    if ( $point->conditions_utilisation=='cle_a_recuperer' AND $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
         $nom_icone="cabane_cle";
         
     // Pour les cabane/refuges/gites dans lesquelles on ne peut dormir (car fermées ou détruites)
     if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit")
           AND
-          ($point->id_point_type==$config['id_cabane_non_gardee'] or $point->id_point_type==$config['id_gite_etape'] or $point->id_point_type==$config['id_refuge_garde'])
+          ($point->id_point_type==$config_wri['id_cabane_non_gardee'] or $point->id_point_type==$config_wri['id_gite_etape'] or $point->id_point_type==$config_wri['id_refuge_garde'])
        )
         $nom_icone="inutilisable";
     if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit")
         AND
-        ($point->id_point_type==$config['point_d_eau'])
+        ($point->id_point_type==$config_wri['point_d_eau'])
        )
         $nom_icone="ancien-point-d-eau";
     return $nom_icone;
 }
 function chemin_icone($nom_icone,$absolu=true)
 {
-    global $config;
+    global $config_wri;
     if (isset($_SERVER['HTTPS']))
         $schema="https";
     else
         $schema="http";
     if ($absolu)
-        $url_et_host="$schema://".$config['nom_hote'];
+        $url_et_host="$schema://".$config_wri['nom_hote'];
     else
         $url_et_host='';
-    return $url_et_host.$config['url_chemin_icones'].$nom_icone.'.png';
+    return $url_et_host.$config_wri['url_chemin_icones'].$nom_icone.'.png';
 }
 ?>

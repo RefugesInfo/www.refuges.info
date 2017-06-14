@@ -7,10 +7,10 @@ header("Content-Type: application/json; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
-$news['copyright'] = $config[copyright_API];
+$news['copyright'] = $config_wri[copyright_API];
 echo json_encode($news);
 
 

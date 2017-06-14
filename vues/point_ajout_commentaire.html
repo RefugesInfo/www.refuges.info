@@ -5,13 +5,13 @@
 		<p>
 			Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
 			Bien que nous autorisions les contributions anonymes, nous vous recommandons de vous connecter sur le forum et/ou de créer un compte
-			afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config['connexion_forum']?>">Connexion</a>
+			afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config_wri['connexion_forum']?>">Connexion</a>
 		</p>
 	<?php } if ($vue->banni) { ?>
 		<p class="erreur_saisie">
 			<strong>Banni !</strong>
 			Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
-			vous pouvez en parler ici : <a href="<?=$config['lien_forum']?>viewtopic.php?t=671">Sur le forum</a>
+			vous pouvez en parler ici : <a href="<?=$config_wri['lien_forum']?>viewtopic.php?t=671">Sur le forum</a>
 		</p>
 	<?php } if ($vue->messages->erreur) { ?>
 		<p><strong><?=$vue->messages->message?></strong></p>
@@ -19,9 +19,9 @@
 		<p><?=$vue->messages->message?>.</p>
 	<?php } ?>
 	<div class="com">
-		<form id="comment" method="post" action="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
+		<form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
 			<textarea name="texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre?></textarea>
-			<?=$config['lien_syntaxe']?>
+			<?=$config_wri['lien_syntaxe']?>
 			<?php if ($vue->non_connecte) { ?>
 				<p>
 					<label>Auteur:</label>
@@ -63,12 +63,12 @@
 		Un commentaire sur une fiche doit être utile et objectif.
 		Si vous désirez poster une appréciation, faites le plutôt sur le <a href="<?=$vue->lien_forum_point?>">forum attaché à <?=$point->article_demonstratif.' '.$point->nom_type?></a>.
 	</p>
-	<?php if ($point->id_point_type==$config['id_cabane_non_gardee']) { ?>
+	<?php if ($point->id_point_type==$config_wri['id_cabane_non_gardee']) { ?>
 		<p>
 			Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>
 			car cette pratique est contraire à l'esprit dans lequel <?=$point->article_demonstratif.' '.$point->nom_type?> à été créé.
 			Tout commentaire dans ce sens sera supprimé par les modérateurs.
-			Voir <a href="<?=$config['lien_forum']?>viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
+			Voir <a href="<?=$config_wri['lien_forum']?>viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
 		</p>
 	<?}?>
 	<?php if ($point->equivalent_proprio!="") { ?>
@@ -78,10 +78,10 @@
 		Vous ne devez en aucun cas insérer un texte ou une <strong>photo qui ne vous appartient pas</strong>
 		ni une <strong>copie d'un autre site</strong>, le <strong>scan d'un journal ou livre</strong>.
 	</p>
-	<p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config['sous_dossier_installation']?>wiki/restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
+	<p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config_wri['sous_dossier_installation']?>wiki/restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
 	<h4>Pour plus de précision</h4>
 	<p>
-		Voir <a href="<?=$config['sous_dossier_installation']?>wiki/que_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires ou les fiches du site</a>
-		et <a href="<?=$config['sous_dossier_installation']?>wiki/cabane_principe_bonne_conduite">règles du site</a>.
+		Voir <a href="<?=$config_wri['sous_dossier_installation']?>wiki/que_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires ou les fiches du site</a>
+		et <a href="<?=$config_wri['sous_dossier_installation']?>wiki/cabane_principe_bonne_conduite">règles du site</a>.
 	</p>
 </div>

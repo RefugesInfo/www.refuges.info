@@ -19,20 +19,20 @@ $cible = str_replace('?','',$cible); // On enlève le ? (implique pas de ? dans 
 
 switch ($cible) {
     case 'bbox': case 'point': case 'massif':
-        include($config['chemin_controlleurs'].'api/points.php');
+        include($config_wri['chemin_controlleurs'].'api/points.php');
         break;
     case 'contributions':
-        include($config['chemin_controlleurs'].'api/contributions.php');
+        include($config_wri['chemin_controlleurs'].'api/contributions.php');
         break;
     case 'polygones':
-        include($config['chemin_controlleurs'].'api/polygones.php');
+        include($config_wri['chemin_controlleurs'].'api/polygones.php');
         break;
     case 'doc':
         // Des fichiers html ou css simples, pas besoin d'un controler pour faire "include"
         if ($controlleur->url_decoupee[2] == "")
-            include($config['chemin_vues'].'api/doc/index.html');
+            include($config_wri['chemin_vues'].'api/doc/index.html');
         else 
-            include($config['chemin_vues'].'api/doc/'.$controlleur->url_decoupee[2]);
+            include($config_wri['chemin_vues'].'api/doc/'.$controlleur->url_decoupee[2]);
         
         break;
     default:

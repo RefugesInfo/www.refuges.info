@@ -7,14 +7,14 @@ header("Content-Type: application/json; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 
 echo '{
 	"type": "FeatureCollection",
 	"generator": "Refuges.info API",
-	"copyright": "'.$config['copyright_API'].'",
+	"copyright": "'.$config_wri['copyright_API'].'",
 	"timestamp": "';
 echo date(DATE_ATOM);
 echo '",

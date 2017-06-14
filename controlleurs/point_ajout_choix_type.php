@@ -33,5 +33,5 @@ if (!isset($_SESSION['id_utilisateur']))
     $vue->etapes->pas_connecte->texte = "<p>Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur.</p>";
 }
 
-$vue->titre = 'Ajout d\'un point sur le site '.$config['nom_hote'];
+$vue->titre = 'Ajout d\'un point sur le site '.$config_wri['nom_hote'];
 ?>

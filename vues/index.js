@@ -11,7 +11,7 @@ new L.Map('carte-accueil', {
 	layers: [
 		new L.TileLayer.OSM.MRI(),
 		new L.GeoJSON.Ajax( // Les massifs WRI
-			'<?=$config['sous_dossier_installation']?>api/polygones',
+			'<?=$config_wri['sous_dossier_installation']?>api/polygones',
 			{
 				argsGeoJSON: {
 					type_polygon: 1
@@ -21,7 +21,7 @@ new L.Map('carte-accueil', {
 					return {
 						popup: feature.properties.nom,
 						popupValidity: 0,
-						url: '<?=$config['sous_dossier_installation']?>nav/'+feature.properties.id,
+						url: '<?=$config_wri['sous_dossier_installation']?>nav/'+feature.properties.id,
 						color: 'black',
 						weight: 1,
 						opacity: 0.7,

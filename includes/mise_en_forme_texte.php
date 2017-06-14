@@ -46,8 +46,8 @@ return strtr($str, $normalizeChars);
 
 function protege($texte)
 {
-    global $config;
-    return htmlspecialchars($texte,ENT_QUOTES,$config['encodage_des_contenu_web']);
+    global $config_wri;
+    return htmlspecialchars($texte,ENT_QUOTES,$config_wri['encodage_des_contenu_web']);
 }
 /**********************************************************************************************
 Afin d'éviter le cross site scripting et permettre de mettre un peu de mise en page
@@ -60,7 +60,7 @@ retourne : le code en HTML
 **********************************************************************************************/
 function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_img=True,$crypter_texte_sensible=True)
 {
-global $config;
+global $config_wri;
 /** étape 1
 nouvelle fonction qui permet de faire des liens internes entre les fiches :
 [->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
@@ -91,7 +91,7 @@ $urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\?&=~-]+\w
 $urlauto_replace = "$1[url=$2]$2[/url]$4";
 $texte_avec_bbcode_apres_detection_urls = preg_replace($urlauto_pattern,$urlauto_replace,$texte_avec_bbcode);
 // gestion des liens vers notre wiki au format [url=##page]c'est là que ça se passe[/url] on le repasse d'abord en bbcode plus classique avec url locale (qui tient compte de l'éventuel sous-dossier dans lequel on est installé
-$texte_avec_bbcode_apres_detection_urls=str_replace("url=##","url=".$config['base_wiki'],$texte_avec_bbcode_apres_detection_urls);
+$texte_avec_bbcode_apres_detection_urls=str_replace("url=##","url=".$config_wri['base_wiki'],$texte_avec_bbcode_apres_detection_urls);
 
 /**
  on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )

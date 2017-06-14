@@ -2,18 +2,18 @@
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
 // $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
 if ($vue->mini_carte) {
-	include ($config['racine_projet'].'vues/includes/cartes.js');
+	include ($config_wri['racine_projet'].'vues/includes/cartes.js');
 	?>
 
 	var map, layerSwitcher;
 
 	map = new L.Map('carte-point', {
 		layers: [
-			baseLayers['<?=$vue->vignette[0]?>'] || // Le fond de carte assigné à cette région par $config['fournisseurs_fond_carte']
-			baseLayers['<?=$config["carte_base"]?>'] || // Sinon le fond de carte par défaut
+			baseLayers['<?=$vue->vignette[0]?>'] || // Le fond de carte assigné à cette région par $config_wri['fournisseurs_fond_carte']
+			baseLayers['<?=$config_wri["carte_base"]?>'] || // Sinon le fond de carte par défaut
 			baseLayers[Object.keys(baseLayers)[0]] // Sinon la première couche définie
 		]
 	});
@@ -21,7 +21,7 @@ if ($vue->mini_carte) {
 	// Cadre fixe marquant une position;
 	var cadre = new L.Marker([<?=$vue->point->latitude?>,<?=$vue->point->longitude?>], {
 		icon: L.icon({
-			iconUrl: '<?=$config['sous_dossier_installation']?>images/cadre.png',
+			iconUrl: '<?=$config_wri['sous_dossier_installation']?>images/cadre.png',
 			className: 'leaflet-grab',
 			iconAnchor: [15, 21]
 		})
@@ -102,5 +102,5 @@ if ($vue->mini_carte) {
 		}
 	}
 
-	<?php include ($config['racine_projet'].'vues/includes/meteo.js') ?>
+	<?php include ($config_wri['racine_projet'].'vues/includes/meteo.js') ?>
 <?}?>

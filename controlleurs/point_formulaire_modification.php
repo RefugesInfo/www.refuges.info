@@ -15,7 +15,7 @@ $vue->champs->textareas = new stdClass;
 $vue->champs->boutons = new stdClass; // Modifier, supprimer...
 $vue->champs->bools = new stdClass; // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
 $vue->champs->places_matelas = new stdClass; // traite en cas particulier, trop specifique, la suppression me demange
-$vue->fond_carte_par_defaut= $config['carte_base'];
+$vue->fond_carte_par_defaut= $config_wri['carte_base'];
 
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
@@ -38,7 +38,7 @@ if ( isset($_REQUEST["id_point"]) )
         return "";
     }
     // Soit on est avec un modérateur soit le créateur de la fiche
-    if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur OR $point->id_point_type == $config['id_batiment_en_montagne']) ) 
+    if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur OR $point->id_point_type == $config_wri['id_batiment_en_montagne']) ) 
     {
         $vue->serie = param_cartes ($point);
         
@@ -58,7 +58,7 @@ if ( isset($_REQUEST["id_point"]) )
         $action="Modification";
         $verbe="Modifier";
 
-        $vue->serie = $config['fournisseurs_fond_carte']['Saisie-modification'];    
+        $vue->serie = $config_wri['fournisseurs_fond_carte']['Saisie-modification'];    
     }
     else // Ni modérateur, ni créateur on l'informe que ses droits sont insuffisants
     {
@@ -66,7 +66,7 @@ if ( isset($_REQUEST["id_point"]) )
           $vue->titre="Permissions insuffisantes";
           $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur ou le créateur de cette fiche et être connecté au forum :";
           $vue->titre_lien="Connexion forum";
-          $vue->lien=$config['connexion_forum'];
+          $vue->lien=$config_wri['connexion_forum'];
           return "";
     }
 }
@@ -110,7 +110,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
         $vue->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
     }
     
-    $vue->serie = $config['fournisseurs_fond_carte']['Saisie-création'];    
+    $vue->serie = $config_wri['fournisseurs_fond_carte']['Saisie-création'];    
 
 }
 // 3) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
@@ -185,7 +185,7 @@ if ($_SESSION['niveau_moderation']>=1)
     $vue->champs->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
 }
 
-foreach($config['champs_binaires_points'] as $champ)
+foreach($config_wri['champs_binaires_points'] as $champ)
 {
     // nouveauté, ne crée les bool QUE si il y a un champ_equivalent.
     $champ_equivalent="equivalent_$champ";
@@ -202,7 +202,7 @@ if ( !empty($point->equivalent_conditions_utilisation) )
 {
     $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
 
-    if ($point->id_point_type==$config['point_d_eau'])
+    if ($point->id_point_type==$config_wri['point_d_eau'])
         $vue->champs->conditions_utilisation->options = array('ouverture' => 'Coule', 'NULL' => 'Ne sait pas','detruit' => 'Détruite','fermeture' => $point->equivalent_conditions_utilisation);
     else
         $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
@@ -219,8 +219,8 @@ if ( !empty($point->equivalent_places_matelas) )
 // ===========================================
 // Préparation de la $vue commune à chaque cas
 
-$vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
-$vue->java_lib_foot [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+$vue->css           [] = $config_wri['url_chemin_leaflet'].'leaflet.css?'.filemtime($config_wri['chemin_leaflet'].'leaflet.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_leaflet'].'leaflet.js?' .filemtime($config_wri['chemin_leaflet'].'leaflet.js');
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");
 $vue->lien_aide_points = lien_wiki("autres_points");

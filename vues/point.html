@@ -4,7 +4,7 @@
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 // $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
 // Inclue des différents blocs spécialisés
 ?>
@@ -32,7 +32,7 @@
 			<?// Si les droits sont suffisants, lien de modification
 			if ($vue->lien_modification) {?>
 				<dd class="noprint">
-					<a class="groupir" style="font-size: smaller ;" href="<?=$config['sous_dossier_installation']?>point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
+					<a class="groupir" style="font-size: smaller ;" href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification.php?id_point=<?=$vue->point->id_point?>">
 						[Modifier cette fiche]
 					</a>
 				</dd>
@@ -66,7 +66,7 @@
 					<span id="p21781"></span>
 				</div>
 				<div class="noprint">
-					<a href="<?=$config['sous_dossier_installation']?>nav" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
+					<a href="<?=$config_wri['sous_dossier_installation']?>nav" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
 						Aller sur la page des cartes
 					</a>
 				</div>
@@ -82,7 +82,7 @@
             <dd>
                 <span>
                 Provenance:
-                <?if ($vue->point->id_type_precision_gps == $config['id_coordonees_gps_approximative']) {?>
+                <?if ($vue->point->id_type_precision_gps == $config_wri['id_coordonees_gps_approximative']) {?>
 						<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 						<?=$vue->point->nom_precision_gps?>
@@ -100,9 +100,9 @@
 					</span>
 					<select id="position-select"></select>
 					(
-						<a href="<?=$config['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">gpx</a>
+						<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">gpx</a>
 					,
-						<a href="<?=$config['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">kml</a>
+						<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">kml</a>
 					,
 						<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
 					)
@@ -162,7 +162,7 @@
 				<dt class="condense noprint">Créateur de cette fiche:</dt>
 				<?if ($vue->point->id_createur != 0) { ?>
 					<dd class="condense noprint">
-						<a href="<?=$config['fiche_utilisateur'].$vue->point->id_createur?>">
+						<a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
 							<?=$vue->nom_createur?>
 						</a>
 					</dd>
@@ -239,7 +239,7 @@
 							<img
 								height="50"
 								style="vertical-align: middle ;"
-								src="<?=$config['rep_web_photos_points'].$commentaire_avec_photo->id_commentaire?>.jpeg"
+								src="<?=$config_wri['rep_web_photos_points'].$commentaire_avec_photo->id_commentaire?>.jpeg"
 								alt="photo miniature"
 							/>
 						</a>
@@ -249,7 +249,7 @@
 
 <!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
 			<dd class="lien_ajout_commentaire noprint">
-				<a href="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
+				<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
 					Ajouter un commentaire, une photo, une demande de correction
 				</a>
 			</dd>
@@ -300,7 +300,7 @@
 						<?if ($commentaire->auteur_commentaire_affichage) {?>
 							par
 							<?if ($commentaire->id_createur_commentaire != 0) {?>
-								<a href="<?=$config['fiche_utilisateur'].$commentaire->id_createur_commentaire?>">
+								<a href="<?=$config_wri['fiche_utilisateur'].$commentaire->id_createur_commentaire?>">
 									<?=$commentaire->auteur_commentaire_affichage?>
 								</a>
 							<?}else{?>
@@ -336,7 +336,7 @@
 
 <!--================== FIN DE LA PAGE DES POINTS - COMMENTAIRES DIVERS ET VARIÉS ===================-->
 	<p class="lien_ajout_commentaire noprint">
-		<a href="<?=$config['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
+		<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
 			Ajouter un commentaire, une photo, une demande de correction
 		</a>
 	</p>
@@ -351,7 +351,7 @@
 	</p>
 	<em>Page sous licence :
 		<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/fr/">
-			<img alt="Creative Commons License" src="<?=$config['sous_dossier_installation']?>images/logo-licence-cc-by-sa.png"/>
+			<img alt="Creative Commons License" src="<?=$config_wri['sous_dossier_installation']?>images/logo-licence-cc-by-sa.png"/>
 		</a>
 	</em>
 <!--============================================= FIN ==============================================-->

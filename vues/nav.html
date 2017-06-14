@@ -6,7 +6,7 @@ Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 $vue contient les données passées par le fichier PHP
-$config les données communes à tout WRI
+$config_wri les données communes à tout WRI
 
 Concept de Zone et Massifs :
 Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
@@ -69,7 +69,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 							<span>
 								<img
 									id="icone_<?=$type_affichable->id_point_type?>"
-									src="<?=$config['url_chemin_icones'].$type_affichable->icone?>.png"
+									src="<?=$config_wri['url_chemin_icones'].$type_affichable->icone?>.png"
 									alt="icone de <?=$type_affichable->nom_type?>"
 								/>
 								<?=$type_affichable->nom_type?>
@@ -101,27 +101,27 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 			<ul>
 				<li><label>
                                         <input type="checkbox" name="osm-categories[]" id="hotel" value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' onclick="poiOVER.reload()" />
-					<img src="<?=$config['url_chemin_icones']?>hotel.png" alt="icone de hotel" />
+					<img src="<?=$config_wri['url_chemin_icones']?>hotel.png" alt="icone de hotel" />
 					Hôtels et locations
 				</label></li>
 				<li><label>
 					<input type="checkbox" name="osm-categories[]" id="camping" value='["tourism"~"camp_site"]' onclick="poiOVER.reload()" />
-					<img src="<?=$config['url_chemin_icones']?>camping.png" alt="icone de camping" />
+					<img src="<?=$config_wri['url_chemin_icones']?>camping.png" alt="icone de camping" />
 					Campings
 				</label></li>
 				<li><label>
 					<input type="checkbox" name="osm-categories[]" id="ravitaillement" value='["shop"~"supermarket|convenience"]' onclick="poiOVER.reload()" />
-					<img src="<?=$config['url_chemin_icones']?>ravitaillement.png" alt="icone de ravitaillement" />
+					<img src="<?=$config_wri['url_chemin_icones']?>ravitaillement.png" alt="icone de ravitaillement" />
 					Alimentation
 				</label></li>
 				<li><label>
 					<input type="checkbox" name="osm-categories[]" id="parking" value='["amenity"="parking"]["access"!="private"]' onclick="poiOVER.reload()" />
-					<img src="<?=$config['url_chemin_icones']?>parking.png" alt="icone de parking" />
+					<img src="<?=$config_wri['url_chemin_icones']?>parking.png" alt="icone de parking" />
 					Parkings
 				</label></li>
 				<li><label>
 					<input type="checkbox" name="osm-categories[]" id="bus" value='["highway"="bus_stop"]' onclick="poiOVER.reload()" />
-					<img src="<?=$config['url_chemin_icones']?>bus.png" alt="icone d'arrêt de bus" />
+					<img src="<?=$config_wri['url_chemin_icones']?>bus.png" alt="icone d'arrêt de bus" />
 					Bus
 				</label></li>
 			</ul>
@@ -161,7 +161,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 	<?}?>
 
 	<?php if ( $vue->mode_affichage == 'edit' && $_SESSION['niveau_moderation']>=1 ) {?>
-		<form method="post" action="<?=$config['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit" >
+		<form method="post" action="<?=$config_wri['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit" >
 			<fieldset>
 				<legend><?=$vue->polygone->id_polygone ? 'Edition' : 'Création'?></legend>
 				<!-- Edition du massif -->
@@ -188,7 +188,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					<label>
 						<?if (!$_GET['test_supprimer']) {?>
 							<p>
-								<a href="<?=$config['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit&amp;test_supprimer=1">
+								<a href="<?=$config_wri['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>?mode_affichage=edit&amp;test_supprimer=1">
 									Supprimer le massif
 								</a>
 							</p>

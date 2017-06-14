@@ -26,7 +26,7 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
     // exploite le champs id_zone renvoyé par infos_polygones
   
     $conditions = new stdClass;
-    $conditions->ids_polygone_type=$config['id_massif'];
+    $conditions->ids_polygone_type=$config_wri['id_massif'];
     $conditions->ordre = "id_zone"; // classe les massifs par zone
     $conditions->avec_zone_parente=True;
     $massifs=infos_polygones($conditions);
@@ -56,7 +56,7 @@ else // formulaire validé, affichage du lien et d'un blabla
     
         $options_lien="format=rss&amp;format_texte=html&amp;type=$liste_id_nouvelle_type&amp;massif=$liste_id_massif";
     
-        $vue->lien_export->url = "http://".$config['nom_hote']."/api/contributions?$options_lien";
+        $vue->lien_export->url = "http://".$config_wri['nom_hote']."/api/contributions?$options_lien";
     } 
     $vue->type="formulaire_rss_validation";
 } // fin du else affichage lien

@@ -7,15 +7,15 @@ Ce fichier regroupe les fonctions de gestion des autres fonctions d'une manière
 
 /*
 Fonction qu'on peut appeler pour retourner le fait qu'on soit en erreur+un message public en texte indiquant l'erreur
-Mais aussi, si le mode debug de wri est activé ($config['debug']=true) un message plus complet sur l'erreur survenue.
+Mais aussi, si le mode debug de wri est activé ($config_wri['debug']=true) un message plus complet sur l'erreur survenue.
 Le premier paramètre est un texte d'erreur qui peut être lu par l'internaute
 Le deuxième peut contenir des infos délicates mais qui ne seront affichées qu'en mode debug
  */
 function erreur($texte,$seulement_avec_debug="")
 {
-  global $config,$pdo;
+  global $config_wri,$pdo;
   
-  if ($config['debug'] and $seulement_avec_debug!="") // Si aucun deuxième paramètre n'a été donné, c'est une erreur mais pas un bug
+  if ($config_wri['debug'] and $seulement_avec_debug!="") // Si aucun deuxième paramètre n'a été donné, c'est une erreur mais pas un bug
   {
     if (isset($pdo))
       if ($pdo->errorInfo())

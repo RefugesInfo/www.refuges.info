@@ -69,7 +69,7 @@ else // le point est valide
     $vue->annonce_fermeture = texte_non_ouverte ($point);
 
     /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" et de l'affichage de la carte ***/
-    if ($point->id_type_precision_gps != $config['id_coordonees_gps_fausses'])
+    if ($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses'])
     {
         $conditions = new stdClass;
         $conditions->avec_infos_massif=True;
@@ -96,8 +96,8 @@ else // le point est valide
             
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
-		$vue->css           [] = $config['url_chemin_leaflet'].'leaflet.css?'.filemtime($config['chemin_leaflet'].'leaflet.css');
-		$vue->java_lib_foot [] = $config['url_chemin_leaflet'].'leaflet.js?' .filemtime($config['chemin_leaflet'].'leaflet.js');
+		$vue->css           [] = $config_wri['url_chemin_leaflet'].'leaflet.css?'.filemtime($config_wri['chemin_leaflet'].'leaflet.css');
+		$vue->java_lib_foot [] = $config_wri['url_chemin_leaflet'].'leaflet.js?' .filemtime($config_wri['chemin_leaflet'].'leaflet.js');
         $vue->vignette = param_cartes ($point);
     }
 
@@ -109,7 +109,7 @@ else // le point est valide
                 $vue->polygone_avec_information=$polygone;
             
     /*********** Préparation de la présentation du point ***/
-    if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur OR $point->id_point_type == $config['id_batiment_en_montagne']))
+    if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur OR $point->id_point_type == $config_wri['id_batiment_en_montagne']))
         $vue->lien_modification=TRUE;
             
     /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
@@ -118,7 +118,7 @@ else // le point est valide
     // Voici tous ceux qui nous intéresse 
     // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer 
     // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
-    $champs=array_merge(array('places_matelas'),$config['champs_binaires_points'],array('site_officiel'));
+    $champs=array_merge(array('places_matelas'),$config_wri['champs_binaires_points'],array('site_officiel'));
    
     foreach ($champs as $champ) 
     {

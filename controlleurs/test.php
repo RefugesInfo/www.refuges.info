@@ -27,7 +27,7 @@ $html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE,$crypt
 $point = infos_point(105);
 
 d(lien_point($point,true));
-//d($config['sous_dossier_installation']);
+//d($config_wri['sous_dossier_installation']);
 
 exit();
 ?>

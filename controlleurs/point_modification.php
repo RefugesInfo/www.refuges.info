@@ -62,10 +62,10 @@ switch( $_REQUEST["action"] )
         $point=preparation_point();
         $point->topic_id=$ancien_point->topic_id;
         // modification uniquement si modérateur ou créateur de la fiche
-        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $ancien_point->id_createur OR $ancien_point->id_point_type == $config['id_batiment_en_montagne']) )
+        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $ancien_point->id_createur OR $ancien_point->id_point_type == $config_wri['id_batiment_en_montagne']) )
         {
             // sly 2016 : cas spécifique au batiment en montagne, le dernier modificateur en devient le créateur
-            if ($ancien_point->id_point_type == $config['id_batiment_en_montagne'])
+            if ($ancien_point->id_point_type == $config_wri['id_batiment_en_montagne'])
               $point->id_createur=$_SESSION['id_utilisateur'];
             $retour = modification_ajout_point($point);
             gestion_retour($retour,$vue);

@@ -23,7 +23,7 @@ le reste sera présuposé si non présent
 ********************************************************/
 function modification_ajout_point_gps($point_gps)
 {
-  global $config,$pdo;
+  global $config_wri,$pdo;
   if (!$point_gps->geojson) { // Plus besoin de faire ces vérifs avec le nouveau format geojson
     // désolé, les coordonnées ne peuvent être vide ou non numérique
     $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
@@ -39,7 +39,7 @@ function modification_ajout_point_gps($point_gps)
   }
   // si aucune précision gps, on les suppose approximatives
   if ($point_gps->id_type_precision_gps=="")
-    $point_gps->id_type_precision_gps=$config['id_coordonees_gps_approximative'];
+    $point_gps->id_type_precision_gps=$config_wri['id_coordonees_gps_approximative'];
 
     // si aucune altitude, on la suppose à 0
     if (!isset($point_gps->altitude))

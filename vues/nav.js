@@ -2,9 +2,9 @@
 
 // Ce fichier ne doit contenir que du code javascript destiné à être inclus dans la page
 // $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
-include ($config['racine_projet'].'vues/includes/cartes.js');
+include ($config_wri['racine_projet'].'vues/includes/cartes.js');
 ?>
 
 var map,
@@ -13,7 +13,7 @@ var map,
 
 // Les massifs ou contours de massifs
 massifLayer = new L.GeoJSON.Ajax(
-	'<?=$config['sous_dossier_installation']?>api/polygones', {
+	'<?=$config_wri['sous_dossier_installation']?>api/polygones', {
 		argsGeoJSON: {
 			type_polygon: 1,
 <?if ($vue->mode_affichage == 'zone') {?>
@@ -53,7 +53,7 @@ wriPoi = new L.GeoJSON.Ajax.wriPoi({ // Les points choisis sur toute la carte
 	}
 });
 wriMassif = new L.GeoJSON.Ajax.wriPoi({ // Seulement les points dans un massif
-	urlGeoJSON: '<?=$config['sous_dossier_installation']?>api/massif',
+	urlGeoJSON: '<?=$config_wri['sous_dossier_installation']?>api/massif',
 	argsGeoJSON: {
 		type_points: null,
 		massif: '<?=$vue->polygone->id_polygone?>'
@@ -90,7 +90,7 @@ map = new L.Map('carte-nav', {
 <?if ($vue->mode_affichage == 'zone') {?>
 				'Outdoors'
 <?}else{?>
-				'<?=$config["carte_base"]?>'
+				'<?=$config_wri["carte_base"]?>'
 <?}?>
 			] || // Sinon le fond de carte par défaut
 			baseLayers[Object.keys(baseLayers)[0]], // Sinon la première couche définie

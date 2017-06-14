@@ -1,29 +1,29 @@
 <?php
 // Affichage du bas d'une page du site
 // $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 ?>
 <div id="basdepage">
-	<a id="lien-mobile" href="<?=$config['sous_dossier_installation']?>mobile/" title="Passer sur l'application mobile">
+	<a id="lien-mobile" href="<?=$config_wri['sous_dossier_installation']?>mobile/" title="Passer sur l'application mobile">
 		Version mobile
 	</a> &mdash; 
-	<a id="lien-api" href="<?=$config['sous_dossier_installation']?>api/doc/" title="API">
+	<a id="lien-api" href="<?=$config_wri['sous_dossier_installation']?>api/doc/" title="API">
 		API développeurs
 	</a> &mdash; 
 	<a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">
-		<img src="<?=$config['sous_dossier_installation']?>images/copyleft.png" alt="Copyleft" />
+		<img src="<?=$config_wri['sous_dossier_installation']?>images/copyleft.png" alt="Copyleft" />
 		Licence des contenus
 	</a>
-	<?php if ($config['debug']) { ?>
+	<?php if ($config_wri['debug']) { ?>
 	<a href="http://validator.w3.org/check?uri=referer">
-		<img src="<?=$config['sous_dossier_installation']?>images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
+		<img src="<?=$config_wri['sous_dossier_installation']?>images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" />
 	</a>
 	<a href="http://jigsaw.w3.org/css-validator/check/referer">
-		<img src="<?=$config['sous_dossier_installation']?>images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1" />
+		<img src="<?=$config_wri['sous_dossier_installation']?>images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1" />
 	</a>
 	<?php } ?>
 </div>

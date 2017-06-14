@@ -6,11 +6,11 @@ require_once ("config.php");
 
 function liste_icones_possibles()
 {
-    global $config;
-    $dossier_icones = opendir($config['chemin_icones']) or erreur('Je ne trouve pas les icones',"la recherche a eu lieu dans ".$config['chemin_icones']);
+    global $config_wri;
+    $dossier_icones = opendir($config_wri['chemin_icones']) or erreur('Je ne trouve pas les icones',"la recherche a eu lieu dans ".$config_wri['chemin_icones']);
     while($entree = @readdir($dossier_icones)) 
     {
-        if (is_file($config['chemin_icones'].'/'.$entree)) 
+        if (is_file($config_wri['chemin_icones'].'/'.$entree)) 
             if (preg_match('/.png/',$entree))
                 $icones[]=preg_replace("/.png/","",$entree);
     }

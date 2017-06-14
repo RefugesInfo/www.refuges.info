@@ -12,12 +12,12 @@ toute bête ou des controlleurs n'ayant pas besoin de session par exemple
 
 
 // quasi obligatoire pour tout le site
-require_once ('./includes/config.php');
+require_once ('includes/config.php');
 
 // pas nécessaire à tout le monde, mais pas gros et nécessaire à presque tous
 require_once ('wiki.php');
 require_once ('gestion_erreur.php');
-require_once ("autoconnexion.php");
+require_once ('autoconnexion.php');
 
 // On "démarre" le site
 require_once ('generales.routes.php');

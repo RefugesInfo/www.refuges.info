@@ -104,6 +104,8 @@ switch ($periode)
 #phpbb .alert_text h3,
 #phpbb .stat-block h3,
 #phpbb .stat-block h3 a,
+#phpbb .headerspace h3,
+#phpbb .headerspace h3 a,
 #phpbb .postbody h3,
 #phpbb .postbody h3 a,
 #phpbb #postform .review,

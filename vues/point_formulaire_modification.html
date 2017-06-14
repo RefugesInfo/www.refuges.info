@@ -4,7 +4,7 @@
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 // $vue contient les données passées par le fichier PHP
-// $config les données communes à tout WRI
+// $config_wri les données communes à tout WRI
 
 // 27/05/12 Dominique : Création
 ?>
@@ -25,7 +25,7 @@
   }
 ?>
     <div id="carte-edit"></div>
-    <form class="wri" id="form_point" method="post" action="<?=$config['sous_dossier_installation']?>point_modification.php">
+    <form class="wri" id="form_point" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_modification.php">
     <div><?
     foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">

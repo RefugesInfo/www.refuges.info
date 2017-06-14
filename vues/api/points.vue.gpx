@@ -8,7 +8,7 @@ else if ($req->format == "gpi") header("Content-Type: application/binary; UTF-8"
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 $gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
@@ -17,7 +17,7 @@ $gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">
 <metadata>
 	<name>points.gpx</name>
-	<desc>$config[copyright_API]</desc>
+	<desc>$config_wri[copyright_API]</desc>
 	<author>
 		<name>Contributeurs refuges.info</name>
 	</author>
@@ -25,8 +25,8 @@ $gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
 		<year>2014</year>
 		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 	</copyright>
-	<link href=\"https://$config[nom_hote]/\">
-		<text>https://$config[nom_hote]/</text>
+	<link href=\"https://$config_wri[nom_hote]/\">
+		<text>https://$config_wri[nom_hote]/</text>
 		<type>text/html</type>
 	</link>
 </metadata>\r\n";
@@ -44,7 +44,7 @@ foreach ($points AS $point) {
 		$gpx .= "	<cmt>".$point->remarque['nom']." : ".htmlspecialchars($point->remarque['valeur'])."</cmt>\r\n";
 		$gpx .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
 		$gpx .= "	<link href=\"$point->lien\">\r\n";
-		$gpx .= "		<text>$point->nom sur $config[nom_hote]</text>\r\n";
+		$gpx .= "		<text>$point->nom sur $config_wri[nom_hote]</text>\r\n";
 		$gpx .= "		<type>text/html</type>\r\n";
 		$gpx .= "	</link>\r\n";
 		$gpx .= "	<extensions>\r\n";

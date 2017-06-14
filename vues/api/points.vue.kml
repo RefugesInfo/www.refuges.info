@@ -7,7 +7,7 @@ header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // raj
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 
@@ -15,13 +15,13 @@ $kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
 $kml .= "<kml xmlns=\"http://earth.google.com/kml/2.1\">\r\n";
 $kml .= "<Document>\r\n";
 $kml .= "	<name>points.kml</name>\r\n";
-$kml .= "	<description>$config[copyright_API]</description>\r\n\r\n";
+$kml .= "	<description>$config_wri[copyright_API]</description>\r\n\r\n";
 	
 $kml .= "<!-- Liste des STYLES -->\r\n\r\n";
 $icones_possibles=liste_icones_possibles();
 foreach ($icones_possibles as $nom_icone)
 {
-	$lien_icone = "http://".$config['nom_hote'].$config['url_chemin_icones'].$nom_icone.'.png';
+	$lien_icone = "http://".$config_wri['nom_hote'].$config_wri['url_chemin_icones'].$nom_icone.'.png';
 
 	$tx = $ty = 16; // La plupart des icones
 
@@ -48,7 +48,7 @@ foreach ($points AS $point) {
 	$kml .= "			<name>$point->nom</name>\r\n";
 	$kml .= "			<description>\r\n";
 	$kml .= "				<![CDATA[\r\n";
-	$kml .= "					<img src=\"https://$config[nom_hote]/images/icones/".$point->type['icone'].".png\" />\r\n";
+	$kml .= "					<img src=\"https://$config_wri[nom_hote]/images/icones/".$point->type['icone'].".png\" />\r\n";
 	$kml .= "					(<em>".$point->type['valeur']."</em>) <br />\r\n";
 	$kml .= "					<center><a href='$point->lien'>Détails</a></center>\r\n";
 	$kml .= "				]]>\r\n";

@@ -21,7 +21,7 @@
 
 			<? if ($commentaire->photo_existe==1) { ?>
 				<img
-					src="<?=$config['rep_web_photos_points'].$commentaire->id_commentaire?>.jpeg"
+					src="<?=$config_wri['rep_web_photos_points'].$commentaire->id_commentaire?>.jpeg"
 					alt="photo liée au commentaire"
 					width="200px" />
 				<br /><br />
@@ -36,9 +36,9 @@
 			<? if ($commentaire->photo_existe==1) { ?>
 				Rotation photo: &nbsp;
 				<input type="radio" name="rotation" value="0" checked="checked">aucune &nbsp;
-				<input type="radio" name="rotation" value="90"><img src="<?=$config['sous_dossier_installation']?>images/270.png" /> &nbsp;
-				<input type="radio" name="rotation" value="180"><img src="<?=$config['sous_dossier_installation']?>images/180.png" /> &nbsp;
-				<input type="radio" name="rotation" value="270"><img src="<?=$config['sous_dossier_installation']?>images/90.png" />
+				<input type="radio" name="rotation" value="90"><img src="<?=$config_wri['sous_dossier_installation']?>images/270.png" /> &nbsp;
+				<input type="radio" name="rotation" value="180"><img src="<?=$config_wri['sous_dossier_installation']?>images/180.png" /> &nbsp;
+				<input type="radio" name="rotation" value="270"><img src="<?=$config_wri['sous_dossier_installation']?>images/90.png" />
 				<br />
 				<input name="type" value="suppression_photo" type="submit" />
 				<br /><br />

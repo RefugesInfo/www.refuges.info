@@ -12,21 +12,21 @@ if (typeof L.OSOpenSpace.TileLayer != 'undefined')
 var baseLayers = {
 	'Refuges.info':new L.TileLayer.OSM.MRI(),
 	'OSM fr':      new L.TileLayer.OSM.FR(),
-	'Outdoors':    new L.TileLayer.OSM.Outdoors({k: '<?=$config['thunderforest_key']?>'}),
-	'IGN':         new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
-	'IGN Express': new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
+	'Outdoors':    new L.TileLayer.OSM.Outdoors({k: '<?=$config_wri['thunderforest_key']?>'}),
+	'IGN':         new L.TileLayer.IGN({k: '<?=$config_wri['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
+	'IGN Express': new L.TileLayer.IGN({k: '<?=$config_wri['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
 	'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),
 	'Autriche':    new L.TileLayer.Kompass({l:'Touristik'}),
 	'Espagne':     new L.TileLayer.WMS.IDEE(),
-	'Photo Bing':  new L.BingLayer('<?=$config['bing_key']?>', {type:'Aerial'}),
-	'Photo IGN':   new L.TileLayer.IGN({k: '<?=$config['ign_key']?>', l:'ORTHOIMAGERY.ORTHOPHOTOS'})
+	'Photo Bing':  new L.BingLayer('<?=$config_wri['bing_key']?>', {type:'Aerial'}),
+	'Photo IGN':   new L.TileLayer.IGN({k: '<?=$config_wri['ign_key']?>', l:'ORTHOIMAGERY.ORTHOPHOTOS'})
 };
 <?}?>
 
 // Points d'interêt refuges.info
 L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: '<?=$config['sous_dossier_installation']?>api/bbox',
+		urlGeoJSON: '<?=$config_wri['sous_dossier_installation']?>api/bbox',
 		argsGeoJSON: {
 			type_points: 'all'
 		},
@@ -38,11 +38,11 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 			if (feature.properties.coord.alt)
 				prop.push(feature.properties.coord.alt + 'm');
 			if (feature.properties.places.valeur)
-				prop.push(feature.properties.places.valeur + '<img src="' + '<?=$config['sous_dossier_installation']?>images/lit.png"/>');
+				prop.push(feature.properties.places.valeur + '<img src="' + '<?=$config_wri['sous_dossier_installation']?>images/lit.png"/>');
 			this.options.disabled = !this.options.argsGeoJSON.type_points;
 			return {
 				url: url_point,
-				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
+				iconUrl: '<?=$config_wri['sous_dossier_installation']?>images/icones/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 8],
 				popup: feature.properties.nom +
 					(prop.length ? '<div style=text-align:center>' + prop.join(' ') + '</div>' : ''),
@@ -84,7 +84,7 @@ L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 <?if (strstr('nav|point',$vue->type)) {?>
 L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 	options: {
-		urlGeoJSON: '<?=$config['overpass_api']?>',
+		urlGeoJSON: '<?=$config_wri['overpass_api']?>',
 		maxLatAperture: 0.5, // Largeur de la carte (en degrés latitude) en dessous de laquelle on recherche les points
 		timeout: 5, // En secondes, du serveur à partir duquel il abandonne la recherche et affiche la loupe rouge
 		idAjaxStatus: 'ajax-osm-status', // HTML id element owning the loading status display
@@ -148,7 +148,7 @@ L.GeoJSON.Ajax.OSM.services = L.GeoJSON.Ajax.OSM.extend({
 		// Style d'affichage des icônes
 		style: function(feature) {
 			return {
-				iconUrl: '<?=$config['sous_dossier_installation']?>images/icones/' + feature.properties.icon_name + '.png',
+				iconUrl: '<?=$config_wri['sous_dossier_installation']?>images/icones/' + feature.properties.icon_name + '.png',
 				iconAnchor: [8, 8],
 				popupClass: 'carte-service-etiquette',
 				degroup: 12

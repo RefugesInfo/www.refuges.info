@@ -8,7 +8,7 @@ header("Content-Type: application/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
 header("Cache-Control: max-age=$secondes_de_cache");
 
 
@@ -16,15 +16,15 @@ $rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
 $rss .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
 $rss .= "<channel>\r\n";
 $rss .= "	<title>Refuges.info</title>\r\n";
-$rss .= "	<link>https://$config[nom_hote]/</link>\r\n";
-$rss .= "	<atom:link href=\"https://$config[nom_hote]".htmlspecialchars($_SERVER["REQUEST_URI"])."\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
-$rss .= "	<description>$config[copyright_API]</description>\r\n";
+$rss .= "	<link>https://$config_wri[nom_hote]/</link>\r\n";
+$rss .= "	<atom:link href=\"https://$config_wri[nom_hote]".htmlspecialchars($_SERVER["REQUEST_URI"])."\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
+$rss .= "	<description>$config_wri[copyright_API]</description>\r\n";
 $rss .= "	<language>fr</language>\r\n";
 $rss .= "	<image>\r\n";
-$rss .= "		<url>https://$config[nom_hote]/mobile/images/icone.svg</url>\r\n";
+$rss .= "		<url>https://$config_wri[nom_hote]/mobile/images/icone.svg</url>\r\n";
 $rss .= "		<title>Refuges.info</title>\r\n";
-$rss .= "		<link>https://$config[nom_hote]/</link>\r\n";
-$rss .= "		<guid>https://$config[nom_hote]/</guid>\r\n";
+$rss .= "		<link>https://$config_wri[nom_hote]/</link>\r\n";
+$rss .= "		<guid>https://$config_wri[nom_hote]/</guid>\r\n";
 $rss .= "		<height>64</height>\r\n";
 $rss .= "		<width>64</width>\r\n";
 $rss .= "	</image>\r\n";

@@ -18,21 +18,21 @@ require_once ("utilisateur.php");
 
   function stat_site ()
   {
-    global $config,$pdo;
+    global $config_wri,$pdo;
     // Petits stats de début sur l'intégralité de la base
     // donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
     // les autres sont des sommets, des cols, des villes où autre
     // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
     // PDO jmb re ecriture en une seule requete
     $q = "SELECT
-        ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config ['tout_type_refuge']." )
+        ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config_wri['tout_type_refuge']." )
         AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
         AND points.modele <> 1
         AND points.censure <> TRUE
         )                                  AS nbrefuges,
     ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
     ( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
-    ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config['id_massif'].")  ) AS nbmassifs ";
+    ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config_wri['id_massif'].")  ) AS nbmassifs ";
     $res = $pdo->query($q);
     return $res->fetch();
   }
@@ -64,7 +64,7 @@ array/object et ce serait au controleur/la vue de s'occuper de la mise en forme
 
 function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
 {
-    global $config,$pdo;
+    global $config_wri,$pdo;
     $conditions = new stdClass;
     // tableau de tableau contiendra toutes les news toutes catégories confondues
     $news_array = array() ;
@@ -119,7 +119,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 }	
                 break;
                 
-            case "refuges": $conditions->ids_types_point=$config['tout_type_refuge'];
+            case "refuges": $conditions->ids_types_point=$config_wri['tout_type_refuge'];
             case "points":
                 $conditions->ordre="date_creation DESC";
                 $conditions->limite=$nombre;
@@ -167,7 +167,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
             case "forums":
                 $conditions_messages_forum = new stdclass();
                 $conditions_messages_forum->limite=$nombre;
-                $conditions_messages_forum->sauf_ids_forum=$config['id_forum_moderateur'].",".$config['id_forum_developpement'];
+                $conditions_messages_forum->sauf_ids_forum=$config_wri['id_forum_moderateur'].",".$config_wri['id_forum_developpement'];
                 
                 $commentaires_forum=messages_du_forum($conditions_messages_forum);
                 if (count($commentaires_forum)>0)
@@ -176,8 +176,8 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         if ($lien_locaux)
                             $url_complete="";
                         else
-                            $url_complete="http://".$config['nom_hote'];
-                        $news_array[$i]['lien']=$url_complete.$config['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
+                            $url_complete="http://".$config_wri['nom_hote'];
+                        $news_array[$i]['lien']=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#$commentaire_forum->post_id";
                         $news_array[$i]['categorie']="Forum";
                         $news_array[$i]['titre']=html_entity_decode ($commentaire_forum->topic_title);
                         $news_array[$i]['date']=$commentaire_forum->date;
