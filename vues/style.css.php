@@ -86,7 +86,8 @@ switch ($periode)
 }
 /* Zones masquées */
 #phpbb .headerbar,
-#phpbb .navbar .avatar {
+#phpbb .navbar .avatar,
+label[for=viewonline] { /* Masquer "Cacher mon statut en ligne pour cette session" */
 	display: none;
 }
 /* Personnalisation des couleurs */

@@ -25,7 +25,12 @@ if (!defined('IN_PHPBB')) {
 
 // Fonction générique qui permet - entre autre - de créer un topic, modifier le titre et ajouter un post
 function forum_submit_post ($args) {
-	global $config_wri, $db;
+	global $config_wri, $db, $user;
+
+	// On se fait passer pour l'auteur du commentaire
+	$mem_user = $user->data['user_id'];
+	if ($args['topic_poster'] > ANONYMOUS)
+		$user->data['user_id'] = $args['topic_poster'];
 
 	$data = [ // Données par défaut
 		'forum_name' => '',
@@ -82,6 +87,10 @@ function forum_submit_post ($args) {
 		$poll,
 		$data
 	);
+
+	// On redevient nous même
+	$user->data['user_id'] = $mem_user;
+
 	return $data;
 }
 
