@@ -29,8 +29,8 @@ function forum_submit_post ($args) {
 
 	// On se fait passer pour l'auteur du commentaire
 	$mem_user = $user->data['user_id'];
-	if ($args['topic_poster'] > ANONYMOUS)
-		$user->data['user_id'] = $args['topic_poster'];
+	$user->data['user_id'] = $args['topic_poster'] = max (ANONYMOUS, $args['topic_poster']);
+	$user->data['is_registered'] = false;
 
 	$data = [ // Données par défaut
 		'forum_name' => '',
@@ -90,6 +90,7 @@ function forum_submit_post ($args) {
 
 	// On redevient nous même
 	$user->data['user_id'] = $mem_user;
+	$user->data['is_registered'] = true;
 
 	return $data;
 }

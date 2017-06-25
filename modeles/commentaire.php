@@ -379,7 +379,7 @@ function redimensionnement_photo($chemin_photo, $type = 'photo')
         6 => -90,
         8 =>  90,
     ];
-    $exif_data = exif_read_data ($chemin_photo);
+    $exif_data = @exif_read_data ($chemin_photo);
     $angle = @$codes_angles [$exif_data ['Orientation']];
     if ($angle)
         $image = imagerotate ($image, $angle, 0);
