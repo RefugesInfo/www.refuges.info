@@ -127,6 +127,9 @@ label[for=viewonline] { /* Masquer "Cacher mon statut en ligne pour cette sessio
 .avertissement {
 	color: red;
 }
+.menu ul {
+	list-style-type: none;
+}
 
 /*==================================================================*/
 /* MISE EN PAGE GENERALE DES TYPES                                  */
