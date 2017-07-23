@@ -129,7 +129,7 @@ $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];
 $config_wri['xapi_url_poi']="//api.openstreetmap.fr/osm2node?";
 $config_wri['overpass_api']="//api.openstreetmap.fr/oapi/interpreter";
 //Autre serveur de backup :
-$config_wri['overpass_api']="//www.overpass-api.de/api/interpreter";
+$config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 
 $config_wri['url_nominatim']="//nominatim.openstreetmap.org/";
 $config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
