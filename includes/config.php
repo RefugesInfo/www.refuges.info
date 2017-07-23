@@ -127,7 +127,7 @@ $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];
 /********** URLs d'accès aux données openstreetmap ************/
 // NOTE: ne pas mettre le "schéma" permet d'utiliser le même que celui de la page.
 $config_wri['xapi_url_poi']="//api.openstreetmap.fr/osm2node?";
-$config_wri['overpass_api']="//api.openstreetmap.fr/oapi/interpreter";
+//$config_wri['overpass_api']="//api.openstreetmap.fr/oapi/interpreter";
 //Autre serveur de backup :
 $config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 
@@ -199,9 +199,8 @@ $config_wri['debug']=false;
 // que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore
 // il est volontairement placé "presque*" à la fin pour que les variables ci-avant puissent par exemple être sur-chargées si on souhaite
 // un autre comportement
-// Le problème c'est que le tableau ci-après re-fait appel à la variable $config_wri['carte_base'] que j'aimerais pouvoir surcharger dans 
-// config_privee.php, c'est donc un peu merdique comme méthode, mais j'ai pas trouvé mieux
-require_once($config_wri['racine_projet']."config_privee.php");
+// FIXME sly 07/2017 : on devrait utiliser un require_once ici plutôt que require, sauf que le config.php est inclus 2 fois (mais je ne sais pas où !) qui fait qu'au deuxième passaeg, config_privee.php ne surchage plus le par défaut
+require($config_wri['racine_projet']."config_privee.php");
 
 // *** NON NON : *** N'ajoutez rien après ce require_once("config_privee.php"); sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant
 // mettez par contre tout ce que vous voulez avant le require_once("config_privee.php");
