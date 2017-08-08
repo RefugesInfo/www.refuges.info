@@ -7,7 +7,7 @@
 
 var deps = [
 	// Kernel leaflet
-	'../node_modules/leaflet/dist/Leaflet-src.js',
+	'../node_modules/leaflet/dist/leaflet-src.js',
 
 	// Controls
 	'../node_modules/leaflet.coordinates/src/util/NumberFormatter.js',
@@ -57,7 +57,7 @@ var deps = [
 	'../src/Leaflet.Marker.coordinates/src/Marker.coordinates.js',
 
 	// Draw for leaflet
-	'../node_modules/leaflet-draw/dist/Leaflet.draw-src.js',
+	'../node_modules/leaflet-draw/dist/leaflet.draw-src.js',
 	'../node_modules/leaflet-geometryutil/src/leaflet.geometryutil.js', // A mettre sinon snap plante.
 	'../node_modules/leaflet-snap/leaflet.snap.js',
 	'../src/Leaflet.draw.plus/src/Control.Draw.Plus.js',

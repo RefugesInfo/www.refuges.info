@@ -32,17 +32,6 @@ if ($vue->mini_carte) {
 	map.setView(cadre._latlng, 13, {reset: true});
 
 	var wriPoi = new L.GeoJSON.Ajax.wriPoi().addTo(map);
-	new L.GeoJSON.Ajax.OSM.services({
-		maxPoints: 30,
-		services: {
-			// <NOM ICONE> = '<REQUETTE OVERPASS>'
-			hotel: '["tourism"~"hotel|camp_site|hostel|chalet|apartment"]',
-			camping: '["tourism"~"camp_site"]',
-			ravitaillement: '["shop"~"supermarket|convenience"]',
-			parking: '["amenity"="parking"]["access"!="private"]',
-			bus: '["highway"="bus_stop"]'
-		},
-	}).addTo(map);
 
 	new L.Control.Scale().addTo(map);
 	new L.Control.Coordinates().addTo(map);
@@ -64,43 +53,6 @@ if ($vue->mini_carte) {
 		text: null, // Le contrôle n'apparait pas sur la carte car ça n'a pas de sens pour un point qui positionne lui même la carte
 		move: false // On n'initialise pas la carte avec le permalink: il est uniquement là pour enregistrer
 	}).addTo(map);
-
-	// Actions de la page
-	function agrandir_carte_point() {
-		// On masque le contrôle puisqu'il a déjà été activé
-		var agrandir_vignette = document.getElementById('agrandir-carte-point');
-		if (agrandir_vignette)
-			agrandir_vignette.style.display = 'none';
-
-		// On redimensionne la carte
-		var mc = map._container,
-			l1 = mc.clientWidth,
-			h1 = mc.clientHeight;
-		mc.style.width = '40vw';
-		mc.style.height = '40vw';
-		mc.style.minWidth = l1+'px';
-		mc.style.minHeight = h1+'px';
-		mc.style.maxHeight = 2*h1+'px';
-		var h2 = mc.clientHeight;
-		map.panBy(
-			[(h1-h2)/2, (h1-h2)/2], // Recentre la nouvelle carte, plus grande, sur le cadre
-			{animate: false}
-		);
-        map.invalidateSize(); // Reload missing tiles
-
-		// On positionne la couche de second choix
-		var oldLayerId, newLayerId;
-		for (l in layerSwitcher._layers) {
-			if (map.hasLayer(layerSwitcher._layers[l].layer))
-				oldLayerId = l;
-			if (layerSwitcher._layers[l].name == '<?=$vue->vignette[2]?>')
-				newLayerId = l;
-		}
-		if (oldLayerId && newLayerId && oldLayerId != newLayerId) {
-			map.removeLayer(layerSwitcher._layers[oldLayerId].layer);
-			map.addLayer(layerSwitcher._layers[newLayerId].layer);
-		}
-	}
 
 	<?php include ($config_wri['racine_projet'].'vues/includes/meteo.js') ?>
 <?}?>
