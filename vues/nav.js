@@ -77,7 +77,7 @@ poiC2C = new L.GeoJSON.Ajax.chem({
 		poi: '3,8,16,20,23,28,30,40,44,64,58,62'
 	},
 	idAjaxStatus: 'ajax-poiC2C-status',
-	urlRootRef: 'http://www.camptocamp.org/huts/'
+	urlRootRef: 'https://www.camptocamp.org/huts/'
 });
 
 // Points OSM
