@@ -69,7 +69,7 @@ else // formulaire validé, affichage du lien et d'un blabla
             $mode_complet="";
         $options_lien="?nb_points=all$mode_complet&amp;format=".$_POST['format']."&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
     
-        $vue->lien_export->url = "http://".$config_wri['nom_hote']."/api/massif$options_lien";
+        $vue->lien_export->url = "/api/massif$options_lien";
     } 
     $vue->type="formulaire_exportations_validation";
 } // fin du else affichage lien
