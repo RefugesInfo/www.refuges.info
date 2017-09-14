@@ -59,19 +59,10 @@
 		if ($vue->mini_carte) {?>
 			<div id="container-carte-point">
 				<div id="carte-point"></div>
-				<div id="agrandir-carte-point" class="noprint">
-					<a style="cursor:pointer" onclick="agrandir_carte_point()" title="Agrandir la carte-point et changer de fond de carte">
-						Utiliser le fond de carte <?=$vue->vignette[1]?><?=$vue->vignette[2]?>
-					</a>
-					<span id="p21781"></span>
-				</div>
 				<div class="noprint">
 					<a href="<?=$config_wri['sous_dossier_installation']?>nav" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
-						Aller sur la page des cartes
+						Agrandir la carte
 					</a>
-				</div>
-				<div id="ajax-osm-status" class="noprint">
-					<div class="ajax-point-some" title="Points de la base OpenStreetMap">Les icônes bleues sont pour information et n'ont pas de fiche.</div>
 				</div>
 			</div>
 		<?}?>
