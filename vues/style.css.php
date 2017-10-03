@@ -69,7 +69,6 @@ switch ($periode)
 }
 
 #entete,
-.menu,
 #basdepage {
 	font-family: Times New Roman;
 }
@@ -124,11 +123,11 @@ label[for=viewonline] { /* Masquer "Cacher mon statut en ligne pour cette sessio
 	background-color: #<?=$couleur_fond?>;
 	background-image: none;
 }
-.avertissement {
-	color: red;
+#phpbb dl a.row-item-link:hover {
+	background-color: transparent !important;
 }
-.menu ul {
-	list-style-type: none;
+#phpbb .avertissement {
+	color: red;
 }
 
 /*==================================================================*/
@@ -517,6 +516,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     clear: both;
   }
 
+  .menu{
+    font-family: Times New Roman;
+  }
+
 /* ==========MENU POUR ECRANS ========== */
 /* Paramétrage commun aux deux menus en mode ecran large */
 @media screen and (min-width: 641px) and (min-device-height: 361px) {
@@ -526,7 +529,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   .mobile-only {
     display: none;
   }
-
   .menu UL {
     clear: left;
     white-space: nowrap;
@@ -538,8 +540,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     padding: 0px;
     background-color: #<?=$couleur_fond?>;
     height: 20px;
-  }
-  .menu UL {
+    list-style-type: none;
     border-bottom: solid 2px #<?=$couleur_decoration_titres?>;
   }
   .menu UL LI {
