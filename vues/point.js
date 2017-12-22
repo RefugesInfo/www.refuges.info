@@ -41,7 +41,7 @@ if ($vue->mini_carte) {
 			return wriPoi._getUrl() + '&format=gpx&nb_points=all';
 		}, {
 			title: "Obtenir les points de refuges.info visibles sur la carte\n"+
-					"Pour charger le fichier sur un GARMIN, utlisez Basecamp",
+					"Pour charger le fichier sur un GARMIN, utilisez Basecamp",
 			label: '&#8659;'
 		}
 	).addTo(map);
