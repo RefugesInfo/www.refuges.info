@@ -10,10 +10,11 @@ $vue->lien_special
 $vue->titre_lien
 rien de bien extraordinaire, faite votre propre vue si vous voulez plus compliqué
 **/
+
+// Pour cette page très simple, elle nous sers aussi à passer les http error code pris sur $vue->http_status_code
+
+
 ?>
-<p>
-	<?=$vue->titre?>
-</p>	
 <p>
 	<?=$vue->contenu?>
 	<? if ($vue->lien){?>

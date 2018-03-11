@@ -13,7 +13,7 @@
 **************************************************/
 
 // Par défaut
-$vue->http_status_code = 403; // (uniquement affiché par page_simple)
+$vue->http_status_code = 403;
 $controlleur->type = 'page_simple';
 
 // C'est le point unique qui contrôle les autorisations de toutes les URL /gestion...

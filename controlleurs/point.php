@@ -22,10 +22,16 @@ else
 
 $point = infos_point ($id_point,$meme_si_censure);
 // Partie spécifique de la page
+
+// Le point n'est pas trouvé ou il y a un problème avec ce point
 if ($point->erreur)
 {
     $vue->type="page_simple";
+    // On affiche le message d'erreur spécifique à ce point
     $vue->contenu=$point->message;
+    $vue->titre=$point->message;
+    // Avec un code 404 pour bien préciser au moteur de recherche qu'il n'y a pas de page valide pour ce point
+    $vue->http_status_code=404;
 }
 else // le point est valide
 {
