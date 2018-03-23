@@ -28,7 +28,7 @@ function initmap(){
 	MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé MRI
 	var OutdoorsUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'; // Serveur de tuiles Thunderforest
 	Outdoors = new L.TileLayer(OutdoorsUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé Outdoors
-	var IGNKey = 'ev2w14tv2ez4wpypux2ael39';
+	var IGNKey = 'jv1hl9ntrac8q5aycla6wc5f';
 	var IGNUrl='http://wxs.ign.fr/'+IGNKey+'/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}'; // Serveur de tuiles IGN
 	IGN = new L.TileLayer(IGNUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé IGN
 
