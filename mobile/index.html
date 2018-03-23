@@ -45,40 +45,6 @@
 						<path d="M 5.5 1 L 4 2.5 L 5 3.5 L 5.25 4.25 L 2.75 6.5 L 5.5 9.25 L 7.75 6.75 L 8.5 7 L 9.5 8 L 11 6.5 L 11 1 L 5.5 1 z M 6 2 L 10 2 L 10 6 L 9.5 6.75 L 8.25 4.75 L 5.25 8 L 4 6.75 L 7.25 3.75 L 5.25 2.5 L 6 2 z " id="path2395" />
 					</svg>
 				</a>
-				<span class="btn small" id="installerwebapp">Installer l'application web</span>
-				<script type="text/javascript">
-					window.onload = function() {
-						var request = window.navigator.mozApps.getInstalled();
-						request.onsuccess = function(e) {
-							var installApp = document.getElementById("installerwebapp");
-							for (var i in request.result) {
-								// Watch the name because it needs to match what is in the helloworld.webapp
-								if (request.result[i].manifest.name === "Refuges") {
-									installApp.textContent = "Refuges est déjà installée";
-									installApp.className = installApp.className + " installed";
-									return;
-								}
-							}
-
-						};
-					};
-					(function() {
-						var installApp = document.getElementById("installerwebapp");
-						if (installApp) {
-							installApp.addEventListener("click", function() {
-								var mozApps = navigator.mozApps;
-								if (mozApps) {
-									var installing = navigator.mozApps.install("http://www.refuges.info/mobile/manifest.webapp");
-									installing.onsuccess = function(e) {
-										var installApp = document.getElementById("installerwebapp");
-										installApp.textContent = "Refuges est déjà installée";
-										installApp.className = installApp.className + " installed";
-									};
-								}
-							});
-						}
-					})();
-				</script>
 			</article>
 			<!-- Partie d'aide -->
 			<article id="aide" style="display:none;">
