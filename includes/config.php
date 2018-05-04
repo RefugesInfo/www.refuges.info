@@ -76,7 +76,7 @@ $config_wri['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondan
 $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
 $config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees ... 
 $config_wri['id_zone_defaut']=352; // sly en fait ce sont les alpes
-$config_wri['id_zone_accueil']=9956; // DOM: une zone définie uniquement pour montrer les massifs en pages d'accueil
+$config_wri['id_zone_accueil']=5084; // DOM: une zone définie uniquement pour montrer les massifs en pages d'accueil
 
 // Catégorie "tout type de refuges"
 // certes une gestion par catégorie directement dans la base serait préférable, mais on a au plus 1 ou 2 catégorie donc, bon,
