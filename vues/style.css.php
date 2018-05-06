@@ -795,13 +795,13 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* Carte de l'accueil */
 #carte-accueil {
-  width: 500px;
-  height: 500px;
+  width: 650px;
+  height: 600px;
 }
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 650px) {
   #carte-accueil {
     width: 100vw;
-    height: 100vw;
+    height: 90vw;
   }
   #accueil-photos {
     display: none;
