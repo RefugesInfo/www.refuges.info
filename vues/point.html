@@ -20,7 +20,7 @@
 <!--======================================== DESCRIPTIONS =========================================-->
 		<div>
 		<dl style="margin: 2px;">
-<!--======= LIEN DE MODIFICATION (modérateurs/créateur fiche/si batiment montagne) =======-->
+<!--======= LIEN DE MODIFICATION (modérateurs et modérateur/créateur de fiche/si batiment montagne) =======-->
 			<?// Signaler les fiches censurées
 			if ($vue->point->censure) {?>
 				<dd class="lien_ajout_commentaire">
@@ -148,9 +148,9 @@
 				<dd class="condense noprint"><?echo date ("d/m/Y",$vue->point->date_modif_timestamp)?>.</dd>
 			<?}
 
-			// créateur de fiche
+			// créateur/modérateur de fiche
 			if ($vue->nom_createur!="") { ?>
-				<dt class="condense noprint">Créateur de cette fiche:</dt>
+				<dt class="condense noprint">Modérateur actuel de cette fiche:</dt>
 				<?if ($vue->point->id_createur != 0) { ?>
 					<dd class="condense noprint">
 						<a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
