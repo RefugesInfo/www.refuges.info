@@ -37,7 +37,7 @@ if ( isset($_REQUEST["id_point"]) )
         $vue->contenu=$point->message;
         return "";
     }
-    // Soit on est avec un modérateur soit le créateur de la fiche
+    // Soit on est avec un modérateur global ou de cette fiche
     if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur ) ) 
     {
         $vue->serie = param_cartes ($point);
@@ -63,11 +63,11 @@ if ( isset($_REQUEST["id_point"]) )
 
         $vue->serie = $config_wri['fournisseurs_fond_carte']['Saisie-modification'];    
     }
-    else // Ni modérateur, ni créateur on l'informe que ses droits sont insuffisants
+    else // Ni modérateur global, ni modérateur de fiche on l'informe que ses droits sont insuffisants
     {
           $vue->type="page_simple";
           $vue->titre="Permissions insuffisantes";
-          $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur ou le créateur de cette fiche et être connecté au forum :";
+          $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :";
           $vue->titre_lien="Connexion forum";
           $vue->lien=$config_wri['connexion_forum'];
           return "";
@@ -94,7 +94,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
     
     // on force l'id du point à vide histoire de ne pas modifier le modèle
     unset($point->id_point);
-    // et pareil pour le créateur du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
+    // et pareil pour le modérateur actuel du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
     unset($point->id_createur);
     
     // cosmétique

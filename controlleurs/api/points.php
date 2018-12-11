@@ -270,7 +270,7 @@ foreach ($points_bruts as $point) {
         $points->$i->proprio['nom'] = $point->equivalent_proprio;
         $points->$i->proprio['valeur'] = $point->proprio;
         $points->$i->createur['id'] = $point->id_createur;
-        // info sur le créateur de la fiche (authentifié ou non)
+        // info sur le modérateur actuel de la fiche (authentifié ou non)
         if ($point->id_createur==0) // non authentifié
             $points->$i->createur['nom']=$point->nom_createur;
         else

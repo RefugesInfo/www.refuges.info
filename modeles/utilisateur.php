@@ -29,15 +29,29 @@ si local est False un lien absolu sera généré
 function lien_utilisateur($utilisateur,$local=True)
 {
   global $config_wri;
-  if (isset($_SERVER['HTTPS']))
-      $schema="https";
-  else
+  if (isset($_SERVER['HTTP']))
       $schema="http";
+  else
+      $schema="https";
   
   if ($local)
     $url_complete="";
   else
     $url_complete="$schema://".$config_wri['nom_hote'];
   return $url_complete.$config_wri['fiche_utilisateur'].$utilisateur->user_id;
+}
+/**
+Pour obtenir la liste des utilisateurs phpBB avec leur id, dans un tableau
+**/
+function infos_utilisateurs()
+{
+  global $config_wri;
+  global $pdo;
+  // 2 on dirait que c'est les faux users de phpbb (bots, anonymous, spiders)
+  $query="SELECT * FROM phpbb3_users where user_type!=2 order by username";
+  $res=$pdo->query($query);
+  while ($utilisateur = $res->fetch())
+    $utilisateurs[]=$utilisateur;
+  return $utilisateurs;
 }
 ?>

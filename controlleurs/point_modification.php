@@ -61,7 +61,7 @@ switch( $_REQUEST["action"] )
         $ancien_point=infos_point($_REQUEST['id_point'],True); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
         $point=preparation_point();
         $point->topic_id=$ancien_point->topic_id;
-        // modification uniquement si modérateur ou créateur de la fiche
+        // modification uniquement si modérateur global ou modérateur de cette fiche
         if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $ancien_point->id_createur ) )
         {
             $retour = modification_ajout_point($point);
@@ -69,7 +69,7 @@ switch( $_REQUEST["action"] )
             $vue->message="Le point a bien été modifié";
         }
         else
-            $vue->erreur="Vous n'êtes ni modérateur, ni créateur de la fiche, vous n'avez pas l'autorisation de la modifier";
+            $vue->erreur="Vous n'êtes ni modérateur global, ni modérateur de cette fiche, vous n'avez pas l'autorisation de la modifier";
         break;
     
     case 'supprimer':
