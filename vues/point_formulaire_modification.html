@@ -103,8 +103,17 @@
             </label>
 
             <?php if ($_SESSION['niveau_moderation']>=1 and $vue->point->id_point) {?>
-				<label>Modérateur de cette fiche: ID =
-					<input size="4" type="text" name="id_createur" value="<?=$vue->point->id_createur?>" />
+				<label>Modérateur de cette fiche:
+                    <select name='id_createur'>	
+                        <option  value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
+                            Aucun modérateur
+                        </option>
+                    <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
+                        <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
+                            <?=$utilisateur->username_clean?>
+                        </option>
+                    <?}?>
+                    </select>
 				</label>
             <?}?>
 

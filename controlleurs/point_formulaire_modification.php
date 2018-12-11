@@ -5,6 +5,7 @@ require_once ("point.php");
 require_once ("polygone.php");
 require_once ("meta_donnee.php");
 require_once ("mise_en_forme_texte.php");
+require_once ("utilisateur.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
@@ -232,5 +233,5 @@ $point->nom=protege($point->nom);
 $point->site_officiel=protege($point->site_officiel);
 $point->nom_createur=protege($point->nom_createur);
 $vue->point=$point;
-
+$vue->utilisateurs=infos_utilisateurs();
 ?>
