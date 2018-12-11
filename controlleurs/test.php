@@ -18,10 +18,16 @@ require_once ("gestion_erreur.php");
 require_once ("meta_donnee.php");
 require_once ("xml.class.php");
 require_once ("api.php");
-require_once ("gestion.php");
 require_once ("nouvelle.php");
 require_once ("point_gps.php");
+session_start();
+//auto_login_phpbb_users();
 
+print("prouf");
+//$_SESSION['toto']="coucou";
+print_r($_SESSION);
+print_r($_GET);
+die();
 $html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE,$crypter_texte_sensible=TRUE);
 
 $point = infos_point(105);
