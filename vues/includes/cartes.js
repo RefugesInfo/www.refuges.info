@@ -57,7 +57,7 @@ L.GeoJSON.Ajax.wriPoi = L.GeoJSON.Ajax.extend({
 <?if (strstr('nav',$vue->type)) {?>
 L.GeoJSON.Ajax.chem = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: '//chemineur.fr/ext/Dominique92/GeoBB/gis.php',
+		urlGeoJSON: '//dc9.fr/chemineur/ext/Dominique92/GeoBB/gis.php',
 		argsGeoJSON: {
 			site: 'this',
 			poi: '3,8,16,20,23,28,30,40,44,64,58,62'
