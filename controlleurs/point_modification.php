@@ -76,6 +76,8 @@ switch( $_REQUEST["action"] )
         break;
     
     case 'supprimer':
+        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $ancien_point->id_createur ) )
+        {
             $point=infos_point($_REQUEST['id_point'],True);
             $resultat_suppression=suppression_point($point);
             if ($resultat_suppression->erreur)
@@ -83,5 +85,9 @@ switch( $_REQUEST["action"] )
             else
                 $vue->message=$resultat_suppression->message; // Il pourra y avoir des messages sur mesures (genre "le point a été supprimé mais il n'y avait pas de commentaires")
             break;
+        }
+        else
+            $vue->erreur="Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la supprimer";
+        break;
 } 
 ?>  

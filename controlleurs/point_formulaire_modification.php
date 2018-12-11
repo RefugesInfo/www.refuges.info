@@ -46,12 +46,15 @@ if ( isset($_REQUEST["id_point"]) )
         $vue->champs->invisibles->id_point_gps = new stdClass;
         $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
         
-        // boutton supprimer 
-        $bouton_suppr = new stdClass;
-        $bouton_suppr->nom = "action";
-        $bouton_suppr->type = "submit";
-        $bouton_suppr->valeur = "supprimer";
-        $bouton_suppr->label = "Suppression de la fiche";
+        // boutton supprimer uniquement pour les modérateurs globaux
+        if ( $_SESSION['niveau_moderation'] >= 1 )
+        {
+            $bouton_suppr = new stdClass;
+            $bouton_suppr->nom = "action";
+            $bouton_suppr->type = "submit";
+            $bouton_suppr->valeur = "supprimer";
+            $bouton_suppr->label = "Suppression de la fiche";
+        }
         
         //cosmétique
         $icone="&amp;iconecenter=ne_sait_pas";
@@ -143,7 +146,6 @@ $bouton_reset->valeur = "Recommencer";
 $bouton_reset->label = "Recommencer";
 
 // Gestion de l'ordre des boutons modifier/valider/supprimer 
-// FIXME : voir dupliquer ? car c'est bizarre l'ancienne méthode de modifier d'abord pour "dupliquer")
 $vue->champs->boutons->valider=$bouton_valider;
 $vue->champs->boutons->reset=$bouton_reset;
 
