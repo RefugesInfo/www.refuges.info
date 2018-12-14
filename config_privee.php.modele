@@ -5,9 +5,9 @@ paramètres locaux (données de type privées à ne pas publier)
 *************************************************/
 
 // Accès à Postgresql
-$config_wri['utilisateur_pgsql']="login";
-$config_wri['mot_de_passe_pgsql']="pass";
-$config_wri['serveur_pgsql']="localhost";
+$config_wri['utilisateur_pgsql']="???";
+$config_wri['mot_de_passe_pgsql']="???";
+$config_wri['serveur_pgsql']="???";
 
 // Info pour développeurs de notre équipe, la base de prod s'appelle "refuges" mais il n'est pas recommandé de bosser dessus, donc test, c'est celle que j'ai dupliqué
 // et dans laquelle on peut bien faire tout ce qu'on veut sans risques.
@@ -15,9 +15,13 @@ $config_wri['serveur_pgsql']="localhost";
 $config_wri['base_pgsql']="test";
 
 // infos privées qu'on ne veut pas divulger sur github et que vous devez remplir 
-$config_wri['ign_key']='xxxx'; // http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
-$config_wri['bing_key']='yyy'; // https://www.bingmapsportal.com
-$config_wri['thunderforest_key']='kkk'; // https://manage.thunderforest.com
+$config_wri['ign_key']='???'; // http://pro.ign.fr/api-web => Service en ligne => S'ABONNER
+$config_wri['bing_key']='???'; // https://www.bingmapsportal.com
+$config_wri['thunderforest_key']='???'; // https://manage.thunderforest.com
+
+// Mettre ici le préfixe de cookies du forum
+// Administration -> GÉNÉRAL -> Paramètres de cookie -> Nom du cookie :
+$config_wri['cookie_prefix']="phpbb3_???";
 
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 // + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
