@@ -45,20 +45,31 @@ elle est donc lancé sur chaque page qui pourrait nécessiter d'être connecté
 ***/
 function auto_login_phpbb_users()
 {
-  global $user, $auth; // Contexte PhpBB
+  global $user, $auth, $phpbb_container; // Contexte PhpBB
+
 
   unset($_SESSION['id_utilisateur']);
   unset($_SESSION['login_utilisateur']);
   unset($_SESSION['niveau_moderation']);
+  unset($_SESSION['phpbb_sid']);
 
   if ($user->data['user_id'] <= ANONYMOUS)
     return false;
 
   /* on rempli notre session */
+  // Les références de l'utilisateur
   $_SESSION['id_utilisateur'] = $user->data['user_id'];
   $_SESSION['login_utilisateur']= $user->data['username'];
-  $_SESSION['niveau_moderation'] = $auth->acl_get('m_warn');
+
+  // Le niveau d'autorisation
   // m_warn est la seule autorisation moderateur ne dépendant pas d'un forum particulier
+  $_SESSION['niveau_moderation'] = $auth->acl_get('m_warn');
+
+  // On retrouve l'identifiant de session pour le passer en paramètre _GET lors des demandes de connexion ou déconnexion hors forum
+  // Utilisé exclusivement dans /vues/_bandeau.html
+  $cookie_name = $phpbb_container->get('config')['cookie_name'];
+  $_SESSION['phpbb_sid'] = $_COOKIE[$cookie_name.'_sid'];
+
   return true;
 }
 

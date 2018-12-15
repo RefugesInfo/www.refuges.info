@@ -41,7 +41,6 @@ PARAMETRES DE CONFIGURATION
 * GÉNÉRAL / Paramètres de la confirmation visuelle / Plugins installés : / Q&A
 * GÉNÉRAL / Paramètres de la confirmation visuelle / Configurer les plugins : Configurer
 * GÉNÉRAL / Paramètres de la page de contact / Activer la page de contact : Désactivé
-* GÉNÉRAL / Paramètres de cookie / Nom du cookie = phpbb3_??? => le mettre dans config_privee.php / $config_wri['cookie_prefix']="phpbb3_???";
 * GÉNÉRAL / Paramètres de charge : NON anniversaires / liste moderateurs
 * PERSONNALISER : activer Couplage "refuges.info"
 * SYSTEME / Paneau de l'utilisateur / Amis et ignorés / Désactiver

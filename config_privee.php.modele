@@ -19,10 +19,6 @@ $config_wri['ign_key']='???'; // http://pro.ign.fr/api-web => Service en ligne =
 $config_wri['bing_key']='???'; // https://www.bingmapsportal.com
 $config_wri['thunderforest_key']='???'; // https://manage.thunderforest.com
 
-// Mettre ici le préfixe de cookies du forum
-// Administration -> GÉNÉRAL -> Paramètres de cookie -> Nom du cookie :
-$config_wri['cookie_prefix']="phpbb3_???";
-
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 // + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
 // sert aussi à afficher les lien de validation xhtml en bas de page (histoire de ne pas ennuier tout le monde avec ça)
@@ -31,6 +27,5 @@ $config_wri['cookie_prefix']="phpbb3_???";
 
 // Par défaut, le fond de carte est maps.refuges.info, décommenter ça permet de changer le par défaut
 //$config_wri['carte_base'] = 'Outdoors';
-
 
 ?>
