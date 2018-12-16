@@ -65,10 +65,9 @@ function auto_login_phpbb_users()
   // m_warn est la seule autorisation moderateur ne dépendant pas d'un forum particulier
   $_SESSION['niveau_moderation'] = $auth->acl_get('m_warn');
 
-  // On retrouve l'identifiant de session pour le passer en paramètre _GET lors des demandes de connexion ou déconnexion hors forum
+  // On retrouve l'identifiant de session pour le passer en paramètre _GET lors des déconnexion hors forum
   // Utilisé exclusivement dans /vues/_bandeau.html
-  $cookie_name = $phpbb_container->get('config')['cookie_name'];
-  $_SESSION['phpbb_sid'] = $_COOKIE[$cookie_name.'_sid'];
+  $_SESSION['phpbb_sid'] = $user->data['session_id'];
 
   return true;
 }
