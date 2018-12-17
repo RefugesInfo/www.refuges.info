@@ -562,7 +562,7 @@ function modification_ajout_point($point)
         forum_submit_post ([
             'action' => 'edit',
             'topic_id' => $point->topic_id,
-            'topic_title' => $point->nom,
+            'topic_title' => mb_ucfirst($point->nom),
         ]);
    }
    else  // INSERT
