@@ -45,7 +45,7 @@ elle est donc lancé sur chaque page qui pourrait nécessiter d'être connecté
 ***/
 function auto_login_phpbb_users()
 {
-  global $user, $auth, $phpbb_container; // Contexte PhpBB
+  global $user, $auth; // Contexte PhpBB
 
 
   unset($_SESSION['id_utilisateur']);
