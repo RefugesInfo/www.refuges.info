@@ -126,8 +126,9 @@ label[for=viewonline] { /* Masquer "Cacher mon statut en ligne pour cette sessio
 #phpbb dl a.row-item-link:hover {
 	background-color: transparent !important;
 }
-#phpbb .avertissement {
-	color: red;
+.section-posting #attach-panel-multi::after {
+	content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
+	background: yellow;
 }
 
 /*==================================================================*/
