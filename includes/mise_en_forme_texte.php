@@ -54,6 +54,8 @@ Afin d'éviter le cross site scripting et permettre de mettre un peu de mise en 
 un peu partour sur le site (forum, points commentaire,s mode d'emploi, cette fonction convertit
 du format bbcode interne vers html
 $texte en bbcode + syntaxe interne
+FIXME sly 2019: quelle tristesse ce code difficile à maintenir alors que le forum phpBB dispose forcément d'une classe pour faire 95% du boulot, et maintenue à jour !
+ça serait bien de l'utiliser, quitte à rajouter nos 4 ajouts ensuite (syntaxe lien point+anti email snif+anti balise img)
 retourne : le code en HTML
 21/03/08 sly création initiale de la fonction
 26/05/08 jmb correction bug des multiples [b] (rajout d'un ? pour une regex ungreedy)
@@ -87,7 +89,7 @@ if ($occurences_trouvees!=0)
 // exemple : coucouwww.coucou ne sera pas transformé
 // il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
 // au format http://truc ou https://bidule ou www.
-$urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\?&=~-]+\w+)([\S< :\.;,\n\*\)\]]|\r\n|$)/i";
+$urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\?&=~-]+\w+)([\S< :\/\.;,\n\*\)\]]|\r\n|$)/iu";
 $urlauto_replace = "$1[url=$2]$2[/url]$4";
 $texte_avec_bbcode_apres_detection_urls = preg_replace($urlauto_pattern,$urlauto_replace,$texte_avec_bbcode);
 // gestion des liens vers notre wiki au format [url=##page]c'est là que ça se passe[/url] on le repasse d'abord en bbcode plus classique avec url locale (qui tient compte de l'éventuel sous-dossier dans lequel on est installé
