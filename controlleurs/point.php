@@ -37,12 +37,12 @@ else // le point est valide
 {
     // Les infos du point deviennent des membres de $vue ($vue->point->latitude ...)
     $vue->point=$point;
-    $vue->nom_createur = $point->nom_createur;
-    $vue->nom=$point->nom;
+    $vue->nom_createur = protege($point->nom_createur);
+    $vue->nom=protege($point->nom);
     $vue->proprio=bbcode2html($point->proprio);
     $vue->acces=bbcode2html($point->acces);
     $vue->remark=bbcode2html($point->remark);
-    $vue->nom_debut_majuscule = mb_ucfirst($point->nom);
+    $vue->nom_debut_majuscule = protege(mb_ucfirst($point->nom));
     $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
@@ -170,7 +170,7 @@ else // le point est valide
     foreach ($tous_commentaires AS $commentaire)
     {
         $commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
-        $commentaire->auteur_commentaire_affichage=$commentaire->auteur_commentaire;
+        $commentaire->auteur_commentaire_affichage=protege($commentaire->auteur_commentaire);
         $commentaire->date_commentaire_format_francais=strftime ("%A %e %B %Y à %H:%M", $commentaire->ts_unix_commentaire);
         // Préparation des données et affichage d'un commentaire de la fiche d'un point
         // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire
