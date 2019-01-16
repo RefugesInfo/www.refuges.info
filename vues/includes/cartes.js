@@ -4,6 +4,13 @@
 L.BingLayer.prototype.options.maxNativeZoom = 18;
 L.BingLayer.prototype.options.maxZoom = 21;
 
+L.TileLayer.OSM.OTP = L.TileLayer.OSM.extend({
+	options: {
+		url: '//{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+		subAttribution: '<a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+	}
+});
+
 // Couches de base
 <?if (strstr('nav|point',$vue->type)) {?>
 if (typeof L.OSOpenSpace.TileLayer != 'undefined')
@@ -12,6 +19,7 @@ if (typeof L.OSOpenSpace.TileLayer != 'undefined')
 var baseLayers = {
 	'Refuges.info':new L.TileLayer.OSM.MRI(),
 	'OSM fr':      new L.TileLayer.OSM.FR(),
+	'OpenTopoMap': new L.TileLayer.OSM.OTP(),
 	'Outdoors':    new L.TileLayer.OSM.Outdoors({k: '<?=$config_wri['thunderforest_key']?>'}),
 	'IGN':         new L.TileLayer.IGN({k: '<?=$config_wri['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
 	'IGN Express': new L.TileLayer.IGN({k: '<?=$config_wri['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
