@@ -201,6 +201,19 @@
 				<?}?>
 			</select>
 		</label>
+        <label>Dont le modérateur est :
+        <select name='id_createur'>	
+            <option  value="" selected="selected">
+                Tous
+            </option>
+        <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
+            <option  value="<?=$utilisateur->user_id?>">
+                <?=$utilisateur->username_clean?>
+            </option>
+        <?}?>
+        </select>
+    </label>
+
 		<label title="Le point est fermé/détruit/en ruine">
 			<input type="checkbox" name="ouvert" value="non" />
 			Que les non utilisables

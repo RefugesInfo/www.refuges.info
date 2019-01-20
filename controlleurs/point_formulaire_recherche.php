@@ -5,6 +5,7 @@ Formulaire de recherche
 
 require_once ("polygone.php");
 require_once ("meta_donnee.php");
+require_once ("utilisateur.php");
 
 $conditions_polygones = new stdClass;
 $vue->infos_base = infos_base ();
@@ -20,6 +21,7 @@ $vue->massifs=infos_polygones($conditions_polygones);
 $conditions_polygones->ids_polygone_type=$config_wri['id_zone'];
 $conditions_polygones->avec_zone_parente=False;
 $vue->zones=infos_polygones($conditions_polygones);
+$vue->utilisateurs=infos_utilisateurs();
 
 //d($vue->zones);
 

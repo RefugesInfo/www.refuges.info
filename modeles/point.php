@@ -78,6 +78,8 @@ $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "
 $conditions->geometrie : Ne renvoir que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
 $conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
 
+$conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
+
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
 Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon
@@ -207,6 +209,13 @@ function infos_points($conditions)
     //quelle condition sur la qualité supposée des GPS
     if( !empty($conditions->precision_gps) )
         $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
+
+    //quel modérateur(s) de fiche ?
+    if( !empty($conditions->id_createur) )
+        if (!verif_multiples_entiers($conditions->id_createur))
+            return erreur("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : $conditions->id_createur");
+        else
+            $conditions_sql .= "\n AND points.id_createur IN ($conditions->id_createur)";
 
     //conditions sur la description (champ remark)
     if( !empty($conditions->description) )

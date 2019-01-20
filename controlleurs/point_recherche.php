@@ -56,6 +56,7 @@ if (!empty($_REQUEST))
     }
     //======================================
     // C'est LA que ca cherche
+    
     $points = infos_points ($conditions);
     if ($points->erreur)
     {
