@@ -514,6 +514,8 @@ function modification_ajout_point($point)
   // désolé, le nom du point ne peut être vide
   if ( trim($point->nom) =="" )
     return erreur("Le nom ne peut être vide");
+  if ( preg_match("/[\<\>\]\[\;]/",$point->nom) )
+    return erreur("Le nom contient un des caractères non autorisé suivant : [ ] < > ;");
 
     if( isset($point->site_officiel) )
     {
