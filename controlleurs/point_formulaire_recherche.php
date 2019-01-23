@@ -9,7 +9,7 @@ require_once ("utilisateur.php");
 
 $conditions_polygones = new stdClass;
 $vue->infos_base = infos_base ();
-$vue->titre = "Recherche de refuges/cabanes/gites";
+$vue->titre = "Recherche de points sur refuges.info";
 
 // preparation de la liste deroulante des massifs:
 // on va faire que 2 niveau, en dur.

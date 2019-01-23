@@ -109,7 +109,6 @@ if (!empty($_REQUEST))
              $nominatim->url_site=$config_wri['url_nominatim'];
              $vue->nominatim=$nominatim;
         }
-        $vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
     }
 }
 else
@@ -117,5 +116,5 @@ else
     $vue->erreur="Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)";
     $vue->type="point_recherche_erreur";
 }
-
+$vue->titre="Recherche sur refuges.info ($vue->nombre_points points trouvés)";
 ?> 
