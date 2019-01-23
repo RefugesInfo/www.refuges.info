@@ -14,7 +14,7 @@ $condition = new stdClass();
 // Arguments de la page
 $id_point = $controlleur->url_decoupee[1]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
 
-// On indique de manière bien évidente aux modérateur que cette fiche est censurée
+// On indique de manière bien évidente aux modérateur que cette fiche est cachée
 if ($_SESSION['niveau_moderation']>=1)
     $meme_si_censure=True;
 else

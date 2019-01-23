@@ -11,7 +11,7 @@ $commentaire = new stdClass();
 $conditions_commentaire = new stdClass();
 
 setlocale(LC_TIME, "fr_FR");
-// les modérateurs ont droit d'ajouter des commentaires aux points censuré
+// les modérateurs ont droit d'ajouter des commentaires aux points cachés
 if ( $_SESSION['niveau_moderation']>=1 )
     $conditions_commentaire->avec_points_censure=True;
 
