@@ -23,13 +23,13 @@ $vue->fond_carte_par_defaut= $config_wri['carte_base'];
 // ou si les droits sont insuffisants
 if ( isset($_REQUEST["id_point"]) )  
 {
-    // Si c'est un modérateur, il peut voir la fiche même si elle est censurée
+    // Si c'est un modérateur, il peut voir la fiche même si elle est en attente de décision
     if ($_SESSION['niveau_moderation']>=1)
-        $meme_si_censure=True;
+        $meme_si_en_attente=True;
     else
-        $meme_si_censure=False;
-    $point=infos_point($_REQUEST['id_point'],$meme_si_censure);
-    // Stop, le point n'existe pas (ou est censuré et il ne faut pas dire que c'est le cas)
+        $meme_si_en_attente=False;
+    $point=infos_point($_REQUEST['id_point'],$meme_si_en_attente);
+    // Stop, le point n'existe pas (ou est en attente et il ne faut pas dire que c'est le cas)
     if ($point->erreur) 
     {
         $vue->http_status_code = 404;
@@ -177,15 +177,15 @@ foreach ($textes_area as $libelle => $nom_variable)
 
 /******** Les informations complémentaires (booléens, détails) *****************/
 
-// Seuls les modérateurs peuvent passer un point en censuré
+// Seuls les modérateurs peuvent passer un point en attente de décision
 // ce n'est pas tout à fait un champ trinaire comme les autres (true, false, null) car on ne peut pas "pas savoir"
 if ($_SESSION['niveau_moderation']>=1)
 {
-    $vue->champs->censure = new stdClass ;
-    $vue->champs->censure->actif = True ;
-    $vue->champs->censure->valeur = $point->censure;
-    $vue->champs->censure->label="Cacher ce point";
-    $vue->champs->censure->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs";
+    $vue->champs->en_attente = new stdClass ;
+    $vue->champs->en_attente->actif = True ;
+    $vue->champs->en_attente->valeur = $point->en_attente;
+    $vue->champs->en_attente->label="Mettre ce point en attente";
+    $vue->champs->en_attente->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs le temps de prendre une décision";
 }
 
 foreach($config_wri['champs_binaires_points'] as $champ)

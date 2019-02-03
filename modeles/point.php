@@ -68,8 +68,8 @@ $conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, det
 $conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
 
 $conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
-$conditions->avec_points_censure=True : Par défaut, False : les points censurés ne sont pas retournés
-$conditions->uniquement_points_censure=True : ne retourner que les points censurés (utiles uniquement pour les modérateurs)
+$conditions->avec_points_en_attente=True : Par défaut, False : les points en attente ne sont pas retournés
+$conditions->uniquement_points_en_attente=True : ne retourner que les points en attente (utiles uniquement pour les modérateurs)
 
 $conditions->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
 $conditions->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
@@ -221,10 +221,10 @@ function infos_points($conditions)
     if( !empty($conditions->description) )
         $conditions_sql.="\n AND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
 
-    if ($conditions->uniquement_points_censure)
+    if ($conditions->uniquement_points_en_attente)
     {
-        $conditions_sql.="\n AND censure=True";
-        $conditions->avec_points_censure=True;
+        $conditions_sql.="\n AND en_attente=True";
+        $conditions->avec_points_en_attente=True;
     }
 
     // cas spécial sur les modèle
@@ -309,14 +309,14 @@ function infos_points($conditions)
       if (isset($point->id_createur))
           $point->nom_createur=html_entity_decode($point->nom_createur);
       
-      // Ici, petite particularité sur les points censurés, par défaut, on ne veut pas les renvoyer, mais on veut quand
-      // même, si un seul a été demandé, pouvoir dire qu'il est censuré, donc on va le chercher en base mais on renvoi une erreur
-      // s'il est censuré
-      // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de censurés
-      if (!$point->censure or $conditions->avec_points_censure) // On renvoi ce point, soit il n'est pas censuré, soit on a demandé aussi les points censurés
+      // Ici, petite particularité sur les points en attente, par défaut, on ne veut pas les renvoyer, mais on veut quand
+      // même, si un seul a été demandé, pouvoir dire qu'il est en attente, donc on va le chercher en base mais on renvoi une erreur
+      // s'il est en attente
+      // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points en attente
+      if (!$point->en_attente or $conditions->avec_points_en_attente) // On renvoi ce point, soit il n'est pas en attente, soit on a demandé aussi les points en attente
           $points[]=$point;
-      elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est censuré on retourne un message d'erreur
-          return erreur("Ce point est censuré, seul un modérateur peut agir sur lui","1");
+      elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
+          return erreur("Ce point est en attente de décision, seul un modérateur peut agir sur lui","1");
   }
   return $points;
 }
@@ -342,7 +342,7 @@ FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui f
 Mais postgis étant super rapide, je pense que l'on peut peut fusioner
 
 *****************************************************/
-function infos_point($id_point,$meme_si_censure=False)
+function infos_point($id_point,$meme_si_en_attente=False)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config_wri,$pdo;
@@ -352,8 +352,8 @@ function infos_point($id_point,$meme_si_censure=False)
       return erreur("Il semblerait que vous n'avez pas renseigné le n°du point");
   $conditions->modele=-1;
   $conditions->avec_infos_massif=True;
-  if ($meme_si_censure)
-     $conditions->avec_points_censure=True;
+  if ($meme_si_en_attente)
+     $conditions->avec_points_en_attente=True;
 
   // récupération des infos du point
   $points=infos_points($conditions);

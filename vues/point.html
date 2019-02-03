@@ -1,5 +1,5 @@
-<?// Bloc HTML réalisant l'affichage de la page d'un point
-
+<?php
+// Bloc HTML réalisant l'affichage de la page d'un point
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 // Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
@@ -21,11 +21,11 @@
 		<div>
 		<dl style="margin: 2px;">
 <!--======= LIEN DE MODIFICATION (modérateurs et modérateur de fiche) =======-->
-			<?// Signaler les fiches cachées
-			if ($vue->point->censure) {?>
+			<?// Signaler les fiches en attente de décision
+			if ($vue->point->en_attente) {?>
 				<dd class="lien_ajout_commentaire">
 					<strong class="warning">
-						Cette fiche n'est visible que des modérateurs
+						Cette fiche est "en attente de	décision", elle n'est visible que des modérateurs
 					</strong>
 				</dd>
 			<?}?>

@@ -28,7 +28,7 @@ require_once ("utilisateur.php");
         ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config_wri['tout_type_refuge']." )
         AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
         AND points.modele <> 1
-        AND points.censure <> TRUE
+        AND points.en_attente <> TRUE
         )                                  AS nbrefuges,
     ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
     ( SELECT count(*) FROM commentaires )                                                     AS nbcomm,

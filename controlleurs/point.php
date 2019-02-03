@@ -14,13 +14,13 @@ $condition = new stdClass();
 // Arguments de la page
 $id_point = $controlleur->url_decoupee[1]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
 
-// On indique de manière bien évidente aux modérateur que cette fiche est cachée
+// On indique de manière bien évidente aux modérateur que cette fiche est en attente de décision et non visible au public
 if ($_SESSION['niveau_moderation']>=1)
-    $meme_si_censure=True;
+    $meme_si_en_attente=True;
 else
-    $meme_si_censure=False;
+    $meme_si_en_attente=False;
 
-$point = infos_point ($id_point,$meme_si_censure);
+$point = infos_point ($id_point,$meme_si_en_attente);
 // Partie spécifique de la page
 
 // Le point n'est pas trouvé ou il y a un problème avec ce point

@@ -2971,7 +2971,7 @@ CREATE TABLE points (
     latrines boolean,
     bois_a_proximite boolean,
     eau_a_proximite boolean,
-    censure boolean DEFAULT false,
+    en_attente boolean DEFAULT false,
     topic_id integer DEFAULT 0
 );
 

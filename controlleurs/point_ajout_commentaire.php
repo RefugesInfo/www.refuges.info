@@ -11,9 +11,9 @@ $commentaire = new stdClass();
 $conditions_commentaire = new stdClass();
 
 setlocale(LC_TIME, "fr_FR");
-// les modérateurs ont droit d'ajouter des commentaires aux points cachés
+// les modérateurs ont droit d'ajouter des commentaires aux points en attente de décision
 if ( $_SESSION['niveau_moderation']>=1 )
-    $conditions_commentaire->avec_points_censure=True;
+    $conditions_commentaire->avec_points_en_attente=True;
 
 $commentaire->id_point=$controlleur->url_decoupee[1];
 $conditions_commentaire->ids_points=$commentaire->id_point;
