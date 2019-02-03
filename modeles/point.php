@@ -541,8 +541,8 @@ function modification_ajout_point($point)
     if (isset($point->places) and (!is_numeric($point->places) or ($point->places<0)))
         return erreur("Le nombre de place doit être un entier positif ou nul, reçu : $point->places");
 
-  // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
-  $champs_sql['date_derniere_modification'] = 'NOW()';
+    // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
+    $champs_sql['date_derniere_modification'] = 'NOW()';
 
     /********* les coordonnées du point dans la table points_gps *************/
     // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet
@@ -558,7 +558,6 @@ function modification_ajout_point($point)
                 $champs_sql[$champ]= "NULL";
             else
                 $champs_sql[$champ]=$pdo->quote($point->$champ);
-
     if ( !empty($point->id_point) )  // update
     {
         $infos_point_avant = infos_point($point->id_point,true);

@@ -18,15 +18,12 @@ function preparation_point()
 {
     // on rempli l'object $point à mettre à jour/ajouter en fonction des paramètres POST
     // si l'id_point peut être vide, cela indiquera une création 
-    // ATTENTION BIDOULLE si on fait attention à ce que le nom des champs correspondent, on gagne du temps avec :
-    // Il y aura bien quelques trucs en trop, mais la fonction modification ne s'en servira pas
+    // ATTENTION GAIN DE TEMPS : si on fait attention à ce que le nom des champs correspondent en base, on gagne du temps et de la simplicité
+    // Il y aura bien quelques variables en trop dans l'object $point, mais la fonction modification n'en tiendra pas compte
     $point = new stdClass;
     foreach ($_REQUEST as $nom => $value)
         $point->$nom=stripslashes(trim($value));
     
-    // crade, mais trop de retard. verrai ca plus tard.
-    if ( !is_numeric($point->places_matelas) && $point->places_matelas != "NULL" )
-        $point->places_matelas = "0" ; // bug : cast d'une string vers 0
     return $point;
 }  
 function gestion_retour($retour,$vue)
