@@ -183,6 +183,12 @@ function infos_points($conditions)
             $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
         else
             return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
+    // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
+    if( !empty($conditions->places_matelas_minimum) )
+        if( is_int($conditions->places_matelas_minimum) and ($conditions->places_matelas_minimum>=1) )
+            $conditions_sql .= "\n AND points.places_matelas >= ". $pdo->quote($conditions->places_matelas_minimum-1, PDO::PARAM_INT);
+        else
+            return erreur("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : $conditions->places_matelas_minimum");
 
     // conditions sur l'altitude
     if( !empty($conditions->altitude_minimum) )
@@ -250,9 +256,6 @@ function infos_points($conditions)
       case 'poele':$conditions_sql.="\n AND points.poele IS TRUE ";break;
     }
   }
-  // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
-  if (isset($conditions->places_matelas_minimum) and is_int($conditions->places_matelas_minimum) and $conditions->places_matelas_minimum>=1 )
-    $conditions_sql.="\n AND (points.places_matelas>=$conditions->places_matelas_minimum-1)";
     
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
   if ($conditions->ouvert=='non')
