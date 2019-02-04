@@ -47,6 +47,9 @@ if (!empty($_REQUEST))
                     foreach ( $valeur as $c )
                         $conditions->binaire->$c = NULL ; 
                     break; // TODO, ne pas restreindre aux champs binaires.
+                case 'ne_manque_pas_un_mur':
+                    $conditions->binaire->manque_un_mur=false;
+                    break;
                     
                 default:  // tous les autres cas: nom, ouvert, places on repositionne comme condition la valeur telle qu'elle était dans le formulaire
                     $conditions->$champ=trim($valeur); 
