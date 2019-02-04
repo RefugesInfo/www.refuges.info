@@ -240,8 +240,8 @@ function infos_points($conditions)
   //jmb si isset a oui, faut vraiment "oui" pas '' (avant il faisait les 2)
   //TODO, transformer les champs binaires en ... binaires
   if (isset($conditions->binaire))      // binaire est construit a part, pas de SQL injection possible normalement
-  foreach ($conditions->binaire as $champ => $valeur)
-    $conditions_sql.="\n AND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
+    foreach ($conditions->binaire as $champ => $valeur)
+      $conditions_sql.="\n AND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
 
     if ($conditions->avec_geometrie)
         $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
@@ -265,6 +265,9 @@ function infos_points($conditions)
   if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
 
+  if ( !empty($conditions->conditions_utilisation) )
+    $conditions_sql.="\n AND points.conditions_utilisation = ". $pdo->quote($conditions->conditions_utilisation);
+      
   $query_points="
   SELECT points.*,
          points_gps.*,
