@@ -251,7 +251,7 @@ function infos_points($conditions)
     }
   }
   // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
-  if (isset($conditions->places_matelas_minimum) and $conditions->places_matelas_minimum>=1 )
+  if (isset($conditions->places_matelas_minimum) and is_int($conditions->places_matelas_minimum) and $conditions->places_matelas_minimum>=1 )
     $conditions_sql.="\n AND (points.places_matelas>=$conditions->places_matelas_minimum-1)";
     
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
