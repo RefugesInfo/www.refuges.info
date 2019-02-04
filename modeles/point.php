@@ -54,6 +54,7 @@ $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
 $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veut quand même, par défaut : FALSE
 $conditions->chauffage : soit "chauffage" pour demander poële ou cheminée ou "poele" ou "cheminee"
+$conditions->places_matelas_minimum : (int) veut dire avec places_matelas >= places_matelas_minimum 
 
 $conditions->binaire->couvertures : "oui" ou "vide"
 $conditions->binaire->eau_a_proximite : "oui" ou "vide"
@@ -84,12 +85,6 @@ FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reç
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
 Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon
 *****************************************************/
-// FIXME elle est executee 2 fois pour chaque points, 1 pour la fiche, 1 pour les points a proxi. trop de CPU
-// Certes, mais faire la méga maxi requête qui va chercher le point et les points à proximité pourrait finir par être
-// encore plus lourde que 2 et au final ingérable
-// FIXME conditions binaires en bool ? pour + de rapidité
-// Actuellement, ça peut être "oui" "non" ou Null (ou "") Y'aurais peut-être moyen en effet d'être plus économe -- sly
-
 
 function infos_points($conditions)
 {
@@ -255,6 +250,10 @@ function infos_points($conditions)
       case 'poele':$conditions_sql.="\n AND points.poele IS TRUE ";break;
     }
   }
+  // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
+  if (isset($conditions->places_matelas_minimum) and $conditions->places_matelas_minimum>=1 )
+    $conditions_sql.="\n AND (points.places_matelas>=$conditions->places_matelas_minimum-1)";
+    
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
   if ($conditions->ouvert=='non')
     $conditions_sql.="\n AND points.conditions_utilisation in ('fermeture','detruit') ";
