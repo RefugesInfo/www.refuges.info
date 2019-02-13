@@ -32,13 +32,13 @@ else
             $commentaire->demande_correction=$_POST['demande_correction'];
             $commentaire->raison_demande_correction=$_POST['raison_demande_correction'];
             modification_ajout_commentaire($commentaire);
-            $vue->titre="Merci pour votre aide au tri";
+            $vue->contenu="Merci pour votre aide au tri, ";
         }
         else
-            $vue->titre="Oups ? la lettre anti_robot saisie n'est pas la bonne";
+            $vue->contenu="Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton \"Retour de votre navigateur pour reprendre la saisie\", ou ";
         
         $vue->lien=$vue->commentaire->lien;
-        $vue->contenu="Vous pouvez retourner sur : ";
+        $vue->contenu.="vous pouvez retourner sur : ";
         $vue->titre_lien="la fiche de $commentaire->nom";
     }
     else
