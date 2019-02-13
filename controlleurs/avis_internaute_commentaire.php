@@ -18,6 +18,8 @@ if ($commentaire->erreur)
 else
 {
     $vue->commentaire=$commentaire;
+    $vue->commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
+
     $vue->commentaire->lien=lien_point($commentaire,True);
     
     /**************************** l'action  ******************************/
@@ -28,8 +30,9 @@ else
         if (isset($_SESSION['id_utilisateur']) or $_POST['anti_robot']=="f")
         {
             $commentaire->demande_correction=$_POST['demande_correction'];
+            $commentaire->raison_demande_correction=$_POST['raison_demande_correction'];
             modification_ajout_commentaire($commentaire);
-            $vue->titre="Merci pour votre aide au classement";
+            $vue->titre="Merci pour votre aide au tri";
         }
         else
             $vue->titre="Oups ? la lettre anti_robot saisie n'est pas la bonne";

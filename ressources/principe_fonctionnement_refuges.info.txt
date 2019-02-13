@@ -4,6 +4,9 @@ comprendre comment marche le site refuges.info au niveau logiciel.
 Comme le code est sous WTFPL (voir fichier licence.txt), il n'y a pas de problème à que n'importe qui trouve le comment ça marche
 Cependant, merci de n'indiquer ici aucun mot de passe du site.
 création le 28/10/2008 par sly sylvain@refuges.info
+Mise à jour quand j'y pense et en fonction de la modif :
+02/2019 : qualite_suppossee de 'commentaire' disparait
+02/2019 : raison
 
 Historique et dernières modifications visible ici :
 https://github.com/sletuffe/www.refuges.info/blob/dev/ressources/principe_fonctionnement_refuges.info.txt
@@ -26,9 +29,9 @@ commentaires
 La table des commentaires des internautes sur un point de la base
 * id_point : pour faire le lien vers la table point
 * demande_correction : un champ à 1 quand un modérateur doit être prévenu que ce commnetaire est jugé utile à la fiche par celui qui l'a mis
-* qualite_supposee : un champ de type int qui indique la probable qualité d'un commentaire : démarre à 0 (-2, -1, +1 ou +2 si un internaute donne son avis +4 si un modérateur le juge utile )
 -- C'est un peu tordu comme méthode mais cela peut limiter un peu le nombre de controles à faire par les modérateurs en évitant qu'un commentaire jugé utiles par
 -- plein de gens ne soit considéré comme "non utile" par un seul.
+* raison_demande_correction : un champ libre pour que l'internaute explique ses raisons de penser que le commentaire est périmé ou très intéressant
 * auteur : le nom de l'auteur (c'est un champs laissé libre pour que les internautes non connectés puissent mettre ce qu'il veulent)
 * id_createur : Le numéro, dans la table phpbb3_users de l'internaute, connecté ayant mis ce commentaire
 

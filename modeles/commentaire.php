@@ -286,19 +286,15 @@ function modification_ajout_commentaire($commentaire)
         imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
     }
 
-    // reparation crado:
     // FIXME, tout correspond, y'a pas moyen de faire un foreach sur $commentaire et remplir les champs SQL ?
     isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
     isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
     isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
     isset($commentaire->id_createur_commentaire) ? $champs_sql['id_createur_commentaire']=$commentaire->id_createur_commentaire:false;
     isset($commentaire->photo_existe) ? $champs_sql['photo_existe']=$commentaire->photo_existe:false;
-
-    if (is_numeric($commentaire->demande_correction))
-        $champs_sql['demande_correction']=$commentaire->demande_correction;
-
-    if (isset($commentaire->date_photo))
-            $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo);
+    isset($commentaire->raison_demande_correction) ? $champs_sql['raison_demande_correction']=$pdo->quote($commentaire->raison_demande_correction):false;
+    is_numeric($commentaire->demande_correction) ? $champs_sql['demande_correction']=$commentaire->demande_correction:false;
+    isset($commentaire->date_photo) ? $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo):false;
 
     // fait-on un update ou un insert ?
     // FIXME  faire un upsert. voir "requete_modification_ou_ajout_generique"

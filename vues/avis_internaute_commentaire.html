@@ -1,27 +1,46 @@
 <div class="contenu">
-    <h4>Merci de nous aider dans notre tâche de classement des commentaires utiles et moins utiles.</h4>
+    <h4>Merci de nous aider pour classer les commentaires</h4>
     <p>
-    Que pensez vous du commentaire suivant : (votre avis sera étudié par un modérateur qui prendra sa décision)
+    Le commentaire et/ou photo suivant(e) : 
     </p>
     <p>
-        <i><?=$vue->commentaire->texte?></i>
+    <div>
+    <?if ($vue->commentaire->photo_existe) {?>
+            <a href="<?=$vue->commentaire->lien_photo['originale']?>">
+                <img class="photos" height="150" src="<?=$vue->commentaire->lien_photo['reduite']?>" alt="Photo commentaire" />
+            </a>
+            <p class='text_sur_image'>
+                <?=$vue->commentaire->date_photo_format_francais?>
+            </p>
+    <?}?>
+      <?=$vue->commentaire->texte_affichage?>
+    </div>
     </p>
+<br>
 <p>
+Est :
 	<form method="post" action="<?=$config_wri['sous_dossier_installation']?>avis_internaute_commentaire/<?=$vue->commentaire->id_commentaire?>/" />
 	<ul>
 		<li><input type="radio" name="demande_correction" value="1" />Très utile : ses informations devraient être rajoutées dans la fiche en haut !</li>
-		<li><input type="radio" name="demande_correction" value="-1" />Peu/pas utile : Il n'a rien a voir avec le point ou il est subjectif du style "Il est bien, pas bien, etc."</li>
-		<li>Finalement, je n'en pense rien, je retourne sur <a href="<?=$vue->commentaire->lien?>">la fiche de <?=$vue->commentaire->nom?></a></li>
+		<li><input type="radio" name="demande_correction" value="-1" />Plus d'actualité ou n'a rien a voir avec le point ou n'est pas factuel <a href="<?=$vue->lien_que_mettre?>">(Voir que mettre ou ne pas mettre sur <?=$config_wri['nom_hote']?>)</a>
+)</li>
+		<li>Une raison rapide pour détailler ? <input type="text" name="raison_demande_correction" value="" size="100"/> (facultatif)</li>
+		
 		<br />
 		<?php if ($vue->test_anti_robot) { ?>
 		<li>Contre les robots merci d'écrire la lettre f ici :<input type="text" name="anti_robot" /></li>
         <?php } ?>
 	</ul>
+    <p>
+    votre remarque sera transmise aux modérateurs.
+    </p>
 	<input type="submit" name="valider" value="Valider mon avis" />
 	</form>
 </p>
 <p>
-Vous pouvez aussi en savoir un peu plus sur <a href="<?=$vue->lien_que_mettre?>">que mettre ou ne pas mettre sur <?=$config_wri['nom_hote']?></a>
+Finalement, je n'en pense rien, je retourne sur <a href="<?=$vue->commentaire->lien?>">la fiche de <?=$vue->commentaire->nom?></a>
 </p>
 </div>
+
+
 

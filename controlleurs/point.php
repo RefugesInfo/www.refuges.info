@@ -183,7 +183,7 @@ else // le point est valide
         {
             // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
             $commentaire->lien_commentaire = "/avis_internaute_commentaire/$commentaire->id_commentaire/";
-            $commentaire->texte_lien_commentaire = 'Que pensez vous de ce commentaire ?';
+            $commentaire->texte_lien_commentaire = 'périmé ? pertinent ?';
         }
         
         // Si, selon la base une photo existe, on va l'afficher
