@@ -375,13 +375,6 @@ A:visited {
 	padding: 10px;
 }
 
-/*=========ADRESSES MAILS CODEES==========*/
-.mail {
-  unicode-bidi: bidi-override;
-  direction: rtl;
-  cursor: pointer;
-}
-
 /*=========INFOBULLES===========*/
 A.infobulle {
   position:relative;

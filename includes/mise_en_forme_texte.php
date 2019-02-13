@@ -60,7 +60,7 @@ retourne : le code en HTML
 21/03/08 sly création initiale de la fonction
 26/05/08 jmb correction bug des multiples [b] (rajout d'un ? pour une regex ungreedy)
 **********************************************************************************************/
-function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_img=True,$crypter_texte_sensible=True)
+function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_img=True)
 {
 global $config_wri;
 /** étape 1
@@ -72,15 +72,13 @@ point destination
 $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte_avec_bbcode,$occurence);
 
 if ($occurences_trouvees!=0)
-{
-      for ($x=0;$x<$occurences_trouvees;$x++)
+  for ($x=0;$x<$occurences_trouvees;$x++)
   {	// Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
     // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
     // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
     $point=infos_point($occurence[1][$x]);
     $texte_avec_bbcode=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte_avec_bbcode);
   }
-}
 
 
 // transformation automatique des chaine de caractère ressemblant à une url vers le BBcode des URLs
@@ -180,31 +178,12 @@ array_merge($replace_img,
 $texte_avec_html = preg_replace($searcharray, $replacearray, $texte_avec_protection_anti_injection_html_ou_pas);
 
 
-// Transformation des adresses mails de façon à ne pas qu'elles ne soient pompées par les robots
-// 1/ Le code ascii de chaque caractère est transformé par la formule: 'x' => 135 - ascii('x')
-// 2/ Les caractères sont envoyés et écrits de droite à gauche. Ils sont affichés dans le bon sens par la feuille style
-// 3/ Ils sont relus et inversés lors du click pour envoi de mail
+// Transformation des adresses mails repérées dans le texte en mailto:<email> clicable
 $occurences_trouvees=preg_match_all("([\w_\-.]+@[\w\-.]+)",$texte_avec_html,$occurence);
 if ($occurences_trouvees!=0)
-{
   for ($x=0;$x<$occurences_trouvees;$x++)
-  {
-        $c = strlen ($occurence[0][$x]);
-        $l = 2 * $c + 1;
-        $code = '';
-        while ($c-- >= 0)
-            $code .= 135 - ord ($occurence[0][$x] [$c]); // Génération de la chaine codée
-        // Code JS de décodage
-        $script = "<script>for(c='$code',i=0;a=135-c[i++]*10-c[i++],i<$l;)document.write('&#'+a+';')</script>";
-        // Code JS de récupération et inversion de l'adresse pour envoi du mail
-        $onclick = "location.href='m&#97;il&#84;o:'+this.innerHTML.toLowerCase().split('</script>')[1].split('').reverse().join('')";
-        // Génération du tag complet
-        if (!$crypter_texte_sensible)
-            $texte_avec_html=str_replace($occurence[0][$x],"<a class=\"mail\" href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$texte_avec_html);
-        else
-            $texte_avec_html=str_replace($occurence[0][$x],"<a class=\"mail\" onclick=\"$onclick\">$script</a>",$texte_avec_html);
-  }
-}
+    $texte_avec_html=str_replace($occurence[0][$x],"<a href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$texte_avec_html);
+
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
 $texte_avec_html = nl2br($texte_avec_html,true);
 $texte_avec_html = str_replace("  ", " &nbsp;", $texte_avec_html);

@@ -28,7 +28,7 @@ print("prouf");
 print_r($_SESSION);
 print_r($_GET);
 die();
-$html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE,$crypter_texte_sensible=TRUE);
+$html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE);
 
 $point = infos_point(105);
 
