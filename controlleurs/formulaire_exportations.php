@@ -54,7 +54,7 @@ else // formulaire validé, affichage du lien et d'un blabla
 {
     $vue->lien_export = new stdClass; // contiendra: URL, description ...
     $vue->lien_licence = lien_wiki("licence");
-    $vue->format=$_POST['format'];
+    $vue->format=$format=$_POST['format'];
 
     if ($_POST['id_point_type']=="" OR $_POST['id_massif']=="")
         $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ?";
@@ -63,11 +63,13 @@ else // formulaire validé, affichage du lien et d'un blabla
         $liste_id_point_type = implode(',',$_POST['id_point_type']);
         $liste_id_massif = implode(',',$_POST['id_massif']);
     
-        if ($_POST['format']=="gpx")
-            $mode_complet="&amp;detail=complet";
+        if ($format=="gpx")
+          $mode_complet="&amp;detail=complet";
         else
-            $mode_complet="";
-        $options_lien="?nb_points=all$mode_complet&amp;format=".$_POST['format']."&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
+          $mode_complet="";
+        if ($format=="gpx_simple")
+          $format="gpx";
+        $options_lien="?nb_points=all$mode_complet&amp;format=$format&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
     
         $vue->lien_export->url = "/api/massif$options_lien";
     } 
