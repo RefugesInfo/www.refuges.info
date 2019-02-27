@@ -21,10 +21,7 @@
 		
 		<form method="post" action="<?=$config_wri['sous_dossier_installation']?>point_recherche/">
 		<div>
-			<input type="text" name="nom" size="35"
-				value="Recherche de refuge par le nom"
-				onfocus="javascript:if(this.value=='Recherche de refuge par le nom')this.value=''"
-			/>
+			<input type="text" name="nom" size="35" placeholder="Recherche de refuge par une partie du nom" />
 			<input type="hidden" name="ids_types_point" value="<?=$config_wri['tout_type_refuge']?>" />
 			<input type="hidden" name="avec_point_osm" value="1" />
 			<input type="image" src="<?=$config_wri['sous_dossier_installation']?>images/loupe.png" title="Lancer la recherche" alt="R" />

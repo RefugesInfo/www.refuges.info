@@ -1,0 +1,85 @@
+<?// Bloc HTML réalisant l'affichage de la page des options de contact
+
+// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
+// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
+// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
+// $vue contient les données passées par le fichier PHP
+// $config_wri les données communes à tout WRI
+?>
+
+<div class="contenu">
+	<h3>Nous contacter ...</h3>
+	<br/>
+
+	<h4>... pour modifier une information concernant un refuge</h4>
+	<form method="post" action="/contact/">
+		<input type="text" name="cherche_refuge" size="40"
+			value="<?=$vue->cherche_refuge?>"
+			placeholder="Recherche de refuge par une partie du nom"
+		>
+		<input type="image" src="/images/loupe.png" title="Lancer la recherche" alt="R">
+	</form>
+
+	<?php if($vue->refuges) { ?>
+		<ul>
+			<?php foreach ($vue->refuges as $refuge) { ?>
+				<li>
+					<a href="<?=$config_wri['sous_dossier_installation']?>forum/posting.php?mode=reply&f=<?=$vue->forum_refuges?>&t=<?=$refuge->topic_id?>"
+						title="Poster une demande d'évolution de la fiche">
+						<?=$refuge->topic_title?>
+					</a>
+				</li>
+			<?php } ?>
+		</ul>
+	<?php } ?>
+	<p style="color:red">
+		<?php if(count($vue->refuges) >= $vue->nbmax_refuges) { ?>
+			... trop de résultats, merci d'affiner la recherche
+		<?php } ?>
+	</p>
+	<br/>
+
+	<h4>... pour une offre / candidatures d'emploi liée aux refuges</h4>
+	<p>
+		Forum :
+		<a href="<?=$config_wri['sous_dossier_installation']?>forum/posting.php?mode=post&f=6"
+			title="Poster une annonce">
+			Emploi et refuges
+		</a>
+	</p>
+	<br/>
+
+	<h4>... pour une question générale</h4>
+	<p>
+		Forum :
+		<a href="<?=$config_wri['sous_dossier_installation']?>forum/posting.php?mode=post&f=5"
+			title="Créer un sujet de discussion générale">
+			Divers
+		</a>
+		ou
+		<a href="<?=$config_wri['sous_dossier_installation']?>forum/posting.php?mode=post&f=1"
+			title="Poser des questions, débattre d'évolutions, étendre les zones, organisations diverses du site, partenaires...">
+			La vie du site
+		</a>
+	</p>
+	<br/>
+
+	<h4>... pour un bug du logiciel ou une proposition d'évolution</h4>
+	<p>
+		Forum :
+		<a href="<?=$config_wri['sous_dossier_installation']?>forum/posting.php?mode=post&f=2"
+			title="Problème/bug rencontré sur le site, évolution/amélioration à proposer">
+			Développement logiciel du site
+		</a>
+	</p>
+	<br/>
+
+	<h4>... pour un problème d'accès, code perdu, site planté, ...</h4>
+	<p>
+		<a href="mailto:moderateurs@refuges.info?subject=Problème%20d'accès%20à%20refuges.info"
+			title="Envoyer un mail à un administrateur">
+			Contacter un administrateur
+		</a> &nbsp;
+		<span style="color:red">ATTENTION : il ne sera répondu ici qu'aux problèmes d'accés</span>
+	</p>
+</div>	
