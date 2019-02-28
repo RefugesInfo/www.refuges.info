@@ -11,29 +11,30 @@
 	<h3>Nous contacter ...</h3>
 	<br/>
 
-	<h4>... pour modifier une information concernant un refuge</h4>
+	<h4>... pour modifier une information concernant un refuge ou une cabane</h4>
 	<form method="post" action="/contact/">
-		<input type="text" name="cherche_refuge" size="40"
-			value="<?=$vue->cherche_refuge?>"
-			placeholder="Recherche de refuge par une partie du nom"
+		<input type="text" name="cherche_points" size="40"
+			value="<?=$vue->cherche_points?>"
+			placeholder="Recherche de point par une partie du nom"
+			 onChange="this.parentNode.submit()"
 		>
 		<input type="image" src="/images/loupe.png" title="Lancer la recherche" alt="R">
 	</form>
 
-	<?php if($vue->refuges) { ?>
+	<?php if($vue->points) { ?>
 		<ul>
-			<?php foreach ($vue->refuges as $refuge) { ?>
+			<?php foreach ($vue->points as $point) { ?>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>forum/posting.php?mode=reply&f=<?=$vue->forum_refuges?>&t=<?=$refuge->topic_id?>"
+					<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$point->id_point?>?correction=oui"
 						title="Poster une demande d'évolution de la fiche">
-						<?=$refuge->topic_title?>
+						<?=$point->nom?>
 					</a>
 				</li>
 			<?php } ?>
 		</ul>
 	<?php } ?>
 	<p style="color:red">
-		<?php if(count($vue->refuges) >= $vue->nbmax_refuges) { ?>
+		<?php if(count($vue->points) >= $vue->nbmax_points) { ?>
 			... trop de résultats, merci d'affiner la recherche
 		<?php } ?>
 	</p>

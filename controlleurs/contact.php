@@ -10,12 +10,11 @@ require_once ("config.php");
 require_once ("contact.php");
 
 $vue->titre = 'Options de contact';
-$vue->cherche_refuge = $_POST ['cherche_refuge'];
-$vue->forum_refuges = $config_wri['forum_refuges'];
-$vue->nbmax_refuges = 20;
+$vue->cherche_points = $_POST ['cherche_points'];
+$vue->nbmax_points = 20;
 
-if($vue->cherche_refuge)
-	$vue->refuges = liste_forums_refuges ($vue->cherche_refuge, $vue->forum_refuges, $vue->nbmax_refuges);
+if($vue->cherche_points)
+	$vue->points = liste_points ($vue->cherche_points, $vue->nbmax_points);
 else
-	$vue->refuges = null;
+	$vue->points = null;
 ?>

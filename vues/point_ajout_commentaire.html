@@ -33,7 +33,11 @@
 				<input type="file" name="comment_photo" size="15" value=""/>(facultatif)
 			</p>
 			<p>
-				<input type="checkbox" name="demande_correction" value="1"/>
+				<input type="checkbox" name="demande_correction" value="1"
+					<?php if ($vue->correction) { ?>
+						checked="checked"
+					<?php } ?>
+				/>
 				<label>Je souhaite prévenir un modérateur car mon commentaire apporte un complément à la partie supérieure de la fiche </label>
 			</p>
 			<?php if ($vue->captcha) { ?>

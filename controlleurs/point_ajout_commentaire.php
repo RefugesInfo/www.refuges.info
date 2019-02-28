@@ -26,6 +26,12 @@ if (!$point->erreur)
         $vue->captcha=True;
     }
 
+    // on force la demande de correction
+    if ($_GET['correction']!="") 
+    {
+        $vue->correction=true;
+    }
+
     // on vient de valider notre formulaire, faisons le nécessaire
     if ($_POST['action']!="") 
     {
