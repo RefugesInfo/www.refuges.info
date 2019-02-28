@@ -35,7 +35,6 @@ switch ($controlleur->url_decoupee[0])
     case "point" :
     case "nav" :
     case "wiki" :
-    case "contact" :
     case "nouvelles" :
     case "point_ajout_commentaire" :
     case "point_recherche" :
