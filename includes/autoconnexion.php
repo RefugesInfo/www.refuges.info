@@ -62,8 +62,8 @@ function auto_login_phpbb_users()
   $_SESSION['login_utilisateur']= $user->data['username'];
 
   // Le niveau d'autorisation
-  // m_warn est la seule autorisation moderateur ne dépendant pas d'un forum particulier
-  $_SESSION['niveau_moderation'] = $auth->acl_get('m_warn');
+  // Teste si l'utilisateur est dans le groupe "modérateurs globaux"
+  $_SESSION['niveau_moderation'] = $auth->acl_get('m_');
 
   // On retrouve l'identifiant de session pour le passer en paramètre _GET lors des déconnexion hors forum
   // Utilisé exclusivement dans /vues/_bandeau.html
