@@ -746,6 +746,18 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     left:-110px;
     top:2px;
   }
+  .point_forum blockquote {
+    margin-block-start: 0;
+  }
+  .point_forum blockquote * {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
+  .point_forum em {
+    color: black !important;
+  }
 
 /*==================================================================*/
 /* LA METEO DES PAGES POINTS                                        */

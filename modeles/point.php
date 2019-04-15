@@ -483,26 +483,51 @@ function texte_non_ouverte($point)
 function infos_point_forum ($point)
 {
   global $config_wri,$pdo;
+  $lon_max_text = 200;
+  $nb_max_post = 4;
+
   $q="SELECT *
-      FROM phpbb3_topics AS t
-        JOIN phpbb3_posts AS p ON p.post_id = t.topic_last_post_id
-      WHERE t.topic_id = {$point->topic_id}
-      LIMIT 1";
+      FROM phpbb3_posts
+      WHERE topic_id = {$point->topic_id}
+      ORDER BY post_time DESC";
   $r = $pdo->query($q);
   if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
 
-  $result = $r->fetch();
-  if (isset($result->topic_id))
-    $result->lienforum=$config_wri['forum_refuge'].$result->topic_id;
-  else
-    if ($point->modele!=1) // Si c'est un modèle de point, il n'a pas de forum
-      return erreur("Le forum du point \"$point->nom\" (id=$point->id_point) ne semble pas exister","$q n'a retourné aucun enregistrement");
+  while ( $res = $r->fetch() )
+  {
+    $res->post_text = preg_replace ('/<[^>]*>/i', '', $res->post_text); // Enlève les balises <...>
+    $res->post_text = preg_replace ('/\[\/?quote[^\]]*\]/i', '...', $res->post_text); // Enlève les balises [quote]
+    $res->post_text = preg_replace ('/\[\/?img[^\]]*\]/i', '...', $res->post_text); // Enlève les balises [img]
+    $res->post_text = bbcode2html ($res->post_text);
+    $res->post_text = preg_replace ('/\<\/?a[^\>]*\>/i', '...', $res->post_text); // Enlève les balises <a ...></a>
+    $res->post_text = preg_replace ('/<br.*>/i', '', $res->post_text); // Enlève les sauts de ligne
+    $res->post_text = preg_replace ('/^\s*$/i', '', $res->post_text); // Purge les posts sans texte
 
     // sly : C'est un peu relou de faire ça, mais phpbb ne stoque pas les messages tels qu'ils ont été saisie puis après les travaille à l'affichage, non !
     // il stoque ça avec des entités html ! Alors comme je préfère faire les traitements de mon choix, je décode pour créer mon objet
-    $result->post_text=htmlspecialchars_decode($result->post_text,ENT_QUOTES);
-    return $result;
+    $res->post_text = htmlspecialchars_decode($res->post_text,ENT_QUOTES);
 
+    // Limite la longueur du texte
+    if (strlen ($res->post_text) > $lon_max_text)
+        $res->post_text = substr ($res->post_text,0,$lon_max_text).'<b> .....</b>';
+
+    //FIXME : Bon, C pa BO mais ça marche pour l'instant ! On passe temporairement en timezone Paris pour décoder l'heure du forum
+    // Pas sûr que ça marche encore en heure d'hiver !
+    date_default_timezone_set('Europe/Paris');
+    $res->date_humaine=strftime ('%A %e %B %Y à %H:%M',$res->post_time).':';
+    date_default_timezone_set('UTC');
+
+    if (strlen($res->post_text)) { // Elimine le premier post généré automatiquement lors de la création du point
+      if (count($result) == $nb_max_post) {
+        $res->date_humaine = '... voir les autres.';
+        $res->post_text = '';
+      }
+      if (count($result) <= $nb_max_post) // Elimine le premier post généré automatiquement lors de la création du point
+        $result[] = $res;
+    }
+  }
+
+  return $result;
 }
 
 
@@ -536,7 +561,7 @@ function modification_ajout_point($point)
         // Pensez bien qu'un modérateur puisse vouloir remettre à "" le site n'existant plus
         if ($point->site_officiel=="")
             $champs_sql['site_officiel'] = $pdo->quote("");
-        //cas du site un peu particuliers ou l'internaute n'aura pas forcément pensé à mettre http://
+        //cas du site un peu particulier ou l'internaute n'aura pas forcément pensé à mettre http://
         elseif ( !preg_match("/https?:\/\//",$point->site_officiel))
             $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
         else

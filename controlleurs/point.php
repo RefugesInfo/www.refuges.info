@@ -60,14 +60,8 @@ else // le point est valide
             }
         }
     if ($point->modele!=1)
-    $vue->forum_point = infos_point_forum ($point);
-    $vue->forum_point->post_text_propre = bbcode2html (preg_replace ('/<[^>]*>/i', '', $vue->forum_point->post_text));
-
-	//FIXME : Bon, C pa BO mais ça marche pour l'instant ! On passe temporairement en timezone Paris pour décoder l'heure du forum
-	// Pas sûr que ça marche encore en heure d'hiver !
-	date_default_timezone_set('Europe/Paris');
-    $vue->forum_point->date_humaine=strftime ('%A %e %B %Y à %H:%M',$vue->forum_point->post_time);
-	date_default_timezone_set('UTC');
+      $vue->forum_point = infos_point_forum ($point);
+    $vue->lienforum=$config_wri['forum_refuge'].$point->topic_id;
 
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;
