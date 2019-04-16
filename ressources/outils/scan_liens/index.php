@@ -52,7 +52,7 @@ $types = [
 
 // Récupération des paramètres _GET de l'url
 $data_file = 'nosqldata.txt';
-$script_name = str_replace ('/', '', $request->server ('SCRIPT_NAME', ''));
+$script_name = str_replace ('/ressources/outils/scan_liens/', '', $request->server ('SCRIPT_NAME', ''));
 $type = request_var ('type', array_keys($types)[0]);
 $nb = request_var ('nb', '5');
 $script_url = "$script_name?type=$type&nb=$nb";
