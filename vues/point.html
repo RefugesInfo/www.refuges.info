@@ -237,17 +237,11 @@
 					<?php } ?>
 				</dd>
 			<?}?>
-
-<!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
-			<dd class="lien_ajout_commentaire noprint">
-				<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
-					Ajouter un commentaire, une photo, une demande de correction
-				</a>
-			</dd>
 		</dl>
 		</div>
 	</div>
 <!--============================ LIEN VERS LE FORUM D'UN POINT ===========================-->
+	<h5 class="noprint">Discussions sur <?=$vue->nom?></h5>
 	<p class="noprint" id="forum">
 		<em>
 			Pour les discussions, les questions et les avis on vous conseille d'utiliser
@@ -256,7 +250,7 @@
 			</a>
 			afin de laisser ces pages pour de l'information objective. 
 			De plus les utilisateurs du site qui "suivent" la discussion du forum seront prévenu par email
-			si vous mettez votre message là bas et non ici.
+			si vous y mettez votre message.
 		</em>
 	</p>
 <!--============================ POST LES PLUS RÉCENTS DU FORUM D'UN POINT ===========================-->
@@ -264,8 +258,7 @@
 		Dernier<?if(count($vue->forum_point)>1)echo's'?> message<?if(count($vue->forum_point)>1)echo's'?> du forum :
 	<?}?>
 	<div class="point_forum couleur_fond_amplifiee noprint">
-		<a href="<?=$vue->lienforum?>">
-			<? if (!$vue->forum_point) {?>
+		<? if (!$vue->forum_point) {?>
 				<p>Le forum est vide, n'hésitez pas à y laisser le premier message!</a></p>
 			<?} else
 			foreach ($vue->forum_point AS $k=>$post) { ?>
@@ -275,13 +268,14 @@
 				</blockquote>
 			<?}?>
 	</div>
-<!--========================================= COMMENTAIRES =========================================-->
-	<h5 class="noprint">Commentaires</h5>
+<!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
+	<h5 class="noprint">Informations récentes</h5>
 		<p class="lien_ajout_commentaire noprint">
 			<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
-				Ajouter un commentaire, une photo, une demande de correction
+				Ajouter une information, une précision, une photo ou signaler une correction
 			</a>
 		</p>
+<!--========================================= COMMENTAIRES =========================================-->
 		<?php
 		if (count ($vue->commentaires)) { ?>
 			<ul class="comment2 noprint">

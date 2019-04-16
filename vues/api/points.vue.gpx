@@ -39,10 +39,11 @@ foreach ($points AS $point) {
 	$gpx .= "	<sym>".$point->sym."</sym>\r\n";
 	$gpx .= "	<type>".$point->type['valeur']."</type>\r\n";
 		
-	if ($req->detail == "complet") {
+	if ($req->detail == "complet" or $req->detail == "garmin" ) {
 		$gpx .= "	<desc>".$point->acces['nom']." : ".htmlspecialchars($point->acces['valeur'])."</desc>\r\n";
 		$gpx .= "	<cmt>".$point->remarque['nom']." : ".htmlspecialchars($point->remarque['valeur'])."</cmt>\r\n";
-		$gpx .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
+		if ($req->detail == "complet")
+		  $gpx .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
 		$gpx .= "	<link href=\"$point->lien\">\r\n";
 		$gpx .= "		<text>$point->nom sur $config_wri[nom_hote]</text>\r\n";
 		$gpx .= "		<type>text/html</type>\r\n";

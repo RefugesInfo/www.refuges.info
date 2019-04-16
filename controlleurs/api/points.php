@@ -49,10 +49,10 @@ $req->type_points = $_REQUEST['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "csv", "gpi", "xml"/*, "yaml"*/, "rss");
+$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "csv", "gpi", "xml", "rss");
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
-$val->detail = array("simple", "complet");
-// FIXME sly : tout ça devrait être stocké dans la base de donnée
+$val->detail = array("simple", "complet", "garmin");
+// FIXME sly 2019 : tout ça devrait être récupéré de la base de donnée, ça exite déjà dans point_type, quel dommage de maintenir 2 duplicats
 $val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac", "batiment_a_explorer");
 $val->type_points_id = array(7, 10, 9, 23, 6, 3, 19, 16, 28);
 
@@ -260,7 +260,7 @@ foreach ($points_bruts as $point) {
     $points->$i->etat['valeur'] = texte_non_ouverte($point);
     $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
    // On rajoute des informations complémentaires si on demande détaillé
-    if($req->detail == "complet") {
+    if($req->detail == "complet" or $req->detail == "garmin") {
         $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
         $points->$i->coord['precision']['type'] = $point->id_type_precision_gps;
         $points->$i->remarque['nom'] = 'Remarque';

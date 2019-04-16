@@ -60,15 +60,20 @@ else // formulaire validé, affichage du lien et d'un blabla
         $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ?";
     else
     {
-        $liste_id_point_type = implode(',',$_POST['id_point_type']);
-        $liste_id_massif = implode(',',$_POST['id_massif']);
+      $liste_id_point_type = implode(',',$_POST['id_point_type']);
+      $liste_id_massif = implode(',',$_POST['id_massif']);
     
-        if ($format=="gpx")
+      $mode_complet="";
+
+      if ($format=="gpx")
           $mode_complet="&amp;detail=complet";
-        else
-          $mode_complet="";
         if ($format=="gpx_simple")
           $format="gpx";
+        if ($format=="gpx_garmin")
+        {
+          $format="gpx";
+          $mode_complet="&amp;detail=garmin";
+        }
         $options_lien="?nb_points=all$mode_complet&amp;format=$format&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
     
         $vue->lien_export->url = "/api/massif$options_lien";
