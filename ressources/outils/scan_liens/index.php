@@ -51,11 +51,11 @@ $types = [
 
 
 // Récupération des paramètres _GET de l'url
-$data_file = 'nosqldata.txt';
-$script_name = str_replace ('/ressources/outils/scan_liens/', '', $request->server ('SCRIPT_NAME', ''));
 $type = request_var ('type', array_keys($types)[0]);
 $nb = request_var ('nb', '5');
+$script_name = $request->server ('SCRIPT_NAME', '');
 $script_url = "$script_name?type=$type&nb=$nb";
+$data_file = 'nosqldata.txt';
 
 // Ajout d'une ligne à la fin de ce fichier
 $list = request_var ('list', '');
@@ -127,11 +127,11 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 
 		if ($row['post_id'])
 			echo "Commentaire à examiner (et modérer si besoin) =>
-		<a target='_BLANK' href='forum/posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>Modérer le message</a><br/>";
+		<a target='_BLANK' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>Modérer le message</a><br/>";
 
 		if ($row['id_commentaire'])
 			echo "Commentaire à examiner : {$row['user_sig']} =>
-			<a target='_BLANK' href='gestion/moderation?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>Modérer le commentaire</a><br/>";
+			<a target='_BLANK' href='{$config_wri['sous_dossier_installation']}gestion/moderation?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>Modérer le commentaire</a><br/>";
 
 		// Analyse de l'auteur
 		if ($row['user_id'] > 1 ) {
@@ -151,7 +151,7 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 		}
 		echo "Auteur : ".($row_user['user_id'] > 1 ?
 			"{$row_user['username']} ({$row_user['user_email']}) =>
-			<a target='_BLANK' title='Voir et modérer l auteur' href='forum/memberlist.php?mode=viewprofile&u={$row_user['user_id']}'>voir le profil et modérer</a>" :
+			<a target='_BLANK' title='Voir et modérer l auteur' href='{$config_wri['lien_forum']}memberlist.php?mode=viewprofile&u={$row_user['user_id']}'>voir le profil et modérer</a>" :
 			"{$row_user['username']}"
 		);
 		echo"<pre style='background-color:white;color:black;font-size:14px;'>USER = ".var_export($row_user,true).'</pre>';
