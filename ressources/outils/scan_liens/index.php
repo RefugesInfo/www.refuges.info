@@ -28,7 +28,8 @@ Cet utilitaire en lui même n'apporte pas de modifications à refuges.info<hr/>"
 // Liste des recherches
 $types = [
 	'phpbb_posts' => "
-		SELECT post_id,topic_id,forum_id,poster_ip AS ip,
+		SELECT post_id,topic_id,forum_id,post_time,
+		poster_ip AS ip,
 		poster_id AS user_id,
 		post_text AS texte
 		FROM phpbb3_posts
@@ -126,8 +127,11 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 		<a title='Ajouter {$match[1]} à la liste des liens morts' href='$script_url&list=M{$match[1]}'>déclarer ce site inexistant</a><br/>";
 
 		if ($row['post_id'])
-			echo "Commentaire à examiner (et modérer si besoin) =>
-		<a target='_BLANK' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>Modérer le message</a><br/>";
+			echo "Commentaire (".strftime ('%A %e %B %Y à %H:%M',$row->post_time).") à
+			<a target='_BLANK' href='{$config_wri['lien_forum']}viewtopic.php?t={$row['topic_id']}#p{$row['post_id']}'>voir</a>
+			ou 
+			<a target='_BLANK' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>modérer</a>
+			<br/>";
 
 		if ($row['id_commentaire'])
 			echo "Commentaire à examiner : {$row['user_sig']} =>
