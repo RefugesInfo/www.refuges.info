@@ -127,7 +127,7 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 		<a title='Ajouter {$match[1]} à la liste des liens morts' href='$script_url&list=M{$match[1]}'>déclarer ce site inexistant</a><br/>";
 
 		if ($row['post_id'])
-			echo "Commentaire (".strftime ('%A %e %B %Y à %H:%M',$row->post_time).") à
+			echo "Commentaire (".strftime ('%A %e %B %Y à %H:%M',$row['post_time']).") à
 			<a target='_BLANK' href='{$config_wri['lien_forum']}viewtopic.php?t={$row['topic_id']}#p{$row['post_id']}'>voir</a>
 			ou 
 			<a target='_BLANK' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>modérer</a>
