@@ -247,7 +247,7 @@
 			Pour les discussions, les questions et les avis, on vous conseille d'utiliser le <a href="<?=$vue->lienforum?>">le forum dédié à <?=$vue->nom?></a>. Les utilisateurs du site qui "suivent" la discussion du forum seront prévenus par e-mail si vous postez votre message sur le forum. Pour faire part d'une information objective à propos de <?=$vue->nom?> (accès, réglementation, demande de corrections de la fiche), vous pouvez ajouter une information ci-après.
 		</em>
 	</p>
-<!--============================ POST LES PLUS RÉCENTS DU FORUM D'UN POINT ===========================-->
+<!--============================ POSTS LES PLUS RÉCENTS DU FORUM D'UN POINT ===========================-->
 	<? if ($vue->forum_point) {?>
 		Dernier<?if(count($vue->forum_point)>1)echo's'?> message<?if(count($vue->forum_point)>1)echo's'?> du forum :
 	<?}?>
@@ -256,10 +256,12 @@
 				<p>Le forum est vide, n'hésitez pas à y laisser le premier message!</a></p>
 			<?} else
 			foreach ($vue->forum_point AS $k=>$post) { ?>
-				<em><?=ucfirst($post->date_humaine)?></em>
-				<blockquote cite="<?=$vue->lienforum?>">
-					<?=$post->post_text?>
-				</blockquote>
+				<a href="<?=$vue->lienforum?>#p<?=$post->post_id?>" title="Voir le post">
+					<em><?=ucfirst($post->date_humaine)?></em>
+					<blockquote cite="<?=$vue->lienforum?>">
+						<?=$post->post_text?>
+					</blockquote>
+				</a>
 			<?}?>
 	</div>
 <!--===================================== LIEN AJOUT COMENTAIRE ====================================-->

@@ -66,6 +66,9 @@ $config_wri['largeur_max_vignette']=140;
 $config_wri['hauteur_max_vignette']=140*3/4;
 $config_wri['qualite_jpeg']=80;
 
+/********** posts dans la page points ************/
+  $config_wri['point_posts_nb_max_post'] = 4;
+  $config_wri['point_posts_lon_max_text'] = 250;
 
 /********** id internes liés à certains éléments remarquables de la base. Merci d'éviter les numéros en dur dans le code, car si ça doit changer, c'est jeu de la fourmis ************/
 // sly  27/04/06 je préfère me baser sur l'id pour le retrouver plutôt que son type ( que je viens d'ailleurs de modifier )

@@ -483,8 +483,6 @@ function texte_non_ouverte($point)
 function infos_point_forum ($point)
 {
   global $config_wri,$pdo;
-  $lon_max_text = 200;
-  $nb_max_post = 4;
 
   $q="SELECT *
       FROM phpbb3_posts
@@ -495,21 +493,16 @@ function infos_point_forum ($point)
 
   while ( $res = $r->fetch() )
   {
-    $res->post_text = preg_replace ('/<[^>]*>/i', '', $res->post_text); // Enlève les balises <...>
-    $res->post_text = preg_replace ('/\[\/?quote[^\]]*\]/i', '...', $res->post_text); // Enlève les balises [quote]
-    $res->post_text = preg_replace ('/\[\/?img[^\]]*\]/i', '...', $res->post_text); // Enlève les balises [img]
-    $res->post_text = bbcode2html ($res->post_text);
-    $res->post_text = preg_replace ('/\<\/?a[^\>]*\>/i', '...', $res->post_text); // Enlève les balises <a ...></a>
-    $res->post_text = preg_replace ('/<br.*>/i', '', $res->post_text); // Enlève les sauts de ligne
+    $res->post_text = preg_replace ('/\[url=([^\]]*)\]/i', ' $1 ', $res->post_text); // Conserve l'url de [url=...]
+    $res->post_text = preg_replace ('/\[[^\]]*\]/i', '', $res->post_text); // Enlève les balises []
+    $res->post_text = preg_replace ('/\<[^\>]*\>/i', ' ', $res->post_text); // Enlève les balises <>
+    $res->post_text = preg_replace ('/&nbsp;/i', ' ', $res->post_text); // Purge les espaces multiples
+    $res->post_text = preg_replace ('/\s+/i', ' ', $res->post_text); // Purge les espaces multiples
     $res->post_text = preg_replace ('/^\s*$/i', '', $res->post_text); // Purge les posts sans texte
 
-    // sly : C'est un peu relou de faire ça, mais phpbb ne stoque pas les messages tels qu'ils ont été saisie puis après les travaille à l'affichage, non !
-    // il stoque ça avec des entités html ! Alors comme je préfère faire les traitements de mon choix, je décode pour créer mon objet
-    $res->post_text = htmlspecialchars_decode($res->post_text,ENT_QUOTES);
-
     // Limite la longueur du texte
-    if (strlen ($res->post_text) > $lon_max_text)
-        $res->post_text = substr ($res->post_text,0,$lon_max_text).'<b> .....</b>';
+    if (strlen ($res->post_text) > $config_wri['point_posts_lon_max_text'])
+        $res->post_text = substr ($res->post_text,0,$config_wri['point_posts_lon_max_text']).'&nbsp;<b> . . .</b>';
 
     //FIXME : Bon, C pa BO mais ça marche pour l'instant ! On passe temporairement en timezone Paris pour décoder l'heure du forum
     // Pas sûr que ça marche encore en heure d'hiver !
@@ -518,11 +511,11 @@ function infos_point_forum ($point)
     date_default_timezone_set('UTC');
 
     if (strlen($res->post_text)) { // Elimine le premier post généré automatiquement lors de la création du point
-      if (count($result) == $nb_max_post) {
-        $res->date_humaine = '... voir les autres.';
+      if (count($result) == $config_wri['point_posts_nb_max_post']) {
+        $res->date_humaine = '. . . voir les autres.';
         $res->post_text = '';
       }
-      if (count($result) <= $nb_max_post) // Elimine le premier post généré automatiquement lors de la création du point
+      if (count($result) <= $config_wri['point_posts_nb_max_post']) // Elimine le premier post généré automatiquement lors de la création du point
         $result[] = $res;
     }
   }
