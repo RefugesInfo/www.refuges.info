@@ -113,7 +113,7 @@ function infos_polygones($conditions)
             ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
         ) AS id_zone ,
         (
-          SELECT nom_polygone
+          SELECT *
           FROM polygones AS zones
           WHERE
             zones.id_polygone_type=".$config_wri['id_zone']."
@@ -124,8 +124,7 @@ function infos_polygones($conditions)
 
   //FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
   $box="box2d(polygones.geom)";
-  $query="SELECT polygone_type.type_polygone,
-                 polygone_type.categorie_polygone_type,
+  $query="SELECT polygone_type.*,
                  st_xmin($box) AS ouest,
                  st_xmax($box) AS est,
                  st_ymin($box) AS sud,
