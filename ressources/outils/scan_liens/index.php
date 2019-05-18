@@ -1,4 +1,9 @@
 <?php
+/*//TODO
+Scan affiche pb en haut si modérateur (+ cron ?)
+Fusionner résultats phpbb / fiches / signatures
+*/
+
 error_reporting(E_ALL);
 ini_set('display_errors', 'on');
 
@@ -19,11 +24,10 @@ if (!$auth->acl_get('f_read', 7)) { // Le forum des modérateurs
 	exit;
 }
 
-echo "Cet utilitaire permet de visualiser tous les liens compris dans certains champs de la base<br/>
-Les actions possibles sont :<br/>
-- Valider le domaine du lien : tous les liens de même domaine ne seront plus listés<br/>
-- Accésder aux pages de modération de refuges.info<br/>
-Cet utilitaire en lui même n'apporte pas de modifications à refuges.info<hr/>";
+echo "Cet utilitaire permet de visualiser (colonne de droite) tous les liens compris dans les fiches, commentaires et forums<br/>
+Ne sont pas visualisés les liens vers les sites reconnus sûrs (colonne de gauche)<br/><br/>
+Cet utilitaire en lui même n'apporte pas de modifications à refuges.info<br/>
+et ne teste pas si les liens sont morts.<hr/>";
 
 // Liste des recherches
 $types = [
@@ -69,20 +73,14 @@ if ($list) {
 // Lecture des domaines autorisés (en fin de ce fichier)
 $gfc = explode (PHP_EOL, file_get_contents ($data_file));
 $urlok = [];
-$urlmort = [];
 foreach ($gfc AS $v)
 	switch ($v[0]) {
 		case 'A':
-			$urlok [substr ($v, 1)] = substr ($v, 1);
-			unset ($urlmort [substr ($v, 1)]);
-			break;
 		case 'M':
-			$urlmort [substr ($v, 1)] = substr ($v, 1);
-			unset ($urlok [substr ($v, 1)]);
+			$urlok [substr ($v, 1)] = substr ($v, 1);
 			break;
 		case 'D':
 			unset ($urlok [substr ($v, 1)]);
-			unset ($urlmort [substr ($v, 1)]);
 			break;
 	}
 
@@ -90,13 +88,8 @@ echo '<table><tr><td valign="top" style="white-space:nowrap">';
 echo '<b>Liste des sites reconnus sûrs :</b><br/>';
 foreach ($urlok AS $v)
 	echo "<a target='_BLANK' title='Voir ce site' href='http://$v'>$v</a> =>
-		<a title='Retirer ce site de la liste autorisée' href='$script_url&list=D$v'>oublier</a><br/>";
-
-echo '<hr/><b>Liste des sites reconnus morts :</b><br/>';
-foreach ($urlmort AS $v)
-	echo "<a target='_BLANK' title='Voir ce site' href='http://$v'>$v</a> =>
-		<a title='Retirer ce site de la liste des liens morts' href='$script_url&list=D$v'>oublier</a><br/>";
-echo '</td><td>';
+		<a title='Retirer ce site de la liste des sites sûrs et repasser le test' href='$script_url&list=D$v'>remettre en test</a><br/>";
+echo '</td><td valign="top">';
 
 // Choix de la recherche à faire
 echo "Type d'infos à scanner :
@@ -112,30 +105,34 @@ nombre présenté :
 
 $result = $db->sql_query($types[$type]);
 while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
-	$row['texte'] = preg_replace  ('/[[:cntrl:]]/', '', $row['texte']);
-	preg_match ('/h[tps]+\:\/\/([^\/^\[^\]^\"]+)[^\<^\[^\]^\"^\s^[:cntrl:]]*/', $row['texte'], $match);
-	if (count ($match) && !in_array ($match[1], $urlok) && !in_array ($match[1], $urlmort)) {
+	$row['texte'] = preg_replace ('/[[:cntrl:]]/', '', $row['texte']);
+	preg_match (
+		'/[\"\'\]]h[tps]+\:\/\/([^\/^\[^\]^\"^<^\s"]+)([^\<^\[^\]^\"^\s^[:cntrl:]]*)/',
+		$row['texte'],
+		$match
+	);
+	if (count ($match) && !in_array ($match[1], $urlok)) {
 		echo "<hr/>";
 
-		echo "Lien suspect : <a target='_BLANK' href='{$match[0]}'>{$match[0]}</a><br/>";
+		echo "Lien à analyser : <a target='_BLANK' title='Suivre le lien et voir son contenu' href='//{$match[1]}{$match[2]}'>{$match[1]}{$match[2]}</a><br/>";
 
 		if ($row['user_sig'])
 			echo "Signature à examiner : {$row['user_sig']}<br/>";
 
-		echo "Site : <a target='_BLANK' title='Voir ce site' href='http://{$match[1]}'>{$match[1]}</a>
-		=> <a title='Ajouter {$match[1]} à la liste autorisée' href='$script_url&list=A{$match[1]}'>autoriser</a> ou
-		<a title='Ajouter {$match[1]} à la liste des liens morts' href='$script_url&list=M{$match[1]}'>déclarer ce site inexistant</a><br/>";
+		echo "Site : <a target='_BLANK' title='Voir le site hébergeur du lien' href='http://{$match[1]}'>{$match[1]}</a>
+		=> <a title='Ajouter {$match[1]} à la liste des sites sûrs' href='$script_url&list=A{$match[1]}'>site sûr</a><br/>";
 
 		if ($row['post_id'])
 			echo "Commentaire (".strftime ('%A %e %B %Y à %H:%M',$row['post_time']).") à
-			<a target='_BLANK' href='{$config_wri['lien_forum']}viewtopic.php?t={$row['topic_id']}#p{$row['post_id']}'>voir</a>
+			<a target='_BLANK' title='Voir le commentaire' href='{$config_wri['lien_forum']}viewtopic.php?t={$row['topic_id']}#p{$row['post_id']}'>voir</a>
 			ou 
-			<a target='_BLANK' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>modérer</a>
+			<a target='_BLANK' title='Modérer le commentaire' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>modérer</a>
 			<br/>";
 
 		if ($row['id_commentaire'])
-			echo "Commentaire à examiner : {$row['user_sig']} =>
-			<a target='_BLANK' href='{$config_wri['sous_dossier_installation']}gestion/moderation?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>Modérer le commentaire</a><br/>";
+			echo "Commentaire de {$row['auteur_commentaire']} à examiner :
+			<a target='_BLANK' title='Voir le commentaire' href='{$config_wri['sous_dossier_installation']}point/{$row['id_point']}#C{$row['id_commentaire']}'>voir</a> ou
+			<a target='_BLANK' title='Modérer le commentaire' href='{$config_wri['sous_dossier_installation']}gestion/moderation?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>modérer le commentaire</a><br/>";
 
 		// Analyse de l'auteur
 		if ($row['user_id'] > 1 ) {
@@ -155,7 +152,7 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 		}
 		echo "Auteur : ".($row_user['user_id'] > 1 ?
 			"{$row_user['username']} ({$row_user['user_email']}) =>
-			<a target='_BLANK' title='Voir et modérer l auteur' href='{$config_wri['lien_forum']}memberlist.php?mode=viewprofile&u={$row_user['user_id']}'>voir le profil et modérer</a>" :
+			<a target='_BLANK' title='Voir et modérer l’auteur' href='{$config_wri['lien_forum']}memberlist.php?mode=viewprofile&u={$row_user['user_id']}'>voir le profil et modérer</a>" :
 			"{$row_user['username']}"
 		);
 		echo"<pre style='background-color:white;color:black;font-size:14px;'>USER = ".var_export($row_user,true).'</pre>';
