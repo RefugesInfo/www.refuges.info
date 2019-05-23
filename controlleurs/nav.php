@@ -44,7 +44,8 @@ if ($id_polygone)
   $polygone=infos_polygone ($id_polygone);
   if (!$polygone->erreur) 
   {
-      $vue->titre="Cartes des refuges, sommets et sources/points d'eau dans $polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
+      $vue->titre=ucfirst($polygone->type_polygone)." $polygone->article_partitif $polygone->nom_polygone : Refuges, cabanes, sommets et points d'eau sur une carte";
+      $vue->intro="Voici les refuges, cabanes, sommets et points d'eau dans $polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
   }
   else
     $vue->titre="Polygone demandé incorrect : $polygone->message";
