@@ -12,7 +12,6 @@ require_once ("nouvelle.php");
 require_once ("polygone.php");
 
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
-$vue->description='Base de donnee de refuges, abris, gites, sommets et divers points en montagne avec cartes satellite, descriptions et coordonnees GPS';
 
 $vue->css           [] = $config_wri['url_chemin_leaflet'].'leaflet.css?'.filemtime($config_wri['chemin_leaflet'].'leaflet.css');
 $vue->java_lib_foot [] = $config_wri['url_chemin_leaflet'].'leaflet.js?' .filemtime($config_wri['chemin_leaflet'].'leaflet.js');

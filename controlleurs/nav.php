@@ -45,7 +45,6 @@ if ($id_polygone)
   if (!$polygone->erreur) 
   {
       $vue->titre="Cartes des refuges, sommets et sources/points d'eau dans $polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
-    $vue->description = $vue->titre.". Possibilité de naviguer sur une carte avec image satellite, cartes IGN, SwissTopo, Bings...";
   }
   else
     $vue->titre="Polygone demandé incorrect : $polygone->message";
