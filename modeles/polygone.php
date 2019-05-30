@@ -113,7 +113,7 @@ function infos_polygones($conditions)
             ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
         ) AS id_zone ,
         (
-          SELECT *
+          SELECT nom_polygone
           FROM polygones AS zones
           WHERE
             zones.id_polygone_type=".$config_wri['id_zone']."
