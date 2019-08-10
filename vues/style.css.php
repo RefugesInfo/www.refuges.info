@@ -783,6 +783,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 #meteo IMG {
 	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 #meteo P {
 	margin: 0;

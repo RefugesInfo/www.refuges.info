@@ -39,7 +39,9 @@ function meteo_fcst(data) {
 			comment =
 			data_heure.CONDITION + '\n' +
 			Math.round(data_heure.TMP2m) +
-			(Math.round(data_heure.WNDCHILL2m) < Math.round(data_heure.TMP2m) ? '° ressenti ' + Math.round(data_heure.WNDCHILL2m) : '') +
+			(data_heure.WNDCHILL2m & (
+				Math.round(data_heure.WNDCHILL2m) < Math.round(data_heure.TMP2m)
+			) ? '° ressenti ' + Math.round(data_heure.WNDCHILL2m) : '' ) +
 			'° à ' + heure + 'h\n' +
 			'Humidité ' + data_heure.RH2m + '%\n' +
 			(!precipitation ? '' : 'Précipitation ' + Math.round(precipitation) + 'mm de ' + debut_intervalle + ' à ' + Math.min(24, debut_intervalle + heures_par_intervalle) + 'h\n') +
@@ -60,8 +62,8 @@ function meteo_draw() {
 			if (typeof f == 'function')
 				html += f(jsonObj[k]);
 		}
+		document.getElementById('meteo').innerHTML = html;
 	}
-	document.getElementById('meteo').innerHTML = html;
 }
 
 function meteo() {
@@ -76,7 +78,7 @@ function meteo_run(el) {
 	var dd = document.createElement("dd"),
 		dt = el.parentElement;
 	dt.innerHTML = '<dt><?=$vue->nom_debut_majuscule?> &copy; <a href="http://www.prevision-meteo.ch/">prevision-meteo.ch</a></dt>';
-	dd.innerHTML = '<div id="meteo"></div><br style="clear:both" />';
+	dd.innerHTML = '<div id="meteo"><img src="<?=$config_wri['sous_dossier_installation']?>images/sablier.png" /></div><br style="clear:both" />';
 	dt.parentNode.insertBefore(dd, dt.nextSibling);
 	meteo();
 }
