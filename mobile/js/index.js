@@ -27,7 +27,7 @@ function initmap(){
 	var MRIUrl='http://maps.refuges.info/hiking/{z}/{x}/{y}.png'; // Serveur de tuiles MRI
 	MRI = new L.TileLayer(MRIUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé MRI
 	
-	var TFKey = 'a54d38a8b23f435fa08cfb1d0d0b266e';
+	var TFKey = 'a54-OBSOLETE-66e';
 	var OutdoorsUrl='http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey='+TFKey; // Serveur de tuiles Thunderforest
 	Outdoors = new L.TileLayer(OutdoorsUrl, {minZoom: 2, maxZoom: 18, noWrap: true}); // Création du calque de tuiles nommé Outdoors
 	var IGNKey = 'jv1hl9ntrac8q5aycla6wc5f';

@@ -20,7 +20,6 @@ var baseLayers = {
 	'Refuges.info':new L.TileLayer.OSM.MRI(),
 	'OSM fr':      new L.TileLayer.OSM.FR(),
 	'OpenTopoMap': new L.TileLayer.OSM.OTP(),
-	'Outdoors':    new L.TileLayer.OSM.Outdoors({k: '<?=$config_wri['thunderforest_key']?>'}),
 	'IGN':         new L.TileLayer.IGN({k: '<?=$config_wri['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS'}),
 	'IGN Express': new L.TileLayer.IGN({k: '<?=$config_wri['ign_key']?>', l:'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'}),
 	'SwissTopo':   new L.TileLayer.SwissTopo({l:'ch.swisstopo.pixelkarte-farbe'}),

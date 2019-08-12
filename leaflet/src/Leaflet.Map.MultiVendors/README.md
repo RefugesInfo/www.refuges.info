@@ -2,7 +2,6 @@
 Leaflet plugin for multi vendors maps & projections
 ```
 - OSM, Maps.Refuges.Info
-- ThunderForest Outdoors, Cycles, Landscape, Transport
 - IGN France, cadastre, photos
 - SwissTopo
 - IDEE España, photos

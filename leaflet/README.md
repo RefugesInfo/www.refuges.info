@@ -6,7 +6,6 @@ Leaflet extensions for
 * Multi vendors maps &amp; projections:
 ```
 - OSM, Maps.Refuges.Info
-- ThunderForest Outdoors, Cycles, Landscape, Transport
 - IGN France, cadastre, photos
 - SwissTopo
 - IDEE España, photos
