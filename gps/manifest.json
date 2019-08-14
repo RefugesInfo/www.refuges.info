@@ -1,0 +1,10 @@
+{
+	"name": "GPS",
+	"start_url": "index.php",
+	"display": "standalone",
+	"icons": [{
+		"src": "../images/favicon.png",
+		"sizes": "96x96",
+		"type": "image/png"
+	}]
+}
