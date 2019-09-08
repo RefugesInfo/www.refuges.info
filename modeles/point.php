@@ -15,7 +15,6 @@ require_once ("config.php");
 require_once ("bdd.php");
 require_once ("gestion_erreur.php");
 require_once ("commentaire.php");
-require_once ("point_gps.php");
 require_once ("polygone.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("forum.php");
@@ -119,7 +118,7 @@ function infos_points($conditions)
             return erreur("Le paramètre donné pour les ids des polygones n'est pas valide, reçu : $conditions->ids_polygones");
         else
         {
-            $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
+            $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
             $champs_polygones=",".colonnes_table('polygones',False);
         }
     }
@@ -127,7 +126,7 @@ function infos_points($conditions)
     {
         // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
         // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
-        $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points_gps.geom, polygones.geom ) AND id_polygone_type=".$config_wri['id_massif'].")";
+        $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points.geom, polygones.geom ) AND id_polygone_type=".$config_wri['id_massif'].")";
         $champs_polygones=",".colonnes_table('polygones',False);
     }
 
@@ -137,31 +136,30 @@ function infos_points($conditions)
         // sly : FIXME : Cette sous requête est particulièrement couteuse en ressources, il faudrait trouver une technique pour faire ça en JOIN
         $tables_en_plus.=",(
                             SELECT
-                              pgps.id_point_gps,
+                              p.id_point,
                               STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
                             FROM
                               polygones pg NATURAL JOIN polygone_type pty,
-                              points_gps pgps
+                              points p
                             WHERE
-                              ST_Within(pgps.geom, pg.geom)
+                              ST_Within(p.geom, pg.geom)
                               AND
                               pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-                            GROUP BY pgps.id_point_gps
+                            GROUP BY p.id_point
                            ) As liste_polys";
                           //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
 
          $champs_polygones.=",liste_polys.liste_polygones";
-         $conditions_sql .= "\n AND liste_polys.id_point_gps=points_gps.id_point_gps";
     }
 
     // on restreint a cette geometrie (un texte "ST machin en fait")
     // cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
     if( !empty($conditions->geometrie) )
     {
-        $conditions_sql .= "\n AND ST_Within(points_gps.geom,".$conditions->geometrie .") ";
+        $conditions_sql .= "\n AND ST_Within(points.geom,".$conditions->geometrie .") ";
         if ($conditions->avec_distance)
         {
-            $select_distance = ",ST_Transform(points_gps.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+            $select_distance = ",ST_Transform(points.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
             $ordre = "ORDER BY distance";
         }
     }
@@ -193,23 +191,23 @@ function infos_points($conditions)
     // conditions sur l'altitude
     if( !empty($conditions->altitude_minimum) )
         if( is_numeric($conditions->altitude_minimum) )
-            $conditions_sql .= "\n AND points_gps.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
+            $conditions_sql .= "\n AND points.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
         else
             return erreur("L'altitude minimum doit être un nombre entier, reçu : $conditions->altitude_minimum");
     if( !empty($conditions->altitude_maximum) )
         if( is_numeric($conditions->altitude_maximum) )
-            $conditions_sql .= "\n AND points_gps.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
+            $conditions_sql .= "\n AND points.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
         else
             return erreur("L'altitude maximum doit être un nombre entier, reçu : $conditions->altitude_maximum");
 
 
     //veut-on les points dont les coordonnées sont cachées ?
     if($conditions->pas_les_points_caches)
-        $conditions_sql .= "\n AND points_gps.id_type_precision_gps != ".$config_wri['id_coordonees_gps_fausses'];
+        $conditions_sql .= "\n AND points.id_type_precision_gps != ".$config_wri['id_coordonees_gps_fausses'];
 
     //quelle condition sur la qualité supposée des GPS
     if( !empty($conditions->precision_gps) )
-        $conditions_sql .= "\n AND points_gps.id_type_precision_gps IN ($conditions->precision_gps)";
+        $conditions_sql .= "\n AND points.id_type_precision_gps IN ($conditions->precision_gps)";
 
     //quel modérateur(s) de fiche ?
     if( !empty($conditions->id_createur) )
@@ -270,23 +268,23 @@ function infos_points($conditions)
       
   $query_points="
   SELECT points.*,
-         points_gps.*,
-         ST_AsGeoJSON(points_gps.geom) AS geojson,
+         ST_AsGeoJSON(points.geom) AS geojson,
          type_precision_gps.*,
          point_type.*,COALESCE(phpbb3_users.username,nom_createur) as nom_createur,
-         ST_X(points_gps.geom) as longitude,ST_Y(points_gps.geom) as latitude,
+         ST_X(points.geom) as longitude,ST_Y(points.geom) as latitude,
          extract('epoch' from date_derniere_modification) as date_modif_timestamp,
      extract('epoch' from date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
          $champs_en_plus
-         FROM points NATURAL JOIN points_gps NATURAL JOIN type_precision_gps NATURAL JOIN point_type LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id$tables_en_plus
+         FROM points NATURAL JOIN type_precision_gps NATURAL JOIN point_type LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id$tables_en_plus
   WHERE
      1=1
     $conditions_sql
   $ordre
   $limite
   ";
+  //print($query_points);
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
@@ -379,11 +377,11 @@ function infos_point($id_point,$meme_si_en_attente=False)
   // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
   // sauf sur les pages des points... doute... incertitude -- sly
   $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
-    FROM polygones,polygone_type,points_gps
+    FROM polygones,polygone_type,points
     WHERE
       polygones.id_polygone_type=polygone_type.id_polygone_type
-    AND ST_Within(points_gps.geom, polygones.geom)
-    AND points_gps.id_point_gps=$point->id_point_gps
+    AND ST_Within(points.geom, polygones.geom)    
+    AND points.id_point=$point->id_point
     ORDER BY polygone_type.ordre_taille DESC";
 
   $res = $pdo->query($query_polygones);
@@ -567,11 +565,37 @@ function modification_ajout_point($point)
     // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
     $champs_sql['date_derniere_modification'] = 'NOW()';
 
-    /********* les coordonnées du point dans la table points_gps *************/
-    // dans $point tout ne lui sert pas mais ça m'évite de créer un nouvel objet
-    $point->id_point_gps=modification_ajout_point_gps($point);
-    if ($point->id_point_gps->erreur) // si on a la moindre erreur sur la gestion des coordonnées de notre point, on abandonne
-        return erreur($point->id_point_gps->message);
+    /********* les coordonnées du point *************/
+    if (!$point->geojson) { // Plus besoin de faire ces vérifs avec le nouveau format geojson
+    // désolé, les coordonnées ne peuvent être vide ou non numérique
+    $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
+    if (!is_numeric($point->latitude))
+        return erreur("La latitude $erreur_coordonnee $point->latitude");
+    if (!is_numeric($point->longitude))
+        return erreur("La longitude $erreur_coordonnee $point->longitude");
+
+    if ($point->latitude>90 or $point->latitude<-90)
+        return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
+    if ($point->longitude>180 or $point->longitude<-180)
+        return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
+    }
+  // si aucune précision gps, on les suppose approximatives
+  if ($point->id_type_precision_gps=="")
+    $point->id_type_precision_gps=$config_wri['id_coordonees_gps_approximative'];
+
+    // si aucune altitude, on la suppose à 0
+    if (!isset($point->altitude))
+        $point->altitude=0;
+    //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
+    if (!is_numeric($point->altitude))
+        return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
+
+    //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
+    if ($point->altitude>8848 or $point->altitude<-50)
+        return erreur("$point->altitude"."m comme altitude du point, vraiment ?");
+
+    if (($point->geojson!=""))
+      $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
 
   /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
   // champ ou il faut juste un set=nouvelle_valeur
@@ -643,17 +667,6 @@ function suppression_point($point)
   // On appelle la fonction du forum qui supprime un topic
   forum_delete_topic ($point->topic_id);
 
-  // suite à la modification dans la base sur les coordonnées GPS, on va supprimer aussi de la table :
-  // point_gps si le point_gps n'est plus utilisé du tout
-
-  $del_si_uniq="
-  DELETE FROM points_gps
-  WHERE
-    ( SELECT COUNT(*) FROM points WHERE id_point_gps=$point->id_point_gps) = 1
-  AND
-   id_point_gps=$point->id_point_gps
-  LIMIT 1 ";
-  $pdo->exec($del_si_uniq);  // supp de la table point_gps si un seul point est dessus
   $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de tt facon
 
   return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés");
@@ -709,5 +722,27 @@ function chemin_icone($nom_icone,$absolu=true)
     else
         $url_et_host='';
     return $url_et_host.$config_wri['url_chemin_icones'].$nom_icone.'.png';
+}
+/********************************************************
+Fonction qui calcul la distance entre deux points gps
+Retourne la distance en metres entre deux points gps dont les coordonnées sont données
+( earth's circumference is 40030 Km long, divided in 360 degrees, that's 111190 )
+********************************************************/
+function calcul_distance_gps($lat1,$lon1,$lat2,$lon2)
+{
+  if ($lat1==$lat2 && $lon1==$lon2) return 0;
+  $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($lon1-$lon2));
+  $dist = acos($dist);
+  $dist = rad2deg($dist);
+  //debug("dist($lat1,$lon1,$lat2,$lon2)=$dist");
+  if ($dist>0) return $dist * 111190;
+  return 0;
+}
+/********************************************************
+Fonction qui calcul la distance entre deux points GPS de notre base
+********************************************************/
+function calcul_distance_points($point1,$point2)
+{
+  return calcul_distance_gps($point1->latitude,$point1->longitude,$point2->latitude,$point2->longitude);
 }
 ?>

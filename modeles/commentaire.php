@@ -106,11 +106,13 @@ function infos_commentaires ($conditions)
   // Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
   if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele OR isset($conditions->ids_polygones))
   {
-            $table_en_plus=",points,point_type,points_gps LEFT JOIN polygones ON (ST_Within(points_gps.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'].")";
+            $table_en_plus=",points,point_type,polygones";
 
-            $condition_en_plus.=" AND points.id_point=commentaires.id_point
-                     AND points_gps.id_point_gps=points.id_point_gps
-                     AND point_type.id_point_type=points.id_point_type";
+            $condition_en_plus.=" 
+                    AND points.id_point=commentaires.id_point
+                    AND point_type.id_point_type=points.id_point_type
+                    AND ST_Within(points.geom,polygones.geom)
+                    AND polygones.id_polygone_type=".$config_wri['id_massif'];
 
             $champ_en_plus.=",points.*,point_type.*,";
             // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
@@ -130,8 +132,9 @@ function infos_commentaires ($conditions)
              extract('epoch' from commentaires.date_photo) as ts_unix_photo,
              commentaires.*,COALESCE(phpbb3_users.username,auteur_commentaire) as auteur_commentaire
              $champ_en_plus
-             FROM commentaires LEFT join phpbb3_users on commentaires.id_createur_commentaire = phpbb3_users.user_id$table_en_plus
+             FROM commentaires,phpbb3_users$table_en_plus
            WHERE 1=1
+             AND commentaires.id_createur_commentaire = phpbb3_users.user_id
              $conditions_sql$condition_en_plus
            ORDER BY commentaires.date DESC
            $limite";

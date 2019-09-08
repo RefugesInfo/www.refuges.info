@@ -1,3 +1,5 @@
+Note sly 2019-09-08 : ce qui est relatifs à points_gps n'est plus à jour car cette table a été supprimée
+
 
 Ce Fichier ne couvre que 3 aspects:
 -PREPARATION DE LA BASE

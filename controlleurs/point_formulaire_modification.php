@@ -42,11 +42,7 @@ if ( isset($_REQUEST["id_point"]) )
     if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur ) ) 
     {
         $vue->serie = param_cartes ($point);
-        
-        // bug du point_gps recree a chaque fois: il faut le transmettre en invisible.
-        $vue->champs->invisibles->id_point_gps = new stdClass;
-        $vue->champs->invisibles->id_point_gps->valeur = $point->id_point_gps;
-        
+                
         // boutton supprimer uniquement pour les modérateurs globaux
         if ( $_SESSION['niveau_moderation'] >= 1 )
         {

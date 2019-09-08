@@ -42,13 +42,16 @@ A noter qu'une seule table regroupe tous les points quels qu'ils soient, même s
 de trouver un nombre de place vide pour un point d'eau.
 Cette notion de mutation des propriétés des points (icones, champs) est géré par la table point_type
 
-* id_point_gps, un lien vers la table des points géographique physique
 * id_point_type, un lien vers la table point_type (refuge ou abri ou sommet ou lac, etc.)
 * auteur_derniere_modification (le nom de l'auteur qui l'a créé si celui ci est anonyme)
 et/ou
 * id_auteur_derniere_modification, l'id de l'utilisateur qui a fait la dernière modif
 ( les autres champs se comprennent d'eux-même )
 * topic_id, lien vers le sujet du forum qui traite de ce point.
+* altitude : facultatif
+* accès : facultatif = manière physique d'accéder à ce point (du texte de blabla)
+* id_type_precision_gps : la qualité du relevé de ce point (selon table type_precision_gps)
+* geom -> la géométrie GIS du point de type POINT
 
 
 point_type
@@ -100,16 +103,6 @@ type_precision_gps
 ==================
 les catégories possibles pour un point GPS ( lue sur une carte, pris sur le terrain, au pif,...)
 
-points_gps
-==========
-C'est une table qui va stocker Toutes les coordonnées de tout point de la base
-les points et les polygones y feront référence (ouais, grosse usine à gaz en perspective, mais on apprend ça à l'école : aucune redondance de champs dans une base de donnée)
-* id_point_gps : son id
-* altitude : facultatif
-* accès : facultatif = manière physique d'accéder à ce point (du texte de blabla)
-* id_type_precision_gps : la qualité du relevé de ce point (selon table type_precision_gps)
-* a venir peut être : la source/identifiant unique externe des coordonnées de ce point pour importer les données des autres ?
-* geom -> la géométrie GIS du point de type POINT
 lien_polygone_gps
 =================
 la table de liaison entre les polygones et les points_gps

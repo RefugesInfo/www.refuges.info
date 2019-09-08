@@ -19,7 +19,6 @@ require_once ("meta_donnee.php");
 require_once ("xml.class.php");
 require_once ("api.php");
 require_once ("nouvelle.php");
-require_once ("point_gps.php");
 session_start();
 //auto_login_phpbb_users();
 

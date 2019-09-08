@@ -233,7 +233,6 @@ $i = 0;
 foreach ($points_bruts as $point) {
     $points->$i = new stdClass();
     $points->$i->id = $point->id_point;
-    $points->$i->id_gps = $point->id_point_gps;
     $points->$i->lien = lien_point($point);
     $points->$i->nom = mb_ucfirst($point->nom);
 	switch ($point->conditions_utilisation) {
