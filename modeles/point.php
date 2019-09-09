@@ -345,7 +345,7 @@ FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui f
 Mais postgis étant super rapide, je pense que l'on peut peut fusioner
 
 *****************************************************/
-function infos_point($id_point,$meme_si_en_attente=False)
+function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config_wri,$pdo;
@@ -376,21 +376,24 @@ function infos_point($id_point,$meme_si_en_attente=False)
   // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
   // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
   // sauf sur les pages des points... doute... incertitude -- sly
-  $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
-    FROM polygones,polygone_type,points
-    WHERE
-      polygones.id_polygone_type=polygone_type.id_polygone_type
-    AND ST_Within(points.geom, polygones.geom)    
-    AND points.id_point=$point->id_point
-    ORDER BY polygone_type.ordre_taille DESC";
+  if ($avec_polygones)
+  {
+    $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
+        FROM polygones,polygone_type,points
+        WHERE
+        polygones.id_polygone_type=polygone_type.id_polygone_type
+        AND ST_Within(points.geom, polygones.geom)    
+        AND points.id_point=$point->id_point
+        ORDER BY polygone_type.ordre_taille DESC";
 
-  $res = $pdo->query($query_polygones);
-  if ( $polygones_du_point = $res->fetch() )
-    do
-    {
-        $polygones_du_point->lien_polygone=lien_polygone($polygones_du_point,True);
-        $point->polygones[]=$polygones_du_point;
-    } while ( $polygones_du_point = $res->fetch() ) ;
+    $res = $pdo->query($query_polygones);
+    if ( $polygones_du_point = $res->fetch() )
+        do
+        {
+            $polygones_du_point->lien_polygone=lien_polygone($polygones_du_point,True);
+            $point->polygones[]=$polygones_du_point;
+        } while ( $polygones_du_point = $res->fetch() ) ;
+    }
     return $point;
 }
 /******************************************************************************************************************************
@@ -607,14 +610,31 @@ function modification_ajout_point($point)
                 $champs_sql[$champ]=$pdo->quote($point->$champ);
     if ( !empty($point->id_point) )  // update
     {
-        $infos_point_avant = infos_point($point->id_point,true);
-        if ($infos_point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
-            return erreur("Erreur de modification du point : $infos_point_avant->message");
+        $point_avant = infos_point($point->id_point,true,false);
+        if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
+            return erreur("Erreur de modification du point : $point_avant->message");
 
         $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
         if (!$pdo->exec($query_finale))
             return erreur("Requête en erreur, impossible à executer",$query_finale);
-
+            
+        // 2019-09-09 Historisation du pauvre, on log dans une table un dump de l'objet point avant et après modification
+        if ( isset($_SESSION['id_utilisateur']))
+            $id_utilisateur=$_SESSION['id_utilisateur'];
+        
+        // L'objet $point par défaut dispose de trop de propriété, ne gardons que celles qui peuvent être modifiées
+        $point_avant_simple = new stdClass;
+        foreach ($point as $propriete => $valeur)
+            $point_avant_simple->$propriete=$point_avant->$propriete;
+            
+        $query_log_modification="insert into historique_modifications_points 
+        (id_point,id_user,date_modification,avant,apres,type_modification) 
+        values 
+        ($point->id_point,$id_utilisateur,NOW(),".$pdo->quote(serialize($point_avant_simple)).",".$pdo->quote(serialize($point)).",'modification')";
+        if (!$pdo->exec($query_log_modification))
+            return erreur("Requête en erreur, impossible d'historiser la modification",$query_log_modification);
+        
+        
         /********* Renommage du topic point dans le forum refuges *************/
         forum_submit_post ([
             'action' => 'edit',

@@ -1,0 +1,35 @@
+<style>
+table, td, th {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  height: 50px;
+}
+</style>
+<div class="contenu">
+	<p>Liste des dernières modifications survenues sur les points de la base</p>
+<table>
+  <tr>
+    <th>date modification</th>
+    <th>modérateur</th>
+    <th>avant</th>
+    <th>après</th>
+  </tr>
+  <?php if (isset($vue->modifications_points)) foreach ($vue->modifications_points as $modification) { ?>
+  <tr>
+    <td><?=$modification->date_modification?></td>
+    <td><?=$modification->moderateur?></td>
+    <td><pre><?=print_r(unserialize($modification->avant),true)?></pre></td>
+    <td><pre><?=print_r(unserialize($modification->apres),true)?></pre></td>
+  </tr>
+
+  <?}?>
+</table>
+
+</div>

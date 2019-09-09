@@ -25,6 +25,7 @@ switch ($controlleur->url_decoupee[1]) {
 
 	case 'modifier_modeles':
 	case 'commentaires_attente_correction':
+	case 'historique_modifications':
 		if ($_SESSION['niveau_moderation'])
 			$controlleur->type = 'gestion/'.$controlleur->url_decoupee[1];
 		break;

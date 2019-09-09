@@ -55,7 +55,7 @@ switch( $_REQUEST["action"] )
         $vue->message="Le point a bien été ajouté";
         break;
     case 'Modifier' :
-        $ancien_point=infos_point($_REQUEST['id_point'],True); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
+        $ancien_point=infos_point($_REQUEST['id_point'],True,false); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
         $point=preparation_point();
         $point->topic_id=$ancien_point->topic_id;
         // modification uniquement si modérateur global ou modérateur de cette fiche

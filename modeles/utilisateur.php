@@ -18,7 +18,6 @@ function infos_utilisateur($id_utilisateur)
     return erreur("Utilisateur inexistant",$query);
   else {
     $utilisateur->username=html_entity_decode($utilisateur->username);
-    $utilisateur->username=html_entity_decode($utilisateur->username);
     return $utilisateur;
   }
 }
