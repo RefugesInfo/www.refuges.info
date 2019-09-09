@@ -9,24 +9,22 @@ table {
 }
 
 th {
-  height: 50px;
+  height: 30px;
 }
 </style>
 <div class="contenu">
 	<p>Liste des dernières modifications survenues sur les points de la base</p>
 <table>
   <tr>
-    <th>date modification</th>
-    <th>modérateur</th>
+    <th>Info modif</th>
     <th>avant</th>
     <th>après</th>
   </tr>
   <?php if (isset($vue->modifications_points)) foreach ($vue->modifications_points as $modification) { ?>
   <tr>
-    <td><?=$modification->date_modification?></td>
-    <td><?=$modification->moderateur?></td>
-    <td><pre><?=print_r(unserialize($modification->avant),true)?></pre></td>
-    <td><pre><?=print_r(unserialize($modification->apres),true)?></pre></td>
+    <td><?=$modification->type_modification?> du/de là <br><b><?=$modification->point_avant->nom?></b><br>du <?=$modification->date?><br>par <?=$modification->moderateur?></td>
+    <td><?=nl2br(print_r($modification->point_avant,true))?></td>
+    <td><?=nl2br(print_r($modification->point_apres,true))?></td>
   </tr>
 
   <?}?>
