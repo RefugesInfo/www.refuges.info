@@ -8,7 +8,11 @@ si ça semble utile, je pourrais l'améliorer avec conditions sur le point et p'
 require_once ('mise_en_forme_texte.php');
 require_once ('utilisateur.php');
 
-$query_log_modification="select *,date_modification::timestamp(0) as date from historique_modifications_points order by date_modification desc LIMIT 100";
+$condition_point="";
+if (is_numeric($controlleur->url_decoupee[2]))
+    $condition_point=" WHERE id_point=".$controlleur->url_decoupee[2];
+
+$query_log_modification="select *,date_modification::timestamp(0) as date from historique_modifications_points$condition_point order by date_modification desc LIMIT 100";
 if (! ($res = $pdo->query($query_log_modification)))
     return erreur("Requête en erreur, impossible d'afficher l'historique de modifications",$query_log_modification);
         
