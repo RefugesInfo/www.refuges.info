@@ -149,7 +149,8 @@ function infos_points($conditions)
                            ) As liste_polys";
                           //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
 
-         $champs_polygones.=",liste_polys.liste_polygones";
+         $champs_polygones.=",liste_polys.liste_polygones";         
+         $conditions_sql .= "\n AND liste_polys.id_point=points.id_point";
     }
 
     // on restreint a cette geometrie (un texte "ST machin en fait")
@@ -228,9 +229,11 @@ function infos_points($conditions)
 
     // cas spécial sur les modèle
     if ($conditions->modele==1)
-        $conditions_sql.="\n AND modele=1";
+        $conditions_sql.="
+         AND modele=1";
     elseif($conditions->modele=="")
-        $conditions_sql.="\n AND modele!=1";
+        $conditions_sql.="
+         AND modele!=1";
     else
         $conditions_sql.="";
 
@@ -273,18 +276,19 @@ function infos_points($conditions)
          point_type.*,COALESCE(phpbb3_users.username,nom_createur) as nom_createur,
          ST_X(points.geom) as longitude,ST_Y(points.geom) as latitude,
          extract('epoch' from date_derniere_modification) as date_modif_timestamp,
-     extract('epoch' from date_creation) as date_creation_timestamp
+         extract('epoch' from date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
          $champs_en_plus
-         FROM points NATURAL JOIN type_precision_gps NATURAL JOIN point_type LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id$tables_en_plus
+  FROM 
+         type_precision_gps,point_type,phpbb3_users, points$tables_en_plus
   WHERE
-     1=1
-    $conditions_sql
+         points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
+         AND points.id_point_type=point_type.id_point_type
+         AND phpbb3_users.user_id=points.id_createur$conditions_sql
   $ordre
   $limite
   ";
-  //print($query_points);
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
