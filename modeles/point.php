@@ -281,14 +281,15 @@ function infos_points($conditions)
          $champs_polygones
          $champs_en_plus
   FROM 
-         type_precision_gps,point_type,phpbb3_users, points$tables_en_plus
+         type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id $tables_en_plus
   WHERE
          points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
          AND points.id_point_type=point_type.id_point_type
-         AND phpbb3_users.user_id=points.id_createur$conditions_sql
+         $conditions_sql
   $ordre
   $limite
   ";
+  //d($query_points);
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
