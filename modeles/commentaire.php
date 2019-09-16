@@ -132,9 +132,8 @@ function infos_commentaires ($conditions)
              extract('epoch' from commentaires.date_photo) as ts_unix_photo,
              commentaires.*,COALESCE(phpbb3_users.username,auteur_commentaire) as auteur_commentaire
              $champ_en_plus
-             FROM commentaires,phpbb3_users$table_en_plus
+             FROM commentaires LEFT join phpbb3_users on commentaires.id_createur_commentaire = phpbb3_users.user_id$table_en_plus
            WHERE 1=1
-             AND commentaires.id_createur_commentaire = phpbb3_users.user_id
              $conditions_sql$condition_en_plus
            ORDER BY commentaires.date DESC
            $limite";
