@@ -555,7 +555,7 @@ function modification_ajout_point($point)
             $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
     }
 
-    if (isset($point->places) and (!is_numeric($point->places) or ($point->places<0)))
+    if (isset($point->places) and (!ctype_digit($point->places) or ($point->places<0)))
         return erreur("Le nombre de place doit être un entier positif ou nul, reçu : $point->places");
 
     // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
@@ -581,7 +581,7 @@ function modification_ajout_point($point)
 
     // si aucune altitude, on la suppose à 0
     if (!isset($point->altitude))
-        $point->altitude=0;
+        $point->altitude="0";
     //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
     if (!is_numeric($point->altitude))
         return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
@@ -593,14 +593,21 @@ function modification_ajout_point($point)
     if (($point->geojson!=""))
       $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
 
-  /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
-  // champ ou il faut juste un set=nouvelle_valeur
-    foreach ($config_wri['champs_simples_points'] as $champ)
+    if ( isset($point->places_matelas) and $point->places_matelas!="" and $point->places_matelas!="ne_sait_pas" and $point->places_matelas!="-1")
+      if (!ctype_digit($point->places_matelas) or $point->places_matelas<0 )
+        return erreur("Le nombre de place sur matelas doit être vide ou 0 (il y en a, mais en nombre inconnu) ou -1 (il n'y en a pas) ou un entier positif, reçu : '$point->places_matelas'");
+    
+    if ($point->places_matelas=="")
+       $point->places_matelas="0";
+/********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
+// champ ou il faut juste un set=nouvelle_valeur
+  foreach ($config_wri['champs_simples_points'] as $champ)
     if (isset($point->$champ))
-            if($point->$champ  == "NULL")
-                $champs_sql[$champ]= "NULL";
-            else
-                $champs_sql[$champ]=$pdo->quote($point->$champ);
+      if($point->$champ  == "ne_sait_pas")
+        $champs_sql[$champ]= "NULL";
+      else
+        $champs_sql[$champ]=$pdo->quote($point->$champ);
+    
     if ( !empty($point->id_point) )  // update
     {
         $point_avant = infos_point($point->id_point,true,false);
@@ -649,7 +656,7 @@ function modification_ajout_point($point)
     $champs_sql['topic_id'] = $r['topic_id']; // On note le topic_id dans la table point pour faire le lien
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
     if (!$pdo->exec($query_finale))
-        return erreur("Requête en erreur, impossible à executer",$query_finale);
+        return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
   }

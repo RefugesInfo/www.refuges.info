@@ -166,7 +166,7 @@
          <fieldset class="booleen">
                   <legend><?=$vue->champs->places_matelas->label?> :</legend> 
                     <label>ne sait pas
-                        <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','NULL');" <?=($vue->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
+                        <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','ne_sait_pas');" <?=($vue->champs->places_matelas->valeur=='NULL')?' checked="checked"':'';?> />
                     </label>
                     <label>sans
                         <input type="radio" name="pm_radio" onclick="affiche_et_set('places_matelas','hidden','-1');" <?=($vue->champs->places_matelas->valeur=="-1")?' checked="checked"':'';?> />
@@ -187,7 +187,7 @@
                 <?php foreach ($vue->champs->bools as $nom => $params) { ?>
                 <fieldset class="booleen">
                         <legend<?=(isset($params->aide))? ' title="'.$params->aide.'"':'';?>><?=$params->label?> :</legend>
-                        <label>ne sait pas<input type="radio" name="<?=$nom?>" value="NULL" <?=($params->valeur===null)?'checked="checked"':'';?>/></label>
+                        <label>ne sait pas<input type="radio" name="<?=$nom?>" value="ne_sait_pas" <?=($params->valeur===NULL)?'checked="checked"':'';?>/></label>
                         <label>oui<input type="radio" name="<?=$nom?>" value="TRUE" <?=($params->valeur===true)?'checked="checked"':'';?>/></label>
                         <label>non<input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>/></label>
                 </fieldset>
