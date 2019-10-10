@@ -429,18 +429,6 @@ function lien_point($point,$lien_local=false)
   return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
 }
 
-/******************************************************************************************************************************
-On génére une url vers le point juste à partir de son id Attention c'est moins performant à ne pas trop utiliser
-pour des longues listes ( car requete SQL oblige )
-******************************************************************************************************************************/
-function lien_point_lent($id_point)
-{
-  $point=infos_point($id_point,True);
-  if ($point->erreur)
-    return erreur($point->message);
-  return (lien_point($point));
-}
-
 // Définit la carte et l'échelle suivant la présence du point dans un des polygones connus pour avoir un fond de carte
 // adapté
 function param_cartes ($point)

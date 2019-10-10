@@ -39,11 +39,17 @@ switch($_REQUEST['type'])
 		$commentaire->id_point=$_REQUEST['id_autre_point'];
 		$vue->retour=modification_ajout_commentaire($commentaire);
 		if (!$vue->retour->erreur)
-			$retour->message='ce commentaire a été déplacé sur la fiche de <a href="'.lien_point_lent($commentaire->id_point).'">Ce point</a>';
+		{
+            $point=infos_point($commentaire->id_point);
+			$retour->message='ce commentaire a été déplacé sur la fiche de <a href="'.lien_point($point,true).'">Ce point</a>';
+        }
 		break;
 
 	case 'suppression_photo':
 		$vue->retour=suppression_photos($commentaire);
 		break;
 }
+
+
+$vue->point=infos_point($_REQUEST['id_point_retour']);
 ?>

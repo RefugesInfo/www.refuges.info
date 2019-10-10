@@ -16,7 +16,7 @@
 	<form method="post" action="commentaires_attente_correction">
 		<?php foreach ($vue->commentaires_attente_correction as $c) { ?>
 			<div>
-				Le commentaire du <?=date("d/m/Y",$c->ts_unix_commentaire)?> par "<?=bbcode2html($c->auteur_commentaire)?>" sur <a href="<?=lien_point_lent($c->id_point)?>#C<?=$c->id_commentaire?>"><?=$c->nom?></a>
+				Le commentaire du <?=date("d/m/Y",$c->ts_unix_commentaire)?> par "<?=bbcode2html($c->auteur_commentaire)?>" sur <a href="<?=lien_point($c)?>#C<?=$c->id_commentaire?>"><?=$c->nom?></a>
 				<?=sprintf($vue->liste_causes[$c->demande_correction], $c->nom_type)?><?php if (!empty($c->raison_demande_correction)) print(", raison=".$c->raison_demande_correction);?>
 				<input type="checkbox" name="commentaires_corriges[]" value="<?=$c->id_commentaire?>">
 			</div>
