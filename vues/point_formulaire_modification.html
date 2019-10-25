@@ -164,7 +164,7 @@
             </label>
             <label>nombre :
                 <input type="radio" name="<?=$nom?>_pas_utile" onclick="affiche_et_set('<?=$nom?>','visible','');" <?=($params->valeur!=NULL)?' checked="checked"':'';?> />
-                <input type="text" id="<?=$nom?>" name="<?=$nom?>" size="4" style="visibility: <?=$visible?>;" value="<?=($params->valeur==NULL)?'ne_sait_pas':$params->valeur;?>" />
+                <input type="text" id="<?=$nom?>" name="<?=$nom?>" size="4" style="visibility: <?=$visible?>;" value="<?=($params->valeur===NULL)?'ne_sait_pas':$params->valeur;?>" />
             </label>
         </fieldset>
         <?php } ?>
