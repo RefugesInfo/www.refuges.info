@@ -177,7 +177,7 @@ if ($_SESSION['niveau_moderation']>=1)
   $vue->champs->en_attente->actif = True ;
   $vue->champs->en_attente->valeur = $point->en_attente;
   $vue->champs->en_attente->label="Mettre ce point en attente";
-  $vue->champs->en_attente->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs le temps de prendre une décision";
+  $vue->champs->en_attente->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs le temps de prendre une décision";
 }
 // cas spécifique des champs qui peuvent être NULL=ne sait pas ou un nombre entier
 foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $champ)
