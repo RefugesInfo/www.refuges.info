@@ -90,11 +90,11 @@ $config_wri['id_gite_etape']=9;
 $config_wri['point_d_eau']=23;
 $config_wri['id_batiment_en_montagne']=28;
 
-// Champs valables pour les points classés par spécificité (permet de dynamiquement gérer le formulaire de saisie et d'affichage)
+// Champs valables pour les points classés par spécificité (permet de dynamiquement gérer en partie le formulaire de saisie et d'affichage)
 // FIXME sly 13/08/2013 : on pourrait presque aller les chercher dans la base directement, mais on perdrait la possiblité de changer l'ordre facilement. A voir le pour et le contre
-$config_wri['champs_binaires_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite');
-$config_wri['champs_choix_multiples_points']=array_merge(array('conditions_utilisation','places_matelas'),$config_wri['champs_binaires_points']);
-$config_wri['champs_simples_points']=array_merge(array("en_attente","nom","places","acces","remark","proprio","id_point_type","id_createur","modele","altitude","id_type_precision_gps",'nom_createur'),$config_wri['champs_choix_multiples_points']);
+$config_wri['champs_trinaires_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite'); // ceux là sont des champs ou ne sait pas/oui/non sont possible (traiter dynamiquement dans une boucle)
+$config_wri['champs_entier_ou_sait_pas_points']=array('places','places_matelas');
+$config_wri['champs_simples_points']=array_merge(array('conditions_utilisation','places','places_matelas',"en_attente","nom","acces","remark","proprio","id_point_type","id_createur","modele","altitude","id_type_precision_gps",'nom_createur'),$config_wri['champs_trinaires_points'],$config_wri['champs_entier_ou_sait_pas_points']);
 
 // c'est l'id pour lequel les coordonnées gps données sont volontairement fausses
 $config_wri['id_coordonees_gps_fausses']=5;

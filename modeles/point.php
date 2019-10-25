@@ -55,13 +55,13 @@ $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veu
 $conditions->chauffage : soit "chauffage" pour demander poële ou cheminée ou "poele" ou "cheminee"
 $conditions->places_matelas_minimum : (int) veut dire avec places_matelas >= places_matelas_minimum 
 
-$conditions->binaire->couvertures : "oui" ou "vide"
-$conditions->binaire->eau_a_proximite : "oui" ou "vide"
-$conditions->binaire->bois_a_proximite : "oui" ou "vide"
-$conditions->binaire->latrines : "oui" ou "vide"
-$conditions->binaire->manque_un_mur : "oui" ou "vide"
-$conditions->binaire->site_officiel : "oui" ou "vide"
-$conditions->binaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
+$conditions->trinaire->couvertures : "oui" ou "vide"
+$conditions->trinaire->eau_a_proximite : "oui" ou "vide"
+$conditions->trinaire->bois_a_proximite : "oui" ou "vide"
+$conditions->trinaire->latrines : "oui" ou "vide"
+$conditions->trinaire->manque_un_mur : "oui" ou "vide"
+$conditions->trinaire->site_officiel : "oui" ou "vide"
+$conditions->trinaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
 
 FIXME : 2 conditions pour faire presque la même chose, je me demande s'il n'y a pas matière à simplifier :
 $conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
@@ -237,11 +237,9 @@ function infos_points($conditions)
     else
         $conditions_sql.="";
 
-  //prise en compte des conditions binaires
-  //jmb si isset a oui, faut vraiment "oui" pas '' (avant il faisait les 2)
-  //TODO, transformer les champs binaires en ... binaires
-  if (isset($conditions->binaire))      // binaire est construit a part, pas de SQL injection possible normalement
-    foreach ($conditions->binaire as $champ => $valeur)
+  //prise en compte des conditions trinaires (oui, non ou NULL = ne sait pas)
+  if (isset($conditions->trinaire))      // trinaire est construit a part, pas de SQL injection possible normalement
+    foreach ($conditions->trinaire as $champ => $valeur)
       $conditions_sql.="\n AND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
 
     if ($conditions->avec_geometrie)
@@ -555,9 +553,6 @@ function modification_ajout_point($point)
             $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
     }
 
-    if (isset($point->places) and (!ctype_digit($point->places) or ($point->places<0)))
-        return erreur("Le nombre de place doit être un entier positif ou nul, reçu : $point->places");
-
     // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
     $champs_sql['date_derniere_modification'] = 'NOW()';
 
@@ -566,14 +561,14 @@ function modification_ajout_point($point)
     // désolé, les coordonnées ne peuvent être vide ou non numérique
     $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
     if (!is_numeric($point->latitude))
-        return erreur("La latitude $erreur_coordonnee $point->latitude");
+      return erreur("La latitude $erreur_coordonnee $point->latitude");
     if (!is_numeric($point->longitude))
-        return erreur("La longitude $erreur_coordonnee $point->longitude");
+      return erreur("La longitude $erreur_coordonnee $point->longitude");
 
     if ($point->latitude>90 or $point->latitude<-90)
-        return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
+      return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
     if ($point->longitude>180 or $point->longitude<-180)
-        return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
+      return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
     }
   // si aucune précision gps, on les suppose approximatives
   if ($point->id_type_precision_gps=="")
@@ -593,9 +588,10 @@ function modification_ajout_point($point)
     if (($point->geojson!=""))
       $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
 
-    if ( isset($point->places_matelas) and $point->places_matelas!="" and $point->places_matelas!="ne_sait_pas" and $point->places_matelas!="-1")
-      if (!ctype_digit($point->places_matelas) or $point->places_matelas<0 )
-        return erreur("Le nombre de place sur matelas doit être vide ou 0 (il y en a, mais en nombre inconnu) ou -1 (il n'y en a pas) ou un entier positif, reçu : '$point->places_matelas'");
+    foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $a_tester)
+      if (isset($point->$a_tester))
+        if ( !((ctype_digit($point->$a_tester) and $point->$a_tester>=0) or $point->$a_tester=="ne_sait_pas") )
+          return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0 ou le code spécial ne_sait_pas, reçu : '".$point->$a_tester."'");
     
     if ($point->places_matelas=="")
        $point->places_matelas="0";

@@ -112,12 +112,13 @@ else // le point est valide
         $vue->lien_modification=TRUE;
             
     /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
-    // Construction du tableau qui sera lu, ligne par ligne par le modele pour être affiché
+    // Construction du tableau qui sera lu, ligne par ligne par la vue pour être affiché
+    // On pourrait détailler en html chaque propriété entourée par un if (propriété = valide), mais ça fait beaucoup de redondance, alors ainsi, je factorise au détriment d'un peu de lisibilité
     
     // Voici tous ceux qui nous intéresse 
     // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer 
     // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
-    $champs=array_merge(array('places_matelas'),$config_wri['champs_binaires_points'],array('site_officiel'));
+    $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points'],array('site_officiel'));
    
     foreach ($champs as $champ) 
     {
@@ -132,12 +133,8 @@ else // le point est valide
                         $val=array('valeur'=> '', 'lien' => $vue->point->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
                     break;
                    
-                case 'places_matelas':
-                    if($point->$champ == -1)
-                        $val=array('valeur'=> 'Sans');
-                    elseif($point->$champ === 0)
-                        $val=array('valeur'=> 'Avec, en nombre inconnu');
-                    elseif($point->$champ === NULL )
+                case 'places_matelas' : case 'places' :
+                    if($point->$champ === NULL )
                         $val=array('valeur'=> '<strong>Inconnu</strong>');
                     else
                         $val=array('valeur'=> $point->$champ);

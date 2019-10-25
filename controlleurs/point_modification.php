@@ -12,7 +12,7 @@ jmb 16/02/13 : un peu de re ecriture du bazar avec des gros Switch
 
 require_once ("point.php");
 require_once ("autoconnexion.php");
-
+//d($_REQUEST);
 // Je ne sais pas dans quel fichier mettre cette fonction, elle ne sert que à la saisie d'un point et uniquement ici en gros
 function preparation_point()
 {

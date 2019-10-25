@@ -46,13 +46,10 @@ Cette notion de mutation des propriétés des points (icones, champs) est géré
 * auteur_derniere_modification (le nom de l'auteur qui l'a créé si celui ci est anonyme)
 et/ou
 * id_createur, l'id de l'utilisateur qui est modérateur de cette fiche (il peut la modifier), par défaut, lors de la création, c'est celui qui la créé qui devient id_createur
-* place_matelas : un champs qui indique le nombre de places possibles, sans se serrer sur des matelas. 
-  s'il s'agit d'un entier supérieur ou égale à 1, c'est le nombre de place
-  si cela vaut -1 c'est qu'il n'y a pas de places sur matelas
-  si la valeure vaut 0 c'est qu'il y a des places sur matelas mais en nombre inconnu de celui qui a fait la saisie
-  si vaut NULL c'est que cette informatin n'est pas connue
-Note sly 2019-10-10 : ça serait pas plus compréhensif si 0 voulait dire "pas de place sur matelas" et -1 devient "oui, il y en a, mais je me rappel plus combien" ?
-( les autres champs se comprennent d'eux-même )
+* places : un champs qui indique le nombre de places prévues pour dormir.
+  s'il s'agit d'un entier c'est le nombre de place
+  si vaut NULL c'est que cette information n'est pas connue
+* places_matelas : idem que places, mais sur des matelas
 * topic_id, lien vers le sujet du forum qui traite de ce point.
 * altitude : facultatif
 * accès : facultatif = manière physique d'accéder à ce point (du texte de blabla)

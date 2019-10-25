@@ -14,8 +14,8 @@ $vue->champs = new stdClass; // contiendra TOUS les champs de formulaire qui ser
 $vue->champs->invisibles = new stdClass;  // champs invisibles a passer quand meme (ancien id ...)
 $vue->champs->textareas = new stdClass;
 $vue->champs->boutons = new stdClass; // Modifier, supprimer...
-$vue->champs->bools = new stdClass; // seulement les vrais bools TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
-$vue->champs->places_matelas = new stdClass; // traite en cas particulier, trop specifique, la suppression me demange
+$vue->champs->trinaires = new stdClass; // seulement les trinaires TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
+$vue->champs->entier_ou_sait_pas = new stdClass; // seulement les trinaires TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
 $vue->fond_carte_par_defaut= $config_wri['carte_base'];
 
 // 4 cas :
@@ -163,37 +163,44 @@ $textes_area["remarques"]="remark";
 foreach ($textes_area as $libelle => $nom_variable)
 {
     $vue->champs->textareas->$nom_variable = new stdClass;
-    // kesasko ?
-    if ($nom_variable=="acces")
-        $vue->champs->textareas->$nom_variable->disable = true; // c'est koi ?
-        
-    $vue->champs->textareas->$nom_variable->label=$libelle ; // faudra mettreca dans un LABEL
+    $vue->champs->textareas->$nom_variable->label=$libelle;
     $vue->champs->textareas->$nom_variable->valeur=protege($point->$nom_variable);
 }
 
-/******** Les informations complémentaires (booléens, détails) *****************/
+/******** Les informations complémentaires (places, matelas, latrines, bois à proximité, etc.) *****************/
 
 // Seuls les modérateurs peuvent passer un point en attente de décision
 // ce n'est pas tout à fait un champ trinaire comme les autres (true, false, null) car on ne peut pas "pas savoir"
 if ($_SESSION['niveau_moderation']>=1)
 {
-    $vue->champs->en_attente = new stdClass ;
-    $vue->champs->en_attente->actif = True ;
-    $vue->champs->en_attente->valeur = $point->en_attente;
-    $vue->champs->en_attente->label="Mettre ce point en attente";
-    $vue->champs->en_attente->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs le temps de prendre une décision";
+  $vue->champs->en_attente = new stdClass ;
+  $vue->champs->en_attente->actif = True ;
+  $vue->champs->en_attente->valeur = $point->en_attente;
+  $vue->champs->en_attente->label="Mettre ce point en attente";
+  $vue->champs->en_attente->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf les modérateurs le temps de prendre une décision";
 }
-
-foreach($config_wri['champs_binaires_points'] as $champ)
+// cas spécifique des champs qui peuvent être NULL=ne sait pas ou un nombre entier
+foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $champ)
 {
-    // nouveauté, ne crée les bool QUE si il y a un champ_equivalent.
-    $champ_equivalent="equivalent_$champ";
-    if ( !empty($point->$champ_equivalent) )
-    {
-        $vue->champs->bools->$champ = new stdClass ;
-        $vue->champs->bools->$champ->label = $point->$champ_equivalent ;
-        $vue->champs->bools->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
-    }
+  $champ_equivalent="equivalent_$champ";
+  if ( !empty($point->$champ_equivalent) )
+  {
+    $vue->champs->entier_ou_sait_pas->$champ = new stdClass ;
+    $vue->champs->entier_ou_sait_pas->$champ->label = $point->$champ_equivalent;
+    $vue->champs->entier_ou_sait_pas->$champ->valeur = $point->$champ ;
+  }
+}
+// cas des champs trinaires (oui, non, ne sait pas)
+foreach($config_wri['champs_trinaires_points'] as $champ)
+{
+  // on ne créér QUE si il y a un equivalent_$champ existe, ce qui signifie que cela a un sens pour ce type de point.
+  $champ_equivalent="equivalent_$champ";
+  if ( !empty($point->$champ_equivalent) )
+  {
+    $vue->champs->trinaires->$champ = new stdClass ;
+    $vue->champs->trinaires->$champ->label = $point->$champ_equivalent ;
+    $vue->champs->trinaires->$champ->valeur = $point->$champ; // NULL or TRUE or FALSE
+  }
 }
 
 //spécificité du cas des conditions d'utilisation de la cabane (clé à récup, ouvert tout le temps, fermée tout le temps, ou détruite)
@@ -207,14 +214,6 @@ if ( !empty($point->equivalent_conditions_utilisation) )
         $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
     $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
-//combine matelas
-if ( !empty($point->equivalent_places_matelas) )
-{
-    $vue->champs->places_matelas->label = $point->equivalent_places_matelas ;
-    $vue->champs->places_matelas->aide = "Laisser vide ou 0 si vous ne connaissez pas le nombre";
-    $vue->champs->places_matelas->valeur = is_null($point->places_matelas)?'NULL': $point->places_matelas ; // retourne un NULL en string au besoin
-}
-
 // ===========================================
 // Préparation de la $vue commune à chaque cas
 
@@ -230,4 +229,5 @@ $point->site_officiel=protege($point->site_officiel);
 $point->nom_createur=protege($point->nom_createur);
 $vue->point=$point;
 $vue->utilisateurs=infos_utilisateurs();
+
 ?>

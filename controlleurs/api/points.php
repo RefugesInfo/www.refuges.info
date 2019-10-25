@@ -291,10 +291,8 @@ foreach ($points_bruts as $point) {
         $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
         $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
         $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
-        if($point->places_matelas == -1)
+        if($point->places_matelas == 0)
             $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
-        elseif($point->places_matelas === 0)
-            $points->$i->info_comp['places_matelas']['valeur'] = "Avec, en nombre inconnu";
         else
             $points->$i->info_comp['places_matelas']['valeur'] = $point->matelas;
         $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;

@@ -11,7 +11,7 @@ require_once ("polygone.php");
 /************ Préparation des conditions de la recherche *******************/
 // tous ceux dont le name du formulaire correspondent à la condition sur le champs en base du même nom
 $conditions = new stdClass;
-$conditions->binaire = new stdClass;
+$conditions->trinaire = new stdClass;
 
 $conditions->avec_infos_massif=1;
 $conditions->avec_liste_polygones="montagnarde";
@@ -38,17 +38,17 @@ if (!empty($_REQUEST))
                     $conditions->ids_types_point = $valeur ;
                     break;
                     
-                case 'champs_binaires':
+                case 'champs_trinaires':
                     foreach ( $valeur as $c )
-                        $conditions->binaire->$c = true ; 
+                        $conditions->trinaire->$c = true ; 
                     break;
                     
                 case 'champs_null':
                     foreach ( $valeur as $c )
-                        $conditions->binaire->$c = NULL ; 
-                    break; // TODO, ne pas restreindre aux champs binaires.
+                        $conditions->trinaire->$c = NULL ; 
+                    break; // TODO, ne pas restreindre aux champs trinaires.
                 case 'ne_manque_pas_un_mur':
-                    $conditions->binaire->manque_un_mur=false;
+                    $conditions->trinaire->manque_un_mur=false;
                     break;
                    
                 default:  // tous les autres cas: nom, ouvert, places on repositionne comme condition la valeur telle qu'elle était dans le formulaire
