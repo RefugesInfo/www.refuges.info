@@ -184,10 +184,10 @@ function infos_points($conditions)
             return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
     // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
     if( !empty($conditions->places_matelas_minimum) )
-        if( is_int($conditions->places_matelas_minimum) and ($conditions->places_matelas_minimum>=1) )
-            $conditions_sql .= "\n AND points.places_matelas >= ". $pdo->quote($conditions->places_matelas_minimum-1, PDO::PARAM_INT);
+        if( is_numeric($conditions->places_matelas_minimum) and ($conditions->places_matelas_minimum>0) )
+            $conditions_sql .= "\n AND points.places_matelas >= ". $pdo->quote($conditions->places_matelas_minimum, PDO::PARAM_INT);
         else
-            return erreur("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : $conditions->places_matelas_minimum");
+            return erreur("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : '$conditions->places_matelas_minimum'");
 
     // conditions sur l'altitude
     if( !empty($conditions->altitude_minimum) )
