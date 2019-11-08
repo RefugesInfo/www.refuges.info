@@ -27,7 +27,7 @@ abstract class RedirectableUrlMatcher extends UrlMatcher implements Redirectable
         try {
             $parameters = parent::match($pathinfo);
         } catch (ResourceNotFoundException $e) {
-            if ('/' === substr($pathinfo, -1) || !in_array($this->context->getMethod(), array('HEAD', 'GET'))) {
+            if ('/' === substr($pathinfo, -1) || !\in_array($this->context->getMethod(), array('HEAD', 'GET'))) {
                 throw $e;
             }
 
@@ -49,7 +49,7 @@ abstract class RedirectableUrlMatcher extends UrlMatcher implements Redirectable
     protected function handleRouteRequirements($pathinfo, $name, Route $route)
     {
         // expression condition
-        if ($route->getCondition() && !$this->getExpressionLanguage()->evaluate($route->getCondition(), array('context' => $this->context, 'request' => $this->request))) {
+        if ($route->getCondition() && !$this->getExpressionLanguage()->evaluate($route->getCondition(), array('context' => $this->context, 'request' => $this->request ?: $this->createRequest($pathinfo)))) {
             return array(self::REQUIREMENT_MISMATCH, null);
         }
 

@@ -2,19 +2,16 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\TemplateNormalizations;
 use DOMElement;
-use s9e\TextFormatter\Configurator\TemplateNormalization;
-class Custom extends TemplateNormalization
+class Custom extends AbstractNormalization
 {
 	protected $callback;
-	public function __construct($callback)
+	public function __construct(callable $callback)
 	{
-		if (!\is_callable($callback))
-			\trigger_error("Argument 1 passed to " . __METHOD__ . "() must be callable, " . \gettype($callback) . " given", \E_USER_ERROR);
 		$this->callback = $callback;
 	}
 	public function normalize(DOMElement $template)

@@ -11,10 +11,10 @@
 
 namespace Symfony\Component\DependencyInjection\Compiler;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Inline service definitions where this is possible.
@@ -23,7 +23,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class InlineServiceDefinitionsPass implements RepeatablePassInterface
 {
-    private $repeatedPass;
     private $graph;
     private $compiler;
     private $formatter;
@@ -34,13 +33,11 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
      */
     public function setRepeatedPass(RepeatedPass $repeatedPass)
     {
-        $this->repeatedPass = $repeatedPass;
+        // no-op for BC
     }
 
     /**
      * Processes the ContainerBuilder for inline service definitions.
-     *
-     * @param ContainerBuilder $container
      */
     public function process(ContainerBuilder $container)
     {
@@ -66,7 +63,7 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
             if ($isRoot) {
                 $this->currentId = $k;
             }
-            if (is_array($argument)) {
+            if (\is_array($argument)) {
                 $arguments[$k] = $this->inlineArguments($container, $argument);
             } elseif ($argument instanceof Reference) {
                 if (!$container->hasDefinition($id = (string) $argument)) {
@@ -109,11 +106,15 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
      */
     private function isInlineableDefinition(ContainerBuilder $container, $id, Definition $definition)
     {
+        if ($definition->isDeprecated() || $definition->isLazy() || $definition->isSynthetic()) {
+            return false;
+        }
+
         if (!$definition->isShared() || ContainerInterface::SCOPE_PROTOTYPE === $definition->getScope(false)) {
             return true;
         }
 
-        if ($definition->isPublic() || $definition->isLazy()) {
+        if ($definition->isPublic()) {
             return false;
         }
 
@@ -130,15 +131,15 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
             $ids[] = $edge->getSourceNode()->getId();
         }
 
-        if (count(array_unique($ids)) > 1) {
+        if (\count(array_unique($ids)) > 1) {
             return false;
         }
 
-        if (count($ids) > 1 && is_array($factory = $definition->getFactory()) && ($factory[0] instanceof Reference || $factory[0] instanceof Definition)) {
+        if (\count($ids) > 1 && \is_array($factory = $definition->getFactory()) && ($factory[0] instanceof Reference || $factory[0] instanceof Definition)) {
             return false;
         }
 
-        if (count($ids) > 1 && $definition->getFactoryService(false)) {
+        if (\count($ids) > 1 && $definition->getFactoryService(false)) {
             return false;
         }
 

@@ -12,11 +12,11 @@
 namespace Symfony\Component\HttpKernel;
 
 use Symfony\Component\BrowserKit\Client as BaseClient;
+use Symfony\Component\BrowserKit\Cookie as DomCookie;
+use Symfony\Component\BrowserKit\CookieJar;
+use Symfony\Component\BrowserKit\History;
 use Symfony\Component\BrowserKit\Request as DomRequest;
 use Symfony\Component\BrowserKit\Response as DomResponse;
-use Symfony\Component\BrowserKit\Cookie as DomCookie;
-use Symfony\Component\BrowserKit\History;
-use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,14 +25,15 @@ use Symfony\Component\HttpFoundation\Response;
  * Client simulates a browser and makes requests to a Kernel object.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @method Request|null  getRequest()  A Request instance
+ * @method Response|null getResponse() A Response instance
  */
 class Client extends BaseClient
 {
     protected $kernel;
 
     /**
-     * Constructor.
-     *
      * @param HttpKernelInterface $kernel    An HttpKernel instance
      * @param array               $server    The server parameters (equivalent of $_SERVER)
      * @param History             $history   A History instance to store the browser history
@@ -48,29 +49,7 @@ class Client extends BaseClient
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @return Request|null A Request instance
-     */
-    public function getRequest()
-    {
-        return parent::getRequest();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return Response|null A Response instance
-     */
-    public function getResponse()
-    {
-        return parent::getResponse();
-    }
-
-    /**
      * Makes a request.
-     *
-     * @param Request $request A Request instance
      *
      * @return Response A Response instance
      */
@@ -88,18 +67,16 @@ class Client extends BaseClient
     /**
      * Returns the script to execute when the request must be insulated.
      *
-     * @param Request $request A Request instance
-     *
      * @return string
      */
     protected function getScript($request)
     {
-        $kernel = str_replace("'", "\\'", serialize($this->kernel));
-        $request = str_replace("'", "\\'", serialize($request));
+        $kernel = var_export(serialize($this->kernel), true);
+        $request = var_export(serialize($request), true);
 
         $r = new \ReflectionClass('\\Symfony\\Component\\ClassLoader\\ClassLoader');
-        $requirePath = str_replace("'", "\\'", $r->getFileName());
-        $symfonyPath = str_replace("'", "\\'", dirname(dirname(dirname(__DIR__))));
+        $requirePath = var_export($r->getFileName(), true);
+        $symfonyPath = var_export(\dirname(\dirname(\dirname(__DIR__))), true);
         $errorReporting = error_reporting();
 
         $code = <<<EOF
@@ -107,14 +84,14 @@ class Client extends BaseClient
 
 error_reporting($errorReporting);
 
-require_once '$requirePath';
+require_once $requirePath;
 
 \$loader = new Symfony\Component\ClassLoader\ClassLoader();
-\$loader->addPrefix('Symfony', '$symfonyPath');
+\$loader->addPrefix('Symfony', $symfonyPath);
 \$loader->register();
 
-\$kernel = unserialize('$kernel');
-\$request = unserialize('$request');
+\$kernel = unserialize($kernel);
+\$request = unserialize($request);
 EOF;
 
         return $code.$this->getHandleScript();
@@ -135,8 +112,6 @@ EOF;
 
     /**
      * Converts the BrowserKit request to a HttpKernel request.
-     *
-     * @param DomRequest $request A DomRequest instance
      *
      * @return Request A Request instance
      */
@@ -162,15 +137,13 @@ EOF;
      *
      * @see UploadedFile
      *
-     * @param array $files An array of files
-     *
      * @return array An array with all uploaded files marked as already moved
      */
     protected function filterFiles(array $files)
     {
         $filtered = array();
         foreach ($files as $key => $value) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $filtered[$key] = $this->filterFiles($value);
             } elseif ($value instanceof UploadedFile) {
                 if ($value->isValid() && $value->getSize() > UploadedFile::getMaxFilesize()) {
@@ -200,8 +173,6 @@ EOF;
 
     /**
      * Converts the HttpKernel response to a BrowserKit response.
-     *
-     * @param Response $response A Response instance
      *
      * @return DomResponse A DomResponse instance
      */

@@ -2,26 +2,20 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\TemplateNormalizations;
 use DOMElement;
-use DOMXPath;
-use s9e\TextFormatter\Configurator\TemplateNormalization;
-class OptimizeNestedConditionals extends TemplateNormalization
+class OptimizeNestedConditionals extends AbstractNormalization
 {
-	public function normalize(DOMElement $template)
+	protected $queries = ['//xsl:choose/xsl:otherwise[count(node()) = 1]/xsl:choose'];
+	protected function normalizeElement(DOMElement $element)
 	{
-		$xpath = new DOMXPath($template->ownerDocument);
-		$query = '//xsl:choose/xsl:otherwise[count(node()) = 1]/xsl:choose';
-		foreach ($xpath->query($query) as $innerChoose)
-		{
-			$otherwise   = $innerChoose->parentNode;
-			$outerChoose = $otherwise->parentNode;
-			while ($innerChoose->firstChild)
-				$outerChoose->appendChild($innerChoose->removeChild($innerChoose->firstChild));
-			$outerChoose->removeChild($otherwise);
-		}
+		$otherwise   = $element->parentNode;
+		$outerChoose = $otherwise->parentNode;
+		while ($element->firstChild)
+			$outerChoose->appendChild($element->removeChild($element->firstChild));
+		$outerChoose->removeChild($otherwise);
 	}
 }

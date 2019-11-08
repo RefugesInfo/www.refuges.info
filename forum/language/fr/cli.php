@@ -59,6 +59,7 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_DISABLE_EXTENSION'			=> 'Désactiver l’extension spécifiée',
 	'CLI_DESCRIPTION_ENABLE_EXTENSION'			=> 'Activer l’extension spécifiée',
 	'CLI_DESCRIPTION_FIND_MIGRATIONS'			=> 'Trouver les migrations qui ne sont pas dépendantes',
+	'CLI_DESCRIPTION_FIX_LEFT_RIGHT_IDS'		=> 'Réparer l’arborescence des forums et des modules',
 	'CLI_DESCRIPTION_GET_CONFIG'				=> 'Obtenir la valeur d’une option de configuration',
 	'CLI_DESCRIPTION_INCREMENT_CONFIG'			=> 'Incrémenter la valeur d’une option de configuration',
 	'CLI_DESCRIPTION_LIST_EXTENSIONS'			=> 'Lister toutes les extensions présentes dans la base de données et le système de fichiers',
@@ -93,7 +94,9 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_UPDATE_CHECK_OPTION_CACHE'		=> 'Exécuter la commande en utilisant le cache',
 	'CLI_DESCRIPTION_UPDATE_CHECK_OPTION_STABILITY'	=> 'Exécuter la commande permettant de contrôler seulement les versions stables ou non stables',
 
-	'CLI_ERROR_INVALID_STABILITY' => '« %s » n’est pas une version stable',
+	'CLI_DESCRIPTION_UPDATE_HASH_BCRYPT'		=> 'Mettre à jour le hachage obsolète des mots de passe avec le hachage bcrypt',
+
+	'CLI_ERROR_INVALID_STABILITY' => '« %s » doit être paramétré sur « stable » ou « unstable »',
 
 	'CLI_DESCRIPTION_USER_ACTIVATE'				=> 'Activer (ou désactiver) le compte d’un membre',
 	'CLI_DESCRIPTION_USER_ACTIVATE_USERNAME'	=> 'Nom d’utilisateur du compte à activer',
@@ -103,8 +106,8 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_USER_ADD'					=> 'Ajouter un nouveau membre',
 	'CLI_DESCRIPTION_USER_ADD_OPTION_USERNAME'	=> 'Nom d’utilisateur du nouveau membre',
 	'CLI_DESCRIPTION_USER_ADD_OPTION_PASSWORD'	=> 'Mot de passe du nouveau membre',
-	'CLI_DESCRIPTION_USER_ADD_OPTION_EMAIL'		=> 'Adresse e-mail du nouveau membre',
-	'CLI_DESCRIPTION_USER_ADD_OPTION_NOTIFY'	=> 'Envoyer un e-mail d’activation du compte au nouveau membre (non envoyé par défaut)',
+	'CLI_DESCRIPTION_USER_ADD_OPTION_EMAIL'		=> 'Adresse courriel du nouveau membre',
+	'CLI_DESCRIPTION_USER_ADD_OPTION_NOTIFY'	=> 'Envoyer un courriel d’activation du compte au nouveau membre (non envoyé par défaut)',
 	'CLI_DESCRIPTION_USER_DELETE'				=> 'Supprimer le compte d’un membre',
 	'CLI_DESCRIPTION_USER_DELETE_USERNAME'		=> 'Nom d’utilisateur du membre à supprimer',
 	'CLI_DESCRIPTION_USER_DELETE_OPTION_POSTS'	=> 'Supprimer tous les messages du membre. Si cette option n’est pas utilisée, les messages du membre seront conservés',
@@ -112,19 +115,25 @@ $lang = array_merge($lang, array(
 
 	'CLI_EXTENSION_DISABLE_FAILURE'		=> 'Impossible de désactiver l’extension « %s »',
 	'CLI_EXTENSION_DISABLE_SUCCESS'		=> 'L’extension « %s » a été désactivée',
+	'CLI_EXTENSION_DISABLED'			=> 'L’extension « %s » n’est pas activée',
 	'CLI_EXTENSION_ENABLE_FAILURE'		=> 'Impossible d’activer l’extension « %s »',
 	'CLI_EXTENSION_ENABLE_SUCCESS'		=> 'L’extension « %s » a été activée',
+	'CLI_EXTENSION_ENABLED'				=> 'L’extension « %s » est déjà activée',
+	'CLI_EXTENSION_NOT_EXIST'			=> 'L’extension « %s » n’existe pas',
 	'CLI_EXTENSION_NAME'				=> 'Nom de l’extension',
 	'CLI_EXTENSION_PURGE_FAILURE'		=> 'Impossible de désactiver et de supprimer les données de l’extension « %s »',
 	'CLI_EXTENSION_PURGE_SUCCESS'		=> 'L’extension « %s » a été désactivée et ses données ont été supprimées',
 	'CLI_EXTENSION_UPDATE_FAILURE'		=> 'Impossible de mettre à jour l’extension « %s »',
 	'CLI_EXTENSION_UPDATE_SUCCESS'		=> 'L’extension « %s » a été mise à jour',
 	'CLI_EXTENSION_NOT_FOUND'			=> 'Aucune extension n’a été trouvée',
+	'CLI_EXTENSION_NOT_ENABLEABLE'		=> 'L’extension « %s » ne peut pas être activée.',
 	'CLI_EXTENSIONS_AVAILABLE'			=> 'Disponibles',
 	'CLI_EXTENSIONS_DISABLED'			=> 'Désactivées',
 	'CLI_EXTENSIONS_ENABLED'			=> 'Activées',
 
-	'CLI_FIXUP_RECALCULATE_EMAIL_HASH_SUCCESS'	=> 'Tous les hachages des e-mails ont été recalculés',
+	'CLI_FIXUP_FIX_LEFT_RIGHT_IDS_SUCCESS'		=> 'L’arborescence des forums et des modules a été réparée',
+	'CLI_FIXUP_RECALCULATE_EMAIL_HASH_SUCCESS'	=> 'Tous les hachages des adresses courriels ont été recalculés',
+	'CLI_FIXUP_UPDATE_HASH_BCRYPT_SUCCESS'		=> 'Tous les hachages obsolètes des mots de passe ont été mis à jour vers le hachage bcrypt',
 
 	'CLI_MIGRATION_NAME'					=> 'Nom de la migration, espace de nom inclus (utilisez des barres obliques au lieu de barres obliques inversées afin d’éviter tout problème)',
 	'CLI_MIGRATIONS_AVAILABLE'				=> 'Migrations disponibles',
@@ -153,7 +162,7 @@ $lang = array_merge($lang, array(
 	'CLI_USER_DELETE_CONFIRM'	=> 'Êtes-vous sûr de vouloir supprimer « %s » ? [y/N]',
 	'CLI_USER_RECLEAN_START'	=> 'Nettoyage des noms d’utilisateurs',
 	'CLI_USER_RECLEAN_DONE'		=> [
-		0	=> 'Nettoyage terminé. Aucun nom d’utlisateur n’a nécessité d’être nettoyé',
+		0	=> 'Nettoyage terminé. Aucun nom d’utilisateur n’a nécessité d’être nettoyé',
 		1	=> 'Nettoyage terminé. %d nom d’utilisateur a été nettoyé',
 		2	=> 'Nettoyage terminé. %d noms d’utilisateurs ont été nettoyés',
 	],
@@ -163,9 +172,9 @@ $lang = array_merge($lang, array(
 $lang = array_merge($lang, array(
 	'CLI_HELP_CRON_RUN'			=> $lang['CLI_DESCRIPTION_CRON_RUN'] . '. Optionnellement, vous pouvez spécifier le nom d’une seule tâche afin de n’exécuter que celle-ci.',
 	'CLI_HELP_USER_ACTIVATE'	=> 'Activez ou désactivez le compte d’un membre en utilisant l’option <info>--deactivate</info>.
-Pour éventuellement envoyer un e-mail d’activation au membre en utilisant l’option <info>--send-email</info>.',
+Pour éventuellement envoyer un courriel d’activation au membre en utilisant l’option <info>--send-email</info>.',
 	'CLI_HELP_USER_ADD'			=> 'La commande <info>%command.name%</info> ajoute un nouveau membre :
 Si cette commande est exécutée sans options, vous serez invité à les saisir.
-Pour éventuellement envoyer un e-mail au nouveau membre, utilisez l’option <info>--send-email</info>.',
+Pour éventuellement envoyer un courriel au nouveau membre, utilisez l’option <info>--send-email</info>.',
 	'CLI_HELP_USER_RECLEAN'		=> 'la commande <info>%command.name%</info> analysera tous les noms d’utilisateurs de la base de données et s’assurera qu’une version nettoyée y sera stockée. Les noms d’utilisateurs nettoyés sont rendus insensibles à la casse, normalisés NFC et transformés en ASCII.',
 ));

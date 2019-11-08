@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Items\AttributeFilters;
@@ -16,11 +16,11 @@ class RegexpFilter extends AttributeFilter
 {
 	public function __construct($regexp = \null)
 	{
-		parent::__construct('s9e\\TextFormatter\\Parser\\BuiltInFilters::filterRegexp');
+		parent::__construct('s9e\\TextFormatter\\Parser\\AttributeFilters\\RegexpFilter::filter');
 		$this->resetParameters();
 		$this->addParameterByName('attrValue');
 		$this->addParameterByName('regexp');
-		$this->setJS('BuiltInFilters.filterRegexp');
+		$this->setJS('RegexpFilter.filter');
 		if (isset($regexp))
 			$this->setRegexp($regexp);
 	}
@@ -81,10 +81,10 @@ class RegexpFilter extends AttributeFilter
 	}
 	protected function evaluateSafenessInJS()
 	{
-		$safeExpressions = array(
+		$safeExpressions = [
 			'\\d+',
 			'[0-9]+'
-		);
+		];
 		$regexp = '(^(?<delim>.)\\^(?:(?<expr>' . \implode('|', \array_map('preg_quote', $safeExpressions)) . ')|\\((?:\\?[:>])?(?&expr)\\))\\$(?&delim)(?=.*D)[Dis]*$)D';
 		if (\preg_match($regexp, $this->vars['regexp']))
 			$this->markAsSafeInJS();

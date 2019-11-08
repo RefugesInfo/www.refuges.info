@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\BBCodes;
@@ -77,7 +77,7 @@ class Parser extends ParserBase
 	protected function parseAttributes()
 	{
 		$firstPos = $this->pos;
-		$this->attributes = array();
+		$this->attributes = [];
 		while ($this->pos < $this->textLen)
 		{
 			$c = $this->text[$this->pos];
@@ -132,8 +132,6 @@ class Parser extends ParserBase
 			return;
 		}
 		$this->parseAttributes();
-		if (isset($this->bbcodeConfig['predefinedAttributes']))
-			$this->attributes += $this->bbcodeConfig['predefinedAttributes'];
 		if (\substr($this->text, $this->pos, 1) === ']')
 			++$this->pos;
 		else
@@ -145,7 +143,7 @@ class Parser extends ParserBase
 			}
 			return;
 		}
-		$contentAttributes = array();
+		$contentAttributes = [];
 		if (isset($this->bbcodeConfig['contentAttributes']))
 			foreach ($this->bbcodeConfig['contentAttributes'] as $attrName)
 				if (!isset($this->attributes[$attrName]))

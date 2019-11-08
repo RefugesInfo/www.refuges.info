@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\BBCodes\Configurator;
@@ -18,7 +18,7 @@ use s9e\TextFormatter\Configurator\Items\Template;
 class BBCodeMonkey
 {
 	const REGEXP = '(.).*?(?<!\\\\)(?>\\\\\\\\)*+\\g{-1}[DSUisu]*';
-	public $allowedFilters = array(
+	public $allowedFilters = [
 		'addslashes',
 		'dechex',
 		'intval',
@@ -38,9 +38,10 @@ class BBCodeMonkey
 		'ucfirst',
 		'ucwords',
 		'urlencode'
-	);
+	];
 	protected $configurator;
-	public $tokenRegexp = array(
+	public $tokenRegexp = [
+		'ANYTHING'   => '[\\s\\S]*?',
 		'COLOR'      => '[a-zA-Z]+|#[0-9a-fA-F]+',
 		'EMAIL'      => '[^@]+@.+?',
 		'FLOAT'      => '(?>0|-?[1-9]\\d*)(?>\\.\\d+)?(?>e[1-9]\\d*)?',
@@ -51,43 +52,43 @@ class BBCodeMonkey
 		'NUMBER'     => '\\d+',
 		'RANGE'      => '\\d+',
 		'SIMPLETEXT' => '[-a-zA-Z0-9+.,_ ]+',
+		'TEXT'       => '[\\s\\S]*?',
 		'UINT'       => '0|[1-9]\\d*'
-	);
-	public $unfilteredTokens = array(
+	];
+	public $unfilteredTokens = [
 		'ANYTHING',
 		'TEXT'
-	);
+	];
 	public function __construct(Configurator $configurator)
 	{
 		$this->configurator = $configurator;
 	}
 	public function create($usage, $template)
 	{
-		$_this = $this;
 		$config = $this->parse($usage);
 		if (!($template instanceof Template))
 			$template = new Template($template);
 		$template->replaceTokens(
 			'#\\{(?:[A-Z]+[A-Z_0-9]*|@[-\\w]+)\\}#',
-			function ($m) use ($config, $_this)
+			function ($m) use ($config)
 			{
 				$tokenId = \substr($m[0], 1, -1);
 				if ($tokenId[0] === '@')
-					return array('expression', $tokenId);
+					return ['expression', $tokenId];
 				if (isset($config['tokens'][$tokenId]))
-					return array('expression', '@' . $config['tokens'][$tokenId]);
+					return ['expression', '@' . $config['tokens'][$tokenId]];
 				if ($tokenId === $config['passthroughToken'])
-					return array('passthrough');
-				if ($_this->isFilter($tokenId))
+					return ['passthrough'];
+				if ($this->isFilter($tokenId))
 					throw new RuntimeException('Token {' . $tokenId . '} is ambiguous or undefined');
-				return array('expression', '$' . $tokenId);
+				return ['expression', '$' . $tokenId];
 			}
 		);
-		$return = array(
+		$return = [
 			'bbcode'     => $config['bbcode'],
 			'bbcodeName' => $config['bbcodeName'],
 			'tag'        => $config['tag']
-		);
+		];
 		$return['tag']->template = $template;
 		return $return;
 	}
@@ -95,11 +96,11 @@ class BBCodeMonkey
 	{
 		$tag    = new Tag;
 		$bbcode = new BBCode;
-		$config = array(
+		$config = [
 			'tag'              => $tag,
 			'bbcode'           => $bbcode,
 			'passthroughToken' => \null
-		);
+		];
 		$usage = \preg_replace_callback(
 			'#(\\{(?>HASH)?MAP=)([^:]+:[^,;}]+(?>,[^:]+:[^,;}]+)*)(?=[;}])#',
 			function ($m)
@@ -118,7 +119,7 @@ class BBCodeMonkey
 		);
 		$regexp = '(^'
 		        . '\\[(?<bbcodeName>\\S+?)'
-		        . '(?<defaultAttribute>=\\S+?)?'
+		        . '(?<defaultAttribute>=.+?)?'
 		        . '(?<attributes>(?:\\s+[^=]+=\\S+?)*?)?'
 		        . '\\s*(?:/?\\]|\\]\\s*(?<content>.*?)\\s*(?<endTag>\\[/\\1]))$)i';
 		if (!\preg_match($regexp, \trim($usage), $m))
@@ -138,7 +139,7 @@ class BBCodeMonkey
 				$bbcode->contentAttributes[] = 'content';
 			}
 		}
-		$attributeDefinitions = array();
+		$attributeDefinitions = [];
 		foreach ($definitions as $definition)
 		{
 			$pos   = \strpos($definition, '=');
@@ -155,7 +156,8 @@ class BBCodeMonkey
 			if ($name[0] === '$')
 			{
 				$optionName = \substr($name, 1);
-				$bbcode->$optionName = $this->convertValue($value);
+				$object = ($optionName === 'nestingLimit' || $optionName === 'tagLimit') ? $tag : $bbcode;
+				$object->$optionName = $this->convertValue($value);
 			}
 			elseif ($name[0] === '#')
 			{
@@ -166,7 +168,7 @@ class BBCodeMonkey
 			else
 			{
 				$attrName = \strtolower(\trim($name));
-				$attributeDefinitions[] = array($attrName, $value);
+				$attributeDefinitions[] = [$attrName, $value];
 			}
 		}
 		$tokens = $this->addAttributes($attributeDefinitions, $bbcode, $tag);
@@ -177,14 +179,14 @@ class BBCodeMonkey
 	}
 	protected function addAttributes(array $definitions, BBCode $bbcode, Tag $tag)
 	{
-		$composites = array();
-		$table = array();
+		$composites = [];
+		$table = [];
 		foreach ($definitions as $_e874cdc7)
 		{
 			list($attrName, $definition) = $_e874cdc7;
 			if (!isset($bbcode->defaultAttribute))
 				$bbcode->defaultAttribute = $attrName;
-			$tokens = self::parseTokens($definition);
+			$tokens = $this->parseTokens($definition);
 			if (empty($tokens))
 				throw new RuntimeException('No valid tokens found in ' . $attrName . "'s definition " . $definition);
 			if ($tokens[0]['content'] === $definition)
@@ -208,14 +210,14 @@ class BBCodeMonkey
 				}
 			}
 			else
-				$composites[] = array($attrName, $definition, $tokens);
+				$composites[] = [$attrName, $definition, $tokens];
 		}
 		foreach ($composites as $_2d84f0a0)
 		{
 			list($attrName, $definition, $tokens) = $_2d84f0a0;
 			$regexp  = '/^';
 			$lastPos = 0;
-			$usedTokens = array();
+			$usedTokens = [];
 			foreach ($tokens as $token)
 			{
 				$tokenId   = $token['id'];
@@ -248,7 +250,9 @@ class BBCodeMonkey
 					}
 					$table[$tokenId] = $matchName;
 				}
-				$regexp .= \preg_quote(\substr($definition, $lastPos, $token['pos'] - $lastPos), '/');
+				$literal = \preg_quote(\substr($definition, $lastPos, $token['pos'] - $lastPos), '/');
+				$literal = \preg_replace('(\\s+)', '\\s+', $literal);
+				$regexp .= $literal;
 				$expr = (isset($this->tokenRegexp[$tokenType]))
 				      ? $this->tokenRegexp[$tokenType]
 				      : '.+?';
@@ -258,7 +262,7 @@ class BBCodeMonkey
 			$regexp .= \preg_quote(\substr($definition, $lastPos), '/') . '$/D';
 			$tag->attributePreprocessors->add($attrName, $regexp);
 		}
-		$newAttributes = array();
+		$newAttributes = [];
 		foreach ($tag->attributePreprocessors as $attributePreprocessor)
 			foreach ($attributePreprocessor->getAttributes() as $attrName => $regexp)
 			{
@@ -284,33 +288,33 @@ class BBCodeMonkey
 			return \false;
 		return $value;
 	}
-	protected static function parseTokens($definition)
+	protected function parseTokens($definition)
 	{
-		$tokenTypes = array(
+		$tokenTypes = [
 			'choice' => 'CHOICE[0-9]*=(?<choices>.+?)',
 			'map'    => '(?:HASH)?MAP[0-9]*=(?<map>.+?)',
 			'parse'  => 'PARSE=(?<regexps>' . self::REGEXP . '(?:,' . self::REGEXP . ')*)',
-			'range'  => 'RAN(?:DOM|GE)[0-9]*=(?<min>-?[0-9]+),(?<max>-?[0-9]+)',
+			'range'  => 'RANGE[0-9]*=(?<min>-?[0-9]+),(?<max>-?[0-9]+)',
 			'regexp' => 'REGEXP[0-9]*=(?<regexp>' . self::REGEXP . ')',
 			'other'  => '(?<other>[A-Z_]+[0-9]*)'
-		);
+		];
 		\preg_match_all(
-			'#\\{(' . \implode('|', $tokenTypes) . ')(?<options>(?:;[^;]*)*)\\}#',
+			'#\\{(' . \implode('|', $tokenTypes) . ')(?<options>\\??(?:;[^;]*)*)\\}#',
 			$definition,
 			$matches,
 			\PREG_SET_ORDER | \PREG_OFFSET_CAPTURE
 		);
-		$tokens = array();
+		$tokens = [];
 		foreach ($matches as $m)
 		{
 			if (isset($m['other'][0])
-			 && \preg_match('#^(?:CHOICE|HASHMAP|MAP|REGEXP|PARSE|RANDOM|RANGE)#', $m['other'][0]))
+			 && \preg_match('#^(?:CHOICE|HASHMAP|MAP|REGEXP|PARSE|RANGE)#', $m['other'][0]))
 				throw new RuntimeException("Malformed token '" . $m['other'][0] . "'");
-			$token = array(
+			$token = [
 				'pos'     => $m[0][1],
 				'content' => $m[0][0],
-				'options' => array()
-			);
+				'options' => (isset($m['options'][0])) ? $this->parseOptionString($m['options'][0]) : []
+			];
 			$head = $m[1][0];
 			$pos  = \strpos($head, '=');
 			if ($pos === \false)
@@ -323,26 +327,10 @@ class BBCodeMonkey
 						$token[$k] = $v[0];
 			}
 			$token['type'] = \rtrim($token['id'], '0123456789');
-			$options = (isset($m['options'][0])) ? $m['options'][0] : '';
-			foreach (\preg_split('#;+#', $options, -1, \PREG_SPLIT_NO_EMPTY) as $pair)
-			{
-				$pos = \strpos($pair, '=');
-				if ($pos === \false)
-				{
-					$k = $pair;
-					$v = \true;
-				}
-				else
-				{
-					$k = \substr($pair, 0, $pos);
-					$v = \substr($pair, 1 + $pos);
-				}
-				$token['options'][$k] = $v;
-			}
 			if ($token['type'] === 'PARSE')
 			{
 				\preg_match_all('#' . self::REGEXP . '(?:,|$)#', $token['regexps'], $m);
-				$regexps = array();
+				$regexps = [];
 				foreach ($m[0] as $regexp)
 					$regexps[] = \rtrim($regexp, ',');
 				$token['regexps'] = $regexps;
@@ -369,12 +357,6 @@ class BBCodeMonkey
 			$filter = $this->configurator->attributeFilters->get('#range');
 			$attribute->filterChain->append($filter)->setRange($token['min'], $token['max']);
 		}
-		elseif ($token['type'] === 'RANDOM')
-		{
-			$attribute->generator = new ProgrammableCallback('mt_rand');
-			$attribute->generator->addParameterByValue((int) $token['min']);
-			$attribute->generator->addParameterByValue((int) $token['max']);
-		}
 		elseif ($token['type'] === 'CHOICE')
 		{
 			$filter = $this->configurator->attributeFilters->get('#choice');
@@ -386,7 +368,7 @@ class BBCodeMonkey
 		}
 		elseif ($token['type'] === 'HASHMAP' || $token['type'] === 'MAP')
 		{
-			$map = array();
+			$map = [];
 			foreach (\explode(',', $token['map']) as $pair)
 			{
 				$pos = \strpos($pair, ':');
@@ -439,12 +421,12 @@ class BBCodeMonkey
 		{
 			if (\substr($filterName, 0, 1) !== '#'
 			 && !\in_array($filterName, $this->allowedFilters, \true))
-				throw new RuntimeException("Filter '" . $filterName . "' is not allowed");
+				throw new RuntimeException("Filter '" . $filterName . "' is not allowed in BBCodes");
 			$filter = $this->configurator->attributeFilters->get($filterName);
 			$attribute->filterChain->append($filter);
 		}
 	}
-	public function isFilter($tokenId)
+	protected function isFilter($tokenId)
 	{
 		$filterName = \rtrim($tokenId, '0123456789');
 		if (\in_array($filterName, $this->unfilteredTokens, \true))
@@ -458,5 +440,26 @@ class BBCodeMonkey
 		{
 			}
 		return \false;
+	}
+	protected function parseOptionString($string)
+	{
+		$string = \preg_replace('(^\\?)', ';optional', $string);
+		$options = [];
+		foreach (\preg_split('#;+#', $string, -1, \PREG_SPLIT_NO_EMPTY) as $pair)
+		{
+			$pos = \strpos($pair, '=');
+			if ($pos === \false)
+			{
+				$k = $pair;
+				$v = \true;
+			}
+			else
+			{
+				$k = \substr($pair, 0, $pos);
+				$v = \substr($pair, 1 + $pos);
+			}
+			$options[$k] = $v;
+		}
+		return $options;
 	}
 }

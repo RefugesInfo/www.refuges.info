@@ -40,16 +40,16 @@ if (empty($lang) || !is_array($lang))
 
 // Email settings
 $lang = array_merge($lang, array(
-	'ACP_MASS_EMAIL_EXPLAIN'		=> 'Vous pouvez envoyer un e-mail à tous vos membres ayant activé l’option « Recevoir les e-mails des administrateurs », individuellement ou aux membres d’un groupe en particulier. Pour cela, un e-mail sera envoyé depuis l’adresse administrative et tous les destinataires seront en copie cachée. Par défaut, un e-mail est limité à 20 destinataires ; au-delà de ce nombre et pour chaque tranche de 20 destinataires un nouvel e-mail sera émis. Si vous envoyez le message à un grand groupe de personnes, veuillez patienter après avoir validé et de ne pas arrêter la page lors du traitement. Il est normal qu’un envoi de masse prenne du temps, vous serez informé lorsque le script sera terminé',
+	'ACP_MASS_EMAIL_EXPLAIN'		=> 'Vous pouvez envoyer un courriel à tous vos membres ayant activé l’option « Recevoir les courriels des administrateurs », individuellement ou aux membres d’un groupe en particulier. Pour cela, un courriel sera envoyé depuis l’adresse administrative et tous les destinataires seront en copie cachée. Par défaut, un courriel est limité à 20 destinataires ; au-delà de ce nombre et pour chaque tranche de 20 destinataires un nouveau courriel sera émis. Si vous envoyez le message à un grand groupe de personnes, veuillez patienter après avoir validé et de ne pas arrêter la page lors du traitement. Il est normal qu’un envoi de masse prenne du temps, vous serez informé lorsque le script sera terminé',
 	'ALL_USERS'						=> 'Tous les membres',
 
 	'COMPOSE'				=> 'Écrire',
 
-	'EMAIL_SEND_ERROR'		=> 'Il y a eu une erreur lors de l’envoi de l’e-mail. Merci de consulter le %sJournal des erreurs%s pour un message plus détaillé.',
+	'EMAIL_SEND_ERROR'		=> 'Il y a eu une erreur lors de l’envoi du courriel. Merci de consulter le %sJournal des erreurs%s pour un message plus détaillé.',
 	'EMAIL_SENT'			=> 'Votre message a été envoyé.',
 	'EMAIL_SENT_QUEUE'		=> 'Votre message a été mis en attente pour l’envoi.',
 
-	'LOG_SESSION'			=> 'Enregistre la session mail dans le journal des erreurs critiques',
+	'LOG_SESSION'			=> 'Enregistre la session mail dans le journal des erreurs critiques', // clé non utilisée par phpBB
 
 	'SEND_IMMEDIATELY'		=> 'Envoyer immédiatement',
 	'SEND_TO_GROUP'			=> 'Envoyer au groupe',
@@ -57,11 +57,11 @@ $lang = array_merge($lang, array(
 	'SEND_TO_USERS_EXPLAIN'	=> 'Saisir des noms ici écrasera tout groupe sélectionné ci-dessus. Saisissez chaque nom d’utilisateur sur une ligne différente.',
 
 	'MAIL_BANNED'			=> 'Envoyer aux membres bannis',
-	'MAIL_BANNED_EXPLAIN'	=> 'Si vous cochez cette case, les membres bannis recevront aussi cet e-mail de masse.',
+	'MAIL_BANNED_EXPLAIN'	=> 'Si vous cochez cette case, les membres bannis recevront aussi ce courriel de masse.',
 	'MAIL_HIGH_PRIORITY'	=> 'Haute',
 	'MAIL_LOW_PRIORITY'		=> 'Basse',
 	'MAIL_NORMAL_PRIORITY'	=> 'Normale',
-	'MAIL_PRIORITY'			=> 'Priorité du mail',
+	'MAIL_PRIORITY'			=> 'Priorité du courriel',
 	'MASS_MESSAGE'			=> 'Votre message',
 	'MASS_MESSAGE_EXPLAIN'	=> 'Notez que vous ne pouvez mettre que du texte brut. Toutes les balises seront supprimées avant l’envoi.',
 

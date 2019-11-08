@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter;
@@ -29,7 +29,7 @@ abstract class Bundle
 			$xml = \call_user_func(static::$afterParse, $xml);
 		return $xml;
 	}
-	public static function render($xml, array $params = array())
+	public static function render($xml, array $params = [])
 	{
 		$renderer = static::getCachedRenderer();
 		if (!empty($params))

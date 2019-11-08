@@ -8,7 +8,7 @@ var xslt = {
 		var stylesheet = xslt.loadXML(xsl, 'MSXML2.FreeThreadedDOMDocument.6.0');
 		if (MSXML)
 		{
-			var generator = new ActiveXObject("MSXML2.XSLTemplate.6.0");
+			var generator = new ActiveXObject('MSXML2.XSLTemplate.6.0');
 			generator['stylesheet'] = stylesheet;
 			xslt.proc = generator['createProcessor']();
 		}
@@ -70,7 +70,7 @@ var xslt = {
 			div.innerHTML = xslt.proc['output'];
 			while (div.firstChild)
 			{
-				fragment.appendChild(div.removeChild(div.firstChild));
+				fragment.appendChild(div.firstChild);
 			}
 
 			return fragment;
@@ -87,13 +87,15 @@ var postProcessFunctions = {};
 /**
 * Parse a given text and render it into given HTML element
 *
-* @param {!string} text
-* @param {!HTMLElement} target
+* @param  {!string} text
+* @param  {!HTMLElement} target
+* @return {!Node}
 */
 function preview(text, target)
 {
-	var targetDoc = target.ownerDocument,
-		resultFragment = xslt.transformToFragment(parse(text), targetDoc);
+	var targetDoc      = target.ownerDocument,
+		resultFragment = xslt.transformToFragment(parse(text).replace(/<[eis]>.*?<\/[eis]>/g, ''), targetDoc),
+		lastUpdated    = target;
 
 	// Apply post-processing
 	if (HINT.postProcessing)
@@ -104,7 +106,6 @@ function preview(text, target)
 		{
 			/** @type {!string} */
 			var code = nodes[i]['getAttribute']('data-s9e-livepreview-postprocess');
-
 			if (!postProcessFunctions[code])
 			{
 				postProcessFunctions[code] = new Function(code);
@@ -124,19 +125,18 @@ function preview(text, target)
 	{
 		var oldNodes = oldEl.childNodes,
 			newNodes = newEl.childNodes,
-			oldCnt = oldNodes.length,
-			newCnt = newNodes.length,
+			oldCnt   = oldNodes.length,
+			newCnt   = newNodes.length,
 			oldNode,
 			newNode,
-			left  = 0,
-			right = 0;
+			left     = 0,
+			right    = 0;
 
 		// Skip the leftmost matching nodes
 		while (left < oldCnt && left < newCnt)
 		{
 			oldNode = oldNodes[left];
 			newNode = newNodes[left];
-
 			if (!refreshNode(oldNode, newNode))
 			{
 				break;
@@ -147,12 +147,10 @@ function preview(text, target)
 
 		// Skip the rightmost matching nodes
 		var maxRight = Math.min(oldCnt - left, newCnt - left);
-
 		while (right < maxRight)
 		{
 			oldNode = oldNodes[oldCnt - (right + 1)];
 			newNode = newNodes[newCnt - (right + 1)];
-
 			if (!refreshNode(oldNode, newNode))
 			{
 				break;
@@ -161,24 +159,30 @@ function preview(text, target)
 			++right;
 		}
 
-		// Clone the new nodes
-		var newNodesFragment = targetDoc.createDocumentFragment(),
-			i = left;
-
-		while (i < (newCnt - right))
-		{
-			newNode = newNodes[i].cloneNode(true);
-
-			newNodesFragment.appendChild(newNode);
-			++i;
-		}
-
 		// Remove the old dirty nodes in the middle of the tree
-		i = oldCnt - right;
+		var i = oldCnt - right;
 		while (--i >= left)
 		{
 			oldEl.removeChild(oldNodes[i]);
+			lastUpdated = oldEl;
 		}
+
+		// Test whether there are any nodes in the new tree between the matching nodes at the left
+		// and the matching nodes at the right
+		var rightBoundary = newCnt - right;
+		if (left >= rightBoundary)
+		{
+			return;
+		}
+
+		// Clone the new nodes
+		var newNodesFragment = targetDoc.createDocumentFragment();
+		i = left;
+		do
+		{
+			lastUpdated = newNodesFragment.appendChild(newNodes[i]);
+		}
+		while (i < --rightBoundary);
 
 		// If we haven't skipped any nodes to the right, we can just append the fragment
 		if (!right)
@@ -212,18 +216,17 @@ function preview(text, target)
 			if (oldNode.nodeValue !== newNode.nodeValue)
 			{
 				oldNode.nodeValue = newNode.nodeValue;
+				lastUpdated = oldNode;
 			}
 
 			return true;
 		}
 
-		if (oldNode.isEqualNode && oldNode.isEqualNode(newNode))
+		if (!oldNode.isEqualNode || !oldNode.isEqualNode(newNode))
 		{
-			return true;
+			syncElementAttributes(oldNode, newNode);
+			refreshElementContent(oldNode, newNode);
 		}
-
-		syncElementAttributes(oldNode, newNode);
-		refreshElementContent(oldNode, newNode);
 
 		return true;
 	}
@@ -238,9 +241,10 @@ function preview(text, target)
 	{
 		var oldAttributes = oldEl['attributes'],
 			newAttributes = newEl['attributes'],
-			oldCnt = oldAttributes.length,
-			newCnt = newAttributes.length,
-			i = oldCnt;
+			oldCnt        = oldAttributes.length,
+			newCnt        = newAttributes.length,
+			i             = oldCnt,
+			ignoreAttrs   = ' ' + oldAttributes['data-s9e-livepreview-ignore-attrs'] + ' ';
 
 		while (--i >= 0)
 		{
@@ -248,9 +252,14 @@ function preview(text, target)
 				namespaceURI = oldAttr['namespaceURI'],
 				attrName     = oldAttr['name'];
 
+			if (HINT.ignoreAttrs && ignoreAttrs.indexOf(' ' + attrName + ' ') > -1)
+			{
+				continue;
+			}
 			if (!newEl.hasAttributeNS(namespaceURI, attrName))
 			{
 				oldEl.removeAttributeNS(namespaceURI, attrName);
+				lastUpdated = oldEl;
 			}
 		}
 
@@ -262,14 +271,21 @@ function preview(text, target)
 				attrName     = newAttr['name'],
 				attrValue    = newAttr['value'];
 
+			if (HINT.ignoreAttrs && ignoreAttrs.indexOf(' ' + attrName + ' ') > -1)
+			{
+				continue;
+			}
 			if (attrValue !== oldEl.getAttributeNS(namespaceURI, attrName))
 			{
 				oldEl.setAttributeNS(namespaceURI, attrName, attrValue);
+				lastUpdated = oldEl;
 			}
 		}
 	}
 
 	refreshElementContent(target, resultFragment);
+
+	return lastUpdated;
 }
 
 /**

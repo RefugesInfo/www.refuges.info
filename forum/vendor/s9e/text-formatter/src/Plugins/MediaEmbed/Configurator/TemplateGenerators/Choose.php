@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed\Configurator\TemplateGenerators;
@@ -21,7 +21,7 @@ class Choose extends TemplateGenerator
 	}
 	protected function getContentTemplate()
 	{
-		$branches = (isset($this->attributes['when'][0])) ? $this->attributes['when'] : array($this->attributes['when']);
+		$branches = (isset($this->attributes['when'][0])) ? $this->attributes['when'] : [$this->attributes['when']];
 		$template = '<xsl:choose>';
 		foreach ($branches as $when)
 			$template .= '<xsl:when test="' . \htmlspecialchars($when['test'], \ENT_COMPAT, 'UTF-8') . '">' . $this->templateBuilder->getTemplate($when) . '</xsl:when>';

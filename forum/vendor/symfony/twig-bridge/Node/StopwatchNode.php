@@ -11,19 +11,23 @@
 
 namespace Symfony\Bridge\Twig\Node;
 
+use Twig\Compiler;
+use Twig\Node\Expression\AssignNameExpression;
+use Twig\Node\Node;
+
 /**
  * Represents a stopwatch node.
  *
  * @author Wouter J <wouter@wouterj.nl>
  */
-class StopwatchNode extends \Twig_Node
+class StopwatchNode extends Node
 {
-    public function __construct(\Twig_Node $name, $body, \Twig_Node_Expression_AssignName $var, $lineno = 0, $tag = null)
+    public function __construct(Node $name, Node $body, AssignNameExpression $var, $lineno = 0, $tag = null)
     {
         parent::__construct(array('body' => $body, 'name' => $name, 'var' => $var), array(), $lineno, $tag);
     }
 
-    public function compile(\Twig_Compiler $compiler)
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->addDebugInfo($this)
@@ -32,11 +36,11 @@ class StopwatchNode extends \Twig_Node
             ->raw(' = ')
             ->subcompile($this->getNode('name'))
             ->write(";\n")
-            ->write("\$this->env->getExtension('stopwatch')->getStopwatch()->start(")
+            ->write("\$this->env->getExtension('Symfony\Bridge\Twig\Extension\StopwatchExtension')->getStopwatch()->start(")
             ->subcompile($this->getNode('var'))
             ->raw(", 'template');\n")
             ->subcompile($this->getNode('body'))
-            ->write("\$this->env->getExtension('stopwatch')->getStopwatch()->stop(")
+            ->write("\$this->env->getExtension('Symfony\Bridge\Twig\Extension\StopwatchExtension')->getStopwatch()->stop(")
             ->subcompile($this->getNode('var'))
             ->raw(");\n")
         ;

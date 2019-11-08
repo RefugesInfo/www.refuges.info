@@ -20,16 +20,21 @@
 {%- endblock %}
 
 {% block money_widget -%}
-    <div class="input-group">
-        {% set append = money_pattern starts with '{{' %}
-        {% if not append %}
-            <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
-        {% endif %}
+    {% set prepend = not (money_pattern starts with '{{') %}
+    {% set append = not (money_pattern ends with '}}') %}
+    {% if prepend or append %}
+        <div class="input-group">
+            {% if prepend %}
+                <span class="input-group-addon">{{ money_pattern|form_encode_currency }}</span>
+            {% endif %}
+            {{- block('form_widget_simple') -}}
+            {% if append %}
+                <span class="input-group-addon">{{ money_pattern|form_encode_currency }}</span>
+            {% endif %}
+        </div>
+    {% else %}
         {{- block('form_widget_simple') -}}
-        {% if append %}
-            <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
-        {% endif %}
-    </div>
+    {% endif %}
 {%- endblock money_widget %}
 
 {% block percent_widget -%}
@@ -148,10 +153,14 @@
 {% endblock %}
 
 {% block checkbox_label -%}
+    {%- set label_attr = label_attr|merge({'for': id}) -%}
+
     {{- block('checkbox_radio_label') -}}
 {%- endblock checkbox_label %}
 
 {% block radio_label -%}
+    {%- set label_attr = label_attr|merge({'for': id}) -%}
+
     {{- block('checkbox_radio_label') -}}
 {%- endblock radio_label %}
 
@@ -234,12 +243,12 @@
 
 {% block form_errors -%}
     {% if errors|length > 0 -%}
-    {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
+    {% if form is not rootform %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
     <ul class="list-unstyled">
         {%- for error in errors -%}
             <li><span class="glyphicon glyphicon-exclamation-sign"></span> {{ error.message }}</li>
         {%- endfor -%}
     </ul>
-    {% if form.parent %}</span>{% else %}</div>{% endif %}
+    {% if form is not rootform %}</span>{% else %}</div>{% endif %}
     {%- endif %}
 {%- endblock form_errors %}

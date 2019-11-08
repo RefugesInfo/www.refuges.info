@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Helpers;
@@ -17,12 +17,12 @@ abstract class RegexpParser
 		if (\substr($def['regexp'], 0, 1) !== '^'
 		 || \substr($def['regexp'], -1)   !== '$')
 			return '//';
-		$def['tokens'][] = array(
+		$def['tokens'][] = [
 			'pos'  => \strlen($def['regexp']),
 			'len'  => 0,
 			'type' => 'end'
-		);
-		$patterns = array();
+		];
+		$patterns = [];
 		$literal = '';
 		$pos     = 0;
 		$skipPos = 0;
@@ -88,7 +88,7 @@ abstract class RegexpParser
 	}
 	public static function getCaptureNames($regexp)
 	{
-		$map        = array('');
+		$map        = [''];
 		$regexpInfo = self::parse($regexp);
 		foreach ($regexpInfo['tokens'] as $tok)
 			if ($tok['type'] === 'capturingSubpatternStart')
@@ -99,14 +99,14 @@ abstract class RegexpParser
 	{
 		if (!\preg_match('#^(.)(.*?)\\1([a-zA-Z]*)$#Ds', $regexp, $m))
 			throw new RuntimeException('Could not parse regexp delimiters');
-		$ret = array(
+		$ret = [
 			'delimiter' => $m[1],
 			'modifiers' => $m[3],
 			'regexp'    => $m[2],
-			'tokens'    => array()
-		);
+			'tokens'    => []
+		];
 		$regexp = $m[2];
-		$openSubpatterns = array();
+		$openSubpatterns = [];
 		$pos = 0;
 		$regexpLen = \strlen($regexp);
 		while ($pos < $regexpLen)
@@ -117,83 +117,83 @@ abstract class RegexpParser
 					$pos += 2;
 					break;
 				case '[':
-					if (!\preg_match('#\\[(.*?(?<!\\\\)(?:\\\\\\\\)*+)\\]((?:[+*][+?]?|\\?)?)#', $regexp, $m, 0, $pos))
+					if (!\preg_match('#\\[(.*?(?<!\\\\)(?:\\\\\\\\)*+)\\]((?:[+*][+?]?|\\?)?)#A', $regexp, $m, 0, $pos))
 						throw new RuntimeException('Could not find matching bracket from pos ' . $pos);
-					$ret['tokens'][] = array(
+					$ret['tokens'][] = [
 						'pos'         => $pos,
 						'len'         => \strlen($m[0]),
 						'type'        => 'characterClass',
 						'content'     => $m[1],
 						'quantifiers' => $m[2]
-					);
+					];
 					$pos += \strlen($m[0]);
 					break;
 				case '(':
-					if (\preg_match('#\\(\\?([a-z]*)\\)#i', $regexp, $m, 0, $pos))
+					if (\preg_match('#\\(\\?([a-z]*)\\)#iA', $regexp, $m, 0, $pos))
 					{
-						$ret['tokens'][] = array(
+						$ret['tokens'][] = [
 							'pos'     => $pos,
 							'len'     => \strlen($m[0]),
 							'type'    => 'option',
 							'options' => $m[1]
-						);
+						];
 						$pos += \strlen($m[0]);
 						break;
 					}
 					if (\preg_match("#(?J)\\(\\?(?:P?<(?<name>[a-z_0-9]+)>|'(?<name>[a-z_0-9]+)')#A", $regexp, $m, \PREG_OFFSET_CAPTURE, $pos))
 					{
-						$tok = array(
+						$tok = [
 							'pos'  => $pos,
 							'len'  => \strlen($m[0][0]),
 							'type' => 'capturingSubpatternStart',
 							'name' => $m['name'][0]
-						);
+						];
 						$pos += \strlen($m[0][0]);
 					}
 					elseif (\preg_match('#\\(\\?([a-z]*):#iA', $regexp, $m, 0, $pos))
 					{
-						$tok = array(
+						$tok = [
 							'pos'     => $pos,
 							'len'     => \strlen($m[0]),
 							'type'    => 'nonCapturingSubpatternStart',
 							'options' => $m[1]
-						);
+						];
 						$pos += \strlen($m[0]);
 					}
 					elseif (\preg_match('#\\(\\?>#iA', $regexp, $m, 0, $pos))
 					{
-						$tok = array(
+						$tok = [
 							'pos'     => $pos,
 							'len'     => \strlen($m[0]),
 							'type'    => 'nonCapturingSubpatternStart',
 							'subtype' => 'atomic'
-						);
+						];
 						$pos += \strlen($m[0]);
 					}
 					elseif (\preg_match('#\\(\\?(<?[!=])#A', $regexp, $m, 0, $pos))
 					{
-						$assertions = array(
+						$assertions = [
 							'='  => 'lookahead',
 							'<=' => 'lookbehind',
 							'!'  => 'negativeLookahead',
 							'<!' => 'negativeLookbehind'
-						);
-						$tok = array(
+						];
+						$tok = [
 							'pos'     => $pos,
 							'len'     => \strlen($m[0]),
 							'type'    => $assertions[$m[1]] . 'AssertionStart'
-						);
+						];
 						$pos += \strlen($m[0]);
 					}
 					elseif (\preg_match('#\\(\\?#A', $regexp, $m, 0, $pos))
 						throw new RuntimeException('Unsupported subpattern type at pos ' . $pos);
 					else
 					{
-						$tok = array(
+						$tok = [
 							'pos'  => $pos,
 							'len'  => 1,
 							'type' => 'capturingSubpatternStart'
-						);
+						];
 						++$pos;
 					}
 					$openSubpatterns[] = \count($ret['tokens']);
@@ -212,12 +212,12 @@ abstract class RegexpParser
 					);
 					$spn = \strspn($regexp, '+*?', 1 + $pos);
 					$quantifiers = \substr($regexp, 1 + $pos, $spn);
-					$ret['tokens'][] = array(
+					$ret['tokens'][] = [
 						'pos'  => $pos,
 						'len'  => 1 + $spn,
 						'type' => \substr($startToken['type'], 0, -5) . 'End',
 						'quantifiers' => $quantifiers
-					);
+					];
 					unset($startToken);
 					$pos += 1 + $spn;
 					break;

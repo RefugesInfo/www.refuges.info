@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\DependencyInjection;
 
-@trigger_error('The '.__NAMESPACE__.'\SimpleXMLElement class is deprecated since version 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\SimpleXMLElement class is deprecated since Symfony 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
 use Symfony\Component\Config\Util\XmlUtils;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -92,7 +92,7 @@ class SimpleXMLElement extends \SimpleXMLElement
                     $arguments[$key] = (string) $arg;
                     break;
                 case 'constant':
-                    $arguments[$key] = constant((string) $arg);
+                    $arguments[$key] = \constant((string) $arg);
                     break;
                 default:
                     $arguments[$key] = self::phpize($arg);

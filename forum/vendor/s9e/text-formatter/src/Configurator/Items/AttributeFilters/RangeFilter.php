@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Items\AttributeFilters;
@@ -13,13 +13,13 @@ class RangeFilter extends AttributeFilter
 {
 	public function __construct($min = \null, $max = \null)
 	{
-		parent::__construct('s9e\\TextFormatter\\Parser\\BuiltInFilters::filterRange');
+		parent::__construct('s9e\\TextFormatter\\Parser\\AttributeFilters\\NumericFilter::filterRange');
 		$this->resetParameters();
 		$this->addParameterByName('attrValue');
 		$this->addParameterByName('min');
 		$this->addParameterByName('max');
 		$this->addParameterByName('logger');
-		$this->setJS('BuiltInFilters.filterRange');
+		$this->setJS('NumericFilter.filterRange');
 		$this->markAsSafeAsURL();
 		$this->markAsSafeInCSS();
 		$this->markAsSafeInJS();

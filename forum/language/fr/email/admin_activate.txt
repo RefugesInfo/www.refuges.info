@@ -7,7 +7,7 @@ Le compte appartenant à « {USERNAME} » vient d’être désactivé ou nouve
 Consultez le profil de ce membre en cliquant sur le lien suivant :
 {U_USER_DETAILS}
 
-Activez son compte en cliquant sur le lien suivant :
+Vous pouvez activer son compte immédiatement en cliquant sur le lien suivant :
 {U_ACTIVATE}
 
 {EMAIL_SIG}

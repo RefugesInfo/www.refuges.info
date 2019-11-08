@@ -54,7 +54,7 @@ $lang = array_merge($lang, array(
 		<h2>Masques de permissions</h2>
 		<p>Ils sont utilisés afin de voir les permissions effectives assignées aux utilisateurs, modérateurs (locaux et globaux), administrateurs du forum.</p>
 
-		<br />
+		<br>
 
 		<p>Pour de plus amples informations sur la configuration et la gestion des permissions de votre forum phpBB3, consultez la documentation <a href="http://forums.phpbb-fr.com/documentation/utilisation-de-phpbb/regler-les-permissions-d-un-forum-simple-a43-view.html">Régler les permissions d’un forum (simple)</a>.</p>
 	',
@@ -187,11 +187,11 @@ $lang = array_merge($lang, array(
 	'ROLE_USER_NEW_MEMBER'		=> 'Fonctionnalités nouvel utilisateur enregistré',
 
 	'ROLE_DESCRIPTION_ADMIN_FORUM'			=> 'Peut accéder à la gestion et à la configuration des permissions du forum.',
-	'ROLE_DESCRIPTION_ADMIN_FULL'			=> 'A accès à toutes les fonctions administratives du forum.<br />Non recommandé.',
+	'ROLE_DESCRIPTION_ADMIN_FULL'			=> 'A accès à toutes les fonctions administratives du forum.<br>Non recommandé.',
 	'ROLE_DESCRIPTION_ADMIN_STANDARD'		=> 'A accès à la plupart des fonctionnalités administratives mais ne peut pas utiliser le serveur ou les outils relatifs au système.',
 	'ROLE_DESCRIPTION_ADMIN_USERGROUP'		=> 'Peut gérer des groupes et des membres: est autorisé à modifier les permissions, les paramètres, à gérer les bannissements et les rangs.',
 	'ROLE_DESCRIPTION_FORUM_BOT'			=> 'Ce modèle est recommandé pour les robots et moteurs de recherche.',
-	'ROLE_DESCRIPTION_FORUM_FULL'			=> 'Peut utiliser toutes les fonctionnalités du forum, y compris les annonces et les sujets épinglés. N’est pas concerné par la limite de flood.<br />Non recommandé pour les utilisateurs standard.',
+	'ROLE_DESCRIPTION_FORUM_FULL'			=> 'Peut utiliser toutes les fonctionnalités du forum, y compris les annonces et les sujets épinglés. N’est pas concerné par la limite de flood.<br>Non recommandé pour les utilisateurs standard.',
 	'ROLE_DESCRIPTION_FORUM_LIMITED'		=> 'Peut utiliser quelques fonctionnalités du forum, mais ne peut pas joindre de fichiers ou utiliser les icônes de messages.',
 	'ROLE_DESCRIPTION_FORUM_LIMITED_POLLS'	=> 'Comme le modèle « accès limité » mais peut aussi créer des sondages.',
 	'ROLE_DESCRIPTION_FORUM_NOACCESS'		=> 'Ne peut ni voir ni accéder au forum.',
@@ -204,8 +204,8 @@ $lang = array_merge($lang, array(
 	'ROLE_DESCRIPTION_MOD_QUEUE'			=> 'Peut utiliser l’attente de modération pour valider ou modifier des messages, mais rien d’autre.',
 	'ROLE_DESCRIPTION_MOD_SIMPLE'			=> 'Peut utiliser seulement les actions de sujet de base. Ne peut pas envoyer d’avertissements ou utiliser l’attente de modération.',
 	'ROLE_DESCRIPTION_MOD_STANDARD'			=> 'Peut utiliser la plupart des outils de modération, mais ne peut pas bannir les membres ou modifier l’auteur du message.',
-	'ROLE_DESCRIPTION_USER_FULL'			=> 'Peut utiliser toutes les fonctionnalités du forum disponibles pour les membres, y compris modifier le nom d’utilisateur ou ignorer la limite de flood.<br />Non recommandé.',
-	'ROLE_DESCRIPTION_USER_LIMITED'			=> 'Peut accéder à la plupart des fonctionnalités utilisables par les membres. Les fichiers joints, e-mails ou messages instantanés ne sont pas autorisés.',
+	'ROLE_DESCRIPTION_USER_FULL'			=> 'Peut utiliser toutes les fonctionnalités du forum disponibles pour les membres, y compris modifier le nom d’utilisateur ou ignorer la limite de flood.<br>Non recommandé.',
+	'ROLE_DESCRIPTION_USER_LIMITED'			=> 'Peut accéder à la plupart des fonctionnalités utilisables par les membres. Les fichiers joints, courriels ou messages instantanés ne sont pas autorisés.',
 	'ROLE_DESCRIPTION_USER_NOAVATAR'		=> 'A un ensemble limité de fonctionnalités et n’est pas autorisé à avoir d’avatar.',
 	'ROLE_DESCRIPTION_USER_NOPM'			=> 'A un ensemble limité de fonctionnalités et n’est pas autorisé à envoyer de messages privés.',
 	'ROLE_DESCRIPTION_USER_STANDARD'		=> 'Peut accéder à la plupart des fonctionnalités utilisables par les membres, mais pas à toutes. Par exemple, ne peut pas modifier le nom d’utilisateur ou ignorer la limite de flood.',
@@ -235,16 +235,16 @@ $lang = array_merge($lang, array(
 	'TRACE_GLOBAL_SETTING'			=> '%s (global)',
 	'TRACE_GROUP_NEVER_TOTAL_NEVER'	=> 'Cette permission de groupe est réglée sur <strong>JAMAIS</strong> tout comme le résultat total, l’ancien résultat est donc conservé.',
 	'TRACE_GROUP_NEVER_TOTAL_NEVER_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>JAMAIS</strong> tout comme le résultat total, l’ancien résultat est donc conservé.',
-	'TRACE_GROUP_NEVER_TOTAL_NO'		=> 'Cette permission de groupe est réglée sur <strong>JAMAIS</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (Paramètré sur <strong>NON</strong>).',
-	'TRACE_GROUP_NEVER_TOTAL_NO_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>JAMAIS</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (Paramètré sur <strong>NON</strong>).',
+	'TRACE_GROUP_NEVER_TOTAL_NO'		=> 'Cette permission de groupe est réglée sur <strong>JAMAIS</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (paramétrée sur <strong>NON</strong>).',
+	'TRACE_GROUP_NEVER_TOTAL_NO_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>JAMAIS</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (paramétrée sur <strong>NON</strong>).',
 	'TRACE_GROUP_NEVER_TOTAL_YES'		=> 'Cette permission de groupe est réglée sur <strong>JAMAIS</strong> ce qui outrepasse le <strong>OUI</strong> pour appliquer <strong>JAMAIS</strong> pour ce membre.',
 	'TRACE_GROUP_NEVER_TOTAL_YES_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>JAMAIS</strong> ce qui outrepasse le <strong>OUI</strong> pour appliquer <strong>JAMAIS</strong> pour ce membre.',
 	'TRACE_GROUP_NO'					=> 'Cette permission est réglée sur <strong>NON</strong> pour ce groupe, ainsi l’ancienne valeur est conservée.',
 	'TRACE_GROUP_NO_LOCAL'				=> 'Cette permission est réglée sur <strong>NON</strong> pour ce groupe dans ce forum, ainsi l’ancienne valeur est conservée.',
 	'TRACE_GROUP_YES_TOTAL_NEVER'		=> 'Cette permission de groupe est réglée sur <strong>OUI</strong> mais la valeur globale <strong>JAMAIS</strong> ne peut pas être outrepassée.',
 	'TRACE_GROUP_YES_TOTAL_NEVER_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>OUI</strong> mais la valeur globale <strong>JAMAIS</strong> ne peut pas être outrepassée.',
-	'TRACE_GROUP_YES_TOTAL_NO'			=> 'Cette permission de groupe est réglée sur <strong>OUI</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (Paramètré sur <strong>NON</strong>).',
-	'TRACE_GROUP_YES_TOTAL_NO_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>OUI</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (Paramètré sur <strong>NON</strong>).',
+	'TRACE_GROUP_YES_TOTAL_NO'			=> 'Cette permission de groupe est réglée sur <strong>OUI</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (paramétrée sur <strong>NON</strong>).',
+	'TRACE_GROUP_YES_TOTAL_NO_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>OUI</strong> ce qui devient la nouvelle valeur globale car elle n’était pas encore réglée (paramétrée sur <strong>NON</strong>).',
 	'TRACE_GROUP_YES_TOTAL_YES'			=> 'Cette permission de groupe est réglée sur <strong>OUI</strong> et la permission totale est déjà réglée sur <strong>OUI</strong>, elle est donc conservée.',
 	'TRACE_GROUP_YES_TOTAL_YES_LOCAL'	=> 'Cette permission de groupe pour ce forum est réglée sur <strong>OUI</strong> et la permission totale est déjà réglée sur <strong>OUI</strong>, elle est donc conservée.',
 	'TRACE_PERMISSION'				=> 'Tracer la permission - %s',

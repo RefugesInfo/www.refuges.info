@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\HTMLComments;
@@ -16,7 +16,8 @@ class Parser extends ParserBase
 		foreach ($matches as $m)
 		{
 			$content = \html_entity_decode(\substr($m[0][0], 4, -3), \ENT_QUOTES, 'UTF-8');
-			$content = \str_replace(array('<', '>'), '', $content);
+			$content = \str_replace(['<', '>'], '', $content);
+			$content = \rtrim($content, '-');
 			$content = \str_replace('--', '', $content);
 			$this->parser->addSelfClosingTag($tagName, $m[0][1], \strlen($m[0][0]))->setAttribute($attrName, $content);
 		}

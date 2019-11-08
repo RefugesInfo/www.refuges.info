@@ -62,7 +62,7 @@ $lang = array_merge($lang, array(
 		1	=> 'Modifié en dernier par %2$s le %3$s, modifié %1$d fois.',
 		2	=> 'Modifié en dernier par %2$s le %3$s, modifié %1$d fois.',
 	),
-	'EMAIL_TOPIC'			=> 'Envoyer le sujet par e-mail',
+	'EMAIL_TOPIC'			=> 'Envoyer le sujet par courriel',
 	'ERROR_NO_ATTACHMENT'	=> 'Le fichier joint sélectionné n’est plus disponible.',
 
 	'FILE_NOT_FOUND_404'	=> 'Le fichier <strong>%s</strong> n’existe pas.',
@@ -90,6 +90,7 @@ $lang = array_merge($lang, array(
 	'NO_UNREAD_POSTS'		=> 'Aucun nouveau message non-lu dans ce sujet.',
 	'NO_VOTE_OPTION'		=> 'Vous devez choisir une option lorsque vous votez.',
 	'NO_VOTES'				=> 'Aucun vote',
+	'NO_AUTH_PRINT_TOPIC'	=> 'Vous n’êtes pas autorisé à imprimer des sujets.',
 
 	'POLL_ENDED_AT'			=> 'Le sondage s’est terminé le %s',
 	'POLL_RUN_TILL'			=> 'Le sondage est actif jusqu’au %s',

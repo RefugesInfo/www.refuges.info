@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed\Configurator\TemplateGenerators;
@@ -11,12 +11,12 @@ class Flash extends TemplateGenerator
 {
 	protected function getContentTemplate()
 	{
-		$attributes = array(
+		$attributes = [
 			'data'          => $this->attributes['src'],
 			'style'         => $this->attributes['style'],
 			'type'          => 'application/x-shockwave-flash',
 			'typemustmatch' => ''
-		);
+		];
 		$flashVarsParam = '';
 		if (isset($this->attributes['flashvars']))
 			$flashVarsParam = $this->generateParamElement('flashvars', $this->attributes['flashvars']);
@@ -29,6 +29,6 @@ class Flash extends TemplateGenerator
 	}
 	protected function generateParamElement($paramName, $paramValue)
 	{
-		return '<param name="' . \htmlspecialchars($paramName) . '">' . $this->generateAttributes(array('value' => $paramValue)) . '</param>';
+		return '<param name="' . \htmlspecialchars($paramName) . '">' . $this->generateAttributes(['value' => $paramValue]) . '</param>';
 	}
 }

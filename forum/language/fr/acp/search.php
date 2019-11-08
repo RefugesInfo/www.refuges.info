@@ -79,7 +79,7 @@ $lang = array_merge($lang, array(
 	'FULLTEXT_SPHINX_HOST'					=> 'Hôte du démon « Recherche Sphinx »',
 	'FULLTEXT_SPHINX_HOST_EXPLAIN'			=> 'Hôte sur lequel le démon « searchd » (recherche sphinx) écoute. Laissez vide pour utiliser par défaut « localhost ».',
 	'FULLTEXT_SPHINX_INDEXER_MEM_LIMIT'		=> 'Mémoire limite d’indexation',
-	'FULLTEXT_SPHINX_INDEXER_MEM_LIMIT_EXPLAIN'	=> 'Ce nombre devrait toujours être inférieur à la mémoire vive (RAM) disponible sur votre machine. Si vous rencontrez des problèmes de performance récurrents, cela pourrait être dû à une trop forte consommation de ressources par l’indexeur. Esssayez de réduire la quantité de mémoire allouée à l’indexeur.',
+	'FULLTEXT_SPHINX_INDEXER_MEM_LIMIT_EXPLAIN'	=> 'Ce nombre devrait toujours être inférieur à la mémoire vive (RAM) disponible sur votre machine. Si vous rencontrez des problèmes de performance récurrents, cela pourrait être dû à une trop forte consommation de ressources par l’indexeur. Essayez de réduire la quantité de mémoire allouée à l’indexeur.',
 	'FULLTEXT_SPHINX_MAIN_POSTS'			=> 'Nombre de messages dans l’index principal',
 	'FULLTEXT_SPHINX_PORT'					=> 'Port du démon « Recherche Sphinx »',
 	'FULLTEXT_SPHINX_PORT_EXPLAIN'			=> 'Port sur lequel le démon « searchd » (recherche sphinx) écoute. Laissez vide pour utiliser Sphinx API port 9312 par défaut.',
@@ -112,13 +112,16 @@ $lang = array_merge($lang, array(
 	'SEARCH_GUEST_INTERVAL'					=> 'Intervalle de flood des invités',
 	'SEARCH_GUEST_INTERVAL_EXPLAIN'			=> 'Nombre de secondes que les invités doivent attendre entre chaque recherche. Si un invité lance une recherche, tous les autres doivent attendre que ce délai soit écoulé.',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
-		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été indexés, un lot de %1$d messages a été traité.<br />',
+		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été indexés, un lot de %1$d messages a été traité.<br>',
 	),
 	'SEARCH_INDEX_CREATE_REDIRECT_RATE'		=> array(
-		2	=> 'Le taux actuel d’indexation est de %1$.1f messages par seconde.<br />Indexation en cours…',
+		2	=> 'Le taux actuel d’indexation est de %1$.1f messages par seconde.<br>Indexation en cours…',
 	),
 	'SEARCH_INDEX_DELETE_REDIRECT'			=> array(
-		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été effacés de l’index de recherche.<br />Effacement en cours…',
+		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été effacés de l’index de recherche, un lot de %1$d messages a été traité.<br>',
+	),
+	'SEARCH_INDEX_DELETE_REDIRECT_RATE'		=> array(
+		2	=> 'Le taux actuel de suppression est de %1$.1f messages par seconde.<br>Suppression en cours…',
 	),
 	'SEARCH_INDEX_CREATED'					=> 'Tous les messages du forum ont été indexés.',
 	'SEARCH_INDEX_REMOVED'					=> 'L’index de recherche a été supprimé.',

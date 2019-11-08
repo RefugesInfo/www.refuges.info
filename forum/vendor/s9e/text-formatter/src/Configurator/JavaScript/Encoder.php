@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\JavaScript;
@@ -18,27 +18,27 @@ class Encoder
 	public function __construct()
 	{
 		$ns = 's9e\\TextFormatter\\Configurator\\';
-		$this->objectEncoders = array(
-			$ns . 'Items\\Regexp'           => array($this, 'encodeRegexp'),
-			$ns . 'JavaScript\\Code'        => array($this, 'encodeCode'),
-			$ns . 'JavaScript\\ConfigValue' => array($this, 'encodeConfigValue'),
-			$ns . 'JavaScript\\Dictionary'  => array($this, 'encodeDictionary')
-		);
-		$this->typeEncoders = array(
-			'array'   => array($this, 'encodeArray'),
-			'boolean' => array($this, 'encodeBoolean'),
-			'double'  => array($this, 'encodeScalar'),
-			'integer' => array($this, 'encodeScalar'),
-			'object'  => array($this, 'encodeObject'),
-			'string'  => array($this, 'encodeScalar')
-		);
+		$this->objectEncoders = [
+			$ns . 'Items\\Regexp'           => [$this, 'encodeRegexp'],
+			$ns . 'JavaScript\\Code'        => [$this, 'encodeCode'],
+			$ns . 'JavaScript\\ConfigValue' => [$this, 'encodeConfigValue'],
+			$ns . 'JavaScript\\Dictionary'  => [$this, 'encodeDictionary']
+		];
+		$this->typeEncoders = [
+			'array'   => [$this, 'encodeArray'],
+			'boolean' => [$this, 'encodeBoolean'],
+			'double'  => [$this, 'encodeScalar'],
+			'integer' => [$this, 'encodeScalar'],
+			'object'  => [$this, 'encodeObject'],
+			'string'  => [$this, 'encodeScalar']
+		];
 	}
 	public function encode($value)
 	{
 		$type = \gettype($value);
 		if (!isset($this->typeEncoders[$type]))
 			throw new RuntimeException('Cannot encode ' . $type . ' value');
-		return \call_user_func($this->typeEncoders[$type], $value);
+		return $this->typeEncoders[$type]($value);
 	}
 	protected function encodeArray(array $array)
 	{
@@ -75,13 +75,13 @@ class Encoder
 	}
 	protected function encodeIndexedArray(array $array)
 	{
-		return '[' . \implode(',', \array_map(array($this, 'encode'), $array)) . ']';
+		return '[' . \implode(',', \array_map([$this, 'encode'], $array)) . ']';
 	}
 	protected function encodeObject($object)
 	{
 		foreach ($this->objectEncoders as $className => $callback)
 			if ($object instanceof $className)
-				return \call_user_func($callback, $object);
+				return $callback($object);
 		throw new RuntimeException('Cannot encode instance of ' . \get_class($object));
 	}
 	protected function encodePropertyName($name, $preserveNames)
@@ -106,7 +106,7 @@ class Encoder
 	}
 	protected function isLegalProp($name)
 	{
-		$reserved = array('abstract', 'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'double', 'else', 'enum', 'export', 'extends', 'false', 'final', 'finally', 'float', 'for', 'function', 'goto', 'if', 'implements', 'import', 'in', 'instanceof', 'int', 'interface', 'let', 'long', 'native', 'new', 'null', 'package', 'private', 'protected', 'public', 'return', 'short', 'static', 'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient', 'true', 'try', 'typeof', 'var', 'void', 'volatile', 'while', 'with');
+		$reserved = ['abstract', 'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'double', 'else', 'enum', 'export', 'extends', 'false', 'final', 'finally', 'float', 'for', 'function', 'goto', 'if', 'implements', 'import', 'in', 'instanceof', 'int', 'interface', 'let', 'long', 'native', 'new', 'null', 'package', 'private', 'protected', 'public', 'return', 'short', 'static', 'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient', 'true', 'try', 'typeof', 'var', 'void', 'volatile', 'while', 'with'];
 		if (\in_array($name, $reserved, \true))
 			return \false;
 		return (bool) \preg_match('#^(?![0-9])[$_\\pL][$_\\pL\\pNl]+$#Du', $name);

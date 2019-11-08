@@ -2,198 +2,151 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed;
 use InvalidArgumentException;
 use RuntimeException;
-use s9e\TextFormatter\Configurator\Helpers\RegexpBuilder;
-use s9e\TextFormatter\Configurator\Items\Attribute;
-use s9e\TextFormatter\Configurator\Items\AttributeFilters\RegexpFilter;
-use s9e\TextFormatter\Configurator\Items\AttributePreprocessor;
+use s9e\TextFormatter\Configurator\Items\Regexp;
 use s9e\TextFormatter\Configurator\Items\Tag;
+use s9e\TextFormatter\Configurator\JavaScript\Dictionary;
 use s9e\TextFormatter\Plugins\ConfiguratorBase;
 use s9e\TextFormatter\Plugins\MediaEmbed\Configurator\Collections\CachedDefinitionCollection;
-use s9e\TextFormatter\Plugins\MediaEmbed\Configurator\Collections\SiteCollection;
 use s9e\TextFormatter\Plugins\MediaEmbed\Configurator\TemplateBuilder;
 class Configurator extends ConfiguratorBase
 {
-	public $allowedFilters = array(
-		'hexdec',
-		'urldecode'
-	);
-	protected $appendTemplate = '';
-	protected $captureURLs = \true;
-	protected $collection;
+	public $allowedFilters = ['stripslashes', 'urldecode'];
 	protected $createMediaBBCode = \true;
-	public $createIndividualBBCodes = \false;
 	public $defaultSites;
+	protected $quickMatch = '://';
+	protected $regexp = '/\\bhttps?:\\/\\/[^["\'\\s]+/Si';
+	protected $sites = [];
 	protected $tagName = 'MEDIA';
 	protected $templateBuilder;
 	protected function setUp()
 	{
-		$this->collection = new SiteCollection;
-		$this->configurator->registeredVars['mediasites'] = $this->collection;
+		$this->defaultSites    = new CachedDefinitionCollection;
+		$this->templateBuilder = new TemplateBuilder;
+		$this->configurator->registeredVars['MediaEmbed.hosts'] = new Dictionary;
+		$this->configurator->registeredVars['MediaEmbed.sites'] = new Dictionary;
+		$this->createMediaTag();
+		if ($this->createMediaBBCode)
+			$this->configurator->BBCodes->set($this->tagName, ['contentAttributes' => ['url']]);
+	}
+	public function asConfig()
+	{
+		if (empty($this->sites))
+			return;
+		return [
+			'quickMatch' => $this->quickMatch,
+			'regexp'     => $this->regexp,
+			'tagName'    => $this->tagName
+		];
+	}
+	public function add($siteId, array $siteConfig = \null)
+	{
+		$siteId = $this->normalizeId($siteId);
+		if (isset($siteConfig))
+			$siteConfig = $this->defaultSites->normalizeValue($siteConfig);
+		else
+			$siteConfig = $this->defaultSites->get($siteId);
+		$siteConfig['extract'] = $this->convertRegexps($siteConfig['extract']);
+		$siteConfig['scrape']  = $this->convertScrapes($siteConfig['scrape']);
+		$this->checkAttributeFilters($siteConfig['attributes']);
+		$tag = $this->addTag($siteId, $siteConfig);
+		$this->sites[$siteId] = $siteConfig;
+		foreach ($siteConfig['host'] as $host)
+			$this->configurator->registeredVars['MediaEmbed.hosts'][$host] = $siteId;
+		$this->configurator->registeredVars['MediaEmbed.sites'][$siteId] = [$siteConfig['extract'], $siteConfig['scrape']];
+		return $tag;
+	}
+	public function getSites()
+	{
+		return $this->sites;
+	}
+	protected function addTag($siteId, array $siteConfig)
+	{
+		$tag = new Tag([
+			'attributes' => $this->getAttributesConfig($siteConfig),
+			'rules'      => [
+				'allowChild' => 'URL',
+				'autoClose'  => \true,
+				'denyChild'  => [$siteId, $this->tagName]
+			],
+			'template'   => $this->templateBuilder->build($siteId, $siteConfig)
+		]);
+		$this->configurator->templateNormalizer->normalizeTag($tag);
+		$this->configurator->templateChecker->checkTag($tag);
+		$this->configurator->tags->add($siteId, $tag);
+		return $tag;
+	}
+	protected function checkAttributeFilters(array $attributes)
+	{
+		foreach ($attributes as $attrConfig)
+		{
+			if (empty($attrConfig['filterChain']))
+				continue;
+			foreach ($attrConfig['filterChain'] as $filter)
+				if (\substr($filter, 0, 1) !== '#' && !\in_array($filter, $this->allowedFilters, \true))
+					throw new RuntimeException("Filter '$filter' is not allowed in media sites");
+		}
+	}
+	protected function convertRegexp($regexp)
+	{
+		$regexp = new Regexp($regexp);
+		return [$regexp, $regexp->getCaptureNames()];
+	}
+	protected function convertRegexps(array $regexps)
+	{
+		return \array_map([$this, 'convertRegexp'], $regexps);
+	}
+	protected function convertScrapeConfig(array $config)
+	{
+		$config['extract'] = $this->convertRegexps($config['extract']);
+		$config['match']   = $this->convertRegexps($config['match']);
+		return $config;
+	}
+	protected function convertScrapes(array $scrapes)
+	{
+		return \array_map([$this, 'convertScrapeConfig'], $scrapes);
+	}
+	protected function createMediaTag()
+	{
 		$tag = $this->configurator->tags->add($this->tagName);
 		$tag->rules->autoClose();
 		$tag->rules->denyChild($this->tagName);
 		$tag->filterChain->clear();
 		$tag->filterChain
-		    ->append(array(__NAMESPACE__ . '\\Parser', 'filterTag'))
+		    ->append(__NAMESPACE__ . '\\Parser::filterTag')
+		    ->resetParameters()
+		    ->addParameterByName('tag')
 		    ->addParameterByName('parser')
-		    ->addParameterByName('mediasites')
+		    ->addParameterByName('MediaEmbed.hosts')
+		    ->addParameterByName('MediaEmbed.sites')
+		    ->addParameterByName('cacheDir')
 		    ->setJS(\file_get_contents(__DIR__ . '/Parser/tagFilter.js'));
-		if ($this->createMediaBBCode)
-			$this->configurator->BBCodes->set(
-				$this->tagName,
-				array(
-					'contentAttributes' => array('url'),
-					'defaultAttribute'  => 'site'
-				)
-			);
-		if (!isset($this->defaultSites))
-			$this->defaultSites = new CachedDefinitionCollection;
-		$this->templateBuilder = new TemplateBuilder;
 	}
-	public function asConfig()
+	protected function getAttributeNamesFromRegexps(array $regexps)
 	{
-		if (!$this->captureURLs || !\count($this->collection))
-			return;
-		$regexp  = 'https?:\\/\\/';
-		$schemes = $this->getSchemes();
-		if (!empty($schemes))
-			$regexp = '(?>' . RegexpBuilder::fromList($schemes) . ':|' . $regexp . ')';
-		return array(
-			'quickMatch' => (empty($schemes)) ? '://' : ':',
-			'regexp'     => '/\\b' . $regexp . '[^["\'\\s]+/Si',
-			'tagName'    => $this->tagName
-		);
-	}
-	public function add($siteId, array $siteConfig = \null)
-	{
-		$siteId = $this->normalizeId($siteId);
-		if (!isset($siteConfig))
-			$siteConfig = $this->defaultSites->get($siteId);
-		$this->collection[$siteId] = $siteConfig;
-		$tag = new Tag;
-		$tag->rules->autoClose();
-		$tag->rules->denyChild($siteId);
-		$tag->rules->denyChild($this->tagName);
-		$attributes = array(
-			'url' => array('type' => 'url')
-		);
-		if (isset($siteConfig['scrape']))
-			$attributes += $this->addScrapes($tag, $siteConfig['scrape']);
-		if (isset($siteConfig['extract']))
-			foreach ((array) $siteConfig['extract'] as $regexp)
-			{
-				$attrRegexps = $tag->attributePreprocessors->add('url', $regexp)->getAttributes();
-				foreach ($attrRegexps as $attrName => $attrRegexp)
-					$attributes[$attrName]['regexp'] = $attrRegexp;
-			}
-		if (isset($siteConfig['attributes']))
-			foreach ($siteConfig['attributes'] as $attrName => $attrConfig)
-				foreach ($attrConfig as $configName => $configValue)
-					$attributes[$attrName][$configName] = $configValue;
-		$hasRequiredAttribute = \false;
-		foreach ($attributes as $attrName => $attrConfig)
+		$attrNames = [];
+		foreach ($regexps as $_53d26d37)
 		{
-			$attribute = $tag->attributes->add($attrName);
-			if (isset($attrConfig['preFilter']))
-				$this->appendFilter($attribute, $attrConfig['preFilter']);
-			if (isset($attrConfig['type']))
-			{
-				$filter = $this->configurator->attributeFilters['#' . $attrConfig['type']];
-				$attribute->filterChain->append($filter);
-			}
-			elseif (isset($attrConfig['regexp']))
-				$attribute->filterChain->append(new RegexpFilter($attrConfig['regexp']));
-			if (isset($attrConfig['required']))
-				$attribute->required = $attrConfig['required'];
-			else
-				$attribute->required = ($attrName === 'id');
-			if (isset($attrConfig['postFilter']))
-				$this->appendFilter($attribute, $attrConfig['postFilter']);
-			if (isset($attrConfig['defaultValue']))
-				$attribute->defaultValue = $attrConfig['defaultValue'];
-			$hasRequiredAttribute |= $attribute->required;
+			list($regexp, $map) = $_53d26d37;
+			$attrNames += \array_flip(\array_filter($map));
 		}
-		if (isset($attributes['id']['regexp']))
-		{
-			$attrRegexp = \preg_replace('(\\^(.*)\\$)s', "^(?'id'$1)$", $attributes['id']['regexp']);
-			$tag->attributePreprocessors->add('url', $attrRegexp);
-		}
-		if (!$hasRequiredAttribute)
-			$tag->filterChain
-				->append(array(__NAMESPACE__ . '\\Parser', 'hasNonDefaultAttribute'))
-				->setJS(\file_get_contents(__DIR__ . '/Parser/hasNonDefaultAttribute.js'));
-		$tag->template = $this->templateBuilder->build($siteId, $siteConfig) . $this->appendTemplate;
-		$this->configurator->templateNormalizer->normalizeTag($tag);
-		$this->configurator->templateChecker->checkTag($tag);
-		$this->configurator->tags->add($siteId, $tag);
-		if ($this->createIndividualBBCodes)
-			$this->configurator->BBCodes->add(
-				$siteId,
-				array(
-					'defaultAttribute'  => 'url',
-					'contentAttributes' => array('url')
-				)
-			);
-		return $tag;
+		return $attrNames;
 	}
-	public function appendTemplate($template = '')
+	protected function getAttributesConfig(array $siteConfig)
 	{
-		$this->appendTemplate = $this->configurator->templateNormalizer->normalizeTemplate($template);
-	}
-	protected function addScrapes(Tag $tag, array $scrapes)
-	{
-		if (!isset($scrapes[0]))
-			$scrapes = array($scrapes);
-		$attributes   = array();
-		$scrapeConfig = array();
-		foreach ($scrapes as $scrape)
-		{
-			$attrNames = array();
-			foreach ((array) $scrape['extract'] as $extractRegexp)
-			{
-				$attributePreprocessor = new AttributePreprocessor($extractRegexp);
-				foreach ($attributePreprocessor->getAttributes() as $attrName => $attrRegexp)
-				{
-					$attrNames[] = $attrName;
-					$attributes[$attrName]['regexp'] = $attrRegexp;
-				}
-			}
-			$attrNames = \array_unique($attrNames);
-			\sort($attrNames);
-			if (!isset($scrape['match']))
-				$scrape['match'] = '//';
-			$entry = array($scrape['match'], $scrape['extract'], $attrNames);
-			if (isset($scrape['url']))
-				$entry[] = $scrape['url'];
-			$scrapeConfig[] = $entry;
-		}
-		$tag->filterChain->insert(1, __NAMESPACE__ . '\\Parser::scrape')
-		                 ->addParameterByName('scrapeConfig')
-		                 ->addParameterByName('cacheDir')
-		                 ->setVar('scrapeConfig', $scrapeConfig)
-		                 ->setJS('returnTrue');
+		$attrNames = $this->getAttributeNamesFromRegexps($siteConfig['extract']);
+		foreach ($siteConfig['scrape'] as $scrapeConfig)
+			$attrNames += $this->getAttributeNamesFromRegexps($scrapeConfig['extract']);
+		$attributes = $siteConfig['attributes'] + \array_fill_keys(\array_keys($attrNames), []);
+		foreach ($attributes as &$attrConfig)
+			$attrConfig += ['required' => \false];
+		unset($attrConfig);
 		return $attributes;
-	}
-	protected function appendFilter(Attribute $attribute, $filter)
-	{
-		if (!\in_array($filter, $this->allowedFilters, \true))
-			throw new RuntimeException("Filter '" . $filter . "' is not allowed");
-		$attribute->filterChain->append($this->configurator->attributeFilters[$filter]);
-	}
-	protected function getSchemes()
-	{
-		$schemes = array();
-		foreach ($this->collection as $site)
-			if (isset($site['scheme']))
-				foreach ((array) $site['scheme'] as $scheme)
-					$schemes[] = $scheme;
-		return $schemes;
 	}
 	protected function normalizeId($siteId)
 	{

@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\JavaScript;
@@ -32,7 +32,7 @@ abstract class Minifier
 	protected function getFromCache($src)
 	{
 		$differentiator = $this->getCacheDifferentiator();
-		$key            = \sha1(\serialize(array(\get_class($this), $differentiator, $src)));
+		$key            = \sha1(\serialize([\get_class($this), $differentiator, $src]));
 		$cacheFile      = $this->cacheDir . '/minifier.' . $key . '.js';
 		if (!\file_exists($cacheFile))
 			\file_put_contents($cacheFile, $this->minify($src));

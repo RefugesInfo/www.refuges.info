@@ -192,7 +192,7 @@ class DefinitionDecorator extends Definition
             return $this->arguments['index_'.$index];
         }
 
-        $lastIndex = count(array_filter(array_keys($this->arguments), 'is_int')) - 1;
+        $lastIndex = \count(array_filter(array_keys($this->arguments), 'is_int')) - 1;
 
         if ($index < 0 || $index > $lastIndex) {
             throw new OutOfBoundsException(sprintf('The index "%d" is not in the range [0, %d].', $index, $lastIndex));
@@ -212,13 +212,13 @@ class DefinitionDecorator extends Definition
      * @param int   $index
      * @param mixed $value
      *
-     * @return DefinitionDecorator the current instance
+     * @return $this
      *
      * @throws InvalidArgumentException when $index isn't an integer
      */
     public function replaceArgument($index, $value)
     {
-        if (!is_int($index)) {
+        if (!\is_int($index)) {
             throw new InvalidArgumentException('$index must be an integer.');
         }
 

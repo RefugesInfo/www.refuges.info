@@ -29,8 +29,6 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
     /**
      * Process the Container to replace aliases with service definitions.
      *
-     * @param ContainerBuilder $container
-     *
      * @throws InvalidArgumentException if the service definition does not exist
      */
     public function process(ContainerBuilder $container)
@@ -51,7 +49,7 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
             if (isset($replacements[$targetId])) {
                 $container->setAlias($definitionId, $replacements[$targetId]);
             }
-            // No neeed to process the same target twice
+            // No need to process the same target twice
             if (isset($seenAliasTargets[$targetId])) {
                 continue;
             }
@@ -95,7 +93,7 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
     {
         foreach ($arguments as $k => $argument) {
             // Handle recursion step
-            if (is_array($argument)) {
+            if (\is_array($argument)) {
                 $arguments[$k] = $this->updateArgumentReferences($replacements, $definitionId, $argument);
                 continue;
             }
@@ -135,7 +133,7 @@ class ReplaceAliasByActualDefinitionPass implements CompilerPassInterface
 
     private function updateFactoryReference(array $replacements, $factory)
     {
-        if (is_array($factory) && $factory[0] instanceof Reference && isset($replacements[$referenceId = (string) $factory[0]])) {
+        if (\is_array($factory) && $factory[0] instanceof Reference && isset($replacements[$referenceId = (string) $factory[0]])) {
             $factory[0] = new Reference($replacements[$referenceId], $factory[0]->getInvalidBehavior());
         }
 

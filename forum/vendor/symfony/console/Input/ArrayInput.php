@@ -27,12 +27,6 @@ class ArrayInput extends Input
 {
     private $parameters;
 
-    /**
-     * Constructor.
-     *
-     * @param array                $parameters An array of parameters
-     * @param InputDefinition|null $definition A InputDefinition instance
-     */
     public function __construct(array $parameters, InputDefinition $definition = null)
     {
         $this->parameters = $parameters;
@@ -62,11 +56,11 @@ class ArrayInput extends Input
         $values = (array) $values;
 
         foreach ($this->parameters as $k => $v) {
-            if (!is_int($k)) {
+            if (!\is_int($k)) {
                 $v = $k;
             }
 
-            if (in_array($v, $values)) {
+            if (\in_array($v, $values)) {
                 return true;
             }
         }
@@ -82,11 +76,11 @@ class ArrayInput extends Input
         $values = (array) $values;
 
         foreach ($this->parameters as $k => $v) {
-            if (is_int($k)) {
-                if (in_array($v, $values)) {
+            if (\is_int($k)) {
+                if (\in_array($v, $values)) {
                     return true;
                 }
-            } elseif (in_array($k, $values)) {
+            } elseif (\in_array($k, $values)) {
                 return $v;
             }
         }
@@ -104,9 +98,15 @@ class ArrayInput extends Input
         $params = array();
         foreach ($this->parameters as $param => $val) {
             if ($param && '-' === $param[0]) {
-                $params[] = $param.('' != $val ? '='.$this->escapeToken($val) : '');
+                if (\is_array($val)) {
+                    foreach ($val as $v) {
+                        $params[] = $param.('' != $v ? '='.$this->escapeToken($v) : '');
+                    }
+                } else {
+                    $params[] = $param.('' != $val ? '='.$this->escapeToken($val) : '');
+                }
             } else {
-                $params[] = $this->escapeToken($val);
+                $params[] = \is_array($val) ? implode(' ', array_map(array($this, 'escapeToken'), $val)) : $this->escapeToken($val);
             }
         }
 

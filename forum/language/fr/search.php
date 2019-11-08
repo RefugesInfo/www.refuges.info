@@ -116,7 +116,7 @@ $lang = array_merge($lang, array(
 	'SORT_FORUM'				=> 'Forum',
 	'SORT_POST_SUBJECT'			=> 'Sujet du message',
 	'SORT_TIME'					=> 'Date',
-	'SPHINX_SEARCH_FAILED'		=> 'Echec de la recherche : %s',
+	'SPHINX_SEARCH_FAILED'		=> 'Échec de la recherche : %s',
 	'SPHINX_SEARCH_FAILED_LOG'	=> 'Désolé, la recherche n’a pu aboutir. Les informations relatives à cette erreur on été consignées dans le journal des erreurs.',
 
 	'TOO_FEW_AUTHOR_CHARS'	=> array(

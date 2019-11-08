@@ -1,4 +1,5 @@
 Subject: Notification de nouveau message dans le forum - {FORUM_NAME}
+List-Unsubscribe: <{U_STOP_WATCHING_FORUM}>
 
 Bonjour {USERNAME},
 

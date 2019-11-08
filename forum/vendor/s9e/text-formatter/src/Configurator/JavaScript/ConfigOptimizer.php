@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\JavaScript;
@@ -30,16 +30,18 @@ class ConfigOptimizer
 	}
 	public function optimize($object)
 	{
-		return \current($this->optimizeObjectContent(array($object)))->getValue();
+		return \current($this->optimizeObjectContent([$object]))->getValue();
 	}
 	public function reset()
 	{
-		$this->configValues = array();
-		$this->jsLengths    = array();
+		$this->configValues = [];
+		$this->jsLengths    = [];
 	}
 	protected function canDeduplicate($value)
 	{
-		return (\is_array($value) || $value instanceof Code || $value instanceof Dictionary);
+		if (\is_array($value) || $value instanceof Dictionary)
+			return (bool) \count($value);
+		return ($value instanceof Code);
 	}
 	protected function deduplicateConfigValues()
 	{

@@ -29,11 +29,19 @@ class RouteCompiler implements RouteCompilerInterface
     const SEPARATORS = '/,;.:-_~+*=@|';
 
     /**
+     * The maximum supported length of a PCRE subpattern name
+     * http://pcre.org/current/doc/html/pcre2pattern.html#SEC16.
+     *
+     * @internal
+     */
+    const VARIABLE_MAXIMUM_LENGTH = 32;
+
+    /**
      * {@inheritdoc}
      *
      * @throws \LogicException  If a variable is referenced more than once
-     * @throws \DomainException If a variable name is numeric because PHP raises an error for such
-     *                          subpatterns in PCRE and thus would break matching, e.g. "(?P<123>.+)".
+     * @throws \DomainException if a variable name starts with a digit or if it is too long to be successfully used as
+     *                          a PCRE subpattern
      */
     public static function compile(Route $route)
     {
@@ -91,20 +99,26 @@ class RouteCompiler implements RouteCompilerInterface
             $varName = substr($match[0][0], 1, -1);
             // get all static text preceding the current variable
             $precedingText = substr($pattern, $pos, $match[0][1] - $pos);
-            $pos = $match[0][1] + strlen($match[0][0]);
-            $precedingChar = strlen($precedingText) > 0 ? substr($precedingText, -1) : '';
+            $pos = $match[0][1] + \strlen($match[0][0]);
+            $precedingChar = \strlen($precedingText) > 0 ? substr($precedingText, -1) : '';
             $isSeparator = '' !== $precedingChar && false !== strpos(static::SEPARATORS, $precedingChar);
 
-            if (is_numeric($varName)) {
-                throw new \DomainException(sprintf('Variable name "%s" cannot be numeric in route pattern "%s". Please use a different name.', $varName, $pattern));
+            // A PCRE subpattern name must start with a non-digit. Also a PHP variable cannot start with a digit so the
+            // variable would not be usable as a Controller action argument.
+            if (preg_match('/^\d/', $varName)) {
+                throw new \DomainException(sprintf('Variable name "%s" cannot start with a digit in route pattern "%s". Please use a different name.', $varName, $pattern));
             }
-            if (in_array($varName, $variables)) {
+            if (\in_array($varName, $variables)) {
                 throw new \LogicException(sprintf('Route pattern "%s" cannot reference variable name "%s" more than once.', $pattern, $varName));
             }
 
-            if ($isSeparator && strlen($precedingText) > 1) {
+            if (\strlen($varName) > self::VARIABLE_MAXIMUM_LENGTH) {
+                throw new \DomainException(sprintf('Variable name "%s" cannot be longer than %s characters in route pattern "%s". Please use a shorter name.', $varName, self::VARIABLE_MAXIMUM_LENGTH, $pattern));
+            }
+
+            if ($isSeparator && \strlen($precedingText) > 1) {
                 $tokens[] = array('text', substr($precedingText, 0, -1));
-            } elseif (!$isSeparator && strlen($precedingText) > 0) {
+            } elseif (!$isSeparator && \strlen($precedingText) > 0) {
                 $tokens[] = array('text', $precedingText);
             }
 
@@ -138,14 +152,14 @@ class RouteCompiler implements RouteCompilerInterface
             $variables[] = $varName;
         }
 
-        if ($pos < strlen($pattern)) {
+        if ($pos < \strlen($pattern)) {
             $tokens[] = array('text', substr($pattern, $pos));
         }
 
         // find the first optional token
         $firstOptional = PHP_INT_MAX;
         if (!$isHost) {
-            for ($i = count($tokens) - 1; $i >= 0; --$i) {
+            for ($i = \count($tokens) - 1; $i >= 0; --$i) {
                 $token = $tokens[$i];
                 if ('variable' === $token[0] && $route->hasDefault($token[3])) {
                     $firstOptional = $i;
@@ -157,13 +171,13 @@ class RouteCompiler implements RouteCompilerInterface
 
         // compute the matching regexp
         $regexp = '';
-        for ($i = 0, $nbToken = count($tokens); $i < $nbToken; ++$i) {
+        for ($i = 0, $nbToken = \count($tokens); $i < $nbToken; ++$i) {
             $regexp .= self::computeRegexp($tokens, $i, $firstOptional);
         }
 
         return array(
             'staticPrefix' => 'text' === $tokens[0][0] ? $tokens[0][1] : '',
-            'regex' => self::REGEX_DELIMITER.'^'.$regexp.'$'.self::REGEX_DELIMITER.'s'.($isHost ? 'i' : ''),
+            'regex' => self::REGEX_DELIMITER.'^'.$regexp.'$'.self::REGEX_DELIMITER.'sD'.($isHost ? 'i' : ''),
             'tokens' => array_reverse($tokens),
             'variables' => $variables,
         );
@@ -215,7 +229,7 @@ class RouteCompiler implements RouteCompilerInterface
                     // "?:" means it is non-capturing, i.e. the portion of the subject string that
                     // matched the optional subpattern is not passed back.
                     $regexp = "(?:$regexp";
-                    $nbTokens = count($tokens);
+                    $nbTokens = \count($tokens);
                     if ($nbTokens - 1 == $index) {
                         // Close the optional subpatterns
                         $regexp .= str_repeat(')?', $nbTokens - $firstOptional - (0 === $firstOptional ? 1 : 0));

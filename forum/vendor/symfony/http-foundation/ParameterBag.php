@@ -20,14 +20,10 @@ class ParameterBag implements \IteratorAggregate, \Countable
 {
     /**
      * Parameter storage.
-     *
-     * @var array
      */
     protected $parameters;
 
     /**
-     * Constructor.
-     *
      * @param array $parameters An array of parameters
      */
     public function __construct(array $parameters = array())
@@ -91,7 +87,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
     public function get($key, $default = null, $deep = false)
     {
         if ($deep) {
-            @trigger_error('Using paths to find deeper items in '.__METHOD__.' is deprecated since version 2.8 and will be removed in 3.0. Filter the returned value in your own code instead.', E_USER_DEPRECATED);
+            @trigger_error('Using paths to find deeper items in '.__METHOD__.' is deprecated since Symfony 2.8 and will be removed in 3.0. Filter the returned value in your own code instead.', E_USER_DEPRECATED);
         }
 
         if (!$deep || false === $pos = strpos($key, '[')) {
@@ -105,7 +101,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
 
         $value = $this->parameters[$root];
         $currentKey = null;
-        for ($i = $pos, $c = strlen($key); $i < $c; ++$i) {
+        for ($i = $pos, $c = \strlen($key); $i < $c; ++$i) {
             $char = $key[$i];
 
             if ('[' === $char) {
@@ -119,7 +115,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
                     throw new \InvalidArgumentException(sprintf('Malformed path. Unexpected "]" at position %d.', $i));
                 }
 
-                if (!is_array($value) || !array_key_exists($currentKey, $value)) {
+                if (!\is_array($value) || !array_key_exists($currentKey, $value)) {
                     return $default;
                 }
 
@@ -135,7 +131,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
         }
 
         if (null !== $currentKey) {
-            throw new \InvalidArgumentException(sprintf('Malformed path. Path must end with "]".'));
+            throw new \InvalidArgumentException('Malformed path. Path must end with "]".');
         }
 
         return $value;
@@ -235,7 +231,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
      * Returns the parameter value converted to boolean.
      *
      * @param string $key     The parameter key
-     * @param mixed  $default The default value if the parameter key does not exist
+     * @param bool   $default The default value if the parameter key does not exist
      * @param bool   $deep    If true, a path like foo[bar] will find deeper items
      *
      * @return bool The filtered value
@@ -267,8 +263,8 @@ class ParameterBag implements \IteratorAggregate, \Countable
                 $filters[filter_id($tmp)] = 1;
             }
         }
-        if (is_bool($filter) || !isset($filters[$filter]) || is_array($deep)) {
-            @trigger_error('Passing the $deep boolean as 3rd argument to the '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0. Remove it altogether as the $deep argument will be removed in 3.0.', E_USER_DEPRECATED);
+        if (\is_bool($filter) || !isset($filters[$filter]) || \is_array($deep)) {
+            @trigger_error('Passing the $deep boolean as 3rd argument to the '.__METHOD__.' method is deprecated since Symfony 2.8 and will be removed in 3.0. Remove it altogether as the $deep argument will be removed in 3.0.', E_USER_DEPRECATED);
             $tmp = $deep;
             $deep = $filter;
             $filter = $options;
@@ -278,12 +274,12 @@ class ParameterBag implements \IteratorAggregate, \Countable
         $value = $this->get($key, $default, $deep);
 
         // Always turn $options into an array - this allows filter_var option shortcuts.
-        if (!is_array($options) && $options) {
+        if (!\is_array($options) && $options) {
             $options = array('flags' => $options);
         }
 
         // Add a convenience check for arrays.
-        if (is_array($value) && !isset($options['flags'])) {
+        if (\is_array($value) && !isset($options['flags'])) {
             $options['flags'] = FILTER_REQUIRE_ARRAY;
         }
 
@@ -307,6 +303,6 @@ class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function count()
     {
-        return count($this->parameters);
+        return \count($this->parameters);
     }
 }

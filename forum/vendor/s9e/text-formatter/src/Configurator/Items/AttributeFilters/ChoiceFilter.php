@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Items\AttributeFilters;
@@ -20,7 +20,7 @@ class ChoiceFilter extends RegexpFilter
 	{
 		if (!\is_bool($caseSensitive))
 			throw new InvalidArgumentException('Argument 2 passed to ' . __METHOD__ . ' must be a boolean');
-		$regexp = RegexpBuilder::fromList($values, array('delimiter' => '/'));
+		$regexp = RegexpBuilder::fromList($values, ['delimiter' => '/']);
 		$regexp = '/^' . $regexp . '$/D';
 		if (!$caseSensitive)
 			$regexp .= 'i';

@@ -8,7 +8,7 @@ Imprimez ce message et faites-le signer et dater par vos parents ou vos tuteurs.
 
 {FAX_INFO}
 
-Ou envoyez-le à l’adresse e-mail suivante :
+Ou envoyez-le à l’adresse courriel suivante :
 
 {MAIL_INFO}
 
@@ -16,7 +16,7 @@ Ou envoyez-le à l’adresse e-mail suivante :
 Autorisation de participer à « {SITENAME} » - {U_BOARD}
 
 Nom d’utilisateur : {USERNAME}
-E-mail : {EMAIL_ADDRESS}
+Adresse courriel : {EMAIL_ADDRESS}
 
 J’AI VÉRIFIÉ LES INFORMATIONS FOURNIES PAR MON ENFANT ET ACCORDE L’AUTORISATION À « {SITENAME} » DE STOCKER CES INFORMATIONS.
 JE COMPRENDS QUE CES INFORMATIONS PEUVENT ÊTRE MODIFIÉES À TOUT MOMENT EN SAISISSANT UN MOT DE PASSE.
@@ -33,9 +33,9 @@ Date : _______________
 ------------------------------ DÉCOUPEZ ICI ------------------------------
 
 
-Une fois que l’administrateur aura reçu le texte ci-dessus par fax ou par e-mail, votre compte sera activé.
+Une fois que l’administrateur aura reçu le texte ci-dessus par fax ou par courriel, votre compte sera activé.
 
-Votre mot de passe a été stocké de manière sécurisée dans notre base de données et ne pourra pas être retrouvé. Dans le cas où vous l’auriez oublié, vous pourrez le réinitialiser en utilisant l’adresse e-mail associée à votre compte.
+Votre mot de passe a été stocké de manière sécurisée dans notre base de données et ne pourra pas être retrouvé. Dans le cas où vous l’auriez oublié, vous pourrez le réinitialiser en utilisant l’adresse courriel associée à votre compte.
 
 Merci de vous être enregistré.
 

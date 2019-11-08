@@ -63,6 +63,9 @@ class FastImageSize
 				'x-icon',
 				'icon',
 		),
+		'webp'	=> array(
+				'webp',
+		)
 	);
 
 	/** @var array Class map that links image extensions/mime types to class */
@@ -109,7 +112,7 @@ class FastImageSize
 		}
 		else
 		{
-			$extension = (isset($match[1])) ? $match[1] : preg_replace('/.+\/([a-z0-9-.]+)$/i', '$1', $type);
+			$extension = (empty($type) && isset($match[1])) ? $match[1] : preg_replace('/.+\/([a-z0-9-.]+)$/i', '$1', $type);
 
 			$this->getImageSizeByExtension($file, $extension);
 		}

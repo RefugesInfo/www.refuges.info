@@ -4,7 +4,7 @@ Félicitations,
 
 Vous venez d’installer phpBB sur votre serveur.
 
-Cet e-mail contient d’importantes informations concernant votre installation que vous devriez conserver. Votre mot de passe a été stocké de manière sécurisée en base de données et ne pourra pas être retrouvé. Dans le cas où vous l’auriez oublié, vous pourrez le réinitialiser en utilisant l’adresse e-mail associée à votre compte.
+Ce courriel contient d’importantes informations concernant votre installation que vous devriez conserver. Votre mot de passe a été stocké de manière sécurisée en base de données et ne pourra pas être retrouvé. Dans le cas où vous l’auriez oublié, vous pourrez le réinitialiser en utilisant l’adresse courriel associée à votre compte.
 
 ----------------------------
 Nom d’utilisateur : {USERNAME}

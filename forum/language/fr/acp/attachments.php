@@ -106,23 +106,21 @@ $lang = array_merge($lang, array(
 	'EXT_GROUP_PLAIN_TEXT'			=> 'Texte',
 
 	'FILES_GONE'			=> 'Certains des fichiers joints sélectionnés pour suppression n’existent pas. Ils ont probablement déjà été supprimés. Les fichiers joints qui existaient ont été supprimés.',
-	'FILES_STATS_WRONG'		=> 'Vos statistiques de fichiers sont probalement inexactes et doivent être actualisées. Valeurs réelles : nombre de fichiers joints = %1$d, taille totale des fichiers joints = %2$s.<br />Cliquez %3$sici%4$s pour actualiser les statistiques.',
+	'FILES_STATS_WRONG'		=> 'Vos statistiques de fichiers sont probablement inexactes et doivent être actualisées. Valeurs réelles : nombre de fichiers joints = %1$d, taille totale des fichiers joints = %2$s.<br>Cliquez %3$sici%4$s pour actualiser les statistiques.',
 
 	'GO_TO_EXTENSIONS'		=> 'Gérer les extensions des fichiers joints',
 	'GROUP_NAME'			=> 'Nom du groupe',
 
 	'IMAGE_LINK_SIZE'			=> 'Dimensions du lien de l’image',
 	'IMAGE_LINK_SIZE_EXPLAIN'	=> 'Les fichiers image joints s’afficheront sous forme de lien texte, si la taille de l’image est plus grande que les dimensions saisies. Pour désactiver ce comportement, réglez les valeurs sur 0px par 0px.',
-	'IMAGICK_PATH'				=> 'Chemin vers ImageMagick',
-	'IMAGICK_PATH_EXPLAIN'		=> 'Chemin complet vers l’application ImageMagick, par exemple : <samp>/usr/bin/</samp>.',
 
 	'MAX_ATTACHMENTS'				=> 'Nombre maximum de fichiers joints par message',
 	'MAX_ATTACHMENTS_PM'			=> 'Nombre maximum de fichiers joints par message privé',
 	'MAX_EXTGROUP_FILESIZE'			=> 'Taille maximale du fichier',
 	'MAX_IMAGE_SIZE'				=> 'Dimensions maximales de l’image',
 	'MAX_IMAGE_SIZE_EXPLAIN'		=> 'Taille maximale des images jointes. Réglez les deux valeurs sur 0px par 0px pour désactiver le contrôle des dimensions.',
-	'MAX_THUMB_WIDTH'				=> 'Largeur maximale de la miniature générée',
-	'MAX_THUMB_WIDTH_EXPLAIN'		=> 'La miniature générée n’excédera pas la largeur indiquée.',
+	'MAX_THUMB_WIDTH'				=> 'Largeur/hauteur maximale de la miniature générée',
+	'MAX_THUMB_WIDTH_EXPLAIN'		=> 'La miniature générée n’excédera pas la largeur ou la hauteur indiquée.',
 	'MIN_THUMB_FILESIZE'			=> 'Taille minimale de la miniature',
 	'MIN_THUMB_FILESIZE_EXPLAIN'	=> 'Ne pas créer de miniature pour les images ayant un poids inférieur à',
 	'MODE_INLINE'					=> 'Intégré',
@@ -137,7 +135,6 @@ $lang = array_merge($lang, array(
 	'NO_EXT_GROUP_SPECIFIED'	=> 'Vous n’avez indiqué aucun groupe d’extension.',
 	'NO_FILE_CAT'				=> 'Aucun',
 	'NO_IMAGE'					=> 'Aucune image',
-	'NO_THUMBNAIL_SUPPORT'		=> 'Le support des miniatures est désactivé. Pour que cela fonctionne correctement, la librairie GD doit être disponible ou ImageMagick doit être installé. Aucun des deux n’a été trouvé.',
 	'NO_UPLOAD_DIR'				=> 'Le répertoire de transfert indiqué n’existe pas.',
 	'NO_WRITE_UPLOAD'			=> 'Vous ne possédez pas les droits en écriture sur le répertoire de transfert indiqué. Modifiez les permissions du répertoire (CHMOD) afin d’autoriser le service Web à y accéder en écriture.',
 
@@ -149,7 +146,6 @@ $lang = array_merge($lang, array(
 	'REMOVE_DISALLOWED_IPS'			=> 'Supprimer ou ne plus exclure les IP/noms d’hôtes <em>interdits</em>',
 	'RESYNC_FILES_STATS_CONFIRM'	=> 'Êtes-vous sûr de vouloir actualiser les statistiques de fichiers ?',
 
-	'SEARCH_IMAGICK'				=> 'Rechercher l’application ImageMagick',
 	'SECURE_ALLOW_DENY'				=> 'Liste des autorisations/refus',
 	'SECURE_ALLOW_DENY_EXPLAIN'		=> 'Lorsque les téléchargements sécurisés sont activés, modifiez le comportement par défaut de la liste d’autorisations/refus à celle d’une <strong>liste blanche</strong> (Autorisé) ou une <strong>liste noire</strong> (Refusé).',
 	'SECURE_DOWNLOADS'				=> 'Activer les téléchargements sécurisés',
@@ -169,7 +165,7 @@ $lang = array_merge($lang, array(
 	'UPLOADING_FILE_TO'				=> 'Le fichier « %1$s » a été transféré au message numéro %2$d.',
 	'UPLOAD_DENIED_FORUM'			=> 'Vous n’avez pas la permission de transférer des fichiers sur le forum « %s ».',
 	'UPLOAD_DIR'					=> 'Répertoire de transfert',
-	'UPLOAD_DIR_EXPLAIN'			=> 'Indiquez le chemin du répertoire de stockage destiné au tranfert de fichiers joints. Notez que si vous modifiez ce répertoire alors que des fichiers joints s’y trouvent déjà, vous devrez les déplacer manuellement vers le nouvel emplacement.',
+	'UPLOAD_DIR_EXPLAIN'			=> 'Indiquez le chemin du répertoire de stockage destiné au transfert de fichiers joints. Notez que si vous modifiez ce répertoire alors que des fichiers joints s’y trouvent déjà, vous devrez les déplacer manuellement vers le nouvel emplacement.',
 	'UPLOAD_ICON'					=> 'Icône de transfert',
 	'UPLOAD_NOT_DIR'				=> 'L’emplacement de transfert que vous avez indiqué ne semble pas être un répertoire.',
 ));

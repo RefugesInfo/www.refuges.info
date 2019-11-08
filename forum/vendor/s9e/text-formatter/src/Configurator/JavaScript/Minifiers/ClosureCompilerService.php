@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\JavaScript\Minifiers;
@@ -13,7 +13,7 @@ class ClosureCompilerService extends OnlineMinifier
 	public $compilationLevel = 'ADVANCED_OPTIMIZATIONS';
 	public $excludeDefaultExterns = \true;
 	public $externs;
-	public $url = 'http://closure-compiler.appspot.com/compile';
+	public $url = 'https://closure-compiler.appspot.com/compile';
 	public function __construct()
 	{
 		parent::__construct();
@@ -21,7 +21,7 @@ class ClosureCompilerService extends OnlineMinifier
 	}
 	public function getCacheDifferentiator()
 	{
-		$key = array($this->compilationLevel, $this->excludeDefaultExterns);
+		$key = [$this->compilationLevel, $this->excludeDefaultExterns];
 		if ($this->excludeDefaultExterns)
 			$key[] = $this->externs;
 		return $key;
@@ -63,12 +63,12 @@ class ClosureCompilerService extends OnlineMinifier
 	}
 	protected function generateRequestBody($src)
 	{
-		$params = array(
+		$params = [
 			'compilation_level' => $this->compilationLevel,
 			'js_code'           => $src,
 			'output_format'     => 'json',
 			'output_info'       => 'compiled_code'
-		);
+		];
 		if ($this->excludeDefaultExterns && $this->compilationLevel === 'ADVANCED_OPTIMIZATIONS')
 		{
 			$params['exclude_default_externs'] = 'true';
@@ -81,7 +81,7 @@ class ClosureCompilerService extends OnlineMinifier
 	{
 		return $this->httpClient->post(
 			$this->url,
-			array('Content-Type: application/x-www-form-urlencoded'),
+			['Content-Type: application/x-www-form-urlencoded'],
 			$body
 		);
 	}

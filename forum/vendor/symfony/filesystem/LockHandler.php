@@ -56,7 +56,7 @@ class LockHandler
     /**
      * Lock the resource.
      *
-     * @param bool $blocking wait until the lock is released
+     * @param bool $blocking Wait until the lock is released
      *
      * @return bool Returns true if the lock was acquired, false otherwise
      *
@@ -68,22 +68,25 @@ class LockHandler
             return true;
         }
 
-        // Silence error reporting
-        set_error_handler(function () {});
+        $error = null;
 
-        if (!$this->handle = fopen($this->file, 'r')) {
+        // Silence error reporting
+        set_error_handler(function ($errno, $msg) use (&$error) {
+            $error = $msg;
+        });
+
+        if (!$this->handle = fopen($this->file, 'r+') ?: fopen($this->file, 'r')) {
             if ($this->handle = fopen($this->file, 'x')) {
-                chmod($this->file, 0444);
-            } elseif (!$this->handle = fopen($this->file, 'r')) {
+                chmod($this->file, 0666);
+            } elseif (!$this->handle = fopen($this->file, 'r+') ?: fopen($this->file, 'r')) {
                 usleep(100); // Give some time for chmod() to complete
-                $this->handle = fopen($this->file, 'r');
+                $this->handle = fopen($this->file, 'r+') ?: fopen($this->file, 'r');
             }
         }
         restore_error_handler();
 
         if (!$this->handle) {
-            $error = error_get_last();
-            throw new IOException($error['message'], 0, null, $this->file);
+            throw new IOException($error, 0, null, $this->file);
         }
 
         // On Windows, even if PHP doc says the contrary, LOCK_NB works, see

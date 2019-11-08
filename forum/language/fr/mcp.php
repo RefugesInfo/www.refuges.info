@@ -149,7 +149,7 @@ $lang = array_merge($lang, array(
 	'MCP_ADD'					=> 'Ajouter un avertissement',
 
 	'MCP_BAN'					=> 'Bannissements',
-	'MCP_BAN_EMAILS'			=> 'Bannir des adresses e-mail',
+	'MCP_BAN_EMAILS'			=> 'Bannir des adresses courriels',
 	'MCP_BAN_IPS'				=> 'Bannir des IP',
 	'MCP_BAN_USERNAMES'			=> 'Bannir des utilisateurs',
 
@@ -220,7 +220,7 @@ $lang = array_merge($lang, array(
 	'MCP_WARN_USER'			=> 'Avertir le membre',
 
 	'MERGE_POSTS_CONFIRM'	=> 'Êtes-vous sûr de vouloir déplacer les messages sélectionnés ?',
-	'MERGE_TOPIC_EXPLAIN'	=> 'L’utilisation du formulaire ci-dessous vous permet de déplacer les messages sélectionnés dans un autre sujet. Ces messages seront déplacés de ce sujet et fusionnés dans l’autre sujet. Ces messages ne seront pas réordonnés et apparaîtront comme si les utilisateurs les avaient postés dans le nouveau sujet.<br />Saisissez l’id du sujet de destination ou cliquez sur « Sélectionner le sujet » pour en rechercher un.',
+	'MERGE_TOPIC_EXPLAIN'	=> 'L’utilisation du formulaire ci-dessous vous permet de déplacer les messages sélectionnés dans un autre sujet. Ces messages seront déplacés de ce sujet et fusionnés dans l’autre sujet. Ces messages ne seront pas réordonnés et apparaîtront comme si les utilisateurs les avaient postés dans le nouveau sujet.<br>Saisissez l’id du sujet de destination ou cliquez sur « Sélectionner le sujet » pour en rechercher un.',
 	'MERGE_TOPIC_ID'		=> 'Id du sujet de destination',
 	'MERGE_TOPICS'			=> 'Fusionner les sujets',
 	'MERGE_TOPICS_CONFIRM'	=> 'Êtes-vous sûr de vouloir fusionner les sujets sélectionnés ?',
@@ -314,7 +314,7 @@ $lang = array_merge($lang, array(
 	'REPORT_MESSAGE_EXPLAIN'	=> 'Utilisez ce formulaire pour rapporter le message privé sélectionné. En général, le rapport ne devra être utilisé que si le message ne respecte pas les règles du forum. <strong>Notez que rapporter un message privé rendra son contenu visible par tous les modérateurs.</strong>',
 	'REPORT_NOTIFY'				=> 'M’informer',
 	'REPORT_NOTIFY_EXPLAIN'		=> 'Vous informer quand votre rapport a été traité.',
-	'REPORT_POST_EXPLAIN'		=> 'Utilisez ce formulaire pour rapporter le message sélectionné aux modérateurs du forum et aux administrateurs. En général, le rapport ne devra être utilisé que si le message ne respecte pas les règles du forum.',
+	'REPORT_POST_EXPLAIN'		=> 'Utilisez ce formulaire pour rapporter le message sélectionné aux modérateurs et aux administrateurs du forum. En général, le rapport ne devrait être utilisé que si le message ne respecte pas les règles du forum.',
 	'REPORT_REASON'				=> 'Raison du rapport',
 	'REPORT_TIME'				=> 'Date du rapport',
 	'RESTORE'					=> 'Restaurer',
@@ -325,7 +325,7 @@ $lang = array_merge($lang, array(
 	'RESTORE_TOPIC'				=> 'Restauration d’un sujet',
 	'RESTORE_TOPIC_CONFIRM'		=> 'Êtes-vous sûr de vouloir restaurer ce sujet ?',
 	'RESTORE_TOPICS'			=> 'Restauration de sujets',
-	'RESTORE_TOPICS_CONFIRM'	=> 'Êtes-vous sûr de vouloir restaurer les sujets selectionnés ?',
+	'RESTORE_TOPICS_CONFIRM'	=> 'Êtes-vous sûr de vouloir restaurer les sujets sélectionnés ?',
 	'RESYNC'					=> 'Resynchroniser',
 	'RETURN_MESSAGE'			=> '%sRetourner au message%s',
 	'RETURN_NEW_FORUM'			=> '%sAller au nouveau forum%s',

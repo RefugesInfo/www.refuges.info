@@ -13,9 +13,9 @@ namespace Symfony\Component\Console\Helper;
 
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 /**
  * The Dialog class provides helpers to interact with the user.
@@ -34,7 +34,7 @@ class DialogHelper extends InputAwareHelper
     public function __construct($triggerDeprecationError = true)
     {
         if ($triggerDeprecationError) {
-            @trigger_error('"Symfony\Component\Console\Helper\DialogHelper" is deprecated since version 2.5 and will be removed in 3.0. Use "Symfony\Component\Console\Helper\QuestionHelper" instead.', E_USER_DEPRECATED);
+            @trigger_error('"Symfony\Component\Console\Helper\DialogHelper" is deprecated since Symfony 2.5 and will be removed in 3.0. Use "Symfony\Component\Console\Helper\QuestionHelper" instead.', E_USER_DEPRECATED);
         }
     }
 
@@ -139,7 +139,7 @@ class DialogHelper extends InputAwareHelper
             $i = 0;
             $ofs = -1;
             $matches = $autocomplete;
-            $numMatches = count($matches);
+            $numMatches = \count($matches);
 
             $sttyMode = shell_exec('stty -g');
 
@@ -161,10 +161,10 @@ class DialogHelper extends InputAwareHelper
                         $output->write("\033[1D");
                     }
 
-                    if ($i === 0) {
+                    if (0 === $i) {
                         $ofs = -1;
                         $matches = $autocomplete;
-                        $numMatches = count($matches);
+                        $numMatches = \count($matches);
                     } else {
                         $numMatches = 0;
                     }
@@ -188,13 +188,13 @@ class DialogHelper extends InputAwareHelper
                         $ofs += ('A' === $c[2]) ? -1 : 1;
                         $ofs = ($numMatches + $ofs) % $numMatches;
                     }
-                } elseif (ord($c) < 32) {
+                } elseif (\ord($c) < 32) {
                     if ("\t" === $c || "\n" === $c) {
                         if ($numMatches > 0 && -1 !== $ofs) {
                             $ret = $matches[$ofs];
                             // Echo out remaining chars for current match
                             $output->write(substr($ret, $i));
-                            $i = strlen($ret);
+                            $i = \strlen($ret);
                         }
 
                         if ("\n" === $c) {
@@ -216,7 +216,7 @@ class DialogHelper extends InputAwareHelper
 
                     foreach ($autocomplete as $value) {
                         // If typed characters match the beginning chunk of value (e.g. [AcmeDe]moBundle)
-                        if (0 === strpos($value, $ret) && $i !== strlen($value)) {
+                        if (0 === strpos($value, $ret) && $i !== \strlen($value)) {
                             $matches[$numMatches++] = $value;
                         }
                     }
@@ -239,7 +239,7 @@ class DialogHelper extends InputAwareHelper
             shell_exec(sprintf('stty %s', $sttyMode));
         }
 
-        return strlen($ret) > 0 ? $ret : $default;
+        return \strlen($ret) > 0 ? $ret : $default;
     }
 
     /**
@@ -256,7 +256,7 @@ class DialogHelper extends InputAwareHelper
     public function askConfirmation(OutputInterface $output, $question, $default = true)
     {
         $answer = 'z';
-        while ($answer && !in_array(strtolower($answer[0]), array('y', 'n'))) {
+        while ($answer && !\in_array(strtolower($answer[0]), array('y', 'n'))) {
             $answer = $this->ask($output, $question);
         }
 
@@ -284,7 +284,7 @@ class DialogHelper extends InputAwareHelper
             $output = $output->getErrorOutput();
         }
 
-        if ('\\' === DIRECTORY_SEPARATOR) {
+        if ('\\' === \DIRECTORY_SEPARATOR) {
             $exe = __DIR__.'/../Resources/bin/hiddeninput.exe';
 
             // handle code running from a phar
@@ -326,7 +326,7 @@ class DialogHelper extends InputAwareHelper
 
         if (false !== $shell = $this->getShell()) {
             $output->write($question);
-            $readCmd = $shell === 'csh' ? 'set mypassword = $<' : 'read -r mypassword';
+            $readCmd = 'csh' === $shell ? 'set mypassword = $<' : 'read -r mypassword';
             $command = sprintf("/usr/bin/env %s -c 'stty -echo; %s; stty echo; echo \$mypassword'", $shell, $readCmd);
             $value = rtrim(shell_exec($command));
             $output->writeln('');
@@ -464,7 +464,7 @@ class DialogHelper extends InputAwareHelper
 
         exec('stty 2>&1', $output, $exitcode);
 
-        return self::$stty = $exitcode === 0;
+        return self::$stty = 0 === $exitcode;
     }
 
     /**
@@ -492,7 +492,7 @@ class DialogHelper extends InputAwareHelper
             }
 
             try {
-                return call_user_func($validator, $interviewer());
+                return \call_user_func($validator, $interviewer());
             } catch (\Exception $e) {
             }
         }

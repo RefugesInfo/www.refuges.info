@@ -12,9 +12,9 @@
 namespace Symfony\Component\HttpKernel\Fragment;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 /**
@@ -40,8 +40,6 @@ class FragmentHandler
     private $requestStack;
 
     /**
-     * Constructor.
-     *
      * RequestStack will become required in 3.0.
      *
      * @param RequestStack                $requestStack The Request stack that controls the lifecycle of requests
@@ -50,11 +48,11 @@ class FragmentHandler
      */
     public function __construct($requestStack = null, $renderers = array(), $debug = false)
     {
-        if (is_array($requestStack)) {
+        if (\is_array($requestStack)) {
             $tmp = $debug;
-            $debug = func_num_args() < 2 ? false : $renderers;
+            $debug = \func_num_args() < 2 ? false : $renderers;
             $renderers = $requestStack;
-            $requestStack = func_num_args() < 3 ? null : $tmp;
+            $requestStack = \func_num_args() < 3 ? null : $tmp;
 
             @trigger_error('The '.__METHOD__.' method now requires a RequestStack to be given as first argument as '.__CLASS__.'::setRequest method will not be supported anymore in 3.0.', E_USER_DEPRECATED);
         } elseif (!$requestStack instanceof RequestStack) {
@@ -64,7 +62,7 @@ class FragmentHandler
         if (null !== $requestStack && !$requestStack instanceof RequestStack) {
             throw new \InvalidArgumentException('RequestStack instance expected.');
         }
-        if (!is_array($renderers)) {
+        if (!\is_array($renderers)) {
             throw new \InvalidArgumentException('Renderers must be an array.');
         }
 
@@ -77,8 +75,6 @@ class FragmentHandler
 
     /**
      * Adds a renderer.
-     *
-     * @param FragmentRendererInterface $renderer A FragmentRendererInterface instance
      */
     public function addRenderer(FragmentRendererInterface $renderer)
     {
@@ -98,7 +94,7 @@ class FragmentHandler
      */
     public function setRequest(Request $request = null)
     {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.' method is deprecated since Symfony 2.4 and will be removed in 3.0.', E_USER_DEPRECATED);
 
         $this->request = $request;
     }
@@ -141,8 +137,6 @@ class FragmentHandler
      *
      * When the Response is a StreamedResponse, the content is streamed immediately
      * instead of being returned.
-     *
-     * @param Response $response A Response instance
      *
      * @return string|null The Response content or null when the Response is streamed
      *

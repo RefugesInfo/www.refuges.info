@@ -53,14 +53,14 @@ $lang = array_merge($lang, array(
 	'MIGRATION_NOT_INSTALLED'			=> 'La migration « %s » n’est pas installée.',
 	'MIGRATION_NOT_VALID'				=> '%s n’est pas une migration valide.',
 	'MIGRATION_SCHEMA_DONE'				=> 'Schéma installé : %1$s ; Durée : %2$.2f secondes',
-	'MIGRATION_SCHEMA_IN_PROGRESS'		=> 'Installation du schéma: %1$s; Durée : %2$.2f secondes',
+	'MIGRATION_SCHEMA_IN_PROGRESS'		=> 'Installation du schéma : %1$s; Durée : %2$.2f secondes',
 	'MIGRATION_SCHEMA_RUNNING'			=> 'Installation du schéma : %s.',
 
 	'MIGRATION_REVERT_DATA_DONE'		=> 'Modifications liées aux données annulées : %1$s ; Durée : %2$.2f secondes',
 	'MIGRATION_REVERT_DATA_IN_PROGRESS'	=> 'Annulation des modifications liées aux données : %1$s ; Durée : %2$.2f secondes',
 	'MIGRATION_REVERT_DATA_RUNNING'		=> 'Annulation des modifications liées aux données : %s.',
 	'MIGRATION_REVERT_SCHEMA_DONE'		=> 'Modifications liées au schéma annulées : %1$s ; Durée : %2$.2f secondes',
-	'MIGRATION_REVERT_SCHEMA_IN_PROGRESS'	=> 'Annulation des modifications liées au schéma: %1$s; Durée : %2$.2f secondes',
+	'MIGRATION_REVERT_SCHEMA_IN_PROGRESS'	=> 'Annulation des modifications liées au schéma : %1$s; Durée : %2$.2f secondes',
 	'MIGRATION_REVERT_SCHEMA_RUNNING'	=> 'Annulation des modifications liées au schéma : %s.',
 
 	'MIGRATION_INVALID_DATA_MISSING_CONDITION'		=> 'Le fichier de mise à jour contient une erreur. Une condition est manquante dans l’instruction « IF ».',

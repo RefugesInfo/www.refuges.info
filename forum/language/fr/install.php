@@ -47,17 +47,17 @@ $lang = array_merge($lang, array(
 
 	// Introduction page
 	'INTRODUCTION_TITLE'	=> 'Introduction',
-	'INTRODUCTION_BODY'		=> 'Bienvenue sur phpBB3 !<br /><br />phpBB® est la solution de forum libre la plus répandue dans le monde. phpBB3 est l’aboutissement d’un long processus débuté en 2000. Comme ces prédécesseurs, phpBB3 est riche en fonctionnalités, convivial et complètement supporté par l’équipe phpBB. phpBB3 améliore considérablement ce qui a rendu populaire phpBB2 et ajoute des fonctionnalités très souvent demandées, qui n’étaient pas présentes dans les versions précédentes. Nous espérons qu’il dépassera vos attentes.<br /><br />Cet outil vous guidera à travers l’installation de phpBB3, la mise à jour de votre forum phpBB3 ou la conversion depuis un autre système de forum (y compris phpBB2). Pour plus d’informations, nous vous invitons à prendre connaissance du <a href="../docs/INSTALL.html">guide d’installation</a> (en anglais).<br /><br />Pour consulter la licence de phpBB3 ou vous renseigner sur l’obtention de support ainsi que notre position, choisissez l’option respective à partir du menu latéral. Pour continuer, choisissez l’option appropriée dans les onglets ci-dessus.',
+	'INTRODUCTION_BODY'		=> 'Bienvenue sur phpBB3 !<br><br>phpBB® est la solution de forum libre la plus répandue dans le monde. phpBB3 est l’aboutissement d’un long processus débuté en 2000. Comme ses prédécesseurs, phpBB3 est riche en fonctionnalités, convivial et complètement supporté par l’équipe phpBB. phpBB3 améliore considérablement ce qui a rendu populaire phpBB2 et ajoute des fonctionnalités très souvent demandées, qui n’étaient pas présentes dans les versions précédentes. Nous espérons qu’il dépassera vos attentes.<br><br>Cet outil vous guidera à travers l’installation de phpBB3, la mise à jour de votre forum phpBB3 ou la conversion depuis un autre système de forum (y compris phpBB2). Pour plus d’informations, nous vous invitons à prendre connaissance du <a href="../docs/INSTALL.html">guide d’installation</a> (en anglais).<br><br>Pour consulter la licence de phpBB3 ou vous renseigner sur l’obtention de support ainsi que notre position, choisissez l’option respective à partir du menu latéral. Pour continuer, choisissez l’option appropriée dans les onglets ci-dessus.',
 
 	// Support page
 	'SUPPORT_TITLE'		=> 'Support',
-	'SUPPORT_BODY'		=> 'Un support complet et gratuit est fourni pour l’actuelle version stable de phpBB3. Ceci inclut les questions concernant :</p><ul><li>l’installation</li><li>la configuration</li><li>les questions techniques</li><li>les problèmes liés aux potentiels bugs du logiciel</li><li>la mise à jour depuis une version « Release Candidate » (RC) vers la dernière version stable</li><li>la conversion depuis un forum phpBB 2.0.x vers phpBB3</li><li>la conversion depuis un autre système de forum vers phpBB3 (consultez <a href="https://www.phpbb.com/community/viewforum.php?f=486">le forum des convertisseurs</a>*)</li></ul><p>Nous encourageons les utilisateurs d’une des versions béta de phpBB3 à remplacer celle-ci par la dernière version stable.</p><h2>Extensions / Styles</h2><p>Pour des problèmes liés aux extensions, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=451">forum des extensions</a>*.<br />Pour des problèmes liés aux styles, templates et thèmes, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=471">forum des styles</a>*.<br /><br />Si votre question est en relation avec une archive précise, créez votre message directement dans le sujet dédié à l’archive.</p><h2>Obtention du support</h2><p><a href="https://www.phpbb.com/community/viewtopic.php?f=14&amp;t=571070">Le pack de bienvenue de phpBB</a>*<br /><a href="https://www.phpbb.com/support/">Section de support</a>*<br /><a href="https://www.phpbb.com/support/docs/en/3.1/ug/quickstart/">Guide de démarrage rapide</a>*<br /><br />Pour vous assurer d’être à jour et au courant des dernières nouvelles, nous vous conseillons de souscrire à notre <a href="https://www.phpbb.com/support/">lettre d’informations</a>*.<br /><br />*lien externe amenant sur une page non traduite en français.<br /><br />',
+	'SUPPORT_BODY'		=> 'Un support complet et gratuit est fourni pour l’actuelle version stable de phpBB3. Ceci inclut les questions concernant :</p><ul><li>l’installation</li><li>la configuration</li><li>les questions techniques</li><li>les problèmes liés aux potentiels bugs du logiciel</li><li>la mise à jour depuis une version « Release Candidate » (RC) vers la dernière version stable</li><li>la conversion depuis un forum phpBB 2.0.x vers phpBB3</li><li>la conversion depuis un autre système de forum vers phpBB3 (consultez <a href="https://www.phpbb.com/community/viewforum.php?f=486">le forum des convertisseurs</a>*)</li></ul><p>Nous encourageons les utilisateurs d’une des versions bêta de phpBB3 à remplacer celle-ci par la dernière version stable.</p><h2>Extensions / Styles</h2><p>Pour des problèmes liés aux extensions, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=451">forum des extensions</a>*.<br>Pour des problèmes liés aux styles, templates et thèmes, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=471">forum des styles</a>*.<br><br>Si votre question est en relation avec une archive précise, créez votre message directement dans le sujet dédié à l’archive.</p><h2>Obtention du support</h2><p><a href="https://www.phpbb.com/support/">Section de support</a>*<br><a href="https://www.phpbb.com/support/docs/en/3.2/ug/quickstart/">Guide de démarrage rapide</a>*<br><br>Pour vous assurer d’être à jour et au courant des dernières nouvelles, suivez-nous sur <a href="https://www.twitter.com/phpbb/">Twitter</a>* et <a href="https://www.facebook.com/phpbb/">Facebook</a>*.<br><br>*liens menant vers des pages en langue anglaise.<br><br>',
 
 	// License
 	'LICENSE_TITLE'		=> 'Licence publique générale',
 
 	// Install page
-	'INSTALL_INTRO'			=> 'Bienvenue dans l’assitant d’installation de phpBB',
+	'INSTALL_INTRO'			=> 'Bienvenue dans l’assistant d’installation de phpBB',
 	'INSTALL_INTRO_BODY'	=> 'Cet assistant va vous permettre d’installer phpBB3 sur votre serveur.</p><p>Pour cela, vous aurez besoin des paramètres de connexion à votre base de données. Si vous ne les connaissez pas, contactez votre hébergeur pour les lui demander. Vous ne pourrez pas continuer l’installation sans ces paramètres. Il vous faut :</p>
 
 	<ul>
@@ -85,7 +85,7 @@ $lang = array_merge($lang, array(
 	'ACP_LINK'	=> 'Accéder au <a href="%1$s">Panneau d’administration</a>',
 
 	'INSTALL_PHPBB_INSTALLED'		=> 'phpBB est déjà installé.',
-	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'phpBB n’est pas encore installé.'
+	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'phpBB n’est pas encore installé.',
 ));
 
 // Requirements translation
@@ -150,7 +150,7 @@ $lang = array_merge($lang, array(
 	'ADMIN_USERNAME_EXPLAIN'	=> 'Saisissez un nom d’utilisateur entre 3 et 20 caractères.',
 
 	// Errors
-	'INST_ERR_EMAIL_INVALID'		=> 'L’adresse e-mail saisie est invalide.',
+	'INST_ERR_EMAIL_INVALID'		=> 'L’adresse courriel saisie est invalide.',
 	'INST_ERR_PASSWORD_MISMATCH'	=> 'Les mots de passe saisis ne correspondent pas.',
 	'INST_ERR_PASSWORD_TOO_LONG'	=> 'Le mot de passe saisi est trop long. La longueur maximale est de 30 caractères.',
 	'INST_ERR_PASSWORD_TOO_SHORT'	=> 'Le mot de passe saisi est trop court. La longueur minimale est de 6 caractères.',
@@ -195,12 +195,14 @@ $lang = array_merge($lang, array(
 	'DB_OPTION_SQLITE3'		=> 'SQLite 3',
 
 	// Errors
+	'INST_ERR_DB'					=> 'Erreur d’installation de la base de données',
 	'INST_ERR_NO_DB'				=> 'Impossible de charger le module PHP pour le type de base sélectionné.',
 	'INST_ERR_DB_INVALID_PREFIX'	=> 'Le préfixe que vous avez saisi n’est pas valide. Il doit commencer par une lettre et ne doit contenir que des lettres, des nombres et des tirets bas.',
 	'INST_ERR_PREFIX_TOO_LONG'		=> 'Le préfixe de table indiqué est trop long. La taille maximale est de %d caractères.',
 	'INST_ERR_DB_NO_NAME'			=> 'Aucun nom de base de données n’est indiqué.',
 	'INST_ERR_DB_FORUM_PATH'		=> 'Le fichier de la base de données indiqué est dans le répertoire racine de votre forum. Vous devez déplacer ce fichier dans un emplacement inaccessible depuis Internet.',
 	'INST_ERR_DB_CONNECT'			=> 'Impossible de se connecter à la base de données, consultez le message d’erreur ci-dessous.',
+	'INST_ERR_DB_NO_WRITABLE'		=> 'La base de données et le répertoire la contenant doivent être accessibles en écriture.',
 	'INST_ERR_DB_NO_ERROR'			=> 'Aucune erreur n’est survenue.',
 	'INST_ERR_PREFIX'				=> 'Des tables avec le préfixe indiqué existent déjà, choisissez-en un autre.',
 	'INST_ERR_DB_NO_MYSQLI'			=> 'La version de MySQL installée sur cette machine est incompatible avec l’option « MySQL avec extension MySQLi ». Essayez avec l’option « MySQL » à la place.',
@@ -212,7 +214,7 @@ $lang = array_merge($lang, array(
 	//
 	// Email data
 	//
-	'EMAIL_CONFIG'	=> 'Configuration des e-mails',
+	'EMAIL_CONFIG'	=> 'Configuration des courriels',
 
 	// Package info
 	'PACKAGE_VERSION'					=> 'Version du pack installé',
@@ -220,12 +222,13 @@ $lang = array_merge($lang, array(
 	'UPDATE_INCOMPLETE_MORE'		=> 'Veuillez lire les informations ci-dessous afin de corriger les erreurs.',
 	'UPDATE_INCOMPLETE_EXPLAIN'		=> '<h1>Mise à jour erronée</h1>
 
-		<p>Nous vous informons que la dernière mise à jour de votre installation de phpBB ne s’est pas bien terminée. Veuillez <a href="%1$s" title="%1$s">mettre à jour la base de données</a>, en vous assurant que <em>Mettre à jour uniquement la base de données</em> est sélectionné et cliquez sur <strong>Envoyer</strong>. N’oubliez pas de supprimer le répertoire « install » une fois la mise à jour correctement terminée.</p>',
+		<p>Nous vous informons que la dernière mise à jour de votre installation de phpBB ne s’est pas bien terminée. Veuillez <a href="%1$s" title="%1$s">mettre à jour la base de données</a>, en vous assurant que <em>Mettre à jour uniquement la base de données</em> est sélectionné puis cliquez sur <strong>Envoyer</strong>. N’oubliez pas de supprimer le répertoire « install » une fois la mise à jour correctement terminée.</p>',
 
 	//
 	// Server data
 	//
 	// Form labels
+	'UPGRADE_INSTRUCTIONS'			=> 'La nouvelle version majeure « phpBB <strong>%1$s</strong> » est disponible. Veuillez lire <a href="%2$s" title="%2$s"><strong>l’annonce de publication</strong></a> (en anglais) pour en savoir plus sur les nouveautés et comment procéder à la mise à niveau.',
 	'SERVER_CONFIG'				=> 'Configuration du serveur',
 	'SCRIPT_PATH'				=> 'Chemin du script',
 	'SCRIPT_PATH_EXPLAIN'		=> 'Le chemin où phpBB est situé par rapport au répertoire racine du forum, par exemple : /<samp>phpbb3</samp>',
@@ -298,13 +301,14 @@ $lang = array_merge($lang, array(
 	'TASK_CREATE_TABLES'				=> 'Création des tables',
 
 	// Install data
-	'TASK_ADD_BOTS'			=> 'Initialisation des robots',
-	'TASK_ADD_LANGUAGES'	=> 'Initialisation des packs de langue disponibles',
-	'TASK_ADD_MODULES'		=> 'Initialisation des modules',
+	'TASK_ADD_BOTS'				=> 'Initialisation des robots',
+	'TASK_ADD_LANGUAGES'		=> 'Initialisation des packs de langue disponibles',
+	'TASK_ADD_MODULES'			=> 'Initialisation des modules',
+	'TASK_CREATE_SEARCH_INDEX'	=> 'Création de l’index de recherche',
 
 	// Install finish tasks
 	'TASK_INSTALL_EXTENSIONS'	=> 'Installation des extensions',
-	'TASK_NOTIFY_USER'			=> 'Envoi d’une notification e-mail',
+	'TASK_NOTIFY_USER'			=> 'Envoi d’une notification par courriel',
 	'TASK_POPULATE_MIGRATIONS'	=> 'Validation de la bonne exécution des migrations',
 
 	// Installer general progress messages
@@ -344,42 +348,65 @@ $lang = array_merge($lang, array(
 // Common updater messages
 $lang = array_merge($lang, array(
 	'UPDATE_INSTALLATION'			=> 'Mettre à jour l’installation de phpBB',
-	'UPDATE_INSTALLATION_EXPLAIN'	=> 'Avec cette option, il est possible de mettre à jour votre installation de phpBB vers la dernière version.<br />Pendant le processus, tous vos fichiers seront vérifiés dans leur intégralité. Vous pouvez revoir toutes les différences et les fichiers avant la mise à jour.<br /><br />La mise à jour de fichiers peut être réalisée de deux manières différentes.</p><h2>Mise à jour manuelle</h2><p>En utilisant la mise à jour manuelle, vous ne téléchargez qu’un pack personnalisé de fichiers modifiés, vous garantissant de ne pas perdre les modifications de fichiers que vous avez peut-être effectuées. Après avoir téléchargé ce pack, vous devez transférer manuellement les fichiers dans leurs emplacements respectifs à partir du répertoire racine de votre forum phpBB. Une fois terminé, vous pouvez recommencer l’étape de vérification des fichiers pour contrôler que les fichiers ont été placés aux bons endroits.</p><h2>Mise à jour automatique par FTP</h2><p>Cette méthode est similaire à la première, mais il ne sera pas nécessaire de télécharger les fichiers modifiés et de les transférer vous-même. Cela sera fait directement. Afin d’utiliser cette méthode, vous devez connaître les informations de votre connexion FTP car elles vous seront demandées. Une fois terminé, vous serez redirigé vers la vérification des fichiers, afin de savoir si tout a été mis à jour correctement.<br /><br />',
+	'UPDATE_INSTALLATION_EXPLAIN'	=> 'Avec cette option, il est possible de mettre à jour votre installation de phpBB vers la dernière version.<br>Pendant le processus, tous vos fichiers seront vérifiés dans leur intégralité. Vous pouvez revoir toutes les différences et les fichiers avant la mise à jour.<br><br>La mise à jour de fichiers peut être réalisée de deux manières différentes.</p><h2>Mise à jour manuelle</h2><p>En utilisant la mise à jour manuelle, vous ne téléchargez qu’un pack personnalisé de fichiers modifiés, vous garantissant de ne pas perdre les modifications de fichiers que vous avez peut-être effectuées. Après avoir téléchargé ce pack, vous devez transférer manuellement les fichiers dans leurs emplacements respectifs à partir du répertoire racine de votre forum phpBB. Une fois terminé, vous pouvez recommencer l’étape de vérification des fichiers pour contrôler que les fichiers ont été placés aux bons endroits.</p><h2>Mise à jour automatique par FTP</h2><p>Cette méthode est similaire à la première, mais il ne sera pas nécessaire de télécharger les fichiers modifiés et de les transférer vous-même. Cela sera fait directement. Afin d’utiliser cette méthode, vous devez connaître les informations de votre connexion FTP car elles vous seront demandées. Une fois terminé, vous serez redirigé vers la vérification des fichiers, afin de savoir si tout a été mis à jour correctement.<br><br>',
 	'UPDATE_INSTRUCTIONS'			=> '
 
 		<h1>Annonce de mise à jour</h1>
 
-		<p>Veuillez lire l’annonce relative à la sortie de la dernière mise à jour avant de continuer le processus de mise à jour, celle-ci pourrait contenir des informations utiles. Elle contient aussi plusieurs liens ainsi que le détail des changements effectués depuis la dernière version.</p>
+		<p>Veuillez lire l’annonce, relative à la sortie de la dernière version, avant de continuer le processus de mise à jour. Elle contient des informations qui pourraient vous être utiles, telles que les liens de téléchargement et les changements effectués depuis la précédente version.</p>
 
-		<br />
+		<br>
+
+		<h1>Comment mettre à jour votre installation avec le pack complet ?</h1>
+
+		<p>La méthode recommandée pour mettre à jour votre installation consiste à utiliser le pack complet. Si les fichiers de base de phpBB ont été modifiés sur votre installation nous vous recommandons l’utilisation du pack de mise à jour automatique, afin de ne pas perdre vos modifications. Vous pouvez également utiliser les méthodes de mises à jour énumérées dans le document « INSTALL.html ». Pour mettre à jour phpBB en utilisant le pack complet, veuillez suivre ces étapes :</p>
+
+		<ol style="margin-left: 20px; font-size: 1.1em;">
+			<li><strong class="error">Sauvegardez votre base de données et vos fichiers.</strong></li>
+			<li>Depuis la <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">page de téléchargement de phpBB.com</a>, allez dans l’onglet « Install phpBB » puis téléchargez l’archive « Full Package ».</li>
+			<li>Décompressez l’archive.</li>
+			<li>Supprimez du répertoire de l’archive (pas de votre site) le fichier <code class="inline">config.php</code> ainsi que les répertoires <code class="inline">/images</code>, <code class="inline">/store</code> et <code class="inline">/files</code>.</li>
+			<li>Depuis votre forum, allez dans le panneau d’administration puis dans « Général --> Configuration du forum ». Assurez-vous que prosilver soit défini comme style par défaut. Si ce n’est pas le cas, faites-le.</li>
+			<li>Supprimez les répertoires <code class="inline">/vendor</code> et <code class="inline">/cache</code> de la racine de votre forum.</li>
+			<li>Transférez via un client FTP ou SSH les fichiers et répertoires de l’archive précédemment décompressée (c’est-à-dire, le CONTENU du répertoire <code class="inline">/phpBB3</code>) à la racine du forum de votre serveur, en vous assurant d’écraser les fichiers existants. Attention : ne supprimez aucune extension du répertoire <code class="inline">/ext</code> lorsque vous transférez le nouveau contenu de phpBB3.</li>
+			<li><strong><a href="%1$s" title="%1$s">Maintenant démarrez l’assistant de mise à jour en pointant votre navigateur sur le répertoire « install »</a>.</strong></li>
+			<li>Suivez les étapes afin de mettre à jour la base de données.</li>
+			<li>Supprimez via un client FTP ou SSH le répertoire <code class="inline">/install</code> de la racine de votre forum.<br><br></li>
+		</ol>
+
+		<p>Vous avez maintenant un forum à jour avec l’ensemble de vos membres et messages. Il ne vous reste plus qu’à :</p>
+		<ul style="margin-left: 20px; font-size: 1.1em;">
+			<li>Mettre à jour vos packs de langue.</li>
+			<li>Mettre à jour vos styles.<br><br></li>
+		</ul>
 
 		<h1>Comment mettre à jour votre installation avec le pack de mise à jour automatique ?</h1>
 
-		<p>Les recommandations de mise à jour pour votre installation indiquées ici ne sont valables que pour le pack de mise à jour automatique. Vous pouvez également mettre à jour votre installation en utilisant les méthodes énumérées dans le document INSTALL.html. Les étapes pour mettre à jour automatiquement phpBB3 sont :</p>
+		<p>L’usage du pack de mise à jour automatique n’est recommandé que si les fichiers de base de phpBB ont été modifiés sur votre installation. Vous pouvez également utiliser les méthodes de mises à jour énumérées dans le document « INSTALL.html ». Les étapes pour mettre à jour automatiquement phpBB3 sont :</p>
 
-		<ul style="margin-left: 20px; font-size: 1.1em;">
-			<li>Allez sur la page <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">de téléchargement de phpBB.com</a> et téléchargez l’archive de mise à jour automatique du forum : « Automatic Update Package ».<br /><br /></li>
-			<li>Décompressez l’archive.<br /><br /></li>
-			<li>Transférez les répertoires « install » et « vendor » sur votre serveur FTP, à la racine de votre forum (où votre fichier « config.php » est situé).<br /><br /></li>
-		</ul>
+		<ol style="margin-left: 20px; font-size: 1.1em;">
+			<li>Depuis la <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">page de téléchargement de phpBB.com</a>, allez dans l’onglet « Automatic Update » puis téléchargez l’archive « Automatic Update Package ».</li>
+			<li>Décompressez l’archive.</li>
+			<li>Transférez les répertoires <code class="inline">/install</code> et <code class="inline">/vendor</code> à la racine de votre forum (où se trouve votre fichier <code class="inline">config.php</code>).<br><br></li>
+		</ol>
 
-		<p>Une fois les répertoires transférés, votre forum sera inaccessible pour les utilisateurs standards.<br /><br />
-		<strong><a href="%1$s" title="%1$s">Vous pouvez maintenant démarrer la mise à jour en pointant votre navigateur sur le répertoire « install »</a>.</strong><br />
-		<br />
-		Vous serez alors guidé par l’assistant de mise à jour. Vous serez averti une fois la mise à jour effectuée.
+		<p>De par la présence du répertoire <code class="inline">/install</code>, votre forum sera inaccessible pour les utilisateurs standards.<br><br>
+		<strong><a href="%1$s" title="%1$s">Vous pouvez maintenant démarrez l’assistant de mise à jour en pointant votre navigateur sur le répertoire « install »</a>.</strong><br>
+		<br>
+		Vous serez alors guidé par l’assistant de mise à jour. Vous serez averti une fois la mise à jour terminée.
 		</p>
 
-		<br />
+		<br>
 
 		<h1>Utilisateurs de la traduction de phpBB-fr</h1>
 
 		<p>Pour les administrateurs utilisant la traduction de phpBB-fr, nous vous recommandons auparavant de consulter les liens suivants :</p>
 		<ul style="margin-left: 20px; font-size: 1.1em;">
-			<li><a href="http://forums.phpbb-fr.com/documentation/mise-a-jour/">Mettre à jour phpBB</a>.<br /><br /></li>
+			<li><a href="http://forums.phpbb-fr.com/documentation/mise-a-jour/">Mettre à jour phpBB</a>.</li>
 			<li><a href="http://www.phpbb-fr.com/telechargements/" title="http://www.phpbb-fr.com/telechargements/">Téléchargements : Pack complet, Mise à jour, Pack français et Pack original</a>.</li>
 		</ul>
 
-		<p>Vous trouverez aussi dans le tutoriel de mise à jour toutes les instructions pour mettre à jour vos styles autres que Prosilver ou Subsilver2.</p>
+		<p>Vous trouverez également dans nos tutoriels les instructions nécessaires pour mettre à jour vos styles autres que Prosilver.</p>
 	',
 ));
 
@@ -481,16 +508,16 @@ $lang = array_merge($lang, array(
 	// Common converter messages
 	'CONVERT_NOT_EXIST'			=> 'Le convertisseur indiqué n’existe pas.',
 	'DEV_NO_TEST_FILE'			=> 'Aucune valeur n’a été indiquée pour la variable « test_file » dans le convertisseur. Si vous utilisez ce convertisseur, vous ne devriez pas voir cette erreur, rapportez cette erreur à l’auteur du convertisseur. Si vous êtes l’auteur du convertisseur, vous devez indiquer le nom du fichier présent dans le répertoire source du forum afin de permettre au chemin d’être vérifié.',
-	'COULD_NOT_FIND_PATH'		=> 'Impossible de trouver le chemin vers votre ancien forum. Vérifiez vos paramètres et recommencez.<br />» Le chemin indiqué était « %s ».',
+	'COULD_NOT_FIND_PATH'		=> 'Impossible de trouver le chemin vers votre ancien forum. Vérifiez vos paramètres et recommencez.<br>» Le chemin indiqué était « %s ».',
 	'CONFIG_PHPBB_EMPTY'		=> 'La variable de configuration de phpBB3 pour « %s » est vide.',
 
-	'MAKE_FOLDER_WRITABLE'		=> 'Vérifiez que ce répertoire existe sur le serveur Web et qu’il est accessible en écriture, puis recommencez :<br />» <strong>%s</strong>',
-	'MAKE_FOLDERS_WRITABLE'		=> 'Vérifiez que ces répertoires existent sur le serveur Web et qu’ils sont accessibles en écriture, puis recommencez :<br />» <strong>%s</strong>',
+	'MAKE_FOLDER_WRITABLE'		=> 'Vérifiez que ce répertoire existe sur le serveur Web et qu’il est accessible en écriture, puis recommencez :<br>» <strong>%s</strong>',
+	'MAKE_FOLDERS_WRITABLE'		=> 'Vérifiez que ces répertoires existent sur le serveur Web et qu’ils sont accessibles en écriture, puis recommencez :<br>» <strong>%s</strong>',
 
 	'INSTALL_TEST'				=> 'Tester à nouveau',
 
 	'NO_TABLES_FOUND'			=> 'Aucune table trouvée.',
-	'TABLES_MISSING'			=> 'Impossible de trouver ces tables<br />» <strong>%s</strong>.',
+	'TABLES_MISSING'			=> 'Impossible de trouver ces tables<br>» <strong>%s</strong>.',
 	'CHECK_TABLE_PREFIX'		=> 'Vérifiez votre préfixe de table et recommencez.',
 
 	// Conversion in progress
@@ -512,7 +539,7 @@ $lang = array_merge($lang, array(
 
 	// Settings
 	'STAGE_SETTINGS'			=> 'Paramètres',
-	'TABLE_PREFIX_SAME'			=> 'Le préfixe de table doit être celui utilisé par le logiciel à convertir.<br />» Le préfixe indiqué était « %s »',
+	'TABLE_PREFIX_SAME'			=> 'Le préfixe de table doit être celui utilisé par le logiciel à convertir.<br>» Le préfixe indiqué était « %s »',
 	'DEFAULT_PREFIX_IS'			=> 'Le convertisseur n’a pas trouvé de tables avec le préfixe indiqué. Vérifiez que ce préfixe est celui du forum que vous désirez convertir. Le préfixe par défaut pour %1$s est <strong>%2$s</strong>.',
 	'SPECIFY_OPTIONS'			=> 'Indiquer les options de conversion',
 	'FORUM_PATH'				=> 'Chemin du forum',
@@ -523,7 +550,7 @@ $lang = array_merge($lang, array(
 	// Conversion
 	'STAGE_IN_PROGRESS'			=> 'Conversion en cours',
 
-	'AUTHOR_NOTES'				=> 'Notes de l’auteur<br />» %s',
+	'AUTHOR_NOTES'				=> 'Notes de l’auteur<br>» %s',
 	'STARTING_CONVERT'			=> 'Démarrage du processus de conversion',
 	'CONFIG_CONVERT'			=> 'Conversion des paramètres de configuration',
 	'DONE'						=> 'Terminé',
@@ -548,7 +575,7 @@ $lang = array_merge($lang, array(
 	'CONTINUE_LAST'				=> 'Continuer les dernières instructions',
 	'CLEAN_VERIFY'				=> 'Nettoyage et vérification de la structure finale',
 	'NOT_UNDERSTAND'			=> 'Impossible d’interpréter %s #%d, table %s (« %s »)',
-	'NAMING_CONFLICT'			=> 'Conflit de noms : %s et %s sont tous deux des alias<br /><br />%s',
+	'NAMING_CONFLICT'			=> 'Conflit de noms : %s et %s sont tous deux des alias<br><br>%s',
 
 	// Finish conversion
 	'CONVERT_COMPLETE'			=> 'La conversion est terminée',

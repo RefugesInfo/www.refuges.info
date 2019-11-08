@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Bundles;
@@ -21,14 +21,14 @@ class Fatdown extends Bundle
 		$configurator->HTMLComments;
 		$configurator->HTMLEntities;
 		$configurator->PipeTables;
-		$htmlAliases = array(
-			'a'      => array('URL', 'href' => 'url'),
+		$htmlAliases = [
+			'a'      => ['URL', 'href' => 'url'],
 			'hr'     => 'HR',
 			'em'     => 'EM',
 			's'      => 'S',
 			'strong' => 'STRONG',
 			'sup'    => 'SUP'
-		);
+		];
 		foreach ($htmlAliases as $elName => $alias)
 			if (\is_array($alias))
 			{
@@ -39,18 +39,18 @@ class Fatdown extends Bundle
 			}
 			else
 				$configurator->HTMLElements->aliasElement($elName, $alias);
-		$htmlElements = array(
-			'abbr' => array('title'),
+		$htmlElements = [
+			'abbr' => ['title'],
 			'b',
 			'br',
 			'code',
 			'dd',
 			'del',
-			'div' => array('class'),
+			'div' => ['class'],
 			'dl',
 			'dt',
 			'i',
-			'img' => array('alt', 'height', 'src', 'title', 'width'),
+			'img' => ['alt', 'height', 'src', 'title', 'width'],
 			'ins',
 			'li',
 			'ol',
@@ -60,26 +60,26 @@ class Fatdown extends Bundle
 			'rt',
 			'rtc',
 			'ruby',
-			'span' => array('class'),
+			'span' => ['class'],
 			'strong',
 			'sub',
 			'sup',
 			'table',
 			'tbody',
-			'td' => array('colspan', 'rowspan'),
+			'td' => ['colspan', 'rowspan'],
 			'tfoot',
-			'th' => array('colspan', 'rowspan', 'scope'),
+			'th' => ['colspan', 'rowspan', 'scope'],
 			'thead',
 			'tr',
 			'u',
 			'ul'
-		);
+		];
 		foreach ($htmlElements as $k => $v)
 		{
 			if (\is_numeric($k))
 			{
 				$elName    = $v;
-				$attrNames = array();
+				$attrNames = [];
 			}
 			else
 			{
@@ -94,8 +94,8 @@ class Fatdown extends Bundle
 		$configurator->tags['html:dt']->rules->createParagraphs(\false);
 		$configurator->tags['html:td']->rules->createParagraphs(\false);
 		$configurator->tags['html:th']->rules->createParagraphs(\false);
-		$configurator->plugins->load('MediaEmbed', array('createMediaBBCode' => \false));
-		$sites = array(
+		$configurator->plugins->load('MediaEmbed', ['createMediaBBCode' => \false]);
+		$sites = [
 			'bandcamp',
 			'dailymotion',
 			'facebook',
@@ -106,7 +106,7 @@ class Fatdown extends Bundle
 			'vimeo',
 			'vine',
 			'youtube'
-		);
+		];
 		foreach ($sites as $site)
 			$configurator->MediaEmbed->add($site);
 	}

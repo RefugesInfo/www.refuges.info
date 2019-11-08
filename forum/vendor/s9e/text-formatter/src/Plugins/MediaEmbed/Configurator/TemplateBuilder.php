@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed\Configurator;
@@ -13,7 +13,7 @@ use s9e\TextFormatter\Plugins\MediaEmbed\Configurator\TemplateGenerators\Flash;
 use s9e\TextFormatter\Plugins\MediaEmbed\Configurator\TemplateGenerators\Iframe;
 class TemplateBuilder
 {
-	protected $templateGenerators = array();
+	protected $templateGenerators = [];
 	public function __construct()
 	{
 		$this->templateGenerators['choose'] = new Choose($this);

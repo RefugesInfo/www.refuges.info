@@ -2,7 +2,7 @@
 <repository>
 
 	<bbcode name="ACRONYM">
-		<usage>[ACRONYM title={TEXT1;optional}]{TEXT2}[/ACRONYM]</usage>
+		<usage>[ACRONYM title={TEXT1?}]{TEXT2}[/ACRONYM]</usage>
 		<template><![CDATA[
 			<acronym title="{TEXT1}">{TEXT2}</acronym>
 		]]></template>
@@ -45,7 +45,7 @@
 
 	<!-- [CODE] BBCode, uses Hightlight.js for highlighting: https://highlightjs.org/ -->
 	<bbcode name="CODE">
-		<usage>[CODE lang={IDENTIFIER;optional}]{TEXT}[/CODE]</usage>
+		<usage>[CODE lang={IDENTIFIER?}]{TEXT}[/CODE]</usage>
 		<template><![CDATA[
 			<pre data-hljs="" data-s9e-livepreview-postprocess="if('undefined'!==typeof hljs)hljs._hb(this)"><code>
 				<xsl:if test="@lang">
@@ -259,9 +259,12 @@
 	</bbcode>
 
 	<bbcode name="IMG">
-		<usage>[IMG src={URL;useContent} title={TEXT;optional} alt={TEXT;optional}]</usage>
+		<usage>[IMG src={URL;useContent} title={TEXT?} alt={TEXT?} height={UINT?}  width={UINT?} ]</usage>
 		<template><![CDATA[
-			<img src="{@src}" title="{@title}" alt="{@alt}" />
+			<img src="{@src}" title="{@title}" alt="{@alt}">
+				<xsl:copy-of select="@height"/>
+				<xsl:copy-of select="@width"/>
+			</img>
 		]]></template>
 	</bbcode>
 
@@ -331,7 +334,7 @@
 	</bbcode>
 
 	<bbcode name="QUOTE">
-		<usage>[QUOTE author={TEXT;optional}]{TEXT}[/QUOTE]</usage>
+		<usage>[QUOTE author={TEXT?}]{TEXT}[/QUOTE]</usage>
 		<template><![CDATA[
 			<blockquote>
 				<xsl:if test="not(@author)">
@@ -371,27 +374,22 @@
 	</bbcode>
 
 	<bbcode name="SPOILER">
-		<usage>[SPOILER title={TEXT1;optional}]{TEXT2}[/SPOILER]</usage>
+		<usage>[SPOILER title={TEXT1?}]{TEXT2}[/SPOILER]</usage>
+		<!--
+			var nextSiblingStyle = parentNode.nextSibling.style,
+				firstChildStyle  = firstChild.style,
+				lastChildStyle   = lastChild.style;
+
+			firstChildStyle.display  = nextSiblingStyle.display;
+			nextSiblingStyle.display = lastChildStyle.display = (firstChildStyle.display) ? '' : 'none';
+
+			// Don't submit if inside a form
+			return false;
+		-->
 		<template><![CDATA[
 			<div class="spoiler">
 				<div class="spoiler-header">
-					<!--
-						var nextSiblingStyle = parentNode.nextSibling.style,
-							firstChildStyle  = firstChild.style,
-							lastChildStyle   = lastChild.style;
-
-						if (nextSiblingStyle.display !== '')
-						{
-							nextSiblingStyle.display = lastChildStyle.display = '';
-							firstChildStyle.display  = 'none';
-						}
-						else
-						{
-							nextSiblingStyle.display = lastChildStyle.display = 'none';
-							firstChildStyle.display  = '';
-						}
-					-->
-					<button onclick="var a=parentNode.nextSibling.style,b=firstChild.style,c=lastChild.style;''!==a.display?(a.display=c.display='',b.display='none'):(a.display=c.display='none',b.display='')"><span>]]><var name="showStr">Show</var><![CDATA[</span><span style="display:none">]]><var name="hideStr">Hide</var><![CDATA[</span></button>
+					<button onclick="var a=parentNode.nextSibling.style,b=firstChild.style,c=lastChild.style;b.display=a.display;a.display=c.display=(b.display)?'':'none';return!1"><span>]]><var name="showStr">Show</var><![CDATA[</span><span style="display:none">]]><var name="hideStr">Hide</var><![CDATA[</span></button>
 					<span class="spoiler-title">]]><var name="spoilerStr">Spoiler:</var><![CDATA[ {TEXT1}</span>
 				</div>
 				<div class="spoiler-content" style="display:none">{TEXT2}</div>
@@ -427,10 +425,19 @@
 		]]></template>
 	</bbcode>
 
+	<bbcode name="TBODY">
+		<usage>[TBODY]{ANYTHING}[/TBODY]</usage>
+		<template><![CDATA[
+			<tbody>{ANYTHING}</tbody>
+		]]></template>
+	</bbcode>
+
 	<bbcode name="TD">
-		<usage>[TD align={CHOICE=left,center,right,justify;caseSensitive;optional;preFilter=strtolower} #createParagraphs=false]{TEXT}[/TD]</usage>
+		<usage>[TD align={CHOICE=left,center,right,justify;caseSensitive;optional;preFilter=strtolower} colspan={UINT?} rowspan={UINT?} #createParagraphs=false]{TEXT}[/TD]</usage>
 		<template><![CDATA[
 			<td>
+				<xsl:copy-of select="@colspan"/>
+				<xsl:copy-of select="@rowspan"/>
 				<xsl:if test="@align">
 					<xsl:attribute name="style">text-align:{CHOICE}</xsl:attribute>
 				</xsl:if>
@@ -440,14 +447,23 @@
 	</bbcode>
 
 	<bbcode name="TH">
-		<usage>[TH align={CHOICE=left,center,right,justify;caseSensitive;optional;preFilter=strtolower} #createParagraphs=false]{TEXT}[/TH]</usage>
+		<usage>[TH align={CHOICE=left,center,right,justify;caseSensitive;optional;preFilter=strtolower} colspan={UINT?} rowspan={UINT?} #createParagraphs=false]{TEXT}[/TH]</usage>
 		<template><![CDATA[
 			<th>
+				<xsl:copy-of select="@colspan"/>
+				<xsl:copy-of select="@rowspan"/>
 				<xsl:if test="@align">
 					<xsl:attribute name="style">text-align:{CHOICE}</xsl:attribute>
 				</xsl:if>
 				<xsl:apply-templates/>
 			</th>
+		]]></template>
+	</bbcode>
+
+	<bbcode name="THEAD">
+		<usage>[THEAD]{ANYTHING}[/THEAD]</usage>
+		<template><![CDATA[
+			<thead>{ANYTHING}</thead>
 		]]></template>
 	</bbcode>
 
@@ -473,7 +489,7 @@
 	</bbcode>
 
 	<bbcode name="URL">
-		<usage>[URL={URL;useContent} title={TEXT;optional}]{TEXT}[/URL]</usage>
+		<usage>[URL={URL;useContent} title={TEXT?}]{TEXT}[/URL]</usage>
 		<template><![CDATA[
 			<a href="{@url}"><xsl:copy-of select="@title" /><xsl:apply-templates /></a>
 		]]></template>

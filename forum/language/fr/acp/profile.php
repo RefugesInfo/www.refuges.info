@@ -82,7 +82,7 @@ $lang = array_merge($lang, array(
 	'DISPLAY_PROFILE_FIELD_EXPLAIN'	=> 'Le champ de profil sera visible dans tous les endroits autorisés dans la page « Paramètres de charge ». Réglez cela sur « Non » masquera le champ des pages de sujets, des profils et de la liste des membres.',
 	'DROPDOWN_ENTRIES_EXPLAIN'		=> 'Saisissez vos options, chaque option doit être sur une ligne différente.',
 
-	'EDIT_DROPDOWN_LANG_EXPLAIN'	=> 'Notez que vous pouvez modifier le texte de vos options et ajouter de nouvelles options en fin de liste. Il est déconseillé d’insérer de nouvelles options entre celles existantes - cela pourrait entraîner l’attribution d’options erronées à vos utilisateurs. Ceci peut également se produire si vous supprimez des options parmi d’autres. La suppression d’options en partant de la fin va entrainer, pour les utilisateurs ayant sélectionné ces options, l’activation de l’option définie par défaut.',
+	'EDIT_DROPDOWN_LANG_EXPLAIN'	=> 'Notez que vous pouvez modifier le texte de vos options et ajouter de nouvelles options en fin de liste. Il est déconseillé d’insérer de nouvelles options entre celles existantes - cela pourrait entraîner l’attribution d’options erronées à vos utilisateurs. Ceci peut également se produire si vous supprimez des options parmi d’autres. La suppression d’options en partant de la fin va entraîner, pour les utilisateurs ayant sélectionné ces options, l’activation de l’option définie par défaut.',
 	'EMPTY_FIELD_IDENT'				=> 'L’identification du champ est vide',
 	'EMPTY_USER_FIELD_NAME'			=> 'Saisissez un nom/titre du champ',
 	'ENTRIES'						=> 'Entrées',
@@ -113,7 +113,7 @@ $lang = array_merge($lang, array(
 	'FIRST_OPTION'				=> 'Première option',
 
 	'HIDE_PROFILE_FIELD'			=> 'Masquer le champ de profil',
-	'HIDE_PROFILE_FIELD_EXPLAIN'	=> 'Masque le champ de profil à tous les autres utilisateurs mis à part l’utilisateur concerné, les administrateurs et les modérateurs qui pourront toujours voir ce champ. Si l’option « Afficher dans le panneau de l’utilisateur » est désactivée, l’utilisateur ne pourra pas voir ou modifier ce champ, seuls les administrateurs le pourront.',
+	'HIDE_PROFILE_FIELD_EXPLAIN'	=> 'Masque le champ de profil à tous les autres utilisateurs mis à part les administrateurs et les modérateurs qui pourront toujours voir ce champ. Si l’option « Afficher dans le panneau de l’utilisateur » est désactivée, l’utilisateur ne pourra pas voir ou modifier ce champ, seuls les administrateurs le pourront.',
 
 	'INVALID_CHARS_FIELD_IDENT'	=> 'L’identification du champ ne peut contenir que des minuscules a-z et _',
 	'INVALID_FIELD_IDENT_LEN'	=> 'La longueur de l’identification du champ ne peut dépasser 17 caractères',
@@ -160,11 +160,11 @@ $lang = array_merge($lang, array(
 	'STEP_1_TITLE_CREATE'			=> 'Ajouter un champ de profil',
 	'STEP_1_TITLE_EDIT'				=> 'Modifier le champ de profil',
 	'STEP_2_EXPLAIN_CREATE'			=> 'Vous pouvez définir quelques options courantes que vous pouvez vouloir ajuster.',
-	'STEP_2_EXPLAIN_EDIT'			=> 'Vous pouvez modifier quelques options courantes.<br /><strong>Notez que les modifications faites aux champs de profil n’affecteront pas les valeurs déjà saisies par les utilisateurs.</strong>',
+	'STEP_2_EXPLAIN_EDIT'			=> 'Vous pouvez modifier quelques options courantes.<br><strong>Notez que les modifications faites aux champs de profil n’affecteront pas les valeurs déjà saisies par les utilisateurs.</strong>',
 	'STEP_2_TITLE_CREATE'			=> 'Options particulières du type de champ',
 	'STEP_2_TITLE_EDIT'				=> 'Options particulières du type de champ',
-	'STEP_3_EXPLAIN_CREATE'			=> 'Comme vous avez plus d’une langue installée, vous devez aussi traduire chacun des éléments dans chaque langage. En l’absence de traduction, le champ de profil fonctionnera avec la langue activée par défaut. Vous pourrez traduire ces éléments de langue ultérieurement.',
-	'STEP_3_EXPLAIN_EDIT'			=> 'Comme vous avez plus d’une langue installée, vous pouvez également traduire chacun des éléments dans chaque langage. En l’absence de traduction, le champ de profil fonctionnera avec la langue activée par défaut.',
+	'STEP_3_EXPLAIN_CREATE'			=> 'Comme vous avez plus d’une langue installée, vous devez aussi traduire chacun des éléments dans chaque langue. En l’absence de traduction, les paramètres définis pour la langue par défaut de ce champ de profil personnalisé seront utilisés. Vous pourrez traduire ces éléments de langue ultérieurement.',
+	'STEP_3_EXPLAIN_EDIT'			=> 'Comme vous avez plus d’une langue installée, vous pouvez maintenant modifier ou ajouter les éléments de langue restants. En l’absence de traduction, les paramètres définis pour la langue par défaut de ce champ de profil personnalisé seront utilisés.',
 	'STEP_3_TITLE_CREATE'			=> 'Traduire le champ',
 	'STEP_3_TITLE_EDIT'				=> 'Modifier les traductions',
 	'STRING_DEFAULT_VALUE_EXPLAIN'	=> 'Saisissez une phrase à afficher comme valeur par défaut. Laissez vide si vous préférez ne pas afficher une valeur par défaut.',

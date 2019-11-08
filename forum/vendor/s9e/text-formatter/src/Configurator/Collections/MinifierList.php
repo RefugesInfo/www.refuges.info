@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Collections;
@@ -21,7 +21,7 @@ class MinifierList extends NormalizedList
 			throw new InvalidArgumentException('Invalid minifier ' . \var_export($minifier, \true));
 		return $minifier;
 	}
-	protected function getMinifierInstance($name, array $args = array())
+	protected function getMinifierInstance($name, array $args = [])
 	{
 		$className = 's9e\\TextFormatter\\Configurator\\JavaScript\\Minifiers\\' . $name;
 		if (!\class_exists($className))

@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Parser;
@@ -11,7 +11,7 @@ use s9e\TextFormatter\Parser;
 class Logger
 {
 	protected $attrName;
-	protected $logs = array();
+	protected $logs = [];
 	protected $tag;
 	protected function add($type, $msg, array $context)
 	{
@@ -19,15 +19,15 @@ class Logger
 			$context['attrName'] = $this->attrName;
 		if (!isset($context['tag']) && isset($this->tag))
 			$context['tag'] = $this->tag;
-		$this->logs[] = array($type, $msg, $context);
+		$this->logs[] = [$type, $msg, $context];
 	}
 	public function clear()
 	{
-		$this->logs = array();
+		$this->logs = [];
 		$this->unsetAttribute();
 		$this->unsetTag();
 	}
-	public function get()
+	public function getLogs()
 	{
 		return $this->logs;
 	}
@@ -47,19 +47,19 @@ class Logger
 	{
 		unset($this->tag);
 	}
-	public function debug($msg, array $context = array())
+	public function debug($msg, array $context = [])
 	{
 		$this->add('debug', $msg, $context);
 	}
-	public function err($msg, array $context = array())
+	public function err($msg, array $context = [])
 	{
 		$this->add('err', $msg, $context);
 	}
-	public function info($msg, array $context = array())
+	public function info($msg, array $context = [])
 	{
 		$this->add('info', $msg, $context);
 	}
-	public function warn($msg, array $context = array())
+	public function warn($msg, array $context = [])
 	{
 		$this->add('warn', $msg, $context);
 	}

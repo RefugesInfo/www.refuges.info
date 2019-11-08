@@ -3,7 +3,6 @@ services:
         class: phpbb\console\exception_subscriber
         arguments:
             - '@language'
-            - '%debug.exceptions%'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -167,6 +166,27 @@ services:
         tags:
             - { name: console.command }
 
+    console.command.fixup.update_hashes:
+        class: phpbb\console\command\fixup\update_hashes
+        arguments:
+            - '@config'
+            - '@user'
+            - '@dbal.conn'
+            - '@passwords.manager'
+            - '@passwords.driver_collection'
+            - '%passwords.algorithms%'
+        tags:
+            - { name: console.command }
+
+    console.command.fixup.fix_left_right_ids:
+        class: phpbb\console\command\fixup\fix_left_right_ids
+        arguments:
+            - '@user'
+            - '@dbal.conn'
+            - '@cache.driver'
+        tags:
+            - { name: console.command }
+
     console.command.reparser.list:
         class: phpbb\console\command\reparser\list_all
         arguments:
@@ -188,6 +208,7 @@ services:
     console.command.thumbnail.delete:
         class: phpbb\console\command\thumbnail\delete
         arguments:
+            - '@config'
             - '@user'
             - '@dbal.conn'
             - '%core.root_path%'
@@ -197,6 +218,7 @@ services:
     console.command.thumbnail.generate:
         class: phpbb\console\command\thumbnail\generate
         arguments:
+            - '@config'
             - '@user'
             - '@dbal.conn'
             - '@cache'

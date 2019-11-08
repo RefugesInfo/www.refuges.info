@@ -188,7 +188,7 @@ class fulltext_mysql extends \phpbb\search\base
 		}
 
 		$sql = 'SHOW VARIABLES
-			LIKE \'ft\_%\'';
+			LIKE \'%ft\_%\'';
 		$result = $this->db->sql_query($sql);
 
 		$mysql_info = array();
@@ -198,8 +198,16 @@ class fulltext_mysql extends \phpbb\search\base
 		}
 		$this->db->sql_freeresult($result);
 
-		$this->config->set('fulltext_mysql_max_word_len', $mysql_info['ft_max_word_len']);
-		$this->config->set('fulltext_mysql_min_word_len', $mysql_info['ft_min_word_len']);
+		if ($engine === 'MyISAM')
+		{
+			$this->config->set('fulltext_mysql_max_word_len', $mysql_info['ft_max_word_len']);
+			$this->config->set('fulltext_mysql_min_word_len', $mysql_info['ft_min_word_len']);
+		}
+		else if ($engine === 'InnoDB')
+		{
+			$this->config->set('fulltext_mysql_max_word_len', $mysql_info['innodb_ft_max_token_size']);
+			$this->config->set('fulltext_mysql_min_word_len', $mysql_info['innodb_ft_min_token_size']);
+		}
 
 		return false;
 	}
@@ -232,9 +240,9 @@ class fulltext_mysql extends \phpbb\search\base
 		$this->split_words = $matches[1];
 
 		// We limit the number of allowed keywords to minimize load on the database
-		if ($this->config['max_num_search_keywords'] && sizeof($this->split_words) > $this->config['max_num_search_keywords'])
+		if ($this->config['max_num_search_keywords'] && count($this->split_words) > $this->config['max_num_search_keywords'])
 		{
-			trigger_error($this->user->lang('MAX_NUM_SEARCH_KEYWORDS_REFINE', (int) $this->config['max_num_search_keywords'], sizeof($this->split_words)));
+			trigger_error($this->user->lang('MAX_NUM_SEARCH_KEYWORDS_REFINE', (int) $this->config['max_num_search_keywords'], count($this->split_words)));
 		}
 
 		// to allow phrase search, we need to concatenate quoted words
@@ -272,6 +280,27 @@ class fulltext_mysql extends \phpbb\search\base
 
 		foreach ($this->split_words as $i => $word)
 		{
+			// Check for not allowed search queries for InnoDB.
+			// We assume similar restrictions for MyISAM, which is usually even
+			// slower but not as restrictive as InnoDB.
+			// InnoDB full-text search does not support the use of a leading
+			// plus sign with wildcard ('+*'), a plus and minus sign
+			// combination ('+-'), or leading a plus and minus sign combination.
+			// InnoDB full-text search only supports leading plus or minus signs.
+			// For example, InnoDB supports '+apple' but does not support 'apple+'.
+			// Specifying a trailing plus or minus sign causes InnoDB to report
+			// a syntax error. InnoDB full-text search does not support the use
+			// of multiple operators on a single search word, as in this example:
+			// '++apple'. Use of multiple operators on a single search word
+			// returns a syntax error to standard out.
+			// Also, ensure that the wildcard character is only used at the
+			// end of the line as it's intended by MySQL.
+			if (preg_match('#^(\+[+-]|\+\*|.+[+-]$|.+\*(?!$))#', $word))
+			{
+				unset($this->split_words[$i]);
+				continue;
+			}
+
 			$clean_word = preg_replace('#^[+\-|"]#', '', $word);
 
 			// check word length
@@ -340,7 +369,7 @@ class fulltext_mysql extends \phpbb\search\base
 
 		// remove too short or too long words
 		$text = array_values($text);
-		for ($i = 0, $n = sizeof($text); $i < $n; $i++)
+		for ($i = 0, $n = count($text); $i < $n; $i++)
 		{
 			$text[$i] = trim($text[$i]);
 			if (utf8_strlen($text[$i]) < $this->config['fulltext_mysql_min_word_len'] || utf8_strlen($text[$i]) > $this->config['fulltext_mysql_max_word_len'])
@@ -542,12 +571,12 @@ class fulltext_mysql extends \phpbb\search\base
 		$sql_select			= ($type == 'posts') ? $sql_select . 'p.post_id' : 'DISTINCT ' . $sql_select . 't.topic_id';
 		$sql_from			= ($join_topic) ? TOPICS_TABLE . ' t, ' : '';
 		$field				= ($type == 'posts') ? 'post_id' : 'topic_id';
-		if (sizeof($author_ary) && $author_name)
+		if (count($author_ary) && $author_name)
 		{
 			// first one matches post of registered users, second one guests and deleted users
 			$sql_author = ' AND (' . $this->db->sql_in_set('p.poster_id', array_diff($author_ary, array(ANONYMOUS)), false, true) . ' OR p.post_username ' . $author_name . ')';
 		}
-		else if (sizeof($author_ary))
+		else if (count($author_ary))
 		{
 			$sql_author = ' AND ' . $this->db->sql_in_set('p.poster_id', $author_ary);
 		}
@@ -559,7 +588,7 @@ class fulltext_mysql extends \phpbb\search\base
 		$sql_where_options = $sql_sort_join;
 		$sql_where_options .= ($topic_id) ? ' AND p.topic_id = ' . $topic_id : '';
 		$sql_where_options .= ($join_topic) ? ' AND t.topic_id = p.topic_id' : '';
-		$sql_where_options .= (sizeof($ex_fid_ary)) ? ' AND ' . $this->db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '';
+		$sql_where_options .= (count($ex_fid_ary)) ? ' AND ' . $this->db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '';
 		$sql_where_options .= ' AND ' . $post_visibility;
 		$sql_where_options .= $sql_author;
 		$sql_where_options .= ($sort_days) ? ' AND p.post_time >= ' . (time() - ($sort_days * 86400)) : '';
@@ -570,6 +599,7 @@ class fulltext_mysql extends \phpbb\search\base
 			WHERE MATCH ($sql_match) AGAINST ('" . $this->db->sql_escape(htmlspecialchars_decode($this->search_query)) . "' IN BOOLEAN MODE)
 				$sql_where_options
 			ORDER BY $sql_sort";
+		$this->db->sql_return_on_error(true);
 		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
 
 		while ($row = $this->db->sql_fetchrow($result))
@@ -581,7 +611,7 @@ class fulltext_mysql extends \phpbb\search\base
 		$id_ary = array_unique($id_ary);
 
 		// if the total result count is not cached yet, retrieve it from the db
-		if (!$result_count)
+		if (!$result_count && count($id_ary))
 		{
 			$sql_found_rows = 'SELECT FOUND_ROWS() as result_count';
 			$result = $this->db->sql_query($sql_found_rows);
@@ -638,7 +668,7 @@ class fulltext_mysql extends \phpbb\search\base
 	public function author_search($type, $firstpost_only, $sort_by_sql, $sort_key, $sort_dir, $sort_days, $ex_fid_ary, $post_visibility, $topic_id, $author_ary, $author_name, &$id_ary, &$start, $per_page)
 	{
 		// No author? No posts
-		if (!sizeof($author_ary))
+		if (!count($author_ary))
 		{
 			return 0;
 		}
@@ -715,7 +745,7 @@ class fulltext_mysql extends \phpbb\search\base
 		{
 			$sql_author = $this->db->sql_in_set('p.poster_id', $author_ary);
 		}
-		$sql_fora		= (sizeof($ex_fid_ary)) ? ' AND ' . $this->db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '';
+		$sql_fora		= (count($ex_fid_ary)) ? ' AND ' . $this->db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '';
 		$sql_topic_id	= ($topic_id) ? ' AND p.topic_id = ' . (int) $topic_id : '';
 		$sql_time		= ($sort_days) ? ' AND p.post_time >= ' . (time() - ($sort_days * 86400)) : '';
 		$sql_firstpost = ($firstpost_only) ? ' AND p.post_id = t.topic_first_post_id' : '';
@@ -868,7 +898,7 @@ class fulltext_mysql extends \phpbb\search\base
 			$id_ary = array_unique($id_ary);
 		}
 
-		if (sizeof($id_ary))
+		if (count($id_ary))
 		{
 			$this->save_ids($search_key, '', $author_ary, $result_count, $id_ary, $start, $sort_dir);
 			$id_ary = array_slice($id_ary, 0, $per_page);
@@ -895,6 +925,34 @@ class fulltext_mysql extends \phpbb\search\base
 		$split_title = ($subject) ? $this->split_message($subject) : array();
 
 		$words = array_unique(array_merge($split_text, $split_title));
+
+		/**
+		* Event to modify method arguments and words before the MySQL search index is updated
+		*
+		* @event core.search_mysql_index_before
+		* @var string	mode				Contains the post mode: edit, post, reply, quote
+		* @var int		post_id				The id of the post which is modified/created
+		* @var string	message				New or updated post content
+		* @var string	subject				New or updated post subject
+		* @var int		poster_id			Post author's user id
+		* @var int		forum_id			The id of the forum in which the post is located
+		* @var array	words				List of words added to the index
+		* @var array	split_text			Array of words from the message
+		* @var array	split_title			Array of words from the title
+		* @since 3.2.3-RC1
+		*/
+		$vars = array(
+			'mode',
+			'post_id',
+			'message',
+			'subject',
+			'poster_id',
+			'forum_id',
+			'words',
+			'split_text',
+			'split_title',
+		);
+		extract($this->phpbb_dispatcher->trigger_event('core.search_mysql_index_before', compact($vars)));
 
 		unset($split_text);
 		unset($split_title);
@@ -975,12 +1033,37 @@ class fulltext_mysql extends \phpbb\search\base
 			$alter_list[] = $alter_entry;
 		}
 
-		if (sizeof($alter_list))
+		$sql_queries = [];
+
+		foreach ($alter_list as $alter)
 		{
-			foreach ($alter_list as $alter)
-			{
-				$this->db->sql_query('ALTER TABLE ' . POSTS_TABLE . ' ' . implode(', ', $alter));
-			}
+			$sql_queries[] = 'ALTER TABLE ' . POSTS_TABLE . ' ' . implode(', ', $alter);
+		}
+
+		if (!isset($this->stats['post_text']))
+		{
+			$sql_queries[] = 'ALTER TABLE ' . POSTS_TABLE . ' ADD FULLTEXT post_text (post_text)';
+		}
+
+		$stats = $this->stats;
+
+		/**
+		* Event to modify SQL queries before the MySQL search index is created
+		*
+		* @event core.search_mysql_create_index_before
+		* @var array	sql_queries			Array with queries for creating the search index
+		* @var array	stats				Array with statistics of the current index (read only)
+		* @since 3.2.3-RC1
+		*/
+		$vars = array(
+			'sql_queries',
+			'stats',
+		);
+		extract($this->phpbb_dispatcher->trigger_event('core.search_mysql_create_index_before', compact($vars)));
+
+		foreach ($sql_queries as $sql_query)
+		{
+			$this->db->sql_query($sql_query);
 		}
 
 		$this->db->sql_query('TRUNCATE TABLE ' . SEARCH_RESULTS_TABLE);
@@ -1018,9 +1101,37 @@ class fulltext_mysql extends \phpbb\search\base
 			$alter[] = 'DROP INDEX post_content';
 		}
 
-		if (sizeof($alter))
+		if (isset($this->stats['post_text']))
 		{
-			$this->db->sql_query('ALTER TABLE ' . POSTS_TABLE . ' ' . implode(', ', $alter));
+			$alter[] = 'DROP INDEX post_text';
+		}
+
+		$sql_queries = [];
+
+		if (count($alter))
+		{
+			$sql_queries[] = 'ALTER TABLE ' . POSTS_TABLE . ' ' . implode(', ', $alter);
+		}
+
+		$stats = $this->stats;
+
+		/**
+		* Event to modify SQL queries before the MySQL search index is deleted
+		*
+		* @event core.search_mysql_delete_index_before
+		* @var array	sql_queries			Array with queries for deleting the search index
+		* @var array	stats				Array with statistics of the current index (read only)
+		* @since 3.2.3-RC1
+		*/
+		$vars = array(
+			'sql_queries',
+			'stats',
+		);
+		extract($this->phpbb_dispatcher->trigger_event('core.search_mysql_delete_index_before', compact($vars)));
+
+		foreach ($sql_queries as $sql_query)
+		{
+			$this->db->sql_query($sql_query);
 		}
 
 		$this->db->sql_query('TRUNCATE TABLE ' . SEARCH_RESULTS_TABLE);
@@ -1038,7 +1149,7 @@ class fulltext_mysql extends \phpbb\search\base
 			$this->get_stats();
 		}
 
-		return isset($this->stats['post_subject']) && isset($this->stats['post_content']);
+		return isset($this->stats['post_subject']) && isset($this->stats['post_content']) && isset($this->stats['post_text']);
 	}
 
 	/**
@@ -1081,6 +1192,10 @@ class fulltext_mysql extends \phpbb\search\base
 				if ($row['Key_name'] == 'post_subject')
 				{
 					$this->stats['post_subject'] = $row;
+				}
+				else if ($row['Key_name'] == 'post_text')
+				{
+					$this->stats['post_text'] = $row;
 				}
 				else if ($row['Key_name'] == 'post_content')
 				{

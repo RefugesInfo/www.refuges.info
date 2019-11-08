@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\JavaScript\Minifiers;
@@ -11,26 +11,28 @@ use s9e\TextFormatter\Configurator\JavaScript\Minifier;
 class ClosureCompilerApplication extends Minifier
 {
 	public $closureCompilerBin;
+	public $command;
 	public $compilationLevel = 'ADVANCED_OPTIMIZATIONS';
 	public $excludeDefaultExterns = \true;
 	public $javaBin = 'java';
 	public $options = '--use_types_for_optimization';
-	public function __construct($filepath = \null)
+	public function __construct($filepathOrCommand = \null)
 	{
-		if (isset($filepath))
-		{
-			$this->closureCompilerBin = $filepath;
-			$this->testFilepaths();
-		}
+		if (isset($filepathOrCommand))
+			if (\file_exists($filepathOrCommand) && \substr($filepathOrCommand, -4) === '.jar')
+				$this->closureCompilerBin = $filepathOrCommand;
+			else
+				$this->command = $filepathOrCommand;
 	}
 	public function getCacheDifferentiator()
 	{
-		$key = array(
+		$key = [
 			$this->compilationLevel,
 			$this->excludeDefaultExterns,
-			$this->options,
-			$this->getClosureCompilerBinHash()
-		);
+			$this->options
+		];
+		if (isset($this->closureCompilerBin))
+			$key[] = $this->getClosureCompilerBinHash();
 		if ($this->excludeDefaultExterns)
 			$key[] = \file_get_contents(__DIR__ . '/../externs.application.js');
 		return $key;
@@ -45,13 +47,15 @@ class ClosureCompilerApplication extends Minifier
 		$inFile  = \sys_get_temp_dir() . '/' . $crc . '.js';
 		$outFile = \sys_get_temp_dir() . '/' . $crc . '.min.js';
 		\file_put_contents($inFile, $src);
-		$cmd = \escapeshellcmd($this->javaBin)
-		     . ' -jar ' . \escapeshellarg($this->closureCompilerBin)
-		     . ' --compilation_level ' . \escapeshellarg($this->compilationLevel)
+		if (isset($this->command))
+			$cmd = $this->command;
+		else
+			$cmd = \escapeshellcmd($this->javaBin) . ' -jar ' . \escapeshellarg($this->closureCompilerBin);
+		$cmd .= ' --compilation_level ' . \escapeshellarg($this->compilationLevel)
 		     . $options
 		     . ' --js ' . \escapeshellarg($inFile)
 		     . ' --js_output_file ' . \escapeshellarg($outFile);
-		\exec($cmd . ' 2>/dev/null', $output, $return);
+		\exec($cmd . ' 2>&1', $output, $return);
 		\unlink($inFile);
 		if (\file_exists($outFile))
 		{
@@ -59,18 +63,20 @@ class ClosureCompilerApplication extends Minifier
 			\unlink($outFile);
 		}
 		if (!empty($return))
-			throw new RuntimeException('An error occured during minification');
+			throw new RuntimeException('An error occured during minification: ' . \implode("\n", $output));
 		return $src;
 	}
 	protected function getClosureCompilerBinHash()
 	{
-		static $cache = array();
+		static $cache = [];
 		if (!isset($cache[$this->closureCompilerBin]))
 			$cache[$this->closureCompilerBin] = \md5_file($this->closureCompilerBin);
 		return $cache[$this->closureCompilerBin];
 	}
 	protected function testFilepaths()
 	{
+		if (isset($this->command))
+			return;
 		if (!isset($this->closureCompilerBin))
 			throw new RuntimeException('No path set for Closure Compiler');
 		if (!\file_exists($this->closureCompilerBin))

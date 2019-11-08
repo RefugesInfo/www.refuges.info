@@ -13,6 +13,8 @@ namespace Symfony\Bridge\Twig\Form;
 
 use Symfony\Component\Form\AbstractRendererEngine;
 use Symfony\Component\Form\FormView;
+use Twig\Environment;
+use Twig\Template;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -20,19 +22,19 @@ use Symfony\Component\Form\FormView;
 class TwigRendererEngine extends AbstractRendererEngine implements TwigRendererEngineInterface
 {
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     private $environment;
 
     /**
-     * @var \Twig_Template
+     * @var Template
      */
     private $template;
 
     /**
      * {@inheritdoc}
      */
-    public function setEnvironment(\Twig_Environment $environment)
+    public function setEnvironment(Environment $environment)
     {
         $this->environment = $environment;
     }
@@ -98,7 +100,7 @@ class TwigRendererEngine extends AbstractRendererEngine implements TwigRendererE
 
         // Check each theme whether it contains the searched block
         if (isset($this->themes[$cacheKey])) {
-            for ($i = count($this->themes[$cacheKey]) - 1; $i >= 0; --$i) {
+            for ($i = \count($this->themes[$cacheKey]) - 1; $i >= 0; --$i) {
                 $this->loadResourcesFromTheme($cacheKey, $this->themes[$cacheKey][$i]);
                 // CONTINUE LOADING (see doc comment)
             }
@@ -106,7 +108,7 @@ class TwigRendererEngine extends AbstractRendererEngine implements TwigRendererE
 
         // Check the default themes once we reach the root view without success
         if (!$view->parent) {
-            for ($i = count($this->defaultThemes) - 1; $i >= 0; --$i) {
+            for ($i = \count($this->defaultThemes) - 1; $i >= 0; --$i) {
                 $this->loadResourcesFromTheme($cacheKey, $this->defaultThemes[$i]);
                 // CONTINUE LOADING (see doc comment)
             }
@@ -150,13 +152,13 @@ class TwigRendererEngine extends AbstractRendererEngine implements TwigRendererE
      */
     protected function loadResourcesFromTheme($cacheKey, &$theme)
     {
-        if (!$theme instanceof \Twig_Template) {
-            /* @var \Twig_Template $theme */
+        if (!$theme instanceof Template) {
+            /* @var Template $theme */
             $theme = $this->environment->loadTemplate($theme);
         }
 
         if (null === $this->template) {
-            // Store the first \Twig_Template instance that we find so that
+            // Store the first Template instance that we find so that
             // we can call displayBlock() later on. It doesn't matter *which*
             // template we use for that, since we pass the used blocks manually
             // anyway.

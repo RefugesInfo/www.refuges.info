@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Utils\Http\Clients;
@@ -14,25 +14,25 @@ class Native extends Client
 	{
 		$this->gzipEnabled = \extension_loaded('zlib');
 	}
-	public function get($url, $headers = array())
+	public function get($url, $headers = [])
 	{
 		return $this->request('GET', $url, $headers);
 	}
-	public function post($url, $headers = array(), $body = '')
+	public function post($url, $headers = [], $body = '')
 	{
 		return $this->request('POST', $url, $headers, $body);
 	}
 	protected function createContext($method, array $headers, $body)
 	{
-		$contextOptions = array(
-			'ssl'  => array('verify_peer' => $this->sslVerifyPeer),
-			'http' => array(
+		$contextOptions = [
+			'ssl'  => ['verify_peer' => $this->sslVerifyPeer],
+			'http' => [
 				'method'  => $method,
 				'timeout' => $this->timeout,
 				'header'  => $this->generateHeaders($headers, $body),
 				'content' => $body
-			)
-		);
+			]
+		];
 		return \stream_context_create($contextOptions);
 	}
 	protected function decompress($content)

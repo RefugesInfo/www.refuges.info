@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed\Configurator\Collections;
@@ -31,6 +31,33 @@ class SiteDefinitionCollection extends NormalizedCollection
 	{
 		if (!\is_array($siteConfig))
 			throw new InvalidArgumentException('Invalid site definition type');
+		if (!isset($siteConfig['host']))
+			throw new InvalidArgumentException('Missing host from site definition');
+		$siteConfig           += ['attributes' => [], 'extract' => [], 'scrape' => []];
+		$siteConfig['extract'] = $this->normalizeRegexp($siteConfig['extract']);
+		$siteConfig['host']    = \array_map('strtolower', (array) $siteConfig['host']);
+		$siteConfig['scrape']  = $this->normalizeScrape($siteConfig['scrape']);
+		foreach ($siteConfig['attributes'] as &$attrConfig)
+			if (isset($attrConfig['filterChain']))
+				$attrConfig['filterChain'] = (array) $attrConfig['filterChain'];
+		unset($attrConfig);
 		return $siteConfig;
+	}
+	protected function normalizeRegexp($value)
+	{
+		return (array) $value;
+	}
+	protected function normalizeScrape($value)
+	{
+		if (!empty($value) && !isset($value[0]))
+			$value = [$value];
+		foreach ($value as &$scrape)
+		{
+			$scrape           += ['extract' => [], 'match' => '//'];
+			$scrape['extract'] = $this->normalizeRegexp($scrape['extract']);
+			$scrape['match']   = $this->normalizeRegexp($scrape['match']);
+		}
+		unset($scrape);
+		return $value;
 	}
 }

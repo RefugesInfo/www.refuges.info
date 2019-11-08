@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'ACP_BBCODES_EXPLAIN'		=> 'Le BBCode est une implémentation spéciale du HTML qui offre un plus grand contrôle sur l’affichage des messages. Depuis cette page, vous pouvez ajouter, supprimer ou modifier des BBCodes personnalisés.',
 	'ADD_BBCODE'				=> 'Ajouter un nouveau BBCode',
 
-	'BBCODE_DANGER'				=> 'Le BBCode que vous tentez d’ajouter semble utiliser un champ {TEXT} à l’intérieur d’un attribut HTML. Ceci est une éventuelle faille de sécurité XSS. Essayez d’utiliser à la place des variables plus restrictives comme {SIMPLETEXT} ou {INTEXT}. Procédez uniquement si vous comprenez les risques potentiels et que vous jugez l’utilisation de {TEXT} absolument inévitable.',
+	'BBCODE_DANGER'				=> 'Le BBCode que vous tentez d’ajouter semble utiliser un champ {TEXT} à l’intérieur d’un attribut HTML. Ceci est une éventuelle faille de sécurité XSS. Essayez d’utiliser à la place des variables plus restrictives comme {SIMPLETEXT} ou {INTTEXT}. Procédez uniquement si vous comprenez les risques potentiels et que vous jugez l’utilisation de {TEXT} absolument inévitable.',
 	'BBCODE_DANGER_PROCEED'		=> 'Procédez', //'I understand the risk',
 
 	'BBCODE_ADDED'				=> 'BBCode ajouté.',
@@ -63,29 +63,29 @@ $lang = array_merge($lang, array(
 	'BBCODE_TAG_TOO_LONG'		=> 'Le nom de la balise que vous avez sélectionné est trop long.',
 	'BBCODE_TAG_DEF_TOO_LONG'	=> 'La définition de la balise que vous avez entrée est trop longue, raccourcissez votre définition.',
 	'BBCODE_USAGE'				=> 'Utilisation du BBCode',
-	'BBCODE_USAGE_EXAMPLE'		=> '[highlight={COLOR}]{TEXT}[/highlight]<br /><br />[font={SIMPLETEXT1}]{SIMPLETEXT2}[/font]',
+	'BBCODE_USAGE_EXAMPLE'		=> '[highlight={COLOR}]{TEXT}[/highlight]<br><br>[font={SIMPLETEXT1}]{SIMPLETEXT2}[/font]',
 	'BBCODE_USAGE_EXPLAIN'		=> 'Vous pouvez définir la façon d’utiliser le BBCode. Remplacez n’importe quelle variable d’entrée par la chaîne de symboles correspondante (%svoir ci-dessous%s).',
 
 	'EXAMPLE'						=> 'Exemple :',
 	'EXAMPLES'						=> 'Exemples :',
 
 	'HTML_REPLACEMENT'				=> 'Code HTML de remplacement',
-	'HTML_REPLACEMENT_EXAMPLE'		=> '&lt;span style="background-color: {COLOR};"&gt;{TEXT}&lt;/span&gt;<br /><br />&lt;span style="font-family: {SIMPLETEXT1};"&gt;{SIMPLETEXT2}&lt;/span&gt;',
+	'HTML_REPLACEMENT_EXAMPLE'		=> '&lt;span style="background-color: {COLOR};"&gt;{TEXT}&lt;/span&gt;<br><br>&lt;span style="font-family: {SIMPLETEXT1};"&gt;{SIMPLETEXT2}&lt;/span&gt;',
 	'HTML_REPLACEMENT_EXPLAIN'		=> 'Vous pouvez définir le code HTML de remplacement de votre BBCode. N’oubliez pas de remettre la chaîne de symboles que vous avez utilisée ci-dessus !',
 
 	'TOKEN'					=> 'Chaîne de symboles',
 	'TOKENS'				=> 'Chaînes de symboles',
-	'TOKENS_EXPLAIN'		=> 'Les chaînes de symboles sont des conteneurs pour les saisies des utilisateurs. Les entrées ne seront validées que si elles trouvent la définition correspondante. Si besoin, vous pouvez les numéroter en y ajoutant un nombre comme dernier caractère entre les accolades, exemple : {TEXT1}, {TEXT2}.<br /><br />En plus du remplacement HTML, vous pouvez utiliser les clés de langue présentes dans votre répertoire « language/ » comme ceci : {L_<em>&lt;STRINGNAME&gt;</em>} où <em>&lt;STRINGNAME&gt;</em> est le nom de la chaîne traduite que vous souhaitez ajouter. Par exemple, {L_WROTE} affichera « a écrit » ou son équivalence selon la langue locale du membre.<br /><br /><strong>Notez que seules les chaînes listées ci-dessous sont autorisées à être utilisées dans les BBCodes personnalisés.</strong>',
+	'TOKENS_EXPLAIN'		=> 'Les chaînes de symboles sont des conteneurs pour les saisies des utilisateurs. Les entrées ne seront validées que si elles trouvent la définition correspondante. Si besoin, vous pouvez les numéroter en y ajoutant un nombre comme dernier caractère entre les accolades, exemple : {TEXT1}, {TEXT2}.<br><br>En plus du remplacement HTML, vous pouvez utiliser les clés de langue présentes dans votre répertoire « language/ » comme ceci : {L_<em>&lt;STRINGNAME&gt;</em>} où <em>&lt;STRINGNAME&gt;</em> est le nom de la chaîne traduite que vous souhaitez ajouter. Par exemple, {L_WROTE} affichera « a écrit » ou son équivalence selon la langue locale du membre.<br><br><strong>Notez que seules les chaînes listées ci-dessous sont autorisées à être utilisées dans les BBCodes personnalisés.</strong>',
 	'TOKEN_DEFINITION'		=> 'Que peut-elle être ?',
 	'TOO_MANY_BBCODES'		=> 'Vous ne pouvez pas créer d’autres BBCodes. Supprimez un ou plusieurs BBCodes puis réessayez.',
 
 	'tokens'	=>	array(
-		'TEXT'			=> 'Tout texte, y compris les caractères étrangers, chiffres, etc.<br />Vous ne devriez pas utiliser cette chaîne de symboles dans les balises HTML. À la place, essayez d’utiliser IDENTIFIER, INTTEXT ou SIMPLETEXT.',
+		'TEXT'			=> 'Tout texte, y compris les caractères étrangers, chiffres, etc.<br>Vous ne devriez pas utiliser cette chaîne de symboles dans les balises HTML. À la place, essayez d’utiliser IDENTIFIER, INTTEXT ou SIMPLETEXT.',
 		'SIMPLETEXT'	=> 'Caractères de l’alphabet latin (A-Z), chiffres, espaces, virgules, points, moins, plus, tirets et tirets bas (underscore).',
 		'INTTEXT'		=> 'Caractères Unicode des catégories « Lettres » et « Chiffres », espaces, virgules, points, moins, plus, tirets et tirets bas (underscore).',
 		'IDENTIFIER'	=> 'Caractères de l’alphabet latin (A-Z), chiffres, tirets et tirets bas (underscore).',
 		'NUMBER'		=> 'Une série de chiffres',
-		'EMAIL'			=> 'Une adresse e-mail valide',
+		'EMAIL'			=> 'Une adresse courriel valide',
 		'URL'			=> 'Une adresse URL valide. Le protocole peut être spécifié mais HTTP, FTP, etc. ne peuvent pas être utilisés pour des exploits JavaScript. Si aucun protocole n’est spécifié, l’adresse URL compléte sera préfixée de « http:// ».',
 		'LOCAL_URL'		=> 'Une adresse URL locale. Ni le protocole ni le serveur ne doivent être spécifiés, l’adresse URL complète sera préfixée de « %s ». Elle doit donc être relative à la page du sujet.',
 		'RELATIVE_URL'	=> 'Une adresse URL relative. Il suffit de la préfixer avec le contenu de la variable LOCAL_URL pour obtenir l’adresse URL complète. Attention, une adresse URL complète est aussi une adresse relative qui est valide, ceci peut poser problème.',

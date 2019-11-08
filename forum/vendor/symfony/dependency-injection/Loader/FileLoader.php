@@ -11,9 +11,9 @@
 
 namespace Symfony\Component\DependencyInjection\Loader;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
 use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * FileLoader is the abstract class used by all built-in loaders that are file based.
@@ -24,10 +24,6 @@ abstract class FileLoader extends BaseFileLoader
 {
     protected $container;
 
-    /**
-     * @param ContainerBuilder     $container A ContainerBuilder instance
-     * @param FileLocatorInterface $locator   A FileLocator instance
-     */
     public function __construct(ContainerBuilder $container, FileLocatorInterface $locator)
     {
         $this->container = $container;

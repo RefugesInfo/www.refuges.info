@@ -11,12 +11,12 @@
 
 namespace Symfony\Component\DependencyInjection\Dumper;
 
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
@@ -34,8 +34,6 @@ class XmlDumper extends Dumper
 
     /**
      * Dumps the service container as an XML string.
-     *
-     * @param array $options An array of options
      *
      * @return string An xml string representing of the service container
      */
@@ -58,11 +56,6 @@ class XmlDumper extends Dumper
         return $xml;
     }
 
-    /**
-     * Adds parameters.
-     *
-     * @param \DOMElement $parent
-     */
     private function addParameters(\DOMElement $parent)
     {
         $data = $this->container->getParameterBag()->all();
@@ -79,18 +72,12 @@ class XmlDumper extends Dumper
         $this->convertParameters($data, 'parameter', $parameters);
     }
 
-    /**
-     * Adds method calls.
-     *
-     * @param array       $methodcalls
-     * @param \DOMElement $parent
-     */
     private function addMethodCalls(array $methodcalls, \DOMElement $parent)
     {
         foreach ($methodcalls as $methodcall) {
             $call = $this->document->createElement('call');
             $call->setAttribute('method', $methodcall[0]);
-            if (count($methodcall[1])) {
+            if (\count($methodcall[1])) {
                 $this->convertParameters($methodcall[1], 'argument', $call);
             }
             $parent->appendChild($call);
@@ -185,10 +172,10 @@ class XmlDumper extends Dumper
         if ($callable = $definition->getFactory()) {
             $factory = $this->document->createElement('factory');
 
-            if (is_array($callable) && $callable[0] instanceof Definition) {
+            if (\is_array($callable) && $callable[0] instanceof Definition) {
                 $this->addService($callable[0], null, $factory);
                 $factory->setAttribute('method', $callable[1]);
-            } elseif (is_array($callable)) {
+            } elseif (\is_array($callable)) {
                 $factory->setAttribute($callable[0] instanceof Reference ? 'service' : 'class', $callable[0]);
                 $factory->setAttribute('method', $callable[1]);
             } else {
@@ -215,13 +202,17 @@ class XmlDumper extends Dumper
             $service->appendChild($autowiringType);
         }
 
+        if ($definition->isAbstract()) {
+            $service->setAttribute('abstract', 'true');
+        }
+
         if ($callable = $definition->getConfigurator()) {
             $configurator = $this->document->createElement('configurator');
 
-            if (is_array($callable) && $callable[0] instanceof Definition) {
+            if (\is_array($callable) && $callable[0] instanceof Definition) {
                 $this->addService($callable[0], null, $configurator);
                 $configurator->setAttribute('method', $callable[1]);
-            } elseif (is_array($callable)) {
+            } elseif (\is_array($callable)) {
                 $configurator->setAttribute($callable[0] instanceof Reference ? 'service' : 'class', $callable[0]);
                 $configurator->setAttribute('method', $callable[1]);
             } else {
@@ -251,11 +242,6 @@ class XmlDumper extends Dumper
         $parent->appendChild($service);
     }
 
-    /**
-     * Adds services.
-     *
-     * @param \DOMElement $parent
-     */
     private function addServices(\DOMElement $parent)
     {
         $definitions = $this->container->getDefinitions();
@@ -288,23 +274,23 @@ class XmlDumper extends Dumper
      */
     private function convertParameters(array $parameters, $type, \DOMElement $parent, $keyAttribute = 'key')
     {
-        $withKeys = array_keys($parameters) !== range(0, count($parameters) - 1);
+        $withKeys = array_keys($parameters) !== range(0, \count($parameters) - 1);
         foreach ($parameters as $key => $value) {
             $element = $this->document->createElement($type);
             if ($withKeys) {
                 $element->setAttribute($keyAttribute, $key);
             }
 
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $element->setAttribute('type', 'collection');
                 $this->convertParameters($value, $type, $element, 'key');
             } elseif ($value instanceof Reference) {
                 $element->setAttribute('type', 'service');
                 $element->setAttribute('id', (string) $value);
                 $behaviour = $value->getInvalidBehavior();
-                if ($behaviour == ContainerInterface::NULL_ON_INVALID_REFERENCE) {
+                if (ContainerInterface::NULL_ON_INVALID_REFERENCE == $behaviour) {
                     $element->setAttribute('on-invalid', 'null');
-                } elseif ($behaviour == ContainerInterface::IGNORE_ON_INVALID_REFERENCE) {
+                } elseif (ContainerInterface::IGNORE_ON_INVALID_REFERENCE == $behaviour) {
                     $element->setAttribute('on-invalid', 'ignore');
                 }
                 if (!$value->isStrict(false)) {
@@ -318,7 +304,7 @@ class XmlDumper extends Dumper
                 $text = $this->document->createTextNode(self::phpToXml((string) $value));
                 $element->appendChild($text);
             } else {
-                if (in_array($value, array('null', 'true', 'false'), true)) {
+                if (\in_array($value, array('null', 'true', 'false'), true)) {
                     $element->setAttribute('type', 'string');
                 }
                 $text = $this->document->createTextNode(self::phpToXml($value));
@@ -331,17 +317,15 @@ class XmlDumper extends Dumper
     /**
      * Escapes arguments.
      *
-     * @param array $arguments
-     *
      * @return array
      */
     private function escape(array $arguments)
     {
         $args = array();
         foreach ($arguments as $k => $v) {
-            if (is_array($v)) {
+            if (\is_array($v)) {
                 $args[$k] = $this->escape($v);
-            } elseif (is_string($v)) {
+            } elseif (\is_string($v)) {
                 $args[$k] = str_replace('%', '%%', $v);
             } else {
                 $args[$k] = $v;
@@ -371,7 +355,7 @@ class XmlDumper extends Dumper
                 return 'false';
             case $value instanceof Parameter:
                 return '%'.$value.'%';
-            case is_object($value) || is_resource($value):
+            case \is_object($value) || \is_resource($value):
                 throw new RuntimeException('Unable to dump a service container if a parameter is an object or a resource.');
             default:
                 return (string) $value;

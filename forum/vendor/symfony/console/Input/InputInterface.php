@@ -24,7 +24,7 @@ interface InputInterface
     /**
      * Returns the first argument from the raw parameters (not parsed).
      *
-     * @return string The value of the first argument or null otherwise
+     * @return string|null The value of the first argument or null otherwise
      */
     public function getFirstArgument();
 
@@ -33,6 +33,8 @@ interface InputInterface
      *
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
+     * Does not necessarily return the correct result for short options
+     * when multiple flags are combined in the same option.
      *
      * @param string|array $values The values to look for in the raw parameters (can be an array)
      *
@@ -45,6 +47,8 @@ interface InputInterface
      *
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
+     * Does not necessarily return the correct result for short options
+     * when multiple flags are combined in the same option.
      *
      * @param string|array $values  The value(s) to look for in the raw parameters (can be an array)
      * @param mixed        $default The default value to return if no result is found
@@ -56,7 +60,7 @@ interface InputInterface
     /**
      * Binds the current Input instance with the given arguments and options.
      *
-     * @param InputDefinition $definition A InputDefinition instance
+     * @throws RuntimeException
      */
     public function bind(InputDefinition $definition);
 
@@ -79,7 +83,7 @@ interface InputInterface
      *
      * @param string $name The argument name
      *
-     * @return mixed The argument value
+     * @return string|string[]|null The argument value
      *
      * @throws InvalidArgumentException When argument given doesn't exist
      */
@@ -88,8 +92,8 @@ interface InputInterface
     /**
      * Sets an argument value by name.
      *
-     * @param string $name  The argument name
-     * @param string $value The argument value
+     * @param string               $name  The argument name
+     * @param string|string[]|null $value The argument value
      *
      * @throws InvalidArgumentException When argument given doesn't exist
      */
@@ -116,7 +120,7 @@ interface InputInterface
      *
      * @param string $name The option name
      *
-     * @return mixed The option value
+     * @return string|string[]|bool|null The option value
      *
      * @throws InvalidArgumentException When option given doesn't exist
      */
@@ -125,8 +129,8 @@ interface InputInterface
     /**
      * Sets an option value by name.
      *
-     * @param string      $name  The option name
-     * @param string|bool $value The option value
+     * @param string                    $name  The option name
+     * @param string|string[]|bool|null $value The option value
      *
      * @throws InvalidArgumentException When option given doesn't exist
      */

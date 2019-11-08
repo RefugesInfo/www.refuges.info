@@ -13,13 +13,15 @@ namespace Symfony\Bridge\Twig\Extension;
 
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Twig extension for the Symfony Asset component.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class AssetExtension extends \Twig_Extension
+class AssetExtension extends AbstractExtension
 {
     private $packages;
     private $foundationExtension;
@@ -40,9 +42,9 @@ class AssetExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('asset', array($this, 'getAssetUrl')),
-            new \Twig_SimpleFunction('asset_version', array($this, 'getAssetVersion')),
-            new \Twig_SimpleFunction('assets_version', array($this, 'getAssetsVersion'), array('deprecated' => true, 'alternative' => 'asset_version')),
+            new TwigFunction('asset', array($this, 'getAssetUrl')),
+            new TwigFunction('asset_version', array($this, 'getAssetVersion')),
+            new TwigFunction('assets_version', array($this, 'getAssetsVersion'), array('deprecated' => true, 'alternative' => 'asset_version')),
         );
     }
 
@@ -60,13 +62,13 @@ class AssetExtension extends \Twig_Extension
     public function getAssetUrl($path, $packageName = null, $absolute = false, $version = null)
     {
         // BC layer to be removed in 3.0
-        if (2 < $count = func_num_args()) {
+        if (2 < $count = \func_num_args()) {
             @trigger_error('Generating absolute URLs with the Twig asset() function was deprecated in 2.7 and will be removed in 3.0. Please use absolute_url() instead.', E_USER_DEPRECATED);
             if (4 === $count) {
                 @trigger_error('Forcing a version with the Twig asset() function was deprecated in 2.7 and will be removed in 3.0.', E_USER_DEPRECATED);
             }
 
-            $args = func_get_args();
+            $args = \func_get_args();
 
             return $this->getLegacyAssetUrl($path, $packageName, $args[2], isset($args[3]) ? $args[3] : null);
         }

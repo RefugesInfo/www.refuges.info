@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'30_MINS'		=> '30 minutes',
 	'6_HOURS'		=> '6 heures',
 
-	'ACP_BAN_EXPLAIN'	=> 'Vous pouvez contrôler le bannissement d’utilisateurs par nom, adresse IP ou adresse e-mail. Ces méthodes empêchent un utilisateur d’atteindre n’importe quelle partie du forum. Vous pouvez donner si vous le souhaitez une courte raison (3000 caractères maximum) du bannissement. Cela sera affiché dans les journaux d’administration.<br />Une durée de bannissement peut également être indiquée. Si vous voulez que le bannissement se termine à une date particulière plutôt qu’après une période de temps définie, sélectionnez <span style="text-decoration: underline;">Jusqu’au -&gt;</span> pour la durée du bannissement et saisissez une date au format <kbd>AAAA-MM-JJ</kbd>.',
+	'ACP_BAN_EXPLAIN'	=> 'Vous pouvez contrôler le bannissement d’utilisateurs par nom, adresse IP ou adresse courriel. Ces méthodes empêchent l’utilisateur d’accéder à toutes les sections de votre forum. Vous pouvez donner si vous le souhaitez une courte raison (3000 caractères maximum) du bannissement. Celle-ci sera affichée dans le journal d’administration.<br>Une durée de bannissement peut également être indiquée. Si vous voulez que le bannissement se termine à une date particulière plutôt qu’après une période de temps définie, sélectionnez <span style="text-decoration: underline;">Jusqu’au -&gt;</span> pour la durée du bannissement et saisissez une date au format <kbd>AAAA-MM-JJ</kbd>.',
 
 	'BAN_EXCLUDE'			=> 'Exclure du bannissement',
 	'BAN_LENGTH'			=> 'Durée du bannissement',
@@ -54,12 +54,12 @@ $lang = array_merge($lang, array(
 	'BANNED_UNTIL_DATE'		=> 'Jusqu’au %s', // Example: "until Mon 13.Jul.2009, 14:44"
 	'BANNED_UNTIL_DURATION'	=> '%1$s (Jusqu’au %2$s)', // Example: "7 days (until Tue 14.Jul.2009, 14:44)"
 
-	'EMAIL_BAN'					=> 'Bannir une ou plusieurs adresses e-mails',
-	'EMAIL_BAN_EXCLUDE_EXPLAIN'	=> 'Activez cette option pour exclure les adresses e-mails listées de tous bannissements actuels.',
-	'EMAIL_BAN_EXPLAIN'			=> 'Pour indiquer plus d’une adresse e-mail, saisissez chacune d’elles sur une nouvelle ligne. Pour bannir sur une partie du nom, utilisez « * » comme caractère joker, par exemple : <samp>*@hotmail.com</samp>, <samp>*@*.domain.tld</samp>, etc.',
-	'EMAIL_NO_BANNED'			=> 'Aucune adresse e-mail bannie',
-	'EMAIL_UNBAN'				=> 'Débannir ou ne plus exclure des adresses e-mails',
-	'EMAIL_UNBAN_EXPLAIN'		=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs adresses e-mails en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur.',
+	'EMAIL_BAN'					=> 'Bannir une ou plusieurs adresses courriels',
+	'EMAIL_BAN_EXCLUDE_EXPLAIN'	=> 'Activez cette option pour exclure les adresses courriels listées de tous bannissements actuels.',
+	'EMAIL_BAN_EXPLAIN'			=> 'Pour indiquer plus d’une adresse courriel, saisissez chacune d’elles sur une nouvelle ligne. Pour bannir sur une partie du nom, utilisez « * » comme caractère joker, par exemple : <samp>*@hotmail.com</samp>, <samp>*@*.domain.tld</samp>, etc.',
+	'EMAIL_NO_BANNED'			=> 'Aucune adresse courriel bannie',
+	'EMAIL_UNBAN'				=> 'Débannir ou ne plus exclure des adresses courriels',
+	'EMAIL_UNBAN_EXPLAIN'		=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs adresses courriels en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur.',
 
 	'IP_BAN'					=> 'Bannir une ou plusieurs adresses IP',
 	'IP_BAN_EXCLUDE_EXPLAIN'	=> 'Activez cette option pour exclure les adresses IP listées de tous bannissements actuels.',

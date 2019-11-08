@@ -11,10 +11,10 @@
 
 namespace Symfony\Component\HttpKernel\EventListener;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * SurrogateListener adds a Surrogate-Control HTTP header when the Response needs to be parsed for Surrogates.
@@ -25,11 +25,6 @@ class SurrogateListener implements EventSubscriberInterface
 {
     private $surrogate;
 
-    /**
-     * Constructor.
-     *
-     * @param SurrogateInterface $surrogate An SurrogateInterface instance
-     */
     public function __construct(SurrogateInterface $surrogate = null)
     {
         $this->surrogate = $surrogate;
@@ -37,8 +32,6 @@ class SurrogateListener implements EventSubscriberInterface
 
     /**
      * Filters the Response.
-     *
-     * @param FilterResponseEvent $event A FilterResponseEvent instance
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {

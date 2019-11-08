@@ -36,7 +36,7 @@ function mcp_topic_view($id, $mode, $action)
 	$topic_id = $request->variable('t', 0);
 	$topic_info = phpbb_get_topic_data(array($topic_id), false, true);
 
-	if (!sizeof($topic_info))
+	if (!count($topic_info))
 	{
 		trigger_error('TOPIC_NOT_EXIST');
 	}
@@ -93,11 +93,15 @@ function mcp_topic_view($id, $mode, $action)
 	// Restore or pprove posts?
 	if (($action == 'restore' || $action == 'approve') && $auth->acl_get('m_approve', $topic_info['forum_id']))
 	{
-		include($phpbb_root_path . 'includes/mcp/mcp_queue.' . $phpEx);
+		if (!class_exists('mcp_queue'))
+		{
+			include($phpbb_root_path . 'includes/mcp/mcp_queue.' . $phpEx);
+		}
+
 		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 
-		if (!sizeof($post_id_list))
+		if (!count($post_id_list))
 		{
 			trigger_error('NO_POST_SELECTED');
 		}
@@ -138,14 +142,36 @@ function mcp_topic_view($id, $mode, $action)
 	}
 	$start = $pagination->validate_start($start, $posts_per_page, $total);
 
-	$sql = 'SELECT u.username, u.username_clean, u.user_colour, p.*
-		FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
-		WHERE ' . (($action == 'reports') ? 'p.post_reported = 1 AND ' : '') . '
+	$sql_where = (($action == 'reports') ? 'p.post_reported = 1 AND ' : '') . '
 			p.topic_id = ' . $topic_id . '
 			AND ' .	$phpbb_content_visibility->get_visibility_sql('post', $topic_info['forum_id'], 'p.') . '
 			AND p.poster_id = u.user_id ' .
-			$limit_time_sql . '
-		ORDER BY ' . $sort_order_sql;
+			$limit_time_sql;
+
+	$sql_ary = array(
+		'SELECT'	=> 'u.username, u.username_clean, u.user_colour, p.*',
+		'FROM'		=> array(
+			POSTS_TABLE		=> 'p',
+			USERS_TABLE		=> 'u'
+		),
+		'LEFT_JOIN'	=> array(),
+		'WHERE'		=> $sql_where,
+		'ORDER_BY'	=> $sort_order_sql,
+	);
+
+	/**
+	* Event to modify the SQL query before the MCP topic review posts is queried
+	*
+	* @event core.mcp_topic_modify_sql_ary
+	* @var	array	sql_ary		The SQL array to get the data of the MCP topic review posts
+	* @since 3.2.8-RC1
+	*/
+	$vars = array('sql_ary');
+	extract($phpbb_dispatcher->trigger_event('core.mcp_topic_modify_sql_ary', compact($vars)));
+
+	$sql = $db->sql_build_query('SELECT', $sql_ary);
+	unset($sql_ary);
+
 	$result = $db->sql_query_limit($sql, $posts_per_page, $start);
 
 	$rowset = $post_id_list = array();
@@ -172,7 +198,7 @@ function mcp_topic_view($id, $mode, $action)
 
 	// Grab extensions
 	$attachments = array();
-	if ($topic_info['topic_attachment'] && sizeof($post_id_list))
+	if ($topic_info['topic_attachment'] && count($post_id_list))
 	{
 		// Get attachments...
 		if ($auth->acl_get('u_download') && $auth->acl_get('f_download', $topic_info['forum_id']))
@@ -326,7 +352,7 @@ function mcp_topic_view($id, $mode, $action)
 		{
 			$to_topic_info = phpbb_get_topic_data(array($to_topic_id), 'm_merge');
 
-			if (!sizeof($to_topic_info))
+			if (!count($to_topic_info))
 			{
 				$to_topic_id = 0;
 			}
@@ -402,13 +428,13 @@ function mcp_topic_view($id, $mode, $action)
 */
 function split_topic($action, $topic_id, $to_forum_id, $subject)
 {
-	global $db, $template, $user, $phpEx, $phpbb_root_path, $auth, $config, $phpbb_log, $request;
+	global $db, $template, $user, $phpEx, $phpbb_root_path, $auth, $config, $phpbb_log, $request, $phpbb_dispatcher;
 
 	$post_id_list	= $request->variable('post_id_list', array(0));
 	$forum_id		= $request->variable('forum_id', 0);
 	$start			= $request->variable('start', 0);
 
-	if (!sizeof($post_id_list))
+	if (!count($post_id_list))
 	{
 		$template->assign_var('MESSAGE', $user->lang['NO_POST_SELECTED']);
 		return;
@@ -422,7 +448,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 	$post_id = $post_id_list[0];
 	$post_info = phpbb_get_post_data(array($post_id));
 
-	if (!sizeof($post_info))
+	if (!count($post_info))
 	{
 		$template->assign_var('MESSAGE', $user->lang['NO_POST_SELECTED']);
 		return;
@@ -446,7 +472,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 
 	$forum_info = phpbb_get_forum_data(array($to_forum_id), 'f_post');
 
-	if (!sizeof($forum_info))
+	if (!count($forum_info))
 	{
 		$template->assign_var('MESSAGE', $user->lang['USER_CANNOT_POST']);
 		return;
@@ -530,7 +556,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			$db->sql_freeresult($result);
 		}
 
-		if (!sizeof($post_id_list))
+		if (!count($post_id_list))
 		{
 			trigger_error('NO_POST_SELECTED');
 		}
@@ -570,6 +596,47 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			WHERE post_id = {$post_id_list[0]}";
 		$db->sql_query($sql);
 
+		// Grab data for first post in split topic
+		$sql_array = array(
+			'SELECT'  => 'p.post_id, p.forum_id, p.poster_id, p.post_text, f.enable_indexing',
+			'FROM' => array(
+				POSTS_TABLE => 'p',
+			),
+			'LEFT_JOIN' => array(
+				array(
+					'FROM' => array(FORUMS_TABLE => 'f'),
+					'ON' => 'p.forum_id = f.forum_id',
+				)
+			),
+			'WHERE' => "post_id = {$post_id_list[0]}",
+		);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		$first_post_data = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		// Index first post as if it were edited
+		if ($first_post_data['enable_indexing'])
+		{
+			// Select the search method and do some additional checks to ensure it can actually be utilised
+			$search_type = $config['search_type'];
+
+			if (!class_exists($search_type))
+			{
+				trigger_error('NO_SUCH_SEARCH_MODULE');
+			}
+
+			$error = false;
+			$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
+
+			if ($error)
+			{
+				trigger_error($error);
+			}
+
+			$search->index('edit', $first_post_data['post_id'], $first_post_data['post_text'], $subject, $first_post_data['poster_id'], $first_post_data['forum_id']);
+		}
+
 		// Copy topic subscriptions to new topic
 		$sql = 'SELECT user_id, notify_status
 			FROM ' . TOPICS_WATCH_TABLE . '
@@ -587,7 +654,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 		}
 		$db->sql_freeresult($result);
 
-		if (sizeof($sql_ary))
+		if (count($sql_ary))
 		{
 			$db->sql_multi_insert(TOPICS_WATCH_TABLE, $sql_ary);
 		}
@@ -608,7 +675,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 		}
 		$db->sql_freeresult($result);
 
-		if (sizeof($sql_ary))
+		if (count($sql_ary))
 		{
 			$db->sql_multi_insert(BOOKMARKS_TABLE, $sql_ary);
 		}
@@ -637,7 +704,7 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 */
 function merge_posts($topic_id, $to_topic_id)
 {
-	global $db, $template, $user, $phpEx, $phpbb_root_path, $phpbb_log, $request;
+	global $db, $template, $user, $phpEx, $phpbb_root_path, $phpbb_log, $request, $phpbb_dispatcher;
 
 	if (!$to_topic_id)
 	{
@@ -649,7 +716,7 @@ function merge_posts($topic_id, $to_topic_id)
 
 	$topic_data = phpbb_get_topic_data($sync_topics, 'm_merge');
 
-	if (!sizeof($topic_data) || empty($topic_data[$to_topic_id]))
+	if (!count($topic_data) || empty($topic_data[$to_topic_id]))
 	{
 		$template->assign_var('MESSAGE', $user->lang['NO_FINAL_TOPIC_SELECTED']);
 		return;
@@ -666,7 +733,7 @@ function merge_posts($topic_id, $to_topic_id)
 	$post_id_list	= $request->variable('post_id_list', array(0));
 	$start			= $request->variable('start', 0);
 
-	if (!sizeof($post_id_list))
+	if (!count($post_id_list))
 	{
 		$template->assign_var('MESSAGE', $user->lang['NO_POST_SELECTED']);
 		return;
@@ -742,6 +809,20 @@ function merge_posts($topic_id, $to_topic_id)
 		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $to_forum_id . '&amp;t=' . $to_topic_id) . '">', '</a>');
 		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?f=$to_forum_id&amp;t=$to_topic_id");
 		$redirect = reapply_sid($redirect);
+
+		/**
+		 * Perform additional actions after merging posts.
+		 *
+		 * @event core.mcp_topics_merge_posts_after
+		 * @var	int		topic_id		The topic ID from which posts are being moved
+		 * @var	int		to_topic_id		The topic ID to which posts are being moved
+		 * @since 3.1.11-RC1
+		 */
+		$vars = array(
+			'topic_id',
+			'to_topic_id',
+		);
+		extract($phpbb_dispatcher->trigger_event('core.mcp_topics_merge_posts_after', compact($vars)));
 
 		meta_refresh(3, $redirect);
 		trigger_error($user->lang[$success_msg] . '<br /><br />' . $return_link);

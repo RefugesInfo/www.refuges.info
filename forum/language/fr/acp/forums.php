@@ -88,7 +88,7 @@ $lang = array_merge($lang, array(
 	'FORUM_DELETE_EXPLAIN'				=> 'Le formulaire suivant vous permet de supprimer un forum et de décider où vous désirez déplacer tous les sujets (ou forums) qu’il contient.',
 	'FORUM_DELETED'						=> 'Le forum a été supprimé.',
 	'FORUM_DESC'						=> 'Description',
-	'FORUM_DESC_EXPLAIN'				=> 'Toute balise HTML saisie sera affichée telle quelle.',
+	'FORUM_DESC_EXPLAIN'				=> 'Toute balise HTML saisie sera affichée telle quelle. Si le type de forum sélectionné est une catégorie alors la description ne sera pas affichée.',
 	'FORUM_DESC_TOO_LONG'				=> 'La description du forum est trop longue. Elle ne peut contenir plus de 4000 caractères.',
 	'FORUM_EDIT_EXPLAIN'				=> 'Le formulaire suivant vous permet de personnaliser ce forum. Notez que la modération et les paramètres de contrôle des messages sont définis via les permissions pour chaque utilisateur ou groupe.',
 	'FORUM_IMAGE'						=> 'Image du forum',
@@ -99,6 +99,7 @@ $lang = array_merge($lang, array(
 	'FORUM_LINK_TRACK_EXPLAIN'			=> 'Enregistre le nombre de fois que le lien a été cliqué.',
 	'FORUM_NAME'						=> 'Nom du forum',
 	'FORUM_NAME_EMPTY'					=> 'Vous devez indiquer un nom pour le forum.',
+	'FORUM_NAME_EMOJI'					=> 'Le nom du forum que vous avez saisi n’est pas valide.<br>Les caractères suivants ne sont pas pris en charge :<br>%s',
 	'FORUM_PARENT'						=> 'Forum parent',
 	'FORUM_PASSWORD'					=> 'Mot de passe',
 	'FORUM_PASSWORD_CONFIRM'			=> 'Confirmation du mot de passe',
@@ -125,7 +126,7 @@ $lang = array_merge($lang, array(
 	'FORUM_TYPE'						=> 'Type du forum',
 	'FORUM_UPDATED'						=> 'Les informations du forum ont été mises à jour.',
 
-	'FORUM_WITH_SUBFORUMS_NOT_TO_LINK'		=> 'Vous souhaitez modifier un forum contenant des sous-forums en un forum-lien. Avant de procéder, déplacez tous les sous-forums hors de ce forum, car une fois le forum modifié en un forum-lien, vous ne pourrez plus consulter les sous-forums.',	
+	'FORUM_WITH_SUBFORUMS_NOT_TO_LINK'		=> 'Vous souhaitez modifier un forum contenant des sous-forums en un forum-lien. Avant de procéder, déplacez tous les sous-forums hors de ce forum, car une fois le forum modifié en un forum-lien, vous ne pourrez plus consulter les sous-forums.',
 
 	'GENERAL_FORUM_SETTINGS'	=> 'Paramètres généraux du forum',
 
@@ -133,14 +134,14 @@ $lang = array_merge($lang, array(
 	'LIST_INDEX'				=> 'Lister le sous-forum dans la légende du forum parent',
 	'LIST_INDEX_EXPLAIN'		=> 'Si cette option est activée, ce forum sera listé sous la forme d’un lien dans la légende de tous ses forums parents ayant l’option « Lister les sous-forums dans la légende » activée.',
 	'LIST_SUBFORUMS'			=> 'Lister les sous-forums dans la légende',
-	'LIST_SUBFORUMS_EXPLAIN'	=> 'Si cette option est activée, tous ses sous-forums, ayant l’option « Lister le sous-forum dans la légende du forum parent » activée, apparaitront sous la forme d’un lien dans la légende de ce forum.',
+	'LIST_SUBFORUMS_EXPLAIN'	=> 'Si cette option est activée, tous ses sous-forums, ayant l’option « Lister le sous-forum dans la légende du forum parent » activée, apparaîtront sous la forme d’un lien dans la légende de ce forum.',
 	'LOCKED'					=> 'Verrouillé',
 
 	'MOVE_POSTS_NO_POSTABLE_FORUM'	=> 'Le forum que vous avez sélectionné pour y déplacer les messages n’est pas approprié. Sélectionnez un forum destiné à recevoir des messages.',
 	'MOVE_POSTS_TO'					=> 'Déplacer les messages',
 	'MOVE_SUBFORUMS_TO'				=> 'Déplacer les sous-forums',
 
-	'NO_DESTINATION_FORUM'			=> 'Vous n’avez pas indiqué de forum pour déplacer le contenu',
+	'NO_DESTINATION_FORUM'			=> 'Vous n’avez pas indiqué de forum pour déplacer le contenu.',
 	'NO_FORUM_ACTION'				=> 'Aucune action définie pour ce qui se produit avec le contenu du forum',
 	'NO_PARENT'						=> 'Aucun parent',
 	'NO_PERMISSIONS'				=> 'Ne pas copier les permissions',

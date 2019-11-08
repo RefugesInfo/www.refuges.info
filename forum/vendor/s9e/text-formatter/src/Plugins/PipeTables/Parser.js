@@ -146,7 +146,7 @@ function captureTables()
 */
 function createBodyTags(startPos, endPos)
 {
-	addTagPair('TBODY', startPos, 0, endPos, 0, -3);
+	addTagPair('TBODY', startPos, 0, endPos, 0, -103);
 }
 
 /**
@@ -159,7 +159,15 @@ function createBodyTags(startPos, endPos)
 */
 function createCellTags(tagName, startPos, endPos, align)
 {
-	var tag = addTagPair(tagName, startPos, 0, endPos, 0, -1);
+	var tag;
+	if (startPos === endPos)
+	{
+		tag = addSelfClosingTag(tagName, startPos, 0, -101);
+	}
+	else
+	{
+		tag = addTagPair(tagName, startPos, 0, endPos, 0, -101);
+	}
 	if (align)
 	{
 		tag.setAttribute('align', align);
@@ -174,7 +182,7 @@ function createCellTags(tagName, startPos, endPos, align)
 */
 function createHeadTags(startPos, endPos)
 {
-	addTagPair('THEAD', startPos, 0, endPos, 0, -3);
+	addTagPair('THEAD', startPos, 0, endPos, 0, -103);
 }
 
 /**
@@ -196,7 +204,7 @@ function createIgnoreTag(pos, len)
 */
 function createRowTags(startPos, endPos)
 {
-	addTagPair('TR', startPos, 0, endPos, 0, -2);
+	addTagPair('TR', startPos, 0, endPos, 0, -102);
 }
 
 /**
@@ -217,7 +225,7 @@ function createSeparatorTag(row)
 */
 function createTableTags(startPos, endPos)
 {
-	tableTag = addTagPair('TABLE', startPos, 0, endPos, 0, -4);
+	tableTag = addTagPair('TABLE', startPos, 0, endPos, 0, -104);
 }
 
 /**

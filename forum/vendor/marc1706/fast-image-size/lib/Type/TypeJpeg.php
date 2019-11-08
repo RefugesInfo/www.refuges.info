@@ -23,6 +23,9 @@ class TypeJpeg extends TypeBase
 	/** @var string Start of frame marker */
 	const SOF_START_MARKER = "\xFF";
 
+	/** @var string End of image (EOI) marker */
+	const JPEG_EOI_MARKER = "\xD9";
+
 	/** @var array JPEG SOF markers */
 	protected $sofMarkers = array(
 		"\xC0",
@@ -32,7 +35,6 @@ class TypeJpeg extends TypeBase
 		"\xC5",
 		"\xC6",
 		"\xC7",
-		"\xC8",
 		"\xC9",
 		"\xCA",
 		"\xCB",
@@ -52,14 +54,11 @@ class TypeJpeg extends TypeBase
 		"\xEE",
 	);
 
-	/** @var string|bool $data JPEG data stream */
+	/** @var string|bool JPEG data stream */
 	protected $data = '';
 
-	/** @var bool Flag whether exif was found */
-	protected $foundExif = false;
-
-	/** @var bool Flag whether xmp was found */
-	protected $foundXmp = false;
+	/** @var int Data length */
+	protected $dataLength = 0;
 
 	/**
 	 * {@inheritdoc}
@@ -83,45 +82,6 @@ class TypeJpeg extends TypeBase
 	}
 
 	/**
-	 * Return if current data point is an SOF marker
-	 *
-	 * @param string $firstByte First byte to check
-	 * @param string $secondByte Second byte to check
-	 *
-	 * @return bool True if current data point is SOF marker, false if not
-	 */
-	protected function isSofMarker($firstByte, $secondByte)
-	{
-		return $firstByte === self::SOF_START_MARKER && in_array($secondByte, $this->sofMarkers);
-	}
-
-	/**
-	 * Return if current data point is an APP marker
-	 *
-	 * @param string $firstByte First byte to check
-	 * @param string $secondByte Second byte to check
-	 *
-	 * @return bool True if current data point is APP marker, false if not
-	 */
-	protected function isAppMarker($firstByte, $secondByte)
-	{
-		return $firstByte === self::SOF_START_MARKER && in_array($secondByte, $this->appMarkers);
-	}
-
-	/**
-	 * Return if current data point is a valid APP1 marker (EXIF or XMP)
-	 *
-	 * @param string $firstByte First byte to check
-	 * @param string $secondByte Second byte to check
-	 *
-	 * @return bool True if current data point is valid APP1 marker, false if not
-	 */
-	protected function isApp1Marker($firstByte, $secondByte)
-	{
-		return (!$this->foundExif || !$this->foundXmp) && $firstByte === self::SOF_START_MARKER && $secondByte === $this->appMarkers[1];
-	}
-
-	/**
 	 * Get size info from image data
 	 *
 	 * @return array An array with the image's size info or an empty array if
@@ -131,30 +91,32 @@ class TypeJpeg extends TypeBase
 	{
 		$size = array();
 		// since we check $i + 1 we need to stop one step earlier
-		$dataLength = strlen($this->data) - 1;
-		$this->foundExif = $this->foundXmp = false;
+		$this->dataLength = strlen($this->data) - 1;
+
+		$sofStartRead = true;
 
 		// Look through file for SOF marker
-		for ($i = 0; $i < $dataLength; $i++)
+		for ($i = 2; $i < $this->dataLength; $i++)
 		{
-			// Only look for EXIF and XMP app marker once, other types more often
-			if (!$this->checkForAppMarker($dataLength, $i))
-			{
-				break;
-			}
+			$marker = $this->getNextMarker($i, $sofStartRead);
 
-			if ($this->isSofMarker($this->data[$i], $this->data[$i + 1]))
+			if (in_array($marker, $this->sofMarkers))
 			{
 				// Extract size info from SOF marker
-				list(, $unpacked) = unpack("H*", substr($this->data, $i + self::LONG_SIZE + 1, self::LONG_SIZE));
+				return $this->extractSizeInfo($i);
+			}
+			else
+			{
+				// Extract length only
+				$markerLength = $this->extractMarkerLength($i);
 
-				// Get width and height from unpacked size info
-				$size = array(
-					'width'		=> hexdec(substr($unpacked, 4, 4)),
-					'height'	=> hexdec(substr($unpacked, 0, 4)),
-				);
+				if ($markerLength < 2)
+				{
+					return $size;
+				}
 
-				break;
+				$i += $markerLength - 1;
+				continue;
 			}
 		}
 
@@ -162,51 +124,81 @@ class TypeJpeg extends TypeBase
 	}
 
 	/**
-	 * Check for APP marker in data
+	 * Extract marker length from data
 	 *
-	 * @param int $dataLength Length of input data
-	 * @param int $index Current data index
-	 *
-	 * @return bool True if searching through data should be continued, false if not
+	 * @param int $i Current index
+	 * @return int Length of current marker
 	 */
-	protected function checkForAppMarker($dataLength, &$index)
+	protected function extractMarkerLength($i)
 	{
-		if ($this->isApp1Marker($this->data[$index], $this->data[$index + 1]) || $this->isAppMarker($this->data[$index], $this->data[$index + 1]))
-		{
-			// Extract length from APP marker
-			list(, $unpacked) = unpack("H*", substr($this->data, $index + self::SHORT_SIZE, 2));
+		// Extract length only
+		list(, $unpacked) = unpack("H*", substr($this->data, $i, self::LONG_SIZE));
 
-			$length = hexdec(substr($unpacked, 0, 4));
+		// Get width and height from unpacked size info
+		$markerLength = hexdec(substr($unpacked, 0, 4));
 
-			$this->setApp1Flags($this->data[$index + 1]);
-
-			// Skip over length of APP header
-			$index += (int) $length;
-
-			// Make sure we don't exceed the data length
-			if ($index >= $dataLength)
-			{
-				return false;
-			}
-		}
-
-		return true;
+		return $markerLength;
 	}
 
 	/**
-	 * Set APP1 flags for specified data point
+	 * Extract size info from data
 	 *
-	 * @param string $data Data point
+	 * @param int $i Current index
+	 * @return array Size info of current marker
 	 */
-	protected function setApp1Flags($data)
+	protected function extractSizeInfo($i)
 	{
-		if (!$this->foundExif)
+		// Extract size info from SOF marker
+		list(, $unpacked) = unpack("H*", substr($this->data, $i - 1 + self::LONG_SIZE, self::LONG_SIZE));
+
+		// Get width and height from unpacked size info
+		$size = array(
+			'width'		=> hexdec(substr($unpacked, 4, 4)),
+			'height'	=> hexdec(substr($unpacked, 0, 4)),
+		);
+
+		return $size;
+	}
+
+	/**
+	 * Get next JPEG marker in file
+	 *
+	 * @param int $i Current index
+	 * @param bool $sofStartRead Flag whether SOF start padding was already read
+	 *
+	 * @return string Next JPEG marker in file
+	 */
+	protected function getNextMarker(&$i, &$sofStartRead)
+	{
+		$this->skipStartPadding($i, $sofStartRead);
+
+		do {
+			if ($i >= $this->dataLength)
+			{
+				return self::JPEG_EOI_MARKER;
+			}
+			$marker = $this->data[$i];
+			$i++;
+		} while ($marker == self::SOF_START_MARKER);
+
+		return $marker;
+	}
+
+	/**
+	 * Skip over any possible padding until we reach a byte without SOF start
+	 * marker. Extraneous bytes might need to require proper treating.
+	 *
+	 * @param int $i Current index
+	 * @param bool $sofStartRead Flag whether SOF start padding was already read
+	 */
+	protected function skipStartPadding(&$i, &$sofStartRead)
+	{
+		if (!$sofStartRead)
 		{
-			$this->foundExif = $data === $this->appMarkers[1];
-		}
-		else if (!$this->foundXmp)
-		{
-			$this->foundXmp = $data === $this->appMarkers[1];
+			while ($this->data[$i] !== self::SOF_START_MARKER)
+			{
+				$i++;
+			}
 		}
 	}
 }

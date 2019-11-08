@@ -2,7 +2,7 @@
 
 /*
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2016 The s9e Authors
+* @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\JavaScript;
@@ -10,7 +10,7 @@ use s9e\TextFormatter\Configurator\Helpers\RegexpBuilder;
 use s9e\TextFormatter\Configurator\JavaScript\Code;
 class StylesheetCompressor
 {
-	protected $deduplicateTargets = array(
+	protected $deduplicateTargets = [
 		'<xsl:template match="',
 		'</xsl:template>',
 		'<xsl:apply-templates/>',
@@ -18,14 +18,14 @@ class StylesheetCompressor
 		'<xsl:value-of select="',
 		'<xsl:copy-of select="@',
 		'<iframe allowfullscreen="" scrolling="no"',
-		'overflow:hidden;position:relative;padding-bottom:',
+		'display:block;overflow:hidden;position:relative;padding-bottom:',
 		'display:inline-block;width:100%;max-width:',
 		' [-:\\w]++="',
 		'\\{[^}]++\\}',
 		'@[-\\w]{4,}+',
 		'(?<=<)[-:\\w]{4,}+',
 		'(?<==")[^"]{4,}+"'
-	);
+	];
 	protected $dictionary;
 	protected $keyPrefix = '$';
 	public $minSaving = 10;
@@ -46,7 +46,7 @@ class StylesheetCompressor
 	{
 		$keys = $this->getAvailableKeys();
 		\rsort($keys);
-		$this->dictionary = array();
+		$this->dictionary = [];
 		\arsort($this->savings);
 		foreach (\array_keys($this->savings) as $str)
 		{
@@ -58,7 +58,7 @@ class StylesheetCompressor
 	}
 	protected function estimateSavings()
 	{
-		$this->savings = array();
+		$this->savings = [];
 		foreach ($this->getStringsFrequency() as $str => $cnt)
 		{
 			$len             = \strlen($str);
@@ -70,12 +70,11 @@ class StylesheetCompressor
 	}
 	protected function filterSavings()
 	{
-		$_this = $this;
 		$this->savings = \array_filter(
 			$this->savings,
-			function ($saving) use ($_this)
+			function ($saving)
 			{
-				return ($saving >= $_this->minSaving);
+				return ($saving >= $this->minSaving);
 			}
 		);
 	}
@@ -89,7 +88,7 @@ class StylesheetCompressor
 	}
 	protected function getPossibleKeys()
 	{
-		$keys = array();
+		$keys = [];
 		foreach (\range('a', 'z') as $char)
 			$keys[] = $this->keyPrefix . $char;
 		return $keys;

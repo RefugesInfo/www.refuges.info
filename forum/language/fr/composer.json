@@ -1,0 +1,18 @@
+{
+    "name": "phpbbfr/trad-fr",
+    "type": "phpbb-language",
+    "description": "French translation of phpBB 3.2",
+    "version": "2.0.9",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "phpBB-fr.com translation team",
+            "email": "traducteurs@phpbb-fr.com",
+            "homepage": "http://www.phpbb-fr.com/go/translation-team"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "composer/installers": "~1.0"
+    }
+}

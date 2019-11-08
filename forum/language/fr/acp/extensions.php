@@ -41,11 +41,11 @@ $lang = array_merge($lang, array(
 	'EXTENSIONS'				=> 'Extensions',
 	'EXTENSIONS_ADMIN'			=> 'Gestionnaire d’extensions',
 	'EXTENSIONS_EXPLAIN'		=> 'Le gestionnaire d’extensions est un outil intégré à votre forum phpBB vous permettant de gérer l’ensemble de vos extensions, leurs statuts et de consulter leurs informations.',
-	'EXTENSION_INVALID_LIST'	=> 'L’extension « %s » n’est pas valide.<br />%s<br /><br />',
+	'EXTENSION_INVALID_LIST'	=> 'L’extension « %s » n’est pas valide.<br>%s<br><br>',
 	'EXTENSION_NOT_AVAILABLE'	=> 'L’extension sélectionnée n’est pas disponible pour ce forum, vérifiez que vos versions de phpBB et de PHP soient compatibles (voir la page des détails).',
 	'EXTENSION_DIR_INVALID'		=> 'L’extension sélectionnée ne peut pas être activée car elle possède une structure de répertoire qui est invalide.',
 	'EXTENSION_NOT_ENABLEABLE'	=> 'L’extension sélectionnée ne peut pas être activée. Veuillez en vérifier les prérequis.',
-	'EXTENSION_NOT_INSTALLED'	=> 'L’extension « %s » n’est pas disponible. Veuilez vérifier que vous l’avez bien installée.',
+	'EXTENSION_NOT_INSTALLED'	=> 'L’extension « %s » n’est pas disponible. Veuillez vérifier que vous l’avez bien installée.',
 
 	'DETAILS'				=> 'Détails',
 
@@ -91,7 +91,7 @@ $lang = array_merge($lang, array(
 			<li>Supprimez les fichiers de l’extension du système de fichiers.</li>
 		</ol>',
 
-	'EXTENSION_DELETE_DATA_CONFIRM'	=> 'Êtes-vous sûr de vouloir supprimer les données de l’extension « %s » ?<br />Cela supprimera la totalité des données et les réglages de cette extension, cette action est irréversible !',
+	'EXTENSION_DELETE_DATA_CONFIRM'	=> 'Êtes-vous sûr de vouloir supprimer les données de l’extension « %s » ?<br>Cela supprimera la totalité des données et les réglages de cette extension, cette action est irréversible !',
 	'EXTENSION_DISABLE_CONFIRM'		=> 'Êtes-vous sûr de vouloir désactiver l’extension « %s » ?',
 	'EXTENSION_ENABLE_CONFIRM'		=> 'Êtes-vous sûr de vouloir activer l’extension « %s » ?',
 	'EXTENSION_FORCE_UNSTABLE_CONFIRM'	=> 'Êtes-vous sûr de vouloir forcer l’utilisation d’une version instable ?',
@@ -114,7 +114,7 @@ $lang = array_merge($lang, array(
 	'PHP_VERSION'			=> 'Version de PHP',
 	'AUTHOR_INFORMATION'	=> 'Informations sur l’auteur',
 	'AUTHOR_NAME'			=> 'Nom',
-	'AUTHOR_EMAIL'			=> 'E-mail',
+	'AUTHOR_EMAIL'			=> 'Courriel',
 	'AUTHOR_HOMEPAGE'		=> 'Site Internet',
 	'AUTHOR_ROLE'			=> 'Fonction',
 
@@ -126,7 +126,7 @@ $lang = array_merge($lang, array(
 
 	'VERSIONCHECK_FORCE_UPDATE_ALL'		=> 'Tout re-contrôler',
 	'FORCE_UNSTABLE'					=> 'Toujours vérifier l’existence de versions instables',
-	'EXTENSIONS_VERSION_CHECK_SETTINGS'	=> 'Paramètres du contôle des versions',
+	'EXTENSIONS_VERSION_CHECK_SETTINGS'	=> 'Paramètres du contrôle des versions',
 
 	'BROWSE_EXTENSIONS_DATABASE'		=> 'Parcourir la base de données des extensions',
 

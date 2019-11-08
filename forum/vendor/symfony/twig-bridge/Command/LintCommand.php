@@ -18,6 +18,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
+use Twig\Environment;
+use Twig\Error\Error;
+use Twig\Loader\ArrayLoader;
+use Twig\Source;
 
 /**
  * Command that will validate your template syntax and output encountered errors.
@@ -37,18 +41,13 @@ class LintCommand extends Command
         parent::__construct($name);
     }
 
-    /**
-     * Sets the twig environment.
-     *
-     * @param \Twig_Environment $twig
-     */
-    public function setTwigEnvironment(\Twig_Environment $twig)
+    public function setTwigEnvironment(Environment $twig)
     {
         $this->twig = $twig;
     }
 
     /**
-     * @return \Twig_Environment $twig
+     * @return Environment $twig
      */
     protected function getTwigEnvironment()
     {
@@ -62,7 +61,7 @@ class LintCommand extends Command
             ->setDescription('Lints a template and outputs encountered errors')
             ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt')
             ->addArgument('filename', InputArgument::IS_ARRAY)
-            ->setHelp(<<<EOF
+            ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command lints a template and outputs to STDOUT
 the first encountered syntax error.
 
@@ -100,7 +99,7 @@ EOF
 
         $filenames = $input->getArgument('filename');
 
-        if (0 === count($filenames)) {
+        if (0 === \count($filenames)) {
             if (0 !== ftell(STDIN)) {
                 throw new \RuntimeException('Please provide a filename or pipe template content to STDIN.');
             }
@@ -110,7 +109,7 @@ EOF
                 $template .= fread(STDIN, 1024);
             }
 
-            return $this->display($input, $output, $io, array($this->validate($twig, $template, uniqid('sf_'))));
+            return $this->display($input, $output, $io, array($this->validate($twig, $template, uniqid('sf_', true))));
         }
 
         $filesInfo = $this->getFilesInfo($twig, $filenames);
@@ -118,7 +117,7 @@ EOF
         return $this->display($input, $output, $io, $filesInfo);
     }
 
-    private function getFilesInfo(\Twig_Environment $twig, array $filenames)
+    private function getFilesInfo(Environment $twig, array $filenames)
     {
         $filesInfo = array();
         foreach ($filenames as $filename) {
@@ -141,16 +140,16 @@ EOF
         throw new \RuntimeException(sprintf('File or directory "%s" is not readable', $filename));
     }
 
-    private function validate(\Twig_Environment $twig, $template, $file)
+    private function validate(Environment $twig, $template, $file)
     {
         $realLoader = $twig->getLoader();
         try {
-            $temporaryLoader = new \Twig_Loader_Array(array((string) $file => $template));
+            $temporaryLoader = new ArrayLoader(array((string) $file => $template));
             $twig->setLoader($temporaryLoader);
-            $nodeTree = $twig->parse($twig->tokenize($template, (string) $file));
+            $nodeTree = $twig->parse($twig->tokenize(new Source($template, (string) $file)));
             $twig->compile($nodeTree);
             $twig->setLoader($realLoader);
-        } catch (\Twig_Error $e) {
+        } catch (Error $e) {
             $twig->setLoader($realLoader);
 
             return array('template' => $template, 'file' => $file, 'valid' => false, 'exception' => $e);
@@ -184,10 +183,10 @@ EOF
             }
         }
 
-        if ($errors === 0) {
-            $io->success(sprintf('All %d Twig files contain valid syntax.', count($filesInfo)));
+        if (0 === $errors) {
+            $io->success(sprintf('All %d Twig files contain valid syntax.', \count($filesInfo)));
         } else {
-            $io->warning(sprintf('%d Twig files have valid syntax and %d contain errors.', count($filesInfo) - $errors, $errors));
+            $io->warning(sprintf('%d Twig files have valid syntax and %d contain errors.', \count($filesInfo) - $errors, $errors));
         }
 
         return min($errors, 1);
@@ -207,12 +206,12 @@ EOF
             }
         });
 
-        $output->writeln(json_encode($filesInfo, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
+        $output->writeln(json_encode($filesInfo, \defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES : 0));
 
         return min($errors, 1);
     }
 
-    private function renderException(OutputInterface $output, $template, \Twig_Error $exception, $file = null)
+    private function renderException(OutputInterface $output, $template, Error $exception, $file = null)
     {
         $line = $exception->getTemplateLine();
 
@@ -240,7 +239,7 @@ EOF
         $lines = explode("\n", $template);
 
         $position = max(0, $line - $context);
-        $max = min(count($lines), $line - 1 + $context);
+        $max = min(\count($lines), $line - 1 + $context);
 
         $result = array();
         while ($position < $max) {

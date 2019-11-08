@@ -48,9 +48,7 @@ class DumperPrefixCollection extends DumperCollection
     /**
      * Adds a route in the tree.
      *
-     * @param DumperRoute $route The route
-     *
-     * @return DumperPrefixCollection The node the route was added to
+     * @return self
      *
      * @throws \LogicException
      */
@@ -69,7 +67,7 @@ class DumperPrefixCollection extends DumperCollection
             // Prefix starts with route's prefix
             if ('' === $collection->prefix || 0 === strpos($prefix, $collection->prefix)) {
                 $child = new self();
-                $child->setPrefix(substr($prefix, 0, strlen($collection->prefix) + 1));
+                $child->setPrefix(substr($prefix, 0, \strlen($collection->prefix) + 1));
                 $collection->add($child);
 
                 return $child->addPrefixRoute($route);
