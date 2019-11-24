@@ -30,9 +30,6 @@ function bandeau_publicitaire($taille = "normal")
   // 02/2008 jmb: re essai chez google
   // 03/2008 jmb : re banni juste avant qu'ils paient...
 
-  //====================================================================//
-  //======================= GOOGLE ADSENSE enculés ====================//
-
   // pub google
   // nouvelle tentative GOOGLE, apparement, j'ai pu recreer un compte que voici:
   // jm.bourdaret@laposte.net   mdp de la BDD
@@ -43,16 +40,17 @@ function bandeau_publicitaire($taille = "normal")
   // 24/11/2012 ça tient toujours ! On a fini par être oublié par leurs fichiers blacklistes ;-), ça tourne et ça rapporte (un peu)
   // ça tourne autour de ~40 euros/mois (avec fortes dispartité été/hiver) soit largement de quoi payer l'hébergement
   // mais environ 40 ans pour rembourser la prune IGN
-  $pub_google="<script type=\"text/javascript\"><!--
-  google_ad_client = \"ca-pub-3240407130303272\";
-    google_ad_slot = \"2316397000\";
-    google_ad_width = 970;
-    google_ad_height = 90;
-  //-->
+  $pub_google='
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- tres-large -->
+  <ins class="adsbygoogle"
+     style="display:inline-block;width:970px;height:90px"
+     data-ad-client="ca-pub-3240407130303272"
+     data-ad-slot="2316397000"></ins>
+     <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
-  <script type=\"text/javascript\"
-  src=\"https://pagead2.googlesyndication.com/pagead/show_ads.js\">
-  </script>";
+     ';
   return $pub_google;
 }
 
