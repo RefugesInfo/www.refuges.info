@@ -1,0 +1,8 @@
+<!-- IF 0 --> Recharge la page du forum si elle comporte un champs <input type="password" ...><!-- ENDIF -->
+<script>
+var inputs = document.getElementsByTagName('input');
+for (var i = 0; i < inputs.length; i++)
+	if (inputs[i].type.toLowerCase() == 'password' &&
+		window.location.protocol == 'http:' && window.location.host != 'localhost')
+		window.location.href = window.location.href.replace('http:', 'https:');
+</script>
