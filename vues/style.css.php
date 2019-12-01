@@ -1,10 +1,11 @@
 <?php
 /***********************************************************************************************
-La seule est unique feuille de style CSS du site refuges.info
+La seule et unique feuille de style CSS du site refuges.info
 
 Pourquoi une feuille de style en .php ?
-- le but c'est de faire un style dynamique selon la période de l'année pour changer les couleurs ;-) 
-ouais je sais, c'est franchement de la frime -- sly
+- le but c'est de faire un style dynamique selon la saison pour changer les couleurs ;-) 
+ouais je sais, c'est franchement de la frime et ça sert à rien, mais si on ne peut plus s'amuser sur une projet
+bénévole ! -- sly
 
 Sommaire:
     -1 Mise en page generale (types HTML, liens, infobulles)
