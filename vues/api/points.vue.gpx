@@ -12,9 +12,9 @@ if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *"
 header("Cache-Control: max-age=$secondes_de_cache");
 
 $gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
-<gpx xmlns=\"http://www.topografix.com/GPX/1/0\" creator=\"refuges.info\" version=\"1.1\" 
+<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"refuges.info\" version=\"1.1\" 
     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
-    xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">
+    xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">
 <metadata>
 	<name>points.gpx</name>
 	<desc>$config_wri[copyright_API]</desc>
