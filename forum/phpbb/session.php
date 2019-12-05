@@ -1089,7 +1089,7 @@ class session
 		$expire = gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookietime);
 		$domain = (!$config['cookie_domain'] || $config['cookie_domain'] == '127.0.0.1' || strpos($config['cookie_domain'], '.') === false) ? '' : '; domain=' . $config['cookie_domain'];
 
-		header('Set-Cookie: ' . $name_data . (($cookietime) ? '; expires=' . $expire : '') . '; path=' . $config['cookie_path'] . $domain . ((!$config['cookie_secure']) ? '' : '; secure') . ';' . (($httponly) ? ' HttpOnly' : '').';SameSite=Strict', false); //HACK from Dominique. Check if it's included un furter phpBB editions
+		header('Set-Cookie: ' . $name_data . (($cookietime) ? '; expires=' . $expire : '') . '; path=' . $config['cookie_path'] . $domain . ((!$config['cookie_secure']) ? '' : '; secure') . ';' . (($httponly) ? ' HttpOnly' : '').';SameSite=Strict', false); //HACK from Dominique. Check if it's included a furter phpBB edition
 	}
 
 	/**
