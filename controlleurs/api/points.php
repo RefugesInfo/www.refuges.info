@@ -33,6 +33,7 @@ function updatebool2char(&$html) {
 }
 /****************************************/
 
+$vue = new stdClass();
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
 $req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
@@ -42,16 +43,13 @@ $req->id = $_REQUEST['id'];
 $req->format = $_REQUEST['format'];
 $req->format_texte = $_REQUEST['format_texte'];
 $req->nb_points = $_REQUEST['nb_points'];
-$req->detail = $_REQUEST['detail'];
 $req->nb_coms = $_REQUEST['nb_coms'];
 $req->nb_points_proches = $_REQUEST['nb_points_proches'];
 $req->type_points = $_REQUEST['type_points'];
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
-$val->format = array("geojson", "kmz", "kml", "gml", "gpx", "csv", "gpi", "xml", "rss");
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
-$val->detail = array("simple", "complet", "garmin");
 // FIXME sly 2019 : tout ça devrait être récupéré de la base de donnée, ça exite déjà dans point_type, quel dommage de maintenir 2 duplicats
 $val->type_points = array("cabane", "refuge", "gite", "pt_eau", "sommet", "pt_passage", "bivouac", "lac", "batiment_a_explorer");
 $val->type_points_id = array(7, 10, 9, 23, 6, 3, 19, 16, 28);
@@ -59,31 +57,14 @@ $val->type_points_id = array(7, 10, 9, 23, 6, 3, 19, 16, 28);
 /****************************** VALEURS PAR DÉFAUT - PARAMS FACULTATIFS ******************************/
 
 
-// On teste chaque champ pour voir si la valeur est correcte, sinon valeur par défaut
-if(!in_array($req->format,$val->format)) {
-    switch ($req->page) {
-        case 'bbox':
+// On teste chaque champ pour voir si la valeur est dans liste des formats accepté, sinon on choisir le format geojson
+if(!array_key_exists($req->format,$config_wri['api_format_points']))
             $req->format = "geojson";
-            break;
-        case 'massif':
-            $req->format = "geojson";
-            break;
-        case 'point':
-            $req->format = "geojson";
-            break;
-        default:
-            $req->format = "geojson";
-            break;
-    }
-}
+            
 if(!in_array($req->format_texte,$val->format_texte)) {
     switch ($req->page) {
-        case 'bbox':
-            $req->format_texte = "bbcode";
-            break;
-        case 'massif':
-            $req->format_texte = "bbcode";
-            break;
+        case 'bbox': 
+        case 'massif': 
         case 'point':
             $req->format_texte = "bbcode";
             break;
@@ -92,27 +73,11 @@ if(!in_array($req->format_texte,$val->format_texte)) {
             break;
     }
 }
-if(!in_array($req->detail,$val->detail)) {
-    switch ($req->page) {
-        case 'bbox':
-            $req->detail = "simple";
-            break;
-        case 'massif':
-            $req->detail = "simple";
-            break;
-        case 'point':
-            $req->detail = "complet";
-            break;
-        default:
-            $req->detail = "simple";
-            break;
-    }
-}
 if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
     switch ($req->page) {
         case 'bbox':
         case 'massif':
-            $req->nb_points = 250;
+            $req->nb_points = $config_wri['defaut_max_nombre_point'];
             break;
         case 'point':
             $req->nb_points = 1;
@@ -249,6 +214,9 @@ foreach ($points_bruts as $point) {
         $points->$i->coord['long'] = $point->longitude;
         $points->$i->coord['lat'] = $point->latitude;
     }
+    // FIXME sly 05/12/2019 : ça me rend fou cette recopie intégrale propriété par propriété. ça oblige à venir maintenir ça !
+    // $points[]=$point; n'aurait il pas suffit ? et en plus le nom des propriété changent de peu et je passe mon temps à ne plus m'en rappeler !
+    // certes ça fait un joli array final multi-niveau et un joli json_encode($point), mais franchement, le jeu en vaut-il la chandelle ?
     $points->$i->coord['alt'] = $point->altitude;
     $points->$i->type['id'] = $point->id_point_type;
     $points->$i->type['valeur'] = $point->nom_type;
@@ -258,51 +226,64 @@ foreach ($points_bruts as $point) {
     $points->$i->etat['id'] = $point->conditions_utilisation;
     $points->$i->etat['valeur'] = texte_non_ouverte($point);
     $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
-   // On rajoute des informations complémentaires si on demande détaillé
-    if($req->detail == "complet" or $req->detail == "garmin") {
-        $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
-        $points->$i->coord['precision']['type'] = $point->id_type_precision_gps;
-        $points->$i->remarque['nom'] = 'Remarque';
-        $points->$i->remarque['valeur'] = $point->remark;
-        $points->$i->acces['nom'] = 'Accès';
-        $points->$i->acces['valeur'] = $point->acces;
-        $points->$i->proprio['nom'] = $point->equivalent_proprio;
-        $points->$i->proprio['valeur'] = $point->proprio;
-        $points->$i->createur['id'] = $point->id_createur;
-        // info sur le modérateur actuel de la fiche (authentifié ou non)
-        if ($point->id_createur==0) // non authentifié
-            $points->$i->createur['nom']=$point->nom_createur;
-        else
-            $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
-        $points->$i->date['creation'] = $point->date_creation;
-        $points->$i->article['demonstratif'] = $point->article_demonstratif;
-        $points->$i->article['defini'] = $point->article_defini;
-        $points->$i->article['partitif'] = $point->article_partitif_point_type;
-        $points->$i->info_comp['site_officiel']['nom'] = $point->equivalent_site_officiel;
-        $points->$i->info_comp['site_officiel']['url'] = $point->site_officiel;
-        $points->$i->info_comp['site_officiel']['valeur'] = $point->site_officiel;
-        $points->$i->info_comp['manque_un_mur']['nom'] = $point->equivalent_manque_un_mur;
-        $points->$i->info_comp['manque_un_mur']['valeur'] = $point->manque_un_mur;
-        $points->$i->info_comp['cheminee']['nom'] = $point->equivalent_cheminee;
-        $points->$i->info_comp['cheminee']['valeur'] = $point->cheminee;
-        $points->$i->info_comp['poele']['nom'] = $point->equivalent_poele;
-        $points->$i->info_comp['poele']['valeur'] = $point->poele;
-        $points->$i->info_comp['couvertures']['nom'] = $point->equivalent_couvertures;
-        $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
-        $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
-        $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
-        if($point->places_matelas == 0)
-            $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
-        else
-            $points->$i->info_comp['places_matelas']['valeur'] = $point->matelas;
-        $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
-        $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
-        $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
-        $points->$i->info_comp['bois']['valeur'] = $point->bois_a_proximite;
-        $points->$i->info_comp['eau']['nom'] = $point->equivalent_eau_a_proximite;
-        $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
-    }
+    $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
+    $points->$i->coord['precision']['type'] = $point->id_type_precision_gps;
+    $points->$i->remarque['nom'] = 'Remarque';
+    $points->$i->remarque['valeur'] = $point->remark;
+    $points->$i->acces['nom'] = 'Accès';
+    $points->$i->acces['valeur'] = $point->acces;
+    $points->$i->proprio['nom'] = $point->equivalent_proprio;
+    $points->$i->proprio['valeur'] = $point->proprio;
+    $points->$i->createur['id'] = $point->id_createur;
+    // info sur le modérateur actuel de la fiche (authentifié ou non)
+    if ($point->id_createur==0) // non authentifié
+        $points->$i->createur['nom']=$point->nom_createur;
+    else
+        $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
+    $points->$i->date['creation'] = $point->date_creation;
+    $points->$i->article['demonstratif'] = $point->article_demonstratif;
+    $points->$i->article['defini'] = $point->article_defini;
+    $points->$i->article['partitif'] = $point->article_partitif_point_type;
+    $points->$i->info_comp['site_officiel']['nom'] = $point->equivalent_site_officiel;
+    $points->$i->info_comp['site_officiel']['url'] = $point->site_officiel;
+    $points->$i->info_comp['site_officiel']['valeur'] = $point->site_officiel;
+    $points->$i->info_comp['manque_un_mur']['nom'] = $point->equivalent_manque_un_mur;
+    $points->$i->info_comp['manque_un_mur']['valeur'] = $point->manque_un_mur;
+    $points->$i->info_comp['cheminee']['nom'] = $point->equivalent_cheminee;
+    $points->$i->info_comp['cheminee']['valeur'] = $point->cheminee;
+    $points->$i->info_comp['poele']['nom'] = $point->equivalent_poele;
+    $points->$i->info_comp['poele']['valeur'] = $point->poele;
+    $points->$i->info_comp['couvertures']['nom'] = $point->equivalent_couvertures;
+    $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
+    $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
+    $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
+    if($point->places_matelas == 0)
+        $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
+    else
+        $points->$i->info_comp['places_matelas']['valeur'] = $point->matelas;
+    $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
+    $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
+    $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
+    $points->$i->info_comp['bois']['valeur'] = $point->bois_a_proximite;
+    $points->$i->info_comp['eau']['nom'] = $point->equivalent_eau_a_proximite;
+    $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
 
+    /*
+    sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx, ça pourrait aussi être récupéré pour le kml je crois
+    */
+    $description="";
+    if ($point->equivalent_places!="" and !empty($point->places))
+      $description=$point->equivalent_places. ": ".$point->places."\n";
+      
+    if ($point->equivalent_places_matelas!="" and !empty($point->places_matelas))
+      $description.=$point->equivalent_places_matelas.": ".$point->places_matelas."\n";
+      
+    $description.=$point->remark;
+    $description.=$point->acces;
+    if ( $point->equivalent_proprio!="")
+      $description.=$point->proprio;
+    
+    $points->$i->description['valeur']=htmlspecialchars(bbcode2txt($description));
     /****************************** POINTS PROCHES ******************************/
 
     if ($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses'] &&
@@ -394,28 +375,5 @@ unset($points_bruts, $i);
 
 /****************************** FORMAT VUE ******************************/
 
-switch ($req->format) {
-    case 'kml': case 'kmz':
-        include($config_wri['chemin_vues'].'/api/points.vue.kml');
-        break;
-    case 'gml':
-        include($config_wri['chemin_vues'].'/api/points.vue.gml');
-        break;
-    case 'gpx': case 'gpi':
-        include($config_wri['chemin_vues'].'/api/points.vue.gpx');
-        break;
-    case 'csv':
-        include($config_wri['chemin_vues'].'/api/points.vue.csv');
-        break;
-    case 'xml':
-        include($config_wri['chemin_vues'].'/api/points.vue.xml');
-        break;
-    case 'rss':
-        include($config_wri['chemin_vues'].'/api/points.vue.rss');
-        break;
-    case 'geojson': default:
-        include($config_wri['chemin_vues'].'/api/points.vue.json');
-        break;
-}
-
+include($config_wri['chemin_vues'].'api/points.vue.'.$req->format.".php");
 ?>

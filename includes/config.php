@@ -107,8 +107,8 @@ $config_wri['id_coordonees_gps_approximative']=4;
 //nombre maximum de point que peut sortir la recherche
 $config_wri['points_maximum_recherche']=40;
 
-// nombre de point renvoyé par défaut, par l'API (/exportations/)
-$config_wri['defaut_max_nombre_point']=121; // NicoM : pourquoi 120 ? sly: pourquoi pas 120 ? NicoM : ben 121 c'est 11^2 sly: alors va pour 121 !
+// nombre de point renvoyé par défaut, par l'API
+$config_wri['defaut_max_nombre_point']=250;
 
 
 /********** Lié au Forum / comptes / utilisateurs / login / users ************/
@@ -147,7 +147,26 @@ $config_wri['carte_base_monde'] = 'OSM fr';
 // Pour avoir swisstopo je suppose ?
 $config_wri['SwissTopo'] = true;
 
+// tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un lourd à maintenir)
+// La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
 
+$config_wri['api_format_points'] = Array 
+( 
+'gpx' => "gpx (Complet, pour logiciel type osmand, marble)",
+'gpx_basecamp' => "gpx (compatible basecamp/garmin/viking/...)",
+'gpx_simple' => "gpx simplifié (sans remarques et accès)",
+'kmz' => "kmz (googlearth compressé)",
+'kml' => "kml (googlearth)",
+'gml' => "Geography Markup Language",
+'gpi' => "gpi (Garmin Point of Interest)",
+'csv' => "csv (tableurs)",
+'xml' => "Spécifique à notre base, exhaustif",
+'geojson' => "GeoJSON"
+);
+
+    
+  
+  
 /* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve
  * utilisé pour les vignettes des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
  * le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap

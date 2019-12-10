@@ -144,7 +144,7 @@ new L.Control.Coordinates({
 	// Récupérations des points sous forme de fichier GPX
 	new L.Control.Click(
 		function () {
-			return wriPoi._getUrl() + '&format=gpx&nb_points=all';
+			return wriPoi._getUrl() + '&format=gpx_basecamp&nb_points=all';
 		}, {
 			title: "Obtenir les points de refuges.info visibles sur la carte\n"+
 					"Pour charger le fichier sur un GARMIN, utilisez Basecamp\n"+

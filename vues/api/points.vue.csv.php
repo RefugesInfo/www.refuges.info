@@ -1,14 +1,7 @@
 <?php
-
-$secondes_de_cache = 60;
-$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: filename=points.csv");
+header("Content-disposition: filename=points-refuges-info.csv");
 header("Content-Type: text/csv; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
-header("Pragma: cache");
-header("Expires: $ts");
-if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
-header("Cache-Control: max-age=$secondes_de_cache");
 
 $separateur=";";
 

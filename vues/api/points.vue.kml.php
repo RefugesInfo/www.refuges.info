@@ -1,16 +1,19 @@
 <?php
+ob_clean();
+if ($req->format=="kml") // quelqu'un s'en sert encore à distance du kml ? pourquoi cette gestion de cache et de CORS ?
+{
+  $secondes_de_cache = 60;
+  $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+  header("Content-disposition: filename=points-refuges-info.$req->format");
+  header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
+  header("Content-Transfer-Encoding: binary");
+  header("Pragma: cache");
+  header("Expires: $ts");
+  if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+  header("Cache-Control: max-age=$secondes_de_cache");
+}
 
-$secondes_de_cache = 60;
-$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: filename=points.$req->format");
-header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
-header("Content-Transfer-Encoding: binary");
-header("Pragma: cache");
-header("Expires: $ts");
-if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
-header("Cache-Control: max-age=$secondes_de_cache");
-
-
+// c'est vraiment dommage d'avoir de belles vues ailleurs et se taper une horreur pareille, mais le format kmz a besoin de la même chose, mais en compressé, donc il lui faut capturer la variable $kml
 $kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
 $kml .= "<kml xmlns=\"http://earth.google.com/kml/2.1\">\r\n";
 $kml .= "<Document>\r\n";
@@ -75,14 +78,5 @@ $kml .= "	</Folder>\r\n\r\n";
 
 $kml .= "</Document>\r\n";
 $kml .= "</kml>\r\n";
-
-if ($req->format=="kmz")
-{
-	$zip = new zipfile() ; //on crée un fichier zip
-	$zip->addfile($kml, "points.kml") ; //on ajoute le fichier
-	$kmz = $zip->file() ; //on associe l'archive
-	echo $kmz;
-}
-else {
-	echo $kml;
-}
+if ($req->format=="kml")
+  print($kml);

@@ -8,7 +8,7 @@ Le traitement proprement dit est dans exportations.php
 require_once ("bdd.php");
 require_once ("meta_donnee.php");
 
-$vue->titre="Téléchargement et exportation de la base refuges.info aux formats $formats";
+$vue->titre="Téléchargement et exportation de la base refuges.info";
 
 // FIXME sly: à découper en deux fichiers pour plus de lisibilité comme on se "post" les informations à soit même, on vérifie dans quel cas on est
 if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
@@ -54,7 +54,7 @@ else // formulaire validé, affichage du lien et d'un blabla
 {
     $vue->lien_export = new stdClass; // contiendra: URL, description ...
     $vue->lien_licence = lien_wiki("licence");
-    $vue->format=$format=$_POST['format'];
+    $vue->format=$_POST['format'];
 
     if ($_POST['id_point_type']=="" OR $_POST['id_massif']=="")
         $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ?";
@@ -63,20 +63,9 @@ else // formulaire validé, affichage du lien et d'un blabla
       $liste_id_point_type = implode(',',$_POST['id_point_type']);
       $liste_id_massif = implode(',',$_POST['id_massif']);
     
-      $mode_complet="";
-
-      if ($format=="gpx")
-          $mode_complet="&amp;detail=complet";
-        if ($format=="gpx_simple")
-          $format="gpx";
-        if ($format=="gpx_garmin")
-        {
-          $format="gpx";
-          $mode_complet="&amp;detail=garmin";
-        }
-        $options_lien="?nb_points=all$mode_complet&amp;format=$format&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
+      $options_lien="?nb_points=all&amp;format=$vue->format&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
     
-        $vue->lien_export->url = "/api/massif$options_lien";
+      $vue->lien_export->url = "/api/massif$options_lien";
     } 
     $vue->type="formulaire_exportations_validation";
 } // fin du else affichage lien

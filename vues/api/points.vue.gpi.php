@@ -1,17 +1,14 @@
 <?php 
-
-$secondes_de_cache = 60;
-$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: filename=points.$req->format");
-if ($req->format == "gpx") header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
-else if ($req->format == "gpi") header("Content-Type: application/binary; UTF-8"); // rajout du charset
+/*
+FIXME : sly 05/12/2019 a tester, je ne sais même s'il marche toujours tant il y a peu de personne qui passe par cette manière de mettre des points dans un garmin.
+Il faudrait que je sorte le mien du placard pour voir si ça fonctionne encore.
+Si on décide de le garder, on pourrait factoriser avec le code dans points.vue.gpx par un usage sioux d'un ob_start(); $gpx=ob_get_clean();
+*/
+header("Content-disposition: filename=points-refuges-info.$req->format");
+header("Content-Type: application/binary");
 header("Content-Transfer-Encoding: binary");
-header("Pragma: cache");
-header("Expires: $ts");
-if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
-header("Cache-Control: max-age=$secondes_de_cache");
 
-$gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
+$gpx = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>
 <gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"refuges.info\" version=\"1.1\" 
     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" 
     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">
@@ -48,13 +45,6 @@ foreach ($points AS $point) {
 		$gpx .= "		<text>$point->nom sur $config_wri[nom_hote]</text>\r\n";
 		$gpx .= "		<type>text/html</type>\r\n";
 		$gpx .= "	</link>\r\n";
-		$gpx .= "	<extensions>\r\n";
-		$gpx .= "		<id_point>$point->id</id_point>\r\n";
-		$gpx .= "		<id_qualite_gps>".$point->coord['precision']['type']."</id_qualite_gps>\r\n";
-		$gpx .= "		<nombre_place>".$point->places['nom']." : ".$point->places['valeur']."</nombre_place>\r\n";
-		$gpx .= "		<renseignements>".$point->proprio['nom']." : ".htmlspecialchars($point->proprio['valeur'])."</renseignements>\r\n";
-		$gpx .= "		<id_type_point>".$point->type['id']."</id_type_point>\r\n";
-		$gpx .= "	</extensions>\r\n";
 	}
 	$gpx .= "</wpt>\r\n";
 }

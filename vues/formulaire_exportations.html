@@ -4,7 +4,7 @@
 <h3><?=$vue->titre?></h3> 
     <dl> 
       <dt>Options d'exportations</dt>
-      <dd>Veuillez préciser les options des points et des massifs</dd>
+      <dd>Veuillez préciser les options des type de points et des massifs voulus</dd>
    </dl>
 <!-- ======= FORMULAIRE ===== -->
 
@@ -63,15 +63,9 @@
     <fieldset>
     <legend>Choix du format d'exportation</legend>
     <select name="format">
-        <option value="kmz">kmz (googlearth compressé)</option>
-        <option value="kml">kml (googlearth)</option>
-        <option value="gml">gml (Geography Markup Language)</option>
-        <option value="gpx">gpx (GPs eXchange format)</option>
-        <option value="gpx_simple">gpx simplifié (pas les remarques)</option>
-        <option value="gpx_garmin">gpx compatible Garmin (pas  &lt;src&gt;)</option>
-        <option value="gpi">gpi (Garmin Point of Interest)</option>
-        <option value="csv">csv (tableurs)</option>
-        <option value="geojson">GeoJSON</option>
+    <?php foreach ($config_wri['api_format_points'] as $format => $description) { ?>
+        <option value="<?=$format?>"><?=$description?></option>
+    <?php } ?>
     </select> 
     <input type='submit' name='validation' value='Obtenir le lien' />
     <a href="<?=lien_wiki("format_exportation")?>">Plus de détail sur ces formats</a>

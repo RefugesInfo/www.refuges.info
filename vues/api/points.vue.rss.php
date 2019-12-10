@@ -2,7 +2,7 @@
 
 $secondes_de_cache = 60;
 $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
-header("Content-disposition: filename=points.rss");
+header("Content-disposition: filename=points-refuges-info.rss");
 header("Content-Type: application/xml; UTF-8"); // rajout du charset
 //header("Content-Type: application/rss+xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");

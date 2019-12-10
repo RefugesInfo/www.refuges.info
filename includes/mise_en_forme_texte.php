@@ -63,23 +63,8 @@ retourne : le code en HTML
 function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_img=True)
 {
 global $config_wri;
-/** étape 1
-nouvelle fonction qui permet de faire des liens internes entre les fiches :
-[->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
-point destination
-**/
 
-$occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte_avec_bbcode,$occurence);
-
-if ($occurences_trouvees!=0)
-  for ($x=0;$x<$occurences_trouvees;$x++)
-  {	// Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
-    // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
-    // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
-    $point=infos_point($occurence[1][$x]);
-    $texte_avec_bbcode=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte_avec_bbcode);
-  }
-
+$string=lien_inter_fiche($texte_avec_bbcode,"bbcode");
 
 // transformation automatique des chaine de caractère ressemblant à une url vers le BBcode des URLs
 // le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
@@ -214,6 +199,8 @@ function c($contenu)
 function bbcode2txt($string)
 {
   global $settings;
+  $string=lien_inter_fiche($string,"txt");
+  
   $string = preg_replace("#\[b\](.+?)\[/b\]#is", "*\\1*", $string);
   $string = preg_replace("#\[i\](.+?)\[/i\]#is", "\\1", $string);
   $string = preg_replace("#\[u\](.+?)\[/u\]#is", "\\1", $string);
@@ -235,6 +222,32 @@ function bbcode2txt($string)
   return $string;
 }
 
+/** 
+nouvelle fonction qui permet de faire des liens internes entre les fiches :
+[->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
+point destination.
+On peut lui passer soit bbcode (le lien sera au format bbcode), soit txt et il n'y aura pas de lien, juste le nom du point indiqué
+**/
+
+function lien_inter_fiche($texte,$format_sortie="bbcode")
+{
+  $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
+
+  if ($occurences_trouvees!=0)
+    for ($x=0;$x<$occurences_trouvees;$x++)
+    {	// Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
+      // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
+      // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
+      $point=infos_point($occurence[1][$x]);
+      if ($format_sortie=="bbcode")
+        $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+      else
+        $texte=str_replace($occurence[0][$x],"$point->nom",$string);
+
+    }
+    return $texte;
+}
+  
 // Cette fonction permet de convertir du bbcode en markdown (pour les balises connues)
 
 function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=TRUE)
