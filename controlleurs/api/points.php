@@ -234,12 +234,12 @@ foreach ($points_bruts as $point) {
     $points->$i->acces['valeur'] = $point->acces;
     $points->$i->proprio['nom'] = $point->equivalent_proprio;
     $points->$i->proprio['valeur'] = $point->proprio;
-    $points->$i->createur['id'] = $point->id_createur;
+    $points->$i->moderateur['id'] = $point->id_createur;
     // info sur le modérateur actuel de la fiche (authentifié ou non)
     if ($point->id_createur==0) // non authentifié
-        $points->$i->createur['nom']=$point->nom_createur;
+        $points->$i->moderateur['nom']=$point->nom_createur;
     else
-        $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
+        $points->$i->moderateur['nom'] = infos_utilisateur($point->id_createur)->username;
     $points->$i->date['creation'] = $point->date_creation;
     $points->$i->article['demonstratif'] = $point->article_demonstratif;
     $points->$i->article['defini'] = $point->article_defini;
