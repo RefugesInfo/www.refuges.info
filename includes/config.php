@@ -160,7 +160,7 @@ $config_wri['api_format_points'] = Array
 'gml' => "Geography Markup Language",
 'gpi' => "gpi (Garmin Point of Interest)",
 'csv' => "csv (tableurs)",
-'xml' => "Spécifique à notre base, exhaustif",
+'xml' => "xml Spécifique à notre base, exhaustif",
 'geojson' => "GeoJSON"
 );
 
