@@ -6,6 +6,7 @@ Pour ajouter un commentaire rattaché à un point
 require_once ("commentaire.php");
 require_once ("point.php");
 require_once ("mise_en_forme_texte.php");
+require_once ("upload_max_filesize.php");
 
 $commentaire = new stdClass();
 $conditions_commentaire = new stdClass();
