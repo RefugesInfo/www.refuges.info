@@ -34,4 +34,3 @@ switch ($controlleur->url_decoupee[1]) {
 		$vue->http_status_code = 404;
 }
 
-?>

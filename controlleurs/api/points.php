@@ -376,4 +376,4 @@ unset($points_bruts, $i);
 /****************************** FORMAT VUE ******************************/
 
 include($config_wri['chemin_vues'].'api/points.vue.'.$req->format.".php");
-?>
+

@@ -70,4 +70,3 @@ else // formulaire validé, affichage du lien et d'un blabla
     $vue->type="formulaire_exportations_validation";
 } // fin du else affichage lien
 
-?>

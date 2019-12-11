@@ -407,4 +407,4 @@ function mb_ucfirst($str, $encoding = "UTF-8", $lower_str_end = false)
       $str = $first_letter . $str_end;
       return $str;
 }
-?>
+

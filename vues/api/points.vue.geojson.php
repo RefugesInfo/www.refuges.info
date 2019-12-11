@@ -40,4 +40,4 @@ foreach ($points as $point) {
 
 echo "\r\n\t]\r\n}";
 
-?>
+

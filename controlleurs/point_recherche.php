@@ -121,4 +121,4 @@ else
     $vue->type="point_recherche_erreur";
 }
 $vue->titre="Recherche sur refuges.info ($vue->nombre_points points trouvés)";
-?> 
+

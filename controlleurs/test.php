@@ -43,4 +43,6 @@ session_start();
 
 //print_r($_SERVER);
 
+print (1);
 
+die();

@@ -325,4 +325,4 @@ function cree_geometrie( $params , $type )
   return $geotexte ;
 }
 
-?>
+

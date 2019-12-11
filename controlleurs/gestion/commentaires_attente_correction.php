@@ -35,4 +35,4 @@ $vue->liste_causes = [
 	 2 => "contient un mot pouvant faire penser à une réservation",
 	 3 => "concerne un %s et n'a pas été traitée par un modérateur",
 ];
-?>
+

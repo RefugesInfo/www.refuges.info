@@ -61,4 +61,3 @@ else // formulaire validé, affichage du lien et d'un blabla
     $vue->type="formulaire_rss_validation";
 } // fin du else affichage lien
 
-?>

@@ -17,5 +17,3 @@ function liste_icones_possibles()
     closedir($dossier_icones);
     return $icones;
 }
-
-?>

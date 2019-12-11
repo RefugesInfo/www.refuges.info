@@ -35,4 +35,3 @@ $config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 // par défaut à false, à mettre à décommenter pour les développeurs qui le veulent
 // $config_wri['debug']=true;
 
-?>

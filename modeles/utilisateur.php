@@ -53,4 +53,4 @@ function infos_utilisateurs()
     $utilisateurs[]=$utilisateur;
   return $utilisateurs;
 }
-?>
+

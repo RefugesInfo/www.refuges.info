@@ -14,4 +14,4 @@ $res = $pdo->query($query);
 while ($mod = $res->fetch())
 	$vue->types_points[$mod->id_point] = $mod->nom_type;
 
-?>
+

@@ -98,4 +98,3 @@ else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans
     $vue->type = "page_simple";
     $vue->titre="Impossible d'ajouter un commentaire car : $point->message";
 }
-?> 

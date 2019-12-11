@@ -761,4 +761,4 @@ function calcul_distance_points($point1,$point2)
 {
   return calcul_distance_gps($point1->latitude,$point1->longitude,$point2->latitude,$point2->longitude);
 }
-?>
+

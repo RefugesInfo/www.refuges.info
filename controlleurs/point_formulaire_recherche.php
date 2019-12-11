@@ -23,6 +23,3 @@ $conditions_polygones->avec_zone_parente=False;
 $vue->zones=infos_polygones($conditions_polygones);
 $vue->utilisateurs=infos_utilisateurs();
 
-//d($vue->zones);
-
-?>

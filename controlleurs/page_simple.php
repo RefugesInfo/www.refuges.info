@@ -12,4 +12,4 @@ switch ($vue->http_status_code) {
 		$vue->contenu = $vue->titre = "Erreur 404 - La page demandée \"$controlleur->url_base\" est introuvable sur refuges.info";
 
 }
-?>
+

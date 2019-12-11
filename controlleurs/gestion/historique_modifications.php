@@ -30,5 +30,3 @@ if (! ($res = $pdo->query($query_log_modification)))
     $modification_point->point_apres=$point_apres;
     $vue->modifications_points[]=$modification_point;
   }
-//d($vue);
-?>

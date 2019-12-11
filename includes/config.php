@@ -211,9 +211,6 @@ $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prev
 // par défaut, pas d'information de debug, développeurs : changer cette variable dans le fichier config_privee.php si vous voulez plus de message en cas d'erreurs
 $config_wri['debug']=false;
 
-
-
-
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
 // que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore
 // il est volontairement placé "presque*" à la fin pour que les variables ci-avant puissent par exemple être sur-chargées si on souhaite

@@ -46,4 +46,4 @@ function types_point_affichables()
     }
   return ($r);
   }
-?>
+

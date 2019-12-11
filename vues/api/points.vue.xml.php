@@ -10,4 +10,4 @@ $xmlOutput = new XMLSerializer;
 $points->copyright = $config_wri[copyright_API];
 echo $xmlOutput->generateValidXmlFromObj($points);
 
-?>
+

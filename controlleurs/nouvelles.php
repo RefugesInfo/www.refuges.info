@@ -32,5 +32,3 @@ foreach ($vue->nouvelles as $id => $nouvelle)
 
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
 
-
-?>

@@ -97,6 +97,3 @@ function colonnes_table($table,$renvoyer_aussi_colonne_geometrie=True)
 
 // Vu qu'on inclus ce fichier, c'est qu'on a besoin d'une connexion, chaque appelant pourrait la faire, mais c'est plus lourd
 $pdo = new PDO_wri();
-
-
-?>

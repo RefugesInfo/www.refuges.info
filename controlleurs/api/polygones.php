@@ -140,4 +140,3 @@ switch ($req->format) {
         break;
 }
 
-?>

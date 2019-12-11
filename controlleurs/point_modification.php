@@ -84,4 +84,4 @@ switch( $_REQUEST["action"] )
             $vue->erreur="Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la supprimer";
         break;
 } 
-?>  
+

@@ -72,4 +72,3 @@ else {
 	echo $gpx;
 }
 
-?>

@@ -64,4 +64,4 @@ function d($a=null,$b=null,$c=null,$d=null)
         print(htmlspecialchars(print_r(debug_backtrace(),True)));
 	die("</pre>");
 }
-?>
+

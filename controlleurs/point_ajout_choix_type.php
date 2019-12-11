@@ -34,4 +34,4 @@ if (!isset($_SESSION['id_utilisateur']))
 }
 
 $vue->titre = 'Ajout d\'un point sur le site '.$config_wri['nom_hote'];
-?>
+

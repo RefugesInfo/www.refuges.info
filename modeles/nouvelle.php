@@ -255,4 +255,4 @@ function texte_nouvelles($nouvelles) {
     }
     return $nouvelles;
 }
-?>
+

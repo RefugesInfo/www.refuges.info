@@ -117,4 +117,3 @@ function prepare_lien_wiki_du_bandeau()
         $lien_wiki[$nom_lien]=lien_wiki($nom_lien);
     return $lien_wiki;
 }
-?>

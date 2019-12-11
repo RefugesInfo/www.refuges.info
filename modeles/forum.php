@@ -112,4 +112,3 @@ function forum_delete_topic ($topic_id) {
 	sync('forum'); // Et on nettoie un peu tout ça
 }
 
-?>

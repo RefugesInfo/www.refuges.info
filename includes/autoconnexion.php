@@ -99,4 +99,4 @@ function remplissage_zones_bandeau()
             $array_zones [ucfirst($zone->nom_polygone)] = lien_polygone($zone)."?mode_affichage=zone";
     return $array_zones;
 }
-?>
+

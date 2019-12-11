@@ -562,4 +562,3 @@ function messages_du_forum($conditions)
 
 }
 
-?>
