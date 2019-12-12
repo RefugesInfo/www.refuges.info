@@ -1,7 +1,7 @@
 var ct_date = new Date();
 
 function ctSetCookie(c_name, value) {
-	document.cookie = c_name + "=" + encodeURIComponent(value) + ";SameSite=Strict; path=/"; //HACK from Dominique. Check if it's included a furter cleantalk edition
+	document.cookie = c_name + "=" + encodeURIComponent(value) + "; path=/";
 }
 ctSetCookie("ct_ps_timestamp", Math.floor(new Date().getTime()/1000));
 ctSetCookie("ct_timezone", "0");
