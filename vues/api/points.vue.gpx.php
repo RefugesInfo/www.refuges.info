@@ -1,11 +1,9 @@
 <?php 
 /*
 sly 05/12/2019 Ce format gpx est celui qui, selon ce que je comprend de la norme, la respecte le mieux, utilises les champs gpx tels qu'ils ont été prévus, mais perds des fonctionnalités intéresantes que les autres pourraient exploiter.
-- J'ai enlevé la valise   <sym><?=$point->sym?></sym> car elle présentait des icônes spécifiques aux outils garmin (basecamp, mapsource, et certains autres comme viking qui reconnaissent les icones par exemple)
+- J'ai enlevé la balise   <sym><?=$point->sym?></sym> car elle présentait des icônes spécifiques aux outils garmin (basecamp, mapsource, et certains autres comme viking qui reconnaissent les icones par exemple). Je pourrais sans doute la remettre car ça ne change pas grand chose, et des fois qu'un outil les supportent ?
 - <desc> est utilisés pour les remarques d'un point
-- <cmt> pour l'accès
-
-- Le logiciel Marble n'ouvre pas les gpx avec une balise <link> contenant un <text> et <type>, viking ouvre mais indique un "thumbnail cannot be loaded" car il tente d'ouvrir le lien en local ?
+- Le logiciel Marble n'ouvre pas les gpx avec une balise <link> contenant un <text> et <type>, viking ouvre mais indique un "thumbnail cannot be loaded" car il tente d'ouvrir le lien en local   je change alors pour un format plus simple <link href="http://la-bas" />
 
 */
 header("Content-disposition: filename=points-refuges-info-standard.gpx");

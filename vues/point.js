@@ -38,7 +38,7 @@ if ($vue->mini_carte) {
 	new L.Control.Fullscreen().addTo(map);
 	new L.Control.Click(
 		function () {
-			return wriPoi._getUrl() + '&format=gpx_basecamp&nb_points=all';
+			return wriPoi._getUrl() + '&format=gpx_garmin&nb_points=all';
 		}, {
 			title: "Obtenir les points de refuges.info visibles sur la carte\n"+
 					"Pour charger le fichier sur un GARMIN, utilisez Basecamp",

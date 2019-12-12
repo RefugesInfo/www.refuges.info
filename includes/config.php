@@ -153,7 +153,7 @@ $config_wri['SwissTopo'] = true;
 $config_wri['api_format_points'] = Array 
 ( 
 'gpx' => "gpx (Complet, pour logiciel type osmand, marble)",
-'gpx_basecamp' => "gpx (compatible basecamp/garmin/viking/...)",
+'gpx_garmin' => "gpx (compatible basecamp/mapsource/viking/...)",
 'gpx_simple' => "gpx simplifié (sans remarques et accès)",
 'kmz' => "kmz (googlearth compressé)",
 'kml' => "kml (googlearth)",
