@@ -10,8 +10,6 @@ très bien être appelé pour des routes extrêmement simples qui ne font qu'ouv
 toute bête ou des controlleurs n'ayant pas besoin de session par exemple
 *******************************************************************************/
 
-// Trop la looze, y'a un bout de code quelque part qui ajoute 4 lignes blanches, et le gpx/kml devient invalide car ne doit pas commencer par des lignes vides ! - je bidouille pour compenser, en demarrant le buffer ici, pour le nettoyer lors de l'export gpx/kml
-ob_start();
 // quasi obligatoire pour tout le site
 require_once ('includes/config.php');
 

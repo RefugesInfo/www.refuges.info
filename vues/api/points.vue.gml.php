@@ -3,7 +3,6 @@
 header("Content-disposition: filename=points-refuges-info.gml");
 header("Content-Type: text/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
-ob_clean();
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" <?='?>'?>
 <wfs:FeatureCollection

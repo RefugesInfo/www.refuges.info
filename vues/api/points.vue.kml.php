@@ -1,6 +1,5 @@
 <?php
-ob_clean();
-if ($req->format=="kml") // quelqu'un s'en sert encore à distance du kml ? pourquoi cette gestion de cache et de CORS ?
+if ($req->format=="kml") // FIXME sly 12/2019 : quelqu'un s'en sert encore à distance du kml ? pourquoi cette gestion de cache et de CORS ?
 {
   $secondes_de_cache = 60;
   $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
@@ -10,10 +9,10 @@ if ($req->format=="kml") // quelqu'un s'en sert encore à distance du kml ? pour
   header("Pragma: cache");
   header("Expires: $ts");
   if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
-  header("Cache-Control: max-age=$secondes_de_cache");
+    header("Cache-Control: max-age=$secondes_de_cache");
 }
 
-// c'est vraiment dommage d'avoir de belles vues ailleurs et se taper une horreur pareille, mais le format kmz a besoin de la même chose, mais en compressé, donc il lui faut capturer la variable $kml
+// FIXME sly 12/2019 : c'est vraiment dommage d'avoir de belles vues ailleurs et se taper une horreur pareille, mais le format kmz a besoin de la même chose, mais en compressé, donc il lui faut capturer la variable $kml
 $kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
 $kml .= "<kml xmlns=\"http://earth.google.com/kml/2.1\">\r\n";
 $kml .= "<Document>\r\n";

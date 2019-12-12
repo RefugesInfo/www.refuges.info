@@ -1,5 +1,4 @@
 <?php 
-ob_clean();
 header("Content-disposition: filename=points-refuges-info-simple.gpx");
 header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
 ?>
