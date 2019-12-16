@@ -64,8 +64,7 @@ function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_
 {
 global $config_wri;
 
-$string=lien_inter_fiche($texte_avec_bbcode,"bbcode");
-
+$texte_avec_bbcode=lien_inter_fiches($texte_avec_bbcode,"bbcode");
 // transformation automatique des chaine de caractère ressemblant à une url vers le BBcode des URLs
 // le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
 // et éviter de retransformer celles contenant du bbcode
@@ -199,7 +198,7 @@ function c($contenu)
 function bbcode2txt($string)
 {
   global $settings;
-  $string=lien_inter_fiche($string,"txt");
+  $string=lien_inter_fiches($string,"txt");
   
   $string = preg_replace("#\[b\](.+?)\[/b\]#is", "*\\1*", $string);
   $string = preg_replace("#\[i\](.+?)\[/i\]#is", "\\1", $string);
@@ -229,7 +228,7 @@ point destination.
 On peut lui passer soit bbcode (le lien sera au format bbcode), soit txt et il n'y aura pas de lien, juste le nom du point indiqué
 **/
 
-function lien_inter_fiche($texte,$format_sortie="bbcode")
+function lien_inter_fiches($texte,$format_sortie="bbcode")
 {
   $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
 
@@ -252,21 +251,8 @@ function lien_inter_fiche($texte,$format_sortie="bbcode")
 
 function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=TRUE)
 {
-
-    /** étape 1
-    nouvelle fonction qui permet de faire des liens internes entre les fiches :
-    [->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
-    point destination
-    **/
-
-    $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
-    if ($occurences_trouvees!=0)
-    {
-      for ($x=0;$x<$occurences_trouvees;$x++)
-      {
-        $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
-      }
-    }
+   
+   $texte=lien_inter_fiches($texte);
 
     /** étape 2
     on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
