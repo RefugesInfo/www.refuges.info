@@ -41,6 +41,7 @@ $req->bbox = $_REQUEST['bbox'];
 $req->massif = $_REQUEST['massif'];
 $req->id = $_REQUEST['id'];
 $req->format = $_REQUEST['format'];
+$req->detail = $_REQUEST['detail'];
 $req->format_texte = $_REQUEST['format_texte'];
 $req->nb_points = $_REQUEST['nb_points'];
 $req->nb_coms = $_REQUEST['nb_coms'];
@@ -220,70 +221,74 @@ foreach ($points_bruts as $point) {
     $points->$i->coord['alt'] = $point->altitude;
     $points->$i->type['id'] = $point->id_point_type;
     $points->$i->type['valeur'] = $point->nom_type;
-    $points->$i->type['icone'] = choix_icone($point);
     $points->$i->places['nom'] = $point->equivalent_places;
     $points->$i->places['valeur'] = $point->places;
-    $points->$i->etat['id'] = $point->conditions_utilisation;
     $points->$i->etat['valeur'] = texte_non_ouverte($point);
-    $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
-    $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
-    $points->$i->coord['precision']['type'] = $point->id_type_precision_gps;
-    $points->$i->remarque['nom'] = 'Remarque';
-    $points->$i->remarque['valeur'] = $point->remark;
-    $points->$i->acces['nom'] = 'Accès';
-    $points->$i->acces['valeur'] = $point->acces;
-    $points->$i->proprio['nom'] = $point->equivalent_proprio;
-    $points->$i->proprio['valeur'] = $point->proprio;
-    $points->$i->moderateur['id'] = $point->id_createur;
-    // info sur le modérateur actuel de la fiche (authentifié ou non)
-    if ($point->id_createur==0) // non authentifié
-        $points->$i->moderateur['nom']=$point->nom_createur;
-    else
-        $points->$i->moderateur['nom'] = infos_utilisateur($point->id_createur)->username;
-    $points->$i->date['creation'] = $point->date_creation;
-    $points->$i->article['demonstratif'] = $point->article_demonstratif;
-    $points->$i->article['defini'] = $point->article_defini;
-    $points->$i->article['partitif'] = $point->article_partitif_point_type;
-    $points->$i->info_comp['site_officiel']['nom'] = $point->equivalent_site_officiel;
-    $points->$i->info_comp['site_officiel']['url'] = $point->site_officiel;
-    $points->$i->info_comp['site_officiel']['valeur'] = $point->site_officiel;
-    $points->$i->info_comp['manque_un_mur']['nom'] = $point->equivalent_manque_un_mur;
-    $points->$i->info_comp['manque_un_mur']['valeur'] = $point->manque_un_mur;
-    $points->$i->info_comp['cheminee']['nom'] = $point->equivalent_cheminee;
-    $points->$i->info_comp['cheminee']['valeur'] = $point->cheminee;
-    $points->$i->info_comp['poele']['nom'] = $point->equivalent_poele;
-    $points->$i->info_comp['poele']['valeur'] = $point->poele;
-    $points->$i->info_comp['couvertures']['nom'] = $point->equivalent_couvertures;
-    $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
-    $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
-    $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
-    if($point->places_matelas == 0)
-        $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
-    else
-        $points->$i->info_comp['places_matelas']['valeur'] = $point->matelas;
-    $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
-    $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
-    $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
-    $points->$i->info_comp['bois']['valeur'] = $point->bois_a_proximite;
-    $points->$i->info_comp['eau']['nom'] = $point->equivalent_eau_a_proximite;
-    $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
+    $points->$i->type['icone'] = choix_icone($point);
 
-    /*
-    sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx, ça pourrait aussi être récupéré pour le kml je crois
-    */
-    $description="";
-    if ($point->equivalent_places!="" and !empty($point->places))
-      $description=$point->equivalent_places. ": ".$point->places."\n";
+    if ($req->format!="geojson" or $req->detail=="complet") // En geojson, utilisé par la carte, on a pas besoin de tout ça, autant simplifier pour réduire le temps de chargement, sauf si on appel explicitement le mode complet avec &detail=complet
+    {
+      $points->$i->etat['id'] = $point->conditions_utilisation;
+      $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
+      $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
+      $points->$i->coord['precision']['type'] = $point->id_type_precision_gps;
+      $points->$i->remarque['nom'] = 'Remarque';
+      $points->$i->remarque['valeur'] = $point->remark;
+      $points->$i->acces['nom'] = 'Accès';
+      $points->$i->acces['valeur'] = $point->acces;
+      $points->$i->proprio['nom'] = $point->equivalent_proprio;
+      $points->$i->proprio['valeur'] = $point->proprio;
+      $points->$i->createur['id'] = $point->id_createur;
+      // info sur le modérateur actuel de la fiche (authentifié ou non)
+      if ($point->id_createur==0) // non authentifié
+          $points->$i->createur['nom']=$point->nom_createur;
+      else
+          $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
+      $points->$i->date['creation'] = $point->date_creation;
+      $points->$i->article['demonstratif'] = $point->article_demonstratif;
+      $points->$i->article['defini'] = $point->article_defini;
+      $points->$i->article['partitif'] = $point->article_partitif_point_type;
+      $points->$i->info_comp['site_officiel']['nom'] = $point->equivalent_site_officiel;
+      $points->$i->info_comp['site_officiel']['url'] = $point->site_officiel;
+      $points->$i->info_comp['site_officiel']['valeur'] = $point->site_officiel;
+      $points->$i->info_comp['manque_un_mur']['nom'] = $point->equivalent_manque_un_mur;
+      $points->$i->info_comp['manque_un_mur']['valeur'] = $point->manque_un_mur;
+      $points->$i->info_comp['cheminee']['nom'] = $point->equivalent_cheminee;
+      $points->$i->info_comp['cheminee']['valeur'] = $point->cheminee;
+      $points->$i->info_comp['poele']['nom'] = $point->equivalent_poele;
+      $points->$i->info_comp['poele']['valeur'] = $point->poele;
+      $points->$i->info_comp['couvertures']['nom'] = $point->equivalent_couvertures;
+      $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
+      $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
+      $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
+      if($point->places_matelas == 0)
+          $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
+      else
+          $points->$i->info_comp['places_matelas']['valeur'] = $point->matelas;
+      $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
+      $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
+      $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
+      $points->$i->info_comp['bois']['valeur'] = $point->bois_a_proximite;
+      $points->$i->info_comp['eau']['nom'] = $point->equivalent_eau_a_proximite;
+      $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
+
+      /*
+      sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx, ça pourrait aussi être récupéré pour le kml je crois
+      */
+      $description="";
+      if ($point->equivalent_places!="" and !empty($point->places))
+        $description=$point->equivalent_places. ": ".$point->places."\n";
+        
+      if ($point->equivalent_places_matelas!="" and !empty($point->places_matelas))
+        $description.=$point->equivalent_places_matelas.": ".$point->places_matelas."\n";
+        
+      $description.=$point->remark;
+      $description.=$point->acces;
+      if ( $point->equivalent_proprio!="")
+        $description.=$point->proprio;
       
-    if ($point->equivalent_places_matelas!="" and !empty($point->places_matelas))
-      $description.=$point->equivalent_places_matelas.": ".$point->places_matelas."\n";
-      
-    $description.=$point->remark;
-    $description.=$point->acces;
-    if ( $point->equivalent_proprio!="")
-      $description.=$point->proprio;
-    
-    $points->$i->description['valeur']=htmlspecialchars(bbcode2txt($description));
+      $points->$i->description['valeur']=htmlspecialchars(bbcode2txt($description));
+    }
     /****************************** POINTS PROCHES ******************************/
 
     if ($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses'] &&
@@ -376,4 +381,4 @@ unset($points_bruts, $i);
 /****************************** FORMAT VUE ******************************/
 
 include($config_wri['chemin_vues'].'api/points.vue.'.$req->format.".php");
-
+?>
