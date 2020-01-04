@@ -427,22 +427,6 @@ function lien_point($point,$lien_local=false)
   return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
 }
 
-// Définit la carte et l'échelle suivant la présence du point dans un des polygones connus pour avoir un fond de carte
-// adapté
-function param_cartes ($point)
-{
-    global $config_wri;
-    // Pour chaque polygones auquel appartient le point, on cherche voir s'il existe un fournisseur de fond de carte "recommandé"
-    // Si plusieurs sont possible, le premier trouvé est renvoyé
-    if ($point->polygones)
-        foreach ($point->polygones as $polygone)
-            foreach ($config_wri['fournisseurs_fond_carte'] as $nom_pays => $choix_carte)
-                if ($polygone->nom_polygone==$nom_pays)
-                    return $choix_carte;
-    // aucun n'a été trouvé
-    return $config_wri['fournisseurs_fond_carte']['Autres'];
-}
-
 
 // Par choix, la notion d'utilisabilité dans la base est enregistrée en un seul champ pour tous les cas
 // (détruite, fermée, ouverte, besoin de récupérer la clé) car ces états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul

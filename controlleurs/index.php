@@ -13,9 +13,10 @@ require_once ("polygone.php");
 
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
 
-$vue->css           [] = $config_wri['url_chemin_leaflet'].'leaflet.css?'.filemtime($config_wri['chemin_leaflet'].'leaflet.css');
-$vue->java_lib_foot [] = $config_wri['url_chemin_leaflet'].'leaflet.js?' .filemtime($config_wri['chemin_leaflet'].'leaflet.js');
-$vue->fond_carte_par_defaut= $config_wri['carte_base'];
+$vue->css          [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
+$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
+$vue->css          [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
+$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
 
 $conditions_notre_zone = new stdClass;
 $conditions_notre_zone->ids_polygones=$config_wri['id_zone_accueil'];
@@ -67,5 +68,4 @@ foreach ($nouveaux_points as $nouveau_point)
 }
 //d( $vue->nouveaux_points);
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
-
 

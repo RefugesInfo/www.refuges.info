@@ -1,1 +1,2 @@
-https://github.com/proj4js/proj4js/releases
+https://github.com/proj4js/proj4js/releases/latest
+V2.5.0

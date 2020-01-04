@@ -34,6 +34,7 @@ switch ($controlleur->url_decoupee[0])
     // sly: Pour toutes ces routes, on est dans un cas simple, l'url correspond au controlleur du même nom, factorisation !
     case "point" :
     case "nav" :
+    case "edit" :
     case "wiki" :
     case "nouvelles" :
     case "point_ajout_commentaire" :
@@ -99,3 +100,4 @@ $vue->zones_pour_bandeau=remplissage_zones_bandeau();
 $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
 
 include ($config_wri['chemin_vues'].$vue->template);
+

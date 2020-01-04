@@ -1,2 +1,0 @@
-https://github.com/tchwork/jsqueeze
-https://github.com/tchwork/jsqueeze/commit/693d64850eab2ce6a7c8f7cf547e1ab46e69d542

@@ -1,5 +1,16 @@
 <!DOCTYPE html>
-<?php include('../config_privee.php')?>
+<!--
+Progressive web application (PWA)
+© Dominique Cavailhez 2019
+https://github.com/Dominique92/MyOl
+Based on https://openlayers.org
+-->
+<?php
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+	include ('../includes/config.php');
+?>
 <html>
 <head>
 	<title>GPS refuges.info</title>
@@ -8,39 +19,36 @@
 	<link rel="icon" type="image/png" href="../images/favicon.png" />
 
 	<!-- Openlayers -->
-	<link href="../ol/ol/ol.css?<?=md5_file('../ol/ol/ol.css')?>" type="text/css" rel="stylesheet">
-	<script src="../ol/ol/ol.js?<?=md5_file('../ol/ol/ol.js')?>"></script>
+	<link href="../ol/ol/ol.css?<?=filemtime('../ol/ol/ol.css')?>" type="text/css" rel="stylesheet">
+	<script src="../ol/ol/ol.js?<?=filemtime('../ol/ol/ol.js')?>"></script>
 
 	<!-- Recherche par nom -->
-	<link href="../ol/geocoder/ol-geocoder.min.css?<?=md5_file('../ol/geocoder/ol-geocoder.min.css')?>" type="text/css" rel="stylesheet">
-	<script src="../ol/geocoder/ol-geocoder.js?<?=md5_file('../ol/geocoder/ol-geocoder.min.js')?>"></script>
+	<link href="../ol/geocoder/ol-geocoder.min.css?<?=filemtime('../ol/geocoder/ol-geocoder.min.css')?>" type="text/css" rel="stylesheet">
+	<script src="../ol/geocoder/ol-geocoder.js?<?=filemtime('../ol/geocoder/ol-geocoder.js')?>"></script>
 
 	<!-- My Openlayers -->
-	<link href="../ol/myol.css?<?=md5_file('../ol/myol.css')?>" type="text/css" rel="stylesheet">
-	<script src="../ol/myol.js?<?=md5_file('../ol/myol.js')?>"></script>
+	<link href="../ol/myol.css?<?=filemtime('../ol/myol.css')?>" type="text/css" rel="stylesheet">
+	<script src="../ol/myol.js?<?=filemtime('../ol/myol.js')?>"></script>
 
 	<!-- This app -->
-	<link rel="manifest" href="manifest.json?<?=md5_file('manifest.json')?>">
-	<!-- other ref="index.php" -->
-	<!-- other ref="service-worker.js.php" -->
+	<link rel="manifest" href="manifest.json">
+	<script defer="defer" src="index.js?<?=filemtime('index.js')?>"></script>
+	<!-- ref="index.php" (for cached file list) -->
+	<!-- ref="service-worker.php" (for cached file list) -->
+
 	<script>
-		var dateGen = '<?=date('ymd-Hi')?>',
-			keys = {
-			ign: '<?=$config_wri['ign_key']?>',
-			thunderforest: '<?=$config_wri['thunderforest_key']?>',
-			bing: '<?=$config_wri['bing_key']?>'
-		};
+		var registrationDate = ' <?=date("md-Hi")?>-',
+			sous_dossier_installation = '<?=$config_wri["sous_dossier_installation"]?>';
+
+		<?php include ($config_wri['racine_projet'].'vues/includes/cartes.js')?>
 	</script>
-	<script src="index.js?<?=md5_file('index.js')?>"></script>
 
 	<style>
-		html, body {
+		html, body, #map {
 			margin: 0;
 			padding: 0;
-		}
-		#map {
-			width: 100vw;
-			height: 100vh;
+			width: 100%;
+			height: 100%;
 		}
 	</style>
 </head>

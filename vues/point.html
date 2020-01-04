@@ -67,14 +67,12 @@
 <!--========================================= COORDONNÉES =========================================-->
 			<dt>Coordonnées:</dt>
             <dd>
-                <span>
                 Provenance:
                 <?if ($vue->point->id_type_precision_gps == $config_wri['id_coordonees_gps_approximative']) {?>
-						<strong><?=$vue->point->nom_precision_gps?></strong>
+					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
-						<?=$vue->point->nom_precision_gps?>
-					<?}?>
-                </span>
+					<?=$vue->point->nom_precision_gps?>
+				<?}?>
             </dd>
 			<dd>
 				Altitude: <em><?=$vue->point->altitude?>m,</em>
@@ -82,47 +80,46 @@
 					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 					<span id="coordonnees-value">
-						<span id="position-title-lng">Longitude</span>: <em id="position-proj-lng"><?=$vue->point->longitude?></em>
-						<span id="position-title-lat">Latitude</span>: <em id="position-proj-lat"><?=$vue->point->latitude?></em>
+						Longitude:
+						<em id="marqueur-lon"><?=$vue->point->longitude?></em>,
+						Latitude:
+						<em id="marqueur-lat"><?=$vue->point->latitude?></em> (WGS84),
 					</span>
-					<select id="position-select"></select>
-					(
-						<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">gpx garmin</a>
-                    ,
-						<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">gpx</a>
-					,
-						<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">kml</a>
-					,
-						<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
-					)
+					<span>
+						X : <em id="marqueur-x"></em>,
+						Y : <em id="marqueur-y"></em> (CH 1903)
+					</span>
+            </dd>
+			<dd>
+				Export:
+					<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,
+					<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">Garmin</a>,
+					<a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">KML</a>,
+					<a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">Géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
 				<?}?>
 			</dd>
-			<?if ($vue->mini_carte) {?>
-				<dd class="noprint">
-					<strong>Attention:</strong> Ces coordonnées sont relatives à l'ellipsoïde WGS84. Il se peut qu'elles ne correspondent pas pour d'anciennes cartes. Consultez le cartouche de la carte pour vérifier son ellipsoïde de référence.
-				</dd>
-			<?}?>
 <!--======================================== LOCALISATION =========================================-->
-			<?php if ($vue->localisation_point) foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
-				<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
-					<dd class="condense">
-						<?php foreach ($polygones as $key => $polygone) { ?>
-							<?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des templates quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
-							  <?php if ($polygone->site_web) { ?>
-								<a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
-							 <?php } else { ?>
-								<?=$polygone->nom_polygone?>
-							 <?php } ?>
-								<?php if ($polygone->avec_lien_carte) { ?>
-								
-								<sup>
-									<a href="<?=$polygone->lien_polygone?>">carte</a>
-								</sup>
-							   <?php } ?>
-							<?=$virgule?>
-						<?php } ?>
-					<dt />
-				</dd>
+			<?php if ($vue->localisation_point)
+				foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
+					<dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
+						<dd class="condense">
+							<?php foreach ($polygones as $key => $polygone) { ?>
+								<?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des templates quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
+								  <?php if ($polygone->site_web) { ?>
+									<a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
+								 <?php } else { ?>
+									<?=$polygone->nom_polygone?>
+								 <?php } ?>
+									<?php if ($polygone->avec_lien_carte) { ?>
+									
+									<sup>
+										<a href="<?=$polygone->lien_polygone?>">carte</a>
+									</sup>
+								   <?php } ?>
+								<?=$virgule?>
+							<?php } ?>
+						<dt />
+					</dd>
 			<?php } ?>
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
 			<dt/>
@@ -152,7 +149,7 @@
 <!--================================= DEMANDE DE MODIFICATION =================================-->
 		<p class="lien_ajout_commentaire noprint">
 			<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
-				<b>Demander une modification</b>
+				<b>Demander une modification des informations de la fiche</b>
 			</a>
 		<p>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->

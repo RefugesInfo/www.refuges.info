@@ -1,26 +1,15 @@
-<?php 
-/***********************************************************************************************
-Préparation d'une page HTML de type 'navigation satellite'
-avec une zone de détermination de critères de choix (couches) et une fonction de zoomage.
-Des critères tels que 'refuges', villes, apparaissent au dessus d'un fond de carte.
-La page ainsi préparée comporte un script Java permettant la sélection des points chauds ("ex: refuges") de la carte
-et renvoi vers un lien sur clic souris. Le déplacement de la souris sur le fond de carte provoque l'affichage des coordonnées du point.
-
-Contient le code PHP de la page
-Le code html est dans /vues/*.html
-Le code javascript est dans /vues/*.js
-Les variables sont passées dans l'objet $vue->...
-
-Concept de Zone et Massifs :
-Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
-Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
-************************************************************************************************/
+<?php // Editeur de massifs
 
 require_once ("bdd.php");
 require_once ("meta_donnee.php");
 require_once ("polygone.php");
 
-$vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/wiki.js';
+if (!$_SESSION['niveau_moderation']) {
+	$vue->type="page_simple";
+	$vue->titre="Permissions insuffisantes";
+	$vue->contenu="Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :";
+	return "";
+}
 
 $vue->css          [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
 $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
@@ -38,7 +27,7 @@ $vue->types_point_affichables=types_point_affichables();
 $id_polygone = (int) $controlleur->url_decoupee[1];
 $vue->mode_affichage = $_GET['mode_affichage']; // "zone", "massif" ou "edit". ca definit l'affichage qui suit
 
-// Récupère les soumissions du formulaire de modification de paramètres de massifs
+//Récupère les soumissions du formulaire de modification de paramètres de massifs
 if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;
 
@@ -50,14 +39,15 @@ if ($id_polygone)
   $polygone=infos_polygone ($id_polygone);
   if (!$polygone->erreur) 
   {
-      $vue->titre=ucfirst($polygone->type_polygone)." $polygone->article_partitif $polygone->nom_polygone : Refuges, cabanes, sommets et points d'eau sur une carte";
-      $vue->intro="Voici les refuges, cabanes, sommets et points d'eau dans $polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
+    $vue->titre = "Edition du $polygone->type_polygone du $polygone->nom_polygone";
+    $vue->intro="Voici les refuges, cabanes, sommets et points d'eau dans $polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
   }
   else
     $vue->titre="Polygone demandé incorrect : $polygone->message";
 } 
 else
-  $vue->titre = "Navigation sur les photos satellite";
+  $vue->titre = "Création d'un massif";
+
 $vue->polygone=$polygone;
 
 // Les coordonnées des polygones à éditer

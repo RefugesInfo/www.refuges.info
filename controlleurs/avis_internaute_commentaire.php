@@ -48,3 +48,4 @@ else
             $vue->test_anti_robot=True;
     }
 }
+

@@ -280,7 +280,6 @@ FORM#form_point .booleen LEGEND {
 FORM#form_point .booleen LABEL {
   clear: none;
   float: none;
-  /*width: 400px;*/
   padding-left: 10px;
   }
 FORM#form_point TEXTAREA {
@@ -293,7 +292,6 @@ FORM#form_point LABEL.textarea  SPAN {
   clear: both;
   float:left;
   }
-
 FORM#form_export LABEL {
   clear: none;
   float: left;
@@ -303,7 +301,7 @@ FORM#form_export LABEL {
   border: thin dotted black;
   }
 
-FORM.wri SPAN , FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
+FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
   clear: left;
   float: left;
   }
@@ -807,9 +805,12 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   width: 650px;
   height: 600px;
 }
+#carte-accueil .ol-switch-layer {
+  display: none;
+}
 @media screen and (max-width: 650px) {
   #carte-accueil {
-    width: 100vw;
+    width: calc(100vw - 23px);
     height: 90vw;
   }
   #accueil-photos {
@@ -832,6 +833,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 #selecteur-carte-nav P {
   margin-top: 0;
   margin-bottom: 5px;
+}
+#selecteur-carte-nav SPAN {
+  font-size: .8em;
+  font-style: oblique;
 }
 /* Menu deplié */
 @media screen and (min-width: 641px) and (min-device-height: 361px) {
@@ -869,17 +874,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 #carte-point {
   width: 50%; /* Support of non CSS3 browsers (Safari on Windows)*/
   height: 380px;
-  width: 100vw;
+  width: calc(100vw - 20px);
   height: 100vw;
-  min-width: 300px;
   max-height: 400px;
-}
-/* Limite de largeur de l'attribution pour ne pas masquer l'échèle */
-#carte-point .leaflet-control-attribution {
-  max-width: 340px;
-}
-#carte-edit .leaflet-control-attribution {
-  max-width: 390px;
 }
 /* Carte de la page des points écrans */
 @media screen and (min-width: 641px) {
@@ -888,7 +885,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
   #carte-point {
     width: 400px;
-    min-width: auto;
   }
 }
 
@@ -911,29 +907,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 
-/* Cartes présentation full screen */
-.leaflet-fullscreen-on {
-  max-height: 100% !important;
-}
-@media screen and (device-width: 100vw) and (device-height: 100vh) { /* Cas du full screen / nécéssaire pour chrome */
-	#carte-nav, #carte-point, #carte-edit {
-		max-width: 100% !important;
-		max-height: 100% !important;
-	}
-}
-
-/* Etiquette dans les cartes */
-.nav-services,
-.carte-service-etiquette .leaflet-rrose-content-wrapper,
-.carte-service-etiquette .leaflet-rrose-tip {
-	background-color: #def;
-}
-.nav-sites,
-.carte-site-etiquette .leaflet-rrose-content-wrapper,
-.carte-site-etiquette .leaflet-rrose-tip {
-	background-color: #efd;
-}
-
 #check-types {
 	float: right;
 	position: relative;
@@ -942,35 +915,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 #check-types input {
 	position: relative;
 	top: 3px;
-}
-/* Couche OSM OVERPASS */
-#ajax-poi-status *,
-#ajax-osm-status *,
-#ajax-poiCHEM-status *,
-#ajax-poiPRC-status *,
-#ajax-poiC2C-status * {
-	display: none;
-}
-.ajax-none .ajax-nav-none,
-.ajax-wait .ajax-nav-wait,
-.ajax-zoom .ajax-nav-zoom,
-.ajax-some .ajax-nav-some,
-.ajax-zero .ajax-nav-zero,
-.ajax-too .ajax-nav-too,
-.ajax-some .ajax-point-some {
-	display: initial !important;
-}
-.ajax-nav-some {
-	color:green;
-}
-.ajax-nav-wait,
-.ajax-nav-zero {
-	color:blue;
-}
-.ajax-nav-zoom,
-.ajax-nav-too,
-.ajax-nav-error {
-	color:red;
 }
 
 .bouton-supprimer {
@@ -988,11 +932,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	#menu-normal,
 	#menu-scroll,
 	#fin-entete,
-	#basdepage,
-	.leaflet-control,
-	.leaflet-control-attribution > a:first-child {
-		display: none;
-	}
+	#basdepage
 	.noprint {
 		display: none !important;
 	}
@@ -1005,11 +945,5 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		width: 100%;
 		height: 100%;
 		max-height: 100%;
-	}
-	.leaflet-control-attribution {
-		display: block;
-	}
-	.leaflet-control-attribution::first-letter {
-		color: transparent;
 	}
 }

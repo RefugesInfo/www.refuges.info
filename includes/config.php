@@ -43,13 +43,13 @@ $config_wri['base_wiki']=$config_wri['sous_dossier_installation']."wiki/";
 // On centralise ici tous les paramètres PhpBB qui sont figés
 // Des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
 $config_wri['lien_forum']=$config_wri['sous_dossier_installation']."forum/";
-$config_wri['url_api']=$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$config_wri['lien_forum'].'ext/RefugesInfo/couplage/api.php';
+
 // On paramètre le numéro du forum qui contient les topics de discussion sur les fiches des points
 $config_wri['forum_refuges']=4;
 
 // Paramètrage des cartes vignettes des fiches de points
-$config_wri['chemin_leaflet']=$config_wri['racine_projet'].'leaflet/';
-$config_wri['url_chemin_leaflet']=$config_wri['sous_dossier_installation'].'leaflet/';
+$config_wri['chemin_ol']=$config_wri['racine_projet'].'ol/';
+$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'ol/';
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
 $config_wri['nom_hote']=$_SERVER['HTTP_HOST'];
@@ -104,16 +104,16 @@ $config_wri['id_coordonees_gps_approximative']=4;
 
 /********** choix de maximums pour rechercher et cartes ************/
 
-//nombre maximum de point que peut sortir la recherche
+// nombre maximum de points que peut sortir la recherche
 $config_wri['points_maximum_recherche']=40;
 
-// nombre de point renvoyé par défaut, par l'API
+// nombre de points renvoyés par défaut, par l'API
 $config_wri['defaut_max_nombre_point']=250;
 
 
 /********** Lié au Forum / comptes / utilisateurs / login / users ************/
 // lien direct pour se connecter, ou créer un compte sur le forum
-$config_wri['connexion_forum']=$config_wri['lien_forum']."login.php";
+$config_wri['connexion_forum']=$config_wri['lien_forum']."ucp.php?mode=login";
 // lien vers le profil d'un utilisateur
 $config_wri['fiche_utilisateur']=$config_wri['lien_forum']."memberlist.php?mode=viewprofile&u=";
 $config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php?t=";
@@ -136,16 +136,7 @@ $config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
 $config_wri['email_contact_nominatim']="sylvain@refuges.info";
 
 /********** Cartes vignettes, fond de carte ************/
-
-
-// Voici le fond de carte par défaut :
-// Si vous voulez en changer ou avoir un autre pour le développement, sans avoir à mettre à jour sur git et faire des pirouettes, vous pouvez simplement modifier cette variable
-// située dans le fichier config_privee.php qui lui ne sera pas écrasé par le prochain git pull
-$config_wri['carte_base'] = 'Refuges.info';
-$config_wri['carte_base_monde'] = 'OSM fr';
-
-// Pour avoir swisstopo je suppose ?
-$config_wri['SwissTopo'] = true;
+// Le fond de carte par défaut est modifiable dans config_privee.php
 
 // tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un lourd à maintenir)
 // La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
@@ -163,27 +154,6 @@ $config_wri['api_format_points'] = Array
 'xml' => "xml Spécifique à notre base, exhaustif",
 'geojson' => "GeoJSON"
 );
-
-    
-  
-  
-/* tableau indiquant quel fond de carte on préfère selon le polygon dans lequel on se trouve
- * utilisé pour les vignettes des pages points et le lien d'accès en dessous + lorsque l'on modifie un point
- * le premier champs est le nom du polygone tel qu'il est dans la base openstreetmap
- * car c'est ce qui a moins de chance de changer, moins que nos id en tout cas */
-
-$config_wri['fournisseurs_fond_carte'] = Array 
-(
-    // Nom pays chez OSM               Vignette    Français  Carte agrandie Échelle 
-    'France métropolitaine'=> Array (null,       ''      , 'IGN',         50000),
-    'Réunion'              => Array ('OSM fr',   ''      , 'IGN',         25000),
-    'Nouvelle Calédonie'   => Array ('OSM fr',   ''      , 'IGN',         25000),
-    'Andorra'              => Array (null,       ''      , 'IGN',         25000),
-    'Schweiz'              => Array (null,       ''      , 'SwissTopo',   50000),
-    'Österreich'           => Array (null,       ''      , 'Autriche',    50000),
-    'España'               => Array (null,       'de l\'', 'Espagne',     25000),
-    'Autres'               => Array ('OSM fr',   ''      , 'Outdoors',    50000),
-    );
     
 /******** Nom du fichier contenant les points exportés **********/
 $config_wri['nom_fichier_export']="refuge-info";
@@ -220,10 +190,6 @@ require($config_wri['racine_projet']."config_privee.php");
 
 // *** NON NON : *** N'ajoutez rien après ce require_once("config_privee.php"); sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant
 // mettez par contre tout ce que vous voulez avant le require_once("config_privee.php");
-
-// Ceci est après l'inclusion de config_privee.php pour que l'on puisse tenir compte du mode debug que le developpeur peut s'il le souhaite activer
-$config_wri['chemin_leaflet'].=$config_wri['debug']?'src/':'dist/';
-$config_wri['url_chemin_leaflet'].=$config_wri['debug']?'src/':'dist/';
 
 if ($config_wri['debug'])
 {

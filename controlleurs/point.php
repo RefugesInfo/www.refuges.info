@@ -94,9 +94,11 @@ else // le point est valide
             
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
-		$vue->css           [] = $config_wri['url_chemin_leaflet'].'leaflet.css?'.filemtime($config_wri['chemin_leaflet'].'leaflet.css');
-		$vue->java_lib_foot [] = $config_wri['url_chemin_leaflet'].'leaflet.js?' .filemtime($config_wri['chemin_leaflet'].'leaflet.js');
-        $vue->vignette = param_cartes ($point);
+        $vue->css          [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
+        $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
+        $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'proj4/proj4.js?'.filemtime($config_wri['chemin_ol'].'proj4/proj4.js');
+        $vue->css          [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
+        $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
     }
 
     /***********  détermination si le point se situe dans un polygone pour lequel un message est à faire passer *******/
@@ -114,8 +116,8 @@ else // le point est valide
     // Construction du tableau qui sera lu, ligne par ligne par la vue pour être affiché
     // On pourrait détailler en html chaque propriété entourée par un if (propriété = valide), mais ça fait beaucoup de redondance, alors ainsi, je factorise au détriment d'un peu de lisibilité
     
-    // Voici tous ceux qui nous intéresse 
-    // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dure, comme par exemple récupérer 
+    // Voici tous ce qui nous intéressent
+    // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dur, comme par exemple récupérer
     // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
     $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points'],array('site_officiel'));
    
@@ -189,3 +191,4 @@ else // le point est valide
         $vue->commentaires[]=$commentaire;
     }
 }
+
