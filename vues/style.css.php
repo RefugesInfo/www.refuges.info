@@ -69,14 +69,6 @@ switch ($periode)
 	max-width: 100%;
 }
 
-#entete,
-#basdepage {
-	font-family: Times New Roman;
-}
-#basdepage {
-	font-size: 16px;
-}
-
 /* Titre des forums de refuges */
 #phpbb .section-viewtopic .topic-title a:first-child {
 	color: black !important;
@@ -406,13 +398,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	background-color: #f8fff4;
     z-index: 500000;
 }
-
-/*=========PUBLICITE==========*/
-@media screen and (max-width: 940px), screen and (max-device-height: 550px) {
-  .publicite {
-    display: none;
-  }
-}
 /*==================================================================*/
 /*  ENTETE DE PAGE : Logo, identification & recherche               */
 /*==================================================================*/
@@ -424,13 +409,11 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 #entete > DIV { /* Définit le bloc à positionner à droite */
 	float: right;
-	margin: 2px 5%;
+	margin: 2px 0;
 }
 /* Réduction des marges du bandeau pour éviter de passer sur 2 lignes */
-@media screen and (max-width: 866px) {
-  #entete > DIV {
-	margin: 2px 0;
-  }
+#entete > A IMG {
+	max-width: calc(100vw - 21em);
 }
 @media screen and (max-width: 800px) {
   #entete > A,
@@ -662,11 +645,14 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /* ==========MENU DU BAS ========== */
+
 /* en bas, il y a un gros div "basdepage" qui englobe la fin */
   #basdepage {
     clear: both;
     padding-top: 15px;
     text-align: center;
+    font-family: Times New Roman;
+    font-size: 16px;
   }
   /* c'est la liste en bas de page */
   #basdepage #racourcismenus {

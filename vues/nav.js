@@ -35,7 +35,7 @@ const controls = [
 
 	// La couche "zone"
 	zone = layerVectorURL({
-		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?type_polygon=1&intersection=<?=$vue->polygone->id_polygone?>',
+		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?type_polygon=<?=$vue->type_polygone?>&intersection=<?=$vue->polygone->id_polygone?>',
 		noMemSelection: true,
 		receiveProperties: function(properties, feature, layer) {
 			properties.name = properties.nom;

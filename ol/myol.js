@@ -11,9 +11,7 @@
  */
 
 /* jshint esversion: 6 */
-
-//TODO avoid fetch / PWA error on IE
-//TODO ranger les blocs dans l'ordre déclaration puis utilisation & noter les dendancies
+if (!ol) var ol = {}; //HACK For JS validators
 
 /**
  * Debug facilities on mobile
@@ -30,29 +28,9 @@ if (window.location.hash == '###')
 	};
 
 /**
- * Global openlayers hacks
+ * IE polyfill
+ * You can include https://cdn.polyfill.io/v3/polyfill.min.js in place
  */
-ol.Map.prototype.renderFrame_ = function(time) {
-	//HACK add map_ to each layer
-	const map = this;
-	map.getLayers().forEach(function(target) {
-		target.map_ = map;
-	});
-
-	return ol.PluggableMap.prototype.renderFrame_.call(this, time);
-};
-
-//HACK log json parsing errors
-function JSONparse(json) {
-	try {
-		return JSON.parse(json);
-	} catch (returnCode) {
-		console.log(returnCode + ' parsing : "' + json + '" ' + new Error().stack);
-	}
-}
-
-//HACK IE Object.assign polyfill
-// You can also use <script nomodule src="https://cdn.polyfill.io/v3/polyfill.min.js"></script>
 if (!Object.assign)
 	Object.assign = function() {
 		let r = {};
@@ -63,12 +41,43 @@ if (!Object.assign)
 	};
 
 /**
+ * Json parsing errors log
+ */
+function JSONparse(json) {
+	try {
+		return JSON.parse(json);
+	} catch (returnCode) {
+		console.log(returnCode + ' parsing : "' + json + '" ' + new Error().stack);
+	}
+}
+
+/**
+ * Hack warn layers when added to the map
+ */
+ol.Map.prototype.handlePostRender = function() {
+	ol.PluggableMap.prototype.handlePostRender.call(this);
+
+	const map = this;
+	map.getLayers().forEach(function(layer) {
+		if (!layer.map_) {
+			layer.map_ = map;
+
+			layer.dispatchEvent({
+				type: 'myol:onadd',
+				map: map,
+			});
+		}
+	});
+};
+
+
+/**
  * TILE LAYERS
  */
 /**
  * Openstreetmap
  */
-function layerOSM(url, attribution, maxZoom) {
+function layerOsm(url, attribution, maxZoom) {
 	return new ol.layer.Tile({
 		source: new ol.source.XYZ({
 			url: url,
@@ -81,12 +90,28 @@ function layerOSM(url, attribution, maxZoom) {
 	});
 }
 
+function layerOsmOpenTopo() {
+	return layerOsm(
+		'//{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png',
+		'<a href="https://opentopomap.org">OpenTopoMap</a> ' +
+		'(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+		17
+	);
+}
+
+function layerOsmMri() {
+	return layerOsm(
+		'//maps.refuges.info/hiking/{z}/{x}/{y}.png',
+		'<a href="//wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
+	);
+}
+
 /**
  * Kompas (Austria)
- * Requires layerOSM
+ * Requires layerOsm
  */
 function layerKompass(layer) {
-	return layerOSM(
+	return layerOsm(
 		'http://ec{0-3}.cdn.ecmaps.de/WmsGateway.ashx.jpg?' + // Not available via https
 		'Experience=ecmaps&MapStyle=' + layer + '&TileX={x}&TileY={y}&ZoomLevel={z}',
 		'<a href="http://www.kompass.de/livemap/">KOMPASS</a>'
@@ -95,11 +120,11 @@ function layerKompass(layer) {
 
 /**
  * Thunderforest
- * Requires layerOSM
+ * Requires layerOsm
  * Get your own (free) THUNDERFOREST key at https://manage.thunderforest.com
  */
 function layerThunderforest(key, layer) {
-	return layerOSM(
+	return layerOsm(
 		'//{a-c}.tile.thunderforest.com/' + layer + '/{z}/{x}/{y}.png?apikey=' + key,
 		'<a href="http://www.thunderforest.com">Thunderforest</a>'
 	);
@@ -160,6 +185,7 @@ function layerIGN(key, layer, format) {
 /**
  * Spain
  */
+//BEST layerTileIncomplete
 function layerSpain(serveur, layer) {
 	return new ol.layer.Tile({
 		source: new ol.source.XYZ({
@@ -176,19 +202,20 @@ function layerSpain(serveur, layer) {
  * Layers with not all resolutions or area available
  * Virtual class
  * Displays Stamen outside the layer zoom range or extend
- * Requires HACK map_
+ * Requires myol:onadd
  */
+//BEST document all options in options = Object.assign
 function layerTileIncomplete(options) {
 	const layer = options.extraLayer || layerStamen('terrain');
 	options.sources[999999] = layer.getSource(); // Add extrabound source on the top of the list
 
-	layer.once('prerender', function() {
+	layer.once('myol:onadd', function(evt) {
 		if (typeof options.addSources == 'function')
 			options.sources = Object.assign(
 				options.sources,
 				options.addSources()
 			);
-		layer.map_.getView().on('change:resolution', change);
+		evt.map.getView().on('change:resolution', change);
 		change(); // At init
 	});
 
@@ -294,7 +321,7 @@ function layerBing(key, subLayer) {
 	const layer = new ol.layer.Tile();
 
 	//HACK : Avoid to call https://dev.virtualearth.net/... if no bing layer is required
-	layer.once('change:opacity', function() {
+	layer.on('change:opacity', function() {
 		if (layer.getVisible() && !layer.getSource()) {
 			layer.setSource(new ol.source.BingMaps({
 				imagerySet: subLayer,
@@ -310,401 +337,11 @@ function layerBing(key, subLayer) {
  * VECTORS, GEOJSON & AJAX LAYERS
  */
 /**
- * Popup label
- * Manages a feature hovering per map common to all features & layers
- */
-function popupLabel(map) {
-	if (!map.popupLabel_) { // Only one per map
-		const element = document.createElement('div'),
-			popup = map.popupLabel_ = new ol.Overlay({
-				element: element,
-			}),
-			viewStyle = map.getViewport().style;
-		map.addOverlay(popup);
-
-		// Go to feature.property.link when click on the feature (icon or area)
-		map.on('click', function(evt) {
-			let done = false;
-			evt.target.forEachFeatureAtPixel(
-				evt.pixel,
-				function(feature) {
-					if (done) return;
-					done = true;
-					const link = feature.getProperties().link;
-					if (link) {
-						if (evt.pointerEvent.ctrlKey) {
-							var win = window.open(link, '_blank');
-							if (evt.pointerEvent.shiftKey)
-								win.focus();
-						} else
-							window.location = link;
-					}
-				}
-			);
-		});
-
-		let hoveredFeature = null;
-		map.on('pointermove', function(evt) {
-			let nbFeaturesAtPixel = 0;
-			map.forEachFeatureAtPixel(
-				evt.pixel,
-				function(feature, layer) {
-					if (feature.getKeys().length > 1 && // Avoid doubled feature (E.G. style changed)
-						!(nbFeaturesAtPixel++) && // Only the first hovered
-						(!hoveredFeature || feature.ol_uid != hoveredFeature.ol_uid)) { // The feature has changed
-						deselectFeature();
-						selectFeature(feature, layer, evt.pixel);
-						hoveredFeature = feature;
-						hoveredFeature.layer_ = layer;
-					}
-				}
-			);
-			if (!nbFeaturesAtPixel && hoveredFeature)
-				deselectFeature();
-		});
-
-		//TODO Function declarations should not be placed in blocks.
-		// Hide popup when the cursor is out of the map
-		window.addEventListener('mousemove', function(evtMm) {
-			const divRect = map.getTargetElement().getBoundingClientRect();
-			if (evtMm.clientX < divRect.left || evtMm.clientX > divRect.right ||
-				evtMm.clientY < divRect.top || evtMm.clientY > divRect.bottom)
-				deselectFeature();
-		});
-
-		function selectFeature(feature, layer, pixel) {
-			// Change the cursor
-			//TODO BUG pointer on the label (but no click)
-			const properties = feature.getProperties();
-			if (properties.link)
-				viewStyle.cursor = 'pointer';
-			if (properties.draggable)
-				viewStyle.cursor = 'move';
-
-			if (layer && layer.options) {
-				element.className = 'myol-popup';
-
-				// Apply layer hover style to the feature
-				feature.setStyle(escapedStyle(
-					layer.options.styleOptions,
-					layer.options.hoverStyleOptions,
-					layer.options.editStyleOptions
-				));
-
-				// Set the text & label position
-				element.innerHTML = formatLabel(
-					layer.options.label,
-					'<br/>',
-					properties,
-					feature
-				);
-				let geometry = feature.getGeometry();
-
-				// If it's a GeometryCollection, take the fisrt feature
-				if (typeof geometry.getGeometries == 'function')
-					geometry = geometry.getGeometries()[0];
-
-				// If it's a point, the icon is stable above it
-				if (geometry.flatCoordinates.length == 2)
-					pixel = map.getPixelFromCoordinate(geometry.flatCoordinates);
-
-				//TODO BUG quelquefois, ne mesure pas la bonne étiquette
-				// Shift of the label to stay into the map regarding the pointer position
-				if (pixel[1] < element.clientHeight + 12) { // On the top of the map (not enough space for it)
-					pixel[0] += pixel[0] < map.getSize()[0] / 2 ? 10 : -element.clientWidth - 10;
-					pixel[1] = 2;
-				} else {
-					pixel[0] -= element.clientWidth / 2;
-					pixel[0] = Math.max(pixel[0], 0); // Bord gauche
-					pixel[0] = Math.min(pixel[0], map.getSize()[0] - element.clientWidth - 1); // Bord droit
-					pixel[1] -= element.clientHeight + 8;
-				}
-				popup.setPosition(map.getCoordinateFromPixel(pixel));
-			}
-		}
-
-		function deselectFeature() {
-			if (hoveredFeature) {
-				viewStyle.cursor = 'default';
-				element.className = 'myol-popup-hidden';
-				const layer = hoveredFeature.layer_;
-				if (layer && layer.options)
-					hoveredFeature.setStyle(escapedStyle(layer.options.styleOptions));
-				hoveredFeature = null;
-			}
-		}
-
-		function formatLabel(format, closure, properties, feature) {
-			if (typeof format == 'function')
-				format = formatLabel(
-					format(properties, feature),
-					closure, properties, feature
-				);
-
-			if (typeof format == 'object') {
-				// Links
-				if (closure == 'link')
-					return '<a href="' + format.link + '">' + format.name + '</a>';
-
-				// List of closure: object
-				let items = [];
-				for (let f in format)
-					items.push(formatLabel(
-						format[f], f,
-						properties, feature
-					));
-				return items
-					.filter(function(a) { // Purge empty items
-						return a;
-					})
-					.join(closure);
-			}
-			// Number with unit
-			const n = parseInt(format);
-			if (n)
-				return n + closure;
-
-			// Other string
-			return format ? format.toString() : '';
-		}
-	}
-	return map.popupLabel_;
-}
-
-/**
- * Marker
- * Requires JSONparse, popupLabel, HACK map_, proj4.js for swiss coordinates
- * Read / write following fields :
- * marker-json : {"type":"Point","coordinates":[2.4,47.082]}
- * marker-lon / marker-lat
- * marker-x / marker-y : CH 1903 (wrapped with marker-xy)
- * marker-center-cursor : onclick = center the cursor at the middle of the map
- * marker-center-map : onclick = center the map on the cursor position
- */
-function layerMarker(o) {
-	const options = Object.assign({
-			llInit: [],
-			idDisplay: 'marker',
-			decimalSeparator: '.',
-		}, o),
-		elJson = document.getElementById(options.idDisplay + '-json'),
-		elLon = document.getElementById(options.idDisplay + '-lon'),
-		elLat = document.getElementById(options.idDisplay + '-lat'),
-		elX = document.getElementById(options.idDisplay + '-x'),
-		elY = document.getElementById(options.idDisplay + '-y'),
-		elCenterMarker = document.getElementById(options.idDisplay + '-center-marker'),
-		elCenterMap = document.getElementById(options.idDisplay + '-center-map');
-
-	// Use json field values if any
-	if (elJson) {
-		let json = elJson.value || elJson.innerHTML;
-		if (json)
-			options.llInit = JSONparse(json).coordinates;
-	}
-	// Use lon-lat fields values if any
-	if (elLon && elLat) {
-		const lon = parseFloat(elLon.value || elLon.innerHTML),
-			lat = parseFloat(elLat.value || elLat.innerHTML);
-		if (lon && lat)
-			options.llInit = [lon, lat];
-	}
-
-	// The marker layer
-	const style = new ol.style.Style({
-			image: new ol.style.Icon(({
-				src: options.imageUrl,
-				anchor: [0.5, 0.5],
-			})),
-		}),
-		point = new ol.geom.Point(
-			ol.proj.fromLonLat(options.llInit)
-		),
-		feature = new ol.Feature({
-			geometry: point,
-			draggable: options.draggable,
-		}),
-		source = new ol.source.Vector({
-			features: [feature],
-		}),
-		layer = new ol.layer.Vector({
-			source: source,
-			style: style,
-			zIndex: 10,
-		}),
-		format = new ol.format.GeoJSON();
-
-	//TODO BUG n'est pas enabled si on ne voit pas le feature !
-	layer.once('prerender', function() {
-		const map = layer.map_;
-		popupLabel(map); // Attach tracking for cursor changes
-
-		if (options.draggable) {
-			// Drag the feature
-			map.addInteraction(new ol.interaction.Modify({
-				features: new ol.Collection([feature]),
-				pixelTolerance: 16, // The circle around the center
-				style: style, // Avoid to add interaction default style
-			}));
-
-			// Change text input values
-			point.on('change', function() {
-				displayLL(point.getCoordinates());
-			});
-
-			// GPS position changed
-			map.on('myol:ongpsposition', function(evt) {
-				point.setCoordinates(evt.position);
-			});
-
-			// Map control buttons
-			if (elCenterMarker)
-				elCenterMarker.onclick = function() {
-					point.setCoordinates(map.getView().getCenter());
-				};
-			else map.addControl(controlButton({
-				label: '\u29BB',
-				title: 'Déplacer le curseur au centre de la carte',
-				activate: function() {
-					point.setCoordinates(map.getView().getCenter());
-				},
-			}));
-			if (elCenterMarker)
-				elCenterMap.onclick = function() {
-					map.getView().setCenter(point.getCoordinates());
-				};
-			else map.addControl(controlButton({
-				label: '\u26DE',
-				title: 'Centrer la carte sur le curseur',
-				activate: function() {
-					map.getView().setCenter(point.getCoordinates());
-				},
-			}));
-		}
-	});
-
-	// <input> coords edition
-	function fieldEdit(evt) {
-		const id = evt.target.id.split('-')[1], // Get second part of the field id
-			pars = {
-				lon: [0, 4326],
-				lat: [1, 4326],
-				x: [0, 21781],
-				y: [1, 21781],
-			},
-			nol = pars[id][0], // Get what coord is concerned (x, y)
-			projection = pars[id][1]; // Get what projection is concerned
-		// Get initial position
-		let coord = ol.proj.transform(point.getCoordinates(), 'EPSG:3857', 'EPSG:' + projection);
-		// We change the value that was edited
-		coord[nol] = parseFloat(evt.target.value.replace(',', '.'));
-		// Set new position
-		point.setCoordinates(ol.proj.transform(coord, 'EPSG:' + projection, 'EPSG:3857'));
-
-		// Center map to the new position
-		layer.map_.getView().setCenter(point.getCoordinates());
-	}
-
-	// Display a coordinate
-	//BEST dispach/edit deg min sec
-	function displayLL(ll) {
-		const ll4326 = ol.proj.transform(ll, 'EPSG:3857', 'EPSG:4326'),
-			values = {
-				lon: (Math.round(ll4326[0] * 100000) / 100000).toString().replace('.', options.decimalSeparator),
-				lat: (Math.round(ll4326[1] * 100000) / 100000).toString().replace('.', options.decimalSeparator),
-				json: JSON.stringify(format.writeGeometryObject(point, {
-					featureProjection: 'EPSG:3857',
-					decimals: 5
-				}))
-			};
-
-		// Specific Swiss coordinates EPSG:21781 (CH1903 / LV03)
-		if (typeof proj4 == 'function') {
-			proj4.defs('EPSG:21781', '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=660.077,13.551,369.344,2.484,1.783,2.939,5.66 +units=m +no_defs');
-			ol.proj.proj4.register(proj4);
-		}
-		// Specific Swiss coordinates EPSG:21781 (CH1903 / LV03)
-		if (typeof proj4 == 'function' &&
-			ol.extent.containsCoordinate([664577, 5753148, 1167741, 6075303], ll)) { // Si on est dans la zone suisse EPSG:21781
-			const c21781 = ol.proj.transform(ll, 'EPSG:3857', 'EPSG:21781');
-			values.x = Math.round(c21781[0]);
-			values.y = Math.round(c21781[1]);
-		}
-		// Mask xy swiss if nothing to write
-		if (elX)
-			elX.parentNode.style.display = values.x ? '' : 'none';
-		if (elY)
-			elY.parentNode.style.display = values.y ? '' : 'none';
-
-		// We insert the resulting HTML string where it is going
-		for (let postId in values) {
-			const el = document.getElementById(options.idDisplay + '-' + postId);
-			if (el) {
-				el.onchange = fieldEdit; // Set the change function
-				if (el.value !== undefined)
-					el.value = values[postId];
-				else
-					el.innerHTML = values[postId];
-			}
-		}
-	}
-	displayLL(ol.proj.fromLonLat(options.llInit)); // Display once at init
-
-	return layer;
-}
-
-// Mem in cookies the checkbox content with name="selectorName"
-function controlPermanentCheckbox(selectorName, callback) {
-	const checkEls = document.getElementsByName(selectorName),
-		cookie = location.hash.match('map-' + selectorName + '=([^#,&;]*)') || // Priority to the hash
-		document.cookie.match('map-' + selectorName + '=([^;]*)'); // Then the cookie
-
-	for (let e = 0; e < checkEls.length; e++) {
-		checkEls[e].addEventListener('click', permanentCheckboxClick); // Attach the action
-		if (cookie) // Set the checks accordingly with the cookie
-			checkEls[e].checked = cookie[1].split(',').indexOf(checkEls[e].value) !== -1;
-	}
-
-	function permanentCheckboxClick(evt) {
-		if (typeof callback == 'function')
-			callback(evt, permanentCheckboxList(selectorName, evt));
-	}
-	callback(null, permanentCheckboxList(selectorName)); // Call callback once at the init
-}
-
-/**
- * List selected checkboxes having the same name
- * selectorName (string)
- * evt (keyboard event)
- * return : [checked values or ids]
- */
-//TODO BUG read first before modifying layers
-function permanentCheckboxList(selectorName, evt) {
-	const checkEls = document.getElementsByName(selectorName);
-	let allChecks = [];
-
-	for (let e = 0; e < checkEls.length; e++) {
-		// Select/deselect all (clicking an <input> without value)
-		if (evt) {
-			if (evt.target.value == 'on') // The Select/deselect has a default value = "on"
-				checkEls[e].checked = evt.target.checked; // Check all if "all" is clicked
-			else if (checkEls[e].value == 'on')
-				checkEls[e].checked = false; // Reset the "all" checks if another check is clicked
-		}
-
-		// Get status of all checks
-		if (checkEls[e].checked) // List checked elements
-			allChecks.push(checkEls[e].value);
-	}
-	// Mem the related cookie / Keep empty one to keep memory of cancelled subchoices
-	document.cookie = 'map-' + selectorName + '=' + allChecks.join(',') + ';path=/; SameSite=Strict';
-	return allChecks; // Returns list of checked values or ids
-}
-
-/**
- * Compute a style from 2 different style
+ * Compute a style from different styles
  * return ol.style.Style containing each style component or ol default
  */
 function escapedStyle(a, b, c) {
+	//BEST work with arguments
 	const defaultStyle = new ol.layer.Vector().getStyleFunction()()[0];
 	return function(feature) {
 		return new ol.style.Style(Object.assign({
@@ -719,9 +356,225 @@ function escapedStyle(a, b, c) {
 	};
 }
 
+/**
+ * Gives list of checkboxes inputs states having the same name
+ * selectorName {string}
+ * evt {keyboard event} if an input is clicked,
+ *     if an input witout value is clicked, copy the check in all other inputs having the same name (click "all")
+ * return : array of values of all checked <input name="selectorName" type="checkbox" value="xxx" />
+ */
+//BEST open/close features check button
+//BEST WRI bug uncheck massifs, go to a page & come back
+function permanentCheckboxList(selectorName, evt) {
+	const inputEls = document.getElementsByName(selectorName),
+		list = [];
+
+	for (let e = 0; e < inputEls.length; e++) { //HACK el.forEach is not supported by IE/Edge
+		if (evt) {
+			// Select/deselect all inputs when clicking an <input> without value
+			if (evt.target.value == 'on') // "all" input has a default value = "on"
+				inputEls[e].checked = evt.target.checked; // Check all if "all" is clicked
+			else if (inputEls[e].value == 'on') // "all" <input>
+				inputEls[e].checked = false; // Reset if another check is clicked
+		}
+
+		// Get the values of all checked inputs
+		if (inputEls[e].checked) // List checked elements
+			list.push(inputEls[e].value);
+	}
+
+	// Mem the data in the cookie
+	document.cookie = 'map-' + selectorName + '=' +
+		(list.join(',') || 'none') +
+		'; path=/; SameSite=Strict;';
+
+	return list;
+}
 
 /**
- * BBOX strategy when the url return a limited number of features depending on the extent
+ * Manages checkboxes inputs having the same name
+ * selectorName {string}
+ * callback {function} action when the button is clicked
+ * options.init {string} default cookie value
+ * options.noMemSelection {bool} do(default)/don't(if true) mem state in a cookie
+ */
+function controlPermanentCheckbox(selectorName, callback, options) {
+	options = options || {};
+
+	// Search values in cookies
+	const inputEls = document.getElementsByName(selectorName),
+		cooks = [
+			location.search, // Priority to the url args
+			location.hash, // Then the hash
+			document.cookie, // Then the cookies
+			'map-' + selectorName + '=' + (options.init || ''), // Then the default
+		];
+	let found = false;
+	for (let c in cooks) {
+		const match = cooks[c].match('map-' + selectorName + '=([^#&;]*)');
+		if (!found && match && !options.noMemSelection)
+			// Set the <input> checks accordingly with the cookie
+			for (let e = 0; e < inputEls.length; e++) //HACK el.forEach is not supported by IE/Edge
+				if (match[1].split(',').indexOf(inputEls[e].value) !== -1)
+					found = inputEls[e].checked = true;
+	}
+
+	// Attach the action
+	function onClick(evt) {
+		callback(evt, permanentCheckboxList(selectorName, evt));
+	}
+	for (let e = 0; e < inputEls.length; e++)
+		inputEls[e].addEventListener('click', onClick);
+
+	// Call callback once at the init
+	callback(null, permanentCheckboxList(selectorName));
+}
+
+/**
+ * Manages a feature hovering common to all features & layers
+ * Requires escapedStyle
+ */
+function hoverManager(map) {
+	if (map.hasHoverManager_) // Only one per map
+		return;
+	map.hasHoverManager_ = true; //BEST make it reentrant (for several maps)
+
+	const labelEl = document.createElement('div'),
+		popup = new ol.Overlay({
+			element: labelEl,
+		}),
+		viewStyle = map.getViewport().style;
+	map.addOverlay(popup);
+
+	let hoveredFeature = null;
+	map.on('pointermove', pointerMove);
+
+	// Hide popup when the cursor is out of the map
+	window.addEventListener('mousemove', function(evt) {
+		const divRect = map.getTargetElement().getBoundingClientRect();
+		if (evt.clientX < divRect.left || evt.clientX > divRect.right ||
+			evt.clientY < divRect.top || evt.clientY > divRect.bottom)
+			pointerMove();
+	});
+
+	// Go to feature.property.link when click on the feature (icon or area)
+	map.on('click', function(evt) {
+		if (hoveredFeature) {
+			const link = hoveredFeature.getProperties().link;
+			if (link) {
+				if (evt.pointerEvent.ctrlKey) {
+					const win = window.open(link, '_blank');
+					if (evt.pointerEvent.shiftKey)
+						win.focus();
+				} else
+					window.location = link;
+			}
+		}
+	});
+
+	function pointerMove(evt) {
+		let closestFeature = null,
+			distanceMin = 2000;
+
+		// Search hovered features
+		if (evt) // Except when out of the map
+			map.forEachFeatureAtPixel(
+				evt.pixel,
+				function(feature, layer) {
+					if (layer) {
+						let geometry = feature.getGeometry(),
+							featurePixel = map.getPixelFromCoordinate(
+								geometry.getExtent()
+							),
+							distance = Math.hypot( // Distance of a point
+								featurePixel[0] - evt.pixel[0] + 1 / feature.ol_uid, // Randomize to avoid same location features
+								featurePixel[1] - evt.pixel[1]
+							);
+
+						// Higest priority for draggable markers
+						if (feature.getProperties().draggable)
+							distance = 0;
+
+						if (geometry.flatCoordinates.length > 2) { // Line or polygon
+							distance = 1000; // Lower priority
+							featurePixel = evt.pixel; // Label follows the cursor
+						}
+						if (distanceMin > distance) {
+							distanceMin = distance;
+							closestFeature = feature;
+							closestFeature.pixel_ = featurePixel;
+							closestFeature.layer_ = layer;
+						}
+					}
+				}
+			);
+
+		if (closestFeature != hoveredFeature) {
+			// Recover the basic style for the previous hoveredFeature feature
+			if (hoveredFeature && hoveredFeature.layer_.options)
+				hoveredFeature.setStyle(
+					escapedStyle(hoveredFeature.layer_.options.styleOptions)
+				);
+			hoveredFeature = closestFeature; // Mem for the next cursor move
+
+			// Default cursor & label
+			viewStyle.cursor = 'default';
+			labelEl.className = 'myol-popup-hidden';
+
+			if (closestFeature) {
+				const properties = closestFeature.getProperties(),
+					layerOptions = closestFeature.layer_.options;
+
+				// Change the cursor
+				if (properties.link)
+					viewStyle.cursor = 'pointer';
+				if (properties.draggable)
+					viewStyle.cursor = 'move';
+
+				// Set the hovered style
+				if (layerOptions) {
+					closestFeature.setStyle(escapedStyle(
+						layerOptions.styleOptions,
+						layerOptions.hoverStyleOptions,
+						layerOptions.editStyleOptions
+					));
+
+					// Set the text
+					if (typeof layerOptions.label == 'function')
+						labelEl.innerHTML = layerOptions.label(properties, closestFeature, layerOptions);
+					else if (layerOptions.label)
+						labelEl.innerHTML = layerOptions.label;
+					else
+						labelEl.innerHTML = null;
+					if (labelEl.innerHTML) // To avoid tinny popup when nothing to display
+						labelEl.className = 'myol-popup';
+				}
+			}
+		}
+		// Position & reposition the label
+		if (closestFeature) {
+			//HACK set the label position in the middle to measure the label extent
+			popup.setPosition(map.getView().getCenter());
+
+			const pixel = closestFeature.pixel_;
+			// Shift of the label to stay into the map regarding the pointer position
+			if (pixel[1] < labelEl.clientHeight + 12) { // On the top of the map (not enough space for it)
+				pixel[0] += pixel[0] < map.getSize()[0] / 2 ? 10 : -labelEl.clientWidth - 10;
+				pixel[1] = 2;
+			} else {
+				pixel[0] -= labelEl.clientWidth / 2;
+				pixel[0] = Math.max(pixel[0], 0); // Left edge
+				pixel[0] = Math.min(pixel[0], map.getSize()[0] - labelEl.clientWidth - 1); // Right edge
+				pixel[1] -= labelEl.clientHeight + 8;
+			}
+			popup.setPosition(map.getCoordinateFromPixel(pixel));
+		}
+	}
+}
+
+
+/**
+ * BBOX strategy when the url returns a limited number of features depending on the extent
  */
 ol.loadingstrategy.bboxLimit = function(extent, resolution) {
 	if (this.bboxLimitResolution > resolution) // When zoom in
@@ -732,77 +585,140 @@ ol.loadingstrategy.bboxLimit = function(extent, resolution) {
 
 /**
  * GeoJson POI layer
- * Requires controlPermanentCheckbox, popupLabel, JSONparse, HACK map_
- * permanentCheckboxList, loadingStrategyBboxLimit & escapedStyle
+ * Requires JSONparse, myol:onadd, escapedStyle, hoverManager,
+ * permanentCheckboxList, controlPermanentCheckbox, ol.loadingstrategy.bboxLimit
  */
 function layerVectorURL(options) {
-	options = Object.assign({ //TODO DELETE
-		TOTO: function(arg) {
-			return arg;
-		},
-	}, options);
 	options = Object.assign({
-		serverUrl: '', // Url prefix to be defined separately from the rest (E.G. server domain and/or directory)
-		baseUrl: null, // Url of the service (mandatory)
-		baseUrlFunction: function(bbox, list) {
-			return options.serverUrl + options.baseUrl + // baseUrl is mandatory, no default
+		/** All ol.source.Vector options */
+		/** All ol.layer.Vector options */
+		// baseUrl: url of the service (mandatory)
+		// strategy: ol.loadingstrategy... object
+		urlSuffix: '', // url suffix to be defined separately from the rest (E.G. server domain and/or directory)
+		// noMemSelection: don't memorize the selection in cookies
+		selectorName: '', // Id of a <select> to tune url optional parameters
+		baseUrlFunction: function(bbox, list) { // Function returning the layer's url
+			return options.baseUrl + options.urlSuffix +
 				list.join(',') + '&bbox=' + bbox.join(','); // Default most common url format
 		},
-		selectorName: '', // Id of a <select> to tune url optional parameters
+		url: function(extent, resolution, projection) {
+			const bbox = ol.proj.transformExtent(
+					extent,
+					projection.getCode(),
+					options.projection
+				),
+				// Retreive checked parameters
+				list = permanentCheckboxList(options.selectorName).
+			filter(function(evt) {
+				return evt !== 'on'; // Except the "all" input (default value = "on")
+			});
+			// Round the coordinates
+			for (let b in bbox)
+				bbox[b] = (Math.ceil(bbox[b] * 10000) + (b < 2 ? 0 : 1)) / 10000;
+			return options.baseUrlFunction(bbox, list, resolution);
+		},
 		projection: 'EPSG:4326', // Projection of received data
-	}, options);
-	options = Object.assign({
 		format: new ol.format.GeoJSON({ // Format of received data
 			dataProjection: options.projection,
 		}),
-		// Modification of the Json object after reception & before geoJson analysis
-		receiveJson: function(object) {
-			return object;
-		},
-		// Modification of the properties of the features during the geoJson analysis
-		receiveProperty: function( /*property*/ ) {
-			return {}; /*new properties*/ 
-		},
-		styleOptions: null, // ol.style.Style of function of the displayed features
-		// Label to dispach above the feature when hovering
-		// - String
-		// - Array of lines to be separated by <br/>
-		// - Structure {'join': {array to be separated by 'join'},...}
-		label: function(properties) {
+		receiveProperties: function() {}, // (properties, feature, layer) Add properties based on existing one
+		styleOptions: function(properties) { // Function returning the layer's feature style
 			return {
-				link: properties, // By default : properties.name / click to properties.link
+				image: new ol.style.Icon({
+					src: '//sym16.dc9.fr/' + properties.sym + '.png',
+				}),
 			};
 		},
-		// All ol.source.Vector options
-		// All ol.layer.Vector options
+		label: function(properties) { // Label to dispach above the feature when hovering
+			const lines = [],
+				desc = [],
+				type = (properties.type || '')
+				.replace(/(:|_)/g, ' ') // Remove overpass prefix
+				.replace(/[a-z]/, function(c) { // Fisrs char uppercase
+					return c.toUpperCase();
+				}),
+				src = (properties.link || '').match(/\/([^\/]+)/i);
+
+			if (properties.name) {
+				if (properties.link)
+					lines.push('<a href="' + properties.link + '">' + properties.name + '</a>');
+				else
+					lines.push(properties.name);
+				if (type)
+					lines.push(type);
+			} else {
+				if (properties.link)
+					lines.push('<a href="' + properties.link + '">' + (type || 'Fiche') + '</a>');
+				else if (type)
+					lines.push(type);
+			}
+			if (properties.ele)
+				desc.push(properties.ele + 'm');
+			if (properties.bed)
+				desc.push(properties.bed + '<span>\u255E\u2550\u2555</span>');
+			if (desc.length)
+				lines.push(desc.join(', '));
+			if (properties.phone)
+				lines.push('<a href="tel:' + properties.phone.replace(/ /g, '') + '">' + properties.phone + '</a>');
+			if (typeof properties.copy != 'string' && src)
+				properties.copy = src[1];
+			if (properties.copy)
+				lines.push('<p>&copy; ' + properties.copy.replace('www.', '') + '</p>');
+
+			return lines.join('<br/>');
+		},
 	}, options);
 
-	//HACK overwrite ol.format.GeoJSON.readFeatures
-	if (options.format.readFeaturesFromObject) // If format = GeoJSON
-		options.format.readFeatures = function(json, opts) {
-			if (options.strategy == ol.loadingstrategy.bboxLimit) // If we can have more features when zomming in
-				source.clear(); // Clean all features when receiving a request
-			return options.format.readFeaturesFromObject(
-				options.receiveJson(
-					JSONparse(json) // Log Json errors
-				),
-				options.format.getReadOptions(json, opts)
-			);
-		};
+	const statusEl = document.getElementById(options.selectorName + '-status') || {},
+		xhr = new XMLHttpRequest(), // Only one object created
+		source = new ol.source.Vector(Object.assign({
+			loader: function(extent, resolution, projection) {
+				const url = typeof options.url === 'function' ?
+					options.url(extent, resolution, projection) :
+					options.url;
+				xhr.abort(); // Abort previous requests if any
+				xhr.open('GET', url, true);
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState < 4)
+						statusEl.innerHTML = 'chargement';
+				};
+				xhr.onload = function() {
+					if (xhr.status != 200)
+						statusEl.innerHTML = 'erreur: ' + xhr.status + ' ' + xhr.statusText;
+					else {
+						if (options.strategy == ol.loadingstrategy.bboxLimit) // If we can have more features when zomming in
+							source.clear(); // Clean all features when receiving a request
 
-	const source = new ol.source.Vector(Object.assign({
-			url: function(extent, resolution, projection) {
-				const bbox = ol.proj.transformExtent(
-						extent,
-						projection.getCode(),
-						options.projection
-					),
-					// Retreive checked parameters
-					list = permanentCheckboxList(options.selectorName).
-				filter(function(evt) { // selectorName optional
-					return evt !== 'on'; // Remove the "all" input (default value = "on")
-				});
-				return options.baseUrlFunction(bbox, list, resolution);
+						const error = xhr.responseText.match(/error: ([^\.]+)/);
+						if (!xhr.responseText)
+							statusEl.innerHTML = 'erreur: réponse vide';
+						else if (error) // Error log ini the text response
+							statusEl.innerHTML = 'erreur: ' + error[1];
+						else {
+							const features = options.format.readFeatures(
+								xhr.responseText, {
+									extent: extent,
+									featureProjection: projection
+								});
+							if (!features.length)
+								statusEl.innerHTML = 'zone vide';
+							else {
+								source.addFeatures(features);
+								statusEl.innerHTML = features.length + ' objet' + (features.length > 1 ? 's' : '') + ' chargé' + (features.length > 1 ? 's' : '');
+							}
+						}
+					}
+				};
+				xhr.ontimeout = function() {
+					statusEl.innerHTML = 'temps dépassé';
+				};
+				xhr.onerror = function() {
+					statusEl.innerHTML = 'erreur réseau';
+				};
+				if (!options.maxResolution || (resolution < options.maxResolution)) {
+					xhr.send();
+					statusEl.innerHTML = 'demandé';
+				}
 			},
 		}, options)),
 
@@ -812,56 +728,89 @@ function layerVectorURL(options) {
 			renderBuffer: 16, // buffered area around curent view (px)
 			zIndex: 1, // Above the baselayer even if included to the map before
 		}, options));
-	layer.options = options;
+	layer.options = options; // Mem options for further use
+
+	const formerFeadFeatureFromObject = options.format.readFeatureFromObject;
+	if (formerFeadFeatureFromObject && // If format = GeoJSON
+		options.receiveProperties) { // If receiveProperties options
+		options.format.readFeatureFromObject = function(object, opt_options) {
+			options.receiveProperties(object.properties, object, layer);
+			return formerFeadFeatureFromObject.call(this, object, opt_options);
+		};
+	}
 
 	// Checkboxes to tune layer parameters
 	if (options.selectorName)
 		controlPermanentCheckbox(
 			options.selectorName,
 			function(evt, list) {
-				layer.setVisible(list.length);
+				if (!list.length)
+					xhr.abort();
+				statusEl.innerHTML = '';
+				layer.setVisible(list.length > 0);
+				displayZoomStatus();
 				if (list.length && source.loadedExtentsRtree_) {
 					source.loadedExtentsRtree_.clear(); // Force the loading of all areas
 					source.clear(); // Redraw the layer
 				}
-			}
+			},
+			options
 		);
 
-	layer.once('prerender', function(evt) {
-		popupLabel(evt.target.map_); // Attach tracking for labeling & cursor changes
+	layer.once('myol:onadd', function(evt) {
+		// Attach tracking for labeling & cursor changes
+		hoverManager(evt.map, layer);
+
+		// Zoom out of range report
+		evt.map.getView().on('change:resolution', displayZoomStatus);
+		displayZoomStatus();
 	});
 
-	// Change properties at reception
-	//TODO BUG too long with lines & polygons
-	source.on('addfeature', function(evt) {
-		evt.feature.setProperties(
-			options.receiveProperty(
-				evt.feature.getProperties()));
-	});
-
+	// Change class indicator when zoom is OK
+	function displayZoomStatus() {
+		if (options.maxResolution &&
+			layer.map_ &&
+			layer.map_.getView().getResolution() > options.maxResolution) {
+			xhr.abort(); // Abort previous requests if any
+			if (layer.getVisible())
+				statusEl.innerHTML = 'zone trop large: zoomez';
+		}
+	}
 	return layer;
 }
 
-// Convert features type into gpx <sym>
+/**
+ * Convert properties type into gpx <sym>
+ * Manages common types for many layer services
+ */
+//BEST define <sym> in an input check field
 function getSym(type) {
 	const lex =
 		// https://forums.geocaching.com/GC/index.php?/topic/277519-garmin-roadtrip-waypoint-symbols/
-		'<Residence> refuge hotel gite chambre_hote' +
-		'<Lodge> cabane cabane_cle buron alpage shelter' +
-		' cabane ouverte mais ocupee par le berger l ete' +
+		// <sym> propertie propertie
+		'<City Hall> hotel' +
+		'<Residence> refuge gite chambre_hote' +
+		'<Lodge> cabane cabane_cle buron alpage shelter cabane ouverte mais ocupee par le berger l ete' +
 		'<Fishing Hot Spot Facility> abri hut' +
-		'<Campground> camping camp_site bivouac orri toue abri en pierre' +
+		'<Campground> camping camp_site bivouac' +
+		'<Tunnel> orri toue abri en pierre grotte cave' +
 		'<Crossing> ferme ruine batiment-inutilisable cabane fermee' +
+
+		'<Summit> sommet summit climbing_indoor climbing_outdoor bisse' +
+		'<Reef> glacier canyon' +
+		'<Waypoint> locality col pass' +
+
 		'<Drinking Water> point_eau waterpoint waterfall' +
 		'<Water Source> lac lake' +
-		'<Summit> sommet summit climbing_indoor climbing_outdoor bisse' +
-		'<Flag, Red> col pass' +
+		'<Ground Transportation> bus car' +
 		'<Parking Area> access' +
-		'<City Hall> locality' +
-		'<Reef> grotte cave glacier' +
-		'<Shopping Center> local_product ravitaillement buffet restaurant' +
-		'<Telephone> telephone wifi reseau',
-		//' canyon slackline_spot paragliding_takeoff paragliding_landing virtual webcam
+		'<Restaurant> buffet restaurant' +
+		'<Shopping Center> local_product ravitaillement' +
+
+		'<Restroom> wc' +
+		'<Oil Field> wifi reseau' +
+		'<Telephone> telephone',
+		// slackline_spot paragliding_takeoff paragliding_landing virtual webcam
 
 		match = lex.match(new RegExp('<([^>]*)>[^>]* ' + type));
 	return match ? match[1] : 'Puzzle Cache';
@@ -869,139 +818,69 @@ function getSym(type) {
 
 /**
  * www.refuges.info POI layer
- * Requires layerVectorURL
+ * Requires ol.loadingstrategy.bboxLimit, layerVectorURL
  */
-function layerRefugesInfo(o) {
-	const options = Object.assign({
-		serverUrl: '//www.refuges.info/',
-		//		baseUrl: 'api/bbox?format=gpx&type_points=',//TODO DELETE
-		baseUrl: 'api/bbox?type_points=',
+function layerRefugesInfo(options) {
+	options = Object.assign({
+		baseUrl: '//www.refuges.info/',
+		urlSuffix: 'api/bbox?type_points=',
 		strategy: ol.loadingstrategy.bboxLimit,
-		receiveProperty: function(property) {
-			return {
-				name: property.nom,
-				ele: property.coord.alt,
-				link: property.lien,
-			};
+		receiveProperties: function(properties) {
+			properties.name = properties.nom;
+			properties.link = properties.lien;
+			properties.ele = properties.coord.alt;
+			properties.icone = properties.type.icone;
+			properties.type = properties.type.valeur;
+			properties.bed = properties.places.valeur;
+			// Need to have clean KML export
+			properties.nom =
+				properties.lien =
+				properties.date = '';
 		},
 		styleOptions: function(properties) {
 			return {
 				image: new ol.style.Icon({
-					src: options.serverUrl + 'images/icones/' + properties.type.icone + '.png'
+					src: options.baseUrl + 'images/icones/' + properties.icone + '.png'
 				})
 			};
 		},
-		label: function(properties) {
-			return {
-				link: properties,
-				', ': {
-					m: properties.coord.alt,
-					' \u255E\u2550\u2555': properties.places.valeur,
-				},
-				'': '&copy;refuges.info',
-			};
-		},
-	}, o);
-	return layerVectorURL(options); //TODO inline
+	}, options);
+	return layerVectorURL(options); //BEST inline
 }
 
 /**
  * pyrenees-refuges.com POI layer
- * Requires layerVectorURL
+ * Requires layerVectorURL, getSym
  */
 function layerPyreneesRefuges(options) {
 	return layerVectorURL(Object.assign({
 		url: 'https://www.pyrenees-refuges.com/api.php?type_fichier=GEOJSON',
-		receiveProperty: function(property) {
-			return {
-				ele: parseInt(property.altitude),
-				link: property.url,
-				sym: getSym(property.type_hebergement),
-			};
-		},
-		styleOptions: function(properties) {
-			return {
-				image: new ol.style.Icon({
-					src: '//dc9.fr/chemineur/ext/Dominique92/GeoBB/types_points/' + properties.sym + '.png',
-				}),
-			};
-		},
-		label: function(properties) {
-			return {
-				link: properties,
-				', ': {
-					m: properties.ele,
-					' \u255E\u2550\u2555': properties.cap_ete,
-				},
-				type: properties.type_hebergement,
-				copy: ' &copy;pyrenees-refuges.com',
-			};
-		},
-	}, options));
-}
-
-/**
- * www.camptocamp.org POI layer
- * Requires layerVectorURL, getSym
- */
-function layerC2C(options) {
-	return layerVectorURL(Object.assign({
-		baseUrl: 'https://api.camptocamp.org/waypoints?limit=200', // https mandatory for Access-Control-Allow-Origin
-		strategy: ol.loadingstrategy.bboxLimit,
-		projection: 'EPSG:3857',
-
-		receiveJson: function(objects) {
-			const features = [];
-			for (let o in objects.documents) {
-				const object = objects.documents[o];
-				features.push({
-					id: object.document_id,
-					type: 'Feature',
-					geometry: JSONparse(object.geometry.geom),
-					properties: { //TODO completely to be developped
-						ele: object.elevation,
-						name: object.locales[0].title,
-						type: object.waypoint_type,
-						sym: getSym(object.waypoint_type),
-						link: 'https://www.camptocamp.org/waypoints/' + object.document_id,
-					},
-				});
-			}
-			return {
-				type: 'FeatureCollection',
-				features: features,
-			};
-		},
-		styleOptions: function(properties) {
-			return {
-				image: new ol.style.Icon({
-					src: '//dc9.fr/chemineur/ext/Dominique92/GeoBB/types_points/' + properties.sym + '.png',
-				})
-			};
-		},
-		label: function(properties) {
-			return {
-				link: properties,
-				'': properties.type + ' &copy;c2c',
-			};
+		receiveProperties: function(properties) {
+			properties.sym = getSym(properties.type_hebergement || 'cabane');
+			properties.link = properties.url;
+			properties.ele = parseInt(properties.altitude);
+			properties.type = properties.type_hebergement;
+			properties.bed = properties.cap_ete || properties.cap_hiver;
 		},
 	}, options));
 }
 
 /**
  * chemineur.fr POI layer
- * Requires layerVectorURL
+ * Requires ol.loadingstrategy.bboxLimit, layerVectorURL, getSym
  */
 function layerChemineur(options) {
 	return layerVectorURL(Object.assign({
-		baseUrl: '//dc9.fr/chemineur/ext/Dominique92/GeoBB/gis.php?site=this&poi=3,8,16,20,23,28,30,40,44,64,58,62,65',
+		baseUrl: '//dc9.fr/chemineur/ext/Dominique92/GeoBB/gis.php?site=this&poi=',
+		urlSuffix: '3,8,16,20,23,30,40,44,58,62,64',
 		strategy: ol.loadingstrategy.bboxLimit,
-		receiveProperty: function(property) {
-			return {
-				name: property.nom,
-				link: property.url,
-				sym: getSym(property.icone),
-			};
+		receiveProperties: function(properties) {
+			const icone = properties.icone.match(new RegExp('([a-z\-_]+)\.png')); // Type calculation
+			properties.name = properties.nom;
+			properties.link = properties.url;
+			properties.type = icone ? icone[1] : null;
+			properties.sym = getSym(properties.type);
+			properties.copy = 'chemineur.fr';
 		},
 		styleOptions: function(properties) {
 			return {
@@ -1016,26 +895,77 @@ function layerChemineur(options) {
 				}),
 			};
 		},
-		label: function(properties) {
+		hoverStyleOptions: {
+			stroke: new ol.style.Stroke({ // For traces
+				color: 'red',
+				width: 3,
+			})
+		},
+	}, options));
+}
+
+/**
+ * alpages.info POI layer
+ * Requires ol.loadingstrategy.bboxLimit, layerVectorURL, getSym, layerChemineur
+ */
+function layerAlpages(options) {
+	return layerChemineur(Object.assign({
+		baseUrl: '//alpages.info/ext/Dominique92/GeoBB/gis.php?forums=4,5,6',
+		receiveProperties: function(properties) {
+			const icone = properties.icon.match(new RegExp('([a-z\-_]+)\.png'));
+			properties.sym = getSym(properties.icone);
+			properties.type = icone ? icone[1] : null;
+			properties.link = 'http://alpages.info/viewtopic.php?t=' + properties.id;
+		},
+		styleOptions: function(properties) {
 			return {
-				link: properties,
-				'': '&copy;chemineur.fr',
+				image: new ol.style.Icon({
+					src: properties.icon,
+				}),
 			};
 		},
-		//TODO BUG don't work with object
-		//TODO dont display traces the first time
-		/*hoverStyleOptions: new ol.style.Stroke({
-			color: 'red',
-			width: 3,
-		}),*/
-		hoverStyleOptions: function() {
-			return {
-				stroke: new ol.style.Stroke({
-					color: 'red',
-					width: 3,
-				})
-			};
-		},
+	}, options));
+}
+
+/**
+ * www.camptocamp.org POI layer
+ * Requires JSONparse, ol.loadingstrategy.bboxLimit, layerVectorURL, getSym
+ */
+function layerC2C(options) {
+	const format = new ol.format.GeoJSON({ // Format of received data
+		dataProjection: 'EPSG:3857',
+	});
+	format.readFeatures = function(json, opts) {
+		const features = [],
+			objects = JSONparse(json);
+		for (let o in objects.documents) {
+			const object = objects.documents[o];
+			features.push({
+				id: object.document_id,
+				type: 'Feature',
+				geometry: JSONparse(object.geometry.geom),
+				properties: {
+					ele: object.elevation,
+					name: object.locales[0].title,
+					type: object.waypoint_type,
+					sym: getSym(object.waypoint_type),
+					link: 'https://www.camptocamp.org/waypoints/' + object.document_id,
+				},
+			});
+		}
+		return format.readFeaturesFromObject({
+				type: 'FeatureCollection',
+				features: features,
+			},
+			format.getReadOptions(json, opts)
+		);
+	};
+
+	return layerVectorURL(Object.assign({
+		baseUrl: 'https://api.camptocamp.org/waypoints?limit=100', // https mandatory for Access-Control-Allow-Origin
+		strategy: ol.loadingstrategy.bboxLimit,
+		projection: 'EPSG:3857',
+		format: format,
 	}, options));
 }
 
@@ -1045,179 +975,104 @@ function layerChemineur(options) {
  * Doc: http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide
  * Requires layerVectorURL
  */
-//TODO WRI NAV OVERPASS Hôtels et locations, camping Campings, ravitaillement Alimentation, parking Parkings, arrêt de bus Bus
-//BEST BUG IE OVERPASS don't work on IE
-//BEST OVERPASS display errors, including 429 (Too Many Requests) - ol/featureloader.js / needs FIXME handle error
-layerOverpass = function(options) {
+//BEST BUG IE don't display icons
+function layerOverpass(options) {
 	options = Object.assign({
 		baseUrl: '//overpass-api.de/api/interpreter',
 		maxResolution: 30, // Only call overpass if the map's resolution is lower
-		selectorId: 'overpass', // Element containing all checkboxes
-		selectorName: 'overpass', // Checkboxes
-		labelClass: 'label-overpass',
-		iconUrlPath: '//dc9.fr/chemineur/ext/Dominique92/GeoBB/types_points/',
 	}, options);
-	const checkEls = document.getElementsByName(options.selectorName);
 
-	// Convert areas into points to display it as an icon
-	function readFeaturesOverpass(response) {
-		for (let node = response.documentElement.firstChild; node; node = node.nextSibling)
+	const inputEls = document.getElementsByName(options.selectorName),
+		format = new ol.format.OSMXML(),
+		layer = layerVectorURL(Object.assign({
+			strategy: ol.loadingstrategy.bbox,
+			format: format,
+			baseUrlFunction: urlFunction,
+		}, options));
+
+	function urlFunction(bbox, list) {
+		const bb = '(' + bbox[1] + ',' + bbox[0] + ',' + bbox[3] + ',' + bbox[2] + ');',
+			args = [];
+
+		for (let l = 0; l < list.length; l++) {
+			const lists = list[l].split('+');
+			for (let ls = 0; ls < lists.length; ls++)
+				args.push(
+					'node' + lists[ls] + bb + // Ask for nodes in the bbox
+					'way' + lists[ls] + bb // Also ask for areas
+				);
+		}
+		return options.baseUrl +
+			'?data=[timeout:5];(' + // Not too much !
+			args.join('') +
+			');out center;'; // add center of areas
+	}
+
+	// Extract features from data when received
+	format.readFeatures = function(response, opt) {
+		// Transform an area to a node (picto) at the center of this area
+		const doc = new DOMParser().parseFromString(response, 'application/xml');
+		for (let node = doc.documentElement.firstChild; node; node = node.nextSibling)
 			if (node.nodeName == 'way') {
 				// Create a new 'node' element centered on the surface
-				const newNode = response.createElement('node');
-				response.documentElement.appendChild(newNode);
+				const newNode = doc.createElement('node');
 				newNode.id = node.id;
+				doc.documentElement.appendChild(newNode);
 
-				// Add a tag to mem what node type it was
-				const newTag = response.createElement('tag');
-				newTag.setAttribute('k', 'nodetype');
-				newTag.setAttribute('v', 'way');
-				newNode.appendChild(newTag);
-
+				// Browse <way> attributes to build a new node
 				for (let subTagNode = node.firstChild; subTagNode; subTagNode = subTagNode.nextSibling)
 					switch (subTagNode.nodeName) {
 						case 'center':
+							// Set node attributes
 							newNode.setAttribute('lon', subTagNode.getAttribute('lon'));
 							newNode.setAttribute('lat', subTagNode.getAttribute('lat'));
 							newNode.setAttribute('nodeName', subTagNode.nodeName);
 							break;
-						case 'tag':
+
+						case 'tag': {
+							// Get existing properties
 							newNode.appendChild(subTagNode.cloneNode());
+
+							// Add a tag to mem what node type it was (for link build)
+							const newTag = doc.createElement('tag');
+							newTag.setAttribute('k', 'nodetype');
+							newTag.setAttribute('v', node.nodeName);
+							newNode.appendChild(newTag);
+						}
 					}
 			}
-		return response;
-	}
 
-	function overpassType(properties) {
-		for (let e = 0; e < checkEls.length; e++)
-			if (checkEls[e].checked) {
-				const tags = checkEls[e].value.split('+');
-				for (let t = 0; t < tags.length; t++) {
-					const conditions = tags[t].split('"');
-					if (properties[conditions[1]] &&
-						properties[conditions[1]].match(conditions[3]))
-						return checkEls[e].id;
-				}
-			}
-		return 'inconnu';
-	}
+		// Call former method into OL
+		const features = ol.format.OSMXML.prototype.readFeatures.call(this, doc, opt);
 
-	return layerVectorURL(Object.assign({
-		strategy: ol.loadingstrategy.bbox,
-		format: new ol.format.OSMXML(),
-		readFeatures: readFeaturesOverpass,
-		styleOptions: function(properties) {
-			return {
-				image: new ol.style.Icon({
-					src: options.iconUrlPath + overpassType(properties) + '.png'
-				})
-			};
-		},
-		baseUrlFunction: function(bbox, list) {
-			const bb = '(' + bbox[1] + ',' + bbox[0] + ',' + bbox[3] + ',' + bbox[2] + ');',
-				args = [];
-
-			for (let l = 0; l < list.length; l++) {
-				const lists = list[l].split('+');
-				for (let ls = 0; ls < lists.length; ls++)
-					args.push(
-						'node' + lists[ls] + bb + // Ask for nodes in the bbox
-						'way' + lists[ls] + bb // Also ask for areas
-					);
-			}
-
-			return options.baseUrl +
-				'?data=[timeout:5];(' + // Not too much !
-				args.join('') +
-				');out center;'; // add center of areas
-		},
-		label: function(p, f) { // properties, feature
-			p.name = p.name || p.alt_name || p.short_name || '';
-			const language = {
-					alpine_hut: 'Refuge gard&egrave;',
-					hotel: 'h&ocirc;tel',
-					guest_house: 'chambre d‘h&ocirc;te',
-					camp_site: 'camping',
-					convenience: 'alimentation',
-					supermarket: 'supermarch&egrave;',
-					drinking_water: 'point d&apos;eau',
-					watering_place: 'abreuvoir',
-					fountain: 'fontaine',
-					telephone: 't&egrave;l&egrave;phone',
-					shelter: ''
-				},
-				phone = p.phone || p['contact:phone'],
-				address = [
-					p.address,
-					p['addr:housenumber'], p.housenumber,
-					p['addr:street'], p.street,
-					p['addr:postcode'], p.postcode,
-					p['addr:city'], p.city
-				],
-				popup = [
-					'<b>' + p.name.charAt(0).toUpperCase() + p.name.slice(1) + '</b>', [
-						'<a target="_blank"',
-						'href="http://www.openstreetmap.org/' + (p.nodetype ? p.nodetype : 'node') + '/' + f.getId() + '"',
-						'title="Voir la fiche d‘origine sur openstreetmap">',
-						p.name ? (
-							p.name.toLowerCase().match(language[p.tourism] || 'azertyuiop') ? '' : p.tourism
-						) : (
-							language[p.tourism] || p.tourism
-						),
-						'*'.repeat(p.stars),
-						p.shelter_type == 'basic_hut' ? 'Abri' : '',
-						p.building == 'cabin' ? 'Cabane non gard&egrave;e' : '',
-						p.highway == 'bus_stop' ? 'Arr&ecirc;t de bus' : '',
-						p.waterway == 'water_point' ? 'Point d&apos;eau' : '',
-						p.natural == 'spring' ? 'Source' : '',
-						p.man_made == 'water_well' ? 'Puits' : '',
-						p.shop ? 'alimentation' : '',
-						typeof language[p.amenity] == 'string' ? language[p.amenity] : p.amenity,
-						'</a>'
-					].join(' '), [
-						p.rooms ? p.rooms + ' chambres' : '',
-						p.beds ? p.beds + ' lits' : '',
-						p.place ? p.place + ' places' : '',
-						p.capacity ? p.capacity + ' places' : '',
-						p.ele ? parseInt(p.ele, 10) + 'm' : ''
-					].join(' '),
-					phone ? '&phone;<a title="Appeler" href="tel:' + phone.replace(/[^0-9+]+/ig, '') + '">' + phone + '</a>' : '',
-					p.email ? '&#9993;<a title="Envoyer un mail" href="mailto:' + p.email + '">' + p.email + '</a>' : '',
-					p['addr:street'] ? address.join(' ') : '',
-					p.website ? '&#8943;<a title="Voir le site web" target="_blank" href="' + p.website + '">' + (p.website.split('/')[2] || p.website) + '</a>' : '',
-					p.opening_hours ? 'ouvert ' + p.opening_hours : '',
-					p.note ? p.note : ''
-				];
-
-			// Other paramaters
-			const done = [ // These that have no added value or already included
-				'geometry,lon,lat,area,amenity,building,highway,shop,shelter_type,access,waterway,natural,man_made',
-				'tourism,stars,rooms,place,capacity,ele,phone,contact,url,nodetype,name,alt_name,email,website',
-				'opening_hours,description,beds,bus,note',
-				'addr,housenumber,street,postcode,city,bus,public_transport,tactile_paving',
-				'ref,source,wheelchair,leisure,landuse,camp_site,bench,network,brand,bulk_purchase,organic',
-				'compressed_air,fuel,vending,vending_machine',
-				'fee,heritage,wikipedia,wikidata,operator,mhs,amenity_1,beverage,takeaway,delivery,cuisine',
-				'historic,motorcycle,drying,restaurant,hgv',
-				'drive_through,parking,park_ride,supervised,surface,created_by,maxstay'
-			].join(',').split(',');
-			let nbInternet = 0;
-			for (let k in p) {
-				const k0 = k.split(':')[0];
-				if (!done.includes(k0))
-					switch (k0) {
-						case 'internet_access':
-							if ((p[k] != 'no') && !(nbInternet++))
-								popup.push('Accès internet');
-							break;
-						default:
-							popup.push(k + ' : ' + p[k]);
+		// Compute missing features
+		for (let f = features.length - 1; f >= 0; f--)
+			if (!features[f].getId()) // Remove unused 'way' features
+				features.splice(f, 1);
+			else {
+				const properties = features[f].getProperties(),
+					newProperties = {
+						sym: 'Puzzle Cache', // Default symbol
+						link: 'http://www.openstreetmap.org/' + (properties.nodetype || 'node') + '/' + features[f].id_,
+						copy: 'openstreetmap.org',
+					};
+				for (let p in properties)
+					if (typeof properties[p] == 'string') { // Avoid geometry
+						for (let c = 0; c < inputEls.length; c++)
+							if (inputEls[c].value &&
+								inputEls[c].value.includes(p) &&
+								inputEls[c].value.includes(properties[p])) {
+								newProperties.sym = inputEls[c].getAttribute('id');
+								newProperties.type = properties[p];
+							}
+						features[f].setProperties(newProperties, false);
 					}
 			}
-			return ('<p>' + popup.join('</p><p>') + '</p>').replace(/<p>\s*<\/p>/ig, '');
-		},
-	}, options));
-};
+		return features;
+	};
+
+	return layer;
+}
 
 
 /**
@@ -1228,25 +1083,19 @@ layerOverpass = function(options) {
  * Abstract definition to be used by other control buttons definitions
  */
 //BEST left aligned buttons when screen vertical
-function controlButton(o) {
-	const options = Object.assign({
-			element: document.createElement('div'),
-			buttonBackgroundColors: ['white', 'white'],
-			className: 'myol-button',
-		}, o),
-		control = new ol.control.Control(options),
+function controlButton(options) {
+	options = Object.assign({
+		element: document.createElement('div'),
+		buttonBackgroundColors: ['white', 'white'], // Also define the button states numbers
+		className: 'myol-button',
+		activate: function() {}, // Call back when the button is clicked. Argument = satus number (0, 1, ...)
+	}, options);
+	const control = new ol.control.Control(options),
 		buttonEl = document.createElement('button');
 
 	control.element.appendChild(buttonEl);
 	control.element.className = 'ol-button ol-unselectable ol-control ' + options.className;
 	control.element.title = options.title; // {string} displayed when the control is hovered.
-	if (options.className) {
-		if (options.rightPosition) { // {float} distance to the top when the button is on the right of the map
-			control.element.style.top = options.rightPosition + 'em';
-			control.element.style.right = '.5em';
-		} else
-			control.element.style.top = '.5em';
-	}
 	if (options.label)
 		buttonEl.innerHTML = options.label;
 
@@ -1255,12 +1104,27 @@ function controlButton(o) {
 		control.toggle();
 	});
 
+	// Add selectors below the button
+	if (options.question) {
+		control.questionEl = document.createElement('div');
+		control.questionEl.innerHTML = options.question;
+		control.questionEl.className = 'ol-control-hidden';
+
+		control.element.appendChild(control.questionEl);
+		control.element.onmouseover = function() {
+			control.questionEl.className = 'ol-control-question';
+		};
+		control.element.onmouseout = function() {
+			control.questionEl.className = 'ol-control-hidden';
+		};
+	}
+
 	// Toggle the button status & aspect
 	control.active = 0;
 	control.toggle = function(newActive, group) {
 		// Toggle by default
 		if (typeof newActive == 'undefined')
-			newActive = (control.active + 1) % options.buttonBackgroundColors.length;
+			newActive = (control.active + 1);
 
 		// Unselect all other controlButtons from the same group
 		if (newActive && options.group)
@@ -1273,9 +1137,9 @@ function controlButton(o) {
 		// Execute the requested change
 		if (control.active != newActive &&
 			(!group || group == options.group)) { // Only for the concerned controls
-			control.active = newActive;
-			buttonEl.style.backgroundColor = options.buttonBackgroundColors[newActive % options.buttonBackgroundColors.length];
-			options.activate(newActive);
+			control.active = newActive % options.buttonBackgroundColors.length;
+			buttonEl.style.backgroundColor = options.buttonBackgroundColors[control.active];
+			options.activate(control.active);
 		}
 	};
 	return control;
@@ -1284,11 +1148,12 @@ function controlButton(o) {
 /**
  * Layer switcher control
  * baseLayers {[ol.layer]} layers to be chosen one to fill the map.
- * Requires controlButton, controlPermanentCheckbox & permanentCheckboxList
+ * Requires controlPermanentCheckbox, permanentCheckboxList, controlButton
  */
 function controlLayersSwitcher(options) {
 	const button = controlButton({
-		className: 'ol-switch-layer',
+		className: 'ol-switch-layer myol-button',
+		label: '\u2026',
 		title: 'Liste des cartes',
 		rightPosition: 0.5,
 	});
@@ -1303,25 +1168,30 @@ function controlLayersSwitcher(options) {
 	// Layer selector
 	const selectorEl = document.createElement('div');
 	selectorEl.style.overflow = 'auto';
-	selectorEl.title = 'Ctrl+click : multicouches';
+	selectorEl.title = 'Ctrl+click: multicouches';
 	button.element.appendChild(selectorEl);
 
-	button.setMap = function(map) { //HACK execute actions on Map init
+	//HACK execute actions on Map init
+	//BEST use option render
+	button.setMap = function(map) {
 		ol.control.Control.prototype.setMap.call(this, map);
 
 		// Base layers selector init
 		for (let name in options.baseLayers)
 			if (options.baseLayers[name]) { // array of layers, mandatory, no default
-				const baseEl = document.createElement('div');
-				baseEl.innerHTML =
+				const choiceEl = document.createElement('div');
+				choiceEl.innerHTML =
 					'<input type="checkbox" name="baselayer" value="' + name + '">' +
 					'<span title="">' + name + '</span>';
-				selectorEl.appendChild(baseEl);
+				selectorEl.appendChild(choiceEl);
 				map.addLayer(options.baseLayers[name]);
 			}
+		const commentEl = document.createElement('p');
+		commentEl.innerHTML = 'Ctrl+click: multicouches';
+		selectorEl.appendChild(commentEl);
 
 		// Make the selector memorized by cookies
-		controlPermanentCheckbox('baselayer', displayLayerSelector);
+		controlPermanentCheckbox('baselayer', displayLayerSelector, options);
 
 		// Hover the button open the selector
 		button.element.firstElementChild.onmouseover = displayLayerSelector;
@@ -1334,9 +1204,12 @@ function controlLayersSwitcher(options) {
 		// Leaving the map close the selector
 		window.addEventListener('mousemove', function(evt) {
 			const divRect = map.getTargetElement().getBoundingClientRect();
-			if (evt.clientX < divRect.left || evt.clientX > divRect.right ||
-				evt.clientY < divRect.top || evt.clientY > divRect.bottom)
-				displayLayerSelector();
+			if (evt.clientX < divRect.left || divRect.right < evt.clientX || // The mouse is outside the map
+				evt.clientY < divRect.top || divRect.bottom < evt.clientY) {
+				button.element.firstElementChild.style.display = '';
+				rangeEl.style.display =
+					selectorEl.style.display = 'none';
+			}
 		});
 	};
 
@@ -1347,10 +1220,10 @@ function controlLayersSwitcher(options) {
 
 		// Leave only one checked except if Ctrl key is on
 		if (evt && evt.type == 'click' && !evt.ctrlKey) {
-			const checkEls = document.getElementsByName('baselayer');
-			for (let e = 0; e < checkEls.length; e++)
-				if (checkEls[e] != evt.target)
-					checkEls[e].checked = false;
+			const inputEls = document.getElementsByName('baselayer');
+			for (let e = 0; e < inputEls.length; e++) //HACK el.forEach is not supported by IE/Edge
+				if (inputEls[e] != evt.target)
+					inputEls[e].checked = false;
 		}
 
 		list = permanentCheckboxList('baselayer');
@@ -1378,24 +1251,32 @@ function controlLayersSwitcher(options) {
 /**
  * Permalink control
  * "map" url hash or cookie = {map=<ZOOM>/<LON>/<LAT>/<LAYER>}
+ * Don't set view when you declare the map
  */
-//BEST save curent layer
-function controlPermalink(o) {
-	const options = Object.assign({
-			hash: '?', // {?, #} the permalink delimiter
-			visible: true, // {true | false} add a controlPermalink button to the map.
-			init: true, // {true | false} use url hash or "controlPermalink" cookie to position the map.
-		}, o),
-		aEl = document.createElement('a'),
+function controlPermalink(options) {
+	options = Object.assign({
+		hash: '?', // {?, #} the permalink delimiter
+		visible: true, // {true | false} add a controlPermalink button to the map.
+		init: true, // {true | false} use url hash or "controlPermalink" cookie to position the map.
+	}, options);
+	const aEl = document.createElement('a'),
 		control = new ol.control.Control({
 			element: document.createElement('div'), //HACK No button
 			render: render,
 		});
 	control.element.appendChild(aEl);
 
-	let params = (location.hash + location.search).match(/map=([-.0-9]+)\/([-.0-9]+)\/([-.0-9]+)/) || // Priority to the hash
-		document.cookie.match(/map=([-.0-9]+)\/([-.0-9]+)\/([-.0-9]+)/) || // Then the cookie
-		(options.initialFit || '6/2/47').match(/([-.0-9]+)\/([-.0-9]+)\/([-.0-9]+)/); // Url arg format : <ZOOM>/<LON>/<LAT>/<LAYER>
+	const zoomMatch = location.href.match(/zoom=([0-9]+)/),
+		latLonMatch = location.href.match(/lat=([-.0-9]+)&lon=([-.0-9]+)/);
+	let params = (
+			location.href + // Priority to ?map=6/2/47 or #map=6/2/47
+			(zoomMatch && latLonMatch ? // Old format ?zoom=6&lat=47&lon=5
+				'map=' + zoomMatch[1] + '/' + latLonMatch[2] + '/' + latLonMatch[1] :
+				'') +
+			document.cookie + // Then the cookie
+			'map=' + options.initialFit + // Optional default
+			'map=6/2/47') // Default
+		.match(/map=([0-9]+)\/([-.0-9]+)\/([-.0-9]+)/); // map=<ZOOM>/<LON>/<LAT>
 
 	if (options.visible) {
 		control.element.className = 'ol-permalink';
@@ -1423,9 +1304,9 @@ function controlPermalink(o) {
 		if (view.getCenter()) {
 			const ll4326 = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
 				newParams = [
-					parseInt(view.getZoom()),
-					Math.round(ll4326[0] * 100000) / 100000,
-					Math.round(ll4326[1] * 100000) / 100000
+					parseInt(view.getZoom()), // Zoom
+					Math.round(ll4326[0] * 100000) / 100000, // Lon
+					Math.round(ll4326[1] * 100000) / 100000, // Lat
 				];
 
 			aEl.href = options.hash + 'map=' + newParams.join('/');
@@ -1436,9 +1317,7 @@ function controlPermalink(o) {
 }
 
 /**
- * Control to displays the length of a line overflown
- * option hoverStyle style the hovered feature
- * Requires controlButton
+ * Control to displays the mouse position
  */
 function controlMousePosition() {
 	return new ol.control.MousePosition({
@@ -1452,7 +1331,6 @@ function controlMousePosition() {
 /**
  * Control to displays the length of a line overflown
  * option hoverStyle style the hovered feature
- * Requires controlButton
  */
 function controlLengthLine() {
 	const control = new ol.control.Control({
@@ -1495,7 +1373,6 @@ function controlLengthLine() {
 /**
  * Control to displays set preload of 4 upper level tiles if we are on full screen mode
  * This prepares the browser to become offline on the same session
- * Requires controlButton
  */
 function controlTilesBuffer(depth, depthFS) {
 	const control = new ol.control.Control({
@@ -1528,9 +1405,13 @@ function controlTilesBuffer(depth, depthFS) {
  * Geocoder
  * Requires https://github.com/jonataswalker/ol-geocoder/tree/master/dist
  */
-//TODO BUG thin button on mobile
-//BEST report issue with with animate on OL v6 & resorb patch
-function controlGeocoder() {
+//BEST report bug that stops animation on OL v6 & resorb patch on Geocoder https://github.com/openlayers/openlayers/issues/10313
+//BEST BUG controm 1px down on FireFox
+function controlGeocoder(options) {
+	options = Object.assign({
+		title: 'Recherche sur la carte',
+	}, options);
+
 	// Vérify if geocoder is available (not supported in IE)
 	const ua = navigator.userAgent;
 	if (typeof Geocoder != 'function' ||
@@ -1543,10 +1424,12 @@ function controlGeocoder() {
 		provider: 'osm',
 		lang: 'FR',
 		keepOpen: true,
-		placeholder: 'Recherche sur la carte' // Initialization of the input field
+		placeholder: options.title, // Initialization of the input field
 	});
-	geocoder.container.firstChild.firstChild.title = 'Recherche sur la carte';
-	geocoder.container.style.top = '.5em';
+
+	// Move the button at the same level than the other control's buttons
+	geocoder.container.firstChild.firstChild.title = options.title;
+	geocoder.container.appendChild(geocoder.container.firstChild.firstChild);
 
 	return geocoder;
 }
@@ -1589,7 +1472,7 @@ function controlGPS() {
 		// The control button
 		button = controlButton({
 			className: 'myol-button ol-gps',
-			buttonBackgroundColors: ['white', '#ef3', '#bbb'],
+			buttonBackgroundColors: ['white', '#ef3', '#bbb'], // Define 3 states button
 			title: 'Centrer sur la position GPS',
 			activate: function(active) {
 				const map = button.getMap();
@@ -1718,22 +1601,17 @@ function controlGPS() {
  * GPX file loader control
  * Requires controlButton
  */
-//BEST upload WPT
-function controlLoadGPX(o) {
-	const options = Object.assign({
-			label: '\u25b2',
-			title: 'Visualiser un fichier GPX sur la carte',
-			activate: function() {
-				inputEl.click();
-			},
-			style: new ol.style.Style({
-				stroke: new ol.style.Stroke({
-					color: 'blue',
-					width: 3,
-				})
-			}),
-		}, o),
-		inputEl = document.createElement('input'),
+//BEST misc formats
+function controlLoadGPX(options) {
+	options = Object.assign({
+		label: '\u25b2',
+		title: 'Visualiser un fichier GPX sur la carte',
+		activate: function() {
+			inputEl.click();
+		},
+	}, options);
+
+	const inputEl = document.createElement('input'),
 		format = new ol.format.GPX(),
 		reader = new FileReader(),
 		button = controlButton(options);
@@ -1762,7 +1640,17 @@ function controlLoadGPX(o) {
 				}),
 				layer = new ol.layer.Vector({
 					source: source,
-					style: options.style,
+					style: function(feature) {
+						return new ol.style.Style({
+							image: new ol.style.Icon({
+								src: '//sym16.dc9.fr/' + feature.getProperties().sym + '.png',
+							}),
+							stroke: new ol.style.Stroke({
+								color: 'blue',
+								width: 3,
+							})
+						});
+					},
 				});
 			map.addLayer(layer);
 			map.getView().fit(source.getExtent());
@@ -1780,59 +1668,97 @@ function controlLoadGPX(o) {
 }
 
 /**
- * GPX file downloader control
+ * File downloader control
  * Requires controlButton
  */
-//BEST various formats
-//TODO BUG download last file when changing the layer without moving the map ==> Clear the source when changing the selector
-function controlDownloadGPX(o) {
-	const options = Object.assign({
-			label: '\u25bc',
-			title: 'Obtenir un fichier GPX contenant\nles éléments visibles dans la fenêtre.',
-			fileName: document.title || 'openlayers',
-			activate: activate,
-		}, o),
-		hiddenEl = document.createElement('a'),
+function controlDownload(options) {
+	options = Object.assign({
+		label: '\u25bc',
+		buttonBackgroundColors: ['white'],
+		className: 'myol-button ol-download',
+		title: 'Cliquer sur un format ci-dessous\n' +
+			'pour obtenir un fichier contenant\n' +
+			'les éléments visibles dans la fenêtre.\n' +
+			'(la liste peut être incomplète pour les grandes zones)',
+		question: '<span/>', // Invisible but generates a questionEl <div>
+		fileName: document.title || 'openlayers',
+		activate: download,
+	}, options);
+
+	const hiddenEl = document.createElement('a'),
 		button = controlButton(options);
 	hiddenEl.target = '_self';
-	hiddenEl.download = options.fileName + '.gpx';
 	hiddenEl.style = 'display:none';
 	document.body.appendChild(hiddenEl);
 
-	function activate() { // Callback at activation / desactivation, mandatory, no default
+	const formats = {
+		GPX: 'application/gpx+xml',
+		KML: 'vnd.google-earth.kml+xml',
+		GeoJSON: 'application/json',
+	};
+	for (let f in formats) {
+		const el = document.createElement('p');
+		el.onclick = download;
+		el.innerHTML = f;
+		el.id = formats[f];
+		el.title = 'Obtenir un fichier ' + f;
+		button.questionEl.appendChild(el);
+	}
+
+	function download() { //formatName, mime
+		const formatName = this.textContent || 'GPX', //BEST get first value as default
+			mime = this.id,
+			format = new ol.format[formatName](),
+			map = button.getMap();
 		let features = [],
-			extent = button.getMap().getView().calculateExtent();
+			extent = map.getView().calculateExtent();
 
 		// Get all visible features
-		button.getMap().getLayers().forEach(function(layer) {
+		if (options.savedLayer)
+			getFeatures(options.savedLayer);
+		else
+			map.getLayers().forEach(getFeatures);
+
+		function getFeatures(layer) {
 			if (layer.getSource() && layer.getSource().forEachFeatureInExtent) // For vector layers only
 				layer.getSource().forEachFeatureInExtent(extent, function(feature) {
-					const properties = feature.getProperties();
-					if (properties.id)
-						feature.setId(properties.id);
-					if (feature.getKeys().length > 1) // Except markers taht have only geom
+					if (!layer.marker_) //BEST find a bette way to don't save the cursors
 						features.push(feature);
 				});
-		});
+		}
 
-		// Write in GPX format
-		const gpx = new ol.format.GPX().writeFeatures(features, {
+		// Transform polygons in lines if format is GPX
+		if (formatName == 'GPX') {
+			const coords = optimiseFeatures(features, true, true);
+			for (let l in coords.polys)
+				features.push(new ol.Feature({
+					geometry: new ol.geom.LineString(coords.polys[l]),
+				}));
+		}
+
+		const data = format.writeFeatures(features, {
 				dataProjection: 'EPSG:4326',
 				featureProjection: 'EPSG:3857',
 				decimals: 5,
 			})
-			.replace(/<[a-z]*>\[object Object\]<\/[a-z]*>/g, '')
-			.replace(/(<\/gpx|<\/?wpt|<\/?trk>|<\/?rte>)/g, '\n$1')
-			.replace(/(<name|<ele|<sym|<link|<type|<\/?trkseg|<rtept)/g, '\n\t$1')
-			.replace(/(<trkpt)/g, '\n\t\t$1'),
+			// Beautify the output
+			.replace(/<[a-z]*>(0|null|[\[object Object\]|[NTZa:-]*)<\/[a-z]*>/g, '')
+			.replace(/<Data name="[a-z_]*"\/>|<Data name="[a-z_]*"><\/Data>|,"[a-z_]*":""/g, '')
+			.replace(/<Data name="copy"><value>[a-z_\.]*<\/value><\/Data>|,"copy":"[a-z_\.]*"/g, '')
+			.replace(/(<\/gpx|<\/?wpt|<\/?trk>|<\/?rte>|<\/kml|<\/?Document)/g, '\n$1')
+			.replace(/(<\/?Placemark|POINT|LINESTRING|POLYGON|<Point|"[a-z_]*":|})/g, '\n$1')
+			.replace(/(<name|<ele|<sym|<link|<type|<rtept|<\/?trkseg|<\/?ExtendedData)/g, '\n\t$1')
+			.replace(/(<trkpt|<Data|<LineString|<\/?Polygon|<Style)/g, '\n\t\t$1')
+			.replace(/(<[a-z]+BoundaryIs)/g, '\n\t\t\t$1'),
 
-			file = new Blob([gpx], {
-				type: 'application/gpx+xml',
+			file = new Blob([data], {
+				type: mime,
 			});
 
 		if (typeof navigator.msSaveBlob == 'function') // IE/Edge
-			navigator.msSaveBlob(file, options.fileName + '.gpx');
+			navigator.msSaveBlob(file, options.fileName + '.' + formatName.toLowerCase());
 		else {
+			hiddenEl.download = options.fileName + '.' + formatName.toLowerCase();
 			hiddenEl.href = URL.createObjectURL(file);
 			hiddenEl.click();
 		}
@@ -1846,34 +1772,26 @@ function controlDownloadGPX(o) {
  */
 function controlPrint() {
 	const button = controlButton({
-			className: 'myol-button ol-print',
-			title: 'Imprimer la carte',
-			activate: function() {
-				resizeDraft(button.getMap());
-				button.getMap().once('rendercomplete', function() {
-					window.print();
-					location.reload();
-				});
-			},
-		}),
-		orientationEl = document.createElement('div');
+		className: 'myol-button ol-print',
+		title: 'Pour imprimer la carte:\n' +
+			'choisir l‘orientation,\n' +
+			'zoomer et déplacer,\n' +
+			'cliquer sur l‘icône imprimante.',
+		question: '<input type="radio" name="print-orientation" value="0" />Portrait A4<br>' +
+			'<input type="radio" name="print-orientation" value="1" />Paysage A4',
+		activate: function() {
+			resizeDraft(button.getMap());
+			button.getMap().once('rendercomplete', function() {
+				window.print();
+				location.reload();
+			});
+		},
+	});
 
-	// Add orientation selectors below the button
-	orientationEl.innerHTML = '<input type="radio" name="ori" value="0">Portrait A4<br>' +
-		'<input type="radio" name="ori" value="1">Paysage A4';
-	orientationEl.className = 'ol-control-hidden';
-
-	button.element.appendChild(orientationEl);
-	button.element.onmouseover = function() {
-		orientationEl.className = 'ol-control-question';
-	};
-	button.element.onmouseout = function() {
-		orientationEl.className = 'ol-control-hidden';
-	};
 	button.setMap = function(map) { //HACK execute actions on Map init
 		ol.control.Control.prototype.setMap.call(this, map);
 
-		const oris = document.getElementsByName('ori');
+		const oris = document.getElementsByName('print-orientation');
 		for (let i = 0; i < oris.length; i++) // Use « for » because of a bug in Edge / IE
 			oris[i].onchange = resizeDraft;
 	};
@@ -1882,10 +1800,10 @@ function controlPrint() {
 		// Resize map to the A4 dimensions
 		const map = button.getMap(),
 			mapEl = map.getTargetElement(),
-			oris = document.querySelectorAll("input[name=ori]:checked"),
-			ori = oris.length ? oris[0].value : 0;
-		mapEl.style.width = ori == 0 ? '210mm' : '297mm';
-		mapEl.style.height = ori == 0 ? '290mm' : '209.9mm'; // -.1mm for Chrome landscape no marging bug
+			oris = document.querySelectorAll("input[name=print-orientation]:checked"),
+			orientation = oris.length ? oris[0].value : 0;
+		mapEl.style.width = orientation == 0 ? '210mm' : '297mm';
+		mapEl.style.height = orientation == 0 ? '290mm' : '209.9mm'; // -.1mm for Chrome landscape no marging bug
 		map.setSize([mapEl.offsetWidth, mapEl.offsetHeight]);
 
 		// Hide all but the map
@@ -1909,30 +1827,211 @@ function controlPrint() {
 }
 
 /**
- * Line & Polygons Editor
- * Requires controlButton, escapedStyle, JSONparse, HACK map_
+ * Marker
+ * Requires JSONparse, myol:onadd, hoverManager, proj4.js for swiss coordinates
+ * Read / write following fields :
+ * marker-json : {"type":"Point","coordinates":[2.4,47.082]}
+ * marker-lon / marker-lat
+ * marker-x / marker-y : CH 1903 (wrapped with marker-xy)
+ * marker-center-cursor : onclick = center the cursor at the middle of the map
+ * marker-center-map : onclick = center the map on the cursor position
  */
-//TODO BUG controlDownloadGPX don't save edited features
-//BEST why must it be included by map.addControl after map init ? Not as an overlay
-function controlEdit(options) {
-	const format = new ol.format.GeoJSON();
+function layerMarker(options) {
 	options = Object.assign({
-		group: 'edit',
+		llInit: [],
+		centerOnMap: false,
+		idDisplay: 'marker',
+		decimalSeparator: '.',
+		/** draggable:false, */
+	}, options);
+	const elJson = document.getElementById(options.idDisplay + '-json'),
+		elLon = document.getElementById(options.idDisplay + '-lon'),
+		elLat = document.getElementById(options.idDisplay + '-lat'),
+		elX = document.getElementById(options.idDisplay + '-x'),
+		elY = document.getElementById(options.idDisplay + '-y'),
+		elCenterMarker = document.getElementById(options.idDisplay + '-center-marker'),
+		elCenterMap = document.getElementById(options.idDisplay + '-center-map');
+
+	// Use json field values if any
+	if (elJson) {
+		let json = elJson.value || elJson.innerHTML;
+		if (json)
+			options.llInit = JSONparse(json).coordinates;
+	}
+	// Use lon-lat fields values if any
+	if (elLon && elLat) {
+		const lon = parseFloat(elLon.value || elLon.innerHTML),
+			lat = parseFloat(elLat.value || elLat.innerHTML);
+		if (lon && lat)
+			options.llInit = [lon, lat];
+	}
+
+	// The marker layer
+	const style = new ol.style.Style({
+			image: new ol.style.Icon(({
+				src: options.imageUrl,
+				anchor: [0.5, 0.5],
+			})),
+		}),
+		point = new ol.geom.Point(
+			ol.proj.fromLonLat(options.llInit)
+		),
+		feature = new ol.Feature({
+			geometry: point,
+			draggable: options.draggable,
+		}),
+		source = new ol.source.Vector({
+			features: [feature],
+		}),
+		layer = new ol.layer.Vector({
+			source: source,
+			style: style,
+			zIndex: 10,
+		}),
+		format = new ol.format.GeoJSON();
+	layer.marker_ = true; //HACK Used by hover & controlDownload
+
+	layer.once('myol:onadd', function(evt) {
+		const map = evt.map;
+		hoverManager(map, layer); // Attach hovering for cursor changes
+
+		layer.center = function() {
+			point.setCoordinates(map.getView().getCenter());
+		};
+		layer.centerMap = function() {
+			map.getView().setCenter(point.getCoordinates());
+		};
+
+		if (options.draggable) {
+			// Position at the init
+			if (options.centerOnMap)
+				layer.center();
+
+			// Drag the feature
+			map.addInteraction(new ol.interaction.Modify({
+				features: new ol.Collection([feature]),
+				pixelTolerance: 16, // The circle around the center
+				style: style, // Avoid to add interaction default style
+			}));
+
+			// Change text input values
+			point.on('change', function() {
+				displayLL(point.getCoordinates());
+			});
+
+			// GPS position changed
+			map.on('myol:ongpsposition', function(evt) {
+				point.setCoordinates(evt.position);
+			});
+
+			// Map control buttons
+			if (elCenterMarker)
+				elCenterMarker.onclick = layer.center;
+			else map.addControl(controlButton({
+				label: '\u29BB',
+				title: 'Déplacer le curseur au centre de la carte',
+				activate: layer.center,
+			}));
+			if (elCenterMarker)
+				elCenterMap.onclick = layer.centerMap;
+			else map.addControl(controlButton({
+				label: '\u2A00',
+				title: 'Centrer la carte sur le curseur',
+				activate: layer.centerMap,
+			}));
+		}
+	});
+
+	// <input> coords edition
+	function fieldEdit(evt) {
+		const id = evt.target.id.split('-')[1], // Get second part of the field id
+			pars = {
+				lon: [0, 4326],
+				lat: [1, 4326],
+				x: [0, 21781],
+				y: [1, 21781],
+			},
+			nol = pars[id][0], // Get what coord is concerned (x, y)
+			projection = pars[id][1]; // Get what projection is concerned
+		// Get initial position
+		let coord = ol.proj.transform(point.getCoordinates(), 'EPSG:3857', 'EPSG:' + projection);
+		// We change the value that was edited
+		coord[nol] = parseFloat(evt.target.value.replace(',', '.'));
+		// Set new position
+		point.setCoordinates(ol.proj.transform(coord, 'EPSG:' + projection, 'EPSG:3857'));
+
+		// Center map to the new position
+		layer.map_.getView().setCenter(point.getCoordinates());
+	}
+
+	// Display a coordinate
+	//BEST dispach/edit deg min sec
+	function displayLL(ll) {
+		const ll4326 = ol.proj.transform(ll, 'EPSG:3857', 'EPSG:4326'),
+			values = {
+				lon: (Math.round(ll4326[0] * 100000) / 100000).toString().replace('.', options.decimalSeparator),
+				lat: (Math.round(ll4326[1] * 100000) / 100000).toString().replace('.', options.decimalSeparator),
+				json: JSON.stringify(format.writeGeometryObject(point, {
+					featureProjection: 'EPSG:3857',
+					decimals: 5
+				}))
+			};
+
+		// Specific Swiss coordinates EPSG:21781 (CH1903 / LV03)
+		if (typeof proj4 == 'function') {
+			proj4.defs('EPSG:21781', '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=660.077,13.551,369.344,2.484,1.783,2.939,5.66 +units=m +no_defs');
+			ol.proj.proj4.register(proj4);
+		}
+		// Specific Swiss coordinates EPSG:21781 (CH1903 / LV03)
+		if (typeof proj4 == 'function' &&
+			ol.extent.containsCoordinate([664577, 5753148, 1167741, 6075303], ll)) { // Si on est dans la zone suisse EPSG:21781
+			const c21781 = ol.proj.transform(ll, 'EPSG:3857', 'EPSG:21781');
+			values.x = Math.round(c21781[0]);
+			values.y = Math.round(c21781[1]);
+		}
+		// Mask xy swiss if nothing to write
+		if (elX)
+			elX.parentNode.style.display = values.x ? '' : 'none';
+		if (elY)
+			elY.parentNode.style.display = values.y ? '' : 'none';
+
+		// We insert the resulting HTML string where it is going
+		for (let postId in values) {
+			const el = document.getElementById(options.idDisplay + '-' + postId);
+			if (el) {
+				el.onchange = fieldEdit; // Set the change function
+				if (el.value !== undefined)
+					el.value = values[postId];
+				else
+					el.innerHTML = values[postId];
+			}
+		}
+	}
+	displayLL(ol.proj.fromLonLat(options.llInit)); // Display once at init
+
+	return layer;
+}
+
+/**
+ * Line & Polygons Editor
+ * Requires JSONparse, myol:onadd, escapedStyle, controlButton
+ */
+function layerEdit(options) {
+	options = Object.assign({
+		format: new ol.format.GeoJSON(),
+		projection: 'EPSG:3857',
 		geoJsonId: 'editable-json', // Option geoJsonId : html element id of the geoJson features to be edited
-		label: 'M',
-		buttonBackgroundColors: ['white', '#ef3'],
-		activate: function(active) {
-			activate(active, modify);
-		},
+		focus: true, // Zoom the map on the loaded features
+		snapLayers: [], // Vector layers to snap on
 		readFeatures: function() {
-			return format.readFeatures(
+			return options.format.readFeatures(
 				JSONparse(geoJsonValue || '{"type":"FeatureCollection","features":[]}'), {
-					featureProjection: 'EPSG:3857', // Read/write data as ESPG:4326 by default
+					featureProjection: options.projection,
 				});
 		},
-		saveFeatures: function() {
+		saveFeatures: function(coordinates, format) {
 			return format.writeFeatures(source.getFeatures(coordinates, format), {
-				featureProjection: 'EPSG:3857',
+				featureProjection: options.projection,
 				decimals: 5,
 			});
 		},
@@ -1965,9 +2064,9 @@ function controlEdit(options) {
 		},
 	}, options);
 
-	const button = controlButton(options),
-		geoJsonEl = document.getElementById(options.geoJsonId), // Read data in an html element
+	const geoJsonEl = document.getElementById(options.geoJsonId), // Read data in an html element
 		geoJsonValue = geoJsonEl ? geoJsonEl.value : '',
+		extent = ol.extent.createEmpty(), // For focus on all features calculation
 		features = options.readFeatures(),
 		source = new ol.source.Vector({
 			features: features,
@@ -1986,24 +2085,32 @@ function controlEdit(options) {
 		modify = new ol.interaction.Modify({
 			source: source,
 			style: editStyle,
-		});
-	layer.options = options;
-
-	// Treat the geoJson input as any other edit
-	optimiseEdited();
-
-	// Optional option snapLayers : [list of layers to snap]
-	if (options.snapLayers)
-		options.snapLayers.forEach(function(layer) {
-			layer.getSource().on('change', function() {
-				const fs = layer.getSource().getFeatures();
-				for (let f in fs)
-					snap.addFeature(fs[f]);
-			});
+		}),
+		controlModify = controlButton({
+			group: 'edit',
+			label: 'M',
+			buttonBackgroundColors: ['white', '#ef3'],
+			title: options.titleModify,
+			activate: function(active) {
+				activate(active, modify);
+			},
 		});
 
-	button.setMap = function(map) { //HACK execute actions on Map init
-		ol.control.Control.prototype.setMap.call(this, map);
+	// Snap on vector layers
+	options.snapLayers.forEach(function(layer) {
+		layer.getSource().on('change', function() {
+			const fs = layer.getSource().getFeatures();
+			for (let f in fs)
+				snap.addFeature(fs[f]);
+		});
+	});
+
+	// Manage hover to save modify actions integrity
+	let hoveredFeature = null;
+
+	layer.once('myol:onadd', function(evt) {
+		const map = evt.map;
+		optimiseEdited(); // Treat the geoJson input as any other edit
 
 		//HACK Avoid zooming when you leave the mode by doubleclick
 		map.getInteractions().forEach(function(i) {
@@ -2011,15 +2118,24 @@ function controlEdit(options) {
 				map.removeInteraction(i);
 		});
 
-		map.addLayer(layer);
-		button.toggle(true); // Init modify button on
+		// Add required controls
+		map.addControl(controlModify);
+		controlModify.toggle(true);
+		if (options.titleLine)
+			map.addControl(controlDraw({
+				type: 'LineString',
+				label: 'L',
+				title: options.titleLine,
+			}));
+		if (options.titlePolygon)
+			map.addControl(controlDraw({
+				type: 'Polygon',
+				label: 'P',
+				title: options.titlePolygon,
+			}));
 
 		// Zoom the map on the loaded features
-		// You must use permalink({init: false})
-		//TODO BUG temporary shift to position if permalink init: true
-		const features = source.getFeatures(),
-			extent = ol.extent.createEmpty();
-		if (features.length) {
+		if (options.focus && features.length) {
 			for (let f in features)
 				ol.extent.extend(extent, features[f].getGeometry().getExtent());
 			map.getView().fit(extent, {
@@ -2035,23 +2151,73 @@ function controlEdit(options) {
 		});
 
 		map.on('pointermove', hover);
+	});
 
-		if (options.editLine)
-			map.addControl(controlDraw({
-				type: 'LineString',
-				label: 'L',
-				title: options.editLine,
-			}));
-		if (options.editPolygon)
-			map.addControl(controlDraw({
-				type: 'Polygon',
-				label: 'P',
-				title: options.editPolygon,
-			}));
+	function removeFeaturesAtPixel(pixel) {
+		const selectedFeatures = layer.map_.getFeaturesAtPixel(pixel, {
+			hitTolerance: 6,
+			layerFilter: function(l) {
+				return l.ol_uid == layer.ol_uid;
+			}
+		});
+		for (let f in selectedFeatures) // We delete the selected feature
+			source.removeFeature(selectedFeatures[f]);
+	}
+
+	//HACK move only one summit when dragging
+	modify.handleDragEvent = function(evt) {
+		let draggedUid; // The first one will be the only one that will be dragged
+		for (let s in this.dragSegments_) {
+			let segmentUid = this.dragSegments_[s][0].feature.ol_uid; // Get the current item uid
+			if (draggedUid && segmentUid != draggedUid) // If it is not the first one
+				delete this.dragSegments_[s]; // Remove it from the dragged list
+			draggedUid = segmentUid;
+		}
+		this.dragSegments_ = this.dragSegments_.filter(Boolean); // Reorder array keys
+		ol.interaction.Modify.prototype.handleDragEvent.call(this, evt); // Call the former method
 	};
 
+	//HACK delete feature when Ctrl+Alt click
+	modify.handleDownEvent = function(evt) {
+		if (evt.originalEvent.ctrlKey && evt.originalEvent.altKey)
+			removeFeaturesAtPixel(evt.pixel_);
+		return ol.interaction.Modify.prototype.handleDownEvent.call(this, evt); // Call the former method
+	};
+
+	modify.on('modifyend', function(evt) {
+		if (evt.mapBrowserEvent.originalEvent.altKey) {
+			// Ctrl + Alt click on segment : delete feature
+			if (evt.mapBrowserEvent.originalEvent.ctrlKey)
+				removeFeaturesAtPixel(evt.mapBrowserEvent.pixel);
+			// Alt click on segment : delete the segment & split the line
+			else if (evt.target.vertexFeature_)
+				return optimiseEdited(evt.target.vertexFeature_.getGeometry().getCoordinates());
+		}
+		optimiseEdited();
+		hoveredFeature = null; // Recover hovering
+	});
+
+	// End of feature creation
+	source.on('change', function() { // Called all sliding long
+		if (source.modified) { // Awaiting adding complete to save it
+			source.modified = false; // To avoid loops
+			optimiseEdited();
+			hoveredFeature = null; // Recover hovering
+		}
+	});
+
+	function activate(active, inter) { // Callback at activation / desactivation, mandatory, no default
+		if (active) {
+			layer.map_.addInteraction(inter);
+			layer.map_.addInteraction(snap); // Must be added after
+		} else {
+			layer.map_.removeInteraction(snap);
+			layer.map_.removeInteraction(inter);
+		}
+	}
+
 	function controlDraw(options) {
-		const buttonDraw = controlButton(Object.assign({
+		const button = controlButton(Object.assign({
 				group: 'edit',
 				buttonBackgroundColors: ['white', '#ef3'],
 				activate: function(active) {
@@ -2065,22 +2231,19 @@ function controlEdit(options) {
 
 		interaction.on(['drawend'], function() {
 			// Switch on the main editor button
-			button.toggle(true);
+			controlModify.toggle(true);
 
 			// Warn source 'on change' to save the feature
 			// Don't do it now as it's not yet added to the source
 			source.modified = true;
 		});
-		return buttonDraw;
+		return button;
 	}
 
-	// Manage hover to save modify actions integrity
-	var hoveredFeature = null;
-
-	//TODO use the centralized hover function
+	//BEST use the centralized hover function
 	function hover(evt) {
 		let nbFeaturesAtPixel = 0;
-		button.getMap().forEachFeatureAtPixel(evt.pixel, function(feature) {
+		layer.map_.forEachFeatureAtPixel(evt.pixel, function(feature) {
 			source.getFeatures().forEach(function(f) {
 				if (f.ol_uid == feature.ol_uid) {
 					nbFeaturesAtPixel++;
@@ -2101,178 +2264,150 @@ function controlEdit(options) {
 		}
 	}
 
-	modify.on('modifyend', function(evt) {
-		if (evt.mapBrowserEvent.originalEvent.altKey) {
-			// Ctrl + Alt click on segment : delete feature
-			if (evt.mapBrowserEvent.originalEvent.ctrlKey) {
-				const selectedFeatures = button.getMap().getFeaturesAtPixel(evt.mapBrowserEvent.pixel, {
-					hitTolerance: 6,
-					layerFilter: function(l) {
-						return l.ol_uid == layer.ol_uid;
-					}
-				});
-				for (let f in selectedFeatures) // We delete the selected feature
-					source.removeFeature(selectedFeatures[f]);
-			}
-			// Alt click on segment : delete the segment & split the line
-			else if (evt.target.vertexFeature_)
-				return optimiseEdited(evt.target.vertexFeature_.getGeometry().getCoordinates());
-			//BEST delete feature when Ctrl+Alt click on a summit
-		}
-		optimiseEdited();
-		hoveredFeature = null; // Recover hovering
-	});
-
-	// End of feature creation
-	source.on('change', function() { // Called all sliding long
-		if (source.modified) { // Awaiting adding complete to save it
-			source.modified = false; // To avoid loops
-			optimiseEdited();
-			hoveredFeature = null; // Recover hovering
-		}
-	});
-
-	function activate(active, inter) { // Callback at activation / desactivation, mandatory, no default
-		if (active) {
-			button.getMap().addInteraction(inter);
-			button.getMap().addInteraction(snap); // Must be added after
-		} else {
-			button.getMap().removeInteraction(snap);
-			button.getMap().removeInteraction(inter);
-		}
-	}
-
-	// Refurbish Points, Lines & Polygons
 	function optimiseEdited(pointerPosition) {
-		// Get all edited features as array of coordinates
-		// Split lines having a summit at pointerPosition
-		//BEST manage points
+		const coords = optimiseFeatures(
+			source.getFeatures(),
+			options.titleLine,
+			options.titlePolygon,
+			true,
+			true,
+			pointerPosition
+		);
 
-		let features = source.getFeatures(),
-			lines = [],
-			polys = [];
-		for (let f in features)
-			if (typeof features[f].getGeometry().getGeometries == 'function') { // GeometryCollection
-				const geometries = features[f].getGeometry().getGeometries();
-				for (let g in geometries)
-					flatCoord(lines, geometries[g].getCoordinates(), pointerPosition);
-			} else if (!features[f].getGeometry().getType().match(/point$/i)) // Not a point
-			flatCoord(lines, features[f].getGeometry().getCoordinates(), pointerPosition); // Get lines or polyons as flat array of coords
-
-		for (let a in lines)
-			// Exclude 1 coordinate features (points)
-			if (lines[a].length < 2)
-				lines[a] = null;
-
-			// Merge lines having a common end
-			else
-				for (let b = 0; b < a; b++) // Once each combination 
-					if (lines[b]) {
-						const m = [a, b];
-						for (let i = 4; i; i--) // 4 times
-							if (lines[m[0]] && lines[m[1]]) {
-								// Shake lines end to explore all possibilities
-								m.reverse();
-								lines[m[0]].reverse();
-								if (compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0])) {
-									// Merge 2 lines having 2 ends in common
-									lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1));
-									lines[m[1]] = null;
-								}
-							}
-					}
-
-		for (let a in lines)
-			if (options.editPolygon && // Only if polygons are autorized
-				lines[a]) {
-				// Close open lines
-				if (!options.editLine) // If only polygons are autorized
-					if (!compareCoords(lines[a]))
-						lines[a].push(lines[a][0]);
-
-				if (compareCoords(lines[a])) { // If this line is closed
-					// Split squeezed polygons
-					for (let i1 = 0; i1 < lines[a].length - 1; i1++) // Explore all summits combinaison
-						for (let i2 = 0; i2 < i1; i2++)
-							if (lines[a][i1][0] == lines[a][i2][0] &&
-								lines[a][i1][1] == lines[a][i2][1]) { // Find 2 identical summits
-								let squized = lines[a].splice(i2, i1 - i2); // Extract the squized part
-								squized.push(squized[0]); // Close the poly
-								polys.push([squized]); // Add the squized poly
-								i1 = i2 = lines[a].length; // End loop
-							}
-
-					// Convert closed lines into polygons
-					polys.push([lines[a]]); // Add the poly
-					lines[a] = null; // Forget the line
-				}
-			}
-
-		// Makes holes if a polygon is included in a biggest one
-		for (let p1 in polys) // Explore all polys combinaison
-			if (polys[p1]) {
-				const fs = new ol.geom.Polygon(polys[p1]);
-				for (let p2 in polys)
-					if (polys[p2] && p1 != p2) {
-						let intersects = true;
-						for (let c in polys[p2][0])
-							if (!fs.intersectsCoordinate(polys[p2][0][c]))
-								intersects = false;
-						if (intersects) { // If one intersects a bigger
-							polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
-							polys[p2] = null; // Forget the smaller
-						}
-					}
-			}
-		// Purge arrays from null values
-		lines = lines.filter(Boolean);
-		polys = polys.filter(Boolean);
-
-		// Recreate & save modified features
+		// Recreate features
 		source.clear();
-		for (let l in lines)
+		for (let l in coords.lines)
 			source.addFeature(new ol.Feature({
-				geometry: new ol.geom.LineString(lines[l]),
+				geometry: new ol.geom.LineString(coords.lines[l]),
 			}));
-		for (let p in polys)
+		for (let p in coords.polys)
 			source.addFeature(new ol.Feature({
-				geometry: new ol.geom.Polygon(polys[p]),
+				geometry: new ol.geom.Polygon(coords.polys[p]),
 			}));
 
 		// Save lines in <EL> as geoJSON at every change
 		if (geoJsonEl)
-			geoJsonEl.value = options.saveFeatures({
-				lines: lines,
-				polys: polys,
-			}, format);
+			geoJsonEl.value = options.saveFeatures(coords, options.format);
 	}
 
-	// Get all lines fragments at the same level & split if one point = pointerPosition
-	function flatCoord(existingCoords, newCoords, pointerPosition) {
-		if (typeof newCoords[0][0] == 'object') // Multi*
-			for (let c1 in newCoords)
-				flatCoord(existingCoords, newCoords[c1], pointerPosition);
-		else {
-			existingCoords.push([]); // Increment existingCoords array
-			for (let c2 in newCoords) {
-				if (pointerPosition && compareCoords(newCoords[c2], pointerPosition)) {
-					existingCoords.push([]); // Forget that one & increment existingCoords array
-				} else
-					// Stack on the last existingCoords array
-					existingCoords[existingCoords.length - 1].push(newCoords[c2]);
+	return layer;
+}
+
+/**
+ * Refurbish Points, Lines & Polygons
+ * Split lines having a summit at removePosition
+ */
+function optimiseFeatures(features, withLines, withPolygons, merge, holes, removePosition) {
+	let lines = [],
+		polys = [];
+
+	// Get all edited features as array of coordinates
+	for (let f in features)
+		if (typeof features[f].getGeometry().getGeometries == 'function') { // GeometryCollection
+			const geometries = features[f].getGeometry().getGeometries();
+			for (let g in geometries)
+				flatCoord(lines, geometries[g].getCoordinates(), removePosition);
+		} else if (!features[f].getGeometry().getType().match(/point$/i)) // Not a point
+		flatCoord(lines, features[f].getGeometry().getCoordinates(), removePosition); // Get lines or polyons as flat array of coords
+
+	for (let a in lines)
+		// Exclude 1 coordinate features (points)
+		//BEST manage points
+		if (lines[a].length < 2)
+			delete lines[a];
+
+		// Merge lines having a common end
+		else if (merge)
+		for (let b = 0; b < a; b++) // Once each combination 
+			if (lines[b]) {
+				const m = [a, b];
+				for (let i = 4; i; i--) // 4 times
+					if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
+						// Shake lines end to explore all possibilities
+						m.reverse();
+						lines[m[0]].reverse();
+						if (compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0])) {
+							// Merge 2 lines having 2 ends in common
+							lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1));
+							delete lines[m[1]]; // Remove the line but don't renumber the array keys
+						}
+					}
+			}
+
+	// Make polygons with in loop lines
+	for (let a in lines)
+		if (withPolygons && // Only if polygons are autorized
+			lines[a]) {
+			// Close open lines
+			if (!withLines) // If only polygons are autorized
+				if (!compareCoords(lines[a]))
+					lines[a].push(lines[a][0]);
+
+			if (compareCoords(lines[a])) { // If this line is closed
+				// Split squeezed polygons
+				for (let i1 = 0; i1 < lines[a].length - 1; i1++) // Explore all summits combinaison
+					for (let i2 = 0; i2 < i1; i2++)
+						if (lines[a][i1][0] == lines[a][i2][0] &&
+							lines[a][i1][1] == lines[a][i2][1]) { // Find 2 identical summits
+							let squized = lines[a].splice(i2, i1 - i2); // Extract the squized part
+							squized.push(squized[0]); // Close the poly
+							polys.push([squized]); // Add the squized poly
+							i1 = i2 = lines[a].length; // End loop
+						}
+
+				// Convert closed lines into polygons
+				polys.push([lines[a]]); // Add the poly
+				delete lines[a]; // Forget the line
 			}
 		}
-	}
 
-	function compareCoords(a, b) {
-		if (!a)
-			return false;
-		if (!b)
-			return compareCoords(a[0], a[a.length - 1]); // Compare start with end
-		return a[0] == b[0] && a[1] == b[1]; // 2 coords
-	}
+	// Makes holes if a polygon is included in a biggest one
+	for (let p1 in polys) // Explore all polys combinaison
+		if (holes && // Make holes option
+			polys[p1]) {
+			const fs = new ol.geom.Polygon(polys[p1]);
+			for (let p2 in polys)
+				if (polys[p2] && p1 != p2) {
+					let intersects = true;
+					for (let c in polys[p2][0])
+						if (!fs.intersectsCoordinate(polys[p2][0][c]))
+							intersects = false;
+					if (intersects) { // If one intersects a bigger
+						polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
+						delete polys[p2]; // Forget the smaller
+					}
+				}
+		}
 
-	return button;
+	return {
+		lines: lines.filter(Boolean), // Remove deleted array members
+		polys: polys.filter(Boolean),
+	};
+}
+
+function compareCoords(a, b) {
+	if (!a)
+		return false;
+	if (!b)
+		return compareCoords(a[0], a[a.length - 1]); // Compare start with end
+	return a[0] == b[0] && a[1] == b[1]; // 2 coords
+}
+
+// Get all lines fragments at the same level & split if one point = pointerPosition
+function flatCoord(existingCoords, newCoords, pointerPosition) {
+	if (typeof newCoords[0][0] == 'object') // Multi*
+		for (let c1 in newCoords)
+			flatCoord(existingCoords, newCoords[c1], pointerPosition);
+	else {
+		existingCoords.push([]); // Increment existingCoords array
+		for (let c2 in newCoords) {
+			if (pointerPosition && compareCoords(newCoords[c2], pointerPosition)) {
+				existingCoords.push([]); // Forget that one & increment existingCoords array
+			} else
+				// Stack on the last existingCoords array
+				existingCoords[existingCoords.length - 1].push(newCoords[c2]);
+		}
+	}
 }
 
 
@@ -2281,22 +2416,14 @@ function controlEdit(options) {
  */
 function layersCollection(keys) {
 	return {
-		'OSM-FR': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'OpenTopo': layerOSM(
-			'//{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png',
-			'<a href="https://opentopomap.org">OpenTopoMap</a> ' +
-			'(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
-			17
-		),
+		'OSM-FR': layerOsm('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
+		'OpenTopo': layerOsmOpenTopo(),
 		'OSM outdoors': layerThunderforest(keys.thunderforest, 'outdoors'),
-		'OSM': layerOSM('//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-		'MRI': layerOSM(
-			'//maps.refuges.info/hiking/{z}/{x}/{y}.png',
-			'<a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
-		),
-		'Hike & Bike': layerOSM(
+		'OSM': layerOsm('//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+		'MRI': layerOsmMri(),
+		'Hike & Bike': layerOsm(
 			'http://{a-c}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
-			'<a href="http://www.hikebikemap.org/">hikebikemap.org</a>'
+			'<a href="//www.hikebikemap.org/">hikebikemap.org</a>'
 		), // Not on https
 		'OSM cycle': layerThunderforest(keys.thunderforest, 'cycle'),
 		'OSM landscape': layerThunderforest(keys.thunderforest, 'landscape'),
@@ -2336,8 +2463,7 @@ function layersCollection(keys) {
 		'Angleterre': layerOS(keys.bing),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Kompas': layerKompass('KOMPASS'),
-		//TODO BUG		'Bing': layerBing(keys.bing, 'Road'),
-		//TODO BUG ne charge pas les dalles à l'init
+		'Bing': layerBing(keys.bing, 'Road'),
 		'Bing photo': layerBing(keys.bing, 'AerialWithLabels'),
 		'Google road': layerGoogle('m'),
 		'Google terrain': layerGoogle('p'),
@@ -2378,7 +2504,7 @@ function controlsCollection(options) {
 		controlGeocoder(),
 		controlGPS(options.controlGPS),
 		controlLoadGPX(),
-		controlDownloadGPX(options.controlDownloadGPX),
+		controlDownload(options.controlDownload),
 		controlPrint(),
 	];
 }
