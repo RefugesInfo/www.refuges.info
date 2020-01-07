@@ -14,8 +14,12 @@ require_once ("nav.php");
 if(!$vue->polygone)
   $vue->polygone = $vue->contenu; // En édition, c'est la même chose
 
+// Définition d'un nom par défaut à la création pour éviter de perdre tout son travail de dessin de contour
+if(!$vue->polygone->nom_polygone)
+  $vue->polygone->nom_polygone='Nom';
+
 if ($polygone)
   $vue->titre="Modification $polygone->article_partitif $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
 else
-  $vue->titre="Création d'".$vue->contenu->art_indef_poly." ".$vue->contenu->type_polygone;
+  $vue->titre="Création d'un polygone";
 

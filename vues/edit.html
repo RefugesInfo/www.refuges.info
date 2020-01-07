@@ -22,32 +22,31 @@
 			<!-- Edition du polygone -->
 			<label>
 				<input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
-				<input type="hidden" name="id_polygone_type" value="<?=$vue->polygone->id_polygone_type?>" />
+				<p>Type : 
+				<select name="id_polygone_type">
+					<option value="<?=$config_wri['id_massif']?>
+						<?=$vue->polygone->id_polygone_type==$config_wri['id_massif']?'selected="selected"':''?>"
+						>Massif</option> 
+					<option value="<?=$config_wri['id_zone']?>"
+						<?=$vue->polygone->id_polygone_type==$config_wri['id_zone']?'selected="selected"':''?>
+						>Zone</option>
+				</select>
+				</p>
+
 				<input size="400" type="hidden" name="json_polygones" id="edit-json" value='<?=$vue->json_polygones?>' />
-
-				<p>Nom <?=$vue->polygone->art_contracte_poly?> <?=$vue->polygone->type_polygone?>
-				<input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone?>" /></p><br/>
-
+				<br/>
+				<p>Nom :
+				<input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone?>" /></p>
+				<br/>
 				<p>Article partitif (max 20 car)
-				<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" /></p><br/>
-
+				<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" /></p>
+				<br/>
 				<p id="edit-changed" style="display:none"><i style="color:red">Polygone modifié</i></p>
 
 				<input type="submit" name="enregistrer" value="Enregistrer" /> les modifications
 				<br/>ou<br/>
 				<p><a href="./<?=$vue->polygone->id_polygone?>">Quiter sans enregistrer</a></p>
 			</label>
-			<?if ($vue->polygone->type_polygone == 'zone') {?>
-				<hr/>
-				<label>
-					Le contour d'une zone n'est jamais visible :
-					Il sert définir quels massifs doivent être affichés dans la page d'une zone couverte
-					sachat que seuls sont affichés les massifs ayant des points communs avec la zone
-					(intersection de polygones).
-					Il suffit donc que la zone couvre au moins un bout de chaque massif de sorte qu'elle peut avoir une forme très vague.
-					Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.
-				</label>
-			<?}?>
 		</fieldset>
 		<fieldset>
 			<legend>Modifier le contour</legend>
@@ -64,8 +63,22 @@
 				<p><b>Contrôle "P" (créer un polygone)</b>
 				activer ce bouton (couleur jaune) puis:</p>
 				<p>Cliquer sur la carte et sur chaque point désiré pour dessiner un polygone,</p>
-				<p>double cliquer pour terminer.</p>
+				<p>Double cliquer pour terminer.</p>
 				<p>Un polygone entièrement compris dans un autre crée un "trou".</p>
+			</label>
+		</fieldset>
+		<fieldset>
+			<legend>Définitions</legend>
+			<label>
+				<p><b>Massif</b></p>
+				<p>Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br/>
+				Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.</p><hr/>
+				<p><b>Zone</b></p>
+				<p>Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br/>
+				Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr/>
+				La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps
+				du moment qu'il recouvre au moins un bout de chaque massif.<br/>
+				Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.</p>
 			</label>
 		</fieldset>
 		<?if ($vue->polygone->id_polygone) {?>

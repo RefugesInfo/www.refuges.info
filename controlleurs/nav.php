@@ -43,7 +43,7 @@ $vue->types_point_affichables=types_point_affichables();
 /edit/4 : édite les contours du polygone 4
 /edit?type_polygone=zone : crée une zone
 */
-$id_polygone = (int) $controlleur->url_decoupee[1]; // Id du polynome contenant
+$id_polygone = (int) $controlleur->url_decoupee[1]; // Id du polygone contenant
 // Récupère les soumissions du formulaire de modification de paramètres de massifs
 if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;

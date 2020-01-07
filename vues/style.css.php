@@ -824,6 +824,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   font-size: .8em;
   font-style: oblique;
 }
+#selecteur-carte-nav LABEL {
+  text-align: justify;
+}
 /* Menu deplié */
 @media screen and (min-width: 641px) and (min-device-height: 361px) {
   #carte-nav {

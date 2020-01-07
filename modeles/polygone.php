@@ -18,7 +18,7 @@ $conditions->non_ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont 
 $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
-$conditions->intersection = id_poly -> Sélectionne tous les polynomes ayant une intersection avec le polynome id_poly
+$conditions->intersection = id_poly -> Sélectionne tous les polygones ayant une intersection avec le polygone id_poly
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
 $conditions->ids_polygone_type = 7 ou 7,8 (les ids de type de polygone)
@@ -262,6 +262,7 @@ function edit_info_polygone()
         $query_update = "UPDATE polygones SET "
       ."article_partitif = '$article_partitif', "
       ."nom_polygone = '$nom_polygone', "
+      ."id_polygone_type = '{$_POST['id_polygone_type']}', "
       ."geom = ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326) "
       ."WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_update);
