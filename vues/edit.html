@@ -37,9 +37,20 @@
 				<br/>ou<br/>
 				<p><a href="./<?=$vue->polygone->id_polygone?>">Quiter sans enregistrer</a></p>
 			</label>
+			<?if ($vue->polygone->type_polygone == 'zone') {?>
+				<hr/>
+				<label>
+					Le contour d'une zone n'est jamais visible :
+					Il sert définir quels massifs doivent être affichés dans la page d'une zone couverte
+					sachat que seuls sont affichés les massifs ayant des points communs avec la zone
+					(intersection de polygones).
+					Il suffit donc que la zone couvre au moins un bout de chaque massif de sorte qu'elle peut avoir une forme très vague.
+					Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.
+				</label>
+			<?}?>
 		</fieldset>
 		<fieldset>
-			<legend>Edition</legend>
+			<legend>Modifier le contour</legend>
 			<label>
 				<p><b>Contrôle "M" (modifier un polygone)</b>
 				activer ce bouton (couleur jaune) puis:</p>

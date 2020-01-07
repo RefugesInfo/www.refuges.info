@@ -111,20 +111,21 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 	<?php if ( $vue->contenu && !$vue->polygone->id_polygone && $_SESSION['niveau_moderation']>=1 ) {?>
 		<fieldset>
 			<legend>Modification</legend>
-			<p>
+			<p><b>
 				<a href="<?=$config_wri['sous_dossier_installation']?>edit?type_polygone=<?=$vue->contenu->type_polygone?>">
 				Créer <?=$vue->contenu->art_indef_poly?> <?=$vue->contenu->type_polygone?>
-			</a></p>
-			<p>Modifier
-				<?=$vue->polygone->art_indef_poly?> <?=$vue->polygone->type_polygone?>:
+			</b></a></p><hr/>
+			<p>
+				<b>Modifier <?=$vue->contenu->art_indef_poly?> <?=$vue->contenu->type_polygone?>:</b>
 				cliquer sur <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>
 				puis sur "Modifier <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
-			</p>
-			<p>Supprimer
-				<?=$vue->polygone->art_indef_poly?> <?=$vue->polygone->type_polygone?>:
+			</p><hr/>
+			<p>
+				<b>Supprimer <?=$vue->contenu->art_indef_poly?> <?=$vue->contenu->type_polygone?>:</b>
 				cliquer sur <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>,
-				sur "Modifier <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
-				puis sur "Supprimer <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
+				sur "Modifier <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>",
+				sur "Supprimer <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
+				puis une seconde fois sur "Supprimer XXX" (bouton jaune et rouge) pour confirmer.
 			</p>
 		</fieldset>
 	<?}?>

@@ -65,6 +65,8 @@ if (!$polygone->erreur)
 else
   $vue->titre="Polygone demandé incorrect : $polygone->message";
 
+$vue->polygone=$polygone;
+
 // Les coordonnées des polygones à éditer
 $params = new stdClass();
 $params->ids_polygones = $id_polygone;
