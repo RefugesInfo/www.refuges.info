@@ -13,7 +13,7 @@ Les variables sont passées dans l'objet $vue->...
 
 Concept de Zone et Massifs :
 Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
-Zone  (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
+Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
 ************************************************************************************************/
 
 require_once ("bdd.php");
@@ -32,34 +32,38 @@ $vue->java_lib_foot[] = $config_wri['sous_dossier_installation'].'vues/wiki.js';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
-
 $vue->types_point_affichables=types_point_affichables();
-// typiquement:  /nav/34/massif/Vercors/?mode_affichage=massif  pour le referencement google, c'est le controlleur.php qui passe ce tableau
-$id_polygone = (int) $controlleur->url_decoupee[1];
-$vue->mode_affichage = $_GET['mode_affichage']; // "zone", "massif" ou "edit". ca definit l'affichage qui suit
-$vue->type_polygone = $_GET['type_polygone'] ? $_GET['type_polygone'] : 1; // Type de polygone dans la table polygone_type. Défaut : massifs
 
+/* Variables d'entrée
+/nav : affiche tous les points
+/nav/4 : affiche les points contenus dans le polygone 4 (ici le massif du Vercors)
+/nav/50?type_polygone=massif : affiche les massifs contenus dans le polygone 50 (ici la zone du Massif Central)
+/nav/?type_polygone=massif : affiche tous les massifs
+/edit : crée un massif
+/edit/4 : édite les contours du polygone 4
+/edit?type_polygone=zone : crée une zone
+*/
+$id_polygone = (int) $controlleur->url_decoupee[1]; // Id du polynome contenant
 // Récupère les soumissions du formulaire de modification de paramètres de massifs
 if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;
+$vue->contenu=infos_type_polygone($_GET['type_polygone']); // Type de contenu à afficher : "massif", "zone" (type_polygone dans la table polygone_type). Par défaut, affiche le contour et les points à l'intérieur
 
-$polygone = new stdClass;
-$polygone->id_polygone=0; // Par défaut si aucun polygone n'est trouvé ou demandé
 // Les paramètres des layers points et massifs
-if ($id_polygone)
+$polygone=infos_polygone ($id_polygone);
+if (!$polygone->erreur) 
 {
-  $polygone=infos_polygone ($id_polygone);
-  if (!$polygone->erreur) 
-  {
-      $vue->titre=ucfirst($polygone->type_polygone)." $polygone->article_partitif $polygone->nom_polygone : Refuges, cabanes, sommets et points d'eau sur une carte";
-      $vue->intro="Voici les refuges, cabanes, sommets et points d'eau dans $polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
-  }
-  else
-    $vue->titre="Polygone demandé incorrect : $polygone->message";
-} 
+  $vue->quoi=$vue->contenu ?
+    $vue->contenu->type_polygone."s" :
+    "refuges, cabanes, sommets et points d'eau";
+  $vue->ou="$polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
+  $vue->titre=ucfirst(
+    ($polygone->nom_polygone ? "$vue->ou : " : "") .
+     "$vue->quoi sur une carte"
+  );
+}
 else
-  $vue->titre = "Navigation sur les photos satellite";
-$vue->polygone=$polygone;
+  $vue->titre="Polygone demandé incorrect : $polygone->message";
 
 // Les coordonnées des polygones à éditer
 $params = new stdClass();

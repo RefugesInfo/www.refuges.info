@@ -15,14 +15,17 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 <div class="contenu noprint">
 	<!-- afficher le titre du massif (en mode massif) -->
 	<h3 id="titrepage">
-		<?=$vue->intro?>
+		Voici les <?=$vue->quoi?>
+		<?if ($vue->polygone->nom_polygone){?>
+			dans <?=$vue->ou?>
+		<?}?>
 	</h3>
 </div>
 
 <div id="carte-nav" class="nav_<?=$vue->mode_affichage?>"></div>
 
 <div id="selecteur-carte-nav" class="noprint">
-	<?if (!$vue->mode_affichage ){?>
+	<?if (!$vue->contenu ){?>
 		<fieldset>
 			<legend>Points (<a href="<?=$vue->lien_legende_carte?>">Légende</a>)</legend>
 			<ul>
@@ -98,10 +101,31 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 		</fieldset>
 	<?}?>
 
-	<?php if ( !$vue->mode_affichage && $_SESSION['niveau_moderation']>=1 ) {?>
+	<?php if ( !$vue->mode_affichage && $vue->polygone->id_polygone && $_SESSION['niveau_moderation']>=1 ) {?>
 		<fieldset>
 			<legend>Modification</legend>
-			<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>"><?= $vue->polygone->id_polygone ? 'Modifier le' : 'Créer un'?> massif</a>
+			<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>">Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?></a>
+		</fieldset>
+	<?}?>
+
+	<?php if ( $vue->contenu && !$vue->polygone->id_polygone && $_SESSION['niveau_moderation']>=1 ) {?>
+		<fieldset>
+			<legend>Modification</legend>
+			<p>
+				<a href="<?=$config_wri['sous_dossier_installation']?>edit?type_polygone=<?=$vue->contenu->type_polygone?>">
+				Créer <?=$vue->contenu->art_indef_poly?> <?=$vue->contenu->type_polygone?>
+			</a></p>
+			<p>Modifier
+				<?=$vue->polygone->art_indef_poly?> <?=$vue->polygone->type_polygone?>:
+				cliquer sur <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>
+				puis sur "Modifier <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
+			</p>
+			<p>Supprimer
+				<?=$vue->polygone->art_indef_poly?> <?=$vue->polygone->type_polygone?>:
+				cliquer sur <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>,
+				sur "Modifier <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
+				puis sur "Supprimer <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
+			</p>
 		</fieldset>
 	<?}?>
 </div>

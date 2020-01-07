@@ -32,10 +32,43 @@ const controls = [
 <?php } ?>
 		controlPrint(),
 	],
+	
+	points = layerRefugesInfo({
+		selectorName: 'couche-wri',
+		noMemSelection: true,
+		baseUrlFunction: function(bbox, list) {
+			const el = document.getElementById('selecteur-massif');
+			return '<?=$config_wri["sous_dossier_installation"]?>api/'+
+				(el && el.checked ? 'massif?massif=<?=$vue->polygone->id_polygone?>&' : 'bbox?')+
+				'type_points=' + list.join(',') + '&bbox=' + bbox.join(','); // Default most common url format
+		},
+	}),
 
-	// La couche "zone"
-	zone = layerVectorURL({
-		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?type_polygon=<?=$vue->type_polygone?>&intersection=<?=$vue->polygone->id_polygone?>',
+	// La couche "contour" (du massif, de la zone)
+	contour = layerVectorURL({
+		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?massif=<?=$vue->polygone->id_polygone?>',
+		selectorName: 'couche-massif',
+		noMemSelection: true,
+		receiveProperties: function(properties, feature) {
+			// Converti les polygones en lignes pour ne pas activer le curseur en passant à l'intérieur du massif
+			feature.geometry = {
+				type: 'MultiLineString',
+				coordinates: feature.geometry.coordinates[0],
+			};
+			// Pas d'étiquette sur le bord du massif
+			properties.type = null;
+		},
+		styleOptions: {
+			stroke: new ol.style.Stroke({
+				color: 'blue',
+				width: 2,
+			}),
+		},
+	}),
+
+	// La couche "polygones" (du massif, de la zone, pleins et colorés)
+	polygones = layerVectorURL({
+		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?type_polygon=<?=$vue->contenu->id_polygone_type?>&intersection=<?=$vue->polygone->id_polygone?>',
 		noMemSelection: true,
 		receiveProperties: function(properties, feature, layer) {
 			properties.name = properties.nom;
@@ -67,47 +100,15 @@ const controls = [
 		},
 	}),
 
-	// La couche "massif"
-	massif = layerVectorURL({
-		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?massif=<?=$vue->polygone->id_polygone?>',
-		selectorName: 'couche-massif',
-		noMemSelection: true,
-		receiveProperties: function(properties, feature) {
-			// Converti les polygones en lignes pour ne pas activer le curseur en passant à l'intérieur du massif
-			feature.geometry = {
-				type: 'MultiLineString',
-				coordinates: feature.geometry.coordinates[0],
-			};
-			// Pas d'étiquette sur le bord du massif
-			properties.type = null;
-		},
-		styleOptions: {
-			stroke: new ol.style.Stroke({
-				color: 'blue',
-				width: 2,
-			}),
-		},
-	}),
-	
-	points = layerRefugesInfo({
-		selectorName: 'couche-wri',
-		noMemSelection: true,
-		baseUrlFunction: function(bbox, list) {
-			const el = document.getElementById('selecteur-massif');
-			return '<?=$config_wri["sous_dossier_installation"]?>api/'+
-				(el && el.checked ? 'massif?massif=<?=$vue->polygone->id_polygone?>&' : 'bbox?')+
-				'nb_points=500&type_points=' +
-				list.join(',') + '&bbox=' + bbox.join(','); // Default most common url format
-		},
-	}),
-
 	overlays = [
-<?php if ($vue->mode_affichage == 'zone') { ?>
-			zone,
+<?php if ($vue->contenu) { ?>
+			polygones,
 <?php } else if ($vue->polygone->id_polygone) { ?>
-			massif,
+			contour,
 <?php } ?>
+<?php if (!$vue->contenu) { ?>
 			points,
+<?php } ?>
 			layerOverpass({
 				selectorName: 'couche-osm',
 			}),

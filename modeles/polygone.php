@@ -180,7 +180,33 @@ function infos_polygone($id_polygone,$avec_geometrie="aucune")
   if ($avec_geometrie!="aucune")
     $conditions->avec_geometrie=$avec_geometrie;
   $poly=infos_polygones($conditions);
+
+  //TODO données à intégrer dans la base
+  if($poly[0])
+    $poly[0]->art_contracte_poly = $poly[0]->art_def_poly=='le' ? 'du' : 'de la';
+
   return $poly[0];
+}
+
+/************************************************************************************/
+function infos_type_polygone($type_polygone)
+{
+  global $pdo;
+  $query="SELECT *
+    FROM polygone_type
+    WHERE type_polygone='$type_polygone'
+  ";
+  $res=$pdo->query($query);
+  $poly=$res->fetch();
+
+  //TODO données à intégrer dans la base
+  if($poly)
+  {
+    $poly->art_indef_poly = $poly->art_def_poly=='le' ? 'un' : 'une';
+    $poly->art_contracte_poly = $poly->art_def_poly=='le' ? 'du' : 'de la';
+  }
+
+  return $poly;
 }
 
 /********************************************
@@ -234,7 +260,7 @@ function edit_info_polygone()
     if ($_POST['enregistrer'] && $_POST['id_polygone'])
     {
         $query_update = "UPDATE polygones SET "
-      ."article_partitif	= '$article_partitif', "
+      ."article_partitif = '$article_partitif', "
       ."nom_polygone = '$nom_polygone', "
       ."geom = ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326) "
       ."WHERE id_polygone = {$_POST['id_polygone']}";
@@ -256,7 +282,7 @@ function edit_info_polygone()
         {
             // Alors, on le crée
             $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone, geom) ".
-        "VALUES (1, '$article_partitif', '$nom_polygone', ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326))";
+        "VALUES ({$_POST['id_polygone_type']}, '$article_partitif', '$nom_polygone', ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326))";
             $res=$pdo->query($query_cree);
             if (!$res)
                 erreur('Requête impossible',$query_cree);

@@ -9,7 +9,7 @@
 ?>
 <div class="contenu noprint">
 	<h3 id="titrepage">
-		Edition des contours du massif "<?=$vue->polygone->nom_polygone?>"
+		<?=$vue->titre?>
 	</h3>
 </div>
 
@@ -18,13 +18,14 @@
 <div id="selecteur-carte-nav" class="noprint">
 	<form method="post" action="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>" >
 		<fieldset>
-			<legend><?=$vue->polygone->id_polygone ? 'Edition' : 'Création'?></legend>
-			<!-- Edition du massif -->
+			<legend><?=$vue->polygone->id_polygone?'Édition':'Création'?></legend>
+			<!-- Edition du polygone -->
 			<label>
 				<input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
+				<input type="hidden" name="id_polygone_type" value="<?=$vue->polygone->id_polygone_type?>" />
 				<input size="400" type="hidden" name="json_polygones" id="edit-json" value='<?=$vue->json_polygones?>' />
 
-				<p>Nom du massif
+				<p>Nom <?=$vue->polygone->art_contracte_poly?> <?=$vue->polygone->type_polygone?>
 				<input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone?>" /></p><br/>
 
 				<p>Article partitif (max 20 car)
@@ -63,12 +64,12 @@
 					<?if (!$_GET['test_supprimer']) {?>
 						<p>
 							<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>?test_supprimer=1">
-								Supprimer le massif
+								Supprimer <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
 							</a>(définitif).
 						</p>
 					<?}else{?>
 						<b>
-							<p style="color:red">ATTENTION: Ceci va supprimer définitivement le massif "<?=$vue->polygone->nom_polygone?>"</p>
+							<p style="color:red">ATTENTION: Ceci va supprimer définitivement <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> "<?=$vue->polygone->nom_polygone?>"</p>
 							<p style="color:red">Aucune restauration ne sera possible</p>
 						</b>
 						<input class="bouton-supprimer" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" />

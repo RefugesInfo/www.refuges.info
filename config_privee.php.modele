@@ -12,8 +12,6 @@ $config_wri['serveur_pgsql']="???";
 // Info pour développeurs de notre équipe, la base de prod s'appelle "refuges" mais il n'est pas recommandé de bosser dessus, donc test, c'est bien !
 // a noter que les photos qui sont des fichiers sur le disque risque fort de ne plus s'afficher, mais c'est en quelque sorte "logique"
 $config_wri['base_pgsql']="test";
-if ($config_wri['base_pgsql'] == "test")
-	$config_wri['id_zone_accueil'] = 352; // Celui par défaut en prod n'existe pas dans la base de tests
 
 // Par défaut, le fond de carte est le premier déclaré dans le fichier /vues/includes/cartes.js (Refuges.info)
 // Décommenter permet de changer le par défaut. Indiquer le nom de la couche dans le sélecteur.

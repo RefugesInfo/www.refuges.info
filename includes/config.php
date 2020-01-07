@@ -67,15 +67,14 @@ $config_wri['hauteur_max_vignette']=140*3/4;
 $config_wri['qualite_jpeg']=80;
 
 /********** posts dans la page points ************/
-  $config_wri['point_posts_nb_max_post'] = 4;
-  $config_wri['point_posts_lon_max_text'] = 250;
+$config_wri['point_posts_nb_max_post'] = 4;
+$config_wri['point_posts_lon_max_text'] = 250;
 
 /********** id internes liés à certains éléments remarquables de la base. Merci d'éviter les numéros en dur dans le code, car si ça doit changer, c'est jeu de la fourmis ************/
 // sly  27/04/06 je préfère me baser sur l'id pour le retrouver plutôt que son type ( que je viens d'ailleurs de modifier )
 $config_wri['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
 $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
 $config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees ... 
-$config_wri['id_zone_defaut']=352; // sly en fait ce sont les alpes
 $config_wri['id_zone_accueil']=5084; // DOM: une zone définie uniquement pour montrer les massifs en pages d'accueil
 
 // Catégorie "tout type de refuges"
