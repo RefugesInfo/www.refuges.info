@@ -128,5 +128,18 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				puis une seconde fois sur "Supprimer XXX" (bouton jaune et rouge) pour confirmer.
 			</p>
 		</fieldset>
+		<fieldset>
+			<legend>Définitions</legend>
+			<label>
+				<p><b>Massif</b></p>
+				<p>Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br/>
+				Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.</p><hr/>
+				<p><b>Zone</b></p>
+				<p>Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br/>
+				Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr/>
+				La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps
+				du moment qu'il recouvre au moins un bout de chaque massif.<br/>
+				Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.</p>
+			</label>
 	<?}?>
 </div>
