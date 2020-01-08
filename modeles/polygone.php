@@ -180,33 +180,19 @@ function infos_polygone($id_polygone,$avec_geometrie="aucune")
   if ($avec_geometrie!="aucune")
     $conditions->avec_geometrie=$avec_geometrie;
   $poly=infos_polygones($conditions);
-
-  //TODO données à intégrer dans la base
-  if($poly[0])
-    $poly[0]->art_contracte_poly = $poly[0]->art_def_poly=='le' ? 'du' : 'de la';
-
   return $poly[0];
 }
 
 /************************************************************************************/
-function infos_type_polygone($type_polygone)
+function infos_type_polygone($id_polygone_type)
 {
   global $pdo;
   $query="SELECT *
     FROM polygone_type
-    WHERE type_polygone='$type_polygone'
+    WHERE id_polygone_type=$id_polygone_type
   ";
   $res=$pdo->query($query);
-  $poly=$res->fetch();
-
-  //TODO données à intégrer dans la base
-  if($poly)
-  {
-    $poly->art_indef_poly = $poly->art_def_poly=='le' ? 'un' : 'une';
-    $poly->art_contracte_poly = $poly->art_def_poly=='le' ? 'du' : 'de la';
-  }
-
-  return $poly;
+  return $res->fetch();
 }
 
 /********************************************

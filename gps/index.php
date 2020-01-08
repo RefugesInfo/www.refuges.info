@@ -6,9 +6,6 @@ https://github.com/Dominique92/MyOl
 Based on https://openlayers.org
 -->
 <?php
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
 	include ('../includes/config.php');
 ?>
 <html>

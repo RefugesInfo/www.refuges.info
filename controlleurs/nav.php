@@ -37,17 +37,22 @@ $vue->types_point_affichables=types_point_affichables();
 /* Variables d'entrée
 /nav : affiche tous les points
 /nav/4 : affiche les points contenus dans le polygone 4 (ici le massif du Vercors)
-/nav/50?type_polygone=massif : affiche les massifs contenus dans le polygone 50 (ici la zone du Massif Central)
-/nav/?type_polygone=massif : affiche tous les massifs
+/nav/50?id_polygone_type=1 : affiche les massifs contenus dans le polygone 50 (ici la zone du Massif Central)
+/nav/?id_polygone_type=1 : affiche tous les massifs
 /edit : crée un massif
 /edit/4 : édite les contours du polygone 4
-/edit?type_polygone=zone : crée une zone
+/edit?id_polygone_type=11 : crée une zone
 */
 $id_polygone = (int) $controlleur->url_decoupee[1]; // Id du polygone contenant
 // Récupère les soumissions du formulaire de modification de paramètres de massifs
 if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;
-$vue->contenu=infos_type_polygone($_GET['type_polygone']); // Type de contenu à afficher : "massif", "zone" (type_polygone dans la table polygone_type). Par défaut, affiche le contour et les points à l'intérieur
+// Le param_tre d'URL id_polygone_type permet d'afficher différents contenus
+// Si abscent : affiche le contour du polygone demandé et les points à l'intérieur
+// Si présent : les polygones qui intersectent le polygone demandé
+$id_polygone_type=$_GET['id_polygone_type'];
+if($id_polygone_type)
+  $vue->contenu=infos_type_polygone($id_polygone_type);
 
 // Les paramètres des layers points et massifs
 $polygone=infos_polygone ($id_polygone);
