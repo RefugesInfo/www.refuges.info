@@ -5,22 +5,20 @@ paramètres locaux (données de type privées à ne pas publier)
 *************************************************/
 
 // Accès à Postgresql
+$config_wri['serveur_pgsql']="???";
 $config_wri['utilisateur_pgsql']="???";
 $config_wri['mot_de_passe_pgsql']="???";
-$config_wri['serveur_pgsql']="???";
-
-// Info pour développeurs de notre équipe, la base de prod s'appelle "refuges" mais il n'est pas recommandé de bosser dessus, donc test, c'est bien !
-// a noter que les photos qui sont des fichiers sur le disque risque fort de ne plus s'afficher, mais c'est en quelque sorte "logique"
-$config_wri['base_pgsql']="test";
-
-// Par défaut, le fond de carte est le premier déclaré dans le fichier /vues/includes/cartes.js (Refuges.info)
-// Décommenter permet de changer le par défaut. Indiquer le nom de la couche dans le sélecteur.
-//$config_wri['carte_base'] = 'OpenTopo';
+$config_wri['base_pgsql']="???";
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['ign_key']='???'; // http://professionnels.ign.fr/user
 $config_wri['bing_key']='???'; // https://www.bingmapsportal.com
 $config_wri['thunderforest_key']='???'; // https://www.bingmapsportal.com
+
+// Par défaut, le fond de carte est le premier déclaré dans le fichier /vues/includes/cartes.js
+// Décommenter permet de changer le par défaut. Indiquer le nom de la couche dans le sélecteur
+//$config_wri['carte_base'] = 'OpenTopo';
+//$config_wri['carte_base'] = 'Photo Bing';
 
 // Le par défaut géré par sly pour l'association Openstreetmap France. Plus rapide en réponse de ~20%, mais leur serveur déconne trop souvent, et ça plante parfois
 //$config_wri['overpass_api']="http://api.openstreetmap.fr/oapi/interpreter";
@@ -34,7 +32,7 @@ $config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 // Activera l'affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 // + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
 // sert aussi à afficher les lien de validation xhtml en bas de page (histoire de ne pas ennuier tout le monde avec ça)
-// par défaut à false, à mettre à décommenter pour les développeurs qui le veulent
+// Par défaut à false, à mettre à décommenter pour les développeurs qui le veulent
 // $config_wri['debug']=true;
 
 // NE PAS OUBLIER rename htaccess.modele.txt .htaccess

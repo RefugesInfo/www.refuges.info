@@ -1,6 +1,14 @@
 <?php
 	include ($config_wri['racine_projet'].'vues/includes/cartes.js');
 ?>
+// Utilitaire de saisie
+function affiche_et_set( el , affiche, valeur ) {
+    document.getElementById(el).style.visibility = affiche ;
+    document.getElementById(el).value = valeur ;
+    return false;
+}
+
+// Gestion des cartes
 const refugesInfo = layerRefugesInfo({
 		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>',
 		receiveProperties: function(properties) {

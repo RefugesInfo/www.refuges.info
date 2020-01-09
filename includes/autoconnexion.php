@@ -96,7 +96,7 @@ function remplissage_zones_bandeau()
     $zones=infos_polygones($conditions);
     if ($zones)
         foreach ($zones as $zone)
-            $array_zones [ucfirst($zone->nom_polygone)] = lien_polygone($zone)."?type_polygone=massif";
+            $array_zones [ucfirst($zone->nom_polygone)] = lien_polygone($zone)."?id_polygone_type=".$config_wri['id_massif'];
     return $array_zones;
 }
 
