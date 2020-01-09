@@ -9,3 +9,8 @@
 *.sublime-workspace
 *.sublime-project
 /ressources/outils/scan_liens/nosqldata.txt
+/forum/*
+!/forum/ext/*
+!/forum/config.php
+!/forum/images/smilies/*
+!/forum/phpBB*.zip
