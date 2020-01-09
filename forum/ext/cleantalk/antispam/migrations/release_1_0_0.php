@@ -25,14 +25,13 @@ class release_1_0_0 extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			//Visible settings
-			array('config.add', array('cleantalk_antispam_regs', 1)),
-			array('config.add', array('cleantalk_antispam_guests', 1)),
-			array('config.add', array('cleantalk_antispam_nusers', 1)),
-			array('config.add', array('cleantalk_antispam_apikey', '')),
-			//System settings
-			array('config.add', array('cleantalk_antispam_work_url', '')),
-			array('config.add', array('cleantalk_antispam_server_url', 'http://moderate.cleantalk.org')),
+			array('config.add', array('cleantalk_antispam_regs', 0)),
+			array('config.add', array('cleantalk_antispam_guests', 0)),
+			array('config.add', array('cleantalk_antispam_nusers', 0)),
+			array('config.add', array('cleantalk_antispam_apikey', 'enter key')),
+
+			array('config.add', array('cleantalk_antispam_work_url', 'http://moderate.cleantalk.ru')),
+			array('config.add', array('cleantalk_antispam_server_url', 'http://moderate.cleantalk.ru')),
 			array('config.add', array('cleantalk_antispam_server_ttl', 0)),
 			array('config.add', array('cleantalk_antispam_server_changed', 0)),
 			array('config.add', array('cleantalk_antispam_error_time', 0)),
@@ -52,4 +51,29 @@ class release_1_0_0 extends \phpbb\db\migration\migration
 			)),
 		);
 	}
+
+	public function update_schema()
+	{
+		return array(
+			'add_columns'	=> array(
+				SESSIONS_TABLE			=> array(
+					'ct_submit_time'	=> array('INT:11', '0'),
+				),
+				USERS_TABLE			=> array(
+					'ct_marked'	=> array('INT:11', '0'),
+				),
+			),
+		);
+	}
+
+	public function revert_schema()
+	{
+		return array(
+    			'drop_columns'        => array(
+        			SESSIONS_TABLE			=> array('ct_submit_time'),
+        			USERS_TABLE			=> array('ct_marked'),
+        		),
+		);
+	}
+
 }

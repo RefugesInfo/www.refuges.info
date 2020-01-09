@@ -1,166 +1,110 @@
-﻿<!-- INCLUDE overall_header.html -->
+<!-- INCLUDE overall_header.html -->
 
 <h1>{L_ACP_CLEANTALK_SETTINGS}</h1>
 
 <form id="acp_board" method="post" action="{U_ACTION}">
 	<fieldset>
 		<dl>
-			<dt>
-				<label for="cleantalk_antispam_regs">{L_ACP_CLEANTALK_REGS_LABEL}</label><br /><span>{L_ACP_CLEANTALK_REGS_DESCR}</span>
-			</dt>
+			<dt><label for="cleantalk_antispam_regs">{L_ACP_CLEANTALK_REGS_LABEL}</label><br /><span>{L_ACP_CLEANTALK_REGS_DESCR}</span></dt>
 			<dd>
-			    <input type="radio" class="radio" name="cleantalk_antispam_regs" value="1" <!-- IF CLEANTALK_ANTISPAM_REGS -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
-			    <input type="radio" class="radio" name="cleantalk_antispam_regs" value="0" <!-- IF not CLEANTALK_ANTISPAM_REGS -->checked="checked"<!-- ENDIF --> /> {L_NO}
+			    <input type="radio" class="radio" name="cleantalk_antispam_regs" value="1" <!-- IF CLEANTALK_ANTISPAM_REGS || CLEANTALK_ANTISPAM_APIKEY == '' -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
+			    <input type="radio" class="radio" name="cleantalk_antispam_regs" value="0" <!-- IF not CLEANTALK_ANTISPAM_REGS && CLEANTALK_ANTISPAM_APIKEY != '' -->checked="checked"<!-- ENDIF --> /> {L_NO}
 			</dd>
 		</dl>
 
 		<dl>
-			<dt>
-				<label for="cleantalk_antispam_guests">{L_ACP_CLEANTALK_GUESTS_LABEL}</label><br /><span>{L_ACP_CLEANTALK_GUESTS_DESCR}</span>
-			</dt>
+			<dt><label for="cleantalk_antispam_guests">{L_ACP_CLEANTALK_GUESTS_LABEL}</label><br /><span>{L_ACP_CLEANTALK_GUESTS_DESCR}</span></dt>
 			<dd>
-			    <input type="radio" class="radio" name="cleantalk_antispam_guests" value="1" <!-- IF CLEANTALK_ANTISPAM_GUESTS -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
-			    <input type="radio" class="radio" name="cleantalk_antispam_guests" value="0" <!-- IF not CLEANTALK_ANTISPAM_GUESTS -->checked="checked"<!-- ENDIF --> /> {L_NO}
+			    <input type="radio" class="radio" name="cleantalk_antispam_guests" value="1" <!-- IF CLEANTALK_ANTISPAM_GUESTS || CLEANTALK_ANTISPAM_APIKEY == ''  -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
+			    <input type="radio" class="radio" name="cleantalk_antispam_guests" value="0" <!-- IF not CLEANTALK_ANTISPAM_GUESTS && CLEANTALK_ANTISPAM_APIKEY != '' -->checked="checked"<!-- ENDIF --> /> {L_NO}
 			</dd>
 		</dl>
 
 		<dl>
-			<dt>
-				<label for="cleantalk_antispam_nusers">{L_ACP_CLEANTALK_NUSERS_LABEL}</label><br /><span>{L_ACP_CLEANTALK_NUSERS_DESCR}</span>
-			</dt>
+			<dt><label for="cleantalk_antispam_nusers">{L_ACP_CLEANTALK_NUSERS_LABEL}</label><br /><span>{L_ACP_CLEANTALK_NUSERS_DESCR}</span></dt>
 			<dd>
-			    <input type="radio" class="radio" name="cleantalk_antispam_nusers" value="1" <!-- IF CLEANTALK_ANTISPAM_NUSERS -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
-			    <input type="radio" class="radio" name="cleantalk_antispam_nusers" value="0" <!-- IF not CLEANTALK_ANTISPAM_NUSERS -->checked="checked"<!-- ENDIF --> /> {L_NO}
+			    <input type="radio" class="radio" name="cleantalk_antispam_nusers" value="1" <!-- IF CLEANTALK_ANTISPAM_NUSERS || CLEANTALK_ANTISPAM_APIKEY == ''  -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
+			    <input type="radio" class="radio" name="cleantalk_antispam_nusers" value="0" <!-- IF not CLEANTALK_ANTISPAM_NUSERS && CLEANTALK_ANTISPAM_APIKEY != ''  -->checked="checked"<!-- ENDIF --> /> {L_NO}
 			</dd>
 		</dl>
+
 		<dl>
-			<dt>
-				<label for="cleantalk_antispam_ccf">{L_ACP_CLEANTALK_CCF_LABEL}</label><br /><span>{L_ACP_CLEANTALK_CCF_DESCR}</span>
-			</dt>
+			<dt><label for="cleantalk_antispam_apikey">{L_ACP_CLEANTALK_APIKEY_LABEL}</label><br /><span>{L_ACP_CLEANTALK_APIKEY_DESCR}<a target="_blank" href="https://cleantalk.org/register?platform=phpbb31">https://cleantalk.org</a></span></dt>
 			<dd>
-			    <input type="radio" class="radio" name="cleantalk_antispam_ccf" value="1" <!-- IF CLEANTALK_ANTISPAM_CCF -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
-			    <input type="radio" class="radio" name="cleantalk_antispam_ccf" value="0" <!-- IF not CLEANTALK_ANTISPAM_CCF -->checked="checked"<!-- ENDIF --> /> {L_NO}
-			</dd>
-		</dl>		
-		<dl>
-			<dt>
-				<label for="cleantalk_antispam_sfw_enabled">{L_ACP_CLEANTALK_SFW_LABEL}</label><br /><span>{L_ACP_CLEANTALK_SFW_DESCR}</span></dt>
-			<dd>
-			    <input type="radio" class="radio" name="cleantalk_antispam_sfw_enabled" value="1" <!-- IF CLEANTALK_ANTISPAM_SFW_ENABLED -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
-			    <input type="radio" class="radio" name="cleantalk_antispam_sfw_enabled" value="0" <!-- IF not CLEANTALK_ANTISPAM_SFW_ENABLED -->checked="checked"<!-- ENDIF --> /> {L_NO}
-			</dd>
-		</dl>		
-		<dl>
-			<dt>
-				<label for="cleantalk_antispam_apikey">{L_ACP_CLEANTALK_APIKEY_LABEL}</label>
-				<br />
-				<span>{L_ACP_CLEANTALK_APIKEY_DESCR}<a target="_blank" href="https://cleantalk.org/register?platform=phpbb31">https://cleantalk.org</a></span>
-			</dt>
-			<dd>
-			    <input type="text" size="40" maxlength="60" name="cleantalk_antispam_apikey" placeholder="{L_ACP_CLEANTALK_APIKEY_LABEL_PLACEHOLDER}" value="{CLEANTALK_ANTISPAM_APIKEY}"/>
-				<!-- IF not CLEANTALK_ANTISPAM_KEY_IS_OK -->
-					<span style="color: red;">{L_ACP_CLEANTALK_APIKEY_IS_BAD_LABEL}</span>
-					<br>
-					<input type="submit" name="get_key_auto" value="{L_ACP_CLEANTALK_APIKEY_GET_AUTO_BUTTON_LABEL}">
-					<a href="https://cleantalk.org/register?platform=phpbb31&email={CLEANTALK_ANTISPAM_REG_EMAIL}&website={CLEANTALK_ANTISPAM_REG_URL}&product_name=antispam'" target="_blank" style="display: inline-block;">
-						<input type="button" name="get_key_manually" value="{L_ACP_CLEANTALK_APIKEY_GET_MANUALLY_BUTTON_LABEL}">
-					</a>
-					<br>
-					<span>{L_ACP_CLEANTALK_REG_NOTICE} ({CLEANTALK_ANTISPAM_REG_EMAIL}) {L_ACP_CLEANTALK_REG_NOTICE2}</span>
-					<br>
-					<span>
-						<a href="https://cleantalk.org/publicoffer" target="_blank">{L_ACP_CLEANTALK_AGREEMENT}</a>
-					</span>
-				<!-- ENDIF -->
-				<!-- IF CLEANTALK_ANTISPAM_KEY_IS_OK -->
-					<span style="color: green;">{L_ACP_CLEANTALK_APIKEY_IS_OK_LABEL}</span>
-					<br>
-					<a href="https://www.cleantalk.org/my?user_token={CLEANTALK_ANTISPAM_USER_TOKEN}">{L_ACP_CLEANTALK_APIKEY_CP_LINK_BUTTON}</a>
-				<!-- ENDIF -->
+			    <input type="text" size="40" maxlength="60" name="cleantalk_antispam_apikey" value="{CLEANTALK_ANTISPAM_APIKEY}"/>
 			</dd>
 		</dl>
+
 		<p class="submit-buttons">
 			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
 			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
 		</p>
+
 		{S_FORM_TOKEN}
 	</fieldset>
 </form>
-	
-<fieldset style="text-align: center;">
-	<form method="post">
-	<h1>{L_ACP_CLEANTALK_CHECKUSERS_TITLE}</h1><br />
-	<dl>
-		<dt>{L_ACP_CLEANTALK_CHECKUSERS_DESCRIPTION}</dt>
-		<dd style="text-align:left; margin-top: 5px;">
-			<input class="button1" type="submit" name="check_spam" value="{L_ACP_CLEANTALK_CHECKUSERS_BUTTON}" />
-		</dd>
-	</dl>
-	{S_FORM_TOKEN}
-	</form>
-	<!-- IF CT_ERROR -->
-	<div class="errorbox">
-		<p>{CT_ERROR}</p>
-	</div>
-	<!-- ELSE -->
-	<!-- ENDIF -->
-	<!-- IF CT_TABLE_USERS_SPAM -->
-	<!-- IF CT_ACP_CHECKUSERS_DONE_1 -->
-	<h3>{L_ACP_CHECKUSERS_DONE_1}</h3><br /><br />
-	<!-- ENDIF -->
+<fieldset>
+<center><h1>{L_ACP_CLEANTALK_CHECKUSERS_TITLE}</h1><br />
+<dl>
+			<dt>{L_ACP_CLEANTALK_CHECKUSERS_DESCRIPTION}</dt>
+			<dd style="text-align:left;">
+			    <button id="check_spam" onclick="location.href=location.href.replace('&finish_check=1','')+'&check_users_spam=1'">{L_ACP_CLEANTALK_CHECKUSERS_BUTTON}</button>
+			</dd>
+		</dl>
+</center>
+<!-- IF CT_ERROR -->
+<div class="errorbox">
+    <p>{CT_ERROR}</p>
+</div>
+<!-- ELSE -->
+<!-- ENDIF -->
 
-	<form method="post" style="text-align: center">
-		<table class="table1 zebra-table">
-			<thead>
-				<tr>
-				<th>{L_ACP_CHECKUSERS_USERNAME}</th>
-				<th>{L_ACP_CHECKUSERS_EMAIL}</th>
-				<th>{L_ACP_CHECKUSERS_IP}</th>
-				<th>{L_ACP_CHECKUSERS_JOINED}</th>
-				<th>{L_ACP_CHECKUSERS_LASTVISIT}</th>
-				<th>{L_ACP_CHECKUSERS_MESSAGES}</th>
-				<th>{L_ACP_CHECKUSERS_SELECT}</th>
-				</tr>
-			</thead>
-			<tbody>
-			<!-- BEGIN CT_SPAMMERS -->
-				<tr>
-				<td style="vertical-align: top;">{CT_SPAMMERS.USERNAME}</td>
-				<td style="vertical-align: top;"><a target="_blank" href="https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_EMAIL}">{CT_SPAMMERS.USER_EMAIL}</a></td>
-				<td style="vertical-align: top;"><a target="_blank" href="https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_IP}">{CT_SPAMMERS.USER_IP}</a></td>
-				<td style="vertical-align: top;">{CT_SPAMMERS.JOINED}</td>
-				<td style="vertical-align: top;">{CT_SPAMMERS.LAST_VISIT}</td>
-				<td style="vertical-align: top;"><a target="_blank" href="{CT_SPAMMERS.USER_POSTS_LINK}">{CT_SPAMMERS.USER_POSTS}</a></td>
-				<td style="vertical-align: top;"><input type="checkbox" name="ct_del_user[{CT_SPAMMERS.USER_ID}]" value="1" /></td>
-				</tr>
-			<!-- END CT_SPAMMERS -->
-			</tbody>
-		</table>
-		<br />
-		<div class="checkusers_pages">		
-		<p>
-			<ul>
-				<!-- IF CT_PAGES_TITLE -->
-				<li style="display: inline-block; padding: 3px 5px;">{L_ACP_CLEANTALK_CHECKUSERS_PAGES_TITLE}</li>
-				<!-- BEGIN CT_PAGES_CHECKUSERS -->
-				<li style="display: inline-block; padding: 3px 5px;border-radius: 3px;{CT_PAGES_CHECKUSERS.PAGE_STYLE}"><a href ="{CT_PAGES_CHECKUSERS.PAGE_LINK}">{CT_PAGES_CHECKUSERS.PAGE_NUMBER}</a></li>
-				<!-- END CT_PAGES_CHECKUSERS -->
-				<!-- ENDIF -->
-			</ul>
-		</p>
-				
-		</div>
-		<p class="submit-buttons">
-		<input type=submit class="button2" name="ct_delete_checked" value="{L_ACP_CHECKUSERS_DELETESEL}" onclick="return confirm('{LA_CLEANTALK_NOTIFICATION}')">
-		<input type=submit class="button2" name="ct_delete_all" value="{L_ACP_CHECKUSERS_DELETEALL}" onclick="return confirm('{LA_CLEANTALK_NOTIFICATION}')">
-		</p>
-		<br />{L_ACP_CHECKUSERS_DELETEALL_DESCR}
-		{S_FORM_TOKEN}
-	</form>
-	<!-- ENDIF -->
-	<!-- IF CT_ACP_CHECKUSERS_DONE_2 -->
-	<h3>{L_ACP_CHECKUSERS_DONE_2}</h3><br /><br />
-	<!-- ENDIF -->
+<!-- IF CT_TABLE_USERS_SPAM -->
+
+<!-- IF CT_ACP_CHECKUSERS_DONE_1 -->
+<h3>{L_ACP_CHECKUSERS_DONE_1}</h3><br /><br />
+<!-- ENDIF -->
+
+<form method="post">
+<center>
+<table class="table1 zebra-table">
+<thead>
+    <tr>
+	<th>{L_ACP_CHECKUSERS_USERNAME}</th>
+	<th>{L_ACP_CHECKUSERS_MESSAGES}</th>
+	<th>{L_ACP_CHECKUSERS_EMAIL}</th>
+	<th>{L_ACP_CHECKUSERS_IP}</th>
+	<th>{L_ACP_CHECKUSERS_JOINED}</th>
+	<th>{L_ACP_CHECKUSERS_LASTVISIT}</th>
+	<th>{L_ACP_CHECKUSERS_SELECT}</th>
+    </tr>
+</thead>
+<tbody>
+<!-- BEGIN CT_SPAMMERS -->
+    <tr>
+	<td style="vertical-align: top;">{CT_SPAMMERS.USERNAME}</td>
+	<td style="vertical-align: top;"><a target='_blank' href='/search.php?author_id={CT_SPAMMERS.USER_ID}&sr=posts'>{CT_SPAMMERS.USER_POSTS}</a></td>
+	<td style="vertical-align: top;"><a target='_blank' href='https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_EMAIL}'>{CT_SPAMMERS.USER_EMAIL}</a></td>
+	<td style="vertical-align: top;"><a target='_blank' href='https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_IP}'>{CT_SPAMMERS.USER_IP}</a></td>
+	<td style="vertical-align: top;">{CT_SPAMMERS.JOINED}</td>
+	<td style="vertical-align: top;">{CT_SPAMMERS.LAST_VISIT}</td>
+	<td style="vertical-align: top;"><input type='checkbox' name=ct_del_user[{CT_SPAMMERS.USER_ID}] value='1' /></td>
+    </tr>
+<!-- END CT_SPAMMERS -->
+</tbody>
+</table>
+<br />
+<input type=submit name='ct_delete_checked' value='{L_ACP_CHECKUSERS_DELETESEL}'>
+<input type=submit name='ct_delete_all' value='{L_ACP_CHECKUSERS_DELETEALL}'>
+<br />{L_ACP_CHECKUSERS_DELETEALL_DESCR}
+</center>
+</form>
+
+<!-- ENDIF -->
+
+<!-- IF CT_ACP_CHECKUSERS_DONE_2 -->
+<h3>{L_ACP_CHECKUSERS_DONE_2}</h3><br /><br />
+<!-- ENDIF -->
 </fieldset>
 
 <!-- INCLUDE overall_footer.html -->

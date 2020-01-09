@@ -3,24 +3,12 @@
     "type": "phpbb-extension",
     "description": "Antispam by CleanTalk",
     "homepage": "https://cleantalk.org",
-    "version": "5.6.9",
-    "time": "2017-06-07",
-    "license": "GPL-2.0-only",
+    "version": "4.7",
+    "time": "2016-08-18",
+    "license": "GPL-2.0",
     "authors": [
         {
             "name": "Alexey Znaev",
-            "email": "welcome@cleantalk.org",
-            "homepage": "https://cleantalk.org",
-            "role": "Developer"
-        },
-        {
-            "name": "Roman Safronov",
-            "email": "welcome@cleantalk.org",
-            "homepage": "https://cleantalk.org",
-            "role": "Developer"
-        },
-        {
-            "name": "Artyom Davydov",
             "email": "welcome@cleantalk.org",
             "homepage": "https://cleantalk.org",
             "role": "Developer"
@@ -28,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "phpbb/phpbb": ">=3.1.0-RC2"
+        "phpbb/phpbb": ">=3.1.0-RC2,<3.2.0@dev"
     },
     "require-dev": {
         "phpbb/epv": "dev-master"
@@ -36,7 +24,7 @@
     "extra": {
         "display-name": "Antispam by CleanTalk",
         "soft-require": {
-            "phpbb/phpbb": ">=3.1.0-RC2"
+            "phpbb/phpbb": ">=3.1.0-RC2,<3.2.0@dev"
         },
         "version-check": {
             "host": "www.phpbb.com",
