@@ -1,24 +1,40 @@
-Qu'est ce que refuges.info ?
-============================
+Qu'est ce que www.refuges.info ?
+===============================
 
-Le mieux, c'est d'aller voir : https://www.refuges.info
+Le mieux, c'est d'aller voir : https://www.refuges.info/wiki/index
 Le code source est sous licence WTFPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
 
-Installation
-============
+Pour en savoir plus sur les détails techniques
+==============================================
+Les explications sur la structure de la base de données, la structure du code le type de fonctions (mais pas encore la liste des fonctions) vous pouvez vous reporter au fichier :
+/ressources/principe_fonctionnement_refuges.info.txt
 
-Pour installer et coder le site de www.refuges.info vous avez besoin :
+Doc dédiée aux développeurs ayant accès à la machine wri
+========================================================
 
-* linux (pas testé sur d'autres plateformes mais sans doute possible)
-* apache 2 
-* php 5.3 ou supérieur (avec module gd)
-* postgresql (testé avec 9.1)
-* postgis (testé avec 1.5)
-* git
+Nous disposons pour chaque développeur actuellement (2020) d'un espace de test et développement sur le même serveur que tourne www.refuges.info
+Si vous voulez venir nous aider à améliorer le site, je peux vous en fournir un, venez présenter votre motivation et votre projet sur le forum https://www.refuges.info/forum
 
-Le code est publié sur github ici :
-https://github.com/RefugesInfo/www.refuges.info
+Accès aux fichiers du serveur
+=============================
 
+Avec votre espace de dév, vous avez une url ou vous pouvez tester votre code (exemple : https//sly.refuges.info)
+Un code d'accès sftp et ssh pour vous y connecter et manipuler les fichiers
+Là bas il y a git d'installé (voir plus bas pour les commandes communes)
+
+
+Accès à la base postgresql
+==========================
+
+* https://www.refuges.info/phppgadmin/
+ou
+* https://sly.refuges.info/adminersly/adminer.php
+
+Notez que la base de production s'appelle "refuges" et chaque instance dispose de sa propre copie.
+
+
+Configurer votre instance
+==========================
 * Code 
 
 Pour télécharger la dernière version de développement :
@@ -29,47 +45,26 @@ cd www.refuges.info
 ```
 Le code du site se retrouve dans un dossier nommé www.refuges.info (toutes les commandes d'après sont à faire depuis ce dossier)
 
-* Postgresql
-
- * Créer un compte d'accès à une base de donnée nommée "refuges" et créer une base appelée "refuges"
- * Pour charger votre base de donnée (fonctions GIS incluses) le fichier de dump de la structure est dans ressources
-une doc (pas totalement à jour le 03/03/2013) explique notre base dans /ressources/principe_fonctionnement_refuges.info.txt
-
-
 * Configuration des fichiers
 
  * dans /includes/
 copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée
  * A la racine : renommer le fichier htaccess.modele.txt en .htaccess (et décommenter la dernière ligne si vous voulez que les erreurs php s'affiche à l'écran)
 
-```
-cp includes/config_privee.php.modele includes/config_privee.php
-vi includes/config_privee.php -> editer le fichier pour vos paramètres à vous
-```
-
- * Créez et donnez tous les droits à l'utilisateur qui fait tourner apache au dossiers et fichiers contenus dans :
+ Pour que cela soit actif, j'ai sans doute besoin de faire une manip sur le serveur à ce stade, demandez à sly sur le forum.
  
-```
-mkdir photos_points
-chmod 777 photos_points
+RAngement actuel sur le serveur : 
+=================================
+ * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
+ * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur https://<login>.refuges.info
+ * /home/sites/refuges/www.refuges.info/ -> la version live contrôlable par l'utilisateur "refuges"
 
-mkdir forum/photos-points
-chmod 777 forum/photos-points
-
-mkdir forum/images/avatars
-chmod 777 forum/images/avatars
-```
-
-(Ces dossiers contiendront des données comme les photos des refuges ou des avatars chargés par les utilisateurs du forum)
-
-Pour en savoir plus sur les détails techniques
-==============================================
-Les explications sur la structure de la base de données, la structure du code le type de fonctions (mais pas encore la liste des fonctions) vous pouvez vous reporter au fichier :
-/ressources/principe_fonctionnement_refuges.info.txt
-
+ 
 Quelques commandes utiles de git adaptées à refuges.info
 ========================================================
-(Valable sous linux, mais sans doute ailleurs aussi)
+
+Nous utilisons github pour se coordonner au niveau du développement, il vous faudra donc presque certainement un compte sur github.
+
 Rappelez vous qu'avant de détruire quelque chose avec git, faut vraiment y aller avec des options toutes bizarres du style "--force" ou "--force-je-suis-sur"
 les commandes de bases ne détruisent rien, jamais !
 Il arrive cependant qu'on perde des fichiers, au sens propre ;-) c'est à dire qu'ils n'ont pas disparus, c'est juste qu'ils ont été déplacés
@@ -153,8 +148,6 @@ FIXME: y'a encore un truc qui m'échappe avec git, chez moi c'est marqué "git@g
 et pourtant, ça marche sans mot de passe en prenant bien ma clef... je pige pas
 
 
-Doc dédiée aux développeurs ayant accès à la machine wri
-========================================================
 
 * commandes git utiles 
  * Pour passer sur la version de développement
@@ -182,20 +175,9 @@ git checkout master
  * Sous Linux/OSX : ssh login@www.refuges.info
  * Sous windows, télécharger putty https://the.earth.li/~sgtatham/putty/latest/x86/putty.exe puis renseigner le serveur (et mode ssh port 22)
 
-* Pour tous les commandes de base sous linux:
 
-```
-ls -> liste les fichiers/dossiers
-ll -> liste les fichiers/dossiers en mode lisible
-cd www.refuges.info -> pour rentrer dans votre zone de développement
-git <options> -> pour taper des commandes git relatives à wri
-cd .. -> revenir dossier d'avant
-```
-
-* Sur le serveur : 
- * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
- * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur https://<login>.refuges.info
- * /home/sites/refuges/www.refuges.info/ -> la version live contrôlable par l'utilisateur "refuges"
+Gestion de la mise en prod des modifications
+===========================================
 
 * pour gérer la mise en live de la dernière version
  * login ssh pour se connecter sur le site actif : refuges
@@ -214,6 +196,3 @@ git pull origin dev
 ```
 (on ne touche pas aux fichiers en prod)
 
-* accès postgresql
- * https://www.refuges.info/phppgadmin/
-Notez qu'il n'y a une base de production qui s'appelle "refuges" et une, (ancienne) copie, qui s'appelle "test" accessible avec le même utilisateur et même mot de passe que l'autre.
