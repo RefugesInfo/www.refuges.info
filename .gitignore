@@ -10,7 +10,8 @@
 *.sublime-project
 /ressources/outils/scan_liens/nosqldata.txt
 /forum/*
-!/forum/ext/*
 !/forum/config.php
-!/forum/images/smilies/*
+!/forum/ext/cleantalk/*
+!/forum/ext/RefugesInfo/*
+!/forum/images/smilies/wri*
 !/forum/phpBB*.zip
