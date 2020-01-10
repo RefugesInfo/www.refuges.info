@@ -16,6 +16,9 @@ use phpbb\template\template;
 use phpbb\request\request;
 use phpbb\user;
 use phpbb\db\driver\driver_interface;
+use cleantalk\antispam\model\CleantalkSFW;
+use cleantalk\antispam\model\main_model;
+use phpbb\symfony_request;
 
 /**
 * Event listener
@@ -25,12 +28,12 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.user_setup'				=> 'load_language_on_setup',
-			'core.page_header_after'            		=> 'add_js_to_head',
-			'core.add_form_key'				=> 'form_set_time',
+			'core.user_setup'							=> 'load_language_on_setup',
+			'core.page_footer_after'     			    => 'add_js_to_footer',
 			'core.posting_modify_submission_errors'		=> 'check_comment',
 			'core.posting_modify_submit_post_before'	=> 'change_comment_approve',
-			'core.user_add_modify_data'                     => 'check_newuser',
+			'core.user_add_modify_data'                 => 'check_newuser',
+			'core.common'								=> 'global_check',
 		);
 	}
 
@@ -49,6 +52,18 @@ class main_listener implements EventSubscriberInterface
 	/* @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/* @var \cleantalk\antispam\model\CleantalkSFW */
+	protected $cleantalk_sfw;
+
+	/* @var \cleantalk\antispam\model\main_model */
+	protected $main_model;
+
+	/** @var \phpbb\symfony_request */
+	protected $symfony_request;
+
+	/** @var string php file extension  */
+	protected $php_ext;	
+
 	/* @var array Stores result of spam checking of post or topic when needed*/
 	private $ct_comment_result;
 
@@ -61,19 +76,22 @@ class main_listener implements EventSubscriberInterface
 	* @param request		$request	Request object
 	* @param driver_interface 	$db 		The database object
 	*/
-	public function __construct(template $template, config $config, user $user, request $request, driver_interface $db)
+	public function __construct(template $template, config $config, user $user, request $request, driver_interface $db, CleantalkSFW $cleantalk_sfw, main_model $main_model, symfony_request $symfony_request, $php_ext)
 	{
 		$this->template = $template;
 		$this->config = $config;
 		$this->user = $user;
 		$this->request = $request;
 		$this->db = $db;
+		$this->cleantalk_sfw = $cleantalk_sfw;
+		$this->main_model = $main_model;
+		$this->symfony_request = $symfony_request;
+		$this->php_ext = $php_ext;
 	}
-
 	/**
 	* Loads language
 	*
-	* @param array	$event		Array with event variable values
+	* @param array	$event		array with event variable values
 	*/
 	public function load_language_on_setup($event)
 	{
@@ -83,51 +101,33 @@ class main_listener implements EventSubscriberInterface
 			'lang_set' => 'common',
 		);
 		$event['lang_set_ext'] = $lang_set_ext;
+
 	}
 
 	/**
 	* Fills tamplate variable by generated JS-code with unique hash
 	*
-	* @param array	$event		Array with event variable values
+	* @param array	$event		array with event variable values
 	*/
-	public function add_js_to_head($event)
-	{
+	public function add_js_to_footer($event)
+	{		
 		if (empty($this->config['cleantalk_antispam_apikey']))
 		{
 			return;
 		}
+		$this->template->assign_var('CT_JS_VALUE', $this->main_model->cleantalk_get_checkjs_code());
+		$this->main_model->set_cookie();	
 
-		$this->template->assign_var('CT_JS_ADDON', \cleantalk\antispam\model\main_model::get_check_js_script());
 	}
-
-	/**
-	* Sets from display time in table
-	*
-	* @param array	$event		Array with event variable values
-	*/
-	public function form_set_time($event)
-	{
-		if (empty($this->config['cleantalk_antispam_apikey']))
-		{
-			return;
-		}
-
-		$data = $event->get_data();
-		$form_id = $data['form_name'];
-		if ($this->config['cleantalk_antispam_guests'] && $form_id == 'posting' || $this->config['cleantalk_antispam_regs'] && $form_id == 'ucp_register')
-		{
-			\cleantalk\antispam\model\main_model::set_submit_time();
-		}
-	}
-
 	/**
 	* Checks post or topic to spam
 	*
-	* @param array	$event		Array with event variable values
+	* @param array	$event		array with event variable values
 	*/
 	public function check_comment($event)
 	{
-		if (empty($this->config['cleantalk_antispam_apikey']))
+		$data = $event->get_data();
+		if (empty($this->config['cleantalk_antispam_apikey']) || $data['submit'] != 1)
 		{
 			return;
 		}
@@ -141,11 +141,15 @@ class main_listener implements EventSubscriberInterface
 		}
 		else if ($this->config['cleantalk_antispam_nusers'] && $this->user->data['is_registered'] == 1)
 		{
-			$sql = 'SELECT g.group_name FROM ' . USER_GROUP_TABLE
-			. ' ug JOIN ' . GROUPS_TABLE
-			. ' g ON (ug.group_id = g.group_id) WHERE ug.user_id = '
-			. (int) $this->user->data['user_id'] . ' AND '
-			. 'g.group_name = \'NEWLY_REGISTERED\'';
+			$user_group_table = USER_GROUP_TABLE;
+			$group_table = GROUPS_TABLE;
+			$user_id = (int) $this->user->data['user_id'];
+			$sql = "SELECT g.group_name 
+				FROM $user_group_table ug 
+				JOIN $group_table g
+				ON (ug.group_id = g.group_id)
+				WHERE ug.user_id = $user_id 
+				AND	g.group_name = 'NEWLY_REGISTERED'";
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			if ($row !== false && isset($row['group_name']))
@@ -153,11 +157,27 @@ class main_listener implements EventSubscriberInterface
 				$moderate = true;
 			}
 			$this->db->sql_freeresult($result);
+			//check numposts also
+			if (!$moderate)
+			{
+				$users_table = USERS_TABLE;
+				$sql = "SELECT u.user_id
+					FROM $users_table u
+					WHERE u.user_id = $user_id 
+					AND	u.user_posts <= 3";
+				$result = $this->db->sql_query($sql);
+				$row = $this->db->sql_fetchrow($result);
+				if ($row !== false && isset($row['user_id']))
+				{
+					$moderate = true;
+				}
+				$this->db->sql_freeresult($result);								
+			}
+
 		}
 
 		if ($moderate)
 		{
-			$data = $event->get_data();
 			if (
 				array_key_exists('post_data', $data) &&
 				is_array($data['post_data']) &&
@@ -169,20 +189,30 @@ class main_listener implements EventSubscriberInterface
 				$spam_check['type'] = 'comment';
 				$spam_check['sender_email'] = '';
 				$spam_check['sender_nickname'] = '';
-				if (array_key_exists('user_email', $data['post_data'])) $spam_check['sender_email'] = $data['post_data']['user_email'];
-				if (array_key_exists('username', $data['post_data'])) $spam_check['sender_nickname'] = $data['post_data']['username'];
-				if (array_key_exists('post_subject', $data['post_data'])) $spam_check['message_title'] = $data['post_data']['post_subject'];
-				$spam_check['message_body'] = utf8_normalize_nfc($this->request->variable('message', '', true));
-				if($spam_check['sender_email'] == '' && isset($this->user->data))
+				if (isset($this->user->data))
 				{
 					$spam_check['sender_email'] = $this->user->data['user_email'];
-				}
-				if($spam_check['sender_nickname'] == '' && isset($this->user->data))
-				{
 					$spam_check['sender_nickname'] = $this->user->data['username'];
 				}
+				else
+				{
+					if (array_key_exists('user_email', $data['post_data']))
+					{
+						$spam_check['sender_email'] = $data['post_data']['user_email'];
+					}
+					if (array_key_exists('username', $data['post_data']))
+					{
+						$spam_check['sender_nickname'] = $data['post_data']['username'];
+					}					
+				}
 
-				$result = \cleantalk\antispam\model\main_model::check_spam($spam_check);
+				if (array_key_exists('post_subject', $data['post_data'])) 
+				{
+					$spam_check['message_title'] = $data['post_data']['post_subject'];
+				}
+				$spam_check['message_body'] = $this->request->variable('message', '', true);
+				$result = $this->main_model->check_spam($spam_check);
+
 				if ($result['errno'] == 0 && $result['allow'] == 0) // Spammer exactly.
 				{ 
 					if ($result['stop_queue'] == 1)
@@ -204,7 +234,7 @@ class main_listener implements EventSubscriberInterface
 	/**
 	* Marks soft-spam post or comment as manual approvement needed
 	*
-	* @param array	$event		Array with event variable values
+	* @param array	$event		array with event variable values
 	*/
 	public function change_comment_approve($event)
 	{
@@ -227,7 +257,7 @@ class main_listener implements EventSubscriberInterface
 	/**
 	* Checks user registration to spam
 	*
-	* @param array	$event		Array with event variable values
+	* @param array	$event		array with event variable values
 	*/
 	public function check_newuser($event)
 	{
@@ -250,13 +280,48 @@ class main_listener implements EventSubscriberInterface
 				$spam_check['type'] = 'register';
 				$spam_check['sender_email'] = $data['user_row']['user_email'];
 				$spam_check['sender_nickname'] = $data['user_row']['username'];
-				if (array_key_exists('user_timezone', $data['user_row'])) $spam_check['timezone'] = $data['user_row']['user_timezone'];
-				$result = \cleantalk\antispam\model\main_model::check_spam($spam_check);
+				if (array_key_exists('user_timezone', $data['user_row'])) {
+					$spam_check['timezone'] = $data['user_row']['user_timezone'];
+				}
+				$result = $this->main_model->check_spam($spam_check);
 				if ($result['errno'] == 0 && $result['allow'] == 0) // Spammer exactly.
 				{
 					trigger_error($result['ct_result_comment']);
 				}
 			}
 		}
+	}	
+	/**
+	* Global checks
+	* @void
+	*/
+	public function global_check()
+	{
+		$this->cleantalk_sfw->sfw_check();
+
+		if ($this->config['cleantalk_antispam_ccf'] && !in_array($this->symfony_request->getScriptName(), array('/adm/index.'.$this->php_ext,'/ucp.'.$this->php_ext,'/posting.'.$this->php_ext)) && $this->request->variable('submit',''))
+		{
+			//Checking contact form
+			$this->ct_comment_result = null;
+			$spam_check = array();	
+
+			$spam_check['sender_email'] = $this->request->variable('email','');
+			$spam_check['sender_nickname'] = $this->request->variable('name','');
+			$spam_check['message_title'] = $this->request->variable('subject','');
+			$spam_check['message_body'] = $this->request->variable('message','');
+			
+			if ($spam_check['sender_email'] !== '' || $spam_check['message_title'] !== '' || $spam_check['message_body'] !== '' )
+			{
+				$spam_check['type'] = 'contact';
+
+				$result = $this->main_model->check_spam($spam_check);
+
+				if ($result['errno'] == 0 && $result['allow'] == 0) // Spammer exactly.
+				{				 
+					// Output error
+					trigger_error($result['ct_result_comment']);
+				}
+			}
+		}			
 	}
 }
