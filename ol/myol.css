@@ -16,11 +16,9 @@
 .ol-geocoder,
 .ol-gps,
 .myol-button {
+	position: static !important;
 	float: left;
-	position: relative !important;
-	left: 0 !important;
-	top: 0 !important;
-	margin: .2em 0 0 .2em;
+	margin: 0.2em 0 0 0.2em;
 	padding: 0; /* No grey line around the button */
 }
 
@@ -31,7 +29,7 @@
 	font-size: 1.14em !important;
 	color: black;
 	background-color: white;
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, .65);
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
 	outline: 0;
 }
 .ol-geocoder button {
@@ -77,7 +75,7 @@
 }
 .gcd-gl-result {
 	top: 3.8em !important;
-	left: .1em !important;
+	left: 0.1em !important;
 }
 
 /* Full screen */
@@ -106,7 +104,7 @@
 }
 .ol-print p {
 	margin: 0;
-	font-size: .8em;
+	font-size: 0.8em;
 	font-family: Times New Roman;
 }
 .ol-print p span {
@@ -128,12 +126,12 @@
 .ol-attribution,
 .ol-coordinate,
 .ol-length-line {
-	font-size: .8em;
+	font-size: 0.8em;
 }
 .ol-switch-layer {
-	position: absolute !important;
-	left: auto !important;
-	right: .2em;
+	position: static !important;
+	float: right;
+	margin-right: 0.2em;
 	z-index: 1;
 	background-color: white !important; /* Initial translucid */
 }
@@ -144,11 +142,11 @@
 	margin: 0;
 }
 .ol-switch-layer button {
-	padding-bottom: .5em;
+	padding-bottom: 0.5em;
 }
 .ol-switch-layer p {
 	margin: 0;
-	font-size: .8em;
+	font-size: 0.8em;
 }
 .ol-permalink {
 	position: absolute;
@@ -156,7 +154,7 @@
 	right: 0;
 	padding: 3px;
 	border-radius: 8px 0 0 8px;
-	background: rgba(255, 255, 255, .8);
+	background: rgba(255, 255, 255, 0.8);
 }
 .ol-coordinate {
 	position: absolute;
@@ -164,7 +162,7 @@
 	left: 8px;
 	padding: 2px;
 	border-radius: 4px;
-	background: rgba(0, 60, 136, .3);
+	background: rgba(0, 60, 136, 0.3);
 	color: white;
 }
 .ol-length-line {
@@ -173,7 +171,7 @@
 	left: 8px;
 	padding: 2px;
 	border-radius: 4px;
-	background: rgba(0, 60, 136, .3);
+	background: rgba(0, 60, 136, 0.3);
 	color: white;
 }
 .ol-coordinate:empty,
@@ -189,7 +187,7 @@
 	border-radius: 5px;
 	box-shadow: 0 3px 8px #888;
 	background-color: white;
-	font-size: .8em;
+	font-size: 0.8em;
 	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 	text-decoration: none;
 	color: initial;
@@ -197,10 +195,10 @@
 }
 .myol-popup p {
 	margin: 0;
-	font-size: .8em;
+	font-size: 0.8em;
 }
 .myol-popup span {
-	font-size: .7em;
+	font-size: 0.7em;
 }
 .myol-popup-hidden {
 	display: none;
