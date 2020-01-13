@@ -41,10 +41,7 @@ const refugesInfo = layerRefugesInfo({
 		new ol.control.ScaleLine(),
 		controlMousePosition(),
 		new ol.control.Zoom(),
-		new ol.control.FullScreen({
-			label: '', //HACK Bad presentation on IE & FF
-			tipLabel: 'Plein écran',
-		}),
+		controlFullScreen(),
 		controlGeocoder(),
 		controlLoadGPX(),
 		controlGPS(),

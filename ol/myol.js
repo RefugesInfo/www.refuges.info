@@ -1402,6 +1402,59 @@ function controlTilesBuffer(depth, depthFS) {
 }
 
 /**
+ * Full window polyfill for non full screen browsers (iOS)
+ */
+function controlFullScreen(options) {
+	const isFullScreenSupported = !!(document.body.webkitRequestFullscreen ||
+		(document.body.msRequestFullscreen && document.msFullscreenEnabled) ||
+		(document.body.requestFullscreen && document.fullscreenEnabled));
+
+	// Force the control button display
+	if (!isFullScreenSupported) {
+		document.body.msRequestFullscreen = true;
+		document.msFullscreenEnabled = true;
+	}
+
+	// Call the former control constructor
+	const control = new ol.control.FullScreen(Object.assign({
+		label: '', //HACK Bad presentation on IE & FF
+		tipLabel: 'Plein écran',
+	}, options));
+
+	// Things dependant on the map container
+	control.setMap = function(map) {
+		ol.control.FullScreen.prototype.setMap.call(this, map);
+		const el = map.getTargetElement();
+
+		// Simulate full screen actions
+		if (!isFullScreenSupported) {
+			el.msRequestFullscreen = function() {
+				document.msFullscreenElement = true; // Note for isFullScreen
+				control.handleFullScreenChange_(); // Change the control class
+			};
+			document.exitFullscreen = function() {
+				document.msFullscreenElement = false;
+				control.handleFullScreenChange_();
+			};
+		}
+
+		// Reenforce container CSS when full screen / window
+		window.addEventListener('resize', sizeChange);
+		map.on('change:size', sizeChange);
+
+		function sizeChange() {
+			if (document.webkitIsFullScreen || document.msFullscreenElement || document.fullscreenElement)
+				el.classList.add('ol-map-full-window');
+			else
+				el.classList.remove('ol-map-full-window');
+			map.updateSize();
+		}
+	};
+
+	return control;
+}
+
+/**
  * Geocoder
  * Requires https://github.com/jonataswalker/ol-geocoder/tree/master/dist
  */
@@ -2497,10 +2550,7 @@ function controlsCollection(options) {
 		controlMousePosition(),
 		controlLengthLine(),
 		new ol.control.Zoom(),
-		new ol.control.FullScreen({
-			label: '', //HACK Bad presentation on IE & FF
-			tipLabel: 'Plein écran',
-		}),
+		controlFullScreen(),
 		controlGeocoder(),
 		controlGPS(options.controlGPS),
 		controlLoadGPX(),

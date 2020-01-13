@@ -16,11 +16,7 @@ const controls = [
 		new ol.control.ScaleLine(),
 		controlMousePosition(),
 		new ol.control.Zoom(),
-		new ol.control.FullScreen({
-			label: '', //HACK Bad presentation on IE & FF
-			tipLabel: 'Plein écran',
-		}),
-		//controlDownload(),
+		controlFullScreen(),
 		new ol.control.Attribution({
 			collapsible: false, // Attribution always open
 		}),
