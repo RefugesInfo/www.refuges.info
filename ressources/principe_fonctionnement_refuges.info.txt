@@ -1,5 +1,5 @@
 Ce fichier texte, non protégé et accessible aussi par Internet tente d'être une première approche pour qui voudrait
-comprendre comment marche le site refuges.info au niveau logiciel.
+comprendre comment s'articule le site refuges.info au niveau logiciel.
 
 Comme le code est sous WTFPL (voir fichier licence.txt), il n'y a pas de problème à que n'importe qui trouve le comment ça marche
 Cependant, merci de n'indiquer ici aucun mot de passe du site.
@@ -33,7 +33,7 @@ La table des commentaires des internautes sur un point de la base
 -- plein de gens ne soit considéré comme "non utile" par un seul.
 * raison_demande_correction : un champ libre pour que l'internaute explique ses raisons de penser que le commentaire est périmé ou très intéressant
 * auteur : le nom de l'auteur (c'est un champs laissé libre pour que les internautes non connectés puissent mettre ce qu'il veulent)
-* id_createur : Le numéro, dans la table phpbb3_users de l'internaute, connecté ayant mis ce commentaire
+* id_createur : Le numéro, dans la table phpbb3_users de l'internaute, connecté ayant mis ce commentaire, qui outrepasse "auteur" (on peut être non connecté ou connecté, auquel cas, l'auteur est vide car on le récupère des infos dans phpBB)
 
 points
 ======
@@ -106,11 +106,6 @@ type_precision_gps
 ==================
 les catégories possibles pour un point GPS ( lue sur une carte, pris sur le terrain, au pif,...)
 
-lien_polygone_gps
-=================
-la table de liaison entre les polygones et les points_gps
-* ordre : le champ (entier) permettant de mettre dans l'ordre les points du polygone
-
 code php
 --------
 
@@ -142,14 +137,13 @@ Exemple, pour afficher la fiche d'un 'point, on trouvera par exemple :
 /vue/point.js
 
 
-Notez qu'en 2015 ont est loin d'avoir terminé ! Outre les modules externes comme Leaflet et le forum phpBB
-qui n'y passeront sans doute jamais, il reste plusieurs modules du site qu'on a toujours pas passé sous ce format.
+En 2020, tout sauf /gps et /mobile /forum et /ol utilisent le format MVC
 
 Une API pour refuges.info
 -------------------------
 pourquoi faire ?
 ----------------
-Nous utilisons une carte interactive sur notre site (avec Leaflet) et le besoin que la partie javascript intérroge 
+Nous utilisons une carte interactive sur notre site (avec OpenLayers) et le besoin que la partie javascript intérroge 
 notre base existe depuis longtemps, nous avons donc codé une sorte d'API assez spécifique au besoin d'affichage sur carte, et 
 conçue dans le but de bien marcher avec Leaflet.
 Par la suite, une version mobile du site a été créé qui devrait pouvoir s'installer de manière indépendante comme application html5
@@ -159,20 +153,12 @@ c'est un peu fait de bric et de broc
 
 Pour tout ça, une API unique (assez stable) fournissant points et commentaires pourrait vraiment servir
 
-existant (que j’appellerais API version 1)
-------------------------------------------
-L'existant, c'est l'appel à:
-/exportation/exportations.php
-ça n'exporte que des points (pas les commentaires ni photos) et les paramètres sont passés en GET, 
-le résultat se fait en gml, gpx, json, kml selon le paramètre demandé &format=gml
-exemple :
-http://www.refuges.info/exportations/exportations.php?liste_id_point=33&format=gml
+existant sur /api
+-----------------
 
-La doc de cette API n'est documentée nulle part (ce qui faudrait faire) ainsi qu'une uniformisation avec notre API
-interne de récupération d'info pour factoriser ce code.
-L'ajout de la récupération des commentaires serait un vrai plus.
 Le débat peut continuer ici :
 http://www.refuges.info/forum/viewtopic.php?t=5259
+Et la doc est ici : https://www.refuges.info/api/doc/
 
 
 Structure de donnée des objects point, polygone, commentaire dans le code
