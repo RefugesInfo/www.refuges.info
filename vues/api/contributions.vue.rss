@@ -21,7 +21,7 @@ $rss .= "	<atom:link href=\"https://$config_wri[nom_hote]".htmlspecialchars($_SE
 $rss .= "	<description>$config_wri[copyright_API]</description>\r\n";
 $rss .= "	<language>fr</language>\r\n";
 $rss .= "	<image>\r\n";
-$rss .= "		<url>https://$config_wri[nom_hote]/mobile/images/icone.svg</url>\r\n";
+$rss .= "		<url>https://$config_wri[nom_hote]/images/icone-rss.svg</url>\r\n";
 $rss .= "		<title>Refuges.info</title>\r\n";
 $rss .= "		<link>https://$config_wri[nom_hote]/</link>\r\n";
 $rss .= "		<height>64</height>\r\n";
