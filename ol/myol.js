@@ -1405,7 +1405,7 @@ function controlTilesBuffer(depth, depthFS) {
  * Full window polyfill for non full screen browsers (iOS)
  */
 function controlFullScreen(options) {
-	const isFullScreenSupported = !!(document.body.webkitRequestFullscreen ||
+	let isFullScreenSupported = !!(document.body.webkitRequestFullscreen ||
 		(document.body.msRequestFullscreen && document.msFullscreenEnabled) ||
 		(document.body.requestFullscreen && document.fullscreenEnabled));
 
@@ -1426,30 +1426,38 @@ function controlFullScreen(options) {
 		ol.control.FullScreen.prototype.setMap.call(this, map);
 		const el = map.getTargetElement();
 
-		// Simulate full screen actions
+		// Simulate full screen actions if no full screen authorised
 		if (!isFullScreenSupported) {
-			el.msRequestFullscreen = function() {
-				document.msFullscreenElement = true; // Note for isFullScreen
-				control.handleFullScreenChange_(); // Change the control class
-			};
-			document.exitFullscreen = function() {
-				document.msFullscreenElement = false;
-				control.handleFullScreenChange_();
-			};
+			el.msRequestFullscreen = toggle;
+			document.exitFullscreen = toggle;
 		}
 
-		// Reenforce container CSS when full screen / window
-		window.addEventListener('resize', sizeChange);
-		map.on('change:size', sizeChange);
-
-		function sizeChange() {
-			if (document.webkitIsFullScreen || document.msFullscreenElement || document.fullscreenElement)
-				el.classList.add('ol-map-full-window');
-			else
-				el.classList.remove('ol-map-full-window');
-			map.updateSize();
+		function toggle() {
+			document.msFullscreenElement = !document.msFullscreenElement; // Flag for isFullScreen
+			map.setTarget(isFullScreen() ? document.body : el); // Temporary attach the map to the body to have it full window
+			el.classList[isFullScreen() ? 'add' : 'remove']('ol-map-full-window');
+			control.handleFullScreenChange_(); // Change the button class
 		}
+
+		[
+			'webkitfullscreenchange', // Edge Safari
+			'MSFullscreenChange', // IE
+			//'fullscreenchange', // Chrome, Opera, Brave
+		].forEach(
+			function(eventType) {
+				document.addEventListener(eventType, function() {
+					el.classList[isFullScreen() ? 'add' : 'remove']('ol-map-full-window');
+					map.getViewport().classList[isFullScreen() ? 'add' : 'remove']('ol-map-full-window');
+					map.updateSize();
+				}, false);
+			});
 	};
+
+	function isFullScreen() {
+		return !!(
+			document.webkitIsFullScreen || document.msFullscreenElement || document.fullscreenElement
+		);
+	}
 
 	return control;
 }

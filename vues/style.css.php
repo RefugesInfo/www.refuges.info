@@ -861,9 +861,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* Carte de la page des points mobiles */
 #carte-point {
-  width: 50%; /* Support of non CSS3 browsers (Safari on Windows)*/
-  height: 380px;
+  width: 50%; /* Support of non CSS3 browsers (Safari)*/
   width: calc(100vw - 20px);
+  height: 380px; /* Support of non CSS3 browsers (Safari)*/
   height: 100vw;
   max-height: 400px;
 }
