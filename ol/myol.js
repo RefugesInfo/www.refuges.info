@@ -1405,13 +1405,15 @@ function controlTilesBuffer(depth, depthFS) {
  * Full window polyfill for non full screen browsers (iOS)
  */
 function controlFullScreen(options) {
-	let pseudoFullScreen = !(document.body.webkitRequestFullscreen ||
+	let pseudoFullScreen = !(
+		document.body.webkitRequestFullscreen || // What is tested by ol.control.FullScreen
 		(document.body.msRequestFullscreen && document.msFullscreenEnabled) ||
-		(document.body.requestFullscreen && document.fullscreenEnabled));
+		(document.body.requestFullscreen && document.fullscreenEnabled)
+	);
 
 	// Force the control button display if no full screen is supported
 	if (pseudoFullScreen) {
-		document.body.msRequestFullscreen = true;
+		document.body.msRequestFullscreen = true; // What is tested by ol.control.FullScreen
 		document.msFullscreenEnabled = true;
 	}
 
@@ -1421,22 +1423,29 @@ function controlFullScreen(options) {
 		tipLabel: 'Plein écran',
 	}, options));
 
-	// Simulate full screen actions if no full screen authorised
-	if (pseudoFullScreen)
-		control.setMap = function(map) {
-			//HACK setup when the control is added to the map
-			ol.control.FullScreen.prototype.setMap.call(this, map);
+	// Add some tricks when the map is known !
+	control.setMap = function(map) {
+		ol.control.FullScreen.prototype.setMap.call(this, map);
 
-			const el = map.getTargetElement();
-			el.msRequestFullscreen = toggle;
+		const el = map.getTargetElement();
+		if (pseudoFullScreen) {
+			el.requestFullscreen = toggle; // What is called first by ol.control.FullScreen
 			document.exitFullscreen = toggle;
+		} else {
+			document.addEventListener('webkitfullscreenchange', toggle, false); // Edge, Safari
+			document.addEventListener('MSFullscreenChange', toggle, false); // IE
+		}
 
-			function toggle() {
-				document.msFullscreenElement = !document.msFullscreenElement; // Toggle isFullScreen flag
-				el.classList[document.msFullscreenElement ? 'add' : 'remove']('ol-pseudo-fullscreen');
-				control.handleFullScreenChange_(); // Change the button class & resize the map
-			}
-		};
+		function toggle() {
+			if (pseudoFullScreen) // Toggle the simulated isFullScreen & the control button
+				document.webkitIsFullScreen = !document.webkitIsFullScreen;
+			const isFullScreen = document.webkitIsFullScreen ||
+				document.fullscreenElement ||
+				document.msFullscreenElement;
+			el.classList[isFullScreen ? 'add' : 'remove']('ol-pseudo-fullscreen');
+			control.handleFullScreenChange_(); // Change the button class & resize the map
+		}
+	};
 	return control;
 }
 
