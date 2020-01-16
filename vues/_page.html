@@ -33,6 +33,9 @@ if ($vue->http_status_code)
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri[encodage_des_contenu_web]?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<script nomodule src="https://cdn.polyfill.io/v3/polyfill.min.js"></script>
 		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>" />
 		<?if (count ($vue->css))
 			foreach ($vue->css as $css) {?>
