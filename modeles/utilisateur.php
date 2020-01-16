@@ -15,7 +15,7 @@ function infos_utilisateur($id_utilisateur)
   $utilisateur=$res->fetch();
   // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
   if (!$utilisateur)
-    return erreur("Utilisateur inexistant",$query);
+    return erreur("Utilisateur inexistant",$query,"pasunbug");
   else {
     $utilisateur->username=html_entity_decode($utilisateur->username);
     return $utilisateur;

@@ -10,6 +10,7 @@ require_once ('bdd.php');
 require_once ('gestion_erreur.php');
 require_once ('point.php');
 require_once ('mise_en_forme_texte.php');
+require_once ('utilisateur.php');
 
 
 /**********************************************************************************************
@@ -484,16 +485,28 @@ function transfert_forum($commentaire)
     // On pourrait se dire que déplacer c'est plus simple. Oui, en effet, mais je préfère profiter de la fonction "suppression_commentaire" toute faite. Et donc faire une copie à cet endroit.
     copy($photo_a_conserver,$config_wri['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
   }
-
-// note sly 17/08/2013 : j'ajoute un "_" à la suite du nom de l'auteur, c'est un peu curieux,
-// mais ça permet de réduire les chances qu'on le confonde avec un utilisateur du forum portant le même nom exactement
-// de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
-  $auteur = 'Anonyme';
-  if ($commentaire->auteur_commentaire)
-    $auteur = substr($commentaire->auteur_commentaire,0,22).'_';
-  while (strlen($auteur) < 3)  // La longueur minimum requise par PhpBB est de 3
-    $auteur .= '_';
-
+  
+  
+  if ($commentaire->id_createur_commentaire != 0) // L'utilisateur qui a posté ce commentaire était connecté
+  {    
+    $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
+    if ($utilisateur->erreur) //  L'utilisateur n'existe plus ?, ça voudrait dire qu'il a existé, a rentrer un commentaire, mais qu'un modérateur à supprimé son compte ? bon, tout est possible dans ce monde ! prévoyons ce cas :
+      $commentaire->id_createur_commentaire=0; // on le force à Anonyme
+    else // Tout s'est bien passé, l'utilisateur existe, inutile de renseigner un nom d'auteur, vu qu'il a un compte
+      $auteur="";
+  }
+  if ($commentaire->id_createur_commentaire==0)
+      // Par défaut on choisi ce nom si on a rien d'autre
+      $auteur = 'Anonyme';
+      
+      // note sly 17/08/2013 : j'ajoute un "_".rand(1,999) à la suite du nom de l'auteur, c'est un peu curieux,
+      // mais ça permet de réduire les chances qu'on le confonde avec un utilisateur du forum portant le même nom exactement
+      // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
+      // Et comme un utilisateur phpBB doit contenir au moins 3 caractères et 25 maximum, s'il s'appelait "a" ça ferait "a_1" au pire, soit les 3 caractères mini
+      // et s'il s'appellait abcdefghijklmnopqrstuvwxyz0123456789 (36 caractères) substr 0,20 + _ + rand(1,999) va donner abcdefghijklmnopqrst_999 max soit 24 charactères
+      if ($commentaire->auteur_commentaire)
+        $auteur = substr($commentaire->auteur_commentaire,0,20).'_'.rand(1,999);
+  
   // On appelle la fonction du forum qui cree un post
   forum_submit_post ([
     'action' => 'reply',
