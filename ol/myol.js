@@ -1405,12 +1405,12 @@ function controlTilesBuffer(depth, depthFS) {
  * Full window polyfill for non full screen browsers (iOS)
  */
 function controlFullScreen(options) {
-	let isFullScreenSupported = !!(document.body.webkitRequestFullscreen ||
+	let pseudoFullScreen = !(document.body.webkitRequestFullscreen ||
 		(document.body.msRequestFullscreen && document.msFullscreenEnabled) ||
 		(document.body.requestFullscreen && document.fullscreenEnabled));
 
-	// Force the control button display
-	if (!isFullScreenSupported) {
+	// Force the control button display if no full screen is supported
+	if (pseudoFullScreen) {
 		document.body.msRequestFullscreen = true;
 		document.msFullscreenEnabled = true;
 	}
@@ -1421,44 +1421,22 @@ function controlFullScreen(options) {
 		tipLabel: 'Plein écran',
 	}, options));
 
-	// Things dependant on the map container
-	control.setMap = function(map) {
-		ol.control.FullScreen.prototype.setMap.call(this, map);
-		const el = map.getTargetElement();
+	// Simulate full screen actions if no full screen authorised
+	if (pseudoFullScreen)
+		control.setMap = function(map) {
+			//HACK setup when the control is added to the map
+			ol.control.FullScreen.prototype.setMap.call(this, map);
 
-		// Simulate full screen actions if no full screen authorised
-		if (!isFullScreenSupported) {
+			const el = map.getTargetElement();
 			el.msRequestFullscreen = toggle;
 			document.exitFullscreen = toggle;
-		}
 
-		function toggle() {
-			document.msFullscreenElement = !document.msFullscreenElement; // Flag for isFullScreen
-			map.setTarget(isFullScreen() ? document.body : el); // Temporary attach the map to the body to have it full window
-			el.classList[isFullScreen() ? 'add' : 'remove']('ol-map-full-window');
-			control.handleFullScreenChange_(); // Change the button class
-		}
-
-		[
-			'webkitfullscreenchange', // Edge Safari
-			'MSFullscreenChange', // IE
-			//'fullscreenchange', // Chrome, Opera, Brave
-		].forEach(
-			function(eventType) {
-				document.addEventListener(eventType, function() {
-					el.classList[isFullScreen() ? 'add' : 'remove']('ol-map-full-window');
-					map.getViewport().classList[isFullScreen() ? 'add' : 'remove']('ol-map-full-window');
-					map.updateSize();
-				}, false);
-			});
-	};
-
-	function isFullScreen() {
-		return !!(
-			document.webkitIsFullScreen || document.msFullscreenElement || document.fullscreenElement
-		);
-	}
-
+			function toggle() {
+				document.msFullscreenElement = !document.msFullscreenElement; // Toggle isFullScreen flag
+				el.classList[document.msFullscreenElement ? 'add' : 'remove']('ol-pseudo-fullscreen');
+				control.handleFullScreenChange_(); // Change the button class & resize the map
+			}
+		};
 	return control;
 }
 
