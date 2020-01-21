@@ -120,6 +120,9 @@ switch ($periode)
 	content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
 	background: yellow;
 }
+.text-strong {
+	color: initial;
+}
 
 /*==================================================================*/
 /* MISE EN PAGE GENERALE DES TYPES                                  */
