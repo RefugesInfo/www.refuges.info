@@ -45,19 +45,16 @@
         <fieldset>
             <label>
                 Longitude :
-                <input type="text" id="viseur-lon" size="12" maxlength="12" />&nbsp;
+                <input type="text" id="viseur-lon" size="12" maxlength="12" />(WGS84)&nbsp;
 				 <span style="display:none"> / X : <input type="text" id="viseur-x" size="7" maxlength="12" /> (CH 1903)</span> 
             </label>
             <label>
                 Latitude :
-                <input type="text" id="viseur-lat" size="12" maxlength="12" /> &nbsp;
+                <input type="text" id="viseur-lat" size="12" maxlength="12" />(WGS84)&nbsp;
 				<span> / Y : <input type="text" id="viseur-y" size="7" maxlength="12" /></span>
             </label>
             <label>
-                Déplacez le viseur pour modifier la position (n'oubliez pas de valider).
-            </label>
-            <label>
-                <strong>Attention:</strong> Ces coordonnées sont relatives à l'ellipsoïde WGS84. Il se peut qu'elles ne correspondent pas pour d'anciennes cartes. Consultez le cartouche de la carte pour vérifier son ellipsoïde de référence.
+                Saisissez ou déplacez le viseur pour modifier la position (n'oubliez pas de valider).
             </label>
             <br />&nbsp;
             <label>Provenance
@@ -110,7 +107,7 @@
             <?}?>
         </fieldset>
         <fieldset>
-                <span><a href="<?=$vue->lien_bbcode?>">Syntaxe possible</a> (bouton du milieu pour nouvel onglet)</span>
+                    <span><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></span>
                     <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
                     <label class="textarea"><span><?=ucfirst($tx_params->label)?></span>
                         <textarea class="textarea" rows="5" cols="80" name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
