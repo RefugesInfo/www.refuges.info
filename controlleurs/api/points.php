@@ -44,8 +44,6 @@ $req->format = $_REQUEST['format'];
 $req->detail = $_REQUEST['detail'];
 $req->format_texte = $_REQUEST['format_texte'];
 $req->nb_points = $_REQUEST['nb_points'];
-$req->nb_coms = $_REQUEST['nb_coms'];
-$req->nb_points_proches = $_REQUEST['nb_points_proches'];
 $req->type_points = $_REQUEST['type_points'];
 
 // Ici c'est les valeurs possibles
@@ -85,38 +83,6 @@ if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
             break;
         default:
             $req->nb_points = "all";
-            break;
-    }
-}
-if(!is_numeric($req->nb_coms)) {
-    switch ($req->page) {
-        case 'bbox':
-            $req->nb_coms = 0;
-            break;
-        case 'massif':
-            $req->nb_coms = 0;
-            break;
-        case 'point':
-            $req->nb_coms = 5;
-            break;
-        default:
-            $req->nb_coms = 0;
-            break;
-    }
-}
-if(!is_numeric($req->nb_points_proches) || $req->page!="point") { // On empêche le retour de points quand on a plusieurs points proches
-    switch ($req->page) {
-        case 'bbox':
-            $req->nb_points_proches = 0;
-            break;
-        case 'massif':
-            $req->nb_points_proches = 0;
-            break;
-        case 'point':
-            $req->nb_points_proches = 3;
-            break;
-        default:
-            $req->nb_points_proches = 0;
             break;
     }
 }
@@ -289,75 +255,6 @@ foreach ($points_bruts as $point) {
       
       $points->$i->description['valeur']=htmlspecialchars(bbcode2txt($description));
     }
-    /****************************** POINTS PROCHES ******************************/
-
-    if ($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses'] &&
-        $req->nb_points_proches != 0)
-    {
-        $conditions = new stdClass;
-        $conditions->limite = $req->nb_points_proches+1; // Parce que le point que l'on observe est retourné en premier
-        $conditions->ouvert = 'oui';
-        
-        $g = array ( 'lat' => $point->latitude, 'lon' => $point->longitude , 'rayon' => 5000 );
-        $conditions->geometrie = cree_geometrie( $g , 'cercle' );
-        $conditions->avec_distance=True;
-
-        $points_proches=infos_points($conditions);
-
-        if (count($points_proches)) {
-            $k=0;
-            foreach ($points_proches as $point_proche) 
-            {
-                //On ne veut pas dans les points proches le point lui même
-                if ($point_proche->id_point!=$point->id_point)
-                {
-                    $points->$i->pp[$k]['id']=$point_proche->id_point;
-                    $points->$i->pp[$k]['nom']=$point_proche->nom;
-                    $points->$i->pp[$k]['alt']=$point_proche->altitude;
-                    $points->$i->pp[$k]['type']['id']=$point_proche->id_point_type;
-                    $points->$i->pp[$k]['type']['valeur']=$point_proche->nom_type;
-                    $points->$i->pp[$k]['distance']=$point_proche->distance;
-                    $k++;
-                }
-            }
-            $points->$i->pp[nb] = $k;
-        }
-
-        unset($conditions);
-        unset($point_proche);
-        unset($points_proches);
-    }
-
-    /****************************** COMMENTAIRES ******************************/
-
-    $conditions = new stdClass();
-    $conditions->ids_points = $point->id_point;
-    $conditions->limite = $req->nb_coms;
-    $tous_commentaires = infos_commentaires ($conditions);
-
-    $k=0;
-    foreach ($tous_commentaires AS $commentaire)
-    {
-        $points->$i->coms[$k]['id'] = $commentaire->id_commentaire;
-        $points->$i->coms[$k]['date'] = $commentaire->date;
-        $points->$i->coms[$k]['createur']['id'] = $commentaire->id_createur_commentaire;
-        // info sur l'auteur du commentaire (authentifié ou non)
-        if ($commentaire->id_createur_commentaire==0) // non authentifié
-        $points->$i->coms[$k]['createur']['nom']=$commentaire->auteur_commentaire;
-        else
-        $points->$i->coms[$k]['createur']['nom'] = infos_utilisateur($commentaire->id_createur_commentaire)->username;
-        $points->$i->coms[$k]['texte'] = $commentaire->texte;
-        $points->$i->coms[$k]['photo']['nb'] = $commentaire->photo_existe;
-        $points->$i->coms[$k]['photo']['date'] = $commentaire->date_photo;
-        $points->$i->coms[$k]['photo']['reduite'] = $commentaire->lien_photo['reduite'];
-        $points->$i->coms[$k]['photo']['originale'] = $commentaire->lien_photo['originale'];
-        $k++;
-    }
-    $points->$i->coms['nb'] = $k;
-
-    unset($conditions);
-    unset($commentaire);
-    unset($tous_commentaires);
 
     /****************************** FORMATAGE DU TEXTE ******************************/
 
