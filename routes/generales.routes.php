@@ -37,9 +37,10 @@ if ($controlleur->url_decoupee[0]=="api")
   require_once ("api.routes.php");
   exit(0);
 }
-// Include général
+// Include général pour les pages du site vues par des humains (pas comme l'api ou similaires)
 require_once ('autoconnexion.php');
 require_once ('wiki.php');
+auto_login_phpbb_users();
 
 switch ($controlleur->url_decoupee[0])
 {
@@ -55,34 +56,16 @@ switch ($controlleur->url_decoupee[0])
     case "formulaire_exportations" :
     case "point_formulaire_recherche" :
     case "formulaire_rss" :
-        auto_login_phpbb_users();
+    case "point_formulaire_modification" :
+    case "point_modification" :
+    case "test" :
+    case "point_ajout" :
         $controlleur->type=$controlleur->url_decoupee[0];
         break;
-    case "point-json":
-        $controlleur->type="point";
-        $vue->template="point.json";
-        break;
-    case "index": case "" :
-        auto_login_phpbb_users();
+    case "" : // c'est la home page "/"
         $controlleur->type="index";
         break;
-    case "point_formulaire_modification.php" : case "point_formulaire_modification" :
-        auto_login_phpbb_users();
-        $controlleur->type="point_formulaire_modification";
-        break;
-    case "point_modification.php" : case "point_modification" :
-        auto_login_phpbb_users();
-        $controlleur->type="point_modification";
-        break;
-    case "point_ajout" :
-        auto_login_phpbb_users();
-        $controlleur->type="point_ajout_choix_type";
-        break;
-    case "test" :
-        $controlleur->type="test";
-        break;
     case "gestion" :
-        auto_login_phpbb_users();
         require_once ("gestion.routes.php");
         break;
     default : 
