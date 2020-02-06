@@ -1,7 +1,8 @@
 <?php
 /**********************************************************************************************
 Ce fichier regroupe les fonctions de gestion des autres fonctions d'une manière généralisée
-- retour d'erreurs pour l'instant
+- retour d'erreurs
+- outils de benchmarking
 - idéalement, le traitement des retours devrait se faire ici aussi
 **********************************************************************************************/
 
@@ -65,3 +66,13 @@ function d($a=null,$b=null,$c=null,$d=null)
 	die("</pre>");
 }
 
+
+// On enregistre le début du script (en réalité, pas vraiment le début, y'a plusieurs includes avant ça, mais ça suffit pour détecter le temps d'execution d'un traitement
+$__time_start = microtime(true); 
+
+function temps_execution()
+{
+  global $__time_start;
+
+  return round(microtime(true) - $__time_start,4);
+}
