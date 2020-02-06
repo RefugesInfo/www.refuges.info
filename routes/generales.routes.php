@@ -29,6 +29,18 @@ $vue->template='_page.html';
 // On pourrait être tenté de faire une conversion direct de url vers controlleur, mais si un filou commence à indiquer
 // n'importe quelle url, il pourrait réussir à ouvrir des trucs pas souhaités, avec une liste, on s'assure
 // de n'autoriser que ceux que l'on a
+
+// cas specifique, light, des appels à l'api : car les routes de l'api ne fonctionnent pas tout à fait comme les autres, il faudrait pouvoir uniformiser et pour ça, être plus flexible sur la gestion routes + controlleurs + vues
+// et en plus je réduis l'include de fichiers inutiles
+if ($controlleur->url_decoupee[0]=="api")
+{
+  require_once ("api.routes.php");
+  exit(0);
+}
+// Include général
+require_once ('autoconnexion.php');
+require_once ('wiki.php');
+
 switch ($controlleur->url_decoupee[0])
 {
     // sly: Pour toutes ces routes, on est dans un cas simple, l'url correspond au controlleur du même nom, factorisation !
@@ -72,10 +84,6 @@ switch ($controlleur->url_decoupee[0])
     case "gestion" :
         auto_login_phpbb_users();
         require_once ("gestion.routes.php");
-        break;
-    case "api" :
-        require_once ("api.routes.php");
-        exit(0); // magouille car les routes de l'api ne fonctionnent pas tout à fait comme les autres, il faudrait pouvoir uniformiser et pour ça, être plus flexible sur la gestion routes + controlleurs + vues
         break;
     default : 
         $vue->http_status_code = 404;
