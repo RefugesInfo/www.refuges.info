@@ -160,9 +160,17 @@ $points = new stdClass();
 $points_bruts = infos_points($params);
 
 /****************************** INFOS GÉNÉRALES ******************************/
-
+/*
+L'idée est de générer une grosse collection de points avec presque toutes leurs propriétés, la vue ne se servant que ce dont elle a besoin selon qu'elle est csv, gpx, etc. 
+ça consome plus de RAM bien sûr et plus de CPU, mais ça simplifie vachement le code en ayant le même traitement quel que soit la vue
+Seule exception à ça, le cas du format "geojson" :
+Car c'est celui utilisé par la carte et que le fichier est généré par un json_encode($point) qui deviendrait trop gros pour les usages en mobilité et débit pourri.
+*/
 $i = 0;
 foreach ($points_bruts as $point) {
+    if($point->id_type_precision_gps == $config_wri['id_coordonees_gps_fausses']) // les cabanes cachées ne sont pas exportées. Les coordonnées étant volontairement stockées fausses, les sortir ne fera que créer de la confusion 
+      break;
+    
     $points->$i = new stdClass();
     $points->$i->id = $point->id_point;
     $points->$i->lien = lien_point($point);
@@ -176,11 +184,6 @@ foreach ($points_bruts as $point) {
 		default:
 			$points->$i->sym = $point->symbole;
 	}
-    // On affiche les coordonnées que si elles ne sont pas cachées
-    if($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses']) {
-        $points->$i->coord['long'] = $point->longitude;
-        $points->$i->coord['lat'] = $point->latitude;
-    }
     // FIXME sly 05/12/2019 : ça me rend fou cette recopie intégrale propriété par propriété. ça oblige à venir maintenir ça !
     // $points[]=$point; n'aurait il pas suffit ? et en plus le nom des propriété changent de peu et je passe mon temps à ne plus m'en rappeler !
     // certes ça fait un joli array final multi-niveau et un joli json_encode($point), mais franchement, le jeu en vaut-il la chandelle ?
@@ -191,9 +194,12 @@ foreach ($points_bruts as $point) {
     $points->$i->places['valeur'] = $point->places;
     $points->$i->etat['valeur'] = texte_non_ouverte($point);
     $points->$i->type['icone'] = choix_icone($point);
-
+    $points_geojson[$point->id_point]['geojson'] = $point->geojson; // FIXME: comme l'array $points est converti en intégralité en xml ou json, je planque dans une autre variable ce que je veux séparément
+    
     if ($req->format!="geojson" or $req->detail=="complet") // En geojson, utilisé par la carte, on a pas besoin de tout ça, autant simplifier pour réduire le temps de chargement, sauf si on appel explicitement le mode complet avec &detail=complet
     {
+      $points->$i->coord['long'] = $point->longitude;
+      $points->$i->coord['lat'] = $point->latitude;
       $points->$i->etat['id'] = $point->conditions_utilisation;
       $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
       $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
@@ -239,7 +245,7 @@ foreach ($points_bruts as $point) {
       $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
 
       /*
-      sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx, ça pourrait aussi être récupéré pour le kml je crois
+      sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx, ça pourrait aussi être réutilisé pour le kml
       */
       $description="";
       if ($point->equivalent_places!="" and !empty($point->places))
@@ -273,8 +279,7 @@ foreach ($points_bruts as $point) {
     $i++;
 }
 $nombre_points = $i;
-unset($points_bruts, $i);
-
+//d($point);
 /****************************** FORMAT VUE ******************************/
 
 include($config_wri['chemin_vues'].'api/points.vue.'.$req->format.".php");
