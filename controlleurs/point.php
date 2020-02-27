@@ -45,7 +45,6 @@ else // le point est valide
     $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
-    $vue->lien_explication_publicite=lien_wiki("publicite");
     
     if ($point->polygones)
         foreach ($point->polygones as $polygone)
