@@ -75,6 +75,7 @@ $config_wri['point_posts_lon_max_text'] = 250;
 $config_wri['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
 $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
 $config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees, massif central, ile de la réunion ... 
+$config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réserves biologique, parcs nationaux.
 $config_wri['id_zone_accueil']=5084; // DOM: un polygone définie uniquement pour montrer les massifs en pages d'accueil
 
 // Catégorie "tout type de refuges"

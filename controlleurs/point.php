@@ -96,11 +96,10 @@ else // le point est valide
         $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
     }
 
-    /***********  détermination si le point se situe dans un polygone pour lequel un message est à faire passer *******/
-    // L'utilisation principal est le message de réglementation de la réserve naturelle
+    /***********  détermination si le point se situe dans une réserve naturelle / zone réglementée *******/
     if (count($point->polygones))
         foreach ($point->polygones as $polygone)
-            if ($polygone->message_information_polygone!="")
+            if ($polygone->id_polygone_type==$config_wri['id_zone_reglementee'])
                 $vue->polygone_avec_information=$polygone;
             
     /*********** Préparation de la présentation du point ***/
