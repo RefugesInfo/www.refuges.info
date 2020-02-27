@@ -3,6 +3,8 @@
 Indique de manière brutale (print_r) les dernières modifications ayant lieu sur les points de la base
 pas super lisible, mais c'est mieux que rien en attendant un super wiki de versionning des fiches de points
 si ça semble utile, je pourrais l'améliorer avec conditions sur le point et p'tet mise en rouge de ce qui a changé ;-)
+2020 : Et aussi ranger proprement avec un modèle pour gérer la table historique_modifications_points.
+sly : mais j'ai la flemme d'y passer du temps en sachant que ça n'est de toute façon pas la bonne solution
 ***/
 
 require_once ('mise_en_forme_texte.php');

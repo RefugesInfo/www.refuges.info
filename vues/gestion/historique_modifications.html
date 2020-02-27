@@ -23,8 +23,8 @@ th {
   <?php if (isset($vue->modifications_points)) foreach ($vue->modifications_points as $modification) { ?>
   <tr>
     <td><?=$modification->type_modification?> du/de là <br><b><?=$modification->point_avant->nom?></b><br>du <?=$modification->date?><br>par <?=$modification->moderateur?></td>
-    <td><?=nl2br(print_r($modification->point_avant,true))?></td>
-    <td><?=nl2br(print_r($modification->point_apres,true))?></td>
+    <td><?=nl2br(protege(print_r($modification->point_avant,true)))?></td>
+    <td><?=nl2br(protege(print_r($modification->point_apres,true)))?></td>
   </tr>
 
   <?}?>
