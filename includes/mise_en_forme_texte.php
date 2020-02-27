@@ -57,7 +57,7 @@ $texte en bbcode + syntaxe interne
 21/03/08 sly création initiale de la fonction
 26/05/08 jmb correction bug des multiples [b] (rajout d'un ? pour une regex ungreedy)
 FIXME sly 2019: quelle tristesse ce code difficile à maintenir alors que le forum phpBB dispose forcément d'une classe pour faire 95% du boulot, et maintenue à jour !
-ça serait bien de l'utiliser, quitte à rajouter nos 4 ajouts ensuite (syntaxe lien point+anti email snif+anti balise img)
+ça serait bien de l'utiliser, quitte à rajouter nos 4 ajouts ensuite (syntaxe lien point+anti balise img)
 retourne : le code en HTML
 **********************************************************************************************/
 function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_img=True)
