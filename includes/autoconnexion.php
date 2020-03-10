@@ -25,13 +25,14 @@ require_once ($config_wri['racine_projet'] . "forum/ext/RefugesInfo/couplage/aut
 
 // Fonction qui va permettre ensuite d'afficher la "petite étoile :*" en haut à coté du nom du modérateur
 // Pour le prévenir si un commentaire est en attente avec une demande de correction
-// FIXME : cette fonction n'a rien à faire dans autoconnexion.php
+// FIXME sly 2020 : cette fonction n'a rien à faire dans autoconnexion.php c'est pas bien rangé ! Il faudrait la mettre heu, ailleurs ;-) en rapport à la gestion ? mais qui doit quand même être disponible quand le bandeau va se charger vu que c'est lui qui contient l'*
 function info_demande_correction ()
 {
     $conditions_attente_correction = new stdclass;
     $conditions_attente_correction->demande_correction=True;
     $conditions_attente_correction->avec_points_en_attente=True;
     $commentaires_attente_correction=infos_commentaires($conditions_attente_correction);
+    //d($commentaires_attente_correction);
     if (count($commentaires_attente_correction)>0)
         return true;
     else
