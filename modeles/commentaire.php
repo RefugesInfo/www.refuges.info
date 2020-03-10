@@ -25,7 +25,7 @@ $conditions->ids_createurs_commentaires -> pour récupérer les commentaires de(
 $conditions->auteur_commentaire -> condition sur le champ "auteur_commentaire" pour les utilisateurs non authentifiés FIXME: un peu ridicule, ça devrait marcher dans tous les cas, anonyme ou authentifié
 $conditions->texte -> condition sur le contenu du commentaire
 $conditions->avec_infos_point=True -> renvoi des informations simples du point auquel ce commentaire se rapporte
-$conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction=1 ou -1)
+$conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction!=0)
 
 $conditions->avec_commentaires_modele=True -> Très spécifique, pour avoir aussi les commentaires sur les modeles de points, le par défaut est non mais ça n'a de sens qu'avec $conditions->avec_infos_point=True
 $conditions->avec_points_en_attente=True : Par défaut, False : les commentaires des points en attente ne sont pas retournés
@@ -107,13 +107,11 @@ function infos_commentaires ($conditions)
   // Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
   if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele OR isset($conditions->ids_polygones))
   {
-            $table_en_plus=",points,point_type,polygones";
+            $table_en_plus=",point_type,points LEFT JOIN polygones on ST_Within(points.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'];
 
             $condition_en_plus.=" 
                     AND points.id_point=commentaires.id_point
-                    AND point_type.id_point_type=points.id_point_type
-                    AND ST_Within(points.geom,polygones.geom)
-                    AND polygones.id_polygone_type=".$config_wri['id_massif'];
+                    AND point_type.id_point_type=points.id_point_type";
 
             $champ_en_plus.=",points.*,point_type.*,";
             // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
@@ -140,7 +138,7 @@ function infos_commentaires ($conditions)
            $limite";
   if ( ! ($res=$pdo->query($query)))
     return erreur("Une erreur sur la requête est survenue",$query);
-
+//d($query);
   //jmb: renvoie un tablo vide, au lieu d'un NULL si pas de comment, => les appelants n'ont plus a tester.
   $commentaires = array() ;
   while ($commentaire = $res->fetch())

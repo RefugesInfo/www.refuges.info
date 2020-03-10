@@ -1,22 +1,11 @@
 <div class="contenu">
-	<h3><a href="./">Retour</a>Zone de gestion</a></h3>
-
-	<h4>Zone de modération des commentaires sur les fiches</h4>
-	<p>Cette liste donne les commentaires qui sont susceptibles d'apporter de l'information à la fiche selon un internaute ou qui sont peu ou pas intéressantes selon un internaute.</p>
-	<p><strong>
-		Modérateurs, rappelez vous qu'il ne s'agit là que de l'avis d'internautes de passage,
-		il est tout à fait possible qu'aucune modification ne soit nécessaire.
-		Et je constate bien souvent que les commentaires jugés "non utiles" sont en fait
-		des commentaires qui ne plaisent pas à certains mais dont l'intérêt peut être réél.
-	</strong></p>
-
-	<h4>Liste : (Cochez la case à droite retire le commentaire de la liste sans rien faire)</h4>
-	<p><strong>Pensez à bien les retirer de la liste une fois la correction faite</strong></p>
-
+    
+    <h4>Liste des commentaires en attente de modération : </h4>
+    <?php if (!empty($vue->commentaires_attente_correction)) { ?>
 	<form method="post" action="commentaires_attente_correction">
 		<?php foreach ($vue->commentaires_attente_correction as $c) { ?>
 			<div>
-				Le commentaire du <?=date("d/m/Y",$c->ts_unix_commentaire)?> par "<?=bbcode2html($c->auteur_commentaire)?>" sur <a href="<?=lien_point($c)?>#C<?=$c->id_commentaire?>"><?=$c->nom?></a>
+				<a href="<?=lien_point($c)?>#C<?=$c->id_commentaire?>">Le commentaire du <?=date("d/m/Y",$c->ts_unix_commentaire)?> par "<?=bbcode2html($c->auteur_commentaire)?>" sur <?=$c->nom?></a>
 				<?=sprintf($vue->liste_causes[$c->demande_correction], $c->nom_type)?><?php if (!empty($c->raison_demande_correction)) print(", raison=".$c->raison_demande_correction);?>
 				<input type="checkbox" name="commentaires_corriges[]" value="<?=$c->id_commentaire?>">
 			</div>
@@ -24,4 +13,21 @@
 
 		<input type="submit" name="corrections_faites" value="Retirer ceux que j'ai coché de la liste">
 	</form>
+	<?php }
+	else {
+	?>
+	<p>Aucun commentaire en attente de modération</p>
+	<?php } ?>
+	<h4>Explications aux Modérateurs: </h4>
+	<p>
+	    <strong>Rappel :</strong>
+		Rappelez vous qu'il ne s'agit que d'un avis, il est possible qu'aucune modification ne soit nécessaire.
+	</p>
+	<p>
+		Un commentaire sera retiré automatiquement de la fiche si vous apportez une modification au commentaire (il est supposé que vous l'avez lu, et que si vous le modifiez, c'est pour dire<br> 
+		*** xx : Merci pour votre aide, la fiche a été modifiée ** ou équivalent).
+	</p>
+	<p>
+	  Si vous avez traité un commentaire (c'est à dire l'avoir lu puis agit en fonction ou n'avoir rien fait) pensez à le retirer de la liste ci-avant sinon un autre modérateur va repasser le même temps que vous dessus, autant se répartir les tâches !
+	</p>
 </div>

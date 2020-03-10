@@ -28,10 +28,10 @@ $conditions_attente_correction->avec_infos_point=True;
 $conditions_attente_correction->avec_points_en_attente=True;
 $vue->commentaires_attente_correction=infos_commentaires($conditions_attente_correction);
 
-// Petit tablo pour afficher le message de cause
+// Petit tableau pour afficher le message de cause
 $vue->liste_causes = [
 	 1 => "apporte peut-être de l'information à la fiche selon un internaute",
-	-1 => "n'a peut-être aucun intérêt selon un internaute",
+	-1 => "n'a peut-être pas/plus d'intérêt selon un internaute",
 	 2 => "contient un mot pouvant faire penser à une réservation",
 	 3 => "concerne un %s et n'a pas été traitée par un modérateur",
 ];
