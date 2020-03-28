@@ -136,7 +136,7 @@ foreach (glob ('phpBB*.zip') AS $fzip) {
 	preg_match ('/-([0-9\.]+)\.zip/', $fzip, $match);
 	if ($match[1] == $phpbb_version_fichiers ||
 		$match[1] == $phpbb_version_bdd)
-		echo "<div><b>Réinitialiser les fichiers phpBB en version {$match[1]} ? <input type='submit' formaction='.?f={$match[1]}'></b></div>\n";
+		echo "<div><b>Installer ou réinitialiser les fichiers phpBB en version {$match[1]} ? <input type='submit' formaction='.?f={$match[1]}'></b></div>\n";
 	elseif ($match[1] > $phpbb_version_bdd)
 		echo "<div><b>Upgrader les fichiers et la base phpBB en version {$match[1]} ? <input type='submit' formaction='.?f={$match[1]}'></b></div>\n";
 }
