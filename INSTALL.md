@@ -36,20 +36,11 @@ Le code du site se retrouve dans un dossier nommé www.refuges.info (toutes les 
  * Créer un rôle d'accès à une base de donnée et créer une base supportant PostGIS
  * Pour charger une base de donnée avec notre structure (fonctions GIS incluses) demandez nous car ça change souvent et personne ne met à jour sur github
 
- * Créez et donnez les droits en écriture à l'utilisateur qui fait tourner apache aux dossiers et fichiers contenus dans :
- 
-```
-mkdir photos_points
+* phpBB
 
-mkdir forum/photos-points
-
-mkdir forum/images/avatars
-```
-
-Ces dossiers contiendront des données comme les photos des refuges ou des avatars chargés par les utilisateurs du forum
-Il est possible, que le forum phpBB que nous utilisons ait lui aussi besion de pouvoir écrire dans son cache ou ses files. Suivre la procédure pour installer le forum phpBB dans le dossier /forum
-C'est nécessaire car c'est le forum phpBB qui gère nos utilisateurs du site également.
-
-
+ * Le logiciel du forum est livré sous forme de .zip
+ * Pour l'installer, le mettre à jour, créer les tables du forum ou upgrader la version :
+ * Lancez /forum/install et suivez les instructions
+ * C'est nécessaire car c'est le forum phpBB qui gère nos utilisateurs du site également.
 
 Voir le README.md pour adapter les paramètres de config du code
