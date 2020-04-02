@@ -1,0 +1,13 @@
+
+Questa email ti è stata inviata da un amministratore di “{SITENAME}”. Se ritieni che questo messaggio costituisca spam (pubblicità non desiderata) o pensi che il suo contenuto sia offensivo, contatta il webmaster al seguente indirizzo:
+
+{CONTACT_EMAIL}
+
+Includi questa email, compresi gli headers (intestazioni, dettagli di invio). 
+
+Testo del messaggio:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}
+
+{EMAIL_SIG}

@@ -1,0 +1,11 @@
+Subject: Erinnerung an inaktives Benutzerkonto
+
+Hallo {USERNAME},
+
+diese Nachricht ist eine Erinnerung, dass dein Benutzerkonto auf „{SITENAME}“, erstellt am {REGISTER_DATE}, weiter inaktiv ist. Wenn du dieses Konto aktivieren möchtest, musst du folgenden Link aufrufen:
+ 
+{U_ACTIVATE}
+
+Vielen Dank für deine Registrierung auf „{SITENAME}“, wir freuen uns über deinen Besuch.
+
+{EMAIL_SIG}

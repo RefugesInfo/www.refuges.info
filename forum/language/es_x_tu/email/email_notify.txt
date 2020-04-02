@@ -1,0 +1,20 @@
+Subject: "{SITENAME}" - Email a un amigo
+
+Hola {TO_USERNAME},
+
+Este email fue enviado desde "{SITENAME}" por {FROM_USERNAME} que pensó que podrías estar interesado en el siguiente tema:
+
+{TOPIC_NAME}
+
+Puede verlo en:
+
+{U_TOPIC}
+
+Un mensaje de {FROM_USERNAME} puede seguir debajo.
+Por favor, fíjate en que este mensaje no ha sido visto o aprobado por la Administración del sitio.
+Si quieres avisar que has recibido este email como no-deseado (Spam) por favor, contacta con la Administración del sitio en {BOARD_CONTACT}.
+Por favor, subraya las cabeceras del mensaje cuando contactes con esa dirección de email.
+
+----------
+
+{MESSAGE}

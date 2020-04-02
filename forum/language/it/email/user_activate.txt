@@ -1,0 +1,9 @@
+Subject: Riattiva il tuo account
+
+Ciao {USERNAME},
+
+il tuo account su “{SITENAME}” è stato disattivato, molto probabilmente a causa di modifiche fatte al tuo profilo. Per la riattivazione del tuo account devi cliccare sul link sottostante:
+
+{U_ACTIVATE}
+
+{EMAIL_SIG}

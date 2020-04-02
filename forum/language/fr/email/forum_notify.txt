@@ -1,0 +1,21 @@
+Subject: Notification de nouveau message dans le forum - {FORUM_NAME}
+List-Unsubscribe: <{U_STOP_WATCHING_FORUM}>
+
+Bonjour {USERNAME},
+
+Vous recevez cette notification car vous surveillez le forum « {FORUM_NAME} » sur « {SITENAME} ». Depuis votre dernière visite, ce forum a reçu un nouveau message<!-- IF AUTHOR_NAME != '' --> de {AUTHOR_NAME}<!-- ENDIF --> dans le sujet « {TOPIC_TITLE} ». Aucune autre notification ne vous sera envoyée jusqu’à votre prochaine visite sur le sujet.
+
+Pour consulter le premier message non lu, cliquez sur le lien suivant :
+{U_NEWEST_POST}
+
+Pour consulter le sujet dans son ensemble, cliquez sur le lien suivant :
+{U_TOPIC}
+
+Pour visiter le forum, cliquez sur le lien suivant :
+{U_FORUM}
+
+Si vous ne souhaitez plus surveiller ce forum, vous pouvez cliquer sur le lien « Arrêter de surveiller ce forum » en bas du forum indiqué ci-dessus, ou bien sur le lien suivant :
+
+{U_STOP_WATCHING_FORUM}
+
+{EMAIL_SIG}

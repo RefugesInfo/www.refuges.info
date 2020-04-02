@@ -1,0 +1,10 @@
+Subject: Segnalazione messaggio privato - “{TOPIC_TITLE}”
+
+Ciao {USERNAME},
+
+ricevi questa notifica perché è stato segnalato un messaggio privato con oggetto “{SUBJECT}” di “{AUTHOR_NAME}” su “{SITENAME}”.
+
+Per visualizzare la segnalazione, clicca sul seguente link:
+{U_VIEW_REPORT}
+
+{EMAIL_SIG}

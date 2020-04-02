@@ -1,0 +1,10 @@
+Subject: Argomento approvato - “{TOPIC_TITLE}”
+
+Ciao {USERNAME},
+
+ricevi questa notifica perché il tuo argomento “{TOPIC_TITLE}” su “{SITENAME}” è stato approvato da un moderatore o da un amministratore:
+
+Se vuoi vedere il tuo argomento clicca sul link seguente:
+{U_VIEW_TOPIC}
+
+{EMAIL_SIG}

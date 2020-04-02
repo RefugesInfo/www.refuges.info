@@ -1,0 +1,11 @@
+Subject: Has ingresado en este grupo de usuarios
+
+Felicidades,
+
+Has sido agregado al grupo "{GROUP_NAME}" en "{SITENAME}".
+Esta acción la llevó a cabo un líder de grupo o la Administración del sitio, contacta con ellos para más información.
+
+Puedes ver información sobre tus grupos aquí:
+{U_GROUP}
+
+{EMAIL_SIG}

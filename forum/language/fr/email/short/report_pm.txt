@@ -1,0 +1,10 @@
+Subject: Rapport de message privé - {SUBJECT}
+
+Bonjour {USERNAME},
+
+Vous recevez cette notification car le message privé « {SUBJECT} » écrit par « {AUTHOR_NAME} » sur « {SITENAME} » a été rapporté.
+
+Pour consulter le rapport, cliquez sur le lien suivant :
+{U_VIEW_REPORT}
+
+{EMAIL_SIG}

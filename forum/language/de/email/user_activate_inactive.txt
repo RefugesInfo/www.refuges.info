@@ -1,0 +1,7 @@
+Subject: Dein Benutzerkonto wurde deaktiviert
+
+Hallo {USERNAME},
+
+dein Benutzerkonto auf „{SITENAME}“ wurde deaktiviert, vermutlich, weil du Änderungen an deinem Profil vorgenommen hast. Ein Administrator des Boards muss dein Konto erst wieder aktivieren, bevor du es verwenden kannst. Du erhältst eine weitere Benachrichtigung, sobald dies geschehen ist.
+
+{EMAIL_SIG}

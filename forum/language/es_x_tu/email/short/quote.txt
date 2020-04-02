@@ -1,0 +1,20 @@
+Subject: Notificación de respuesta al tema - "{TOPIC_TITLE}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación debido a que "{AUTHOR_NAME}" te ha citado en este tema "{TOPIC_TITLE}" de "{SITENAME}".  Puedes utilizar el siguiente enlace para ver las respuestas dadas.
+
+Si quieres ver el nuevo mensaje donde se te cita, haz clic en el siguiente enlace:
+{U_VIEW_POST}
+
+Si quieres ver el tema, haz clic en el siguiente enlace:
+{U_TOPIC}
+
+Si quieres ver el foro, haz clic en el siguiente enlace:
+{U_FORUM}
+
+Si ya no deseas recibir información sobre las respuestas que te citan, por favor, actualiza la configuración de notificaciones aquí:
+
+{U_NOTIFICATION_SETTINGS}
+
+{EMAIL_SIG}

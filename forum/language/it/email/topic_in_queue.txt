@@ -1,0 +1,13 @@
+Subject: Notifica moderazione argomento - “{TOPIC_TITLE}”
+
+Ciao {USERNAME},
+
+ricevi questa notifica perché l’argomento “{TOPIC_TITLE}” su “{SITENAME}” è in coda di moderazione.
+
+Per visualizzare l’argomento clicca sul seguente link:
+{U_VIEW_TOPIC}
+
+Per visualizzare il forum clicca sul seguente link:
+{U_FORUM}
+
+{EMAIL_SIG}

@@ -1,0 +1,43 @@
+Subject: Benvenuto su “{SITENAME}”
+
+{WELCOME_MSG}
+
+Nell’attesa dell’atto di Responsabilità Minore il tuo account rimarrà inattivo.
+Stampa questo messaggio. Letto e approvato dal Genitore o dal Tutore Legale attendiamo fax a:
+
+{FAX_INFO}
+
+o via posta a:
+
+{MAIL_INFO}
+
+
+------------------------------ TAGLIA QUI ------------------------------
+
+
+Consenso per la partecipazione su “{SITENAME}” - {U_BOARD}
+
+
+Nome utente: {USERNAME}
+
+Email: {EMAIL_ADDRESS}
+
+
+HO CONTROLLATO LE INFORMAZIONI FORNITE DA MIO FIGLIO E AUTORIZZO {SITENAME} A UTILIZZARE QUESTE INFORMAZIONI. SONO CONSAPEVOLE CHE LE INFORMAZIONI POSSONO ESSERE CAMBIATE IN OGNI MOMENTO INSERENDO UNA PASSWORD D’ACCESSO. SONO CONSAPEVOLE CHE POSSO RICHIEDERE CHE TALI INFORMAZIONI VENGANO RIMOSSE DA {SITENAME} IN QUALSIASI MOMENTO.
+
+
+Genitore o Tutore Legale (Scrivi Nome e Cognome): _____________________(Firma): __________________
+
+
+Data: _______________
+
+
+
+------------------------------ TAGLIA QUI ------------------------------
+
+
+Una volta che avremo ricevuto copia della presente via fax o per posta, il tuo account verrà attivato.
+Non scordare la tua password, non sarà possibile recuperarla dal nostro database in quanto viene criptata.
+In caso di smarrimento della stessa, sarà comunque possibile richiederne una nuova, utilizzando l’indirizzo email associato al tuo account. Grazie per esserti iscritto.
+
+{EMAIL_SIG}

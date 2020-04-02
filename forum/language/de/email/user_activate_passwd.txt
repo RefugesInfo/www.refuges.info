@@ -1,0 +1,17 @@
+Subject: Aktivierung eines neuen Passworts
+
+Hallo {USERNAME},
+
+du erhältst diese Benachrichtigung, weil du (oder jemand, der angegeben hat, du zu sein) ein neues Passwort für dein Benutzerkonto auf „{SITENAME}“ angefordert hat. Wenn du diese Benachrichtigung nicht angefordert hast, kannst du sie ignorieren. Falls du sie regelmäßig erhältst, kontaktiere bitte die Board-Administration.
+
+Um das neue Passwort zu verwenden, musst du es aktivieren. Dazu musst du den folgenden Link aufrufen:
+
+{U_ACTIVATE}
+
+Nach erfolgreicher Aktivierung kannst du dich mit folgendem Passwort anmelden:
+
+Passwort: {PASSWORD}
+
+Du kannst dieses Passwort anschließend in deinem persönlichen Bereich ändern. Wenn du auf Schwierigkeiten stößt, kontaktiere bitte die Board-Administration.
+
+{EMAIL_SIG}

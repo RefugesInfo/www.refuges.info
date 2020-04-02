@@ -1,0 +1,10 @@
+Subject: Eine Anfrage auf Gruppenmitgliedschaft wurde gestellt
+
+Hallo {USERNAME},
+
+der Benutzer „{REQUEST_USERNAME}“ auf „{SITENAME}“ hat einen Antrag auf Mitgliedschaft in der Gruppe „{GROUP_NAME}“ gestellt, die du verwaltest.
+Du kannst diese Anfrage bestätigen oder ablehnen, wenn du folgenden Link aufrufst:
+
+{U_PENDING}
+
+{EMAIL_SIG}

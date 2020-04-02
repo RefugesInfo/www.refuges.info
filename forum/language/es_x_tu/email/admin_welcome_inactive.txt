@@ -1,0 +1,19 @@
+Subject: Bienvenido a "{SITENAME}"
+
+{WELCOME_MSG}
+
+Por favor, guarda este email para futuras referencias. La información de tu cuenta es la siguiente:
+
+----------------------------
+Nombre de usuario: {USERNAME}
+
+URL del Sitio: {U_BOARD}
+----------------------------
+
+Tu cuenta está actualmente inactiva y necesitará que sea aprobada por la Administración antes de que puedas identificarte. Recibirás otro email cuando esto haya ocurrido.
+
+Tu contraseña ha sido guardada de forma segura en nuestra base de datos y no puede ser recuperada. En el caso de que la olvides tendrás la posibilidad de regenerarla usando la misma dirección de correo electrónico asociada a tu cuenta.
+
+Gracias por registrarte.
+
+{EMAIL_SIG}

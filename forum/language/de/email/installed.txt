@@ -1,0 +1,19 @@
+Subject: phpBB erfolgreich installiert
+
+Herzlichen Glückwunsch!
+
+Du hast phpBB erfolgreich auf deinem Server installiert.
+
+Diese E-Mail enthält wichtige Informationen über deine Installation, die du gut aufbewahren solltest. Dein Passwort wurde sicher in unserer Datenbank gespeichert und kann nicht wiederhergestellt werden. Falls es vergessen werden sollte, kannst du es über die E-Mail-Adresse, die deinem Benutzerkonto zugeordnet ist, zurücksetzen lassen.
+
+----------------------------
+Benutzername: {USERNAME}
+
+URL des Boards: {U_BOARD}
+----------------------------
+
+Hilfreiche Informationen über die phpBB-Software können im docs-Ordner deiner Installation und auf der Website von phpBB Limited — https://www.phpbb.com/support/ — gefunden werden. Eine deutschsprachige Anlaufstelle findest du unter https://www.phpbb.de/.
+
+Um die Sicherheit deines Boards zu gewährleisten, empfehlen wir dir dringend, es immer auf der aktuellen Version zu halten. Damit du entsprechende Informationen zeitnah erhältst, kann auf den oben genannten Seite ein Newsletter abonniert werden.
+
+{EMAIL_SIG}

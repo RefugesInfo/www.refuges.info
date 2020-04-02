@@ -1,0 +1,13 @@
+Subject: Activate user account
+
+Hello,
+
+The account owned by "{USERNAME}" has been deactivated or newly created, you should check the details of this user (if required) and handle it appropriately.
+
+Use this link to view the user's profile:
+{U_USER_DETAILS}
+
+You may activate the account immediately by clicking on this link:
+{U_ACTIVATE}
+
+{EMAIL_SIG}

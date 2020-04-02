@@ -1,0 +1,10 @@
+Subject: C’è una richiesta di adesione al tuo gruppo
+
+Ciao {USERNAME},
+
+l’utente “{REQUEST_USERNAME}” ha richiesto di aderire al gruppo “{GROUP_NAME}” che gestisci su “{SITENAME}”.
+Per approvare o meno questa richiesta di adesione, vai al link seguente:
+
+{U_PENDING}
+
+{EMAIL_SIG}

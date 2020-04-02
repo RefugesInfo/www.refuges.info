@@ -1,0 +1,10 @@
+Subject: Tema aprobado - "{TOPIC_TITLE}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación porque tu tema "{TOPIC_TITLE}" en "{SITENAME}" fue aprobado por un(a) Moderador(a) o por la Administración.
+
+Si quieres ver el tema, visita el siguiente enlace:
+{U_VIEW_TOPIC}
+
+{EMAIL_SIG}

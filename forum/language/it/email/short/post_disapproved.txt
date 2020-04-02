@@ -1,0 +1,11 @@
+Subject: Messaggio disapprovato - “{POST_SUBJECT}”
+
+Ciao {USERNAME},
+
+ricevi questa notifica perché il messaggio “{POST_SUBJECT}” su “{SITENAME}” è stato disapprovato da un moderatore o da un amministratore.
+
+La ragione della disapprovazione è la seguente:
+
+{REASON}
+
+{EMAIL_SIG}

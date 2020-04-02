@@ -1,0 +1,13 @@
+Hola {TO_USERNAME},
+
+El siguiente es un email que te envía {FROM_USERNAME} mediante tu cuenta en "{SITENAME}".
+Si este email es Spam, contiene comentarios abusivos o que consideres ofensivos, por favor contacta con la Administración del sitio en esta dirección:
+
+{BOARD_CONTACT}
+
+Adjunta este email completo (particularmente las cabeceras [headers]). Por favor, asegúrate de que la dirección de respuesta a este email es la de {FROM_USERNAME}.
+
+El mensaje enviado es el siguiente :
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

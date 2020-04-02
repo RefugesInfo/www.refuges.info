@@ -1,0 +1,8 @@
+Subject: Account attivato
+
+Ciao {USERNAME},
+
+il tuo account su “{SITENAME}” è stato attivato da un amministratore, ora puoi collegarti.
+La tua password è stata memorizzata in modo sicuro nel nostro database, e non può essere recuperata. In caso di smarrimento della stessa, sarà comunque possibile richiederne una nuova, utilizzando l’indirizzo email associato al tuo account.
+
+{EMAIL_SIG}

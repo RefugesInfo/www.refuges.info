@@ -1,0 +1,14 @@
+Subject: Attiva account utente
+
+Ciao,
+
+l’account di “{USERNAME}” è stato disattivato o appena creato: dovresti controllare i dettagli di questo utente (se necessario) e gestirlo di conseguenza.
+
+Usa questo link per controllare il profilo utente:
+{U_USER_DETAILS}
+
+Usa questo link per attivare l’account:
+{U_ACTIVATE}
+
+
+{EMAIL_SIG}

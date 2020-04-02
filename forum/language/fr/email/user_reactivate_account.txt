@@ -1,0 +1,18 @@
+Subject: Réactivez votre compte sur « {SITENAME} »
+
+Un administrateur du forum demande que votre compte soit réactivé. Votre compte est actuellement inactif.
+Suivez les étapes listées ici pour réactiver votre compte.
+
+Conservez ce courriel dans vos archives. Les informations de votre compte sont les suivantes :
+
+----------------------------
+Nom d’utilisateur : {USERNAME}
+----------------------------
+
+Votre mot de passe a été stocké de manière sécurisée dans notre base de données et ne pourra pas être retrouvé. Dans le cas où vous l’auriez oublié, vous pourrez le réinitialiser en utilisant l’adresse courriel associée à votre compte.
+
+Cliquez sur le lien suivant pour réactiver votre compte :
+
+{U_ACTIVATE}
+
+{EMAIL_SIG}

@@ -1,0 +1,13 @@
+
+Ciao {TO_USERNAME},
+
+quello che segue è un messaggio che ti è stato inviato da {FROM_USERNAME} tramite il tuo account su “{SITENAME}”. Se il messaggio è spam, o contiene altri commenti che trovi offensivi, per favore contatta l’amministratore della Board al seguente indirizzo:
+
+{BOARD_CONTACT}
+
+Allega questo messaggio completo. Tieni presente che l’indirizzo mittente è quello dell’account IM della Board.
+
+Segue il messaggio inviato
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

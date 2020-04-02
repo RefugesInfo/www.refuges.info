@@ -1,0 +1,23 @@
+
+Hallo {TO_USERNAME},
+
+die folgende Nachricht wurde dir als Administrator über die Kontakt-Funktion auf „{SITENAME}“ gesendet:
+
+<!-- IF S_IS_REGISTERED -->
+Die Nachricht wurde von einem registrierten Benutzer gesendet.
+Benutzername: {FROM_USERNAME}
+E-mail-Adresse: {FROM_EMAIL_ADDRESS}
+IP-Adresse: {FROM_IP_ADDRESS}
+Profil: {U_FROM_PROFILE}
+<!-- ELSE -->
+Die Nachricht wurde von einem Gast gesendet, der folgende Kontaktdaten angegeben hat:
+Name: {FROM_USERNAME}
+E-mail-Adresse: {FROM_EMAIL_ADDRESS}
+IP-Adresse: {FROM_IP_ADDRESS}
+<!-- ENDIF -->
+
+
+Es folgt die an dich gesendete Nachricht
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

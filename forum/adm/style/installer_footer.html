@@ -1,0 +1,32 @@
+					</div>
+				</div><!-- /#main -->
+			</div>
+		</div><!-- /#acp -->
+	</div>
+
+	<div id="page-footer">
+		<div class="copyright">
+			{% if S_COPYRIGHT_HTML %}
+				{{ CREDIT_LINE }}
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+<script>
+<!--
+installLang = {
+	title: '{LA_TIMEOUT_DETECTED_TITLE}',
+	msg: '{LA_TIMEOUT_DETECTED_MESSAGE}'
+};
+//-->
+</script>
+
+<script src="{T_JQUERY_LINK}"></script>
+<!-- IF S_ALLOW_CDN --><script>window.jQuery || document.write('\x3Cscript src="{T_ASSETS_PATH}/javascript/jquery.min.js">\x3C/script>');</script><!-- ENDIF -->
+<script src="{T_ASSETS_PATH}/javascript/core.js?assets_version={T_ASSETS_VERSION}"></script>
+<!-- INCLUDEJS admin.js -->
+{$SCRIPTS}
+
+</body>
+</html>

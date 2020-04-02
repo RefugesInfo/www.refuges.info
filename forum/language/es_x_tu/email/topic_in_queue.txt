@@ -1,0 +1,13 @@
+Subject: Notificación de Moderación de tema - "{TOPIC_TITLE}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación debido a que el tema "{TOPIC_TITLE}" en "{SITENAME}" necesita aprobación.
+
+Si quieres ver el tema, haz clic en el siguiente enlace:
+{U_VIEW_TOPIC}
+
+Si quieres ver el foro, haz clic en el siguiente enlace:
+{U_FORUM}
+
+{EMAIL_SIG}

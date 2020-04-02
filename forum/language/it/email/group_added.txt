@@ -1,0 +1,11 @@
+Subject: Sei stato aggiunto a questo gruppo
+
+Congratulazioni,
+
+sei stato aggiunto al gruppo “{GROUP_NAME}” su “{SITENAME}”.
+Questa azione è stata intrapresa da un leader del gruppo o da un amministratore: contattali per maggiori informazioni.
+
+Per visionare le tue informazioni sui gruppi:
+{U_GROUP}
+
+{EMAIL_SIG}

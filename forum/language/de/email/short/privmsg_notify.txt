@@ -1,0 +1,15 @@
+Subject: Neue Private Nachricht erhalten
+
+Hallo {USERNAME},
+
+du hast auf „{SITENAME}“ eine neue Private Nachricht von „{AUTHOR_NAME}“ mit folgendem Betreff erhalten:
+
+{SUBJECT}
+
+Du kannst dir die neue Nachricht ansehen, wenn du folgenden Link aufrufst:
+
+{U_VIEW_MESSAGE}
+
+Du hast ausgewählt, dass du bei neuen Privaten Nachrichten informiert werden möchtest. Du kannst diese Benachrichtigungen in deinem persönlichen Bereich abstellen.
+
+{EMAIL_SIG}

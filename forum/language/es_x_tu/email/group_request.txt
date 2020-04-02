@@ -1,0 +1,10 @@
+Subject: Se ha hecho una solicitud para ingresar en tu grupo
+
+Estimado {USERNAME},
+
+El usuario "{REQUEST_USERNAME}" ha solicitado ingresar en el grupo "{GROUP_NAME}" que moderas en "{SITENAME}".
+Para aprobar o negar esta solicitud, por favor visita el siguiente enlace:
+
+{U_PENDING}
+
+{EMAIL_SIG}

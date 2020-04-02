@@ -1,0 +1,11 @@
+Subject: phpBB est correctement configuré pour envoyer des courriels
+
+Bonjour {USERNAME},
+
+Félicitations ! Si vous recevez ce message cela signifie que phpBB est correctement configuré pour envoyer des courriels.
+
+Dans le cas où vous auriez besoin d’assistance, veuillez visiter :
+- le forum de support phpBB (en anglais) - https://www.phpbb.com/community/
+- le forum de support phpBB-fr.com (en français) - http://forums.phpbb-fr.com/
+
+{EMAIL_SIG}

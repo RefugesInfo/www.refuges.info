@@ -1,0 +1,19 @@
+Subject: phpBB instalado
+
+Felicidades,
+
+phpBB está instalado correctamente en tu servidor.
+
+Este correo contiene información importante acerca del foro recién instalado. La contraseña fue encriptada en la base de datos y no podrá recuperarla, sin embargo puedes solicitar que se le recuerde la contraseña, y recibirás un correo como éste.
+
+----------------------------
+Nombre de usuario: {USERNAME}
+
+URL del foro: {U_BOARD}
+----------------------------
+
+Información útil sobre la instalación de su foro phpBB puede ser encontrada en las carpeta docs de tu instalación y en la página oficial de soporte (en inglés) phpBB.com - https://www.phpbb.com/support/
+
+Con idea de mantener tu foro a salvo y seguro, se recomienda enormemente que te mantengas al día de la última versión, lo cuál se puede hacer fácilmente suscribiéndote a la lista de correo de phpBB.com, localizable en la URL de arriba.
+
+{EMAIL_SIG}

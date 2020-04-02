@@ -1,0 +1,13 @@
+Subject: Mensaje aprobado - "{POST_SUBJECT}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación porque tu mensaje "{POST_SUBJECT}" en "{SITENAME}" fue aprobado por un(a) Moderador(a) o la Administración.
+
+Si quieres ver el mensaje, haz clic en el siguiente enlace:
+{U_VIEW_POST}
+
+Si quieres ver el tema, haz clic en el siguiente enlace:
+{U_VIEW_TOPIC}
+
+{EMAIL_SIG}

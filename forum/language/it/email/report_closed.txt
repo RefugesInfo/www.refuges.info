@@ -1,0 +1,7 @@
+Subject: Chiusura segnalazione - “{POST_SUBJECT}”
+
+Ciao {USERNAME},
+
+ricevi questa notifica, perché la segnalazione che hai fatto sul messaggio “{POST_SUBJECT}” in “{TOPIC_TITLE}” su “{SITENAME}” è stata letta da un moderatore o da un amministratore. La segnalazione è stata poi chiusa. Se hai ulteriori domande contatta {CLOSER_NAME} con un messaggio privato.
+
+{EMAIL_SIG}

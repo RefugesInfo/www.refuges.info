@@ -1,0 +1,21 @@
+Subject: Willkommen auf „{SITENAME}“
+
+{WELCOME_MSG}
+
+Bitte bewahre diese E-Mail in deinen Unterlagen auf. Die Daten deines Benutzerkontos lauten:
+
+----------------------------
+Benutzername: {USERNAME}
+
+Board-URL:    {U_BOARD}
+----------------------------
+
+Um dein Benutzerkonto zu aktivieren, musst du folgenden Link aufrufen:
+
+{U_ACTIVATE}
+
+Dein Passwort wurde sicher in unserer Datenbank gespeichert und kann nicht wiederhergestellt werden. Falls es vergessen werden sollte, kannst du es über die E-Mail-Adresse, die deinem Benutzerkonto zugeordnet ist, zurücksetzen lassen.
+
+Vielen Dank für deine Registrierung.
+
+{EMAIL_SIG}

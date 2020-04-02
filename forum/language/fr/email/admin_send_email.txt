@@ -1,0 +1,13 @@
+
+Ce qui suit est un courriel qui vous a été envoyé par un administrateur de « {SITENAME} ». Si vous considérez que ce message est du spam, contient des termes abusifs ou bien des commentaires que vous trouvez choquants, contactez l’administrateur du forum à partir du lien suivant :
+
+{CONTACT_EMAIL}
+
+Incluez ce courriel en entier (tout particulièrement les en-têtes).
+
+Voici le message qui vous a été envoyé :
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}
+
+{EMAIL_SIG}

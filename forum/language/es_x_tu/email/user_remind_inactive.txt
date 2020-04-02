@@ -1,0 +1,11 @@
+Subject: Recordatorio de cuenta inactiva
+
+Hola {USERNAME},
+
+Esta notificación es un recordatorio que tu cuenta en "{SITENAME}", creada el {REGISTER_DATE}, permanece inactiva. Si quieres activar esta cuenta por favor visita el siguiente enlace:
+
+{U_ACTIVATE}
+
+Gracias por registrarte en "{SITENAME}", esperamos tu participación.
+
+{EMAIL_SIG}

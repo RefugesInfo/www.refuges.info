@@ -1,0 +1,7 @@
+Subject: Il tuo account è stato disattivato
+
+Ciao {USERNAME},
+
+il tuo account su “{SITENAME}” è stato disattivato, molto probabilmente a causa di modifiche fatte al tuo profilo. L’amministratore deve attivarlo prima che tu possa accedere. Riceverai un’altra notifica ad attivazione avvenuta.
+
+{EMAIL_SIG}

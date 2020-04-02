@@ -1,0 +1,13 @@
+
+Hallo {TO_USERNAME},
+
+die folgende Nachricht wurde dir von {FROM_USERNAME} über dein Benutzerkonto auf „{SITENAME}“ geschickt. Wenn diese Nachricht Werbung, Beleidigungen oder anderen anstößigen Inhalt enthält, kannst du die Board-Administration unter folgender Adresse erreichen:
+
+{BOARD_CONTACT}
+
+Füge deiner Nachricht bitte die vollständige E-Mail (insbesondere die Nachrichtenkopfzeilen) bei. Bitte beachte, dass als Antwortadresse dieser E-Mail die E-Mail-Adresse von {FROM_USERNAME} hinterlegt ist.
+
+Es folgt die an dich gesendete Nachricht
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

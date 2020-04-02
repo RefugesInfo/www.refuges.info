@@ -1,0 +1,19 @@
+Subject: Benachrichtigung über neue Antwort — „{TOPIC_TITLE}“
+
+Hallo {USERNAME},
+
+du erhältst diese Benachrichtigung, weil du das Thema „{TOPIC_TITLE}“ auf „{SITENAME}“ abonniert hast. Seit deinem letzten Besuch wurde zu diesem Thema eine neue Antwort<!-- IF AUTHOR_NAME != '' --> von {AUTHOR_NAME}<!-- ENDIF --> erstellt. Du erhältst keine weitere Benachrichtigung, bis du das Thema besucht hast.
+
+Du kannst dir die neuesten Antworten seit deinem letzten Besuch ansehen, wenn du folgenden Link aufrufst:
+{U_NEWEST_POST}
+
+Du kannst dir das Thema ansehen, wenn du folgenden Link aufrufst:
+{U_TOPIC}
+
+Du kannst dir das Forum ansehen, wenn du folgenden Link aufrufst:
+{U_FORUM}
+
+Wenn du das Thema nicht länger abonnieren möchtest, verwende entweder den Link „Abonnement des Themas beenden“ im entsprechenden Thema oder rufe folgenden Link auf:
+{U_STOP_WATCHING_TOPIC}
+
+{EMAIL_SIG}

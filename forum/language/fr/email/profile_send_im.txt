@@ -1,0 +1,13 @@
+
+Bonjour {TO_USERNAME},
+
+Le courriel suivant vous a été envoyé par {FROM_USERNAME} depuis « {SITENAME} », sur lequel vous possédez un compte. Si vous considérez que ce message est du spam, contient des termes abusifs ou bien des commentaires que vous trouvez choquants, contactez l’administrateur du forum à partir du lien suivant :
+
+{BOARD_CONTACT}
+
+Incluez ce courriel en entier (tout particulièrement les en-têtes). Veuillez noter que l’adresse de l’expéditeur correspond au compte de messagerie instantanée (IM) du forum.
+
+Voici le message qui vous a été envoyé :
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

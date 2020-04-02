@@ -5,10 +5,12 @@ paramètres locaux (données de type privées à ne pas publier)
 *************************************************/
 
 // Accès à Postgresql
+/* A décommenter et renseigner si forum/config.php ne contient pas ces informations
 $config_wri['serveur_pgsql']="???";
 $config_wri['utilisateur_pgsql']="???";
 $config_wri['mot_de_passe_pgsql']="???";
 $config_wri['base_pgsql']="???";
+*/
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['ign_key']='???'; // http://professionnels.ign.fr/user
@@ -35,4 +37,5 @@ $config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 // Par défaut à false, à mettre à décommenter pour les développeurs qui le veulent
 // $config_wri['debug']=true;
 
-// NE PAS OUBLIER rename htaccess.modele.txt .htaccess
+// Aprés l'installation des fichiers, veuillez exécuter l'utilitaire /install.php
+// Qui vérifiera les paramètres et installera ou upgradera la forum si nécéssaire

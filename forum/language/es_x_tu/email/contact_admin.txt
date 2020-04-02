@@ -1,0 +1,23 @@
+
+Hola {TO_USERNAME},
+
+Lo siguiente es un correo electrónico enviado a ti a través de la página de contacto de Administración de "{SITENAME}".
+
+<!-- IF S_IS_REGISTERED -->
+El mensaje ha sido enviado desde una cuenta en el sitio.
+Nombre de usuario: {FROM_USERNAME}
+Dirección de correo electrónico: {FROM_EMAIL_ADDRESS}
+Dirección IP: {FROM_IP_ADDRESS}
+Perfil: {U_FROM_PROFILE}
+<!-- ELSE -->
+El mensaje fue enviado por un invitado que especifica la siguiente información de contacto:
+Nombre: {FROM_USERNAME}
+Dirección de correo electrónico: {FROM_EMAIL_ADDRESS}
+Dirección IP: {FROM_IP_ADDRESS}
+<!-- ENDIF -->
+
+
+Este es el mensaje enviado
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

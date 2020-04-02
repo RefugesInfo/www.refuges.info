@@ -1,0 +1,17 @@
+Subject: Attivazione nuova password
+
+Ciao {USERNAME},
+
+ricevi questa notifica perché hai (o qualcun altro ha) richiesto di ricevere una nuova password per il tuo account su “{SITENAME}”. Se non hai effettuato tu questa richiesta allora ti preghiamo di ignorarla, ma se dovessi ricevere altre notifiche per favore contatta l’amministratore.
+
+La nuova password deve essere attivata. Per farlo devi cliccare sul link sottostante:
+
+{U_ACTIVATE}
+
+Se la procedura dà esito corretto potrai accedere utilizzando la seguente password:
+
+Password: {PASSWORD}
+
+Puoi cambiare questa password dalla pagina del tuo profilo utente. Se incontrassi qualche difficoltà puoi contattare l’amministratore.
+
+{EMAIL_SIG}

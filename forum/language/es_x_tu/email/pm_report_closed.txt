@@ -1,0 +1,7 @@
+Subject: Informe cerrado - "{PM_SUBJECT}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación porque el informe que guardaste relacionado con el mensaje privado "{PM_SUBJECT}" en "{SITENAME}" ha sido gestionado por un Moderador o Administrador. El informe ahora está cerrado. Si tienes alguna pregunta o duda, por favor contacta con {CLOSER_NAME} por mensaje privado.
+
+{EMAIL_SIG}

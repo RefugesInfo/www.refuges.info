@@ -188,6 +188,17 @@ $config_wri['debug']=false;
 // FIXME sly 07/2017 : on devrait utiliser un require_once ici plutôt que require, sauf que le config.php est inclus 2 fois (mais je ne sais pas où !) qui fait qu'au deuxième passaeg, config_privee.php ne surchage plus le par défaut
 require($config_wri['racine_projet']."config_privee.php");
 
+// Repli si config_privee.php ne contient pas les données du serveur
+// Va les chercher dans /forum/config.php
+if (file_exists ($config_wri['racine_projet']."/forum/config.php") &&
+	(!isset ($config_wri['serveur_pgsql']) || !$config_wri['serveur_pgsql'] || $config_wri['serveur_pgsql']=="???")) {
+  require($config_wri['racine_projet']."/forum/config.php");
+  $config_wri['serveur_pgsql']=$dbhost;
+  $config_wri['utilisateur_pgsql']=$dbuser;
+  $config_wri['mot_de_passe_pgsql']=$dbpasswd;
+  $config_wri['base_pgsql']=$dbname;
+}
+
 // *** NON NON : *** N'ajoutez rien après ce require_once("config_privee.php"); sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant
 // mettez par contre tout ce que vous voulez avant le require_once("config_privee.php");
 

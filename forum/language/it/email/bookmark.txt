@@ -1,0 +1,20 @@
+Subject: Notifica risposta argomento - “{TOPIC_TITLE}”
+
+Ciao {USERNAME},
+
+ricevi questa notifica perché in un argomento che hai sottoscritto, “{TOPIC_TITLE}” su “{SITENAME}”, è stata data una risposta dalla tua ultima visita. Tramite i link seguenti puoi vedere tutte le risposte; non riceverai altre notifiche fino alla tua prossima visita.
+
+Se vuoi vedere la risposta più recente dalla tua ultima visita, clicca sul seguente link:
+{U_NEWEST_POST}
+
+Per visualizzare l’argomento clicca sul seguente link:
+{U_TOPIC}
+
+Per visualizzare il forum clicca sul seguente link:
+{U_FORUM}
+
+Se non desideri più controllare questo argomento puoi cliccare su “Annulla sottoscrizione argomento” che trovi sull’argomento sottoscritto, o cliccando sul link seguente:
+
+{U_NOTIFICATION_SETTINGS}
+
+{EMAIL_SIG}

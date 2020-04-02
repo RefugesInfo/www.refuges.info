@@ -1,0 +1,17 @@
+Subject: „{SITENAME}“ — Information über ein Thema
+
+Hallo {TO_USERNAME},
+
+diese Nachricht wurde dir von „{SITENAME}“ geschickt, weil {FROM_USERNAME} glaubt, dass du an folgendem Thema interessiert sein könntest:
+
+{TOPIC_NAME}
+
+Du kannst dir das Thema ansehen, wenn du folgenden Link aufrufst:
+
+{U_TOPIC}
+
+{FROM_USERNAME} kann dir auch eine Nachricht geschickt haben, die du unten finden kannst. Bitte beachte, dass diese Nachricht nicht durch einen Administrator des Boards geprüft wurde. Wenn du dich über den Erhalt dieser E-Mail beschweren möchtest, wende dich bitte an die Board-Administration unter {BOARD_CONTACT}. Bitte füge die kompletten Nachrichtenkopfzeilen bei, wenn du dich an diese Adresse wendest.
+
+----------
+
+{MESSAGE}

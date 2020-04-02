@@ -1,0 +1,15 @@
+Subject: Notificación de nuevo tema - "{FORUM_NAME}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación porque sigues el foro "{FORUM_NAME}" de "{SITENAME}".
+Este foro tiene un nuevo tema<!-- IF AUTHOR_NAME != '' --> por {AUTHOR_NAME}<!-- ENDIF --> desde tu última visita, "{TOPIC_TITLE}".
+Puedes usar el siguiente enlace para ver el foro. No se enviarán más notificaciones hasta que lo visites.
+
+{U_FORUM}
+
+Si no quieres seguir más ese foro puedes hacer clic en "Cancelar suscripción al Foro" cuando estés allí, o bien siguiendo este enlace:
+
+{U_STOP_WATCHING_FORUM}
+
+{EMAIL_SIG}

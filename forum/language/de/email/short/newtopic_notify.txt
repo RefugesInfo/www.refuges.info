@@ -1,0 +1,13 @@
+Subject: Benachrichtigung über neues Thema — „{FORUM_NAME}“
+
+Hallo {USERNAME},
+
+du erhältst diese Benachrichtigung, weil du das Forum „{FORUM_NAME}“ auf „{SITENAME}“ abonniert hast. Seit deinem letzten Besuch wurde in diesem Forum ein neues Thema<!-- IF AUTHOR_NAME != '' --> von {AUTHOR_NAME}<!-- ENDIF --> erstellt: „{TOPIC_TITLE}“. Du erhältst keine weitere Benachrichtigung, bis du das Forum besucht hast.
+
+Du kannst dir das Forum ansehen, wenn du folgenden Link aufrufst:
+{U_FORUM}
+
+Wenn du das Forum nicht länger abonnieren möchtest, verwende entweder den Link „Abonnement des Forums beenden“ im entsprechenden Forum oder rufe folgenden Link auf:
+{U_STOP_WATCHING_FORUM}
+
+{EMAIL_SIG}

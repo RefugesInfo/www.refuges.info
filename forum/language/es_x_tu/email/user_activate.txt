@@ -1,0 +1,10 @@
+Subject: Reactivar tu cuenta
+
+Hola {USERNAME},
+
+Tu cuenta en "{SITENAME}" ha sido desactivada, probablemente debido a cambios hechos en tu perfil.
+Para reactivar tu cuenta tienes que hacer clic en el siguiente enlace:
+
+{U_ACTIVATE}
+
+{EMAIL_SIG}

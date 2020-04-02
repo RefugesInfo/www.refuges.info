@@ -1,0 +1,42 @@
+Subject: Bienvenido a "{SITENAME}"
+
+{WELCOME_MSG}
+
+De conformidad con COPPA, tu cuenta permanece inactiva.
+
+Por favor, imprime este mensaje y que tu padre/madre o tutor legal lo firme y ponga la fecha. Después envíalo por fax a:
+
+{FAX_INFO}
+
+O mándalo por correo a:
+
+{MAIL_INFO}
+
+------------------------------ CORTE POR AQUÍ ------------------------------
+Permiso para participar en "{SITENAME}" - {U_BOARD}
+
+Nombre de usuario: {USERNAME}
+E-mail: {EMAIL_ADDRESS}
+
+HE COMPROBADO LA INFORMACIÓN PROVISTA POR MI HIJO/A Y CONCEDO PERMISO A "{SITENAME}" PARA QUE GUARDE ESTA INFORMACIÓN.
+ENTIENDO QUE ESTA INFORMACIÓN PUEDE SER MODIFICADA EN CUALQUIER MOMENTO CON SOLO INTRODUCIR UNA CONTRASEÑA.
+ENTIENDO QUE PUEDO SOLICITAR QUE ESTA INFORMACIÓN SEA ELIMINADA DE "{SITENAME}" EN CUALQUIER MOMENTO.
+
+
+Padre, madre o tutor(a) legal 
+(escriba su nombre aquí): _____________________
+
+(Firme aquí): __________________ 
+
+Fecha: _______________
+
+------------------------------ CORTE POR AQUÍ ------------------------------
+
+
+Una vez que el/la Administrador(a) haya recibido el formulario de arriba vía fax o correo tradicional tu cuenta será activada.
+
+Tu contraseña ha sido guardada de forma segura en nuestra base de datos y no puede ser recuperada. En caso de que sea olvidada, podrás restaurarla usando la dirección de email asociada a tu cuenta.
+
+Gracias por registrarte.
+
+{EMAIL_SIG}

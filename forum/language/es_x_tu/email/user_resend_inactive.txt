@@ -1,0 +1,20 @@
+Subject: Bienvenido a "{SITENAME}"
+
+{WELCOME_MSG}
+
+Por favor, guarda este email para futuras referencias. La información de tu cuenta es la siguiente:
+
+----------------------------
+Nombre de usuario: {USERNAME}
+----------------------------
+
+Tu contraseña ha sido guardada de forma segura en nuestra base de datos y no puede ser recuperada.
+En el caso de que la olvides tendrás la posibilidad de regenerarla usando la misma dirección de correo electrónico asociada a tu cuenta.
+
+Por favor, visita el siguiente enlace para activar tu cuenta:
+
+{U_ACTIVATE}
+
+Gracias por registrarse.
+
+{EMAIL_SIG}

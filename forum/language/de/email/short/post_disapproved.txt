@@ -1,0 +1,11 @@
+Subject: Beitragsfreigabe verweigert — „{POST_SUBJECT}“
+
+Hallo {USERNAME},
+
+du erhältst diese Nachricht, weil deinem Beitrag „{POST_SUBJECT}“ auf „{SITENAME}“ von einem Moderator oder Administrator die Freigabe verweigert wurde.
+
+Der folgende Grund wurde dafür angegeben:
+
+{REASON}
+
+{EMAIL_SIG}

@@ -1,0 +1,17 @@
+Subject: Bienvenido a "{SITENAME}" - {U_BOARD}
+
+{WELCOME_MSG}
+
+Por favor, guarda este email para futuras referencias. La información de tu cuenta es la siguiente:
+
+----------------------------
+Nombre de usuario: {USERNAME}
+
+URL del Sitio: {U_BOARD}
+----------------------------
+
+Tu clave ha sido encriptada en nuestra base de datos. Si la olvidaste podrás solicitar una nueva la cuál será activada en la misma forma que esta cuenta.
+
+Gracias por registrarse.
+
+{EMAIL_SIG}

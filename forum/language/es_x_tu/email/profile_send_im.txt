@@ -1,0 +1,13 @@
+Hola {TO_USERNAME},
+
+El siguiente es un mensaje que te envía {FROM_USERNAME} mediante tu cuenta en "{SITENAME}".
+Si este mensaje es Spam, contiene comentarios abusivos o que consideres ofensivos, por favor, contacta con la Administración del sitio en esta dirección:
+
+{BOARD_CONTACT}
+
+Adjunta este mensaje completo. Por favor, fíjate en que la dirección del remitente es la de la cuenta de IM.
+
+El siguiente es el mensaje enviado:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

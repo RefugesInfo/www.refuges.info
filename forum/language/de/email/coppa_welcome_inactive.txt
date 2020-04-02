@@ -1,0 +1,41 @@
+Subject: Willkommen auf „{SITENAME}“
+
+{WELCOME_MSG}
+
+Gemäß den Regelungen des COPPA ist dein Benutzerkonto momentan inaktiv.
+
+Bitte drucke diese Nachricht aus und lass sie von einem Elternteil oder einem Erziehungsberechtigten unterzeichnen und datieren. Sende sie anschließend per Fax an:
+
+{FAX_INFO}
+
+oder sende sie per Post an:
+
+{MAIL_INFO}
+
+-------------------------- HIER AUSSCHNEIDEN -------------------------
+
+Genehmigung der Teilnahme auf „{SITENAME}“ — {U_BOARD}
+
+Benutzername: {USERNAME}
+E-Mail-Adresse: {EMAIL_ADDRESS}
+
+ICH HABE DIE ANGABEN MEINES KINDES ÜBERPRÜFT UND GENEHMIGE „{SITENAME}“ HIERMIT, DIESE INFORMATIONEN ZU SPEICHERN.
+ICH WEISS, DASS DIESE INFORMATIONEN JEDERZEIT NACH EINGABE EINES PASSWORTS GEÄNDERT WERDEN KÖNNEN.
+ICH WEISS, DASS ICH JEDERZEIT VON „{SITENAME}“ VERLANGEN KANN, DASS DIESE INFORMATIONEN ENTFERNT WERDEN.
+
+Elternteil oder Erziehungsberechtigter 
+(Vollständiger Name): _____________________
+
+(Unterschrift): __________________ 
+
+Datum: _______________
+
+-------------------------- HIER AUSSCHNEIDEN -------------------------
+
+Sobald der Administrator dieses Formular per Fax oder Post erhalten hat, wird er dein Benutzerkonto aktivieren.
+
+Dein Passwort wurde sicher in unserer Datenbank gespeichert und kann nicht wiederhergestellt werden. Falls es vergessen werden sollte, kannst du es über die E-Mail-Adresse, die deinem Benutzerkonto zugeordnet ist, zurücksetzen lassen.
+
+Vielen Dank für deine Registrierung.
+
+{EMAIL_SIG}

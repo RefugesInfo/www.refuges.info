@@ -1,0 +1,22 @@
+Subject: Notificación de mensaje en el foro - "{FORUM_NAME}"
+Lista-Darse de baja: <{U_STOP_WATCHING_FORUM}>
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación porque estás siguiendo el foro "{FORUM_NAME}" en "{SITENAME}".
+Este foro tiene una nueva respuesta al tema "{TOPIC_TITLE}"<!-- IF AUTHOR_NAME != '' --> por {AUTHOR_NAME}<!-- ENDIF --> desde tu última visita.
+Siguiendo este enlace puede ver esa respuesta, no se enviarán más notificaciones hasta que visites ese enlace.
+
+{U_NEWEST_POST}
+
+Si quieres ver el tema, haz clic en el siguiente enlace:
+{U_TOPIC}
+
+Si quieres ver el foro, haz clic en el siguiente enlace:
+{U_FORUM}
+
+Si no quieres seguir más ese foro puedes hacer clic en "Cancelar suscripción al Foro" cuando estés allí, o bien siguiendo este enlace:
+
+{U_STOP_WATCHING_FORUM}
+
+{EMAIL_SIG}

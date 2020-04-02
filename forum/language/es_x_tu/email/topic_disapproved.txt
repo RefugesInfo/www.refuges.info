@@ -1,0 +1,11 @@
+Subject: Tema no aprobado - "{TOPIC_TITLE}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación porque tu tema "{TOPIC_TITLE}" en "{SITENAME}" no fue aprobado por un(a) Moderador(a) o por la Administración del sitio.
+
+No fue aprobado por esta razón:
+
+{REASON}
+
+{EMAIL_SIG}

@@ -1,0 +1,20 @@
+Subject: Notifica argomento forum - “{FORUM_NAME}”
+List-Unsubscribe: <{U_STOP_WATCHING_FORUM}>
+
+Ciao {USERNAME},
+
+ricevi questa notifica perché stai controllando il forum “{FORUM_NAME}” su “{SITENAME}”. C’è stata una risposta all’argomento “{TOPIC_TITLE}”<!-- IF AUTHOR_NAME != '' --> effettuata da {AUTHOR_NAME}<!-- ENDIF --> dalla tua ultima visita. Tramite il link che segue puoi arrivare direttamente all’argomento; non riceverai altre notifiche fino alla tua prossima visita all’argomento:
+
+{U_NEWEST_POST}
+
+Per visualizzare l’argomento clicca sul seguente link:
+{U_TOPIC}
+
+Per visualizzare il forum clicca sul seguente link:
+{U_FORUM}
+
+Se non desideri più controllare questo forum puoi cliccare su “Annulla sottoscrizione forum” che trovi su “{SITENAME}”, o cliccando sul link seguente:
+
+{U_STOP_WATCHING_FORUM}
+
+{EMAIL_SIG}

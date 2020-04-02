@@ -1,0 +1,23 @@
+
+Bonjour {TO_USERNAME},
+
+Ce qui suit est un courriel qui vous a été envoyé depuis la page de contact de « {SITENAME} ».
+
+<!-- IF S_IS_REGISTERED -->
+Le message a été envoyé depuis un compte du forum.
+Non d’utilisateur : {FROM_USERNAME}
+Adresse courriel : {FROM_EMAIL_ADDRESS}
+Adresse IP : {FROM_IP_ADDRESS}
+Profil : {U_FROM_PROFILE}
+<!-- ELSE -->
+Le message a été envoyé par un invité qui a indiqué les informations de contact suivantes :
+Nom : {FROM_USERNAME}
+Adresse courriel : {FROM_EMAIL_ADDRESS}
+Adresse IP : {FROM_IP_ADDRESS}
+<!-- ENDIF -->
+
+
+Voici le message qui vous a été envoyé :
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

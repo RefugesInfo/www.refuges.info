@@ -1,0 +1,11 @@
+Subject: Avviso di account inattivo
+
+Ciao {USERNAME},
+
+il {REGISTER_DATE} hai registrato un nuovo account su “{SITENAME}”. Ad oggi non hai ancora attivato il tuo account, procedura necessaria per poter accedere. Per comodità il link di attivazione è ripetuto qui sotto:
+
+{U_ACTIVATE}
+
+Grazie per esserti registrato su “{SITENAME}”, attendiamo la tua partecipazione.
+
+{EMAIL_SIG}

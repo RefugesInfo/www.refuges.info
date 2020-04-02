@@ -1,0 +1,23 @@
+
+Ciao {TO_USERNAME},
+
+La seguente email è inviata attraverso la pagina dei contatti di amministrazione su "{SITENAME}".
+
+<!-- IF S_IS_REGISTERED -->
+Il messaggio è stato inviato da un account sul sito.
+Nome Utente: {FROM_USERNAME}
+Indirizzo Email: {FROM_EMAIL_ADDRESS}
+Indirizzo IP: {FROM_IP_ADDRESS}
+Profilo: {U_FROM_PROFILE}
+<!-- ELSE -->
+Il messaggio è stato inviato da un ospite che ha specificato le seguenti informazioni:
+Nome: {FROM_USERNAME}
+Indirizzo Email: {FROM_EMAIL_ADDRESS}
+Indirizzo IP: {FROM_IP_ADDRESS}
+<!-- ENDIF -->
+
+
+Messaggio inviato a te che segui
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

@@ -1,0 +1,17 @@
+Subject: Benvenuto su “{SITENAME}”
+
+{WELCOME_MSG}
+
+Per favore conserva questa email con le informazioni del tuo account:
+
+----------------------------
+Nome utente: {USERNAME}
+
+URL Board: {U_BOARD}
+----------------------------
+
+Non scordare la tua password, non sarà possibile recuperarla dal nostro database in quanto viene criptata. In caso di smarrimento della stessa, sarà comunque possibile richiederne una nuova dalla pagina di login, utilizzando l’indirizzo email associato al tuo account.
+
+Grazie per esserti iscritto.
+
+{EMAIL_SIG}

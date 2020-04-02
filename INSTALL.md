@@ -21,7 +21,8 @@ Pour installer le code du site de www.refuges.info nous utilisons actuellement (
 Le code est publié sur github ici :
 https://github.com/RefugesInfo/www.refuges.info
 
-* Code 
+Code 
+====
 
 Pour télécharger la dernière version de développement :
 
@@ -31,16 +32,17 @@ cd www.refuges.info
 ```
 Le code du site se retrouve dans un dossier nommé www.refuges.info (toutes les commandes d'après sont à faire depuis ce dossier)
 
-* Postgresql
+Postgresql
+==========
 
  * Créer un rôle d'accès à une base de donnée et créer une base supportant PostGIS
  * Pour charger une base de donnée avec notre structure (fonctions GIS incluses) demandez nous car ça change souvent et personne ne met à jour sur github
 
-* phpBB
+Installation / upgrade phpBB
+============================
 
- * Le logiciel du forum est livré sous forme de .zip
- * Pour l'installer, le mettre à jour, créer les tables du forum ou upgrader la version :
- * Lancez /forum/install et suivez les instructions
- * C'est nécessaire car c'est le forum phpBB qui gère nos utilisateurs du site également.
+ * Une fois les fichiers du GIT installés ou mis à jour, il est indispensable d'exécuter l'utilitaire /install.php
+ * Cecui-ci vérifiera les principaux fichiers de configuration et vous guidera dans leur mise à niveau
+ * Il vous proposera si nécéssaire la mise à jour des tables phpBB dans la base de donnée
 
 Voir le README.md pour adapter les paramètres de config du code

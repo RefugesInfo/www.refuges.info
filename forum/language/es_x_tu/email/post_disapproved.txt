@@ -1,0 +1,11 @@
+Subject: Mensaje desaprobado - "{POST_SUBJECT}"
+
+Hola {USERNAME},
+
+Estás recibiendo esta notificación porque tu mensaje "{POST_SUBJECT}" en "{SITENAME}" fue desaprobado por un(a) Moderador(a) o la Administración.
+
+Se dió la siguiente razón para desaprobarlo:
+
+{REASON}
+
+{EMAIL_SIG}

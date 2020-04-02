@@ -1,0 +1,18 @@
+Subject: Notification de nouveau sujet - {FORUM_NAME}
+List-Unsubscribe: <{U_STOP_WATCHING_FORUM}>
+
+Bonjour {USERNAME},
+
+Vous recevez cette notification car vous surveillez le forum « {FORUM_NAME} » sur « {SITENAME} ». Depuis votre dernière visite, ce forum a reçu un nouveau sujet<!-- IF AUTHOR_NAME != '' --> créé par {AUTHOR_NAME}<!-- ENDIF -->, « {TOPIC_TITLE} ». Vous pouvez utiliser le lien suivant pour voir le forum, aucune autre notification ne vous sera envoyée jusqu’à votre prochaine visite sur le forum.
+
+{U_FORUM}
+
+Pour consulter directement ce nouveau sujet, cliquez sur le lien suivant :
+
+{U_TOPIC}
+
+Si vous ne souhaitez plus surveiller ce forum, vous pouvez cliquer sur le lien « Arrêter de surveiller ce forum » en bas de celui-ci, ou bien sur le lien suivant :
+
+{U_STOP_WATCHING_FORUM}
+
+{EMAIL_SIG}
