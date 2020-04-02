@@ -1,6 +1,5 @@
 <?php
 // Récupère les données locales
-require(__DIR__.'/../includes/config.php');
 require(__DIR__.'/../config_privee.php');
 
 $dbms = 'phpbb\\db\\driver\\postgres';

@@ -75,6 +75,7 @@ else
 //NOTE : On peut mettre un config_privee.php personnalisé dans le répertoire en dessous de la racine du site
 if (file_exists ('../config_privee.php.modele')) {
 	echo "<section>Copie du fichier ../config_privee.php.modele (perso) dans /config_privee.php</section>\n";
+	ob_flush (); flush ();
 	copy ('../config_privee.php.modele', 'config_privee.php');
 }
 else
@@ -88,6 +89,7 @@ else
 //NOTE : On peut mettre un htaccess.modele.txt personnalisé dans le répertoire en dessous de la racine du site
 if (file_exists ('../htaccess.modele.txt')) {
 	echo "<section>Copie du fichier ../htaccess.modele.txt (perso) dans /.htaccess</section>\n";
+	ob_flush (); flush ();
 	copy ('../htaccess.modele.txt', '.htaccess');
 }
 else
@@ -95,7 +97,7 @@ else
 
 //=========================
 // Fichier forum/config.php
-if (file_exists ('forum/config.php'))
+if (file_exists ('forum/config.php') && filesize('forum/config.php'))
 	echo "<div>Fichier forum/config.php présent</div>\n";
 else {
 	include ('config_privee.php');
@@ -122,7 +124,10 @@ else {
 
 //=========================
 // Connexion au serveur SQL
+ob_flush (); flush ();
+$config_wri['debug']=true;
 include ('includes/bdd.php');
+	ob_flush (); flush ();
 if (@$pdo->errorCode() === null) {
 	echo "<strong>Les paramètres de config_privee.php ou forum/config.php ne permettent pas de se connecter à la base PGSQL</strong>";
 	exit;
@@ -131,6 +136,7 @@ echo "<div>Connexion à PGSQL OK</div>\n";
 
 //========================
 // Etat des fichiers phpBB
+ob_flush (); flush ();
 define ('IN_PHPBB', true);
 include ('forum/includes/constants.php');
 $phpbb_version_fichiers = PHPBB_VERSION;
@@ -139,6 +145,7 @@ echo "<div>Fichiers phpBB installés version $phpbb_version_fichiers</div>\n";
 //======================
 // Etat de la base phpBB
 if (file_exists ('forum/config.php')) {
+	ob_flush (); flush ();
 	include ('forum/config.php');
 	$query = "SELECT config_value FROM {$table_prefix}config WHERE config_name = 'version'";
 	$res = $pdo->query($query);
@@ -185,6 +192,7 @@ else {
 // C'est fini !
 if ($phpbb_version_bdd == $phpbb_version_fichiers) {
 	echo "</br><div>Purge des fichiers phpBB install & cache</div>\n";
+	ob_flush (); flush ();
 	recurse_delete ('forum/install');
 	recurse_delete ('forum/docs');
 	recurse_delete ('forum/cache/installer');
@@ -197,6 +205,7 @@ if ($phpbb_version_bdd == $phpbb_version_fichiers) {
 function initialise_fichier_par_defaut_ou_meurs ($modele, $fichier) {
 	if (file_exists ($modele)) {
 		echo "<section>Copie du fichier /$modele dans /$fichier</section>\n";
+		ob_flush (); flush ();
 		copy ($modele, $fichier);
 	}
 	else {
@@ -212,6 +221,7 @@ function initialise_fichier_par_defaut_ou_meurs ($modele, $fichier) {
 function recurse_copy ($src, $dst, $recurse = false) {
 	if (!$recurse)
 		echo "<section>Copie du répertoire /$src dans /$dst</section>\n";
+	ob_flush (); flush ();
     $dir = opendir ($src);
     @mkdir ($dst);
     while (false !== ($file = readdir ($dir)))
@@ -226,6 +236,7 @@ function recurse_copy ($src, $dst, $recurse = false) {
 
 //===================================
 function recurse_delete ($dir) {
+	ob_flush (); flush ();
 	if (is_dir ($dir)) {
 		$files = array_diff (scandir ($dir), ['.','..']);
 		foreach ($files as $file)
