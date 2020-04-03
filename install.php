@@ -97,9 +97,15 @@ else
 
 //=========================
 // Fichier forum/config.php
-if (file_exists ('forum/config.php') && filesize('forum/config.php'))
-	echo "<div>Fichier forum/config.php présent</div>\n";
-else {
+if (file_exists ('forum/config.php')) {
+	include ('forum/config.php');
+	if ($dbms && $table_prefix)
+		echo "<div>Fichier forum/config.php présent</div>\n";
+	else {
+		echo "<strong>Le fichier forum/config.php ne contient pas les paramètres d'accès à SQL</strong>";
+		exit;
+	}
+} else {
 	include ('config_privee.php');
 	// Cas ou le forum est déjà installé et les paramètres SQL sont dans config_privee.php
 	if (isset ($config_wri['serveur_pgsql']) &&
@@ -109,9 +115,10 @@ else {
 
 	// Récupération ou install de la base phpBB
 	else {
-		echo "<strong>Paramètres d'accès à SQL absents</strong><br/>\n".
+		echo "<strong>Le fichier config_privee.php ne contient pas les paramètres d'accès à SQL</strong><br/>\n".
 			"<label>Si vous avez déjà une base SQL refuges.info : renseignez les paramètres dans config_privee.php</label><br/>\n";
 
+		// On propose de créer les tables SQL phpBB
 		if (!is_dir('forum/install'))
 			recurse_copy ('forum/install.modele', 'forum/install');
 		echo "<label>Sinon, créez la base phpBB : ".
@@ -127,7 +134,7 @@ else {
 ob_flush (); flush ();
 $config_wri['debug']=true;
 include ('includes/bdd.php');
-	ob_flush (); flush ();
+ob_flush (); flush ();
 if (@$pdo->errorCode() === null) {
 	echo "<strong>Les paramètres de config_privee.php ou forum/config.php ne permettent pas de se connecter à la base PGSQL</strong>";
 	exit;
