@@ -1,0 +1,76 @@
+services:
+    cleantalk.antispam.listener:
+        class: cleantalk\antispam\event\main_listener
+        arguments:
+            - @template
+            - @config
+            - @user
+            - @request
+            - @dbal.conn
+            - @cleantalk.antispam.cleantalk_sfw
+            - @cleantalk.antispam.main_model
+            - @symfony_request
+            - '%core.php_ext%'                                            
+        tags:
+            - { name: event.listener }
+
+    cleantalk.antispam.cleantalk_sfw:
+        class: cleantalk\antispam\model\CleantalkSFW
+        arguments:
+            - @template
+            - @config
+            - @user
+            - @request
+            - @dbal.conn
+            - '%core.table_prefix%' 
+
+    cleantalk.antispam.cleantalk:
+        class: cleantalk\antispam\model\Cleantalk
+        arguments:
+            - @request
+
+    cleantalk.antispam.cleantalk_request:
+        class: cleantalk\antispam\model\CleantalkRequest  
+
+    cleantalk.antispam.main_model:
+        class: cleantalk\antispam\model\main_model
+        arguments:
+            - @config
+            - @user
+            - @request
+            - @log
+            - @cleantalk.antispam.cleantalk
+            - @cleantalk.antispam.cleantalk_request
+            - @config_text
+            - '%core.root_path%'            
+            - '%core.php_ext%'                                
+
+    cleantalk.antispam.cron.task.cleantalk_antispam_sfw_logs_send:
+        class: cleantalk\antispam\cron\task\cleantalk_antispam_sfw_logs_send
+        arguments:
+            - @config
+            - @cleantalk.antispam.cleantalk_sfw            
+        calls:
+            - [set_name, [cron.task.cleantalk_antispam_sfw_logs_send]]
+        tags:
+            - { name: cron.task }
+
+    cleantalk.antispam.cron.task.cleantalk_antispam_sfw_update:
+        class: cleantalk\antispam\cron\task\cleantalk_antispam_sfw_update
+        arguments:
+            - @config
+            - @cleantalk.antispam.cleantalk_sfw
+        calls:
+            - [set_name, [cron.task.cleantalk_antispam_sfw_update]]
+        tags:
+            - { name: cron.task }
+            
+    cleantalk.antispam.cron.task.cleantalk_antispam_check_payment_status:
+        class: cleantalk\antispam\cron\task\cleantalk_antispam_check_payment_status
+        arguments:
+            - @config
+        calls:
+            - [set_name, [cron.task.cleantalk_antispam_check_payment_status]]
+        tags:
+            - { name: cron.task }
+            
