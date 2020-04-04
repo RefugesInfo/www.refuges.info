@@ -15,7 +15,7 @@ if(!$vue->polygone)
   $vue->polygone = $vue->contenu; // En édition, c'est la même chose
 
 // Définition d'un nom par défaut à la création pour éviter de perdre tout son travail de dessin de contour
-if(!$vue->polygone->nom_polygone)
+if($vue->polygone && !$vue->polygone->nom_polygone)
   $vue->polygone->nom_polygone='Nom';
 
 if ($polygone)
