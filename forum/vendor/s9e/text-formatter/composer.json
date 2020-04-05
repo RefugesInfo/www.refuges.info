@@ -6,16 +6,15 @@
 	"keywords": ["bbcode","bbcodes","blog","censor","embed","emoji","emoticons","engine","forum","html","markdown","markup","media","parser","shortcodes"],
 	"license": "MIT",
 	"require": {
-		"php":        ">=5.4.7",
+		"php":        ">=7.1",
 		"ext-dom":    "*",
 		"ext-filter": "*",
-		"lib-pcre":   ">=7.2"
+		"lib-pcre":   ">=8.13",
+		"s9e/regexp-builder": "^1.4"
 	},
 	"require-dev": {
-		"matthiasmullie/minify":       "*",
-		"phpunit/phpunit":             "<6",
-		"php-coveralls/php-coveralls": "*",
-		"s9e/regexp-builder":          "1.*"
+		"matthiasmullie/minify": "*",
+		"phpunit/phpunit":       "^7 || 8.2.*"
 	},
 	"suggest": {
 		"ext-curl":      "Improves the performance of the MediaEmbed plugin and some JavaScript minifiers",
@@ -35,5 +34,8 @@
 		"psr-4": {
 			"s9e\\TextFormatter\\Tests\\": "tests"
 		}
+	},
+	"extra": {
+		"version": "2.3.1"
 	}
 }

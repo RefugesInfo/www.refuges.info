@@ -43,10 +43,10 @@ $lang = array_merge($lang, array(
 	'RECAPTCHA_INCORRECT'			=> 'La solución que has insertado era incorrecta',
 	'RECAPTCHA_NOSCRIPT'			=> 'Por favor, activa JavaScript en tú navegador para cargar el desafío.',
 
-	'RECAPTCHA_PUBLIC'				=> 'Clave pública reCaptcha',
-	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Tu clave pública reCaptcha. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
-	'RECAPTCHA_PRIVATE'				=> 'Clave Privada reCaptcha',
-	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'Tu clave privada reCaptcha. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
+	'RECAPTCHA_PUBLIC'				=> 'Clave del sitio',
+	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Tu clave de sitio reCAPTCHA. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>. Por favor, usa reCAPTCHA v2 &gt; Invisible reCAPTCHA badge type.',
+	'RECAPTCHA_PRIVATE'				=> 'Clave secreta',
+	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'Tu clave secreta reCAPTCHA. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>. Por favor, usa reCAPTCHA v2 &gt; Invisible reCAPTCHA badge type.',
 
-	'RECAPTCHA_EXPLAIN'				=> 'En un esfuerzo por prevenir insersiones automáticas requerimos que completes el siguiente desafio.',
+	'RECAPTCHA_INVISIBLE'			=> 'Este CAPTCHA es realmente invisible. Para verificar que funciona, debe aparecer un pequeño icono en la esquina inferior derecha de esta página.',
 ));

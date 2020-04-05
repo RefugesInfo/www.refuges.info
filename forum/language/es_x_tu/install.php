@@ -69,9 +69,9 @@ $lang = array_merge($lang, array(
 
 	<p>phpBB3 soporta las siguientes bases de datos:</p>
 	<ul>
-		<li>MySQL 3.23 ó superior (MySQLi también)</li>
+		<li>MySQL 4.1.3 ó superior (MySQLi requerido)</li>
 		<li>PostgreSQL 8.3+</li>
-        	<li>SQLite 3.6.15+</li>
+        <li>SQLite 3.6.15+</li>
 		<li>MS SQL Server 2000 ó superior (directamente o vía ODBC)</li>
 		<li>MS SQL Server 2005 ó superior (nativo)</li>
 		<li>Oracle</li>
@@ -103,7 +103,7 @@ $lang = array_merge($lang, array(
 
 	// Server requirements
 	'PHP_VERSION_REQD'					=> 'Versión PHP',
-	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB requiere la versión 5.4.0 de PHP o superior.',
+	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB requiere la versión 7.1.3 de PHP o superior.',
 	'PHP_GETIMAGESIZE_SUPPORT'			=> 'La función PHP getimagesize() es requerida',
 	'PHP_GETIMAGESIZE_SUPPORT_EXPLAIN'	=> 'Para que phpBB funcione correctamente, la función getimagesize debe estar disponible.',
 	'PCRE_UTF_SUPPORT'					=> 'Soporte PCRE UTF-8',
@@ -184,7 +184,6 @@ $lang = array_merge($lang, array(
 	// Database options
 	'DB_OPTION_MSSQL_ODBC'	=> 'MSSQL Server 2000+ vía ODBC',
 	'DB_OPTION_MSSQLNATIVE'	=> 'MSSQL Server 2005+ [ Nativo ]',
-	'DB_OPTION_MYSQL'		=> 'MySQL',
 	'DB_OPTION_MYSQLI'		=> 'MySQL con Extensiones MySQLi',
 	'DB_OPTION_ORACLE'		=> 'Oracle',
 	'DB_OPTION_POSTGRES'	=> 'PostgreSQL',
@@ -369,7 +368,7 @@ $lang = array_merge($lang, array(
 			<li>Siga los pasos para actualizar la base de datos y deje que se ejecute hasta su finalización.</li>
 			<li>Usando FTP o SSH borre la carpeta <code class="inline">/install</code> de la raíz de su foro instalado.<br><br></li>
 		</ol>
-		
+
 		<p>Ahora tiene un nuevo foro actualizado que contiene todos sus usuarios y mensajes. Tareas de seguimiento:</p>
 		<ul style="margin-left: 20px; font-size: 1.1em;">
 			<li>Actualiza tu paquete de lenguaje</li>
@@ -563,7 +562,7 @@ $lang = array_merge($lang, array(
 
 	// Finish conversion
 	'CONVERT_COMPLETE'			=> 'Conversión completada',
-	'CONVERT_COMPLETE_EXPLAIN'	=> 'Has convertido tu sitio a phpBB 3.2 correctamente. Ahora puedes identificarte y <a href="../">acceder a tu sitio</a>. Recuerda que hay ayuda disponible en línea para usar phpBB3 vía <a href="https://www.phpbb.com/support/docs/en/3.2/ug/">Documentación</a>, y los <a href="https://www.phpbb.com/community/viewforum.php?f=466">foros de soporte</a> (ambos en inglés).',
+	'CONVERT_COMPLETE_EXPLAIN'	=> 'Has convertido tu sitio a phpBB 3.3 correctamente. Ahora puedes identificarte y <a href="../">acceder a tu sitio</a>. Recuerda que hay ayuda disponible en línea para usar phpBB3 vía <a href="https://www.phpbb.com/support/docs/en/3.3/ug/">Documentación</a>, y los <a href="https://www.phpbb.com/community/viewforum.php?f=661">foros de soporte</a> (ambos en inglés).',
 
 	'CONV_ERROR_ATTACH_FTP_DIR'			=> 'El FTP para subir adjuntos está habilitado en el viejo sitio. Por favor, deshabilita esta opción de FTP y asegúrate de especificar una carpeta válida para subir, luego copia todos los adjuntos a esta nueva carpeta. Una vez hecho esto, reinicia el conversor.',
 	'CONV_ERROR_CONFIG_EMPTY'			=> 'No hay información de conversión disponible para la misma.',

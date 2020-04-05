@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -11,27 +11,30 @@ namespace Zend\Code\Reflection\DocBlock\Tag;
 
 use Zend\Code\Generic\Prototype\PrototypeGenericInterface;
 
+use function explode;
+use function trim;
+
 class GenericTag implements TagInterface, PrototypeGenericInterface
 {
     /**
      * @var string
      */
-    protected $name = null;
+    protected $name;
 
     /**
      * @var string
      */
-    protected $content = null;
+    protected $content;
 
     /**
      * @var null|string
      */
-    protected $contentSplitCharacter = null;
+    protected $contentSplitCharacter;
 
     /**
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * @param  string $contentSplitCharacter
@@ -95,7 +98,7 @@ class GenericTag implements TagInterface, PrototypeGenericInterface
      */
     public function __toString()
     {
-        return 'DocBlock Tag [ * @' . $this->name . ' ]' . PHP_EOL;
+        return 'DocBlock Tag [ * @' . $this->name . ' ]' . "\n";
     }
 
     /**

@@ -16,6 +16,8 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\Util;
 
 use Zend\Code\Generator\PropertyGenerator;
@@ -53,12 +55,12 @@ class PublicScopeSimulator
      * @throws \InvalidArgumentException
      */
     public static function getPublicAccessSimulationCode(
-        $operationType,
-        $nameParameter,
+        string $operationType,
+        string $nameParameter,
         $valueParameter = null,
         PropertyGenerator $valueHolder = null,
         $returnPropertyName = null
-    ) {
+    ) : string {
         $byRef  = self::getByRefReturnValue($operationType);
         $value  = static::OPERATION_SET === $operationType ? ', $value' : '';
         $target = '$this';
@@ -71,7 +73,7 @@ class PublicScopeSimulator
             . 'if (! $realInstanceReflection->hasProperty($' . $nameParameter . ')) {'   . "\n"
             . '    $targetObject = ' . $target . ';' . "\n\n"
             . self::getUndefinedPropertyNotice($operationType, $nameParameter)
-            . '    ' . self::getOperation($operationType, $nameParameter, $valueParameter) . ";\n"
+            . '    ' . self::getOperation($operationType, $nameParameter, $valueParameter) . "\n"
             . "    return;\n"
             . '}' . "\n\n"
             . '$targetObject = ' . self::getTargetObject($valueHolder) . ";\n"
@@ -94,18 +96,23 @@ class PublicScopeSimulator
      *
      * @return string
      */
-    private static function getUndefinedPropertyNotice($operationType, $nameParameter)
+    private static function getUndefinedPropertyNotice(string $operationType, string $nameParameter) : string
     {
         if (static::OPERATION_GET !== $operationType) {
             return '';
         }
 
-        //
         return '    $backtrace = debug_backtrace(false);' . "\n"
-            . '    trigger_error(\'Undefined property: \' . get_parent_class($this) . \'::$\' . $'
-            . $nameParameter
-            . ' . \' in \' . $backtrace[0][\'file\'] . \' on line \' . $backtrace[0][\'line\'], \E_USER_NOTICE);'
-            . "\n";
+            . '    trigger_error(' . "\n"
+            . '        sprintf(' . "\n"
+            . '            \'Undefined property: %s::$%s in %s on line %s\',' . "\n"
+            . '            get_parent_class($this),' . "\n"
+            . '            $' . $nameParameter . ',' . "\n"
+            . '            $backtrace[0][\'file\'],' . "\n"
+            . '            $backtrace[0][\'line\']' . "\n"
+            . '        ),' . "\n"
+            . '        \E_USER_NOTICE' . "\n"
+            . '    );' . "\n";
     }
 
     /**
@@ -119,7 +126,7 @@ class PublicScopeSimulator
      *
      * @return string
      */
-    private static function getByRefReturnValue($operationType)
+    private static function getByRefReturnValue(string $operationType) : string
     {
         return (static::OPERATION_GET === $operationType || static::OPERATION_SET === $operationType) ? '& ' : '';
     }
@@ -131,7 +138,7 @@ class PublicScopeSimulator
      *
      * @return string
      */
-    private static function getTargetObject(PropertyGenerator $valueHolder = null)
+    private static function getTargetObject(PropertyGenerator $valueHolder = null) : string
     {
         if ($valueHolder) {
             return '$this->' . $valueHolder->getName();
@@ -149,11 +156,11 @@ class PublicScopeSimulator
      *
      * @throws \InvalidArgumentException
      */
-    private static function getOperation($operationType, $nameParameter, $valueParameter)
+    private static function getOperation(string $operationType, string $nameParameter, $valueParameter) : string
     {
         switch ($operationType) {
             case static::OPERATION_GET:
-                return 'return $targetObject->$' . $nameParameter . ";";
+                return 'return $targetObject->$' . $nameParameter . ';';
             case static::OPERATION_SET:
                 if (! $valueParameter) {
                     throw new \InvalidArgumentException('Parameter $valueParameter not provided');
@@ -170,21 +177,15 @@ class PublicScopeSimulator
     }
 
     /**
-     * Generates code to bind operations to the parent scope if supported by the current PHP implementation
+     * Generates code to bind operations to the parent scope
      *
      * @return string
      */
-    private static function getScopeReBind()
+    private static function getScopeReBind() : string
     {
-        if (! method_exists('Closure', 'bind')) {
-            // @codeCoverageIgnoreStart
-            return '';
-            // @codeCoverageIgnoreEnd
-        }
-
-        return '    $backtrace = debug_backtrace(true);' . "\n"
-            . '    $scopeObject = isset($backtrace[1][\'object\'])'
-            . ' ? $backtrace[1][\'object\'] : new \stdClass();' . "\n"
-            . '    $accessor = $accessor->bindTo($scopeObject, get_class($scopeObject));' . "\n";
+        return '$backtrace = debug_backtrace(true);' . "\n"
+            . '$scopeObject = isset($backtrace[1][\'object\'])'
+            . ' ? $backtrace[1][\'object\'] : new \ProxyManager\Stub\EmptyClassStub();' . "\n"
+            . '$accessor = $accessor->bindTo($scopeObject, get_class($scopeObject));' . "\n";
     }
 }

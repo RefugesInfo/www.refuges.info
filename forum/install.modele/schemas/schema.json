@@ -796,6 +796,10 @@
                 "BOOL",
                 1
             ],
+            "display_subforum_limit": [
+                "BOOL",
+                0
+            ],
             "forum_options": [
                 "UINT:20",
                 0
@@ -3129,10 +3133,6 @@
                 "VCHAR_UNI:100",
                 ""
             ],
-            "user_email_hash": [
-                "BINT",
-                0
-            ],
             "user_birthday": [
                 "VCHAR:10",
                 ""
@@ -3325,6 +3325,14 @@
                 "VCHAR:32",
                 ""
             ],
+            "reset_token": [
+                "VCHAR:64",
+                ""
+            ],
+            "reset_token_expiration": [
+                "TIMESTAMP",
+                0
+            ],
             "user_newpasswd": [
                 "VCHAR:255",
                 ""
@@ -3352,10 +3360,6 @@
                 "INDEX",
                 "user_birthday"
             ],
-            "user_email_hash": [
-                "INDEX",
-                "user_email_hash"
-            ],
             "user_type": [
                 "INDEX",
                 "user_type"
@@ -3363,6 +3367,12 @@
             "username_clean": [
                 "UNIQUE",
                 "username_clean"
+            ],
+            "user_email": [
+                "INDEX",
+                [
+                    "user_email"
+                ]
             ]
         }
     },

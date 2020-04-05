@@ -22,24 +22,15 @@ class CleantalkHelper
 	
 	const URL = 'https://api.cleantalk.org'; // CleanTalk's API url
 	
-	/**
-	 * Function checks api key status
-	 *
-	 * @param string api key
-	 * @param bool perform check flag
-	 * @return mixed (STRING || array('error' => true, 'error_string' => STRING))
-	 */
-	static public function noticeValidateKey($api_key, $do_check = true)
-	{
-		$request = array(
-			'method_name' => 'notice_validate_key',
-			'auth_key' => $api_key
-		);
-		
-		$result = self::sendRawRequest(self::URL, $request);
-		$result = $do_check ? self::checkRequestResult($result, 'notice_validate_key') : $result;
-		
-		return $result;
+	/*
+	*	Checking api_key
+	*	returns (boolean)
+	*/
+
+	static public function apbct_key_is_correct($api_key = '') {
+
+		return preg_match('/^[a-z\d]{3,15}$|^$/', $api_key);
+
 	}
 	
 	/**
@@ -163,34 +154,11 @@ class CleantalkHelper
 			'data' => implode(',',$data),
 		);
 		
-		$result = self::sendRawRequest(self::URL, $request);
+		$result = self::sendRawRequest(self::URL, $request, false, 15);
 		$result = $do_check ? $result = self::checkRequestResult($result, 'spam_check_cms') : $result;
 		
 		return $result;
-	}
-	
-	/**
-	 * Function sends empty feedback for version comparison in Dashboard
-	 *
-	 * @param string api_key
-	 * @param string agent-version
-	 * @param bool perform check flag
-	 * @return mixed (STRING || array('error' => true, 'error_string' => STRING))
-	 */
-	static public function sendEmptyFeedback($api_key, $agent_version, $do_check = true){
-		
-		$request = array(
-			'method_name' => 'send_feedback',
-			'auth_key' => $api_key,
-			'feedback' => 0 . ':' . $agent_version
-		);
-		
-		$result = self::sendRawRequest(self::URL, $request);
-		$result = $do_check ? $result = self::checkRequestResult($result, 'send_feedback') : $result;
-		
-		return $result;
-	}
-	
+	}	
 	
 	/**
 	 * Function gets spam report
@@ -257,13 +225,7 @@ class CleantalkHelper
 		}
 		
 		// Patches for different methods
-		
-		// mehod_name = notice_validate_key
-		if($method_name == 'notice_validate_key' && isset($result['valid']))
-		{
-			return $result;
-		}
-		
+				
 		// Other methods
 		if(isset($result['data']) && is_array($result['data']))
 		{
@@ -309,8 +271,7 @@ class CleantalkHelper
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
             // see http://stackoverflow.com/a/23322368
             curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);            			
+           			
 			$result = curl_exec($ch);
 			
 			if($result !== false)

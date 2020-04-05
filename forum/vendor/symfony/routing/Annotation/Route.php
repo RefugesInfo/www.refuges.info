@@ -23,12 +23,12 @@ class Route
 {
     private $path;
     private $name;
-    private $requirements = array();
-    private $options = array();
-    private $defaults = array();
+    private $requirements = [];
+    private $options = [];
+    private $defaults = [];
     private $host;
-    private $methods = array();
-    private $schemes = array();
+    private $methods = [];
+    private $schemes = [];
     private $condition;
 
     /**
@@ -50,26 +50,6 @@ class Route
             }
             $this->$method($value);
         }
-    }
-
-    /**
-     * @deprecated since version 2.2, to be removed in 3.0. Use setPath instead.
-     */
-    public function setPattern($pattern)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since Symfony 2.2 and will be removed in 3.0. Use the setPath() method instead and use the "path" option instead of the "pattern" option in the route definition.', E_USER_DEPRECATED);
-
-        $this->path = $pattern;
-    }
-
-    /**
-     * @deprecated since version 2.2, to be removed in 3.0. Use getPath instead.
-     */
-    public function getPattern()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since Symfony 2.2 and will be removed in 3.0. Use the getPath() method instead and use the "path" option instead of the "pattern" option in the route definition.', E_USER_DEPRECATED);
-
-        return $this->path;
     }
 
     public function setPath($path)
@@ -104,22 +84,6 @@ class Route
 
     public function setRequirements($requirements)
     {
-        if (isset($requirements['_method'])) {
-            if (0 === \count($this->methods)) {
-                $this->methods = explode('|', $requirements['_method']);
-            }
-
-            @trigger_error('The "_method" requirement is deprecated since Symfony 2.2 and will be removed in 3.0. Use the "methods" option instead.', E_USER_DEPRECATED);
-        }
-
-        if (isset($requirements['_scheme'])) {
-            if (0 === \count($this->schemes)) {
-                $this->schemes = explode('|', $requirements['_scheme']);
-            }
-
-            @trigger_error('The "_scheme" requirement is deprecated since Symfony 2.2 and will be removed in 3.0. Use the "schemes" option instead.', E_USER_DEPRECATED);
-        }
-
         $this->requirements = $requirements;
     }
 
@@ -150,7 +114,7 @@ class Route
 
     public function setSchemes($schemes)
     {
-        $this->schemes = \is_array($schemes) ? $schemes : array($schemes);
+        $this->schemes = \is_array($schemes) ? $schemes : [$schemes];
     }
 
     public function getSchemes()
@@ -160,7 +124,7 @@ class Route
 
     public function setMethods($methods)
     {
-        $this->methods = \is_array($methods) ? $methods : array($methods);
+        $this->methods = \is_array($methods) ? $methods : [$methods];
     }
 
     public function getMethods()

@@ -16,10 +16,13 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
 use ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator\Util\InterceptorGenerator;
+use ProxyManager\ProxyGenerator\Util\GetMethodIfExists;
 use ReflectionClass;
 use Zend\Code\Generator\PropertyGenerator;
 
@@ -33,6 +36,10 @@ class MagicClone extends MagicMethodGenerator
 {
     /**
      * Constructor
+     *
+     * @param ReflectionClass   $originalClass
+     * @param PropertyGenerator $prefixInterceptors
+     * @param PropertyGenerator $suffixInterceptors
      */
     public function __construct(
         ReflectionClass $originalClass,
@@ -41,13 +48,14 @@ class MagicClone extends MagicMethodGenerator
     ) {
         parent::__construct($originalClass, '__clone');
 
-        $this->setBody(
-            InterceptorGenerator::createInterceptedMethodBody(
-                $originalClass->hasMethod('__clone') ? '$returnValue = parent::__clone();' : '$returnValue = null;',
-                $this,
-                $prefixInterceptors,
-                $suffixInterceptors
-            )
-        );
+        $parent = GetMethodIfExists::get($originalClass, '__clone');
+
+        $this->setBody(InterceptorGenerator::createInterceptedMethodBody(
+            $parent ? '$returnValue = parent::__clone();' : '$returnValue = null;',
+            $this,
+            $prefixInterceptors,
+            $suffixInterceptors,
+            $parent
+        ));
     }
 }

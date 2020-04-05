@@ -229,16 +229,6 @@ $lang = array_merge($lang, array(
 
 	'BACK'					=> 'Indietro',
 
-	'CANNOT_CHANGE_FILE_GROUP'			=> 'Impossibile modificare il gruppo dei file',
-	'CANNOT_CHANGE_FILE_PERMISSIONS'	=> 'Impossibile modificare i permessi dei file',
-	'CANNOT_COPY_FILES'					=> 'Impossibile copiare i file',
-	'CANNOT_CREATE_SYMLINK'				=> 'Impossibile creare un link simbolico',
-	'CANNOT_DELETE_FILES'				=> 'Impossibile eliminare file dal sistema',
-	'CANNOT_DUMP_FILE'					=> 'Impossibile scaricare il file',
-	'CANNOT_MIRROR_DIRECTORY'			=> 'Impossibile copiare la cartella',
-	'CANNOT_RENAME_FILE'				=> 'Impossibile rinominare un file dal sistema',
-	'CANNOT_TOUCH_FILES'				=> 'Impossibile determinare se il file esiste',
-
 	'CONTAINER_EXCEPTION'	=> 'phpBB ha rilevato un errore di costruzione del contenitore a causa di un’estensione installata. Per questo motivo, tutte le estensioni sono state temporaneamente disattivate. Svuota la cache del Forum. Tutte le estensioni verranno automaticamente riattivate una volta risolto l’errore del contenitore. Se questo errore persiste, vai su <a href="https://www.phpbb.com/support">phpBB.com</a> per avere supporto.',
 	'EXCEPTION'				=> 'Eccezione',
 
@@ -376,7 +366,7 @@ $lang = array_merge($lang, array(
 	'DATABASE_SERVER_INFO'	=> 'Database server',
 	'DATABASE_SIZE'			=> 'Dimensione database',
 
-	// Enviroment configuration checks, mbstring related
+	// Environment configuration checks, mbstring related
 	'ERROR_MBSTRING_FUNC_OVERLOAD'					=> 'La funzione di sovraccarico non è correttamente configurata.',
 	'ERROR_MBSTRING_FUNC_OVERLOAD_EXPLAIN'			=> '<var>mbstring.func_overload</var> deve essere impostata su 0 o su 4. Puoi controllare il valore corrente nella pagina <samp>Informazioni *php</samp>.',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION'			=> 'La codifica trasparente dei caratteri non è correttamente configurata',

@@ -130,6 +130,8 @@ $lang = array_merge($lang, array(
 	'GENERAL_FORUM_SETTINGS'	=> 'Configuración general',
 
 	'LINK'						=> 'Enlace',
+	'LIMIT_SUBFORUMS'			=> 'Limite la leyenda para dirigir subforos secundarios',
+	'LIMIT_SUBFORUMS_EXPLAIN'	=> 'Limita los subforos que se mostrarán a los subforos que son descendientes directos (hijos) del foro actual. Deshabilitar esto mostrará todos los subforos con la opción “Listar subforos en leyenda” habilitada, independientemente de la profundidad.',
 	'LIST_INDEX'				=> 'Lista subforo en la leyenda del foro padre',
 	'LIST_INDEX_EXPLAIN'		=> 'Muestra este Foro en el índice y en cualquier otro lugar del foro padre como un enlace dentro de la leyenda de su foro padre si en éste está activado el parámetro “Lista subforos en la leyenda”.',
 	'LIST_SUBFORUMS'			=> 'Lista subforos en la leyenda',

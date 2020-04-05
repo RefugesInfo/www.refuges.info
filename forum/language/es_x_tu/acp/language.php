@@ -40,7 +40,7 @@ $lang = array_merge($lang, array(
 	'ACP_FILES'						=> 'Archivos de Administración',
 	'ACP_LANGUAGE_PACKS_EXPLAIN'	=> 'Aquí puedes instalar/desinstalar paquetes de idiomas. El paquete de idioma por defecto está marcado con un asterisco (*).',
 
-    	'DELETE_LANGUAGE_CONFIRM'		=> '¿Estás seguro que deseas eliminar “%s”?',
+    'DELETE_LANGUAGE_CONFIRM'		=> '¿Estás seguro que deseas eliminar “%s”?',
 
 	'INSTALLED_LANGUAGE_PACKS'		=> 'Paquetes de idiomas instalados',
 

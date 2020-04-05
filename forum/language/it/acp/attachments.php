@@ -71,7 +71,6 @@ $lang = array_merge($lang, array(
 	'ATTACH_QUOTA_EXPLAIN'				=> 'Dimensione massima riservata su disco per tutti gli allegati; 0 = illimitata.',
 	'ATTACH_TO_POST'					=> 'Allega file al messaggio',
 
-	'CAT_FLASH_FILES'			=> 'File flash',
 	'CAT_IMAGES'				=> 'Immagini',
 	'CHECK_CONTENT'             => 'Controlla allegati',
 	'CHECK_CONTENT_EXPLAIN'		=> 'Alcuni browser possono essere ingannati nell’accettare un mimetype incorretto per i file da caricare. Questa opzione garantisce che i file che possono causare questo problema vengano respinti.',
@@ -102,7 +101,6 @@ $lang = array_merge($lang, array(
 	'EXT_GROUP_ARCHIVES'			=> 'Archivi',
 	'EXT_GROUP_DOCUMENTS'			=> 'Documenti',
 	'EXT_GROUP_DOWNLOADABLE_FILES'	=> 'File scaricabili',
-	'EXT_GROUP_FLASH_FILES'			=> 'File Flash',
 	'EXT_GROUP_IMAGES'				=> 'Immagini',
 	'EXT_GROUP_PLAIN_TEXT'			=> 'Testo normale',
 

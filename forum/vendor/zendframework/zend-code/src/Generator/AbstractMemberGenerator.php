@@ -3,11 +3,15 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code\Generator;
+
+use function is_array;
+use function is_string;
+use function sprintf;
 
 abstract class AbstractMemberGenerator extends AbstractGenerator
 {
@@ -17,6 +21,7 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
     const FLAG_ABSTRACT  = 0x01;
     const FLAG_FINAL     = 0x02;
     const FLAG_STATIC    = 0x04;
+    const FLAG_INTERFACE = 0x08;
     const FLAG_PUBLIC    = 0x10;
     const FLAG_PROTECTED = 0x20;
     const FLAG_PRIVATE   = 0x40;
@@ -31,14 +36,14 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
     /**#@-*/
 
     /**
-     * @var DocBlockGenerator
+     * @var DocBlockGenerator|null
      */
-    protected $docBlock = null;
+    protected $docBlock;
 
     /**
      * @var string
      */
-    protected $name = null;
+    protected $name;
 
     /**
      * @var int
@@ -90,7 +95,7 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
      */
     public function setAbstract($isAbstract)
     {
-        return (($isAbstract) ? $this->addFlag(self::FLAG_ABSTRACT) : $this->removeFlag(self::FLAG_ABSTRACT));
+        return $isAbstract ? $this->addFlag(self::FLAG_ABSTRACT) : $this->removeFlag(self::FLAG_ABSTRACT);
     }
 
     /**
@@ -102,12 +107,29 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
     }
 
     /**
+     * @param  bool $isInterface
+     * @return AbstractMemberGenerator
+     */
+    public function setInterface($isInterface)
+    {
+        return $isInterface ? $this->addFlag(self::FLAG_INTERFACE) : $this->removeFlag(self::FLAG_INTERFACE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInterface()
+    {
+        return (bool) ($this->flags & self::FLAG_INTERFACE);
+    }
+
+    /**
      * @param  bool $isFinal
      * @return AbstractMemberGenerator
      */
     public function setFinal($isFinal)
     {
-        return (($isFinal) ? $this->addFlag(self::FLAG_FINAL) : $this->removeFlag(self::FLAG_FINAL));
+        return $isFinal ? $this->addFlag(self::FLAG_FINAL) : $this->removeFlag(self::FLAG_FINAL);
     }
 
     /**
@@ -124,7 +146,7 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
      */
     public function setStatic($isStatic)
     {
-        return (($isStatic) ? $this->addFlag(self::FLAG_STATIC) : $this->removeFlag(self::FLAG_STATIC));
+        return $isStatic ? $this->addFlag(self::FLAG_STATIC) : $this->removeFlag(self::FLAG_STATIC);
     }
 
     /**
@@ -165,9 +187,9 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
     public function getVisibility()
     {
         switch (true) {
-            case ($this->flags & self::FLAG_PROTECTED):
+            case $this->flags & self::FLAG_PROTECTED:
                 return self::VISIBILITY_PROTECTED;
-            case ($this->flags & self::FLAG_PRIVATE):
+            case $this->flags & self::FLAG_PRIVATE:
                 return self::VISIBILITY_PRIVATE;
             default:
                 return self::VISIBILITY_PUBLIC;
@@ -201,7 +223,7 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
     {
         if (is_string($docBlock)) {
             $docBlock = new DocBlockGenerator($docBlock);
-        } elseif (!$docBlock instanceof DocBlockGenerator) {
+        } elseif (! $docBlock instanceof DocBlockGenerator) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s is expecting either a string, array or an instance of %s\DocBlockGenerator',
                 __METHOD__,
@@ -214,8 +236,13 @@ abstract class AbstractMemberGenerator extends AbstractGenerator
         return $this;
     }
 
+    public function removeDocBlock(): void
+    {
+        $this->docBlock = null;
+    }
+
     /**
-     * @return DocBlockGenerator
+     * @return DocBlockGenerator|null
      */
     public function getDocBlock()
     {

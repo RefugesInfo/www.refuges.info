@@ -24,8 +24,7 @@ class release_5_2_0 extends \phpbb\db\migration\migration
 
 	public function update_data()
 	{
-		return array(
-		
+		return array(		
 			// Result of notice_paid_till method
 			array('config.add', array('cleantalk_antispam_show_notice', 0)),
 			array('config.add', array('cleantalk_antispam_renew',       0)),

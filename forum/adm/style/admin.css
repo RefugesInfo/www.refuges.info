@@ -1,4 +1,4 @@
-/*  phpBB 3.2 Admin Style Sheet
+/*  phpBB 3.3 Admin Style Sheet
 	------------------------------------------------------------------------
 	Original author:	subBlue ( http://www.subblue.com/ )
 	Copyright (c) phpBB Limited <https://www.phpbb.com>
@@ -191,7 +191,7 @@ li {
 
 #page-header {
 	text-align: right;
-	background: url("../images/phpbb_logo.png") top left no-repeat;
+	background: url("../images/phpbb_logo.svg") top left no-repeat;
 	height: 54px;
 	font-size: 0.85em;
 	margin-bottom: 10px;
@@ -199,7 +199,7 @@ li {
 
 .rtl #page-header {
 	text-align: left;
-	background: url("../images/phpbb_logo.png") top right no-repeat;
+	background: url("../images/phpbb_logo.svg") top right no-repeat;
 }
 
 #page-header h1 {
@@ -723,9 +723,25 @@ td {
 }
 
 .table1 {
-	border-collapse: separate;
-	border-spacing: 1px;
 	clear: both;
+	border-spacing: 1px;
+	border-collapse: separate;
+}
+
+.table2 {
+	display: inline-block;
+	border-spacing: 1px;
+	border-collapse: separate;
+}
+
+.lside {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+}
+
+.tabled {
+	width: 1%;
 }
 
 dt#color_palette_placeholder table {

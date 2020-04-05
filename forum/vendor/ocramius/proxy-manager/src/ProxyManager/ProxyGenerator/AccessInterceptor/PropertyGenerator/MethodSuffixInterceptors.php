@@ -16,6 +16,8 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\AccessInterceptor\PropertyGenerator;
 
 use ProxyManager\Generator\Util\UniqueIdentifierGenerator;
@@ -31,13 +33,15 @@ class MethodSuffixInterceptors extends PropertyGenerator
 {
     /**
      * Constructor
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
     public function __construct()
     {
         parent::__construct(UniqueIdentifierGenerator::getIdentifier('methodSuffixInterceptors'));
 
-        $this->setDefaultValue(array());
+        $this->setDefaultValue([]);
         $this->setVisibility(self::VISIBILITY_PRIVATE);
-        $this->setDocblock('@var \\Closure[] map of interceptors to be called per-method after execution');
+        $this->setDocBlock('@var \\Closure[] map of interceptors to be called per-method after execution');
     }
 }

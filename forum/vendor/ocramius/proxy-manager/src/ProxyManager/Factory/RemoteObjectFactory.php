@@ -16,11 +16,17 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\Factory;
 
 use ProxyManager\Configuration;
 use ProxyManager\Factory\RemoteObject\AdapterInterface;
+use ProxyManager\Proxy\RemoteObjectInterface;
+use ProxyManager\ProxyGenerator\ProxyGeneratorInterface;
 use ProxyManager\ProxyGenerator\RemoteObjectGenerator;
+use ProxyManager\Signature\Exception\InvalidSignatureException;
+use ProxyManager\Signature\Exception\MissingSignatureException;
 
 /**
  * Factory responsible of producing remote proxy objects
@@ -56,20 +62,25 @@ class RemoteObjectFactory extends AbstractBaseFactory
     /**
      * @param string|object $instanceOrClassName
      *
-     * @return \ProxyManager\Proxy\RemoteObjectInterface
+     * @return RemoteObjectInterface
+     *
+     * @throws InvalidSignatureException
+     * @throws MissingSignatureException
+     * @throws \OutOfBoundsException
      */
-    public function createProxy($instanceOrClassName)
+    public function createProxy($instanceOrClassName) : RemoteObjectInterface
     {
-        $className      = is_object($instanceOrClassName) ? get_class($instanceOrClassName) : $instanceOrClassName;
-        $proxyClassName = $this->generateProxy($className);
+        $proxyClassName = $this->generateProxy(
+            is_object($instanceOrClassName) ? get_class($instanceOrClassName) : $instanceOrClassName
+        );
 
-        return new $proxyClassName($this->adapter);
+        return $proxyClassName::staticProxyConstructor($this->adapter);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function getGenerator()
+    protected function getGenerator() : ProxyGeneratorInterface
     {
         return $this->generator ?: $this->generator = new RemoteObjectGenerator();
     }

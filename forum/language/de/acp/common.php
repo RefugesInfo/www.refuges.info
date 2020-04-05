@@ -228,16 +228,6 @@ $lang = array_merge($lang, array(
 
 	'BACK'					=> 'Zurück',
 
-	'CANNOT_CHANGE_FILE_GROUP'	=> 'Die Gruppe einer Datei konnte nicht geändert werden',
-	'CANNOT_CHANGE_FILE_PERMISSIONS'	=> 'Die Berechtigungen einer Datei konnten nicht geändert werden',
-	'CANNOT_COPY_FILES'		=> 'Die Dateien konnten nicht kopiert werden',
-	'CANNOT_CREATE_SYMLINK'	=> 'Eine symbolische Verknüpfung (Symlink) konnte nicht erstellt werden',
-	'CANNOT_DELETE_FILES'	=> 'Eine Datei konnte nicht vom Server gelöscht werden',
-	'CANNOT_DUMP_FILE'		=> 'Eine Datei konnte nicht ausgelesen werden',
-	'CANNOT_MIRROR_DIRECTORY'	=> 'Ein Verzeichnis konnte nicht gespiegelt werden',
-	'CANNOT_RENAME_FILE'	=> 'Eine Datei konnte auf dem Server nicht umbenannt werden',
-	'CANNOT_TOUCH_FILES'	=> 'Es konnte nicht geprüft werden, ob eine Datei existiert',
-
 	'CONTAINER_EXCEPTION' => 'Beim Aufbau des Containers durch phpBB ist wegen einer installierten Erweiterung ein Fehler aufgetreten. Aus diesem Grund wurden alle Erweiterungen vorrübergehend deaktiviert. Bitte versuche das Problem zu beheben, in dem du den Cache des Boards leerst. Alle Erweiterungen werden automatisch wieder aktiviert, sobald der Container-Fehler behoben ist. Wenn das Problem dauerhaft auftritt, besuche bitte <a href="https://www.phpbb.com/support">phpBB.com (englisch)</a> für Support (<a href="https://www.phpbb.de/go/3.2/supportforum">deutschsprachiger Support auf phpBB.de</a>).',
 	'EXCEPTION' => 'Fehler',
 
@@ -375,7 +365,7 @@ $lang = array_merge($lang, array(
 	'DATABASE_SERVER_INFO'	=> 'Datenbank-Server',
 	'DATABASE_SIZE'		=> 'Datenbank-Größe',
 
-	// Enviroment configuration checks, mbstring related
+	// Environment configuration checks, mbstring related
 	'ERROR_MBSTRING_FUNC_OVERLOAD'					=> 'Das Überladen von Funktionen ist fehlerhaft konfiguriert',
 	'ERROR_MBSTRING_FUNC_OVERLOAD_EXPLAIN'			=> '<var>mbstring.func_overload</var> muss entweder 0 oder 4 sein. Du kannst den aktuellen Wert auf der Seite <samp>PHP-Information</samp> prüfen.',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION'			=> 'Die transparente Zeichenkodierung ist fehlerhaft konfiguriert',

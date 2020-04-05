@@ -94,6 +94,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_ERROR_ALREADY_LINKED'				=> 'Este servicio externo ya está asociado con otra cuenta del foro.',
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_ENTRY'				=> 'Entrada de la base de datos no válida.',
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_SERVICE_TYPE'		=> 'Tipo de servicio no válido proporcionado al controlador de servicio de OAuth.',
+	'AUTH_PROVIDER_OAUTH_ERROR_REQUEST'						=> 'Algo salió mal al procesar tu solicitud de OAuth.',
 	'AUTH_PROVIDER_OAUTH_ERROR_SERVICE_NOT_CREATED'			=> 'Servicio OAuth no creado',
 	'AUTH_PROVIDER_OAUTH_SERVICE_BITLY'						=> 'Bitly',
 	'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK'					=> 'Facebook',
@@ -266,6 +267,17 @@ $lang = array_merge($lang, array(
 	'FROM'	=> 'de',
 	'FSOCK_DISABLED'	=> 'No se puede completar la operación porque las funciones fsock han sido deshabilitadas o el servidor no está disponible.',
 	'FSOCK_TIMEOUT'			=> 'Se agotó el tiempo de lectura de la corriente de red.',
+
+	'FILESYSTEM_CANNOT_CHANGE_FILE_GROUP'	=> 'Incapaz de cambiar el grupo de archivos',
+	'FILESYSTEM_CANNOT_CHANGE_FILE_PERMISSIONS'	=> 'Incapaz de cambiar los permisos de archivos',
+	'FILESYSTEM_CANNOT_COPY_FILES'		=> 'Incapaz de copiar archivos',
+	'FILESYSTEM_CANNOT_CREATE_SYMLINK'	=> 'Incapaz de crear un enlace simbólico',
+	'FILESYSTEM_CANNOT_CREATE_DIRECTORY'		=> 'Incapaz de crear un directorio',
+	'FILESYSTEM_CANNOT_DELETE_FILES'	=> 'Incapaz de borrar los archivos del sistema',
+	'FILESYSTEM_CANNOT_DUMP_FILE'		=> 'Incapaz de volvar en el archivo',
+	'FILESYSTEM_CANNOT_MIRROR_DIRECTORY'	=> 'Incapaz de reflejar el directorio',
+	'FILESYSTEM_CANNOT_RENAME_FILE'	=> 'Incapaz de renombrar un archivo del sistema',
+	'FILESYSTEM_CANNOT_TOUCH_FILES'	=> 'Incapaz de crear el archivo o cambiar las marcas de tiempo del archivo',
 	
 	'FTP_FSOCK_HOST'	=> 'Servidor FTP Fsock',
 	'FTP_FSOCK_HOST_EXPLAIN'	=> 'Servidor FTP Fsock empleado para conectar a tu sitio',
@@ -484,7 +496,7 @@ $lang = array_merge($lang, array(
 	'NOTIFICATION_TOPIC_IN_QUEUE'		=> '<strong>Aprobación del tema</strong> requerida por %1$s:',
 	'NOTIFICATION_TYPE_NOT_EXIST'		=> 'El tipo de notificación "%s" no se encuentra en el sistema de archivos.',
 	'NOTIFICATION_ADMIN_ACTIVATE_USER'	=> '<strong>Activación requerida</strong> para nuevo usuario registrado: “%1$s”',
-	// Used in conjuction with NOTIFICATION_BOOKMARK and NOTIFICATION_POST.
+	// Used in conjunction with NOTIFICATION_BOOKMARK and NOTIFICATION_POST.
     	'NOTIFICATION_MANY_OTHERS'			=> 'otros',
 	'NOTIFICATION_X_OTHERS'				=> array(
 		2	=> 'otros %d',
@@ -577,7 +589,7 @@ $lang = array_merge($lang, array(
 	'POSTING_PRIVATE_MESSAGE'	=> 'Escribiendo mensaje privado',
 	'POST'					=> 'Mensaje',
 	'POST_ANNOUNCEMENT'		=> 'Anuncio',
-	'POST_STICKY'			=> 'Nota',
+	'POST_STICKY'			=> 'Fijo',
 	'POSTED'				=> 'Publicado',
 	'POSTED_IN_FORUM'		=> 'en',
 	'POSTED_ON_DATE'		=> 'el',
@@ -604,6 +616,7 @@ $lang = array_merge($lang, array(
 	'POST_TOPIC'			=> 'Publicar un nuevo tema',
     	'POST_UNAPPROVED_ACTION'	=> 'Mensaje esperando aprobación:',
     	'POST_UNAPPROVED'		=> 'Este mensaje no ha sido aprobado.',
+	'POST_UNAPPROVED_EXPLAIN'	=> 'Este mensaje no es visible para otros usuarios hasta que haya sido aprobado por un Moderador.',
 	'POWERED_BY'			=> 'Desarrollado por %s',
 	'PREVIEW'				=> 'Vista previa',
 	'PREVIOUS'				=> 'Anterior',
@@ -786,7 +799,7 @@ $lang = array_merge($lang, array(
 		1	=> 'Tema pendiente de aprobación',
 		2	=> 'Temas pendientes de aprobación',
 	),
-    'TOPIC_DELETED'		=> 'Este tema ha sido borrado.',
+    	'TOPIC_DELETED'		=> 'Este tema ha sido borrado.',
 	'TOTAL_ATTACHMENTS'	=> 'Adjunto(s)',
 	'TOTAL_LOGS'		=> array(
 		1	=> '%d registro',
@@ -796,7 +809,7 @@ $lang = array_merge($lang, array(
 		1	=> '%d mensaje privado en total',
 		2	=> '%d mensajes privados en total',
 	),
-    'TOPIC_POLL'		=> 'Este tema tiene una encuesta.',
+    	'TOPIC_POLL'		=> 'Este tema tiene una encuesta.',
 	'TOTAL_POSTS'		=> 'Mensajes totales',
 	'TOTAL_POSTS_COUNT'	=> array(
 		2	=> 'Mensajes totales <strong>%d</strong>',
@@ -875,7 +888,7 @@ $lang = array_merge($lang, array(
 	'VIEW_TOPIC_LOGS'	=> 'Ver registros de tema',
 	'VIEW_TOPIC_MOVED'	=> 'Movido: ',
 	'VIEW_TOPIC_POLL'	=> 'Encuesta: ',
-	'VIEW_TOPIC_STICKY'	=> 'Nota: ',
+	'VIEW_TOPIC_STICKY'	=> 'Fijo: ',
 	'VISIT_WEBSITE'	=> 'Visitar sitio web',
 
 	'WARNINGS'	=> 'Advertencias',
@@ -1436,5 +1449,4 @@ $lang = array_merge($lang, array(
 	// The default dateformat which will be used on new installs in this language
 	// Translators should change this if a the usual date format is different
 	'default_dateformat'	=> 'D, d M Y, H:i', // Mié, 10 Mar 2010, 23:26
-
 ));

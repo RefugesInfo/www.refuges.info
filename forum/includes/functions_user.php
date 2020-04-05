@@ -204,7 +204,6 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 		'username_clean'	=> $username_clean,
 		'user_password'		=> (isset($user_row['user_password'])) ? $user_row['user_password'] : '',
 		'user_email'		=> strtolower($user_row['user_email']),
-		'user_email_hash'	=> phpbb_email_hash($user_row['user_email']),
 		'group_id'			=> $user_row['group_id'],
 		'user_type'			=> $user_row['user_type'],
 	);
@@ -1455,12 +1454,7 @@ function user_unban($mode, $ban)
 */
 function user_ipwhois($ip)
 {
-	if (empty($ip))
-	{
-		return '';
-	}
-
-	if (!preg_match(get_preg_expression('ipv4'), $ip) && !preg_match(get_preg_expression('ipv6'), $ip))
+	if (!filter_var($ip, FILTER_VALIDATE_IP))
 	{
 		return '';
 	}
@@ -1910,7 +1904,7 @@ function phpbb_validate_email($email, $config = null)
 	{
 		list(, $domain) = explode('@', $email);
 
-		if (phpbb_checkdnsrr($domain, 'A') === false && phpbb_checkdnsrr($domain, 'MX') === false)
+		if (checkdnsrr($domain, 'A') === false && checkdnsrr($domain, 'MX') === false)
 		{
 			return 'DOMAIN_NO_MX_RECORD';
 		}
@@ -1953,9 +1947,9 @@ function validate_user_email($email, $allowed_email = false)
 
 	if (!$config['allow_emailreuse'])
 	{
-		$sql = 'SELECT user_email_hash
+		$sql = 'SELECT user_email
 			FROM ' . USERS_TABLE . "
-			WHERE user_email_hash = " . $db->sql_escape(phpbb_email_hash($email));
+			WHERE user_email = '" . $db->sql_escape($email) . "'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);

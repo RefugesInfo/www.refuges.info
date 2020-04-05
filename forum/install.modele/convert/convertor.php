@@ -63,7 +63,7 @@ class convertor
 	{
 		global $user, $phpbb_root_path, $phpEx, $db, $lang, $config, $cache, $auth;
 		global $convert, $convert_row, $message_parser, $skip_rows, $language;
-		global $request, $phpbb_dispatcher;
+		global $request, $phpbb_dispatcher, $phpbb_container;
 
 		$phpbb_config_php_file = new \phpbb\config_php_file($phpbb_root_path, $phpEx);
 		extract($phpbb_config_php_file->get_all());
@@ -146,16 +146,6 @@ class convertor
 		{
 			case 'sqlite3':
 				$convert->src_truncate_statement = 'DELETE FROM ';
-				break;
-
-			// Thanks MySQL, for silently converting...
-			case 'mysql':
-			case 'mysql4':
-				if (version_compare($src_db->sql_server_info(true, false), '4.1.3', '>='))
-				{
-					$convert->mysql_convert = true;
-				}
-				$convert->src_truncate_statement = 'TRUNCATE TABLE ';
 				break;
 
 			case 'mysqli':
@@ -687,7 +677,7 @@ class convertor
 
 				$this->template->assign_block_vars('checks', array(
 					'TITLE'		=> "skip_rows = $skip_rows",
-					'RESULT'	=> $rows . ((defined('DEBUG') && function_exists('memory_get_usage')) ? ceil(memory_get_usage()/1024) . ' ' . $user->lang['KIB'] : ''),
+					'RESULT'	=> $rows . (($phpbb_container->getParameter('debug.memory') && function_exists('memory_get_usage')) ? ceil(memory_get_usage()/1024) . ' ' . $user->lang['KIB'] : ''),
 				));
 
 				$mtime = explode(' ', microtime());
@@ -748,8 +738,6 @@ class convertor
 						switch ($db->get_sql_layer())
 						{
 							// If MySQL, we'll wait to have num_wait_rows rows to submit at once
-							case 'mysql':
-							case 'mysql4':
 							case 'mysqli':
 								$waiting_rows[] = '(' . implode(', ', $insert_values) . ')';
 
@@ -920,6 +908,7 @@ class convertor
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $cache;
 		global $convert;
+		global $phpbb_container;
 
 		include_once ($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 
@@ -959,7 +948,7 @@ class convertor
 			sync('topic', 'range', 'topic_id BETWEEN ' . $sync_batch . ' AND ' . $end, true, true);
 
 			$this->template->assign_block_vars('checks', array(
-				'TITLE'		=> sprintf($user->lang['SYNC_TOPIC_ID'], $sync_batch, ($sync_batch + $batch_size)) . ((defined('DEBUG') && function_exists('memory_get_usage')) ? ' [' . ceil(memory_get_usage()/1024) . ' ' . $user->lang['KIB'] . ']' : ''),
+				'TITLE'		=> sprintf($user->lang['SYNC_TOPIC_ID'], $sync_batch, ($sync_batch + $batch_size)) . (($phpbb_container->getParameter('debug.memory') && function_exists('memory_get_usage')) ? ' [' . ceil(memory_get_usage()/1024) . ' ' . $user->lang['KIB'] . ']' : ''),
 				'RESULT'	=> $user->lang['DONE'],
 			));
 
@@ -1257,9 +1246,7 @@ class convertor
 		global $db, $user;
 		global $convert;
 
-		// Can we use IGNORE with this DBMS?
-		$sql_ignore = (strpos($db->get_sql_layer(), 'mysql') === 0 && !defined('DEBUG')) ? 'IGNORE ' : '';
-		$insert_query = 'INSERT ' . $sql_ignore . 'INTO ' . $schema['target'] . ' (';
+		$insert_query = 'INSERT INTO ' . $schema['target'] . ' (';
 
 		$aliases = array();
 

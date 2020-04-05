@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -11,27 +11,32 @@ namespace Zend\Code\Scanner;
 
 use Zend\Code\Exception;
 
+use function array_keys;
+use function array_merge;
+use function sprintf;
+use function trigger_error;
+
 class DerivedClassScanner extends ClassScanner
 {
     /**
      * @var DirectoryScanner
      */
-    protected $directoryScanner = null;
+    protected $directoryScanner;
 
     /**
      * @var ClassScanner
      */
-    protected $classScanner = null;
+    protected $classScanner;
 
     /**
      * @var array
      */
-    protected $parentClassScanners = array();
+    protected $parentClassScanners = [];
 
     /**
      * @var array
      */
-    protected $interfaceClassScanners = array();
+    protected $interfaceClassScanners = [];
 
     /**
      * @param ClassScanner $classScanner
@@ -47,9 +52,9 @@ class DerivedClassScanner extends ClassScanner
         while ($currentScannerClass && $currentScannerClass->hasParentClass()) {
             $currentParentClassName = $currentScannerClass->getParentClass();
             if ($directoryScanner->hasClass($currentParentClassName)) {
-                $currentParentClass                                 = $directoryScanner->getClass($currentParentClassName);
+                $currentParentClass = $directoryScanner->getClass($currentParentClassName);
                 $this->parentClassScanners[$currentParentClassName] = $currentParentClass;
-                $currentScannerClass                                = $currentParentClass;
+                $currentScannerClass = $currentParentClass;
             } else {
                 $currentScannerClass = false;
             }
@@ -123,7 +128,7 @@ class DerivedClassScanner extends ClassScanner
      */
     public function hasParentClass()
     {
-        return ($this->classScanner->getParentClass() !== null);
+        return $this->classScanner->getParentClass() !== null;
     }
 
     /**

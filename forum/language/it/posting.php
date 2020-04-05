@@ -269,7 +269,6 @@ $lang = array_merge($lang, array(
 	'TOPIC_BUMPED'				=> 'Bump argomento eseguito correttamente.',
 
 	'UNAUTHORISED_BBCODE'		=> 'Non puoi usare questo BBCode: %s.',
-	'UNGLOBALISE_EXPLAIN'		=> 'Per rendere normale questo Annuncio globale, devi specificare il forum in cui vuoi che venga visualizzato.',
 	'UNSUPPORTED_CHARACTERS_MESSAGE'	=> 'Il tuo messaggio contiene i seguenti caratteri non supportati:<br />%s',
 	'UNSUPPORTED_CHARACTERS_SUBJECT'	=> 'Il tuo oggetto contiene i seguenti caratteri non supportati:<br />%s',
 	'UPDATE_COMMENT'			=> 'Aggiorna commento',

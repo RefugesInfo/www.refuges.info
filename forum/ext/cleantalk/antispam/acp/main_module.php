@@ -37,7 +37,7 @@ class main_module
 			$config->set('cleantalk_antispam_sfw_enabled', $request->variable('cleantalk_antispam_sfw_enabled', 0));
 			
 			$key_is_valid = false;
-			$user_token_is_valid = false;
+			$key_is_ok = false;
 			
 			if($request->is_set_post('submit'))
 			{
@@ -58,36 +58,38 @@ class main_module
 					$config->set('cleantalk_antispam_apikey', $result['auth_key']);
 					$savekey = $result['auth_key'];
 					$key_is_valid = true;
-					if(!empty($result['user_token']))
-					{
-						$config->set('cleantalk_antispam_user_token', $result['user_token']);
-						$user_token_is_valid = true;
-					}
-					else
-					{
-						$config->set('cleantalk_antispam_user_token', '');
-						$user_token_is_valid = false;
-					}
 				}
 			}
 			
 			$savekey = $key_is_valid ? $savekey : $request->variable('cleantalk_antispam_apikey', '');
+							
+			if(!$key_is_valid)
+			{
+				$result =\cleantalk\antispam\model\CleantalkHelper::apbct_key_is_correct($savekey);
+				$key_is_valid = ($result) ? true: false;
+			}
 			
-			if($savekey != '')
-			{				
-				if(!$key_is_valid)
+			if($key_is_valid)
+			{
+				$result =\cleantalk\antispam\model\CleantalkHelper::noticePaidTill($savekey);
+
+				if(empty($result['error']))
 				{
-					$result =\cleantalk\antispam\model\CleantalkHelper::noticeValidateKey($savekey);
-					if(empty($result['error']))
-					{
-						$key_is_valid = $result['valid'] ? true : false;
-					}
-				}
-				
-				if($key_is_valid)
-				{					
-					$config->set('cleantalk_antispam_key_is_ok', 1);
+					$key_is_ok = true;
 					
+					$config->set('cleantalk_antispam_show_notice', ($result['show_notice']) ? $result['show_notice'] : 0);
+					$config->set('cleantalk_antispam_renew',       ($result['renew']) ? $result['renew'] : 0);
+					$config->set('cleantalk_antispam_trial',       ($result['trial']) ? $result['trial'] : 0);
+					$config->set('cleantalk_antispam_user_token',  ($result['user_token']) ? $result['user_token'] : '');
+					$config->set('cleantalk_antispam_spam_count',  ($result['spam_count']) ? $result['spam_count'] : 0);
+					$config->set('cleantalk_antispam_moderate_ip', ($result['moderate_ip']) ? $result['moderate_ip'] : 0);
+					$config->set('cleantalk_antispam_moderate', ($result['moderate']) ? $result['moderate'] : 0);
+					$config->set('cleantalk_antispam_show_review', ($result['show_review']) ? $result['show_review'] : 0);
+					$config->set('cleantalk_antispam_service_id', ($result['service_id']) ? $result['service_id'] : 0);
+					$config->set('cleantalk_antispam_ip_license',  ($result['ip_license']) ? $result['ip_license'] : 0);
+					$config->set('cleantalk_antispam_check_payment_status_last_gc', time());
+					$config->set('cleantalk_antispam_account_name_ob', ($result['account_name_ob']) ? $result['account_name_ob'] : '');
+
 					if ($config['cleantalk_antispam_sfw_enabled'])
 					{
 						$result =\cleantalk\antispam\model\CleantalkHelper::get2sBlacklistsDb($savekey);
@@ -119,6 +121,7 @@ class main_module
 
 						$result = $db->sql_query("SELECT * FROM ".$table_prefix."cleantalk_sfw_logs");
 						$sfw_logs_data = $db->sql_fetchrowset($result);
+ 						$db->sql_freeresult($result);
 						
 						if(count($sfw_logs_data))
 						{							
@@ -140,43 +143,15 @@ class main_module
 									$config->set('cleantalk_antispam_sfw_logs_send_last_gc', time());			
 								}
 							}								
-						}						
- 						$db->sql_freeresult($result);												
-					}
-					if(!$user_token_is_valid)
-					{						
-						$result =\cleantalk\antispam\model\CleantalkHelper::noticePaidTill($savekey);
-						
-						if(empty($result['error']))
-						{
-							$config->set('cleantalk_antispam_show_notice', ($result['show_notice']) ? $result['show_notice'] : 0);
-							$config->set('cleantalk_antispam_renew',       ($result['renew']) ? $result['renew'] : 0);
-							$config->set('cleantalk_antispam_trial',       ($result['trial']) ? $result['trial'] : 0);
-							$config->set('cleantalk_antispam_user_token',  ($result['user_token']) ? $result['user_token'] : '');
-							$config->set('cleantalk_antispam_spam_count',  ($result['spam_count']) ? $result['spam_count'] : 0);
-							$config->set('cleantalk_antispam_moderate_ip', ($result['moderate_ip']) ? $result['moderate_ip'] : 0);
-							$config->set('cleantalk_antispam_ip_license',  ($result['ip_license']) ? $result['ip_license'] : 0);
-							$config->set('cleantalk_antispam_check_payment_status_last_gc', time());
 						}
-					}	
-						$composer_json = json_decode(file_get_contents($phpbb_root_path . 'ext/cleantalk/antispam/composer.json'));
-						\cleantalk\antispam\model\CleantalkHelper::sendEmptyFeedback($savekey, 'phpbb31-' . preg_replace("/(\d+)\.(\d*)\.?(\d*)/", "$1$2$3", $composer_json->version));
-				}
-				else
-				{
-					$config->set('cleantalk_antispam_key_is_ok', 0);
-					$config->set('cleantalk_antispam_user_token', '');
-				}
-			}
-			else
-			{
-				$config->set('cleantalk_antispam_key_is_ok', 0);
-				$config->set('cleantalk_antispam_user_token', '');
-			}
+					}						
+				}																										
+			}				
+			$config->set('cleantalk_antispam_key_is_ok', ($key_is_ok) ? 1 : 0);
 			
 			trigger_error($user->lang('ACP_CLEANTALK_SETTINGS_SAVED') . adm_back_link($this->u_action));
 		}
-		
+
 		$template->assign_vars(array(
 			'U_ACTION'				=> $this->u_action,
 			'CLEANTALK_ANTISPAM_REGS'		=> $config['cleantalk_antispam_regs'] ? true : false,
@@ -189,14 +164,17 @@ class main_module
 			'CLEANTALK_ANTISPAM_USER_TOKEN'	=> $config['cleantalk_antispam_user_token'],
 			'CLEANTALK_ANTISPAM_REG_EMAIL'	=> $config['board_email'],
 			'CLEANTALK_ANTISPAM_REG_URL'	=> $request->server('SERVER_NAME'),
+			'CLEANTALK_ANTISPAM_ACCOUNT_NAME_OB' => $config['cleantalk_antispam_account_name_ob'],
+			'CLEANTALK_ANTISPAM_MODERATE_IP'=> $config['cleantalk_antispam_moderate_ip'],
+			'CLEANTALK_ANTISPAM_IP_LICENSE' => $config['cleantalk_antispam_ip_license'],
 		));
 
 		$user->add_lang_ext('cleantalk/antispam', 'common');
 
-		$ct_del_user = $request->variable('ct_del_user',   array(0), false, \phpbb\request\request_interface::POST);
-		$ct_del_all  = $request->variable('ct_delete_all', '',       false, \phpbb\request\request_interface::POST);
-				
-		if($ct_del_all!='')
+		$table_action = $request->variable('table_actions', '', false, \phpbb\request\request_interface::POST);
+		$delete_user_ids = array();		
+
+		if($table_action == 'ct_delete_all')
 		{
 			if (!check_form_key('cleantalk/antispam'))
 			{
@@ -207,16 +185,18 @@ class main_module
 			{
 				include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 			}
-			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ct_marked=1';
+			$sql = 'SELECT user_id FROM ' . USERS_TABLE . ' WHERE ct_marked=1';
 			$result = $db->sql_query($sql);
+			
 			while($row = $db->sql_fetchrow($result))
 			{
-				user_delete('remove', $row['user_id']);
+				$delete_user_ids[] = $row['user_id'];
 			}
+
 			$db->sql_freeresult($result);
 		}
 		
-		if(sizeof($ct_del_user)>0)
+		if ($table_action == 'ct_delete_checked')
 		{
 			if (!check_form_key('cleantalk/antispam'))
 			{
@@ -226,100 +206,132 @@ class main_module
 			{
 				include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 			}
-			foreach($ct_del_user as $key=>$value)
+			$ct_del_user = $request->variable('ct_del_user',   array(0), false, \phpbb\request\request_interface::POST);
+			if (sizeof($ct_del_user) > 0)
 			{
-				user_delete('remove', $key);
+				foreach($ct_del_user as $key=>$value)
+				{
+					$delete_user_ids[] = $key;
+				}				
 			}
 		}
-		if($request->variable('check_spam', '',       false, \phpbb\request\request_interface::POST))
+		if (!empty($delete_user_ids))
+		{
+			user_delete('remove', $delete_user_ids);
+		}
+
+		if ($request->variable('check_spam', '', false, \phpbb\request\request_interface::POST))
 		{
 			if (!check_form_key('cleantalk/antispam'))
 			{
 				trigger_error('FORM_INVALID');
 			}
-			$sql = 'UPDATE ' . USERS_TABLE . ' 
-				SET ct_marked=0';
-			$db->sql_query($sql);
-			$sql = "SELECT user_id, username, user_regdate, user_lastvisit, user_ip, user_email FROM " . USERS_TABLE . " WHERE user_password<>'' ORDER BY user_regdate DESC";
+
+            $error="";
+            $check_spam_number = $request->variable('check_spam_number', '', false, \phpbb\request\request_interface::POST);
+
+            $sql = 'UPDATE ' . USERS_TABLE . ' SET ct_marked=0 WHERE ct_marked=1';
+            $db->sql_query($sql);
+
+			if( ! is_numeric($check_spam_number) && '' !== $check_spam_number )
+			{
+			    $error = 'Please provide a right number to check.';
+                $template->assign_var('CT_ERROR', $error);
+            }
+
+			if( '' !== $check_spam_number )
+			{
+                $limit = " LIMIT " . (int) $check_spam_number;
+                $config->set('check_spam_number', $check_spam_number);
+
+            }
+			else
+            {
+                $sql = 'UPDATE ' . USERS_TABLE . ' SET ct_marked=0';
+                $db->sql_query($sql);
+
+                $limit = '';
+                $config->set('check_spam_number', '');
+            }
+
+            $template->assign_var('CLEANTALK_CHECKUSERS_NUMBER', $config['check_spam_number'] ? $config['check_spam_number'] : '');
+
+			$sql = "SELECT user_ip, user_email FROM " . USERS_TABLE . " WHERE user_password<>'' AND ct_marked<>2 ORDER BY user_regdate DESC" . $limit;
 			$result = $db->sql_query($sql);
-			
-			$users  = array(0 => array());
-			$data   = array(0 => array());
-			$cnt    = 0;
+			$data   = array();
+
 			while($row = $db->sql_fetchrow($result))
 			{
-				$users[$cnt][] = array(
-					'name'   => $row['username'],
-					'id'     => $row['user_id'],
-					'email'  => $row['user_email'],
-					'ip'     => $row['user_ip'],
-					'joined' => $row['user_regdate'],
-					'visit'  => $row['user_lastvisit'],
-				);
-				$data[$cnt][]=$row['user_email'];
-				$data[$cnt][]=$row['user_ip'];
-				
-				if(sizeof($users[$cnt])>450)
-				{
-					$cnt++;
-					$users[$cnt]=array();
-					$data[$cnt]=array();
-				}
+				if (!empty($row['user_email']) && !in_array($row['user_email'], $data))
+					$data[] = $row['user_email'];
+				if (!empty($row['user_ip']) && !in_array($row['user_ip'], $data))
+					$data[] = $row['user_ip'];
 			}
-			
+
 			$db->sql_freeresult($result);
-			$error="";
-			for($i=0;$i<sizeof($users);$i++)
+			
+			if ($data && count($data) > 0)
 			{
-				
-				$result = \cleantalk\antispam\model\CleantalkHelper::spamCheckCms($config['cleantalk_antispam_apikey'], $data[$i]);
-				
-				if(!empty($result['error']))
-				{					
-					if($result['error_string'] == 'CONNECTION_ERROR')
-					{
-						$error = $user->lang('ACP_CHECKUSERS_DONE_3');
-					}
-					else 
-					{
-						$error = $result['error_message'];
-					}
-				}
-				else
+				$api_check_limit = 1000;
+				$offset = 0;
+				for ($i=0;$i < count($data);$i++)
 				{
-					foreach($result as $key => $value)
+					if ($i % $api_check_limit == 0)
 					{
-						if($key === filter_var($key, FILTER_VALIDATE_IP))
-						{
-							if(strval($value['appears']) == 1)
+						$result = \cleantalk\antispam\model\CleantalkHelper::spamCheckCms($config['cleantalk_antispam_apikey'], array_slice($data, $offset, $api_check_limit));
+						$offset+=$api_check_limit;
+
+						if(!empty($result['error']))
+						{					
+							if($result['error_string'] == 'CONNECTION_ERROR')
 							{
-								$sql = "UPDATE " . USERS_TABLE . " 
-								SET ct_marked=1 
-								WHERE user_ip='".$db->sql_escape($key)."'";
-								$db->sql_query($sql);
+								$error = $user->lang('ACP_CHECKUSERS_DONE_3');
+							}
+							else 
+							{
+								$error = $result['error_message'];
 							}
 						}
 						else
 						{
-							if(strval($value['appears']) == 1)
+							foreach($result as $key => $value)
 							{
-								$sql = "UPDATE " . USERS_TABLE . "
-									SET ct_marked=1 
-									WHERE user_email='".$db->sql_escape($key)."'";
-								$db->sql_query($sql);
+								if($key === filter_var($key, FILTER_VALIDATE_IP))
+								{
+									if(strval($value['appears']) == 1)
+									{
+										$sql = "UPDATE " . USERS_TABLE . " 
+										SET ct_marked=1 
+										WHERE user_ip='".$db->sql_escape($key)."'";
+										$db->sql_query($sql);
+									}
+								}
+								else
+								{
+									if(strval($value['appears']) == 1)
+									{
+										$sql = "UPDATE " . USERS_TABLE . "
+											SET ct_marked=1 
+											WHERE user_email='".$db->sql_escape($key)."'";
+										$db->sql_query($sql);
+									}
+									else
+									{
+                                        $sql = "UPDATE " . USERS_TABLE . "
+											SET ct_marked=2 
+											WHERE user_email='".$db->sql_escape($key)."'";
+                                        $db->sql_query($sql);
+                                    }
+								}
 							}
 						}
 					}
 				}
+				
 			}
-
 			if($error!='')
 			{
 				$template->assign_var('CT_ERROR', $error);
-			}
-			else
-			{
-				$template->assign_var('CT_ACP_CHECKUSERS_DONE_1',1);
 			}
 		}
 		$start_entry = 0;		
@@ -329,10 +341,11 @@ class main_module
 		}
 		$on_page = 20;
 		$sql = 'SELECT COUNT(user_id) AS user_count	FROM ' . USERS_TABLE . ' WHERE ct_marked = 1';
-		$db->sql_query($sql);
+		$result = $db->sql_query($sql);
 		$spam_users_count = (int)$db->sql_fetchfield('user_count');
+		$db->sql_freeresult($result);
 
-		$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ct_marked = 1';
+		$sql = 'SELECT user_id, username, user_regdate, user_posts, user_colour, user_email, user_ip, user_lastvisit FROM ' . USERS_TABLE . ' WHERE ct_marked = 1';
 		$result = $db->sql_query_limit($sql, $on_page, $start_entry);
 		$found = false;
 		while($row = $db->sql_fetchrow($result))
@@ -345,13 +358,13 @@ class main_module
 			    'USERNAME'			=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
 			    'JOINED'			=> (!$row['user_regdate']) ? ' - ' : $user->format_date(intval($row['user_regdate'])),
 			    'USER_EMAIL'		=> $row['user_email'],
-			    'USER_IP'			=> $row['user_ip'],
+			    'USER_IP'			=> (!$row['user_ip']) ? ' - ' : $row['user_ip'],
 			    'LAST_VISIT'		=> (!$row['user_lastvisit']) ? ' - ' : $user->format_date(intval($row['user_lastvisit'])),
 			));
 		}
 		$db->sql_freeresult($result);
 		$pages = ceil($spam_users_count / $on_page); 
-		$server_uri = append_sid('index.'.$phpEx,array('i'=>$request->variable('i','1')));
+		$server_uri = append_sid($phpbb_root_path.'adm/index.'.$phpEx,array('i'=>$request->variable('i','1')));
 		if ($pages>1)
 		{
 			$template->assign_var('CT_PAGES_TITLE',1);

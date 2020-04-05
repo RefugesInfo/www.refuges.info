@@ -3,15 +3,29 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
+
 namespace Zend\Code\Generator;
 
 use Reflection;
 use ReflectionMethod;
 
-class TraitUsageGenerator extends AbstractGenerator
+use function array_key_exists;
+use function array_search;
+use function array_values;
+use function count;
+use function current;
+use function explode;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_string;
+use function sprintf;
+use function strpos;
+
+class TraitUsageGenerator extends AbstractGenerator implements TraitUsageInterface
 {
     /**
      * @var ClassGenerator
@@ -21,22 +35,22 @@ class TraitUsageGenerator extends AbstractGenerator
     /**
      * @var array Array of trait names
      */
-    protected $traits = array();
+    protected $traits = [];
 
     /**
      * @var array Array of trait aliases
      */
-    protected $traitAliases = array();
+    protected $traitAliases = [];
 
     /**
      * @var array Array of trait overrides
      */
-    protected $traitOverrides = array();
+    protected $traitOverrides = [];
 
     /**
      * @var array Array of string names
      */
-    protected $uses = array();
+    protected $uses = [];
 
     public function __construct(ClassGenerator $classGenerator)
     {
@@ -44,10 +58,12 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function addUse($use, $useAlias = null)
     {
+        $this->removeUse($use);
+
         if (! empty($useAlias)) {
             $use .= ' as ' . $useAlias;
         }
@@ -57,7 +73,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function getUses()
     {
@@ -65,7 +81,105 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @param string $use
+     * @return bool
+     */
+    public function hasUse($use)
+    {
+        foreach ($this->uses as $key => $value) {
+            $parts = explode(' ', $value);
+            if ($parts[0] === $use) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $use
+     * @return bool
+     */
+    public function hasUseAlias($use)
+    {
+        foreach ($this->uses as $key => $value) {
+            $parts = explode(' as ', $value);
+            if ($parts[0] === $use && count($parts) == 2) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the alias of the provided FQCN
+     *
+     * @param string $use
+     * @return string|null
+     */
+    public function getUseAlias(string $use): ?string
+    {
+        foreach ($this->uses as $key => $value) {
+            $parts = explode(' as ', $key);
+            if ($parts[0] === $use && count($parts) == 2) {
+                return $parts[1];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns true if the alias is defined in the use list
+     *
+     * @param string $alias
+     * @return bool
+     */
+    public function isUseAlias(string $alias): bool
+    {
+        foreach ($this->uses as $key => $value) {
+            $parts = explode(' as ', $key);
+            if (count($parts) === 2 && $parts[1] === $alias) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param string $use
+     * @return TraitUsageGenerator
+     */
+    public function removeUse($use)
+    {
+        foreach ($this->uses as $key => $value) {
+            $parts = explode(' ', $value);
+            if ($parts[0] === $use) {
+                unset($this->uses[$value]);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $use
+     * @return TraitUsageGenerator
+     */
+    public function removeUseAlias($use)
+    {
+        foreach ($this->uses as $key => $value) {
+            $parts = explode(' as ', $value);
+            if ($parts[0] === $use && count($parts) == 2) {
+                unset($this->uses[$value]);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function addTrait($trait)
     {
@@ -97,7 +211,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function addTraits(array $traits)
     {
@@ -109,7 +223,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function hasTrait($traitName)
     {
@@ -117,7 +231,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function getTraits()
     {
@@ -125,7 +239,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function removeTrait($traitName)
     {
@@ -138,7 +252,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function addTraitAlias($method, $alias, $visibility = null)
     {
@@ -156,7 +270,7 @@ class TraitUsageGenerator extends AbstractGenerator
         }
 
         // Validations
-        if (false === strpos($traitAndMethod, "::")) {
+        if (false === strpos($traitAndMethod, '::')) {
             throw new Exception\InvalidArgumentException(
                 'Invalid Format: $method must be in the format of trait::method'
             );
@@ -183,16 +297,16 @@ class TraitUsageGenerator extends AbstractGenerator
             throw new Exception\InvalidArgumentException('Invalid trait: Trait does not exists on this class');
         }
 
-        $this->traitAliases[$traitAndMethod] = array(
+        $this->traitAliases[$traitAndMethod] = [
             'alias'      => $alias,
-            'visibility' => $visibility
-        );
+            'visibility' => $visibility,
+        ];
 
         return $this;
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function getTraitAliases()
     {
@@ -200,12 +314,12 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function addTraitOverride($method, $traitsToReplace)
     {
         if (false === is_array($traitsToReplace)) {
-            $traitsToReplace = array($traitsToReplace);
+            $traitsToReplace = [$traitsToReplace];
         }
 
         $traitAndMethod = $method;
@@ -222,19 +336,19 @@ class TraitUsageGenerator extends AbstractGenerator
         }
 
         // Validations
-        if (false === strpos($traitAndMethod, "::")) {
+        if (false === strpos($traitAndMethod, '::')) {
             throw new Exception\InvalidArgumentException(
                 'Invalid Format: $method must be in the format of trait::method'
             );
         }
 
-        list($trait, $method) = explode("::", $traitAndMethod);
+        list($trait, $method) = explode('::', $traitAndMethod);
         if (! $this->hasTrait($trait)) {
             throw new Exception\InvalidArgumentException('Invalid trait: Trait does not exists on this class');
         }
 
         if (! array_key_exists($traitAndMethod, $this->traitOverrides)) {
-            $this->traitOverrides[$traitAndMethod] = array();
+            $this->traitOverrides[$traitAndMethod] = [];
         }
 
         foreach ($traitsToReplace as $traitToReplace) {
@@ -253,7 +367,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function removeTraitOverride($method, $overridesToRemove = null)
     {
@@ -266,8 +380,8 @@ class TraitUsageGenerator extends AbstractGenerator
             return $this;
         }
 
-        $overridesToRemove = (! is_array($overridesToRemove))
-            ? array($overridesToRemove)
+        $overridesToRemove = ! is_array($overridesToRemove)
+            ? [$overridesToRemove]
             : $overridesToRemove;
         foreach ($overridesToRemove as $traitToRemove) {
             $key = array_search($traitToRemove, $this->traitOverrides[$method]);
@@ -279,7 +393,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\TraitUsageInterface
+     * @inheritDoc
      */
     public function getTraitOverrides()
     {
@@ -287,7 +401,7 @@ class TraitUsageGenerator extends AbstractGenerator
     }
 
     /**
-     * @inherit Zend\Code\Generator\GeneratorInterface
+     * @inheritDoc
      */
     public function generate()
     {
@@ -304,13 +418,13 @@ class TraitUsageGenerator extends AbstractGenerator
         $aliases   = $this->getTraitAliases();
         $overrides = $this->getTraitOverrides();
         if (empty($aliases) && empty($overrides)) {
-            $output .= ";" . self::LINE_FEED . self::LINE_FEED;
+            $output .= ';' . self::LINE_FEED . self::LINE_FEED;
             return $output;
         }
 
         $output .= ' {' . self::LINE_FEED;
         foreach ($aliases as $method => $alias) {
-            $visibility = (null !== $alias['visibility'])
+            $visibility = null !== $alias['visibility']
                 ? current(Reflection::getModifierNames($alias['visibility'])) . ' '
                 : '';
 

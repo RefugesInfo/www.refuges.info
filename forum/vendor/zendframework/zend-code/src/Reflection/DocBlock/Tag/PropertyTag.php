@@ -3,28 +3,32 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code\Reflection\DocBlock\Tag;
+
+use function explode;
+use function preg_match;
+use function rtrim;
 
 class PropertyTag implements TagInterface, PhpDocTypedTagInterface
 {
     /**
      * @var array
      */
-    protected $types = array();
+    protected $types = [];
 
     /**
      * @var string
      */
-    protected $propertyName = null;
+    protected $propertyName;
 
     /**
      * @var string
      */
-    protected $description = null;
+    protected $description;
 
     /**
      * @return string
@@ -41,8 +45,8 @@ class PropertyTag implements TagInterface, PhpDocTypedTagInterface
      */
     public function initialize($tagDocblockLine)
     {
-        $match = array();
-        if (!preg_match('#^(.+)?(\$[\S]+)[\s]*(.*)$#m', $tagDocblockLine, $match)) {
+        $match = [];
+        if (! preg_match('#^(.+)?(\$[\S]+)[\s]*(.*)$#m', $tagDocblockLine, $match)) {
             return;
         }
 
@@ -95,6 +99,6 @@ class PropertyTag implements TagInterface, PhpDocTypedTagInterface
 
     public function __toString()
     {
-        return 'DocBlock Tag [ * @' . $this->getName() . ' ]' . PHP_EOL;
+        return 'DocBlock Tag [ * @' . $this->getName() . ' ]' . "\n";
     }
 }

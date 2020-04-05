@@ -129,6 +129,11 @@ $phpbb_content_visibility = $phpbb_container->get('content.visibility');
 /* @var $pagination \phpbb\pagination */
 $pagination = $phpbb_container->get('pagination');
 
+$template->assign_block_vars('navlinks', array(
+	'BREADCRUMB_NAME'	=> $user->lang('SEARCH'),
+	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}search.$phpEx"),
+));
+
 /**
 * This event allows you to alter the above parameters, such as keywords and submit
 *
@@ -511,6 +516,11 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				$l_search_title = $user->lang['SEARCH_SELF'];
 			break;
 		}
+
+		$template->assign_block_vars('navlinks', array(
+			'BREADCRUMB_NAME'	=> $l_search_title,
+			'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}search.$phpEx", "search_id=$search_id"),
+		));
 	}
 
 	/**
@@ -710,6 +720,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 	if ($sql_where)
 	{
+		$zebra = [];
+
 		if ($show_results == 'posts')
 		{
 			// @todo Joining this query to the one below?
@@ -718,7 +730,6 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				WHERE user_id = ' . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 
-			$zebra = array();
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$zebra[($row['friend']) ? 'friend' : 'foe'][] = $row['zebra_id'];
@@ -1068,6 +1079,10 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			$view_topic_url_params = "f=$forum_id&amp;t=$result_topic_id" . (($u_hilit) ? "&amp;hilit=$u_hilit" : '');
 			$view_topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params);
 
+			$folder_img = $folder_alt = $u_mcp_queue = '';
+			$topic_type = $posts_unapproved = 0;
+			$unread_topic = $topic_unapproved = $topic_deleted = false;
+
 			if ($show_results == 'topics')
 			{
 				if ($config['load_db_track'] && $author_id === $user->data['user_id'])
@@ -1075,7 +1090,6 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 					$row['topic_posted'] = 1;
 				}
 
-				$folder_img = $folder_alt = $topic_type = '';
 				topic_status($row, $replies, (isset($topic_tracking_info[$forum_id][$row['topic_id']]) && $row['topic_last_post_time'] > $topic_tracking_info[$forum_id][$row['topic_id']]) ? true : false, $folder_img, $folder_alt, $topic_type);
 
 				$unread_topic = (isset($topic_tracking_info[$forum_id][$row['topic_id']]) && $row['topic_last_post_time'] > $topic_tracking_info[$forum_id][$row['topic_id']]) ? true : false;

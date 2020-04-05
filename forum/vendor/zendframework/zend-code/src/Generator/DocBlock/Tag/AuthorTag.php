@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -18,12 +18,12 @@ class AuthorTag extends AbstractGenerator implements TagInterface
     /**
      * @var string
      */
-    protected $authorName = null;
+    protected $authorName;
 
     /**
      * @var string
      */
-    protected $authorEmail = null;
+    protected $authorEmail;
 
     /**
      * @param string $authorName
@@ -31,18 +31,18 @@ class AuthorTag extends AbstractGenerator implements TagInterface
      */
     public function __construct($authorName = null, $authorEmail = null)
     {
-        if (!empty($authorName)) {
+        if (! empty($authorName)) {
             $this->setAuthorName($authorName);
         }
 
-        if (!empty($authorEmail)) {
+        if (! empty($authorEmail)) {
             $this->setAuthorEmail($authorEmail);
         }
     }
 
     /**
      * @param ReflectionTagInterface $reflectionTag
-     * @return ReturnTag
+     * @return AuthorTag
      * @deprecated Deprecated in 2.3. Use TagManager::createTagFromReflection() instead
      */
     public static function fromReflection(ReflectionTagInterface $reflectionTag)
@@ -102,8 +102,8 @@ class AuthorTag extends AbstractGenerator implements TagInterface
     public function generate()
     {
         $output = '@author'
-            . ((!empty($this->authorName)) ? ' ' . $this->authorName : '')
-            . ((!empty($this->authorEmail)) ? ' <' . $this->authorEmail . '>' : '');
+            . (! empty($this->authorName) ? ' ' . $this->authorName : '')
+            . (! empty($this->authorEmail) ? ' <' . $this->authorEmail . '>' : '');
 
         return $output;
     }

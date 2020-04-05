@@ -49,7 +49,7 @@ $lang = array_merge($lang, array(
 
 	// Support page
 	'SUPPORT_TITLE'		=> 'Supporto',
-	'SUPPORT_BODY'		=> 'Supporto completo viene fornito per la versione più recente di phpBB3 su phpBB.com (in Inglese) e su phpBB-Store.it (in Italiano). Questo include problemi relativi a:</p><ul><li>installazione</li><li>configurazione</li><li>questioni tecniche</li><li>possibili bug nel software</li><li>aggiornamento da Release Candidate (RC) all’ultima versione stabile</li><li>conversione da phpBB 2.0.x a phpBB3</li><li>conversione da altri software per forum a phpBB3 (vedere in particolare i <a href="https://www.phpbb.com/community/viewforum.php?f=486">Convertitori per Forum</a>, in inglese)</li></ul><p>Invitiamo gli utenti che utilizzano ancora versioni beta di phpBB3 a sostituire la loro installazione con una nuova copia della versione più recente.</p><h2>Estensioni / Stili</h2><p>Per questioni relative alle Estensioni, consultate gli appropriati forum su <a href="https://www.phpbb-store.it">phpBB-store.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=451">phpBB.com</a>.<br />Analogamente per gli stili, template e temi, consultate i relativi forum su <a href="https://www.phpbb-store.it">phpBB-store.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=471">phpBB.com</a>.<br /><br />Se le domande riguardano una specifica estensione o uno specifico stile, scrivi direttamente nell’argomento dedicato a quella estensione o a quello stile su phpBB.com o phpBB-Store.it.</p><h2>Come ottenere supporto su phpBB-Store.it</h2><p><a href="https://www.phpbb-store.it/guide2/">Guide e FAQ su phpBB3</a><br /><a href="https://www.phpbb-store.it/supporto-phpbb-3-2-x/">Forum con informazioni e supporto</a>.</p><h2>Come ottenere supporto su phpBB.com (in Inglese)</h2><p><a href="https://www.phpbb.com/community/viewtopic.php?f=14&amp;t=571070">Risorse e riferimenti</a><br /><a href="https://www.phpbb.com/support/">Sezione di supporto</a><br /><a href="https://www.phpbb.com/support/docs/en/3.1/ug/quickstart/">Quick Start Guide</a><br /><br />Per essere sempre aggiornato sulle ultime novità, seguici su <a href="https://www.twitter.com/phpbb/">Twitter</a> o su <a href="https://www.facebook.com/phpbb/">Facebook</a><br /><br />',
+	'SUPPORT_BODY'		=> 'Supporto completo viene fornito per la versione più recente di phpBB3 su phpBB.com (in Inglese) e su phpBB-Store.it (in Italiano). Questo include problemi relativi a:</p><ul><li>installazione</li><li>configurazione</li><li>questioni tecniche</li><li>possibili bug nel software</li><li>aggiornamento da Release Candidate (RC) all’ultima versione stabile</li><li>conversione da phpBB 2.0.x a phpBB3</li><li>conversione da altri software per forum a phpBB3 (vedere in particolare i <a href="https://www.phpbb.com/community/viewforum.php?f=486">Convertitori per Forum</a>, in inglese)</li></ul><p>Invitiamo gli utenti che utilizzano ancora versioni beta di phpBB3 a sostituire la loro installazione con una nuova copia della versione più recente.</p><h2>Estensioni / Stili</h2><p>Per questioni relative alle Estensioni, consultate gli appropriati forum su <a href="https://www.phpbb-store.it">phpBB-store.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=451">phpBB.com</a>.<br />Analogamente per gli stili, template e temi, consultate i relativi forum su <a href="https://www.phpbb-store.it">phpBB-store.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=471">phpBB.com</a>.<br /><br />Se le domande riguardano una specifica estensione o uno specifico stile, scrivi direttamente nell’argomento dedicato a quella estensione o a quello stile su phpBB.com o phpBB-Store.it.</p><h2>Come ottenere supporto su phpBB-Store.it</h2><p><a href="https://www.phpbb-store.it/guide2/">Guide e FAQ su phpBB3</a><br /><a href="https://www.phpbb-store.it/supporto-phpbb-3-2-x/">Forum con informazioni e supporto</a>.</p><h2>Come ottenere supporto su phpBB.com (in Inglese)</h2><p><a href="https://www.phpbb.com/community/viewtopic.php?f=14&amp;t=571070">Risorse e riferimenti</a><br /><a href="https://www.phpbb.com/support/">Sezione di supporto</a><br /><a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/">Quick Start Guide</a><br /><br />Per essere sempre aggiornato sulle ultime novità, seguici su <a href="https://www.twitter.com/phpbb/">Twitter</a> o su <a href="https://www.facebook.com/phpbb/">Facebook</a><br /><br />',
 
 	// License
 	'LICENSE_TITLE'		=> 'General Public License',
@@ -70,7 +70,7 @@ $lang = array_merge($lang, array(
 
 	<p>phpBB3 supporta i seguenti database:</p>
 	<ul>
-		<li>MySQL 3.23 o successivo (MySQLi supportato)</li>
+		<li>MySQL 4.1.3 o successivo (MySQLi richiesto)</li>
 		<li>PostgreSQL 8.3+</li>
 		<li>SQLite 3.6.15+</li>
 		<li>MS SQL Server 2000 o successivo (direttamente o via ODBC)</li>
@@ -105,7 +105,7 @@ $lang = array_merge($lang, array(
 
 	// Server requirements
 	'PHP_VERSION_REQD'					=> 'Versione PHP',
-	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB richiede PHP versione 5.4.0 o superiore.',
+	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB richiede PHP versione 7.1.3 o successiva.',
 	'PHP_GETIMAGESIZE_SUPPORT'			=> 'La funzione PHP getimagesize() è disponibile',
 	'PHP_GETIMAGESIZE_SUPPORT_EXPLAIN'	=> 'Perché phpBB funzioni correttamente, la funzione getimagesize deve essere abilitata',
 	'PCRE_UTF_SUPPORT'					=> 'Supporto PCRE UTF-8',
@@ -186,7 +186,6 @@ $lang = array_merge($lang, array(
 	// Database options
 	'DB_OPTION_MSSQL_ODBC'	=> 'MSSQL Server 2000+ via ODBC',
 	'DB_OPTION_MSSQLNATIVE'	=> 'MSSQL Server 2005+ [ Nativo ]',
-	'DB_OPTION_MYSQL'		=> 'MySQL',
 	'DB_OPTION_MYSQLI'		=> 'MySQL con estensione MySQLi',
 	'DB_OPTION_ORACLE'		=> 'Oracle',
 	'DB_OPTION_POSTGRES'	=> 'PostgreSQL',
@@ -567,7 +566,7 @@ $lang = array_merge($lang, array(
 
 	// Finish conversion
 	'CONVERT_COMPLETE'			=> 'Conversione completata',
-	'CONVERT_COMPLETE_EXPLAIN'	=> 'Hai convertito correttamente la tua Board a phpBB 3.2. Puoi effettuare il login e <a href="../">accedere alla tua Board</a>. Assicurati che le impostazioni siano state trasferite correttamente prima di cancellare la cartella d’installazione. Ricorda che l’aiuto sull’uso di phpBB è disponibile online con la <a href="https://www.phpbb.com/support/docs/en/3.2/ug/">Documentazione</a> ed i <a href="https://www.phpbb.com/community/viewforum.php?f=466">forum di supporto</a>.',
+	'CONVERT_COMPLETE_EXPLAIN'	=> 'Hai convertito correttamente la tua Board a phpBB 3.3. Puoi effettuare il login e <a href="../">accedere alla tua Board</a>. Assicurati che le impostazioni siano state trasferite correttamente prima di cancellare la cartella d’installazione. Ricorda che l’aiuto sull’uso di phpBB è disponibile online con la <a href="https://www.phpbb.com/support/docs/en/3.3/ug/">Documentazione</a> ed i <a href="https://www.phpbb.com/community/viewforum.php?f=661">forum di supporto</a>.',
 
 	'CONV_ERROR_ATTACH_FTP_DIR'			=> 'L’invio FTP degli allegati sulla vecchia Board è abilitato. Disabilita l’opzione ed assicurati di specificare una cartella upload valida, infine copia tutti i file allegati a questa cartella (che deve essere accessibile da web). Fatto questo fai ripartire il convertitore..',
 	'CONV_ERROR_CONFIG_EMPTY'			=> 'Non ci sono informazioni di configurazione disponibili per la conversione.',

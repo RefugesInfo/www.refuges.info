@@ -25,18 +25,18 @@ class RouteCollectionBuilder
     /**
      * @var Route[]|RouteCollectionBuilder[]
      */
-    private $routes = array();
+    private $routes = [];
 
     private $loader;
-    private $defaults = array();
+    private $defaults = [];
     private $prefix;
     private $host;
     private $condition;
-    private $requirements = array();
-    private $options = array();
+    private $requirements = [];
+    private $options = [];
     private $schemes;
     private $methods;
-    private $resources = array();
+    private $resources = [];
 
     public function __construct(LoaderInterface $loader = null)
     {
@@ -58,17 +58,24 @@ class RouteCollectionBuilder
      */
     public function import($resource, $prefix = '/', $type = null)
     {
-        /** @var RouteCollection $collection */
-        $collection = $this->load($resource, $type);
+        /** @var RouteCollection[] $collection */
+        $collections = $this->load($resource, $type);
 
         // create a builder from the RouteCollection
         $builder = $this->createBuilder();
-        foreach ($collection->all() as $name => $route) {
-            $builder->addRoute($route, $name);
-        }
 
-        foreach ($collection->getResources() as $resource) {
-            $builder->addResource($resource);
+        foreach ($collections as $collection) {
+            if (null === $collection) {
+                continue;
+            }
+
+            foreach ($collection->all() as $name => $route) {
+                $builder->addRoute($route, $name);
+            }
+
+            foreach ($collection->getResources() as $resource) {
+                $builder->addResource($resource);
+            }
         }
 
         // mount into this builder
@@ -111,7 +118,7 @@ class RouteCollectionBuilder
      * @param string                 $prefix
      * @param RouteCollectionBuilder $builder
      */
-    public function mount($prefix, RouteCollectionBuilder $builder)
+    public function mount($prefix, self $builder)
     {
         $builder->prefix = trim(trim($prefix), '/');
         $this->routes[] = $builder;
@@ -120,7 +127,6 @@ class RouteCollectionBuilder
     /**
      * Adds a Route object to the builder.
      *
-     * @param Route       $route
      * @param string|null $name
      *
      * @return $this
@@ -198,7 +204,7 @@ class RouteCollectionBuilder
     }
 
     /**
-     * Sets an opiton that will be added to all embedded routes (unless that
+     * Sets an option that will be added to all embedded routes (unless that
      * option is already set).
      *
      * @param string $key
@@ -244,8 +250,6 @@ class RouteCollectionBuilder
     /**
      * Adds a resource for this collection.
      *
-     * @param ResourceInterface $resource
-     *
      * @return $this
      */
     private function addResource(ResourceInterface $resource)
@@ -269,7 +273,6 @@ class RouteCollectionBuilder
                 $route->setDefaults(array_merge($this->defaults, $route->getDefaults()));
                 $route->setOptions(array_merge($this->options, $route->getOptions()));
 
-                // we're extra careful here to avoid re-setting deprecated _method and _scheme
                 foreach ($this->requirements as $key => $val) {
                     if (!$route->hasRequirement($key)) {
                         $route->setRequirement($key, $val);
@@ -328,7 +331,7 @@ class RouteCollectionBuilder
         $methods = implode('_', $route->getMethods()).'_';
 
         $routeName = $methods.$route->getPath();
-        $routeName = str_replace(array('/', ':', '|', '-'), '_', $routeName);
+        $routeName = str_replace(['/', ':', '|', '-'], '_', $routeName);
         $routeName = preg_replace('/[^a-z0-9A-Z_.]+/', '', $routeName);
 
         // Collapse consecutive underscores down into a single underscore.
@@ -343,7 +346,7 @@ class RouteCollectionBuilder
      * @param mixed       $resource A resource
      * @param string|null $type     The resource type or null if unknown
      *
-     * @return RouteCollection
+     * @return RouteCollection[]
      *
      * @throws FileLoaderLoadException If no loader is found
      */
@@ -354,17 +357,21 @@ class RouteCollectionBuilder
         }
 
         if ($this->loader->supports($resource, $type)) {
-            return $this->loader->load($resource, $type);
+            $collections = $this->loader->load($resource, $type);
+
+            return \is_array($collections) ? $collections : [$collections];
         }
 
         if (null === $resolver = $this->loader->getResolver()) {
-            throw new FileLoaderLoadException($resource);
+            throw new FileLoaderLoadException($resource, null, null, null, $type);
         }
 
         if (false === $loader = $resolver->resolve($resource, $type)) {
-            throw new FileLoaderLoadException($resource);
+            throw new FileLoaderLoadException($resource, null, null, null, $type);
         }
 
-        return $loader->load($resource, $type);
+        $collections = $loader->load($resource, $type);
+
+        return \is_array($collections) ? $collections : [$collections];
     }
 }

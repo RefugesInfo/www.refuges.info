@@ -16,10 +16,12 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\LazyLoadingValueHolder\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
-use ProxyManager\Generator\ParameterGenerator;
+use Zend\Code\Generator\ParameterGenerator;
 use ProxyManager\ProxyGenerator\PropertyGenerator\PublicPropertiesMap;
 use ProxyManager\ProxyGenerator\Util\PublicScopeSimulator;
 use ReflectionClass;
@@ -35,6 +37,14 @@ class MagicSet extends MagicMethodGenerator
 {
     /**
      * Constructor
+     *
+     * @param ReflectionClass     $originalClass
+     * @param PropertyGenerator   $initializerProperty
+     * @param PropertyGenerator   $valueHolderProperty
+     * @param PublicPropertiesMap $publicProperties
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         ReflectionClass $originalClass,
@@ -45,16 +55,15 @@ class MagicSet extends MagicMethodGenerator
         parent::__construct(
             $originalClass,
             '__set',
-            array(new ParameterGenerator('name'), new ParameterGenerator('value'))
+            [new ParameterGenerator('name'), new ParameterGenerator('value')]
         );
 
+        $hasParent   = $originalClass->hasMethod('__set');
         $initializer = $initializerProperty->getName();
         $valueHolder = $valueHolderProperty->getName();
         $callParent  = '';
 
-        $this->setDocblock(
-            ($originalClass->hasMethod('__set') ? "{@inheritDoc}\n" : '') . "@param string \$name\n@param mixed \$value"
-        );
+        $this->setDocBlock(($hasParent ? "{@inheritDoc}\n" : '') . "@param string \$name\n@param mixed \$value");
 
         if (! $publicProperties->isEmpty()) {
             $callParent = 'if (isset(self::$' . $publicProperties->getName() . "[\$name])) {\n"
@@ -62,12 +71,14 @@ class MagicSet extends MagicMethodGenerator
                 . "\n}\n\n";
         }
 
-        $callParent .= PublicScopeSimulator::getPublicAccessSimulationCode(
-            PublicScopeSimulator::OPERATION_SET,
-            'name',
-            'value',
-            $valueHolderProperty
-        );
+        $callParent .= $hasParent
+            ? 'return $this->' . $valueHolder . '->__set($name, $value);'
+            : PublicScopeSimulator::getPublicAccessSimulationCode(
+                PublicScopeSimulator::OPERATION_SET,
+                'name',
+                'value',
+                $valueHolderProperty
+            );
 
         $this->setBody(
             '$this->' . $initializer . ' && $this->' . $initializer

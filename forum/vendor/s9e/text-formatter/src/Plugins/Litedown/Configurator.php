@@ -1,22 +1,31 @@
 <?php
 
-/*
+/**
 * @package   s9e\TextFormatter
 * @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Litedown;
+
 use s9e\TextFormatter\Plugins\ConfiguratorBase;
+
 class Configurator extends ConfiguratorBase
 {
-	public $decodeHtmlEntities = \false;
+	/**
+	* @var bool Whether to decode HTML entities in attribute values
+	*/
+	public $decodeHtmlEntities = false;
+
+	/**
+	* @var array Default tags
+	*/
 	protected $tags = [
 		'C'      => '<code><xsl:apply-templates/></code>',
 		'CODE'   => [
 			'attributes' => [
 				'lang' => [
 					'filterChain' => ['#simpletext'],
-					'required'    => \false
+					'required'    => false
 				]
 			],
 			'template' =>
@@ -43,22 +52,23 @@ class Configurator extends ConfiguratorBase
 		'HR'     => '<hr/>',
 		'IMG'    => [
 			'attributes' => [
-				'alt'   => ['required'    => \false   ],
+				'alt'   => ['required'    => false   ],
 				'src'   => ['filterChain' => ['#url']],
-				'title' => ['required'    => \false   ]
+				'title' => ['required'    => false   ]
 			],
 			'template' => '<img src="{@src}"><xsl:copy-of select="@alt"/><xsl:copy-of select="@title"/></img>'
 		],
+		'ISPOILER' => '<span class="spoiler" data-s9e-livepreview-ignore-attrs="style" onclick="removeAttribute(\'style\')" style="background:#444;color:transparent"><xsl:apply-templates/></span>',
 		'LI'     => '<li><xsl:apply-templates/></li>',
 		'LIST'   => [
 			'attributes' => [
 				'start' => [
 					'filterChain' => ['#uint'],
-					'required'    => \false
+					'required'    => false
 				],
 				'type' => [
 					'filterChain' => ['#simpletext'],
-					'required'    => \false
+					'required'    => false
 				]
 			],
 			'template' =>
@@ -71,48 +81,78 @@ class Configurator extends ConfiguratorBase
 					</xsl:otherwise>
 				</xsl:choose>'
 		],
-		'QUOTE'  => '<blockquote><xsl:apply-templates/></blockquote>',
-		'STRONG' => '<strong><xsl:apply-templates/></strong>',
-		'SUB'    => '<sub><xsl:apply-templates/></sub>',
-		'SUP'    => '<sup><xsl:apply-templates/></sup>',
-		'URL'    => [
+		'QUOTE'   => '<blockquote><xsl:apply-templates/></blockquote>',
+		'SPOILER' => '<details class="spoiler" data-s9e-livepreview-ignore-attrs="open"><xsl:apply-templates/></details>',
+		'STRONG'  => '<strong><xsl:apply-templates/></strong>',
+		'SUB'     => '<sub><xsl:apply-templates/></sub>',
+		'SUP'     => '<sup><xsl:apply-templates/></sup>',
+		'URL'     => [
 			'attributes' => [
-				'title' => ['required'    => \false   ],
+				'title' => ['required'    => false   ],
 				'url'   => ['filterChain' => ['#url']]
 			],
 			'template' => '<a href="{@url}"><xsl:copy-of select="@title"/><xsl:apply-templates/></a>'
 		]
 	];
+
+	/**
+	* {@inheritdoc}
+	*/
 	protected function setUp()
 	{
 		$this->configurator->rulesGenerator->append('ManageParagraphs');
+
 		foreach ($this->tags as $tagName => $tagConfig)
 		{
+			// Skip this tag if it already exists
 			if (isset($this->configurator->tags[$tagName]))
+			{
 				continue;
-			if (\is_string($tagConfig))
+			}
+
+			// If the tag's config is a single string, it's really its default template
+			if (is_string($tagConfig))
+			{
 				$tagConfig = ['template' => $tagConfig];
+			}
+
+			// Add this tag
 			$this->configurator->tags->add($tagName, $tagConfig);
 		}
 	}
+
+	/**
+	* {@inheritdoc}
+	*/
 	public function asConfig()
 	{
 		return ['decodeHtmlEntities' => (bool) $this->decodeHtmlEntities];
 	}
+
+	/**
+	* {@inheritdoc}
+	*/
 	public function getJSHints()
 	{
 		return ['LITEDOWN_DECODE_HTML_ENTITIES' => (int) $this->decodeHtmlEntities];
 	}
+
+	/**
+	* {@inheritdoc}
+	*/
 	public function getJSParser()
 	{
-		$js = \file_get_contents(__DIR__ . '/Parser/ParsedText.js') . "\n"
-		    . \file_get_contents(__DIR__ . '/Parser/Passes/AbstractScript.js') . "\n"
-		    . \file_get_contents(__DIR__ . '/Parser/LinkAttributesSetter.js');
+		$js = file_get_contents(__DIR__ . '/Parser/ParsedText.js') . "\n"
+		    . file_get_contents(__DIR__ . '/Parser/Passes/AbstractInlineMarkup.js') . "\n"
+		    . file_get_contents(__DIR__ . '/Parser/Passes/AbstractScript.js') . "\n"
+		    . file_get_contents(__DIR__ . '/Parser/LinkAttributesSetter.js');
+
 		$passes = [
 			'Blocks',
 			'LinkReferences',
 			'InlineCode',
 			'Images',
+			'InlineSpoiler',
 			'Links',
 			'Strikethrough',
 			'Subscript',
@@ -121,8 +161,13 @@ class Configurator extends ConfiguratorBase
 			'ForcedLineBreaks'
 		];
 		foreach ($passes as $pass)
+		{
 			$js .= "\n(function(){\n"
-			     . \file_get_contents(__DIR__ . '/Parser/Passes/' . $pass . '.js') . "\nparse();\n})();";
+			     . file_get_contents(__DIR__ . '/Parser/Passes/' . $pass . '.js') . "\n"
+			     . "parse();\n"
+			     . "})();";
+		}
+
 		return $js;
 	}
 }

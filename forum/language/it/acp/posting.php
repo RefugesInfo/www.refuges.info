@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'ACP_BBCODES_EXPLAIN'		=> 'Il BBCode è una speciale implementazione dell’HTML e offre un controllo maggiore su cosa e come viene mostrato nei messaggi. Da qui puoi aggiungere, rimuovere e modificare BBCode.',
 	'ADD_BBCODE'				=> 'Aggiungi nuovo BBCode',
 
-	'BBCODE_DANGER'				=> 'Il BBCode che stai tentando di aggiungere utilizza un segnaposto {TEXT} all’interno di un attributo HTML. Questo rappresenta un potenziale problema di sicurezza di tipo XSS. Cerca di usare i più restrittivi {SIMPLETEXT} o {INTTEXT} . Vai avanti solo se comprendi i rischi a cui vai incontro e se consideri l’utilizzo di {TEXT} assolutamente imprescindibile.',
+	'BBCODE_DANGER'				=> 'Il BBCode che stai cercando di aggiungere sembra non sicuro. Se il BBCode utilizza un segnaposto {TEXT} in un contesto sensibile, prova invece a utilizzare un tipo più restrittivo. Procedere solo se si comprendono i rischi.',
 	'BBCODE_DANGER_PROCEED'		=> 'Vai avanti', //'Accetto il rischio',
 
 	'BBCODE_ADDED'				=> 'BBCode aggiunto.',
@@ -59,6 +59,7 @@ $lang = array_merge($lang, array(
 
 	'BBCODE_INVALID_TAG_NAME'	=> 'Il nome tag del BBCode selezionato è già esistente.',
 	'BBCODE_INVALID'            => 'Il tuo BBCode è costruito in una forma non valida.',
+	'BBCODE_INVALID_TEMPLATE'	=> 'Il modello del tuo BBCode non è valido.',
 	'BBCODE_TAG'				=> 'Tag',
 	'BBCODE_TAG_TOO_LONG'		=> 'Il nome tag inserito è troppo lungo.',
 	'BBCODE_TAG_DEF_TOO_LONG'	=> 'La definizione del tag inserita è troppo lunga, riduci tale definizione.',

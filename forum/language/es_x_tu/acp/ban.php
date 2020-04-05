@@ -81,5 +81,4 @@ $lang = array_merge($lang, array(
 	'USER_NO_BANNED'			=> 'No hay nombres de usuario excluidos',
 	'USER_UNBAN'				=> 'Levantar exclusión a usuarios por nombres de usuario',
 	'USER_UNBAN_EXPLAIN'		=> 'Puedes quitar la exclusión a múltiples nombres de usuario al mismo tiempo usando la combinación apropiada de ratón y teclado en tu navegador (por ejemplo Ctrl+Clic). Los nombres de usuario <em>excluidos</em> están en negrita.',
-
 ));

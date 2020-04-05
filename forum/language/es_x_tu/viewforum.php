@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'FORUM_PERMISSIONS'		=> 'Permisos del foro',
 
 	'ICON_ANNOUNCEMENT'		=> 'Anuncio',
-	'ICON_STICKY'			=> 'Nota',
+	'ICON_STICKY'			=> 'Fijo',
 
 	'LOGIN_NOTIFY_FORUM'	=> 'Has sido notificado sobre este foro, por favor inicia sesión para verlo.',
 

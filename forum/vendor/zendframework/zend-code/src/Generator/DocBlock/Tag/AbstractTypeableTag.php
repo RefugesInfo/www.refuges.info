@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -11,9 +11,14 @@ namespace Zend\Code\Generator\DocBlock\Tag;
 
 use Zend\Code\Generator\AbstractGenerator;
 
+use function explode;
+use function implode;
+use function is_string;
+
 /**
  * This abstract class can be used as parent for all tags
  * that use a type part in their content.
+ *
  * @see http://www.phpdoc.org/docs/latest/for-users/phpdoc/types.html
  */
 abstract class AbstractTypeableTag extends AbstractGenerator
@@ -21,31 +26,31 @@ abstract class AbstractTypeableTag extends AbstractGenerator
     /**
      * @var string
      */
-    protected $description = null;
+    protected $description;
 
     /**
      * @var array
      */
-    protected $types = array();
+    protected $types = [];
 
     /**
-     * @param array $types
-     * @param string $description
+     * @param string|string[] $types
+     * @param string          $description
      */
-    public function __construct($types = array(), $description = null)
+    public function __construct($types = [], $description = null)
     {
-        if (!empty($types)) {
+        if (! empty($types)) {
             $this->setTypes($types);
         }
 
-        if (!empty($description)) {
+        if (! empty($description)) {
             $this->setDescription($description);
         }
     }
 
     /**
      * @param string $description
-     * @return ReturnTag
+     * @return AbstractTypeableTag
      */
     public function setDescription($description)
     {
@@ -66,7 +71,7 @@ abstract class AbstractTypeableTag extends AbstractGenerator
      * e.g. array('int', 'null') or "int|null"
      *
      * @param array|string $types
-     * @return ReturnTag
+     * @return AbstractTypeableTag
      */
     public function setTypes($types)
     {

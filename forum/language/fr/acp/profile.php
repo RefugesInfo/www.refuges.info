@@ -113,7 +113,7 @@ $lang = array_merge($lang, array(
 	'FIRST_OPTION'				=> 'Première option',
 
 	'HIDE_PROFILE_FIELD'			=> 'Masquer le champ de profil',
-	'HIDE_PROFILE_FIELD_EXPLAIN'	=> 'Masque le champ de profil à tous les utilisateurs mis à part les administrateurs et les modérateurs qui pourront toujours voir ce champ. Si l’option « Afficher dans le panneau de l’utilisateur » est désactivée, l’utilisateur ne pourra pas voir ou modifier ce champ, seuls les administrateurs le pourront.',
+	'HIDE_PROFILE_FIELD_EXPLAIN'	=> 'Masque le champ de profil à tous les utilisateurs sauf pour les administrateurs et les modérateurs. Si l’option « Afficher dans le panneau de l’utilisateur » est désactivée, l’utilisateur ne pourra pas voir ou modifier ce champ, seuls les administrateurs le pourront.',
 
 	'INVALID_CHARS_FIELD_IDENT'	=> 'L’identification du champ ne peut contenir que des minuscules a-z et _',
 	'INVALID_FIELD_IDENT_LEN'	=> 'La longueur de l’identification du champ ne peut dépasser 17 caractères',

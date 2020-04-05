@@ -123,7 +123,7 @@ class p_master
 
 		// We "could" build a true tree with this function - maybe mod authors want to use this...
 		// Functions for traversing and manipulating the tree are not available though
-		// We might re-structure the module system to use true trees in 3.2.x...
+		// We might re-structure the module system to use true trees in 4.0
 		// $tree = $this->build_tree($this->module_cache['modules'], $this->module_cache['parents']);
 
 		// Clean up module cache array to only let survive modules the user can access
@@ -445,7 +445,7 @@ class p_master
 				break;
 
 				default:
-					if (!preg_match('#(?:' . implode(array_keys($valid_tokens), ')|(?:') . ')#', $token))
+					if (!preg_match('#(?:' . implode(')|(?:', array_keys($valid_tokens)) . ')#', $token))
 					{
 						$token = '';
 					}
@@ -932,6 +932,14 @@ class p_master
 					'S_SELECTED'	=> (isset($this->module_cache['parents'][$item_ary['id']]) || $item_ary['id'] == $this->p_id) ? true : false,
 					'U_TITLE'		=> $u_title
 				);
+
+				if (isset($this->module_cache['parents'][$item_ary['id']]) || $item_ary['id'] == $this->p_id)
+				{
+					$template->assign_block_vars('navlinks', array(
+						'BREADCRUMB_NAME'	=> $item_ary['lang'],
+						'U_BREADCRUMB'		=> $u_title,
+					));
+				}
 
 				$template->assign_block_vars($use_tabular_offset, array_merge($tpl_ary, array_change_key_case($item_ary, CASE_UPPER)));
 			}

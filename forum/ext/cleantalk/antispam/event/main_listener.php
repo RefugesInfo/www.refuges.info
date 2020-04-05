@@ -12,6 +12,7 @@ namespace cleantalk\antispam\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use phpbb\config\config;
+use phpbb\config\db_text;
 use phpbb\template\template;
 use phpbb\request\request;
 use phpbb\user;
@@ -29,14 +30,16 @@ class main_listener implements EventSubscriberInterface
 	{
 		return array(
 			'core.user_setup'							=> 'load_language_on_setup',
+			'core.user_setup_after'						=> 'sfw_check',
 			'core.page_footer_after'     			    => 'add_js_to_footer',
 			'core.posting_modify_submission_errors'		=> 'check_comment',
 			'core.posting_modify_submit_post_before'	=> 'change_comment_approve',
 			'core.user_add_modify_data'                 => 'check_newuser',
-			'core.common'								=> 'global_check',
+			'core.common'								=> 'ccf_check',
 		);
 	}
-
+	const APBCT_REMOTE_CALL_SLEEP = 10;
+	
 	/* @var \phpbb\template\template */
 	protected $template;
 
@@ -64,6 +67,9 @@ class main_listener implements EventSubscriberInterface
 	/** @var string php file extension  */
 	protected $php_ext;	
 
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
+
 	/* @var array Stores result of spam checking of post or topic when needed*/
 	private $ct_comment_result;
 
@@ -76,10 +82,11 @@ class main_listener implements EventSubscriberInterface
 	* @param request		$request	Request object
 	* @param driver_interface 	$db 		The database object
 	*/
-	public function __construct(template $template, config $config, user $user, request $request, driver_interface $db, CleantalkSFW $cleantalk_sfw, main_model $main_model, symfony_request $symfony_request, $php_ext)
+	public function __construct(template $template, config $config, db_text $config_text, user $user, request $request, driver_interface $db, CleantalkSFW $cleantalk_sfw, main_model $main_model, symfony_request $symfony_request, $php_ext)
 	{
 		$this->template = $template;
 		$this->config = $config;
+		$this->config_text = $config_text;
 		$this->user = $user;
 		$this->request = $request;
 		$this->db = $db;
@@ -94,7 +101,7 @@ class main_listener implements EventSubscriberInterface
 	* @param array	$event		array with event variable values
 	*/
 	public function load_language_on_setup($event)
-	{
+	{		
 		$lang_set_ext = $event['lang_set_ext'];
 		$lang_set_ext[] = array(
 			'ext_name' => 'cleantalk/antispam',
@@ -103,7 +110,15 @@ class main_listener implements EventSubscriberInterface
 		$event['lang_set_ext'] = $lang_set_ext;
 
 	}
-
+	/**
+	* SpamFirewall Check
+	*
+	* @param array	$event		array with event variable values
+	*/
+	public function sfw_check($event)
+	{
+		$this->cleantalk_sfw->sfw_check();		
+	}
 	/**
 	* Fills tamplate variable by generated JS-code with unique hash
 	*
@@ -111,13 +126,11 @@ class main_listener implements EventSubscriberInterface
 	*/
 	public function add_js_to_footer($event)
 	{		
-		if (empty($this->config['cleantalk_antispam_apikey']))
+		if (!$this->config['cleantalk_antispam_key_is_ok'])
 		{
 			return;
 		}
 		$this->template->assign_var('CT_JS_VALUE', $this->main_model->cleantalk_get_checkjs_code());
-		$this->main_model->set_cookie();	
-
 	}
 	/**
 	* Checks post or topic to spam
@@ -127,7 +140,7 @@ class main_listener implements EventSubscriberInterface
 	public function check_comment($event)
 	{
 		$data = $event->get_data();
-		if (empty($this->config['cleantalk_antispam_apikey']) || $data['submit'] != 1)
+		if (!$this->config['cleantalk_antispam_key_is_ok'] || $data['submit'] != 1)
 		{
 			return;
 		}
@@ -230,7 +243,6 @@ class main_listener implements EventSubscriberInterface
 			}
 		}
 	}
-
 	/**
 	* Marks soft-spam post or comment as manual approvement needed
 	*
@@ -238,7 +250,7 @@ class main_listener implements EventSubscriberInterface
 	*/
 	public function change_comment_approve($event)
 	{
-		if (empty($this->config['cleantalk_antispam_apikey']))
+		if (!$this->config['cleantalk_antispam_key_is_ok'])
 		{
 			return;
 		}
@@ -253,7 +265,6 @@ class main_listener implements EventSubscriberInterface
 			$event->set_data($data);
 		}
 	}
-
 	/**
 	* Checks user registration to spam
 	*
@@ -261,7 +272,7 @@ class main_listener implements EventSubscriberInterface
 	*/
 	public function check_newuser($event)
 	{
-		if (empty($this->config['cleantalk_antispam_apikey']))
+		if (!$this->config['cleantalk_antispam_key_is_ok'])
 		{
 			return;
 		}
@@ -290,14 +301,58 @@ class main_listener implements EventSubscriberInterface
 				}
 			}
 		}
-	}	
+	}
 	/**
-	* Global checks
-	* @void
+	* CCF check
+	*
+	* @param array	$event		array with event variable values
 	*/
-	public function global_check()
+	public function ccf_check($event)
 	{
-		$this->cleantalk_sfw->sfw_check();
+		$this->main_model->set_cookie();
+
+		//Remote calls
+		if ($this->request->variable('spbc_remote_call_token', '') && $this->request->variable('spbc_remote_call_action','') && $this->request->variable('plugin_name', '') && in_array($this->request->variable('plugin_name',''), array('antispam','anti-spam', 'apbct')))
+		{
+	        $remote_calls_config = $this->config_text->get_array(array('cleantalk_antispam_remote_calls'));
+	        $remote_calls = isset($remote_calls_config['cleantalk_antispam_remote_calls']) ? json_decode($remote_calls_config['cleantalk_antispam_remote_calls'],true) : null;
+	        $remote_action = $this->request->variable('spbc_remote_call_action', '');
+	        $auth_key = $this->config['cleantalk_antispam_apikey'];
+
+	        if(array_key_exists($remote_action, $remote_calls)){
+	                    
+	            if(time() - $remote_calls[$remote_action]['last_call'] > self::APBCT_REMOTE_CALL_SLEEP){
+	                
+	                $remote_calls[$remote_action]['last_call'] = time();
+	                $this->config_text->set_array(array(
+	                	'cleantalk_antispam_remote_calls' => json_encode($remote_calls),
+	                ));
+
+	                if(strtolower($this->request->variable('spbc_remote_call_token','')) == strtolower(md5($auth_key))){
+
+	                    // Close renew banner
+	                    if($this->request->variable('spbc_remote_call_action','') == 'close_renew_banner'){
+	                        die('OK');
+	                    // SFW update
+	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'sfw_update'){   
+	                        $result = $this->cleantalk_sfw->sfw_update($this->config['cleantalk_antispam_apikey']);             
+	                        die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
+	                    // SFW send logs
+	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'sfw_send_logs'){  
+	                        $result = $this->cleantalk_sfw->send_logs($this->config['cleantalk_antispam_apikey']);              
+	                        die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
+	                    // Update plugin
+	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'update_plugin'){
+	                        //add_action('wp', 'apbct_update', 1);
+	                    }else
+	                        die('FAIL '.json_encode(array('error' => 'UNKNOWN_ACTION_2')));
+	                }else
+	                    die('FAIL '.json_encode(array('error' => 'WRONG_TOKEN')));
+	            }else
+	                die('FAIL '.json_encode(array('error' => 'TOO_MANY_ATTEMPTS')));
+	        }else
+	            die('FAIL '.json_encode(array('error' => 'UNKNOWN_ACTION')));
+		}
 
 		if ($this->config['cleantalk_antispam_ccf'] && !in_array($this->symfony_request->getScriptName(), array('/adm/index.'.$this->php_ext,'/ucp.'.$this->php_ext,'/posting.'.$this->php_ext)) && $this->request->variable('submit',''))
 		{
@@ -322,6 +377,6 @@ class main_listener implements EventSubscriberInterface
 					trigger_error($result['ct_result_comment']);
 				}
 			}
-		}			
-	}
+		}
+	}	
 }

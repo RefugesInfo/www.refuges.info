@@ -35,7 +35,7 @@ class StreamedResponse extends Response
      * @param int           $status   The response status code
      * @param array         $headers  An array of response headers
      */
-    public function __construct($callback = null, $status = 200, $headers = array())
+    public function __construct(callable $callback = null, $status = 200, $headers = [])
     {
         parent::__construct(null, $status, $headers);
 
@@ -55,7 +55,7 @@ class StreamedResponse extends Response
      *
      * @return static
      */
-    public static function create($callback = null, $status = 200, $headers = array())
+    public static function create($callback = null, $status = 200, $headers = [])
     {
         return new static($callback, $status, $headers);
     }
@@ -65,20 +65,21 @@ class StreamedResponse extends Response
      *
      * @param callable $callback A valid PHP callback
      *
-     * @throws \LogicException
+     * @return $this
      */
-    public function setCallback($callback)
+    public function setCallback(callable $callback)
     {
-        if (!\is_callable($callback)) {
-            throw new \LogicException('The Response callback must be a valid PHP callable.');
-        }
         $this->callback = $callback;
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      *
      * This method only sends the headers once.
+     *
+     * @return $this
      */
     public function sendHeaders()
     {
@@ -95,6 +96,8 @@ class StreamedResponse extends Response
      * {@inheritdoc}
      *
      * This method only sends the content once.
+     *
+     * @return $this
      */
     public function sendContent()
     {
@@ -117,6 +120,8 @@ class StreamedResponse extends Response
      * {@inheritdoc}
      *
      * @throws \LogicException when the content is not null
+     *
+     * @return $this
      */
     public function setContent($content)
     {
@@ -125,12 +130,12 @@ class StreamedResponse extends Response
         }
 
         $this->streamed = true;
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @return false
      */
     public function getContent()
     {

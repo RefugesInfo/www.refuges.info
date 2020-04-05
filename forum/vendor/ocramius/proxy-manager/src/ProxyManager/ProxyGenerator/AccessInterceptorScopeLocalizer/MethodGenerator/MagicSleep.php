@@ -16,10 +16,13 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
 use ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator\Util\InterceptorGenerator;
+use ProxyManager\ProxyGenerator\Util\GetMethodIfExists;
 use ReflectionClass;
 use Zend\Code\Generator\PropertyGenerator;
 
@@ -33,6 +36,10 @@ class MagicSleep extends MagicMethodGenerator
 {
     /**
      * Constructor
+     *
+     * @param ReflectionClass   $originalClass
+     * @param PropertyGenerator $prefixInterceptors
+     * @param PropertyGenerator $suffixInterceptors
      */
     public function __construct(
         ReflectionClass $originalClass,
@@ -41,17 +48,16 @@ class MagicSleep extends MagicMethodGenerator
     ) {
         parent::__construct($originalClass, '__sleep');
 
-        $callParent = $originalClass->hasMethod('__sleep')
-            ? '$returnValue = & parent::__sleep();'
-            : '$returnValue = array_keys((array) $this);';
+        $parent = GetMethodIfExists::get($originalClass, '__sleep');
 
-        $this->setBody(
-            InterceptorGenerator::createInterceptedMethodBody(
-                $callParent,
-                $this,
-                $prefixInterceptors,
-                $suffixInterceptors
-            )
-        );
+        $callParent = $parent ? '$returnValue = & parent::__sleep();' : '$returnValue = array_keys((array) $this);';
+
+        $this->setBody(InterceptorGenerator::createInterceptedMethodBody(
+            $callParent,
+            $this,
+            $prefixInterceptors,
+            $suffixInterceptors,
+            $parent
+        ));
     }
 }

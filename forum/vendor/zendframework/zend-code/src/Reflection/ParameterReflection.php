@@ -3,13 +3,15 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code\Reflection;
 
 use ReflectionParameter;
+
+use function method_exists;
 
 class ParameterReflection extends ReflectionParameter implements ReflectionInterface
 {
@@ -35,13 +37,13 @@ class ParameterReflection extends ReflectionParameter implements ReflectionInter
     /**
      * Get class reflection object
      *
-     * @return ClassReflection
+     * @return null|ClassReflection
      */
     public function getClass()
     {
         $phpReflection = parent::getClass();
         if ($phpReflection === null) {
-            return;
+            return null;
         }
 
         $zendReflection = new ClassReflection($phpReflection->getName());
@@ -71,13 +73,24 @@ class ParameterReflection extends ReflectionParameter implements ReflectionInter
     /**
      * Get parameter type
      *
-     * @return string
+     * @return string|null
      */
-    public function getType()
+    public function detectType()
     {
+        if (method_exists($this, 'getType')
+            && ($type = $this->getType())
+            && $type->isBuiltin()
+        ) {
+            return $type->getName();
+        }
+
+        // can be dropped when dropping PHP7 support:
         if ($this->isArray()) {
             return 'array';
-        } elseif (method_exists($this, 'isCallable') && $this->isCallable()) {
+        }
+
+        // can be dropped when dropping PHP7 support:
+        if ($this->isCallable()) {
             return 'callable';
         }
 
@@ -86,16 +99,18 @@ class ParameterReflection extends ReflectionParameter implements ReflectionInter
         }
 
         $docBlock = $this->getDeclaringFunction()->getDocBlock();
-        if (!$docBlock instanceof DocBlockReflection) {
-            return;
+
+        if (! $docBlock instanceof DocBlockReflection) {
+            return null;
         }
 
         $params = $docBlock->getTags('param');
+
         if (isset($params[$this->getPosition()])) {
             return $params[$this->getPosition()]->getType();
         }
 
-        return;
+        return null;
     }
 
     /**

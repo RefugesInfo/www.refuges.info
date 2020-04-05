@@ -1,8 +1,8 @@
 {
     "name": "phpbbfr/trad-fr",
     "type": "phpbb-language",
-    "description": "French translation of phpBB 3.2",
-    "version": "2.0.10",
+    "description": "French translation of phpBB 3.3",
+    "version": "3.0.0",
     "license": "GPL-2.0",
     "authors": [
         {
@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
+        "php": ">=7.1.3",
         "composer/installers": "~1.0"
     }
 }

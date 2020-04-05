@@ -276,9 +276,9 @@ class ucp_register
 					array('string', false, $config['min_name_chars'], $config['max_name_chars']),
 					array('username', '')),
 				'new_password'		=> array(
-					array('string', false, $config['min_pass_chars'], $config['max_pass_chars']),
+					array('string', false, $config['min_pass_chars'], 0),
 					array('password')),
-				'password_confirm'	=> array('string', false, $config['min_pass_chars'], $config['max_pass_chars']),
+				'password_confirm'	=> array('string', false, $config['min_pass_chars'], 0),
 				'email'				=> array(
 					array('string', false, 6, 60),
 					array('user_email')),
@@ -452,6 +452,9 @@ class ucp_register
 				{
 					$message = $user->lang['ACCOUNT_ADDED'];
 					$email_template = 'user_welcome';
+
+					// Autologin after registration
+					$user->session_create($user_id, 0, false, 1);
 				}
 
 				if ($config['email_enable'])
@@ -600,6 +603,31 @@ class ucp_register
 			break;
 		}
 
+		/* @var $provider_collection \phpbb\auth\provider_collection */
+		$provider_collection = $phpbb_container->get('auth.provider_collection');
+		$auth_provider = $provider_collection->get_provider();
+
+		$auth_provider_data = $auth_provider->get_login_data();
+		if ($auth_provider_data)
+		{
+			if (isset($auth_provider_data['VARS']))
+			{
+				$template->assign_vars($auth_provider_data['VARS']);
+			}
+
+			if (isset($auth_provider_data['BLOCK_VAR_NAME']))
+			{
+				foreach ($auth_provider_data['BLOCK_VARS'] as $block_vars)
+				{
+					$template->assign_block_vars($auth_provider_data['BLOCK_VAR_NAME'], $block_vars);
+				}
+			}
+
+			$template->assign_vars(array(
+				'PROVIDER_TEMPLATE_FILE' => $auth_provider_data['TEMPLATE_FILE'],
+			));
+		}
+
 		// Assign template vars for timezone select
 		phpbb_timezone_select($template, $user, $data['tz'], true);
 
@@ -611,7 +639,7 @@ class ucp_register
 
 			'L_REG_COND'				=> $l_reg_cond,
 			'L_USERNAME_EXPLAIN'		=> $user->lang($config['allow_name_chars'] . '_EXPLAIN', $user->lang('CHARACTERS', (int) $config['min_name_chars']), $user->lang('CHARACTERS', (int) $config['max_name_chars'])),
-			'L_PASSWORD_EXPLAIN'		=> $user->lang($config['pass_complex'] . '_EXPLAIN', $user->lang('CHARACTERS', (int) $config['min_pass_chars']), $user->lang('CHARACTERS', (int) $config['max_pass_chars'])),
+			'L_PASSWORD_EXPLAIN'		=> $user->lang($config['pass_complex'] . '_EXPLAIN', $user->lang('CHARACTERS', (int) $config['min_pass_chars'])),
 
 			'S_LANG_OPTIONS'	=> language_select($data['lang']),
 			'S_TZ_PRESELECT'	=> !$submit,

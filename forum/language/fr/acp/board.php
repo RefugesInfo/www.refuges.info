@@ -54,6 +54,8 @@ $lang = array_merge($lang, array(
 	'DISABLE_BOARD_EXPLAIN'			=> 'Ceci va rendre le forum inaccessible aux utilisateurs qui ne sont ni administrateurs, ni modérateurs. Vous pouvez aussi saisir un message court (255 caractères) pour leur en expliquer la raison.',
 	'DISPLAY_LAST_SUBJECT'			=> 'Afficher le titre du dernier message dans la liste des forums',
 	'DISPLAY_LAST_SUBJECT_EXPLAIN'	=> 'Le titre du dernier message posté sera affiché dans la liste des forums avec un lien pointant vers ce message. Les titres de sujet ne seront pas affichés lorsque le sujet provient d’un forum protégé par mot de passe ou provient d’un forum pour lequel l’utilisateur n’a pas d’accès en lecture.',
+	'DISPLAY_UNAPPROVED_POSTS'		=> 'Afficher les messages non approuvés à l’auteur',
+	'DISPLAY_UNAPPROVED_POSTS_EXPLAIN'	=> 'Les messages non approuvés peuvent être consultés par l’auteur. Ne s’applique pas aux messages d’invités.',
 	'GUEST_STYLE'					=> 'Styles pour les invités',
 	'GUEST_STYLE_EXPLAIN'			=> 'Définit le style par défaut pour les invités.',
 	'OVERRIDE_STYLE'				=> 'Annuler le style de l’utilisateur',
@@ -439,7 +441,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_TITLE'					=> 'OAuth',
 	'AUTH_PROVIDER_OAUTH_SECRET'				=> 'Secret',
 
-	'APACHE_SETUP_BEFORE_USE'	=> 'Vous devez configurer l’authentification Apache avant de passer phpBB à cette méthode d’authentification. Gardez en tête que le nom d’utilisateur utilisé pour l’authentification Apache doit être identique à votre nom d’utilisateur phpBB. L’authentification Apache peut seulement être utilisée avec mod_php (pas avec une version CGI) et safe_mode doit être désactivé.',
+	'APACHE_SETUP_BEFORE_USE'	=> 'Vous devez configurer l’authentification Apache avant de passer phpBB sur cette méthode d’authentification. Gardez en tête que le nom d’utilisateur utilisé pour l’authentification Apache doit être identique à votre nom d’utilisateur phpBB. L’authentification Apache peut seulement être utilisée avec mod_php (pas avec une version CGI).',
 
 	'LDAP'							=> 'LDAP',
 	'LDAP_DN'						=> 'Base LDAP vers <var>DN</var>',

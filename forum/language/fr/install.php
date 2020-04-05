@@ -51,7 +51,7 @@ $lang = array_merge($lang, array(
 
 	// Support page
 	'SUPPORT_TITLE'		=> 'Support',
-	'SUPPORT_BODY'		=> 'Un support complet et gratuit est fourni pour l’actuelle version stable de phpBB3. Ceci inclut les questions concernant :</p><ul><li>l’installation</li><li>la configuration</li><li>les questions techniques</li><li>les problèmes liés aux potentiels bugs du logiciel</li><li>la mise à jour depuis une version « Release Candidate » (RC) vers la dernière version stable</li><li>la conversion depuis un forum phpBB 2.0.x vers phpBB3</li><li>la conversion depuis un autre système de forum vers phpBB3 (consultez <a href="https://www.phpbb.com/community/viewforum.php?f=486">le forum des convertisseurs</a>*)</li></ul><p>Nous encourageons les utilisateurs d’une des versions bêta de phpBB3 à remplacer celle-ci par la dernière version stable.</p><h2>Extensions / Styles</h2><p>Pour des problèmes liés aux extensions, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=451">forum des extensions</a>*.<br>Pour des problèmes liés aux styles, templates et thèmes, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=471">forum des styles</a>*.<br><br>Si votre question est en relation avec une archive précise, créez votre message directement dans le sujet dédié à l’archive.</p><h2>Obtention du support</h2><p><a href="https://www.phpbb.com/support/">Section de support</a>*<br><a href="https://www.phpbb.com/support/docs/en/3.2/ug/quickstart/">Guide de démarrage rapide</a>*<br><br>Pour vous assurer d’être à jour et au courant des dernières nouvelles, suivez-nous sur <a href="https://www.twitter.com/phpbb/">Twitter</a>* et <a href="https://www.facebook.com/phpbb/">Facebook</a>*.<br><br>*liens menant vers des pages en langue anglaise.<br><br>',
+	'SUPPORT_BODY'		=> 'Un support complet et gratuit est fourni pour l’actuelle version stable de phpBB3. Ceci inclut les questions concernant :</p><ul><li>l’installation</li><li>la configuration</li><li>les questions techniques</li><li>les problèmes liés aux potentiels bugs du logiciel</li><li>la mise à jour depuis une version « Release Candidate » (RC) vers la dernière version stable</li><li>la conversion depuis un forum phpBB 2.0.x vers phpBB3</li><li>la conversion depuis un autre système de forum vers phpBB3 (consultez <a href="https://www.phpbb.com/community/viewforum.php?f=486">le forum des convertisseurs</a>*)</li></ul><p>Nous encourageons les utilisateurs d’une des versions bêta de phpBB3 à remplacer celle-ci par la dernière version stable.</p><h2>Extensions / Styles</h2><p>Pour des problèmes liés aux extensions, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=451">forum des extensions</a>*.<br>Pour des problèmes liés aux styles, templates et thèmes, nous vous invitons à créer votre sujet dans le <a href="https://www.phpbb.com/community/viewforum.php?f=471">forum des styles</a>*.<br><br>Si votre question est en relation avec une archive précise, créez votre message directement dans le sujet dédié à l’archive.</p><h2>Obtention du support</h2><p><a href="https://www.phpbb.com/support/">Section de support</a>*<br><a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/">Guide de démarrage rapide</a>*<br><br>Pour vous assurer d’être à jour et au courant des dernières nouvelles, suivez-nous sur <a href="https://www.twitter.com/phpbb/">Twitter</a>* et <a href="https://www.facebook.com/phpbb/">Facebook</a>*.<br><br>*liens menant vers des pages en langue anglaise.<br><br>',
 
 	// License
 	'LICENSE_TITLE'		=> 'Licence publique générale',
@@ -72,7 +72,7 @@ $lang = array_merge($lang, array(
 
 	<p>phpBB3 supporte les bases de données suivantes :</p>
 	<ul>
-		<li>MySQL 3.23 ou supérieur (MySQLi supporté)</li>
+		<li>MySQL 4.1.3 ou supérieur (MySQLi requis)</li>
 		<li>PostgreSQL 8.3+</li>
 		<li>SQLite 3.6.15+</li>
 		<li>MS SQL Server 2000 ou supérieur (directement ou via ODBC)</li>
@@ -107,7 +107,7 @@ $lang = array_merge($lang, array(
 
 	// Server requirements
 	'PHP_VERSION_REQD'					=> 'Version de PHP',
-	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB requiert PHP version 5.4.0 ou supérieure.',
+	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB requiert PHP version 7.1.3 ou supérieure.',
 	'PHP_GETIMAGESIZE_SUPPORT'			=> 'La fonction PHP getimagesize() est requise',
 	'PHP_GETIMAGESIZE_SUPPORT_EXPLAIN'	=> 'Pour que phpBB fonctionne correctement, la fonction getimagesize() doit être disponible.',
 	'PCRE_UTF_SUPPORT'					=> 'Support de PCRE UTF-8',
@@ -188,7 +188,6 @@ $lang = array_merge($lang, array(
 	// Database options
 	'DB_OPTION_MSSQL_ODBC'	=> 'MSSQL Server 2000+ via ODBC',
 	'DB_OPTION_MSSQLNATIVE'	=> 'MSSQL Server 2005+ [Natif]',
-	'DB_OPTION_MYSQL'		=> 'MySQL',
 	'DB_OPTION_MYSQLI'		=> 'MySQL avec l’extension MySQLi',
 	'DB_OPTION_ORACLE'		=> 'Oracle',
 	'DB_OPTION_POSTGRES'	=> 'PostgreSQL',
@@ -579,7 +578,7 @@ $lang = array_merge($lang, array(
 
 	// Finish conversion
 	'CONVERT_COMPLETE'			=> 'La conversion est terminée',
-	'CONVERT_COMPLETE_EXPLAIN'	=> 'Vous avez converti votre forum vers phpBB 3.2. Assurez-vous que les paramètres aient été correctement transférés avant d’activer votre forum en supprimant le répertoire « install ». Vous pouvez désormais vous connecter et <a href="../">accéder à votre forum</a>. Souvenez-vous que l’aide sur l’utilisation de phpBB est disponible dans la <a href="https://www.phpbb.com/support/docs/en/3.2/ug/">documentation en ligne</a> (en anglais), les <a href="https://www.phpbb.com/community/viewforum.php?f=466">forums de support officiels</a> (en anglais) et les <a href="http://forums.phpbb-fr.com/">forums de support de phpBB-fr.com</a>.',
+	'CONVERT_COMPLETE_EXPLAIN'	=> 'Vous avez converti votre forum vers phpBB 3.3. Assurez-vous que les paramètres aient été correctement transférés avant d’activer votre forum en supprimant le répertoire « install ». Vous pouvez désormais vous connecter et <a href="../">accéder à votre forum</a>. Souvenez-vous que l’aide sur l’utilisation de phpBB est disponible dans la <a href="https://www.phpbb.com/support/docs/en/3.3/ug/">documentation en ligne</a> (en anglais), les <a href="https://www.phpbb.com/community/viewforum.php?f=466">forums de support officiels</a> (en anglais) et les <a href="http://forums.phpbb-fr.com/">forums de support de phpBB-fr.com</a>.',
 
 	'CONV_ERROR_ATTACH_FTP_DIR'			=> 'Le transfert par FTP des fichiers joints est activé sur votre ancien forum. Veuillez désactiver le paramètre « Transfert FTP » et assurez-vous qu’un nom de répertoire de transfert valide soit indiqué, puis copiez tous les fichiers joints dans ce nouveau répertoire. Une fois les fichiers transférés, redémarrez l’assistant de conversion.',
 	'CONV_ERROR_CONFIG_EMPTY'			=> 'Il n’y a aucune information de configuration disponible pour la conversion.',

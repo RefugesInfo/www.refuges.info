@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -18,12 +18,12 @@ class LicenseTag extends AbstractGenerator implements TagInterface
     /**
      * @var string
      */
-    protected $url = null;
+    protected $url;
 
     /**
      * @var string
      */
-    protected $licenseName = null;
+    protected $licenseName;
 
     /**
      * @param string $url
@@ -31,11 +31,11 @@ class LicenseTag extends AbstractGenerator implements TagInterface
      */
     public function __construct($url = null, $licenseName = null)
     {
-        if (!empty($url)) {
+        if (! empty($url)) {
             $this->setUrl($url);
         }
 
-        if (!empty($licenseName)) {
+        if (! empty($licenseName)) {
             $this->setLicenseName($licenseName);
         }
     }
@@ -102,8 +102,8 @@ class LicenseTag extends AbstractGenerator implements TagInterface
     public function generate()
     {
         $output = '@license'
-            . ((!empty($this->url)) ? ' ' . $this->url : '')
-            . ((!empty($this->licenseName)) ? ' ' . $this->licenseName : '');
+            . (! empty($this->url) ? ' ' . $this->url : '')
+            . (! empty($this->licenseName) ? ' ' . $this->licenseName : '');
 
         return $output;
     }

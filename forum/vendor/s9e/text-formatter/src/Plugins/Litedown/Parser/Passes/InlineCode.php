@@ -1,24 +1,29 @@
 <?php
 
-/*
+/**
 * @package   s9e\TextFormatter
 * @copyright Copyright (c) 2010-2019 The s9e Authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Litedown\Parser\Passes;
+
 class InlineCode extends AbstractPass
 {
+	/**
+	* {@inheritdoc}
+	*/
 	public function parse()
 	{
 		$markers = $this->getInlineCodeMarkers();
 		$i       = -1;
-		$cnt     = \count($markers);
+		$cnt     = count($markers);
 		while (++$i < ($cnt - 1))
 		{
 			$pos = $markers[$i]['next'];
 			$j   = $i;
 			if ($this->text->charAt($markers[$i]['pos']) !== '`')
 			{
+				// Adjust the left marker if its first backtick was escaped
 				++$markers[$i]['pos'];
 				--$markers[$i]['len'];
 			}
@@ -34,6 +39,14 @@ class InlineCode extends AbstractPass
 			}
 		}
 	}
+
+	/**
+	* Add the tag pair for an inline code span
+	*
+	* @param  array $left  Left marker
+	* @param  array $right Right marker
+	* @return void
+	*/
 	protected function addInlineCodeTags($left, $right)
 	{
 		$startPos = $left['pos'];
@@ -43,16 +56,25 @@ class InlineCode extends AbstractPass
 		$this->parser->addTagPair('C', $startPos, $startLen, $endPos, $endLen);
 		$this->text->overwrite($startPos, $endPos + $endLen - $startPos);
 	}
+
+	/**
+	* Capture and return inline code markers
+	*
+	* @return array
+	*/
 	protected function getInlineCodeMarkers()
 	{
 		$pos = $this->text->indexOf('`');
-		if ($pos === \false)
+		if ($pos === false)
+		{
 			return [];
-		\preg_match_all(
+		}
+
+		preg_match_all(
 			'/(`+)(\\s*)[^\\x17`]*/',
-			\str_replace("\x1BB", '\\`', $this->text),
+			str_replace("\x1BB", '\\`', $this->text),
 			$matches,
-			\PREG_OFFSET_CAPTURE | \PREG_SET_ORDER,
+			PREG_OFFSET_CAPTURE | PREG_SET_ORDER,
 			$pos
 		);
 		$trimNext = 0;
@@ -61,13 +83,14 @@ class InlineCode extends AbstractPass
 		{
 			$markers[] = [
 				'pos'        => $m[0][1],
-				'len'        => \strlen($m[1][0]),
+				'len'        => strlen($m[1][0]),
 				'trimBefore' => $trimNext,
-				'trimAfter'  => \strlen($m[2][0]),
-				'next'       => $m[0][1] + \strlen($m[0][0])
+				'trimAfter'  => strlen($m[2][0]),
+				'next'       => $m[0][1] + strlen($m[0][0])
 			];
-			$trimNext = \strlen($m[0][0]) - \strlen(\rtrim($m[0][0]));
+			$trimNext = strlen($m[0][0]) - strlen(rtrim($m[0][0]));
 		}
+
 		return $markers;
 	}
 }

@@ -52,7 +52,7 @@ $lang = array_merge($lang, array(
 
 	// Support page
 	'SUPPORT_TITLE'		=> 'Support',
-	'SUPPORT_BODY'		=> 'Für die aktuelle, stabile Version von phpBB3 wird kostenloser Support gewährt. Dies umfasst:</p><ul><li>Installation</li><li>Konfiguration</li><li>Technische Fragen</li><li>Probleme durch eventuelle Fehler in der Software</li><li>Aktualisierung von Release Candidates (RC) oder stabilen Versionen zur aktuellen stabilen Version</li><li>Konvertierungen von phpBB 2.0.x zu phpBB3</li><li>Konvertierung von anderen Forensoftwares zu phpBB3 (Bitte beachte das <a href="https://www.phpbb.com/community/viewforum.php?f=561">Konvertierungs-Forum (englisch)</a> (<a href="https://www.phpbb.de/go/3.2/konvertierung">Konvertierungs-Support auf phpBB.de</a>))</li></ul><p>Wir ermutigen Benutzer, die noch eine Beta-Version von phpBB3 verwenden, ihre Installation mit einer aktuellen Ausgabe von phpBB3 zu ersetzen.</p><h2>Erweiterungen / Styles</h2><p>Fragen bezüglich von Erweiterungen stelle bitte im <a href="https://www.phpbb.com/community/viewforum.php?f=451">englischsprachigen Erweiterungen-Forum</a> (<a href="https://www.phpbb.de/go/3.2/extensions">Erweiterungen auf phpBB.de</a>).<br />Fragen bezüglich Styles, Templates und Themes stelle bitte im <a href="https://www.phpbb.com/community/viewforum.php?f=471">englischsprachigen Styles-Forum</a> (<a href="https://www.phpbb.de/go/3.2/styles">Styles auf phpBB.de</a>).<br /><br />Wenn sich deine Frage direkt auf ein bestimmtes Paket bezieht, stelle deine Frage bitte direkt in dem Thema, das für das Paket vorgesehen ist.</p><h2>Support erhalten</h2><p><a href="https://www.phpbb.com/community/viewtopic.php?f=14&amp;t=571070">Das phpBB Willkommenspaket (englisch)</a><br /><a href="https://www.phpbb.com/support/">Supportbereich (englisch)</a><br /><a href="https://www.phpbb.com/support/docs/en/3.2/ug/quickstart/">Schnellstartanleitung (englisch)</a><br /><a href="https://www.phpbb.de/go/3.2/ersteschritte">Erste Schritte mit phpBB</a><br /><a href="https://www.phpbb.de/go/3.2/support">deutschsprachiger Support auf phpBB.de</a><br /><a href="https://www.phpbb.de/go/3.2/schnellstart">Schnellstartanleitung</a><br /><br />Um immer die neuesten Informationen zu Updates und Veröffentlichungen zu erhalten, solltest du dich für den <a href="https://www.phpbb.com/support/">phpBB Newsletter (englisch)</a> anmelden (<a href="https://www.phpbb.de/go/newsletter">deutschsprachiger phpBB.de-Newsletter</a>).<br /><br />',
+	'SUPPORT_BODY'		=> 'Für die aktuelle, stabile Version von phpBB3 wird kostenloser Support gewährt. Dies umfasst:</p><ul><li>Installation</li><li>Konfiguration</li><li>Technische Fragen</li><li>Probleme durch eventuelle Fehler in der Software</li><li>Aktualisierung von Release Candidates (RC) oder stabilen Versionen zur aktuellen stabilen Version</li><li>Konvertierungen von phpBB 2.0.x zu phpBB3</li><li>Konvertierung von anderen Forensoftwares zu phpBB3 (Bitte beachte das <a href="https://www.phpbb.com/community/viewforum.php?f=486">Konvertierungs-Forum (englisch)</a> (<a href="https://www.phpbb.de/go/3.3/konvertierung">Konvertierungs-Support auf phpBB.de</a>))</li></ul><p>Wir ermutigen Benutzer, die noch eine Beta-Version von phpBB3 verwenden, ihre Installation mit einer aktuellen Ausgabe von phpBB3 zu ersetzen.</p><h2>Erweiterungen / Styles</h2><p>Fragen bezüglich von Erweiterungen stelle bitte im <a href="https://www.phpbb.com/community/viewforum.php?f=451">englischsprachigen Erweiterungen-Forum</a> (<a href="https://www.phpbb.de/go/3.3/extensions">Erweiterungen auf phpBB.de</a>).<br />Fragen bezüglich Styles, Templates und Themes stelle bitte im <a href="https://www.phpbb.com/community/viewforum.php?f=471">englischsprachigen Styles-Forum</a> (<a href="https://www.phpbb.de/go/3.3/styles">Styles auf phpBB.de</a>).<br /><br />Wenn sich deine Frage direkt auf ein bestimmtes Paket bezieht, stelle deine Frage bitte direkt in dem Thema, das für das Paket vorgesehen ist.</p><h2>Support erhalten</h2><p><a href="https://www.phpbb.com/support/">Supportbereich (englisch)</a><br /><a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/">Schnellstartanleitung (englisch)</a><br /><a href="https://www.phpbb.de/go/3.3/ersteschritte">Erste Schritte mit phpBB</a><br /><a href="https://www.phpbb.de/go/3.3/support">deutschsprachiger Support auf phpBB.de</a><br /><a href="https://www.phpbb.de/go/3.3/schnellstart">Schnellstartanleitung</a><br /><br />Um immer die neuesten Informationen zu Updates und Veröffentlichungen zu erhalten, folge uns auf <a href="https://www.twitter.com/phpbb/">Twitter</a> und <a href="https://www.facebook.com/phpbb/">Facebook</a> (englisch) oder melde dich für den <a href="https://www.phpbb.de/go/newsletter">deutschsprachigen phpBB.de-Newsletter</a> an.<br /><br />',
 
 	// License
 	'LICENSE_TITLE'		=> 'General Public License',
@@ -72,7 +72,7 @@ $lang = array_merge($lang, array(
 
 	<p>phpBB3 unterstützt folgende Datenbank-Typen:</p>
 	<ul>
-		<li>MySQL 3.23 und höher (MySQLi wird unterstützt)</li>
+		<li>MySQL 4.1.3 und höher (MySQLi ist erforderlich)</li>
 		<li>PostgreSQL 8.3+</li>
 		<li>SQLite 3.6.15+</li>
 		<li>MS SQL Server 2000 und höher (direkt oder über ODBC)</li>
@@ -107,7 +107,7 @@ $lang = array_merge($lang, array(
 
 	// Server requirements
 	'PHP_VERSION_REQD'					=> 'PHP-Version',
-	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB erfordert PHP 5.4.0 oder höher.',
+	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB erfordert PHP 7.1.3 oder höher.',
 	'PHP_GETIMAGESIZE_SUPPORT'			=> 'PHP-Funktion getimagesize() ist erforderlich',
 	'PHP_GETIMAGESIZE_SUPPORT_EXPLAIN'	=> 'Damit phpBB richtig funktioniert, muss die Funktion getimagesize() verfügbar sein.',
 	'PCRE_UTF_SUPPORT'					=> 'PCRE UTF-8-Unterstützung',
@@ -188,8 +188,7 @@ $lang = array_merge($lang, array(
 	// Database options
 	'DB_OPTION_MSSQL_ODBC'	=> 'MSSQL Server 2000+ via ODBC',
 	'DB_OPTION_MSSQLNATIVE'	=> 'MSSQL Server 2005+ [ Nativ ]',
-	'DB_OPTION_MYSQL'		=> 'MySQL',
-	'DB_OPTION_MYSQLI'		=> 'MySQL with MySQLi-Erweiterung',
+	'DB_OPTION_MYSQLI'		=> 'MySQL mit MySQLi-Erweiterung',
 	'DB_OPTION_ORACLE'		=> 'Oracle',
 	'DB_OPTION_POSTGRES'	=> 'PostgreSQL',
 	'DB_OPTION_SQLITE3'		=> 'SQLite 3',
@@ -359,11 +358,11 @@ $lang = array_merge($lang, array(
 
 		<h1>Wie du ein Update deiner Installation mit dem „Komplettpaket“ durchführst</h1>
 
-		<p>Es wird empfohlen, deine Installation mit Hilfe des Komplettpakets zu aktualisieren. Wenn allerdings in deiner Installation die phpBB-Hauptdateien verändert wurden, solltest du stattdessen das „Automatische-Update-Paket“ verwenden, um diese Veränderung nicht zu verlieren. Du kannst deine Installation auch mit den in der INSTALL.html beschriebenen Methoden aktualisieren. Zum Aktualisieren von phpBB mit Hilfe des Komplettpakets musst du folgende Schritte ausführen (ausführliche Anleitung auf <a href="https://www.phpbb.de/go/3.2/update">www.phpBB.de</a>):</p>
+		<p>Es wird empfohlen, deine Installation mit Hilfe des Komplettpakets zu aktualisieren. Wenn allerdings in deiner Installation die phpBB-Hauptdateien verändert wurden, solltest du stattdessen das „Automatische-Update-Paket“ verwenden, um diese Veränderungen nicht zu verlieren. Du kannst deine Installation auch mit den in der INSTALL.html beschriebenen Methoden aktualisieren. Zum Aktualisieren von phpBB mit Hilfe des Komplettpakets musst du folgende Schritte ausführen (ausführliche Anleitung auf <a href="https://www.phpbb.de/go/3.3/update">www.phpBB.de</a>):</p>
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
 			<li><strong class="error">Sichere alle Board-Dateien und die Datenbank.</strong></li>
-			<li>Gehe zur <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">phpBB.com-Downloadseite</a> und lade das neuste „Komplettpaket“-Archiv runter (<a href="https://www.phpbb.de/go/3.2/downloads">deutschsprachige Downloadseite</a>).</li>
+			<li>Gehe zur <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">phpBB.com-Downloadseite</a> und lade das neuste „Komplettpaket“-Archiv runter (<a href="https://www.phpbb.de/go/3.3/downloads">deutschsprachige Downloadseite</a>).</li>
 			<li>Entpacke das Archiv.</li>
 			<li>Lösche die <code class="inline">config.php</code>-Datei und die Verzeichnisse <code class="inline">/images</code>, <code class="inline">/store</code> und <code class="inline">/files</code> <em>aus dem Paket</em> (nicht von deiner Website).</li>
 			<li>Gehe in den Administrations-Bereich unter Board-Einstellungen und stelle sicher, dass prosilver als Standard-Style eingerichtet ist. Wenn nicht, stelle den Standard-Style auf prosilver.</li>
@@ -385,7 +384,7 @@ $lang = array_merge($lang, array(
 		<p>Das „Automatische-Update-Paket“ wird nur in dem Fall empfohlen, wenn in deiner Installation die phpBB-Hauptdateien verändert wurden. Du kannst deine Installation auch mit den in der INSTALL.html beschriebenen Methoden aktualisieren. Zum automatischen Update von phpBB musst du folgende Schritte ausführen:</p>
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
-			<li>Gehe zur <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">phpBB.com-Downloadseite</a> und lade das entsprechende „Automatische-Update-Paket“ herunter (<a href="https://www.phpbb.de/go/3.2/downloads">deutschsprachige Downloadseite</a>).</li>
+			<li>Gehe zur <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">phpBB.com-Downloadseite</a> und lade das entsprechende „Automatische-Update-Paket“ herunter (<a href="https://www.phpbb.de/go/3.3/downloads">deutschsprachige Downloadseite</a>).</li>
 			<li>Entpacke das Archiv.</li>
 			<li>Lade die entpackten Verzeichnisse „install“ und „vendor“ vollständig in dein phpBB-Hauptverzeichnis (dort, wo die config.php ist).</li>
 		</ol>
@@ -567,7 +566,7 @@ $lang = array_merge($lang, array(
 
 	// Finish conversion
 	'CONVERT_COMPLETE'			=> 'Konvertierung abgeschlossen',
-	'CONVERT_COMPLETE_EXPLAIN'	=> 'Dein Board wurde erfolgreich auf phpBB 3.2 konvertiert. Du kannst dich jetzt anmelden und <a href="../">dein Board betreten</a>. Bitte prüfe, ob alle Einstellungen richtig übernommen wurden, bevor du dein Board durch Löschen des „install“-Verzeichnisses freigibst. Hilfe zum Gebrauch von phpBB erhältst du online über die <a href="https://www.phpbb.com/support/docs/en/3.2/ug/">Dokumentation (englisch)</a> (<a href="https://www.phpbb.de/go/3.2/dokumentation">deutsche Übersetzung</a>) und das <a href="https://www.phpbb.com/community/viewforum.php?f=466">Support-Forum (englisch)</a> (<a href="https://www.phpbb.de/go/3.2/supportforum">deutschsprachiges Forum auf phpBB.de</a>).',
+	'CONVERT_COMPLETE_EXPLAIN'	=> 'Dein Board wurde erfolgreich auf phpBB 3.3 konvertiert. Du kannst dich jetzt anmelden und <a href="../">dein Board betreten</a>. Bitte prüfe, ob alle Einstellungen richtig übernommen wurden, bevor du dein Board durch Löschen des „install“-Verzeichnisses freigibst. Hilfe zum Gebrauch von phpBB erhältst du online über die <a href="https://www.phpbb.com/support/docs/en/3.3/ug/">Dokumentation (englisch)</a> (<a href="https://www.phpbb.de/go/3.3/dokumentation">deutsche Übersetzung</a>) und das <a href="https://www.phpbb.com/community/viewforum.php?f=661">Support-Forum (englisch)</a> (<a href="https://www.phpbb.de/go/3.3/supportforum">deutschsprachiges Forum auf phpBB.de</a>).',
 
 	'CONV_ERROR_ATTACH_FTP_DIR'			=> 'Der FTP-Upload für Dateianhänge ist im alten Forum eingeschaltet. Bitte deaktiviere den FTP-Upload und stelle sicher, dass ein gültiges Upload-Verzeichnis angegeben ist. Kopiere dann alle Dateianhänge in dieses neue, aus dem Web zugängliche Verzeichnis. Sobald du dies getan hast, kannst du das Konvertierungsprogramm erneut aufrufen.',
 	'CONV_ERROR_CONFIG_EMPTY'			=> 'Es sind keine Konfigurationsinformationen für die Konvertierung verfügbar.',

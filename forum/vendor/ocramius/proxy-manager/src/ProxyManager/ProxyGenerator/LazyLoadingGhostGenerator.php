@@ -16,16 +16,20 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator;
 
+use ProxyManager\Exception\InvalidProxiedClassException;
+use ProxyManager\Generator\MethodGenerator as ProxyManagerMethodGenerator;
 use ProxyManager\Generator\Util\ClassGeneratorUtils;
+use ProxyManager\Proxy\GhostObjectInterface;
 use ProxyManager\ProxyGenerator\Assertion\CanProxyAssertion;
-use ProxyManager\ProxyGenerator\LazyLoading\MethodGenerator\Constructor;
+use ProxyManager\ProxyGenerator\LazyLoading\MethodGenerator\StaticProxyConstructor;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\CallInitializer;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\GetProxyInitializer;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\InitializeProxy;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\IsProxyInitialized;
-use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\LazyLoadingMethodInterceptor;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\MagicClone;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\MagicGet;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\MagicIsset;
@@ -35,8 +39,10 @@ use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\MagicUnset;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator\SetProxyInitializer;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\PropertyGenerator\InitializationTracker;
 use ProxyManager\ProxyGenerator\LazyLoadingGhost\PropertyGenerator\InitializerProperty;
-use ProxyManager\ProxyGenerator\PropertyGenerator\PublicPropertiesDefaults;
+use ProxyManager\ProxyGenerator\LazyLoadingGhost\PropertyGenerator\PrivatePropertiesMap;
+use ProxyManager\ProxyGenerator\LazyLoadingGhost\PropertyGenerator\ProtectedPropertiesMap;
 use ProxyManager\ProxyGenerator\PropertyGenerator\PublicPropertiesMap;
+use ProxyManager\ProxyGenerator\Util\Properties;
 use ProxyManager\ProxyGenerator\Util\ProxiedMethodsFilter;
 use ReflectionClass;
 use ReflectionMethod;
@@ -56,59 +62,104 @@ class LazyLoadingGhostGenerator implements ProxyGeneratorInterface
 {
     /**
      * {@inheritDoc}
+     *
+     * @throws InvalidProxiedClassException
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
-    public function generate(ReflectionClass $originalClass, ClassGenerator $classGenerator)
+    public function generate(ReflectionClass $originalClass, ClassGenerator $classGenerator, array $proxyOptions = [])
     {
-        CanProxyAssertion::assertClassCanBeProxied($originalClass);
+        CanProxyAssertion::assertClassCanBeProxied($originalClass, false);
 
-        $interfaces          = array('ProxyManager\\Proxy\\GhostObjectInterface');
-        $publicProperties    = new PublicPropertiesMap($originalClass);
-        $publicPropsDefaults = new PublicPropertiesDefaults($originalClass);
+        $filteredProperties = Properties::fromReflectionClass($originalClass)
+            ->filter($proxyOptions['skippedProperties'] ?? []);
 
-        if ($originalClass->isInterface()) {
-            $interfaces[] = $originalClass->getName();
-        } else {
-            $classGenerator->setExtendedClass($originalClass->getName());
-        }
+        $publicProperties    = new PublicPropertiesMap($filteredProperties);
+        $privateProperties   = new PrivatePropertiesMap($filteredProperties);
+        $protectedProperties = new ProtectedPropertiesMap($filteredProperties);
 
-        $classGenerator->setImplementedInterfaces($interfaces);
+        $classGenerator->setExtendedClass($originalClass->getName());
+        $classGenerator->setImplementedInterfaces([GhostObjectInterface::class]);
         $classGenerator->addPropertyFromGenerator($initializer = new InitializerProperty());
         $classGenerator->addPropertyFromGenerator($initializationTracker = new InitializationTracker());
         $classGenerator->addPropertyFromGenerator($publicProperties);
-        $classGenerator->addPropertyFromGenerator($publicPropsDefaults);
+        $classGenerator->addPropertyFromGenerator($privateProperties);
+        $classGenerator->addPropertyFromGenerator($protectedProperties);
 
-        $init = new CallInitializer($initializer, $publicPropsDefaults, $initializationTracker);
+        $init = new CallInitializer($initializer, $initializationTracker, $filteredProperties);
 
         array_map(
             function (MethodGenerator $generatedMethod) use ($originalClass, $classGenerator) {
                 ClassGeneratorUtils::addMethodIfNotFinal($originalClass, $classGenerator, $generatedMethod);
             },
             array_merge(
-                array_map(
-                    function (ReflectionMethod $method) use ($initializer, $init) {
-                        return LazyLoadingMethodInterceptor::generateMethod(
-                            new MethodReflection($method->getDeclaringClass()->getName(), $method->getName()),
-                            $initializer,
-                            $init
-                        );
-                    },
-                    ProxiedMethodsFilter::getProxiedMethods($originalClass)
-                ),
-                array(
+                $this->getAbstractProxiedMethods($originalClass),
+                [
                     $init,
-                    new Constructor($originalClass, $initializer),
-                    new MagicGet($originalClass, $initializer, $init, $publicProperties),
-                    new MagicSet($originalClass, $initializer, $init, $publicProperties),
-                    new MagicIsset($originalClass, $initializer, $init, $publicProperties),
-                    new MagicUnset($originalClass, $initializer, $init, $publicProperties),
-                    new MagicClone($originalClass, $initializer, $init, $publicProperties),
-                    new MagicSleep($originalClass, $initializer, $init, $publicProperties),
+                    new StaticProxyConstructor($initializer, $filteredProperties),
+                    new MagicGet(
+                        $originalClass,
+                        $initializer,
+                        $init,
+                        $publicProperties,
+                        $protectedProperties,
+                        $privateProperties,
+                        $initializationTracker
+                    ),
+                    new MagicSet(
+                        $originalClass,
+                        $initializer,
+                        $init,
+                        $publicProperties,
+                        $protectedProperties,
+                        $privateProperties
+                    ),
+                    new MagicIsset(
+                        $originalClass,
+                        $initializer,
+                        $init,
+                        $publicProperties,
+                        $protectedProperties,
+                        $privateProperties
+                    ),
+                    new MagicUnset(
+                        $originalClass,
+                        $initializer,
+                        $init,
+                        $publicProperties,
+                        $protectedProperties,
+                        $privateProperties
+                    ),
+                    new MagicClone($originalClass, $initializer, $init),
+                    new MagicSleep($originalClass, $initializer, $init),
                     new SetProxyInitializer($initializer),
                     new GetProxyInitializer($initializer),
                     new InitializeProxy($initializer, $init),
                     new IsProxyInitialized($initializer),
-                )
+                ]
             )
+        );
+    }
+
+    /**
+     * Retrieves all abstract methods to be proxied
+     *
+     * @param ReflectionClass $originalClass
+     *
+     * @return MethodGenerator[]
+     */
+    private function getAbstractProxiedMethods(ReflectionClass $originalClass) : array
+    {
+        return array_map(
+            function (ReflectionMethod $method) : ProxyManagerMethodGenerator {
+                $generated = ProxyManagerMethodGenerator
+                    ::fromReflection(new MethodReflection($method->getDeclaringClass()->getName(), $method->getName()));
+
+                $generated->setAbstract(false);
+
+                return $generated;
+            },
+            ProxiedMethodsFilter::getAbstractProxiedMethods($originalClass)
         );
     }
 }

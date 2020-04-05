@@ -149,7 +149,7 @@ table.zebra-list tr:nth-child(even) td, ul.zebra-list li:nth-child(even) {
 }
 
 .site_logo {
-	background-image: url("./images/site_logo.gif");
+	background-image: url("./images/site_logo.svg");
 }
 
 /* Horizontal lists
@@ -670,6 +670,11 @@ Colours and backgrounds for buttons.css
 
 .search-header {
 	box-shadow: 0 0 10px #0075B0;
+}
+
+.search-results li:hover,
+.search-results li.active {
+	background-color: #CFE1F6;
 }
 
 /* Icon images

@@ -17,15 +17,26 @@ use Symfony\Component\Stopwatch\Stopwatch;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class TraceableControllerResolver implements ControllerResolverInterface
+class TraceableControllerResolver implements ControllerResolverInterface, ArgumentResolverInterface
 {
     private $resolver;
     private $stopwatch;
+    private $argumentResolver;
 
-    public function __construct(ControllerResolverInterface $resolver, Stopwatch $stopwatch)
+    public function __construct(ControllerResolverInterface $resolver, Stopwatch $stopwatch, ArgumentResolverInterface $argumentResolver = null)
     {
         $this->resolver = $resolver;
         $this->stopwatch = $stopwatch;
+        $this->argumentResolver = $argumentResolver;
+
+        // BC
+        if (null === $this->argumentResolver) {
+            $this->argumentResolver = $resolver;
+        }
+
+        if (!$this->argumentResolver instanceof TraceableArgumentResolver) {
+            $this->argumentResolver = new TraceableArgumentResolver($this->argumentResolver, $this->stopwatch);
+        }
     }
 
     /**
@@ -44,14 +55,14 @@ class TraceableControllerResolver implements ControllerResolverInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated This method is deprecated as of 3.1 and will be removed in 4.0.
      */
     public function getArguments(Request $request, $controller)
     {
-        $e = $this->stopwatch->start('controller.get_arguments');
+        @trigger_error(sprintf('The "%s()" method is deprecated as of 3.1 and will be removed in 4.0. Please use the %s instead.', __METHOD__, TraceableArgumentResolver::class), E_USER_DEPRECATED);
 
-        $ret = $this->resolver->getArguments($request, $controller);
-
-        $e->stop();
+        $ret = $this->argumentResolver->getArguments($request, $controller);
 
         return $ret;
     }

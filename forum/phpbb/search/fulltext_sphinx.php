@@ -18,7 +18,7 @@ define('SPHINX_CONNECT_RETRIES', 3);
 define('SPHINX_CONNECT_WAIT_TIME', 300);
 
 /**
-* Fulltext search based on the sphinx search deamon
+* Fulltext search based on the sphinx search daemon
 */
 class fulltext_sphinx
 {
@@ -210,11 +210,11 @@ class fulltext_sphinx
 	/**
 	* Checks permissions and paths, if everything is correct it generates the config file
 	*
-	* @return string|bool Language key of the error/incompatiblity encountered, or false if successful
+	* @return string|bool Language key of the error/incompatibility encountered, or false if successful
 	*/
 	public function init()
 	{
-		if ($this->db->get_sql_layer() != 'mysql' && $this->db->get_sql_layer() != 'mysql4' && $this->db->get_sql_layer() != 'mysqli' && $this->db->get_sql_layer() != 'postgres')
+		if ($this->db->get_sql_layer() != 'mysqli' && $this->db->get_sql_layer() != 'postgres')
 		{
 			return $this->user->lang['FULLTEXT_SPHINX_WRONG_DATABASE'];
 		}
@@ -233,7 +233,7 @@ class fulltext_sphinx
 	protected function config_generate()
 	{
 		// Check if Database is supported by Sphinx
-		if ($this->db->get_sql_layer() =='mysql' || $this->db->get_sql_layer() == 'mysql4' || $this->db->get_sql_layer() == 'mysqli')
+		if ($this->db->get_sql_layer() == 'mysqli')
 		{
 			$this->dbtype = 'mysql';
 		}

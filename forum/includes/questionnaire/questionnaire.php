@@ -68,7 +68,7 @@ class phpbb_questionnaire_data_collector
 
 	function get_data_for_form()
 	{
-		return base64_encode(serialize($this->get_data_raw()));
+		return base64_encode(json_encode($this->get_data_raw()));
 	}
 
 	/**
@@ -110,7 +110,6 @@ class phpbb_questionnaire_php_data_provider
 			'version'						=> PHP_VERSION,
 			'sapi'							=> PHP_SAPI,
 			'int_size'						=> defined('PHP_INT_SIZE') ? PHP_INT_SIZE : '',
-			'safe_mode'						=> (int) @ini_get('safe_mode'),
 			'open_basedir'					=> (int) @ini_get('open_basedir'),
 			'memory_limit'					=> @ini_get('memory_limit'),
 			'allow_url_fopen'				=> (int) @ini_get('allow_url_fopen'),
@@ -121,13 +120,11 @@ class phpbb_questionnaire_php_data_provider
 			'disable_functions'				=> @ini_get('disable_functions'),
 			'disable_classes'				=> @ini_get('disable_classes'),
 			'enable_dl'						=> (int) @ini_get('enable_dl'),
-			'magic_quotes_gpc'				=> (int) @ini_get('magic_quotes_gpc'),
-			'register_globals'				=> (int) @ini_get('register_globals'),
 			'filter.default'				=> @ini_get('filter.default'),
 			'zend.ze1_compatibility_mode'	=> (int) @ini_get('zend.ze1_compatibility_mode'),
 			'unicode.semantics'				=> (int) @ini_get('unicode.semantics'),
 			'zend_thread_safty'				=> (int) function_exists('zend_thread_id'),
-			'extensions'					=> get_loaded_extensions(),
+			'extensions'					=> implode(',', get_loaded_extensions()),
 		);
 	}
 }
@@ -405,7 +402,6 @@ class phpbb_questionnaire_phpbb_data_provider
 			'max_login_attempts' => true,
 			'max_name_chars' => true,
 			'max_num_search_keywords' => true,
-			'max_pass_chars' => true,
 			'max_poll_options' => true,
 			'max_post_chars' => true,
 			'max_post_font_size' => true,

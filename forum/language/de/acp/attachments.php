@@ -71,7 +71,6 @@ $lang = array_merge($lang, array(
 	'ATTACH_QUOTA_EXPLAIN'				=> 'Maximaler für Dateianhänge verfügbarer Speicherplatz für das gesamte Forum; 0 bedeutet unbegrenzt.',
 	'ATTACH_TO_POST'					=> 'Datei an den Beitrag anhängen',
 
-	'CAT_FLASH_FILES'			=> 'Flash-Dateien',
 	'CAT_IMAGES'				=> 'Bilder',
 	'CHECK_CONTENT'				=> 'Dateianhänge prüfen',
 	'CHECK_CONTENT_EXPLAIN'		=> 'Manchen Browsern kann ein fehlerhafter MIME-Typ für hochgeladene Dateien vorgetäuscht werden. Diese Option stellt sicher, dass Dateien, die dieses Verhalten provozieren könnten, abgewiesen werden.',
@@ -102,7 +101,6 @@ $lang = array_merge($lang, array(
 	'EXT_GROUP_ARCHIVES'			=> 'Archiv-Dateien',
 	'EXT_GROUP_DOCUMENTS'			=> 'Dokumente',
 	'EXT_GROUP_DOWNLOADABLE_FILES'	=> 'Herunterladbare Dateien',
-	'EXT_GROUP_FLASH_FILES'			=> 'Flash-Dateien',
 	'EXT_GROUP_IMAGES'				=> 'Bilder',
 	'EXT_GROUP_PLAIN_TEXT'			=> 'Text-Dateien',
 

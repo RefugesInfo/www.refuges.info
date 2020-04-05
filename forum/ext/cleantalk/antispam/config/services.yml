@@ -2,14 +2,15 @@ services:
     cleantalk.antispam.listener:
         class: cleantalk\antispam\event\main_listener
         arguments:
-            - @template
-            - @config
-            - @user
-            - @request
-            - @dbal.conn
-            - @cleantalk.antispam.cleantalk_sfw
-            - @cleantalk.antispam.main_model
-            - @symfony_request
+            - '@template'
+            - '@config'
+            - '@config_text'
+            - '@user'
+            - '@request'
+            - '@dbal.conn'
+            - '@cleantalk.antispam.cleantalk_sfw'
+            - '@cleantalk.antispam.main_model'
+            - '@symfony_request'
             - '%core.php_ext%'                                            
         tags:
             - { name: event.listener }
@@ -17,17 +18,17 @@ services:
     cleantalk.antispam.cleantalk_sfw:
         class: cleantalk\antispam\model\CleantalkSFW
         arguments:
-            - @template
-            - @config
-            - @user
-            - @request
-            - @dbal.conn
+            - '@template'
+            - '@config'
+            - '@user'
+            - '@request'
+            - '@dbal.conn'
             - '%core.table_prefix%' 
 
     cleantalk.antispam.cleantalk:
         class: cleantalk\antispam\model\Cleantalk
         arguments:
-            - @request
+            - '@request'
 
     cleantalk.antispam.cleantalk_request:
         class: cleantalk\antispam\model\CleantalkRequest  
@@ -35,21 +36,21 @@ services:
     cleantalk.antispam.main_model:
         class: cleantalk\antispam\model\main_model
         arguments:
-            - @config
-            - @user
-            - @request
-            - @log
-            - @cleantalk.antispam.cleantalk
-            - @cleantalk.antispam.cleantalk_request
-            - @config_text
+            - '@config'
+            - '@user'
+            - '@request'
+            - '@log'
+            - '@cleantalk.antispam.cleantalk'
+            - '@cleantalk.antispam.cleantalk_request'
+            - '@config_text'
             - '%core.root_path%'            
             - '%core.php_ext%'                                
 
     cleantalk.antispam.cron.task.cleantalk_antispam_sfw_logs_send:
         class: cleantalk\antispam\cron\task\cleantalk_antispam_sfw_logs_send
         arguments:
-            - @config
-            - @cleantalk.antispam.cleantalk_sfw            
+            - '@config'
+            - '@cleantalk.antispam.cleantalk_sfw'
         calls:
             - [set_name, [cron.task.cleantalk_antispam_sfw_logs_send]]
         tags:
@@ -58,8 +59,8 @@ services:
     cleantalk.antispam.cron.task.cleantalk_antispam_sfw_update:
         class: cleantalk\antispam\cron\task\cleantalk_antispam_sfw_update
         arguments:
-            - @config
-            - @cleantalk.antispam.cleantalk_sfw
+            - '@config'
+            - '@cleantalk.antispam.cleantalk_sfw'
         calls:
             - [set_name, [cron.task.cleantalk_antispam_sfw_update]]
         tags:
@@ -68,7 +69,7 @@ services:
     cleantalk.antispam.cron.task.cleantalk_antispam_check_payment_status:
         class: cleantalk\antispam\cron\task\cleantalk_antispam_check_payment_status
         arguments:
-            - @config
+            - '@config'
         calls:
             - [set_name, [cron.task.cleantalk_antispam_check_payment_status]]
         tags:

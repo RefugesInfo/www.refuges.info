@@ -132,6 +132,8 @@ $lang = array_merge($lang, array(
 	'GENERAL_FORUM_SETTINGS'	=> 'Impostazioni generali forum',
 
 	'LINK'						=> 'Link',
+	'LIMIT_SUBFORUMS'			=> 'Limita la legenda direttamente ai sub-forum figli',
+	'LIMIT_SUBFORUMS_EXPLAIN'	=> 'Limita i subforum da visualizzare ai subforum che sono discendenti diretti (figli) del forum corrente. Disabilitando questo verranno visualizzati tutti i subforum con l’opzione “Elenca subforum nella legenda” abilitata, indipendentemente dalla profondità.',
 	'LIST_INDEX'				=> 'Elenca i subforum nella legenda dei forum madre',
 	'LIST_INDEX_EXPLAIN'		=> 'Se il forum madre ha abilitata l’opzione “Elenca i subforum nella legenda” questo forum verrà visualizzato come un collegamento all’interno della legenda del suo forum madre, sia nell’Indice che altrove.',
 	'LIST_SUBFORUMS'			=> 'Elenca i subforum nella legenda',

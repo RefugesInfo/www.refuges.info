@@ -76,7 +76,6 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_MAX'	=> 'ID del registro mayor a procesar',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_SIZE'	=> 'Número aproximado de registros a procesar ahora',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RESUME'		=> 'Comienzar el reanálisis donde la última ejecución se detuvo',
-	'CLI_DESCRIPTION_RECALCULATE_EMAIL_HASH'			=> 'Recalcula la columna de user_email_hash de la tabla de usuarios.',
 
 	'CLI_DESCRIPTION_SET_ATOMIC_CONFIG'				=> 'Establece el valor de una opción de configuración solamente si el valor antiguo coincide con el valor actual',
 	'CLI_DESCRIPTION_SET_CONFIG'					=> 'Establece el valor de una opción de configuración',
@@ -128,7 +127,6 @@ $lang = array_merge($lang, array(
 	'CLI_EXTENSIONS_ENABLED'			=> 'Habilitada',
 
 	'CLI_FIXUP_FIX_LEFT_RIGHT_IDS_SUCCESS'		=> 'Reparado correctamente el árbol de estructura de los foros y módulos.',
-	'CLI_FIXUP_RECALCULATE_EMAIL_HASH_SUCCESS'	=> 'Todos los hashes de correo se han recalculado correctamente.',
 	'CLI_FIXUP_UPDATE_HASH_BCRYPT_SUCCESS'		=> 'Contraseñas caducadas correctamente actualizadas los hashes para bcrypt.',
 
 	'CLI_MIGRATION_NAME'					=> 'Nombre de Migración, incluyendo el espacio de nombres (utilice barras inclinadas en lugar de barras invertidas para evitar problemas).',

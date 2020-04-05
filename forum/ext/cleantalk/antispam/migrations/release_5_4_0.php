@@ -24,11 +24,9 @@ class release_5_4_0 extends \phpbb\db\migration\migration
 
 	public function update_data()
 	{
-		return array(
-		
+		return array(		
 			// Variable JS check field
-			array('config_text.add', array('cleantalk_antispam_js_keys','')),
-			
+			array('config_text.add', array('cleantalk_antispam_js_keys','')),			
 		);
 	}
 }

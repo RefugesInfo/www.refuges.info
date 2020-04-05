@@ -34,10 +34,9 @@ class ProgressIndicator
     private static $formats;
 
     /**
-     * @param OutputInterface $output
-     * @param string|null     $format                  Indicator format
-     * @param int             $indicatorChangeInterval Change interval in milliseconds
-     * @param array|null      $indicatorValues         Animated indicator characters
+     * @param string|null $format                  Indicator format
+     * @param int         $indicatorChangeInterval Change interval in milliseconds
+     * @param array|null  $indicatorValues         Animated indicator characters
      */
     public function __construct(OutputInterface $output, $format = null, $indicatorChangeInterval = 100, $indicatorValues = null)
     {
@@ -48,7 +47,7 @@ class ProgressIndicator
         }
 
         if (null === $indicatorValues) {
-            $indicatorValues = array('-', '\\', '|', '/');
+            $indicatorValues = ['-', '\\', '|', '/'];
         }
 
         $indicatorValues = array_values($indicatorValues);
@@ -73,42 +72,6 @@ class ProgressIndicator
         $this->message = $message;
 
         $this->display();
-    }
-
-    /**
-     * Gets the current indicator message.
-     *
-     * @return string|null
-     *
-     * @internal for PHP 5.3 compatibility
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * Gets the progress bar start time.
-     *
-     * @return int The progress bar start time
-     *
-     * @internal for PHP 5.3 compatibility
-     */
-    public function getStartTime()
-    {
-        return $this->startTime;
-    }
-
-    /**
-     * Gets the current animated indicator character.
-     *
-     * @return string
-     *
-     * @internal for PHP 5.3 compatibility
-     */
-    public function getCurrentValue()
-    {
-        return $this->indicatorValues[$this->indicatorCurrent % \count($this->indicatorValues)];
     }
 
     /**
@@ -275,25 +238,25 @@ class ProgressIndicator
 
     private static function initPlaceholderFormatters()
     {
-        return array(
-            'indicator' => function (ProgressIndicator $indicator) {
-                return $indicator->getCurrentValue();
+        return [
+            'indicator' => function (self $indicator) {
+                return $indicator->indicatorValues[$indicator->indicatorCurrent % \count($indicator->indicatorValues)];
             },
-            'message' => function (ProgressIndicator $indicator) {
-                return $indicator->getMessage();
+            'message' => function (self $indicator) {
+                return $indicator->message;
             },
-            'elapsed' => function (ProgressIndicator $indicator) {
-                return Helper::formatTime(time() - $indicator->getStartTime());
+            'elapsed' => function (self $indicator) {
+                return Helper::formatTime(time() - $indicator->startTime);
             },
             'memory' => function () {
                 return Helper::formatMemory(memory_get_usage(true));
             },
-        );
+        ];
     }
 
     private static function initFormats()
     {
-        return array(
+        return [
             'normal' => ' %indicator% %message%',
             'normal_no_ansi' => ' %message%',
 
@@ -302,6 +265,6 @@ class ProgressIndicator
 
             'very_verbose' => ' %indicator% %message% (%elapsed:6s%, %memory:6s%)',
             'very_verbose_no_ansi' => ' %message% (%elapsed:6s%, %memory:6s%)',
-        );
+        ];
     }
 }

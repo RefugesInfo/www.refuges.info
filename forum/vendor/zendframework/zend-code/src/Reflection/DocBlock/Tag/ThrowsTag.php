@@ -3,23 +3,27 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code\Reflection\DocBlock\Tag;
+
+use function explode;
+use function implode;
+use function preg_match;
 
 class ThrowsTag implements TagInterface, PhpDocTypedTagInterface
 {
     /**
      * @var array
      */
-    protected $types = array();
+    protected $types = [];
 
     /**
      * @var string
      */
-    protected $description = null;
+    protected $description;
 
     /**
      * @return string
@@ -35,7 +39,7 @@ class ThrowsTag implements TagInterface, PhpDocTypedTagInterface
      */
     public function initialize($tagDocBlockLine)
     {
-        $matches = array();
+        $matches = [];
         preg_match('#([\w|\\\]+)(?:\s+(.*))?#', $tagDocBlockLine, $matches);
 
         $this->types = explode('|', $matches[1]);

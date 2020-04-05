@@ -329,32 +329,37 @@ class Cleantalk
         
         $result = false;
         $curl_error = null;
-        if(function_exists('curl_init'))
-        {
+        if(function_exists('curl_init')) {
+
             $ch = curl_init();
+
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_TIMEOUT, $server_timeout);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-            // receive server response ...
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            // resolve 'Expect: 100-continue' issue
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
-            // see http://stackoverflow.com/a/23322368
-            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // receive server response ...
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); // resolve 'Expect: 100-continue' issue
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0); // see http://stackoverflow.com/a/23322368
+
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disabling CA cert verivication and
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);     // Disabling common name verification
+
+            if ($this->ssl_on && $this->ssl_path != '') {
+                curl_setopt($ch, CURLOPT_CAINFO, $this->ssl_path);
+            }
 
             $result = curl_exec($ch);
-            if (!$result) 
-            {
+            if (!$result) {
                 $curl_error = curl_error($ch);
                 // Use SSL next time, if error occurs.
-                if(!$this->ssl_on)
-                {
-                    return $this->sendRequest($original_data, $original_url, $server_timeout);
+                if(!$this->ssl_on){
+                    $this->ssl_on = true;
+                    $args = func_get_args();
+                    return $this->sendRequest($args[0], $args[1], $server_timeout);
                 }
             }
-            
-            curl_close($ch); 
+
+            curl_close($ch);
         }
 
         if (!$result) 
@@ -711,13 +716,7 @@ class Cleantalk
         $headers['Accept'] = $this->request->server('HTTP_ACCEPT','');
         $headers['Referer'] = $this->request->server('HTTP_REFERER','');
         $headers['Accept-Encoding'] = $this->request->server('HTTP_ACCEPT_ENCODING','');
-        $headers['Accept-Language'] = $this->request->server('HTTP_ACCEPT_LANGUAGE',''); 
-        $headers['Cookie'] = preg_replace(array(
-                    '/\s{0,1}ct_checkjs=[a-z0-9]*[;|$]{0,1}/',
-                    '/\s{0,1}ct_timezone=.{0,1}\d{1,2}[;|$]/', 
-                    '/\s{0,1}ct_pointer_data=.*5D[;|$]{0,1}/', 
-                    '/;{0,1}\s{0,3}$/'
-                ), '', $this->request->server('HTTP_COOKIE',''));           
+        $headers['Accept-Language'] = $this->request->server('HTTP_ACCEPT_LANGUAGE','');            
         return $headers;
     }
 

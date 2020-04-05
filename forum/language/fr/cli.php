@@ -80,8 +80,6 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_SIZE'	=> 'Nombre approximatif d’enregistrements à traiter à la fois',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RESUME'		=> 'Redémarrer l’analyse où la dernière exécution a été arrêtée',
 
-	'CLI_DESCRIPTION_RECALCULATE_EMAIL_HASH'			=> 'Recalculer la colonne « user_email_hash » de la table « phpbb_users »',
-
 	'CLI_DESCRIPTION_SET_ATOMIC_CONFIG'					=> 'Définir la valeur d’une option de configuration seulement si l’ancienne correspond à la valeur actuelle',
 	'CLI_DESCRIPTION_SET_CONFIG'						=> 'Définir la valeur d’une option de configuration',
 
@@ -132,7 +130,6 @@ $lang = array_merge($lang, array(
 	'CLI_EXTENSIONS_ENABLED'			=> 'Activées',
 
 	'CLI_FIXUP_FIX_LEFT_RIGHT_IDS_SUCCESS'		=> 'L’arborescence des forums et des modules a été réparée',
-	'CLI_FIXUP_RECALCULATE_EMAIL_HASH_SUCCESS'	=> 'Tous les hachages des adresses courriels ont été recalculés',
 	'CLI_FIXUP_UPDATE_HASH_BCRYPT_SUCCESS'		=> 'Tous les hachages obsolètes des mots de passe ont été mis à jour vers le hachage bcrypt',
 
 	'CLI_MIGRATION_NAME'					=> 'Nom de la migration, espace de nom inclus (utilisez des barres obliques au lieu de barres obliques inversées afin d’éviter tout problème)',

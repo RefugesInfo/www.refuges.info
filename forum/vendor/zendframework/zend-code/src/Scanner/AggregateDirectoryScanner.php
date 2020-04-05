@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -27,18 +27,13 @@ class AggregateDirectoryScanner extends DirectoryScanner
         // @todo
     }
 
-    /*
-    public function getUses($returnScannerClass = false)
-    {}
-    */
-
     public function getIncludes($returnScannerClass = false)
     {
     }
 
     public function getClasses($returnScannerClass = false, $returnDerivedScannerClass = false)
     {
-        $classes = array();
+        $classes = [];
         foreach ($this->directories as $scanner) {
             $classes += $scanner->getClasses();
         }
@@ -65,7 +60,7 @@ class AggregateDirectoryScanner extends DirectoryScanner
             }
         }
 
-        return (isset($scanner));
+        return isset($scanner);
     }
 
     /**
@@ -85,7 +80,7 @@ class AggregateDirectoryScanner extends DirectoryScanner
             }
         }
 
-        if (!isset($scanner)) {
+        if (! isset($scanner)) {
             throw new Exception\RuntimeException('Class by that name was not found.');
         }
 
@@ -101,8 +96,8 @@ class AggregateDirectoryScanner extends DirectoryScanner
     {
         $this->scan();
 
-        if (!$returnScannerClass) {
-            $functions = array();
+        if (! $returnScannerClass) {
+            $functions = [];
             foreach ($this->infos as $info) {
                 if ($info['type'] == 'function') {
                     $functions[] = $info['name'];

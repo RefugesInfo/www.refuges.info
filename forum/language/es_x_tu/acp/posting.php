@@ -42,7 +42,7 @@ $lang = array_merge($lang, array(
 	'ACP_BBCODES_EXPLAIN'		=> 'BBCode es una implementación especial de HTML ofreciendo gran control sobre qué y cómo mostrar algo. Desde esta sección puede añadir, eliminar y editar BBCodes personalizados',
 	'ADD_BBCODE'				=> 'Añadir un nuevo BBCode',
 
-	'BBCODE_DANGER'				=> 'El BBCode que estás intentando añadir parece que usa la marca clave {TEXT} dentro de un atributo HTML. Eso puede traducirse en un agujero de seguridad XSS. Trate de usar en cambio los tipos {SIMPLETEXT} o {INTTEXT} que son más restrictivos. Solo continúe entiende los riesgos que corre y considera el uso de {TEXT} absolutamente inevitable.',
+	'BBCODE_DANGER'				=> 'El código BBCode que estás intentando agregar parece inseguro. Si BBCode usas un token {TEXT} en un contexto sensible, intente usar un tipo más restrictivo. Solo proceda si comprende los riesgos involucrados.',
 	'BBCODE_DANGER_PROCEED'		=> 'Proceder', //'Entiendo el riesgo',
 
 	'BBCODE_ADDED'				=> 'BBCode añadido correctamente.',
@@ -52,16 +52,17 @@ $lang = array_merge($lang, array(
 	'BBCODE_HELPLINE'			=> 'Línea de ayuda',
 	'BBCODE_HELPLINE_EXPLAIN'	=> 'Este campo contiene el consejo de ayuda del BBCode',
 	'BBCODE_HELPLINE_TEXT'		=> 'Texto de la línea de ayuda',
-	'BBCODE_HELPLINE_TOO_LONG'	=> 'La línea de ayuda que insertó es demasiado larga.',
+	'BBCODE_HELPLINE_TOO_LONG'	=> 'La línea de ayuda que has introducido es demasiado larga.',
 
 	'BBCODE_INVALID_TAG_NAME'	=> 'El nombre elegido para este BBCode ya existe.',
 	'BBCODE_INVALID'			=> 'Tu BBCode está construido en un formulario no válido.',
+	'BBCODE_INVALID_TEMPLATE'	=> 'La plantilla de tu BBCode no es válida.',
 	'BBCODE_TAG'				=> 'Etiqueta',
 	'BBCODE_TAG_TOO_LONG'		=> 'El nombre elegido es muy largo.',
 	'BBCODE_TAG_DEF_TOO_LONG'	=> 'La definición de etiqueta que has introducido es muy larga, por favor acórtala.',
 	'BBCODE_USAGE'				=> 'Uso de BBCode',
 	'BBCODE_USAGE_EXAMPLE'		=> '[highlight={COLOR}]{TEXT}[/highlight]<br /><br />[font={SIMPLETEXT1}]{SIMPLETEXT2}[/font]',
-	'BBCODE_USAGE_EXPLAIN'		=> 'Aquí define cómo usar el BBCode. Reemplace las variables de entrada por la marca clave correpondiente (%sver abajo%s)',
+	'BBCODE_USAGE_EXPLAIN'		=> 'Aquí define cómo usar el BBCode. Reemplaza las variables de entrada por la marca clave correpondiente (%sver abajo%s)',
 
 	'EXAMPLE'						=> 'Ejemplo:',
 	'EXAMPLES'						=> 'Ejemplos:',
@@ -74,7 +75,7 @@ $lang = array_merge($lang, array(
 	'TOKENS'				=> 'Marca claves',
 	'TOKENS_EXPLAIN'		=> 'Las marca claves son contenedores de la información suministrada por el usuario. La entrada será válida solo si coincide con la definición correspondiente. Si es necesario puede numerarlas, añadiendo un número como último caracter entre llaves, ej. {USERNAME1}, {USERNAME2}.<br /><br />Sumado a estas marca claves puede usar cualquier palabra presente en su directorio language/ como estas: {L_<em>&lt;stringname&gt;</em>} donde <em>&lt;stringname&gt;</em> es la palabra traducida que quiere agregar. Por ejemplo, {L_WROTE} se mostrará como “escrito” o su traducción de acuerdo al idioma usado por el usuario.<br /><br /><strong>Por favor tenga en cuenta que solo las marca claves listadas debajo son las que se pueden usar en los BBCodes personalizados.</strong>',
 	'TOKEN_DEFINITION'		=> '¿Qué puede ser?',
-	'TOO_MANY_BBCODES'		=> 'No puedes crear más BBCodes. Por favor borre uno o más BBCodes y luego inténtelo de nuevo.',
+	'TOO_MANY_BBCODES'		=> 'No puede crear más BBCodes. Por favor borre uno o más BBCodes y luego inténtelo de nuevo.',
 
 	'tokens'	=>  array(
 		'TEXT'			=> 'Cualquier texto, incluyendo caracteres extraños, números, etc…',
@@ -83,9 +84,9 @@ $lang = array_merge($lang, array(
 		'IDENTIFIER'	=> 'Carecteres del alfabeto latino (A-Z), números, guión y guión bajo',
 		'NUMBER'		=> 'Cualquier serie de dígitos',
 		'EMAIL'			=> 'Una dirección de email válida',
-		'URL'			=> 'Una URL válida usando cualquier protocolo permitido (http, ftp, etc… no puede ser usado para exploits de javascript). Si no se proporciona, se asumirá “http://” antes de la cadena dada',
+		'URL'			=> 'Una URL válida cualquier protocolo permitido (http, ftp, etc… no puede ser usado para exploits de javascript). Si no se proporciona, se asumirá “http://” antes de la cadena dada',
 		'LOCAL_URL'		=> 'Una URL local. La URL debe ser relativa a la página del tema y no puede contener nombre de servidor o protocolo, enlaces van precedidos de“%s”',
-		'RELATIVE_URL'	=> 'Una URL relativa. Usted puede utilizar esto para que coincida con las partes de una URL, pero ten cuidado: una URL completa es una URL relativa válida. Cuando se desea utilizar URLs relativas de su foro, utilice la ficha LOCAL_URL',
+		'RELATIVE_URL'	=> 'Una URL relativa. Usted puede utilizar esto para que coincida con las partes de una URL, pero tenga cuidado: una URL completa es una URL relativa válida. Cuando se desea utilizar URLs relativas de su foro, utilice la ficha LOCAL_URL',
 		'COLOR'			=> 'Un color HTML, puede ser bien en formato numérico <samp>#FF1234</samp> o un <a href="http://www.w3.org/TR/CSS21/syndata.html#value-def-color">color CSS</a> como ser <samp>fuchsia</samp> o <samp>InactiveBorder</samp>',
 	),
 ));

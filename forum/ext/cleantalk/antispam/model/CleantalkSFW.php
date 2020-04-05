@@ -182,24 +182,24 @@ class CleantalkSFW
 	*/
 	public function sfw_check()
 	{	
-		if($this->config['cleantalk_antispam_sfw_enabled'] && $this->config['cleantalk_antispam_key_is_ok'])
+		if ($this->config['cleantalk_antispam_sfw_enabled'] && $this->config['cleantalk_antispam_key_is_ok'])
 		{			
 			$is_sfw_check = true;
 
 			$ip = $this->get_ip();
 			
-			$cookie_prefix = $this->config['cookie_name']   ? $this->config['cookie_name'].'_'           : '';
+			$cookie_prefix = $this->config['cookie_name'] ? $this->config['cookie_name'].'_' : '';
 			$cookie_domain = $this->config['cookie_domain'] ? " domain={$this->config['cookie_domain']};" : ''; 
 			
 			$ct_sfw_pass_key 	= $this->request->variable($cookie_prefix.'ct_sfw_pass_key', '', false, \phpbb\request\request_interface::COOKIE);
-			$ct_sfw_passed 		= $this->request->variable($cookie_prefix.'ct_sfw_passed',   '', false, \phpbb\request\request_interface::COOKIE);
+			$ct_sfw_passed 		= $this->request->variable($cookie_prefix.'ct_sfw_passed', '', false, \phpbb\request\request_interface::COOKIE);
 			
-			foreach($ip as $ct_cur_ip)
+			foreach ($ip as $ct_cur_ip)
 			{								
-				if($ct_sfw_pass_key == md5($ct_cur_ip.$this->config['cleantalk_antispam_apikey']))
+				if ($ct_sfw_pass_key == md5($ct_cur_ip.$this->config['cleantalk_antispam_apikey']))
 				{	
 					$is_sfw_check = false;
-					if($ct_sfw_passed)
+					if ($ct_sfw_passed)
 					{
 						$this->sfw_update_logs($ct_cur_ip, 'passed');
 						$this->user->set_cookie('ct_sfw_passed', '0', 10);
@@ -207,7 +207,7 @@ class CleantalkSFW
 				}
 				
 			} unset($ct_cur_ip);
-			if($is_sfw_check)
+			if ($is_sfw_check)
 			{
 				$this->check_ip();
 				if($this->result)
@@ -259,8 +259,7 @@ class CleantalkSFW
 				ip = '$ip',
 				all_entries = 1,
 				blocked_entries = 1,
-				entries_timestamp = ".$time."";
-
+				entries_timestamp = $time";
 			$this->universal_query($query);
 		}
 	}
@@ -276,7 +275,7 @@ class CleantalkSFW
 		
 		if(empty($result['error']))
 		{	
-			$this->universal_query("DELETE FROM ".$this->table_prefix."cleantalk_sfw;");
+			$this->universal_query("DELETE FROM ".$this->table_prefix."cleantalk_sfw");
 						
 			// Cast result to int
 			foreach($result as $value)
@@ -358,10 +357,8 @@ class CleantalkSFW
 	*/	
 	public function sfw_die($cookie_prefix = '', $cookie_domain = '')
 	{
-		$this->user->session_begin();
-		$this->user->setup();
 		$this->user->add_lang_ext('cleantalk/antispam', 'common');
-		
+
 		page_header();
 
 		$this->template->set_filenames ( array (

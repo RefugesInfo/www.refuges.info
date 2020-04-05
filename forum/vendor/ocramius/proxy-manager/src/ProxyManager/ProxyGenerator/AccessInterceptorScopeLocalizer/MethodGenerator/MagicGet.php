@@ -16,10 +16,13 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
-use ProxyManager\Generator\ParameterGenerator;
+use ProxyManager\ProxyGenerator\Util\GetMethodIfExists;
+use Zend\Code\Generator\ParameterGenerator;
 use ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator\Util\InterceptorGenerator;
 use ProxyManager\ProxyGenerator\Util\PublicScopeSimulator;
 use ReflectionClass;
@@ -37,21 +40,24 @@ class MagicGet extends MagicMethodGenerator
      * @param ReflectionClass   $originalClass
      * @param PropertyGenerator $prefixInterceptors
      * @param PropertyGenerator $suffixInterceptors
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         ReflectionClass $originalClass,
         PropertyGenerator $prefixInterceptors,
         PropertyGenerator $suffixInterceptors
     ) {
-        parent::__construct($originalClass, '__get', array(new ParameterGenerator('name')));
+        parent::__construct($originalClass, '__get', [new ParameterGenerator('name')]);
 
-        $override = $originalClass->hasMethod('__get');
+        $parent = GetMethodIfExists::get($originalClass, '__get');
 
-        $this->setDocblock(($override ? "{@inheritDoc}\n" : '') . '@param string $name');
+        $this->setDocBlock(($parent ? "{@inheritDoc}\n" : '') . '@param string $name');
 
-        if ($override) {
-            $callParent = '$returnValue = & parent::__get($name);';
-        } else {
+        $callParent = '$returnValue = & parent::__get($name);';
+
+        if (! $parent) {
             $callParent = PublicScopeSimulator::getPublicAccessSimulationCode(
                 PublicScopeSimulator::OPERATION_GET,
                 'name',
@@ -61,13 +67,12 @@ class MagicGet extends MagicMethodGenerator
             );
         }
 
-        $this->setBody(
-            InterceptorGenerator::createInterceptedMethodBody(
-                $callParent,
-                $this,
-                $prefixInterceptors,
-                $suffixInterceptors
-            )
-        );
+        $this->setBody(InterceptorGenerator::createInterceptedMethodBody(
+            $callParent,
+            $this,
+            $prefixInterceptors,
+            $suffixInterceptors,
+            $parent
+        ));
     }
 }

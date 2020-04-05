@@ -78,10 +78,7 @@ class approve_topic extends \phpbb\notification\type\topic
 			'ignore_users'		=> array(),
 		), $options);
 
-		$users = array();
-		$users[$post['poster_id']] = $this->notification_manager->get_default_methods();
-
-		return $this->get_authorised_recipients(array_keys($users), $post['forum_id'], array_merge($options, array(
+		return $this->get_authorised_recipients(array($post['poster_id']), $post['forum_id'], array_merge($options, array(
 			'item_type'		=> static::$notification_option['id'],
 		)));
 	}
@@ -94,7 +91,7 @@ class approve_topic extends \phpbb\notification\type\topic
 	*
 	* @param array $post Post data from submit_post
 	* @param array $notify_users Notify users list
-	* 		Formated from find_users_for_notification()
+	* 		Formatted from find_users_for_notification()
 	* @return array Whatever you want to send to create_insert_array().
 	*/
 	public function pre_create_insert_array($post, $notify_users)

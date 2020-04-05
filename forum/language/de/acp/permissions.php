@@ -57,7 +57,7 @@ $lang = array_merge($lang, array(
 
 		<br />
 
-		<p>Weitere Informationen über die Einrichtung und Verwaltung von Berechtigungen auf deinem phpBB3-Board findest du <a href="https://www.phpbb.com/support/docs/en/3.2/ug/quickstart/permissions/">im Kapitel „Setting permissions“ der Schnellstartanleitung (englisch)</a> (<a href="https://www.phpbb.de/go/3.2/berechtigungen">deutsche Übersetzung</a>) nach.</p>
+		<p>Weitere Informationen über die Einrichtung und Verwaltung von Berechtigungen auf deinem phpBB3-Board findest du <a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/permissions/">im Kapitel „Setting permissions“ der Schnellstartanleitung (englisch)</a> (<a href="https://www.phpbb.de/go/3.3/berechtigungen">deutsche Übersetzung</a>) nach.</p>
 	',
 
 	'ACL_NEVER'				=> 'Nie',

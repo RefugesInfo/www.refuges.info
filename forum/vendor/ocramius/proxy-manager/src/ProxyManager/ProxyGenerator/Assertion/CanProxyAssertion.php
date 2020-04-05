@@ -16,6 +16,8 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\Assertion;
 
 use BadMethodCallException;
@@ -47,7 +49,7 @@ final class CanProxyAssertion
      *
      * @throws InvalidProxiedClassException
      */
-    public static function assertClassCanBeProxied(ReflectionClass $originalClass, $allowInterfaces = true)
+    public static function assertClassCanBeProxied(ReflectionClass $originalClass, bool $allowInterfaces = true) : void
     {
         self::isNotFinal($originalClass);
         self::hasNoAbstractProtectedMethods($originalClass);
@@ -62,7 +64,7 @@ final class CanProxyAssertion
      *
      * @throws InvalidProxiedClassException
      */
-    private static function isNotFinal(ReflectionClass $originalClass)
+    private static function isNotFinal(ReflectionClass $originalClass) : void
     {
         if ($originalClass->isFinal()) {
             throw InvalidProxiedClassException::finalClassNotSupported($originalClass);
@@ -74,11 +76,11 @@ final class CanProxyAssertion
      *
      * @throws InvalidProxiedClassException
      */
-    private static function hasNoAbstractProtectedMethods(ReflectionClass $originalClass)
+    private static function hasNoAbstractProtectedMethods(ReflectionClass $originalClass) : void
     {
         $protectedAbstract = array_filter(
             $originalClass->getMethods(),
-            function (ReflectionMethod $method) {
+            function (ReflectionMethod $method) : bool {
                 return $method->isAbstract() && $method->isProtected();
             }
         );
@@ -93,7 +95,7 @@ final class CanProxyAssertion
      *
      * @throws InvalidProxiedClassException
      */
-    private static function isNotInterface(ReflectionClass $originalClass)
+    private static function isNotInterface(ReflectionClass $originalClass) : void
     {
         if ($originalClass->isInterface()) {
             throw InvalidProxiedClassException::interfaceNotSupported($originalClass);

@@ -228,16 +228,6 @@ $lang = array_merge($lang, array(
 
 	'BACK'					=> 'Retour',
 
-	'CANNOT_CHANGE_FILE_GROUP'			=> 'Impossible de modifier le groupe propriétaire du fichier',
-	'CANNOT_CHANGE_FILE_PERMISSIONS'	=> 'Impossible de modifier les permissions du fichier',
-	'CANNOT_COPY_FILES'					=> 'Impossible de copier un fichier',
-	'CANNOT_CREATE_SYMLINK'				=> 'Impossible de créer un lien symbolique',
-	'CANNOT_DELETE_FILES'				=> 'Impossible de supprimer un fichier du système',
-	'CANNOT_DUMP_FILE'					=> 'Impossible de créer une sauvegarde du fichier',
-	'CANNOT_MIRROR_DIRECTORY'			=> 'Impossible de répliquer le répertoire',
-	'CANNOT_RENAME_FILE'				=> 'Impossible de renommer un fichier du système',
-	'CANNOT_TOUCH_FILES'				=> 'Impossible de déterminer si le fichier existe',
-
 	'CONTAINER_EXCEPTION'	=> 'phpBB a rencontré une erreur lors de la construction du conteneur en raison d’une extension installée. Pour cette raison, toutes les extensions ont été temporairement désactivées. Elles seront automatiquement réactivées dès que l’erreur de conteneur sera résolue. Pour cela, commencez par purger le cache de votre forum. Si cette erreur persiste, veuillez visiter le <a href="https://www.phpbb.com/support">forum de support phpBB.com</a> (en anglais) ou le <a href="http://forums.phpbb-fr.com/">forum de support phpBB-fr.com</a> (en français).',
 	'EXCEPTION'				=> 'Exception',
 
@@ -375,7 +365,7 @@ $lang = array_merge($lang, array(
 	'DATABASE_SERVER_INFO'	=> 'Serveur de base de données',
 	'DATABASE_SIZE'			=> 'Taille de la base de données',
 
-	// Enviroment configuration checks, mbstring related
+	// Environment configuration checks, mbstring related
 	'ERROR_MBSTRING_FUNC_OVERLOAD'					=> 'La fonction de surcharge n’est pas configurée correctement.',
 	'ERROR_MBSTRING_FUNC_OVERLOAD_EXPLAIN'			=> '<var>mbstring.func_overload</var> doit être configuré sur 0 ou 4. Vous pouvez vérifier la valeur actuelle dans la page <samp>Informations PHP</samp>.',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION'			=> 'Les caractères d’encodage transparents ne sont pas configurés correctement.',

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -14,49 +14,61 @@ use Zend\Code\Reflection\DocBlock\Tag\TagInterface as DocBlockTagInterface;
 use Zend\Code\Reflection\DocBlock\TagManager as DocBlockTagManager;
 use Zend\Code\Scanner\DocBlockScanner;
 
+use function count;
+use function get_class;
+use function is_string;
+use function ltrim;
+use function method_exists;
+use function preg_replace;
+use function sprintf;
+use function substr_count;
+
 class DocBlockReflection implements ReflectionInterface
 {
     /**
      * @var Reflector
      */
-    protected $reflector = null;
+    protected $reflector;
 
     /**
      * @var string
      */
-    protected $docComment = null;
+    protected $docComment;
 
     /**
      * @var DocBlockTagManager
      */
-    protected $tagManager = null;
+    protected $tagManager;
 
-    /**#@+
+    /**
      * @var int
      */
-    protected $startLine = null;
-    protected $endLine = null;
-    /**#@-*/
+    protected $startLine;
+
+    /**
+     * @var int
+     */
+    protected $endLine;
 
     /**
      * @var string
      */
-    protected $cleanDocComment = null;
+    protected $cleanDocComment;
 
     /**
      * @var string
      */
-    protected $longDescription = null;
+    protected $longDescription;
 
     /**
      * @var string
      */
-    protected $shortDescription = null;
+    protected $shortDescription;
 
     /**
      * @var array
      */
-    protected $tags = array();
+    protected $tags = [];
 
     /**
      * @var bool
@@ -79,11 +91,10 @@ class DocBlockReflection implements ReflectionInterface
      * @param  Reflector|string $commentOrReflector
      * @param  null|DocBlockTagManager $tagManager
      * @throws Exception\InvalidArgumentException
-     * @return DocBlockReflection
      */
     public function __construct($commentOrReflector, DocBlockTagManager $tagManager = null)
     {
-        if (!$tagManager) {
+        if (! $tagManager) {
             $tagManager = new DocBlockTagManager();
             $tagManager->initializeDefaultTags();
         }
@@ -91,7 +102,7 @@ class DocBlockReflection implements ReflectionInterface
 
         if ($commentOrReflector instanceof Reflector) {
             $this->reflector = $commentOrReflector;
-            if (!method_exists($commentOrReflector, 'getDocComment')) {
+            if (! method_exists($commentOrReflector, 'getDocComment')) {
                 throw new Exception\InvalidArgumentException('Reflector must contain method "getDocComment"');
             }
             /* @var MethodReflection $commentOrReflector */
@@ -222,11 +233,11 @@ class DocBlockReflection implements ReflectionInterface
     public function getTags($filter = null)
     {
         $this->reflect();
-        if ($filter === null || !is_string($filter)) {
+        if ($filter === null || ! is_string($filter)) {
             return $this->tags;
         }
 
-        $returnTags = array();
+        $returnTags = [];
         foreach ($this->tags as $tag) {
             if ($tag->getName() == $filter) {
                 $returnTags[] = $tag;
@@ -251,7 +262,9 @@ class DocBlockReflection implements ReflectionInterface
 
         // create a clean docComment
         $this->cleanDocComment = preg_replace("#[ \t]*(?:/\*\*|\*/|\*)[ ]{0,1}(.*)?#", '$1', $docComment);
-        $this->cleanDocComment = ltrim($this->cleanDocComment, "\r\n"); // @todo should be changed to remove first and last empty line
+
+        // @todo should be changed to remove first and last empty line
+        $this->cleanDocComment = ltrim($this->cleanDocComment, "\r\n");
 
         $scanner                = new DocBlockScanner($docComment);
         $this->shortDescription = ltrim($scanner->getShortDescription());
@@ -269,15 +282,15 @@ class DocBlockReflection implements ReflectionInterface
      */
     public function toString()
     {
-        $str = "DocBlock [ /* DocBlock */ ] {" . PHP_EOL . PHP_EOL;
-        $str .= "  - Tags [" . count($this->tags) . "] {" . PHP_EOL;
+        $str = 'DocBlock [ /* DocBlock */ ] {' . "\n\n";
+        $str .= '  - Tags [' . count($this->tags) . '] {' . "\n";
 
         foreach ($this->tags as $tag) {
-            $str .= "    " . $tag;
+            $str .= '    ' . $tag;
         }
 
-        $str .= "  }" . PHP_EOL;
-        $str .= "}" . PHP_EOL;
+        $str .= '  }' . "\n";
+        $str .= '}' . "\n";
 
         return $str;
     }

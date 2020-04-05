@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -53,7 +53,7 @@ class PropertyReflection extends PhpReflectionProperty implements ReflectionInte
      */
     public function getDocBlock()
     {
-        if (!($docComment = $this->getDocComment())) {
+        if (! ($docComment = $this->getDocComment())) {
             return false;
         }
 
@@ -64,7 +64,7 @@ class PropertyReflection extends PhpReflectionProperty implements ReflectionInte
 
     /**
      * @param  AnnotationManager $annotationManager
-     * @return AnnotationScanner
+     * @return AnnotationScanner|false
      */
     public function getAnnotations(AnnotationManager $annotationManager)
     {
@@ -80,7 +80,7 @@ class PropertyReflection extends PhpReflectionProperty implements ReflectionInte
         $cachingFileScanner = $this->createFileScanner($class->getFileName());
         $nameInformation    = $cachingFileScanner->getClassNameInformation($class->getName());
 
-        if (!$nameInformation) {
+        if (! $nameInformation) {
             return false;
         }
 
@@ -100,7 +100,7 @@ class PropertyReflection extends PhpReflectionProperty implements ReflectionInte
     /**
      * Creates a new FileScanner instance.
      *
-     * By having this as a seperate method it allows the method to be overridden
+     * By having this as a separate method it allows the method to be overridden
      * if a different FileScanner is needed.
      *
      * @param  string $filename

@@ -3,29 +3,42 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code;
+
+use function array_key_exists;
+use function array_search;
+use function is_array;
+use function is_int;
+use function is_string;
+use function ltrim;
+use function strlen;
+use function strpos;
+use function strrpos;
+use function substr;
+use function substr_replace;
+use function trim;
 
 class NameInformation
 {
     /**
      * @var string
      */
-    protected $namespace = null;
+    protected $namespace;
 
     /**
      * @var array
      */
-    protected $uses = array();
+    protected $uses = [];
 
     /**
      * @param  string $namespace
      * @param  array $uses
      */
-    public function __construct($namespace = null, array $uses = array())
+    public function __construct($namespace = null, array $uses = [])
     {
         if ($namespace) {
             $this->setNamespace($namespace);
@@ -58,7 +71,7 @@ class NameInformation
      */
     public function hasNamespace()
     {
-        return ($this->namespace !== null);
+        return $this->namespace !== null;
     }
 
     /**
@@ -67,7 +80,7 @@ class NameInformation
      */
     public function setUses(array $uses)
     {
-        $this->uses = array();
+        $this->uses = [];
         $this->addUses($uses);
 
         return $this;
@@ -128,11 +141,11 @@ class NameInformation
      */
     public function resolveName($name)
     {
-        if ($this->namespace && !$this->uses && strlen($name) > 0 && $name{0} != '\\') {
+        if ($this->namespace && ! $this->uses && strlen($name) > 0 && $name[0] != '\\') {
             return $this->namespace . '\\' . $name;
         }
 
-        if (!$this->uses || strlen($name) <= 0 || $name{0} == '\\') {
+        if (! $this->uses || strlen($name) <= 0 || $name[0] == '\\') {
             return ltrim($name, '\\');
         }
 

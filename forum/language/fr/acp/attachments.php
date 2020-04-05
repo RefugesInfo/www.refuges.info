@@ -70,7 +70,6 @@ $lang = array_merge($lang, array(
 	'ATTACH_QUOTA_EXPLAIN'				=> 'Espace disque maximum disponible pour les fichiers joints de tout le forum, mettre « 0 » pour illimité.',
 	'ATTACH_TO_POST'					=> 'Joindre le fichier au message',
 
-	'CAT_FLASH_FILES'			=> 'Fichiers Flash',
 	'CAT_IMAGES'				=> 'Images',
 	'CHECK_CONTENT'				=> 'Vérifier les fichiers joints',
 	'CHECK_CONTENT_EXPLAIN'		=> 'Certains navigateurs peuvent se tromper en attribuant un type MIME incorrect aux fichiers transférés. Cette option permet de rejeter les fichiers qui risquent d’entraîner ce problème.',
@@ -101,7 +100,6 @@ $lang = array_merge($lang, array(
 	'EXT_GROUP_ARCHIVES'			=> 'Archives',
 	'EXT_GROUP_DOCUMENTS'			=> 'Documents',
 	'EXT_GROUP_DOWNLOADABLE_FILES'	=> 'Fichiers téléchargeables',
-	'EXT_GROUP_FLASH_FILES'			=> 'Fichiers Flash',
 	'EXT_GROUP_IMAGES'				=> 'Images',
 	'EXT_GROUP_PLAIN_TEXT'			=> 'Texte',
 

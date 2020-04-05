@@ -1,4 +1,4 @@
-/* global phpbb */
+/* global phpbb, statsData */
 
 (function($) {  // Avoid conflicts with other libraries
 
@@ -74,7 +74,7 @@ phpbb.prepareSendStats = function () {
 			var $sendStatisticsSuccess = $('<input />', {
 				type: 'hidden',
 				name: 'send_statistics_response',
-				value: res
+				value: JSON.stringify(res)
 			});
 			$sendStatisticsSuccess.appendTo('p.submit-buttons');
 
@@ -87,7 +87,7 @@ phpbb.prepareSendStats = function () {
 		$.ajax({
 			url: $this.attr('data-ajax-action').replace('&amp;', '&'),
 			type: 'POST',
-			data: 'systemdata=' + encodeURIComponent($this.find('input[name=systemdata]').val()),
+			data: statsData,
 			success: returnHandler,
 			error: errorHandler,
 			cache: false
@@ -154,6 +154,34 @@ phpbb.addAjaxCallback('activate_deactivate', function(res) {
 phpbb.addAjaxCallback('row_delete', function(res) {
 	if (res.SUCCESS !== false) {
 		$(this).parents('tr').remove();
+	}
+});
+
+/**
+ * Callbacks for extension actions
+ */
+phpbb.addAjaxCallback('ext_enable', function(res) {
+	if (res.EXT_ENABLE_SUCCESS) {
+		move_to_enabled(this.parentNode.parentNode);
+		set_actions(this.parentNode, res.ACTIONS);
+		show_enabled_header();
+		hide_disabled_header_if_empty();
+	}
+});
+phpbb.addAjaxCallback('ext_delete_data', function(res) {
+	if (res.EXT_DELETE_DATA_SUCCESS) {
+		move_to_disabled(this.parentNode.parentNode);
+		set_actions(this.parentNode, res.ACTIONS);
+		show_disabled_header();
+		hide_enabled_header_if_empty();
+	}
+});
+phpbb.addAjaxCallback('ext_disable', function(res) {
+	if (res.EXT_DISABLE_SUCCESS) {
+		move_to_disabled(this.parentNode.parentNode);
+		set_actions(this.parentNode, res.ACTIONS);
+		show_disabled_header();
+		hide_enabled_header_if_empty();
 	}
 });
 

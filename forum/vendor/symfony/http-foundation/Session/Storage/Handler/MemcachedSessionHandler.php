@@ -15,11 +15,11 @@ namespace Symfony\Component\HttpFoundation\Session\Storage\Handler;
  * Memcached based session storage handler based on the Memcached class
  * provided by the PHP memcached extension.
  *
- * @see http://php.net/memcached
+ * @see https://php.net/memcached
  *
  * @author Drak <drak@zikula.org>
  */
-class MemcachedSessionHandler implements \SessionHandlerInterface
+class MemcachedSessionHandler extends AbstractSessionHandler
 {
     private $memcached;
 
@@ -38,18 +38,15 @@ class MemcachedSessionHandler implements \SessionHandlerInterface
      *
      * List of available options:
      *  * prefix: The prefix to use for the memcached keys in order to avoid collision
-     *  * expiretime: The time to live in seconds
-     *
-     * @param \Memcached $memcached A \Memcached instance
-     * @param array      $options   An associative array of Memcached options
+     *  * expiretime: The time to live in seconds.
      *
      * @throws \InvalidArgumentException When unsupported options are passed
      */
-    public function __construct(\Memcached $memcached, array $options = array())
+    public function __construct(\Memcached $memcached, array $options = [])
     {
         $this->memcached = $memcached;
 
-        if ($diff = array_diff(array_keys($options), array('prefix', 'expiretime'))) {
+        if ($diff = array_diff(array_keys($options), ['prefix', 'expiretime'])) {
             throw new \InvalidArgumentException(sprintf('The following options are not supported "%s"', implode(', ', $diff)));
         }
 
@@ -58,33 +55,35 @@ class MemcachedSessionHandler implements \SessionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function open($savePath, $sessionName)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function close()
     {
-        return true;
+        return $this->memcached->quit();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function read($sessionId)
+    protected function doRead($sessionId)
     {
         return $this->memcached->get($this->prefix.$sessionId) ?: '';
     }
 
     /**
+     * @return bool
+     */
+    public function updateTimestamp($sessionId, $data)
+    {
+        $this->memcached->touch($this->prefix.$sessionId, time() + $this->ttl);
+
+        return true;
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function write($sessionId, $data)
+    protected function doWrite($sessionId, $data)
     {
         return $this->memcached->set($this->prefix.$sessionId, $data, time() + $this->ttl);
     }
@@ -92,7 +91,7 @@ class MemcachedSessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function destroy($sessionId)
+    protected function doDestroy($sessionId)
     {
         $result = $this->memcached->delete($this->prefix.$sessionId);
 
@@ -100,7 +99,7 @@ class MemcachedSessionHandler implements \SessionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function gc($maxlifetime)
     {

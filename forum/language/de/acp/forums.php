@@ -132,6 +132,8 @@ $lang = array_merge($lang, array(
 	'GENERAL_FORUM_SETTINGS'	=> 'Allgemeine Forumseinstellungen',
 
 	'LINK'						=> 'Link',
+	'LIMIT_SUBFORUMS'			=> 'Beschränke die Legende auf die direkten Unterforen',
+	'LIMIT_SUBFORUMS_EXPLAIN'	=> 'Beschränkt die angezeigten Unterforen auf die direkten Kinder des jeweiligen Forums. Kindeskinder werden nicht angezeigt. Ist diese Einstellung deaktiviert, so werden alle Unterforen unabhängig von deren Verschachtelungstiefe angezeigt, bei denen die Option „Unterforen in Legende aufführen“ aktiviert ist.',
 	'LIST_INDEX'				=> 'Führe Unterforum in der Legende des übergeordneten Forums auf',
 	'LIST_INDEX_EXPLAIN'		=> 'Zeigt einen Link zu diesem Forum in der Legende des übergeordneten Forums an, wenn dort die Option „Unterforen in Legende aufführen“ aktiviert ist.',
 	'LIST_SUBFORUMS'			=> 'Unterforen in Legende aufführen',

@@ -13,26 +13,24 @@ namespace Symfony\Component\HttpKernel\Bundle;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
- * An implementation of BundleInterface that adds a few conventions
- * for DependencyInjection extensions and Console commands.
+ * An implementation of BundleInterface that adds a few conventions for DependencyInjection extensions.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 abstract class Bundle implements BundleInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    use ContainerAwareTrait;
+
     protected $name;
     protected $extension;
     protected $path;
+    private $namespace;
 
     /**
      * {@inheritdoc}
@@ -59,15 +57,9 @@ abstract class Bundle implements BundleInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * {@inheritdoc}
+     * Returns the bundle's container extension.
+     *
+     * @return ExtensionInterface|null The container extension
      *
      * @throws \LogicException
      */
@@ -95,9 +87,7 @@ abstract class Bundle implements BundleInterface
             }
         }
 
-        if ($this->extension) {
-            return $this->extension;
-        }
+        return $this->extension ?: null;
     }
 
     /**
@@ -105,9 +95,11 @@ abstract class Bundle implements BundleInterface
      */
     public function getNamespace()
     {
-        $class = \get_class($this);
+        if (null === $this->namespace) {
+            $this->parseClassName();
+        }
 
-        return substr($class, 0, strrpos($class, '\\'));
+        return $this->namespace;
     }
 
     /**
@@ -135,14 +127,11 @@ abstract class Bundle implements BundleInterface
      */
     final public function getName()
     {
-        if (null !== $this->name) {
-            return $this->name;
+        if (null === $this->name) {
+            $this->parseClassName();
         }
 
-        $name = \get_class($this);
-        $pos = strrpos($name, '\\');
-
-        return $this->name = false === $pos ? $name : substr($name, $pos + 1);
+        return $this->name;
     }
 
     /**
@@ -174,13 +163,16 @@ abstract class Bundle implements BundleInterface
             }
             $class = $ns.'\\'.$file->getBasename('.php');
             if ($this->container) {
+                $commandIds = $this->container->hasParameter('console.command.ids') ? $this->container->getParameter('console.command.ids') : [];
                 $alias = 'console.command.'.strtolower(str_replace('\\', '_', $class));
-                if ($this->container->has($alias)) {
+                if (isset($commandIds[$alias]) || $this->container->has($alias)) {
                     continue;
                 }
             }
             $r = new \ReflectionClass($class);
             if ($r->isSubclassOf('Symfony\\Component\\Console\\Command\\Command') && !$r->isAbstract() && !$r->getConstructor()->getNumberOfRequiredParameters()) {
+                @trigger_error(sprintf('Auto-registration of the command "%s" is deprecated since Symfony 3.4 and won\'t be supported in 4.0. Use PSR-4 based service discovery instead.', $class), E_USER_DEPRECATED);
+
                 $application->add($r->newInstance());
             }
         }
@@ -205,8 +197,15 @@ abstract class Bundle implements BundleInterface
      */
     protected function createContainerExtension()
     {
-        if (class_exists($class = $this->getContainerExtensionClass())) {
-            return new $class();
+        return class_exists($class = $this->getContainerExtensionClass()) ? new $class() : null;
+    }
+
+    private function parseClassName()
+    {
+        $pos = strrpos(static::class, '\\');
+        $this->namespace = false === $pos ? '' : substr(static::class, 0, $pos);
+        if (null === $this->name) {
+            $this->name = false === $pos ? static::class : substr(static::class, $pos + 1);
         }
     }
 }

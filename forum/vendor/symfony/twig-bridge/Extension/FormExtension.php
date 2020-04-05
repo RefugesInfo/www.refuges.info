@@ -13,11 +13,11 @@ namespace Symfony\Bridge\Twig\Extension;
 
 use Symfony\Bridge\Twig\Form\TwigRendererInterface;
 use Symfony\Bridge\Twig\TokenParser\FormThemeTokenParser;
-use Symfony\Component\Form\Extension\Core\View\ChoiceView;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\FormView;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\InitRuntimeInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -31,24 +31,32 @@ use Twig\TwigTest;
 class FormExtension extends AbstractExtension implements InitRuntimeInterface
 {
     /**
-     * This property is public so that it can be accessed directly from compiled
-     * templates without having to call a getter, which slightly decreases performance.
-     *
-     * @var TwigRendererInterface
+     * @deprecated since version 3.2, to be removed in 4.0 alongside with magic methods below
      */
-    public $renderer;
+    private $renderer;
 
-    public function __construct(TwigRendererInterface $renderer)
+    public function __construct($renderer = null)
     {
+        if ($renderer instanceof TwigRendererInterface) {
+            @trigger_error(sprintf('Passing a Twig Form Renderer to the "%s" constructor is deprecated since Symfony 3.2 and won\'t be possible in 4.0. Pass the Twig\Environment to the TwigRendererEngine constructor instead.', static::class), E_USER_DEPRECATED);
+        } elseif (null !== $renderer && !(\is_array($renderer) && isset($renderer[0], $renderer[1]) && $renderer[0] instanceof ContainerInterface)) {
+            throw new \InvalidArgumentException(sprintf('Passing any arguments to the constructor of %s is reserved for internal use.', __CLASS__));
+        }
         $this->renderer = $renderer;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * To be removed in 4.0
      */
     public function initRuntime(Environment $environment)
     {
-        $this->renderer->setEnvironment($environment);
+        if ($this->renderer instanceof TwigRendererInterface) {
+            $this->renderer->setEnvironment($environment);
+        } elseif (\is_array($this->renderer)) {
+            $this->renderer[2] = $environment;
+        }
     }
 
     /**
@@ -56,10 +64,10 @@ class FormExtension extends AbstractExtension implements InitRuntimeInterface
      */
     public function getTokenParsers()
     {
-        return array(
+        return [
             // {% form_theme form "SomeBundle::widgets.twig" %}
             new FormThemeTokenParser(),
-        );
+        ];
     }
 
     /**
@@ -67,18 +75,17 @@ class FormExtension extends AbstractExtension implements InitRuntimeInterface
      */
     public function getFunctions()
     {
-        return array(
-            new TwigFunction('form_enctype', null, array('node_class' => 'Symfony\Bridge\Twig\Node\FormEnctypeNode', 'is_safe' => array('html'), 'deprecated' => true, 'alternative' => 'form_start')),
-            new TwigFunction('form_widget', null, array('node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('form_errors', null, array('node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('form_label', null, array('node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('form_row', null, array('node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('form_rest', null, array('node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('form', null, array('node_class' => 'Symfony\Bridge\Twig\Node\RenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('form_start', null, array('node_class' => 'Symfony\Bridge\Twig\Node\RenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('form_end', null, array('node_class' => 'Symfony\Bridge\Twig\Node\RenderBlockNode', 'is_safe' => array('html'))),
-            new TwigFunction('csrf_token', array($this, 'renderCsrfToken')),
-        );
+        return [
+            new TwigFunction('form_widget', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('form_errors', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('form_label', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('form_row', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('form_rest', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('form', null, ['node_class' => 'Symfony\Bridge\Twig\Node\RenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('form_start', null, ['node_class' => 'Symfony\Bridge\Twig\Node\RenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('form_end', null, ['node_class' => 'Symfony\Bridge\Twig\Node\RenderBlockNode', 'is_safe' => ['html']]),
+            new TwigFunction('csrf_token', ['Symfony\Component\Form\FormRenderer', 'renderCsrfToken']),
+        ];
     }
 
     /**
@@ -86,10 +93,10 @@ class FormExtension extends AbstractExtension implements InitRuntimeInterface
      */
     public function getFilters()
     {
-        return array(
-            new TwigFilter('humanize', array($this, 'humanize')),
-            new TwigFilter('form_encode_currency', array($this, 'encodeCurrency'), array('is_safe' => array('html'), 'needs_environment' => true)),
-        );
+        return [
+            new TwigFilter('humanize', ['Symfony\Component\Form\FormRenderer', 'humanize']),
+            new TwigFilter('form_encode_currency', ['Symfony\Component\Form\FormRenderer', 'encodeCurrency'], ['is_safe' => ['html'], 'needs_environment' => true]),
+        ];
     }
 
     /**
@@ -97,90 +104,66 @@ class FormExtension extends AbstractExtension implements InitRuntimeInterface
      */
     public function getTests()
     {
-        return array(
-            new TwigTest('selectedchoice', array($this, 'isSelectedChoice')),
-            new TwigTest('rootform', array($this, 'isRootForm')),
-        );
-    }
-
-    /**
-     * Renders a CSRF token.
-     *
-     * @param string $intention The intention of the protected action
-     *
-     * @return string A CSRF token
-     */
-    public function renderCsrfToken($intention)
-    {
-        return $this->renderer->renderCsrfToken($intention);
-    }
-
-    /**
-     * Makes a technical name human readable.
-     *
-     * @param string $text The text to humanize
-     *
-     * @return string The humanized text
-     */
-    public function humanize($text)
-    {
-        return $this->renderer->humanize($text);
-    }
-
-    /**
-     * Returns whether a choice is selected for a given form value.
-     *
-     * Unfortunately Twig does not support an efficient way to execute the
-     * "is_selected" closure passed to the template by ChoiceType. It is faster
-     * to implement the logic here (around 65ms for a specific form).
-     *
-     * Directly implementing the logic here is also faster than doing so in
-     * ChoiceView (around 30ms).
-     *
-     * The worst option tested so far is to implement the logic in ChoiceView
-     * and access the ChoiceView method directly in the template. Doing so is
-     * around 220ms slower than doing the method call here in the filter. Twig
-     * seems to be much more efficient at executing filters than at executing
-     * methods of an object.
-     *
-     * @param ChoiceView   $choice        The choice to check
-     * @param string|array $selectedValue The selected value to compare
-     *
-     * @return bool Whether the choice is selected
-     *
-     * @see ChoiceView::isSelected()
-     */
-    public function isSelectedChoice(ChoiceView $choice, $selectedValue)
-    {
-        if (\is_array($selectedValue)) {
-            return \in_array($choice->value, $selectedValue, true);
-        }
-
-        return $choice->value === $selectedValue;
+        return [
+            new TwigTest('selectedchoice', 'Symfony\Bridge\Twig\Extension\twig_is_selected_choice'),
+            new TwigTest('rootform', 'Symfony\Bridge\Twig\Extension\twig_is_root_form'),
+        ];
     }
 
     /**
      * @internal
      */
-    public function isRootForm(FormView $formView)
+    public function __get($name)
     {
-        return null === $formView->parent;
+        if ('renderer' === $name) {
+            @trigger_error(sprintf('Using the "%s::$renderer" property is deprecated since Symfony 3.2 as it will be removed in 4.0.', __CLASS__), E_USER_DEPRECATED);
+
+            if (\is_array($this->renderer)) {
+                $renderer = $this->renderer[0]->get($this->renderer[1]);
+                if (isset($this->renderer[2]) && $renderer instanceof TwigRendererInterface) {
+                    $renderer->setEnvironment($this->renderer[2]);
+                }
+                $this->renderer = $renderer;
+            }
+        }
+
+        return $this->$name;
     }
 
     /**
      * @internal
      */
-    public function encodeCurrency(Environment $environment, $text, $widget = '')
+    public function __set($name, $value)
     {
-        if ('UTF-8' === $charset = $environment->getCharset()) {
-            $text = htmlspecialchars($text, ENT_QUOTES | (\defined('ENT_SUBSTITUTE') ? ENT_SUBSTITUTE : 0), 'UTF-8');
-        } else {
-            $text = htmlentities($text, ENT_QUOTES | (\defined('ENT_SUBSTITUTE') ? ENT_SUBSTITUTE : 0), 'UTF-8');
-            $text = iconv('UTF-8', $charset, $text);
-            $widget = iconv('UTF-8', $charset, $widget);
+        if ('renderer' === $name) {
+            @trigger_error(sprintf('Using the "%s::$renderer" property is deprecated since Symfony 3.2 as it will be removed in 4.0.', __CLASS__), E_USER_DEPRECATED);
         }
 
-        return str_replace('{{ widget }}', $widget, $text);
+        $this->$name = $value;
+    }
+
+    /**
+     * @internal
+     */
+    public function __isset($name)
+    {
+        if ('renderer' === $name) {
+            @trigger_error(sprintf('Using the "%s::$renderer" property is deprecated since Symfony 3.2 as it will be removed in 4.0.', __CLASS__), E_USER_DEPRECATED);
+        }
+
+        return isset($this->$name);
+    }
+
+    /**
+     * @internal
+     */
+    public function __unset($name)
+    {
+        if ('renderer' === $name) {
+            @trigger_error(sprintf('Using the "%s::$renderer" property is deprecated since Symfony 3.2 as it will be removed in 4.0.', __CLASS__), E_USER_DEPRECATED);
+        }
+
+        unset($this->$name);
     }
 
     /**
@@ -190,4 +173,32 @@ class FormExtension extends AbstractExtension implements InitRuntimeInterface
     {
         return 'form';
     }
+}
+
+/**
+ * Returns whether a choice is selected for a given form value.
+ *
+ * This is a function and not callable due to performance reasons.
+ *
+ * @param string|array $selectedValue The selected value to compare
+ *
+ * @return bool Whether the choice is selected
+ *
+ * @see ChoiceView::isSelected()
+ */
+function twig_is_selected_choice(ChoiceView $choice, $selectedValue)
+{
+    if (\is_array($selectedValue)) {
+        return \in_array($choice->value, $selectedValue, true);
+    }
+
+    return $choice->value === $selectedValue;
+}
+
+/**
+ * @internal
+ */
+function twig_is_root_form(FormView $formView)
+{
+    return null === $formView->parent;
 }

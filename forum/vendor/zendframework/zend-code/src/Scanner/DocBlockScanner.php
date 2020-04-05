@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -11,6 +11,19 @@ namespace Zend\Code\Scanner;
 
 use Zend\Code\Annotation\AnnotationManager;
 use Zend\Code\NameInformation;
+
+use function array_pop;
+use function array_push;
+use function current;
+use function end;
+use function key;
+use function next;
+use function preg_match;
+use function reset;
+use function strlen;
+use function strpos;
+use function substr;
+use function trim;
 
 class DocBlockScanner implements ScannerInterface
 {
@@ -22,22 +35,22 @@ class DocBlockScanner implements ScannerInterface
     /**
      * @var string
      */
-    protected $docComment = null;
+    protected $docComment;
 
     /**
      * @var NameInformation
      */
-    protected $nameInformation = null;
+    protected $nameInformation;
 
     /**
      * @var AnnotationManager
      */
-    protected $annotationManager = null;
+    protected $annotationManager;
 
     /**
      * @var string
      */
-    protected $shortDescription = null;
+    protected $shortDescription;
 
     /**
      * @var string
@@ -47,12 +60,12 @@ class DocBlockScanner implements ScannerInterface
     /**
      * @var array
      */
-    protected $tags = array();
+    protected $tags = [];
 
     /**
      * @var array
      */
-    protected $annotations = array();
+    protected $annotations = [];
 
     /**
      * @param  string $docComment
@@ -135,7 +148,9 @@ class DocBlockScanner implements ScannerInterface
             case 'DOCBLOCK_WHITESPACE':
             case 'DOCBLOCK_TEXT':
                 if ($tagIndex !== null) {
-                    $this->tags[$tagIndex]['value'] .= ($this->tags[$tagIndex]['value'] == '') ? $token[1] : ' ' . $token[1];
+                    $this->tags[$tagIndex]['value'] .= $this->tags[$tagIndex]['value'] == ''
+                        ? $token[1]
+                        : ' ' . $token[1];
                     goto SCANNER_CONTINUE;
                 } elseif ($mode <= 2) {
                     if ($mode == 1) {
@@ -147,8 +162,10 @@ class DocBlockScanner implements ScannerInterface
                 }
                 //gotos no break needed
             case 'DOCBLOCK_TAG':
-                array_push($this->tags, array('name'  => $token[1],
-                                              'value' => ''));
+                array_push($this->tags, [
+                    'name'  => $token[1],
+                    'value' => '',
+                ]);
                 end($this->tags);
                 $tagIndex = key($this->tags);
                 $mode     = 3;
@@ -157,7 +174,6 @@ class DocBlockScanner implements ScannerInterface
 
             case 'DOCBLOCK_COMMENTEND':
                 goto SCANNER_END;
-
         }
 
         SCANNER_CONTINUE:
@@ -184,27 +200,37 @@ class DocBlockScanner implements ScannerInterface
         $context     = 0x00;
         $stream      = $this->docComment;
         $streamIndex = null;
-        $tokens      = array();
+        $tokens      = [];
         $tokenIndex  = null;
         $currentChar = null;
         $currentWord = null;
         $currentLine = null;
 
-        $MACRO_STREAM_ADVANCE_CHAR       = function ($positionsForward = 1) use (&$stream, &$streamIndex, &$currentChar, &$currentWord, &$currentLine) {
-            $positionsForward = ($positionsForward > 0) ? $positionsForward : 1;
-            $streamIndex      = ($streamIndex === null) ? 0 : $streamIndex + $positionsForward;
-            if (!isset($stream[$streamIndex])) {
+        $MACRO_STREAM_ADVANCE_CHAR = function ($positionsForward = 1) use (
+            &$stream,
+            &$streamIndex,
+            &$currentChar,
+            &$currentWord,
+            &$currentLine
+        ) {
+            $positionsForward = $positionsForward > 0 ? $positionsForward : 1;
+            $streamIndex      = $streamIndex === null ? 0 : $streamIndex + $positionsForward;
+            if (! isset($stream[$streamIndex])) {
                 $currentChar = false;
 
                 return false;
             }
             $currentChar = $stream[$streamIndex];
-            $matches     = array();
-            $currentLine = (preg_match('#(.*?)\r?\n#', $stream, $matches, null, $streamIndex) === 1) ? $matches[1] : substr($stream, $streamIndex);
+            $matches     = [];
+            $currentLine = preg_match('#(.*?)\r?\n#', $stream, $matches, null, $streamIndex) === 1
+                ? $matches[1]
+                : substr($stream, $streamIndex);
             if ($currentChar === ' ') {
-                $currentWord = (preg_match('#( +)#', $currentLine, $matches) === 1) ? $matches[1] : $currentLine;
+                $currentWord = preg_match('#( +)#', $currentLine, $matches) === 1 ? $matches[1] : $currentLine;
             } else {
-                $currentWord = (($matches = strpos($currentLine, ' ')) !== false) ? substr($currentLine, 0, $matches) : $currentLine;
+                $currentWord = ($matches = strpos($currentLine, ' ')) !== false
+                    ? substr($currentLine, 0, $matches)
+                    : $currentLine;
             }
 
             return $currentChar;
@@ -216,8 +242,8 @@ class DocBlockScanner implements ScannerInterface
             return $MACRO_STREAM_ADVANCE_CHAR(strlen($currentLine));
         };
         $MACRO_TOKEN_ADVANCE             = function () use (&$tokenIndex, &$tokens) {
-            $tokenIndex          = ($tokenIndex === null) ? 0 : $tokenIndex + 1;
-            $tokens[$tokenIndex] = array('DOCBLOCK_UNKNOWN', '');
+            $tokenIndex          = $tokenIndex === null ? 0 : $tokenIndex + 1;
+            $tokens[$tokenIndex] = ['DOCBLOCK_UNKNOWN', ''];
         };
         $MACRO_TOKEN_SET_TYPE            = function ($type) use (&$tokenIndex, &$tokens) {
             $tokens[$tokenIndex][0] = $type;
@@ -264,7 +290,11 @@ class DocBlockScanner implements ScannerInterface
         }
 
         if ($currentChar === ' ' || $currentChar === "\t") {
-            $MACRO_TOKEN_SET_TYPE(($context & $CONTEXT_INSIDE_ASTERISK) ? 'DOCBLOCK_WHITESPACE' : 'DOCBLOCK_WHITESPACE_INDENT');
+            $MACRO_TOKEN_SET_TYPE(
+                $context & $CONTEXT_INSIDE_ASTERISK
+                ? 'DOCBLOCK_WHITESPACE'
+                : 'DOCBLOCK_WHITESPACE_INDENT'
+            );
             $MACRO_TOKEN_APPEND_WORD();
             $MACRO_TOKEN_ADVANCE();
             if ($MACRO_STREAM_ADVANCE_WORD() === false) {

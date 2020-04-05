@@ -165,7 +165,7 @@ class create_config_file extends \phpbb\install\task_base
 	protected function get_config_data($debug = false, $debug_container = false, $environment = null)
 	{
 		$config_content = "<?php\n";
-		$config_content .= "// phpBB 3.2.x auto-generated configuration file\n// Do not change anything in this file!\n";
+		$config_content .= "// phpBB 3.3.x auto-generated configuration file\n// Do not change anything in this file!\n";
 
 		$dbms = $this->install_config->get('dbms');
 		$db_driver = $this->db_helper->get_available_dbms($dbms);
@@ -191,7 +191,6 @@ class create_config_file extends \phpbb\install\task_base
 		}
 
 		$config_content .= "\n@define('PHPBB_INSTALLED', true);\n";
-		$config_content .= "// @define('PHPBB_DISPLAY_LOAD_TIME', true);\n";
 
 		if ($environment)
 		{

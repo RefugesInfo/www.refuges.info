@@ -9,31 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\HttpKernel\Exception;
-
-/**
- * Fatal Error Exception.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Konstanton Myakshin <koc-dp@yandex.ru>
- * @author Nicolas Grekas <p@tchwork.com>
- *
- * @deprecated Deprecated in 2.3, to be removed in 3.0. Use the same class from the Debug component instead.
- */
-class FatalErrorException extends \ErrorException
-{
-}
-
 namespace Symfony\Component\Debug\Exception;
 
-use Symfony\Component\HttpKernel\Exception\FatalErrorException as LegacyFatalErrorException;
-
 /**
  * Fatal Error Exception.
  *
  * @author Konstanton Myakshin <koc-dp@yandex.ru>
  */
-class FatalErrorException extends LegacyFatalErrorException
+class FatalErrorException extends \ErrorException
 {
     public function __construct($message, $code, $severity, $filename, $lineno, $traceOffset = null, $traceArgs = true, array $trace = null, $previous = null)
     {
@@ -83,7 +66,7 @@ class FatalErrorException extends LegacyFatalErrorException
                     array_splice($trace, 0, $traceOffset);
                 }
             } else {
-                $trace = array();
+                $trace = [];
             }
 
             $this->setTrace($trace);

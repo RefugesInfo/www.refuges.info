@@ -92,7 +92,7 @@ $lang = array_merge($lang, array(
 	'EXTENSION_DELETE_DATA_CONFIRM'	=> '¿Estás seguro de querer borrar los datos asociados de “%s”?<br /><br />¡Esto elimina todos los datos y configuraciones, y no se puede deshacer!',
 	'EXTENSION_DISABLE_CONFIRM'		=> '¿Estás seguro de querer deshabilitar la extensión “%s”?',
 	'EXTENSION_ENABLE_CONFIRM'		=> '¿Estás seguro de querer habilitar la extensión “%s”?',
-    	'EXTENSION_FORCE_UNSTABLE_CONFIRM'	=> '¿Está seguro de querer forzar el uso de la versión inestable?',
+    'EXTENSION_FORCE_UNSTABLE_CONFIRM'	=> '¿Está seguro de querer forzar el uso de la versión inestable?',
 
 	'RETURN_TO_EXTENSION_LIST'	=> 'Volver a la lista de extensiones',
 

@@ -56,15 +56,14 @@ class ExceptionListener implements EventSubscriberInterface
         } catch (\Exception $e) {
             $this->logException($e, sprintf('Exception thrown when handling an exception (%s: %s at %s line %s)', \get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
 
-            $wrapper = $e;
-
-            while ($prev = $wrapper->getPrevious()) {
+            $prev = $e;
+            do {
                 if ($exception === $wrapper = $prev) {
                     throw $e;
                 }
-            }
+            } while ($prev = $wrapper->getPrevious());
 
-            $prev = new \ReflectionProperty('Exception', 'previous');
+            $prev = new \ReflectionProperty($wrapper instanceof \Exception ? \Exception::class : \Error::class, 'previous');
             $prev->setAccessible(true);
             $prev->setValue($wrapper, $exception);
 
@@ -84,9 +83,9 @@ class ExceptionListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('onKernelException', -128),
-        );
+        return [
+            KernelEvents::EXCEPTION => ['onKernelException', -128],
+        ];
     }
 
     /**
@@ -99,9 +98,9 @@ class ExceptionListener implements EventSubscriberInterface
     {
         if (null !== $this->logger) {
             if (!$exception instanceof HttpExceptionInterface || $exception->getStatusCode() >= 500) {
-                $this->logger->critical($message, array('exception' => $exception));
+                $this->logger->critical($message, ['exception' => $exception]);
             } else {
-                $this->logger->error($message, array('exception' => $exception));
+                $this->logger->error($message, ['exception' => $exception]);
             }
         }
     }
@@ -116,15 +115,11 @@ class ExceptionListener implements EventSubscriberInterface
      */
     protected function duplicateRequest(\Exception $exception, Request $request)
     {
-        $attributes = array(
+        $attributes = [
             '_controller' => $this->controller,
             'exception' => FlattenException::create($exception),
             'logger' => $this->logger instanceof DebugLoggerInterface ? $this->logger : null,
-            // keep for BC -- as $format can be an argument of the controller callable
-            // see src/Symfony/Bundle/TwigBundle/Controller/ExceptionController.php
-            // @deprecated since version 2.4, to be removed in 3.0
-            'format' => $request->getRequestFormat(),
-        );
+        ];
         $request = $request->duplicate(null, null, $attributes);
         $request->setMethod('GET');
 

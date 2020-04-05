@@ -44,11 +44,15 @@ Tortoise : supprimer les répertoires
 	/forum/images/... sauf /forum/images/smilies/wri*
 	/forum/includes/...
 	/forum/install.modele/...
+	/forum/langages/...
 	/forum/phpbb/...
 	/forum/styles/...
 	/forum/vendor/...
 
-Décompresser pphBB_FR.zip pack complet dans /forum sauf config.php & docs/...
+Décompresser pphBB_FR.zip pack complet dans /forum sauf :
+	config.php
+	ext/phpbb/... (viglink)
+	docs/...
 Renommer /forum/install /forum/install en /forum/install.modele
 
 Upgrader si nécéssiare la version compatible de cleantalk dans /forum/ext
@@ -95,6 +99,14 @@ if (file_exists ('../htaccess.modele.txt')) {
 else
 	initialise_fichier_par_defaut_ou_meurs ('htaccess.modele.txt', '.htaccess');
 
+//========================
+// Etat des fichiers phpBB
+ob_flush (); flush ();
+define ('IN_PHPBB', true);
+include ('forum/includes/constants.php');
+$phpbb_version_fichiers = PHPBB_VERSION;
+echo "<div>Fichiers phpBB installés version $phpbb_version_fichiers</div>\n";
+
 //=========================
 // Fichier forum/config.php
 if (file_exists ('forum/config.php')) {
@@ -123,7 +135,8 @@ if (file_exists ('forum/config.php')) {
 			recurse_copy ('forum/install.modele', 'forum/install');
 		echo "<label>Sinon, créez la base phpBB : ".
 			"<input type='submit' formaction='forum/install/app.php/install' value='Installer phpBB'></label>\n".
-			"<p>Puis <b>Install</b> puis suivre les instructions</p>\n".
+			"<p>Puis Select language: <b style='color:red'>Français</b> et <b>Change</b></p>\n".
+			"<p>Puis <b>Installer</b> puis suivre les instructions</p>\n".
 			"<p>Puis revenir à cet utilitaire <b>/install.php</b></p>";
 		exit;
 	}
@@ -140,14 +153,6 @@ if (@$pdo->errorCode() === null) {
 	exit;
 }
 echo "<div>Connexion à PGSQL OK</div>\n";
-
-//========================
-// Etat des fichiers phpBB
-ob_flush (); flush ();
-define ('IN_PHPBB', true);
-include ('forum/includes/constants.php');
-$phpbb_version_fichiers = PHPBB_VERSION;
-echo "<div>Fichiers phpBB installés version $phpbb_version_fichiers</div>\n";
 
 //======================
 // Etat de la base phpBB
@@ -184,6 +189,15 @@ if ($phpbb_version_bdd != $phpbb_version_fichiers) {
 	exit;
 }
 
+//=====================
+// Purge fichiers phpBB
+	echo "</br><div>Purge des fichiers phpBB install & cache</div>\n";
+	ob_flush (); flush ();
+	recurse_delete ('forum/install');
+	recurse_delete ('forum/docs');
+	recurse_delete ('forum/cache/installer');
+	recurse_delete ('forum/cache/production');
+
 //=================================
 // Tables refuges.info dans la base
 if ($pdo->query('SELECT id_point FROM points limit 1'))
@@ -198,14 +212,8 @@ else {
 //=============
 // C'est fini !
 if ($phpbb_version_bdd == $phpbb_version_fichiers) {
-	echo "</br><div>Purge des fichiers phpBB install & cache</div>\n";
-	ob_flush (); flush ();
-	recurse_delete ('forum/install');
-	recurse_delete ('forum/docs');
-	recurse_delete ('forum/cache/installer');
-	recurse_delete ('forum/cache/production');
 	echo "<h3 style='color:green'>Votre installation est à jour : \n".
-		"<a style='color:green' href='.'>Aller sur le site</a></h3>\n";
+		"<a style='color:green' href='.'>Aller sur le site</a></h3>";
 }
 
 //=============================================

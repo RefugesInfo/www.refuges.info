@@ -3,13 +3,27 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code\Reflection;
 
 use ReflectionFunction;
+
+use function array_shift;
+use function array_slice;
+use function count;
+use function file;
+use function implode;
+use function preg_match;
+use function preg_quote;
+use function preg_replace;
+use function sprintf;
+use function strlen;
+use function strrpos;
+use function substr;
+use function var_export;
 
 class FunctionReflection extends ReflectionFunction implements ReflectionInterface
 {
@@ -85,7 +99,7 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
         $lines = array_slice(
             file($fileName, FILE_IGNORE_NEW_LINES),
             $startLine - 1,
-            ($endLine - ($startLine - 1)),
+            $endLine - ($startLine - 1),
             true
         );
 
@@ -98,8 +112,12 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
                 $content = $matches[0];
             }
         } else {
-            $name = substr($this->getName(), strrpos($this->getName(), '\\')+1);
-            preg_match('#function\s+' . preg_quote($name) . '\s*\([^\)]*\)\s*{([^{}]+({[^}]+})*[^}]+)?}#', $functionLine, $matches);
+            $name = substr($this->getName(), strrpos($this->getName(), '\\') + 1);
+            preg_match(
+                '#function\s+' . preg_quote($name) . '\s*\([^\)]*\)\s*{([^{}]+({[^}]+})*[^}]+)?}#',
+                $functionLine,
+                $matches
+            );
             if (isset($matches[0])) {
                 $content = $matches[0];
             }
@@ -113,7 +131,8 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
     /**
      * Get method prototype
      *
-     * @return array
+     * @param string $format
+     * @return array|string
      */
     public function getPrototype($format = FunctionReflection::PROTOTYPE_AS_ARRAY)
     {
@@ -125,29 +144,31 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
             $returnType = count($returnTypes) > 1 ? implode('|', $returnTypes) : $returnTypes[0];
         }
 
-        $prototype = array(
+        $prototype = [
             'namespace' => $this->getNamespaceName(),
             'name'      => substr($this->getName(), strlen($this->getNamespaceName()) + 1),
             'return'    => $returnType,
-            'arguments' => array(),
-        );
+            'arguments' => [],
+        ];
 
         $parameters = $this->getParameters();
         foreach ($parameters as $parameter) {
-            $prototype['arguments'][$parameter->getName()] = array(
-                'type'     => $parameter->getType(),
-                'required' => !$parameter->isOptional(),
+            $prototype['arguments'][$parameter->getName()] = [
+                'type'     => $parameter->detectType(),
+                'required' => ! $parameter->isOptional(),
                 'by_ref'   => $parameter->isPassedByReference(),
                 'default'  => $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null,
-            );
+            ];
         }
 
         if ($format == FunctionReflection::PROTOTYPE_AS_STRING) {
             $line = $prototype['return'] . ' ' . $prototype['name'] . '(';
-            $args = array();
+            $args = [];
             foreach ($prototype['arguments'] as $name => $argument) {
-                $argsLine = ($argument['type'] ? $argument['type'] . ' ' : '') . ($argument['by_ref'] ? '&' : '') . '$' . $name;
-                if (!$argument['required']) {
+                $argsLine = ($argument['type']
+                    ? $argument['type'] . ' '
+                    : '') . ($argument['by_ref'] ? '&' : '') . '$' . $name;
+                if (! $argument['required']) {
                     $argsLine .= ' = ' . var_export($argument['default'], true);
                 }
                 $args[] = $argsLine;
@@ -169,7 +190,7 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
     public function getParameters()
     {
         $phpReflections  = parent::getParameters();
-        $zendReflections = array();
+        $zendReflections = [];
         while ($phpReflections && ($phpReflection = array_shift($phpReflections))) {
             $instance          = new ParameterReflection($this->getName(), $phpReflection->getName());
             $zendReflections[] = $instance;
@@ -189,7 +210,7 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
     public function getReturn()
     {
         $docBlock = $this->getDocBlock();
-        if (!$docBlock->hasTag('return')) {
+        if (! $docBlock->hasTag('return')) {
             throw new Exception\InvalidArgumentException(
                 'Function does not specify an @return annotation tag; cannot determine return type'
             );
@@ -226,7 +247,7 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
         $lines = array_slice(
             file($fileName, FILE_IGNORE_NEW_LINES),
             $startLine - 1,
-            ($endLine - ($startLine - 1)),
+            $endLine - ($startLine - 1),
             true
         );
 
@@ -239,7 +260,7 @@ class FunctionReflection extends ReflectionFunction implements ReflectionInterfa
                 $body = $matches[2];
             }
         } else {
-            $name = substr($this->getName(), strrpos($this->getName(), '\\')+1);
+            $name = substr($this->getName(), strrpos($this->getName(), '\\') + 1);
             preg_match('#function\s+' . $name . '\s*\([^\)]*\)\s*{([^{}]+({[^}]+})*[^}]+)}#', $functionLine, $matches);
             if (isset($matches[1])) {
                 $body = $matches[1];

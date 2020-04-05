@@ -222,19 +222,9 @@ $lang = array_merge($lang, array(
 	'ADMIN_PANEL'	  		=> 'Panel de Control de Administración (PCA)',
 
 	'ADM_LOGOUT'         	=> 'Desconectarse&nbsp;del&nbsp;PCA',
-	'ADM_LOGGED_OUT'		=> 'Se desconectó con éxito del Panel de Control de Administración (PCA)',
+	'ADM_LOGGED_OUT'		=> 'Te desconectaste correctamente del Panel de Control de Administración (PCA)',
 
 	'BACK'					=> 'Volver',
-
-	'CANNOT_CHANGE_FILE_GROUP'	=> 'Incapaz de cambiar el grupo de archivos',
-	'CANNOT_CHANGE_FILE_PERMISSIONS'	=> 'Incapaz de cambiar los permisos de archivos',
-	'CANNOT_COPY_FILES'		=> 'Incapaz de copiar archivos',
-	'CANNOT_CREATE_SYMLINK'	=> 'Incapaz de crear un enlace simbólico',
-	'CANNOT_DELETE_FILES'	=> 'Incapaz de borrar los archivos del sistema',
-	'CANNOT_DUMP_FILE'		=> 'Incapaz de volvar el archivo',
-	'CANNOT_MIRROR_DIRECTORY'	=> 'Incapaz de reflejar el directorio',
-	'CANNOT_RENAME_FILE'	=> 'Incapaz de renombrar un archivo del sistema',
-	'CANNOT_TOUCH_FILES'	=> 'Incapaz de determinar si el archivo existe',
 
 	'CONTAINER_EXCEPTION' => 'phpBB encontró un error al construir el contenedor debido a una extensión instalada. Por esta razón, todas las extensiones se han desactivado temporalmente. Por favor, intenta purgar el caché del foro. Todas las extensiones serán automáticamente habilitadas de nuevo una vez que se resuelva el error del contenedor. Si este error continúa, por favor visita <a href="https://www.phpbb.com/support">phpBB.com</a> para soporte.',
 	'EXCEPTION' => 'Excepción',
@@ -373,7 +363,7 @@ $lang = array_merge($lang, array(
 	'DATABASE_SERVER_INFO'	=> 'Servidor de base de datos',
 	'DATABASE_SIZE'			=> 'Tamaño de la base de datos',
 
-	// Enviroment configuration checks, mbstring related
+	// Environment configuration checks, mbstring related
 	'ERROR_MBSTRING_FUNC_OVERLOAD'					=> 'Las funciones de sobrecarga no está configurado correctamente',
 	'ERROR_MBSTRING_FUNC_OVERLOAD_EXPLAIN' 			=> '<var>mbstring.func_overload</var> se debe establecer en 0 o 4. Usted puede comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION' 			=> 'Codificación de caracteres transparentes no está configurado correctamente',
@@ -610,7 +600,7 @@ $lang = array_merge($lang, array(
 
 	'LOG_TOPIC_APPROVED'		=> '<strong>Tema aprobado</strong><br />» %s',
 	'LOG_TOPIC_RESTORED'		=> '<strong>Tema restaurado</strong><br />» %s',
-    	'LOG_TOPIC_DISAPPROVED'		=> '<strong>Tema desaprobado “%1$s” escrito por “%3$s” por la siguiente razón</strong><br />» %2$s',
+    'LOG_TOPIC_DISAPPROVED'		=> '<strong>Tema desaprobado “%1$s” escrito por “%3$s” por la siguiente razón</strong><br />» %2$s',
 	'LOG_TOPIC_RESYNC'			=> '<strong>Resincronizados contadores de temas</strong><br />» %s',
 	'LOG_TOPIC_TYPE_CHANGED'	=> '<strong>Cambiado: tipo de tema</strong><br />» %s',
 	'LOG_UNLOCK'				=> '<strong>Abierto: tema</strong><br />» %s',
@@ -717,7 +707,7 @@ $lang = array_merge($lang, array(
 
 	'LOG_PRUNE'					=> '<strong>Purgados: foros</strong><br />» %s',
 	'LOG_AUTO_PRUNE'			=> '<strong>Auto-purgados: foros</strong><br />» %s',
-    	'LOG_PRUNE_SHADOW'		=> '<strong>Auto-purgados: temas sombreados</strong><br />» %s',
+    'LOG_PRUNE_SHADOW'		=> '<strong>Auto-purgados: temas sombreados</strong><br />» %s',
 	'LOG_PRUNE_USER_DEAC'		=> '<strong>Desactivados: usuarios</strong><br />» %s',
 	'LOG_PRUNE_USER_DEL_DEL'	=> '<strong>Usuarios purgados y mensajes borrados</strong><br />» %s',
 	'LOG_PRUNE_USER_DEL_ANON'	=> '<strong>Usuarios purgados y mensajes retenidos</strong><br />» %s',

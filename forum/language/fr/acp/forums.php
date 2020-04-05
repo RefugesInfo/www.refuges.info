@@ -131,6 +131,8 @@ $lang = array_merge($lang, array(
 	'GENERAL_FORUM_SETTINGS'	=> 'Paramètres généraux du forum',
 
 	'LINK'						=> 'Lien',
+	'LIMIT_SUBFORUMS'			=> 'Limiter l’affichage dans la légende uniquement aux sous-forums directs',
+	'LIMIT_SUBFORUMS_EXPLAIN'	=> 'Limite l’affichage des sous-forums aux sous-forums qui sont des descendants directs (enfants) du forum actuel. En désactivant cette option cela affichera tous les sous-forums ayant l’option « Lister les sous-forums dans la légende » activée, peu importe la profondeur.',
 	'LIST_INDEX'				=> 'Lister le sous-forum dans la légende du forum parent',
 	'LIST_INDEX_EXPLAIN'		=> 'Si cette option est activée, ce forum sera listé sous la forme d’un lien dans la légende de tous ses forums parents ayant l’option « Lister les sous-forums dans la légende » activée.',
 	'LIST_SUBFORUMS'			=> 'Lister les sous-forums dans la légende',

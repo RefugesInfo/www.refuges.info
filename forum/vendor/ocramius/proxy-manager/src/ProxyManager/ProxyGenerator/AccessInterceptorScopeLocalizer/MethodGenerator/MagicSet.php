@@ -16,10 +16,13 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
-use ProxyManager\Generator\ParameterGenerator;
+use ProxyManager\ProxyGenerator\Util\GetMethodIfExists;
+use Zend\Code\Generator\ParameterGenerator;
 use ProxyManager\ProxyGenerator\AccessInterceptorScopeLocalizer\MethodGenerator\Util\InterceptorGenerator;
 use ProxyManager\ProxyGenerator\Util\PublicScopeSimulator;
 use ReflectionClass;
@@ -37,6 +40,9 @@ class MagicSet extends MagicMethodGenerator
      * @param \ReflectionClass                       $originalClass
      * @param \Zend\Code\Generator\PropertyGenerator $prefixInterceptors
      * @param \Zend\Code\Generator\PropertyGenerator $suffixInterceptors
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         ReflectionClass $originalClass,
@@ -46,16 +52,16 @@ class MagicSet extends MagicMethodGenerator
         parent::__construct(
             $originalClass,
             '__set',
-            array(new ParameterGenerator('name'), new ParameterGenerator('value'))
+            [new ParameterGenerator('name'), new ParameterGenerator('value')]
         );
 
-        $override = $originalClass->hasMethod('__set');
+        $parent = GetMethodIfExists::get($originalClass, '__set');
 
-        $this->setDocblock(($override ? "{@inheritDoc}\n" : '') . '@param string $name');
+        $this->setDocBlock(($parent ? "{@inheritDoc}\n" : '') . '@param string $name');
 
-        if ($override) {
-            $callParent = '$returnValue = & parent::__set($name, $value);';
-        } else {
+        $callParent = '$returnValue = & parent::__set($name, $value);';
+
+        if (! $parent) {
             $callParent = PublicScopeSimulator::getPublicAccessSimulationCode(
                 PublicScopeSimulator::OPERATION_SET,
                 'name',
@@ -65,13 +71,12 @@ class MagicSet extends MagicMethodGenerator
             );
         }
 
-        $this->setBody(
-            InterceptorGenerator::createInterceptedMethodBody(
-                $callParent,
-                $this,
-                $prefixInterceptors,
-                $suffixInterceptors
-            )
-        );
+        $this->setBody(InterceptorGenerator::createInterceptedMethodBody(
+            $callParent,
+            $this,
+            $prefixInterceptors,
+            $suffixInterceptors,
+            $parent
+        ));
     }
 }

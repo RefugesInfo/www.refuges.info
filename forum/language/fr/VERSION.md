@@ -1,6 +1,6 @@
 Pack de langue
 --------------
 
-Version : 2.0.10  
+Version : 3.0.0  
 Mis à jour le : 07 janvier 2020  
-phpBB : 3.2.9
+phpBB : 3.3.0

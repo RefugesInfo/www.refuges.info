@@ -16,10 +16,14 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\LazyLoadingGhost\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
-use ProxyManager\Generator\ParameterGenerator;
+use Zend\Code\Generator\ParameterGenerator;
+use ProxyManager\ProxyGenerator\LazyLoadingGhost\PropertyGenerator\PrivatePropertiesMap;
+use ProxyManager\ProxyGenerator\LazyLoadingGhost\PropertyGenerator\ProtectedPropertiesMap;
 use ProxyManager\ProxyGenerator\PropertyGenerator\PublicPropertiesMap;
 use ProxyManager\ProxyGenerator\Util\PublicScopeSimulator;
 use ReflectionClass;
@@ -35,43 +39,110 @@ use Zend\Code\Generator\PropertyGenerator;
 class MagicIsset extends MagicMethodGenerator
 {
     /**
-     * @param \ReflectionClass                                                   $originalClass
-     * @param \Zend\Code\Generator\PropertyGenerator                             $initializerProperty
-     * @param \Zend\Code\Generator\MethodGenerator                               $callInitializer
-     * @param \ProxyManager\ProxyGenerator\PropertyGenerator\PublicPropertiesMap $publicProperties
+     * @var string
+     */
+    private $callParentTemplate = <<<'PHP'
+%s
+
+if (isset(self::$%s[$name])) {
+    return isset($this->$name);
+}
+
+if (isset(self::$%s[$name])) {
+    // check protected property access via compatible class
+    $callers      = debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+    $caller       = isset($callers[1]) ? $callers[1] : [];
+    $object       = isset($caller['object']) ? $caller['object'] : '';
+    $expectedType = self::$%s[$name];
+
+    if ($object instanceof $expectedType) {
+        return isset($this->$name);
+    }
+
+    $class = isset($caller['class']) ? $caller['class'] : '';
+
+    if ($class === $expectedType || is_subclass_of($class, $expectedType)) {
+        return isset($this->$name);
+    }
+} else {
+    // check private property access via same class
+    $callers = debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+    $caller  = isset($callers[1]) ? $callers[1] : [];
+    $class   = isset($caller['class']) ? $caller['class'] : '';
+
+    static $accessorCache = [];
+
+    if (isset(self::$%s[$name][$class])) {
+        $cacheKey = $class . '#' . $name;
+        $accessor = isset($accessorCache[$cacheKey])
+            ? $accessorCache[$cacheKey]
+            : $accessorCache[$cacheKey] = \Closure::bind(function ($instance) use ($name) {
+                return isset($instance->$name);
+            }, null, $class);
+
+        return $accessor($this);
+    }
+
+    if ('ReflectionProperty' === $class) {
+        $tmpClass = key(self::$%s[$name]);
+        $cacheKey = $tmpClass . '#' . $name;
+        $accessor = isset($accessorCache[$cacheKey])
+            ? $accessorCache[$cacheKey]
+            : $accessorCache[$cacheKey] = \Closure::bind(function ($instance) use ($name) {
+                return isset($instance->$name);
+            }, null, $tmpClass);
+
+        return $accessor($this);
+    }
+}
+
+%s
+PHP;
+
+    /**
+     * @param ReflectionClass        $originalClass
+     * @param PropertyGenerator      $initializerProperty
+     * @param MethodGenerator        $callInitializer
+     * @param PublicPropertiesMap    $publicProperties
+     * @param ProtectedPropertiesMap $protectedProperties
+     * @param PrivatePropertiesMap   $privateProperties
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         ReflectionClass $originalClass,
         PropertyGenerator $initializerProperty,
         MethodGenerator $callInitializer,
-        PublicPropertiesMap $publicProperties
+        PublicPropertiesMap $publicProperties,
+        ProtectedPropertiesMap $protectedProperties,
+        PrivatePropertiesMap $privateProperties
     ) {
-        parent::__construct($originalClass, '__isset', array(new ParameterGenerator('name')));
+        parent::__construct($originalClass, '__isset', [new ParameterGenerator('name')]);
 
-        $override   = $originalClass->hasMethod('__isset');
-        $callParent = '';
+        $override = $originalClass->hasMethod('__isset');
 
-        $this->setDocblock(($override ? "{@inheritDoc}\n" : '') . '@param string $name');
+        $this->setDocBlock(($override ? "{@inheritDoc}\n" : '') . '@param string $name');
 
-        if (! $publicProperties->isEmpty()) {
-            $callParent = 'if (isset(self::$' . $publicProperties->getName() . "[\$name])) {\n"
-                . '    return isset($this->$name);'
-                . "\n}\n\n";
-        }
+        $parentAccess = 'return parent::__isset($name);';
 
-        if ($override) {
-            $callParent .= 'return parent::__isset($name);';
-        } else {
-            $callParent .= PublicScopeSimulator::getPublicAccessSimulationCode(
+        if (! $override) {
+            $parentAccess = PublicScopeSimulator::getPublicAccessSimulationCode(
                 PublicScopeSimulator::OPERATION_ISSET,
                 'name'
             );
         }
 
-        $this->setBody(
+        $this->setBody(sprintf(
+            $this->callParentTemplate,
             '$this->' . $initializerProperty->getName() . ' && $this->' . $callInitializer->getName()
-            . '(\'__isset\', array(\'name\' => $name));'
-            . "\n\n" . $callParent
-        );
+            . '(\'__isset\', array(\'name\' => $name));',
+            $publicProperties->getName(),
+            $protectedProperties->getName(),
+            $protectedProperties->getName(),
+            $privateProperties->getName(),
+            $privateProperties->getName(),
+            $parentAccess
+        ));
     }
 }

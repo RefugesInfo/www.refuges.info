@@ -27,7 +27,7 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
     /**
      * Returns an array of bundles to register.
      *
-     * @return BundleInterface[] An array of bundle instances
+     * @return iterable|BundleInterface[] An iterable of bundle instances
      */
     public function registerBundles();
 
@@ -56,18 +56,10 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
     public function getBundles();
 
     /**
-     * Checks if a given class name belongs to an active bundle.
-     *
-     * @param string $class A class name
-     *
-     * @return bool true if the class belongs to an active bundle, false otherwise
-     *
-     * @deprecated since version 2.6, to be removed in 3.0.
-     */
-    public function isClassInActiveBundle($class);
-
-    /**
      * Returns a bundle and optionally its descendants by its name.
+     *
+     * The second argument is deprecated as of 3.4 and will be removed in 4.0. This method
+     * will always return an instance of BundleInterface in 4.0.
      *
      * @param string $name  Bundle name
      * @param bool   $first Whether to return the first bundle only or together with its descendants
@@ -130,9 +122,9 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
     public function isDebug();
 
     /**
-     * Gets the application root dir.
+     * Gets the application root dir (path of the project's Kernel class).
      *
-     * @return string The application root dir
+     * @return string The Kernel root dir
      */
     public function getRootDir();
 
@@ -146,7 +138,7 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
     /**
      * Gets the request start time (not available if debug is disabled).
      *
-     * @return int The request start timestamp
+     * @return float The request start timestamp
      */
     public function getStartTime();
 

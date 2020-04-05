@@ -40,16 +40,15 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, array(
-	'RECAPTCHA_LANG'				=> 'it-IT', // Trova il codice Lingua / Paese https://developers.google.com/recaptcha/docs/language - Se non esiste alcun codice per la tua lingua, puoi usare "en" o lasciare la stringa vuota
+	'RECAPTCHA_LANG'				=> 'it', // Trova il codice Lingua / Paese https://developers.google.com/recaptcha/docs/language - Se non esiste alcun codice per la tua lingua, puoi usare "en" o lasciare la stringa vuota
 	'RECAPTCHA_NOT_AVAILABLE'		=> 'Per poter utilizzare reCaptcha, è necessario creare un account su <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
 	'CAPTCHA_RECAPTCHA'				=> 'reCaptcha',
 	'RECAPTCHA_INCORRECT'			=> 'La soluzione che hai inviato non è corretta',
 	'RECAPTCHA_NOSCRIPT'			=> 'Abilita JavaScript nel tuo browser per caricare il test antispam.',
 
-	'RECAPTCHA_PUBLIC'				=> 'Chiave pubblica reCaptcha',
-	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'La tua chiave pubblica reCaptcha. Le chiavi possono essere ottenute su <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
-	'RECAPTCHA_PRIVATE'				=> 'Chiave privata reCaptcha',
-	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'La tua chiave privata reCaptcha. Le chiavi possono essere ottenute su <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
-
-	'RECAPTCHA_EXPLAIN'				=> 'Per prevenire invii automatici, è necessario che si completi il seguente test antispam nel campo sottostante.',
+	'RECAPTCHA_PUBLIC'				=> 'Chiave del sito',
+	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'La tua chiave reCaptcha del sito. Le chiavi possono essere ottenute su <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>. Per favore, usa reCAPTCHA v2 &gt; tipo di simbolo reCAPTCHA invisibile.',
+	'RECAPTCHA_PRIVATE'				=> 'Chiave segreta',
+	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'La tua chiave reCaptcha segreta. Le chiavi possono essere ottenute su <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>. Per favore, usa reCAPTCHA v2 &gt; tipo di simbolo reCAPTCHA invisibile.',
+	'RECAPTCHA_INVISIBLE'			=> 'Questo CAPTCHA è in realtà invisibile. Per verificare che funzioni, dovrebbe apparire una piccola icona nell’angolo in basso a destra di questa pagina.',
 ));

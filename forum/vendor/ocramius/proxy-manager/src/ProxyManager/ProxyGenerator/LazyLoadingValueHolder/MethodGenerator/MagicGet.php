@@ -16,10 +16,12 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\LazyLoadingValueHolder\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
-use ProxyManager\Generator\ParameterGenerator;
+use Zend\Code\Generator\ParameterGenerator;
 use ProxyManager\ProxyGenerator\PropertyGenerator\PublicPropertiesMap;
 use ProxyManager\ProxyGenerator\Util\PublicScopeSimulator;
 use ReflectionClass;
@@ -35,6 +37,14 @@ class MagicGet extends MagicMethodGenerator
 {
     /**
      * Constructor
+     *
+     * @param ReflectionClass     $originalClass
+     * @param PropertyGenerator   $initializerProperty
+     * @param PropertyGenerator   $valueHolderProperty
+     * @param PublicPropertiesMap $publicProperties
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         ReflectionClass $originalClass,
@@ -42,9 +52,11 @@ class MagicGet extends MagicMethodGenerator
         PropertyGenerator $valueHolderProperty,
         PublicPropertiesMap $publicProperties
     ) {
-        parent::__construct($originalClass, '__get', array(new ParameterGenerator('name')));
+        parent::__construct($originalClass, '__get', [new ParameterGenerator('name')]);
 
-        $this->setDocblock(($originalClass->hasMethod('__get') ? "{@inheritDoc}\n" : '') . '@param string $name');
+        $hasParent = $originalClass->hasMethod('__get');
+
+        $this->setDocBlock(($hasParent ? "{@inheritDoc}\n" : '') . '@param string $name');
 
         $initializer = $initializerProperty->getName();
         $valueHolder = $valueHolderProperty->getName();
@@ -52,16 +64,33 @@ class MagicGet extends MagicMethodGenerator
             . '    return $this->' . $valueHolder . '->$name;'
             . "\n}\n\n";
 
-        $callParent .= PublicScopeSimulator::getPublicAccessSimulationCode(
-            PublicScopeSimulator::OPERATION_GET,
-            'name',
-            null,
-            $valueHolderProperty
-        );
+        if ($hasParent) {
+            $this->setInitializerBody(
+                $initializer,
+                $valueHolder,
+                $callParent . 'return $this->' . $valueHolder . '->__get($name);'
+            );
 
+            return;
+        }
+
+        $this->setInitializerBody(
+            $initializer,
+            $valueHolder,
+            $callParent . PublicScopeSimulator::getPublicAccessSimulationCode(
+                PublicScopeSimulator::OPERATION_GET,
+                'name',
+                null,
+                $valueHolderProperty
+            )
+        );
+    }
+
+    private function setInitializerBody(string $initializer, string $valueHolder, string $callParent) : void
+    {
         $this->setBody(
             '$this->' . $initializer . ' && $this->' . $initializer
-            . '->__invoke($this->' . $valueHolder . ', $this, \'__get\', array(\'name\' => $name), $this->'
+            . '->__invoke($this->' . $valueHolder . ', $this, \'__get\', [\'name\' => $name], $this->'
             . $initializer . ');'
             . "\n\n" . $callParent
         );

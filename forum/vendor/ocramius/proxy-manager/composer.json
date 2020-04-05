@@ -15,24 +15,30 @@
         {
             "name":     "Marco Pivetta",
             "email":    "ocramius@gmail.com",
-            "homepage": "http://ocramius.github.com/"
+            "homepage": "http://ocramius.github.io/"
         }
     ],
     "require": {
-        "php":                     ">=5.3.3",
-        "zendframework/zend-code": ">2.2.5,<3.0"
+        "php":                       "^7.1.0",
+        "zendframework/zend-code":   "^3.1.0",
+        "ocramius/package-versions": "^1.1.1"
     },
     "require-dev": {
-        "ext-phar":                    "*",
-        "phpunit/phpunit":             "~4.0",
-        "squizlabs/php_codesniffer":   "1.5.*"
+        "ext-phar":                     "*",
+        "phpunit/phpunit":              "^5.6.4",
+        "phpunit/phpunit-mock-objects": "^3.4.1",
+        "squizlabs/php_codesniffer":    "^2.7.0",
+        "couscous/couscous":            "^1.5.2",
+        "phpbench/phpbench":            "^0.12.2",
+        "phpstan/phpstan":              "^0.6.4",
+        "nikic/php-parser":             "^3.0.4",
+        "humbug/humbug":                "dev-master@DEV"
     },
     "suggest": {
-        "zendframework/zend-stdlib":   "To use the hydrator proxy",
         "ocramius/generated-hydrator": "To have very fast object to array to object conversion for ghost objects",
-        "zendframework/zend-xmlrpc": "To have the XmlRpc adapter (Remote Object feature)",
-        "zendframework/zend-json": "To have the JsonRpc adapter (Remote Object feature)",
-        "zendframework/zend-soap": "To have the Soap adapter (Remote Object feature)"
+        "zendframework/zend-xmlrpc":   "To have the XmlRpc adapter (Remote Object feature)",
+        "zendframework/zend-json":     "To have the JsonRpc adapter (Remote Object feature)",
+        "zendframework/zend-soap":     "To have the Soap adapter (Remote Object feature)"
     },
     "autoload": {
         "psr-0": {
@@ -41,13 +47,14 @@
     },
     "autoload-dev": {
         "psr-0": {
+            "ProxyManagerBench\\": "tests",
             "ProxyManagerTest\\": "tests",
             "ProxyManagerTestAsset\\": "tests"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }

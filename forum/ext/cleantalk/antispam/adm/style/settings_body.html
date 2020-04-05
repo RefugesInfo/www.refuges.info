@@ -75,6 +75,12 @@
 				<!-- IF CLEANTALK_ANTISPAM_KEY_IS_OK -->
 					<span style="color: green;">{L_ACP_CLEANTALK_APIKEY_IS_OK_LABEL}</span>
 					<br>
+					<!-- IF CLEANTALK_ANTISPAM_MODERATE_IP -->
+					<b>{L_ACP_CLEANTALK_MODERATE_IP} {CLEANTALK_ANTISPAM_IP_LICENSE}</b>
+					<!-- ELSE -->
+					<b>{L_ACP_CLEANTALK_ACCOUNT_NAME_OB} {CLEANTALK_ANTISPAM_ACCOUNT_NAME_OB}</b>					
+					<!-- ENDIF -->
+					<br>
 					<a href="https://www.cleantalk.org/my?user_token={CLEANTALK_ANTISPAM_USER_TOKEN}">{L_ACP_CLEANTALK_APIKEY_CP_LINK_BUTTON}</a>
 				<!-- ENDIF -->
 			</dd>
@@ -90,10 +96,16 @@
 <fieldset style="text-align: center;">
 	<form method="post">
 	<h1>{L_ACP_CLEANTALK_CHECKUSERS_TITLE}</h1><br />
-	<dl>
 		<dt>{L_ACP_CLEANTALK_CHECKUSERS_DESCRIPTION}</dt>
 		<dd style="text-align:left; margin-top: 5px;">
-			<input class="button1" type="submit" name="check_spam" value="{L_ACP_CLEANTALK_CHECKUSERS_BUTTON}" />
+			<div>
+				<input size="10" maxlength="60" type="text" name="check_spam_number" value="{CLEANTALK_CHECKUSERS_NUMBER}" />
+				{L_ACP_CLEANTALK_CHECKUSERS_NUMBER_DESCRIPTION}
+				<br>
+			</div>
+			<div>
+				<input class="button1" type="submit" name="check_spam" value="{L_ACP_CLEANTALK_CHECKUSERS_BUTTON}" />
+			</div>
 		</dd>
 	</dl>
 	{S_FORM_TOKEN}
@@ -105,38 +117,40 @@
 	<!-- ELSE -->
 	<!-- ENDIF -->
 	<!-- IF CT_TABLE_USERS_SPAM -->
-	<!-- IF CT_ACP_CHECKUSERS_DONE_1 -->
-	<h3>{L_ACP_CHECKUSERS_DONE_1}</h3><br /><br />
-	<!-- ENDIF -->
 
-	<form method="post" style="text-align: center">
+	<form method="post">
 		<table class="table1 zebra-table">
+		<p class="submit-buttons" style="text-align:right; margin-top: 5px; margin-bottom: 5px;">
+		<select name="table_actions">
+			<option value="ct_delete_checked">{L_ACP_CHECKUSERS_DELETESEL}</option> 
+			<option value="ct_delete_all">{L_ACP_CHECKUSERS_DELETEALL}</option>
+		</select>			
 			<thead>
 				<tr>
-				<th>{L_ACP_CHECKUSERS_USERNAME}</th>
-				<th>{L_ACP_CHECKUSERS_EMAIL}</th>
-				<th>{L_ACP_CHECKUSERS_IP}</th>
-				<th>{L_ACP_CHECKUSERS_JOINED}</th>
-				<th>{L_ACP_CHECKUSERS_LASTVISIT}</th>
-				<th>{L_ACP_CHECKUSERS_MESSAGES}</th>
-				<th>{L_ACP_CHECKUSERS_SELECT}</th>
+				<th></th>					
+				<th style="text-align: center;">{L_ACP_CHECKUSERS_USERNAME}</th>
+				<th style="text-align: center;">{L_ACP_CHECKUSERS_EMAIL}</th>
+				<th style="text-align: center;">{L_ACP_CHECKUSERS_IP}</th>
+				<th style="text-align: center;">{L_ACP_CHECKUSERS_JOINED}</th>
+				<th style="text-align: center;">{L_ACP_CHECKUSERS_LASTVISIT}</th>
+				<th style="text-align: center;">{L_ACP_CHECKUSERS_MESSAGES}</th>
 				</tr>
 			</thead>
 			<tbody>
 			<!-- BEGIN CT_SPAMMERS -->
 				<tr>
-				<td style="vertical-align: top;">{CT_SPAMMERS.USERNAME}</td>
-				<td style="vertical-align: top;"><a target="_blank" href="https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_EMAIL}">{CT_SPAMMERS.USER_EMAIL}</a></td>
-				<td style="vertical-align: top;"><a target="_blank" href="https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_IP}">{CT_SPAMMERS.USER_IP}</a></td>
-				<td style="vertical-align: top;">{CT_SPAMMERS.JOINED}</td>
-				<td style="vertical-align: top;">{CT_SPAMMERS.LAST_VISIT}</td>
-				<td style="vertical-align: top;"><a target="_blank" href="{CT_SPAMMERS.USER_POSTS_LINK}">{CT_SPAMMERS.USER_POSTS}</a></td>
-				<td style="vertical-align: top;"><input type="checkbox" name="ct_del_user[{CT_SPAMMERS.USER_ID}]" value="1" /></td>
+				<td style="vertical-align: top;text-align: center;"><input type="checkbox" name="ct_del_user[{CT_SPAMMERS.USER_ID}]" value="1" /></td>					
+				<td style="vertical-align: top;text-align: center;">{CT_SPAMMERS.USERNAME}</td>
+				<td style="vertical-align: top;text-align: center;"><a target="_blank" href="https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_EMAIL}">{CT_SPAMMERS.USER_EMAIL}</a></td>
+				<td style="vertical-align: top;text-align: center;"><a target="_blank" href="https://cleantalk.org/blacklists/{CT_SPAMMERS.USER_IP}">{CT_SPAMMERS.USER_IP}</a></td>
+				<td style="vertical-align: top;text-align: center;">{CT_SPAMMERS.JOINED}</td>
+				<td style="vertical-align: top;text-align: center;">{CT_SPAMMERS.LAST_VISIT}</td>
+				<td style="vertical-align: top;text-align: center;"><a target="_blank" href="{CT_SPAMMERS.USER_POSTS_LINK}">{CT_SPAMMERS.USER_POSTS}</a></td>
 				</tr>
 			<!-- END CT_SPAMMERS -->
 			</tbody>
 		</table>
-		<br />
+		<br />		
 		<div class="checkusers_pages">		
 		<p>
 			<ul>
@@ -150,9 +164,8 @@
 		</p>
 				
 		</div>
-		<p class="submit-buttons">
-		<input type=submit class="button2" name="ct_delete_checked" value="{L_ACP_CHECKUSERS_DELETESEL}" onclick="return confirm('{LA_CLEANTALK_NOTIFICATION}')">
-		<input type=submit class="button2" name="ct_delete_all" value="{L_ACP_CHECKUSERS_DELETEALL}" onclick="return confirm('{LA_CLEANTALK_NOTIFICATION}')">
+
+		<input class="button2" type="submit" id="submit" name="ct_delete" value="{L_SUBMIT}" onclick="return confirm('{LA_CLEANTALK_NOTIFICATION}')" />
 		</p>
 		<br />{L_ACP_CHECKUSERS_DELETEALL_DESCR}
 		{S_FORM_TOKEN}

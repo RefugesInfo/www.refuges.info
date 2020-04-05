@@ -46,10 +46,10 @@ $lang = array_merge($lang, array(
 	'RECAPTCHA_INCORRECT'			=> 'Die von dir eingegebene Antwort ist falsch',
 	'RECAPTCHA_NOSCRIPT'			=> 'Bitte aktiviere JavaScript in deinem Browser, um die Aufgabe zu laden.',
 
-	'RECAPTCHA_PUBLIC'				=> 'Öffentlicher reCaptcha-Schlüssel',
-	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Dein öffentlicher reCaptcha-Schlüssel. Schlüssel können über <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a> bezogen werden.',
-	'RECAPTCHA_PRIVATE'				=> 'Privater reCaptcha-Schlüssel',
-	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'Dein privater reCaptcha-Schlüssel. Schlüssel können über <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a> bezogen werden.',
+	'RECAPTCHA_PUBLIC'				=> 'Website-Schlüssel',
+	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Der reCaptcha Website-Schlüssel für deine Seite. Schlüssel können über <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a> bezogen werden. Bitte verwende das unsichtbare reCAPTCHA-Logo in der Version 2 (Typ: reCAPTCHA v2 &gt; Invisible reCAPTCHA badge).',
+	'RECAPTCHA_PRIVATE'				=> 'Geheimer Schlüssel',
+	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'Dein geheimer reCaptcha-Schlüssel. Schlüssel können über <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a> bezogen werden. Bitte verwende das unsichtbare reCAPTCHA-Logo in der Version 2 (Typ: reCAPTCHA v2 &gt; Invisible reCAPTCHA badge).',
 
-	'RECAPTCHA_EXPLAIN'				=> 'Um automatische Eingaben zu unterbinden, musst du die nachfolgende Aufgabe lösen.',
+	'RECAPTCHA_INVISIBLE'			=> 'Dieses CAPTCHA ist unsichtbar. Wenn es korrekt funktioniert, sollte ein kleines Symbol in der rechten unteren Ecke dieser Seite erscheinen.',
 ));

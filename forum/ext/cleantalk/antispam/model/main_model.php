@@ -316,7 +316,7 @@ class main_model
                 $check_srting .= $this->request->variable($this->config['cookie_name'].'_'.$cookie_name,'', false, \phpbb\request\request_interface::COOKIE);
             } unset($cokie_name);
             
-            if($cookie_test['check_value'] == md5($check_srting))
+            if($cookie_test['check_value'] == md5(htmlspecialchars_decode($check_srting)))
             {
                 return 1;
             }
@@ -409,6 +409,5 @@ class main_model
 		}
 
 	    return  $result;
-	}
-		
+	}		
 }

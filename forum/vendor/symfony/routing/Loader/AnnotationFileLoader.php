@@ -46,7 +46,7 @@ class AnnotationFileLoader extends FileLoader
      * @param string      $file A PHP file path
      * @param string|null $type The resource type
      *
-     * @return RouteCollection A RouteCollection instance
+     * @return RouteCollection|null A RouteCollection instance
      *
      * @throws \InvalidArgumentException When the file does not exist or its routes cannot be parsed
      */
@@ -56,6 +56,11 @@ class AnnotationFileLoader extends FileLoader
 
         $collection = new RouteCollection();
         if ($class = $this->findClass($path)) {
+            $refl = new \ReflectionClass($class);
+            if ($refl->isAbstract()) {
+                return null;
+            }
+
             $collection->addResource(new FileResource($path));
             $collection->addCollection($this->loader->load($class, $type));
         }
@@ -87,6 +92,11 @@ class AnnotationFileLoader extends FileLoader
         $class = false;
         $namespace = false;
         $tokens = token_get_all(file_get_contents($file));
+
+        if (1 === \count($tokens) && T_INLINE_HTML === $tokens[0][0]) {
+            throw new \InvalidArgumentException(sprintf('The file "%s" does not contain PHP code. Did you forgot to add the "<?php" start tag at the beginning of the file?', $file));
+        }
+
         for ($i = 0; isset($tokens[$i]); ++$i) {
             $token = $tokens[$i];
 
@@ -100,7 +110,7 @@ class AnnotationFileLoader extends FileLoader
 
             if (true === $namespace && T_STRING === $token[0]) {
                 $namespace = $token[1];
-                while (isset($tokens[++$i][1]) && \in_array($tokens[$i][0], array(T_NS_SEPARATOR, T_STRING))) {
+                while (isset($tokens[++$i][1]) && \in_array($tokens[$i][0], [T_NS_SEPARATOR, T_STRING])) {
                     $namespace .= $tokens[$i][1];
                 }
                 $token = $tokens[$i];
@@ -117,7 +127,7 @@ class AnnotationFileLoader extends FileLoader
                     if (T_DOUBLE_COLON === $tokens[$j][0] || T_NEW === $tokens[$j][0]) {
                         $skipClassToken = true;
                         break;
-                    } elseif (!\in_array($tokens[$j][0], array(T_WHITESPACE, T_DOC_COMMENT, T_COMMENT))) {
+                    } elseif (!\in_array($tokens[$j][0], [T_WHITESPACE, T_DOC_COMMENT, T_COMMENT])) {
                         break;
                     }
                 }

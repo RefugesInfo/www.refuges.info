@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -15,17 +15,25 @@ use Zend\Code\Annotation\AnnotationManager;
 use Zend\Code\Scanner\AnnotationScanner;
 use Zend\Code\Scanner\FileScanner;
 
+use function array_shift;
+use function array_slice;
+use function array_unshift;
+use function file;
+use function file_exists;
+use function implode;
+use function strstr;
+
 class ClassReflection extends ReflectionClass implements ReflectionInterface
 {
     /**
      * @var AnnotationScanner
      */
-    protected $annotations = null;
+    protected $annotations;
 
     /**
      * @var DocBlockReflection
      */
-    protected $docBlock = null;
+    protected $docBlock;
 
     /**
      * Return the reflection file of the declaring file.
@@ -42,7 +50,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
     /**
      * Return the classes DocBlock reflection object
      *
-     * @return DocBlockReflection
+     * @return DocBlockReflection|false
      * @throws Exception\ExceptionInterface for missing DocBock or invalid reflection class
      */
     public function getDocBlock()
@@ -62,7 +70,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
 
     /**
      * @param  AnnotationManager $annotationManager
-     * @return AnnotationCollection
+     * @return AnnotationCollection|false
      */
     public function getAnnotations(AnnotationManager $annotationManager)
     {
@@ -79,7 +87,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
         $fileScanner       = $this->createFileScanner($this->getFileName());
         $nameInformation   = $fileScanner->getClassNameInformation($this->getName());
 
-        if (!$nameInformation) {
+        if (! $nameInformation) {
             return false;
         }
 
@@ -123,7 +131,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
 
         // Ensure we get between the open and close braces
         $lines = array_slice($filelines, $startnum, $endnum);
-        array_unshift($lines, $filelines[$startnum-1]);
+        array_unshift($lines, $filelines[$startnum - 1]);
 
         return strstr(implode('', $lines), '{');
     }
@@ -136,7 +144,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
     public function getInterfaces()
     {
         $phpReflections  = parent::getInterfaces();
-        $zendReflections = array();
+        $zendReflections = [];
         while ($phpReflections && ($phpReflection = array_shift($phpReflections))) {
             $instance          = new ClassReflection($phpReflection->getName());
             $zendReflections[] = $instance;
@@ -168,7 +176,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
      */
     public function getMethods($filter = -1)
     {
-        $methods = array();
+        $methods = [];
         foreach (parent::getMethods($filter) as $method) {
             $instance  = new MethodReflection($this->getName(), $method->getName());
             $methods[] = $instance;
@@ -180,11 +188,11 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
     /**
      * Returns an array of reflection classes of traits used by this class.
      *
-     * @return array|null
+     * @return null|array
      */
     public function getTraits()
     {
-        $vals = array();
+        $vals = [];
         $traits = parent::getTraits();
         if ($traits === null) {
             return;
@@ -239,7 +247,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
     public function getProperties($filter = -1)
     {
         $phpReflections  = parent::getProperties($filter);
-        $zendReflections = array();
+        $zendReflections = [];
         while ($phpReflections && ($phpReflection = array_shift($phpReflections))) {
             $instance          = new PropertyReflection($this->getName(), $phpReflection->getName());
             $zendReflections[] = $instance;
@@ -269,7 +277,7 @@ class ClassReflection extends ReflectionClass implements ReflectionInterface
     /**
      * Creates a new FileScanner instance.
      *
-     * By having this as a seperate method it allows the method to be overridden
+     * By having this as a separate method it allows the method to be overridden
      * if a different FileScanner is needed.
      *
      * @param  string $filename

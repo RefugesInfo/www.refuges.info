@@ -26,8 +26,7 @@ class release_5_6_0 extends \phpbb\db\migration\migration
 	{
 		return array(
 			//Custom contact forms
-			array('config.add', array('cleantalk_antispam_ccf', 0)),
-			
+			array('config.add', array('cleantalk_antispam_ccf', 0)),			
 		);
 	}
 }

@@ -268,7 +268,6 @@ $lang = array_merge($lang, array(
 	'TOPIC_BUMPED'				=> 'Le sujet a été remonté.',
 
 	'UNAUTHORISED_BBCODE'		=> 'Vous ne pouvez pas utiliser certains BBCodes : %s.',
-	'UNGLOBALISE_EXPLAIN'		=> 'Pour changer cette annonce globale en sujet normal, vous devez sélectionner le forum où vous souhaitez voir apparaître le sujet.',
 	'UNSUPPORTED_CHARACTERS_MESSAGE'	=> 'Votre message contient les caractères non supportés suivants :<br>%s',
 	'UNSUPPORTED_CHARACTERS_SUBJECT'	=> 'Votre objet contient les caractères non supportés suivants :<br>%s',
 	'UPDATE_COMMENT'			=> 'Mettre à jour le commentaire',

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -14,6 +14,9 @@ use Zend\EventManager\Event;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+
+use function get_class;
+use function is_object;
 
 /**
  * Pluggable annotation manager
@@ -41,10 +44,10 @@ class AnnotationManager implements EventManagerAwareInterface
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $events->setIdentifiers(array(
+        $events->setIdentifiers([
             __CLASS__,
             get_class($this),
-        ));
+        ]);
         $this->events = $events;
 
         return $this;
@@ -75,7 +78,7 @@ class AnnotationManager implements EventManagerAwareInterface
     public function attach(ParserInterface $parser)
     {
         $this->getEventManager()
-             ->attach(self::EVENT_CREATE_ANNOTATION, array($parser, 'onCreateAnnotation'));
+             ->attach(self::EVENT_CREATE_ANNOTATION, [$parser, 'onCreateAnnotation']);
 
         return $this;
     }
@@ -91,19 +94,19 @@ class AnnotationManager implements EventManagerAwareInterface
         $event = new Event();
         $event->setName(self::EVENT_CREATE_ANNOTATION);
         $event->setTarget($this);
-        $event->setParams(array(
+        $event->setParams([
             'class'   => $annotationData[0],
             'content' => $annotationData[1],
             'raw'     => $annotationData[2],
-        ));
+        ]);
 
         $eventManager = $this->getEventManager();
-        $results = $eventManager->trigger($event, function ($r) {
-            return (is_object($r));
-        });
+        $results = $eventManager->triggerEventUntil(function ($r) {
+            return is_object($r);
+        }, $event);
 
         $annotation = $results->last();
 
-        return (is_object($annotation) ? $annotation : false);
+        return is_object($annotation) ? $annotation : false;
     }
 }

@@ -70,7 +70,6 @@ $lang = array_merge($lang, array(
 	'ATTACH_QUOTA_EXPLAIN'				=> 'Máximo en disco disponible para adjuntos en todo el sitio, 0 significa ilimitado.',
 	'ATTACH_TO_POST'					=> 'Adjuntar archivo a mensaje',
 
-	'CAT_FLASH_FILES'					=> 'Archivos Flash',
 	'CAT_IMAGES'						=> 'Imágenes',
 	'CHECK_CONTENT'						=> 'Comprobar archivos adjuntos',
 	'CHECK_CONTENT_EXPLAIN'				=> 'Algunos navegadores pueden ser engañados para que asuman un mimetype de archivos subibles incorrecto. Esta opción previene que tales archivos que puedan causar eso sean rechazados.',
@@ -100,7 +99,6 @@ $lang = array_merge($lang, array(
 	'EXT_GROUP_ARCHIVES'  				=> 'Archivos',
 	'EXT_GROUP_DOCUMENTS'  				=> 'Documentos',
 	'EXT_GROUP_DOWNLOADABLE_FILES'   	=> 'Archivos descargables',
-	'EXT_GROUP_FLASH_FILES'	  			=> 'Archivos flash',
 	'EXT_GROUP_IMAGES'	  				=> 'Imágenes',
 	'EXT_GROUP_PLAIN_TEXT'	  			=> 'Texto plano',
 

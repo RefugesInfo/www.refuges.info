@@ -3,13 +3,20 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code\Generator;
 
 use Traversable;
+
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function method_exists;
+use function sprintf;
 
 abstract class AbstractGenerator implements GeneratorInterface
 {
@@ -31,12 +38,12 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * @var string
      */
-    protected $sourceContent = null;
+    protected $sourceContent;
 
     /**
      * @param  array $options
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         if ($options) {
             $this->setOptions($options);
@@ -104,11 +111,11 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function setOptions($options)
     {
-        if (!is_array($options) && !$options instanceof Traversable) {
+        if (! is_array($options) && ! $options instanceof Traversable) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an array or Traversable object; received "%s"',
                 __METHOD__,
-                (is_object($options) ? get_class($options) : gettype($options))
+                is_object($options) ? get_class($options) : gettype($options)
             ));
         }
 

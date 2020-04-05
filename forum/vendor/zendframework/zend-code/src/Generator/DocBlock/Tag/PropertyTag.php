@@ -3,27 +3,29 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Code\Generator\DocBlock\Tag;
+
+use function ltrim;
 
 class PropertyTag extends AbstractTypeableTag implements TagInterface
 {
     /**
      * @var string
      */
-    protected $propertyName = null;
+    protected $propertyName;
 
     /**
      * @param string $propertyName
      * @param array $types
      * @param string $description
      */
-    public function __construct($propertyName = null, $types = array(), $description = null)
+    public function __construct($propertyName = null, $types = [], $description = null)
     {
-        if (!empty($propertyName)) {
+        if (! empty($propertyName)) {
             $this->setPropertyName($propertyName);
         }
 
@@ -62,9 +64,9 @@ class PropertyTag extends AbstractTypeableTag implements TagInterface
     public function generate()
     {
         $output = '@property'
-            . ((!empty($this->types)) ? ' ' . $this->getTypesAsString() : '')
-            . ((!empty($this->propertyName)) ? ' $' . $this->propertyName : '')
-            . ((!empty($this->description)) ? ' ' . $this->description : '');
+            . (! empty($this->types) ? ' ' . $this->getTypesAsString() : '')
+            . (! empty($this->propertyName) ? ' $' . $this->propertyName : '')
+            . (! empty($this->description) ? ' ' . $this->description : '');
 
         return $output;
     }

@@ -136,7 +136,7 @@ class ucp_groups
 							{
 								trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 							}
-							list(, $row) = each($row);
+							$row = current($row);
 
 							$sql = 'SELECT group_type
 								FROM ' . GROUPS_TABLE . '
@@ -240,7 +240,7 @@ class ucp_groups
 							{
 								trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 							}
-							list(, $row) = each($row);
+							$row = current($row);
 
 							if (!$row['group_leader'])
 							{
@@ -460,7 +460,7 @@ class ucp_groups
 						{
 							trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 						}
-						list(, $row) = each($row);
+						$row = current($row);
 
 						if (!$row['group_leader'])
 						{
@@ -754,7 +754,7 @@ class ucp_groups
 						{
 							trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 						}
-						list(, $row) = each($row);
+						$row = current($row);
 
 						if (!$row['group_leader'])
 						{
@@ -884,7 +884,7 @@ class ucp_groups
 						{
 							trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 						}
-						list(, $row) = each($row);
+						$row = current($row);
 
 						if (!$row['group_leader'])
 						{
@@ -911,7 +911,7 @@ class ucp_groups
 						{
 							trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 						}
-						list(, $row) = each($row);
+						$row = current($row);
 
 						if (!$row['group_leader'])
 						{
@@ -990,7 +990,7 @@ class ucp_groups
 						{
 							trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 						}
-						list(, $row) = each($row);
+						$row = current($row);
 
 						if (!$row['group_leader'])
 						{
@@ -1051,7 +1051,7 @@ class ucp_groups
 						{
 							trigger_error($user->lang['NOT_MEMBER_OF_GROUP'] . $return_page);
 						}
-						list(, $row) = each($row);
+						$row = current($row);
 
 						if (!$row['group_leader'])
 						{

@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'ACP_BBCODES_EXPLAIN'		=> 'Le BBCode est une implémentation spéciale du HTML qui offre un plus grand contrôle sur l’affichage des messages. Depuis cette page, vous pouvez ajouter, supprimer ou modifier des BBCodes personnalisés.',
 	'ADD_BBCODE'				=> 'Ajouter un nouveau BBCode',
 
-	'BBCODE_DANGER'				=> 'Le BBCode que vous tentez d’ajouter semble utiliser un champ {TEXT} à l’intérieur d’un attribut HTML. Ceci est une éventuelle faille de sécurité XSS. Essayez d’utiliser à la place des variables plus restrictives comme {SIMPLETEXT} ou {INTTEXT}. Procédez uniquement si vous comprenez les risques potentiels et que vous jugez l’utilisation de {TEXT} absolument inévitable.',
+	'BBCODE_DANGER'				=> 'Le BBCode que vous tentez d’ajouter ne semble pas sûr. Si le BBCode utilise un champ de type {TEXT} dans un contexte sensible, essayez plutôt un type plus restrictif. Ne validez que si vous comprenez les risques encourus.',
 	'BBCODE_DANGER_PROCEED'		=> 'Procédez', //'I understand the risk',
 
 	'BBCODE_ADDED'				=> 'BBCode ajouté.',
@@ -58,6 +58,7 @@ $lang = array_merge($lang, array(
 
 	'BBCODE_INVALID_TAG_NAME'	=> 'Le nom de la balise BBCode que vous avez sélectionné existe déjà.',
 	'BBCODE_INVALID'			=> 'Votre BBCode est construit dans une forme invalide.',
+	'BBCODE_INVALID_TEMPLATE'	=> 'Votre modèle de BBCode n’est pas valide.',
 	'BBCODE_TAG'				=> 'Balise',
 	'BBCODE_TAG_TOO_LONG'		=> 'Le nom de la balise que vous avez sélectionné est trop long.',
 	'BBCODE_TAG_DEF_TOO_LONG'	=> 'La définition de la balise que vous avez entrée est trop longue, raccourcissez votre définition.',

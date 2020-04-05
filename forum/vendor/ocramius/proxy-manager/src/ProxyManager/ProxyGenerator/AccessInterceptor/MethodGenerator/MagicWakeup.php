@@ -16,11 +16,14 @@
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ProxyManager\ProxyGenerator\AccessInterceptor\MethodGenerator;
 
 use ProxyManager\Generator\MagicMethodGenerator;
+use ProxyManager\ProxyGenerator\Util\Properties;
+use ProxyManager\ProxyGenerator\Util\UnsetPropertiesGenerator;
 use ReflectionClass;
-use ReflectionProperty;
 
 /**
  * Magic `__wakeup` for lazy loading value holder objects
@@ -32,19 +35,16 @@ class MagicWakeup extends MagicMethodGenerator
 {
     /**
      * Constructor
+     *
+     * @param ReflectionClass $originalClass
      */
     public function __construct(ReflectionClass $originalClass)
     {
         parent::__construct($originalClass, '__wakeup');
 
-        /* @var $publicProperties \ReflectionProperty[] */
-        $publicProperties = $originalClass->getProperties(ReflectionProperty::IS_PUBLIC);
-        $unsetProperties  = array();
-
-        foreach ($publicProperties as $publicProperty) {
-            $unsetProperties[] = '$this->' . $publicProperty->getName();
-        }
-
-        $this->setBody($unsetProperties ? 'unset(' . implode(', ', $unsetProperties) . ");" : '');
+        $this->setBody(UnsetPropertiesGenerator::generateSnippet(
+            Properties::fromReflectionClass($originalClass),
+            'this'
+        ));
     }
 }

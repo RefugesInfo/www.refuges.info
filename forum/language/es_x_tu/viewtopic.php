@@ -53,7 +53,7 @@ $lang = array_merge($lang, array(
 
 	'DELETE_TOPIC'			=> 'Borrar tema',
 	'DELETED_INFORMATION'	=> 'Borrado por %1$s el %2$s',
-	'DISAPPROVE'					=> 'Desaprobar',
+	'DISAPPROVE'			=> 'Desaprobar',
 	'DOWNLOAD_NOTICE'		=> 'No tienes los permisos requeridos para ver los archivos adjuntos a este mensaje.',
 
 	'EDITED_TIMES_TOTAL'	=> array(
@@ -74,7 +74,7 @@ $lang = array_merge($lang, array(
 	'MAKE_ANNOUNCE'				=> 'Cambiar a "Anuncio"',
 	'MAKE_GLOBAL'				=> 'Cambiar a "Global"',
 	'MAKE_NORMAL'				=> 'Cambiar a "Tema"',
-	'MAKE_STICKY'				=> 'Cambiar a "Nota"',
+	'MAKE_STICKY'				=> 'Cambiar a "Fijo"',
 	'MAX_OPTIONS_SELECT'		=> array(
 		1	=> 'Puedes seleccionar <strong>%d</strong> opción',
 		2	=> 'Puedes seleccionar hasta <strong>%d</strong> opciones',
@@ -123,5 +123,4 @@ $lang = array_merge($lang, array(
 	'VIEW_UNREAD_POST'		=> 'Primer mensaje sin leer',
 	'VOTE_SUBMITTED'		=> 'Tu voto ha sido enviado',
 	'VOTE_CONVERTED'		=> 'El cambio de voto no está soportado en encuestas convertidas.',
-
 ));

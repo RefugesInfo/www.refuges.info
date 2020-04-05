@@ -55,6 +55,8 @@ $lang = array_merge($lang, array(
 	'DISABLE_BOARD_EXPLAIN'			=> 'Questa opzione renderà la Board non disponibile per gli utenti che non sono amministratori o moderatori. È anche possibile inserire un breve messaggio di spiegazione (non deve superare i 255 caratteri).',
 	'DISPLAY_LAST_SUBJECT'			=> 'Visualizza l’oggetto dell’ultimo messaggio aggiunto nella lista forum',
 	'DISPLAY_LAST_SUBJECT_EXPLAIN'	=> 'L’oggetto dell’ultimo messaggio aggiunto sarà visualizzato nella lista dei forum con un link relativo al messaggio stesso. Gli oggetti relativi a forum protetti da password e di cui l’utente non dispone di permessi in lettura, non vengono visualizzati.',
+	'DISPLAY_UNAPPROVED_POSTS'		=> 'Mostra i messaggi non approvati dall’autore',
+	'DISPLAY_UNAPPROVED_POSTS_EXPLAIN'	=> 'I messaggi non approvati possono essere visualizzati dall’autore. Non si applica ai messaggi degli ospiti.',
 	'GUEST_STYLE'					=> 'Stile per gli ospiti',
 	'GUEST_STYLE_EXPLAIN'			=> 'Lo stile della Board per gli ospiti',
 	'OVERRIDE_STYLE'				=> 'Annulla lo stile dell’utente',
@@ -441,7 +443,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_TITLE'					=> 'OAuth',
 	'AUTH_PROVIDER_OAUTH_SECRET'				=> 'Segreta',
 
-	'APACHE_SETUP_BEFORE_USE'	=> 'Devi impostare l’autenticazione Apache prima di configurare su phpBB questo metodo di autenticazione. Ricorda che il nome utente che usi per l’autenticazione Apache deve essere uguale al tuo nome utente per phpBB. L’autenticazione Apache può essere usata solo con mod_php (non con una versione CGI) e con il safe_mode disabilitato.',
+	'APACHE_SETUP_BEFORE_USE'	=> 'Devi impostare l’autenticazione Apache prima di configurare su phpBB questo metodo di autenticazione. Ricorda che il nome utente che usi per l’autenticazione Apache deve essere uguale al tuo nome utente per phpBB. L’autenticazione Apache può essere usata solo con mod_php (non con una versione CGI).',
 
 	'LDAP'							=> 'LDAP',
 	'LDAP_DN'						=> 'LDAP base <var>dn</var>',
