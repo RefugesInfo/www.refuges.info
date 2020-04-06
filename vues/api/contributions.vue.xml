@@ -13,7 +13,7 @@ header("Cache-Control: max-age=$secondes_de_cache");
 include("xml.class.php");
 
 $xmlOutput = new XMLSerializer;
-$news['copyright'] = $config_wri[copyright_API];
+$news['copyright'] = $config_wri['copyright_API'];
 echo $xmlOutput->generateValidXmlFromArray($news);
 
 ?>

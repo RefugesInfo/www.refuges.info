@@ -5,7 +5,7 @@ header("Content-Transfer-Encoding: binary");
 
 $separateur=";";
 
-echo "#".$config_wri[copyright_API]."\r\n";
+echo "#".$config_wri['copyright_API']."\r\n";
 echo "id_point".$separateur."nom".$separateur."type".$separateur."altitude".$separateur."latitude".$separateur."longitude".$separateur."état".$separateur."nombre de place".$separateur."lien\r\n";
 
 foreach ($points AS $point) {

@@ -16,36 +16,36 @@ $rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
 $rss .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
 $rss .= "<channel>\r\n";
 $rss .= "	<title>Refuges.info</title>\r\n";
-$rss .= "	<link>https://$config_wri[nom_hote]/</link>\r\n";
-$rss .= "	<atom:link href=\"https://$config_wri[nom_hote]".htmlspecialchars($_SERVER["REQUEST_URI"])."\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
-$rss .= "	<description>$config_wri[copyright_API]</description>\r\n";
+$rss .= "	<link>https://".$config_wri['nom_hote']."/</link>\r\n";
+$rss .= "	<atom:link href=\"https://".$config_wri['nom_hote'].htmlspecialchars($_SERVER["REQUEST_URI"])."\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
+$rss .= "	<description>".$config_wri['copyright_API']."</description>\r\n";
 $rss .= "	<language>fr</language>\r\n";
 $rss .= "	<image>\r\n";
-$rss .= "		<url>https://$config_wri[nom_hote]/images/icone-rss.svg</url>\r\n";
+$rss .= "		<url>https://".$config_wri['nom_hote']."/images/icone-rss.svg</url>\r\n";
 $rss .= "		<title>Refuges.info</title>\r\n";
-$rss .= "		<link>https://$config_wri[nom_hote]/</link>\r\n";
+$rss .= "		<link>https://".$config_wri['nom_hote']."/</link>\r\n";
 $rss .= "		<height>64</height>\r\n";
 $rss .= "		<width>64</width>\r\n";
 $rss .= "	</image>\r\n";
 
 foreach ($news AS $nouvelle) {
 	$rss .= "	<item>\r\n";
-	$rss .= "		<title>$nouvelle[categorie] : $nouvelle[titre]</title>\r\n";
-	$rss .= "		<link>$nouvelle[lien]</link>\r\n";
-	$rss .= "		<guid>$nouvelle[lien]</guid>\r\n";
+	$rss .= "		<title>".$nouvelle['categorie']." : ".$nouvelle['titre']."</title>\r\n";
+	$rss .= "		<link>".$nouvelle['lien']."</link>\r\n";
+	$rss .= "		<guid>".$nouvelle['lien']."</guid>\r\n";
 	$rss .= "		<pubDate>".date(r,$nouvelle['date'])."</pubDate>\r\n";
 	$rss .= "		<description><![CDATA[
-			<b><big>$nouvelle[texte]</big></b><br>\r\n";
+			<b><big>".$nouvelle['texte']."</big></b><br>\r\n";
 	switch ($nouvelle['categorie']) {
 		case 'Commentaire':
-			$rss .= "			<p style='color:grey;'>$nouvelle[commentaire]";
+			$rss .= "			<p style='color:grey;'>".$nouvelle['commentaire']."";
 			if ($nouvelle['photo']) {
-				$rss .= "<br><a href='$nouvelle[photo_originale]'><img src='$nouvelle[photo_mini]' /></a>";
+				$rss .= "<br><a href='".$nouvelle['photo_originale']."'><img src='".$nouvelle['photo_mini']."' /></a>";
 			}
 			$rss .= "</p>\r\n";
 			break;
 		case 'Point':
-			$rss .= "			<p style='color:grey;'><b>Remarques :</b> $nouvelle[remarques]<br><b>Accès :</b> $nouvelle[acces]</p>";
+			$rss .= "			<p style='color:grey;'><b>Remarques :</b> ".$nouvelle['remarques']."<br><b>Accès :</b> ".$nouvelle['acces']."</p>";
 			break;
 	}
 	$rss .= "			]]></description>\r\n";

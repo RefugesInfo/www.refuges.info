@@ -16,7 +16,7 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 	xmlns:gml=\"http://www.opengis.net/gml\"
 	xmlns:topp=\"http://www.openplans.org/topp\">
 	<name>points.gml</name>
-	<description>$config_wri[copyright_API]</description>\r\n";
+	<description>".$config_wri['copyright_API']."</description>\r\n";
 
 foreach ($polygones as $polygone) {
 	echo "	<gml:featureMember>

@@ -17,7 +17,7 @@ $kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
 $kml .= "<kml xmlns=\"http://earth.google.com/kml/2.1\">\r\n";
 $kml .= "<Document>\r\n";
 $kml .= "	<name>points.kml</name>\r\n";
-$kml .= "	<description>$config_wri[copyright_API]</description>\r\n\r\n";
+$kml .= "	<description>".$config_wri['copyright_API']."</description>\r\n\r\n";
 	
 $kml .= "<!-- Liste des STYLES -->\r\n\r\n";
 $icones_possibles=liste_icones_possibles();
@@ -50,7 +50,7 @@ foreach ($points AS $point) {
 	$kml .= "			<name>$point->nom</name>\r\n";
 	$kml .= "			<description>\r\n";
 	$kml .= "				<![CDATA[\r\n";
-	$kml .= "					<img src=\"https://$config_wri[nom_hote]/images/icones/".$point->type['icone'].".png\" />\r\n";
+	$kml .= "					<img src=\"https://".$config_wri['nom_hote']."/images/icones/".$point->type['icone'].".png\" />\r\n";
 	$kml .= "					(<em>".$point->type['valeur']."</em>) <br />\r\n";
 	$kml .= "					<center><a href='$point->lien'>Détails</a></center>\r\n";
 	$kml .= "				]]>\r\n";

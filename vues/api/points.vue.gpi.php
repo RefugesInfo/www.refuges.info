@@ -14,7 +14,7 @@ $gpx = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>
     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">
 <metadata>
 	<name>points.gpx</name>
-	<desc>$config_wri[copyright_API]</desc>
+	<desc>".$config_wri['copyright_API']."</desc>
 	<author>
 		<name>Contributeurs refuges.info</name>
 	</author>
@@ -22,8 +22,8 @@ $gpx = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>
 		<year>2014</year>
 		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 	</copyright>
-	<link href=\"https://$config_wri[nom_hote]/\">
-		<text>https://$config_wri[nom_hote]/</text>
+	<link href=\"https://".$config_wri['nom_hote']."/\">
+		<text>https://".$config_wri['nom_hote']."/</text>
 		<type>text/html</type>
 	</link>
 </metadata>\r\n";
@@ -42,7 +42,7 @@ foreach ($points AS $point) {
 		if ($req->detail == "complet")
 		  $gpx .= "	<src>".$point->coord['precision']['nom']."</src>\r\n";
 		$gpx .= "	<link href=\"$point->lien\">\r\n";
-		$gpx .= "		<text>$point->nom sur $config_wri[nom_hote]</text>\r\n";
+		$gpx .= "		<text>$point->nom sur ".$config_wri['nom_hote']."</text>\r\n";
 		$gpx .= "		<type>text/html</type>\r\n";
 		$gpx .= "	</link>\r\n";
 	}

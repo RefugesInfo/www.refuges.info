@@ -7,7 +7,7 @@ header("Content-Transfer-Encoding: binary");
 include("xml.class.php");
 
 $xmlOutput = new XMLSerializer;
-$points->copyright = $config_wri[copyright_API];
+$points->copyright = $config_wri['copyright_API'];
 echo $xmlOutput->generateValidXmlFromObj($points);
 
 
