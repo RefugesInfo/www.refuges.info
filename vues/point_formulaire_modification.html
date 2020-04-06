@@ -9,7 +9,7 @@
 
 <div class="contenu">
 	<?
-	if (!count($vue->etapes))
+	if (!@count($vue->etapes))
   { ?>
     <dl> <?
     foreach ($vue->etapes as $etape)
