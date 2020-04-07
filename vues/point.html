@@ -79,16 +79,8 @@
 				<?if (!$vue->mini_carte) {?>
 					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
-					<span id="coordonnees-value">
-						Longitude:
-						<em id="marqueur-lon"><?=$vue->point->longitude?></em>,
-						Latitude:
-						<em id="marqueur-lat"><?=$vue->point->latitude?></em> (WGS84),
-					</span>
-					<span>
-						X : <em id="marqueur-x"></em>,
-						Y : <em id="marqueur-y"></em> (CH 1903)
-					</span>
+					<input type="hidden" id="marqueur-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}' />
+					<span id="marqueur"></span>
             </dd>
 			<dd>
 				Export:

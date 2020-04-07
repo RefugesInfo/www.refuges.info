@@ -1,7 +1,7 @@
 Dominique92.MyOl
 ================
 * This package adds many features to [openlayer maps](https://openlayers.org/)
-* It is deployed on [alpages.info](http://alpages.info)
+* It is deployed on [refuges.info](https://www.refuges.info) [alpages.info](https://alpages.info)
 
 SIMPLE EXAMPLE
 ==============
