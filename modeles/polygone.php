@@ -249,7 +249,7 @@ function edit_info_polygone()
       ."article_partitif = '$article_partitif', "
       ."nom_polygone = '$nom_polygone', "
       ."id_polygone_type = '{$_POST['id_polygone_type']}', "
-      ."geom = ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326) "
+      ."geom = st_makevalid(ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326)) "
       ."WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_update);
         if (!$res)
@@ -269,7 +269,7 @@ function edit_info_polygone()
         {
             // Alors, on le crée
             $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone, geom) ".
-        "VALUES ({$_POST['id_polygone_type']}, '$article_partitif', '$nom_polygone', ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326))";
+        "VALUES ({$_POST['id_polygone_type']}, '$article_partitif', '$nom_polygone', st_makevalid(ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326)))";
             $res=$pdo->query($query_cree);
             if (!$res)
                 erreur('Requête impossible',$query_cree);
