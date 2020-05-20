@@ -47,10 +47,13 @@ const controls = [
 		selectorName: 'couche-massif',
 		noMemSelection: true,
 		receiveProperties: function(properties, feature) {
-			// Converti les polygones en lignes pour ne pas activer le curseur en passant à l'intérieur du massif
+			// Convertit les polygones en lignes pour ne pas activer le curseur en passant à l'intérieur du massif
+			let multi = [];
+			for(c in feature.geometry.coordinates)
+				multi = multi.concat(feature.geometry.coordinates[c]);
 			feature.geometry = {
 				type: 'MultiLineString',
-				coordinates: feature.geometry.coordinates[0],
+				coordinates: multi,
 			};
 			// Pas d'étiquette sur le bord du massif
 			properties.type = null;
