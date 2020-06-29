@@ -74,7 +74,7 @@ else // le point est valide
         
         $conditions->avec_distance=True;
         $points_proches=infos_points($conditions);
-        if (@count($points_proches))
+        if (count($points_proches))
             foreach ($points_proches as $point_proche) 
             {
                 //On ne veut pas dans les points proches le point lui même
@@ -97,7 +97,7 @@ else // le point est valide
     }
 
     /***********  détermination si le point se situe dans une réserve naturelle / zone réglementée *******/
-    if (@count($point->polygones))
+    if (count($point->polygones))
         foreach ($point->polygones as $polygone)
             if ($polygone->id_polygone_type==$config_wri['id_zone_reglementee'])
                 $vue->polygone_avec_information=$polygone;

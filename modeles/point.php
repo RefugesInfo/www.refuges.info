@@ -366,9 +366,9 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
   // Requête impossible à executer
   if ($points->erreur)
     return erreur($points->message);
-  if (@count($points)==0)
+  if (count($points)==0)
     return erreur("Le numéro de point demandé \"$conditions->ids_points\" est introuvable dans notre base");
-  if (@count($points)>1)
+  if (count($points)>1)
     return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu...");
 
     $i=0;
@@ -487,11 +487,11 @@ function infos_point_forum ($point)
     date_default_timezone_set('UTC');
 
     if (strlen($res->post_text)) { // Elimine le premier post généré automatiquement lors de la création du point
-      if (@count($result) == $config_wri['point_posts_nb_max_post']) {
+      if (count($result) == $config_wri['point_posts_nb_max_post']) {
         $res->date_humaine = '. . . voir les autres.';
         $res->post_text = '';
       }
-      if (@count($result) <= $config_wri['point_posts_nb_max_post']) // Elimine le premier post généré automatiquement lors de la création du point
+      if (count($result) <= $config_wri['point_posts_nb_max_post']) // Elimine le premier post généré automatiquement lors de la création du point
         $result[] = $res;
     }
   }
