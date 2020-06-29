@@ -23,6 +23,9 @@ require_once ("forum.php");
 // On appelle le fichier qui va chercher les infos dans phpBB
 require_once ($config_wri['racine_projet'] . "forum/ext/RefugesInfo/couplage/autoconnexion.php");
 
+// phpBB défini lui même sa fonction pour gérer les erreurs, on n'en veut pas merci ! surtout qu'elle est active, même si on semble avoir fait ce qu'il faut pour mettre en mode sans affichage d'erreur (ou alors j'ai pas trouvé sur php 3.3)
+restore_error_handler();
+
 // Fonction qui va permettre ensuite d'afficher la "petite étoile :*" en haut à coté du nom du modérateur
 // Pour le prévenir si un commentaire est en attente avec une demande de correction
 // FIXME sly 2020 : cette fonction n'a rien à faire dans autoconnexion.php c'est pas bien rangé ! Il faudrait la mettre heu, ailleurs ;-) en rapport à la gestion ? mais qui doit quand même être disponible quand le bandeau va se charger vu que c'est lui qui contient l'*
