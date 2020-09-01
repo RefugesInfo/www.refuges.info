@@ -169,10 +169,6 @@ mb_internal_encoding("UTF-8");
 // donc en lui disant "UTC" il ne fait pas d'ajout et nous laisse les heures comme elle devrait être
 date_default_timezone_set('UTC');
 
-// ************* anti-spam, boulets, réservateurs et autres personnes dont on doit se protéger
-// Filtrage géographique des inscriptions
-//$config_wri['filtre_geo'] = '40 52 -5 10'; // Zone autorisée: latitude_min latitude_max longitude_min longitude_max
-
 // Censure des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
 $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
 

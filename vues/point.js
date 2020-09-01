@@ -6,7 +6,6 @@
 // $config_wri les données communes à tout WRI
 
 include ($config_wri['racine_projet'].'vues/includes/cartes.js');
-include ($config_wri['racine_projet'].'vues/includes/meteo.js');
 ?>
 const controls = [
 		layersSwitcher,
