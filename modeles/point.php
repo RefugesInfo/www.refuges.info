@@ -459,6 +459,7 @@ function texte_non_ouverte($point)
 function infos_point_forum ($point)
 {
   global $config_wri,$pdo;
+  $result = array();
 
   $q="SELECT *
       FROM phpbb3_posts

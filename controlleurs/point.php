@@ -152,6 +152,8 @@ else // le point est valide
         unset($val);
     }
     /*********** Préparation des infos des commentaires ***/
+    $vue->commentaires=array();
+    $vue->commentaires_avec_photo=array();
     foreach ($tous_commentaires AS $commentaire)
     {
         $commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
