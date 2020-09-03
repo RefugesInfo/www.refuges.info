@@ -154,7 +154,7 @@
 			<dt>Remarques:</dt>
 			<dd><?=$vue->remark?></dd>
 <!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
-			<?php if (isset($vue->infos_complementaires)) { ?>
+			<?php if (count($vue->infos_complementaires)) { ?>
 
 			<dt style='clear: left;'>Informations complémentaires:</dt>
 			<?php foreach ($vue->infos_complementaires as $champ => $val) { ?>

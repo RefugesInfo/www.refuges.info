@@ -201,6 +201,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
     $nb=0;
     // Et je ne prends que les $nombre première ou toutes s'il y en a moins que $nombre
     // FIXME c'est à faire dans le controleur ça, pas dans le modèle
+    $nouvelles = array ();
     foreach ($news_array as $nouvelle)
     {
         $nouvelles[]=$nouvelle;
@@ -253,6 +254,7 @@ function texte_nouvelles($nouvelles) {
         }
         $nouvelles[$key]['texte'] = $texte;
     }
+    
     return $nouvelles;
 }
 

@@ -1,17 +1,24 @@
 <div class="contenu">
 <h4><?=$vue->titre?></h4>
-<?php
-if (isset($vue->etapes))
-{ ?>
-<dl> <?php
-foreach ($vue->etapes as $etape)
-{
-    // les etapes en listes DT, plus approprié, le style au besoin en CSS
-    ?>
-    <dt><?=$etape->titre?></dt>
-    <dd><?=$etape->texte?></dd>
-    <?}?>
-    </dl>  
+<dl> 
+  <dt>Licence des contenus</dt>
+  <dd>
+    <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
+  </dd>
+</dl>  
+<dl> 
+  <dt>Que mettre ou ne pas mettre ?</dt>
+  <dd>
+    <p>Tout ne trouve pas sa place sur le site, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
+  </dd>
+</dl>
+<?php if (!isset($_SESSION['id_utilisateur'])) { ?>
+<dl> 
+  <dt>Pas encore de compte ?</dt>
+  <dd>
+    <p>Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur.</p>
+  </dd>
+</dl>  
 <?php } ?>
 
 <h5>Vous souhaitez ajouter :</h5>

@@ -74,6 +74,7 @@ else // le point est valide
         
         $conditions->avec_distance=True;
         $points_proches=infos_points($conditions);
+        $vue->points_proches = array();
         if (count($points_proches))
             foreach ($points_proches as $point_proche) 
             {

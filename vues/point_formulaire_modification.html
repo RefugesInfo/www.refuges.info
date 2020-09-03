@@ -8,23 +8,9 @@
 ?>
 
 <div class="contenu">
-	<?
-	if (!count($vue->etapes))
-  { ?>
-    <dl> <?
-    foreach ($vue->etapes as $etape)
-    {
-      // les etapes en listes DT, plus approprié, le style au besoin en CSS
-      ?>
-      <dt><?=$etape->titre?></dt>
-      <dd><?=$etape->texte?></dd>
-    <?}?>
-    </dl>  <?
-  }
-?>
     <div id="carte-edit"></div>
     <form class="wri" id="form_point" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_modification">
-    <div><?
+    <div><?php
     foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
         <?=$bouton->label?>
@@ -33,7 +19,7 @@
     </div>
     <div>
     <!-- Champs cachés -->
-    <?
+    <?php
     foreach ($vue->champs->invisibles as $nom => $params)
     { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />

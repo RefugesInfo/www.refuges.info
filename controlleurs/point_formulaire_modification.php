@@ -9,7 +9,6 @@ require_once ("utilisateur.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
-$vue->etapes = new stdClass; // les etapes, les titres complementaires affiches en haut
 $vue->champs = new stdClass; // contiendra TOUS les champs de formulaire qui seront passés au V de MVC (je yip suis converti)
 $vue->champs->invisibles = new stdClass;  // champs invisibles a passer quand meme (ancien id ...)
 $vue->champs->textareas = new stdClass;
@@ -96,17 +95,6 @@ elseif ( isset($_REQUEST["id_point_type"]))
     $icone="&amp;iconecenter=".$point->nom_icone;
     $action="Ajout";
     $verbe="Ajouter";
-    
-    $vue->etapes->saisie = new stdClass;
-    $vue->etapes->saisie->titre = "Saisie";
-    $vue->etapes->saisie->texte = "Rien d'obligatoire mais essayez d'être précis ne laissez pas les valeurs par défaut; au pire, remplacez par un blanc.";
-    
-    if (!isset($_SESSION['id_utilisateur']))
-    {
-        $vue->etapes->guest = new stdClass;
-        $vue->etapes->guest->titre = "Non connecté ?";
-        $vue->etapes->guest->texte = "Je note que vous n'êtes pas connecté avec un compte du forum, rien de grave à ça, mais vous ne pourrez pas revenir ensuite modifier la fiche";
-    }
 }
 // 3) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
