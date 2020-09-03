@@ -46,12 +46,12 @@ else // le point est valide
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
     
-    if ($point->polygones)
-        foreach ($point->polygones as $polygone)
-        {
-            if (in_array($polygone->categorie_polygone_type,array("administrative","montagnarde"))) // il existe d'autres catégories de polygone comme "interne" ce sont des polygones de positionnement de point de vu carte sans intérêt dans notre cas ici. Plutôt que de procéder par blacklist (categorie_polygone_type!="" je préfère finalement lister ceux que je veux)
-                $vue->localisation_point[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
-        }
+    $vue->localisation_point = array();
+    foreach ($point->polygones as $polygone)
+    {
+        if (in_array($polygone->categorie_polygone_type,array("administrative","montagnarde"))) // il existe d'autres catégories de polygone comme "interne" ce sont des polygones de positionnement de point de vu carte sans intérêt dans notre cas ici. Plutôt que de procéder par blacklist (categorie_polygone_type!="" je préfère finalement lister ceux que je veux)
+            $vue->localisation_point[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
+    }
     if ($point->modele!=1)
       $vue->forum_point = infos_point_forum ($point);
     $vue->lienforum=$config_wri['forum_refuge'].$point->topic_id;
@@ -75,18 +75,17 @@ else // le point est valide
         $conditions->avec_distance=True;
         $points_proches=infos_points($conditions);
         $vue->points_proches = array();
-        if (count($points_proches))
-            foreach ($points_proches as $point_proche) 
+        foreach ($points_proches as $point_proche) 
+        {
+            //On ne veut pas dans les points proches le point lui même
+            if ($point_proche->id_point!=$point->id_point)
             {
-                //On ne veut pas dans les points proches le point lui même
-                if ($point_proche->id_point!=$point->id_point)
-                {
-                    $point_proche->lien=lien_point($point_proche);
-                    $point_proche->nom=mb_ucfirst($point_proche->nom);
-                    $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
-                    $vue->points_proches[]=$point_proche;
-                }
+                $point_proche->lien=lien_point($point_proche);
+                $point_proche->nom=mb_ucfirst($point_proche->nom);
+                $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
+                $vue->points_proches[]=$point_proche;
             }
+        }
             
         /*********** Détermination de la carte à afficher ***/
         $vue->mini_carte=TRUE;
@@ -98,10 +97,9 @@ else // le point est valide
     }
 
     /***********  détermination si le point se situe dans une réserve naturelle / zone réglementée *******/
-    if (count($point->polygones))
-        foreach ($point->polygones as $polygone)
-            if ($polygone->id_polygone_type==$config_wri['id_zone_reglementee'])
-                $vue->polygone_avec_information=$polygone;
+    foreach ($point->polygones as $polygone)
+        if ($polygone->id_polygone_type==$config_wri['id_zone_reglementee'])
+            $vue->polygone_avec_information=$polygone;
             
     /*********** Préparation de la présentation du point ***/
     if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur ))
@@ -115,7 +113,8 @@ else // le point est valide
     // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dur, comme par exemple récupérer
     // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
     $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points'],array('site_officiel'));
-   
+
+    $vue->infos_complementaires = array ();
     foreach ($champs as $champ) 
     {
         $champ_equivalent = "equivalent_$champ";

@@ -91,7 +91,7 @@ function infos_points($conditions)
     $champs_en_plus="";
     $conditions_sql="";
     $tables_en_plus="";
-    $points = [];
+    $points = array ();
 
     // condition de limite en nombre
     if (!empty($conditions->limite))
@@ -352,6 +352,7 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config_wri,$pdo;
+  
   $conditions = new stdClass();
   $conditions->ids_points=$id_point;
   if (empty($id_point))
@@ -390,6 +391,7 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
         ORDER BY polygone_type.ordre_taille DESC";
 
     $res = $pdo->query($query_polygones);
+    $point->polygones = array ();
     if ( $polygones_du_point = $res->fetch() )
         do
         {
