@@ -4,13 +4,13 @@ Information de type privée à renseigner selon vos
 paramètres locaux (données de type privées à ne pas publier)
 *************************************************/
 
+// Les ??? sont à remplacer par les paramètres de votre configuration
+
 // Accès à Postgresql
-/* A décommenter et renseigner si forum/config.php ne contient pas ces informations
 $config_wri['serveur_pgsql']="???";
 $config_wri['utilisateur_pgsql']="???";
 $config_wri['mot_de_passe_pgsql']="???";
 $config_wri['base_pgsql']="???";
-*/
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['ign_key']='???'; // http://professionnels.ign.fr/user
@@ -35,7 +35,12 @@ $config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 // + affichage des erreurs dans le navigateur (commenter les lignes plus bas pour un mixe)
 // sert aussi à afficher les lien de validation xhtml en bas de page (histoire de ne pas ennuier tout le monde avec ça)
 // Par défaut à false, à mettre à décommenter pour les développeurs qui le veulent
-// $config_wri['debug']=true;
+//$config_wri['debug']=true;
+
+// A activer pour debugger les erreurs 500
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
 
 // Aprés l'installation des fichiers, veuillez exécuter l'utilitaire /install.php
 // Qui vérifiera les paramètres et installera ou upgradera la forum si nécéssaire
