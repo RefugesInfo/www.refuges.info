@@ -102,6 +102,7 @@ function infos_polygones($conditions)
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
     // sly: faire que cette requête un peu plus lourde ne soit pas systématiquement utilisée, sauf demande
+    // sly: 2020 quand un massif est dans une zone, mais en touche une autre (en bordure) ça sort au pif une zone, parfois celle juste touchée. Le AND NOT ST_TOUCHES gère ce cas
     if ($conditions->avec_zone_parente)
         $champs_en_plus.=",
         (
@@ -110,7 +111,7 @@ function infos_polygones($conditions)
           WHERE
             zones.id_polygone_type=".$config_wri['id_zone']."
             AND
-            ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+            ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) LIMIT 1
         ) AS id_zone ,
         (
           SELECT nom_polygone
@@ -118,7 +119,7 @@ function infos_polygones($conditions)
           WHERE
             zones.id_polygone_type=".$config_wri['id_zone']."
             AND
-            ST_INTERSECTS(polygones.geom, zones.geom) LIMIT 1
+            ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) LIMIT 1
         ) AS nom_zone
         ";
 
