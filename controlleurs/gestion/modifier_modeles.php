@@ -1,17 +1,19 @@
 <?php
 /***
-Contrôleur qui prépare la vue pour les pages de modification des modeles
+Dans notre table "points" il y a des fiches de points inexistants, précisément une par type de point (cabane, gîte, point d'eau, ...)
+ce sont les modeles, dont le champ modele vaut 1 et qui servent à pré-remplir les champs et cases à cocher d'un futur vrai point.
+L'avantage, c'est qu'on peut utiliser le code/formulaire de modification classique pour que chaque modérateur puisse facilement modifier le modèle sans rentrer dans d'obscurs fichiers texte ou outils.
+L'inconvenient c'est qu'il faut bien penser à les exclure de pratiquement toutes les requêtes du site. Chose faite de manière par défaut dans modele/points.php
+
+Ce contrôlleur génére la liste de ces fiches en demandant spécifiquement et uniquement les modèles et faisant un lien vers la modification des modèles
+
 ***/
 
-// Ajout au template de la liste des types de points
-$query="
-	SELECT id_point, nom_type
-	FROM points
-	NATURAL JOIN point_type
-	WHERE modele=1
-	ORDER BY importance DESC";
-$res = $pdo->query($query);
-while ($mod = $res->fetch())
-	$vue->types_points[$mod->id_point] = $mod->nom_type;
+$conditions = new stdClass;
+$conditions->modele=True;
+$conditions->ordre="importance DESC";
+$modeles=infos_points($conditions);
+
+$vue->modeles = $modeles;
 
 
