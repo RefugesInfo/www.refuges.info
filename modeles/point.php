@@ -618,12 +618,14 @@ function modification_ajout_point($point)
             return erreur("Requête en erreur, impossible d'historiser la modification",$query_log_modification);
         
         
-        /********* Renommage du topic point dans le forum refuges *************/
-        forum_submit_post ([
-            'action' => 'edit',
-            'topic_id' => $point->topic_id,
-            'topic_title' => mb_ucfirst($point->nom),
-        ]);
+        /********* Renommage du topic point dans le forum refuges, sauf s'il s'agit d'un modèle, qui n'a pas (ou pas besoin) de sujet dans le forum *************/
+        if (!$point_avant->modele)
+          forum_submit_post ([
+              'action' => 'edit',
+              'topic_id' => $point->topic_id,
+              'topic_title' => mb_ucfirst($point->nom),
+          ]);
+        
    }
    else  // INSERT
    {
