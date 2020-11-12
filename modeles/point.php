@@ -633,7 +633,7 @@ function modification_ajout_point($point)
     $r = forum_submit_post ([
         'action' => 'post',
 		'forum_id' => $config_wri['forum_refuges'],
-        'topic_title' => $point->nom,
+        'topic_title' => mb_ucfirst($point->nom),
     ]);
     if (!$r['topic_id'])
         return erreur( "Erreur création forum point<br/>".var_export($r,true) );
