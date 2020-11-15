@@ -1,2 +1,2 @@
 User-agent: *
-Disallow: /photos-points/*
+Disallow: /photos_points/*
