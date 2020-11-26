@@ -56,6 +56,7 @@ $lang = array_merge($lang, array(
 	'ACP_CLEANTALK_CHECKUSERS_DESCRIPTION'		=> 'Antispam von CleanTalk wird Benutzer in der Sperrlisten-Daten prüfen und alle anzeigen, welche SPAM-Aktivitäten auf anderen Webseiten gezeigt haben. Klicke auf `Prüfe Benutzer auf SPAM`, um den Vorgang zu starten.',
 	'ACP_CLEANTALK_CHECKUSERS_PAGES_TITLE'      => 'Seite:',		
 	'ACP_CLEANTALK_CHECKUSERS_BUTTON'			=> 'Prüfe Benutzer auf SPAM',
+	'ACP_CLEANTALK_CHECKUSERS_NUMBER_DESCRIPTION'=> 'Anzahl der zu überprüfenden Benutzer. Lassen Sie es leer zu reset flags und starten volle scan.',	
 	'ACP_CHECKUSERS_DONE_2'                     => 'Fertig. Alle Benutzer wurden in der Sperrlisten-Datenbank geprüft und es wurde dort kein Benutzer gefunden.',
 	'ACP_CHECKUSERS_DONE_3'						=> 'Fehler. Keine Verbindung zur Blacklist-Datenbank.',
 	'ACP_CHECKUSERS_USERNAME'                   => 'Benutzername',

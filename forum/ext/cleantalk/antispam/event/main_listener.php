@@ -320,26 +320,25 @@ class main_listener implements EventSubscriberInterface
 	        $auth_key = $this->config['cleantalk_antispam_apikey'];
 
 	        if(array_key_exists($remote_action, $remote_calls)){
-	                    
-	            if(time() - $remote_calls[$remote_action]['last_call'] > self::APBCT_REMOTE_CALL_SLEEP){
-	                
+  
+	            if(time() - $remote_calls[$remote_action]['last_call'] > self::APBCT_REMOTE_CALL_SLEEP || ($remote_action == 'sfw_update' && !empty($this->request->variable('file_url_hash', '')))){
+
 	                $remote_calls[$remote_action]['last_call'] = time();
 	                $this->config_text->set_array(array(
 	                	'cleantalk_antispam_remote_calls' => json_encode($remote_calls),
 	                ));
 
 	                if(strtolower($this->request->variable('spbc_remote_call_token','')) == strtolower(md5($auth_key))){
-
 	                    // Close renew banner
 	                    if($this->request->variable('spbc_remote_call_action','') == 'close_renew_banner'){
 	                        die('OK');
 	                    // SFW update
 	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'sfw_update'){   
-	                        $result = $this->cleantalk_sfw->sfw_update($this->config['cleantalk_antispam_apikey']);             
+	                        $result = $this->main_model->sfw_update($this->config['cleantalk_antispam_apikey']);           
 	                        die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
 	                    // SFW send logs
 	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'sfw_send_logs'){  
-	                        $result = $this->cleantalk_sfw->send_logs($this->config['cleantalk_antispam_apikey']);              
+	                        $result = $this->main_model->sfw_send_logs($this->config['cleantalk_antispam_apikey']);              
 	                        die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
 	                    // Update plugin
 	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'update_plugin'){
@@ -378,5 +377,5 @@ class main_listener implements EventSubscriberInterface
 				}
 			}
 		}
-	}	
+	}
 }

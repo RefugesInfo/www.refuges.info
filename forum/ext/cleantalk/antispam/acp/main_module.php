@@ -92,57 +92,13 @@ class main_module
 
 					if ($config['cleantalk_antispam_sfw_enabled'])
 					{
-						$result =\cleantalk\antispam\model\CleantalkHelper::get2sBlacklistsDb($savekey);
-						
-						if(empty($result['error']))
-						{	
-							$db->sql_query("DELETE FROM ".$table_prefix."cleantalk_sfw");
-										
-							// Cast result to int
-							foreach($result as $value)
-							{
-								$value[0] = intval($value[0]);
-								$value[1] = intval($value[1]);
-							} unset($value);
-							$sql_ary = null;
-							for($i=0, $arr_count = count($result); $i < $arr_count; $i++)
-							{
-								$sql_ary[] = array(
-									'network' => $result[$i][0],
-									'mask'    => $result[$i][1],
-								);
-							}
-							if ($sql_ary !== null)
-							{
-								$db->sql_multi_insert($table_prefix.'cleantalk_sfw',$sql_ary);	
-							}					
-							$config->set('cleantalk_antispam_sfw_update_last_gc', time());														
+						$sfw_update = \cleantalk\antispam\model\main_model::sfw_update($savekey);
+						if (isset($sfw_update['error'])) {
+							trigger_error($sfw_update['error']);
 						}
-
-						$result = $db->sql_query("SELECT * FROM ".$table_prefix."cleantalk_sfw_logs");
-						$sfw_logs_data = $db->sql_fetchrowset($result);
- 						$db->sql_freeresult($result);
-						
-						if(count($sfw_logs_data))
-						{							
-							//Compile logs
-							$data = array();
-							foreach($sfw_logs_data as $key => $value)
-							{
-								$data[] = array(trim($value['ip']), $value['all_entries'], $value['all_entries']-$value['blocked_entries'], $value['entries_timestamp']);
-							}
-							unset($key, $value);							
-							//Sending the request
-							$result =\cleantalk\antispam\model\CleantalkHelper::sfwLogs($savekey, $data);
-							
-							//Checking answer and deleting all lines from the table
-							if(empty($result['error'])){
-								if($result['rows'] == count($data))
-								{
-									$db->sql_query("DELETE FROM ".$table_prefix."cleantalk_sfw_logs");
-									$config->set('cleantalk_antispam_sfw_logs_send_last_gc', time());			
-								}
-							}								
+						$sfw_send_logs = \cleantalk\antispam\model\main_model::sfw_send_logs($savekey);
+						if (isset($sfw_send_logs['error'])) {
+							trigger_error($sfw_send_logs['error']);
 						}
 					}						
 				}																										

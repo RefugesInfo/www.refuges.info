@@ -54,6 +54,7 @@ $lang = array_merge($lang, array(
 	'ACP_CLEANTALK_CHECKUSERS_DESCRIPTION'		=> 'Антиспам от CleanTalk проверит всех пользователей по черным спискам и покажет вам тех, кто проявил спам-активность на других сайтах. ',
 	'ACP_CLEANTALK_CHECKUSERS_PAGES_TITLE'      => 'Страницы:',
 	'ACP_CLEANTALK_CHECKUSERS_BUTTON'			=> 'Проверить на спам',
+	'ACP_CLEANTALK_CHECKUSERS_NUMBER_DESCRIPTION'=> 'Количество непроверенных пользователей для проверки. Оставьте его пустым, чтобы сбросить флаги и начать полное сканирование.',
 	'ACP_CHECKUSERS_DONE_2'                     => 'Готово. Все пользователи проверены на спам, найдено 0 результатов',
 	'ACP_CHECKUSERS_DONE_3'						=> 'Ошибка. Нет соединения с базой данных черных списков.',
 	'ACP_CHECKUSERS_USERNAME'                   => 'Пользователь',

@@ -56,6 +56,7 @@ $lang = array_merge($lang, array(
 	'ACP_CLEANTALK_CHECKUSERS_DESCRIPTION'		=> 'المكافح CleanTalk سوف يفحص جميع الأعضاء في قاعدة بيانات القوائم السوداء لديه , وسيعرض لك أسماء الأعضاء الذين لديهم نشاط مُزعج في المواقع الأخرى. فقط انقر على الزر `فحص الأعضاء المُزعجين` لبدء عملية الفحص.',
 	'ACP_CLEANTALK_CHECKUSERS_PAGES_TITLE'      => 'صفحات',	
 	'ACP_CLEANTALK_CHECKUSERS_BUTTON'			=> 'فحص الأعضاء المُزعجين',
+	'ACP_CLEANTALK_CHECKUSERS_NUMBER_DESCRIPTION'=> 'الرقم من غير محقق مستخدم إلى تفقد. اتركه فارغا لإعادة تعيين الأعلام وبدء المسح الكامل.',	
 	'ACP_CHECKUSERS_DONE_2'                     => 'تم فحص جميع الأعضاء بواسطة قاعدة بيانات القوائم السوداء. لم يتم العثور على أعضاء مُزعجين.',
 	'ACP_CHECKUSERS_DONE_3'						=> 'Error. No connection with blacklist database.',
 	'ACP_CHECKUSERS_USERNAME'                   => 'إسم المستخدم',

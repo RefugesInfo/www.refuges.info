@@ -21,7 +21,12 @@ class CleantalkHelper
 {
 	
 	const URL = 'https://api.cleantalk.org'; // CleanTalk's API url
-	
+
+	/**
+	 * Default user agent for HTTP requests
+	 */
+	const AGENT = 'Cleantalk-Helper/3.4';
+
 	/*
 	*	Checking api_key
 	*	returns (boolean)
@@ -105,11 +110,13 @@ class CleantalkHelper
 	* 
 	* returns mixed STRING || array('error' => true, 'error_string' => STRING)
 	*/
-	static public function get2sBlacklistsDb($api_key, $do_check = true)
+	static public function get2sBlacklistsDb($api_key, $out = null, $version = '1_0', $do_check = true)
 	{		
 		$request = array(
 			'method_name' => '2s_blacklists_db',
-			'auth_key' => $api_key,			
+			'auth_key' => $api_key,	
+			'out'         => $out,
+            'version'	  => $version,		
 		);
 		
 		$result = self::sendRawRequest(self::URL, $request);
@@ -154,7 +161,7 @@ class CleantalkHelper
 			'data' => implode(',',$data),
 		);
 		
-		$result = self::sendRawRequest(self::URL, $request, false, 15);
+		$result = self::sendRawRequest(self::URL, $request);
 		$result = $do_check ? $result = self::checkRequestResult($result, 'spam_check_cms') : $result;
 		
 		return $result;
@@ -232,7 +239,23 @@ class CleantalkHelper
 			return $result['data'];
 		}
 	}
-	
+
+	/**
+	 * Merging arrays without reseting numeric keys
+	 *
+	 * @param array $arr1 One-dimentional array
+	 * @param array $arr2 One-dimentional array
+	 *
+	 * @return array Merged array
+	 */
+	static public function array_merge__save_numeric_keys($arr1, $arr2)
+	{
+		foreach($arr2 as $key => $val){
+			$arr1[$key] = $val;
+		}
+		return $arr1;
+	}	
+
 	/**
 	 * Function sends raw request to API server
 	 *
@@ -242,58 +265,116 @@ class CleantalkHelper
 	 * @param integer connect timeout
 	 * @return type
 	 */
-	static public function sendRawRequest($url, $data, $isJSON = false, $timeout = 3)
+	static public function sendRawRequest($url, $data = array(), $presets = null, $opts = array(), $timeout = 3)
 	{	
-		$result=null;
-		if(!$isJSON)
-		{
-			$data=http_build_query($data);
-			$data=str_replace("&amp;", "&", $data);
-		}
-		else
-		{
-			$data= json_encode($data);
-		}
-		
-		$curl_exec=false;
-		
-		if (function_exists('curl_init') && function_exists('json_decode'))
+		if (function_exists('curl_init'))
 		{	
 			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-			
-			// receive server response ...
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			// resolve 'Expect: 100-continue' issue
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
-            // see http://stackoverflow.com/a/23322368
-            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-           			
-			$result = curl_exec($ch);
-			
-			if($result !== false)
-			{
-				$curl_exec=true;
+
+			if(!empty($data)){
+				$data = is_string($data) || is_int($data) ? array($data => 1) : $data;
+				// Build query
+				$opts[CURLOPT_POSTFIELDS] = $data;
 			}
-			
-			curl_close($ch);
-		}
-		if(!$curl_exec)
-		{	
-			$opts = array(
-				'http'=>array(
-					'method' => "POST",
-					'timeout'=> $timeout,
-					'content' => $data
-				)
+
+			// Merging OBLIGATORY options with GIVEN options
+			$opts = self::array_merge__save_numeric_keys(
+				array(
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_CONNECTTIMEOUT_MS => 3000,
+					CURLOPT_FORBID_REUSE => true,
+					CURLOPT_POST => true,
+					CURLOPT_SSL_VERIFYPEER => false,
+					CURLOPT_SSL_VERIFYHOST => 0,
+					CURLOPT_HTTPHEADER => array('Expect:'), // Fix for large data and old servers http://php.net/manual/ru/function.curl-setopt.php#82418
+					CURLOPT_FOLLOWLOCATION => true,
+					CURLOPT_MAXREDIRS => 5,
+				),
+				$opts
 			);
-			$context = stream_context_create($opts);
-			$result = @file_get_contents($url, 0, $context);
+
+			// Use presets
+			$presets = is_array($presets) ? $presets : explode(' ', $presets);
+			foreach($presets as $preset){
+				
+				switch($preset){
+					
+					// Do not follow redirects
+					case 'dont_follow_redirects':
+						$opts[CURLOPT_FOLLOWLOCATION] = false;
+						$opts[CURLOPT_MAXREDIRS] = 0;
+						break;
+					
+					// Get headers only
+					case 'get_code':
+						$opts[CURLOPT_HEADER] = true;
+						$opts[CURLOPT_NOBODY] = true;
+						break;
+					
+					// Make a request, don't wait for an answer
+					case 'async':
+						$opts[CURLOPT_CONNECTTIMEOUT_MS] = 1000;
+						$opts[CURLOPT_TIMEOUT_MS] = 1000;
+						break;
+					
+					case 'get':
+						$opts[CURLOPT_URL] .= $data ? '?' . str_replace("&amp;", "&", http_build_query($data)) : '';
+						$opts[CURLOPT_CUSTOMREQUEST] = 'GET';
+						$opts[CURLOPT_POST] = false;
+						$opts[CURLOPT_POSTFIELDS] = null;
+						break;
+					
+					case 'ssl':
+						$opts[CURLOPT_SSL_VERIFYPEER] = true;
+						$opts[CURLOPT_SSL_VERIFYHOST] = 2;
+						if(defined('CLEANTALK_CASERT_PATH') && CLEANTALK_CASERT_PATH)
+							$opts[CURLOPT_CAINFO] = CLEANTALK_CASERT_PATH;
+						break;
+					
+					default:
+						
+						break;
+				}
+				
+			}
+			unset($preset);
+
+           	curl_setopt_array($ch, $opts);		
+			$result = curl_exec($ch);
+
+			// RETURN if async request
+			if(in_array('async', $presets))
+				return true;
+			
+			if($result){
+				
+				if(strpos($result, PHP_EOL) !== false && !in_array('dont_split_to_array', $presets))
+					$result = explode(PHP_EOL, $result);
+				
+				// Get code crossPHP method
+				if(in_array('get_code', $presets)){
+					$curl_info = curl_getinfo($ch);
+					$result = $curl_info['http_code'];
+				}
+				curl_close($ch);
+				$out = $result;
+			}else
+				$out = array('error' => curl_error($ch));
+		} else {
+			$out = array('error' => 'CURL_NOT_INSTALLED');
 		}
-		
-		return $result;
+
+		/**
+		 * Getting HTTP-response code without cURL
+		 */
+		if($presets && ($presets == 'get_code' || (is_array($presets) && in_array('get_code', $presets)))
+			&& isset($out['error']) && $out['error'] == 'CURL_NOT_INSTALLED'
+		){
+			$headers = get_headers($url);
+			$out = (int)preg_replace('/.*(\d{3}).*/', '$1', $headers[0]);
+		}
+
+		return $out;
 	}
 }

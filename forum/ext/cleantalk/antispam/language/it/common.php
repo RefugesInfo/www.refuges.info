@@ -55,6 +55,7 @@ $lang = array_merge($lang, array(
 	'ACP_CLEANTALK_CHECKUSERS_DESCRIPTION'		=> 'Antispam da CleanTalk controllerà tutti gli utenti in lista nera e vi mostrerà chi ha dimostrato di spam attività su altri siti.',
 	'ACP_CLEANTALK_CHECKUSERS_PAGES_TITLE'      => 'Pagina:',
 	'ACP_CLEANTALK_CHECKUSERS_BUTTON'			=> 'Verificare spam',
+	'ACP_CLEANTALK_CHECKUSERS_NUMBER_DESCRIPTION'=> 'Numero di utenti non controllati da controllare. Lasciare vuoto per reimpostare le opzioni e avviare la scansione completa.',
 	'ACP_CHECKUSERS_DONE_2'                     => 'Fine. Tutti gli utenti testati per spam, abbiamo trovato 0 risultati',
 	'ACP_CHECKUSERS_DONE_3'						=> 'Errore. Non c’è connessione con il database degli elenchi.',
 	'ACP_CHECKUSERS_USERNAME'                   => 'L’utente',
