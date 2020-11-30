@@ -48,8 +48,8 @@ $config_wri['lien_forum']=$config_wri['sous_dossier_installation']."forum/";
 $config_wri['forum_refuges']=4;
 
 // Paramètrage des cartes vignettes des fiches de points
-$config_wri['chemin_ol']=$config_wri['racine_projet'].'ol/';
-$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'ol/';
+$config_wri['chemin_ol']=$config_wri['racine_projet'].'MyOl/';
+$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'MyOl/';
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
 $config_wri['nom_hote']=$_SERVER['HTTP_HOST'];
@@ -136,6 +136,13 @@ $config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
 $config_wri['email_contact_nominatim']="sylvain@refuges.info";
 
 /********** Cartes vignettes, fond de carte ************/
+// Clés des cartes
+$mapKeys = [
+	'ign' => $config_wri['ign_key'],
+	'thunderforest' => $config_wri['thunderforest_key'],
+	'bing' => $config_wri['bing_key'],
+];
+
 // Le fond de carte par défaut est modifiable dans config_privee.php
 
 // tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un lourd à maintenir)

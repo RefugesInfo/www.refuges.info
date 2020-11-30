@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+© Dominique Cavailhez 2019
+https://github.com/Dominique92/MyOl
+Based on https://openlayers.org
+-->
+<html>
+<head>
+	<title>My Openlayers simple example</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Polyfills -->
+	<script nomodule src="https://cdn.polyfill.io/v3/polyfill.min.js"></script><!-- IE -->
+	<script src="https://unpkg.com/elm-pep"></script><!-- FF -->
+
+	<!-- Openlayers -->
+	<link  href="ol/ol.css" type="text/css" rel="stylesheet">
+	<script src="ol/ol.js"></script>
+
+	<!-- Recherche par nom -->
+	<link  href="geocoder/ol-geocoder.css" type="text/css" rel="stylesheet">
+	<script src="geocoder/ol-geocoder-debug.js"></script>
+
+	<!-- My Openlayers -->
+	<link  href="myol.css" type="text/css" rel="stylesheet">
+	<script src="myol.js"></script>
+
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+		#map {
+			width: 100vw;
+			height: calc(100vh - 10em);
+		}
+	</style>
+</head>
+
+<body>
+	<div id="map"></div>
+
+	<p><a href="examples">LAYERS DEMO</a></p>
+	<p><a href="examples/markers.html">MARKERS DEMO</a></p>
+	<p><a href="examples/editor.html">EDITOR DEMO</a></p>
+	<p><a href="gps">OFF LINE GPS</a></p>
+
+	<script>
+		// Must be after the <div id="map"> tag
+		new ol.Map({
+			target: 'map',
+			controls: controlsCollection({
+				baseLayers: layersCollection(),
+			}),
+		});
+	</script>
+</body>
+</html>

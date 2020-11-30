@@ -1,0 +1,10 @@
+{
+	"name": "My GPS",
+	"display": "fullscreen",
+	"start_url": "index.html",
+	"icons": [{
+		"src": "favicon.png",
+		"sizes": "225x225",
+		"type": "image/png"
+	}]
+}

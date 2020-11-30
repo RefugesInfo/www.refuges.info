@@ -26,7 +26,7 @@ const layerMassifs = layerVectorURL({
 		},
 	}),
 
-	editeur = layerEdit({
+	editeur = layerGeoJson({
 		geoJsonId: 'edit-json',
 		snapLayers: [layerMassifs],
 		titleModify: 'Modification d‘un polygone:\n' +
@@ -56,12 +56,7 @@ const layerMassifs = layerVectorURL({
 
 	controls = [
 		layersSwitcher,
-		controlPermalink({ // Permet de garder le même réglage de carte en création
-			visible: false, // Mais on ne visualise pas le lien du permalink
-<?php if ($vue->polygone->id_polygone) { ?>
-			init: false, // Ici, on utilisera plutôt la position du massif si on est en modification
-<?php } ?>
-		}),
+		controlPermalink(), // Permet de garder le même réglage de carte en création
 		new ol.control.Attribution(),
 		new ol.control.ScaleLine(),
 		controlMousePosition(),
@@ -80,10 +75,6 @@ const layerMassifs = layerVectorURL({
 
 	map = new ol.Map({
 		target: 'carte-nav',
-		view: new ol.View({
-			center: ol.proj.fromLonLat([2, 47]), // Default
-			zoom: 13,
-		}),
 		controls: controls,
 		layers: [
 			layerMassifs,

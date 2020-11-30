@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+© Dominique Cavailhez 2019
+https://github.com/Dominique92/MyOl
+Based on https://openlayers.org
+-->
+<html>
+<head>
+	<title>My Openlayers</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" type="image/png" href="logo.png" />
+
+	<!-- Polyfills -->
+	<script nomodule src="https://cdn.polyfill.io/v3/polyfill.min.js"></script><!-- IE -->
+	<script src="https://unpkg.com/elm-pep"></script><!-- FF -->
+
+	<!-- Openlayers -->
+	<link  href="../ol/ol.css" type="text/css" rel="stylesheet">
+	<script src="../ol/ol.js"></script>
+
+	<!-- My Openlayers -->
+	<link  href="../myol.css" type="text/css" rel="stylesheet">
+	<script src="../myol.js"></script>
+
+	<!-- This exemple -->
+	<script src="editor.js" defer="defer"></script>
+	<style>
+		#map {
+			width: 90vw;
+			height: 60vw;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="map"></div>
+
+	<p><a href="..">BASIC DEMO</a></p>
+	<p><a href=".">LAYERS DEMO</a></p>
+	<p><a href="markers.html">MARKERS DEMO</a></p>
+	<p><a href="../gps">OFF LINE GPS</a></p>
+
+	<!-- Features editor -->
+	<input type="text" id="geojson" style="width:90%" value='{
+		"type": "FeatureCollection",
+		"features": [{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [[-4.5,47.2],[-2,44.5]]
+			}
+		}, {
+			"type": "Feature",
+			"geometry": {
+				"type": "Polygon",
+				"coordinates": [
+					[[-5.5,47.2],[-3,44.5],[-8,44.5],[-5.5,47.2]],
+					[[-5.5,44.7],[-6.5,45.8],[-4.5,45.8],[-5.5,44.7]]
+				]
+			}
+		}]
+	}' />
+</body>
+</html>

@@ -20,13 +20,25 @@ const refugesInfo = layerRefugesInfo({
 		},
 	}),
 
-	marker = layerMarker({
-		imageUrl: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.png',
-		idDisplay: 'viseur',
-<?php if (!$point->id_point) { ?> // Pour une création de point
-		centerOnMap: true, // On utilise la position du permalink et on centre le curseur dessus
-<?php } ?>
-		draggable: true,
+	marker = layerGeoJson({
+		displayPointId: 'viseur',
+		geoJsonId: 'geojson',
+		dragPoint: true,
+		singlePoint: true,
+		styleOptions: {
+			image: new ol.style.Icon({
+				src: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.png',
+			}),
+		},
+		// Remove FeatureCollection packing of the point
+		saveFeatures: function(coordinates, format) {
+			return format.writeGeometry(
+				new ol.geom.Point(coordinates.points[0]), {
+					featureProjection: 'EPSG:3857',
+					decimals: 5,
+				}
+			);
+		},
 	}),
 
 	controls = [

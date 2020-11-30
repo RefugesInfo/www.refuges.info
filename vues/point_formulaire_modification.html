@@ -10,6 +10,7 @@
 <div class="contenu">
     <div id="carte-edit"></div>
     <form class="wri" id="form_point" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_modification">
+
     <div><?php
     foreach ($vue->champs->boutons as $bouton) { ?> 
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
@@ -17,6 +18,7 @@
       </button>
     <?}?>
     </div>
+
     <div>
     <!-- Champs cachés -->
     <?php
@@ -24,25 +26,40 @@
     { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
     <?}?>
-	<input type="hidden" id="viseur-json" name="geojson" value='<?=$vue->point->geojson?>' />
-	
     </div>
+
+	<!-- Draggable marker -->
     <h4>Coordonnées</h4>
+		<input type="hidden" id="geojson" name="geojson" value='<?=$vue->point->geojson?>' />
         <fieldset>
-            <label>
-                Longitude :
-                <input type="text" id="viseur-lon" size="12" maxlength="12" />(WGS84)&nbsp;
-				 <span style="display:none"> / X : <input type="text" id="viseur-x" size="7" maxlength="12" /> (CH 1903)</span> 
-            </label>
-            <label>
-                Latitude :
-                <input type="text" id="viseur-lat" size="12" maxlength="12" />(WGS84)&nbsp;
-				<span> / Y : <input type="text" id="viseur-y" size="7" maxlength="12" /></span>
-            </label>
+			<div id="viseur">
+				<label>
+					Longitude :
+					<input type="text" name="lon" size="12" maxlength="12"> (WGS84)&nbsp;
+					 <span style="display:none" class="epsg-21781"> / X : <input type="text" name="x" size="7" maxlength="12"> (CH 1903)</span> 
+				</label>
+				<label>
+					Latitude :
+					<input type="text" name="lat" size="12" maxlength="12"> (WGS84)&nbsp;
+					<span style="display:none" class="epsg-21781"> / Y : <input type="text" name="y" size="7" maxlength="12"></span>
+				</label>
+			</div>
+
             <label>
                 Saisissez ou déplacez le viseur pour modifier la position (n'oubliez pas de valider).
             </label>
-            <br />&nbsp;
+            <label>
+				<a onclick="marker.centerMarker()" style="color:blue;cursor:pointer">
+					Replacer le curseur au centre actuel de la carte
+				</a>
+            </label>
+            <label>
+				<a onclick="marker.centerMap()" style="color:blue;cursor:pointer">
+					Centrer la carte sur la position actuelle du curseur
+				</a>
+            </label>
+
+            <label>&nbsp;</label>
             <label>Provenance
                 <select name="id_type_precision_gps">
                 <?php foreach ($vue->infos_base->type_precision AS $gps) { ?>

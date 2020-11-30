@@ -1,2 +1,0 @@
-https://github.com/jonataswalker/ol-geocoder/releases/latest
-V4.0.0

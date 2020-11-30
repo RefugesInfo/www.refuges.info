@@ -642,9 +642,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   .menu UL LI UL {
     padding-left: 10px;
   }
-  #accueil-photos { /* DOM : masque les photos qui sont trop grosses sur la page accueil en responsive */
-    display: none;
-  }
 }
 
 /* ==========MENU DU BAS ========== */
@@ -772,9 +769,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #carte-accueil {
     width: calc(100vw - 23px);
     height: 90vw;
-  }
-  #accueil-photos {
-    display: none;
   }
 }
 

@@ -16,9 +16,9 @@
 <div id="carte-nav" class="nav_edit"></div>
 
 <div id="selecteur-carte-nav" class="noprint">
-	<form method="post" action="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>" >
-		<fieldset>
-			<legend><?=$vue->polygone->id_polygone?'Édition':'Création'?></legend>
+	<fieldset>
+		<legend><?=$vue->polygone->id_polygone?'Édition':'Création'?></legend>
+		<form method="post" action="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>" >
 			<!-- Edition du polygone -->
 			<label>
 				<input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
@@ -32,65 +32,64 @@
 						>Zone</option>
 				</select>
 				</p>
-
 				<input size="400" type="hidden" name="json_polygones" id="edit-json" value='<?=$vue->json_polygones?>' />
-				<br/>
 				<p>Nom :
 				<input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone?>" /></p>
-				<br/>
 				<p>Article partitif (max 20 car)
 				<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" /></p>
 				<br/>
-				<p id="edit-changed" style="display:none"><i style="color:red">Polygone modifié</i></p>
+				<p><input type="submit" name="enregistrer" value="Enregistrer et rester" /></p>
+			</label>
+		</form>
 
-				<input type="submit" name="enregistrer" value="Enregistrer" /> les modifications
-				<br/>ou<br/>
-				<p><a href="./<?=$vue->polygone->id_polygone?>">Quiter sans enregistrer</a></p>
-			</label>
-		</fieldset>
+		<form method="post" action="<?=$config_wri['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>" >
+			<p><input type="submit" value="Quitter sans enregistrer" /></p>
+		</form>
+	</fieldset>
+
+	<fieldset>
+		<legend>Modifier le contour</legend>
+		<label>
+			<p><b>Contrôle "M" (modifier un polygone)</b>
+			activer ce bouton (couleur jaune) puis:</p>
+			<p><u>Déplacer un sommet:</u> Cliquer dessus puis le déplacer.</p>
+			<p><u>Ajouter un sommet:</u> Cliquer sur un côté puis le déplacer.</p>
+			<p><u>Supprimer un sommet:</u> Alt + cliquer dessus.</p>
+			<p><u>Scinder un polygone:</u> Joindre 2 sommets du polygone.</p>
+			<p><u>Fusionner 2 polygones:</u> Coller un côté identique (entre 2 sommets consécutifs) de chaque polygone puis alt+cliquer dessus.</p>
+			<p><u>Supprimer un polygone:</u> Ctrl + Alt + cliquer dessus.</p>
+		<hr/>
+			<p><b>Contrôle "P" (créer un polygone)</b>
+			activer ce bouton (couleur jaune) puis:</p>
+			<p>Cliquer sur la carte et sur chaque point désiré pour dessiner un polygone,</p>
+			<p>Double cliquer pour terminer.</p>
+			<p>Un polygone entièrement compris dans un autre crée un "trou".</p>
+		</label>
+	</fieldset>
+
+	<?if ($vue->polygone->id_polygone) {?>
 		<fieldset>
-			<legend>Modifier le contour</legend>
+			<legend>Suppression</legend>
 			<label>
-				<p><b>Contrôle "M" (modifier un polygone)</b>
-				activer ce bouton (couleur jaune) puis:</p>
-				<p><u>Déplacer un sommet:</u> Cliquer dessus puis le déplacer.</p>
-				<p><u>Ajouter un sommet:</u> Cliquer sur un côté puis le déplacer.</p>
-				<p><u>Supprimer un sommet:</u> Alt + cliquer dessus.</p>
-				<p><u>Scinder un polygone:</u> Joindre 2 sommets du polygone.</p>
-				<p><u>Fusionner 2 polygones:</u> Coller un côté identique (entre 2 sommets consécutifs) de chaque polygone puis alt+cliquer dessus.</p>
-				<p><u>Supprimer un polygone:</u> Ctrl + Alt + cliquer dessus.</p>
-			<hr/>
-				<p><b>Contrôle "P" (créer un polygone)</b>
-				activer ce bouton (couleur jaune) puis:</p>
-				<p>Cliquer sur la carte et sur chaque point désiré pour dessiner un polygone,</p>
-				<p>Double cliquer pour terminer.</p>
-				<p>Un polygone entièrement compris dans un autre crée un "trou".</p>
+				<?if (!$_GET['test_supprimer']) {?>
+					<p>
+						<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>?test_supprimer=1">
+							Supprimer <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
+						</a>(définitif).
+					</p>
+				<?}else{?>
+					<b>
+						<p style="color:red">ATTENTION: Ceci va supprimer définitivement <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> "<?=$vue->polygone->nom_polygone?>"</p>
+						<p style="color:red">Aucune restauration ne sera possible</p>
+					</b>
+					<input class="bouton-supprimer" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" />
+					<br/>ou<br/>
+					<input type="submit" name="annuler" value="Annuler" />
+					<br />&nbsp;
+				<?}?>
 			</label>
 		</fieldset>
-		</fieldset>
-		<?if ($vue->polygone->id_polygone) {?>
-			<fieldset>
-				<legend>Suppression</legend>
-				<label>
-					<?if (!$_GET['test_supprimer']) {?>
-						<p>
-							<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>?test_supprimer=1">
-								Supprimer <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
-							</a>(définitif).
-						</p>
-					<?}else{?>
-						<b>
-							<p style="color:red">ATTENTION: Ceci va supprimer définitivement <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> "<?=$vue->polygone->nom_polygone?>"</p>
-							<p style="color:red">Aucune restauration ne sera possible</p>
-						</b>
-						<input class="bouton-supprimer" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" />
-						<br/>ou<br/>
-						<input type="submit" name="annuler" value="Annuler" />
-						<br />&nbsp;
-					<?}?>
-				</label>
-			</fieldset>
-		<?}?>
-	</form>
+	<?}?>
+
 	<div id="help-edit"></div>
 </div>

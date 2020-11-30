@@ -1,0 +1,231 @@
+/* Nomalize em sizes */
+.ol-viewport {
+	font-size: 16px;
+	font-family: Arial;
+}
+
+/* Top aligned buttons */
+/* Container */
+.ol-control-hidden {
+	display: none;
+}
+.ol-zoom,
+.ol-full-screen,
+.ol-geocoder,
+.ol-gps,
+.myol-button {
+	position: static !important;
+	float: left;
+	margin: 2px;
+	padding: 0 !important; /* No grey line around the button */
+}
+.ol-geocoder {
+	line-height: 15px; /* HACK FF */
+}
+
+/* Button */
+.ol-control button,
+.ol-control button:focus {
+	font-size: 18px !important;
+	color: black !important;
+	background-color: white;
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
+	outline: 0;
+}
+.ol-attribution button,
+.ol-attribution button:focus {
+	font-size: 14px !important;
+}
+.ol-geocoder .gcd-gl-btn {
+	border-image-width: 0 !important;
+	top: 0 !important;
+	position: static !important;
+	height: 24.75px;
+	width: 24.75px;
+	margin: 1px;
+	border: 0;
+	padding: 0;
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
+	border-radius: 2px;
+	background: white;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' style='stroke:black;stroke-width:2;fill-opacity:0;'%3E%3Cpath d='M15 15A5 5 0 0 1 6 6A6 6 0 0 1 15 15L22 22'/%3E%3C/svg%3E") !important;
+}
+.ol-control button:hover,
+.ol-geocoder button:hover {
+	box-shadow: 1px 1px 10px black;
+	background-color: #d6fbff;
+}
+.ol-control button:active,
+.ol-geocoder button:active { /* Shift the button by 1px when clicked */
+	position: relative !important;
+	top: 1px;
+	left: 1px;
+}
+
+/* Boxes under buttons */
+.ol-control-gps {
+	position: absolute;
+	top: 32px;
+	padding: 1px;
+	background-color: white;
+}
+.ol-control-question {
+	position: absolute;
+	top: 27px;
+	width: 100px;
+	padding: 1px;
+	background-color: white;
+	font-size: 14px;
+}
+.ol-control-question span {
+	cursor: pointer;
+}
+.gcd-gl-control {
+	top: 27px;
+	left: -34px;
+}
+.gcd-gl-control,
+.gcd-gl-control:hover {
+	background: rgba(0, 0, 0, 0); /* Transparent */
+}
+.gcd-gl-result {
+	top: 60px !important;
+	left: 2px !important;
+}
+
+/* Full screen */
+.ol-full-screen-false,
+.ol-full-screen-true {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' style='stroke:black;stroke-width:2;fill-opacity:0;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:5,7,5,0;'%3E%3Cpath d='M4 4l17 0 0 17-17 0z'/%3E%3C/svg%3E");
+	/* https://developer.mozilla.org/fr/docs/Web/SVG/Tutoriel/Paths */
+}
+/* Full window polyfill for non fullscreen browsers */
+.ol-pseudo-fullscreen {
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	height: 100% !important;
+	max-height: 100% !important;
+	z-index: 1000000 !important;
+}
+
+/* GPS */
+.ol-gps button {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' style='stroke:black;stroke-width:2;fill-opacity:0;stroke-linejoin:round;stroke-linecap:round;'%3E%3Cpath d='M7 7A7.5 7.5 0 0 1 18 18 7.5 7.5 0 1 1 7 7'/%3E%3Cpath d='M2 12.5l21 0M12.5 2l0 21' style='stroke-dasharray:6,9;'/%3E%3C/svg%3E");
+}
+
+.ol-download p {
+	margin: 0;
+	cursor: pointer;
+}
+
+/* Print */
+.ol-print:hover {
+	background-color: transparent;
+}
+.ol-print button {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' style='stroke:black;'%3E%3Cpath d='M8 6l9 0 0 2-9 0z'/%3E%3Cpath d='M5 10l15 0 0 5-15 0z'/%3E%3Cpath d='M8 13l9 0 0 6-9 0z' style='fill:white;'/%3E%3C/svg%3E");
+}
+.ol-print p {
+	margin: 0;
+	font-size: 12px;
+	font-family: Times New Roman;
+}
+.ol-print p span {
+	color: blue;
+}
+/* When printing, hide all controls except : */
+@media print {
+	.ol-overlaycontainer-stopevent > * {
+		display: none;
+	}
+	.ol-attribution,
+	.ol-scale-line {
+		display: block;
+	}
+}
+
+/* Other controls */
+.ol-permalink,
+.ol-attribution,
+.ol-coordinate,
+.ol-length-line {
+	font-size: 12px;
+}
+.ol-switch-layer {
+	position: static !important;
+	float: right;
+	margin-right: 3px;
+	z-index: 1;
+	background-color: white !important; /* Initial translucid */
+}
+.ol-switch-layer div {
+	padding: 2px;
+}
+.ol-switch-layer input {
+	margin: 0;
+}
+.ol-switch-layer button {
+	padding-bottom: 8px;
+}
+.ol-switch-layer p {
+	margin: 0;
+	font-size: 12px;
+}
+.ol-permalink {
+	position: absolute;
+	bottom: 35px;
+	right: 0;
+	padding: 3px;
+	border-radius: 8px 0 0 8px;
+	background: rgba(255, 255, 255, 0.8);
+}
+.ol-coordinate {
+	position: absolute;
+	bottom: 30px;
+	left: 8px;
+	padding: 2px;
+	border-radius: 4px;
+	background: rgba(0, 60, 136, 0.3);
+	color: white;
+}
+.ol-length-line {
+	position: absolute;
+	bottom: 52px;
+	left: 8px;
+	padding: 2px;
+	border-radius: 4px;
+	background: rgba(0, 60, 136, 0.3);
+	color: white;
+}
+.ol-coordinate:empty,
+.ol-length-line:empty {
+	display: none;
+}
+
+/* Vector layers popup */
+.myol-popup,
+.myol-popup:hover {
+	display: block;
+	padding: 1px 4px;
+	border-radius: 5px;
+	box-shadow: 0 3px 8px #888;
+	background-color: white;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: initial;
+	cursor: auto;
+}
+.myol-popup p {
+	margin: 0;
+	font-size: 12px;
+}
+.myol-popup span {
+	font-size: 12px;
+}
+.myol-popup-hidden {
+	display: none;
+}

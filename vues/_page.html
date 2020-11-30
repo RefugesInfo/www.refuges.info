@@ -27,15 +27,31 @@ if ($vue->http_status_code)
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 	<head>
 		<title><?=$vue->titre?></title>
-		<link rel="shortcut icon" href="<?=$config_wri['sous_dossier_installation']?>images/favicon.png" />
+		<link rel="shortcut icon" href="<?=$config_wri['sous_dossier_installation']?>images/favicon.svg" />
 		<meta name="robots" content="all" />
 		<meta name="robots" content="index,follow" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<!-- Compatibilité de certains explorateurs, notamment pour les cartes -->
+		<!-- IE --><!-- nomodule ne charge le script que pour IE -->
+		<script nomodule src="https://polyfill.io/v3/polyfill.min.js?features=Math.hypot%2CObject.assign"></script>
+		<!-- iOS -->
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-		<script nomodule src="https://cdn.polyfill.io/v3/polyfill.min.js"></script>
+		<!-- FF -->
+		<?php
+			if ((stripos ($_SERVER['HTTP_USER_AGENT'], 'android') && stripos ($_SERVER['HTTP_USER_AGENT'], 'firefox')) ||
+				(stripos ($_SERVER['HTTP_USER_AGENT'], 'iphone') && stripos ($_SERVER['HTTP_USER_AGENT'], 'safari'))) {
+		?>
+				<script src="https://unpkg.com/elm-pep"></script>
+		<?php } ?>
+
+		<script>
+			var mapKeys = <?=json_encode(@$mapKeys)?>;
+		</script>
+
 		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>" />
 		<?if (isset ($vue->css))
 			foreach ($vue->css as $css) {?>

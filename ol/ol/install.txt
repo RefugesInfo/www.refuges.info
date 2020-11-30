@@ -1,2 +1,0 @@
-https://openlayers.org/download/
-6.3.1

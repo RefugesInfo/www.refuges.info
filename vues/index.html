@@ -29,8 +29,9 @@
 		</ul>
 	</div>
 
-	<!-- PHOTOS -->
-	<div id="accueil-photos" class="tablo" style="float:right">
+	<div class="tablo" style="float:none;padding-left:15px">
+		<?=$vue->nouvelles_generales?>
+
 		<h4><?=$vue->stat->nbphotos?> photos</h4>
 		<br/>
 		<ul>
@@ -43,11 +44,7 @@
 			</li>
 			<?}?>
 		</ul>
-	</div>
-
-	<!-- NEWS -->
-	<div class="tablo" style="float:none;padding-left:15px">
-		<?=$vue->nouvelles_generales?>
+		<br/>
 
 		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges</h4>
 		<ul>
@@ -72,6 +69,7 @@
 			<li><a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche/" title="Recherche d'un points de refuges.info par le nom"><b>Recherche...</b></a></li>
 		</ul>
 		<br/>
+
 		<h4><?=$vue->stat->nbcomm?> commentaires</h4>
 		<ul>
 			<?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>

@@ -26,9 +26,20 @@ const controls = [
 		layerRefugesInfo({
 			baseUrl: '<?=$config_wri["sous_dossier_installation"]?>',
 		}),
-		layerMarker({
-			imageUrl: '<?=$config_wri["sous_dossier_installation"]?>images/cadre.png',
-			idDisplay: 'marqueur',
+		layerGeoJson({
+			displayPointId: 'marqueur',
+			geoJson: {
+				type: 'Point',
+				coordinates: [
+					<?=$vue->point->longitude?>,
+					<?=$vue->point->latitude?>,
+				],
+			},
+			styleOptions: {
+				image: new ol.style.Icon({
+					src: '<?=$config_wri["sous_dossier_installation"]?>images/cadre.png',
+				}),
+			},
 		}),
 	],
 
