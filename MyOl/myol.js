@@ -20,7 +20,7 @@ if (!ol) var ol = {};
 try {
 	new ol.style.Icon(); // Try incorrect action
 } catch (err) { // to get Assert url
-	ol.version = 'Ol ' + err.message.match('/v([0-9\.]+)/')[1] + ' 201129';
+	ol.version = 'Ol ' + err.message.match('/v([0-9\.]+)/')[1] + ' 201201';
 	console.log(ol.version);
 }
 
@@ -468,7 +468,7 @@ function hoverManager(map) {
 		let closestFeature = null,
 			distanceMin = 2000;
 
-		map.forEachFeatureAtPixel( //TODO BUG tolérance 0 OK pour point et surface mais pas pour ligne
+		map.forEachFeatureAtPixel(
 			pixel,
 			function(feature, layer) {
 				if (layer) {
@@ -499,6 +499,8 @@ function hoverManager(map) {
 						closestFeature.layer_ = layer;
 					}
 				}
+			}, {
+				hitTolerance: 6,
 			}
 		);
 
