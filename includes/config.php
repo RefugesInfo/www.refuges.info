@@ -138,9 +138,9 @@ $config_wri['email_contact_nominatim']="sylvain@refuges.info";
 /********** Cartes vignettes, fond de carte ************/
 // Clés des cartes
 $mapKeys = [
-	'ign' => $config_wri['ign_key'],
-	'thunderforest' => $config_wri['thunderforest_key'],
-	'bing' => $config_wri['bing_key'],
+	'ign' => @$config_wri['ign_key'],
+	'thunderforest' => @$config_wri['thunderforest_key'],
+	'bing' => @$config_wri['bing_key'],
 ];
 
 // Le fond de carte par défaut est modifiable dans config_privee.php
