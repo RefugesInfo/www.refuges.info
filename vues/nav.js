@@ -31,6 +31,7 @@ const controls = [
 	],
 	
 	points = layerRefugesInfo({
+		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>',
 		selectorName: 'couche-wri',
 		noMemSelection: true,
 		baseUrlFunction: function(bbox, list) {
@@ -66,7 +67,7 @@ const controls = [
 		},
 	}),
 
-	// La couche "polygones" (du massif, de la zone, pleins et colorés)
+	// La couche "polygones" (du massif, de la zone, plein et coloré)
 	polygones = layerVectorURL({
 		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?type_polygon=<?=$vue->contenu->id_polygone_type?>&intersection=<?=$vue->polygone->id_polygone?>',
 		noMemSelection: true,
