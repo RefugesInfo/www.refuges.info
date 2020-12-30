@@ -17,17 +17,8 @@
 	else {
 	?>
 	<p>Aucun commentaire en attente de modération</p>
-	<?php } ?>
-	<h4>Explications aux Modérateurs: </h4>
-	<p>
-	    <strong>Rappel :</strong>
-		Rappelez vous qu'il ne s'agit que d'un avis, il est possible qu'aucune modification ne soit nécessaire.
-	</p>
-	<p>
-		Un commentaire sera retiré automatiquement de la fiche si vous apportez une modification au commentaire (il est supposé que vous l'avez lu, et que si vous le modifiez, c'est pour dire<br> 
-		*** xx : Merci pour votre aide, la fiche a été modifiée ** ou équivalent).
-	</p>
-	<p>
-	  Si vous avez traité un commentaire (c'est à dire l'avoir lu puis agit en fonction ou n'avoir rien fait) pensez à le retirer de la liste ci-avant sinon un autre modérateur va repasser le même temps que vous dessus, autant se répartir les tâches !
-	</p>
+	<?php 
+	}	
+	print(wiki_page_html("explications_moderateurs_commentaires_attente_correction"));
+	?>
 </div>
