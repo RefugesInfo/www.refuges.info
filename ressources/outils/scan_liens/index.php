@@ -60,7 +60,7 @@ $types = [
 
 // Récupération des paramètres _GET de l'url
 $type = request_var ('type', array_keys($types)[0]);
-$nb = request_var ('nb', '5');
+$nb = request_var ('nb', '50');
 $script_name = $request->server ('SCRIPT_NAME', '');
 $script_url = "$script_name?type=$type&nb=$nb";
 $data_file = 'nosqldata.txt';
@@ -119,35 +119,36 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 
 	foreach ($match[0] AS $k=>$m) 
 		if (!in_array ($match[1][$k], $urlok)) {
-			echo "<hr/>";
-
-			echo "Lien à analyser : <a target='_BLANK' title='Suivre le lien et voir son contenu' href='//{$match[1][$k]}{$match[2][$k]}'>{$match[1][$k]}{$match[2][$k]}</a><br/>";
-
-			if ($row['user_sig'])
-				echo "Signature à examiner : {$row['user_sig']}<br/>";
-
-			echo "Site : <a target='_BLANK' title='Voir le site hébergeur du lien' href='http://{$match[1][$k]}'>{$match[1][$k]}</a>
-			=> <a title='Ajouter {$match[1][$k]} à la liste des sites sûrs' href='$script_url&list=A{$match[1][$k]}'>site sûr</a><br/>";
-
-			if ($row['post_id'])
-				echo "Commentaire (".strftime ('%A %e %B %Y à %H:%M',$row['post_time']).") à
-				<a target='_BLANK' title='Voir le commentaire' href='{$config_wri['lien_forum']}viewtopic.php?t={$row['topic_id']}#p{$row['post_id']}'>voir</a>
-				ou 
-				<a target='_BLANK' title='Modérer le commentaire' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>modérer</a>
-				<br/>";
-
-			if ($row['id_commentaire'])
-				echo "Commentaire de {$row['auteur_commentaire']} à examiner :
-				<a target='_BLANK' title='Voir le commentaire' href='{$config_wri['sous_dossier_installation']}point/{$row['id_point']}#C{$row['id_commentaire']}'>voir</a> ou
-				<a target='_BLANK' title='Modérer le commentaire' href='{$config_wri['sous_dossier_installation']}gestion/moderation?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>modérer</a> le commentaire<br/>";
-
 			// Analyse de l'auteur
-			if ($row['user_id'] > 1 ) {
-				$result_user = $db->sql_query("
-					SELECT user_id,username,user_email
-					FROM phpbb3_users
-					WHERE user_id = ".$row['user_id']);
-				$row_user = $db->sql_fetchrow($result_user);
+			$result_user = $db->sql_query("
+				SELECT user_id,username,user_email,user_type
+				FROM phpbb3_users
+				WHERE user_id = ".$row['user_id']);
+			$row_user = $db->sql_fetchrow($result_user);
+
+			if ($row_user['user_id'] != 3) { // Sauf pour les modérateurs
+				echo "<hr/>";
+
+				echo "Lien à analyser : <a target='_BLANK' title='Suivre le lien et voir son contenu' href='//{$match[1][$k]}{$match[2][$k]}'>{$match[1][$k]}{$match[2][$k]}</a><br/>";
+
+				if ($row['user_sig'])
+					echo "Signature à examiner : {$row['user_sig']}<br/>";
+
+				echo "Site : <a target='_BLANK' title='Voir le site hébergeur du lien' href='http://{$match[1][$k]}'>{$match[1][$k]}</a>
+				=> <a title='Ajouter {$match[1][$k]} à la liste des sites sûrs' href='$script_url&list=A{$match[1][$k]}'>site sûr</a><br/>";
+
+				if ($row['post_id'])
+					echo "Commentaire (".strftime ('%A %e %B %Y à %H:%M',$row['post_time']).") à
+					<a target='_BLANK' title='Voir le commentaire' href='{$config_wri['lien_forum']}viewtopic.php?t={$row['topic_id']}#p{$row['post_id']}'>voir</a>
+					ou 
+					<a target='_BLANK' title='Modérer le commentaire' href='{$config_wri['lien_forum']}posting.php?mode=edit&f={$row['forum_id']}&p={$row['post_id']}'>modérer</a>
+					<br/>";
+
+				if ($row['id_commentaire'])
+					echo "Commentaire de {$row['auteur_commentaire']} à examiner :
+					<a target='_BLANK' title='Voir le commentaire' href='{$config_wri['sous_dossier_installation']}point/{$row['id_point']}#C{$row['id_commentaire']}'>voir</a> ou
+					<a target='_BLANK' title='Modérer le commentaire' href='{$config_wri['sous_dossier_installation']}gestion/moderation?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>modérer</a> le commentaire<br/>";
+
 				$result_ip = $db->sql_query("
 					SELECT poster_ip
 					FROM phpbb3_posts
@@ -156,22 +157,22 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 					ORDER BY post_time DESC
 					LIMIT 1");
 				$row_ip = $db->sql_fetchrow($result_ip);
+
+				echo "Auteur : ".($row_user['user_id'] > 1 ?
+					"{$row_user['username']} ({$row_user['user_email']}) =>
+					<a target='_BLANK' title='Voir et modérer l’auteur' href='{$config_wri['lien_forum']}memberlist.php?mode=viewprofile&u={$row_user['user_id']}'>voir le profil et modérer</a>" :
+					"{$row_user['username']}"
+				);
+
+				echo"<pre style='background-color:white;color:black;font-size:14px;'>USER = ".var_export($row_user,true).'</pre>';
+
+				if ($row_ip['poster_ip'])
+					echo "<pre style='background-color:white;color:black;font-size:14px;'>IP = ".var_export(json_decode(file_get_contents("https://www.iplocate.io/api/lookup/{$row_ip['poster_ip']}")),true)."</pre>";
+
+				// Dump de l'enregistrement
+				unset ($row['texte']);
+				echo "<pre style='background-color:white;color:black;font-size:14px;'>DATA = ".var_export($row,true).'</pre>';
+				$nb--;
 			}
-			echo "Auteur : ".($row_user['user_id'] > 1 ?
-				"{$row_user['username']} ({$row_user['user_email']}) =>
-				<a target='_BLANK' title='Voir et modérer l’auteur' href='{$config_wri['lien_forum']}memberlist.php?mode=viewprofile&u={$row_user['user_id']}'>voir le profil et modérer</a>" :
-				"{$row_user['username']}"
-			);
-			echo"<pre style='background-color:white;color:black;font-size:14px;'>USER = ".var_export($row_user,true).'</pre>';
-
-			if ($row_ip['poster_ip'])
-				echo "<pre style='background-color:white;color:black;font-size:14px;'>IP = ".var_export(json_decode(file_get_contents("https://www.iplocate.io/api/lookup/{$row_ip['poster_ip']}")),true)."</pre>";
-
-			// Dump de l'enregistrement
-			unset ($row['texte']);
-			echo "<pre style='background-color:white;color:black;font-size:14px;'>DATA = ".var_export($row,true).'</pre>';
-			$nb--;
 		}
 }
-
-echo '<hr/>FIN</td></tr></table>';
