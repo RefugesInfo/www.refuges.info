@@ -121,12 +121,12 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 		if (!in_array ($match[1][$k], $urlok)) {
 			// Analyse de l'auteur
 			$result_user = $db->sql_query("
-				SELECT user_id,username,user_email,user_type
+				SELECT user_id,username,user_email,group_id
 				FROM phpbb3_users
 				WHERE user_id = ".$row['user_id']);
 			$row_user = $db->sql_fetchrow($result_user);
 
-			if ($row_user['user_id'] != 3) { // Sauf pour les modérateurs
+			if ($row_user['group_id'] != 201 && $row_user['group_id'] != 202) { // Sauf pour les modérateurs
 				echo "<hr/>";
 
 				echo "Lien à analyser : <a target='_BLANK' title='Suivre le lien et voir son contenu' href='//{$match[1][$k]}{$match[2][$k]}'>{$match[1][$k]}{$match[2][$k]}</a><br/>";
