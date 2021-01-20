@@ -18,6 +18,9 @@ $user->session_begin();
 $auth->acl($user->data);
 $user->setup('viewforum');
 
+$request->enable_super_globals();
+include($phpbb_root_path . '../includes/config.php');
+
 // Vérification autorisation niveau modérateur
 if (!$auth->acl_get('f_read', 7)) { // Le forum des modérateurs
 	echo 'Vous n\'ètes pas autorisé à accéder à ce lien';
