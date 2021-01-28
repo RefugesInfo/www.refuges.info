@@ -19,7 +19,7 @@ $controlleur->type = 'page_simple';
 switch ($controlleur->url_decoupee[1]) {
 	case 'moderation':
 		$commentaire = infos_commentaire($_REQUEST['id_commentaire'],true);
-		if ($commentaire->id_createur_commentaire === $_SESSION['id_utilisateur'] OR $_SESSION['niveau_moderation'])
+		if ( (isset($_SESSION['id_utilisateur']) AND $commentaire->id_createur_commentaire === $_SESSION['id_utilisateur']) OR $_SESSION['niveau_moderation'])
 			$controlleur->type = 'gestion/moderation';
         else
         {

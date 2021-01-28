@@ -40,7 +40,7 @@ if ( isset($_REQUEST["id_point"]) )
     }
     // Soit on est avec un modérateur global ou de cette fiche
     if ( isset($_SESSION['id_utilisateur']) AND
-        ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $point->id_createur ) )
+        ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] === $point->id_createur ) )
     {
         // boutton supprimer uniquement pour les modérateurs globaux
         if ( $_SESSION['niveau_moderation'] >= 1 )

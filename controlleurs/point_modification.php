@@ -59,7 +59,7 @@ switch( $_REQUEST["action"] )
         $point=preparation_point();
         $point->topic_id=$ancien_point->topic_id;
         // modification uniquement si modérateur global ou modérateur de cette fiche
-        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $ancien_point->id_createur ) )
+        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] === $ancien_point->id_createur ) )
         {
             $retour = modification_ajout_point($point);
             gestion_retour($retour,$vue);
@@ -70,7 +70,7 @@ switch( $_REQUEST["action"] )
         break;
     
     case 'supprimer':
-        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] == $ancien_point->id_createur ) )
+        if ( isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] === $ancien_point->id_createur ) )
         {
             $point=infos_point($_REQUEST['id_point'],True);
             $resultat_suppression=suppression_point($point);
