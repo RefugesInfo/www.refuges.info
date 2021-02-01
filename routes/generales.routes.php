@@ -39,6 +39,8 @@ if ($controlleur->url_decoupee[0]=="api")
 }
 // Include général pour les pages du site vues par des humains (pas comme l'api ou similaires)
 require_once ('autoconnexion.php');
+require_once ('bandeau_dynamique.php');
+
 require_once ('wiki.php');
 auto_login_phpbb_users();
 

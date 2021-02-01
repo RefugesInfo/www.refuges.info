@@ -40,17 +40,5 @@ function info_demande_correction ()
     else
         return false;
 }
-// FIXME : pas mieux que info_demande_correction tout ça est lié au bandeau et devrait filer dans un autre fichier
-function remplissage_zones_bandeau()
-{
-    global $config_wri;
-    // Ajoute les liens vers les autres zones
-    $conditions = new stdClass;
-    $conditions->ids_polygone_type=$config_wri['id_zone'];
-    $zones=infos_polygones($conditions);
-    if ($zones)
-        foreach ($zones as $zone)
-            $array_zones [ucfirst($zone->nom_polygone)] = lien_polygone($zone)."?id_polygone_type=".$config_wri['id_massif'];
-    return $array_zones;
-}
+
 
