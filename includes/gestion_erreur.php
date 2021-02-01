@@ -74,7 +74,7 @@ function temps_execution()
 {
   global $__time_start;
 
-  return round(microtime(true) - $__time_start,4);
+  return round(microtime(true) - $__time_start,3);
 }
 
 // Une fonction pour afficher à l'écran, de manière vaguement lisible le temps d'execution depuis le début
