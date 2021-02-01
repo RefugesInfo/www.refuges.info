@@ -22,11 +22,7 @@ require_once ("nouvelle.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("upload_max_filesize.php");
 require_once ("zipfile.php");
-
-
-session_start();
-
-//auto_login_phpbb_users();
+ 
 
 //print("prouf");
 //$_SESSION['toto']="coucou";
@@ -42,7 +38,8 @@ session_start();
 //d($config_wri['sous_dossier_installation']);
 
 //print_r($_SERVER);
+if (!empty($_COOKIE))
+  print_r($_COOKIE);
 
-print (1);
-
+t("fin");
 die();
