@@ -76,3 +76,12 @@ function temps_execution()
 
   return round(microtime(true) - $__time_start,4);
 }
+
+// Une fonction pour afficher à l'écran, de manière vaguement lisible le temps d'execution depuis le début
+
+function t($texte = "")
+{
+  print("<pre>$texte : ".temps_execution()."</pre>");
+}
+
+
