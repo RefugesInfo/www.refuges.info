@@ -207,7 +207,7 @@ if (file_exists ($config_wri['racine_projet']."/forum/config.php") &&
 
 if ($config_wri['debug'])
 {
-  ini_set('error_reporting', E_ALL ^ E_NOTICE);
+  ini_set('error_reporting', E_ALL);
   ini_set('display_errors', '1');
 }
 else 
