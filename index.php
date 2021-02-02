@@ -10,6 +10,9 @@ très bien être appelé pour des routes extrêmement simples qui ne font qu'ouv
 toute bête ou des controlleurs n'ayant pas besoin de session par exemple
 *******************************************************************************/
 
+//Tout tout début de notre code, cela servira ultérieurement pour du profiling
+$__time_start = microtime(true); 
+
 // obligatoire pour tout le site, donc on include pour tous les appels
 require_once ('includes/config.php');
 require_once ('gestion_erreur.php');

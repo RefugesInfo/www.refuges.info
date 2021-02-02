@@ -6,6 +6,22 @@ Ce fichier regroupe les fonctions de gestion des autres fonctions d'une manière
 - idéalement, le traitement des retours devrait se faire ici aussi
 **********************************************************************************************/
 
+function temps_execution()
+{
+  //$__time_start doit être initialisé par : $__time_start = microtime(true); le plus tôt possible dans l'execution du framework wri si on veut des calculs de profiling le plus juste possible (/index.php est un bon endroit !)
+
+  global $__time_start;
+
+  return round(microtime(true) - $__time_start,3);
+}
+
+// Une fonction pour afficher à l'écran, de manière vaguement lisible le temps d'execution depuis le début
+
+function t($texte = "")
+{
+  print("<pre>$texte : ".temps_execution()."</pre>");
+}
+
 /*
 Fonction qu'on peut appeler pour retourner le fait qu'on soit en erreur+un message public en texte indiquant l'erreur
 Mais aussi, si le mode debug de wri est activé ($config_wri['debug']=true) un message plus complet sur l'erreur survenue.
@@ -64,24 +80,6 @@ function d($a=null,$b=null,$c=null,$d=null)
                 print(htmlspecialchars(print_r($$var,True))."\n------------------------------------Backtrace des appels :-----------------------------------\n"); // O peut un print_r des variables (des fois que ça soit des arrays) et on veut le résultat brut lisible dans un navigateur
         print(htmlspecialchars(print_r(debug_backtrace(),True)));
 	die("</pre>");
-}
-
-
-// On enregistre le début du script (en réalité, pas vraiment le début, y'a plusieurs includes avant ça, mais ça suffit pour détecter le temps d'execution d'un traitement
-$__time_start = microtime(true); 
-
-function temps_execution()
-{
-  global $__time_start;
-
-  return round(microtime(true) - $__time_start,3);
-}
-
-// Une fonction pour afficher à l'écran, de manière vaguement lisible le temps d'execution depuis le début
-
-function t($texte = "")
-{
-  print("<pre>$texte : ".temps_execution()."</pre>");
 }
 
 
