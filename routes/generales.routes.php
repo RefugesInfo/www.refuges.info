@@ -13,7 +13,7 @@ selon cette url puis ouvrir les vues, toujours selon cet url.
 $controlleur = new stdClass;
 $vue = new stdClass;
 
-// On garde dans $controlleur l'url complète d'appel, au cas où
+// On garde dans $controlleur l'url complète d'appel, certains controlleurs peuvent en avoir besoin
 $controlleur->url_complete=$_SERVER['REQUEST_URI'];
 $sans_parametres=explode ('?',$controlleur->url_complete);
 
@@ -30,19 +30,30 @@ $vue->template='_page.html';
 // n'importe quelle url, il pourrait réussir à ouvrir des trucs pas souhaités, avec une liste, on s'assure
 // de n'autoriser que ceux que l'on a
 
-// cas specifique, light, des appels à l'api : car les routes de l'api ne fonctionnent pas tout à fait comme les autres, il faudrait pouvoir uniformiser et pour ça, être plus flexible sur la gestion routes + controlleurs + vues
-// et en plus je réduis l'include de fichiers inutiles
+// API : cas specifique, léger : car les routes de l'api ne fonctionnent pas tout à fait comme les autres, il faudrait pouvoir uniformiser et pour ça, être plus flexible sur la gestion routes + controlleurs + vues
+// et en plus je réduis l'include de fichiers inutiles à l'API
 if ($controlleur->url_decoupee[0]=="api")
 {
   require_once ("api.routes.php");
   exit(0);
 }
-// Include général pour les pages du site vues par des humains (pas comme l'api ou similaires)
-require_once ('autoconnexion.php');
-require_once ('bandeau_dynamique.php');
 
+// PHPBB : Gain de performance donc de temps de réponse, si aucun cookie n'existe, inutile d'essayer de connecter et de charger le framework phpBB qui mange ~80ms
+//if (!empty($_COOKIE)) // en cours de test par sylvain
+{
+  // Et même si un cookie existe, si le user est défini comme 1 c'est qu'il s'agit d'un anonyme, le site n'a pas besoin de faire de stats sur lui et il n'aura pas plus de droits de toute façon
+  //if ( isset ($_COOKIE['phpbb3_wri_u']) and $_COOKIE['phpbb3_wri_u']!=1 )
+  {
+    // Include général pour les pages du site vues par des humains (pas comme l'api ou similaires)
+    require_once ('autoconnexion.php');
+    auto_login_phpbb_users();
+  }
+}
+ 
+// Toutes page du site ayant le menu bandeau, donc comme ce menu a besoin au moins de ça :
 require_once ('wiki.php');
-auto_login_phpbb_users();
+require_once ('authentification.php');
+require_once ('bandeau_dynamique.php');
 
 switch ($controlleur->url_decoupee[0])
 {
@@ -93,4 +104,3 @@ $vue->zones_pour_bandeau=remplissage_zones_bandeau();
 $vue->lien_wiki=prepare_lien_wiki_du_bandeau();
 
 include ($config_wri['chemin_vues'].$vue->template);
-

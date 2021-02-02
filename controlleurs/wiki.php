@@ -54,4 +54,3 @@ else // affichage de la page
 	$vue->date=date("d/m/Y",$contenu_brut->ts_unix_page);
     $vue->contenu_html  = wiki_page_html($page);
 }
-
