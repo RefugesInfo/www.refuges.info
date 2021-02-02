@@ -1,7 +1,7 @@
 <?php
 /***
-Fonctions qui permettent de générer dynamiquement du contenu quasi-statique du menu/bandeaux.
-31/01/2021 sly : Il aurait pû aller dans la vue correspondante, mais je voulais limiter le code dans les vues pour qu'on y 
+Fonctions qui permettent de générer dynamiquement du contenu quasi-statique du menu/bandeau.
+31/01/2021 sly : Il aurait pû aller dans le controlleur de la vue du bandeau, mais son controlleur c'est la route generale, et ça fait déjà lour de code là bas
 trouve que de la présentation
 ***/
 require_once ('polygone.php');

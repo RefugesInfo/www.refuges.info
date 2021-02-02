@@ -6,10 +6,11 @@ contenu non dynamiquement généré
 Finalement on passe à un quasi-vrai wiki avec historique (approximatif) que pour modérateurs
 *****************************************************/
 require_once ("mise_en_forme_texte.php");
+require_once ("wiki.php");
 
     $page=$controlleur->url_decoupee[1];
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
-if (($_SESSION ['niveau_moderation'] >= 1) ) 
+if (est_moderateur()) 
 {
 	if (isset($_POST ['modification']))
 		ecrire_contenu ($page, $_POST ['texte']);
@@ -26,19 +27,19 @@ $contenu_brut =  wiki_page_brut ($page);
 $vue->titre = $page;
 $vue->nom_page= $page;
 // La page n'existe pas (ou pas encore !)
-if ($contenu_brut->erreur and $_GET['form_modifier']!=1)
+if (isset ($contenu_brut->erreur) and $contenu_brut->erreur and $_GET['form_modifier']!=1)
 {
     $vue->http_status_code = 404;
     $vue->type = 'page_simple';
     $vue->titre=$contenu_brut->message;
-    if ($_SESSION ['niveau_moderation'] >= 1)
+    if (est_moderateur())
     {
         $vue->contenu="Toutefois, vous pouvez la créér si besoin car vous êtes modérateur en : ";
         $vue->lien=lien_wiki($page)."?form_modifier=1";
         $vue->titre_lien="Cliquant ici";
     }
 } // Un modérateur a demandé à la modifier
-elseif($_GET['form_modifier']==1 and $_SESSION ['niveau_moderation'] >= 1)
+elseif($_GET['form_modifier']==1 and est_moderateur())
 {
     $vue->type="wiki_modification";
     $vue->contenu_a_modifier=protege($contenu_brut->contenu);
@@ -47,7 +48,7 @@ elseif($_GET['form_modifier']==1 and $_SESSION ['niveau_moderation'] >= 1)
 }
 else // affichage de la page
 {
-    if ($_SESSION ['niveau_moderation'] >= 1)
+    if (est_moderateur())
         $vue->montrer_lien_admin=True;
 
 	$vue->date=date("d/m/Y",$contenu_brut->ts_unix_page);

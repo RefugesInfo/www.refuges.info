@@ -210,3 +210,9 @@ if ($config_wri['debug'])
   ini_set('error_reporting', E_ALL ^ E_NOTICE);
   ini_set('display_errors', '1');
 }
+else 
+{
+  ini_set('error_reporting', E_ERROR);
+  ini_set('display_errors', '0');
+  
+}
