@@ -34,19 +34,17 @@ if ($vue->http_status_code)
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 
-		<!-- Compatibilité de certains explorateurs, notamment pour les cartes -->
-		<!-- IE --><!-- nomodule ne charge le script que pour IE -->
+		<!-- Compatibilité IE (nomodule ne charge le script que pour IE) -->
 		<script nomodule src="https://polyfill.io/v3/polyfill.min.js?features=Math.hypot%2CObject.assign"></script>
-		<!-- iOS -->
+		
+		<!-- De vielles versions d'iOS ne prennent pas en compte le glissé / écarté -->
+		<?php if (stripos ($_SERVER['HTTP_USER_AGENT'], 'iphone')) { ?>
+			<script src="<?=$config_wri['sous_dossier_installation']?>MyOl/elm-pep/elm-pep.min.js"></script>
+		<?php } ?>
+
+		<!-- Polyfill iOS : Amélioration du pseudo full screen pour les cartes pour d'anciennes versions d'iOS/Safari -->
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-		<!-- FF -->
-		<?php
-			if ((stripos ($_SERVER['HTTP_USER_AGENT'], 'android') && stripos ($_SERVER['HTTP_USER_AGENT'], 'firefox')) ||
-				(stripos ($_SERVER['HTTP_USER_AGENT'], 'iphone') && stripos ($_SERVER['HTTP_USER_AGENT'], 'safari'))) {
-		?>
-				<script src="https://unpkg.com/elm-pep"></script>
-		<?php } ?>
 
 		<script>
 			var mapKeys = <?=json_encode(@$mapKeys)?>;

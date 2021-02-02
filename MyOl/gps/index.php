@@ -73,12 +73,9 @@ Based on https://openlayers.org
 	<!-- iOS -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<!-- FF -->
-	<?php
-		if ((stripos ($_SERVER['HTTP_USER_AGENT'], 'android') && stripos ($_SERVER['HTTP_USER_AGENT'], 'firefox')) ||
-			(stripos ($_SERVER['HTTP_USER_AGENT'], 'iphone') && stripos ($_SERVER['HTTP_USER_AGENT'], 'safari'))) {
-	?>
-			<script src="https://unpkg.com/elm-pep"></script>
+	<!-- De vielles versions d'iOS ne prennent pas en compte le glissé / écarté -->
+	<?php if (stripos ($_SERVER['HTTP_USER_AGENT'], 'iphone')) { ?>
+		<script src="<?=$myol_path?>elm-pep/elm-pep.min.js"></script>
 	<?php } ?>
 
 	<!-- Openlayers -->
