@@ -20,7 +20,8 @@ require_once ("commentaire.php");
 require_once ("forum.php");
 
 // On appelle le fichier qui va chercher les infos dans phpBB
-require_once ($config_wri['racine_projet'] . "forum/ext/RefugesInfo/couplage/autoconnexion.php");
+require_once ("identification.php");
+infos_identification();
 
 // phpBB défini lui même sa fonction pour gérer les erreurs, on n'en veut pas merci ! surtout qu'elle est active, même si on semble avoir fait ce qu'il faut pour mettre en mode sans affichage d'erreur (ou alors j'ai pas trouvé sur php 3.3)
 restore_error_handler();
@@ -40,5 +41,3 @@ function info_demande_correction ()
     else
         return false;
 }
-
-

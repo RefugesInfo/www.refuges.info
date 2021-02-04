@@ -46,13 +46,12 @@ if ($controlleur->url_decoupee[0]=="api")
   {
     // Include général pour les pages du site vues par des humains (pas comme l'api ou similaires)
     require_once ('autoconnexion.php');
-    auto_login_phpbb_users();
+    infos_identification();
   }
 }
  
 // Toutes page du site ayant le menu bandeau, donc comme ce menu a besoin au moins de ça :
 require_once ('wiki.php');
-require_once ('authentification.php');
 require_once ('bandeau_dynamique.php');
 
 switch ($controlleur->url_decoupee[0])

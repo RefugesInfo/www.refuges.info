@@ -61,7 +61,7 @@ class listener implements EventSubscriberInterface
 		require_once ('wiki.php');
 		require_once ('autoconnexion.php');
 		require_once ('bandeau_dynamique.php');
-		auto_login_phpbb_users();
+		infos_identification();
 		$vue = new \stdClass;
 		$vue->type = '';
 		$vue->java_lib_foot = [];
