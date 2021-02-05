@@ -38,7 +38,7 @@ $config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 //$config_wri['debug']=true;
 
 // Si le debug est actif ci-avant, on peut activer l'affichage des NOTICE ici :
-//$config_wri['debug_notices']=false;
+//$config_wri['debug_notices']=true;
 
 // Aprés l'installation des fichiers, veuillez exécuter l'utilitaire /install.php
 // Qui vérifiera les paramètres et installera ou upgradera la forum si nécéssaire
