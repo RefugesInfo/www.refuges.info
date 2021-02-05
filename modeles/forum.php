@@ -22,6 +22,8 @@ if (!defined('IN_PHPBB')) {
 	// On restitue le contexte WRI qui a été écrasé
 	include ("config.php");
 }
+// phpBB défini lui même sa fonction pour gérer les erreurs, on n'en veut pas car elle est active même si on semble avoir fait ce qu'il faut pour mettre en mode sans affichage d'erreur (ou alors j'ai pas trouvé sur php 3.3)
+restore_error_handler();
 
 // Fonction générique qui permet - entre autre - de créer un topic, modifier le titre et ajouter un post
 function forum_submit_post ($args) {

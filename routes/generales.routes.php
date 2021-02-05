@@ -38,21 +38,12 @@ if ($controlleur->url_decoupee[0]=="api")
   exit(0);
 }
 
-// PHPBB : Gain de performance donc de temps de réponse, si aucun cookie n'existe, inutile d'essayer de connecter et de charger le framework phpBB qui mange ~80ms
-//if (!empty($_COOKIE)) // en cours de test par sylvain
-{
-  // Et même si un cookie existe, si le user est défini comme 1 c'est qu'il s'agit d'un anonyme, le site n'a pas besoin de faire de stats sur lui et il n'aura pas plus de droits de toute façon
-  //if ( isset ($_COOKIE['phpbb3_wri_u']) and $_COOKIE['phpbb3_wri_u']!=1 )
-  {
-    // Include général pour les pages du site vues par des humains (pas comme l'api ou similaires)
-    require_once ('autoconnexion.php');
-    infos_identification();
-  }
-}
- 
-// Toutes page du site ayant le menu bandeau, donc comme ce menu a besoin au moins de ça :
-require_once ('wiki.php');
+// Toutes page du site ci-après ayant le bandeau des menus, on a besoin de ça
 require_once ('bandeau_dynamique.php');
+require_once ('identification.php');
+
+infos_identification();
+ 
 
 switch ($controlleur->url_decoupee[0])
 {

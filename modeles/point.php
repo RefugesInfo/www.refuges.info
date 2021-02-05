@@ -17,7 +17,10 @@ require_once ("gestion_erreur.php");
 require_once ("commentaire.php");
 require_once ("polygone.php");
 require_once ("mise_en_forme_texte.php");
-require_once ("forum.php");
+
+// FIXME : 05/02/2021 sly : Seulement 2 fonctions utilisées peu fréquement (mais importantes !) ont besoin des fonction du forum, j'aimerais réduire le temps de chargement et faire du conditionnel
+require_once ('forum.php');
+
 
 /*****************************************************
 Cette fonction récupère sous la forme de plusieurs objets des points de la base qui satisfont des conditions.
@@ -520,7 +523,7 @@ Si une erreur grave survient, rien n'est fait et un retour par la fonction erreu
 ********************************************************/
 
 function modification_ajout_point($point)
-{
+{  
   global $config_wri,$pdo;
   // désolé, le nom du point ne peut être vide
   if ( trim($point->nom) =="" )

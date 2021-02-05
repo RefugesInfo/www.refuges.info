@@ -469,6 +469,7 @@ function suppression_commentaire($commentaire)
 function transfert_forum($commentaire)
 {
   global $config_wri;
+  require_once ("forum.php");
   
   if ($commentaire->photo_existe)
   {

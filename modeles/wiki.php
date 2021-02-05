@@ -111,9 +111,4 @@ function supprimer_page($page)
 
     return ok("Page supprimée et tout ses anciennes versions");
 }
-function prepare_lien_wiki_du_bandeau()
-{
-    foreach (array("index","licence","prudence","qui_est_refuges.info","liens","don","mentions-legales") as $nom_lien)
-        $lien_wiki[$nom_lien]=lien_wiki($nom_lien);
-    return $lien_wiki;
-}
+
