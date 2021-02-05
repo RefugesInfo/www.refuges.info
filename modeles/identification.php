@@ -24,27 +24,35 @@ require_once ("bdd.php");
 
 function infos_identification()
 {
-  global $pdo, $infos_identification;
+  global $pdo, $infos_identification, $config_wri;
 
-  if (!empty($_COOKIE) and isset ($_COOKIE['phpbb3_wri_u']) and $_COOKIE['phpbb3_wri_u']!=1 ) // Il nous faut un cookie pour authentifié nos users, et même si un cookie existe, si le user est défini comme 1 c'est qu'il s'agit d'un anonyme, le site n'a pas besoin de faire de stats sur lui et il n'aura pas plus de droits de toute façon
+  if (!isset ($infos_identification)) // On ne rapelle pas SQL à chaque fois !
   {
-    if (!isset ($infos_identification)) { // On ne rapelle pas SQL à chaque fois !
-      $sql = "SELECT user_id, username, group_id, session_id
-        FROM phpbb3_sessions
-        JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
-        WHERE session_id = '{$_COOKIE['phpbb3_wri_sid']}'";
-      $res = $pdo->query($sql);
-      $infos_identification = $res->fetch();
+    // le cookie porte un nom variable selon la config phpBB et on n'a pas choisi le standard ! Donc, je vais le chercher dans la table phpbb3_config
+    $sql_cookie = "SELECT config_value as cookie_name from phpbb3_config where config_name='cookie_name'";
+    $res_cookie = $pdo->query($sql_cookie);
+    $config_phpbb = $res_cookie->fetch();
 
-      $infos_identification->niveau_moderation =
-      $infos_identification->group_id == 201 ||
-      $infos_identification->group_id == 202
-        ? 1 : 0;
-    }
+    // Il nous faut un cookie et un user id !=1 (anonyme) pour authentifier nos users, sinon on peut retourner NULL car il n'est pas connecté et n'a donc aucun droit spécial
+    if (!empty($_COOKIE) and isset ($_COOKIE[$config_phpbb->cookie_name.'_u']) and $_COOKIE[$config_phpbb->cookie_name.'_u']!=1 ) 
+    {
+        $sql = "SELECT user_id, username, group_id, session_id
+          FROM phpbb3_sessions
+          JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
+          WHERE session_id = '".$_COOKIE[$config_phpbb->cookie_name.'_sid']."'";
+        $res = $pdo->query($sql);
+        $infos_identification = $res->fetch();
 
-    return $infos_identification;
+        $infos_identification->niveau_moderation =
+        $infos_identification->group_id == 201 ||
+        $infos_identification->group_id == 202
+          ? 1 : 0;
+      }
+      else
+        return NULL;
+      
   }
-    return NULL;
+  return $infos_identification;
 }
 
 function est_moderateur()
