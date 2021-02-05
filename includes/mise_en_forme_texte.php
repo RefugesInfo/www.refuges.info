@@ -37,6 +37,16 @@ $normalizeChars = array(
 
 return strtr($str, $normalizeChars);
 }
+
+function conversion_adresse_email_vers_mailto($texte)
+{
+    //Detect and create email
+    $mail_pattern = "/([A-z0-9\._-]+\@[A-z0-9_-]+\.)([A-z0-9\_\-\.]{1,}[A-z])/";
+    $str = preg_replace($mail_pattern, '<a href="mailto:$1$2">$1$2</a>', $texte);
+
+    return $str;
+}
+
 /**********************************************************************************************
  Répétitivement, on a besoin de protéger une exportation vers du xml/html, cette fonction protège les
  caractères
@@ -163,10 +173,7 @@ $texte_avec_html = preg_replace($searcharray, $replacearray, $texte_avec_protect
 
 
 // Transformation des adresses mails repérées dans le texte en mailto:<email> clicable
-$occurences_trouvees=preg_match_all("([\w_\-.]+@[\w\-.]+)",$texte_avec_html,$occurence);
-if ($occurences_trouvees!=0)
-  for ($x=0;$x<$occurences_trouvees;$x++)
-    $texte_avec_html=str_replace($occurence[0][$x],"<a href=\"mailto:".$occurence[0][$x]."\">".$occurence[0][$x]."</a>",$texte_avec_html);
+$texte_avec_html=conversion_adresse_email_vers_mailto($texte_avec_html);
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
 $texte_avec_html = nl2br($texte_avec_html,true);
