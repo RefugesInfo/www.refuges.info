@@ -118,7 +118,7 @@ $config_wri['connexion_forum']=$config_wri['lien_forum']."ucp.php?mode=login";
 $config_wri['fiche_utilisateur']=$config_wri['lien_forum']."memberlist.php?mode=viewprofile&u=";
 $config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php?t=";
 
-// l'id des modérateurs du forum, pour qu'ils puissent devenir modérateur du site
+// l'id de catégories spéciales du forum
 $config_wri['id_forum_moderateur']=7;
 $config_wri['id_forum_developpement']=2;
 $config_wri['encodage_exportation']="utf-8";
