@@ -48,8 +48,8 @@ switch( $_REQUEST["action"] )
         }
         $point=preparation_point();
         if (est_connecte())
-            $point->id_createur=$_SESSION['id_utilisateur'];
-        $retour = modification_ajout_point($point);
+            $point->id_createur=$infos_identification->user_id;
+        $retour = modification_ajout_point($point,$infos_identification->user_id);
         gestion_retour($retour,$vue);
         $vue->message="Le point a bien été ajouté";
         break;
@@ -60,7 +60,7 @@ switch( $_REQUEST["action"] )
         // modification uniquement si modérateur global ou modérateur de cette fiche
         if ( est_autorise($ancien_point->id_createur) )
         {
-            $retour = modification_ajout_point($point);
+            $retour = modification_ajout_point($point,$infos_identification->user_id);
             gestion_retour($retour,$vue);
             $vue->message="Le point a bien été modifié";
         }

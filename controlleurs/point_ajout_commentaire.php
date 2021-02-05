@@ -66,7 +66,7 @@ if (!$point->erreur)
             if ($point->id_point_type == $config_wri['id_batiment_en_montagne'])
               $commentaire->demande_correction=3;
 
-            $commentaire->id_createur_commentaire=$_SESSION['id_utilisateur'];
+            $commentaire->id_createur_commentaire=$infos_identification->user_id;
             // Transmission des info en cas d'erreur au modèle
             $vue->messages=modification_ajout_commentaire($commentaire);
 

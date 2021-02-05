@@ -522,7 +522,7 @@ Si une erreur grave survient, rien n'est fait et un retour par la fonction erreu
 
 ********************************************************/
 
-function modification_ajout_point($point)
+function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 {  
   global $config_wri,$pdo;
   // désolé, le nom du point ne peut être vide
@@ -604,10 +604,7 @@ function modification_ajout_point($point)
         if (!$pdo->exec($query_finale))
             return erreur("Requête en erreur, impossible à executer",$query_finale);
             
-        // 2019-09-09 Historisation du pauvre, on log dans une table un dump de l'objet point avant et après modification
-        if ( est_connecte() )
-            $id_utilisateur=$_SESSION['id_utilisateur'];
-        
+        // sly : 2019-09-09 Historisation du pauvre, on log dans une table un dump de l'objet point avant et après modification
         // L'objet $point par défaut dispose de trop de propriété, ne gardons que celles qui peuvent être modifiées
         $point_avant_simple = new stdClass;
         foreach ($point as $propriete => $valeur)
@@ -616,7 +613,7 @@ function modification_ajout_point($point)
         $query_log_modification="insert into historique_modifications_points 
         (id_point,id_user,date_modification,avant,apres,type_modification) 
         values 
-        ($point->id_point,$id_utilisateur,NOW(),".$pdo->quote(serialize($point_avant_simple)).",".$pdo->quote(serialize($point)).",'modification')";
+        ($point->id_point,$id_utilisateur_qui_modifie,NOW(),".$pdo->quote(serialize($point_avant_simple)).",".$pdo->quote(serialize($point)).",'modification')";
         if (!$pdo->exec($query_log_modification))
             return erreur("Requête en erreur, impossible d'historiser la modification",$query_log_modification);
         

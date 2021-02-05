@@ -30,7 +30,7 @@ function infos_identification()
   if (!empty($_COOKIE) and isset ($_COOKIE['phpbb3_wri_u']) and $_COOKIE['phpbb3_wri_u']!=1 ) // Il nous faut un cookie pour authentifié nos users, et même si un cookie existe, si le user est défini comme 1 c'est qu'il s'agit d'un anonyme, le site n'a pas besoin de faire de stats sur lui et il n'aura pas plus de droits de toute façon
   {
     if (!isset ($infos_identification)) { // On ne rapelle pas SQL à chaque fois !
-      $sql = "SELECT user_id, username, group_id
+      $sql = "SELECT user_id, username, group_id, session_id
         FROM phpbb3_sessions
         JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
         WHERE session_id = '{$_COOKIE['phpbb3_wri_sid']}'";
@@ -41,12 +41,6 @@ function infos_identification()
       $infos_identification->group_id == 201 ||
       $infos_identification->group_id == 202
         ? 1 : 0;
-
-      // Pour compatibilité (il y en a un paquet !)
-      // TODO ??? remplacer l'utilisation de $_SESSION par l'appel à infos_identification()
-      $_SESSION['id_utilisateur'] = $infos_identification->user_id;
-      $_SESSION['login_utilisateur'] = $infos_identification->username;
-      $_SESSION['phpbb_sid'] = $_COOKIE['phpbb3_wri_sid'];
     }
 
     return $infos_identification;

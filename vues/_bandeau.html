@@ -10,8 +10,8 @@
 <div id="entete">
 	<div>
 		<?if (est_connecte()) {?>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$_SESSION['phpbb_sid']?>">Déconnexion</a>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php" title="Modifier votre profil"><?=$_SESSION['login_utilisateur']?></a> /
+			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$infos_identification->session_id?>">Déconnexion</a>
+			<a href="<?=$config_wri['lien_forum']?>ucp.php" title="Modifier votre profil"><?=$infos_identification->username?></a> /
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=reg_details&i=ucp_profile" title="Changer votre mot de passe">mdp</a>
 		<?} else {?>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login" title="Si vous avez déjà un compte">Connexion</a>
@@ -53,7 +53,7 @@ foreach ($menus AS $id) {?>
 			</li>
 			<li class="mobile-only">
 				<?if (est_moderateur()) {?>
-					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$_SESSION['phpbb_sid']?>">Déconnexion</a>
+					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$infos_identification->session_id?>">Déconnexion</a>
 				<?} else {?>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">Connexion</a>
 					<span onclick="flip(this.parentNode,'deroule')" title="Inscription">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>

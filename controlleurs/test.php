@@ -25,8 +25,6 @@ require_once ("zipfile.php");
  
 
 //print("prouf");
-//$_SESSION['toto']="coucou";
-//print_r($_SESSION);
 //print_r($_GET);
 //die();
 //$html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE);
@@ -37,9 +35,4 @@ require_once ("zipfile.php");
 //d(lien_point($point,true));
 //d($config_wri['sous_dossier_installation']);
 
-//print_r($_SERVER);
-if (!empty($_COOKIE))
-  print_r($_COOKIE);
 
-t("fin");
-die();
