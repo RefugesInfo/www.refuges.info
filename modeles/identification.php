@@ -46,7 +46,6 @@ function infos_identification()
       // TODO ??? remplacer l'utilisation de $_SESSION par l'appel à infos_identification()
       $_SESSION['id_utilisateur'] = $infos_identification->user_id;
       $_SESSION['login_utilisateur'] = $infos_identification->username;
-      $_SESSION['niveau_moderation'] = $infos_identification->niveau_moderation;
       $_SESSION['phpbb_sid'] = $_COOKIE['phpbb3_wri_sid'];
     }
 

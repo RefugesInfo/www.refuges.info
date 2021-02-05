@@ -14,7 +14,7 @@ $condition = new stdClass();
 $id_point = $controlleur->url_decoupee[1]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
 
 // On indique de manière bien évidente aux modérateur que cette fiche est en attente de décision et non visible au public
-if ($_SESSION['niveau_moderation']>=1)
+if (est_moderateur())
     $meme_si_en_attente=True;
 else
     $meme_si_en_attente=False;
@@ -102,7 +102,7 @@ else // le point est valide
             $vue->polygone_avec_information=$polygone;
             
     /*********** Préparation de la présentation du point ***/
-    if (isset($_SESSION['id_utilisateur']) AND ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] === $point->id_createur ))
+    if (est_autorise($point->id_createur) )
         $vue->lien_modification=TRUE;
             
     /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
@@ -161,7 +161,7 @@ else // le point est valide
         $commentaire->date_commentaire_format_francais=strftime ("%A %e %B %Y à %H:%M", $commentaire->ts_unix_commentaire);
         // Préparation des données et affichage d'un commentaire de la fiche d'un point
         // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire
-        if (isset($_SESSION['id_utilisateur']) AND ( ($_SESSION['niveau_moderation']>=1) OR ($_SESSION['id_utilisateur'] === $commentaire->id_createur_commentaire))) 
+        if (est_autorise($commentaire->id_createur_commentaire)) 
         {
             $commentaire->lien_commentaire='/gestion/moderation?id_point_retour='.$commentaire->id_point.'&amp;id_commentaire='.$commentaire->id_commentaire;
             $commentaire->texte_lien_commentaire = 'Modifier';

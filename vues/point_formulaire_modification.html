@@ -94,7 +94,7 @@
                 </a>
             </label>
 
-            <?php if ($_SESSION['niveau_moderation']>=1 and $vue->point->id_point) {?>
+            <?php if (est_moderateur() and $vue->point->id_point) {?>
 				<label>Modérateur de cette fiche:
                     <select name='id_createur'>	
                         <option  value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
@@ -178,7 +178,7 @@
         </fieldset>
         <?php } ?>
         
-        <?php if (!isset($_SESSION['id_utilisateur'])) { ?>
+        <?php if ( !est_connecte() ) { ?>
         <br style="clear: both;" />
         <h4>Questions pour les contributeurs anonymes</h4>
         <fieldset class="booleen">

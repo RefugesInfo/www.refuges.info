@@ -101,14 +101,14 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 		</fieldset>
 	<?}?>
 
-	<?php if ( !$vue->mode_affichage && $vue->polygone->id_polygone && $_SESSION['niveau_moderation']>=1 ) {?>
+	<?php if ( !$vue->mode_affichage && $vue->polygone->id_polygone && est_moderateur() ) {?>
 		<fieldset>
 			<legend>Modification</legend>
 			<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>">Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?></a>
 		</fieldset>
 	<?}?>
 
-	<?php if ( $vue->contenu && !$vue->polygone->id_polygone && $_SESSION['niveau_moderation']>=1 ) {?>
+	<?php if ( $vue->contenu && !$vue->polygone->id_polygone && est_moderateur() ) {?>
 		<fieldset>
 			<legend>Modification</legend>
 			<p><b>

@@ -45,9 +45,10 @@ $vue->types_point_affichables=types_point_affichables();
 */
 $id_polygone = (int) $controlleur->url_decoupee[1]; // Id du polygone contenant
 // Récupère les soumissions du formulaire de modification de paramètres de massifs
-if ($id_polygone_edit = edit_info_polygone())
+if (est_moderateur()) 
+  if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;
-// Le param_tre d'URL id_polygone_type permet d'afficher différents contenus
+// Le paramètre d'URL id_polygone_type permet d'afficher différents contenus
 // Si abscent : affiche le contour du polygone demandé et les points à l'intérieur
 // Si présent : les polygones qui intersectent le polygone demandé
 $id_polygone_type=$_GET['id_polygone_type'];

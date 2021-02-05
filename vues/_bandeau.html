@@ -9,7 +9,7 @@
 ?>
 <div id="entete">
 	<div>
-		<?if ($_SESSION['login_utilisateur']) {?>
+		<?if (est_connecte()) {?>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$_SESSION['phpbb_sid']?>">Déconnexion</a>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php" title="Modifier votre profil"><?=$_SESSION['login_utilisateur']?></a> /
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=reg_details&i=ucp_profile" title="Changer votre mot de passe">mdp</a>
@@ -44,7 +44,7 @@ foreach ($menus AS $id) {?>
 	<div id="<?=$id?>" class="menu">
 		<a href="<?=$config_wri['sous_dossier_installation']?>" title="Retour à l'accueil">Refuges.info</a>
 		<span onclick="flip(this.parentNode,'deroule')">Menu</span>
-		<?if (!$_SESSION['login_utilisateur']) {?>
+		<?if (!est_connecte()) {?>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login" style="float:right">Connexion</a>
 		<?}?>
 		<ul>
@@ -52,7 +52,7 @@ foreach ($menus AS $id) {?>
 				<a href="<?=$config_wri['sous_dossier_installation']?>">Accueil</a>
 			</li>
 			<li class="mobile-only">
-				<?if ($_SESSION['id_utilisateur']>=1) {?>
+				<?if (est_moderateur()) {?>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$_SESSION['phpbb_sid']?>">Déconnexion</a>
 				<?} else {?>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">Connexion</a>
@@ -133,7 +133,7 @@ foreach ($menus AS $id) {?>
 				</ul>
 			</li>
 			
-			<? if ($_SESSION['niveau_moderation']>=1) {?>
+			<? if ( est_moderateur() ) {?>
 				<li style="max-width:90px">
 					<a>Gestion</a>
 					<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>

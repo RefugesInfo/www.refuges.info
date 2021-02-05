@@ -227,8 +227,6 @@ modification de paramètres de massifs
 function edit_info_polygone()
 {
     global $pdo;
-    if (!$_SESSION['niveau_moderation'])
-        return null;
 
     // On échappe les simples quotes
     $article_partitif = str_replace ("'", "''", $_POST ['article_partitif']);

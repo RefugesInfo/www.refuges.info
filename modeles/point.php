@@ -605,7 +605,7 @@ function modification_ajout_point($point)
             return erreur("Requête en erreur, impossible à executer",$query_finale);
             
         // 2019-09-09 Historisation du pauvre, on log dans une table un dump de l'objet point avant et après modification
-        if ( isset($_SESSION['id_utilisateur']))
+        if ( est_connecte() )
             $id_utilisateur=$_SESSION['id_utilisateur'];
         
         // L'objet $point par défaut dispose de trop de propriété, ne gardons que celles qui peuvent être modifiées

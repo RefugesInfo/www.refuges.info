@@ -27,7 +27,7 @@ else
     {
         $vue->type="page_simple";
         // Si l'internaute est connecté au forum ou qu'il a saisi la lettre anti-robot
-        if (isset($_SESSION['id_utilisateur']) or $_POST['anti_robot']=="f")
+        if (est_connecte() or $_POST['anti_robot']=="f")
         {
             $commentaire->demande_correction=$_POST['demande_correction'];
             $commentaire->raison_demande_correction=$_POST['raison_demande_correction'];
@@ -44,7 +44,7 @@ else
     else
     {
         $vue->lien_que_mettre=lien_wiki("que_mettre");
-        if (!isset($_SESSION['id_utilisateur']))
+        if (!est_connecte())
             $vue->test_anti_robot=True;
     }
 }

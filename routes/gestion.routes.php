@@ -19,7 +19,7 @@ $controlleur->type = 'page_simple';
 switch ($controlleur->url_decoupee[1]) {
 	case 'moderation':
 		$commentaire = infos_commentaire($_REQUEST['id_commentaire'],true);
-		if ( (isset($_SESSION['id_utilisateur']) AND $commentaire->id_createur_commentaire === $_SESSION['id_utilisateur']) OR $_SESSION['niveau_moderation'])
+		if ( est_autorise($commentaire->id_createur_commentaire))
 			$controlleur->type = 'gestion/moderation';
         else
         {
@@ -31,7 +31,7 @@ switch ($controlleur->url_decoupee[1]) {
 	case 'modifier_modeles':
 	case 'commentaires_attente_correction':
 	case 'historique_modifications':
-		if ($_SESSION['niveau_moderation'])
+		if (est_moderateur())
 			$controlleur->type = 'gestion/'.$controlleur->url_decoupee[1];
         else
         {

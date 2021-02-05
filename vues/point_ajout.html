@@ -12,7 +12,7 @@
     <p>Tout ne trouve pas sa place sur le site, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
   </dd>
 </dl>
-<?php if (!isset($_SESSION['id_utilisateur'])) { ?>
+<?php if (!est_connecte()) { ?>
 <dl> 
   <dt>Pas encore de compte ?</dt>
   <dd>

@@ -87,7 +87,7 @@ include ($config_wri['chemin_controlleurs'].$controlleur->type.".php");
 // et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
 // FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
 // Si quelqu'un veut le bouger, il a mon feu vert -- sly
-if (isset ($_SESSION['niveau_moderation']) and $_SESSION['niveau_moderation']>=1)
+if (est_moderateur())
 	$vue->demande_correction=info_demande_correction ();
 
 $vue->zones_pour_bandeau=remplissage_zones_bandeau();

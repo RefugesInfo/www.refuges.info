@@ -13,7 +13,7 @@ $conditions_commentaire = new stdClass();
 
 setlocale(LC_TIME, "fr_FR");
 // les modérateurs ont droit d'ajouter des commentaires aux points en attente de décision
-if ( $_SESSION['niveau_moderation']>=1 )
+if ( est_moderateur() )
     $conditions_commentaire->avec_points_en_attente=True;
 
 $commentaire->id_point=$controlleur->url_decoupee[1];
@@ -21,7 +21,7 @@ $conditions_commentaire->ids_points=$commentaire->id_point;
 $point=infos_point($commentaire->id_point,true);
 if (!$point->erreur)
 {
-    if (!isset($_SESSION['id_utilisateur'])) // non connecté ? un message d'information s'affichera, et on présentera un CAPTCHA
+    if (!est_connecte()) // non connecté ? un message d'information s'affichera, et on présentera un CAPTCHA
     {
         $vue->non_connecte=True;
         $vue->captcha=True;
@@ -42,7 +42,7 @@ if (!$point->erreur)
         $vue->lettre_verification=$_POST["lettre_verification"];
         
         // peut être un robot ?
-        if ( ($vue->lettre_verification!="f") AND !isset($_SESSION['id_utilisateur']) )
+        if ( ($vue->lettre_verification!="f") AND !est_connecte() )
         {
             $vue->erreur_captcha=True;
             $vue->lettre_verification="";

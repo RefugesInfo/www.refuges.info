@@ -22,7 +22,7 @@ $vue->champs->entier_ou_sait_pas = new stdClass; // seulement les trinaires TRUE
 if ( isset($_REQUEST["id_point"]) )  
 {
     // Si c'est un modérateur, il peut voir la fiche même si elle est en attente de décision
-    if ($_SESSION['niveau_moderation']>=1)
+    if (est_moderateur())
         $meme_si_en_attente=True;
     else
         $meme_si_en_attente=False;
@@ -39,11 +39,10 @@ if ( isset($_REQUEST["id_point"]) )
         return "";
     }
     // Soit on est avec un modérateur global ou de cette fiche
-    if ( isset($_SESSION['id_utilisateur']) AND
-        ( $_SESSION['niveau_moderation'] >= 1 OR $_SESSION['id_utilisateur'] === $point->id_createur ) )
+    if ( est_autorise($point->id_createur) )
     {
         // boutton supprimer uniquement pour les modérateurs globaux
-        if ( $_SESSION['niveau_moderation'] >= 1 )
+        if ( est_moderateur() )
         {
             $bouton_suppr = new stdClass;
             $bouton_suppr->nom = "action";
@@ -153,7 +152,7 @@ foreach ($textes_area as $libelle => $nom_variable)
 
 // Seuls les modérateurs peuvent passer un point en attente de décision
 // ce n'est pas tout à fait un champ trinaire comme les autres (true, false, null) car on ne peut pas "pas savoir"
-if ($_SESSION['niveau_moderation']>=1)
+if (est_moderateur())
 {
   $vue->champs->en_attente = new stdClass ;
   $vue->champs->en_attente->actif = True ;

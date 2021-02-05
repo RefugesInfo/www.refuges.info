@@ -165,7 +165,7 @@
 <?php
   // Champs uniquement pour les modérateurs (des fonctionnalités qui ne leur sont utiles qu'a eux comme chercher les cabannes fermées 
   $visible = '';
-  if ( isset($_SESSION['id_utilisateur']) AND $_SESSION['niveau_moderation'] >= 1 )
+  if (est_moderateur() )
   {
 ?>
 
