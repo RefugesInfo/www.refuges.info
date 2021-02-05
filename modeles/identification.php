@@ -20,7 +20,6 @@ Elle retourne :
   Il n'y a que 2 niveaux dans WRI aujourd'hui 01/02/2021: 0 = rien, >= 1 = tout
 
 ***/
-require_once ("config.php");
 require_once ("bdd.php");
 
 function infos_identification()

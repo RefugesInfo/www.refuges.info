@@ -8,13 +8,11 @@ http://dev.refuges.info/test
 
 **********************************************************************************************/
 // On est pas là pour les perfs, alors on inclus tout pour être tranquille !
-require_once ("config.php");
 require_once ("bdd.php");
 require_once ("commentaire.php");
 require_once ("point.php");
 require_once ("utilisateur.php");
 require_once ("polygone.php");
-require_once ("gestion_erreur.php");
 require_once ("meta_donnee.php");
 require_once ("xml.class.php");
 require_once ("api.php");
@@ -36,3 +34,6 @@ require_once ("zipfile.php");
 //d($config_wri['sous_dossier_installation']);
 
 
+t("fin");
+//On quitte ici notre test parce que sinon la route va tenter d'ouvrir une vue test.html que je n'ai pas faite
+die();

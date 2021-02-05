@@ -60,6 +60,7 @@ class listener implements EventSubscriberInterface
 		// dans des variables des templates de PhpBB V3.2
 		require_once ('wiki.php');
 		require_once ('identification.php');
+		require_once ('gestion_erreur.php');
 		require_once ('bandeau_dynamique.php');
 		$infos_identification=infos_identification();
 		$vue = new \stdClass;

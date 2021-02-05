@@ -5,9 +5,7 @@ Fichiers regroupant les fonctions sur les commentaires des points
 sly 23/11/2012
 **********************************************************************************************/
 
-require_once ('config.php');
 require_once ('bdd.php');
-require_once ('gestion_erreur.php');
 require_once ('point.php');
 require_once ('mise_en_forme_texte.php');
 require_once ('utilisateur.php');
@@ -138,7 +136,7 @@ function infos_commentaires ($conditions)
            $limite";
   if ( ! ($res=$pdo->query($query)))
     return erreur("Une erreur sur la requête est survenue",$query);
-//d($query);
+
   //jmb: renvoie un tablo vide, au lieu d'un NULL si pas de comment, => les appelants n'ont plus a tester.
   $commentaires = array() ;
   while ($commentaire = $res->fetch())

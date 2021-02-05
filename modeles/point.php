@@ -11,15 +11,10 @@ ou en modifier
 
 /**********************************************************************************************/
 
-require_once ("config.php");
 require_once ("bdd.php");
-require_once ("gestion_erreur.php");
 require_once ("commentaire.php");
 require_once ("polygone.php");
 require_once ("mise_en_forme_texte.php");
-
-// FIXME : 05/02/2021 sly : Seulement 2 fonctions utilisées peu fréquement (mais importantes !) ont besoin des fonction du forum, j'aimerais réduire le temps de chargement et faire du conditionnel
-require_once ('forum.php');
 
 
 /*****************************************************

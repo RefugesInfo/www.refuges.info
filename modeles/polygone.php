@@ -7,7 +7,6 @@ gestion : modification/suppression/création
 13/03/13 jmb PDO chamboulement PDO+ pour ajout et PDO-
 **********************************************************************************************/
 
-require_once ("config.php");
 require_once ("bdd.php");
 require_once ('mise_en_forme_texte.php');
 

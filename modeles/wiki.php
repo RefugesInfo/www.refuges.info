@@ -5,7 +5,6 @@ Accés aux données : entrées / sorties / modifications des textes / formatage 
 
 ********************************************************************/
 
-require_once ("config.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("bdd.php");
 

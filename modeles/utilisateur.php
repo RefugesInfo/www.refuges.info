@@ -5,7 +5,6 @@ aussi des utilisateurs du site
 **********************************************************************************************/
 
 require_once ("bdd.php");
-require_once ("gestion_erreur.php");
 
 function infos_utilisateur($id_utilisateur)
 {
