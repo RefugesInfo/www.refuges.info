@@ -181,8 +181,10 @@ $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prev
 
 // ************* développeurs debug & co
 
-// par défaut, pas d'information de debug, développeurs : changer cette variable dans le fichier config_privee.php si vous voulez plus de message en cas d'erreurs
+// par défaut, pas d'information de debug, développeurs : changer cette variable dans le fichier config_privee.php si vous voulez plus de message (errors, warnings) en cas d'erreurs
 $config_wri['debug']=false;
+// Si vous voulez aussi les NOTICE, passez ça à true dans votre config_privee.php (FIXME : depuis le passage à php 7.3 le site en est rempli, il faudrait que je m'en occupe, mais c'est du boulot)
+$config_wri['debug_notices']=false;
 
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
 // que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore
@@ -207,7 +209,10 @@ if (file_exists ($config_wri['racine_projet']."/forum/config.php") &&
 
 if ($config_wri['debug'])
 {
-  ini_set('error_reporting', E_ALL);
+  if ($config_wri['debug_notices'])
+    ini_set('error_reporting', E_ALL);
+  else
+    ini_set('error_reporting', E_ALL ^ E_NOTICE);
   ini_set('display_errors', '1');
 }
 else 
