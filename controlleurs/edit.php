@@ -1,6 +1,6 @@
 <?php // Editeur de massifs
 
-if (est_moderateur()) {
+if (!est_moderateur()) {
   $vue->type="page_simple";
   $vue->titre="Permissions insuffisantes";
   $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :";

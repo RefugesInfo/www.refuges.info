@@ -88,7 +88,6 @@ The coding rules are volontary simple & don't follow all openlayers's
 Tested on :
 * windows : Chrome, FireFox, Edge, IE11 (with some limitations), Opera (slow)
 * Android : Chrome, FireFox, Edge, Opera, Samsung Internet
-* IE 10 & 11 need [https://cdn.polyfill.io/v3/polyfill.min.js](https://polyfill.io)
 
 FILES
 =====

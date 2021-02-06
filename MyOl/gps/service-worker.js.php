@@ -28,11 +28,13 @@ if (isset ($_GET['files'])) {
 		$version_tag += filesize ($f);
 
 	// Update cached file list
+	//TODO dangeureux !
 	$service_worker = str_replace (
 		['index.html', 'manifest.json', 'favicon.png'],
 		$specific_files,
 		$service_worker
 	);
+	//TODO icone SVG ?
 
 	// Add GPX files in the url directory to the list of files to cache
 	$gpx_files = glob (pathinfo ($specific_files[0], PATHINFO_DIRNAME) .'/*.gpx');

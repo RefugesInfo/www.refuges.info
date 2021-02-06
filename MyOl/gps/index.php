@@ -67,16 +67,9 @@ Based on https://openlayers.org
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="icon" type="<?=$icon['type']?>" href="<?=$icon['src']?>" />
 
-	<!-- Polyfills -->
-	<!-- IE -->
-	<script nomodule src="https://polyfill.io/v3/polyfill.min.js?features=Math.hypot%2CObject.assign"></script>
-	<!-- iOS -->
+	<!-- Polyfill iOS : Amélioration du pseudo full screen pour les cartes pour d'anciennes versions d'iOS/Safari -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<!-- De vielles versions d'iOS ne prennent pas en compte le glissé / écarté -->
-	<?php if (stripos ($_SERVER['HTTP_USER_AGENT'], 'iphone')) { ?>
-		<script src="<?=$myol_path?>elm-pep/elm-pep.min.js"></script>
-	<?php } ?>
 
 	<!-- Openlayers -->
 	<link href="<?=$myol_path?>ol/ol.css" type="text/css" rel="stylesheet">
