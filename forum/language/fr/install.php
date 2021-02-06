@@ -114,6 +114,8 @@ $lang = array_merge($lang, array(
 	'PCRE_UTF_SUPPORT_EXPLAIN'			=> 'phpBB ne fonctionnera pas si votre installation PHP n’est pas compilée avec la prise en charge de UTF-8 dans l’extension PCRE.',
 	'PHP_JSON_SUPPORT'					=> 'Support de JSON pour PHP',
 	'PHP_JSON_SUPPORT_EXPLAIN'			=> 'Pour que phpBB fonctionne correctement, l’extension JSON pour PHP doit être disponible.',
+	'PHP_MBSTRING_SUPPORT'				=> 'Support de PHP mbstring',
+	'PHP_MBSTRING_SUPPORT_EXPLAIN'		=> 'Pour que phpBB fonctionne correctement, l’extension mbstring pour PHP doit être disponible.',
 	'PHP_XML_SUPPORT'					=> 'Support de PHP XML/DOM',
 	'PHP_XML_SUPPORT_EXPLAIN'			=> 'Pour que phpBB fonctionne correctement, l’extension XML/DOM pour PHP doit être disponible.',
 	'PHP_SUPPORTED_DB'					=> 'Bases de données supportées',
@@ -239,7 +241,7 @@ $lang = array_merge($lang, array(
 	'CONFIG_SITE_DESC'				=> 'Description de votre forum',
 	'CONFIG_SITENAME'				=> 'votredomaine.com',
 
-	'DEFAULT_INSTALL_POST'			=> 'Ceci est un exemple de message de votre installation phpBB3. Tout semble fonctionner. Vous pouvez si vous le voulez supprimer ce message et continuer à configurer votre forum. Durant le processus d’installation, votre première catégorie et votre premier forum sont assignés à un ensemble de permissions appropriées aux groupes d’utilisateurs que sont les administrateurs, les robots, les modérateurs globaux, les invités, les utilisateurs enregistrés et les utilisateurs COPPA enregistrés. Si vous choisissez de supprimer également votre première catégorie et votre premier forum, n’oubliez pas de régler les permissions de tous les groupes d’utilisateurs, pour toutes les nouvelles catégories et forums que vous allez créer. Il est recommandé de renommer votre première catégorie et votre premier forum et de copier leurs permissions sur chaque nouvelle catégorie et nouveau forum lors de leur création. Amusez-vous bien !',
+	'DEFAULT_INSTALL_POST'			=> '<t>Ceci est un exemple de message de votre installation phpBB3. Tout semble fonctionner. Vous pouvez si vous le voulez supprimer ce message et continuer à configurer votre forum. Durant le processus d’installation, votre première catégorie et votre premier forum sont assignés à un ensemble de permissions appropriées aux groupes d’utilisateurs que sont les administrateurs, les robots, les modérateurs globaux, les invités, les utilisateurs enregistrés et les utilisateurs COPPA enregistrés. Si vous choisissez de supprimer également votre première catégorie et votre premier forum, n’oubliez pas de régler les permissions de tous les groupes d’utilisateurs, pour toutes les nouvelles catégories et forums que vous allez créer. Il est recommandé de renommer votre première catégorie et votre premier forum et de copier leurs permissions sur chaque nouvelle catégorie et nouveau forum lors de leur création. Amusez-vous bien !</t>',
 
 	'FORUMS_FIRST_CATEGORY'			=> 'Votre première catégorie',
 	'FORUMS_TEST_FORUM_DESC'		=> 'Description de votre premier forum.',

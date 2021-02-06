@@ -38,6 +38,8 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, array(
+	'CLI_APCU_CACHE_NOTICE'				=> 'Der APCu-Cache muss im Adminstrations-Bereich geleert werden.',
+
 	'CLI_CONFIG_CANNOT_CACHED'			=> 'Verwende diese Option, wenn sich die Konfigurations-Einstellung zu oft ändert, um effizient gecached zu werden.',
 	'CLI_CONFIG_CURRENT'				=> 'Aktuell eingestellter Wert. Nutze 0 und 1, um einen boolschen Wert festzulegen',
 	'CLI_CONFIG_DELETE_SUCCESS'			=> 'Konfigurations-Einstellung %s erfolgreich gelöscht.',

@@ -88,6 +88,7 @@ function adm_page_header($page_title)
 		'T_ICONS_PATH'			=> "{$phpbb_root_path}{$config['icons_path']}/",
 		'T_RANKS_PATH'			=> "{$phpbb_root_path}{$config['ranks_path']}/",
 		'T_UPLOAD_PATH'			=> "{$phpbb_root_path}{$config['upload_path']}/",
+
 		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$phpbb_root_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
 
 		'T_ASSETS_VERSION'		=> $config['assets_version'],
@@ -177,7 +178,7 @@ function adm_page_footer($copyright_html = true)
 		'TRANSLATION_INFO'	=> (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['TRANSLATION_INFO'] : '',
 		'S_COPYRIGHT_HTML'	=> $copyright_html,
 		'CREDIT_LINE'		=> $user->lang('POWERED_BY', '<a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Limited'),
-		'T_JQUERY_LINK'		=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$phpbb_root_path}assets/javascript/jquery-3.4.1.min.js",
+		'T_JQUERY_LINK'		=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$phpbb_root_path}assets/javascript/jquery-3.5.1.min.js",
 		'S_ALLOW_CDN'		=> !empty($config['allow_cdn']),
 		'VERSION'			=> $config['version'])
 	);
@@ -282,27 +283,17 @@ function build_cfg_template($tpl_type, $key, &$new_ary, $config_key, $vars)
 		case 'time':
 		case 'number':
 		case 'range':
-			$max = '';
-			$min = ( isset($tpl_type[1]) ) ? (int) $tpl_type[1] : false;
-			if ( isset($tpl_type[2]) )
-			{
-				$max = (int) $tpl_type[2];
-			}
+			$min = isset($tpl_type[1]) ? (int) $tpl_type[1] : false;
+			$max = isset($tpl_type[2]) ? (int) $tpl_type[2] : false;
 
-			$tpl = '<input id="' . $key . '" type="' . $tpl_type[0] . '"' . (( $min != '' ) ? ' min="' . $min . '"' : '') . (( $max != '' ) ? ' max="' . $max . '"' : '') . ' name="' . $name . '" value="' . $new_ary[$config_key] . '" />';
+			$tpl = '<input id="' . $key . '" type="' . $tpl_type[0] . '"' . (( $min !== false ) ? ' min="' . $min . '"' : '') . (( $max !== false ) ? ' max="' . $max . '"' : '') . ' name="' . $name . '" value="' . $new_ary[$config_key] . '" />';
 		break;
 
 		case 'dimension':
-			$max = '';
+			$min = isset($tpl_type[1]) ? (int) $tpl_type[1] : false;
+			$max = isset($tpl_type[2]) ? (int) $tpl_type[2] : false;
 
-			$min = (int) $tpl_type[1];
-
-			if ( isset($tpl_type[2]) )
-			{
-				$max = (int) $tpl_type[2];
-			}
-
-			$tpl = '<input id="' . $key . '" type="number"' . (( $min !== '' ) ? ' min="' . $min . '"' : '') . (( $max != '' ) ? ' max="' . $max . '"' : '') . ' name="config[' . $config_key . '_width]" value="' . $new_ary[$config_key . '_width'] . '" /> x <input type="number"' . (( $min !== '' ) ? ' min="' . $min . '"' : '') . (( $max != '' ) ? ' max="' . $max . '"' : '') . ' name="config[' . $config_key . '_height]" value="' . $new_ary[$config_key . '_height'] . '" />';
+			$tpl = '<input id="' . $key . '" type="number"' . (( $min !== false ) ? ' min="' . $min . '"' : '') . (( $max !== false ) ? ' max="' . $max . '"' : '') . ' name="config[' . $config_key . '_width]" value="' . $new_ary[$config_key . '_width'] . '" /> x <input type="number"' . (( $min !== '' ) ? ' min="' . $min . '"' : '') . (( $max != '' ) ? ' max="' . $max . '"' : '') . ' name="config[' . $config_key . '_height]" value="' . $new_ary[$config_key . '_height'] . '" />';
 		break;
 
 		case 'textarea':
@@ -444,13 +435,27 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 		switch ($validator[$type])
 		{
 			case 'url':
-				$cfg_array[$config_name] = trim($cfg_array[$config_name]);
-
-				if (!empty($cfg_array[$config_name]) && !preg_match('#^' . get_preg_expression('url') . '$#iu', $cfg_array[$config_name]))
+			case 'csv':
+				if ($validator[$type] == 'url')
 				{
-					$error[] = $language->lang('URL_INVALID', $language->lang($config_definition['lang']));
-				}
+					$cfg_array[$config_name] = trim($cfg_array[$config_name]);
 
+					if (!empty($cfg_array[$config_name]) && !preg_match('#^' . get_preg_expression('url') . '$#iu', $cfg_array[$config_name]))
+					{
+						$error[] = $language->lang('URL_INVALID', $language->lang($config_definition['lang']));
+					}
+				}
+				else if ($validator[$type] == 'csv')
+				{
+					// Validate comma separated values
+					$unfiltered_array = explode(',', $cfg_array[$config_name]);
+					$filtered_array = array_filter($unfiltered_array);
+					if (!empty($filtered_array) && count($unfiltered_array) !== count($filtered_array))
+					{
+						$error[] = $language->lang('CSV_INVALID', $language->lang($config_definition['lang']));
+					}
+
+				}
 			// no break here
 
 			case 'string':

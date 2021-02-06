@@ -158,34 +158,6 @@ phpbb.addAjaxCallback('row_delete', function(res) {
 });
 
 /**
- * Callbacks for extension actions
- */
-phpbb.addAjaxCallback('ext_enable', function(res) {
-	if (res.EXT_ENABLE_SUCCESS) {
-		move_to_enabled(this.parentNode.parentNode);
-		set_actions(this.parentNode, res.ACTIONS);
-		show_enabled_header();
-		hide_disabled_header_if_empty();
-	}
-});
-phpbb.addAjaxCallback('ext_delete_data', function(res) {
-	if (res.EXT_DELETE_DATA_SUCCESS) {
-		move_to_disabled(this.parentNode.parentNode);
-		set_actions(this.parentNode, res.ACTIONS);
-		show_disabled_header();
-		hide_enabled_header_if_empty();
-	}
-});
-phpbb.addAjaxCallback('ext_disable', function(res) {
-	if (res.EXT_DISABLE_SUCCESS) {
-		move_to_disabled(this.parentNode.parentNode);
-		set_actions(this.parentNode, res.ACTIONS);
-		show_disabled_header();
-		hide_enabled_header_if_empty();
-	}
-});
-
-/**
  * Handler for submitting permissions form in chunks
  * This call will submit permissions forms in chunks of 5 fieldsets.
  */
@@ -201,7 +173,9 @@ function submitPermissions() {
 	var permissionSubmitSize = 0,
 		permissionRequestCount = 0,
 		forumIds = [],
-		permissionSubmitFailed = false;
+		permissionSubmitFailed = false,
+		clearIndicator = true,
+		$loadingIndicator;
 
 	if ($submitAllButton !== $submitButton) {
 		fieldsetList = $form.find('fieldset#' + $submitButton.closest('fieldset.permissions').id);
@@ -235,6 +209,8 @@ function submitPermissions() {
 		}
 	});
 
+	$loadingIndicator = phpbb.loadingIndicator();
+
 	/**
 	 * Handler for submitted permissions form chunk
 	 *
@@ -250,6 +226,8 @@ function submitPermissions() {
 		} else if (!permissionSubmitFailed && res.S_USER_NOTICE) {
 			// Display success message at the end of submitting the form
 			if (permissionRequestCount >= permissionSubmitSize) {
+				clearIndicator = true;
+
 				var $alert = phpbb.alert(res.MESSAGE_TITLE, res.MESSAGE_TEXT);
 				var $alertBoxLink = $alert.find('p.alert_text > a');
 
@@ -299,6 +277,17 @@ function submitPermissions() {
 						$form.submit();
 					}, res.REFRESH_DATA.time * 1000); // Server specifies time in seconds
 				}
+			} else {
+				// Still more forms to submit, so do not clear indicator
+				clearIndicator = false;
+			}
+		}
+
+		if (clearIndicator) {
+			phpbb.clearLoadingTimeout();
+
+			if ($loadingIndicator) {
+				$loadingIndicator.fadeOut(phpbb.alertTime);
 			}
 		}
 	}

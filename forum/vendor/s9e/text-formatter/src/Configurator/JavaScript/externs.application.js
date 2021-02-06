@@ -51,7 +51,7 @@ function Document() {}
 Document.prototype.createDocumentFragment = function() {};
 /**
  * @param {string} tagName
- * @param {string=} opt_typeExtension
+ * @param {({is: string}|string)=} opt_typeExtension
  * @return {!Element}
  * @nosideeffects
  */
@@ -101,7 +101,9 @@ Node.prototype.appendChild = function(newChild) {};
 Node.prototype.childNodes;
 /**
  * @param {boolean} deep
- * @return {!Node}
+ * @return {THIS}
+ * @this {THIS}
+ * @template THIS
  * @nosideeffects
  */
 Node.prototype.cloneNode = function(deep) {};
@@ -141,12 +143,25 @@ Node.prototype.parentNode;
  */
 Node.prototype.removeChild = function(oldChild) {};
 /**
+ * @param {Node} newChild
+ * @param {Node} oldChild
+ * @return {!Node}
+ */
+Node.prototype.replaceChild = function(newChild, oldChild) {};
+/**
  * @constructor
  * @implements {IArrayLike<T>}
  * @implements {Iterable<T>}
  * @template T
  */
 function NodeList() {}
+/**
+ * @param {?function(this:S, T, number, !NodeList<T>): ?} callback
+ * @param {S=} opt_thisobj
+ * @template S
+ * @return {undefined}
+ */
+NodeList.prototype.forEach = function(callback, opt_thisobj) {};
 /**
  * @type {number}
  */
@@ -161,9 +176,9 @@ function Element() {}
  */
 function Window() {}
 /**
- * @param {Node} externalNode
- * @param {boolean} deep
- * @return {Node}
+ * @param {!Node} externalNode
+ * @param {boolean=} deep
+ * @return {!Node}
  */
 Document.prototype.importNode = function(externalNode, deep) {};
 /**

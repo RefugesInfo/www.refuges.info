@@ -241,9 +241,9 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('merge', 'twig_array_merge'),
             new TwigFilter('batch', 'twig_array_batch'),
             new TwigFilter('column', 'twig_array_column'),
-            new TwigFilter('filter', 'twig_array_filter'),
-            new TwigFilter('map', 'twig_array_map'),
-            new TwigFilter('reduce', 'twig_array_reduce'),
+            new TwigFilter('filter', 'twig_array_filter', ['needs_environment' => true]),
+            new TwigFilter('map', 'twig_array_map', ['needs_environment' => true]),
+            new TwigFilter('reduce', 'twig_array_reduce', ['needs_environment' => true]),
 
             // string/array filters
             new TwigFilter('reverse', 'twig_reverse_filter', ['needs_environment' => true]),
@@ -411,7 +411,7 @@ function twig_random(Environment $env, $values = null, $max = null)
         $charset = $env->getCharset();
 
         if ('UTF-8' !== $charset) {
-            $values = iconv($charset, 'UTF-8', $values);
+            $values = twig_convert_encoding($values, 'UTF-8', $charset);
         }
 
         // unicode version of str_split()
@@ -420,7 +420,7 @@ function twig_random(Environment $env, $values = null, $max = null)
 
         if ('UTF-8' !== $charset) {
             foreach ($values as $i => $value) {
-                $values[$i] = iconv('UTF-8', $charset, $value);
+                $values[$i] = twig_convert_encoding($value, $charset, 'UTF-8');
             }
         }
     }
@@ -490,7 +490,7 @@ function twig_date_modify_filter(Environment $env, $date, $modifier)
  * @param \DateTimeInterface|string|null  $date     A date or null to use the current time
  * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
  *
- * @return \DateTime
+ * @return \DateTimeInterface
  */
 function twig_date_converter(Environment $env, $date = null, $timezone = null)
 {
@@ -563,11 +563,11 @@ function twig_replace_filter($str, $from)
  */
 function twig_round($value, $precision = 0, $method = 'common')
 {
-    if ('common' == $method) {
+    if ('common' === $method) {
         return round($value, $precision);
     }
 
-    if ('ceil' != $method && 'floor' != $method) {
+    if ('ceil' !== $method && 'floor' !== $method) {
         throw new RuntimeError('The round filter only supports the "common", "ceil", and "floor" methods.');
     }
 
@@ -885,7 +885,7 @@ function twig_reverse_filter(Environment $env, $item, $preserveKeys = false)
     $charset = $env->getCharset();
 
     if ('UTF-8' !== $charset) {
-        $item = iconv($charset, 'UTF-8', $string);
+        $item = twig_convert_encoding($string, 'UTF-8', $charset);
     }
 
     preg_match_all('/./us', $item, $matches);
@@ -893,7 +893,7 @@ function twig_reverse_filter(Environment $env, $item, $preserveKeys = false)
     $string = implode('', array_reverse($matches[0]));
 
     if ('UTF-8' !== $charset) {
-        $string = iconv('UTF-8', $charset, $string);
+        $string = twig_convert_encoding($string, $charset, 'UTF-8');
     }
 
     return $string;
@@ -997,6 +997,10 @@ function twig_spaceless($content)
 
 function twig_convert_encoding($string, $to, $from)
 {
+    if (!\function_exists('iconv')) {
+        throw new RuntimeError('Unable to convert encoding: required function iconv() does not exist. You should install ext-iconv or symfony/polyfill-iconv.');
+    }
+
     return iconv($from, $to, $string);
 }
 
@@ -1148,7 +1152,7 @@ function twig_to_array($seq, $preserveKeys = true)
 function twig_test_empty($value)
 {
     if ($value instanceof \Countable) {
-        return 0 == \count($value);
+        return 0 === \count($value);
     }
 
     if ($value instanceof \Traversable) {
@@ -1425,7 +1429,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
     if (!isset($cache[$class])) {
         $methods = get_class_methods($object);
         sort($methods);
-        $lcMethods = array_map('strtolower', $methods);
+        $lcMethods = array_map(function ($value) { return strtr($value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'); }, $methods);
         $classCache = [];
         foreach ($methods as $i => $method) {
             $classCache[$method] = $method;
@@ -1464,7 +1468,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
     $call = false;
     if (isset($cache[$class][$item])) {
         $method = $cache[$class][$item];
-    } elseif (isset($cache[$class][$lcItem = strtolower($item)])) {
+    } elseif (isset($cache[$class][$lcItem = strtr($item, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')])) {
         $method = $cache[$class][$lcItem];
     } elseif (isset($cache[$class]['__call'])) {
         $method = $item;
@@ -1531,8 +1535,16 @@ function twig_array_column($array, $name, $index = null): array
     return array_column($array, $name, $index);
 }
 
-function twig_array_filter($array, $arrow)
+function twig_array_filter(Environment $env, $array, $arrow)
 {
+    if (!twig_test_iterable($array)) {
+        throw new RuntimeError(sprintf('The "filter" filter expects an array or "Traversable", got "%s".', \is_object($array) ? \get_class($array) : \gettype($array)));
+    }
+
+    if (!$arrow instanceof Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+        throw new RuntimeError('The callable passed to "filter" filter must be a Closure in sandbox mode.');
+    }
+
     if (\is_array($array)) {
         return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
     }
@@ -1541,8 +1553,12 @@ function twig_array_filter($array, $arrow)
     return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
 }
 
-function twig_array_map($array, $arrow)
+function twig_array_map(Environment $env, $array, $arrow)
 {
+    if (!$arrow instanceof Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+        throw new RuntimeError('The callable passed to the "map" filter must be a Closure in sandbox mode.');
+    }
+
     $r = [];
     foreach ($array as $k => $v) {
         $r[$k] = $arrow($v, $k);
@@ -1551,8 +1567,12 @@ function twig_array_map($array, $arrow)
     return $r;
 }
 
-function twig_array_reduce($array, $arrow, $initial = null)
+function twig_array_reduce(Environment $env, $array, $arrow, $initial = null)
 {
+    if (!$arrow instanceof Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+        throw new RuntimeError('The callable passed to the "reduce" filter must be a Closure in sandbox mode.');
+    }
+
     if (!\is_array($array)) {
         $array = iterator_to_array($array);
     }

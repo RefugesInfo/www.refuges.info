@@ -238,6 +238,7 @@ $lang = array_merge($lang, array(
 	'CRON_NO_SUCH_TASK'		=> 'Impossibile trovare il processo pianificato “%s”.',
 	'CRON_NO_TASK'			=> 'Nessuna operazione pianificata deve essere eseguita ora.',
 	'CRON_NO_TASKS'			=> 'Nessuna operazione pianificata è stata trovata.',
+	'CSV_INVALID'			=> 'L’impostazione delimitata da virgole “%1$s” fornita non è valida. I valori devono essere delimitati solo da virgole, non devono contenere delimitatori iniziali o finali.',
 	'CURRENT_VERSION'		=> 'Versione corrente',
 
 	'DEACTIVATE'				=> 'Disattiva',
@@ -319,6 +320,7 @@ $lang = array_merge($lang, array(
 
 	'UCP'					=> 'Pannello di Controllo Utente',
 	'URL_INVALID'			=> 'L’URL fornito per l’impostazione “%1$s” non è valido.',
+	'URL_SCHEME_INVALID'	=> 'Lo schema fornito “%2$s” nell’impostazione separata da virgole “%1$s” non è valido. Lo schema dovrebbe iniziare con un carattere latino seguito da caratteri alfanumerici, trattini o punti.',
 	'USERNAMES_EXPLAIN'		=> 'Metti ogni nome utente su una linea separata.',
 	'USER_CONTROL_PANEL'	=> 'Pannello di Controllo Utente',
 
@@ -372,10 +374,12 @@ $lang = array_merge($lang, array(
 	'ERROR_MBSTRING_ENCODING_TRANSLATION'			=> 'La codifica trasparente dei caratteri non è correttamente configurata',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION_EXPLAIN'	=> '<var>mbstring.encoding_translation</var> deve essere impostata su 0. Puoi controllare il valore corrente nella pagina <samp>Informazioni *php</samp>.',
 	'ERROR_MBSTRING_HTTP_INPUT'						=> 'La codifica HTTP dei caratteri in ingresso non è correttamente configurata',
-	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN'				=> '<var>mbstring.http_input</var> deve essere impostata su <samp>pass</samp>. Puoi controllare il valore corrente nella pagina <samp>Informazioni *php</samp>.',
+	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN'				=> '<var>mbstring.http_input</var> deve essere lasciato vuoto. Puoi controllare il valore corrente nella pagina <samp>Informazioni *php</samp>.',
 	'ERROR_MBSTRING_HTTP_OUTPUT'					=> 'La codifica HTTP dei caratteri in uscita non è correttamente configurata',
-	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN'			=> '<var>mbstring.http_output</var> deve essere impostata su <samp>pass</samp>. Puoi controllare il valore corrente nella pagina <samp>Informazioni *php</samp>.',
-
+	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN'			=> '<var>mbstring.http_output</var> deve essere lasciato vuoto. Puoi controllare il valore corrente nella pagina <samp>Informazioni *php</samp>.',
+    'ERROR_DEFAULT_CHARSET'							=> 'Il set di caratteri predefinito non è configurato correttamente',
+	'ERROR_DEFAULT_CHARSET_EXPLAIN'					=> '<var>set di caratteri predefinito</var> deve essere impostato su <samp>UTF-8</samp>. Puoi controllare il valore corrente nella pagina <samp>Informazioni *php</samp>.',
+	
 	'FILES_PER_DAY'		=> 'Allegati al giorno',
 	'FORUM_STATS'		=> 'Statistiche',
 
@@ -493,23 +497,23 @@ $lang = array_merge($lang, array(
 
 // Log Entries
 $lang = array_merge($lang, array(
-	'LOG_ACL_ADD_USER_GLOBAL_U_'		=> '<strong>Aggiungi o modifica permessi utente a utenti</strong><br />» %s',
-	'LOG_ACL_ADD_GROUP_GLOBAL_U_'		=> '<strong>Aggiungi o modifica permessi utente a gruppi</strong><br />» %s',
-	'LOG_ACL_ADD_USER_GLOBAL_M_'		=> '<strong>Aggiungi o modifica permessi moderatore globale a utenti</strong><br />» %s',
-	'LOG_ACL_ADD_GROUP_GLOBAL_M_'		=> '<strong>Aggiungi o modifica permessi moderatore globale a gruppi</strong><br />» %s',
-	'LOG_ACL_ADD_USER_GLOBAL_A_'		=> '<strong>Aggiungi o modifica permessi amministratore a utenti</strong><br />» %s',
-	'LOG_ACL_ADD_GROUP_GLOBAL_A_'		=> '<strong>Aggiungi o modifica permessi amministratore a gruppi</strong><br />» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_U_'		=> '<strong>Aggiunti o modificati permessi utente a utenti</strong><br />» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_U_'		=> '<strong>Aggiunti o modificati permessi utente a gruppi</strong><br />» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_M_'		=> '<strong>Aggiunti o modificati permessi moderatore globale a utenti</strong><br />» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_M_'		=> '<strong>Aggiunti o modificati permessi moderatore globale a gruppi</strong><br />» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_A_'		=> '<strong>Aggiunti o modificati permessi amministratore a utenti</strong><br />» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_A_'		=> '<strong>Aggiunti o modificati permessi amministratore a gruppi</strong><br />» %s',
 
-	'LOG_ACL_ADD_ADMIN_GLOBAL_A_'		=> '<strong>Aggiungi o modifica amministratori</strong><br />» %s',
-	'LOG_ACL_ADD_MOD_GLOBAL_M_'			=> '<strong>Aggiungi o modifica moderatori globali</strong><br />» %s',
+	'LOG_ACL_ADD_ADMIN_GLOBAL_A_'		=> '<strong>Aggiunti o modificati amministratori</strong><br />» %s',
+	'LOG_ACL_ADD_MOD_GLOBAL_M_'			=> '<strong>Aggiunti o modificati moderatori globali</strong><br />» %s',
 
-	'LOG_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Aggiungi o modifica accesso forum a utenti</strong> da %1$s<br />» %2$s',
-	'LOG_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Aggiungi o modifica accesso forum moderatore a utenti</strong> da %1$s<br />» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Aggiungi o modifica accesso forum a gruppi</strong> da %1$s<br />» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Aggiungi o modifica accesso forum moderatore a gruppi</strong> da %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Aggiunto o modificato accesso forum a utenti</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Aggiunto o modificato accesso forum moderatore a utenti</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Aggiunto o modificato accesso forum a gruppi</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Aggiunto o modificato accesso forum moderatore a gruppi</strong> in %1$s<br />» %2$s',
 
-	'LOG_ACL_ADD_MOD_LOCAL_M_'			=> '<strong>Aggiungi o modifica moderatori</strong> da %1$s<br />» %2$s',
-	'LOG_ACL_ADD_FORUM_LOCAL_F_'		=> '<strong>Aggiungi o modifica permessi forum</strong> da %1$s<br />» %2$s',
+	'LOG_ACL_ADD_MOD_LOCAL_M_'			=> '<strong>Aggiunti o modificati moderatori</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_FORUM_LOCAL_F_'		=> '<strong>Aggiunti o modificati permessi forum</strong> in %1$s<br />» %2$s',
 
 	'LOG_ACL_DEL_ADMIN_GLOBAL_A_'		=> '<strong>Rimossi amministratori</strong><br />» %s',
 	'LOG_ACL_DEL_MOD_GLOBAL_M_'			=> '<strong>Rimossi moderatori globali</strong><br />» %s',
@@ -530,7 +534,7 @@ $lang = array_merge($lang, array(
 	'LOG_ATTACH_EXTGROUP_ADD'	=> '<strong>Aggiunta estensione gruppo</strong><br />» %s',
 	'LOG_ATTACH_EXTGROUP_EDIT'	=> '<strong>Modificata estensione gruppo</strong><br />» %s',
 	'LOG_ATTACH_EXTGROUP_DEL'	=> '<strong>Rimossa estensione gruppo</strong><br />» %s',
-	'LOG_ATTACH_FILEUPLOAD'		=> '<strong>File orfano caricata su argomento</strong><br />» ID %1$d - %2$s',
+	'LOG_ATTACH_FILEUPLOAD'		=> '<strong>File orfano caricato su argomento</strong><br />» ID %1$d - %2$s',
 	'LOG_ATTACH_ORPHAN_DEL'		=> '<strong>File orfano cancellato</strong><br />» %s',
 
 	'LOG_BAN_EXCLUDE_USER'	=> '<strong>Escludi utente dal ban</strong> per questo motivo “<em>%1$s</em>”<br />» %2$s',

@@ -194,7 +194,7 @@ class language
 	}
 
 	/**
-	 * @param $key array|string		The language key we want to know more about. Can be string or array.
+	 * @param	array|string	$key	The language key we want to know more about. Can be string or array.
 	 *
 	 * @return bool		Returns whether the language key is set.
 	 */
@@ -292,7 +292,7 @@ class language
 	 *
 	 * @return string
 	 */
-	public function lang_array($key, $args = array())
+	public function lang_array($key, array $args = [])
 	{
 		$lang = $this->lang_raw($key);
 
@@ -399,7 +399,7 @@ class language
 	 *
 	 * @return int	The plural-case we need to use for the number plural-rule combination
 	 *
-	 * @throws \phpbb\language\exception\invalid_plural_rule_exception	When $force_rule has an invalid value
+	 * @throws invalid_plural_rule_exception	When $force_rule has an invalid value
 	 */
 	public function get_plural_form($number, $force_rule = false)
 	{

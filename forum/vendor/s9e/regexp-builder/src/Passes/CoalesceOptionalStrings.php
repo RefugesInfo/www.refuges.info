@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2018 The s9e Authors
+* @copyright Copyright (c) 2016-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Passes;
@@ -50,10 +50,10 @@ class CoalesceOptionalStrings extends AbstractPass
 	protected function buildCoalescedStrings(array $prefixStrings, array $suffix)
 	{
 		$strings = $this->runPass($this->buildPrefix($prefixStrings));
-		if (count($strings) === 1 && $strings[0][0][0] === [])
+		if ($this->isSingleOptionalAlternation($strings))
 		{
 			// If the prefix has been remerged into a list of strings which contains only one string
-			// of which the first element is an optional alternations, we only need to append the
+			// of which the first element is an optional alternation, we only need to append the
 			// suffix
 			$strings[0][] = $suffix;
 		}
@@ -134,5 +134,16 @@ class CoalesceOptionalStrings extends AbstractPass
 		}
 
 		return $groups;
+	}
+
+	/**
+	* Test whether given list of strings starts with a single optional alternation
+	*
+	* @param  array $strings
+	* @return bool
+	*/
+	protected function isSingleOptionalAlternation(array $strings)
+	{
+		return (count($strings) === 1 && is_array($strings[0][0]) && $strings[0][0][0] === []);
 	}
 }

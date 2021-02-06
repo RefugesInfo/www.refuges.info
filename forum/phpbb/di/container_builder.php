@@ -117,6 +117,11 @@ class container_builder
 	private $build_exception;
 
 	/**
+	 * @var array
+	 */
+	private $env_parameters = [];
+
+	/**
 	 * Constructor
 	 *
 	 * @param string $phpbb_root_path Path to the phpbb includes directory.
@@ -124,8 +129,14 @@ class container_builder
 	 */
 	public function __construct($phpbb_root_path, $php_ext)
 	{
-		$this->phpbb_root_path = $phpbb_root_path;
-		$this->php_ext = $php_ext;
+		$this->phpbb_root_path	= $phpbb_root_path;
+		$this->php_ext			= $php_ext;
+		$this->env_parameters	= $this->get_env_parameters();
+
+		if (isset($this->env_parameters['core.cache_dir']))
+		{
+			$this->with_cache_dir($this->env_parameters['core.cache_dir']);
+		}
 	}
 
 	/**
@@ -137,13 +148,14 @@ class container_builder
 	{
 		try
 		{
-			$container_filename = $this->get_container_filename();
-			$config_cache = new ConfigCache($container_filename, defined('DEBUG'));
-			if ($this->use_cache && $config_cache->isFresh())
+			$build_container = true;
+
+			if ($this->use_cache)
 			{
 				if ($this->use_extensions)
 				{
 					$autoload_cache = new ConfigCache($this->get_autoload_filename(), defined('DEBUG'));
+
 					if (!$autoload_cache->isFresh())
 					{
 						// autoload cache should be refreshed
@@ -153,10 +165,18 @@ class container_builder
 					require($this->get_autoload_filename());
 				}
 
-				require($config_cache->getPath());
-				$this->container = new \phpbb_cache_container();
+				$container_filename = $this->get_container_filename();
+				$config_cache = new ConfigCache($container_filename, defined('DEBUG'));
+
+				if ($config_cache->isFresh())
+				{
+					require($config_cache->getPath());
+					$this->container = new \phpbb_cache_container();
+					$build_container = false;
+				}
 			}
-			else
+
+			if ($build_container)
 			{
 				$this->container_extensions = [
 					new extension\core($this->get_config_path()),
@@ -572,14 +592,14 @@ class container_builder
 	protected function get_core_parameters()
 	{
 		return array_merge(
-			array(
+			[
 				'core.root_path'     => $this->phpbb_root_path,
 				'core.php_ext'       => $this->php_ext,
 				'core.environment'   => $this->get_environment(),
 				'core.debug'         => defined('DEBUG') ? DEBUG : false,
 				'core.cache_dir'     => $this->get_cache_dir(),
-			),
-			$this->get_env_parameters()
+			],
+			$this->env_parameters
 		);
 	}
 

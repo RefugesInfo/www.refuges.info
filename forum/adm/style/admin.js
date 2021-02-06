@@ -169,7 +169,7 @@ function parse_document(container)
 			ul = $this.children(),
 			tabs = ul.children().not('[data-skip-responsive]'),
 			links = tabs.children('a'),
-			item = ul.append('<li class="tab responsive-tab" style="display:none;"><a href="javascript:void(0);" class="responsive-tab-link">&nbsp;</a><div class="dropdown tab-dropdown" style="display: none;"><div class="pointer"><div class="pointer-inner" /></div><ul class="dropdown-contents" /></div></li>').find('li.responsive-tab'),
+			item = ul.append('<li class="tab responsive-tab" style="display:none;"><a href="javascript:void(0);" class="responsive-tab-link">&nbsp;</a><div class="dropdown tab-dropdown" style="display: none;"><div class="pointer"><div class="pointer-inner"></div></div><ul class="dropdown-contents" /></div></li>').find('li.responsive-tab'),
 			menu = item.find('.dropdown-contents'),
 			maxHeight = 0,
 			lastWidth = false,
@@ -226,64 +226,6 @@ function parse_document(container)
 		check(true);
 		$(window).resize(check);
 	});
-}
-
-/**
- * Extension actions helper functions
- */
-function move_to_enabled(element)
-{
-	var disabled_header = document.querySelector('#ext_disabled_header');
-	disabled_header.parentNode.insertBefore(element, disabled_header);
-	element.classList.remove('ext_disabled');
-	element.classList.add('ext_enabled');
-}
-function move_to_disabled(element)
-{
-	var table_body = document.querySelector('#ext_disabled_header').parentNode;
-	table_body.appendChild(element);
-	element.classList.remove('ext_enabled');
-	element.classList.add('ext_disabled');
-}
-function set_actions(container, actions) {
-	container.innerHTML = '';
-	for (var i = 0; i < actions.length; i++) {
-		var a = document.createElement('a');
-		a.href = actions[i].U_ACTION.split('&amp;').join('&'); // replace all occurances
-		a.title = actions[i].L_ACTION_EXPLAIN;
-		if (actions[i].COLOR) {
-			a.style = actions[i].COLOR;
-		}
-		a.innerHTML = actions[i].L_ACTION;
-		// ajaxify this action as well
-		phpbb.ajaxify({
-			selector: a,
-			refresh: true,
-			callback: actions[i].ACTION_AJAX
-		});
-
-		container.appendChild(a);
-
-		if (i < actions.length - 1) {
-			container.innerHTML += '&nbsp;|&nbsp;';
-		}
-	}
-}
-function show_enabled_header() {
-	document.querySelector('#ext_enabled_header').classList.remove('hidden');
-}
-function show_disabled_header() {
-	document.querySelector('#ext_disabled_header').classList.remove('hidden');
-}
-function hide_disabled_header_if_empty() {
-	if (!document.querySelector('.ext_disabled')) {
-		document.querySelector('#ext_disabled_header').classList.add('hidden');
-	}
-}
-function hide_enabled_header_if_empty() {
-	if (!document.querySelector('.ext_enabled')) {
-		document.querySelector('#ext_enabled_header').classList.add('hidden');
-	}
 }
 
 /**

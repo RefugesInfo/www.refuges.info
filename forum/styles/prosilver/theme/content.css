@@ -281,7 +281,7 @@ dd.option {
 }
 
 .search .postbody {
-	width: 68%
+	width: 68%;
 }
 
 /* Topic review panel
@@ -359,6 +359,17 @@ dd.option {
 	font-size: 1.2em;
 	margin-bottom: 1em;
 	line-height: 1.4em;
+}
+
+.agreement {
+	font-size: 12px;
+	line-height: 17px;
+	margin-bottom: 10px;
+}
+
+.agreement-text {
+	line-height: 17px;
+	margin-bottom: 10px;
 }
 
 dl.faq {
@@ -484,7 +495,7 @@ blockquote cite:before, .uncited:before {
 	padding-right: 5px;
 }
 
-blockquote cite > div {
+blockquote cite > span {
 	float: right;
 	font-weight: normal;
 }
@@ -553,6 +564,7 @@ blockquote .codebox {
 	clear: left;
 	border-top: 1px solid transparent;
 	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 .attachbox dd dd {

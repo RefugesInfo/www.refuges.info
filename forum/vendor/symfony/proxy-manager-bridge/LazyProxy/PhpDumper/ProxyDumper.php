@@ -62,10 +62,10 @@ class ProxyDumper implements DumperInterface
         }
 
         if (null === $factoryCode) {
-            @trigger_error(sprintf('The "%s()" method expects a third argument defining the code to execute to construct your service since Symfony 3.4, providing it will be required in 4.0.', __METHOD__), E_USER_DEPRECATED);
+            @trigger_error(sprintf('The "%s()" method expects a third argument defining the code to execute to construct your service since Symfony 3.4, providing it will be required in 4.0.', __METHOD__), \E_USER_DEPRECATED);
             $factoryCode = '$this->get'.Container::camelize($id).'Service(false)';
         } elseif (false === strpos($factoryCode, '(')) {
-            @trigger_error(sprintf('The "%s()" method expects its third argument to define the code to execute to construct your service since Symfony 3.4, providing it will be required in 4.0.', __METHOD__), E_USER_DEPRECATED);
+            @trigger_error(sprintf('The "%s()" method expects its third argument to define the code to execute to construct your service since Symfony 3.4, providing it will be required in 4.0.', __METHOD__), \E_USER_DEPRECATED);
             $factoryCode = "\$this->$factoryCode(false)";
         }
         $proxyClass = $this->getProxyClassName($definition);
@@ -97,6 +97,7 @@ EOF;
     public function getProxyCode(Definition $definition)
     {
         $code = $this->classGenerator->generate($this->generateProxyClass($definition));
+        $code = preg_replace('/^(class [^ ]++ extends )([^\\\\])/', '$1\\\\$2', $code);
 
         $code = preg_replace(
             '/(\$this->initializer[0-9a-f]++) && \1->__invoke\(\$this->(valueHolder[0-9a-f]++), (.*?), \1\);/',

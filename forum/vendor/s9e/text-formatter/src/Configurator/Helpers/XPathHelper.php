@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Helpers;
@@ -28,10 +28,10 @@ abstract class XPathHelper
 	public static function decodeStrings($expr)
 	{
 		return preg_replace_callback(
-			'(([\'"])(.*?)\\1)s',
+			'(\'[^\']*+\'|"[^"]*+")',
 			function ($m)
 			{
-				return $m[1] . hex2bin($m[2]) . $m[1];
+				return $m[0][0] . hex2bin(substr($m[0], 1, -1)) . $m[0][0];
 			},
 			$expr
 		);
@@ -46,10 +46,10 @@ abstract class XPathHelper
 	public static function encodeStrings($expr)
 	{
 		return preg_replace_callback(
-			'(([\'"])(.*?)\\1)s',
+			'(\'[^\']*+\'|"[^"]*+")',
 			function ($m)
 			{
-				return $m[1] . bin2hex($m[2]) . $m[1];
+				return $m[0][0] . bin2hex(substr($m[0], 1, -1)) . $m[0][0];
 			},
 			$expr
 		);
@@ -111,50 +111,75 @@ abstract class XPathHelper
 	*/
 	public static function minify($expr)
 	{
-		$old     = $expr;
-		$strings = [];
+		$expr = trim($expr);
 
-		// Trim the surrounding whitespace then temporarily remove literal strings
-		$expr = preg_replace_callback(
-			'/"[^"]*"|\'[^\']*\'/',
-			function ($m) use (&$strings)
-			{
-				$uniqid = '(' . sha1(uniqid()) . ')';
-				$strings[$uniqid] = $m[0];
-
-				return $uniqid;
-			},
-			trim($expr)
-		);
-
-		if (preg_match('/[\'"]/', $expr))
+		// Test whether there's any characters that can be removed
+		if (!preg_match('([\\s\\)])', $expr))
 		{
-			throw new RuntimeException("Cannot parse XPath expression '" . $old . "'");
+			return $expr;
 		}
 
+		// Temporarily encode the content of literal strings
+		$expr = self::encodeStrings(trim($expr));
+
 		// Normalize whitespace to a single space
-		$expr = preg_replace('/\\s+/', ' ', $expr);
+		$expr = preg_replace('(\\s+)', ' ', $expr);
 
-		// Remove the space between a non-word character and a word character
-		$expr = preg_replace('/([-a-z_0-9]) ([^-a-z_0-9])/i', '$1$2', $expr);
-		$expr = preg_replace('/([^-a-z_0-9]) ([-a-z_0-9])/i', '$1$2', $expr);
+		$regexps = [
+			// Remove the space between a non-word character and a word character
+			'([-a-z_0-9]\\K (?=[^-a-z_0-9]))i',
+			'([^-a-z_0-9]\\K (?=[-a-z_0-9]))i',
 
-		// Remove the space between two non-word characters as long as they're not two -
-		$expr = preg_replace('/(?!- -)([^-a-z_0-9]) ([^-a-z_0-9])/i', '$1$2', $expr);
+			// Remove the space between two non-word characters as long as they're not two -
+			'((?!- -)[^-a-z_0-9]\\K (?=[^-a-z_0-9]))i',
 
-		// Remove the space between a - and a word character, as long as there's a space before -
-		$expr = preg_replace('/ - ([a-z_0-9])/i', ' -$1', $expr);
+			// Remove the space between a - and a word character as long as there's a space before -
+			'( -\\K (?=[a-z_0-9]))i',
 
-		// Remove the spaces between a number and a div or "-" operator and the next token
-		$expr = preg_replace('/(?:^|[ \\(])\\d+\\K (div|-) ?/', '$1', $expr);
+			// Remove the space between an operator and the next token if it's a left parenthesis
+			'([ \\)](?:and|div|mod|or)\\K (?=\\())',
 
-		// Remove the space between the div operator the next token
-		$expr = preg_replace('/([^-a-z_0-9]div) (?=[$0-9@])/', '$1', $expr);
+			// Remove the space after a number
+			'(\\b\\d+\\K )'
+		];
+		$expr = preg_replace($regexps, '', $expr);
+
+		// Remove consecutive parentheses where redundant
+		$expr = self::removeRedundantParentheses($expr);
 
 		// Restore the literals
-		$expr = strtr($expr, $strings);
+		$expr = self::decodeStrings($expr);
 
 		return $expr;
+	}
+
+	/**
+	* Remove consecutive parentheses where redundant
+	*/
+	protected static function removeRedundantParentheses(string $expr): string
+	{
+		// Add parentheses around the original expression and terminate the expression with a space
+		preg_match_all('(([\\(\\)])|[^\\(\\)]++)', '(' . $expr . ') ', $m);
+		$tokens = $m[0];
+		$parens = array_filter($m[1]);
+
+		// Iterate over parentheses and remove the inner pair when consecutive parentheses are found
+		$depth = 0;
+		$left  = [];
+		foreach ($parens as $k => $token)
+		{
+			if ($token === '(')
+			{
+				$left[$depth++] = $k;
+			}
+			elseif (--$depth > 0 && $tokens[$k + 1] === ')' && $left[$depth - 1] === $left[$depth] - 1)
+			{
+				unset($tokens[$k], $tokens[$left[$depth]]);
+			}
+		}
+
+		// Remove the extra parentheses as well as the last token before serializing them
+		return implode('', array_slice($tokens, 1, -2));
 	}
 
 	/**

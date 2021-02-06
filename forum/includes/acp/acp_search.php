@@ -53,7 +53,7 @@ class acp_search
 		global $user, $template, $phpbb_log, $request;
 		global $config, $phpbb_admin_path, $phpEx;
 
-		$submit = (isset($_POST['submit'])) ? true : false;
+		$submit = $request->is_set_post('submit');
 
 		if ($submit && !check_link_hash($request->variable('hash', ''), 'acp_search'))
 		{
@@ -62,15 +62,16 @@ class acp_search
 
 		$search_types = $this->get_search_types();
 
-		$settings = array(
-			'search_interval'			=> 'float',
-			'search_anonymous_interval'	=> 'float',
-			'load_search'				=> 'bool',
-			'limit_search_load'			=> 'float',
-			'min_search_author_chars'	=> 'integer',
-			'max_num_search_keywords'	=> 'integer',
-			'search_store_results'		=> 'integer',
-		);
+		$settings = [
+			'search_interval'				=> 'float',
+			'search_anonymous_interval'		=> 'float',
+			'load_search'					=> 'bool',
+			'limit_search_load'				=> 'float',
+			'min_search_author_chars'		=> 'integer',
+			'max_num_search_keywords'		=> 'integer',
+			'default_search_return_chars'	=> 'integer',
+			'search_store_results'			=> 'integer',
+		];
 
 		$search = null;
 		$error = false;
@@ -219,20 +220,21 @@ class acp_search
 		$this->tpl_name = 'acp_search';
 		$this->page_title = 'ACP_SEARCH_SETTINGS';
 
-		$template->assign_vars(array(
-			'LIMIT_SEARCH_LOAD'		=> (float) $config['limit_search_load'],
-			'MIN_SEARCH_AUTHOR_CHARS'	=> (int) $config['min_search_author_chars'],
-			'SEARCH_INTERVAL'		=> (float) $config['search_interval'],
-			'SEARCH_GUEST_INTERVAL'	=> (float) $config['search_anonymous_interval'],
-			'SEARCH_STORE_RESULTS'	=> (int) $config['search_store_results'],
-			'MAX_NUM_SEARCH_KEYWORDS'	=> (int) $config['max_num_search_keywords'],
+		$template->assign_vars([
+			'DEFAULT_SEARCH_RETURN_CHARS'	=> (int) $config['default_search_return_chars'],
+			'LIMIT_SEARCH_LOAD'				=> (float) $config['limit_search_load'],
+			'MIN_SEARCH_AUTHOR_CHARS'		=> (int) $config['min_search_author_chars'],
+			'SEARCH_INTERVAL'				=> (float) $config['search_interval'],
+			'SEARCH_GUEST_INTERVAL'			=> (float) $config['search_anonymous_interval'],
+			'SEARCH_STORE_RESULTS'			=> (int) $config['search_store_results'],
+			'MAX_NUM_SEARCH_KEYWORDS'		=> (int) $config['max_num_search_keywords'],
 
 			'S_SEARCH_TYPES'		=> $search_options,
 			'S_YES_SEARCH'			=> (bool) $config['load_search'],
 			'S_SETTINGS'			=> true,
 
-			'U_ACTION'				=> $this->u_action . '&amp;hash=' . generate_link_hash('acp_search'))
-		);
+			'U_ACTION'				=> $this->u_action . '&amp;hash=' . generate_link_hash('acp_search'),
+		]);
 	}
 
 	function index($id, $mode)
@@ -243,13 +245,13 @@ class acp_search
 		$action = $request->variable('action', '');
 		$this->state = explode(',', $config['search_indexing_state']);
 
-		if (isset($_POST['cancel']))
+		if ($request->is_set_post('cancel'))
 		{
 			$action = '';
 			$this->state = array();
 			$this->save_state();
 		}
-		$submit = $request->is_set_post('submit', false);
+		$submit = $request->is_set_post('submit');
 
 		if (!check_link_hash($request->variable('hash', ''), 'acp_search') && in_array($action, array('create', 'delete')))
 		{

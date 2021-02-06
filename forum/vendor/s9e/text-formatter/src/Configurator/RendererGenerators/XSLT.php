@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RendererGenerators;
@@ -84,7 +84,7 @@ class XSLT implements RendererGenerator
 		}
 
 		// Start the stylesheet with the boilerplate stuff
-		$xsl .= '><xsl:output method="html" encoding="utf-8" indent="no"/>';
+		$xsl .= '><xsl:output method="html" encoding="utf-8" indent="no"/><xsl:decimal-format decimal-separator="."/>';
 
 		// Add stylesheet parameters
 		foreach ($rendering->getAllParameters() as $paramName => $paramValue)

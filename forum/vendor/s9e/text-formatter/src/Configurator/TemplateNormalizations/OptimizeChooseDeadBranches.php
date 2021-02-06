@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\TemplateNormalizations;
@@ -20,7 +20,7 @@ class OptimizeChooseDeadBranches extends AbstractChooseOptimization
 	protected function isAlwaysFalse($expr)
 	{
 		// Always false: empty strings, 0, or false()
-		$regexp = '(^(?:""|\'\'|0|0*\\.0+|false\\s*\\(\\s*\\))$)';
+		$regexp = '(^(?:""|\'\'|(?:0*\\.)?0+|false\\s*\\(\\s*\\))$)';
 
 		return (bool) preg_match($regexp, trim($expr));
 	}
@@ -34,7 +34,7 @@ class OptimizeChooseDeadBranches extends AbstractChooseOptimization
 	protected function isAlwaysTrue($expr)
 	{
 		// Always true: non-empty strings, non-0 numbers, or true()
-		$regexp = '(^(?:"[^"]++"|\'[^\']++\'|0[0-9]+|[1-9][0-9]*|[0-9]*\\.0*[1-9][0-9]*|true\\s*\\(\\s*\\))$)';
+		$regexp = '(^(?:"[^"]++"|\'[^\']++\'|0*[1-9][0-9]*(?:\\.[0-9]*)?|0*\\.0*[1-9][0-9]*|true\\s*\\(\\s*\\))$)';
 
 		return (bool) preg_match($regexp, trim($expr));
 	}

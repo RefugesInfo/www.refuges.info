@@ -235,6 +235,7 @@ $lang = array_merge($lang, array(
  	'CRON_NO_SUCH_TASK'		=> 'No se pudo encontrar la tarea cron “%s”.',
  	'CRON_NO_TASK'			=> 'No hay tareas cron que necesiten ejecutarse en estos momentos.',
  	'CRON_NO_TASKS'			=> 'No se han podido encontrar tareas cron.',
+	'CSV_INVALID'			=> 'El ajuste “%1$s” separado por comas proporcionado no es válido. Los valores deben estar delimitados solo por comas, no deben contener delimitadores iniciales o finales.',
 	'CURRENT_VERSION'		=> 'Versión actual',
 	
 	'DEACTIVATE'				=> 'Desactivar',
@@ -316,6 +317,7 @@ $lang = array_merge($lang, array(
 
 	'UCP'					=> 'Panel de Control del Usuario',
 	'URL_INVALID'			=> 'La URL proporcionada para la configuración “%1$s” no es válida.',
+	'URL_SCHEME_INVALID'	=> 'El esquema proporcionado “%2$s” en la configuración separada por comas “%1$s” no es válido. El esquema debe comenzar con un carácter latino seguido de caracteres alfanuméricos, guiones o puntos.',
 	'USERNAMES_EXPLAIN'		=> 'Inserte cada nombre de usuario en una línea diferente',
 	'USER_CONTROL_PANEL'	=> 'Panel de Control del Usuario',
 
@@ -365,20 +367,22 @@ $lang = array_merge($lang, array(
 
 	// Environment configuration checks, mbstring related
 	'ERROR_MBSTRING_FUNC_OVERLOAD'					=> 'Las funciones de sobrecarga no está configurado correctamente',
-	'ERROR_MBSTRING_FUNC_OVERLOAD_EXPLAIN' 			=> '<var>mbstring.func_overload</var> se debe establecer en 0 o 4. Usted puede comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
+	'ERROR_MBSTRING_FUNC_OVERLOAD_EXPLAIN' 			=> '<var>mbstring.func_overload</var> se debe establecer en 0 o 4. Puedes comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION' 			=> 'Codificación de caracteres transparentes no está configurado correctamente',
-	'ERROR_MBSTRING_ENCODING_TRANSLATION_EXPLAIN' 	=> '<var>mbstring.encoding_translation</var> se debe establecer en 0. Usted puede comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
+	'ERROR_MBSTRING_ENCODING_TRANSLATION_EXPLAIN' 	=> '<var>mbstring.encoding_translation</var> se debe establecer en 0. Puedes comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
 	'ERROR_MBSTRING_HTTP_INPUT'						=> 'HTTP conversión de caracteres de entrada no está configurado correctamente',
-	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN' 			=> '<var>mbstring.http_input</var> se debe establecer en <samp>pass</samp>. Usted puede comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
+	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN' 			=> '<var>mbstring.http_input</var> debe dejarse vacío. Puedes comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
 	'ERROR_MBSTRING_HTTP_OUTPUT'					=> 'HTTP conversión de caracteres de salida no está configurado correctamente',
-	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN' 			=> '<var>mbstring.http_output</var> se debe establecer en <samp>pass</samp>. Usted puede comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
+	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN' 			=> '<var>mbstring.http_output</var> debe dejarse vacío. Puedes comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
+	'ERROR_DEFAULT_CHARSET'							=> 'El juego de caracteres predeterminado está configurado incorrectamente',
+	'ERROR_DEFAULT_CHARSET_EXPLAIN'					=> '<var>default_charset</var> debe establecerse en <samp>UTF-8</samp>. Puedes comprobar el valor actual en la página de <samp>Información de PHP</samp>.',
 
 	'FILES_PER_DAY'		=> 'Adjuntos por día',
 	'FORUM_STATS'		=> 'Estadísticas de foros',
 
 	'GZIP_COMPRESSION'	=> 'Compresión GZip',
 
-	'NO_SEARCH_INDEX'	=> 'El motor de búsqueda seleccionado no tiene un índice de búsqueda.<br />Por favor, cree el índice “%1$s” en la sección %2$sÍndice de Búsqueda%3$s .',
+	'NO_SEARCH_INDEX'	=> 'El motor de búsqueda seleccionado no tiene un índice de búsqueda.<br />Por favor, crea el índice “%1$s” en la sección %2$sÍndice de Búsqueda%3$s .',
 	'NOT_AVAILABLE'		=> 'No disponible',
 	'NUMBER_FILES'		=> 'Número de adjuntos',
 	'NUMBER_POSTS'		=> 'Número de mensajes',
@@ -397,26 +401,26 @@ $lang = array_merge($lang, array(
 	'PURGE_CACHE_SUCCESS'	=> 'Caché limpiado correctamente.',
 
 	'PURGE_SESSIONS'			=> 'Purgar todas las sesiones',
-	'PURGE_SESSIONS_CONFIRM'	=> '¿Está seguro de que quiere purgar todas las sesiones? Esto desconectará a todos los usuarios.',
+	'PURGE_SESSIONS_CONFIRM'	=> '¿Estás seguro de que quieres purgar todas las sesiones? Esto desconectará a todos los usuarios.',
 	'PURGE_SESSIONS_EXPLAIN'	=> 'Purgar todas las sesiones. Esto desconectará a todos los usuarios al limpiar la tabla de sesiones.',
 	'PURGE_SESSIONS_SUCCESS'	=> 'Sesiones limpiadas correctamente.',
 
 	'RESET_DATE'					=> 'Reiniciar fecha comienzo Sitio',
-	'RESET_DATE_CONFIRM'			=> '¿Está seguro de que quiere reiniciar la fecha de comienzo del Sitio?',
+	'RESET_DATE_CONFIRM'			=> '¿Estás seguro de que quieres reiniciar la fecha de comienzo del Sitio?',
 	'RESET_DATE_SUCCESS'				=> 'Fecha de inicio del Foro reiniciada',
 	'RESET_ONLINE'					=> 'Reiniciar contador usuarios máximos identificados',
-	'RESET_ONLINE_CONFIRM'			=> '¿Está seguro de que quiere reiniciar el contador de mayor cantidad de usuarios en línea?',
+	'RESET_ONLINE_CONFIRM'			=> '¿Estás seguro de que quieres reiniciar el contador de mayor cantidad de usuarios en línea?',
 	'RESET_ONLINE_SUCCESS'				=> 'Reiniciar mayor cantidad de usuarios en línea',
 	'RESYNC_POSTCOUNTS'				=> 'Sincronizar recuento de mensajes',
 	'RESYNC_POSTCOUNTS_EXPLAIN'		=> 'Se tomarán en consideración mensajes existentes. No se cuentan los mensajes purgados.',
-	'RESYNC_POSTCOUNTS_CONFIRM'		=> '¿Está seguro de que quiere resincronizar la cantidad de mensajes?',
+	'RESYNC_POSTCOUNTS_CONFIRM'		=> '¿Estás seguro de que quieres resincronizar la cantidad de mensajes?',
 	'RESYNC_POSTCOUNTS_SUCCESS'			=> 'Resincronizar la cantidad de mensajes',
 	'RESYNC_POST_MARKING'			=> 'Sincronizar temas marcados',
-	'RESYNC_POST_MARKING_CONFIRM'	=> '¿Está seguro de que quiere resincronizar los temas marcados?',
+	'RESYNC_POST_MARKING_CONFIRM'	=> '¿Estás seguro de que quieres resincronizar los temas marcados?',
 	'RESYNC_POST_MARKING_EXPLAIN'	=> 'Primero desmarca todos los temas y luego marca correctamente los temas que han tenido actividad en los últimos seis meses.',
 	'RESYNC_POST_MARKING_SUCCESS'	=> 'Resincronizar temas marcados',
 	'RESYNC_STATS'					=> 'Sincronizar estadísticas',
-	'RESYNC_STATS_CONFIRM'			=> '¿Está seguro de que quiere resincronizar las estadísticas?',
+	'RESYNC_STATS_CONFIRM'			=> '¿Estás seguro de que quieres resincronizar las estadísticas?',
 	'RESYNC_STATS_EXPLAIN'			=> 'Recalcula el número total de mensajes, temas, usuarios y archivos.',
 	'RESYNC_STATS_SUCCESS'			=> 'Resincronizar estadísticas',
 	'RUN'							=> 'Ejecutar',
@@ -476,7 +480,7 @@ $lang = array_merge($lang, array(
 
 // Help support phpBB page
 $lang = array_merge($lang, array(
-	'EXPLAIN_SEND_STATISTICS'	=> 'Por favor envíe información sobre su servidor y configuraciones del foro a phpBB para análisis estadísticos. Toda información que pueda identificarle o a su web ha sido eliminada - los datos son completamente <strong>anónimos</strong>. Basamos las decisiones sobre futuras versiones de phpBB en esta información. Las estadísticas se ofrecen públicamente. También compartimos estos datos con el proyecto PHP, el lenguaje de programación con el que está hecho phpBB.',
+	'EXPLAIN_SEND_STATISTICS'	=> 'Por favor envía información sobre su servidor y configuraciones del foro a phpBB para análisis estadísticos. Toda información que pueda identificarle o a tu web ha sido eliminada - los datos son completamente <strong>anónimos</strong>. Basamos las decisiones sobre futuras versiones de phpBB en esta información. Las estadísticas se ofrecen públicamente. También compartimos estos datos con el proyecto PHP, el lenguaje de programación con el que está hecho phpBB.',
 	'EXPLAIN_SHOW_STATISTICS'	=> 'Usando el botón de abajo puede tener una vista previa de todas las variables que serán transmitidas.',
 	'DONT_SEND_STATISTICS'		=> 'Vuelva al PCA si no desea enviar información estadística a phpBB.',
 	'GO_ACP_MAIN'				=> 'Ir a la página inicial del PCA',
@@ -500,10 +504,10 @@ $lang = array_merge($lang, array(
 	'LOG_ACL_ADD_ADMIN_GLOBAL_A_'		=> '<strong>Añadidos o editados: Administradores</strong><br />» %s',
 	'LOG_ACL_ADD_MOD_GLOBAL_M_'			=> '<strong>Añadidos o editados: Moderadores globales</strong><br />» %s',
 
-	'LOG_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Añadidos o editados: acceso a foro de usuarios</strong> de %1$s<br />» %2$s',
-	'LOG_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Añadidos o editados: acceso a foro de moderadores</strong> de %1$s<br />» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Añadidos o editados: acceso a foro de grupos de usuarios</strong> de %1$s<br />» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Añadidos o editados: acceso a foro de grupos de moderadores</strong> de %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Añadidos o editados: acceso a foro de usuarios</strong> a %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Añadidos o editados: acceso a foro de moderadores</strong> a %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Añadidos o editados: acceso a foro de grupos de usuarios</strong> a %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Añadidos o editados: acceso a foro de grupos de moderadores</strong> a %1$s<br />» %2$s',
 
 	'LOG_ACL_ADD_MOD_LOCAL_M_'			=> '<strong>Añadidos o editados: Moderadores</strong> de %1$s<br />» %2$s',
 	'LOG_ACL_ADD_FORUM_LOCAL_F_'		=> '<strong>Añadidos o editados: permisos de foros</strong> de %1$s<br />» %2$s',

@@ -82,25 +82,25 @@ if ($post_id)
 {
 	// We determine the topic and forum id here, to make sure the moderator really has moderative rights on this post
 	$sql = 'SELECT topic_id, forum_id
-		FROM ' . POSTS_TABLE . "
-		WHERE post_id = $post_id";
+		FROM ' . POSTS_TABLE . '
+		WHERE post_id = ' . (int) $post_id;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
-	$topic_id = (int) $row['topic_id'];
-	$forum_id = (int) $row['forum_id'];
+	$topic_id = $row['topic_id'] ?? false;
+	$forum_id = $row['forum_id'] ?? false;
 }
 else if ($topic_id)
 {
 	$sql = 'SELECT forum_id
-		FROM ' . TOPICS_TABLE . "
-		WHERE topic_id = $topic_id";
+		FROM ' . TOPICS_TABLE . '
+		WHERE topic_id = ' . (int) $topic_id;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
-	$forum_id = (int) $row['forum_id'];
+	$forum_id = $row['forum_id'] ?? false;
 }
 
 // If the user doesn't have any moderator powers (globally or locally) he can't access the mcp
@@ -124,6 +124,26 @@ if (!$auth->acl_getf_global('m_'))
 			$allow_user = true;
 		}
 	}
+
+	/**
+	* Allow modification of the permissions to access the mcp file
+	*
+	* @event core.mcp_modify_permissions
+	* @var	array		user_quickmod_actions			Array holding the quickmod actions and their respectiev permissions
+	* @var	bool		quickmod						Whether or not the action is performed via QuickMod
+	* @var	bool		allow_user						Boolean holding if the user can access the mcp
+	* @var	int			forum_id						The current forum ID
+	* @var	int			topic_id						The current topic ID
+	* @since 3.3.3-RC1
+	*/
+	$vars = array(
+		'user_quickmod_actions',
+		'quickmod',
+		'allow_user',
+		'forum_id',
+		'topic_id',
+	);
+	extract($phpbb_dispatcher->trigger_event('core.mcp_modify_permissions', compact($vars)));
 
 	if (!$allow_user)
 	{
@@ -313,12 +333,6 @@ $template->assign_block_vars('navlinks', array(
 	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}mcp.$phpEx"),
 ));
 
-// Load and execute the relevant module
-$module->load_active();
-
-// Assign data to the template engine for the list of modules
-$module->assign_tpl_vars(append_sid("{$phpbb_root_path}mcp.$phpEx"));
-
 // Generate urls for letting the moderation control panel being accessed in different modes
 $template->assign_vars(array(
 	'U_MCP'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main'),
@@ -326,6 +340,12 @@ $template->assign_vars(array(
 	'U_MCP_TOPIC'	=> ($forum_id && $topic_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=topic_view&amp;t=$topic_id") : '',
 	'U_MCP_POST'	=> ($forum_id && $topic_id && $post_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=post_details&amp;t=$topic_id&amp;p=$post_id") : '',
 ));
+
+// Load and execute the relevant module
+$module->load_active();
+
+// Assign data to the template engine for the list of modules
+$module->assign_tpl_vars(append_sid("{$phpbb_root_path}mcp.$phpEx"));
 
 // Generate the page, do not display/query online list
 $module->display($module->get_page_title());

@@ -41,7 +41,7 @@ if (empty($lang) || !is_array($lang))
 
 // Privacy policy and T&C
 $lang = array_merge($lang, array(
-	'TERMS_OF_USE_CONTENT'	=> 'Mit dem Zugriff auf „%1$s“ („%2$s“) wird zwischen dir und dem Betreiber ein Vertrag mit folgenden Regelungen geschlossen:</p>
+	'TERMS_OF_USE_CONTENT'	=> '<p>Mit dem Zugriff auf „%1$s“ („%2$s“) wird zwischen dir und dem Betreiber ein Vertrag mit folgenden Regelungen geschlossen:</p>
 		<h3>1. Nutzungsvertrag</h3>
 		<ol style="list-style-type: lower-alpha"><li>Mit dem Zugriff auf „%1$s“ (im Folgenden „das Board“) schließt du einen Nutzungsvertrag mit dem Betreiber des Boards ab (im Folgenden „Betreiber“) und erklärst dich mit den nachfolgenden Regelungen einverstanden.</li>
 		<li>Wenn du mit diesen Regelungen nicht einverstanden bist, so darfst du das Board nicht weiter nutzen. Für die Nutzung des Boards gelten jeweils die an dieser Stelle veröffentlichten Regelungen.</li>
@@ -72,8 +72,8 @@ $lang = array_merge($lang, array(
 		<li>Der Nutzer ist berechtigt, den Änderungen zu widersprechen. Im Falle des Widerspruchs erlischt das zwischen dem Betreiber und dem Nutzer bestehende Vertragsverhältnis mit sofortiger Wirkung.</li>
 		<li>Die Änderungen gelten als anerkannt und verbindlich, wenn der Nutzer den Änderungen zugestimmt hat.</li></ol>
 
-		<p>Informationen über den Umgang mit deinen persönlichen Daten sind in der Datenschutzerklärung enthalten.',
-	'PRIVACY_POLICY'		=> 'Diese Richtlinie beschreibt, wie „%1$s“ („%2$s“) (im Folgenden „der Betreiber“) die Daten verwendet, die während deines Foren-Besuchs gesammelt werden.</p>
+		<p>Informationen über den Umgang mit deinen persönlichen Daten sind in der Datenschutzerklärung enthalten.</p>',
+	'PRIVACY_POLICY'		=> '<p>Diese Richtlinie beschreibt, wie „%1$s“ („%2$s“) (im Folgenden „der Betreiber“) die Daten verwendet, die während deines Foren-Besuchs gesammelt werden.</p>
 		<h3>Umfang und Art der Datenspeicherung</h3>
 		<p>Deine Daten werden auf vier verschiedene Arten gesammelt:</p>
 		<ol style="list-style-type: decimal;"><li>Die Forensoftware phpBB erstellt bei deinem Besuch des Boards mehrere Cookies. Cookies sind kleine Textdateien, die dein Browser als temporäre Dateien ablegt und die zwischen den einzelnen Aufrufen des Boards erhalten bleiben. In diesen Cookies sind die aktuelle ID deiner Sitzung (damit dir alle Seitenaufrufe zugeordnet werden können), Informationen über die von dir gelesenen Beiträge (zur Markierung dieser als gelesen/ungelesen; sofern du nicht angemeldet bist) sowie Informationen über deine Teilnahme an Umfragen (sofern du nicht angemeldet bist) gespeichert. Ferner werden deine Benutzer-ID, ein Authentifizierungsschlüssel und eine Session-ID gespeichert. Die Cookies haben standardmäßig eine Gültigkeit von einem Jahr. Alle Cookies kannst du jederzeit über die Funktion „Alle Cookies löschen“ löschen.</li>
@@ -99,7 +99,7 @@ $lang = array_merge($lang, array(
 
 		<h3>Auskunftsrecht</h3>
 		<p>Der Betreiber erteilt dir auf Anfrage Auskunft, welche Daten über dich gespeichert sind.</p>
-		<p>Du kannst jederzeit die Löschung bzw. Sperrung deiner Daten verlangen. Kontaktiere hierzu bitte den Betreiber.',
+		<p>Du kannst jederzeit die Löschung bzw. Sperrung deiner Daten verlangen. Kontaktiere hierzu bitte den Betreiber.</p>',
 ));
 
 // Common language entries
@@ -224,7 +224,6 @@ $lang = array_merge($lang, array(
 	'DEMOTE_SELECTED'			=> 'Führung niederlegen',
 	'DISABLE_CENSORS'			=> 'Wortzensur aktivieren',
 	'DISPLAY_GALLERY'			=> 'Galerie anzeigen',
-	'DOMAIN_NO_MX_RECORD_EMAIL'	=> 'Die für die E-Mail angegebene Domain hat keinen gültigen MX-Eintrag.',
 	'DOWNLOADS'					=> 'Downloads',
 	'DRAFTS_DELETED'			=> 'Alle ausgewählten Entwürfe wurden erfolgreich gelöscht.',
 	'DRAFTS_EXPLAIN'			=> 'Hier kannst du deine gespeicherten Entwürfe ansehen, ändern oder löschen.',
@@ -382,12 +381,16 @@ $lang = array_merge($lang, array(
 	'NOTIFICATION_TYPE'									=> 'Benachrichtigungs-Typ',
 	'NOTIFICATION_TYPE_BOOKMARK'						=> 'Jemand antwortet auf ein Thema, für das du ein Lesezeichen gesetzt hast',
 	'NOTIFICATION_TYPE_GROUP_REQUEST'					=> 'Jemand möchte einer Gruppe beitreten, deren Leiter du bist',
+	'NOTIFICATION_TYPE_FORUM'							=> 'Jemand antwortet auf ein Thema in einem Forum, das du abonniert hast',
 	'NOTIFICATION_TYPE_IN_MODERATION_QUEUE'				=> 'Ein Beitrag oder ein Thema muss freigegeben werden',
 	'NOTIFICATION_TYPE_MODERATION_QUEUE'				=> 'Deine Themen/Beiträge wurden von einem Moderator freigegeben oder die Freigabe abgelehnt',
 	'NOTIFICATION_TYPE_PM'								=> 'Jemand sendet dir eine Private Nachricht',
 	'NOTIFICATION_TYPE_POST'							=> 'Jemand antwortet auf ein Thema, das du abonniert hast',
 	'NOTIFICATION_TYPE_QUOTE'							=> 'Jemand zitiert dich in einem Beitrag',
 	'NOTIFICATION_TYPE_REPORT'							=> 'Jemand hat einen Beitrag gemeldet',
+	'NOTIFICATION_TYPE_REPORT_CLOSED'					=> 'Deine Meldung zu einem Beitrag wurde von einem Moderator geschlossen',
+	'NOTIFICATION_TYPE_REPORT_PM'						=> 'Jemand meldet eine Private Nachricht',
+	'NOTIFICATION_TYPE_REPORT_PM_CLOSED'				=> 'Deine Meldung zu einer Privaten Nachricht wurde von einem Moderator geschlossen',
 	'NOTIFICATION_TYPE_TOPIC'							=> 'Jemand erstellt einen Beitrag in einem Forum, das du abonniert hast',
 	'NOTIFICATION_TYPE_ADMIN_ACTIVATE_USER'				=> 'Ein Benutzer muss aktiviert werden',
 

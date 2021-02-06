@@ -411,18 +411,20 @@ class ucp_register
 				* @event core.ucp_register_user_row_after
 				* @var	bool	submit		Do we display the form only
 				*							or did the user press submit
+				* @var	array	data		Array with current ucp registration data
 				* @var	array	cp_data		Array with custom profile fields data
-				* @var	array	user_row	Array with current ucp registration data
+				* @var	array	user_row	Array with user data that will be inserted
 				* @since 3.1.4-RC1
+				* @changed 3.2.10-RC1 Added data array
 				*/
-				$vars = array('submit', 'cp_data', 'user_row');
+				$vars = array('submit', 'data', 'cp_data', 'user_row');
 				extract($phpbb_dispatcher->trigger_event('core.ucp_register_user_row_after', compact($vars)));
 
 				// Register user...
 				$user_id = user_add($user_row, $cp_data);
 
 				// This should not happen, because the required variables are listed above...
-				if ($user_id === false)
+				if ((bool) $user_id === false)
 				{
 					trigger_error('NO_USER', E_USER_ERROR);
 				}

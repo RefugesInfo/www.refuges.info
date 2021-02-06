@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\BBCodes\Configurator;
@@ -144,7 +144,8 @@ class Repository
 	* Replace var elements in given definition
 	*
 	* @param  DOMElement $node
-	* @return array      $vars
+	* @param  array      $vars
+	* @return void
 	*/
 	protected function replaceVars(DOMElement $node, array $vars)
 	{

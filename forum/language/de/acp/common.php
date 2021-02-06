@@ -228,7 +228,7 @@ $lang = array_merge($lang, array(
 
 	'BACK'					=> 'Zurück',
 
-	'CONTAINER_EXCEPTION' => 'Beim Aufbau des Containers durch phpBB ist wegen einer installierten Erweiterung ein Fehler aufgetreten. Aus diesem Grund wurden alle Erweiterungen vorrübergehend deaktiviert. Bitte versuche das Problem zu beheben, in dem du den Cache des Boards leerst. Alle Erweiterungen werden automatisch wieder aktiviert, sobald der Container-Fehler behoben ist. Wenn das Problem dauerhaft auftritt, besuche bitte <a href="https://www.phpbb.com/support">phpBB.com (englisch)</a> für Support (<a href="https://www.phpbb.de/go/3.2/supportforum">deutschsprachiger Support auf phpBB.de</a>).',
+	'CONTAINER_EXCEPTION' => 'Beim Aufbau des Containers durch phpBB ist wegen einer installierten Erweiterung ein Fehler aufgetreten. Aus diesem Grund wurden alle Erweiterungen vorrübergehend deaktiviert. Bitte versuche das Problem zu beheben, in dem du den Cache des Boards leerst. Alle Erweiterungen werden automatisch wieder aktiviert, sobald der Container-Fehler behoben ist. Wenn das Problem dauerhaft auftritt, besuche bitte <a href="https://www.phpbb.com/support">phpBB.com (englisch)</a> für Support (<a href="https://www.phpbb.de/go/3.3/supportforum">deutschsprachiger Support auf phpBB.de</a>).',
 	'EXCEPTION' => 'Fehler',
 
 	'COLOUR_SWATCH'			=> 'Websichere Farbpalette',
@@ -237,6 +237,7 @@ $lang = array_merge($lang, array(
 	'CRON_NO_SUCH_TASK'		=> 'Cron-Job „%s“ konnte nicht gefunden werden.',
 	'CRON_NO_TASK'			=> 'Momentan muss kein Cron-Job ausgeführt werden.',
 	'CRON_NO_TASKS'			=> 'Es konnten keine Cron-Jobs gefunden werden.',
+	'CSV_INVALID'			=> 'Die ausgewählte CSV-Einstellung „%1$s“ ist ungültig. Die Werte dürfen nur durch Kommatas getrennt sein und es dürfen keine führenden oder abschließenden Trennzeichen enthalten sein.',
 	'CURRENT_VERSION'		=> 'Aktuelle Version',
 
 	'DEACTIVATE'				=> 'Deaktivieren',
@@ -318,6 +319,7 @@ $lang = array_merge($lang, array(
 
 	'UCP'					=> 'Persönlicher Bereich',
 	'URL_INVALID'			=> 'Die für die Einstellung „%1$s“ angegebene URL ist ungültig.',
+	'URL_SCHEME_INVALID'	=> 'Das in der CSV-Einstellung „%1$s“ verwendete Schema „%2$s“ ist ungültig. Das Schema muss mit einem lateinischen Buchstaben anfangen und der Name darf nur aus alphanumerischen Zeichen, Bindestrichen und Punkten bestehen.',
 	'USERNAMES_EXPLAIN'		=> 'Verwende für jeden Benutzernamen eine neue Zeile.',
 	'USER_CONTROL_PANEL'	=> 'Persönlicher Bereich',
 
@@ -371,9 +373,11 @@ $lang = array_merge($lang, array(
 	'ERROR_MBSTRING_ENCODING_TRANSLATION'			=> 'Die transparente Zeichenkodierung ist fehlerhaft konfiguriert',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION_EXPLAIN'	=> '<var>mbstring.encoding_translation</var> muss 0 sein. Du kannst den aktuellen Wert auf der Seite <samp>PHP-Information</samp> prüfen.',
 	'ERROR_MBSTRING_HTTP_INPUT'						=> 'Die HTTP-Eingabe-Kodierung ist fehlerhaft konfiguriert',
-	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN'				=> '<var>mbstring.http_input</var> muss auf <samp>pass</samp> eingestellt sein. Du kannst den aktuellen Wert auf der Seite <samp>PHP-Information</samp> prüfen.',
+	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN'				=> '<var>mbstring.http_input</var> darf nicht gesetzt sein. Du kannst den aktuellen Wert auf der Seite <samp>PHP-Information</samp> prüfen.',
 	'ERROR_MBSTRING_HTTP_OUTPUT'					=> 'Die HTTP-Ausgabe-Kodierung ist fehlerhaft konfiguriert',
-	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN'			=> '<var>mbstring.http_output</var> muss auf <samp>pass</samp> eingestellt sein. Du kannst den aktuellen Wert auf der Seite <samp>PHP-Information</samp> prüfen.',
+	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN'			=> '<var>mbstring.http_output</var> darf nicht gesetzt sein. Du kannst den aktuellen Wert auf der Seite <samp>PHP-Information</samp> prüfen.',
+	'ERROR_DEFAULT_CHARSET'							=> 'Der Standard-Zeichensatz ist fehlerhaft konfiguriert',
+	'ERROR_DEFAULT_CHARSET_EXPLAIN'					=> '<var>default_charset</var> muss <samp>UTF-8</samp> sein. Du kannst den aktuellen Wert auf der Seite <samp>PHP-Information</samp> prüfen.',
 
 	'FILES_PER_DAY'		=> 'Dateianhänge pro Tag',
 	'FORUM_STATS'		=> 'Board-Statistik',
@@ -502,18 +506,18 @@ $lang = array_merge($lang, array(
 	'LOG_ACL_ADD_ADMIN_GLOBAL_A_'		=> '<strong>Administratoren hinzugefügt oder geändert</strong><br />» %s',
 	'LOG_ACL_ADD_MOD_GLOBAL_M_'			=> '<strong>Globale Moderatoren hinzugefügt oder geändert</strong><br />» %s',
 
-	'LOG_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Forenrechte eines Benutzers hinzugefügt oder geändert</strong> von %1$s<br />» %2$s',
-	'LOG_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Moderationsrechte eines Benutzer für ein Forum hinzugefügt oder geändert</strong> von %1$s<br />» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Forenrechte einer Gruppe hinzugefügt oder geändert</strong> von %1$s<br />» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Moderationsrechte einer Gruppe für ein Forum hinzugefügt oder geändert</strong> von %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_F_'			=> '<strong>Forenrechte eines Benutzers hinzugefügt oder geändert</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_M_'			=> '<strong>Moderationsrechte eines Benutzer für ein Forum hinzugefügt oder geändert</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_F_'		=> '<strong>Forenrechte einer Gruppe hinzugefügt oder geändert</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_M_'		=> '<strong>Moderationsrechte einer Gruppe für ein Forum hinzugefügt oder geändert</strong> in %1$s<br />» %2$s',
 
-	'LOG_ACL_ADD_MOD_LOCAL_M_'			=> '<strong>Moderatoren hinzugefügt oder geändert</strong> von %1$s<br />» %2$s',
-	'LOG_ACL_ADD_FORUM_LOCAL_F_'		=> '<strong>Forenrechte hinzugefügt oder geändert</strong> von %1$s<br />» %2$s',
+	'LOG_ACL_ADD_MOD_LOCAL_M_'			=> '<strong>Moderatoren hinzugefügt oder geändert</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_ADD_FORUM_LOCAL_F_'		=> '<strong>Forenrechte hinzugefügt oder geändert</strong> in %1$s<br />» %2$s',
 
 	'LOG_ACL_DEL_ADMIN_GLOBAL_A_'		=> '<strong>Administratoren entfernt</strong><br />» %s',
 	'LOG_ACL_DEL_MOD_GLOBAL_M_'			=> '<strong>Globale Moderatoren entfernt</strong><br />» %s',
-	'LOG_ACL_DEL_MOD_LOCAL_M_'			=> '<strong>Moderatoren entfernt</strong> von %1$s<br />» %2$s',
-	'LOG_ACL_DEL_FORUM_LOCAL_F_'		=> '<strong>Forums-Berechtigung von Benutzer/Gruppe entfernt</strong> von %1$s<br />» %2$s',
+	'LOG_ACL_DEL_MOD_LOCAL_M_'			=> '<strong>Moderatoren entfernt</strong> in %1$s<br />» %2$s',
+	'LOG_ACL_DEL_FORUM_LOCAL_F_'		=> '<strong>Forums-Berechtigung von Benutzer/Gruppe entfernt</strong> in %1$s<br />» %2$s',
 
 	'LOG_ACL_TRANSFER_PERMISSIONS'		=> '<strong>Berechtigungen übernommen</strong><br />» %s',
 	'LOG_ACL_RESTORE_PERMISSIONS'		=> '<strong>Eigene Berechtigungen wiederhergestellt nach Übernahme von</strong><br />» %s',

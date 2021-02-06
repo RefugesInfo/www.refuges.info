@@ -2,12 +2,14 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Litedown;
 
+use s9e\TextFormatter\Configurator\Items\Tag;
 use s9e\TextFormatter\Plugins\ConfiguratorBase;
+use s9e\TextFormatter\Plugins\Litedown\Parser\Slugger;
 
 class Configurator extends ConfiguratorBase
 {
@@ -43,6 +45,10 @@ class Configurator extends ConfiguratorBase
 		],
 		'DEL'    => '<del><xsl:apply-templates/></del>',
 		'EM'     => '<em><xsl:apply-templates/></em>',
+		'EMAIL'  => [
+			'attributes' => ['email' => ['filterChain' => ['#email']]],
+			'template'   => '<a href="mailto:{@email}"><xsl:apply-templates/></a>'
+		],
 		'H1'     => '<h1><xsl:apply-templates/></h1>',
 		'H2'     => '<h2><xsl:apply-templates/></h2>',
 		'H3'     => '<h3><xsl:apply-templates/></h3>',
@@ -119,6 +125,58 @@ class Configurator extends ConfiguratorBase
 			// Add this tag
 			$this->configurator->tags->add($tagName, $tagConfig);
 		}
+	}
+
+	/**
+	* Add an "id" attribute to headers
+	*
+	* @param  string $prefix Prefix used for the "id" value
+	* @return void
+	*/
+	public function addHeadersId(string $prefix = ''): void
+	{
+		for ($i = 1; $i <= 6; ++$i)
+		{
+			$tagName = 'H' . $i;
+			if (isset($this->configurator->tags[$tagName]))
+			{
+				$this->addHeaderId($this->configurator->tags[$tagName], $prefix);
+			}
+		}
+	}
+
+	/**
+	* Add an "id" attribute to given tag
+	*
+	* @param  Tag    $tag
+	* @param  string $prefix Prefix used for the "id" value
+	* @return void
+	*/
+	protected function addHeaderId(Tag $tag, string $prefix): void
+	{
+		if (!isset($tag->attributes['slug']))
+		{
+			unset($tag->attributes['slug']);
+		}
+
+		$tag->attributes->add('slug')->required = false;
+		$tag->filterChain
+			->append(Slugger::class . '::setTagSlug($tag, $innerText)')
+			->setJS(Slugger::getJS());
+
+		$dom = $tag->template->asDOM();
+		foreach ($dom->query('//xsl:if[@test = "@slug"]') as $if)
+		{
+			// Remove any pre-existing xsl:if from previous invocations
+			$if->remove();
+		}
+		foreach ($dom->query('//h1 | //h2 | //h3 | //h4 | //h5 | //h6') as $header)
+		{
+			$header->prependXslIf('@slug')
+			       ->appendXslAttribute('id', $prefix)
+			       ->appendXslValueOf('@slug');
+		}
+		$dom->saveChanges();
 	}
 
 	/**

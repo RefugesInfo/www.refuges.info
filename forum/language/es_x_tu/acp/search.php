@@ -49,6 +49,8 @@ $lang = array_merge($lang, array(
 	'CONTINUE_INDEXING_EXPLAIN'				=> 'Se ha iniciado un proceso de indexación. Con el fin de acceder a la página de búsqueda nuevamente necesita completar este proceso primero.',
 	'CREATE_INDEX'							=> 'Crear índice',
 
+	'DEFAULT_SEARCH_RETURN_CHARS'			=> 'Número predeterminado de caracteres devueltos',
+	'DEFAULT_SEARCH_RETURN_CHARS_EXPLAIN'	=> 'El número predeterminado de caracteres que se devolverán durante la búsqueda. Un valor de 0 devolverá todo el mensaje.',
 	'DELETE_INDEX'							=> 'Borrar índice',
 	'DELETING_INDEX_IN_PROGRESS'			=> 'Borrado de índice en curso',
 	'DELETING_INDEX_IN_PROGRESS_EXPLAIN'	=> 'El motor de búsqueda actualmente está limpiando su índice. Esto puede llevar algunos minutos.',

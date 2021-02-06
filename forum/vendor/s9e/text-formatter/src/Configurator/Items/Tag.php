@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Items;
@@ -24,7 +24,7 @@ use s9e\TextFormatter\Configurator\Traits\Configurable;
 * @property integer $nestingLimit Maximum nesting level for this tag
 * @property Ruleset $rules Rules associated with this tag
 * @property integer $tagLimit Maximum number of this tag per message
-* @property Template $template Template associated with this tag
+* @property-read Template $template Template associated with this tag
 * @property-write string|Template $template Template associated with this tag
 */
 class Tag implements ConfigProvider

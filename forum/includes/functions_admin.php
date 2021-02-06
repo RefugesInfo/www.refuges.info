@@ -2375,7 +2375,7 @@ function prune($forum_id, $prune_mode, $prune_date, $prune_flags = 0, $auto_sync
 /**
 * Function auto_prune(), this function now relies on passed vars
 */
-function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_freq)
+function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_freq, $log_prune = true)
 {
 	global $db, $user, $phpbb_log;
 
@@ -2395,13 +2395,18 @@ function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_fr
 
 		if ($result['topics'] == 0 && $result['posts'] == 0)
 		{
+			$column = $prune_mode === 'shadow' ? 'prune_shadow_next' : 'prune_next';
+
 			$sql = 'UPDATE ' . FORUMS_TABLE . "
-				SET prune_next = $next_prune
+				SET $column = $next_prune
 				WHERE forum_id = $forum_id";
 			$db->sql_query($sql);
 		}
 
-		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AUTO_PRUNE', false, array($row['forum_name']));
+		if ($log_prune)
+		{
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_AUTO_PRUNE', false, [$row['forum_name']]);
+		}
 	}
 
 	return;
@@ -2827,56 +2832,36 @@ function view_warned_users(&$users, &$user_count, $limit = 0, $offset = 0, $limi
 
 /**
 * Get database size
-* Currently only mysql and mssql are supported
 */
 function get_database_size()
 {
-	global $db, $user, $table_prefix;
+	global $db, $user;
 
 	$database_size = false;
 
-	// This code is heavily influenced by a similar routine in phpMyAdmin 2.2.0
 	switch ($db->get_sql_layer())
 	{
 		case 'mysqli':
-			$sql = 'SELECT VERSION() AS mysql_version';
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
+			$mysql_engine	= ['MyISAM', 'InnoDB', 'Aria'];
+			$db_name		= $db->get_db_name();
+			$database_size	= 0;
 
-			if ($row)
+			$sql = 'SHOW TABLE STATUS
+				FROM ' . $db_name;
+			$result = $db->sql_query($sql, 7200);
+
+			while ($row = $db->sql_fetchrow($result))
 			{
-				$version = $row['mysql_version'];
-
-				if (preg_match('#(3\.23|[45]\.|10\.[0-9]\.[0-9]{1,2}-+Maria)#', $version))
+				if (isset($row['Engine']) && in_array($row['Engine'], $mysql_engine))
 				{
-					$db_name = (preg_match('#^(?:3\.23\.(?:[6-9]|[1-9]{2}))|[45]\.|10\.[0-9]\.[0-9]{1,2}-+Maria#', $version)) ? "`{$db->get_db_name()}`" : $db->get_db_name();
-
-					$sql = 'SHOW TABLE STATUS
-						FROM ' . $db_name;
-					$result = $db->sql_query($sql, 7200);
-
-					$database_size = 0;
-					while ($row = $db->sql_fetchrow($result))
-					{
-						if ((isset($row['Type']) && $row['Type'] != 'MRG_MyISAM') || (isset($row['Engine']) && ($row['Engine'] == 'MyISAM' || $row['Engine'] == 'InnoDB' || $row['Engine'] == 'Aria')))
-						{
-							if ($table_prefix != '')
-							{
-								if (strpos($row['Name'], $table_prefix) !== false)
-								{
-									$database_size += $row['Data_length'] + $row['Index_length'];
-								}
-							}
-							else
-							{
-								$database_size += $row['Data_length'] + $row['Index_length'];
-							}
-						}
-					}
-					$db->sql_freeresult($result);
+					$database_size += $row['Data_length'] + $row['Index_length'];
 				}
 			}
+
+			$db->sql_freeresult($result);
+
+			$database_size = $database_size ? $database_size : false;
+
 		break;
 
 		case 'sqlite3':
@@ -3093,4 +3078,134 @@ function enable_bitfield_column_flag($table_name, $column_name, $flag, $sql_more
 		SET ' . $column_name . ' = ' . $db->sql_bit_or($column_name, $flag) . '
 		' . $sql_more;
 	$db->sql_query($sql);
+}
+
+function display_ban_end_options()
+{
+	global $user, $template;
+
+	// Ban length options
+	$ban_end_text = array(0 => $user->lang['PERMANENT'], 30 => $user->lang['30_MINS'], 60 => $user->lang['1_HOUR'], 360 => $user->lang['6_HOURS'], 1440 => $user->lang['1_DAY'], 10080 => $user->lang['7_DAYS'], 20160 => $user->lang['2_WEEKS'], 40320 => $user->lang['1_MONTH'], -1 => $user->lang['UNTIL'] . ' -&gt; ');
+
+	$ban_end_options = '';
+	foreach ($ban_end_text as $length => $text)
+	{
+		$ban_end_options .= '<option value="' . $length . '">' . $text . '</option>';
+	}
+
+	$template->assign_vars(array(
+		'S_BAN_END_OPTIONS'	=> $ban_end_options
+	));
+}
+
+/**
+* Display ban options
+*/
+function display_ban_options($mode)
+{
+	global $user, $db, $template;
+
+	switch ($mode)
+	{
+		case 'user':
+
+			$field = 'username';
+
+			$sql = 'SELECT b.*, u.user_id, u.username, u.username_clean
+				FROM ' . BANLIST_TABLE . ' b, ' . USERS_TABLE . ' u
+				WHERE (b.ban_end >= ' . time() . '
+						OR b.ban_end = 0)
+					AND u.user_id = b.ban_userid
+				ORDER BY u.username_clean ASC';
+		break;
+
+		case 'ip':
+
+			$field = 'ban_ip';
+
+			$sql = 'SELECT *
+				FROM ' . BANLIST_TABLE . '
+				WHERE (ban_end >= ' . time() . "
+						OR ban_end = 0)
+					AND ban_ip <> ''
+				ORDER BY ban_ip";
+		break;
+
+		case 'email':
+
+			$field = 'ban_email';
+
+			$sql = 'SELECT *
+				FROM ' . BANLIST_TABLE . '
+				WHERE (ban_end >= ' . time() . "
+						OR ban_end = 0)
+					AND ban_email <> ''
+				ORDER BY ban_email";
+		break;
+	}
+	$result = $db->sql_query($sql);
+
+	$banned_options = $excluded_options = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$option = '<option value="' . $row['ban_id'] . '">' . $row[$field] . '</option>';
+
+		if ($row['ban_exclude'])
+		{
+			$excluded_options[] = $option;
+		}
+		else
+		{
+			$banned_options[] = $option;
+		}
+
+		$time_length = ($row['ban_end']) ? ($row['ban_end'] - $row['ban_start']) / 60 : 0;
+
+		if ($time_length == 0)
+		{
+			// Banned permanently
+			$ban_length = $user->lang['PERMANENT'];
+		}
+		else if (isset($ban_end_text[$time_length]))
+		{
+			// Banned for a given duration
+			$ban_length = $user->lang('BANNED_UNTIL_DURATION', $ban_end_text[$time_length], $user->format_date($row['ban_end'], false, true));
+		}
+		else
+		{
+			// Banned until given date
+			$ban_length = $user->lang('BANNED_UNTIL_DATE', $user->format_date($row['ban_end'], false, true));
+		}
+
+		$template->assign_block_vars('bans', array(
+			'BAN_ID'		=> (int) $row['ban_id'],
+			'LENGTH'		=> $ban_length,
+			'A_LENGTH'		=> addslashes($ban_length),
+			'REASON'		=> $row['ban_reason'],
+			'A_REASON'		=> addslashes($row['ban_reason']),
+			'GIVE_REASON'	=> $row['ban_give_reason'],
+			'A_GIVE_REASON'	=> addslashes($row['ban_give_reason']),
+		));
+	}
+	$db->sql_freeresult($result);
+
+	$options = '';
+	if ($excluded_options)
+	{
+		$options .= '<optgroup label="' . $user->lang['OPTIONS_EXCLUDED'] . '">';
+		$options .= implode('', $excluded_options);
+		$options .= '</optgroup>';
+	}
+
+	if ($banned_options)
+	{
+		$options .= '<optgroup label="' . $user->lang['OPTIONS_BANNED'] . '">';
+		$options .= implode('', $banned_options);
+		$options .= '</optgroup>';
+	}
+
+	$template->assign_vars(array(
+		'S_BANNED_OPTIONS'	=> ($banned_options || $excluded_options) ? true : false,
+		'BANNED_OPTIONS'	=> $options,
+	));
 }

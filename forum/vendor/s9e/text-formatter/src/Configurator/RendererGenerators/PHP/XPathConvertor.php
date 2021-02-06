@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RendererGenerators\PHP;
@@ -46,7 +46,7 @@ class XPathConvertor
 	{
 		// Replace @attr with boolean(@attr) in boolean expressions
 		$expr = preg_replace(
-			'((^|\\(\\s*|\\b(?:and|or)\\s*)([\\(\\s]*)([$@][-\\w]+|@\\*)([\\)\\s]*)(?=$|\\s+(?:and|or)))',
+			'((^|(?<!\\bboolean)\\(\\s*|\\b(?:and|or)\\s*)([\\(\\s]*)([$@][-\\w]+|@\\*)([\\)\\s]*)(?=$|\\s+(?:and|or)))',
 			'$1$2boolean($3)$4',
 			trim($expr)
 		);

@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Helpers;
@@ -44,11 +44,11 @@ class FilterSyntaxMatcher extends AbstractRecursiveMatcher
 			],
 			'Float' => [
 				'groups' => ['FilterArg', 'Literal', 'Scalar'],
-				'regexp' => '([-+]?(?:\\.[0-9]+|[0-9]+\\.[0-9]*|[0-9]+(?=[Ee]))(?:[Ee]-?[0-9]+)?)',
+				'regexp' => '([-+]?(?:\\.[0-9]+(?:_[0-9]+)*|[0-9]+(?:_[0-9]+)*\\.(?!_)[0-9]*(?:_[0-9]+)*|[0-9]+(?:_[0-9]+)*(?=[Ee]))(?:[Ee]-?[0-9]+(?:_[0-9]+)*)?)',
 			],
 			'Integer' => [
 				'groups' => ['FilterArg', 'Literal', 'Scalar'],
-				'regexp' => '(-?(?:0[Bb][01]+|0[Xx][0-9A-Fa-f]+|[0-9]+))',
+				'regexp' => '(-?(?:0[Bb][01]+(?:_[01]+)*|0[Oo][0-7]+(?:_[0-7]+)*|0[Xx][0-9A-Fa-f]+(?:_[0-9A-Fa-f]+)*|[0-9]+(?:_[0-9]+)*))',
 			],
 			'Null' => [
 				'groups' => ['FilterArg', 'Literal', 'Scalar'],
@@ -136,7 +136,26 @@ class FilterSyntaxMatcher extends AbstractRecursiveMatcher
 	*/
 	public function parseDoubleQuotedString(string $str): string
 	{
-		return stripcslashes($str);
+		/**
+		* @link https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double
+		*/
+		return preg_replace_callback(
+			'(\\\\([nrtvef\\\\$"]|[0-7]{1,3}|x[0-9A-Fa-f]{1,2}|u\\{[0-9A-Fa-f]+\\}))',
+			function ($m)
+			{
+				if ($m[1] === 'e')
+				{
+					return "\e";
+				}
+				if ($m[1][0] === 'u')
+				{
+					return html_entity_decode('&#x' . substr($m[1], 2, -1) . ';', ENT_QUOTES, 'utf-8');
+				}
+
+				return stripcslashes($m[0]);
+			},
+			$str
+		);
 	}
 
 	/**
@@ -196,7 +215,7 @@ class FilterSyntaxMatcher extends AbstractRecursiveMatcher
 	*/
 	public function parseFloat(string $str): float
 	{
-		return (float) $str;
+		return (float) str_replace('_', '', $str);
 	}
 
 	/**
@@ -205,7 +224,13 @@ class FilterSyntaxMatcher extends AbstractRecursiveMatcher
 	*/
 	public function parseInteger(string $str): int
 	{
-		return intval($str, 0);
+		// Handle PHP 8.1's explicit octal notation
+		if (strtolower(substr($str, 0, 2)) === '0o')
+		{
+			$str = '0' . substr($str, 2);
+		}
+
+		return intval(str_replace('_', '', $str), 0);
 	}
 
 	/**

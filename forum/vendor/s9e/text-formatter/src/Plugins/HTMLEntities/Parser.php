@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\HTMLEntities;
@@ -22,7 +22,7 @@ class Parser extends ParserBase
 		foreach ($matches as $m)
 		{
 			$entity = $m[0][0];
-			$chr    = html_entity_decode($entity, ENT_QUOTES, 'UTF-8');
+			$chr    = html_entity_decode($entity, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
 
 			if ($chr === $entity || ord($chr) < 32)
 			{

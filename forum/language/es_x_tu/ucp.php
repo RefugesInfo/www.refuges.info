@@ -38,22 +38,22 @@ if (empty($lang) || !is_array($lang))
 
 // Privacy policy and T&C
 $lang = array_merge($lang, array(
-	'TERMS_OF_USE_CONTENT'	=> 'Al ingresar en "%1$s" (de aquí en adelante "nosotros", "nos", "nuestro", "%1$s", "%2$s"), tú acuerdas estar legalmente sometido a los siguientes términos. En caso contrario, por favor no te registres y/o uses "%1$s". Podemos cambiar estos términos en cualquier momento e intentaríamos avisarte, sin embargo sería prudente que los revises por tu cuenta periódicamente. Seguir registrado a "%1$s" después de esos cambios significa que acuerdas estar legalmente sometido a esos nuevos términos tal como fueron actualizados y/o reformados.<br>
-	<br>
-	Nuestros foros están desarrollados por phpBB (de aquí en adelante "ellos", "sus", "software phpBB", "www.phpbb.com", "phpBB Limited", "phpBB Teams") el cual es una solución de foros liberada bajo la “<a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License v2 en Ingles</a>” (de aquí en adelante "GPL") y puede ser descargada de <a href="https://www.phpbb.com/">www.phpbb.com</a>. El software phpBB solamente facilita discusiones basadas en Internet y la GPL estrictamente los excluye de lo que aprobamos y/o desaprobamos como conductas y/o contenido permisible. Para más información sobre phpBB, por favor visita: <a href="https://www.phpbb.com/">https://www.phpbb.com/</a>.<br>
-	<br>
-	Acuerdas no enviar ningun contenido abusivo, obsceno, vulgar, difamatorio, indecente, amenazante, sexual o cualquier otro material que pueda violar cualquier ley de tu país, el país donde "%1$s" está instalado o Leyes Internacionales. Hacer eso provocará que sea inmediata y permanentemente expulsado y, si lo creemos oportuno, con notificación a su Proveedor de Servicios de Internet. Las direcciones IP de todos los envíos son registradas como ayuda para reforzar estas condiciones. Acuerdas que "%1$s" tiene derecho a eliminar, editar, mover o cerrar cualquier tema en cualquier momento que lo creamos conveniente. Como usuario acuerdas que cualquier información que hayas ingresado será almacenada en una base de datos. Dado que esta información no será compartida con ninguna tercera parte sin tu consentimiento, ni "%1$s" ni phpBB podrán considerarse responsables por cualquier intento de hacking que conlleve a que los datos sean comprometidos.
+	'TERMS_OF_USE_CONTENT'	=> 'Al ingresar en “%1$s” (de aquí en adelante “nosotros”, “nos”, “nuestro”, “%1$s”, “%2$s”), usted acuerda estar legalmente sometido a los siguientes términos. En caso contrario por favor no se registre y/o use “%1$s”. Podemos cambiar estos términos en cualquier momento e intentaríamos avisarle, sin embargo sería prudente que los revisase por su cuenta periódicamente. Seguir registrado a “%1$s” después de esos cambios significa que acuerda estar legalmente sometido a esos nuevos términos tal como fueron actualizados y/o reformados.
+	<br><br>
+	Nuestros foros están desarrollados por phpBB (de aquí en adelante “ellos”, “sus”, “software phpBB”, “www.phpbb.com”, “phpBB Limited”, “phpBB Teams”) el cual es una solución de foros liberada bajo la “<a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License v2 en Ingles</a>” (de aquí en adelante “GPL”) y puede ser descargada de <a href="https://www.phpbb.com/">www.phpbb.com</a>. El software phpBB solamente facilita discusiones basadas en Internet y la GPL estrictamente los excluye de lo que aprobamos y/o desaprobamos como conductas y/o contenido permisible. Para más información sobre phpBB, por favor visite: <a href="https://www.phpbb.com/">https://www.phpbb.com/</a>.
+	<br><br>
+	Acuerda no enviar ningun contenido abusivo, obsceno, vulgar, difamatorio, indecente, amenazante, sexual o cualquier otro material que pueda violar cualquier ley de su país, el país donde “%1$s” está instalado o Leyes Internacionales. Hacer eso provocará que sea inmediata y permanentemente expulsado y, si lo creemos oportuno, con notificación a su Proveedor de Servicios de Internet. Las direcciones IP de todos los envíos son registradas como ayuda para reforzar estas condiciones. Acuerda que “%1$s” tiene derecho a eliminar, editar, mover o cerrar cualquier tema en cualquier momento que lo creamos conveniente. Como usuario acuerda que cualquier información que haya ingresado será almacenada en una base de datos. Dado que esta información no será compartida con ninguna tercera parte sin su consentimiento, ni “%1$s” ni phpBB podrán considerarse responsables por cualquier intento de hacking que conlleve a que los datos sean comprometidos.
 	',
 
-	'PRIVACY_POLICY'		=> 'Esta política explica con detalle cómo "%1$s" junto con sus empresas asociadas (de aquí en adelante "nosotros", "nos", "nuestro", "%1$s", "%2$s") y phpBB (de aquí en adelante "ellos", "sus", "software phpBB", "www.phpbb.com", "phpBB Limited", "phpBB Teams") emplean cualquier información obtenida durante cualquier sesión de uso por ti (de aquí en adelante "tu información").<br>
-	<br>
-	Tu información es obtenida por dos vías. Primeramente, navegar por "%1$s" hará al software phpBB crear un número de cookies, las cuales son un pequeño archivo de texto que se descargan en los archivos temporales del navegador de tu PC. Las primeras dos cookies sólo contienen un identificador de usuario (de aquí en adelante "user-id") y un identificador de sesión anónima (de aquí en adelante "session-id"), automáticamente asignada a ti por el software phpBB. Una tercera cookie se creará una vez que hayas navegado por temas en "%1$s" y se emplea para registrar cuales han sido leídos, con objeto de optimizar tu experiencia de usuario.<br>
-	<br>
-	Además podemos crear cookies externas al software phpBB mientras navega por "%1$s", las cuales exceden el alcance de este documento que solamente se refiere a las páginas creadas por el software phpBB. La segunda vía mediante la que obtenemos tu información es mediante lo que tú envías. Esto puede ser, y no limitado a: envíos como usuario anónimo (de aquí en adelante "envíos anónimos"), tu registro en "%1$s" (de aquí en adelante "tu cuenta") y mensajes enviados por ti después de registrarte y mientras te hayas identificado (de aquí en adelante "tus mensajes").<br>
-	<br>
-	Tu cuenta como mínimo constará de un nombre único de identificación (de aquí en adelante "tu nombre de usuario"), una contraseña personal empleada para la identificación (de aquí en adelante "tu contraseña") y una dirección de email personal válida (de aquí en adelante "tu email"). La información de tu cuenta en "%1$s" está protegida por las leyes de protección de datos aplicables en el país en el que estamos instalados. Cualquier información más allá de tu nombre de usuario, tu contraseña y tu dirección de e-mail requerida por "%1$s" durante el proceso de registro será obligatoria u opcional, según el criterio de “%1$s”. En cualquier caso, tú tienes la opción de qué información en su cuenta será públicamente exhibida. Además, en tu cuenta, tienes la opción de activar o desactivar los emails generados automáticamente por el software phpBB.<br>
-	<br>
-	Tu contraseña está encriptada (cifrado de una vía) por lo tanto está segura. Sin embargo, se recomienda que no emplee la misma contraseña en diferentes websites. Tu contraseña garantiza el acceso a tu cuenta en "%1$s", por favor guárdala cuidadosamente y bajo ninguna circunstancia ningún miembro de "%1$s", phpBB u otra tercera parte, legítimamente te preguntará tu contraseña. Si has olvidado la contraseña de tu cuenta, puede usar el servicio "Olvidé mi contraseña" provisto por el software phpBB. Este proceso te solicitará ingresar tu nombre de usuario y tu email, luego el software phpBB generará una nueva contraseña para recuperar tu cuenta.<br>
+	'PRIVACY_POLICY'		=> 'Esta política explica con detalle cómo “%1$s” junto con sus empresas asociadas (de aquí en adelante “nosotros”, “nos”, “nuestro”, “%1$s”, “%2$s”) y phpBB (de aquí en adelante “ellos”, “sus”, “software phpBB”, “www.phpbb.com”, “phpBB Limited”, “phpBB Teams”) emplean cualquier información obtenida durante cualquier sesión de uso por usted (de aquí en adelante “su información”).
+	<br><br>
+	Tu información es obtenida por dos vías. Primeramente, navegar por “%1$s” hará al software phpBB crear un número de cookies, las cuales son un pequeño archivo de texto que se descargan en los archivos temporales del navegador de su PC. Las primeras dos cookies sólo contienen un identificador de usuario (de aquí en adelante “user-id”) y un identificador de sesión anónima (de aquí en adelante “session-id”), automáticamente asignada a usted por el software phpBB. Una tercera cookie se creará una vez que haya navegado por temas en “%1$s” y se emplea para registrar cuales han sido leídos, con objeto de optimizar su experiencia de usuario.
+	<br><br>
+	Además podemos crear cookies externas al software phpBB mientras navega por “%1$s”, las cuales exceden el alcance de este documento que solamente se refiere a las páginas creadas por el software phpBB. La segunda vía mediante la que obtenemos su información es mediante lo que usted envía. Esto puede ser, y no limitado a: envíos como usuario anónimo (de aquí en adelante “envíos anónimos”), su registro en “%1$s” (de aquí en adelante “su cuenta”) y mensajes enviados por usted después de registrarse y mientras se haya identificado (de aquí en adelante “sus mensajes”).
+	<br><br>
+	Tu cuenta como mínimo constará de un nombre único de identificación (de aquí en adelante “su nombre de usuario”), una contraseña personal empleada para la identificación (de aquí en adelante “su contraseña”) y una dirección de email personal válida (de aquí en adelante “su email”). La información de su cuenta en “%1$s” está protegida por las leyes de protección de datos aplicables en el país en el que estamos instalados. Cualquier información más allá de su nombre de usuario, su contraseña y su dirección de e-mail requerida por “%1$s” durante el proceso de registro será obligatoria u opcional, según el criterio de “%1$s”. En cualquier caso, usted tiene la opción de qué información en su cuenta será públicamente exhibida. Además, en su cuenta, usted tiene la opción de activar o desactivar los emails generados automáticamente por el software phpBB.
+	<br><br>
+	Tu contraseña está encriptada (cifrado de una vía) por lo tanto está segura. Sin embargo, se recomienda que no emplee la misma contraseña en diferentes websites. Su contraseña garantiza el acceso a su cuenta en “%1$s”, por favor guárdela cuidadosamente y bajo ninguna circunstancia ningún miembro “%1$s”, phpBB u otra tercera parte, legítimamente le preguntará su contraseña. Si olvidó la contraseña de su cuenta, puede usar el servicio “Olvidé mi contraseña” provisto por el software phpBB. Este proceso le solicitará ingresar su nombre de usuario y su email, luego el software phpBB generará una nueva contraseña para recuperar su cuenta.
 	',
 ));
 
@@ -140,7 +140,7 @@ $lang = array_merge($lang, array(
 	'VC_REFRESH'            		=> 'Refrescar código de confirmación',
 	'VC_REFRESH_EXPLAIN'      		=> 'Si no puedes leer el código puede pedir uno nuevo haciendo clic en el botón.',
 
-    'CONFIRM_PASSWORD'				=> 'Confirmar contraseña',
+    	'CONFIRM_PASSWORD'				=> 'Confirmar contraseña',
 	'CONFIRM_PASSWORD_EXPLAIN'		=> 'Necesitas confirmar tu contraseña sólo si la has cambiado arriba',
 	'COPPA_BIRTHDAY'				=> 'Para continuar con el proceso de registro, por favor indica cuándo naciste.',
 	'COPPA_COMPLIANCE'				=> 'APPCO (COPPA en inglés) compliance',
@@ -179,7 +179,6 @@ $lang = array_merge($lang, array(
 	'DEMOTE_SELECTED'				=> 'Degradar seleccionado',
 	'DISABLE_CENSORS'				=> 'Habilitar palabras censuradas',
 	'DISPLAY_GALLERY'				=> 'Mostrar galería',
-	'DOMAIN_NO_MX_RECORD_EMAIL'		=> 'El dominio del email ingresado no tiene un registro MX válido.',
 	'DOWNLOADS'						=> 'Descargas',
 	'DRAFTS_DELETED'				=> 'Todos los borradores seleccionados fueron borrados correctamente.',
 	'DRAFTS_EXPLAIN'				=> 'Aquí puedes ver, editar o borrar tus borradores guardados.',
@@ -337,12 +336,16 @@ $lang = array_merge($lang, array(
 	'NOTIFICATION_TYPE'									=> 'Tipo de Notificación',
 	'NOTIFICATION_TYPE_BOOKMARK'						=> 'Alguien ha respondido a un tema que tienes como Favorito',
 	'NOTIFICATION_TYPE_GROUP_REQUEST'					=> 'Alguien ha requerido unirse a un grupo del que eres líder',
+	'NOTIFICATION_TYPE_FORUM'							=> 'Alguien ha respondido a un tema en un foro al que estás suscrito',
 	'NOTIFICATION_TYPE_IN_MODERATION_QUEUE'				=> 'Un mensaje o tema necesita aprobación',
 	'NOTIFICATION_TYPE_MODERATION_QUEUE'   				=> 'Tus temas/mensajes han sido aprobados o desaprobados por un Moderador',
 	'NOTIFICATION_TYPE_PM'								=> 'Alguien te ha enviado un mensaje privado',
 	'NOTIFICATION_TYPE_POST'							=> 'Alguien ha respondido a un tema al que estás suscrito',
 	'NOTIFICATION_TYPE_QUOTE'							=> 'Alguien te citó en un mensaje',
 	'NOTIFICATION_TYPE_REPORT'							=> 'Alguien reporto un mensaje',
+	'NOTIFICATION_TYPE_REPORT_CLOSED'					=> 'Tu informe ha sido cerrado por un Moderador',
+	'NOTIFICATION_TYPE_REPORT_PM'						=> 'Alguien informó un mensaje privado',
+	'NOTIFICATION_TYPE_REPORT_PM_CLOSED'				=> 'Tu informe sobre un mensaje privado ha sido cerrado por un Moderador',
 	'NOTIFICATION_TYPE_TOPIC'				   			=> 'Alguien creó un nuevo tema en un foro al que estás suscrito',
 	'NOTIFICATION_TYPE_ADMIN_ACTIVATE_USER'				=> 'Nuevo usuario registrado requiere activación',
 

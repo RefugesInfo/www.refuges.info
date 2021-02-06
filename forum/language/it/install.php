@@ -112,6 +112,8 @@ $lang = array_merge($lang, array(
 	'PCRE_UTF_SUPPORT_EXPLAIN'			=> 'phpBB non funzionerà se il tuo PHP non è compilato con supporto UTF-8 nell’estensione PCRE.',
 	'PHP_JSON_SUPPORT'					=> 'Supporto PHP JSON',
 	'PHP_JSON_SUPPORT_EXPLAIN'			=> 'Per un corretto funzionamento del phpBB, l’estensione PHP JSON deve essere abilitata.',
+	'PHP_MBSTRING_SUPPORT'				=> 'Supporto per mbstring PHP',
+	'PHP_MBSTRING_SUPPORT_EXPLAIN'		=> 'Affinché phpBB funzioni correttamente, deve essere disponibile l’estensione PHP mbstring.',
 	'PHP_XML_SUPPORT'					=> 'Supporto PHP XML/DOM',
 	'PHP_XML_SUPPORT_EXPLAIN'			=> 'Affinché phpBB sia eseguito correttamente, l’estensione PHP XML/DOM deve essere disponibile.',
 	'PHP_SUPPORTED_DB'					=> 'Database supportati',
@@ -225,7 +227,7 @@ $lang = array_merge($lang, array(
 	// Server data
 	//
 	// Form labels
-	'UPGRADE_INSTRUCTIONS'			=> 'È disponibile una nuova versione <strong>%1$s</strong>. Leggi <a href="%2$s" title="%2$s"><strong>l’annuncio di rilascio</strong></a> per conoscere ciò che ha da offrire e come aggiornare.',
+	'UPGRADE_INSTRUCTIONS'			=> 'È disponibile la nuova versione <strong>%1$s</strong>. Leggi <a href="%2$s" title="%2$s"><strong>l’annuncio di rilascio</strong></a> per conoscere ciò che ha da offrire e come aggiornare.',
 	'SERVER_CONFIG'				=> 'Configurazione del server',
 	'SCRIPT_PATH'				=> 'Percorso script',
 	'SCRIPT_PATH_EXPLAIN'		=> 'Il percorso dove è situato phpbb relativo al nome di dominio, es. <samp>/phpBB3</samp>',
@@ -237,7 +239,7 @@ $lang = array_merge($lang, array(
 	'CONFIG_SITE_DESC'				=> 'Un breve testo per descrivere il tuo forum',
 	'CONFIG_SITENAME'				=> 'tuodominio.it',
 
-	'DEFAULT_INSTALL_POST'			=> 'Questo è un messaggio di esempio nella tua installazione di phpBB3. Ogni cosa sembra funzionare. Se vuoi, puoi cancellare questo messaggio e continuare a configurare il tuo forum. Durante il processo di installazione, alla tua prima categoria e al tuo primo forum è stato assegnato un opportuno set di permessi per i gruppi predefiniti (amministratori, bot, moderatori globali, ospiti, utenti registrati, utenti COPPA). Se decidi di cancellare il primo forum e la prima categoria, ricordati di assegnare i permessi a tutti questi gruppi per ogni categoria e ogni forum che viene creato. Raccomandiamo di rinominare la tua prima categoria e il tuo primo forum e di copiare i permessi da questi quando si creano nuove categorie e nuovi forum. Buon divertimento!',
+	'DEFAULT_INSTALL_POST'			=> '<t>Questo è un messaggio di esempio nella tua installazione di phpBB3. Ogni cosa sembra funzionare. Se vuoi, puoi cancellare questo messaggio e continuare a configurare il tuo forum. Durante il processo di installazione, alla tua prima categoria e al tuo primo forum è stato assegnato un opportuno set di permessi per i gruppi predefiniti (amministratori, bot, moderatori globali, ospiti, utenti registrati, utenti COPPA). Se decidi di cancellare il primo forum e la prima categoria, ricordati di assegnare i permessi a tutti questi gruppi per ogni categoria e ogni forum che viene creato. Raccomandiamo di rinominare la tua prima categoria e il tuo primo forum e di copiare i permessi da questi quando si creano nuove categorie e nuovi forum. Buon divertimento!</t>',
 
 	'FORUMS_FIRST_CATEGORY'			=> 'La tua prima categoria',
 	'FORUMS_TEST_FORUM_DESC'		=> 'Descrizione del tuo primo forum.',

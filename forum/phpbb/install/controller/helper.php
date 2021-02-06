@@ -40,7 +40,7 @@ class helper
 	protected $installer_config;
 
 	/**
-	 * @var \phpbb\language\language
+	 * @var language
 	 */
 	protected $language;
 
@@ -50,37 +50,37 @@ class helper
 	protected $language_cookie;
 
 	/**
-	 * @var \phpbb\language\language_file_helper
+	 * @var language_file_helper
 	 */
 	protected $lang_helper;
 
 	/**
-	 * @var \phpbb\install\helper\navigation\navigation_provider
+	 * @var navigation_provider
 	 */
 	protected $navigation_provider;
 
 	/**
-	 * @var \phpbb\template\template
+	 * @var template
 	 */
 	protected $template;
 
 	/**
-	 * @var \phpbb\path_helper
+	 * @var path_helper
 	 */
 	protected $path_helper;
 
 	/**
-	 * @var \phpbb\request\request
+	 * @var request
 	 */
 	protected $phpbb_request;
 
 	/**
-	 * @var \phpbb\symfony_request
+	 * @var symfony_request
 	 */
 	protected $request;
 
 	/**
-	 * @var \phpbb\routing\router
+	 * @var router
 	 */
 	protected $router;
 
@@ -267,7 +267,7 @@ class helper
 			'L_SKIP'				=> $this->language->lang('SKIP'),
 			'PAGE_TITLE'			=> $this->language->lang($page_title),
 			'T_IMAGE_PATH'			=> $this->path_helper->get_web_root_path() . $path . 'images',
-			'T_JQUERY_LINK'			=> $this->path_helper->get_web_root_path() . $path . '../assets/javascript/jquery-3.4.1.min.js',
+			'T_JQUERY_LINK'			=> $this->path_helper->get_web_root_path() . $path . '../assets/javascript/jquery-3.5.1.min.js',
 			'T_TEMPLATE_PATH'		=> $this->path_helper->get_web_root_path() . $path . 'style',
 			'T_ASSETS_PATH'			=> $this->path_helper->get_web_root_path() . $path . '../assets',
 

@@ -613,13 +613,10 @@ class filesystem implements filesystem_interface
 			}
 			else
 			{
-				$handle = @fopen($file, 'c');
+				$handle = new \SplFileInfo($file);
 
-				if (is_resource($handle))
-				{
-					fclose($handle);
-					return true;
-				}
+				// Returns TRUE if writable, FALSE otherwise
+				return $handle->isWritable();
 			}
 		}
 		else
@@ -637,7 +634,7 @@ class filesystem implements filesystem_interface
 	}
 
 	/**
-	 * Try to resolve real path when PHP's realpath failes to do so
+	 * Try to resolve real path when PHP's realpath fails to do so
 	 *
 	 * @param string	$path
 	 * @return bool|string

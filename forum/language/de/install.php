@@ -114,6 +114,8 @@ $lang = array_merge($lang, array(
 	'PCRE_UTF_SUPPORT_EXPLAIN'			=> 'phpBB wird nicht funktionieren, wenn die PHP-Installation ohne UTF-8-Unterstützung in der PCRE-Erweiterung kompiliert wurde.',
 	'PHP_JSON_SUPPORT'					=> 'PHP JSON-Unterstützung',
 	'PHP_JSON_SUPPORT_EXPLAIN'			=> 'Damit phpBB richtig funktioniert, muss die PHP JSON-Erweiterung verfügbar sein.',
+	'PHP_MBSTRING_SUPPORT'				=> 'PHP mbstring-Unterstützung',
+	'PHP_MBSTRING_SUPPORT_EXPLAIN'		=> 'Damit phpBB richtig funktioniert, muss die PHP mbstring-Erweiterung verfügbar sein.',
 	'PHP_XML_SUPPORT'					=> 'PHP XML/DOM-Unterstützung',
 	'PHP_XML_SUPPORT_EXPLAIN'			=> 'Damit phpBB richtig funktioniert, muss die PHP XML/DOM-Erweiterung verfügbar sein.',
 	'PHP_SUPPORTED_DB'					=> 'Unterstützte Datenbanken',
@@ -239,7 +241,7 @@ $lang = array_merge($lang, array(
 	'CONFIG_SITE_DESC'				=> 'Ein kurzer Text, der dein Forum beschreibt',
 	'CONFIG_SITENAME'				=> 'deinedomain.tld',
 
-	'DEFAULT_INSTALL_POST'			=> 'Dies ist ein Beispielbeitrag deiner phpBB3-Installation. Alles scheint zu funktionieren. Wenn du möchtest, kannst du diesen Beitrag löschen und mit der Einrichtung deines Boards fortfahren. Während des Installationsvorgangs wurden deiner ersten Kategorie und deinem ersten Forum passende Berechtigungen für die Benutzergruppen Administratoren, Bots, globale Moderatoren, Gäste, Registrierte Benutzer und Registrierte COPPA-Benutzer zugewiesen. Wenn du dich entscheidest, auch deine erste Kategorie und dein erstes Forum zu löschen, darfst du nicht vergessen, den genannten Gruppen entsprechende Rechte für alle neuen Kategorien und Foren, die du erstellst, zuzuweisen. Es wird jedoch empfohlen, deine erste Kategorie und dein erstes Forum umzubenennen und deren Rechte zu übernehmen, wenn neue Kategorien und Foren erstellt werden. Viel Spaß mit phpBB!',
+	'DEFAULT_INSTALL_POST'			=> '<t>Dies ist ein Beispielbeitrag deiner phpBB3-Installation. Alles scheint zu funktionieren. Wenn du möchtest, kannst du diesen Beitrag löschen und mit der Einrichtung deines Boards fortfahren. Während des Installationsvorgangs wurden deiner ersten Kategorie und deinem ersten Forum passende Berechtigungen für die Benutzergruppen Administratoren, Bots, globale Moderatoren, Gäste, Registrierte Benutzer und Registrierte COPPA-Benutzer zugewiesen. Wenn du dich entscheidest, auch deine erste Kategorie und dein erstes Forum zu löschen, darfst du nicht vergessen, den genannten Gruppen entsprechende Rechte für alle neuen Kategorien und Foren, die du erstellst, zuzuweisen. Es wird jedoch empfohlen, deine erste Kategorie und dein erstes Forum umzubenennen und deren Rechte zu übernehmen, wenn neue Kategorien und Foren erstellt werden. Viel Spaß mit phpBB!</t>',
 
 	'FORUMS_FIRST_CATEGORY'			=> 'Deine erste Kategorie',
 	'FORUMS_TEST_FORUM_DESC'		=> 'Beschreibung deines ersten Forums.',

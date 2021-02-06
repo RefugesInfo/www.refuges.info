@@ -207,7 +207,7 @@ class factory implements \phpbb\textformatter\cache_interface
 		* Modify the s9e\TextFormatter configurator before the default settings are set
 		*
 		* @event core.text_formatter_s9e_configure_before
-		* @var \s9e\TextFormatter\Configurator configurator Configurator instance
+		* @var Configurator configurator Configurator instance
 		* @since 3.2.0-a1
 		*/
 		$vars = array('configurator');
@@ -218,7 +218,7 @@ class factory implements \phpbb\textformatter\cache_interface
 		{
 			$configurator->urlConfig->disallowScheme($scheme);
 		}
-		foreach (explode(',', $this->config['allowed_schemes_links']) as $scheme)
+		foreach (array_filter(explode(',', $this->config['allowed_schemes_links'])) as $scheme)
 		{
 			$configurator->urlConfig->allowScheme(trim($scheme));
 		}
@@ -273,8 +273,6 @@ class factory implements \phpbb\textformatter\cache_interface
 			->add('#imageurl', __NAMESPACE__ . '\\parser::filter_img_url')
 			->addParameterByName('urlConfig')
 			->addParameterByName('logger')
-			->addParameterByName('max_img_height')
-			->addParameterByName('max_img_width')
 			->markAsSafeAsURL()
 			->setJS('UrlFilter.filter');
 
@@ -370,7 +368,7 @@ class factory implements \phpbb\textformatter\cache_interface
 		* Modify the s9e\TextFormatter configurator after the default settings are set
 		*
 		* @event core.text_formatter_s9e_configure_after
-		* @var \s9e\TextFormatter\Configurator configurator Configurator instance
+		* @var Configurator configurator Configurator instance
 		* @since 3.2.0-a1
 		*/
 		$vars = array('configurator');
@@ -448,7 +446,7 @@ class factory implements \phpbb\textformatter\cache_interface
 	/**
 	* Configure the Autolink / Autoemail plugins used to linkify text
 	*
-	* @param  \s9e\TextFormatter\Configurator $configurator
+	* @param  Configurator $configurator
 	* @return void
 	*/
 	protected function configure_autolink(Configurator $configurator)
@@ -470,11 +468,17 @@ class factory implements \phpbb\textformatter\cache_interface
 		$tag->attributes->add('text');
 		$tag->template = '<xsl:value-of select="@text"/>';
 
+		$board_url = generate_board_url() . '/';
 		$tag->filterChain
 			->add(array($this->link_helper, 'truncate_local_url'))
 			->resetParameters()
 			->addParameterByName('tag')
-			->addParameterByValue(generate_board_url() . '/');
+			->addParameterByValue($board_url);
+		$tag->filterChain
+			->add(array($this->link_helper, 'truncate_local_url'))
+			->resetParameters()
+			->addParameterByName('tag')
+			->addParameterByValue(preg_replace('(^\\w+:)', '', $board_url));
 		$tag->filterChain
 			->add(array($this->link_helper, 'truncate_text'))
 			->resetParameters()

@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Emoji;
@@ -44,7 +44,7 @@ class Configurator extends ConfiguratorBase
 				$this->configurator->attributeFilters['#identifier']
 			);
 		}
-		$tag->template = '<img alt="{.}" class="emoji" draggable="false" src="https://twemoji.maxcdn.com/2/svg/{@tseq}.svg"/>';
+		$tag->template = '<img alt="{.}" class="emoji" draggable="false" src="https://twemoji.maxcdn.com/v/latest/svg/{@tseq}.svg"/>';
 	}
 
 	/**

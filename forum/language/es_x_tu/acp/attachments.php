@@ -110,6 +110,10 @@ $lang = array_merge($lang, array(
 
 	'IMAGE_LINK_SIZE'					=> 'Dimensiones de la imagen enlazada',
 	'IMAGE_LINK_SIZE_EXPLAIN'			=> 'Mostrar la imagen adjunta como un enlace si es más grande. 0px por 0px significa ilimitado.',
+	'IMAGE_QUALITY'				=> 'Calidad de los archivos adjuntos de imagen subidos (solo JPEG)',
+	'IMAGE_QUALITY_EXPLAIN'		=> 'Especifica un valor entre 50% (tamaño de archivo más pequeño) y 90% (mayor calidad). Una calidad superior al 90% aumenta el tamaño del archivo y está deshabilitada. La configuración solo se aplica si las dimensiones máximas de la imagen se establecen en un valor distinto de 0px por 0px.',
+	'IMAGE_STRIP_METADATA'		=> 'Tira de metadatos de imagen (solo JPEG)',
+	'IMAGE_STRIP_METADATA_EXPLAIN'	=> 'Tira Exif metadatos, por ejemplo; nombre del autor, coordenadas GPS y detalles de la cámara. La configuración solo se aplica si las dimensiones máximas de la imagen se establecen en un valor distinto de 0px por 0px.',
 
 	'MAX_ATTACHMENTS'					=> 'Número de adjuntos máximos por mensaje',
 	'MAX_ATTACHMENTS_PM'				=> 'Número de adjuntos máximos por Mensaje Privado',
@@ -128,6 +132,8 @@ $lang = array_merge($lang, array(
 	'NOT_ASSIGNED'						=> 'No asignado',
 	'NO_ATTACHMENTS'			=> 'No se han encontrado adjuntos en este período.',
 	'NO_EXT_GROUP'						=> 'Ninguno',
+	'NO_EXT_GROUP_ALLOWED_PM'	=> 'No hay <a href="%s">grupos de extensiones permitidos</a> para mensajes privados.',
+	'NO_EXT_GROUP_ALLOWED_POST'	=> 'No hay <a href="%s">grupos de extensiones permitidos</a> para mensajes.',
 	'NO_EXT_GROUP_NAME'					=> 'No introdujo el nombre del Grupo',
 	'NO_EXT_GROUP_SPECIFIED'			=> 'No especificó Grupo de Extensiones.',
 	'NO_FILE_CAT'						=> 'Ninguno',

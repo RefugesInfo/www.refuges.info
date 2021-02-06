@@ -958,6 +958,11 @@ function handle_mark_actions($user_id, $mark_action)
 	{
 		case 'mark_important':
 
+			if (!check_form_key('ucp_pm_view'))
+			{
+				trigger_error('FORM_INVALID');
+			}
+
 			$sql = 'UPDATE ' . PRIVMSGS_TO_TABLE . "
 				SET pm_marked = 1 - pm_marked
 				WHERE folder_id = $cur_folder_id
@@ -1172,25 +1177,6 @@ function delete_pm($user_id, $msg_ids, $folder_id)
 	$db->sql_transaction('commit');
 
 	return true;
-}
-
-/**
-* Delete all PM(s) for a given user and delete the ones without references
-*
-* @param	int		$user_id	ID of the user whose private messages we want to delete
-*
-* @return	boolean		False if there were no pms found, true otherwise.
-*/
-function phpbb_delete_user_pms($user_id)
-{
-	$user_id = (int) $user_id;
-
-	if (!$user_id)
-	{
-		return false;
-	}
-
-	return phpbb_delete_users_pms(array($user_id));
 }
 
 /**
@@ -2060,6 +2046,35 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 	while ($row = $db->sql_fetchrow($result));
 	$db->sql_freeresult($result);
 
+	$url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm');
+
+	/**
+	* Modify message rows before displaying the history in private messages
+	*
+	* @event core.message_history_modify_rowset
+	* @var int		msg_id			ID of the private message
+	* @var int		user_id			ID of the message author
+	* @var array	message_row		Array with message data
+	* @var array	folder			Array with data of user's message folders
+	* @var bool		in_post_mode	Whether or not we are viewing or composing
+	* @var array	rowset			Array with message history data
+	* @var string	url				Base URL used to generate links to private messages
+	* @var string	title			Subject of the private message
+	* @since 3.2.10-RC1
+	* @since 3.3.1-RC1
+	*/
+	$vars = [
+		'msg_id',
+		'user_id',
+		'message_row',
+		'folder',
+		'in_post_mode',
+		'rowset',
+		'url',
+		'title',
+	];
+	extract($phpbb_dispatcher->trigger_event('core.message_history_modify_rowset', compact($vars)));
+
 	if (count($rowset) == 1 && !$in_post_mode)
 	{
 		return false;
@@ -2067,7 +2082,6 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 
 	$title = censor_text($title);
 
-	$url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm');
 	$next_history_pm = $previous_history_pm = $prev_id = 0;
 
 	// Re-order rowset to be able to get the next/prev message rows...

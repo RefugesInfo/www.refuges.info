@@ -76,7 +76,7 @@ class acp_board
 						'legend3'				=> 'WARNINGS',
 						'warnings_expire_days'	=> array('lang' => 'WARNINGS_EXPIRE',		'validate' => 'int:0:9999',	'type' => 'number:0:9999', 'explain' => true, 'append' => ' ' . $user->lang['DAYS']),
 
-						'legend4'					=> 'ACP_SUBMIT_CHANGES',
+						'legend4'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -97,6 +97,7 @@ class acp_board
 						'allow_smilies'					=> array('lang' => 'ALLOW_SMILIES',					'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),
 						'allow_sig'						=> array('lang' => 'ALLOW_SIG',						'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),
 						'allow_board_notifications'		=> array('lang' => 'ALLOW_BOARD_NOTIFICATIONS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),
+
 						'allow_nocensors'				=> array('lang' => 'ALLOW_NO_CENSORS',				'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_bookmarks'				=> array('lang' => 'ALLOW_BOOKMARKS',				'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_birthdays'				=> array('lang' => 'ALLOW_BIRTHDAYS',				'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
@@ -104,7 +105,7 @@ class acp_board
 						'display_unapproved_posts'		=> array('lang' => 'DISPLAY_UNAPPROVED_POSTS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_quick_reply'				=> array('lang' => 'ALLOW_QUICK_REPLY',				'validate' => 'bool',	'type' => 'custom', 'method' => 'quick_reply', 'explain' => true),
 
-						'legend2'							=> 'ACP_SUBMIT_CHANGES',
+						'legend2'						=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -133,12 +134,10 @@ class acp_board
 					'title'	=> 'ACP_AVATAR_SETTINGS',
 					'vars'	=> array(
 						'legend1'				=> 'ACP_AVATAR_SETTINGS',
-
 						'avatar_min_width'		=> array('lang' => 'MIN_AVATAR_SIZE', 'validate' => 'int:0', 'type' => false, 'method' => false, 'explain' => false),
 						'avatar_min_height'		=> array('lang' => 'MIN_AVATAR_SIZE', 'validate' => 'int:0', 'type' => false, 'method' => false, 'explain' => false),
 						'avatar_max_width'		=> array('lang' => 'MAX_AVATAR_SIZE', 'validate' => 'int:0', 'type' => false, 'method' => false, 'explain' => false),
 						'avatar_max_height'		=> array('lang' => 'MAX_AVATAR_SIZE', 'validate' => 'int:0', 'type' => false, 'method' => false, 'explain' => false),
-
 						'allow_avatar'			=> array('lang' => 'ALLOW_AVATARS',			'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'avatar_min'			=> array('lang' => 'MIN_AVATAR_SIZE',		'validate' => 'int:0',	'type' => 'dimension:0', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
 						'avatar_max'			=> array('lang' => 'MAX_AVATAR_SIZE',		'validate' => 'int:0',	'type' => 'dimension:0', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
@@ -149,6 +148,8 @@ class acp_board
 				{
 					$display_vars['vars'] += $avatar_vars;
 				}
+
+				$display_vars['vars']['legend2'] = 'ACP_SUBMIT_CHANGES';
 			break;
 
 			case 'message':
@@ -176,7 +177,7 @@ class acp_board
 						'auth_flash_pm'			=> array('lang' => 'ALLOW_FLASH_PM',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'enable_pm_icons'		=> array('lang' => 'ENABLE_PM_ICONS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),
 
-						'legend3'					=> 'ACP_SUBMIT_CHANGES',
+						'legend3'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -192,7 +193,7 @@ class acp_board
 						'allow_post_flash'		=> array('lang' => 'ALLOW_POST_FLASH',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_smilies'			=> array('lang' => 'ALLOW_SMILIES',			'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),
 						'allow_post_links'		=> array('lang' => 'ALLOW_POST_LINKS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
-						'allowed_schemes_links'	=> array('lang' => 'ALLOWED_SCHEMES_LINKS',	'validate' => 'string',	'type' => 'text:0:255', 'explain' => true),
+						'allowed_schemes_links'	=> array('lang' => 'ALLOWED_SCHEMES_LINKS',	'validate' => 'csv',	'type' => 'text:0:255', 'explain' => true),
 						'allow_nocensors'		=> array('lang' => 'ALLOW_NO_CENSORS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_bookmarks'		=> array('lang' => 'ALLOW_BOOKMARKS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'enable_post_confirm'	=> array('lang' => 'VISUAL_CONFIRM_POST',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
@@ -219,7 +220,7 @@ class acp_board
 						'max_post_img_width'	=> array('lang' => 'MAX_POST_IMG_WIDTH',	'validate' => 'int:0:9999',		'type' => 'number:0:9999', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
 						'max_post_img_height'	=> array('lang' => 'MAX_POST_IMG_HEIGHT',	'validate' => 'int:0:9999',		'type' => 'number:0:9999', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
 
-						'legend3'					=> 'ACP_SUBMIT_CHANGES',
+						'legend3'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -244,7 +245,7 @@ class acp_board
 						'max_sig_img_width'		=> array('lang' => 'MAX_SIG_IMG_WIDTH',		'validate' => 'int:0:9999',	'type' => 'number:0:9999', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
 						'max_sig_img_height'	=> array('lang' => 'MAX_SIG_IMG_HEIGHT',	'validate' => 'int:0:9999',	'type' => 'number:0:9999', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
 
-						'legend3'					=> 'ACP_SUBMIT_CHANGES',
+						'legend3'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -306,6 +307,8 @@ class acp_board
 						'legend4'					=> 'ACP_FEED_SETTINGS_OTHER',
 						'feed_overall_forums'		=> array('lang'	=> 'ACP_FEED_OVERALL_FORUMS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',	'explain' => true ),
 						'feed_exclude_id'			=> array('lang' => 'ACP_FEED_EXCLUDE_ID',			'validate' => 'string',	'type' => 'custom', 'method' => 'select_exclude_forums', 'explain' => true),
+
+						'legend5'					=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -320,6 +323,8 @@ class acp_board
 						'cookie_path'	=> array('lang'	=> 'COOKIE_PATH',	'validate' => 'string',	'type' => 'text::255', 'explain' => true),
 						'cookie_secure'	=> array('lang' => 'COOKIE_SECURE',	'validate' => 'bool',	'type' => 'radio:enabled_disabled', 'explain' => true),
 						'cookie_notice'	=> array('lang' => 'COOKIE_NOTICE',	'validate' => 'bool',	'type' => 'radio:enabled_disabled', 'explain' => true),
+
+						'legend2'		=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -360,7 +365,7 @@ class acp_board
 						'load_cpf_viewprofile'	=> array('lang' => 'LOAD_CPF_VIEWPROFILE',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),
 						'load_cpf_viewtopic'	=> array('lang' => 'LOAD_CPF_VIEWTOPIC',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),
 
-						'legend4'					=> 'ACP_SUBMIT_CHANGES',
+						'legend4'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -397,7 +402,7 @@ class acp_board
 						'server_port'			=> array('lang' => 'SERVER_PORT',		'validate' => 'int:0:99999',			'type' => 'number:0:99999', 'explain' => true),
 						'script_path'			=> array('lang' => 'SCRIPT_PATH',		'validate' => 'script_path',	'type' => 'text::255', 'explain' => true),
 
-						'legend4'					=> 'ACP_SUBMIT_CHANGES',
+						'legend4'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -428,6 +433,7 @@ class acp_board
 						'form_token_lifetime'	=> array('lang' => 'FORM_TIME_MAX',			'validate' => 'int:-1:99999',	'type' => 'number:-1:99999', 'explain' => true, 'append' => ' ' . $user->lang['SECONDS']),
 						'form_token_sid_guests'	=> array('lang' => 'FORM_SID_GUESTS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 
+						'legend2'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -460,7 +466,7 @@ class acp_board
 						'smtp_verify_peer_name'	=> array('lang' => 'SMTP_VERIFY_PEER_NAME',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'smtp_allow_self_signed'=> array('lang' => 'SMTP_ALLOW_SELF_SIGNED','validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 
-						'legend3'					=> 'ACP_SUBMIT_CHANGES',
+						'legend3'				=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -490,6 +496,42 @@ class acp_board
 		$this->new_config = clone $config;
 		$cfg_array = (isset($_REQUEST['config'])) ? $request->variable('config', array('' => ''), true) : $this->new_config;
 		$error = array();
+
+		// Prevalidate allowed URL schemes
+		if ($mode == 'post')
+		{
+			$schemes = array_filter(explode(',', $cfg_array['allowed_schemes_links']));
+			foreach ($schemes as $scheme)
+			{
+				if (!preg_match('#^[a-z][a-z0-9+\\-.]*$#Di', $scheme))
+				{
+					$error[] = $language->lang('URL_SCHEME_INVALID', $language->lang('ALLOWED_SCHEMES_LINKS'), $scheme);
+				}
+			}
+		}
+
+		if ($mode == 'avatar' && $cfg_array['allow_avatar_upload'])
+		{
+			// If avatar uploading is enabled but the path setting is empty,
+			// config variable validation is bypassed. Catch the case here
+			if (!$cfg_array['avatar_path'])
+			{
+				$error[] = $language->lang('AVATAR_NO_UPLOAD_PATH');
+			}
+			else if (!$submit)
+			{
+				$filesystem = $phpbb_container->get('filesystem');
+				$avatar_path_exists = $filesystem->exists($phpbb_root_path . $cfg_array['avatar_path']);
+				$avatar_path_writable = $filesystem->is_writable($phpbb_root_path . $cfg_array['avatar_path']);
+
+				// Not existing or writable path will be caught on submit by validate_config_vars().
+				// Display the warning if the directory was changed on the server afterwards
+				if (!$avatar_path_exists || !$avatar_path_writable)
+				{
+					$error[] = $language->lang('AVATAR_NO_UPLOAD_DIR');
+				}
+			}
+		}
 
 		// We validate the complete config if wished
 		validate_config_vars($display_vars['vars'], $cfg_array, $error);
@@ -540,7 +582,37 @@ class acp_board
 					continue;
 				}
 
-				$config->set($config_name, $config_value);
+				// Array of emoji-enabled configurations
+				$config_name_ary = [
+					'sitename',
+					'site_desc',
+					'site_home_text',
+					'board_index_text',
+					'board_disable_msg',
+				];
+
+				/**
+				 * Event to manage the array of emoji-enabled configurations
+				 *
+				 * @event core.acp_board_config_emoji_enabled
+				 * @var array	config_name_ary		Array of config names to process
+				 * @since 3.3.3-RC1
+				 */
+				$vars = ['config_name_ary'];
+				extract($phpbb_dispatcher->trigger_event('core.acp_board_config_emoji_enabled', compact($vars)));
+
+				if (in_array($config_name, $config_name_ary))
+				{
+					/**
+					 * Replace Emojis and other 4bit UTF-8 chars not allowed by MySQL to UCR/NCR.
+					 * Using their Numeric Character Reference's Hexadecimal notation.
+					 */
+					$config->set($config_name, utf8_encode_ucr($config_value));
+				}
+				else
+				{
+					$config->set($config_name, $config_value);
+				}
 
 				if ($config_name == 'allow_quick_reply' && isset($_POST['allow_quick_reply_enable']))
 				{
@@ -549,8 +621,8 @@ class acp_board
 			}
 		}
 
-		// Invalidate the text_formatter cache when posting options are changed
-		if ($mode == 'post' && $submit)
+		// Invalidate the text_formatter cache when posting or server options are changed
+		if (preg_match('(^(?:post|server)$)', $mode) && $submit)
 		{
 			$phpbb_container->get('text_formatter.cache')->invalidate();
 		}
@@ -616,7 +688,7 @@ class acp_board
 			if ($submit && (($cfg_array['auth_method'] != $this->new_config['auth_method']) || $updated_auth_settings))
 			{
 				$method = basename($cfg_array['auth_method']);
-				if (array_key_exists('auth.provider.' . $method, $auth_providers))
+				if (array_key_exists('auth.provider.' . $method, (array) $auth_providers))
 				{
 					$provider = $auth_providers['auth.provider.' . $method];
 					if ($error = $provider->init())
@@ -648,6 +720,7 @@ class acp_board
 				$messenger->anti_abuse_headers($config, $user);
 				$messenger->assign_vars(array(
 					'USERNAME'	=> htmlspecialchars_decode($user->data['username']),
+					'MESSAGE'	=> htmlspecialchars_decode($request->variable('send_test_email_text', '', true)),
 				));
 				$messenger->send(NOTIFY_EMAIL);
 
@@ -1167,6 +1240,7 @@ class acp_board
 	{
 		global $user;
 
-		return '<input class="button2" type="submit" id="' . $key . '" name="' . $key . '" value="' . $user->lang['SEND_TEST_EMAIL'] . '" />';
+		return '<input class="button2" type="submit" id="' . $key . '" name="' . $key . '" value="' . $user->lang('SEND_TEST_EMAIL') . '" />
+				<textarea id="' . $key . '_text" name="' . $key . '_text" placeholder="' . $user->lang('MESSAGE') . '"></textarea>';
 	}
 }

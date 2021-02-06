@@ -46,7 +46,7 @@ $lang = array_merge($lang, array(
 	'USER_LANG'			=> 'fr',
 
 	// You can define different rules for the determination of plural forms here.
-	// See https://area51.phpbb.com/docs/dev/32x/language/plurals.html for more information
+	// See https://area51.phpbb.com/docs/dev/3.3.x/language/plurals.html for more information
 	// or ask the translation manager for help.
 	'PLURAL_RULE'		=> 2,
 
@@ -108,6 +108,8 @@ $lang = array_merge($lang, array(
 	'AVATAR_NOT_UPLOADED'			=> 'L’avatar n’a pas pu être transféré.',
 	'AVATAR_NO_TEMP_DIR'			=> 'Le répertoire temporaire n’existe pas ou n’est pas accessible en écriture.',
 	'AVATAR_NO_SIZE'				=> 'Impossible de déterminer la largeur ou la hauteur de l’avatar lié, saisissez-les manuellement.',
+	'AVATAR_NO_UPLOAD_DIR'			=> 'Le répertoire de stockage des avatars n’existe pas ou n’est pas accessible en écriture.',
+	'AVATAR_NO_UPLOAD_PATH'			=> 'Le transfert d’avatars est activé mais le chemin du répertoire de stockage des avatars n’est pas défini.',
 	'AVATAR_PARTIAL_UPLOAD'			=> 'Le fichier n’a pu être que partiellement transféré.',
 	'AVATAR_PHP_SIZE_NA'			=> 'Le fichier image de l’avatar est trop volumineux.<br>Le maximum réglé dans php.ini n’a pas pu être déterminé.',
 	'AVATAR_PHP_SIZE_OVERRUN'		=> 'Le fichier image de l’avatar est trop volumineux. Le maximum autorisée est %1$d %2$s.<br>Notez que ce paramètre est inscrit dans php.ini et ne peut pas être dépassé.',
@@ -166,6 +168,7 @@ $lang = array_merge($lang, array(
 	),
 	'COLLAPSE_VIEW'			=> 'Réduire la vue',
 	'CLOSE_WINDOW'			=> 'Fermer la fenêtre',
+	'CODE'					=> 'Code',
 	'COLOUR_SWATCH'			=> 'Palette de couleurs',
 	'COLON'					=> ' :',
 	'COMMA_SEPARATOR'		=> ', ',	// Used in pagination of ACP & prosilver, use localised comma if appropriate, eg: Ideographic or Arabic
@@ -203,6 +206,7 @@ $lang = array_merge($lang, array(
 	'DISPLAY_MESSAGES'		=> 'Afficher les messages postés depuis',
 	'DISPLAY_POSTS'			=> 'Afficher les messages postés depuis',
 	'DISPLAY_TOPICS'		=> 'Afficher les sujets postés depuis',
+	'DOMAIN_NO_MX_RECORD_EMAIL'	=> 'Le domaine de l’adresse courriel saisie n’a pas d’enregistrements MX valides.',
 	'DOWNLOADED'			=> 'Téléchargé',
 	'DOWNLOADING_FILE'		=> 'Téléchargement en cours',
 	'DOWNLOAD_COUNTS'		=> array(
@@ -307,7 +311,6 @@ $lang = array_merge($lang, array(
 	'GB'						=> 'Go',
 	'GIB'						=> 'Gio',
 	'GO'						=> 'Aller',
-	'GOOGLEPLUS'				=> 'Google+',
 	'GOTO_FIRST_POST'			=> 'Aller au premier message',
 	'GOTO_LAST_POST'			=> 'Aller au dernier message',
 	'GOTO_PAGE'					=> 'Aller à la page',
@@ -474,6 +477,7 @@ $lang = array_merge($lang, array(
 	'NOTIFICATION_GROUP_REQUEST_APPROVED'	=> '<strong>Adhésion au groupe approuvée</strong> pour rejoindre le groupe %1$s.',
 	'NOTIFICATION_METHOD_INVALID'		=> 'La méthode « %s » ne fait pas référence à une méthode de notification valide.',
 	'NOTIFICATION_PM'					=> '<strong>Message privé</strong> de %1$s :',
+	'NOTIFICATION_REPORT_PM_CLOSED'		=> '<strong>Rapport de message privé fermé</strong> par %1$s :',
 	'NOTIFICATION_POST'					=> array(
 		1	=> '<strong>Réponse</strong> de %1$s dans le sujet :',
 	),
@@ -616,6 +620,9 @@ $lang = array_merge($lang, array(
 	'POST_UNAPPROVED'		=> 'Ce message n’a pas été approuvé.',
 	'POST_UNAPPROVED_EXPLAIN'	=> 'Ce message n’est pas visible pour les autres utilisateurs tant qu’il n’est pas approuvé par un modérateur.',
 	'POWERED_BY'			=> 'Développé par %s',
+
+	'QUOTE'					=> 'Citation',
+
 	'PREVIEW'				=> 'Aperçu',
 	'PREVIOUS'				=> 'Précédente',				// Used in pagination
 	'PREVIOUS_STEP'			=> 'Précédente',

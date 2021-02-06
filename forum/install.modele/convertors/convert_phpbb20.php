@@ -38,7 +38,7 @@ $dbms = $phpbb_config_php_file->convert_30_dbms_to_31($dbms);
 $convertor_data = array(
 	'forum_name'	=> 'phpBB 2.0.x',
 	'version'		=> '1.0.3',
-	'phpbb_version'	=> '3.3.0',
+	'phpbb_version'	=> '3.3.3',
 	'author'		=> '<a href="https://www.phpbb.com/">phpBB Limited</a>',
 	'dbms'			=> $dbms,
 	'dbhost'		=> $dbhost,
@@ -963,7 +963,6 @@ if (!$get_info)
 				array('pf_phpbb_location',		'users.user_from',					array('function1' => 'phpbb_set_encoding')),
 				array('pf_phpbb_icq',			'users.user_icq',					array('function1' => 'phpbb_set_encoding')),
 				array('pf_phpbb_yahoo',			'users.user_yim',					array('function1' => 'phpbb_set_encoding')),
-				array('pf_phpbb_aol',			'users.user_aim',					array('function1' => 'phpbb_set_encoding')),
 				array('pf_phpbb_website',		'users.user_website',				'validate_website'),
 
 				'where'			=> 'users.user_id <> -1',

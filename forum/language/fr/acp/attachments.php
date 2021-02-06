@@ -111,6 +111,10 @@ $lang = array_merge($lang, array(
 
 	'IMAGE_LINK_SIZE'			=> 'Dimensions du lien de l’image',
 	'IMAGE_LINK_SIZE_EXPLAIN'	=> 'Les fichiers image joints s’afficheront sous forme de lien texte, si la taille de l’image est plus grande que les dimensions saisies. Pour désactiver ce comportement, réglez les valeurs sur 0px par 0px.',
+	'IMAGE_QUALITY'				=> 'Qualité des images jointes transférées (JPEG uniquement)',
+	'IMAGE_QUALITY_EXPLAIN'		=> 'Spécifiez une valeur entre 50% (fichier compact) and 90% (meilleure qualité). Une qualité supérieure à 90% augmente la taille du fichier et est désactivée. Le paramètre ne s’applique que si les dimensions maximales de l’image sont définies sur une valeur autre que 0 px par 0 px.',
+	'IMAGE_STRIP_METADATA'		=> 'Supprimer les métadonnées d’image (JPEG uniquement)',
+	'IMAGE_STRIP_METADATA_EXPLAIN'	=> 'Supprime les métadonnées Exif, par exemple le nom de l’auteur, les coordonnées GPS les détails de l’appareil photo. Le paramètre ne s’applique que si les dimensions maximales de l’image sont définies sur une valeur autre que 0 px par 0 px.',
 
 	'MAX_ATTACHMENTS'				=> 'Nombre maximum de fichiers joints par message',
 	'MAX_ATTACHMENTS_PM'			=> 'Nombre maximum de fichiers joints par message privé',
@@ -129,6 +133,8 @@ $lang = array_merge($lang, array(
 	'NOT_ASSIGNED'				=> 'Non assigné',
 	'NO_ATTACHMENTS'			=> 'Aucune pièce jointe pour cette période.',
 	'NO_EXT_GROUP'				=> 'Aucun',
+	'NO_EXT_GROUP_ALLOWED_PM'	=> 'Aucun <a href="%s">groupe d’extension n’est autorisé</a> pour les messages privés.',
+	'NO_EXT_GROUP_ALLOWED_POST'	=> 'Aucun <a href="%s">groupe d’extension n’est autorisé</a> pour les messages.',
 	'NO_EXT_GROUP_NAME'			=> 'Vous n’avez indiqué aucun nom de groupe',
 	'NO_EXT_GROUP_SPECIFIED'	=> 'Vous n’avez indiqué aucun groupe d’extension.',
 	'NO_FILE_CAT'				=> 'Aucun',

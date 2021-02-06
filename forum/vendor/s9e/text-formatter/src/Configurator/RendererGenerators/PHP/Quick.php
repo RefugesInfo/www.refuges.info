@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RendererGenerators\PHP;
@@ -78,7 +78,7 @@ class Quick
 		// Build a regexp that matches tags that cannot be rendered with the Quick renderer
 		if (!empty($unsupported))
 		{
-			$regexp = '(<(?:[!?]|' . RegexpBuilder::fromList($unsupported) . '[ />]))';
+			$regexp = '((?<=<)(?:[!?]|' . RegexpBuilder::fromList($unsupported) . '[ />]))';
 			$php[]  = '	/** {@inheritdoc} */';
 			$php[]  = '	protected $quickRenderingTest=' . var_export($regexp, true) . ';';
 		}

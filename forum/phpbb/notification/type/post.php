@@ -129,18 +129,6 @@ class post extends \phpbb\notification\type\base
 		}
 		$this->db->sql_freeresult($result);
 
-		$sql = 'SELECT user_id
-			FROM ' . FORUMS_WATCH_TABLE . '
-			WHERE forum_id = ' . (int) $post['forum_id'] . '
-				AND notify_status = ' . NOTIFY_YES . '
-				AND user_id <> ' . (int) $post['poster_id'];
-		$result = $this->db->sql_query($sql);
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$users[] = (int) $row['user_id'];
-		}
-		$this->db->sql_freeresult($result);
-
 		$notify_users = $this->get_authorised_recipients($users, $post['forum_id'], $options, true);
 
 		if (empty($notify_users))
@@ -457,6 +445,12 @@ class post extends \phpbb\notification\type\base
 		}
 
 		$data_array = array_merge(array(
+			'poster_id'		=> $post['poster_id'],
+			'topic_title'	=> $post['topic_title'],
+			'post_subject'	=> $post['post_subject'],
+			'post_username'	=> $post['post_username'],
+			'forum_id'		=> $post['forum_id'],
+			'forum_name'	=> $post['forum_name'],
 			'post_time'		=> $post['post_time'],
 			'post_id'		=> $post['post_id'],
 			'topic_id'		=> $post['topic_id']

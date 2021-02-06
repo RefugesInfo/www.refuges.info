@@ -15,6 +15,7 @@ namespace phpbb\cron;
 
 use phpbb\cron\task\wrapper;
 use phpbb\routing\helper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
 * Cron manager class.
@@ -23,6 +24,11 @@ use phpbb\routing\helper;
 */
 class manager
 {
+	/**
+	 * @var ContainerInterface
+	 */
+	protected $phpbb_container;
+
 	/**
 	 * @var helper
 	 */
@@ -34,7 +40,14 @@ class manager
 	*
 	* @var array
 	*/
-	protected $tasks = array();
+	protected $tasks = [];
+
+	/**
+	 * Flag indicating if $this->tasks contains tasks registered in the container
+	 *
+	 * @var bool
+	 */
+	protected $is_initialised_from_container = false;
 
 	/**
 	 * @var string
@@ -49,18 +62,17 @@ class manager
 	/**
 	* Constructor. Loads all available tasks.
 	*
-	* @param array|\Traversable $tasks Provides an iterable set of task names
+	* @param ContainerInterface $phpbb_container Container
 	* @param helper $routing_helper Routing helper
 	* @param string $phpbb_root_path Relative path to phpBB root
 	* @param string $php_ext PHP file extension
 	*/
-	public function __construct($tasks, helper $routing_helper, $phpbb_root_path, $php_ext)
+	public function __construct(ContainerInterface $phpbb_container, helper $routing_helper, $phpbb_root_path, $php_ext)
 	{
+		$this->phpbb_container = $phpbb_container;
 		$this->routing_helper = $routing_helper;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
-
-		$this->load_tasks($tasks);
 	}
 
 	/**
@@ -68,8 +80,6 @@ class manager
 	* and puts them into $this->tasks.
 	*
 	* @param array|\Traversable $tasks		Array of instances of \phpbb\cron\task\task
-	*
-	* @return null
 	*/
 	public function load_tasks($tasks)
 	{
@@ -80,16 +90,34 @@ class manager
 	}
 
 	/**
+	* Loads registered tasks from the container, wraps them
+	* and puts them into $this->tasks.
+	*/
+	public function load_tasks_from_container()
+	{
+		if (!$this->is_initialised_from_container)
+		{
+			$this->is_initialised_from_container = true;
+
+			$tasks = $this->phpbb_container->get('cron.task_collection');
+
+			$this->load_tasks($tasks);
+		}
+	}
+
+	/**
 	* Finds a task that is ready to run.
 	*
 	* If several tasks are ready, any one of them could be returned.
 	*
 	* If no tasks are ready, null is returned.
 	*
-	* @return \phpbb\cron\task\wrapper|null
+	* @return wrapper|null
 	*/
 	public function find_one_ready_task()
 	{
+		$this->load_tasks_from_container();
+
 		shuffle($this->tasks);
 		foreach ($this->tasks as $task)
 		{
@@ -108,7 +136,9 @@ class manager
 	*/
 	public function find_all_ready_tasks()
 	{
-		$tasks = array();
+		$this->load_tasks_from_container();
+
+		$tasks = [];
 		foreach ($this->tasks as $task)
 		{
 			if ($task->is_ready())
@@ -127,10 +157,12 @@ class manager
 	* Web runner uses this method to resolve names to tasks.
 	*
 	* @param string				$name Name of the task to look up.
-	* @return \phpbb\cron\task\wrapper	A wrapped task corresponding to the given name, or null.
+	* @return wrapper	A wrapped task corresponding to the given name, or null.
 	*/
 	public function find_task($name)
 	{
+		$this->load_tasks_from_container();
+
 		foreach ($this->tasks as $task)
 		{
 			if ($task->get_name() == $name)
@@ -148,6 +180,8 @@ class manager
 	*/
 	public function get_tasks()
 	{
+		$this->load_tasks_from_container();
+
 		return $this->tasks;
 	}
 
@@ -155,7 +189,7 @@ class manager
 	* Wraps a task inside an instance of \phpbb\cron\task\wrapper.
 	*
 	* @param  \phpbb\cron\task\task 			$task The task.
-	* @return \phpbb\cron\task\wrapper	The wrapped task.
+	* @return wrapper	The wrapped task.
 	*/
 	public function wrap_task(\phpbb\cron\task\task $task)
 	{

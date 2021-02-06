@@ -881,16 +881,38 @@ function mcp_restore_topic($topic_ids)
 */
 function mcp_delete_topic($topic_ids, $is_soft = false, $soft_delete_reason = '', $action = 'delete_topic')
 {
-	global $auth, $user, $db, $phpEx, $phpbb_root_path, $request, $phpbb_container, $phpbb_log;
+	global $auth, $user, $db, $phpEx, $phpbb_root_path, $request, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
 
-	$check_permission = ($is_soft) ? 'm_softdelete' : 'm_delete';
-	if (!phpbb_check_ids($topic_ids, TOPICS_TABLE, 'topic_id', array($check_permission)))
+	$forum_id = $request->variable('f', 0);
+	$check_permission = ($is_soft) ? ['m_softdelete'] : ['m_delete'];
+	/**
+	* This event allows you to modify the current user's checked permissions when deleting a topic
+	*
+	* @event core.mcp_delete_topic_modify_permissions
+	* @var	array	topic_ids				The array of topic IDs to be deleted
+	* @var	int		forum_id				The current forum ID
+	* @var	bool	is_soft					Boolean designating whether we're soft deleting or not
+	* @var	string	soft_delete_reason		The reason we're soft deleting
+	* @var	string	action					The current delete action
+	* @var	array	check_permission		The array with a permission to check for, can be set to false to not check them
+	* @since 3.3.3-RC1
+	*/
+	$vars = array(
+		'topic_ids',
+		'forum_id',
+		'is_soft',
+		'soft_delete_reason',
+		'action',
+		'check_permission',
+	);
+	extract($phpbb_dispatcher->trigger_event('core.mcp_delete_topic_modify_permissions', compact($vars)));
+
+	if (!phpbb_check_ids($topic_ids, TOPICS_TABLE, 'topic_id', $check_permission))
 	{
 		return;
 	}
 
 	$redirect = $request->variable('redirect', build_url(array('action', 'quickmod')));
-	$forum_id = $request->variable('f', 0);
 
 	$s_hidden_fields = array(
 		'topic_id_list'	=> $topic_ids,
@@ -1002,6 +1024,28 @@ function mcp_delete_topic($topic_ids, $is_soft = false, $soft_delete_reason = ''
 			$s_hidden_fields['delete_permanent'] = '1';
 		}
 
+		/**
+		* This event allows you to modify the hidden form fields when deleting topics
+		*
+		* @event core.mcp_delete_topic_modify_hidden_fields
+		* @var	string	l_confirm				The confirmation text language variable (DELETE_TOPIC(S), DELETE_TOPIC(S)_PERMANENTLY)
+		* @var	array	s_hidden_fields			The array holding the hidden form fields
+		* @var	array	topic_ids				The array of topic IDs to be deleted
+		* @var	int		forum_id				The current forum ID
+		* @var	bool	only_softdeleted		If the topic_ids are all soft deleted, this is true
+		* @var	bool	only_shadow				If the topic_ids are all shadow topics, this is true
+		* @since 3.3.3-RC1
+		*/
+		$vars = array(
+			'l_confirm',
+			's_hidden_fields',
+			'topic_ids',
+			'forum_id',
+			'only_softdeleted',
+			'only_shadow',
+		);
+		extract($phpbb_dispatcher->trigger_event('core.mcp_delete_topic_modify_hidden_fields', compact($vars)));
+
 		confirm_box(false, $l_confirm, build_hidden_fields($s_hidden_fields), 'confirm_delete_body.html');
 	}
 
@@ -1049,6 +1093,7 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 
 	$redirect = $request->variable('redirect', build_url(array('action', 'quickmod')));
 	$forum_id = $request->variable('f', 0);
+	$topic_id = 0;
 
 	$s_hidden_fields = array(
 		'post_id_list'	=> $post_ids,
@@ -1122,8 +1167,6 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 			));
 		}
 
-		$topic_id = $request->variable('t', 0);
-
 		// Return links
 		$return_link = array();
 		if ($affected_topics == 1 && $topic_id)
@@ -1152,7 +1195,7 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 		$topic_id_list = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$topic_id_list[] = $row['topic_id'];
+			$topic_id_list[] = $topic_id = $row['topic_id'];
 		}
 		$affected_topics = count($topic_id_list);
 		$db->sql_freeresult($result);
@@ -1183,8 +1226,6 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 		$deleted_topics = ($row = $db->sql_fetchrow($result)) ? ($affected_topics - $row['topics_left']) : $affected_topics;
 		$db->sql_freeresult($result);
 
-		$topic_id = $request->variable('t', 0);
-
 		// Return links
 		$return_link = array();
 		if ($affected_topics == 1 && !$deleted_topics && $topic_id)
@@ -1203,6 +1244,12 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 			}
 			else
 			{
+				// Remove any post id anchor
+				if ($anchor_pos = (strrpos($redirect, '#p')) !== false)
+				{
+					$redirect = substr($redirect, 0, $anchor_pos);
+				}
+
 				$success_msg = $user->lang['POST_DELETED_SUCCESS'];
 			}
 		}
@@ -1260,7 +1307,6 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 		confirm_box(false, $l_confirm, build_hidden_fields($s_hidden_fields), 'confirm_delete_body.html');
 	}
 
-	$redirect = $request->variable('redirect', "index.$phpEx");
 	$redirect = reapply_sid($redirect);
 
 	if (!$success_msg)
@@ -1564,10 +1610,11 @@ function mcp_fork_topic($topic_ids)
 				// Copy Attachments
 				if ($row['post_attachment'])
 				{
-					$sql = 'SELECT * FROM ' . ATTACHMENTS_TABLE . "
-						WHERE post_msg_id = {$row['post_id']}
-							AND topic_id = $topic_id
-							AND in_message = 0";
+					$sql = 'SELECT * FROM ' . ATTACHMENTS_TABLE . '
+						WHERE post_msg_id = ' . (int) $row['post_id'] . '
+							AND topic_id = ' . (int) $topic_id . '
+							AND in_message = 0
+						ORDER BY attach_id ASC';
 					$result = $db->sql_query($sql);
 
 					$sql_ary = array();

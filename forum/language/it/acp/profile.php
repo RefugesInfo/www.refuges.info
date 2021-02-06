@@ -96,7 +96,6 @@ $lang = array_merge($lang, array(
 	'FIELD_DESCRIPTION'			=> 'Descrizione campo',
 	'FIELD_DESCRIPTION_EXPLAIN'	=> 'La spiegazione per questo campo che si presenta all’utente.',
 	'FIELD_DROPDOWN'			=> 'Menù a tendina',
-	'FIELD_GOOGLEPLUS'			=> 'Google+',
 	'FIELD_IDENT'				=> 'Identificazione campo',
 	'FIELD_IDENT_ALREADY_EXIST'	=> 'Il campo di identificazione scelto esiste già. Scegli un altro nome.',
 	'FIELD_IDENT_EXPLAIN'		=> 'Il campo di identificazione serve per identificare il campo profilo all’interno del database e degli stili.',

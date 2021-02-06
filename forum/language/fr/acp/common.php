@@ -91,7 +91,7 @@ $lang = array_merge($lang, array(
 	'ACP_EXTENSION_MANAGEMENT'	=> 'Gestion des extensions',
 	'ACP_EXTENSIONS'			=> 'Gérer les extensions',
 
-	'ACP_FORUM_BASED_PERMISSIONS'	=> 'Permissions basiques des forums',
+	'ACP_FORUM_BASED_PERMISSIONS'	=> 'Permissions des forums',
 	'ACP_FORUM_LOGS'				=> 'Journaux du forum',
 	'ACP_FORUM_MANAGEMENT'			=> 'Gestion du forum',
 	'ACP_FORUM_MODERATORS'			=> 'Modérateurs des forums',
@@ -207,11 +207,11 @@ $lang = array_merge($lang, array(
 	'ACP_VC_SETTINGS'					=> 'Paramètres de la confirmation visuelle',
 	'ACP_VC_CAPTCHA_DISPLAY'			=> 'Aperçu CAPTCHA',
 	'ACP_VERSION_CHECK'					=> 'Vérifier les mises à jour',
-	'ACP_VIEW_ADMIN_PERMISSIONS'		=> 'Permissions d’administration',
-	'ACP_VIEW_FORUM_MOD_PERMISSIONS'	=> 'Permissions de modération des forums',
-	'ACP_VIEW_FORUM_PERMISSIONS'		=> 'Permissions basiques des forums',
+	'ACP_VIEW_ADMIN_PERMISSIONS'		=> 'Permissions des administrateurs',
+	'ACP_VIEW_FORUM_MOD_PERMISSIONS'	=> 'Permissions des modérateurs de forums',
+	'ACP_VIEW_FORUM_PERMISSIONS'		=> 'Permissions des forums',
 	'ACP_VIEW_GLOBAL_MOD_PERMISSIONS'	=> 'Permissions des modérateurs globaux',
-	'ACP_VIEW_USER_PERMISSIONS'			=> 'Permissions basiques des membres',
+	'ACP_VIEW_USER_PERMISSIONS'			=> 'Permissions des membres',
 
 	'ACP_WORDS'					=> 'Censure',
 
@@ -237,6 +237,7 @@ $lang = array_merge($lang, array(
 	'CRON_NO_SUCH_TASK'		=> 'Impossible de trouver la tâche cron « %s ».',
 	'CRON_NO_TASK'			=> 'Aucune tâche cron n’a besoin d’être exécutée dans l’immédiat.',
 	'CRON_NO_TASKS'			=> 'Aucune tâche cron n’a été trouvée.',
+	'CSV_INVALID'			=> 'Les valeurs du paramètre « %1$s », séparées par des virgules, ne sont pas valides. Les valeurs doivent être délimitées uniquement par des virgules. La saisie ne doit pas débuter ou finir avec un délimiteur.',
 	'CURRENT_VERSION'		=> 'Version actuelle',
 
 	'DEACTIVATE'				=> 'Désactiver',
@@ -318,6 +319,7 @@ $lang = array_merge($lang, array(
 
 	'UCP'					=> 'Panneau de l’utilisateur',
 	'URL_INVALID'			=> 'L’URL indiquée pour le paramètre « %1$s » n’est pas valide.',
+	'URL_SCHEME_INVALID'	=> 'Le schéma « %2$s » saisi dans le paramètre « %1$s » n’est pas valide. Un schéma doit commencer par un caractère latin et doit être suivi de caractères alphanumériques, de traits-d’unions ou de points.',
 	'USERNAMES_EXPLAIN'		=> 'Indiquez un nom d’utilisateur par ligne',
 	'USER_CONTROL_PANEL'	=> 'Panneau de l’utilisateur',
 
@@ -371,9 +373,11 @@ $lang = array_merge($lang, array(
 	'ERROR_MBSTRING_ENCODING_TRANSLATION'			=> 'Les caractères d’encodage transparents ne sont pas configurés correctement.',
 	'ERROR_MBSTRING_ENCODING_TRANSLATION_EXPLAIN'	=> '<var>mbstring.encoding_translation</var> doit être configuré sur 0. Vous pouvez vérifier la valeur actuelle dans la page <samp>Informations PHP</samp>.',
 	'ERROR_MBSTRING_HTTP_INPUT'						=> 'La conversion des caractères d’entrée HTTP n’est pas configurée correctement.',
-	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN'				=> '<var>mbstring.http_input</var> doit être configuré sur <samp>pass</samp>. Vous pouvez vérifier la valeur actuelle dans la page <samp>Informations PHP</samp>.',
+	'ERROR_MBSTRING_HTTP_INPUT_EXPLAIN'				=> '<var>mbstring.http_input</var> doit être laissé vide. Vous pouvez vérifier la valeur actuelle dans la page <samp>Informations PHP</samp>.',
 	'ERROR_MBSTRING_HTTP_OUTPUT'					=> 'La conversion des caractères de sortie HTTP n’est pas configurée correctement.',
-	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN'			=> '<var>mbstring.http_output</var> doit être configuré sur <samp>pass</samp>. Vous pouvez vérifier la valeur actuelle dans la page <samp>Informations PHP</samp>.',
+	'ERROR_MBSTRING_HTTP_OUTPUT_EXPLAIN'			=> '<var>mbstring.http_output</var> doit être laissé vide. Vous pouvez vérifier la valeur actuelle dans la page <samp>Informations PHP</samp>.',
+	'ERROR_DEFAULT_CHARSET'							=> 'Le jeu de caractères par défaut n’est pas configuré correctement.',
+	'ERROR_DEFAULT_CHARSET_EXPLAIN'					=> '<var>default_charset</var> doit être configuré sur <samp>UTF-8</samp>. Vous pouvez vérifier la valeur actuelle dans la page <samp>Informations PHP</samp>.',
 
 	'FILES_PER_DAY'		=> 'Moyenne journalière de fichiers joints',
 	'FORUM_STATS'		=> 'Statistiques du forum',
@@ -492,23 +496,23 @@ $lang = array_merge($lang, array(
 
 // Log Entries
 $lang = array_merge($lang, array(
-	'LOG_ACL_ADD_USER_GLOBAL_U_'	=> '<strong>Ajout/modification des permissions utilisateur</strong><br>» %s',
-	'LOG_ACL_ADD_GROUP_GLOBAL_U_'	=> '<strong>Ajout/modification des permissions utilisateur des groupes</strong><br>» %s',
-	'LOG_ACL_ADD_USER_GLOBAL_M_'	=> '<strong>Ajout/modification des permissions de modération globale des utilisateurs</strong><br>» %s',
-	'LOG_ACL_ADD_GROUP_GLOBAL_M_'	=> '<strong>Ajout/modification des permissions de modération globale des groupes</strong><br>» %s',
-	'LOG_ACL_ADD_USER_GLOBAL_A_'	=> '<strong>Ajout/modification des permissions d’administration des utilisateurs</strong><br>» %s',
-	'LOG_ACL_ADD_GROUP_GLOBAL_A_'	=> '<strong>Ajout/modification des permissions d’administration des groupes</strong><br>» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_U_'	=> '<strong>Ajout/modification des permissions utilisateur d’un membre</strong><br>» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_U_'	=> '<strong>Ajout/modification des permissions utilisateur d’un groupe</strong><br>» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_M_'	=> '<strong>Ajout/modification des permissions de modération globale d’un membre</strong><br>» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_M_'	=> '<strong>Ajout/modification des permissions de modération globale d’un groupe</strong><br>» %s',
+	'LOG_ACL_ADD_USER_GLOBAL_A_'	=> '<strong>Ajout/modification des permissions d’administration d’un membre</strong><br>» %s',
+	'LOG_ACL_ADD_GROUP_GLOBAL_A_'	=> '<strong>Ajout/modification des permissions d’administration d’un groupe</strong><br>» %s',
 
 	'LOG_ACL_ADD_ADMIN_GLOBAL_A_'	=> '<strong>Ajout/modification des administrateurs</strong><br>» %s',
 	'LOG_ACL_ADD_MOD_GLOBAL_M_'		=> '<strong>Ajout/modification des modérateurs globaux</strong><br>» %s',
 
-	'LOG_ACL_ADD_USER_LOCAL_F_'		=> '<strong>Ajout/modification des accès utilisateurs aux forums</strong> de %1$s<br>» %2$s',
-	'LOG_ACL_ADD_USER_LOCAL_M_'		=> '<strong>Ajout/modification des accès de modération aux forums</strong> de %1$s<br>» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_F_'	=> '<strong>Ajout/modification des accès de groupes aux forums</strong> de %1$s<br>» %2$s',
-	'LOG_ACL_ADD_GROUP_LOCAL_M_'	=> '<strong>Ajout/modification des accès de modération aux forums des groupes</strong> de %1$s<br>» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_F_'		=> '<strong>Ajout/modification des permissions d’un membre aux forums</strong> %1$s<br>» %2$s',
+	'LOG_ACL_ADD_USER_LOCAL_M_'		=> '<strong>Ajout/modification des permissions de modération des forums</strong> %1$s<br>» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_F_'	=> '<strong>Ajout/modification des permissions d’un groupe aux forums</strong> %1$s<br>» %2$s',
+	'LOG_ACL_ADD_GROUP_LOCAL_M_'	=> '<strong>Ajout/modification des permissions de modération des forums</strong> %1$s<br>» %2$s',
 
-	'LOG_ACL_ADD_MOD_LOCAL_M_'		=> '<strong>Ajout/modification des modérateurs</strong> de %1$s<br>» %2$s',
-	'LOG_ACL_ADD_FORUM_LOCAL_F_'	=> '<strong>Ajout/modification des permissions de forum</strong> de %1$s<br>» %2$s',
+	'LOG_ACL_ADD_MOD_LOCAL_M_'		=> '<strong>Ajout/modification des modérateurs de forums</strong> pour %1$s<br>» %2$s',
+	'LOG_ACL_ADD_FORUM_LOCAL_F_'	=> '<strong>Ajout/modification des permissions de forums</strong> pour %1$s<br>» %2$s',
 
 	'LOG_ACL_DEL_ADMIN_GLOBAL_A_'	=> '<strong>Suppression d’administrateurs</strong><br>» %s',
 	'LOG_ACL_DEL_MOD_GLOBAL_M_'		=> '<strong>Suppression de modérateurs globaux</strong><br>» %s',

@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Parser;
@@ -155,25 +155,26 @@ class Tag
 	*/
 	public function pairWith(Tag $tag)
 	{
-		if ($this->name === $tag->name)
+		if ($this->canBePaired($this, $tag))
 		{
-			if ($this->type === self::START_TAG
-			 && $tag->type  === self::END_TAG
-			 && $tag->pos   >=  $this->pos)
-			{
-				$this->endTag  = $tag;
-				$tag->startTag = $this;
+			$this->endTag  = $tag;
+			$tag->startTag = $this;
 
-				$this->cascadeInvalidationTo($tag);
-			}
-			elseif ($this->type === self::END_TAG
-			     && $tag->type  === self::START_TAG
-			     && $tag->pos   <=  $this->pos)
-			{
-				$this->startTag = $tag;
-				$tag->endTag    = $this;
-			}
+			$this->cascadeInvalidationTo($tag);
 		}
+		elseif ($this->canBePaired($tag, $this))
+		{
+			$this->startTag = $tag;
+			$tag->endTag    = $this;
+		}
+	}
+
+	/**
+	* Test whether two tags can be paired
+	*/
+	protected function canBePaired(Tag $startTag, Tag $endTag): bool
+	{
+		return $startTag->name === $endTag->name && $startTag->type === self::START_TAG && $endTag->type === self::END_TAG && $startTag->pos <= $endTag->pos;
 	}
 
 	/**
@@ -190,7 +191,7 @@ class Tag
 	/**
 	* Set the bitfield of boolean rules that apply to this tag
 	*
-	* @param  integer Bitfield of boolean rules that apply to this tag
+	* @param  integer $flags Bitfield of boolean rules that apply to this tag
 	* @return void
 	*/
 	public function setFlags($flags)
@@ -305,10 +306,7 @@ class Tag
 	public function canClose(Tag $startTag)
 	{
 		if ($this->invalid
-		 || $this->name !== $startTag->name
-		 || $startTag->type !== self::START_TAG
-		 || $this->type !== self::END_TAG
-		 || $this->pos < $startTag->pos
+		 || !$this->canBePaired($startTag, $this)
 		 || ($this->startTag && $this->startTag !== $startTag)
 		 || ($startTag->endTag && $startTag->endTag !== $this))
 		{

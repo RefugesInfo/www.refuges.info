@@ -92,7 +92,7 @@ class report
 	 * @param int		$id		ID of the entity to report
 	 * @param string	$mode
 	 * @return \Symfony\Component\HttpFoundation\Response a Symfony response object
-	 * @throws \phpbb\exception\http_exception when $mode or $id is invalid for some reason
+	 * @throws http_exception when $mode or $id is invalid for some reason
 	 */
 	public function handle($id, $mode)
 	{
@@ -104,6 +104,12 @@ class report
 		$user_notify	= ($this->user->data['is_registered']) ? $this->request->variable('notify', 0) : false;
 		$reason_id		= $this->request->variable('reason_id', 0);
 		$report_text	= $this->request->variable('report_text', '', true);
+
+		/**
+		 * Replace Emojis and other 4bit UTF-8 chars not allowed by MySQL to UCR/NCR.
+		 * Using their Numeric Character Reference's Hexadecimal notation.
+		 */
+		$report_text	= utf8_encode_ucr($report_text);
 
 		$submit = $this->request->variable('submit', '');
 		$cancel = $this->request->variable('cancel', '');

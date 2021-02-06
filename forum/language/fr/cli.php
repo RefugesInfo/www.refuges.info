@@ -37,6 +37,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
+	'CLI_APCU_CACHE_NOTICE'				=> 'Le cache APCu a été purgé depuis le panneau d’administration.',
+
 	'CLI_CONFIG_CANNOT_CACHED'			=> 'Utilisez cette option si l’option de configuration change trop souvent pour être efficacement mise en cache',
 	'CLI_CONFIG_CURRENT'				=> 'Valeur actuelle de la configuration. Utilisez 0 ou 1 pour spécifier des valeurs booléennes',
 	'CLI_CONFIG_DELETE_SUCCESS'			=> 'La configuration « %s » a été supprimée',

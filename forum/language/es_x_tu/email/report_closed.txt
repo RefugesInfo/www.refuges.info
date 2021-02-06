@@ -1,8 +1,13 @@
-Subject: Aviso cerrado - "{POST_SUBJECT}"
+Subject: Informe cerrado - “{POST_SUBJECT}”
 
 Hola {USERNAME},
 
-Estás recibiendo esta notificación porque el aviso que enviaste sobre el mensaje "{POST_SUBJECT}" en "{TOPIC_TITLE}" de "{SITENAME}" fue revisado por un(a) Moderador(a) o por la Administración.
-El aviso fue posteriormente cerrado. Si tienes alguna duda contacta con {CLOSER_NAME} mediante un mensaje privado.
+Estás recibiendo esta notificación porque el aviso que envió sobre el mensaje “{POST_SUBJECT}” por “{AUTHOR_NAME}” en “{TOPIC_TITLE}” de “{SITENAME}” fue revisado por un(a) Moderador(a) o por La Administración. Posteriormente se cerró el informe. Si tienes más preguntas, comuníquese con {CLOSER_NAME} con un mensaje personal.
+
+Puedes ver tu mensaje reportado haciendo clic en el siguiente enlace:
+
+{U_VIEW_POST}
+
+Has solicitado que se te notifique sobre este evento, recuerda que siempre puedes elegir no ser notificado de los informes de mensajes cerrados cambiando la configuración adecuada en tu perfil.
 
 {EMAIL_SIG}

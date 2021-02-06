@@ -52,8 +52,6 @@ $lang = array_merge($lang, array(
 	'BUMPED_BY'				=> 'Zuletzt als neu markiert von %1$s am %2$s.',
 	'BUMP_TOPIC'			=> 'Thema als neu markieren',
 
-	'CODE'					=> 'Code',
-
 	'DELETE_TOPIC'			=> 'Thema löschen',
 	'DELETED_INFORMATION'	=> 'Gelöscht durch %1$s am %2$s',
 	'DISAPPROVE'					=> 'Freigabe verweigern',
@@ -101,7 +99,6 @@ $lang = array_merge($lang, array(
 
 	'QUICK_MOD'				=> 'Schnellmoderation',
 	'QUICKREPLY'			=> 'Schnellantwort',
-	'QUOTE'					=> 'Zitat',
 
 	'REPLY_TO_TOPIC'		=> 'Auf das Thema antworten',
 	'RESTORE'				=> 'Wiederherstellen',

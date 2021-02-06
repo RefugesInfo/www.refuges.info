@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Renderers;
@@ -16,7 +16,7 @@ use s9e\TextFormatter\Utils\XPath;
 abstract class PHP extends Renderer
 {
 	/**
-	* @var array[] List of dictionaries used by the Quick renderer [[attrName => attrValue]]
+	* @var array[] Stack of dictionaries used by the Quick renderer [[attrName => attrValue]]
 	*/
 	protected $attributes;
 
@@ -43,7 +43,7 @@ abstract class PHP extends Renderer
 	/**
 	* @var string Regexp that matches nodes that SHOULD NOT be rendered by the quick renderer
 	*/
-	protected $quickRenderingTest = '(<[!?])';
+	protected $quickRenderingTest = '((?<=<)[!?])';
 
 	/**
 	* @var array Dictionary of static replacements used by the Quick renderer [id => replacement]
@@ -82,7 +82,7 @@ abstract class PHP extends Renderer
 		if ($root->nodeType === XML_TEXT_NODE)
 		{
 			// Text nodes are outputted directly
-			$this->out .= htmlspecialchars($root->textContent,0);
+			$this->out .= htmlspecialchars($root->textContent, ENT_NOQUOTES);
 		}
 		else
 		{
@@ -199,11 +199,7 @@ abstract class PHP extends Renderer
 		$html = preg_replace_callback(
 			$this->quickRegexp,
 			[$this, 'renderQuickCallback'],
-			preg_replace(
-				'(<[eis]>[^<]*</[eis]>)',
-				'',
-				substr($xml, 1 + strpos($xml, '>'), -4)
-			)
+			substr($xml, 1 + strpos($xml, '>'), -4)
 		);
 
 		return str_replace('<br/>', '<br>', $html);
@@ -287,11 +283,16 @@ abstract class PHP extends Renderer
 	*/
 	protected function renderRichText($xml)
 	{
+		$this->setLocale();
+
 		try
 		{
 			if ($this->canQuickRender($xml))
 			{
-				return $this->renderQuick($xml);
+				$html = $this->renderQuick($xml);
+				$this->restoreLocale();
+
+				return $html;
 			}
 		}
 		catch (RuntimeException $e)
@@ -305,6 +306,7 @@ abstract class PHP extends Renderer
 		$this->at($dom->documentElement);
 		$html        = $this->out;
 		$this->reset();
+		$this->restoreLocale();
 
 		return $html;
 	}

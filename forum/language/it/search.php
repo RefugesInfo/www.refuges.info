@@ -89,7 +89,8 @@ $lang = array_merge($lang, array(
 	'RECENT_SEARCHES'		=> 'Ricerche recenti',
 	'RESULT_DAYS'			=> 'Limita risultati a',
 	'RESULT_SORT'			=> 'Ordina risultati per',
-	'RETURN_FIRST'			=> 'Ritorna ai primi',
+	'RETURN_FIRST'			=> 'Restituisci i primi',
+	'RETURN_FIRST_EXPLAIN'	=> 'Imposta su 0 per visualizzare l’intero messaggio.',
 	'GO_TO_SEARCH_ADV'		=> 'Vai alla ricerca avanzata',
 
 	'SEARCHED_FOR'				=> 'Termine di ricerca usato',

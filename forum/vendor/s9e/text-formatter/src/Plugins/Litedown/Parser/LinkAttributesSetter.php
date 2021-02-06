@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Litedown\Parser;
@@ -28,6 +28,10 @@ trait LinkAttributesSetter
 		{
 			$title = substr(trim(substr($url, $pos)), 1, -1);
 			$url   = substr($url, 0, $pos);
+		}
+		if (preg_match('/^<.+>$/', $url))
+		{
+			$url = str_replace('\\>', '>', substr($url, 1, -1));
 		}
 
 		$tag->setAttribute($attrName, $this->text->decode($url));

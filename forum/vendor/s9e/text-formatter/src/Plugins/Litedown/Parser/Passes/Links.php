@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Litedown\Parser\Passes;
@@ -21,6 +21,10 @@ class Links extends AbstractPass
 		if ($this->text->indexOf('](') !== false)
 		{
 			$this->parseInlineLinks();
+		}
+		if ($this->text->indexOf('<') !== false)
+		{
+			$this->parseAutomaticLinks();
 		}
 		if ($this->text->hasReferences)
 		{
@@ -75,6 +79,34 @@ class Links extends AbstractPass
 	}
 
 	/**
+	* Parse automatic links markup
+	*
+	* @return void
+	*/
+	protected function parseAutomaticLinks()
+	{
+		preg_match_all(
+			'/<[-+.\\w]++([:@])[^\\x17\\s>]+?(?:>|\\x1B7)/',
+			$this->text,
+			$matches,
+			PREG_OFFSET_CAPTURE
+		);
+		foreach ($matches[0] as $i => $m)
+		{
+			// Re-escape escape sequences in automatic links
+			$content  = substr($this->text->decode(str_replace("\x1B", "\\\x1B", $m[0])), 1, -1);
+			$startPos = $m[1];
+			$endPos   = $startPos + strlen($m[0]) - 1;
+
+			$tagName  = ($matches[1][$i][0] === ':') ? 'URL' : 'EMAIL';
+			$attrName = strtolower($tagName);
+
+			$this->parser->addTagPair($tagName, $startPos, 1, $endPos, 1)
+			             ->setAttribute($attrName, $content);
+		}
+	}
+
+	/**
 	* Parse inline links markup
 	*
 	* @return void
@@ -82,7 +114,7 @@ class Links extends AbstractPass
 	protected function parseInlineLinks()
 	{
 		preg_match_all(
-			'/\\[(?:[^\\x17[\\]]|\\[[^\\x17[\\]]*\\])*\\]\\(( *(?:[^\\x17\\s()]|\\([^\\x17\\s()]*\\))*(?=[ )]) *(?:"[^\\x17]*?"|\'[^\\x17]*?\'|\\([^\\x17)]*\\))? *)\\)/',
+			'/\\[(?:[^\\x17[\\]]|\\[[^\\x17[\\]]*\\])*\\]\\(( *(?:\\([^\\x17\\s()]*\\)|[^\\x17\\s)])*(?=[ )]) *(?:"[^\\x17]*?"|\'[^\\x17]*?\'|\\([^\\x17)]*\\))? *)\\)/',
 			$this->text,
 			$matches,
 			PREG_OFFSET_CAPTURE | PREG_SET_ORDER

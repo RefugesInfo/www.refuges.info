@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Items;
@@ -34,7 +34,8 @@ class Regexp implements ConfigProvider, FilterableConfigValue
 	/**
 	* Constructor
 	*
-	* @param  string $regexp PCRE regexp, with delimiters and modifiers, e.g. "/foo/i"
+	* @param string $regexp   PCRE regexp, with delimiters and modifiers, e.g. "/foo/i"
+	* @param bool   $isGlobal Whether this regexp should have the global flag set in JavaScript
 	*/
 	public function __construct($regexp, $isGlobal = false)
 	{

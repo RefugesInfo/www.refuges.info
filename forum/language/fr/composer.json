@@ -2,7 +2,7 @@
     "name": "phpbbfr/trad-fr",
     "type": "phpbb-language",
     "description": "French translation of phpBB 3.3",
-    "version": "3.0.0",
+    "version": "3.0.3",
     "license": "GPL-2.0",
     "authors": [
         {

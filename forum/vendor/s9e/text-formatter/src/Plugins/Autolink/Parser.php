@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2019 The s9e Authors
+* @copyright Copyright (c) 2010-2020 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Autolink;
@@ -32,12 +32,6 @@ class Parser extends ParserBase
 	*/
 	protected function linkifyUrl($tagPos, $url)
 	{
-		// Ensure that the anchor (scheme/www) is still there
-		if (!preg_match('/^[^:]+:|^www\\./i', $url))
-		{
-			return;
-		}
-
 		// Create a zero-width end tag right after the URL
 		$endPos = $tagPos + strlen($url);
 		$endTag = $this->parser->addEndTag($this->config['tagName'], $endPos, 0);
@@ -66,16 +60,16 @@ class Parser extends ParserBase
 	*
 	* We remove most ASCII non-letters and Unicode punctuation from the end of the string.
 	* Exceptions:
-	*  - dashes (some YouTube URLs end with a dash due to the video ID)
-	*  - equal signs (because of "foo?bar="),
+	*  - dashes and underscores, (base64 IDs could end with one)
+	*  - equal signs, (because of "foo?bar=")
 	*  - trailing slashes,
-	*  - closing parentheses are balanced separately.
+	*  - closing parentheses. (they are balanced separately)
 	*
 	* @param  string $url Original URL
 	* @return string      Trimmed URL
 	*/
 	protected function trimUrl($url)
 	{
-		return preg_replace('#(?![-=/)])[\\s!-.:-@[-`{-~\\pP]+$#Du', '', $url);
+		return preg_replace('#(?:(?![-=)/_])[\\s!-.:-@[-`{-~\\pP])+$#Du', '', $url);
 	}
 }

@@ -4,14 +4,15 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
+class ComposerStaticInitda774e186d9edc8eea21fe635b894b41
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '023d27dca8066ef29e6739335ea73bad' => __DIR__ . '/..' . '/symfony/polyfill-php70/bootstrap.php',
-        'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
+        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
@@ -21,6 +22,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's' => 
         array (
             's9e\\TextFormatter\\' => 18,
+            's9e\\SweetDOM\\' => 13,
             's9e\\RegexpBuilder\\' => 18,
         ),
         'b' => 
@@ -38,10 +40,10 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         ),
         'S' => 
         array (
-            'Symfony\\Polyfill\\Util\\' => 22,
-            'Symfony\\Polyfill\\Php70\\' => 23,
-            'Symfony\\Polyfill\\Php56\\' => 23,
+            'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
+            'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\Routing\\' => 26,
@@ -88,6 +90,10 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         array (
             0 => __DIR__ . '/..' . '/s9e/text-formatter/src',
         ),
+        's9e\\SweetDOM\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/s9e/sweetdom/src',
+        ),
         's9e\\RegexpBuilder\\' => 
         array (
             0 => __DIR__ . '/..' . '/s9e/regexp-builder/src',
@@ -108,21 +114,21 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
         ),
-        'Symfony\\Polyfill\\Util\\' => 
+        'Symfony\\Polyfill\\Php72\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-util',
-        ),
-        'Symfony\\Polyfill\\Php70\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php70',
-        ),
-        'Symfony\\Polyfill\\Php56\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php56',
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
+        ),
+        'Symfony\\Polyfill\\Intl\\Idn\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
         ),
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
@@ -206,7 +212,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         ),
         'PackageVersions\\' => 
         array (
-            0 => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions',
+            0 => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -259,10 +265,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
     );
 
     public static $classMap = array (
-        'ArithmeticError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
-        'AssertionError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
-        'DivisionByZeroError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/DivisionByZeroError.php',
-        'Error' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/Error.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'FastImageSize\\FastImageSize' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/FastImageSize.php',
         'FastImageSize\\Type\\TypeBase' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/Type/TypeBase.php',
         'FastImageSize\\Type\\TypeBmp' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/Type/TypeBmp.php',
@@ -310,8 +313,11 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'GuzzleHttp\\Promise\\AggregateException' => __DIR__ . '/..' . '/guzzlehttp/promises/src/AggregateException.php',
         'GuzzleHttp\\Promise\\CancellationException' => __DIR__ . '/..' . '/guzzlehttp/promises/src/CancellationException.php',
         'GuzzleHttp\\Promise\\Coroutine' => __DIR__ . '/..' . '/guzzlehttp/promises/src/Coroutine.php',
+        'GuzzleHttp\\Promise\\Create' => __DIR__ . '/..' . '/guzzlehttp/promises/src/Create.php',
+        'GuzzleHttp\\Promise\\Each' => __DIR__ . '/..' . '/guzzlehttp/promises/src/Each.php',
         'GuzzleHttp\\Promise\\EachPromise' => __DIR__ . '/..' . '/guzzlehttp/promises/src/EachPromise.php',
         'GuzzleHttp\\Promise\\FulfilledPromise' => __DIR__ . '/..' . '/guzzlehttp/promises/src/FulfilledPromise.php',
+        'GuzzleHttp\\Promise\\Is' => __DIR__ . '/..' . '/guzzlehttp/promises/src/Is.php',
         'GuzzleHttp\\Promise\\Promise' => __DIR__ . '/..' . '/guzzlehttp/promises/src/Promise.php',
         'GuzzleHttp\\Promise\\PromiseInterface' => __DIR__ . '/..' . '/guzzlehttp/promises/src/PromiseInterface.php',
         'GuzzleHttp\\Promise\\PromisorInterface' => __DIR__ . '/..' . '/guzzlehttp/promises/src/PromisorInterface.php',
@@ -319,18 +325,23 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'GuzzleHttp\\Promise\\RejectionException' => __DIR__ . '/..' . '/guzzlehttp/promises/src/RejectionException.php',
         'GuzzleHttp\\Promise\\TaskQueue' => __DIR__ . '/..' . '/guzzlehttp/promises/src/TaskQueue.php',
         'GuzzleHttp\\Promise\\TaskQueueInterface' => __DIR__ . '/..' . '/guzzlehttp/promises/src/TaskQueueInterface.php',
+        'GuzzleHttp\\Promise\\Utils' => __DIR__ . '/..' . '/guzzlehttp/promises/src/Utils.php',
         'GuzzleHttp\\Psr7\\AppendStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/AppendStream.php',
         'GuzzleHttp\\Psr7\\BufferStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/BufferStream.php',
         'GuzzleHttp\\Psr7\\CachingStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/CachingStream.php',
         'GuzzleHttp\\Psr7\\DroppingStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/DroppingStream.php',
         'GuzzleHttp\\Psr7\\FnStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/FnStream.php',
+        'GuzzleHttp\\Psr7\\Header' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Header.php',
         'GuzzleHttp\\Psr7\\InflateStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/InflateStream.php',
         'GuzzleHttp\\Psr7\\LazyOpenStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/LazyOpenStream.php',
         'GuzzleHttp\\Psr7\\LimitStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/LimitStream.php',
+        'GuzzleHttp\\Psr7\\Message' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Message.php',
         'GuzzleHttp\\Psr7\\MessageTrait' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/MessageTrait.php',
+        'GuzzleHttp\\Psr7\\MimeType' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/MimeType.php',
         'GuzzleHttp\\Psr7\\MultipartStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/MultipartStream.php',
         'GuzzleHttp\\Psr7\\NoSeekStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/NoSeekStream.php',
         'GuzzleHttp\\Psr7\\PumpStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/PumpStream.php',
+        'GuzzleHttp\\Psr7\\Query' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Query.php',
         'GuzzleHttp\\Psr7\\Request' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Request.php',
         'GuzzleHttp\\Psr7\\Response' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Response.php',
         'GuzzleHttp\\Psr7\\Rfc7230' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Rfc7230.php',
@@ -342,11 +353,13 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'GuzzleHttp\\Psr7\\Uri' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Uri.php',
         'GuzzleHttp\\Psr7\\UriNormalizer' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/UriNormalizer.php',
         'GuzzleHttp\\Psr7\\UriResolver' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/UriResolver.php',
+        'GuzzleHttp\\Psr7\\Utils' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Utils.php',
         'GuzzleHttp\\RedirectMiddleware' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/RedirectMiddleware.php',
         'GuzzleHttp\\RequestOptions' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/RequestOptions.php',
         'GuzzleHttp\\RetryMiddleware' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/RetryMiddleware.php',
         'GuzzleHttp\\TransferStats' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/TransferStats.php',
         'GuzzleHttp\\UriTemplate' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/UriTemplate.php',
+        'GuzzleHttp\\Utils' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Utils.php',
         'Normalizer' => __DIR__ . '/..' . '/patchwork/utf8/src/Normalizer.php',
         'OAuth\\Common\\AutoLoader' => __DIR__ . '/..' . '/lusitanian/oauth/src/OAuth/Common/AutoLoader.php',
         'OAuth\\Common\\Consumer\\Credentials' => __DIR__ . '/..' . '/lusitanian/oauth/src/OAuth/Common/Consumer/Credentials.php',
@@ -444,10 +457,9 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'OAuth\\OAuth2\\Token\\StdOAuth2Token' => __DIR__ . '/..' . '/lusitanian/oauth/src/OAuth/OAuth2/Token/StdOAuth2Token.php',
         'OAuth\\OAuth2\\Token\\TokenInterface' => __DIR__ . '/..' . '/lusitanian/oauth/src/OAuth/OAuth2/Token/TokenInterface.php',
         'OAuth\\ServiceFactory' => __DIR__ . '/..' . '/lusitanian/oauth/src/OAuth/ServiceFactory.php',
-        'PackageVersions\\FallbackVersions' => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions/FallbackVersions.php',
-        'PackageVersions\\Installer' => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions/Installer.php',
-        'PackageVersions\\Versions' => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions/Versions.php',
-        'ParseError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ParseError.php',
+        'PackageVersions\\FallbackVersions' => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions/FallbackVersions.php',
+        'PackageVersions\\Installer' => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions/Installer.php',
+        'PackageVersions\\Versions' => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions/Versions.php',
         'Patchwork\\PHP\\Shim\\Iconv' => __DIR__ . '/..' . '/patchwork/utf8/src/Patchwork/PHP/Shim/Iconv.php',
         'Patchwork\\PHP\\Shim\\Intl' => __DIR__ . '/..' . '/patchwork/utf8/src/Patchwork/PHP/Shim/Intl.php',
         'Patchwork\\PHP\\Shim\\Mbstring' => __DIR__ . '/..' . '/patchwork/utf8/src/Patchwork/PHP/Shim/Mbstring.php',
@@ -614,7 +626,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerInterface.php',
         'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerTrait.php',
         'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/NullLogger.php',
-        'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
+        'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/DummyTest.php',
         'Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'Psr\\Log\\Test\\TestLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/TestLogger.php',
         'ReCaptcha\\ReCaptcha' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/ReCaptcha.php',
@@ -626,7 +638,6 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'ReCaptcha\\RequestMethod\\SocketPost' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestMethod/SocketPost.php',
         'ReCaptcha\\RequestParameters' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestParameters.php',
         'ReCaptcha\\Response' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/Response.php',
-        'SessionUpdateTimestampHandlerInterface' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/SessionUpdateTimestampHandlerInterface.php',
         'Symfony\\Bridge\\ProxyManager\\LazyProxy\\Instantiator\\LazyLoadingValueHolderFactoryV1' => __DIR__ . '/..' . '/symfony/proxy-manager-bridge/LazyProxy/Instantiator/LazyLoadingValueHolderFactoryV1.php',
         'Symfony\\Bridge\\ProxyManager\\LazyProxy\\Instantiator\\LazyLoadingValueHolderFactoryV2' => __DIR__ . '/..' . '/symfony/proxy-manager-bridge/LazyProxy/Instantiator/LazyLoadingValueHolderFactoryV2.php',
         'Symfony\\Bridge\\ProxyManager\\LazyProxy\\Instantiator\\RuntimeInstantiator' => __DIR__ . '/..' . '/symfony/proxy-manager-bridge/LazyProxy/Instantiator/RuntimeInstantiator.php',
@@ -744,8 +755,6 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Symfony\\Component\\Config\\Resource\\FileResource' => __DIR__ . '/..' . '/symfony/config/Resource/FileResource.php',
         'Symfony\\Component\\Config\\Resource\\GlobResource' => __DIR__ . '/..' . '/symfony/config/Resource/GlobResource.php',
         'Symfony\\Component\\Config\\Resource\\ReflectionClassResource' => __DIR__ . '/..' . '/symfony/config/Resource/ReflectionClassResource.php',
-        'Symfony\\Component\\Config\\Resource\\ReflectionMethodHhvmWrapper' => __DIR__ . '/..' . '/symfony/config/Resource/ReflectionClassResource.php',
-        'Symfony\\Component\\Config\\Resource\\ReflectionParameterHhvmWrapper' => __DIR__ . '/..' . '/symfony/config/Resource/ReflectionClassResource.php',
         'Symfony\\Component\\Config\\Resource\\ResourceInterface' => __DIR__ . '/..' . '/symfony/config/Resource/ResourceInterface.php',
         'Symfony\\Component\\Config\\Resource\\SelfCheckingResourceChecker' => __DIR__ . '/..' . '/symfony/config/Resource/SelfCheckingResourceChecker.php',
         'Symfony\\Component\\Config\\Resource\\SelfCheckingResourceInterface' => __DIR__ . '/..' . '/symfony/config/Resource/SelfCheckingResourceInterface.php',
@@ -874,8 +883,6 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Symfony\\Component\\DependencyInjection\\Compiler\\FactoryReturnTypePass' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/FactoryReturnTypePass.php',
         'Symfony\\Component\\DependencyInjection\\Compiler\\InlineServiceDefinitionsPass' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/InlineServiceDefinitionsPass.php',
         'Symfony\\Component\\DependencyInjection\\Compiler\\LoggingFormatter' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/LoggingFormatter.php',
-        'Symfony\\Component\\DependencyInjection\\Compiler\\MergeExtensionConfigurationContainerBuilder' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/MergeExtensionConfigurationPass.php',
-        'Symfony\\Component\\DependencyInjection\\Compiler\\MergeExtensionConfigurationParameterBag' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/MergeExtensionConfigurationPass.php',
         'Symfony\\Component\\DependencyInjection\\Compiler\\MergeExtensionConfigurationPass' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/MergeExtensionConfigurationPass.php',
         'Symfony\\Component\\DependencyInjection\\Compiler\\PassConfig' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/PassConfig.php',
         'Symfony\\Component\\DependencyInjection\\Compiler\\PriorityTaggedServiceTrait' => __DIR__ . '/..' . '/symfony/dependency-injection/Compiler/PriorityTaggedServiceTrait.php',
@@ -985,7 +992,6 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Symfony\\Component\\DependencyInjection\\Loader\\GlobFileLoader' => __DIR__ . '/..' . '/symfony/dependency-injection/Loader/GlobFileLoader.php',
         'Symfony\\Component\\DependencyInjection\\Loader\\IniFileLoader' => __DIR__ . '/..' . '/symfony/dependency-injection/Loader/IniFileLoader.php',
         'Symfony\\Component\\DependencyInjection\\Loader\\PhpFileLoader' => __DIR__ . '/..' . '/symfony/dependency-injection/Loader/PhpFileLoader.php',
-        'Symfony\\Component\\DependencyInjection\\Loader\\ProtectedPhpFileLoader' => __DIR__ . '/..' . '/symfony/dependency-injection/Loader/PhpFileLoader.php',
         'Symfony\\Component\\DependencyInjection\\Loader\\XmlFileLoader' => __DIR__ . '/..' . '/symfony/dependency-injection/Loader/XmlFileLoader.php',
         'Symfony\\Component\\DependencyInjection\\Loader\\YamlFileLoader' => __DIR__ . '/..' . '/symfony/dependency-injection/Loader/YamlFileLoader.php',
         'Symfony\\Component\\DependencyInjection\\Parameter' => __DIR__ . '/..' . '/symfony/dependency-injection/Parameter.php',
@@ -1004,7 +1010,6 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Symfony\\Component\\EventDispatcher\\Debug\\TraceableEventDispatcher' => __DIR__ . '/..' . '/symfony/event-dispatcher/Debug/TraceableEventDispatcher.php',
         'Symfony\\Component\\EventDispatcher\\Debug\\TraceableEventDispatcherInterface' => __DIR__ . '/..' . '/symfony/event-dispatcher/Debug/TraceableEventDispatcherInterface.php',
         'Symfony\\Component\\EventDispatcher\\Debug\\WrappedListener' => __DIR__ . '/..' . '/symfony/event-dispatcher/Debug/WrappedListener.php',
-        'Symfony\\Component\\EventDispatcher\\DependencyInjection\\ExtractingEventDispatcher' => __DIR__ . '/..' . '/symfony/event-dispatcher/DependencyInjection/RegisterListenersPass.php',
         'Symfony\\Component\\EventDispatcher\\DependencyInjection\\RegisterListenersPass' => __DIR__ . '/..' . '/symfony/event-dispatcher/DependencyInjection/RegisterListenersPass.php',
         'Symfony\\Component\\EventDispatcher\\Event' => __DIR__ . '/..' . '/symfony/event-dispatcher/Event.php',
         'Symfony\\Component\\EventDispatcher\\EventDispatcher' => __DIR__ . '/..' . '/symfony/event-dispatcher/EventDispatcher.php',
@@ -1086,6 +1091,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Symfony\\Component\\HttpFoundation\\Session\\SessionBagInterface' => __DIR__ . '/..' . '/symfony/http-foundation/Session/SessionBagInterface.php',
         'Symfony\\Component\\HttpFoundation\\Session\\SessionBagProxy' => __DIR__ . '/..' . '/symfony/http-foundation/Session/SessionBagProxy.php',
         'Symfony\\Component\\HttpFoundation\\Session\\SessionInterface' => __DIR__ . '/..' . '/symfony/http-foundation/Session/SessionInterface.php',
+        'Symfony\\Component\\HttpFoundation\\Session\\SessionUtils' => __DIR__ . '/..' . '/symfony/http-foundation/Session/SessionUtils.php',
         'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Handler\\AbstractSessionHandler' => __DIR__ . '/..' . '/symfony/http-foundation/Session/Storage/Handler/AbstractSessionHandler.php',
         'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Handler\\MemcacheSessionHandler' => __DIR__ . '/..' . '/symfony/http-foundation/Session/Storage/Handler/MemcacheSessionHandler.php',
         'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Handler\\MemcachedSessionHandler' => __DIR__ . '/..' . '/symfony/http-foundation/Session/Storage/Handler/MemcachedSessionHandler.php',
@@ -1289,7 +1295,6 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Symfony\\Component\\Routing\\Loader\\GlobFileLoader' => __DIR__ . '/..' . '/symfony/routing/Loader/GlobFileLoader.php',
         'Symfony\\Component\\Routing\\Loader\\ObjectRouteLoader' => __DIR__ . '/..' . '/symfony/routing/Loader/ObjectRouteLoader.php',
         'Symfony\\Component\\Routing\\Loader\\PhpFileLoader' => __DIR__ . '/..' . '/symfony/routing/Loader/PhpFileLoader.php',
-        'Symfony\\Component\\Routing\\Loader\\ProtectedPhpFileLoader' => __DIR__ . '/..' . '/symfony/routing/Loader/PhpFileLoader.php',
         'Symfony\\Component\\Routing\\Loader\\XmlFileLoader' => __DIR__ . '/..' . '/symfony/routing/Loader/XmlFileLoader.php',
         'Symfony\\Component\\Routing\\Loader\\YamlFileLoader' => __DIR__ . '/..' . '/symfony/routing/Loader/YamlFileLoader.php',
         'Symfony\\Component\\Routing\\Matcher\\Dumper\\DumperCollection' => __DIR__ . '/..' . '/symfony/routing/Matcher/Dumper/DumperCollection.php',
@@ -1326,17 +1331,13 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Symfony\\Component\\Yaml\\Unescaper' => __DIR__ . '/..' . '/symfony/yaml/Unescaper.php',
         'Symfony\\Component\\Yaml\\Yaml' => __DIR__ . '/..' . '/symfony/yaml/Yaml.php',
         'Symfony\\Polyfill\\Ctype\\Ctype' => __DIR__ . '/..' . '/symfony/polyfill-ctype/Ctype.php',
+        'Symfony\\Polyfill\\Intl\\Idn\\Idn' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/Idn.php',
+        'Symfony\\Polyfill\\Intl\\Idn\\Info' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/Info.php',
+        'Symfony\\Polyfill\\Intl\\Idn\\Resources\\unidata\\DisallowedRanges' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/Resources/unidata/DisallowedRanges.php',
+        'Symfony\\Polyfill\\Intl\\Idn\\Resources\\unidata\\Regex' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/Resources/unidata/Regex.php',
+        'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Normalizer.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
-        'Symfony\\Polyfill\\Php56\\Php56' => __DIR__ . '/..' . '/symfony/polyfill-php56/Php56.php',
-        'Symfony\\Polyfill\\Php70\\Php70' => __DIR__ . '/..' . '/symfony/polyfill-php70/Php70.php',
-        'Symfony\\Polyfill\\Util\\Binary' => __DIR__ . '/..' . '/symfony/polyfill-util/Binary.php',
-        'Symfony\\Polyfill\\Util\\BinaryNoFuncOverload' => __DIR__ . '/..' . '/symfony/polyfill-util/BinaryNoFuncOverload.php',
-        'Symfony\\Polyfill\\Util\\BinaryOnFuncOverload' => __DIR__ . '/..' . '/symfony/polyfill-util/BinaryOnFuncOverload.php',
-        'Symfony\\Polyfill\\Util\\TestListener' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListener.php',
-        'Symfony\\Polyfill\\Util\\TestListenerForV5' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerForV5.php',
-        'Symfony\\Polyfill\\Util\\TestListenerForV6' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerForV6.php',
-        'Symfony\\Polyfill\\Util\\TestListenerForV7' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerForV7.php',
-        'Symfony\\Polyfill\\Util\\TestListenerTrait' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerTrait.php',
+        'Symfony\\Polyfill\\Php72\\Php72' => __DIR__ . '/..' . '/symfony/polyfill-php72/Php72.php',
         'Twig\\Cache\\CacheInterface' => __DIR__ . '/..' . '/twig/twig/src/Cache/CacheInterface.php',
         'Twig\\Cache\\FilesystemCache' => __DIR__ . '/..' . '/twig/twig/src/Cache/FilesystemCache.php',
         'Twig\\Cache\\NullCache' => __DIR__ . '/..' . '/twig/twig/src/Cache/NullCache.php',
@@ -1692,7 +1693,6 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         'Twig_TokenStream' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenStream.php',
         'Twig_Util_DeprecationCollector' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Util/DeprecationCollector.php',
         'Twig_Util_TemplateDirIterator' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Util/TemplateDirIterator.php',
-        'TypeError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/TypeError.php',
         'Zend\\Code\\Annotation\\AnnotationCollection' => __DIR__ . '/..' . '/zendframework/zend-code/src/Annotation/AnnotationCollection.php',
         'Zend\\Code\\Annotation\\AnnotationInterface' => __DIR__ . '/..' . '/zendframework/zend-code/src/Annotation/AnnotationInterface.php',
         'Zend\\Code\\Annotation\\AnnotationManager' => __DIR__ . '/..' . '/zendframework/zend-code/src/Annotation/AnnotationManager.php',
@@ -1835,6 +1835,8 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's9e\\RegexpBuilder\\Passes\\Recurse' => __DIR__ . '/..' . '/s9e/regexp-builder/src/Passes/Recurse.php',
         's9e\\RegexpBuilder\\Runner' => __DIR__ . '/..' . '/s9e/regexp-builder/src/Runner.php',
         's9e\\RegexpBuilder\\Serializer' => __DIR__ . '/..' . '/s9e/regexp-builder/src/Serializer.php',
+        's9e\\SweetDOM\\Document' => __DIR__ . '/..' . '/s9e/sweetdom/src/Document.php',
+        's9e\\SweetDOM\\Element' => __DIR__ . '/..' . '/s9e/sweetdom/src/Element.php',
         's9e\\TextFormatter\\Bundle' => __DIR__ . '/..' . '/s9e/text-formatter/src/Bundle.php',
         's9e\\TextFormatter\\Bundles\\Fatdown' => __DIR__ . '/..' . '/s9e/text-formatter/src/Bundles/Fatdown.php',
         's9e\\TextFormatter\\Bundles\\Fatdown\\Renderer' => __DIR__ . '/..' . '/s9e/text-formatter/src/Bundles/Fatdown/Renderer.php',
@@ -1894,6 +1896,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's9e\\TextFormatter\\Configurator\\Helpers\\XPathHelper' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/Helpers/XPathHelper.php',
         's9e\\TextFormatter\\Configurator\\Items\\Attribute' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/Items/Attribute.php',
         's9e\\TextFormatter\\Configurator\\Items\\AttributeFilter' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/Items/AttributeFilter.php',
+        's9e\\TextFormatter\\Configurator\\Items\\AttributeFilters\\AbstractMapFilter' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/Items/AttributeFilters/AbstractMapFilter.php',
         's9e\\TextFormatter\\Configurator\\Items\\AttributeFilters\\AlnumFilter' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/Items/AttributeFilters/AlnumFilter.php',
         's9e\\TextFormatter\\Configurator\\Items\\AttributeFilters\\ChoiceFilter' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/Items/AttributeFilters/ChoiceFilter.php',
         's9e\\TextFormatter\\Configurator\\Items\\AttributeFilters\\ColorFilter' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/Items/AttributeFilters/ColorFilter.php',
@@ -1989,6 +1992,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's9e\\TextFormatter\\Configurator\\TemplateChecker' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecker.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\AbstractDynamicContentCheck' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/AbstractDynamicContentCheck.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\AbstractFlashRestriction' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/AbstractFlashRestriction.php',
+        's9e\\TextFormatter\\Configurator\\TemplateChecks\\AbstractXSLSupportCheck' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/AbstractXSLSupportCheck.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowAttributeSets' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowAttributeSets.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowCopy' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowCopy.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowDisableOutputEscaping' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowDisableOutputEscaping.php',
@@ -2000,16 +2004,19 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowNodeByXPath' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowNodeByXPath.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowObjectParamsWithGeneratedName' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowObjectParamsWithGeneratedName.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowPHPTags' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowPHPTags.php',
+        's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowUncompilableXSL' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowUncompilableXSL.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowUnsafeCopyOf' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowUnsafeCopyOf.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowUnsafeDynamicCSS' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowUnsafeDynamicCSS.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowUnsafeDynamicJS' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowUnsafeDynamicJS.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowUnsafeDynamicURL' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowUnsafeDynamicURL.php',
+        's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowUnsupportedXSL' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowUnsupportedXSL.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\DisallowXPathFunction' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/DisallowXPathFunction.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\RestrictFlashNetworking' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/RestrictFlashNetworking.php',
         's9e\\TextFormatter\\Configurator\\TemplateChecks\\RestrictFlashScriptAccess' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateChecks/RestrictFlashScriptAccess.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\AbstractChooseOptimization' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/AbstractChooseOptimization.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\AbstractConstantFolding' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/AbstractConstantFolding.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\AbstractNormalization' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/AbstractNormalization.php',
+        's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\AddAttributeValueToElements' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/AddAttributeValueToElements.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\ConvertCurlyExpressionsInText' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/ConvertCurlyExpressionsInText.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\Custom' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/Custom.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\DeoptimizeIf' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/DeoptimizeIf.php',
@@ -2041,6 +2048,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\RemoveInterElementWhitespace' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/RemoveInterElementWhitespace.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\RemoveLivePreviewAttributes' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/RemoveLivePreviewAttributes.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\RenameLivePreviewEvent' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/RenameLivePreviewEvent.php',
+        's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\SetAttributeOnElements' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/SetAttributeOnElements.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\SetRelNoreferrerOnTargetedLinks' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/SetRelNoreferrerOnTargetedLinks.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\SortAttributesByName' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/SortAttributesByName.php',
         's9e\\TextFormatter\\Configurator\\TemplateNormalizations\\TransposeComments' => __DIR__ . '/..' . '/s9e/text-formatter/src/Configurator/TemplateNormalizations/TransposeComments.php',
@@ -2120,6 +2128,7 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's9e\\TextFormatter\\Plugins\\Litedown\\Parser\\Passes\\Strikethrough' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/Litedown/Parser/Passes/Strikethrough.php',
         's9e\\TextFormatter\\Plugins\\Litedown\\Parser\\Passes\\Subscript' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/Litedown/Parser/Passes/Subscript.php',
         's9e\\TextFormatter\\Plugins\\Litedown\\Parser\\Passes\\Superscript' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/Litedown/Parser/Passes/Superscript.php',
+        's9e\\TextFormatter\\Plugins\\Litedown\\Parser\\Slugger' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/Litedown/Parser/Slugger.php',
         's9e\\TextFormatter\\Plugins\\MediaEmbed\\Configurator' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/MediaEmbed/Configurator.php',
         's9e\\TextFormatter\\Plugins\\MediaEmbed\\Configurator\\Collections\\CachedDefinitionCollection' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/MediaEmbed/Configurator/Collections/CachedDefinitionCollection.php',
         's9e\\TextFormatter\\Plugins\\MediaEmbed\\Configurator\\Collections\\SiteDefinitionCollection' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/MediaEmbed/Configurator/Collections/SiteDefinitionCollection.php',
@@ -2135,6 +2144,8 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
         's9e\\TextFormatter\\Plugins\\PipeTables\\Parser' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/PipeTables/Parser.php',
         's9e\\TextFormatter\\Plugins\\Preg\\Configurator' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/Preg/Configurator.php',
         's9e\\TextFormatter\\Plugins\\Preg\\Parser' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/Preg/Parser.php',
+        's9e\\TextFormatter\\Plugins\\TaskLists\\Configurator' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/TaskLists/Configurator.php',
+        's9e\\TextFormatter\\Plugins\\TaskLists\\Helper' => __DIR__ . '/..' . '/s9e/text-formatter/src/Plugins/TaskLists/Helper.php',
         's9e\\TextFormatter\\Renderer' => __DIR__ . '/..' . '/s9e/text-formatter/src/Renderer.php',
         's9e\\TextFormatter\\Renderers\\PHP' => __DIR__ . '/..' . '/s9e/text-formatter/src/Renderers/PHP.php',
         's9e\\TextFormatter\\Renderers\\Unformatted' => __DIR__ . '/..' . '/s9e/text-formatter/src/Renderers/Unformatted.php',
@@ -2152,10 +2163,10 @@ class ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit5ba2d544c5d0bf61b3c77aaea4d92d6b::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitda774e186d9edc8eea21fe635b894b41::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitda774e186d9edc8eea21fe635b894b41::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitda774e186d9edc8eea21fe635b894b41::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitda774e186d9edc8eea21fe635b894b41::$classMap;
 
         }, null, ClassLoader::class);
     }

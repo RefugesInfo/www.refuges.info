@@ -52,6 +52,8 @@ $lang = array_merge($lang, array(
 	'CONTINUE_INDEXING_EXPLAIN'				=> 'Eine Indizierung wurde gestartet. Um auf die Such-Indizes-Seite zugreifen zu können, muss dieser Vorgang erst abgeschlossen oder abgebrochen werden.',
 	'CREATE_INDEX'							=> 'Index erstellen',
 
+	'DEFAULT_SEARCH_RETURN_CHARS'			=> 'Standardanzahl an angezeigten Zeichen',
+	'DEFAULT_SEARCH_RETURN_CHARS_EXPLAIN'	=> 'Die standardmäßige Anzahl von Zeichen eines Beitrags, die bei einer Suche angezeigt wird. Wenn 0 als Wert eingestellt wird, wird der komplette Beitrag angezeigt.',
 	'DELETE_INDEX'							=> 'Index löschen',
 	'DELETING_INDEX_IN_PROGRESS'			=> 'Index wird gelöscht',
 	'DELETING_INDEX_IN_PROGRESS_EXPLAIN'	=> 'Das Backend löscht seinen Index. Dieser Vorgang kann einige Minuten beanspruchen.',

@@ -41,20 +41,21 @@ if (empty($lang) || !is_array($lang))
 
 // Privacy policy and T&C
 $lang = array_merge($lang, array(
-	'TERMS_OF_USE_CONTENT'	=> 'Accedendo a “%1$s” (in seguito “noi”, “nostro”, “%1$s”, “%2$s”), l’utente accetta di essere vincolato legalmente alle seguenti condizioni d’uso. Se non accetti di essere limitato legalmente dalle condizioni d’uso seguenti non utilizzare i servizi offerti da “%1$s”. Le condizioni d’uso possono cambiare in qualunque momento, sarà nostra premura avvisarti di tali modifiche, benché sia opportuno controllare con frequenza queste pagine per eventuali modifiche, dato che l’uso dei servizi di “%1$s” implica la completa accettazione delle condizioni d’uso.<br />
-	<br />
-	“%1$s” utilizza il sistema phpBB (in seguito “loro”, “phpBB software”, “www.phpbb.com”, “phpBB Limited”, “phpBB Teams”) che è un software per la creazione di comunità web rilasciata sotto “<a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License v2</a>” (in seguito “GPL”) liberamente scaricabile da <a href="https://www.phpbb.com/">www.phpbb.com</a>. Il software phpBB facilita le aree di discussione internet; phpBB Limited non è responsabile dei contenuti e della gestione. Per ulteriori informazioni su phpBB: <a href="https://www.phpbb.com">https://www.phpbb.com</a>.<br />
-	<br />
+	'TERMS_OF_USE_CONTENT'	=> 'Accedendo a “%1$s” (in seguito “noi”, “nostro”, “%1$s”, “%2$s”), l’utente accetta di essere vincolato legalmente alle seguenti condizioni d’uso. Se non accetti di essere limitato legalmente dalle condizioni d’uso seguenti non utilizzare i servizi offerti da “%1$s”. Le condizioni d’uso possono cambiare in qualunque momento, sarà nostra premura avvisarti di tali modifiche, benché sia opportuno controllare con frequenza queste pagine per eventuali modifiche, dato che l’uso dei servizi di “%1$s” implica la completa accettazione delle condizioni d’uso.
+	<br><br>
+	“%1$s” utilizza il sistema phpBB (in seguito “loro”, “phpBB software”, “www.phpbb.com”, “phpBB Limited”, “phpBB Teams”) che è un software per la creazione di comunità web rilasciata sotto “<a href="http://opensource.org/licenses/gpl-2.0.php">GNU General Public License v2</a>” (in seguito “GPL”) liberamente scaricabile da <a href="https://www.phpbb.com/">www.phpbb.com</a>. Il software phpBB facilita le aree di discussione internet; phpBB Limited non è responsabile dei contenuti e della gestione. Per ulteriori informazioni su phpBB: <a href="https://www.phpbb.com">https://www.phpbb.com</a>.
+	<br><br>
 	Accetti di non inviare alcun tipo di offesa, oscenità, volgarità, calunnia, minaccia, messaggio a sfondo sessuale, o qualsiasi altro tipo di materiale che può violare una qualsiasi Legge del proprio Stato, o dello Stato dove “%1$s” è ospitato, o di una Legge internazionale. Fare ciò porta all’immediato e permanente divieto di accesso, con notifica al tuo provider Internet se è ritenuto da noi opportuno. Tutti gli indirizzi IP sono registrati per salvaguardare e rinforzare queste condizioni. Accetti che “%1$s” abbia il diritto di rimuovere, riscrivere, spostare o chiudere qualsiasi argomento in qualsiasi momento lo ritenga necessario. Come fruitore di questo servizio, accetti che ogni informazione (dato personale) tu abbia inviato sia conservata in un database. Al contempo queste informazioni non saranno divulgate a nessuno senza il tuo consenso, né “%1$s” o phpBB sono da ritenersi responsabili per qualsiasi violazione al sistema che possa compromettere queste informazioni.
 	',
 
-	'PRIVACY_POLICY'		=> 'Questo paragrafo spiega dettagliatamente come “%1$s” ed eventuali affiliati (in seguito “noi”, “nostro”, “%1$s”, “%2$s”) e phpBB (in seguito “essi”, “loro”, “phpBB software”, “www.phpbb.com”, “phpBB Limited”, “phpBB Teams”) usano le informazioni raccolte durante qualsiasi sessione d’uso da te effettuata (in seguito “le tue informazioni”).<br />
-	<br />
-	Le tue informazioni sono raccolte in due modi. In primo luogo, mentre si naviga su “%1$s” il software phpBB creerà un certo numero di cookie, che sono piccoli file di testo che vengono scaricati nei file temporanei del tuo browser. I primi due cookie contengono solo un identificativo utente (in seguito “user-id”) ed un identificativo anonimo di sessione (in seguito “session-id”), assegnato automaticamente dal software phpBB. Un terzo cookie viene creato quando si naviga tra gli argomenti di “%1$s” e viene usato per memorizzare gli argomenti letti da quelli ancora da leggere, quindi agevolando la lettura nelle tue visite future.<br />
-	<br />
-	Possiamo anche generare cookie esterni al software phpBB mentre navighi su “%1$s”, benché questi siano estranei agli scopi di questo documento che intende trattare solo quelli creati dal software phpBB. Il secondo metodo di raccolta delle tue informazioni è dato da quello che tu inserisci volontariamente. Con questo sono intesi e non limitati ad essi: inviare messaggi come utente ospite (in seguito “messaggi da ospite”), registrarsi su “%1$s” (in seguito “il tuo account”) e l’invio di messaggi dopo la registrazione e l’accesso (in seguito “i tuoi messaggi”).<br />
-	<br />
-	Il tuo account avrà, di base, un unico nome identificativo (in seguito “il tuo nome utente”), una password da usare per accedere al tuo account (in seguito “la tua password”) ed un indirizzo email valido (in seguito “la tua email”). Le informazioni rilasciate per l’apertura dell’account su “%1$s” sono protette dalle Leggi sulla Privacy dello Stato che ospita il server. In aggiunta alle informazioni di nome utente, password ed indirizzo email richiesti durante il processo di registrazione su “%1$s”, quale altra informazione sia obbligatoria o opzionale, è a totale discrezione di “%1$s”. In tutti i casi, hai la possibilità di selezionare quali delle informazioni che hai fornito possano essere rese pubbliche. All’interno del tuo account, hai facoltà di opt-in o opt-out sul generatore automatico di email del software phpBB.<br /><br />
+	'PRIVACY_POLICY'		=> 'Questo paragrafo spiega dettagliatamente come “%1$s” ed eventuali affiliati (in seguito “noi”, “nostro”, “%1$s”, “%2$s”) e phpBB (in seguito “essi”, “loro”, “phpBB software”, “www.phpbb.com”, “phpBB Limited”, “phpBB Teams”) usano le informazioni raccolte durante qualsiasi sessione d’uso da te effettuata (in seguito “le tue informazioni”).
+	<br><br>
+	Le tue informazioni sono raccolte in due modi. In primo luogo, mentre si naviga su “%1$s” il software phpBB creerà un certo numero di cookie, che sono piccoli file di testo che vengono scaricati nei file temporanei del tuo browser. I primi due cookie contengono solo un identificativo utente (in seguito “user-id”) ed un identificativo anonimo di sessione (in seguito “session-id”), assegnato automaticamente dal software phpBB. Un terzo cookie viene creato quando si naviga tra gli argomenti di “%1$s” e viene usato per memorizzare gli argomenti letti da quelli ancora da leggere, quindi agevolando la lettura nelle tue visite future.
+	<br><br>
+	Possiamo anche generare cookie esterni al software phpBB mentre navighi su “%1$s”, benché questi siano estranei agli scopi di questo documento che intende trattare solo quelli creati dal software phpBB. Il secondo metodo di raccolta delle tue informazioni è dato da quello che tu inserisci volontariamente. Con questo sono intesi e non limitati ad essi: inviare messaggi come utente ospite (in seguito “messaggi da ospite”), registrarsi su “%1$s” (in seguito “il tuo account”) e l’invio di messaggi dopo la registrazione e l’accesso (in seguito “i tuoi messaggi”).
+	<br><br>
+	Il tuo account avrà, di base, un unico nome identificativo (in seguito “il tuo nome utente”), una password da usare per accedere al tuo account (in seguito “la tua password”) ed un indirizzo email valido (in seguito “la tua email”). Le informazioni rilasciate per l’apertura dell’account su “%1$s” sono protette dalle Leggi sulla Privacy dello Stato che ospita il server. In aggiunta alle informazioni di nome utente, password ed indirizzo email richiesti durante il processo di registrazione su “%1$s”, quale altra informazione sia obbligatoria o opzionale, è a totale discrezione di “%1$s”. In tutti i casi, hai la possibilità di selezionare quali delle informazioni che hai fornito possano essere rese pubbliche. All’interno del tuo account, hai facoltà di opt-in o opt-out sul generatore automatico di email del software phpBB.
+	<br><br>
 	La password viene criptata (hash unidirezionale) per motivi di sicurezza. In ogni caso ti raccomandiamo di non utilizzare la stessa password in troppi siti. La tua password è il metodo di accesso al tuo account su “%1$s”, quindi proteggila attentamente. Ricorda che in nessuna circostanza affiliati di “%1$s”, phpBB o terzi possono legittimamente richiedere la tua password. Nel caso dimenticassi la tua password, puoi utilizzare l’opzione “Ho dimenticato la password” prevista dal software phpBB. Durante questo procedimento ti verrà richiesto il tuo nome utente ed indirizzo email, in modo che il software phpBB possa generare una nuova password che ti permetterà di accedere nuovamente al tuo account.',
 ));
 
@@ -180,7 +181,6 @@ $lang = array_merge($lang, array(
 	'DEMOTE_SELECTED'			=> 'Cedi gestione selezionati',
 	'DISABLE_CENSORS'			=> 'Attiva censura parole',
 	'DISPLAY_GALLERY'			=> 'Visualizza galleria',
-	'DOMAIN_NO_MX_RECORD_EMAIL'	=> 'L’indirizzo email inserito non ha un dominio valido.',
 	'DOWNLOADS'					=> 'Download',
 	'DRAFTS_DELETED'			=> 'Tutte le bozze selezionate sono state cancellate.',
 	'DRAFTS_EXPLAIN'			=> 'Qui puoi leggere, modificare e cancellare le bozze dei tuoi messaggi.',
@@ -338,12 +338,17 @@ $lang = array_merge($lang, array(
 	'NOTIFICATION_TYPE'									=> 'Tipo di notifica',
 	'NOTIFICATION_TYPE_BOOKMARK'						=> 'Qualcuno ha risposto ad un messaggio che hai aggiunto ai segnalibri',
 	'NOTIFICATION_TYPE_GROUP_REQUEST'					=> 'Qualcuno ha richiesto l’aggiunta ad un gruppo che amministri',
+	'NOTIFICATION_TYPE_FORUM'							=> 'Qualcuno ha risposto ad un argomento di un forum a cui sei iscritto',
 	'NOTIFICATION_TYPE_IN_MODERATION_QUEUE'				=> 'Un messaggio o un argomento necessita di approvazione',
 	'NOTIFICATION_TYPE_MODERATION_QUEUE'				=> 'Il tuo argomento/messaggio è stato approvato o disapprovato da un moderatore',
 	'NOTIFICATION_TYPE_PM'								=> 'Qualcuno ti ha inviato un messaggio privato',
 	'NOTIFICATION_TYPE_POST'							=> 'Qualcuno ha risposto ad un argomento a cui sei iscritto',
 	'NOTIFICATION_TYPE_QUOTE'							=> 'Qualcuno ti ha citato in un messaggio',
 	'NOTIFICATION_TYPE_REPORT'							=> 'Qualcuno ha segnalato un messaggio',
+	'NOTIFICATION_TYPE_REPORT_CLOSED'					=> 'La tua segnalazione di un messaggio è stata chiusa da un moderatore',
+	'NOTIFICATION_TYPE_REPORT_PM'						=> 'Qualcuno ha segnalato un messaggio privato',
+	'NOTIFICATION_TYPE_REPORT_PM_CLOSED'				=> 'La tua segnalazione per un messaggio privato è stata chiusa da un moderatore',
+
 	'NOTIFICATION_TYPE_TOPIC'							=> 'Un utente ha creato un argomento in un forum da te sottoscritto',
 	'NOTIFICATION_TYPE_ADMIN_ACTIVATE_USER'				=> 'Un utente richiede attivazione',
 
@@ -578,10 +583,10 @@ $lang = array_merge($lang, array(
 	'UPLOAD_AVATAR_URL'				=> 'Carica da un URL',
 	'UPLOAD_AVATAR_URL_EXPLAIN'		=> 'Inserisci l’indirizzo URL di dove risiede l’immagine e verrà copiata su questo sito.',
 	'USERNAME_ALPHA_ONLY_EXPLAIN'	=> 'Il nome utente deve essere lungo tra %1$s e %2$s, deve contenere solo caratteri alfanumerici.',
-	'USERNAME_ALPHA_SPACERS_EXPLAIN'	=> 'Il nome utente deve essere lungo tra %1$s e %2$s, deve contenere caratteri alfanumerici, lo spazio o -+_[].',
+	'USERNAME_ALPHA_SPACERS_EXPLAIN'	=> 'Il nome utente deve essere lungo tra %1$s e %2$s e può contenere caratteri alfanumerici, lo spazio o i caratteri - +  _ [ ] .',
 	'USERNAME_ASCII_EXPLAIN'			=> 'Il nome utente deve essere lungo tra %1$s e %2$s, deve contenere solo caratteri ASCII, quindi niente simboli speciali.',
 	'USERNAME_LETTER_NUM_EXPLAIN'		=> 'Il nome utente deve essere lungo tra %1$s e %2$s, deve contenere solo lettere o numeri.',
-	'USERNAME_LETTER_NUM_SPACERS_EXPLAIN'	=> 'Il nome utente deve essere lungo tra %1$s e %2$s, deve contenere lettere, numeri, lo spazio o -+_[].',
+	'USERNAME_LETTER_NUM_SPACERS_EXPLAIN'	=> 'Il nome utente deve essere lungo tra %1$s e %2$s e può contenere lettere, numeri, lo spazio o i caratteri - +  _ [ ] .',
 	'USERNAME_CHARS_ANY_EXPLAIN'		=> 'La lunghezza deve essere tra %1$s e %2$s.',
 	'USERNAME_TAKEN_USERNAME'			=> 'Il nome utente inserito è già in uso, inserisci un’alternativa.',
 	'USERNAME_DISALLOWED_USERNAME'		=> 'Il nome utente inserito è stato respinto o contiene una parola non ammessa. Scegli un altro nome.',

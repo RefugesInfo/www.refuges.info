@@ -2,6 +2,12 @@ Subject: Chiusura segnalazione - “{POST_SUBJECT}”
 
 Ciao {USERNAME},
 
-ricevi questa notifica, perché la segnalazione che hai fatto sul messaggio “{POST_SUBJECT}” in “{TOPIC_TITLE}” su “{SITENAME}” è stata letta da un moderatore o da un amministratore. La segnalazione è stata poi chiusa. Se hai ulteriori domande contatta {CLOSER_NAME} con un messaggio privato.
+ricevi questa notifica, perché la segnalazione che hai fatto sul messaggio “{POST_SUBJECT}” da "{AUTHOR_NAME}" in “{TOPIC_TITLE}” su “{SITENAME}” è stata letta da un moderatore o da un amministratore. La segnalazione è stata poi chiusa. Se hai ulteriori domande contatta {CLOSER_NAME} con un messaggio privato. 
+
+È possibile visualizzare il messaggio segnalato cliccando sul seguente collegamento:
+
+{U_VIEW_POST}
+
+Hai richiesto di essere avvisato per questo evento, ricorda che puoi sempre scegliere di non essere avvisato della chiusura di segnalazioni dei messaggi, modificando l'impostazione appropriata nel tuo profilo.
 
 {EMAIL_SIG}

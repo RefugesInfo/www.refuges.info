@@ -188,10 +188,10 @@ $lang = array_merge($lang, array(
 	'MAX_POLL_OPTIONS'				=> 'Maximale Anzahl von Umfrage-Optionen',
 	'MAX_POST_FONT_SIZE'			=> 'Maximale Schriftgröße in Beiträgen',
 	'MAX_POST_FONT_SIZE_EXPLAIN'	=> 'Maximal in Beiträgen zulässige Schriftgröße. Es wird keine Begrenzung festgelegt, wenn 0 als Wert eingestellt wird.',
-	'MAX_POST_IMG_HEIGHT'			=> 'Maximale Bild-Höhe in Beiträgen',
-	'MAX_POST_IMG_HEIGHT_EXPLAIN'	=> 'Die maximale Höhe eines Bildes/einer Flash-Datei in Beiträgen. Es wird keine Begrenzung festgelegt, wenn 0 als Wert eingestellt wird.',
-	'MAX_POST_IMG_WIDTH'			=> 'Maximale Bild-Breite in Beiträgen',
-	'MAX_POST_IMG_WIDTH_EXPLAIN'	=> 'Die maximale Breite eines Bildes/einer Flash-Datei in Beiträgen. Es wird keine Begrenzung festgelegt, wenn 0 als Wert eingestellt wird.',
+	'MAX_POST_IMG_HEIGHT'			=> 'Maximale Höhe einer Flash-Datei in Beiträgen',
+	'MAX_POST_IMG_HEIGHT_EXPLAIN'	=> 'Die maximale Höhe einer Flash-Datei in Beiträgen. Es wird keine Begrenzung festgelegt, wenn 0 als Wert eingestellt wird.',
+	'MAX_POST_IMG_WIDTH'			=> 'Maximale Breite einer Flash-Datei in Beiträgen',
+	'MAX_POST_IMG_WIDTH_EXPLAIN'	=> 'Die maximale Breite einer Flash-Datei in Beiträgen. Es wird keine Begrenzung festgelegt, wenn 0 als Wert eingestellt wird.',
 	'MAX_POST_URLS'					=> 'Maximale Anzahl von Links pro Beitrag',
 	'MAX_POST_URLS_EXPLAIN'			=> 'Maximale Anzahl von Links in einem Beitrag. Es wird keine Begrenzung festgelegt, wenn 0 als Wert eingestellt wird.',
 	'MIN_CHAR_LIMIT'				=> 'Minimale Anzahl von Zeichen pro Beitrag/Nachricht',
@@ -253,7 +253,7 @@ $lang = array_merge($lang, array(
 	'MIN_CHARS'					=> 'Min.',
 	'NO_AUTH_PLUGIN'			=> 'Keine passende Authentifizierungs-Methode gefunden.',
 	'PASSWORD_LENGTH'			=> 'Passwortlänge',
-	'PASSWORD_LENGTH_EXPLAIN'	=> 'Die minimale und maximale Anzahl von Zeichen in Passwörtern.',
+	'PASSWORD_LENGTH_EXPLAIN'	=> 'Anzahl an Zeichen, aus denen ein Passwort mindestens bestehen muss. Es existiert keine Grenze für die maximale Länge des Passworts.',
 	'REG_LIMIT'					=> 'Registrierungs-Versuche',
 	'REG_LIMIT_EXPLAIN'			=> 'Die Zahl der Versuche, die ein Benutzer für die Lösung der Anti-Spam-Bot-Aufgabe hat, bevor er für die Sitzung gesperrt wird.',
 	'USERNAME_ALPHA_ONLY'		=> 'Nur alphanumerische Zeichen',
@@ -353,7 +353,7 @@ $lang = array_merge($lang, array(
 
 // Cookie Settings
 $lang = array_merge($lang, array(
-	'ACP_COOKIE_SETTINGS_EXPLAIN'		=> 'Hier legst du die Einstellungen fest, die verwendet werden, um Cookies an die Browser deiner Benutzer zu senden. In den meisten Fällen sollten die Standardwerte ausreichend sein. Führe Änderungen mit Bedacht durch, fehlerhafte Einstellungen könnten deine Benutzer daran hindern, sich anzumelden. Wenn du Probleme mit Benutzern hast, die nicht angemeldet bleiben, besuche die <strong><a href="https://www.phpbb.com/support/go/cookie-settings/">phpBB.com Knowledge Base - Fixing incorrect cookie settings</a></strong> (<a href="https://www.phpbb.de/go/cookie-settings/" rel="external">Deutschsprachiger Artikel</a>).',
+	'ACP_COOKIE_SETTINGS_EXPLAIN'		=> 'Hier legst du die Einstellungen fest, die verwendet werden, um Cookies an die Browser deiner Benutzer zu senden. In den meisten Fällen sollten die Standardwerte ausreichend sein. Führe Änderungen mit Bedacht durch, fehlerhafte Einstellungen könnten deine Benutzer daran hindern, sich anzumelden. Wenn du Probleme mit Benutzern hast, die nicht angemeldet bleiben, besuche die <strong><a href="https://www.phpbb.com/support/go/cookie-settings/">phpBB.com Knowledge Base - Fixing incorrect cookie settings</a></strong> (<a href="https://www.phpbb.de/go/cookie-settings" rel="external">Deutschsprachiger Artikel</a>).',
 
 	'COOKIE_DOMAIN'				=> 'Cookie-Domain',
 	'COOKIE_DOMAIN_EXPLAIN'		=> 'In den meisten Fällen ist die Cookie-Domain optional. Lasse diese leer, wenn du dir unsicher bist.<br><br>Falls du dein Board mit anderer Software integriert hast oder mehrere Domains verwendest, dann kannst du die benötigte Cookie-Domain wie folgt bestimmen: Falls du Domainkombinationen wie <i>example.com</i> und <i>forums.example.com</i> oder auch <i>forums.example.com</i> und <i>blog.example.com</i> verwendest, dann entferne die Subdomains, bis du den gemeinsamen Domainteil gefunden hast; in diesem Beispiel <i>example.com</i>. Nun füge einen Punkt vor den gemeinsamen Domain-Namen und trage das Ergebnis in das Feld ein. In unserem Beispiel würdest du also <i>.example.com</i> einfügen (beachte den Punkt am Anfang).',
@@ -603,7 +603,7 @@ $lang = array_merge($lang, array(
 	'SMTP_VERIFY_PEER_EXPLAIN'		=> 'Erzwinge eine Verifizierung des SSL-Zertifikats, das vom SMTP-Server verwendet wird.<br><em><strong>Warnung:</strong> Die Verbindung zu Servern mit unverifizierten SSL-Zertifikaten kann die Sicherheit beeinträchtigen.</em>',
 	'SMTP_VERIFY_PEER_NAME'			=> 'Verifiziere Namen des SMTP-Servers',
 	'SMTP_VERIFY_PEER_NAME_EXPLAIN'	=> 'Erzwinge eine Verifizierung des Namens des SMTP-Servers, falls eine SSL-/TLS-Verbindung verwendet wird.<br><em><strong>Warnung:</strong> Die Verbindung zu unverifizierten Servern kann die Sicherheit beeinträchtigen.</em>',
-	'TEST_EMAIL_SENT'				=> 'Die Test-Mail wurde gesendet.<br>Falls du sie nicht erhalten solltest, prüfe bitte deine E-Mail-Konfiguration.<br><br>Wenn du Unterstützung brauchst, besuche die <a href="https://www.phpbb.com/community/">phpBB-Support-Foren (englisch)</a> (<a href="https://www.phpbb.de/go/3.2/supportforum">deutschsprachiges Forum auf phpBB.de</a>).',
+	'TEST_EMAIL_SENT'				=> 'Die Test-Mail wurde gesendet.<br>Falls du sie nicht erhalten solltest, prüfe bitte deine E-Mail-Konfiguration.<br><br>Wenn du Unterstützung brauchst, besuche die <a href="https://www.phpbb.com/community/">phpBB-Support-Foren (englisch)</a> (<a href="https://www.phpbb.de/go/3.3/supportforum">deutschsprachiges Forum auf phpBB.de</a>).',
 
 	'USE_SMTP'						=> 'SMTP-Server für E-Mail nutzen',
 	'USE_SMTP_EXPLAIN'				=> 'Wähle „Ja“ aus, wenn du E-Mails über einen SMTP-Server senden möchtest (oder musst), anstatt die PHP-eigene Mail-Funktion zu nutzen.',

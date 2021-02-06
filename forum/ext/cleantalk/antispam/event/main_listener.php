@@ -228,9 +228,17 @@ class main_listener implements EventSubscriberInterface
 
 				if ($result['errno'] == 0 && $result['allow'] == 0) // Spammer exactly.
 				{ 
+					if ($result['stop_queue'] == 1)
+					{
 						// Output error
 						array_push($data['error'], $result['ct_result_comment']);
 						$event->set_data($data);
+					}
+					else
+					{
+						// No error output but send comment to manual approvement
+						$this->ct_comment_result = $result;
+					}
 				}
 			}
 		}

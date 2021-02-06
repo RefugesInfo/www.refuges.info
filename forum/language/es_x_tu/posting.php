@@ -151,6 +151,7 @@ $lang = array_merge($lang, array(
 	'LOGIN_EXPLAIN_QUOTE'		=> 'Necesitas identificarte para citar mensajes en este foro.',
 	'LOGIN_EXPLAIN_REPLY'		=> 'Necesitas identificarte para responder temas en este foro.',
 
+	'MAX_ATTACHMENT_FILESIZE'	=> 'Tamaño máximo de archivo por adjunto: %s.',
 	'MAX_FONT_SIZE_EXCEEDED'	=> 'Solo puedes usar fuentes de un tamaño hasta %d.',
 	'MAX_FLASH_HEIGHT_EXCEEDED'	=> array(
 		1	=> 'Tus archivos flash solo pueden ser hasta %d pixel de alto.',

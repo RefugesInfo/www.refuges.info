@@ -12,12 +12,6 @@ matches.forEach(function(m)
 */
 function linkifyUrl(tagPos, url)
 {
-	// Ensure that the anchor (scheme/www) is still there
-	if (!/^www\.|^[^:]+:/i.test(url))
-	{
-		return;
-	}
-
 	// Create a zero-width end tag right after the URL
 	var endPos = tagPos + url.length,
 		endTag = addEndTag(config.tagName, endPos, 0);
@@ -46,15 +40,15 @@ function linkifyUrl(tagPos, url)
 *
 * We remove most ASCII non-letters from the end of the string.
 * Exceptions:
-*  - dashes (some YouTube URLs end with a dash due to the video ID)
-*  - equal signs (because of "foo?bar="),
+*  - dashes and underscores, (base64 IDs could end with one)
+*  - equal signs, (because of "foo?bar=")
 *  - trailing slashes,
-*  - closing parentheses are balanced separately.
+*  - closing parentheses. (they are balanced separately)
 *
 * @param  {string} url Original URL
 * @return {string}     Trimmed URL
 */
 function trimUrl(url)
 {
-	return url.replace(/(?![-=\/)])[\s!-.:-@[-`{-~]+$/, '');
+	return url.replace(/(?:(?![-=)\/_])[\s!-.:-@[-`{-~])+$/, '');
 }

@@ -1383,6 +1383,32 @@
             ]
         }
     },
+    "phpbb_notification_emails": {
+        "COLUMNS": {
+            "notification_type_id": [
+                "USINT",
+                0
+            ],
+            "item_id": [
+                "ULINT",
+                0
+            ],
+            "item_parent_id": [
+                "ULINT",
+                0
+            ],
+            "user_id": [
+                "ULINT",
+                0
+            ]
+        },
+        "PRIMARY_KEY": [
+            "notification_type_id",
+            "item_id",
+            "item_parent_id",
+            "user_id"
+        ]
+    },
     "phpbb_notification_types": {
         "COLUMNS": {
             "notification_type_id": [
@@ -2168,19 +2194,11 @@
                 "VCHAR",
                 ""
             ],
-            "pf_phpbb_googleplus": [
-                "VCHAR",
-                ""
-            ],
             "pf_phpbb_website": [
                 "VCHAR",
                 ""
             ],
             "pf_phpbb_yahoo": [
-                "VCHAR",
-                ""
-            ],
-            "pf_phpbb_aol": [
                 "VCHAR",
                 ""
             ]

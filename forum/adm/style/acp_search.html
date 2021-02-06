@@ -37,6 +37,13 @@
 		<dd><input id="max_num_search_keywords" type="number" min="0" max="9999" name="config[max_num_search_keywords]" value="{MAX_NUM_SEARCH_KEYWORDS}" /></dd>
 	</dl>
 	<dl>
+		<dt>
+			<label for="default_search_return_chars">{{ lang('DEFAULT_SEARCH_RETURN_CHARS') ~ lang('COLON') }}</label>
+			<br><span>{{ lang('DEFAULT_SEARCH_RETURN_CHARS_EXPLAIN') }}</span>
+		</dt>
+		<dd><input id="default_search_return_chars" name="config[default_search_return_chars]" type="number" value="{{ DEFAULT_SEARCH_RETURN_CHARS }}" min="0" max="9999"></dd>
+	</dl>
+	<dl>
 		<dt><label for="search_store_results">{L_SEARCH_STORE_RESULTS}{L_COLON}</label><br /><span>{L_SEARCH_STORE_RESULTS_EXPLAIN}</span></dt>
 		<dd><input id="search_store_results" type="number" min="0" max="999999" name="config[search_store_results]" value="{SEARCH_STORE_RESULTS}" /> {L_SECONDS}</dd>
 	</dl>
@@ -59,10 +66,12 @@
 
 	<!-- END backend -->
 
-	<fieldset class="submit-buttons">
-		<legend>{L_SUBMIT}</legend>
-		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	<fieldset>
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+		<p class="submit-buttons">
+			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		</p>
 		{S_FORM_TOKEN}
 	</fieldset>
 	</form>
@@ -89,10 +98,12 @@
 		<p>{L_CONTINUE_EXPLAIN}</p>
 
 		<form id="acp_search_continue" method="post" action="{U_CONTINUE_INDEXING}">
-			<fieldset class="submit-buttons">
-				<legend>{L_SUBMIT}</legend>
-				<input class="button1" type="submit" id="continue" name="continue" value="{L_CONTINUE}" onclick="popup_progress_bar('{S_CONTINUE_INDEXING}');" />&nbsp;
-				<input class="button2" type="submit" id="cancel" name="cancel" value="{L_CANCEL}" />
+			<fieldset>
+				<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+				<p class="submit-buttons">
+					<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+					<input class="button2" type="submit" id="cancel" name="cancel" value="{L_CANCEL}" />
+				</p>
 				{S_FORM_TOKEN}
 			</fieldset>
 		</form>

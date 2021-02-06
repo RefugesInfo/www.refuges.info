@@ -49,8 +49,6 @@ $lang = array_merge($lang, array(
 	'BUMPED_BY'				=> 'Última reactivación por %1$s en %2$s',
 	'BUMP_TOPIC'			=> 'Reactivar tema',
 
-	'CODE'					=> 'Código',
-
 	'DELETE_TOPIC'			=> 'Borrar tema',
 	'DELETED_INFORMATION'	=> 'Borrado por %1$s el %2$s',
 	'DISAPPROVE'			=> 'Desaprobar',
@@ -98,7 +96,6 @@ $lang = array_merge($lang, array(
 
 	'QUICK_MOD'				=> 'Herramientas de Moderación Rápida',
 	'QUICKREPLY'			=> 'Respuesta Rápida',
-	'QUOTE'					=> 'Citar',
 
 	'REPLY_TO_TOPIC'		=> 'Responder al tema',
 	'RESTORE'				=> 'Restaurar',

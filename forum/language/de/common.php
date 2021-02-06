@@ -51,7 +51,7 @@ $lang = array_merge($lang, array(
 	'USER_LANG'			=> 'de',
 
 	// You can define different rules for the determination of plural forms here.
-	// See https://area51.phpbb.com/docs/dev/32x/language/plurals.html for more information
+	// See https://area51.phpbb.com/docs/dev/3.3.x/language/plurals.html for more information
 	// or ask the translation manager for help.
 	'PLURAL_RULE'		=> 1,
 
@@ -113,6 +113,8 @@ $lang = array_merge($lang, array(
 	'AVATAR_NOT_UPLOADED'			=> 'Der Avatar konnte nicht hochgeladen werden.',
 	'AVATAR_NO_TEMP_DIR'			=> 'Der temporäre Ordner konnte nicht gefunden werden oder ist nicht beschreibbar.',
 	'AVATAR_NO_SIZE'				=> 'Die Breite oder die Höhe des verlinkten Avatars konnte nicht ermittelt werden. Bitte gib sie manuell an.',
+	'AVATAR_NO_UPLOAD_DIR'			=> 'Der Ordner zur Ablage der Avatare konnte nicht gefunden werden oder ist nicht beschreibbar.',
+	'AVATAR_NO_UPLOAD_PATH'			=> 'Das Hochladen von Avataren wurde aktiviert, es wurde aber kein Ablage-Ordner festgelegt.',
 	'AVATAR_PARTIAL_UPLOAD'			=> 'Die ausgewählte Datei wurde nur unvollständig hochgeladen.',
 	'AVATAR_PHP_SIZE_NA'			=> 'Die Avatar-Datei ist zu groß.<br />Die durch PHP in der php.ini festgelegte maximale Größe konnte nicht ermittelt werden.',
 	'AVATAR_PHP_SIZE_OVERRUN'		=> 'Die Avatar-Datei ist zu groß, sie darf maximal %1$d %2$s groß sein.<br />Dieser Wert ist in der php.ini festgelegt und kann nicht überschrieben werden.',
@@ -171,6 +173,7 @@ $lang = array_merge($lang, array(
 	),
 	'COLLAPSE_VIEW'			=> 'Zusammenklappen',
 	'CLOSE_WINDOW'			=> 'Fenster schließen',
+	'CODE'					=> 'Code',
 	'COLOUR_SWATCH'			=> 'Farbpalette',
 	'COLON'					=> ':',
 	'COMMA_SEPARATOR'		=> ', ',	// Comma used to join lists into a single string, use localised comma if appropriate, eg: Ideographic or Arabic
@@ -208,6 +211,7 @@ $lang = array_merge($lang, array(
 	'DISPLAY_MESSAGES'		=> 'Nachrichten der letzten Zeit anzeigen',
 	'DISPLAY_POSTS'			=> 'Beiträge der letzten Zeit anzeigen',
 	'DISPLAY_TOPICS'		=> 'Themen der letzten Zeit anzeigen',
+	'DOMAIN_NO_MX_RECORD_EMAIL'	=> 'Die Domain der eingegebenen E-Mail-Adresse hat keinen gültigen MX-Eintrag.',
 	'DOWNLOADED'			=> 'Heruntergeladen',
 	'DOWNLOADING_FILE'		=> 'Lädt eine Datei herunter',
 	'DOWNLOAD_COUNTS'		=> array(
@@ -312,7 +316,6 @@ $lang = array_merge($lang, array(
 	'GB'						=> 'GB',
 	'GIB'						=> 'GiB',
 	'GO'						=> 'Los',
-	'GOOGLEPLUS'				=> 'Google+',
 	'GOTO_FIRST_POST'			=> 'Gehe zum ersten Beitrag',
 	'GOTO_LAST_POST'			=> 'Gehe zum letzten Beitrag',
 	'GOTO_PAGE'					=> 'Gehe zu Seite',
@@ -495,6 +498,7 @@ $lang = array_merge($lang, array(
 	'NOTIFICATION_REFERENCE'			=> '„%1$s“',
 	'NOTIFICATION_REASON'				=> '<em>Grund:</em> %1$s.',
 	'NOTIFICATION_REPORT_PM'			=> '<strong>Private Nachricht gemeldet</strong> von %1$s:',
+	'NOTIFICATION_REPORT_PM_CLOSED'		=> '<strong>Meldung zu Privater Nachricht geschlossen</strong> von %1$s:',
 	'NOTIFICATION_REPORT_POST'			=> '<strong>Beitrag gemeldet</strong> von %1$s:',
 	'NOTIFICATION_REPORT_CLOSED'		=> '<strong>Meldung geschlossen</strong> von %1$s für:',
 	'NOTIFICATION_TOPIC'				=> '<strong>Neues Thema</strong> von %1$s:',
@@ -625,6 +629,9 @@ $lang = array_merge($lang, array(
 	'POST_UNAPPROVED'		=> 'Dieser Beitrag wurde noch nicht freigegeben.',
 	'POST_UNAPPROVED_EXPLAIN'	=> 'Dieser Beitrag kann von anderen Benutzer nicht gelesen werden, bis er von einem Moderator freigegeben wurde.',
 	'POWERED_BY'			=> 'Powered by %s',
+
+	'QUOTE'					=> 'Zitat',
+
 	'PREVIEW'				=> 'Vorschau',
 	'PREVIOUS'				=> 'Vorherige',		// Used in pagination
 	'PREVIOUS_STEP'			=> 'Zurück',

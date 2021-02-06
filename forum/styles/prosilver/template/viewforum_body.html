@@ -58,7 +58,7 @@
 				<button class="button button-search" type="submit" title="{L_SEARCH}">
 					<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH}</span>
 				</button>
-				<a href="{U_SEARCH}" class="button button-search-end" title="{L_SEARCH_ADV}">
+				<a href="{{ U_SEARCH_FORUM }}" class="button button-search-end" title="{L_SEARCH_ADV}">
 					<i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEARCH_ADV}</span>
 				</a>
 				{S_SEARCH_LOCAL_HIDDEN_FIELDS}
@@ -250,7 +250,7 @@
 	<!-- IF S_IS_POSTABLE -->
 	<div class="panel">
 		<div class="inner">
-		<strong>{L_NO_TOPICS}</strong>
+		<strong>{{ lang(S_SORT_DAYS ? 'NO_TOPICS_TIME_FRAME' : 'NO_TOPICS') }}</strong>
 		</div>
 	</div>
 	<!-- ELSE IF not S_HAS_SUBFORUM -->
@@ -298,6 +298,8 @@
 
 <!-- INCLUDE jumpbox.html -->
 
+{% EVENT viewforum_body_online_list_before %}
+
 <!-- IF S_DISPLAY_ONLINE_LIST and U_VIEWONLINE -->
 	<div class="stat-block online-list">
 		<h3><a href="{U_VIEWONLINE}">{L_WHO_IS_ONLINE}</a></h3>
@@ -305,7 +307,7 @@
 	</div>
 <!-- ENDIF -->
 
-<!-- IF S_DISPLAY_POST_INFO -->
+<!-- IF S_IS_POSTABLE and rules|length -->
 	<div class="stat-block permissions">
 		<h3>{L_FORUM_PERMISSIONS}</h3>
 		<p><!-- BEGIN rules -->{rules.RULE}<br /><!-- END rules --></p>
