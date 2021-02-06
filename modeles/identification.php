@@ -39,7 +39,7 @@ function infos_identification()
       $sql = "SELECT user_id, username, group_id
         FROM phpbb3_sessions_keys
         JOIN phpbb3_users USING (user_id)
-        WHERE key_id = '".md5($_COOKIE['phpbb3_wri_k'])."'";
+        WHERE key_id = '".md5($_COOKIE[$config_phpbb->cookie_name.'_k'])."'";
       $res = $pdo->query($sql);
       $infos_identification = $res->fetch();
       if (empty($infos_identification)) // Visiblement, la session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
