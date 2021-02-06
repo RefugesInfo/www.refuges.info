@@ -15,7 +15,7 @@ require_once ("bdd.php");
 require_once ("commentaire.php");
 require_once ("polygone.php");
 require_once ("mise_en_forme_texte.php");
-
+require_once ("forum.php");
 
 /*****************************************************
 Cette fonction récupère sous la forme de plusieurs objets des points de la base qui satisfont des conditions.
