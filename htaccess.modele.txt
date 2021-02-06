@@ -1,15 +1,14 @@
 #A renommer en .htaccess
 
-# Blocage de l'accès au site pour maintenance
-order deny,allow
-# Decommenter les deux lignes suivantes pour bloquer l'accès au site
-	#deny from all
-	#ErrorDocument 403 /maintenance.html
-#allow from 2001:cb00:... # Mettre l'adresse du développeur ici
+# Blocage de l'accès au site pour maintenance urgente (bug grave, piratage, tout est cassé) : Décommentez les lignes suivantes pour bloquer l'accès au site
+#order deny,allow
+#deny from all
+#ErrorDocument 403 /maintenance.html
+#allow from 2001:cb00:... # Mettre l'adresse du développeur qui veut y accéder ici, ou plusieurs ligne possible (format ipv6 oiu ipv4
 #allow from 2001:bc8:37ca:101::1 # Mettre l'adresse du serveur (pour les requettes AJAX intra-site)
-<FilesMatch "^maintenance.html$">
-	Allow from all
-</FilesMatch>
+#<FilesMatch "^maintenance.html$">
+#  Allow from all
+#</FilesMatch>
 
 AddDefaultCharset UTF-8
 
@@ -31,20 +30,20 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . ./index.php [L]
 
+#Si on doit un jour ne plus utiliser mod_php de apache, il faudra bouger cette option dans la config php.ini
 php_value short_open_tag 1
 
 #A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error
 #php_value display_errors 1
 
 
-#C'est pas une nécessité, mais pour le css et le js ça accélère un peu le
-#chargement. Si le module n'existe pas avec apache, tant pis, on ne fera
-#rien
+#Ces options de mise en cache navigateur ne pas une nécessité, mais pour le css et le js ça accélère quand même bigrement la navigation sur le site
+#Si le module n'existe pas avec apache, tant pis, ça ne fera rien (mais c'est dommage !)
 <ifmodule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css "access plus 2 hours"
-  ExpiresByType application/javascript "access plus 2 hours"
-  ExpiresByType image/png "access plus 2 hours"
-  ExpiresByType image/jpg "access plus 2 hours"
-  ExpiresByType image/jpeg "access plus 2 hours"
+  ExpiresByType text/css "access plus 6 hours"
+  ExpiresByType application/javascript "access plus 6 hours"
+  ExpiresByType image/png "access plus 12 hours"
+  ExpiresByType image/jpg "access plus 6 hours"
+  ExpiresByType image/jpeg "access plus 6 hours"
 </ifmodule>
