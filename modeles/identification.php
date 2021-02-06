@@ -45,6 +45,7 @@ function infos_identification()
       if (empty($infos_identification)) // Visiblement, la session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
         return NULL;
 
+      $infos_identification->session_id = $_COOKIE[$config_phpbb->cookie_name.'_sid'];
       $infos_identification->niveau_moderation =
       $infos_identification->group_id == 201 ||
       $infos_identification->group_id == 202
