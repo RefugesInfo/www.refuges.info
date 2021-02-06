@@ -42,7 +42,8 @@ if ($controlleur->url_decoupee[0]=="api")
 require_once ('bandeau_dynamique.php');
 require_once ('identification.php');
 
-infos_identification();
+// on vérifie si l'utilisateur est connecté et s'il a des droits ($infos_identification est global est peut être utilisée partout dans le code)
+$infos_identification=infos_identification();
  
 
 switch ($controlleur->url_decoupee[0])

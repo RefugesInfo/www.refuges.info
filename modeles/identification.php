@@ -42,6 +42,8 @@ function infos_identification()
           WHERE session_id = '".$_COOKIE[$config_phpbb->cookie_name.'_sid']."'";
         $res = $pdo->query($sql);
         $infos_identification = $res->fetch();
+        if (empty($infos_identification)) // Visiblement, la session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
+          return NULL;
 
         $infos_identification->niveau_moderation =
         $infos_identification->group_id == 201 ||
@@ -57,14 +59,14 @@ function infos_identification()
 
 function est_moderateur()
 {
-  $infos_identification = infos_identification();
+  global $infos_identification;
   if (isset($infos_identification))
     return $infos_identification->niveau_moderation >= 1;
 }
 
 function est_autorise($id_utilisateur)
 {
-  $infos_identification = infos_identification();
+  global $infos_identification;
   if (isset($infos_identification))
     return $infos_identification->niveau_moderation >= 1 ||
     $infos_identification->user_id == $id_utilisateur;
@@ -72,7 +74,7 @@ function est_autorise($id_utilisateur)
 // L'utilisateur est connecté, et n'est pas anonyme
 function est_connecte()
 {
-  $infos_identification = infos_identification();
+  global $infos_identification;
   if (isset($infos_identification))
     return $infos_identification->user_id !== 1 ;
 }
