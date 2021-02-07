@@ -1,6 +1,8 @@
 <?php
 // Récupère les données locales
-require(__DIR__.'/../config_privee.php');
+global $config_wri; // Comme ce fichier est appelé dans un namespace, il faut s'adresser à celui de WRI qui est global
+if (!isset ($config_wri)) // Une seule fois
+	require(__DIR__.'/../config_privee.php');
 
 $dbms = 'phpbb\\db\\driver\\postgres';
 $dbhost = $config_wri['serveur_pgsql'];

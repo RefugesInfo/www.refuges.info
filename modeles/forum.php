@@ -7,7 +7,6 @@ On trouve les fonctions permettant de faire des modifications dans le forum
 // Récupère l'environnement du forum
 // Cette séquence ne peut pas être dans une function
 if (!defined('IN_PHPBB')) {
-  $conservation_config_wri=$config_wri;
   define('IN_PHPBB', true);
   $phpbb_root_path = $config_wri['rep_forum'];
   $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -22,7 +21,6 @@ if (!defined('IN_PHPBB')) {
   
   // On restitue le contexte et les options WRI qui a été écrasé par le framework du forum
   restore_error_handler(); // phpBB a défini lui même sa fonction pour gérer les erreurs
-  $config_wri=$conservation_config_wri; // et pour une raison qui m'échappe, le $config_wri a été partiellement vidé
 }
 
 // Fonction générique qui permet - entre autre - de créer un topic, modifier le titre et ajouter un post
