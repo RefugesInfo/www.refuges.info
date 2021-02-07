@@ -7,7 +7,6 @@
  * http://leo.refuges.info/api/bbox?bbox=5.5,45.1,6.5,45.6 : Un bout d'alpes
 ********************************************/
 include_once("point.php");
-include_once("api.php");
 include_once("mise_en_forme_texte.php");
 include_once("utilisateur.php");
 
