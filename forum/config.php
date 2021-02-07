@@ -1,8 +1,12 @@
 <?php
 // Récupère les données locales
-global $config_wri; // Comme ce fichier est appelé dans un namespace, il faut s'adresser à celui de WRI qui est global
-if (!isset ($config_wri)) // Une seule fois
-	require(__DIR__.'/../config_privee.php');
+// Comme ce fichier est appelé dans un namespace depuis le forum
+// il faut s'adresser au tableau $config_wri de WRI qui est global
+global $config_wri;
+
+// Aller les chercher dans config_privee.php si on l'appelle depuis le forum
+// mais ne pas le réinclure si on l'appelle depuis WRI
+require_once(__DIR__.'/../config_privee.php');
 
 $dbms = 'phpbb\\db\\driver\\postgres';
 $dbhost = $config_wri['serveur_pgsql'];
@@ -18,6 +22,3 @@ $acm_type = 'phpbb\\cache\\driver\\file';
 
 if (!@$config_wri['debug'])
 	@define('PHPBB_ENVIRONMENT', 'production');
-
-// @define('PHPBB_DISPLAY_LOAD_TIME', true);
-// @define('DEBUG_CONTAINER', true);
