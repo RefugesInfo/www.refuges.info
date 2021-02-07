@@ -5,7 +5,7 @@ des dossiers, des chemins, des options par défaut, etc.
 tout dans un gros tableau $config_wri qu'il suffit de récupérer en déclarant 
 global $config_wri; dans les fonctions
 
-un require_once("../emplacement/du/fichier/config.php") est la seule inclusion avec chemin d'accès nécessaire dans un programme non contrôlé par /routage.php
+un require_once("../emplacement/du/fichier/config.php") est la seule inclusion avec chemin d'accès nécessaire dans un programme non contrôlé par /index.php
 à partir de là tout peut s'inclure par require_once("modele.php")
 Si vous êtes en train d'écrire un contrôleur et une règle de routage, cette inclusion du config est inutile car déjà faite
 
