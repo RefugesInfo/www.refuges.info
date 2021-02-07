@@ -28,7 +28,8 @@ class PDO_wri extends PDO
             parent::__construct(
 				"pgsql:host=".$config_wri['serveur_pgsql'] . ";dbname=" . $config_wri['base_pgsql'] ,
 				$config_wri['utilisateur_pgsql'],
-				$config_wri['mot_de_passe_pgsql']);
+				$config_wri['mot_de_passe_pgsql']
+				,array(PDO::ATTR_PERSISTENT => true));
             $this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
         }
 	catch(Exception $e) 
@@ -72,6 +73,8 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
 /* Et une autre fonction postgresql spécifique pour obtenir les noms des colonnes d'une table
 FIXME : ça risque d'être trop souvent appelé, le mettre dans un tableau global pourrait être plus économe... à voir
 c'est pas non plus la requête qui consomme beaucoup -- sly
+FIXME : 2021-02-07 et ben un peu quand même ! C'est de l'ordre de 10ms juste pour la table polygone qui récupère 7 champs, du délire.
+c'est pas que 10ms ça soit beaucoup, mais à la longue...
 Le but est le suivant : Les géométries GIS peuvent être énormes, et d'habitude, je mets "select *" car c'est bien plus
 simple que de lister tous les champs, qui en plus, pourraient augmenter en nombre. Mais là, surtout avec les polygones énormes
 il vaut mieux pouvoir enlever la colonne "geom" si demandée (ce qui sera quasi tout le temps le cas, mais je préfère être générique)
