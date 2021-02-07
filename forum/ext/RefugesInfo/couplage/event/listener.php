@@ -50,7 +50,7 @@ class listener implements EventSubscriberInterface
 		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
 
 		global $config_wri, $pdo; // Contexte WRI
-		include (__DIR__.'/../../../../../includes/config.php');
+		require_once (__DIR__.'/../../../../../includes/config.php');
 
 		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
 		$template->assign_var('STYLE_CSS_TIME', filemtime($config_wri['chemin_vues'].'style.css.php'));

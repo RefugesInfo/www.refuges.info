@@ -132,16 +132,6 @@ $config_wri['url_nominatim']="//nominatim.openstreetmap.org/";
 $config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
 $config_wri['email_contact_nominatim']="sylvain@refuges.info";
 
-/********** Cartes vignettes, fond de carte ************/
-// Clés des cartes
-$mapKeys = [
-	'ign' => @$config_wri['ign_key'],
-	'thunderforest' => @$config_wri['thunderforest_key'],
-	'bing' => @$config_wri['bing_key'],
-];
-
-// Le fond de carte par défaut est modifiable dans config_privee.php
-
 // tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un lourd à maintenir)
 // La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
 

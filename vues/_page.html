@@ -39,7 +39,7 @@ if ($vue->http_status_code)
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 		<script>
-			var mapKeys = <?=json_encode(@$mapKeys)?>;
+			var mapKeys = <?=json_encode($config_wri['mapKeys'])?>;
 		</script>
 
 		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>" />

@@ -13,9 +13,16 @@ $config_wri['mot_de_passe_pgsql']="???";
 $config_wri['base_pgsql']="???";
 
 // Les clés des cartes sous contrat gratuit
-$config_wri['ign_key']="???"; // http://professionnels.ign.fr/user
-$config_wri['bing_key']="???"; // https://www.bingmapsportal.com
-$config_wri['thunderforest_key']="???"; // https://www.bingmapsportal.com
+$config_wri['mapKeys'] = [
+	// Get your own (free) IGN key at http://professionnels.ign.fr/ign/contrats
+	'ign' => '???',
+	// Get your own (free) THUNDERFOREST key at https://manage.thunderforest.com
+	'thunderforest' => '???',
+	// Get your own (free) BING key at https://www.microsoft.com/en-us/maps/create-a-bing-maps-key
+	'bing' => '???',
+	// SwissTopo : You need to register your domain in
+	// https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
+];
 
 // Par défaut, le fond de carte est le premier déclaré dans le fichier /vues/includes/cartes.js
 // Décommenter permet de changer le par défaut. Indiquer le nom de la couche dans le sélecteur
