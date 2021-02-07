@@ -55,7 +55,7 @@ if($id_polygone_type)
   $vue->contenu=infos_type_polygone($id_polygone_type);
 
 // Les paramètres des layers points et massifs
-$polygone=infos_polygone ($id_polygone);
+$polygone=infos_polygone ($id_polygone,False,True);
 if (!$polygone->erreur) 
 {
   $vue->quoi=$vue->contenu ?

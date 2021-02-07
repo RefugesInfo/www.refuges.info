@@ -17,6 +17,7 @@ $conditions->non_ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont 
 $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
    La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
+$conditions->avec_enveloppe = True -> retourne 4 propriété ouest, est, sud et nord qui sont pour chaque polygones les bornes extrèmes (par défaut à False)
 $conditions->intersection = id_poly -> Sélectionne tous les polygones ayant une intersection avec le polygone id_poly
 $conditions->limite = 5 (un entier donnant le nombre max de polygones retournés)
 $conditions->bbox (au format OL : -3.8,39.22,13.77,48.68 soit : ouest,sud,est,nord
@@ -56,7 +57,6 @@ function infos_polygones($conditions)
     $conditions_sql="";
     $champs_en_plus="";
     $table_en_plus="";
-
     // Conditions sur les ids des polygones
     if (isset($conditions->ids_polygones))
         if (!verif_multiples_entiers($conditions->ids_polygones))
@@ -85,7 +85,6 @@ function infos_polygones($conditions)
             return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
         else
             $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
-
     // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
     if (isset($conditions->geometrie))
         $conditions_sql.=" AND ST_Intersects(polygones.geom, {$conditions->geometrie})";
@@ -121,17 +120,17 @@ function infos_polygones($conditions)
             ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) LIMIT 1
         ) AS nom_zone
         ";
+      if ($conditions->avec_enveloppe)
+        $champs_en_plus.=",
+                 st_xmin(geom) AS ouest,
+                 st_xmax(geom) AS est,
+                 st_ymin(geom) AS sud,
+                 st_ymax(geom) AS nord
+                 ";
 
-  //FIXME jmb: a voir pour transformer cette combine de bbox en GIS un jour.
-  $box="box2d(polygones.geom)";
-  $query="SELECT polygone_type.*,
-                 st_xmin($box) AS ouest,
-                 st_xmax($box) AS est,
-                 st_ymin($box) AS sud,
-                 st_ymax($box) AS nord,
-                 ".colonnes_table('polygones',False)."
+  $query="SELECT polygone_type.*,id_polygone,article_partitif,nom_polygone,source,message_information_polygone,url_exterieure,site_web
                  $champs_en_plus
-          FROM polygones,polygone_type $table_en_plus
+          FROM polygones,polygone_type$table_en_plus
           WHERE
             polygones.id_polygone_type=polygone_type.id_polygone_type
             $conditions_sql
@@ -173,12 +172,14 @@ stdClass Object
 )
 Si $avec_geometrie vaut gml/kml/svg/text/...  (voir fonction avant) la géométrie est retournée. Ce n'est pas systématique pour des raisons de performances
 ************************************************************************************/
-function infos_polygone($id_polygone,$avec_geometrie="aucune")
+function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False)
 {
   $conditions = new stdClass;
   $conditions->ids_polygones=$id_polygone;
-  if ($avec_geometrie!="aucune")
+  if ($avec_geometrie)
     $conditions->avec_geometrie=$avec_geometrie;
+  if ($avec_enveloppe)
+    $conditions->avec_enveloppe=True;
   $poly=infos_polygones($conditions);
   return $poly[0];
 }
