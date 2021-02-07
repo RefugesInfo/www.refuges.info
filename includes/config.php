@@ -126,9 +126,6 @@ $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];
 
 /********** URLs d'accès aux données openstreetmap ************/
 // NOTE: ne pas mettre le "schéma" permet d'utiliser le même que celui de la page.
-$config_wri['xapi_url_poi']="//api.openstreetmap.fr/osm2node?";
-//$config_wri['overpass_api']="//api.openstreetmap.fr/oapi/interpreter";
-//Autre serveur de backup :
 $config_wri['overpass_api']="//overpass-api.de/api/interpreter";
 
 $config_wri['url_nominatim']="//nominatim.openstreetmap.org/";
@@ -172,8 +169,9 @@ $config_wri['copyright_API']="The data included in this document is from www.ref
 // indispensable pour avoir les affichage de date en french et en UTF-8
 setlocale(LC_TIME, "fr_FR.UTF-8");
 mb_internal_encoding("UTF-8");
-// Bidouille : les dates que nous avons dans notre base sont déjà en heure locale (de Paris) si j'indique ici Europe/Paris, lors de formatage de date en php, on se retrouve à ajouter une fois de trop 1h ou 2h
+// FIXME : les dates que nous avons dans notre base sont déjà en heure locale (de Paris) si j'indique ici Europe/Paris, lors de formatage de date en php, on se retrouve à ajouter une fois de trop 1h ou 2h
 // donc en lui disant "UTC" il ne fait pas d'ajout et nous laisse les heures comme elle devrait être
+// La bonne solution serait sûrement de convertir toutes les dates de notre base en UTC et de faire les opérations ensuite pour la présentation à l'affichage
 date_default_timezone_set('UTC');
 
 // Censure des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
@@ -181,10 +179,11 @@ $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prev
 
 // ************* développeurs debug & co
 
-// par défaut, pas d'information de debug, développeurs : changer cette variable dans le fichier config_privee.php si vous voulez plus de message (errors, warnings) en cas d'erreurs
+// par défaut, pas d'erreur php à l'écran, développeurs : utilisez vore config_privee.php pour définir vos propres options
+ini_set('error_reporting', E_ERROR);
+ini_set('display_errors', '0');
+// cette option contrôle des sorties avec plus d'info mais un peu privée comme requêtes SQL et variables, mettez à true dans votre fichier privee
 $config_wri['debug']=false;
-// Si vous voulez aussi les NOTICE, passez ça à true dans votre config_privee.php (FIXME : depuis le passage à php 7.3 le site en est rempli, il faudrait que je m'en occupe, mais c'est du boulot)
-$config_wri['debug_notices']=false;
 
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
 // que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore
@@ -206,18 +205,3 @@ if (file_exists ($config_wri['racine_projet']."/forum/config.php") &&
 
 // *** NON NON : *** N'ajoutez rien après ce require_once("config_privee.php"); sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant
 // mettez par contre tout ce que vous voulez avant le require_once("config_privee.php");
-
-if ($config_wri['debug'])
-{
-  if ($config_wri['debug_notices'])
-    ini_set('error_reporting', E_ALL);
-  else
-    ini_set('error_reporting', E_ALL ^ E_NOTICE);
-  ini_set('display_errors', '1');
-}
-else 
-{
-  ini_set('error_reporting', E_ERROR);
-  ini_set('display_errors', '0');
-  
-}
