@@ -19,7 +19,6 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 require_once ("bdd.php");
 require_once ("meta_donnee.php");
 require_once ("polygone.php");
-require_once ("forum.php");
 
 $vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/wiki.js';
 
