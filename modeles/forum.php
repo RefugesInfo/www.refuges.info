@@ -7,8 +7,8 @@ On trouve les fonctions permettant de faire des modifications dans le forum
 // Récupère l'environnement du forum
 // Cette séquence ne peut pas être dans une function
 if (!defined('IN_PHPBB')) {
+  $conservation_config_wri=$config_wri;
   define('IN_PHPBB', true);
-  print_r($config_wri);
   $phpbb_root_path = $config_wri['rep_forum'];
   $phpEx = substr(strrchr(__FILE__, '.'), 1);
   include($phpbb_root_path . 'common.' . $phpEx);
@@ -19,13 +19,10 @@ if (!defined('IN_PHPBB')) {
   $request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
   $user->session_begin();
   $auth->acl($user->data);
-
-  // On restitue le contexte WRI qui a été écrasé
-  print_r($config_wri);
-//   include ("config.php");
-//   d($config_wri);
-  // phpBB défini lui même sa fonction pour gérer les erreurs, on n'en veut pas car elle est active même si on semble avoir fait ce qu'il faut pour mettre en mode sans affichage d'erreur (ou alors j'ai pas trouvé sur php 3.3)
-  restore_error_handler();
+  
+  // On restitue le contexte et les options WRI qui a été écrasé par le framework du forum
+  restore_error_handler(); // phpBB a défini lui même sa fonction pour gérer les erreurs
+  $config_wri=$conservation_config_wri; // et pour une raison qui m'échappe, le $config_wri a été partiellement vidé
 }
 
 // Fonction générique qui permet - entre autre - de créer un topic, modifier le titre et ajouter un post
