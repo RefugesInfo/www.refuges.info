@@ -19,16 +19,15 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 require_once ("bdd.php");
 require_once ("meta_donnee.php");
 require_once ("polygone.php");
+require_once ("forum.php");
 
 $vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/wiki.js';
-
-$vue->css          [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
-$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
-$vue->css          [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
-$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
-$vue->css          [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
-$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
-$vue->java_lib_foot[] = $config_wri['sous_dossier_installation'].'vues/wiki.js';
+$vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
+$vue->css           [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
+$vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
