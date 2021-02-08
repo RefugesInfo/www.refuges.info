@@ -67,7 +67,8 @@ class listener implements EventSubscriberInterface
 		$vue->java_lib_foot = [];
 		$vue->zones_pour_bandeau=remplissage_zones_bandeau();
 		$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
-
+        if (est_moderateur())
+            $vue->demande_correction=info_demande_correction ();
 		ob_start();
 		include ($config_wri['chemin_vues'].'_bandeau.html');
 		$template->assign_var('BANDEAU', ob_get_clean());
