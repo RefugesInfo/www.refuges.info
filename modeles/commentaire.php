@@ -114,7 +114,7 @@ function infos_commentaires ($conditions)
             $champ_en_plus.=",points.*,point_type.*,";
             // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
             // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
-            $champ_en_plus.=colonnes_table('polygones',False);
+            $champ_en_plus.="polygones.article_partitif,polygones.nom_polygone,polygones.source,polygones.message_information_polygone,polygones.url_exterieure,polygones.site_web";
 
             if (!$conditions->avec_commentaires_modele)
                     $condition_en_plus.=" AND modele!=1 ";
@@ -136,7 +136,6 @@ function infos_commentaires ($conditions)
            $limite";
   if ( ! ($res=$pdo->query($query)))
     return erreur("Une erreur sur la requête est survenue",$query);
-
   //jmb: renvoie un tablo vide, au lieu d'un NULL si pas de comment, => les appelants n'ont plus a tester.
   $commentaires = array() ;
   while ($commentaire = $res->fetch())
@@ -173,7 +172,6 @@ function infos_commentaires ($conditions)
         $commentaire->auteur_commentaire=html_entity_decode($commentaire->auteur_commentaire);
     $commentaires [] = $commentaire;
   }
-
   return $commentaires ;
 }
 
