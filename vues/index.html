@@ -32,7 +32,7 @@
 	<div class="tablo" style="float:none;padding-left:15px">
 		<?=$vue->nouvelles_generales?>
 
-		<h4><?=$vue->stat->nbphotos?> photos. De moins <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
+		<h4><?=$vue->stat->nbphotos?> photos. Celles rentrées il y a moins <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<br/>
 		<dd>
 			<?php if (isset($vue->nouveaux_commentaires)) 
@@ -45,7 +45,7 @@
 		</dd>
 		<br/>
 
-		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges. De moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
+		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges. Ceux ajoutés il y a moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<ul>
 			<?php if (isset($vue->nouveaux_points)) foreach ($vue->nouveaux_points as $nouveau_point) { ?>
 				<li>
@@ -69,7 +69,7 @@
 		</ul>
 		<br/>
 
-		<h4><?=$vue->stat->nbcomm?> commentaires. De moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
+		<h4><?=$vue->stat->nbcomm?> commentaires. Ceux de moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<ul>
 			<?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>
 				<li>
