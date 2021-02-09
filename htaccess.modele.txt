@@ -30,10 +30,10 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . ./index.php [L]
 
-#Si on doit un jour ne plus utiliser mod_php de apache, il faudra bouger cette option dans la config php.ini
-php_value short_open_tag 1
+#A n'activer que si on utilise mod_php de apache sinon on il faudra le mettre dans la config php.ini
+#php_value short_open_tag 1
 
-#A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error
+#A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error (uniquement si on utilise mod_php, ce qui, en 09/02/2021 n'est plus le cas)
 #php_value display_errors 1
 
 
