@@ -76,6 +76,8 @@ $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "
 $conditions->geometrie : Ne renvoir que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
 $conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
 
+$conditions->date_creation_apres : La date de création du point est >= à celle demandée (on peut utiliser une date '2020-02-01' ou toute syntaxe postgres du genre "NOW() -  INTERVAL '1 week'"
+
 $conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
 
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
@@ -85,188 +87,190 @@ Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet-
 
 function infos_points($conditions)
 {
-    global $config_wri,$pdo;
-    $champs_en_plus="";
-    $conditions_sql="";
-    $tables_en_plus="";
-    $points = array ();
+  global $config_wri,$pdo;
+  $champs_en_plus="";
+  $conditions_sql="";
+  $tables_en_plus="";
+  $points = array ();
 
-    // condition de limite en nombre
-    if (!empty($conditions->limite))
-        if (!is_numeric ($conditions->limite))
-            return erreur("Le paramètre de limite \$conditions->limite est mal formé, reçu : $conditions->limite");
-        else
-            $limite="\nLIMIT $conditions->limite";
-
-    /******** Liste des conditions de type WHERE *******/
-    if (!empty($conditions->ids_points))
-        if (!verif_multiples_entiers($conditions->ids_points))
-            return erreur("Le paramètre donnée pour les ids des points n'est pas valide, reçu : $conditions->ids_points");
-        else
-            $conditions_sql.="\n AND points.id_point IN ($conditions->ids_points)";
-
-    // conditions sur le nom du point, on tente d'être tolérant en supportant les caractères non accentués, et les - , ou espaces de la même façon
-    if( !empty($conditions->nom) )
-        $conditions_sql .= " AND unaccent(points.nom) ILIKE unaccent(".$pdo->quote('%'.str_replace(array('-',' '),'%',$conditions->nom).'%').")";
-
-    // condition sur l'appartenance à un polygone
-    if( !empty($conditions->ids_polygones) )
-    {
-        if (!verif_multiples_entiers($conditions->ids_polygones))
-            return erreur("Le paramètre donné pour les ids des polygones n'est pas valide, reçu : $conditions->ids_polygones");
-        else
-        {
-            $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
-            $champs_polygones=",".colonnes_table('polygones',False);
-        }
-    }
-    elseif ($conditions->avec_infos_massif)
-    {
-        // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
-        // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
-        $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points.geom, polygones.geom ) AND id_polygone_type=".$config_wri['id_massif'].")";
-        $champs_polygones=",".colonnes_table('polygones',False);
-    }
-
-    if (!empty($conditions->avec_liste_polygones) )
-    {
-        // Jointure pour la liste des polygones auquels appartient le point
-        // sly : FIXME : Cette sous requête est particulièrement couteuse en ressources, il faudrait trouver une technique pour faire ça en JOIN
-        $tables_en_plus.=",(
-                            SELECT
-                              p.id_point,
-                              STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
-                            FROM
-                              polygones pg NATURAL JOIN polygone_type pty,
-                              points p
-                            WHERE
-                              ST_Within(p.geom, pg.geom)
-                              AND
-                              pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-                            GROUP BY p.id_point
-                           ) As liste_polys";
-                          //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
-
-         $champs_polygones.=",liste_polys.liste_polygones";         
-         $conditions_sql .= "\n AND liste_polys.id_point=points.id_point";
-    }
-
-    // on restreint a cette geometrie (un texte "ST machin en fait")
-    // cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
-    if( !empty($conditions->geometrie) )
-    {
-        $conditions_sql .= "\n AND ST_Within(points.geom,".$conditions->geometrie .") ";
-        if ($conditions->avec_distance)
-        {
-            $select_distance = ",ST_Transform(points.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
-            $ordre = "ORDER BY distance";
-        }
-    }
-
-    // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
-    if( !empty($conditions->ids_types_point) )
-        if (!verif_multiples_entiers($conditions->ids_types_point))
-            return erreur("Le paramètre donné pour les ids des types de points n'est pas valide, reçu : $conditions->ids_types_point");
-        else
-            $conditions_sql .="\n AND points.id_point_type IN ($conditions->ids_types_point) \n";
-
-    if( !empty($conditions->places_minimum) )
-        if( is_numeric($conditions->places_minimum) )
-            $conditions_sql .= "\n AND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
-        else
-            return erreur("Le nombre de place minimum doit être un nombre entier, reçu : $conditions->places_minimum");
-    if( !empty($conditions->places_maximum) )
-        if( is_numeric($conditions->places_maximum) )
-            $conditions_sql .= "\n AND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
-        else
-            return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
-    // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
-    if( !empty($conditions->places_matelas_minimum) )
-        if( is_numeric($conditions->places_matelas_minimum) and ($conditions->places_matelas_minimum>0) )
-            $conditions_sql .= "\n AND points.places_matelas >= ". $pdo->quote($conditions->places_matelas_minimum, PDO::PARAM_INT);
-        else
-            return erreur("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : '$conditions->places_matelas_minimum'");
-
-    // conditions sur l'altitude
-    if( !empty($conditions->altitude_minimum) )
-        if( is_numeric($conditions->altitude_minimum) )
-            $conditions_sql .= "\n AND points.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
-        else
-            return erreur("L'altitude minimum doit être un nombre entier, reçu : $conditions->altitude_minimum");
-    if( !empty($conditions->altitude_maximum) )
-        if( is_numeric($conditions->altitude_maximum) )
-            $conditions_sql .= "\n AND points.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
-        else
-            return erreur("L'altitude maximum doit être un nombre entier, reçu : $conditions->altitude_maximum");
-
-
-    //veut-on les points dont les coordonnées sont cachées ?
-    if($conditions->pas_les_points_caches)
-        $conditions_sql .= "\n AND points.id_type_precision_gps != ".$config_wri['id_coordonees_gps_fausses'];
-
-    //quelle condition sur la qualité supposée des GPS
-    if( !empty($conditions->precision_gps) )
-        $conditions_sql .= "\n AND points.id_type_precision_gps IN ($conditions->precision_gps)";
-
-    //quel modérateur(s) de fiche ?
-    if( !empty($conditions->id_createur) )
-        if (!verif_multiples_entiers($conditions->id_createur))
-            return erreur("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : $conditions->id_createur");
-        else
-            $conditions_sql .= "\n AND points.id_createur IN ($conditions->id_createur)";
-
-    //conditions sur la description (champ remark)
-    if( !empty($conditions->description) )
-        $conditions_sql.="\n AND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
-
-    if ($conditions->uniquement_points_en_attente)
-    {
-        $conditions_sql.="\n AND en_attente=True";
-        $conditions->avec_points_en_attente=True;
-    }
-
-    // cas spécial sur les modèle
-    if ($conditions->modele==1)
-        $conditions_sql.="
-         AND modele=1";
-    elseif($conditions->modele=="")
-        $conditions_sql.="
-         AND modele!=1";
+  // condition de limite en nombre
+  if (!empty($conditions->limite))
+    if (!is_numeric ($conditions->limite))
+      return erreur("Le paramètre de limite \$conditions->limite est mal formé, reçu : $conditions->limite");
     else
-        $conditions_sql.="";
+      $limite="\n\tLIMIT $conditions->limite";
+
+  /******** Liste des conditions de type WHERE *******/
+  if (!empty($conditions->ids_points))
+    if (!verif_multiples_entiers($conditions->ids_points))
+      return erreur("Le paramètre donnée pour les ids des points n'est pas valide, reçu : $conditions->ids_points");
+    else
+      $conditions_sql.="\n\tAND points.id_point IN ($conditions->ids_points)";
+
+  // conditions sur le nom du point, on tente d'être tolérant en supportant les caractères non accentués, et les - , ou espaces de la même façon
+  if( !empty($conditions->nom) )
+    $conditions_sql .= "\n\tAND unaccent(points.nom) ILIKE unaccent(".$pdo->quote('%'.str_replace(array('-',' '),'%',$conditions->nom).'%').")";
+
+  // condition sur l'appartenance à un polygone
+  if( !empty($conditions->ids_polygones) )
+  {
+    if (!verif_multiples_entiers($conditions->ids_polygones))
+      return erreur("Le paramètre donné pour les ids des polygones n'est pas valide, reçu : $conditions->ids_polygones");
+    else
+    {
+      $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
+      $champs_polygones=",".colonnes_table('polygones',False);
+    }
+  }
+  elseif ($conditions->avec_infos_massif)
+  {
+    // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
+    // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
+    $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points.geom, polygones.geom ) AND id_polygone_type=".$config_wri['id_massif'].")";
+    $champs_polygones=",".colonnes_table('polygones',False);
+  }
+
+  if (!empty($conditions->avec_liste_polygones) )
+  {
+    // Jointure pour la liste des polygones auquels appartient le point
+    // sly : FIXME : Cette sous requête est particulièrement couteuse en ressources, il faudrait trouver une technique pour faire ça en JOIN
+    $tables_en_plus.=",(
+                          SELECT
+                            p.id_point,
+                            STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
+                          FROM
+                            polygones pg NATURAL JOIN polygone_type pty,
+                            points p
+                          WHERE
+                            ST_Within(p.geom, pg.geom)
+                            AND
+                            pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
+                          GROUP BY p.id_point
+                          ) As liste_polys";
+                        //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
+
+    $champs_polygones.=",liste_polys.liste_polygones";         
+    $conditions_sql .= "\n\tAND liste_polys.id_point=points.id_point";
+  }
+
+  // on restreint a cette geometrie (un texte "ST machin en fait")
+  // cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
+  if( !empty($conditions->geometrie) )
+  {
+    $conditions_sql .= "\n\tAND ST_Within(points.geom,".$conditions->geometrie .") ";
+    if ($conditions->avec_distance)
+    {
+      $select_distance = ",ST_Transform(points.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+      $ordre = "ORDER BY distance";
+    }
+  }
+
+  // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
+  if( !empty($conditions->ids_types_point) )
+    if (!verif_multiples_entiers($conditions->ids_types_point))
+      return erreur("Le paramètre donné pour les ids des types de points n'est pas valide, reçu : $conditions->ids_types_point");
+    else
+      $conditions_sql .="\n\tAND points.id_point_type IN ($conditions->ids_types_point) \n";
+
+  if( !empty($conditions->places_minimum) )
+    if( is_numeric($conditions->places_minimum) )
+        $conditions_sql .= "\n\tAND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
+    else
+        return erreur("Le nombre de place minimum doit être un nombre entier, reçu : $conditions->places_minimum");
+  if( !empty($conditions->places_maximum) )
+    if( is_numeric($conditions->places_maximum) )
+        $conditions_sql .= "\n\tAND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
+    else
+        return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
+  // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
+  if( !empty($conditions->places_matelas_minimum) )
+    if( is_numeric($conditions->places_matelas_minimum) and ($conditions->places_matelas_minimum>0) )
+      $conditions_sql .= "\n\tAND points.places_matelas >= ". $pdo->quote($conditions->places_matelas_minimum, PDO::PARAM_INT);
+    else
+      return erreur("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : '$conditions->places_matelas_minimum'");
+
+  // conditions sur l'altitude
+  if( !empty($conditions->altitude_minimum) )
+    if( is_numeric($conditions->altitude_minimum) )
+      $conditions_sql .= "\n\tAND points.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
+    else
+      return erreur("L'altitude minimum doit être un nombre entier, reçu : $conditions->altitude_minimum");
+  if( !empty($conditions->altitude_maximum) )
+    if( is_numeric($conditions->altitude_maximum) )
+      $conditions_sql .= "\n\tAND points.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
+    else
+      return erreur("L'altitude maximum doit être un nombre entier, reçu : $conditions->altitude_maximum");
+
+
+  //veut-on les points dont les coordonnées sont cachées ?
+  if($conditions->pas_les_points_caches)
+    $conditions_sql .= "\n\tAND points.id_type_precision_gps != ".$config_wri['id_coordonees_gps_fausses'];
+
+  //quelle condition sur la qualité supposée des GPS
+  if( !empty($conditions->precision_gps) )
+    $conditions_sql .= "\n\tAND points.id_type_precision_gps IN ($conditions->precision_gps)";
+
+  //quel modérateur(s) de fiche ?
+  if( !empty($conditions->id_createur) )
+    if (!verif_multiples_entiers($conditions->id_createur))
+      return erreur("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : $conditions->id_createur");
+    else
+      $conditions_sql .= "\n\tAND points.id_createur IN ($conditions->id_createur)";
+
+  //conditions sur la description (champ remark)
+  if( !empty($conditions->description) )
+    $conditions_sql.="\n\tAND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
+
+  if ( !empty($conditions->date_creation_apres) )
+    $conditions_sql.="\n\tAND points.date_creation >= $conditions->date_creation_apres";
+
+
+  if ($conditions->uniquement_points_en_attente)
+  {
+    $conditions_sql.="\n\tAND en_attente=True";
+    $conditions->avec_points_en_attente=True;
+  }
+
+  // cas spécial sur les modèle
+  if ($conditions->modele==1)
+    $conditions_sql.="\n\tAND modele=1";
+  elseif($conditions->modele=="")
+    $conditions_sql.="\n\tAND modele!=1";
+  else
+    $conditions_sql.="";
 
   //prise en compte des conditions trinaires (oui, non ou NULL = ne sait pas)
   if (isset($conditions->trinaire))      // trinaire est construit a part, pas de SQL injection possible normalement
     foreach ($conditions->trinaire as $champ => $valeur)
-      $conditions_sql.="\n AND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
+      $conditions_sql.="\n\tAND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
 
-    if ($conditions->avec_geometrie)
-        $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+  if ($conditions->avec_geometrie)
+    $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
 
   //prise en compte de la recherche sur le chauffage
   if (isset($conditions->chauffage))
   {
     switch ($conditions->chauffage)
     {
-      case 'chauffage':$conditions_sql.="\n AND (points.cheminee OR points.poele)";break;
-      case 'cheminee':$conditions_sql.="\n AND points.cheminee IS TRUE";break;
-      case 'poele':$conditions_sql.="\n AND points.poele IS TRUE ";break;
+      case 'chauffage':$conditions_sql.="\n\tAND (points.cheminee OR points.poele)";break;
+      case 'cheminee':$conditions_sql.="\n\tAND points.cheminee IS TRUE";break;
+      case 'poele':$conditions_sql.="\n\tAND points.poele IS TRUE ";break;
     }
   }
     
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
   if ($conditions->ouvert=='non')
-    $conditions_sql.="\n AND points.conditions_utilisation in ('fermeture','detruit') ";
+    $conditions_sql.="\n\tAND points.conditions_utilisation in ('fermeture','detruit') ";
   if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n AND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
+    $conditions_sql.="\n\tAND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
   if ($conditions->ordre!="")
       $ordre="\nORDER BY $conditions->ordre";
 
   if ( !empty($conditions->conditions_utilisation) )
-    $conditions_sql.="\n AND points.conditions_utilisation = ". $pdo->quote($conditions->conditions_utilisation);
+    $conditions_sql.="\n\tAND points.conditions_utilisation = ". $pdo->quote($conditions->conditions_utilisation);
       
   $query_points="
-  SELECT points.*,
+SELECT points.*,
          ST_AsGeoJSON(points.geom) AS geojson,
          type_precision_gps.*,
          point_type.*,COALESCE(phpbb3_users.username,nom_createur) as nom_createur,
@@ -285,7 +289,7 @@ function infos_points($conditions)
   $ordre
   $limite
   ";
-  //d($query_points);
+//   d($query_points);
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
@@ -293,34 +297,34 @@ function infos_points($conditions)
   $point = new stdClass();
   while ($point = $res->fetch())
   {
-      // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
-      // FIXME sly : Encore cette spécificité liée au massif qu'il faudrait généraliser
-      // jmb: ce n'est pas le boulot de infos_points de donner les noms et adjectifs des massifs.
-      // l'appelant devrait appeler infos_polygone avec l'ID plus tard.
-      // Note sly : Le problème est que ça peut obliger à des centaines de requêtes ! (cf la recherche, les nouvelles,etc.),
-      // l'avantage d'un join ici, c'est qu'on récupère tout ça en une seule requête !
-      // définitivement non, le SQL n'est pas orienté objet !
-      // pas le boulot non plus de infos_points de donner les liens
-      // sly : d'accord avec ça, charge à l'appelant de faire l'appel à lien_point($point);
-      if ($conditions->avec_infos_massif)
-      {
-          $point->nom_massif = $point->nom_polygone;
-          $point->id_massif  = $point->id_polygone;
-          $point->article_partitif_massif = $point->article_partitif;
-      }
-      $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
-      // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
-      if (isset($point->id_createur))
-          $point->nom_createur=html_entity_decode($point->nom_createur);
-      
-      // Ici, petite particularité sur les points en attente, par défaut, on ne veut pas les renvoyer, mais on veut quand
-      // même, si un seul a été demandé, pouvoir dire qu'il est en attente, donc on va le chercher en base mais on renvoi une erreur
-      // s'il est en attente
-      // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points en attente
-      if (!$point->en_attente or $conditions->avec_points_en_attente) // On renvoi ce point, soit il n'est pas en attente, soit on a demandé aussi les points en attente
-          $points[]=$point;
-      elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
-          return erreur("Ce point est en attente de décision, seul un modérateur peut agir sur lui","1");
+    // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
+    // FIXME sly : Encore cette spécificité liée au massif qu'il faudrait généraliser
+    // jmb: ce n'est pas le boulot de infos_points de donner les noms et adjectifs des massifs.
+    // l'appelant devrait appeler infos_polygone avec l'ID plus tard.
+    // Note sly : Le problème est que ça peut obliger à des centaines de requêtes ! (cf la recherche, les nouvelles,etc.),
+    // l'avantage d'un join ici, c'est qu'on récupère tout ça en une seule requête !
+    // définitivement non, le SQL n'est pas orienté objet !
+    // pas le boulot non plus de infos_points de donner les liens
+    // sly : d'accord avec ça, charge à l'appelant de faire l'appel à lien_point($point);
+    if ($conditions->avec_infos_massif)
+    {
+      $point->nom_massif = $point->nom_polygone;
+      $point->id_massif  = $point->id_polygone;
+      $point->article_partitif_massif = $point->article_partitif;
+    }
+    $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
+    // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
+    if (isset($point->id_createur))
+      $point->nom_createur=html_entity_decode($point->nom_createur);
+    
+    // Ici, petite particularité sur les points en attente, par défaut, on ne veut pas les renvoyer, mais on veut quand
+    // même, si un seul a été demandé, pouvoir dire qu'il est en attente, donc on va le chercher en base mais on renvoi une erreur
+    // s'il est en attente
+    // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points en attente
+    if (!$point->en_attente or $conditions->avec_points_en_attente) // On renvoi ce point, soit il n'est pas en attente, soit on a demandé aussi les points en attente
+      $points[]=$point;
+    elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
+      return erreur("Ce point est en attente de décision, seul un modérateur peut agir sur lui","1");
   }
   return $points;
 }

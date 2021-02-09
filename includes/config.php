@@ -102,13 +102,16 @@ $config_wri['id_coordonees_gps_fausses']=5;
 $config_wri['id_coordonees_gps_approximative']=4;
 
 
-/********** choix de maximums pour rechercher et cartes ************/
+/********** choix de maximums ************/
 
 // nombre maximum de points que peut sortir la recherche
 $config_wri['points_maximum_recherche']=40;
 
 // nombre de points renvoyés par défaut, par l'API
 $config_wri['defaut_max_nombre_point']=250;
+
+// nombre de jours pris en compte pour les derniers ajouts sur la page d'accueil et nouvelles
+$config_wri['defaut_max_jours_ajouts_recents']=7;
 
 
 /********** Lié au Forum / comptes / utilisateurs / login / users ************/

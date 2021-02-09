@@ -32,34 +32,35 @@
 	<div class="tablo" style="float:none;padding-left:15px">
 		<?=$vue->nouvelles_generales?>
 
-		<h4><?=$vue->stat->nbphotos?> photos</h4>
+		<h4><?=$vue->stat->nbphotos?> photos. De moins <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<br/>
 		<ul>
-			<?php if (isset($vue->photos_recentes)) 
-				foreach ($vue->photos_recentes as $vignette) {?>
+			<?php if (isset($vue->nouveaux_commentaires)) 
+				foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {  if ($nouveau_commentaire->photo_existe) {
+				  ?>
 			<li>
-				<a href="<?=$vignette->lien?>" title="<?=$vignette->nom?>">
-					<img alt="photo" src="<?=$vignette->lien_photo['vignette']?>" />
+				<a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>" title="<?=$nouveau_commentaire->nom?>">
+					<img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>" />
 				</a>
 			</li>
-			<?}?>
+			<?}}?>
 		</ul>
 		<br/>
 
-		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges</h4>
+		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges. De moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<ul>
-			<?php foreach ($vue->nouveaux_points as $nouveau_point) { ?>
+			<?php if (isset($vue->nouveaux_points)) foreach ($vue->nouveaux_points as $nouveau_point) { ?>
 				<li>
-					<em><?=$nouveau_point->date_formatee?></em>
+					<em><?=date("d/m/y",$nouveau_point->date_creation_timestamp)?></em>
 					&nbsp;Ajout <?=$nouveau_point->article_partitif_point_type?> <?=$nouveau_point->nom_type?>
 					<?php if ($nouveau_point->nom_createur!="") { 
 						if ($nouveau_point->id_createur==0) { ?>
 							par <?=$nouveau_point->nom_createur?>
 						<?php } else { ?>
-						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
+						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=bbcode2html($nouveau_point->nom_createur)?></a>
 						<?}?>
 					<?}?>
-						: <a href="<?=$nouveau_point->lien?>"><?=$nouveau_point->nom?></a>
+						: <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst(bbcode2html($nouveau_point->nom))?></a>
 						<?php if (isset($nouveau_point->id_massif)) { ?>
 						dans le 
 						<a href="<?=lien_polygone($nouveau_point,True)?>">massif <?=$nouveau_point->article_partitif_massif?> <?=$nouveau_point->nom_massif?></a>
@@ -70,12 +71,24 @@
 		</ul>
 		<br/>
 
-		<h4><?=$vue->stat->nbcomm?> commentaires</h4>
+		<h4><?=$vue->stat->nbcomm?> commentaires. De moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<ul>
 			<?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>
 				<li>
-					<em><?=$nouveau_commentaire['date_formatee']?></em>
-					&nbsp;<?=$nouveau_commentaire['texte']?>
+					<em><?=date("d/m/y",$nouveau_commentaire->ts_unix_commentaire)?></em>
+					&nbsp;Commentaire
+					<?php if ($nouveau_commentaire->auteur_commentaire!="") { 
+						if ($nouveau_commentaire->id_createur_commentaire==0) { ?>
+							par <?=$nouveau_commentaire->auteur_commentaire?>
+						<?php } else { ?>
+						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_commentaire->id_createur_commentaire?>"><?=$nouveau_commentaire->auteur_commentaire?></a>
+						<?}?>
+					<?}?>
+						sur <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=bbcode2html($nouveau_commentaire->nom)?></a>
+						<?php if (isset($nouveau_commentaire->id_polygone)) { ?>
+						dans le 
+						<a href="<?=lien_polygone($nouveau_commentaire,True)?>">massif <?=$nouveau_commentaire->article_partitif?> <?=$nouveau_commentaire->nom_polygone?></a>
+						<?}?>
 				</li>
 			<?}?>
 				<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>

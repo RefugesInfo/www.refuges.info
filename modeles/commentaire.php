@@ -97,6 +97,9 @@ function infos_commentaires ($conditions)
   if ($conditions->demande_correction)
     $conditions_sql.=" AND demande_correction!=0";
 
+  if ($conditions->date_apres)
+    $conditions_sql.="\n\tAND date >= $conditions->date_apres";
+
   // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
   // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
   // jmb ca fait un job de trop pour cette fonction. faudrait pourtant bien appeler infos_points pour etre coherent.
@@ -114,7 +117,7 @@ function infos_commentaires ($conditions)
             $champ_en_plus.=",points.*,point_type.*,";
             // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
             // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
-            $champ_en_plus.="polygones.article_partitif,polygones.nom_polygone,polygones.source,polygones.message_information_polygone,polygones.url_exterieure,polygones.site_web";
+            $champ_en_plus.="polygones.id_polygone,polygones.article_partitif,polygones.nom_polygone,polygones.source,polygones.message_information_polygone,polygones.url_exterieure,polygones.site_web";
 
             if (!$conditions->avec_commentaires_modele)
                     $condition_en_plus.=" AND modele!=1 ";
