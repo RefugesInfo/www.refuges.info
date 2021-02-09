@@ -135,6 +135,9 @@ $config_wri['url_nominatim']="//nominatim.openstreetmap.org/";
 $config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
 $config_wri['email_contact_nominatim']="sylvain@refuges.info";
 
+// Censure des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
+$config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
+
 // tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un lourd à maintenir)
 // La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
 
@@ -159,24 +162,22 @@ $config_wri['nom_fichier_export']="refuge-info";
 $config_wri['autoriser_CORS']=TRUE; // Autoriser les requêtes AJAX sur notre API
 $config_wri['copyright_API']="The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0";
 
-// indispensable pour avoir les affichage de date en french et en UTF-8
-setlocale(LC_TIME, "fr_FR.UTF-8");
+// ******* options php *******
+setlocale(LC_TIME, "fr_FR.UTF-8"); // Pour avoir les affichage de date en french et en UTF-8
 mb_internal_encoding("UTF-8");
 // FIXME : les dates que nous avons dans notre base sont déjà en heure locale (de Paris) si j'indique ici Europe/Paris, lors de formatage de date en php, on se retrouve à ajouter une fois de trop 1h ou 2h
 // donc en lui disant "UTC" il ne fait pas d'ajout et nous laisse les heures comme elle devrait être
 // La bonne solution serait sûrement de convertir toutes les dates de notre base en UTC et de faire les opérations ensuite pour la présentation à l'affichage
 date_default_timezone_set('UTC');
 
-// Censure des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
-$config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
+ini_set('short_open_tag','1'); // on utilise encore par ci par là la notation < ? print(1); ? > qui a besoin de cette option
+ini_set('date.timezone','Europe/Paris');
+// NOTE: j'aurais aimé tout mettre ici, par exemple la taille max de fichier qu'on peut envoyer, mais ça n'est pas pris en compte par php, voir le fichier .user.ini
 
-// ************* développeurs debug & co
-
-// par défaut, pas d'erreur php à l'écran, développeurs : utilisez vore config_privee.php pour définir vos propres options
-ini_set('error_reporting', E_ERROR);
+// option de développement et debug 
+ini_set('error_reporting', E_ERROR); // par défaut, pas d'erreur php à l'écran, développeurs : utilisez vore config_privee.php pour définir vos propres options
 ini_set('display_errors', '0');
-// cette option contrôle des sorties avec plus d'info mais un peu privée comme requêtes SQL et variables, mettez à true dans votre fichier privee
-$config_wri['debug']=false;
+$config_wri['debug']=false; // cette option contrôle des sorties avec plus d'info mais un peu privée comme requêtes SQL et variables, mettez à true dans votre fichier privee
 
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
 // que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore 
