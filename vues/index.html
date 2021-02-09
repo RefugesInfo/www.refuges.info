@@ -34,17 +34,15 @@
 
 		<h4><?=$vue->stat->nbphotos?> photos. De moins <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<br/>
-		<ul>
+		<dd>
 			<?php if (isset($vue->nouveaux_commentaires)) 
 				foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {  if ($nouveau_commentaire->photo_existe) {
 				  ?>
-			<li>
 				<a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>" title="<?=$nouveau_commentaire->nom?>">
 					<img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>" />
 				</a>
-			</li>
 			<?}}?>
-		</ul>
+		</dd>
 		<br/>
 
 		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges. De moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
