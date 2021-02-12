@@ -143,3 +143,9 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 			</label>
 	<?}?>
 </div>
+<p>
+<?php if (!empty($vue->points_de_la_zone)) foreach ($vue->points_de_la_zone as $point) { ?>
+
+<a href="<?=lien_point($point)?>"><?=$point->nom?></a>&nbsp;
+<?php } ?>
+</p>

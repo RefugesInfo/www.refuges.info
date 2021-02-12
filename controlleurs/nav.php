@@ -82,3 +82,19 @@ $vue->json_polygones = $polygones_bruts[0]->geometrie_geojson;
 
 $vue->lien_legende_carte=lien_wiki('legende_carte');
 
+/* sly 2021-02-12 : dans un objectif de test, j'ajoute en fin de page la liste plate (dans une limite de perf de 100) des liens vers toutes les fiches du polygone considéré.
+  L'objectif est multiple : je veux savoir si ça améliore le référencement de ces pages, car je trouve que les moteurs de recherche ne les indexent que très mal. 
+  Sans doute car il ne savent pas intérpréter le js de OL alors qu'en terme de pertinence, selon moi il apparait pertinent que "refuges+écrins" devrait tomber sur la carte des écrins chez nous ;-)
+  L'autre, c'est pour les utilisateurs sans javascript (ouais, ça doit plus trop exister), mais pour eux, cette page ne sert vraiment à rien !
+  Et enfin, sur mobile, parfois, le js ne se charge pas en 2G, avoir cette liste donnerait a minima un truc que l'on peut "chercher" par ctrl+f
+  Et tout ça pour ~20ms de coût de chargement, dans une zone qui ne perturbe pas beaucoup les users normaux.
+  */
+if (!$id_polygone_type)
+{
+$conditions = new stdClass;
+$conditions->ids_polygones=$id_polygone;
+$conditions->ids_types_point=$config_wri['tout_type_refuge'];
+$conditions->limite=100;
+$vue->points_de_la_zone=infos_points($conditions);
+
+}
