@@ -10,9 +10,7 @@
 <div id="entete">
 	<div>
 		<?if (est_connecte()) {?>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$infos_identification->session_id?>">Déconnexion</a>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php" title="Modifier votre profil"><?=$infos_identification->username?></a> /
-			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=reg_details&i=ucp_profile" title="Changer votre mot de passe">mdp</a>
+			<a href="<?=$config_wri['lien_forum']?>ucp.php" title="Modifier votre profil">Connecté en <?=$infos_identification->username?></a>
 		<?} else {?>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login" title="Si vous avez déjà un compte">Connexion</a>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=register" title="Créer un compte">Inscription</a> /
@@ -52,9 +50,7 @@ foreach ($menus AS $id) {?>
 				<a href="<?=$config_wri['sous_dossier_installation']?>">Accueil</a>
 			</li>
 			<li class="mobile-only">
-				<?if (est_moderateur()) {?>
-					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&sid=<?=$infos_identification->session_id?>">Déconnexion</a>
-				<?} else {?>
+				<?if (!est_moderateur()) {?>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">Connexion</a>
 					<span onclick="flip(this.parentNode,'deroule')" title="Inscription">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 				<?}?>
