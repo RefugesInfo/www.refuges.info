@@ -70,30 +70,6 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
 
     return $query;
 }
-/* Et une autre fonction postgresql spécifique pour obtenir les noms des colonnes d'une table
-FIXME : ça risque d'être trop souvent appelé, le mettre dans un tableau global pourrait être plus économe... à voir
-c'est pas non plus la requête qui consomme beaucoup -- sly
-FIXME : 2021-02-07 et ben un peu quand même ! C'est de l'ordre de 10ms juste pour la table polygone qui récupère 7 champs, du délire.
-c'est pas que 10ms ça soit beaucoup, mais à la longue...
-Le but est le suivant : Les géométries GIS peuvent être énormes, et d'habitude, je mets "select *" car c'est bien plus
-simple que de lister tous les champs, qui en plus, pourraient augmenter en nombre. Mais là, surtout avec les polygones énormes
-il vaut mieux pouvoir enlever la colonne "geom" si demandée (ce qui sera quasi tout le temps le cas, mais je préfère être générique)
-
-Cette fonction retourne les champs sous la forme d'une chaine au format "table.champ1,table.champ2"
-*/
-function colonnes_table($table,$renvoyer_aussi_colonne_geometrie=True)
-{
-  global $pdo;
-  $res=$pdo->query("select column_name 
-                    from information_schema.columns 
-                    where 
-                      table_name='$table'");
-  while ($colonne=$res->fetch())
-    if ($renvoyer_aussi_colonne_geometrie or $colonne->column_name!="geom")
-      $r.="$table.$colonne->column_name,";
-  $r=trim($r,",");
-  return $r;
-}
 
 // Vu qu'on inclus ce fichier, c'est qu'on a besoin d'une connexion, chaque appelant pourrait la faire, mais c'est plus lourd
 $pdo = new PDO_wri();

@@ -119,7 +119,7 @@ function infos_points($conditions)
     else
     {
       $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
-      $champs_polygones=",".colonnes_table('polygones',False);
+      $champs_polygones=",".$config_wri['champs_table_polygones'];
     }
   }
   elseif ($conditions->avec_infos_massif)
@@ -127,7 +127,7 @@ function infos_points($conditions)
     // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
     // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
     $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points.geom, polygones.geom ) AND id_polygone_type=".$config_wri['id_massif'].")";
-    $champs_polygones=",".colonnes_table('polygones',False);
+    $champs_polygones=",".$config_wri['champs_table_polygones'];
   }
 
   if (!empty($conditions->avec_liste_polygones) )
@@ -171,7 +171,7 @@ function infos_points($conditions)
       return erreur("Le paramètre donné pour les ids des types de points n'est pas valide, reçu : $conditions->ids_types_point");
     else
       $conditions_sql .="\n\tAND points.id_point_type IN ($conditions->ids_types_point) \n";
-
+      
   if( !empty($conditions->places_minimum) )
     if( is_numeric($conditions->places_minimum) )
         $conditions_sql .= "\n\tAND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
@@ -289,7 +289,7 @@ SELECT points.*,
   $ordre
   $limite
   ";
-//   d($query_points);
+  
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 

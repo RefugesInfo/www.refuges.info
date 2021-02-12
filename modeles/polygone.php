@@ -128,7 +128,7 @@ function infos_polygones($conditions)
                  st_ymax(geom) AS nord
                  ";
 
-  $query="SELECT polygone_type.*,polygones.id_polygone,polygones.article_partitif,polygones.nom_polygone,polygones.source,polygones.message_information_polygone,polygones.url_exterieure,polygones.site_web
+  $query="SELECT polygone_type.*,".$config_wri['champs_table_polygones']."
                  $champs_en_plus
           FROM polygones,polygone_type$table_en_plus
           WHERE

@@ -90,6 +90,10 @@ $config_wri['id_gite_etape']=9;
 $config_wri['point_d_eau']=23;
 $config_wri['id_batiment_en_montagne']=28;
 
+//là aussi ça parait crétin de stocker ça en dur, alors qu'il y a bien une technique pour lister dynamiquement le nom des champs, et ben, allez savoir pourquoi, chez postgres, cette méthode bouffe ~10ms !! Vu que je m'en sers plusieurs fois en plus, quitte à en arriver là, je l'écris ici et zou
+//pensez à ajouter vous même à la main "geom" si vous voulez la géométrie, car c'est justement là le but de ne pas mettre "*" : éviter de récupérer la géométrie pour rien
+$config_wri['champs_table_polygones']='polygones.id_polygone,polygones.id_polygone_type,polygones.article_partitif,polygones.nom_polygone,polygones.source,polygones.message_information_polygone,polygones.url_exterieure,polygones.site_web';
+
 // Champs valables pour les points classés par spécificité (permet de dynamiquement gérer en partie le formulaire de saisie et d'affichage)
 // FIXME sly 13/08/2013 : on pourrait presque aller les chercher dans la base directement, mais on perdrait la possiblité de changer l'ordre facilement. A voir le pour et le contre
 $config_wri['champs_trinaires_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite'); // ceux là sont des champs ou ne sait pas/oui/non sont possible (traiter dynamiquement dans une boucle)
