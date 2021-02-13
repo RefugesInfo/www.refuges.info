@@ -27,6 +27,8 @@ Fonction qu'on peut appeler pour retourner le fait qu'on soit en erreur+un messa
 Mais aussi, si le mode debug de wri est activé ($config_wri['debug']=true) un message plus complet sur l'erreur survenue.
 Le premier paramètre est un texte d'erreur qui peut être lu par l'internaute
 Le deuxième peut contenir des infos délicates mais qui ne seront affichées qu'en mode debug
+FIXME sly 2021 : c'est joli cette fonction mutante qui sert à renvoyer parfois une var, et, en cas d'erreur ce tableau, mais c'est trop galère à faire des is_array, empty à chaque retour.
+FIXME on est en 2021 et il existe les exceptions, c'est ça qu'il me faut. Bon par de miracle hein, on passe d'un test du retour, au passage dans un bloc try / catch mais c'est plus standardisé
  */
 function erreur($texte,$seulement_avec_debug="")
 {

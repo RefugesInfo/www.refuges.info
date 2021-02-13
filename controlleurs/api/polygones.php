@@ -28,11 +28,11 @@ function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
 $req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
-$req->format = $_REQUEST['format'];
-$req->massif = $_REQUEST['massif'];
-$req->type_polygones = $_REQUEST['type_polygon'];
-$req->bbox = $_REQUEST['bbox'];
-$req->intersection = $_REQUEST['intersection'];
+$req->format = $_REQUEST['format'] ?? '';
+$req->massif = $_REQUEST['massif'] ?? '';
+$req->type_polygones = $_REQUEST['type_polygon'] ?? '';
+$req->bbox = $_REQUEST['bbox'] ?? '';
+$req->intersection = $_REQUEST['intersection'] ?? '';
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
@@ -108,10 +108,11 @@ if ($nb_coul) {
 			$polygones->$i->type['id'] = $polygone->id_polygone_type;
 			$polygones->$i->type['type'] = $polygone->type_polygone;
 			$polygones->$i->type['categorie'] = $polygone->categorie_polygone_type;
-			$polygones->$i->geometrie =
-				$_GET['type_geom']=='polylines'
-					? str_replace (array('MultiPolygon','[[[',']]]'), array('MultiLineString','[[',']]'), $polygone->$geo)
-					: $polygone->$geo;
+			//if (!empty($_GET['type_geom']))
+			  $polygones->$i->geometrie =
+                $_GET['type_geom'] ?? '' =='polylines'
+                  ? str_replace (array('MultiPolygon','[[[',']]]'), array('MultiLineString','[[',']]'), $polygone->$geo)
+                  : $polygone->$geo;
 			$polygones->$i->partitif = $polygone->article_partitif;
 			$polygones->$i->bbox = $polygone->bbox;
 			$polygones->$i->lien = lien_polygone($polygone,False);
@@ -129,14 +130,11 @@ array_walk_recursive($polygones, 'updatebool2char'); // Remplace les False et Tr
 /****************************** FORMAT VUE ******************************/
 
 switch ($req->format) {
-    case 'geojson':
-        include($config_wri['chemin_vues'].'/api/polygones.vue.json');
-        break;
     case 'gml':
-        include($config_wri['chemin_vues'].'/api/polygones.vue.gml');
+        include($config_wri['chemin_vues'].'/api/polygones.vue.gml.php');
         break;
     default:
-        include($config_wri['chemin_vues'].'/api/polygones.vue.json');
+        include($config_wri['chemin_vues'].'/api/polygones.vue.json.php');
         break;
 }
 

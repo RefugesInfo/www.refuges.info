@@ -36,14 +36,14 @@ $vue = new stdClass();
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();
 $req->page = $cible; // Ici on récupère la page (point, bbox, massif, contribution...)
-$req->bbox = $_REQUEST['bbox'];
-$req->massif = $_REQUEST['massif'];
-$req->id = $_REQUEST['id'];
-$req->format = $_REQUEST['format'];
-$req->detail = $_REQUEST['detail'];
-$req->format_texte = $_REQUEST['format_texte'];
-$req->nb_points = $_REQUEST['nb_points'];
-$req->type_points = $_REQUEST['type_points'];
+$req->bbox = $_REQUEST['bbox'] ?? '';
+$req->massif = $_REQUEST['massif'] ?? '';
+$req->id = $_REQUEST['id'] ?? '';
+$req->format = $_REQUEST['format'] ?? '';
+$req->detail = $_REQUEST['detail'] ?? '';
+$req->format_texte = $_REQUEST['format_texte'] ?? '';
+$req->nb_points = $_REQUEST['nb_points'] ?? '';
+$req->type_points = $_REQUEST['type_points'] ?? '';
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();

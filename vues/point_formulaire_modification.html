@@ -94,7 +94,7 @@
                 </a>
             </label>
 
-            <?php if (est_moderateur() and $vue->point->id_point) {?>
+            <?php if (est_moderateur() and !empty($vue->point->id_point)) {?>
 				<label>Modérateur de cette fiche:
                     <select name='id_createur'>	
                         <option  value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
@@ -128,7 +128,7 @@
         </fieldset>
         <?php } ?>
 
-        <?php if ($vue->champs->conditions_utilisation) { ?>
+        <?php if (!empty($vue->champs->conditions_utilisation)) { ?>
         <fieldset class="booleen">
             <legend>État :</legend>
             <?php foreach ( $vue->champs->conditions_utilisation->options as $option_key => $option_val) { ?>

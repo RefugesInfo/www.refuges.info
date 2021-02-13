@@ -19,7 +19,7 @@ $vue->champs->entier_ou_sait_pas = new stdClass; // seulement les trinaires TRUE
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
 // ou si les droits sont insuffisants
-if ( isset($_REQUEST["id_point"]) )  
+if ( !empty($_REQUEST["id_point"]) )  
 {
     // Si c'est un modérateur, il peut voir la fiche même si elle est en attente de décision
     if (est_moderateur())
@@ -67,7 +67,7 @@ if ( isset($_REQUEST["id_point"]) )
     }
 }
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
-elseif ( isset($_REQUEST["id_point_type"]))  
+elseif ( !empty($_REQUEST["id_point_type"]))  
 {
     $conditions = new stdClass;
     $conditions->ids_types_point=$_REQUEST["id_point_type"];
@@ -91,7 +91,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
     unset($point->id_createur);
     
     // cosmétique
-    $icone="&amp;iconecenter=".$point->nom_icone;
+    $icone="&amp;iconecenter=".choix_icone($point);
     $action="Ajout";
     $verbe="Ajouter";
 }
@@ -104,7 +104,7 @@ else
 }
 
 /******** Formulaire de modification/création/suppression *****************/
-if (isset($point->id_point))
+if (!empty($point->id_point))
 {
     $vue->champs->invisibles->id_point = new stdClass;
     $vue->champs->invisibles->id_point->valeur = $point->id_point;
@@ -127,7 +127,7 @@ $bouton_reset->label = "Recommencer";
 $vue->champs->boutons->valider=$bouton_valider;
 $vue->champs->boutons->reset=$bouton_reset;
 
-if (isset($bouton_suppr))
+if (!empty($bouton_suppr))
     $vue->champs->boutons->suppr=$bouton_suppr;
 
 //3 Champs text area similaires, on fait une boucle

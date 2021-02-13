@@ -25,7 +25,7 @@ if (!empty($vue->http_status_code))
 <!doctype html>
 <html lang="fr">
 	<head>
-		<title><?=$vue->titre?></title>
+		<title><?=$vue->titre ?? ''?></title>
 		<link rel="shortcut icon" type="image/svg+xml" href="<?=$config_wri['sous_dossier_installation']?>images/favicon.svg" />
 		<link rel="icon" rel="alternate" type="image/png" href="<?=$config_wri['sous_dossier_installation']?>images/favicon.png">
 		<meta name="robots" content="all" />

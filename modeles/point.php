@@ -88,7 +88,7 @@ Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet-
 function infos_points($conditions)
 {
   global $config_wri,$pdo;
-  $champs_en_plus=$select_distance=$conditions_sql=$tables_en_plus=$ordre=$limite="";
+  $champs_en_plus=$select_distance=$conditions_sql=$tables_en_plus=$ordre=$limite=$champs_polygones="";
   $points = array ();
 
   // condition de limite en nombre
@@ -120,7 +120,7 @@ function infos_points($conditions)
       $champs_polygones=",".$config_wri['champs_table_polygones'];
     }
   }
-  elseif ($conditions->avec_infos_massif)
+  elseif (!empty($conditions->avec_infos_massif))
   {
     // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
     // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
@@ -156,7 +156,7 @@ function infos_points($conditions)
   if( !empty($conditions->geometrie) )
   {
     $conditions_sql .= "\n\tAND ST_Within(points.geom,".$conditions->geometrie .") ";
-    if ($conditions->avec_distance)
+    if (!empty($conditions->avec_distance))
     {
       $select_distance = ",ST_Transform(points.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
       $ordre = "ORDER BY distance";

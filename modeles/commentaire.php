@@ -191,7 +191,7 @@ function infos_commentaire($id_commentaire,$meme_si_en_attente=False)
   $conditions->avec_infos_point=True;
   $conditions->avec_points_en_attente=$meme_si_en_attente;
   $c=infos_commentaires ($conditions);
-  if ($c->erreur)
+  if (!empty($c->erreur))
     return erreur($c->texte);
   if (count($c)!=1)
       return erreur("un commentaire demandé mais ".count($c)." trouvés");

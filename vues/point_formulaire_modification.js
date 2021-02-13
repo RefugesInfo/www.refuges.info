@@ -57,7 +57,7 @@ const refugesInfo = layerRefugesInfo({
 		layersSwitcher,
 		controlPermalink({ // Permet de garder le même réglage de carte en création
 			visible: false, // Mais on ne visualise pas le lien du permalink
-<?php if ($point->id_point) { ?>
+<?php if (!empty($point->id_point)) { ?>
 			init: false, // Ici, on utilisera plutôt la position du point si on est en modification
 <?php } ?>
 		}),
@@ -73,7 +73,7 @@ const refugesInfo = layerRefugesInfo({
 
 	map = new ol.Map({
 		target: 'carte-edit',
-<?php if ($point->id_point) { ?>
+<?php if (!empty($point->id_point)) { ?>
 		view: new ol.View({ // Position initiale forcée aux coordonnées de la cabane
 			center: ol.proj.fromLonLat([<?=$vue->point->longitude?>, <?=$vue->point->latitude?>]),
 			zoom: 13,
