@@ -5,7 +5,7 @@ Contrôleur qui prépare la vue pour les pages des commentaires en attente de co
 
 // On applique la validation des commentaires cochés
 $conditions = new stdclass;
-if ($_POST["corrections_faites"]!="")
+if (!empty($_POST["corrections_faites"]))
 	foreach ($_POST['commentaires_corriges'] as $id_commentaire) {
 		$conditions->avec_points_en_attente=True; // Ici, en secteur modération, il est possible qu'un modérateur souhaite modifier le commentaire d'une fiche en attente de décision
 		$conditions->ids_commentaires=$id_commentaire;

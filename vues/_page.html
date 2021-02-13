@@ -8,7 +8,7 @@
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 
 // Ici on permet de changer le code http qui, par défaut est 200
-if ($vue->http_status_code) 
+if (!empty($vue->http_status_code)) 
     switch ($vue->http_status_code) 
     {
         case 403:

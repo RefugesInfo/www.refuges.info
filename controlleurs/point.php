@@ -23,7 +23,7 @@ $point = infos_point ($id_point,$meme_si_en_attente);
 // Partie spécifique de la page
 
 // Le point n'est pas trouvé ou il y a un problème avec ce point
-if ($point->erreur)
+if (!empty($point->erreur))
 {
     $vue->type="page_simple";
     // On affiche le message d'erreur spécifique à ce point

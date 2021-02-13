@@ -17,10 +17,8 @@ else
     $nombre = 30;
 
 $vue->stat = stat_site ();
-$types_nouvelles = $_GET ['quoi']
-			  ? $_GET ['quoi']
-			  : 'commentaires,points,forums';
-$vue->nouvelles = nouvelles ($nombre,$types_nouvelles);
+$vue->types_nouvelles = $_GET ['quoi'] ??  'commentaires,points,forums';
+$vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles);
 $vue->nouvelles = texte_nouvelles ($vue->nouvelles); // On ajoute le texte
 
 foreach ($vue->nouvelles as $id => $nouvelle)

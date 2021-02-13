@@ -30,7 +30,7 @@ if ( isset($_REQUEST["id_point"]) )
     $point=infos_point($_REQUEST['id_point'],$meme_si_en_attente);
 
     // Stop, le point n'existe pas (ou est en attente et il ne faut pas dire que c'est le cas)
-    if ($point->erreur) 
+    if (!empty($point->erreur)) 
     {
         $vue->http_status_code = 404;
         $vue->type = "page_simple";
@@ -71,7 +71,7 @@ elseif ( isset($_REQUEST["id_point_type"]))
 {
     $conditions = new stdClass;
     $conditions->ids_types_point=$_REQUEST["id_point_type"];
-    $conditions->modele=1;
+    $conditions->modele='uniquement';
     $points_modele=infos_points($conditions);
     if (count($points_modele)!=1)
     {

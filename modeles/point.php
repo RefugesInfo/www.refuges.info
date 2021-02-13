@@ -65,7 +65,7 @@ FIXME : 2 conditions pour faire presque la même chose, je me demande s'il n'y a
 $conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
 $conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
 
-$conditions->modele=True si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), -1 si on veut tout, par défaut on ne les veux pas.
+$conditions->modele='uniquement' si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), 'avec' si on veut les points et les modèles, si empty() on ne les veux pas.
 $conditions->avec_points_en_attente=True : Par défaut, False : les points en attente ne sont pas retournés
 $conditions->uniquement_points_en_attente=True : ne retourner que les points en attente (utiles uniquement pour les modérateurs)
 
@@ -88,9 +88,7 @@ Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet-
 function infos_points($conditions)
 {
   global $config_wri,$pdo;
-  $champs_en_plus="";
-  $conditions_sql="";
-  $tables_en_plus="";
+  $champs_en_plus=$select_distance=$conditions_sql=$tables_en_plus=$ordre=$limite="";
   $points = array ();
 
   // condition de limite en nombre
@@ -203,7 +201,7 @@ function infos_points($conditions)
 
 
   //veut-on les points dont les coordonnées sont cachées ?
-  if($conditions->pas_les_points_caches)
+  if(!empty($conditions->pas_les_points_caches))
     $conditions_sql .= "\n\tAND points.id_type_precision_gps != ".$config_wri['id_coordonees_gps_fausses'];
 
   //quelle condition sur la qualité supposée des GPS
@@ -225,30 +223,32 @@ function infos_points($conditions)
     $conditions_sql.="\n\tAND points.date_creation >= $conditions->date_creation_apres";
 
 
-  if ($conditions->uniquement_points_en_attente)
+  if (!empty($conditions->uniquement_points_en_attente))
   {
     $conditions_sql.="\n\tAND en_attente=True";
     $conditions->avec_points_en_attente=True;
   }
 
-  // cas spécial sur les modèle
-  if ($conditions->modele==1)
-    $conditions_sql.="\n\tAND modele=1";
-  elseif($conditions->modele=="")
-    $conditions_sql.="\n\tAND modele!=1";
-  else
-    $conditions_sql.="";
+  // cas spécial sur les modèles (ils sont dans la table point, ont modele=1 et servent à pré-remplir les champs d'une saisie d'un type particulier)
+  // par défaut on ne les veut pas
+  if (!empty($conditions->modele))
+  {
+    if ($conditions->modele=='uniquement')
+      $conditions_sql.="\n\tAND modele=1";
+  }
+    else 
+      $conditions_sql.="\n\tAND modele!=1";
 
   //prise en compte des conditions trinaires (oui, non ou NULL = ne sait pas)
-  if (isset($conditions->trinaire))      // trinaire est construit a part, pas de SQL injection possible normalement
+  if (!empty($conditions->trinaire))      // trinaire est construit a part, pas de SQL injection possible normalement
     foreach ($conditions->trinaire as $champ => $valeur)
       $conditions_sql.="\n\tAND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
 
-  if ($conditions->avec_geometrie)
+  if (!empty($conditions->avec_geometrie))
     $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
 
   //prise en compte de la recherche sur le chauffage
-  if (isset($conditions->chauffage))
+  if (!empty($conditions->chauffage))
   {
     switch ($conditions->chauffage)
     {
@@ -259,11 +259,15 @@ function infos_points($conditions)
   }
     
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
-  if ($conditions->ouvert=='non')
-    $conditions_sql.="\n\tAND points.conditions_utilisation in ('fermeture','detruit') ";
-  if ($conditions->ouvert=='oui')
-    $conditions_sql.="\n\tAND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
-  if ($conditions->ordre!="")
+  if (!empty($conditions->ouvert))
+  {
+    if ($conditions->ouvert=='non')
+      $conditions_sql.="\n\tAND points.conditions_utilisation in ('fermeture','detruit') ";
+    if ($conditions->ouvert=='oui')
+      $conditions_sql.="\n\tAND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
+  }
+    
+  if (!empty($conditions->ordre))
       $ordre="\nORDER BY $conditions->ordre";
 
   if ( !empty($conditions->conditions_utilisation) )
@@ -306,7 +310,7 @@ SELECT points.*,
     // définitivement non, le SQL n'est pas orienté objet !
     // pas le boulot non plus de infos_points de donner les liens
     // sly : d'accord avec ça, charge à l'appelant de faire l'appel à lien_point($point);
-    if ($conditions->avec_infos_massif)
+    if (!empty($conditions->avec_infos_massif))
     {
       $point->nom_massif = $point->nom_polygone;
       $point->id_massif  = $point->id_polygone;
@@ -321,9 +325,9 @@ SELECT points.*,
     // même, si un seul a été demandé, pouvoir dire qu'il est en attente, donc on va le chercher en base mais on renvoi une erreur
     // s'il est en attente
     // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points en attente
-    if (!$point->en_attente or $conditions->avec_points_en_attente) // On renvoi ce point, soit il n'est pas en attente, soit on a demandé aussi les points en attente
+    if (!$point->en_attente or !empty($conditions->avec_points_en_attente)) // On renvoi ce point, soit il n'est pas en attente, soit on a demandé aussi les points en attente
       $points[]=$point;
-    elseif (is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
+    elseif ( !empty($conditions->ids_points) and is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
       return erreur("Ce point est en attente de décision, seul un modérateur peut agir sur lui","1");
   }
   return $points;
@@ -359,7 +363,7 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
   $conditions->ids_points=$id_point;
   if (empty($id_point))
       return erreur("Il semblerait que vous n'avez pas renseigné le n°du point");
-  $conditions->modele=-1;
+  $conditions->modele='avec';
   $conditions->avec_infos_massif=True;
   if ($meme_si_en_attente)
      $conditions->avec_points_en_attente=True;
@@ -367,10 +371,12 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
   // récupération des infos du point
   $points=infos_points($conditions);
   // Requête impossible à executer
-  if ($points->erreur)
+  if (!empty($points->erreur))
     return erreur($points->message);
+    
   if (count($points)==0)
     return erreur("Le numéro de point demandé \"$conditions->ids_points\" est introuvable dans notre base");
+    
   if (count($points)>1)
     return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu...");
 

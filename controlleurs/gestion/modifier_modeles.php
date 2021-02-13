@@ -10,7 +10,7 @@ Ce contrôlleur génére la liste de ces fiches en demandant spécifiquement et 
 ***/
 
 $conditions = new stdClass;
-$conditions->modele=True;
+$conditions->modele='uniquement';
 $conditions->ordre="importance DESC";
 $modeles=infos_points($conditions);
 

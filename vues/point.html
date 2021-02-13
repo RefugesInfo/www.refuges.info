@@ -221,11 +221,11 @@
 		</em>
 	</p>
 <!--============================ POSTS LES PLUS RÉCENTS DU FORUM D'UN POINT ===========================-->
-	<? if ($vue->forum_point) {?>
+	<? if (!empty($vue->forum_point)) {?>
 		Dernier<?if(count($vue->forum_point)>1)echo's'?> message<?if(count($vue->forum_point)>1)echo's'?> du forum :
 	<?}?>
 	<div class="point_forum couleur_fond_amplifiee noprint">
-		<? if (!$vue->forum_point) {?>
+		<? if (empty($vue->forum_point)) {?>
 				<p>Le forum est vide, n'hésitez pas à y laisser le premier message!</a></p>
 			<?} else
 			foreach ($vue->forum_point AS $k=>$post) { ?>

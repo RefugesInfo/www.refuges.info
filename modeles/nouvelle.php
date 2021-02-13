@@ -8,6 +8,10 @@ En format exploitable pour le flux RSS, les pages nouvelles en HTML
 04/07/08 jmb : modif de affiche news, forum, rajout de Post_id dans la requete, et chgt du lien forum
 rajout du setlocale et déplacement dans un fichier config.php
 24/10/11 Dominique : Ajout de stat_site() pour compatibilité MVC
+
+2021-02-13 sly : C'est un sacré morceau de code tout ça, pas très rapide, un peu redondant avec l'accueil qui n'utilise même pas ce code ! et s'en sort très bien. Et pénible à maintenir.
+Sa seule force, c'est de pouvoir fournir, ordonné par date un ensemble fusionné provenant de plusieurs sources : surtout forum puis commentaires et fiches.
+Mais bon, franchement, tout ça pour ça, j'ai envie de tout jeter et me simplifier la vie...
 ****************************************************************************************************/
 
 require_once ("bdd.php");
@@ -89,10 +93,10 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                     $news_array[$i]['commentaire']=$commentaire->texte;
                     if ($commentaire->photo_existe) {
                         $news_array[$i]['photo']="1";
-                        $news_array[$i]['photo_mini']=$commentaire->lien_photo['reduite'];
-                        $news_array[$i]['photo_originale']=$commentaire->lien_photo['originale'];
+                        $news_array[$i]['photo_mini']=$commentaire->lien_photo['reduite'] ?? '';
+                        $news_array[$i]['photo_originale']=$commentaire->lien_photo['originale'] ?? '';
                     }
-                    if ($commentaire->auteur_commentaire!="")
+                    if (!empty($commentaire->auteur_commentaire))
                     {
                         $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
                         if ($commentaire->id_createur_commentaire!=0)
@@ -103,7 +107,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                     }
                     // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
                     // la ya un massif
-                    if (isset($commentaire->id_polygone))
+                    if (!empty($commentaire->id_polygone))
                     {
                         // Cosmétique, on ne place pas d'espace après un l'
                         if ($commentaire->article_partitif=="de l'")
@@ -221,33 +225,33 @@ function texte_nouvelles($nouvelles) {
                 break;
             case 'Commentaire':
                 $texte = "Commentaire";
-                if ($nouvelle['photo'])
+                if (!empty($nouvelle['photo']))
                     $texte .= " et photo";
-                if (isset($nouvelle['auteur'])) {
+                if (!empty($nouvelle['auteur'])) {
                     $texte .= " de ";
-                    if (isset($nouvelle['lien_auteur']))
+                    if (!empty($nouvelle['lien_auteur']))
                         $texte .= "[url=".$nouvelle['lien_auteur']."]";
                     $texte .= $nouvelle['auteur'];
-                    if (isset($nouvelle['lien_auteur']))
+                    if (!empty($nouvelle['lien_auteur']))
                         $texte .= "[/url]";
                 }
                 $texte .= " sur [url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
-                if (isset($nouvelle['massif']))
+                if (!empty($nouvelle['massif']))
                     $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
                 break;
             case 'Point':
                 $texte = "Ajout ".$nouvelle['partitif_point']." ".$nouvelle['type_point'];
-                if (isset($nouvelle['auteur'])) {
+                if (!empty($nouvelle['auteur'])) {
                     $texte .= " par ";
-                    if (isset($nouvelle['lien_auteur']))
+                    if (!empty($nouvelle['lien_auteur']))
                         $texte .= "[url=".$nouvelle['lien_auteur']."]";
                     $texte .= $nouvelle['auteur'];
-                    if (isset($nouvelle['lien_auteur']))
+                    if (!empty($nouvelle['lien_auteur']))
                         $texte .= "[/url]";
                 }
                 $texte .= " : ";
                 $texte .= "[url=".$nouvelle['lien']."]".ucfirst($nouvelle['titre'])."[/url]";
-                if (isset($nouvelle['massif']))
+                if (!empty($nouvelle['massif']))
                     $texte .= " dans [url=".$nouvelle['lien_massif']."]le massif ".$nouvelle['partitif_massif'].$nouvelle['massif']."[/url]";
                 break;
         }

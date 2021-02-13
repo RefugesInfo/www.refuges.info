@@ -54,24 +54,23 @@ Array
 function infos_polygones($conditions)
 {
     global $config_wri,$pdo;
-    $conditions_sql="";
-    $champs_en_plus="";
-    $table_en_plus="";
+    $conditions_sql=$champs_en_plus=$table_en_plus=$limite="";
+    
     // Conditions sur les ids des polygones
-    if (isset($conditions->ids_polygones))
+    if (!empty($conditions->ids_polygones))
         if (!verif_multiples_entiers($conditions->ids_polygones))
             return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
         else
             $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
 
         // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
-    if (isset($conditions->non_ids_polygones))
+    if (!empty($conditions->non_ids_polygones))
         if (!verif_multiples_entiers($conditions->non_ids_polygones))
             return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
         else
             $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
 
-    if (is_numeric($conditions->limite))
+    if (!empty($conditions->limite) and is_numeric($conditions->limite))
         $limite="LIMIT $conditions->limite";
 
     if (!empty($conditions->ordre))
@@ -80,19 +79,19 @@ function infos_polygones($conditions)
         $ordre_champ="nom_polygone ASC";
     $ordre="ORDER BY $ordre_champ";
 
-    if (isset($conditions->ids_polygone_type))
+    if (!empty($conditions->ids_polygone_type))
         if (!verif_multiples_entiers($conditions->ids_polygone_type))
             return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
         else
             $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
     // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
-    if (isset($conditions->geometrie))
+    if (!empty($conditions->geometrie))
         $conditions_sql.=" AND ST_Intersects(polygones.geom, {$conditions->geometrie})";
 
-    if ($conditions->avec_geometrie)
+    if (!empty($conditions->avec_geometrie))
         $champs_en_plus.=",st_as$conditions->avec_geometrie(polygones.geom,5) AS geometrie_$conditions->avec_geometrie";
 
-    if ($conditions->intersection) {
+    if (!empty($conditions->intersection)) {
         $table_en_plus.=",polygones AS zones ";
         $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND zones.id_polygone = ". $conditions->intersection ;
   }
@@ -101,7 +100,7 @@ function infos_polygones($conditions)
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
     // sly: faire que cette requête un peu plus lourde ne soit pas systématiquement utilisée, sauf demande
     // sly: 2020 quand un massif est dans une zone, mais en touche une autre (en bordure) ça sort au pif une zone, parfois celle juste touchée. Le AND NOT ST_TOUCHES gère ce cas
-    if ($conditions->avec_zone_parente)
+    if (!empty($conditions->avec_zone_parente))
         $champs_en_plus.=",
         (
           SELECT id_polygone
@@ -120,7 +119,7 @@ function infos_polygones($conditions)
             ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) LIMIT 1
         ) AS nom_zone
         ";
-      if ($conditions->avec_enveloppe)
+      if (!empty($conditions->avec_enveloppe))
         $champs_en_plus.=",
                  st_xmin(geom) AS ouest,
                  st_xmax(geom) AS est,
@@ -142,7 +141,7 @@ function infos_polygones($conditions)
     return erreur("Requête impossible",$query);
   while ($polygone=$res->fetch())
   {
-    if ($polygone->ouest && $polygone->sud && $polygone->est && $polygone->nord)
+    if (!empty($polygone->ouest) && !empty($polygone->sud) && !empty($polygone->est) && !empty($polygone->nord))
         $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord";
     else
         $polygone->bbox="-5,42,8,51";

@@ -66,38 +66,38 @@ blabla
 function infos_commentaires ($conditions)
 {
   global $config_wri,$pdo;
-  $conditions_sql="";
-
+  $conditions_sql=$condition_en_plus=$champ_en_plus=$table_en_plus="";
+  
   // conditions de limite
-  if (is_numeric($conditions->limite))
+  if (!empty($conditions->limite) and is_numeric($conditions->limite))
     $limite="LIMIT $conditions->limite";
   else
-    $limite="LIMIT 100"; // limite de sécurité si on s'enballe
+    $limite="LIMIT 100"; // limite de sécurité si on s'enballe, en même temps, si un jour on veut faire un export total, il faudra bien l'autoriser non ?
 
-  if (isset($conditions->ids_points))
+  if (!empty($conditions->ids_points))
     if (!verif_multiples_entiers($conditions->ids_points))
       return erreur("Le paramètre donné pour les ids des points n'est pas valide","Reçu : $conditions->ids_points");
 
-  if (isset($conditions->ids_commentaires))
+  if (!empty($conditions->ids_commentaires))
     if (!verif_multiples_entiers($conditions->ids_commentaires))
       return erreur("Le paramètre donné pour les ids n'est pas valide","Reçu : $conditions->ids_commentaires");
 
-  if ($conditions->ids_commentaires!="")
+  if (!empty($conditions->ids_commentaires))
     $conditions_sql.=" AND id_commentaire IN ($conditions->ids_commentaires)";
 
-  if ($conditions->ids_points!="")
+  if (!empty($conditions->ids_points))
     $conditions_sql.=" AND id_point IN ($conditions->ids_points)";
 
-  if ($conditions->avec_photo)
+  if (!empty($conditions->avec_photo))
     $conditions_sql.=" AND photo_existe=1";
 
-  if ($conditions->ids_createurs_commentaires!="")
+  if (!empty($conditions->ids_createurs_commentaires))
     $conditions_sql.=" AND id_createur_commentaire in ($conditions->ids_createurs_commentaires)";
 
-  if ($conditions->demande_correction)
+  if (!empty($conditions->demande_correction))
     $conditions_sql.=" AND demande_correction!=0";
 
-  if ($conditions->date_apres)
+  if (!empty($conditions->date_apres))
     $conditions_sql.="\n\tAND date >= $conditions->date_apres";
 
   // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
@@ -106,7 +106,7 @@ function infos_commentaires ($conditions)
   // ou alors que cette fonction ET infos _points appellent une fonction d'appartenance. Le code ne serait plus en double.
   // ca rajoute une fonction, mais ca reduit ici, et ca reduit la bas.
   // Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
-  if ($conditions->avec_infos_point OR $conditions->avec_commentaires_modele OR isset($conditions->ids_polygones))
+  if (!empty($conditions->avec_infos_point) OR !empty($conditions->avec_commentaires_modele) OR !empty(($conditions->ids_polygones)))
   {
             $table_en_plus=",point_type,points LEFT JOIN polygones on ST_Within(points.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'];
 
@@ -119,11 +119,11 @@ function infos_commentaires ($conditions)
             // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
             $champ_en_plus.=$config_wri['champs_table_polygones'];
 
-            if (!$conditions->avec_commentaires_modele)
+            if (!empty($conditions->avec_commentaires_modele))
                     $condition_en_plus.=" AND modele!=1 ";
-            if (!$conditions->avec_points_en_attente)
+            if (!empty($conditions->avec_points_en_attente))
                  $condition_en_plus.=" AND (en_attente=False) ";
-            if (isset($conditions->ids_polygones))
+            if (!empty($conditions->ids_polygones))
                  $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
   }
 

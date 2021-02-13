@@ -20,13 +20,14 @@ function wiki_page_html($page)
 {
     global $config_wri,$pdo;
     $contenu_page=wiki_page_brut($page);
-    if ($contenu_page->erreur)
+    if (!empty($contenu_page->erreur))
         return "Contenu inexistant";
 
 	// Horible bidouille pour le wiki contact
 	// A intégrer dans le bbcode2html ?
 	// Traitement de la balise {cherche_points}
-	$contenu_page->contenu = str_replace('{cherche_points}', $_POST['cherche_points'], $contenu_page->contenu);
+	if (!empty($_POST['cherche_points']))
+      $contenu_page->contenu = str_replace('{cherche_points}', $_POST['cherche_points'], $contenu_page->contenu);
 	// Traitement de la balise de répétition [points]
 	$contenu_page->contenu = preg_replace_callback(
 		'/\[points\]([^\[]*)\[\/points\]/',
