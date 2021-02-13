@@ -21,20 +21,15 @@ $conditions_commentaire->ids_points=$commentaire->id_point;
 $point=infos_point($commentaire->id_point,true);
 if (!$point->erreur)
 {
-    if (!est_connecte()) // non connecté ? un message d'information s'affichera, et on présentera un CAPTCHA
-    {
-        $vue->non_connecte=True;
+    if (!est_connecte()) // non connecté ? on présentera un CAPTCHA
         $vue->captcha=True;
-    }
 
     // on force la demande de correction
-    if ($_GET['correction']!="") 
-    {
+    if (!empty($_GET['correction'])) 
         $vue->correction=true;
-    }
 
     // on vient de valider notre formulaire, faisons le nécessaire
-    if ($_POST['action']!="") 
+    if (!empty($_POST['action'])) 
     {
         $commentaire->texte=stripslashes($_POST['texte']);
         $commentaire->auteur_commentaire=stripslashes($_POST['auteur_commentaire']);
@@ -57,7 +52,7 @@ if (!$point->erreur)
             if (is_uploaded_file  ( $file_path=$_FILES['comment_photo']['tmp_name']  ) )
                 $commentaire->photo['originale']=$file_path;
 
-            $commentaire->demande_correction=$_POST['demande_correction'];
+            $commentaire->demande_correction=$_POST['demande_correction'] ?? '';
             // Et si on trouve un mot clé censuré
             if (isset ($config_wri['censure']) && preg_match ('/'.$config_wri['censure'].'/i', retrait_accents ($commentaire->texte)))
               $commentaire->demande_correction=2;
