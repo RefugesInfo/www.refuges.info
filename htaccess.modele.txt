@@ -10,6 +10,10 @@
 #  Allow from all
 #</FilesMatch>
 
+#Notre code est public, c'est donc pas vraiment par sécurité mais parce que ça met dans lignes d'erreur dans nos logs (Et au cas où on commiterait par erreur un mot de passe). Ces pirates, ils tentent vraiment n'importe quoi...
+RedirectMatch 403 ^/.git/.*$
+
+
 AddDefaultCharset UTF-8
 
 RewriteEngine On
