@@ -19,16 +19,18 @@ if ( est_moderateur() )
 $commentaire->id_point=$controlleur->url_decoupee[1];
 $conditions_commentaire->ids_points=$commentaire->id_point;
 $point=infos_point($commentaire->id_point,true);
-if (!$point->erreur)
+if (!empty($point->erreur))
 {
-    if (!est_connecte()) // non connecté ? on présentera un CAPTCHA
-        $vue->captcha=True;
-
     // on force la demande de correction
     if (!empty($_GET['correction'])) 
         $vue->correction=true;
+    else
+        $vue->correction=False;
+    
 
     // on vient de valider notre formulaire, faisons le nécessaire
+    $vue->banni=False;
+    $vue->erreur_captcha=False;
     if (!empty($_POST['action'])) 
     {
         $commentaire->texte=stripslashes($_POST['texte']);

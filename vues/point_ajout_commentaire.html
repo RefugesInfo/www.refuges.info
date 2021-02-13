@@ -7,7 +7,7 @@
 			Bien que nous autorisions les contributions anonymes, nous vous recommandons de vous connecter sur le forum et/ou de créer un compte
 			afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config_wri['connexion_forum']?>">Connexion</a>
 		</p>
-	<?php } if (!empty($vue->banni)) { ?>
+	<?php } if ($vue->banni) { ?>
 		<p class="erreur_saisie">
 			<strong>Banni !</strong>
 			Une erreur est survenu lors de l'ajout de votre commentaire car vous êtes banni, 
@@ -41,7 +41,7 @@
 				<label>Je souhaite prévenir un modérateur car mon commentaire apporte un complément à la partie supérieure de la fiche </label>
 			</p>
 			<?php if (!est_connecte())) { ?>
-				<?php if (!empty($vue->erreur_captcha)) { ?>
+				<?php if ($vue->erreur_captcha) { ?>
 					<p class="erreur_saisie">
 						<strong>Mauvaise lettre !</strong>
 						Merci de recopier la lettre indiquée afin de lutter contre les message indésirables:
