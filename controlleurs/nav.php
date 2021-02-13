@@ -48,9 +48,10 @@ if (est_moderateur())
   if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;
 // Le paramètre d'URL id_polygone_type permet d'afficher différents contenus
-// Si abscent : affiche le contour du polygone demandé et les points à l'intérieur
+// Si absent : affiche le contour du polygone demandé et les points à l'intérieur
 // Si présent : les polygones qui intersectent le polygone demandé
-$id_polygone_type=$_GET['id_polygone_type'];
+// FIXME: ce nom de variable est vraiment bizarrement choisi, à chaque fois je me demande ce que c'est que ce 1. Pourquoi pas plus clair &mode_affichage=massifs/points
+$id_polygone_type=$_GET['id_polygone_type'] ?? '';
 if($id_polygone_type)
   $vue->contenu=infos_type_polygone($id_polygone_type);
 
@@ -88,8 +89,8 @@ $vue->lien_legende_carte=lien_wiki('legende_carte');
   L'autre, c'est pour les utilisateurs sans javascript (ouais, ça doit plus trop exister), mais pour eux, cette page ne sert vraiment à rien !
   Et enfin, sur mobile, parfois, le js ne se charge pas en 2G, avoir cette liste donnerait a minima un truc que l'on peut "chercher" par ctrl+f
   Et tout ça pour ~20ms de coût de chargement, dans une zone qui ne perturbe pas beaucoup les users normaux.
-  */
-if (!$id_polygone_type)
+*/
+if (!$id_polygone_type and $id_polygone!=0)
 {
 $conditions = new stdClass;
 $conditions->ids_polygones=$id_polygone;
