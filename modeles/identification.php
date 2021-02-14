@@ -26,34 +26,49 @@ function infos_identification()
 {
   global $pdo, $infos_identification, $config_wri;
 
-  if (!isset ($infos_identification)) // On ne rapelle pas SQL à chaque fois !
-  {
-    // le cookie porte un nom variable selon la config phpBB et on n'a pas choisi le standard ! Donc, je vais le chercher dans la table phpbb3_config
-    $sql_cookie = "SELECT config_value as cookie_name from phpbb3_config where config_name='cookie_name'";
-    $res_cookie = $pdo->query($sql_cookie);
-    $config_phpbb = $res_cookie->fetch();
+  // On ne rapelle pas SQL à chaque fois !
+  if (isset ($infos_identification))
+    return $infos_identification;
 
-    // Il nous faut un cookie et un user id !=1 (anonyme) pour authentifier nos users, sinon on peut retourner NULL car il n'est pas connecté et n'a donc aucun droit spécial
-    if (!empty($_COOKIE) and isset ($_COOKIE[$config_phpbb->cookie_name.'_u']) and $_COOKIE[$config_phpbb->cookie_name.'_u']!=1 ) 
-    {
-      $sql = "SELECT user_id, username, group_id
-        FROM phpbb3_sessions_keys
-        JOIN phpbb3_users USING (user_id)
-        WHERE key_id = '".md5($_COOKIE[$config_phpbb->cookie_name.'_k'])."'";
-      $res = $pdo->query($sql);
-      $infos_identification = $res->fetch();
-      if (empty($infos_identification)) // Visiblement, la session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
-        return NULL;
+  // le cookie porte un nom variable selon la config phpBB et on n'a pas choisi le standard ! Donc, je vais le chercher dans la table phpbb3_config
+  $sql_cookie = "SELECT config_value as cookie_name from phpbb3_config where config_name='cookie_name'";
+  $res_cookie = $pdo->query($sql_cookie);
+  $config_phpbb = $res_cookie->fetch();
 
-      $infos_identification->session_id = $_COOKIE[$config_phpbb->cookie_name.'_sid'];
-      $infos_identification->niveau_moderation =
-      $infos_identification->group_id == 201 ||
-      $infos_identification->group_id == 202
-        ? 1 : 0;
-    }
-    else
-      return NULL;
-  }
+  // Cas où on n'est pas connecté
+  if (empty($_COOKIE) || // Pas de cookies du tout
+  !isset ($_COOKIE[$config_phpbb->cookie_name.'_u']) || // Pas de cookie de connexion
+  $_COOKIE[$config_phpbb->cookie_name.'_u']==1 ) // Anonymous
+    return NULL;
+
+  // Cas de la connexion permanente (se souvenir de moi)
+  if ($_COOKIE[$config_phpbb->cookie_name.'_k'])
+    $sql = "SELECT user_id, username, group_id
+      FROM phpbb3_sessions_keys
+      JOIN phpbb3_users USING (user_id)
+      WHERE key_id = '".md5($_COOKIE[$config_phpbb->cookie_name.'_k'])."'";
+
+  // Cas de la connexion limitée à l'ouverture de l'explorateur
+  // ou à la durée de la session définie dans les paramètres du forum
+  else
+    $sql = "SELECT user_id, username, group_id, session_id
+      FROM phpbb3_sessions
+      JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
+      WHERE session_id = '{$_COOKIE['phpbb3_wri_sid']}'";
+
+  $res = $pdo->query($sql);
+  $infos_identification = $res->fetch();
+
+  // La session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
+  if (empty($infos_identification))
+    return NULL;
+
+  $infos_identification->session_id = $_COOKIE[$config_phpbb->cookie_name.'_sid'];
+  $infos_identification->niveau_moderation =
+    $infos_identification->group_id == 201 ||
+    $infos_identification->group_id == 202
+      ? 1 : 0;
+
   return $infos_identification;
 }
 
