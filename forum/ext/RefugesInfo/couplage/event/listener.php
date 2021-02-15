@@ -46,8 +46,12 @@ class listener implements EventSubscriberInterface
 	}
 
 	function page_footer () {
-		global $template, $request; // Contexte PhpBB
+		global $template, $request, $user; // Contexte PhpBB
 		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
+
+		// On traite le logout ici car la fonction de base demande un sid (on se demande pourquoi ?)
+		if ($request->variable('mode', '') == 'logout')
+			$user->session_kill();
 
 		global $config_wri, $pdo; // Contexte WRI
 		require_once (__DIR__.'/../../../../../includes/config.php');

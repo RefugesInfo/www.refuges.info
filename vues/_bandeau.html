@@ -9,7 +9,8 @@
 ?>
 <div id="entete">
 	<div>
-		<?if (est_connecte()) {?>
+		<?if (est_connecte() && $infos_identification->username) {?>
+			<a href="<?=$config_wri['lien_forum']?>index.php?mode=logout">Déconnexion</a>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php" title="Modifier votre profil">Connecté en <?=$infos_identification->username?></a>
 		<?} else {?>
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login" title="Si vous avez déjà un compte">Connexion</a>
