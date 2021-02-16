@@ -5,6 +5,7 @@ Pour ajouter un commentaire rattaché à un point
 
 require_once ("commentaire.php");
 require_once ("point.php");
+require_once ("wiki.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("upload_max_filesize.php");
 
@@ -19,7 +20,8 @@ if ( est_moderateur() )
 $commentaire->id_point=$controlleur->url_decoupee[1];
 $conditions_commentaire->ids_points=$commentaire->id_point;
 $point=infos_point($commentaire->id_point,true);
-if (!empty($point->erreur))
+
+if (empty($point->erreur))
 {
     // on force la demande de correction
     if (!empty($_GET['correction'])) 
@@ -34,9 +36,12 @@ if (!empty($point->erreur))
     if (!empty($_POST['action'])) 
     {
         $commentaire->texte=stripslashes($_POST['texte']);
-        $commentaire->auteur_commentaire=stripslashes($_POST['auteur_commentaire']);
+
+        // Si on est connecté, ces valeurs ne sont pas défini, on la passe alors à ''
+        $commentaire->auteur_commentaire=stripslashes($_POST['auteur_commentaire'] ?? '');
+        $vue->lettre_verification=$_POST["lettre_verification"] ?? '';
+
         $commentaire->texte_propre=protege($commentaire->texte);
-        $vue->lettre_verification=$_POST["lettre_verification"];
         
         // peut être un robot ?
         if ( ($vue->lettre_verification!="f") AND !est_connecte() )
@@ -44,8 +49,6 @@ if (!empty($point->erreur))
             $vue->erreur_captcha=True;
             $vue->lettre_verification="";
         }
-        else if (bloquage_internaute($_POST['auteur_commentaire']))  // utilisateur dont l'adresse IP est bannie
-            $vue->banni=True;
         else
         {
             // Variables du commentaire à ajouter, presque plus de tests à faire, tout est dans la fonction d'ajout de
@@ -76,7 +79,7 @@ if (!empty($point->erreur))
                 unlink($file_path);
         }
     }
-    // Qu'on arrive juste ou que l'on vienne de rentrer un point, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
+    // Qu'on arrive juste ou que l'on vienne déjà de rentrer un premier commentaire, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
 
     $quel_point="$point->article_defini $point->nom_type : ".protege($point->nom);
     $vue->titre="Ajout d'un commentaire sur $quel_point";
@@ -86,8 +89,7 @@ if (!empty($point->erreur))
     $vue->commentaire=$commentaire;
     $vue->lien_wiki_que_mettre=lien_wiki('que_mettre');
     $vue->lien_wiki_restriction_licence=lien_wiki('restriction_licence');
-    $info_forum_point=infos_point_forum($point);
-    $vue->lien_forum_point=$config_wri['forum_refuge'].$info_forum_point->topic_id;
+    $vue->lien_forum_point=$config_wri['forum_refuge'].$point->topic_id;
 }
 else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans le vent !
 {

@@ -40,6 +40,9 @@ $config_wri['rep_web_forum_photos']=$config_wri['sous_dossier_installation']."fo
 // Lien direct vers le mode d'emploi
 $config_wri['base_wiki']=$config_wri['sous_dossier_installation']."wiki/";
 
+// c'est le nom de la page du wiki qui explique la syntaxe bbcode
+$config_wri['bbcode_wiki_page']="syntaxe_bbcode";
+
 // On centralise ici tous les paramètres PhpBB qui sont figés
 // Des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
 $config_wri['lien_forum']=$config_wri['sous_dossier_installation']."forum/";

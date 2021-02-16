@@ -73,6 +73,20 @@ function verif_multiples_entiers($string)
     return preg_match ('/^-?\d+(,-?\d+)*$/', $string);
 }
 
+/*
+Fonction qui vérifie que le paramètre passé est soit un entier positif soit une string qui peut être transtyper comme un int entier positif
+sinon false pour le reste.
+4 -> true
+-5 -> false
+"456" -> true
+5.3 -> false
+
+*/
+function est_entier($mixed)
+{
+    return ( empty($mixed) or (is_int($mixed) and $mixed>=0) or ctype_digit($mixed));
+}
+
 // petit débuggeur basique, on l'appel par d($variable1,$variable2) et il balance tout en à peu près lisible
 function d($a=null,$b=null,$c=null,$d=null)
 {

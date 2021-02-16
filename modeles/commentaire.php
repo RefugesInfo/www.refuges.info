@@ -227,10 +227,11 @@ function modification_ajout_commentaire($commentaire)
     global $config_wri,$pdo;
     $retour = new stdClass;
     $photo_valide=False;
+    $ajout_photo=False;
 
     $point=infos_point($commentaire->id_point,True);
-    if ($point->erreur)
-            return erreur("Le commentaire ne peut être ajouté car : $point->message","Id du point: \"$commentaire->id_point\"");
+    if (!empty($point->erreur))
+            return erreur("Le commentaire ne peut être ajouté car : ".$point->message ?? '',"Id du point: \"$commentaire->id_point\"");
     // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
     // On dirait que le commentaire dispose bien d'une photo
     if (isset($commentaire->photo['originale']))
@@ -270,7 +271,8 @@ function modification_ajout_commentaire($commentaire)
     {
             $commentaire->photo_existe=1;
             $exif_data = @exif_read_data ($commentaire->photo['originale']);
-            $date_photo = $exif_data ['DateTimeOriginal'];
+            // la date ne semble pas exister dans les données Exif de la photo, on met ''
+            $date_photo = $exif_data ['DateTimeOriginal'] ?? '';
 
             // Testons si on a récupéré une date dans les infos exif de la photo
             // jmb tant que les photos ne sont QUE dans les commentaires
@@ -281,7 +283,7 @@ function modification_ajout_commentaire($commentaire)
     }
 
     // Rotation manuelle des photos
-    if ($_REQUEST['rotation']) {
+    if (!empty($_REQUEST['rotation']) ) {
         $nom_fichier = $config_wri['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
         $image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
         $image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
@@ -351,20 +353,6 @@ function modification_ajout_commentaire($commentaire)
     return ($retour);
 }
 
-
-// Fonction, pour l'instant désactivée, mais qui permet, en urgence d'empêcher un internaute indélicat
-// de nous remplir de commentaires
-function bloquage_internaute($code="")
-{
-  // n'ayant pour l'instant plus de problème, je ne bloque plus personne sly 23/03/08
-  return 0;
-  // sinon, on refuse tout les gaoland
-  $hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-  if (ereg("^(.*)\.rev\.gaoland\.net$",$hostname))
-    return -1;
-  else
-    return 0;
-}
 
 function redimensionnement_photo($chemin_photo, $type = 'photo')
 {
