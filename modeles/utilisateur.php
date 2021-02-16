@@ -9,7 +9,9 @@ require_once ("bdd.php");
 function infos_utilisateur($id_utilisateur)
 {
   global $pdo;
-  $query="SELECT * FROM phpbb3_users WHERE user_id=".$id_utilisateur;
+  if (!est_entier_positif($id_utilisateur))
+    return erreur("L'id de l'utilisateur demandé : '$id_utilisateur' n'est pas un entier");
+  $query="SELECT * FROM phpbb3_users WHERE user_id=$id_utilisateur";
   $res=$pdo->query($query);
   $utilisateur=$res->fetch();
   // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés

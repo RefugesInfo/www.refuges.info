@@ -52,7 +52,7 @@
 		</div>
 <!--============================================ CARTE ============================================-->
 		<?// Veut-on une carte point ? (oui sauf cas des coordonnées inconnues
-		if ($vue->mini_carte) {?>
+		if (!empty($vue->mini_carte)) {?>
 			<div id="container-carte-point">
 				<div id="carte-point"></div>
 				<div class="noprint">
@@ -76,7 +76,7 @@
             </dd>
 			<dd>
 				Altitude: <em><?=$vue->point->altitude?>m,</em>
-				<?if (!$vue->mini_carte) {?>
+				<?if (empty($vue->mini_carte)) {?>
 					<strong><?=$vue->point->nom_precision_gps?></strong>
 				<?}else{?>
 					<input type="hidden" id="marqueur-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}' />
@@ -165,7 +165,7 @@
 			}
 			}?>
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
-			<?if (count($vue->points_proches)) {?>
+			<?if (!empty($vue->points_proches) and count($vue->points_proches)) {?>
 				<dt>Points à proximité (distance à vol d'oiseau):</dt><?
 				foreach ($vue->points_proches as $point_proche) {
 						?>

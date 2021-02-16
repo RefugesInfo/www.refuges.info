@@ -62,7 +62,7 @@ if (!empty($_REQUEST))
     // C'est LA que ca cherche
     
     $points = infos_points ($conditions);
-    if ($points->erreur)
+    if (!empty($points->erreur))
     {
         $vue->contenu=$points->message."<br>(Vous pouvez revenir en arrière avec votre navigateur pour corriger le problème)";
         $vue->type="page_simple";
@@ -88,7 +88,7 @@ if (!empty($_REQUEST))
         //-----------------------------------------------------------------------------------------------------
         // Recherche de points sur nominatim.openstreetmap.org
         
-        if ($_POST['avec_point_osm'])
+        if (!empty($_POST['avec_point_osm']))
         {
             $nominatim = new stdClass();
             $vue->recherche_osm_active=True;

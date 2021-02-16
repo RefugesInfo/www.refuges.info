@@ -30,7 +30,7 @@ function inverse_visibility_voisins( id_element )
 <div class="contenu">
     <?php // Parcours tous les refuges de la recherche
     if (isset($vue->points)) { ?>
-	<h4>Recherche sur refuges.info (<?=$vue->nombre_points?> retournés)<?=$vue->trop?></h4>
+	<h4><?=$vue->titre?></h4>
 	
 		<?php if(isset($vue->limite_atteinte) ) { ?>
 			<h5>La limite a été atteinte. seuls les <?=$vue->limite_atteinte?> premiers points sont affichés.</h5>
@@ -64,7 +64,7 @@ function inverse_visibility_voisins( id_element )
 					<a href="<?=$point->lien?>">
 						<?=bbcode2html($point->nom)?>
 					</a>
-					<?=$html_annonce_fermeture?>
+					<?=$html_annonce_fermeture ?? ''?>
 				</em>
 				<?=bbcode2html($point->nom_type);
 				if ($annonce_fermeture=texte_non_ouverte($point)) {?>
@@ -85,7 +85,7 @@ function inverse_visibility_voisins( id_element )
 						<a href="<?=$point->lien?>">
 							<?=bbcode2html($point->nom)?>
 						</a>
-						<?=$html_annonce_fermeture?>
+						<?=$html_annonce_fermeture ?? ''?>
 					</em>
 					<?=bbcode2html($point->nom_type);?>
 					<? //afficher un lien vers le massif comprenant le point
@@ -108,7 +108,7 @@ function inverse_visibility_voisins( id_element )
     <?php } ?>
 
 	<? // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
-	if ($vue->nominatim->nb_points) { ?>
+	if (!empty($vue->nominatim->nb_points)) { ?>
 		<h4>Recherche dans la base <a href="http://openstreetmap.org/">OpenStreetMap</a> : <?=$vue->nominatim->nb_points?> point<?=$vue->nominatim->pluriel?> trouvé<?=$vue->nominatim->pluriel?> avec <a href="<?=$vue->nominatim->url_site?>">Nominatim</a></h4>
 		<dl>
 			<? foreach ($vue->nominatim->xml as $points_nominatim) { ?>
@@ -122,7 +122,7 @@ function inverse_visibility_voisins( id_element )
 				</dd>
 			<?}?>
 		</dl>
-	<?php } elseif ($vue->recherche_osm_active) { ?>
+	<?php } elseif (!empty($vue->recherche_osm_active)) { ?>
     <p>Aucun point trouvé dans la base OpenStreetMap</p>
     <?php } ?>
 </div>

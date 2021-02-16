@@ -38,7 +38,7 @@ function erreur($texte,$seulement_avec_debug="")
   {
     if (isset($pdo))
       if ($pdo->errorInfo())
-	$erreur_pdo="Erreur PDO : ".var_export($pdo->errorInfo(),true);
+        $erreur_pdo="Erreur PDO : ".var_export($pdo->errorInfo(),true);
     
     print("<pre>
     Mode debug actif : 
@@ -66,11 +66,15 @@ function ok($texte)
 }
 /*
 Fonction qui vérifie que le paramètre passé (string) est bien au format int ou int,int,int : "7"  "5,4,7" ou "-2" répond : true, 
-sinon false pour les cas genre "2.3" "5 ; delete * from..." "," "9,"
+sinon false pour les cas genre "2.3" "5 ; delete * from..." "," "9," ou empty
 */
-function verif_multiples_entiers($string)
+function verif_multiples_entiers($mixed)
 {
-    return preg_match ('/^-?\d+(,-?\d+)*$/', $string);
+  if (empty($mixed))
+    return False;
+  if (is_int($mixed))
+    return True;
+  return preg_match ('/^-?\d+(,-?\d+)*$/', $mixed);
 }
 
 /*
@@ -80,22 +84,26 @@ sinon false pour le reste.
 -5 -> false
 "456" -> true
 5.3 -> false
+empty() -> false
 
 */
-function est_entier($mixed)
+function est_entier_positif($mixed)
 {
-    return ( empty($mixed) or (is_int($mixed) and $mixed>=0) or ctype_digit($mixed));
+  if (empty($mixed))
+    return False;
+  return ( ctype_digit($mixed) or (is_int($mixed) and $mixed>=0) );
 }
+
 
 // petit débuggeur basique, on l'appel par d($variable1,$variable2) et il balance tout en à peu près lisible
 function d($a=null,$b=null,$c=null,$d=null)
 {
-	print("<pre>"); // Pour la lisibilité, et que les retour ligne sont affichés
-	foreach (array('a','b','c','d') as $var ) // Pour toutes les variables qu'on a passées de a à d, factorisation du code
-            if (!is_null($$var))
-                print(htmlspecialchars(print_r($$var,True))."\n------------------------------------Backtrace des appels :-----------------------------------\n"); // O peut un print_r des variables (des fois que ça soit des arrays) et on veut le résultat brut lisible dans un navigateur
-        print(htmlspecialchars(print_r(debug_backtrace(),True)));
-	die("</pre>");
+  print("<pre>"); // Pour la lisibilité, et que les retour ligne sont affichés
+  foreach (array('a','b','c','d') as $var ) // Pour toutes les variables qu'on a passées de a à d, factorisation du code
+    if (!is_null($$var))
+      print(htmlspecialchars(print_r($$var,True))."\n------------------------------------Backtrace des appels :-----------------------------------\n"); // O peut un print_r des variables (des fois que ça soit des arrays) et on veut le résultat brut lisible dans un navigateur
+  print(htmlspecialchars(print_r(debug_backtrace(),True)));
+  die("</pre>");
 }
 
 

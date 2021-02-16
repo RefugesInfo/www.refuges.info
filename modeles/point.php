@@ -53,13 +53,14 @@ $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veu
 $conditions->chauffage : soit "chauffage" pour demander poële ou cheminée ou "poele" ou "cheminee"
 $conditions->places_matelas_minimum : (int) veut dire avec places_matelas >= places_matelas_minimum 
 
-$conditions->trinaire->couvertures : "oui" ou "vide"
-$conditions->trinaire->eau_a_proximite : "oui" ou "vide"
-$conditions->trinaire->bois_a_proximite : "oui" ou "vide"
-$conditions->trinaire->latrines : "oui" ou "vide"
-$conditions->trinaire->manque_un_mur : "oui" ou "vide"
-$conditions->trinaire->site_officiel : "oui" ou "vide"
-$conditions->trinaire->xxxxx : (Le champ de la table point et vérifier à oui dans la base quand se champ est à oui)
+$conditions->trinaire->couvertures : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
+$conditions->trinaire->eau_a_proximite : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas) 
+$conditions->trinaire->bois_a_proximite : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
+$conditions->trinaire->latrines : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
+$conditions->trinaire->manque_un_mur : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
+$conditions->trinaire->poele : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
+$conditions->trinaire->cheminee : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
+(pour augmenter la liste, voir $config_wri['champs_trinaires_points'])
 
 FIXME : 2 conditions pour faire presque la même chose, je me demande s'il n'y a pas matière à simplifier :
 $conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
@@ -93,7 +94,7 @@ function infos_points($conditions)
 
   // condition de limite en nombre
   if (!empty($conditions->limite))
-    if (!is_numeric ($conditions->limite))
+    if (!est_entier_positif ($conditions->limite))
       return erreur("Le paramètre de limite \$conditions->limite est mal formé, reçu : $conditions->limite");
     else
       $limite="\n\tLIMIT $conditions->limite";
@@ -171,33 +172,33 @@ function infos_points($conditions)
       $conditions_sql .="\n\tAND points.id_point_type IN ($conditions->ids_types_point) \n";
       
   if( !empty($conditions->places_minimum) )
-    if( is_numeric($conditions->places_minimum) )
-        $conditions_sql .= "\n\tAND points.places >= ". $pdo->quote($conditions->places_minimum, PDO::PARAM_INT);
+    if( est_entier_positif($conditions->places_minimum) )
+        $conditions_sql .= "\n\tAND points.places >= $conditions->places_minimum";
     else
         return erreur("Le nombre de place minimum doit être un nombre entier, reçu : $conditions->places_minimum");
   if( !empty($conditions->places_maximum) )
-    if( is_numeric($conditions->places_maximum) )
-        $conditions_sql .= "\n\tAND points.places <= ".$pdo->quote($conditions->places_maximum, PDO::PARAM_INT);
+    if( est_entier_positif($conditions->places_maximum) )
+        $conditions_sql .= "\n\tAND points.places <= $conditions->places_maximum";
     else
         return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
   // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
   if( !empty($conditions->places_matelas_minimum) )
-    if( is_numeric($conditions->places_matelas_minimum) and ($conditions->places_matelas_minimum>0) )
-      $conditions_sql .= "\n\tAND points.places_matelas >= ". $pdo->quote($conditions->places_matelas_minimum, PDO::PARAM_INT);
+    if ( est_entier_positif($conditions->places_matelas_minimum ))
+      $conditions_sql .= "\n\tAND points.places_matelas >= $conditions->places_matelas_minimum";
     else
       return erreur("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : '$conditions->places_matelas_minimum'");
 
   // conditions sur l'altitude
   if( !empty($conditions->altitude_minimum) )
-    if( is_numeric($conditions->altitude_minimum) )
-      $conditions_sql .= "\n\tAND points.altitude >= ".$pdo->quote($conditions->altitude_minimum, PDO::PARAM_INT);
+    if( est_entier_positif($conditions->altitude_minimum) )
+      $conditions_sql .= "\n\tAND points.altitude >= $conditions->altitude_minimum";
     else
-      return erreur("L'altitude minimum doit être un nombre entier, reçu : $conditions->altitude_minimum");
+      return erreur("L'altitude minimum doit être un nombre entier positif, reçu : $conditions->altitude_minimum");
   if( !empty($conditions->altitude_maximum) )
-    if( is_numeric($conditions->altitude_maximum) )
-      $conditions_sql .= "\n\tAND points.altitude <= ".$pdo->quote($conditions->altitude_maximum, PDO::PARAM_INT);
+    if( est_entier_positif($conditions->altitude_maximum) )
+      $conditions_sql .= "\n\tAND points.altitude <= $conditions->altitude_maximum";
     else
-      return erreur("L'altitude maximum doit être un nombre entier, reçu : $conditions->altitude_maximum");
+      return erreur("L'altitude maximum doit être un nombre entier positif, reçu : $conditions->altitude_maximum");
 
 
   //veut-on les points dont les coordonnées sont cachées ?
@@ -206,9 +207,12 @@ function infos_points($conditions)
 
   //quelle condition sur la qualité supposée des GPS
   if( !empty($conditions->precision_gps) )
-    $conditions_sql .= "\n\tAND points.id_type_precision_gps IN ($conditions->precision_gps)";
+    if (est_entier_positif($conditions->precision_gps))
+      $conditions_sql .= "\n\tAND points.id_type_precision_gps IN ($conditions->precision_gps)";
+    else
+      return erreur("Vous avez demandé une précision pour les coordonnées gps, qui est invalide :".$conditions->precision_gps);
 
-  //quel modérateur(s) de fiche ?
+  //quel(s) modérateur(s) de fiche ?
   if( !empty($conditions->id_createur) )
     if (!verif_multiples_entiers($conditions->id_createur))
       return erreur("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : $conditions->id_createur");
@@ -220,7 +224,7 @@ function infos_points($conditions)
     $conditions_sql.="\n\tAND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
 
   if ( !empty($conditions->date_creation_apres) )
-    $conditions_sql.="\n\tAND points.date_creation >= $conditions->date_creation_apres";
+    $conditions_sql.="\n\tAND points.date_creation >= ".$pdo->quote($conditions->date_creation_apres);
 
 
   if (!empty($conditions->uniquement_points_en_attente))
@@ -239,10 +243,13 @@ function infos_points($conditions)
     else 
       $conditions_sql.="\n\tAND modele!=1";
 
-  //prise en compte des conditions trinaires (oui, non ou NULL = ne sait pas)
-  if (!empty($conditions->trinaire))      // trinaire est construit a part, pas de SQL injection possible normalement
+  //prise en compte des conditions trinaires couverture, eau à proximité, etc. (1, 0 ou NULL = ne sait pas)
+  if (!empty($conditions->trinaire))
     foreach ($conditions->trinaire as $champ => $valeur)
-      $conditions_sql.="\n\tAND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
+      if (in_array($champ,$config_wri['champs_trinaires_points']) and in_array($valeur,array(1,0,Null)) ) // A priori, rien ne vient d'un formulaire (mais soyons safe), et on peut nous même nous tromper en passant cette condition
+        $conditions_sql.="\n\tAND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
+      else
+        return erreur("La demande ne peut aboutir car la condition de $champ=$valeur est incorrecte");
 
   if (!empty($conditions->avec_geometrie))
     $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
@@ -271,7 +278,10 @@ function infos_points($conditions)
       $ordre="\nORDER BY $conditions->ordre";
 
   if ( !empty($conditions->conditions_utilisation) )
-    $conditions_sql.="\n\tAND points.conditions_utilisation = ". $pdo->quote($conditions->conditions_utilisation);
+    if (in_array($conditions->conditions_utilisation, array('ouverture', 'fermeture', 'cle_a_recuperer', 'detruit')))
+      $conditions_sql.="\n\tAND points.conditions_utilisation = '$conditions->conditions_utilisation'";
+    else
+      return erreur("On nous a demandé les points avec '$conditions->conditions_utilisation' ce qui est inexistant ou signe d'un bug");
       
   $query_points="
 SELECT points.*,
@@ -318,7 +328,7 @@ SELECT points.*,
     }
     $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
-    if (isset($point->id_createur))
+    if (!empty($point->id_createur))
       $point->nom_createur=html_entity_decode($point->nom_createur);
     
     // Ici, petite particularité sur les points en attente, par défaut, on ne veut pas les renvoyer, mais on veut quand
@@ -358,15 +368,15 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config_wri,$pdo;
-  
+  if (!est_entier_positif($id_point))
+    return erreur("Le n°du point demandé est invalide, reçu : $id_point");
+
   $conditions = new stdClass();
   $conditions->ids_points=$id_point;
-  if (empty($id_point))
-      return erreur("Il semblerait que vous n'avez pas renseigné le n°du point");
   $conditions->modele='avec';
   $conditions->avec_infos_massif=True;
   if ($meme_si_en_attente)
-     $conditions->avec_points_en_attente=True;
+    $conditions->avec_points_en_attente=True;
 
   // récupération des infos du point
   $points=infos_points($conditions);
@@ -375,7 +385,7 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
     return erreur($points->message);
     
   if (count($points)==0)
-    return erreur("Le numéro de point demandé \"$conditions->ids_points\" est introuvable dans notre base");
+    return erreur("Le numéro de point demandé $id_point est introuvable dans notre base");
     
   if (count($points)>1)
     return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu...");
@@ -428,9 +438,9 @@ function lien_point($point,$lien_local=false)
   else
       $url_complete="$schema://".$config_wri['nom_hote'].$config_wri['sous_dossier_installation'];
 
-  if (isset($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
+  if (!empty($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
     $info_massif=replace_url($point->nom_massif)."/";
-  elseif (isset($point->nom_polygone)) // FIXME : des fois c'est dans nom_massif, des fois nom_polygone, il faudrait uniformiser
+  elseif (!empty($point->nom_polygone)) // FIXME : des fois c'est dans nom_massif, des fois nom_polygone, il faudrait uniformiser
     $info_massif=replace_url($point->nom_polygone)."/";
   else
     $info_massif="";
@@ -471,9 +481,11 @@ function infos_point_forum ($point)
   global $config_wri,$pdo;
   $result = array();
 
+  if (!est_entier_positif($point->topic_id))
+    return erreur("Le point passé n'a pas d'id valide ou existant sur le forum reçu :".$point->topic_id ?? '');
   $q="SELECT *
       FROM phpbb3_posts
-      WHERE topic_id = {$point->topic_id}
+      WHERE topic_id = $point->topic_id
       ORDER BY post_time DESC";
   $r = $pdo->query($q);
   if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
@@ -530,8 +542,8 @@ Si une erreur grave survient, rien n'est fait et un retour par la fonction erreu
 function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 {  
   global $config_wri,$pdo;
-  // désolé, le nom du point ne peut être vide
-  if ( trim($point->nom) =="" )
+  // désolé, le nom du point ne peut être vide, unset ou juste des espaces
+  if ( empty($point->nom) or empty(trim($point->nom)) )
     return erreur("Le nom ne peut être vide");
   if ( preg_match("/[\<\>\]\[\;]/",$point->nom) )
     return erreur("Le nom contient un des caractères non autorisé suivant : [ ] < > ;");
@@ -540,7 +552,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     {
         // Pensez bien qu'un modérateur puisse vouloir remettre à "" le site n'existant plus
         if ($point->site_officiel=="")
-            $champs_sql['site_officiel'] = $pdo->quote("");
+            $champs_sql['site_officiel'] = "''";
         //cas du site un peu particulier ou l'internaute n'aura pas forcément pensé à mettre http://
         elseif ( !preg_match("/https?:\/\//",$point->site_officiel))
             $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
@@ -552,12 +564,12 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     $champs_sql['date_derniere_modification'] = 'NOW()';
 
     /********* les coordonnées du point *************/
-    if (!$point->geojson) { // Plus besoin de faire ces vérifs avec le nouveau format geojson
+    if (empty($point->geojson)) { // Plus besoin de faire ces vérifs avec le nouveau format geojson
     // désolé, les coordonnées ne peuvent être vide ou non numérique
     $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
-    if (!is_numeric($point->latitude))
+    if (empty($point->latitude) or !is_numeric($point->latitude))
       return erreur("La latitude $erreur_coordonnee $point->latitude");
-    if (!is_numeric($point->longitude))
+    if (empty($point->latitude) or !is_numeric($point->longitude))
       return erreur("La longitude $erreur_coordonnee $point->longitude");
 
     if ($point->latitude>90 or $point->latitude<-90)
@@ -566,7 +578,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
     }
   // si aucune précision gps, on les suppose approximatives
-  if ($point->id_type_precision_gps=="")
+  if (empty($point->id_type_precision_gps))
     $point->id_type_precision_gps=$config_wri['id_coordonees_gps_approximative'];
 
     // si aucune altitude, on la suppose à 0
@@ -577,18 +589,18 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
         return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
 
     //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
-    if ($point->altitude>8848 or $point->altitude<-50)
+    if ($point->altitude>8848 or $point->altitude<0)
         return erreur("$point->altitude"."m comme altitude du point, vraiment ?");
 
-    if (($point->geojson!=""))
+    if (!empty($point->geojson))
       $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
 
     foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $a_tester)
-      if (isset($point->$a_tester))
-        if ( !((ctype_digit($point->$a_tester) and $point->$a_tester>=0) or $point->$a_tester=="ne_sait_pas") )
+      if (!empty($point->$a_tester))
+        if ( !(est_entier_positif($point->$a_tester) or $point->$a_tester=="ne_sait_pas") )
           return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0 ou le code spécial ne_sait_pas, reçu : '".$point->$a_tester."'");
     
-    if ($point->places_matelas=="")
+    if (isset($point->places_matelas) and $point->places_matelas=="") // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
        $point->places_matelas="0";
 /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
 // champ ou il faut juste un set=nouvelle_valeur
@@ -656,7 +668,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 }
 /*******************************************************
 * on lui passe un objet $point et ça supprime tout proprement
-* commentaires, photos, forum, points, points_gps
+* commentaires, photos, forum, messages du forum?, point
 *******************************************************/
 function suppression_point($point)
 {
@@ -665,7 +677,7 @@ function suppression_point($point)
   // On vérifie que le $point passé existe bien dans notre base, qu'il a donc un id et que cela correspond bien à un seul point
   // toujours présent, sinon, on ne tente rien
   $point_test=infos_point($point->id_point,True);
-  if ($point_test->erreur)
+  if (!empty($point_test->erreur))
       return erreur($point_test->message);
 
   $conditions->ids_points=$point->id_point;
@@ -685,8 +697,9 @@ function suppression_point($point)
 /*******************************************************
 Cette fonction retourne le nom de l'icone (sans le chemin ni l'extention)
 de l'icone à utiliser sur une carte de refuges.info
-Elle n'est qu'une solution intermédiaire avant un éventuel système plus flexible
-de style permettant de choisir l'icone selon les critères d'un point
+Elle n'est qu'une solution intermédiaire avec des if avant un éventuel système plus flexible
+de style permettant de choisir l'icone selon les critères d'un point.
+Comme par exemple une feuille de style cartocc ou truc du genre (uzine à gaz, je m'y collerait quand on aura 50 icônes ;-) )
 
 *******************************************************/
 function choix_icone($point)
@@ -695,26 +708,36 @@ function choix_icone($point)
     // par défaut, et sauf modification ultérieure, le nom de l'icone à choisir porte, par défaut, le nom du type de point (dans une version convertie sans accents,guillemet ou espace)
     $nom_icone=replace_url($point->nom_type);
 
-    // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( ($point->manque_un_mur OR $point->places==0) AND $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
+    // Pour les cabane dans lesquelles on ne peut dormir
+    if ( $point->id_point_type==$config_wri['id_cabane_non_gardee'] and $point->places==0 and !$point->manque_un_mur)
+        $nom_icone="abri";
+
+    // Pour les cabane dans lesquelles il manque un mur
+    if ( $point->manque_un_mur and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
         $nom_icone="abri";
 
     // les bâtiments en montagne sont des bâtiments situé en montgne dont on ne sait rien et qu'il faudrait explorer ou, si fermé dont on sait qu'ils ne peuvent servir
-    if ( ($point->conditions_utilisation=='fermeture' or $point->conditions_utilisation=="detruit") AND $point->id_point_type==$config_wri['id_batiment_en_montagne'] )
+    if ( ($point->conditions_utilisation=='fermeture' or $point->conditions_utilisation=="detruit") and $point->id_point_type==$config_wri['id_batiment_en_montagne'] )
         $nom_icone="batiment-inutilisable";
         
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
-    if ( $point->conditions_utilisation=='cle_a_recuperer' AND $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-        $nom_icone="cabane_cle";
+    if ( $point->conditions_utilisation=='cle_a_recuperer' and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
+        $nom_icone="cabane-cle";
+        
+    // Pour les cabane dans lesquelles on ne peut plus dormir (car fermées ou détruites)
+    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") and $point->id_point_type==$config_wri['id_cabane_non_gardee'])
+        $nom_icone="inutilisable";
+        
+    // Pour les refuges dans lesquelles on ne peut dormir (car fermées ou détruites)
+    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") and $point->id_point_type==$config_wri['id_refuge_garde'] )
+        $nom_icone="inutilisable";
         
     // Pour les cabane/refuges/gites dans lesquelles on ne peut dormir (car fermées ou détruites)
-    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit")
-          AND
-          ($point->id_point_type==$config_wri['id_cabane_non_gardee'] or $point->id_point_type==$config_wri['id_gite_etape'] or $point->id_point_type==$config_wri['id_refuge_garde'])
-       )
+    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") and $point->id_point_type==$config_wri['id_gite_etape'] )
         $nom_icone="inutilisable";
+        
     if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit")
-        AND
+        and
         ($point->id_point_type==$config_wri['point_d_eau'])
        )
         $nom_icone="ancien-point-d-eau";
