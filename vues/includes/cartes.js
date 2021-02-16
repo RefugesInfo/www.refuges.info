@@ -44,8 +44,13 @@ function layerRefugesInfo(options) {
 		},
 		styleOptions: function(properties) {
 			var ext = 'png';
-			if (properties.icone == 'cabane-non-gardee' && !ie)
-				ext = 'svg';
+			if (!ie)
+				switch(properties.icone) {
+					case 'refuge-garde':
+					case 'cabane-non-gardee':
+					case 'gite-d-etape':
+					ext = 'svg';
+				}
 			return {
 				image: new ol.style.Icon({
 					src: options.baseUrl + 'images/icones/' + properties.icone + '.' + ext,
