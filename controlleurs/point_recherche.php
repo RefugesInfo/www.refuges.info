@@ -64,13 +64,16 @@ if (!empty($_REQUEST))
     $points = infos_points ($conditions);
     if ($points->erreur)
     {
-        $vue->erreur=$points->message;
-        $vue->type="point_recherche_erreur";
+        $vue->contenu=$points->message."<br>(Vous pouvez revenir en arrière avec votre navigateur pour corriger le problème)";
+        $vue->type="page_simple";
+        $vue->titre="Recherche sur refuges.info en Erreur";
+
     }
     else
     {
         $vue->nombre_points=sizeof($points);
-        
+        $vue->titre="Recherche sur refuges.info ($vue->nombre_points points trouvés)";
+
         // FIXME sly : et aller, c'est beau l'abstraction en couche mais pour une recherche, on en est à 3 (4?) fois le parcours des résultats
         if (isset($points))
             foreach ($points as $point)
@@ -120,5 +123,4 @@ else
     $vue->erreur="Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)";
     $vue->type="point_recherche_erreur";
 }
-$vue->titre="Recherche sur refuges.info ($vue->nombre_points points trouvés)";
 
