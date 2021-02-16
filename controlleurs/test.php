@@ -15,7 +15,6 @@ require_once ("utilisateur.php");
 require_once ("polygone.php");
 require_once ("meta_donnee.php");
 require_once ("xml.class.php");
-require_once ("api.php");
 require_once ("nouvelle.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("upload_max_filesize.php");
@@ -32,6 +31,7 @@ require_once ("zipfile.php");
 // d ( ) et la fonction de debug qui print les variables passée et une trace des appels
 //d(lien_point($point,true));
 //d($config_wri['sous_dossier_installation']);
+
 
 
 t("fin");
