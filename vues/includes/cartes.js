@@ -21,3 +21,37 @@ const layersSwitcher = controlLayersSwitcher({
 		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS'),
 	},
 });
+
+function layerRefugesInfo(options) {
+	var ie = navigator.userAgent.indexOf("MSIE ") > -1 || // MS old browsers
+		navigator.userAgent.indexOf("Trident/") > -1; // Newer ones
+
+	options = Object.assign({
+		baseUrl: '//www.refuges.info/',
+		urlSuffix: 'api/bbox?type_points=',
+		strategy: ol.loadingstrategy.bboxLimit,
+		receiveProperties: function(properties) {
+			properties.name = properties.nom;
+			properties.link = properties.lien;
+			properties.ele = properties.coord.alt;
+			properties.icone = properties.type.icone;
+			properties.type = properties.type.valeur;
+			properties.bed = properties.places.valeur;
+			// Need to have clean KML export
+			properties.nom =
+				properties.lien =
+				properties.date = '';
+		},
+		styleOptions: function(properties) {
+			var ext = 'png';
+			if (properties.icone == 'cabane-non-gardee' && !ie)
+				ext = 'svg';
+			return {
+				image: new ol.style.Icon({
+					src: options.baseUrl + 'images/icones/' + properties.icone + '.' + ext,
+				}),
+			};
+		},
+	}, options);
+	return layerVectorURL(options);
+}
