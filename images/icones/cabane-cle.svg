@@ -3,4 +3,6 @@
 	<ellipse cx="8" cy="7" rx="4.5" ry="4.5" stroke="#ffeedd" fill="#ffeedd" />
 	<line x1="1" y1="8" x2="8" y2="1" stroke-width="2" stroke-linecap="round" stroke="red" />
 	<line x1="8" y1="1" x2="15" y2="8" stroke-width="2" stroke-linecap="round" stroke="red" />
+	<ellipse cx="13.2" cy="5.2" rx="2" ry="2" stroke-width="1.6" stroke="black" fill-opacity="0" />
+	<polyline points="12,6 2.2,15 1.4,14.1 3.1,13.9 3.3,12.2 4.1,13" stroke-width="1.4" stroke="black" fill-opacity="0" />
 </svg>
