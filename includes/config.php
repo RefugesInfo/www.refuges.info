@@ -86,6 +86,8 @@ $config_wri['id_zone_accueil']=5084; // DOM: un polygone définie uniquement pou
 // à la main dans la config : ( ce sont les id des refuges gardés, non gardés et gites)
 $config_wri['tout_type_refuge']="7,9,10";
 
+$config_wri['bbox_page_accueil']='-5,42,8,51';
+
 // C'est clair que c'est nul, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'intéroger le bon id directement
 $config_wri['id_cabane_non_gardee']=7; 
 $config_wri['id_refuge_garde']=10; 

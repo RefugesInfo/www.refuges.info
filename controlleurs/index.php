@@ -17,10 +17,6 @@ $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($conf
 $vue->css          [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
 $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
 
-$conditions_notre_zone = new stdClass;
-$conditions_notre_zone->ids_polygones=$config_wri['id_zone_accueil'];
-$polygones=infos_polygone($config_wri['id_zone_accueil']);
-$vue->bbox="-5,42,8,51";
 $vue->stat = stat_site ();
 
 // Préparation de la liste des photos et commentaires récent(e)s
@@ -40,3 +36,4 @@ $vue->nouveaux_points=infos_points($conditions_nouveaux_points);
 
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
 $vue->type="index";
+$vue->bbox=$config_wri['bbox_page_accueil']; //point de vue et position initiale de la page
