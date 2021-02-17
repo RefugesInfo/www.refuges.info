@@ -25,7 +25,6 @@ $conditions_nouveaux_commentaires->date_apres="NOW() - INTERVAL '".$config_wri['
 $conditions_nouveaux_commentaires->avec_infos_point=True;
 $conditions_nouveaux_commentaires->ordre="date_creation DESC";
 $vue->nouveaux_commentaires=infos_commentaires($conditions_nouveaux_commentaires);
-$vue->contenu_accueil=wiki_page_html("contenu_accueil");
 
 
 $conditions_nouveaux_points = new stdclass();
@@ -34,6 +33,5 @@ $conditions_nouveaux_points->avec_infos_massif=True;
 $conditions_nouveaux_points->ordre="date_creation DESC";
 $vue->nouveaux_points=infos_points($conditions_nouveaux_points);
 
-$vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
 $vue->type="index";
 $vue->bbox=$config_wri['bbox_page_accueil']; //point de vue et position initiale de la page

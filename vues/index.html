@@ -11,7 +11,7 @@
 	<!-- PRESENTATION   -->
 
 	<p style="margin-top:0">
-		<?=$vue->contenu_accueil?>
+		<?=wiki_page_html("contenu_accueil")?>
 	</p>
 
 	<!-- CARTE DES MASSIFS -->
@@ -30,7 +30,7 @@
 	</div>
 
 	<div class="tablo" style="float:none;padding-left:15px">
-		<?=$vue->nouvelles_generales?>
+		<?=wiki_page_html("nouvelles_generales")?>
 
 		<h4><?=$vue->stat->nbphotos?> photos. Celles rentrées il y a moins <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<br/>
