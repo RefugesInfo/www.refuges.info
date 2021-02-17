@@ -74,9 +74,9 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 			<fieldset >
 				<legend>Téléchargements</legend>
 				Tous les points refuges.info <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?><br/>
-					<a href="http://www.refuges.info/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx" title="Télécharger au format GPX complet">GPX</a> /
-					<a href="http://www.refuges.info/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin" title="Télécharger au format GPX pour Garmin">Garmin</a> /
-					<a href="http://www.refuges.info/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml" title="Télécharger au format KML">KML</a>
+					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx" title="Télécharger au format GPX complet">GPX</a> /
+					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin" title="Télécharger au format GPX pour Garmin">Garmin</a> /
+					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml" title="Télécharger au format KML">KML</a>
 			</fieldset>
 		<?}?>
 
