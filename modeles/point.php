@@ -224,7 +224,7 @@ function infos_points($conditions)
     $conditions_sql.="\n\tAND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
 
   if ( !empty($conditions->date_creation_apres) )
-    $conditions_sql.="\n\tAND points.date_creation >= ".$pdo->quote($conditions->date_creation_apres);
+    $conditions_sql.="\n\tAND points.date_creation >= $conditions->date_creation_apres"; // j'ai essayé $pdo->quote mais ça m'ajoute un ' d'escape en trop quand je met NOW() INTERVAL '3 days'
 
 
   if (!empty($conditions->uniquement_points_en_attente))
