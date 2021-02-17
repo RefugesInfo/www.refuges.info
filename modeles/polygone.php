@@ -59,7 +59,7 @@ function infos_polygones($conditions)
     // Conditions sur les ids des polygones
     if (!empty($conditions->ids_polygones))
         if (!verif_multiples_entiers($conditions->ids_polygones))
-            return erreur("Le paramètre donnée pour les ids n'est pas valide : $conditions->ids_polygones");
+            return erreur("le paramètre donné pour les ids de polygone est/sont invalide.s : $conditions->ids_polygones");
         else
             $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
 
@@ -119,12 +119,12 @@ function infos_polygones($conditions)
             ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) LIMIT 1
         ) AS nom_zone
         ";
-      if (!empty($conditions->avec_enveloppe))
+      if (!empty($conditions->avec_enveloppe)) // FIXME: y'aurait plus simple en demandant st_envelope à postgis ?
         $champs_en_plus.=",
-                 st_xmin(geom) AS ouest,
-                 st_xmax(geom) AS est,
-                 st_ymin(geom) AS sud,
-                 st_ymax(geom) AS nord
+                 st_xmin(polygones.geom) AS ouest,
+                 st_xmax(polygones.geom) AS est,
+                 st_ymin(polygones.geom) AS sud,
+                 st_ymax(polygones.geom) AS nord
                  ";
 
   $query="SELECT polygone_type.*,".$config_wri['champs_table_polygones']."
@@ -139,13 +139,13 @@ function infos_polygones($conditions)
   $res=$pdo->query($query);
   if (!$res)
     return erreur("Requête impossible",$query);
+  // On les met tous dans le tableau à retourné
+  $polygones = array();
   while ($polygone=$res->fetch())
   {
-    if (!empty($polygone->ouest) && !empty($polygone->sud) && !empty($polygone->est) && !empty($polygone->nord))
-        $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord";
-    else
-        $polygone->bbox="-5,42,8,51";
-    $polygones[]=$polygone;
+    if (!empty($polygone->ouest) && !empty($polygone->sud) && !empty($polygone->est) && !empty($polygone->nord) )
+        $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord"; // Et on ajoute une bbox
+    $polygones[]=$polygone; 
   }
   return $polygones;
 }
@@ -173,13 +173,24 @@ Si $avec_geometrie vaut gml/kml/svg/text/...  (voir fonction avant) la géométr
 ************************************************************************************/
 function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False)
 {
+  if (!est_entier_positif($id_polygone)) // Inutile d'aller plus loin
+    return erreur("le paramètre donné pour l' id unique de polygone est invalide : $id_polygone");
+
   $conditions = new stdClass;
   $conditions->ids_polygones=$id_polygone;
+  
   if ($avec_geometrie)
     $conditions->avec_geometrie=$avec_geometrie;
+    
   if ($avec_enveloppe)
     $conditions->avec_enveloppe=True;
+    
   $poly=infos_polygones($conditions);
+  if (!empty($poly->erreur))
+      return erreur($poly->message);
+  
+  if (count($poly)!=1)
+    return erreur("Le polygone d'id $id_polygone n'existe pas dans notre base");
   return $poly[0];
 }
 
@@ -187,12 +198,17 @@ function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False
 function infos_type_polygone($id_polygone_type)
 {
   global $pdo;
+  if (!est_entier_positif($id_polygone_type))
+    return erreur("Vous demandez un type de polygone avec un id incorrect :".$id_polygone_type);
   $query="SELECT *
     FROM polygone_type
     WHERE id_polygone_type=$id_polygone_type
   ";
   $res=$pdo->query($query);
-  return $res->fetch();
+  if (empty($infos_type_polygone=$res->fetch()))
+    return erreur("Le type de polygone avec un id de $id_polygone_type est inexistant dans notre base");
+  else
+    return $infos_type_polygone;
 }
 
 /********************************************

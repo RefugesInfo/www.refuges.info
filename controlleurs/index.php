@@ -20,7 +20,7 @@ $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($confi
 $conditions_notre_zone = new stdClass;
 $conditions_notre_zone->ids_polygones=$config_wri['id_zone_accueil'];
 $polygones=infos_polygone($config_wri['id_zone_accueil']);
-$vue->bbox=$polygones->bbox;
+$vue->bbox="-5,42,8,51";
 $vue->stat = stat_site ();
 
 // Préparation de la liste des photos et commentaires récent(e)s

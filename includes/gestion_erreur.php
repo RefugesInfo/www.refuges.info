@@ -74,7 +74,7 @@ function verif_multiples_entiers($mixed)
     return False;
   if (is_int($mixed))
     return True;
-  return preg_match ('/^-?\d+(,-?\d+)*$/', $mixed);
+  return preg_match ('/^\d+(,\d+)*$/', $mixed);
 }
 
 /*
@@ -91,7 +91,7 @@ function est_entier_positif($mixed)
 {
   if (empty($mixed))
     return False;
-  return ( ctype_digit($mixed) or (is_int($mixed) and $mixed>=0) );
+  return ( ctype_digit($mixed) or (is_int($mixed) and $mixed>0) );
 }
 
 

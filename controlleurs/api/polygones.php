@@ -79,7 +79,7 @@ if($req->type_polygones != "")
 	$params->ids_polygone_type=$req->type_polygones;
 $params->avec_geometrie=$req->format;
 $params->intersection=$req->intersection;
-
+$params->avec_enveloppe=True;
 $polygones_bruts = new stdClass();
 $polygones = new stdClass();
 

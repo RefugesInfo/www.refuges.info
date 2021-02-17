@@ -42,22 +42,42 @@ $vue->types_point_affichables=types_point_affichables();
 /edit/4 : édite les contours du polygone 4
 /edit?id_polygone_type=11 : crée une zone
 */
-$id_polygone = (int) $controlleur->url_decoupee[1]; // Id du polygone contenant
+$id_polygone = $controlleur->url_decoupee[1]; // Id du polygone contenant
+
+
 // Récupère les soumissions du formulaire de modification de paramètres de massifs
 if (est_moderateur()) 
   if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;
+
+
 // Le paramètre d'URL id_polygone_type permet d'afficher différents contenus
 // Si absent : affiche le contour du polygone demandé et les points à l'intérieur
 // Si présent : les polygones qui intersectent le polygone demandé
-// FIXME: ce nom de variable est vraiment bizarrement choisi, à chaque fois je me demande ce que c'est que ce 1. Pourquoi pas plus clair &mode_affichage=massifs/points
-$id_polygone_type=$_GET['id_polygone_type'] ?? '';
-if($id_polygone_type)
-  $vue->contenu=infos_type_polygone($id_polygone_type);
+// FIXME: ce nom de variable est vraiment bizarrement choisi, à chaque fois je me demande ce que c'est que ce 1. Pourquoi pas plus clair &mode_affichage=polygones&id_polygone_type=x 
 
-// Les paramètres des layers points et massifs
+if (!empty($_GET['id_polygone_type']))
+{
+  $vue->contenu=infos_type_polygone($_GET['id_polygone_type']);
+  if (!empty($vue->contenu->erreur)) // quand même, si id_polygone_type présente un problème, on propose un message d'erreur un peu plus humain
+  {
+    $vue->contenu=$vue->contenu->message;
+    $vue->http_status_code="404";
+    $vue->type="page_simple";
+    return;
+  }
+}
+
+if (!isset($id_polygone)) // Pas de numéro de polygone ou , ça n'est pas une erreur, mais l'affichage d'un mode "libre" de la carte sans limite sur les points
+{
+  $vue->polygone = new stdClass;
+  $vue->polygone->bbox="-5,12,8,20"; // FIXME: vérifier si utile : on propose quand même une bbox pour positionner la vue, mais l'url peut contenir les paramètres OL pour se positionner où l'on veut
+  return;
+}
+
 $polygone=infos_polygone ($id_polygone,False,True);
-if (!$polygone->erreur) 
+
+if (empty($polygone->erreur)) 
 {
   $vue->quoi=$vue->contenu ?
     $vue->contenu->type_polygone."s" :
@@ -65,13 +85,19 @@ if (!$polygone->erreur)
   $vue->ou="$polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
   $vue->titre=ucfirst(
     ($polygone->nom_polygone ? "$vue->ou : " : "") .
-     "$vue->quoi sur une carte"
+    "$vue->quoi sur une carte"
   );
 }
-else
-  $vue->titre="Polygone demandé incorrect : $polygone->message";
+else // On a un problème avec le polygone demandé dans l'url, inutile d'aller plus loin
+{
+  $vue->contenu=$vue->titre="Impossible d'afficher la carte sur ce polygone car : ".$polygone->message;
+  $vue->http_status_code="404";
+  $vue->type='page_simple';
+  return;
+}
 
 $vue->polygone=$polygone;
+
 
 // Les coordonnées des polygones à éditer
 $params = new stdClass();
@@ -82,19 +108,20 @@ $polygones_bruts=infos_polygones($params);
 $vue->json_polygones = $polygones_bruts[0]->geometrie_geojson;
 
 $vue->lien_legende_carte=lien_wiki('legende_carte');
+$id_polygone= (int) $id_polygone;
 
 /* sly 2021-02-12 : dans un objectif de test, j'ajoute en fin de page la liste plate (dans une limite de perf de 150) des liens vers toutes les fiches du polygone considéré.
-  L'objectif est multiple : je veux savoir si ça améliore le référencement de ces pages, car je trouve que les moteurs de recherche ne les indexent que très mal. 
-  Sans doute car il ne savent pas intérpréter le js de OL alors qu'en terme de pertinence, selon moi il apparait pertinent que "refuges+écrins" devrait tomber sur la carte des écrins chez nous ;-)
-  L'autre, c'est pour les utilisateurs sans javascript (ouais, ça doit plus trop exister), mais pour eux, cette page ne sert vraiment à rien !
-  Et enfin, sur mobile, parfois, le js ne se charge pas en 2G, avoir cette liste donnerait a minima un truc que l'on peut "chercher" par ctrl+f
-  Et tout ça pour ~20ms de coût de chargement, dans une zone qui ne perturbe pas beaucoup les users normaux.
+L'objectif est multiple : je veux savoir si ça améliore le référencement de ces pages, car je trouve que les moteurs de recherche ne les indexent que très mal. 
+Sans doute car il ne savent pas intérpréter le js de OL alors qu'en terme de pertinence, selon moi il apparait pertinent que "refuges+écrins" devrait tomber sur la carte des écrins chez nous ;-)
+L'autre, c'est pour les utilisateurs sans javascript (ouais, ça doit plus trop exister), mais pour eux, cette page ne sert vraiment à rien !
+Et enfin, sur mobile, parfois, le js ne se charge pas en 2G, avoir cette liste donnerait a minima un truc que l'on peut "chercher" par ctrl+f
+Et tout ça pour ~20ms de coût de chargement, dans une zone qui ne perturbe pas beaucoup les users normaux.
 */
-if (!$id_polygone_type and $id_polygone!=0)
+if (empty($_GET['id_polygone_type']))
 {
-$conditions = new stdClass;
-$conditions->ids_polygones=$id_polygone;
-$conditions->limite=150;
-$vue->points_de_la_zone=infos_points($conditions);
-
+  $conditions = new stdClass;
+  $conditions->ids_polygones=$id_polygone;
+  $conditions->limite=150;
+  $vue->points_de_la_zone=infos_points($conditions);
 }
+
