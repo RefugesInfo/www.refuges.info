@@ -14,34 +14,36 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 ?>
 <div class="contenu noprint">
 	<!-- afficher le titre du massif (en mode massif) -->
+	<?php if ( $vue->polygone->id_polygone ){?>
 	<h3 id="titrepage">
 		Voici les <?=$vue->quoi?>
-		<?if ($vue->polygone->nom_polygone){?>
+		<?php if ($vue->polygone->nom_polygone){?>
 			dans <?=$vue->ou?>
-		<?}?>
+		<?php }?>
 	</h3>
+	<?php } ?>
 </div>
 
 <div id="carte-nav" class="nav_<?=$vue->mode_affichage?>"></div>
 
 <div id="selecteur-carte-nav" class="noprint">
-	<?if (!$vue->contenu ){?>
+	<?php if (!$vue->contenu ){?>
 		<fieldset>
 			<legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
 			<ul>
-				<?if ( $vue->polygone->id_polygone ){?>
+				<?php if ( $vue->polygone->id_polygone ){?>
 					<li>
 						<input id="selecteur-massif" name="couche-massif"
 							onchange="points.getSource().refresh()"
 							type="checkbox" checked="checked" />
 						<?=$vue->polygone->nom_polygone?> uniquement
 					</li><hr/>
-				<?}?>
+				<?php }?>
 				<li>Tout
 					<input type="checkbox" name="couche-wri" checked="checked" />
 					<span id="couche-wri-status" />
 				</li>
-				<? foreach ($vue->types_point_affichables AS $type_affichable) {
+				<?php foreach ($vue->types_point_affichables AS $type_affichable) {
 					/* DOM : codé à la va-vite mais ça devrait disparaitre quand toutes les icônes seront en SVG */
 					$ext = 'png';
 					switch($type_affichable->icone) {
@@ -66,11 +68,11 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 						/>
 						<?=$type_affichable->nom_type?>
 					</li>
-				<?}?>
+				<?php }?>
 			</ul>
 		</fieldset>
 
-		<?if ($vue->polygone->nom_polygone ) { ?>
+		<?php if ($vue->polygone->nom_polygone ) { ?>
 			<fieldset >
 				<legend>Téléchargements</legend>
 				Tous les points refuges.info <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?><br/>
@@ -78,7 +80,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin" title="Télécharger au format GPX pour Garmin">Garmin</a> /
 					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml" title="Télécharger au format KML">KML</a>
 			</fieldset>
-		<?}?>
+		<?php }?>
 
 		<fieldset>
 			<legend>
@@ -109,14 +111,14 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				<li><input type="checkbox" name="couche-alpages" />alpages.info &nbsp;<span id="couche-alpages-status" /></li>
 			</ul>
 		</fieldset>
-	<?}?>
+	<?php }?>
 
 	<?php if ( !$vue->mode_affichage && $vue->polygone->id_polygone && est_moderateur() ) {?>
 		<fieldset>
 			<legend>Modification</legend>
 			<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>">Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?></a>
 		</fieldset>
-	<?}?>
+	<?php }?>
 
 	<?php if ( $vue->contenu && !$vue->polygone->id_polygone && est_moderateur() ) {?>
 		<fieldset>
@@ -151,7 +153,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				du moment qu'il recouvre au moins un bout de chaque massif.<br/>
 				Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.</p>
 			</label>
-	<?}?>
+	<?php }?>
 </div>
 <p>
 <?php if (!empty($vue->points_de_la_zone)) foreach ($vue->points_de_la_zone as $point) { ?>
