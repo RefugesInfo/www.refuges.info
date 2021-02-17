@@ -79,7 +79,6 @@ $config_wri['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondan
 $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
 $config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees, massif central, ile de la réunion ... 
 $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réserves biologique, parcs nationaux.
-$config_wri['id_zone_accueil']=5084; // DOM: un polygone définie uniquement pour montrer les massifs en pages d'accueil
 
 // Catégorie "tout type de refuges"
 // certes une gestion par catégorie directement dans la base serait préférable, mais on a au plus 1 ou 2 catégorie donc, bon,
@@ -100,7 +99,6 @@ $config_wri['id_batiment_en_montagne']=28;
 $config_wri['champs_table_polygones']='polygones.id_polygone,polygones.id_polygone_type,polygones.article_partitif,polygones.nom_polygone,polygones.source,polygones.message_information_polygone,polygones.url_exterieure,polygones.site_web';
 
 // Champs valables pour les points classés par spécificité (permet de dynamiquement gérer en partie le formulaire de saisie et d'affichage)
-// FIXME sly 13/08/2013 : on pourrait presque aller les chercher dans la base directement, mais on perdrait la possiblité de changer l'ordre facilement. A voir le pour et le contre
 $config_wri['champs_trinaires_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite'); // ceux là sont des champs ou ne sait pas/oui/non sont possible (traiter dynamiquement dans une boucle)
 $config_wri['champs_entier_ou_sait_pas_points']=array('places','places_matelas');
 $config_wri['champs_simples_points']=array_merge(array('conditions_utilisation','places','places_matelas',"en_attente","nom","acces","remark","proprio","id_point_type","id_createur","modele","altitude","id_type_precision_gps",'nom_createur'),$config_wri['champs_trinaires_points'],$config_wri['champs_entier_ou_sait_pas_points']);
