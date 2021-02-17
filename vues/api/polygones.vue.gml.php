@@ -25,7 +25,6 @@ foreach ($polygones as $polygone) {
 			<type>".$polygone->type['id']."</type>
 			<id>".$polygone->id."</id>
 			<partitif>".$polygone->partitif."</partitif>
-			<bbox>".$polygone->bbox."</bbox>
 			<lien>".$polygone->lien."</lien>
 			<couleur>".$polygone->couleur."</couleur>
 			".$polygone->geometrie."

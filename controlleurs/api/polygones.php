@@ -114,7 +114,6 @@ if ($nb_coul) {
                   ? str_replace (array('MultiPolygon','[[[',']]]'), array('MultiLineString','[[',']]'), $polygone->$geo)
                   : $polygone->$geo;
 			$polygones->$i->partitif = $polygone->article_partitif;
-			$polygones->$i->bbox = $polygone->bbox;
 			$polygones->$i->lien = lien_polygone($polygone,False);
 			$polygones->$i->couleur = $couleur;
 			$i++;

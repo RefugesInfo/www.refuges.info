@@ -68,12 +68,9 @@ if (!empty($_GET['id_polygone_type']))
   }
 }
 
-if (!isset($id_polygone)) // Pas de numéro de polygone ou , ça n'est pas une erreur, mais l'affichage d'un mode "libre" de la carte sans limite sur les points
-{
-  $vue->polygone = new stdClass;
-  $vue->polygone->bbox="-5,12,8,20"; // FIXME: vérifier si utile : on propose quand même une bbox pour positionner la vue, mais l'url peut contenir les paramètres OL pour se positionner où l'on veut
+if (!isset($id_polygone)) // Pas de numéro de polygone, ça n'est pas une erreur, on affiche les points visibles
   return;
-}
+
 
 $polygone=infos_polygone ($id_polygone,False,True);
 

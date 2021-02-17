@@ -138,15 +138,9 @@ function infos_polygones($conditions)
   ";
   $res=$pdo->query($query);
   if (!$res)
-    return erreur("Requête impossible",$query);
-  // On les met tous dans le tableau à retourné
-  $polygones = array();
-  while ($polygone=$res->fetch())
-  {
-    if (!empty($polygone->ouest) && !empty($polygone->sud) && !empty($polygone->est) && !empty($polygone->nord) )
-        $polygone->bbox="$polygone->ouest,$polygone->sud,$polygone->est,$polygone->nord"; // Et on ajoute une bbox
-    $polygones[]=$polygone; 
-  }
+    return erreur("Requête SQL en erreur (vous pouvez nous signaler le problème sur le forum)",$query);
+  // On les met tous dans le tableau à retourner
+  $polygones = $res->fetchall();
   return $polygones;
 }
 /***********************************************************************************
