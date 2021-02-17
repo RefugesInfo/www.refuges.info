@@ -51,6 +51,8 @@ function layerRefugesInfo(options) {
 					case 'gite-d-etape':
 					ext = 'svg';
 				}
+				//FIXME sly 17/02/2021: temporairement, pour ne pas perturber les habitudes, je maintiens png comme extension pour tous, quelques tests et essais avant de le pousser pour tous
+				ext = 'png'; // A enlever dès ques svg marche pour tous ;-)
 			return {
 				image: new ol.style.Icon({
 					src: options.baseUrl + 'images/icones/' + properties.icone + '.' + ext,
