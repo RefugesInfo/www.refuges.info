@@ -27,7 +27,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 <div id="selecteur-carte-nav" class="noprint">
 	<?if (!$vue->contenu ){?>
 		<fieldset>
-			<legend>Points (<a href="<?=$vue->lien_legende_carte?>">Légende</a>)</legend>
+			<legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
 			<ul>
 				<?if ( $vue->polygone->id_polygone ){?>
 					<li>
