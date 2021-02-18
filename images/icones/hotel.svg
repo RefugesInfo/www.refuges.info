@@ -2,8 +2,8 @@
 	<style>
 		* {
 			stroke-width: 0.5;
-			stroke: green;
-			fill: green;
+			stroke: blue;
+			fill: blue;
 		}
 		line {
 			stroke-width: 2;
