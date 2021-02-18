@@ -278,7 +278,6 @@ foreach ($points_bruts as $point) {
     $i++;
 }
 $nombre_points = $i;
-//d($point);
 /****************************** FORMAT VUE ******************************/
 
 include($config_wri['chemin_vues'].'api/points.vue.'.$req->format.".php");
