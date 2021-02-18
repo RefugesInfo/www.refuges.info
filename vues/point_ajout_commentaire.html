@@ -15,11 +15,11 @@
 	<div class="com">
 		<form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
 			<textarea name="texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
-			<?=lien_wiki($config_wri['bbcode_wiki_page'])?>
+			<a href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe possible</a>
 			<?php if (!est_connecte()) { ?>
 				<p>
 					<label>Auteur:</label>
-					<input type="text" value="" name="auteur_commentaire" maxlength="120" size="40" />(facultatif)
+					<input type="text" value="<?=$_REQUEST['auteur_commentaire'] ?? ''?>" name="auteur_commentaire" maxlength="120" size="40" />(facultatif)
 				</p>
 			<?php } ?>
 			<p>
@@ -47,13 +47,18 @@
 				<?}?>
 				<p>
 					Merci de simplement écrire la lettre "f" dans la case :
-					<input type="text" name="lettre_verification" value="<?=$vue->lettre_verification?>"/>
+					<input type="text" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
 					(Ceci afin d'éviter les messages indésirables automatiques, désolé)
 				</p>
 			<?}?>
 			<input type="submit" name="action" value="Envoyer" />
 			<input type="reset" value="Recommencer" />
 		</form>
+        <?php if ($vue->succes_ajout_commentaire) { ?>
+        <p>
+          <b>Votre commentaire a bien été ajouté.</b> (Vous pouvez en ajouter un autre si vous le souhaitez ou <a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a>)
+        </p>
+        <?php } ?>
 	</div>
 	<br />
 	<h4>Ce que vous pouvez ou non mettre sur le site</h4>
