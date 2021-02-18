@@ -1,5 +1,5 @@
-<?php // Contient les déclarations communes aux cartes
-?>
+// Contient les déclarations communes aux cartes
+
 const layersSwitcher = controlLayersSwitcher({
 	<?if (isset($config_wri["carte_base"])){?>
 		init: '<?=$config_wri["carte_base"]?>',
@@ -23,9 +23,6 @@ const layersSwitcher = controlLayersSwitcher({
 });
 
 function layerRefugesInfo(options) {
-	var ie = navigator.userAgent.indexOf('MSIE ') > -1 || // MS old browsers
-		navigator.userAgent.indexOf('Trident/') > -1; // Newer ones
-
 	options = Object.assign({
 		baseUrl: '//www.refuges.info/',
 		urlSuffix: 'api/bbox?type_points=',
@@ -45,9 +42,11 @@ function layerRefugesInfo(options) {
 		styleOptions: function(properties) {
 			return {
 				image: new ol.style.Icon({
+// Pour SVG, changer .png en .svg ci-dessous
 					src: options.baseUrl + 'images/icones/' + properties.icone + '.png',
-// A remplacer dès que SVG marche pour tous ;-)
-//					src: options.baseUrl + 'images/icones/' + properties.icone + (ie ? '.png' : '.svg'),
+					imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
+// Pour avoir des icônes 15*15, décommenter la ligne en dessous 
+//					scale: 0.666,
 				}),
 			};
 		},
