@@ -45,7 +45,7 @@ function layerRefugesInfo(options) {
 // Pour SVG, changer .png en .svg ci-dessous
 					src: options.baseUrl + 'images/icones/' + properties.icone + '.png',
 					imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
-// Pour avoir des icônes 15*15, décommenter la ligne en dessous 
+// Pour avoir des icônes 16*16, décommenter la ligne en dessous 
 //					scale: 0.666,
 				}),
 			};
