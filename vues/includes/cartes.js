@@ -23,8 +23,8 @@ const layersSwitcher = controlLayersSwitcher({
 });
 
 function layerRefugesInfo(options) {
-	var ie = navigator.userAgent.indexOf("MSIE ") > -1 || // MS old browsers
-		navigator.userAgent.indexOf("Trident/") > -1; // Newer ones
+	var ie = navigator.userAgent.indexOf('MSIE ') > -1 || // MS old browsers
+		navigator.userAgent.indexOf('Trident/') > -1; // Newer ones
 
 	options = Object.assign({
 		baseUrl: '//www.refuges.info/',
@@ -43,19 +43,11 @@ function layerRefugesInfo(options) {
 				properties.date = '';
 		},
 		styleOptions: function(properties) {
-			var ext = 'png';
-			if (!ie)
-				switch(properties.icone) {
-					case 'refuge-garde':
-					case 'cabane-non-gardee':
-					case 'gite-d-etape':
-					ext = 'svg';
-				}
-				//FIXME sly 17/02/2021: temporairement, pour ne pas perturber les habitudes, je maintiens png comme extension pour tous, quelques tests et essais avant de le pousser pour tous
-				ext = 'png'; // A enlever dès ques svg marche pour tous ;-)
 			return {
 				image: new ol.style.Icon({
-					src: options.baseUrl + 'images/icones/' + properties.icone + '.' + ext,
+					src: options.baseUrl + 'images/icones/' + properties.icone + '.png',
+// A remplacer dès que SVG marche pour tous ;-)
+//					src: options.baseUrl + 'images/icones/' + properties.icone + (ie ? '.png' : '.svg'),
 				}),
 			};
 		},

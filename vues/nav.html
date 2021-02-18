@@ -43,17 +43,7 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 					<input type="checkbox" name="couche-wri" checked="checked" />
 					<span id="couche-wri-status" />
 				</li>
-				<?php foreach ($vue->types_point_affichables AS $type_affichable) {
-					/* DOM : codé à la va-vite mais ça devrait disparaitre quand toutes les icônes seront en SVG */
-					$ext = 'png';
-					switch($type_affichable->icone) {
-						case 'refuge-garde':
-						case 'cabane-non-gardee':
-						case 'gite-d-etape':
-						$ext = 'svg';
-					}
-					$ext='png'
-				?>
+				<?php foreach ($vue->types_point_affichables AS $type_affichable) { ?>
 					<li>
 						<input
 							type="checkbox"
@@ -63,7 +53,8 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 						/>
 						<img
 							id="icone_<?=$type_affichable->id_point_type?>"
-							src="<?=$config_wri['url_chemin_icones'].$type_affichable->icone?>.<?=$ext?>"
+<?php/* Pour SVG, changer .png en .svg ci-dessous (pas de test I.E.) */?>
+							src="<?=$config_wri['url_chemin_icones'].$type_affichable->icone?>.png"
 							alt="icone de <?=$type_affichable->nom_type?>"
 						/>
 						<?=$type_affichable->nom_type?>
