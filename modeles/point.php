@@ -710,7 +710,7 @@ function choix_icone($point)
 
     // Pour les cabane dans lesquelles on ne peut dormir
     if ( $point->id_point_type==$config_wri['id_cabane_non_gardee'] and $point->places==0 and !$point->manque_un_mur)
-        $nom_icone="abri";
+        $nom_icone="cabane-sans-places-dormir";
 
     // Pour les cabane dans lesquelles il manque un mur
     if ( $point->manque_un_mur and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
@@ -721,19 +721,19 @@ function choix_icone($point)
         $nom_icone="batiment-inutilisable";
         
     // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
+    if ( $point->eau_a_proximite and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
+        $nom_icone="cabane-avec-eau";
+        
+    // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
+    if ( ($point->cheminee or $point->poele) and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
+        $nom_icone="cabane-avec-moyen-de-chauffage";
+        
+    // Pour les cabane dans lesquelles on ne peut dormir (ou à qui il manque un mur)
     if ( $point->conditions_utilisation=='cle_a_recuperer' and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
         $nom_icone="cabane-cle";
         
     // Pour les cabane dans lesquelles on ne peut plus dormir (car fermées ou détruites)
-    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") and $point->id_point_type==$config_wri['id_cabane_non_gardee'])
-        $nom_icone="inutilisable";
-        
-    // Pour les refuges dans lesquelles on ne peut dormir (car fermées ou détruites)
-    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") and $point->id_point_type==$config_wri['id_refuge_garde'] )
-        $nom_icone="inutilisable";
-        
-    // Pour les cabane/refuges/gites dans lesquelles on ne peut dormir (car fermées ou détruites)
-    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit") and $point->id_point_type==$config_wri['id_gite_etape'] )
+    if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit"))
         $nom_icone="inutilisable";
         
     if ( ($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit")
