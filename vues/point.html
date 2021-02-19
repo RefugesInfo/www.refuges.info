@@ -23,7 +23,7 @@
 				</dd>
 			<?}?>
 			<?// Si les droits sont suffisants, lien de modification
-			if ($vue->lien_modification) {?>
+			if (est_autorise($point->id_createur)) {?>
 				<dd class="noprint">
 					<a class="groupir" style="font-size: smaller ;" href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
 						[Modifier cette fiche]

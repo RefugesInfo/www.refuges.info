@@ -101,10 +101,6 @@ else // le point est valide
         if ($polygone->id_polygone_type==$config_wri['id_zone_reglementee'])
             $vue->polygone_avec_information=$polygone;
             
-    /*********** Préparation de la présentation du point ***/
-    if (est_autorise($point->id_createur) )
-        $vue->lien_modification=TRUE;
-            
     /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
     // Construction du tableau qui sera lu, ligne par ligne par la vue pour être affiché
     // On pourrait détailler en html chaque propriété entourée par un if (propriété = valide), mais ça fait beaucoup de redondance, alors ainsi, je factorise au détriment d'un peu de lisibilité
