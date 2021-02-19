@@ -11,7 +11,7 @@
 		}
 		polyline {
 			stroke: white;
-			fill-opacity: 0;
+			fill: none;
 		}
 	</style>
 	<rect x="2" y="7" width="12" height="9" />
