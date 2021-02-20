@@ -248,7 +248,7 @@ function lien_inter_fiches($texte,$format_sortie="bbcode")
       if ($format_sortie=="bbcode")
         $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
       else
-        $texte=str_replace($occurence[0][$x],"$point->nom",$string);
+        $texte=str_replace($occurence[0][$x],"$point->nom",$texte);
 
     }
     return $texte;

@@ -36,7 +36,7 @@ $menus = array ('menu-normal'); // On commence par la barre normale, dans tous l
 
 // Si ce n'est pas un mobile, on ajoute un menu surgissant quand la page est scrollée
 $agents_mobiles = "phone|iphone|itouch|ipod|ipad|symbian|android|htc_|htc-|palmos|blackberry|opera m|iemobile|windows ce|fennec|hiptop|kindle|mot |mot-|samsung|sony|ericsson|nokia|^sie-|nintendo|webos\/|pda;|avantgo|eudoraweb|minimo|netfront|brew|teleca|lg;|lge |wap;| wap ";
-if (!preg_match( "/$agents_mobiles/i", $_SERVER['HTTP_USER_AGENT']))
+if (!preg_match( "/$agents_mobiles/i", $_SERVER['HTTP_USER_AGENT'] ?? ''))
 	$menus [] = 'menu-scroll';
 
 foreach ($menus AS $id) {?>

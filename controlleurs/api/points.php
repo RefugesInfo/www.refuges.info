@@ -235,7 +235,7 @@ foreach ($points_bruts as $point) {
       if($point->places_matelas == 0)
           $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
       else
-          $points->$i->info_comp['places_matelas']['valeur'] = $point->matelas;
+          $points->$i->info_comp['places_matelas']['valeur'] = $point->places_matelas;
       $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
       $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
       $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
