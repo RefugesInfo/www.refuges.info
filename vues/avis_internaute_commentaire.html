@@ -5,14 +5,16 @@
     </p>
     <p>
     <div>
-    <?if ($vue->commentaire->photo_existe) {?>
+    <?php if ($vue->commentaire->photo_existe) {?>
             <a href="<?=$vue->commentaire->lien_photo['originale']?>">
                 <img class="photos" height="150" src="<?=$vue->commentaire->lien_photo['reduite']?>" alt="Photo commentaire" />
             </a>
+            <?php if (!empty($vue->commentaire->date_photo_format_francais)) {?>
             <p class='text_sur_image'>
                 <?=$vue->commentaire->date_photo_format_francais?>
             </p>
-    <?}?>
+            <?php }?>
+    <?php }?>
       <?=$vue->commentaire->texte_affichage?>
     </div>
     </p>

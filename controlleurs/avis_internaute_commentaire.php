@@ -9,7 +9,7 @@ require_once ("commentaire.php");
 
 $commentaire=infos_commentaire($controlleur->url_decoupee[1]);
 
-if ($commentaire->erreur)
+if (!empty($commentaire->erreur))
 {
     $vue->http_status_code = 404;
     $vue->type = "page_simple";
@@ -23,7 +23,7 @@ else
     $vue->commentaire->lien=lien_point($commentaire,True);
     
     /**************************** l'action  ******************************/
-    if ($_POST['valider']!="")
+    if (!empty($_POST['valider']))
     {
         $vue->type="page_simple";
         // Si l'internaute est connecté au forum ou qu'il a saisi la lettre anti-robot
