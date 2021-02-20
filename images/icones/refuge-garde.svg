@@ -9,7 +9,7 @@
 			stroke-width: 2;
 			stroke-linecap: round;
 		}
-		polyline {
+		path {
 			stroke: white;
 			fill: none;
 		}
@@ -18,5 +18,5 @@
 	<ellipse cx="8" cy="7" rx="4.5" ry="4.5" />
 	<line x1="1" y1="8" x2="8" y2="1" />
 	<line x1="8" y1="1" x2="15" y2="8" />
-	<polyline points="6,16 6,10 10,10 10,16" />
+	<path d="M 6 16 l 0 -6, 4 0, 0 6" />
 </svg>

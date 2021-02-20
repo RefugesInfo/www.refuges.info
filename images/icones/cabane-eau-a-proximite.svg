@@ -10,6 +10,9 @@
 	<ellipse cx="8" cy="7" rx="4.5" ry="4.5" stroke="#ffeedd" fill="#ffeedd" />
 	<line x1="1" y1="8" x2="8" y2="1" />
 	<line x1="8" y1="1" x2="15" y2="8" />
-	<ellipse cx="13.2" cy="5.2" rx="2" ry="2" stroke-width="1.6" stroke="black" fill="none" />
-	<path d="M 12 6 l -9 9, -1.5 -1.5, 2.8 -0.3, 0.1 -2.7, 1.9 1.8" stroke-width="1.4" stroke="black" fill="none" />
+	
+	<ellipse cx="11" cy="13" rx="2.25" ry="2.25" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
+	<ellipse cx="11" cy="13" rx="1.5" ry="1.5" stroke-width="0" fill="#005e5e" />
+	<ellipse cx="11.35" cy="12.6" rx="1.5" ry="1.5" stroke-width="0" fill="cyan" />
+	<path d="M 9.1 11.8 l 1.9 -3.3, 1.9 3.3" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
 </svg>

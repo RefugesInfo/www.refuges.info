@@ -921,7 +921,7 @@ function layerRefugesInfo(options) {
 				image: new ol.style.Icon({
 					//TODO BUG don't use the same baseUrl than baseUrlFunction
 					// Pour SVG, changer .png en .svg ci-dessous
-					src: options.baseUrl + 'images/icones/' + properties.icone + '.svg',
+					src: options.baseUrl + 'images/icones/' + properties.icone + '.png',
 					imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
 					// Pour avoir des icônes 16*16, décommenter la ligne en dessous 
 					//					scale: 0.666,
