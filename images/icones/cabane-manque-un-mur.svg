@@ -1,13 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="24" width="24">
-	<style>
-		line {
-			stroke-linecap: round;
-			stroke: red;
-		}
-	</style>
-	<line x1="1" y1="8" x2="8" y2="1" stroke-width="2" />
-	<line x1="8" y1="1" x2="15" y2="8" stroke-width="2" />
-	<line x1="4" y1="8" x2="12" y2="8" />
-	<line x1="3" y1="11.5" x2="13" y2="11.5" />
-	<line x1="3" y1="15" x2="13" y2="15" />
+	<path d="M 1 8.2 l 7 -7, 7 7" stroke-width="2" stroke-linecap="round" stroke="red" fill="none" />
+	<path d="M 4 8 l 8 0" stroke-linecap="round" stroke="red" />
+	<path d="M 3 11.5 l 10 0" stroke-linecap="round" stroke="red" />
+	<path d="M 3 15 l 10 0" stroke-linecap="round" stroke="red" />
 </svg>

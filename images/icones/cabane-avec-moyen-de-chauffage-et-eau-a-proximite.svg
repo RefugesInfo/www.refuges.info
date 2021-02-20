@@ -1,16 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="24" width="24">
 	<ellipse cx="9.5" cy="1.5" rx="6" ry="1" stroke="#a0b0e0" fill="#bbccff" />
 	<rect x="2" y="2" width="2" height="5" fill="grey" />
-	<rect x="2" y="7" width="12" height="11" fill="#ffeedd" stroke="#e08020" stroke-width="0.5" />
-	<ellipse cx="8" cy="7" rx="4" ry="4" stroke="#ffeedd" fill="#ffeedd" />
-	<line x1="1" y1="9" x2="8" y2="2" stroke="red" stroke-width="2" stroke-linecap="round" />
-	<line x1="8" y1="2" x2="15" y2="9" stroke="red" stroke-width="2" stroke-linecap="round" />
 
-	<rect x="6" y="10" width="4" height="6" fill="#e08020" />
-	<ellipse cx="11" cy="13" rx="2.25" ry="2.25" stroke-width="0.25" stroke="#005e5e" fill="cyan" />
+	<path d="M 2 7 l 0 8.75, 12 0, 0 -8.75" stroke-width="0.5" stroke="#e08020" fill="#ffeedd" />
+	<path d="M 1 9 l 7 -7, 7 7" stroke-width="2" stroke-linecap="round" stroke="red" fill="#ffeedd" />
 
-	<ellipse cx="11" cy="13" rx="2.25" ry="2.25" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
-	<ellipse cx="11" cy="13" rx="1.5" ry="1.5" stroke-width="0" fill="#005e5e" />
-	<ellipse cx="11.35" cy="12.6" rx="1.5" ry="1.5" stroke-width="0" fill="cyan" />
-	<path d="M 9.1 11.8 l 1.9 -3.3, 1.9 3.3" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
+	<ellipse cx="11" cy="12.75" rx="2.25" ry="2.25" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
+	<ellipse cx="11" cy="12.75" rx="1.5" ry="1.5" stroke-width="0" fill="#005e5e" />
+	<ellipse cx="11.35" cy="12.8" rx="1.5" ry="1.5" stroke-width="0" fill="cyan" />
+	<path d="M 9.1 11.55 l 1.9 -3.3, 1.9 3.3" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
 </svg>
