@@ -24,7 +24,7 @@ $config_wri['mapKeys'] = [
   // https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
 ];
 
-// Par défaut, le fond de carte est le premier déclaré dans le fichier /vues/includes/cartes.js
+// Par défaut, le fond de carte est le premier déclaré dans le fichier /vues/_carte.js
 // Décommenter permet de changer le par défaut. Indiquer le nom de la couche dans le sélecteur
 //$config_wri['carte_base'] = 'OpenTopo';
 //$config_wri['carte_base'] = 'Photo Bing';

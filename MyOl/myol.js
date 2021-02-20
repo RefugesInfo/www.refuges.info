@@ -898,6 +898,7 @@ function getSym(type) {
  * www.refuges.info POI layer
  * Requires ol.loadingstrategy.bboxLimit, layerVectorURL
  */
+
 function layerRefugesInfo(options) {
 	options = Object.assign({
 		baseUrl: '//www.refuges.info/',
@@ -919,7 +920,11 @@ function layerRefugesInfo(options) {
 			return {
 				image: new ol.style.Icon({
 					//TODO BUG don't use the same baseUrl than baseUrlFunction
-					src: options.baseUrl + 'images/icones/' + properties.icone + '.png',
+					// Pour SVG, changer .png en .svg ci-dessous
+					src: options.baseUrl + 'images/icones/' + properties.icone + '.svg',
+					imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
+					// Pour avoir des icônes 16*16, décommenter la ligne en dessous 
+					//					scale: 0.666,
 				}),
 			};
 		},
