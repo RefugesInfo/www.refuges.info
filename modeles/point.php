@@ -722,7 +722,11 @@ function choix_icone($point)
 
   if ( $point->conditions_utilisation=='cle_a_recuperer' and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
     return "cabane-cle";
-      
+
+    // a supprimer post passage SVG
+  if ( ($point->manque_un_mur or $point->places==0) and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
+    return "abri";
+/*      
   if ( $point->manque_un_mur and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
     return "cabane-manque-un-mur";
 
@@ -737,6 +741,7 @@ function choix_icone($point)
 
   if ( $point->eau_a_proximite and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
     return "cabane-eau-a-proximite";             
+*/
       
   // Et par défaut, le nom de l'icone à choisir porte le nom du type de point (dans une version convertie sans accents,guillemet ou espace)
   return replace_url($point->nom_type);
