@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="24" width="24">
-	<path d="M 1.2 15.25 l 6.88 -11.75, 6.8 11.75 Z" stroke-width="1.5" stroke="red" fill="white" />
+	<path d="M1.2 15.25 l6.88 -11.75,6.8 11.75 Z" stroke-width="1.5" stroke="red" fill="white" />
 	<text x="6.2" y="14" font-size="0.7em" >!</text>
 </svg>
