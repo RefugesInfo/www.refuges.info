@@ -705,7 +705,7 @@ indiquer d'abord qu'elle est inutilisable
 function choix_icone($point)
 {
   global $config_wri;
-  $fermee_detuite=$point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit";
+  $fermee_detuite=($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit");
 
   // les bâtiments en montagne sont des bâtiments situés en montagne dont on ne sait rien et qu'il faudrait explorer ou, si fermé dont on sait qu'ils ne peuvent servir
   // FIXME: on pourrait décider d'utiliser l'icone générique de fermeture, mais j'aime garder l'info en icone que ça n'a jamais été une cabane/gite ou refuge
