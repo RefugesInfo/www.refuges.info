@@ -53,8 +53,16 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 						/>
 						<img
 							id="icone_<?=$type_affichable->id_point_type?>"
-<?php /* Pour SVG, changer .png en .svg ci-dessous (pas de test I.E.) */?>
+<?php
+// DOM : Ce bout de code est à enlever si on n'utilise pas les icones groupées SVG
+if (@$config_wri['mapKeys']['mime_icones_wri'] == 'svg') {
+?>
+							src="<?=$config_wri['url_chemin_icones'].$type_affichable->icone?>.svg"
+<?php } else {
+// DOM : Fin du bout de code à enlever si on n'utilise pas les icones groupées SVG
+?>
 							src="<?=$config_wri['url_chemin_icones'].$type_affichable->icone?>.png"
+<?php } ?>
 							alt="icone de <?=$type_affichable->nom_type?>"
 						/>
 						<?=$type_affichable->nom_type?>

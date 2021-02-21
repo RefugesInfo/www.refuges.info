@@ -2,5 +2,5 @@
 	<ellipse cx="8" cy="10" rx="4.5" ry="4.5" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
 	<ellipse cx="8" cy="10" rx="3" ry="3" stroke-width="0" fill="#005e5e" />
 	<ellipse cx="8.7" cy="9.2" rx="3" ry="3" stroke-width="0" fill="cyan" />
-	<path d="M 4.2 7.6 l 3.8 -6.6, 3.8 6.6" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
+	<path d="M4.2 7.6 l3.8 -6.6,3.8 6.6" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
 </svg>
