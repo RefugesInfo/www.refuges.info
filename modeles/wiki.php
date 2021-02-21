@@ -34,11 +34,11 @@ function wiki_page_html($page)
 		function ($matches)
 		{
 			global $config_wri,$pdo;
-			$cherche_points = $_POST ['cherche_points'];
+			$cherche_points = $_POST ['cherche_points'] ?? '';
 			$nb_max = 20;
 			$retour=[];
 			if($cherche_points) {
-				$sql = "SELECT id_point, nom FROM points WHERE nom ILIKE '%$cherche_points%' LIMIT $nb_max";
+				$sql = "SELECT id_point, nom FROM points WHERE nom ILIKE ".$pdo->quote("%$cherche_points%")." LIMIT $nb_max";
 				if ( ! ($res = $pdo->query($sql)))
 					return erreur("Une erreur sur la requête est survenue",$sql);
 

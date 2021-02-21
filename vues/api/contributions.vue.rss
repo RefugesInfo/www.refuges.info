@@ -33,7 +33,7 @@ foreach ($news AS $nouvelle) {
 	$rss .= "		<title>".$nouvelle['categorie']." : ".$nouvelle['titre']."</title>\r\n";
 	$rss .= "		<link>".$nouvelle['lien']."</link>\r\n";
 	$rss .= "		<guid>".$nouvelle['lien']."</guid>\r\n";
-	$rss .= "		<pubDate>".date(r,$nouvelle['date'])."</pubDate>\r\n";
+	$rss .= "		<pubDate>".date('r',$nouvelle['date'])."</pubDate>\r\n";
 	$rss .= "		<description><![CDATA[
 			<b><big>".$nouvelle['texte']."</big></b><br>\r\n";
 	switch ($nouvelle['categorie']) {
