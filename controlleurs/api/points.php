@@ -202,7 +202,7 @@ foreach ($points_bruts as $point) {
 // DOM : Ce bout de code est à enlever si on n'utilise pas les icones groupées SVG
 // Le mieux serait d'avoir un champ id_icone dans la base
     $nom_complet_icone = $config_wri['chemin_icones'].$points->$i->type['icone'].'.svg';
-    $points->$i->type['id_icone'] = $numero_icones_svg[$nom_complet_icone];
+    $points->$i->type['id_icone'] = $numero_icones_svg[$nom_complet_icone] ?? '';
 // DOM : Fin du bout de code à enlever si on n'utilise pas les icones groupées SVG
 
     $points_geojson[$point->id_point]['geojson'] = $point->geojson; // FIXME: comme l'array $points est converti en intégralité en xml ou json, je planque dans une autre variable ce que je veux séparément
