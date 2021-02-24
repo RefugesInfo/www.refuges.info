@@ -17,7 +17,7 @@ $icones = [
 	'icone=danger',
 	'icone=lac',
 	'couleur=black&texte=?',
-	'couleur=black&barre=?',
+	'couleur=black&barre',
 ];
 
 foreach ($icones AS $params) { ?>
