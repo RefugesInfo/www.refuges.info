@@ -26,6 +26,6 @@ foreach ($icones AS $params) { ?>
 		<a href="../images/icone.svg.php?<?=$params?>">
 			/images/icone.svg.php?<?=$params?>
 		</a> &nbsp;
-		API... type":{,"valeur" = "<?=$params?>"}
+		API... type" : {"valeur" = "<?=$params?>"}
 	</p>
 <?php } ?>
