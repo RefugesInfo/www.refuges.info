@@ -1,3 +1,0 @@
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*).svg$ index.php?url=$1 [QSA,L]

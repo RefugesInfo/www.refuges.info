@@ -31,11 +31,35 @@ Ti : caractère ?
 
 */
 
-header ('Content-type: image/svg+xml');
-header ('Cache-Control: max-age=86000');
+//-------------------------
+// Traduction des alias
+$alias = [
+	'ancien-point-d-eau' => 'IeB',
+	'batiment-en-montagne' => 'CblackTi',
+	'batiment-inutilisable' => 'CblackB',
+	'cabane-avec-eau' => 'E',
+	'cabane-avec-moyen-de-chauffage' => 'F',
+	'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => 'EF',
+	'cabane-cle' => 'K',
+	'cabane-eau-a-proximite' => 'E',
+	'cabane-manque-un-mur' => 'Im',
+	'cabane-non-gardee' => 'Ic',
+	'cabane-sans-places-dormir' => 'T0',
+	'gite-d-etape' => 'Cblue',
+	'inutilisable' => 'CblackB',
+	'lac' => 'Il',
+	'passage-delicat' => 'Id',
+	'point-d-eau' => 'Ie',
+	'refuge-garde' => 'Cred',
+	'sommet' => 'Is',
+];
+$nom = $_GET['nom'];
+if (isset ($alias[$nom]))
+	$nom = $alias[$nom];
 
+//-------------------------
 // Extraction des arguments
-preg_match_all ('/([A-Z])([a-z0-9]*)/', $_GET['url'], $match);
+preg_match_all ('/([A-Z])([a-z0-9]*)/', $nom, $match);
 foreach ($match[2] AS $k=>$v)
 	$arg[$match[1][$k]] = $v;
 
@@ -49,6 +73,9 @@ if ($couleur == 'black')
 if (@$arg['T'] == 'i') // Pour ne pas avoir un caractère "?" dans l'URL
 	$arg['T'] = '?';
 
+//------------------------------------------------
+// On commence à enregistrer la sortie du template
+ob_start();
 ?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="<?=$taille?>" width="<?=$taille?>">
 <?php
 
@@ -72,7 +99,7 @@ if (isset ($arg['F'])) { /* la cheminée vient en premier car elle est masquée 
 
 <?php } elseif (@$arg['I'] == 'd') /* Danger */ {
 ?>	<path d="M1.2 15.25 l6.88 -11.75,6.8 11.75 Z" stroke-width="1.5" stroke="red" fill="white" />
-	<text x="6.2" y="14" font-size="0.7em" >!</text>
+	<text x="6.2" y="14" font-size="10px" >!</text>
 
 <?php } elseif (@$arg['I'] == 'l') /* Lac */ {
 ?>	<ellipse cx="5" cy="6" rx="4" ry="3" stroke="#204A87" fill="#204A87" />
@@ -82,11 +109,11 @@ if (isset ($arg['F'])) { /* la cheminée vient en premier car elle est masquée 
 <?php } else { /* bâtiments */
 ?>	<path d="M2 7 l0 8.75,12 0,0 -8.75" stroke-width="0.5" stroke="<?=$couleur_mur?>" fill="<?=$couleur?>" />
 	<path d="M1 8.2 l7 -7,7 7" stroke-width="2" stroke-linecap="round" stroke="<?=$couleur_toit?>" fill="<?=$couleur?>" />
-	<?php if (!isset ($arg['C']) &&
+	<?php if (!isset ($arg['C']) && /* Porte */
 		!isset ($arg['E']) &&
 		!isset ($arg['T']) &&
-		!isset ($arg['K'])) { /* Porte */
-	?>	<rect x="6" y="9" width="4" height="7" fill="#e08020" />
+		!isset ($arg['K'])) {
+	?>	<rect x="6" y="9" width="4" height="7" stroke="none" fill="#e08020" />
 
 	<?php }
 	}
@@ -105,10 +132,39 @@ if (isset ($arg['K'])) {
 	<path d="M9.1 11.55 l1.9 -3.3,1.9 3.3" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
 
 <?php } if (isset ($arg['T'])) {
-?>	<text x="4.5" y="14.5" font-size="smaller" ><?=$arg['T']?></text>
+?>	<text x="5" y="14.5" font-size="12px" ><?=$arg['T']?></text>
 
 <?php } if (isset ($arg['B'])) {
 ?>	<path d="M0.75 2.5 l14.5 12.75" stroke-width="1.5" stroke-linecap="round" stroke="black" fill="none" />
 	<path d="M0.75 15.25 l14.5 -12.75" stroke-width="1.5" stroke-linecap="round" stroke="black" fill="none" />
 
 <?php } ?></svg>
+<?php
+
+//--------------------------------------------
+// On fini d'enregistrer la sortie du template
+$svg =  ob_get_contents();
+ob_end_clean();
+
+//--------------------------
+// Sortie en format SVG
+if ($_GET['ext'] == 'svg') {
+	header ('Content-type: image/svg+xml');
+//	header ('Cache-Control: max-age=86000');
+	echo $svg;
+}
+
+//--------------------------
+// Traduit le texte SVG en format PNG
+if ($_GET['ext'] == 'png') {
+	header ('Content-type: image/png');
+//	header ('Cache-Control: max-age=86000');
+
+	$image = new Imagick();
+	$image->setBackgroundColor(new ImagickPixel('transparent'));
+	$image->readImageBlob($svg);
+	$image->setImageFormat('png');
+	echo $image;
+	$image->clear();
+	$image->destroy();
+}
