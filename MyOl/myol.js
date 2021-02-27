@@ -909,9 +909,6 @@ function layerRefugesInfo(options) {
 			properties.link = properties.lien;
 			properties.ele = properties.coord.alt;
 			properties.icone = properties.type.icone;
-// DOM : Ce bout de code est à enlever si on n'utilise pas les icones groupées SVG
-			properties.id_icone = properties.type.id_icone;
-// DOM : Fin du bout de code à enlever si on n'utilise pas les icones groupées SVG
 			properties.type = properties.type.valeur;
 			properties.bed = properties.places.valeur;
 			// Need to have clean KML export
@@ -924,17 +921,9 @@ function layerRefugesInfo(options) {
 			icon_options = {
 				//TODO BUG it don't use the same baseUrl than baseUrlFunction
 				src: options.baseUrl + 'images/icones/',
-				size: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
-				// Pour avoir des icônes 16*16, décommenter la ligne en dessous 
-				// scale: 0.666,
+				imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
 			};
-// DOM : Ce bout de code est à enlever si on n'utilise pas les icones groupées SVG
-			if (mapKeys.groupe_icones_wri) {
-				icon_options.offset = [properties.id_icone * 24, 0];
-				icon_options.imgSize = [2400, 24];
-			} else
-// DOM : Fin du bout de code à enlever si on n'utilise pas les icones groupées SVG
-				icon_options.src += properties.icone + '.' + (mapKeys.mime_icones_wri || 'png');
+			icon_options.src += properties.icone + '.' + (mapKeys.mime_icones_wri || 'png');
 
 			return {
 				image: new ol.style.Icon(icon_options),

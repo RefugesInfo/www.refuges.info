@@ -158,11 +158,6 @@ $points = new stdClass();
 
 $points_bruts = infos_points($params);
 
-/****************************** TABLO DES ICONES SVG ******************************/
-// DOM : Ce bout de code est à enlever si on n'utilise pas les icones groupées SVG
-$numero_icones_svg = array_flip (glob ($config_wri['chemin_icones'].'*.svg'));
-// DOM : Fin du bout de code à enlever si on n'utilise pas les icones groupées SVG
-
 /****************************** INFOS GÉNÉRALES ******************************/
 /*
 L'idée est de générer une grosse collection de points avec presque toutes leurs propriétés, la vue ne se servant que ce dont elle a besoin selon qu'elle est csv, gpx, etc. 
@@ -198,13 +193,6 @@ foreach ($points_bruts as $point) {
     $points->$i->places['valeur'] = $point->places;
     $points->$i->etat['valeur'] = texte_non_ouverte($point);
     $points->$i->type['icone'] = choix_icone($point);
-
-// DOM : Ce bout de code est à enlever si on n'utilise pas les icones groupées SVG
-// Le mieux serait d'avoir un champ id_icone dans la base
-    $nom_complet_icone = $config_wri['chemin_icones'].$points->$i->type['icone'].'.svg';
-    $points->$i->type['id_icone'] = $numero_icones_svg[$nom_complet_icone] ?? '';
-// DOM : Fin du bout de code à enlever si on n'utilise pas les icones groupées SVG
-
     $points_geojson[$point->id_point]['geojson'] = $point->geojson; // FIXME: comme l'array $points est converti en intégralité en xml ou json, je planque dans une autre variable ce que je veux séparément
     
     if ($req->format!="geojson" or $req->detail=="complet") // En geojson, utilisé par la carte, on a pas besoin de tout ça, autant simplifier pour réduire le temps de chargement, sauf si on appel explicitement le mode complet avec &detail=complet

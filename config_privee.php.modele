@@ -14,12 +14,6 @@ $config_wri['base_pgsql']="???";
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [
-
-// DOM : Ce bout de code est à enlever si on n'utilise pas les icones groupées SVG
-	'mime_icones_wri' => 'svg',
-	'groupe_icones_wri' => true,
-// DOM : Fin du bout de code à enlever si on n'utilise pas les icones groupées SVG
-
   // Get your own (free) IGN key at http://professionnels.ign.fr/ign/contrats
   'ign' => '???',
   // Get your own (free) THUNDERFOREST key at https://manage.thunderforest.com
