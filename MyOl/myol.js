@@ -918,15 +918,12 @@ function layerRefugesInfo(options) {
 		},
 
 		styleOptions: function(properties) {
-			icon_options = {
-				//TODO BUG it don't use the same baseUrl than baseUrlFunction
-				src: options.baseUrl + 'images/icones/',
-				imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
-			};
-			icon_options.src += properties.icone + '.' + (mapKeys.mime_icones_wri || 'png');
-
 			return {
-				image: new ol.style.Icon(icon_options),
+				image: new ol.style.Icon({
+					//TODO BUG it don't use the same baseUrl than baseUrlFunction
+					src: options.baseUrl + 'images/icones/' + properties.icone + '.svg',
+					imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
+				}),
 			};
 		},
 	}, options);
