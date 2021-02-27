@@ -7,54 +7,37 @@ body {
 
 <h1>Exemples d'icônes</h1>
 <?php
-$icones = [
-	'ancien-point-d-eau',
-	'batiment-en-montagne',
-	'batiment-inutilisable',
-	'cabane-avec-eau',
-	'cabane-avec-moyen-de-chauffage',
-	'cabane-avec-moyen-de-chauffage-et-eau-a-proximite',
-	'cabane-cle',
-	'cabane-eau-a-proximite',
-	'cabane-manque-un-mur',
-	'cabane-non-gardee',
-	'cabane-sans-places-dormir',
-	'gite-d-etape',
-	'inutilisable',
-	'lac',
-	'passage-delicat',
-	'point-d-eau',
-	'refuge-garde',
-	'sommet',
 
-	'Ic',
-	'T0',
-	'E',
-	'F',
-	'EF',
-	'K',
-	'KE',
-	'Im',
-	'Cred',
-	'Cgreen',
-	'Cblue',
-	'Ie',
-	'IeB',
-	'Is',
-	'Id',
-	'il',
-	'CblackTi',
-	'CblackB',
+$alias = [
+	'ancien-point-d-eau' => 'IeB',
+	'batiment-en-montagne' => 'CblackTi',
+	'batiment-inutilisable' => 'CblackB',
+	'cabane-avec-eau' => 'E',
+	'cabane-avec-moyen-de-chauffage' => 'F',
+	'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => 'EF',
+	'cabane-cle' => 'K',
+	'cabane-eau-a-proximite' => 'E',
+	'cabane-manque-un-mur' => 'Im',
+	'cabane-non-gardee' => 'Ic',
+	'cabane-sans-places-dormir' => 'T0',
+	'gite-d-etape' => 'Cblue',
+	'inutilisable' => 'CblackB',
+	'lac' => 'Il',
+	'passage-delicat' => 'Id',
+	'point-d-eau' => 'Ie',
+	'refuge-garde' => 'Cred',
+	'sommet' => 'Is',
 ];
+$icones = array_merge (array_keys ($alias), array_values ($alias));
 
-foreach ($icones AS $params) { ?>
+foreach ($icones AS $nom) { ?>
 	<p>
-		<img src="../images/icones-test/<?=$params?>.svg" />
-		<a href="../images/icones-test/<?=$params?>.svg">
-			/images/icones-test/<?=$params?>.svg</a>
+		<img src="../images/icones/<?=$nom?>.svg" />
+		<a href="../images/icones/<?=$nom?>.svg">
+			/images/icones/<?=$nom?>.svg</a>
 		&nbsp; &nbsp;
-		<img src="../images/icones-test/<?=$params?>.png" />
-		<a href="../images/icones-test/<?=$params?>.png">
-			/images/icones-test/<?=$params?>.png</a>
+		<img src="../images/icones/<?=$nom?>.png" />
+		<a href="../images/icones/<?=$nom?>.png">
+			/images/icones/<?=$nom?>.png</a>
 	</p>
 <?php } ?>
