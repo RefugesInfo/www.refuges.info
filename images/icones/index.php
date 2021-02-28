@@ -99,8 +99,6 @@ if (in_array('cle', $att)) {
 
 <?php } if (in_array('eau', $att)) {
 ?>	<ellipse cx="11" cy="12.75" rx="2.25" ry="2.25" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
-	<ellipse cx="11" cy="12.75" rx="1.5" ry="1.5" stroke-width="0" fill="#005e5e" />
-	<ellipse cx="11.35" cy="12.8" rx="1.5" ry="1.5" stroke-width="0" fill="cyan" />
 	<path d="M9.1 11.55 l1.9 -3.3,1.9 3.3" stroke-width="0.5" stroke="#005e5e" fill="cyan" />
 
 <?php } if (in_array('feu', $att)) {
