@@ -5,32 +5,12 @@ body {
 }
 </style>
 
-<h1>Exemples d'icônes</h1>
+<h1>Exemples d'icônes SVG et PNG générées en PHP</h1>
 <?php
 
-$alias = [
-	'ancien-point-d-eau' => 'IeB',
-	'batiment-en-montagne' => 'CblackTi',
-	'batiment-inutilisable' => 'CblackB',
-	'cabane-avec-eau' => 'E',
-	'cabane-avec-moyen-de-chauffage' => 'F',
-	'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => 'EF',
-	'cabane-cle' => 'K',
-	'cabane-eau-a-proximite' => 'E',
-	'cabane-manque-un-mur' => 'Im',
-	'cabane-non-gardee' => 'Ic',
-	'cabane-sans-places-dormir' => 'T0',
-	'gite-d-etape' => 'Cblue',
-	'inutilisable' => 'CblackB',
-	'lac' => 'Il',
-	'passage-delicat' => 'Id',
-	'point-d-eau' => 'Ie',
-	'refuge-garde' => 'Cred',
-	'sommet' => 'Is',
-];
-$icones = array_merge (array_keys ($alias), array_values ($alias));
+include_once ('../includes/config.php');
 
-foreach ($icones AS $nom) { ?>
+foreach (array_keys ($config_wri['definition_icones']) AS $nom) { ?>
 	<p>
 		<img src="../images/icones/<?=$nom?>.svg" />
 		<a href="../images/icones/<?=$nom?>.svg">

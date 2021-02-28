@@ -47,6 +47,28 @@ $config_wri['bbcode_wiki_page']="syntaxe_bbcode";
 // Des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
 $config_wri['lien_forum']=$config_wri['sous_dossier_installation']."forum/";
 
+// Liste et définition des icônes des cartes
+$config_wri['definition_icones']=[
+  'ancien-point-d-eau' => ['icone' => 'eau', 'croix'],
+  'batiment-en-montagne' => ['couleur' => 'black', 'texte' => '?'],
+  'batiment-inutilisable' => ['couleur' => 'black', 'croix'],
+  'cabane-avec-eau' => ['eau'],
+  'cabane-avec-moyen-de-chauffage' => ['feu'],
+  'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => ['feu', 'eau'],
+  'cabane-cle' => ['cle'],
+  'cabane-eau-a-proximite' => ['eau'],
+  'cabane-manque-un-mur' => ['icone' => 'precaire'],
+  'cabane-non-gardee' => [],
+  'cabane-sans-places-dormir' => ['texte' => '0'],
+  'gite-d-etape' => ['couleur' => 'blue'],
+  'inutilisable' => ['couleur' => 'black', 'croix'],
+  'lac' => ['icone' => 'lac'],
+  'passage-delicat' => ['icone' => 'triangle', 'texte' => '!'],
+  'point-d-eau' => ['icone' => 'eau'],
+  'refuge-garde' => ['couleur' => 'red'],
+  'sommet' => ['icone' => 'sommet'],
+];
+
 // On paramètre le numéro du forum qui contient les topics de discussion sur les fiches des points
 $config_wri['forum_refuges']=4;
 

@@ -25,7 +25,7 @@ foreach ($icones_possibles as $nom_icone)
 {
 	$lien_icone = "http://".$config_wri['nom_hote'].$config_wri['url_chemin_icones'].$nom_icone.'.png';
 
-	$tx = $ty = 16; // La plupart des icones
+	$tx = $ty = 24; // La plupart des icones
 
 	$kml .= "	<Style id='icone_$nom_icone'>\r\n";
 	$kml .= "		<IconStyle>\r\n";

@@ -762,6 +762,7 @@ function chemin_icone($nom_icone,$absolu=true)
 }
 // Fourni une listes des icônes possibles pour nos types de points
 function liste_icones_possibles()
+//TODO DOM à reprendre s'il n'y a plus de fichiers dans le répertoire
 {
     global $config_wri;
     $dossier_icones = opendir($config_wri['chemin_icones']) or erreur('Je ne trouve pas les icones',"la recherche a eu lieu dans ".$config_wri['chemin_icones']);
