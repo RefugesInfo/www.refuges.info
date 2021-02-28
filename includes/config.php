@@ -49,7 +49,6 @@ $config_wri['lien_forum']=$config_wri['sous_dossier_installation']."forum/";
 
 // Liste et définition des icônes des cartes
 $config_wri['definition_icones']=[
-  'abri' => [],
   'ancien-point-d-eau' => ['icone' => 'eau', 'croix'],
   'batiment-en-montagne' => ['couleur' => 'black', 'texte' => '?'],
   'batiment-inutilisable' => ['couleur' => 'black', 'croix'],
