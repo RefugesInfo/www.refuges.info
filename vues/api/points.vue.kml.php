@@ -23,7 +23,7 @@ $kml .= "<!-- Liste des STYLES -->\r\n\r\n";
 $icones_possibles=liste_icones_possibles();
 foreach ($icones_possibles as $nom_icone)
 {
-	$lien_icone = "http://".$config_wri['nom_hote'].$config_wri['url_chemin_icones'].$nom_icone.'.png';
+	$lien_icone = "https://".$config_wri['nom_hote'].$config_wri['url_chemin_icones'].$nom_icone.'.png';
 
 	$tx = $ty = 24; // La plupart des icones
 

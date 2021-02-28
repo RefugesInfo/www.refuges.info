@@ -125,6 +125,8 @@ ob_end_clean();
 if ($_GET['ext'] == 'svg') {
 	header ('Content-type: image/svg+xml');
 	header ('Cache-Control: max-age=86000');
+	header ('Access-Control-Allow-Origin: *');
+
 	echo $svg;
 }
 
@@ -133,6 +135,7 @@ if ($_GET['ext'] == 'svg') {
 if ($_GET['ext'] == 'png') {
 	header ('Content-type: image/png');
 	header ('Cache-Control: max-age=86000');
+	header ('Access-Control-Allow-Origin: *');
 
 	// Fabrique une image PNG à partir du script SVG
 	$image = new Imagick();
