@@ -76,7 +76,7 @@ if (@$def['icone'] == 'eau') {
 <?php } elseif (@$def['icone'] == 'triangle') {
 ?>	<path d="M1.2 15.25 l6.88 -11.75,6.8 11.75 Z" stroke-width="1.5" stroke="red" fill="white" />
 
-<?php } else { /* bâtiments */
+<?php } else { /* Bâtiments */
 ?>	<path d="M2 7 l0 8.75,12 0,0 -8.75" stroke-width="0.5" stroke="<?=$couleur_mur?>" fill="<?=$couleur?>" />
 	<path d="M1 8.2 l7 -7,7 7" stroke-width="2" stroke-linecap="round" stroke="<?=$couleur_toit?>" fill="<?=$couleur?>" />
 	<?php if (!isset ($def['couleur']) && /* Porte */
@@ -139,7 +139,7 @@ if ($_GET['ext'] == 'png') {
 	$image = new Imagick();
 	$image->setBackgroundColor(new ImagickPixel('transparent'));
 	$image->readImageBlob($svg);
-	$image->setImageFormat('png');
+	$image->setImageFormat('png32');
 	echo $image;
 	$image->clear();
 	$image->destroy();
