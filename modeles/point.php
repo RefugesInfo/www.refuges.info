@@ -761,19 +761,11 @@ function chemin_icone($nom_icone,$absolu=true)
     return $url_et_host.$config_wri['url_chemin_icones'].$nom_icone.'.png';
 }
 // Fourni une listes des icônes possibles pour nos types de points
+
 function liste_icones_possibles()
-//TODO DOM à reprendre s'il n'y a plus de fichiers dans le répertoire
 {
     global $config_wri;
-    $dossier_icones = opendir($config_wri['chemin_icones']) or erreur('Je ne trouve pas les icones',"la recherche a eu lieu dans ".$config_wri['chemin_icones']);
-    while($entree = @readdir($dossier_icones)) 
-    {
-        if (is_file($config_wri['chemin_icones'].'/'.$entree)) 
-            if (preg_match('/.png/',$entree))
-                $icones[]=preg_replace("/.png/","",$entree);
-    }
-    closedir($dossier_icones);
-    return $icones;
+    return array_keys($config_wri['definition_icones']);
 }
 
 /********************************************************
