@@ -125,7 +125,8 @@ if (isset ($args['a'])) { /* Ascii */
 <?php } if (isset($args['f'])) { /* Feu */
 ?>	<rect x="3" y="2" width="3" height="7" fill="black" />
 	<ellipse cx="9.5" cy="2.5" rx="3" ry="2" stroke="#666666" fill="#bbccff" />
-	<ellipse cx="17.5" cy="3.5" rx="4" ry="3" stroke="#666666" fill="#bbccff" />
+	<ellipse cx="14.5" cy="2.7" rx="3.5" ry="2.2" stroke="#666666" fill="#bbccff" />
+	<ellipse cx="19.5" cy="3.5" rx="4" ry="3" stroke="#666666" fill="#bbccff" />
 
 <?php } if (isset($args['k'])) { /* Clé */
 ?>	<ellipse cx="19.8" cy="7.8" rx="3" ry="3" stroke-width="2.4" stroke="black" fill="none" />
