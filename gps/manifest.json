@@ -4,7 +4,7 @@
 	"scope": "../",
 	"start_url": "index.php",
 	"icons": [{
-		"src": "../images/favicon.svg",
+		"src": "../images/icones/favicon_t384.svg",
 		"sizes": "256x256",
 		"type": "image/svg+xml"
 	}]
