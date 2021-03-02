@@ -33,7 +33,6 @@ Seule la première lettre compte
 Caractère au centre
 -------------------
 	a123 le caractère ascii 123 (en décimal)
-
 */
 
 //-------------------------------------
@@ -62,7 +61,6 @@ $alias = [
 if (isset ($alias[$_GET['nom']]))
 	$_GET['nom'] = $alias[$_GET['nom']];
 
-
 //------------------------------------------------------
 // On va rechercher les arguments dans le nom du fichier
 preg_match_all ('/([a-z])([a-z0-9]*)_/', $_GET['nom'].'_', $matches);
@@ -79,7 +77,6 @@ if (isset($args['p'])) // Pas de murs extérieurs aux bâtiments précaires
 	$couleur_mur = '#ffeedd';
 if ($couleur == 'black') // Murs et toit noir, murs blancs
 	$couleur = 'white';
-
 
 //------------------------------------------------
 // On commence à capturer la sortie du template
@@ -109,15 +106,13 @@ if ($icone == 'e') { /* Eau */
 <?php } else { /* Bâtiments */
 ?>	<path d="M3 10.7 l0 13,18 0,0 -13" stroke-width="0.5" stroke="<?=$couleur_mur?>" fill="<?=$couleur?>" />
 	<path d="M1.5 12.3 l10.5 -10.5,10.5 10.5" stroke-width="3" stroke-linecap="round" stroke="<?=$couleur_toit?>" fill="<?=$couleur?>" />
-	<?php if (!isset ($args['couleur']) && /* Porte */
-		!isset ($args['a']) &&
+	<?php if (!isset ($args['a']) && /* Porte */
 		!isset ($args['c']) &&
 		!isset ($args['e']) &&
 		!isset ($args['p'])) {
 	?>	<rect x="9" y="13.5" width="6" height="10" stroke="none" fill="#e08020" />
-
-	<?php }
-	}
+	<?php } ?>
+<?php }
 
 // Attributs
 if (isset ($args['a'])) { /* Ascii */
@@ -129,9 +124,8 @@ if (isset ($args['a'])) { /* Ascii */
 
 <?php } if (isset($args['f'])) { /* Feu */
 ?>	<rect x="3" y="2" width="3" height="7" fill="black" />
-	<ellipse cx="8" cy="2.5" rx="1.5" ry="2" stroke="#444444" fill="#888888" />
-	<ellipse cx="12.5" cy="3.5" rx="2" ry="3" stroke="#444444" fill="#888888" />
-	<ellipse cx="19.5" cy="5.5" rx="4" ry="5" stroke="#444444" fill="#888888" />
+	<ellipse cx="9.5" cy="2.5" rx="3" ry="2" stroke="#666666" fill="#bbccff" />
+	<ellipse cx="17.5" cy="3.5" rx="4" ry="3" stroke="#666666" fill="#bbccff" />
 
 <?php } if (isset($args['k'])) { /* Clé */
 ?>	<ellipse cx="19.8" cy="7.8" rx="3" ry="3" stroke-width="2.4" stroke="black" fill="none" />
@@ -142,7 +136,6 @@ if (isset ($args['a'])) { /* Ascii */
 	<path d="M4.5 17.25 l15 0" stroke-width="1.5" stroke-linecap="round" stroke="red" />
 	<path d="M4.5 22.5 l15 0" stroke-width="1.5" stroke-linecap="round" stroke="red" />
 
-
 <?php } if (isset($args['x'])) { /* Croix (barré) */
 ?>	<path d="M1 1 l22 22" stroke-width="2" stroke-linecap="round" stroke="black" fill="none" />
 	<path d="M1 23 l22 -22" stroke-width="2" stroke-linecap="round" stroke="black" fill="none" />
@@ -150,12 +143,10 @@ if (isset ($args['a'])) { /* Ascii */
 <?php } ?></svg>
 <?php
 
-
 //--------------------------------------------
 // On fini de capturer la sortie du template
 $svg =  ob_get_contents();
 ob_end_clean();
-
 
 //---------------------
 // Sortie en format SVG
@@ -166,7 +157,6 @@ if ($_GET['ext'] == 'svg') {
 
 	echo $svg;
 }
-
 
 //---------------------
 // Sortie en format PNG
