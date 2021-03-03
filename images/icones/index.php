@@ -1,7 +1,7 @@
 <?php
 /* Cet utilitaire produit toutes les icônes SVG utilisées par les cartes
 /images/icones/debut-du-nom-<code>_<code>_<code>.svg ou .png
-Chaque code désigne une forme élémentaire :
+Chaque <code> désigne une forme élémentaire :
 
 Icônes
 ------
@@ -25,10 +25,10 @@ Attributs
 ---------
 Seule la première lettre compte
 	e[au] (petite goute d'eau)
-	f'feu' (cheminée et fumée)
+	f[eu] (cheminée et fumée)
 	k[ey] (clé)
 	p[recaire] (manque un mur)
-	x(une grande croix noire)
+	x (une grande croix noire)
 
 Caractère au centre
 -------------------
@@ -116,7 +116,7 @@ if ($icone == 'e') { /* Eau */
 
 // Attributs
 if (isset ($args['a'])) { /* Ascii */
-?>	<text x="<?=$args['a']==33?9:7.5?>" y="21" font-size="18px" >&#<?=$args['a']?>;</text>
+?>	<text x="<?=$args['a']==33?9.5:7?>" y="22" font-size="18px" font-family="sans-serif" >&#<?=$args['a']?>;</text>
 
 <?php } if (isset($args['e'])) { /* Eau */
 ?>	<ellipse cx="16.5" cy="19.2" rx="3.4" ry="3.4" stroke-width="0.75" stroke="#005e5e" fill="cyan" />
@@ -138,8 +138,8 @@ if (isset ($args['a'])) { /* Ascii */
 	<path d="M4.5 22.5 l15 0" stroke-width="1.5" stroke-linecap="round" stroke="red" />
 
 <?php } if (isset($args['x'])) { /* Croix (barré) */
-?>	<path d="M1 1 l22 22" stroke-width="2" stroke-linecap="round" stroke="black" fill="none" />
-	<path d="M1 23 l22 -22" stroke-width="2" stroke-linecap="round" stroke="black" fill="none" />
+?>	<path d="M1 3 l22 20" stroke-width="2" stroke-linecap="round" stroke="black" fill="none" />
+	<path d="M1 23 l22 -20" stroke-width="2" stroke-linecap="round" stroke="black" fill="none" />
 
 <?php } ?></svg>
 <?php
