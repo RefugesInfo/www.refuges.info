@@ -112,6 +112,14 @@ const controls = [
 <?php } ?>
 			layerOverpass({
 				selectorName: 'couche-osm',
+				styleOptions: function(properties) {
+					return {
+						image: new ol.style.Icon({
+							src: '<?=$config_wri["url_chemin_icones"]?>' + properties.sym + '.svg',
+							imgSize: [24, 24], // I.E. compatibility
+						}),
+					};
+				},
 			}),
 			layerPyreneesRefuges({
 				selectorName: 'couche-prc',

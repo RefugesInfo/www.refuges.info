@@ -43,6 +43,8 @@ Caractère au centre
 //-------------------------------------
 // Tableau de correspondance temporaire
 // A retirer quand tous les noms des icones auront été codés
+// TOREFLECHIR : sly 2021-03-04 : de notre site seul l'export kml s'en sert encore, je pense corriger ça, mais j'hésite à le garder quand même pour la compatiblité des autres sites qui utiliseraient encore cette syntaxe ?
+// DOM : je pense que non, la compatibilité serait plutôt un site qui aurait ses propres icônes ancien-point-d-eau.png et qui n'aurait pas les nouveaux noms
 $alias = [
 	// Icônes refuges.info
 	'ancien-point-d-eau' => 'ieau_x',
