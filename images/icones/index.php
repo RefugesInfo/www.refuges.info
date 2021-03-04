@@ -6,8 +6,13 @@ Chaque <code> désigne une forme élémentaire :
 Icônes
 ------
 Les 2 première lettres comptent : i<une minuscule>[n'importe quelles minuscules]
+	ib[us]
+	ic[abane]
+	ig (camping ou bivouac)
 	ie[au] (point d'eau)
 	il[ac]
+	ip[arking]
+	ir[avitaillement]
 	is[ommet]
 	it[riangle] (passage délicat)
 	Défaut : cabane, forme de bâtiment
@@ -38,8 +43,8 @@ Caractère au centre
 //-------------------------------------
 // Tableau de correspondance temporaire
 // A retirer quand tous les noms des icones auront été codés
-// TOREFLECHIR : sly 2021-03-04 : de notre site seul l'export kml s'en sert encore, je pense corriger ça, mais j'hésite à le garder quand même pour la compatiblité des autres sites qui utiliseraient encore cette syntaxe ?
 $alias = [
+	// Icônes refuges.info
 	'ancien-point-d-eau' => 'ieau_x',
 	'batiment-en-montagne' => 'cblack_a63',
 	'batiment-inutilisable' => 'cblack_x',
@@ -58,6 +63,14 @@ $alias = [
 	'point-d-eau' => 'ieau',
 	'refuge-garde' => 'cred',
 	'sommet' => 'isommet', // Peut être résumé par 'is'
+
+	// Icônes Overpass (remplacer ' ' par %20 dans l'URL)
+	'Campground' => 'ig', // Camping
+	'City Hall' => 'cblue', // Hôtel ou location
+	'Drinking Water' => 'ie',
+	'Ground Transportation' => 'ib', // Bus
+	'Parking Area' => 'ip',
+	'Shopping Center' => 'ir', // Ravitaillement
 ];
 if (isset ($alias[$_GET['nom']]))
 	$_GET['nom'] = $alias[$_GET['nom']];
@@ -87,11 +100,21 @@ ob_start();
 ?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="<?=$taille?>" width="<?=$taille?>">
 <?php
 
-if ($icone == 'e') { /* Eau */
+if ($icone == 'b') { /* Bus */
+?>	<path d="M0.5 7 l21.5 0, 1.5 5, -23 0 z" stroke-linejoin="round" stroke="black" fill="#99FFFF" />
+	<path d="M3 7 l0 5, 4 0, 0 -5, 4 0, 0 5, 4 0, 0 -5, 4 0, 0 5" stroke="black" fill="none" />
+	<path d="M0.5 12.4 l23 0, 0 5.5, -23 0 z" stroke-linejoin="round" stroke="black" fill="yellow" />
+	<ellipse cx="4.5" cy="18.5" rx="2" ry="2" stroke="black" fill="grey" />
+	<ellipse cx="19" cy="18.5" rx="2" ry="2" stroke="black" fill="grey" />
+
+<?php } elseif ($icone == 'e') { /* Eau */
 ?>	<ellipse cx="12" cy="15" rx="6.75" ry="6.75" stroke-width="0.75" stroke="#005e5e" fill="cyan" />
 	<ellipse cx="12" cy="15" rx="4.5" ry="4.5" stroke-width="0" fill="#005e5e" />
 	<ellipse cx="13" cy="14" rx="4.5" ry="4.5" stroke-width="0" fill="cyan" />
 	<path d="M6.3 11.4 l5.7 -10,5.7 10" stroke-width="0.75" stroke="#005e5e" fill="cyan" />
+
+<?php } elseif ($icone == 'g') { /* Camping */
+?>	<path d="M1.75 23 l12.8 -22.5,-2.5 4.5,-2.5 -4.5,12.7 22.5" stroke-width="2" stroke="red" fill="yellow" />
 
 <?php } elseif ($icone == 'l') { /* Lac */
 ?>	<ellipse cx="7.5" cy="9" rx="6" ry="4.5" stroke="#204A87" fill="#204A87" />
@@ -100,6 +123,14 @@ if ($icone == 'e') { /* Eau */
 	
 <?php } elseif ($icone == 's') { /* Sommet */
 ?>	<path d="M0 26 l8 -17,3 5,5 -12,8 24" stroke="white" fill="#583E24" />
+	
+<?php } elseif ($icone == 'p') { /* Parking */
+?>	<path d="M4 3 l16 0, 0 18, -16 0 z" stroke-width="1.5" stroke-linejoin="round" stroke="white" fill="#064CA0" />
+	<text x="6.1" y="18.5" font-size="18px" font-family="sans-serif" fill="white">P</text>
+	
+<?php } elseif ($icone == 'r') { /* Ravitaillement */
+?>	<ellipse cx="12" cy="9" rx="4" ry="4" stroke-width="3" stroke="black" fill="grey" />
+	<path d="M1 9 l4 10,12 0,6 -10" stroke-width="3" stroke="black" fill="grey" />
 
 <?php } elseif ($icone == 't') { /* Triangle (passage délicat) */
 ?>	<path d="M1.75 23 l10.3 -18,10.2 18 Z" stroke-width="2" stroke="red" fill="white" />
@@ -117,7 +148,7 @@ if ($icone == 'e') { /* Eau */
 
 // Attributs
 if (isset ($args['a'])) { /* Ascii */
-?>	<text x="<?=$args['a']==33?9.5:7?>" y="22" font-size="18px" font-family="sans-serif" >&#<?=$args['a']?>;</text>
+?>	<text x="<?=$args['a']==33?9.7:7.6?>" y="21.5" font-size="16px" font-family="sans-serif">&#<?=$args['a']?>;</text>
 
 <?php } if (isset($args['e'])) { /* Eau */
 ?>	<ellipse cx="16.5" cy="19.2" rx="3.4" ry="3.4" stroke-width="0.75" stroke="#005e5e" fill="cyan" />
