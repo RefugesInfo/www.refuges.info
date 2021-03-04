@@ -168,3 +168,36 @@ body {
 	<a href="../images/icones/sommet.png">
 		/images/icones/sommet.png</a>
 </p>
+
+<hr/>
+<h1>Icônes OSM OverPass</h1>
+<p>
+	<img src="../images/icones/Campground.svg" />
+	<a href="../images/icones/Campground.svg">
+		/images/icones/Campground.svg</a>
+</p>
+<p>
+	<img src="../images/icones/City%20Hall%20Hall.svg" />
+	<a href="../images/icones/City%20Hall.svg">
+		/images/icones/City%20Hall.svg</a>
+</p>
+<p>
+	<img src="../images/icones/Drinking%20Water.svg" />
+	<a href="../images/icones/Drinking%20Water.svg">
+		/images/icones/Drinking%20Water.svg</a>
+</p>
+<p>
+	<img src="../images/icones/Ground%20Transportation.svg" />
+	<a href="../images/icones/Ground%20Transportation.svg">
+		/images/icones/Ground%20Transportation.svg</a>
+</p>
+<p>
+	<img src="../images/icones/Parking%20Area.svg" />
+	<a href="../images/icones/Parking%20Area.svg">
+		/images/icones/Parking%20Area.svg</a>
+</p>
+<p>
+	<img src="../images/icones/Shopping%20Center.svg" />
+	<a href="../images/icones/Shopping%20Center.svg">
+		/images/icones/Shopping%20Center.svg</a>
+</p>
