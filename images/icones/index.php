@@ -66,13 +66,21 @@ $alias = [
 	'refuge-garde' => 'cred',
 	'sommet' => 'isommet', // Peut être résumé par 'is'
 
-	// Icônes Overpass (remplacer ' ' par %20 dans l'URL)
+	// Icônes Overpass, C2C & PRC (remplacer ' ' par %20 dans l'URL)
+	// Il s'agit en fait d'une équivalence des symboles geocaching utilisés par les GPS
 	'Campground' => 'ig', // Camping
 	'City Hall' => 'cblue', // Hôtel ou location
+	'Crossing' => 'cblack_x', // Fermé
 	'Drinking Water' => 'ie',
+	'Fishing Hot Spot Facility' => 'im', // Manque un mur
 	'Ground Transportation' => 'ib', // Bus
+	'Lodge' => 'ic', // Cabane
 	'Parking Area' => 'ip',
 	'Shopping Center' => 'ir', // Ravitaillement
+	'Summit' => 'is',
+	'Tunnel' => 'm', // Orri
+	'Waypoint' => 'it_a33',
+	'Water Source' => 'ie',
 ];
 if (isset ($alias[$_GET['nom']]))
 	$_GET['nom'] = $alias[$_GET['nom']];

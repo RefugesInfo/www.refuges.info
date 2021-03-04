@@ -123,9 +123,25 @@ const controls = [
 			}),
 			layerPyreneesRefuges({
 				selectorName: 'couche-prc',
+				styleOptions: function(properties) {
+					return {
+						image: new ol.style.Icon({
+							src: '<?=$config_wri["url_chemin_icones"]?>' + properties.sym + '.svg',
+							imgSize: [24, 24], // I.E. compatibility
+						}),
+					};
+				},
 			}),
 			layerC2C({
 				selectorName: 'couche-c2c',
+				styleOptions: function(properties) {
+					return {
+						image: new ol.style.Icon({
+							src: '<?=$config_wri["url_chemin_icones"]?>' + properties.sym + '.svg',
+							imgSize: [24, 24], // I.E. compatibility
+						}),
+					};
+				},
 			}),
 			layerChemineur({
 				selectorName: 'couche-chemineur',
