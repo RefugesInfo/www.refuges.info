@@ -38,11 +38,6 @@ function types_point_affichables()
             WHERE point_type.pas_afficher=0
             ORDER BY importance DESC";  
     $q = $pdo->query( $sql );
-    while( $res = $q->fetch() )
-    {
-            $res->icone=replace_url($res->nom_type);
-            $r[] = $res ;
-    }
-  return ($r);
+    return $q->fetchAll();
   }
 

@@ -27,7 +27,7 @@ Seule la première lettre compte
 	e[au] (petite goute d'eau)
 	f[eu] (cheminée et fumée)
 	k[ey] (clé)
-	p[recaire] (manque un mur)
+	m[anqueunmur] (manque un mur)
 	x (une grande croix noire)
 
 Caractère au centre
@@ -38,6 +38,7 @@ Caractère au centre
 //-------------------------------------
 // Tableau de correspondance temporaire
 // A retirer quand tous les noms des icones auront été codés
+// TOREFLECHIR : sly 2021-03-04 : de notre site seul l'export kml s'en sert encore, je pense corriger ça, mais j'hésite à le garder quand même pour la compatiblité des autres sites qui utiliseraient encore cette syntaxe ?
 $alias = [
 	'ancien-point-d-eau' => 'ieau_x',
 	'batiment-en-montagne' => 'cblack_a63',
@@ -47,7 +48,7 @@ $alias = [
 	'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => 'eau_feu', // Peut être résumé par 'e_f'
 	'cabane-cle' => 'key',
 	'cabane-eau-a-proximite' => 'eau',
-	'cabane-manque-un-mur' => 'precaire',
+	'cabane-manque-un-mur' => 'manqueunmur',
 	'cabane-non-gardee' => 'icabane', // Le vrai code est '' mais on peut mettre icabane, ça fait plus joli
 	'cabane-sans-places-dormir' => 'a48',
 	'gite-d-etape' => 'cblue', // Car la forme de bâtiment est par défaut
@@ -73,7 +74,7 @@ $icone = @$args['i'][0];
 $couleur_toit = @$args['c'] ?: 'red';
 $couleur_mur = @$args['c'] ?: '#e08020';
 $couleur = @$args['c'] ?: '#ffeedd';
-if (isset($args['p'])) // Pas de murs extérieurs aux bâtiments précaires
+if (isset($args['m'])) // Pas de murs extérieurs
 	$couleur_mur = '#ffeedd';
 if ($couleur == 'black') // Murs et toit noir, murs blancs
 	$couleur = 'white';
@@ -109,7 +110,7 @@ if ($icone == 'e') { /* Eau */
 	<?php if (!isset ($args['a']) && /* Porte */
 		!isset ($args['c']) &&
 		!isset ($args['e']) &&
-		!isset ($args['p'])) {
+		!isset ($args['m'])) {
 	?>	<rect x="9" y="13.5" width="6" height="10" stroke="none" fill="#e08020" />
 	<?php } ?>
 <?php }
@@ -132,7 +133,7 @@ if (isset ($args['a'])) { /* Ascii */
 ?>	<ellipse cx="19.8" cy="7.8" rx="3" ry="3" stroke-width="2.4" stroke="black" fill="none" />
 	<path d="M18 9 l-13.5 13.5,-2.25 -2.25,4.2 -0.45,0.15 -4,3 2.7" stroke-width="2.1" stroke="black" fill="none" />
 
-<?php } if (isset($args['p'])) { /* Précaire (manque un mur) */
+<?php } if (isset($args['m'])) { /* manque un mur */
 ?>	<path d="M6 12 l12 0" stroke-width="1.5" stroke-linecap="round" stroke="red" />
 	<path d="M4.5 17.25 l15 0" stroke-width="1.5" stroke-linecap="round" stroke="red" />
 	<path d="M4.5 22.5 l15 0" stroke-width="1.5" stroke-linecap="round" stroke="red" />

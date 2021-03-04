@@ -700,65 +700,43 @@ de l'icone à utiliser sur une carte de refuges.info
 
 Attention !! L'ordre des if est important, une cabane non utilisable  même si elle a un moyen de chauffage ben il faut bien 
 indiquer d'abord qu'elle est inutilisable
+La nouvelle syntaxe du nom peut être visible dans /images/icones/index.php elle permet d'être dynamique pour générer un grand nombre d'icônes semblables
 
 *******************************************************/
 function choix_icone($point)
 {
   global $config_wri;
-  $fermee_detuite=($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit");
-
-  // les bâtiments en montagne sont des bâtiments situés en montagne dont on ne sait rien et qu'il faudrait explorer ou, si fermé dont on sait qu'ils ne peuvent servir
-  // FIXME: on pourrait décider d'utiliser l'icone générique de fermeture, mais j'aime garder l'info en icone que ça n'a jamais été une cabane/gite ou refuge
-  if ( $fermee_detuite and $point->id_point_type==$config_wri['id_batiment_en_montagne'] )
-    return "batiment-inutilisable";
-
-  // Un point d'eau tari définitivement
-  if ( $fermee_detuite and $point->id_point_type==$config_wri['point_d_eau'] )
-    return "ancien-point-d-eau";
-      
-  // Pour tout ce qui est fermé ou détruit (cabane, refuge, gite)
-  if ( $fermee_detuite )
-    return "inutilisable";
-
-  if ( $point->conditions_utilisation=='cle_a_recuperer' and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-    return "cabane-cle";
-
-      
+  $fermee_detuite=($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit" or $point->conditions_utilisation=="tari");
+  
+  // conversion de nos types de points vers une icône de base
+  $nom_icone=$config_wri['correspondance_type_icone'][replace_url($point->nom_type)] ?? '';
+  
+  // Une icone de base spéciale pour les cabanes dont il manque un mur
   if ( $point->manque_un_mur and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-    return "cabane-manque-un-mur";
+    $nom_icone="manqueunmur";
 
+   /* options qui s'ajoutent */  
   if ( $point->id_point_type==$config_wri['id_cabane_non_gardee'] and $point->places==0 )
-    return "cabane-sans-places-dormir";
-
-  if ( ($point->cheminee or $point->poele) and $point->eau_a_proximite and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-    return "cabane-avec-moyen-de-chauffage-et-eau-a-proximite";
+    $nom_icone.="_a48";
 
   if ( ($point->cheminee or $point->poele) and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-    return "cabane-avec-moyen-de-chauffage";
+    $nom_icone.="_feu";
 
-  if ( $point->eau_a_proximite and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-    return "cabane-eau-a-proximite";             
+  if ( $point->eau_a_proximite)
+    $nom_icone.="_eau";
+
+  // il faut une clé pour rentrer dans cette cabane
+  if ( $point->conditions_utilisation=='cle_a_recuperer' and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
+    $nom_icone.="_key";
+
+  // N'importe quoi d'inutilisable, on ajoute la croix noire
+  if ( $fermee_detuite )
+    $nom_icone.="_x";
 
       
-  // Et par défaut, le nom de l'icone à choisir porte le nom du type de point (dans une version convertie sans accents,guillemet ou espace)
-  return replace_url($point->nom_type);
+  return $nom_icone;
 }
-// Fourni un lien local ou absolu, http ou https aux icônes des types de points possibles
-function chemin_icone($nom_icone,$absolu=true)
-{
-    global $config_wri;
-    if (isset($_SERVER['HTTPS']))
-        $schema="https";
-    else
-        $schema="http";
-    if ($absolu)
-        $url_et_host="$schema://".$config_wri['nom_hote'];
-    else
-        $url_et_host='';
-    return $url_et_host.$config_wri['url_chemin_icones'].$nom_icone.'.png';
-}
-// Fourni une listes des icônes possibles pour nos types de points
-
+// FIXME: on devrait pouvoir s'en passer et utiliser la fonction ci-avant
 function liste_icones_possibles()
 {
     global $config_wri;

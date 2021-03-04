@@ -50,7 +50,7 @@ function conversion_adresse_email_vers_mailto($texte)
 /**********************************************************************************************
  Répétitivement, on a besoin de protéger une exportation vers du xml/html, cette fonction protège les
  caractères
- FIXME:sly: un autre nom ne serait pas de refus, c'est trop confus "protege" ça oblige à retourner voir la fonction 
+ FIXME sly: un autre nom ne serait pas de refus, c'est trop confus "protege" ça oblige à retourner voir la fonction 
  trop souvent
 **********************************************************************************************/
 

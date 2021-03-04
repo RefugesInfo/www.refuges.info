@@ -62,7 +62,7 @@ foreach ($points AS $point) {
 	$kml .= "				<tilt>40</tilt>\r\n";
 	$kml .= "				<heading>50</heading>\r\n";
 	$kml .= "			</LookAt>\r\n";
-	$kml .= "    		<styleUrl>#icone_".$point->type['icone']."</styleUrl>\n";
+	$kml .= "    		<styleUrl>#icone_".replace_url($point->type['valeur'])."</styleUrl>\n";
 	$kml .= "			<Point>\r\n";
 	$kml .= "				<coordinates>".$point->coord['long'].",".$point->coord['lat'].",0</coordinates>\r\n";
 	$kml .= "			</Point>\r\n";
