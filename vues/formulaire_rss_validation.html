@@ -9,11 +9,11 @@
       <dd>Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)</dd>
    </dl>
     <p>
-        <?=$vue->lien_export->description?>
+        <?=$vue->description?>
     </p>
-    <? if (isset($vue->lien_export->url)) { ?>
+    <? if (isset($vue->url)) { ?>
     <p>
-        <a href="<?=$vue->lien_export->url?>" alt="lien vers le flux">Cliquez ici pour accéder au flux RSS</a>
+        <a href="<?=$vue->url?>" alt="lien vers le flux">Cliquez ici pour accéder au flux RSS</a>
     </p>
     <?}?>
 </div>

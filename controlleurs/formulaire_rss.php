@@ -9,6 +9,7 @@ require_once ("wiki.php");
 require_once ("bdd.php");
 
 $vue->titre="Flux RSS des nouvelles du site Refuges.info";
+$vue->description="";
 
 // comme on se "post" les informations à soit même, on vérifie dans quel cas on est
 if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
@@ -44,11 +45,10 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
 }
 else // formulaire validé, affichage du lien et d'un blabla
 {
-    $vue->lien_export = new stdClass; // contiendra: URL, description ...
     $vue->lien_licence = lien_wiki("licence");
 
-    if ($_POST['id_nouvelle_type']=="" OR $_POST['id_massif']=="")
-        $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ??";
+    if (empty($_POST['id_nouvelle_type']) OR empty($_POST['id_massif']) )
+        $vue->description="Vous demandez vraiment quelque chose de vide ??";
     else
     {
         $liste_id_nouvelle_type = implode(',',$_POST['id_nouvelle_type']);
@@ -56,7 +56,7 @@ else // formulaire validé, affichage du lien et d'un blabla
     
         $options_lien="format=rss&amp;format_texte=html&amp;type=$liste_id_nouvelle_type&amp;massif=$liste_id_massif";
     
-        $vue->lien_export->url = "http://".$config_wri['nom_hote']."/api/contributions?$options_lien";
+        $vue->url = "http://".$config_wri['nom_hote']."/api/contributions?$options_lien";
     } 
     $vue->type="formulaire_rss_validation";
 } // fin du else affichage lien

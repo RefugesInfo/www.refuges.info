@@ -39,7 +39,7 @@ foreach ($news AS $nouvelle) {
 	switch ($nouvelle['categorie']) {
 		case 'Commentaire':
 			$rss .= "			<p style='color:grey;'>".$nouvelle['commentaire']."";
-			if ($nouvelle['photo']) {
+			if (!empty($nouvelle['photo'])) {
 				$rss .= "<br><a href='".$nouvelle['photo_originale']."'><img src='".$nouvelle['photo_mini']."' /></a>";
 			}
 			$rss .= "</p>\r\n";

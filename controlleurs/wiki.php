@@ -27,7 +27,7 @@ $contenu_brut =  wiki_page_brut ($page);
 $vue->titre = $page;
 $vue->nom_page= $page;
 // La page n'existe pas (ou pas encore !)
-if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and $_GET['form_modifier']!=1)
+if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and empty($_GET['form_modifier']))
 {
     $vue->http_status_code = 404;
     $vue->type = 'page_simple';
