@@ -25,7 +25,8 @@ if (isset ($_GET['files'])) {
 
 	// Update version tag
 	foreach ($specific_files as $f)
-		$version_tag += filesize ($f);
+		if (file_exists ($f))
+			$version_tag += filesize ($f);
 
 	// Update cached file list
 	//TODO dangeureux !

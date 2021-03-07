@@ -157,7 +157,7 @@ if ($icone == 'b') { /* Bus */
 <?php }
 
 // Attributs
-if (isset ($args['a'])) { /* Ascii */
+if (isset ($args['a']) && is_numeric ($args['a'])) { /* Ascii */
 ?>	<text x="<?=$args['a']==33?9.7:7.6?>" y="21.5" font-size="16px" font-family="sans-serif">&#<?=$args['a']?>;</text>
 
 <?php } if (isset($args['e'])) { /* Eau */
