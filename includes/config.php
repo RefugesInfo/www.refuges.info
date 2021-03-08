@@ -71,14 +71,14 @@ $config_wri['definition_icones']=[
 
 // liste des icône de base pour nos types de point de base
 $config_wri['correspondance_type_icone'] = [
-	'batiment-en-montagne' => 'cblack_a63',
-	'cabane-non-gardee' => 'icabane', // Le vrai code est '' mais on peut mettre icabane, ça fait plus joli
-	'gite-d-etape' => 'cblue', // Car la forme de bâtiment est par défaut
-	'lac' => 'ilac',
-	'passage-delicat' => 'itriangle_a33', // Peut être résumé par 'it_a33'
-	'point-d-eau' => 'ieau',
-	'refuge-garde' => 'cred',
-	'sommet' => 'isommet', // Peut être résumé par 'is'
+	'batiment-en-montagne' => 'black_a63',
+	'cabane-non-gardee' => 'cabane',
+	'gite-d-etape' => 'blue',
+	'lac' => 'lac',
+	'passage-delicat' => 'triangle_a33',
+	'point-d-eau' => 'eau',
+	'refuge-garde' => 'red',
+	'sommet' => 'sommet',
 ];
 
 // On paramètre le numéro du forum qui contient les topics de discussion sur les fiches des points

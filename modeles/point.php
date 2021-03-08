@@ -713,7 +713,7 @@ function choix_icone($point)
   
   // Une icone de base spéciale pour les cabanes dont il manque un mur
   if ( $point->manque_un_mur and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-    $nom_icone="manqueunmur";
+    $nom_icone="cabane_manqueunmur";
 
    /* options qui s'ajoutent */  
   if ( $point->id_point_type==$config_wri['id_cabane_non_gardee'] and $point->places==0 )
@@ -727,7 +727,7 @@ function choix_icone($point)
 
   // il faut une clé pour rentrer dans cette cabane
   if ( $point->conditions_utilisation=='cle_a_recuperer' and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
-    $nom_icone.="_key";
+    $nom_icone.="_cle";
 
   // N'importe quoi d'inutilisable, on ajoute la croix noire
   if ( $fermee_detuite )

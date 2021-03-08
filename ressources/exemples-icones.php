@@ -7,6 +7,15 @@ body {
 
 <h1>Exemples d'icônes SVG et PNG générées en PHP</h1>
 <p>
+	<img src="../images/icones/abri.svg" />
+	<a href="../images/icones/abri.svg">
+		/images/icones/abri.svg</a>
+	&nbsp; &nbsp;
+	<img src="../images/icones/abri.png" />
+	<a href="../images/icones/abri.png">
+		/images/icones/abri.png</a>
+</p>
+<p>
 	<img src="../images/icones/ancien-point-d-eau.svg" />
 	<a href="../images/icones/ancien-point-d-eau.svg">
 		/images/icones/ancien-point-d-eau.svg</a>
@@ -170,6 +179,18 @@ body {
 </p>
 
 <hr/>
+<h1>Favicon</h1>
+<p>
+	<img src="../images/icones/favicon.svg" />
+	<a href="../images/icones/favicon.svg">
+		/images/icones/favicon.svg</a>
+	&nbsp; &nbsp;
+	<img src="../images/icones/favicon.png" />
+	<a href="../images/icones/favicon.png">
+		/images/icones/favicon.png</a>
+</p>
+
+<hr/>
 <h1>Icônes OSM OverPass</h1>
 <p>
 	<img src="../images/icones/Campground.svg" />
@@ -177,7 +198,7 @@ body {
 		/images/icones/Campground.svg</a>
 </p>
 <p>
-	<img src="../images/icones/City%20Hall%20Hall.svg" />
+	<img src="../images/icones/City%20Hall.svg" />
 	<a href="../images/icones/City%20Hall.svg">
 		/images/icones/City%20Hall.svg</a>
 </p>
