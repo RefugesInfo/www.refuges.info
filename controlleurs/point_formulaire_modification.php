@@ -150,16 +150,11 @@ foreach ($textes_area as $libelle => $nom_variable)
 
 /******** Les informations complémentaires (places, matelas, latrines, bois à proximité, etc.) *****************/
 
-// Seuls les modérateurs peuvent passer un point en attente de décision
-// ce n'est pas tout à fait un champ trinaire comme les autres (true, false, null) car on ne peut pas "pas savoir"
-if (est_moderateur())
-{
-  $vue->champs->en_attente = new stdClass ;
-  $vue->champs->en_attente->actif = True ;
-  $vue->champs->en_attente->valeur = $point->en_attente;
-  $vue->champs->en_attente->label="Mettre ce point en attente";
-  $vue->champs->en_attente->aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs le temps de prendre une décision";
-}
+// Seuls les modérateurs peuvent passer un point en attente de décision, le test est directement dans la vue
+$vue->champs->en_attente = $point->en_attente;
+$vue->champs->en_attente_label = "Mettre ce point en attente";
+$vue->champs->en_attente_aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs le temps de prendre une décision";
+
 // cas spécifique des champs qui peuvent être NULL=ne sait pas ou un nombre entier
 foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $champ)
 {

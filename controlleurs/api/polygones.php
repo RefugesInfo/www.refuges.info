@@ -90,10 +90,10 @@ $polygones_bruts=infos_polygones($params);
 $lum = 0xC0 / 2; // Luminance constante pour un meilleur contraste
 $nb_coul =  count ($polygones_bruts); // Pour répartir les couleurs
 // Incrément des couleurs pour ne pas avoir de couleurs proches pour des massifs de n° proches
+$i=0;
 if ($nb_coul) {
 	for ($pas = (int)($nb_coul/6+1); $nb_coul%$pas == 0; $pas++); // Le premier non diviseur de nb_coul > nb_coul / 6
 	$pas_angulaire = $pas * 2*M_PI / $nb_coul;
-	$i = 0;
 	foreach($polygones_bruts as $polygone)
 	{
 		$geo = "geometrie_".$req->format;

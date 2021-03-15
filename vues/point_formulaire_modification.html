@@ -120,11 +120,11 @@
         </fieldset>
     <h4>Informations complémentaires</h4>
 	
-        <?php if ($vue->champs->en_attente->actif) { ?>
+        <?php if (est_moderateur()) { ?>
         <fieldset class="booleen">
-            <legend title="<?=$vue->champs->en_attente->aide?>"><?=$vue->champs->en_attente->label?> :</legend>
-                <label>oui<input type="radio" name="en_attente" value="TRUE" <?=($vue->champs->en_attente->valeur===true)?'checked="checked"':'';?>/></label>
-                <label>non<input type="radio" name="en_attente" value="FALSE" <?=($vue->champs->en_attente->valeur===false)?'checked="checked"':'';?>/></label>
+            <legend title="<?=$vue->champs->en_attente_aide?>"><?=$vue->champs->en_attente_label?> :</legend>
+                <label>oui<input type="radio" name="en_attente" value="TRUE" <?=($vue->champs->en_attente===true)?'checked="checked"':'';?>/></label>
+                <label>non<input type="radio" name="en_attente" value="FALSE" <?=($vue->champs->en_attente===false)?'checked="checked"':'';?>/></label>
         </fieldset>
         <?php } ?>
 

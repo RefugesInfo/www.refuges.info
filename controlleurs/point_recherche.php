@@ -122,7 +122,8 @@ if (!empty($_REQUEST))
 }
 else
 {
-  $vue->erreur="Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)";
-  $vue->type="point_recherche_erreur";
+  $vue->contenu="Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)";
+  $vue->http_status_code = 404;
+  $vue->type="page_simple";
 }
 
