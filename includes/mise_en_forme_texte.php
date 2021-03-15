@@ -230,7 +230,7 @@ function bbcode2txt($string)
 
 /** 
 nouvelle fonction qui permet de faire des liens internes entre les fiches :
-[->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
+la syntaxe, inspirée de spip au format [->457] créer un lien qui pointe vers la fiche du point d'id 457 et donne le nom du lien égal au nom du
 point destination.
 On peut lui passer soit bbcode (le lien sera au format bbcode), soit txt et il n'y aura pas de lien, juste le nom du point indiqué
 **/
@@ -241,21 +241,25 @@ function lien_inter_fiches($texte,$format_sortie="bbcode")
 
   if ($occurences_trouvees!=0)
     for ($x=0;$x<$occurences_trouvees;$x++)
-    {	// Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
+    { 
+      // Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
       // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
       // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
       $point=infos_point($occurence[1][$x]);
-      if ($format_sortie=="bbcode")
-        $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
-      else
-        $texte=str_replace($occurence[0][$x],"$point->nom",$texte);
-
+      if (empty($point->erreur)) // C'est bon, un point avec ce numéro a bien été trouvé
+      {
+        if ($format_sortie=="bbcode")
+          $texte=str_replace($occurence[0][$x],"[url=".lien_point($point)."]$point->nom[/url]",$texte);
+        else
+          $texte=str_replace($occurence[0][$x],$point->nom,$texte);
+      }
+      else        
+        $texte=str_replace($occurence[0][$x],'(Lien impossible car le point n°'.$occurence[1][$x].' est introuvable)',$texte);
     }
     return $texte;
 }
   
 // Cette fonction permet de convertir du bbcode en markdown (pour les balises connues)
-
 function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=TRUE)
 {
    

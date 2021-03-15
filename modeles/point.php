@@ -444,7 +444,7 @@ function lien_point($point,$lien_local=false)
     $info_massif=replace_url($point->nom_polygone)."/";
   else
     $info_massif="";
-  return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
+   return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
 }
 
 
