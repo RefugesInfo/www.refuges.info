@@ -1,0 +1,2 @@
+	<path d="M3 10.7 l0 12.5,18 0,0 -12.5" stroke-width="0.5" stroke="<?=$couleurs[2]?:$couleurs[1]?:'#e08020'?>" fill="<?=$couleurs[1]?:'#ffeedd'?>" />
+	<path d="M1.5 12.3 l10.5 -10.5,10.5 10.5" stroke-width="3" stroke-linecap="round" stroke="<?=$couleurs[2]?:$couleurs[1]?:'red'?>" fill="<?=$couleurs[1]?:'#ffeedd'?>" />

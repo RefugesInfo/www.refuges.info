@@ -1,0 +1,4 @@
+	<ellipse cx="12" cy="15" rx="6.75" ry="6.75" stroke-width="0.75" stroke="#005e5e" fill="cyan" />
+	<ellipse cx="12" cy="15" rx="4.5" ry="4.5" stroke-width="0" fill="#005e5e" />
+	<ellipse cx="13" cy="14" rx="4.5" ry="4.5" stroke-width="0" fill="cyan" />
+	<path d="M6.3 11.4 l5.7 -10,5.7 10" stroke-width="0.75" stroke="#005e5e" fill="cyan" />

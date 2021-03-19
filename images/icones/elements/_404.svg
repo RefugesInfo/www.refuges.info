@@ -1,0 +1,3 @@
+	<rect x="0" y="0" height="<?=$taille?>" width="<?=$taille?>" fill="red" />
+	<text x="0.5" y="9" font-size="9px" fill="white">Erreur</text>
+	<text x="4" y="20" font-size="10px" fill="white">404</text>

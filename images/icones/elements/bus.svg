@@ -1,0 +1,5 @@
+	<path d="M0.5 7 l21.5 0, 1.5 5, -23 0 z" stroke-linejoin="round" stroke="black" fill="#99FFFF" />
+	<path d="M3 7 l0 5, 4 0, 0 -5, 4 0, 0 5, 4 0, 0 -5, 4 0, 0 5" stroke="black" fill="none" />
+	<path d="M0.5 12.4 l23 0, 0 5.5, -23 0 z" stroke-linejoin="round" stroke="black" fill="yellow" />
+	<ellipse cx="4.5" cy="18.5" rx="2" ry="2" stroke="black" fill="grey" />
+	<ellipse cx="19" cy="18.5" rx="2" ry="2" stroke="black" fill="grey" />
