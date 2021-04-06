@@ -62,7 +62,7 @@ foreach ($elements[1] AS $k => $element) {
 	// On enlève la porte dans certains cas
 	if (in_array ($element, ['a','eau','manqueunmur']))
 			$premier_element = false;
-	
+
 	// t24 définit une taille de l'icone SVG 24x24 pixels
 	if ($element == 't')
 		$taille = $elements[2][$k];

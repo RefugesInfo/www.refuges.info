@@ -13,7 +13,7 @@ ob_end_clean();
 // On envoie les headers
 header ('Content-type: image/png');
 //header ('Content-type: text/plain'); // Debug
-// Les autres headers, notamment 404 sont générés lors de l'include 
+// Les autres headers, notamment 404 sont générés lors de l'include
 
 // On fabrique une image PNG à partir du script SVG
 $image = new Imagick();
