@@ -5,6 +5,7 @@
 // $vue contient les données passées par le fichier PHP
 // $config_wri les données communes à tout WRI
 
+$edition = true; // N'affiche pas les couches dont la licence ne permet pas la recopie
 include ($config_wri['racine_projet'].'vues/_carte.js');
 ?>
 

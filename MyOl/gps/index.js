@@ -118,6 +118,8 @@ function addLayer(url) {
 			ol.extent.extend(extent, features[f].getGeometry().getExtent());
 		map.getView().fit(extent, {
 			maxZoom: 17,
+			size: map.getSize(),
+			padding: [5, 5, 5, 5],
 		});
 	});
 

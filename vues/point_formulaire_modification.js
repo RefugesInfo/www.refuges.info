@@ -1,17 +1,9 @@
-const layersSwitcher = controlLayersSwitcher({
-	<?if (isset($config_wri["carte_base"])){?>
-		init: '<?=$config_wri["carte_base"]?>',
-	<?}?>
-	baseLayers: {
-		'Refuges.info': layerOsmMri(),
-		'OpenTopo': layerOsmOpenTopo(),
-		'Outdoors': layerThunderforest('outdoors'),
-		'OSM-fr': layerOsm('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'Autriche': layerKompass('KOMPASS Touristik'),
-		'Espagne': layerSpain('mapa-raster', 'MTN'),
-		'Photo Bing': layerBing('Aerial'),
-	},
-});
+<?php
+// Code Javascript de la page d'édition des pointss
+
+$edition = true; // N'affiche pas les couches dont la licence ne permet pas la recopie
+include ($config_wri['racine_projet'].'vues/_carte.js');
+?>
 
 // Utilitaire de saisie
 function affiche_et_set( el , affiche, valeur ) {

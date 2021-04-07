@@ -84,6 +84,9 @@ ol.Map.prototype.handlePostRender = function() {
 			});
 		}
 	});
+
+	// Save the js object into the DOM
+	map.getTargetElement()._map = map;
 };
 
 
@@ -178,18 +181,19 @@ function layerStamen(layer) {
  * Doc on http://api.ign.fr
  * var mapKeys.ign = Get your own (free)IGN key at http://professionnels.ign.fr/user
  */
-function layerIGN(layer, format) {
+function layerIGN(layer, format, key) {
 	let IGNresolutions = [],
 		IGNmatrixIds = [];
 	for (let i = 0; i < 18; i++) {
 		IGNresolutions[i] = ol.extent.getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / Math.pow(2, i);
 		IGNmatrixIds[i] = i.toString();
 	}
-	return typeof mapKeys === 'undefined' || !mapKeys || !mapKeys.ign ?
+	return (typeof mapKeys === 'undefined' || !mapKeys || !mapKeys.ign) &&
+		(typeof key === 'undefined' || !key) ?
 		null :
 		new ol.layer.Tile({
 			source: new ol.source.WMTS({
-				url: '//wxs.ign.fr/' + mapKeys.ign + '/wmts',
+				url: '//wxs.ign.fr/' + (key || mapKeys.ign) + '/wmts',
 				layer: layer,
 				matrixSet: 'PM',
 				format: 'image/' + (format || 'jpeg'),
@@ -534,8 +538,10 @@ function hoverManager(map) {
 	map.on('click', function(evt) {
 		let clickedFeature = findClosestFeature(evt.pixel);
 		if (clickedFeature) {
-			const link = clickedFeature.getProperties().link;
-			if (link) {
+			const link = clickedFeature.getProperties().link,
+				layerOptions = clickedFeature.layer_.options;
+
+			if (link && !layerOptions.noClick) {
 				if (evt.originalEvent.ctrlKey) {
 					const tab = window.open(link, '_blank');
 					if (evt.originalEvent.shiftKey)
@@ -592,7 +598,7 @@ function hoverManager(map) {
 							labelEl.className = 'myol-popup';
 					}
 					// Change the cursor
-					if (properties.link)
+					if (properties.link && !layerOptions.noClick)
 						viewStyle.cursor = 'pointer';
 					if (properties.draggable)
 						viewStyle.cursor = 'move';
@@ -777,11 +783,10 @@ function layerVectorURL(options) {
 										mapSize = layer.map_.getSize();
 									for (let f in features)
 										ol.extent.extend(extent, features[f].getGeometry().getExtent());
-									layer.map_.getView().fit(
-										extent, {
-											maxZoom: 17,
-											size: [mapSize[0] * 0.8, mapSize[1] * 0.8],
-										});
+									layer.map_.getView().fit(extent, {
+										maxZoom: 17,
+										size: [mapSize[0] * 0.8, mapSize[1] * 0.8],
+									});
 								}
 							}
 						}
@@ -865,6 +870,7 @@ function layerVectorURL(options) {
 function getSym(type) {
 	const lex =
 		// https://forums.geocaching.com/GC/index.php?/topic/277519-garmin-roadtrip-waypoint-symbols/
+		// https://www.gerritspeek.nl/navigatie/gps-navigatie_waypoint-symbolen.html
 		// <sym> propertie propertie
 		'<City Hall> hotel' +
 		'<Residence> refuge gite chambre_hote' +
@@ -1094,7 +1100,7 @@ function layerOverpass(options) {
 	format.readFeatures = function(response, opt) {
 		// Transform an area to a node (picto) at the center of this area
 		const doc = new DOMParser().parseFromString(response, 'application/xml');
-		for (let node = doc.documentElement.firstChild; node; node = node.nextSibling)
+		for (let node = doc.documentElement.firstElementChild; node; node = node.nextSibling)
 			if (node.nodeName == 'way') {
 				// Create a new 'node' element centered on the surface
 				const newNode = doc.createElement('node');
@@ -1102,7 +1108,7 @@ function layerOverpass(options) {
 				doc.documentElement.appendChild(newNode);
 
 				// Browse <way> attributes to build a new node
-				for (let subTagNode = node.firstChild; subTagNode; subTagNode = subTagNode.nextSibling)
+				for (let subTagNode = node.firstElementChild; subTagNode; subTagNode = subTagNode.nextSibling)
 					switch (subTagNode.nodeName) {
 						case 'center':
 							// Set node attributes
@@ -1248,7 +1254,6 @@ function controlLayersSwitcher(options) {
 	const button = controlButton({
 		className: 'ol-switch-layer myol-button',
 		label: '\u2026',
-		title: 'Liste des cartes',
 		rightPosition: 0.5,
 	});
 
@@ -1266,7 +1271,6 @@ function controlLayersSwitcher(options) {
 	// Layer selector
 	const selectorEl = document.createElement('div');
 	selectorEl.style.overflow = 'auto';
-	selectorEl.title = 'Ctrl+click: multicouches';
 	button.element.appendChild(selectorEl);
 
 	//HACK execute actions on Map init
@@ -1279,8 +1283,8 @@ function controlLayersSwitcher(options) {
 			if (options.baseLayers[name]) { // null is ignored
 				const choiceEl = document.createElement('div');
 				choiceEl.innerHTML =
-					'<input type="checkbox" name="baselayer" value="' + name + '">' +
-					'<span title="">' + name + '</span>';
+					'<input type="checkbox" name="baselayer" id="bl' + options.baseLayers[name].ol_uid + '" value="' + name + '" /> ' +
+					'<label for="bl' + options.baseLayers[name].ol_uid + '">' + name + '</label>';
 				selectorEl.appendChild(choiceEl);
 				map.addLayer(options.baseLayers[name]);
 			}
@@ -1314,7 +1318,7 @@ function controlLayersSwitcher(options) {
 	function displayLayerSelector(evt, list) {
 		// Check the first if none checked
 		if (list && list.length === 0)
-			selectorEl.firstChild.firstChild.checked = true;
+			selectorEl.firstElementChild.firstElementChild.checked = true;
 
 		// Leave only one checked except if Ctrl key is on
 		if (evt && evt.type == 'click' && !evt.ctrlKey) {
@@ -1571,8 +1575,8 @@ function controlGeocoder(options) {
 	});
 
 	// Move the button at the same level than the other control's buttons
-	geocoder.container.firstChild.firstChild.title = options.title;
-	geocoder.container.appendChild(geocoder.container.firstChild.firstChild);
+	geocoder.container.firstElementChild.firstElementChild.title = options.title;
+	geocoder.container.appendChild(geocoder.container.firstElementChild.firstElementChild);
 
 	return geocoder;
 }
@@ -1801,7 +1805,6 @@ function controlLoadGPX(options) {
 					},
 				});
 			map.addLayer(layer);
-			map.getView().fit(source.getExtent());
 		}
 
 		// Zoom the map on the added features
@@ -1810,6 +1813,8 @@ function controlLoadGPX(options) {
 			ol.extent.extend(extent, features[f].getGeometry().getExtent());
 		map.getView().fit(extent, {
 			maxZoom: 17,
+			size: map.getSize(),
+			padding: [5, 5, 5, 5],
 		});
 	};
 	return button;
@@ -1955,7 +1960,7 @@ function controlPrint() {
 		map.setSize([mapEl.offsetWidth, mapEl.offsetHeight]);
 
 		// Hide all but the map
-		for (let child = document.body.firstChild; child !== null; child = child.nextSibling)
+		for (let child = document.body.firstElementChild; child !== null; child = child.nextSibling)
 			if (child.style && child !== mapEl)
 				child.style.display = 'none';
 
@@ -2121,6 +2126,8 @@ function layerGeoJson(options) {
 				ol.extent.extend(extent, features[f].getGeometry().getExtent());
 			map.getView().fit(extent, {
 				maxZoom: options.focus,
+				size: map.getSize(),
+				padding: [5, 5, 5, 5],
 			});
 		}
 
@@ -2279,7 +2286,7 @@ function layerGeoJson(options) {
 			const ll4326 = ol.proj.transform(ll, 'EPSG:3857', 'EPSG:4326'),
 				formats = {
 					decimal: ['Degrés décimaux', 'EPSG:4326', 'format',
-						'Longitude: {x}, Latitude: {y} (WGS84)',
+						'Longitude: {x}, Latitude: {y}',
 						5
 					],
 					degminsec: ['Deg Min Sec', 'EPSG:4326', 'toStringHDMS'],
@@ -2549,9 +2556,9 @@ function layersCollection() {
 		'OSM fr': layerOsm('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'Photo Google': layerGoogle('s'),
 		'Photo Bing': layerBing('Aerial'),
-		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS'),
-		'IGN': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'),
-		'IGN Express': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
+		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', 'jpeg', 'pratique'),
+		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'),
+		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'png', 'pratique'),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Angleterre': layerOS(),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
@@ -2572,7 +2579,8 @@ function layersDemo() {
 		'OSM villes': layerThunderforest('neighbourhood'),
 		'OSM contraste': layerThunderforest('mobile-atlas'),
 
-		'IGN TOP 25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'),
+		'IGN Classique': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.CLASSIQUE'),
+		'IGN Standard': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD'),
 		//403 'IGN Spot': layerIGN('ORTHOIMAGERY.ORTHO-SAT.SPOT.2017', 'png'),
 		//Double 	'SCAN25TOUR': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR'),
 		'IGN 1950': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS.1950-1965', 'png'),
