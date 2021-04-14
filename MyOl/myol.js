@@ -963,7 +963,7 @@ function layerPyreneesRefuges(options) {
  */
 function layerChemineur(options) {
 	return layerVectorURL(Object.assign({
-		baseUrl: '//chemineur.fr/ext/Dominique92/GeoBB/gis.php?poi=',
+		baseUrl: '//chemineur.fr/ext/Dominique92/GeoBB/gis.php?cat=',
 		urlSuffix: '3,8,16,20,23,30,40,44,58,64',
 		strategy: ol.loadingstrategy.bboxLimit,
 		receiveProperties: function(properties) {
