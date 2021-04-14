@@ -59,12 +59,6 @@ const controls = [
 			// Pas d'étiquette sur le bord du massif
 			properties.type = null;
 		},
-		styleOptions: {
-			stroke: new ol.style.Stroke({
-				color: 'blue',
-				width: 2,
-			}),
-		},
 	}),
 
 	// La couche "polygones" (du massif, de la zone, plein et coloré)

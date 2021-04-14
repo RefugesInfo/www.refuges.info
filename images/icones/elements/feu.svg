@@ -1,5 +1,5 @@
-	<ellipse cx="13.7" cy="3.5" rx="4" ry="2.5" stroke="#666666" fill="#bbccff" />
-	<ellipse cx="9" cy="3" rx="3.5" ry="2" stroke="#666666" fill="#bbccff" />
-	<ellipse cx="19" cy="4.5" rx="4" ry="3.5" stroke="#666666" fill="#bbccff" />
-	<ellipse cx="13.7" cy="3.5" rx="3" ry="1.5" stroke="#bbccff" fill="#bbccff" />
-	<rect x="3" y="2" width="3" height="7" fill="black" />
+	<ellipse cx="13.7" cy="3.5" rx="4" ry="2.5" stroke="#888888" fill="#aaccff" />
+	<ellipse cx="9" cy="3" rx="3.5" ry="2" stroke="#888888" fill="#aaccff" />
+	<ellipse cx="19" cy="4.5" rx="4" ry="3.5" stroke="#888888" fill="#aaccff" />
+	<ellipse cx="13.7" cy="3.5" rx="3" ry="1.5" stroke="#aaccff" fill="#aaccff" />
+	<rect x="3" y="2" width="3" height="7" fill="#666666" />

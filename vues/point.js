@@ -26,7 +26,7 @@ const controls = [
 		layerRefugesInfo({
 			baseUrl: '<?=$config_wri["sous_dossier_installation"]?>',
 		}),
-		layerGeoJson({
+		layerEditGeoJson({
 			displayPointId: 'marqueur',
 			geoJson: {
 				type: 'Point',

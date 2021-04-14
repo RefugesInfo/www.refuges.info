@@ -100,14 +100,6 @@ function addLayer(url) {
 			map.getView().setZoom(1); //HACK enable gpx rendering anywhere we are
 			return features;
 		},
-		styleOptions: function() {
-			return {
-				stroke: new ol.style.Stroke({
-					color: 'blue',
-					width: 3,
-				}),
-			};
-		},
 	});
 
 	// Zoom the map on the added features

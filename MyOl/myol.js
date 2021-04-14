@@ -404,7 +404,7 @@ function escapedStyle(a, b, c) {
  * return : array of values of all checked <input name="selectorName" type="checkbox" value="xxx" />
  */
 //BEST open/close features check button
-//BEST WRI bug uncheck massifs, go to a page & come back
+//TODO WRI bug uncheck massifs, go to a page & come back
 function permanentCheckboxList(selectorName, evt) {
 	const inputEls = document.getElementsByName(selectorName),
 		list = [];
@@ -552,14 +552,14 @@ function hoverManager(map) {
 		}
 	});
 
-	//TODO appeler sur l'event "hover" (pour les mobiles)
+	//BEST appeler sur l'event "hover" (pour les mobiles)
 	map.on('pointermove', function(evt) {
 		const mapRect = map.getTargetElement().getBoundingClientRect(),
 			hoveredEl = document.elementFromPoint(
 				evt.pixel[0] + (mapRect.x || mapRect.left), //HACK left/top for IE
 				evt.pixel[1] + (mapRect.y || mapRect.top)
 			);
-		if (hoveredEl.id != 'label') { // Not hovering an html element (label, button, ...)
+		if (hoveredEl && hoveredEl.id != 'label') { // Not hovering an html element (label, button, ...)
 			// Search hovered features
 			let closestFeature = findClosestFeature(evt.pixel);
 
@@ -693,17 +693,31 @@ function layerVectorURL(options) {
 		receiveFeatures: function(features) { // features pre-treatment
 			return features;
 		},
-		styleOptions: function(properties) { // Function returning the layer's feature style
+		styleOptions: function(properties) { // Default function returning the layer's feature style
+			if (!properties.icon)
+				properties.icon = '//chemineur.fr/ext/Dominique92/GeoBB/icones/' + (properties.sym || 'Puzzle Cache') + '.png';
 			return {
 				image: new ol.style.Icon({
-					src: '//sym16.dc9.fr/' + properties.sym + '.png', //TODO C coi //sym16.dc9.fr/ ??????????
+					src: properties.icon,
+					imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
+					//TODO détecter la taille automatiquement
+				}),
+				stroke: new ol.style.Stroke({
+					color: 'blue',
+					width: 2,
 				}),
 			};
+		},
+		hoverStyleOptions: {
+			stroke: new ol.style.Stroke({ // For lines & polygons
+				color: '#4444ff',
+				width: 4,
+			})
 		},
 		label: function(properties) { // Label to dispach above the feature when hovering
 			const lines = [],
 				desc = [],
-				type = (properties.type || '')
+				type = (typeof properties.type == 'string' ? properties.type : '')
 				.replace(/(:|_)/g, ' ') // Remove overpass prefix
 				.replace(/[a-z]/, function(c) { // First char uppercase
 					return c.toUpperCase();
@@ -808,7 +822,7 @@ function layerVectorURL(options) {
 		layer = new ol.layer.Vector(Object.assign({
 			source: source,
 			style: escapedStyle(options.styleOptions),
-			renderBuffer: 16, // buffered area around curent view (px)
+			renderBuffer: 16, // Buffered area around curent view (px)
 			zIndex: 1, // Above the baselayer even if included to the map before
 		}, options));
 	layer.options = options; // Mem options for further use
@@ -914,7 +928,7 @@ function layerRefugesInfo(options) {
 			properties.name = properties.nom;
 			properties.link = properties.lien;
 			properties.ele = properties.coord.alt;
-			properties.icone = properties.type.icone;
+			properties.icon = options.baseUrl + 'images/icones/' + properties.type.icone + '.svg';
 			properties.type = properties.type.valeur;
 			properties.bed = properties.places.valeur;
 			// Need to have clean KML export
@@ -922,18 +936,8 @@ function layerRefugesInfo(options) {
 				properties.lien =
 				properties.date = '';
 		},
-
-		styleOptions: function(properties) {
-			return {
-				image: new ol.style.Icon({
-					//TODO BUG it don't use the same baseUrl than baseUrlFunction
-					src: options.baseUrl + 'images/icones/' + properties.icone + '.svg',
-					imgSize: [24, 24], // C'est le paramètre miracle qui permet d'afficher sur I.E.
-				}),
-			};
-		},
 	}, options);
-	return layerVectorURL(options); //BEST inline
+	return layerVectorURL(options);
 }
 
 /**
@@ -959,35 +963,11 @@ function layerPyreneesRefuges(options) {
  */
 function layerChemineur(options) {
 	return layerVectorURL(Object.assign({
-		baseUrl: '//dc9.fr/chemineur/ext/Dominique92/GeoBB/gis.php?site=this&poi=',
-		urlSuffix: '3,8,16,20,23,30,40,44,58,62,64',
+		baseUrl: '//chemineur.fr/ext/Dominique92/GeoBB/gis.php?poi=',
+		urlSuffix: '3,8,16,20,23,30,40,44,58,64',
 		strategy: ol.loadingstrategy.bboxLimit,
 		receiveProperties: function(properties) {
-			const icone = properties.icone.match(new RegExp('([a-z\-_]+)\.png')); // Type calculation
-			properties.name = properties.nom;
-			properties.link = properties.url;
-			properties.type = icone ? icone[1] : null;
-			properties.sym = getSym(properties.type);
 			properties.copy = 'chemineur.fr';
-		},
-		styleOptions: function(properties) {
-			return {
-				// POI
-				image: new ol.style.Icon({
-					src: properties.icone,
-				}),
-				// Traces
-				stroke: new ol.style.Stroke({
-					color: 'blue',
-					width: 3,
-				}),
-			};
-		},
-		hoverStyleOptions: {
-			stroke: new ol.style.Stroke({ // For traces
-				color: 'red',
-				width: 3,
-			})
 		},
 	}, options));
 }
@@ -1004,13 +984,6 @@ function layerAlpages(options) {
 			properties.sym = getSym(properties.icone);
 			properties.type = icone ? icone[1] : null;
 			properties.link = 'http://alpages.info/viewtopic.php?t=' + properties.id;
-		},
-		styleOptions: function(properties) {
-			return {
-				image: new ol.style.Icon({
-					src: properties.icon,
-				}),
-			};
 		},
 	}, options));
 }
@@ -1780,7 +1753,7 @@ function controlLoadGPX(options) {
 				featureProjection: 'EPSG:3857',
 			}),
 			added = map.dispatchEvent({
-				type: 'myol:onfeatureload', // Warn layerGeoJson that we uploaded some features
+				type: 'myol:onfeatureload', // Warn layerEditGeoJson that we uploaded some features
 				features: features,
 			});
 
@@ -1795,11 +1768,11 @@ function controlLoadGPX(options) {
 					style: function(feature) {
 						return new ol.style.Style({
 							image: new ol.style.Icon({
-								src: '//sym16.dc9.fr/' + feature.getProperties().sym + '.png',
+								src: '//chemineur.fr/ext/Dominique92/GeoBB/icones/' + feature.getProperties().sym + '.png',
 							}),
 							stroke: new ol.style.Stroke({
 								color: 'blue',
-								width: 3,
+								width: 2,
 							}),
 						});
 					},
@@ -1985,7 +1958,7 @@ function controlPrint() {
  * Lines & polygons edit
  * Requires JSONparse, myol:onadd, escapedStyle, controlButton
  */
-function layerGeoJson(options) {
+function layerEditGeoJson(options) {
 	options = Object.assign({
 		format: new ol.format.GeoJSON(),
 		projection: 'EPSG:3857',
@@ -2008,8 +1981,9 @@ function layerGeoJson(options) {
 					})
 				.replace(/"properties":\{[^\}]*\}/, '"properties":null');
 		},
+		// Drag lines or Polygons
 		styleOptions: {
-			// Drag lines or Polygons
+			// Marker circle
 			image: new ol.style.Circle({
 				radius: 4,
 				stroke: new ol.style.Stroke({
@@ -2017,21 +1991,23 @@ function layerGeoJson(options) {
 					width: 2,
 				}),
 			}),
+			// Editable lines or polygons border
 			stroke: new ol.style.Stroke({
-				color: 'blue',
+				color: 'red',
 				width: 2,
 			}),
+			// Editable polygons
 			fill: new ol.style.Fill({
 				color: 'rgba(0,0,255,0.2)',
 			}),
 		},
 		editStyleOptions: { // Hover / modify / create
-			// Lines or border colors
+			// Editable lines or polygons border
 			stroke: new ol.style.Stroke({
 				color: 'red',
-				width: 2,
+				width: 4,
 			}),
-			// Polygons
+			// Editable polygons fill
 			fill: new ol.style.Fill({
 				color: 'rgba(255,0,0,0.3)',
 			}),
@@ -2310,8 +2286,8 @@ function layerGeoJson(options) {
 				ol.proj.proj4.register(proj4);
 			}
 			// Display or not the EPSG:21781 coordinates
-			var epsg21781 = document.getElementsByClassName('epsg-21781');
-			for (var e = 0; e < epsg21781.length; e++)
+			const epsg21781 = document.getElementsByClassName('epsg-21781');
+			for (let e = 0; e < epsg21781.length; e++)
 				epsg21781[e].style.display = ll21781 ? '' : 'none';
 
 			if (inputEls.length)
@@ -2553,22 +2529,24 @@ function layersCollection() {
 		'OpenTopo': layerOsmOpenTopo(),
 		'OSM outdoors': layerThunderforest('outdoors'),
 		'OSM transport': layerThunderforest('transport'),
+		'MRI': layerOsmMri(),
 		'OSM fr': layerOsm('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'Photo Google': layerGoogle('s'),
-		'Photo Bing': layerBing('Aerial'),
 		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', 'jpeg', 'pratique'),
 		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'),
 		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'png', 'pratique'),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
+		'Swiss photo': layerSwissTopo('ch.swisstopo.swissimage', layerGoogle('s')), //TODO ?????? layerGoogle
+		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Angleterre': layerOS(),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
+		'Espagne photo': layerSpain('pnoa-ma', 'OI.OrthoimageCoverage'),
 	};
 }
 
 function layersDemo() {
 	return Object.assign(layersCollection(), {
 		'OSM': layerOsm('//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-		'MRI': layerOsmMri(),
 		'Hike & Bike': layerOsm(
 			'http://{a-c}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
 			'<a href="//www.hikebikemap.org/">hikebikemap.org</a>'
@@ -2600,14 +2578,12 @@ function layersDemo() {
 		'Etat major': layerIGN('GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40'),
 		'ETATMAJOR10': layerIGN('GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR10'),
 
-		'Swiss photo': layerSwissTopo('ch.swisstopo.swissimage', layerGoogle('s')), //TODO ?????? layerGoogle
-		'Espagne photo': layerSpain('pnoa-ma', 'OI.OrthoimageCoverage'),
 		'Italie': layerIGM(),
-		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Kompas': layerKompass('KOMPASS'),
 
 		'Bing': layerBing('Road'),
-		'Bing photo': layerBing('AerialWithLabels'),
+		'Bing photo': layerBing('Aerial'),
+		'Bing hybrid': layerBing('AerialWithLabels'),
 		'Google road': layerGoogle('m'),
 		'Google terrain': layerGoogle('p'),
 		'Google hybrid': layerGoogle('s,h'),

@@ -481,7 +481,7 @@
     return results.map(function (result) { return ({
       lon: result.lon,
       lat: result.lat,
-      bbox: result.boundingbox,
+//      bbox: result.boundingbox,
 
       address: {
         name: result.display_name,

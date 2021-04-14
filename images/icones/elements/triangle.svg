@@ -1,1 +1,1 @@
-	<path d="M1.75 23 l10.3 -18,10.2 18 Z" stroke-width="2" stroke="<?=$couleurs[2]?:'red'?>" fill="<?=$couleurs[1]?:'white'?>" />
+	<path d="M1.75 23 l10.3 -18,10.2 18 Z" stroke-width="2" stroke="<?=$couleurs[1]?:'red'?>" fill="<?=$couleurs[0]?:'white'?>" />

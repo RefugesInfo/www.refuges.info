@@ -27,7 +27,7 @@ const layerMassifs = layerVectorURL({
 		},
 	}),
 
-	editeur = layerGeoJson({
+	editeur = layerEditGeoJson({
 		geoJsonId: 'edit-json',
 		snapLayers: [layerMassifs],
 		titleModify: 'Modification d‘un polygone:\n' +

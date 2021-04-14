@@ -24,7 +24,7 @@ const refugesInfo = layerRefugesInfo({
 		},
 	}),
 
-	marker = layerGeoJson({
+	marker = layerEditGeoJson({
 		displayPointId: 'viseur',
 		geoJsonId: 'geojson',
 		dragPoint: true,

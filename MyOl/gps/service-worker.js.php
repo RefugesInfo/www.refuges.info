@@ -35,7 +35,7 @@ if (isset ($_GET['files'])) {
 		$specific_files,
 		$service_worker
 	);
-	//TODO icone SVG ?
+	//BEST icone SVG
 
 	// Add GPX files in the url directory to the list of files to cache
 	$gpx_files = glob (pathinfo ($specific_files[0], PATHINFO_DIRNAME) .'/*.gpx');

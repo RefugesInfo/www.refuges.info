@@ -14,7 +14,8 @@ const massifs = layerVectorURL({
 	},
 	styleOptions: function(properties) {
 		// Translates the color in RGBA to be transparent
-		var cs = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(properties.couleur);
+		//TODO make it in refuges.info
+		const cs = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(properties.couleur);
 		return {
 			fill: new ol.style.Fill({
 				color: 'rgba(' +

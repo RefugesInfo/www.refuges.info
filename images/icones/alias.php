@@ -1,12 +1,14 @@
 <?php
 include (__DIR__.'/../../includes/config.php');
 
+$colors = ['black','green','blue','red','grey','white'];
+
 $alias = array_merge ($config_wri['definition_icones'], [
 	// Compatibilité des exports KML
 	'abri' => 'cabane',
 
 	// Favicon
-	'favicon' => 'cabane_feu_t384',
+	'favicon' => 'cabane_feu_porte_t384',
 
 	// Icônes Overpass, C2C & PRC (remplacer ' ' par %20 dans l'URL)
 	// Il s'agit en fait d'une équivalence des symboles geocaching utilisés par les GPS

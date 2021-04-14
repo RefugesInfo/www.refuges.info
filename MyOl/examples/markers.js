@@ -1,4 +1,4 @@
-const cadre = layerGeoJson({
+const cadre = layerEditGeoJson({
 		displayPointId: 'fix-marker',
 		singlePoint: true,
 		geoJson: {
@@ -11,7 +11,7 @@ const cadre = layerGeoJson({
 			}),
 		},
 	}),
-	viseur = layerGeoJson({
+	viseur = layerEditGeoJson({
 		displayPointId: 'drag-marker',
 		geoJsonId: 'drag-marker-json',
 		dragPoint: true,
@@ -31,7 +31,7 @@ const cadre = layerGeoJson({
 			);
 		},
 	});
-//TODO BEST cadre et viseur SVG / inline ?
+//BEST cadre et viseur SVG / inline
 
 new ol.Map({
 	target: 'map',

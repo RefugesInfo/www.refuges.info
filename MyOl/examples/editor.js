@@ -1,7 +1,12 @@
-const wri = layerRefugesInfo(), //TODO BUG : need layer without click
-	editor = layerGeoJson({
+const back = layerChemineur({
+		baseUrl: '//chemineur.fr/ext/Dominique92/GeoBB/gis.php?', //TODO GIS sans arguments (&bbox)
+		receiveProperties: function(properties) {
+			properties.link = null; // Couche non cliquable
+		},
+	}),
+	editor = layerEditGeoJson({
 		geoJsonId: 'geojson',
-		snapLayers: [wri],
+		snapLayers: [back],
 		titleModify: 'Modification d‘une ligne, d‘un polygone:\n' +
 			'Activer ce bouton (couleur jaune) puis\n' +
 			'Cliquer et déplacer un sommet pour modifier une ligne ou un polygone\n' +
@@ -27,7 +32,7 @@ const wri = layerRefugesInfo(), //TODO BUG : need layer without click
 new ol.Map({
 	target: 'map',
 	layers: [
-		wri,
+		back,
 		editor,
 	],
 	controls: controlsCollection({

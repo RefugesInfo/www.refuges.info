@@ -1,2 +1,6 @@
 https://github.com/jonataswalker/ol-geocoder/releases/latest
 V4.1.2
+
+//TODO Résultat avec le zoom à 1 :
+https://github.com/jonataswalker/ol-geocoder/issues/228
+Remove line : bbox: result.boundingbox,
