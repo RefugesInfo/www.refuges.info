@@ -2,6 +2,8 @@
 	<path d="M1.5 12.3 l10.5 -10.5,10.5 10.5" stroke-width="3" stroke-linecap="round" stroke="<?=$couleurs[1]?:$couleurs[0]?:'red'?>" fill="<?=$couleurs[0]?:'#ffeedd'?>" />
 <?php
 	if (count($elements[1]) == 1 ||
-		(count($elements[1]) == 2 && $elements[1][1] == 'feu'))
+		(count($elements[1]) == 2 && $elements[1][1] == 'eau') ||
+		(count($elements[1]) == 2 && $elements[1][1] == 'feu') ||
+		(count($elements[1]) == 2 && $elements[1][1] == 'x'))
 		include ('elements/porte.svg');
 ?>

@@ -8,7 +8,7 @@ $alias = array_merge ($config_wri['definition_icones'], [
 	'abri' => 'cabane',
 
 	// Favicon
-	'favicon' => 'cabane_feu_porte_t384',
+	'favicon' => 'feu_cabane_porte_oeuil_t384',
 
 	// Icônes Overpass, C2C & PRC (remplacer ' ' par %20 dans l'URL)
 	// Il s'agit en fait d'une équivalence des symboles geocaching utilisés par les GPS
