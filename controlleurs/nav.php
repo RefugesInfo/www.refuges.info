@@ -69,7 +69,7 @@ if (!empty($_GET['id_polygone_type']))
   }
 }
 
-if (!isset($id_polygone)) // Pas de numéro de polygone, ça n'est pas une erreur, on affiche les points visibles
+if (empty($id_polygone)) // Pas de numéro de polygone, ça n'est pas une erreur, on affiche les points visibles
   return;
 
 
