@@ -18,7 +18,7 @@
 			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=sendpassword" title="Récupérer votre mot de passe">mdp</a>
 		<?}?>
 		
-		<form method="post" action="<?=$config_wri['sous_dossier_installation']?>point_recherche/">
+		<form method="post" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
 		<div>
 			<input type="text" name="nom" size="35" placeholder="Recherche de point par une partie du nom" />
             <input type="hidden" name="limite" value="<?=$config_wri['points_maximum_recherche']?>">
@@ -60,26 +60,26 @@ foreach ($menus AS $id) {?>
 				</ul>
 			</li>
 			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/">Nouvelles</a>
+				<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles">Nouvelles</a>
 				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 				<ul>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/" title="Les entrées les plus récentes">Toutes</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss/">Flux RSS</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles" title="Les entrées les plus récentes">Toutes</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss">Flux RSS</a></li>
 				</ul>
 			</li>
 			<li>
 				<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
 			</li>
 			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche/">Recherche</a>
+				<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche">Recherche</a>
 				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
 				<ul>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche/" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations/" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
+					<li><a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
 				</ul>
 			</li>
 			<li>
