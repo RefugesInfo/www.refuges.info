@@ -15,12 +15,9 @@ function affiche_et_set( el , affiche, valeur ) {
 // Gestion des cartes
 const refugesInfo = layerRefugesInfo({
 		baseUrl: '<?=$config_wri["sous_dossier_installation"]?>',
-		receiveProperties: function(properties) {
-			properties.icone = properties.type.icone;
-			properties.link = null; // Couche non cliquable
-		},
+		noClick: true,
 		label: function(properties) {
-			return properties.nom;
+			return properties.name;
 		},
 	}),
 
