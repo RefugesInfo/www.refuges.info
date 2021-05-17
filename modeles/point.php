@@ -521,7 +521,38 @@ function infos_point_forum ($point)
 
   return $result;
 }
+/**********************************************************************************************************************
+sly : 2019-09-09 Historisation du pauvre, on log dans une table un dump de l'objet point avant et après modification
+L'objet $point par défaut dispose de trop de propriété, ne gardons que celles qui peuvent être modifiées par le formulaire, 
+c'est à dire celle de $point_apres qui est issue du formulaire (donc comparaison sioux entre les propriété de $point_apres et $point_avant)
 
+**********************************************************************************************************************/
+function point_historisation_modification($point_avant,$point_apres,$id_utilisateur_qui_modifie=0,$type_operation="modification")
+{
+  global $pdo;
+  
+  $point_avant_simple = new stdClass;
+    if (!empty($point_apres)) // la point après modification existe, on stockera d'utile que les propriétés qui ont été passé par le formulaire (moins lourd)
+     foreach ($point_apres as $propriete => $valeur)
+       $point_avant_simple->$propriete=$point_avant->$propriete;
+    else
+      foreach ($point_avant as $propriete => $valeur)
+        if ($propriete!='polygones') // en cas de suppression, la liste des polygones auquel appartenait le point ne nous intéresse pas tant que ça, lourd à l'écran !
+          $point_avant_simple->$propriete=$point_avant->$propriete;
+       
+  $query_log_modification="insert into historique_modifications_points 
+  (id_point,id_user,date_modification,avant,apres,type_modification) 
+  values 
+  ($point_avant->id_point,
+  $id_utilisateur_qui_modifie,
+  NOW(),
+  ".$pdo->quote(serialize($point_avant_simple)).",
+  ".$pdo->quote(serialize($point_apres)).",
+  '$type_operation')";
+  
+  if (!$pdo->exec($query_log_modification))
+      return erreur("Requête en erreur, impossible d'historiser la modification",$query_log_modification);
+}
 
 /********************************************************
 Fonction qui permet, en fonction de l'object $point passé en paramêtre la mise à jour OU la création si :
@@ -548,60 +579,60 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   if ( preg_match("/[\<\>\]\[\;]/",$point->nom) )
     return erreur("Le nom contient un des caractères non autorisé suivant : [ ] < > ;");
 
-    if( isset($point->site_officiel) )
-    {
-        // Pensez bien qu'un modérateur puisse vouloir remettre à "" le site n'existant plus
-        if ($point->site_officiel=="")
-            $champs_sql['site_officiel'] = "''";
-        //cas du site un peu particulier ou l'internaute n'aura pas forcément pensé à mettre http://
-        elseif ( !preg_match("/https?:\/\//",$point->site_officiel))
-            $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
-        else
-            $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-    }
+  if( isset($point->site_officiel) )
+  {
+    // Pensez bien qu'un modérateur puisse vouloir remettre à "" le site n'existant plus
+    if ($point->site_officiel=="")
+        $champs_sql['site_officiel'] = "''";
+    //cas du site un peu particulier ou l'internaute n'aura pas forcément pensé à mettre http://
+    elseif ( !preg_match("/https?:\/\//",$point->site_officiel))
+        $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
+    else
+        $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
+  }
 
-    // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
-    $champs_sql['date_derniere_modification'] = 'NOW()';
+  // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
+  $champs_sql['date_derniere_modification'] = 'NOW()';
 
-    /********* les coordonnées du point *************/
-    if (empty($point->geojson)) { // Plus besoin de faire ces vérifs avec le nouveau format geojson
-    // désolé, les coordonnées ne peuvent être vide ou non numérique
-    $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
-    if (empty($point->latitude) or !is_numeric($point->latitude))
-      return erreur("La latitude $erreur_coordonnee $point->latitude");
-    if (empty($point->latitude) or !is_numeric($point->longitude))
-      return erreur("La longitude $erreur_coordonnee $point->longitude");
+  /********* les coordonnées du point *************/
+  if (empty($point->geojson)) { // Plus besoin de faire ces vérifs avec le nouveau format geojson
+  // désolé, les coordonnées ne peuvent être vide ou non numérique
+  $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
+  if (empty($point->latitude) or !is_numeric($point->latitude))
+    return erreur("La latitude $erreur_coordonnee $point->latitude");
+  if (empty($point->latitude) or !is_numeric($point->longitude))
+    return erreur("La longitude $erreur_coordonnee $point->longitude");
 
-    if ($point->latitude>90 or $point->latitude<-90)
-      return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
-    if ($point->longitude>180 or $point->longitude<-180)
-      return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
-    }
+  if ($point->latitude>90 or $point->latitude<-90)
+    return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
+  if ($point->longitude>180 or $point->longitude<-180)
+    return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
+  }
   // si aucune précision gps, on les suppose approximatives
   if (empty($point->id_type_precision_gps))
     $point->id_type_precision_gps=$config_wri['id_coordonees_gps_approximative'];
 
-    // si aucune altitude, on la suppose à 0
-    if (!isset($point->altitude))
-        $point->altitude="0";
-    //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
-    if (!is_numeric($point->altitude))
-        return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
+  // si aucune altitude, on la suppose à 0
+  if (!isset($point->altitude))
+    $point->altitude="0";
+  //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
+  if (!is_numeric($point->altitude))
+    return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
 
-    //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
-    if ($point->altitude>8848 or $point->altitude<0)
-        return erreur("$point->altitude"."m comme altitude du point, vraiment ?");
+  //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
+  if ($point->altitude>8848 or $point->altitude<0)
+    return erreur("$point->altitude"."m comme altitude du point, vraiment ?");
 
-    if (!empty($point->geojson))
-      $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
+  if (!empty($point->geojson))
+    $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
 
-    foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $a_tester)
-      if (!empty($point->$a_tester))
-        if ( !(est_entier_positif($point->$a_tester) or $point->$a_tester=="ne_sait_pas") )
-          return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0 ou le code spécial ne_sait_pas, reçu : '".$point->$a_tester."'");
-    
-    if (isset($point->places_matelas) and $point->places_matelas=="") // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
-       $point->places_matelas="0";
+  foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $a_tester)
+    if (!empty($point->$a_tester))
+      if ( !(est_entier_positif($point->$a_tester) or $point->$a_tester=="ne_sait_pas") )
+        return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0 ou le code spécial ne_sait_pas, reçu : '".$point->$a_tester."'");
+  
+  if (isset($point->places_matelas) and $point->places_matelas=="") // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
+    $point->places_matelas="0";
 /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
 // champ ou il faut juste un set=nouvelle_valeur
   foreach ($config_wri['champs_simples_points'] as $champ)
@@ -611,38 +642,24 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       else
         $champs_sql[$champ]=$pdo->quote($point->$champ);
     
-    if ( !empty($point->id_point) )  // update
-    {
-        $point_avant = infos_point($point->id_point,true,false);
-        if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
-            return erreur("Erreur de modification du point : $point_avant->message");
+  if ( !empty($point->id_point) )  // update
+  {
+    $point_avant = infos_point($point->id_point,true,false);
+    if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
+        return erreur("Erreur de modification du point : $point_avant->message");
 
-        $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
-        if (!$pdo->exec($query_finale))
-            return erreur("Requête en erreur, impossible à executer",$query_finale);
-            
-        // sly : 2019-09-09 Historisation du pauvre, on log dans une table un dump de l'objet point avant et après modification
-        // L'objet $point par défaut dispose de trop de propriété, ne gardons que celles qui peuvent être modifiées
-        $point_avant_simple = new stdClass;
-        foreach ($point as $propriete => $valeur)
-            $point_avant_simple->$propriete=$point_avant->$propriete;
-            
-        $query_log_modification="insert into historique_modifications_points 
-        (id_point,id_user,date_modification,avant,apres,type_modification) 
-        values 
-        ($point->id_point,$id_utilisateur_qui_modifie,NOW(),".$pdo->quote(serialize($point_avant_simple)).",".$pdo->quote(serialize($point)).",'modification')";
-        if (!$pdo->exec($query_log_modification))
-            return erreur("Requête en erreur, impossible d'historiser la modification",$query_log_modification);
-        
-        
-        /********* Renommage du topic point dans le forum refuges, sauf s'il s'agit d'un modèle, qui n'a pas (ou pas besoin) de sujet dans le forum *************/
-        if (!$point_avant->modele)
-          forum_submit_post ([
-              'action' => 'edit',
-              'topic_id' => $point->topic_id,
-              'topic_title' => mb_ucfirst($point->nom),
-          ]);
-        
+    $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
+    if (!$pdo->exec($query_finale))
+        return erreur("Requête en erreur, impossible à executer",$query_finale);
+    
+    /********* Renommage du topic point dans le forum refuges, sauf s'il s'agit d'un modèle, qui n'a pas (ou pas besoin) de sujet dans le forum *************/
+    if (!$point_avant->modele)
+      forum_submit_post ([
+          'action' => 'edit',
+          'topic_id' => $point->topic_id,
+          'topic_title' => mb_ucfirst($point->nom),
+      ]);
+    point_historisation_modification($point_avant,$point,$id_utilisateur_qui_modifie,'modification');
    }
    else  // INSERT
    {
@@ -670,7 +687,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 * on lui passe un objet $point et ça supprime tout proprement
 * commentaires, photos, forum, messages du forum?, point
 *******************************************************/
-function suppression_point($point)
+function suppression_point($point,$id_utilisateur_qui_supprime=0)
 {
   global $config_wri,$pdo;
   $conditions = new stdClass;
@@ -689,7 +706,9 @@ function suppression_point($point)
   // On appelle la fonction du forum qui supprime un topic
   forum_delete_topic ($point->topic_id);
 
-  $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de tt facon
+  $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de toute façon, même si le forum n'avait pas de topic par exemple
+  
+  point_historisation_modification($point_test,Null,$id_utilisateur_qui_supprime,'suppression');
 
   return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés");
 }

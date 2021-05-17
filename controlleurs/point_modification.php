@@ -73,7 +73,7 @@ switch( $_REQUEST["action"] )
         if ( est_autorise($ancien_point->id_createur) )
         {
             $point=infos_point($_REQUEST['id_point'],True);
-            $resultat_suppression=suppression_point($point);
+            $resultat_suppression=suppression_point($point,$infos_identification->user_id);
             if ($resultat_suppression->erreur)
                 $vue->erreur=$resultat_suppression->message;
             else
