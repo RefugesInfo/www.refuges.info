@@ -226,7 +226,9 @@
 	<?}?>
 	<div class="point_forum couleur_fond_amplifiee noprint">
 		<? if (empty($vue->forum_point)) {?>
-				<p>Le forum est vide, n'hésitez pas à y laisser le premier message!</a></p>
+				<p><a href="<?=$vue->lienforum?>">
+					Le forum est vide, n'hésitez pas à y laisser le premier message!
+				</a></p>
 			<?} else
 			foreach ($vue->forum_point AS $k=>$post) { ?>
 				<a href="<?=$vue->lienforum?>#p<?=$post->post_id?>" title="Voir le post">
