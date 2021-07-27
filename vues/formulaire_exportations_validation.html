@@ -1,5 +1,6 @@
 <div class="contenu">
-<h3>Lien vers les données demandées</h3> 
+    <? if (!empty($vue->lien_export->url)) { ?>
+    <h3>Lien vers les données demandées</h3> 
     <dl> 
       <dt>Licence</dt>
       <dd><a href="<?=$vue->lien_licence?>">Voir les détails sur la licence de refuges.info</a></dd>
@@ -8,11 +9,10 @@
       <dt>Exportation demandée</dt>
       <dd>Voici le lien permanent d'accès direct aux données au format "<?=$vue->format?>"</dd>
    </dl>
-   <? if (isset($vue->lien_export->url)) { ?>
     <p>
         <a href="<?=$vue->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour télécharger les données</a>
     </p>
     <?} else {?>
-    <p style="color:red;text-indent:2em;">Il n'y a pas de points sélectionnés</p>
+    <p style="color:red;text-indent:2em;">Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en arrière pour compléter le formulaire</p>
     <?}?>
 </div>

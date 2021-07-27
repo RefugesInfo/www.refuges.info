@@ -21,12 +21,10 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
   $vue->types_de_point=new stdClass;
   foreach ( $types_de_point AS $index => $type_de_point ) 
   {
-    $objet_vide=new stdClass;
-    $vue->types_de_point->$index = $objet_vide;
+    $vue->types_de_point->$index = new stdClass;
     $vue->types_de_point->$index->nom_type = $type_de_point->nom_type;
     $vue->types_de_point->$index->id_point_type = $type_de_point->id_point_type;
-    if (!empty($_GET['id_point_type']))
-      if (in_array($type_de_point->id_point_type, (array) $_GET['id_point_type']) OR $type_de_point->importance > 62)
+    if ( in_array($type_de_point->id_point_type, explode( ',',$config_wri['tout_type_refuge'])) ) 
         $vue->types_de_point->$index->checked = true;
   }
 
@@ -57,8 +55,8 @@ else // formulaire validé, affichage du lien et d'un blabla
   $vue->lien_licence = lien_wiki("licence");
   $vue->format=$_POST['format'];
 
-  if ($_POST['id_point_type']=="" OR $_POST['id_massif']=="")
-    $vue->lien_export->description="Vous demandez vraiment quelque chose de vide ?";
+  if ( empty($_POST['id_point_type']) OR empty($_POST['id_massif']) ) // Pas de type de point choisi ou aucun massif choisi : on l'indique par une erreur vu que le résultat sera forcément vide.
+    $vue->lien_export->url="";
   else
   {
     $liste_id_point_type = implode(',',$_POST['id_point_type']);
