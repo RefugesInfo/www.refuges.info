@@ -183,7 +183,6 @@ $config_wri['api_format_points'] = Array
 'kmz' => "kmz (googlearth compressé)",
 'kml' => "kml (googlearth)",
 'gml' => "Geography Markup Language",
-'gpi' => "gpi (Garmin Point of Interest)",
 'csv' => "csv (tableurs)",
 'xml' => "xml Spécifique à notre base, exhaustif",
 'geojson' => "GeoJSON"
