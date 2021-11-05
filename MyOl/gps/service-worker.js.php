@@ -29,7 +29,7 @@ if (isset ($_GET['files'])) {
 			$version_tag += filesize ($f);
 
 	// Update cached file list
-	//TODO dangeureux !
+	//BEST dangeureux !
 	$service_worker = str_replace (
 		['index.html', 'manifest.json', 'favicon.png'],
 		$specific_files,

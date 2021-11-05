@@ -37,6 +37,9 @@ if (!empty($vue->http_status_code))
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
+		<!-- Polyfill IE - nomodule garanti qu'il n'est chargé que sous IE -->
+		<script nomodule src="<?=$config_wri['sous_dossier_installation']?>MyOl/ol/polyfill.min.js"></script>
+
 		<script>
 			var mapKeys = <?=json_encode($config_wri['mapKeys'])?>;
 		</script>

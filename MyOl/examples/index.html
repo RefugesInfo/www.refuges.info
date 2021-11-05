@@ -9,94 +9,79 @@ Based on https://openlayers.org
 	<title>My Openlayers</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="icon" type="image/png" href="logo.png" />
+	<link href="images/favicon.png" rel="icon" type="image/png" />
+
+	<!-- IE compatibility -->
+	<script nomodule src="../ol/polyfill.min.js"></script>
 
 	<!-- Openlayers -->
 	<link  href="../ol/ol.css" type="text/css" rel="stylesheet">
 	<script src="../ol/ol.js"></script>
 
-	<!-- Recherche par nom -->
-	<link  href="../geocoder/ol-geocoder.min.css" type="text/css" rel="stylesheet">
-	<script src="../geocoder/ol-geocoder.js"></script>
-
 	<!-- My Openlayers -->
-	<link  href="../myol.css" type="text/css" rel="stylesheet">
-	<script src="../myol.js"></script>
+	<link  href="../src/controls.css" type="text/css" rel="stylesheet">
+	<link  href="../src/layerSwitcher.css" type="text/css" rel="stylesheet">
+	<script src="../src/header.js"></script>
+	<script src="../src/layerTileCollection.js"></script>
+	<script src="../src/layerSwitcher.js"></script>
+	<script src="../src/layerVector.js"></script>
+	<script src="../src/layerVectorCollection.js"></script>
+	<script src="../src/controls.js"></script>
+	<script src="../src/editor.js"></script>
 
-	<!-- This exemple -->
-	<script src="example.js" defer="defer"></script>
 	<style>
 		#map {
-			width: 90vw;
-			height: 60vw;
+			clear: both;
+			width: 100%;
+			max-width: 600px;
+			height: 80vw;
+			max-height: 400px;
 		}
-		.label-overpass {
-			background: #cde;
-		}
-		.selectors span {
-			font-size: .8em;
-			color: blue;
-		}
-		ul {
-			margin-top: 0;
+		.selector {
+			float: left;
+			border-right: solid;
+			padding: 5px
 		}
 	</style>
 </head>
 
 <body>
+	<a style="float:right" href="layerSwitcher.html">Layer switcher &#9654;</a>
+	<a style="float:right;margin-right:15px" href="..">HOME</a>
+	<h1 style="margin:0">MyOl</h1>
+	<a style="float:right" href="https://github.com/Dominique92/MyOl/">GITHUB &#9654;</a>
+
 	<div id="map"></div>
 
-	<p><a href="..">BASIC DEMO</a></p>
-	<p><a href="markers.html">MARKERS DEMO</a></p>
-	<p><a href="editor.html">EDITOR DEMO</a></p>
-	<p><a href="../gps">OFF LINE GPS</a></p>
+	<div id="additional-selector" >
+		<hr />
+		chemineur.fr <input type="checkbox" name="geobb-features" checked="checked" />
+		<ul>
+			<li><input type="checkbox" name="geobb-features" value="3" />Refuge</li>
+			<li><input type="checkbox" name="geobb-features" value="8" />Abri</li>
+			<li><input type="checkbox" name="geobb-features" value="23" />Montagne</li>
+		</ul>
+	</div>
 
-	<br/>OVERPASS<input type="checkbox" name="osm-features" />
-	<span id="osm-features-status"></span>
-	<ul class="selectors">
-		<li><input type="checkbox" name="osm-features" id="City Hall" value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' />Hôtel</li>
-		<li><input type="checkbox" name="osm-features" id="Residence" value='["tourism"="alpine_hut"]' />Refuge gardé</li>
-		<li><input type="checkbox" name="osm-features" id="Lodge" value='["building"="cabin"]' />Cabane non gardée</li>
-		<li><input type="checkbox" name="osm-features" id="Fishing Hot Spot Facility" value='["amenity"="shelter"]["shelter_type"="basic_hut"]' />Abri</li>
-		<li><input type="checkbox" name="osm-features" id="Campground" value='["tourism"="camp_site"]' />Camping</li>
-
-		<li><input type="checkbox" name="osm-features" id="Drinking Water" value='["amenity"="drinking_water|watering_place|fountain"]+["waterway"="water_point"]+["natural"="spring"]+["man_made"="water_well"]' />Point d'eau</li>
-		<li><input type="checkbox" name="osm-features" id="Ground Transportation" value='["highway"="bus_stop"]' />Bus</li>
-		<li><input type="checkbox" name="osm-features" id="Parking Area" value='["amenity"="parking"]["access"!="private"]' />Parking</li>
-		<li><input type="checkbox" name="osm-features" id="Restaurant" value='["amenity"="restaurant"]' />Restaurants</li>
-		<li><input type="checkbox" name="osm-features" id="Shopping Center" value='["shop"~"supermarket|convenience"]' />Alimentation</li>
-
-		<li><input type="checkbox" name="osm-features" id="Restroom" value='["amenity"="toilets"]' />WC</li>
-		<li><input type="checkbox" name="osm-features" id="Oil Field" value='["internet_access"~"yes|public|wlan|wired|terminal|service|free|fee|type|access"]' />Café internet</li>
-		<li><input type="checkbox" name="osm-features" id="Telephone" value='["amenity"="telephone"]' />Cabines téléphoniques</li>
-	</ul>
-
-	<br/>WRI<input type="checkbox" name="wri-features" />
-	<span id="wri-features-status"></span>
-	<ul class="selectors">
-		<li><input type="checkbox" name="wri-features" value="7" checked="checked" />cabane non gardée</li>
-		<li><input type="checkbox" name="wri-features" value="10" />refuge gardé</li>
-		<li><input type="checkbox" name="wri-features" value="9" checked="checked" />gîte d'étape</li>
-		<li><input type="checkbox" name="wri-features" value="23" />point d'eau</li>
-		<li><input type="checkbox" name="wri-features" value="6" checked="checked" />sommet</li>
-		<li><input type="checkbox" name="wri-features" value="3" />passage délicat</li>
-		<li><input type="checkbox" name="wri-features" value="28" />bâtiment en montagne</li>
-	</ul>
-
-	<ul class="selectors">
-		<li>pyrenees-refuges.com<input type="checkbox" name="prc-features" /><span id="prc-features-status"></span></li>
-	</ul>
-	<ul class="selectors">
-		<li>camptocamp.org<input type="checkbox" name="c2c-features" /><span id="c2c-features-status"></span></li>
-	</ul>
-	<ul class="selectors">
-		<li>Chemineur.fr<input type="checkbox" name="chm-features" /><span id="chm-features-status"></span></li>
-	</ul>
-	<ul class="selectors">
-		<li>Alpages.info<input type="checkbox" name="alp-features" /><span id="alp-features-status"></span></li>
-	</ul>
-	<ul class="selectors">
-		<li>Massifs<input type="checkbox" name="wri-massifs" /><span id="wri-massifs-status"></span></li>
-	</ul>
+	<script>
+// Must be after the "map" tag
+new ol.Map({
+	target: 'map',
+	controls: controlsCollection().concat(controlLayerSwitcher()),
+	layers: [
+		layerGeoBB({
+			selectorName: 'geobb-features',
+			maxResolution: 300,
+			distance: 30,
+		}),
+		layerGeoBBCluster({
+			selectorName: 'geobb-features',
+			minResolution: 300,
+			distance: 30,
+		}),
+	],
+});
+	</script>
+	<script src="print_script.js"></script>
 </body>
 </html>

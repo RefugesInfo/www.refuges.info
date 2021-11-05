@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--
+© Dominique Cavailhez 2019
+https://github.com/Dominique92/MyOl
+Based on https://openlayers.org
+-->
+<html>
+<head>
+	<title>My Openlayers</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="images/favicon.png" rel="icon" type="image/png" />
+
+	<!-- IE compatibility -->
+	<script nomodule src="../ol/polyfill.min.js"></script>
+
+	<!-- Openlayers -->
+	<link  href="../ol/ol.css" type="text/css" rel="stylesheet">
+	<script src="../ol/ol.js"></script>
+
+	<!-- My Openlayers -->
+	<script src="../src/header.js"></script>
+	<script src="../src/layerVector.js"></script>
+	<script src="../src/layerVectorCollection.js"></script>
+
+	<style>
+		#map {
+			width: 100%;
+			max-width: 600px;
+			height: 80vw;
+			max-height: 400px;
+		}
+		.selector {
+			float: left;
+			border-right: solid;
+			padding: 5px
+		}
+	</style>
+</head>
+
+<body>
+	<a style="float:right" href="controls.html">Controls &#9654;</a>
+	<a style="float:right;margin-right:15px" href="..">HOME</a>
+	<h1 style="margin:0">Layer vector</h1>
+	<a style="float:right" href="https://github.com/Dominique92/MyOl/">GITHUB &#9654;</a>
+	<p><a href="../src/layerVector.js">src/layerVector.js</a> adds some facilities to ol.layer.Vector</p>
+
+	<div id="map"></div>
+
+	<div class="selector">
+		Chemineur
+		<input type="checkbox" name="geobb-features" />
+		<p id="geobb-features-status"></p>
+		<ul>
+			<li><input type="checkbox" name="geobb-features" value="3" />Refuge</li>
+			<li><input type="checkbox" name="geobb-features" value="8" />Abri</li>
+			<li><input type="checkbox" name="geobb-features" value="20" />Alimentation</li>
+			<li><input type="checkbox" name="geobb-features" value="23" />Montagne</li>
+			<li><input type="checkbox" name="geobb-features" value="30" />Ferroviaire</li>
+			<li><input type="checkbox" name="geobb-features" value="40" />Transport</li>
+			<li><input type="checkbox" name="geobb-features" value="44" />Tourisme</li>
+			<li><input type="checkbox" name="geobb-features" value="58" />Naval</li>
+			<li><input type="checkbox" name="geobb-features" value="64" />Trace</li>
+		</ul>
+	</div>
+
+	<div class="selector">
+		Alpages.info
+		<input type="checkbox" name="alp-features" />
+		<p id="alp-features-status"></p>
+		<ul>
+			<li><input type="checkbox" name="alp-features" value="3" />Alpages</li>
+			<li><input type="checkbox" name="alp-features" value="4" checked="checked" />Cabane</li>
+			<li><input type="checkbox" name="alp-features" value="5" checked="checked" />Point d'eau</li>
+			<li><input type="checkbox" name="alp-features" value="6" />Internet</li>
+		</ul>
+	</div>
+
+	<div class="selector">
+		Overpass (OSM services)
+		<input type="checkbox" name="osm-features" />
+		<p id="osm-features-status"></p>
+		<ul>
+			<li><input type="checkbox" name="osm-features" value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' />Hôtel</li>
+			<li><input type="checkbox" name="osm-features" value='["tourism"="alpine_hut"]' />Refuge gardé</li>
+			<li><input type="checkbox" name="osm-features" value='["building"="cabin"]' />Cabane non gardée</li>
+			<li><input type="checkbox" name="osm-features" value='["amenity"="shelter"]["shelter_type"="basic_hut"]' />Abri</li>
+			<li><input type="checkbox" name="osm-features" value='["tourism"="camp_site"]' />Camping</li>
+			<li><input type="checkbox" name="osm-features" value='["amenity"="drinking_water|watering_place|fountain"]+["waterway"="water_point"]+["natural"="spring"]+["man_made"="water_well"]' />Point d'eau</li>
+			<li><input type="checkbox" name="osm-features" value='["highway"="bus_stop"]' />Bus</li>
+			<li><input type="checkbox" name="osm-features" value='["amenity"="parking"]["access"!="private"]' />Parking</li>
+			<li><input type="checkbox" name="osm-features" value='["amenity"="restaurant"]' />Restaurant</li>
+			<li><input type="checkbox" name="osm-features" value='["shop"~"supermarket|convenience"]' />Alimentation</li>
+			<li><input type="checkbox" name="osm-features" value='["amenity"="toilets"]' />WC</li>
+			<li><input type="checkbox" name="osm-features" value='["amenity"="telephone"]' />Cabine téléphonique</li>
+		</ul>
+	</div>
+
+	<div>
+		Refuges.info
+		<input type="checkbox" name="wri-features" value="7,9,10" />
+		<p id="wri-features-status"></p>
+	</div>
+
+	<div>
+		Pyrenees-refuges.com
+		<input type="checkbox" name="prc-features" />
+		<p id="prc-features-status"></p>
+	</div>
+
+	<div>
+		Camptocamp.org
+		<input type="checkbox" name="c2c-features" />
+		<p><span id="c2c-features-status"></span> Only 100 features at a time</p>
+	</div>
+
+	<br style="clear:both" />
+
+	<script>
+console.log('Cookies: ' + document.cookie);
+
+const map = new ol.Map({
+	target: 'map',
+	view: new ol.View({
+		//center: ol.proj.transform([5.36, 44.935], 'EPSG:4326', 'EPSG:3857'), zoom: 11, // Crobache
+		//center: ol.proj.transform([7.331, 46.0185], 'EPSG:4326', 'EPSG:3857'), zoom: 16, // Caractères html dans titre
+		//center: ol.proj.transform([0, 43], 'EPSG:4326', 'EPSG:3857'), zoom: 10, // Pyrénées
+		//center: ol.proj.transform([5.5, 44.8], 'EPSG:4326', 'EPSG:3857'), zoom: 13, // Alpages
+		center: ol.proj.transform([5.7, 45.2], 'EPSG:4326', 'EPSG:3857'), zoom: 13, // Grenoble OSM
+	}),
+	layers: [
+		new ol.layer.Tile({
+			source: new ol.source.OSM(),
+		}),
+	],
+});
+
+// Chemineur
+if (0)
+	map.addLayer(layerGeoBB({
+		selectorName: 'geobb-features',
+	}));
+if (01) {
+	map.addLayer(layerGeoBB({
+		selectorName: 'geobb-features',
+		maxResolution: 100,
+		distance: 30,
+		attribution: 'Chemineur',
+	}));
+	map.addLayer(layerGeoBB({
+		selectorName: 'geobb-features',
+		subLayer: 'cluster',
+		minResolution: 100,
+		distance: 30,
+		attribution: 'Chemineur',
+	}));
+}
+
+// Alpages.info
+if (01)
+	map.addLayer(layerGeoBB({
+		host: '//alpages.info/',
+		selectorName: 'alp-features',
+		argSelName: 'forums',
+		distance: 30,
+		attribution: 'Alpages',
+	}));
+
+// Overpass
+if (01)
+	map.addLayer(layerOverpass({
+		selectorName: 'osm-features',
+		distance: 30,
+	}));
+
+// Refuges.info
+if (0)
+	map.addLayer(layerWri({
+		selectorName: 'wri-features',
+	}));
+if (01) {
+	map.addLayer(layerWri({
+		selectorName: 'wri-features',
+		maxResolution: 100,
+		distance: 30,
+	}));
+	map.addLayer(layerWriAreas({
+		minResolution: 100,
+		selectorName: 'wri-features',
+	}));
+}
+
+// Pyrenees-refuges.com
+if (0)
+	map.addLayer(layerPyreneesRefuges({
+		selectorName: 'prc-features',
+	}));
+if (01)
+	map.addLayer(layerPyreneesRefuges({
+		selectorName: 'prc-features',
+		distance: 30,
+	}));
+
+// CampToCamp
+if (01)
+	map.addLayer(layerC2C({
+		selectorName: 'c2c-features',
+		distance: 30,
+	}));
+
+	</script>
+
+	<h4 style="clear:both;margin-bottom:0">Tests</h4>
+	<div>Check all vector layers / select only 1 feature</div>
+	<div>Hover a feature</div>
+	<div>Zoom out up to world</div>
+</body>
+</html>

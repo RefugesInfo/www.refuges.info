@@ -10,8 +10,8 @@ if (!window.location.pathname.split('/').pop())
 // Load service worker for web application install & updates
 if ('serviceWorker' in navigator)
 	navigator.serviceWorker.register(
-		typeof service_worker === 'undefined' ? 'service-worker.js' : service_worker,
-		typeof scope === 'undefined' ? {} : {
+		service_worker === undefined ? 'service-worker.js' : service_worker,
+		scope === undefined ? {} : {
 			scope: scope, // Max scope. Allow service worker to be in a different directory
 		}
 	)
@@ -23,7 +23,7 @@ if ('serviceWorker' in navigator)
 	});
 
 /** Openlayers map area */
-const nbli = document.getElementsByTagName('li').length,
+const areLiTags = document.getElementsByTagName('li').length,
 	elListe = document.getElementById('liste'),
 
 	help = 'Pour utiliser les cartes et le GPS hors réseau :\n' +
@@ -44,9 +44,7 @@ const nbli = document.getElementsByTagName('li').length,
 
 	controls = [
 		controlTilesBuffer(4),
-		controlLayersSwitcher({
-			baseLayers: layersCollection(),
-		}),
+		controlLayerSwitcher(),
 		controlPermalink(),
 
 		new ol.control.Attribution({
@@ -64,7 +62,7 @@ const nbli = document.getElementsByTagName('li').length,
 		controlGeocoder(),
 		controlGPS(),
 
-		!nbli ? noControl() :
+		areLiTags ?
 		controlButton({
 			label: '\u25B3',
 			title: 'Choisir une trace dans la liste / fermer',
@@ -75,7 +73,12 @@ const nbli = document.getElementsByTagName('li').length,
 				if (document.fullscreenElement)
 					document.exitFullscreen();
 			},
+		}) :
+		// No button display
+		new ol.control.Control({
+			element: document.createElement('div'),
 		}),
+
 		controlLoadGPX(),
 		controlDownload(),
 		controlButton({
@@ -93,13 +96,17 @@ const nbli = document.getElementsByTagName('li').length,
 	});
 
 function addLayer(url) {
-	const layer = layerVectorURL({
-		url: url,
-		format: new ol.format.GPX(),
-		receiveFeatures: function(features) {
-			map.getView().setZoom(1); //HACK enable gpx rendering anywhere we are
-			return features;
-		},
+	const layer = new ol.layer.Vector({
+		source: new ol.source.Vector({
+			format: new ol.format.GPX(),
+			url: url,
+		}),
+		style: new ol.style.Style({
+			stroke: new ol.style.Stroke({
+				color: 'blue',
+				width: 2,
+			}),
+		}),
 	});
 
 	// Zoom the map on the added features
@@ -117,6 +124,10 @@ function addLayer(url) {
 
 	map.addLayer(layer);
 
+	//HACK needed because the layer only becomes active when in the map area
+	map.getView().setZoom(1);
+
+	// Mask the local .gpx file list
 	if (elListe)
 		elListe.style.display = 'none';
 }

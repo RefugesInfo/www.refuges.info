@@ -13,8 +13,15 @@ This installs the service but upgrades the files only after the caches delay
 
 	<title>My GPS</title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="icon" type="image/png" href="favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link href="favicon.png" rel="icon" type="image/png" />
+
+	<!-- Polyfill iOS : Amélioration du pseudo full screen pour les cartes pour d'anciennes versions d'iOS/Safari -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<!-- IE compatibility -->
+	<script nomodule src="../ol/polyfill.min.js"></script>
 
 	<!-- Openlayers -->
 	<link href="../ol/ol.css" type="text/css" rel="stylesheet">
@@ -25,7 +32,8 @@ This installs the service but upgrades the files only after the caches delay
 	<script src="../geocoder/ol-geocoder.js"></script>
 
 	<!-- My Openlayers -->
-	<link href="../myol.css" type="text/css" rel="stylesheet">
+	<script src="../layers.js"></script>
+	<link  href="../myol.css" type="text/css" rel="stylesheet">
 	<script src="../myol.js"></script>
 
 	<!-- This app -->

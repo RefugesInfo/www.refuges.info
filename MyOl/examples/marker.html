@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!--
+© Dominique Cavailhez 2019
+https://github.com/Dominique92/MyOl
+Based on https://openlayers.org
+-->
+<html>
+<head>
+	<title>My Openlayers</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="images/favicon.png" rel="icon" type="image/png" />
+
+	<!-- IE compatibility -->
+	<script nomodule src="../ol/polyfill.min.js"></script>
+
+	<!-- Openlayers -->
+	<link  href="../ol/ol.css" type="text/css" rel="stylesheet">
+	<script src="../ol/ol.js"></script>
+
+	<!-- Proj4 projections Swiss -->
+	<script src="../proj4/proj4-src.js"></script>
+
+	<!-- My Openlayers -->
+	<script src="../src/header.js"></script>
+	<link  href="../src/controls.css" type="text/css" rel="stylesheet">
+	<script src="../src/controls.js"></script>
+	<script src="../src/editor.js"></script>
+
+	<style>
+		#map {
+			width: 100%;
+			max-width: 600px;
+			height: 80vw;
+			max-height: 400px;
+		}
+	</style>
+</head>
+
+<body>
+	<a style="float:right" href="editor.html">Editor &#9654;</a>
+	<a style="float:right;margin-right:15px" href="..">HOME</a>
+	<h1 style="margin:0">Position marker</h1>
+	<a style="float:right" href="https://github.com/Dominique92/MyOl/">GITHUB &#9654;</a>
+	<p><a href="../src/editor.js">src/editor.js</a> adds marker position display & edit</p>
+
+	<div id="map"></div>
+
+	<!-- Fixed marker -->
+	<p><b>Cadre :</b> <span id="fix-marker"></span></p>
+
+	<!-- Draggable marker -->
+	<b>Viseur :</b>
+	<input type="text" id="drag-marker-json" style="width:50%" value='{
+		"type": "Point",
+		"coordinates": [7,47]
+	}' />
+	<div id="drag-marker">
+		<p>
+			Longitude :
+			<input type="text" name="lon" size="12" maxlength="12"> (WGS84)&nbsp;
+			 <span style="display:none" class="epsg-21781"> / X : <input type="text" name="x" size="7" maxlength="12"> (CH 1903)</span>
+		</p>
+		<p>
+			Latitude :
+			<input type="text" name="lat" size="12" maxlength="12"> (WGS84)&nbsp;
+			<span style="display:none" class="epsg-21781"> / Y : <input type="text" name="y" size="7" maxlength="12"></span>
+		</p>
+	</div>
+
+	<p><a onclick="viseur.centerMap()" style="color:blue;cursor:pointer">
+		Center the map on the cusor
+	</a></p>
+
+	<p><a onclick="viseur.centerMarker()" style="color:blue;cursor:pointer">
+		Move the cusor at the center of the map
+	</a></p>
+
+	<script>
+//BEST cadre et viseur SVG / inline
+const cadre = layerEditGeoJson({
+		displayPointId: 'fix-marker',
+		singlePoint: true,
+		geoJson: {
+			type: 'Point',
+			coordinates: [2, 48],
+		},
+		styleOptions: {
+			image: new ol.style.Icon({
+				src: 'images/cadre.png',
+				imgSize: [31, 43], // IE compatibility
+			}),
+		},
+	}),
+	viseur = layerEditGeoJson({
+		displayPointId: 'drag-marker',
+		geoJsonId: 'drag-marker-json',
+		dragPoint: true,
+		singlePoint: true,
+		styleOptions: {
+			image: new ol.style.Icon({
+				src: 'images/viseur.png',
+				imgSize: [30, 30], // IE compatibility
+			}),
+		},
+		// Remove FeatureCollection packing of the point
+		saveFeatures: function(coordinates, format) {
+			return format.writeGeometry(
+				new ol.geom.Point(coordinates.points[0]), {
+					featureProjection: 'EPSG:3857',
+					decimals: 5,
+				}
+			);
+		},
+	});
+
+new ol.Map({
+	target: 'map',
+	view: new ol.View({
+		center: [200000, 5800000],
+		zoom: 6,
+	}),
+	layers: [
+		new ol.layer.Tile({
+			source: new ol.source.OSM(),
+		}),
+		cadre,
+		viseur,
+	],
+});
+	</script>
+	<script src="print_script.js"></script>
+
+	<h4 style="margin-bottom:0">Tests</h4>
+	<div>Look at fix marker & display</div>
+	<div>Move dragable marker</div>
+	<div>Center the map on the cusor</div>
+	<div>Move the cusor at the center of the map</div>
+</body>
+</html>

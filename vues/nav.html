@@ -1,17 +1,3 @@
-<?php 
-// Bloc HTML réalisant l'affichage des cartes
-/*
-Concept de Zone et Massifs :
-Massif (1): classique : un poly qui entoure tous les points, possibilité de jouer avec le panel de gauche
-Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cliquer pour aller sur un massif. comme l'ancienne page massifs.
-*/
-
-// $vue contient les données passées par le fichier PHP
-// $config_wri les données communes à tout WRI
-// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
-// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
-// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-?>
 <div class="contenu noprint">
 	<!-- afficher le titre du massif (en mode massif) -->
 	<?php if ( $vue->polygone->id_polygone ){?>
@@ -34,14 +20,14 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 				<?php if ( $vue->polygone->id_polygone ){?>
 					<li>
 						<input id="selecteur-massif" name="couche-massif"
-							onchange="points.getSource().refresh()"
+							onchange="points.getSource().getSource().refresh()"
 							type="checkbox" checked="checked" />
 						<?=$vue->polygone->nom_polygone?> uniquement
 					</li><hr/>
 				<?php }?>
 				<li>Tout
 					<input type="checkbox" name="couche-wri" checked="checked" />
-					<span id="couche-wri-status" />
+					<span id="couche-wri-status"></span>
 				</li>
 				<?php foreach ($vue->types_point_affichables AS $type_affichable) { ?>
 					<li>
@@ -75,12 +61,13 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 		<fieldset>
 			<legend>
 				Services (<a href="https://overpass-turbo.eu/" target=_blank title="Points de la base OpensStreetmap">OSM</a>)
+				- disponible seulement pour les zoom forts
 			</legend>
 			<div>
 				<ul>
 					<li>
 						Tout <input type="checkbox" name="couche-osm" />
-						<span id="couche-osm-status" />
+						<span id="couche-osm-status"></span>
 					</li>
 					<li><input type="checkbox" name="couche-osm" id="City Hall" value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' />hôtel ou location</li>
 					<li><input type="checkbox" name="couche-osm" id="Campground" value='["tourism"="camp_site"]' />camping</li>
@@ -95,10 +82,23 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 		<fieldset>
 			<legend>Autres sites</legend>
 			<ul>
-				<li><input type="checkbox" name="couche-prc" />pyrenees-refuges.com &nbsp;<span id="couche-prc-status" /></li>
-				<li><input type="checkbox" name="couche-c2c" />camptocamp.org &nbsp;<span id="couche-c2c-status" /></li>
-				<li><input type="checkbox" name="couche-chemineur" />chemineur.fr &nbsp;<span id="couche-chemineur-status" /></li>
-				<li><input type="checkbox" name="couche-alpages" />alpages.info &nbsp;<span id="couche-alpages-status" /></li>
+				<li>
+					<input type="checkbox" name="couche-prc" />pyrenees-refuges.com &nbsp;
+					<span id="couche-prc-status"></span>
+				</li>
+				<li>
+					<input type="checkbox" name="couche-c2c" />camptocamp.org &nbsp;
+					<span id="couche-c2c-status"></span>
+					(seuls les 100 premiers points sont affichés)
+				</li>
+				<li>
+					<input type="checkbox" name="couche-chemineur" value="3,8,20,23" />chemineur.fr &nbsp;
+					<span id="couche-chemineur-status"></span>
+				</li>
+				<li>
+					<input type="checkbox" name="couche-alpages" value="4,5" />alpages.info &nbsp;
+					<span id="couche-alpages-status"></span>
+				</li>
 			</ul>
 		</fieldset>
 	<?php }?>

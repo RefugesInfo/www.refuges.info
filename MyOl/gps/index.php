@@ -64,12 +64,15 @@ Based on https://openlayers.org
 
 	<title><?=$manifest['name']?></title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<link rel="icon" type="<?=$icon['type']?>" href="<?=$icon['src']?>" />
 
 	<!-- Polyfill iOS : Amélioration du pseudo full screen pour les cartes pour d'anciennes versions d'iOS/Safari -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<!-- IE compatibility -->
+	<script nomodule src="../ol/polyfill.min.js"></script>
 
 	<!-- Openlayers -->
 	<link href="<?=$myol_path?>ol/ol.css" type="text/css" rel="stylesheet">
@@ -94,16 +97,10 @@ Based on https://openlayers.org
 			mapKeys = <?=json_encode(@$mapKeys)?>,
 			baselayers = <?=isset ($baselayers)?$baselayers:'{}'?>;
 
-<?php if (isset ($_GET['gpx']) || isset ($overlays)) { ?>
-			window.onload = function() {
 <?php if (isset ($_GET['gpx'])) { ?>
-				addLayer ('<?=dirname($_SERVER['SCRIPT_NAME'])?>/<?=$_GET['gpx']?>.gpx');
-<?php }
-if (isset ($overlays)) { ?>
-				for (let o in <?=$overlays?>)
-					map.addLayer (<?=$overlays?>[o]);
-<?php } ?>
-			};
+		window.addEventListener ('load', function() {
+			addLayer ('<?=dirname($_SERVER['SCRIPT_NAME'])?>/<?=$_GET['gpx']?>.gpx');
+		});
 <?php } ?>
 	</script>
 </head>
@@ -128,5 +125,8 @@ if (isset ($overlays)) { ?>
 	<?php } ?>
 
 	<div id="map"></div>
+
+<?php if (!isset ($no_tail)) { ?>
 </body>
 </html>
+<?php } ?>

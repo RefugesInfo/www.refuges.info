@@ -9,48 +9,92 @@ Based on https://openlayers.org
 	<title>My Openlayers simple example</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="examples/images/favicon.png" rel="icon" type="image/png" />
+
+	<!-- Polyfill iOS : Amélioration du pseudo full screen pour les cartes pour d'anciennes versions d'iOS/Safari -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<!-- IE compatibility -->
+	<script nomodule src="ol/polyfill.min.js"></script>
 
 	<!-- Openlayers -->
 	<link  href="ol/ol.css" type="text/css" rel="stylesheet">
 	<script src="ol/ol.js"></script>
 
 	<!-- Recherche par nom -->
-	<link  href="geocoder/ol-geocoder.css" type="text/css" rel="stylesheet">
-	<script src="geocoder/ol-geocoder-debug.js"></script>
+	<link  href="geocoder/ol-geocoder.min.css" type="text/css" rel="stylesheet">
+	<script src="geocoder/ol-geocoder.js"></script>
 
 	<!-- My Openlayers -->
 	<link  href="myol.css" type="text/css" rel="stylesheet">
 	<script src="myol.js"></script>
 
 	<style>
-		html, body {
-			margin: 0;
-			padding: 0;
-			overflow: hidden;
-		}
 		#map {
-			width: 100vw;
-			height: calc(100vh - 10em);
+			clear: both;
+			width: 100%;
+			max-width: 600px;
+			height: 80vw;
+			max-height: 400px;
 		}
 	</style>
 </head>
 
 <body>
+	<a style="float:right" href="examples/layerSwitcher.html">Layer switcher &#9654;</a>
+	<h1 style="margin:0">MyOl</h1>
+	<a style="float:right" href="https://github.com/Dominique92/MyOl/">GITHUB &#9654;</a>
+
 	<div id="map"></div>
 
-	<p><a href="examples">LAYERS DEMO</a></p>
-	<p><a href="examples/markers.html">MARKERS DEMO</a></p>
-	<p><a href="examples/editor.html">EDITOR DEMO</a></p>
-	<p><a href="gps">OFF LINE GPS</a></p>
+	<div id="additional-selector">
+		<hr />
+		Chemineur
+		<input type="checkbox" name="geobb-features" checked="checked" />
+		<ul>
+			<li><input type="checkbox" name="geobb-features" value="3" />Refuge</li>
+			<li><input type="checkbox" name="geobb-features" value="8" />Abri</li>
+			<li><input type="checkbox" name="geobb-features" value="23" />Montagne</li>
+		</ul>
+	</div>
 
 	<script>
-		// Must be after the <div id="map"> tag
-		new ol.Map({
-			target: 'map',
-			controls: controlsCollection({
-				baseLayers: layersCollection(),
-			}),
-		});
+// Must be after the <div id="map"> tag
+new ol.Map({
+	target: 'map',
+	view: new ol.View({
+		enableRotation: false,
+	}),
+	controls: controlsCollection().concat(controlLayerSwitcher()),
+	layers: [
+		layerGeoBB({
+			selectorName: 'geobb-features',
+			maxResolution: 300,
+			distance: 30,
+		}),
+		layerGeoBB({
+			selectorName: 'geobb-features',
+			subLayer: 'cluster',
+			minResolution: 300,
+			distance: 30,
+		}),
+	],
+});
 	</script>
+
+	<h1 style="clear:both">MyOl</h1>
+	<p>Set of js functions adding some facilities to <a href="https://openlayers.org/">Openlayers</a></p>
+	<p>See doc & details on <a href="https://github.com/DC92/dev/tree/master/assets/MyOl">GITHUB</a></p>
+	<p><a href="examples">Overview</a></p>
+	<p><a href="examples/layerSwitcher.html">Layer switcher</a></p>
+	<p><a href="examples/layerTile.html">Layer tile</a></p>
+	<p><a href="examples/layerVector.html">Layer vector</a></p>
+	<p><a href="examples/controls.html">Controls</a></p>
+	<p><a href="examples/marker.html">Marker</a></p>
+	<p><a href="examples/editor.html">Editor</a></p>
+	<p><a href="gps">Off line GPS</a></p>
+	<p><a href="build.php">Build</a></p>
+	<p><a href="https://github.com/Dominique92/MyOl/">GITHUB</a></p>
 </body>
 </html>
