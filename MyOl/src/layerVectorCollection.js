@@ -2,6 +2,8 @@
  * This file implements various acces to geoJson services
  * using MyOl/src/layerVector.js
  */
+//BEST http://www.lacsdespyrenees.com/kml-Bielsa.kml
+//BEST https://www.lecampingsauvage.fr/legislation-et-reglementation/camping-sauvage-bivouac
 
 /**
  * Site chemineur.fr, alpages.info
@@ -9,7 +11,7 @@
  */
 function layerGeoBB(options) {
 	return layerVectorCluster(Object.assign({
-		host: '//c92.fr/test/chem5/', //TODO+ host: 'chemineur.fr',
+		host: '//chemineur.fr/',
 		urlFunction: function(options, bbox, selection) {
 			return options.host + 'ext/Dominique92/GeoBB/gis.php?limit=10000' +
 				'&layer=' + (options.subLayer || 'simple') +
@@ -25,17 +27,17 @@ function layerGeoBB(options) {
 		},
 		styleOptionsFunction: function(feature, properties) {
 			return Object.assign({},
+				// Points
 				styleOptionsIcon(properties.icon),
-				styleOptionsLabel(properties.name, properties), {
-					//BEST BUG autant d'étiquettes que de tronçons de ligne
-					// Lines
+				// Polygons with color
+				styleOptionsPolygon(properties.color, 0.5),
+				// Lines
+				{
 					stroke: new ol.style.Stroke({
 						color: 'blue',
 						width: 2,
 					}),
-				},
-				// Polygons with color
-				styleOptionsPolygon(properties.color, 0.5)
+				}
 			);
 		},
 		hoverStyleOptionsFunction: function(feature, properties) {
@@ -77,10 +79,7 @@ function layerWri(options) {
 			};
 		},
 		styleOptionsFunction: function(feature, properties) {
-			return Object.assign({},
-				styleOptionsIcon(properties.icon),
-				styleOptionsLabel(properties.nom, properties)
-			);
+			return styleOptionsIcon(properties.icon);
 		},
 		hoverStyleOptionsFunction: function(feature, properties) {
 			return styleOptionsFullLabel(properties);
@@ -135,10 +134,7 @@ function layerPyreneesRefuges(options) {
 			};
 		},
 		styleOptionsFunction: function(feature, properties) {
-			return Object.assign({},
-				styleOptionsIconChemineur(properties.type_hebergement),
-				styleOptionsLabel(properties.name, properties)
-			);
+			return styleOptionsIconChemineur(properties.type_hebergement);
 		},
 		hoverStyleOptionsFunction: function(feature, properties) {
 			return styleOptionsFullLabel(properties);
@@ -188,10 +184,7 @@ function layerC2C(options) {
 		},
 		format: format,
 		styleOptionsFunction: function(feature, properties) {
-			return Object.assign({},
-				styleOptionsIconChemineur(properties.type),
-				styleOptionsLabel(properties.name, properties)
-			);
+			return styleOptionsIconChemineur(properties.type);
 		},
 		hoverStyleOptionsFunction: function(feature, properties) {
 			return styleOptionsFullLabel(properties);
@@ -219,10 +212,7 @@ function layerOverpass(options) {
 			format: format,
 			convertProperties: convertProperties,
 			styleOptionsFunction: function(feature, properties) {
-				return Object.assign({},
-					styleOptionsIconChemineur(properties.type),
-					styleOptionsLabel(properties.name, properties)
-				);
+				return styleOptionsIconChemineur(properties.type);
 			},
 			hoverStyleOptionsFunction: function(feature, properties) {
 				return styleOptionsFullLabel(properties);

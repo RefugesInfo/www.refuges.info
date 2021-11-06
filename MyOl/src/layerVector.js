@@ -459,8 +459,7 @@ function styleOptionsIconChemineur(iconName) {
 		// Limit to 2 type names & ' ' -> '_'
 		iconName = icons[0] + (icons.length > 1 ? '_' + icons[1] : '');
 
-		//TODO+ chemineur.fr
-		return styleOptionsIcon('//c92.fr/test/chem5/ext/Dominique92/GeoBB/icones/' + iconName + '.svg');
+		return styleOptionsIcon('//chemineur.fr/ext/Dominique92/GeoBB/icones/' + iconName + '.svg');
 	}
 }
 

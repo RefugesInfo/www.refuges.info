@@ -55,9 +55,6 @@ new ol.Map({
 		layerWri({ // La couche des points
 			host: '<?=$config_wri["sous_dossier_installation"]?>',
 			distance: 30, // Clusterisation
-			styleOptionsFunction: function(feature, properties) {
-				return styleOptionsIcon(properties.icon); // Display only the icon
-			},
 		}),
 		cadre,
 	],
