@@ -83,7 +83,7 @@ error_reporting(E_ALL);
 ini_set('display_errors','on');
 
 // détection de MS Internet Explorer
-$config_wri['is_ie']=strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false;
+$config_wri['is_ie']=strpos(@$_SERVER['HTTP_USER_AGENT'], 'Trident') !== false;
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
 $config_wri['nom_hote']=$_SERVER['HTTP_HOST'];
