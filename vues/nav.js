@@ -133,6 +133,9 @@ const baseLayers = {
 
 	map = new ol.Map({
 		target: 'carte-nav',
+		view: new ol.View({
+			enableRotation: false,
+		}),
 		controls: controls,
 		layers: layers,
 	});
