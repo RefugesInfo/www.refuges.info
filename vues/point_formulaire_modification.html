@@ -1,12 +1,3 @@
-<?// Bloc HTML réalisant l'affichage de la page de modification d'une fiche
-
-// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
-// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
-// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $vue contient les données passées par le fichier PHP
-// $config_wri les données communes à tout WRI
-?>
-
 <div class="contenu">
     <div id="carte-edit"></div>
     <form class="wri" id="form_point" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_modification">
@@ -30,7 +21,7 @@
 
 	<!-- Draggable marker -->
     <h4>Coordonnées</h4>
-		<input type="hidden" id="geojson" name="geojson" value='<?=$vue->point->geojson?>' />
+		<input type="hidden" id="geojson" name="geojson" value='<?=$vue->point->id_point?$vue->point->geojson:''?>' />
         <fieldset>
 			<div id="viseur">
 				<label>
