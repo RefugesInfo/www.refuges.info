@@ -593,7 +593,6 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
   // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
   $champs_sql['date_derniere_modification'] = 'NOW()';
-/*DCMM*/echo"<pre style='background:white;color:black;font-size:16px'> = ".var_export($point->id_point_type,true).'</pre>'.PHP_EOL;
 
   /********* On ne peut plus créer de bâtiment autour d'une cabane caché *************/
   if ($point->id_point_type == 7 || $point->id_point_type == 28)
