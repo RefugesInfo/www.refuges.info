@@ -594,14 +594,14 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
   $champs_sql['date_derniere_modification'] = 'NOW()';
 
-  /********* On ne peut plus créer de bâtiment autour d'une cabane caché *************/
-  if ($point->id_point_type == 7 || $point->id_point_type == 28)
+  /********* On ne peut plus créer de cabane autour d'une cabane caché *************/
+  if ($point->id_point_type == 7)
   {
     $distance = 1500; // ~500m
     $q="SELECT id_point, nom
       FROM points
       WHERE en_attente = true AND
-          id_point <> " .($point->id_point ?: 0). " AND
+          id_point <> ".($point->id_point?:0)." AND
           ST_DWithin(geom, ST_GeomFromGeoJSON('{$point->geojson}'), $distance, false)
         LIMIT 1";
 
@@ -612,7 +612,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     if ( $res = $r->fetch() )
       return erreur("L'emplacement de <a href='/point/{$res->id_point}'>\"{$res->nom}\"</a> \n".
         "et ses alentours sont privés.<br/>\n".
-        "On ne peut pas y référencer de bâtiment.<br/>\n".
+        "On ne peut pas y référencer de cabane.<br/>\n".
         "Voir : <a href=\"/wiki/fiche-cabane-non-gardee\">Définition d'une cabane non gardée</a>.<br/>\n".
         "Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>\n");
   }
@@ -807,4 +807,3 @@ function calcul_distance_points($point1,$point2)
 {
   return calcul_distance_gps($point1->latitude,$point1->longitude,$point2->latitude,$point2->longitude);
 }
-
