@@ -32,6 +32,7 @@ const baseLayers = {
 <?if (!$vue->polygone->nom_polygone ) { ?>
 		controlDownload(),
 <?php } ?>
+		controlPrint(),
 	],
 
 	points = layerWri({

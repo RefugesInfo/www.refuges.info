@@ -22,6 +22,8 @@ const baseLayers = {
 		controlMousePosition(),
 		new ol.control.Zoom(),
 		controlFullScreen(),
+		controlGPS(),
+		controlPrint(),
 		new ol.control.Attribution(),
 	],
 

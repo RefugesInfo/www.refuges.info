@@ -11,7 +11,7 @@ if (!window.location.pathname.split('/').pop())
 if ('serviceWorker' in navigator)
 	navigator.serviceWorker.register(
 		service_worker === undefined ? 'service-worker.js' : service_worker,
-		scope === undefined ? {} : {
+		typeof scope == 'undefined' ? {} : {
 			scope: scope, // Max scope. Allow service worker to be in a different directory
 		}
 	)

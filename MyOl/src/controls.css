@@ -130,14 +130,27 @@
 .ol-print p span {
 	color: blue;
 }
-/* When printing, hide all controls except : */
+/* When printing, hide all controls except scale & attribution */
 @media print {
-	.ol-overlaycontainer-stopevent > * {
-		display: none;
+	@page {
+		margin: 0; /* Hide the header, footer & margins */
 	}
-	.ol-attribution,
-	.ol-scale-line {
-		display: block;
+	body {
+		margin: 1mm 0 0 1mm;
+		padding: 0;
+	}
+
+	/* Force attribution open */
+	.ol-scale-line,
+	.ol-attribution {
+		display: flex !important;
+	}
+	.ol-attribution ul {
+		display: block !important;
+	}
+	.ol-attribution button,
+	.ol-overlaycontainer-stopevent > div {
+		display: none;
 	}
 }
 

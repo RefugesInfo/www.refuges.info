@@ -863,6 +863,24 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     height: 450px; 
   }
 }
+@media print {
+  html {
+    height: initial;
+  }
+  #carte-nav {
+    margin: 0;
+  }
+  /* Force attribution open */
+  .ol-attribution {
+    background: rgba(255,255,255,0.8);
+  }
+  .ol-attribution ul {
+    display: block !important;
+  }
+  .ol-attribution button {
+    display: none;
+  }
+}
 
 #check-types {
 	float: right;
@@ -878,29 +896,4 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	color: red;
 	background-color: yellow;
 	padding: 4px;
-}
-
-/* Format d'impression des cartes */
-@page {
-	margin: 0; 
-}
-@media print {
-	#entete,
-	#menu-normal,
-	#menu-scroll,
-	#fin-entete,
-	#basdepage
-	.noprint {
-		display: none !important;
-	}
-	html, body,
-	#carte-nav {
-		position: absolute;
-		top: 0;
-		left: 0;
-		margin: 0;
-		width: 100%;
-		height: 100%;
-		max-height: 100%;
-	}
 }

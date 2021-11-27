@@ -69,14 +69,18 @@ new ol.Map({
 	target: 'map',
 	controls: controlsCollection().concat(controlLayerSwitcher()),
 	layers: [
+		// Low map resolution : points
 		layerGeoBB({
 			selectorName: 'geobb-features',
-			maxResolution: 300,
+			maxResolution: 100,
 			distance: 30,
+			attribution: 'Chemineur',
 		}),
-		layerGeoBBCluster({
+		// High map resolution : clusters
+		layerGeoBB({
+			subLayer: 'cluster',
 			selectorName: 'geobb-features',
-			minResolution: 300,
+			minResolution: 100,
 			distance: 30,
 		}),
 	],

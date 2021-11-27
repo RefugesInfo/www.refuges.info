@@ -58,7 +58,9 @@ Based on https://openlayers.org
 		</ul>
 	</p>
 
-	<div id="map"></div>
+	<div>
+		<div id="map"></div>
+	</div>
 
 	<script>
 new ol.Map({
@@ -69,7 +71,7 @@ new ol.Map({
 		}),
 	],
 	controls: controlsCollection({
-		controlPermalink: {
+		permalink: {
 			display: true,
 		},
 	}),
