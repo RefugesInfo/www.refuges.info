@@ -119,10 +119,11 @@ function infos_commentaires ($conditions)
             // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
             $champ_en_plus.=$config_wri['champs_table_polygones'];
 
-            if (!empty($conditions->avec_commentaires_modele))
+            if (!empty($conditions->avec_commentaires_modele) and $conditions->avec_commentaires_modele==True)
                     $condition_en_plus.=" AND modele!=1 ";
-            if (!empty($conditions->avec_points_en_attente))
-                 $condition_en_plus.=" AND (en_attente=False) ";
+            // par défaut, les points en attente ne sont pas retournés, sauf si on précise avec_points_en_attente=True (par exemple quand un modérateur est authentifié)
+            if (empty($conditions->avec_points_en_attente) or $conditions->avec_points_en_attente==False )
+                 $condition_en_plus.=" AND ( en_attente= 'f' ) ";
             if (!empty($conditions->ids_polygones))
                  $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
   }
