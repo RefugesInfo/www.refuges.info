@@ -14,11 +14,11 @@
 		<div>
 		<dl style="margin: 2px;">
 <!--======= LIEN DE MODIFICATION (modérateurs et modérateur de fiche) =======-->
-			<?// Signaler les fiches en attente de décision
-			if ($vue->point->en_attente) {?>
+			<?// Signaler les fiches cachées
+			if ($vue->point->cache) {?>
 				<dd class="lien_ajout_commentaire">
 					<strong class="warning">
-						Cette fiche est "en attente de	décision", elle n'est visible que des modérateurs
+						Cette fiche est cachée du public, elle n'est visible que des modérateurs
 					</strong>
 				</dd>
 			<?}?>

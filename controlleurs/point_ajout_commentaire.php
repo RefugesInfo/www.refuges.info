@@ -15,9 +15,9 @@ $conditions_commentaire = new stdClass();
 $vue->succes_ajout_commentaire=False;
 
 setlocale(LC_TIME, "fr_FR");
-// les modérateurs ont droit d'ajouter des commentaires aux points en attente de décision
+// les modérateurs ont droit d'ajouter des commentaires aux points cachés
 if ( est_moderateur() )
-    $conditions_commentaire->avec_points_en_attente=True;
+    $conditions_commentaire->avec_points_caches=True;
 
 $commentaire->id_point=$controlleur->url_decoupee[1];
 $conditions_commentaire->ids_points=$commentaire->id_point;

@@ -26,7 +26,7 @@ $conditions->avec_infos_point=True -> renvoi des informations simples du point a
 $conditions->demande_correction=True -> pour récupérer les commentaires en attente de correction (demande_correction!=0)
 
 $conditions->avec_commentaires_modele=True -> Très spécifique, pour avoir aussi les commentaires sur les modeles de points, le par défaut est non mais ça n'a de sens qu'avec $conditions->avec_infos_point=True
-$conditions->avec_points_en_attente=True : Par défaut, False : les commentaires des points en attente ne sont pas retournés
+$conditions->avec_points_caches=True : Par défaut, False : les commentaires des points cachés ne sont pas retournés
 
 $conditions->ids_polygones -> commentaires ayant eu lieu sur un point appartenant aux polygones d'id fournis
 
@@ -121,9 +121,9 @@ function infos_commentaires ($conditions)
 
             if (!empty($conditions->avec_commentaires_modele) and $conditions->avec_commentaires_modele==True)
                     $condition_en_plus.=" AND modele!=1 ";
-            // par défaut, les points en attente ne sont pas retournés, sauf si on précise avec_points_en_attente=True (par exemple quand un modérateur est authentifié)
-            if (empty($conditions->avec_points_en_attente) or $conditions->avec_points_en_attente==False )
-                 $condition_en_plus.=" AND ( en_attente= 'f' ) ";
+            // par défaut, les points cachés ne sont pas retournés, sauf si on précise avec_points_caches=True (par exemple quand un modérateur est authentifié)
+            if (empty($conditions->avec_points_caches) or $conditions->avec_points_caches==False )
+                 $condition_en_plus.=" AND ( cache= 'f' ) ";
             if (!empty($conditions->ids_polygones))
                  $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
   }
@@ -185,12 +185,12 @@ function infos_commentaires ($conditions)
 // Un appel plus simple qui utilise le précédent
 // jmb , comme infos_point, je vois pas l'interet, les fonctions pointS et sommentaireS savent gerer les cas unique
 // sly : totalement d'accord sur le principe, j'ai juste voulu reproduire l'appel historique qui récupére un commentaire à partir de son id
-function infos_commentaire($id_commentaire,$meme_si_en_attente=False)
+function infos_commentaire($id_commentaire,$meme_si_cache=False)
 {
   $conditions = new stdClass;
   $conditions->ids_commentaires=$id_commentaire;
   $conditions->avec_infos_point=True;
-  $conditions->avec_points_en_attente=$meme_si_en_attente;
+  $conditions->avec_points_caches=$meme_si_cache;
   $c=infos_commentaires ($conditions);
   if (!empty($c->erreur))
     return erreur($c->texte);

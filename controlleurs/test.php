@@ -33,11 +33,7 @@ require_once ("zipfile.php");
 //d($config_wri['sous_dossier_installation']);
 
 
-$conditions_attente_correction = new stdclass;
-$conditions_attente_correction->demande_correction=True;
-$conditions_attente_correction->avec_infos_point=True;
-$conditions_attente_correction->avec_points_en_attente=True;
-d(infos_commentaires($conditions_attente_correction));
+
 t("fin");
 //On quitte ici notre test parce que sinon la route va tenter d'ouvrir une vue test.html que je n'ai pas faite
 die();

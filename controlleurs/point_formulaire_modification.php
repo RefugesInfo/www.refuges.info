@@ -21,15 +21,15 @@ $vue->champs->entier_ou_sait_pas = new stdClass; // seulement les trinaires TRUE
 // ou si les droits sont insuffisants
 if ( !empty($_REQUEST["id_point"]) )  
 {
-    // Si c'est un modérateur, il peut voir la fiche même si elle est en attente de décision
+    // Si c'est un modérateur, il peut voir la fiche même si elle est cachée
     if (est_moderateur())
-        $meme_si_en_attente=True;
+        $meme_si_cache=True;
     else
-        $meme_si_en_attente=False;
+        $meme_si_cache=False;
 
-    $point=infos_point($_REQUEST['id_point'],$meme_si_en_attente);
+    $point=infos_point($_REQUEST['id_point'],$meme_si_cache);
 
-    // Stop, le point n'existe pas (ou est en attente et il ne faut pas dire que c'est le cas)
+    // Stop, le point n'existe pas (ou est caché et il ne faut pas dire que c'est le cas)
     if (!empty($point->erreur)) 
     {
         $vue->http_status_code = 404;
@@ -150,10 +150,10 @@ foreach ($textes_area as $libelle => $nom_variable)
 
 /******** Les informations complémentaires (places, matelas, latrines, bois à proximité, etc.) *****************/
 
-// Seuls les modérateurs peuvent passer un point en attente de décision, le test est directement dans la vue
-$vue->champs->en_attente = $point->en_attente;
-$vue->champs->en_attente_label = "Mettre ce point en attente";
-$vue->champs->en_attente_aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs le temps de prendre une décision";
+// Seuls les modérateurs peuvent cacher un point, le test est directement dans la vue
+$vue->champs->cache = $point->cache;
+$vue->champs->cache_label = "Cacher cette fiche du public";
+$vue->champs->cache_aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs (demande du propriétaire, terrain privé, autre raison). Une autre possiblité, selon le cas, serait de noter comme fermé/détruite qui garde visible, mais indique le changement de statut";
 
 // cas spécifique des champs qui peuvent être NULL=ne sait pas ou un nombre entier
 foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $champ)

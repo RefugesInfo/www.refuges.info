@@ -67,8 +67,8 @@ $conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, det
 $conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
 
 $conditions->modele='uniquement' si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), 'avec' si on veut les points et les modèles, si empty() on ne les veux pas.
-$conditions->avec_points_en_attente=True : Par défaut, False : les points en attente ne sont pas retournés
-$conditions->uniquement_points_en_attente=True : ne retourner que les points en attente (utiles uniquement pour les modérateurs)
+$conditions->avec_points_caches=True : Par défaut, False : les points cachés ne sont pas retournés
+$conditions->uniquement_points_cachés=True : ne retourner que les points cachés (utiles uniquement pour les modérateurs)
 
 $conditions->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
 $conditions->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
@@ -227,10 +227,10 @@ function infos_points($conditions)
     $conditions_sql.="\n\tAND points.date_creation >= $conditions->date_creation_apres"; // j'ai essayé $pdo->quote mais ça m'ajoute un ' d'escape en trop quand je met NOW() INTERVAL '3 days'
 
 
-  if (!empty($conditions->uniquement_points_en_attente))
+  if (!empty($conditions->uniquement_points_caches))
   {
-    $conditions_sql.="\n\tAND en_attente=True";
-    $conditions->avec_points_en_attente=True;
+    $conditions_sql.="\n\tAND cache=True";
+    $conditions->avec_points_caches=True;
   }
 
   // cas spécial sur les modèles (ils sont dans la table point, ont modele=1 et servent à pré-remplir les champs d'une saisie d'un type particulier)
@@ -331,11 +331,10 @@ SELECT points.*,
     if (!empty($point->id_createur))
       $point->nom_createur=html_entity_decode($point->nom_createur);
     
-    // Ici, petite particularité sur les points en attente, par défaut, on ne veut pas les renvoyer, mais on veut quand
-    // même, si un seul a été demandé, pouvoir dire qu'il est en attente, donc on va le chercher en base mais on renvoi une erreur
-    // s'il est en attente
-    // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points en attente
-    if (!$point->en_attente or !empty($conditions->avec_points_en_attente)) // On renvoi ce point, soit il n'est pas en attente, soit on a demandé aussi les points en attente
+    // Ici, petite particularité sur les points cachés, par défaut, on ne veut pas les renvoyer, mais on veut quand
+    // même, si un seul a été demandé, pouvoir dire qu'il est caché (du public), donc on va le chercher en base mais on renvoi une erreur s'il est en caché
+    // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
+    if (!$point->cache or !empty($conditions->avec_points_caches)) // On renvoi ce point, soit il n'est pas caché, soit on a demandé aussi les points cachés
       $points[]=$point;
     elseif ( !empty($conditions->ids_points) and is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
       return erreur("Ce point est en attente de décision, seul un modérateur peut agir sur lui");
@@ -364,7 +363,7 @@ FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui f
 Mais postgis étant super rapide, je pense que l'on peut peut fusioner
 
 *****************************************************/
-function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
+function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config_wri,$pdo;
@@ -375,8 +374,8 @@ function infos_point($id_point,$meme_si_en_attente=False,$avec_polygones=True)
   $conditions->ids_points=$id_point;
   $conditions->modele='avec';
   $conditions->avec_infos_massif=True;
-  if ($meme_si_en_attente)
-    $conditions->avec_points_en_attente=True;
+  if ($meme_si_cache)
+    $conditions->avec_points_caches=True;
 
   // récupération des infos du point
   $points=infos_points($conditions);
@@ -600,7 +599,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     $distance = 1500; // ~500m
     $q="SELECT id_point, nom
       FROM points
-      WHERE en_attente = true AND
+      WHERE cache = true AND
           id_point <> ".($point->id_point?:0)." AND
           ST_DWithin(geom, ST_GeomFromGeoJSON('{$point->geojson}'), $distance, false)
         LIMIT 1";

@@ -25,7 +25,7 @@ function info_demande_correction ()
 {
     $conditions_attente_correction = new stdclass;
     $conditions_attente_correction->demande_correction=True;
-    $conditions_attente_correction->avec_points_en_attente=True;
+    $conditions_attente_correction->avec_points_caches=True;
     $commentaires_attente_correction=infos_commentaires($conditions_attente_correction);
 
     if (count($commentaires_attente_correction)>0)

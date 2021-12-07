@@ -133,7 +133,7 @@ $config_wri['champs_table_polygones']='polygones.id_polygone,polygones.id_polygo
 // Champs valables pour les points classés par spécificité (permet de dynamiquement gérer en partie le formulaire de saisie et d'affichage)
 $config_wri['champs_trinaires_points']=array('couvertures','manque_un_mur','eau_a_proximite','latrines','poele','cheminee','bois_a_proximite'); // ceux là sont des champs ou ne sait pas/oui/non sont possible (traiter dynamiquement dans une boucle)
 $config_wri['champs_entier_ou_sait_pas_points']=array('places','places_matelas');
-$config_wri['champs_simples_points']=array_merge(array('conditions_utilisation','places','places_matelas',"en_attente","nom","acces","remark","proprio","id_point_type","id_createur","modele","altitude","id_type_precision_gps",'nom_createur'),$config_wri['champs_trinaires_points'],$config_wri['champs_entier_ou_sait_pas_points']);
+$config_wri['champs_simples_points']=array_merge(array('conditions_utilisation','places','places_matelas',"cache","nom","acces","remark","proprio","id_point_type","id_createur","modele","altitude","id_type_precision_gps",'nom_createur'),$config_wri['champs_trinaires_points'],$config_wri['champs_entier_ou_sait_pas_points']);
 
 // c'est l'id pour lequel les coordonnées gps données sont volontairement fausses
 $config_wri['id_coordonees_gps_fausses']=5;

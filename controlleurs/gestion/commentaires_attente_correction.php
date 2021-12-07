@@ -7,7 +7,7 @@ Contrôleur qui prépare la vue pour les pages des commentaires en attente de co
 $conditions = new stdclass;
 if (!empty($_POST["corrections_faites"]))
 	foreach ($_POST['commentaires_corriges'] as $id_commentaire) {
-		$conditions->avec_points_en_attente=True; // Ici, en secteur modération, il est possible qu'un modérateur souhaite modifier le commentaire d'une fiche en attente de décision
+		$conditions->avec_points_caches=True; // Ici, en secteur modération, il est possible qu'un modérateur souhaite modifier le commentaire d'une fiche en attente de décision
 		$conditions->ids_commentaires=$id_commentaire;
 		$commentaires=infos_commentaires($conditions);
 		if (!empty($commentaires->erreur))
@@ -25,7 +25,7 @@ if (!empty($_POST["corrections_faites"]))
 $conditions_attente_correction = new stdclass;
 $conditions_attente_correction->demande_correction=True;
 $conditions_attente_correction->avec_infos_point=True;
-$conditions_attente_correction->avec_points_en_attente=True;
+$conditions_attente_correction->avec_points_caches=True;
 $vue->commentaires_attente_correction=infos_commentaires($conditions_attente_correction);
 
 // Petit tableau pour afficher le message de cause
