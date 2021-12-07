@@ -258,9 +258,13 @@ function modification_ajout_commentaire($commentaire)
     if (isset($commentaire->id_commentaire))
     { // On souhaite modifier le commentaire
             $old_commentaire=infos_commentaires($commentaire->id_commentaire,True);
-            if ($old_commentaire->erreur)
-                    return erreur("Une modification d'un commentaire inexistant a été demandée");
-            $ajout_photo=!$commentaire->photo['originale'];
+            if (!empty($old_commentaire->erreur))
+                    return erreur("Une modification d'un commentaire inexistant a été demandée : ".$old_commentaire->message);
+                    
+            if (!empty($commentaire->photo['originale']))      
+              $ajout_photo=!$commentaire->photo['originale'];
+            else
+              $ajout_photo=False;
             $mode="modification";
     }
     else

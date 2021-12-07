@@ -10,7 +10,7 @@ if (!empty($_POST["corrections_faites"]))
 		$conditions->avec_points_en_attente=True; // Ici, en secteur modération, il est possible qu'un modérateur souhaite modifier le commentaire d'une fiche en attente de décision
 		$conditions->ids_commentaires=$id_commentaire;
 		$commentaires=infos_commentaires($conditions);
-		if ($commentaires->erreur)
+		if (!empty($commentaires->erreur))
 			print($commentaires->message);
 		else {
 			$commentaire=$commentaires[0]; // On est censé récupérer qu'un seul commentaire vu qu'on a donner qu'une condition l'id
