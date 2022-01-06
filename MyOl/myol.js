@@ -1129,11 +1129,8 @@ function layerGeoBB(options) {
 function layerWri(options) {
 	return layerVectorCluster(Object.assign({
 		host: '//www.refuges.info/',
-		nb_points: 'all',
-		strategy: ol.loadingstrategy.bboxLimit,
 		urlFunction: function(options, bbox, selection) {
-			return options.host + 'api/bbox' +
-				'?nb_points=' + options.nb_points +
+			return options.host + 'api/bbox?nb_points=all' +
 				'&type_points=' + selection.join(',') +
 				'&bbox=' + bbox.join(',');
 		},
