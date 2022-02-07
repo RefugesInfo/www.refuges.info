@@ -99,9 +99,15 @@ FILES
 * myol.js : full JS distribution
 * src/... : Source files
 * ol/... : Openlayer V6.0.1 (you can use any of openlayers V5.* or V6.*) from [Openlayers](https://openlayers.org/download/)
+* ol-681/... : Last IE compatible version & polyfill
 * geocoder/... : Geocoder V4.0.0 from [Openlayers geocoder](https://github.com/jonataswalker/ol-geocoder/releases/latest)
 * proj4/... : Coordinate transformation software proj4js V2.5.0 from [Proj4](https://github.com/proj4js/proj4js/releases/latest)
 * index.html : Simple demo
 * examples/... : Demos or ongoing developments
-* examples/polyfill.js : pour IE, generate with https://polyfill.io/v3/url-builder/
 * gps/... : Off line demo with GPS capabilities
+
+IE support
+==========
+* Need to include OL v-6.8.1 (last compatible version) & the polyfill
+* Tested on Windows 10 / IE.11 see [example](https://DC92.github.io/dev/assets/MyOl/examples/ie11.html)
+* Tested on Windows 10 / IE.11 see [example](https://DC92.github.io/dev/assets/MyOl/examples/ie11.html)

@@ -3,14 +3,13 @@ const baseLayers = {
 		'OpenTopo': layerOpenTopo(),
 		'Outdoors': layerThunderforest('outdoors'),
 		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		//TODO+ voir licences IGN V2 / Photos / SwissTopo
-		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'), // Need an IGN key
 		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'png', 'pratique'), // 'pratique' is the key for the free layers
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
 		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', 'jpeg', 'pratique'),
 		'Photo Bing': layerBing('Aerial'),
+		'test ign': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'), // Obsolete, pour test avant de la retirer
 	},
 
   controls = [
@@ -55,7 +54,7 @@ const baseLayers = {
 		styleOptionsFunction: function(feature, properties) {
 			return Object.assign({},
 				styleOptionsIcon(properties.icon),
-				styleOptionsLabel(properties.nom, properties),
+				styleOptionsLabel(properties.nom, properties)
 			);
 		},
 	}),

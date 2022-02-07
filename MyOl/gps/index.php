@@ -71,9 +71,6 @@ Based on https://openlayers.org
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-	<!-- IE compatibility -->
-	<script nomodule src="../ol/polyfill.min.js"></script>
-
 	<!-- Openlayers -->
 	<link href="<?=$myol_path?>ol/ol.css" type="text/css" rel="stylesheet">
 	<script src="<?=$myol_path?>ol/ol.js"></script>

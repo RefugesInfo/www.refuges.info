@@ -182,28 +182,37 @@ foreach($config_wri['champs_trinaires_points'] as $champ)
 //spécificité du cas des conditions d'utilisation de la cabane (clé à récup, ouvert tout le temps, fermée tout le temps, ou détruite)
 if ( !empty($point->equivalent_conditions_utilisation) )
 {
-    $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
+  $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
 
-    if ($point->id_point_type==$config_wri['point_d_eau'])
-        $vue->champs->conditions_utilisation->options = array('ouverture' => 'Coule', 'NULL' => 'Ne sait pas','detruit' => 'Détruite','fermeture' => $point->equivalent_conditions_utilisation);
-    else if ($point->id_point_type==$config_wri['passage_delicat'])
-        $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','fermeture' => $point->equivalent_conditions_utilisation);
-    else
-        $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
+  if ($point->id_point_type==$config_wri['point_d_eau'])
+    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Coule', 'NULL' => 'Ne sait pas','detruit' => 'Détruite','fermeture' => $point->equivalent_conditions_utilisation);
+  else if ($point->id_point_type==$config_wri['passage_delicat'])
+    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','fermeture' => $point->equivalent_conditions_utilisation);
+  else
+    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
     $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 // ===========================================
 // Préparation de la $vue commune à chaque cas
 
-$vue->css          [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
-$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
-if (!$config_wri['is_ie']) { // geocoder non supporté IE
-  $vue->css          [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
-  $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
+if ($config_wri['is_ie']) {
+  // Includes pour IE
+  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol-681/polyfill.min.js?'.filemtime($config_wri['chemin_ol'].'ol-681/polyfill.min.js');
+  // Last IE compatible OL version
+  $vue->css           [] = $config_wri['url_chemin_ol'].'ol-681/ol.css?'.filemtime($config_wri['chemin_ol'].'ol-681/ol.css');
+  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol-681/ol.js?'.filemtime($config_wri['chemin_ol'].'ol-681/ol.js');
+} else {
+  // Includes pour autres que IE
+  $vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
+  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
+  // Non supporté IE
+  $vue->css           [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
+  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
 }
+// Includes communs à IE et autres
 $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'proj4/proj4.js?'.filemtime($config_wri['chemin_ol'].'proj4/proj4.js');
-$vue->css          [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
-$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
+$vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
 
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");
