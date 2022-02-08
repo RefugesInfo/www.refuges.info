@@ -14,6 +14,8 @@ $config_wri['base_pgsql']="???";
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [
+  // Get your own (free) IGN key at https://geoservices.ign.fr/
+  'ign' => 'sl4yl7uaazsqdjn8lkgzj0ju', // Clé gratuite pour TOP25
   // Get your own (free) THUNDERFOREST key at https://manage.thunderforest.com
   'thunderforest' => '???',
   // Get your own (free) BING key at https://www.microsoft.com/en-us/maps/create-a-bing-maps-key
