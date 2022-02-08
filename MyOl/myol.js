@@ -159,10 +159,8 @@ function layerStamen(subLayer, min) {
 
 /**
  * IGN France
- * var mapKeys.ign = Get your own (free)IGN key at https://professionnels.ign.fr/user
-https://geoservices.ign.fr/services-web-decouverte
-https://geoservices.ign.fr/services-web-experts-cartes
-https://geoservices.ign.fr/services-web-experts-administratif
+ * var mapKeys.ign = Get your own (free)IGN key at https://geoservices.ign.fr/
+ * doc : https://geoservices.ign.fr/services-web
  */
 function layerIGN(subLayer, format, key) {
 	let IGNresolutions = [],
@@ -321,6 +319,7 @@ function layersCollection() {
 		'OSM transport': layerThunderforest('transport'),
 		'Refuges.info': layerMRI(),
 		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
+		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPSMAPS.SCAN25TOUR'), // Need an IGN key
 		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'png', 'pratique'),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
@@ -348,8 +347,6 @@ function layersDemo() {
 
 		'Bing': layerBing('Road'),
 		'Bing hybrid': layerBing('AerialWithLabels'),
-
-		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'), // Need an IGN key
 
 		'Photo Swiss': layerSwissTopo('ch.swisstopo.swissimage'),
 		'Photo Espagne': layerSpain('pnoa-ma', 'OI.OrthoimageCoverage'),
