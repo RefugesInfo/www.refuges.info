@@ -319,7 +319,7 @@ function layersCollection() {
 		'OSM transport': layerThunderforest('transport'),
 		'Refuges.info': layerMRI(),
 		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPSMAPS.SCAN25TOUR'), // Need an IGN key
+		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPSMAPS'), // Need an IGN key
 		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'png', 'pratique'),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
