@@ -148,12 +148,12 @@ function layerGoogle(subLayer) {
 /**
  * Stamen http://maps.stamen.com
  */
-function layerStamen(subLayer, min) {
+function layerStamen(subLayer, minResolution) {
 	return new ol.layer.Tile({
 		source: new ol.source.Stamen({
 			layer: subLayer,
 		}),
-		minResolution: min || 0,
+		minResolution: minResolution || 0,
 	});
 }
 
@@ -162,8 +162,11 @@ function layerStamen(subLayer, min) {
  * var mapKeys.ign = Get your own (free)IGN key at https://geoservices.ign.fr/
  * doc : https://geoservices.ign.fr/services-web
  */
-function layerIGN(subLayer, format, key) {
-	let IGNresolutions = [],
+function layerIGN(subLayer, options) {
+	options = options || {};
+
+	let key = options.key || (typeof mapKeys == 'object' ? mapKeys.ign : null),
+		IGNresolutions = [],
 		IGNmatrixIds = [];
 
 	for (let i = 0; i < 18; i++) {
@@ -171,16 +174,14 @@ function layerIGN(subLayer, format, key) {
 		IGNmatrixIds[i] = i.toString();
 	}
 
-	if (!key && typeof mapKeys == 'object')
-		key = mapKeys.ign;
-
 	if (key)
 		return new ol.layer.Tile({
+			maxResolution: options.maxResolution,
 			source: new ol.source.WMTS({
 				url: '//wxs.ign.fr/' + key + '/wmts',
 				layer: subLayer,
 				matrixSet: 'PM',
-				format: 'image/' + (format || 'jpeg'),
+				format: 'image/' + (options.format || 'jpeg'),
 				tileGrid: new ol.tilegrid.WMTS({
 					origin: [-20037508, 20037508],
 					resolutions: IGNresolutions,
@@ -251,10 +252,10 @@ function layerIGM() {
 		layerStamen('terrain', 120),
 	];
 
-	function subLayerIGM(url, layer, min, max) {
+	function subLayerIGM(url, layer, minResolution, maxResolution) {
 		return new ol.layer.Tile({
-			minResolution: min,
-			maxResolution: max,
+			minResolution: minResolution,
+			maxResolution: maxResolution,
 			source: new ol.source.TileWMS({
 				url: 'https://chemineur.fr/assets/proxy/?s=minambiente.it&type=png' + // Not available via https
 					'&map=/ms_ogc/WMS_v1.3/raster/' + url + '.map',
@@ -319,14 +320,19 @@ function layersCollection() {
 		'OSM transport': layerThunderforest('transport'),
 		'Refuges.info': layerMRI(),
 		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPSMAPS'), // Need an IGN key
-		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'png', 'pratique'),
+		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'), // Need an IGN key
+		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', {
+			format: 'png',
+			key: 'pratique',
+		}),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Angleterre': layerOS('Outdoor_3857'),
 		'Italie': layerIGM(),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
-		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', 'jpeg', 'pratique'),
+		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', {
+			key: 'pratique',
+		}),
 		'Photo Bing': layerBing('Aerial'),
 		'Photo Google': layerGoogle('s'),
 	};
