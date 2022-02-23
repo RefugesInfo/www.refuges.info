@@ -8,8 +8,8 @@ if ($req->format=="kml") // FIXME sly 12/2019 : quelqu'un s'en sert encore à di
   header("Content-Transfer-Encoding: binary");
   header("Pragma: cache");
   header("Expires: $ts");
-  if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
-    header("Cache-Control: max-age=$secondes_de_cache");
+  headers_cors_par_default();
+  header("Cache-Control: max-age=$secondes_de_cache");
 }
 
 // FIXME sly 12/2019 : c'est vraiment dommage d'avoir de belles vues ailleurs et se taper une horreur pareille, mais le format kmz a besoin de la même chose, mais en compressé, donc il lui faut capturer la variable $kml

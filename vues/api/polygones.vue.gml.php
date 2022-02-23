@@ -7,7 +7,7 @@ header("Content-Type: text/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 header("Pragma: cache");
 header("Expires: $ts");
-if($config_wri['autoriser_CORS']===TRUE) header("Access-Control-Allow-Origin: *");
+headers_cors_par_default();
 header("Cache-Control: max-age=$secondes_de_cache");
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
