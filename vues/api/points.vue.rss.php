@@ -1,15 +1,10 @@
-<?
-
-$secondes_de_cache = 60;
-$ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
+<?php
 header("Content-disposition: filename=points-refuges-info.rss");
 header("Content-Type: application/xml; UTF-8"); // rajout du charset
-//header("Content-Type: application/rss+xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
-header("Pragma: cache");
-header("Expires: $ts");
 headers_cors_par_default();
-header("Cache-Control: max-age=$secondes_de_cache");
+headers_cache_api();
+
 
 
 $rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";

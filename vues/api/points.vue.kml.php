@@ -1,15 +1,11 @@
 <?php
 if ($req->format=="kml") // FIXME sly 12/2019 : quelqu'un s'en sert encore à distance du kml ? pourquoi cette gestion de cache et de CORS ?
 {
-  $secondes_de_cache = 60;
-  $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
   header("Content-disposition: filename=points-refuges-info.$req->format");
   header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
   header("Content-Transfer-Encoding: binary");
-  header("Pragma: cache");
-  header("Expires: $ts");
   headers_cors_par_default();
-  header("Cache-Control: max-age=$secondes_de_cache");
+  headers_cache_api();
 }
 
 // FIXME sly 12/2019 : c'est vraiment dommage d'avoir de belles vues ailleurs et se taper une horreur pareille, mais le format kmz a besoin de la même chose, mais en compressé, donc il lui faut capturer la variable $kml
