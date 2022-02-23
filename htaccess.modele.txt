@@ -34,12 +34,14 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . ./index.php [L]
 
-#A n'activer que si on utilise mod_php de apache sinon on il faudra le mettre dans la config php.ini
-#php_value short_open_tag 1
+#Dans le cas d'utilisation de php en module apache (courant en config mono site ou zone de développement), a noter : ce n'est plus le cas pour le serveur www.refuges.info depuis 2020
+#Dans le cas d'utilisation de php en mode php-fpm, si vous avez besoin de changer des options de php, ajouter les au .user.ini à la place
+<ifmodule mod_php.c>
+  php_value short_open_tag 1
 
-#A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error (uniquement si on utilise mod_php, ce qui, en 09/02/2021 n'est plus le cas)
-#php_value display_errors 1
-
+  #A décommenter pour les développeurs : ça affiche les erreurs à l'écran même celle de parse error (uniquement si on utilise mod_php, ce qui, en 09/02/2021 n'est plus le cas)
+  #php_value display_errors 1
+</ifmodule>
 
 #Ces options de mise en cache navigateur ne pas une nécessité, mais pour le css et le js ça accélère quand même bigrement la navigation sur le site
 #Si le module n'existe pas avec apache, tant pis, ça ne fera rien (mais c'est dommage !)
