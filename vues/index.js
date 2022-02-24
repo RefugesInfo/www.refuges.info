@@ -2,6 +2,7 @@ new ol.Map({
 	target: 'carte-accueil',
 	view: new ol.View({
 		enableRotation: false,
+		constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
 	}),
 	layers: [
 		layerMRI(), // Fond de carte WRI

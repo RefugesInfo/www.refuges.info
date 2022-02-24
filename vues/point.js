@@ -50,6 +50,7 @@ new ol.Map({
 		center: ol.proj.fromLonLat(coordinates),
 		zoom: 13,
 		enableRotation: false,
+		constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
 	}),
 	controls: controls,
 	layers: [

@@ -135,6 +135,7 @@ const baseLayers = {
 		target: 'carte-nav',
 		view: new ol.View({
 			enableRotation: false,
+			constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
 		}),
 		controls: controls,
 		layers: layers,
