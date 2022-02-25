@@ -31,7 +31,7 @@ function requete_overpass_api($xml_query)
 {
   global $config_wri;
 
-  $ch = curl_init($config_wri['overpass_api']);
+  $ch = curl_init('https://overpass-api.de/api/interpreter');
   
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, "data=".$xml_query);

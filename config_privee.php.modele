@@ -15,7 +15,7 @@ $config_wri['base_pgsql']="???";
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [
   // Get your own (free) IGN key at https://geoservices.ign.fr/
-  'ign' => 'sl4yl7uaazsqdjn8lkgzj0ju', // Clé gratuite pour TOP25
+  'ign' => '???', // Clé gratuite pour TOP25
   // Get your own (free) THUNDERFOREST key at https://manage.thunderforest.com
   'thunderforest' => '???',
   // Get your own (free) BING key at https://www.microsoft.com/en-us/maps/create-a-bing-maps-key
@@ -23,12 +23,6 @@ $config_wri['mapKeys'] = [
   // SwissTopo : You need to register your domain in
   // https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
 ];
-
-// Par défaut, le fond de carte est le premier déclaré dans le fichier /vues/_carte.js
-// Décommenter permet de changer le par défaut. Indiquer le nom de la couche dans le sélecteur
-//$config_wri['carte_base'] = 'OpenTopo';
-//$config_wri['carte_base'] = 'Photo Bing';
-
 
 // Pour affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
 //$config_wri['debug']=true;

@@ -166,10 +166,6 @@ $config_wri['id_forum_developpement']=2;
 $config_wri['encodage_exportation']="utf-8";
 $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];
 
-/********** URLs d'accès aux données openstreetmap ************/
-// NOTE: ne pas mettre le "schéma" permet d'utiliser le même que celui de la page.
-$config_wri['overpass_api']="//overpass-api.de/api/interpreter";
-
 $config_wri['url_nominatim']="//nominatim.openstreetmap.org/";
 $config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
 $config_wri['email_contact_nominatim']="sylvain@refuges.info";
