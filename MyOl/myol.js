@@ -1305,8 +1305,8 @@ function layerOverpass(options) {
 		layer = layerVectorCluster(Object.assign({
 			//host: 'overpass-api.de',
 			//host: 'lz4.overpass-api.de',
-			host: 'overpass.openstreetmap.fr',
-			//host: 'overpass.kumi.systems',
+			//host: 'overpass.openstreetmap.fr',
+			host: 'overpass.kumi.systems',
 			//host: 'overpass.nchc.org.tw',
 
 			urlFunction: urlFunction,
