@@ -32,9 +32,10 @@ require_once ("utilisateur.php");
         AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
         AND points.modele <> 1
         AND points.cache <> TRUE
-        )                                  AS nbrefuges,
-    ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                AS nbphotos,
-    ( SELECT count(*) FROM commentaires )                                                     AS nbcomm,
+        )                                                                                         AS nbrefuges,
+    ( SELECT count(*) FROM points WHERE points.modele <> 1 AND points.cache <> TRUE )         AS nbpoints,
+    ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                    AS nbphotos,
+    ( SELECT count(*) FROM commentaires )                                                         AS nbcomm,
     ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config_wri['id_massif'].")  ) AS nbmassifs ";
     $res = $pdo->query($q);
     return $res->fetch();
