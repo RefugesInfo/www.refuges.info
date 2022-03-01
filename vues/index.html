@@ -36,7 +36,7 @@
 		</dd>
 		<br/>
 
-		<h4><?=$vue->stat->nbrefuges?> cabanes et refuges. Ceux ajoutés il y a moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
+		<h4><?=$vue->stat->nbpoints?> points dans la base. Ceux ajoutés il y a moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<ul>
 			<?php if (isset($vue->nouveaux_points)) foreach ($vue->nouveaux_points as $nouveau_point) { ?>
 				<li>
@@ -56,7 +56,7 @@
 						<?}?>
 				</li>
 			<?}?>
-			<li><a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche/" title="Recherche d'un points de refuges.info par le nom"><b>Recherche...</b></a></li>
+			<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_max_page_nouvelles']?>&amp;quoi=points" title="Voir les <?=$config_wri['defaut_max_page_nouvelles']?> derniers points ajoutés sur le site"><b>Plus...</b></a></li>
 		</ul>
 		<br/>
 
@@ -80,7 +80,7 @@
 						<?}?>
 				</li>
 			<?}?>
-				<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/" title="Les dernières entrées dans refuges.info"><b>Plus...</b></a></li>
+				<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_max_page_nouvelles']?>&quoi=commentaires" title="Les <?=$config_wri['defaut_max_page_nouvelles']?> derniers commentaires dans refuges.info"><b>Plus...</b></a></li>
 		</ul>
 		<br/>
 	</div>

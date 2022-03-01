@@ -152,6 +152,9 @@ $config_wri['defaut_max_nombre_point']=250;
 // nombre de jours pris en compte pour les derniers ajouts sur la page d'accueil et nouvelles
 $config_wri['defaut_max_jours_ajouts_recents']=7;
 
+// nombre de points ou commentaires renvoyés par défaut sur la page des nouvelles si on en veut "plus"
+$config_wri['defaut_max_page_nouvelles']=100;
+
 
 /********** Lié au Forum / comptes / utilisateurs / login / users ************/
 // lien direct pour se connecter, ou créer un compte sur le forum
