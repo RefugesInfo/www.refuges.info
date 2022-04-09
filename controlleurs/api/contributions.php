@@ -8,6 +8,7 @@
 ********************************************/
 include_once("nouvelle.php");
 include_once("mise_en_forme_texte.php");
+include_once("entetes_http.php");
 
 /****************************************/
 // Ça permet de mettre convertir tout un objet
