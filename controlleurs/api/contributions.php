@@ -35,6 +35,9 @@ $req->format = $_REQUEST['format'] ?? '';
 $req->format_texte = $_REQUEST['format_texte'] ?? '';
 $req->nombre = $_REQUEST['nombre'] ?? '';
 $req->massif = $_REQUEST['massif'] ?? '';
+$req->ids_forum = $_REQUEST['ids_forum'] ?? '';
+$req->avec_texte = $_REQUEST['avec_texte'] ?? '';
+$req->avec_photo = $_REQUEST['avec_photo'] ?? '';
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
@@ -69,7 +72,7 @@ foreach ($temp as $massif) {
 
 /****************************** REQUÊTE RÉCUPÉRATION NOUVELLES ******************************/
 
-$news = nouvelles($req->nombre,$req->type,$req->massif,False);
+$news = nouvelles($req->nombre,$req->type,$req->massif,False,$req);
 $news = texte_nouvelles($news); // On ajoute le texte
 foreach ($news as $id => $nouvelle)
 {

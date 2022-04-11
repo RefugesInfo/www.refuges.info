@@ -405,3 +405,17 @@ function mb_ucfirst($str, $encoding = "UTF-8", $lower_str_end = false)
       return $str;
 }
 
+/* Purge les balises et autres dans le forum phpbb3.post_text */
+function purge_phpbb_post_text($s)
+{
+    $s = preg_replace ('/\<[^\>]*\>/i', ' ', $s); // Enlève les balises <>
+    $s = preg_replace ('/\[url=([^\]]*)\]/i', ' $1 ', $s); // Conserve l'url de [url=...]
+    $s = preg_replace ('/\[quote\][^\[]*/i', '', $s); // Supprime les [quote]...
+    $s = preg_replace ('/[^\]]*\[\/quote\]/i', '', $s); // Supprime les ...[/quote]
+    $s = preg_replace ('/\[[^\]]*\]/i', '', $s); // Enlève les balises []
+    $s = preg_replace ('/&nbsp;/i', ' ', $s); // Purge les espaces multiples
+    $s = preg_replace ('/\s+/i', ' ', $s); // Purge les espaces multiples
+    $s = preg_replace ('/^\s*$/i', '', $s); // Purge les posts sans texte
+	return $s;
+}
+

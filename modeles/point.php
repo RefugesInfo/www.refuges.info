@@ -491,12 +491,7 @@ function infos_point_forum ($point)
 
   while ( $res = $r->fetch() )
   {
-    $res->post_text = preg_replace ('/\[url=([^\]]*)\]/i', ' $1 ', $res->post_text); // Conserve l'url de [url=...]
-    $res->post_text = preg_replace ('/\[[^\]]*\]/i', '', $res->post_text); // Enlève les balises []
-    $res->post_text = preg_replace ('/\<[^\>]*\>/i', ' ', $res->post_text); // Enlève les balises <>
-    $res->post_text = preg_replace ('/&nbsp;/i', ' ', $res->post_text); // Purge les espaces multiples
-    $res->post_text = preg_replace ('/\s+/i', ' ', $res->post_text); // Purge les espaces multiples
-    $res->post_text = preg_replace ('/^\s*$/i', '', $res->post_text); // Purge les posts sans texte
+    $res->post_text = purge_phpbb_post_text($res->post_text);
 
     // Limite la longueur du texte
     if (strlen ($res->post_text) > $config_wri['point_posts_lon_max_text'])

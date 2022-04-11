@@ -66,7 +66,7 @@ array/object et ce serait au controleur/la vue de s'occuper de la mise en forme
 
 ***************************************/
 
-function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
+function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
 {
     global $config_wri,$pdo;
     $conditions = new stdClass;
@@ -83,6 +83,8 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                 $conditions_commentaires = new stdclass();
                 $conditions_commentaires->limite=$nombre;
                 $conditions_commentaires->avec_infos_point=True;
+                if ($req && $req->avec_photo)
+                    $conditions_commentaires->avec_photo=$req->avec_photo;
                 if($id_massif!="") $conditions_commentaires->ids_polygones=$id_massif;
                 $commentaires=infos_commentaires($conditions_commentaires);
                 foreach ( $commentaires as $commentaire )
@@ -91,7 +93,9 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                     $news_array[$i]['categorie']="Commentaire";
                     $news_array[$i]['lien']=lien_point($commentaire,$lien_locaux)."#C$commentaire->id_commentaire";
                     $news_array[$i]['titre']=$commentaire->nom;
-                    $news_array[$i]['commentaire']=$commentaire->texte;
+                    if ($req && $req->avec_texte)
+                        $news_array[$i]['commentaire']=$commentaire->texte;
+                    $news_array[$i]['id_commentaire']=$commentaire->id_commentaire;
                     if ($commentaire->photo_existe) {
                         $news_array[$i]['photo']="1";
                         $news_array[$i]['photo_mini']=$commentaire->lien_photo['reduite'] ?? '';
@@ -171,6 +175,8 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
             case "forums":
                 $conditions_messages_forum = new stdclass();
                 $conditions_messages_forum->limite=$nombre;
+                if ($req && $req->ids_forum)
+                    $conditions_messages_forum->ids_forum=$req->ids_forum;
                 $conditions_messages_forum->sauf_ids_forum=$config_wri['id_forum_moderateur'].",".$config_wri['id_forum_developpement'];
                 
                 $commentaires_forum=messages_du_forum($conditions_messages_forum);
@@ -185,6 +191,8 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True)
                         $news_array[$i]['categorie']="Forum";
                         $news_array[$i]['titre']=html_entity_decode ($commentaire_forum->topic_title);
                         $news_array[$i]['date']=$commentaire_forum->date;
+                        if ($req && $req->avec_texte)
+                            $news_array[$i]['commentaire']=purge_phpbb_post_text($commentaire_forum->post_text);
                         $i++;
                     }
                     break;
