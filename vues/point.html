@@ -25,7 +25,7 @@
       <?php // Si les droits sont suffisants, lien de modification
       if (est_autorise($point->id_createur)) {?>
         <div class="noprint">
-          <p class="lien_ajout_commentaire noprint"><b>Vous êtes modérateur de cette fiche, vous pouvez :
+          <p class="lien_ajout_commentaire"><b>Vous êtes modérateur de cette fiche, vous pouvez :
             <a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
               Modifier cette fiche
             </a>&nbsp;

@@ -1,4 +1,4 @@
-<div id="entete">
+<div id="entete" class="noprint">
 	<div>
 		<?if (est_connecte() && $infos_identification->username) {?>
 			<a href="<?=$config_wri['lien_forum']?>index.php?mode=logout">Déconnexion</a>
@@ -31,7 +31,7 @@ if (!preg_match( "/$agents_mobiles/i", $_SERVER['HTTP_USER_AGENT'] ?? ''))
 	$menus [] = 'menu-scroll';
 
 foreach ($menus AS $id) {?>
-	<div id="<?=$id?>" class="menu">
+	<div id="<?=$id?>" class="menu noprint">
 		<a href="<?=$config_wri['sous_dossier_installation']?>" title="Retour à l'accueil">Refuges.info</a>
 		<span onclick="flip(this.parentNode,'deroule')">Menu</span>
 		<?if (!est_connecte()) {?>

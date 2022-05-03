@@ -867,6 +867,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   html {
     height: initial;
   }
+  .noprint {
+    display:none;
+  }
+}
   #carte-nav {
     margin: 0;
   }
