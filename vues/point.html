@@ -24,14 +24,16 @@
       <?php }?>
       <?php // Si les droits sont suffisants, lien de modification
       if (est_autorise($point->id_createur)) {?>
-        <dd class="noprint">
-          <a class="groupir" style="font-size: smaller ;" href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
-            [Modifier cette fiche]
-          </a>
-                    <a class="groupir" style="font-size: smaller ;" href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications/<?=$vue->point->id_point?>">
-                        [Consulter l'historique de cette fiche]
-                    </a>
-        </dd>
+        <div class="noprint">
+          <p class="lien_ajout_commentaire noprint"><b>Vous êtes modérateur de cette fiche, vous pouvez :
+            <a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
+              Modifier cette fiche
+            </a>&nbsp;
+            <a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications/<?=$vue->point->id_point?>">
+              Consulter l'historique de cette fiche
+            </a>
+          </b></p>
+        </div>
       <?php }?>
 <!--========================================== FICHE DE ===========================================-->
       <dt class="condense">
