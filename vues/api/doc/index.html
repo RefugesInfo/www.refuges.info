@@ -5,31 +5,11 @@
         <title>Documentation API refuges.info</title>
         <meta charset=utf-8 />
         <link rel="stylesheet" type="text/css" media="all" href="style.css" />
-        <script type="text/javascript">
-            function isValidEmail(str) {
-                return (str.indexOf(".") > 2) && (str.indexOf("@") > 0);
-            }
-            
-            function ValidateForm(form)
-            {
-                if(!isValidEmail(form.mail.value)) 
-                { 
-                    alert('L\'adresse courriel entrée est invalide') 
-                    form.mail.focus(); 
-                    return false; 
-                }
-                return true;
-            }
-        </script>
     </head>
     
     <body>
         <header>
             <p>API Refuges<span class="small">.info</span></p>
-            
-            <form method="post" action="addMail.php" onsubmit="javascript:return ValidateForm(this)">
-                <input type="text" name="mail" onFocus="if(this.value=='Newsletter API')this.value=''" onblur="if(this.value=='')this.value='Newsletter API'" value="Newsletter API" /><input type="submit" value="Ok!" />
-            </form>
         </header>
         
         <section id="intro">
@@ -46,16 +26,13 @@
                 L'API est disponible en <b>lecture seule</b> uniquement, et aucune autentification ou clé d'API n'est requise.
             </p>
             <p>
-                Nous vous invitons à vous abonner à la newsletter de l'API (en haut à droite) de manière à être informé des évolutions qui pourraient apparaître et afin de nous aider
-                à établir des statistiques d'utilisations de l'API. <i>Note : Les mails sont stockés sur notre serveur mais ne seront en aucun cas partagés à des tiers. En vous abonnant vous acceptez
-                tout de même de recevoir un mail de notre part, ce qui ne va pas arriver souvent ;).</i>
+               Vous pouvez nous suivre, rapporter des bugs ou soumettre des évolution de l'api sur  <a href="https://github.com/RefugesInfo/www.refuges.info">la page github de refuges.info</a>
             </p>
             <p>
                 Les données du site Refuges.info sous sont licence <a href="http://creativecommons.org/licenses/by-sa/2.0/deed.fr">CC By-Sa 2.0</a>, cependant l'API permet aussi de retourner des données
                 provenant d'OpenStreetMap via sa fonction de recherche, ces données sont sous licence <a href="http://opendatacommons.org/licenses/odbl/">ODbL</a>.
                 Plus d'informations sur <a href="/wiki/licence/">la licence des contenus</a>,
-                <a href="http://www.openstreetmap.org/copyright">la licence d'OpenStreetMap</a>,
-                et <a href="https://github.com/RefugesInfo/www.refuges.info/">le code source du site</a> ou vous pouvez contribuer avec plaisir.
+                <a href="http://www.openstreetmap.org/copyright">la licence d'OpenStreetMap</a>.
             </p>
         </section>
         
