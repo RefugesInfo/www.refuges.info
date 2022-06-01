@@ -16,6 +16,7 @@ class listener implements EventSubscriberInterface
 			'core.viewtopic_assign_template_vars_before' => 'viewtopic_assign_template_vars_before',
 			'core.posting_modify_submission_errors' => 'posting_modify_submission_errors',
 			'core.page_footer' => 'page_footer',
+			'core.login_box_before' => 'login_box_before',
 		];
 	}
 
@@ -84,5 +85,20 @@ class listener implements EventSubscriberInterface
 		ob_start();
 		include ($config_wri['chemin_vues'].'_pied.html');
 		$template->assign_var('PIED', ob_get_clean());
+	}
+
+	// Forçage https du login.
+	/* TODO : ça devrait le faire avec 2 lignes .htaccess mais ça marche pô :(
+RewriteCond %{HTTPS} !=on
+RewriteRule /forum/ucp.* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+	*/
+	function login_box_before () {
+		global $request;
+		$server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
+
+		if (!isset($server['HTTPS'])) {
+			header('Location: https://'.$server['HTTP_HOST'].$server['REQUEST_URI'], true, 301);
+			die();
+		}
 	}
 }
