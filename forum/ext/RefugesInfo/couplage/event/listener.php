@@ -98,7 +98,7 @@ RewriteRule /forum/ucp.* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 		if (!isset($server['HTTPS'])) {
 			header('Location: https://'.$server['HTTP_HOST'].$server['REQUEST_URI'], true, 301);
-			die();
+			exit(0);
 		}
 	}
 }
