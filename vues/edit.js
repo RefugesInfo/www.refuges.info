@@ -1,17 +1,18 @@
 const controls = [
-		controlLayerSwitcher(layersCollection()),
-		new ol.control.Attribution(),
-		new ol.control.ScaleLine(),
-		controlMousePosition(),
 		new ol.control.Zoom(),
-		controlFullScreen(),
+		new ol.control.FullScreen(),
 		controlGeocoder(),
 		controlLoadGPX(),
+		controlLayerSwitcher(layersCollection()),
+		controlMousePosition(),
+		new ol.control.ScaleLine(),
 		controlPermalink({ // Permet de garder le même réglage de carte
-			display: true,
 <?php if ($vue->polygone->id_polygone) { ?>
 			init: false, // Ici, on cadrera plutôt sur le massif
 <?php } ?>
+		}),
+		new ol.control.Attribution({
+			collapsed: false,
 		}),
 	],
 

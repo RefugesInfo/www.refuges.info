@@ -33,10 +33,6 @@ if (!empty($vue->http_status_code))
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 
-		<!-- Polyfill iOS : Amélioration du pseudo full screen pour les cartes pour d'anciennes versions d'iOS/Safari -->
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
 		<script>
 			var mapKeys = <?=json_encode($config_wri['mapKeys'])?>;
 		</script>

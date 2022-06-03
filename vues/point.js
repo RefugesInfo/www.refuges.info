@@ -13,18 +13,20 @@ const baseLayers = {
 	},
 
 	controls = [
+		new ol.control.Zoom(),
+		new ol.control.FullScreen(),
+		controlGPS(),
+		controlPrint(),
 		controlLayerSwitcher(baseLayers),
+		controlMousePosition(),
+		new ol.control.ScaleLine(),
 		controlPermalink({ // Permet de garder le même réglage de carte d'une page à l'autre
 			visible: false, // Mais on ne visualise pas le lien du permalink
 			init: false, // Ici, on utilisera plutôt la position du point
 		}),
-		new ol.control.ScaleLine(),
-		controlMousePosition(),
-		new ol.control.Zoom(),
-		controlFullScreen(),
-		controlGPS(),
-		controlPrint(),
-		new ol.control.Attribution(),
+		new ol.control.Attribution({
+			collapsed: false,
+		}),
 	],
 
 	coordinates = [<?=$vue->point->longitude?>,<?=$vue->point->latitude?>],
@@ -38,8 +40,7 @@ const baseLayers = {
 		},
 		styleOptions: {
 			image: new ol.style.Icon({
-				src: '<?=$config_wri["sous_dossier_installation"]?>images/cadre.png',
-				imgSize: [31, 43], // IE compatibility
+				src: '<?=$config_wri["sous_dossier_installation"]?>images/cadre.svg',
 			}),
 		},
 	});

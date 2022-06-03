@@ -11,7 +11,9 @@ new ol.Map({
 		}),
 	],
 	controls: [
-		new ol.control.Attribution(),
+		new ol.control.Attribution({
+			collapsed: false,
+		}),
 	],
 })
 

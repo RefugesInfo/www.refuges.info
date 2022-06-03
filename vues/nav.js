@@ -13,25 +13,25 @@ const baseLayers = {
 	},
 
   controls = [
+		new ol.control.Zoom(),
+		new ol.control.FullScreen(),
+		controlGeocoder(),
+		controlGPS(),
+		controlLoadGPX(),
+		controlDownload(),
+		controlPrint(),
 		controlLayerSwitcher(baseLayers),
+		controlMousePosition(),
+		new ol.control.ScaleLine(),
 		controlPermalink({ // Permet de garder le même réglage de carte
 			display: true,
 <?php if ($vue->polygone->id_polygone) { ?>
 			init: false, // Ici, on cadrera plutôt sur le massif
 <?php } ?>
 		}),
-		new ol.control.Attribution(),
-		new ol.control.ScaleLine(),
-		controlMousePosition(),
-		new ol.control.Zoom(),
-		controlFullScreen(),
-		controlGeocoder(),
-		controlGPS(),
-		controlLoadGPX(),
-<?if (!$vue->polygone->nom_polygone ) { ?>
-		controlDownload(),
-<?php } ?>
-		controlPrint(),
+		new ol.control.Attribution({
+			collapsed: false,
+		}),
 	],
 
 	points = layerWri({

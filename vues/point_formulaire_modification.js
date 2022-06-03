@@ -18,21 +18,23 @@ const baseLayers = {
 	},
 
 	controls = [
+		new ol.control.Zoom(),
+		new ol.control.FullScreen(),
+		controlGeocoder(),
+		controlLoadGPX(),
+		controlGPS(),
 		controlLayerSwitcher(baseLayers),
+		controlMousePosition(),
+		new ol.control.ScaleLine(),
 		controlPermalink({ // Permet de garder le même réglage de carte en création
 			visible: false, // Mais on ne visualise pas le lien du permalink
 <?php if (!empty($point->id_point)) { ?>
 			init: false, // Ici, on utilisera plutôt la position du point si on est en modification
 <?php } ?>
 		}),
-		new ol.control.Attribution(),
-		new ol.control.ScaleLine(),
-		controlMousePosition(),
-		new ol.control.Zoom(),
-		controlFullScreen(),
-		controlGeocoder(),
-		controlLoadGPX(),
-		controlGPS(),
+		new ol.control.Attribution({
+			collapsed: false,
+		}),
 	],
 
 	coordinates = [<?=$vue->point->longitude?>, <?=$vue->point->latitude?>],
@@ -44,8 +46,7 @@ const baseLayers = {
 		singlePoint: true,
 		styleOptions: {
 			image: new ol.style.Icon({
-				src: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.png',
-				imgSize: [30, 30], // IE compatibility
+				src: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.svg',
 			}),
 		},
 		// Remove FeatureCollection packing of the point
