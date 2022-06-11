@@ -83,9 +83,15 @@
         <?php if (empty($vue->mini_carte)) {?>
           <strong><?=$vue->point->nom_precision_gps?></strong>
         <?php }else{?>
-          <input type="hidden" id="marqueur-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}' />
-          <span id="marqueur"></span>
-            </dd>
+          <input type="hidden" id="cadre-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}' />
+          <span id="cadre-string"></span>
+          <select id="cadre-select">
+            <option value="dec" selected="selected">Degrés décimaux</option>
+            <option value="dms">Deg Min Sec</option>
+            <option class="xy" value="swiss">Suisse</option>
+            <option value="utm">UTM</option>
+          </select>
+      </dd>
       <dd>
         Export:
           <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,

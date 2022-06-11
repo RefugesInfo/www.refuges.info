@@ -5,125 +5,107 @@ https://github.com/Dominique92/MyOl
 Based on https://openlayers.org
 -->
 <?php
-	// This is the entry point for the apache servers running PHP
-	// You can include it from another directory
-	// It needs a manifest.json file in the same directory
+// Scan involved directories
+$url_dirs  = explode ('/', str_replace ('index.php', '', $_SERVER['SCRIPT_FILENAME']));
+$script_dirs  = explode ('/', str_replace ('\\', '/', __DIR__ .'/'));
 
-	//BEST BUG battements entre deux instances de GPS
+// Remove common part of the paths (except the last /)
+while (count ($url_dirs ) > 1 && count ($script_dirs ) > 1 &&
+	$url_dirs [0] == $script_dirs [0]) {
+	array_shift ($url_dirs );
+	array_shift ($script_dirs );
+}
 
-	// Read info in the manifest.json & list *.gpx files
-	$manifest = json_decode (file_get_contents ('manifest.json'), true);
-	$icon = $manifest['icons'][0];
+// Url path from service-worker
+$url_path = str_replace ('../', ':', //HACK avoid http 406 error
+	str_repeat ('../', count ($script_dirs ) - 1) .implode ('/', $url_dirs));
 
-	// Find the last subdir server internal files
-	preg_match ('/[^\/]*$/', $_SERVER['DOCUMENT_ROOT'], $tag_root);
+// Gps scripts path from url
+$script_path = str_repeat ('../', count ($url_dirs ) - 1) .implode ('/', $script_dirs);
 
-	// Calculate relative paths between the requested url & the GPS package directory
-	$urls = explode ($tag_root[0], pathinfo ($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME));
-	$dirs = explode ($tag_root[0], str_replace ('\\', '/', __DIR__));
-	$url_dir = explode ('/', $urls[1]);
-	$gps_dir = explode ('/', $dirs[1]);
-
-	// Remove common part of the paths
-	foreach ($url_dir AS $k=>$v)
-		if (@$gps_dir[$k] == $v) {
-			unset ($url_dir[$k]);
-			unset ($gps_dir[$k]);
-		}
-
-	if (count ($gps_dir)) { // If the URL is not in the GPS package directory
-		$url_dir[] = $gps_dir[] = ''; // Add a / at the end if necessary
-
-		$url_path = str_repeat ('../', count ($gps_dir) - 1) .implode ('/', $url_dir); // Path of the URL from the GPS dir
-		$gps_path = str_repeat ('../', count ($url_dir) - 1) .implode ('/', $gps_dir); // Path of the GPS dir from the URL
-
-		$myol_path = preg_replace ('/gps\/$/', '', $gps_path);
-	} else {
-		$url_path = $gps_path = '';
-		$myol_path = '../';
-	}
-
-	// List the files to cache
-	$service_worker =
-		$gps_path.
-		'service-worker.js.php?files='.
-		str_replace (['gps/../', '../'], ['', ':'], // Optimise link, avoid error 406 ModSecurity
-			implode (',', [
-				$url_path.pathinfo ($_SERVER['SCRIPT_FILENAME'], PATHINFO_BASENAME),
-				$url_path.'manifest.json',
-				$url_path.$icon['src'],
-			])
-		);
-
-	// Get gpx files on the url directory
-	$gpx_files = glob ('*.gpx');
+// Get manifest info
+$manifest = json_decode (file_get_contents ('manifest.json'), true);
+$icon_file = $manifest['icons'][0]['src'];
+$icon_type = pathinfo ($icon_file, PATHINFO_EXTENSION);
 ?>
 <html>
 <head>
-	<link rel="manifest" href="manifest.json">
-
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
 	<title><?=$manifest['name']?></title>
+	<link href="manifest.json" rel="manifest">
+
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<link rel="icon" type="<?=$icon['type']?>" href="<?=$icon['src']?>" />
-
-	<!-- Polyfill iOS : Amélioration du pseudo full screen pour les cartes pour d'anciennes versions d'iOS/Safari -->
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<link href="<?=$icon_file?>" rel="icon" type="image/<?=$icon_type?>" />
+	<link href="<?=$icon_file?>" rel="apple-touch-icon" />
 
 	<!-- Openlayers -->
-	<link href="<?=$myol_path?>ol/ol.css" type="text/css" rel="stylesheet">
-	<script src="<?=$myol_path?>ol/ol.js"></script>
+	<link href="<?=@$script_path?>../ol/ol.css" type="text/css" rel="stylesheet">
+	<script src="<?=@$script_path?>../ol/ol.js"></script>
 
 	<!-- Recherche par nom -->
-	<link href="<?=$myol_path?>geocoder/ol-geocoder.min.css" type="text/css" rel="stylesheet">
-	<script src="<?=$myol_path?>geocoder/ol-geocoder.js"></script>
+	<link href="<?=@$script_path?>../geocoder/ol-geocoder.min.css" type="text/css" rel="stylesheet">
+	<script src="<?=@$script_path?>../geocoder/ol-geocoder.js"></script>
 
 	<!-- My Openlayers -->
-	<link href="<?=$myol_path?>myol.css" type="text/css" rel="stylesheet">
-	<script src="<?=$myol_path?>myol.js"></script>
+	<link href="<?=@$script_path?>../myol.css" type="text/css" rel="stylesheet">
+	<script src="<?=@$script_path?>../myol.js"></script>
 
 	<!-- This app -->
-	<link href="<?=$gps_path?>index.css" type="text/css" rel="stylesheet">
-	<script src="<?=$gps_path?>index.js" defer="defer"></script>
+	<link href="<?=@$script_path?>index.css" type="text/css" rel="stylesheet">
+	<script src="<?=@$script_path?>index.js" defer="defer"></script>
 	<script>
-		var service_worker = '<?=$service_worker?>',
-<?php if (isset ($manifest['scope'])) { ?>
+		var serviceWorkerName = '<?=@$script_path?>service-worker.js.php?url_path=<?=$url_path?>',
 			scope = '<?=$manifest['scope']?>',
-<?php } ?>
-			mapKeys = <?=json_encode(@$mapKeys)?>,
-			baselayers = <?=isset ($baselayers)?$baselayers:'{}'?>;
-
-<?php if (isset ($_GET['gpx'])) { ?>
-		window.addEventListener ('load', function() {
-			addLayer ('<?=dirname($_SERVER['SCRIPT_NAME'])?>/<?=$_GET['gpx']?>.gpx');
-		});
-<?php } ?>
+			scriptName = 'index.php',
+			mapKeys = <?=json_encode(@$mapKeys)?>;
 	</script>
 </head>
 
 <body>
-	<?php if (count ($gpx_files) && !isset ($_GET['gpx'])) { ?>
+	<?php
+	// List gpx files on the url directory
+	$gpx_files = glob ('*.gpx');
+	$gpx_args = $_GET ?: $gpx_files;
+
+	// Add a gpx layer if any arguments to the url
+	if (count ($gpx_args) == 1) {
+		$gpx_show =
+			@$gpx_args['gpx'] ?: // 1 : ?gpx=trace
+			str_replace ('.gpx', '', array_values($gpx_args)[0]) ?: // 3 : 1 gpx file in the directory
+			array_keys($gpx_args)[0]; // 2 : ?trace
+
+		if (in_array ($gpx_show.'.gpx', $gpx_files)) {
+	?>	<script>
+			var gpxFile = '<?=$gpx_show?>.gpx';
+		</script>
+	<?php }
+	}
+
+	// Add a gpx layers list
+	if (count ($gpx_files)) { ?>
 		<div id="liste">
 			<p>Cliquez sur le nom de la trace pour l'afficher :</p>
 			<ul>
 			<?php foreach ($gpx_files AS $gpx) { ?>
 				<li>
 					<a title="Cliquer pour afficher la trace"
-						onclick="addLayer('<?=dirname($_SERVER['SCRIPT_NAME']).'/'.$gpx?>')">
+						onclick="addLayer('<?=$gpx?>')">
 						<?=ucfirst(pathinfo($gpx,PATHINFO_FILENAME))?>
 					</a>
 				</li>
 		<?php } ?>
 			</ul>
 			<p>Puis sur la cible pour afficher votre position.</p>
-			<p>Fermer : <a onclick="document.getElementById('liste').style.display='none'" title="Replier">&#9651;</a></p>
+			<p>Fermer : <a onclick="document.getElementById('liste').style.display='none'" title="Replier">&Xi;</a></p>
 		</div>
 	<?php } ?>
 
 	<div id="map"></div>
 
-<?php if (!isset ($no_tail)) { ?>
+	<?php // WRI
+		if(file_exists ('footer.php'))
+			include 'footer.php';
+	?>
 </body>
 </html>
-<?php } ?>

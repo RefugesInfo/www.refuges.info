@@ -3,16 +3,26 @@ const baseLayers = {
 		'OpenTopo': layerOpenTopo(),
 		'Outdoors': layerThunderforest('outdoors'),
 		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'), // Besoin d'une clé gratuite
-		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', {format:'png', key:'pratique'}), // 'pratique' is the key for the free layers
+		'IGN TOP25': layerIGN({
+			layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+			key: mapKeys.ign,
+		}),
+		'IGN V2': layerIGN({
+			layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+			key: 'essentiels', // The key for the free layers
+			format: 'image/png',
+		}),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
-		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', {key:'pratique'}),
+		'Photo IGN': layerIGN({
+			layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+			key: 'essentiels',
+		}),
 		'Photo Bing': layerBing('Aerial'),
 	},
 
-  controls = [
+	controls = [
 		new ol.control.Zoom(),
 		new ol.control.FullScreen(),
 		controlGeocoder(),
@@ -51,12 +61,6 @@ const baseLayers = {
 		selectorName: 'couche-wri',
 		maxResolution: 500, // La couche est affichée pour les résolutions < 500 Mercator map unit / pixel
 		distance: 30, // Clusterisation
-		styleOptionsFunction: function(feature, properties) {
-			return Object.assign({},
-				styleOptionsIcon(properties.icon),
-				styleOptionsLabel(properties.nom, properties)
-			);
-		},
 	}),
 
 	// Affiche les massifs si résolution > 500

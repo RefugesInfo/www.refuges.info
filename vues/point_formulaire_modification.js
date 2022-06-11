@@ -1,8 +1,8 @@
 // Utilitaire de saisie
-function affiche_et_set( el , affiche, valeur ) {
-    document.getElementById(el).style.visibility = affiche ;
-    document.getElementById(el).value = valeur ;
-    return false;
+function affiche_et_set(el, affiche, valeur) {
+	document.getElementById(el).style.visibility = affiche;
+	document.getElementById(el).value = valeur;
+	return false;
 }
 
 // Gestion des cartes
@@ -11,7 +11,6 @@ const baseLayers = {
 		'OpenTopo': layerOpenTopo(),
 		'Outdoors': layerThunderforest('outdoors'),
 		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
 		'Photo Bing': layerBing('Aerial'),
@@ -37,27 +36,12 @@ const baseLayers = {
 		}),
 	],
 
-	coordinates = [<?=$vue->point->longitude?>, <?=$vue->point->latitude?>],
-
-	viseur = layerEditGeoJson({
-		displayPointId: 'viseur',
-		geoJsonId: 'geojson',
-		dragPoint: true,
-		singlePoint: true,
-		styleOptions: {
-			image: new ol.style.Icon({
-				src: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.svg',
-			}),
-		},
-		// Remove FeatureCollection packing of the point
-		saveFeatures: function(coordinates, format) {
-			return format.writeGeometry(
-				new ol.geom.Point(coordinates.points[0]), {
-					featureProjection: 'EPSG:3857',
-					decimals: 5,
-				}
-			);
-		},
+	marker = layerMarker({
+		prefix: 'marker', // S'interface avec les <TAG id="marker-xxx"...
+		src: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.svg',
+		focus: 15,
+		dragable: true,
+		zIndex: 10,
 	}),
 
 	layerPoints = layerWri({
@@ -73,7 +57,7 @@ const baseLayers = {
 new ol.Map({
 	target: 'carte-edit',
 	view: new ol.View({
-		center: ol.proj.fromLonLat(coordinates),
+		center: ol.proj.fromLonLat([<?=$vue->point->longitude?>, <?=$vue->point->latitude?>]),
 		zoom: 13,
 		enableRotation: false,
 		constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
@@ -81,6 +65,6 @@ new ol.Map({
 	controls: controls,
 	layers: [
 		layerPoints,
-		viseur,
+		marker,
 	],
 });

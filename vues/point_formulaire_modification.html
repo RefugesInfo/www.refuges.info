@@ -1,5 +1,8 @@
 <div class="contenu">
-    <div id="carte-edit"></div>
+    <div id="container-carte-point">
+      <div id="carte-edit"></div>
+      <p>Double clic sur la carte y déplace le curseur.</p>
+	</div>
     <form class="wri" id="form_point" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_modification">
 
     <div><?php
@@ -13,42 +16,28 @@
     <div>
     <!-- Champs cachés -->
     <?php
-    foreach ($vue->champs->invisibles as $nom => $params)
-    { ?>
+    foreach ($vue->champs->invisibles as $nom => $params) { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
     <?}?>
     </div>
 
-	<!-- Draggable marker -->
+	<!-- Edition de la position -->
     <h4>Coordonnées</h4>
-		<input type="hidden" id="geojson" name="geojson" value='<?=$vue->point->id_point?$vue->point->geojson:''?>' />
+		<input type="hidden" id="marker-json" name="geojson" value='<?=$vue->point->id_point?$vue->point->geojson:''?>' />
+
         <fieldset>
-			<div id="viseur">
+			<div id="marker-coordinates">
 				<label>
 					Longitude :
-					<input type="text" name="lon" size="12" maxlength="12"> (WGS84)&nbsp;
-					 <span style="display:none" class="epsg-21781"> / X : <input type="text" name="x" size="7" maxlength="12"> (CH 1903)</span> 
+					<input type="text" id="marker-lon" name="lon" size="12" maxlength="12"> (WGS84)&nbsp;
+					<span class="xy"> / X : <input id="marker-x" type="text" name="x" size="7" maxlength="12"> (CH 1903)</span> 
 				</label>
 				<label>
 					Latitude :
-					<input type="text" name="lat" size="12" maxlength="12"> (WGS84)&nbsp;
-					<span style="display:none" class="epsg-21781"> / Y : <input type="text" name="y" size="7" maxlength="12"></span>
+					<input type="text" id="marker-lat" name="lat" size="12" maxlength="12"> (WGS84)&nbsp;
+					<span class="xy"> / Y : <input id="marker-y" type="text" name="y" size="7" maxlength="12"></span>
 				</label>
 			</div>
-
-            <label>
-                Saisissez ou déplacez le viseur pour modifier la position (n'oubliez pas de valider).
-            </label>
-            <label>
-				<a onclick="viseur.centerMarker()" style="color:blue;cursor:pointer">
-					Replacer le curseur au centre actuel de la carte
-				</a>
-            </label>
-            <label>
-				<a onclick="viseur.centerMap()" style="color:blue;cursor:pointer">
-					Centrer la carte sur la position actuelle du curseur
-				</a>
-            </label>
 
             <label>&nbsp;</label>
             <label>Provenance
@@ -60,6 +49,7 @@
                 <?}?>
                 </select>
             </label>
+
             <label>
                 Altitude :
                 <input type="text" name="altitude" size="6" value="<?=$vue->point->altitude?>" />m
@@ -100,6 +90,7 @@
 				</label>
             <?}?>
         </fieldset>
+
         <fieldset>
                     <span><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></span>
                     <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
@@ -109,7 +100,8 @@
 		
 <?php } ?>
         </fieldset>
-    <h4>Informations complémentaires</h4>
+
+		<h4>Informations complémentaires</h4>
 	
         <?php if (est_moderateur()) { ?>
         <fieldset class="booleen">

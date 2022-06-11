@@ -1,9 +1,20 @@
-const controls = [
+const baseLayers = {
+		'Refuges.info': layerMRI(),
+		'OpenTopo': layerOpenTopo(),
+		'Outdoors': layerThunderforest('outdoors'),
+		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
+		'Autriche': layerKompass('KOMPASS Touristik'),
+		'Espagne': layerSpain('mapa-raster', 'MTN'),
+		'Photo Bing': layerBing('Aerial'),
+	},
+
+  controls = [
 		new ol.control.Zoom(),
 		new ol.control.FullScreen(),
 		controlGeocoder(),
 		controlLoadGPX(),
-		controlLayerSwitcher(layersCollection()),
+		controlDownload(),
+		controlLayerSwitcher(baseLayers),
 		controlMousePosition(),
 		new ol.control.ScaleLine(),
 		controlPermalink({ // Permet de garder le même réglage de carte
