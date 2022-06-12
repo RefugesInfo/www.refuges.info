@@ -12,12 +12,6 @@
 /* jshint esversion: 6 */
 if (!ol) var ol = {};
 
-if (window.PointerEvent === undefined) {
-	const script = document.createElement('script');
-	script.src = 'https://unpkg.com/elm-pep';
-	document.head.appendChild(script);
-}
-
 /**
  * Debug facilities on mobile
  */
@@ -31,38 +25,22 @@ if (location.hash == '###')
 	};
 
 /**
- * Display OL version
+ * Display misc values
  */
+// OL version
 try {
 	new ol.style.Icon(); // Try incorrect action
 } catch (err) { // to get Assert url
 	console.log('Ol ' + err.message.match('/v([0-9\.]+)/')[1]);
 }
-
-/**
- * Load url ?name=value&name=value and #name=value&name=value in localstorage.myol_name
- */
-for (let v of location.href.matchAll(/([a-z]+)=([^?#=]+)/g))
-	localStorage['myol_' + v[1]] = v[2];
-
-/**
- * Json parsing errors log
- */
-function JSONparse(json) {
-	try {
-		return JSON.parse(json);
-	} catch (returnCode) {
-		console.log(returnCode + ' parsing : "' + json + '" ' + new Error().stack);
-	}
+// localStorage
+let localStorageDump = [];
+for (let i = 0; i < localStorage.length; i++) {
+	localStorageDump.push(
+		localStorage.key(i) + ': ' +
+		localStorage.getItem(localStorage.key(i)));
 }
-
-/**
- * Icon extension depending on the OS
- */
-function iconCanvasExt() {
-	const iOSVersion = navigator.userAgent.match(/iPhone OS ([0-9]+)/);
-	return iOSVersion && iOSVersion[1] < 13 ? 'png' : 'svg';
-}
+console.log(localStorageDump.join('\n'));
 
 /**
  * Warn layers when added to the map
@@ -82,6 +60,31 @@ ol.Map.prototype.handlePostRender = function() {
 		}
 	});
 };
+
+/**
+ * Json parsing errors log
+ */
+function JSONparse(json) {
+	try {
+		return JSON.parse(json);
+	} catch (returnCode) {
+		console.log(returnCode + ' parsing : "' + json + '" ' + new Error().stack);
+	}
+}
+
+/**
+ * IOS 12 support
+ */
+if (window.PointerEvent === undefined) {
+	const script = document.createElement('script');
+	script.src = 'https://unpkg.com/elm-pep';
+	document.head.appendChild(script);
+}
+// Icon extension depending on the OS (IOS 12 dosn't support SVG)
+function iconCanvasExt() {
+	const iOSVersion = navigator.userAgent.match(/iPhone OS ([0-9]+)/);
+	return iOSVersion && iOSVersion[1] < 13 ? 'png' : 'svg';
+}
 
 /* FILE src/layerTileCollection.js */
 /**
@@ -379,11 +382,13 @@ function layersCollection() {
 function layersDemo() {
 	return Object.assign(layersCollection(), {
 		'OSM': layerOSM('//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-		'OSM cycle': layerThunderforest('cycle'),
-		'OSM landscape': layerThunderforest('landscape'),
-		'OSM trains': layerThunderforest('pioneer'),
-		'OSM villes': layerThunderforest('neighbourhood'),
-		'OSM contraste': layerThunderforest('mobile-atlas'),
+		'OSM cyclo': layerOSM('//{a-c}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png'),
+
+		'ThF cycle': layerThunderforest('cycle'),
+		'ThF landscape': layerThunderforest('landscape'),
+		'ThF trains': layerThunderforest('pioneer'),
+		'ThF villes': layerThunderforest('neighbourhood'),
+		'ThF contraste': layerThunderforest('mobile-atlas'),
 
 		'OS light': layerOS('Light_3857'),
 		'OS road': layerOS('Road_3857'),
@@ -418,7 +423,7 @@ function controlLayerSwitcher(baseLayers, options) {
 			element: document.createElement('div'),
 		}),
 		layerNames = Object.keys(baseLayers),
-		baselayer = location.search.match(/baselayer=([^\&]+)/);
+		baselayer = location.href.match(/baselayer=([^\&]+)/);
 	let transparentBaseLayerName = '';
 
 	// Get baselayer from url ?
@@ -1503,17 +1508,25 @@ function controlButton(options) {
  * Don't set view when you declare the map
  */
 function controlPermalink(options) {
+	const aEl = document.createElement('a'),
+		control = new ol.control.Control({
+			element: document.createElement('div'),
+			render: render,
+		}),
+		urlArgs = {
+			map: '',
+		};
+
+	// Load url ?name=value&name=value and #name=value&name=value in urlArgs
+	for (let v of location.href.replaceAll('NaN', '').matchAll(/([a-z]+)=([^?#&=]+)/g))
+		urlArgs[v[1]] = v[2];
+
 	options = Object.assign({
 		init: true, // {true | false} use url hash or localStorage to position the map.
 		setUrl: false, // {true | false} Change url hash when moving the map.
 		display: false, // {true | false} Display permalink link the map.
 		hash: '?', // {?, #} the permalink delimiter after the url
 	}, options);
-	const aEl = document.createElement('a'),
-		control = new ol.control.Control({
-			element: document.createElement('div'),
-			render: render,
-		});
 
 	if (options.display) {
 		control.element.className = 'ol-permalink';
@@ -1523,29 +1536,28 @@ function controlPermalink(options) {
 	}
 
 	function render(evt) {
-		const view = evt.map.getView();
+		const view = evt.map.getView(),
+			mapHash = (urlArgs.map + '//').split('/');
 
 		// Set center & zoom at the init
 		if (options.init) {
 			options.init = false; // Only once
 
-			view.setZoom(parseFloat(localStorage.myol_zoom) || 6);
+			view.setZoom(parseFloat(mapHash[0] || urlArgs.zoom || localStorage.myol_zoom.replace('NaN', '') || 6));
+
 			view.setCenter(ol.proj.transform([
-				parseFloat(localStorage.myol_lon) || 2,
-				parseFloat(localStorage.myol_lat) || 47
+				parseFloat(mapHash[1] || urlArgs.lon || localStorage.myol_lon.replace('NaN', '') || 2),
+				parseFloat(mapHash[2] || urlArgs.lat || localStorage.myol_lat.replace('NaN', '') || 47)
 			], 'EPSG:4326', 'EPSG:3857'));
 		}
 
 		// Set the permalink with current map zoom & position
 		if (view.getCenter()) {
 			const ll4326 = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
-				newParams = 'zoom=' + Math.round(view.getZoom() * 10) / 10 +
-				'&lon=' + Math.round(ll4326[0] * 1000) / 1000 +
-				'&lat=' + Math.round(ll4326[1] * 1000) / 1000;
-
-			localStorage.myol_zoom = view.getZoom();
-			localStorage.myol_lon = ll4326[0];
-			localStorage.myol_lat = ll4326[1];
+				newParams = 'map=' +
+				(localStorage.myol_zoom = Math.round(view.getZoom() * 10) / 10) + '/' +
+				(localStorage.myol_lon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
+				(localStorage.myol_lat = Math.round(ll4326[1] * 10000) / 10000);
 
 			if (options.display)
 				aEl.href = options.hash + newParams;
@@ -2237,7 +2249,7 @@ function layerMarker(options) {
 			els.lat.value = Math.round(ll4326[1] * 100000) / 100000;
 			els.json.value = '{"type":"Point","coordinates":[' + els.lon.value + ',' + els.lat.value + ']}';
 
-			// Display	
+			// Display
 			const strings = {
 				dec: 'Lon: ' + els.lon.value + ', Lat: ' + els.lat.value,
 				dms: ol.coordinate.toStringHDMS(ll4326),
@@ -2254,7 +2266,7 @@ function layerMarker(options) {
 				els.x.value = Math.round(ll21781[0]);
 				els.y.value = Math.round(ll21781[1]);
 
-				// Display	
+				// Display
 				strings.swiss = 'X=' + els.x.value + ', Y=' + els.y.value + ' (CH1903)';
 				strings.utm = ' UTM ' + z +
 					' E:' + Math.round(llutm[0]) + ' ' +
@@ -2275,18 +2287,27 @@ function layerMarker(options) {
 	}
 
 	layer.once('myol:onadd', function(evt) {
+		const map = evt.map,
+			view = map.getView(),
+			pc = point.getCoordinates();
+
 		// Focus map on the marker
 		if (options.focus) {
-			evt.map.getView().setCenter(point.getCoordinates());
-			evt.map.getView().setZoom(options.focus);
+			if (pc[0] && pc[1])
+				view.setCenter(pc);
+			else
+				// If no position given, put the marker on the center of the visible map
+				changeLL(view.getCenter(), 'EPSG:3857');
+
+			view.setZoom(options.focus);
 		}
 
 		// Edit the marker position
 		if (options.dragable) {
 			// Drag the marker
-			evt.map.addInteraction(new ol.interaction.Pointer({
+			map.addInteraction(new ol.interaction.Pointer({
 				handleDownEvent: function(evt) {
-					return evt.map.getFeaturesAtPixel(evt.pixel, {
+					return map.getFeaturesAtPixel(evt.pixel, {
 						layerFilter: function(l) {
 							return l.ol_uid == layer.ol_uid;
 						}
@@ -2298,7 +2319,7 @@ function layerMarker(options) {
 			}));
 
 			// Get the marker at the dblclick position
-			evt.map.on('dblclick', function(evt) {
+			map.on('dblclick', function(evt) {
 				changeLL(evt.coordinate, 'EPSG:3857');
 				return false;
 			});

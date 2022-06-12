@@ -1,8 +1,8 @@
 const baseLayers = {
 		'Refuges.info': layerMRI(),
+		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'OpenTopo': layerOpenTopo(),
 		'Outdoors': layerThunderforest('outdoors'),
-		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'IGN TOP25': layerIGN({
 			layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
 			key: mapKeys.ign,

@@ -1,8 +1,8 @@
 const baseLayers = {
 		'Refuges.info': layerMRI(),
+		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'OpenTopo': layerOpenTopo(),
 		'Outdoors': layerThunderforest('outdoors'),
-		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
 		'Photo Bing': layerBing('Aerial'),
@@ -13,7 +13,7 @@ const baseLayers = {
 		new ol.control.FullScreen(),
 		controlGeocoder(),
 		controlLoadGPX(),
-		controlDownload(),
+		//controlDownload(), //TODO
 		controlLayerSwitcher(baseLayers),
 		controlMousePosition(),
 		new ol.control.ScaleLine(),
