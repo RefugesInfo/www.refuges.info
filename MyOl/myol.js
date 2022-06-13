@@ -1802,7 +1802,7 @@ function controlGPS() {
 		});
 
 		geolocation.on('error', function(error) {
-			alert('Geolocation error: ' + error.message);
+			console.log('Geolocation error: ' + error.message);
 		});
 	};
 
