@@ -195,22 +195,12 @@ if ( !empty($point->equivalent_conditions_utilisation) )
 // ===========================================
 // Préparation de la $vue commune à chaque cas
 
-if ($config_wri['is_ie']) {
-  // Includes pour IE
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol-681/polyfill.min.js?'.filemtime($config_wri['chemin_ol'].'ol-681/polyfill.min.js');
-  // Last IE compatible OL version
-  $vue->css           [] = $config_wri['url_chemin_ol'].'ol-681/ol.css?'.filemtime($config_wri['chemin_ol'].'ol-681/ol.css');
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol-681/ol.js?'.filemtime($config_wri['chemin_ol'].'ol-681/ol.js');
-} else {
-  // Includes pour autres que IE
-  $vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
-  // Non supporté IE
-  $vue->css           [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
-}
-// Includes communs à IE et autres
-$vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'proj4/proj4.js?'.filemtime($config_wri['chemin_ol'].'proj4/proj4.js');
+// Includes cartes
+$vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
+$vue->css           [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'proj4/proj4.js?'.filemtime($config_wri['chemin_ol'].'proj4/proj4.js');
 $vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
 $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
 

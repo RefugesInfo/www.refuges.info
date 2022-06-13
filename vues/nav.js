@@ -1,37 +1,47 @@
 const baseLayers = {
 		'Refuges.info': layerMRI(),
+		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'OpenTopo': layerOpenTopo(),
 		'Outdoors': layerThunderforest('outdoors'),
-		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'), // Besoin d'une clé gratuite
-		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', {format:'png', key:'pratique'}), // 'pratique' is the key for the free layers
+		'IGN TOP25': layerIGN({
+			layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+			key: mapKeys.ign,
+		}),
+		'IGN V2': layerIGN({
+			layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+			key: 'essentiels', // The key for the free layers
+			format: 'image/png',
+		}),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
-		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', {key:'pratique'}),
+		'Photo IGN': layerIGN({
+			layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+			key: 'essentiels',
+		}),
 		'Photo Bing': layerBing('Aerial'),
 	},
 
-  controls = [
+	controls = [
+		new ol.control.Zoom(),
+		new ol.control.FullScreen(),
+		controlGeocoder(),
+		controlGPS(),
+		controlLoadGPX(),
+		controlDownload(),
+		controlPrint(),
 		controlLayerSwitcher(baseLayers),
+		controlMousePosition(),
+		new ol.control.ScaleLine(),
 		controlPermalink({ // Permet de garder le même réglage de carte
 			display: true,
 <?php if ($vue->polygone->id_polygone) { ?>
 			init: false, // Ici, on cadrera plutôt sur le massif
 <?php } ?>
 		}),
-		new ol.control.Attribution(),
-		new ol.control.ScaleLine(),
-		controlMousePosition(),
-		new ol.control.Zoom(),
-		controlFullScreen(),
-		controlGeocoder(),
-		controlGPS(),
-		controlLoadGPX(),
-<?if (!$vue->polygone->nom_polygone ) { ?>
-		controlDownload(),
-<?php } ?>
-		controlPrint(),
+		new ol.control.Attribution({
+			collapsed: false,
+		}),
 	],
 
 	points = layerWri({
@@ -51,12 +61,6 @@ const baseLayers = {
 		selectorName: 'couche-wri',
 		maxResolution: 500, // La couche est affichée pour les résolutions < 500 Mercator map unit / pixel
 		distance: 30, // Clusterisation
-		styleOptionsFunction: function(feature, properties) {
-			return Object.assign({},
-				styleOptionsIcon(properties.icon),
-				styleOptionsLabel(properties.nom, properties)
-			);
-		},
 	}),
 
 	// Affiche les massifs si résolution > 500

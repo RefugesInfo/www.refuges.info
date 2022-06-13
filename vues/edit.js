@@ -1,17 +1,29 @@
-const controls = [
-		controlLayerSwitcher(layersCollection()),
-		new ol.control.Attribution(),
-		new ol.control.ScaleLine(),
-		controlMousePosition(),
+const baseLayers = {
+		'Refuges.info': layerMRI(),
+		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
+		'OpenTopo': layerOpenTopo(),
+		'Outdoors': layerThunderforest('outdoors'),
+		'Autriche': layerKompass('KOMPASS Touristik'),
+		'Espagne': layerSpain('mapa-raster', 'MTN'),
+		'Photo Bing': layerBing('Aerial'),
+	},
+
+  controls = [
 		new ol.control.Zoom(),
-		controlFullScreen(),
+		new ol.control.FullScreen(),
 		controlGeocoder(),
 		controlLoadGPX(),
+		//controlDownload(), //TODO
+		controlLayerSwitcher(baseLayers),
+		controlMousePosition(),
+		new ol.control.ScaleLine(),
 		controlPermalink({ // Permet de garder le même réglage de carte
-			display: true,
 <?php if ($vue->polygone->id_polygone) { ?>
 			init: false, // Ici, on cadrera plutôt sur le massif
 <?php } ?>
+		}),
+		new ol.control.Attribution({
+			collapsed: false,
 		}),
 	],
 

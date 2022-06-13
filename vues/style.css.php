@@ -116,6 +116,11 @@ switch ($periode)
 #phpbb dl a.row-item-link:hover {
 	background-color: transparent !important;
 }
+/* Masquage login rapide en bas de page */
+#page-body form > h3,
+#page-body form > fieldset {
+	display: none;
+}
 .section-posting #attach-panel-multi::after {
 	content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
 	background: yellow;
@@ -874,17 +879,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   #carte-nav {
     margin: 0;
   }
-  /* Force attribution open */
-  .ol-attribution {
-    background: rgba(255,255,255,0.8);
-  }
-  .ol-attribution ul {
-    display: block !important;
-  }
-  .ol-attribution button {
-    display: none;
-  }
-}
 
 #check-types {
 	float: right;

@@ -24,21 +24,11 @@ require_once ("forum.php");
 
 $vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/wiki.js';
 
-if ($config_wri['is_ie']) {
-  // Includes pour IE
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol-681/polyfill.min.js?'.filemtime($config_wri['chemin_ol'].'ol-681/polyfill.min.js');
-  // Last IE compatible OL version
-  $vue->css           [] = $config_wri['url_chemin_ol'].'ol-681/ol.css?'.filemtime($config_wri['chemin_ol'].'ol-681/ol.css');
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol-681/ol.js?'.filemtime($config_wri['chemin_ol'].'ol-681/ol.js');
-} else {
-  // Includes pour autres que IE
-  $vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
-  // Non supporté IE
-  $vue->css           [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
-  $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
-}
-// Includes communs à IE et autres
+// Includes cartes
+$vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
+$vue->css           [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.css?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.min.css');
+$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
 $vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
 $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
 

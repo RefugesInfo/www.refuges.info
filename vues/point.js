@@ -1,64 +1,60 @@
 const baseLayers = {
 		'Refuges.info': layerMRI(),
+		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
 		'OpenTopo': layerOpenTopo(),
 		'Outdoors': layerThunderforest('outdoors'),
-		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'IGN TOP25': layerIGN('GEOGRAPHICALGRIDSYSTEMS.MAPS'), // Besoin d'une clé gratuite
-		'IGN V2': layerIGN('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', {format:'png', key:'pratique'}), // 'pratique' is the key for the free layers
+		'IGN TOP25': layerIGN({
+			layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+			key: mapKeys.ign,
+		}),
+		'IGN V2': layerIGN({
+			layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+			key: 'essentiels', // The key for the free layers
+			format: 'image/png',
+		}),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
-		'Photo IGN': layerIGN('ORTHOIMAGERY.ORTHOPHOTOS', {key:'pratique'}),
-		'Photo Bing': layerBing('Aerial'),
-	},
-
-	controls = [
-		controlLayerSwitcher(baseLayers),
-		controlPermalink({ // Permet de garder le même réglage de carte d'une page à l'autre
-			visible: false, // Mais on ne visualise pas le lien du permalink
-			init: false, // Ici, on utilisera plutôt la position du point
+		'Photo IGN': layerIGN({
+			layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+			key: 'essentiels',
 		}),
-		new ol.control.ScaleLine(),
-		controlMousePosition(),
-		new ol.control.Zoom(),
-		controlFullScreen(),
-		controlGPS(),
-		controlPrint(),
-		new ol.control.Attribution(),
-	],
-
-	coordinates = [<?=$vue->point->longitude?>,<?=$vue->point->latitude?>],
-
-	cadre = layerEditGeoJson({
-		displayPointId: 'marqueur',
-		singlePoint: true,
-		geoJson: {
-			type: 'Point',
-			coordinates: coordinates,
-		},
-		styleOptions: {
-			image: new ol.style.Icon({
-				src: '<?=$config_wri["sous_dossier_installation"]?>images/cadre.png',
-				imgSize: [31, 43], // IE compatibility
-			}),
-		},
-	});
+		'Photo Bing': layerBing('Aerial'),
+	};
 
 new ol.Map({
 	target: 'carte-point',
 	view: new ol.View({
-		center: ol.proj.fromLonLat(coordinates),
+		center: ol.proj.fromLonLat([<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]),
 		zoom: 13,
 		enableRotation: false,
 		constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
 	}),
-	controls: controls,
+	controls: [
+		new ol.control.Zoom(),
+		new ol.control.FullScreen(),
+		controlGPS(),
+		controlPrint(),
+		controlLayerSwitcher(baseLayers),
+		controlMousePosition(),
+		new ol.control.ScaleLine(),
+		controlPermalink({ // Permet de garder le même réglage de carte d'une page à l'autre
+			visible: false, // Mais on ne visualise pas le lien du permalink
+			init: false, // Ici, on utilisera plutôt la position du point
+		}),
+		new ol.control.Attribution({
+			collapsed: false,
+		}),
+	],
 	layers: [
-		layerMRI(), // Fond de carte WRI
 		layerWri({ // La couche des points
 			host: '<?=$config_wri["sous_dossier_installation"]?>',
 			distance: 30, // Clusterisation
 		}),
-		cadre,
+		layerMarker({ // Le cadre
+			prefix: 'cadre', // S'interface avec les <TAG id="cadre-xxx"...
+			src: '<?=$config_wri["sous_dossier_installation"]?>images/cadre.svg',
+			focus: 15, // Centrer 
+		}),
 	],
 });
