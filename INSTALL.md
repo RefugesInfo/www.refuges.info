@@ -39,9 +39,9 @@ cd www.refuges.info
 Le code du site se retrouve dans un dossier nommé www.refuges.info (toutes les commandes d'après sont à faire depuis ce dossier)
 
 
-* Configuration des fichiers
+Configuration locale des fichiers
 
- * A la racine copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée et activer si besion l'affichage des erreurs de code
+ * A la racine copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée et activer si besoin l'affichage des erreurs de code
  * A la racine : copier le fichier htaccess.modele.txt en .htaccess (et décommenter les lignes si vous voulez que les erreurs php s'affiche à l'écran)
  * Option: si vous utilisez le mode php-fpm, copier le fichier user.modele.ini en .user.ini
 
