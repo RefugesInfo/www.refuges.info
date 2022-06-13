@@ -1200,7 +1200,7 @@ function layerWri(options) {
 				ele: properties.coord.alt,
 				capacity: properties.places.valeur,
 				url: options.noClick ? null : properties.lien,
-				attribution: 'Refuges.info'
+				attribution: 'Refuges.info',
 			};
 		},
 		styleOptionsFunction: function(feature, properties) {

@@ -61,6 +61,16 @@ const baseLayers = {
 		selectorName: 'couche-wri',
 		maxResolution: 500, // La couche est affichée pour les résolutions < 500 Mercator map unit / pixel
 		distance: 30, // Clusterisation
+		styleOptionsFunction: function(feature, properties) {
+			return Object.assign({},
+				styleOptionsLabel(properties.name, properties, true),
+				styleOptionsIcon(properties.icon)
+			);
+		},
+		hoverStyleOptionsFunction: function(feature, properties) {
+			properties.attribution=null;
+			return styleOptionsFullLabel(properties);
+		},
 	}),
 
 	// Affiche les massifs si résolution > 500
