@@ -1513,16 +1513,19 @@ function controlPermalink(options) {
 			element: document.createElement('div'),
 			render: render,
 		}),
-		urlhashs = location.href.replace(/NaN/g, '').match(/[a-z]+=[^?#&=]+/g),
-		urlArgs = {
-			map: '',
-		};
-
-	// Load url ?name=value&name=value and #name=value&name=value in urlArgs
-	for (let u in urlhashs) {
-		const uh = urlhashs[u].match(/([a-z]+)=([^?#&=]+)/);
-		urlArgs[uh[1]] = uh[2];
-	}
+		urlMod =
+		// zoom=<zoom>&lon=<lon>&lat=<lat>
+		location.href.replace(
+			// map=<zoom>/<lon>/<lat>
+			/map=([0-9\.]+)\/([-0-9\.]+)\/([-0-9\.]+)/,
+			'zoom=$1&lon=$2&lat=$3'
+		) +
+		// Last values
+		'zoom=' + localStorage.myol_zoom +
+		'lon=' + localStorage.myol_lon +
+		'lat=' + localStorage.myol_lat +
+		// Default
+		'zoom=6&lon=2&lat=47';
 
 	options = Object.assign({
 		init: true, // {true | false} use url hash or localStorage to position the map.
@@ -1539,18 +1542,17 @@ function controlPermalink(options) {
 	}
 
 	function render(evt) {
-		const view = evt.map.getView(),
-			mapHash = (urlArgs.map + '//').split('/');
+		const view = evt.map.getView();
 
 		// Set center & zoom at the init
 		if (options.init) {
 			options.init = false; // Only once
 
-			view.setZoom(parseFloat(mapHash[0] || urlArgs.zoom || localStorage.myol_zoom.replace('NaN', '') || 6));
+			view.setZoom(urlMod.match(/zoom=([0-9\.]+)/)[1]);
 
 			view.setCenter(ol.proj.transform([
-				parseFloat(mapHash[1] || urlArgs.lon || localStorage.myol_lon.replace('NaN', '') || 2),
-				parseFloat(mapHash[2] || urlArgs.lat || localStorage.myol_lat.replace('NaN', '') || 47)
+				urlMod.match(/lon=([-0-9\.]+)/)[1],
+				urlMod.match(/lat=([-0-9\.]+)/)[1],
 			], 'EPSG:4326', 'EPSG:3857'));
 		}
 
