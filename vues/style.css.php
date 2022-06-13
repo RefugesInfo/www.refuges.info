@@ -832,21 +832,21 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 
-/* Carte de la page des points mobiles */
-#carte-point {
-  width: 50%; /* Support of non CSS3 browsers (Safari)*/
-  width: calc(100vw - 20px);
-  height: 380px; /* Support of non CSS3 browsers (Safari)*/
-  height: 100vw;
-  max-height: 400px;
-}
 /* Carte de la page des points écrans */
-@media screen and (min-width: 641px) {
-  #container-carte-point {
-    float: right;
-  }
+#container-carte-point {
+  float: right;
+}
+#carte-point {
+  width: 50vw;
+  height: 50vw;
+  max-height: 75vh;
+}
+/* Carte de la page des points mobiles */
+@media screen and (max-width: 640px) {
   #carte-point {
-    width: 400px;
+    width: calc(100vw - 20px);
+    height: 400px;
+    max-height: 100vw;
   }
 }
 
