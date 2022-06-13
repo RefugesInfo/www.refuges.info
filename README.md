@@ -4,13 +4,19 @@ Qu'est ce que www.refuges.info ?
 Le mieux, c'est d'aller voir : https://www.refuges.info/wiki/index
 Le code source est sous licence WTFPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
 
+Comment installer une copie du code sur votre serveur ?
+=======================================================
+
+Voir le fichier INSTALL
+
 Pour en savoir plus sur les détails techniques
 ==============================================
 Les explications sur la structure de la base de données, la structure du code le type de fonctions (mais pas encore la liste des fonctions) vous pouvez vous reporter au fichier :
 /ressources/principe_fonctionnement_refuges.info.txt
 
-Doc dédiée aux développeurs ayant accès à la machine wri
-========================================================
+
+Doc dédiée aux développeurs ayant accès à la machine wri :
+==========================================================
 
 Nous disposons pour chaque développeur actuellement (2020) d'un espace de test et développement sur le même serveur que tourne www.refuges.info
 Si vous voulez venir nous aider à améliorer le site, je peux vous en fournir un, venez présenter votre motivation et votre projet sur le forum https://www.refuges.info/forum
@@ -31,36 +37,16 @@ ou
 * https://sly.refuges.info/adminersly/adminer.php
 
 Notez que la base de production s'appelle "refuges" et chaque instance dispose de sa propre copie.
-
-
-Configurer votre instance
-==========================
-* Code 
-
-Pour télécharger la dernière version de développement :
-
-```
-git clone git://github.com/RefugesInfo/www.refuges.info.git
-cd www.refuges.info
-```
-Le code du site se retrouve dans un dossier nommé www.refuges.info (toutes les commandes d'après sont à faire depuis ce dossier)
-
-* Configuration des fichiers
-
- * dans /includes/
-copier le fichier config_privee.php.modele vers config_privee.php et renseignez vos identifiants d'accès à la base de donnée
- * A la racine : renommer le fichier htaccess.modele.txt en .htaccess (et décommenter la dernière ligne si vous voulez que les erreurs php s'affiche à l'écran)
-
- Pour que cela soit actif, j'ai sans doute besoin de faire une manip sur le serveur à ce stade, demandez à sly sur le forum.
  
-RAngement actuel sur le serveur : 
+Rangement actuel sur le serveur : 
 =================================
  * /home/users/(login de l'utilisateur) -> contient les dossiers de chaque développeur contenant chacun sa version dans :
  * /home/users/(login de l'utilisateur)/www.refuges.info -> contient la version de "développement" de chacun visible sur https://<login>.refuges.info
  * /home/sites/refuges/www.refuges.info/ -> la version live contrôlable par l'utilisateur "refuges"
 
  
-Quelques commandes utiles de git adaptées à refuges.info
+ 
+Quelques commandes utiles de git adaptées à refuges.info (2022 je me demande si tout ça est bien à jour et si ça à du sens de faire une mini doc git mal fichue ?)
 ========================================================
 
 Nous utilisons github pour se coordonner au niveau du développement, il vous faudra donc presque certainement un compte sur github.
