@@ -5,37 +5,37 @@ Dominique92.MyOl
 
 SIMPLE EXAMPLE
 ==============
-This [EXAMPLE DEMO](https://Dominique92.github.io/dev/assets/MyOl/) implements a single map with the most current maps layers providers.
+This [EXAMPLE DEMO](https://Dominique92.github.io/MyOl/) implements a single map with the most current maps layers providers.
 * You can download the [DISTRIBUTION ZIPPED PACKAGE](https://github.com/Dominique92/dev/archive/refs/heads/master.zip) and unzip it in your website FTP section.
 * You can include the css & js sections of this example on your own page (adjust the include files path to your implementation)
 
 LAYER SWITCHER
 ==============
-See a LAYER SWITCHER DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/examples/layerSwitcher.html)
+See a LAYER SWITCHER DEMO [here](https://Dominique92.github.io/MyOl/examples/layerSwitcher.html)
 
 TILE LAYERS
 ===========
-See a TILE LAYERS DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/examples/layerTile.html)
-* OSM, OSM-FR, OpenTopo, Maps.Refuges.Info
+See a TILE LAYERS DEMO [here](https://Dominique92.github.io/MyOl/examples/layerTile.html)
+* OSM, OSM-FR, OpenTopo, CyclOsm, Maps.Refuges.Info
 * ThunderForest Outdoors, OpenTopoMap, Cycles, Landscape, Transport, ...
 * IGN France, cadastre, satellite, ...
 * SwissTopo, satellite
 * IDEE España, satellite
 * IGM Italie
-* Great Britain
+* Ordnance Survey (Great Britain)
 * Kompass Austria
 * Bing Microsoft, satellite
 * Google maps, satellite
 
 VECTOR LAYERS
 =============
-See a VECTOR LAYER DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/examples/layerVector.html)
+See a VECTOR LAYER DEMO [here](https://Dominique92.github.io/MyOl/examples/layerVector.html)
 * GeoJson ajax layers,
 * OverPass (OSM vector points of interest)
 
 MISC CONTROLS
 =============
-See a CONTROL DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/examples/controls.html)
+See a CONTROL DEMO [here](https://Dominique92.github.io/MyOl/examples/controls.html)
 * Keep position, zoom & zoom on localstorage
 * Geocoder
 * Line length display
@@ -45,18 +45,18 @@ See a CONTROL DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/examples
 
 MARKER DISPLAY & EDIT
 =====================
-See a MARKER DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/examples/marker.html)
+See a MARKER DEMO [here](https://Dominique92.github.io/MyOl/examples/marker.html)
 * Editable position marker with multi-projection position display,
 
 LINES & POLYGONS EDITOR
 =======================
-See an EDITOR DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/examples/editor.html)
+See an EDITOR DEMO [here](https://Dominique92.github.io/MyOl/examples/editor.html)
 * Polylines & polygons editor.
 
 OFF LINE GPS
 ============
-See an OFF LINE GPS DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/gps)
-* Open this url : [Dominique92.github.io/dev/assets/MyOl/gps](https://Dominique92.github.io/dev/assets/MyOl/gps/)
+See an OFF LINE GPS DEMO [here](https://Dominique92.github.io/MyOl/gps)
+* Open this url : [Dominique92.github.io/MyOl/gps](https://Dominique92.github.io/MyOl/gps/)
 * Browser -> options -> add to the home screen
 * Choose a map layer
 * Place yourself at the starting point of your hike
@@ -74,7 +74,7 @@ See an OFF LINE GPS DEMO [here](https://Dominique92.github.io/dev/assets/MyOl/gp
 LAYERS KEYS
 ===========
 If you want to use external providers layers, you must acquire free keys and replace them in the html (see source comment)
-* French IGN : Get your own (free) IGN key at [https://professionnels.ign.fr](https://professionnels.ign.fr/ign/contrats)
+* French IGN : Get your own (free) IGN key at [https://geoservices.ign.fr/](https://geoservices.ign.fr/)
 * OSM thunderforest : Get your own (free) THUNDERFOREST key at [https://manage.thunderforest.com](https://manage.thunderforest.com)
 * Microsoft BING : Get your own (free) BING key at [https://www.microsoft.com](https://www.microsoft.com/en-us/maps/create-a-bing-maps-key)
 
@@ -105,5 +105,6 @@ TESTED ON
 =========
 * windows10 : Edge, FireFox, Chrome, Opera, Brave
 * Android (Samsung) : Samsung Internet, FireFox, Chrome, Brave, DuckDuckGo
-* iOS7 (iPhone5s) : Safari, FireFox, Chrome
+* iOS12 (iPhone5s) : Safari, FireFox, Chrome
+* Linux : FireFox
 * NO SUPPORT ON Microsoft Internet Explorer

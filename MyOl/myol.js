@@ -357,8 +357,13 @@ function layersCollection() {
 		}),
 		/*'IGN Cassini': layerIGN({
 			layer:'GEOGRAPHICALGRIDSYSTEMS.CASSINI',
-			key: 'x7yv499pbcguxhhxh8syehwe/geoportail',
+			key: 'cartes/geoportail',
 		}),*/
+		'Cadastre': layerIGN({
+			layer: 'CADASTRALPARCELS.PARCELLAIRE_EXPRESS',
+			key: 'essentiels',
+			format: 'image/png',
+		}),
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Angleterre': layerOS('Outdoor_3857'),
@@ -777,7 +782,7 @@ function layerVector(opt) {
 							// To specify feature open a new window
 							window.open(display.url, '_blank', 'resizable=yes').focus();
 						else
-							location.replace(display.url);
+							window.location.href = display.url;
 					}
 					// Cluster
 					else if (geom && (features.length > 1 || display.cluster))
