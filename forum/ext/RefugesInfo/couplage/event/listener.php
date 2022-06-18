@@ -87,18 +87,12 @@ class listener implements EventSubscriberInterface
 		$template->assign_var('PIED', ob_get_clean());
 	}
 
-	// Forçage https du login.
-	/* TODO : ça devrait le faire avec 2 lignes .htaccess mais ça marche pô :(
-RewriteCond %{HTTPS} !=on
-RewriteRule /forum/ucp.* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
-	*/
+	// Forçage https du login
 	function login_box_before () {
 		global $request;
 		$server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
 
-		if (!isset($server['HTTPS'])) {
+		if (!isset($server['HTTPS']))
 			header('Location: https://'.$server['HTTP_HOST'].$server['REQUEST_URI'], true, 301);
-			exit(0);
-		}
 	}
 }
