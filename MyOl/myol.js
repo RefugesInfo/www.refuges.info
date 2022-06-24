@@ -333,8 +333,8 @@ function layerBing(subLayer) {
  */
 function layersCollection() {
 	return {
-		'OpenTopo': layerOpenTopo(),
 		'OSM outdoors': layerThunderforest('outdoors'),
+		'OpenTopo': layerOpenTopo(),
 		'OSM transport': layerThunderforest('transport'),
 		'Refuges.info': layerMRI(),
 		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
@@ -1147,7 +1147,15 @@ function layerGeoBB(options) {
 		urlFunction: function(options, bbox, selection) {
 			return options.host + 'ext/Dominique92/GeoBB/gis.php?limit=10000' +
 				'&layer=' + (options.subLayer || 'simple') +
-				(options.selectorName ? '&' + (options.argSelName || 'cat') + '=' + selection.join(',') : '') +
+				// Add layer features filters
+				(options.selectorName ?
+					'&' + (options.argSelName || 'cat') + '=' + selection.join(',') :
+					'') +
+				// Refresh layer when data chenged
+				(localStorage.myol_lastChangeTime ?
+					'&v=' + localStorage.myol_lastChangeTime :
+					'') +
+				// Bbox strategy
 				'&bbox=' + bbox.join(',');
 		},
 		convertProperties: function(properties, feature, options) {
@@ -1194,7 +1202,15 @@ function layerWri(options) {
 		host: '//www.refuges.info/',
 		urlFunction: function(options, bbox, selection) {
 			return options.host + 'api/bbox?nb_points=all' +
-				'&type_points=' + selection.join(',') +
+				// Add layer features filters
+				(selection && selection.length ?
+					'&type_points=' + selection.join(',') :
+					'') +
+				// Refresh layer when data chenged
+				(localStorage.myol_lastChangeTime ?
+					'&v=' + localStorage.myol_lastChangeTime :
+					'') +
+				// Bbox strategy
 				'&bbox=' + bbox.join(',');
 		},
 		convertProperties: function(properties, feature, options) {
@@ -1222,7 +1238,11 @@ function layerWriAreas(options) {
 		host: '//www.refuges.info/',
 		polygon: 1, // Massifs
 		urlFunction: function(options) {
-			return options.host + 'api/polygones?type_polygon=' + options.polygon;
+			return options.host + 'api/polygones?type_polygon=' + options.polygon +
+				// Refresh layer when data chenged
+				(localStorage.myol_lastChangeTime ?
+					'&v=' + localStorage.myol_lastChangeTime :
+					'');
 		},
 		convertProperties: function(properties) {
 			return {
@@ -1630,11 +1650,15 @@ function controlLengthLine() {
 		if (feature) {
 			const length = ol.sphere.getLength(feature.getGeometry());
 
-			control.element.innerHTML = length < 1000 ?
-				(Math.round(length)) + ' m' :
-				(Math.round(length / 10) / 100) + ' km';
+			if (length) {
+				control.element.innerHTML =
+					length < 1000 ?
+					(Math.round(length)) + ' m' :
+					(Math.round(length / 10) / 100) + ' km';
+
+				return false; // Continue detection (for editor that has temporary layers)
+			}
 		}
-		return false; // Continue detection (for editor that has temporary layers)
 	}
 	return control;
 }
@@ -2218,21 +2242,28 @@ function layerMarker(options) {
 	els.json.onchange();
 
 	// Read new values
-	function onChange() {
-		const fieldName = this.id.match(/-([a-z])/);
+	function onChange(evt) {
+		if (evt) { // If a field has changed
+			// Mark last change time to be able to reload vector layr if changed
+			localStorage.myol_lastChangeTime = new Date().getTime();
 
-		if (fieldName) {
-			if (fieldName[1] == 'j') { // json
-				const json = (els.json.value).match(/([-0-9\.]+)[, ]*([-0-9\.]+)/);
-
-				if (json)
-					changeLL(json.slice(1), 'EPSG:4326', true);
-			} else
-			if (fieldName[1] == 'l') // lon | lat
-				changeLL([els.lon.value, els.lat.value], 'EPSG:4326', true);
-			else
-			if (typeof proj4 == 'function') // x | y
-				changeLL([parseInt(els.x.value), parseInt(els.y.value)], 'EPSG:21781', true);
+			// Find changed input type from tne input id
+			switch (evt.target.id.match(/-([a-z]+)/)[1]) {
+				case 'json':
+					const json = (els.json.value).match(/([-0-9\.]+)[, ]*([-0-9\.]+)/);
+					if (json)
+						changeLL(json.slice(1), 'EPSG:4326', true);
+					break;
+				case 'lon':
+				case 'lat':
+					changeLL([els.lon.value, els.lat.value], 'EPSG:4326', true);
+					break;
+				case 'x':
+				case 'y':
+					if (typeof proj4 == 'function') // x | y
+						changeLL([parseInt(els.x.value), parseInt(els.y.value)], 'EPSG:21781', true);
+					break;
+			}
 		}
 	}
 
@@ -2317,6 +2348,9 @@ function layerMarker(options) {
 			// Drag the marker
 			map.addInteraction(new ol.interaction.Pointer({
 				handleDownEvent: function(evt) {
+					// Mark last change time
+					localStorage.myol_lastChangeTime = new Date().getTime();
+
 					return map.getFeaturesAtPixel(evt.pixel, {
 						layerFilter: function(l) {
 							return l.ol_uid == layer.ol_uid;
@@ -2494,6 +2528,9 @@ function layerEditGeoJson(options) {
 
 
 	modify.on('modifyend', function(evt) {
+
+		// Mark last change time
+		localStorage.myol_lastChangeTime = new Date().getTime();
 
 		// Ctrl+Alt+click on segment : delete the line or poly
 		if (evt.mapBrowserEvent.originalEvent.ctrlKey &&

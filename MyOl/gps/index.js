@@ -11,7 +11,7 @@ if (!location.href.match(/(https|localhost).*index/)) {
 	location.replace(
 		(location.hostname == 'localhost' ? 'http://' : 'https://') +
 		location.hostname +
-		location.pathname + (location.pathname.slice(-1) == '/' ? scriptName : '') +
+		location.pathname + (location.pathname.slice(-1) == '/' ? scriptName || 'index.html' : '') +
 		location.search);
 } else {
 	/**
