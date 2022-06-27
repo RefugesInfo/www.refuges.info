@@ -13,7 +13,8 @@ const baseLayers = {
 		'Outdoors': layerThunderforest('outdoors'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
-		'Photo Bing': layerBing('Aerial'),
+		'Photo ArcGIS': layerArcGIS('World_Imagery'),
+		'Photo Google': layerGoogle('s'),
 	},
 
 	controls = [

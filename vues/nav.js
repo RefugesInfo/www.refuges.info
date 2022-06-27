@@ -19,7 +19,8 @@ const baseLayers = {
 			layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
 			key: 'essentiels',
 		}),
-		'Photo Bing': layerBing('Aerial'),
+		'Photo ArcGIS': layerArcGIS('World_Imagery'),
+		'Photo Google': layerGoogle('s'),
 	},
 
 	controls = [
