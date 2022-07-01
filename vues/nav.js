@@ -20,6 +20,7 @@ const baseLayers = {
 			key: 'essentiels',
 		}),
 		'Photo ArcGIS': layerArcGIS('World_Imagery'),
+		'Photo Bing': layerBing('Aerial'),
 		'Photo Google': layerGoogle('s'),
 	},
 

@@ -15,11 +15,12 @@ const baseLayers = {
 		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
 		'Autriche': layerKompass('KOMPASS Touristik'),
 		'Espagne': layerSpain('mapa-raster', 'MTN'),
+		'Photo ArcGIS': layerArcGIS('World_Imagery'),
+		'Photo Bing': layerBing('Aerial'),
 		'Photo IGN': layerIGN({
 			layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
 			key: 'essentiels',
 		}),
-		'Photo ArcGIS': layerArcGIS('World_Imagery'),
 		'Photo Google': layerGoogle('s'),
 	};
 
