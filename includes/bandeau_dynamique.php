@@ -1,11 +1,12 @@
 <?php
 /***
 Fonctions qui permettent de générer dynamiquement du contenu quasi-statique du menu/bandeau.
-31/01/2021 sly : Il aurait pû aller dans le controlleur de la vue du bandeau, mais son controlleur c'est la route generale, et ça fait déjà lour de code là bas
+31/01/2021 sly : Il aurait pû aller dans le controlleur de la vue du bandeau, mais son controlleur c'est la route generale, et ça fait déjà lourd de code là bas
 trouve que de la présentation
 ***/
 require_once ('polygone.php'); // Nécessaire pour générer le menu des zones couvertes
 require_once ('wiki.php');
+require_once ('meta_donnee.php'); // Pour la liste des types de points
 
 function remplissage_zones_bandeau()
 {

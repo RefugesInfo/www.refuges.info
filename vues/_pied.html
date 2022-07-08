@@ -18,9 +18,6 @@
 		<img src="<?=$config_wri['sous_dossier_installation']?>images/copyleft.png" alt="Copyleft" />
 		Licence des contenus
 	</a> &mdash; 
-	<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations/" title="Exportation au format gpx, kml, csv des points de refuges.info">
-		Exportation
-	</a> &mdash; 
 	<a href="<?=$vue->lien_wiki["mentions-legales"]?>">
 		Mentions légales
 	</a> 
@@ -36,27 +33,14 @@
 	<?php } ?>
 </div>
 
-<?if (isset ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
+<?php if (isset ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
 	foreach ($vue->java_lib_foot as $js_lib) {?>
 		<script type="text/javascript" src="<?=$js_lib?>"></script>
-<?	}?>
-<?if (file_exists ("vues/$vue->type.js")) {?>
+<?php } ?>
+<?php if (file_exists ("vues/$vue->type.js")) {?>
 	<script type="text/javascript">
 	//<![CDATA[
 		<?include ("vues/$vue->type.js")?>
 	//]]>
 	</script>
-<?}?>
-
-<script type="text/javascript">
-//<![CDATA[
-	// Utilisé dans les menus pour mobile
-	// Si Ajoute la classe c si elle n'est pas attribuée à l'élémént HTML e et vice versa
-	function flip(e, c) {
-		var cs = e.className.split(' '),
-			f = cs.indexOf(c);
-		cs.splice(f, f >= 0, f < 0 ? c : '');
-		e.className = cs.join(' ').trim();
-	}
-//]]>
-</script>
+<?php } ?>

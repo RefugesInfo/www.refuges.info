@@ -1,43 +1,70 @@
+<?php if ($vue->point->id_point) { ?>
+  <h2>Modification du point <?=$vue->point->nom?></h2>
+<?php } else { ?>
+  <h2>Création d'un point</h2>
+<?php } ?>
+
+<dl>
+  <dt>Que mettre ou ne pas mettre ?</dt>
+  <dd>
+    <p>Tout ne trouve pas sa place sur le site, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
+  </dd>
+</dl>
+<dl>
+  <?php foreach ($vue->types_point_affichables AS $pa)
+    if($pa->id_point_type == $vue->point->id_point_type) { ?>
+      <dt>Qu'est-ce qu'un <?=$pa->nom_type?> ?</dt>
+      <dd>
+        <p>Voyez la <a href="<?=$pa->lien_wiki_type_point?>"><?=$pa->lien_wiki_type_point?>
+        définition de "<?=$pa->nom_type?>".</a></p>
+     </dd>
+  <?php } ?>
+</dl>
+<dl>
+  <dt>Licence des contenus</dt>
+  <dd>
+    <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
+  </dd>
+</dl>
+<hr/>
+
 <div class="contenu">
     <div id="container-carte-point">
       <div id="carte-edit"></div>
       <p>Double clic sur la carte y déplace le curseur.</p>
-	</div>
+    </div>
     <form class="wri" id="form_point" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_modification">
 
-    <div><?php
-    foreach ($vue->champs->boutons as $bouton) { ?> 
-      <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
+    <div>
+	<?php foreach ($vue->champs->boutons as $bouton) { ?>      <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
         <?=$bouton->label?>
       </button>
-    <?}?>
+    <?php } ?>
     </div>
 
     <div>
     <!-- Champs cachés -->
-    <?php
-    foreach ($vue->champs->invisibles as $nom => $params) { ?>
+    <?php foreach ($vue->champs->invisibles as $nom => $params) { ?>
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
-    <?}?>
+    <?php } ?>
     </div>
 
-	<!-- Edition de la position -->
+    <!-- Edition de la position -->
     <h4>Coordonnées</h4>
-		<input type="hidden" id="marker-json" name="geojson" value='<?=$vue->point->id_point?$vue->point->geojson:''?>' />
+        <input type="hidden" id="marker-json" name="geojson" value='<?=$vue->point->id_point?$vue->point->geojson:''?>' />
 
         <fieldset>
-			<div id="marker-coordinates">
-				<label>
-					Longitude :
-					<input type="text" id="marker-lon" name="lon" size="12" maxlength="12"> (WGS84)&nbsp;
-					<span class="xy"> / X : <input id="marker-x" type="text" name="x" size="7" maxlength="12"> (CH 1903)</span> 
-				</label>
-				<label>
-					Latitude :
-					<input type="text" id="marker-lat" name="lat" size="12" maxlength="12"> (WGS84)&nbsp;
-					<span class="xy"> / Y : <input id="marker-y" type="text" name="y" size="7" maxlength="12"></span>
-				</label>
-			</div>
+            <div id="marker-coordinates">
+                <label>
+                    Longitude :
+                    <input type="text" id="marker-lon" name="lon" size="12" maxlength="12"> (WGS84)&nbsp;
+                    <span class="xy"> / X : <input id="marker-x" type="text" name="x" size="7" maxlength="12"> (CH 1903)</span>                </label>
+                <label>
+                    Latitude :
+                    <input type="text" id="marker-lat" name="lat" size="12" maxlength="12"> (WGS84)&nbsp;
+                    <span class="xy"> / Y : <input id="marker-y" type="text" name="y" size="7" maxlength="12"></span>
+                </label>
+            </div>
 
             <label>&nbsp;</label>
             <label>Provenance
@@ -46,7 +73,7 @@
                     <option  value="<?=$gps->id_type_precision_gps?>"<?=($gps->id_type_precision_gps==$vue->point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
                         <?=$gps->nom_precision_gps ?>
                     </option>
-                <?}?>
+                    <?php } ?>
                 </select>
             </label>
 
@@ -55,8 +82,7 @@
                 <input type="text" name="altitude" size="6" value="<?=$vue->point->altitude?>" />m
             </label>
         </fieldset>
-            
-    <h4>Informations de base:</h4>
+               <h4>Informations de base:</h4>
         <fieldset>
             <label>
                 Nom :
@@ -68,42 +94,40 @@
                     <option  value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$vue->point->id_point_type)? 'selected="selected"' : '' ;?>>
                         <?=$type_point->nom_type?>
                     </option>
-                <?}?>
+                <?php } ?>
                 </select>
                 <a href="<?=$vue->lien_aide_points?>">
                     Explications plus précises sur les différents types de points
                 </a>
             </label>
 
-            <?php if (est_moderateur() and !empty($vue->point->id_point)) {?>
-				<label>Modérateur de cette fiche:
-                    <select name='id_createur'>	
-                        <option  value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
+            <?php if (est_moderateur() and !empty($vue->point->id_point)) { ?>
+                <label>Modérateur de cette fiche:
+                    <select name='id_createur'>                           <option  value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
                             Aucun modérateur
                         </option>
                     <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
                         <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
                             <?=$utilisateur->username_clean?>
                         </option>
-                    <?}?>
+                    <?php } ?>
                     </select>
-				</label>
-            <?}?>
+                </label>
+            <?php } ?>
         </fieldset>
 
         <fieldset>
-                    <span><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></span>
-                    <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
-                    <label class="textarea"><span><?=ucfirst($tx_params->label)?></span>
-                        <textarea style="height:<?=(substr_count($tx_params->valeur, "\n")+5)?>em;"  name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
-                    </label>
-		
-<?php } ?>
+            <span><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></span>
+            <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
+                <label class="textarea"><span><?=ucfirst($tx_params->label)?></span>
+                <textarea style="height:<?=(substr_count($tx_params->valeur, "\n")+5)?>em;"
+                    name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
+                </label>
+            <?php } ?>
         </fieldset>
 
-		<h4>Informations complémentaires</h4>
-	
-        <?php if (est_moderateur()) { ?>
+        <h4>Informations complémentaires</h4>
+           <?php if (est_moderateur()) { ?>
         <fieldset class="booleen">
             <legend title="<?=$vue->champs->cache_aide?>"><?=$vue->champs->cache_label?> :</legend>
                 <label>oui<input type="radio" name="cache" value="TRUE" <?=($vue->champs->cache===true)?'checked="checked"':'';?>/></label>
@@ -122,10 +146,7 @@
             </fieldset>
         <?php } ?>
 
-        <?php 
-        if (!empty($vue->champs->entier_ou_sait_pas)) 
-          foreach ($vue->champs->entier_ou_sait_pas as $nom => $params) 
-          {
+        <?php        if (!empty($vue->champs->entier_ou_sait_pas))          foreach ($vue->champs->entier_ou_sait_pas as $nom => $params)          {
             // rendre le champs invisible si le champ vaut NULL (code pour dire "ne sait pas")
             if ( $params->valeur===NULL )
                  $visible = 'hidden';
@@ -160,8 +181,7 @@
             </label>
         </fieldset>
         <?php } ?>
-        
-        <?php if ( !est_connecte() ) { ?>
+               <?php if ( !est_connecte() ) { ?>
         <br style="clear: both;" />
         <h4>Questions pour les contributeurs anonymes</h4>
         <fieldset class="booleen">
@@ -176,14 +196,13 @@
                 <input name="lettre_securite" type="text" size="1" />
             </label>
         </fieldset>
-        <?}?>
-        
-        <fieldset class="booleen">
+        <?php } ?>
+               <fieldset class="booleen">
         <?php foreach ($vue->champs->boutons as $bouton) { ?>
             <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
             <?=$bouton->label?>
             </button>
-        <?}?>
+        <?php } ?>
         </fieldset>
-	</form>
+    </form>
 </div>

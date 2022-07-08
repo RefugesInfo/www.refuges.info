@@ -288,7 +288,7 @@ FORM#form_point TEXTAREA {
   width:650px;
   height:170px;
   }
-FORM#form_point LABEL.textarea  SPAN {
+FORM#form_point LABEL.textarea SPAN {
   clear: both;
   float:left;
   }
@@ -407,246 +407,147 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     z-index: 500000;
 }
 /*==================================================================*/
-/*  ENTETE DE PAGE : Logo, identification & recherche               */
+/*  ENTETE DE PAGE : Logo, menus, identification                    */
 /*==================================================================*/
-#entete {
-	position: relative;
-	z-index: 40000;
-	font-size: 13.33px;;
-	font-family: Arial;
-}
-#entete > DIV { /* Définit le bloc à positionner à droite */
-	float: right;
-	margin: 2px 0;
-}
-/* Réduction des marges du bandeau pour éviter de passer sur 2 lignes */
-#entete > A IMG {
-	max-width: calc(100vw - 21em);
-}
-@media screen and (max-width: 800px) {
-  #entete > A,
-  #entete IMG {
-	height: 50px;
-  }
-}
-#entete A,
-#entete SPAN,
-#entete > A {
+/* Première ligne */
+.bandeau {
+	display: flex;
+	padding: 0;
+	/* Format pour tout le menu et sous-menus */
+    font-family: Times New Roman;
 	font-size: 18px;
-	font-weight: bold;
-	float: none;
+	line-height: 22px;
+	color: #<?=$couleur_lien?>;
 }
-#entete DIV A:first-child {
-	float: right;
+.bandeau > li {
+	white-space: nowrap;
+	margin: 0;
+	border: 2px solid transparent;
+	border-radius: 10px 10px 0 0;
+	padding: 10px 0;
+	cursor: pointer;
 }
-#entete FORM {
+.bandeau > li span {
+	background: #<?=$couleur_fond?>;
+}
+/* Comportement du bandeau quand il rétrécit */
+.bandeau:not(.bandeau-noflex) > li {
+	flex-grow: 1;
+}
+.bandeau:not(.bandeau-noflex) > li.bandeau-etiquette-reduite {
+	overflow: hidden;
+}
+.bandeau:not(.bandeau-noflex) > li.bandeau-etiquette-cachee {
+	width: 24px;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+.bandeau > li.sous-menu-ouvert {
+	border: 2px solid #<?=$couleur_lien?>;
+	background: transparent;
+}
+/* Logo */
+.bandeau > li:first-child {
+	padding: 0;
+	border: 0;
+}
+.bandeau > li:first-child p {
+	margin: 2px;
+	text-align: center;
+	line-height: 22px; /* Pour certains explorateurs */
+	font-size: 24px;
+    font-family: 'Open Sans', 'Liberation Sans', sans-serif;
+}
+.bandeau > li:first-child span {
 	display: block;
 }
-#entete INPUT:first-child {
-    border: solid 1px #<?=$couleur_decoration_titres?>;
-	height: 18px;
-	position: relative; top: -3px;
-	width: 306px;
-	margin-top: 5px;
+.bandeau > li:first-child:hover,
+.bandeau > li:first-child:hover * {
+	border-radius: 10px;
+	color: #<?=$couleur_fond?>;
+	background: #<?=$couleur_lien?>;
 }
-#entete A:hover {
-    color: white;
-    background-color: #<?=$couleur_decoration_titres?>;
-    text-decoration: none;
+/* Sous-menus */
+.bandeau > li ul {
+	/* On sort du flux pour s'incruster au dessus de la page */
+	position: absolute;
+	top: 44px;
+	z-index: 100; /* Pour passer au dessus des cartes */
+	/* On redéclare les couleurs car on est sorti du flux */
+	margin: 0 -2px;
+	border: 2px solid #<?=$couleur_lien?>;
+	border-radius: 0 10px 10px 10px;
+	padding: 5px;
+	background: #<?=$couleur_fond?>;
+	cursor: initial;
 }
-#entete > A:hover {
-    background-color: #<?=$couleur_fond?>;
+.bandeau > li:not(.sous-menu-ouvert) ul {
+	/* Flip flop sous menu par clic ou touch*/
+	display: none;
 }
-
-/*==================================================================*/
-/*  MENUS                                                           */
-/*==================================================================*/
-
-/* ========== MENU DÉROULANT FIXE EN HAUT DE PAGE ========== */
-
-/* Permet de gérer 2 menus identiques: */
-
-/* 1/ Paramétrage du menu permanent en haut de page */
-  #menu-normal  {
-    z-index: 20000; /* Pour être au dessus du menu surgissant */
-    position: relative; /* Pour que z-index s'applique */
-    width: 100%;
-  }
-  #menu-normal > UL {
-    border-top: solid 2px #<?=$couleur_decoration_titres?>;
-  }
-
-/* 2/ Paramétrage du menu surgissant et fixe en haut de fenetre */
-  #menu-scroll {
-    z-index: 10000; /* Au dessus du reste de la page mais en dessous du haut */
-    position: fixed; top: 0;
-    height: 22px; /* Réserve un espace où rien n'est affiché mais qui est sensible à la souris */
-    width: 100%;
-  }
-  #menu-scroll:hover {
-    z-index: 30000;
-  }
-  #menu-scroll > UL {
-    display: none;
-  }
-  #menu-scroll:hover > UL {
-    display: block;
-  }
-
-  #fin-entete {
-    clear: both;
-  }
-
-  .menu{
-    font-family: Times New Roman;
-  }
-
-/* ==========MENU POUR ECRANS ========== */
-/* Paramétrage commun aux deux menus en mode ecran large */
-@media screen and (min-width: 641px) and (min-device-height: 361px) {
-  /* On inhibe les affichages non souhaités */
-  .menu > A,
-  .menu SPAN,
-  .mobile-only {
-    display: none;
-  }
-  .menu UL {
-    clear: left;
-    white-space: nowrap;
-    display: block;
-    font-size: 18px;
-    font-weight: 700;
-    text-align: left;
-    margin: 0px;
-    padding: 0px;
-    background-color: #<?=$couleur_fond?>;
-    height: 20px;
-    list-style-type: none;
-    border-bottom: solid 2px #<?=$couleur_decoration_titres?>;
-  }
-  .menu UL LI {
-    float: left; /* Distribue le premier niveau de menu de façon horizontale tout en permettant d'inclure des UL de type block */
-    text-align: center;
-    color: #<?=$couleur_lien?>;
-    background-color: #<?=$couleur_fond?>;
-    border-bottom: solid 2px #<?=$couleur_decoration_titres?>;
-    height: 20px;
-  }
-  .menu UL LI UL {
-    position: relative; top: -5000px; /* On le cache loin mais on ne fait pas display:none pour avoir la largeur max une fois montré */
-    left: 0;
-      height: 0;
-    padding: 0;
-  }
-  .menu UL LI:hover UL {
-    top: 0; /* Montre le sous menu */
-  }
-  .menu UL LI UL LI {
-    float: none;
-    text-align: left;
-    font-size: 16px;
-    background-color: #<?=$couleur_fond?>;
-    border-left: solid 2px #<?=$couleur_decoration_titres?>;
-    border-right: solid 2px #<?=$couleur_decoration_titres?>;
-    padding: 0;
-    margin: 0;
-  }
-  .menu UL LI UL LI:first-child {
-    border-top: solid 0px #<?=$couleur_decoration_titres?>;
-  }
-  .menu UL LI UL {
-    border-bottom: solid 2px #<?=$couleur_decoration_titres?>;
-  }
-  .menu UL A {
-    padding: 0em 0.5em;
-    text-decoration: none;
-  }
-  .menu UL LI UL LI A {
-    padding: 0;
-  }
-  .menu UL LI UL LI:hover,
-  .menu UL A:hover,
-  .menu UL DIV:hover {
-    background-color: #<?=$couleur_decoration_titres?>;
-    color: white;
-    text-decoration: none;
-  }
-  .menu UL INPUT {
-    position: relative;
-    top: -3px;
-    margin: 0 -18px 0 -2px;
-    border-left: 1px solid #<?=$couleur_fond?>;
-    border-right: 1px solid #<?=$couleur_fond?>;
-    border-top: 0;
-    border-bottom: 0;
-    background-color: #<?=$couleur_fond?>;
-    background-image: url(../images/loupe.png);
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
-  .menu UL INPUT:hover {
-    border: 1px solid #<?=$couleur_decoration_titres?>;
-    background-color: white;
-    background-image: none;
-  }
+.bandeau > li ul.sous-menu-a-gauche {
+	left: 2px;
 }
-
-/* ==========MENU POUR MOBILES ========== */
-/* Menu simplifié pour petits écrans */
- 
-@media screen and (max-width: 640px), screen and (max-device-height: 360px) {
-  /* On inhibe les affichages non souhaités */
-  .screen-only,
-  #entete,
-  #menu-scroll,
-  .menu > UL {
-    display: none;
-    height: auto;
-  }
-
-  #menu-normal {
-    width:98%;
-  }
-  .menu {
-    border: solid 2px #<?=$couleur_decoration_titres?>;
-    padding: 2px;
-	font-size: 16px;
-  }
-  .menu > SPAN {
-    float: right;
-	padding: 0 30px;
-    cursor: pointer;
-  }
-  .menu SPAN::after { /* Les 3 bandes signalant l'ouverture du menu */
-    content: "";
-    position: absolute;
-    height: 0;
-    top: 4px;
-    right: 5px;
-    box-shadow: 0 0px 0 1px black, 0 7px 0 1px black, 0 14px 0 1px black;
-    width: 16px;
-  }
-  .menu UL {
-    display: none;
-    text-align: left;
-    padding: 0;
-    font-weight: normal;
-	border: none !important;
-  }
-  .deroule > UL {
-    display: block;
-  }
-  .menu > UL > LI {
-    border-top: solid 2px #<?=$couleur_decoration_titres?>;
-	text-align: left;
-  }
-  .menu UL LI SPAN {
-    cursor: pointer;
-	font-size: 18px;
-  }
-  .menu UL LI UL {
-    padding-left: 10px;
-  }
+.bandeau > li ul.sous-menu-a-droite {
+	right: 2px;
+	border-radius: 10px;
+}
+.bandeau > li:last-child ul.sous-menu-a-droite {
+	border-top-right-radius: 0;
+}
+.bandeau > li ul label { /* Titre un sous-menu réduit à une icône */
+	color: black;
+	font-weight: bold;
+	text-decoration: underline;
+}
+.bandeau > li:not(.bandeau-etiquette-reduite):not(.bandeau-etiquette-cachee) ul label {
+	display: none;
+}
+.bandeau a { /* Pour permettre :first-letter */
+	display: inline-block;
+}
+.bandeau a:first-letter { /* Pour les types de points */
+    text-transform: uppercase;
+}
+.bandeau > li ul li input {
+	color: black;
+}
+/* Grandes fenêtres */
+@media screen and (min-width: 650px) {
+	.bandeau {
+		background-image: url('../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png');
+		background-size: contain;
+		background-repeat: no-repeat;
+	}
+	.bandeau > li:first-child {
+		padding: 14px;
+	}
+	.bandeau > li:first-child p {
+		display: inline;
+		color: transparent;
+	}
+}
+/* Petites fenêtres */
+@media screen and (max-width: 420px) {
+	.bandeau > li {
+		width: 24px;
+		color: transparent;
+		overflow: hidden;
+		flex-shrink: 0;
+	}
+	.bandeau > li:first-letter {
+		color: initial; /* Pour caractère unicode */
+	}
+	.bandeau > li:first-child {
+		width: initial;
+	}
+	.bandeau > li:first-child p {
+		line-height: 5.2vw;
+		font-size: 5.7vw;
+	}
+	.bandeau > li ul label {
+		display: initial !important;
+	}
 }
 
 /* ==========MENU DU BAS ========== */

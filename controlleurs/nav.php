@@ -17,7 +17,6 @@ Zone (11): affiche tous les massifs inclus. pas de points, pas de panel. faut cl
 ************************************************************************************************/
 
 require_once ("bdd.php");
-require_once ("meta_donnee.php");
 require_once ("polygone.php");
 require_once ("point.php");
 require_once ("forum.php");
@@ -34,7 +33,6 @@ $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($conf
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
-$vue->types_point_affichables=types_point_affichables();
 
 /* Variables d'entrée
 /nav : affiche tous les points

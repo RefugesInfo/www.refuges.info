@@ -52,6 +52,10 @@ new ol.Map({
 		layerWri({ // La couche des points
 			host: '<?=$config_wri["sous_dossier_installation"]?>',
 			distance: 30, // Clusterisation
+			hoverStyleOptionsFunction: function(feature, properties) {
+				properties.attribution=null;
+				return styleOptionsFullLabel(properties);
+			},
 		}),
 		layerMarker({ // Le cadre
 			prefix: 'cadre', // S'interface avec les <TAG id="cadre-xxx"...

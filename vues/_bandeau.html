@@ -1,167 +1,230 @@
-<div id="entete" class="noprint">
-	<div>
-		<?if (est_connecte() && $infos_identification->username) {?>
-			<a href="<?=$config_wri['lien_forum']?>index.php?mode=logout">Déconnexion</a>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php" title="Modifier votre profil">Connecté en <?=$infos_identification->username?></a>
-		<?} else {?>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login" title="Si vous avez déjà un compte">Connexion</a>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=register" title="Créer un compte">Inscription</a> /
-			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=sendpassword" title="Récupérer votre mot de passe">mdp</a>
-		<?}?>
-		
-		<form method="post" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
-		<div>
-			<input type="text" name="nom" size="35" placeholder="Recherche de point par une partie du nom" />
-            <input type="hidden" name="limite" value="<?=$config_wri['points_maximum_recherche']?>">
-			<input type="hidden" name="ids_types_point" value="<?=$config_wri['tout_type_refuge']?>" />
-			<input type="hidden" name="avec_point_osm" value="1" />
-			<input type="image" src="<?=$config_wri['sous_dossier_installation']?>images/loupe.png" title="Lancer la recherche" alt="R" />
-		</div>
-		</form>
-	</div>
-	<a href="<?=$config_wri['sous_dossier_installation']?>"><img alt="Photo d'ambiance" src="<?=$config_wri['sous_dossier_installation']?>images/bandeau-haut/titrehorizontal_<?=date('m')?>.png" /></a>
-</div>
+<ul class="bandeau">
+	<li title="Retour à l'accueil">
+		<a href="<?=$config_wri['sous_dossier_installation']?>">
+			<p>Refuges</p><p>.info</p>
+		</a>
+	</li>
 
-<? // Barres de menus
-$menus = array ('menu-normal'); // On commence par la barre normale, dans tous les cas
+	<li title="Nouvelles informations entrées">&#128276; <span>Nouvelles</span>
+		<ul><label>Nouvelles</label>
+		<li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles"
+				title="Les entrées les plus récentes">
+			Toutes</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=points"
+				title="Derniers points entrés sur le site">
+			Points</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=refuges"
+				title="Dernières cabanes ou refuges entrés sur le site">
+			Cabanes</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=commentaires"
+				title="Derniers commentaires">
+			Commentaires</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=forums"
+				title="Dernières cabanes ou refuges entrées sur le site">
+			Forum</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss">
+			Flux RSS</a>
+		</li></ul>
+	</li>
 
-// Si ce n'est pas un mobile, on ajoute un menu surgissant quand la page est scrollée
-$agents_mobiles = "phone|iphone|itouch|ipod|ipad|symbian|android|htc_|htc-|palmos|blackberry|opera m|iemobile|windows ce|fennec|hiptop|kindle|mot |mot-|samsung|sony|ericsson|nokia|^sie-|nintendo|webos\/|pda;|avantgo|eudoraweb|minimo|netfront|brew|teleca|lg;|lge |wap;| wap ";
-if (!preg_match( "/$agents_mobiles/i", $_SERVER['HTTP_USER_AGENT'] ?? ''))
-	$menus [] = 'menu-scroll';
-
-foreach ($menus AS $id) {?>
-	<div id="<?=$id?>" class="menu noprint">
-		<a href="<?=$config_wri['sous_dossier_installation']?>" title="Retour à l'accueil">Refuges.info</a>
-		<span onclick="flip(this.parentNode,'deroule')">Menu</span>
-		<?if (!est_connecte()) {?>
-			<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login" style="float:right">Connexion</a>
-		<?}?>
-		<ul>
-			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>">Accueil</a>
-			</li>
-			<li class="mobile-only">
-				<?if (!est_moderateur()) {?>
-					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">Connexion</a>
-					<span onclick="flip(this.parentNode,'deroule')" title="Inscription">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-				<?}?>
-				<ul>
-					<li><a href="<?=$config_wri['lien_forum']?>ucp.php?mode=register" title="Les entrées les plus récentes">Inscription</a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles">Nouvelles</a>
-				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-				<ul>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles" title="Les entrées les plus récentes">Toutes</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=points" title="Derniers points entrés sur le site">Points</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=refuges" title="Dernières cabanes ou refuges entrés sur le site">Cabanes</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=commentaires" title="Derniers commentaires">Commentaires</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=forums" title="Dernières cabanes ou refuges entrées sur le site">Forum</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss">Flux RSS</a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout" title="Ajouter une nouvelle cabane ou refuge">Ajouter un point</a>
-			</li>
-			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche">Recherche</a>
-				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-				<ul>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche" title="Formulaire de recherche dans la base de données de refuges">Avancée</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations" title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">Exportations</a></li>
-				</ul>
-			</li>
-			<li>
-				<a>Zones couvertes</a>
-				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-				<ul>
-					<?php if (isset($vue->zones_pour_bandeau))
-						foreach ($vue->zones_pour_bandeau AS $nom_zone => $lien) {?>
-							<li>
-								<a href="<?=$lien?>"><?=$nom_zone?></a>
-							</li>
-					<?}?>
-				</ul>
-			</li>
-			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>nav">Cartes</a>
-				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-				<ul>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nav?map=7/5/45&baselayer=Refuges.info ">Refuges.info</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nav?map=7/5/45&baselayer=OSM%20fr">OSM</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nav?map=7/5/45&baselayer=OpenTopo">OpenTopo</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nav?map=6/3/47&baselayer=IGN%20TOP25">IGN</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>nav?map=6/3/47&baselayer=Photo%20Bing">Satellite</a></li>
-					<li><a href="<?=$config_wri['sous_dossier_installation']?>gps">GPS</a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="<?=$config_wri['lien_forum']?>">Forums</a>
-				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-				<ul>
-					<li><a href="<?=$config_wri['lien_forum']?>">Tous</a></li>
-					<li><a href="<?=$config_wri['lien_forum']?>viewforum.php?f=1" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">La vie du site</a></li>
-					<li><a href="<?=$config_wri['lien_forum']?>viewforum.php?f=2" title="Forum de discussion sur le développement et les défauts logiciels du site">Développement</a></li>
-					<li><a href="<?=$config_wri['lien_forum']?>viewforum.php?f=6" title="Forum d'échange sur les offres et demandes d'emploi en refuge">Emplois</a></li>
-					<li><a href="<?=$config_wri['lien_forum']?>viewforum.php?f=5" title="Forum de discussion sur les refuges et sur la gestion communautaire du site">Divers</a></li>
-					<li><a href="<?=$config_wri['lien_forum']?>ucp.php?i=pm&folder=inbox" title="Votre boite aux lettres personelle">Messages</a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="<?=$vue->lien_wiki["index"]?>">A propos du site</a>
-				<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-				<ul>
-					<li><a href="<?=$vue->lien_wiki["index"]?>">A propos</a></li>
-					<li><a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">Licence des contenus</a></li>
-					<li><a href="<?=$vue->lien_wiki["prudence"]?>" title="Règles de prudence à observer vis à vis de l'information présente sur refuges.info">Règles de prudence</a></li>
-					<li><a href="<?=$vue->lien_wiki["qui_est_refuges.info"]?>" title="Qui est derrière www.refuges.info ?">Qui sommes nous ?</a></li>
-					<li><a href="<?=$vue->lien_wiki["liens"]?>">Liens</a></li>
-				</ul>
-			</li>
-			
-			<? if ( est_moderateur() ) {?>
-				<li style="max-width:90px">
-					<a>Gestion</a>
-					<span onclick="flip(this.parentNode,'deroule')" title="Plus de fonctions">&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span>
-					<ul style="width:300px">
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
-							Commentaires en attente d'une correction
-						</a></li>
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications">
-							Historique des modifications des points
-						</a></li>
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=<?=$config_wri['id_massif']?>">
-							Gestion des massifs
-						</a></li>
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=<?=$config_wri['id_zone']?>">
-							Gestion des zones couvertes
-						</a></li>
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>gestion/modifier_modeles"
-							title="Pré-remplissage des champs lors d'un ajout de point">
-							Modifier les modèles de points
-						</a></li>
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>wiki/contenus_speciaux">
-							Liste des contenus spéciaux
-						</a></li>
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>ressources/outils/scan_liens">
-							Scanner les liens véreux
-						</a></li>
-						<li><a href="<?=$config_wri['sous_dossier_installation']?>forum/adm">
-							Panneau d’administration
-						</a></li>
-					</ul>
-				</li>
+	<li title="Voir les différentes régions">&#127757; <span>Cartes</span>
+		<ul><label>Cartes</label>
+		<li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nav">Toutes</a>
+		</li>
+		<hr/>
+		<?php if (isset($vue->zones_pour_bandeau))
+			foreach ($vue->zones_pour_bandeau AS $nom_zone => $lien) {?>
 				<li>
-					<?if ($vue->demande_correction) {?>
-						<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction" title="Commentaires en attente d'une correction">*</a>
-					<?}?>
+					<a href="<?=$lien?>"><?=$nom_zone?></a>
 				</li>
-			<?}?>
-		</ul>
-	</div>
-<?}?>
+		<?}?>
+		<hr/>
+		<li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>gps">GPS</a>
+		</li></ul>
+	</li>
 
-<?/* Juste pour que les repliements de la ligne de menus sur une page étroite ne bavent pas sur la page */?>
-<div id="fin-entete"></div>
+	<li title="Ajouter un point">&#128204; <span>Ajouter</span>
+		<ul><label>Ajouter</label>
+		</li>
+		 <?php foreach ($vue->types_point_affichables AS $pa) { ?>
+			 <li>
+				<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification/?id_point_type=<?=$pa->id_point_type?>"><?=$pa->nom_type?>
+				</a>
+			 </li>
+		 <?}?>
+		</ul>
+	</li>
+
+	<li title="Recherches">&#128269; <span>Recherches</span>
+		<ul><li>
+			<form method="post" action="/point_recherche">
+				<input type="text" name="nom" size="30" placeholder="Recherche de point">
+				<input type="hidden" name="limite" value="40">
+				<input type="hidden" name="ids_types_point" value="7,9,10">
+				<input type="hidden" name="avec_point_osm" value="1">
+				<input type="image" src="/images/loupe.png" title="Lancer la recherche">
+			</form>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
+				title="Formulaire de recherche dans la base de données de refuges.info">
+			Recherche avancée de points</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations"
+				title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">
+			Exportation de points</a>
+		</li><hr/><li>
+			<form action="<?=$config_wri['lien_forum']?>search.php" method="get">
+				<input type="search" name="keywords" size="30" value="" placeholder="Recherche dans le forum">
+				<input type="image" src="/images/loupe.png" title="Lancer la recherche">
+			</form>
+		</li><li>
+			<a href="<?=$config_wri['lien_forum']?>search.php">
+			Recherche avancée forum</a>
+		</li></ul>
+	</li>
+
+	<li title="Forums">&#128172; Forums
+		<ul><label>Forums</label>
+		<li>
+			<a href="<?=$config_wri['lien_forum']?>">
+			Tous les forums</a>
+		</li><li>
+			<a href="<?=$config_wri['lien_forum']?>viewforum.php?f=1"
+				title="Forum de discussion sur les refuges et sur la gestion communautaire du site">
+			La vie du site</a>
+		</li><li>
+			<a href="<?=$config_wri['lien_forum']?>viewforum.php?f=2"
+				title="Forum de discussion sur le développement et les défauts logiciels du site">
+			Développement</a>
+		</li><li>
+			<a href="<?=$config_wri['lien_forum']?>viewforum.php?f=6"
+				title="Forum d'échange sur les offres et demandes d'emploi en refuge">
+			Emplois</a>
+		</li><li>
+			<a href="<?=$config_wri['lien_forum']?>viewforum.php?f=5"
+				title="Forum de discussion sur les refuges et sur la gestion communautaire du site">
+			Divers</a>
+		</li>
+		<?php if (est_connecte() && $infos_identification->username) { ?>
+			<li>
+				<a href="<?=$config_wri['lien_forum']?>ucp.php?i=pm&amp;folder=inbox"
+					title="Votre boite aux lettres personelle">
+				Messages privés</a>
+			</li>
+		<?php } ?>
+		</ul>
+	</li>
+
+	<li title="Divers">&#128218; A propos
+		<ul><label>A propos</label>
+		<li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>wiki/index">
+			Qui sommes nous ?</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>wiki/licence"
+				title="Quelle est la licence du contenu de refuges.info ?">
+			Licence des contenus</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>wiki/prudence"
+				title="Règles de prudence à observer vis à vis de l'information présente sur refuges.info">
+			Règles de prudence</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>wiki/qui_est_refuges.info"
+				title="Qui est derrière www.refuges.info ?">
+			Qui sommes nous ?</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>wiki/liens">
+			Liens</a>
+		</li></ul>
+	</li>
+
+	<?php if (est_moderateur()) { ?>
+	<li title="Gestion">&#128295; Gestion
+		<ul title="Fonction réservées aux modérateurs">
+			<label>Gestion</label>
+		<?if ($vue->demande_correction) {?>
+			<li><a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
+				Commentaires en attente d'une correction
+			</a></li>
+		<?}?>
+		<li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications">
+			Historique des modifications des points</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=1">
+			Gestion des massifs</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=11">
+			Gestion des zones couvertes</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>gestion/modifier_modeles"
+				title="Pré-remplissage des champs lors d'un ajout de point">
+			Modifier les modèles de points</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contenus_speciaux">
+			Liste des contenus spéciaux</a>
+		</li><li>
+			<a href="<?=$config_wri['sous_dossier_installation']?>ressources/outils/scan_liens">
+			Scanner les liens véreux</a>
+		</li></ul>
+	</li>
+	<?php } ?>
+
+	<?php if (est_connecte() && $infos_identification->username) { ?>
+		<li title="Fonctions nécéssitant d'être connecté">&#128104; <?=$infos_identification->username?>
+			<ul><label>Compte <?=$infos_identification->username?></label>
+			<li>
+				<a href="<?=$config_wri['lien_forum']?>ucp.php"
+					title="Panneau de l’utilisateur">
+				Panneau de l’utilisateur</a>
+			</li><li>
+				<a href="<?=$config_wri['lien_forum']?>ucp.php?i=pm&folder=inbox">
+				Messages privés</a>
+			</li>
+			<?php if (est_moderateur()) { ?>
+				<li>
+					<a href="<?=$config_wri['lien_forum']?>mcp.php?i=main&mode=front"
+						title="Panneau de modération">
+					Modération forum</a>
+				</li>
+			<?php } ?>
+			<li>
+				<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&redirect=<?=$_SERVER['REQUEST_URI']?>"
+					title="Déconnexion">
+				Déconnexion</a>
+			</li></ul>
+		</li>
+	<?php } elseif ($_SERVER['REQUEST_SCHEME'] == 'http') { ?>
+		<li id="http-login" title="Connexion à un compte">&#128100; Connexion
+		</li>
+	<?php } else { ?>
+		<li title="Connexion à un compte">&#128100; Connexion
+			<ul>
+			<form method="post" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
+				<li>
+					<input type="text" name="username" id="username" size="15" placeholder="Nom d’utilisateur">
+				</li><li>
+					<input type="password" name="password" id="password" size="15" placeholder="Mot de passe">
+				</li><li>
+					<input type="hidden" name="creation_time" value="<?=$infos_identification->creation_time?>">
+					<input type="hidden" name="form_token" value="<?=$infos_identification->login_form_token?>">
+					<input type="hidden" name="redirect" value="<?=$_SERVER['REQUEST_URI']?>">
+					<input type="submit" name="login" value="Connexion">
+				</li><hr/><li>
+					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">Connexion avancée</a>
+				</li><hr/><li>
+					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=register">Créer un compte</a>
+				</li>
+			</form>
+			</ul>
+		</li>
+	<?php } ?>
+</ul>

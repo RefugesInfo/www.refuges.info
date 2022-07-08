@@ -11,6 +11,13 @@ if (!defined('IN_PHPBB')) exit;
 
 class listener implements EventSubscriberInterface
 {
+	// List of externals
+	public function __construct(
+	) {
+		global $request;
+		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
+	}
+
 	static public function getSubscribedEvents () {
 		return [
 			'core.viewtopic_assign_template_vars_before' => 'viewtopic_assign_template_vars_before',
@@ -55,8 +62,10 @@ class listener implements EventSubscriberInterface
 		$language->add_lang('common', $ns[0].'/'.$ns[1]);
 
 		// On traite le logout ici car la fonction de base demande un sid (on se demande pourquoi ?)
-		if ($request->variable('mode', '') == 'logout')
+		if ($request->variable('mode', '') == 'logout') {
 			$user->session_kill();
+			header('Location: https://'.$this->server['HTTP_HOST'].$request->variable('redirect', '/'));
+		}
 
 		global $config_wri, $pdo; // Contexte WRI
 		require_once (__DIR__.'/../../../../../includes/config.php');
@@ -74,10 +83,16 @@ class listener implements EventSubscriberInterface
 		$vue = new \stdClass;
 		$vue->type = '';
 		$vue->java_lib_foot = [];
-		$vue->zones_pour_bandeau=remplissage_zones_bandeau();
-		$vue->lien_wiki=prepare_lien_wiki_du_bandeau();
+
+		// Pour le bandeau
+		$vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_bandeau.js?'
+			.filemtime($config_wri['chemin_vues'].'_bandeau.js');
+		$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes
+		$vue->lien_wiki=prepare_lien_wiki_du_bandeau(); // Menu des pages d'aide
+		$vue->types_point_affichables=types_point_affichables(); // Menu des types de points
         if (est_moderateur())
             $vue->demande_correction=info_demande_correction ();
+
 		ob_start();
 		include ($config_wri['chemin_vues'].'_bandeau.html');
 		$template->assign_var('BANDEAU', ob_get_clean());
@@ -89,10 +104,7 @@ class listener implements EventSubscriberInterface
 
 	// Forçage https du login
 	function login_box_before () {
-		global $request;
-		$server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
-
-		if (!isset($server['HTTPS']))
-			header('Location: https://'.$server['HTTP_HOST'].$server['REQUEST_URI'], true, 301);
+		if (!isset($this->server['HTTPS']))
+			header('Location: https://'.$this->server['HTTP_HOST'].$this->server['REQUEST_URI'], true, 301);
 	}
 }
