@@ -503,8 +503,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 .bandeau > li:not(.bandeau-etiquette-reduite):not(.bandeau-etiquette-cachee) ul label {
 	display: none;
 }
-.bandeau a { /* Pour permettre :first-letter */
-	display: inline-block;
+.bandeau a {
+	display: inline-block; /* Pour permettre :first-letter */
+	color: #<?=$couleur_lien?>; /* Pour couvrir un style du forum */
 }
 .bandeau a:first-letter { /* Pour les types de points */
     text-transform: uppercase;
