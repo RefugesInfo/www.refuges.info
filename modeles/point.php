@@ -337,7 +337,7 @@ SELECT points.*,
     if (!$point->cache or !empty($conditions->avec_points_caches)) // On renvoi ce point, soit il n'est pas caché, soit on a demandé aussi les points cachés
       $points[]=$point;
     elseif ( !empty($conditions->ids_points) and is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
-      return erreur("Ce point est en attente de décision, seul un modérateur peut agir sur lui");
+      return erreur("Ce point a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique (et vous n'êtes pas modérateur, ou pas connecté)");
   }
   return $points;
 }
