@@ -55,8 +55,9 @@ function infos_identification()
       JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
       WHERE session_id = '{$cookie_sid[0]}'";
 
-  $res = $pdo->query($sql);
-  if ($res)
+  if (!empty($sql))    
+    $res = $pdo->query($sql);
+  if (!empty($res))
     $infos_identification = $res->fetch();
 
   // Pas de cookies du tout ou
