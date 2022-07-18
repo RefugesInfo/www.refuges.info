@@ -1,27 +1,20 @@
 <?php if (!empty($vue->point->id_point)) { ?>
   <h2>Modification du point <?=$vue->point->nom?></h2>
-<?php } else { ?>
-  <h2>Création d'un point</h2>
 <?php } ?>
 
 <dl>
-  <dt>Que mettre ou ne pas mettre ?</dt>
   <dd>
-    <p>Tout ne trouve pas sa place sur le site, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
+    <p><b>Tout ne trouve pas sa place sur le site</b>, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
   </dd>
 </dl>
 <dl>
-  <?php foreach ($vue->types_point_affichables AS $pa)
-    if($pa->id_point_type == $vue->point->id_point_type and isset($pa->lien_wiki_type_point)) { ?>
-      <dt>Qu'est-ce qu'un <?=$pa->nom_type?> ?</dt>
+  <?php if (!empty($vue->point->id_point_type)) { ?>
       <dd>
-        <p>Voyez la <a href="<?=$pa->lien_wiki_type_point?>"><?=$pa->lien_wiki_type_point?>
-        définition de "<?=$pa->nom_type?>".</a></p>
+        <p>Voyez la <a href="<?=lien_wiki(replace_url('fiche-'.$vue->point->nom_type))?>"> définition de "<?=$vue->point->nom_type?>".</a></p>
      </dd>
   <?php } ?>
 </dl>
 <dl>
-  <dt>Licence des contenus</dt>
   <dd>
     <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
   </dd>
