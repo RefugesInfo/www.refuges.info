@@ -414,7 +414,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	display: flex;
 	padding: 0;
 	/* Format pour tout le menu et sous-menus */
-    font-family: Times New Roman;
+	font-family: Times New Roman;
 	font-size: 18px;
 	line-height: 22px;
 	color: #<?=$couleur_lien?>;
@@ -423,7 +423,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	white-space: nowrap;
 	margin: 0;
 	border: 2px solid transparent;
-	border-radius: 10px 10px 0 0;
+	border-radius: 10px;
 	padding: 10px 0;
 	cursor: pointer;
 }
@@ -444,7 +444,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 .bandeau > li.sous-menu-ouvert {
 	border: 2px solid #<?=$couleur_lien?>;
-	background: transparent;
+	background: #<?=$couleur_fond?>;
 }
 /* Logo */
 .bandeau > li:first-child {
@@ -454,9 +454,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 .bandeau > li:first-child p {
 	margin: 2px;
 	text-align: center;
-	line-height: 22px; /* Pour certains explorateurs */
 	font-size: 24px;
-    font-family: 'Open Sans', 'Liberation Sans', sans-serif;
 }
 .bandeau > li:first-child span {
 	display: block;
@@ -508,9 +506,11 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	color: #<?=$couleur_lien?>; /* Pour couvrir un style du forum */
 }
 .bandeau a:first-letter { /* Pour les types de points */
-    text-transform: uppercase;
+	text-transform: uppercase;
 }
 .bandeau > li ul li input {
+	font-size: 18px;
+	font-family: Times New Roman;
 	color: black;
 }
 /* Grandes fenêtres */
