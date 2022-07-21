@@ -13,7 +13,10 @@
 <div id="carte-nav" class="nav_<?=$vue->mode_affichage?>"></div>
 
 <div id="selecteur-carte-nav" class="noprint">
-	<?php if (!$vue->contenu ){?>
+	<?php if ($vue->contenu ) {?>
+		<!-- Cas autre qu'un massif -->
+		<input style="display:none" name="couche-wri" type="checkbox" checked="checked" />
+	<?php } else {?>
 		<fieldset>
 			<legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
 			<ul>

@@ -987,7 +987,7 @@ function memCheckbox(selectorName, callback) {
 
 	const selection = readCheckbox(selectorName);
 
-	if (inputEls.length && typeof callback == 'function')
+	if (selectorName)
 		callback(selection);
 
 	return selection;
