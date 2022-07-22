@@ -79,14 +79,18 @@ const baseLayers = {
 	massifs = layerWriAreas({
 		host: '<?=$config_wri["sous_dossier_installation"]?>',
 		minResolution: 500,
+<?php if (!$vue->contenu) {?>
 		selectorName: 'couche-wri',
+<?php } ?>
 	}),
 
 	// La couche "contour" (du massif, de la zone)
 	contour = layerVector({
 		url: '<?=$config_wri["sous_dossier_installation"]?>api/polygones' +
 			'?massif=<?=$vue->polygone->id_polygone?>',
+<?php if (!$vue->contenu) {?>
 		selectorName: 'couche-massif',
+<?php } ?>
 		style: new ol.style.Style({
 			stroke: new ol.style.Stroke({
 				color: 'blue',
