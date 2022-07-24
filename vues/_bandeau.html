@@ -204,7 +204,8 @@
 	<?php } else { ?>
 		<li title="Connexion à un compte">&#128100; Connexion
 			<ul>
-			<form method="post" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
+			<form method="post" class="connexion"
+				action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
 				<li>
 					<input type="text" name="username" id="username" size="15" placeholder="Nom d’utilisateur">
 				</li><li>
@@ -214,6 +215,10 @@
 					<input type="hidden" name="form_token" value="<?=$infos_identification->login_form_token?>">
 					<input type="hidden" name="redirect" value="<?=$_SERVER['REQUEST_URI']?>">
 					<input type="submit" name="login" value="Connexion">
+					<p>La connexion à refuges.info</p>
+					<p>et l'utilisation du forum</p>
+					<p>implique l'acceptation de</p>
+					<p><a href="<?=$vue->lien_wiki["cookies"]?>">notre utilisation des cookies</a></p>
 				</li><hr/><li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">Connexion avancée</a>
 				</li><hr/><li>

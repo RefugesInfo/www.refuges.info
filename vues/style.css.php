@@ -513,6 +513,13 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	font-family: Times New Roman;
 	color: black;
 }
+.bandeau .connexion p {
+	margin: 0;
+	font-size: 14px;
+}
+.bandeau .connexion p a:first-letter {
+	text-transform: lowercase;
+}
 /* Grandes fenêtres */
 @media screen and (min-width: 650px) {
 	.bandeau {
