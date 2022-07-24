@@ -11,16 +11,19 @@
 	<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact/" title="Nous contacter">
 		Contact
 	</a> &mdash; 
-	<a id="lien-api" href="<?=$config_wri['sous_dossier_installation']?>api/doc/" title="API">
-		API développeurs
-	</a> &mdash; 
 	<a href="<?=$vue->lien_wiki["licence"]?>" title="Quelle est la licence du contenu de refuges.info ?">
 		<img src="<?=$config_wri['sous_dossier_installation']?>images/copyleft.png" alt="Copyleft" />
 		Licence des contenus
 	</a> &mdash; 
+	<a href="<?=$vue->lien_wiki["cookies"]?>">
+		Info cookies
+	</a> &mdash; 
 	<a href="<?=$vue->lien_wiki["mentions-legales"]?>">
 		Mentions légales
-	</a> 
+	</a> &mdash; 
+	<a id="lien-api" href="<?=$config_wri['sous_dossier_installation']?>api/doc/" title="API">
+		API développeurs
+	</a>
 	<?php if ($config_wri['debug']) { ?>
 	&mdash; 
 	<a href="http://validator.w3.org/check?uri=referer">
