@@ -494,12 +494,18 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	border-top-right-radius: 0;
 }
 .bandeau > li ul label { /* Titre un sous-menu réduit à une icône */
-	color: black;
+	margin-bottom: 3px;
+	color: #<?=$couleur_lien?>;
 	font-weight: bold;
 	text-decoration: underline;
 }
 .bandeau > li:not(.bandeau-etiquette-reduite):not(.bandeau-etiquette-cachee) ul label {
 	display: none;
+}
+.bandeau > li ul p {
+	margin: 0;
+	font-size: 14px;
+	color: #<?=$couleur_lien?>;
 }
 .bandeau a {
 	display: inline-block; /* Pour permettre :first-letter */
@@ -513,9 +519,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	font-family: Times New Roman;
 	color: black;
 }
-.bandeau .connexion p {
-	margin: 0;
-	font-size: 14px;
+.bandeau > li ul li .input-text {
+	width: calc(100vw - 47px);
+	max-width: 400px;
 }
 .bandeau .connexion p a:first-letter {
 	text-transform: lowercase;
@@ -554,7 +560,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		font-size: 5.7vw;
 	}
 	.bandeau > li ul label {
-		display: initial !important;
+		display: block !important;
 	}
 }
 

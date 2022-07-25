@@ -1,40 +1,45 @@
 const bandeauEl = document.querySelector('.bandeau'),
 	sousMenusEls = document.querySelectorAll('.bandeau ul');
 
-if ('ontouchstart' in window) { // Touch screen
-	window.addEventListener('load', initSousMenu);
-	window.addEventListener('touchstart', actionneSousMenu);
-	// Ne pas utiliser resize qui est déclenché par le clavier virtuel
-} else { // Mouse screen
-	window.addEventListener('load', initSousMenu);
-	window.addEventListener('resize', initSousMenu);
-	window.addEventListener('mouseover', actionneSousMenu);
-}
+window.addEventListener('touchstart', actionneSousMenu);
+window.addEventListener('resize', initSousMenu);
+window.addEventListener('mouseover', actionneSousMenu);
+window.addEventListener('load', initSousMenu);
+
+var previousWindowWidth = 0;
 
 function initSousMenu(evt) {
-	// On réserve la place pour les icônes
-	let nbIconesAPlacer = sousMenusEls.length,
-		nbZonesReduites = 0;
+	// Ne pas utiliser la redimension verticale qui est déclenchée par l'apparitiondu clavier virtuel des terminaux tactiles
+	if (previousWindowWidth != window.innerWidth) {
+		previousWindowWidth = window.innerWidth;
 
-	// On enlève le flex pour mesurer la vraie largeur de chaque zone
-	bandeauEl.classList.add('bandeau-noflex');
+		// On réserve la place pour les icônes
+		let nbIconesAPlacer = sousMenusEls.length,
+			nbZonesReduites = 0;
 
-	sousMenusEls.forEach(function(ulEl) { // Pour toutes les zones du bandeau
-		// On efface la classe pour mesurer la vraie largeur de chaque zone
-		ulEl.parentElement.classList = '';
+		// On enlève le flex pour mesurer la vraie largeur de chaque zone
+		bandeauEl.classList.add('bandeau-noflex');
 
-		if (ulEl.parentElement.getBoundingClientRect().right >
-			document.body.clientWidth - --nbIconesAPlacer * 28) // On réserve la place pour les icônes qui restent à placer à droite
-			ulEl.parentElement.classList = nbZonesReduites++ ? // Une seule zone en cours de réduction
-			'bandeau-etiquette-cachee' : // On cache les zones à droite
-			'bandeau-etiquette-reduite';
-	});
+		sousMenusEls.forEach(function(ulEl) { // Pour toutes les zones du bandeau
+			// On efface la classe pour mesurer la vraie largeur de chaque zone
+			ulEl.parentElement.classList = '';
 
-	// On repasse en flex pour voir le résultat
-	bandeauEl.classList.remove('bandeau-noflex');
+			if (ulEl.parentElement.getBoundingClientRect().right >
+				document.body.clientWidth - --nbIconesAPlacer * 28) // On réserve la place pour les icônes qui restent à placer à droite
+				ulEl.parentElement.classList = nbZonesReduites++ ? // Une seule zone en cours de réduction
+				'bandeau-etiquette-cachee' : // On cache les zones à droite
+				'bandeau-etiquette-reduite';
+		});
+
+		// On repasse en flex pour voir le résultat
+		bandeauEl.classList.remove('bandeau-noflex');
+	}
 }
 
 function actionneSousMenu(evt) {
+	// Exécute seulement la première fonction disponible pour ce type de terminal (touch ou mouseover
+	evt.preventDefault();
+
 	// Passe en https si on ouvre un formulaire de login
 	if (evt.target.id == 'http-login')
 		location.replace(location.href.replace('http:', 'https:'));
