@@ -425,7 +425,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	border: 2px solid transparent;
 	border-radius: 10px;
 	padding: 10px 0;
-	cursor: pointer;
 }
 .bandeau > li span {
 	background: #<?=$couleur_fond?>;
