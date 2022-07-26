@@ -24,18 +24,19 @@
 			</li><li>
 				<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles?quoi=forums">
 				Forum</a>
-			</li><li>
+			</li><hr/><li>
 				<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss">
 				Flux RSS</a>
 			</li>
 		</ul>
 	</li>
 
-	<li>&#127757; <span>Zones</span>
+	<li>&#127757; <span>Cartes</span>
 		<ul>
-			<label>Zones</label>
+			<label>Cartes</label>
 			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>nav">Voir les cartes</a>
+				<a href="<?=$config_wri['sous_dossier_installation']?>nav">Toutes les cartes</a>
+				<p><a href="<?=lien_wiki('legende_carte')?>">Légende des icônes</a></p>
 			</li>
 			<hr/>
 			<p>Zones couvertes:</p>
@@ -64,6 +65,9 @@
 					</a>
 				</li>
 			<? } ?>
+			<hr/>
+			<p><a href="<?=lien_wiki('que_mettre')?>">Quoi mettre ?</a></p>
+			<p><a href="<?=lien_wiki('contenus_interdits')?>">Contenus interdits.</a></p>
 		</ul>
 	</li>
 
@@ -139,17 +143,36 @@
 				<a href="<?=$config_wri['sous_dossier_installation']?>wiki/prudence">
 				Règles de prudence</a>
 			</li><li>
+				<a href="<?=$config_wri['sous_dossier_installation']?>wiki/cabane_principe_bonne_conduite">
+				Consignes en cabane non gardée</a>
+			</li><li>
 				<a href="<?=$config_wri['sous_dossier_installation']?>wiki/liens">
 				Liens</a>
+			</li><li>
+				<a href="<?=$vue->lien_wiki["licence"]?>">
+					Licence des contenus
+				</a> 
+			</li><li>
+				<a href="<?=$vue->lien_wiki["mentions-legales"]?>">
+					Mentions légales
+				</a> 
+			</li><li>
+				<a href="<?=$vue->lien_wiki["cookies"]?>">
+					Utilisation des cookies
+				</a> 
+			</li><li>
+				<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact/">
+					Contact
+				</a> 
 			</li>
 		</ul>
 	</li>
 
 	<?php if (est_moderateur()) { ?>
 	<li>&#128295; Gestion
-			<label>Gestion</label>
 		<ul>
 			<label>Gestion</label>
+			<p>Fonctions destinées aux modérateurs</p>
 			<?if ($vue->demande_correction) {?>
 				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
@@ -184,6 +207,7 @@
 		<li>&#128104; <?=$infos_identification->username?>
 			<ul>
 				<label>Compte <?=$infos_identification->username?></label>
+				<p>Fonctions destinées aux personnes connectées</p>
 				<li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php">
 					Panneau de l’utilisateur</a>
