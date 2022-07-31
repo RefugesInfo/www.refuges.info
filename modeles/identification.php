@@ -24,7 +24,7 @@ require_once ("bdd.php");
 
 function infos_identification()
 {
-  global $pdo, $infos_identification, $config_wri;
+  global $pdo, $infos_identification, $config_wri, $config;
 
   // On ne rapelle pas SQL à chaque fois !
   if (isset ($infos_identification))
@@ -53,7 +53,8 @@ function infos_identification()
     $sql = "SELECT user_id, username, group_id, session_id, user_form_salt
       FROM phpbb3_sessions
       JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
-      WHERE session_id = '{$cookie_sid[0]}'";
+      WHERE session_time >= ". (time() - $config['session_length']) ." AND
+        session_id = '{$cookie_sid[0]}'";
 
   if (!empty($sql))    
     $res = $pdo->query($sql);
