@@ -45,7 +45,8 @@ function infos_identification()
     $sql = "SELECT user_id, username, group_id, user_form_salt
       FROM phpbb3_sessions_keys
       JOIN phpbb3_users USING (user_id)
-      WHERE key_id = '".md5($cookie_k[0])."'";
+      WHERE session_time >= ". (time() - $config['session_length']) ." AND
+        key_id = '".md5($cookie_k[0])."'";
 
   // Cas de la connexion limitée à l'ouverture de l'explorateur
   // ou à la durée de la session définie dans les paramètres du forum
