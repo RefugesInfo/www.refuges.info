@@ -41,30 +41,35 @@ function infos_identification()
   preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb->cookie_name.'_sid'], $cookie_sid);
 
   // Cas de la connexion permanente (se souvenir de moi)
-  if ($cookie_k[0])
+  $res = null;
+  if ($cookie_k[0]) {
     $sql = "SELECT user_id, username, group_id, user_form_salt
       FROM phpbb3_sessions_keys
       JOIN phpbb3_users USING (user_id)
-      WHERE session_time >= ". (time() - $config['session_length']) ." AND
+      WHERE last_ip = '{$_SERVER['REMOTE_ADDR']}' AND
         key_id = '".md5($cookie_k[0])."'";
+    $res = $pdo->query($sql);
+  }
 
   // Cas de la connexion limitée à l'ouverture de l'explorateur
   // ou à la durée de la session définie dans les paramètres du forum
-  else if ($cookie_sid[0])
-    $sql = "SELECT user_id, username, group_id, session_id, user_form_salt
-      FROM phpbb3_sessions
-      JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
-      WHERE session_time >= ". (time() - $config['session_length']) ." AND
-        session_id = '{$cookie_sid[0]}'";
+    if (!$cookie_k[0] || empty($res)) {
+      $sql = "SELECT user_id, username, group_id, session_id, user_form_salt
+        FROM phpbb3_sessions
+        JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
+        WHERE session_ip = '{$_SERVER['REMOTE_ADDR']}' AND
+          session_browser = '{$_SERVER['HTTP_USER_AGENT']}' AND
+          session_time >= ". (time() - $config['session_length']) ." AND
+          session_id = '{$cookie_sid[0]}'";
+      $res = $pdo->query($sql);
+    }
 
-  if (!empty($sql))    
-    $res = $pdo->query($sql);
   if (!empty($res))
     $infos_identification = $res->fetch();
 
   // Pas de cookies du tout ou
   // La session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
-  if (empty($infos_identification)) {
+  if (empty($res) || empty($infos_identification)) {
     $sql = "SELECT user_id, username, group_id, user_form_salt
       FROM phpbb3_users
       WHERE user_id = 1"; // On prend les infos de l'utilisateur UNKNOWN
@@ -72,7 +77,7 @@ function infos_identification()
     $infos_identification = $res->fetch();
   }
 
-  // Informations sessions
+  // Niveau de modération
   $infos_identification->niveau_moderation =
     $infos_identification->group_id == 201 ||
     $infos_identification->group_id == 202
@@ -84,8 +89,8 @@ function infos_identification()
   $infos_identification->creation_time = time();
   $infos_identification->login_form_token = sha1(
     $infos_identification->creation_time .
-	$infos_identification->user_form_salt .
-	'login');
+    $infos_identification->user_form_salt .
+    'login');
 
   return $infos_identification;
 }
