@@ -214,23 +214,24 @@
 				</li><li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?i=pm&folder=inbox">
 					Messages privés</a>
-				</li>
 				<?php if (est_moderateur()) { ?>
-					<li>
-						<a href="<?=$config_wri['lien_forum']?>mcp.php?i=main&mode=front">
-						Panneau de modération</a>
-					</li><li>
-						<a href="<?=$config_wri['lien_forum']?>adm">
-						Panneau d’administration</a>
-					</li>
+				</li><li>
+					<a href="<?=$config_wri['lien_forum']?>mcp.php?i=main&mode=front">
+					Panneau de modération</a>
+				<?php }
+				if ($infos_identification->group_id == 202) { ?>
+				</li><li>
+					<a href="<?=$config_wri['lien_forum']?>adm">
+					Panneau d’administration</a>
 				<?php } ?>
-				<li>
+				</li><li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&redirect=<?=$_SERVER['REQUEST_URI']?>">
 					Déconnexion</a>
 				</li>
 			</ul>
 		</li>
 	<?php } elseif ($_SERVER['REQUEST_SCHEME'] == 'http') { ?>
+		<!-- Le survol de cette balise fait passer en https -->
 		<li id="http-login">&#128100; Connexion</li>
 	<?php } else { ?>
 		<li>&#128100; Connexion
@@ -238,10 +239,11 @@
 				<label>Connexion</label>
 				<form method="post" class="connexion" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
 					<li>
-						<input type="text" name="username" id="username" size="15" placeholder="Nom d’utilisateur">
+						<input type="text" name="username" size="15" placeholder="Nom d’utilisateur">
 					</li><li>
-						<input type="password" name="password" id="password" size="15" placeholder="Mot de passe">
+						<input type="password" name="password" size="15" placeholder="Mot de passe">
 					</li><li>
+						<input type="hidden" name="autologin" checked="checked">
 						<input type="hidden" name="creation_time" value="<?=$infos_identification->creation_time?>">
 						<input type="hidden" name="form_token" value="<?=$infos_identification->login_form_token?>">
 						<input type="hidden" name="redirect" value="<?=$_SERVER['REQUEST_URI']?>">
