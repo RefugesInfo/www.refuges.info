@@ -24,7 +24,7 @@ require_once ("bdd.php");
 
 function infos_identification()
 {
-  global $pdo, $infos_identification, $config_wri, $config;
+  global $pdo, $infos_identification, $config_wri;
 
   // On ne rapelle pas SQL à chaque fois !
   if (isset ($infos_identification))
@@ -41,35 +41,28 @@ function infos_identification()
   preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb->cookie_name.'_sid'], $cookie_sid);
 
   // Cas de la connexion permanente (se souvenir de moi)
-  $res = null;
-  if ($cookie_k[0]) {
+  if ($cookie_k[0])
     $sql = "SELECT user_id, username, group_id, user_form_salt
       FROM phpbb3_sessions_keys
       JOIN phpbb3_users USING (user_id)
-      WHERE last_ip = '{$_SERVER['REMOTE_ADDR']}' AND
-        key_id = '".md5($cookie_k[0])."'";
-    $res = $pdo->query($sql);
-  }
+      WHERE key_id = '".md5($cookie_k[0])."'";
 
   // Cas de la connexion limitée à l'ouverture de l'explorateur
   // ou à la durée de la session définie dans les paramètres du forum
-    if (!$cookie_k[0] || empty($res)) {
-      $sql = "SELECT user_id, username, group_id, session_id, user_form_salt
-        FROM phpbb3_sessions
-        JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
-        WHERE session_ip = '{$_SERVER['REMOTE_ADDR']}' AND
-          session_browser = '{$_SERVER['HTTP_USER_AGENT']}' AND
-          session_time >= ". (time() - $config['session_length']) ." AND
-          session_id = '{$cookie_sid[0]}'";
-      $res = $pdo->query($sql);
-    }
+  else if ($cookie_sid[0])
+    $sql = "SELECT user_id, username, group_id, session_id, user_form_salt
+      FROM phpbb3_sessions
+      JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
+      WHERE session_id = '{$cookie_sid[0]}'";
 
+  if (!empty($sql))    
+    $res = $pdo->query($sql);
   if (!empty($res))
     $infos_identification = $res->fetch();
 
   // Pas de cookies du tout ou
   // La session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
-  if (empty($res) || empty($infos_identification)) {
+  if (empty($infos_identification)) {
     $sql = "SELECT user_id, username, group_id, user_form_salt
       FROM phpbb3_users
       WHERE user_id = 1"; // On prend les infos de l'utilisateur UNKNOWN
@@ -77,7 +70,7 @@ function infos_identification()
     $infos_identification = $res->fetch();
   }
 
-  // Niveau de modération
+  // Informations sessions
   $infos_identification->niveau_moderation =
     $infos_identification->group_id == 201 ||
     $infos_identification->group_id == 202
@@ -89,8 +82,8 @@ function infos_identification()
   $infos_identification->creation_time = time();
   $infos_identification->login_form_token = sha1(
     $infos_identification->creation_time .
-    $infos_identification->user_form_salt .
-    'login');
+	$infos_identification->user_form_salt .
+	'login');
 
   return $infos_identification;
 }
