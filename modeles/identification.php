@@ -47,44 +47,49 @@ function infos_identification()
   }
 
   // On n'est pas dans une page du forum, il faut faire la calcul nous même
-  // Le cookie porte un nom variable selon la config phpBB et on n'a pas choisi le standard !
-  // Donc, je vais le chercher dans la table phpbb3_config
-  $sql_phpbb = "SELECT config_value as cookie_name from phpbb3_config where config_name='cookie_name'";
-  $res_phpbb = $pdo->query($sql_phpbb);
-  $config_phpbb = $res_phpbb->fetch();
+  // On va chercher les valeurs de config dans la table phpbb3_config
+  $sql = "SELECT config_name, config_value
+    FROM phpbb3_config
+    WHERE config_name IN ('cookie_name', 'session_length')";
+  $res = $pdo->query($sql);
+  while ($row = $res->fetch())
+    $config_phpbb[$row->config_name] = $row->config_value;
 
   // On filtre le contenu des cookies pour éviter les injections
-  preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb->cookie_name.'_u'], $cookie_u);
-  preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb->cookie_name.'_k'], $cookie_k);
-  preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb->cookie_name.'_sid'], $cookie_sid);
+  // Le cookie porte un nom variable selon la config phpBB et on n'a pas choisi le standard !
+  preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb['cookie_name'].'_u'], $cookie_u);
+  preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb['cookie_name'].'_k'], $cookie_k);
+  if (isset($_GET['sid']))
+    $cookie_sid = [$_GET['sid']]; // Le sid peut être passé en argument de l'url !
+  else
+    preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb['cookie_name'].'_sid'], $cookie_sid);
 
   // Cas de la connexion permanente (se souvenir de moi)
-  if (!$infos_identification && $cookie_k[0]) {
+  if (!$infos_identification && $cookie_k[0] && $cookie_u[0] > 1) {
     $sql = "SELECT user_id, username, group_id, user_form_salt
       FROM phpbb3_sessions_keys
       JOIN phpbb3_users USING (user_id)
-      WHERE key_id = '".md5($cookie_k[0])."'";
+      WHERE user_id = '{$cookie_u[0]}' AND
+        key_id = '".md5($cookie_k[0])."'";
     $res = $pdo->query($sql);
-    $infos_identification = $res->fetch();
+    if (!empty($res))
+      $infos_identification = $res->fetch();
   }
 
   // Cas de la connexion limitée à l'ouverture de l'explorateur
   // ou à la durée de la session définie dans les paramètres du forum
-  if (!$infos_identification) {
-    // On va chercher cette info dans la base car on n'est pas connecté au forum
-    $sql_phpbb = "SELECT config_value as session_length from phpbb3_config where config_name='session_length'";
-    $res_phpbb = $pdo->query($sql_phpbb);
-    $config_phpbb = $res_phpbb->fetch();
-
+  if (!$infos_identification && $cookie_sid[0] && $cookie_u[0] > 1) {
     $sql = "SELECT user_id, username, group_id, user_form_salt, session_time
       FROM phpbb3_sessions
       JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
-      WHERE session_ip = '{$_SERVER['REMOTE_ADDR']}' AND
-        session_time >= ". (time() - $config_phpbb->session_length) ." AND
+      WHERE user_id = '{$cookie_u[0]}' AND
+        session_ip = '{$_SERVER['REMOTE_ADDR']}' AND
+        session_time >= ". (time() - $config_phpbb['session_length']) ." AND
         session_browser = '{$_SERVER['HTTP_USER_AGENT']}' AND
         session_id = '{$cookie_sid[0]}'";
     $res = $pdo->query($sql);
-    $infos_identification = $res->fetch();
+    if (!empty($res))
+      $infos_identification = $res->fetch();
   }
 
   // Pas de cookies du tout ou
