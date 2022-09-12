@@ -87,9 +87,20 @@
                     </tr>
                     <tr>
                         <td>nb_points</td>
-                        <td><span class="opt">Optionnel</span> Nombre de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, sommets, cols...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).</td>
-                        <td><span class="url">121</span></td>
+                        <td><span class="opt">Optionnel</span> Nombre de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, sommets, cols...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).
+						</td>
+                        <td><span class="url">250</span></td>
                         <td><span class="url">1500</span>,<span class="url">all</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>cluster</td>
+                        <td><span class="opt">Optionnel</span>
+						S'il y a plusieurs points dans un carré de &lt;décimal&gt;
+						degrès de latitude et longitude (environ 100 km pour 1°),
+						ils sont regroupés et représentés par un picto "cluster"
+						(un cercle bleu avec le nombre de points regroupés).
+                        <td><span class="url">Aucune</span></td>
+                        <td><span class="url">0.1</span>,<span class="url">&lt;décimal&gt;</span></td>
                     </tr>
                     <tr>
                         <td>detail</td>

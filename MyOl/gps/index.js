@@ -1,162 +1,81 @@
-/**
- * PWA
- */
-var map;
-const liTags = document.getElementsByTagName('li'), //TODO BUG trop de séléction (BUG WRI)
-	elListe = document.getElementById('liste');
-
 // Force https to allow PWA and geolocation
 // Force full script name of short url to allow PWA
-if (!location.href.match(/(https|localhost).*index/)) {
+if (!location.href.match(/(https|localhost).*index/))
 	location.replace(
 		(location.hostname == 'localhost' ? 'http://' : 'https://') +
 		location.hostname +
-		location.pathname + (location.pathname.slice(-1) == '/' ? scriptName || 'index.html' : '') +
-		location.search);
-} else {
-	/**
-	 * Load service worker for web application install & updates
-	 */
-	if ('serviceWorker' in navigator)
-		navigator.serviceWorker.register(
-			typeof serviceWorkerName == 'undefined' ? 'service-worker.js' : serviceWorkerName, {
-				// Max scope. Allow service worker to be in a different directory
-				scope: typeof scope == 'undefined' ? './' : scope,
+		location.pathname + (location.pathname.slice(-1) == '/' ? 'index.php' : '') +
+		location.search +
+		location.hash);
+
+// Load service worker for web application, install & update
+if ('serviceWorker' in navigator)
+	navigator.serviceWorker.register(myolPath + 'service-worker.js.php?' + swInstance + buildDate, {
+		scope: './',
+	})
+	.then(registration => {
+		//BEST clarify this :
+		if (registration.installing)
+			console.log('PWA SW installing ' + registration.installing.scriptURL);
+		else if (registration.waiting)
+			console.log('PWA SW waiting ' + registration.waiting.scriptURL);
+		else if (registration.active)
+			console.log('PWA SW waiting ' + registration.active.scriptURL);
+		else
+			console.log('PWA SW STATUS UNKNOWN');
+
+		registration.onupdatefound = async function() { // service-worker.js is changed
+			console.log('PWA update found');
+
+			// Completely unregister the previous SW to avoid installed SW actions ongoing
+			if (registration.active) { // If it's an upgrade
+				await navigator.serviceWorker.getRegistrations().then(registrations => {
+					if (registrations.length) {
+						for (let reg of registrations)
+							//BEST need 3 reload to update
+							//BEST https://bitsofco.de/what-self-skipwaiting-does-to-the-service-worker-lifecycle/ 
+							//BEST https://stackoverflow.com/questions/59207110/in-a-pwa-is-there-a-way-to-check-for-a-waiting-service-worker-upgrade 
+							reg.unregister()
+							.then(console.log('SW ' + reg.active.scriptURL + ' deleted'));
+					}
+				});
 			}
-		)
-		.then(function(registration) {
-			if (registration.active) // Avoid reload on first install
-				registration.onupdatefound = function() { // service-worker.js is changed
-					const installingWorker = registration.installing;
-					installingWorker.onstatechange = function() {
-						if (installingWorker.state == 'installed')
-							// The old content have been purged
-							// and the fresh content have been added to the cache.
-							location.reload();
-					};
-				};
-		});
 
-	/**
-	 * OPENLAYERS
-	 */
-	const help = 'Pour utiliser les cartes et le GPS hors réseau :\n' +
-		'Avant le départ :\n' +
-		'- Enregistrez un marque-page ou installez l‘application web (explorateur -> options -> ajouter à l‘écran d‘accueil)\n' +
-		'- Choisissez une couche de carte\n' +
-		'- Placez-vous au point de départ de votre randonnée\n' +
-		'- Zoomez au niveau le plus détaillé que vous voulez mémoriser\n' +
-		'- Déplacez-vous suivant le trajet de votre randonnée suffisamment lentement pour charger toutes les dalles\n' +
-		'- Recommencez avec les couches de cartes que vous voulez mémoriser\n' +
-		'* Toutes les dalles visualisées une fois seront conservées dans le cache de l‘explorateur quelques jours\n' +
-		'Hors réseau :\n' +
-		'- Ouvrez votre marque-page ou votre application\n' +
-		'- Si vous avez un fichier .gpx dans votre mobile, visualisez-le en cliquant sur ▲\n' +
-		'* Fonctionne bien sur Android avec Chrome, Edge, Samsung Internet, fonctions réduites avec Firefox & Safari\n' +
-		'* Cette application ne permet pas d‘enregistrer le parcours\n' +
-		'* Aucune donnée ni géolocalisation n‘est remontée ni mémorisée',
+			// Wait for end of all actions & roboot
+			const installingWorker = registration.installing;
 
-		controls = [
-			controlTilesBuffer(4),
-			controlLayerSwitcher(),
-			controlPermalink(),
+			if (installingWorker)
+				installingWorker.addEventListener('statechange', () => {
+					if (installingWorker.state === 'installed') {
+						console.log('PWA update installed / reload');
+						location.reload();
+					}
+				});
+		}
+	})
 
-			new ol.control.Attribution({
-				collapseLabel: '>',
-			}),
-			new ol.control.ScaleLine(),
-			controlMousePosition(),
-			controlLengthLine(),
+// Manage the map
+var map,
+	layers = [],
+	controlOptions = { // To be customized by the specific index.php
+		layerSwitcher: {},
+		Help: {
+			submenuId: 'myol-gps-help',
+		}
+	};
 
-			new ol.control.Zoom(),
-			new ol.control.FullScreen({
-				tipLabel: 'Plein écran',
-			}),
-			controlGeocoder(),
-			controlGPS(),
+window.addEventListener('load', function() {
+	if (!controlOptions.layerSwitcher.layers)
+		controlOptions.layerSwitcher.layers = layerTileCollection(controlOptions.layerSwitcher);
 
-			//BEST liste des traces dans le layerswitcher
-			liTags.length ? controlButton({
-				label: '&Xi;',
-				title: 'Choisir une trace dans la liste / fermer',
-				activate: function() {
-					if (elListe)
-						elListe.style.display = elListe.style.display == 'none' ? 'block' : 'none';
-					window.scrollTo(0, 0);
-					if (document.fullscreenElement)
-						document.exitFullscreen();
-				},
-			}) :
-			// No button display
-			new ol.control.Control({
-				element: document.createElement('div'),
-			}),
-
-			controlLoadGPX(),
-			controlDownload(),
-			controlButton({
-				label: '?',
-				title: help,
-				activate: function() {
-					alert(this.title);
-				},
-			}),
-		];
-
+	// Load the map
 	map = new ol.Map({
 		target: 'map',
-		controls: controls,
 		view: new ol.View({
-			constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+			constrainResolution: true, // Force zoom on the available tile's definition
 		}),
+		controls: controlsCollection(controlOptions)
+			.concat(controlLayerSwitcher(controlOptions.layerSwitcher)),
+		layers: layers,
 	});
-
-	// Add a gpx layer if any to be loaded
-	if (typeof gpxFile == 'string')
-		window.addEventListener('load', function() {
-			addLayer(gpxFile);
-		});
-
-	// Mask if GPS location is active
-	map.on('myol:ongpsactivate', function() {
-		if (elListe)
-			elListe.style.display = 'none';
-	});
-}
-
-function addLayer(url) {
-	const layer = new ol.layer.Vector({
-		source: new ol.source.Vector({
-			format: new ol.format.GPX(),
-			url: url,
-		}),
-		style: new ol.style.Style({
-			stroke: new ol.style.Stroke({
-				color: 'blue',
-				width: 2,
-			}),
-		}),
-	});
-
-	// Zoom the map on the added features
-	layer.once('prerender', function() {
-		const features = layer.getSource().getFeatures(),
-			extent = ol.extent.createEmpty();
-		for (let f in features)
-			ol.extent.extend(extent, features[f].getGeometry().getExtent());
-		map.getView().fit(extent, {
-			maxZoom: 17,
-			size: map.getSize(),
-			padding: [5, 5, 5, 5],
-		});
-	});
-
-	map.addLayer(layer);
-
-	//HACK needed because the layer only becomes active when in the map area
-	map.getView().setZoom(1);
-
-	// Mask the local .gpx file list when one gpx is displayed
-	if (elListe)
-		elListe.style.display = 'none';
-}
+});

@@ -10,61 +10,84 @@
 /* FILE src/controls.css */
 /* Top aligned buttons */
 /* Container */
-.ol-control-hidden {
-	display: none;
-}
 .ol-zoom,
 .ol-full-screen,
 .ol-geocoder,
-.ol-gps,
-.ol-button {
+.myol-button {
 	position: static !important;
 	float: left;
 	margin: 2px;
 	padding: 0 !important; /* No grey line around the button */
 }
 
+/* PhpBB compatibility */
+.ol-overlaycontainer-stopevent > div:not(.ol-control) {
+	margin: 0;
+}
+
 /* Button */
-.ol-control button,
-.ol-control button:focus {
+.ol-control button { /* Also for zoom, fullScreen, ... */
 	font-size: 18px !important;
 	color: black;
-	background-color: white;
+	background: white;
 	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
 	outline: 0;
 }
-.ol-control-question {
-	position: absolute;
-	top: 27px;
-	width: 100px;
-	padding: 1px;
-	background-color: white;
-	font-size: 14px;
-}
-.ol-control-question span {
-	cursor: pointer;
+.myol-button > div {
+	max-height: calc(100% - 38px);
+	overflow: auto;
+	z-index: 30;
 }
 .ol-control button:hover,
 .ol-geocoder button:hover {
 	box-shadow: 1px 1px 10px black;
-	background-color: #d6fbff;
+	background: #d6fbff;
 }
-.ol-control button:active,
-.ol-geocoder button:active { /* Shift the button by 1px when clicked */
-	position: relative !important;
-	top: 1px;
-	left: 1px;
+.ol-control button:focus { /* Zoom, fullScreen, ... after have been clicked */
+	background: white;
+}
+/* Submenu */
+.myol-button:not(.myol-display-submenu) > div *:not(.myol-display-under),
+.myol-display-under:empty,
+.myol-display-submenu .myol-display-under {
+	display: none;
+}
+.myol-display-submenu > div,
+.myol-display-under {
+	position: absolute;
+	top: 29px;
+	padding: 3px;
+	background: white;
+	font-size: 16px;
+}
+.myol-display-submenu p,
+.myol-display-submenu span {
+	font-size: 14px;
+}
+.myol-display-submenu > div * {
+	margin: 3px 0;
+}
+.myol-display-submenu input,
+.myol-display-submenu label {
+	margin: 5px;
+	cursor: pointer;
+}
+.myol-display-submenu a {
+	display: block;
+	margin: 5px;
+	color: blue;
+	cursor: pointer;
 }
 
 /* Full screen */
 .ol-full-screen-false {
-  text-indent: -1em;
-  color: transparent !important;
+	text-indent: -1em;
+	color: transparent !important;
 }
 .ol-full-screen-false::after {
-  font-style: italic;
-  color: black !important;
-  content: "\21F3";
+	font-style: italic;
+	color: black !important;
+	content: "\21F3";
 }
 
 /* Geocodeur */
@@ -96,44 +119,20 @@
 	left: 2px !important;
 }
 
-/* GPS */
-.ol-control-gps {
-	position: absolute;
-	top: 32px;
-	padding: 1px;
-	background-color: white;
-}
-
 /* Download */
-.ol-download p {
+.myol-button-download p {
 	margin: 0;
 	cursor: pointer;
 }
 
-/* Print */
-.ol-print:hover {
-	background-color: transparent;
-}
-.ol-print button {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' style='stroke:black;'%3E%3Cpath d='M8 6l9 0 0 2-9 0z'/%3E%3Cpath d='M5 10l15 0 0 5-15 0z'/%3E%3Cpath d='M8 13l9 0 0 6-9 0z' style='fill:white;'/%3E%3C/svg%3E");
-}
-.ol-print p {
-	margin: 0;
-	font-size: 12px;
-	font-family: Times New Roman;
-}
-.ol-print p span {
-	color: blue;
-}
-
 /* Other controls */
-.ol-permalink,
+.myol-permalink,
 .ol-attribution,
-.ol-coordinate,
-.ol-length-line {
+.myol-coordinate,
+.myol-length-line {
 	font-size: 12px;
 }
-.ol-coordinate {
+.myol-coordinate {
 	position: absolute;
 	bottom: 30px;
 	left: 8px;
@@ -142,7 +141,7 @@
 	background: rgba(0, 60, 136, 0.3);
 	color: white;
 }
-.ol-length-line {
+.myol-length-line {
 	position: absolute;
 	bottom: 52px;
 	left: 8px;
@@ -151,11 +150,11 @@
 	background: rgba(0, 60, 136, 0.3);
 	color: white;
 }
-.ol-coordinate:empty,
-.ol-length-line:empty {
+.myol-coordinate:empty,
+.myol-length-line:empty {
 	display: none;
 }
-.ol-permalink {
+.myol-permalink {
 	position: absolute;
 	bottom: 35px;
 	right: 0;
@@ -193,40 +192,40 @@
 }
 
 /* FILE src/layerSwitcher.css */
-.ol-control-switcher {
+.myol-button-switcher {
 	position: static;
 	float: right;
 }
-.ol-control-switcher .single-layer span {
+.myol-button-switcher .myol-single-layer span {
 	font-size: 0.7em;
 }
-.ol-control-switcher .single-layer input,
-.ol-control-switcher .double-layer span,
-.ol-control-switcher-open button,
-.ol-control-switcher:not(.ol-control-switcher-open) > hr,
-.ol-control-switcher:not(.ol-control-switcher-open) > div {
+.myol-button-switcher .myol-single-layer input,
+.myol-button-switcher .myol-double-layer span,
+.myol-button-switcher-open button,
+.myol-button-switcher:not(.myol-button-switcher-open) > hr,
+.myol-button-switcher:not(.myol-button-switcher-open) > div {
 	display: none;
 }
-.ol-control-switcher hr {
+.myol-button-switcher hr {
 	margin: 0;
 }
-.ol-control-switcher-open {
+.myol-button-switcher-open {
 	position: absolute;
 	right: 0;
 	max-height: 98%;
 	overflow: auto;
 }
-.ol-control-switcher div {
+.myol-button-switcher div {
 	padding-left: 5px;
 }
-.ol-control-switcher span,
-.ol-control-switcher label {
+.myol-button-switcher span,
+.myol-button-switcher label {
 	color: black;
 }
 
-#additional-selector {
+#additional-selector { /*
 	color: black;
-	background-color: rgb(162, 226, 255, 0.6);
+	background: rgb(162, 226, 255, 0.6);
 }
 #additional-selector ul {
 	margin: 0;
@@ -244,4 +243,10 @@
 /* FILE src/marker.css */
 #marker-coordinates:not(.epsg21781) .xy {
 	display: none;
+}
+
+/* FILE src/editor.css */
+.myol-button-edit > div {
+	left: 0;
+	width: 100%;
 }

@@ -30,6 +30,7 @@ $vue->css           [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.min.
 $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'geocoder/ol-geocoder.js?'.filemtime($config_wri['chemin_ol'].'geocoder/ol-geocoder.js');
 $vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
 $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
+$vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_cartes.js?'.filemtime($config_wri['chemin_vues'].'_cartes.js');
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();
@@ -39,6 +40,7 @@ $vue->infos_base = infos_base ();
 /nav/4 : affiche les points contenus dans le polygone 4 (ici le massif du Vercors)
 /nav/50?id_polygone_type=1 : affiche les massifs contenus dans le polygone 50 (ici la zone du Massif Central)
 /nav/?id_polygone_type=1 : affiche tous les massifs
+/nav/?id_polygone_type=11 : affiche toutes les zones
 /edit : crée un massif
 /edit/4 : édite les contours du polygone 4
 /edit?id_polygone_type=11 : crée une zone
@@ -55,7 +57,6 @@ if (est_moderateur())
 // Le paramètre d'URL id_polygone_type permet d'afficher différents contenus
 // Si absent : affiche le contour du polygone demandé et les points à l'intérieur
 // Si présent : les polygones qui intersectent le polygone demandé
-// FIXME: ce nom de variable est vraiment bizarrement choisi, à chaque fois je me demande ce que c'est que ce 1. Pourquoi pas plus clair &mode_affichage=polygones&id_polygone_type=x 
 
 if (!empty($_GET['id_polygone_type']))
 {

@@ -1,172 +1,115 @@
-const baseLayers = {
-		'Refuges.info': layerMRI(),
-		'OSM fr': layerOSM('//{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'),
-		'OpenTopo': layerOpenTopo(),
-		'Outdoors': layerThunderforest('outdoors'),
-		'IGN TOP25': layerIGN({
-			layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
-			key: mapKeys.ign,
-		}),
-		'IGN V2': layerIGN({
-			layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-			key: 'essentiels', // The key for the free layers
-			format: 'image/png',
-		}),
-		'SwissTopo': layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
-		'Autriche': layerKompass('KOMPASS Touristik'),
-		'Espagne': layerSpain('mapa-raster', 'MTN'),
-		'Photo IGN': layerIGN({
-			layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-			key: 'essentiels',
-		}),
-		'Photo ArcGIS': layerArcGIS('World_Imagery'),
-		'Photo Bing': layerBing('Aerial'),
-		'Photo Google': layerGoogle('s'),
-	},
+// Forçage de l'init des coches
+<?php if ( $vue->polygone->id_polygone ) { ?>
+	// Supprime toutes les sélections commençant par myol_selecteur
+	Object.keys(localStorage)
+		.filter(k => k.substring(0, 14) == 'myol_selecteur')
+		.forEach(k => localStorage.removeItem(k));
 
-	controls = [
-		new ol.control.Zoom(),
-		new ol.control.FullScreen(),
-		controlGeocoder(),
-		controlGPS(),
-		controlLoadGPX(),
-		controlDownload(),
-		controlPrint(),
-		controlLayerSwitcher(baseLayers),
-		controlMousePosition(),
-		new ol.control.ScaleLine(),
-		controlPermalink({ // Permet de garder le même réglage de carte
-			display: true,
-<?php if ($vue->polygone->id_polygone) { ?>
-			init: false, // Ici, on cadrera plutôt sur le massif
+	// Force tous les points et le contour
+	localStorage.myol_selecteurwri = 'all';
+	localStorage.myol_selecteurmassif = <?=$vue->polygone->id_polygone?>;
 <?php } ?>
+
+const mapId = 'carte-nav',
+	mapEl = document.getElementById(mapId),
+	mapSize = mapEl ? Math.max(mapEl.clientWidth, mapEl.clientHeight) : window.innerWidth,
+	layers = [
+		// Refuges.info (2 level layer depending on resolution)
+		...layersWri({
+			host: '<?=$config_wri["sous_dossier_installation"]?>',
+			selectorName: 'selecteur-wri,selecteur-massif', // 2 selectors for one layer
+			styleOptionsFunction: function (feature, properties) {
+				return {
+					...styleOptionsLabel(properties.name, properties, true),
+					...styleOptionsIcon(properties.icon),
+				};
+			},
+			attribution: '',
 		}),
-		new ol.control.Attribution({
-			collapsed: false,
-		}),
-	],
 
-	points = layerWri({
-		host: '<?=$config_wri["sous_dossier_installation"]?>',
-		urlFunction: function(options, bbox, selection) {
-			const el = document.getElementById('selecteur-massif');
-
-			if (el && el.checked)
-				return options.host + 'api/massif' +
-					'?massif=<?=$vue->polygone->id_polygone?>&'+
-					'type_points=' + selection.join(',');
-			else
-				return options.host + 'api/bbox' +
-					'?type_points=' + selection.join(',') +
-					'&bbox=' + bbox.join(',');
-		},
-		selectorName: 'couche-wri',
-		maxResolution: 500, // La couche est affichée pour les résolutions < 500 Mercator map unit / pixel
-		distance: 30, // Clusterisation
-		styleOptionsFunction: function(feature, properties) {
-			return Object.assign({},
-				styleOptionsLabel(properties.name, properties, true),
-				styleOptionsIcon(properties.icon)
-			);
-		},
-		hoverStyleOptionsFunction: function(feature, properties) {
-			properties.attribution=null;
-			return styleOptionsFullLabel(properties);
-		},
-	}),
-
-	// Affiche les massifs si résolution > 500
-	massifs = layerWriAreas({
-		host: '<?=$config_wri["sous_dossier_installation"]?>',
-		minResolution: 500,
-<?php if (!$vue->contenu) {?>
-		selectorName: 'couche-wri',
-<?php } ?>
-	}),
-
-	// La couche "contour" (du massif, de la zone)
-	contour = layerVector({
-		url: '<?=$config_wri["sous_dossier_installation"]?>api/polygones' +
-			'?massif=<?=$vue->polygone->id_polygone?>',
-<?php if (!$vue->contenu) {?>
-		selectorName: 'couche-massif',
-<?php } ?>
-		style: new ol.style.Style({
-			stroke: new ol.style.Stroke({
-				color: 'blue',
-				width: 2,
+		// Contour d'un massif ou d'une zone
+		layerVector({
+			url: '<?=$config_wri["sous_dossier_installation"]?>' +
+				'api/polygones?massif=<?=$vue->polygone->id_polygone?>',
+			zIndex: 3, // Au dessus des massifs mais en dessous de son hover
+			<?php if ( !$vue->contenu ) { ?>
+				selectorName: 'selecteur-massif',
+			<?php } ?>
+			style: new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: 'blue',
+					width: 2,
+				}),
 			}),
 		}),
-	}),
 
-	layers = [
-		// Refuges.info
-<?php if ($vue->polygone->id_polygone) { ?>
-		contour,
-<?php } ?>
-		points,
-		massifs,
+		// Les massifs
+		layerWriAreas({
+			host: '<?=$config_wri["sous_dossier_installation"]?>',
+			<?php if ( !$vue->contenu ) { ?>
+				selectorName: 'selecteur-massifs',
+			<?php } ?>
+		}),
 
 		// Overpass
 		layerOverpass({
-			selectorName: 'couche-osm',
-			distance: 30,
+			selectorName: 'selecteur-osm',
 			maxResolution: 100,
 		}),
 
 		// Pyrenees-refuges.com
 		layerPyreneesRefuges({
-			selectorName: 'couche-prc',
-			distance: 30,
+			selectorName: 'selecteur-prc',
 		}),
 
 		// CampToCamp
 		layerC2C({
-			selectorName: 'couche-c2c',
-			distance: 30,
+			selectorName: 'selecteur-c2c',
 		}),
 
 		// Chemineur
-		layerGeoBB({
-			selectorName: 'couche-chemineur',
-			maxResolution: 100,
-			distance: 30,
-			attribution: 'Chemineur',
-		}),
-		layerGeoBB({
-			selectorName: 'couche-chemineur',
-			subLayer: 'cluster',
-			minResolution: 100,
-			distance: 30,
+		...layersGeoBB({
+			host: '//chemineur.fr/',
+			selectorName: 'selecteur-chemineur',
 			attribution: 'Chemineur',
 		}),
 
 		// Alpages.info
 		layerGeoBB({
+			strategy: ol.loadingstrategy.all,
 			host: '//alpages.info/',
-			selectorName: 'couche-alpages',
-			argSelName: 'forums',
-			distance: 30,
+			selectorName: 'selecteur-alpages',
+			extraParams: function() {
+				return {
+					forums: '4,5',
+				}
+			},
 			attribution: 'Alpages',
 		}),
 	],
 
 	map = new ol.Map({
-		target: 'carte-nav',
+		target: mapId,
 		view: new ol.View({
 			enableRotation: false,
 			constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
 		}),
-		controls: controls,
+		controls: [
+			...mapControls('nav'),
+			controlPermalink({ // Permet de garder le même réglage de carte
+				display: true,
+				init: <?=$vue->polygone->id_polygone?'false':'true'?>, // On cadre le massif
+			}),
+		],
 		layers: layers,
 	});
 
-	// Centrer sur la zone du polygone
-	<?if ($vue->polygone->id_polygone){?>
-		map.getView().fit(ol.proj.transformExtent([
-			<?=$vue->polygone->ouest?>,
-			<?=$vue->polygone->sud?>,
-			<?=$vue->polygone->est?>,
-			<?=$vue->polygone->nord?>,
-		], 'EPSG:4326', 'EPSG:3857'));
-	<?}?>
+// Centrer sur la zone du polygone
+<?if ($vue->polygone->id_polygone) { ?>
+	map.getView().fit(ol.proj.transformExtent([
+		<?=$vue->polygone->ouest?>,
+		<?=$vue->polygone->sud?>,
+		<?=$vue->polygone->est?>,
+		<?=$vue->polygone->nord?>,
+	], 'EPSG:4326', 'EPSG:3857'));
+<? } ?>

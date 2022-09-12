@@ -39,7 +39,7 @@
 				<p><a href="<?=lien_wiki('legende_carte')?>">Légende des icônes</a></p>
 			</li>
 			<hr/>
-			<p>Zones couvertes:</p>
+			<p>Zones:</p>
 			<?php if (isset($vue->zones_pour_bandeau))
 				foreach ($vue->zones_pour_bandeau AS $nom_zone => $lien) {?>
 					<li>
@@ -48,7 +48,7 @@
 			<?	} ?>
 			<hr/>
 			<li>
-				<a href="<?=$config_wri['sous_dossier_installation']?>gps">Fonction GPS</a>
+				<a href="<?=$config_wri['sous_dossier_installation']?>gps/index.php">Fonction GPS</a>
 			</li>
 		</ul>
 	</li>
@@ -188,7 +188,7 @@
 				Gestion des massifs</a>
 			</li><li>
 				<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=11">
-				Gestion des zones couvertes</a>
+				Gestion des zones</a>
 			</li><li>
 				<a href="<?=$config_wri['sous_dossier_installation']?>gestion/modifier_modeles">
 				Modifier les modèles de points</a>
@@ -239,9 +239,11 @@
 				<label>Connexion</label>
 				<form method="post" class="connexion" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
 					<li>
-						<input type="text" name="username" size="15" placeholder="Nom d’utilisateur">
+						<input type="text" name="username" size="15" placeholder="Nom d’utilisateur"
+							autocomplete="username">
 					</li><li>
-						<input type="password" name="password" size="15" placeholder="Mot de passe">
+						<input type="password" name="password" size="15"
+							placeholder="Mot de passe" autocomplete="current-password">
 					</li><li>
 						<input type="hidden" name="autologin" checked="checked">
 						<input type="hidden" name="creation_time" value="<?=$infos_identification->creation_time?>">

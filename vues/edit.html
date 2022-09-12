@@ -40,21 +40,22 @@
 
 	<fieldset>
 		<legend>Modifier le contour</legend>
-		<label>
-			<p><b>Contrôle "M" (modifier un polygone)</b>
-			activer ce bouton (couleur jaune) puis:</p>
-			<p><u>Déplacer un sommet:</u> Cliquer dessus puis le déplacer.</p>
-			<p><u>Ajouter un sommet:</u> Cliquer sur un côté puis le déplacer.</p>
-			<p><u>Supprimer un sommet:</u> Alt + cliquer dessus.</p>
-			<p><u>Scinder un polygone:</u> Joindre 2 sommets du polygone.</p>
-			<p><u>Fusionner 2 polygones:</u> Coller un côté identique (entre 2 sommets consécutifs) de chaque polygone puis alt+cliquer dessus.</p>
-			<p><u>Supprimer un polygone:</u> Ctrl + Alt + cliquer dessus.</p>
+		<label id="myol-help-edit-modify">
+			<p><u>Déplacer un sommet:</u> cliquer sur le sommet et le déplacer</p>
+			<p><u>Ajouter un sommet au milieu d'un côté:</u> cliquer le long du côté puis déplacer</p>
+			<p><u>Supprimer un sommet:</u> Alt+cliquer sur le sommet</p>
+			<p><u>Scinder un polygone:</u> joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>
+				'de chaque polygone puis Alt+cliquer dessus</p>
+			<p><u>Supprimer un polygone:</u> Ctrl+Alt+cliquer sur un côté du polygone</p>
+		</label>
 		<hr/>
-			<p><b>Contrôle "P" (créer un polygone)</b>
-			activer ce bouton (couleur jaune) puis:</p>
-			<p>Cliquer sur la carte et sur chaque point désiré pour dessiner un polygone,</p>
-			<p>Double cliquer pour terminer.</p>
-			<p>Un polygone entièrement compris dans un autre crée un "trou".</p>
+		<label id="myol-help-edit-poly">
+			<p><u>Pour créer un polygone:</u></p>
+			<p>Cliquer sur le bouton &#x1F58D; et choisissez "Création polygone"</p>
+			<p>Cliquer sur l'emplacement du premier sommet</p>
+			<p>Puis sur chaque sommet</p>
+			<p>Double cliquer sur le dernier sommet pour terminer</p>
+			<hr/><p>Un polygone entièrement compris dans un autre crée un "trou"</p>
 		</label>
 	</fieldset>
 
@@ -64,7 +65,8 @@
 			<label>
 				<?if (!$_GET['test_supprimer']) {?>
 					<p>
-						<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>?test_supprimer=1">
+						<a id="supprimer-massif"
+							href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>?test_supprimer=1">
 							Supprimer <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
 						</a>(définitif).
 					</p>
@@ -82,5 +84,5 @@
 		</fieldset>
 	<?}?>
 
-	<div id="help-edit"></div>
+	<div id="myol-help-edit"></div>
 </div>

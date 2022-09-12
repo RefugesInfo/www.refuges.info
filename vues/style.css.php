@@ -711,8 +711,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   font-size: .8em;
   font-style: oblique;
 }
+#selecteur-carte-nav INPUT,
 #selecteur-carte-nav LABEL {
   text-align: justify;
+  cursor: pointer;
 }
 /* Menu deplié */
 @media screen and (min-width: 641px) and (min-device-height: 361px) {
@@ -745,6 +747,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     padding-left: 5px;
   }
 }
+.carte-nav-full {
+  width: 98.4% !important;
+  margin-right: 0.8% !important;
+}
 
 /* Carte de la page des points écrans */
 #container-carte-point {
@@ -764,10 +770,6 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 
-/* Spécificité carte des zones */
-.nav_zone {
-  width: 100% !important;
-}
 /* Carte formulaire de modification */
 #carte-edit {
   float: right;

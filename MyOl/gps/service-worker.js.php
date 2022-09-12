@@ -1,35 +1,58 @@
 <?php
-header('Content-Type: application/javascript');
-//TODO BUG : essaye de loader le service worker quand on revient à l'URL de base MyOl/
+error_reporting(E_ALL);
+ini_set('display_errors','on');
 
-// Check new version each time the url is called
-header('Expires: '.date('r'));
 header('Cache-Control: no-cache');
 header('Pragma: no-cache');
+header('Content-Type: application/javascript');
 header('Service-Worker-Allowed: /');
 
-//HACK avoid http 406 error
-$url_path = str_replace (':', '../', @$_GET['url_path']);
+$sw_instance = preg_match ('/^[^0-9]*/', @$_SERVER['QUERY_STRING'], $matches);
+$start_path = str_replace (['.',':'], ['/','../'], $matches[0]);
+$myol_path = '';
 
-// Read service worker & replace some values
-$serviceWorkerCode = str_replace (
-	'index.html', $url_path.'index.php',
-	file_get_contents ('service-worker.js')
-);
+include ('common.php');
 
-// Add GPX files in the url directory to the list of files to cache
-foreach (glob ($url_path.'*.gpx') as $gf) {
-	$serviceWorkerCode = str_replace (
-		"addAll([",
-		"addAll([\n\t\t\t\t'$gf',",
-		$serviceWorkerCode
+// The first time a user hits the page an install event is triggered.
+// The other times an update is provided if the service-worker source md5 is different
+?>
+// Next available version : <?=$build_date?> (to trigger SW upgrade)
+
+var gpxFiles = <?=json_encode($gpx_files)?>;
+
+self.addEventListener('install', evt => {
+	console.log('PWA SW install ' + evt.target.location);
+
+	// Clean cache when PWA install or upgrades
+	caches.delete('myGpsCache')
+		.then(console.log('myGpsCache deleted'));
+
+	// Create & populate the cache
+	evt.waitUntil(
+		caches.open('myGpsCache')
+		.then(cache => cache.addAll(gpxFiles)
+			.then(console.log('myGpsCache created, ' + gpxFiles.length + ' files added'))
+		)
 	);
-}
+});
 
-// Calculate a key depending on the delivery (Total byte size of cached files)
-$versionTag = 0;
-foreach (glob ("{../*,../*/*,$url_path*}", GLOB_BRACE) as $f)
-	$versionTag += filemtime ($f);
-
-// Display code
-echo "// Version tag $versionTag\n$serviceWorkerCode";
+// Cache all used files
+self.addEventListener('fetch', evt =>
+	evt.respondWith(
+		caches.match(evt.request)
+		.then(found => {
+			if (found) {
+				//console.log('found ' + evt.request.url)
+				return found;
+			} else
+				return fetch(evt.request).then(response => //TODO catch errors (url not found)
+					caches.open('myGpsCache')
+					.then(cache => {
+						//console.log(response.type + ' ' + evt.request.url)
+						cache.put(evt.request, response.clone());
+						return response;
+					})
+				)
+		})
+	)
+);

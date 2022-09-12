@@ -36,7 +36,7 @@ See a VECTOR LAYER DEMO [here](https://Dominique92.github.io/MyOl/examples/layer
 MISC CONTROLS
 =============
 See a CONTROL DEMO [here](https://Dominique92.github.io/MyOl/examples/controls.html)
-* Keep position, zoom & zoom on localstorage
+* Keep position, zoom & zoom on localStorage
 * Geocoder
 * Line length display
 * GPX upload & download
@@ -69,7 +69,6 @@ See an OFF LINE GPS DEMO [here](https://Dominique92.github.io/MyOl/gps)
 * All tiles viewed once will be kept in the explorer's cache for a few days
 * This application does not record your track
 * Works well on Android with Chrome, Edge & Samsung Internet, a little less well with Firefox & Safari
-* Tested on iOS7 (iPhone5s) Safari, FireFox, Chrome
 
 LAYERS KEYS
 ===========
@@ -103,8 +102,8 @@ FILES
 
 TESTED ON
 =========
-* windows10 : Edge, FireFox, Chrome, Opera, Brave
+* windows 10 : Edge, FireFox, Chrome, Opera, Brave
 * Android (Samsung) : Samsung Internet, FireFox, Chrome, Brave, DuckDuckGo
-* iOS12 (iPhone5s) : Safari, FireFox, Chrome
+* iOS 12.4.4 (iPhone5s) : Safari 12.1, FireFox, Chrome
 * Linux : FireFox
 * NO SUPPORT ON Microsoft Internet Explorer

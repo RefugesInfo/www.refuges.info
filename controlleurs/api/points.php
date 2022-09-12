@@ -44,6 +44,7 @@ $req->format = $_REQUEST['format'] ?? '';
 $req->detail = $_REQUEST['detail'] ?? '';
 $req->format_texte = $_REQUEST['format_texte'] ?? '';
 $req->nb_points = $_REQUEST['nb_points'] ?? '';
+$req->cluster = $_REQUEST['cluster'] ?? '';
 $req->type_points = $_REQUEST['type_points'] ?? '';
 
 // Ici c'est les valeurs possibles
@@ -150,6 +151,9 @@ switch ($req->page) {
 if($req->nb_points != "all") {
     $params->limite = $req->nb_points;
 }
+if(is_numeric($req->cluster)) {
+    $params->cluster = $req->cluster;
+}
 if($req->type_points != "all") {
     $params->ids_types_point = str_replace($val->type_points, $val->type_points_id, $req->type_points);
 }
@@ -166,8 +170,18 @@ L'idée est de générer une grosse collection de points avec presque toutes leu
 Seule exception à ça, le cas du format "geojson" :
 Car c'est celui utilisé par la carte et que le fichier est généré par un json_encode($point) qui deviendrait trop gros pour les usages en mobilité et débit pourri.
 */
-$i = 0;
-foreach ($points_bruts as $point) {
+foreach ($points_bruts as $i=>$point) {
+  if(isset ($point->nb_points)) // cas des clusters
+  {
+    $points->$i = new stdClass();
+    $points->$i->cluster = $point->nb_points;
+    $points->$i->id = $point->id_point;
+    $points->$i->nom = mb_ucfirst($point->nom);
+    $points->$i->type['icone'] = 'cluster_n'.$point->nb_points;
+    $points_geojson[$point->id_point]['geojson'] = $point->geojson;
+  }
+  else
+  {
     if($point->id_type_precision_gps == $config_wri['id_coordonees_gps_fausses']) // les cabanes cachées ne sont pas exportées. Les coordonnées étant volontairement stockées fausses, les sortir ne fera que créer de la confusion 
       break;
     
@@ -275,10 +289,8 @@ foreach ($points_bruts as $point) {
         array_walk_recursive($points->$i, 'updatebbcode2markdown');
     }
     array_walk_recursive($points->$i, 'updatebool2char'); // Remplace les False et True en 0 ou 1
-
-    $i++;
+  }
 }
-$nombre_points = $i;
 /****************************** FORMAT VUE ******************************/
 
 include($config_wri['chemin_vues'].'api/points.vue.'.$req->format.".php");

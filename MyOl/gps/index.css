@@ -3,13 +3,14 @@ html, body, #map {
 	padding: 0;
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 }
-p, ul {
-	margin: 0;
+.ol-full-screen,
+.myol-button-download,
+.myol-button-print {
+	display: none;
 }
-li {
-	margin: 0.5em 0;
-}
-#liste a {
-	cursor: pointer;
+#myol-gps-help {
+	left: 0;
+	width: 100%;
 }

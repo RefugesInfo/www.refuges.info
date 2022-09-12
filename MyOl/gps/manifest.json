@@ -1,6 +1,6 @@
 {
-	"name": "My GPS",
-	"id": "my_gps",
+	"name": "MyGPS",
+	"id": "MyGPS",
 	"display": "fullscreen",
 	"scope": "./",
 	"start_url": "index.php",

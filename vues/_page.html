@@ -30,9 +30,9 @@ if (!empty($vue->http_status_code))
 		<meta name="robots" content="all" />
 		<meta name="robots" content="index,follow" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<?if (isset ($vue->css)) {?>
+		<?php if (isset ($vue->css)) { ?>
 			<meta name="viewport" content="width=device-width, user-scalable=no" />
-		<?}?>
+		<? } ?>
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 
@@ -41,15 +41,15 @@ if (!empty($vue->http_status_code))
 		</script>
 
 		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>" />
-		<?if (isset ($vue->css))
-			foreach ($vue->css as $css) {?>
+		<?php if (isset ($vue->css))
+			foreach ($vue->css as $css) { ?>
 				<link type="text/css" rel="stylesheet" href="<?=$css?>" />
-		<?}?>
+		<?php } ?>
 		<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	</head>
 
 	<body>
-		<?
+		<?php
 			include ($config_wri['chemin_vues'].'_bandeau.html');
 			include ($config_wri['chemin_vues'].$vue->type.'.html');
 			include ($config_wri['chemin_vues'].'_pied.html');

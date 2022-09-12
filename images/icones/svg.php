@@ -31,11 +31,11 @@ foreach ($elements[1] AS $k => $element)
 	elseif (in_array ($element, $colors))
 		$couleurs[] = $element;
 
-	// a123.4.5 = caractère Ascii &#123; à la position x = 4, y = 5
-	elseif ($element == 'a') {
-		$ascii = intval ($elements[2][$k]) ?: 32; // Extrait le code décimal
-		$x_ascii = $elements[3][$k] ? $elements[3][$k] : 7.6;
-		$y_ascii = $elements[4][$k] ? $elements[4][$k] : 21.5;
+	elseif ($element == 'a' || // a123.4.5 = caractère unicode décimal &#123; à la position x = 4, y = 5
+		$element == 'n') { // n12.3.2 = entier 12 à la position x = 3, y = 4
+		$decimal = intval($elements[2][$k]);
+		$x_ascii = $elements[3][$k];
+		$y_ascii = $elements[4][$k];
 		$images[] = $element;
 	}
 	elseif (file_exists("elements/$element.svg"))
@@ -50,17 +50,19 @@ $couleurs[] = $couleurs[] = null;
 // Génération du fichier SVG
 header ('Content-type: image/svg+xml');
 header ('Cache-Control: max-age=86000');
+header ('Access-Control-Allow-Headers: *');
 header ('Access-Control-Allow-Origin: *');
-if (isset ($inconnu)) {
+
+if (isset ($inconnu) || !isset ($images)) {
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	$images = ['_404']; // Uniquement l'élément erreur 404
 }
 
-include ("_head.svg");
+include ('_head.svg');
 
 foreach ($images AS $element) {
 		echo PHP_EOL; // Jolie mise en page du fichier .svg
 		include ("elements/$element.svg");
 	}
 
-include ("_tail.svg");
+include ('_tail.svg');

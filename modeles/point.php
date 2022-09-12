@@ -283,6 +283,50 @@ function infos_points($conditions)
     else
       return erreur("On nous a demandé les points avec '$conditions->conditions_utilisation' ce qui est inexistant ou signe d'un bug");
       
+  // CLUSTERISATION AU NIVEAU DU SERVEUR
+  if ( $conditions->cluster && 
+    !$tables_en_plus ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requette compliquée :)
+  {
+    // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
+    $query_clusters="
+SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom)) AS geojson,
+       round(ST_X(geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(geom)/{$conditions->cluster}) AS cluster_lat
+  FROM points
+  WHERE true $conditions_sql
+  GROUP BY cluster_lon, cluster_lat
+  $limite
+  ";
+    if ( ! ($res_clusters = $pdo->query($query_clusters)) )
+      return erreur("Une erreur sur la requête est survenue",$query_clusters);
+
+    $points_isoles = [];
+
+    while ( $raw = $res_clusters->fetch() )
+      if ( $raw->nb_points > 1 ) // S'il y a plusieurs points dans le carré
+      {
+        // On fabrique un "point" de type "cluster" (cercle bleu avec un nombre dedans)
+        $raw->nom = $raw->nb_points.' points';
+
+        // Comme openlayers réclame un id pour gérer son affichage,
+        // on calcule un id virtuel à partir des limites du cluster
+        $raw->id_point = intval($raw->cluster_lon + ($raw->cluster_lat + 1000) * 2000);
+
+        // Et on l'enregistre dans la liste des points
+        $points[] = $raw;
+      }
+      elseif ( $raw->nb_points == 1 ) // S'il n'y a qu'un point dans le carré
+      {
+        // On n'en fait pas un cluster et on le traitera plus tard comme un point normal
+        $points_isoles[] = $raw->id_point;
+      }
+
+    if ( !count($points_isoles) ) // S'il n'y a pas de points isolés, c'est tout !
+      return $points;
+
+    // Sinon, on change le scope des points qu'il reste à traiter
+    $conditions_sql.="\n\tAND id_point IN (".implode(',',$points_isoles).")";
+  }
+
   $query_points="
 SELECT points.*,
          ST_AsGeoJSON(points.geom) AS geojson,

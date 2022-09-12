@@ -10,73 +10,129 @@
 	<?php } ?>
 </div>
 
-<div id="carte-nav" class="nav_<?=$vue->mode_affichage?>"></div>
+<div id="carte-nav"
+	<?php if ( $vue->contenu && !est_moderateur() ) { ?>
+		class="carte-nav-full"
+	<?php } ?>
+></div>
 
 <div id="selecteur-carte-nav" class="noprint">
-	<?php if ( !$vue->contenu ) {?>
+	<?php if ( !$vue->contenu ) { ?>
+		<!-- Affichage de points : il n'y a pas de paramétre ?id_polygone_type= -->
 		<fieldset>
 			<legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
 			<ul>
-				<?php if ( $vue->polygone->id_polygone ){?>
+				<?php if ( $vue->polygone->id_polygone ) { ?>
 					<li>
-						<input id="selecteur-massif" name="couche-massif"
-							onchange="points.getSource().getSource().refresh()"
-							type="checkbox" checked="checked" />
-						<?=$vue->polygone->nom_polygone?> uniquement
+						<input type="checkbox"
+							id="selecteur-massif" name="selecteur-massif"
+							value="<?=$vue->polygone->id_polygone?>"
+						/>
+						<label for="selecteur-massif"><?=$vue->polygone->nom_polygone?> uniquement</label>
 					</li><hr/>
-				<?php }?>
-				<li>Tout
-					<input type="checkbox" name="couche-wri" checked="checked" />
-					<span id="couche-wri-status"></span>
+				<?php } ?>
+				<li>
+					<label for="selecteur-wri">Tout</label>
+					<input type="checkbox" id="selecteur-wri" name="selecteur-wri" value="all" />
+					<span id="selecteur-wri-status"></span>
 				</li>
 				<?php foreach ($vue->types_point_affichables AS $type_affichable) { ?>
 					<li>
-						<input
-							type="checkbox"
-							name="couche-wri"
+						<input type="checkbox"
+							id="selecteur-wri-<?=$type_affichable->id_point_type?>"
+							name="selecteur-wri"
 							value="<?=$type_affichable->id_point_type?>"
-							checked="checked"
 						/>
-						<img
-							id="icone_<?=$type_affichable->id_point_type?>"
-							src="<?=$config_wri['url_chemin_icones'].$config_wri['correspondance_type_icone'][replace_url($type_affichable->nom_type)]?>.svg"
-							alt="icone de <?=$type_affichable->nom_type?>"
-						/>
-						<?=$type_affichable->nom_type?>
+						<label for="selecteur-wri-<?=$type_affichable->id_point_type?>">
+							<img
+								id="icone_<?=$type_affichable->id_point_type?>"
+								src="<?=$config_wri['url_chemin_icones'].$config_wri['correspondance_type_icone'][replace_url($type_affichable->nom_type)]?>.svg"
+								alt="icone de <?=$type_affichable->nom_type?>"
+							/>
+							<?=$type_affichable->nom_type?>
+						</label>
 					</li>
-				<?php }?>
+				<?php } ?>
 			</ul>
-			<ul>Ctrl+click: nouvel onglet</ul>
-			<ul>Maj+click: nouvelle fenêtre</ul>
+			<hr />
+				<input type="checkbox" id="selecteur-massifs" name="selecteur-massifs" />
+				<label for="selecteur-massifs">Massifs</label>
+				<span id="selecteur-massifs-status"></span>
+			<hr />
+				<ul>Ctrl+click: nouvel onglet</ul>
+				<ul>Maj+click: nouvelle fenêtre</ul>
 		</fieldset>
 
-		<?php if ($vue->polygone->nom_polygone ) { ?>
-			<fieldset >
+		<?php if ( $vue->polygone->id_polygone ) { ?>
+			<fieldset>
 				<legend>Téléchargements</legend>
-				Tous les points refuges.info <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?><br/>
-					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx" title="Télécharger au format GPX complet">GPX</a> /
-					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin" title="Télécharger au format GPX pour Garmin">Garmin</a> /
-					<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml" title="Télécharger au format KML">KML</a>
+				Tous les points refuges.info
+				<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
+				<br/>
+				<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx"
+					title="Télécharger au format GPX complet">
+					GPX
+				</a> /
+				<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin"
+					title="Télécharger au format GPX pour Garmin">
+					Garmin
+				</a> /
+				<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml"
+					title="Télécharger au format KML">
+					KML
+				</a>
 			</fieldset>
-		<?php }?>
+		<?php } ?>
 
 		<fieldset>
 			<legend>
-				Services (<a href="https://overpass-turbo.eu/" target=_blank title="Points de la base OpensStreetmap">OSM</a>)
-				- disponible seulement pour les zoom forts
+				Services (
+				<a href="https://overpass-turbo.eu/"
+					target=_blank title="Points de la base OpensStreetmap">
+					OSM
+				</a>
+				) - disponible seulement pour les zoom forts
 			</legend>
 			<div>
 				<ul>
 					<li>
-						Tout <input type="checkbox" name="couche-osm" />
-						<span id="couche-osm-status"></span>
+						<label for="selecteur-osm">Tout</label>
+						<input type="checkbox" id="selecteur-osm" name="selecteur-osm" value="all" />
+						<span id="selecteur-osm-status"></span>
 					</li>
-					<li><input type="checkbox" name="couche-osm" id="City Hall" value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' />hôtel ou location</li>
-					<li><input type="checkbox" name="couche-osm" id="Campground" value='["tourism"="camp_site"]' />camping</li>
-					<li><input type="checkbox" name="couche-osm" id="Drinking Water" value='["amenity"="drinking_water|watering_place|fountain"]+["waterway"="water_point"]+["natural"="spring"]+["man_made"="water_well"]' />point d'eau</li>
-					<li><input type="checkbox" name="couche-osm" id="Shopping Center" value='["shop"~"supermarket|convenience"]' />alimentation</li>
-					<li><input type="checkbox" name="couche-osm" id="Parking Area" value='["amenity"="parking"]["access"!="private"]' />parking</li>
-					<li><input type="checkbox" name="couche-osm" id="Ground Transportation" value='["highway"="bus_stop"]' />bus</li>
+					<li>
+						<input type="checkbox" name="selecteur-osm" id="City Hall"
+							value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' />
+						<label for="City Hall">hôtel ou location</label>
+					</li>
+					<li>
+						<input type="checkbox" name="selecteur-osm" id="Campground"
+							value='["tourism"="camp_site"]' />
+						<label for="Campground">camping</label>
+					</li>
+					<li>
+						<input type="checkbox" name="selecteur-osm" id="Drinking Water"
+							value='["natural"="spring"]+'.
+								'["amenity"="drinking_water|watering_place|fountain"]+'.
+								'["waterway"="water_point"]+'.
+								'["man_made"="water_well"]' />
+						<label for="Drinking Water">point d'eau</label>
+					</li>
+					<li>
+						<input type="checkbox" name="selecteur-osm" id="Shopping Center"
+							value='["shop"~"supermarket|convenience"]' />
+						<label for="Shopping Center">alimentation</label>
+					</li>
+					<li>
+						<input type="checkbox" name="selecteur-osm" id="Parking Area"
+							value='["amenity"="parking"]["access"!="private"]' />
+						<label for="Parking Area">parking</label>
+					</li>
+					<li>
+						<input type="checkbox" name="selecteur-osm" id="Ground Transportation"
+							value='["highway"="bus_stop"]' />
+						<label for="Ground Transportation">bus</label>
+					</li>
 				</ul>
 			</div>
 		</fieldset>
@@ -85,67 +141,64 @@
 			<legend>Autres sites</legend>
 			<ul>
 				<li>
-					<input type="checkbox" name="couche-prc" />pyrenees-refuges.com &nbsp;
-					<span id="couche-prc-status"></span>
+					<input type="checkbox" name="selecteur-prc" id="selecteur-prc" />
+					<label for="selecteur-prc">pyrenees-refuges.com</label>
+					<span id="selecteur-prc-status"></span>
 				</li>
 				<li>
-					<input type="checkbox" name="couche-c2c" />camptocamp.org &nbsp;
-					<span id="couche-c2c-status"></span>
+					<input type="checkbox" name="selecteur-c2c" id="selecteur-c2c" />
+					<label for="selecteur-c2c">camptocamp.org</label>
+					<span id="selecteur-c2c-status"></span>
 					(seuls les 100 premiers points sont affichés)
 				</li>
 				<li>
-					<input type="checkbox" name="couche-chemineur" value="3,8,20,23" />chemineur.fr &nbsp;
-					<span id="couche-chemineur-status"></span>
+					<input type="checkbox"
+						name="selecteur-chemineur" id="selecteur-chemineur"
+						value="3,8,20,23"
+					/>
+					<label for="selecteur-chemineur">chemineur.fr</label>
+					<span id="selecteur-chemineur-status"></span>
 				</li>
 				<li>
-					<input type="checkbox" name="couche-alpages" value="4,5" />alpages.info &nbsp;
-					<span id="couche-alpages-status"></span>
+					<input type="checkbox"
+						name="selecteur-alpages" id="selecteur-alpages"
+						value="4,5"
+					/>
+					<label for="selecteur-alpages">alpages.info</label>
+					<span id="selecteur-alpages-status"></span>
 				</li>
 			</ul>
 		</fieldset>
-	<?php }?>
+	<?php } ?>
 
-	<?php if ( !$vue->mode_affichage && $vue->polygone->id_polygone && est_moderateur() ) {?>
+	<?php if ( est_moderateur() ) { ?>
 		<fieldset>
-			<legend>Modification</legend>
-			<a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>">Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?></a>
-		</fieldset>
-	<?php }?>
+			<legend>Modifications</legend>
+			<?php if ( $vue->polygone->id_polygone ) { ?>
+				<p><a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>">
+					Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
+					<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
+				</a></p>
+				<p><a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>#supprimer-massif">
+					Supprimer <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
+					<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
+				</a></p>
+				<hr/>
+			<?php } ?>
 
-	<?php if ( $vue->contenu && !$vue->polygone->id_polygone && est_moderateur() ) {?>
-		<fieldset>
-			<legend>Modification</legend>
-			<p><b>
-				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=<?=$vue->contenu->id_polygone_type?>">
-				Créer <?=$vue->contenu->art_indef_poly?> <?=$vue->contenu->type_polygone?>
-			</b></a></p><hr/>
-			<p>
-				<b>Modifier <?=$vue->contenu->art_indef_poly?> <?=$vue->contenu->type_polygone?>:</b>
-				cliquer sur <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>
-				puis sur "Modifier <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
-			</p><hr/>
-			<p>
-				<b>Supprimer <?=$vue->contenu->art_indef_poly?> <?=$vue->contenu->type_polygone?>:</b>
-				cliquer sur <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>,
-				sur "Modifier <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>",
-				sur "Supprimer <?=$vue->contenu->art_def_poly?> <?=$vue->contenu->type_polygone?>"
-				puis une seconde fois sur "Supprimer XXX" (bouton jaune et rouge) pour confirmer.
-			</p>
+			<p><b>Massif</b> :
+				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=1">Création d'un massif</a></p>
+			<p>Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br/>
+			Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.</p><hr/>
+			<p><b>Zone</b> :
+				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=11">Création d'une zone</a></p>
+			<p>Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br/>
+			Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr/>
+			La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps
+			du moment qu'il recouvre au moins un bout de chaque massif.<br/>
+			Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.</p>
 		</fieldset>
-		<fieldset>
-			<legend>Définitions</legend>
-			<label>
-				<p><b>Massif</b></p>
-				<p>Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br/>
-				Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.</p><hr/>
-				<p><b>Zone</b></p>
-				<p>Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br/>
-				Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr/>
-				La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps
-				du moment qu'il recouvre au moins un bout de chaque massif.<br/>
-				Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.</p>
-			</label>
-	<?php }?>
+	<?php } ?>
 </div>
 <p style="clear:both;">
 <?php if (!empty($vue->points_de_la_zone)) foreach ($vue->points_de_la_zone as $point) { ?>
