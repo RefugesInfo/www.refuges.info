@@ -65,32 +65,42 @@ function infos_identification()
   else
     preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb['cookie_name'].'_sid'], $cookie_sid);
 
+  $group_ids = [];
   // Cas de la connexion permanente (se souvenir de moi)
   if (!$infos_identification && $cookie_k[0] && $cookie_u[0] > 1) {
-    $sql = "SELECT user_id, username, group_id, user_form_salt
+    $sql = "SELECT user_id, username, phpbb3_user_group.group_id, user_form_salt
       FROM phpbb3_sessions_keys
       JOIN phpbb3_users USING (user_id)
+      JOIN phpbb3_user_group USING (user_id)
       WHERE user_id = '{$cookie_u[0]}' AND
         key_id = '".md5($cookie_k[0])."'";
     $res = $pdo->query($sql);
     if (!empty($res))
-      $infos_identification = $res->fetch();
+      while( $raw = $res->fetch() )
+	  {
+        $infos_identification = $raw;
+        $group_ids[] = $infos_identification->group_id;
+      }
   }
 
   // Cas de la connexion limitée à l'ouverture de l'explorateur
   // ou à la durée de la session définie dans les paramètres du forum
   if (!$infos_identification && $cookie_sid[0] && $cookie_u[0] > 1) {
-    $sql = "SELECT user_id, username, group_id, user_form_salt, session_time
+    $sql = "SELECT user_id, username, phpbb3_user_group.group_id, user_form_salt, session_time
       FROM phpbb3_sessions
       JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
+      JOIN phpbb3_user_group USING (user_id)
       WHERE user_id = '{$cookie_u[0]}' AND
         session_ip = '{$_SERVER['REMOTE_ADDR']}' AND
         session_time >= ". (time() - $config_phpbb['session_length']) ." AND
         session_browser = '{$_SERVER['HTTP_USER_AGENT']}' AND
         session_id = '{$cookie_sid[0]}'";
     $res = $pdo->query($sql);
-    if (!empty($res))
-      $infos_identification = $res->fetch();
+      while( $raw = $res->fetch() )
+	  {
+        $infos_identification = $raw;
+        $group_ids[] = $infos_identification->group_id;
+      }
   }
 
   // Pas de cookies du tout ou
@@ -105,10 +115,7 @@ function infos_identification()
 
   // Infos à calculer dans tous les cas, à partir des précédentes
   // Niveau de modération
-  $infos_identification->niveau_moderation =
-    $infos_identification->group_id == 201 ||
-    $infos_identification->group_id == 202
-      ? 1 : 0;
+  $infos_identification->niveau_moderation = empty(array_intersect($group_ids, [201,202])) ? 0 : 1;
 
   // Tokens du formulaire de login
   // Nécessite : GENERAL -> CONFIGURATION DU SERVEUR -> Paramètres de sécurité
