@@ -18,6 +18,7 @@ Elle retourne :
 
   $infos_identification->niveau_moderation
   Il n'y a que 2 niveaux dans WRI aujourd'hui 01/02/2021: 0 = rien, >= 1 = tout
+    Est niveau 1 un utilisateur qui est dans un des groupes 201 ou 202
 
   $infos_identification->creation_time
   $infos_identification->login_form_token
