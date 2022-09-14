@@ -117,8 +117,8 @@ switch ($periode)
 	background-color: transparent !important;
 }
 /* Masquage login rapide en bas de page */
-#page-body form > h3,
-#page-body form > fieldset {
+#page-body > form > h3,
+.quick-login {
 	display: none;
 }
 .section-posting #attach-panel-multi::after {
