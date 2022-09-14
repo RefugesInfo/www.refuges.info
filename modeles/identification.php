@@ -79,7 +79,7 @@ function infos_identification()
       while( $raw = $res->fetch() )
 	  {
         $infos_identification = $raw;
-        $group_ids[] = $infos_identification->group_id;
+        $group_ids[] = $raw->group_id;
       }
   }
 
@@ -99,7 +99,7 @@ function infos_identification()
       while( $raw = $res->fetch() )
 	  {
         $infos_identification = $raw;
-        $group_ids[] = $infos_identification->group_id;
+        $group_ids[] = $raw->group_id;
       }
   }
 
