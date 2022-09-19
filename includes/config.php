@@ -173,16 +173,16 @@ $config_wri['email_contact_nominatim']="sylvain@refuges.info";
 // Censure des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
 $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
 
-// tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un lourd à maintenir)
+// tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un peu lourd à maintenir)
 // La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
 
 $config_wri['api_format_points'] = Array 
 ( 
-'gpx' => "gpx (Complet, pour logiciel type osmand, marble)",
+'gpx' => "gpx (Complet, pour logiciel type osmand, marble, ...)",
 'gpx_garmin' => "gpx (compatible basecamp/mapsource/viking/...)",
 'gpx_simple' => "gpx simplifié (sans remarques et accès)",
-'kmz' => "kmz (googlearth compressé)",
-'kml' => "kml (googlearth)",
+'kmz' => "kml compressé)",
+'kml' => "kml (googlearth et plusieurs applications smartphone )",
 'gml' => "Geography Markup Language",
 'csv' => "csv (tableurs)",
 'xml' => "xml Spécifique à notre base, exhaustif",
