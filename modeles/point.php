@@ -284,9 +284,10 @@ function infos_points($conditions)
       return erreur("On nous a demandé les points avec '$conditions->conditions_utilisation' ce qui est inexistant ou signe d'un bug");
       
   // CLUSTERISATION AU NIVEAU DU SERVEUR
-  if ( $conditions->cluster && 
-    !$tables_en_plus ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requette compliquée :)
-  {
+  if (!empty($conditions->cluster))
+    if ( $conditions->cluster && 
+      !$tables_en_plus ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requette compliquée :)
+    {
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
     $query_clusters="
 SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom)) AS geojson,
