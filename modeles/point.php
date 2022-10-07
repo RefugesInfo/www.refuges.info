@@ -636,7 +636,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   /********* On ne peut plus créer de cabane autour d'une cabane caché *************/
   if ($point->id_point_type == 7)
   {
-    $distance = 1500; // ~500m
+    $distance = 300; // ~100m
     $q="SELECT id_point, nom
       FROM points
       WHERE cache = true AND
