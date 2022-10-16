@@ -1,5 +1,5 @@
-// Partie commune des cartes : les couches de fond et les contrôles
-function mapBaseLayers(page) {
+// Les couches de fond des cartes de refuges.info
+function wriMapBaseLayers(page) {
 	return {
 		'Refuges.info': layerMRI(),
 		'OSM fr': layerOSM({
@@ -16,7 +16,7 @@ function mapBaseLayers(page) {
 		}),
 		'IGN V2': layerIGN({
 			layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-			key: 'essentiels', // The key for the free layers
+			key: 'essentiels', // La clé pour les couches publiques
 			format: 'image/png',
 		}),
 		'SwissTopo': page == 'modif' ? null : layerSwissTopo('ch.swisstopo.pixelkarte-farbe'),
@@ -32,21 +32,29 @@ function mapBaseLayers(page) {
 	};
 }
 
-function mapControls(page) {
-
+// Les controles des cartes de refuges.info
+function wriMapControls(options) {
 	return [
+		// Haut gauche
 		new ol.control.Zoom(),
 		new ol.control.FullScreen(),
 		controlGeocoder(),
 		controlGPS(),
-		page == 'point' ? controlButton() : controlLoadGPX(),
-		page == 'point' || page == 'modif' ? controlButton() : controlDownload(),
-		page == 'modif' ? controlButton() : controlPrint(),
+		options.page == 'point' ? controlButton() : controlLoadGPX(),
+		options.page == 'nav' ? controlButton() : controlDownload(options.Download),
+		options.page == 'modif' ? controlButton() : controlPrint(),
+
+		// Haut droit
 		controlLayerSwitcher({
-			layers: mapBaseLayers(page),
+			layers: wriMapBaseLayers(options.page),
 		}),
+
+		// Bas gauche
 		controlMousePosition(),
 		new ol.control.ScaleLine(),
+
+		// Bas droit
+		controlPermalink(options.Permalink),
 		new ol.control.Attribution({
 			collapsed: false,
 		}),

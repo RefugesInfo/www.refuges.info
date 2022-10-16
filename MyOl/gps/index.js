@@ -33,8 +33,8 @@ if ('serviceWorker' in navigator)
 					if (registrations.length) {
 						for (let reg of registrations)
 							//BEST need 3 reload to update
-							//BEST https://bitsofco.de/what-self-skipwaiting-does-to-the-service-worker-lifecycle/ 
-							//BEST https://stackoverflow.com/questions/59207110/in-a-pwa-is-there-a-way-to-check-for-a-waiting-service-worker-upgrade 
+							//BEST https://bitsofco.de/what-self-skipwaiting-does-to-the-service-worker-lifecycle/
+							//BEST https://stackoverflow.com/questions/59207110/in-a-pwa-is-there-a-way-to-check-for-a-waiting-service-worker-upgrade
 							reg.unregister()
 							.then(console.log('SW ' + reg.active.scriptURL + ' deleted'));
 					}
@@ -51,8 +51,8 @@ if ('serviceWorker' in navigator)
 						location.reload();
 					}
 				});
-		}
-	})
+		};
+	});
 
 // Manage the map
 var map,

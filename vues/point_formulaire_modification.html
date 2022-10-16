@@ -109,10 +109,10 @@
             <?php } ?>
         </fieldset>
 
-        <fieldset>
-            <span><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></span>
+        <fieldset class="textarea">
+            <div><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></div>
             <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
-                <label class="textarea"><span><?=ucfirst($tx_params->label)?></span>
+                <label><span><?=ucfirst($tx_params->label)?></span>
                 <textarea style="height:<?=(substr_count($tx_params->valeur, "\n")+5)?>em;"
                     name="<?=$tx_nom?>"><?=$tx_params->valeur?></textarea>
                 </label>
@@ -170,7 +170,7 @@
         <fieldset class="booleen">
             <legend><?=$vue->point->equivalent_site_officiel?> :</legend>
             <label>
-                    <input name="site_officiel" size="50" type="text" value="<?=$vue->point->site_officiel?>" />
+                    <input name="site_officiel" size="60" type="text" value="<?=$vue->point->site_officiel?>" />
             </label>
         </fieldset>
         <?php } ?>

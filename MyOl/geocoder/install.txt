@@ -1,2 +1,10 @@
 https://github.com/jonataswalker/ol-geocoder/releases/latest
-V4.1.2
+V4.1.2 + (temporary delivery)
+https://github.com/kirtan-desai/ol-geocoder-5-dist
+
+OL v7.1.0 bug:
+https://github.com/jonataswalker/ol-geocoder/issues/258
+
+workaround:
+Use ol-geocoder-debug.js and replace line 1134 by:
+return new Control({ element: this.container });

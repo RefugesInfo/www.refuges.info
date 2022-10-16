@@ -56,7 +56,7 @@
 			</ul>
 			<hr />
 				<input type="checkbox" id="selecteur-massifs" name="selecteur-massifs" />
-				<label for="selecteur-massifs">Massifs</label>
+				<label for="selecteur-massifs">massifs</label>
 				<span id="selecteur-massifs-status"></span>
 			<hr />
 				<ul>Ctrl+click: nouvel onglet</ul>
@@ -187,11 +187,11 @@
 			<?php } ?>
 
 			<p><b>Massif</b> :
-				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=1">Création d'un massif</a></p>
+				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=1">Créer un massif</a></p>
 			<p>Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br/>
 			Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.</p><hr/>
 			<p><b>Zone</b> :
-				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=11">Création d'une zone</a></p>
+				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=11">Créer une zone</a></p>
 			<p>Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br/>
 			Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr/>
 			La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps

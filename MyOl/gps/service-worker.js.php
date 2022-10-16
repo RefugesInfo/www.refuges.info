@@ -45,7 +45,7 @@ self.addEventListener('fetch', evt =>
 				//console.log('found ' + evt.request.url)
 				return found;
 			} else
-				return fetch(evt.request).then(response => //TODO catch errors (url not found)
+				return fetch(evt.request).then(response => //BEST catch errors (url not found)
 					caches.open('myGpsCache')
 					.then(cache => {
 						//console.log(response.type + ' ' + evt.request.url)

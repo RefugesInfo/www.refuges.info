@@ -10,21 +10,22 @@ new ol.Map({
 		enableRotation: false,
 		constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
 	}),
-	controls: [
-		...mapControls('point'),
-		controlPermalink({ // Permet de garder le même réglage de carte d'une page à l'autre
+	controls: wriMapControls({
+		page: 'point',
+		Permalink: { // Permet de garder le même réglage de carte d'une page à l'autre
 			visible: false, // Mais on ne visualise pas le lien du permalink
 			init: false, // Ici, on utilisera plutôt la position du point
-		}),
-	],
+		},
+	}),
 	layers: [
-		// Refuges.info (2 level layer depending on resolution)
-		...layersWri({
+		// Refuges.info (2 couches dependant de la resolution)
+		layerClusterWri({
 			host: '<?=$config_wri["sous_dossier_installation"]?>',
-			styleOptionsFunction: function (feature, properties) {
+			selectName: null, // Toujours affiché
+			styleOptFnc: function (feature, properties) {
 				return {
-					...styleOptionsLabel(properties.name, properties, true),
-					...styleOptionsIcon(properties.icon),
+					...styleOptLabel(properties.name, feature, properties, true),
+					...styleOptIcon(properties.icon),
 				};
 			},
 			attribution: '',

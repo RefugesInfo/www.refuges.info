@@ -6,7 +6,6 @@ html, body, #map {
 	overflow: hidden;
 }
 .ol-full-screen,
-.myol-button-download,
 .myol-button-print {
 	display: none;
 }

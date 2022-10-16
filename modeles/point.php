@@ -633,10 +633,10 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
   $champs_sql['date_derniere_modification'] = 'NOW()';
 
-  /********* On ne peut plus créer de cabane autour d'une cabane caché *************/
-  if ($point->id_point_type == 7)
+  /********* On ne peut plus créer de cabane autour d'une cabane cachée *************/
+  if ($point->id_point_type == 7 && !est_moderateur())
   {
-    $distance = 300; // ~100m
+    $distance = $config_wri['defaut_max_distance_cabane_cachee'] * 3;
     $q="SELECT id_point, nom
       FROM points
       WHERE cache = true AND

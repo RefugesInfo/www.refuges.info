@@ -1,2 +1,2 @@
 https://openlayers.org/download/
-v6.15.1
+v7.1.0

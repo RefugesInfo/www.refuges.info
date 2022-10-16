@@ -106,7 +106,7 @@ Based on https://openlayers.org
 		<hr />
 		<p>* Fonctionne bien sur Android avec Chrome, Edge, Brave, Samsung Internet,
 			fonctions réduites avec Firefox & Safari</p>
-		<p>* Cette application ne permet pas de visualiser ou d'enregistrer le parcours</p>
+		<p>* Cette application ne permet pas de visualiser ni d'enregistrer le parcours</p>
 		<p>* Aucune donnée ni géolocalisation n'est remontée ni mémorisée</p>
 		<hr />
 		<p style="font-size:0.7em">Mise à jour <?=$sw_instance.$build_date?> @<?=$_SERVER['HTTP_HOST']?></p>

@@ -12,7 +12,6 @@
 /* Container */
 .ol-zoom,
 .ol-full-screen,
-.ol-geocoder,
 .myol-button {
 	position: static !important;
 	float: left;
@@ -31,52 +30,59 @@
 	color: black;
 	background: white;
 	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
-	outline: 0;
 }
 .myol-button > div {
 	max-height: calc(100% - 38px);
+	opacity: 0.8;
+	transition: max-height 0.3s ease-in, opacity 0.3s ease-out;
 	overflow: auto;
 	z-index: 30;
 }
-.ol-control button:hover,
-.ol-geocoder button:hover {
+.ol-control button:hover {
 	box-shadow: 1px 1px 10px black;
-	background: #d6fbff;
 }
-.ol-control button:focus { /* Zoom, fullScreen, ... after have been clicked */
-	background: white;
-}
+
 /* Submenu */
-.myol-button:not(.myol-display-submenu) > div *:not(.myol-display-under),
-.myol-display-under:empty,
-.myol-display-submenu .myol-display-under {
-	display: none;
+.myol-button:not(.myol-button-hover):not(.myol-button-selected) > div,
+.myol-button > *:empty {
+	max-height: 0;
+	opacity: 0; /* For beauty of the transition */
 }
-.myol-display-submenu > div,
-.myol-display-under {
+.myol-button > *:not(button) {
 	position: absolute;
-	top: 29px;
-	padding: 3px;
+	top: 30px;
 	background: white;
 	font-size: 16px;
 }
-.myol-display-submenu p,
-.myol-display-submenu span {
+.myol-button-selected button, /* Coloring the button when touch selected */
+.myol-button div {
+	background: #d1e9ff;
+}
+.myol-button p,
+.myol-button span {
+	margin: 3px 0;
+	padding: 0 3px;
 	font-size: 14px;
 }
-.myol-display-submenu > div * {
-	margin: 3px 0;
-}
-.myol-display-submenu input,
-.myol-display-submenu label {
-	margin: 5px;
-	cursor: pointer;
-}
-.myol-display-submenu a {
+.myol-button label,
+.myol-button a {
 	display: block;
-	margin: 5px;
-	color: blue;
+	margin: 0;
+	padding: 2px 0;
 	cursor: pointer;
+}
+.myol-button a {
+	color: blue;
+}
+.myol-button input {
+	margin: 0 3px;
+}
+.myol-button label:hover,
+.myol-button a:hover {
+	background: #ffe8d1;
+}
+.myol-button hr {
+	margin: 1px;
 }
 
 /* Full screen */
@@ -91,41 +97,35 @@
 }
 
 /* Geocodeur */
+.ol-geocoder {
+	position: initial !important;
+	float: left;
+	height: 30.75px; /* Takes place in the MyOl button flow */
+	width: 30.75px;
+	font-size: 14.4px !important; /* For some mobiles */
+}
+.ol-geocoder .gcd-gl-expanded,
+.ol-geocoder .gcd-gl-control:hover {
+	width: 30.75px;
+	overflow: visible;
+}
 .ol-geocoder .gcd-gl-btn {
-	border-image-width: 0 !important;
-	top: 0 !important;
-	position: static !important;
 	height: 24.75px;
 	width: 24.75px;
-	margin: 1px;
-	border: 0;
-	padding: 0;
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
-	border-radius: 2px;
-	background: white;
 }
-.gcd-gl-control:not(.gcd-gl-expanded) {
+.ol-geocoder .gcd-gl-input {
+	top: 32px;
+	left: 4px;
+}
+.ol-geocoder .gcd-gl-reset {
 	display: none;
 }
-.gcd-gl-control,
-.gcd-gl-control:hover {
-	top: 27px;
-}
-.gcd-gl-input {
-	margin-left: -32px;
-}
-.gcd-gl-result {
-	top: 60px !important;
-	left: 2px !important;
+.ol-geocoder ul.gcd-gl-result {
+	top: 62px;
+	z-index: 99; /* For mobiles no interaction with animate */
 }
 
-/* Download */
-.myol-button-download p {
-	margin: 0;
-	cursor: pointer;
-}
-
-/* Other controls */
+/* Buttonless controls */
 .myol-permalink,
 .ol-attribution,
 .myol-coordinate,
@@ -193,51 +193,21 @@
 
 /* FILE src/layerSwitcher.css */
 .myol-button-switcher {
-	position: static;
 	float: right;
 }
-.myol-button-switcher .myol-single-layer span {
-	font-size: 0.7em;
+.myol-button-switcher > button {
+	font-style: italic;
+}
+.myol-button-switcher > div {
+	right: 0;
+    overflow-y: scroll; /* Forced to avoid unexpected shifts */
 }
 .myol-button-switcher .myol-single-layer input,
-.myol-button-switcher .myol-double-layer span,
-.myol-button-switcher-open button,
-.myol-button-switcher:not(.myol-button-switcher-open) > hr,
-.myol-button-switcher:not(.myol-button-switcher-open) > div {
+.myol-button-switcher .myol-double-layer span {
 	display: none;
 }
-.myol-button-switcher hr {
-	margin: 0;
-}
-.myol-button-switcher-open {
-	position: absolute;
-	right: 0;
-	max-height: 98%;
-	overflow: auto;
-}
-.myol-button-switcher div {
-	padding-left: 5px;
-}
-.myol-button-switcher span,
-.myol-button-switcher label {
-	color: black;
-}
-
-#additional-selector { /*
-	color: black;
-	background: rgb(162, 226, 255, 0.6);
-}
-#additional-selector ul {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-}
-#additional-selector p {
-	margin: 0;
-	color: red;
-}
-#additional-selector hr {
-	border-color: black;
+.select-ext {
+	background: #fcffd1 !important;
 }
 
 /* FILE src/marker.css */
