@@ -18,8 +18,6 @@ $config_wri['mapKeys'] = [
   'ign' => '???', // Clé gratuite pour TOP25
   // Get your own (free) THUNDERFOREST key at https://manage.thunderforest.com
   'thunderforest' => '???',
-  // Get your own (free) BING key at https://www.microsoft.com/en-us/maps/create-a-bing-maps-key
-  'bing' => '???',
   // SwissTopo : You need to register your domain in
   // https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
 ];

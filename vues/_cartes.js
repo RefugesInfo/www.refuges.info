@@ -27,7 +27,6 @@ function wriMapBaseLayers(page) {
 			key: 'essentiels',
 		}),
 		'Photo ArcGIS': layerArcGIS('World_Imagery'),
-		'Photo Bing': layerBing('Aerial'),
 		'Photo Google': page == 'modif' ? null : layerGoogle('s'),
 	};
 }
