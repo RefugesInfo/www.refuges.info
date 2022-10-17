@@ -10,4 +10,4 @@ $zip = new zipfile() ; //on crée un fichier zip
 $zip->addfile($kml, "points.kml") ; //on ajoute le fichier
 $kmz = $zip->file() ; //on associe l'archive
 echo $kmz;
-}
+
