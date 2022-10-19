@@ -117,16 +117,20 @@
 			</li><li>
 				<a href="<?=$config_wri['lien_forum']?>viewforum.php?f=6">
 				Offres et demandes d'emplois</a>
+<?php if (est_moderateur()) { ?>
+			</li><li>
+				<a href="<?=$config_wri['lien_forum']?>viewforum.php?f=7">
+				Modérateurs</a>
+<?php } ?>
 			</li><li>
 				<a href="<?=$config_wri['lien_forum']?>viewforum.php?f=5">
 				Divers</a>
+<?php if (est_connecte() && $infos_identification->username) { ?>
+			</li><li>
+				<a href="<?=$config_wri['lien_forum']?>ucp.php?i=pm&amp;folder=inbox">
+				Messages privés</a>
+<?php } ?>
 			</li>
-			<?php if (est_connecte() && $infos_identification->username) { ?>
-				<li>
-					<a href="<?=$config_wri['lien_forum']?>ucp.php?i=pm&amp;folder=inbox">
-					Messages privés</a>
-				</li>
-			<?php } ?>
 		</ul>
 	</li>
 
@@ -254,6 +258,8 @@
 						<p>et l'utilisation du forum</p>
 						<p>implique l'acceptation de</p>
 						<p><a href="<?=$vue->lien_wiki["cookies"]?>">notre utilisation des cookies</a></p>
+					</li><hr/><li>
+						<a href="<?=$config_wri['lien_forum']?>app.php/user/forgot_password">Mot de passe oublié</a>
 					</li><hr/><li>
 						<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">Connexion avancée</a>
 					</li><hr/><li>

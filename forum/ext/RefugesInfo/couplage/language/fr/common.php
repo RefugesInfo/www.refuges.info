@@ -40,5 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'EMAIL_REMIND' => 'Adresse courriel associée à votre compte. Si vous ne l’avez pas modifiée via votre panneau d’utilisateur, il s’agit de l’adresse que vous avez fournie lors de votre enregistrement.<br/><br/>'.
 	'<span style="color:red">Si votre email termine en @gmail.com ou @hotmail.com/fr ou @live.fr/com ou @outlook.com (ou autre chez microsoft) ou chez yahoo.fr/.com, des problèmes sont parfois rencontrés avec ces fournisseurs (surtout Microsoft/Live). Il faut vérifier dans le répertoire indésirables et/ou être patient et attendre des fois plusieurs heures avant de recevoir le mail qui vous rappelle votre mot de passe. Si cela vous est possible, utilisez une autre adresse email</span><br/>'.
-	'Si le problème persiste, n\'hesitez pas à nous contacter via le <a href="../../wiki/contact/">formulaire de contact</a>',
+	'Si le problème persiste, n\'hesitez pas à nous contacter via le <a href="/wiki/contact/">formulaire de contact</a>',
 ));

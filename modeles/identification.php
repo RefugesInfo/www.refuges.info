@@ -36,6 +36,7 @@ function infos_identification()
     return $infos_identification;
 
   $infos_identification = false;
+  $group_ids = [];
 
   // Pages du forum : la connexion au forum à déjà eu lieu quand on déroule cette fonction
   // Et l'objet PhpBB $user contient toutes les informations nécéssaires
@@ -45,6 +46,7 @@ function infos_identification()
     $infos_identification->username = $user->data['username'];
     $infos_identification->group_id = $user->data['group_id'];
     $infos_identification->user_form_salt = $user->data['user_form_salt'];
+    $group_ids[] = $user->data['group_id'];
   }
 
   // On n'est pas dans une page du forum, il faut faire la calcul nous même
@@ -65,7 +67,6 @@ function infos_identification()
   else
     preg_match ('/[0-9a-z]*/', @$_COOKIE[$config_phpbb['cookie_name'].'_sid'], $cookie_sid);
 
-  $group_ids = [];
   // Cas de la connexion permanente (se souvenir de moi)
   if (!$infos_identification && $cookie_k[0] && $cookie_u[0] > 1) {
     $sql = "SELECT user_id, username, phpbb3_user_group.group_id, user_form_salt
