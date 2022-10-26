@@ -9,7 +9,7 @@ header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
 <?php foreach ($points AS $point) { ?>
 <wpt lat="<?=$point->coord['lat']?>" lon="<?=$point->coord['long']?>">
   <ele><?=$point->coord['alt']?></ele>
-  <name><?=$point->nom?></name>
+  <name><?=$point->nom?> <?php if ($point->etat['valeur']!="") print(' ('.$point->etat['valeur'].')')?></name>
   <type><?=$point->type['valeur']?></type>
 </wpt>
 <?php } ?>
