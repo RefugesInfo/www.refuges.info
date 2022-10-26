@@ -18,7 +18,6 @@ require_once ("xml.class.php");
 require_once ("nouvelle.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("upload_max_filesize.php");
-require_once ("zipfile.php");
  
 
 //print("prouf");

@@ -1,77 +1,73 @@
 <?php
-if ($req->format=="kml") // FIXME sly 12/2019 : quelqu'un s'en sert encore à distance du kml ? pourquoi cette gestion de cache et de CORS ?
-{
-  header("Content-disposition: filename=points-refuges-info.$req->format");
-  header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
-  header("Content-Transfer-Encoding: binary");
-  headers_cors_par_default();
-  headers_cache_api();
+/* Voici notre format d'export kml, c'est très perfectible. 
+ * 2021+ : les remarques, l'accès, les textes ne sont pas correctement intégré (mais quelles balises pour ça ?)
+ * 2022+ : il ne prend pas en charge notre nouveau système dynamique d'icone
+ * Mais bon, il a le mérite d'exister, c'est déjà ça !
+ */
+
+header("Content-disposition: filename=points-refuges-info.$req->format");
+header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
+header("Content-Transfer-Encoding: binary");
+headers_cors_par_default();
+?>
+<?='<?'?>xml version="1.0" encoding="utf-8"<?='?>'?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+  <Document>
+  <name>points.kml</name>
+  <description><?=$config_wri['copyright_API']?></description>
+<!-- Liste des styles  (en gros, les icones possibles) -->
+<?php foreach ($points AS $point) {
+  // on boucle une première fois pour détecter toutes les icones possibles
+  $liste_icones_possibles[$point->type['icone']]=1; 
 }
+?>
+<?php /* on constuit la liste des icones/styles */ foreach ($liste_icones_possibles as $nom_icone => $pas_utile) { ?>
+  <Style id='<?=$nom_icone?>'>
+    <IconStyle>
+    <hotSpot x='0.5' y='0.5' xunits='fraction' yunits='fraction' />
+      <Icon>
+        <href>https://<?=$config_wri['nom_hote'].$config_wri['url_chemin_icones'].$nom_icone?>.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+<?php } ?>
+<!-- Fin des Styles -->
+  
+<!-- Liste des POINTS -->
+  <Folder><name>Points</name>
+  <open>0</open>
+  
+<?php foreach ($points AS $point) { ?>
+  <Placemark id='<?=$point->id?>'>
+    <name><?=$point->nom?></name>
+      <description>
+        <![CDATA[ <em><?=$point->type['valeur']?></em> 
+              <br />
+              <p><?=bbcode2html($point->description['valeur'],true)?></p>
+              <br />
+            <center><a href='<?=$point->lien?>'>Détails</a></center>
+        ]]>
+      </description>
+      <LookAt>
+        <longitude><?=$point->coord['long']?></longitude>
+        <latitude><?=$point->coord['lat']?></latitude>
+        <range><?=$point->coord['alt']?></range>
+        <tilt>40</tilt>
+        <heading>50</heading>
+      </LookAt>
+        <styleUrl>#<?=$point->type['icone']?></styleUrl>
+      <Point>
+        <coordinates><?=$point->coord['long']?>,<?=$point->coord['lat']?>,0</coordinates>
+      </Point>
+      <ExtendedData>
+          <Data name="url">
+          <value><?=$point->lien?></value>
+          </Data>
+      </ExtendedData>
+  </Placemark>
+<?php } ?>
+<!-- fin des points -->
 
-// FIXME sly 12/2019 : c'est vraiment dommage d'avoir de belles vues ailleurs et se taper une horreur pareille, mais le format kmz a besoin de la même chose, mais en compressé, donc il lui faut capturer la variable $kml
-$kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
-$kml .= "<kml xmlns=\"http://earth.google.com/kml/2.1\">\r\n";
-$kml .= "<Document>\r\n";
-$kml .= "	<name>points.kml</name>\r\n";
-$kml .= "	<description>".$config_wri['copyright_API']."</description>\r\n\r\n";
-	
-$kml .= "<!-- Liste des STYLES -->\r\n\r\n";
-$icones_possibles=liste_icones_possibles();
-foreach ($icones_possibles as $nom_icone)
-{
-	$lien_icone = "https://".$config_wri['nom_hote'].$config_wri['url_chemin_icones'].$nom_icone.'.png';
-
-	$tx = $ty = 24; // La plupart des icones
-
-	$kml .= "	<Style id='icone_$nom_icone'>\r\n";
-	$kml .= "		<IconStyle>\r\n";
-	$kml .= "		<hotSpot x='0.5' y='0.5' xunits='fraction' yunits='fraction' />\r\n";
-	$kml .= "		<scale>1</scale>\r\n";
-	$kml .= "		<Icon>\r\n";
-	$kml .= "			<href>$lien_icone</href>\r\n";
-	$kml .= "			<w>$tx</w>\r\n";
-	$kml .= "			<h>$ty</h>\r\n";
-	$kml .= "		</Icon>\r\n";
-	$kml .= "		</IconStyle>\r\n";
-	$kml .= "	</Style>\r\n";
-}
-$kml .= "<!-- Fin des Styles ! -->\r\n\r\n";
-
-$kml .= "<!-- Liste des POINTS -->\r\n";
-$kml .= "	<Folder><name>Points</name>\r\n";
-$kml .= "	<open>0</open>\r\n\r\n";
-	
-foreach ($points AS $point) {
-	$kml .= "		<Placemark id='$point->id'>\r\n";
-	$kml .= "			<name>$point->nom</name>\r\n";
-	$kml .= "			<description>\r\n";
-	$kml .= "				<![CDATA[\r\n";
-	$kml .= "					<img src=\"https://".$config_wri['nom_hote']."/images/icones/".$point->type['icone'].".png\" />\r\n";
-	$kml .= "					(<em>".$point->type['valeur']."</em>) <br />\r\n";
-	$kml .= "					<center><a href='$point->lien'>Détails</a></center>\r\n";
-	$kml .= "				]]>\r\n";
-	$kml .= "			</description>\r\n";
-	$kml .= "			<LookAt>\r\n";
-	$kml .= "				<longitude>".($point->coord['long']+0.0002)."</longitude>\r\n";
-	$kml .= "				<latitude>".($point->coord['lat']+0.0008)."</latitude>\r\n";
-	$kml .= "				<range>".($point->coord['alt']+5500.0)."</range>\r\n";
-	$kml .= "				<tilt>40</tilt>\r\n";
-	$kml .= "				<heading>50</heading>\r\n";
-	$kml .= "			</LookAt>\r\n";
-	$kml .= "    		<styleUrl>#icone_".replace_url($point->type['valeur'])."</styleUrl>\n";
-	$kml .= "			<Point>\r\n";
-	$kml .= "				<coordinates>".$point->coord['long'].",".$point->coord['lat'].",0</coordinates>\r\n";
-	$kml .= "			</Point>\r\n";
-	$kml .= "			<ExtendedData>\r\n";
-	$kml .= "				<Data name=\"url\">\r\n";
-	$kml .= "				<value>$point->lien</value>\r\n";
-	$kml .= "				</Data>\r\n";
-	$kml .= "			</ExtendedData>\r\n";
-	$kml .= "		</Placemark>\r\n\r\n";
-}
-$kml .= "	</Folder>\r\n\r\n";
-
-$kml .= "</Document>\r\n";
-$kml .= "</kml>\r\n";
-if ($req->format=="kml")
-  print($kml);
+  </Folder>
+  </Document>
+</kml>

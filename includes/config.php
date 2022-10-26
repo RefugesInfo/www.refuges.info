@@ -185,7 +185,6 @@ $config_wri['api_format_points'] = Array
 'gpx_garmin' => "gpx (compatible basecamp/mapsource/viking/...)",
 'gpx_simple' => "gpx simplifié (sans remarques et accès)",
 'kml' => "kml (googlearth et plusieurs applications smartphone )",
-'kmz' => "kml compressé",
 'gml' => "Geography Markup Language",
 'csv' => "csv (tableurs)",
 'xml' => "xml Spécifique à notre base, exhaustif",
