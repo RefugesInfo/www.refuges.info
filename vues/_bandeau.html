@@ -64,7 +64,7 @@
 						<?=$pa->nom_type?>
 					</a>
 				</li>
-			<? } ?>
+			<?php } ?>
 			<hr/>
 			<p><a href="<?=lien_wiki('que_mettre')?>">Quoi mettre ?</a></p>
 			<p><a href="<?=lien_wiki('contenus_interdits')?>">Contenus interdits.</a></p>
@@ -173,17 +173,15 @@
 	</li>
 
 	<?php if (est_moderateur()) { ?>
-	<li>&#128295; Gestion
+	<li>&#128295; Gestion<?php if ($vue->demande_correction) {?>*<?php } ?>
 		<ul>
 			<label>Gestion</label>
 			<p>Fonctions destinées aux modérateurs</p>
-			<?if ($vue->demande_correction) {?>
 				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
 						Commentaires en attente d'une correction
 					</a>
 				</li>
-			<? } ?>
 			<li>
 				<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications">
 				Historique des modifications des points</a>
