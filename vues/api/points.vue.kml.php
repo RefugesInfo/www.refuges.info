@@ -39,7 +39,7 @@ headers_cors_par_default();
   
 <?php foreach ($points AS $point) { ?>
   <Placemark id='<?=$point->id?>'>
-    <name><?=$point->nom?></name>
+    <name><?=htmlspecialchars($point->nom,ENT_NOQUOTES)?></name>
       <description>
         <![CDATA[ <em><?=$point->type['valeur']?></em> 
               <br />
