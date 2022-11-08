@@ -1,16 +1,13 @@
-<?
-// Bloc HTML réalisant l'affichage de la page des news
-
-// Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
-// Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
-// Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
-// $vue contient les données passées par le fichier PHP
-// $config_wri les données communes à tout WRI
-?> 
 <div class="contenu">
 	<h3><?=$vue->stat->nbrefuges?> refuges, <?=$vue->stat->nbcomm?> commentaires et <?=$vue->stat->nbphotos?> photos</h3>
 
-<!-- BLOC NEWS -->
+    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=points">Points</a> -
+    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=refuges">Refuges</a> -
+    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=commentaires">Commentaires</a> -
+    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=forums">Forum</a> -
+    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=commentaires,points">Tout sauf forum</a> -
+    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/">Tout</a>
+
     <?=$vue->nouvelles_generales?>
 
     <h4>Les nouvelles</h4>
@@ -22,12 +19,6 @@
             </li>
         <?php } ?>
     </ul>
-    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_max_page_nouvelles']?>&amp;quoi=<?=$vue->types_nouvelles?>">(Voir les plus anciennes)</a> -
-    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=points">Points</a> -
-    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=refuges">Refuges</a> -
-    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=commentaires">Commentaires</a> -
-    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=forums">Forum</a> -
-    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=commentaires,points">Tout sauf forum</a> -
-    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/">Tout</a>
-<!-- FIN BLOC NEWS -->
+
+    <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_max_page_nouvelles']?>&amp;quoi=<?=$vue->types_nouvelles?>">(Voir les plus anciennes)</a>
 </div>	

@@ -1,0 +1,41 @@
+<div class="contenu">
+<h4><?=$vue->titre?></h4>
+<dl> 
+  <dt>Licence des contenus</dt>
+  <dd>
+    <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
+  </dd>
+</dl>  
+<dl> 
+  <dt>Que mettre ou ne pas mettre ?</dt>
+  <dd>
+    <p>Tout ne trouve pas sa place sur le site, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
+  </dd>
+</dl>
+<?php if (!est_connecte()) { ?>
+<dl> 
+  <dt>Pas encore de compte ?</dt>
+  <dd>
+    <p>Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur.</p>
+  </dd>
+</dl>  
+<?php } ?>
+
+<h5>Vous souhaitez ajouter :</h5>
+<form id="cree_point" action="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification/"> 
+    <ul>
+         <?php
+         // Calcul de la liste déroulante pour le menu
+         $checked="checked=\"checked\""; // pour cocher la première option
+         foreach ($vue->types_point_affichables AS $pa) { ?>
+             <li>
+                 <input type="radio" name="id_point_type" value="<?=$pa->id_point_type?>" <?=$checked?>/>
+                 <a href="<?=$pa->lien_wiki_type_point?>"><?=$pa->nom_type?><sup>?</sup></a>
+             </li>
+         <?
+         $checked="";
+         }?>
+    </ul>
+    <p><input type="submit" value="Passer à l'étape suivante" /></p>
+</form> 
+</div>

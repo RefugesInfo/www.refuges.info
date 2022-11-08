@@ -1,26 +1,5 @@
-<?php if (!empty($vue->point->id_point)) { ?>
-  <h2>Modification du point <?=$vue->point->nom?></h2>
-<?php } ?>
-
-<dl>
-  <dd>
-    <p><b>Tout ne trouve pas sa place sur le site</b>, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
-  </dd>
-</dl>
-<dl>
-  <?php if (!empty($vue->point->id_point_type)) { ?>
-      <dd>
-        <p>Voyez la <a href="<?=lien_wiki(replace_url('fiche-'.$vue->point->nom_type))?>"> définition de "<?=$vue->point->nom_type?>".</a></p>
-     </dd>
-  <?php } ?>
-</dl>
-<dl>
-  <dd>
-    <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
-  </dd>
-</dl>
-<hr/>
-
+<h3>Ajouter un point dans refuges.info</h3>
+<br/>
 <div class="contenu">
     <div id="container-carte-point">
       <div id="carte-edit"></div>

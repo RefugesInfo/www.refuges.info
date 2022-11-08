@@ -29,7 +29,7 @@ require_once ("bdd.php");
 
 function infos_identification()
 {
-  global $pdo, $infos_identification, $config_wri, $user;
+  global $pdo, $infos_identification, $config_wri, $user, $auth;
 
   // On ne rapelle pas SQL à chaque fois !
   if (isset ($infos_identification))
@@ -46,7 +46,8 @@ function infos_identification()
     $infos_identification->username = $user->data['username'];
     $infos_identification->group_id = $user->data['group_id'];
     $infos_identification->user_form_salt = $user->data['user_form_salt'];
-    $group_ids[] = $user->data['group_id'];
+    $infos_identification->niveau_administration = $auth->acl_get('a_');
+    $infos_identification->niveau_moderation = $auth->acl_get('m_');
   }
 
   // On n'est pas dans une page du forum, il faut faire la calcul nous même
@@ -115,8 +116,10 @@ function infos_identification()
   }
 
   // Infos à calculer dans tous les cas, à partir des précédentes
-  // Niveau de modération
-  $infos_identification->niveau_moderation = empty(array_intersect($group_ids, [201,202])) ? 0 : 1;
+  if ($group_ids) {
+    $infos_identification->niveau_administration = empty(array_intersect($group_ids, [202])) ? 0 : 1;
+    $infos_identification->niveau_moderation = empty(array_intersect($group_ids, [201,202])) ? 0 : 1;
+  }
 
   // Tokens du formulaire de login
   // Nécessite : GENERAL -> CONFIGURATION DU SERVEUR -> Paramètres de sécurité
@@ -128,6 +131,12 @@ function infos_identification()
     'login');
 
   return $infos_identification;
+}
+
+function est_administrateur()
+{
+  global $infos_identification;
+  return $infos_identification->niveau_administration;
 }
 
 function est_moderateur()
