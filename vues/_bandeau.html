@@ -15,7 +15,7 @@
 	<div class="menu-haut">
 		<div class="menu-connexion menu-bouton">
 	<?php if (est_connecte() && $infos_identification->username) { ?>
-			<span>&#128104;</span><span class="menu-large"><?=$infos_identification->username?></span>
+			<span>&#128104;</span><span class="menu-large"><?=$infos_identification->username?> <?php if ($vue->demande_correction && est_moderateur()) {?><sup>⭐</sup><?php } ?></span>
 			<ul>
 				<li>
 		<?php if (!est_moderateur()) { ?>
@@ -45,8 +45,7 @@
 				<li>Fonctions modérateurs</li>
 				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
-						<?php if ($vue->demande_correction) {?>&#128276;<?php } ?>
-						Commentaires à corriger
+						<?php if ($vue->demande_correction) {?>⭐ <?php } ?>Commentaires à corriger
 					</a>
 				</li><li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications">
