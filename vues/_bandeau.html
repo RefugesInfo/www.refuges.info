@@ -15,7 +15,7 @@
 	<div class="menu-haut">
 		<div class="menu-connexion menu-bouton">
 	<?php if (est_connecte() && $infos_identification->username) { ?>
-			<span>&#128104;</span><span class="menu-large"><?=$infos_identification->username?> <?php if ($vue->demande_correction && est_moderateur()) {?><sup>⭐</sup><?php } ?></span>
+			<span>&#128104;</span><span class="menu-large"><?=$infos_identification->username?> <?php if ($vue->demande_correction && est_moderateur()) {?><span title="Commentaires à corriger">⭐</span><?php } ?></span>
 			<ul>
 				<li>
 		<?php if (!est_moderateur()) { ?>
@@ -141,9 +141,12 @@
 	<?php } ?>
 		</div>
 
-		<a class="menu-titre" href="<?=$config_wri['sous_dossier_installation']?>" title="Revenir à l'accueil">
-			<span>Forum de </span>Refuges.info
-		</a>
+		<div class="menu-titre">
+			<span>Forum de </span>
+			<a href="<?=$config_wri['sous_dossier_installation']?>" title="Revenir à l'accueil">
+				Refuges.info
+			</a>
+		</div>
 
 		<div class="menu-liste menu-bouton">
 			<span>&#x2630;</span>
@@ -173,12 +176,12 @@
 					<p>Forum de discussion</p>
 				</li>
 				<li class="menu-bouton" style="order:0">
-					<span class="menu-large">&#x1F3E0;</span><span class="menu-large">Accueil</span>
+					<span class="menu-large">&#x1F3E0;</span><span class="menu-large">Refuges.info</span>
 					<ul>
 						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>"
 								title="Retour à l'entrée du site">
-								Page d'accueil
+								Accueil
 							</a>
 						</li><li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"

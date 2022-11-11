@@ -525,14 +525,14 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /* On enlève les icones pour les fenêtres moyenes */
-@media screen and (min-width:450px) and (max-width:600px) {
+@media screen and (min-width:500px) and (max-width:650px) {
 	.menu-bouton SPAN:first-child {
 		display: none;
 	}
 }
 
 /* On enlève le bandeau pour les fenêtres de faible hauteur */
-@media screen and (max-height: 600px) {
+@media screen and (max-height: 600px) and (min-width:500px) {
 	.bandeau-haut {
 		background-image: none;
 	}
@@ -542,16 +542,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		display: none;
 	}
 }
-
-/* On ajoute un sigle Refuges.info quand on n'a pas de bandeau et la place */
-@media screen and (max-height: 600px) and (min-width:600px) {
-	.menu-titre {
-		display: block;
-		float: left;
-		padding: 6px;
-	}
-}
-@media screen and (max-height: 600px) and (min-width:450px) and (max-width:700px) {
+@media screen and (max-height: 600px) and (min-width:500px) and (max-width:700px) {
 	.menu-bouton SPAN {
 		line-height: 1.5em;
 	}
@@ -574,12 +565,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		display: none;
 	}
 	.menu-haut {
-		margin-bottom: 5px;
-	}
-	.menu-haut {
 		display: flex;
 		flex-direction: row-reverse;
 		justify-content: space-between;
+		margin-bottom: 5px;
 		background: #<?=$couleur_lien?>;
 	}
 
@@ -588,16 +577,15 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	.menu-titre {
 		display: block;
 		padding: 0 8px 2px 8px;
-		font-size: 20px;
+		Wfont-size: 20px;
 		font-weight: 700;
 		color: white !important;
 		cursor: pointer;
 	}
-	.menu-titre {
-		padding-top: 3px;
-	}
-	.menu-titre SPAN {
-		font-size: 20px;
+	.menu-titre * {
+		padding-top: 4px;
+		font-size: 18px;
+		color: white !important;
 	}
 
 	/* Blocs rétractables en dessous des boutons */
@@ -642,6 +630,12 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	.menu-connexion.menu-hover LI {
 		padding: 1.5px 0;
 		max-height: 1.2em;
+	}
+}
+/* Fenêtres très étroites */
+@media screen and (max-width: 300px) {
+	.menu-titre SPAN {
+		display: none;
 	}
 }
 
