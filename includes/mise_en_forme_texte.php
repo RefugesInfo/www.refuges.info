@@ -9,8 +9,12 @@ require_once("point.php");
 
 
 /**
-Fonction d'aide au référencement mais aussi de simplification pour que les internautes puisse se passer des urls d'accès direct aux points (par exemple)
-qui soit d'elle même significative (plus que http://wri/point/456)
+Fonction d'aide au référencement pour générer des chaines de caractères sans accents, sans espaces, sans caractères trop exotiques.
+Facile à copier/coller, bien reconnues dans les emails ou sur le net.
+L'usage principal est la génération d'url de ce genre :
+https://www.refuges.info/point/2917/gite-d-etape/Bauges/Chalet-de-la-Servaz-dit-La-Sarve
+Bon, en 2022 on devrait pouvoir avoir des accents dans les urls, mais après quelques essais, y'a toujours un logiciel dans le tas qui va vous l'urlencode, et ça fait moche et pas lisible.
+Donc, en attendant le support UTF8 de partout et sans failles, on restera sans les accents.
 **/
 function replace_url($str)
 {
@@ -75,15 +79,30 @@ function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_
 global $config_wri;
 
 $texte_avec_bbcode=lien_inter_fiches($texte_avec_bbcode,"bbcode");
-// transformation automatique des chaine de caractère ressemblant à une url vers le BBcode des URLs
-// le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
-// et éviter de retransformer celles contenant du bbcode
-// exemple : coucouwww.coucou ne sera pas transformé
-// il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
-// au format http://truc ou https://bidule ou www.
-$urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\?&=~-]+\w+)([\S< :\/\.;,\n\*\)\]]|\r\n|$)/iu";
+/* 
+ transformation automatique des chaine de caractère ressemblant à une url http(s) vers le BBcode des URLs
+ le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
+ et éviter de retransformer celles contenant du bbcode
+ exemple : coucouwww.coucou ne sera pas transformé
+ il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
+ 2022: plein de caractères supportés ont été ajouté, vu qu'on met presque tout dans une url maintenant
+ On devrait supporter les formats 
+ - http://truc.much.bidule/machin-chose-çé?q=123&t=ou!|s$d!f#encre
+ - www.truc.machin/
+ 
+ Ne sont pas supportés :
+ google.com/toto
+ 
+ FIXME 2022: seul caractère non supporté alors qu'il devrait l'être, le @
+ Car il rentre en conflit avec le transformateur de lien mailto:
+ Exemple, que comprendre de : Contactez nous à www.refuges.info/contact@refuges.info
+ Est-ce qu'on peut contacter soit à l'adresse suivante, soit par email (auquel cas il faudrait un lien http et un lien mailto, où est-ce un sous dossier de l'url ?
+ Vu que je ne peux trancher, et que la gestion des emails en @ deviendrait sioux, je vire la gestion du @ dans les urls, si vraiment y'a besoin, la syntaxe bbcode peut venir à la rescousse 
+*/
+$urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\%\:\?\|\$\_\;\!&+=~-]+\w+)([\S< :\/\.;,\n\*\)\]]|\r\n|$)/iu";
 $urlauto_replace = "$1[url=$2]$2[/url]$4";
 $texte_avec_bbcode_apres_detection_urls = preg_replace($urlauto_pattern,$urlauto_replace,$texte_avec_bbcode);
+
 // gestion des liens vers notre wiki au format [url=##page]c'est là que ça se passe[/url] on le repasse d'abord en bbcode plus classique avec url locale (qui tient compte de l'éventuel sous-dossier dans lequel on est installé
 $texte_avec_bbcode_apres_detection_urls=str_replace("url=##","url=".$config_wri['base_wiki'],$texte_avec_bbcode_apres_detection_urls);
 
