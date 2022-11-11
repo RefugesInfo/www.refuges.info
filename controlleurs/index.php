@@ -36,3 +36,4 @@ $vue->nouveaux_points=infos_points($conditions_nouveaux_points);
 
 $vue->type="index";
 $vue->bbox=$config_wri['bbox_page_accueil']; //point de vue et position initiale de la page
+$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes

@@ -1,7 +1,7 @@
 <?php 
 /*******************************************************************************
 Ceci est le fichier des routes principales, il s'ocupe de faire correspondre 
-une route (qui correspond à une forume d'url) vers un controlleur.
+une route (qui correspond à une forme d'url) vers un controlleur.
 
 exemple : http://www.refuges.info/point/X/Y/Z => le controlleur point.php
   
@@ -91,9 +91,6 @@ include ($config_wri['chemin_controlleurs'].$controlleur->type.".php");
 if (est_moderateur())
 	$vue->demande_correction=info_demande_correction ();
 
-$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes
-$vue->lien_wiki=prepare_lien_wiki_du_bandeau(); // Menu des pages d'aide
-$vue->types_point_affichables=types_point_affichables(); // Menu des types de points
 $vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_bandeau.js?'
 	.filemtime($config_wri['chemin_vues'].'_bandeau.js');
 
