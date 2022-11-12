@@ -455,6 +455,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		right: 0;
 		border-radius: 10px 0 10px 10px !important;
 	}
+	.menu-connexion SPAN SPAN {
+		vertical-align:super;
+		font-size: 12px;
+	}
 
 	/* Boutons */
 	.menu-bouton:not(.menu-liste) {

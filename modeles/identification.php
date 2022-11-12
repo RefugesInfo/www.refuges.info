@@ -45,6 +45,7 @@ function infos_identification()
     $infos_identification->user_id = $user->data['user_id'];
     $infos_identification->username = $user->data['username'];
     $infos_identification->group_id = $user->data['group_id'];
+    $infos_identification->session_id = $user->data['session_id'];
     $infos_identification->user_form_salt = $user->data['user_form_salt'];
     $infos_identification->niveau_administration = $auth->acl_get('a_');
     $infos_identification->niveau_moderation = $auth->acl_get('m_');
@@ -70,7 +71,7 @@ function infos_identification()
 
   // Cas de la connexion permanente (se souvenir de moi)
   if (!$infos_identification && $cookie_k[0] && $cookie_u[0] > 1) {
-    $sql = "SELECT user_id, username, phpbb3_user_group.group_id, user_form_salt
+    $sql = "SELECT user_id, username, phpbb3_user_group.group_id, session_id, user_form_salt
       FROM phpbb3_sessions_keys
       JOIN phpbb3_users USING (user_id)
       JOIN phpbb3_user_group USING (user_id)
@@ -88,7 +89,8 @@ function infos_identification()
   // Cas de la connexion limitée à l'ouverture de l'explorateur
   // ou à la durée de la session définie dans les paramètres du forum
   if (!$infos_identification && $cookie_sid[0] && $cookie_u[0] > 1) {
-    $sql = "SELECT user_id, username, phpbb3_user_group.group_id, user_form_salt, session_time
+    $sql = "SELECT user_id, username, phpbb3_user_group.group_id,
+		session_id, user_form_salt, session_time
       FROM phpbb3_sessions
       JOIN phpbb3_users ON (phpbb3_users.user_id = phpbb3_sessions.session_user_id)
       JOIN phpbb3_user_group USING (user_id)
@@ -108,7 +110,7 @@ function infos_identification()
   // Pas de cookies du tout ou
   // La session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
   if (!$infos_identification) {
-    $sql = "SELECT user_id, username, group_id, user_form_salt
+    $sql = "SELECT user_id, username, group_id, session_id, user_form_salt
       FROM phpbb3_users
       WHERE user_id = 1"; // On prend les infos de l'utilisateur UNKNOWN
     $res = $pdo->query($sql);
