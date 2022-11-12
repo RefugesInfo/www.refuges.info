@@ -110,11 +110,12 @@ function infos_identification()
   // Pas de cookies du tout ou
   // La session a expirée car on a bien le cookie, le sid mais la table ne la contient plus
   if (!$infos_identification) {
-    $sql = "SELECT user_id, username, group_id, session_id, user_form_salt
+    $sql = "SELECT user_id, username, group_id, user_form_salt
       FROM phpbb3_users
       WHERE user_id = 1"; // On prend les infos de l'utilisateur UNKNOWN
     $res = $pdo->query($sql);
-    $infos_identification = $res->fetch();
+    if( $res->)
+      $infos_identification = $res->fetch();
   }
 
   // Infos à calculer dans tous les cas, à partir des précédentes
