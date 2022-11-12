@@ -1,8 +1,7 @@
 <?php
+$notail = true;
 include ('../config_privee.php');
 include ('../MyOl/gps/index.php');
-
-$notail = true;
 ?>
 
 <div id="select-ext">
