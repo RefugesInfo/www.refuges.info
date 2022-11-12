@@ -114,7 +114,7 @@ function infos_identification()
       FROM phpbb3_users
       WHERE user_id = 1"; // On prend les infos de l'utilisateur UNKNOWN
     $res = $pdo->query($sql);
-    if( $res->)
+    if( $res )
       $infos_identification = $res->fetch();
   }
 
