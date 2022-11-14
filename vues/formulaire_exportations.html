@@ -30,34 +30,40 @@
             <button type='button' onclick="checkboites('liste_massifs',false); return false;">☐</button>
         </legend>
         <?php
-        // je laisse tomber l'algo qui gere un nombre d'arborescence variable.
-        // c'est pas encore supporte par infos_polygone.
-        // on fait donc un truc dout simple avec id_zone, qui lui existe déjà.
-        // Attention ! ca suppose que les massifs sont triés par id_zone ! voir requete.
-        $idzone=0; // au depart, ya pas de zone
-        foreach ($vue->massifs as $poly) { 
-            if($idzone != $poly->id_zone) { 
-                if($idzone != 0) { ?>
-                    </fieldset>
-                    <!-- fin de la zone -->
-                <?}
-                $idzone=$poly->id_zone;
-                ?>
-                    <!-- nouvelle zone -->
-                    <fieldset id="<?=$idzone?>">
-                        <legend>
-                            <?=$poly->nom_zone?>
-                            <button type='button' onclick="checkboites(<?=$idzone?>,true); return false;">☒</button>
-                            <button type='button' onclick="checkboites(<?=$idzone?>,false); return false;">☐</button>
-</legend>
-            <?}?>
-                        <label>
-                            <input type='checkbox' name='id_massif[]' value='<?=$poly->id_polygone?>'<?=($poly->checked?' checked="checked"':'');?> />
-                            <?=$poly->nom_polygone?>
-                        </label>
-        <?}?>
-                   <!-- fin de la derniere zone -->
-                    </fieldset>
+        /* Les massifs de notre base, vont être rangés en blocs qui correspondent à des zones (Alpes, Pyrénées, etc.) et par ordre alphabétique à l'intérieur de ces blocs
+        Une seule boucle : à chaque fois que le numéro de zone change, on défini un nouveau bloc pour la zone en question           
+        Attention ! ca suppose que les massifs sont triés par l'id_zone auquel ils  apprtiennent !
+        */
+        $idzone="pas_encore_de_zone"; // En définissant un numéro de zone inexistant, on va démarrer directement un nouveau bloc au début.
+        
+        foreach ($vue->massifs as $poly) {             
+          if ($idzone != $poly->id_zone) { // l'id change, c'est qu'on change de zone, on ferme puis ouvre un nouveau bloc 
+            if ($idzone!='pas_encore_de_zone') { // On ferme le précédent bloc sauf dans le cas du tout début quand aucun bloc pour une zone n'a encore été ouvert
+          ?>
+          </fieldset>
+          <!-- fin de la zone -->
+          <?php 
+            } 
+            $idzone=$poly->id_zone;
+          ?>
+          
+          <!-- nouvelle zone <?=$poly->nom_zone?> -->
+          <fieldset id="z<?=$idzone?>">
+            <legend>
+              <?=$poly->nom_zone?> 
+              <button type='button' onclick="checkboites('z<?=$idzone?>',true); return false;">☒</button>
+              <button type='button' onclick="checkboites('z<?=$idzone?>',false); return false;">☐</button>
+           </legend>
+          <?php } ?>
+
+          <label>
+            <input type='checkbox' name='id_massif[]' value='<?=$poly->id_polygone?>'<?=($poly->checked?' checked="checked"':'');?> /> 
+            <?=$poly->nom_polygone?> 
+          </label>
+          <?php } ?>
+        
+          </fieldset>
+          <!-- fin de la derniere zone -->
     </fieldset>
     <!-- Format d'export, KML GPX ... -->
     <fieldset>
