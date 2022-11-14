@@ -420,7 +420,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	.logo-haut {
 		display: block;
 		position: absolute;
-		width: 100%;
+		width: calc(100% - 225px);
 		height: 50px;
 	}
 	.logo-haut:hover {
