@@ -1,90 +1,87 @@
 <div class="contenu">
-	<h3><?=$vue->titre?></h3>
-	<h4><a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a></h4>
-	<?php if (!est_connecte()) { ?>
-		<p>
-			Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
-			Bien que nous autorisions les contributions anonymes, nous vous recommandons de vous connecter sur le forum et/ou de créer un compte
-			afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config_wri['connexion_forum']?>">Connexion</a>
-		</p>
-	<?php } if (!empty($vue->messages->erreur)) { ?>
-		<p><strong><?=$vue->messages->message?></strong></p>
-	<?php } elseif (!empty($vue->messages->erreur)) { ?>
-		<p><?=$vue->messages->message?>.</p>
-	<?php } ?>
-	<div class="com">
-		<form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
-			<textarea name="texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
-			<a href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe possible</a>
-			<?php if (!est_connecte()) { ?>
-				<p>
-					<label>Auteur:</label>
-					<input type="text" value="<?=$_REQUEST['auteur_commentaire'] ?? ''?>" name="auteur_commentaire" maxlength="120" size="40" />(facultatif)
-				</p>
-			<?php } ?>
-			<p>
-				<label>Une photo ? (format jpeg, taille max=<?=getMaximumFileUploadSize()?>)</label>
-				<input type="file" name="comment_photo" size="15" value="" accept="image/*" />(facultatif)
-			</p>
-			<p>
-				<input type="checkbox" name="demande_correction" value="1"
-					<?php if ($vue->correction) { ?>
-						checked="checked"
-					<?php } ?>
-				/>
-				<label>Je souhaite prévenir un modérateur car mon commentaire apporte un complément à la partie supérieure de la fiche </label>
-			</p>
-			<?php if (!est_connecte()) { ?>
-				<?php if ($vue->erreur_captcha) { ?>
-					<p class="erreur_saisie">
-						<strong>Mauvaise lettre !</strong>
-						Merci de recopier la lettre indiquée afin de lutter contre les message indésirables:
-						Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la publicité pour des sites plus que douteux,
-						du coup, cette manoeuvre a pour but de leur compliquer la tâche.
-						Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire.
-						Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a toujours été d'être simple et rapide d'utilisation.
-					</p>
-				<?}?>
-				<p>
-					Merci de simplement écrire la lettre "f" dans la case :
-					<input type="text" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
-					(Ceci afin d'éviter les messages indésirables automatiques, désolé)
-				</p>
-			<?}?>
-			<input type="submit" name="action" value="Envoyer" />
-			<input type="reset" value="Recommencer" />
-		</form>
-        <?php if ($vue->succes_ajout_commentaire) { ?>
+  <h3><?=$vue->titre?></h3>
+  <h4><a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a></h4>
+  <?php if (!est_connecte()) { ?>
+    <p>
+      Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
+      Bien que nous autorisions les contributions anonymes, nous vous recommandons de vous connecter sur le forum et/ou de créer un compte
+      afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config_wri['connexion_forum']?>">Connexion</a>
+    </p>
+  <?php } if (!empty($vue->messages->erreur)) { ?>
+    <p><strong><?=$vue->messages->message?></strong></p>
+  <?php } elseif (!empty($vue->messages->erreur)) { ?>
+      <p><?=$vue->messages->message?>.</p>
+  <?php } ?>
+  <div class="com">
+    <form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
+      <textarea name="texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
+      <a href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe possible</a>
+      <?php if (!est_connecte()) { ?>
         <p>
-          <b>Votre commentaire a bien été ajouté.</b> (Vous pouvez en ajouter un autre si vous le souhaitez ou <a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a>)
+          <label>Auteur:</label>
+          <input type="text" value="<?=$_REQUEST['auteur_commentaire'] ?? ''?>" name="auteur_commentaire" maxlength="120" size="40" />(facultatif)
         </p>
-        <?php } ?>
-	</div>
-	<br />
-	<h4>Ce que vous pouvez ou non mettre sur le site</h4>
-	<p>
-		Un commentaire sur une fiche doit être utile et objectif.
-		Si vous désirez poster une appréciation, faites le plutôt sur le <a href="<?=$vue->lien_forum_point?>">forum attaché à <?=$point->article_demonstratif.' '.$point->nom_type?></a>.
-	</p>
-	<?php if ($point->id_point_type==$config_wri['id_cabane_non_gardee']) { ?>
-		<p>
-			Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>
-			car cette pratique est contraire à l'esprit dans lequel <?=$point->article_demonstratif.' '.$point->nom_type?> à été créé.
-			Tout commentaire dans ce sens sera supprimé par les modérateurs.
-			Voir <a href="<?=$config_wri['lien_forum']?>viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
-		</p>
-	<?}?>
-	<?php if ($point->equivalent_proprio!="") { ?>
-		<p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
-	<?}?>
-	<p>
-		Vous ne devez en aucun cas insérer un texte ou une <strong>photo qui ne vous appartient pas</strong>
-		ni une <strong>copie d'un autre site</strong>, le <strong>scan d'un journal ou livre</strong>.
-	</p>
-	<p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config_wri['sous_dossier_installation']?>wiki/restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
-	<h4>Pour plus de précision</h4>
-	<p>
-		Voir <a href="<?=$config_wri['sous_dossier_installation']?>wiki/que_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires ou les fiches du site</a>
-		et <a href="<?=$config_wri['sous_dossier_installation']?>wiki/cabane_principe_bonne_conduite">règles du site</a>.
-	</p>
+      <?php } ?>
+      <p>
+        <label>Une photo ? (format jpeg, taille max=<?=getMaximumFileUploadSize()?>)</label>
+        <input type="file" name="comment_photo" size="15" value="" accept="image/*" />(facultatif)
+      </p>
+      <p>
+        <input type="checkbox" name="demande_correction" value="1"
+            <?php if ($vue->correction) { ?>
+                checked="checked"
+            <?php } ?>
+        />
+        <label>Je souhaite prévenir un modérateur car mon commentaire apporte un complément à la partie supérieure de la fiche </label>
+      </p>
+      <?php if (!est_connecte()) { ?>
+        <?php if ($vue->erreur_captcha) { ?>
+          <p class="erreur_saisie">
+            <strong>Mauvaise lettre !</strong>
+            Merci de recopier la lettre indiquée afin de lutter contre les message indésirables:
+            Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la publicité pour des sites plus que douteux,
+            du coup, cette manoeuvre a pour but de leur compliquer la tâche.
+            Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire.
+            Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a toujours été d'être simple et rapide d'utilisation.
+          </p>
+        <?}?>
+          <p>
+            Merci de simplement écrire la lettre "f" dans la case :
+            <input type="text" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
+            (Ceci afin d'éviter les messages indésirables automatiques, désolé)
+          </p>
+      <?}?>
+      <input type="submit" name="action" value="Envoyer" />
+      <input type="reset" value="Recommencer" />
+    </form>
+      <?php if ($vue->succes_ajout_commentaire) { ?>
+      <p>
+        <b>Votre commentaire a bien été ajouté.</b> (Vous pouvez en ajouter un autre si vous le souhaitez ou <a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a>)
+      </p>
+      <?php } ?>
+  </div>
+  <br />
+  <h4>Ce que vous pouvez ou non mettre sur le site</h4>
+  <p>
+    Un commentaire sur une fiche doit être utile et objectif.
+    Si vous désirez poster une appréciation, faites le plutôt sur le <a href="<?=$vue->lien_forum_point?>">forum attaché à <?=$point->article_demonstratif.' '.$point->nom_type?></a>.
+  </p>
+  <?php if ($point->id_point_type==$config_wri['id_cabane_non_gardee']) { ?>
+    <p>
+      Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>
+      car cette pratique est contraire à l'esprit dans lequel <?=$point->article_demonstratif.' '.$point->nom_type?> à été créé.
+      Tout commentaire dans ce sens sera supprimé par les modérateurs.
+      Voir <a href="<?=$config_wri['lien_forum']?>viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
+    </p>
+    <p>
+      Voir <a href="<?=$config_wri['sous_dossier_installation']?>wiki/que_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires</a>.
+    </p>
+  <?}?>
+  <?php if ($point->equivalent_proprio!="") { ?>
+    <p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
+  <?}?>
+  <p>
+    N'insérer pas de <strong>photo qui ne vous appartient pas.</strong> (ni une copie d'un autre site, scan d'un journal, livre ou carte).
+  </p>
+  <p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config_wri['sous_dossier_installation']?>wiki/restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
 </div>
