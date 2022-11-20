@@ -1,27 +1,14 @@
 <?php
-/**********************************************************************************************
-On trouve les fonctions permettant de faire des modifications dans le forum
+/***
+Fonctions permettant de faire des modifications dans le forum
 ( création & suppresion de topic, modification du titre, création de post pour transfert depuis la fiche )
+***/
 
-/**********************************************************************************************/
 // Récupère l'environnement du forum
 // Cette séquence ne peut pas être dans une function
-if (!defined('IN_PHPBB')) {
-  define('IN_PHPBB', true);
-  $phpbb_root_path = $config_wri['rep_forum'];
-  $phpEx = substr(strrchr(__FILE__, '.'), 1);
-  include($phpbb_root_path . 'common.' . $phpEx);
-  include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-  include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-  include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-
-  $request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
-  $user->session_begin();
-  $auth->acl($user->data);
-  
-  // On restitue le contexte et les options WRI qui a été écrasé par le framework du forum
-  restore_error_handler(); // phpBB a défini lui même sa fonction pour gérer les erreurs
-}
+include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 
 // Fonction générique qui permet - entre autre - de créer un topic, modifier le titre et ajouter un post
 function forum_submit_post ($args) {

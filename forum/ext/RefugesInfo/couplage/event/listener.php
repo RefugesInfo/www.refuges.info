@@ -79,7 +79,7 @@ class listener implements EventSubscriberInterface
 		require_once ('identification.php');
 		require_once ('bandeau_dynamique.php');
 		require_once ('gestion_erreur.php');
-		$infos_identification=infos_identification();
+
 		$vue = new \stdClass;
 		$vue->type = '';
 		$vue->java_lib_foot = [];
