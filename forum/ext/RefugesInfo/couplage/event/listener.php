@@ -110,7 +110,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Forçage du mail sur un sujet phpBB par défaut
-	function user_add_modify_data () {
+	function user_add_modify_data ($vars) {
 		$sql_ary = $vars['sql_ary']; // On importe le tablo
 
 		$sql_ary['user_notify'] = 1; // On force la variable
