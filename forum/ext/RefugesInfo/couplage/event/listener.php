@@ -24,6 +24,7 @@ class listener implements EventSubscriberInterface
 			'core.posting_modify_submission_errors' => 'posting_modify_submission_errors',
 			'core.page_footer' => 'page_footer',
 			'core.login_box_before' => 'login_box_before',
+			'core.user_add_modify_data' => 'user_add_modify_data',
 		];
 	}
 
@@ -106,5 +107,14 @@ class listener implements EventSubscriberInterface
 	function login_box_before () {
 		if (!isset($this->server['HTTPS']))
 			header('Location: https://'.$this->server['HTTP_HOST'].$this->server['REQUEST_URI'], true, 301);
+	}
+
+	// Forçage du mail sur un sujet phpBB par défaut
+	function user_add_modify_data () {
+		$sql_ary = $vars['sql_ary']; // On importe le tablo
+
+		$sql_ary['user_notify'] = 1; // On force la variable
+
+		$vars['sql_ary'] = $sql_ary; // On exporte le tablo
 	}
 }
