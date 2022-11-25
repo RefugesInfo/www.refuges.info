@@ -25,6 +25,7 @@ class listener implements EventSubscriberInterface
 			'core.page_footer' => 'page_footer',
 			'core.login_box_before' => 'login_box_before',
 			'core.user_add_modify_data' => 'user_add_modify_data',
+			'core.user_add_modify_notifications_data' => 'user_add_modify_notifications_data',
 		];
 	}
 
@@ -109,12 +110,31 @@ class listener implements EventSubscriberInterface
 			header('Location: https://'.$this->server['HTTP_HOST'].$this->server['REQUEST_URI'], true, 301);
 	}
 
-	// Forçage du mail sur un sujet phpBB par défaut
+	// Pour cocher par défaut l'option "m'avertir si une réponse" dans le cas d'un nouveau sujet ou d'une réponse
 	function user_add_modify_data ($vars) {
 		$sql_ary = $vars['sql_ary']; // On importe le tablo
-
-		$sql_ary['user_notify'] = 1; // On force la variable
-
+		$sql_ary['user_notify'] = 1; // On défini la valeur par défaut (peut être changée ensuite par l'utilisateur s'il le souhaite)
 		$vars['sql_ary'] = $sql_ary; // On exporte le tablo
 	}
+	
+	// Pour activer par défaut les notifications par email dans le cas de message privé (sans quoi plein d'utilisateur n'y prètent pas attention
+	function user_add_modify_notifications_data ($vars) {
+		$notifications_data = $vars['notifications_data']; 
+        $notifications_data = array(
+            array(
+                'item_type'	=> 'notification.type.pm',
+                'method'	=> 'notification.method.email',              
+            ),
+			array(
+				'item_type'	=> 'notification.type.post',
+				'method'	=> 'notification.method.email',
+			),
+			array(
+				'item_type'	=> 'notification.type.topic',
+				'method'	=> 'notification.method.email',
+			),
+        );
+	$vars['notifications_data'] = $notifications_data; 
+	}
+
 }
