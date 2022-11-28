@@ -1,9 +1,18 @@
 <div class="contenu">
-	<h3><a href="./">Retour</a>&nbsp;Zone de gestion</h3>
-	<p>Ci jointe la liste des modèles existants pour les différents points de la base</p>
-	<ul>
-		<?php foreach ($vue->modeles as $modele) { ?>
-			<li><a href="/point_formulaire_modification?id_point=<?=$modele->id_point?>"><?=$modele->nom_type?></a></li>
-		<?}?>
-	</ul>
+  <h3>Modification des "modèles" de fiche</h3>
+  <p>
+  Voici la liste des modèles existants pour les différents points de la base, chacun pouvant être modifié, exactement comme une fiche normale, sauf qu'ici il s'agit d'un "modèle" sur un point fictif : Il est dans notre base, au même titre que toutes les autres fiches de points, mais ne sera affiché sur aucune cartes, aucune recherche et rien du tout en fait sauf... comme "pré-remplissage" d'un nouveau point vierge.
+  </p>
+  <p>
+  En gros, c'est le contenu par défaut lorsque l'on créé une fiche, dont l'objectif est d'inciter à indiquer, qu'il y a un poêle, une table, des couvertures, etc.
+  </p>
+
+  <p>
+  On aurait pû faire autrement bien sûr en écrivant ça à coté de la fiche, mais j'ai (sly) trouvé l'idée intéressante, et comme avantage collatéral, quand une fiche apparaît avec toutes les valeurs par défaut, on détecte rapidement qu'il y a eu un problème et un modérateur peut alors intervenir.
+  </p>
+  <ul>
+      <?php foreach ($vue->modeles as $modele) { ?>
+          <li><a href="/point_formulaire_modification?id_point=<?=$modele->id_point?>"><?=$modele->nom_type?></a></li>
+      <?}?>
+  </ul>
 </div>
