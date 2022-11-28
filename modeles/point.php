@@ -405,10 +405,12 @@ que aux pays/départements/autres/ une version plus logique devrait laisser tomb
 auquel le point appartient sly 14/03/2010
 
 FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui fait la même chose que celle avant, à part cette histoire de polygones.
-Mais postgis étant super rapide, je pense que l'on peut peut fusioner
+Mais postgis étant super rapide, je pense que l'on peut fusioner. 2022: Ou mieux ! écrire une fonction dont le but est d'aller chercher les polygones auquel un unique point appartient ?
+
+FIXME: 2022 Et en plus, j'arrête pas d'ajouter des paramètres, on va finir par passer un tableau d'options ! ce que je voulais éviter en faisant la fonction précédente
 
 *****************************************************/
-function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True)
+function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_si_modele=False)
 {
   // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
   global $config_wri,$pdo;
@@ -417,7 +419,10 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True)
 
   $conditions = new stdClass();
   $conditions->ids_points=$id_point;
-  $conditions->modele='avec';
+  
+  if ($meme_si_modele)
+    $conditions->modele='avec';
+    
   $conditions->avec_infos_massif=True;
   if ($meme_si_cache)
     $conditions->avec_points_caches=True;
@@ -706,7 +711,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     
   if ( !empty($point->id_point) )  // update
   {
-    $point_avant = infos_point($point->id_point,true,false);
+    $point_avant = infos_point($point->id_point,true,false,true);
     if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
         return erreur("Erreur de modification du point : $point_avant->message");
 

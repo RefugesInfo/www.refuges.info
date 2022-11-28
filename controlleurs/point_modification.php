@@ -32,7 +32,7 @@ function gestion_retour($retour,$vue)
         $vue->erreur=$retour->message;
     else
     {
-        $point_apres_modif=infos_point($retour,true);
+        $point_apres_modif=infos_point($retour,true,true,true);
         if ($point_apres_modif->erreur) // Cela ne devrait pas arriver si la fonction avant "modification_ajout_point" a bien fait son boulot
             $vue->erreur=$point_apres_modif->message;
         $vue->lien_point=lien_point($point_apres_modif);

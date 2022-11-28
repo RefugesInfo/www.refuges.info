@@ -21,50 +21,50 @@ $vue->champs->entier_ou_sait_pas = new stdClass; // seulement les trinaires TRUE
 // ou si les droits sont insuffisants
 if ( !empty($_REQUEST["id_point"]) )  
 {
-    // Si c'est un modérateur, il peut voir la fiche même si elle est cachée
-    if (est_moderateur())
-        $meme_si_cache=True;
-    else
-        $meme_si_cache=False;
+  // Si c'est un modérateur, il peut voir la fiche même si elle est cachée ou si c'est un modèle
+  if (est_moderateur())
+    $meme_si_cache=$meme_si_modele=True;
+  else
+    $meme_si_cache=$meme_si_modele=False;
 
-    $point=infos_point($_REQUEST['id_point'],$meme_si_cache);
+  $point=infos_point($_REQUEST['id_point'],$meme_si_cache,True,$meme_si_modele);
 
-    // Stop, le point n'existe pas (ou est caché et il ne faut pas dire que c'est le cas)
-    if (!empty($point->erreur)) 
+  // Stop, le point n'existe pas (ou est caché et il ne faut pas dire que c'est le cas)
+  if (!empty($point->erreur)) 
+  {
+    $vue->http_status_code = 404;
+    $vue->type = "page_simple";
+    $vue->titre="Point inexistant";
+    $vue->contenu=$point->message;
+    return "";
+  }
+  // Soit on est avec un modérateur global ou de cette fiche
+  if ( est_autorise($point->id_createur) )
+  {
+    // boutton supprimer uniquement pour les modérateurs globaux
+    if ( est_moderateur() )
     {
-        $vue->http_status_code = 404;
-        $vue->type = "page_simple";
-        $vue->titre="Point inexistant";
-        $vue->contenu=$point->message;
-        return "";
+      $bouton_suppr = new stdClass;
+      $bouton_suppr->nom = "action";
+      $bouton_suppr->type = "submit";
+      $bouton_suppr->valeur = "supprimer";
+      $bouton_suppr->label = "Suppression de la fiche";
     }
-    // Soit on est avec un modérateur global ou de cette fiche
-    if ( est_autorise($point->id_createur) )
-    {
-        // boutton supprimer uniquement pour les modérateurs globaux
-        if ( est_moderateur() )
-        {
-            $bouton_suppr = new stdClass;
-            $bouton_suppr->nom = "action";
-            $bouton_suppr->type = "submit";
-            $bouton_suppr->valeur = "supprimer";
-            $bouton_suppr->label = "Suppression de la fiche";
-        }
-        
-        //cosmétique
-        $icone="&amp;iconecenter=ne_sait_pas";
-        $action="Modification";
-        $verbe="Modifier";
-    }
-    else // Ni modérateur global, ni modérateur de fiche on l'informe que ses droits sont insuffisants
-    {
-          $vue->type="page_simple";
-          $vue->titre="Permissions insuffisantes";
-          $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :";
-          $vue->titre_lien="Connexion forum";
-          $vue->lien=$config_wri['connexion_forum'];
-          return "";
-    }
+    
+    //cosmétique
+    $icone="&amp;iconecenter=ne_sait_pas";
+    $action="Modification";
+    $verbe="Modifier";
+  }
+  else // Ni modérateur global, ni modérateur de fiche on l'informe que ses droits sont insuffisants
+  {
+    $vue->type="page_simple";
+    $vue->titre="Permissions insuffisantes";
+    $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :";
+    $vue->titre_lien="Connexion forum";
+    $vue->lien=$config_wri['connexion_forum'];
+    return "";
+  }
 }
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
 elseif ( !empty($_REQUEST["id_point_type"]))  
