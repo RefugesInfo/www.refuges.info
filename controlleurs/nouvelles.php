@@ -14,7 +14,7 @@ $vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les re
 if (isset($_GET['nombre']) and is_numeric($_GET['nombre']))
     $nombre = $_GET['nombre'];
 else
-    $nombre = 30;
+    $nombre = $config_wri['defaut_nombre_nouvelles_page_nouvelles'];
 
 $vue->stat = stat_site ();
 $vue->types_nouvelles = $_GET ['quoi'] ??  'commentaires,points,forums';
