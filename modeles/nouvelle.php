@@ -177,8 +177,11 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
                 $conditions_messages_forum->limite=$nombre;
                 if ($req && $req->ids_forum)
                     $conditions_messages_forum->ids_forum=$req->ids_forum;
-                $conditions_messages_forum->sauf_ids_forum=$config_wri['id_forum_moderateur'].",".$config_wri['id_forum_developpement'];
-                
+                $conditions_messages_forum->sauf_ids_forum=
+					$config_wri['id_forum_moderateur'].",".
+					$config_wri['id_forum_developpement'].",".
+					$config_wri['id_forum_hors_sujet'];
+
                 $commentaires_forum=messages_du_forum($conditions_messages_forum);
                 if (count($commentaires_forum)>0)
                     foreach ( $commentaires_forum as $commentaire_forum)

@@ -169,6 +169,7 @@ $config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php?t=";
 // l'id de catégories spéciales du forum
 $config_wri['id_forum_moderateur']=7;
 $config_wri['id_forum_developpement']=2;
+$config_wri['id_forum_hors_sujet']=10;
 $config_wri['encodage_exportation']="utf-8";
 $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];
 
