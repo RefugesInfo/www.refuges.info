@@ -74,7 +74,8 @@ Based on https://openlayers.org
 	// Vars for index.js
 	var myolPath = '<?=$myol_path?>',
 		swInstance = '<?=$sw_instance?>',
-		buildDate = '<?=$build_date?>';
+		buildDate = '<?=$build_date?>',
+		gpxParam = '<?=$gpx_param?>';
 	</script>
 	<script <?=fl($myol_path.'./index.js')?>></script>
 	<link <?=fl($myol_path.'./index.css')?>>
@@ -99,7 +100,7 @@ Based on https://openlayers.org
 		<hr /><p><u>Hors réseau :</u></p>
 		<p>- Ouvrez le marque-page ou l'application</p>
 		<p>- Si vous avez un fichier trace .gpx dans votre mobile, visualisez-le en cliquant sur &#x1F4C2;</p>
-<?php if (count ($gpx_files)) { ?>
+<?php if (count ($gpx_files) > 1) { ?>
 		<p>- Si vous voulez suivre une trace du serveur, affichez là en cliquant sur &#x1F6B6;</p>
 <?php } ?>
 		<p>- Lancez la localisation en cliquant sur &#x2295;</p>

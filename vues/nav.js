@@ -14,17 +14,18 @@ const mapId = 'carte-nav',
 	mapEl = document.getElementById(mapId),
 	mapSize = mapEl ? Math.max(mapEl.clientWidth, mapEl.clientHeight) : window.innerWidth,
 	layers = [
-		// Refuges.info (2 couches dependant de la resolution)
 		layerClusterWri({
 			host: '<?=$config_wri["sous_dossier_installation"]?>',
 			selectName: 'selecteur-wri,selecteur-massif', // 2 selecteurs pour une même couche
-			styleOptFnc: function (feature, properties) {
-				return {
-					...styleOptLabel(properties.name, feature, properties, true),
-					...styleOptIcon(properties.icon),
-				};
+			// Display a single label above each icon
+			styleOptionsDisplay: function(feature, properties, layer, resolution) {
+				//if (!properties.cluster || resolution < layer.options.maxResolutionDegroup)
+					return styleOptionsLabel(feature, properties.nom || properties.name); // Points || clusters
 			},
-			attribution: '',
+			// Don't display attribution on labels
+			convertProperties: {
+				attribution: null,
+			},
 		}),
 
 		// Contour d'un massif ou d'une zone
@@ -35,12 +36,12 @@ const mapId = 'carte-nav',
 			<?php if ( !$vue->contenu ) { ?>
 				selectName: 'selecteur-massif',
 			<?php } ?>
-			style: new ol.style.Style({
+			styleOptionsDisplay: {
 				stroke: new ol.style.Stroke({
 					color: 'blue',
 					width: 2,
 				}),
-			}),
+			},
 		}),
 
 		// Les massifs
@@ -66,23 +67,13 @@ const mapId = 'carte-nav',
 		}),
 
 		// Chemineur
-		layerClusterGeoBB({
-			host: '//chemineur.fr/',
+		layerChemineur({
 			selectName: 'selecteur-chemineur',
-			attribution: 'Chemineur',
 		}),
 
 		// Alpages.info
-		layerGeoBB({
-			strategy: ol.loadingstrategy.all,
-			host: '//alpages.info/',
+		layerAlpages({
 			selectName: 'selecteur-alpages',
-			extraParams: function() {
-				return {
-					forums: '4,5',
-				}
-			},
-			attribution: 'Alpages',
 		}),
 	],
 

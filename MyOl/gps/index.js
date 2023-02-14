@@ -41,7 +41,7 @@ if ('serviceWorker' in navigator)
 				});
 			}
 
-			// Wait for end of all actions & roboot
+			// Wait for end of all actions & reboot
 			const installingWorker = registration.installing;
 
 			if (installingWorker)
@@ -59,6 +59,9 @@ var map,
 	layers = [],
 	controlOptions = { // To be customized by the specific index.php
 		layerSwitcher: {},
+		LoadGPX: {
+			initFile: gpxParam,
+		},
 		Help: {
 			submenuId: 'myol-gps-help',
 		}
@@ -74,8 +77,10 @@ window.addEventListener('load', function() {
 		view: new ol.View({
 			constrainResolution: true, // Force zoom on the available tile's definition
 		}),
-		controls: controlsCollection(controlOptions)
-			.concat(controlLayerSwitcher(controlOptions.layerSwitcher)),
+		controls: [
+			...controlsCollection(controlOptions),
+			controlLayerSwitcher(controlOptions.layerSwitcher),
+		],
 		layers: layers,
 	});
 });

@@ -6,25 +6,6 @@ function affiche_et_set(el, affiche, valeur) {
 }
 
 // Gestion des cartes
-const marker = layerMarker({
-		prefix: 'marker', // S'interface avec les <TAG id="marker-xxx"...
-		src: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.svg',
-		focus: 15,
-		dragable: true,
-		zIndex: 30, // Above points (zIndex = 10)
-	}),
-
-	layerPoints = layerWri({
-		host: '<?=$config_wri["sous_dossier_installation"]?>',
-		maxResolution: 100, // La couche est affichée pour les résolutions < 100 Mercator map unit / pixel
-		selectName: null, // Toujours affiché
-		noClick: true, // Pour ne pas perturber l'édition par ces clicks intempestifs
-		styleOptFnc: function(feature, properties) {
-			return styleOptIcon(properties.icon); // Display only the icon
-		},
-		hoverstyleOptFnc: null, // Pour ne pas perturber l'édition par ces étiquettes intempestives
-	});
-
 new ol.Map({
 	target: 'carte-edit',
 	view: new ol.View({
@@ -35,15 +16,20 @@ new ol.Map({
 	}),
 	controls: wriMapControls({
 		page: 'modif',
-		Permalink: { // Permet de garder le même réglage de carte en création
-			visible: false, // Mais on ne visualise pas le lien du permalink
-<?php if (!empty($point->id_point)) { ?>
-			init: false, // Ici, on utilisera plutôt la position du point si on est en modification
-<?php } ?>
-		},
 	}),
 	layers: [
-		layerPoints,
-		marker,
+		layerClusterWri({
+			host: '<?=$config_wri["sous_dossier_installation"]?>',
+			noClick: true, // Pour ne pas perturber l'édition par ces clicks intempestifs
+			styleOptionsHover: function(feature, properties) {
+				return styleOptionsLabel(feature, properties.nom || properties.name); // Single label
+			},
+		}),
+		layerMarker({
+			prefix: 'marker', // S'interface avec les <TAG id="marker-xxx"...
+			src: '<?=$config_wri["sous_dossier_installation"]?>images/viseur.svg',
+			focus: 15,
+			dragable: true,
+		}),
 	],
 });

@@ -18,19 +18,18 @@ new ol.Map({
 		},
 	}),
 	layers: [
-		// Refuges.info (2 couches dependant de la resolution)
 		layerClusterWri({
 			host: '<?=$config_wri["sous_dossier_installation"]?>',
-			selectName: null, // Toujours affiché
-			styleOptFnc: function (feature, properties) {
-				return {
-					...styleOptLabel(properties.name, feature, properties, true),
-					...styleOptIcon(properties.icon),
-				};
+			// Display a single label above each icon
+			styleOptionsDisplay: function(feature, properties, layer, resolution) {
+				if (!properties.cluster || resolution < layer.options.maxResolutionDegroup)
+					return styleOptionsLabel(feature, properties.nom || properties.name); // Points || clusters
 			},
-			attribution: '',
+			// Don't display attribution on labels
+			convertProperties: {
+				attribution: null,
+			},
 		}),
-
 		// Le cadre
 		layerMarker({
 			prefix: 'cadre', // S'interface avec les <TAG id="cadre-xxx"...
