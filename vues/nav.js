@@ -19,7 +19,7 @@ const mapId = 'carte-nav',
 			selectName: 'selecteur-wri,selecteur-massif', // 2 selecteurs pour une même couche
 			// Display a single label above each icon
 			styleOptionsDisplay: function(feature, properties, layer, resolution) {
-				//if (!properties.cluster || resolution < layer.options.maxResolutionDegroup)
+				if (!properties.cluster || resolution < layer.options.maxResolutionDegroup)
 					return styleOptionsLabel(feature, properties.nom || properties.name); // Points || clusters
 			},
 			// Don't display attribution on labels
