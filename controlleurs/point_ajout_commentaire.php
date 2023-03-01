@@ -62,7 +62,6 @@ if (empty($point->erreur))
       $commentaire->demande_correction=$_POST['demande_correction'] ?? '';
       // Et si on trouve un mot clé censuré
       if (isset ($config_wri['censure']) && preg_match ('/'.$config_wri['censure'].'/i', retrait_accents ($commentaire->texte)))
-exit; // DOM : je fais ça à l'arrache car je ne comprend pas comment ça marche (return hors d'une fonction, ...)
         $commentaire->demande_correction=2;
 
       // Et si la fiche concerne un batiment en montagne, on le signale systématiquement à un modérateur
