@@ -53,14 +53,14 @@ if (empty($point->erreur))
     }
     else
     {
-      // Variables du commentaire à ajouter, presque plus de tests à faire, tout est dans la fonction d'ajout de
-      // commentaires
+      // Variables du commentaire à ajouter, presque plus de tests à faire (sauf ceux de contrôle qu'on aurait pas imposé par exemple aux modérateurs), tout est dans la fonction d'ajout de commentaires
 
       if (is_uploaded_file  ( $file_path=$_FILES['comment_photo']['tmp_name']  ) )
         $commentaire->photo['originale']=$file_path;
 
       $commentaire->demande_correction=$_POST['demande_correction'] ?? '';
-      // Et si on trouve un mot clé censuré
+      
+      // Et si on trouve un mot clé "censuré" on accepte le message mais on averti les modérateurs qu'il faut aller vérifier le commentaire
       if (isset ($config_wri['censure']) && preg_match ('/'.$config_wri['censure'].'/i', retrait_accents ($commentaire->texte)))
         $commentaire->demande_correction=2;
 
@@ -71,8 +71,16 @@ if (empty($point->erreur))
       if (est_connecte() and est_entier_positif($infos_identification->user_id)) // l'utilisateur est connecté, il n'est pas anonyme (0) et y'a pas un user_id bizarre
         $commentaire->id_createur_commentaire=$infos_identification->user_id;
         
-      // Transmission des info en cas d'erreur au modèle
-      $vue->messages=modification_ajout_commentaire($commentaire);
+      // Et si on trouve un mot clé "interdit" on refuse le commentaire complètement
+      if (isset ($config_wri['mots_interdits']) && preg_match ('/'.$config_wri['mots_interdits'].'/i', $commentaire->texte))
+      {
+        $vue->messages = new stdClass;
+        $vue->messages->erreur=True;
+        $commentaire->message="Il contient un ou des mots clés interdits. En cas de doute venez en parler sur le forum";
+      }
+      else
+      // On tente d'ajouter le commentaire, qui peut retourner une erreur au besoin (point supprimé, erreur technique, ...)
+        $vue->messages=modification_ajout_commentaire($commentaire);
 
       // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
       if (empty($vue->messages->erreur))
@@ -83,10 +91,9 @@ if (empty($point->erreur))
       else 
       {
         $vue->type = "page_simple";
-        $vue->titre="Impossible d'ajouter un commentaire car : $commentaire->->message";   
+        $vue->contenu="Impossible d'ajouter ce commentaire car : $commentaire->message";   
         return;
       }
-      
 
       // Nettoyage de la photo envoyée qu'elle fût ou non insérée correctement comme commentaire
       if (is_uploaded_file  ( $file_path))
@@ -105,7 +112,7 @@ if (empty($point->erreur))
   $vue->lien_wiki_restriction_licence=lien_wiki('restriction_licence');
   $vue->lien_forum_point=$config_wri['forum_refuge'].$point->topic_id;
 }
-else // Une erreur est survenue, ne permettons pas d'ajouter un commentaire dans le vent !
+else // Une erreur est survenue sur le point concerné, ne permettons pas d'ajouter un commentaire dans le vent !
 {
   $vue->http_status_code = 404;
   $vue->type = "page_simple";

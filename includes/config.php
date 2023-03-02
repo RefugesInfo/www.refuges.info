@@ -177,8 +177,12 @@ $config_wri['url_nominatim']="//nominatim.openstreetmap.org/";
 $config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
 $config_wri['email_contact_nominatim']="sylvain@refuges.info";
 
-// Censure des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
+// Signalement aux modérateurs des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
 $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
+
+// Mots clés interdits dans les commentaires (le commentaire sera refusé). Par défaut vide, mais en urgence on peut en ajouter dans la config_privee type $config_wri['mots_interdits'].="|credit-immobilier-pas-cher.fr"
+// C'est une méthode de défense assez peu efficace contre les robots, mais peut décourager les commentateurs humains
+$config_wri['mots_interdits']="";
 
 // tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un peu lourd à maintenir)
 // La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
