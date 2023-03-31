@@ -220,8 +220,7 @@ $retour->id_commentaire (l'id du commentaire créé ou modifié)
 $retour->message : un message texte compréhensible indiquant une information sur ce qui s'est passé
 (exemple : la photo, trop, grosse a dû être redimensionnée)
 
-FIXME : possibilité plus facile avec cette fonction modulaire, mais à coder quand même :
-Possibilité d'ajouter une photo en provenance d'un autre site (pour éviter de faire l'upload par exemple car déjà en ligne)
+TODO peut-être: pouvoir passer une url http pour la photo au lieu d'un chemin local, si la photo est déjà sur un service distant, alors la télécharger, ce qui évite à l'internaute de la ré-envoyer. (Avis sly: ouais bon, c'est pas non plus la fonction de fou, et que faire si le serveur distant ne répond pas ?)
 ************/
 function modification_ajout_commentaire($commentaire)
 {
@@ -295,7 +294,8 @@ function modification_ajout_commentaire($commentaire)
         imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
     }
 
-    // FIXME, tout correspond, y'a pas moyen de faire un foreach sur $commentaire et remplir les champs SQL ?
+    // FIXME, tout correspond, y'a pas moyen de simplifier par un foreach sur $commentaire et remplir les champs SQL ?
+    // 2023, pas tout à fait, l'object $commentaire contient des trucs comme la photo qui n'est pas en base, il faudrait ruser.
     isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
     isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
     isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
@@ -306,7 +306,6 @@ function modification_ajout_commentaire($commentaire)
     isset($commentaire->date_photo) ? $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo):false;
 
     // fait-on un update ou un insert ?
-    // FIXME  faire un upsert. voir "requete_modification_ou_ajout_generique"
     if ($mode=="modification")
             $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'update',"id_commentaire=$commentaire->id_commentaire");
     else

@@ -47,13 +47,9 @@ $champs_valeur = un array associatif avec comme cle, le champ à mettre à jour,
 $update_ou_insert = soit 'update' soit 'insert'
 $condition = la clause, dans le cas d'un update indiquant quel enregistrement à mettre à jour genre 'id_point=5'
 
+2023 TO CHECK : Il parait que PostGresql dispose du mode : INSERT INTO table (id, x) VALUES (2, "x") ON CONFLICT (id) DO UPDATE
+Avec ça, on pourrait se passer de cette fonction (qui n'est utilisée que 2 fois)
 */
-// bonne idée la centralisation des UPDATE/INSERT
-// TODO (jmb) Faire un UPSERT a la place, pas de differenciation dans tous les appelants,
-// ils fournissent l'objet, et on se demerde pour savoir.
-// la difference serait faite ici: pas de condition => INSERT.
-// c'est quasiment tout fait puisque $condition="". 
-// la requete PDO devrait etre aussi lancee ici, et renvoyer l'ID
 function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition="")
 {
     // Regroupement : un pas vers l'UPSERT
