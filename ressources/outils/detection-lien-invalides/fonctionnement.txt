@@ -1,15 +1,17 @@
-Cet outils en ligne de commande à pour but de détecter, sur le site de
-refuges.info les liens qui pointent vers des page en erreur (404 500
+Cet outil en ligne de commande a pour but de détecter, sur le site de refuges.info les liens qui pointent vers des page en erreur (404 500
 résolution dns impossible, 301, etc.)
 
-Il y a besoin de l'outil "linkchecker"
+Il a besoin de l'outil "linkchecker" pour s'executer
 
 et on lance simplement :
 ./recuperation-liste-csv.sh > liste-brute.csv
 pour extraire un fichier temporaire au format csv
-puis on executre 
+
+Puis pour le rendre plus lisible, on peut lancer :
 ./lien-erreur-liste-lisible.sh ./liste-brute.csv > version-un-peu-plus-lisible-et-apres-nettoyage.txt
-pour en avoir une version plus compréhensible
 
 le 1er outils tourne presque une demi-heure pour ~180000 lien à tester, on
 peut aussi l'interrompre par ctrl+c à tout moment
+
+J'ai exclus les urls au format /forum/* nav/* /avis_internaute_commentaire/* /point_ajout_commentaire/* car c'est hyper long à traiter en plus (surtout le forum)
+Mais évidement, ça exclus le forum, donc si on veut quand même s'attaquer aux messages sur le forum, on peut enlever dans le script le "ignore" du forum
