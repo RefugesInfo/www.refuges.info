@@ -79,7 +79,7 @@ function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_
 global $config_wri;
 
 $texte_avec_bbcode=lien_inter_fiches($texte_avec_bbcode,"bbcode");
-/* 
+/*
  transformation automatique des chaine de caractère ressemblant à une url http(s) vers le BBcode des URLs
  le truc bizarre devant : ([ :\.;,\n]) c'est pour ne transformer que les urls isolées
  et éviter de retransformer celles contenant du bbcode
@@ -99,7 +99,7 @@ $texte_avec_bbcode=lien_inter_fiches($texte_avec_bbcode,"bbcode");
  Est-ce qu'on peut contacter soit à l'adresse suivante, soit par email (auquel cas il faudrait un lien http et un lien mailto, où est-ce un sous dossier de l'url ?
  Vu que je ne peux trancher, et que la gestion des emails en @ deviendrait sioux, je vire la gestion du @ dans les urls, si vraiment y'a besoin, la syntaxe bbcode peut venir à la rescousse 
 */
-$urlauto_pattern = "/(^|[> :\.;,\n\*\(\[])((www.|https?:\/\/)[\/\w\.\#\%\:\?\|\$\_\;\!&+=~-]+\w+)([\S< :\/\.;,\n\*\)\]]|\r\n|$)/iu";
+$urlauto_pattern = "/(^|[<> :\.;,\n\*\(\[])((www.|https?:\/\/)[\w\/\.\#\%\:\?\|\$\_\;\!&+=~-]+[\w\/\%\:\?\$\_&+=~-])/iu";
 $urlauto_replace = "$1[url=$2]$2[/url]$4";
 $texte_avec_bbcode_apres_detection_urls = preg_replace($urlauto_pattern,$urlauto_replace,$texte_avec_bbcode);
 
