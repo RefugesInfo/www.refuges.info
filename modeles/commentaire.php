@@ -99,6 +99,9 @@ function infos_commentaires ($conditions)
 
   if (!empty($conditions->date_apres))
     $conditions_sql.="\n\tAND date >= $conditions->date_apres";
+    
+  if (!empty($conditions->texte))
+    $conditions_sql.="\n\tAND texte ILIKE '%$conditions->texte%'";
 
   // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
   // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
