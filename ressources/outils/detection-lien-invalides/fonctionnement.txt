@@ -1,17 +1,26 @@
-Cet outil en ligne de commande a pour but de détecter, sur le site de refuges.info les liens qui pointent vers des page en erreur (404 500
-résolution dns impossible, 301, etc.)
+En utilisant l'outil "linkchecker" (installé sur le serveur) on peut détecter, sur le site de refuges.info les liens qui pointent vers des page en erreur (404 500
+résolution dns impossible, 301, mailto: non valide, etc.)
+Cet outil test la syntaxe des liens, le pointage du lien.
 
-Il a besoin de l'outil "linkchecker" pour s'executer
+J'utilise maintenant une nouvelle méthode, un poil plus longue mais exhaustive et un peu plus rapide :
 
-et on lance simplement :
-./recuperation-liste-csv.sh > liste-brute.csv
-pour extraire un fichier temporaire au format csv
+On génère un fichier avec les urls de toutes les fiches à vérifier, au format :
+https://www.refuges.info/point/45 https://www.refuges.info/point/46 https://www.refuges.info/point/47 ...
 
-Puis pour le rendre plus lisible, on peut lancer :
+for id in $(echo "select id_point from points;" | psql refuges -t -A -U refuges) ; do echo -n "https://www.refuges.info/point/$id " >> urls_a_tester ; done
+
+
+et on le passe au linkchecker :
+
+cat "urls_a_tester" | linkchecker -v -r1 -t 32 -o csv --check-extern --ignore="www.refuges.info" --stdin > liste-brute.csv
+
+Note :
+Avec le --ignore="www.refuges.info" j'ignore toutes les urls qui pointe vers nous même, en partant du principe que nos liens internes ne sont pas foireux
+Ça exclus le forum, donc si on veut quand même s'attaquer aux messages sur le forum
+(franchement, je ne vois pas l'intérêt d'un travail pareil !) , on peut adapter le "ignore" et enlever le -r1 qui limite la récursion à 1
+
+
+Pour rendre le résultat plus lisible, on peut lancer :
 ./lien-erreur-liste-lisible.sh ./liste-brute.csv > version-un-peu-plus-lisible-et-apres-nettoyage.txt
 
-le 1er outils tourne presque une demi-heure pour ~180000 lien à tester, on
-peut aussi l'interrompre par ctrl+c à tout moment
 
-J'ai exclus les urls au format /forum/* nav/* /avis_internaute_commentaire/* /point_ajout_commentaire/* car c'est hyper long à traiter en plus (surtout le forum)
-Mais évidement, ça exclus le forum, donc si on veut quand même s'attaquer aux messages sur le forum, on peut enlever dans le script le "ignore" du forum
