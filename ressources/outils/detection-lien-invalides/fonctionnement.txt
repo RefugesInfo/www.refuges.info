@@ -7,12 +7,13 @@ J'utilise maintenant une nouvelle méthode, un poil plus longue mais exhaustive 
 On génère un fichier avec les urls de toutes les fiches à vérifier, au format :
 https://www.refuges.info/point/45 https://www.refuges.info/point/46 https://www.refuges.info/point/47 ...
 
-for id in $(echo "select id_point from points;" | psql refuges -t -A -U refuges) ; do echo -n "https://www.refuges.info/point/$id " >> urls_a_tester ; done
+Ce genre de ligne de commande devrait faire le job, sans tenir compte des fiches cachées que l'outil ne peut pas atteindre :
+for id in $(echo "select id_point from points where cache='f';" | psql refuges -t -A -U refuges) ; do echo -n "https://www.refuges.info/point/$id " >> urls_a_tester ; done
 
 
 et on le passe au linkchecker :
 
-cat "urls_a_tester" | linkchecker -v -r1 -t 32 -o csv --check-extern --ignore="www.refuges.info" --stdin > liste-brute.csv
+cat "urls_a_tester" | linkchecker -r1 -t 32 -o csv --check-extern --ignore="www.refuges.info" --stdin > liste-brute.csv
 
 Note :
 Avec le --ignore="www.refuges.info" j'ignore toutes les urls qui pointe vers nous même, en partant du principe que nos liens internes ne sont pas foireux
