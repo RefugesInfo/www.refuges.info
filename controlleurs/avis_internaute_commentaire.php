@@ -23,14 +23,14 @@ else
     $vue->commentaire->lien=lien_point($commentaire,True);
     
     /**************************** l'action  ******************************/
-    if (!empty($_POST['valider']))
+    if (!empty($_REQUEST['valider']))
     {
         $vue->type="page_simple";
         // Si l'internaute est connecté au forum ou qu'il a saisi la lettre anti-robot
-        if (est_connecte() or $_POST['anti_robot']=="f")
+        if (est_connecte() or $_REQUEST['anti_robot']=="f")
         {
-            $commentaire->demande_correction=$_POST['demande_correction'];
-            $commentaire->raison_demande_correction=$_POST['raison_demande_correction'];
+            $commentaire->demande_correction=$_REQUEST['demande_correction'];
+            $commentaire->raison_demande_correction=$_REQUEST['raison_demande_correction'];
             modification_ajout_commentaire($commentaire);
             $vue->contenu="Merci pour votre aide au tri, ";
         }

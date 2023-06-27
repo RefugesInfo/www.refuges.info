@@ -12,7 +12,7 @@ $vue->titre="Flux RSS des nouvelles du site Refuges.info";
 $vue->description="";
 
 // comme on se "post" les informations à soit même, on vérifie dans quel cas on est
-if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
+if (!isset($_REQUEST['validation'])) // rien de valider, formulaire vierge
 {
     $vue->types_de_nouvelles = new stdClass; // objet contenant les type de nouvelles (en tant quobjets eux memes)
     $vue->massifs = new stdClass;
@@ -39,7 +39,7 @@ if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
         $vue->massifs->$index->id_polygone = $massif->id_polygone ;
         $vue->massifs->$index->id_zone = $massif->id_zone ;
         $vue->massifs->$index->nom_zone = $massif->nom_zone ;
-        if ( !isset($_GET['id_massif']) OR  ( (array) $_GET['id_massif'] == $massif->id_polygone ) )
+        if ( !isset($_REQUEST['id_massif']) OR  ( (array) $_REQUEST['id_massif'] == $massif->id_polygone ) )
             $vue->massifs->$index->checked = true;
     }
 }
@@ -47,12 +47,12 @@ else // formulaire validé, affichage du lien et d'un blabla
 {
     $vue->lien_licence = lien_wiki("licence");
 
-    if (empty($_POST['id_nouvelle_type']) OR empty($_POST['id_massif']) )
+    if (empty($_REQUEST['id_nouvelle_type']) OR empty($_REQUEST['id_massif']) )
         $vue->description="Vous demandez vraiment quelque chose de vide ??";
     else
     {
-        $liste_id_nouvelle_type = implode(',',$_POST['id_nouvelle_type']);
-        $liste_id_massif = implode(',',$_POST['id_massif']);
+        $liste_id_nouvelle_type = implode(',',$_REQUEST['id_nouvelle_type']);
+        $liste_id_massif = implode(',',$_REQUEST['id_massif']);
     
         $options_lien="format=rss&amp;format_texte=html&amp;type=$liste_id_nouvelle_type&amp;massif=$liste_id_massif";
     

@@ -11,7 +11,7 @@ require_once ("meta_donnee.php");
 $vue->titre="Téléchargement et exportation de la base refuges.info";
 
 // FIXME sly: à découper en deux fichiers pour plus de lisibilité comme on se "post" les informations à soit même, on vérifie dans quel cas on est
-if (!isset($_POST['validation'])) // rien de valider, formulaire vierge
+if (!isset($_REQUEST['validation'])) // rien de valider, formulaire vierge
 {
   $vue->points = new stdClass; // objet contenant les type de points (en tant quobjets eux memes)
   $vue->massifs = new stdClass;
@@ -53,14 +53,14 @@ else // formulaire validé, affichage du lien et d'un blabla
 {
   $vue->lien_export = new stdClass; // contiendra: URL, description ...
   $vue->lien_licence = lien_wiki("licence");
-  $vue->format=$_POST['format'];
+  $vue->format=$_REQUEST['format'];
 
-  if ( empty($_POST['id_point_type']) OR empty($_POST['id_massif']) ) // Pas de type de point choisi ou aucun massif choisi : on l'indique par une erreur vu que le résultat sera forcément vide.
+  if ( empty($_REQUEST['id_point_type']) OR empty($_REQUEST['id_massif']) ) // Pas de type de point choisi ou aucun massif choisi : on l'indique par une erreur vu que le résultat sera forcément vide.
     $vue->lien_export->url="";
   else
   {
-    $liste_id_point_type = implode(',',$_POST['id_point_type']);
-    $liste_id_massif = implode(',',$_POST['id_massif']);
+    $liste_id_point_type = implode(',',$_REQUEST['id_point_type']);
+    $liste_id_massif = implode(',',$_REQUEST['id_massif']);
   
     $options_lien="?nb_points=all&amp;format=$vue->format&amp;type_points=$liste_id_point_type&amp;massif=$liste_id_massif";
   

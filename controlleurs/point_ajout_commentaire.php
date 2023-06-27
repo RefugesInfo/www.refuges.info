@@ -26,7 +26,7 @@ $point=infos_point($commentaire->id_point,true);
 if (empty($point->erreur))
 {
   // on force la demande de correction
-  if (!empty($_GET['correction'])) 
+  if (!empty($_REQUEST['correction'])) 
       $vue->correction=true;
   else
       $vue->correction=False;
@@ -35,13 +35,13 @@ if (empty($point->erreur))
   // on vient de valider notre formulaire, faisons le nécessaire
   $vue->banni=False;
   $vue->erreur_captcha=False;
-  if (!empty($_POST['action'])) 
+  if (!empty($_REQUEST['action'])) 
   {
-    $commentaire->texte=stripslashes($_POST['texte']);
+    $commentaire->texte=stripslashes($_REQUEST['texte']);
 
     // Si on est connecté, ces valeurs ne sont pas défini, on la passe alors à ''
-    $commentaire->auteur_commentaire=stripslashes($_POST['auteur_commentaire'] ?? '');
-    $vue->lettre_verification=$_POST["lettre_verification"] ?? '';
+    $commentaire->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire'] ?? '');
+    $vue->lettre_verification=$_REQUEST["lettre_verification"] ?? '';
 
     $commentaire->texte_propre=protege($commentaire->texte);
     
@@ -58,7 +58,7 @@ if (empty($point->erreur))
       if (is_uploaded_file  ( $file_path=$_FILES['comment_photo']['tmp_name']  ) )
         $commentaire->photo['originale']=$file_path;
 
-      $commentaire->demande_correction=$_POST['demande_correction'] ?? '';
+      $commentaire->demande_correction=$_REQUEST['demande_correction'] ?? '';
       
       // Et si on trouve un mot clé "censuré" on accepte le message mais on averti les modérateurs qu'il faut aller vérifier le commentaire
       if (isset ($config_wri['censure']) && preg_match ('/'.$config_wri['censure'].'/i', retrait_accents ($commentaire->texte)))

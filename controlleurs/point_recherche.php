@@ -1,6 +1,6 @@
 <?php
 /********************************************************************************************************
-Les resultats de la recherche. Ce fichier recupere les criteres en POST du formulaire
+Les resultats de la recherche. Ce fichier recupere les criteres du formulaire
 ( une suite de fiche refuges, mais sans tous les détails )
 ********************************************************************************************************/
 
@@ -88,7 +88,7 @@ if (!empty($_REQUEST))
     //-----------------------------------------------------------------------------------------------------
     // Recherche de points sur nominatim.openstreetmap.org
       
-    if (!empty($_POST['avec_point_osm']))
+    if (!empty($_REQUEST['avec_point_osm']))
     {
       $nominatim = new stdClass();
       $vue->recherche_osm_active=True;
@@ -100,7 +100,7 @@ if (!empty($_REQUEST))
         'format' => 'xml',
         'countrycodes' => 'fr,ch,it,es',
         'accept-language' => 'fr',
-        'q' => $_POST['nom'],
+        'q' => $_REQUEST['nom'],
         'limit' => 20,
         )
         );

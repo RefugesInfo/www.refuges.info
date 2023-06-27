@@ -12,9 +12,9 @@ require_once ("wiki.php");
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (est_moderateur()) 
 {
-	if (!empty($_POST ['modification']))
-		ecrire_contenu ($page, $_POST ['texte']);
-	if (!empty($_GET ['supprimer']))
+	if (!empty($_REQUEST ['modification']))
+		ecrire_contenu ($page, $_REQUEST ['texte']);
+	if (!empty($_REQUEST ['supprimer']))
 		supprimer_page($page);
 }
 
@@ -27,7 +27,7 @@ $contenu_brut =  wiki_page_brut ($page);
 $vue->titre = $page;
 $vue->nom_page= $page;
 // La page n'existe pas (ou pas encore !)
-if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and empty($_GET['form_modifier']))
+if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and empty($_REQUEST['form_modifier']))
 {
     $vue->http_status_code = 404;
     $vue->type = 'page_simple';
@@ -39,7 +39,7 @@ if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and empty($_GET['fo
         $vue->titre_lien="Cliquant ici";
     }
 } // Un modérateur a demandé à la modifier
-elseif(!empty($_GET['form_modifier']) and est_moderateur())
+elseif(!empty($_REQUEST['form_modifier']) and est_moderateur())
 {
     $vue->type="wiki_modification";
     $vue->contenu_a_modifier=protege($contenu_brut->contenu);
