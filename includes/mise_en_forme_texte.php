@@ -190,12 +190,11 @@ array_merge($replace_img,
 
 $texte_avec_html = preg_replace($searcharray, $replacearray, $texte_avec_protection_anti_injection_html_ou_pas);
 
-
 // Transformation des adresses mails repérées dans le texte en mailto:<email> clicable
 $texte_avec_html=conversion_adresse_email_vers_mailto($texte_avec_html);
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
-$texte_avec_html = nl2br($texte_avec_html,true);
+$texte_avec_html = nl2br($texte_avec_html,false);
 $texte_avec_html = str_replace("  ", " &nbsp;", $texte_avec_html);
 
 return $texte_avec_html;
