@@ -6,8 +6,8 @@
     <a href="<?=$vue->commentaire->lien_photo['originale']?>">
         <img class="photos" height="400" src="<?=$vue->commentaire->lien_photo['reduite']?>" alt="Photo commentaire">
     </a>
-    <?=$vue->commentaire->texte_affichage?>
   <?php }?>
+    <?=$vue->commentaire->texte_affichage?>
   </p>
   <h4 style="clear:both;">Est :</h4>
   <form method="post" action="<?=$config_wri['sous_dossier_installation']?>avis_internaute_commentaire/<?=$vue->commentaire->id_commentaire?>/">
