@@ -401,9 +401,9 @@ function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=
     // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
     if (!$autoriser_html)
     {
-      $html = str_replace("\r\n", "<br />", $html);
-      $html = str_replace("\n", "<br />", $html);
-      $html = str_replace("\r", "<br />", $html);
+      $html = str_replace("\r\n", "<br>", $html);
+      $html = str_replace("\n", "<br>", $html);
+      $html = str_replace("\r", "<br>", $html);
       $html = str_replace("  ", " &nbsp;", $html);
     }
     return $html;

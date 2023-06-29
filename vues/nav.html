@@ -68,7 +68,7 @@
 				<legend>Téléchargements</legend>
 				Tous les points refuges.info
 				<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
-				<br/>
+				<br>
 				<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx"
 					title="Télécharger au format GPX complet">
 					GPX
@@ -185,14 +185,14 @@
 
 			<p><b>Massif</b> :
 				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=1">Créer un massif</a></p>
-			<p>Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br/>
+			<p>Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br>
 			Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.</p><hr/>
 			<p><b>Zone</b> :
 				<a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=11">Créer une zone</a></p>
-			<p>Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br/>
+			<p>Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br>
 			Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr/>
 			La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps
-			du moment qu'il recouvre au moins un bout de chaque massif.<br/>
+			du moment qu'il recouvre au moins un bout de chaque massif.<br>
 			Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.</p>
 		</fieldset>
 	<?php } ?>

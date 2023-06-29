@@ -42,9 +42,9 @@ headers_cors_par_default();
     <name><?=htmlspecialchars($point->nom,ENT_NOQUOTES)?></name>
       <description>
         <![CDATA[ <em><?=$point->type['valeur']?></em> 
-              <br />
+              <br>
               <p><?=bbcode2html($point->description['valeur'],true)?></p>
-              <br />
+              <br>
             <center><a href='<?=$point->lien?>'>Détails</a></center>
         ]]>
       </description>

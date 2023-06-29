@@ -9,29 +9,29 @@
 		<form method="POST">
 			<h4>le commentaire est :</h4>
 
-			<br />
+			<br>
 			<label>Date:
 				<input type="text" disabled="disabled" name="date" size="16"
 					value="<?=date('d/m/Y H:i',$commentaire->ts_unix_commentaire)?>"/>
 			</label>
-			<br /><br />
+			<br><br>
 
 			<?=bbcode2html($commentaire->texte)?>
-			<br /><br />
+			<br><br>
 
 			<? if ($commentaire->photo_existe==1) { ?>
 				<img
 					src="<?=$config_wri['rep_web_photos_points'].$commentaire->id_commentaire?>.jpeg"
 					alt="photo liée au commentaire"
 					width="200px" />
-				<br /><br />
+				<br><br>
 			<?}?>
 
 			<h4>Moderation :</h4>
-			<br />
+			<br>
 
 			<textarea name="texte" rows="10" cols="100"><?=protege($commentaire->texte)?></textarea>
-			<br /><br />
+			<br><br>
 
 			<? if ($commentaire->photo_existe==1) { ?>
 				Rotation photo: &nbsp;
@@ -39,30 +39,30 @@
 				<input type="radio" name="rotation" value="90"><img src="<?=$config_wri['sous_dossier_installation']?>images/270.png" /> &nbsp;
 				<input type="radio" name="rotation" value="180"><img src="<?=$config_wri['sous_dossier_installation']?>images/180.png" /> &nbsp;
 				<input type="radio" name="rotation" value="270"><img src="<?=$config_wri['sous_dossier_installation']?>images/90.png" />
-				<br />
+				<br>
 				<input name="type" value="suppression_photo" type="submit" />
-				<br /><br />
+				<br><br>
 			<?}?>
 
 			<? if ($commentaire->id_createur_commentaire==0) { ?><!-- Seulement modifiable si n'était pas authentifié -->
 				<label>Auteur:
 					<input type="text" name="auteur_commentaire" value="<?=$commentaire->auteur_commentaire?>" />
 				</label>
-				<br /><br />
+				<br><br>
 			<?}?>
 
 			<!-- 4 actions possible -->
 			<input name="type" value="modification" type="submit" />
 			<input name="type" value="transfert_forum" type="submit" />
 			<input name="type" value="suppression" type="submit" />
-			<br /><br />
+			<br><br>
 
 			<input name="type" value="transfert_autre_point" label="x" type="submit" />
 			Indiquez le numéro de l'autre point :
 			<input type="text" name="id_autre_point" value="" size="16"/>
 		</form>
 		<p>
-		'suppression' entraine également la suppression de la photo.<br />
+		'suppression' entraine également la suppression de la photo.<br>
 		'transfert_forum' entraîne aussi le déplacement de la photo vers le forum
 		</p>
 	<?}?>

@@ -24,7 +24,7 @@
 		<?=wiki_page_html("nouvelles_generales")?>
 
 		<h4><?=$vue->stat->nbphotos?> photos. Celles rentrées il y a moins <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
-		<br/>
+		<br>
 		<dd>
 			<?php if (isset($vue->nouveaux_commentaires)) 
 				foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {  if ($nouveau_commentaire->photo_existe) {
@@ -34,7 +34,7 @@
 				</a>
 			<?}}?>
 		</dd>
-		<br/>
+		<br>
 
 		<h4><?=$vue->stat->nbpoints?> points dans la base. Ceux ajoutés il y a moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<ul>
@@ -58,7 +58,7 @@
 			<?}?>
 			<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_max_page_nouvelles']?>&amp;quoi=points" title="Voir les <?=$config_wri['defaut_max_page_nouvelles']?> derniers points ajoutés sur le site"><b>Plus...</b></a></li>
 		</ul>
-		<br/>
+		<br>
 
 		<h4><?=$vue->stat->nbcomm?> commentaires. Ceux de moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
 		<ul>
@@ -82,6 +82,6 @@
 			<?}?>
 				<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_max_page_nouvelles']?>&quoi=commentaires" title="Les <?=$config_wri['defaut_max_page_nouvelles']?> derniers commentaires dans refuges.info"><b>Plus...</b></a></li>
 		</ul>
-		<br/>
+		<br>
 	</div>
 </div>
