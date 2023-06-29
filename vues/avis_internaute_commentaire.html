@@ -10,23 +10,23 @@
   <?php }?>
   </p>
   <h4 style="clear:both;">Est :</h4>
+  <form method="post" action="<?=$config_wri['sous_dossier_installation']?>avis_internaute_commentaire/<?=$vue->commentaire->id_commentaire?>/">
   <p>
-    <form method="post" action="<?=$config_wri['sous_dossier_installation']?>avis_internaute_commentaire/<?=$vue->commentaire->id_commentaire?>/">
     <ul>
-      <li><input type="radio" name="demande_correction" value="-1" checked="checked"/>Plus d'actualité ou n'a rien a voir avec le point ou n'est pas factuel <a href="<?=$vue->lien_que_mettre?>">(Voir ce que l'on peut mettre ou ne pas mettre).</a></li>
-      <li><input type="radio" name="demande_correction" value="1" />Ou au contraire très utile : ces informations devraient être rajoutées dans la fiche en haut.</li>
+      <li><input type="radio" name="demande_correction" value="-1" checked="checked">Plus d'actualité ou n'a rien a voir avec le point ou n'est pas factuel <a href="<?=$vue->lien_que_mettre?>">(Voir ce que l'on peut mettre ou ne pas mettre).</a></li>
+      <li><input type="radio" name="demande_correction" value="1">Ou au contraire très utile : ces informations devraient être rajoutées dans la fiche en haut.</li>
       <li>Une raison pour expliquer ? <input type="text" name="raison_demande_correction" value="" size="100"/> (facultatif)</li>
-      
       <?php if ($vue->test_anti_robot) { ?>
+      
       <li>Contre les robots merci d'écrire la lettre f ici :<input type="text" name="anti_robot"></li>
       <?php } ?>
     </ul>
-    </p>
-    <p>
+  </p>
+  <p>
       Votre remarque sera transmise en privé aux modérateurs.<br>
       <input type="submit" name="valider" value="Valider mon avis">
-    </form>
-    </p>
+  </p>
+  </form>
   <p>
     Retour sur <a href="<?=$vue->commentaire->lien?>">la fiche de <?=$vue->commentaire->nom?></a> sans action.
   </p>
