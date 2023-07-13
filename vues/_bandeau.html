@@ -9,7 +9,7 @@
 		<input type="hidden" name="limite" value="40">
 		<input type="hidden" name="ids_types_point" value="7,9,10">
 		<input type="hidden" name="avec_point_osm" value="1">
-		<input type="image" src="<?=$config_wri['sous_dossier_installation']?>images/loupe.png" title="Lancer la recherche">
+		<input type="image" alt="Recherche" src="<?=$config_wri['sous_dossier_installation']?>images/loupe.png" title="Lancer la recherche">
 	</form>
 
 	<div class="menu-haut">
@@ -100,44 +100,45 @@
 	<?php } else { ?>
 			<span>&#128100;</span><span class="menu-large">Connexion</span>
 			<ul>
-				<form method="post" class="connexion"
-					action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
-					<li>
-						<input type="text" name="username" size="15" placeholder="Nom d’utilisateur"
-							autocomplete="username">
-					</li><li>
-						<input type="password" name="password" size="15"
-							placeholder="Mot de passe" autocomplete="current-password">
-					</li><li>
-						<input type="hidden" name="autologin" checked="checked">
-						<input type="hidden" name="creation_time"
-							value="<?=$infos_identification->creation_time?>">
-						<input type="hidden" name="form_token"
-							value="<?=$infos_identification->login_form_token?>">
-						<input type="hidden" name="redirect"
-							value="<?=$_SERVER['REQUEST_URI']?>">
-						<input type="submit" name="login" value="Connexion">
-					</li>
-				</form>
-				<hr/>
-				<li>
-					<a href="<?=lien_wiki('cookies')?>">
-						Utilisation des cookies
-					</a>
-				</li><li>
-					<a href="<?=$config_wri['lien_forum']?>app.php/user/forgot_password">
-						Mot de passe oublié
-					</a>
-				</li><li>
-					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=register">
-						Créer un compte
-					</a>
-				</li><li>
-					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
-						Connexion avancée
-					</a>
-				</li>
-			</ul>
+                <form method="post" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
+              <li>
+                <input type="text" name="username" size="15" placeholder="Nom d’utilisateur"
+                    autocomplete="username">
+              </li><li>
+                <input type="password" name="password" size="15"
+                      placeholder="Mot de passe" autocomplete="current-password">
+              </li><li>
+                <input type="hidden" name="autologin" value="checked">
+                <input type="hidden" name="creation_time"
+                    value="<?=$infos_identification->creation_time?>">
+                <input type="hidden" name="form_token"
+                    value="<?=$infos_identification->login_form_token?>">
+                <input type="hidden" name="redirect"
+                    value="<?=$_SERVER['REQUEST_URI']?>">
+                <input type="submit" name="login" value="Connexion">
+              </li>
+              <li>
+                <hr>
+              </li>
+              <li>
+                <a href="<?=lien_wiki('cookies')?>">
+                    Utilisation des cookies
+                </a>
+              </li><li>
+                <a href="<?=$config_wri['lien_forum']?>app.php/user/forgot_password">
+                    Mot de passe oublié
+                </a>
+              </li><li>
+                <a href="<?=$config_wri['lien_forum']?>ucp.php?mode=register">
+                    Créer un compte
+                </a>
+              </li><li>
+                <a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
+                    Connexion avancée
+                </a>
+              </li>
+            </form>
+            </ul>
 	<?php } ?>
 		</div>
 

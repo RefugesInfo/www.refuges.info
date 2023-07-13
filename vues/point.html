@@ -83,7 +83,7 @@
         <?php if (empty($vue->mini_carte)) {?>
           <strong><?=$vue->point->nom_precision_gps?></strong>
         <?php }else{?>
-          <input type="hidden" id="cadre-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}' />
+          <input type="hidden" id="cadre-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}'>
           <span id="cadre-string"></span>
           <select id="cadre-select">
             <option value="dec" selected="selected">Degrés décimaux</option>
@@ -106,7 +106,7 @@
           <dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
             <dd class="condense">
               <?php foreach ($polygones as $key => $polygone) { ?>
-                <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; //on sent qu'on atteint la limite des templates quand il faut 50 caractères pour choisir ou non d'afficher une simple virgule?>
+                <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; ?>
                   <?php if ($polygone->site_web) { ?>
                   <a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
                  <?php } else { ?>
@@ -117,17 +117,15 @@
                   </sup>
                 <?=$virgule?>
               <?php } ?>
-            <dt />
-          </dd>
+            <dd>
       <?php } ?>
 <!--===================================== SUR LE SITE DEPUIS ======================================-->
-      <dt/>
       <dt class="condense noprint">Sur le site depuis:</dt>
       <dd class="condense noprint"><?=date ("d/m/Y", $vue->point->date_creation_timestamp)?></dd>
 
       <?php // Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
       if (isset($vue->point->date_derniere_modification)) {?>
-        <dt class="condense noprint">Dernière modification du </dt>
+        <dt class="condense noprint">Dernière modification du</dt>
         <dd class="condense noprint"><?echo date ("d/m/Y",$vue->point->date_modif_timestamp)?>.</dd>
       <?php }
 
@@ -146,11 +144,11 @@
       }
       ?>
 <!--================================= DEMANDE DE MODIFICATION =================================-->
-    <p class="lien_ajout_commentaire noprint">
+    <dd class="lien_ajout_commentaire noprint">
       <a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
         <b>Demander une modification des informations de la fiche</b>
       </a>
-    <p>
+    </dd>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
       <?php // Champs textes libres
       if ($vue->point->equivalent_proprio) {?>
@@ -201,8 +199,6 @@
             <?php } ?>
         </dd>
       <?php } ?>
-<!--==================== On se recadre en dessous =====================-->
-	  <br class="spacer" />
 <!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
       <!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
       <?php if (count ($vue->commentaires_avec_photo)) {?>
@@ -215,7 +211,7 @@
                 style="vertical-align: middle ;"
                 src="<?=$config_wri['rep_web_photos_points'].$commentaire_avec_photo->id_commentaire?>.jpeg"
                 alt="photo miniature"
-              />
+              >
             </a>
           <?php } ?>
         </dd>
@@ -280,11 +276,11 @@
           </p>
           <a class="fauxfieldset-legend" style="display: block; float: right;" href="<?=$commentaire->lien_commentaire?>">
             <?=$commentaire->texte_lien_commentaire?></a>
-          <hr class="spacer" />
+          <hr class="spacer">
           <?php if ($commentaire->photo_existe) {?>
             <div>
               <a href="<?=$commentaire->lien_photo['originale'] ?? ''?>">
-                <img class="photos" src="<?=$commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo" />
+                <img class="photos" src="<?=$commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo">
               </a>
               <p class='text_sur_image'>
                 <?=$commentaire->date_photo_format_francais?>
@@ -297,7 +293,7 @@
               <?=$commentaire->texte_affichage?>
             </p></blockquote>
           <?php }?>
-          <hr class="spacer"/><!-- pour ne pas avoir la foto qui depasse -->
+          <hr class="spacer"><!-- pour ne pas avoir la foto qui depasse -->
         </div>
       </li>
     <?php }?>
@@ -316,7 +312,7 @@
   </p>
   <em>Page sous licence :
     <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/fr/">
-      <img alt="Creative Commons License" src="<?=$config_wri['sous_dossier_installation']?>images/logo-licence-cc-by-sa.png"/>
+      <img alt="Creative Commons License" src="<?=$config_wri['sous_dossier_installation']?>images/logo-licence-cc-by-sa.png">
     </a>
   </em>
 <!--============================================= FIN ==============================================-->

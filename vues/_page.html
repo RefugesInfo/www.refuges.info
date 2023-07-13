@@ -28,25 +28,19 @@ if (!empty($vue->http_status_code))
 		<title><?=$vue->titre ?? ''?></title>
 		<link rel="icon" type="image/png" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.png">
 		<link rel="icon" type="image/svg+xml" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.svg">
-		<meta name="robots" content="all" />
-		<meta name="robots" content="index,follow" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<?php if (isset ($vue->css)) { ?>
-			<meta name="viewport" content="width=device-width, user-scalable=no" />
+			<meta name="viewport" content="width=device-width, user-scalable=no">
 		<? } ?>
-		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>" />
-		<meta http-equiv="Content-Style-Type" content="text/css" />
-
+		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
 		<script>
 			var mapKeys = <?=json_encode($config_wri['mapKeys'])?>;
 		</script>
 
-		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>" />
+		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>">
 		<?php if (isset ($vue->css))
 			foreach ($vue->css as $css) { ?>
-				<link type="text/css" rel="stylesheet" href="<?=$css?>" />
+				<link type="text/css" rel="stylesheet" href="<?=$css?>">
 		<?php } ?>
-		<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	</head>
 
 	<body>
