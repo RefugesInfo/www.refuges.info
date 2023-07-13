@@ -6,7 +6,7 @@ for (let el of menuEls) {
 	el.addEventListener('click', menuAction);
 }
 // Ferme les boutons quand on clique sur la page
-document.body.addEventListener('click', menuAction);
+document.body.addEventListener('click', menuClean);
 
 function menuAction(evt) {
 	// Passage de la souris sur tout l'élement de classe 'menu-bouton'
@@ -24,6 +24,13 @@ function menuAction(evt) {
 		this == evt.target.parentNode)
 		this.classList.toggle('menu-touch');
 
+	// Ferme les autres boutons ouverts
+	for (let el of menuEls)
+		if (!el.contains(evt.target))
+			el.classList.remove('menu-touch');
+}
+
+function menuClean(evt) {
 	// Ferme les autres boutons ouverts
 	for (let el of menuEls)
 		if (!el.contains(evt.target))
