@@ -775,10 +775,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 #carte-nav {
   width: 75%; /* Support of non CSS3 browsers (Safari on Windows)*/
   height: 75%;
-  width: 96vw;
+  width: 100%;
   height: 96vw;
   max-height: calc(100% - 65px); /* Pour ne pas trop déborder en bas */
-  margin: 0 0.8%;
+  margin: 0 0;
 }
 #selecteur-carte-nav {
   padding-left: 1px;
@@ -844,7 +844,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /* Carte de la page des points mobiles */
 @media screen and (max-width: 640px) {
   #carte-point {
-    width: calc(100vw - 20px);
+    width: calc(100vw - 10px);
     height: 400px;
     max-height: 100vw;
   }
