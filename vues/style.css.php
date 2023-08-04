@@ -675,7 +675,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /*==================================================================*/
   .lien_ajout_commentaire {
-    margin: 20px;
+    text-align: center;
   }
   .lien_ajout_commentaire A {
     border-style: solid;
