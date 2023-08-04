@@ -28,6 +28,7 @@ if (!empty($vue->http_status_code))
 		<title><?=$vue->titre ?? ''?></title>
 		<link rel="icon" type="image/png" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.png">
 		<link rel="icon" type="image/svg+xml" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.svg">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<?php if (isset ($vue->css)) { ?>
 			<meta name="viewport" content="width=device-width, user-scalable=no">
 		<? } ?>
