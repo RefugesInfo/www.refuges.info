@@ -154,6 +154,14 @@
       if ($vue->point->equivalent_proprio) {?>
         <dt><?=$vue->point->equivalent_proprio?>:</dt>
         <dd><?=$vue->proprio?></dd>
+        <dd><i>Refuge.info n'assure pas le contact avec les gestionnaires de
+		<?=$vue->point->article_demonstratif?> <?=$vue->point->nom_type?>.
+        <?php if ($vue->point->id_point_type == 9 || $vue->point->id_point_type == 10) {?>
+          Si vous voulez les contacter, vous devez les appeler directement.
+        <?php }?></i></dd>
+      <?php } else {?>
+        <dd><i>Refuge.info n'assure pas le contact avec les gestionnaires de
+		<?=$vue->point->article_demonstratif?> <?=$vue->point->nom_type?>.</i></dd>
       <?php }?>
 <!--============================================ ACCÈS ============================================-->
       <dt style="clear: left;">Accès:</dt>
