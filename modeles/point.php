@@ -696,10 +696,12 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $a_tester)
     if (!empty($point->$a_tester))
       if ( !(est_entier_positif($point->$a_tester) or $point->$a_tester=="ne_sait_pas") )
-        return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0 ou le code spécial ne_sait_pas, reçu : '".$point->$a_tester."'");
-  
-  if (isset($point->places_matelas) and $point->places_matelas=="") // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
+        return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0, reçu : '".$point->$a_tester."'");
+  //d($point->places_matelas);
+  if (isset($point->places_matelas) and empty($point->places_matelas)) // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
     $point->places_matelas="0";
+  if (isset($point->places) and empty($point->places)) // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
+    $point->places="0";
 /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
 // champ ou il faut juste un set=nouvelle_valeur
   foreach ($config_wri['champs_simples_points'] as $champ)
@@ -717,7 +719,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
     if (!$pdo->exec($query_finale))
-        return erreur("Requête en erreur, impossible à executer",$query_finale);
+        return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouver un bug !",$query_finale);
     
     /********* Renommage du topic point dans le forum refuges, sauf s'il s'agit d'un modèle, qui n'a pas (ou pas besoin) de sujet dans le forum *************/
     if (!$point_avant->modele)
