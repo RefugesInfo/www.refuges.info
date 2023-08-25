@@ -286,14 +286,10 @@
             <?=$commentaire->texte_lien_commentaire?></a>
           <hr class="spacer">
           <?php if ($commentaire->photo_existe) {?>
-            <div>
-              <a href="<?=$commentaire->lien_photo['originale'] ?? ''?>">
-                <img class="photos" src="<?=$commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo">
-              </a>
-              <p class='text_sur_image'>
-                <?=$commentaire->date_photo_format_francais?>
-              </p>
-            </div>
+           <div class="photos">
+            <img src="<?=$commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo" style="max-width:100%;">
+            <div class="texte_sur_image"><?=$commentaire->date_photo_format_francais?></div>
+           </div> 
           <?php }?>
           
           <?php if ($commentaire->texte_affichage) {?>

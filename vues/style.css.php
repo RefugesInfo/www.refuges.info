@@ -724,14 +724,15 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     float: left;
     margin: 1px;
     position: relative;
-    max-width: 99.8%;
+    max-width: 100%;
   }
-  .text_sur_image {
-    position:relative;
-    font-size:18px;
-    color:white;
-    left:-110px;
-    top:2px;
+  .texte_sur_image {
+    color: white;
+    text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
+             1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
   .point_forum blockquote {
     margin-block-start: 0;
@@ -891,3 +892,4 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	background-color: yellow;
 	padding: 4px;
 }
+
