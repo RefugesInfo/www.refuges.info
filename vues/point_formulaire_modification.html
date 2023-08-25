@@ -56,9 +56,9 @@
         </fieldset>
                <h4>Informations de base:</h4>
         <fieldset>
-            <label>
+            <label class="input_en_ligne">
                 Nom :
-                <input size="40" type="text" name="nom" value="<?=$vue->point->nom?>" />
+                <input type="text" name="nom" value="<?=$vue->point->nom?>" />
             </label>
             <label>Type de point
                 <select name='id_point_type'>
@@ -144,32 +144,33 @@
             <label>oui<input type="radio" name="<?=$nom?>" value="TRUE" <?=($params->valeur===true)?'checked="checked"':'';?>/></label>
             <label>non<input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>/></label>
         </fieldset>
+        <br style="clear: both;">
         <?php } ?>
         <?php if (!empty($vue->point->equivalent_site_officiel) ) { ?>
-        <fieldset class="booleen">
-            <legend><?=$vue->point->equivalent_site_officiel?> :</legend>
+        <fieldset>
             <label>
-                    <input name="site_officiel" size="60" type="text" value="<?=$vue->point->site_officiel?>" />
+              <?=$vue->point->equivalent_site_officiel?> :
+              <input class="input_en_ligne" name="site_officiel" type="text" value="<?=$vue->point->site_officiel?>" />
             </label>
         </fieldset>
         <?php } ?>
-               <?php if ( !est_connecte() ) { ?>
+        <?php if ( !est_connecte() ) { ?>
         <br style="clear: both;">
         <h4>Questions pour les contributeurs anonymes</h4>
-        <fieldset class="booleen">
-            <legend>Votre nom ou pseudo (facultatif) :</legend>
+        <fieldset>
             <label>
-                <input type="text" name="nom_createur" maxlength="40" size="41" value="" />
+              Votre nom ou pseudo (facultatif) :
+              <input class="input_en_ligne" type="text" name="nom_createur" value="" />
             </label>
         </fieldset>
-        <fieldset class="booleen">
+        <fieldset>
             <label title="Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne vienne pas jusqu'ici">
                 Entrez la lettre <strong>d</strong>
-                <input name="lettre_securite" type="text" size="1" />
+                <input name="lettre_securite" type="text" size="2" />
             </label>
         </fieldset>
         <?php } ?>
-               <fieldset class="booleen">
+        <fieldset>
         <?php foreach ($vue->champs->boutons as $bouton) { ?>
             <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
             <?=$bouton->label?>

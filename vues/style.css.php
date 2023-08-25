@@ -146,7 +146,7 @@ BODY {
   }
 /* zone de contenu */
 .contenu {
-  margin: 0.8%;
+  margin: 0.5%;
   margin-top:3px;
   }
 .couleur_fond_amplifiee {
@@ -260,9 +260,9 @@ FORM#form_point FIELDSET {
   padding: 0.75em 0;
   }
 FORM#form_point .textarea {
-  width: 700px;
-  min-width: 450px;
-  max-width: calc(100% - 8px);
+  width: 96%;
+  min-width: 150px;
+  max-width: 1000px;
   }
 FORM#form_point .textarea LABEL,
 FORM#form_point .textarea TEXTAREA {
@@ -284,7 +284,7 @@ FORM#form_point .booleen LEGEND {
 FORM#form_point .booleen LABEL {
   clear: none;
   float: none;
-  padding-left: 10px;
+  padding-left: 5px;
   }
 FORM#form_export LABEL {
   clear: none;
@@ -316,7 +316,9 @@ FORM .champs_null_masque > INPUT:checked  + *  INPUT { /* desactive les INPUT qu
 FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon endroit */
   clear: none;
   }
-
+.input_en_ligne {
+  width:18em;
+}
 .fauxfieldset-legend {
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;
