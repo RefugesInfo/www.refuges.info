@@ -28,6 +28,11 @@ function wriMapBaseLayers(page) {
 		}),
 		'Photo ArcGIS': layerArcGIS('World_Imagery'),
 		'Photo Google': page == 'modif' ? null : layerGoogle('s'),
+		'Photo Maxar': new ol.layer.Tile({
+			source: new ol.source.XYZ({
+				url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.webp?access_token=' + mapKeys.mapbox,
+			}),
+		}),
 	};
 }
 
