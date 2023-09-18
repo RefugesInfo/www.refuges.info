@@ -12,6 +12,11 @@ Sommaire:
     -2 menus du haut et du bas
     -3 classes speciales (sur-mesure, googmaps, fiche, ...)
     -4 PUB
+
+Notes de sly en 2023: ce style a évolué au fil des années et je suis sûr qu'il y a plusieurs classes 
+qui ne servent nulle part, pas mal de redondance, un manque de cohérence sur le style au niveau des formulaires.
+Un support parfois médiocre des petites écrans, des adressages par id, par class. Bref, ça mériterait vraiment un coup de neuf.
+Celui qui a le courage à bien sûr mon feu vert !
 ***********************************************************************************************/
 
 header('content-type: text/css');
@@ -137,18 +142,18 @@ switch ($periode)
 HTML {
   width: 100%; /* jmb 01/2008 , pour gmaps */
   height: 100%;
-  }
+}
 BODY {
   margin: 0px; /* il le faut pour FF */
   width: 100%; /* jmb 01/2008 , pour gmaps */
   height: 100%;
   background-color: #<?=$couleur_fond?>;
-  }
+}
 /* zone de contenu */
 .contenu {
   margin: 0.5%;
   margin-top:3px;
-  }
+}
 .couleur_fond_amplifiee {
     background-color: #cef99c;
 }
@@ -157,40 +162,40 @@ BODY {
 EM { /* Emphasis: gras+italic */
   font-weight: bold ;
   font-style: italic ;
-  }
+}
 STRONG { /* Strong Emphasis: gras+italic+rouge */
   font-weight: bold;
   font-style: italic;
   color: #FF0000 ;
-  }
+}
 CITE { /* Citation: gras+droit */
   font-weight: bold ;
   font-style: normal ;
-  }
+}
 DFN { /*Definitions */
   border-bottom: thin dotted blue;
   font-style: normal;
-  }
+}
 DFN:after { /*Definition, ajoute un ? a la fin pour inciter a passer la souris dessus*/
   content: "?";
   font-size: smaller;
   vertical-align: text-top;
-  }
+}
 BLOCKQUOTE { /* citations: utilisé sur les fiches pour les commentaires ET la citation forum */
   font-style: italic;
-  }
+}
 BLOCKQUOTE > DIV { /* en particulier les ciations forum */
   border-left: double blue;
-  }
+}
 BLOCKQUOTE P:before  { /* message forum et commentaires *//* HS sous IE */
   content: open-quote;
   font-size: xx-large;
-  }
+}
 BLOCKQUOTE P:after  { /* message forum et commentaires */
   content: close-quote;
   font-size: xx-large;
   vertical-align: text-top; /* pour pas que cette derniere quote decale la derniere ligne */
-  }
+}
 
 /*======TITRES=======*/
 /* on commence au H3 car 1,2 sont vraiment trop gros. je sais ... CSS .... mais maintenant c'est fait.*/
@@ -204,7 +209,7 @@ H3 { /* titres de pages */
   margin-bottom:3px;
   color: white;
   background-color: #<?=$couleur_lien?>;
-  }
+}
 H4 { /* sous titres */
   padding-top: 4px; /* sous FF, la padding par defo est immense */
   padding-bottom: 2px;
@@ -213,44 +218,44 @@ H4 { /* sous titres */
   margin: 0px; /* sous FF, la padding par defo est immense */
   border-bottom: 2px solid #<?=$couleur_decoration_titres?>;
   border-left: 2px solid #<?=$couleur_decoration_titres?>;
-  }
+}
 H5 { /* sou-sou titre, pour l'instant que dans les fiches de refuges */
   border-bottom: thin solid #<?=$couleur_decoration_titres?> ;
   font-size: medium; /* sinon H5 cest tout petit ... */
   margin-top:15px;
   margin-bottom:3px;
   padding-left: 10px;
-  }
+}
 H6 { /* utilisé dans la "FAQ" comme question */
   margin-bottom: 0px;
   margin-top: 1em;
   font-size: 12px;
   font-weight: bold ;
   font-size: medium; /* sinon H6, c'est tout petit ... */
-  }
+}
 P {
   margin-bottom: 1em;
-  }
+}
 /*===== LISTES=====*/
 UL { /* les listes , y compris news en page de garde */
   list-style-type: none;
   margin: 0px;
   padding: 0px 0px 0px 5px;
-  }
+}
 DT { /* listes, de definitions */
   font-weight: bold;
   margin-top:4px;
-  }
+}
 DL > DL { /* decale les elements imbriques de 1em */
   padding-left: 1em;
-  }
+}
 DT > BUTTON {
   font-size: 60%;
   padding: 0px ;
-  }
+}
 LI {
   margin-bottom:3px;
-  }
+}
 
   /*====== FORMULAIRES======*/
   /* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
@@ -258,16 +263,16 @@ LI {
 FORM#form_point FIELDSET {
   border: thin solid transparent;  /* pour les allergiques aux barrieres ;) */
   padding: 0.75em 0;
-  }
+}
 FORM#form_point .textarea {
   width: 96%;
   min-width: 150px;
   max-width: 1000px;
-  }
+}
 FORM#form_point .textarea LABEL,
 FORM#form_point .textarea TEXTAREA {
   width: 100%;
-  }
+}
 FORM#form_point .booleen {
   clear: left;
   float:left;
@@ -276,46 +281,46 @@ FORM#form_point .booleen {
   max-width: calc(100% - 4px);
   text-align: right;
   padding: 1px;
-  }
+}
 FORM#form_point .booleen LEGEND {
   clear: left;
   float:left;
-  }
+}
 FORM#form_point .booleen LABEL {
   clear: none;
   float: none;
   padding-left: 5px;
-  }
+}
 FORM#form_export LABEL {
   clear: none;
   float: left;
   width: 16em;
-  }
+}
 #form_export FIELDSET FIELDSET:hover {  /* deco sur le fieldset actif, pour bien le differencier des autres */
   border: thin dotted black;
-  }
+}
 FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
   clear: left;
   float: left;
-  }
+}
 FORM LABEL[title]:after, FORM LEGEND[title]:after {  /* combine pour exclure OL , leurs LABEL ne sont pas dans des FORM */
   content: url(../images/tooltip.png);
-  }
+}
 FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
   float: left;
   border: thin solid transparent;
-  }
+}
 FORM .champs_null_masque>INPUT { /* couleur de la case "champ null" et masquee par defo */
   outline : red solid 2px ;
   float: left;
   display: none;
-  }
+}
 FORM .champs_null_masque > INPUT:checked  + *  INPUT { /* desactive les INPUT qui suivent */
   visibility: hidden;
-  }
+}
 FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon endroit */
   clear: none;
-  }
+}
 .input_en_ligne {
   width:18em;
 }
@@ -323,25 +328,25 @@ FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon en
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;
   font-weight: bold;
-  }
+}
 /* Cas particulier pour OL qui a des labels non standards */
 DIV#switch_nav LABEL {
   float: none;
   clear: none;
-  }
+}
 
 /*==========DIVERS=======*/
 IMG { /* images sans bordures */
   border: 0px;
   margin: 0px;
   padding: 0px;
-  }
+}
 
 /*=========LIENS==========*/
 A:hover { /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;
   text-decoration: none;
-  }
+}
 /*
 J'intègre également les class des liens du forum
 en gros je veux tout de la même couleur
@@ -350,11 +355,11 @@ en gros je veux tout de la même couleur
 A,A.mainmenu,A.nav,A.forumlink,A.cattitle,A.topictitle,A.postlink,A.gen,A.genmed,A.gensmall {
   color : #<?=$couleur_lien?>; /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
-  }
+}
 
 A:visited {
   color : #<?=$couleur_lien_visite?>;
-  }
+}
 
 /*=========ERREUR==========*/
 .erreur_saisie {
@@ -368,10 +373,10 @@ A.infobulle {
   position:relative;
   text-decoration: none;
   color: black;
-  }
+}
 A.infobulle SPAN { /* au repos, on efface */
   display: none;
-  }
+}
 A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   display: block;
   position: absolute; /* relativement au relatif du A */
@@ -383,7 +388,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   background: #ffc;
   white-space: nowrap;
   z-index: 100; /* ?? */
-  }
+}
 
 /*=========LIENS==========*/
 .don {
@@ -654,37 +659,37 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     text-align: center;
     font-family: Times New Roman;
     font-size: 16px;
-  }
+}
   /* c'est la liste en bas de page */
   #basdepage #racourcismenus {
     clear: both;
     border: dashed thin #096EA1;
     text-align: center;
     margin: 0px;
-  }
+}
   #basdepage UL {
     clear: both;
     text-align: center;
-  }
+}
   #basdepage LI {
     display: inline;
     margin-right: 2em;
-  }
+}
   #basdepage IMG,IFRAME,FORM { /* tout le bazar de pub de bas de page, en ligne! */
     display: inline;
     vertical-align: middle;
-  }
+}
 
 /*==================================================================*/
   .lien_ajout_commentaire {
     text-align: center;
-  }
+}
   .lien_ajout_commentaire A {
     border-style: solid;
     border-color: #<?=$couleur_decoration_titres?>;
     padding-right: 0.5em;
     padding-left: 0.5em;
-  }
+}
 
 /*==================================================================*/
 /* LA PAGES DES MASSIFS (Accueil)                                   */
@@ -694,7 +699,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     display:table-cell;
     vertical-align: top;
     float: left; /* pour IE7 */
-  }
+}
 
 /*==================================================================*/
 /* LES PAGES POINTS                                                 */
@@ -704,30 +709,30 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     border: thin solid black;
     margin-top: 1em;
     /*padding: 1em;*/
-  }
+}
   .fauxfieldset-legend  { /* P imite un fieldset legend */
     float: left;
     margin: -0.2em 1em 0em 1em;
     /*margin-bottom: 1em;*/
     /*vertical-align: super;*/
-  }
+}
   .spacer { /* HR de spacer pour la mise en page, en particulier dans les fiches */
     clear: both;
     visibility: hidden;
     margin: 0px;
     padding: 0px;
-  }
+}
   /* ENCADRE de présentation de FICHE */
   .fiche_cadre .condense, .fiche_cadre .condense DD, .fiche_cadre .condense DT {
     display: inline;
     margin: 1px 5px 1px 0px;
-  }
+}
   .photos {
     float: left;
     margin: 1px;
     position: relative;
     max-width: 100%;
-  }
+}
   .texte_sur_image {
     color: white;
     text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
@@ -735,19 +740,19 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     position: absolute;
     top: 10px;
     right: 10px;
-  }
+}
   .point_forum blockquote {
     margin-block-start: 0;
-  }
+}
   .point_forum blockquote * {
     margin-block-start: 0;
     margin-block-end: 0;
     margin-inline-start: 0;
     margin-inline-end: 0;
-  }
+}
   .point_forum em {
     color: black !important;
-  }
+}
 
 /*==================================================================*/
 /*                              CARTES                              */
@@ -811,7 +816,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     float: right;
     width: 67%;
     max-height: calc(100% - 75px);
-  }
+}
   #selecteur-carte-nav {
     display: table-cell;
     width: 33%;
@@ -823,7 +828,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     float: right;
     width: 75vw;
     height: 75vw;
-  }
+}
   #selecteur-carte-nav {
     display: table-cell;
     width: 33%;
@@ -870,14 +875,14 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 @media print {
   html {
     height: initial;
-  }
+}
   .noprint {
     display:none;
   }
 }
   #carte-nav {
     margin: 0;
-  }
+}
 
 #check-types {
 	float: right;
