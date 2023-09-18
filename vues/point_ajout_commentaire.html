@@ -12,10 +12,10 @@
   <?php } elseif (!empty($vue->messages->erreur)) { ?>
       <p><?=$vue->messages->message?>.</p>
   <?php } ?>
-  <div class="com">
+  <div>
     <form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
-      <textarea name="texte" cols="120" rows="8"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
-      <a href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe possible</a>
+      <textarea class="textarea_large" name="texte"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
+      <a href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe&nbsp;possible</a>
       <?php if (!est_connecte()) { ?>
         <p>
           <label>Auteur:</label>
@@ -23,8 +23,8 @@
         </p>
       <?php } ?>
       <p>
-        <label>Une photo ? (format jpeg, taille max=<?=getMaximumFileUploadSize()?>)</label>
-        <input type="file" name="comment_photo" size="15" value="" accept="image/*" />(facultatif)
+        <label>Une photo ?</label>
+        <input type="file" name="comment_photo" size="15" value="" accept="image/*" />(facultatif, format jpeg, taille max=<?=getMaximumFileUploadSize()?>)
       </p>
       <p>
         <input type="checkbox" id="demande_correction" name="demande_correction" value="1"
@@ -47,7 +47,7 @@
         <?}?>
           <p>
             Merci de simplement écrire la lettre "f" dans la case :
-            <input type="text" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
+            <input type="text" class="input_captcha_court" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
             (Ceci afin d'éviter les messages indésirables automatiques, désolé)
           </p>
       <?}?>

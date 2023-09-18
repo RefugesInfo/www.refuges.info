@@ -257,17 +257,22 @@ LI {
   margin-bottom:3px;
 }
 
-  /*====== FORMULAIRES======*/
-  /* Utilisé pour le formulaire de création ou modification pour les 3 champs libres proprio, accès, remarques */
+/*====== FORMULAIRES======*/
+/* 
+  Utilisé pour le formulaire de création ou modification ainsi que l'ajout de commentaires. 
+  J'aimerais pouvoir rendre un peu plus cohérent (factoriser) les style de la plupart des formulaires du site (zone modérateur, modif fiche, ajout commentaires) 
+  mais ça demande un peu de tests.
+*/
 
 FORM#form_point FIELDSET {
   border: thin solid transparent;  /* pour les allergiques aux barrieres ;) */
   padding: 0.75em 0;
 }
 FORM#form_point .textarea {
-  width: 96%;
+  width: 100%;
   min-width: 150px;
   max-width: 1000px;
+  min-height: 10em;
 }
 FORM#form_point .textarea LABEL,
 FORM#form_point .textarea TEXTAREA {
@@ -324,6 +329,16 @@ FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon en
 .input_en_ligne {
   width:18em;
 }
+.input_captcha_court {
+  width:3em;
+}
+.textarea_large {
+  width: 99%;
+  min-width: 150px;
+  max-width: 1000px;
+  min-height: 10em;
+}
+
 .fauxfieldset-legend {
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;
