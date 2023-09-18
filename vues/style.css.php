@@ -876,8 +876,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /* Carte formulaire de modification */
 #carte-edit {
   float: right;
-  width: 95vw;
-  height: 95vw;
+  width: 99vw;
+  height: 97vw;
   max-height: 450px;
 }
 /* Carte formulaire de modification présentation écrans */
