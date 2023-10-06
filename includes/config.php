@@ -146,8 +146,9 @@ $config_wri['points_maximum_recherche']=40;
 // nombre de points renvoyés par défaut, par l'API
 $config_wri['defaut_max_nombre_point']=250;
 
-// nombre de jours pris en compte pour les derniers ajouts sur la page d'accueil et nouvelles
-$config_wri['defaut_max_jours_ajouts_recents']=7;
+// nombre de commentaires ou de point ajouté tels que présentés sur la page d'accueil
+$config_wri['defaut_max_commentaires_recents']=10;
+$config_wri['defaut_max_ajouts_recents']=10;
 
 // nombre de points ou commentaires renvoyés par défaut sur la page des nouvelles si on en veut "plus"
 $config_wri['defaut_max_page_nouvelles']=150;

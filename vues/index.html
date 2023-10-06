@@ -23,7 +23,7 @@
 	<div class="tablo" style="float:none;padding-left:15px">
 		<?=wiki_page_html("nouvelles_generales")?>
 
-		<h4><?=$vue->stat->nbphotos?> photos. Celles rentrées il y a moins <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
+		<h4><?=$vue->stat->nbphotos?> photos. Les dernières :</h4>
 		<br>
 		<dd>
 			<?php if (isset($vue->nouveaux_commentaires)) 
@@ -36,7 +36,7 @@
 		</dd>
 		<br>
 
-		<h4><?=$vue->stat->nbpoints?> points dans la base. Ceux ajoutés il y a moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
+		<h4><?=$vue->stat->nbpoints?> points dans la base. Les <?=$config_wri['defaut_max_ajouts_recents']?> derniers ajoutés :</h4>
 		<ul>
 			<?php if (isset($vue->nouveaux_points)) foreach ($vue->nouveaux_points as $nouveau_point) { ?>
 				<li>
@@ -60,7 +60,7 @@
 		</ul>
 		<br>
 
-		<h4><?=$vue->stat->nbcomm?> commentaires. Ceux de moins de <?=$config_wri['defaut_max_jours_ajouts_recents']?> jours :</h4>
+		<h4><?=$vue->stat->nbcomm?> commentaires. Les <?=$config_wri['defaut_max_commentaires_recents']?> derniers :</h4>
 		<ul>
 			<?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>
 				<li>

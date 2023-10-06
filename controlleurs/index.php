@@ -22,14 +22,14 @@ $vue->stat = stat_site ();
 
 // Préparation de la liste des photos et commentaires récent(e)s
 $conditions_nouveaux_commentaires = new stdclass();
-$conditions_nouveaux_commentaires->date_apres="NOW() - INTERVAL '".$config_wri['defaut_max_jours_ajouts_recents']." days'";
+$conditions_nouveaux_commentaires->limite=$config_wri['defaut_max_commentaires_recents'];
 $conditions_nouveaux_commentaires->avec_infos_point=True;
 $conditions_nouveaux_commentaires->ordre="date_creation DESC";
 $vue->nouveaux_commentaires=infos_commentaires($conditions_nouveaux_commentaires);
 
 
 $conditions_nouveaux_points = new stdclass();
-$conditions_nouveaux_points->date_creation_apres="NOW() - INTERVAL '".$config_wri['defaut_max_jours_ajouts_recents']." days'";
+$conditions_nouveaux_points->limite=$config_wri['defaut_max_ajouts_recents'];
 $conditions_nouveaux_points->avec_infos_massif=True;
 $conditions_nouveaux_points->ordre="date_creation DESC";
 $vue->nouveaux_points=infos_points($conditions_nouveaux_points);
