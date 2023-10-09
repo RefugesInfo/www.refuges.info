@@ -81,7 +81,6 @@ if (empty($point->erreur))
       else
       // On tente d'ajouter le commentaire, qui peut retourner une erreur au besoin (point supprimé, erreur technique, ...)
         $vue->messages=modification_ajout_commentaire($commentaire);
-
       // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
       if (empty($vue->messages->erreur))
       {
@@ -91,7 +90,7 @@ if (empty($point->erreur))
       else 
       {
         $vue->type = "page_simple";
-        $vue->contenu="Impossible d'ajouter ce commentaire car : $commentaire->message";   
+        $vue->contenu="Impossible d'ajouter ce commentaire car : ".$vue->messages->message;   
         return;
       }
 

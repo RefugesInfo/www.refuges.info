@@ -243,8 +243,8 @@ function modification_ajout_commentaire($commentaire)
                     return erreur("La photo proposée ne semble pas exister ou ne nous est pas parvenue");
             $taille = getimagesize($commentaire->photo['originale']);
             // Test pour voir si la photo est bien un jpeg
-            if ($taille[2] != 2)
-                    return erreur("La photo proposée ne semble pas être au format JPEG");
+            if (exif_imagetype($commentaire->photo['originale']) != IMAGETYPE_JPEG )
+                    return erreur("Le fichier de photo proposé ne semble pas être au format JPEG, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre.");
             //bien, on a une image pour ce commentaire
             $photo_valide=True;
     }
