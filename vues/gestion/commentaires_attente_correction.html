@@ -1,6 +1,6 @@
 <div class="contenu">
-    
     <h4>Liste des commentaires en attente de modération : </h4>
+    <p>
     <?php if (!empty($vue->commentaires_attente_correction)) { ?>
 	<form method="post" action="commentaires_attente_correction">
 		<?php foreach ($vue->commentaires_attente_correction as $c) { ?>
@@ -13,12 +13,14 @@
 
 		<input type="submit" name="corrections_faites" value="Retirer ceux que j'ai coché de la liste">
 	</form>
+	</p>
 	<?php }
 	else {
 	?>
 	<p>Aucun commentaire en attente de modération</p>
+	<br>
 	<?php 
-	}	
+	}
 	print(wiki_page_html("explications_moderateurs_commentaires_attente_correction"));
 	?>
 </div>
