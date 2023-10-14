@@ -227,137 +227,138 @@ TODO peut-être: pouvoir passer une url http pour la photo au lieu d'un chemin l
 ************/
 function modification_ajout_commentaire($commentaire)
 {
-    global $config_wri,$pdo;
-    $retour = new stdClass;
-    $photo_valide=False;
-    $ajout_photo=False;
+  global $config_wri,$pdo;
+  $retour = new stdClass;
+  $photo_valide=False;
+  $ajout_photo=False;
 
-    $point=infos_point($commentaire->id_point,True);
-    if (!empty($point->erreur))
-            return erreur("Le commentaire ne peut être ajouté car : ".$point->message ?? '',"Id du point: \"$commentaire->id_point\"");
-    // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
-    // On dirait que le commentaire dispose bien d'une photo
-    if (isset($commentaire->photo['originale']))
+  $point=infos_point($commentaire->id_point,True);
+  if (!empty($point->erreur))
+    return erreur("Le commentaire ne peut être ajouté car : ".$point->message ?? '',"Id du point: \"$commentaire->id_point\"");
+  // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
+  // On dirait que le commentaire dispose bien d'une photo
+  if (isset($commentaire->photo['originale']))
+  {
+    if (!is_file($commentaire->photo['originale']))
+      return erreur("La photo proposée ne semble pas exister ou ne nous est pas parvenue");
+    // Test pour voir si la photo est bien un jpeg
+    if (exif_imagetype($commentaire->photo['originale']) != IMAGETYPE_JPEG )
+      return erreur("Le fichier de photo proposé ne semble pas être au format JPEG, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre.");
+    //bien, on a une image pour ce commentaire
+    $photo_valide=True;
+  }
+  else if (isset($commentaire->photo['reduite']))
+    // On a pas (ou plus) la photo originale, mais on a quand même la réduite
+    $commentaire->photo_existe=1; // normalement, vu que l'objet n'a pas de chemin pour la photo, ça devrait déjà être 0, mais si quelqu'un veut le forcer à 1 : non
+  else
+    $commentaire->photo_existe=0;
+
+  if (!$photo_valide and trim($commentaire->texte)=="")
+    return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
+
+  // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
+  if (isset($commentaire->id_commentaire))
+  { // On souhaite modifier le commentaire
+    $old_commentaire=infos_commentaires($commentaire->id_commentaire,True);
+    if (!empty($old_commentaire->erreur))
+      return erreur("Une modification d'un commentaire inexistant a été demandée : ".$old_commentaire->message);
+            
+    if (!empty($commentaire->photo['originale']))      
+      $ajout_photo=!$commentaire->photo['originale'];
+    else
+      $ajout_photo=False;
+    $mode="modification";
+  }
+  else
+    $mode="ajout";
+
+  $traitement_photo=($photo_valide and ($ajout_photo or $mode=="ajout"));
+  if ($traitement_photo)
+  {
+    $commentaire->photo_existe=1;
+    $exif_data = @exif_read_data ($commentaire->photo['originale']);
+    // la date ne semble pas exister dans les données Exif de la photo, on met ''
+    $date_photo = $exif_data ['DateTimeOriginal'] ?? '';
+
+    // Testons si on a récupéré une date dans les infos exif de la photo
+    // jmb tant que les photos ne sont QUE dans les commentaires
+    // certains appareils photo pas à l'heure enregistrent quand même une date parfois au format "0000:00:00 00:00:00" qui est manifestement invalide, j'ajoute un test plus poussé (mais un peu compliqué) pour éviter aussi les 32 Mars
+    // tout autant que les 00000000000 ou n'importe quoi qui ne ressemble pas à "2014:04:14 12:45:78" -- sly
+    if (preg_match('/^([0-9]{4}):([0-9]{2}):([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/', $date_photo, $m) == 1 && checkdate($m[2], $m[3], $m[1]))
+      $commentaire->date_photo = "$m[1]-$m[2]-$m[3] $m[4]:$m[5]:$m[6]";
+  }
+
+  // Rotation manuelle des photos
+  if (!empty($_REQUEST['rotation']) ) {
+    $nom_fichier = $config_wri['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
+    $image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
+    $image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
+    imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
+  }
+
+  // FIXME, tout correspond, y'a pas moyen de simplifier par un foreach sur $commentaire et remplir les champs SQL ?
+  // 2023, pas tout à fait, l'object $commentaire contient des trucs comme la photo qui n'est pas en base, il faudrait ruser.
+  isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
+  isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
+  isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
+  isset($commentaire->id_createur_commentaire) ? $champs_sql['id_createur_commentaire']=$commentaire->id_createur_commentaire:false;
+  isset($commentaire->photo_existe) ? $champs_sql['photo_existe']=$commentaire->photo_existe:false;
+  isset($commentaire->raison_demande_correction) ? $champs_sql['raison_demande_correction']=$pdo->quote($commentaire->raison_demande_correction):false;
+  is_numeric($commentaire->demande_correction) ? $champs_sql['demande_correction']=$commentaire->demande_correction:false;
+  isset($commentaire->date_photo) ? $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo):false;
+
+  // fait-on un update ou un insert ?
+  if ($mode=="modification")
+    $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'update',"id_commentaire=$commentaire->id_commentaire");
+  else
+    $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'insert');
+
+  if (!$pdo->exec($query_finale))
+    return erreur("Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
+  elseif ($mode!="modification")
+    $commentaire->id_commentaire = $pdo->lastInsertId();
+
+  if ($mode=="ajout")
+    $retour->message="Commentaire ajouté";
+  else
+    $retour->message="Commentaire modifié";
+
+  $retour->erreur=False;
+
+  // On avait une photo valide sur le disque mais il est demandé qu'il n'y en ait pas, il faut donc faire le ménage
+  if ($commentaire->photo_existe==0 and $photo_valide)
+    suppression_photos($commentaire);
+
+  // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo
+  if ($traitement_photo)
+  {
+    $photo_originale=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
+    $vignette_photo = $config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
+    $image_reduite=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
+    $taille = getimagesize($commentaire->photo['originale']);
+
+    if ( ($taille[0]>$config_wri['largeur_max_photo']) OR ($taille[1]>$config_wri['hauteur_max_photo']))
     {
-            if (!is_file($commentaire->photo['originale']))
-                    return erreur("La photo proposée ne semble pas exister ou ne nous est pas parvenue");
-            $taille = getimagesize($commentaire->photo['originale']);
-            // Test pour voir si la photo est bien un jpeg
-            if (exif_imagetype($commentaire->photo['originale']) != IMAGETYPE_JPEG )
-                    return erreur("Le fichier de photo proposé ne semble pas être au format JPEG, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre.");
-            //bien, on a une image pour ce commentaire
-            $photo_valide=True;
-    }
-    else if (isset($commentaire->photo['reduite']))
-            // On a pas (ou plus) la photo originale, mais on a quand même la réduite
-            $commentaire->photo_existe=1; // normalement, vu que l'objet n'a pas de chemin pour la photo, ça devrait déjà être 0, mais si quelqu'un veut le forcer à 1 : non
-    else
-            $commentaire->photo_existe=0;
+      copy($commentaire->photo['originale'],$photo_originale);
+      $retour->message.=", la photo est grande (plus grande que "
+      .$config_wri['largeur_max_photo'] . "x"
+      .$config_wri['hauteur_max_photo']
+      ."), elle est redimensionnée";
+      copy($commentaire->photo['originale'],$image_reduite);
 
-    if (!$photo_valide and trim($commentaire->texte)=="")
-            return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
-
-    // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
-    if (isset($commentaire->id_commentaire))
-    { // On souhaite modifier le commentaire
-            $old_commentaire=infos_commentaires($commentaire->id_commentaire,True);
-            if (!empty($old_commentaire->erreur))
-                    return erreur("Une modification d'un commentaire inexistant a été demandée : ".$old_commentaire->message);
-                    
-            if (!empty($commentaire->photo['originale']))      
-              $ajout_photo=!$commentaire->photo['originale'];
-            else
-              $ajout_photo=False;
-            $mode="modification";
+      redimensionnement_photo($image_reduite);
+      copy($image_reduite,$vignette_photo);
     }
     else
-            $mode="ajout";
-
-    $traitement_photo=($photo_valide and ($ajout_photo or $mode=="ajout"));
-    if ($traitement_photo)
     {
-            $commentaire->photo_existe=1;
-            $exif_data = @exif_read_data ($commentaire->photo['originale']);
-            // la date ne semble pas exister dans les données Exif de la photo, on met ''
-            $date_photo = $exif_data ['DateTimeOriginal'] ?? '';
-
-            // Testons si on a récupéré une date dans les infos exif de la photo
-            // jmb tant que les photos ne sont QUE dans les commentaires
-            // certains appareils photo pas à l'heure enregistrent quand même une date parfois au format "0000:00:00 00:00:00" qui est manifestement invalide, j'ajoute un test plus poussé (mais un peu compliqué) pour éviter aussi les 32 Mars
-            // tout autant que les 00000000000 ou n'importe quoi qui ne ressemble pas à "2014:04:14 12:45:78" -- sly
-            if (preg_match('/^([0-9]{4}):([0-9]{2}):([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/', $date_photo, $m) == 1 && checkdate($m[2], $m[3], $m[1]))
-                    $commentaire->date_photo = "$m[1]-$m[2]-$m[3] $m[4]:$m[5]:$m[6]";
+      copy($commentaire->photo['originale'],$image_reduite);
+      copy($image_reduite,$vignette_photo);
+      $retour->message.=", photo ajoutée";
     }
-
-    // Rotation manuelle des photos
-    if (!empty($_REQUEST['rotation']) ) {
-        $nom_fichier = $config_wri['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
-        $image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
-        $image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
-        imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
-    }
-
-    // FIXME, tout correspond, y'a pas moyen de simplifier par un foreach sur $commentaire et remplir les champs SQL ?
-    // 2023, pas tout à fait, l'object $commentaire contient des trucs comme la photo qui n'est pas en base, il faudrait ruser.
-    isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
-    isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
-    isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
-    isset($commentaire->id_createur_commentaire) ? $champs_sql['id_createur_commentaire']=$commentaire->id_createur_commentaire:false;
-    isset($commentaire->photo_existe) ? $champs_sql['photo_existe']=$commentaire->photo_existe:false;
-    isset($commentaire->raison_demande_correction) ? $champs_sql['raison_demande_correction']=$pdo->quote($commentaire->raison_demande_correction):false;
-    is_numeric($commentaire->demande_correction) ? $champs_sql['demande_correction']=$commentaire->demande_correction:false;
-    isset($commentaire->date_photo) ? $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo):false;
-
-    // fait-on un update ou un insert ?
-    if ($mode=="modification")
-            $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'update',"id_commentaire=$commentaire->id_commentaire");
-    else
-            $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'insert');
-
-    if (!$pdo->exec($query_finale))
-            return erreur("Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
-    elseif ($mode!="modification")
-            $commentaire->id_commentaire = $pdo->lastInsertId();
-
-    if ($mode=="ajout")
-            $retour->message="Commentaire ajouté";
-    else
-            $retour->message="Commentaire modifié";
-
-    $retour->erreur=False;
-
-    // On avait une photo valide sur le disque mais il est demandé qu'il n'y en ait pas, il faut donc faire le ménage
-    if ($commentaire->photo_existe==0 and $photo_valide)
-            suppression_photos($commentaire);
-
-    // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo
-    if ($traitement_photo)
-    {
-            $photo_originale=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
-            $vignette_photo = $config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
-            $image_reduite=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
-            if ( ($taille[0]>$config_wri['largeur_max_photo']) OR ($taille[1]>$config_wri['hauteur_max_photo']))
-            {
-                    copy($commentaire->photo['originale'],$photo_originale);
-                    $retour->message.=", la photo est grande (plus grande que "
-                    .$config_wri['largeur_max_photo'] . "x"
-                    .$config_wri['hauteur_max_photo']
-                    ."), elle est redimensionnée";
-                    copy($commentaire->photo['originale'],$image_reduite);
-
-                    redimensionnement_photo($image_reduite);
-                    copy($image_reduite,$vignette_photo);
-            }
-            else
-            {
-                    copy($commentaire->photo['originale'],$image_reduite);
-                    copy($image_reduite,$vignette_photo);
-                    $retour->message.=", photo ajoutée";
-            }
-            redimensionnement_photo($vignette_photo, 'vignette');
-    }
-    $retour->id_commentaire=$commentaire->id_commentaire;
-    return ($retour);
+    redimensionnement_photo($vignette_photo, 'vignette');
+  }
+  $retour->id_commentaire=$commentaire->id_commentaire;
+  return ($retour);
 }
 
 
