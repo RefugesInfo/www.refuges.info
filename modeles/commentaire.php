@@ -143,41 +143,44 @@ function infos_commentaires ($conditions)
            $limite";
            
   if ( ! ($res=$pdo->query($query)))
-
     return erreur("Une erreur sur la requête est survenue",$query);
+    
   //jmb: renvoie un tablo vide, au lieu d'un NULL si pas de comment, => les appelants n'ont plus a tester.
   $commentaires = array() ;
   while ($commentaire = $res->fetch())
   {
     if ($commentaire->photo_existe)
     {
-      // Remplissage de l'objet avec les photos disponibles pour ce commentaire, s'il y en a et si elle existe sur le disque
-      // Le problème venant du fait que tous les commentaires n'ont pas eu leur vignette de créée, et pas tous on une photo à la taille d'origine (historique wri)
+      /* 
+        Remplissage de l'objet avec les photos disponibles pour ce commentaire, s'il y en a et si elles existent sur le disque :
+        Quand tout est "normal", on devrait avoir : la photo d'origine fournie par le contributeur, la version réduite à la taille qui nous plait, la vignette
+        Le problème venant du fait que tous les commentaires n'ont pas eu leur vignette de créée, et pas tous on une photo à la taille d'origine (historique wri)
+        ben, on est obligé de tout tester : ouais, c'est relou !
+      */
       foreach (array("reduite", "vignette", "originale") as $taille)
-      {
-        if ($taille=="reduite")
-          $nom_fichier=$commentaire->id_commentaire.".jpeg";
-        else
-          $nom_fichier=$commentaire->id_commentaire."-$taille.jpeg";
-        if (is_file($config_wri['rep_photos_points'].$nom_fichier))
+        foreach($config_wri['extensions_fichier_photo'] as $extension_fichier_photo)
         {
-          $commentaire->photo[$taille]=$config_wri['rep_photos_points'].$nom_fichier;
-          $commentaire->lien_photo[$taille]=$config_wri['rep_web_photos_points'].$nom_fichier
-            .'?'.filemtime($commentaire->photo[$taille]); // Permet de recharger si on bascule laphoto par exemple
+          $nom_fichier_photo=$commentaire->id_commentaire."-".$taille.".".$extension_fichier_photo;
+          $chemin_photo=$config_wri['rep_photos_points'].$nom_fichier_photo;
+          if (is_file($chemin_photo))
+          {
+            $commentaire->photo[$taille]=$chemin_photo;
+            // Le filemtime a pour but, après une modification sur la photo, d'éviter que les caches navigateurs ne s'activent
+            $commentaire->lien_photo[$taille]=$config_wri['rep_web_photos_points'].$nom_fichier_photo."?".filemtime($chemin_photo);
+            break; // pas besoin de tester toute les extensions, on en a trouvé une
+          }
         }
-      }
-      // Ce cas peut exister quand la photo originale est la même que la réduite (déjà suffisament petite, ou raisons historiques)
+            
+      // Ce cas peut exister quand on a plus/pas gardé la photo originale (historique) alors elle sera la même que la réduite
       if (!isset($commentaire->photo['originale']) and isset($commentaire->photo['reduite']))
       {
         $commentaire->photo['originale']=$commentaire->photo['reduite'];
         $commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
       }
     }
-    //FIXME sly 12/2016: question rangement propre, il ne devrait pas appartenir au modèle de faire de la mise en forme
-    $commentaire->date_formatee=date("d/m/y", $commentaire->ts_unix_commentaire);
     
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
-    if (isset($commentaire->id_createur_commentaire))
+    if (isset($commentaire->id_createur_com))
         $commentaire->auteur_commentaire=html_entity_decode($commentaire->auteur_commentaire);
     $commentaires [] = $commentaire;
   }
@@ -223,6 +226,9 @@ $retour->id_commentaire (l'id du commentaire créé ou modifié)
 $retour->message : un message texte compréhensible indiquant une information sur ce qui s'est passé
 (exemple : la photo, trop, grosse a dû être redimensionnée)
 
+$commentaire->rotation : demande une rotation de la photo d'un angle de $commentaire->rotation (degrés)
+
+
 TODO peut-être: pouvoir passer une url http pour la photo au lieu d'un chemin local, si la photo est déjà sur un service distant, alors la télécharger, ce qui évite à l'internaute de la ré-envoyer. (Avis sly: ouais bon, c'est pas non plus la fonction de fou, et que faire si le serveur distant ne répond pas ?)
 ************/
 function modification_ajout_commentaire($commentaire)
@@ -237,13 +243,16 @@ function modification_ajout_commentaire($commentaire)
     return erreur("Le commentaire ne peut être ajouté car : ".$point->message ?? '',"Id du point: \"$commentaire->id_point\"");
   // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
   // On dirait que le commentaire dispose bien d'une photo
-  if (isset($commentaire->photo['originale']))
+  if (!empty($commentaire->photo['originale']))
   {
     if (!is_file($commentaire->photo['originale']))
       return erreur("La photo proposée ne semble pas exister ou ne nous est pas parvenue");
-    // Test pour voir si la photo est bien un jpeg
-    if (exif_imagetype($commentaire->photo['originale']) != IMAGETYPE_JPEG )
-      return erreur("Le fichier de photo proposé ne semble pas être au format JPEG, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre.");
+    
+    $format_photo=exif_imagetype($commentaire->photo['originale']);
+    // Test pour voir si le fichier envoyé est bien un format de photo dans la liste que nous acceptons
+    if (!in_array($format_photo,$config_wri['format_photo_autorisees'] ))
+      return erreur("Le fichier proposé ne semble pas contenir une image au format ".$config_wri['texte_des_formats_photo_autorisee'].", vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre.");
+      
     //bien, on a une image pour ce commentaire
     $photo_valide=True;
   }
@@ -257,11 +266,11 @@ function modification_ajout_commentaire($commentaire)
     return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
 
   // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
-  if (isset($commentaire->id_commentaire))
-  { // On souhaite modifier le commentaire
-    $old_commentaire=infos_commentaires($commentaire->id_commentaire,True);
-    if (!empty($old_commentaire->erreur))
-      return erreur("Une modification d'un commentaire inexistant a été demandée : ".$old_commentaire->message);
+  if (isset($commentaire->id_commentaire)) // On a un id de commentaire, on est donc en train de le modifier
+  { 
+    $commentaire_avant_modification=infos_commentaire($commentaire->id_commentaire,True);
+    if (!empty($commentaire_avant_modification->erreur))
+      return erreur("Une modification d'un commentaire inexistant a été demandée : ".$commentaire_avant_modification->message);
             
     if (!empty($commentaire->photo['originale']))      
       $ajout_photo=!$commentaire->photo['originale'];
@@ -272,7 +281,10 @@ function modification_ajout_commentaire($commentaire)
   else
     $mode="ajout";
 
-  $traitement_photo=($photo_valide and ($ajout_photo or $mode=="ajout"));
+  // On ne souhaite traiter la photo (redimensionnement, vignette) que si celle-ci est valide et que l'on est bien dans le mode d'ajout d'un commentaire  
+  $traitement_photo=($photo_valide and $mode=="ajout");
+  
+  // Le but de ce bout est de récupérer la date (données exif) de prise de la photo que l'on doit ajouter
   if ($traitement_photo)
   {
     $commentaire->photo_existe=1;
@@ -288,12 +300,16 @@ function modification_ajout_commentaire($commentaire)
       $commentaire->date_photo = "$m[1]-$m[2]-$m[3] $m[4]:$m[5]:$m[6]";
   }
 
-  // Rotation manuelle des photos
-  if (!empty($_REQUEST['rotation']) ) {
-    $nom_fichier = $config_wri['rep_photos_points'].$_REQUEST['id_commentaire'].".jpeg";
-    $image=imagecreatefromjpeg($nom_fichier);//on chope le jpeg
-    $image = imagerotate ($image, $_REQUEST['rotation'], 0); // On le fait tourner
-    imagejpeg($image,$nom_fichier);// On l'écrit sur le disque
+  // Rotation des photos réduite (la photo originale du client n'est pas touchée, ça peut être discutable, mais avec les tags exif d'orientation, j'ai eu des gags), (2023 utilisée uniquement par les modérateurs, donc a posteriori de l'ajout)
+  if (!empty($commentaire->rotation) and $mode=="modification" ) 
+  {
+    $image=imagecreatefromstring(file_get_contents($commentaire_avant_modification->photo['reduite'])); // on récupère la réduite, peut importe son format
+    $image = imagerotate ($image, $commentaire->rotation, 0); // On la fait tourner
+    
+    imagejpeg($image,$commentaire_avant_modification->photo['reduite']); // On l'écrit sur le disque
+    redimensionnement_photo($commentaire_avant_modification->photo['reduite']); // on la redimensionne en mode réduite
+    imagejpeg($image,$commentaire_avant_modification->photo['vignette']); 
+    redimensionnement_photo($commentaire_avant_modification->photo['vignette'],"vignette"); // on redimensionne celle là en mode vignette
   }
 
   // FIXME, tout correspond, y'a pas moyen de simplifier par un foreach sur $commentaire et remplir les champs SQL ?
@@ -329,69 +345,70 @@ function modification_ajout_commentaire($commentaire)
   if ($commentaire->photo_existe==0 and $photo_valide)
     suppression_photos($commentaire);
 
-  // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo
+  // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo ajoutée
   if ($traitement_photo)
   {
-    $photo_originale=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-originale.jpeg";
+    //2023 : on accepte maintenant plusieurs format possible, on garde donc une trace dans l'extension du format d'origine (on pourrait faire sans extension, mais l'intuition me dit qu'il vaut p'tet mieux garder ça
+    $choix_extension_fichier=str_replace("image/","",image_type_to_mime_type($format_photo));
+    
+    // On souhaite garder la photo originale telle qu'elle a été fournie, sans la retoucher, mais on ne souhaite pas garder le nom de fichier fourni par le client
+    // des fois qu'il y ait des trucs malveillants dedans, ou pour la confidentialité, et pour standardiser le stockage sur disque
+    $photo_originale=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-originale.".$choix_extension_fichier;
     $vignette_photo = $config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-vignette.jpeg";
-    $image_reduite=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . ".jpeg";
+    $image_reduite=$config_wri['rep_photos_points'] . $commentaire->id_commentaire . "-reduite.jpeg";
     $taille = getimagesize($commentaire->photo['originale']);
 
+    //On garde bien la photo d'origine, sans modification (à part la renommer), comme ça, si un jour on veut changer de format, relire les exifs, etc.
+    copy($commentaire->photo['originale'],$photo_originale);
+    copy($commentaire->photo['originale'],$image_reduite);
+    
     if ( ($taille[0]>$config_wri['largeur_max_photo']) OR ($taille[1]>$config_wri['hauteur_max_photo']))
-    {
-      copy($commentaire->photo['originale'],$photo_originale);
-      $retour->message.=", la photo est grande (plus grande que "
-      .$config_wri['largeur_max_photo'] . "x"
-      .$config_wri['hauteur_max_photo']
-      ."), elle est redimensionnée";
-      copy($commentaire->photo['originale'],$image_reduite);
-
       redimensionnement_photo($image_reduite);
-      copy($image_reduite,$vignette_photo);
-    }
     else
-    {
-      copy($commentaire->photo['originale'],$image_reduite);
-      copy($image_reduite,$vignette_photo);
-      $retour->message.=", photo ajoutée";
+    { 
+      $image=imagecreatefromstring(file_get_contents($image_reduite));
+      imagejpeg($image,$image_reduite); // On l'écrit sur le disque en jpeg même si sa résolution reste inchangée, on uniformise
     }
+    copy($image_reduite,$vignette_photo);
     redimensionnement_photo($vignette_photo, 'vignette');
   }
   $retour->id_commentaire=$commentaire->id_commentaire;
-  return ($retour);
+  return $retour;
 }
 
 
 function redimensionnement_photo($chemin_photo, $type = 'photo')
 {
   global $config_wri;
-    $image=imagecreatefromjpeg($chemin_photo);//on chope le jpeg
+  $image=imagecreatefromstring(file_get_contents($chemin_photo)); //On récupère la photo dans n'importe lequel des formats qu'on accepte
 
-    // Detect orientation
-    $codes_angles = [
-        3 => 180,
-        6 => -90,
-        8 =>  90,
-    ];
-    $exif_data = @exif_read_data ($chemin_photo);
-    $angle = @$codes_angles [$exif_data ['Orientation']];
-    if ($angle)
-        $image = imagerotate ($image, $angle, 0);
+  // Detect orientation
+  $codes_angles = [
+      3 => 180,
+      6 => -90,
+      8 =>  90,
+  ];
+  $exif_data = @exif_read_data ($chemin_photo);
+  $angle = @$codes_angles [$exif_data ['Orientation']];
+  
+  // Si des données exif sont disponible sur l'orientation (jpeg et webp uniquement) alors on tente de respecter l'orientation
+  if ($angle)
+      $image = imagerotate ($image, $angle, 0);
 
-    $x_image= ImageSX($image); // coord en X
-    $y_image= ImageSY($image); //coord en Y
+  $x_image= ImageSX($image); // coord en X
+  $y_image= ImageSY($image); //coord en Y
 
-    if (($x_image/$y_image)>=($config_wri['largeur_max_'.$type]/$config_wri['hauteur_max_'.$type]))
-    $zoom1=$config_wri['largeur_max_'.$type]/$x_image;
-    else
-    $zoom1=$config_wri['hauteur_max_'.$type]/$y_image;
+  if (($x_image/$y_image)>=($config_wri['largeur_max_'.$type]/$config_wri['hauteur_max_'.$type]))
+  $zoom1=$config_wri['largeur_max_'.$type]/$x_image;
+  else
+  $zoom1=$config_wri['hauteur_max_'.$type]/$y_image;
 
-    $image2=imagecreatetruecolor($x_image*$zoom1,$y_image*$zoom1);
-    imagecopyresampled ($image2, $image, 0,0, 0, 0,$x_image*$zoom1 ,$y_image*$zoom1,$x_image,$y_image);
+  $image2=imagecreatetruecolor($x_image*$zoom1,$y_image*$zoom1);
+  imagecopyresampled ($image2, $image, 0,0, 0, 0,$x_image*$zoom1 ,$y_image*$zoom1,$x_image,$y_image);
 
-    imagejpeg($image2,$chemin_photo);
-    ImageDestroy($image2);
-    ImageDestroy($image);
+  imagejpeg($image2,$chemin_photo);
+  ImageDestroy($image2);
+  ImageDestroy($image);
 }
 
 /******************************************************

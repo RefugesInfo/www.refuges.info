@@ -21,9 +21,9 @@
 
 			<? if ($commentaire->photo_existe==1) { ?>
 				<img
-					src="<?=$config_wri['rep_web_photos_points'].$commentaire->id_commentaire?>.jpeg"
+					src="<?=$commentaire->lien_photo['reduite']?>"
 					alt="photo liée au commentaire"
-					width="200px" />
+					width="300px" />
 				<br><br>
 			<?}?>
 

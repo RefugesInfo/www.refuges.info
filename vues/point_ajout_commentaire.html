@@ -24,7 +24,7 @@
       <?php } ?>
       <p>
         <label>Une photo ?</label>
-        <input type="file" name="comment_photo" size="15" value="" accept="image/*" />(facultatif, format jpeg, taille max=<?=getMaximumFileUploadSize()?>)
+        <input type="file" name="comment_photo" size="15" value="" accept="image/*" />(facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?>, taille max=<?=getMaximumFileUploadSize()?>)
       </p>
       <p>
         <input type="checkbox" id="demande_correction" name="demande_correction" value="1"

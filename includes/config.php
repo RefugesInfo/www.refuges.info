@@ -91,6 +91,12 @@ $config_wri['nom_hote']=$_SERVER['HTTP_HOST'];
 ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.$config_wri['chemin_modeles'].PATH_SEPARATOR.$config_wri['chemin_routes'].PATH_SEPARATOR.__DIR__);
 
 /********** photos / images points ************/
+// Liste des formats de photo autorisées pour la fonction exif_imagetype()
+$config_wri['format_photo_autorisees']=array(IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP, IMAGETYPE_BMP);
+// Liste des format des extensions de fichiers photo que l'on accepte de garder sur le disque comme "photo originale"
+$config_wri['extensions_fichier_photo']=array("jpeg", "png", "webp", "bmp");
+$config_wri['texte_des_formats_photo_autorisee']="jpeg, png, bmp ou webp";
+
 $config_wri['largeur_max_photo']=700;
 $config_wri['hauteur_max_photo']=600;
 $config_wri['largeur_max_vignette']=140;

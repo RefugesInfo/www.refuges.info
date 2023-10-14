@@ -13,6 +13,7 @@ switch($_REQUEST['type'])
 	case 'modification':
 		$commentaire->texte=stripslashes($_REQUEST['texte']);
 		$commentaire->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire']);
+		$commentaire->rotation=$_REQUEST['rotation'];
 		//On suppose qu'après modification par qui que ce soit, on ne veut plus forcément prévenir un modérateur
 		//et si c'est le modérateur qui fait la modif, on suppose qu'il à fait la correction.
 		$commentaire->demande_correction=0;
