@@ -3,10 +3,11 @@
 
 	<p style="margin-top:0">
 		<?=wiki_page_html("contenu_accueil")?>
+        <?=wiki_page_html("nouvelles_generales")?>
 	</p>
 
 	<!-- CARTE DES MASSIFS -->
-	<div class="tablo">
+	<div class="tablo" style="padding-right:1em;">
 		<h4><?=$vue->stat->nbmassifs?> massifs</h4>
 		<div>Passez la souris et cliquez sur un massif</div>
 		<div class="carte" id="carte-accueil"></div>
@@ -20,9 +21,7 @@
 		</ul>
 	</div>
 
-	<div class="tablo" style="float:none;padding-left:15px">
-		<?=wiki_page_html("nouvelles_generales")?>
-
+	<div class="tablo" style="float:none;">
 		<h4><?=$vue->stat->nbphotos?> photos. Les dernières :</h4>
 		<br>
 		<dd>

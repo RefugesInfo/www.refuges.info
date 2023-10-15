@@ -715,6 +715,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
   .tablo { /* DIV imite une table */
     display:table-cell;
+    min-width:400px; //En dessous de 400 pixels, c'est trop tassé/pas lisible, en mettant ça, on force un affichage en dessous de la carte de l'accueil
     vertical-align: top;
     float: left; /* pour IE7 */
 }
@@ -755,7 +756,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     color: white;
     text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
              1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
-    position: absolute;
+    position: absolute		
+
+;
     top: 10px;
     right: 10px;
 }
@@ -784,15 +787,15 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* Carte de l'accueil */
 #carte-accueil {
-  width: 650px;
+  width: 750px;
   height: 600px;
 }
 #carte-accueil .ol-switch-layer {
   display: none;
 }
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 750px) {
   #carte-accueil {
-    width: calc(100vw - 23px);
+    width: calc(100vw - 6px);
     height: 90vw;
   }
 }
