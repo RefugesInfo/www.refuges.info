@@ -349,6 +349,9 @@ DIV#switch_nav LABEL {
   float: none;
   clear: none;
 }
+input[type=checkbox]:hover, input[type=radio]:hover{
+    box-shadow: 0px 0px 10px #1300ff;
+}
 
 /*==========DIVERS=======*/
 IMG { /* images sans bordures */
