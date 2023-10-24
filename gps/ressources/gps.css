@@ -1,0 +1,23 @@
+html,
+body,
+#map {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#myol-gps-help,
+#myol-gps-help-fr {
+  left: 0;
+  width: 100%;
+}
+
+@viewport {
+  viewport-fit: cover;
+}
+
+.myol-button-upgrade button::after {
+  content: "\1F195";
+}

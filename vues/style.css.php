@@ -809,19 +809,19 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   max-height: calc(100% - 65px); /* Pour ne pas trop déborder en bas */
   margin: 0 0;
 }
-#selecteur-carte-nav {
+#selecteur-carte-edit {
   padding-left: 1px;
 }
-#selecteur-carte-nav P {
+#selecteur-carte-edit P {
   margin-top: 0;
   margin-bottom: 5px;
 }
-#selecteur-carte-nav SPAN {
+#selecteur-carte-edit SPAN {
   font-size: .8em;
   font-style: oblique;
 }
-#selecteur-carte-nav INPUT,
-#selecteur-carte-nav LABEL {
+#selecteur-carte-edit INPUT,
+#selecteur-carte-edit LABEL {
   text-align: justify;
   cursor: pointer;
 }
@@ -838,7 +838,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     width: 67%;
     max-height: calc(100% - 75px);
 }
-  #selecteur-carte-nav {
+  #selecteur-carte-edit {
     display: table-cell;
     width: 33%;
   }
@@ -850,7 +850,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     width: 75vw;
     height: 75vw;
 }
-  #selecteur-carte-nav {
+  #selecteur-carte-edit {
     display: table-cell;
     width: 33%;
     padding-left: 5px;
@@ -879,7 +879,14 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
 
-/* Carte formulaire de modification */
+/* Carte formulaire de modification de point */
+#carte-modif {
+  float: right;
+  width: 99vw;
+  height: 97vw;
+  max-height: 450px;
+}
+/* Carte formulaire de modification de massif */
 #carte-edit {
   float: right;
   width: 99vw;
@@ -888,7 +895,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 /* Carte formulaire de modification présentation écrans */
 @media screen and (min-width: 800px) {
-  #carte-edit {
+  #carte-modif {
     width: 450px;
     height: 450px;
   }

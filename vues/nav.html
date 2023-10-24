@@ -16,7 +16,7 @@
 	<?php } ?>
 ></div>
 
-<div id="selecteur-carte-nav" class="noprint">
+<div id="select-carte-nav" class="noprint">
 	<?php if ( !$vue->contenu ) { ?>
 		<!-- Affichage de points : il n'y a pas de paramétre ?id_polygone_type= -->
 		<fieldset>
@@ -25,25 +25,25 @@
 				<?php if ( $vue->polygone->id_polygone ) { ?>
 					<li>
 						<input type="checkbox"
-							id="selecteur-massif" name="selecteur-massif"
+							id="select-massif" name="select-massif"
 							value="<?=$vue->polygone->id_polygone?>"
 						/>
-						<label for="selecteur-massif"><?=$vue->polygone->nom_polygone?> uniquement</label>
+						<label for="select-massif"><?=$vue->polygone->nom_polygone?> uniquement</label>
 					</li><hr/>
 				<?php } ?>
 				<li>
-					<label for="selecteur-wri">Tout</label>
-					<input type="checkbox" id="selecteur-wri" name="selecteur-wri" value="all" />
-					<span id="selecteur-wri-status"></span>
+					<label for="select-wri">Tout</label>
+					<input type="checkbox" id="select-wri" name="select-wri" value="all" />
+					<span id="select-wri-status"></span>
 				</li>
 				<?php foreach ($vue->types_point_affichables AS $type_affichable) { ?>
 					<li>
 						<input type="checkbox"
-							id="selecteur-wri-<?=$type_affichable->id_point_type?>"
-							name="selecteur-wri"
+							id="select-wri-<?=$type_affichable->id_point_type?>"
+							name="select-wri"
 							value="<?=$type_affichable->id_point_type?>"
 						/>
-						<label for="selecteur-wri-<?=$type_affichable->id_point_type?>">
+						<label for="select-wri-<?=$type_affichable->id_point_type?>">
 							<img
 								id="icone_<?=$type_affichable->id_point_type?>"
 								src="<?=$config_wri['url_chemin_icones'].$config_wri['correspondance_type_icone'][replace_url($type_affichable->nom_type)]?>.svg"
@@ -55,9 +55,9 @@
 				<?php } ?>
 			</ul>
 			<hr />
-				<input type="checkbox" id="selecteur-massifs" name="selecteur-massifs" />
-				<label for="selecteur-massifs">massifs</label>
-				<span id="selecteur-massifs-status"></span>
+				<input type="checkbox" id="select-massifs" name="select-massifs" />
+				<label for="select-massifs">massifs</label>
+				<span id="select-massifs-status"></span>
 			<hr />
 				<ul>Ctrl+click: nouvel onglet</ul>
 				<ul>Maj+click: nouvelle fenêtre</ul>
@@ -96,37 +96,37 @@
 			<div>
 				<ul>
 					<li>
-						<label for="selecteur-osm">Tout</label>
-						<input type="checkbox" id="selecteur-osm" name="selecteur-osm" value="all" />
-						<span id="selecteur-osm-status"></span>
+						<label for="select-osm">Tout</label>
+						<input type="checkbox" id="select-osm" name="select-osm" value="all" />
+						<span id="select-osm-status"></span>
 					</li>
 					<li>
-						<input type="checkbox" name="selecteur-osm" id="City Hall"
+						<input type="checkbox" name="select-osm" id="City Hall"
 							value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' />
 						<label for="City Hall">hôtel ou location</label>
 					</li>
 					<li>
-						<input type="checkbox" name="selecteur-osm" id="Campground"
+						<input type="checkbox" name="select-osm" id="Campground"
 							value='["tourism"="camp_site"]' />
 						<label for="Campground">camping</label>
 					</li>
 					<li>
-						<input type="checkbox" name="selecteur-osm" id="Drinking Water"
+						<input type="checkbox" name="select-osm" id="Drinking Water"
 							value='["natural"="spring"]+["amenity"="drinking_water|watering_place|fountain"]+["waterway"="water_point"]+["man_made"="water_well"]' />
 						<label for="Drinking Water">point d'eau</label>
 					</li>
 					<li>
-						<input type="checkbox" name="selecteur-osm" id="Shopping Center"
+						<input type="checkbox" name="select-osm" id="Shopping Center"
 							value='["shop"~"supermarket|convenience"]' />
 						<label for="Shopping Center">alimentation</label>
 					</li>
 					<li>
-						<input type="checkbox" name="selecteur-osm" id="Parking Area"
+						<input type="checkbox" name="select-osm" id="Parking Area"
 							value='["amenity"="parking"]["access"!="private"]' />
 						<label for="Parking Area">parking</label>
 					</li>
 					<li>
-						<input type="checkbox" name="selecteur-osm" id="Ground Transportation"
+						<input type="checkbox" name="select-osm" id="Ground Transportation"
 							value='["highway"="bus_stop"]' />
 						<label for="Ground Transportation">bus</label>
 					</li>
@@ -138,31 +138,31 @@
 			<legend>Autres sites</legend>
 			<ul>
 				<li>
-					<input type="checkbox" name="selecteur-prc" id="selecteur-prc" />
-					<label for="selecteur-prc">pyrenees-refuges.com</label>
-					<span id="selecteur-prc-status"></span>
+					<input type="checkbox" name="select-prc" id="select-prc" />
+					<label for="select-prc">pyrenees-refuges.com</label>
+					<span id="select-prc-status"></span>
 				</li>
 				<li>
-					<input type="checkbox" name="selecteur-c2c" id="selecteur-c2c" />
-					<label for="selecteur-c2c">camptocamp.org</label>
-					<span id="selecteur-c2c-status"></span>
+					<input type="checkbox" name="select-c2c" id="select-c2c" />
+					<label for="select-c2c">camptocamp.org</label>
+					<span id="select-c2c-status"></span>
 					(seuls les 100 premiers points sont affichés)
 				</li>
 				<li>
 					<input type="checkbox"
-						name="selecteur-chemineur" id="selecteur-chemineur"
+						name="select-chem" id="select-chem"
 						value="3,8,20,23"
 					/>
-					<label for="selecteur-chemineur">chemineur.fr</label>
-					<span id="selecteur-chemineur-status"></span>
+					<label for="select-chem">chemineur.fr</label>
+					<span id="select-chem-status"></span>
 				</li>
 				<li>
 					<input type="checkbox"
-						name="selecteur-alpages" id="selecteur-alpages"
+						name="select-alpages" id="select-alpages"
 						value="4,5"
 					/>
-					<label for="selecteur-alpages">alpages.info</label>
-					<span id="selecteur-alpages-status"></span>
+					<label for="select-alpages">alpages.info</label>
+					<span id="select-alpages-status"></span>
 				</li>
 			</ul>
 		</fieldset>

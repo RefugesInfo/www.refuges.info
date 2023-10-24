@@ -23,6 +23,7 @@ $config_wri['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"
 
 $config_wri['rep_web_photos_points']=$config_wri['sous_dossier_installation']."photos_points/";
 $config_wri['rep_photos_points']=$config_wri['racine_projet']."photos_points/";
+$config_wri['url_chemin_vues']=$config_wri['sous_dossier_installation']."vues/";
 $config_wri['chemin_vues']=$config_wri['racine_projet']."vues/";
 $config_wri['chemin_modeles']=$config_wri['racine_projet']."modeles/";
 $config_wri['chemin_controlleurs']=$config_wri['racine_projet']."controlleurs/";
@@ -77,8 +78,8 @@ $config_wri['definition_icones'] = array_merge ($config_wri['correspondance_type
 $config_wri['forum_refuges']=4;
 
 // Paramètrage des cartes vignettes des fiches de points
-$config_wri['chemin_ol']=$config_wri['racine_projet'].'MyOl/';
-$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'MyOl/';
+$config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/dist/';
+$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'myol/dist/';
 error_reporting(E_ALL);
 ini_set('display_errors','on');
 
@@ -119,7 +120,7 @@ $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réser
 // à la main dans la config : ( ce sont les id des refuges gardés, non gardés et gites)
 $config_wri['tout_type_refuge']="7,9,10";
 
-$config_wri['bbox_page_accueil']='-5,42,8,51';
+$config_wri['bbox_page_accueil']='4,43.5,8.5,47';
 
 // C'est clair que c'est nul, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'intéroger le bon id directement
 $config_wri['id_cabane_non_gardee']=7; 

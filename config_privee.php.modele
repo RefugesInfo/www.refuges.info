@@ -14,12 +14,19 @@ $config_wri['base_pgsql']="???";
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [
-  // Get your own (free) IGN key at https://geoservices.ign.fr/
-  'ign' => '???', // Clé gratuite pour TOP25
-  // Get your own (free) THUNDERFOREST key at https://manage.thunderforest.com
+  // Clé à https://manage.thunderforest.com
   'thunderforest' => '???',
-  // SwissTopo : You need to register your domain in
-  // https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
+
+  // Clé à https://www.mapbox.com/
+  'mapbox' => '???',
+
+  // Clé à https://www.bingmapsportal.com/
+  'bing' => '???',
+
+  // Clé à https://geoservices.ign.fr/
+  'ign' => '???', // Clé gratuite pour TOP25
+
+  // SwissTopo : You need to register your domain in https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
 ];
 
 // Pour affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();

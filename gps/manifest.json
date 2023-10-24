@@ -1,12 +1,16 @@
 {
-	"name": "GPS refuges.info",
-	"id": "GPS-refuges-info",
-	"display": "fullscreen",
-	"scope": "./",
-	"start_url": "index.php",
-	"icons": [{
-		"src": "../images/icones/favicon.svg",
-		"sizes": "384x384",
-		"type": "image/png"
-	}]
+  "name": "My GPS",
+  "short_name": "GPS",
+  "id": "MyGPS",
+  "icons": [{
+    "src": "ressources/favicon.svg",
+    "sizes": "48x48 72x72 96x96 128x128 256x256",
+    "type": "image/svg+xml",
+    "purpose": "any"
+  }],
+  "start_url": "index.php",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "white",
+  "theme_color": "white"
 }

@@ -1,0 +1,19 @@
+/* Editor */
+
+.myol-button-edit-modify button::after {
+  content: "\2725";
+}
+
+.myol-button-edit-line button::after {
+  content: "\1F58D";
+}
+
+.myol-button-edit-poly button::after {
+  content: "\23E2";
+}
+
+/* Close submenu after enable draw */
+.myol-button-edit-line.myol-button-selected div,
+.myol-button-edit-poly.myol-button-selected div {
+  display: none;
+}

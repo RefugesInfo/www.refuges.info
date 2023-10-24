@@ -13,10 +13,9 @@ require_once ("polygone.php");
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
 
 // Includes cartes
-$vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
-$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
 $vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
 $vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
+$vue->java_lib_foot [] = $config_wri['url_chemin_vues'].'_cartes.js?'.filemtime($config_wri['chemin_vues'].'_cartes.js');
 
 $vue->stat = stat_site ();
 

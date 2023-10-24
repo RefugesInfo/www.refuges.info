@@ -92,12 +92,9 @@ else // le point est valide
         $vue->mini_carte=TRUE;
 
 		// Includes cartes
-		$vue->css           [] = $config_wri['url_chemin_ol'].'ol/ol.css?'.filemtime($config_wri['chemin_ol'].'ol/ol.css');
-		$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'ol/ol.js?'.filemtime($config_wri['chemin_ol'].'ol/ol.js');
-        $vue->java_lib_foot[] = $config_wri['url_chemin_ol'].'proj4/proj4.js?'.filemtime($config_wri['chemin_ol'].'proj4/proj4.js');
 		$vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
 		$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].'myol.js?'.filemtime($config_wri['chemin_ol'].'myol.js');
-		$vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_cartes.js?'.filemtime($config_wri['chemin_vues'].'_cartes.js');
+		$vue->java_lib_foot [] = $config_wri['url_chemin_vues'].'_cartes.js?'.filemtime($config_wri['chemin_vues'].'_cartes.js');
     }
 
     /***********  détermination si le point se situe dans une réserve naturelle / zone réglementée *******/

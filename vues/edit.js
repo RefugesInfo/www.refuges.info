@@ -1,61 +1,67 @@
-// Affiche la limite de tous les massifs
-const coucheContours = layerVector({
-		url: '<?=$config_wri["sous_dossier_installation"]?>api/polygones?type_polygon=1',
-		noHover: true,
-		style: new ol.style.Style({
-			stroke: new ol.style.Stroke({
-				color: 'blue',
-			}),
-		}),
-	}),
+var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
+  coucheContours = coucheContourMassif({
+    host: '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+  }),
+  editorlayer = new myol.layer.Editor({
+    geoJsonId: 'edit-json',
+    editOnly: 'poly',
 
-	controleEditeur = layerEditGeoJson({
-		geoJsonId: 'edit-json',
-		snapLayers: [coucheContours],
-		help: [
-			(document.getElementById('myol-help-edit-modify') || {}).innerHTML,
-			null, // Pas d'édition de ligne
-			(document.getElementById('myol-help-edit-poly') || {}).innerHTML,
-		],
-		saveFeatures: function(coordinates, format) {
-			return format.writeGeometry(
-				new ol.geom.MultiPolygon(coordinates.polys),
-				{
-					featureProjection: 'EPSG:3857',
-					decimals: 5,
-				});
-		},
-	}),
+    featuresToSave: function(coordinates) {
+      return this.format.writeGeometry(
+        new ol.geom.MultiPolygon(coordinates.polys), {
+          featureProjection: 'EPSG:3857',
+          decimals: 5,
+        });
+    },
+  }),
 
-	map = new ol.Map({
-		target: 'carte-nav',
-		view: new ol.View({
-			enableRotation: false,
-		}),
-		controls: wriMapControls({
-			page: 'modif',
-			Download: {
-				savedLayer: controleEditeur.layer, // Obtenir uniquement le massif en cours d'édition
-			},
-			Permalink: {// Permet de garder le même réglage de carte
-<?php if ($vue->polygone->id_polygone) { ?>
-				init: false, // Ici, on cadrera plutôt sur le massif
-<?php } ?>
-			},
-		}),
-		layers: [
-			coucheContours,
-		],
-	});
+  map = new ol.Map({
+    target: 'carte-edit',
+    view: new ol.View({
+      enableRotation: false,
+    }),
+    controls: [
+      // Haut gauche
+      new ol.control.Zoom(),
+      new ol.control.FullScreen(),
+      new myol.control.MyGeocoder(),
+      new myol.control.MyGeolocation,
+      new myol.control.Load(),
+      new myol.control.Download({
+        savedLayer: editorlayer,
+      }),
 
-map.addControl(controleEditeur);
+      // Bas gauche
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
 
-	// Centrer sur la zone du polygone
-	<?if ($vue->polygone->id_polygone){?>
-		map.getView().fit(ol.proj.transformExtent([
-			<?=$vue->polygone->ouest?>,
-			<?=$vue->polygone->sud?>,
-			<?=$vue->polygone->est?>,
-			<?=$vue->polygone->nord?>,
-		], 'EPSG:4326', 'EPSG:3857'));
-	<?}?>
+      // Bas droit
+      new ol.control.Attribution({ // Attribution doit être défini avant LayerSwitcher
+        collapsed: false,
+      }),
+      new myol.control.Permalink({ // Permet de garder le même réglage de carte
+        display: false, // Cache le lien
+        init: <?=$vue->polygone->id_polygone?'false':'true'?>, // On cadre le massif, s'il y a massif
+      }),
+
+      // Haut droit
+      new myol.control.LayerSwitcher({
+        layers: fondsCarte('edit', mapKeys),
+      }),
+    ],
+    layers: [
+      coucheContours,
+      editorlayer,
+    ],
+  });
+
+// Centrer sur la zone du polygone
+map.getView().fit(ol.proj.transformExtent([5, 44.68, 5.72, 45.33], 'EPSG:4326', 'EPSG:3857'));
+<?if ($vue->polygone->id_polygone) { ?>
+  map.getView().fit(ol.proj.transformExtent([
+    <?=$vue->polygone->ouest?>,
+    <?=$vue->polygone->sud?>,
+    <?=$vue->polygone->est?>,
+    <?=$vue->polygone->nord?>,
+  ], 'EPSG:4326', 'EPSG:3857'));
+<? } ?>
