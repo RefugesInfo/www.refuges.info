@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 25/10/2023 11:14:44 using npm run build from the src/... sources
+ * Built 25/10/2023 20:43:43 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -60849,7 +60849,7 @@ var myol = (function () {
       }),
 
       'SwissTopo': new SwissTopo(),
-      'Autriche Kompass': new Kompass({
+      'Österreich Kompass': new Kompass({
         subLayer: 'osm', // No key
       }),
       'Kompas winter': new Kompass({
@@ -60857,10 +60857,10 @@ var myol = (function () {
         subLayer: 'winter',
         maxZoom: 22,
       }),
-      'Angleterre': new OS(options.os), // options include key
+      'England': new OS(options.os), // options include key
       'Italie': new IGM(),
 
-      'Espagne': new IgnES(),
+      'España': new IgnES(),
       'Google': new Google(),
 
       'Maxar': new Maxbox({
@@ -60966,7 +60966,7 @@ var myol = (function () {
       'Photo Swiss': new SwissTopo({
         subLayer: 'ch.swisstopo.swissimage',
       }),
-      'Photo Espagne': new IgnES({
+      'Photo España': new IgnES({
         server: 'pnoa-ma',
         subLayer: 'OI.OrthoimageCoverage',
       }),

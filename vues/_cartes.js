@@ -3,9 +3,9 @@
 function couchePointsWRI(options) {
   const layer = new myol.layer.MyVectorLayer({
     selectMassif: new myol.Selector('no-selector'), // Defaut = pas de sélecteur de massif
-    browserClusterMinDistance: 50, // Distance (pixels) entre 2 icones en dessous de laquelle on affiche un cluster local
-    spreadClusterMaxResolution: 10,
     serverClusterMinResolution: 100, // Résolution de la carte (en mètres par pixels) au delà de laquelle on demande des clusters au serveur
+    browserClusterMinDistance: 50, // Distance (en pixels) entre 2 icones en dessous de laquelle on affiche un cluster local
+    spreadClusterMaxResolution: 10, // Résolution de la carte (en mètres par pixels) en dessous de laquelle on affiche des icônes contigues plutôt qu'un rond
     ...options,
 
     // Calcul de l'url de l'API refuges?.info

@@ -8,7 +8,7 @@ INSTALL & BUILD
 ===============
 Requires [node.js](https://nodejs.org/) to be installed
 
-* Download the [full code & tools](https://github.com/Dominique92/).
+* Download the [full code & tools](https://github.com/Dominique92/myol/).
 
 
 * Go to the myol repository :
@@ -36,21 +36,22 @@ See a [Layer Switcher demo](https://Dominique92.github.io/myol/examples/layerSwi
 
 Tile layers
 ===========
-See a [Tile layers demo](https://Dominique92.github.io/myol/examples/layerTile.html)
+See a [Tile layers demo](https://Dominique92.github.io/myol/examples/tileLayer.html)
 * OSM, OSM-FR, OpenTopo, CyclOsm, Maps.Refuges.Info
 * ThunderForest Outdoors, OpenTopoMap, Cycles, Landscape, Transport, ...
-* IGN France, cadastre, satellite, ...
+* IGN France, TOP25, cadastre, satellite, ...
 * SwissTopo, satellite
+* Österreich Kompass
+* Great Britain Ordnance Survey
 * IDEE España, satellite
 * IGM Italie
-* Ordnance Survey (Great Britain)
-* Kompass Austria
 * Bing Microsoft, satellite
 * Google maps, satellite
+* Maxar, ArcGIS
 
 Vector layers
 =============
-See a [Vector layer demo](https://Dominique92.github.io/myol/examples/layerVector.html)
+See a [Vector layer demo](https://Dominique92.github.io/myol/examples/vectorLayer.html)
 * GeoJson ajax layers,
 * OverPass (OSM vector points of interest)
 
@@ -76,7 +77,6 @@ See an [Editor demo](https://Dominique92.github.io/myol/examples/editor.html)
 
 Off line GPS
 ============
-See an [Off line GPS demo](https://Dominique92.github.io/myol/gps)
 * Browser -> options -> add to the home screen
 * Choose a map layer
 * Place yourself at the starting point of your hike
@@ -96,6 +96,11 @@ If you want to use external providers layers, you must acquire free keys and rep
 * French IGN : Get your own (free) IGN key at [https://geoservices.ign.fr/](https://geoservices.ign.fr/)
 * OSM thunderforest : Get your own (free) THUNDERFOREST key at [https://manage.thunderforest.com](https://manage.thunderforest.com)
 * Microsoft BING : Get your own (free) BING key at [https://www.microsoft.com](https://www.microsoft.com/en-us/maps/create-a-bing-maps-key)
+* England Ordnance Survey : Get your own (free) key at [https://osdatahub.os.uk/](https://osdatahub.os.uk/)
+* Austria kompass : Get your own (free) key at [http://www.kompass.de/livemap/](http://www.kompass.de/livemap/)
+* Austria kompass : Get your own (free) key at [http://www.kompass.de/livemap/](http://www.kompass.de/livemap/)
+* Maxar / Mapbox : Get your own (free) key at https://www.mapbox.com/
+* SwissTopo : Register your domain in [https://shop.swisstopo.admin.ch/](https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info)
 
 Architecture
 ============
@@ -110,18 +115,19 @@ The coding rules are volontary simple & don't follow all openlayers's
 
 Files
 =====
-* myol.css : full CSS distribution
-* myol.js : full JS distribution
 * src/... : Source files
-* ol/... : Openlayer V6.0.1 (you can use any of openlayers V5.* or V6.*) from [Openlayers](https://openlayers.org/download/)
-* geocoder/... : Geocoder V4.0.0 from [Openlayers geocoder](https://github.com/jonataswalker/ol-geocoder/releases/latest)
-* proj4/... : Coordinate transformation software proj4js V2.5.0 from [Proj4](https://github.com/proj4js/proj4js/releases/latest)
+* dist/myol.* : Distribution files, for your website
 * examples/... : Demos & visual tests
 * gps/... : Off line demo with GPS capabilities
 
+Included packages
+=================
+* openlayers : Map display [Openlayers](https://openlayers.org/download/)
+* ol-geocoder : Find a location by name [Geocoder](https://github.com/Dominique92/ol-geocoder/releases/latest)
+* proj4 : Coordinate transformation software [Proj4](https://github.com/proj4js/proj4js/releases/latest)
+
 Tested on
 =========
-* windows 10 : Edge, FireFox, Chrome, Opera, Brave
+* Windows 10 : Edge, FireFox, Chrome, Opera, Brave
 * Android (Samsung) : Samsung Internet, FireFox, Chrome, Brave, DuckDuckGo
 * Linux : FireFox
-* NO SUPPORT ON Microsoft Internet Explorer

@@ -17,8 +17,6 @@
     "Openlayers"
   ],
   "files": [
-    "README.md",
-    "package.json",
     "src",
     "dist"
   ],
@@ -26,7 +24,7 @@
   "scripts": {
     "build": "rollup -c build/config.js",
     "lint": "npx eslint src/*.js src/*/*.js",
-    "beautify": "js-beautify -s=2 build/*.js gps/*/*.*s* examples/*.html examples/ressources/* examples/wri/*.h* examples/wri/vues/*.js src/*.*s src/control/* src/layer/* package.json"
+    "beautify": "js-beautify -s=2 build/*.js gps/*/*.*s examples/*.html examples/ressources/* examples/wri/*.h* examples/wri/vues/*.js src/*.*s src/control/* src/layer/* package.json"
   },
   "dependencies": {
     "ol": "8.1.0",

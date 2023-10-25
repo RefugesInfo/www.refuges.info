@@ -383,7 +383,7 @@ export function collection(options = {}) {
     }),
 
     'SwissTopo': new SwissTopo(),
-    'Autriche Kompass': new Kompass({
+    'Österreich Kompass': new Kompass({
       subLayer: 'osm', // No key
     }),
     'Kompas winter': new Kompass({
@@ -391,10 +391,10 @@ export function collection(options = {}) {
       subLayer: 'winter',
       maxZoom: 22,
     }),
-    'Angleterre': new OS(options.os), // options include key
+    'England': new OS(options.os), // options include key
     'Italie': new IGM(),
 
-    'Espagne': new IgnES(),
+    'España': new IgnES(),
     'Google': new Google(),
 
     'Maxar': new Maxbox({
@@ -500,7 +500,7 @@ export function demo(options = {}) {
     'Photo Swiss': new SwissTopo({
       subLayer: 'ch.swisstopo.swissimage',
     }),
-    'Photo Espagne': new IgnES({
+    'Photo España': new IgnES({
       server: 'pnoa-ma',
       subLayer: 'OI.OrthoimageCoverage',
     }),
