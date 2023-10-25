@@ -3,15 +3,15 @@
   "version": "1.1.2.dev",
   "description": "This package adds many features to Openlayer https://openlayers.org/",
   "author": "Dominique Cavailhez",
-  "homepage": "https://github.com/Dominique92/MyOl#readme",
+  "homepage": "https://github.com/Dominique92/myol#readme",
   "license": "MIT",
   "main": "dist/myol.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dominique92/MyOl.git"
+    "url": "git+https://github.com/Dominique92/myol.git"
   },
   "bugs": {
-    "url": "https://github.com/Dominique92/MyOl/issues"
+    "url": "https://github.com/Dominique92/myol/issues"
   },
   "keywords": [
     "Openlayers"

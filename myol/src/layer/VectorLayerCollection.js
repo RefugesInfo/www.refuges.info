@@ -274,7 +274,7 @@ export class Overpass extends MyVectorLayer {
       // Transform an area to a node (picto) at the center of this area
 
       for (let node = doc.documentElement.firstElementChild; node; node = node.nextSibling) {
-        // Translate attributes to standard MyOl
+        // Translate attributes to standard myol
         for (let tag = node.firstElementChild; tag; tag = tag.nextSibling)
           if (tag.attributes) {
             if (tags.indexOf(tag.getAttribute('k')) !== -1 &&

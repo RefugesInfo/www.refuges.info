@@ -19,6 +19,7 @@ var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
     target: 'carte-edit',
     view: new ol.View({
       enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
     }),
     controls: [
       // Haut gauche

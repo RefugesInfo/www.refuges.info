@@ -1,4 +1,4 @@
-DC92.MyOl
+Dominique92.myol
 ================
 * This package adds many features to [openlayer maps](https://openlayers.org/)
 * It is deployed on [refuges.info](https://www.refuges.info), [chemineur.fr](https://chemineur.fr) & [alpages.info](https://alpages.info)
@@ -7,6 +7,10 @@ DC92.MyOl
 INSTALL & BUILD
 ===============
 Requires [node.js](https://nodejs.org/) to be installed
+
+* Download the [full code & tools](https://github.com/Dominique92/).
+
+
 * Go to the myol repository :
 ```
 cd ./myol
@@ -22,17 +26,17 @@ npm run build
 
 Simple example
 ==============
-This [Example demo](https://DC92.github.io/MyOl/) implements a single map with the most current maps layers providers.
-* You can download the [DISTRIBUTION ZIPPED PACKAGE](https://github.com/DC92/dev/archive/refs/heads/master.zip) and unzip it in your website FTP section.
+This [Example demo](https://Dominique92.github.io/myol/) implements a single map with the most current maps layers providers.
+* You can download the [DISTRIBUTION ZIPPED PACKAGE](https://github.com/Dominique92/dev/archive/refs/heads/master.zip) and unzip it in your website FTP section.
 * You can include the css & js sections of this example on your own page (adjust the include files path to your implementation)
 
 Layer Switcher
 ==============
-See a [Layer Switcher demo](https://DC92.github.io/MyOl/examples/layerSwitcher.html)
+See a [Layer Switcher demo](https://Dominique92.github.io/myol/examples/layerSwitcher.html)
 
 Tile layers
 ===========
-See a [Tile layers demo](https://DC92.github.io/MyOl/examples/layerTile.html)
+See a [Tile layers demo](https://Dominique92.github.io/myol/examples/layerTile.html)
 * OSM, OSM-FR, OpenTopo, CyclOsm, Maps.Refuges.Info
 * ThunderForest Outdoors, OpenTopoMap, Cycles, Landscape, Transport, ...
 * IGN France, cadastre, satellite, ...
@@ -46,13 +50,13 @@ See a [Tile layers demo](https://DC92.github.io/MyOl/examples/layerTile.html)
 
 Vector layers
 =============
-See a [Vector layer demo](https://DC92.github.io/MyOl/examples/layerVector.html)
+See a [Vector layer demo](https://Dominique92.github.io/myol/examples/layerVector.html)
 * GeoJson ajax layers,
 * OverPass (OSM vector points of interest)
 
 Misc controls
 =============
-See a [Control demo](https://DC92.github.io/MyOl/examples/controls.html)
+See a [Control demo](https://Dominique92.github.io/myol/examples/controls.html)
 * Keep position, zoom & zoom on localStorage
 * Geocoder
 * Line length display
@@ -62,17 +66,17 @@ See a [Control demo](https://DC92.github.io/MyOl/examples/controls.html)
 
 Marker display & edit
 =====================
-See a [Marker demo](https://DC92.github.io/MyOl/examples/marker.html)
+See a [Marker demo](https://Dominique92.github.io/myol/examples/marker.html)
 * Editable position marker with multi-projection position display,
 
 Lines & Polygons editor
 =======================
-See an [Editor demo](https://DC92.github.io/MyOl/examples/editor.html)
+See an [Editor demo](https://Dominique92.github.io/myol/examples/editor.html)
 * Polylines & polygons editor.
 
 Off line GPS
 ============
-See an [Off line GPS demo](https://DC92.github.io/MyOl/gps)
+See an [Off line GPS demo](https://Dominique92.github.io/myol/gps)
 * Browser -> options -> add to the home screen
 * Choose a map layer
 * Place yourself at the starting point of your hike
@@ -96,7 +100,7 @@ If you want to use external providers layers, you must acquire free keys and rep
 Architecture
 ============
 Just include myol.js & myos.css after ol/dist, proj4js & geocoder's js & css.
-* See this [example](https://DC92.github.io/MyOl/examples/index.html)
+* See this [example](https://Dominique92.github.io/myol/examples/index.html)
 * Code & all tiled layers use EPSG:3857 spherical mercator projection
 
 The coding rules are volontary simple & don't follow all openlayers's

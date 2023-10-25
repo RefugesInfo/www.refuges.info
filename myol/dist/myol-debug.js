@@ -2,9 +2,9 @@
  * © Dominique Cavailhez 2017
  * @myol/myol - v1.1.2.dev
  * This package adds many features to Openlayer https://openlayers.org/
- * https://github.com/Dominique92/MyOl#readme
+ * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 24/10/2023 20:54:15 using npm run build from the src/... sources
+ * Built 25/10/2023 11:14:44 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -98856,7 +98856,7 @@ var myol = (function () {
         // Transform an area to a node (picto) at the center of this area
 
         for (let node = doc.documentElement.firstElementChild; node; node = node.nextSibling) {
-          // Translate attributes to standard MyOl
+          // Translate attributes to standard myol
           for (let tag = node.firstElementChild; tag; tag = tag.nextSibling)
             if (tag.attributes) {
               if (tags.indexOf(tag.getAttribute('k')) !== -1 &&
