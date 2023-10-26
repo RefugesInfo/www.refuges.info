@@ -96,7 +96,7 @@ $lang = array_merge($lang, array(
 	'ACL_U_PM_ATTACH'	=> 'Kann Dateianhänge in Privaten Nachrichten versenden',
 	'ACL_U_PM_DOWNLOAD'	=> 'Kann Dateianhänge in Privaten Nachrichten herunterladen',
 	'ACL_U_PM_BBCODE'	=> 'Kann BBCode in Privaten Nachrichten verwenden',
-	'ACL_U_PM_SMILIES'	=> 'Kann Smilies in Privaten Nachrichten verwenden',
+	'ACL_U_PM_SMILIES'	=> 'Kann Smileys in Privaten Nachrichten verwenden',
 	'ACL_U_PM_IMG'		=> 'Kann den [img]-BBCode-Tag in Privaten Nachrichten verwenden',
 	'ACL_U_PM_FLASH'	=> 'Kann den [flash]-BBCode-Tag in Privaten Nachrichten verwenden',
 
@@ -140,7 +140,7 @@ $lang = array_merge($lang, array(
 	'ACL_F_FLASH'		=> 'Kann den [flash]-BBCode-Tag verwenden',
 	'ACL_F_IMG'			=> 'Kann den [img]-BBCode-Tag verwenden',
 	'ACL_F_SIGS'		=> 'Kann Signatur verwenden',
-	'ACL_F_SMILIES'		=> 'Kann Smilies verwenden',
+	'ACL_F_SMILIES'		=> 'Kann Smileys verwenden',
 
 	'ACL_F_POLL'		=> 'Kann Umfragen erstellen',
 	'ACL_F_VOTE'		=> 'Kann an Umfragen teilnehmen',
@@ -180,7 +180,7 @@ $lang = array_merge($lang, array(
 	'ACL_A_FORUMDEL'	=> 'Kann Foren löschen',
 	'ACL_A_PRUNE'		=> 'Kann inaktive Themen löschen',
 
-	'ACL_A_ICONS'		=> 'Kann Themen-/Beitrags-Symbole und Smilies ändern',
+	'ACL_A_ICONS'		=> 'Kann Themen-/Beitrags-Symbole und Smileys ändern',
 	'ACL_A_WORDS'		=> 'Kann Wortzensur einstellen',
 	'ACL_A_BBCODE'		=> 'Kann BBCode-Tags festlegen',
 	'ACL_A_ATTACH'		=> 'Kann Einstellungen zu Dateianhängen ändern',

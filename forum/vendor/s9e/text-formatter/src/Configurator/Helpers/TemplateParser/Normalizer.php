@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Helpers\TemplateParser;
@@ -43,14 +43,15 @@ class Normalizer extends IRProcessor
 	public function normalize(DOMDocument $ir)
 	{
 		$this->createXPath($ir);
-		$this->addDefaultCase($ir);
-		$this->addElementIds($ir);
+		$this->addDefaultCase();
+		$this->addElementIds();
 		$this->addCloseTagElements($ir);
-		$this->markVoidElements($ir);
+		$this->markVoidElements();
 		$this->optimizer->optimize($ir);
-		$this->markConditionalCloseTagElements($ir);
-		$this->setOutputContext($ir);
-		$this->markBranchTables($ir);
+		$this->markConditionalCloseTagElements();
+		$this->setOutputContext();
+		$this->markBranchTables();
+		$this->markBooleanAttributes();
 	}
 
 	/**
@@ -89,10 +90,9 @@ class Normalizer extends IRProcessor
 	/**
 	* Add an empty default <case/> to <switch/> nodes that don't have one
 	*
-	* @param  DOMDocument $ir
 	* @return void
 	*/
-	protected function addDefaultCase(DOMDocument $ir)
+	protected function addDefaultCase()
 	{
 		foreach ($this->query('//switch[not(case[not(@test)])]') as $switch)
 		{
@@ -103,10 +103,9 @@ class Normalizer extends IRProcessor
 	/**
 	* Add an id attribute to <element/> nodes
 	*
-	* @param  DOMDocument $ir
 	* @return void
 	*/
-	protected function addElementIds(DOMDocument $ir)
+	protected function addElementIds()
 	{
 		$id = 0;
 		foreach ($this->query('//element') as $element)
@@ -166,10 +165,9 @@ class Normalizer extends IRProcessor
 	* against are stored JSON-encoded in the case as "branch-values". It can be used to create
 	* optimized branch tables
 	*
-	* @param  DOMDocument $ir
 	* @return void
 	*/
-	protected function markBranchTables(DOMDocument $ir)
+	protected function markBranchTables()
 	{
 		// Iterate over switch elements that have at least two case children with a test attribute
 		foreach ($this->query('//switch[case[2][@test]]') as $switch)
@@ -214,10 +212,9 @@ class Normalizer extends IRProcessor
 	/**
 	* Mark conditional <closeTag/> nodes
 	*
-	* @param  DOMDocument $ir
 	* @return void
 	*/
-	protected function markConditionalCloseTagElements(DOMDocument $ir)
+	protected function markConditionalCloseTagElements()
 	{
 		foreach ($this->query('//closeTag') as $closeTag)
 		{
@@ -242,12 +239,30 @@ class Normalizer extends IRProcessor
 	}
 
 	/**
-	* Mark void elements
+	* Mark boolean attributes
 	*
-	* @param  DOMDocument $ir
+	* The test is case-sensitive and only covers attribute that are minimized by libxslt
+	*
 	* @return void
 	*/
-	protected function markVoidElements(DOMDocument $ir)
+	protected function markBooleanAttributes(): void
+	{
+		$attrNames = ['checked', 'compact', 'declare', 'defer', 'disabled', 'ismap', 'multiple', 'nohref', 'noresize', 'noshade', 'nowrap', 'readonly', 'selected'];
+		foreach ($this->query('//attribute') as $attribute)
+		{
+			if (in_array($attribute->getAttribute('name'), $attrNames, true))
+			{
+				$attribute->setAttribute('boolean', 'yes');
+			}
+		}
+	}
+
+	/**
+	* Mark void elements
+	*
+	* @return void
+	*/
+	protected function markVoidElements()
 	{
 		foreach ($this->query('//element') as $element)
 		{
@@ -269,10 +284,9 @@ class Normalizer extends IRProcessor
 	/**
 	* Fill in output context
 	*
-	* @param  DOMDocument $ir
 	* @return void
 	*/
-	protected function setOutputContext(DOMDocument $ir)
+	protected function setOutputContext()
 	{
 		foreach ($this->query('//output') as $output)
 		{

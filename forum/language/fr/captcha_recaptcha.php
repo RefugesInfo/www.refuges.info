@@ -46,10 +46,11 @@ $lang = array_merge($lang, [
 	'CAPTCHA_RECAPTCHA'				=> 'reCAPTCHA v2',
 	'CAPTCHA_RECAPTCHA_V3'			=> 'reCAPTCHA v3',
 
-	'RECAPTCHA_INCORRECT'			=> 'La solution que vous avez fournie est incorrecte',
-	'RECAPTCHA_NOSCRIPT'			=> 'Veuillez activer JavaScript dans votre navigateur pour charger ce CAPTCHA.',
-	'RECAPTCHA_NOT_AVAILABLE'		=> 'Afin d’utiliser reCAPTCHA, vous devez créer un compte sur <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
-	'RECAPTCHA_INVISIBLE'			=> 'Il s’agit d’un CAPTCHA invisible. Pour verifier qu’il fonctionne, une petite icône devrait apparaître dans le coin inférieur droit de cette page.',
+	'RECAPTCHA_INCORRECT'				=> 'La solution que vous avez fournie est incorrecte',
+	'RECAPTCHA_NOSCRIPT'				=> 'Veuillez activer JavaScript dans votre navigateur pour charger ce CAPTCHA.',
+	'RECAPTCHA_NOT_AVAILABLE'			=> 'Afin d’utiliser reCAPTCHA, vous devez créer un compte sur <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
+	'RECAPTCHA_INVISIBLE'				=> 'Il s’agit d’un CAPTCHA invisible. Pour vérifier qu’il fonctionne, une petite icône devrait apparaître dans le coin inférieur droit de cette page.',
+	'RECAPTCHA_V3_LOGIN_ERROR_ATTEMPTS'	=> 'Vous avez dépassé le nombre maximal de tentatives de connexions autorisées.<br>En plus de votre nom d’utilisateur et de votre mot de passe, le reCAPTCHA v3 invisible sera utilisé pour authentifier votre session.',
 
 	'RECAPTCHA_PUBLIC'				=> 'Clé du site reCAPTCHA',
 	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Votre clé du site reCAPTCHA. La clé peut être obtenue sur <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a>. Veuillez utiliser reCAPTCHA v2 &gt; type de badge reCAPTCHA invisible.',

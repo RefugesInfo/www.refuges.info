@@ -2,7 +2,7 @@ Subject: Message refusé - {POST_SUBJECT}
 
 Bonjour {USERNAME},
 
-Vous recevez cette notification car votre message « {POST_SUBJECT} » sur « {SITENAME} » a été refusé par un modérateur ou un administrateur.
+Votre message « {POST_SUBJECT} » sur « {SITENAME} » a été refusé par un modérateur ou un administrateur.
 
 La raison du refus est la suivante :
 

@@ -5,7 +5,8 @@
  *
  * @copyright (c) phpBB Limited <https://www.phpbb.com>
  * @license GNU General Public License, version 2 (GPL-2.0)
- * @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+ * @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+ * @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
  * For full copyright and license information, please see
  * the docs/CREDITS.txt file.
  *
@@ -49,7 +50,7 @@ $lang = array_merge($lang, array(
 
 	// Support page
 	'SUPPORT_TITLE'		=> 'Supporto',
-	'SUPPORT_BODY'		=> 'Supporto completo viene fornito per la versione più recente di phpBB3 su phpBB.com (in Inglese) e su phpBB-Store.it (in Italiano). Questo include problemi relativi a:</p><ul><li>installazione</li><li>configurazione</li><li>questioni tecniche</li><li>possibili bug nel software</li><li>aggiornamento da Release Candidate (RC) all’ultima versione stabile</li><li>conversione da phpBB 2.0.x a phpBB3</li><li>conversione da altri software per forum a phpBB3 (vedere in particolare i <a href="https://www.phpbb.com/community/viewforum.php?f=486">Convertitori per Forum</a>, in inglese)</li></ul><p>Invitiamo gli utenti che utilizzano ancora versioni beta di phpBB3 a sostituire la loro installazione con una nuova copia della versione più recente.</p><h2>Estensioni / Stili</h2><p>Per questioni relative alle Estensioni, consultate gli appropriati forum su <a href="https://www.phpbb-store.it">phpBB-store.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=451">phpBB.com</a>.<br />Analogamente per gli stili, template e temi, consultate i relativi forum su <a href="https://www.phpbb-store.it">phpBB-store.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=471">phpBB.com</a>.<br /><br />Se le domande riguardano una specifica estensione o uno specifico stile, scrivi direttamente nell’argomento dedicato a quella estensione o a quello stile su phpBB.com o phpBB-Store.it.</p><h2>Come ottenere supporto su phpBB-Store.it</h2><p><a href="https://www.phpbb-store.it/guide2/">Guide e FAQ su phpBB3</a><br /><a href="https://www.phpbb-store.it/supporto-phpbb-3-2-x/">Forum con informazioni e supporto</a>.</p><h2>Come ottenere supporto su phpBB.com (in Inglese)</h2><p><a href="https://www.phpbb.com/community/viewtopic.php?f=14&amp;t=571070">Risorse e riferimenti</a><br /><a href="https://www.phpbb.com/support/">Sezione di supporto</a><br /><a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/">Quick Start Guide</a><br /><br />Per essere sempre aggiornato sulle ultime novità, seguici su <a href="https://www.twitter.com/phpbb/">Twitter</a> o su <a href="https://www.facebook.com/phpbb/">Facebook</a><br /><br />',
+	'SUPPORT_BODY'		=> 'Supporto completo viene fornito per la versione più recente di phpBB3 su phpBB.com (in Inglese) e su phpBB-Italia.it (in Italiano). Questo include problemi relativi a:</p><ul><li>installazione</li><li>configurazione</li><li>questioni tecniche</li><li>possibili bug nel software</li><li>aggiornamento da Release Candidate (RC) all’ultima versione stabile</li><li>conversione da phpBB 2.0.x a phpBB3</li><li>conversione da altri software per forum a phpBB3 (vedere in particolare i <a href="https://www.phpbb.com/community/viewforum.php?f=486">Convertitori per Forum</a>, in inglese)</li></ul><p>Invitiamo gli utenti che utilizzano ancora versioni beta di phpBB3 a sostituire la loro installazione con una nuova copia della versione più recente.</p><h2>Estensioni / Stili</h2><p>Per questioni relative alle Estensioni, consultate gli appropriati forum su <a href="https://www.phpbb-italia.it">phpBB-Italia.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=451">phpBB.com</a>.<br />Analogamente per gli stili, template e temi, consultate i relativi forum su <a href="https://www.phpbb-italia.it">phpBB-Italia.it</a> o <a href="https://www.phpbb.com/community/viewforum.php?f=471">phpBB.com</a>.<br /><br />Se le domande riguardano una specifica estensione o uno specifico stile, scrivi direttamente nell’argomento dedicato a quella estensione o a quello stile su phpBB.com o phpBB-Italia.it.</p><h2>Come ottenere supporto su phpBB-Italia.it</h2><p><a href="https://www.phpbb-italia.it/guide2/">Guide e FAQ su phpBB3</a><br /><a href="https://www.phpbb-italia.it/supporto-phpbb-3-2-x/">Forum con informazioni e supporto</a>.</p><h2>Come ottenere supporto su phpBB.com (in Inglese)</h2><p><a href="https://www.phpbb.com/community/viewtopic.php?f=14&amp;t=571070">Risorse e riferimenti</a><br /><a href="https://www.phpbb.com/support/">Sezione di supporto</a><br /><a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/">Quick Start Guide</a><br /><br />Per essere sempre aggiornato sulle ultime novità, seguici su <a href="https://www.twitter.com/phpbb/">Twitter</a> o su <a href="https://www.facebook.com/phpbb/">Facebook</a><br /><br />',
 
 	// License
 	'LICENSE_TITLE'		=> 'General Public License',
@@ -349,7 +350,7 @@ $lang = array_merge($lang, array(
 // Common updater messages
 $lang = array_merge($lang, array(
 	'UPDATE_INSTALLATION'			=> 'Aggiornamento installazione phpBB',
-	'UPDATE_INSTALLATION_EXPLAIN'	=> 'Con questa opzione è possibile aggiornare all’ultima versione l’installazione del tuo phpBB.<br />Durante il processo saranno controllati tutti i tuoi file per la loro integrità. Potrai esaminare tutte le differenze e i file prima dell’aggiornamento.<br /><br />L’aggiornamento del file può essere fatto in due modi diversi.</p><h2>Aggiornamento Manuale</h2><p> Con questo aggiornamento scarichi solo i tuoi file modificati, per assicurarti di non perdere le modifiche che potresti avere apportato. Dopo aver scaricato questo pacchetto devi caricare manualmente i file nella loro posizione corretta nella cartella "principale" del tuo phpBB. Una volta fatto questo, potrai eseguire nuovamente un controllo sui file per vedere se sono stati spostati nella cartella corretta.</p><h2>Aggiornamento automatico via FTP</h2><p>Questo metodo è simile al primo ma senza la necessità di scaricare i file modificati e di caricarli da soli. Verrà fatto in automatico. Per utilizzare questo metodo devi conoscere i dettagli del login per l’FTP perché saranno richiesti. Appena finito sarai reindirizzato nuovamente al controllo dei file per assicurarti che tutto sia stato aggiornato correttamente.<br /><br />',
+	'UPDATE_INSTALLATION_EXPLAIN'	=> 'Con questa opzione è possibile aggiornare all’ultima versione l’installazione del tuo phpBB.<br />Durante il processo saranno controllati tutti i tuoi file per la loro integrità. Potrai esaminare tutte le differenze e i file prima dell’aggiornamento.<br /><br />L’aggiornamento dei file può essere fatto in due modi diversi.</p><h2>Aggiornamento Manuale</h2><p> Con questo aggiornamento scarichi solo i tuoi file modificati, per assicurarti di non perdere le modifiche che potresti avere apportato ai file. Dopo aver scaricato questo pacchetto devi caricare manualmente i file nella loro posizione corretta nella cartella "principale" del tuo phpBB. Una volta fatto questo, potrai eseguire nuovamente un controllo sui file per vedere se sono stati spostati nella cartella corretta.</p><h2>Aggiornamento avanzato con FTP</h2><p>Questo metodo è simile al primo ma senza la necessità di scaricare i file modificati e di caricarli da soli. Verrà fatto in automatico. Per utilizzare questo metodo devi conoscere i tuoi dati di accesso FTP poiché ti verranno richiesti. Appena terminato, sarai reindirizzato nuovamente al controllo dei file per assicurarti che tutto sia stato aggiornato correttamente.<br /><br />',
 	'UPDATE_INSTRUCTIONS'			=> '
 
 		<h1>Annuncio di rilascio</h1>
@@ -360,14 +361,14 @@ $lang = array_merge($lang, array(
 		
 		<h1>Come aggiornare la tua installazione con il pacchetto di Aggiornamento completo</h1>
 
-		<p>Il metodo consigliato di aggiornare la tua installazione è quello tramite l’utilizzo del pacchetto completo. Se i file core phpBB sono stati modificati nell’installazione, allora potresti utilizzare il pacchetto di aggiornamento automatico per non perdere queste modifiche. È inoltre possibile aggiornare l’installazione utilizzando gli altri metodi elencati nel documento INSTALL.html. I passaggi per l’aggiornamento di phpBB3 usando il pacchetto completo sono:</p>
+		<p>Il metodo consigliato di aggiornare la tua installazione è quello tramite l’utilizzo del pacchetto completo. Se i file core phpBB sono stati modificati nell’installazione, allora potresti utilizzare il pacchetto di aggiornamento avanzato per non perdere queste modifiche. È inoltre possibile aggiornare l’installazione utilizzando gli altri metodi elencati nel documento INSTALL.html. I passaggi per l’aggiornamento di phpBB3 usando il pacchetto completo sono:</p>
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
 			<li><strong class="error">Esegui il backup di tutti i file e del database.</strong></li>
 			<li>Vai a <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">pagina di download su phpBB.com</a> e scarica l’ultimo "Pacchetto completo" di installazione.</li>
 			<li>Decomprimi l’archivio.</li>
 			<li>Rimuovi il file <code class="inline">config.php</code> , e le cartelle <code class="inline">/images</code>, <code class="inline">/store</code> e <code class="inline">/files</code> <em>dal pacchetto di installazione</em> (non dal tuo sito).</li>
-			<li>Vai su ACP, Personalizzazioni, Stili e assicurati che il prosilver sia impostato come stile predefinito. In caso contrario, impostalo su prosilver.</li>
+			<li>Vai su PCA, Personalizzazioni, Stili e assicurati che il prosilver sia impostato come stile predefinito. In caso contrario, impostalo su prosilver.</li>
 			<li>Elimina le cartelle <code class="inline">/vendor</code> e <code class="inline">/cache</code> dalla radice sul tuo spazio host.</li>
 			<li>Tramite FTP o SSH, caricare i file e le cartelle rimanenti (ovvero il CONTENUTO rimanente della cartella phpBB3) nella cartella principale dell’installazione del forum sul server, sovrascrivendo i file esistenti. (Nota: Fai attenzione a non eliminare alcuna estensione nella tua cartella <code class="inline">/ext</code> durante il caricamento dei nuovi file di phpBB3.)</li>
 			<li><strong><a href="%1$s" title="%1$s">Adesso avvia il processo di aggiornamento puntando il browser nella cartella di installazione</a>.</strong></li>
@@ -381,12 +382,12 @@ $lang = array_merge($lang, array(
 			<li>Aggiorna il tuo style<br><br></li>
 		</ul>
 
-		<h1>Come aggiornare la tua installazione con il Pacchetto di Aggiornamento Automatico</h1>
+		<h1>Come aggiornare la tua installazione con il Pacchetto di Aggiornamento Avanzato</h1>
 
-		<p>Il pacchetto di aggiornamento automatico è consigliato solo nel caso in cui i file core di phpBB siano stati modificati nella tua installazione. Puoi aggiornare la tua installazione anche con altri metodi e li trovi elencati nel file INSTALL.html. La procedura per aggiornare tramite il pacchetto di aggiornamento automatico è:</p>
+		<p>Il pacchetto di aggiornamento avanzato è consigliato solo per utenti esperti nel caso in cui i file phpBB di base siano stati modificati durante l’installazione. Puoi aggiornare la tua installazione anche con altri metodi e li trovi elencati nel file INSTALL.html. La procedura per aggiornare tramite il pacchetto di aggiornamento avanzato è:</p>
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
-			<li>Vai alla <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">pagina di download di phpBB.com</a> e scarica il Pacchetto di Aggiornamento Automatico (Automatic Update Package).<br /><br /></li>
+			<li>Vai alla <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">pagina di download di phpBB.com</a> e scarica il Pacchetto di Aggiornamento Avanzato (Advanced Update Package).<br /><br /></li>
 			<li>Decomprimi l’archivio.<br /><br /></li>
 			<li>Invia le parti decompresse complete delle cartelle install e vendor, alla radice del tuo phpBB (ovvero dove si trova il file config.php).<br /><br /></li>
 		</ol>

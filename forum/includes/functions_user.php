@@ -425,7 +425,7 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 /**
  * Delete user(s) and their related data
  *
- * @param string	$mode				Mode of posts deletion (retain|delete)
+ * @param string	$mode				Mode of posts deletion (retain|remove)
  * @param mixed		$user_ids			Either an array of integers or an integer
  * @param bool		$retain_username	True if username should be retained, false otherwise
  * @return bool
@@ -464,7 +464,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	 * Event before of the performing of the user(s) delete action
 	 *
 	 * @event core.delete_user_before
-	 * @var string	mode				Mode of posts deletion (retain|delete)
+	 * @var string	mode				Mode of posts deletion (retain|remove)
 	 * @var array	user_ids			ID(s) of the user(s) bound to be deleted
 	 * @var bool	retain_username		True if username should be retained, false otherwise
 	 * @var array	user_rows			Array containing data of the user(s) bound to be deleted
@@ -774,7 +774,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	 * Event after the user(s) delete action has been performed
 	 *
 	 * @event core.delete_user_after
-	 * @var string	mode				Mode of posts deletion (retain|delete)
+	 * @var string	mode				Mode of posts deletion (retain|remove)
 	 * @var array	user_ids			ID(s) of the deleted user(s)
 	 * @var bool	retain_username		True if username should be retained, false otherwise
 	 * @var array	user_rows			Array containing data of the deleted user(s)
@@ -797,6 +797,8 @@ function user_delete($mode, $user_ids, $retain_username = true)
 * Flips user_type from active to inactive and vice versa, handles group membership updates
 *
 * @param string $mode can be flip for flipping from active/inactive, activate or deactivate
+* @param array $user_id_ary
+* @param int $reason
 */
 function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 {
@@ -919,6 +921,7 @@ function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 * @param string $ban_len_other Ban length as a date (YYYY-MM-DD)
 * @param boolean $ban_exclude Exclude these entities from banning?
 * @param string $ban_reason String describing the reason for this ban
+* @param string $ban_give_reason
 * @return boolean
 */
 function user_ban($mode, $ban, $ban_len, $ban_len_other, $ban_exclude, $ban_reason, $ban_give_reason = '')
@@ -1510,7 +1513,7 @@ function user_ipwhois($ip)
 		$ipwhois = (empty($buffer)) ? $ipwhois : $buffer;
 	}
 
-	$ipwhois = htmlspecialchars($ipwhois);
+	$ipwhois = htmlspecialchars($ipwhois, ENT_COMPAT);
 
 	// Magic URL ;)
 	return trim(make_clickable($ipwhois, false, ''));
@@ -1572,11 +1575,11 @@ function validate_string($string, $optional = false, $min = 0, $max = 0)
 		return false;
 	}
 
-	if ($min && utf8_strlen(htmlspecialchars_decode($string)) < $min)
+	if ($min && utf8_strlen(html_entity_decode($string, ENT_COMPAT)) < $min)
 	{
 		return 'TOO_SHORT';
 	}
-	else if ($max && utf8_strlen(htmlspecialchars_decode($string)) > $max)
+	else if ($max && utf8_strlen(html_entity_decode($string, ENT_COMPAT)) > $max)
 	{
 		return 'TOO_LONG';
 	}
@@ -1611,6 +1614,7 @@ function validate_num($num, $optional = false, $min = 0, $max = 1E99)
 /**
 * Validate Date
 * @param	string $date_string a date in the dd-mm-yyyy format
+* @param	bool $optional
 * @return	boolean
 */
 function validate_date($date_string, $optional = false)
@@ -1748,7 +1752,8 @@ function validate_username($username, $allowed_username = false, $allow_all_name
 	}
 
 	// ... fast checks first.
-	if (strpos($username, '&quot;') !== false || strpos($username, '"') !== false || empty($clean_username))
+	if (strpos($username, '&quot;') !== false || strpos($username, '"') !== false || empty($clean_username)
+		|| preg_match('/[\x{180E}\x{2005}-\x{200D}\x{202F}\x{205F}\x{2060}\x{FEFF}]/u', $username))
 	{
 		return 'INVALID_CHARS';
 	}
@@ -1882,6 +1887,7 @@ function validate_password($password)
 * Check to see if email address is a valid address and contains a MX record
 *
 * @param string $email The email to check
+* @param $config
 *
 * @return mixed Either false if validation succeeded or a string which will be used as the error message (with the variable name appended)
 */
@@ -3621,7 +3627,8 @@ function group_update_listings($group_id)
 /**
 * Funtion to make a user leave the NEWLY_REGISTERED system group.
 * @access public
-* @param $user_id The id of the user to remove from the group
+* @param int $user_id The id of the user to remove from the group
+* @param mixed $user_data The id of the user to remove from the group
 */
 function remove_newly_registered($user_id, $user_data = false)
 {

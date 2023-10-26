@@ -1,17 +1,15 @@
-Subject: Benachrichtigung über neues Thema — „{FORUM_NAME}“
+Subject: Neues Thema in „{FORUM_NAME}“
 List-Unsubscribe: <{U_STOP_WATCHING_FORUM}>
 
 Hallo {USERNAME},
 
-du erhältst diese Benachrichtigung, weil du das Forum „{FORUM_NAME}“ auf „{SITENAME}“ abonniert hast. Seit deinem letzten Besuch wurde in diesem Forum ein neues Thema<!-- IF AUTHOR_NAME != '' --> von {AUTHOR_NAME}<!-- ENDIF --> erstellt: „{TOPIC_TITLE}“. Du erhältst keine weitere Benachrichtigung, bis du das Forum besucht hast.
-
-Du kannst dir das Forum ansehen, wenn du folgenden Link aufrufst:
+im Forum „{FORUM_NAME}“ wurde ein neues Thema „{TOPIC_TITLE}“<!-- IF AUTHOR_NAME != '' --> von {AUTHOR_NAME}<!-- ENDIF --> erstellt, seitdem du „{SITENAME}“ zuletzt besucht hast. Du erhältst keine weitere Benachrichtigung, bis du das Forum besucht hast.
 {U_FORUM}
 
-Klicke auf den folgenden Link, um das neue Thema direkt aufzurufen:
+Klicke auf den folgenden Link, um das neue Thema aufzurufen:
 {U_TOPIC}
 
-Wenn du das Forum nicht länger abonnieren möchtest, verwende entweder den Link „Abonnement des Forums beenden“ im entsprechenden Forum oder rufe folgenden Link auf:
+Wenn du das Forum nicht länger abonnieren möchtest, rufe folgenden Link auf:
 {U_STOP_WATCHING_FORUM}
 
 {EMAIL_SIG}

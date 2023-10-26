@@ -49,7 +49,7 @@ class session
 		// If we are unable to get the script name we use REQUEST_URI as a failover and note it within the page array for easier support...
 		if (!$script_name)
 		{
-			$script_name = htmlspecialchars_decode($request->server('REQUEST_URI'));
+			$script_name = html_entity_decode($request->server('REQUEST_URI'), ENT_COMPAT);
 			$script_name = (($pos = strpos($script_name, '?')) !== false) ? substr($script_name, 0, $pos) : $script_name;
 			$page_array['failover'] = 1;
 		}
@@ -83,7 +83,7 @@ class session
 
 		// basenamed page name (for example: index.php)
 		$page_name = (substr($script_name, -1, 1) == '/') ? '' : basename($script_name);
-		$page_name = urlencode(htmlspecialchars($page_name));
+		$page_name = urlencode(htmlspecialchars($page_name, ENT_COMPAT));
 
 		$symfony_request_path = $phpbb_filesystem->clean_path($symfony_request->getPathInfo());
 		if ($symfony_request_path !== '/')
@@ -148,8 +148,8 @@ class session
 			'page_dir'			=> $page_dir,
 
 			'query_string'		=> $query_string,
-			'script_path'		=> str_replace(' ', '%20', htmlspecialchars($script_path)),
-			'root_script_path'	=> str_replace(' ', '%20', htmlspecialchars($root_script_path)),
+			'script_path'		=> str_replace(' ', '%20', htmlspecialchars($script_path, ENT_COMPAT)),
+			'root_script_path'	=> str_replace(' ', '%20', htmlspecialchars($root_script_path, ENT_COMPAT)),
 
 			'page'				=> $page,
 			'forum'				=> $forum_id,
@@ -166,7 +166,7 @@ class session
 		global $config, $request;
 
 		// Get hostname
-		$host = htmlspecialchars_decode($request->header('Host', $request->server('SERVER_NAME')));
+		$host = html_entity_decode($request->header('Host', $request->server('SERVER_NAME')), ENT_COMPAT);
 
 		// Should be a string and lowered
 		$host = (string) strtolower($host);
@@ -289,7 +289,7 @@ class session
 
 		// Why no forwarded_for et al? Well, too easily spoofed. With the results of my recent requests
 		// it's pretty clear that in the majority of cases you'll at least be left with a proxy/cache ip.
-		$ip = htmlspecialchars_decode($request->server('REMOTE_ADDR'));
+		$ip = html_entity_decode($request->server('REMOTE_ADDR'), ENT_COMPAT);
 		$ip = preg_replace('# {2,}#', ' ', str_replace(',', ' ', $ip));
 
 		/**
@@ -420,7 +420,7 @@ class session
 						// Else check the autologin length... and also removing those having autologin enabled but no longer allowed board-wide.
 						if (!$this->data['session_autologin'])
 						{
-							if ($this->data['session_time'] < $this->time_now - ($config['session_length'] + 60))
+							if ($this->data['session_time'] < $this->time_now - ((int) $config['session_length'] + 60))
 							{
 								$session_expired = true;
 							}
@@ -455,8 +455,8 @@ class session
 								$s_ip,
 								$u_browser,
 								$s_browser,
-								htmlspecialchars($u_forwarded_for),
-								htmlspecialchars($s_forwarded_for)
+								htmlspecialchars($u_forwarded_for, ENT_COMPAT),
+								htmlspecialchars($s_forwarded_for, ENT_COMPAT)
 							));
 						}
 						else
@@ -1347,6 +1347,109 @@ class session
 	}
 
 	/**
+	* Check if ip is blacklisted by Spamhaus SBL
+	*
+	* Disables DNSBL setting if errors are returned by Spamhaus due to a policy violation.
+	* https://www.spamhaus.com/product/help-for-spamhaus-public-mirror-users/
+	*
+	* @param string 		$dnsbl	the blacklist to check against
+	* @param string|false	$ip		the IPv4 address to check
+	*
+	* @return bool true if listed in spamhaus database, false if not
+	*/
+	function check_dnsbl_spamhaus($dnsbl, $ip = false)
+	{
+		global $config, $phpbb_log;
+
+		if ($ip === false)
+		{
+			$ip = $this->ip;
+		}
+
+		// Spamhaus does not support IPv6 addresses.
+		if (strpos($ip, ':') !== false)
+		{
+			return false;
+		}
+
+		if ($ip)
+		{
+			$quads = explode('.', $ip);
+			$reverse_ip = $quads[3] . '.' . $quads[2] . '.' . $quads[1] . '.' . $quads[0];
+
+			$records = dns_get_record($reverse_ip . '.' . $dnsbl . '.', DNS_A);
+			if (empty($records))
+			{
+				return false;
+			}
+			else
+			{
+				$error = false;
+				foreach ($records as $record)
+				{
+					if ($record['ip'] == '127.255.255.254')
+					{
+						$error = 'LOG_SPAMHAUS_OPEN_RESOLVER';
+						break;
+					}
+					else if ($record['ip'] == '127.255.255.255')
+					{
+						$error = 'LOG_SPAMHAUS_VOLUME_LIMIT';
+						break;
+					}
+				}
+
+				if ($error !== false)
+				{
+					$config->set('check_dnsbl', 0);
+					$phpbb_log->add('critical', $this->data['user_id'], $ip, $error);
+				}
+				else
+				{
+					// The existence of a non-error A record means it's a hit
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	* Checks if an IPv4 address is in a specified DNS blacklist
+	*
+	* Only checks if a record is returned or not.
+	*
+	* @param string 		$dnsbl	the blacklist to check against
+	* @param string|false	$ip		the IPv4 address to check
+	*
+	* @return bool true if record is returned, false if not
+	*/
+	function check_dnsbl_ipv4_generic($dnsbl, $ip = false)
+	{
+		if ($ip === false)
+		{
+			$ip = $this->ip;
+		}
+
+		// This function does not support IPv6 addresses.
+		if (strpos($ip, ':') !== false)
+		{
+			return false;
+		}
+
+		$quads = explode('.', $ip);
+		$reverse_ip = $quads[3] . '.' . $quads[2] . '.' . $quads[1] . '.' . $quads[0];
+
+		if (checkdnsrr($reverse_ip . '.' . $dnsbl . '.', 'A') === true)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	* Check if ip is blacklisted
 	* This should be called only where absolutely necessary
 	*
@@ -1372,28 +1475,25 @@ class session
 		}
 
 		$dnsbl_check = array(
-			'sbl.spamhaus.org'	=> 'http://www.spamhaus.org/query/bl?ip=',
+			'sbl.spamhaus.org'	=> ['http://www.spamhaus.org/query/bl?ip=', 'check_dnsbl_spamhaus'],
 		);
 
 		if ($mode == 'register')
 		{
-			$dnsbl_check['bl.spamcop.net'] = 'http://spamcop.net/bl.shtml?';
+			$dnsbl_check['bl.spamcop.net'] = ['http://spamcop.net/bl.shtml?', 'check_dnsbl_ipv4_generic'];
 		}
 
 		if ($ip)
 		{
-			$quads = explode('.', $ip);
-			$reverse_ip = $quads[3] . '.' . $quads[2] . '.' . $quads[1] . '.' . $quads[0];
-
 			// Need to be listed on all servers...
 			$listed = true;
 			$info = array();
 
 			foreach ($dnsbl_check as $dnsbl => $lookup)
 			{
-				if (checkdnsrr($reverse_ip . '.' . $dnsbl . '.', 'A') === true)
+				if (call_user_func(array($this, $lookup[1]), $dnsbl, $ip) === true)
 				{
-					$info = array($dnsbl, $lookup . $ip);
+					$info = array($dnsbl, $lookup[0] . $ip);
 				}
 				else
 				{
@@ -1584,7 +1684,7 @@ class session
 			return true;
 		}
 
-		$host = htmlspecialchars($this->host);
+		$host = htmlspecialchars($this->host, ENT_COMPAT);
 		$ref = substr($this->referer, strpos($this->referer, '://') + 3);
 
 		if (!(stripos($ref, $host) === 0) && (!$config['force_server_vars'] || !(stripos($ref, $config['server_name']) === 0)))
@@ -1660,7 +1760,7 @@ class session
 		}
 
 		// Do not update the session page for ajax requests, so the view online still works as intended
-		$page_changed = $this->update_session_page && $this->data['session_page'] != $this->page['page'] && !$request->is_ajax();
+		$page_changed = $this->update_session_page && (!isset($this->data['session_page']) || $this->data['session_page'] != $this->page['page']) && !$request->is_ajax();
 
 		// Only update session DB a minute or so after last update or if page changes
 		if ($this->time_now - (isset($this->data['session_time']) ? $this->data['session_time'] : 0) > 60 || $page_changed)

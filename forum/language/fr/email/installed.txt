@@ -14,7 +14,7 @@ Adresse du forum : {U_BOARD}
 
 Des informations utiles concernant le produit phpBB sont consultables dans le répertoire « docs » de votre installation ou sur les forums de support de phpBB
  Site de support officiel (en anglais) : https://www.phpbb.com/support/
- Site de support francophone : http://www.phpbb-fr.com/
+ Site de support francophone : https://www.phpbb-fr.com/
 
 Dans le but de conserver votre forum sûr et sécurisé, nous vous recommandons fortement de vous tenir au courant des mises à jour du logiciel. Pour ce faire, rendez-vous sur les liens mentionnés ci-dessus.
 

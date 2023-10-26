@@ -430,11 +430,11 @@ class acp_main
 		// Version check
 		$user->add_lang('install');
 
-		if ($auth->acl_get('a_server') && version_compare(PHP_VERSION, '7.1.3', '<'))
+		if ($auth->acl_get('a_server') && version_compare(PHP_VERSION, '7.2.0', '<'))
 		{
 			$template->assign_vars(array(
 				'S_PHP_VERSION_OLD'	=> true,
-				'L_PHP_VERSION_OLD'	=> sprintf($user->lang['PHP_VERSION_OLD'], PHP_VERSION, '7.1.3', '<a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/requirements">', '</a>'),
+				'L_PHP_VERSION_OLD'	=> sprintf($user->lang['PHP_VERSION_OLD'], PHP_VERSION, '7.2.0', '<a href="https://www.phpbb.com/support/docs/en/3.3/ug/quickstart/requirements">', '</a>'),
 			));
 		}
 
@@ -544,20 +544,13 @@ class acp_main
 			$files_per_day = $total_files;
 		}
 
-		if ($config['allow_attachments'] || $config['allow_pm_attach'])
-		{
-			$sql = 'SELECT COUNT(attach_id) AS total_orphan
-				FROM ' . ATTACHMENTS_TABLE . '
-				WHERE is_orphan = 1
-					AND filetime < ' . (time() - 3*60*60);
-			$result = $db->sql_query($sql);
-			$total_orphan = (int) $db->sql_fetchfield('total_orphan');
-			$db->sql_freeresult($result);
-		}
-		else
-		{
-			$total_orphan = false;
-		}
+		$sql = 'SELECT COUNT(attach_id) AS total_orphan
+			FROM ' . ATTACHMENTS_TABLE . '
+			WHERE is_orphan = 1
+				AND filetime < ' . (time() - 3*60*60);
+		$result = $db->sql_query($sql);
+		$total_orphan = (int) $db->sql_fetchfield('total_orphan');
+		$db->sql_freeresult($result);
 
 		$dbsize = get_database_size();
 
@@ -575,7 +568,6 @@ class acp_main
 			'DBSIZE'			=> $dbsize,
 			'UPLOAD_DIR_SIZE'	=> $upload_dir_size,
 			'TOTAL_ORPHAN'		=> $total_orphan,
-			'S_TOTAL_ORPHAN'	=> ($total_orphan === false) ? false : true,
 			'GZIP_COMPRESSION'	=> ($config['gzip_compress'] && @extension_loaded('zlib')) ? $user->lang['ON'] : $user->lang['OFF'],
 			'DATABASE_INFO'		=> $db->sql_server_info(),
 			'PHP_VERSION_INFO'	=> PHP_VERSION,
@@ -704,7 +696,7 @@ class acp_main
 				'S_MBSTRING_ENCODING_TRANSLATION_FAIL'	=> $encoding_translation && ($encoding_translation != 0),
 				'S_MBSTRING_HTTP_INPUT_FAIL'			=> !empty($http_input),
 				'S_MBSTRING_HTTP_OUTPUT_FAIL'			=> !empty($http_output),
-				'S_DEFAULT_CHARSET_FAIL'				=> $default_charset !== 'UTF-8',
+				'S_DEFAULT_CHARSET_FAIL'				=> $default_charset !== null && strtolower($default_charset) !== 'utf-8',
 			]);
 		}
 

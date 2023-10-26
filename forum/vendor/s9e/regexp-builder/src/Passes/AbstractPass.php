@@ -1,11 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Passes;
+
+use const false, true;
+use function array_shift, array_unshift, count, end, is_array;
 
 abstract class AbstractPass implements PassInterface
 {
@@ -17,7 +20,7 @@ abstract class AbstractPass implements PassInterface
 	/**
 	* {@inheritdoc}
 	*/
-	public function run(array $strings)
+	public function run(array $strings): array
 	{
 		$strings = $this->beforeRun($strings);
 		if ($this->canRun($strings))
@@ -35,7 +38,7 @@ abstract class AbstractPass implements PassInterface
 	* @param  array[] $strings
 	* @return array[]
 	*/
-	protected function afterRun(array $strings)
+	protected function afterRun(array $strings): array
 	{
 		if ($this->isOptional && $strings[0] !== [])
 		{
@@ -51,7 +54,7 @@ abstract class AbstractPass implements PassInterface
 	* @param  array[] $strings
 	* @return array[]
 	*/
-	protected function beforeRun(array $strings)
+	protected function beforeRun(array $strings): array
 	{
 		$this->isOptional = (isset($strings[0]) && $strings[0] === []);
 		if ($this->isOptional)
@@ -68,7 +71,7 @@ abstract class AbstractPass implements PassInterface
 	* @param  array[] $strings
 	* @return bool
 	*/
-	protected function canRun(array $strings)
+	protected function canRun(array $strings): bool
 	{
 		return true;
 	}
@@ -79,7 +82,7 @@ abstract class AbstractPass implements PassInterface
 	* @param  array[] $strings
 	* @return array[]
 	*/
-	abstract protected function runPass(array $strings);
+	abstract protected function runPass(array $strings): array;
 
 	/**
 	* Test whether given string has an optional suffix
@@ -87,7 +90,7 @@ abstract class AbstractPass implements PassInterface
 	* @param  array $string
 	* @return bool
 	*/
-	protected function hasOptionalSuffix(array $string)
+	protected function hasOptionalSuffix(array $string): bool
 	{
 		$suffix = end($string);
 
@@ -95,12 +98,12 @@ abstract class AbstractPass implements PassInterface
 	}
 
 	/**
-	* Test whether given string contains a single alternations made of single values
+	* Test whether given string contains a single alternation made of single values
 	*
 	* @param  array $string
 	* @return bool
 	*/
-	protected function isCharacterClassString(array $string)
+	protected function isCharacterClassString(array $string): bool
 	{
 		return ($this->isSingleAlternationString($string) && $this->isSingleCharStringList($string[0]));
 	}
@@ -108,10 +111,10 @@ abstract class AbstractPass implements PassInterface
 	/**
 	* Test whether given string contains one single element that is an alternation
 	*
-	* @param  array
+	* @param  array $string
 	* @return bool
 	*/
-	protected function isSingleAlternationString(array $string)
+	protected function isSingleAlternationString(array $string): bool
 	{
 		return (count($string) === 1 && is_array($string[0]));
 	}
@@ -122,7 +125,7 @@ abstract class AbstractPass implements PassInterface
 	* @param  array $string
 	* @return bool
 	*/
-	protected function isSingleCharString(array $string)
+	protected function isSingleCharString(array $string): bool
 	{
 		return (count($string) === 1 && !is_array($string[0]));
 	}
@@ -133,7 +136,7 @@ abstract class AbstractPass implements PassInterface
 	* @param  array[] $strings
 	* @return bool
 	*/
-	protected function isSingleCharStringList(array $strings)
+	protected function isSingleCharStringList(array $strings): bool
 	{
 		foreach ($strings as $string)
 		{

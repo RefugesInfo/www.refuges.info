@@ -48,6 +48,9 @@ class upload
 	/** @var dispatcher */
 	protected $phpbb_dispatcher;
 
+	/** @var string */
+	protected $phpbb_root_path;
+
 	/** @var plupload Plupload */
 	protected $plupload;
 
@@ -296,8 +299,10 @@ class upload
 	 */
 	protected function check_disk_space()
 	{
-		if ($free_space = @disk_free_space($this->phpbb_root_path . $this->config['upload_path']))
+		if (function_exists('disk_free_space'))
 		{
+			$free_space = @disk_free_space($this->phpbb_root_path);
+
 			if ($free_space <= $this->file->get('filesize'))
 			{
 				if ($this->auth->acl_get('a_'))

@@ -2,7 +2,7 @@
 /**
 *
 * This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
+* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
 *
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,7 +39,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'TRANSLATION_INFO'	=> 'Traduit par <a href="http://www.phpbb-fr.com">phpBB-fr.com</a>',
+	'TRANSLATION_INFO'	=> 'Traduit par <a href="https://www.phpbb-fr.com">phpBB-fr.com</a>',
 	'DIRECTION'			=> 'ltr',
 	'DATE_FORMAT'		=> '|d M Y|',	// 01 janv. 2007 (with Relative days enabled)
 	'DATETIME_FORMAT'	=> '|d M Y, H:i|',	// 01 janv. 2007, 13:37 (with Relative days enabled)
@@ -93,6 +93,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_ENTRY'				=> 'Entrée de base de données non valide.',
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_SERVICE_TYPE'		=> 'Le type de service fournit au gestionnaire de service OAuth n’est pas valide.',
 	'AUTH_PROVIDER_OAUTH_ERROR_REQUEST'						=> 'Une erreur s’est produite lors du traitement de votre demande OAuth.',
+	'AUTH_PROVIDER_OAUTH_RETURN_ERROR'						=> 'Le service externe a renvoyé une valeur erronée. Donc, votre demande ne peut pas être traitée.',
 	'AUTH_PROVIDER_OAUTH_ERROR_SERVICE_NOT_CREATED'			=> 'Le service OAuth n’a pas été créé.',
 	'AUTH_PROVIDER_OAUTH_SERVICE_BITLY'						=> 'Bitly',
 	'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK'					=> 'Facebook',
@@ -163,6 +164,11 @@ $lang = array_merge($lang, array(
 	'CHANGING_PREFERENCES'	=> 'Modifie les préférences du forum',
 	'CHANGING_PROFILE'		=> 'Modifie son profil',
 	'CHARACTERS'			=> array(
+		1	=> '%d caractère',
+		2	=> '%d caractères',
+	),
+	// Special version to be used when describing ranges e.g. "min x characters and max y characters"
+	'CHARACTERS_XY'			=> array(
 		1	=> '%d caractère',
 		2	=> '%d caractères',
 	),
@@ -429,6 +435,7 @@ $lang = array_merge($lang, array(
 	'MESSAGE'				=> 'Message',
 	'MESSAGES'				=> 'Messages',
 	'MESSAGES_COUNT'		=> array(
+		0	=> 'messages illimités',
 		1	=> '%d message',
 		2	=> '%d messages',
 	),
@@ -600,7 +607,7 @@ $lang = array_merge($lang, array(
 	'POSTS_UNAPPROVED_FORUM'=> 'Au moins un message de ce forum n’a pas été approuvé.',
 	'POST_BY_AUTHOR'		=> 'par',
 	'POST_BY_FOE'			=> '<strong>%1$s</strong>, qui est actuellement sur votre liste de membres ignorés, a posté ce message.',
-	'POST_DISPLAY'			=> '%1$sAfficher ce message%2$s.',
+	'POST_DISPLAY'			=> 'Afficher ce message.',
 	'POST_DAY'				=> '%.2f messages par jour',
 	'POST_DELETED_ACTION'	=> 'Message supprimé :',
 	'POST_DELETED'			=> 'Ce message a été supprimé.',
@@ -674,6 +681,10 @@ $lang = array_merge($lang, array(
 	'RETURN_TOPIC'				=> '%sRetourner au dernier sujet visité%s',
 	'RETURN_TO'					=> 'Retourner vers « %s »',
 	'RETURN_TO_INDEX'			=> 'Retourner à l’index du forum',
+
+	'ROUTE_NOT_FOUND'				=> 'La route demandée « %s » n’a pu être trouvée.',
+	'ROUTE_INVALID_MISSING_PARAMS'	=> 'Les paramètres transmis à la route « %s » sont invalides ou manquants.',
+
 	'FEED'						=> 'Flux',
 	'FEED_NEWS'					=> 'Nouvelles informations',
 	'FEED_TOPICS_ACTIVE'		=> 'Sujets actifs',

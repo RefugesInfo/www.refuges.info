@@ -98,6 +98,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_ENTRY'				=> 'Ungültiger Datenbank-Eintrag.',
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_SERVICE_TYPE'		=> 'Es wurde ein ungültiger Dienst-Typ an die OAuth-Dienst-Routine übergeben.',
 	'AUTH_PROVIDER_OAUTH_ERROR_REQUEST'						=> 'Bei der OAuth-Abfrage ist ein Fehler aufgetreten.',
+	'AUTH_PROVIDER_OAUTH_RETURN_ERROR'						=> 'Der externe Service hat einen falschen Wert zurückgegeben, daher kann deine Anfrage nicht verarbeitet werden.',
 	'AUTH_PROVIDER_OAUTH_ERROR_SERVICE_NOT_CREATED'			=> 'Der OAuth-Dienst konnte nicht erstellt werden',
 	'AUTH_PROVIDER_OAUTH_SERVICE_BITLY'						=> 'Bitly',
 	'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK'					=> 'Facebook',
@@ -435,6 +436,7 @@ $lang = array_merge($lang, array(
 	'MESSAGE'				=> 'Nachricht',
 	'MESSAGES'				=> 'Nachrichten',
 	'MESSAGES_COUNT'		=> array(
+		0	=> 'beliebig vielen Nachrichten',
 		1	=> '%d Nachricht',
 		2	=> '%d Nachrichten',
 	),
@@ -609,7 +611,7 @@ $lang = array_merge($lang, array(
 	'POSTS_UNAPPROVED_FORUM'=> 'Mindestens ein Beitrag in diesem Forum wurde noch nicht freigegeben.',
 	'POST_BY_AUTHOR'		=> 'von',
 	'POST_BY_FOE'			=> 'Dieser Beitrag wurde von <strong>%1$s</strong>, einem von dir ignorierten Mitglied, erstellt.',
-	'POST_DISPLAY'			=> '%1$sDiesen Beitrag anzeigen%2$s.',
+	'POST_DISPLAY'			=> 'Diesen Beitrag anzeigen',
 	'POST_DAY'				=> '%.2f Beiträge pro Tag',
 	'POST_DELETED_ACTION'	=> 'Gelöschter Beitrag:',
 	'POST_DELETED'			=> 'Dieser Beitrag wurde gelöscht.',
@@ -683,6 +685,10 @@ $lang = array_merge($lang, array(
 	'RETURN_TOPIC'				=> '%sZurück zum zuletzt besuchten Thema%s',
 	'RETURN_TO'					=> 'Zurück zu „%s“',
 	'RETURN_TO_INDEX'			=> 'Zurück zur Foren-Übersicht',
+
+	'ROUTE_NOT_FOUND'				=> 'Die angeforderte Route „%s” konnte nicht gefunden werden.',
+	'ROUTE_INVALID_MISSING_PARAMS'	=> 'Die übergebenen Parameter für die Route „%s“ sind ungültig oder fehlen.',
+
 	'FEED'						=> 'Feed',
 	'FEED_NEWS'					=> 'Neuigkeiten',
 	'FEED_TOPICS_ACTIVE'		=> 'Aktive Themen',

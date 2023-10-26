@@ -211,13 +211,13 @@
 			<!-- IF postrow.S_POST_HIDDEN -->
 				<!-- IF postrow.S_POST_DELETED -->
 					<div class="ignore" id="post_hidden{postrow.POST_ID}">
-						{postrow.L_POST_DELETED_MESSAGE}<br />
-						{postrow.L_POST_DISPLAY}
+						{postrow.L_POST_DELETED_MESSAGE}<br>
+						<a class="display_post" data-post-id="{{ postrow.POST_ID }}" href="{{ postrow.U_MINI_POST_VIEW }}">{{ lang('POST_DISPLAY') }}</a>
 					</div>
 				<!-- ELSEIF postrow.S_IGNORE_POST -->
 					<div class="ignore" id="post_hidden{postrow.POST_ID}">
-						{postrow.L_IGNORE_POST}<br />
-						{postrow.L_POST_DISPLAY}
+						{postrow.L_IGNORE_POST}<br>
+						<a class="display_post" data-post-id="{{ postrow.POST_ID }}" href="{{ postrow.U_MINI_POST_VIEW }}">{{ lang('POST_DISPLAY') }}</a>
 					</div>
 				<!-- ENDIF -->
 			<!-- ENDIF -->
@@ -336,6 +336,8 @@
 			</p>
 			<!-- ENDIF -->
 
+			{% EVENT viewtopic_body_postrow_content_before %}
+
 			<div class="content">{postrow.MESSAGE}</div>
 
 			<!-- EVENT viewtopic_body_postrow_content_after -->
@@ -367,7 +369,10 @@
 
 			<!-- IF postrow.BUMPED_MESSAGE --><div class="notice"><br /><br />{postrow.BUMPED_MESSAGE}</div><!-- ENDIF -->
 			<!-- EVENT viewtopic_body_postrow_post_notices_after -->
-			<!-- IF postrow.SIGNATURE --><div id="sig{postrow.POST_ID}" class="signature">{postrow.SIGNATURE}</div><!-- ENDIF -->
+
+			{% EVENT viewtopic_body_postrow_signature_before %}
+				{% if postrow.SIGNATURE %}<div id="sig{{ postrow.POST_ID }}" class="signature">{{ postrow.SIGNATURE }}</div>{% endif %}
+			{% EVENT viewtopic_body_postrow_signature_after %}
 
 			<!-- EVENT viewtopic_body_postrow_post_content_footer -->
 			</div>

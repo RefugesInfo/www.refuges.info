@@ -141,7 +141,7 @@ class user_loader
 		{
 			$this->load_users(array($user_id));
 
-			return $this->get_user($user_id);
+			return $user_id != ANONYMOUS ? $this->get_user($user_id) : $this->users[$user_id] ?? false;
 		}
 
 		return $this->get_user(ANONYMOUS);
@@ -181,7 +181,7 @@ class user_loader
 	* @param bool $query Should we query the database if this user has not yet been loaded?
 	* 						Typically this should be left as false and you should make sure
 	* 						you load users ahead of time with load_users()
-	* @param bool @lazy If true, will be lazy loaded (requires JS)
+	* @param bool $lazy If true, will be lazy loaded (requires JS)
 	* @return string
 	*/
 	public function get_avatar($user_id, $query = false, $lazy = false)

@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Utils;
@@ -31,7 +31,7 @@ abstract class Http
 	public static function getCachingClient($cacheDir = null)
 	{
 		$client = new Cached(self::getClient());
-		$client->cacheDir = (isset($cacheDir)) ? $cacheDir : sys_get_temp_dir();
+		$client->cacheDir = $cacheDir ?? sys_get_temp_dir();
 
 		return $client;
 	}

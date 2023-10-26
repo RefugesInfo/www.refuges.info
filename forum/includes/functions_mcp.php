@@ -35,7 +35,7 @@ function phpbb_module_notes_url($mode, $module_row)
 	}
 
 	global $user_id;
-	return ($user_id) ? "&amp;u=$user_id" : '';
+	return phpbb_extra_url();
 }
 
 function phpbb_module_warn_url($mode, $module_row)
@@ -43,24 +43,18 @@ function phpbb_module_warn_url($mode, $module_row)
 	if ($mode == 'front' || $mode == 'list')
 	{
 		global $forum_id;
-
-		return ($forum_id) ? "&amp;f=$forum_id" : '';
+		return phpbb_extra_url();
 	}
 
 	if ($mode == 'warn_post')
 	{
 		global $forum_id, $post_id;
-
-		$url_extra = ($forum_id) ? "&amp;f=$forum_id" : '';
-		$url_extra .= ($post_id) ? "&amp;p=$post_id" : '';
-
-		return $url_extra;
+		return phpbb_extra_url();
 	}
 	else
 	{
 		global $user_id;
-
-		return ($user_id) ? "&amp;u=$user_id" : '';
+		return phpbb_extra_url();
 	}
 }
 
@@ -89,18 +83,34 @@ function phpbb_module_reports_url($mode, $module_row)
 	return phpbb_extra_url();
 }
 
-function phpbb_extra_url()
+/**
+ * Generate URL parameters for MCP modules
+ *
+ * @param array $additional_parameters	Array with additional parameters in format of ['key' => 'parameter_name']
+ *
+ * @return string						String with URL parameters (empty string if not any)
+ */
+function phpbb_extra_url($additional_parameters = [])
 {
-	global $forum_id, $topic_id, $post_id, $report_id, $user_id;
+	$url_extra = [];
+	$url_parameters = array_merge([
+		'f' => 'forum_id',
+		't' => 'topic_id',
+		'p' => 'post_id',
+		'r' => 'report_id',
+		'u' => 'user_id',
+	], $additional_parameters);
 
-	$url_extra = '';
-	$url_extra .= ($forum_id) ? "&amp;f=$forum_id" : '';
-	$url_extra .= ($topic_id) ? "&amp;t=$topic_id" : '';
-	$url_extra .= ($post_id) ? "&amp;p=$post_id" : '';
-	$url_extra .= ($user_id) ? "&amp;u=$user_id" : '';
-	$url_extra .= ($report_id) ? "&amp;r=$report_id" : '';
+	foreach ($url_parameters as $key => $value)
+	{
+		global $$value;
+		if (isset($$value) && $parameter = $$value)
+		{
+			$url_extra[] = "$key=$parameter";
+		}
+	}
 
-	return $url_extra;
+	return implode('&amp;', $url_extra);
 }
 
 /**
@@ -383,7 +393,7 @@ function phpbb_get_pm_data($pm_ids)
 /**
 * sorting in mcp
 *
-* @param string $where_sql should either be WHERE (default if ommited) or end with AND or OR
+* $where_sql should either be WHERE (default if ommited) or end with AND or OR
 *
 * $mode reports and reports_closed: the $where parameters uses aliases p for posts table and r for report table
 * $mode unapproved_posts: the $where parameters uses aliases p for posts table and t for topic table
@@ -684,7 +694,7 @@ function phpbb_mcp_sorting($mode, &$sort_days_val, &$sort_key_val, &$sort_dir_va
 * @param	string	$table			The table to find the ids in
 * @param	string	$sql_id			The ids relevant column name
 * @param	array	$acl_list		A list of permissions the user need to have
-* @param	mixed	$singe_forum	Limit to one forum id (int) or the first forum found (true)
+* @param	mixed	$single_forum	Limit to one forum id (int) or the first forum found (true)
 *
 * @return	mixed	False if no ids were able to be retrieved, true if at least one id left.
 *					Additionally, this value can be the forum_id assigned if $single_forum was set.

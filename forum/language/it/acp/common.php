@@ -6,7 +6,8 @@
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010 phpBB.it
 * @copyright (c) 2014 phpBBItalia.net <https://www.phpbbitalia.net>
-* @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -741,6 +742,8 @@ $lang = array_merge($lang, array(
 	'LOG_SEARCH_INDEX_CREATED'	=> '<strong>Creato Indice ricerca per</strong><br />» %s',
 	'LOG_SEARCH_INDEX_REMOVED'	=> '<strong>Rimosso Indice ricerca per</strong><br />» %s',
 	'LOG_SPHINX_ERROR'			=> '<strong>Errore Sphinx</strong><br />» %s',
+	'LOG_SPAMHAUS_OPEN_RESOLVER'		=> 'Spamhaus non consente query che utilizzano un risolutore aperto. Il controllo della lista nera è stato disabilitato. Per ulteriori informazioni, vedere https://www.spamhaus.com/product/help-for-spamhaus-public-mirror-users/',
+	'LOG_SPAMHAUS_VOLUME_LIMIT'			=> 'Il limite del volume delle query di Spamhaus è stato superato. Il controllo della lista nera è stato disabilitato. Per ulteriori informazioni, vedere https://www.spamhaus.com/product/help-for-spamhaus-public-mirror-users/',
 	'LOG_STYLE_ADD'				=> '<strong>Nuovo stile aggiunto</strong><br />» %s',
 	'LOG_STYLE_DELETE'			=> '<strong>Stile cancellato</strong><br />» %s',
 	'LOG_STYLE_EDIT_DETAILS'	=> '<strong>Stile modificato</strong><br />» %s',

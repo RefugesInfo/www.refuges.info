@@ -1,11 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Passes;
+
+use function array_merge, array_slice, count, is_array, serialize;
 
 /**
 * Replaces (?:ab|bb|c) with (?:[ab]b|c)
@@ -15,7 +17,7 @@ class CoalesceSingleCharacterPrefix extends AbstractPass
 	/**
 	* {@inheritdoc}
 	*/
-	protected function runPass(array $strings)
+	protected function runPass(array $strings): array
 	{
 		$newStrings = [];
 		foreach ($this->getEligibleKeys($strings) as $keys)
@@ -44,7 +46,7 @@ class CoalesceSingleCharacterPrefix extends AbstractPass
 	* @param  array[] $eligibleKeys List of lists of keys
 	* @return array[]
 	*/
-	protected function filterEligibleKeys(array $eligibleKeys)
+	protected function filterEligibleKeys(array $eligibleKeys): array
 	{
 		$filteredKeys = [];
 		foreach ($eligibleKeys as $k => $keys)
@@ -64,7 +66,7 @@ class CoalesceSingleCharacterPrefix extends AbstractPass
 	* @param  array[] $strings
 	* @return array[]
 	*/
-	protected function getEligibleKeys(array $strings)
+	protected function getEligibleKeys(array $strings): array
 	{
 		$eligibleKeys = [];
 		foreach ($strings as $k => $string)

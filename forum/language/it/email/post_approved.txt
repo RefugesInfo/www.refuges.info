@@ -2,7 +2,7 @@ Subject: Messaggio approvato - “{POST_SUBJECT}”
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché il messaggio “{POST_SUBJECT}” su “{SITENAME}” è stato approvato da un moderatore o da un amministratore.
+Il tuo messaggio "{POST_SUBJECT}" su "{SITENAME}" è stato approvato da un moderatore o amministratore.
 
 Per visualizzare il messaggio clicca sul link seguente:
 {U_VIEW_POST}

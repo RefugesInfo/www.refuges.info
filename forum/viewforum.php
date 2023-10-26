@@ -244,8 +244,8 @@ if (!$config['use_system_cron'])
 
 	if ($task->is_ready())
 	{
-		$url = $task->get_url();
-		$template->assign_var('RUN_CRON_TASK', '<img src="' . $url . '" width="1" height="1" alt="cron" />');
+		$cron_task_tag = $task->get_html_tag();
+		$template->assign_var('RUN_CRON_TASK', $cron_task_tag);
 	}
 	else
 	{
@@ -255,8 +255,8 @@ if (!$config['use_system_cron'])
 
 		if ($task->is_ready())
 		{
-			$url = $task->get_url();
-			$template->assign_var('RUN_CRON_TASK', '<img src="' . $url . '" width="1" height="1" alt="cron" />');
+			$cron_task_tag = $task->get_html_tag();
+			$template->assign_var('RUN_CRON_TASK', $cron_task_tag);
 		}
 	}
 }
@@ -940,7 +940,7 @@ if (count($topic_list))
 		topic_status($row, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
 		// Generate all the URIs ...
-		$view_topic_url_params = 'f=' . $row['forum_id'] . '&amp;t=' . $topic_id;
+		$view_topic_url_params = 't=' . $topic_id;
 		$view_topic_url = $auth->acl_get('f_read', $forum_id) ? append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params) : false;
 
 		$topic_unapproved = (($row['topic_visibility'] == ITEM_UNAPPROVED || $row['topic_visibility'] == ITEM_REAPPROVE) && $auth->acl_get('m_approve', $row['forum_id']));
@@ -999,12 +999,12 @@ if (count($topic_list))
 			'S_TOPIC_MOVED'			=> ($row['topic_status'] == ITEM_MOVED) ? true : false,
 
 			'U_NEWEST_POST'			=> $auth->acl_get('f_read', $forum_id) ? append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params . '&amp;view=unread') . '#unread' : false,
-			'U_LAST_POST'			=> $auth->acl_get('f_read', $forum_id)  ? append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'] : false,
+			'U_LAST_POST'			=> $auth->acl_get('f_read', $forum_id)  ? append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'] : false,
 			'U_LAST_POST_AUTHOR'	=> get_username_string('profile', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 			'U_TOPIC_AUTHOR'		=> get_username_string('profile', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
 			'U_VIEW_TOPIC'			=> $view_topic_url,
 			'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
-			'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;f=' . $row['forum_id'] . '&amp;t=' . $topic_id, true, $user->session_id),
+			'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;t=' . $topic_id, true, $user->session_id),
 			'U_MCP_QUEUE'			=> $u_mcp_queue,
 
 			'S_TOPIC_TYPE_SWITCH'	=> ($s_type_switch == $s_type_switch_test) ? -1 : $s_type_switch_test,
@@ -1027,7 +1027,7 @@ if (count($topic_list))
 
 		$template->assign_block_vars('topicrow', $topic_row);
 
-		$pagination->generate_template_pagination($topic_row['U_VIEW_TOPIC'], 'topicrow.pagination', 'start', $topic_row['REPLIES'] + 1, $config['posts_per_page'], 1, true, true);
+		$pagination->generate_template_pagination($topic_row['U_VIEW_TOPIC'], 'topicrow.pagination', 'start', (int) $topic_row['REPLIES'] + 1, $config['posts_per_page'], 1, true, true);
 
 		$s_type_switch = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
 

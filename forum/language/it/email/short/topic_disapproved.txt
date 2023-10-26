@@ -2,7 +2,7 @@ Subject: Argomento disapprovato - “{TOPIC_TITLE}”
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché il tuo argomento “{TOPIC_TITLE}” su “{SITENAME}” è stato disapprovato da un moderatore o da un amministratore.
+Il tuo argomento "{TOPIC_TITLE}" su "{SITENAME}" non è stato approvato da un moderatore o amministratore.
 
 La ragione della disapprovazione è la seguente:
 

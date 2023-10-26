@@ -635,6 +635,14 @@ abstract class driver implements driver_interface
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function sql_nextid()
+	{
+		return $this->sql_last_inserted_id();
+	}
+
+	/**
 	* {@inheritDoc}
 	*/
 	function cast_expr_to_string($expression)
@@ -983,7 +991,7 @@ abstract class driver implements driver_interface
 			// The DEBUG constant is for development only!
 			if ((isset($auth) && $auth->acl_get('a_')) || defined('IN_INSTALL') || $this->debug_sql_explain)
 			{
-				$message .= ($sql) ? '<br /><br />SQL<br /><br />' . htmlspecialchars($sql) : '';
+				$message .= ($sql) ? '<br /><br />SQL<br /><br />' . htmlspecialchars($sql, ENT_COMPAT) : '';
 			}
 			else
 			{
@@ -997,7 +1005,7 @@ abstract class driver implements driver_interface
 				{
 					if (!empty($config['board_contact']))
 					{
-						$message .= '<br /><br />' . sprintf($user->lang['SQL_ERROR_OCCURRED'], '<a href="mailto:' . htmlspecialchars($config['board_contact']) . '">', '</a>');
+						$message .= '<br /><br />' . sprintf($user->lang['SQL_ERROR_OCCURRED'], '<a href="mailto:' . htmlspecialchars($config['board_contact'], ENT_COMPAT) . '">', '</a>');
 					}
 					else
 					{
@@ -1061,7 +1069,7 @@ abstract class driver implements driver_interface
 						<meta charset="utf-8">
 						<meta http-equiv="X-UA-Compatible" content="IE=edge">
 						<title>SQL Report</title>
-						<link href="' . htmlspecialchars($phpbb_path_helper->update_web_root_path($phpbb_root_path) . $phpbb_path_helper->get_adm_relative_path()) . 'style/admin.css" rel="stylesheet" type="text/css" media="screen" />
+						<link href="' . htmlspecialchars($phpbb_path_helper->update_web_root_path($phpbb_root_path) . $phpbb_path_helper->get_adm_relative_path(), ENT_COMPAT) . 'style/admin.css" rel="stylesheet" type="text/css" media="screen" />
 					</head>
 					<body id="errorpage">
 					<div id="wrap">
@@ -1111,7 +1119,7 @@ abstract class driver implements driver_interface
 					</thead>
 					<tbody>
 					<tr>
-						<td class="row3"><textarea style="font-family:\'Courier New\',monospace;width:99%" rows="5" cols="10">' . preg_replace('/\t(AND|OR)(\W)/', "\$1\$2", htmlspecialchars(preg_replace('/[\s]*[\n\r\t]+[\n\r\s\t]*/', "\n", $query))) . '</textarea></td>
+						<td class="row3"><textarea style="font-family:\'Courier New\',monospace;width:99%" rows="5" cols="10">' . preg_replace('/\t(AND|OR)(\W)/', "\$1\$2", htmlspecialchars(preg_replace('/[\s]*[\n\r\t]+[\n\r\s\t]*/', "\n", $query), ENT_COMPAT)) . '</textarea></td>
 					</tr>
 					</tbody>
 					</table>
@@ -1132,7 +1140,7 @@ abstract class driver implements driver_interface
 				else
 				{
 					$error = $this->sql_error();
-					$this->sql_report .= '<b style="color: red">FAILED</b> - ' . $this->sql_layer . ' Error ' . $error['code'] . ': ' . htmlspecialchars($error['message']);
+					$this->sql_report .= '<b style="color: red">FAILED</b> - ' . $this->sql_layer . ' Error ' . $error['code'] . ': ' . htmlspecialchars($error['message'], ENT_COMPAT);
 				}
 
 				$this->sql_report .= '</p><br /><br />';
@@ -1197,7 +1205,7 @@ abstract class driver implements driver_interface
 				$color = ($time_db > $time_cache) ? 'green' : 'red';
 
 				$this->sql_report .= '<table cellspacing="1"><thead><tr><th>Query results obtained from the cache</th></tr></thead><tbody><tr>';
-				$this->sql_report .= '<td class="row3"><textarea style="font-family:\'Courier New\',monospace;width:99%" rows="5" cols="10">' . preg_replace('/\t(AND|OR)(\W)/', "\$1\$2", htmlspecialchars(preg_replace('/[\s]*[\n\r\t]+[\n\r\s\t]*/', "\n", $query))) . '</textarea></td></tr></tbody></table>';
+				$this->sql_report .= '<td class="row3"><textarea style="font-family:\'Courier New\',monospace;width:99%" rows="5" cols="10">' . preg_replace('/\t(AND|OR)(\W)/', "\$1\$2", htmlspecialchars(preg_replace('/[\s]*[\n\r\t]+[\n\r\s\t]*/', "\n", $query), ENT_COMPAT)) . '</textarea></td></tr></tbody></table>';
 				$this->sql_report .= '<p style="text-align: center;">';
 				$this->sql_report .= 'Before: ' . sprintf('%.5f', $this->curtime - $starttime) . 's | After: ' . sprintf('%.5f', $endtime - $starttime) . 's | Elapsed [cache]: <b style="color: ' . $color . '">' . sprintf('%.5f', ($time_cache)) . 's</b> | Elapsed [db]: <b>' . sprintf('%.5f', $time_db) . 's</b></p><br /><br />';
 
@@ -1236,5 +1244,22 @@ abstract class driver implements driver_interface
 		$this->sql_freeresult($result);
 
 		return $rows_total;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function clean_query_id($query_id)
+	{
+		// Some DBMS functions accept/return objects and/or resources instead if identifiers
+		// Attempting to use objects/resources as array keys will throw error, hence correctly handle all cases
+		if (is_resource($query_id))
+		{
+			return function_exists('get_resource_id') ? get_resource_id($query_id) : (int) $query_id;
+		}
+		else
+		{
+			return is_object($query_id) ? spl_object_id($query_id) : $query_id;
+		}
 	}
 }

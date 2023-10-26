@@ -695,7 +695,7 @@ class log implements \phpbb\log\log_interface
 					}
 
 					$lang_arguments = array_merge(array($log[$i]['action']), $log_data_ary);
-					$log[$i]['action'] = call_user_func_array(array($this->user, 'lang'), $lang_arguments);
+					$log[$i]['action'] = call_user_func_array(array($this->user, 'lang'), array_values($lang_arguments));
 
 					// If within the admin panel we do not censor text out
 					if ($this->get_is_admin())
@@ -746,8 +746,8 @@ class log implements \phpbb\log\log_interface
 
 			foreach ($log as $key => $row)
 			{
-				$log[$key]['viewtopic'] = (isset($topic_auth['f_read'][$row['topic_id']])) ? append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 'f=' . $topic_auth['f_read'][$row['topic_id']] . '&amp;t=' . $row['topic_id']) : false;
-				$log[$key]['viewpost'] = (isset($topic_auth['f_read'][$row['topic_id']]) && $row['post_id']) ? append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 'f=' . $topic_auth['f_read'][$row['topic_id']] . '&amp;t=' . $row['topic_id'] . '&amp;p=' . $row['post_id'] . '#p' . $row['post_id']) : false;
+				$log[$key]['viewtopic'] = (isset($topic_auth['f_read'][$row['topic_id']])) ? append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 't=' . $row['topic_id']) : false;
+				$log[$key]['viewpost'] = (isset($topic_auth['f_read'][$row['topic_id']]) && $row['post_id']) ? append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 'p=' . $row['post_id'] . '#p' . $row['post_id']) : false;
 				$log[$key]['viewlogs'] = (isset($topic_auth['m_'][$row['topic_id']])) ? append_sid("{$this->phpbb_root_path}mcp.{$this->php_ext}", 'i=logs&amp;mode=topic_logs&amp;t=' . $row['topic_id'], true, $this->user->session_id) : false;
 			}
 		}

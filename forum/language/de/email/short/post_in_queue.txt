@@ -1,8 +1,8 @@
-Subject: Benachrichtigung zur Beitrags-Moderation — „{TOPIC_TITLE}“
+Subject: Beitrag muss freigegeben werden — „{TOPIC_TITLE}“
 
 Hallo {USERNAME},
 
-du erhältst diese Nachricht, weil der Beitrag „{POST_SUBJECT}“ auf „{SITENAME}“ auf Freigabe wartet.
+der Beitrag „{POST_SUBJECT}“ auf „{SITENAME}“ muss freigegeben werden.
 
 Du kannst dir den Beitrag ansehen, wenn du folgenden Link aufrufst:
 {U_VIEW_POST}

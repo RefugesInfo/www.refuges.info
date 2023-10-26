@@ -9,3 +9,8 @@ setTimeout(function(){
 	ctSetCookie(ct_cookie_name, ct_cookie_value);
 	ctSetCookie("ct_timezone", ct_date.getTimezoneOffset()/60*(-1));
 },1000);
+
+jQuery(document).ready(function () {
+	jQuery('#js_info').hide();
+	jQuery('#js_passed').show();
+});

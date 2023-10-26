@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Autolink;
@@ -62,6 +62,7 @@ class Parser extends ParserBase
 	* Exceptions:
 	*  - dashes and underscores, (base64 IDs could end with one)
 	*  - equal signs, (because of "foo?bar=")
+	*  - plus signs, (used by some file share services to force download)
 	*  - trailing slashes,
 	*  - closing parentheses. (they are balanced separately)
 	*
@@ -70,6 +71,6 @@ class Parser extends ParserBase
 	*/
 	protected function trimUrl($url)
 	{
-		return preg_replace('#(?:(?![-=)/_])[\\s!-.:-@[-`{-~\\pP])+$#Du', '', $url);
+		return preg_replace('#(?:(?![-=+)/_])[\\s!-.:-@[-`{-~\\pP])+$#Du', '', $url);
 	}
 }

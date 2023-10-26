@@ -55,8 +55,8 @@ class acp_ranks
 				$min_posts = ($special_rank) ? 0 : max(0, $request->variable('min_posts', 0));
 				$rank_image = $request->variable('rank_image', '');
 
-				// The rank image has to be a jpg, gif or png
-				if ($rank_image != '' && !preg_match('#(\.gif|\.png|\.jpg|\.jpeg)$#i', $rank_image))
+				// The rank image has to be a jp(e)g, gif, png, svg or webp
+				if ($rank_image != '' && !preg_match('#(\.gif|\.png|\.jpg|\.jpeg|\.svg|\.webp)$#i', $rank_image))
 				{
 					$rank_image = '';
 				}
@@ -70,7 +70,7 @@ class acp_ranks
 					'rank_title'		=> $rank_title,
 					'rank_special'		=> $special_rank,
 					'rank_min'			=> $min_posts,
-					'rank_image'		=> htmlspecialchars_decode($rank_image)
+					'rank_image'		=> html_entity_decode($rank_image, ENT_COMPAT)
 				);
 
 				/**
@@ -206,7 +206,7 @@ class acp_ranks
 							continue;
 						}
 
-						$filename_list .= '<option value="' . htmlspecialchars($img) . '"' . $selected . '>' . $img . ((in_array($img, $existing_imgs)) ? ' ' . $user->lang['RANK_IMAGE_IN_USE'] : '') . '</option>';
+						$filename_list .= '<option value="' . htmlspecialchars($img, ENT_COMPAT) . '"' . $selected . '>' . $img . ((in_array($img, $existing_imgs)) ? ' ' . $user->lang['RANK_IMAGE_IN_USE'] : '') . '</option>';
 					}
 				}
 
@@ -221,7 +221,7 @@ class acp_ranks
 
 					'RANK_TITLE'		=> (isset($ranks['rank_title'])) ? $ranks['rank_title'] : '',
 					'S_FILENAME_LIST'	=> $filename_list,
-					'RANK_IMAGE'		=> ($edit_img) ? $phpbb_root_path . $config['ranks_path'] . '/' . $edit_img : htmlspecialchars($phpbb_admin_path) . 'images/spacer.gif',
+					'RANK_IMAGE'		=> ($edit_img) ? $phpbb_root_path . $config['ranks_path'] . '/' . $edit_img : htmlspecialchars($phpbb_admin_path, ENT_COMPAT) . 'images/spacer.gif',
 					'S_SPECIAL_RANK'	=> (isset($ranks['rank_special']) && $ranks['rank_special']) ? true : false,
 					'MIN_POSTS'			=> (isset($ranks['rank_min']) && !$ranks['rank_special']) ? $ranks['rank_min'] : 0,
 				);

@@ -6,7 +6,8 @@
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010 phpBB.it
 * @copyright (c) 2014 phpBBItalia.net <https://www.phpbbitalia.net>
-* @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -49,6 +50,7 @@ $lang = array_merge($lang, [
 	'RECAPTCHA_NOSCRIPT'			=> 'Abilita JavaScript nel tuo browser per caricare il test antispam.',
 	'RECAPTCHA_NOT_AVAILABLE'		=> 'Per utilizzare reCaptcha, devi creare un account su <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
 	'RECAPTCHA_INVISIBLE'			=> 'Questo CAPTCHA è in realtà invisibile. Per verificare che funzioni, dovrebbe apparire una piccola icona nell’angolo inferiore destro di questa pagina.',
+	'RECAPTCHA_V3_LOGIN_ERROR_ATTEMPTS'	=> 'Hai superato il numero massimo di tentativi di accesso consentiti.<br>Oltre al nome utente e alla password, verrà utilizzato reCAPTCHA v3 invisibile per autenticare la sessione.',
 
 	'RECAPTCHA_PUBLIC'				=> 'Chiave del sito',
 	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'La tua chiave reCaptcha del sito. Le chiavi possono essere ottenute su <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a>. Per favore, usa reCAPTCHA v2 &gt; tipo di simbolo reCAPTCHA invisibile.',

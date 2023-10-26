@@ -1,13 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder;
 
 use InvalidArgumentException;
+use function count, preg_match;
 use s9e\RegexpBuilder\Input\InputInterface;
 
 class MetaCharacters
@@ -53,7 +54,7 @@ class MetaCharacters
 	* @param  string $expr Regular expression
 	* @return void
 	*/
-	public function add($char, $expr)
+	public function add(string $char, string $expr): void
 	{
 		$split = $this->input->split($char);
 		if (count($split) !== 1)
@@ -78,7 +79,7 @@ class MetaCharacters
 	* @param  integer $metaValue
 	* @return string
 	*/
-	public function getExpression($metaValue)
+	public function getExpression(int $metaValue): string
 	{
 		if (!isset($this->exprs[$metaValue]))
 		{
@@ -94,7 +95,7 @@ class MetaCharacters
 	* @param  integer $value
 	* @return bool
 	*/
-	public static function isChar($value)
+	public static function isChar(int $value): bool
 	{
 		return ($value >= 0 || ($value & self::IS_CHAR));
 	}
@@ -105,7 +106,7 @@ class MetaCharacters
 	* @param  integer $value
 	* @return bool
 	*/
-	public static function isQuantifiable($value)
+	public static function isQuantifiable(int $value): bool
 	{
 		return ($value >= 0 || ($value & self::IS_QUANTIFIABLE));
 	}
@@ -116,7 +117,7 @@ class MetaCharacters
 	* @param  array[] $strings
 	* @return array[]
 	*/
-	public function replaceMeta(array $strings)
+	public function replaceMeta(array $strings): array
 	{
 		foreach ($strings as &$string)
 		{
@@ -135,20 +136,20 @@ class MetaCharacters
 	/**
 	* Compute and return a value for given expression
 	*
-	* Values are meant to be a unique negative integer. The last 2 bits indicate whether the
-	* expression is quantifiable and/or represents a single character.
+	* Values are meant to be a unique negative integer. The least significant bits are used to
+	* store the expression's properties
 	*
 	* @param  string  $expr Regular expression
 	* @return integer
 	*/
-	protected function computeValue($expr)
+	protected function computeValue(string $expr): int
 	{
 		$properties = [
-			'exprIsChar'         => self::IS_CHAR,
-			'exprIsQuantifiable' => self::IS_QUANTIFIABLE
+			self::IS_CHAR         => 'exprIsChar',
+			self::IS_QUANTIFIABLE => 'exprIsQuantifiable'
 		];
-		$value = (1 + count($this->meta)) * -pow(2, count($properties));
-		foreach ($properties as $methodName => $bitValue)
+		$value = (1 + count($this->meta)) * -(2 ** count($properties));
+		foreach ($properties as $bitValue => $methodName)
 		{
 			if ($this->$methodName($expr))
 			{
@@ -165,7 +166,7 @@ class MetaCharacters
 	* @param  string $expr
 	* @return bool
 	*/
-	protected function exprIsChar($expr)
+	protected function exprIsChar(string $expr): bool
 	{
 		$regexps = [
 			// Escaped literal or escape sequence such as \w but not \R
@@ -187,7 +188,7 @@ class MetaCharacters
 	* @param  string $expr
 	* @return bool
 	*/
-	protected function exprIsQuantifiable($expr)
+	protected function exprIsQuantifiable(string $expr): bool
 	{
 		$regexps = [
 			// A dot or \R
@@ -207,7 +208,7 @@ class MetaCharacters
 	* @param  string[] $regexps
 	* @return bool
 	*/
-	protected function matchesAny($expr, array $regexps)
+	protected function matchesAny(string $expr, array $regexps): bool
 	{
 		foreach ($regexps as $regexp)
 		{

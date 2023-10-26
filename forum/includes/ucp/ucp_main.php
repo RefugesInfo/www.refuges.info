@@ -35,8 +35,14 @@ class ucp_main
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $auth, $template, $phpbb_root_path, $phpEx, $phpbb_dispatcher;
-		global $request;
+		global $config, $db, $user, $auth, $template, $phpbb_root_path, $phpEx, $phpbb_dispatcher, $cache;
+		global $request, $phpbb_container, $language;
+
+		/* @var $pagination \phpbb\pagination */
+		$pagination = $phpbb_container->get('pagination');
+
+		/* @var $phpbb_content_visibility \phpbb\content_visibility */
+		$phpbb_content_visibility = $phpbb_container->get('content.visibility');
 
 		switch ($mode)
 		{
@@ -44,8 +50,8 @@ class ucp_main
 
 				$user->add_lang('memberlist');
 
-				$sql_from = TOPICS_TABLE . ' t ';
-				$sql_select = '';
+				$sql_from = TOPICS_TABLE . ' t LEFT JOIN ' . FORUMS_TABLE . ' f ON (f.forum_id = t.forum_id) ';
+				$sql_select = ', f.enable_icons';
 
 				if ($config['load_db_track'])
 				{
@@ -137,6 +143,9 @@ class ucp_main
 				}
 				unset($topic_forum_list);
 
+				// Grab icons
+				$icons = $cache->obtain_icons();
+
 				foreach ($topic_list as $topic_id)
 				{
 					$row = &$rowset[$topic_id];
@@ -148,6 +157,9 @@ class ucp_main
 
 					$folder_img = ($unread_topic) ? $folder_new : $folder;
 					$folder_alt = ($unread_topic) ? 'UNREAD_POSTS' : (($row['topic_status'] == ITEM_LOCKED) ? 'TOPIC_LOCKED' : 'NO_UNREAD_POSTS');
+
+					// Replies
+					$replies = $phpbb_content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
 
 					if ($row['topic_status'] == ITEM_LOCKED)
 					{
@@ -176,18 +188,22 @@ class ucp_main
 						'TOPIC_TITLE'				=> censor_text($row['topic_title']),
 						'TOPIC_TYPE'				=> $topic_type,
 
+						'TOPIC_ICON_IMG'		=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['img'] : '',
+						'TOPIC_ICON_IMG_WIDTH'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['width'] : '',
+						'TOPIC_ICON_IMG_HEIGHT'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['height'] : '',
 						'TOPIC_IMG_STYLE'		=> $folder_img,
 						'TOPIC_FOLDER_IMG'		=> $user->img($folder_img, $folder_alt),
 						'ATTACH_ICON_IMG'		=> ($auth->acl_get('u_download') && $auth->acl_get('f_download', $forum_id) && $row['topic_attachment']) ? $user->img('icon_topic_attach', '') : '',
 
+						'S_TOPIC_ICONS'		=> $row['enable_icons'] ? true : false,
 						'S_USER_POSTED'		=> (!empty($row['topic_posted']) && $row['topic_posted']) ? true : false,
 						'S_UNREAD'			=> $unread_topic,
 
 						'U_TOPIC_AUTHOR'		=> get_username_string('profile', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
-						'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=$topic_id&amp;p=" . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+						'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p=" . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
 						'U_LAST_POST_AUTHOR'	=> get_username_string('profile', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
-						'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=$topic_id&amp;view=unread") . '#unread',
-						'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=$topic_id"),
+						'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id&amp;view=unread") . '#unread',
+						'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id"),
 					);
 
 					/**
@@ -211,6 +227,8 @@ class ucp_main
 					extract($phpbb_dispatcher->trigger_event('core.ucp_main_front_modify_template_vars', compact($vars)));
 
 					$template->assign_block_vars('topicrow', $topicrow);
+
+					$pagination->generate_template_pagination(append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id"), 'topicrow.pagination', 'start', $replies + 1, $config['posts_per_page'], 1, true, true);
 				}
 
 				if ($config['load_user_activity'])
@@ -396,23 +414,25 @@ class ucp_main
 						if ($row['forum_last_post_id'])
 						{
 							$last_post_time = $user->format_date($row['forum_last_post_time']);
-							$last_post_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;p=" . $row['forum_last_post_id']) . '#p' . $row['forum_last_post_id'];
+							$last_post_time_rfc3339 = gmdate(DATE_RFC3339, $row['forum_last_post_time']);
+							$last_post_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p=" . $row['forum_last_post_id']) . '#p' . $row['forum_last_post_id'];
 						}
 						else
 						{
-							$last_post_time = $last_post_url = '';
+							$last_post_time = $last_post_time_rfc3339 = $last_post_url = '';
 						}
 
 						$template_vars = array(
-							'FORUM_ID'				=> $forum_id,
-							'FORUM_IMG_STYLE'		=> $folder_image,
-							'FORUM_FOLDER_IMG'		=> $user->img($folder_image, $folder_alt),
-							'FORUM_IMAGE'			=> ($row['forum_image']) ? '<img src="' . $phpbb_root_path . $row['forum_image'] . '" alt="' . $user->lang[$folder_alt] . '" />' : '',
-							'FORUM_IMAGE_SRC'		=> ($row['forum_image']) ? $phpbb_root_path . $row['forum_image'] : '',
-							'FORUM_NAME'			=> $row['forum_name'],
-							'FORUM_DESC'			=> generate_text_for_display($row['forum_desc'], $row['forum_desc_uid'], $row['forum_desc_bitfield'], $row['forum_desc_options']),
-							'LAST_POST_SUBJECT'		=> $row['forum_last_post_subject'],
-							'LAST_POST_TIME'		=> $last_post_time,
+							'FORUM_ID'					=> $forum_id,
+							'FORUM_IMG_STYLE'			=> $folder_image,
+							'FORUM_FOLDER_IMG'			=> $user->img($folder_image, $folder_alt),
+							'FORUM_IMAGE'				=> ($row['forum_image']) ? '<img src="' . $phpbb_root_path . $row['forum_image'] . '" alt="' . $user->lang[$folder_alt] . '" />' : '',
+							'FORUM_IMAGE_SRC'			=> ($row['forum_image']) ? $phpbb_root_path . $row['forum_image'] : '',
+							'FORUM_NAME'				=> $row['forum_name'],
+							'FORUM_DESC'				=> generate_text_for_display($row['forum_desc'], $row['forum_desc_uid'], $row['forum_desc_bitfield'], $row['forum_desc_options']),
+							'LAST_POST_SUBJECT'			=> $row['forum_last_post_subject'],
+							'LAST_POST_TIME'			=> $last_post_time,
+							'LAST_POST_TIME_RFC3339'	=> $last_post_time_rfc3339,
 
 							'LAST_POST_AUTHOR'			=> get_username_string('username', $row['forum_last_poster_id'], $row['forum_last_poster_name'], $row['forum_last_poster_colour']),
 							'LAST_POST_AUTHOR_COLOUR'	=> get_username_string('colour', $row['forum_last_poster_id'], $row['forum_last_poster_name'], $row['forum_last_poster_colour']),
@@ -677,10 +697,10 @@ class ucp_main
 					if (isset($topic_rows[$draft['topic_id']]) && $auth->acl_get('f_read', $topic_rows[$draft['topic_id']]['forum_id']))
 					{
 						$link_topic = true;
-						$view_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $topic_rows[$draft['topic_id']]['forum_id'] . '&amp;t=' . $draft['topic_id']);
+						$view_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $draft['topic_id']);
 						$title = $topic_rows[$draft['topic_id']]['topic_title'];
 
-						$insert_url = append_sid("{$phpbb_root_path}posting.$phpEx", 'f=' . $topic_rows[$draft['topic_id']]['forum_id'] . '&amp;t=' . $draft['topic_id'] . '&amp;mode=reply&amp;d=' . $draft['draft_id']);
+						$insert_url = append_sid("{$phpbb_root_path}posting.$phpEx", 't=' . $draft['topic_id'] . '&amp;mode=reply&amp;d=' . $draft['draft_id']);
 					}
 					else if ($auth->acl_get('f_read', $draft['forum_id']))
 					{
@@ -940,7 +960,7 @@ class ucp_main
 			$folder_img = $folder_alt = $topic_type = '';
 			topic_status($row, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
-			$view_topic_url_params = "f=$forum_id&amp;t=$topic_id";
+			$view_topic_url_params = "t=$topic_id";
 			$view_topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params);
 
 			// Send vars to template
@@ -1022,7 +1042,7 @@ class ucp_main
 
 			$template->assign_block_vars('topicrow', $template_vars);
 
-			$pagination->generate_template_pagination(append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $row['forum_id'] . "&amp;t=$topic_id"), 'topicrow.pagination', 'start', $replies + 1, $config['posts_per_page'], 1, true, true);
+			$pagination->generate_template_pagination(append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id"), 'topicrow.pagination', 'start', $replies + 1, $config['posts_per_page'], 1, true, true);
 		}
 	}
 }

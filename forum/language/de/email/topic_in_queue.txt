@@ -1,8 +1,8 @@
-Subject: Benachrichtigung zur Themen-Moderation — „{TOPIC_TITLE}“
+Subject: Thema muss freigegeben werden — „{TOPIC_TITLE}“
 
 Hallo {USERNAME},
 
-du erhältst diese Nachricht, weil das Thema „{TOPIC_TITLE}“ auf „{SITENAME}“ auf Freigabe wartet.
+das Thema „{TOPIC_TITLE}“ auf „{SITENAME}“ muss freigegeben werden.
 
 Du kannst dir das Thema ansehen, wenn du folgenden Link aufrufst:
 {U_VIEW_TOPIC}

@@ -6,7 +6,8 @@
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010 phpBB.it
 * @copyright (c) 2014 phpBBItalia.net <https://www.phpbbitalia.net>
-* @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -44,7 +45,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'TRANSLATION_INFO'   => 'Traduzione Italiana <a href="https://www.phpbb-store.it">phpBB-Store.it</a>',
+	'TRANSLATION_INFO'   => 'Traduzione Italiana <a href="https://www.phpbb-italia.it">phpBB-Italia.it</a>',
 	'DIRECTION'			=> 'ltr',
 	'DATE_FORMAT'		=> '|d M Y|',	// 01 Jan 2007 (with Relative days enabled)
 	'DATETIME_FORMAT'	=> '|d M Y, H:i|',	// 01 Jan 2007, 13:37 (with Relative days enabled)
@@ -98,6 +99,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_ENTRY'				=> 'Voce database non valida.',
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_SERVICE_TYPE'		=> 'Tipo di servizio non valido fornito al gestore del servizio OAuth.',
 	'AUTH_PROVIDER_OAUTH_ERROR_REQUEST'						=> 'Si è verificato un errore durante l’elaborazione della tua richiesta OAuth.',
+	'AUTH_PROVIDER_OAUTH_RETURN_ERROR'						=> 'Il servizio esterno ha restituito un valore errato, pertanto la tua richiesta non può essere elaborata.',
 	'AUTH_PROVIDER_OAUTH_ERROR_SERVICE_NOT_CREATED'			=> 'Servizio OAuth non creato',
 	'AUTH_PROVIDER_OAUTH_SERVICE_BITLY'						=> 'Bitly',
 	'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK'					=> 'Facebook',
@@ -436,6 +438,7 @@ $lang = array_merge($lang, array(
 	'MESSAGE'				=> 'Messaggio',
 	'MESSAGES'				=> 'Messaggi',
 	'MESSAGES_COUNT'		=> array(
+	    0	=> 'unlimited messages',
 		1	=> '%d messaggio',
 		2	=> '%d messaggi',
 	),
@@ -607,7 +610,7 @@ $lang = array_merge($lang, array(
 	'POSTS_UNAPPROVED_FORUM'	=> 'Uno o più messaggi in questo forum non sono stati approvati.',
 	'POST_BY_AUTHOR'			=> 'da',
 	'POST_BY_FOE'				=> 'Questo messaggio è stato scritto da <strong>%1$s</strong>, che è inserito nella tua lista ignorati.',
-	'POST_DISPLAY'				=> '%1$sVisualizza questo messaggio%2$s.',
+	'POST_DISPLAY'				=> 'Visualizza questo messaggio',
 	'POST_DAY'					=> '%.2f messaggi al giorno',
 	'POST_DELETED_ACTION'		=> 'Messaggio eliminato:',
 	'POST_DELETED'				=> 'Questo messaggio è stato eliminato.',
@@ -679,6 +682,9 @@ $lang = array_merge($lang, array(
 	'RETURN_TOPIC'				=> '%sTorna all’ultimo argomento letto%s',
 	'RETURN_TO'					=> 'Torna a “%s”',
 	'RETURN_TO_INDEX'			=> 'Torna all’Indice della Board',
+	
+	'ROUTE_NOT_FOUND'				=> 'Il percorso richiesto “%s” non può essere trovato.',
+	'ROUTE_INVALID_MISSING_PARAMS'	=> 'Parametri non validi o mancanti per il percorso “%s”.',
 
 	'FEED'						=> 'Feed',
 	'FEED_NEWS'					=> 'News',

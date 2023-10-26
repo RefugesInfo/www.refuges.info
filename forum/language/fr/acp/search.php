@@ -54,7 +54,7 @@ $lang = array_merge($lang, array(
 	'DEFAULT_SEARCH_RETURN_CHARS'			=> 'Nombre par défaut de caractères à renvoyer',
 	'DEFAULT_SEARCH_RETURN_CHARS_EXPLAIN'	=> 'Correspond au nombre de caractères qui sera renvoyé lors de la recherche. Une valeur définie à 0 renverra l’intégralité du message.',
 	'DELETE_INDEX'							=> 'Supprimer l’index de recherche',
-	'DELETING_INDEX_IN_PROGRESS'			=> 'Suppression de l’index de recherche.',
+	'DELETING_INDEX_IN_PROGRESS'			=> 'Suppression de l’index de recherche en cours…',
 	'DELETING_INDEX_IN_PROGRESS_EXPLAIN'	=> 'La méthode d’indexation de la recherche est en train de vider son index. Cela peut prendre quelques minutes.',
 
 	'FULLTEXT_MYSQL_INCOMPATIBLE_DATABASE'	=> 'L’indexation FULLTEXT de MySQL ne peut être utilisée qu’avec MySQL version 4 ou supérieure.',
@@ -94,7 +94,7 @@ $lang = array_merge($lang, array(
 	'GO_TO_SEARCH_INDEX'					=> 'Aller à la page « Index de la recherche »',
 
 	'INDEX_STATS'							=> 'Statistiques de l’index',
-	'INDEXING_IN_PROGRESS'					=> 'Indexation en cours',
+	'INDEXING_IN_PROGRESS'					=> 'Indexation en cours…',
 	'INDEXING_IN_PROGRESS_EXPLAIN'			=> 'La méthode d’indexation de la recherche est actuellement en train d’indexer tous les messages du forum. Cela peut prendre de quelques minutes à quelques heures selon la taille de votre forum.',
 
 	'LIMIT_SEARCH_LOAD'						=> 'Limite de la charge système de la recherche',
@@ -114,18 +114,19 @@ $lang = array_merge($lang, array(
 	'SEARCH_GUEST_INTERVAL'					=> 'Intervalle de flood des invités',
 	'SEARCH_GUEST_INTERVAL_EXPLAIN'			=> 'Nombre de secondes que les invités doivent attendre entre chaque recherche. Si un invité lance une recherche, tous les autres doivent attendre que ce délai soit écoulé.',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
-		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été indexés, un lot de %1$d messages a été traité.<br>',
+		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été indexés, un lot de %1$d messages a été traité.',
 	),
 	'SEARCH_INDEX_CREATE_REDIRECT_RATE'		=> array(
-		2	=> 'Le taux actuel d’indexation est de %1$.1f messages par seconde.<br>Indexation en cours…',
+		2	=> 'Le taux actuel d’indexation est de %1$.1f messages par seconde.',
 	),
 	'SEARCH_INDEX_DELETE_REDIRECT'			=> array(
-		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été effacés de l’index de recherche, un lot de %1$d messages a été traité.<br>',
+		2	=> 'Tous les messages jusqu’à l’ID de message %2$d ont été effacés de l’index de recherche, un lot de %1$d messages a été traité.',
 	),
 	'SEARCH_INDEX_DELETE_REDIRECT_RATE'		=> array(
-		2	=> 'Le taux actuel de suppression est de %1$.1f messages par seconde.<br>Suppression en cours…',
+		2	=> 'Le taux actuel de suppression est de %1$.1f messages par seconde.',
 	),
 	'SEARCH_INDEX_CREATED'					=> 'Tous les messages du forum ont été indexés.',
+	'SEARCH_INDEX_PROGRESS'					=> 'Effectué : %1$d | Restant : %2$d | Total : %3$d',
 	'SEARCH_INDEX_REMOVED'					=> 'L’index de recherche a été supprimé.',
 	'SEARCH_INTERVAL'						=> 'Intervalle de flood des utilisateurs',
 	'SEARCH_INTERVAL_EXPLAIN'				=> 'Nombre de secondes que les utilisateurs doivent attendre entre chaque recherche. Cet intervalle est contrôlé indépendamment pour chaque utilisateur.',

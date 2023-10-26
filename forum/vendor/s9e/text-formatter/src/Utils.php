@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter;
@@ -105,7 +105,7 @@ abstract class Utils
 	*
 	* @param  string   $xml      Original XML
 	* @param  string   $tagName  Target tag's name
-	* @param  callback $callback Callback used to process attributes. Receives the old attributes
+	* @param  callable $callback Callback used to process attributes. Receives the old attributes
 	*                            as an array, should return the new attributes as an array
 	* @return string             Modified XML
 	*/

@@ -8,7 +8,7 @@
  * @author Cleantalk team (welcome@cleantalk.org)
  * @copyright (C) 2014 CleanTalk team (http://cleantalk.org)
  * @license GNU/GPL: http://www.gnu.org/copyleft/gpl.html
- * @see https://github.com/CleanTalk/php-antispam 
+ * @see https://github.com/CleanTalk/php-antispam
  *
  */
 
@@ -17,21 +17,21 @@ namespace cleantalk\antispam\model;
 use phpbb\request\request;
 
 class Cleantalk
-{    
+{
     /**
     * Maximum data size in bytes
     * @var int
     */
     private $dataMaxSise = 32768;
-    
+
     /**
-    * Data compression rate 
+    * Data compression rate
     * @var int
     */
     private $compressRate = 6;
-    
+
     /**
-    * Server connection timeout in seconds 
+    * Server connection timeout in seconds
     * @var int
     */
     private $server_timeout = 15;
@@ -71,27 +71,33 @@ class Cleantalk
      * @var bool
      */
     public $stay_on_server = false;
-    
+
     /**
-     * Codepage of the data 
+     * Codepage of the data
      * @var bool
      */
     public $data_codepage = null;
-    
+
     /**
-     * API version to use 
+     * API version to use
      * @var string
      */
     public $api_version = '/api2.0';
-    
+
     /**
-     * Use https connection to servers 
-     * @var bool 
+     * Use https connection to servers
+     * @var bool
      */
     public $ssl_on = false;
-    
+
     /**
-     * Path to SSL certificate 
+     * Flag to force ipv4
+     * @var string
+     */
+    public $force_ipv4 = false;
+
+    /**
+     * Path to SSL certificate
      * @var string
      */
     public $ssl_path = '';
@@ -108,7 +114,7 @@ class Cleantalk
     /**
     * Constructor
     * @param request        $request    Request object
-    */    
+    */
     public function __construct(request $request)
     {
         $this->request = $request;
@@ -118,7 +124,7 @@ class Cleantalk
      * @param CleantalkRequest $request
      * @return type
      */
-    public function isAllowMessage(CleantalkRequest $request) 
+    public function isAllowMessage(CleantalkRequest $request)
     {
         $request = $this->filterRequest($request);
         $msg = $this->createMsg('check_message', $request);
@@ -130,7 +136,7 @@ class Cleantalk
      * @param CleantalkRequest $request
      * @return type
      */
-    public function isAllowUser(CleantalkRequest $request) 
+    public function isAllowUser(CleantalkRequest $request)
     {
         $request = $this->filterRequest($request);
         $msg = $this->createMsg('check_newuser', $request);
@@ -143,7 +149,7 @@ class Cleantalk
      * @param CleantalkRequest $request
      * @return type
      */
-    public function sendFeedback(CleantalkRequest $request) 
+    public function sendFeedback(CleantalkRequest $request)
     {
         $request = $this->filterRequest($request);
         $msg = $this->createMsg('send_feedback', $request);
@@ -155,55 +161,55 @@ class Cleantalk
      * @param CleantalkRequest $request
      * @return type
      */
-    private function filterRequest(CleantalkRequest $request) 
+    private function filterRequest(CleantalkRequest $request)
     {
         // general and optional
-        foreach ($request as $param => $value) 
+        foreach ($request as $param => $value)
         {
             if (in_array($param, array('message', 'example', 'agent',
-                        'sender_info', 'sender_nickname', 'post_info', 'phone')) && !empty($value)) 
+                        'sender_info', 'sender_nickname', 'post_info', 'phone')) && !empty($value))
             {
-                if (!is_string($value) && !is_integer($value)) 
+                if (!is_string($value) && !is_integer($value))
                 {
                     $request->$param = NULL;
                 }
             }
 
-            if (in_array($param, array('stoplist_check', 'allow_links')) && !empty($value)) 
+            if (in_array($param, array('stoplist_check', 'allow_links')) && !empty($value))
             {
-                if (!in_array($value, array(1, 2))) 
-                {
-                    $request->$param = NULL;
-                }
-            }
-            
-            if (in_array($param, array('js_on')) && !empty($value)) 
-            {
-                if (!is_integer($value)) 
+                if (!in_array($value, array(1, 2)))
                 {
                     $request->$param = NULL;
                 }
             }
 
-            if ($param == 'sender_ip' && !empty($value)) 
+            if (in_array($param, array('js_on')) && !empty($value))
             {
-                if (!is_string($value)) 
+                if (!is_integer($value))
                 {
                     $request->$param = NULL;
                 }
             }
 
-            if ($param == 'sender_email' && !empty($value)) 
+            if ($param == 'sender_ip' && !empty($value))
             {
-                if (!is_string($value)) 
+                if (!is_string($value))
                 {
                     $request->$param = NULL;
                 }
             }
 
-            if ($param == 'submit_time' && !empty($value)) 
+            if ($param == 'sender_email' && !empty($value))
             {
-                if (!is_int($value)) 
+                if (!is_string($value))
+                {
+                    $request->$param = NULL;
+                }
+            }
+
+            if ($param == 'submit_time' && !empty($value))
+            {
+                if (!is_int($value))
                 {
                     $request->$param = NULL;
                 }
@@ -211,15 +217,15 @@ class Cleantalk
         }
         return $request;
     }
-    
+
     /**
-     * Compress data and encode to base64 
+     * Compress data and encode to base64
      * @param type string
-     * @return string 
+     * @return string
      */
     private function compressData($data = null)
     {
-        
+
         if (strlen($data) > $this->dataMaxSise && function_exists('gzencode') && function_exists('base64_encode'))
         {
 
@@ -229,19 +235,19 @@ class Cleantalk
             {
                 return $data;
             }
-            
+
             $localData = base64_encode($localData);
-            
+
             if ($localData === false)
             {
                 return $data;
             }
-            
+
             return $localData;
         }
 
         return $data;
-    } 
+    }
 
     /**
      * Create msg for cleantalk server
@@ -249,9 +255,9 @@ class Cleantalk
      * @param CleantalkRequest $request
      * @return \xmlrpcmsg
      */
-    private function createMsg($method, CleantalkRequest $request) 
+    private function createMsg($method, CleantalkRequest $request)
     {
-        switch ($method) 
+        switch ($method)
         {
             case 'check_message':
                 // Convert strings to UTF8
@@ -271,42 +277,42 @@ class Cleantalk
                 break;
 
             case 'send_feedback':
-                if (is_array($request->feedback)) 
+                if (is_array($request->feedback))
                 {
                     $request->feedback = implode(';', $request->feedback);
                 }
                 break;
         }
-        
+
         $request->method_name = $method;
-        
+
         //
         // Removing non UTF8 characters from request, because non UTF8 or malformed characters break json_encode().
         //
-        foreach ($request as $param => $value) 
+        foreach ($request as $param => $value)
         {
             if (!preg_match('//u', $value))
             {
-                $request->{$param} = 'Nulled. Not UTF8 encoded or malformed.'; 
+                $request->{$param} = 'Nulled. Not UTF8 encoded or malformed.';
             }
         }
-        
+
         return $request;
     }
-    
+
     /**
-     * Send JSON request to servers 
+     * Send JSON request to servers
      * @param $msg
      * @return boolean|\CleantalkResponse
      */
-    private function sendRequest($data = null, $url, $server_timeout = 3) 
+    private function sendRequest($data = null, $url, $server_timeout = 3)
     {
         // Convert to array
         $data = (array)json_decode(json_encode($data), true);
-        
+
         $original_url = $url;
         $original_data = $data;
-        
+
         //Cleaning from 'null' values
         $tmp_data = array();
         foreach($data as $key => $value)
@@ -318,15 +324,15 @@ class Cleantalk
         }
         $data = $tmp_data;
         unset($key, $value, $tmp_data);
-        
+
         // Convert to JSON
         $data = json_encode($data);
-        
-        if (isset($this->api_version)) 
+
+        if (isset($this->api_version))
         {
             $url = $url . $this->api_version;
         }
-        
+
         $result = false;
         $curl_error = null;
         if(function_exists('curl_init')) {
@@ -344,28 +350,44 @@ class Cleantalk
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disabling CA cert verivication and
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);     // Disabling common name verification
 
+            if ($this->force_ipv4){
+                curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+            }
+
             if ($this->ssl_on && $this->ssl_path != '') {
                 curl_setopt($ch, CURLOPT_CAINFO, $this->ssl_path);
             }
 
             $result = curl_exec($ch);
-            if (!$result) {
+            if ( !$result ) {
                 $curl_error = curl_error($ch);
-                // Use SSL next time, if error occurs.
-                if(!$this->ssl_on){
-                    $this->ssl_on = true;
-                    $args = func_get_args();
-                    return $this->sendRequest($args[0], $args[1], $server_timeout);
+                // Use forced IPV4 next time, if error occurs.
+                $args = func_get_args();
+                if (!$this->force_ipv4) {
+
+                    $this->force_ipv4 = true;
+                    $result = $this->sendRequest($args[0], $original_url, $server_timeout);
+
+                    // Use SSL next time, if error occurs.
+                    if ( !empty($result->errno) ) {
+
+                        $this->ssl_on = true;
+
+                        return $this->sendRequest($args[0], $original_url, $server_timeout);
+                    } else {
+                        return $result;
+                    }
                 }
+
             }
 
             curl_close($ch);
         }
 
-        if (!$result) 
+        if (!$result)
         {
             $allow_url_fopen = ini_get('allow_url_fopen');
-            if (function_exists('file_get_contents') && isset($allow_url_fopen) && $allow_url_fopen == '1') 
+            if (function_exists('file_get_contents') && isset($allow_url_fopen) && $allow_url_fopen == '1')
             {
                 $opts = array('http' =>
                   array(
@@ -380,44 +402,44 @@ class Cleantalk
                 $result = @file_get_contents($url, false, $context);
             }
         }
-        
-        if (!$result || !$this->cleantalk_is_JSON($result)) 
+
+        if (!$result || !$this->cleantalk_is_JSON($result))
         {
             $response = null;
             $response['errno'] = 1;
             $response['errstr'] = true;
             $response['curl_err'] = isset($curl_error) ? $curl_error : false;
             $response = json_decode(json_encode($response));
-            
+
             return $response;
         }
-        
+
         $errstr = null;
         $response = json_decode($result);
-        if ($result !== false && is_object($response)) 
+        if ($result !== false && is_object($response))
         {
             $response->errno = 0;
             $response->errstr = $errstr;
-        } 
-        else 
+        }
+        else
         {
 
             $response = null;
             $response['errno'] = 1;
             $response = json_decode(json_encode($response));
-        } 
-        
-        
+        }
+
+
         return $response;
     }
 
     /**
-     * httpRequest 
+     * httpRequest
      * @param $msg
      * @return boolean|\CleantalkResponse
      */
-    private function httpRequest($msg) 
-    {    
+    private function httpRequest($msg)
+    {
         $result = false;
         if($msg->method_name != 'send_feedback')
         {
@@ -428,24 +450,24 @@ class Cleantalk
             }
         }
         $si=(array)json_decode($msg->sender_info,true);
-        
+
         if(method_exists($this->request,'server'))
         {
             $si['remote_addr']=$this->request->server('REMOTE_ADDR');
             $msg->x_forwarded_for=$this->request->server('X_FORWARDED_FOR');
             $msg->x_real_ip=$this->request->server('X_REAL_IP');
         }
-        
+
         $msg->sender_info=json_encode($si);
         if (((isset($this->work_url) && $this->work_url !== '') && ($this->server_changed + $this->server_ttl > time()))
-                || $this->stay_on_server == true) 
-        {    
+                || $this->stay_on_server == true)
+        {
             $url = (!empty($this->work_url)) ? $this->work_url : $this->server_url;
-            
+
             $result = $this->sendRequest($msg, $url, $this->server_timeout);
         }
 
-        if (($result === false || $result->errno != 0) && $this->stay_on_server == false) 
+        if (($result === false || $result->errno != 0) && $this->stay_on_server == false)
         {
             // Split server url to parts
             preg_match("@^(https?://)([^/:]+)(.*)@i", $this->server_url, $matches);
@@ -460,49 +482,49 @@ class Cleantalk
             {
                 $pool = $matches[2];
             }
-            
+
             $url_suffix = '';
             if (isset($matches[3]))
             {
                 $url_suffix = $matches[3];
             }
-            
+
             if ($url_prefix === '')
             {
                 $url_prefix = 'http://';
             }
 
-            if (empty($pool)) 
+            if (empty($pool))
             {
                 return false;
-            } 
-            else 
+            }
+            else
             {
                 // Loop until find work server
-                foreach ($this->get_servers_ip($pool) as $server) 
+                foreach ($this->get_servers_ip($pool) as $server)
                 {
-                    if ($server['host'] === 'localhost' || $server['ip'] === null) 
+                    if ($server['host'] === 'localhost' || $server['ip'] === null)
                     {
                         $work_url = $server['host'];
-                    } 
-                    else 
+                    }
+                    else
                     {
                         $server_host = $server['ip'];
                         $work_url = $server_host;
                     }
                     $host = filter_var($work_url,FILTER_VALIDATE_IP) ? gethostbyaddr($work_url) : $work_url;
-                    $work_url = $url_prefix . $host; 
+                    $work_url = $url_prefix . $host;
                     if (isset($url_suffix))
-                    { 
+                    {
                         $work_url = $work_url . $url_suffix;
                     }
-                    
+
                     $this->work_url = $work_url;
                     $this->server_ttl = $server['ttl'];
-                    
+
                     $result = $this->sendRequest($msg, $this->work_url, $this->server_timeout);
 
-                    if ($result !== false && $result->errno === 0) 
+                    if ($result !== false && $result->errno === 0)
                     {
                         $this->server_change = true;
                         break;
@@ -510,10 +532,10 @@ class Cleantalk
                 }
             }
         }
-        
+
         $response = new CleantalkResponse(null, $result);
-        
-        if (!empty($this->data_codepage) && $this->data_codepage !== 'UTF-8') 
+
+        if (!empty($this->data_codepage) && $this->data_codepage !== 'UTF-8')
         {
             if (!empty($response->comment))
             {
@@ -528,10 +550,10 @@ class Cleantalk
                 $response->sms_error_text = $this->stringFromUTF8($response->sms_error_text, $this->data_codepage);
             }
         }
-        
+
         return $response;
     }
-    
+
     /**
      * Function DNS request
      * @param $host
@@ -539,32 +561,32 @@ class Cleantalk
      */
     private function get_servers_ip($host)
     {
-        $response = null;
+        $response = array();
         if (!isset($host))
         {
             return $response;
         }
 
-        if (function_exists('dns_get_record')) 
+        if (function_exists('dns_get_record'))
         {
             $records = dns_get_record($host, DNS_A);
 
-            if ($records !== FALSE) 
+            if ($records !== FALSE)
             {
-                foreach ($records as $server) 
+                foreach ($records as $server)
                 {
                     $response[] = $server;
                 }
             }
         }
 
-        if (count($response) == 0 && function_exists('gethostbynamel')) 
+        if (count($response) == 0 && function_exists('gethostbynamel'))
         {
             $records = gethostbynamel($host);
 
-            if ($records !== FALSE) 
+            if ($records !== FALSE)
             {
-                foreach ($records as $server) 
+                foreach ($records as $server)
                 {
                     $response[] = array(
                         "ip" => $server,
@@ -575,41 +597,41 @@ class Cleantalk
             }
         }
 
-        if (count($response) == 0) 
+        if (count($response) == 0)
         {
             $response[] = array("ip" => null,
                 "host" => $host,
                 "ttl" => $this->server_ttl
             );
-        } 
-        else 
+        }
+        else
         {
             // $i - to resolve collisions with localhost
             $i = 0;
             $r_temp = null;
             $fast_server_found = false;
-            foreach ($response as $server) 
+            foreach ($response as $server)
             {
-                
+
                 // Do not test servers because fast work server found
-                if ($fast_server_found) 
+                if ($fast_server_found)
                 {
-                    $ping = $this->min_server_timeout; 
-                } 
-                else 
+                    $ping = $this->min_server_timeout;
+                }
+                else
                 {
                     $ping = $this->httpPing($server['ip']);
                     $ping = $ping * 1000;
                 }
-                
+
                 // -1 server is down, skips not reachable server
-                if ($ping != -1) 
+                if ($ping != -1)
                 {
                     $r_temp[$ping + $i] = $server;
                 }
                 $i++;
-                
-                if ($ping < $this->min_server_timeout) 
+
+                if ($ping < $this->min_server_timeout)
                 {
                     $fast_server_found = true;
                 }
@@ -622,8 +644,8 @@ class Cleantalk
         }
 
         return $response;
-    } 
-    
+    }
+
     /**
     * Function to check response time
     * param string
@@ -632,7 +654,7 @@ class Cleantalk
     private function httpPing($host)
     {
         // Skip localhost ping cause it raise error at fsockopen.
-        // And return minimun value 
+        // And return minimun value
         if ($host == 'localhost')
         {
             return 0.001;
@@ -642,22 +664,22 @@ class Cleantalk
         $file      = @fsockopen ($host, 80, $errno, $errstr, $this->server_timeout);
         $stoptime  = microtime(true);
         $status    = 0;
-        if (!$file) 
+        if (!$file)
         {
             $status = -1;  // Site is down
-        } 
-        else 
+        }
+        else
         {
             fclose($file);
             $status = ($stoptime - $starttime);
             $status = round($status, 4);
         }
-        
+
         return $status;
     }
-    
+
     /**
-    * Function convert string to UTF8 and removes non UTF8 characters 
+    * Function convert string to UTF8 and removes non UTF8 characters
     * param string
     * param string
     * @return string
@@ -677,12 +699,12 @@ class Cleantalk
                 return mb_convert_encoding($str, 'UTF-8', $encoding);
             }
         }
-        
+
         return $str;
     }
-    
+
     /**
-    * Function convert string from UTF8 
+    * Function convert string from UTF8
     * param string
     * param string
     * @return string
@@ -693,16 +715,16 @@ class Cleantalk
         {
             return mb_convert_encoding($str, $data_codepage, 'UTF-8');
         }
-        
+
         return $str;
     }
 
-    /* 
+    /*
      * If Apache web server is missing then making
-     * Patch for apache_request_headers() 
+     * Patch for apache_request_headers()
      */
     private function request_headers()
-    {   
+    {
         $headers['Host']  = $this->request->server('HTTP_HOST','');
         $headers['X-Real-IP'] = $this->request->server('HTTP_X_REAL_IP','');
         $headers['X-Forwarded-Proto'] = $this->request->server('HTTP_X_FORWARDED_PROTO','');
@@ -716,7 +738,7 @@ class Cleantalk
         $headers['Accept'] = $this->request->server('HTTP_ACCEPT','');
         $headers['Referer'] = $this->request->server('HTTP_REFERER','');
         $headers['Accept-Encoding'] = $this->request->server('HTTP_ACCEPT_ENCODING','');
-        $headers['Accept-Language'] = $this->request->server('HTTP_ACCEPT_LANGUAGE','');            
+        $headers['Accept-Language'] = $this->request->server('HTTP_ACCEPT_LANGUAGE','');
         return $headers;
     }
 
@@ -735,7 +757,7 @@ class Cleantalk
     * @return string
     */
     public function cleantalk_get_real_ip()
-    {       
+    {
         if ($this->request->server('X_FORWARDED_FOR'))
         {
             $ip = explode(",", trim($this->request->server('X_FORWARDED_FOR')));
@@ -766,8 +788,8 @@ class Cleantalk
         {
             $the_ip = null;
         }
-        
+
         return $the_ip;
-    }    
+    }
 
 }

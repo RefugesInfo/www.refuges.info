@@ -95,6 +95,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_ENTRY'				=> 'Entrada de la base de datos no válida.',
 	'AUTH_PROVIDER_OAUTH_ERROR_INVALID_SERVICE_TYPE'		=> 'Tipo de servicio no válido proporcionado al controlador de servicio de OAuth.',
 	'AUTH_PROVIDER_OAUTH_ERROR_REQUEST'						=> 'Algo salió mal al procesar tu solicitud de OAuth.',
+	'AUTH_PROVIDER_OAUTH_RETURN_ERROR'						=> 'El servicio externo devolvió un valor incorrecto, por lo que tu solicitud no se puede procesar.',
 	'AUTH_PROVIDER_OAUTH_ERROR_SERVICE_NOT_CREATED'			=> 'Servicio OAuth no creado',
 	'AUTH_PROVIDER_OAUTH_SERVICE_BITLY'						=> 'Bitly',
 	'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK'					=> 'Facebook',
@@ -431,6 +432,7 @@ $lang = array_merge($lang, array(
 	'MESSAGE'	=> 'Mensaje',
 	'MESSAGES'	=> 'Mensajes',
 	'MESSAGES_COUNT'		=> array(
+		0	=> 'mensajes ilimitados',
 		1	=> '%d mensaje',
 		2	=> '%d mensajes',
 	),
@@ -602,7 +604,7 @@ $lang = array_merge($lang, array(
 	'POSTS_UNAPPROVED_FORUM'=> 'Al menos un mensaje en este foro no ha sido aprobado.',
 	'POST_BY_AUTHOR'		=> 'por',
 	'POST_BY_FOE'			=> '<strong>%1$s</strong>, que actualmente está en tu lista de ignorados, crear este mensaje.',
-	'POST_DISPLAY'			=> '%1$sMostrar este mensaje%2$s.',
+	'POST_DISPLAY'			=> 'Mostrar este mensaje',
 	'POST_DAY'				=> '%.2f mensajes por día',
     	'POST_DELETED_ACTION'	=> 'Mensaje borrado:',
     	'POST_DELETED'			=> 'Este mensaje ha sido borrado.',
@@ -676,6 +678,10 @@ $lang = array_merge($lang, array(
 	'RETURN_TOPIC'	=> '%sVolver al último tema visitado%s',
 	'RETURN_TO'	=> 'Volver a  “%s”',
 	'RETURN_TO_INDEX'			=> 'Volver a Índice general',
+
+	'ROUTE_NOT_FOUND'				=> 'La ruta solicitada “%s” no se pudo encontrar.',
+	'ROUTE_INVALID_MISSING_PARAMS'	=> 'Se pasaron parámetros no válidos o faltantes para la ruta “%s”.',
+
 	'FEED'						=> 'Feed',
 	'FEED_NEWS'					=> 'Noticias',
 	'FEED_TOPICS_ACTIVE'		=> 'Temas Activos',

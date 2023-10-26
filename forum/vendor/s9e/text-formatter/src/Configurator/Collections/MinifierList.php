@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Collections;
@@ -41,8 +41,8 @@ class MinifierList extends NormalizedList
 	/**
 	* Create and return a Minifier instance
 	*
-	* @param  string   Minifier's name
-	* @param  array    Constructor's arguments
+	* @param  string   $name Minifier's name
+	* @param  array    $args Constructor's arguments
 	* @return Minifier
 	*/
 	protected function getMinifierInstance($name, array $args = [])

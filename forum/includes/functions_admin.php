@@ -479,7 +479,7 @@ function copy_forum_permissions($src_forum_id, $dest_forum_ids, $clear_dest_perm
 /**
 * Get physical file listing
 */
-function filelist($rootdir, $dir = '', $type = 'gif|jpg|jpeg|png')
+function filelist($rootdir, $dir = '', $type = 'gif|jpg|jpeg|png|svg|webp')
 {
 	$matches = array($dir => array());
 
@@ -1324,7 +1324,7 @@ function update_posted_info(&$topic_ids)
 */
 function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false, $sync_extra = false)
 {
-	global $db;
+	global $db, $phpbb_dispatcher;
 
 	if (is_array($where_ids))
 	{
@@ -1826,11 +1826,26 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			// 5: Retrieve last_post infos
 			if (count($post_ids))
 			{
-				$sql = 'SELECT p.post_id, p.poster_id, p.post_subject, p.post_time, p.post_username, u.username, u.user_colour
-					FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
-					WHERE ' . $db->sql_in_set('p.post_id', $post_ids) . '
-						AND p.poster_id = u.user_id';
-				$result = $db->sql_query($sql);
+				$sql_ary = array(
+					'SELECT'	=> 'p.post_id, p.poster_id, p.post_subject, p.post_time, p.post_username, u.username, u.user_colour',
+					'FROM'		=> array(
+						POSTS_TABLE	=> 'p',
+						USERS_TABLE => 'u',
+					),
+					'WHERE'		=> $db->sql_in_set('p.post_id', $post_ids) . '
+						AND p.poster_id = u.user_id',
+				);
+
+				/**
+				* Event to modify the SQL array to get the post and user data from all forums' last posts
+				*
+				* @event core.sync_forum_last_post_info_sql
+				* @var	array	sql_ary		SQL array with some post and user data from the last posts list
+				* @since 3.3.5-RC1
+				*/
+				$vars = ['sql_ary'];
+				extract($phpbb_dispatcher->trigger_event('core.sync_forum_last_post_info_sql', compact($vars)));
+				$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
 				while ($row = $db->sql_fetchrow($result))
 				{
@@ -1862,7 +1877,6 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 						}
 					}
 				}
-				unset($post_info);
 			}
 
 			// 6: Now do that thing
@@ -1872,6 +1886,23 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 			{
 				array_push($fieldnames, 'posts_approved', 'posts_unapproved', 'posts_softdeleted', 'topics_approved', 'topics_unapproved', 'topics_softdeleted');
 			}
+
+			/**
+			* Event to modify the SQL array to get the post and user data from all forums' last posts
+			*
+			* @event core.sync_modify_forum_data
+			* @var	array	forum_data		Array with data to update for all forum ids
+			* @var	array	post_info		Array with some post and user data from the last posts list
+			* @var	array	fieldnames		Array with the partial column names that are being updated
+			* @since 3.3.5-RC1
+			*/
+			$vars = [
+				'forum_data',
+				'post_info',
+				'fieldnames',
+			];
+			extract($phpbb_dispatcher->trigger_event('core.sync_modify_forum_data', compact($vars)));
+			unset($post_info);
 
 			foreach ($forum_data as $forum_id => $row)
 			{
@@ -2041,11 +2072,31 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 				unset($delete_topics, $delete_topic_ids);
 			}
 
-			$sql = 'SELECT p.post_id, p.topic_id, p.post_visibility, p.poster_id, p.post_subject, p.post_username, p.post_time, u.username, u.user_colour
-				FROM ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
-				WHERE ' . $db->sql_in_set('p.post_id', $post_ids) . '
-					AND u.user_id = p.poster_id';
-			$result = $db->sql_query($sql);
+			$sql_ary = array(
+				'SELECT'	=> 'p.post_id, p.topic_id, p.post_visibility, p.poster_id, p.post_subject, p.post_username, p.post_time, u.username, u.user_colour',
+				'FROM'		=> array(
+					POSTS_TABLE	=> 'p',
+					USERS_TABLE => 'u',
+				),
+				'WHERE'		=> $db->sql_in_set('p.post_id', $post_ids) . '
+					AND u.user_id = p.poster_id',
+			);
+
+			$custom_fieldnames = [];
+			/**
+			* Event to modify the SQL array to get the post and user data from all topics' last posts
+			*
+			* @event core.sync_topic_last_post_info_sql
+			* @var	array	sql_ary					SQL array with some post and user data from the last posts list
+			* @var	array	custom_fieldnames		Empty array for custom fieldnames to update the topics_table with
+			* @since 3.3.5-RC1
+			*/
+			$vars = [
+				'sql_ary',
+				'custom_fieldnames',
+			];
+			extract($phpbb_dispatcher->trigger_event('core.sync_topic_last_post_info_sql', compact($vars)));
+			$result = $db->sql_query($db->sql_build_query('SELECT', $sql_ary));
 
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -2067,6 +2118,22 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 					$topic_data[$topic_id]['last_poster_name'] = ($row['poster_id'] == ANONYMOUS) ? $row['post_username'] : $row['username'];
 					$topic_data[$topic_id]['last_poster_colour'] = $row['user_colour'];
 				}
+
+				/**
+				* Event to modify the topic_data when syncing topics
+				*
+				* @event core.sync_modify_topic_data
+				* @var	array	topic_data		Array with the topics' data we are syncing
+				* @var	array	row				Array with some of the current user and post data
+				* @var	int		topic_id		The current topic_id of $row
+				* @since 3.3.5-RC1
+				*/
+				$vars = [
+					'topic_data',
+					'row',
+					'topic_id',
+				];
+				extract($phpbb_dispatcher->trigger_event('core.sync_modify_topic_data', compact($vars)));
 			}
 			$db->sql_freeresult($result);
 
@@ -2181,6 +2248,10 @@ function sync($mode, $where_type = '', $where_ids = '', $resync_parents = false,
 
 			// These are fields that will be synchronised
 			$fieldnames = array('time', 'visibility', 'posts_approved', 'posts_unapproved', 'posts_softdeleted', 'poster', 'first_post_id', 'first_poster_name', 'first_poster_colour', 'last_post_id', 'last_post_subject', 'last_post_time', 'last_poster_id', 'last_poster_name', 'last_poster_colour');
+
+			// Add custom fieldnames
+			$fieldnames = array_merge($fieldnames, $custom_fieldnames);
+			unset($custom_fieldnames);
 
 			if ($sync_extra)
 			{
@@ -2418,7 +2489,7 @@ function auto_prune($forum_id, $prune_mode, $prune_flags, $prune_days, $prune_fr
 * must be carried through for the moderators table.
 *
 * @param \phpbb\db\driver\driver_interface $db Database connection
-* @param \phpbb\cache\driver\driver_interface Cache driver
+* @param \phpbb\cache\driver\driver_interface $cache Cache driver
 * @param \phpbb\auth\auth $auth Authentication object
 * @return null
 */
@@ -2605,7 +2676,7 @@ function phpbb_cache_moderators($db, $cache, $auth)
 * @param	mixed	$forum_id		Restrict the log entries to the given forum_id (can also be an array of forum_ids)
 * @param	int		$topic_id		Restrict the log entries to the given topic_id
 * @param	int		$user_id		Restrict the log entries to the given user_id
-* @param	int		$log_time		Only get log entries newer than the given timestamp
+* @param	int		$limit_days		Only get log entries newer than the given timestamp
 * @param	string	$sort_by		SQL order option, e.g. 'l.log_time DESC'
 * @param	string	$keywords		Will only return log entries that have the keywords in log_operation or log_data
 *
@@ -2847,7 +2918,7 @@ function get_database_size()
 			$database_size	= 0;
 
 			$sql = 'SHOW TABLE STATUS
-				FROM ' . $db_name;
+				FROM ' . $db->sql_quote($db_name);
 			$result = $db->sql_query($sql, 7200);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -2900,37 +2971,18 @@ function get_database_size()
 		break;
 
 		case 'postgres':
-			$sql = "SELECT proname
-				FROM pg_proc
-				WHERE proname = 'pg_database_size'";
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
+			$database = $db->get_db_name();
 
-			if ($row['proname'] == 'pg_database_size')
+			if (strpos($database, '.') !== false)
 			{
-				$database = $db->get_db_name();
-				if (strpos($database, '.') !== false)
-				{
-					list($database, ) = explode('.', $database);
-				}
-
-				$sql = "SELECT oid
-					FROM pg_database
-					WHERE datname = '$database'";
-				$result = $db->sql_query($sql);
-				$row = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
-
-				$oid = $row['oid'];
-
-				$sql = 'SELECT pg_database_size(' . $oid . ') as size';
-				$result = $db->sql_query($sql);
-				$row = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
-
-				$database_size = $row['size'];
+				$database = explode('.', $database)[0];
 			}
+
+			$sql = "SELECT pg_database_size('" . $database . "') AS dbsize";
+			$result = $db->sql_query($sql, 7200);
+			$row = $db->sql_fetchrow($result);
+			$database_size = !empty($row['dbsize']) ? $row['dbsize'] : false;
+			$db->sql_freeresult($result);
 		break;
 
 		case 'oracle':

@@ -1,8 +1,8 @@
-Subject: Notifica moderazione messaggio - “{TOPIC_TITLE}”
+Subject: Il messaggio necessita di approvazione - "{TOPIC_TITLE}"
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché il messaggio “{POST_SUBJECT}” su “{SITENAME}” è in coda di moderazione.
+Il messaggio "{POST_SUBJECT}" su "{SITENAME}" richiede l'approvazione.
 
 Per visualizzare il messaggio clicca sul link seguente:
 {U_VIEW_POST}

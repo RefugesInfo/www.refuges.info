@@ -1,8 +1,8 @@
-Subject: Argomento approvato - “{TOPIC_TITLE}”
+Subject: Argomento approvato - "{TOPIC_TITLE}"
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché il tuo argomento “{TOPIC_TITLE}” su “{SITENAME}” è stato approvato da un moderatore o da un amministratore:
+Il tuo argomento "{TOPIC_TITLE}" in "{SITENAME}" è stato approvato da un moderatore o amministratore.
 
 Se vuoi vedere il tuo argomento clicca sul link seguente:
 {U_VIEW_TOPIC}

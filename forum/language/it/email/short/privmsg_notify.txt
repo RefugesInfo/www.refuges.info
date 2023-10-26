@@ -1,8 +1,8 @@
-Subject: Hai ricevuto un messaggio privato
+Subject: Nuovo messaggio privato
 
 Ciao {USERNAME},
 
-hai ricevuto un nuovo messaggio privato da parte di “{AUTHOR_NAME}” nel tuo account su “{SITENAME}” avente il seguente oggetto:
+È arrivato un nuovo messaggio privato da "{AUTHOR_NAME}" al tuo account su "{SITENAME}" con il seguente oggetto:
 
 {SUBJECT}
 

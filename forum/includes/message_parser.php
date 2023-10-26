@@ -506,7 +506,7 @@ class bbcode_firstpass extends bbcode
 				}
 
 				// Because highlight_string is specialcharing the text (but we already did this before), we have to reverse this in order to get correct results
-				$code = htmlspecialchars_decode($code);
+				$code = html_entity_decode($code, ENT_COMPAT);
 				$code = highlight_string($code, true);
 
 				$str_from = array('<span style="color: ', '<font color="syntax', '</font>', '<code>', '</code>','[', ']', '.', ':');
@@ -1154,7 +1154,7 @@ class parse_message extends bbcode_firstpass
 		}
 
 		// Store message length...
-		$message_length = ($mode == 'post') ? utf8_strlen($this->message) : utf8_strlen(preg_replace('#\[\/?[a-z\*\+\-]+(=[\S]+)?\]#ius', ' ', $this->message));
+		$message_length = ($mode == 'post') ? utf8_strlen($this->message) : utf8_strlen(preg_replace('#\[\/?[a-z\*\+\-]+(?:=\S+?)?\]#ius', '', $this->message));
 
 		// Maximum message length check. 0 disables this check completely.
 		if ((int) $config['max_' . $mode . '_chars'] > 0 && $message_length > (int) $config['max_' . $mode . '_chars'])
@@ -1247,7 +1247,7 @@ class parse_message extends bbcode_firstpass
 		));
 
 		// Parse this message
-		$this->message = $parser->parse(htmlspecialchars_decode($this->message, ENT_QUOTES));
+		$this->message = $parser->parse(html_entity_decode($this->message, ENT_QUOTES));
 
 		// Remove quotes that are nested too deep
 		if ($config['max_quote_depth'] > 0)

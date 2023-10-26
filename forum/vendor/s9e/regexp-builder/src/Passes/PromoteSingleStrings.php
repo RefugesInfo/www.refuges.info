@@ -1,11 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Passes;
+
+use function array_map, array_merge, count, is_array;
 
 /**
 * Replaces alternations that only contain one string to allow other passes to replace
@@ -16,7 +18,7 @@ class PromoteSingleStrings extends AbstractPass
 	/**
 	* {@inheritdoc}
 	*/
-	protected function runPass(array $strings)
+	protected function runPass(array $strings): array
 	{
 		return array_map([$this, 'promoteSingleStrings'], $strings);
 	}
@@ -27,7 +29,7 @@ class PromoteSingleStrings extends AbstractPass
 	* @param  array $string Original string
 	* @return array         Modified string
 	*/
-	protected function promoteSingleStrings(array $string)
+	protected function promoteSingleStrings(array $string): array
 	{
 		$newString = [];
 		foreach ($string as $element)

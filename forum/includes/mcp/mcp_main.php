@@ -1171,7 +1171,7 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 		$return_link = array();
 		if ($affected_topics == 1 && $topic_id)
 		{
-			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=$topic_id") . '">', '</a>');
+			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id") . '">', '</a>');
 		}
 		$return_link[] = sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
 
@@ -1230,7 +1230,7 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 		$return_link = array();
 		if ($affected_topics == 1 && !$deleted_topics && $topic_id)
 		{
-			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=$topic_id") . '">', '</a>');
+			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id") . '">', '</a>');
 		}
 		$return_link[] = sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
 
@@ -1245,7 +1245,7 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 			else
 			{
 				// Remove any post id anchor
-				if ($anchor_pos = (strrpos($redirect, '#p')) !== false)
+				if (($anchor_pos = strrpos($redirect, '#p')) !== false)
 				{
 					$redirect = substr($redirect, 0, $anchor_pos);
 				}
@@ -1563,6 +1563,26 @@ function mcp_fork_topic($topic_ids)
 						$counter[$row['poster_id']] = 1;
 					}
 				}
+
+				/**
+				* Modify the forked post's sql array before it's inserted into the database.
+				*
+				* @event core.mcp_main_modify_fork_post_sql
+				* @var	int		new_topic_id	The newly created topic ID
+				* @var	int		to_forum_id		The forum ID where the forked topic has been moved to
+				* @var	array	sql_ary			SQL Array with the post's data
+				* @var	array	row				Post data
+				* @var	array	counter			Array with post counts
+				* @since 3.3.5-RC1
+				*/
+				$vars = [
+					'new_topic_id',
+					'to_forum_id',
+					'sql_ary',
+					'row',
+					'counter',
+				];
+				extract($phpbb_dispatcher->trigger_event('core.mcp_main_modify_fork_post_sql', compact($vars)));
 				$db->sql_query('INSERT INTO ' . POSTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
 				$new_post_id = $db->sql_nextid();
 

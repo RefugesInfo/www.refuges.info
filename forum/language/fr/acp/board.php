@@ -2,7 +2,7 @@
 /**
 *
 * This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
+* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
 *
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -46,7 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_STYLE'					=> 'Style du forum',
 	'CUSTOM_DATEFORMAT'				=> 'Personnalisée',
 	'DEFAULT_DATE_FORMAT'			=> 'Format de la date',
-	'DEFAULT_DATE_FORMAT_EXPLAIN'	=> 'Le format de la date est le même que la fonction <code><a href="https://www.php.net/manual/fr/function.date.php">date()</a></code> de PHP.',
+	'DEFAULT_DATE_FORMAT_EXPLAIN'	=> 'La syntaxe utilisée est identique à la <a href="https://www.php.net/manual/datetime.format.php">fonction date</a> de PHP.',
 	'DEFAULT_LANGUAGE'				=> 'Langue par défaut',
 	'DEFAULT_STYLE'					=> 'Style par défaut',
 	'DEFAULT_STYLE_EXPLAIN'			=> 'Définit le style par défaut pour les nouveaux membres.',
@@ -56,7 +56,7 @@ $lang = array_merge($lang, array(
 	'DISPLAY_LAST_SUBJECT_EXPLAIN'	=> 'Le titre du dernier message posté sera affiché dans la liste des forums avec un lien pointant vers ce message. Les titres de sujet ne seront pas affichés lorsque le sujet provient d’un forum protégé par mot de passe ou provient d’un forum pour lequel l’utilisateur n’a pas d’accès en lecture.',
 	'DISPLAY_UNAPPROVED_POSTS'		=> 'Afficher les messages non approuvés à l’auteur',
 	'DISPLAY_UNAPPROVED_POSTS_EXPLAIN'	=> 'Les messages non approuvés peuvent être consultés par l’auteur. Ne s’applique pas aux messages d’invités.',
-	'GUEST_STYLE'					=> 'Styles pour les invités',
+	'GUEST_STYLE'					=> 'Style pour les invités',
 	'GUEST_STYLE_EXPLAIN'			=> 'Définit le style par défaut pour les invités.',
 	'OVERRIDE_STYLE'				=> 'Annuler le style de l’utilisateur',
 	'OVERRIDE_STYLE_EXPLAIN'		=> 'Remplace le style du membre (et de l’invité) par le style défini dans « Style par défaut ».',
@@ -388,7 +388,7 @@ $lang = array_merge($lang, array(
 	'ACP_LOAD_SETTINGS_EXPLAIN'	=> 'Vous pouvez activer et désactiver certaines fonctions du forum pour réduire la quantité de traitement requise. Sur la plupart des serveurs, il n’est pas nécessaire de désactiver ces fonctionnalités. Cependant, sur certains systèmes ou hébergements mutualisés, il peut être préférable de désactiver certaines possibilités dont vous n’avez pas réellement besoin. Vous pouvez également indiquer des limites pour la charge du système et les sessions actives au-delà desquelles le forum sera hors-ligne.',
 
 	'ALLOW_CDN'						=> 'Autoriser l’utilisation des CDN tiers',
-	'ALLOW_CDN_EXPLAIN'				=> 'Un CDN (Content Delivery Network) est un réseau de distribution de contenus. Si l’option est activée, certains fichiers seront distribués par des serveurs tiers au lieu du vôtre. Ceci permet de réduire la bande passante utilisée par votre serveur, mais pour certains administrateurs de forums, cette option pourraient poser des problèmes de confidentialité.',
+	'ALLOW_CDN_EXPLAIN'				=> 'Un CDN (Content Delivery Network) est un réseau de distribution de contenus. Si l’option est activée, certains fichiers seront distribués par des serveurs tiers au lieu du vôtre. Ceci permet de réduire la bande passante utilisée par votre serveur, mais cette option pourrait poser un problème de confidentialité dans certains pays. Dans une installation phpBB par défaut, cela inclut le chargement de « jQuery » et de la police « Open Sans » depuis le CDN de Google. Cela s’applique également à la police « Font Awesome », que phpBB et certaines extensions utilisent pour le rendu des icônes.',
 	'ALLOW_LIVE_SEARCHES'			=> 'Autoriser la recherche dynamique',
 	'ALLOW_LIVE_SEARCHES_EXPLAIN'	=> 'Si activé, au fur et à mesure qu’un membre saisira du texte dans certains champs de recherche des mots-clés seront suggérés.',
 	'CUSTOM_PROFILE_FIELDS'			=> 'Champs de profil personnalisés',
@@ -485,7 +485,7 @@ $lang = array_merge($lang, array(
 	'SCRIPT_PATH'				=> 'Chemin du script',
 	'SCRIPT_PATH_EXPLAIN'		=> 'Chemin d’accès où sont situés les fichiers phpBB depuis le nom de domaine, exemple : <samp>/phpBB3</samp>',
 	'SERVER_NAME'				=> 'Nom de domaine',
-	'SERVER_NAME_EXPLAIN'		=> 'Nom de domaine du serveur exécutant phpBB, exemple : <samp>www.exemple.com</samp>',
+	'SERVER_NAME_EXPLAIN'		=> 'Nom de domaine du serveur exécutant phpBB, exemple : <samp>exemple.com</samp>',
 	'SERVER_PORT'				=> 'Port du serveur',
 	'SERVER_PORT_EXPLAIN'		=> 'Port utilisé par le serveur, normalement 80, changez seulement si différent.',
 	'SERVER_PROTOCOL'			=> 'Protocole du serveur',
@@ -561,7 +561,7 @@ $lang = array_merge($lang, array(
 	'ADMIN_EMAIL'					=> 'Adresse courriel de l’expéditeur',
 	'ADMIN_EMAIL_EXPLAIN'			=> 'Il s’agit de l’adresse courriel de l’expéditeur qui sera utilisée dans tous les courriels émis par le forum, l’adresse courriel de contact technique. C’est elle qui sera fournie pour le champ <samp>Sender</samp> (expéditeur) des en-têtes de courriels.',
 	'BOARD_EMAIL_FORM'				=> 'Les membres envoient des courriels via le forum',
-	'BOARD_EMAIL_FORM_EXPLAIN'		=> 'Au lieu de montrer publiquement les adresses courriels des membres, ces derniers peuvent envoyer des courriels via le forum.',
+	'BOARD_EMAIL_FORM_EXPLAIN'		=> 'Plutôt que de montrer les adresses courriel des membres, ces derniers pourront envoyer des courriels via le forum.',
 	'BOARD_HIDE_EMAILS'				=> 'Masquer les adresses courriels',
 	'BOARD_HIDE_EMAILS_EXPLAIN'		=> 'Cette fonction préserve les adresses courriels complètement privées.',
 	'CONTACT_EMAIL'					=> 'Courriel de contact',
@@ -602,7 +602,7 @@ $lang = array_merge($lang, array(
 	'SMTP_VERIFY_PEER_EXPLAIN'		=> 'Exige la vérification du certificat SSL utilisé par le server SMTP partenaire.<br><em><strong>Attention :</strong> établir une connexion avec un certificat SSL non vérifié peut induire des problèmes de sécurité.</em>',
 	'SMTP_VERIFY_PEER_NAME'			=> 'Vérifier le nom du partenaire SMTP',
 	'SMTP_VERIFY_PEER_NAME_EXPLAIN'	=> 'Exige la vérification du nom du partenaire pour les serveurs SMTP utilisant une connexion SSL/TLS.<br><em><strong>Attention :</strong> établir une connexion à un partenaire non vérifié peut induire des problèmes de sécurité.</em>',
-	'TEST_EMAIL_SENT'				=> 'Le courriel de test a été envoyé.<br>Si vous ne le recevez pas, veuillez vérifier les paramètres courriels du forum.<br><br>Si vous avez besoin d’assistance, veuillez visiter le <a href="https://www.phpbb.com/community/">forum de support phpBB</a> (en anglais) ou le <a href="http://forums.phpbb-fr.com/">forum de support phpBB-fr.com</a> (en français).',
+	'TEST_EMAIL_SENT'				=> 'Le courriel de test a été envoyé.<br>Si vous ne le recevez pas, veuillez vérifier les paramètres courriels du forum.<br><br>Si vous avez besoin d’assistance, veuillez visiter le <a href="https://www.phpbb.com/community/">forum de support phpBB</a> (en anglais) ou le <a href="https://www.phpbb-fr.com/forums/">forum de support phpBB-fr.com</a> (en français).',
 
 	'USE_SMTP'						=> 'Utiliser un serveur SMTP pour l’envoi de courriels',
 	'USE_SMTP_EXPLAIN'				=> 'Sélectionnez « Oui » si vous voulez ou devez envoyer les courriels par l’intermédiaire d’un serveur au lieu d’utiliser la fonction courriel locale.',

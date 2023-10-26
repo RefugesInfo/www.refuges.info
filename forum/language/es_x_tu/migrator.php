@@ -78,5 +78,6 @@ $lang = array_merge($lang, array(
 	'PARENT_MODULE_FIND_ERROR'			=> 'No se puede determinar el identificador del módulo primario: %s',
 	'PERMISSION_NOT_EXIST'				=> 'El ajuste de permiso "%s" inesperadamente, no existe.',
 
+	'ROLE_ASSIGNED_NOT_EXIST'			=> 'El rol de permiso asignado al grupo "%1$s" inesperadamente, no existe. ID del rol: "%2$s"',
 	'ROLE_NOT_EXIST'					=> 'El rol de permiso "%s" inesperadamente, no existe.',
 ));

@@ -57,6 +57,7 @@ class datetime extends \DateTime
 	* @param boolean $force_absolute Force output of a non relative date
 	* @return string Formatted date time
 	*/
+	#[\ReturnTypeWillChange]
 	public function format($format = '', $force_absolute = false)
 	{
 		$format		= $format ? $format : $this->user->date_format;
@@ -97,19 +98,19 @@ class datetime extends \DateTime
 
 				$midnight	= $midnight->getTimestamp();
 
-				if ($timestamp <= $midnight + 2 * 86400)
+				if ($timestamp < $midnight + 2 * 86400)
 				{
 					$day = false;
 
-					if ($timestamp > $midnight + 86400)
+					if ($timestamp >= $midnight + 86400)
 					{
 						$day = 'TOMORROW';
 					}
-					else if ($timestamp > $midnight)
+					else if ($timestamp >= $midnight)
 					{
 						$day = 'TODAY';
 					}
-					else if ($timestamp > $midnight - 86400)
+					else if ($timestamp >= $midnight - 86400)
 					{
 						$day = 'YESTERDAY';
 					}

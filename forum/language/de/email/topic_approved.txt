@@ -2,7 +2,7 @@ Subject: Thema freigegeben — „{TOPIC_TITLE}“
 
 Hallo {USERNAME},
 
-du erhältst diese Benachrichtigung, weil dein Thema „{TOPIC_TITLE}“ auf „{SITENAME}“ durch einen Moderator oder Administrator freigegeben wurde.
+dein Thema „{TOPIC_TITLE}“ auf „{SITENAME}“ wurde durch einen Moderator oder Administrator freigegeben.
 
 Du kannst dir das Thema ansehen, wenn du folgenden Link aufrufst:
 {U_VIEW_TOPIC}

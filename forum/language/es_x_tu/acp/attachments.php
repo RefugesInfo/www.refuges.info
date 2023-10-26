@@ -171,4 +171,5 @@ $lang = array_merge($lang, array(
 	'UPLOAD_DIR_EXPLAIN'				=> 'Ruta donde se guardan los adjuntos.',
 	'UPLOAD_ICON'						=> 'Icono de subida',
 	'UPLOAD_NOT_DIR'					=> 'La ubicación que has especificado no parece ser una carpeta.',
+	'UPLOAD_POST_NOT_EXIST'				=> 'El archivo “%1$s” no se pudo subir al mensaje número %2$d debido a que el mensaje no existe.',
 ));

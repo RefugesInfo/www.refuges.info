@@ -1,8 +1,8 @@
-Subject: Notification de réponse au sujet - {TOPIC_TITLE}
+Subject: Réponse dans « {TOPIC_TITLE} »
 
 Bonjour {USERNAME},
 
-Vous recevez cette notification car vous avez le sujet « {TOPIC_TITLE} » dans vos favoris sur « {SITENAME} ». Depuis votre dernière visite, ce sujet a reçu une nouvelle réponse. Aucune autre notification ne vous sera envoyée jusqu’à votre prochaine visite du sujet.
+Depuis votre dernière visite sur « {SITENAME} », votre sujet favori « {TOPIC_TITLE} » a reçu une nouvelle réponse. Aucun autre courriel ne vous sera envoyé jusqu’à votre prochaine consultation du sujet.
 
 Pour consulter le premier message non lu, cliquez sur le lien suivant :
 {U_NEWEST_POST}
@@ -10,11 +10,10 @@ Pour consulter le premier message non lu, cliquez sur le lien suivant :
 Pour consulter le sujet dans son ensemble, cliquez sur le lien suivant :
 {U_TOPIC}
 
-Pour visiter le forum, cliquez sur le lien suivant :
+Pour consulter le forum, cliquez sur le lien suivant :
 {U_FORUM}
 
 Si vous ne souhaitez plus recevoir de notifications de vos sujets favoris, veuillez modifier vos paramètres de notifications en cliquant sur le lien suivant :
-
 {U_NOTIFICATION_SETTINGS}
 
 {EMAIL_SIG}

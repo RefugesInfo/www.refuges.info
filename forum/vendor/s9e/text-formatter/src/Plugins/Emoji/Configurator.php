@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Emoji;
@@ -95,7 +95,7 @@ class Configurator extends ConfiguratorBase
 		$custom = $this->getCustomAliases();
 		if (!empty($custom))
 		{
-			$regexp                 = '/' . RegexpBuilder::fromList($custom) . '/';
+			$regexp = '/' . RegexpBuilder::fromList($custom, ['unicode' => false]) . "(?!\u{FE0E})/";
 			$config['customRegexp'] = new Regexp($regexp, true);
 
 			$quickMatch = ConfigHelper::generateQuickMatchFromList($custom);

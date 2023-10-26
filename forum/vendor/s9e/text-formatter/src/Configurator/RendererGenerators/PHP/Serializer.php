@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RendererGenerators\PHP;
@@ -116,6 +116,22 @@ class Serializer
 	}
 
 	/**
+	* Convert a dynamic xsl:attribute/xsl:element name into PHP
+	*
+	* @param  string $attrValue Attribute value template
+	* @return string
+	*/
+	protected function convertDynamicNodeName(string $attrValue): string
+	{
+		if (strpos($attrValue, '{') === false)
+		{
+			return var_export(htmlspecialchars($attrValue, ENT_QUOTES), true);
+		}
+
+		return 'htmlspecialchars(' . $this->convertAttributeValueTemplate($attrValue) . ',' . ENT_QUOTES . ')';
+	}
+
+	/**
 	* Escape given literal
 	*
 	* @param  string $text    Literal
@@ -167,21 +183,18 @@ class Serializer
 	/**
 	* Test whether given attribute declaration is a minimizable boolean attribute
 	*
-	* The test is case-sensitive and only covers attribute that are minimized by libxslt
-	*
-	* @param  string $attrName Attribute name
-	* @param  string $php      Attribute content, in PHP
+	* @param  DOMElement $attribute <attribute/> node
+	* @param  string     $php       Attribute content, in PHP
 	* @return boolean
 	*/
-	protected function isBooleanAttribute(string $attrName, string $php): bool
+	protected function isBooleanAttribute(DOMElement $attribute, string $php): bool
 	{
-		$attrNames = ['checked', 'compact', 'declare', 'defer', 'disabled', 'ismap', 'multiple', 'nohref', 'noresize', 'noshade', 'nowrap', 'readonly', 'selected'];
-		if (!in_array($attrName, $attrNames, true))
+		if ($attribute->getAttribute('boolean') !== 'yes')
 		{
 			return false;
 		}
 
-		return ($php === '' || $php === "\$this->out.='" . $attrName . "';");
+		return ($php === '' || $php === "\$this->out.='" . $attribute->getAttribute('name') . "';");
 	}
 
 	/**
@@ -213,14 +226,11 @@ class Serializer
 		$attrName = $attribute->getAttribute('name');
 
 		// PHP representation of this attribute's name
-		$phpAttrName = $this->convertAttributeValueTemplate($attrName);
-
-		// NOTE: the attribute name is escaped by default to account for dynamically-generated names
-		$phpAttrName = 'htmlspecialchars(' . $phpAttrName . ',' . ENT_QUOTES . ')';
+		$phpAttrName = $this->convertDynamicNodeName($attrName);
 
 		$php     = "\$this->out.=' '." . $phpAttrName;
 		$content = $this->serializeChildren($attribute);
-		if (!$this->isBooleanAttribute($attrName, $content))
+		if (!$this->isBooleanAttribute($attribute, $content))
 		{
 			$php .= ".'=\"';" . $content . "\$this->out.='\"'";
 		}
@@ -328,10 +338,7 @@ class Serializer
 		$isDynamic = (bool) (strpos($elName, '{') !== false);
 
 		// PHP representation of this element's name
-		$phpElName = $this->convertAttributeValueTemplate($elName);
-
-		// NOTE: the element name is escaped by default to account for dynamically-generated names
-		$phpElName = 'htmlspecialchars(' . $phpElName . ',' . ENT_QUOTES . ')';
+		$phpElName = $this->convertDynamicNodeName($elName);
 
 		// If the element name is dynamic, we cache its name for convenience and performance
 		if ($isDynamic)

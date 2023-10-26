@@ -30,12 +30,14 @@ class main_listener implements EventSubscriberInterface
 	{
 		return array(
 			'core.user_setup'							=> 'load_language_on_setup',
-			'core.user_setup_after'						=> 'sfw_check',
+			'core.user_setup_after'						=> array(
+				array('sfw_check', 1),
+				array('ccf_check', 2),
+			),
 			'core.page_footer_after'     			    => 'add_js_to_footer',
 			'core.posting_modify_submission_errors'		=> 'check_comment',
 			'core.posting_modify_submit_post_before'	=> 'change_comment_approve',
 			'core.user_add_modify_data'                 => 'check_newuser',
-			'core.common'								=> 'ccf_check',
 		);
 	}
 	const APBCT_REMOTE_CALL_SLEEP = 10;
@@ -228,9 +230,17 @@ class main_listener implements EventSubscriberInterface
 
 				if ($result['errno'] == 0 && $result['allow'] == 0) // Spammer exactly.
 				{ 
+					if ($result['stop_queue'] == 1)
+					{
 						// Output error
 						array_push($data['error'], $result['ct_result_comment']);
 						$event->set_data($data);
+					}
+					else
+					{
+						// No error output but send comment to manual approvement
+						$this->ct_comment_result = $result;
+					}
 				}
 			}
 		}
@@ -304,7 +314,7 @@ class main_listener implements EventSubscriberInterface
 		$this->main_model->set_cookie();
 
 		//Remote calls
-		if ($this->request->variable('spbc_remote_call_token', '') && $this->request->variable('spbc_remote_call_action','') && $this->request->variable('plugin_name', '') && in_array($this->request->variable('plugin_name',''), array('antispam','anti-spam', 'apbct')))
+		if ($this->request->variable('spbc_remote_call_token', '') && $this->request->variable('spbc_remote_call_action','') && in_array($this->request->variable('plugin_name',''), array('antispam','anti-spam', 'apbct')))
 		{
 	        $remote_calls_config = $this->config_text->get_array(array('cleantalk_antispam_remote_calls'));
 	        $remote_calls = isset($remote_calls_config['cleantalk_antispam_remote_calls']) ? json_decode($remote_calls_config['cleantalk_antispam_remote_calls'],true) : null;
@@ -313,7 +323,7 @@ class main_listener implements EventSubscriberInterface
 
 	        if(array_key_exists($remote_action, $remote_calls)){
   
-	            if(time() - $remote_calls[$remote_action]['last_call'] > self::APBCT_REMOTE_CALL_SLEEP || ($remote_action == 'sfw_update' && !empty($this->request->variable('file_url_hash', '')))){
+	            if(time() - $remote_calls[$remote_action]['last_call'] > self::APBCT_REMOTE_CALL_SLEEP || ($remote_action == 'sfw_update' && !empty($this->request->variable('data_id', '')))){
 
 	                $remote_calls[$remote_action]['last_call'] = time();
 	                $this->config_text->set_array(array(
@@ -326,11 +336,15 @@ class main_listener implements EventSubscriberInterface
 	                        die('OK');
 	                    // SFW update
 	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'sfw_update'){   
-	                        $result = $this->main_model->sfw_update($this->config['cleantalk_antispam_apikey']);           
+	                        $result = $this->main_model->sfw_update($this->config['cleantalk_antispam_apikey']);
+		                    if( ! empty( $result['error'] ) )
+			                    error_log( 'Cleantalk Antispam error while updating SFW: ' . $result['error'] );
 	                        die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
 	                    // SFW send logs
 	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'sfw_send_logs'){  
-	                        $result = $this->main_model->sfw_send_logs($this->config['cleantalk_antispam_apikey']);              
+	                        $result = $this->main_model->sfw_send_logs($this->config['cleantalk_antispam_apikey']);
+		                    if( ! empty( $result['error'] ) )
+			                    error_log( 'Cleantalk Antispam error while sending SFW logs: ' . $result['error'] );
 	                        die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
 	                    // Update plugin
 	                    }elseif($this->request->variable('spbc_remote_call_action','') == 'update_plugin'){
@@ -365,7 +379,7 @@ class main_listener implements EventSubscriberInterface
 				if ($result['errno'] == 0 && $result['allow'] == 0) // Spammer exactly.
 				{				 
 					// Output error
-					trigger_error($result['ct_result_comment']);
+					@trigger_error($result['ct_result_comment']);
 				}
 			}
 		}

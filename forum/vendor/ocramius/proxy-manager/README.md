@@ -1,5 +1,11 @@
 # Proxy Manager
 
+## A message to Russian 🇷🇺 people
+
+If you currently live in Russia, please read [this message](./ToRussianPeople.md).
+
+## Purpose
+
 This library aims at providing abstraction for generating various kinds of [proxy classes](http://ocramius.github.io/presentations/proxy-pattern-in-php/).
 
 ![ProxyManager](https://raw.githubusercontent.com/Ocramius/ProxyManager/917bf1698243a1079aaa27ed8ea08c2aef09f4cb/proxy-manager.png)
@@ -10,7 +16,6 @@ This library aims at providing abstraction for generating various kinds of [prox
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/69fe5f97-b1c8-4ddd-93ce-900b8b788cf2/mini.png)](https://insight.sensiolabs.com/projects/69fe5f97-b1c8-4ddd-93ce-900b8b788cf2)
 [![Dependency Status](https://www.versioneye.com/package/php--ocramius--proxy-manager/badge.png)](https://www.versioneye.com/package/php--ocramius--proxy-manager)
 [![Reference Status](https://www.versioneye.com/php/ocramius:proxy-manager/reference_badge.svg)](https://www.versioneye.com/php/ocramius:proxy-manager/references)
-[![HHVM Status](http://hhvm.h4cc.de/badge/ocramius/proxy-manager.png)](http://hhvm.h4cc.de/package/ocramius/proxy-manager)
 
 [![Total Downloads](https://poser.pugx.org/ocramius/proxy-manager/downloads.png)](https://packagist.org/packages/ocramius/proxy-manager)
 [![Latest Stable Version](https://poser.pugx.org/ocramius/proxy-manager/v/stable.png)](https://packagist.org/packages/ocramius/proxy-manager)

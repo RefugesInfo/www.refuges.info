@@ -2,6 +2,6 @@ Subject: Meldung gelöscht — „{POST_SUBJECT}“
 
 Hallo {USERNAME},
 
-du erhältst diese Nachricht, weil deine Meldung zum Beitrag „{POST_SUBJECT}“ in „{TOPIC_TITLE}“ auf „{SITENAME}“ von einem Moderator oder Administrator gelöscht wurde.
+deine Meldung zum Beitrag „{POST_SUBJECT}“ in „{TOPIC_TITLE}“ auf „{SITENAME}“ wurde von einem Moderator oder Administrator gelöscht.
 
 {EMAIL_SIG}

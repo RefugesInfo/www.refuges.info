@@ -9,6 +9,6 @@ Complimenti! Se hai ricevuto questa email, phpBB è configurato correttamente pe
 
 <!-- ENDIF -->
 
-Nel caso in cui avessi bisogno di assistenza, visita il forum di supporto phpBB - https://www.phpbb-store.it
+Nel caso in cui avessi bisogno di assistenza, visita il forum di supporto phpBB - https://www.phpbb-italia.it
 
 {EMAIL_SIG}

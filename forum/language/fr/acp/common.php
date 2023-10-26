@@ -2,7 +2,7 @@
 /**
 *
 * This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
+* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
 *
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -228,7 +228,7 @@ $lang = array_merge($lang, array(
 
 	'BACK'					=> 'Retour',
 
-	'CONTAINER_EXCEPTION'	=> 'phpBB a rencontré une erreur lors de la construction du conteneur en raison d’une extension installée. Pour cette raison, toutes les extensions ont été temporairement désactivées. Elles seront automatiquement réactivées dès que l’erreur de conteneur sera résolue. Pour cela, commencez par purger le cache de votre forum. Si cette erreur persiste, veuillez visiter le <a href="https://www.phpbb.com/support">forum de support phpBB.com</a> (en anglais) ou le <a href="http://forums.phpbb-fr.com/">forum de support phpBB-fr.com</a> (en français).',
+	'CONTAINER_EXCEPTION'	=> 'phpBB a rencontré une erreur lors de la construction du conteneur en raison d’une extension installée. Pour cette raison, toutes les extensions ont été temporairement désactivées. Elles seront automatiquement réactivées dès que l’erreur de conteneur sera résolue. Pour cela, commencez par purger le cache de votre forum. Si cette erreur persiste, veuillez visiter le <a href="https://www.phpbb.com/support">forum de support phpBB.com</a> (en anglais) ou le <a href="https://www.phpbb-fr.com/forums/">forum de support phpBB-fr.com</a> (en français).',
 	'EXCEPTION'				=> 'Exception',
 
 	'COLOUR_SWATCH'			=> 'Palette de couleurs',
@@ -537,8 +537,8 @@ $lang = array_merge($lang, array(
 	'LOG_ATTACH_ORPHAN_DEL'		=> '<strong>Suppression des fichiers joints orphelins</strong><br>» %s',
 
 	'LOG_BAN_EXCLUDE_USER'	=> '<strong>Débannissement d’un membre</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
-	'LOG_BAN_EXCLUDE_IP'	=> '<strong>Débannissement d’adresse IP</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
-	'LOG_BAN_EXCLUDE_EMAIL'	=> '<strong>Débannissement d’adresse de courriels</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
+	'LOG_BAN_EXCLUDE_IP'	=> '<strong>Débannissement d’adresses IP</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
+	'LOG_BAN_EXCLUDE_EMAIL'	=> '<strong>Débannissement d’adresses courriel</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
 	'LOG_BAN_USER'			=> '<strong>Bannissement d’un membre</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
 	'LOG_BAN_IP'			=> '<strong>Bannissement d’une adresse IP</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
 	'LOG_BAN_EMAIL'			=> '<strong>Bannissement d’une adresse courriel</strong> pour la raison suivante : « <em>%1$s</em> »<br>» %2$s',
@@ -740,6 +740,10 @@ $lang = array_merge($lang, array(
 	'LOG_SEARCH_INDEX_CREATED'	=> '<strong>Création de l’index de recherche pour</strong><br>» %s',
 	'LOG_SEARCH_INDEX_REMOVED'	=> '<strong>Suppression de l’index de recherche pour</strong><br>» %s',
 	'LOG_SPHINX_ERROR'			=> '<strong>Erreur Sphinx</strong><br>» %s',
+
+	'LOG_SPAMHAUS_OPEN_RESOLVER'		=> 'Spamhaus n’autorise pas les requêtes passant par un résolveur public/ouvert. La fonction de vérification de la liste noire a été désactivée. Pour plus d’informations, consultez https://www.spamhaus.com/product/help-for-spamhaus-public-mirror-users/.',
+	'LOG_SPAMHAUS_VOLUME_LIMIT'			=> 'Le volume de requête autorisé par Spamhaus a été atteint. La fonction de vérification de la liste noire a été désactivée. Pour plus d’informations, consultez https://www.spamhaus.com/product/help-for-spamhaus-public-mirror-users/.',
+
 	'LOG_STYLE_ADD'				=> '<strong>Ajout du style</strong><br>» %s',
 	'LOG_STYLE_DELETE'			=> '<strong>Suppression du style</strong><br>» %s',
 	'LOG_STYLE_EDIT_DETAILS'	=> '<strong>Modification des informations du style</strong><br>» %s',
@@ -773,9 +777,9 @@ $lang = array_merge($lang, array(
 	'LOG_UPDATE_PHPBB'		=> '<strong>Mise à jour de phpBB de la version %1$s à la version %2$s</strong>',
 
 	'LOG_USER_ACTIVE'		=> '<strong>Activation du membre</strong><br>» %s',
-	'LOG_USER_BAN_USER'		=> '<strong>Bannissement d’utilisateur via la gestion d’utilisateurs</strong> pour la raison « <em>%1$s</em> »<br>» %2$s',
-	'LOG_USER_BAN_IP'		=> '<strong>Bannissement d’adresse IP via la gestion d’utilisateurs</strong> pour la raison « <em>%1$s</em> »<br>» %2$s',
-	'LOG_USER_BAN_EMAIL'	=> '<strong>Bannissement d’adresse de courriels via la gestion d’utilisateurs</strong> pour la raison « <em>%1$s</em> »<br>» %2$s',
+	'LOG_USER_BAN_USER'		=> '<strong>Bannissement d’utilisateurs via la gestion d’utilisateurs</strong> pour la raison « <em>%1$s</em> »<br>» %2$s',
+	'LOG_USER_BAN_IP'		=> '<strong>Bannissement d’adresses IP via la gestion d’utilisateurs</strong> pour la raison « <em>%1$s</em> »<br>» %2$s',
+	'LOG_USER_BAN_EMAIL'	=> '<strong>Bannissement d’adresses courriel via la gestion d’utilisateurs</strong> pour la raison « <em>%1$s</em> »<br>» %2$s',
 	'LOG_USER_DELETED'		=> '<strong>Suppression du membre</strong><br>» %s',
 	'LOG_USER_DEL_ATTACH'	=> '<strong>Suppression de tous les fichiers joints du membre</strong><br>» %s',
 	'LOG_USER_DEL_AVATAR'	=> '<strong>Suppression de l’avatar du membre</strong><br>» %s',
@@ -788,7 +792,7 @@ $lang = array_merge($lang, array(
 	'LOG_USER_REACTIVATE'	=> '<strong>Réactivation forcée du compte du membre</strong><br>» %s',
 	'LOG_USER_REMOVED_NR'	=> '<strong>Suppression du statut « nouvel utilisateur enregistré » du membre</strong><br>» %s',
 
-	'LOG_USER_UPDATE_EMAIL'	=> '<strong>Modification de l’adresse de courriels du membre « %1$s » </strong><br>» de « %2$s » à « %3$s »',
+	'LOG_USER_UPDATE_EMAIL'	=> '<strong>Modification de l’adresse courriel du membre « %1$s » </strong><br>» de « %2$s » à « %3$s »',
 	'LOG_USER_UPDATE_NAME'	=> '<strong>Modification du nom d’utilisateur</strong><br>» de « %1$s » à « %2$s »',
 	'LOG_USER_USER_UPDATE'	=> '<strong>Mise à jour des informations du membre</strong><br>» %s',
 

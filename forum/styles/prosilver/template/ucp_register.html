@@ -57,16 +57,17 @@
 	<hr />
 
 	<!-- EVENT ucp_register_options_before -->
+	{% if S_LANG_OPTIONS %}
 	<dl>
-		<dt><label for="lang">{L_LANGUAGE}{L_COLON}</label></dt>
-		<dd><select name="lang" id="lang" onchange="change_language(this.value); return false;" tabindex="6" title="{L_LANGUAGE}">{S_LANG_OPTIONS}</select></dd>
+		<dt><label for="lang">{{ lang('LANGUAGE') ~ lang('COLON') }}</label></dt>
+		<dd><select name="lang" id="lang" onchange="change_language(this.value); return false;" tabindex="6" title="{{ lang('LANGUAGE') }}">{{ S_LANG_OPTIONS }}</select></dd>
 	</dl>
+	{% endif %}
 
 	<!-- INCLUDE timezone_option.html -->
 
 	<!-- EVENT ucp_register_profile_fields_before -->
-	<!-- IF .profile_fields -->
-		<dl><dd><strong>{L_ITEMS_REQUIRED}</strong></dd></dl>
+	{% if PROFILE_FIELDS_REQUIRED %}<dl><dd><strong>{L_ITEMS_REQUIRED}</strong></dd></dl>{% endif %}
 
 	<!-- BEGIN profile_fields -->
 		<dl>
@@ -76,7 +77,6 @@
 			<dd>{profile_fields.FIELD}</dd>
 		</dl>
 	<!-- END profile_fields -->
-	<!-- ENDIF -->
 
 	<!-- EVENT ucp_register_profile_fields_after -->
 	</fieldset>
@@ -105,7 +105,6 @@
 
 	<fieldset class="submit-buttons">
 		{S_HIDDEN_FIELDS}
-		<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp;
 		<input type="submit" tabindex="9" name="submit" id="submit" value="{L_SUBMIT}" class="button1 default-submit-action" />
 		{S_FORM_TOKEN}
 	</fieldset>

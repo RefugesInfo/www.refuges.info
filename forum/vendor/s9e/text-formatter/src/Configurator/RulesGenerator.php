@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator;
@@ -184,7 +184,7 @@ class RulesGenerator implements ArrayAccess, Iterator
 		foreach ($tags as $tagName => $tag)
 		{
 			// Use the tag's template if applicable or XSLT's implicit default otherwise
-			$template = (isset($tag->template)) ? $tag->template : '<xsl:apply-templates/>';
+			$template = $tag->template ?? '<xsl:apply-templates/>';
 			$tagInspectors[$tagName] = new TemplateInspector($template);
 		}
 

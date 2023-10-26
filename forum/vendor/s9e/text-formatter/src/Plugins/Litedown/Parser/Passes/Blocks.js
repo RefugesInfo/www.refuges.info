@@ -194,7 +194,7 @@ function parse()
 				m = {};
 			}
 		}
-		else
+		else if (!codeTag)
 		{
 			var hasListItem = !!m[4];
 
@@ -466,7 +466,7 @@ function computeBlockIgnoreLen(str, maxBlockDepth)
 */
 function getAtxHeaderEndTagLen(startPos, endPos)
 {
-	var content = text.substr(startPos, endPos - startPos),
+	var content = text.substring(startPos, endPos),
 		m = /[ \t]*#*[ \t]*$/.exec(content);
 
 	return m[0].length;

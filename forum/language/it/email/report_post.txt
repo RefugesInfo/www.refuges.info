@@ -2,7 +2,7 @@ Subject: Messaggio segnalato - “{TOPIC_TITLE}”
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché il messaggio “{POST_SUBJECT}” su “{SITENAME}” è stato segnalato.
+Il messaggio "{POST_SUBJECT}" su "{SITENAME}" è stato segnalato.
 
 Se vuoi vedere la segnalazione, clicca sul seguente link:
 {U_VIEW_REPORT}

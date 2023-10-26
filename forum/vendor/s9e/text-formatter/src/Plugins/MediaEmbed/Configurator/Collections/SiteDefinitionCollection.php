@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed\Configurator\Collections;
@@ -85,7 +85,7 @@ class SiteDefinitionCollection extends NormalizedCollection
 	/**
 	* Normalize a regexp / indexed array of regexps
 	*
-	* @param  array|string
+	* @param  array|string $value
 	* @return array
 	*/
 	protected function normalizeRegexp($value)
@@ -96,7 +96,7 @@ class SiteDefinitionCollection extends NormalizedCollection
 	/**
 	* Normalize the "scrape" value
 	*
-	* @param  array
+	* @param  array $value
 	* @return array
 	*/
 	protected function normalizeScrape($value)

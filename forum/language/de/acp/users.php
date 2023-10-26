@@ -64,7 +64,7 @@ $lang = array_merge($lang, array(
 
 	'DELETE_POSTS'			=> 'Beiträge löschen',
 	'DELETE_USER'			=> 'Benutzer löschen',
-	'DELETE_USER_EXPLAIN'	=> 'Bitte beachte, dass das Löschen eines Benutzers endgültig ist und nicht rückgängig gemacht werden kann. Ungelesende Private Nachrichten, die der Benutzer geschrieben hat, werden gelöscht und können nicht mehr durch die Empfänger abgerufen werden.',
+	'DELETE_USER_EXPLAIN'	=> 'Bitte beachte, dass das Löschen eines Benutzers endgültig ist und nicht rückgängig gemacht werden kann. Ungelesene Private Nachrichten, die der Benutzer geschrieben hat, werden gelöscht und können nicht mehr durch die Empfänger abgerufen werden.',
 
 	'FORCE_REACTIVATION_SUCCESS'	=> 'Erneute Aktivierung des Benutzerkontos erfolgreich erzwungen.',
 	'FOUNDER'						=> 'Gründer',

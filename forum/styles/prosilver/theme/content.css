@@ -88,6 +88,10 @@ ul.topiclist dfn {
 	margin-right: 5px;
 }
 
+.forum-image img {
+	max-width: 100%;
+}
+
 li.row {
 	border-top: 1px solid transparent;
 	border-bottom: 1px solid transparent;
@@ -98,7 +102,7 @@ li.row strong {
 }
 
 li.header dt, li.header dd {
-	line-height: 1em;
+	line-height: 1.6em;
 	border-left-width: 0;
 	margin: 2px 0 4px 0;
 	padding-top: 2px;
@@ -151,7 +155,7 @@ dl.row-item dt {
 }
 
 dl.row-item dt .list-inner {
-	padding-left: 52px;					/* Space for folder icon */
+	padding-left: 52px;			/* Space for folder icon */
 }
 
 dl.row-item dt, dl.row-item dd {
@@ -162,7 +166,7 @@ dl.row-item dt a {
 	display: inline;
 }
 
-dl a.row-item-link {						/* topic row icon links */
+dl a.row-item-link {				/* topic row icon links */
 	display: block;
 	width: 30px;
 	height: 30px;
@@ -577,8 +581,7 @@ blockquote .codebox {
 	clear: left;
 }
 
-.attachbox p.stats
-{
+.attachbox p.stats {
 	line-height: 110%;
 	font-weight: normal;
 	clear: left;
@@ -591,7 +594,6 @@ blockquote .codebox {
 
 .attach-image img {
 	border: 1px solid transparent;
-/*	cursor: move; */
 	cursor: default;
 }
 
@@ -737,6 +739,10 @@ fieldset.polls dd div {
 	margin-bottom: 10px;
 }
 
+.profile-rank img {
+	max-width: 160px;
+}
+
 /* Post-profile avatars */
 .postprofile .has-avatar .avatar-container {
 	margin-bottom: 3px;
@@ -864,4 +870,14 @@ table.fixed-width-table {
 
 #memberlist tr.inactive, #team tr.inactive {
 	font-style: italic;
+}
+
+/* Memberlist
+----------------------------------------*/
+.group-description {
+	font-size: 1.3em;
+}
+
+.group-description ul {
+	list-style-position: inside;
 }

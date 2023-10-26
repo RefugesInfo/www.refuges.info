@@ -2,14 +2,13 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RendererGenerators;
 
 use s9e\TextFormatter\Configurator\Helpers\TemplateHelper;
 use s9e\TextFormatter\Configurator\RendererGenerator;
-use s9e\TextFormatter\Configurator\RendererGenerators\XSLT\Optimizer;
 use s9e\TextFormatter\Configurator\Rendering;
 use s9e\TextFormatter\Configurator\TemplateNormalizer;
 use s9e\TextFormatter\Renderers\XSLT as XSLTRenderer;
@@ -139,7 +138,7 @@ class XSLT implements RendererGenerator
 		$xml = '<' . $tagName;
 		foreach ($attributes as $attrName => $attrValue)
 		{
-			$xml .= ' ' . $attrName . '="' . htmlspecialchars($attrValue) . '"';
+			$xml .= ' ' . $attrName . '="' . htmlspecialchars($attrValue, ENT_COMPAT, 'utf-8') . '"';
 		}
 		if ($content === '')
 		{

@@ -386,7 +386,7 @@ $lang = array_merge($lang, array(
 	'ACP_LOAD_SETTINGS_EXPLAIN'	=> 'Aquí puede habilitar y deshabilitar ciertas funciones del Sitio para reducir la cantidad de procesamiento requerido. En la mayoría de los servidores no hay necesidad de deshabilitar ninguna función. Sin embargo en ciertos sistemas o entornos compartidos puede ser beneficioso deshabilitar capacidades que no necesite realmente. También puede especificar límites para la carga de sistema y sesiones activas, superadas las cuales el Sitio se pondrá fuera de línea.',
 
 	'ALLOW_CDN'						=> 'Permitir el uso de las redes de distribución de contenidos de terceros',
-	'ALLOW_CDN_EXPLAIN'				=> 'Si esta opción está activada, algunos archivos se sirven desde los servidores de terceros externos en lugar de su servidor. Esto reduce el ancho de banda requerido por el servidor, pero puede presentar un problema de privacidad para algunos Administradores del foro. En una instalación por defecto de phpBB, incluye la carga de “jQuery” y la fuente “Open Sans” desde la red de contenido de Google.',
+	'ALLOW_CDN_EXPLAIN'				=> 'Si esta opción está habilitada, algunos archivos se servirán desde servidores externos de terceros en lugar de su servidor. Esto reduce el ancho de banda de red utilizado por su servidor, pero puede presentar un problema de privacidad en algunos países. En una instalación predeterminada de phpBB, esto incluye cargar "jQuery" y la fuente "Open Sans" de la red de entrega de contenido de Google. Esto también se aplica a la fuente “Font Awesome”, que phpBB y algunas extensiones usan para representar íconos.',
 	'ALLOW_LIVE_SEARCHES'			=> 'Permitir búsquedas en vivo',
 	'ALLOW_LIVE_SEARCHES_EXPLAIN'	=> 'Si se habilita esta opción, los usuarios disponen de sugerencias de palabras clave del tipo en ciertos campos del foro.',
     'CUSTOM_PROFILE_FIELDS'			=> 'Campos de perfil personalizados',
@@ -485,7 +485,7 @@ $lang = array_merge($lang, array(
 	'SCRIPT_PATH'			=> 'Ruta de phpBB',
 	'SCRIPT_PATH_EXPLAIN'		=> 'Ruta donde está ubicado phpBB relativa al nombre de dominio, ej. <samp>/phpBB3</samp>',
 	'SERVER_NAME'			=> 'Nombre de dominio',
-	'SERVER_NAME_EXPLAIN'		=> 'El nombre del dominio de este Sitio (por ejemplo: <samp>www.foo.bar</samp>)',
+	'SERVER_NAME_EXPLAIN'		=> 'El nombre del dominio de este Sitio (por ejemplo: <samp>ejemplo.com</samp>).',
 	'SERVER_PORT'			=> 'Puerto del servidor',
 	'SERVER_PORT_EXPLAIN'		=> 'El puerto que utiliza su servidor, normalmente 80, cámbielo solo si es diferente',
 	'SERVER_PROTOCOL'		=> 'Protocolo del servidor',

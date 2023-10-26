@@ -1,9 +1,8 @@
-Subject: Un nouveau message privé vient d’arriver
+Subject: Nouveau message privé
 
 Bonjour {USERNAME},
 
 Vous avez reçu un nouveau message privé de « {AUTHOR_NAME} » sur « {SITENAME} » ayant pour objet :
-
 {SUBJECT}
 
 Vous pouvez consulter votre nouveau message en cliquant sur le lien suivant :

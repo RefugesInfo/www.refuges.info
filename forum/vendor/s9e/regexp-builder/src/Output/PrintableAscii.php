@@ -1,11 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Output;
+
+use function chr, sprintf;
 
 abstract class PrintableAscii extends BaseImplementation
 {
@@ -28,7 +30,7 @@ abstract class PrintableAscii extends BaseImplementation
 	* @param  integer $cp
 	* @return string
 	*/
-	protected function escapeAscii($cp)
+	protected function escapeAscii(int $cp): string
 	{
 		return '\\x' . sprintf('%02' . $this->hexCase, $cp);
 	}
@@ -39,11 +41,11 @@ abstract class PrintableAscii extends BaseImplementation
 	* @param  integer $cp
 	* @return string
 	*/
-	protected function escapeControlCode($cp)
+	protected function escapeControlCode(int $cp): string
 	{
 		$table = [9 => '\\t', 10 => '\\n', 13 => '\\r'];
 
-		return (isset($table[$cp])) ? $table[$cp] : $this->escapeAscii($cp);
+		return $table[$cp] ?? $this->escapeAscii($cp);
 	}
 
 	/**
@@ -52,12 +54,12 @@ abstract class PrintableAscii extends BaseImplementation
 	* @param  integer $cp Unicode codepoint
 	* @return string
 	*/
-	abstract protected function escapeUnicode($cp);
+	abstract protected function escapeUnicode(int $cp): string;
 
 	/**
 	* {@inheritdoc}
 	*/
-	protected function outputValidValue($value)
+	protected function outputValidValue(int $value): string
 	{
 		if ($value < 32)
 		{

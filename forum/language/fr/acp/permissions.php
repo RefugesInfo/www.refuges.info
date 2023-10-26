@@ -61,7 +61,7 @@ $lang = array_merge($lang, array(
 
 	'ACL_NEVER'				=> 'Jamais',
 	'ACL_SET'				=> 'Configuration des permissions',
-	'ACL_SET_EXPLAIN'		=> 'Les permissions sont basées sur un simple système <strong>OUI</strong>/<strong>NON</strong>. Régler une option sur <strong>JAMAIS</strong> pour un utilisateur ou groupe d’utilisateurs l’emporte sur toute autre valeur qui lui était assignée. Si vous ne souhaitez pas assigner de valeur à une option pour ce membre ou ce groupe, sélectionnez <strong>NON</strong>. Si des valeurs sont assignées ailleurs pour cette option, elles seront utilisées de préférence, autrement <strong>JAMAIS</strong> est appliqué. Tous les objets sélectionnés (avec la case de choix devant eux) copieront l’ensemble de permissions que vous aurez défini.',
+	'ACL_SET_EXPLAIN'		=> 'Les permissions sont basées sur un simple système <strong>OUI</strong>/<strong>NON</strong>. Régler une option sur <strong>JAMAIS</strong> pour un utilisateur ou groupe d’utilisateurs l’emporte sur toute autre valeur qui lui était assignée. Si vous ne souhaitez pas assigner de valeur à une option pour ce membre ou ce groupe, sélectionnez <strong>NON</strong>. Si des valeurs sont assignées ailleurs pour cette option, elles seront utilisées de préférence, autrement <strong>JAMAIS</strong> est appliqué. Tous les objets sélectionnés (avec la case de choix devant eux) copieront l’ensemble de permissions que vous aurez défini. Veuillez noter qu’accorder des permissions d’administration à un compte fondateur n’a aucun effet, car ces permissions sont toujours réglées à <strong>OUI</strong> pour les fondateurs',
 	'ACL_SETTING'			=> 'Permissions',
 
 	'ACL_TYPE_A_'			=> 'Permissions d’administration',

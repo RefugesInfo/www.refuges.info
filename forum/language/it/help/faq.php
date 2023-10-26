@@ -5,7 +5,8 @@
  *
  * @copyright (c) phpBB Limited <https://www.phpbb.com>
  * @license GNU General Public License, version 2 (GPL-2.0)
- * @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+ * @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+ * @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
  * For full copyright and license information, please see
  * the docs/CREDITS.txt file.
  *
@@ -96,7 +97,7 @@ $lang = array_merge($lang, array(
 	'HELP_FAQ_ISSUES_ADMIN_QUESTION'	=> 'Come posso contattare un amministratore del Forum?',
 	'HELP_FAQ_ISSUES_FEATURE_ANSWER'	=> 'Questo programma è stato scritto da phpBB Limited. Se credi che ci sia bisogno di aggiungere una nuova funzionalità, visita il <a href="https://www.phpbb.com/ideas/">Centro Idee phpBB</a>, dove potrai supportare idee esistenti o suggerire nuove funzionalità.',
 	'HELP_FAQ_ISSUES_FEATURE_QUESTION'	=> 'Perché la caratteristica X non è disponibile?',
-	'HELP_FAQ_ISSUES_LEGAL_ANSWER'	=> 'Devi contattare l’amministratore di questa Board. Se non riesci a trovarlo, prova a contattare uno dei moderatori e chiedi a chi puoi rivolgerti. Se ancora non ottieni risposta, puoi contattare il proprietario del dominio (fai una ricerca con <em>whois</em>) oppure, se la Board è ospitata da un servizio gratuito (ad es. yahoo, free.fr, f2s.com, ecc.), l’amministratore di tale servizio. Nota che phpBB Limited e phpBB Store non hanno <strong>assolutamente alcun controllo</strong> e non possono essere ritenuti responsabili di come, dove e da chi viene utilizzata questa Board. È assolutamente inutile contattare phpBB Limited o phpBB Store in relazione a qualsiasi questione legale <strong>non direttamente collegata</strong> al sito phpBB.com, phpBB-Store.it o al software phpBB stesso. I messaggi di posta elettronica inviati a phpBB Limited o a phpBB Store riguardanti l’uso da parte di terzi di questo programma non riceveranno risposta.',
+	'HELP_FAQ_ISSUES_LEGAL_ANSWER'	=> 'Devi contattare l’amministratore di questa Board. Se non riesci a trovarlo, prova a contattare uno dei moderatori e chiedi a chi puoi rivolgerti. Se ancora non ottieni risposta, puoi contattare il proprietario del dominio (fai una ricerca con <em>whois</em>) oppure, se la Board è ospitata da un servizio gratuito (ad es. yahoo, free.fr, f2s.com, ecc.), l’amministratore di tale servizio. Nota che phpBB Limited e phpBB Store non hanno <strong>assolutamente alcun controllo</strong> e non possono essere ritenuti responsabili di come, dove e da chi viene utilizzata questa Board. È assolutamente inutile contattare phpBB Limited o phpBB Store in relazione a qualsiasi questione legale <strong>non direttamente collegata</strong> al sito phpBB.com, phpBB-Italia.it o al software phpBB stesso. I messaggi di posta elettronica inviati a phpBB Limited o a phpBB Store riguardanti l’uso da parte di terzi di questo programma non riceveranno risposta.',
 	'HELP_FAQ_ISSUES_LEGAL_QUESTION'	=> 'Chi devo contattare per segnalare abusi e/o per questioni d’ordine legale concernenti questa Board?',
 	'HELP_FAQ_ISSUES_WHOIS_PHPBB_ANSWER'	=> 'Questo programma (nella sua forma originale) è prodotto e rilasciato da <a href="https://www.phpbb.com/">phpBB Limited</a>. È reso disponibile sotto la GNU General Public Licence versione 2 (GPL-2.0) e può essere liberamente distribuito; clicca sul collegamento per maggiori informazioni.',
 	'HELP_FAQ_ISSUES_WHOIS_PHPBB_QUESTION'	=> 'Chi ha scritto questo programma?',

@@ -1,8 +1,8 @@
-Subject: Notification de modération de sujet - {TOPIC_TITLE}
+Subject: Sujet nécessitant une approbation - {TOPIC_TITLE}
 
 Bonjour {USERNAME},
 
-Vous recevez cette notification car le sujet « {TOPIC_TITLE} » sur « {SITENAME} » nécessite d’être approuvé.
+Le sujet « {TOPIC_TITLE} » sur « {SITENAME} » nécessite d’être approuvé.
 
 Pour consulter le sujet, cliquez sur le lien suivant :
 {U_VIEW_TOPIC}

@@ -47,10 +47,11 @@ $lang = array_merge($lang, [
 	'CAPTCHA_RECAPTCHA'				=> 'reCaptcha v2',
 	'CAPTCHA_RECAPTCHA_V3'			=> 'reCaptcha v3',
 
-	'RECAPTCHA_INCORRECT'			=> 'Die von dir eingegebene Antwort ist falsch',
-	'RECAPTCHA_NOSCRIPT'			=> 'Bitte aktiviere JavaScript in deinem Browser, um die Aufgabe zu laden.',
-	'RECAPTCHA_NOT_AVAILABLE'		=> 'Um reCaptcha nutzen zu können, musst du dir ein Konto auf <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a> anlegen.',
-	'RECAPTCHA_INVISIBLE'			=> 'Dieses CAPTCHA ist unsichtbar. Wenn es korrekt funktioniert, sollte ein kleines Symbol in der rechten unteren Ecke dieser Seite erscheinen.',
+	'RECAPTCHA_INCORRECT'				=> 'Die von dir eingegebene Antwort ist falsch',
+	'RECAPTCHA_NOSCRIPT'				=> 'Bitte aktiviere JavaScript in deinem Browser, um die Aufgabe zu laden.',
+	'RECAPTCHA_NOT_AVAILABLE'			=> 'Um reCaptcha nutzen zu können, musst du dir ein Konto auf <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a> anlegen.',
+	'RECAPTCHA_INVISIBLE'				=> 'Dieses CAPTCHA ist unsichtbar. Wenn es korrekt funktioniert, sollte ein kleines Symbol in der rechten unteren Ecke dieser Seite erscheinen.',
+	'RECAPTCHA_V3_LOGIN_ERROR_ATTEMPTS'	=> 'Du hast die maximal zulässige Anzahl von Anmeldeversuchen überschritten.<br>Zur Verifizierung deiner Anmeldung wird neben deinem Benutzernamen und Passwort ein unsichtbares reCAPTCHA v3 genutzt.',
 
 	'RECAPTCHA_PUBLIC'				=> 'Website-Schlüssel',
 	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Der reCaptcha Website-Schlüssel für deine Seite. Schlüssel können über <a href="https://www.google.com/recaptcha">www.google.com/recaptcha</a> bezogen werden. Bitte verwende das unsichtbare reCAPTCHA-Logo in der Version 2 (Typ: reCAPTCHA v2 &gt; Invisible reCAPTCHA badge).',

@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\Collections;
@@ -154,9 +154,16 @@ class NormalizedCollection extends Collection implements ArrayAccess
 	*/
 	public function delete($key)
 	{
-		$key = $this->normalizeKey($key);
+		try
+		{
+			$key = $this->normalizeKey($key);
 
-		unset($this->items[$key]);
+			unset($this->items[$key]);
+		}
+		catch (InvalidArgumentException $e)
+		{
+			// Do nothing
+		}
 	}
 
 	/**
@@ -167,7 +174,14 @@ class NormalizedCollection extends Collection implements ArrayAccess
 	*/
 	public function exists($key)
 	{
-		$key = $this->normalizeKey($key);
+		try
+		{
+			$key = $this->normalizeKey($key);
+		}
+		catch (InvalidArgumentException $e)
+		{
+			return false;
+		}
 
 		return array_key_exists($key, $this->items);
 	}
@@ -227,7 +241,7 @@ class NormalizedCollection extends Collection implements ArrayAccess
 	* @param  string|integer $offset
 	* @return bool
 	*/
-	public function offsetExists($offset)
+	public function offsetExists($offset): bool
 	{
 		return $this->exists($offset);
 	}
@@ -236,6 +250,7 @@ class NormalizedCollection extends Collection implements ArrayAccess
 	* @param  string|integer $offset
 	* @return mixed
 	*/
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset)
 	{
 		return $this->get($offset);
@@ -246,7 +261,7 @@ class NormalizedCollection extends Collection implements ArrayAccess
 	* @param  mixed          $value
 	* @return void
 	*/
-	public function offsetSet($offset, $value)
+	public function offsetSet($offset, $value): void
 	{
 		$this->set($offset, $value);
 	}
@@ -255,7 +270,7 @@ class NormalizedCollection extends Collection implements ArrayAccess
 	* @param  string|integer $offset
 	* @return void
 	*/
-	public function offsetUnset($offset)
+	public function offsetUnset($offset): void
 	{
 		$this->delete($offset);
 	}

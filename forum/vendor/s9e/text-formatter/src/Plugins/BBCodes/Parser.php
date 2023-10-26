@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\BBCodes;
@@ -118,7 +118,8 @@ class Parser extends ParserBase
 	*/
 	protected function addBBCodeStartTag()
 	{
-		$tag = $this->parser->addStartTag($this->getTagName(), $this->startPos, $this->pos - $this->startPos);
+		$prio = ($this->bbcodeSuffix !== '') ? -10 : 0;
+		$tag  = $this->parser->addStartTag($this->getTagName(), $this->startPos, $this->pos - $this->startPos, $prio);
 		$tag->setAttributes($this->attributes);
 
 		return $tag;
@@ -241,7 +242,7 @@ class Parser extends ParserBase
 		// NOTE: this is for compatibility with some forums (such as vBulletin it seems)
 		//       that do not put attribute values in quotes, e.g.
 		//       [quote=John Smith;123456] (quoting "John Smith" from post #123456)
-		preg_match('((?:[^\\s\\]]|[ \\t](?!\\s*(?:[-\\w]+=|/?\\])))*)', $this->text, $m, null, $this->pos);
+		preg_match('((?:[^\\s\\]]|[ \\t](?!\\s*(?:[-\\w]+=|/?\\])))*)', $this->text, $m, 0, $this->pos);
 
 		$attrValue  = $m[0];
 		$this->pos += strlen($attrValue);

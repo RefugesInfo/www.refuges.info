@@ -1,13 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Input;
 
 use InvalidArgumentException;
+use function array_map, ord, preg_match_all;
 
 class Utf8 extends BaseImplementation
 {
@@ -27,7 +28,7 @@ class Utf8 extends BaseImplementation
 	/**
 	* {@inheritdoc}
 	*/
-	public function split($string)
+	public function split(string $string): array
 	{
 		if (preg_match_all('(.)us', $string, $matches) === false)
 		{
@@ -43,7 +44,7 @@ class Utf8 extends BaseImplementation
 	* @param  string[]  $chars
 	* @return integer[]
 	*/
-	protected function charsToCodepoints(array $chars)
+	protected function charsToCodepoints(array $chars): array
 	{
 		return array_map([$this, 'cp'], $chars);
 	}
@@ -54,7 +55,7 @@ class Utf8 extends BaseImplementation
 	* @param  string[]  $chars
 	* @return integer[]
 	*/
-	protected function charsToCodepointsWithSurrogates(array $chars)
+	protected function charsToCodepointsWithSurrogates(array $chars): array
 	{
 		$codepoints = [];
 		foreach ($chars as $char)
@@ -80,7 +81,7 @@ class Utf8 extends BaseImplementation
 	* @param  string  $char UTF-8 char
 	* @return integer
 	*/
-	protected function cp($char)
+	protected function cp(string $char): int
 	{
 		$cp = ord($char[0]);
 		if ($cp >= 0xF0)

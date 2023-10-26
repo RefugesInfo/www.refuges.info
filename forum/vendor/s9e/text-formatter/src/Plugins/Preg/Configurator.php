@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Preg;
@@ -107,7 +107,7 @@ class Configurator extends ConfiguratorBase
 		$this->parseRegexp($regexp);
 		foreach ($this->captures as $i => $capture)
 		{
-			if (!$this->isCatchAll($capture['expr']))
+			if (!$this->isCatchAll((string) $capture['expr']))
 			{
 				continue;
 			}
@@ -327,7 +327,7 @@ class Configurator extends ConfiguratorBase
 		$passthrough = 0;
 		foreach ($this->references['inText'] as $key)
 		{
-			if (!$this->isCatchAll($this->captures[$key]['expr']))
+			if (!$this->isCatchAll((string) $this->captures[$key]['expr']))
 			{
 				// Ignore if it's not a catch-all expression such as .*?
 				continue;
@@ -391,7 +391,7 @@ class Configurator extends ConfiguratorBase
 			}
 			$this->captures[] = [
 				'pos'    => $token['pos'],
-				'name'   => (isset($token['name'])) ? $token['name'] : null,
+				'name'   => $token['name'] ?? null,
 				'expr'   => $token['content']
 			];
 		}

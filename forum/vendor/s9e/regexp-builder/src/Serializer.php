@@ -1,12 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder;
 
+use function array_diff_key, array_map, array_unshift, array_values, count, implode, is_array, is_int;
 use s9e\RegexpBuilder\MetaCharacters;
 use s9e\RegexpBuilder\Output\OutputInterface;
 
@@ -45,7 +46,7 @@ class Serializer
 	* @param  array[] $strings
 	* @return string
 	*/
-	public function serializeStrings(array $strings)
+	public function serializeStrings(array $strings): string
 	{
 		$info         = $this->analyzeStrings($strings);
 		$alternations = array_map([$this, 'serializeString'], $info['strings']);
@@ -76,7 +77,7 @@ class Serializer
 	* @param  array[] $strings
 	* @return array
 	*/
-	protected function analyzeStrings(array $strings)
+	protected function analyzeStrings(array $strings): array
 	{
 		$info = ['alternationsCount' => 0, 'quantifier' => ''];
 		if ($strings[0] === [])
@@ -102,10 +103,10 @@ class Serializer
 	/**
 	* Return the portion of strings that are composed of a single character
 	*
-	* @param  array[]
-	* @return array   String key => value
+	* @param  array<int, array> $strings
+	* @return array<int, int>            String key => value
 	*/
-	protected function getChars(array $strings)
+	protected function getChars(array $strings): array
 	{
 		$chars = [];
 		foreach ($strings as $k => $string)
@@ -125,7 +126,7 @@ class Serializer
 	* @param  integer[] $values Ordered list of values
 	* @return array[]           List of ranges in the form [start, end]
 	*/
-	protected function getRanges(array $values)
+	protected function getRanges(array $values): array
 	{
 		$i      = 0;
 		$cnt    = count($values);
@@ -155,7 +156,7 @@ class Serializer
 	* @param  array $string
 	* @return bool
 	*/
-	protected function isChar(array $string)
+	protected function isChar(array $string): bool
 	{
 		return count($string) === 1 && is_int($string[0]) && MetaCharacters::isChar($string[0]);
 	}
@@ -166,7 +167,7 @@ class Serializer
 	* @param  array $info
 	* @return bool
 	*/
-	protected function isQuantifiable(array $info)
+	protected function isQuantifiable(array $info): bool
 	{
 		$strings = $info['strings'];
 
@@ -179,7 +180,7 @@ class Serializer
 	* @param  array[] $strings
 	* @return bool
 	*/
-	protected function isSingleQuantifiableString(array $strings)
+	protected function isSingleQuantifiableString(array $strings): bool
 	{
 		return count($strings) === 1 && count($strings[0]) === 1 && MetaCharacters::isQuantifiable($strings[0][0]);
 	}
@@ -190,7 +191,7 @@ class Serializer
 	* @param  array $info
 	* @return bool
 	*/
-	protected function needsParentheses(array $info)
+	protected function needsParentheses(array $info): bool
 	{
 		return ($info['alternationsCount'] > 1 || ($info['quantifier'] && !$this->isQuantifiable($info)));
 	}
@@ -201,7 +202,7 @@ class Serializer
 	* @param  integer[] $values
 	* @return string
 	*/
-	protected function serializeCharacterClass(array $values)
+	protected function serializeCharacterClass(array $values): string
 	{
 		$expr = '[';
 		foreach ($this->getRanges($values) as list($start, $end))
@@ -227,7 +228,7 @@ class Serializer
 	* @param  integer $value
 	* @return string
 	*/
-	protected function serializeCharacterClassUnit($value)
+	protected function serializeCharacterClassUnit(int $value): string
 	{
 		return $this->serializeValue($value, 'escapeCharacterClass');
 	}
@@ -238,7 +239,7 @@ class Serializer
 	* @param  array|integer $element
 	* @return string
 	*/
-	protected function serializeElement($element)
+	protected function serializeElement($element): string
 	{
 		return (is_array($element)) ? $this->serializeStrings($element) : $this->serializeLiteral($element);
 	}
@@ -249,7 +250,7 @@ class Serializer
 	* @param  integer $value
 	* @return string
 	*/
-	protected function serializeLiteral($value)
+	protected function serializeLiteral(int $value): string
 	{
 		return $this->serializeValue($value, 'escapeLiteral');
 	}
@@ -260,7 +261,7 @@ class Serializer
 	* @param  array  $string
 	* @return string
 	*/
-	protected function serializeString(array $string)
+	protected function serializeString(array $string): string
 	{
 		return implode('', array_map([$this, 'serializeElement'], $string));
 	}
@@ -272,7 +273,7 @@ class Serializer
 	* @param  string  $escapeMethod
 	* @return string
 	*/
-	protected function serializeValue($value, $escapeMethod)
+	protected function serializeValue(int $value, string $escapeMethod): string
 	{
 		return ($value < 0) ? $this->meta->getExpression($value) : $this->escaper->$escapeMethod($this->output->output($value));
 	}

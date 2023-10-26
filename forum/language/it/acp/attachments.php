@@ -6,7 +6,8 @@
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010 phpBB.it
 * @copyright (c) 2014 phpBBItalia.net <https://www.phpbbitalia.net>
-* @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -174,4 +175,7 @@ $lang = array_merge($lang, array(
 	'UPLOAD_DIR_EXPLAIN'			=> 'Percorso della cartella allegati. NOTA BENE: se cambi questo dato quando degli allegati sono già stati caricati, questi dovranno essere spostati/copiati manualmente alla nuova posizione.',
 	'UPLOAD_ICON'					=> 'Icona upload',
 	'UPLOAD_NOT_DIR'				=> 'L’indirizzo specificato non sembra essere una cartella.',
+	
+	'UPLOAD_POST_NOT_EXIST'			=> 'Impossibile caricare il file “%1$s” nel post numero %2$d poichè il post non esiste.',
+	
 ));

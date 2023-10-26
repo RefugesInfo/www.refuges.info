@@ -263,49 +263,68 @@ function phpbb_version_compare($version1, $version2, $operator = null)
 // functions used for building option fields
 
 /**
-* Pick a language, any language ...
-*/
-function language_select($default = '')
+ * Pick a language, any language ...
+ *
+ * @param string $default	Language ISO code to be selected by default in the dropdown list
+ * @param array $langdata	Language data in format of array(array('lang_iso' => string, lang_local_name => string), ...)
+ *
+ * @return string			HTML options for language selection dropdown list.
+ */
+function language_select($default = '', array $langdata = [])
 {
 	global $db;
 
-	$sql = 'SELECT lang_iso, lang_local_name
-		FROM ' . LANG_TABLE . '
-		ORDER BY lang_english_name';
-	$result = $db->sql_query($sql);
+	if (empty($langdata))
+	{
+		$sql = 'SELECT lang_iso, lang_local_name
+			FROM ' . LANG_TABLE . '
+			ORDER BY lang_english_name';
+		$result = $db->sql_query($sql);
+		$langdata = (array) $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+	}
 
 	$lang_options = '';
-	while ($row = $db->sql_fetchrow($result))
+	foreach ($langdata as $row)
 	{
 		$selected = ($row['lang_iso'] == $default) ? ' selected="selected"' : '';
 		$lang_options .= '<option value="' . $row['lang_iso'] . '"' . $selected . '>' . $row['lang_local_name'] . '</option>';
 	}
-	$db->sql_freeresult($result);
 
 	return $lang_options;
 }
 
 /**
-* Pick a template/theme combo,
-*/
-function style_select($default = '', $all = false)
+ * Pick a template/theme combo
+ *
+ * @param string $default	Style ID to be selected by default in the dropdown list
+ * @param bool $all			Flag indicating if all styles data including inactive ones should be fetched
+ * @param array $styledata	Style data in format of array(array('style_id' => int, style_name => string), ...)
+ *
+ * @return string			HTML options for style selection dropdown list.
+ */
+function style_select($default = '', $all = false, array $styledata = [])
 {
 	global $db;
 
-	$sql_where = (!$all) ? 'WHERE style_active = 1 ' : '';
-	$sql = 'SELECT style_id, style_name
-		FROM ' . STYLES_TABLE . "
-		$sql_where
-		ORDER BY style_name";
-	$result = $db->sql_query($sql);
+	if (empty($styledata))
+	{
+		$sql_where = (!$all) ? 'WHERE style_active = 1 ' : '';
+		$sql = 'SELECT style_id, style_name
+			FROM ' . STYLES_TABLE . "
+			$sql_where
+			ORDER BY style_name";
+		$result = $db->sql_query($sql);
+		$styledata = (array) $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+	}
 
 	$style_options = '';
-	while ($row = $db->sql_fetchrow($result))
+	foreach ($styledata as $row)
 	{
 		$selected = ($row['style_id'] == $default) ? ' selected="selected"' : '';
 		$style_options .= '<option value="' . $row['style_id'] . '"' . $selected . '>' . $row['style_name'] . '</option>';
 	}
-	$db->sql_freeresult($result);
 
 	return $style_options;
 }
@@ -1075,7 +1094,7 @@ function get_complete_topic_tracking($forum_id, $topic_ids, $global_announce_lis
 * @param string $sql_limit		Limits the size of unread topics list, 0 for unlimited query
 * @param string $sql_limit_offset  Sets the offset of the first row to search, 0 to search from the start
 *
-* @return array[int][int]		Topic ids as keys, mark_time of topic as value
+* @return int[]		Topic ids as keys, mark_time of topic as value
 */
 function get_unread_topics($user_id = false, $sql_extra = '', $sql_sort = '', $sql_limit = 1001, $sql_limit_offset = 0)
 {
@@ -1464,10 +1483,9 @@ function tracking_unserialize($string, $max_depth = 3)
 * @return string The corrected url.
 *
 * Examples:
-* <code>
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx?t=1&amp;f=2");
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1&amp;f=2');
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1&f=2', false);
+* <code> append_sid("{$phpbb_root_path}viewtopic.$phpEx?t=1");
+* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1');
+* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1', false);
 * append_sid("{$phpbb_root_path}viewtopic.$phpEx", array('t' => 1, 'f' => 2));
 * </code>
 *
@@ -2703,7 +2721,7 @@ function parse_cfg_file($filename, $lines = false)
 		}
 
 		// Determine first occurrence, since in values the equal sign is allowed
-		$key = htmlspecialchars(strtolower(trim(substr($line, 0, $delim_pos))));
+		$key = htmlspecialchars(strtolower(trim(substr($line, 0, $delim_pos))), ENT_COMPAT);
 		$value = trim(substr($line, $delim_pos + 1));
 
 		if (in_array($value, array('off', 'false', '0')))
@@ -2720,11 +2738,11 @@ function parse_cfg_file($filename, $lines = false)
 		}
 		else if (($value[0] == "'" && $value[strlen($value) - 1] == "'") || ($value[0] == '"' && $value[strlen($value) - 1] == '"'))
 		{
-			$value = htmlspecialchars(substr($value, 1, strlen($value)-2));
+			$value = htmlspecialchars(substr($value, 1, strlen($value)-2), ENT_COMPAT);
 		}
 		else
 		{
-			$value = htmlspecialchars($value);
+			$value = htmlspecialchars($value, ENT_COMPAT);
 		}
 
 		$parsed_items[$key] = $value;
@@ -2757,7 +2775,7 @@ function get_backtrace()
 	foreach ($backtrace as $trace)
 	{
 		// Strip the current directory from path
-		$trace['file'] = (empty($trace['file'])) ? '(not given by php)' : htmlspecialchars(phpbb_filter_root_path($trace['file']));
+		$trace['file'] = (empty($trace['file'])) ? '(not given by php)' : htmlspecialchars(phpbb_filter_root_path($trace['file']), ENT_COMPAT);
 		$trace['line'] = (empty($trace['line'])) ? '(not given by php)' : $trace['line'];
 
 		// Only show function arguments for include etc.
@@ -2765,7 +2783,7 @@ function get_backtrace()
 		$argument = '';
 		if (!empty($trace['args'][0]) && in_array($trace['function'], array('include', 'require', 'include_once', 'require_once')))
 		{
-			$argument = htmlspecialchars(phpbb_filter_root_path($trace['args'][0]));
+			$argument = htmlspecialchars(phpbb_filter_root_path($trace['args'][0]), ENT_COMPAT);
 		}
 
 		$trace['class'] = (!isset($trace['class'])) ? '' : $trace['class'];
@@ -2775,7 +2793,7 @@ function get_backtrace()
 		$output .= '<b>FILE:</b> ' . $trace['file'] . '<br />';
 		$output .= '<b>LINE:</b> ' . ((!empty($trace['line'])) ? $trace['line'] : '') . '<br />';
 
-		$output .= '<b>CALL:</b> ' . htmlspecialchars($trace['class'] . $trace['type'] . $trace['function']);
+		$output .= '<b>CALL:</b> ' . htmlspecialchars($trace['class'] . $trace['type'] . $trace['function'], ENT_COMPAT);
 		$output .= '(' . (($argument !== '') ? "'$argument'" : '') . ')<br />';
 	}
 	$output .= '</div>';
@@ -2900,7 +2918,7 @@ function get_censor_preg_expression($word)
 
 /**
 * Returns the first block of the specified IPv6 address and as many additional
-* ones as specified in the length paramater.
+* ones as specified in the length parameter.
 * If length is zero, then an empty string is returned.
 * If length is greater than 3 the complete IP will be returned
 */
@@ -2909,6 +2927,14 @@ function short_ipv6($ip, $length)
 	if ($length < 1)
 	{
 		return '';
+	}
+
+	// Handle IPv4 embedded IPv6 addresses
+	if (preg_match('/(?:\d{1,3}\.){3}\d{1,3}$/i', $ip))
+	{
+		$binary_ip = inet_pton($ip);
+		$ip_v6 = $binary_ip ? inet_ntop($binary_ip) : $ip;
+		$ip = $ip_v6 ?: $ip;
 	}
 
 	// extend IPv6 addresses
@@ -2996,7 +3022,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 
 			// Check the error reporting level and return if the error level does not match
 			// If DEBUG is defined the default level is E_ALL
-			if (($errno & ($phpbb_container->getParameter('debug.show_errors') ? E_ALL : error_reporting())) == 0)
+			if (($errno & ($phpbb_container != null && $phpbb_container->getParameter('debug.show_errors') ? E_ALL : error_reporting())) == 0)
 			{
 				return;
 			}
@@ -3240,12 +3266,12 @@ function phpbb_filter_root_path($errfile)
 	{
 		if ($phpbb_filesystem)
 		{
-			$root_path = $phpbb_filesystem->realpath(dirname(__FILE__) . '/../');
+			$root_path = $phpbb_filesystem->realpath(__DIR__ . '/../');
 		}
 		else
 		{
 			$filesystem = new \phpbb\filesystem\filesystem();
-			$root_path = $filesystem->realpath(dirname(__FILE__) . '/../');
+			$root_path = $filesystem->realpath(__DIR__ . '/../');
 		}
 	}
 
@@ -3677,15 +3703,11 @@ function phpbb_get_avatar($row, $alt, $ignore_config = false, $lazy = false)
 	{
 		if ($lazy)
 		{
-			// Determine board url - we may need it later
-			$board_url = generate_board_url() . '/';
 			// This path is sent with the base template paths in the assign_vars()
 			// call below. We need to correct it in case we are accessing from a
 			// controller because the web paths will be incorrect otherwise.
 			$phpbb_path_helper = $phpbb_container->get('path_helper');
-			$corrected_path = $phpbb_path_helper->get_web_root_path();
-
-			$web_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
+			$web_path = $phpbb_path_helper->get_web_root_path();
 
 			$theme = "{$web_path}styles/" . rawurlencode($user->style['style_path']) . '/theme';
 
@@ -3856,8 +3878,9 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		}
 	}
 
-	$forum_id = $request->variable('f', 0);
-	$topic_id = $request->variable('t', 0);
+	// Negative forum and topic IDs are not allowed
+	$forum_id = max(0, $request->variable('f', 0));
+	$topic_id = max(0, $request->variable('t', 0));
 
 	$s_feed_news = false;
 
@@ -3872,15 +3895,12 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		$db->sql_freeresult($result);
 	}
 
-	// Determine board url - we may need it later
-	$board_url = generate_board_url() . '/';
 	// This path is sent with the base template paths in the assign_vars()
 	// call below. We need to correct it in case we are accessing from a
 	// controller because the web paths will be incorrect otherwise.
 	/* @var $phpbb_path_helper \phpbb\path_helper */
 	$phpbb_path_helper = $phpbb_container->get('path_helper');
-	$corrected_path = $phpbb_path_helper->get_web_root_path();
-	$web_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? $board_url : $corrected_path;
+	$web_path = $phpbb_path_helper->get_web_root_path();
 
 	// Send a proper content-language to the output
 	$user_lang = $user->lang['USER_LANG'];
@@ -3983,7 +4003,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'_SID'				=> $_SID,
 		'SESSION_ID'		=> $user->session_id,
 		'ROOT_PATH'			=> $web_path,
-		'BOARD_URL'			=> $board_url,
+		'BOARD_URL'			=> generate_board_url() . '/',
 
 		'L_LOGIN_LOGOUT'	=> $l_login_logout,
 		'L_INDEX'			=> ($config['board_index_text'] !== '') ? $config['board_index_text'] : $user->lang['FORUM_INDEX'],
@@ -4049,7 +4069,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'S_ENABLE_FEEDS_TOPICS_ACTIVE'	=> ($config['feed_topics_active']) ? true : false,
 		'S_ENABLE_FEEDS_NEWS'		=> ($s_feed_news) ? true : false,
 
-		'S_LOAD_UNREADS'			=> ($config['load_unreads_search'] && ($config['load_anon_lastread'] || $user->data['is_registered'])) ? true : false,
+		'S_LOAD_UNREADS'			=> (bool) $config['load_unreads_search'] && ($config['load_anon_lastread'] || !empty($user->data['is_registered'])),
 
 		'S_SEARCH_HIDDEN_FIELDS'	=> build_hidden_fields($s_search_hidden_fields),
 
@@ -4070,7 +4090,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 
 		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$web_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
 
-		'T_JQUERY_LINK'			=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$web_path}assets/javascript/jquery-3.5.1.min.js?assets_version=" . $config['assets_version'],
+		'T_JQUERY_LINK'			=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$web_path}assets/javascript/jquery-3.6.0.min.js?assets_version=" . $config['assets_version'],
 		'S_ALLOW_CDN'			=> !empty($config['allow_cdn']),
 		'S_COOKIE_NOTICE'		=> !empty($config['cookie_notice']),
 
@@ -4405,6 +4425,6 @@ function phpbb_get_board_contact_link(\phpbb\config\config $config, $phpbb_root_
 	}
 	else
 	{
-		return 'mailto:' . htmlspecialchars($config['board_contact']);
+		return 'mailto:' . htmlspecialchars($config['board_contact'], ENT_COMPAT);
 	}
 }

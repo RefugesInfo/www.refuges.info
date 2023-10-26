@@ -2,7 +2,7 @@ Subject: Gemeldete Private Nachricht — „{SUBJECT}“
 
 Hallo {USERNAME},
 
-du erhältst diese Benachrichtigung, weil eine Private Nachricht mit dem Titel „{SUBJECT}“ von „{AUTHOR_NAME}“ auf „{SITENAME}“ gemeldet wurde.
+eine Private Nachricht mit dem Titel „{SUBJECT}“ von „{AUTHOR_NAME}“ auf „{SITENAME}“ wurde gemeldet.
 
 Du kannst dir die Meldung ansehen, wenn du folgenden Link aufrufst:
 {U_VIEW_REPORT}

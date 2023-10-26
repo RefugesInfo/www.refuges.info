@@ -2,7 +2,7 @@ Subject: Fermeture de rapport de message privé - {SUBJECT}
 
 Bonjour {USERNAME},
 
-Vous recevez cette notification car le rapport que vous avez émis concernant le message « {SUBJECT} » écrit par « {AUTHOR_NAME} » sur « {SITENAME} » a été pris en charge par un modérateur ou un administrateur. Ce rapport est dorénavant clôturé. Si vous avez des questions supplémentaires, contactez {CLOSER_NAME} par message privé.
+Le rapport que vous avez émis concernant le message « {SUBJECT} » écrit par « {AUTHOR_NAME} » sur « {SITENAME} » a été pris en charge par un modérateur ou un administrateur. Ce rapport est dorénavant clôturé. Si vous avez des questions supplémentaires, contactez {CLOSER_NAME} par message privé.
 
 Pour consulter le message privé que vous avez rapporté, cliquez sur le lien suivant :
 

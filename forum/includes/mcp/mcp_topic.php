@@ -288,9 +288,9 @@ function mcp_topic_view($id, $mode, $action)
 			'S_CHECKED'			=> (($submitted_id_list && !in_array(intval($row['post_id']), $submitted_id_list)) || in_array(intval($row['post_id']), $checked_ids)) ? true : false,
 			'S_HAS_ATTACHMENTS'	=> (!empty($attachments[$row['post_id']])) ? true : false,
 
-			'U_POST_DETAILS'	=> "$url&amp;i=$id&amp;p={$row['post_id']}&amp;mode=post_details" . (($forum_id) ? "&amp;f=$forum_id" : ''),
-			'U_MCP_APPROVE'		=> ($auth->acl_get('m_approve', $topic_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;f=' . $topic_info['forum_id'] . '&amp;p=' . $row['post_id']) : '',
-			'U_MCP_REPORT'		=> ($auth->acl_get('m_report', $topic_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=report_details&amp;f=' . $topic_info['forum_id'] . '&amp;p=' . $row['post_id']) : '',
+			'U_POST_DETAILS'	=> "$url&amp;i=$id&amp;p={$row['post_id']}&amp;mode=post_details",
+			'U_MCP_APPROVE'		=> ($auth->acl_get('m_approve', $topic_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $row['post_id']) : '',
+			'U_MCP_REPORT'		=> ($auth->acl_get('m_report', $topic_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=report_details&amp;p=' . $row['post_id']) : '',
 		);
 
 		/**
@@ -379,12 +379,12 @@ function mcp_topic_view($id, $mode, $action)
 		$pagination->generate_template_pagination($base_url, 'pagination', 'start', $total, $posts_per_page, $start);
 	}
 
-	$template->assign_vars(array(
+	$topic_row = [
 		'TOPIC_TITLE'		=> $topic_info['topic_title'],
-		'U_VIEW_TOPIC'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $topic_info['forum_id'] . '&amp;t=' . $topic_info['topic_id']),
+		'U_VIEW_TOPIC'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_info['topic_id']),
 
-		'TO_TOPIC_ID'		=> $to_topic_id,
-		'TO_TOPIC_INFO'		=> ($to_topic_id) ? sprintf($user->lang['YOU_SELECTED_TOPIC'], $to_topic_id, '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $to_topic_info['forum_id'] . '&amp;t=' . $to_topic_id) . '">' . $to_topic_info['topic_title'] . '</a>') : '',
+		'TO_TOPIC_ID'		=> $to_topic_id ?: '',
+		'TO_TOPIC_INFO'		=> ($to_topic_id) ? sprintf($user->lang['YOU_SELECTED_TOPIC'], $to_topic_id, '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">' . $to_topic_info['topic_title'] . '</a>') : '',
 
 		'SPLIT_SUBJECT'		=> $subject,
 		'POSTS_PER_PAGE'	=> $posts_per_page,
@@ -416,11 +416,53 @@ function mcp_topic_view($id, $mode, $action)
 
 		'U_SELECT_TOPIC'	=> "$url&amp;i=$id&amp;mode=forum_view&amp;action=merge_select" . (($forum_id) ? "&amp;f=$forum_id" : ''),
 
-		'RETURN_TOPIC'		=> sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f={$topic_info['forum_id']}&amp;t={$topic_info['topic_id']}&amp;start=$start") . '">', '</a>'),
+		'RETURN_TOPIC'		=> sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t={$topic_info['topic_id']}&amp;start=$start") . '">', '</a>'),
 		'RETURN_FORUM'		=> sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", "f={$topic_info['forum_id']}&amp;start=$start") . '">', '</a>'),
 
 		'TOTAL_POSTS'		=> $user->lang('VIEW_TOPIC_POSTS', (int) $total),
-	));
+	];
+
+	/**
+	 * Event to modify the template data block for topic data output in the MCP
+	 *
+	 * @event core.mcp_topic_review_modify_topic_row
+	 * @var	string	action					Moderation action type to be performed with the topic
+	 * @var	bool	has_unapproved_posts	Flag indicating if the topic has unapproved posts
+	 * @var	int		icon_id					Split topic icon ID
+	 * @var	int		id						ID of the tab we are displaying
+	 * @var	string	mode					Mode of the MCP page we are displaying
+	 * @var	int		topic_id				The topic ID we are currently reviewing
+	 * @var	int		forum_id				The forum ID we are currently in
+	 * @var	bool	s_topic_icons			Flag indicating if split topic icon to be displayed
+	 * @var	int		start					Start item of this page
+	 * @var	string	subject					Subject of the topic to be split
+	 * @var	array	topic_info				Array with topic data
+	 * @var	int		to_forum_id				Forum id the topic is being moved to
+	 * @var	int		to_topic_id				Topic ID the topic is being merged with
+	 * @var	array	topic_row				Topic template data array
+	 * @var	int		total					Total posts count
+	 * @since 3.3.5-RC1
+	 */
+	$vars = [
+		'action',
+		'has_unapproved_posts',
+		'icon_id',
+		'id',
+		'mode',
+		'topic_id',
+		'forum_id',
+		's_topic_icons',
+		'start',
+		'subject',
+		'topic_info',
+		'to_forum_id',
+		'to_topic_id',
+		'topic_row',
+		'total',
+	];
+	extract($phpbb_dispatcher->trigger_event('core.mcp_topic_review_modify_topic_row', compact($vars)));
+
+	$template->assign_vars($topic_row);
 }
 
 /**
@@ -596,9 +638,13 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 			$topic_info['topic_title']
 		));
 
-		// Change topic title of first post
-		$sql = 'UPDATE ' . POSTS_TABLE . "
-			SET post_subject = '" . $db->sql_escape($subject) . "'
+		// Change topic title of first post and write icon_id to post
+		$sql_ary = [
+			'post_subject'		=> $subject,
+			'icon_id'			=> $icon_id,
+		];
+		$sql = 'UPDATE ' . POSTS_TABLE . '
+			SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
 			WHERE post_id = {$post_id_list[0]}";
 		$db->sql_query($sql);
 
@@ -690,11 +736,38 @@ function split_topic($action, $topic_id, $to_forum_id, $subject)
 
 		// Update forum statistics
 		$config->increment('num_topics', 1, false);
+		sync('forum', 'forum_id', [$to_forum_id], true, true);
 
 		// Link back to both topics
-		$return_link = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $post_info['forum_id'] . '&amp;t=' . $post_info['topic_id']) . '">', '</a>') . '<br /><br />' . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $to_forum_id . '&amp;t=' . $to_topic_id) . '">', '</a>');
-		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?f=$to_forum_id&amp;t=$to_topic_id");
+		$return_link = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $post_info['topic_id']) . '">', '</a>') . '<br /><br />' . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
+		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?t=$to_topic_id");
 		$redirect = reapply_sid($redirect);
+
+		/**
+		 * Event to access topic data after split
+		 *
+		 * @event core.mcp_topic_split_topic_after
+		 * @var	string	action			Split action type to be performed with the topic
+		 * @var	int		topic_id		The topic ID we are currently splitting
+		 * @var	int		forum_id		The forum ID we are currently in
+		 * @var	int		start			Start item of this page
+		 * @var	string	subject			Subject of the topic to be split
+		 * @var	array	topic_info		Array with topic data
+		 * @var	int		to_forum_id		Forum id the topic is being moved to
+		 * @var	int		to_topic_id		Topic ID the topic is being split to
+		 * @since 3.3.5-RC1
+		 */
+		$vars = [
+			'action',
+			'topic_id',
+			'forum_id',
+			'start',
+			'subject',
+			'topic_info',
+			'to_forum_id',
+			'to_topic_id',
+		];
+		extract($phpbb_dispatcher->trigger_event('core.mcp_topic_split_topic_after', compact($vars)));
 
 		meta_refresh(3, $redirect);
 		trigger_error($user->lang[$success_msg] . '<br /><br />' . $return_link);
@@ -789,7 +862,7 @@ function merge_posts($topic_id, $to_topic_id)
 
 		if ($row)
 		{
-			$return_link .= sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $row['forum_id'] . '&amp;t=' . $topic_id) . '">', '</a>');
+			$return_link .= sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_id) . '">', '</a>');
 		}
 		else
 		{
@@ -812,8 +885,8 @@ function merge_posts($topic_id, $to_topic_id)
 		sync('forum', 'forum_id', $sync_forums, true, true);
 
 		// Link to the new topic
-		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $to_forum_id . '&amp;t=' . $to_topic_id) . '">', '</a>');
-		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?f=$to_forum_id&amp;t=$to_topic_id");
+		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $to_topic_id) . '">', '</a>');
+		$redirect = $request->variable('redirect', "{$phpbb_root_path}viewtopic.$phpEx?t=$to_topic_id");
 		$redirect = reapply_sid($redirect);
 
 		/**

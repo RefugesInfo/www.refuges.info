@@ -52,6 +52,8 @@ $lang = array_merge($lang, array(
 	'ACP_CLEANTALK_APIKEY_GET_MANUALLY_BUTTON_LABEL'	=> 'الحصول على مفتاح الدخول يدوياً',
 	'ACP_CLEANTALK_APIKEY_CP_LINK_BUTTON'		=> 'انقر هنا للحصول على احصائيات المُكافح',
 	'ACP_CLEANTALK_ACCOUNT_NAME_OB'				=> 'الحساب at cleantalk.org هو',
+	'ACP_CLEANTALK_TITLE__STATS'				=> 'الإحصاءات',
+	'ACP_CLEANTALK_STATS__SFW_NETS'             => 'عدد شبكات جدار الحماية غير المرغوب فيها',
 	'ACP_CLEANTALK_CHECKUSERS_TITLE'			=> 'فحص الأعضاء المُزعجين',
 	'ACP_CLEANTALK_CHECKUSERS_DESCRIPTION'		=> 'المكافح CleanTalk سوف يفحص جميع الأعضاء في قاعدة بيانات القوائم السوداء لديه , وسيعرض لك أسماء الأعضاء الذين لديهم نشاط مُزعج في المواقع الأخرى. فقط انقر على الزر `فحص الأعضاء المُزعجين` لبدء عملية الفحص.',
 	'ACP_CLEANTALK_CHECKUSERS_PAGES_TITLE'      => 'صفحات',	
@@ -80,4 +82,11 @@ $lang = array_merge($lang, array(
 	'CLEANTALK_ERROR_NO_CURL'		            => 'No CURL support compiled in',
 	'CLEANTALK_ERROR_ADDON'		                => ' or disabled allow_url_fopen in php.ini.',
 	'CLEANTALK_NOTIFICATION'					=> 'هل أنت متأكد ؟',
+
+    'ACP_CLEANTALK_STATS__LAST_SPAM_REQUEST_TIME' => 'Last spam check request to server was at',
+    'ACP_CLEANTALK_STATS__AVERAGE_REQUEST_TIME' => 'Average request time for past 7 days (seconds)',
+    'ACP_CLEANTALK_STATS__LAST_SFW_BLOCK_IP' => 'Last time SpamFireWall was triggered for IP',
+    'ACP_CLEANTALK_STATS__LAST_SFW_BLOCK_TIME' => 'Last time SpamFireWall was triggered at',
+    'ACP_CLEANTALK_STATS__SFW_LAST_TIME_UPDATED' => 'SpamFireWall was updated at',
+    'ACP_CLEANTALK_STATS__SFW_LAST_TIME_SEND_LOGS' => 'SpamFireWall sent logs at',
 ));

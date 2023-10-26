@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\JavaScript;
@@ -73,8 +73,10 @@ class StylesheetCompressor
 
 		$str = $this->getCompressedStylesheet();
 
-		// Split the stylesheet's string into 2000 bytes chunks to appease Google Closure Compiler
-		$js = implode("+\n", array_map('json_encode', str_split($str, 2000)));
+		// Split the stylesheet's string into 2000 chars chunks to appease Google Closure Compiler
+		preg_match_all('(.{1,2000})su', $str, $matches);
+
+		$js = implode("+\n", array_map('json_encode', $matches[0]));
 		if (!empty($this->dictionary))
 		{
 			$js = '(' . $js . ').replace(' . $this->getReplacementRegexp() . ',function(k){return' . json_encode($this->dictionary) . '[k];})';

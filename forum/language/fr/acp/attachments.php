@@ -2,7 +2,7 @@
 /**
 *
 * This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
+* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
 *
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -112,7 +112,7 @@ $lang = array_merge($lang, array(
 	'IMAGE_LINK_SIZE'			=> 'Dimensions du lien de l’image',
 	'IMAGE_LINK_SIZE_EXPLAIN'	=> 'Les fichiers image joints s’afficheront sous forme de lien texte, si la taille de l’image est plus grande que les dimensions saisies. Pour désactiver ce comportement, réglez les valeurs sur 0px par 0px.',
 	'IMAGE_QUALITY'				=> 'Qualité des images jointes transférées (JPEG uniquement)',
-	'IMAGE_QUALITY_EXPLAIN'		=> 'Spécifiez une valeur entre 50% (fichier compact) and 90% (meilleure qualité). Une qualité supérieure à 90% augmente la taille du fichier et est désactivée. Le paramètre ne s’applique que si les dimensions maximales de l’image sont définies sur une valeur autre que 0 px par 0 px.',
+	'IMAGE_QUALITY_EXPLAIN'		=> 'Spécifiez une valeur entre 50% (fichier compact) et 90% (meilleure qualité). Une qualité supérieure à 90% augmente la taille du fichier et est désactivée. Le paramètre ne s’applique que si les dimensions maximales de l’image sont définies sur une valeur autre que 0 px par 0 px.',
 	'IMAGE_STRIP_METADATA'		=> 'Supprimer les métadonnées d’image (JPEG uniquement)',
 	'IMAGE_STRIP_METADATA_EXPLAIN'	=> 'Supprime les métadonnées Exif, par exemple le nom de l’auteur, les coordonnées GPS les détails de l’appareil photo. Le paramètre ne s’applique que si les dimensions maximales de l’image sont définies sur une valeur autre que 0 px par 0 px.',
 
@@ -172,4 +172,5 @@ $lang = array_merge($lang, array(
 	'UPLOAD_DIR_EXPLAIN'			=> 'Indiquez le chemin du répertoire de stockage destiné au transfert de fichiers joints. Notez que si vous modifiez ce répertoire alors que des fichiers joints s’y trouvent déjà, vous devrez les déplacer manuellement vers le nouvel emplacement.',
 	'UPLOAD_ICON'					=> 'Icône de transfert',
 	'UPLOAD_NOT_DIR'				=> 'L’emplacement de transfert que vous avez indiqué ne semble pas être un répertoire.',
+	'UPLOAD_POST_NOT_EXIST'			=> 'Le fichier « %1$s » ne peut pas être transféré vers le message numéro %2$d car ce message n’existe pas.',
 ));

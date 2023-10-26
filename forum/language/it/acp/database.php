@@ -6,7 +6,8 @@
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010 phpBB.it
 * @copyright (c) 2014 phpBBItalia.net <https://www.phpbbitalia.net>
-* @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -73,7 +74,6 @@ $lang = array_merge($lang, array(
 	'START_RESTORE'			=> 'Avvia ripristino',
 	'STORE_AND_DOWNLOAD'	=> 'Salva e scarica',
 	'STORE_LOCAL'			=> 'Salva file in store',
-	'STRUCTURE_ONLY'		=> 'Solo struttura',
 
 	'TABLE_SELECT'		=> 'Seleziona tabelle',
 	'TABLE_SELECT_ERROR'=> 'Devi selezionare almeno una tabella.',

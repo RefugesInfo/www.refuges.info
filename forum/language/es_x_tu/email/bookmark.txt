@@ -1,10 +1,10 @@
-Subject: Notificación de respuesta al tema - "{TOPIC_TITLE}"
+Subject: Respuesta en - "{TOPIC_TITLE}"
 
 Hola {USERNAME},
 
-Estás recibiendo esta notificación debido a que un tema Favorito, "{TOPIC_TITLE}" de "{SITENAME}", has recibido una respuesta desde tu última visita. Puedes utilizar el siguiente enlace para ver las respuestas dadas, no se enviarán más notificaciones hasta que visites el tema.
+Tu tema marcado como favorito “{TOPIC_TITLE}” recibió una nueva respuesta desde tu última visita a “{SITENAME}”. No se enviarán más notificaciones hasta que visites el tema.
 
-Si quieres ver los nuevos mensajes desde tu última visita, haz clic en el siguiente enlace:
+Si deseas ver el mensaje más reciente, haz clic en el siguiente enlace:
 {U_NEWEST_POST}
 
 Si quieres ver el tema, haz clic en el siguiente enlace:
@@ -14,7 +14,6 @@ Si quieres ver el foro, haz clic en el siguiente enlace:
 {U_FORUM}
 
 Si ya no deseas recibir información sobre las respuestas a los Favoritos, por favor, actualiza la configuración de notificaciones aquí:
-
 {U_NOTIFICATION_SETTINGS}
 
 {EMAIL_SIG}

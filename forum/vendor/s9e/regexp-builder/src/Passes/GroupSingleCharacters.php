@@ -1,13 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Passes;
 
+use function array_diff_key, array_filter, array_unshift, array_values, count;
+
 /**
+* Replaces (?:aa|b|cc|d) with (?:[bd]|aa|cc)
 * Enables other passes to replace (?:[xy]|a[xy]) with a?[xy]
 */
 class GroupSingleCharacters extends AbstractPass
@@ -15,7 +18,7 @@ class GroupSingleCharacters extends AbstractPass
 	/**
 	* {@inheritdoc}
 	*/
-	protected function runPass(array $strings)
+	protected function runPass(array $strings): array
 	{
 		$singles = $this->getSingleCharStrings($strings);
 		$cnt     = count($singles);
@@ -35,7 +38,7 @@ class GroupSingleCharacters extends AbstractPass
 	* @param  array[] $strings
 	* @return array[]
 	*/
-	protected function getSingleCharStrings(array $strings)
+	protected function getSingleCharStrings(array $strings): array
 	{
 		return array_filter($strings, [$this, 'isSingleCharString']);
 	}

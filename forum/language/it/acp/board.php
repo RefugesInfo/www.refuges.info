@@ -6,7 +6,8 @@
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010 phpBB.it
 * @copyright (c) 2014 phpBBItalia.net <https://www.phpbbitalia.net>
-* @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -389,12 +390,12 @@ $lang = array_merge($lang, array(
 	'ACP_LOAD_SETTINGS_EXPLAIN'	=> 'Qui puoi abilitare o disabilitare alcune funzioni della Board per ridurre l’ammontare dei processi richiesti. Sulla maggior parte dei server non c’è bisogno di disabilitare alcuna funzione. Tuttavia in alcuni sistemi o ambienti condivisi può essere consigliato disabilitare ciò di cui non hai bisogno. Puoi anche stabilire dei limiti al caricamento del sistema ed alle sessioni attive oltre i quali la Board andrà OffLine.',
 
 	'ALLOW_CDN'						=> 'Consenti l’utilizzo delle reti di distribuzione per contenuti di terze parti',
-	'ALLOW_CDN_EXPLAIN'				=> 'Se questa impostazione è attivata, alcuni file saranno forniti da server di terze parti esterni anziché dal tuo server. Questo riduce la larghezza di banda richiesta del tuo server, ma può creare un problema di privacy. In un’installazione phpBB predefinita, questo include caricamenti “jQuery” e il font “Open Sans” per i contenuti della rete distribuzione di Google.',
+	'ALLOW_CDN_EXPLAIN'				=> 'Se questa impostazione è attivata, alcuni file saranno forniti da server di terze parti esterni anziché dal tuo server. Questo riduce la larghezza di banda utilizzata dal tuo server, ma potrebbe creare un problema di privacy in alcuni paesi. In un’installazione phpBB predefinita, questo include caricamenti “jQuery” e il font “Open Sans” per i contenuti della rete distribuzione di Google.',
 	'ALLOW_LIVE_SEARCHES'			=> 'Consenti ricerche in tempo reale',
 	'ALLOW_LIVE_SEARCHES_EXPLAIN'	=> 'Se questa impostazione è attivata, gli utenti usufruiranno di suggerimenti di parole chiave, digitando nei campi relativi in tutta la Board.',
 	'CUSTOM_PROFILE_FIELDS'			=> 'Campi profilo personalizzati',
 	'LIMIT_LOAD'					=> 'Limita caricamento del sistema',
-	'LIMIT_LOAD_EXPLAIN'			=> 'Se il limite per caricamento del sistema eccede il valore impostato, entro un minuto la Board andrà automaticamente OffLine. Il valore di 1.0 equivale al 100% di utilizzo di un processore. Questo funziona solo sui server che si basano su UNIX e dove questa informazione è accessibile. Il valore si reimposta sullo 0 se phpBB non è in grado di raggiungere il limite di caricamento.',
+	'LIMIT_LOAD_EXPLAIN'			=> 'Se il limite per caricamento del sistema eccede il valore impostato, entro un minuto la Board andrà automaticamente OffLine. Il valore di 1.0 equivale al 100% di utilizzo di un processore. Questo funziona solo sui server che si basano su UNIX e dove questa informazione è accessibile. Il valore si reimposta sullo 0 se phpBB non è in grado di raggiungere il limite di caricamento. Questo vale anche per il font "Font Awesome", che phpBB e alcune estensioni usano per le icone',
 	'LIMIT_SESSIONS'				=> 'Limita sessioni',
 	'LIMIT_SESSIONS_EXPLAIN'		=> 'Se il numero delle sessioni eccede questo valore, entro un minuto la Board andrà OffLine. 0 = illimitate.',
 	'LOAD_CPF_MEMBERLIST'			=> 'Permetti ai temi di visualizzare i campi personalizzati nel profilo nella lista utenti',
@@ -487,7 +488,7 @@ $lang = array_merge($lang, array(
 	'SCRIPT_PATH'				=> 'Percorso script',
 	'SCRIPT_PATH_EXPLAIN'		=> 'Percorso in cui è situato phpBB, relativo al nome del dominio, es. <samp>/phpBB3</samp>.',
 	'SERVER_NAME'				=> 'Nome del dominio',
-	'SERVER_NAME_EXPLAIN'		=> 'Nome del dominio relativo alla Board (per esempio: <samp>www.foo.bar</samp>).',
+	'SERVER_NAME_EXPLAIN'		=> 'Nome del dominio relativo alla Board (per esempio: <samp>esempio.com</samp>).',
 	'SERVER_PORT'				=> 'Porta del server',
 	'SERVER_PORT_EXPLAIN'		=> 'La porta del tuo server, di solito 80. Cambiala solo se è diversa.',
 	'SERVER_PROTOCOL'			=> 'Protocollo del server',
@@ -604,7 +605,7 @@ $lang = array_merge($lang, array(
 	'SMTP_VERIFY_PEER_EXPLAIN'		=> 'Richiedi la verifica del certificato SSL utilizzato dal server SMTP. <em><strong>Attenzione:</strong> il collegamento peer con certificati SSL non verificati può causare problemi di sicurezza.</em>',
 	'SMTP_VERIFY_PEER_NAME'			=> 'Verifica il nome peer SMTP',
 	'SMTP_VERIFY_PEER_NAME_EXPLAIN'	=> 'Richiedi la verifica del nome peer per i server SMTP utilizzando connessioni SSL / TLS. <em><strong>Attenzione:</strong> la connessione a peer non verificati può causare problemi di sicurezza.</em>',
-	'TEST_EMAIL_SENT'				=> 'L’email di prova è stata inviata.<br />Se non la dovessi ricevere, controlla le tue configurazioni di posta elettronica e la cartella antispam del tuo account di posta<br /><br />Se hai bisogno di supporto, visita il <a href="https://www.phpbb-store.it">Forum di supporto di phpBB Store</a>.',
+	'TEST_EMAIL_SENT'				=> 'L’email di prova è stata inviata.<br />Se non la dovessi ricevere, controlla le tue configurazioni di posta elettronica e la cartella antispam del tuo account di posta<br /><br />Se hai bisogno di supporto, visita il <a href="https://www.phpbb-italia.it">Forum di supporto di phpBB Italia</a>.',
 
 	'USE_SMTP'						=> 'Usa un server SMTP per le email',
 	'USE_SMTP_EXPLAIN'				=> 'Scegli “Sì” se vuoi o devi inviare email attraverso un server specifico invece di usare la funzione mail locale.',

@@ -2,6 +2,8 @@
 
 namespace cleantalk\antispam\cron\task;
 
+use cleantalk\antispam\library\Cleantalk\Common\API;
+
 class cleantalk_antispam_check_payment_status extends \phpbb\cron\task\base
 {
 
@@ -14,7 +16,13 @@ class cleantalk_antispam_check_payment_status extends \phpbb\cron\task\base
 		
 	public function run()
 	{
-		$result = \cleantalk\antispam\model\CleantalkHelper::noticePaidTill($this->config['cleantalk_antispam_apikey']);
+	    global $config;
+	    
+        $result = API::methodNoticePaidTill(
+            $this->config['cleantalk_antispam_apikey'],
+            $config['server_name']
+        );
+
 		if(empty($result['error']))
 		{
 			$this->config->set('cleantalk_antispam_show_notice', ($result['show_notice']) ? $result['show_notice'] : 0);

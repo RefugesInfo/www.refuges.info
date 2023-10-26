@@ -5,7 +5,8 @@
  *
  * @copyright (c) phpBB Limited <https://www.phpbb.com>
  * @license GNU General Public License, version 2 (GPL-2.0)
- * @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+ * @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+ * @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
  * For full copyright and license information, please see
  * the docs/CREDITS.txt file.
  *

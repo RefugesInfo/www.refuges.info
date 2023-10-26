@@ -1,18 +1,18 @@
 {
     "name": "phpbbfr/trad-fr",
     "type": "phpbb-language",
-    "description": "French translation of phpBB 3.3",
-    "version": "3.0.3",
-    "license": "GPL-2.0",
+    "description": "phpBB 3.3 French translation",
+    "version": "3.0.12",
+    "license": "GPL-2.0-only",
     "authors": [
         {
             "name": "phpBB-fr.com translation team",
             "email": "traducteurs@phpbb-fr.com",
-            "homepage": "http://www.phpbb-fr.com/go/translation-team"
+            "homepage": "https://www.phpbb-fr.com/go/translation-team"
         }
     ],
     "require": {
-        "php": ">=7.1.3",
+        "php": ">=7.2.0",
         "composer/installers": "~1.0"
     }
 }

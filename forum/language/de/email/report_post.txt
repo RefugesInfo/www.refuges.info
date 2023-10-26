@@ -2,7 +2,7 @@ Subject: Gemeldeter Beitrag — „{TOPIC_TITLE}“
 
 Hallo {USERNAME},
 
-du erhältst diese Benachrichtigung, weil der Beitrag „{POST_SUBJECT}“ auf „{SITENAME}“ gemeldet wurde.
+der Beitrag „{POST_SUBJECT}“ auf „{SITENAME}“ wurde gemeldet.
 
 Du kannst dir die Meldung ansehen, wenn du folgenden Link aufrufst:
 {U_VIEW_REPORT}

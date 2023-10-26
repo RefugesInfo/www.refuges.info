@@ -2,7 +2,7 @@ Subject: Segnalazione messaggio privato - “{SUBJECT}”
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché è stato segnalato un messaggio privato con oggetto “{SUBJECT}” di “{AUTHOR_NAME}” su “{SITENAME}”.
+È stato segnalato un messaggio privato intitolato "{SUBJECT}" di "{AUTHOR_NAME}" in "{SITENAME}".
 
 Per visualizzare la segnalazione, clicca sul seguente link:
 {U_VIEW_REPORT}

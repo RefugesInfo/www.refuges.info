@@ -738,6 +738,10 @@ $lang = array_merge($lang, array(
 	'LOG_SEARCH_INDEX_CREATED'	=> '<strong>Índice de búsqueda creado por</strong><br />» %s',
 	'LOG_SEARCH_INDEX_REMOVED'	=> '<strong>Índice de búsqueda borrado por</strong><br />» %s',
 	'LOG_SPHINX_ERROR'			=> '<strong>Error en Sphinx</strong><br />» %s',
+
+	'LOG_SPAMHAUS_OPEN_RESOLVER'		=> 'Spamhaus no permite consultas utilizando un resolver abierto. Se ha deshabilitado la verificación de la lista negra. Para obtener más información, consulta https://www.spamhaus.com/product/help-for-spamhaus-public-mirror-users/.',
+	'LOG_SPAMHAUS_VOLUME_LIMIT'			=> 'Se ha superado el límite de volumen de consultas de Spamhaus. Se ha deshabilitado la verificación de la lista negra. Para obtener más información, consulta https://www.spamhaus.com/product/help-for-spamhaus-public-mirror-users/.',
+
 	'LOG_STYLE_ADD'				=> '<strong>Añadido: estilo</strong><br />» %s',
 	'LOG_STYLE_DELETE'			=> '<strong>Borrado: estilo</strong><br />» %s',
 	'LOG_STYLE_EDIT_DETAILS'	=> '<strong>Editado: estilo</strong><br />» %s',

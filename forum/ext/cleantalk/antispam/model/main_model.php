@@ -50,7 +50,11 @@ class main_model
 	/** @var \phpbb\config\db_text */
 	protected $config_text;
 
-	/**
+    /** @var bool Marker of cleantalk is already executed on page  */
+    public $cleantalk_executed;
+
+
+    /**
 	* Constructor
 	*
 	* @param config			$config		Config object
@@ -69,6 +73,7 @@ class main_model
 		$this->php_ext = $php_ext;		
 		$this->cleantalk = $cleantalk;
 		$this->cleantalk_request = $cleantalk_request;
+		$this->cleantalk_executed = false;
 	}
 
 	/**
@@ -79,6 +84,9 @@ class main_model
 	*/	
 	public function check_spam( $spam_check )
 	{
+	    if ( $this->cleantalk_executed ){
+	        return array('allow' => 1);
+        }
 		
 		// Exclusions
 		$exclusion_urls = array(
@@ -152,7 +160,8 @@ class main_model
 		$this->cleantalk_request->sender_nickname = array_key_exists('sender_nickname', $spam_check) ? $spam_check['sender_nickname'] : '';
         $this->cleantalk_request->sender_ip = $this->cleantalk->cleantalk_get_real_ip();
 		$this->cleantalk_request->submit_time = ($page_set_timestamp !== 0) ? time() - $page_set_timestamp : null;
-		
+
+        $start = microtime(true);
 		switch ($spam_check['type'])
 		{
 			case 'contact':
@@ -171,11 +180,18 @@ class main_model
 				$ct_result = $this->cleantalk->sendFeedback($this->cleantalk_request);
 				break;
 		}
-		
+        $exec_time = microtime(true) - $start;
+
 		$ret_val = array();
 		$ret_val['errno'] = 0;
 		$ret_val['allow'] = 1;
 		$ret_val['ct_request_id'] = $ct_result->id;
+
+        // Last spam check time
+        $this->config->set('cleantalk_stats__last_spam_request_time', time());
+
+        // Average request time
+        $this->averageRequestTime($exec_time);
 
 		if ($this->cleantalk->server_change)
 		{
@@ -267,10 +283,11 @@ class main_model
 					// New user or Spammer and stop_queue == 1 - display form error message.
 					$ret_val['stop_queue'] = 1;
 				}
-			}			
-		}
+			}
+        }
+        $this->cleantalk_executed = true;
 
-	return $ret_val;
+        return $ret_val;
 	}
 
 	/**
@@ -453,24 +470,30 @@ class main_model
 	/**
 	 * SpamFireWall update function
 	 *
+	 * @param null $access_key
+	 *
+	 * @return array|bool|type|int|mixed|string[]
 	 */
-	public function sfw_update($access_key) {
+	public function sfw_update( $access_key = null ){
 
 		global $request, $config;
 
-		$file_url_hash = !empty($request->variable('file_url_hash', '')) ? urldecode($request->variable('file_url_hash', '')) : null;
-        $file_url_nums = !empty($request->variable('file_url_nums', '')) ? urldecode($request->variable('file_url_nums', '')) : null;
+		$api_server    = !empty($request->variable('api_server', ''))    ? urldecode($request->variable('api_server', ''))    : null;
+		$data_id       = !empty($request->variable('data_id', ''))       ? urldecode($request->variable('data_id', ''))       : null;
+		$file_url_nums = (!empty($request->variable('file_url_nums', '')) || (string) $request->variable('file_url_nums', '') === '0') ? urldecode($request->variable('file_url_nums', '')) : null;
 		$file_url_nums = isset($file_url_nums) ? explode(',', $file_url_nums) : null;
 		
-	    if( ! isset( $file_url_hash, $file_url_nums ) ){
+	    if( ! isset( $api_server, $data_id, $file_url_nums ) ){
+	    
 			$result = \cleantalk\antispam\model\CleantalkSFW::sfw_update();
-	    } elseif( $file_url_hash && is_array( $file_url_nums ) && count( $file_url_nums ) ){
+			
+	    } elseif( $api_server && $data_id && is_array( $file_url_nums ) && count( $file_url_nums ) ){
 
-			$result = \cleantalk\antispam\model\CleantalkSFW::sfw_update($file_url_hash, $file_url_nums[0]);
+			$result = \cleantalk\antispam\model\CleantalkSFW::sfw_update( $api_server, $data_id, $file_url_nums[0] );
 
 			if(empty($result['error'])){
 
-				array_shift($file_url_nums);	
+				array_shift($file_url_nums);
 
 				if (count($file_url_nums)) {
 					\cleantalk\antispam\model\CleantalkHelper::sendRawRequest(
@@ -479,7 +502,8 @@ class main_model
 							'spbc_remote_call_token'  => md5($config['cleantalk_antispam_apikey']),
 							'spbc_remote_call_action' => 'sfw_update',
 							'plugin_name'             => 'apbct',
-		                    'file_url_hash'           => $file_url_hash,
+							'api_server'              => $api_server,
+							'data_id'                 => $data_id,
 		                    'file_url_nums'           => implode(',', $file_url_nums),
 						),
 						array('get', 'async')
@@ -491,8 +515,8 @@ class main_model
 					return $result;
 				}
 			}	    	
-	    }
-	    return $result;
+	    }else
+	        return true;
 	}
 
 	/**
@@ -510,5 +534,36 @@ class main_model
 		}
 
 		return $result;
-	}	
+	}
+
+    /**
+     * Update and rotate statistics with requests execution time
+     *
+     * @param $exec_time
+     */
+    private function averageRequestTime($exec_time)
+    {
+        $requests = $this->config_text->get_array(array('cleantalk_stats__requests'));
+		$requests = isset($requests['cleantalk_stats__requests']) ? json_decode($requests['cleantalk_stats__requests'], true) : null;
+		
+        // Delete old stats
+        if ( !is_null($requests) && min(array_keys($requests)) < time() - (86400 * 7) ) {
+            unset($requests[min(array_keys($requests))]);
+        }
+
+        // Create new if newest older than 1 day
+        if ( is_null($requests) || max(array_keys($requests)) < time() - (86400 * 1) ) {
+            $requests[time()] = array('amount' => 0, 'average_time' => 0);
+        }
+
+        // Update all existing stats
+        foreach ( $requests as &$weak_stat ) {
+            $weak_stat['average_time'] = ($weak_stat['average_time'] * $weak_stat['amount'] + $exec_time) / ++$weak_stat['amount'];
+        }
+        unset($weak_stat);
+
+		$this->config_text->set_array(array(
+			'cleantalk_stats__requests'	=> json_encode($requests),
+		));
+    }
 }

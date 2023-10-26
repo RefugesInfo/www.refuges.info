@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\Emoticons;
@@ -199,7 +199,7 @@ class Configurator extends ConfiguratorBase implements ArrayAccess, Countable, I
 		// First, test whether the emoticon should be rendered as text if applicable
 		if (!empty($this->notIfCondition))
 		{
-			$xsl .= '<xsl:when test="' . htmlspecialchars($this->notIfCondition) . '">'
+			$xsl .= '<xsl:when test="' . htmlspecialchars($this->notIfCondition, ENT_COMPAT) . '">'
 			      . '<xsl:value-of select="."/>'
 			      . '</xsl:when>'
 			      . '<xsl:otherwise>'
@@ -209,7 +209,7 @@ class Configurator extends ConfiguratorBase implements ArrayAccess, Countable, I
 		// Iterate over codes, create an <xsl:when> for each emote
 		foreach ($this->collection as $code => $template)
 		{
-			$xsl .= '<xsl:when test=".=' . htmlspecialchars(XPath::export($code)) . '">'
+			$xsl .= '<xsl:when test=".=' . htmlspecialchars(XPath::export($code), ENT_COMPAT) . '">'
 			      . $template
 			      . '</xsl:when>';
 		}

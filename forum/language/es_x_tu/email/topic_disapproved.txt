@@ -1,8 +1,8 @@
-Subject: Tema no aprobado - "{TOPIC_TITLE}"
+Subject: Tema no aprobado - “{TOPIC_TITLE}”
 
 Hola {USERNAME},
 
-Estás recibiendo esta notificación porque tu tema "{TOPIC_TITLE}" en "{SITENAME}" no fue aprobado por un(a) Moderador(a) o por la Administración del sitio.
+Tu tema "{TOPIC_TITLE}" en "{SITENAME}" no fue aprobado por un Moderador o Administrador.
 
 No fue aprobado por esta razón:
 

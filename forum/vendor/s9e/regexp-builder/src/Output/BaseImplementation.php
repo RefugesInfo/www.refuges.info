@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
 * @package   s9e\RegexpBuilder
-* @copyright Copyright (c) 2016-2020 The s9e authors
+* @copyright Copyright (c) 2016-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\RegexpBuilder\Output;
@@ -31,7 +31,7 @@ abstract class BaseImplementation implements OutputInterface
 	/**
 	* {@inheritdoc}
 	*/
-	public function output($value)
+	public function output(int $value): string
 	{
 		$this->validate($value);
 
@@ -44,7 +44,7 @@ abstract class BaseImplementation implements OutputInterface
 	* @param  integer $value
 	* @return void
 	*/
-	protected function validate($value)
+	protected function validate(int $value): void
 	{
 		if ($value < $this->minValue || $value > $this->maxValue)
 		{
@@ -58,5 +58,5 @@ abstract class BaseImplementation implements OutputInterface
 	* @param  integer $value
 	* @return string
 	*/
-	abstract protected function outputValidValue($value);
+	abstract protected function outputValidValue(int $value): string;
 }

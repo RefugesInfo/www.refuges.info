@@ -1,9 +1,8 @@
-Subject: Neue Private Nachricht erhalten
+Subject: Neue Private Nachricht
 
 Hallo {USERNAME},
 
-du hast auf „{SITENAME}“ eine neue Private Nachricht von „{AUTHOR_NAME}“ mit folgendem Betreff erhalten:
-
+du hast eine neue Private Nachricht von „{AUTHOR_NAME}“ auf „{SITENAME}“ mit folgendem Betreff erhalten:
 {SUBJECT}
 
 Du kannst dir die neue Nachricht ansehen, wenn du folgenden Link aufrufst:

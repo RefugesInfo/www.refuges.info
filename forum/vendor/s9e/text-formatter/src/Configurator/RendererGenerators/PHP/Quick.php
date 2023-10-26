@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RendererGenerators\PHP;
@@ -158,8 +158,8 @@ class Quick
 	*/
 	protected static function getQuickRendering($php)
 	{
-		// xsl:apply-templates elements with a select expression are not supported
-		if (preg_match('(\\$this->at\\((?!\\$node\\);))', $php))
+		// xsl:apply-templates elements with a select expression and switch statements are not supported
+		if (preg_match('(\\$this->at\\((?!\\$node\\);)|switch\()', $php))
 		{
 			return [];
 		}
@@ -404,20 +404,22 @@ class Quick
 
 			// An attribute value escaped as ENT_NOQUOTES. We only need to unescape quotes
 			'(htmlspecialchars\\(' . $getAttribute . ',' . ENT_NOQUOTES . '\\))'
-				=> "str_replace('&quot;','\"',\$attributes[\$1])",
+				=> "str_replace('&quot;','\"',\$attributes[\$1]??'')",
 
 			// One or several attribute values escaped as ENT_COMPAT can be used as-is
-			'(htmlspecialchars\\((' . $getAttribute . '(?:\\.' . $getAttribute . ')*),' . ENT_COMPAT . '\\))'
+			'((\\.?)htmlspecialchars\\((' . $getAttribute . '(?:\\.' . $getAttribute . ')*),' . ENT_COMPAT . '\\)(\\.?))'
 				=> function ($m) use ($getAttribute)
 				{
-					return preg_replace('(' . $getAttribute . ')', '$attributes[$1]', $m[1]);
+					$replacement = (strpos($m[0], '.') === false) ? '($attributes[$1]??\'\')' : '$attributes[$1]';
+
+					return $m[1] . preg_replace('(' . $getAttribute . ')', $replacement, $m[2]) . $m[5];
 				},
 
 			// Character replacement can be performed directly on the escaped value provided that it
 			// is then escaped as ENT_COMPAT and that replacements do not interfere with the escaping
 			// of the characters &<>" or their representation &amp;&lt;&gt;&quot;
 			'(htmlspecialchars\\(strtr\\(' . $getAttribute . ",('[^\"&\\\\';<>aglmopqtu]+'),('[^\"&\\\\'<>]+')\\)," . ENT_COMPAT . '\\))'
-				=> 'strtr($attributes[$1],$2,$3)',
+				=> 'strtr($attributes[$1]??\'\',$2,$3)',
 
 			// A comparison between two attributes. No need to unescape
 			'(' . $getAttribute . '(!?=+)' . $getAttribute . ')'
@@ -441,13 +443,25 @@ class Quick
 			'(strpos\\(' . $getAttribute . ',(' . $string . ')\\)([!=]==(?:0|false)))s'
 				=> function ($m)
 				{
-					return 'strpos($attributes[' . $m[1] . "]," . htmlspecialchars($m[2], ENT_COMPAT) . ')' . $m[3];
+					return 'strpos($attributes[' . $m[1] . "]??''," . htmlspecialchars($m[2], ENT_COMPAT) . ')' . $m[3];
 				},
 
 			'(strpos\\((' . $string . '),' . $getAttribute . '\\)([!=]==(?:0|false)))s'
 				=> function ($m)
 				{
-					return 'strpos(' . htmlspecialchars($m[1], ENT_COMPAT) . ',$attributes[' . $m[2] . '])' . $m[3];
+					return 'strpos(' . htmlspecialchars($m[1], ENT_COMPAT) . ',$attributes[' . $m[2] . "]??'')" . $m[3];
+				},
+
+			'(str_(contains|(?:end|start)s_with)\\(' . $getAttribute . ',(' . $string . ')\\))s'
+				=> function ($m)
+				{
+					return 'str_' . $m[1] . '($attributes[' . $m[2] . "]??''," . htmlspecialchars($m[3], ENT_COMPAT) . ')';
+				},
+
+			'(str_(contains|(?:end|start)s_with)\\((' . $string . '),' . $getAttribute . '\\))s'
+				=> function ($m)
+				{
+					return 'str_' . $m[1] . '(' . htmlspecialchars($m[2], ENT_COMPAT) . ',$attributes[' . $m[3] . "]??'')";
 				},
 
 			// An attribute value used in an arithmetic comparison or operation does not need to be
@@ -459,7 +473,7 @@ class Quick
 			'if($node->attributes->length)'                => 'if($this->hasNonNullValues($attributes))',
 
 			// In all other situations, unescape the attribute value before use
-			'(' . $getAttribute . ')' => 'htmlspecialchars_decode($attributes[$1])'
+			'(' . $getAttribute . ')' => 'htmlspecialchars_decode($attributes[$1]??\'\')'
 		];
 
 		foreach ($replacements as $match => $replace)

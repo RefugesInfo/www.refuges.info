@@ -1,9 +1,9 @@
-Subject: Notifica nuovo argomento - “{FORUM_NAME}”
+Subject: Nuovo argomento su "{FORUM_NAME}"
 List-Unsubscribe: <{U_STOP_WATCHING_FORUM}>
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché stai controllando il forum “{FORUM_NAME}” su “{SITENAME}”. Dalla tua ultima visita è stato creato un nuovo argomento<!-- IF AUTHOR_NAME != '' --> da {AUTHOR_NAME}<!-- ENDIF -->, dal titolo: “{TOPIC_TITLE}”. Tramite il link che segue puoi arrivare direttamente al forum; non riceverai altre notifiche fino alla tua prossima visita:
+Nel forum "{FORUM_NAME}" è stato aperto un nuovo argomento "{TOPIC_TITLE}" <!-- IF AUTHOR_NAME != '' --> da {AUTHOR_NAME}<!-- ENDIF --> dalla tua ultima visita a "{SITENAME} ". Non verranno più inviate notifiche finché non visiterai il forum.
 
 {U_FORUM}
 
@@ -12,7 +12,7 @@ Per vedere direttamente il nuovo argomento, visita il seguente link:
 {U_TOPIC}
 
 
-Se non desideri più controllare questo forum puoi cliccare su “Annulla sottoscrizione forum” che trovi sul forum sottoscritto, o cliccando sul link seguente:
+Se non desideri più seguire questo forum, clicca sul seguente link:
 
 {U_STOP_WATCHING_FORUM}
 

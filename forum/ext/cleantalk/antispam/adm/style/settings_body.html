@@ -2,6 +2,13 @@
 
 <h1>{L_ACP_CLEANTALK_SETTINGS}</h1>
 
+{% if CLEANTALK_ERRORS %}
+<div class="errorbox">
+	<h3>{{ lang('WARNING') }}</h3>
+	<p>{{ CLEANTALK_ERRORS_MSG }}</p>
+</div>
+{% endif %}
+
 <form id="acp_board" method="post" action="{U_ACTION}">
 	<fieldset>
 		<dl>
@@ -92,7 +99,24 @@
 		{S_FORM_TOKEN}
 	</fieldset>
 </form>
-	
+
+<fieldset style="text-align: center;">
+	<h1>{L_ACP_CLEANTALK_TITLE__STATS}</h1><br />
+	<dl>
+		<dt>
+			<p>{L_ACP_CLEANTALK_STATS__LAST_SPAM_REQUEST_TIME}: <span>{CLEANTALK_STATS__LAST_SPAM_REQUEST_TIME}</span></p>
+			<p>{L_ACP_CLEANTALK_STATS__AVERAGE_REQUEST_TIME}: <span>{CLEANTALK_STATS__AVERAGE_REQUEST_TIME}</span></p>
+			<p>{L_ACP_CLEANTALK_STATS__LAST_SFW_BLOCK_IP}: <span>{CLEANTALK_STATS__LAST_SFW_BLOCK_IP}</span></p>
+			<p>{L_ACP_CLEANTALK_STATS__LAST_SFW_BLOCK_TIME}: <span>{CLEANTALK_STATS__LAST_SFW_BLOCK_TIME}</span></p>
+			<p>{L_ACP_CLEANTALK_STATS__SFW_LAST_TIME_UPDATED}: <span>{CLEANTALK_STATS__SFW_LAST_TIME_UPDATED}</span></p>
+			<p>{L_ACP_CLEANTALK_STATS__SFW_NETS}: <span>{CLEANTALK_STATS__SFW_NETS}</span></p>
+			<p>{L_ACP_CLEANTALK_STATS__SFW_LAST_TIME_SEND_LOGS}: <span>{CLEANTALK_STATS__SFW_LAST_TIME_SEND_LOGS}</span></p>
+		</dt>
+	</dl>
+</fieldset>
+
+{CLEANTALK_DEBUG}
+
 <fieldset style="text-align: center;">
 	<form method="post">
 	<h1>{L_ACP_CLEANTALK_CHECKUSERS_TITLE}</h1><br />

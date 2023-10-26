@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed;
@@ -200,7 +200,7 @@ class Parser extends ParserBase
 			'(\\{@(\\w+)\\})',
 			function ($m) use ($vars)
 			{
-				return (isset($vars[$m[1]])) ? $vars[$m[1]] : '';
+				return $vars[$m[1]] ?? '';
 			},
 			$str
 		);
@@ -243,7 +243,8 @@ class Parser extends ParserBase
 	protected static function wget($url, $cacheDir, $config)
 	{
 		$options = [
-			'headers' => (isset($config['header'])) ? (array) $config['header'] : []
+			'headers'       => (isset($config['header'])) ? (array) $config['header'] : [],
+			'returnHeaders' => true
 		];
 
 		return @self::getHttpClient($cacheDir)->get($url, $options);

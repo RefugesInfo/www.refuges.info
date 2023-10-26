@@ -91,29 +91,43 @@ class acp_icons
 				{
 					$img_size = getimagesize($phpbb_root_path . $img_path . '/' . $path . $img);
 
-					if (!$img_size[0] || !$img_size[1] || strlen($img) > 255)
+					if ($img_size)
 					{
-						continue;
-					}
+						if (!$img_size[0] || !$img_size[1] || strlen($img) > 255)
+						{
+							continue;
+						}
 
-					// adjust the width and height to be lower than 128px while perserving the aspect ratio (for icons)
-					if ($mode == 'icons')
+						// adjust the width and height to be lower than 128px while perserving the aspect ratio (for icons)
+						if ($mode == 'icons')
+						{
+							if ($img_size[0] > 127 && $img_size[0] > $img_size[1])
+							{
+								$img_size[1] = (int) ($img_size[1] * (127 / $img_size[0]));
+								$img_size[0] = 127;
+							}
+							else if ($img_size[1] > 127)
+							{
+								$img_size[0] = (int) ($img_size[0] * (127 / $img_size[1]));
+								$img_size[1] = 127;
+							}
+						}
+					}
+					else
 					{
-						if ($img_size[0] > 127 && $img_size[0] > $img_size[1])
-						{
-							$img_size[1] = (int) ($img_size[1] * (127 / $img_size[0]));
-							$img_size[0] = 127;
-						}
-						else if ($img_size[1] > 127)
-						{
-							$img_size[0] = (int) ($img_size[0] * (127 / $img_size[1]));
-							$img_size[1] = 127;
-						}
+						// getimagesize can't read the dimensions of the SVG files
+						// https://bugs.php.net/bug.php?id=71517
+						$xml_get = simplexml_load_file($phpbb_root_path . $img_path . '/' . $path . $img);
+
+						$svg_width = intval($xml_get['width']);
+						$svg_height = intval($xml_get['height']);
 					}
 
 					$_images[$path . $img]['file'] = $path . $img;
-					$_images[$path . $img]['width'] = $img_size[0];
-					$_images[$path . $img]['height'] = $img_size[1];
+
+					// Give SVG a fallback on failure
+					$_images[$path . $img]['width'] = $img_size ? $img_size[0] : ($svg_width ?: 32);
+					$_images[$path . $img]['height'] = $img_size ? $img_size[1] : ($svg_height ?: 32);
 				}
 			}
 			unset($imglist);
@@ -536,7 +550,7 @@ class acp_icons
 						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
 					}
 
-					if (!($pak_ary = @file($phpbb_root_path . $img_path . '/' . $pak)))
+					if (!($pak_ary = @file($phpbb_root_path . $img_path . '/' . utf8_basename($pak))))
 					{
 						trigger_error($user->lang['PAK_FILE_NOT_READABLE'] . adm_back_link($this->u_action), E_USER_WARNING);
 					}
@@ -640,7 +654,7 @@ class acp_icons
 							{
 								$replace_sql = ($mode == 'smilies') ? $code : $img;
 								$sql = array(
-									$fields . '_url'		=> $img,
+									$fields . '_url'		=> utf8_substr(rawurlencode($img), 0, 50),
 									$fields . '_height'		=> (int) $height,
 									$fields . '_width'		=> (int) $width,
 									'display_on_posting'	=> (int) $display_on_posting,
@@ -662,7 +676,7 @@ class acp_icons
 								++$order;
 
 								$sql = array(
-									$fields . '_url'	=> $img,
+									$fields . '_url'	=> utf8_substr(rawurlencode($img), 0, 50),
 									$fields . '_height'	=> (int) $height,
 									$fields . '_width'	=> (int) $width,
 									$fields . '_order'	=> (int) $order,
@@ -693,7 +707,7 @@ class acp_icons
 
 					foreach ($_paks as $pak)
 					{
-						$pak_options .= '<option value="' . $pak . '">' . htmlspecialchars($pak) . '</option>';
+						$pak_options .= '<option value="' . $pak . '">' . htmlspecialchars($pak, ENT_COMPAT) . '</option>';
 					}
 
 					$template->assign_vars(array(

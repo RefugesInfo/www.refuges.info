@@ -2,18 +2,23 @@
 
 /**
 * @package   s9e\SweetDOM
-* @copyright Copyright (c) 2019-2020 The s9e authors
+* @copyright Copyright (c) 2019-2021 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\SweetDOM;
 
 use BadMethodCallException;
 use DOMElement;
+use DOMException;
 use DOMNode;
 use DOMNodeList;
-use InvalidArgumentException;
+use DOMText;
 
 /**
+* @method self appendElement(string $nodeName, $text = '')
+* @method self appendElementSibling(string $nodeName, $text = '')
+* @method DOMText appendText(string $text)
+* @method DOMText appendTextSibling(string $text)
 * @method self appendXslApplyTemplates(string $select = null)
 * @method self appendXslApplyTemplatesSibling(string $select = null)
 * @method self appendXslAttribute(string $name, string $text = '')
@@ -36,6 +41,10 @@ use InvalidArgumentException;
 * @method self appendXslVariableSibling(string $name, string $select = null)
 * @method self appendXslWhen(string $test, string $text = '')
 * @method self appendXslWhenSibling(string $test, string $text = '')
+* @method self prependElement(string $nodeName, $text = '')
+* @method self prependElementSibling(string $nodeName, $text = '')
+* @method DOMText prependText(string $text)
+* @method DOMText prependTextSibling(string $text)
 * @method self prependXslApplyTemplates(string $select = null)
 * @method self prependXslApplyTemplatesSibling(string $select = null)
 * @method self prependXslAttribute(string $name, string $text = '')
@@ -58,26 +67,41 @@ use InvalidArgumentException;
 * @method self prependXslVariableSibling(string $name, string $select = null)
 * @method self prependXslWhen(string $test, string $text = '')
 * @method self prependXslWhenSibling(string $test, string $text = '')
+* @property Document $ownerDocument
 */
 class Element extends DOMElement
 {
 	public function __call(string $name, array $arguments)
 	{
-		if (preg_match('(^(append|prepend)(xsl\\w+?)(sibling|)$)', strtolower($name), $m))
-		{
-			$callback = [$this->ownerDocument, 'create' . $m[2]];
-			if (is_callable($callback))
-			{
-				$element = call_user_func_array($callback, $arguments);
-				$where   = [
-					'append'         => 'beforeend',
-					'appendsibling'  => 'afterend',
-					'prepend'        => 'afterbegin',
-					'prependsibling' => 'beforebegin'
-				];
+		$name      = strtolower($name);
+		$positions = [
+			'append'         => 'beforeend',
+			'appendsibling'  => 'afterend',
+			'prepend'        => 'afterbegin',
+			'prependsibling' => 'beforebegin'
+		];
 
-				return $this->insertAdjacentElement($where[$m[1] . $m[3]], $element);
-			}
+		if (preg_match('(^(append|prepend)xsl(\\w+?)(sibling|)$)', $name, $m))
+		{
+			$localName = $m[2];
+			$where     = $positions[$m[1] . $m[3]];
+
+			return $this->insertXslElement($where, $localName, $arguments);
+		}
+		if (preg_match('(^(append|prepend)element(sibling|)$)', $name, $m))
+		{
+			$nodeName = $arguments[0];
+			$text     = $arguments[1] ?? '';
+			$where    = $positions[$m[1] . $m[2]];
+
+			return $this->insertElement($where, $nodeName, $text);
+		}
+		if (preg_match('(^(append|prepend)text(sibling|)$)', $name, $m))
+		{
+			$text  = $arguments[0];
+			$where = $positions[$m[1] . $m[2]];
+
+			return $this->insertText($where, $text);
 		}
 
 		throw new BadMethodCallException;
@@ -128,7 +152,7 @@ class Element extends DOMElement
 	*/
 	public function insertAdjacentText(string $where, string $text): void
 	{
-		$this->insertAdjacentXML($where, htmlspecialchars($text, ENT_XML1));
+		$this->insertText($where, $text);
 	}
 
 	/**
@@ -164,7 +188,7 @@ class Element extends DOMElement
 	*/
 	public function remove(): void
 	{
-		$this->parentNode->removeChild($this);
+		$this->parentOrThrow()->removeChild($this);
 	}
 
 	/**
@@ -175,15 +199,17 @@ class Element extends DOMElement
 	*/
 	public function replaceWith(...$nodes): void
 	{
+		$parentNode = $this->parentOrThrow(new DOMException('No Modification Allowed Error', DOM_NO_MODIFICATION_ALLOWED_ERR));
+
 		foreach ($nodes as $node)
 		{
 			if (!($node instanceof DOMNode))
 			{
 				$node = $this->ownerDocument->createTextNode((string) $node);
 			}
-			$this->parentNode->insertBefore($node, $this);
+			$parentNode->insertBefore($node, $this);
 		}
-		$this->parentNode->removeChild($this);
+		$parentNode->removeChild($this);
 	}
 
 	/**
@@ -224,26 +250,110 @@ class Element extends DOMElement
 	*/
 	protected function insertAdjacentNode(string $where, DOMNode $node): void
 	{
-		$where = strtolower($where);
-		if ($where === 'beforebegin')
+		switch (strtolower($where))
 		{
-			$this->parentNode->insertBefore($node, $this);
+			case 'afterbegin':
+				$this->insertBefore($node, $this->firstChild);
+				break;
+
+			case 'afterend':
+				if (isset($this->parentNode))
+				{
+					$this->parentNode->insertBefore($node, $this->nextSibling);
+				}
+				break;
+
+			case 'beforebegin':
+				if (isset($this->parentNode))
+				{
+					$this->parentNode->insertBefore($node, $this);
+				}
+				break;
+
+			case 'beforeend':
+				$this->appendChild($node);
+				break;
+
+			default:
+				throw new DOMException("'$where' is not one of 'beforebegin', 'afterbegin', 'beforeend', or 'afterend'", DOM_SYNTAX_ERR);
 		}
-		elseif ($where === 'beforeend')
+	}
+
+	/**
+	* Create and insert an element at given position
+	*
+	* @param  string $where    One of 'beforebegin', 'afterbegin', 'beforeend', 'afterend'
+	* @param  string $nodeName Element's nodeName
+	* @param  string $text     Text content
+	* @return self
+	*/
+	protected function insertElement(string $where, string $nodeName, string $text): self
+	{
+		$text = htmlspecialchars($text, ENT_NOQUOTES);
+		$pos  = strpos($nodeName, ':');
+		if ($pos === false)
 		{
-			$this->appendChild($node);
-		}
-		elseif ($where === 'afterend')
-		{
-			$this->parentNode->insertBefore($node, $this->nextSibling);
-		}
-		elseif ($where === 'afterbegin')
-		{
-			$this->insertBefore($node, $this->firstChild);
+			$element = $this->ownerDocument->createElement($nodeName, $text);
 		}
 		else
 		{
-			throw new InvalidArgumentException;
+			$prefix       = substr($nodeName, 0, $pos);
+			$namespaceURI = $this->ownerDocument->lookupNamespaceURI($prefix);
+			$element      = $this->ownerDocument->createElementNS($namespaceURI, $nodeName, $text);
 		}
+
+		return $this->insertAdjacentElement($where, $element);
+	}
+
+	/**
+	* Insert given text relative to this element's position
+	*
+	* @param  string  $where One of 'beforebegin', 'afterbegin', 'beforeend', 'afterend'
+	* @param  string  $text
+	* @return DOMText
+	*/
+	protected function insertText(string $where, string $text): DOMText
+	{
+		$node = $this->ownerDocument->createTextNode($text);
+		$this->insertAdjacentNode($where, $node);
+
+		return $node;
+	}
+
+	/**
+	* Create and insert an XSL element at given position
+	*
+	* @param  string $where     One of 'beforebegin', 'afterbegin', 'beforeend', 'afterend'
+	* @param  string $localName Element's localName
+	* @param  array  $arguments Arguments passed to the Document::create* function
+	* @return self
+	*/
+	protected function insertXslElement(string $where, string $localName, array $arguments): self
+	{
+		$callback = [$this->ownerDocument, 'createXsl' . ucfirst($localName)];
+		if (!is_callable($callback))
+		{
+			throw new BadMethodCallException;
+		}
+
+		$element = call_user_func_array($callback, $arguments);
+
+		return $this->insertAdjacentElement($where, $element);
+	}
+
+	/**
+	* Return this element's parent element if available, or throw an exception
+	*
+	* @param  DOMException $previous Previous exception
+	* @return DOMNode
+	*/
+	protected function parentOrThrow(DOMException $previous = null): DOMNode
+	{
+		if (isset($this->parentNode))
+		{
+			return $this->parentNode;
+		}
+
+		throw new DOMException('Not Found Error', DOM_NOT_FOUND_ERR, $previous);
 	}
 }

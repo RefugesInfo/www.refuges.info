@@ -2,7 +2,7 @@
 /**
 *
 * This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
+* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
 *
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -79,5 +79,6 @@ $lang = array_merge($lang, array(
 	'PARENT_MODULE_FIND_ERROR'			=> 'Impossible de déterminer l’ID du module parent : %s',
 	'PERMISSION_NOT_EXIST'				=> 'La permission « %s » n’existe pas.',
 
+	'ROLE_ASSIGNED_NOT_EXIST'			=> 'Le modèle de permissions assigné au groupe "%1$s" n’existe pas. ID de rôle : "%2$s"',
 	'ROLE_NOT_EXIST'					=> 'Le modèle de permissions pour le rôle « %s » n’existe pas.',
 ));

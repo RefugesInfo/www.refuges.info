@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RendererGenerators\PHP\XPathConvertor\Convertors;
@@ -14,19 +14,21 @@ class BooleanFunctions extends AbstractConvertor
 	*/
 	public function getMatchers(): array
 	{
+		$groups = 'Boolean:BooleanFunction:';
+
 		return [
-			'Boolean:BooleanFunction:BooleanParam'  => 'boolean \\( ((?&Parameter)) \\)',
-			'Boolean:BooleanFunction:False'         => 'false \\( \\)',
-			'Boolean:BooleanFunction:HasAttribute'  => 'boolean \\( ((?&Attribute)) \\)',
-			'Boolean:BooleanFunction:HasAttributes' => 'boolean \\( @\\* \\)',
-			'Boolean:BooleanFunction:Not'           => [
+			$groups . 'BooleanParam'  => 'boolean \\( ((?&Parameter)) \\)',
+			$groups . 'False'         => 'false \\( \\)',
+			$groups . 'HasAttribute'  => 'boolean \\( ((?&Attribute)) \\)',
+			$groups . 'HasAttributes' => 'boolean \\( @\\* \\)',
+			$groups . 'Not'           => [
 				// Only try matching generic not() invocations after special cases fail
 				'order'  => 100,
 				'regexp' => 'not \\( ((?&Boolean)|(?&BooleanExpression)) \\)'
 			],
-			'Boolean:BooleanFunction:NotAttribute'  => 'not \\( ((?&Attribute)) \\)',
-			'Boolean:BooleanFunction:NotParam'      => 'not \\( ((?&Parameter)) \\)',
-			'Boolean:BooleanFunction:True'          => 'true \\( \\)'
+			$groups . 'NotAttribute'  => 'not \\( ((?&Attribute)) \\)',
+			$groups . 'NotParam'      => 'not \\( ((?&Parameter)) \\)',
+			$groups . 'True'          => 'true \\( \\)'
 		];
 	}
 

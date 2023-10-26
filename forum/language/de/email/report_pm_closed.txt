@@ -2,7 +2,7 @@ Subject: Meldung zu Privater Nachricht geschlossen — „{SUBJECT}“
 
 Hallo {USERNAME},
 
-du erhältst diese Nachricht, weil deine Meldung zur Privaten Nachricht „{SUBJECT}“ von „{AUTHOR_NAME}“ auf „{SITENAME}“ von einem Moderator oder Administrator bearbeitet wurde. Die Meldung wurde anschließend geschlossen. Wenn du weitere Fragen dazu hast, kannst du {CLOSER_NAME} mit einer Privaten Nachricht kontaktieren.
+deine Meldung zur Privaten Nachricht „{SUBJECT}“ von „{AUTHOR_NAME}“ auf „{SITENAME}“ wurde von einem Moderator oder Administrator bearbeitet. Die Meldung ist nun geschlossen. Wenn du weitere Fragen dazu hast, kannst du {CLOSER_NAME} mit einer Privaten Nachricht kontaktieren.
 
 Du kannst dir die von dir gemeldete Private Nachricht ansehen, wenn du folgenden Link aufrufst:
 {U_VIEW_MESSAGE}

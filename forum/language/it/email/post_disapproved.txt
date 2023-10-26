@@ -2,7 +2,7 @@ Subject: Messaggio disapprovato - “{POST_SUBJECT}”
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché il messaggio “{POST_SUBJECT}” su “{SITENAME}” è stato disapprovato da un moderatore o da un amministratore.
+Il tuo messaggio "{POST_SUBJECT}" su "{SITENAME}" non è stato approvato da un moderatore o amministratore.
 
 La ragione della disapprovazione è la seguente:
 

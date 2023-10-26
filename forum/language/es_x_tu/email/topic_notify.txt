@@ -1,12 +1,11 @@
-Subject: Notificación de respuesta al tema - "{TOPIC_TITLE}"
+Subject: Respuesta en - “{TOPIC_TITLE}”
+Lista-Darse de baja: <{U_STOP_WATCHING_TOPIC}>
 
 Hola {USERNAME},
 
-Estás recibiendo esta notificación porque sigues el tema "{TOPIC_TITLE}" de "{SITENAME}".
-Este tema ha recibido una respuesta<!-- IF AUTHOR_NAME != '' --> por {AUTHOR_NAME}<!-- ENDIF --> desde tu última visita.
-Siguiendo este enlace puedes ver esa respuesta, no se enviarán más notificaciones hasta que visites ese tema.
+El tema “{TOPIC_TITLE}” recibió una nueva respuesta<!-- IF AUTHOR_NAME != '' --> por {AUTHOR_NAME}<!-- ENDIF --> desde tu última visita a “{SITENAME}”. No se enviarán más notificaciones hasta que visites el tema
 
-Si quieres ver los nuevos mensajes desde tu última visita, haz clic en el siguiente enlace:
+Si quieres ver los nuevos mensajes haz clic en el siguiente enlace:
 {U_NEWEST_POST}
 
 Si quieres ver el tema, haz clic en el siguiente enlace:
@@ -15,8 +14,7 @@ Si quieres ver el tema, haz clic en el siguiente enlace:
 Si quieres ver el foro, haz clic en el siguiente enlace:
 {U_FORUM}
 
-Si no quieres seguir más ese tema puedes hacer clic en "Cancelar suscripción al tema" cuando estés allí, o bien siguiendo este enlace:
-
+Si ya no deseas seguir este tema, haz clic en el siguiente enlace:
 {U_STOP_WATCHING_TOPIC}
 
 {EMAIL_SIG}

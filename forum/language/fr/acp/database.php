@@ -2,7 +2,7 @@
 /**
 *
 * This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
+* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
 *
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -72,7 +72,6 @@ $lang = array_merge($lang, array(
 	'START_RESTORE'			=> 'Démarrer la restauration',
 	'STORE_AND_DOWNLOAD'	=> 'Stocker et télécharger',
 	'STORE_LOCAL'			=> 'Stocker le fichier',
-	'STRUCTURE_ONLY'		=> 'Structure seulement',
 
 	'TABLE_SELECT'		=> 'Sélection de la table',
 	'TABLE_SELECT_ERROR'=> 'Vous devez sélectionner au moins une table.',

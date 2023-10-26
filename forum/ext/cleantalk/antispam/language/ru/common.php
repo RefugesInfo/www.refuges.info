@@ -50,6 +50,8 @@ $lang = array_merge($lang, array(
 	'ACP_CLEANTALK_APIKEY_GET_MANUALLY_BUTTON_LABEL'	=> 'Получить ключ вручную',
 	'ACP_CLEANTALK_APIKEY_CP_LINK_BUTTON'		=> 'Перейти в панель управления CleanTalk',
 	'ACP_CLEANTALK_ACCOUNT_NAME_OB'				=> 'Аккаунт на cleantalk.org',
+	'ACP_CLEANTALK_TITLE__STATS'				=> 'Статистика',
+	'ACP_CLEANTALK_STATS__SFW_NETS'             => 'Количество сетей SpamFireWall',
 	'ACP_CLEANTALK_CHECKUSERS_TITLE'		    => 'Проверить пользователей на спам',
 	'ACP_CLEANTALK_CHECKUSERS_DESCRIPTION'		=> 'Антиспам от CleanTalk проверит всех пользователей по черным спискам и покажет вам тех, кто проявил спам-активность на других сайтах. ',
 	'ACP_CLEANTALK_CHECKUSERS_PAGES_TITLE'      => 'Страницы:',
@@ -78,4 +80,11 @@ $lang = array_merge($lang, array(
 	'CLEANTALK_ERROR_NO_CURL'		            => 'Нет поддержки CURL',
 	'CLEANTALK_ERROR_ADDON'		                => ' или выключена настройка allow_url_fopen в php.ini.',
 	'CLEANTALK_NOTIFICATION'					=> 'Вы уверены?',
+
+    'ACP_CLEANTALK_STATS__LAST_SPAM_REQUEST_TIME' => 'Последний спам запрос на сервер был',
+    'ACP_CLEANTALK_STATS__AVERAGE_REQUEST_TIME' => 'Среднее время запроса за последние 7 дней (в секундах)',
+    'ACP_CLEANTALK_STATS__LAST_SFW_BLOCK_IP' => 'В последний раз SpamFireWall сработал на IP',
+    'ACP_CLEANTALK_STATS__LAST_SFW_BLOCK_TIME' => 'В последний раз SpamFireWall сработал в',
+    'ACP_CLEANTALK_STATS__SFW_LAST_TIME_UPDATED' => 'SpamFireWall был обновлен',
+    'ACP_CLEANTALK_STATS__SFW_LAST_TIME_SEND_LOGS' => 'SpamFireWall отправил логи',
 ));

@@ -8,6 +8,4 @@ $baseDir = dirname($vendorDir);
 return array(
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'ProxyManager\\' => array($vendorDir . '/ocramius/proxy-manager/src'),
-    'OAuth\\Unit' => array($vendorDir . '/lusitanian/oauth/tests'),
-    'OAuth' => array($vendorDir . '/lusitanian/oauth/src'),
 );

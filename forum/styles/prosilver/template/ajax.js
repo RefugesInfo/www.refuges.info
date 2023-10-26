@@ -101,6 +101,7 @@ phpbb.addAjaxCallback('mark_topics_read', function(res, updateTopicLinks) {
 phpbb.addAjaxCallback('notification.mark_all_read', function(res) {
 	if (typeof res.success !== 'undefined') {
 		phpbb.markNotifications($('#notification_list li.bg2'), 0);
+		phpbb.toggleDropdown.call($('#notification_list_button'));
 		phpbb.closeDarkenWrapper(3000);
 	}
 });
@@ -359,6 +360,17 @@ $('.display_post').click(function(e) {
 	$('#post_content' + postId).show();
 	$('#profile' + postId).show();
 	$('#post_hidden' + postId).hide();
+});
+
+/**
+ * Display hidden post on post review page
+ */
+$('.display_post_review').on('click', function(e) {
+	e.preventDefault();
+
+	let $displayPostLink = $(this);
+	$displayPostLink.closest('.post-ignore').removeClass('post-ignore');
+	$displayPostLink.hide();
 });
 
 /**

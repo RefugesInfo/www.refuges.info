@@ -208,7 +208,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 
 	if (empty($user->browser) || ((strpos(strtolower($user->browser), 'msie') !== false) && !phpbb_is_greater_ie_version($user->browser, 7)))
 	{
-		header('Content-Disposition: attachment; ' . header_filename(htmlspecialchars_decode($attachment['real_filename'])));
+		header('Content-Disposition: attachment; ' . header_filename(html_entity_decode($attachment['real_filename'], ENT_COMPAT)));
 		if (empty($user->browser) || (strpos(strtolower($user->browser), 'msie 6.0') !== false))
 		{
 			header('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
@@ -216,7 +216,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 	}
 	else
 	{
-		header('Content-Disposition: ' . ((strpos($attachment['mimetype'], 'image') === 0) ? 'inline' : 'attachment') . '; ' . header_filename(htmlspecialchars_decode($attachment['real_filename'])));
+		header('Content-Disposition: ' . ((strpos($attachment['mimetype'], 'image') === 0) ? 'inline' : 'attachment') . '; ' . header_filename(html_entity_decode($attachment['real_filename'], ENT_COMPAT)));
 		if (phpbb_is_greater_ie_version($user->browser, 7) && (strpos($attachment['mimetype'], 'image') !== 0))
 		{
 			header('X-Download-Options: noopen');
@@ -242,7 +242,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 			// X-Sendfile - http://blog.lighttpd.net/articles/2006/07/02/x-sendfile
 			// Lighttpd's X-Sendfile does not support range requests as of 1.4.26
 			// and always requires an absolute path.
-			header('X-Sendfile: ' . dirname(__FILE__) . "/../$upload_dir/{$attachment['physical_filename']}");
+			header('X-Sendfile: ' . __DIR__ . "/../$upload_dir/{$attachment['physical_filename']}");
 			exit;
 		}
 
@@ -327,7 +327,7 @@ function download_allowed()
 		return true;
 	}
 
-	$url = htmlspecialchars_decode($request->header('Referer'));
+	$url = html_entity_decode($request->header('Referer'), ENT_COMPAT);
 
 	if (!$url)
 	{
@@ -656,15 +656,15 @@ function phpbb_download_handle_forum_auth($db, $auth, $topic_id)
 {
 	global $phpbb_container;
 
-	$sql_array = array(
-		'SELECT'	=> 't.topic_visibility, t.forum_id, f.forum_name, f.forum_password, f.parent_id',
-		'FROM'		=> array(
+	$sql_array = [
+		'SELECT'	=> 't.forum_id, t.topic_poster, t.topic_visibility, f.forum_name, f.forum_password, f.parent_id',
+		'FROM'		=> [
 			TOPICS_TABLE => 't',
 			FORUMS_TABLE => 'f',
-		),
-		'WHERE'	=> 't.topic_id = ' . (int) $topic_id . '
+		],
+		'WHERE'		=> 't.topic_id = ' . (int) $topic_id . '
 			AND t.forum_id = f.forum_id',
-	);
+	];
 
 	$sql = $db->sql_build_query('SELECT', $sql_array);
 	$result = $db->sql_query($sql);

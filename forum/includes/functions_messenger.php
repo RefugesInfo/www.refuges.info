@@ -320,8 +320,8 @@ class messenger
 		// We add some standard variables we always use, no need to specify them always
 		$this->assign_vars(array(
 			'U_BOARD'	=> generate_board_url(),
-			'EMAIL_SIG'	=> str_replace('<br />', "\n", "-- \n" . htmlspecialchars_decode($config['board_email_sig'])),
-			'SITENAME'	=> htmlspecialchars_decode($config['sitename']),
+			'EMAIL_SIG'	=> str_replace('<br />', "\n", "-- \n" . html_entity_decode($config['board_email_sig'], ENT_COMPAT)),
+			'SITENAME'	=> html_entity_decode($config['sitename'], ENT_COMPAT),
 		));
 
 		$subject = $this->subject;
@@ -427,7 +427,7 @@ class messenger
 			$user->session_begin();
 		}
 
-		$calling_page = htmlspecialchars_decode($request->server('PHP_SELF'));
+		$calling_page = html_entity_decode($request->server('REQUEST_URI'), ENT_COMPAT);
 
 		switch ($type)
 		{
@@ -440,7 +440,7 @@ class messenger
 			break;
 		}
 
-		$message .= '<br /><em>' . htmlspecialchars($calling_page) . '</em><br /><br />' . $msg . '<br />';
+		$message .= '<br /><em>' . htmlspecialchars($calling_page, ENT_COMPAT) . '</em><br /><br />' . $msg . '<br />';
 		$phpbb_log->add('critical', $user->data['user_id'], $user->ip, 'LOG_ERROR_' . $type, false, array($message));
 	}
 
@@ -557,7 +557,7 @@ class messenger
 			$use_queue = true;
 		}
 
-		$contact_name = htmlspecialchars_decode($config['board_contact_name']);
+		$contact_name = html_entity_decode($config['board_contact_name'], ENT_COMPAT);
 		$board_contact = (($contact_name !== '') ? '"' . mail_encode($contact_name) . '" ' : '') . '<' . $config['board_contact'] . '>';
 
 		$break = false;
@@ -597,7 +597,7 @@ class messenger
 			$this->from = $board_contact;
 		}
 
-		$encode_eol = ($config['smtp_delivery']) ? "\r\n" : PHP_EOL;
+		$encode_eol = $config['smtp_delivery'] || PHP_VERSION_ID >= 80000 ? "\r\n" : PHP_EOL;
 
 		// Build to, cc and bcc strings
 		$to = $cc = $bcc = '';
@@ -629,7 +629,7 @@ class messenger
 			}
 			else
 			{
-				$result = phpbb_mail($mail_to, $this->subject, $this->msg, $headers, PHP_EOL, $err_msg);
+				$result = phpbb_mail($mail_to, $this->subject, $this->msg, $headers, $encode_eol, $err_msg);
 			}
 
 			if (!$result)
@@ -691,7 +691,7 @@ class messenger
 		if (!$use_queue)
 		{
 			include_once($phpbb_root_path . 'includes/functions_jabber.' . $phpEx);
-			$this->jabber = new jabber($config['jab_host'], $config['jab_port'], $config['jab_username'], htmlspecialchars_decode($config['jab_password']), $config['jab_use_ssl'], $config['jab_verify_peer'], $config['jab_verify_peer_name'], $config['jab_allow_self_signed']);
+			$this->jabber = new jabber($config['jab_host'], $config['jab_port'], $config['jab_username'], html_entity_decode($config['jab_password'], ENT_COMPAT), $config['jab_use_ssl'], $config['jab_verify_peer'], $config['jab_verify_peer_name'], $config['jab_allow_self_signed']);
 
 			if (!$this->jabber->connect())
 			{
@@ -891,7 +891,7 @@ class queue
 					}
 
 					include_once($phpbb_root_path . 'includes/functions_jabber.' . $phpEx);
-					$this->jabber = new jabber($config['jab_host'], $config['jab_port'], $config['jab_username'], htmlspecialchars_decode($config['jab_password']), $config['jab_use_ssl'], $config['jab_verify_peer'], $config['jab_verify_peer_name'], $config['jab_allow_self_signed']);
+					$this->jabber = new jabber($config['jab_host'], $config['jab_port'], $config['jab_username'], html_entity_decode($config['jab_password'], ENT_COMPAT), $config['jab_use_ssl'], $config['jab_verify_peer'], $config['jab_verify_peer_name'], $config['jab_allow_self_signed']);
 
 					if (!$this->jabber->connect())
 					{
@@ -952,7 +952,8 @@ class queue
 							}
 							else
 							{
-								$result = phpbb_mail($to, $subject, $msg, $headers, PHP_EOL, $err_msg);
+								$encode_eol = $config['smtp_delivery'] || PHP_VERSION_ID >= 80000 ? "\r\n" : PHP_EOL;
+								$result = phpbb_mail($to, $subject, $msg, $headers, $encode_eol, $err_msg);
 							}
 
 							if (!$result)
@@ -1196,7 +1197,7 @@ function smtpmail($addresses, $subject, $message, &$err_msg, $headers = false)
 		}
 
 		$err_msg = (isset($user->lang['NO_CONNECT_TO_SMTP_HOST'])) ? sprintf($user->lang['NO_CONNECT_TO_SMTP_HOST'], $errno, $errstr) : "Could not connect to smtp host : $errno : $errstr";
-		$err_msg .= ($error_contents) ? '<br /><br />' . htmlspecialchars($error_contents) : '';
+		$err_msg .= ($error_contents) ? '<br /><br />' . htmlspecialchars($error_contents, ENT_COMPAT) : '';
 		return false;
 	}
 
@@ -1208,7 +1209,7 @@ function smtpmail($addresses, $subject, $message, &$err_msg, $headers = false)
 	}
 
 	// Let me in. This function handles the complete authentication process
-	if ($err_msg = $smtp->log_into_server($config['smtp_host'], $config['smtp_username'], htmlspecialchars_decode($config['smtp_password']), $config['smtp_auth_method']))
+	if ($err_msg = $smtp->log_into_server($config['smtp_host'], $config['smtp_username'], html_entity_decode($config['smtp_password'], ENT_COMPAT), $config['smtp_auth_method']))
 	{
 		$smtp->close_session($err_msg);
 		return false;
@@ -1259,7 +1260,7 @@ function smtpmail($addresses, $subject, $message, &$err_msg, $headers = false)
 	{
 		$user->session_begin();
 		$err_msg .= '<br /><br />';
-		$err_msg .= (isset($user->lang['INVALID_EMAIL_LOG'])) ? sprintf($user->lang['INVALID_EMAIL_LOG'], htmlspecialchars($mail_to_address)) : '<strong>' . htmlspecialchars($mail_to_address) . '</strong> possibly an invalid email address?';
+		$err_msg .= (isset($user->lang['INVALID_EMAIL_LOG'])) ? sprintf($user->lang['INVALID_EMAIL_LOG'], htmlspecialchars($mail_to_address, ENT_COMPAT)) : '<strong>' . htmlspecialchars($mail_to_address, ENT_COMPAT) . '</strong> possibly an invalid email address?';
 		$smtp->close_session($err_msg);
 		return false;
 	}
@@ -1342,7 +1343,7 @@ class smtp_class
 	{
 		if ($this->backtrace)
 		{
-			$this->backtrace_log[] = utf8_htmlspecialchars($message);
+			$this->backtrace_log[] = utf8_htmlspecialchars($message, ENT_COMPAT);
 		}
 	}
 
@@ -1840,56 +1841,84 @@ class smtp_class
 }
 
 /**
-* Encodes the given string for proper display in UTF-8.
-*
-* This version is using base64 encoded data. The downside of this
-* is if the mail client does not understand this encoding the user
-* is basically doomed with an unreadable subject.
-*
-* Please note that this version fully supports RFC 2045 section 6.8.
-*
-* @param string $eol End of line we are using (optional to be backwards compatible)
-*/
+ * Encodes the given string for proper display in UTF-8 or US-ASCII.
+ *
+ * This version is based on iconv_mime_encode() implementation
+ * from symfomy/polyfill-iconv
+ * https://github.com/symfony/polyfill-iconv/blob/fd324208ec59a39ebe776e6e9ec5540ad4f40aaa/Iconv.php#L355
+ *
+ * @param string $str
+ * @param string $eol Lines delimiter (optional to be backwards compatible)
+ *
+ * @return string
+ */
 function mail_encode($str, $eol = "\r\n")
 {
-	// define start delimimter, end delimiter and spacer
-	$start = "=?UTF-8?B?";
-	$end = "?=";
-	$delimiter = "$eol ";
+	// Check if string contains ASCII only characters
+	$is_ascii = strlen($str) === utf8_strlen($str);
 
-	// Maximum length is 75. $split_length *must* be a multiple of 4, but <= 75 - strlen($start . $delimiter . $end)!!!
-	$split_length = 60;
-	$encoded_str = base64_encode($str);
+	$scheme = $is_ascii ? 'Q' : 'B';
 
-	// If encoded string meets the limits, we just return with the correct data.
-	if (strlen($encoded_str) <= $split_length)
+	// Define start delimiter, end delimiter
+	// Use the Quoted-Printable encoding for ASCII strings to avoid unnecessary encoding in Base64
+	$start = '=?' . ($is_ascii ? 'US-ASCII' : 'UTF-8') . '?' . $scheme . '?';
+	$end = '?=';
+
+	// Maximum encoded-word length is 75 as per RFC 2047 section 2.
+	// $split_length *must* be a multiple of 4, but <= 75 - strlen($start . $eol . $end)!!!
+	$split_length = 75 - strlen($start . $eol . $end);
+	$split_length = $split_length - $split_length % 4;
+
+	$line_length = strlen($start) + strlen($end);
+	$line_offset = strlen($start) + 1;
+	$line_data = '';
+
+	$is_quoted_printable = 'Q' === $scheme;
+
+	preg_match_all('/./us', $str, $chars);
+	$chars = $chars[0] ?? [];
+
+	$str = [];
+	foreach ($chars as $char)
 	{
-		return $start . $encoded_str . $end;
-	}
+		$encoded_char = $is_quoted_printable
+			? $char = preg_replace_callback(
+				'/[()<>@,;:\\\\".\[\]=_?\x20\x00-\x1F\x80-\xFF]/',
+				function ($matches)
+				{
+					$hex = dechex(ord($matches[0]));
+					$hex = strlen($hex) == 1 ? "0$hex" : $hex;
+					return '=' . strtoupper($hex);
+				},
+				$char
+			)
+			: base64_encode($line_data . $char);
 
-	// If there is only ASCII data, we just return what we want, correctly splitting the lines.
-	if (strlen($str) === utf8_strlen($str))
-	{
-		return $start . implode($end . $delimiter . $start, str_split($encoded_str, $split_length)) . $end;
-	}
-
-	// UTF-8 data, compose encoded lines
-	$array = utf8_str_split($str);
-	$str = '';
-
-	while (count($array))
-	{
-		$text = '';
-
-		while (count($array) && intval((strlen($text . $array[0]) + 2) / 3) << 2 <= $split_length)
+		if (isset($encoded_char[$split_length - $line_length]))
 		{
-			$text .= array_shift($array);
+			if (!$is_quoted_printable)
+			{
+				$line_data = base64_encode($line_data);
+			}
+			$str[] = $start . $line_data . $end;
+			$line_length = $line_offset;
+			$line_data = '';
 		}
 
-		$str .= $start . base64_encode($text) . $end . $delimiter;
+		$line_data .= $char;
+		$is_quoted_printable && $line_length += strlen($char);
 	}
 
-	return substr($str, 0, -strlen($delimiter));
+	if ($line_data !== '')
+	{
+		if (!$is_quoted_printable)
+		{
+			$line_data = base64_encode($line_data);
+		}
+		$str[] = $start . $line_data . $end;
+	}
+
+	return implode($eol . ' ', $str);
 }
 
 /**
@@ -1897,7 +1926,7 @@ function mail_encode($str, $eol = "\r\n")
  */
 function phpbb_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
 {
-	global $config, $phpbb_root_path, $phpEx;
+	global $config, $phpbb_root_path, $phpEx, $phpbb_dispatcher;
 
 	// Convert Numeric Character References to UTF-8 chars (ie. Emojis)
 	$subject = utf8_decode_ncr($subject);
@@ -1926,7 +1955,53 @@ function phpbb_mail($to, $subject, $msg, $headers, $eol, &$err_msg)
 	 */
 	$additional_parameters = $config['email_force_sender'] ? '-f' . $config['board_email'] : '';
 
+	/**
+	 * Modify data before sending out emails with PHP's mail function
+	 *
+	 * @event core.phpbb_mail_before
+	 * @var	string	to						The message recipient
+	 * @var	string	subject					The message subject
+	 * @var	string	msg						The message text
+	 * @var string	headers					The email headers
+	 * @var string	eol						The endline character
+	 * @var string	additional_parameters	The additional parameters
+	 * @since 3.3.6-RC1
+	 */
+	$vars = [
+		'to',
+		'subject',
+		'msg',
+		'headers',
+		'eol',
+		'additional_parameters',
+	];
+	extract($phpbb_dispatcher->trigger_event('core.phpbb_mail_before', compact($vars)));
+
 	$result = mail($to, mail_encode($subject, ''), wordwrap(utf8_wordwrap($msg), 997, "\n", true), $headers, $additional_parameters);
+
+	/**
+	 * Execute code after sending out emails with PHP's mail function
+	 *
+	 * @event core.phpbb_mail_after
+	 * @var	string	to						The message recipient
+	 * @var	string	subject					The message subject
+	 * @var	string	msg						The message text
+	 * @var string	headers					The email headers
+	 * @var string	eol						The endline character
+	 * @var string	additional_parameters	The additional parameters
+	 * @var bool	result					True if the email was sent, false otherwise
+	 * @since 3.3.6-RC1
+	 */
+	$vars = [
+		'to',
+		'subject',
+		'msg',
+		'headers',
+		'eol',
+		'additional_parameters',
+		'result',
+	];
+	extract($phpbb_dispatcher->trigger_event('core.phpbb_mail_after', compact($vars)));
 
 	$collector->uninstall();
 	$err_msg = $collector->format_errors();

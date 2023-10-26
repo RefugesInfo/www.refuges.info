@@ -345,7 +345,7 @@ $lang = array_merge($lang, array(
 // Common updater messages
 $lang = array_merge($lang, array(
 	'UPDATE_INSTALLATION'			=> 'Actualizar la instalación de phpBB',
-	'UPDATE_INSTALLATION_EXPLAIN'	=> 'Con esta opción, es posible actualizar su instalacion de phpBB a la última versión.<br />Durante el proceso se verificará la integridad de todos los archivos. Podrá también revisar las diferencias y archivos antes de actualizar.<br /><br /> La actualización de archivos en si misma se puede hacer de dos formas distintas.</p><h2>Actualización Manual</h2> <p>Con esta actualización solamente descarga su paquete de archivos cambiados personalizado para asegurarse de no perder sus cambios de archivos. Una vez terminado se le redirige a la comprobación de archivo de nuevo para asegurarse de que todo se actualizó correctamente.<br /><br />',
+	'UPDATE_INSTALLATION_EXPLAIN'	=> 'Con esta opción, es posible actualizar su instalacion de phpBB a la última versión.<br />Durante el proceso se verificará la integridad de todos los archivos. Podrá también revisar las diferencias y archivos antes de actualizar.<br /><br />La actualización de archivos en si misma se puede hacer de dos formas distintas.</p><h2>Actualización Manual</h2><p>Con esta actualización solamente descarga su paquete de archivos cambiados personalizado para asegurarse de no perder sus cambios de archivos. Una vez terminado se le redirige a la comprobación de archivo de nuevo para asegurarse de que todo se actualizó correctamente.</p><h2>Actualización Avanzada con FTP</h2><p>Este método es similar al primero pero sin necesidad de descargar los archivos modificados y subirlos por su cuenta. Esto se hará por usted. Para usar este método, deberá conocer las credenciales de acceso por FTP, ya que se le solicitarán. Una vez terminado será redirigido a la verificación de archivos de nuevo para asegurarse de que todo se haya actualizado correctamente.<br /><br />',
 	'UPDATE_INSTRUCTIONS'			=> '
 
 		<h1>Anuncio de la publicación</h1>
@@ -356,7 +356,7 @@ $lang = array_merge($lang, array(
 
 		<h1>Cómo actualizar su instalación con el paquete completo</h1>
 
-		<p>La forma recomendada de actualizar su instalación es utilizando el paquete completo. Si los archivos core phpBB se han modificado en su instalación, es posible que desee utilizar el paquete de actualización automática para no perder estos cambios. También puede actualizar su instalación utilizando los otros métodos enumerados en el documento INSTALL.html. Los pasos para actualizar phpBB3 usando el paquete completo son los siguientes:</p>
+		<p>La forma recomendada de actualizar su instalación es utilizando el paquete completo. Si los archivos core phpBB se han modificado en su instalación, es posible que desee utilizar el paquete de actualización avanzada para no perder estos cambios. También puede actualizar su instalación utilizando los otros métodos enumerados en el documento INSTALL.html. Los pasos para actualizar phpBB3 usando el paquete completo son los siguientes:</p>
 
 		<ol style="margin-left: 20px; font-size: 1.1em;">
 			<li><strong class="error">Copia de seguridad de todos los archivos y base de datos.</strong></li>
@@ -377,12 +377,12 @@ $lang = array_merge($lang, array(
 			<li>Actualiza tu estilo<br><br></li>
 		</ul>
 
-		<h1>Cómo actualizar su instalación con el paquete de actualización automática</h1>
+		<h1>Cómo actualizar su instalación con el paquete de actualización avanzada</h1>
 
-		<p>El paquete de actualización automática solo se recomienda en caso de que se hayan modificado los archivos core phpBB en su instalación. También puede actualizar su instalación utilizando los métodos enumerados en el documento INSTALL.html. Los pasos para actualizar phpBB3 usando el paquete de actualización automática son:</p>
+		<p>El paquete de actualización avanzada solo se recomienda en caso de que se hayan modificado los archivos core phpBB en su instalación. También puede actualizar su instalación utilizando los métodos enumerados en el documento INSTALL.html. Los pasos para actualizar phpBB3 usando el paquete de actualización avanzada son:</p>
 
 		<ul style="margin-left: 20px; font-size: 1.1em;">
-			<li>Visite la <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">página de descargas de phpBB.com</a> y descargue el archivo “Paquete de Actualización automática de phpBB”.</li>
+			<li>Visite la <a href="https://www.phpbb.com/downloads/" title="https://www.phpbb.com/downloads/">página de descargas de phpBB.com</a> y descargue el archivo “Paquete de Actualización Avanzada de phpBB”.</li>
 			<li>Desempaquete el archivo.<br /><br /></li>
 			<li>Suba las carpetas de instalación descomprimida “install” y “vendor” completa a la carpeta raiz de phpBB (donde está el archivo config.php).<br><br></li>
 		</ul>
@@ -408,8 +408,8 @@ $lang = array_merge($lang, array(
 
 	'UPDATE_FILE_METHOD'			=> 'Método de actualización del archivo',
 	'UPDATE_FILE_METHOD_DOWNLOAD'	=> 'Descargar archivos modificados en un archivo',
-	'UPDATE_FILE_METHOD_FTP'		=> 'Archivos de actualización a través de FTP (Automático)',
-	'UPDATE_FILE_METHOD_FILESYSTEM'	=> 'Archivos de actualización a través de acceso directo a archivos (Automático)',
+	'UPDATE_FILE_METHOD_FTP'		=> 'Archivos de actualización a través de FTP (Avanzado)',
+	'UPDATE_FILE_METHOD_FILESYSTEM'	=> 'Archivos de actualización a través de acceso directo a archivos (Avanzado)',
 
 	// File updater archives
 	'SELECT_DOWNLOAD_FORMAT'	=> 'Seleccione el formato del archivo de descarga',

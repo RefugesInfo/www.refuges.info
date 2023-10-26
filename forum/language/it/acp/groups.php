@@ -6,7 +6,8 @@
 * @copyright (c) phpBB Limited <https://www.phpbb.com>
 * @copyright (c) 2010 phpBB.it
 * @copyright (c) 2014 phpBBItalia.net <https://www.phpbbitalia.net>
-* @copyright (c) 2020 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2018 phpBB-Store.it <https://www.phpbb-store.it>
+* @copyright (c) 2021 phpBB-Italia.it <https://www.phpbb-italia.it>
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
@@ -65,7 +66,7 @@ $lang = array_merge($lang, array(
 		2	=> 'Sei sicuro di voler aggiungere gli utenti %2$s al gruppo?',
 	),
 	'GROUP_CREATED'					=> 'Il gruppo è stato creato.',
-	'GROUP_DEFAULT'					=> 'Rendi il gruppo come predefinito per i membri',
+	'GROUP_DEFAULT'					=> 'Rendi il gruppo predefinito per l’utente',
 	'GROUP_DEFS_UPDATED'			=> 'Gruppo predefinito impostato per tutti i membri selezionati.',
 	'GROUP_DELETE'					=> 'Rimuovi membro dal gruppo',
 	'GROUP_DELETED'					=> 'Gruppo cancellato e gruppo predefinito utente impostato.',

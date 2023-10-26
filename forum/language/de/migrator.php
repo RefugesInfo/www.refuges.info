@@ -79,7 +79,8 @@ $lang = array_merge($lang, array(
 	'MODULE_NOT_EXIST'					=> 'Ein erforderliches Modul existiert nicht: %s',
 
 	'PARENT_MODULE_FIND_ERROR'			=> 'Es wurde kein übergeordnetes Modul mit diesem Namen gefunden: %s',
-	'PERMISSION_NOT_EXIST'				=> 'Die Berechtigungs-Einstellung „%s“ existiert unerwarteterweise nicht.',
+	'PERMISSION_NOT_EXIST'				=> 'Die Berechtigungs-Einstellung „%s“ existiert leider nicht.',
 
-	'ROLE_NOT_EXIST'					=> 'Die Berechtigungs-Rolle „%s“ existiert unerwarteterweise nicht.',
+	'ROLE_ASSIGNED_NOT_EXIST'			=> 'Die der Gruppe „%1$s“ zugewiesene Berechtigungsrolle existiert leider nicht. ID der Rolle: „%2$s“',
+	'ROLE_NOT_EXIST'					=> 'Die Berechtigungs-Rolle „%s“ existiert leider nicht.',
 ));

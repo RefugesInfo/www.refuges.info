@@ -2,7 +2,7 @@ Subject: Beitrag freigegeben — „{POST_SUBJECT}“
 
 Hallo {USERNAME},
 
-du erhältst diese Nachricht, weil dein Beitrag „{POST_SUBJECT}“ auf „{SITENAME}“ durch einen Moderator oder Administrator freigegeben wurde.
+dein Beitrag „{POST_SUBJECT}“ auf „{SITENAME}“ wurde durch einen Moderator oder Administrator freigegeben.
 
 Du kannst dir den Beitrag ansehen, wenn du folgenden Link aufrufst:
 {U_VIEW_POST}

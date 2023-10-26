@@ -1,9 +1,10 @@
-Subject: Notifica risposta argomento - “{TOPIC_TITLE}”
+Subject: Citazione su - “{TOPIC_TITLE}”
 
 Ciao {USERNAME},
 
-ricevi questa notifica perché “{AUTHOR_NAME}” ti ha citato nell’argomento “{TOPIC_TITLE}” su “{SITENAME}”. Per visualizzare la risposta e il messaggio citato clicca sul seguente link:
+"{AUTHOR_NAME}" ti ha citato nell'argomento "{TOPIC_TITLE}" in "{SITENAME}". 
 
+Per visualizzare la risposta con il messaggio citato clicca sul seguente link:
 {U_VIEW_POST}
 
 Per visualizzare l’argomento clicca sul seguente link:

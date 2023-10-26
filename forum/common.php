@@ -12,7 +12,7 @@
 */
 
 /**
-* Minimum Requirement: PHP 7.1.3
+* Minimum Requirement: PHP 7.2.0
 */
 
 if (!defined('IN_PHPBB'))
@@ -51,10 +51,10 @@ if (!defined('PHPBB_INSTALLED'))
 		$server_port = 443;
 	}
 
-	$script_name = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
+	$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
 	if (!$script_name)
 	{
-		$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
+		$script_name = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
 	}
 
 	// $phpbb_root_path accounts for redirects from e.g. /adm
@@ -96,6 +96,8 @@ include($phpbb_root_path . 'includes/functions_compatibility.' . $phpEx);
 require($phpbb_root_path . 'includes/constants.' . $phpEx);
 require($phpbb_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
+// Registered before building the container so the development environment stay capable of intercepting
+// the container builder exceptions.
 if (PHPBB_ENVIRONMENT === 'development')
 {
 	\phpbb\debug\debug::enable();
@@ -112,6 +114,14 @@ $phpbb_class_loader_ext->register();
 try
 {
 	$phpbb_container_builder = new \phpbb\di\container_builder($phpbb_root_path, $phpEx);
+
+	// Check that cache directory is writable before trying to build container
+	$cache_dir = $phpbb_container_builder->get_cache_dir();
+	if (file_exists($cache_dir) && !is_writable($phpbb_container_builder->get_cache_dir()))
+	{
+		die('Unable to write to the cache directory path "' . $cache_dir . '". Ensure that the web server user can write to the cache folder.');
+	}
+
 	$phpbb_container = $phpbb_container_builder->with_config($phpbb_config_php_file)->get_container();
 }
 catch (InvalidArgumentException $e)
@@ -127,6 +137,11 @@ catch (InvalidArgumentException $e)
 	{
 		throw $e;
 	}
+}
+
+if ($phpbb_container->getParameter('debug.error_handler'))
+{
+	\phpbb\debug\debug::enable();
 }
 
 $phpbb_class_loader->set_cache($phpbb_container->get('cache.driver'));

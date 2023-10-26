@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter;
@@ -464,18 +464,7 @@ class Parser
 		// Current paragraph must end before the tag if:
 		//  - the tag is a start (or self-closing) tag and it breaks paragraphs, or
 		//  - the tag is an end tag (but not self-closing)
-		$closeParagraph = false;
-		if ($tag->isStartTag())
-		{
-			if ($tagFlags & self::RULE_BREAK_PARAGRAPH)
-			{
-				$closeParagraph = true;
-			}
-		}
-		else
-		{
-			$closeParagraph = true;
-		}
+		$closeParagraph = (!$tag->isStartTag() || ($tagFlags & self::RULE_BREAK_PARAGRAPH));
 
 		// Let the cursor catch up with this tag's position
 		$this->outputText($tagPos, $skipBefore, $closeParagraph);
@@ -961,7 +950,7 @@ class Parser
 	* existing plugin
 	*
 	* @param  string   $pluginName
-	* @param  callback $parser
+	* @param  callable $parser
 	* @param  string   $regexp
 	* @param  integer  $limit
 	* @return void

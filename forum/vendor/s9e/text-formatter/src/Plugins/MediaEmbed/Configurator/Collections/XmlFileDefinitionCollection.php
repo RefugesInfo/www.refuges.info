@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Plugins\MediaEmbed\Configurator\Collections;
@@ -17,9 +17,9 @@ class XmlFileDefinitionCollection extends SiteDefinitionCollection
 	* @var array Known config types [<name regexp>, <value regexp>, <type>]
 	*/
 	protected $configTypes = [
-		['(^defaultValue$)', '(^[1-9][0-9]*$)D',     'castToInt'],
-		['(height$|width$)', '(^[1-9][0-9]*$)D',     'castToInt'],
-		['(^required$)',     '(^(?:true|false)$)iD', 'castToBool']
+		['(^defaultValue$)', '(^(?:0|[1-9][0-9]+)$)D', 'castToInt'],
+		['(height$|width$)', '(^(?:0|[1-9][0-9]+)$)D', 'castToInt'],
+		['(^required$)',     '(^(?:fals|tru)e$)Di',    'castToBool']
 	];
 
 	/**
@@ -98,7 +98,7 @@ class XmlFileDefinitionCollection extends SiteDefinitionCollection
 			{
 				$config[$k] = $this->convertValueTypes($v);
 			}
-			else
+			elseif (is_string($v))
 			{
 				$config[$k] = $this->castConfigValue($k, $v);
 			}

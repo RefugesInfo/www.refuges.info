@@ -96,7 +96,7 @@ class fulltext_postgres extends \phpbb\search\base
 	 * @param string $phpEx PHP file extension
 	 * @param \phpbb\auth\auth $auth Auth object
 	 * @param \phpbb\config\config $config Config object
-	 * @param \phpbb\db\driver\driver_interface Database object
+	 * @param \phpbb\db\driver\driver_interface $db Database object
 	 * @param \phpbb\user $user User object
 	 * @param \phpbb\event\dispatcher_interface	$phpbb_dispatcher	Event dispatcher object
 	 */
@@ -204,7 +204,7 @@ class fulltext_postgres extends \phpbb\search\base
 		}
 
 		// Filter out as above
-		$split_keywords = preg_replace("#[\"\n\r\t]+#", ' ', trim(htmlspecialchars_decode($keywords)));
+		$split_keywords = preg_replace("#[\"\n\r\t]+#", ' ', trim(html_entity_decode($keywords, ENT_COMPAT)));
 
 		// Split words
 		$split_keywords = preg_replace('#([^\p{L}\p{N}\'*"()])#u', '$1$1', str_replace('\'\'', '\' \'', trim($split_keywords)));
@@ -550,7 +550,7 @@ class fulltext_postgres extends \phpbb\search\base
 		// if the total result count is not cached yet, retrieve it from the db
 		if (!$result_count)
 		{
-			$sql_count = "SELECT COUNT(*) as result_count
+			$sql_count = "SELECT COUNT(DISTINCT " . (($type == 'posts') ? 'p.post_id' : 't.topic_id') . ") as result_count
 				$sql_from
 				$sql_where";
 			$result = $this->db->sql_query($sql_count);
@@ -836,8 +836,9 @@ class fulltext_postgres extends \phpbb\search\base
 					GROUP BY t.topic_id, $sort_by_sql[$sort_key]";
 			}
 
-			$this->db->sql_query($sql_count);
-			$result_count = (int) $this->db->sql_fetchfield('result_count');
+			$result = $this->db->sql_query($sql_count);
+			$result_count = ($type == 'posts') ? (int) $this->db->sql_fetchfield('result_count') : count($this->db->sql_fetchrowset($result));
+			$this->db->sql_freeresult($result);
 
 			if (!$result_count)
 			{

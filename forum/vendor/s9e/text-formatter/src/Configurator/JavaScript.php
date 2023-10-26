@@ -2,13 +2,14 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator;
 
 use ReflectionClass;
 use s9e\TextFormatter\Configurator;
+use s9e\TextFormatter\Configurator\Helpers\AVTHelper;
 use s9e\TextFormatter\Configurator\Helpers\ConfigHelper;
 use s9e\TextFormatter\Configurator\JavaScript\CallbackGenerator;
 use s9e\TextFormatter\Configurator\JavaScript\Code;
@@ -132,7 +133,7 @@ class JavaScript
 		$this->xsl = $xslt->getXSL($this->configurator->rendering);
 
 		// Prepare the parser's config
-		$this->config = (isset($config)) ? $config : $this->configurator->asConfig();
+		$this->config = $config ?? $this->configurator->asConfig();
 		$this->config = ConfigHelper::filterConfig($this->config, 'JS');
 		$this->config = $this->callbackGenerator->replaceCallbacks($this->config);
 
@@ -218,6 +219,27 @@ class JavaScript
 		sort($exports);
 
 		return "window['s9e']['TextFormatter'] = {" . implode(',', $exports) . '};';
+	}
+
+	/**
+	* @return string Function cache serialized as a JavaScript object
+	*/
+	protected function getFunctionCache(): string
+	{
+		preg_match_all('(data-s9e-livepreview-on\\w+="([^">]++)(?=[^<>]++>))', $this->xsl, $m);
+
+		$cache = [];
+		foreach ($m[1] as $js)
+		{
+			$avt = AVTHelper::parse($js);
+			if (count($avt) === 1 && $avt[0][0] === 'literal')
+			{
+				$js = htmlspecialchars_decode($js);
+				$cache[] = json_encode($js) . ':/**@this {!Element}*/function(){' . trim($js, ';') . ';}';
+			}
+		}
+
+		return '{' . implode(',', $cache) . '}';
 	}
 
 	/**
@@ -372,6 +394,7 @@ class JavaScript
 		{
 			$files[] = $rootDir . '/render.js';
 			$src .= '/** @const */ var xsl=' . $this->getStylesheet() . ";\n";
+			$src .= 'var functionCache=' . $this->getFunctionCache() . ";\n";
 		}
 
 		$src .= implode("\n", array_map('file_get_contents', $files));

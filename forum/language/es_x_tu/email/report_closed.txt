@@ -2,7 +2,7 @@ Subject: Informe cerrado - “{POST_SUBJECT}”
 
 Hola {USERNAME},
 
-Estás recibiendo esta notificación porque el aviso que envió sobre el mensaje “{POST_SUBJECT}” por “{AUTHOR_NAME}” en “{TOPIC_TITLE}” de “{SITENAME}” fue revisado por un(a) Moderador(a) o por La Administración. Posteriormente se cerró el informe. Si tienes más preguntas, comuníquese con {CLOSER_NAME} con un mensaje personal.
+El informe que presentaste sobre el mensaje “{POST_SUBJECT}” por “{AUTHOR_NAME}” en “{TOPIC_TITLE}” de “{SITENAME}” fue revisado por un Moderador o Administrador. Posteriormente se cerró el informe. Si tienes más preguntas, contacta con {CLOSER_NAME} con un mensaje privado.
 
 Puedes ver tu mensaje reportado haciendo clic en el siguiente enlace:
 

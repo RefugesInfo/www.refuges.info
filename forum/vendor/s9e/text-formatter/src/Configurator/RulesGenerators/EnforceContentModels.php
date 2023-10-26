@@ -2,7 +2,7 @@
 
 /**
 * @package   s9e\TextFormatter
-* @copyright Copyright (c) 2010-2020 The s9e authors
+* @copyright Copyright (c) 2010-2022 The s9e authors
 * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
 */
 namespace s9e\TextFormatter\Configurator\RulesGenerators;
@@ -21,6 +21,11 @@ class EnforceContentModels implements BooleanRulesGenerator, TargetedRulesGenera
 	/**
 	* @var TemplateInspector
 	*/
+	protected $p;
+
+	/**
+	* @var TemplateInspector
+	*/
 	protected $span;
 
 	/**
@@ -31,6 +36,7 @@ class EnforceContentModels implements BooleanRulesGenerator, TargetedRulesGenera
 	public function __construct()
 	{
 		$this->br   = new TemplateInspector('<br/>');
+		$this->p    = new TemplateInspector('<p><xsl:apply-templates/></p>');
 		$this->span = new TemplateInspector('<span><xsl:apply-templates/></span>');
 	}
 
@@ -53,6 +59,10 @@ class EnforceContentModels implements BooleanRulesGenerator, TargetedRulesGenera
 		{
 			$rules['disableAutoLineBreaks'] = true;
 			$rules['preventLineBreaks'] = true;
+		}
+		if ($src->closesParent($this->p))
+		{
+			$rules['breakParagraph'] = true;
 		}
 
 		return $rules;
