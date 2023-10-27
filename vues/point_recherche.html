@@ -34,7 +34,7 @@ function inverse_visibility_voisins( id_element )
 	
 		<?php if(isset($vue->limite_atteinte) ) { ?>
 			<h5>La limite a été atteinte. seuls les <?=$vue->limite_atteinte?> premiers points sont affichés.</h5>
-		<? }
+		<?php }
 			
 		$arbre = array();
 		foreach ($vue->points as $point) {
@@ -47,7 +47,7 @@ function inverse_visibility_voisins( id_element )
 			
 			for( $i=0 ;$i< $nombre_branches_a_fermer; $i++ ) { ?>
 				</dl> 
-			<? }
+			<?php }
 						
 			$branches_a_creer = array_diff_assoc($polys, $commun) ;
 			foreach ($branches_a_creer as $branche) { 
@@ -62,33 +62,33 @@ function inverse_visibility_voisins( id_element )
 			<dd class="fiche_cadre condense">
 				<em>
 					<a href="<?=$point->lien?>">
-						<?=bbcode2html($point->nom)?>
+						<?=bbcode2html(ucfirst($point->nom))?>
 					</a>
 					<?=$html_annonce_fermeture ?? ''?>
 				</em>
 				<?=bbcode2html($point->nom_type);
 				if ($annonce_fermeture=texte_non_ouverte($point)) {?>
 					<strong>(<?=$annonce_fermeture?>)</strong>
-				<?}?>
+				<?php } ?>
 			</dd><?
 		}
 		for( $i=0 ;$i< sizeof($arbre); $i++ ) { ?>
-				</dl> <? } ?>
+				</dl> <?php } ?>
 	
 	<h4>Même chose, présentation différente</h4>
 	
 		<dl>
-			<? foreach ($vue->points as $point) {?>
+			<?php foreach ($vue->points as $point) {?>
 			
 				<dd class="fiche_cadre condense">
 					<em>
 						<a href="<?=$point->lien?>">
-							<?=bbcode2html($point->nom)?>
+							<?=bbcode2html(ucfirst($point->nom))?>
 						</a>
 						<?=$html_annonce_fermeture ?? ''?>
 					</em>
 					<?=bbcode2html($point->nom_type);?>
-					<? //afficher un lien vers le massif comprenant le point
+					<?php //afficher un lien vers le massif comprenant le point
 					if (!empty($point->liste_polygones))
 					{
 						$polys = explode(",",$point->liste_polygones);
@@ -99,19 +99,19 @@ function inverse_visibility_voisins( id_element )
 					}	
 					if ($annonce_fermeture=texte_non_ouverte($point)) {?>
 						<strong>(<?=$annonce_fermeture?>)</strong>
-					<?}?>
+					<?php }?>
 				</dd>
-			<?}?>
+			<?php }?>
 		</dl>
 	<?php } else { ?>
 	<p>Aucun point trouvé dans la base de <?=$config_wri['nom_hote']?></p>
     <?php } ?>
 
-	<? // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
+	<?php // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
 	if (!empty($vue->nominatim->nb_points)) { ?>
 		<h4>Recherche dans la base <a href="http://openstreetmap.org/">OpenStreetMap</a> : <?=$vue->nominatim->nb_points?> point<?=$vue->nominatim->pluriel?> trouvé<?=$vue->nominatim->pluriel?> avec <a href="<?=$vue->nominatim->url_site?>">Nominatim</a></h4>
 		<dl>
-			<? foreach ($vue->nominatim->xml as $points_nominatim) { ?>
+			<?php foreach ($vue->nominatim->xml as $points_nominatim) { ?>
 				<dd class="fiche_cadre condense">
 				<em>
 					<a href="<?=$config_wri['sous_dossier_installation'].'nav?zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
@@ -120,7 +120,7 @@ function inverse_visibility_voisins( id_element )
 				</em>
 				(<?=$points_nominatim['class']?>)
 				</dd>
-			<?}?>
+			<?php }?>
 		</dl>
 	<?php } elseif (!empty($vue->recherche_osm_active)) { ?>
     <p>Aucun point trouvé dans la base OpenStreetMap</p>
