@@ -1,0 +1,12 @@
+Ce code en shell a pour but de remettre la première lettre en minuscule dans le nom des points, je ne peux pas généraliser totalement car il y a parfois des noms propres, donc je tente de lister les plus courant, et pour le reste, bha, tant pis.
+Il faudrait en réalité lister tous les noms, articles, adjectif  du dictionnaire (ou presque)
+ 
+Générer la liste des nom, commençant par une majuscule les 50 plus présents :
+
+echo "select nom from points;"  | psql -Aq testsly  | egrep ^[A-Z] | cut -f1 -d\  | sort | uniq -c | sort -rn | head -n 50 | awk '{print $2}' > noms-communs.txt
+ 
+!! Important : on édite le fichier généré  noms-communs.txt et on retire manuellement ce qui ressemble à un nom propre !!
+
+Ensuite, une petite boucle pour traiter un à un ceux contenus dans le fichier ci avant.
+
+for x in $(cat noms-communs.txt ) ; do echo "update points set nom = replace(nom,'$x ','${x,} ') where nom ilike '$x %';" | psql testsly ; done
