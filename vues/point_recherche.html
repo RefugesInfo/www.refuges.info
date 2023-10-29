@@ -62,12 +62,12 @@ function inverse_visibility_voisins( id_element )
 			<dd class="fiche_cadre condense">
 				<em>
 					<a href="<?=$point->lien?>">
-						<?=bbcode2html(ucfirst($point->nom))?>
+						<?=ucfirst($point->nom)?>
 					</a>
 					<?=$html_annonce_fermeture ?? ''?>
 				</em>
-				<?=bbcode2html($point->nom_type);
-				if ($annonce_fermeture=texte_non_ouverte($point)) {?>
+				<?=$point->nom_type?>
+				<?php  if ($annonce_fermeture=texte_non_ouverte($point)) {?>
 					<strong>(<?=$annonce_fermeture?>)</strong>
 				<?php } ?>
 			</dd><?
@@ -83,11 +83,11 @@ function inverse_visibility_voisins( id_element )
 				<dd class="fiche_cadre condense">
 					<em>
 						<a href="<?=$point->lien?>">
-							<?=bbcode2html(ucfirst($point->nom))?>
+							<?=ucfirst($point->nom)?>
 						</a>
 						<?=$html_annonce_fermeture ?? ''?>
 					</em>
-					<?=bbcode2html($point->nom_type);?>
+					<?=$point->nom_type?>
 					<?php //afficher un lien vers le massif comprenant le point
 					if (!empty($point->liste_polygones))
 					{
