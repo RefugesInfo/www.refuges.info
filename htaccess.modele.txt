@@ -53,3 +53,10 @@ RewriteRule . ./index.php [L]
   ExpiresByType image/jpg "access plus 6 hours"
   ExpiresByType image/jpeg "access plus 6 hours"
 </ifmodule>
+
+#On demande la compression gzip des contenu suivants, ça gagnent vraiment de la bande passante sur les json (l'api) les xml (parfois) et l'export kml
+<IfModule mod_deflate.c>
+  <IfModule mod_filter.c>
+    AddOutputFilterByType DEFLATE application/rss+xml application/xml application/json application/vnd.google-earth
+  </IfModule>
+</IfModule>
