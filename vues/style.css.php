@@ -882,7 +882,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 /* Carte formulaire de modification de point */
 #carte-modif {
   float: right;
-  width: 99vw;
+  width: 96vw;
   height: 97vw;
   max-height: 450px;
 }

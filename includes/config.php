@@ -78,8 +78,8 @@ $config_wri['definition_icones'] = array_merge ($config_wri['correspondance_type
 $config_wri['forum_refuges']=4;
 
 // Paramètrage des cartes vignettes des fiches de points
-$config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/dist/';
-$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'myol/dist/';
+$config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/';
+$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'myol/';
 error_reporting(E_ALL);
 ini_set('display_errors','on');
 

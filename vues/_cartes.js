@@ -3,9 +3,14 @@
 function couchePointsWRI(options) {
   const layer = new myol.layer.MyVectorLayer({
     selectMassif: new myol.Selector('no-selector'), // Defaut = pas de sélecteur de massif
-    serverClusterMinResolution: 100, // Résolution de la carte (en mètres par pixels) au delà de laquelle on demande des clusters au serveur
-    browserClusterMinDistance: 50, // Distance (en pixels) entre 2 icones en dessous de laquelle on affiche un cluster local
-    spreadClusterMaxResolution: 10, // Résolution de la carte (en mètres par pixels) en dessous de laquelle on affiche des icônes contigues plutôt qu'un rond
+
+    // Clusters:
+    serverClusterMinResolution: 100, // (mètres par pixel) résolution au dessus de laquelle on demande des clusters au serveur
+    distance: 30, // (pixels) distance au-dessus de laquelle le navigateur clusterise
+    browserClusterMinResolution: 10, // (mètres par pixel) résolution en-dessous de laquelle le navigateur ne clusterise plus
+    browserGigue: 5, // (mètres) décale aléatoirement un point autour de sa position
+
+    ...layerOptions, // Config_privee
     ...options,
 
     // Calcul de l'url de l'API refuges?.info
@@ -73,7 +78,6 @@ function etiquetteComplette(properties) {
 }
 
 // La couche des massifs colorés (accueil et couche carte nav)
-//TODO BUG edit don't apply immediately
 function coucheMassifsColores(options) {
   return new myol.layer.MyVectorLayer({
     // Construction de l'url
@@ -191,7 +195,9 @@ function fondsCarte(page, mapKeys) {
     }),
     'Photo ArcGIS': new myol.layer.tile.ArcGIS(),
     'Photo Google': 'nav,point'.includes(page) ? // Not available on edit pages
-      new myol.layer.tile.Google('s') : null,
+      new myol.layer.tile.Google({
+        subLayers: 's',
+      }) : null,
     'Photo Maxar': new myol.layer.tile.Maxbox({
       tileset: 'mapbox.satellite',
       key: mapKeys.mapbox,

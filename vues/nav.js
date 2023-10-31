@@ -1,3 +1,7 @@
+var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
+  host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+  initPermalink = <?=$vue->polygone->id_polygone?'false':'true'?>;
+    
 // Forçage de l'init des coches
 <?php if ( $vue->polygone->id_polygone ) { ?>
   // Supprime toutes les sélections commençant par myol_selecteur
@@ -16,11 +20,7 @@
   localStorage.myol_selectalpages = '';
 <?php } ?>
 
-myol.trace();
-
-var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
-  host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
-  contourMassif = coucheContourMassif({
+var contourMassif = coucheContourMassif({
     host: host,
     selectName: 'select-massif',
   }),
@@ -51,7 +51,7 @@ var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
       }),
       new myol.control.Permalink({ // Permet de garder le même réglage de carte
         display: true, // Affiche le lien
-        init: <?=$vue->polygone->id_polygone?'false':'true'?>, // On cadre le massif, s'il y a massif
+        init: initPermalink, // On cadre le massif, s'il y a massif
       }),
 
       // Haut droit
@@ -89,8 +89,9 @@ var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
     ],
   });
 
+myol.trace(map);
+
 // Centrer sur la zone du polygone
-map.getView().fit(ol.proj.transformExtent([5, 44.68, 5.72, 45.33], 'EPSG:4326', 'EPSG:3857'));
 <?if ($vue->polygone->id_polygone) { ?>
   map.getView().fit(ol.proj.transformExtent([
     <?=$vue->polygone->ouest?>,

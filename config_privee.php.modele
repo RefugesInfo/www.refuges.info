@@ -14,19 +14,19 @@ $config_wri['base_pgsql']="???";
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [
-  // Clé à https://manage.thunderforest.com
-  'thunderforest' => '???',
-
-  // Clé à https://www.mapbox.com/
-  'mapbox' => '???',
-
-  // Clé à https://www.bingmapsportal.com/
-  'bing' => '???',
-
-  // Clé à https://geoservices.ign.fr/
-  'ign' => '???', // Clé gratuite pour TOP25
-
+  'thunderforest' => '???',// Clé à https://manage.thunderforest.com
+  'mapbox' => '???', // Clé à https://www.mapbox.com/
+  'bing' => '???', // Clé à https://www.bingmapsportal.com/
+  'ign' => '???', // Clé gratuite pour TOP25 // Clé à https://geoservices.ign.fr/
   // SwissTopo : You need to register your domain in https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
+];
+
+// Les paramètres d'affichage de la couche refuges.info
+$config_wri['layerOptions'] = [
+  'serverClusterMinResolution' => 100, // (mètres par pixel) résolution au dessus de laquelle on demande des clusters au serveur
+  'distance' => 30, // (pixels) distance au-dessus de laquelle le navigateur clusterise
+  'browserClusterMinResolution' => 10, // (mètres par pixel) résolution en-dessous de laquelle le navigateur ne clusterise plus
+  'browserGigue' => 5, // (mètres) décale aléatoirement un point autour de sa position
 ];
 
 // Pour affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();

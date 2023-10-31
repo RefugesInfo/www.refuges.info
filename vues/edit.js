@@ -1,8 +1,8 @@
-var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
-  coucheContours = coucheContourMassif({
-    host: '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
-  }),
-  editorlayer = new myol.layer.Editor({
+var host = '<?=$config_wri["sous_dossier_installation"]?>',// Appeler la couche de CE serveur
+  initPermalink = <?=$vue->polygone->id_polygone?'false':'true'?>;
+  mapKeys = <?=json_encode($config_wri['mapKeys'])?>;
+
+const editorlayer = new myol.layer.Editor({
     geoJsonId: 'edit-json',
     editOnly: 'poly',
 
@@ -40,10 +40,6 @@ var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
       new ol.control.Attribution({ // Attribution doit être défini avant LayerSwitcher
         collapsed: false,
       }),
-      new myol.control.Permalink({ // Permet de garder le même réglage de carte
-        display: false, // Cache le lien
-        init: <?=$vue->polygone->id_polygone?'false':'true'?>, // On cadre le massif, s'il y a massif
-      }),
 
       // Haut droit
       new myol.control.LayerSwitcher({
@@ -51,13 +47,14 @@ var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
       }),
     ],
     layers: [
-      coucheContours,
+      coucheContourMassif({
+        host: host,
+      }),
       editorlayer,
     ],
   });
 
 // Centrer sur la zone du polygone
-map.getView().fit(ol.proj.transformExtent([5, 44.68, 5.72, 45.33], 'EPSG:4326', 'EPSG:3857'));
 <?if ($vue->polygone->id_polygone) { ?>
   map.getView().fit(ol.proj.transformExtent([
     <?=$vue->polygone->ouest?>,
