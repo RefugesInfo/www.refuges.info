@@ -11,7 +11,7 @@ Fonction donnant plusieurs informations générales sur la base
 ***************************************/
 function infos_base () {
 	global $config_wri,$pdo;
-	
+	$r = new stdClass;
 	$sql = "SELECT * 
 		FROM point_type 
 		ORDER BY importance DESC";  
