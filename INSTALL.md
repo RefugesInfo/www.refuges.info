@@ -10,12 +10,13 @@ Installation
 
 Pour installer le code du site de www.refuges.info nous utilisons actuellement (toute autre configuration m'est inconnue si fonctionnelle)  :
 
-* linux Debian 10
-* apache 2.4
-* php 7.3 avec modules :
-  apt install php-common  php-mbstring  php-pgsql php7.3-cli php7.3-common php7.3-gd  php7.3-json  php7.3-mbstring  php7.3-opcache  php7.3-pgsql  php7.3-readline  php7.3-xml
-* postgresql 11
-* postgis 2.5
+* linux Debian 10 ou 11
+* apache 2.4.x
+* php 7.3 ou 7.4 avec modules :
+  pgsql gd json mbstring opcache readline xml
+  apt install php-common  php-mbstring  php-pgsql php7.4-cli php7.4-common php7.4-gd  php7.4-json  php7.4-mbstring  php7.4-opcache  php7.4-pgsql  php7.4-readline  php7.4-xml
+* postgresql 13
+* postgis 3
 * git
 
 Postgresql
