@@ -1,7 +1,8 @@
-var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
-  host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+  mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
+  layerOptions = <?=json_encode($config_wri['layerOptions'])?>,
   initPermalink = <?=$vue->polygone->id_polygone?'false':'true'?>;
-    
+
 // Forçage de l'init des coches
 <?php if ( $vue->polygone->id_polygone ) { ?>
   // Supprime toutes les sélections commençant par myol_selecteur

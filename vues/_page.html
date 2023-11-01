@@ -33,10 +33,6 @@ if (!empty($vue->http_status_code))
 			<meta name="viewport" content="width=device-width, user-scalable=no">
 		<? } ?>
 		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
-		<script>
-			var mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
-				layerOptions = <?=json_encode($config_wri['layerOptions'])?>;
-		</script>
 
 		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>">
 		<?php if (isset ($vue->css))

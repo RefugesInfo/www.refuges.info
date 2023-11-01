@@ -5,6 +5,12 @@ function affiche_et_set(el, affiche, valeur) {
   return false;
 }
 
+var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+  mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
+  layerOptions = <?=json_encode($config_wri['layerOptions'])?>,
+  centre = ol.proj.transform([<?=$vue->point->longitude?>, <?=$vue->point->latitude?>], 'EPSG:4326', 'EPSG:3857'),
+  viseur = '<?=$config_wri["sous_dossier_installation"]?>images/viseur.svg';
+
 // Gestion des cartes
 new ol.Map({
   target: 'carte-modif',

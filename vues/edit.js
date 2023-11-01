@@ -1,8 +1,9 @@
-var host = '<?=$config_wri["sous_dossier_installation"]?>',// Appeler la couche de CE serveur
-  initPermalink = <?=$vue->polygone->id_polygone?'false':'true'?>;
-  mapKeys = <?=json_encode($config_wri['mapKeys'])?>;
+var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+  mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
+  layerOptions = <?=json_encode($config_wri['layerOptions'])?>;
 
-const editorlayer = new myol.layer.Editor({
+
+var editorlayer = new myol.layer.Editor({
     geoJsonId: 'edit-json',
     editOnly: 'poly',
 
