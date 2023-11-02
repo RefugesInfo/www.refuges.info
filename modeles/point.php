@@ -535,6 +535,7 @@ function infos_point_forum ($point)
   $q="SELECT *
       FROM phpbb3_posts
       WHERE topic_id = $point->topic_id
+	    AND post_visibility = 1
       ORDER BY post_time DESC";
   $r = $pdo->query($q);
   if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
