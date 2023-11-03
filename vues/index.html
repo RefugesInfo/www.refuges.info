@@ -45,10 +45,10 @@
 						if ($nouveau_point->id_createur==0) { ?>
 							par <?=$nouveau_point->nom_createur?>
 						<?php } else { ?>
-						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=bbcode2html($nouveau_point->nom_createur)?></a>
+						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
 						<?}?>
 					<?}?>
-						: <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst(bbcode2html($nouveau_point->nom))?></a>
+						: <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst($nouveau_point->nom)?></a>
 						<?php if (isset($nouveau_point->id_massif)) { ?>
 						dans le 
 						<a href="<?=lien_polygone($nouveau_point,True)?>">massif <?=$nouveau_point->article_partitif_massif?> <?=$nouveau_point->nom_massif?></a>
@@ -72,7 +72,7 @@
 						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_commentaire->id_createur_commentaire?>"><?=$nouveau_commentaire->auteur_commentaire?></a>
 						<?}?>
 					<?}?>
-						sur <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=bbcode2html($nouveau_commentaire->nom)?></a>
+						sur <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=$nouveau_commentaire->nom?></a>
 						<?php if (isset($nouveau_commentaire->id_polygone)) { ?>
 						dans le 
 						<a href="<?=lien_polygone($nouveau_commentaire,True)?>">massif <?=$nouveau_commentaire->article_partitif?> <?=$nouveau_commentaire->nom_polygone?></a>
