@@ -32,8 +32,6 @@ Là bas il y a git d'installé (voir plus bas pour les commandes communes)
 Accès à la base postgresql
 ==========================
 
-* https://www.refuges.info/phppgadmin/
-ou
 * https://sly.refuges.info/adminersly/adminer.php
 
 Notez que la base de production s'appelle "refuges" et chaque instance dispose de sa propre copie.
