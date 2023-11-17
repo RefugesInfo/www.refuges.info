@@ -11,6 +11,7 @@ $config_wri['serveur_pgsql']="???";
 $config_wri['utilisateur_pgsql']="???";
 $config_wri['mot_de_passe_pgsql']="???";
 $config_wri['base_pgsql']="???";
+//$config_wri['nom_ol']='myol-debug'; // Décommenter pour utiliser myol-debug.js
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [

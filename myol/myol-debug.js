@@ -98252,8 +98252,8 @@ var myol = (function () {
           evt.type == 'featuresloadend')
           evt.features.forEach(f => {
             f.getGeometry().translate(
-              Math.cos(f.getId()) * options.browserGigue,
-              Math.sin(f.getId()) * options.browserGigue,
+            (f.getId() / 5 % 2 - 1) * options.browserGigue,
+            (f.getId() / 7 % 2 - 1) * options.browserGigue,
             );
           });
       });
