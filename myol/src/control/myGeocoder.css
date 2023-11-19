@@ -1,0 +1,49 @@
+/* Geocodeur */
+.ol-geocoder.gcd-gl-container {
+  /* Takes place in the myol button flow */
+  position: initial;
+  float: left;
+  width: 26.75px;
+  margin: 2px !important;
+}
+
+.ol-geocoder .gcd-gl-control {
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
+  height: 26.75px;
+  width: 26.75px;
+}
+
+.ol-geocoder .gcd-gl-control:hover {
+  box-shadow: 1px 1px 10px black;
+}
+
+.ol-geocoder:hover .gcd-gl-control,
+.ol-geocoder .gcd-gl-expanded {
+  overflow: visible;
+}
+
+.ol-geocoder .gcd-gl-btn {
+  position: initial;
+  height: 24.75px;
+  width: 24.75px;
+}
+
+.ol-geocoder .gcd-gl-btn:after {
+  font-size: 15px;
+}
+
+.ol-geocoder .gcd-gl-input {
+  top: 27px;
+  left: 1px;
+}
+
+.ol-geocoder .gcd-gl-search {
+  top: 24px;
+  left: 170px;
+  font-size: 12.6px;
+}
+
+.ol-geocoder .gcd-gl-result {
+  top: 61px !important;
+  left: 66px !important;
+}

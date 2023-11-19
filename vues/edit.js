@@ -2,7 +2,6 @@ var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche
   mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
   layerOptions = <?=json_encode($config_wri['layerOptions'])?>;
 
-
 var editorlayer = new myol.layer.Editor({
     geoJsonId: 'edit-json',
     editOnly: 'poly',
@@ -54,13 +53,3 @@ var editorlayer = new myol.layer.Editor({
       editorlayer,
     ],
   });
-
-// Centrer sur la zone du polygone
-<?if ($vue->polygone->id_polygone) { ?>
-  map.getView().fit(ol.proj.transformExtent([
-    <?=$vue->polygone->ouest?>,
-    <?=$vue->polygone->sud?>,
-    <?=$vue->polygone->est?>,
-    <?=$vue->polygone->nord?>,
-  ], 'EPSG:4326', 'EPSG:3857'));
-<? } ?>

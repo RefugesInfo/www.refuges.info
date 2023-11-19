@@ -4,14 +4,15 @@ var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche
   initPermalink = <?=$vue->polygone->id_polygone?'false':'true'?>;
 
 // Forçage de l'init des coches
-<?php if ( $vue->polygone->id_polygone ) { ?>
   // Supprime toutes les sélections commençant par myol_selecteur
   Object.keys(localStorage)
     .filter(k => k.substring(0, 14) == 'myol_selecteur')
     .forEach(k => localStorage.removeItem(k));
 
   // Force tous les points et le contour
+<?php if ( $vue->polygone->id_polygone ) { ?>
   localStorage.myol_selectmassif = <?=$vue->polygone->id_polygone?>;
+<?php } ?>
   localStorage.myol_selectwri = 'all';
   localStorage.myol_selectmassifs =
   localStorage.myol_selectosm =
@@ -19,7 +20,6 @@ var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche
   localStorage.myol_selectcc =
   localStorage.myol_selectchem =
   localStorage.myol_selectalpages = '';
-<?php } ?>
 
 var contourMassif = coucheContourMassif({
     host: host,
@@ -80,12 +80,14 @@ var contourMassif = coucheContourMassif({
       new myol.layer.vector.Overpass({
         selectName: 'select-osm',
       }),
+
       contourMassif,
+
       couchePointsWRI({
-        host: host,
+        host: host, // Appeler la couche de CE serveur
         selectName: 'select-wri',
         selectMassif: contourMassif.options.selector,
-      }),
+      }, 'nav'),
       new myol.layer.Hover(), // Gère le survol du curseur
     ],
   });

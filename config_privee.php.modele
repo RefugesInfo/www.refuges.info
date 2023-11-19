@@ -11,7 +11,6 @@ $config_wri['serveur_pgsql']="???";
 $config_wri['utilisateur_pgsql']="???";
 $config_wri['mot_de_passe_pgsql']="???";
 $config_wri['base_pgsql']="???";
-//$config_wri['nom_ol']='myol-debug'; // Décommenter pour utiliser myol-debug.js
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [
@@ -24,14 +23,14 @@ $config_wri['mapKeys'] = [
 
 // Les paramètres d'affichage de la couche refuges.info
 $config_wri['layerOptions'] = [
-  'serverClusterMinResolution' => 100, // (mètres par pixel) résolution au dessus de laquelle on demande des clusters au serveur
-  'distance' => 30, // (pixels) distance au-dessus de laquelle le navigateur clusterise
-  'browserClusterMinResolution' => 10, // (mètres par pixel) résolution en-dessous de laquelle le navigateur ne clusterise plus
-  'browserGigue' => 5, // (mètres) décale aléatoirement un point autour de sa position
+  // 'serverClusterMinResolution' => 100, // (mètres par pixel) résolution au dessus de laquelle on demande des clusters au serveur
+  // 'nbMaxClusters' => 90, // Nombre de clusters sur la carte (10 rangées de 9)
+  // 'browserClusterMinResolution' => 10, // (mètres par pixel) résolution en-dessous de laquelle le navigateur ne clusterise plus et ajoute une gigue
 ];
 
-// Pour affichage d'un peu plus de debug sur certaines fonctions utilisant la fonction erreur();
-//$config_wri['debug']=true;
+// Décommenter pour
+//$config_wri['debug']=true; // afficher un peu plus de debug sur certaines fonctions utilisant la fonction erreur()
+//$config_wri['nom_ol']='myol-debug'; // utiliser myol-debug.js à la place de myol.js
 
 // Ici choisissez les options pour afficher les erreurs php
 //ini_set('error_reporting', E_ALL); // toutes les erreurs

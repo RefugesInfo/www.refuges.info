@@ -1,0 +1,118 @@
+/* layerSwitcher */
+
+/* Top aligned buttons */
+/* Container */
+.ol-zoom,
+.ol-full-screen,
+.myol-button {
+  position: static !important;
+  float: left;
+  margin: 2px;
+  /* No grey line around the button */
+  padding: 0 !important;
+}
+
+/* Button */
+/* Also for zoom, fullScreen, ... */
+.ol-control button {
+  font-size: 18px !important;
+  color: black;
+  background: white;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+}
+
+.myol-button>div {
+  max-height: calc(100% - 38px);
+  opacity: 0.8;
+  transition: max-height 0.3s ease-in, opacity 0.3s ease-out;
+  overflow: auto;
+  z-index: 30;
+}
+
+/* Button labels */
+.myol-button-download button::after {
+  content: "\21e9";
+}
+
+.myol-button-geolocation button::after {
+  content: "\2295";
+}
+
+.myol-button-load button::after {
+  content: "\1F4C2";
+}
+
+.myol-button-print button::after {
+  content: "\1F5A8";
+}
+
+.myol-button-hide {
+  display: none;
+}
+
+@media screen and (max-width: 400px) {
+  .myol-button:not(.myol-button-switcher)>div {
+    width: 100%;
+    left: 0;
+  }
+}
+
+.ol-control button:hover {
+  box-shadow: 1px 1px 10px black;
+}
+
+/* Submenu */
+.myol-button:not(.myol-button-hover):not(.myol-button-selected)>div,
+.myol-button>*:empty {
+  max-height: 0;
+  /* For beauty of the transition */
+  opacity: 0;
+}
+
+.myol-button>*:not(button) {
+  position: absolute;
+  top: 30px;
+  background: white;
+  font-size: 16px;
+}
+
+/* Coloring the button when touch selected */
+.myol-button-selected button,
+.myol-button div {
+  background: #d1e9ff;
+}
+
+.myol-button p,
+.myol-button span {
+  margin: 3px 0;
+  padding: 0 3px;
+  font-size: 14px;
+}
+
+.myol-button label {
+  display: block;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.myol-button a {
+  cursor: pointer;
+}
+
+.myol-button a {
+  color: blue;
+}
+
+.myol-button input {
+  margin: 0 3px;
+}
+
+.myol-button label:hover,
+.myol-button a:hover {
+  background: #ffe8d1;
+}
+
+.myol-button hr {
+  margin: 1px;
+}

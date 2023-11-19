@@ -4,12 +4,9 @@ var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche
   centre = [<?=$vue->point->longitude?>, <?=$vue->point->latitude?>],
   cadre = '<?=$config_wri["sous_dossier_installation"]?>images/cadre.svg';
 
-
 var map = new ol.Map({
   target: 'carte-point',
   view: new ol.View({
-    center: ol.proj.transform(centre, 'EPSG:4326', 'EPSG:3857'),
-    zoom: 13,
     enableRotation: false,
     constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
   }),
@@ -43,15 +40,21 @@ var map = new ol.Map({
   layers: [
     // Les autres points refuges.info
     couchePointsWRI({
-      host: host,
-    }),
+      host: host, // Appeler la couche de CE serveur
+      browserClusterMinResolution: 4, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
+    }, 'point'),
+
     // Le cadre rouge autour du point de la fiche
     new myol.layer.Marker({
-      src: cadre,
       prefix: 'cadre', // S'interface avec les <TAG id="cadre-xxx"...>
-      focus: 17, // Centrer
+      // Prend la position qui est dans <input id="cadre-json">
+      src: cadre,
+      focus: 15, // Centrer
+      zIndex: 300, // Above the features, under the hover label
     }),
-    new myol.layer.Hover(), // Gère le survol du curseur
+
+    // Gère le survol du curseur
+    new myol.layer.Hover(),
   ],
 });
 
