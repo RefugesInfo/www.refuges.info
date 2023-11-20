@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 20/11/2023 18:32:33 using npm run build from the src/... sources
+ * Built 20/11/2023 21:56:31 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -71304,10 +71304,10 @@ body>*:not(#' + mapEl.id + '),\
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
         anchor: resolution < layer.options.minResolution ? [
-          feature.getId() / 5 % 1 * layer.options.jitter + 12, // 24 * 24 icons
+          feature.getId() / 5 % 1 * layer.options.jitter + 12,
           feature.getId() / 9 % 1 * layer.options.jitter + 12,
-        ] : [0.5, 0.5],
-        src: properties.icon,
+        ] : [12, 12],
+        src: properties.icon, // 24 * 24 icons
         //BEST ??? crossOrigin: 'anonymous',
       }) : null,
 
