@@ -3,9 +3,9 @@
   "short_name": "GPS",
   "id": "MyGPS",
   "icons": [{
-    "src": "ressources/favicon.svg",
+    "src": "ressources/favicon.png",
     "sizes": "48x48 72x72 96x96 128x128 256x256",
-    "type": "image/svg+xml",
+    "type": "image/png",
     "purpose": "any"
   }],
   "start_url": "index.php",

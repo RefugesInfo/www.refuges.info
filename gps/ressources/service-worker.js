@@ -19,7 +19,7 @@ self.addEventListener('install', evt => {
           'ressources/favicon.png',
           'ressources/gps.css',
           'ressources/gps.js',
-          'ressources/icon-512.png',
+          'ressources/icon-512.png', //TODO remove when favicon.svg
           'index.php',
           'manifest.json',
           'service-worker.php',

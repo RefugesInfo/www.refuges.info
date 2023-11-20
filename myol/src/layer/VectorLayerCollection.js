@@ -24,7 +24,7 @@ export class GeoBB extends MyVectorLayer {
     super({
       serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
       browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters but add a jitter
-      nbMaxClusters: 90, // Number of clusters on the map display. Replace distance
+      nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
       browserClusterFeaturelMaxPerimeter: 300, // (pixels) perimeter of a line or poly above which we do not cluster
 
       // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
@@ -92,7 +92,7 @@ export class WRI extends MyVectorLayer {
       attribution: '&copy;refuges.info',
 
       serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
-      nbMaxClusters: 90, // Number of clusters on the map display. Replace distance
+      nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
       browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters
 
       // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
@@ -130,7 +130,7 @@ export class PRC extends MyVectorLayer {
       url: 'https://www.pyrenees-refuges.com/api.php?type_fichier=GEOJSON',
       strategy: ol.loadingstrategy.all,
       attribution: '&copy;Pyrenees-Refuges',
-      nbMaxClusters: 90, // Number of clusters on the map display. Replace distance
+      nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
 
       // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
 
@@ -217,7 +217,7 @@ export class Overpass extends MyVectorLayer {
       attribution: '&copy;OpenStreetMap',
 
       maxResolution: 50,
-      nbMaxClusters: 90, // Number of clusters on the map display. Replace distance
+      nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
 
       // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
       ...options,

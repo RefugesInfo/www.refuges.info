@@ -2,7 +2,7 @@
 <?php include("ressources/gps.php")?>
 <!--
 © Dominique Cavailhez 2019
-https://github.com/Dominique92/MyOl
+https://github.com/Dominique92/myol
 Based on https://openlayers.org
 -->
 <html lang="fr">

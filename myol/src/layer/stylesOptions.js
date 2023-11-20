@@ -15,9 +15,11 @@ export function basic(feature, resolution, layer) {
   return [{
     // Point
     image: properties.icon ? new ol.style.Icon({
+      anchorXUnits: 'pixels',
+      anchorYUnits: 'pixels',
       anchor: resolution < layer.options.minResolution ? [
-        feature.getId() / 5 % 1,
-        feature.getId() / 7 % 1,
+        feature.getId() / 5 % 1 * layer.options.jitter + 12, // 24 * 24 icons
+        feature.getId() / 9 % 1 * layer.options.jitter + 12,
       ] : [0.5, 0.5],
       src: properties.icon,
       //BEST ??? crossOrigin: 'anonymous',
@@ -34,6 +36,7 @@ export function basic(feature, resolution, layer) {
       color: 'rgba(0,0,256,0.3)',
     }),
     // properties.label if any
+    //BEST appliquer gigue anchor au label
     ...label(...arguments),
   }];
 }
@@ -83,6 +86,7 @@ export function cluster(feature) {
         color: 'white',
       }),
     }),
+    //TODO laisser le texte sur les clusters < 3 icônes
     text: new ol.style.Text({
       text: feature.getProperties().cluster.toString(),
       font: '12px Verdana',

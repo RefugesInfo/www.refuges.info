@@ -6,7 +6,7 @@ function couchePointsWRI(options, page) {
 
     // Clusters:
     serverClusterMinResolution: 100, // (mètres par pixel) résolution au dessus de laquelle on demande des clusters au serveur
-    nbMaxClusters: 90, // Nombre de clusters sur la carte. Remplace la distance
+    nbMaxClusters: 108, // Nombre de clusters sur la carte (12 rangées de 9). Remplace la distance
     browserClusterMinResolution: 10, // (mètres par pixel) résolution en-dessous de laquelle le navigateur ne clusterise plus et ajoute une gigue
 
     ...layerOptions, // Config_privee

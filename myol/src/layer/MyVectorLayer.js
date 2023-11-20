@@ -37,7 +37,7 @@ class MyVectorSource extends ol.source.Vector {
           f._yetAdded = true;
           f.setProperties(
             options.addProperties(f.getProperties()),
-            true // Silent : add the feature without refresh the layer
+            true, // Silent : add the feature without refresh the layer
           );
         }
       })
@@ -129,10 +129,11 @@ class MyClusterSource extends ol.source.Cluster {
 
   tuneDistance(map) {
     const s = map.getSize(),
-      n = this.options.nbMaxClusters;
+      n = this.options.nbMaxClusters,
+      f = (s[0] + s[1] + 5000) / 5000; // More clusters on big maps
 
     if (n)
-      this.setDistance(Math.sqrt(s[0] * s[1] / n / 2));
+      this.setDistance(Math.sqrt(s[0] * s[1] / n / f));
   }
 
   reload() {
@@ -267,9 +268,10 @@ export class MyVectorLayer extends MyServerClusterVectorLayer {
       // Clusters:
       // serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
       // browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters but add a jitter
-      // nbMaxClusters: 90, // Number of clusters on the map display. Replace distance
+      jitter: 36, // (pixels)
+      // nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
       // distance: 50, // (pixels) distance above which we cluster
-      minDistance: 24, // (pixels) minimum distance in pixels between clusters (can slide cluster icons
+      minDistance: 24, // (pixels) minimum distance in pixels between clusters (can slide cluster icons)
       // browserClusterFeaturelMaxPerimeter: 300, // (pixels) perimeter of a line or poly above which we do not cluster
 
       // Features
