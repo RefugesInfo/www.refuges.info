@@ -98,7 +98,8 @@ if ($nb_coul) {
 	foreach($polygones_bruts as $polygone)
 	{
 		$geo = "geometrie_".$req->format;
-		if (isset($polygone->$geo)) {
+		if (isset($polygone->$geo) &&
+			!strpos($polygone->$geo, '[]')) { // On exclue les massifs sans polygones
 			$polygones->$i = new stdClass();
 			$couleur = '#';
 				for ($c = 0; $c < 2*M_PI; $c += 2*M_PI/3) // Chacune des 3 couleurs primaires
