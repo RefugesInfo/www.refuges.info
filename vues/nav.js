@@ -63,7 +63,9 @@ var contourMassif = coucheContourMassif({
     layers: [
       coucheMassifsColores({
         host: host,
+<?php if ( !$vue->contenu ) { ?>
         selectName: 'select-massifs',
+<?php } ?>
       }),
       new myol.layer.vector.Chemineur({
         selectName: 'select-chem',

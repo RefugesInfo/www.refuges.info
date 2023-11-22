@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 20/11/2023 21:56:31 using npm run build from the src/... sources
+ * Built 22/11/2023 16:37:03 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -300,8 +300,8 @@ var myol = (function () {
   }
 
   /**
-   * @param {Array|Uint8ClampedArray} arr1 The first array to compare.
-   * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
+   * @param {Array<any>|Uint8ClampedArray} arr1 The first array to compare.
+   * @param {Array<any>|Uint8ClampedArray} arr2 The second array to compare.
    * @return {boolean} Whether the two arrays are equal.
    */
   function equals$2(arr1, arr2) {
@@ -400,7 +400,7 @@ var myol = (function () {
 
   /**
    * Removes all properties from an object.
-   * @param {Object} object The object to clear.
+   * @param {Object<string, unknown>} object The object to clear.
    */
   function clear$2(object) {
     for (const property in object) {
@@ -459,19 +459,19 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {Object<string, number>}
+       * @type {Object<string, number>|null}
        */
       this.pendingRemovals_ = null;
 
       /**
        * @private
-       * @type {Object<string, number>}
+       * @type {Object<string, number>|null}
        */
       this.dispatching_ = null;
 
       /**
        * @private
-       * @type {Object<string, Array<import("../events.js").Listener>>}
+       * @type {Object<string, Array<import("../events.js").Listener>>|null}
        */
       this.listeners_ = null;
     }
@@ -585,19 +585,23 @@ var myol = (function () {
      * @param {import("../events.js").Listener} listener Listener.
      */
     removeEventListener(type, listener) {
-      const listeners = this.listeners_ && this.listeners_[type];
-      if (listeners) {
-        const index = listeners.indexOf(listener);
-        if (index !== -1) {
-          if (this.pendingRemovals_ && type in this.pendingRemovals_) {
-            // make listener a no-op, and remove later in #dispatchEvent()
-            listeners[index] = VOID;
-            ++this.pendingRemovals_[type];
-          } else {
-            listeners.splice(index, 1);
-            if (listeners.length === 0) {
-              delete this.listeners_[type];
-            }
+      if (!this.listeners_) {
+        return;
+      }
+      const listeners = this.listeners_[type];
+      if (!listeners) {
+        return;
+      }
+      const index = listeners.indexOf(listener);
+      if (index !== -1) {
+        if (this.pendingRemovals_ && type in this.pendingRemovals_) {
+          // make listener a no-op, and remove later in #dispatchEvent()
+          listeners[index] = VOID;
+          ++this.pendingRemovals_[type];
+        } else {
+          listeners.splice(index, 1);
+          if (listeners.length === 0) {
+            delete this.listeners_[type];
           }
         }
       }
@@ -975,7 +979,7 @@ var myol = (function () {
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION = '8.1.0';
+  const VERSION = '8.2.0';
 
   /**
    * @module ol/Object
@@ -1091,7 +1095,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {Object<string, *>}
+       * @type {Object<string, *>|null}
        */
       this.values_ = null;
 
@@ -1281,7 +1285,7 @@ var myol = (function () {
    */
 
   /***
-   * @template Geometry
+   * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
    * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
    */
 
@@ -1674,7 +1678,9 @@ var myol = (function () {
         },
       });
 
+      // @ts-ignore Ignore invalid event type '_'
       window.addEventListener('_', null, options);
+      // @ts-ignore Ignore invalid event type '_'
       window.removeEventListener('_', null, options);
     } catch (error) {
       // passive not supported
@@ -3368,13 +3374,13 @@ var myol = (function () {
   /**
    * @type {Object<string, import("./Projection.js").default>}
    */
-  let cache = {};
+  let cache$1 = {};
 
   /**
    * Clear the projections cache.
    */
   function clear$1() {
-    cache = {};
+    cache$1 = {};
   }
 
   /**
@@ -3384,8 +3390,8 @@ var myol = (function () {
    */
   function get$4(code) {
     return (
-      cache[code] ||
-      cache[code.replace(/urn:(x-)?ogc:def:crs:EPSG:(.*:)?(\w+)$/, 'EPSG:$3')] ||
+      cache$1[code] ||
+      cache$1[code.replace(/urn:(x-)?ogc:def:crs:EPSG:(.*:)?(\w+)$/, 'EPSG:$3')] ||
       null
     );
   }
@@ -3396,7 +3402,7 @@ var myol = (function () {
    * @param {import("./Projection.js").default} projection The projection to cache.
    */
   function add$3(code, projection) {
-    cache[code] = projection;
+    cache$1[code] = projection;
   }
 
   /**
@@ -3509,7 +3515,7 @@ var myol = (function () {
    *
    * @param {Array<Array<number>>} mat Augmented matrix (n x n + 1 column)
    *                                     in row-major order.
-   * @return {Array<number>} The resulting vector.
+   * @return {Array<number>|null} The resulting vector.
    */
   function solveLinearSystem(mat) {
     const n = mat.length;
@@ -4444,6 +4450,9 @@ var myol = (function () {
    */
   let level = levels.info;
 
+  /**
+   * @param  {...any} args Arguments to log
+   */
   function warn(...args) {
     if (level > levels.warn) {
       return;
@@ -5024,10 +5033,10 @@ var myol = (function () {
     if (!userProjection) {
       return resolution;
     }
-    const sourceUnits = get$2(sourceProjection).getUnits();
-    const userUnits = userProjection.getUnits();
-    return sourceUnits && userUnits
-      ? (resolution * METERS_PER_UNIT$1[sourceUnits]) / METERS_PER_UNIT$1[userUnits]
+    const sourceMetersPerUnit = get$2(sourceProjection).getMetersPerUnit();
+    const userMetersPerUnit = userProjection.getMetersPerUnit();
+    return sourceMetersPerUnit && userMetersPerUnit
+      ? (resolution * sourceMetersPerUnit) / userMetersPerUnit
       : resolution;
   }
 
@@ -5043,10 +5052,10 @@ var myol = (function () {
     if (!userProjection) {
       return resolution;
     }
-    const sourceUnits = get$2(destProjection).getUnits();
-    const userUnits = userProjection.getUnits();
-    return sourceUnits && userUnits
-      ? (resolution * METERS_PER_UNIT$1[userUnits]) / METERS_PER_UNIT$1[sourceUnits]
+    const destMetersPerUnit = get$2(destProjection).getMetersPerUnit();
+    const userMetersPerUnit = userProjection.getMetersPerUnit();
+    return destMetersPerUnit && userMetersPerUnit
+      ? (resolution * userMetersPerUnit) / destMetersPerUnit
       : resolution;
   }
 
@@ -5317,7 +5326,7 @@ var myol = (function () {
   /**
    * @type {import("../transform.js").Transform}
    */
-  const tmpTransform = create();
+  const tmpTransform$1 = create();
 
   /**
    * @classdesc
@@ -5367,18 +5376,16 @@ var myol = (function () {
        * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
        * @return {Geometry} Simplified geometry.
        */
-      this.simplifyTransformedInternal = memoizeOne(function (
-        revision,
-        squaredTolerance,
-        transform
-      ) {
-        if (!transform) {
-          return this.getSimplifiedGeometry(squaredTolerance);
+      this.simplifyTransformedInternal = memoizeOne(
+        (revision, squaredTolerance, transform) => {
+          if (!transform) {
+            return this.getSimplifiedGeometry(squaredTolerance);
+          }
+          const clone = this.clone();
+          clone.applyTransform(transform);
+          return clone.getSimplifiedGeometry(squaredTolerance);
         }
-        const clone = this.clone();
-        clone.applyTransform(transform);
-        return clone.getSimplifiedGeometry(squaredTolerance);
-      });
+      );
     }
 
     /**
@@ -5599,7 +5606,7 @@ var myol = (function () {
               const projectedExtent = sourceProj.getWorldExtent();
               const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
               compose(
-                tmpTransform,
+                tmpTransform$1,
                 projectedExtent[0],
                 projectedExtent[3],
                 scale,
@@ -5613,7 +5620,7 @@ var myol = (function () {
                 0,
                 inCoordinates.length,
                 stride,
-                tmpTransform,
+                tmpTransform$1,
                 outCoordinates
               );
               return getTransform(sourceProj, destination)(
@@ -5662,7 +5669,7 @@ var myol = (function () {
        * @protected
        * @type {Array<number>}
        */
-      this.flatCoordinates = null;
+      this.flatCoordinates;
     }
 
     /**
@@ -5802,7 +5809,6 @@ var myol = (function () {
      * @protected
      */
     setLayout(layout, coordinates, nesting) {
-      /** @type {number} */
       let stride;
       if (layout) {
         stride = getStrideForLayout(layout);
@@ -5813,7 +5819,7 @@ var myol = (function () {
             this.stride = 2;
             return;
           }
-          coordinates = /** @type {Array} */ (coordinates[0]);
+          coordinates = /** @type {Array<unknown>} */ (coordinates[0]);
         }
         stride = coordinates.length;
         layout = getLayoutForStride(stride);
@@ -6733,6 +6739,7 @@ var myol = (function () {
   ) {
     for (let i = 0, ii = endss.length; i < ii; ++i) {
       const ends = endss[i];
+      /** @type {Array<number>} */
       const simplifiedEnds = [];
       simplifiedOffset = quantizeArray(
         flatCoordinates,
@@ -7032,6 +7039,7 @@ var myol = (function () {
      * @protected
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
+      /** @type {Array<number>} */
       const simplifiedFlatCoordinates = [];
       simplifiedFlatCoordinates.length = douglasPeucker(
         this.flatCoordinates,
@@ -7150,7 +7158,7 @@ var myol = (function () {
      * @api
      */
     getCoordinates() {
-      return !this.flatCoordinates ? [] : this.flatCoordinates.slice();
+      return this.flatCoordinates.slice();
     }
 
     /**
@@ -7440,6 +7448,7 @@ var myol = (function () {
     stride,
     flatCenters
   ) {
+    /** @type {Array<number>} */
     let interiorPoints = [];
     for (let i = 0, ii = endss.length; i < ii; ++i) {
       const ends = endss[i];
@@ -7747,7 +7756,7 @@ var myol = (function () {
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
-   * @return {boolean} Is clockwise.
+   * @return {boolean|undefined} Is clockwise.
    */
   function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
     // https://stackoverflow.com/q/1165647/clockwise-method#1165943
@@ -7914,6 +7923,39 @@ var myol = (function () {
   }
 
   /**
+   * Return a two-dimensional endss
+   * @param {Array<number>} flatCoordinates Flat coordinates
+   * @param {Array<number>} ends Linear ring end indexes
+   * @return {Array<Array<number>>} Two dimensional endss array that can
+   * be used to construct a MultiPolygon
+   */
+  function inflateEnds(flatCoordinates, ends) {
+    const endss = [];
+    let offset = 0;
+    let prevEndIndex = 0;
+    let startOrientation;
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      const end = ends[i];
+      // classifies an array of rings into polygons with outer rings and holes
+      const orientation = linearRingIsClockwise(flatCoordinates, offset, end, 2);
+      if (startOrientation === undefined) {
+        startOrientation = orientation;
+      }
+      if (orientation === startOrientation) {
+        endss.push(ends.slice(prevEndIndex, i + 1));
+      } else {
+        if (endss.length === 0) {
+          continue;
+        }
+        endss[endss.length - 1].push(ends[prevEndIndex]);
+      }
+      prevEndIndex = i + 1;
+      offset = end;
+    }
+    return endss;
+  }
+
+  /**
    * @module ol/geom/Polygon
    */
 
@@ -7952,7 +7994,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("../coordinate.js").Coordinate}
+       * @type {import("../coordinate.js").Coordinate|null}
        */
       this.flatInteriorPoint_ = null;
 
@@ -7976,7 +8018,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {Array<number>}
+       * @type {Array<number>|null}
        */
       this.orientedFlatCoordinates_ = null;
 
@@ -8141,7 +8183,9 @@ var myol = (function () {
         );
         this.flatInteriorPointRevision_ = this.getRevision();
       }
-      return this.flatInteriorPoint_;
+      return /** @type {import("../coordinate.js").Coordinate} */ (
+        this.flatInteriorPoint_
+      );
     }
 
     /**
@@ -8230,7 +8274,7 @@ var myol = (function () {
         }
         this.orientedRevision_ = this.getRevision();
       }
-      return this.orientedFlatCoordinates_;
+      return /** @type {Array<number>} */ (this.orientedFlatCoordinates_);
     }
 
     /**
@@ -8239,7 +8283,9 @@ var myol = (function () {
      * @protected
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
+      /** @type {Array<number>} */
       const simplifiedFlatCoordinates = [];
+      /** @type {Array<number>} */
       const simplifiedEnds = [];
       simplifiedFlatCoordinates.length = quantizeArray(
         this.flatCoordinates,
@@ -9168,6 +9214,723 @@ var myol = (function () {
   var Collection$1 = Collection;
 
   /**
+   * RGB space.
+   *
+   * @module  color-space/rgb
+   */
+
+  var rgb = {
+  	name: 'rgb',
+  	min: [0,0,0],
+  	max: [255,255,255],
+  	channel: ['red', 'green', 'blue'],
+  	alias: ['RGB']
+  };
+
+  /**
+   * CIE XYZ
+   *
+   * @module  color-space/xyz
+   */
+
+  var xyz = {
+  	name: 'xyz',
+  	min: [0,0,0],
+  	channel: ['X','Y','Z'],
+  	alias: ['XYZ', 'ciexyz', 'cie1931']
+  };
+
+
+  /**
+   * Whitepoint reference values with observer/illuminant
+   *
+   * http://en.wikipedia.org/wiki/Standard_illuminant
+   */
+  xyz.whitepoint = {
+  	//1931 2°
+  	2: {
+  		//incadescent
+  		A:[109.85, 100, 35.585],
+  		// B:[],
+  		C: [98.074, 100, 118.232],
+  		D50: [96.422, 100, 82.521],
+  		D55: [95.682, 100, 92.149],
+  		//daylight
+  		D65: [95.045592705167, 100, 108.9057750759878],
+  		D75: [94.972, 100, 122.638],
+  		//flourescent
+  		// F1: [],
+  		F2: [99.187, 100, 67.395],
+  		// F3: [],
+  		// F4: [],
+  		// F5: [],
+  		// F6:[],
+  		F7: [95.044, 100, 108.755],
+  		// F8: [],
+  		// F9: [],
+  		// F10: [],
+  		F11: [100.966, 100, 64.370],
+  		// F12: [],
+  		E: [100,100,100]
+  	},
+
+  	//1964  10°
+  	10: {
+  		//incadescent
+  		A:[111.144, 100, 35.200],
+  		C: [97.285, 100, 116.145],
+  		D50: [96.720, 100, 81.427],
+  		D55: [95.799, 100, 90.926],
+  		//daylight
+  		D65: [94.811, 100, 107.304],
+  		D75: [94.416, 100, 120.641],
+  		//flourescent
+  		F2: [103.280, 100, 69.026],
+  		F7: [95.792, 100, 107.687],
+  		F11: [103.866, 100, 65.627],
+  		E: [100,100,100]
+  	}
+  };
+
+
+  /**
+   * Top values are the whitepoint’s top values, default are D65
+   */
+  xyz.max = xyz.whitepoint[2].D65;
+
+
+  /**
+   * Transform xyz to rgb
+   *
+   * @param {Array} xyz Array of xyz values
+   *
+   * @return {Array} RGB values
+   */
+  xyz.rgb = function (_xyz, white) {
+  	//FIXME: make sure we have to divide like this. Probably we have to replace matrix as well then
+  	white = white || xyz.whitepoint[2].E;
+
+  	var x = _xyz[0] / white[0],
+  		y = _xyz[1] / white[1],
+  		z = _xyz[2] / white[2],
+  		r, g, b;
+
+  	// assume sRGB
+  	// http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+  	r = (x * 3.240969941904521) + (y * -1.537383177570093) + (z * -0.498610760293);
+  	g = (x * -0.96924363628087) + (y * 1.87596750150772) + (z * 0.041555057407175);
+  	b = (x * 0.055630079696993) + (y * -0.20397695888897) + (z * 1.056971514242878);
+
+  	r = r > 0.0031308 ? ((1.055 * Math.pow(r, 1.0 / 2.4)) - 0.055)
+  		: r = (r * 12.92);
+
+  	g = g > 0.0031308 ? ((1.055 * Math.pow(g, 1.0 / 2.4)) - 0.055)
+  		: g = (g * 12.92);
+
+  	b = b > 0.0031308 ? ((1.055 * Math.pow(b, 1.0 / 2.4)) - 0.055)
+  		: b = (b * 12.92);
+
+  	r = Math.min(Math.max(0, r), 1);
+  	g = Math.min(Math.max(0, g), 1);
+  	b = Math.min(Math.max(0, b), 1);
+
+  	return [r * 255, g * 255, b * 255];
+  };
+
+
+
+  /**
+   * RGB to XYZ
+   *
+   * @param {Array} rgb RGB channels
+   *
+   * @return {Array} XYZ channels
+   */
+  rgb.xyz = function(rgb, white) {
+  	var r = rgb[0] / 255,
+  			g = rgb[1] / 255,
+  			b = rgb[2] / 255;
+
+  	// assume sRGB
+  	r = r > 0.04045 ? Math.pow(((r + 0.055) / 1.055), 2.4) : (r / 12.92);
+  	g = g > 0.04045 ? Math.pow(((g + 0.055) / 1.055), 2.4) : (g / 12.92);
+  	b = b > 0.04045 ? Math.pow(((b + 0.055) / 1.055), 2.4) : (b / 12.92);
+
+  	var x = (r * 0.41239079926595) + (g * 0.35758433938387) + (b * 0.18048078840183);
+  	var y = (r * 0.21263900587151) + (g * 0.71516867876775) + (b * 0.072192315360733);
+  	var z = (r * 0.019330818715591) + (g * 0.11919477979462) + (b * 0.95053215224966);
+
+  	white = white || xyz.whitepoint[2].E;
+
+  	return [x * white[0], y * white[1], z * white[2]];
+  };
+
+  /**
+   * CIE LUV (C'est la vie)
+   *
+   * @module color-space/luv
+   */
+
+  var luv = {
+  	name: 'luv',
+  	//NOTE: luv has no rigidly defined limits
+  	//easyrgb fails to get proper coords
+  	//boronine states no rigid limits
+  	//colorMine refers this ones:
+  	min: [0,-134,-140],
+  	max: [100,224,122],
+  	channel: ['lightness', 'u', 'v'],
+  	alias: ['LUV', 'cieluv', 'cie1976'],
+
+  	xyz: function(arg, i, o){
+  		var _u, _v, l, u, v, x, y, z, xn, yn, zn, un, vn;
+  		l = arg[0], u = arg[1], v = arg[2];
+
+  		if (l === 0) return [0,0,0];
+
+  		//get constants
+  		//var e = 0.008856451679035631; //(6/29)^3
+  		var k = 0.0011070564598794539; //(3/29)^3
+
+  		//get illuminant/observer
+  		i = i || 'D65';
+  		o = o || 2;
+
+  		xn = xyz.whitepoint[o][i][0];
+  		yn = xyz.whitepoint[o][i][1];
+  		zn = xyz.whitepoint[o][i][2];
+
+  		un = (4 * xn) / (xn + (15 * yn) + (3 * zn));
+  		vn = (9 * yn) / (xn + (15 * yn) + (3 * zn));
+  		// un = 0.19783000664283;
+  		// vn = 0.46831999493879;
+
+
+  		_u = u / (13 * l) + un || 0;
+  		_v = v / (13 * l) + vn || 0;
+
+  		y = l > 8 ? yn * Math.pow( (l + 16) / 116 , 3) : yn * l * k;
+
+  		//wikipedia method
+  		x = y * 9 * _u / (4 * _v) || 0;
+  		z = y * (12 - 3 * _u - 20 * _v) / (4 * _v) || 0;
+
+  		//boronine method
+  		//https://github.com/boronine/husl/blob/master/husl.coffee#L201
+  		// x = 0 - (9 * y * _u) / ((_u - 4) * _v - _u * _v);
+  		// z = (9 * y - (15 * _v * y) - (_v * x)) / (3 * _v);
+
+  		return [x, y, z];
+  	}
+  };
+
+  // http://www.brucelindbloom.com/index.html?Equations.html
+  // https://github.com/boronine/husl/blob/master/husl.coffee
+  //i - illuminant
+  //o - observer
+  xyz.luv = function(arg, i, o) {
+  	var _u, _v, l, u, v, x, y, z, xn, yn, zn, un, vn;
+
+  	//get constants
+  	var e = 0.008856451679035631; //(6/29)^3
+  	var k = 903.2962962962961; //(29/3)^3
+
+  	//get illuminant/observer coords
+  	i = i || 'D65';
+  	o = o || 2;
+
+  	xn = xyz.whitepoint[o][i][0];
+  	yn = xyz.whitepoint[o][i][1];
+  	zn = xyz.whitepoint[o][i][2];
+
+  	un = (4 * xn) / (xn + (15 * yn) + (3 * zn));
+  	vn = (9 * yn) / (xn + (15 * yn) + (3 * zn));
+
+
+  	x = arg[0], y = arg[1], z = arg[2];
+
+
+  	_u = (4 * x) / (x + (15 * y) + (3 * z)) || 0;
+  	_v = (9 * y) / (x + (15 * y) + (3 * z)) || 0;
+
+  	var yr = y/yn;
+
+  	l = yr <= e ? k * yr : 116 * Math.pow(yr, 1/3) - 16;
+
+  	u = 13 * l * (_u - un);
+  	v = 13 * l * (_v - vn);
+
+  	return [l, u, v];
+  };
+
+  /**
+   * Cylindrical CIE LUV
+   *
+   * @module color-space/lchuv
+   */
+
+  //cylindrical luv
+  var lchuv = {
+  	name: 'lchuv',
+  	channel: ['lightness', 'chroma', 'hue'],
+  	alias: ['LCHuv', 'cielchuv'],
+  	min: [0,0,0],
+  	max: [100,100,360],
+
+  	luv: function(luv){
+  		var l = luv[0],
+  		c = luv[1],
+  		h = luv[2],
+  		u, v, hr;
+
+  		hr = h / 360 * 2 * Math.PI;
+  		u = c * Math.cos(hr);
+  		v = c * Math.sin(hr);
+  		return [l, u, v];
+  	},
+
+  	xyz: function(arg) {
+  		return luv.xyz(lchuv.luv(arg));
+  	}
+  };
+
+  luv.lchuv = function(luv){
+  	var l = luv[0], u = luv[1], v = luv[2];
+
+  	var c = Math.sqrt(u*u + v*v);
+  	var hr = Math.atan2(v,u);
+  	var h = hr * 360 / 2 / Math.PI;
+  	if (h < 0) {
+  		h += 360;
+  	}
+
+  	return [l,c,h]
+  };
+
+  xyz.lchuv = function(arg){
+    return luv.lchuv(xyz.luv(arg));
+  };
+
+  function getDefaultExportFromCjs (x) {
+  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+  }
+
+  var colorName = {
+  	"aliceblue": [240, 248, 255],
+  	"antiquewhite": [250, 235, 215],
+  	"aqua": [0, 255, 255],
+  	"aquamarine": [127, 255, 212],
+  	"azure": [240, 255, 255],
+  	"beige": [245, 245, 220],
+  	"bisque": [255, 228, 196],
+  	"black": [0, 0, 0],
+  	"blanchedalmond": [255, 235, 205],
+  	"blue": [0, 0, 255],
+  	"blueviolet": [138, 43, 226],
+  	"brown": [165, 42, 42],
+  	"burlywood": [222, 184, 135],
+  	"cadetblue": [95, 158, 160],
+  	"chartreuse": [127, 255, 0],
+  	"chocolate": [210, 105, 30],
+  	"coral": [255, 127, 80],
+  	"cornflowerblue": [100, 149, 237],
+  	"cornsilk": [255, 248, 220],
+  	"crimson": [220, 20, 60],
+  	"cyan": [0, 255, 255],
+  	"darkblue": [0, 0, 139],
+  	"darkcyan": [0, 139, 139],
+  	"darkgoldenrod": [184, 134, 11],
+  	"darkgray": [169, 169, 169],
+  	"darkgreen": [0, 100, 0],
+  	"darkgrey": [169, 169, 169],
+  	"darkkhaki": [189, 183, 107],
+  	"darkmagenta": [139, 0, 139],
+  	"darkolivegreen": [85, 107, 47],
+  	"darkorange": [255, 140, 0],
+  	"darkorchid": [153, 50, 204],
+  	"darkred": [139, 0, 0],
+  	"darksalmon": [233, 150, 122],
+  	"darkseagreen": [143, 188, 143],
+  	"darkslateblue": [72, 61, 139],
+  	"darkslategray": [47, 79, 79],
+  	"darkslategrey": [47, 79, 79],
+  	"darkturquoise": [0, 206, 209],
+  	"darkviolet": [148, 0, 211],
+  	"deeppink": [255, 20, 147],
+  	"deepskyblue": [0, 191, 255],
+  	"dimgray": [105, 105, 105],
+  	"dimgrey": [105, 105, 105],
+  	"dodgerblue": [30, 144, 255],
+  	"firebrick": [178, 34, 34],
+  	"floralwhite": [255, 250, 240],
+  	"forestgreen": [34, 139, 34],
+  	"fuchsia": [255, 0, 255],
+  	"gainsboro": [220, 220, 220],
+  	"ghostwhite": [248, 248, 255],
+  	"gold": [255, 215, 0],
+  	"goldenrod": [218, 165, 32],
+  	"gray": [128, 128, 128],
+  	"green": [0, 128, 0],
+  	"greenyellow": [173, 255, 47],
+  	"grey": [128, 128, 128],
+  	"honeydew": [240, 255, 240],
+  	"hotpink": [255, 105, 180],
+  	"indianred": [205, 92, 92],
+  	"indigo": [75, 0, 130],
+  	"ivory": [255, 255, 240],
+  	"khaki": [240, 230, 140],
+  	"lavender": [230, 230, 250],
+  	"lavenderblush": [255, 240, 245],
+  	"lawngreen": [124, 252, 0],
+  	"lemonchiffon": [255, 250, 205],
+  	"lightblue": [173, 216, 230],
+  	"lightcoral": [240, 128, 128],
+  	"lightcyan": [224, 255, 255],
+  	"lightgoldenrodyellow": [250, 250, 210],
+  	"lightgray": [211, 211, 211],
+  	"lightgreen": [144, 238, 144],
+  	"lightgrey": [211, 211, 211],
+  	"lightpink": [255, 182, 193],
+  	"lightsalmon": [255, 160, 122],
+  	"lightseagreen": [32, 178, 170],
+  	"lightskyblue": [135, 206, 250],
+  	"lightslategray": [119, 136, 153],
+  	"lightslategrey": [119, 136, 153],
+  	"lightsteelblue": [176, 196, 222],
+  	"lightyellow": [255, 255, 224],
+  	"lime": [0, 255, 0],
+  	"limegreen": [50, 205, 50],
+  	"linen": [250, 240, 230],
+  	"magenta": [255, 0, 255],
+  	"maroon": [128, 0, 0],
+  	"mediumaquamarine": [102, 205, 170],
+  	"mediumblue": [0, 0, 205],
+  	"mediumorchid": [186, 85, 211],
+  	"mediumpurple": [147, 112, 219],
+  	"mediumseagreen": [60, 179, 113],
+  	"mediumslateblue": [123, 104, 238],
+  	"mediumspringgreen": [0, 250, 154],
+  	"mediumturquoise": [72, 209, 204],
+  	"mediumvioletred": [199, 21, 133],
+  	"midnightblue": [25, 25, 112],
+  	"mintcream": [245, 255, 250],
+  	"mistyrose": [255, 228, 225],
+  	"moccasin": [255, 228, 181],
+  	"navajowhite": [255, 222, 173],
+  	"navy": [0, 0, 128],
+  	"oldlace": [253, 245, 230],
+  	"olive": [128, 128, 0],
+  	"olivedrab": [107, 142, 35],
+  	"orange": [255, 165, 0],
+  	"orangered": [255, 69, 0],
+  	"orchid": [218, 112, 214],
+  	"palegoldenrod": [238, 232, 170],
+  	"palegreen": [152, 251, 152],
+  	"paleturquoise": [175, 238, 238],
+  	"palevioletred": [219, 112, 147],
+  	"papayawhip": [255, 239, 213],
+  	"peachpuff": [255, 218, 185],
+  	"peru": [205, 133, 63],
+  	"pink": [255, 192, 203],
+  	"plum": [221, 160, 221],
+  	"powderblue": [176, 224, 230],
+  	"purple": [128, 0, 128],
+  	"rebeccapurple": [102, 51, 153],
+  	"red": [255, 0, 0],
+  	"rosybrown": [188, 143, 143],
+  	"royalblue": [65, 105, 225],
+  	"saddlebrown": [139, 69, 19],
+  	"salmon": [250, 128, 114],
+  	"sandybrown": [244, 164, 96],
+  	"seagreen": [46, 139, 87],
+  	"seashell": [255, 245, 238],
+  	"sienna": [160, 82, 45],
+  	"silver": [192, 192, 192],
+  	"skyblue": [135, 206, 235],
+  	"slateblue": [106, 90, 205],
+  	"slategray": [112, 128, 144],
+  	"slategrey": [112, 128, 144],
+  	"snow": [255, 250, 250],
+  	"springgreen": [0, 255, 127],
+  	"steelblue": [70, 130, 180],
+  	"tan": [210, 180, 140],
+  	"teal": [0, 128, 128],
+  	"thistle": [216, 191, 216],
+  	"tomato": [255, 99, 71],
+  	"turquoise": [64, 224, 208],
+  	"violet": [238, 130, 238],
+  	"wheat": [245, 222, 179],
+  	"white": [255, 255, 255],
+  	"whitesmoke": [245, 245, 245],
+  	"yellow": [255, 255, 0],
+  	"yellowgreen": [154, 205, 50]
+  };
+
+  var names$x = /*@__PURE__*/getDefaultExportFromCjs(colorName);
+
+  /**
+   * @module color-parse
+   */
+
+  /**
+   * Base hues
+   * http://dev.w3.org/csswg/css-color/#typedef-named-hue
+   */
+  //FIXME: use external hue detector
+  var baseHues = {
+  	red: 0,
+  	orange: 60,
+  	yellow: 120,
+  	green: 180,
+  	blue: 240,
+  	purple: 300
+  };
+
+  /**
+   * Parse color from the string passed
+   *
+   * @return {Object} A space indicator `space`, an array `values` and `alpha`
+   */
+  function parse$3(cstr) {
+  	var m, parts = [], alpha = 1, space;
+
+  	//numeric case
+  	if (typeof cstr === 'number') {
+  		return { space: 'rgb', values: [cstr >>> 16, (cstr & 0x00ff00) >>> 8, cstr & 0x0000ff], alpha: 1 }
+  	}
+  	if (typeof cstr === 'number') return { space: 'rgb', values: [cstr >>> 16, (cstr & 0x00ff00) >>> 8, cstr & 0x0000ff], alpha: 1 }
+
+  	cstr = String(cstr).toLowerCase();
+
+  	//keyword
+  	if (names$x[cstr]) {
+  		parts = names$x[cstr].slice();
+  		space = 'rgb';
+  	}
+
+  	//reserved words
+  	else if (cstr === 'transparent') {
+  		alpha = 0;
+  		space = 'rgb';
+  		parts = [0, 0, 0];
+  	}
+
+  	//hex
+  	else if (cstr[0] === '#') {
+  		var base = cstr.slice(1);
+  		var size = base.length;
+  		var isShort = size <= 4;
+  		alpha = 1;
+
+  		if (isShort) {
+  			parts = [
+  				parseInt(base[0] + base[0], 16),
+  				parseInt(base[1] + base[1], 16),
+  				parseInt(base[2] + base[2], 16)
+  			];
+  			if (size === 4) {
+  				alpha = parseInt(base[3] + base[3], 16) / 255;
+  			}
+  		}
+  		else {
+  			parts = [
+  				parseInt(base[0] + base[1], 16),
+  				parseInt(base[2] + base[3], 16),
+  				parseInt(base[4] + base[5], 16)
+  			];
+  			if (size === 8) {
+  				alpha = parseInt(base[6] + base[7], 16) / 255;
+  			}
+  		}
+
+  		if (!parts[0]) parts[0] = 0;
+  		if (!parts[1]) parts[1] = 0;
+  		if (!parts[2]) parts[2] = 0;
+
+  		space = 'rgb';
+  	}
+
+  	// color space
+  	else if (m = /^((?:rgba?|hs[lvb]a?|hwba?|cmyk?|xy[zy]|gray|lab|lchu?v?|[ly]uv|lms|oklch|oklab|color))\s*\(([^\)]*)\)/.exec(cstr)) {
+  		var name = m[1];
+  		space = name.replace(/a$/, '');
+  		var dims = space === 'cmyk' ? 4 : space === 'gray' ? 1 : 3;
+  		parts = m[2].trim().split(/\s*[,\/]\s*|\s+/);
+
+  		// color(srgb-linear x x x) -> srgb-linear(x x x)
+  		if (space === 'color') space = parts.shift();
+
+  		parts = parts.map(function (x, i) {
+  			//<percentage>
+  			if (x[x.length - 1] === '%') {
+  				x = parseFloat(x) / 100;
+  				// alpha -> 0..1
+  				if (i === 3) return x
+  				// rgb -> 0..255
+  				if (space === 'rgb') return x * 255
+  				// hsl, hwb H -> 0..100
+  				if (space[0] === 'h') return x * 100
+  				// lch, lab L -> 0..100
+  				if (space[0] === 'l' && !i) return x * 100
+  				// lab A B -> -125..125
+  				if (space === 'lab') return x * 125
+  				// lch C -> 0..150, H -> 0..360
+  				if (space === 'lch') return i < 2 ? x * 150 : x * 360
+  				// oklch/oklab L -> 0..1
+  				if (space[0] === 'o' && !i) return x
+  				// oklab A B -> -0.4..0.4
+  				if (space === 'oklab') return x * 0.4
+  				// oklch C -> 0..0.4, H -> 0..360
+  				if (space === 'oklch') return i < 2 ? x * 0.4 : x * 360
+  				// color(xxx) -> 0..1
+  				return x
+  			}
+
+  			//hue
+  			if (space[i] === 'h' || (i === 2 && space[space.length - 1] === 'h')) {
+  				//<base-hue>
+  				if (baseHues[x] !== undefined) return baseHues[x]
+  				//<deg>
+  				if (x.endsWith('deg')) return parseFloat(x)
+  				//<turn>
+  				if (x.endsWith('turn')) return parseFloat(x) * 360
+  				if (x.endsWith('grad')) return parseFloat(x) * 360 / 400
+  				if (x.endsWith('rad')) return parseFloat(x) * 180 / Math.PI
+  			}
+  			if (x === 'none') return 0
+  			return parseFloat(x)
+  		});
+
+  		alpha = parts.length > dims ? parts.pop() : 1;
+  	}
+
+  	//named channels case
+  	else if (/[0-9](?:\s|\/|,)/.test(cstr)) {
+  		parts = cstr.match(/([0-9]+)/g).map(function (value) {
+  			return parseFloat(value)
+  		});
+
+  		space = cstr.match(/([a-z])/ig)?.join('')?.toLowerCase() || 'rgb';
+  	}
+
+  	return {
+  		space,
+  		values: parts,
+  		alpha
+  	}
+  }
+
+  /**
+   * @module color-space/hsl
+   */
+
+  var hsl = {
+  	name: 'hsl',
+  	min: [0,0,0],
+  	max: [360,100,100],
+  	channel: ['hue', 'saturation', 'lightness'],
+  	alias: ['HSL'],
+
+  	rgb: function(hsl) {
+  		var h = hsl[0]/360, s = hsl[1]/100, l = hsl[2]/100, t1, t2, t3, rgb, val, i=0;
+
+  		if (s === 0) return val = l * 255, [val, val, val];
+
+  		t2 = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  		t1 = 2 * l - t2;
+
+  		rgb = [0, 0, 0];
+  		for (;i<3;) {
+  			t3 = h + 1 / 3 * - (i - 1);
+  			t3 < 0 ? t3++ : t3 > 1 && t3--;
+  			val = 6 * t3 < 1 ? t1 + (t2 - t1) * 6 * t3 :
+  			2 * t3 < 1 ? t2 :
+  			3 * t3 < 2 ?  t1 + (t2 - t1) * (2 / 3 - t3) * 6 :
+  			t1;
+  			rgb[i++] = val * 255;
+  		}
+
+  		return rgb;
+  	}
+  };
+
+
+  //extend rgb
+  rgb.hsl = function(rgb) {
+  	var r = rgb[0]/255,
+  			g = rgb[1]/255,
+  			b = rgb[2]/255,
+  			min = Math.min(r, g, b),
+  			max = Math.max(r, g, b),
+  			delta = max - min,
+  			h, s, l;
+
+  	if (max === min) {
+  		h = 0;
+  	}
+  	else if (r === max) {
+  		h = (g - b) / delta;
+  	}
+  	else if (g === max) {
+  		h = 2 + (b - r) / delta;
+  	}
+  	else if (b === max) {
+  		h = 4 + (r - g)/ delta;
+  	}
+
+  	h = Math.min(h * 60, 360);
+
+  	if (h < 0) {
+  		h += 360;
+  	}
+
+  	l = (min + max) / 2;
+
+  	if (max === min) {
+  		s = 0;
+  	}
+  	else if (l <= 0.5) {
+  		s = delta / (max + min);
+  	}
+  	else {
+  		s = delta / (2 - max - min);
+  	}
+
+  	return [h, s * 100, l * 100];
+  };
+
+  /** @module  color-rgba */
+
+  function rgba(color) {
+  	// template literals
+  	if (Array.isArray(color) && color.raw) color = String.raw(...arguments);
+  	if (color instanceof Number) color = +color;
+
+  	var values;
+
+  	//attempt to parse non-array arguments
+  	var parsed = parse$3(color);
+
+  	if (!parsed.space) return []
+
+  	const min = parsed.space[0] === 'h' ? hsl.min : rgb.min;
+  	const max = parsed.space[0] === 'h' ? hsl.max : rgb.max;
+
+  	values = Array(3);
+  	values[0] = Math.min(Math.max(parsed.values[0], min[0]), max[0]);
+  	values[1] = Math.min(Math.max(parsed.values[1], min[1]), max[1]);
+  	values[2] = Math.min(Math.max(parsed.values[2], min[2]), max[2]);
+
+  	if (parsed.space[0] === 'h') {
+  		values = hsl.rgb(values);
+  	}
+
+  	values.push(Math.min(Math.max(parsed.alpha, 0), 1));
+
+  	return values
+  }
+
+  /**
    * @module ol/color
    */
 
@@ -9179,22 +9942,6 @@ var myol = (function () {
    * @typedef {Array<number>} Color
    * @api
    */
-
-  /**
-   * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
-   * @const
-   * @type {RegExp}
-   * @private
-   */
-  const HEX_COLOR_RE_ = /^#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})$/i;
-
-  /**
-   * Regular expression for matching potential named color style strings.
-   * @const
-   * @type {RegExp}
-   * @private
-   */
-  const NAMED_COLOR_RE_ = /^([a-z]*)$|^hsla?\(.*\)$/i;
 
   /**
    * Return the color as an rgba string.
@@ -9210,74 +9957,90 @@ var myol = (function () {
   }
 
   /**
-   * Return named color as an rgba string.
-   * @param {string} color Named color.
-   * @return {string} Rgb string.
+   * @type {number}
    */
-  function fromNamed(color) {
-    const el = document.createElement('div');
-    el.style.color = color;
-    if (el.style.color !== '') {
-      document.body.appendChild(el);
-      const rgb = getComputedStyle(el).color;
-      document.body.removeChild(el);
-      return rgb;
+  const MAX_CACHE_SIZE = 1024;
+
+  /**
+   * We maintain a small cache of parsed strings.  Whenever the cache grows too large,
+   * we delete an arbitrary set of the entries.
+   *
+   * @type {Object<string, Color>}
+   */
+  const cache = {};
+
+  /**
+   * @type {number}
+   */
+  let cacheSize = 0;
+
+  /**
+   * @param {Color} color A color that may or may not have an alpha channel.
+   * @return {Color} The input color with an alpha channel.  If the input color has
+   * an alpha channel, the input color will be returned unchanged.  Otherwise, a new
+   * array will be returned with the input color and an alpha channel of 1.
+   */
+  function withAlpha(color) {
+    if (color.length === 4) {
+      return color;
     }
-    return '';
+    const output = color.slice();
+    output[3] = 1;
+    return output;
+  }
+
+  /**
+   * @param {Color} color RGBA color.
+   * @return {Color} LCHuv color with alpha.
+   */
+  function rgbaToLcha(color) {
+    const output = xyz.lchuv(rgb.xyz(color));
+    output[3] = color[3];
+    return output;
+  }
+
+  /**
+   * @param {Color} color LCHuv color with alpha.
+   * @return {Color} RGBA color.
+   */
+  function lchaToRgba(color) {
+    const output = xyz.rgb(lchuv.xyz(color));
+    output[3] = color[3];
+    return output;
   }
 
   /**
    * @param {string} s String.
    * @return {Color} Color.
    */
-  const fromString = (function () {
-    // We maintain a small cache of parsed strings.  To provide cheap LRU-like
-    // semantics, whenever the cache grows too large we simply delete an
-    // arbitrary 25% of the entries.
-
-    /**
-     * @const
-     * @type {number}
-     */
-    const MAX_CACHE_SIZE = 1024;
-
-    /**
-     * @type {Object<string, Color>}
-     */
-    const cache = {};
-
-    /**
-     * @type {number}
-     */
-    let cacheSize = 0;
-
-    return (
-      /**
-       * @param {string} s String.
-       * @return {Color} Color.
-       */
-      function (s) {
-        let color;
-        if (cache.hasOwnProperty(s)) {
-          color = cache[s];
-        } else {
-          if (cacheSize >= MAX_CACHE_SIZE) {
-            let i = 0;
-            for (const key in cache) {
-              if ((i++ & 3) === 0) {
-                delete cache[key];
-                --cacheSize;
-              }
-            }
-          }
-          color = fromStringInternal_(s);
-          cache[s] = color;
-          ++cacheSize;
+  function fromString(s) {
+    if (cache.hasOwnProperty(s)) {
+      return cache[s];
+    }
+    if (cacheSize >= MAX_CACHE_SIZE) {
+      let i = 0;
+      for (const key in cache) {
+        if ((i++ & 3) === 0) {
+          delete cache[key];
+          --cacheSize;
         }
-        return color;
       }
-    );
-  })();
+    }
+
+    const color = rgba(s);
+    if (color.length !== 4) {
+      throw new Error('Failed to parse "' + s + '" as color');
+    }
+    for (const c of color) {
+      if (isNaN(c)) {
+        throw new Error('Failed to parse "' + s + '" as color');
+      }
+    }
+    normalize(color);
+    cache[s] = color;
+    ++cacheSize;
+    return color;
+  }
 
   /**
    * Return the color as an array. This function maintains a cache of calculated
@@ -9294,61 +10057,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {string} s String.
-   * @private
-   * @return {Color} Color.
-   */
-  function fromStringInternal_(s) {
-    let r, g, b, a, color;
-
-    if (NAMED_COLOR_RE_.exec(s)) {
-      s = fromNamed(s);
-    }
-
-    if (HEX_COLOR_RE_.exec(s)) {
-      // hex
-      const n = s.length - 1; // number of hex digits
-      let d; // number of digits per channel
-      if (n <= 4) {
-        d = 1;
-      } else {
-        d = 2;
-      }
-      const hasAlpha = n === 4 || n === 8;
-      r = parseInt(s.substr(1 + 0 * d, d), 16);
-      g = parseInt(s.substr(1 + 1 * d, d), 16);
-      b = parseInt(s.substr(1 + 2 * d, d), 16);
-      if (hasAlpha) {
-        a = parseInt(s.substr(1 + 3 * d, d), 16);
-      } else {
-        a = 255;
-      }
-      if (d == 1) {
-        r = (r << 4) + r;
-        g = (g << 4) + g;
-        b = (b << 4) + b;
-        if (hasAlpha) {
-          a = (a << 4) + a;
-        }
-      }
-      color = [r, g, b, a / 255];
-    } else if (s.startsWith('rgba(')) {
-      // rgba()
-      color = s.slice(5, -1).split(',').map(Number);
-      normalize(color);
-    } else if (s.startsWith('rgb(')) {
-      // rgb()
-      color = s.slice(4, -1).split(',').map(Number);
-      color.push(1);
-      normalize(color);
-    } else {
-      throw new Error('Invalid color');
-    }
-    return color;
-  }
-
-  /**
-   * TODO this function is only used in the test, we probably shouldn't export it
+   * Exported for the tests.
    * @param {Color} color Color.
    * @return {Color} Clamped color.
    */
@@ -9379,6 +10088,19 @@ var myol = (function () {
     }
     const a = color[3] === undefined ? 1 : Math.round(color[3] * 100) / 100;
     return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
+
+  /**
+   * @param {string} s String.
+   * @return {boolean} Whether the string is actually a valid color
+   */
+  function isStringColor(s) {
+    try {
+      fromString(s);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   /**
@@ -10394,7 +11116,7 @@ var myol = (function () {
    * @return {Type} Rotation constraint.
    */
   function createSnapToZero(tolerance) {
-    tolerance = tolerance || toRadians(5);
+    const t = tolerance === undefined ? toRadians(5) : tolerance;
     return (
       /**
        * @param {number|undefined} rotation Rotation.
@@ -10402,17 +11124,14 @@ var myol = (function () {
        * @return {number|undefined} Rotation.
        */
       function (rotation, isMoving) {
-        if (isMoving) {
+        if (isMoving || rotation === undefined) {
           return rotation;
         }
 
-        if (rotation !== undefined) {
-          if (Math.abs(rotation) <= tolerance) {
-            return 0;
-          }
-          return rotation;
+        if (Math.abs(rotation) <= t) {
+          return 0;
         }
-        return undefined;
+        return rotation;
       }
     );
   }
@@ -10492,9 +11211,10 @@ var myol = (function () {
 
   /**
    * @typedef {Object} FitOptions
-   * @property {import("./size.js").Size} [size] The size in pixels of the box to fit
-   * the extent into. Default is the current size of the first map in the DOM that
-   * uses this view, or `[100, 100]` if no such map is found.
+   * @property {import("./size.js").Size} [size] The size in pixels of the box to
+   * fit the extent into. Defaults to the size of the map the view is associated with.
+   * If no map or multiple maps are connected to the view, provide the desired box size
+   * (e.g. `map.getSize()`).
    * @property {!Array<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
    * cleared inside the view. Values in the array are top, right, bottom and left
    * padding.
@@ -11404,12 +12124,12 @@ var myol = (function () {
     }
 
     /**
-     * Calculate the extent for the current view state and the passed size.
-     * The size is the pixel dimensions of the box into which the calculated extent
-     * should fit. In most cases you want to get the extent of the entire map,
-     * that is `map.getSize()`.
-     * @param {import("./size.js").Size} [size] Box pixel size. If not provided, the size
-     * of the map that uses this view will be used.
+     * Calculate the extent for the current view state and the passed box size.
+     * @param {import("./size.js").Size} [size] The pixel dimensions of the box
+     * into which the calculated extent should fit. Defaults to the size of the
+     * map the view is associated with.
+     * If no map or multiple maps are connected to the view, provide the desired
+     * box size (e.g. `map.getSize()`).
      * @return {import("./extent.js").Extent} Extent.
      * @api
      */
@@ -13457,6 +14177,7 @@ var myol = (function () {
     ].join(''),
     'i'
   );
+  /** @type {Array<'style'|'variant'|'weight'|'size'|'lineHeight'|'family'>} */
   const fontRegExMatchIndex = [
     'style',
     'variant',
@@ -13511,7 +14232,7 @@ var myol = (function () {
     /** @type {HTMLCanvasElement|OffscreenCanvas} */
     let canvas;
     if (canvasPool && canvasPool.length) {
-      canvas = canvasPool.shift();
+      canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
     } else if (WORKER_OFFSCREEN_CANVAS) {
       canvas = new OffscreenCanvas(width || 300, height || 300);
     } else {
@@ -15407,8 +16128,8 @@ var myol = (function () {
         elements.length = 0;
         priorities.length = 0;
       } else {
-        elements[0] = elements.pop();
-        priorities[0] = priorities.pop();
+        elements[0] = /** @type {T} */ (elements.pop());
+        priorities[0] = /** @type {number} */ (priorities.pop());
         this.siftUp_(0);
       }
       const elementKey = this.keyFunction_(element);
@@ -20592,7 +21313,7 @@ var myol = (function () {
       }
       const view = this.getView();
       if (view) {
-        this.updateViewportSize_();
+        this.updateViewportSize_(this.getSize());
 
         this.viewPropertyListenerKey_ = listen(
           view,
@@ -20963,25 +21684,18 @@ var myol = (function () {
       const oldSize = this.getSize();
       if (size && (!oldSize || !equals$2(size, oldSize))) {
         this.setSize(size);
-        this.updateViewportSize_();
+        this.updateViewportSize_(size);
       }
     }
 
     /**
      * Recomputes the viewport size and save it on the view object (if any)
+     * @param {import("./size.js").Size|undefined} size The size.
      * @private
      */
-    updateViewportSize_() {
+    updateViewportSize_(size) {
       const view = this.getView();
       if (view) {
-        let size = undefined;
-        const computedStyle = getComputedStyle(this.viewport_);
-        if (computedStyle.width && computedStyle.height) {
-          size = [
-            parseInt(computedStyle.width, 10),
-            parseInt(computedStyle.height, 10),
-          ];
-        }
         view.setViewportSize(size);
       }
     }
@@ -21333,7 +22047,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("../coordinate.js").Coordinate}
+       * @type {import("../coordinate.js").Coordinate|null}
        */
       this.flatMidpoint_ = null;
 
@@ -21376,11 +22090,7 @@ var myol = (function () {
      * @api
      */
     appendCoordinate(coordinate) {
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = coordinate.slice();
-      } else {
-        extend$3(this.flatCoordinates, coordinate);
-      }
+      extend$3(this.flatCoordinates, coordinate);
       this.changed();
     }
 
@@ -21540,10 +22250,13 @@ var myol = (function () {
      */
     getFlatMidpoint() {
       if (this.flatMidpointRevision_ != this.getRevision()) {
-        this.flatMidpoint_ = this.getCoordinateAt(0.5, this.flatMidpoint_);
+        this.flatMidpoint_ = this.getCoordinateAt(
+          0.5,
+          this.flatMidpoint_ ?? undefined
+        );
         this.flatMidpointRevision_ = this.getRevision();
       }
-      return this.flatMidpoint_;
+      return /** @type {Array<number>} */ (this.flatMidpoint_);
     }
 
     /**
@@ -21552,6 +22265,7 @@ var myol = (function () {
      * @protected
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
+      /** @type {Array<number>} */
       const simplifiedFlatCoordinates = [];
       simplifiedFlatCoordinates.length = douglasPeucker(
         this.flatCoordinates,
@@ -21614,6 +22328,2063 @@ var myol = (function () {
   var LineString$1 = LineString;
 
   /**
+   * @module ol/geom/Circle
+   */
+
+  /**
+   * @classdesc
+   * Circle geometry.
+   *
+   * @api
+   */
+  let Circle$1 = class Circle extends SimpleGeometry$1 {
+    /**
+     * @param {!import("../coordinate.js").Coordinate} center Center.
+     *     For internal use, flat coordinates in combination with `layout` and no
+     *     `radius` are also accepted.
+     * @param {number} [radius] Radius in units of the projection.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     */
+    constructor(center, radius, layout) {
+      super();
+      if (layout !== undefined && radius === undefined) {
+        this.setFlatCoordinates(layout, center);
+      } else {
+        radius = radius ? radius : 0;
+        this.setCenterAndRadius(center, radius, layout);
+      }
+    }
+
+    /**
+     * Make a complete copy of the geometry.
+     * @return {!Circle} Clone.
+     * @api
+     */
+    clone() {
+      const circle = new Circle(
+        this.flatCoordinates.slice(),
+        undefined,
+        this.layout
+      );
+      circle.applyProperties(this);
+      return circle;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+     * @param {number} minSquaredDistance Minimum squared distance.
+     * @return {number} Minimum squared distance.
+     */
+    closestPointXY(x, y, closestPoint, minSquaredDistance) {
+      const flatCoordinates = this.flatCoordinates;
+      const dx = x - flatCoordinates[0];
+      const dy = y - flatCoordinates[1];
+      const squaredDistance = dx * dx + dy * dy;
+      if (squaredDistance < minSquaredDistance) {
+        if (squaredDistance === 0) {
+          for (let i = 0; i < this.stride; ++i) {
+            closestPoint[i] = flatCoordinates[i];
+          }
+        } else {
+          const delta = this.getRadius() / Math.sqrt(squaredDistance);
+          closestPoint[0] = flatCoordinates[0] + delta * dx;
+          closestPoint[1] = flatCoordinates[1] + delta * dy;
+          for (let i = 2; i < this.stride; ++i) {
+            closestPoint[i] = flatCoordinates[i];
+          }
+        }
+        closestPoint.length = this.stride;
+        return squaredDistance;
+      }
+      return minSquaredDistance;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @return {boolean} Contains (x, y).
+     */
+    containsXY(x, y) {
+      const flatCoordinates = this.flatCoordinates;
+      const dx = x - flatCoordinates[0];
+      const dy = y - flatCoordinates[1];
+      return dx * dx + dy * dy <= this.getRadiusSquared_();
+    }
+
+    /**
+     * Return the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
+     * @return {import("../coordinate.js").Coordinate} Center.
+     * @api
+     */
+    getCenter() {
+      return this.flatCoordinates.slice(0, this.stride);
+    }
+
+    /**
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @protected
+     * @return {import("../extent.js").Extent} extent Extent.
+     */
+    computeExtent(extent) {
+      const flatCoordinates = this.flatCoordinates;
+      const radius = flatCoordinates[this.stride] - flatCoordinates[0];
+      return createOrUpdate$2(
+        flatCoordinates[0] - radius,
+        flatCoordinates[1] - radius,
+        flatCoordinates[0] + radius,
+        flatCoordinates[1] + radius,
+        extent
+      );
+    }
+
+    /**
+     * Return the radius of the circle.
+     * @return {number} Radius.
+     * @api
+     */
+    getRadius() {
+      return Math.sqrt(this.getRadiusSquared_());
+    }
+
+    /**
+     * @private
+     * @return {number} Radius squared.
+     */
+    getRadiusSquared_() {
+      const dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
+      const dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
+      return dx * dx + dy * dy;
+    }
+
+    /**
+     * Get the type of this geometry.
+     * @return {import("./Geometry.js").Type} Geometry type.
+     * @api
+     */
+    getType() {
+      return 'Circle';
+    }
+
+    /**
+     * Test if the geometry and the passed extent intersect.
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @return {boolean} `true` if the geometry and the extent intersect.
+     * @api
+     */
+    intersectsExtent(extent) {
+      const circleExtent = this.getExtent();
+      if (intersects$1(extent, circleExtent)) {
+        const center = this.getCenter();
+
+        if (extent[0] <= center[0] && extent[2] >= center[0]) {
+          return true;
+        }
+        if (extent[1] <= center[1] && extent[3] >= center[1]) {
+          return true;
+        }
+
+        return forEachCorner(extent, this.intersectsCoordinate.bind(this));
+      }
+      return false;
+    }
+
+    /**
+     * Set the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
+     * @param {import("../coordinate.js").Coordinate} center Center.
+     * @api
+     */
+    setCenter(center) {
+      const stride = this.stride;
+      const radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
+      const flatCoordinates = center.slice();
+      flatCoordinates[stride] = flatCoordinates[0] + radius;
+      for (let i = 1; i < stride; ++i) {
+        flatCoordinates[stride + i] = center[i];
+      }
+      this.setFlatCoordinates(this.layout, flatCoordinates);
+      this.changed();
+    }
+
+    /**
+     * Set the center (as {@link module:ol/coordinate~Coordinate coordinate}) and the radius (as
+     * number) of the circle.
+     * @param {!import("../coordinate.js").Coordinate} center Center.
+     * @param {number} radius Radius.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     * @api
+     */
+    setCenterAndRadius(center, radius, layout) {
+      this.setLayout(layout, center, 0);
+      if (!this.flatCoordinates) {
+        this.flatCoordinates = [];
+      }
+      /** @type {Array<number>} */
+      const flatCoordinates = this.flatCoordinates;
+      let offset = deflateCoordinate(flatCoordinates, 0, center, this.stride);
+      flatCoordinates[offset++] = flatCoordinates[0] + radius;
+      for (let i = 1, ii = this.stride; i < ii; ++i) {
+        flatCoordinates[offset++] = flatCoordinates[i];
+      }
+      flatCoordinates.length = offset;
+      this.changed();
+    }
+
+    getCoordinates() {
+      return null;
+    }
+
+    setCoordinates(coordinates, layout) {}
+
+    /**
+     * Set the radius of the circle. The radius is in the units of the projection.
+     * @param {number} radius Radius.
+     * @api
+     */
+    setRadius(radius) {
+      this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
+      this.changed();
+    }
+
+    /**
+     * Rotate the geometry around a given coordinate. This modifies the geometry
+     * coordinates in place.
+     * @param {number} angle Rotation angle in counter-clockwise radians.
+     * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
+     * @api
+     */
+    rotate(angle, anchor) {
+      const center = this.getCenter();
+      const stride = this.getStride();
+      this.setCenter(
+        rotate(center, 0, center.length, stride, angle, anchor, center)
+      );
+      this.changed();
+    }
+  };
+
+  /**
+   * Transform each coordinate of the circle from one coordinate reference system
+   * to another. The geometry is modified in place.
+   * If you do not want the geometry modified in place, first clone() it and
+   * then use this function on the clone.
+   *
+   * Internally a circle is currently represented by two points: the center of
+   * the circle `[cx, cy]`, and the point to the right of the circle
+   * `[cx + r, cy]`. This `transform` function just transforms these two points.
+   * So the resulting geometry is also a circle, and that circle does not
+   * correspond to the shape that would be obtained by transforming every point
+   * of the original circle.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Circle} This geometry.  Note that original geometry is
+   *     modified in place.
+   * @function
+   * @api
+   */
+  Circle$1.prototype.transform;
+  var Circle$2 = Circle$1;
+
+  /**
+   * @module ol/geom/GeometryCollection
+   */
+
+  /**
+   * @classdesc
+   * An array of {@link module:ol/geom/Geometry~Geometry} objects.
+   *
+   * @api
+   */
+  class GeometryCollection extends Geometry$1 {
+    /**
+     * @param {Array<Geometry>} [geometries] Geometries.
+     */
+    constructor(geometries) {
+      super();
+
+      /**
+       * @private
+       * @type {Array<Geometry>}
+       */
+      this.geometries_ = geometries ? geometries : null;
+
+      /**
+       * @type {Array<import("../events.js").EventsKey>}
+       */
+      this.changeEventsKeys_ = [];
+
+      this.listenGeometriesChange_();
+    }
+
+    /**
+     * @private
+     */
+    unlistenGeometriesChange_() {
+      this.changeEventsKeys_.forEach(unlistenByKey);
+      this.changeEventsKeys_.length = 0;
+    }
+
+    /**
+     * @private
+     */
+    listenGeometriesChange_() {
+      if (!this.geometries_) {
+        return;
+      }
+      for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
+        this.changeEventsKeys_.push(
+          listen(this.geometries_[i], EventType.CHANGE, this.changed, this)
+        );
+      }
+    }
+
+    /**
+     * Make a complete copy of the geometry.
+     * @return {!GeometryCollection} Clone.
+     * @api
+     */
+    clone() {
+      const geometryCollection = new GeometryCollection(null);
+      geometryCollection.setGeometries(this.geometries_);
+      geometryCollection.applyProperties(this);
+      return geometryCollection;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+     * @param {number} minSquaredDistance Minimum squared distance.
+     * @return {number} Minimum squared distance.
+     */
+    closestPointXY(x, y, closestPoint, minSquaredDistance) {
+      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+        return minSquaredDistance;
+      }
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        minSquaredDistance = geometries[i].closestPointXY(
+          x,
+          y,
+          closestPoint,
+          minSquaredDistance
+        );
+      }
+      return minSquaredDistance;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @return {boolean} Contains (x, y).
+     */
+    containsXY(x, y) {
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        if (geometries[i].containsXY(x, y)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @protected
+     * @return {import("../extent.js").Extent} extent Extent.
+     */
+    computeExtent(extent) {
+      createOrUpdateEmpty(extent);
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        extend$2(extent, geometries[i].getExtent());
+      }
+      return extent;
+    }
+
+    /**
+     * Return the geometries that make up this geometry collection.
+     * @return {Array<Geometry>} Geometries.
+     * @api
+     */
+    getGeometries() {
+      return cloneGeometries(this.geometries_);
+    }
+
+    /**
+     * @return {Array<Geometry>} Geometries.
+     */
+    getGeometriesArray() {
+      return this.geometries_;
+    }
+
+    /**
+     * @return {Array<Geometry>} Geometries.
+     */
+    getGeometriesArrayRecursive() {
+      /** @type {Array<Geometry>} */
+      let geometriesArray = [];
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        if (geometries[i].getType() === this.getType()) {
+          geometriesArray = geometriesArray.concat(
+            /** @type {GeometryCollection} */ (
+              geometries[i]
+            ).getGeometriesArrayRecursive()
+          );
+        } else {
+          geometriesArray.push(geometries[i]);
+        }
+      }
+      return geometriesArray;
+    }
+
+    /**
+     * Create a simplified version of this geometry using the Douglas Peucker algorithm.
+     * @param {number} squaredTolerance Squared tolerance.
+     * @return {GeometryCollection} Simplified GeometryCollection.
+     */
+    getSimplifiedGeometry(squaredTolerance) {
+      if (this.simplifiedGeometryRevision !== this.getRevision()) {
+        this.simplifiedGeometryMaxMinSquaredTolerance = 0;
+        this.simplifiedGeometryRevision = this.getRevision();
+      }
+      if (
+        squaredTolerance < 0 ||
+        (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
+          squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)
+      ) {
+        return this;
+      }
+
+      const simplifiedGeometries = [];
+      const geometries = this.geometries_;
+      let simplified = false;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        const geometry = geometries[i];
+        const simplifiedGeometry =
+          geometry.getSimplifiedGeometry(squaredTolerance);
+        simplifiedGeometries.push(simplifiedGeometry);
+        if (simplifiedGeometry !== geometry) {
+          simplified = true;
+        }
+      }
+      if (simplified) {
+        const simplifiedGeometryCollection = new GeometryCollection(null);
+        simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
+        return simplifiedGeometryCollection;
+      }
+      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
+      return this;
+    }
+
+    /**
+     * Get the type of this geometry.
+     * @return {import("./Geometry.js").Type} Geometry type.
+     * @api
+     */
+    getType() {
+      return 'GeometryCollection';
+    }
+
+    /**
+     * Test if the geometry and the passed extent intersect.
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @return {boolean} `true` if the geometry and the extent intersect.
+     * @api
+     */
+    intersectsExtent(extent) {
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        if (geometries[i].intersectsExtent(extent)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * @return {boolean} Is empty.
+     */
+    isEmpty() {
+      return this.geometries_.length === 0;
+    }
+
+    /**
+     * Rotate the geometry around a given coordinate. This modifies the geometry
+     * coordinates in place.
+     * @param {number} angle Rotation angle in radians.
+     * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
+     * @api
+     */
+    rotate(angle, anchor) {
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        geometries[i].rotate(angle, anchor);
+      }
+      this.changed();
+    }
+
+    /**
+     * Scale the geometry (with an optional origin).  This modifies the geometry
+     * coordinates in place.
+     * @abstract
+     * @param {number} sx The scaling factor in the x-direction.
+     * @param {number} [sy] The scaling factor in the y-direction (defaults to sx).
+     * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
+     *     of the geometry extent).
+     * @api
+     */
+    scale(sx, sy, anchor) {
+      if (!anchor) {
+        anchor = getCenter(this.getExtent());
+      }
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        geometries[i].scale(sx, sy, anchor);
+      }
+      this.changed();
+    }
+
+    /**
+     * Set the geometries that make up this geometry collection.
+     * @param {Array<Geometry>} geometries Geometries.
+     * @api
+     */
+    setGeometries(geometries) {
+      this.setGeometriesArray(cloneGeometries(geometries));
+    }
+
+    /**
+     * @param {Array<Geometry>} geometries Geometries.
+     */
+    setGeometriesArray(geometries) {
+      this.unlistenGeometriesChange_();
+      this.geometries_ = geometries;
+      this.listenGeometriesChange_();
+      this.changed();
+    }
+
+    /**
+     * Apply a transform function to the coordinates of the geometry.
+     * The geometry is modified in place.
+     * If you do not want the geometry modified in place, first `clone()` it and
+     * then use this function on the clone.
+     * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+     * Called with a flat array of geometry coordinates.
+     * @api
+     */
+    applyTransform(transformFn) {
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        geometries[i].applyTransform(transformFn);
+      }
+      this.changed();
+    }
+
+    /**
+     * Translate the geometry.  This modifies the geometry coordinates in place.  If
+     * instead you want a new geometry, first `clone()` this geometry.
+     * @param {number} deltaX Delta X.
+     * @param {number} deltaY Delta Y.
+     * @api
+     */
+    translate(deltaX, deltaY) {
+      const geometries = this.geometries_;
+      for (let i = 0, ii = geometries.length; i < ii; ++i) {
+        geometries[i].translate(deltaX, deltaY);
+      }
+      this.changed();
+    }
+
+    /**
+     * Clean up.
+     */
+    disposeInternal() {
+      this.unlistenGeometriesChange_();
+      super.disposeInternal();
+    }
+  }
+
+  /**
+   * @param {Array<Geometry>} geometries Geometries.
+   * @return {Array<Geometry>} Cloned geometries.
+   */
+  function cloneGeometries(geometries) {
+    const clonedGeometries = [];
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      clonedGeometries.push(geometries[i].clone());
+    }
+    return clonedGeometries;
+  }
+
+  var GeometryCollection$1 = GeometryCollection;
+
+  /**
+   * @module ol/geom/MultiLineString
+   */
+
+  /**
+   * @classdesc
+   * Multi-linestring geometry.
+   *
+   * @api
+   */
+  class MultiLineString extends SimpleGeometry$1 {
+    /**
+     * @param {Array<Array<import("../coordinate.js").Coordinate>|LineString>|Array<number>} coordinates
+     *     Coordinates or LineString geometries. (For internal use, flat coordinates in
+     *     combination with `layout` and `ends` are also accepted.)
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     * @param {Array<number>} [ends] Flat coordinate ends for internal use.
+     */
+    constructor(coordinates, layout, ends) {
+      super();
+
+      /**
+       * @type {Array<number>}
+       * @private
+       */
+      this.ends_ = [];
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.maxDelta_ = -1;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.maxDeltaRevision_ = -1;
+
+      if (Array.isArray(coordinates[0])) {
+        this.setCoordinates(
+          /** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (
+            coordinates
+          ),
+          layout
+        );
+      } else if (layout !== undefined && ends) {
+        this.setFlatCoordinates(
+          layout,
+          /** @type {Array<number>} */ (coordinates)
+        );
+        this.ends_ = ends;
+      } else {
+        const lineStrings = /** @type {Array<LineString>} */ (coordinates);
+        /** @type {Array<number>} */
+        const flatCoordinates = [];
+        const ends = [];
+        for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
+          const lineString = lineStrings[i];
+          extend$3(flatCoordinates, lineString.getFlatCoordinates());
+          ends.push(flatCoordinates.length);
+        }
+        const layout =
+          lineStrings.length === 0
+            ? this.getLayout()
+            : lineStrings[0].getLayout();
+        this.setFlatCoordinates(layout, flatCoordinates);
+        this.ends_ = ends;
+      }
+    }
+
+    /**
+     * Append the passed linestring to the multilinestring.
+     * @param {LineString} lineString LineString.
+     * @api
+     */
+    appendLineString(lineString) {
+      extend$3(this.flatCoordinates, lineString.getFlatCoordinates().slice());
+      this.ends_.push(this.flatCoordinates.length);
+      this.changed();
+    }
+
+    /**
+     * Make a complete copy of the geometry.
+     * @return {!MultiLineString} Clone.
+     * @api
+     */
+    clone() {
+      const multiLineString = new MultiLineString(
+        this.flatCoordinates.slice(),
+        this.layout,
+        this.ends_.slice()
+      );
+      multiLineString.applyProperties(this);
+      return multiLineString;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+     * @param {number} minSquaredDistance Minimum squared distance.
+     * @return {number} Minimum squared distance.
+     */
+    closestPointXY(x, y, closestPoint, minSquaredDistance) {
+      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+        return minSquaredDistance;
+      }
+      if (this.maxDeltaRevision_ != this.getRevision()) {
+        this.maxDelta_ = Math.sqrt(
+          arrayMaxSquaredDelta(
+            this.flatCoordinates,
+            0,
+            this.ends_,
+            this.stride,
+            0
+          )
+        );
+        this.maxDeltaRevision_ = this.getRevision();
+      }
+      return assignClosestArrayPoint(
+        this.flatCoordinates,
+        0,
+        this.ends_,
+        this.stride,
+        this.maxDelta_,
+        false,
+        x,
+        y,
+        closestPoint,
+        minSquaredDistance
+      );
+    }
+
+    /**
+     * Returns the coordinate at `m` using linear interpolation, or `null` if no
+     * such coordinate exists.
+     *
+     * `extrapolate` controls extrapolation beyond the range of Ms in the
+     * MultiLineString. If `extrapolate` is `true` then Ms less than the first
+     * M will return the first coordinate and Ms greater than the last M will
+     * return the last coordinate.
+     *
+     * `interpolate` controls interpolation between consecutive LineStrings
+     * within the MultiLineString. If `interpolate` is `true` the coordinates
+     * will be linearly interpolated between the last coordinate of one LineString
+     * and the first coordinate of the next LineString.  If `interpolate` is
+     * `false` then the function will return `null` for Ms falling between
+     * LineStrings.
+     *
+     * @param {number} m M.
+     * @param {boolean} [extrapolate] Extrapolate. Default is `false`.
+     * @param {boolean} [interpolate] Interpolate. Default is `false`.
+     * @return {import("../coordinate.js").Coordinate|null} Coordinate.
+     * @api
+     */
+    getCoordinateAtM(m, extrapolate, interpolate) {
+      if (
+        (this.layout != 'XYM' && this.layout != 'XYZM') ||
+        this.flatCoordinates.length === 0
+      ) {
+        return null;
+      }
+      extrapolate = extrapolate !== undefined ? extrapolate : false;
+      interpolate = interpolate !== undefined ? interpolate : false;
+      return lineStringsCoordinateAtM(
+        this.flatCoordinates,
+        0,
+        this.ends_,
+        this.stride,
+        m,
+        extrapolate,
+        interpolate
+      );
+    }
+
+    /**
+     * Return the coordinates of the multilinestring.
+     * @return {Array<Array<import("../coordinate.js").Coordinate>>} Coordinates.
+     * @api
+     */
+    getCoordinates() {
+      return inflateCoordinatesArray(
+        this.flatCoordinates,
+        0,
+        this.ends_,
+        this.stride
+      );
+    }
+
+    /**
+     * @return {Array<number>} Ends.
+     */
+    getEnds() {
+      return this.ends_;
+    }
+
+    /**
+     * Return the linestring at the specified index.
+     * @param {number} index Index.
+     * @return {LineString} LineString.
+     * @api
+     */
+    getLineString(index) {
+      if (index < 0 || this.ends_.length <= index) {
+        return null;
+      }
+      return new LineString$1(
+        this.flatCoordinates.slice(
+          index === 0 ? 0 : this.ends_[index - 1],
+          this.ends_[index]
+        ),
+        this.layout
+      );
+    }
+
+    /**
+     * Return the linestrings of this multilinestring.
+     * @return {Array<LineString>} LineStrings.
+     * @api
+     */
+    getLineStrings() {
+      const flatCoordinates = this.flatCoordinates;
+      const ends = this.ends_;
+      const layout = this.layout;
+      /** @type {Array<LineString>} */
+      const lineStrings = [];
+      let offset = 0;
+      for (let i = 0, ii = ends.length; i < ii; ++i) {
+        const end = ends[i];
+        const lineString = new LineString$1(
+          flatCoordinates.slice(offset, end),
+          layout
+        );
+        lineStrings.push(lineString);
+        offset = end;
+      }
+      return lineStrings;
+    }
+
+    /**
+     * @return {Array<number>} Flat midpoints.
+     */
+    getFlatMidpoints() {
+      /** @type {Array<number>} */
+      const midpoints = [];
+      const flatCoordinates = this.flatCoordinates;
+      let offset = 0;
+      const ends = this.ends_;
+      const stride = this.stride;
+      for (let i = 0, ii = ends.length; i < ii; ++i) {
+        const end = ends[i];
+        const midpoint = interpolatePoint(
+          flatCoordinates,
+          offset,
+          end,
+          stride,
+          0.5
+        );
+        extend$3(midpoints, midpoint);
+        offset = end;
+      }
+      return midpoints;
+    }
+
+    /**
+     * @param {number} squaredTolerance Squared tolerance.
+     * @return {MultiLineString} Simplified MultiLineString.
+     * @protected
+     */
+    getSimplifiedGeometryInternal(squaredTolerance) {
+      /** @type {Array<number>} */
+      const simplifiedFlatCoordinates = [];
+      /** @type {Array<number>} */
+      const simplifiedEnds = [];
+      simplifiedFlatCoordinates.length = douglasPeuckerArray(
+        this.flatCoordinates,
+        0,
+        this.ends_,
+        this.stride,
+        squaredTolerance,
+        simplifiedFlatCoordinates,
+        0,
+        simplifiedEnds
+      );
+      return new MultiLineString(simplifiedFlatCoordinates, 'XY', simplifiedEnds);
+    }
+
+    /**
+     * Get the type of this geometry.
+     * @return {import("./Geometry.js").Type} Geometry type.
+     * @api
+     */
+    getType() {
+      return 'MultiLineString';
+    }
+
+    /**
+     * Test if the geometry and the passed extent intersect.
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @return {boolean} `true` if the geometry and the extent intersect.
+     * @api
+     */
+    intersectsExtent(extent) {
+      return intersectsLineStringArray(
+        this.flatCoordinates,
+        0,
+        this.ends_,
+        this.stride,
+        extent
+      );
+    }
+
+    /**
+     * Set the coordinates of the multilinestring.
+     * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     * @api
+     */
+    setCoordinates(coordinates, layout) {
+      this.setLayout(layout, coordinates, 2);
+      if (!this.flatCoordinates) {
+        this.flatCoordinates = [];
+      }
+      const ends = deflateCoordinatesArray(
+        this.flatCoordinates,
+        0,
+        coordinates,
+        this.stride,
+        this.ends_
+      );
+      this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
+      this.changed();
+    }
+  }
+
+  var MultiLineString$1 = MultiLineString;
+
+  /**
+   * @module ol/geom/MultiPoint
+   */
+
+  /**
+   * @classdesc
+   * Multi-point geometry.
+   *
+   * @api
+   */
+  class MultiPoint extends SimpleGeometry$1 {
+    /**
+     * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
+     *     For internal use, flat coordinates in combination with `layout` are also accepted.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     */
+    constructor(coordinates, layout) {
+      super();
+      if (layout && !Array.isArray(coordinates[0])) {
+        this.setFlatCoordinates(
+          layout,
+          /** @type {Array<number>} */ (coordinates)
+        );
+      } else {
+        this.setCoordinates(
+          /** @type {Array<import("../coordinate.js").Coordinate>} */ (
+            coordinates
+          ),
+          layout
+        );
+      }
+    }
+
+    /**
+     * Append the passed point to this multipoint.
+     * @param {Point} point Point.
+     * @api
+     */
+    appendPoint(point) {
+      extend$3(this.flatCoordinates, point.getFlatCoordinates());
+      this.changed();
+    }
+
+    /**
+     * Make a complete copy of the geometry.
+     * @return {!MultiPoint} Clone.
+     * @api
+     */
+    clone() {
+      const multiPoint = new MultiPoint(
+        this.flatCoordinates.slice(),
+        this.layout
+      );
+      multiPoint.applyProperties(this);
+      return multiPoint;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+     * @param {number} minSquaredDistance Minimum squared distance.
+     * @return {number} Minimum squared distance.
+     */
+    closestPointXY(x, y, closestPoint, minSquaredDistance) {
+      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+        return minSquaredDistance;
+      }
+      const flatCoordinates = this.flatCoordinates;
+      const stride = this.stride;
+      for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+        const squaredDistance = squaredDistance$1(
+          x,
+          y,
+          flatCoordinates[i],
+          flatCoordinates[i + 1]
+        );
+        if (squaredDistance < minSquaredDistance) {
+          minSquaredDistance = squaredDistance;
+          for (let j = 0; j < stride; ++j) {
+            closestPoint[j] = flatCoordinates[i + j];
+          }
+          closestPoint.length = stride;
+        }
+      }
+      return minSquaredDistance;
+    }
+
+    /**
+     * Return the coordinates of the multipoint.
+     * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
+     * @api
+     */
+    getCoordinates() {
+      return inflateCoordinates(
+        this.flatCoordinates,
+        0,
+        this.flatCoordinates.length,
+        this.stride
+      );
+    }
+
+    /**
+     * Return the point at the specified index.
+     * @param {number} index Index.
+     * @return {Point} Point.
+     * @api
+     */
+    getPoint(index) {
+      const n = this.flatCoordinates.length / this.stride;
+      if (index < 0 || n <= index) {
+        return null;
+      }
+      return new Point$2(
+        this.flatCoordinates.slice(
+          index * this.stride,
+          (index + 1) * this.stride
+        ),
+        this.layout
+      );
+    }
+
+    /**
+     * Return the points of this multipoint.
+     * @return {Array<Point>} Points.
+     * @api
+     */
+    getPoints() {
+      const flatCoordinates = this.flatCoordinates;
+      const layout = this.layout;
+      const stride = this.stride;
+      /** @type {Array<Point>} */
+      const points = [];
+      for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+        const point = new Point$2(flatCoordinates.slice(i, i + stride), layout);
+        points.push(point);
+      }
+      return points;
+    }
+
+    /**
+     * Get the type of this geometry.
+     * @return {import("./Geometry.js").Type} Geometry type.
+     * @api
+     */
+    getType() {
+      return 'MultiPoint';
+    }
+
+    /**
+     * Test if the geometry and the passed extent intersect.
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @return {boolean} `true` if the geometry and the extent intersect.
+     * @api
+     */
+    intersectsExtent(extent) {
+      const flatCoordinates = this.flatCoordinates;
+      const stride = this.stride;
+      for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+        const x = flatCoordinates[i];
+        const y = flatCoordinates[i + 1];
+        if (containsXY(extent, x, y)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Set the coordinates of the multipoint.
+     * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     * @api
+     */
+    setCoordinates(coordinates, layout) {
+      this.setLayout(layout, coordinates, 1);
+      if (!this.flatCoordinates) {
+        this.flatCoordinates = [];
+      }
+      this.flatCoordinates.length = deflateCoordinates(
+        this.flatCoordinates,
+        0,
+        coordinates,
+        this.stride
+      );
+      this.changed();
+    }
+  }
+
+  var MultiPoint$1 = MultiPoint;
+
+  /**
+   * @module ol/geom/flat/center
+   */
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {Array<Array<number>>} endss Endss.
+   * @param {number} stride Stride.
+   * @return {Array<number>} Flat centers.
+   */
+  function linearRingss(flatCoordinates, offset, endss, stride) {
+    const flatCenters = [];
+    let extent = createEmpty();
+    for (let i = 0, ii = endss.length; i < ii; ++i) {
+      const ends = endss[i];
+      extent = createOrUpdateFromFlatCoordinates(
+        flatCoordinates,
+        offset,
+        ends[0],
+        stride
+      );
+      flatCenters.push((extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2);
+      offset = ends[ends.length - 1];
+    }
+    return flatCenters;
+  }
+
+  /**
+   * @module ol/geom/MultiPolygon
+   */
+
+  /**
+   * @classdesc
+   * Multi-polygon geometry.
+   *
+   * @api
+   */
+  class MultiPolygon extends SimpleGeometry$1 {
+    /**
+     * @param {Array<Array<Array<import("../coordinate.js").Coordinate>>|Polygon>|Array<number>} coordinates Coordinates.
+     *     For internal use, flat coordinates in combination with `layout` and `endss` are also accepted.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     * @param {Array<Array<number>>} [endss] Array of ends for internal use with flat coordinates.
+     */
+    constructor(coordinates, layout, endss) {
+      super();
+
+      /**
+       * @type {Array<Array<number>>}
+       * @private
+       */
+      this.endss_ = [];
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.flatInteriorPointsRevision_ = -1;
+
+      /**
+       * @private
+       * @type {Array<number>|null}
+       */
+      this.flatInteriorPoints_ = null;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.maxDelta_ = -1;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.maxDeltaRevision_ = -1;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.orientedRevision_ = -1;
+
+      /**
+       * @private
+       * @type {Array<number>|null}
+       */
+      this.orientedFlatCoordinates_ = null;
+
+      if (!endss && !Array.isArray(coordinates[0])) {
+        const polygons = /** @type {Array<Polygon>} */ (coordinates);
+        /** @type {Array<number>} */
+        const flatCoordinates = [];
+        const thisEndss = [];
+        for (let i = 0, ii = polygons.length; i < ii; ++i) {
+          const polygon = polygons[i];
+          const offset = flatCoordinates.length;
+          const ends = polygon.getEnds();
+          for (let j = 0, jj = ends.length; j < jj; ++j) {
+            ends[j] += offset;
+          }
+          extend$3(flatCoordinates, polygon.getFlatCoordinates());
+          thisEndss.push(ends);
+        }
+        layout =
+          polygons.length === 0 ? this.getLayout() : polygons[0].getLayout();
+        coordinates = flatCoordinates;
+        endss = thisEndss;
+      }
+      if (layout !== undefined && endss) {
+        this.setFlatCoordinates(
+          layout,
+          /** @type {Array<number>} */ (coordinates)
+        );
+        this.endss_ = endss;
+      } else {
+        this.setCoordinates(
+          /** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (
+            coordinates
+          ),
+          layout
+        );
+      }
+    }
+
+    /**
+     * Append the passed polygon to this multipolygon.
+     * @param {Polygon} polygon Polygon.
+     * @api
+     */
+    appendPolygon(polygon) {
+      /** @type {Array<number>} */
+      let ends;
+      if (!this.flatCoordinates) {
+        this.flatCoordinates = polygon.getFlatCoordinates().slice();
+        ends = polygon.getEnds().slice();
+        this.endss_.push();
+      } else {
+        const offset = this.flatCoordinates.length;
+        extend$3(this.flatCoordinates, polygon.getFlatCoordinates());
+        ends = polygon.getEnds().slice();
+        for (let i = 0, ii = ends.length; i < ii; ++i) {
+          ends[i] += offset;
+        }
+      }
+      this.endss_.push(ends);
+      this.changed();
+    }
+
+    /**
+     * Make a complete copy of the geometry.
+     * @return {!MultiPolygon} Clone.
+     * @api
+     */
+    clone() {
+      const len = this.endss_.length;
+      const newEndss = new Array(len);
+      for (let i = 0; i < len; ++i) {
+        newEndss[i] = this.endss_[i].slice();
+      }
+
+      const multiPolygon = new MultiPolygon(
+        this.flatCoordinates.slice(),
+        this.layout,
+        newEndss
+      );
+      multiPolygon.applyProperties(this);
+
+      return multiPolygon;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+     * @param {number} minSquaredDistance Minimum squared distance.
+     * @return {number} Minimum squared distance.
+     */
+    closestPointXY(x, y, closestPoint, minSquaredDistance) {
+      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+        return minSquaredDistance;
+      }
+      if (this.maxDeltaRevision_ != this.getRevision()) {
+        this.maxDelta_ = Math.sqrt(
+          multiArrayMaxSquaredDelta(
+            this.flatCoordinates,
+            0,
+            this.endss_,
+            this.stride,
+            0
+          )
+        );
+        this.maxDeltaRevision_ = this.getRevision();
+      }
+      return assignClosestMultiArrayPoint(
+        this.getOrientedFlatCoordinates(),
+        0,
+        this.endss_,
+        this.stride,
+        this.maxDelta_,
+        true,
+        x,
+        y,
+        closestPoint,
+        minSquaredDistance
+      );
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @return {boolean} Contains (x, y).
+     */
+    containsXY(x, y) {
+      return linearRingssContainsXY(
+        this.getOrientedFlatCoordinates(),
+        0,
+        this.endss_,
+        this.stride,
+        x,
+        y
+      );
+    }
+
+    /**
+     * Return the area of the multipolygon on projected plane.
+     * @return {number} Area (on projected plane).
+     * @api
+     */
+    getArea() {
+      return linearRingss$1(
+        this.getOrientedFlatCoordinates(),
+        0,
+        this.endss_,
+        this.stride
+      );
+    }
+
+    /**
+     * Get the coordinate array for this geometry.  This array has the structure
+     * of a GeoJSON coordinate array for multi-polygons.
+     *
+     * @param {boolean} [right] Orient coordinates according to the right-hand
+     *     rule (counter-clockwise for exterior and clockwise for interior rings).
+     *     If `false`, coordinates will be oriented according to the left-hand rule
+     *     (clockwise for exterior and counter-clockwise for interior rings).
+     *     By default, coordinate orientation will depend on how the geometry was
+     *     constructed.
+     * @return {Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
+     * @api
+     */
+    getCoordinates(right) {
+      let flatCoordinates;
+      if (right !== undefined) {
+        flatCoordinates = this.getOrientedFlatCoordinates().slice();
+        orientLinearRingsArray(
+          flatCoordinates,
+          0,
+          this.endss_,
+          this.stride,
+          right
+        );
+      } else {
+        flatCoordinates = this.flatCoordinates;
+      }
+
+      return inflateMultiCoordinatesArray(
+        flatCoordinates,
+        0,
+        this.endss_,
+        this.stride
+      );
+    }
+
+    /**
+     * @return {Array<Array<number>>} Endss.
+     */
+    getEndss() {
+      return this.endss_;
+    }
+
+    /**
+     * @return {Array<number>} Flat interior points.
+     */
+    getFlatInteriorPoints() {
+      if (this.flatInteriorPointsRevision_ != this.getRevision()) {
+        const flatCenters = linearRingss(
+          this.flatCoordinates,
+          0,
+          this.endss_,
+          this.stride
+        );
+        this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
+          this.getOrientedFlatCoordinates(),
+          0,
+          this.endss_,
+          this.stride,
+          flatCenters
+        );
+        this.flatInteriorPointsRevision_ = this.getRevision();
+      }
+      return /** @type {Array<number>} */ (this.flatInteriorPoints_);
+    }
+
+    /**
+     * Return the interior points as {@link module:ol/geom/MultiPoint~MultiPoint multipoint}.
+     * @return {MultiPoint} Interior points as XYM coordinates, where M is
+     * the length of the horizontal intersection that the point belongs to.
+     * @api
+     */
+    getInteriorPoints() {
+      return new MultiPoint$1(this.getFlatInteriorPoints().slice(), 'XYM');
+    }
+
+    /**
+     * @return {Array<number>} Oriented flat coordinates.
+     */
+    getOrientedFlatCoordinates() {
+      if (this.orientedRevision_ != this.getRevision()) {
+        const flatCoordinates = this.flatCoordinates;
+        if (
+          linearRingssAreOriented(flatCoordinates, 0, this.endss_, this.stride)
+        ) {
+          this.orientedFlatCoordinates_ = flatCoordinates;
+        } else {
+          this.orientedFlatCoordinates_ = flatCoordinates.slice();
+          this.orientedFlatCoordinates_.length = orientLinearRingsArray(
+            this.orientedFlatCoordinates_,
+            0,
+            this.endss_,
+            this.stride
+          );
+        }
+        this.orientedRevision_ = this.getRevision();
+      }
+      return /** @type {Array<number>} */ (this.orientedFlatCoordinates_);
+    }
+
+    /**
+     * @param {number} squaredTolerance Squared tolerance.
+     * @return {MultiPolygon} Simplified MultiPolygon.
+     * @protected
+     */
+    getSimplifiedGeometryInternal(squaredTolerance) {
+      /** @type {Array<number>} */
+      const simplifiedFlatCoordinates = [];
+      /** @type {Array<Array<number>>} */
+      const simplifiedEndss = [];
+      simplifiedFlatCoordinates.length = quantizeMultiArray(
+        this.flatCoordinates,
+        0,
+        this.endss_,
+        this.stride,
+        Math.sqrt(squaredTolerance),
+        simplifiedFlatCoordinates,
+        0,
+        simplifiedEndss
+      );
+      return new MultiPolygon(simplifiedFlatCoordinates, 'XY', simplifiedEndss);
+    }
+
+    /**
+     * Return the polygon at the specified index.
+     * @param {number} index Index.
+     * @return {Polygon} Polygon.
+     * @api
+     */
+    getPolygon(index) {
+      if (index < 0 || this.endss_.length <= index) {
+        return null;
+      }
+      let offset;
+      if (index === 0) {
+        offset = 0;
+      } else {
+        const prevEnds = this.endss_[index - 1];
+        offset = prevEnds[prevEnds.length - 1];
+      }
+      const ends = this.endss_[index].slice();
+      const end = ends[ends.length - 1];
+      if (offset !== 0) {
+        for (let i = 0, ii = ends.length; i < ii; ++i) {
+          ends[i] -= offset;
+        }
+      }
+      return new Polygon$1(
+        this.flatCoordinates.slice(offset, end),
+        this.layout,
+        ends
+      );
+    }
+
+    /**
+     * Return the polygons of this multipolygon.
+     * @return {Array<Polygon>} Polygons.
+     * @api
+     */
+    getPolygons() {
+      const layout = this.layout;
+      const flatCoordinates = this.flatCoordinates;
+      const endss = this.endss_;
+      const polygons = [];
+      let offset = 0;
+      for (let i = 0, ii = endss.length; i < ii; ++i) {
+        const ends = endss[i].slice();
+        const end = ends[ends.length - 1];
+        if (offset !== 0) {
+          for (let j = 0, jj = ends.length; j < jj; ++j) {
+            ends[j] -= offset;
+          }
+        }
+        const polygon = new Polygon$1(
+          flatCoordinates.slice(offset, end),
+          layout,
+          ends
+        );
+        polygons.push(polygon);
+        offset = end;
+      }
+      return polygons;
+    }
+
+    /**
+     * Get the type of this geometry.
+     * @return {import("./Geometry.js").Type} Geometry type.
+     * @api
+     */
+    getType() {
+      return 'MultiPolygon';
+    }
+
+    /**
+     * Test if the geometry and the passed extent intersect.
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @return {boolean} `true` if the geometry and the extent intersect.
+     * @api
+     */
+    intersectsExtent(extent) {
+      return intersectsLinearRingMultiArray(
+        this.getOrientedFlatCoordinates(),
+        0,
+        this.endss_,
+        this.stride,
+        extent
+      );
+    }
+
+    /**
+     * Set the coordinates of the multipolygon.
+     * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     * @api
+     */
+    setCoordinates(coordinates, layout) {
+      this.setLayout(layout, coordinates, 3);
+      if (!this.flatCoordinates) {
+        this.flatCoordinates = [];
+      }
+      const endss = deflateMultiCoordinatesArray(
+        this.flatCoordinates,
+        0,
+        coordinates,
+        this.stride,
+        this.endss_
+      );
+      if (endss.length === 0) {
+        this.flatCoordinates.length = 0;
+      } else {
+        const lastEnds = endss[endss.length - 1];
+        this.flatCoordinates.length =
+          lastEnds.length === 0 ? 0 : lastEnds[lastEnds.length - 1];
+      }
+      this.changed();
+    }
+  }
+
+  var MultiPolygon$1 = MultiPolygon;
+
+  /**
+   * @module ol/geom
+   */
+
+  var geom = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Circle: Circle$2,
+    Geometry: Geometry$1,
+    GeometryCollection: GeometryCollection$1,
+    LineString: LineString$1,
+    LinearRing: LinearRing$1,
+    MultiLineString: MultiLineString$1,
+    MultiPoint: MultiPoint$1,
+    MultiPolygon: MultiPolygon$1,
+    Point: Point$2,
+    Polygon: Polygon$1,
+    SimpleGeometry: SimpleGeometry$1
+  });
+
+  /**
+   * @module ol/render/Feature
+   */
+
+  /**
+   * @typedef {'Point' | 'LineString' | 'LinearRing' | 'Polygon' | 'MultiPoint' | 'MultiLineString'} Type
+   * The geometry type.  One of `'Point'`, `'LineString'`, `'LinearRing'`,
+   * `'Polygon'`, `'MultiPoint'` or 'MultiLineString'`.
+   */
+
+  /**
+   * @type {import("../transform.js").Transform}
+   */
+  const tmpTransform = create();
+
+  /**
+   * Lightweight, read-only, {@link module:ol/Feature~Feature} and {@link module:ol/geom/Geometry~Geometry} like
+   * structure, optimized for vector tile rendering and styling. Geometry access
+   * through the API is limited to getting the type and extent of the geometry.
+   */
+  class RenderFeature {
+    /**
+     * @param {Type} type Geometry type.
+     * @param {Array<number>} flatCoordinates Flat coordinates. These always need
+     *     to be right-handed for polygons.
+     * @param {Array<number>} ends Ends.
+     * @param {number} stride Stride.
+     * @param {Object<string, *>} properties Properties.
+     * @param {number|string|undefined} id Feature id.
+     */
+    constructor(type, flatCoordinates, ends, stride, properties, id) {
+      /**
+       * @type {import("../style/Style.js").StyleFunction|undefined}
+       */
+      this.styleFunction;
+
+      /**
+       * @private
+       * @type {import("../extent.js").Extent|undefined}
+       */
+      this.extent_;
+
+      /**
+       * @private
+       * @type {number|string|undefined}
+       */
+      this.id_ = id;
+
+      /**
+       * @private
+       * @type {Type}
+       */
+      this.type_ = type;
+
+      /**
+       * @private
+       * @type {Array<number>}
+       */
+      this.flatCoordinates_ = flatCoordinates;
+
+      /**
+       * @private
+       * @type {Array<number>}
+       */
+      this.flatInteriorPoints_ = null;
+
+      /**
+       * @private
+       * @type {Array<number>}
+       */
+      this.flatMidpoints_ = null;
+
+      /**
+       * @private
+       * @type {Array<number>}
+       */
+      this.ends_ = ends;
+
+      /**
+       * @private
+       * @type {Object<string, *>}
+       */
+      this.properties_ = properties;
+
+      /**
+       * @type {number}
+       */
+      this.squaredTolerance_;
+
+      /**
+       * @type {number}
+       */
+      this.stride_ = stride;
+
+      /**
+       * @private
+       * @type {RenderFeature}
+       */
+      this.simplifiedGeometry_;
+    }
+
+    /**
+     * Get a feature property by its key.
+     * @param {string} key Key
+     * @return {*} Value for the requested key.
+     * @api
+     */
+    get(key) {
+      return this.properties_[key];
+    }
+
+    /**
+     * Get the extent of this feature's geometry.
+     * @return {import("../extent.js").Extent} Extent.
+     * @api
+     */
+    getExtent() {
+      if (!this.extent_) {
+        this.extent_ =
+          this.type_ === 'Point'
+            ? createOrUpdateFromCoordinate(this.flatCoordinates_)
+            : createOrUpdateFromFlatCoordinates(
+                this.flatCoordinates_,
+                0,
+                this.flatCoordinates_.length,
+                2
+              );
+      }
+      return this.extent_;
+    }
+
+    /**
+     * @return {Array<number>} Flat interior points.
+     */
+    getFlatInteriorPoint() {
+      if (!this.flatInteriorPoints_) {
+        const flatCenter = getCenter(this.getExtent());
+        this.flatInteriorPoints_ = getInteriorPointOfArray(
+          this.flatCoordinates_,
+          0,
+          /** @type {Array<number>} */ (this.ends_),
+          2,
+          flatCenter,
+          0
+        );
+      }
+      return this.flatInteriorPoints_;
+    }
+
+    /**
+     * @return {Array<number>} Flat interior points.
+     */
+    getFlatInteriorPoints() {
+      if (!this.flatInteriorPoints_) {
+        const ends = inflateEnds(this.flatCoordinates_, this.ends_);
+        const flatCenters = linearRingss(this.flatCoordinates_, 0, ends, 2);
+        this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
+          this.flatCoordinates_,
+          0,
+          ends,
+          2,
+          flatCenters
+        );
+      }
+      return this.flatInteriorPoints_;
+    }
+
+    /**
+     * @return {Array<number>} Flat midpoint.
+     */
+    getFlatMidpoint() {
+      if (!this.flatMidpoints_) {
+        this.flatMidpoints_ = interpolatePoint(
+          this.flatCoordinates_,
+          0,
+          this.flatCoordinates_.length,
+          2,
+          0.5
+        );
+      }
+      return this.flatMidpoints_;
+    }
+
+    /**
+     * @return {Array<number>} Flat midpoints.
+     */
+    getFlatMidpoints() {
+      if (!this.flatMidpoints_) {
+        this.flatMidpoints_ = [];
+        const flatCoordinates = this.flatCoordinates_;
+        let offset = 0;
+        const ends = /** @type {Array<number>} */ (this.ends_);
+        for (let i = 0, ii = ends.length; i < ii; ++i) {
+          const end = ends[i];
+          const midpoint = interpolatePoint(flatCoordinates, offset, end, 2, 0.5);
+          extend$3(this.flatMidpoints_, midpoint);
+          offset = end;
+        }
+      }
+      return this.flatMidpoints_;
+    }
+
+    /**
+     * Get the feature identifier.  This is a stable identifier for the feature and
+     * is set when reading data from a remote source.
+     * @return {number|string|undefined} Id.
+     * @api
+     */
+    getId() {
+      return this.id_;
+    }
+
+    /**
+     * @return {Array<number>} Flat coordinates.
+     */
+    getOrientedFlatCoordinates() {
+      return this.flatCoordinates_;
+    }
+
+    /**
+     * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
+     * determining the geometry type in style function (see {@link #getType}).
+     * @return {RenderFeature} Feature.
+     * @api
+     */
+    getGeometry() {
+      return this;
+    }
+
+    /**
+     * @param {number} squaredTolerance Squared tolerance.
+     * @return {RenderFeature} Simplified geometry.
+     */
+    getSimplifiedGeometry(squaredTolerance) {
+      return this;
+    }
+
+    /**
+     * Get a transformed and simplified version of the geometry.
+     * @param {number} squaredTolerance Squared tolerance.
+     * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
+     * @return {RenderFeature} Simplified geometry.
+     */
+    simplifyTransformed(squaredTolerance, transform) {
+      return this;
+    }
+
+    /**
+     * Get the feature properties.
+     * @return {Object<string, *>} Feature properties.
+     * @api
+     */
+    getProperties() {
+      return this.properties_;
+    }
+
+    /**
+     * Get an object of all property names and values.  This has the same behavior as getProperties,
+     * but is here to conform with the {@link module:ol/Feature~Feature} interface.
+     * @return {Object<string, *>?} Object.
+     */
+    getPropertiesInternal() {
+      return this.properties_;
+    }
+
+    /**
+     * @return {number} Stride.
+     */
+    getStride() {
+      return this.stride_;
+    }
+
+    /**
+     * @return {import('../style/Style.js').StyleFunction|undefined} Style
+     */
+    getStyleFunction() {
+      return this.styleFunction;
+    }
+
+    /**
+     * Get the type of this feature's geometry.
+     * @return {Type} Geometry type.
+     * @api
+     */
+    getType() {
+      return this.type_;
+    }
+
+    /**
+     * Transform geometry coordinates from tile pixel space to projected.
+     *
+     * @param {import("../proj.js").ProjectionLike} projection The data projection
+     */
+    transform(projection) {
+      projection = get$2(projection);
+      const pixelExtent = projection.getExtent();
+      const projectedExtent = projection.getWorldExtent();
+      if (pixelExtent && projectedExtent) {
+        const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
+        compose(
+          tmpTransform,
+          projectedExtent[0],
+          projectedExtent[3],
+          scale,
+          -scale,
+          0,
+          0,
+          0
+        );
+        transform2D(
+          this.flatCoordinates_,
+          0,
+          this.flatCoordinates_.length,
+          2,
+          tmpTransform,
+          this.flatCoordinates_
+        );
+      }
+    }
+
+    /**
+     * Apply a transform function to the coordinates of the geometry.
+     * The geometry is modified in place.
+     * If you do not want the geometry modified in place, first `clone()` it and
+     * then use this function on the clone.
+     * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+     */
+    applyTransform(transformFn) {
+      transformFn(this.flatCoordinates_, this.flatCoordinates_, this.stride_);
+    }
+
+    /**
+     * @return {RenderFeature} A cloned render feature.
+     */
+    clone() {
+      return new RenderFeature(
+        this.type_,
+        this.flatCoordinates_.slice(),
+        this.ends_.slice(),
+        this.stride_,
+        Object.assign({}, this.properties_),
+        this.id_
+      );
+    }
+
+    /**
+     * @return {Array<number>} Ends.
+     */
+    getEnds() {
+      return this.ends_;
+    }
+
+    /**
+     * Add transform and resolution based geometry simplification to this instance.
+     * @return {RenderFeature} This render feature.
+     */
+    enableSimplifyTransformed() {
+      this.simplifyTransformed = memoizeOne((squaredTolerance, transform) => {
+        if (squaredTolerance === this.squaredTolerance_) {
+          return this.simplifiedGeometry_;
+        }
+        this.simplifiedGeometry_ = this.clone();
+        if (transform) {
+          this.simplifiedGeometry_.applyTransform(transform);
+        }
+        const simplifiedFlatCoordinates =
+          this.simplifiedGeometry_.getFlatCoordinates();
+        let simplifiedEnds;
+        switch (this.type_) {
+          case 'LineString':
+            simplifiedFlatCoordinates.length = douglasPeucker(
+              simplifiedFlatCoordinates,
+              0,
+              this.simplifiedGeometry_.flatCoordinates_.length,
+              this.simplifiedGeometry_.stride_,
+              squaredTolerance,
+              simplifiedFlatCoordinates,
+              0
+            );
+            simplifiedEnds = [simplifiedFlatCoordinates.length];
+            break;
+          case 'MultiLineString':
+            simplifiedEnds = [];
+            simplifiedFlatCoordinates.length = douglasPeuckerArray(
+              simplifiedFlatCoordinates,
+              0,
+              this.simplifiedGeometry_.ends_,
+              this.simplifiedGeometry_.stride_,
+              squaredTolerance,
+              simplifiedFlatCoordinates,
+              0,
+              simplifiedEnds
+            );
+            break;
+          case 'Polygon':
+            simplifiedEnds = [];
+            simplifiedFlatCoordinates.length = quantizeArray(
+              simplifiedFlatCoordinates,
+              0,
+              this.simplifiedGeometry_.ends_,
+              this.simplifiedGeometry_.stride_,
+              Math.sqrt(squaredTolerance),
+              simplifiedFlatCoordinates,
+              0,
+              simplifiedEnds
+            );
+            break;
+        }
+        if (simplifiedEnds) {
+          this.simplifiedGeometry_ = new RenderFeature(
+            this.type_,
+            simplifiedFlatCoordinates,
+            simplifiedEnds,
+            2,
+            this.properties_,
+            this.id_
+          );
+        }
+        this.squaredTolerance_ = squaredTolerance;
+        return this.simplifiedGeometry_;
+      });
+      return this;
+    }
+  }
+
+  /**
+   * @return {Array<number>} Flat coordinates.
+   */
+  RenderFeature.prototype.getFlatCoordinates =
+    RenderFeature.prototype.getOrientedFlatCoordinates;
+
+  var RenderFeature$1 = RenderFeature;
+
+  /**
    * @module ol/format/Feature
    */
 
@@ -21663,6 +24434,29 @@ var myol = (function () {
    */
 
   /**
+   * @typedef {Object} SimpleGeometryObject
+   * @property {import('../geom/Geometry.js').Type} type Type.
+   * @property {Array<number>} flatCoordinates Flat coordinates.
+   * @property {Array<number>|Array<Array<number>>} [ends] Ends or endss.
+   * @property {import('../geom/Geometry.js').GeometryLayout} [layout] Layout.
+   */
+
+  /**
+   * @typedef {Array<GeometryObject>} GeometryCollectionObject
+   */
+
+  /**
+   * @typedef {SimpleGeometryObject|GeometryCollectionObject} GeometryObject
+   */
+
+  /**
+   * @typedef {Object} FeatureObject
+   * @property {string|number} [id] Id.
+   * @property {GeometryObject} [geometry] Geometry.
+   * @property {Object<string, *>} [properties] Properties.
+   */
+
+  /**
    * @classdesc
    * Abstract base class; normally only used for creating subclasses and not
    * instantiated in apps.
@@ -21687,6 +24481,12 @@ var myol = (function () {
        * @type {import("../proj/Projection.js").default|undefined}
        */
       this.defaultFeatureProjection = undefined;
+
+      /**
+       * @protected
+       * @type {import("../Feature.js").FeatureClass}
+       */
+      this.featureClass = Feature$1;
 
       /**
        * A list media types supported by the format in descending order of preference.
@@ -21737,6 +24537,7 @@ var myol = (function () {
         {
           dataProjection: this.dataProjection,
           featureProjection: this.defaultFeatureProjection,
+          featureClass: this.featureClass,
         },
         options
       );
@@ -21756,7 +24557,7 @@ var myol = (function () {
      * @abstract
      * @param {Document|Element|Object|string} source Source.
      * @param {ReadOptions} [options] Read options.
-     * @return {import("../Feature.js").FeatureLike} Feature.
+     * @return {import("../Feature.js").FeatureLike|Array<import("../render/Feature.js").default>} Feature.
      */
     readFeature(source, options) {
       return abstract();
@@ -21835,10 +24636,11 @@ var myol = (function () {
   }
 
   /**
-   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @template {import("../geom/Geometry.js").default|RenderFeature} T
+   * @param {T} geometry Geometry.
    * @param {boolean} write Set to true for writing, false for reading.
    * @param {WriteOptions|ReadOptions} [options] Options.
-   * @return {import("../geom/Geometry.js").default} Transformed geometry.
+   * @return {T} Transformed geometry.
    */
   function transformGeometryWithOptions(geometry, write, options) {
     const featureProjection = options
@@ -21846,18 +24648,22 @@ var myol = (function () {
       : null;
     const dataProjection = options ? get$2(options.dataProjection) : null;
 
-    let transformed;
+    let transformed = geometry;
     if (
       featureProjection &&
       dataProjection &&
       !equivalent(featureProjection, dataProjection)
     ) {
-      transformed = (write ? geometry.clone() : geometry).transform(
-        write ? featureProjection : dataProjection,
-        write ? dataProjection : featureProjection
-      );
-    } else {
-      transformed = geometry;
+      if (write) {
+        transformed = /** @type {T} */ (geometry.clone());
+      }
+      const fromProjection = write ? featureProjection : dataProjection;
+      const toProjection = write ? dataProjection : featureProjection;
+      if (fromProjection.getUnits() === 'tile-pixels') {
+        transformed.transform(fromProjection, toProjection);
+      } else {
+        transformed.applyTransform(getTransform(fromProjection, toProjection));
+      }
     }
     if (
       write &&
@@ -21877,11 +24683,98 @@ var myol = (function () {
         return coordinates;
       };
       if (transformed === geometry) {
-        transformed = geometry.clone();
+        transformed = /** @type {T} */ (geometry.clone());
       }
       transformed.applyTransform(transform);
     }
     return transformed;
+  }
+
+  const GeometryConstructor = {
+    Point: Point$2,
+    LineString: LineString$1,
+    Polygon: Polygon$1,
+    MultiPoint: MultiPoint$1,
+    MultiLineString: MultiLineString$1,
+    MultiPolygon: MultiPolygon$1,
+  };
+
+  function orientFlatCoordinates(flatCoordinates, ends, stride) {
+    if (Array.isArray(ends[0])) {
+      // MultiPolagon
+      if (!linearRingssAreOriented(flatCoordinates, 0, ends, stride)) {
+        flatCoordinates = flatCoordinates.slice();
+        orientLinearRingsArray(flatCoordinates, 0, ends, stride);
+      }
+      return flatCoordinates;
+    }
+    if (!linearRingsAreOriented(flatCoordinates, 0, ends, stride)) {
+      flatCoordinates = flatCoordinates.slice();
+      orientLinearRings(flatCoordinates, 0, ends, stride);
+    }
+    return flatCoordinates;
+  }
+
+  /**
+   * @param {FeatureObject} object Feature object.
+   * @param {WriteOptions|ReadOptions} [options] Options.
+   * @return {RenderFeature|Array<RenderFeature>} Render feature.
+   */
+  function createRenderFeature(object, options) {
+    const geometry = object.geometry;
+    if (!geometry) {
+      return [];
+    }
+    if (Array.isArray(geometry)) {
+      return geometry
+        .map((geometry) => createRenderFeature({...object, geometry}))
+        .flat();
+    }
+
+    const geometryType =
+      geometry.type === 'MultiPolygon' ? 'Polygon' : geometry.type;
+    if (geometryType === 'GeometryCollection' || geometryType === 'Circle') {
+      throw new Error('Unsupported geometry type: ' + geometryType);
+    }
+
+    const stride = geometry.layout.length;
+    return transformGeometryWithOptions(
+      new RenderFeature$1(
+        geometryType,
+        geometryType === 'Polygon'
+          ? orientFlatCoordinates(geometry.flatCoordinates, geometry.ends, stride)
+          : geometry.flatCoordinates,
+        geometry.ends?.flat(),
+        stride,
+        object.properties || {},
+        object.id
+      ).enableSimplifyTransformed(),
+      false,
+      options
+    );
+  }
+
+  /**
+   * @param {GeometryObject|null} object Geometry object.
+   * @param {WriteOptions|ReadOptions} [options] Options.
+   * @return {import("../geom/Geometry.js").default} Geometry.
+   */
+  function createGeometry(object, options) {
+    if (!object) {
+      return null;
+    }
+    if (Array.isArray(object)) {
+      const geometries = object.map((geometry) =>
+        createGeometry(geometry, options)
+      );
+      return new GeometryCollection$1(geometries);
+    }
+    const Geometry = GeometryConstructor[object.type];
+    return transformGeometryWithOptions(
+      new Geometry(object.flatCoordinates, object.layout, object.ends),
+      false,
+      options
+    );
   }
 
   /**
@@ -23173,9 +26066,12 @@ var myol = (function () {
       assert$1(
         isSorted(
           this.resolutions_,
-          function (a, b) {
-            return b - a;
-          },
+          /**
+           * @param {number} a First resolution
+           * @param {number} b Second resolution
+           * @return {number} Comparison result
+           */
+          (a, b) => b - a,
           true
         ),
         '`resolutions` must be sorted in descending order'
@@ -23292,7 +26188,7 @@ var myol = (function () {
       this.tmpExtent_ = [0, 0, 0, 0];
 
       if (options.sizes !== undefined) {
-        this.fullTileRanges_ = options.sizes.map(function (size, z) {
+        this.fullTileRanges_ = options.sizes.map((size, z) => {
           const tileRange = new TileRange$1(
             Math.min(0, size[0]),
             Math.max(size[0] - 1, -1),
@@ -23307,7 +26203,7 @@ var myol = (function () {
             tileRange.maxY = Math.min(restrictedTileRange.maxY, tileRange.maxY);
           }
           return tileRange;
-        }, this);
+        });
       } else if (extent) {
         this.calculateTileRanges_(extent);
       }
@@ -23353,7 +26249,7 @@ var myol = (function () {
         tileCoordExtent = this.getTileCoordExtent(tileCoord, tempExtent);
       }
       while (z >= this.minZoom) {
-        if (this.zoomFactor_ === 2) {
+        if (x !== undefined && y !== undefined) {
           x = Math.floor(x / 2);
           y = Math.floor(y / 2);
           tileRange = createOrUpdate$1(x, x, y, y, tempTileRange);
@@ -23652,7 +26548,7 @@ var myol = (function () {
     /**
      * Get a tile coordinate given a map coordinate and zoom level.
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-     * @param {number} z Zoom level.
+     * @param {number} z Integer zoom level, e.g. the result of a `getZForResolution()` method call
      * @param {import("../tilecoord.js").TileCoord} [opt_tileCoord] Destination import("../tilecoord.js").TileCoord object.
      * @return {import("../tilecoord.js").TileCoord} Tile coordinate.
      * @api
@@ -23692,7 +26588,7 @@ var myol = (function () {
 
     /**
      * @param {number} z Zoom level.
-     * @return {import("../TileRange.js").default} Extent tile range for the specified zoom level.
+     * @return {import("../TileRange.js").default|null} Extent tile range for the specified zoom level.
      */
     getFullTileRange(z) {
       if (!this.fullTileRanges_) {
@@ -26771,7 +29667,7 @@ var myol = (function () {
      *
      * @param {ArrayBuffer|Document|Element|Object|string} source Source.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
-     * @return {import("../Feature.js").default} Feature.
+     * @return {import("../Feature.js").FeatureLike|Array<import("../render/Feature.js").default>} Feature.
      * @api
      */
     readFeature(source, options) {
@@ -26787,7 +29683,7 @@ var myol = (function () {
      *
      * @param {ArrayBuffer|Document|Element|Object|string} source Source.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
-     * @return {Array<import("../Feature.js").default>} Features.
+     * @return {Array<import("../Feature.js").FeatureLike>} Features.
      * @api
      */
     readFeatures(source, options) {
@@ -26802,7 +29698,7 @@ var myol = (function () {
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {import("../Feature.js").default} Feature.
+     * @return {import("../Feature.js").default|import("../render/Feature.js").default|Array<import("../render/Feature.js").default>} Feature.
      */
     readFeatureFromObject(object, options) {
       return abstract();
@@ -26813,7 +29709,7 @@ var myol = (function () {
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {Array<import("../Feature.js").default>} Features.
+     * @return {Array<import("../Feature.js").default|import("../render/Feature.js").default>} Features.
      */
     readFeaturesFromObject(object, options) {
       return abstract();
@@ -26951,1355 +29847,6 @@ var myol = (function () {
   var JSONFeature$1 = JSONFeature;
 
   /**
-   * @module ol/geom/MultiLineString
-   */
-
-  /**
-   * @classdesc
-   * Multi-linestring geometry.
-   *
-   * @api
-   */
-  class MultiLineString extends SimpleGeometry$1 {
-    /**
-     * @param {Array<Array<import("../coordinate.js").Coordinate>|LineString>|Array<number>} coordinates
-     *     Coordinates or LineString geometries. (For internal use, flat coordinates in
-     *     combination with `layout` and `ends` are also accepted.)
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     * @param {Array<number>} [ends] Flat coordinate ends for internal use.
-     */
-    constructor(coordinates, layout, ends) {
-      super();
-
-      /**
-       * @type {Array<number>}
-       * @private
-       */
-      this.ends_ = [];
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.maxDelta_ = -1;
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.maxDeltaRevision_ = -1;
-
-      if (Array.isArray(coordinates[0])) {
-        this.setCoordinates(
-          /** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (
-            coordinates
-          ),
-          layout
-        );
-      } else if (layout !== undefined && ends) {
-        this.setFlatCoordinates(
-          layout,
-          /** @type {Array<number>} */ (coordinates)
-        );
-        this.ends_ = ends;
-      } else {
-        let layout = this.getLayout();
-        const lineStrings = /** @type {Array<LineString>} */ (coordinates);
-        const flatCoordinates = [];
-        const ends = [];
-        for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
-          const lineString = lineStrings[i];
-          if (i === 0) {
-            layout = lineString.getLayout();
-          }
-          extend$3(flatCoordinates, lineString.getFlatCoordinates());
-          ends.push(flatCoordinates.length);
-        }
-        this.setFlatCoordinates(layout, flatCoordinates);
-        this.ends_ = ends;
-      }
-    }
-
-    /**
-     * Append the passed linestring to the multilinestring.
-     * @param {LineString} lineString LineString.
-     * @api
-     */
-    appendLineString(lineString) {
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = lineString.getFlatCoordinates().slice();
-      } else {
-        extend$3(this.flatCoordinates, lineString.getFlatCoordinates().slice());
-      }
-      this.ends_.push(this.flatCoordinates.length);
-      this.changed();
-    }
-
-    /**
-     * Make a complete copy of the geometry.
-     * @return {!MultiLineString} Clone.
-     * @api
-     */
-    clone() {
-      const multiLineString = new MultiLineString(
-        this.flatCoordinates.slice(),
-        this.layout,
-        this.ends_.slice()
-      );
-      multiLineString.applyProperties(this);
-      return multiLineString;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
-     * @param {number} minSquaredDistance Minimum squared distance.
-     * @return {number} Minimum squared distance.
-     */
-    closestPointXY(x, y, closestPoint, minSquaredDistance) {
-      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
-        return minSquaredDistance;
-      }
-      if (this.maxDeltaRevision_ != this.getRevision()) {
-        this.maxDelta_ = Math.sqrt(
-          arrayMaxSquaredDelta(
-            this.flatCoordinates,
-            0,
-            this.ends_,
-            this.stride,
-            0
-          )
-        );
-        this.maxDeltaRevision_ = this.getRevision();
-      }
-      return assignClosestArrayPoint(
-        this.flatCoordinates,
-        0,
-        this.ends_,
-        this.stride,
-        this.maxDelta_,
-        false,
-        x,
-        y,
-        closestPoint,
-        minSquaredDistance
-      );
-    }
-
-    /**
-     * Returns the coordinate at `m` using linear interpolation, or `null` if no
-     * such coordinate exists.
-     *
-     * `extrapolate` controls extrapolation beyond the range of Ms in the
-     * MultiLineString. If `extrapolate` is `true` then Ms less than the first
-     * M will return the first coordinate and Ms greater than the last M will
-     * return the last coordinate.
-     *
-     * `interpolate` controls interpolation between consecutive LineStrings
-     * within the MultiLineString. If `interpolate` is `true` the coordinates
-     * will be linearly interpolated between the last coordinate of one LineString
-     * and the first coordinate of the next LineString.  If `interpolate` is
-     * `false` then the function will return `null` for Ms falling between
-     * LineStrings.
-     *
-     * @param {number} m M.
-     * @param {boolean} [extrapolate] Extrapolate. Default is `false`.
-     * @param {boolean} [interpolate] Interpolate. Default is `false`.
-     * @return {import("../coordinate.js").Coordinate|null} Coordinate.
-     * @api
-     */
-    getCoordinateAtM(m, extrapolate, interpolate) {
-      if (
-        (this.layout != 'XYM' && this.layout != 'XYZM') ||
-        this.flatCoordinates.length === 0
-      ) {
-        return null;
-      }
-      extrapolate = extrapolate !== undefined ? extrapolate : false;
-      interpolate = interpolate !== undefined ? interpolate : false;
-      return lineStringsCoordinateAtM(
-        this.flatCoordinates,
-        0,
-        this.ends_,
-        this.stride,
-        m,
-        extrapolate,
-        interpolate
-      );
-    }
-
-    /**
-     * Return the coordinates of the multilinestring.
-     * @return {Array<Array<import("../coordinate.js").Coordinate>>} Coordinates.
-     * @api
-     */
-    getCoordinates() {
-      return inflateCoordinatesArray(
-        this.flatCoordinates,
-        0,
-        this.ends_,
-        this.stride
-      );
-    }
-
-    /**
-     * @return {Array<number>} Ends.
-     */
-    getEnds() {
-      return this.ends_;
-    }
-
-    /**
-     * Return the linestring at the specified index.
-     * @param {number} index Index.
-     * @return {LineString} LineString.
-     * @api
-     */
-    getLineString(index) {
-      if (index < 0 || this.ends_.length <= index) {
-        return null;
-      }
-      return new LineString$1(
-        this.flatCoordinates.slice(
-          index === 0 ? 0 : this.ends_[index - 1],
-          this.ends_[index]
-        ),
-        this.layout
-      );
-    }
-
-    /**
-     * Return the linestrings of this multilinestring.
-     * @return {Array<LineString>} LineStrings.
-     * @api
-     */
-    getLineStrings() {
-      const flatCoordinates = this.flatCoordinates;
-      const ends = this.ends_;
-      const layout = this.layout;
-      /** @type {Array<LineString>} */
-      const lineStrings = [];
-      let offset = 0;
-      for (let i = 0, ii = ends.length; i < ii; ++i) {
-        const end = ends[i];
-        const lineString = new LineString$1(
-          flatCoordinates.slice(offset, end),
-          layout
-        );
-        lineStrings.push(lineString);
-        offset = end;
-      }
-      return lineStrings;
-    }
-
-    /**
-     * @return {Array<number>} Flat midpoints.
-     */
-    getFlatMidpoints() {
-      const midpoints = [];
-      const flatCoordinates = this.flatCoordinates;
-      let offset = 0;
-      const ends = this.ends_;
-      const stride = this.stride;
-      for (let i = 0, ii = ends.length; i < ii; ++i) {
-        const end = ends[i];
-        const midpoint = interpolatePoint(
-          flatCoordinates,
-          offset,
-          end,
-          stride,
-          0.5
-        );
-        extend$3(midpoints, midpoint);
-        offset = end;
-      }
-      return midpoints;
-    }
-
-    /**
-     * @param {number} squaredTolerance Squared tolerance.
-     * @return {MultiLineString} Simplified MultiLineString.
-     * @protected
-     */
-    getSimplifiedGeometryInternal(squaredTolerance) {
-      const simplifiedFlatCoordinates = [];
-      const simplifiedEnds = [];
-      simplifiedFlatCoordinates.length = douglasPeuckerArray(
-        this.flatCoordinates,
-        0,
-        this.ends_,
-        this.stride,
-        squaredTolerance,
-        simplifiedFlatCoordinates,
-        0,
-        simplifiedEnds
-      );
-      return new MultiLineString(simplifiedFlatCoordinates, 'XY', simplifiedEnds);
-    }
-
-    /**
-     * Get the type of this geometry.
-     * @return {import("./Geometry.js").Type} Geometry type.
-     * @api
-     */
-    getType() {
-      return 'MultiLineString';
-    }
-
-    /**
-     * Test if the geometry and the passed extent intersect.
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @return {boolean} `true` if the geometry and the extent intersect.
-     * @api
-     */
-    intersectsExtent(extent) {
-      return intersectsLineStringArray(
-        this.flatCoordinates,
-        0,
-        this.ends_,
-        this.stride,
-        extent
-      );
-    }
-
-    /**
-     * Set the coordinates of the multilinestring.
-     * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     * @api
-     */
-    setCoordinates(coordinates, layout) {
-      this.setLayout(layout, coordinates, 2);
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = [];
-      }
-      const ends = deflateCoordinatesArray(
-        this.flatCoordinates,
-        0,
-        coordinates,
-        this.stride,
-        this.ends_
-      );
-      this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
-      this.changed();
-    }
-  }
-
-  var MultiLineString$1 = MultiLineString;
-
-  /**
-   * @module ol/geom/MultiPoint
-   */
-
-  /**
-   * @classdesc
-   * Multi-point geometry.
-   *
-   * @api
-   */
-  class MultiPoint extends SimpleGeometry$1 {
-    /**
-     * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
-     *     For internal use, flat coordinates in combination with `layout` are also accepted.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     */
-    constructor(coordinates, layout) {
-      super();
-      if (layout && !Array.isArray(coordinates[0])) {
-        this.setFlatCoordinates(
-          layout,
-          /** @type {Array<number>} */ (coordinates)
-        );
-      } else {
-        this.setCoordinates(
-          /** @type {Array<import("../coordinate.js").Coordinate>} */ (
-            coordinates
-          ),
-          layout
-        );
-      }
-    }
-
-    /**
-     * Append the passed point to this multipoint.
-     * @param {Point} point Point.
-     * @api
-     */
-    appendPoint(point) {
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = point.getFlatCoordinates().slice();
-      } else {
-        extend$3(this.flatCoordinates, point.getFlatCoordinates());
-      }
-      this.changed();
-    }
-
-    /**
-     * Make a complete copy of the geometry.
-     * @return {!MultiPoint} Clone.
-     * @api
-     */
-    clone() {
-      const multiPoint = new MultiPoint(
-        this.flatCoordinates.slice(),
-        this.layout
-      );
-      multiPoint.applyProperties(this);
-      return multiPoint;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
-     * @param {number} minSquaredDistance Minimum squared distance.
-     * @return {number} Minimum squared distance.
-     */
-    closestPointXY(x, y, closestPoint, minSquaredDistance) {
-      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
-        return minSquaredDistance;
-      }
-      const flatCoordinates = this.flatCoordinates;
-      const stride = this.stride;
-      for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-        const squaredDistance = squaredDistance$1(
-          x,
-          y,
-          flatCoordinates[i],
-          flatCoordinates[i + 1]
-        );
-        if (squaredDistance < minSquaredDistance) {
-          minSquaredDistance = squaredDistance;
-          for (let j = 0; j < stride; ++j) {
-            closestPoint[j] = flatCoordinates[i + j];
-          }
-          closestPoint.length = stride;
-        }
-      }
-      return minSquaredDistance;
-    }
-
-    /**
-     * Return the coordinates of the multipoint.
-     * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
-     * @api
-     */
-    getCoordinates() {
-      return inflateCoordinates(
-        this.flatCoordinates,
-        0,
-        this.flatCoordinates.length,
-        this.stride
-      );
-    }
-
-    /**
-     * Return the point at the specified index.
-     * @param {number} index Index.
-     * @return {Point} Point.
-     * @api
-     */
-    getPoint(index) {
-      const n = !this.flatCoordinates
-        ? 0
-        : this.flatCoordinates.length / this.stride;
-      if (index < 0 || n <= index) {
-        return null;
-      }
-      return new Point$2(
-        this.flatCoordinates.slice(
-          index * this.stride,
-          (index + 1) * this.stride
-        ),
-        this.layout
-      );
-    }
-
-    /**
-     * Return the points of this multipoint.
-     * @return {Array<Point>} Points.
-     * @api
-     */
-    getPoints() {
-      const flatCoordinates = this.flatCoordinates;
-      const layout = this.layout;
-      const stride = this.stride;
-      /** @type {Array<Point>} */
-      const points = [];
-      for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-        const point = new Point$2(flatCoordinates.slice(i, i + stride), layout);
-        points.push(point);
-      }
-      return points;
-    }
-
-    /**
-     * Get the type of this geometry.
-     * @return {import("./Geometry.js").Type} Geometry type.
-     * @api
-     */
-    getType() {
-      return 'MultiPoint';
-    }
-
-    /**
-     * Test if the geometry and the passed extent intersect.
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @return {boolean} `true` if the geometry and the extent intersect.
-     * @api
-     */
-    intersectsExtent(extent) {
-      const flatCoordinates = this.flatCoordinates;
-      const stride = this.stride;
-      for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-        const x = flatCoordinates[i];
-        const y = flatCoordinates[i + 1];
-        if (containsXY(extent, x, y)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    /**
-     * Set the coordinates of the multipoint.
-     * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     * @api
-     */
-    setCoordinates(coordinates, layout) {
-      this.setLayout(layout, coordinates, 1);
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = [];
-      }
-      this.flatCoordinates.length = deflateCoordinates(
-        this.flatCoordinates,
-        0,
-        coordinates,
-        this.stride
-      );
-      this.changed();
-    }
-  }
-
-  var MultiPoint$1 = MultiPoint;
-
-  /**
-   * @module ol/geom/flat/center
-   */
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<Array<number>>} endss Endss.
-   * @param {number} stride Stride.
-   * @return {Array<number>} Flat centers.
-   */
-  function linearRingss(flatCoordinates, offset, endss, stride) {
-    const flatCenters = [];
-    let extent = createEmpty();
-    for (let i = 0, ii = endss.length; i < ii; ++i) {
-      const ends = endss[i];
-      extent = createOrUpdateFromFlatCoordinates(
-        flatCoordinates,
-        offset,
-        ends[0],
-        stride
-      );
-      flatCenters.push((extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2);
-      offset = ends[ends.length - 1];
-    }
-    return flatCenters;
-  }
-
-  /**
-   * @module ol/geom/MultiPolygon
-   */
-
-  /**
-   * @classdesc
-   * Multi-polygon geometry.
-   *
-   * @api
-   */
-  class MultiPolygon extends SimpleGeometry$1 {
-    /**
-     * @param {Array<Array<Array<import("../coordinate.js").Coordinate>>|Polygon>|Array<number>} coordinates Coordinates.
-     *     For internal use, flat coordinates in combination with `layout` and `endss` are also accepted.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     * @param {Array<Array<number>>} [endss] Array of ends for internal use with flat coordinates.
-     */
-    constructor(coordinates, layout, endss) {
-      super();
-
-      /**
-       * @type {Array<Array<number>>}
-       * @private
-       */
-      this.endss_ = [];
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.flatInteriorPointsRevision_ = -1;
-
-      /**
-       * @private
-       * @type {Array<number>}
-       */
-      this.flatInteriorPoints_ = null;
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.maxDelta_ = -1;
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.maxDeltaRevision_ = -1;
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.orientedRevision_ = -1;
-
-      /**
-       * @private
-       * @type {Array<number>}
-       */
-      this.orientedFlatCoordinates_ = null;
-
-      if (!endss && !Array.isArray(coordinates[0])) {
-        let thisLayout = this.getLayout();
-        const polygons = /** @type {Array<Polygon>} */ (coordinates);
-        const flatCoordinates = [];
-        const thisEndss = [];
-        for (let i = 0, ii = polygons.length; i < ii; ++i) {
-          const polygon = polygons[i];
-          if (i === 0) {
-            thisLayout = polygon.getLayout();
-          }
-          const offset = flatCoordinates.length;
-          const ends = polygon.getEnds();
-          for (let j = 0, jj = ends.length; j < jj; ++j) {
-            ends[j] += offset;
-          }
-          extend$3(flatCoordinates, polygon.getFlatCoordinates());
-          thisEndss.push(ends);
-        }
-        layout = thisLayout;
-        coordinates = flatCoordinates;
-        endss = thisEndss;
-      }
-      if (layout !== undefined && endss) {
-        this.setFlatCoordinates(
-          layout,
-          /** @type {Array<number>} */ (coordinates)
-        );
-        this.endss_ = endss;
-      } else {
-        this.setCoordinates(
-          /** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (
-            coordinates
-          ),
-          layout
-        );
-      }
-    }
-
-    /**
-     * Append the passed polygon to this multipolygon.
-     * @param {Polygon} polygon Polygon.
-     * @api
-     */
-    appendPolygon(polygon) {
-      /** @type {Array<number>} */
-      let ends;
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = polygon.getFlatCoordinates().slice();
-        ends = polygon.getEnds().slice();
-        this.endss_.push();
-      } else {
-        const offset = this.flatCoordinates.length;
-        extend$3(this.flatCoordinates, polygon.getFlatCoordinates());
-        ends = polygon.getEnds().slice();
-        for (let i = 0, ii = ends.length; i < ii; ++i) {
-          ends[i] += offset;
-        }
-      }
-      this.endss_.push(ends);
-      this.changed();
-    }
-
-    /**
-     * Make a complete copy of the geometry.
-     * @return {!MultiPolygon} Clone.
-     * @api
-     */
-    clone() {
-      const len = this.endss_.length;
-      const newEndss = new Array(len);
-      for (let i = 0; i < len; ++i) {
-        newEndss[i] = this.endss_[i].slice();
-      }
-
-      const multiPolygon = new MultiPolygon(
-        this.flatCoordinates.slice(),
-        this.layout,
-        newEndss
-      );
-      multiPolygon.applyProperties(this);
-
-      return multiPolygon;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
-     * @param {number} minSquaredDistance Minimum squared distance.
-     * @return {number} Minimum squared distance.
-     */
-    closestPointXY(x, y, closestPoint, minSquaredDistance) {
-      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
-        return minSquaredDistance;
-      }
-      if (this.maxDeltaRevision_ != this.getRevision()) {
-        this.maxDelta_ = Math.sqrt(
-          multiArrayMaxSquaredDelta(
-            this.flatCoordinates,
-            0,
-            this.endss_,
-            this.stride,
-            0
-          )
-        );
-        this.maxDeltaRevision_ = this.getRevision();
-      }
-      return assignClosestMultiArrayPoint(
-        this.getOrientedFlatCoordinates(),
-        0,
-        this.endss_,
-        this.stride,
-        this.maxDelta_,
-        true,
-        x,
-        y,
-        closestPoint,
-        minSquaredDistance
-      );
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @return {boolean} Contains (x, y).
-     */
-    containsXY(x, y) {
-      return linearRingssContainsXY(
-        this.getOrientedFlatCoordinates(),
-        0,
-        this.endss_,
-        this.stride,
-        x,
-        y
-      );
-    }
-
-    /**
-     * Return the area of the multipolygon on projected plane.
-     * @return {number} Area (on projected plane).
-     * @api
-     */
-    getArea() {
-      return linearRingss$1(
-        this.getOrientedFlatCoordinates(),
-        0,
-        this.endss_,
-        this.stride
-      );
-    }
-
-    /**
-     * Get the coordinate array for this geometry.  This array has the structure
-     * of a GeoJSON coordinate array for multi-polygons.
-     *
-     * @param {boolean} [right] Orient coordinates according to the right-hand
-     *     rule (counter-clockwise for exterior and clockwise for interior rings).
-     *     If `false`, coordinates will be oriented according to the left-hand rule
-     *     (clockwise for exterior and counter-clockwise for interior rings).
-     *     By default, coordinate orientation will depend on how the geometry was
-     *     constructed.
-     * @return {Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
-     * @api
-     */
-    getCoordinates(right) {
-      let flatCoordinates;
-      if (right !== undefined) {
-        flatCoordinates = this.getOrientedFlatCoordinates().slice();
-        orientLinearRingsArray(
-          flatCoordinates,
-          0,
-          this.endss_,
-          this.stride,
-          right
-        );
-      } else {
-        flatCoordinates = this.flatCoordinates;
-      }
-
-      return inflateMultiCoordinatesArray(
-        flatCoordinates,
-        0,
-        this.endss_,
-        this.stride
-      );
-    }
-
-    /**
-     * @return {Array<Array<number>>} Endss.
-     */
-    getEndss() {
-      return this.endss_;
-    }
-
-    /**
-     * @return {Array<number>} Flat interior points.
-     */
-    getFlatInteriorPoints() {
-      if (this.flatInteriorPointsRevision_ != this.getRevision()) {
-        const flatCenters = linearRingss(
-          this.flatCoordinates,
-          0,
-          this.endss_,
-          this.stride
-        );
-        this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
-          this.getOrientedFlatCoordinates(),
-          0,
-          this.endss_,
-          this.stride,
-          flatCenters
-        );
-        this.flatInteriorPointsRevision_ = this.getRevision();
-      }
-      return this.flatInteriorPoints_;
-    }
-
-    /**
-     * Return the interior points as {@link module:ol/geom/MultiPoint~MultiPoint multipoint}.
-     * @return {MultiPoint} Interior points as XYM coordinates, where M is
-     * the length of the horizontal intersection that the point belongs to.
-     * @api
-     */
-    getInteriorPoints() {
-      return new MultiPoint$1(this.getFlatInteriorPoints().slice(), 'XYM');
-    }
-
-    /**
-     * @return {Array<number>} Oriented flat coordinates.
-     */
-    getOrientedFlatCoordinates() {
-      if (this.orientedRevision_ != this.getRevision()) {
-        const flatCoordinates = this.flatCoordinates;
-        if (
-          linearRingssAreOriented(flatCoordinates, 0, this.endss_, this.stride)
-        ) {
-          this.orientedFlatCoordinates_ = flatCoordinates;
-        } else {
-          this.orientedFlatCoordinates_ = flatCoordinates.slice();
-          this.orientedFlatCoordinates_.length = orientLinearRingsArray(
-            this.orientedFlatCoordinates_,
-            0,
-            this.endss_,
-            this.stride
-          );
-        }
-        this.orientedRevision_ = this.getRevision();
-      }
-      return this.orientedFlatCoordinates_;
-    }
-
-    /**
-     * @param {number} squaredTolerance Squared tolerance.
-     * @return {MultiPolygon} Simplified MultiPolygon.
-     * @protected
-     */
-    getSimplifiedGeometryInternal(squaredTolerance) {
-      const simplifiedFlatCoordinates = [];
-      const simplifiedEndss = [];
-      simplifiedFlatCoordinates.length = quantizeMultiArray(
-        this.flatCoordinates,
-        0,
-        this.endss_,
-        this.stride,
-        Math.sqrt(squaredTolerance),
-        simplifiedFlatCoordinates,
-        0,
-        simplifiedEndss
-      );
-      return new MultiPolygon(simplifiedFlatCoordinates, 'XY', simplifiedEndss);
-    }
-
-    /**
-     * Return the polygon at the specified index.
-     * @param {number} index Index.
-     * @return {Polygon} Polygon.
-     * @api
-     */
-    getPolygon(index) {
-      if (index < 0 || this.endss_.length <= index) {
-        return null;
-      }
-      let offset;
-      if (index === 0) {
-        offset = 0;
-      } else {
-        const prevEnds = this.endss_[index - 1];
-        offset = prevEnds[prevEnds.length - 1];
-      }
-      const ends = this.endss_[index].slice();
-      const end = ends[ends.length - 1];
-      if (offset !== 0) {
-        for (let i = 0, ii = ends.length; i < ii; ++i) {
-          ends[i] -= offset;
-        }
-      }
-      return new Polygon$1(
-        this.flatCoordinates.slice(offset, end),
-        this.layout,
-        ends
-      );
-    }
-
-    /**
-     * Return the polygons of this multipolygon.
-     * @return {Array<Polygon>} Polygons.
-     * @api
-     */
-    getPolygons() {
-      const layout = this.layout;
-      const flatCoordinates = this.flatCoordinates;
-      const endss = this.endss_;
-      const polygons = [];
-      let offset = 0;
-      for (let i = 0, ii = endss.length; i < ii; ++i) {
-        const ends = endss[i].slice();
-        const end = ends[ends.length - 1];
-        if (offset !== 0) {
-          for (let j = 0, jj = ends.length; j < jj; ++j) {
-            ends[j] -= offset;
-          }
-        }
-        const polygon = new Polygon$1(
-          flatCoordinates.slice(offset, end),
-          layout,
-          ends
-        );
-        polygons.push(polygon);
-        offset = end;
-      }
-      return polygons;
-    }
-
-    /**
-     * Get the type of this geometry.
-     * @return {import("./Geometry.js").Type} Geometry type.
-     * @api
-     */
-    getType() {
-      return 'MultiPolygon';
-    }
-
-    /**
-     * Test if the geometry and the passed extent intersect.
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @return {boolean} `true` if the geometry and the extent intersect.
-     * @api
-     */
-    intersectsExtent(extent) {
-      return intersectsLinearRingMultiArray(
-        this.getOrientedFlatCoordinates(),
-        0,
-        this.endss_,
-        this.stride,
-        extent
-      );
-    }
-
-    /**
-     * Set the coordinates of the multipolygon.
-     * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     * @api
-     */
-    setCoordinates(coordinates, layout) {
-      this.setLayout(layout, coordinates, 3);
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = [];
-      }
-      const endss = deflateMultiCoordinatesArray(
-        this.flatCoordinates,
-        0,
-        coordinates,
-        this.stride,
-        this.endss_
-      );
-      if (endss.length === 0) {
-        this.flatCoordinates.length = 0;
-      } else {
-        const lastEnds = endss[endss.length - 1];
-        this.flatCoordinates.length =
-          lastEnds.length === 0 ? 0 : lastEnds[lastEnds.length - 1];
-      }
-      this.changed();
-    }
-  }
-
-  var MultiPolygon$1 = MultiPolygon;
-
-  /**
-   * @module ol/geom/GeometryCollection
-   */
-
-  /**
-   * @classdesc
-   * An array of {@link module:ol/geom/Geometry~Geometry} objects.
-   *
-   * @api
-   */
-  class GeometryCollection extends Geometry$1 {
-    /**
-     * @param {Array<Geometry>} [geometries] Geometries.
-     */
-    constructor(geometries) {
-      super();
-
-      /**
-       * @private
-       * @type {Array<Geometry>}
-       */
-      this.geometries_ = geometries ? geometries : null;
-
-      /**
-       * @type {Array<import("../events.js").EventsKey>}
-       */
-      this.changeEventsKeys_ = [];
-
-      this.listenGeometriesChange_();
-    }
-
-    /**
-     * @private
-     */
-    unlistenGeometriesChange_() {
-      this.changeEventsKeys_.forEach(unlistenByKey);
-      this.changeEventsKeys_.length = 0;
-    }
-
-    /**
-     * @private
-     */
-    listenGeometriesChange_() {
-      if (!this.geometries_) {
-        return;
-      }
-      for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
-        this.changeEventsKeys_.push(
-          listen(this.geometries_[i], EventType.CHANGE, this.changed, this)
-        );
-      }
-    }
-
-    /**
-     * Make a complete copy of the geometry.
-     * @return {!GeometryCollection} Clone.
-     * @api
-     */
-    clone() {
-      const geometryCollection = new GeometryCollection(null);
-      geometryCollection.setGeometries(this.geometries_);
-      geometryCollection.applyProperties(this);
-      return geometryCollection;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
-     * @param {number} minSquaredDistance Minimum squared distance.
-     * @return {number} Minimum squared distance.
-     */
-    closestPointXY(x, y, closestPoint, minSquaredDistance) {
-      if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
-        return minSquaredDistance;
-      }
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        minSquaredDistance = geometries[i].closestPointXY(
-          x,
-          y,
-          closestPoint,
-          minSquaredDistance
-        );
-      }
-      return minSquaredDistance;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @return {boolean} Contains (x, y).
-     */
-    containsXY(x, y) {
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        if (geometries[i].containsXY(x, y)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    /**
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @protected
-     * @return {import("../extent.js").Extent} extent Extent.
-     */
-    computeExtent(extent) {
-      createOrUpdateEmpty(extent);
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        extend$2(extent, geometries[i].getExtent());
-      }
-      return extent;
-    }
-
-    /**
-     * Return the geometries that make up this geometry collection.
-     * @return {Array<Geometry>} Geometries.
-     * @api
-     */
-    getGeometries() {
-      return cloneGeometries(this.geometries_);
-    }
-
-    /**
-     * @return {Array<Geometry>} Geometries.
-     */
-    getGeometriesArray() {
-      return this.geometries_;
-    }
-
-    /**
-     * @return {Array<Geometry>} Geometries.
-     */
-    getGeometriesArrayRecursive() {
-      /** @type {Array<Geometry>} */
-      let geometriesArray = [];
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        if (geometries[i].getType() === this.getType()) {
-          geometriesArray = geometriesArray.concat(
-            /** @type {GeometryCollection} */ (
-              geometries[i]
-            ).getGeometriesArrayRecursive()
-          );
-        } else {
-          geometriesArray.push(geometries[i]);
-        }
-      }
-      return geometriesArray;
-    }
-
-    /**
-     * Create a simplified version of this geometry using the Douglas Peucker algorithm.
-     * @param {number} squaredTolerance Squared tolerance.
-     * @return {GeometryCollection} Simplified GeometryCollection.
-     */
-    getSimplifiedGeometry(squaredTolerance) {
-      if (this.simplifiedGeometryRevision !== this.getRevision()) {
-        this.simplifiedGeometryMaxMinSquaredTolerance = 0;
-        this.simplifiedGeometryRevision = this.getRevision();
-      }
-      if (
-        squaredTolerance < 0 ||
-        (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
-          squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)
-      ) {
-        return this;
-      }
-
-      const simplifiedGeometries = [];
-      const geometries = this.geometries_;
-      let simplified = false;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        const geometry = geometries[i];
-        const simplifiedGeometry =
-          geometry.getSimplifiedGeometry(squaredTolerance);
-        simplifiedGeometries.push(simplifiedGeometry);
-        if (simplifiedGeometry !== geometry) {
-          simplified = true;
-        }
-      }
-      if (simplified) {
-        const simplifiedGeometryCollection = new GeometryCollection(null);
-        simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
-        return simplifiedGeometryCollection;
-      }
-      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
-      return this;
-    }
-
-    /**
-     * Get the type of this geometry.
-     * @return {import("./Geometry.js").Type} Geometry type.
-     * @api
-     */
-    getType() {
-      return 'GeometryCollection';
-    }
-
-    /**
-     * Test if the geometry and the passed extent intersect.
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @return {boolean} `true` if the geometry and the extent intersect.
-     * @api
-     */
-    intersectsExtent(extent) {
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        if (geometries[i].intersectsExtent(extent)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    /**
-     * @return {boolean} Is empty.
-     */
-    isEmpty() {
-      return this.geometries_.length === 0;
-    }
-
-    /**
-     * Rotate the geometry around a given coordinate. This modifies the geometry
-     * coordinates in place.
-     * @param {number} angle Rotation angle in radians.
-     * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
-     * @api
-     */
-    rotate(angle, anchor) {
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        geometries[i].rotate(angle, anchor);
-      }
-      this.changed();
-    }
-
-    /**
-     * Scale the geometry (with an optional origin).  This modifies the geometry
-     * coordinates in place.
-     * @abstract
-     * @param {number} sx The scaling factor in the x-direction.
-     * @param {number} [sy] The scaling factor in the y-direction (defaults to sx).
-     * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
-     *     of the geometry extent).
-     * @api
-     */
-    scale(sx, sy, anchor) {
-      if (!anchor) {
-        anchor = getCenter(this.getExtent());
-      }
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        geometries[i].scale(sx, sy, anchor);
-      }
-      this.changed();
-    }
-
-    /**
-     * Set the geometries that make up this geometry collection.
-     * @param {Array<Geometry>} geometries Geometries.
-     * @api
-     */
-    setGeometries(geometries) {
-      this.setGeometriesArray(cloneGeometries(geometries));
-    }
-
-    /**
-     * @param {Array<Geometry>} geometries Geometries.
-     */
-    setGeometriesArray(geometries) {
-      this.unlistenGeometriesChange_();
-      this.geometries_ = geometries;
-      this.listenGeometriesChange_();
-      this.changed();
-    }
-
-    /**
-     * Apply a transform function to the coordinates of the geometry.
-     * The geometry is modified in place.
-     * If you do not want the geometry modified in place, first `clone()` it and
-     * then use this function on the clone.
-     * @param {import("../proj.js").TransformFunction} transformFn Transform function.
-     * Called with a flat array of geometry coordinates.
-     * @api
-     */
-    applyTransform(transformFn) {
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        geometries[i].applyTransform(transformFn);
-      }
-      this.changed();
-    }
-
-    /**
-     * Translate the geometry.  This modifies the geometry coordinates in place.  If
-     * instead you want a new geometry, first `clone()` this geometry.
-     * @param {number} deltaX Delta X.
-     * @param {number} deltaY Delta Y.
-     * @api
-     */
-    translate(deltaX, deltaY) {
-      const geometries = this.geometries_;
-      for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        geometries[i].translate(deltaX, deltaY);
-      }
-      this.changed();
-    }
-
-    /**
-     * Clean up.
-     */
-    disposeInternal() {
-      this.unlistenGeometriesChange_();
-      super.disposeInternal();
-    }
-  }
-
-  /**
-   * @param {Array<Geometry>} geometries Geometries.
-   * @return {Array<Geometry>} Cloned geometries.
-   */
-  function cloneGeometries(geometries) {
-    const clonedGeometries = [];
-    for (let i = 0, ii = geometries.length; i < ii; ++i) {
-      clonedGeometries.push(geometries[i].clone());
-    }
-    return clonedGeometries;
-  }
-
-  var GeometryCollection$1 = GeometryCollection;
-
-  /**
    * @module ol/format/GeoJSON
    */
 
@@ -28328,6 +29875,10 @@ var myol = (function () {
    * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
    * will look for that field to set the geometry name. If both this field is set to `true`
    * and a `geometryName` is provided, the `geometryName` will take precedence.
+   * @property {import("../Feature.js").FeatureClass} [featureClass] Feature class
+   * to be used when reading features. The default is {@link module:ol/Feature~Feature}. If performance is
+   * the primary concern, and features are not going to be modified or round-tripped through the format,
+   * consider using {@link module:ol/render/Feature~RenderFeature}
    */
 
   /**
@@ -28359,6 +29910,10 @@ var myol = (function () {
         this.defaultFeatureProjection = get$2(options.featureProjection);
       }
 
+      if (options.featureClass) {
+        this.featureClass = options.featureClass;
+      }
+
       /**
        * Name of the geometry attribute for features.
        * @type {string|undefined}
@@ -28383,7 +29938,7 @@ var myol = (function () {
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {import("../Feature.js").default} Feature.
+     * @return {Feature|RenderFeature|Array<RenderFeature>}.default} Feature.
      */
     readFeatureFromObject(object, options) {
       /**
@@ -28400,7 +29955,18 @@ var myol = (function () {
         };
       }
 
-      const geometry = readGeometry(geoJSONFeature['geometry'], options);
+      const geometry = readGeometryInternal(geoJSONFeature['geometry']);
+      if (this.featureClass === RenderFeature$1) {
+        return createRenderFeature(
+          {
+            geometry,
+            id: geoJSONFeature['id'],
+            properties: geoJSONFeature['properties'],
+          },
+          options
+        );
+      }
+
       const feature = new Feature$1();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
@@ -28410,7 +29976,7 @@ var myol = (function () {
       ) {
         feature.setGeometryName(geoJSONFeature['geometry_name']);
       }
-      feature.setGeometry(geometry);
+      feature.setGeometry(createGeometry(geometry, options));
 
       if ('id' in geoJSONFeature) {
         feature.setId(geoJSONFeature['id']);
@@ -28426,11 +29992,11 @@ var myol = (function () {
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {Array<Feature>} Features.
+     * @return {Array<Feature|RenderFeature>} Features.
      */
     readFeaturesFromObject(object, options) {
       const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-      /** @type {Array<import("../Feature.js").default>} */
+      /** @type {Array<Feature|RenderFeature|Array<RenderFeature>>} */
       let features = null;
       if (geoJSONObject['type'] === 'FeatureCollection') {
         const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (
@@ -28439,12 +30005,19 @@ var myol = (function () {
         features = [];
         const geoJSONFeatures = geoJSONFeatureCollection['features'];
         for (let i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
-          features.push(this.readFeatureFromObject(geoJSONFeatures[i], options));
+          const featureObject = this.readFeatureFromObject(
+            geoJSONFeatures[i],
+            options
+          );
+          if (!featureObject) {
+            continue;
+          }
+          features.push(featureObject);
         }
       } else {
         features = [this.readFeatureFromObject(object, options)];
       }
-      return features;
+      return features.flat();
     }
 
     /**
@@ -28557,16 +30130,14 @@ var myol = (function () {
   /**
    * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../geom/Geometry.js").default} Geometry.
+   * @return {import("./Feature.js").GeometryObject} Geometry.
    */
-  function readGeometry(object, options) {
+  function readGeometryInternal(object, options) {
     if (!object) {
       return null;
     }
 
-    /**
-     * @type {import("../geom/Geometry.js").default}
-     */
+    /** @type {import("./Feature.js").GeometryObject} */
     let geometry;
     switch (object['type']) {
       case 'Point': {
@@ -28611,73 +30182,132 @@ var myol = (function () {
         throw new Error('Unsupported GeoJSON type: ' + object['type']);
       }
     }
-    return transformGeometryWithOptions(geometry, false, options);
+    return geometry;
+  }
+
+  /**
+   * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @return {import("../geom/Geometry.js").default} Geometry.
+   */
+  function readGeometry(object, options) {
+    const geometryObject = readGeometryInternal(object);
+    return createGeometry(geometryObject, options);
   }
 
   /**
    * @param {GeoJSONGeometryCollection} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {GeometryCollection} Geometry collection.
+   * @return {import("./Feature.js").GeometryCollectionObject} Geometry collection.
    */
   function readGeometryCollectionGeometry(object, options) {
     const geometries = object['geometries'].map(
       /**
        * @param {GeoJSONGeometry} geometry Geometry.
-       * @return {import("../geom/Geometry.js").default} geometry Geometry.
+       * @return {import("./Feature.js").GeometryObject} geometry Geometry.
        */
       function (geometry) {
-        return readGeometry(geometry, options);
+        return readGeometryInternal(geometry);
       }
     );
-    return new GeometryCollection$1(geometries);
+    return geometries;
   }
 
   /**
-   * @param {GeoJSONPoint} object Object.
-   * @return {Point} Point.
+   * @param {GeoJSONPoint} object Input object.
+   * @return {import("./Feature.js").GeometryObject} Point geometry.
    */
   function readPointGeometry(object) {
-    return new Point$2(object['coordinates']);
+    const flatCoordinates = object['coordinates'];
+    return {
+      type: 'Point',
+      flatCoordinates,
+      layout: getLayoutForStride(flatCoordinates.length),
+    };
   }
 
   /**
    * @param {GeoJSONLineString} object Object.
-   * @return {LineString} LineString.
+   * @return {import("./Feature.js").GeometryObject} LineString geometry.
    */
   function readLineStringGeometry(object) {
-    return new LineString$1(object['coordinates']);
+    const coordinates = object['coordinates'];
+    const flatCoordinates = coordinates.flat();
+    return {
+      type: 'LineString',
+      flatCoordinates,
+      ends: [flatCoordinates.length],
+      layout: getLayoutForStride(coordinates[0].length),
+    };
   }
 
   /**
    * @param {GeoJSONMultiLineString} object Object.
-   * @return {MultiLineString} MultiLineString.
+   * @return {import("./Feature.js").GeometryObject} MultiLineString geometry.
    */
   function readMultiLineStringGeometry(object) {
-    return new MultiLineString$1(object['coordinates']);
+    const coordinates = object['coordinates'];
+    const stride = coordinates[0][0].length;
+    const flatCoordinates = [];
+    const ends = deflateCoordinatesArray(flatCoordinates, 0, coordinates, stride);
+    return {
+      type: 'MultiLineString',
+      flatCoordinates,
+      ends,
+      layout: getLayoutForStride(stride),
+    };
   }
 
   /**
    * @param {GeoJSONMultiPoint} object Object.
-   * @return {MultiPoint} MultiPoint.
+   * @return {import("./Feature.js").GeometryObject} MultiPoint geometry.
    */
   function readMultiPointGeometry(object) {
-    return new MultiPoint$1(object['coordinates']);
+    const coordinates = object['coordinates'];
+    return {
+      type: 'MultiPoint',
+      flatCoordinates: coordinates.flat(),
+      layout: getLayoutForStride(coordinates[0].length),
+    };
   }
 
   /**
    * @param {GeoJSONMultiPolygon} object Object.
-   * @return {MultiPolygon} MultiPolygon.
+   * @return {import("./Feature.js").GeometryObject} MultiPolygon geometry.
    */
   function readMultiPolygonGeometry(object) {
-    return new MultiPolygon$1(object['coordinates']);
+    const coordinates = object['coordinates'];
+    const flatCoordinates = [];
+    const stride = coordinates[0][0][0].length;
+    const endss = deflateMultiCoordinatesArray(
+      flatCoordinates,
+      0,
+      coordinates,
+      stride
+    );
+    return {
+      type: 'MultiPolygon',
+      flatCoordinates,
+      ends: endss,
+      layout: getLayoutForStride(stride),
+    };
   }
 
   /**
    * @param {GeoJSONPolygon} object Object.
-   * @return {Polygon} Polygon.
+   * @return {import("./Feature.js").GeometryObject} Polygon.
    */
   function readPolygonGeometry(object) {
-    return new Polygon$1(object['coordinates']);
+    const coordinates = object['coordinates'];
+    const flatCoordinates = [];
+    const stride = coordinates[0][0].length;
+    const ends = deflateCoordinatesArray(flatCoordinates, 0, coordinates, stride);
+    return {
+      type: 'Polygon',
+      flatCoordinates,
+      ends,
+      layout: getLayoutForStride(stride),
+    };
   }
 
   /**
@@ -28687,47 +30317,51 @@ var myol = (function () {
    */
   function writeGeometry(geometry, options) {
     geometry = transformGeometryWithOptions(geometry, true, options);
+
     const type = geometry.getType();
 
     /** @type {GeoJSONGeometry} */
     let geoJSON;
     switch (type) {
       case 'Point': {
-        geoJSON = writePointGeometry(/** @type {Point} */ (geometry));
+        geoJSON = writePointGeometry(
+          /** @type {import("../geom/Point.js").default} */ (geometry));
         break;
       }
       case 'LineString': {
         geoJSON = writeLineStringGeometry(
-          /** @type {LineString} */ (geometry));
+          /** @type {import("../geom/LineString.js").default} */ (geometry));
         break;
       }
       case 'Polygon': {
         geoJSON = writePolygonGeometry(
-          /** @type {Polygon} */ (geometry),
+          /** @type {import("../geom/Polygon.js").default} */ (geometry),
           options
         );
         break;
       }
       case 'MultiPoint': {
         geoJSON = writeMultiPointGeometry(
-          /** @type {MultiPoint} */ (geometry));
+          /** @type {import("../geom/MultiPoint.js").default} */ (geometry));
         break;
       }
       case 'MultiLineString': {
         geoJSON = writeMultiLineStringGeometry(
-          /** @type {MultiLineString} */ (geometry));
+          /** @type {import("../geom/MultiLineString.js").default} */ (geometry));
         break;
       }
       case 'MultiPolygon': {
         geoJSON = writeMultiPolygonGeometry(
-          /** @type {MultiPolygon} */ (geometry),
+          /** @type {import("../geom/MultiPolygon.js").default} */ (geometry),
           options
         );
         break;
       }
       case 'GeometryCollection': {
         geoJSON = writeGeometryCollectionGeometry(
-          /** @type {GeometryCollection} */ (geometry),
+          /** @type {import("../geom/GeometryCollection.js").default} */ (
+            geometry
+          ),
           options
         );
         break;
@@ -28747,7 +30381,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {GeometryCollection} geometry Geometry.
+   * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
    */
@@ -28764,7 +30398,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {LineString} geometry Geometry.
+   * @param {import("../geom/LineString.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -28776,7 +30410,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {MultiLineString} geometry Geometry.
+   * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -28788,7 +30422,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {MultiPoint} geometry Geometry.
+   * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -28800,7 +30434,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {MultiPolygon} geometry Geometry.
+   * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -28816,7 +30450,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {Point} geometry Geometry.
+   * @param {import("../geom/Point.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -28828,7 +30462,7 @@ var myol = (function () {
   }
 
   /**
-   * @param {Polygon} geometry Geometry.
+   * @param {import("../geom/Polygon.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -30369,9 +32003,14 @@ var myol = (function () {
     if (src) {
       image.src = src;
     }
-    return IMAGE_DECODE
+    return image.src && IMAGE_DECODE
       ? new Promise((resolve, reject) =>
-          image.decode().then(() => resolve(image), reject)
+          image
+            .decode()
+            .then(() => resolve(image))
+            .catch((e) =>
+              image.complete && image.width ? resolve(image) : reject(e)
+            )
         )
       : load(image);
   }
@@ -31507,7 +33146,7 @@ var myol = (function () {
 
   /**
    * @typedef {Object} RenderOptions
-   * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+   * @property {import("../colorlike.js").ColorLike|undefined} strokeStyle StrokeStyle.
    * @property {number} strokeWidth StrokeWidth.
    * @property {number} size Size.
    * @property {CanvasLineCap} lineCap LineCap.
@@ -31549,17 +33188,17 @@ var myol = (function () {
        * @private
        * @type {Object<number, HTMLCanvasElement>}
        */
-      this.canvas_ = undefined;
+      this.canvases_;
 
       /**
        * @private
-       * @type {HTMLCanvasElement}
+       * @type {HTMLCanvasElement|null}
        */
       this.hitDetectionCanvas_ = null;
 
       /**
        * @private
-       * @type {import("./Fill.js").default}
+       * @type {import("./Fill.js").default|null}
        */
       this.fill_ = options.fill !== undefined ? options.fill : null;
 
@@ -31596,7 +33235,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("./Stroke.js").default}
+       * @type {import("./Stroke.js").default|null}
        */
       this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -31604,13 +33243,13 @@ var myol = (function () {
        * @private
        * @type {import("../size.js").Size}
        */
-      this.size_ = null;
+      this.size_;
 
       /**
        * @private
        * @type {RenderOptions}
        */
-      this.renderOptions_ = null;
+      this.renderOptions_;
 
       this.render();
     }
@@ -31647,9 +33286,6 @@ var myol = (function () {
      */
     getAnchor() {
       const size = this.size_;
-      if (!size) {
-        return null;
-      }
       const displacement = this.getDisplacement();
       const scale = this.getScaleArray();
       // anchor is scaled by renderer but displacement should not be scaled
@@ -31671,7 +33307,7 @@ var myol = (function () {
 
     /**
      * Get the fill style for the shape.
-     * @return {import("./Fill.js").default} Fill style.
+     * @return {import("./Fill.js").default|null} Fill style.
      * @api
      */
     getFill() {
@@ -31680,7 +33316,7 @@ var myol = (function () {
 
     /**
      * Set the fill style.
-     * @param {import("./Fill.js").default} fill Fill style.
+     * @param {import("./Fill.js").default|null} fill Fill style.
      * @api
      */
     setFill(fill) {
@@ -31693,7 +33329,9 @@ var myol = (function () {
      */
     getHitDetectionImage() {
       if (!this.hitDetectionCanvas_) {
-        this.createHitDetectionCanvas_(this.renderOptions_);
+        this.hitDetectionCanvas_ = this.createHitDetectionCanvas_(
+          this.renderOptions_
+        );
       }
       return this.hitDetectionCanvas_;
     }
@@ -31705,7 +33343,7 @@ var myol = (function () {
      * @api
      */
     getImage(pixelRatio) {
-      let image = this.canvas_[pixelRatio];
+      let image = this.canvases_[pixelRatio];
       if (!image) {
         const renderOptions = this.renderOptions_;
         const context = createCanvasContext2D(
@@ -31715,7 +33353,7 @@ var myol = (function () {
         this.draw_(renderOptions, context, pixelRatio);
 
         image = context.canvas;
-        this.canvas_[pixelRatio] = image;
+        this.canvases_[pixelRatio] = image;
       }
       return image;
     }
@@ -31790,7 +33428,7 @@ var myol = (function () {
 
     /**
      * Get the stroke style for the shape.
-     * @return {import("./Stroke.js").default} Stroke style.
+     * @return {import("./Stroke.js").default|null} Stroke style.
      * @api
      */
     getStroke() {
@@ -31799,7 +33437,7 @@ var myol = (function () {
 
     /**
      * Set the stroke style.
-     * @param {import("./Stroke.js").default} stroke Stroke style.
+     * @param {import("./Stroke.js").default|null} stroke Stroke style.
      * @api
      */
     setStroke(stroke) {
@@ -31926,29 +33564,13 @@ var myol = (function () {
       let strokeWidth = 0;
 
       if (this.stroke_) {
-        strokeStyle = this.stroke_.getColor();
-        if (strokeStyle === null) {
-          strokeStyle = defaultStrokeStyle;
-        }
-        strokeStyle = asColorLike(strokeStyle);
-        strokeWidth = this.stroke_.getWidth();
-        if (strokeWidth === undefined) {
-          strokeWidth = defaultLineWidth;
-        }
+        strokeStyle = asColorLike(this.stroke_.getColor() ?? defaultStrokeStyle);
+        strokeWidth = this.stroke_.getWidth() ?? defaultLineWidth;
         lineDash = this.stroke_.getLineDash();
-        lineDashOffset = this.stroke_.getLineDashOffset();
-        lineJoin = this.stroke_.getLineJoin();
-        if (lineJoin === undefined) {
-          lineJoin = defaultLineJoin;
-        }
-        lineCap = this.stroke_.getLineCap();
-        if (lineCap === undefined) {
-          lineCap = defaultLineCap;
-        }
-        miterLimit = this.stroke_.getMiterLimit();
-        if (miterLimit === undefined) {
-          miterLimit = defaultMiterLimit;
-        }
+        lineDashOffset = this.stroke_.getLineDashOffset() ?? 0;
+        lineJoin = this.stroke_.getLineJoin() ?? defaultLineJoin;
+        lineCap = this.stroke_.getLineCap() ?? defaultLineCap;
+        miterLimit = this.stroke_.getMiterLimit() ?? defaultMiterLimit;
       }
 
       const add = this.calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit);
@@ -31973,7 +33595,8 @@ var myol = (function () {
     render() {
       this.renderOptions_ = this.createRenderOptions();
       const size = this.renderOptions_.size;
-      this.canvas_ = {};
+      this.canvases_ = {};
+      this.hitDetectionCanvas_ = null;
       this.size_ = [size, size];
     }
 
@@ -31998,7 +33621,7 @@ var myol = (function () {
         context.fillStyle = asColorLike(color);
         context.fill();
       }
-      if (this.stroke_) {
+      if (renderOptions.strokeStyle) {
         context.strokeStyle = renderOptions.strokeStyle;
         context.lineWidth = renderOptions.strokeWidth;
         if (renderOptions.lineDash) {
@@ -32015,8 +33638,10 @@ var myol = (function () {
     /**
      * @private
      * @param {RenderOptions} renderOptions Render options.
+     * @return {HTMLCanvasElement} Canvas containing the icon
      */
     createHitDetectionCanvas_(renderOptions) {
+      let context;
       if (this.fill_) {
         let color = this.fill_.getColor();
 
@@ -32033,18 +33658,11 @@ var myol = (function () {
         if (opacity === 0) {
           // if a transparent fill style is set, create an extra hit-detection image
           // with a default fill style
-          const context = createCanvasContext2D(
-            renderOptions.size,
-            renderOptions.size
-          );
-          this.hitDetectionCanvas_ = context.canvas;
-
+          context = createCanvasContext2D(renderOptions.size, renderOptions.size);
           this.drawHitDetectionCanvas_(renderOptions, context);
         }
       }
-      if (!this.hitDetectionCanvas_) {
-        this.hitDetectionCanvas_ = this.getImage(1);
-      }
+      return context ? context.canvas : this.getImage(1);
     }
 
     /**
@@ -32085,7 +33703,7 @@ var myol = (function () {
 
       context.fillStyle = defaultFillStyle;
       context.fill();
-      if (this.stroke_) {
+      if (renderOptions.strokeStyle) {
         context.strokeStyle = renderOptions.strokeStyle;
         context.lineWidth = renderOptions.strokeWidth;
         if (renderOptions.lineDash) {
@@ -32181,7 +33799,7 @@ var myol = (function () {
     }
   }
 
-  var Circle$2 = CircleStyle;
+  var Circle = CircleStyle;
 
   /**
    * @module ol/style/Style
@@ -32339,7 +33957,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {string|import("../geom/Geometry.js").default|GeometryFunction}
+       * @type {string|import("../geom/Geometry.js").default|GeometryFunction|null}
        */
       this.geometry_ = null;
 
@@ -32355,13 +33973,13 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("./Fill.js").default}
+       * @type {import("./Fill.js").default|null}
        */
       this.fill_ = options.fill !== undefined ? options.fill : null;
 
       /**
        * @private
-       * @type {import("./Image.js").default}
+       * @type {import("./Image.js").default|null}
        */
       this.image_ = options.image !== undefined ? options.image : null;
 
@@ -32382,13 +34000,13 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("./Stroke.js").default}
+       * @type {import("./Stroke.js").default|null}
        */
       this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
       /**
        * @private
-       * @type {import("./Text.js").default}
+       * @type {import("./Text.js").default|null}
        */
       this.text_ = options.text !== undefined ? options.text : null;
 
@@ -32412,10 +34030,10 @@ var myol = (function () {
         ).clone();
       }
       return new Style({
-        geometry: geometry,
+        geometry: geometry ?? undefined,
         fill: this.getFill() ? this.getFill().clone() : undefined,
         image: this.getImage() ? this.getImage().clone() : undefined,
-        renderer: this.getRenderer(),
+        renderer: this.getRenderer() ?? undefined,
         stroke: this.getStroke() ? this.getStroke().clone() : undefined,
         text: this.getText() ? this.getText().clone() : undefined,
         zIndex: this.getZIndex(),
@@ -32464,7 +34082,7 @@ var myol = (function () {
 
     /**
      * Get the geometry to be rendered.
-     * @return {string|import("../geom/Geometry.js").default|GeometryFunction}
+     * @return {string|import("../geom/Geometry.js").default|GeometryFunction|null}
      * Feature property or geometry or function that returns the geometry that will
      * be rendered with this style.
      * @api
@@ -32485,7 +34103,7 @@ var myol = (function () {
 
     /**
      * Get the fill style.
-     * @return {import("./Fill.js").default} Fill style.
+     * @return {import("./Fill.js").default|null} Fill style.
      * @api
      */
     getFill() {
@@ -32494,7 +34112,7 @@ var myol = (function () {
 
     /**
      * Set the fill style.
-     * @param {import("./Fill.js").default} fill Fill style.
+     * @param {import("./Fill.js").default|null} fill Fill style.
      * @api
      */
     setFill(fill) {
@@ -32503,7 +34121,7 @@ var myol = (function () {
 
     /**
      * Get the image style.
-     * @return {import("./Image.js").default} Image style.
+     * @return {import("./Image.js").default|null} Image style.
      * @api
      */
     getImage() {
@@ -32521,7 +34139,7 @@ var myol = (function () {
 
     /**
      * Get the stroke style.
-     * @return {import("./Stroke.js").default} Stroke style.
+     * @return {import("./Stroke.js").default|null} Stroke style.
      * @api
      */
     getStroke() {
@@ -32530,7 +34148,7 @@ var myol = (function () {
 
     /**
      * Set the stroke style.
-     * @param {import("./Stroke.js").default} stroke Stroke style.
+     * @param {import("./Stroke.js").default|null} stroke Stroke style.
      * @api
      */
     setStroke(stroke) {
@@ -32539,7 +34157,7 @@ var myol = (function () {
 
     /**
      * Get the text style.
-     * @return {import("./Text.js").default} Text style.
+     * @return {import("./Text.js").default|null} Text style.
      * @api
      */
     getText() {
@@ -32663,7 +34281,7 @@ var myol = (function () {
       });
       defaultStyles = [
         new Style({
-          image: new Circle$2({
+          image: new Circle({
             fill: fill,
             stroke: stroke,
             radius: 5,
@@ -32715,7 +34333,7 @@ var myol = (function () {
 
     styles['Point'] = [
       new Style({
-        image: new Circle$2({
+        image: new Circle({
           radius: width * 2,
           fill: new Fill$1({
             color: blue,
@@ -32887,7 +34505,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("./Fill.js").default}
+       * @type {import("./Fill.js").default|null}
        */
       this.fill_ =
         options.fill !== undefined
@@ -32916,7 +34534,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("./Stroke.js").default}
+       * @type {import("./Stroke.js").default|null}
        */
       this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -32934,7 +34552,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("./Fill.js").default}
+       * @type {import("./Fill.js").default|null}
        */
       this.backgroundFill_ = options.backgroundFill
         ? options.backgroundFill
@@ -32942,7 +34560,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("./Stroke.js").default}
+       * @type {import("./Stroke.js").default|null}
        */
       this.backgroundStroke_ = options.backgroundStroke
         ? options.backgroundStroke
@@ -33054,7 +34672,7 @@ var myol = (function () {
 
     /**
      * Get the fill style for the text.
-     * @return {import("./Fill.js").default} Fill style.
+     * @return {import("./Fill.js").default|null} Fill style.
      * @api
      */
     getFill() {
@@ -33098,7 +34716,7 @@ var myol = (function () {
 
     /**
      * Get the stroke style for the text.
-     * @return {import("./Stroke.js").default} Stroke style.
+     * @return {import("./Stroke.js").default|null} Stroke style.
      * @api
      */
     getStroke() {
@@ -33143,7 +34761,7 @@ var myol = (function () {
 
     /**
      * Get the background fill style for the text.
-     * @return {import("./Fill.js").default} Fill style.
+     * @return {import("./Fill.js").default|null} Fill style.
      * @api
      */
     getBackgroundFill() {
@@ -33152,7 +34770,7 @@ var myol = (function () {
 
     /**
      * Get the background stroke style for the text.
-     * @return {import("./Stroke.js").default} Stroke style.
+     * @return {import("./Stroke.js").default|null} Stroke style.
      * @api
      */
     getBackgroundStroke() {
@@ -33250,7 +34868,7 @@ var myol = (function () {
     /**
      * Set the fill.
      *
-     * @param {import("./Fill.js").default} fill Fill style.
+     * @param {import("./Fill.js").default|null} fill Fill style.
      * @api
      */
     setFill(fill) {
@@ -33281,7 +34899,7 @@ var myol = (function () {
     /**
      * Set the stroke.
      *
-     * @param {import("./Stroke.js").default} stroke Stroke style.
+     * @param {import("./Stroke.js").default|null} stroke Stroke style.
      * @api
      */
     setStroke(stroke) {
@@ -33331,7 +34949,7 @@ var myol = (function () {
     /**
      * Set the background fill.
      *
-     * @param {import("./Fill.js").default} fill Fill style.
+     * @param {import("./Fill.js").default|null} fill Fill style.
      * @api
      */
     setBackgroundFill(fill) {
@@ -33341,7 +34959,7 @@ var myol = (function () {
     /**
      * Set the background stroke.
      *
-     * @param {import("./Stroke.js").default} stroke Stroke style.
+     * @param {import("./Stroke.js").default|null} stroke Stroke style.
      * @api
      */
     setBackgroundStroke(stroke) {
@@ -36714,287 +38332,6 @@ var myol = (function () {
 
   var KML$1 = KML;
 
-  /**
-   * @module ol/geom/Circle
-   */
-
-  /**
-   * @classdesc
-   * Circle geometry.
-   *
-   * @api
-   */
-  class Circle extends SimpleGeometry$1 {
-    /**
-     * @param {!import("../coordinate.js").Coordinate} center Center.
-     *     For internal use, flat coordinates in combination with `layout` and no
-     *     `radius` are also accepted.
-     * @param {number} [radius] Radius in units of the projection.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     */
-    constructor(center, radius, layout) {
-      super();
-      if (layout !== undefined && radius === undefined) {
-        this.setFlatCoordinates(layout, center);
-      } else {
-        radius = radius ? radius : 0;
-        this.setCenterAndRadius(center, radius, layout);
-      }
-    }
-
-    /**
-     * Make a complete copy of the geometry.
-     * @return {!Circle} Clone.
-     * @api
-     */
-    clone() {
-      const circle = new Circle(
-        this.flatCoordinates.slice(),
-        undefined,
-        this.layout
-      );
-      circle.applyProperties(this);
-      return circle;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
-     * @param {number} minSquaredDistance Minimum squared distance.
-     * @return {number} Minimum squared distance.
-     */
-    closestPointXY(x, y, closestPoint, minSquaredDistance) {
-      const flatCoordinates = this.flatCoordinates;
-      const dx = x - flatCoordinates[0];
-      const dy = y - flatCoordinates[1];
-      const squaredDistance = dx * dx + dy * dy;
-      if (squaredDistance < minSquaredDistance) {
-        if (squaredDistance === 0) {
-          for (let i = 0; i < this.stride; ++i) {
-            closestPoint[i] = flatCoordinates[i];
-          }
-        } else {
-          const delta = this.getRadius() / Math.sqrt(squaredDistance);
-          closestPoint[0] = flatCoordinates[0] + delta * dx;
-          closestPoint[1] = flatCoordinates[1] + delta * dy;
-          for (let i = 2; i < this.stride; ++i) {
-            closestPoint[i] = flatCoordinates[i];
-          }
-        }
-        closestPoint.length = this.stride;
-        return squaredDistance;
-      }
-      return minSquaredDistance;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @return {boolean} Contains (x, y).
-     */
-    containsXY(x, y) {
-      const flatCoordinates = this.flatCoordinates;
-      const dx = x - flatCoordinates[0];
-      const dy = y - flatCoordinates[1];
-      return dx * dx + dy * dy <= this.getRadiusSquared_();
-    }
-
-    /**
-     * Return the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
-     * @return {import("../coordinate.js").Coordinate} Center.
-     * @api
-     */
-    getCenter() {
-      return this.flatCoordinates.slice(0, this.stride);
-    }
-
-    /**
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @protected
-     * @return {import("../extent.js").Extent} extent Extent.
-     */
-    computeExtent(extent) {
-      const flatCoordinates = this.flatCoordinates;
-      const radius = flatCoordinates[this.stride] - flatCoordinates[0];
-      return createOrUpdate$2(
-        flatCoordinates[0] - radius,
-        flatCoordinates[1] - radius,
-        flatCoordinates[0] + radius,
-        flatCoordinates[1] + radius,
-        extent
-      );
-    }
-
-    /**
-     * Return the radius of the circle.
-     * @return {number} Radius.
-     * @api
-     */
-    getRadius() {
-      return Math.sqrt(this.getRadiusSquared_());
-    }
-
-    /**
-     * @private
-     * @return {number} Radius squared.
-     */
-    getRadiusSquared_() {
-      const dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
-      const dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
-      return dx * dx + dy * dy;
-    }
-
-    /**
-     * Get the type of this geometry.
-     * @return {import("./Geometry.js").Type} Geometry type.
-     * @api
-     */
-    getType() {
-      return 'Circle';
-    }
-
-    /**
-     * Test if the geometry and the passed extent intersect.
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @return {boolean} `true` if the geometry and the extent intersect.
-     * @api
-     */
-    intersectsExtent(extent) {
-      const circleExtent = this.getExtent();
-      if (intersects$1(extent, circleExtent)) {
-        const center = this.getCenter();
-
-        if (extent[0] <= center[0] && extent[2] >= center[0]) {
-          return true;
-        }
-        if (extent[1] <= center[1] && extent[3] >= center[1]) {
-          return true;
-        }
-
-        return forEachCorner(extent, this.intersectsCoordinate.bind(this));
-      }
-      return false;
-    }
-
-    /**
-     * Set the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
-     * @param {import("../coordinate.js").Coordinate} center Center.
-     * @api
-     */
-    setCenter(center) {
-      const stride = this.stride;
-      const radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
-      const flatCoordinates = center.slice();
-      flatCoordinates[stride] = flatCoordinates[0] + radius;
-      for (let i = 1; i < stride; ++i) {
-        flatCoordinates[stride + i] = center[i];
-      }
-      this.setFlatCoordinates(this.layout, flatCoordinates);
-      this.changed();
-    }
-
-    /**
-     * Set the center (as {@link module:ol/coordinate~Coordinate coordinate}) and the radius (as
-     * number) of the circle.
-     * @param {!import("../coordinate.js").Coordinate} center Center.
-     * @param {number} radius Radius.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     * @api
-     */
-    setCenterAndRadius(center, radius, layout) {
-      this.setLayout(layout, center, 0);
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = [];
-      }
-      /** @type {Array<number>} */
-      const flatCoordinates = this.flatCoordinates;
-      let offset = deflateCoordinate(flatCoordinates, 0, center, this.stride);
-      flatCoordinates[offset++] = flatCoordinates[0] + radius;
-      for (let i = 1, ii = this.stride; i < ii; ++i) {
-        flatCoordinates[offset++] = flatCoordinates[i];
-      }
-      flatCoordinates.length = offset;
-      this.changed();
-    }
-
-    getCoordinates() {
-      return null;
-    }
-
-    setCoordinates(coordinates, layout) {}
-
-    /**
-     * Set the radius of the circle. The radius is in the units of the projection.
-     * @param {number} radius Radius.
-     * @api
-     */
-    setRadius(radius) {
-      this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
-      this.changed();
-    }
-
-    /**
-     * Rotate the geometry around a given coordinate. This modifies the geometry
-     * coordinates in place.
-     * @param {number} angle Rotation angle in counter-clockwise radians.
-     * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
-     * @api
-     */
-    rotate(angle, anchor) {
-      const center = this.getCenter();
-      const stride = this.getStride();
-      this.setCenter(
-        rotate(center, 0, center.length, stride, angle, anchor, center)
-      );
-      this.changed();
-    }
-  }
-
-  /**
-   * Transform each coordinate of the circle from one coordinate reference system
-   * to another. The geometry is modified in place.
-   * If you do not want the geometry modified in place, first clone() it and
-   * then use this function on the clone.
-   *
-   * Internally a circle is currently represented by two points: the center of
-   * the circle `[cx, cy]`, and the point to the right of the circle
-   * `[cx + r, cy]`. This `transform` function just transforms these two points.
-   * So the resulting geometry is also a circle, and that circle does not
-   * correspond to the shape that would be obtained by transforming every point
-   * of the original circle.
-   *
-   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
-   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
-   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @return {Circle} This geometry.  Note that original geometry is
-   *     modified in place.
-   * @function
-   * @api
-   */
-  Circle.prototype.transform;
-  var Circle$1 = Circle;
-
-  /**
-   * @module ol/geom
-   */
-
-  var geom = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    Circle: Circle$1,
-    Geometry: Geometry$1,
-    GeometryCollection: GeometryCollection$1,
-    LineString: LineString$1,
-    LinearRing: LinearRing$1,
-    MultiLineString: MultiLineString$1,
-    MultiPoint: MultiPoint$1,
-    MultiPolygon: MultiPolygon$1,
-    Point: Point$2,
-    Polygon: Polygon$1,
-    SimpleGeometry: SimpleGeometry$1
-  });
-
   function quickselect(arr, k, left, right, compare) {
       quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare);
   }
@@ -37564,7 +38901,6 @@ var myol = (function () {
    * @module ol/expr/expression
    */
 
-
   /**
    * @fileoverview This module includes types and functions for parsing array encoded expressions.
    * The result of parsing an encoded expression is one of the specific expression classes.
@@ -37572,7 +38908,112 @@ var myol = (function () {
    * expression.
    */
 
+  /**
+   * Base type used for literal style parameters; can be a number literal or the output of an operator,
+   * which in turns takes {@link import("./expression.js").ExpressionValue} arguments.
+   *
+   * The following operators can be used:
+   *
+   * * Reading operators:
+   *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
+   *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
+   *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
+   *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
+   *     of bands, depending on the underlying data source and
+   *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
+   *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels.
+   *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
+   *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
+   *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
+   *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
+   *     `Multi*` values are returned as their singular equivalent
+   *     `Circle` geometries are returned as 'Polygon'
+   *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection
+   *   * `['resolution']` returns the current resolution
+   *   * `['time']` returns the time in seconds since the creation of the layer
+   *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
+   *   * `['zoom']` returns the current zoom level
+   *
+   * * Math operators:
+   *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
+   *   * `['/', value1, value2]` divides `value1` by `value2`
+   *   * `['+', value1, value2, ...]` adds the values
+   *   * `['-', value1, value2]` subtracts `value2` from `value1`
+   *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
+   *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
+   *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
+   *   * `['abs', value1]` returns the absolute value of `value1`
+   *   * `['floor', value1]` returns the nearest integer less than or equal to `value1`
+   *   * `['round', value1]` returns the nearest integer to `value1`
+   *   * `['ceil', value1]` returns the nearest integer greater than or equal to `value1`
+   *   * `['sin', value1]` returns the sine of `value1`
+   *   * `['cos', value1]` returns the cosine of `value1`
+   *   * `['atan', value1, value2]` returns `atan2(value1, value2)`. If `value2` is not provided, returns `atan(value1)`
+   *   * `['sqrt', value1]` returns the square root of `value1`
+   *
+   * * Transform operators:
+   *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
+   *     condition evaluates to `true`. If no match is found, returns the `fallback` value.
+   *     All conditions should be `boolean`, output and fallback can be any kind.
+   *   * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
+   *     provided `matchX` values, returning the output associated with the first valid match. If no match is found,
+   *     returns the `fallback` value.
+   *     `input` and `matchX` values must all be of the same type, and can be `number` or `string`. `outputX` and
+   *     `fallback` values must be of the same type, and can be of any kind.
+   *   * `['interpolate', interpolation, input, stop1, output1, ...stopN, outputN]` returns a value by interpolating between
+   *     pairs of inputs and outputs; `interpolation` can either be `['linear']` or `['exponential', base]` where `base` is
+   *     the rate of increase from stop A to stop B (i.e. power to which the interpolation ratio is raised); a value
+   *     of 1 is equivalent to `['linear']`.
+   *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
+   *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
+   *     between `output1` and `outputN`.
+   *
+   * * Logical operators:
+   *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
+   *   * `['<=', value1, value2]` returns `true` if `value1` is lower than or equals `value2`, or `false` otherwise.
+   *   * `['>', value1, value2]` returns `true` if `value1` is strictly greater than `value2`, or `false` otherwise.
+   *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals `value2`, or `false` otherwise.
+   *   * `['==', value1, value2]` returns `true` if `value1` equals `value2`, or `false` otherwise.
+   *   * `['!=', value1, value2]` returns `true` if `value1` does not equal `value2`, or `false` otherwise.
+   *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
+   *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
+   *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
+   *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
+   *     (inclusively), or `false` otherwise.
+   *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
+   *     `false` otherwise.
+   *     This operator has the following limitations:
+   *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
+   *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
+   *     expression. If `haystack` is an array of strings, use the `literal` operator to disambiguate from an expression:
+   *     `['literal', ['abc', 'def', 'ghi']]`
+   *
+   * * Conversion operators:
+   *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
+   *     values can currently only be 2, 3 or 4.
+   *   * `['color', red, green, blue, alpha]` creates a `color` value from `number` values; the `alpha` parameter is
+   *     optional; if not specified, it will be set to 1.
+   *     Note: `red`, `green` and `blue` components must be values between 0 and 255; `alpha` between 0 and 1.
+   *   * `['palette', index, colors]` picks a `color` value from an array of colors using the given index; the `index`
+   *     expression must evaluate to a number; the items in the `colors` array must be strings with hex colors
+   *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
+   *     named colors (e.g. `'red'`), or array literals with 3 ([r, g, b]) or 4 ([r, g, b, a]) values (with r, g, and b
+   *     in the 0-255 range and a in the 0-1 range).
+   *
+   * Values can either be literals or another operator, as they will be evaluated recursively.
+   * Literal values can be of the following types:
+   * * `boolean`
+   * * `number`
+   * * `number[]` (number arrays can only have a length of 2, 3 or 4)
+   * * `string`
+   * * {@link module:ol/color~Color}
+   *
+   * @typedef {Array<*>|import("../color.js").Color|string|number|boolean} ExpressionValue
+   * @api
+   */
+
   let numTypes = 0;
+  const NoneType = 0;
   const BooleanType = 1 << numTypes++;
   const NumberType = 1 << numTypes++;
   const StringType = 1 << numTypes++;
@@ -37630,6 +39071,15 @@ var myol = (function () {
   }
 
   /**
+   * @param {number} type The type.
+   * @param {number} expected The expected type.
+   * @return {boolean} The given type is exactly the expected type.
+   */
+  function isType(type, expected) {
+    return type === expected;
+  }
+
+  /**
    * @typedef {boolean|number|string|Array<number>} LiteralValue
    */
 
@@ -37665,6 +39115,8 @@ var myol = (function () {
    * @typedef {Object} ParsingContext
    * @property {Set<string>} variables Variables referenced with the 'var' operator.
    * @property {Set<string>} properties Properties referenced with the 'get' operator.
+   * @property {boolean} featureId The style uses the feature id.
+   * @property {import("../style/flat.js").FlatStyle|import("../style/webgl.js").WebGLStyle} style The style being parsed
    */
 
   /**
@@ -37674,7 +39126,30 @@ var myol = (function () {
     return {
       variables: new Set(),
       properties: new Set(),
+      featureId: false,
+      style: {},
     };
+  }
+
+  /**
+   * @param {string} typeHint Type hint
+   * @return {number} Resulting value type (will be a single type)
+   */
+  function getTypeFromHint(typeHint) {
+    switch (typeHint) {
+      case 'string':
+        return StringType;
+      case 'color':
+        return ColorType;
+      case 'number':
+        return NumberType;
+      case 'boolean':
+        return BooleanType;
+      case 'number[]':
+        return NumberArrayType;
+      default:
+        throw new Error(`Unrecognized type hint: ${typeHint}`);
+    }
   }
 
   /**
@@ -37684,9 +39159,10 @@ var myol = (function () {
   /**
    * @param {EncodedExpression} encoded The encoded expression.
    * @param {ParsingContext} context The parsing context.
+   * @param {number} [typeHint] Optional type hint
    * @return {Expression} The parsed expression result.
    */
-  function parse$1(encoded, context) {
+  function parse$1(encoded, context, typeHint) {
     switch (typeof encoded) {
       case 'boolean': {
         return new LiteralExpression(BooleanType, encoded);
@@ -37695,7 +39171,15 @@ var myol = (function () {
         return new LiteralExpression(NumberType, encoded);
       }
       case 'string': {
-        return new LiteralExpression(StringType, encoded);
+        let type = StringType;
+        if (isStringColor(encoded)) {
+          type |= ColorType;
+        }
+        // apply the given type hint only if it won't result in an empty type
+        if (!isType(type & typeHint, NoneType)) {
+          type &= typeHint;
+        }
+        return new LiteralExpression(type, encoded);
       }
     }
 
@@ -37708,7 +39192,7 @@ var myol = (function () {
     }
 
     if (typeof encoded[0] === 'string') {
-      return parseCallExpression(encoded, context);
+      return parseCallExpression(encoded, context, typeHint);
     }
 
     for (const item of encoded) {
@@ -37721,7 +39205,9 @@ var myol = (function () {
     if (encoded.length === 3 || encoded.length === 4) {
       type |= ColorType;
     }
-
+    if (typeHint) {
+      type &= typeHint;
+    }
     return new LiteralExpression(type, encoded);
   }
 
@@ -37729,14 +39215,16 @@ var myol = (function () {
    * @type {Object<string, string>}
    */
   const Ops = {
-    Number: 'number',
-    String: 'string',
     Get: 'get',
     Var: 'var',
+    Concat: 'concat',
+    GeometryType: 'geometry-type',
     Any: 'any',
     All: 'all',
     Not: '!',
     Resolution: 'resolution',
+    Zoom: 'zoom',
+    Time: 'time',
     Equal: '==',
     NotEqual: '!=',
     GreaterThan: '>',
@@ -37759,65 +39247,278 @@ var myol = (function () {
     Atan: 'atan',
     Sqrt: 'sqrt',
     Match: 'match',
+    Between: 'between',
+    Interpolate: 'interpolate',
+    Case: 'case',
+    In: 'in',
+    Number: 'number',
+    String: 'string',
+    Array: 'array',
+    Color: 'color',
+    Id: 'id',
+    Band: 'band',
+    Palette: 'palette',
   };
 
   /**
-   * @typedef {function(Array, ParsingContext):Expression} Parser
+   * @typedef {function(Array, ParsingContext, number):Expression} Parser
+   * Third argument is a type hint
    */
 
   /**
    * @type {Object<string, Parser>}
    */
   const parsers = {
-    [Ops.Number]: createParser(withArgs(1, Infinity, AnyType), NumberType),
-    [Ops.String]: createParser(withArgs(1, Infinity, AnyType), StringType),
-    [Ops.Get]: createParser(withGetArgs, AnyType),
-    [Ops.Var]: createParser(withVarArgs, AnyType),
-    [Ops.Resolution]: createParser(withNoArgs, NumberType),
-    [Ops.Any]: createParser(withArgs(2, Infinity, BooleanType), BooleanType),
-    [Ops.All]: createParser(withArgs(2, Infinity, BooleanType), BooleanType),
-    [Ops.Not]: createParser(withArgs(1, 1, BooleanType), BooleanType),
-    [Ops.Equal]: createParser(withArgs(2, 2, AnyType), BooleanType),
-    [Ops.NotEqual]: createParser(withArgs(2, 2, AnyType), BooleanType),
-    [Ops.GreaterThan]: createParser(withArgs(2, 2, AnyType), BooleanType),
+    [Ops.Get]: createParser(
+      ([_, typeHint]) => {
+        if (typeHint !== undefined) {
+          return getTypeFromHint(
+            /** @type {string} */ (
+              /** @type {LiteralExpression} */ (typeHint).value
+            )
+          );
+        }
+        return AnyType;
+      },
+      withArgsCount(1, 2),
+      withGetArgs
+    ),
+    [Ops.Var]: createParser(
+      ([firstArg]) => firstArg.type,
+      withArgsCount(1, 1),
+      withVarArgs
+    ),
+    [Ops.Id]: createParser(NumberType | StringType, withNoArgs, usesFeatureId),
+    [Ops.Concat]: createParser(
+      StringType,
+      withArgsCount(2, Infinity),
+      parseArgsOfType(AnyType)
+    ),
+    [Ops.GeometryType]: createParser(StringType, withNoArgs),
+    [Ops.Resolution]: createParser(NumberType, withNoArgs),
+    [Ops.Zoom]: createParser(NumberType, withNoArgs),
+    [Ops.Time]: createParser(NumberType, withNoArgs),
+    [Ops.Any]: createParser(
+      BooleanType,
+      withArgsCount(2, Infinity),
+      parseArgsOfType(BooleanType)
+    ),
+    [Ops.All]: createParser(
+      BooleanType,
+      withArgsCount(2, Infinity),
+      parseArgsOfType(BooleanType)
+    ),
+    [Ops.Not]: createParser(
+      BooleanType,
+      withArgsCount(1, 1),
+      parseArgsOfType(BooleanType)
+    ),
+    [Ops.Equal]: createParser(
+      BooleanType,
+      withArgsCount(2, 2),
+      parseArgsOfType(AnyType),
+      narrowArgsType
+    ),
+    [Ops.NotEqual]: createParser(
+      BooleanType,
+      withArgsCount(2, 2),
+      parseArgsOfType(AnyType),
+      narrowArgsType
+    ),
+    [Ops.GreaterThan]: createParser(
+      BooleanType,
+      withArgsCount(2, 2),
+      parseArgsOfType(AnyType),
+      narrowArgsType
+    ),
     [Ops.GreaterThanOrEqualTo]: createParser(
-      withArgs(2, 2, AnyType),
-      BooleanType
+      BooleanType,
+      withArgsCount(2, 2),
+      parseArgsOfType(AnyType),
+      narrowArgsType
     ),
-    [Ops.LessThan]: createParser(withArgs(2, 2, AnyType), BooleanType),
-    [Ops.LessThanOrEqualTo]: createParser(withArgs(2, 2, AnyType), BooleanType),
-    [Ops.Multiply]: createParser(withArgs(2, Infinity, NumberType), NumberType),
-    [Ops.Divide]: createParser(withArgs(2, 2, NumberType), NumberType),
-    [Ops.Add]: createParser(withArgs(2, Infinity, NumberType), NumberType),
-    [Ops.Subtract]: createParser(withArgs(2, 2, NumberType), NumberType),
-    [Ops.Clamp]: createParser(withArgs(3, 3, NumberType), NumberType),
-    [Ops.Mod]: createParser(withArgs(2, 2, NumberType), NumberType),
-    [Ops.Pow]: createParser(withArgs(2, 2, NumberType), NumberType),
-    [Ops.Abs]: createParser(withArgs(1, 1, NumberType), NumberType),
-    [Ops.Floor]: createParser(withArgs(1, 1, NumberType), NumberType),
-    [Ops.Ceil]: createParser(withArgs(1, 1, NumberType), NumberType),
-    [Ops.Round]: createParser(withArgs(1, 1, NumberType), NumberType),
-    [Ops.Sin]: createParser(withArgs(1, 1, NumberType), NumberType),
-    [Ops.Cos]: createParser(withArgs(1, 1, NumberType), NumberType),
-    [Ops.Atan]: createParser(withArgs(1, 2, NumberType), NumberType),
-    [Ops.Sqrt]: createParser(withArgs(1, 1, NumberType), NumberType),
+    [Ops.LessThan]: createParser(
+      BooleanType,
+      withArgsCount(2, 2),
+      parseArgsOfType(AnyType),
+      narrowArgsType
+    ),
+    [Ops.LessThanOrEqualTo]: createParser(
+      BooleanType,
+      withArgsCount(2, 2),
+      parseArgsOfType(AnyType),
+      narrowArgsType
+    ),
+    [Ops.Multiply]: createParser(
+      (parsedArgs) => {
+        let outputType = NumberType | ColorType;
+        for (let i = 0; i < parsedArgs.length; i++) {
+          outputType &= parsedArgs[i].type;
+        }
+        return outputType;
+      },
+      withArgsCount(2, Infinity),
+      parseArgsOfType(NumberType | ColorType),
+      narrowArgsType
+    ),
+    [Ops.Divide]: createParser(
+      NumberType,
+      withArgsCount(2, 2),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Add]: createParser(
+      NumberType,
+      withArgsCount(2, Infinity),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Subtract]: createParser(
+      NumberType,
+      withArgsCount(2, 2),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Clamp]: createParser(
+      NumberType,
+      withArgsCount(3, 3),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Mod]: createParser(
+      NumberType,
+      withArgsCount(2, 2),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Pow]: createParser(
+      NumberType,
+      withArgsCount(2, 2),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Abs]: createParser(
+      NumberType,
+      withArgsCount(1, 1),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Floor]: createParser(
+      NumberType,
+      withArgsCount(1, 1),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Ceil]: createParser(
+      NumberType,
+      withArgsCount(1, 1),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Round]: createParser(
+      NumberType,
+      withArgsCount(1, 1),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Sin]: createParser(
+      NumberType,
+      withArgsCount(1, 1),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Cos]: createParser(
+      NumberType,
+      withArgsCount(1, 1),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Atan]: createParser(
+      NumberType,
+      withArgsCount(1, 2),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Sqrt]: createParser(
+      NumberType,
+      withArgsCount(1, 1),
+      parseArgsOfType(NumberType)
+    ),
     [Ops.Match]: createParser(
-      withArgs(4, Infinity, StringType | NumberType),
-      AnyType
+      (parsedArgs) => {
+        let type = AnyType;
+        for (let i = 2; i < parsedArgs.length; i += 2) {
+          type &= parsedArgs[i].type;
+        }
+        type &= parsedArgs[parsedArgs.length - 1].type;
+        return type;
+      },
+      withArgsCount(4, Infinity),
+      withEvenArgs,
+      parseMatchArgs
     ),
+    [Ops.Between]: createParser(
+      BooleanType,
+      withArgsCount(3, 3),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Interpolate]: createParser(
+      (parsedArgs) => {
+        let type = ColorType | NumberType;
+        for (let i = 3; i < parsedArgs.length; i += 2) {
+          type &= parsedArgs[i].type;
+        }
+        return type;
+      },
+      withArgsCount(6, Infinity),
+      withEvenArgs,
+      parseInterpolateArgs
+    ),
+    [Ops.Case]: createParser(
+      (parsedArgs) => {
+        let type = AnyType;
+        for (let i = 1; i < parsedArgs.length; i += 2) {
+          type &= parsedArgs[i].type;
+        }
+        type &= parsedArgs[parsedArgs.length - 1].type;
+        return type;
+      },
+      withArgsCount(3, Infinity),
+      withOddArgs,
+      parseCaseArgs
+    ),
+    [Ops.In]: createParser(BooleanType, withArgsCount(2, 2), parseInArgs),
+    [Ops.Number]: createParser(
+      NumberType,
+      withArgsCount(1, Infinity),
+      parseArgsOfType(AnyType)
+    ),
+    [Ops.String]: createParser(
+      StringType,
+      withArgsCount(1, Infinity),
+      parseArgsOfType(AnyType)
+    ),
+    [Ops.Array]: createParser(
+      (parsedArgs) => {
+        return parsedArgs.length === 3 || parsedArgs.length === 4
+          ? NumberArrayType | ColorType
+          : NumberArrayType;
+      },
+      withArgsCount(1, Infinity),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Color]: createParser(
+      ColorType,
+      withArgsCount(3, 4),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Band]: createParser(
+      NumberType,
+      withArgsCount(1, 3),
+      parseArgsOfType(NumberType)
+    ),
+    [Ops.Palette]: createParser(ColorType, withArgsCount(2, 2), parsePaletteArgs),
   };
 
   /**
-   * @typedef {function(Array, ParsingContext):Array<Expression>} ArgValidator
+   * @typedef {function(Array<EncodedExpression>, ParsingContext, Array<Expression>, number?):Array<Expression>|void} ArgValidator
+   * An argument validator applies various checks to an encoded expression arguments
+   * Returns the parsed arguments if any.
+   * Third argument is the array of parsed arguments from previous validators
+   * Fourth argument is an optional type hint
    */
 
   /**
    * @type ArgValidator
    */
   function withGetArgs(encoded, context) {
-    if (encoded.length !== 2) {
-      throw new Error('Expected 1 argument for get operation');
-    }
     const arg = parse$1(encoded[1], context);
     if (!(arg instanceof LiteralExpression)) {
       throw new Error('Expected a literal argument for get operation');
@@ -37826,25 +39527,46 @@ var myol = (function () {
       throw new Error('Expected a string argument for get operation');
     }
     context.properties.add(arg.value);
+    if (encoded.length === 3) {
+      const hint = parse$1(encoded[2], context);
+      return [arg, hint];
+    }
     return [arg];
   }
 
   /**
    * @type ArgValidator
    */
-  function withVarArgs(encoded, context) {
-    if (encoded.length !== 2) {
-      throw new Error('Expected 1 argument for var operation');
+  function withVarArgs(encoded, context, parsedArgs, typeHint) {
+    const varName = encoded[1];
+    if (typeof varName !== 'string') {
+      throw new Error('Expected a string argument for var operation');
     }
-    const arg = parse$1(encoded[1], context);
-    if (!(arg instanceof LiteralExpression)) {
-      throw new Error('Expected a literal argument for var operation');
+    context.variables.add(varName);
+    if (
+      !('variables' in context.style) ||
+      context.style.variables[varName] === undefined
+    ) {
+      return [new LiteralExpression(AnyType, varName)];
     }
-    if (typeof arg.value !== 'string') {
-      throw new Error('Expected a string argument for get operation');
+    const initialValue = context.style.variables[varName];
+    const arg = /** @type {LiteralExpression} */ (parse$1(initialValue, context));
+    arg.value = varName;
+    if (typeHint && !overlapsType(typeHint, arg.type)) {
+      throw new Error(
+        `The variable ${varName} has type ${typeName(
+        arg.type
+      )} but the following type was expected: ${typeName(typeHint)}`
+      );
     }
-    context.variables.add(arg.value);
     return [arg];
+  }
+
+  /**
+   * @type ArgValidator
+   */
+  function usesFeatureId(encoded, context) {
+    context.featureId = true;
   }
 
   /**
@@ -37861,10 +39583,9 @@ var myol = (function () {
   /**
    * @param {number} minArgs The minimum number of arguments.
    * @param {number} maxArgs The maximum number of arguments.
-   * @param {number} argType The argument type.
    * @return {ArgValidator} The argument validator
    */
-  function withArgs(minArgs, maxArgs, argType) {
+  function withArgsCount(minArgs, maxArgs) {
     return function (encoded, context) {
       const operation = encoded[0];
       const argCount = encoded.length - 1;
@@ -37872,15 +39593,29 @@ var myol = (function () {
         if (argCount !== minArgs) {
           const plural = minArgs === 1 ? '' : 's';
           throw new Error(
-            `Expected ${minArgs} argument${plural} for operation ${operation}, got ${argCount}`
+            `Expected ${minArgs} argument${plural} for ${operation}, got ${argCount}`
           );
         }
       } else if (argCount < minArgs || argCount > maxArgs) {
+        const range =
+          maxArgs === Infinity
+            ? `${minArgs} or more`
+            : `${minArgs} to ${maxArgs}`;
         throw new Error(
-          `Expected ${minArgs} to ${maxArgs} arguments for operation ${operation}, got ${argCount}`
+          `Expected ${range} arguments for ${operation}, got ${argCount}`
         );
       }
+    };
+  }
 
+  /**
+   * @param {number} argType The argument type.
+   * @return {ArgValidator} The argument validator
+   */
+  function parseArgsOfType(argType) {
+    return function (encoded, context) {
+      const operation = encoded[0];
+      const argCount = encoded.length - 1;
       /**
        * @type {Array<Expression>}
        */
@@ -37892,42 +39627,369 @@ var myol = (function () {
           const expectedType = typeName(expression.type);
           throw new Error(
             `Unexpected type for argument ${i} of ${operation} operation` +
-              ` : got ${gotType} but expected ${expectedType}`
+              `, got ${gotType} but expected ${expectedType}`
           );
         }
+        expression.type &= argType;
         args[i] = expression;
       }
-
       return args;
     };
   }
 
   /**
-   * @param {ArgValidator} argValidator The argument validator.
-   * @param {number} returnType The return type.
+   * @type {ArgValidator}
+   */
+  function narrowArgsType(encoded, context, parsedArgs) {
+    const operation = encoded[0];
+    const argCount = encoded.length - 1;
+
+    // first pass to determine a narrowed down type
+    let sameType = AnyType;
+    for (let i = 0; i < parsedArgs.length; ++i) {
+      sameType &= parsedArgs[i].type;
+    }
+
+    if (sameType === NoneType) {
+      throw new Error(
+        `No common type could be found for arguments of ${operation} operation`
+      );
+    }
+
+    // re-parse args
+    const args = new Array(argCount);
+    for (let i = 0; i < argCount; ++i) {
+      args[i] = parse$1(encoded[i + 1], context, sameType);
+    }
+    return args;
+  }
+
+  /**
+   * @type {ArgValidator}
+   */
+  function withOddArgs(encoded, context) {
+    const operation = encoded[0];
+    const argCount = encoded.length - 1;
+    if (argCount % 2 === 0) {
+      throw new Error(
+        `An odd amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
+        argCount
+      )} instead`
+      );
+    }
+  }
+
+  /**
+   * @type {ArgValidator}
+   */
+  function withEvenArgs(encoded, context) {
+    const operation = encoded[0];
+    const argCount = encoded.length - 1;
+    if (argCount % 2 === 1) {
+      throw new Error(
+        `An even amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
+        argCount
+      )} instead`
+      );
+    }
+  }
+
+  /**
+   * @type ArgValidator
+   */
+  function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
+    const argsCount = encoded.length - 1;
+
+    const input = parse$1(encoded[1], context);
+    let inputType = input.type;
+    const fallback = parse$1(encoded[encoded.length - 1], context);
+    let outputType =
+      typeHint !== undefined ? typeHint & fallback.type : fallback.type;
+
+    // first parse args to figure out possible types
+    const args = new Array(argsCount - 2);
+    for (let i = 0; i < argsCount - 2; i += 2) {
+      const match = parse$1(encoded[i + 2], context);
+      const output = parse$1(encoded[i + 3], context);
+      inputType &= match.type;
+      outputType &= output.type;
+      args[i] = match;
+      args[i + 1] = output;
+    }
+
+    // check input and output types validity
+    const expectedInputType = StringType | NumberType | BooleanType;
+    if (!overlapsType(expectedInputType, inputType)) {
+      throw new Error(
+        `Expected an input of type ${typeName(
+        expectedInputType
+      )} for the interpolate operation` + `, got ${typeName(inputType)} instead`
+      );
+    }
+    if (isType(outputType, NoneType)) {
+      throw new Error(
+        `Could not find a common output type for the following match operation: ` +
+          JSON.stringify(encoded)
+      );
+    }
+
+    // parse again inputs and outputs with common type
+    for (let i = 0; i < argsCount - 2; i += 2) {
+      const match = parse$1(encoded[i + 2], context, inputType);
+      const output = parse$1(encoded[i + 3], context, outputType);
+      args[i] = match;
+      args[i + 1] = output;
+    }
+
+    return [
+      parse$1(encoded[1], context, inputType),
+      ...args,
+      parse$1(encoded[encoded.length - 1], context, outputType),
+    ];
+  }
+
+  /**
+   * @type ArgValidator
+   */
+  function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
+    const interpolationType = encoded[1];
+    let interpolation;
+    switch (interpolationType[0]) {
+      case 'linear':
+        interpolation = 1;
+        break;
+      case 'exponential':
+        interpolation = interpolationType[1];
+        if (typeof interpolation !== 'number') {
+          throw new Error(
+            `Expected a number base for exponential interpolation` +
+              `, got ${JSON.stringify(interpolation)} instead`
+          );
+        }
+        break;
+      default:
+        interpolation = null;
+    }
+    if (!interpolation) {
+      throw new Error(
+        `Invalid interpolation type: ${JSON.stringify(interpolationType)}`
+      );
+    }
+    interpolation = parse$1(interpolation, context);
+
+    // check input types
+    let input = parse$1(encoded[2], context);
+    if (!overlapsType(NumberType, input.type)) {
+      throw new Error(
+        `Expected an input of type number for the interpolate operation` +
+          `, got ${typeName(input.type)} instead`
+      );
+    }
+    input = parse$1(encoded[2], context, NumberType); // parse again with narrower output
+
+    const args = new Array(encoded.length - 3);
+    for (let i = 0; i < args.length; i += 2) {
+      let stop = parse$1(encoded[i + 3], context);
+      if (!overlapsType(NumberType, stop.type)) {
+        throw new Error(
+          `Expected all stop input values in the interpolate operation to be of type number` +
+            `, got ${typeName(stop.type)} at position ${i + 2} instead`
+        );
+      }
+      let output = parse$1(encoded[i + 4], context);
+      if (!overlapsType(NumberType | ColorType, output.type)) {
+        throw new Error(
+          `Expected all stop output values in the interpolate operation to be a number or color` +
+            `, got ${typeName(output.type)} at position ${i + 3} instead`
+        );
+      }
+      // parse again with narrower types
+      stop = parse$1(encoded[i + 3], context, NumberType);
+      output = parse$1(encoded[i + 4], context, NumberType | ColorType);
+      args[i] = stop;
+      args[i + 1] = output;
+    }
+
+    return [interpolation, input, ...args];
+  }
+
+  /**
+   * @type ArgValidator
+   */
+  function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
+    const fallback = parse$1(encoded[encoded.length - 1], context);
+    let outputType =
+      typeHint !== undefined ? typeHint & fallback.type : fallback.type;
+
+    // first parse args to figure out possible types
+    const args = new Array(encoded.length - 1);
+    for (let i = 0; i < args.length - 1; i += 2) {
+      const condition = parse$1(encoded[i + 1], context);
+      const output = parse$1(encoded[i + 2], context);
+      if (!overlapsType(BooleanType, condition.type)) {
+        throw new Error(
+          `Expected all conditions in the case operation to be of type boolean` +
+            `, got ${typeName(condition.type)} at position ${i} instead`
+        );
+      }
+      outputType &= output.type;
+      args[i] = condition;
+      args[i + 1] = output;
+    }
+
+    if (isType(outputType, NoneType)) {
+      throw new Error(
+        `Could not find a common output type for the following case operation: ` +
+          JSON.stringify(encoded)
+      );
+    }
+
+    // parse again args with common output type
+    for (let i = 0; i < args.length - 1; i += 2) {
+      args[i + 1] = parse$1(encoded[i + 2], context, outputType);
+    }
+    args[args.length - 1] = parse$1(
+      encoded[encoded.length - 1],
+      context,
+      outputType
+    );
+
+    return args;
+  }
+
+  /**
+   * @type ArgValidator
+   */
+  function parseInArgs(encoded, context) {
+    /** @type {Array<number|string>} */
+    let haystack = /** @type {any} */ (encoded[2]);
+    if (!Array.isArray(haystack)) {
+      throw new Error(
+        `The "in" operator was provided a literal value which was not an array as second argument.`
+      );
+    }
+    if (typeof haystack[0] === 'string') {
+      if (haystack[0] !== 'literal') {
+        throw new Error(
+          `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`
+        );
+      }
+      if (!Array.isArray(haystack[1])) {
+        throw new Error(
+          `The "in" operator was provided a literal value which was not an array as second argument.`
+        );
+      }
+      haystack = haystack[1];
+    }
+
+    let needleType = StringType | NumberType;
+    const args = new Array(haystack.length);
+    for (let i = 0; i < args.length; i++) {
+      const arg = parse$1(haystack[i], context);
+      needleType &= arg.type;
+      args[i] = arg;
+    }
+    if (isType(needleType, NoneType)) {
+      throw new Error(
+        `Could not find a common type for the following in operation: ` +
+          JSON.stringify(encoded)
+      );
+    }
+
+    const needle = parse$1(encoded[1], context, needleType);
+    return [needle, ...args];
+  }
+
+  /**
+   * @type ArgValidator
+   */
+  function parsePaletteArgs(encoded, context) {
+    const index = parse$1(encoded[1], context, NumberType);
+    if (index.type !== NumberType) {
+      throw new Error(
+        `The first argument of palette must be an number, got ${typeName(
+        index.type
+      )} instead`
+      );
+    }
+    const colors = encoded[2];
+    if (!Array.isArray(colors)) {
+      throw new Error('The second argument of palette must be an array');
+    }
+    const parsedColors = new Array(colors.length);
+    for (let i = 0; i < parsedColors.length; i++) {
+      const color = parse$1(colors[i], context, ColorType);
+      if (!(color instanceof LiteralExpression)) {
+        throw new Error(
+          `The palette color at index ${i} must be a literal value`
+        );
+      }
+      if (!overlapsType(color.type, ColorType)) {
+        throw new Error(
+          `The palette color at index ${i} should be of type color, got ${typeName(
+          color.type
+        )} instead`
+        );
+      }
+      parsedColors[i] = color;
+    }
+    return [index, ...parsedColors];
+  }
+
+  /**
+   * @param {number|function(Array<Expression>):number} returnType The return type of the operator; can be a fixed value or a callback taking the parsed
+   * arguments
+   * @param {Array<ArgValidator>} argValidators A chain of argument validators; the return value of the last validator
+   * will be used as parsed arguments
    * @return {Parser} The parser.
    */
-  function createParser(argValidator, returnType) {
-    return function (encoded, context) {
+  function createParser(returnType, ...argValidators) {
+    return function (encoded, context, typeHint) {
       const operator = encoded[0];
-      const args = argValidator(encoded, context);
-      return new CallExpression(returnType, operator, ...args);
+      let parsedArgs = [];
+      for (let i = 0; i < argValidators.length; i++) {
+        parsedArgs =
+          argValidators[i](encoded, context, parsedArgs, typeHint) || parsedArgs;
+      }
+      let actualType =
+        typeof returnType === 'function' ? returnType(parsedArgs) : returnType;
+      if (typeHint !== undefined) {
+        if (!overlapsType(actualType, typeHint)) {
+          throw new Error(
+            `The following expression was expected to return ${typeName(
+            typeHint
+          )}, but returns ${typeName(actualType)} instead: ${JSON.stringify(
+            encoded
+          )}`
+          );
+        }
+        actualType &= typeHint;
+      }
+      if (actualType === NoneType) {
+        throw new Error(
+          `No matching type was found for the following expression: ${JSON.stringify(
+          encoded
+        )}`
+        );
+      }
+      return new CallExpression(actualType, operator, ...parsedArgs);
     };
   }
 
   /**
    * @param {Array} encoded The encoded expression.
    * @param {ParsingContext} context The parsing context.
+   * @param {number} [typeHint] Optional type hint
    * @return {Expression} The parsed expression.
    */
-  function parseCallExpression(encoded, context) {
+  function parseCallExpression(encoded, context, typeHint) {
     const operator = encoded[0];
 
     const parser = parsers[operator];
     if (!parser) {
       throw new Error(`Unknown operator: ${operator}`);
     }
-    return parser(encoded, context);
+    return parser(encoded, context, typeHint);
   }
 
   /**
@@ -37948,6 +40010,7 @@ var myol = (function () {
    * @property {Object} properties The values for properties used in 'get' expressions.
    * @property {Object} variables The values for variables used in 'var' expressions.
    * @property {number} resolution The map resolution.
+   * @property {string|number|null} featureId The feature id.
    */
 
   /**
@@ -37958,6 +40021,7 @@ var myol = (function () {
       variables: {},
       properties: {},
       resolution: NaN,
+      featureId: null,
     };
   }
 
@@ -38018,6 +40082,13 @@ var myol = (function () {
    */
   function compileExpression(expression, context) {
     if (expression instanceof LiteralExpression) {
+      // convert colors to array if possible
+      if (expression.type === ColorType && typeof expression.value === 'string') {
+        const colorValue = fromString(expression.value);
+        return function () {
+          return colorValue;
+        };
+      }
       return function () {
         return expression.value;
       };
@@ -38031,6 +40102,14 @@ var myol = (function () {
       case Ops.Get:
       case Ops.Var: {
         return compileAccessorExpression(expression);
+      }
+      case Ops.Id: {
+        return (expression) => expression.featureId;
+      }
+      case Ops.Concat: {
+        const args = expression.args.map((e) => compileExpression(e));
+        return (context) =>
+          ''.concat(...args.map((arg) => arg(context).toString()));
       }
       case Ops.Resolution: {
         return (context) => context.resolution;
@@ -38068,9 +40147,23 @@ var myol = (function () {
       case Ops.Match: {
         return compileMatchExpression(expression);
       }
+      case Ops.Interpolate: {
+        return compileInterpolateExpression(expression);
+      }
       default: {
         throw new Error(`Unsupported operator ${operator}`);
       }
+      // TODO: unimplemented
+      // Ops.GeometryType
+      // Ops.Zoom
+      // Ops.Time
+      // Ops.Between
+      // Ops.Case
+      // Ops.In
+      // Ops.Array
+      // Ops.Color
+      // Ops.Band
+      // Ops.Palette
     }
   }
 
@@ -38112,14 +40205,8 @@ var myol = (function () {
    * @return {ExpressionEvaluator} The evaluator function.
    */
   function compileAccessorExpression(expression, context) {
-    const nameExpression = expression.args[0];
-    if (!(nameExpression instanceof LiteralExpression)) {
-      throw new Error('Expected literal name');
-    }
-    const name = nameExpression.value;
-    if (typeof name !== 'string') {
-      throw new Error('Expected string name');
-    }
+    const nameExpression = /** @type {LiteralExpression} */ (expression.args[0]);
+    const name = /** @type {string} */ (nameExpression.value);
     switch (expression.operator) {
       case Ops.Get: {
         return (context) => context.properties[name];
@@ -38324,6 +40411,114 @@ var myol = (function () {
   }
 
   /**
+   * @param {import('./expression.js').CallExpression} expression The call expression.
+   * @param {import('./expression.js').ParsingContext} context The parsing context.
+   * @return {ExpressionEvaluator} The evaluator function.
+   */
+  function compileInterpolateExpression(expression, context) {
+    const length = expression.args.length;
+    const args = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      args[i] = compileExpression(expression.args[i]);
+    }
+    return (context) => {
+      const base = args[0](context);
+      const value = args[1](context);
+
+      let previousInput;
+      let previousOutput;
+      for (let i = 2; i < length; i += 2) {
+        const input = args[i](context);
+        let output = args[i + 1](context);
+        const isColor = Array.isArray(output);
+        if (isColor) {
+          output = withAlpha(output);
+        }
+        if (input >= value) {
+          if (i === 2) {
+            return output;
+          }
+          if (isColor) {
+            return interpolateColor(
+              base,
+              value,
+              previousInput,
+              previousOutput,
+              input,
+              output
+            );
+          }
+          return interpolateNumber(
+            base,
+            value,
+            previousInput,
+            previousOutput,
+            input,
+            output
+          );
+        }
+        previousInput = input;
+        previousOutput = output;
+      }
+      return previousOutput;
+    };
+  }
+
+  /**
+   * @param {number} base The base.
+   * @param {number} value The value.
+   * @param {number} input1 The first input value.
+   * @param {number} output1 The first output value.
+   * @param {number} input2 The second input value.
+   * @param {number} output2 The second output value.
+   * @return {number} The interpolated value.
+   */
+  function interpolateNumber(base, value, input1, output1, input2, output2) {
+    const delta = input2 - input1;
+    if (delta === 0) {
+      return output1;
+    }
+    const along = value - input1;
+    const factor =
+      base === 1
+        ? along / delta
+        : (Math.pow(base, along) - 1) / (Math.pow(base, delta) - 1);
+    return output1 + factor * (output2 - output1);
+  }
+
+  /**
+   * @param {number} base The base.
+   * @param {number} value The value.
+   * @param {number} input1 The first input value.
+   * @param {import('../color.js').Color} rgba1 The first output value.
+   * @param {number} input2 The second input value.
+   * @param {import('../color.js').Color} rgba2 The second output value.
+   * @return {import('../color.js').Color} The interpolated color.
+   */
+  function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
+    const delta = input2 - input1;
+    if (delta === 0) {
+      return rgba1;
+    }
+    const lcha1 = rgbaToLcha(rgba1);
+    const lcha2 = rgbaToLcha(rgba2);
+    let deltaHue = lcha2[2] - lcha1[2];
+    if (deltaHue > 180) {
+      deltaHue -= 360;
+    } else if (deltaHue < -180) {
+      deltaHue += 360;
+    }
+
+    const lcha = [
+      interpolateNumber(base, value, input1, lcha1[0], input2, lcha2[0]),
+      interpolateNumber(base, value, input1, lcha1[1], input2, lcha2[1]),
+      lcha1[2] + interpolateNumber(base, value, input1, 0, input2, deltaHue),
+      interpolateNumber(base, value, input1, rgba1[3], input2, rgba2[3]),
+    ];
+    return normalize(lchaToRgba(lcha));
+  }
+
+  /**
    * @module ol/render/canvas/style
    */
 
@@ -38383,6 +40578,14 @@ var myol = (function () {
     return function (feature, resolution) {
       evaluationContext.properties = feature.getPropertiesInternal();
       evaluationContext.resolution = resolution;
+      if (parsingContext.featureId) {
+        const id = feature.getId();
+        if (id !== undefined) {
+          evaluationContext.featureId = id;
+        } else {
+          evaluationContext.featureId = null;
+        }
+      }
       return evaluator(evaluationContext);
     };
   }
@@ -38416,9 +40619,23 @@ var myol = (function () {
     return function (feature, resolution) {
       evaluationContext.properties = feature.getPropertiesInternal();
       evaluationContext.resolution = resolution;
-      for (let i = 0; i < length; ++i) {
-        styles[i] = evaluators[i](evaluationContext);
+      if (parsingContext.featureId) {
+        const id = feature.getId();
+        if (id !== undefined) {
+          evaluationContext.featureId = id;
+        } else {
+          evaluationContext.featureId = null;
+        }
       }
+      let nonNullCount = 0;
+      for (let i = 0; i < length; ++i) {
+        const style = evaluators[i](evaluationContext);
+        if (style) {
+          styles[nonNullCount] = style;
+          nonNullCount += 1;
+        }
+      }
+      styles.length = nonNullCount;
       return styles;
     };
   }
@@ -38500,7 +40717,7 @@ var myol = (function () {
   }
 
   /**
-   * @typedef {function(EvaluationContext):Style} StyleEvaluator
+   * @typedef {function(EvaluationContext):Style|null} StyleEvaluator
    */
 
   /**
@@ -38515,6 +40732,21 @@ var myol = (function () {
     const evaluateText = buildText(flatStyle, context);
     const evaluateImage = buildImage(flatStyle, context);
     const evaluateZIndex = numberEvaluator(flatStyle, 'z-index', context);
+
+    if (
+      !evaluateFill &&
+      !evaluateStroke &&
+      !evaluateText &&
+      !evaluateImage &&
+      !isEmpty$1(flatStyle)
+    ) {
+      // assume this is a user error
+      // would be nice to check the properties and suggest "did you mean..."
+      throw new Error(
+        'No fill, stroke, point, or text symbolizer properties in style: ' +
+          JSON.stringify(flatStyle)
+      );
+    }
 
     const style = new Style$1();
     return function (context) {
@@ -38558,7 +40790,7 @@ var myol = (function () {
   }
 
   /**
-   * @typedef {function(EvaluationContext):Fill} FillEvaluator
+   * @typedef {function(EvaluationContext):Fill|null} FillEvaluator
    */
 
   /**
@@ -38589,7 +40821,7 @@ var myol = (function () {
   }
 
   /**
-   * @typedef {function(EvaluationContext):Stroke} StrokeEvaluator
+   * @typedef {function(EvaluationContext):Stroke|null} StrokeEvaluator
    */
 
   /**
@@ -39154,7 +41386,7 @@ var myol = (function () {
       prefix + 'declutter-mode'
     );
 
-    const circle = new Circle$2({
+    const circle = new Circle({
       radius: 5, // this is arbitrary, but required - the evaluated radius is used below
       declutterMode,
     });
@@ -45653,7 +47885,7 @@ var myol = (function () {
 
   var style = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    Circle: Circle$2,
+    Circle: Circle,
     Fill: Fill$1,
     Icon: Icon$1,
     IconImage: IconImage$1,
@@ -45830,6 +48062,7 @@ var myol = (function () {
    * @template {import("../../Feature.js").FeatureLike} F
    */
   function hitDetect(pixel, features, imageData) {
+    /** @type {Array<F>} */
     const resultFeatures = [];
     if (imageData) {
       const x = Math.floor(Math.round(pixel[0]) * HIT_DETECT_RESOLUTION);
@@ -45850,7 +48083,6 @@ var myol = (function () {
         resultFeatures.push(features[i / indexFactor - 1]);
       }
     }
-    // @ts-ignore Features are copied from `features` to `resultFeatures` so the type should be the same
     return resultFeatures;
   }
 
@@ -47821,7 +50053,9 @@ var myol = (function () {
         const type = format.getType();
         /** @type {Document|Node|Object|string|undefined} */
         let source;
-        if (type == 'json' || type == 'text') {
+        if (type == 'json') {
+          source = JSON.parse(xhr.responseText);
+        } else if (type == 'text') {
           source = xhr.responseText;
         } else if (type == 'xml') {
           source = xhr.responseXML;
@@ -47920,27 +50154,27 @@ var myol = (function () {
    * @classdesc
    * Events emitted by {@link module:ol/source/Vector~VectorSource} instances are instances of this
    * type.
-   * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
+   * @template {import("../Feature.js").FeatureLike} [FeatureClass=import("../Feature.js").default]
    */
   class VectorSourceEvent extends Event {
     /**
      * @param {string} type Type.
-     * @param {import("../Feature.js").default<Geometry>} [feature] Feature.
-     * @param {Array<import("../Feature.js").default<Geometry>>} [features] Features.
+     * @param {FeatureClass} [feature] Feature.
+     * @param {Array<FeatureClass>} [features] Features.
      */
     constructor(type, feature, features) {
       super(type);
 
       /**
        * The added or removed feature for the `ADDFEATURE` and `REMOVEFEATURE` events, `undefined` otherwise.
-       * @type {import("../Feature.js").default<Geometry>|undefined}
+       * @type {FeatureClass|undefined}
        * @api
        */
       this.feature = feature;
 
       /**
        * The loaded features for the `FEATURESLOADED` event, `undefined` otherwise.
-       * @type {Array<import("../Feature.js").default<Geometry>>|undefined}
+       * @type {Array<FeatureClass>|undefined}
        * @api
        */
       this.features = features;
@@ -47957,10 +50191,10 @@ var myol = (function () {
    */
 
   /**
-   * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
+   * @template {import("../Feature.js").FeatureLike} [FeatureClass=import("../Feature.js").default]
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
-   * @property {Array<import("../Feature.js").default<Geometry>>|Collection<import("../Feature.js").default<Geometry>>} [features]
+   * @property {Array<FeatureClass>|Collection<FeatureClass>} [features]
    * Features. If provided as {@link module:ol/Collection~Collection}, the features in the source
    * and the collection will stay in sync.
    * @property {import("../format/Feature.js").default} [format] The feature format used by the XHR
@@ -48057,11 +50291,11 @@ var myol = (function () {
    *
    * @fires VectorSourceEvent
    * @api
-   * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
+   * @template {import("../Feature.js").FeatureLike} [FeatureClass=import("../Feature.js").default]
    */
   class VectorSource extends Source$1 {
     /**
-     * @param {Options<Geometry>} [options] Vector source options.
+     * @param {Options<FeatureClass>} [options] Vector source options.
      */
     constructor(options) {
       options = options || {};
@@ -48136,7 +50370,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {RBush<import("../Feature.js").default<Geometry>>}
+       * @type {RBush<FeatureClass>}
        */
       this.featuresRtree_ = useSpatialIndex ? new RBush$1() : null;
 
@@ -48154,21 +50388,21 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {!Object<string, import("../Feature.js").default<Geometry>>}
+       * @type {!Object<string, FeatureClass>}
        */
       this.nullGeometryFeatures_ = {};
 
       /**
        * A lookup of features by id (the return from feature.getId()).
        * @private
-       * @type {!Object<string, import("../Feature.js").default<Geometry>>}
+       * @type {!Object<string, FeatureClass|Array<RenderFeature>>}
        */
       this.idIndex_ = {};
 
       /**
        * A lookup of features by uid (using getUid(feature)).
        * @private
-       * @type {!Object<string, import("../Feature.js").default<Geometry>>}
+       * @type {!Object<string, FeatureClass>}
        */
       this.uidIndex_ = {};
 
@@ -48180,13 +50414,13 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {Collection<import("../Feature.js").default<Geometry>>|null}
+       * @type {Collection<FeatureClass>|null}
        */
       this.featuresCollection_ = null;
 
-      /** @type {Collection<import("../Feature.js").default<Geometry>>} */
+      /** @type {Collection<FeatureClass>} */
       let collection;
-      /** @type {Array<import("../Feature.js").default<Geometry>>} */
+      /** @type {Array<FeatureClass>} */
       let features;
       if (Array.isArray(options.features)) {
         features = options.features;
@@ -48214,7 +50448,7 @@ var myol = (function () {
      * Note: this also applies if an {@link module:ol/Collection~Collection} is used for features,
      * meaning that if a feature with a duplicate id is added in the collection, it will
      * be removed from it right away.
-     * @param {import("../Feature.js").default<Geometry>} feature Feature to add.
+     * @param {FeatureClass} feature Feature to add.
      * @api
      */
     addFeature(feature) {
@@ -48224,7 +50458,7 @@ var myol = (function () {
 
     /**
      * Add a feature without firing a `change` event.
-     * @param {import("../Feature.js").default<Geometry>} feature Feature.
+     * @param {FeatureClass} feature Feature.
      * @protected
      */
     addFeatureInternal(feature) {
@@ -48256,10 +50490,13 @@ var myol = (function () {
 
     /**
      * @param {string} featureKey Unique identifier for the feature.
-     * @param {import("../Feature.js").default<Geometry>} feature The feature.
+     * @param {FeatureClass} feature The feature.
      * @private
      */
     setupChangeEvents_(featureKey, feature) {
+      if (feature instanceof RenderFeature$1) {
+        return;
+      }
       this.featureChangeKeys_[featureKey] = [
         listen(feature, EventType.CHANGE, this.handleFeatureChange_, this),
         listen(
@@ -48273,17 +50510,28 @@ var myol = (function () {
 
     /**
      * @param {string} featureKey Unique identifier for the feature.
-     * @param {import("../Feature.js").default<Geometry>} feature The feature.
+     * @param {FeatureClass} feature The feature.
      * @return {boolean} The feature is "valid", in the sense that it is also a
      *     candidate for insertion into the Rtree.
      * @private
      */
     addToIndex_(featureKey, feature) {
       let valid = true;
-      const id = feature.getId();
-      if (id !== undefined) {
-        if (!(id.toString() in this.idIndex_)) {
-          this.idIndex_[id.toString()] = feature;
+      if (feature.getId() !== undefined) {
+        const id = String(feature.getId());
+        if (!(id in this.idIndex_)) {
+          this.idIndex_[id] = feature;
+        } else if (feature instanceof RenderFeature$1) {
+          const indexedFeature = this.idIndex_[id];
+          if (!(indexedFeature instanceof RenderFeature$1)) {
+            valid = false;
+          } else {
+            if (!Array.isArray(indexedFeature)) {
+              this.idIndex_[id] = [indexedFeature, feature];
+            } else {
+              indexedFeature.push(feature);
+            }
+          }
         } else {
           valid = false;
         }
@@ -48300,7 +50548,7 @@ var myol = (function () {
 
     /**
      * Add a batch of features to the source.
-     * @param {Array<import("../Feature.js").default<Geometry>>} features Features to add.
+     * @param {Array<FeatureClass>} features Features to add.
      * @api
      */
     addFeatures(features) {
@@ -48310,12 +50558,14 @@ var myol = (function () {
 
     /**
      * Add features without firing a `change` event.
-     * @param {Array<import("../Feature.js").default<Geometry>>} features Features.
+     * @param {Array<FeatureClass>} features Features.
      * @protected
      */
     addFeaturesInternal(features) {
       const extents = [];
+      /** @type {Array<FeatureClass>} */
       const newFeatures = [];
+      /** @type Array<FeatureClass> */
       const geometryFeatures = [];
 
       for (let i = 0, length = features.length; i < length; i++) {
@@ -48354,7 +50604,7 @@ var myol = (function () {
     }
 
     /**
-     * @param {!Collection<import("../Feature.js").default<Geometry>>} collection Collection.
+     * @param {!Collection<FeatureClass>} collection Collection.
      * @private
      */
     bindFeaturesCollection_(collection) {
@@ -48362,7 +50612,7 @@ var myol = (function () {
       this.addEventListener(
         VectorEventType.ADDFEATURE,
         /**
-         * @param {VectorSourceEvent<Geometry>} evt The vector source event
+         * @param {VectorSourceEvent<FeatureClass>} evt The vector source event
          */
         function (evt) {
           if (!modifyingCollection) {
@@ -48375,7 +50625,7 @@ var myol = (function () {
       this.addEventListener(
         VectorEventType.REMOVEFEATURE,
         /**
-         * @param {VectorSourceEvent<Geometry>} evt The vector source event
+         * @param {VectorSourceEvent<FeatureClass>} evt The vector source event
          */
         function (evt) {
           if (!modifyingCollection) {
@@ -48388,7 +50638,7 @@ var myol = (function () {
       collection.addEventListener(
         CollectionEventType.ADD,
         /**
-         * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
+         * @param {import("../Collection.js").CollectionEvent<FeatureClass>} evt The collection event
          */
         (evt) => {
           if (!modifyingCollection) {
@@ -48401,7 +50651,7 @@ var myol = (function () {
       collection.addEventListener(
         CollectionEventType.REMOVE,
         /**
-         * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
+         * @param {import("../Collection.js").CollectionEvent<FeatureClass>} evt The collection event
          */
         (evt) => {
           if (!modifyingCollection) {
@@ -48461,7 +50711,7 @@ var myol = (function () {
      * stop and the function will return the same value.
      * Note: this function only iterate through the feature that have a defined geometry.
      *
-     * @param {function(import("../Feature.js").default<Geometry>): T} callback Called with each feature
+     * @param {function(FeatureClass): T} callback Called with each feature
      *     on the source.  Return a truthy value to stop iteration.
      * @return {T|undefined} The return value from the last call to the callback.
      * @template T
@@ -48482,8 +50732,11 @@ var myol = (function () {
      * a "truthy" value, iteration will stop and the function will return the same
      * value.
      *
+     * For {@link module:ol/render/Feature~RenderFeature} features, the callback will be
+     * called for all features.
+     *
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-     * @param {function(import("../Feature.js").default<Geometry>): T} callback Called with each feature
+     * @param {function(FeatureClass): T} callback Called with each feature
      *     whose goemetry contains the provided coordinate.
      * @return {T|undefined} The return value from the last call to the callback.
      * @template T
@@ -48492,7 +50745,10 @@ var myol = (function () {
       const extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
       return this.forEachFeatureInExtent(extent, function (feature) {
         const geometry = feature.getGeometry();
-        if (geometry.intersectsCoordinate(coordinate)) {
+        if (
+          geometry instanceof RenderFeature$1 ||
+          geometry.intersectsCoordinate(coordinate)
+        ) {
           return callback(feature);
         }
         return undefined;
@@ -48512,7 +50768,7 @@ var myol = (function () {
      * features, equivalent to {@link module:ol/source/Vector~VectorSource#forEachFeature #forEachFeature()}.
      *
      * @param {import("../extent.js").Extent} extent Extent.
-     * @param {function(import("../Feature.js").default<Geometry>): T} callback Called with each feature
+     * @param {function(FeatureClass): T} callback Called with each feature
      *     whose bounding box intersects the provided extent.
      * @return {T|undefined} The return value from the last call to the callback.
      * @template T
@@ -48536,7 +50792,7 @@ var myol = (function () {
      * {@link module:ol/source/Vector~VectorSource#forEachFeatureInExtent #forEachFeatureInExtent()} method instead.
      *
      * @param {import("../extent.js").Extent} extent Extent.
-     * @param {function(import("../Feature.js").default<Geometry>): T} callback Called with each feature
+     * @param {function(FeatureClass): T} callback Called with each feature
      *     whose geometry intersects the provided extent.
      * @return {T|undefined} The return value from the last call to the callback.
      * @template T
@@ -48546,12 +50802,15 @@ var myol = (function () {
       return this.forEachFeatureInExtent(
         extent,
         /**
-         * @param {import("../Feature.js").default<Geometry>} feature Feature.
+         * @param {FeatureClass} feature Feature.
          * @return {T|undefined} The return value from the last call to the callback.
          */
         function (feature) {
           const geometry = feature.getGeometry();
-          if (geometry.intersectsExtent(extent)) {
+          if (
+            geometry instanceof RenderFeature$1 ||
+            geometry.intersectsExtent(extent)
+          ) {
             const result = callback(feature);
             if (result) {
               return result;
@@ -48565,7 +50824,7 @@ var myol = (function () {
      * Get the features collection associated with this source. Will be `null`
      * unless the source was configured with `useSpatialIndex` set to `false`, or
      * with an {@link module:ol/Collection~Collection} as `features`.
-     * @return {Collection<import("../Feature.js").default<Geometry>>|null} The collection of features.
+     * @return {Collection<FeatureClass>|null} The collection of features.
      * @api
      */
     getFeaturesCollection() {
@@ -48575,7 +50834,7 @@ var myol = (function () {
     /**
      * Get a snapshot of the features currently on the source in random order. The returned array
      * is a copy, the features are references to the features in the source.
-     * @return {Array<import("../Feature.js").default<Geometry>>} Features.
+     * @return {Array<FeatureClass>} Features.
      * @api
      */
     getFeatures() {
@@ -48588,15 +50847,13 @@ var myol = (function () {
           extend$3(features, Object.values(this.nullGeometryFeatures_));
         }
       }
-      return /** @type {Array<import("../Feature.js").default<Geometry>>} */ (
-        features
-      );
+      return features;
     }
 
     /**
      * Get all features whose geometry intersects the provided coordinate.
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-     * @return {Array<import("../Feature.js").default<Geometry>>} Features.
+     * @return {Array<import("../Feature.js").default>} Features.
      * @api
      */
     getFeaturesAtCoordinate(coordinate) {
@@ -48618,7 +50875,7 @@ var myol = (function () {
      * @param {import("../extent.js").Extent} extent Extent.
      * @param {import("../proj/Projection.js").default} [projection] Include features
      * where `extent` exceeds the x-axis bounds of `projection` and wraps around the world.
-     * @return {Array<import("../Feature.js").default<Geometry>>} Features.
+     * @return {Array<FeatureClass>} Features.
      * @api
      */
     getFeaturesInExtent(extent, projection) {
@@ -48645,12 +50902,13 @@ var myol = (function () {
      * Get the closest feature to the provided coordinate.
      *
      * This method is not available when the source is configured with
-     * `useSpatialIndex` set to `false`.
+     * `useSpatialIndex` set to `false` and the features in this source are of type
+     * {@link module:ol/Feature~Feature}.
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-     * @param {function(import("../Feature.js").default<Geometry>):boolean} [filter] Feature filter function.
+     * @param {function(FeatureClass):boolean} [filter] Feature filter function.
      *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
      *     and it should return a boolean value. By default, no filtering is made.
-     * @return {import("../Feature.js").default<Geometry>} Closest feature.
+     * @return {FeatureClass} Closest feature.
      * @api
      */
     getClosestFeatureToCoordinate(coordinate, filter) {
@@ -48671,18 +50929,16 @@ var myol = (function () {
       this.featuresRtree_.forEachInExtent(
         extent,
         /**
-         * @param {import("../Feature.js").default<Geometry>} feature Feature.
+         * @param {FeatureClass} feature Feature.
          */
         function (feature) {
           if (filter(feature)) {
             const geometry = feature.getGeometry();
             const previousMinSquaredDistance = minSquaredDistance;
-            minSquaredDistance = geometry.closestPointXY(
-              x,
-              y,
-              closestPoint,
-              minSquaredDistance
-            );
+            minSquaredDistance =
+              geometry instanceof RenderFeature$1
+                ? 0
+                : geometry.closestPointXY(x, y, closestPoint, minSquaredDistance);
             if (minSquaredDistance < previousMinSquaredDistance) {
               closestFeature = feature;
               // This is sneaky.  Reduce the extent that it is currently being
@@ -48716,12 +50972,15 @@ var myol = (function () {
     }
 
     /**
-     * Get a feature by its identifier (the value returned by feature.getId()).
+     * Get a feature by its identifier (the value returned by feature.getId()). When `RenderFeature`s
+     * are used, `getFeatureById()` can return an array of `RenderFeature`s. This allows for handling
+     * of `GeometryCollection` geometries, where format readers create one `RenderFeature` per
+     * `GeometryCollection` member.
      * Note that the index treats string and numeric identifiers as the same.  So
      * `source.getFeatureById(2)` will return a feature with id `'2'` or `2`.
      *
      * @param {string|number} id Feature identifier.
-     * @return {import("../Feature.js").default<Geometry>|null} The feature (or `null` if not found).
+     * @return {FeatureClass|Array<RenderFeature>|null} The feature (or `null` if not found).
      * @api
      */
     getFeatureById(id) {
@@ -48733,7 +50992,7 @@ var myol = (function () {
      * Get a feature by its internal unique identifier (using `getUid`).
      *
      * @param {string} uid Feature identifier.
-     * @return {import("../Feature.js").default<Geometry>|null} The feature (or `null` if not found).
+     * @return {FeatureClass|null} The feature (or `null` if not found).
      */
     getFeatureByUid(uid) {
       const feature = this.uidIndex_[uid];
@@ -48772,9 +51031,7 @@ var myol = (function () {
      * @private
      */
     handleFeatureChange_(event) {
-      const feature = /** @type {import("../Feature.js").default<Geometry>} */ (
-        event.target
-      );
+      const feature = /** @type {FeatureClass} */ (event.target);
       const featureKey = getUid(feature);
       const geometry = feature.getGeometry();
       if (!geometry) {
@@ -48816,7 +51073,7 @@ var myol = (function () {
 
     /**
      * Returns true if the feature is contained within the source.
-     * @param {import("../Feature.js").default<Geometry>} feature Feature.
+     * @param {FeatureClass} feature Feature.
      * @return {boolean} Has feature.
      * @api
      */
@@ -48926,7 +51183,7 @@ var myol = (function () {
      * Remove a single feature from the source.  If you want to remove all features
      * at once, use the {@link module:ol/source/Vector~VectorSource#clear #clear()} method
      * instead.
-     * @param {import("../Feature.js").default<Geometry>} feature Feature to remove.
+     * @param {FeatureClass} feature Feature to remove.
      * @api
      */
     removeFeature(feature) {
@@ -48949,8 +51206,8 @@ var myol = (function () {
 
     /**
      * Remove feature without firing a `change` event.
-     * @param {import("../Feature.js").default<Geometry>} feature Feature.
-     * @return {import("../Feature.js").default<Geometry>|undefined} The removed feature
+     * @param {FeatureClass} feature Feature.
+     * @return {FeatureClass|undefined} The removed feature
      *     (or undefined if the feature was not found).
      * @protected
      */
@@ -48976,14 +51233,21 @@ var myol = (function () {
     /**
      * Remove a feature from the id index.  Called internally when the feature id
      * may have changed.
-     * @param {import("../Feature.js").default<Geometry>} feature The feature.
+     * @param {FeatureClass} feature The feature.
      * @return {boolean} Removed the feature from the index.
      * @private
      */
     removeFromIdIndex_(feature) {
       let removed = false;
       for (const id in this.idIndex_) {
-        if (this.idIndex_[id] === feature) {
+        const indexedFeature = this.idIndex_[id];
+        if (
+          feature instanceof RenderFeature$1 &&
+          Array.isArray(indexedFeature) &&
+          indexedFeature.includes(feature)
+        ) {
+          indexedFeature.splice(indexedFeature.indexOf(feature), 1);
+        } else if (this.idIndex_[id] === feature) {
           delete this.idIndex_[id];
           removed = true;
           break;
@@ -49050,7 +51314,15 @@ var myol = (function () {
    * boolean to indicate whether the drawing can be finished. Not used when drawing
    * POINT or MULTI_POINT geometries.
    * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
-   * Style for sketch features.
+   * Style for sketch features. The draw interaction can have up to three sketch features, depending on the mode.
+   * It will always contain a feature with a `Point` geometry that corresponds to the current cursor position.
+   * If the mode is `LineString` or `Polygon`, and there is at least one drawn point, it will also contain a feature with
+   * a `LineString` geometry that corresponds to the line between the already drawn points and the current cursor position.
+   * If the mode is `Polygon`, and there is at least one drawn point, it will also contain a feature with a `Polygon`
+   * geometry that corresponds to the polygon between the already drawn points and the current cursor position
+   * (note that this polygon has only two points if only one point is drawn).
+   * If the mode is `Circle`, and there is one point drawn, it will also contain a feature with a `Circle` geometry whose
+   * center is the drawn point and the radius is determined by the distance between the drawn point and the cursor.
    * @property {GeometryFunction} [geometryFunction]
    * Function that is called when a geometry's coordinates are updated.
    * @property {string} [geometryName] Geometry name to use for features created
@@ -49729,7 +52001,7 @@ var myol = (function () {
           geometryFunction = function (coordinates, geometry, projection) {
             const circle = geometry
               ? /** @type {Circle} */ (geometry)
-              : new Circle$1([NaN, NaN]);
+              : new Circle$2([NaN, NaN]);
             const center = fromUserCoordinate(coordinates[0], projection);
             const squaredLength = squaredDistance(
               center,
@@ -51997,14 +54269,13 @@ var myol = (function () {
         map.forEachFeatureAtPixel(
           pixel,
           (feature, layer, geometry) => {
-            if (geometry) {
+            if (geometry && geometry.getType() === 'Point') {
               geometry = new Point$2(
                 toUserCoordinate(geometry.getCoordinates(), projection)
               );
             }
             const geom = geometry || feature.getGeometry();
             if (
-              geom.getType() === 'Point' &&
               feature instanceof Feature$1 &&
               this.features_.getArray().includes(feature)
             ) {
@@ -53079,6 +55350,7 @@ var myol = (function () {
      * @param {import("../coordinate.js").Coordinate} options.vertex The snapped vertex.
      * @param {import("../coordinate.js").Coordinate} options.vertexPixel The pixel of the snapped vertex.
      * @param {import("../Feature.js").default} options.feature The feature being snapped.
+     * @param {Array<import("../coordinate.js").Coordinate>|null} options.segment Segment, or `null` if snapped to a vertex.
      */
     constructor(type, options) {
       super(type);
@@ -53100,6 +55372,12 @@ var myol = (function () {
        * @api
        */
       this.feature = options.feature;
+      /**
+       * The segment closest to the snapped point, if snapped to a segment.
+       * @type {Array<import("../coordinate.js").Coordinate>|null}
+       * @api
+       */
+      this.segment = options.segment;
     }
   }
 
@@ -53112,6 +55390,7 @@ var myol = (function () {
    * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
    * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
    * @property {import("../Feature.js").default|null} feature Feature.
+   * @property {Array<import("../coordinate.js").Coordinate>|null} segment Segment, or `null` if snapped to a vertex.
    */
 
   /**
@@ -53386,6 +55665,7 @@ var myol = (function () {
             vertex: evt.coordinate,
             vertexPixel: evt.pixel,
             feature: result.feature,
+            segment: result.segment,
           })
         );
       }
@@ -53559,6 +55839,7 @@ var myol = (function () {
       let closestVertex;
       let minSquaredDistance = Infinity;
       let closestFeature;
+      let closestSegment = null;
 
       const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
       const getResult = () => {
@@ -53573,6 +55854,7 @@ var myol = (function () {
                 Math.round(vertexPixel[1]),
               ],
               feature: closestFeature,
+              segment: closestSegment,
             };
           }
         }
@@ -53629,6 +55911,10 @@ var myol = (function () {
             const delta = squaredDistance(projectedCoordinate, vertex);
             if (delta < minSquaredDistance) {
               closestVertex = toUserCoordinate(vertex, projection);
+              closestSegment =
+                segmentData.feature.getGeometry().getType() === 'Circle'
+                  ? null
+                  : segmentData.segment;
               minSquaredDistance = delta;
             }
           }
@@ -53882,7 +56168,7 @@ var myol = (function () {
        * An "interim" tile for this tile. The interim tile may be used while this
        * one is loading, for "smooth" transitions when changing params/dimensions
        * on the source.
-       * @type {Tile}
+       * @type {Tile|null}
        */
       this.interimTile = null;
 
@@ -53945,11 +56231,11 @@ var myol = (function () {
      * @return {!Tile} Best tile for rendering.
      */
     getInterimTile() {
-      if (!this.interimTile) {
+      let tile = this.interimTile;
+      if (!tile) {
         //empty chain
         return this;
       }
-      let tile = this.interimTile;
 
       // find the first loaded tile and return it. Since the chain is sorted in
       // decreasing order of creation time, there is no need to search the remainder
@@ -53974,17 +56260,13 @@ var myol = (function () {
      * that are no longer relevant.
      */
     refreshInterimChain() {
-      if (!this.interimTile) {
+      let tile = this.interimTile;
+      if (!tile) {
         return;
       }
 
-      let tile = this.interimTile;
-
-      /**
-       * @type {Tile}
-       */
+      /** @type {Tile} */
       let prev = this;
-
       do {
         if (tile.getState() == TileState.LOADED) {
           //we have a loaded tile, we can discard the rest of the list
@@ -53992,7 +56274,8 @@ var myol = (function () {
           //older than this tile (i.e. any LOADING tile following this entry in the chain)
           tile.interimTile = null;
           break;
-        } else if (tile.getState() == TileState.LOADING) {
+        }
+        if (tile.getState() == TileState.LOADING) {
           //keep this LOADING tile any loaded tiles later in the chain are
           //older than this tile, so we're still interested in the request
           prev = tile;
@@ -54785,6 +57068,7 @@ var myol = (function () {
    * @param {number} gutter Gutter of the sources.
    * @param {boolean} [renderEdges] Render reprojection edges.
    * @param {boolean} [interpolate] Use linear interpolation when resampling.
+   * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
    * @return {HTMLCanvasElement} Canvas with reprojected data.
    */
   function render(
@@ -54799,7 +57083,8 @@ var myol = (function () {
     sources,
     gutter,
     renderEdges,
-    interpolate
+    interpolate,
+    drawSingle
   ) {
     const context = createCanvasContext2D(
       Math.round(pixelRatio * width),
@@ -54828,42 +57113,44 @@ var myol = (function () {
       extend$2(sourceDataExtent, src.extent);
     });
 
-    const canvasWidthInUnits = getWidth(sourceDataExtent);
-    const canvasHeightInUnits = getHeight(sourceDataExtent);
-    const stitchContext = createCanvasContext2D(
-      Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
-      Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution),
-      canvasPool
-    );
+    let stitchContext;
+    if (!drawSingle || sources.length !== 1 || gutter !== 0) {
+      const canvasWidthInUnits = getWidth(sourceDataExtent);
+      const canvasHeightInUnits = getHeight(sourceDataExtent);
+      stitchContext = createCanvasContext2D(
+        Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
+        Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution),
+        canvasPool
+      );
 
-    if (!interpolate) {
-      stitchContext.imageSmoothingEnabled = false;
-    }
-
-    const stitchScale = pixelRatio / sourceResolution;
-
-    sources.forEach(function (src, i, arr) {
-      const xPos = src.extent[0] - sourceDataExtent[0];
-      const yPos = -(src.extent[3] - sourceDataExtent[3]);
-      const srcWidth = getWidth(src.extent);
-      const srcHeight = getHeight(src.extent);
-
-      // This test should never fail -- but it does. Need to find a fix the upstream condition
-      if (src.image.width > 0 && src.image.height > 0) {
-        stitchContext.drawImage(
-          src.image,
-          gutter,
-          gutter,
-          src.image.width - 2 * gutter,
-          src.image.height - 2 * gutter,
-          xPos * stitchScale,
-          yPos * stitchScale,
-          srcWidth * stitchScale,
-          srcHeight * stitchScale
-        );
+      if (!interpolate) {
+        stitchContext.imageSmoothingEnabled = false;
       }
-    });
 
+      const stitchScale = pixelRatio / sourceResolution;
+
+      sources.forEach(function (src, i, arr) {
+        const xPos = src.extent[0] - sourceDataExtent[0];
+        const yPos = -(src.extent[3] - sourceDataExtent[3]);
+        const srcWidth = getWidth(src.extent);
+        const srcHeight = getHeight(src.extent);
+
+        // This test should never fail -- but it does. Need to find a fix the upstream condition
+        if (src.image.width > 0 && src.image.height > 0) {
+          stitchContext.drawImage(
+            src.image,
+            gutter,
+            gutter,
+            src.image.width - 2 * gutter,
+            src.image.height - 2 * gutter,
+            xPos * stitchScale,
+            yPos * stitchScale,
+            srcWidth * stitchScale,
+            srcHeight * stitchScale
+          );
+        }
+      });
+    }
     const targetTopLeft = getTopLeft(targetExtent);
 
     triangulation.getTriangles().forEach(function (triangle, i, arr) {
@@ -54980,17 +57267,31 @@ var myol = (function () {
         sourceDataExtent[3] - sourceNumericalShiftY
       );
 
-      context.scale(
-        sourceResolution / pixelRatio,
-        -sourceResolution / pixelRatio
-      );
+      let image;
+      if (stitchContext) {
+        image = stitchContext.canvas;
+        context.scale(
+          sourceResolution / pixelRatio,
+          -sourceResolution / pixelRatio
+        );
+      } else {
+        const source = sources[0];
+        const extent = source.extent;
+        image = source.image;
+        context.scale(
+          getWidth(extent) / image.width,
+          -getHeight(extent) / image.height
+        );
+      }
 
-      context.drawImage(stitchContext.canvas, 0, 0);
+      context.drawImage(image, 0, 0);
       context.restore();
     });
 
-    releaseCanvas(stitchContext);
-    canvasPool.push(stitchContext.canvas);
+    if (stitchContext) {
+      releaseCanvas(stitchContext);
+      canvasPool.push(stitchContext.canvas);
+    }
 
     if (renderEdges) {
       context.save();
@@ -55049,7 +57350,7 @@ var myol = (function () {
      *     Function returning source tiles (z, x, y, pixelRatio).
      * @param {number} [errorThreshold] Acceptable reprojection error (in px).
      * @param {boolean} [renderEdges] Render reprojection edges.
-     * @param {boolean} [interpolate] Use linear interpolation when resampling.
+     * @param {import("../Tile.js").Options} [options] Tile options.
      */
     constructor(
       sourceProj,
@@ -55063,9 +57364,9 @@ var myol = (function () {
       getTileFunction,
       errorThreshold,
       renderEdges,
-      interpolate
+      options
     ) {
-      super(tileCoord, TileState.IDLE, {interpolate: !!interpolate});
+      super(tileCoord, TileState.IDLE, options);
 
       /**
        * @private
@@ -55564,8 +57865,8 @@ var myol = (function () {
   /**
    * @typedef {Object} Entry
    * @property {string} key_ Key.
-   * @property {Object} newer Newer.
-   * @property {Object} older Older.
+   * @property {Entry|null} newer Newer.
+   * @property {Entry|null} older Older.
    * @property {*} value_ Value.
    */
 
@@ -55780,13 +58081,10 @@ var myol = (function () {
     /**
      * Return an entry without updating least recently used time.
      * @param {string} key Key.
-     * @return {T} Value.
+     * @return {T|undefined} Value.
      */
     peek(key) {
-      if (!this.containsKey(key)) {
-        return undefined;
-      }
-      return this.entries_[key].value_;
+      return this.entries_[key]?.value_;
     }
 
     /**
@@ -57687,10 +59985,11 @@ var myol = (function () {
           .replace(dashYRegEx, function () {
             const z = tileCoord[0];
             const range = tileGrid.getFullTileRange(z);
-            assert$1(
-              range,
-              'The {-y} placeholder requires a tile grid with extent'
-            );
+            if (!range) {
+              throw new Error(
+                'The {-y} placeholder requires a tile grid with extent'
+              );
+            }
             const y = range.getHeight() - tileCoord[2] - 1;
             return y.toString();
           });
@@ -58318,7 +60617,7 @@ var myol = (function () {
           this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
         this.reprojectionErrorThreshold_,
         this.renderReprojectionEdges_,
-        this.getInterpolate()
+        this.tileOptions
       );
       newTile.key = key;
 
@@ -59230,6 +61529,7 @@ var myol = (function () {
    * @return {string} The new URI.
    */
   function appendParams(uri, params) {
+    /** @type {Array<string>} */
     const keyParams = [];
     // Skip any null or undefined parameter values
     Object.keys(params).forEach(function (k) {
@@ -71301,12 +73601,10 @@ body>*:not(#' + mapEl.id + '),\
     return [{
       // Point
       image: properties.icon ? new ol.style.Icon({
-        anchorXUnits: 'pixels',
-        anchorYUnits: 'pixels',
         anchor: resolution < layer.options.minResolution ? [
-          feature.getId() / 5 % 1 * layer.options.jitter + 12,
-          feature.getId() / 9 % 1 * layer.options.jitter + 12,
-        ] : [12, 12],
+          feature.getId() / 5 % 1 / 2 + 0.25, // 32 px width frame
+          feature.getId() / 9 % 1, // 44 px hight frame
+        ] : [0.5, 0.5],
         src: properties.icon, // 24 * 24 icons
         //BEST ??? crossOrigin: 'anonymous',
       }) : null,
@@ -71697,7 +73995,6 @@ body>*:not(#' + mapEl.id + '),\
         // Clusters:
         // serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
         // browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters but add a jitter
-        jitter: 36, // (pixels)
         // nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
         // distance: 50, // (pixels) distance above which we cluster
         minDistance: 24, // (pixels) minimum distance in pixels between clusters (can slide cluster icons)

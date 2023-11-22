@@ -122,7 +122,7 @@
 }
 
 .ol-viewport {
-  touch-action: none;
+  touch-action: pan-x pan-y;
 }
 
 .ol-selectable {

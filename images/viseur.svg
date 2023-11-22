@@ -1,12 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" height="32" width="32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" height="32" width="32">
 <style>
 g {
 	fill: rgba(128,128,128,0.03);
 	stroke: orange;
+	stroke-width: 2;
 }
 </style>
 <g>
-	<ellipse cx="6" cy="6" rx="5.5" ry="5.5" />
-	<path d="M0 6 12 6,6 6,6 0,6 12" />
+	<ellipse cx="16" cy="16" rx="15" ry="15" />
+	<path d="M0 16 32 16,16 16,16 0,16 32" />
 </g>
 </svg>

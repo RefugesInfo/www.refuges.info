@@ -268,7 +268,6 @@ export class MyVectorLayer extends MyServerClusterVectorLayer {
       // Clusters:
       // serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
       // browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters but add a jitter
-      jitter: 36, // (pixels)
       // nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
       // distance: 50, // (pixels) distance above which we cluster
       minDistance: 24, // (pixels) minimum distance in pixels between clusters (can slide cluster icons)

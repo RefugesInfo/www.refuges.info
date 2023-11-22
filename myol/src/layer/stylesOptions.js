@@ -15,12 +15,10 @@ export function basic(feature, resolution, layer) {
   return [{
     // Point
     image: properties.icon ? new ol.style.Icon({
-      anchorXUnits: 'pixels',
-      anchorYUnits: 'pixels',
       anchor: resolution < layer.options.minResolution ? [
-        feature.getId() / 5 % 1 * layer.options.jitter + 12,
-        feature.getId() / 9 % 1 * layer.options.jitter + 12,
-      ] : [12, 12],
+        feature.getId() / 5 % 1 / 2 + 0.25, // 32 px width frame
+        feature.getId() / 9 % 1, // 44 px hight frame
+      ] : [0.5, 0.5],
       src: properties.icon, // 24 * 24 icons
       //BEST ??? crossOrigin: 'anonymous',
     }) : null,
