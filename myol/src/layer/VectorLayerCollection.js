@@ -150,6 +150,7 @@ export class PRC extends MyVectorLayer {
 }
 
 // CampToCamp.org
+/*//TODO Don't work / to be redesigned
 export class C2C extends MyVectorLayer {
   constructor(options) {
     super({
@@ -196,7 +197,7 @@ export class C2C extends MyVectorLayer {
       wtyp: this.selector.getSelection(),
     };
   }
-}
+}*/
 
 /**
  * OSM XML overpass POI layer
@@ -325,7 +326,7 @@ export function collection(options = {}) {
   return [
     new WRI(options.wri),
     new PRC(options.prc),
-    new C2C(options.c2c),
+    //new C2C(options.c2c),
     new Overpass(options.osm),
     new Chemineur(options.chemineur),
     new Alpages(options.alpages),

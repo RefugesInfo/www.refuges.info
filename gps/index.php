@@ -14,7 +14,7 @@ Based on https://openlayers.org
   <meta name="description" content="Offline GPS based on openlayers & Progressive Web Application">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <!-- Good old favicon -->
-  <link href="ressources/favicon.png" type="image/png" rel="icon">
+  <link href="ressources/favicon.svg" type="image/svg+xml" rel="icon">
   <!-- Android / Chrome -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="white">

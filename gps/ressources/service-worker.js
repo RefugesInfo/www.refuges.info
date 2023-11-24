@@ -16,10 +16,9 @@ self.addEventListener('install', evt => {
     .then(cache => {
       console.log('PWA open cache ' + cacheName);
       cache.addAll([
-          'ressources/favicon.png',
+          'ressources/favicon.svg',
           'ressources/gps.css',
           'ressources/gps.js',
-          'ressources/icon-512.png', //TODO remove when favicon.svg
           'index.php',
           'manifest.json',
           'service-worker.php',

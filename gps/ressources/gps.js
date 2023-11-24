@@ -1,7 +1,5 @@
 console.log('MyGPS version ' + jsVars.lastChangeDate);
 
-//TODO finir favicon.svg
-
 // Force https & script name to be compliant with PWA
 if (!location.href.match(/(https|localhost).*\/index.php/)) {
   console.log('index.php reload');

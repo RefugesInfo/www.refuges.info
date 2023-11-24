@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 22/11/2023 16:37:03 using npm run build from the src/... sources
+ * Built 24/11/2023 15:28:40 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -74245,7 +74245,8 @@ body>*:not(#' + mapEl.id + '),\
   }
 
   // CampToCamp.org
-  class C2C extends MyVectorLayer {
+  /*//TODO Don't work / to be redesigned
+  export class C2C extends MyVectorLayer {
     constructor(options) {
       super({
         host: 'https://api.camptocamp.org/',
@@ -74291,7 +74292,7 @@ body>*:not(#' + mapEl.id + '),\
         wtyp: this.selector.getSelection(),
       };
     }
-  }
+  }*/
 
   /**
    * OSM XML overpass POI layer
@@ -74420,7 +74421,7 @@ body>*:not(#' + mapEl.id + '),\
     return [
       new WRI(options.wri),
       new PRC(options.prc),
-      new C2C(options.c2c),
+      //new C2C(options.c2c),
       new Overpass(options.osm),
       new Chemineur(options.chemineur),
       new Alpages(options.alpages),
@@ -74430,7 +74431,6 @@ body>*:not(#' + mapEl.id + '),\
   var vectorLayerCollection = /*#__PURE__*/Object.freeze({
     __proto__: null,
     Alpages: Alpages,
-    C2C: C2C,
     Chemineur: Chemineur,
     GeoBB: GeoBB,
     Overpass: Overpass,

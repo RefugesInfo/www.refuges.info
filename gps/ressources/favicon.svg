@@ -1,0 +1,30 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="gris" x1="14%" y1="0%" x2="86%" y2="0%">
+      <stop offset="27%" style="stop-color:#E2DCC6;stop-opacity:1" />
+      <stop offset="28%" style="stop-color:#BEB8A6;stop-opacity:1" />
+      <stop offset="73%" style="stop-color:#BEB8A6;stop-opacity:1" />
+      <stop offset="74%" style="stop-color:#E2DCC6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="vert" x1="14%" y1="0%" x2="86%" y2="0%">
+      <stop offset="27%" style="stop-color:#76CB61;stop-opacity:1" />
+      <stop offset="28%" style="stop-color:#4CAD41;stop-opacity:1" />
+      <stop offset="73%" style="stop-color:#4CAD41;stop-opacity:1" />
+      <stop offset="74%" style="stop-color:#76CB61;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="rouge" x1="30%" y1="0%" x2="70%" y2="0%">
+      <stop offset="41%" style="stop-color:#E73735;stop-opacity:1" />
+      <stop offset="51%" style="stop-color:#F04C4C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="100%" height="100%" fill="white" />
+
+  <polygon points="82,190 198,225 314,190 430,225 430,390 314,305   278,292  124,472  80,460" fill="url(#gris)" />
+  <polygon points="139,477 280,310 314,322 430,410 430,495 314,460 198,495 80,460" fill="url(#vert)" />
+  <path d="M75 270 L198 397 L318 255 L430 217" stroke-width="14" stroke="white" fill="none" />
+
+  <ellipse cx="256" cy="88" rx="70" ry="70" stroke-width="36" stroke="url(#rouge)" fill="none" />
+  <polygon points="174,120 256,330 340,115 256,160" fill="url(#rouge)" />
+</svg>
