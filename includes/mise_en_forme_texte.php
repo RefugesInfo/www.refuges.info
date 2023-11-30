@@ -278,19 +278,10 @@ function lien_inter_fiches($texte,$format_sortie="bbcode")
 }
   
 // Cette fonction permet de convertir du bbcode en markdown (pour les balises connues)
-function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=TRUE)
+function bbcode2markdown($texte)
 {
    
-   $texte=lien_inter_fiches($texte);
-
-    /** étape 2
-    on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )
-    sauf si on veut expréssément autoriser une entrée en HTML (cas du wiki sous contrôle des modérateurs en qui on a confiance ! Et qui ont besoin d'une totale liberté)
-    **/
-    if (!$autoriser_html)
-  $html=protege($texte);
-    else
-  $html=$texte;
+   $markdown=$texte=lien_inter_fiches($texte);
 
     // gestion de la majorité des tag bbcode
     $searcharray =
@@ -316,16 +307,14 @@ function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=
       "/\[color=(.+?):(.*)\](.+?)\[\/color:(.*)\]/s",
       "/\[color=(.+?)\](.+?)\[\/color\]/s",
       "/:([a-z]+):/",
-      "/\[t\]/",
-      "/\[email\](.+?)\[\/email\]/",
-      "/(0[0-9]([-. ]?[0-9]{2}){4})/" // Pour les numéros de téléphone
+      "/\[t\]/"
       );
     $replacearray =
       array(
-      "[$1]($2)",
-      "[$1]($1)",
-      "[$3]($2)",
-      "[$1]($2)",
+      "[$2]($1)",
+      "<$1>",
+      "[$2]($3)",
+      "[$2]($1)",
       "**$2**",
       "**$1**",
       "*$2*",
@@ -343,69 +332,47 @@ function bbcode2markdown($texte,$autoriser_html=FALSE,$autoriser_texte_sensible=
       "$3",
       "$2",
       " - ",
-      "    ",
-      "<sensible>$1</sensible>", // Sera codé plus loin
-      "<sensible>$1</sensible>" // Sera codé plus loin
+      "    "
       );
-    $html = preg_replace($searcharray, $replacearray, $html);
+    $markdown = preg_replace($searcharray, $replacearray, $markdown);
 
     // transformation automatique des url
 
     // au format http://truc
     $urlauto_pattern = "/([ :\.;,\n])(http:\/\/\w\S*)/i";
-    $urlauto_replace = "$1[$2]($2)";
-    $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
+    $urlauto_replace = "$1<$2>";
+    $markdown = preg_replace($urlauto_pattern,$urlauto_replace,$markdown);
 
     // au format www.
     $urlauto_pattern = "/([ :\.;,\n])(www.\w\S*)/i";
-    $urlauto_replace = "$1[$2](http://$2)";
-    $html = preg_replace($urlauto_pattern,$urlauto_replace,$html);
-
-    // Gestion du texte sensible
-    if($autoriser_texte_sensible) {
-  $html = preg_replace("/<sensible>(.*)<\/sensible>/","$1",$html);
-    }
-    else {
-  $html = preg_replace("/<sensible>(.*)<\/sensible>/","",$html);
-    }
+    $urlauto_replace = "$1<http://$2>";
+    $markdown = preg_replace($urlauto_pattern,$urlauto_replace,$markdown);
 
     // Gestion des codes en bloc
     $occurences_trouvees=preg_match_all("/<code>.*<\/code>/s",$texte,$occurence);
     if ($occurences_trouvees!=0)
-    {
-  for ($x=0;$x<$occurences_trouvees;$x++)
-  {
-      $occurence_temp=$occurence[0][$x];
-      $occurence_temp=preg_replace("/^<code>/","\n    ",$occurence_temp);
-      $occurence_temp=preg_replace("/<\/code>$/","\n",$occurence_temp);
-      $occurence_temp=preg_replace("/\n/","\n    ",$occurence_temp);
-      $html=str_replace($occurence[0][$x],$occurence_temp,$html);
-  }
-    }
+      for ($x=0;$x<$occurences_trouvees;$x++)
+      {
+          $occurence_temp=$occurence[0][$x];
+          $occurence_temp=preg_replace("/^<code>/","\n    ",$occurence_temp);
+          $occurence_temp=preg_replace("/<\/code>$/","\n",$occurence_temp);
+          $occurence_temp=preg_replace("/\n/","\n    ",$occurence_temp);
+          $markdown=str_replace($occurence[0][$x],$occurence_temp,$markdown);
+      }
 
     // Gestion des citations en bloc
     $occurences_trouvees=preg_match_all("/<blockquote>.*<\/blockquote>/s",$texte,$occurence);
     if ($occurences_trouvees!=0)
-    {
-  for ($x=0;$x<$occurences_trouvees;$x++)
-  {
-      $occurence_temp=$occurence[0][$x];
-      $occurence_temp=preg_replace("/^<blockquote>/","\n> ",$occurence_temp);
-      $occurence_temp=preg_replace("/<\/blockquote>$/","\n",$occurence_temp);
-      $occurence_temp=preg_replace("/\n/","\n> ",$occurence_temp);
-      $html=str_replace($occurence[0][$x],$occurence_temp,$html);
-  }
-    }
+      for ($x=0;$x<$occurences_trouvees;$x++)
+      {
+          $occurence_temp=$occurence[0][$x];
+          $occurence_temp=preg_replace("/^<blockquote>/","\n> ",$occurence_temp);
+          $occurence_temp=preg_replace("/<\/blockquote>$/","\n",$occurence_temp);
+          $occurence_temp=preg_replace("/\n/","\n> ",$occurence_temp);
+          $markdown=str_replace($occurence[0][$x],$occurence_temp,$markdown);
+      }
 
-    // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
-    if (!$autoriser_html)
-    {
-      $html = str_replace("\r\n", "<br>", $html);
-      $html = str_replace("\n", "<br>", $html);
-      $html = str_replace("\r", "<br>", $html);
-      $html = str_replace("  ", " &nbsp;", $html);
-    }
-    return $html;
+    return $markdown;
 }
 
 /* ucfirst( ) does not work well with UTF-8 this is it's multibyte replacement */
