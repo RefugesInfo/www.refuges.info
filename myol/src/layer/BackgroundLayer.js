@@ -11,7 +11,7 @@ export class BackgroundLayer extends layerTile.Positron {
   constructor(options) {
     // High resolution background layer
     super({
-      minResolution: 10,
+      minResolution: 20,
       visible: false,
 
       ...options,

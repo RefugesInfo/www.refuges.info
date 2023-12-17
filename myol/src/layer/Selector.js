@@ -48,6 +48,7 @@ export class Selector {
     // Save the current status
     if (this.safeName && this.getSelection().length)
       localStorage[this.safeName] = this.getSelection().join(',');
+    //BEST BUG : don't recover values including a ,
     else
       delete localStorage[this.safeName];
 

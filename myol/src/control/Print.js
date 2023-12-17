@@ -78,10 +78,10 @@ body>*:not(#' + mapEl.id + '),\
 }
 
 var subMenuHTML = '\
-  <label><input type="radio" value="0">Portrait</label>\
-  <label><input type="radio" value="1">Landscape</label>\
-  <label><a id="print">Print</a></label>\
-  <label><a onclick="location.reload()">Cancel</a></label>';
+  <p><input type="radio" name="myol-portrait" value="0">Portrait</p>\
+  <p><input type="radio" name="myol-landscape" value="1">Landscape</p>\
+  <p><a id="print">Print</a></p>\
+  <p><a onclick="location.reload()">Cancel</a></p>';
 
 var subMenuHTML_fr = '\
   <p>Pour imprimer la carte:</p>\

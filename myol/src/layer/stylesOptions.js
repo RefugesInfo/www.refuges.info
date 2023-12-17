@@ -20,7 +20,6 @@ export function basic(feature, resolution, layer) {
         feature.getId() / 9 % 1, // 44 px hight frame
       ] : [0.5, 0.5],
       src: properties.icon, // 24 * 24 icons
-      //BEST ??? crossOrigin: 'anonymous',
     }) : null,
 
     // Lines
@@ -84,7 +83,7 @@ export function cluster(feature) {
         color: 'white',
       }),
     }),
-    //TODO laisser le texte sur les clusters < 3 icônes
+    //BEST laisser le texte sur les clusters < 3 icônes
     text: new ol.style.Text({
       text: feature.getProperties().cluster.toString(),
       font: '12px Verdana',

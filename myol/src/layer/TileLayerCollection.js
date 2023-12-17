@@ -54,7 +54,7 @@ export class Kompass extends OpenStreetMap { // Austria
         'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
       maxZoom: 17,
       hidden: !options.key && options.subLayer != 'osm', // For LayerSwitcher
-      attributions: '<a href="http://www.kompass.de/livemap/">KOMPASS</a>',
+      attributions: '<a href="http://www.kompass.de/livemap/">Kompass</a>',
       ...options,
     });
   }
@@ -160,7 +160,6 @@ export class SwissTopo extends ol.layer.Tile {
           matrixIds: matrixIds,
         }),
         requestEncoding: 'REST',
-        crossOrigin: 'anonymous',
       })),
 
       ...options, // For layer limits
@@ -279,7 +278,7 @@ export class ArcGIS extends XYZ {
 
 /**
  * Maxbox (Maxar)
- * Get your own key at https://www.mapbox.com/
+ * Get your own (free) key at https://www.mapbox.com/
  */
 export class Maxbox extends XYZ {
   constructor(options = {}) {
@@ -337,6 +336,41 @@ export class Bing extends ol.layer.Tile {
     });
   }
 }
+
+/**
+ * RGB elevation (Mapbox)
+ * Doc: https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/
+ * elevation = -10000 + (({R} * 256 * 256 + {G} * 256 + {B}) * 0.1)
+ * Get your own (free) key at https://www.mapbox.com/
+ */
+export class MapboxElevation extends Maxbox {
+  constructor(options) {
+    super({
+      ...options,
+      tileset: 'mapbox.terrain-rgb',
+    });
+  }
+}
+
+/**
+ * RGB elevation (MapTiler)
+ * Doc: https://cloud.maptiler.com/tiles/terrain-rgb-v2/
+ * Doc: https://documentation.maptiler.com/hc/en-us/articles/4405444055313-RGB-Terrain-by-MapTiler
+ * elevation = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1
+ * Get your own (free) key at https://cloud.maptiler.com/account/keys/
+ */
+/*// Opportunity : backup of Maxbox elevation 
+export class MapTilerElevation extends XYZ {
+  constructor(options = {}) {
+    super({
+      url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
+      hidden: !options.key, // For LayerSwitcher
+      maxZoom: 12,
+      attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap contributors</a>',
+      ...options,
+    });
+  }
+}*/
 
 export class NoTile extends XYZ {
   constructor(options) {
@@ -510,6 +544,9 @@ export function demo(options = {}) {
     'Google hybrid': new Google({
       subLayers: 's,h',
     }),
+
+    'MapBox elevation': new MapboxElevation(options.mapbox), // options include key
+
     'No tile': new NoTile(),
     'Blank': new ol.layer.Tile(),
   };

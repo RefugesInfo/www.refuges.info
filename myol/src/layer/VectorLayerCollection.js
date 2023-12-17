@@ -150,7 +150,6 @@ export class PRC extends MyVectorLayer {
 }
 
 // CampToCamp.org
-/*//TODO Don't work / to be redesigned
 export class C2C extends MyVectorLayer {
   constructor(options) {
     super({
@@ -164,11 +163,10 @@ export class C2C extends MyVectorLayer {
     });
 
     this.format.readFeatures = json => {
-      const features = [],
-        objects = JSON.parse(json);
+      const features = [];
 
-      for (let o in objects.documents) {
-        const properties = objects.documents[o];
+      for (let p in json.documents) {
+        const properties = json.documents[p];
 
         features.push({
           id: properties.document_id,
@@ -197,7 +195,7 @@ export class C2C extends MyVectorLayer {
       wtyp: this.selector.getSelection(),
     };
   }
-}*/
+}
 
 /**
  * OSM XML overpass POI layer
@@ -326,7 +324,7 @@ export function collection(options = {}) {
   return [
     new WRI(options.wri),
     new PRC(options.prc),
-    //new C2C(options.c2c),
+    new C2C(options.c2c),
     new Overpass(options.osm),
     new Chemineur(options.chemineur),
     new Alpages(options.alpages),

@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 24/11/2023 15:28:40 using npm run build from the src/... sources
+ * Built 17/12/2023 17:02:24 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -62747,9 +62747,9 @@ var myol = (function () {
   }
 
   var subMenuHTML$3 = '\
-  <label><a mime="application/gpx+xml">GPX</a></label>\
-  <label><a mime="vnd.google-earth.kml+xml">KML</a></label>\
-  <label><a mime="application/json">GeoJSON</a></label>';
+  <p><a mime="application/gpx+xml">GPX</a></p>\
+  <p><a mime="vnd.google-earth.kml+xml">KML</a></p>\
+  <p><a mime="application/json">GeoJSON</a></p>';
 
   var subMenuHTML_fr$3 = '\
   <p>Cliquer sur un format ci-dessous pour obtenir\
@@ -62811,7 +62811,7 @@ var myol = (function () {
           'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
         maxZoom: 17,
         hidden: !options.key && options.subLayer != 'osm', // For LayerSwitcher
-        attributions: '<a href="http://www.kompass.de/livemap/">KOMPASS</a>',
+        attributions: '<a href="http://www.kompass.de/livemap/">Kompass</a>',
         ...options,
       });
     }
@@ -62917,7 +62917,6 @@ var myol = (function () {
             matrixIds: matrixIds,
           }),
           requestEncoding: 'REST',
-          crossOrigin: 'anonymous',
         })),
 
         ...options, // For layer limits
@@ -63036,7 +63035,7 @@ var myol = (function () {
 
   /**
    * Maxbox (Maxar)
-   * Get your own key at https://www.mapbox.com/
+   * Get your own (free) key at https://www.mapbox.com/
    */
   class Maxbox extends XYZ {
     constructor(options = {}) {
@@ -63094,6 +63093,41 @@ var myol = (function () {
       });
     }
   };
+
+  /**
+   * RGB elevation (Mapbox)
+   * Doc: https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/
+   * elevation = -10000 + (({R} * 256 * 256 + {G} * 256 + {B}) * 0.1)
+   * Get your own (free) key at https://www.mapbox.com/
+   */
+  class MapboxElevation extends Maxbox {
+    constructor(options) {
+      super({
+        ...options,
+        tileset: 'mapbox.terrain-rgb',
+      });
+    }
+  }
+
+  /**
+   * RGB elevation (MapTiler)
+   * Doc: https://cloud.maptiler.com/tiles/terrain-rgb-v2/
+   * Doc: https://documentation.maptiler.com/hc/en-us/articles/4405444055313-RGB-Terrain-by-MapTiler
+   * elevation = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1
+   * Get your own (free) key at https://cloud.maptiler.com/account/keys/
+   */
+  /*// Opportunity : backup of Maxbox elevation 
+  export class MapTilerElevation extends XYZ {
+    constructor(options = {}) {
+      super({
+        url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
+        hidden: !options.key, // For LayerSwitcher
+        maxZoom: 12,
+        attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap contributors</a>',
+        ...options,
+      });
+    }
+  }*/
 
   class NoTile extends XYZ {
     constructor(options) {
@@ -63267,6 +63301,9 @@ var myol = (function () {
       'Google hybrid': new Google({
         subLayers: 's,h',
       }),
+
+      'MapBox elevation': new MapboxElevation(options.mapbox), // options include key
+
       'No tile': new NoTile(),
       'Blank': new ol.layer.Tile(),
     };
@@ -63282,6 +63319,7 @@ var myol = (function () {
     IgnES: IgnES,
     Kompass: Kompass,
     MRI: MRI,
+    MapboxElevation: MapboxElevation,
     Maxbox: Maxbox,
     NoTile: NoTile,
     OS: OS,
@@ -63305,7 +63343,7 @@ var myol = (function () {
     constructor(options) {
       // High resolution background layer
       super({
-        minResolution: 10,
+        minResolution: 20,
         visible: false,
 
         ...options,
@@ -65314,10 +65352,10 @@ body>*:not(#' + mapEl.id + '),\
   }
 
   var subMenuHTML = '\
-  <label><input type="radio" value="0">Portrait</label>\
-  <label><input type="radio" value="1">Landscape</label>\
-  <label><a id="print">Print</a></label>\
-  <label><a onclick="location.reload()">Cancel</a></label>';
+  <p><input type="radio" name="myol-portrait" value="0">Portrait</p>\
+  <p><input type="radio" name="myol-landscape" value="1">Landscape</p>\
+  <p><a id="print">Print</a></p>\
+  <p><a onclick="location.reload()">Cancel</a></p>';
 
   var subMenuHTML_fr = '\
   <p>Pour imprimer la carte:</p>\
@@ -73567,6 +73605,7 @@ body>*:not(#' + mapEl.id + '),\
       // Save the current status
       if (this.safeName && this.getSelection().length)
         localStorage[this.safeName] = this.getSelection().join(',');
+      //BEST BUG : don't recover values including a ,
       else
         delete localStorage[this.safeName];
 
@@ -73606,7 +73645,6 @@ body>*:not(#' + mapEl.id + '),\
           feature.getId() / 9 % 1, // 44 px hight frame
         ] : [0.5, 0.5],
         src: properties.icon, // 24 * 24 icons
-        //BEST ??? crossOrigin: 'anonymous',
       }) : null,
 
       // Lines
@@ -73670,7 +73708,7 @@ body>*:not(#' + mapEl.id + '),\
           color: 'white',
         }),
       }),
-      //TODO laisser le texte sur les clusters < 3 icônes
+      //BEST laisser le texte sur les clusters < 3 icônes
       text: new ol.style.Text({
         text: feature.getProperties().cluster.toString(),
         font: '12px Verdana',
@@ -74245,8 +74283,7 @@ body>*:not(#' + mapEl.id + '),\
   }
 
   // CampToCamp.org
-  /*//TODO Don't work / to be redesigned
-  export class C2C extends MyVectorLayer {
+  class C2C extends MyVectorLayer {
     constructor(options) {
       super({
         host: 'https://api.camptocamp.org/',
@@ -74259,11 +74296,10 @@ body>*:not(#' + mapEl.id + '),\
       });
 
       this.format.readFeatures = json => {
-        const features = [],
-          objects = JSON.parse(json);
+        const features = [];
 
-        for (let o in objects.documents) {
-          const properties = objects.documents[o];
+        for (let p in json.documents) {
+          const properties = json.documents[p];
 
           features.push({
             id: properties.document_id,
@@ -74292,7 +74328,7 @@ body>*:not(#' + mapEl.id + '),\
         wtyp: this.selector.getSelection(),
       };
     }
-  }*/
+  }
 
   /**
    * OSM XML overpass POI layer
@@ -74421,7 +74457,7 @@ body>*:not(#' + mapEl.id + '),\
     return [
       new WRI(options.wri),
       new PRC(options.prc),
-      //new C2C(options.c2c),
+      new C2C(options.c2c),
       new Overpass(options.osm),
       new Chemineur(options.chemineur),
       new Alpages(options.alpages),
@@ -74431,6 +74467,7 @@ body>*:not(#' + mapEl.id + '),\
   var vectorLayerCollection = /*#__PURE__*/Object.freeze({
     __proto__: null,
     Alpages: Alpages,
+    C2C: C2C,
     Chemineur: Chemineur,
     GeoBB: GeoBB,
     Overpass: Overpass,

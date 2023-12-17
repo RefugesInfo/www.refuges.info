@@ -99,9 +99,9 @@ export class Download extends Button {
 }
 
 var subMenuHTML = '\
-  <label><a mime="application/gpx+xml">GPX</a></label>\
-  <label><a mime="vnd.google-earth.kml+xml">KML</a></label>\
-  <label><a mime="application/json">GeoJSON</a></label>';
+  <p><a mime="application/gpx+xml">GPX</a></p>\
+  <p><a mime="vnd.google-earth.kml+xml">KML</a></p>\
+  <p><a mime="application/json">GeoJSON</a></p>';
 
 var subMenuHTML_fr = '\
   <p>Cliquer sur un format ci-dessous pour obtenir\

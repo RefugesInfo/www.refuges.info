@@ -76,9 +76,9 @@ var contourMassif = coucheContourMassif({
       new myol.layer.vector.PRC({
         selectName: 'select-prc',
       }),
-      /*new myol.layer.vector.C2C({
+      new myol.layer.vector.C2C({
         selectName: 'select-c2c',
-      }),*/
+      }),
       new myol.layer.vector.Overpass({
         selectName: 'select-osm',
       }),
