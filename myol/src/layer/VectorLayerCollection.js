@@ -193,6 +193,7 @@ export class C2C extends MyVectorLayer {
     return {
       _path: 'waypoints',
       wtyp: this.selector.getSelection(),
+      limit: 100, // C2C max limit
     };
   }
 }

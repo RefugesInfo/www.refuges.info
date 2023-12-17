@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 17/12/2023 17:02:24 using npm run build from the src/... sources
+ * Built 17/12/2023 20:04:19 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -74326,6 +74326,7 @@ body>*:not(#' + mapEl.id + '),\
       return {
         _path: 'waypoints',
         wtyp: this.selector.getSelection(),
+        limit: 100, // C2C max limit
       };
     }
   }
