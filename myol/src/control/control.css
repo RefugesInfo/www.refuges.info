@@ -1,5 +1,6 @@
-/* Control */
-
+/*
+ * control.css
+ */
 /* PhpBB compatibility */
 .ol-overlaycontainer-stopevent>div:not(.ol-control) {
   margin: 0;

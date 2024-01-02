@@ -1,5 +1,6 @@
-/* Editor */
-
+/*
+ * editor.css
+ */
 .myol-button-edit-modify button::after {
   content: "\2725";
 }

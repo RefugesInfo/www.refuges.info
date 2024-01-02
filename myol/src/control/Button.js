@@ -4,7 +4,7 @@
  */
 
 import ol from '../ol';
-import './Button.css';
+import './button.css';
 
 /**
  * Control button
@@ -75,10 +75,9 @@ export class Button extends ol.control.Control {
     });
 
     this.subMenuEl.querySelectorAll('a, input')
-      .forEach(el => ['click', 'change'].forEach(tag =>
-        el.addEventListener(tag, evt =>
-          this.subMenuAction(evt)
-        )));
+      .forEach(el => el.addEventListener('click', evt =>
+        this.subMenuAction(evt)
+      ));
 
     return super.setMap(map);
   }

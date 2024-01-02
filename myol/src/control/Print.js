@@ -2,8 +2,8 @@
  * Print control
  */
 
-import ol from '../ol';
 import Button from './Button.js';
+import './print.css';
 
 export class Print extends Button {
   constructor(options) {
@@ -29,68 +29,45 @@ export class Print extends Button {
   subMenuAction(evt) {
     const map = this.getMap(),
       mapEl = map.getTargetElement(),
-      poElcs = this.element.querySelectorAll('input:checked'), // Selected orientation inputs
-      orientation = poElcs.length ? parseInt(poElcs[0].value) : 0; // Selected orientation or portrait
+      poEl = this.element.querySelector('input:checked'), // Selected orientation inputs
+      orientation = poEl && poEl.value == '1' ? 'landscape' : 'portrait';
 
-    // Change map size & style
-    mapEl.style.maxHeight = mapEl.style.maxWidth = mapEl.style.float = 'none';
-    mapEl.style.width = orientation == 0 ? '208mm' : '295mm';
-    mapEl.style.height = orientation == 0 ? '295mm' : '208mm';
-    map.setSize([mapEl.clientWidth, mapEl.clientHeight]);
+    // Fix resolution to an available tiles resolution
+    map.getView().setConstrainResolution(true);
+
+    // Set or replace the page style
+    if (document.head.lastChild.textContent.match(/^@page{size:/))
+      document.head.lastChild.remove();
+    document.head.insertAdjacentHTML('beforeend', '<style>@page{size: A4 ' + orientation + '}</style>');
 
     // Parent the map to the top of the page
     document.body.appendChild(mapEl);
-
-    // Set style
-    const styleSheet = document.createElement('style');
-    styleSheet.type = 'text/css';
-    styleSheet.innerText = '\
-@page {\
-  size: ' + (orientation == 0 ? 'portrait' : 'landscape') + ';\
-}\
-body>*:not(#' + mapEl.id + '),\
-.ol-control:not(.ol-zoom):not(.ol-attribution):not(.myol-button-print) {\
-  display: none;\
-}\
-.myol-button-switcher {\
-  display: block !important;\
-  float: left !important;\
-}\
-.myol-button-switcher>div {\
-  left: 65px;\
-  right: initial;\
-}';
-    document.head.appendChild(styleSheet);
-
-    // Finer zoom not dependent on the baselayer's levels
-    map.getView().setConstrainResolution(false);
-    map.addInteraction(new ol.interaction.MouseWheelZoom({
-      maxDelta: 0.1,
-    }));
+    mapEl.className = 'myol-print-' + orientation;
 
     // Finally print if required
-    if (evt.target.id == 'print')
-      map.once('rendercomplete', () => {
+    if (evt.target.id == 'myol-print') {
+      if (poEl) { // If a format is set, the full page is already loaded
         window.print();
         location.reload();
-      });
+      } else // Direct print : wait for full format rendering
+        map.once('rendercomplete', () => {
+          window.print();
+          location.reload();
+        });
+    }
   }
 }
 
 var subMenuHTML = '\
-  <p><input type="radio" name="myol-portrait" value="0">Portrait</p>\
-  <p><input type="radio" name="myol-landscape" value="1">Landscape</p>\
-  <p><a id="print">Print</a></p>\
-  <p><a onclick="location.reload()">Cancel</a></p>';
+  <label><input type="radio" name="myol-print-orientation" value="0">Portrait</label>\
+  <label><input type="radio" name="myol-print-orientation" value="1">Landscape</label>\
+  <p><a id="myol-print">Print</a></p>',
 
-var subMenuHTML_fr = '\
-  <p>Pour imprimer la carte:</p>\
-  <p>-Choisir portrait ou paysage,</p>\
-  <p>-zoomer et déplacer la carte dans le format,</p>\
-  <p>-imprimer.</p>' +
+  subMenuHTML_fr = '\
+  <p style="float:right" title="Cancel"><a onclick="location.reload()">&#10006;</a></p>\
+  <p style="width:175px">Choisir le format et recadrer</p>' +
   subMenuHTML
   .replace('Landscape', 'Paysage')
-  .replace('Print', 'Imprimer')
-  .replace('Cancel', 'Annuler');
+  .replace('Print', 'Imprimer');
 
 export default Print;

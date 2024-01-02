@@ -1,5 +1,6 @@
-/* layerSwitcher */
-
+/*
+ * button.css
+ */
 /* Top aligned buttons */
 /* Container */
 .ol-zoom,
@@ -84,7 +85,8 @@
 }
 
 .myol-button p,
-.myol-button span {
+.myol-button span,
+.myol-button .select-ext {
   margin: 3px 0;
   padding: 0 3px;
   font-size: 14px;

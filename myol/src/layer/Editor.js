@@ -5,7 +5,7 @@
 
 import ol from '../ol';
 import Button from '../control/Button';
-import './Editor.css';
+import './editor.css';
 
 // Editor
 export class Editor extends ol.layer.Vector {

@@ -1,11 +1,8 @@
-/* LayerSwitcher */
-
+/*
+ * layerSwitcher.css
+ */
 .myol-button-switcher {
   float: right !important;
-}
-
-.myol-button-switcher>button {
-  font-style: italic;
 }
 
 .myol-button-switcher>div {
@@ -14,6 +11,7 @@
 
 .myol-button-switcher button::after {
   content: "\274f";
+  font-style: italic;
 }
 
 .select-ext {

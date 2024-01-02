@@ -3,7 +3,7 @@
  */
 
 import ol from '../ol';
-import './Control.css';
+import './control.css';
 
 import Button from './Button';
 import Download from './Download';

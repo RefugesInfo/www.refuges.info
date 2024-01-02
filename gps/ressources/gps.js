@@ -11,10 +11,9 @@ if (!location.href.match(/(https|localhost).*\/index.php/)) {
     location.hash);
 }
 
-if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator)
   navigator.serviceWorker.register("service-worker.php")
-    .catch(err => console.log(err));
-}
+  .catch(error => console.log(error));
 
 // Display the map
 var loadControl = new myol.control.Load(),
@@ -38,6 +37,7 @@ var loadControl = new myol.control.Load(),
       // Top right
       new myol.control.LayerSwitcher({
         layers: myol.layer.tile.collection(jsVars.mapKeys),
+        ...jsVars.layerSwitcherOptions,
       }),
 
       // Bottom left
@@ -51,10 +51,11 @@ var loadControl = new myol.control.Load(),
       }),
       new ol.control.Attribution(),
     ],
+    layers: jsVars.vectorLayers,
   });
 
 // Preload 2 more layers zoom
-map.on('precompose', () => {
+map.once('precompose', () => {
   map.getLayers().forEach(layer => {
     if (typeof layer.setPreload == 'function')
       layer.setPreload(2);
@@ -90,6 +91,12 @@ navigator.serviceWorker.addEventListener('controllerchange', () => {
     new myol.control.Button({
       className: 'myol-button-upgrade',
       subMenuId: 'myol-button-upgrade',
+
+      // Reload when click on the "New" button
+      buttonAction: evt => {
+        if (evt.type == 'click')
+          location.reload();
+      },
     })
   );
 }, {

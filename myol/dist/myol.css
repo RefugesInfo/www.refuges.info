@@ -358,8 +358,9 @@
   cursor: move;
 }
 
-/* Control */
-
+/*
+ * control.css
+ */
 /* PhpBB compatibility */
 .ol-overlaycontainer-stopevent>div:not(.ol-control) {
   margin: 0;
@@ -439,8 +440,9 @@
     display: none;
   }
 }
-/* layerSwitcher */
-
+/*
+ * button.css
+ */
 /* Top aligned buttons */
 /* Container */
 .ol-zoom,
@@ -525,7 +527,8 @@
 }
 
 .myol-button p,
-.myol-button span {
+.myol-button span,
+.myol-button .select-ext {
   margin: 3px 0;
   padding: 0 3px;
   font-size: 14px;
@@ -557,14 +560,11 @@
 .myol-button hr {
   margin: 1px;
 }
-/* LayerSwitcher */
-
+/*
+ * layerSwitcher.css
+ */
 .myol-button-switcher {
   float: right !important;
-}
-
-.myol-button-switcher>button {
-  font-style: italic;
 }
 
 .myol-button-switcher>div {
@@ -573,6 +573,7 @@
 
 .myol-button-switcher button::after {
   content: "\274f";
+  font-style: italic;
 }
 
 .select-ext {
@@ -841,7 +842,9 @@
   font-weight: lighter;
   color: #333; }
 
-/* Geocodeur */
+/*
+ * myGeocodeur.css
+ */
 .ol-geocoder.gcd-gl-container {
   /* Takes place in the myol button flow */
   position: initial;
@@ -890,8 +893,47 @@
   top: 61px !important;
   left: 66px !important;
 }
-/* Editor */
+/*
+ * print.css
+ */
+/* Display only the map when the format is chosen */
+body:has(.myol-print-portrait)>*:not(.myol-print-portrait),
+body:has(.myol-print-landscape)>*:not(.myol-print-landscape),
+/* Hide useless controls */
+.myol-print-portrait .ol-control:not(.ol-zoom):not(.ol-attribution):not(.myol-button-print):not(.myol-button-switcher),
+.myol-print-landscape .ol-control:not(.ol-zoom):not(.ol-attribution):not(.myol-button-print):not(.myol-button-switcher) {
+  display: none;
+}
 
+.myol-print-portrait,
+.myol-print-landscape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-height: none !important;
+  max-width: none !important;
+  width: 210mm !important;
+  height: 297mm !important;
+}
+
+.myol-print-landscape {
+  width: 297mm !important;
+  height: 210mm !important;
+}
+
+.myol-print-portrait .myol-button-switcher,
+.myol-print-landscape .myol-button-switcher {
+  float: right !important;
+  margin-right: calc(max(2px, 100% - 100vw + 20px));
+}
+
+.myol-print-portrait .myol-button-switcher>div,
+.myol-print-landscape .myol-button-switcher>div {
+  right: calc(max(2px, 100% - 100vw + 20px));
+}
+/*
+ * editor.css
+ */
 .myol-button-edit-modify button::after {
   content: "\2725";
 }

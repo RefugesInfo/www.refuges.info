@@ -162,9 +162,7 @@ function coucheContourMassif(options) {
 function fondsCarte(page, mapKeys) {
   return {
     'Refuges.info': new myol.layer.tile.MRI(),
-    'OSM fr': new myol.layer.tile.OpenStreetMap({
-      url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
-    }),
+    'OSM': new myol.layer.tile.OpenStreetMap(),
     'OpenTopo': new myol.layer.tile.OpenTopo(),
     'Outdoors': new myol.layer.tile.Thunderforest({
       subLayer: 'outdoors',
