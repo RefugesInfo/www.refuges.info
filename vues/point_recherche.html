@@ -60,12 +60,12 @@ function inverse_visibility_voisins( id_element )
 
 			?>
 			<dd class="fiche_cadre condense">
-				<em>
+				<b>
 					<a href="<?=$point->lien?>">
 						<?=ucfirst($point->nom)?>
 					</a>
 					<?=$html_annonce_fermeture ?? ''?>
-				</em>
+				</b>
 				<?=$point->nom_type?>
 				<?php  if ($annonce_fermeture=texte_non_ouverte($point)) {?>
 					<strong>(<?=$annonce_fermeture?>)</strong>
@@ -81,12 +81,12 @@ function inverse_visibility_voisins( id_element )
 			<?php foreach ($vue->points as $point) {?>
 			
 				<dd class="fiche_cadre condense">
-					<em>
+					<b>
 						<a href="<?=$point->lien?>">
 							<?=ucfirst($point->nom)?>
 						</a>
 						<?=$html_annonce_fermeture ?? ''?>
-					</em>
+					</b>
 					<?=$point->nom_type?>
 					<?php //afficher un lien vers le massif comprenant le point
 					if (!empty($point->liste_polygones))
@@ -113,11 +113,11 @@ function inverse_visibility_voisins( id_element )
 		<dl>
 			<?php foreach ($vue->nominatim->xml as $points_nominatim) { ?>
 				<dd class="fiche_cadre condense">
-				<em>
+				<b>
 					<a href="<?=$config_wri['sous_dossier_installation'].'nav?zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
 						<?=$points_nominatim['display_name']?>
 					</a>
-				</em>
+				</b>
 				(<?=$points_nominatim['class']?>)
 				</dd>
 			<?php }?>

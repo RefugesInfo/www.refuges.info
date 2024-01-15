@@ -159,13 +159,8 @@ BODY {
 }
 
 /*=====TEXTE=======*/
-EM { /* Emphasis: gras+italic */
-  font-weight: bold ;
-  font-style: italic ;
-}
-STRONG { /* Strong Emphasis: gras+italic+rouge */
+STRONG { /* Strong Emphasis: gras+rouge */
   font-weight: bold;
-  font-style: italic;
   color: #FF0000 ;
 }
 CITE { /* Citation: gras+droit */

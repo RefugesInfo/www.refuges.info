@@ -40,7 +40,7 @@
         Fiche (n°<?=$vue->point->id_point?>) de:
       </dt>
       <dd class="condense">
-        <em><?=$vue->nom_debut_majuscule?></em>, 
+        <b><?=$vue->nom_debut_majuscule?></b>, 
       </dd>
       <dd class="condense">
         <a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?><sup>?</sup></a>
@@ -79,7 +79,7 @@
           <?php }?>
         </dd>
       <dd>
-        Altitude: <em><?=$vue->point->altitude?>m,</em>
+        Altitude: <b><?=$vue->point->altitude?>m,</b>
         <?php if (empty($vue->mini_carte)) {?>
           <strong><?=$vue->point->nom_precision_gps?></strong>
         <?php }else{?>
@@ -173,7 +173,7 @@
       <?php if (count($vue->infos_complementaires)) { ?>
       <dt style='clear: left;'>Informations complémentaires:</dt>
         <?php foreach ($vue->infos_complementaires as $champ => $val) {?>
-          <dd><?=$champ?>: <em><?=$val['valeur']?></em> <?php
+          <dd><?=$champ?>: <b><?=$val['valeur']?></b> <?php
             if (isset($val['lien'])) 
             {?><a href="<?=$val['lien']?>"><?=$val['texte_lien']?></a><?php } 
           ?></dd>
@@ -230,9 +230,9 @@
 <!--============================ LIEN VERS LE FORUM D'UN POINT ===========================-->
   <h5 class="noprint">Discussions sur <?=$vue->nom?></h5>
   <p class="noprint" id="forum">
-    <em>
+    <b>
       Pour les discussions, les questions et les avis, on vous conseille d'utiliser le <a href="<?=$vue->lienforum?>">le forum dédié à <?=$vue->nom?></a>. Les utilisateurs du site qui "suivent" la discussion du forum seront prévenus par e-mail si vous postez votre message sur le forum. Pour faire part d'une information objective à propos de <?=$vue->nom?> (accès, réglementation, demande de corrections de la fiche), vous pouvez ajouter une information ci-après.
-    </em>
+    </b>
   </p>
 <!--============================ POSTS LES PLUS RÉCENTS DU FORUM D'UN POINT ===========================-->
   <?php if (!empty($vue->forum_point)) {?>
@@ -246,7 +246,7 @@
       <?php } else
       foreach ($vue->forum_point AS $k=>$post) { ?>
         <a href="<?=$vue->lienforum?>#p<?=$post->post_id?>" title="Voir le post">
-          <em><?=ucfirst($post->date_humaine)?></em>
+          <b><?=ucfirst($post->date_humaine)?></b>
           <blockquote cite="<?=$vue->lienforum?>">
             <?=$post->post_text?>
           </blockquote>
@@ -316,10 +316,10 @@
       Soyez responsables
     </strong>
   </p>
-  <em>Page sous licence :
+  <b>Page sous licence :
     <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/fr/">
       <img alt="Creative Commons License" src="<?=$config_wri['sous_dossier_installation']?>images/logo-licence-cc-by-sa.png">
     </a>
-  </em>
+  </b>
 <!--============================================= FIN ==============================================-->
 </div>
