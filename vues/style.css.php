@@ -176,9 +176,6 @@ DFN:after { /*Definition, ajoute un ? a la fin pour inciter a passer la souris d
   font-size: smaller;
   vertical-align: text-top;
 }
-BLOCKQUOTE { /* citations: utilisé sur les fiches pour les commentaires ET la citation forum */
-  font-style: italic;
-}
 BLOCKQUOTE > DIV { /* en particulier les ciations forum */
   border-left: double blue;
 }
