@@ -175,12 +175,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
             case "forums":
                 $conditions_messages_forum = new stdclass();
                 $conditions_messages_forum->limite=$nombre;
-                if ($req && $req->ids_forum)
-                    $conditions_messages_forum->ids_forum=$req->ids_forum;
-                $conditions_messages_forum->sauf_ids_forum=
-					$config_wri['id_forum_moderateur'].",".
-					$config_wri['id_forum_developpement'].",".
-					$config_wri['id_forum_hors_sujet'];
+                $conditions_messages_forum->ids_forum=$config_wri['ids_forum_pour_les_nouvelles'];
 
                 $commentaires_forum=messages_du_forum($conditions_messages_forum);
                 if (count($commentaires_forum)>0)

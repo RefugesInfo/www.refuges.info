@@ -544,8 +544,7 @@ function transfert_forum($commentaire)
 Derniers messages du forum
 $conditions->limite : nombre maximum de messages retournés
 $conditions->ordre : exemple "ORDER BY date"
-$conditions->ids_forum : (5 ou 4,7,8)
-$conditions->sauf_ids_forum : (5 ou 4,7,8)
+$conditions->ids_forum : (5 ou 4,7,8) pour restreindre la provenance des messages
 ************************************************************************/
 // jmb: return un tableau vide au lieu d'un undefined si aucun message
 function messages_du_forum($conditions)
@@ -554,8 +553,6 @@ function messages_du_forum($conditions)
   $quels_ids="";
   if (isset($conditions->ids_forum))
     $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
-  if (isset($conditions->sauf_ids_forum))
-    $quels_ids.="AND phpbb3_topics.forum_id not in ($conditions->sauf_ids_forum)";
   if ( !isset($conditions->ordre))
     $conditions->ordre="ORDER BY date DESC";
 
