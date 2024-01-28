@@ -15,6 +15,7 @@ require_once ("bdd.php");
 require_once ("commentaire.php");
 require_once ("polygone.php");
 require_once ("mise_en_forme_texte.php");
+require_once ("gestion_erreur.php");
 
 
 /*****************************************************
@@ -80,6 +81,7 @@ $conditions->avec_distance : Renvoi la distance au centroid de la géométrie, l
 $conditions->date_creation_apres : La date de création du point est >= à celle demandée (on peut utiliser une date '2020-02-01' ou toute syntaxe postgres du genre "NOW() -  INTERVAL '1 week'"
 
 $conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
+$conditions->topic_id : Dont le topic du forum est celui-ci (permet d'avoir un lien retour du forum du point vers la fiche)
 
 FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
 Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
@@ -273,7 +275,9 @@ function infos_points($conditions)
     if ($conditions->ouvert=='oui')
       $conditions_sql.="\n\tAND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
   }
-    
+  if (!empty($conditions->topic_id))
+    $conditions_sql.="\n\tAND topic_id =".$conditions->topic_id;
+ 
   if (!empty($conditions->ordre))
       $ordre="\nORDER BY $conditions->ordre";
 
