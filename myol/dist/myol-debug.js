@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 02/01/2024 17:35:58 using npm run build from the src/... sources
+ * Built 31/01/2024 15:52:53 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -62618,9 +62618,10 @@ var myol = (function () {
       });
 
       this.subMenuEl.querySelectorAll('a, input')
-        .forEach(el => el.addEventListener('click', evt =>
-          this.subMenuAction(evt)
-        ));
+        .forEach(el => ['click', 'change'].forEach(type =>
+          el.addEventListener(type, evt =>
+            this.subMenuAction(evt)
+          )));
 
       return super.setMap(map);
     }
