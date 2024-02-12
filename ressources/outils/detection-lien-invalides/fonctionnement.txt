@@ -2,7 +2,7 @@ En utilisant l'outil "linkchecker" (installé sur le serveur) on peut détecter,
 résolution dns impossible, 301, mailto: non valide, etc.)
 Cet outil test la syntaxe des liens, le pointage du lien.
 
-J'utilise maintenant une nouvelle méthode, un poil plus longue mais exhaustive et un peu plus rapide :
+J'utilise maintenant une nouvelle méthode, un poil plus longue à préparer mais exhaustive et plus rapide à faire tourner :
 
 On génère un fichier avec les urls de toutes les fiches à vérifier, au format :
 https://www.refuges.info/point/45 https://www.refuges.info/point/46 https://www.refuges.info/point/47 ...
