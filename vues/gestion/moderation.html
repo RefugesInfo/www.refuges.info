@@ -1,71 +1,70 @@
 <div class="contenu">
 	<h3>Modération des commentaires</h3>
-	<? if ($vue->retour->message) { ?>
+	<?php if ($vue->retour->message) { ?>
 		<h4><?=$vue->retour->message?></h4>
-	<?}else{?>
-		<p>Vous entrez dans la zone de modération qui va vous permettre de modifier un commentaire
-		ou de le déplacer vers le forum dans la section correspondant au point.</p>
+	<?php } else {?>
+		<p>Vous entrez dans la zone de modification des commentaires qui va vous permettre de modifier un commentaire, de le déplacer vers le forum dans la section correspondant au point ou le transférer sur une autre fiche du site.</p>
 
 		<form method="POST">
 			<h4>le commentaire est :</h4>
-
 			<br>
 			<label>Date:
 				<input type="text" disabled="disabled" name="date" size="16"
 					value="<?=date('d/m/Y H:i',$commentaire->ts_unix_commentaire)?>"/>
 			</label>
-			<br><br>
+			<br>
 
 			<?=bbcode2html($commentaire->texte)?>
 			<br><br>
 
-			<? if ($commentaire->photo_existe==1) { ?>
+			<?php if ($commentaire->photo_existe==1) { ?>
 				<img
 					src="<?=$commentaire->lien_photo['reduite']?>"
 					alt="photo liée au commentaire"
 					width="300px" />
 				<br><br>
-			<?}?>
+			<?php }?>
 
-			<h4>Moderation :</h4>
+			<h4>Le modifier :</h4>
 			<br>
 
 			<textarea name="texte" rows="10" cols="100"><?=protege($commentaire->texte)?></textarea>
 			<br><br>
 
-			<? if ($commentaire->photo_existe==1) { ?>
+			<?php if ($commentaire->photo_existe==1) { ?>
 				Rotation photo: &nbsp;
 				<input type="radio" name="rotation" value="0" checked="checked">aucune &nbsp;
 				<input type="radio" name="rotation" value="90"><img src="<?=$config_wri['sous_dossier_installation']?>images/270.png" /> &nbsp;
 				<input type="radio" name="rotation" value="180"><img src="<?=$config_wri['sous_dossier_installation']?>images/180.png" /> &nbsp;
 				<input type="radio" name="rotation" value="270"><img src="<?=$config_wri['sous_dossier_installation']?>images/90.png" />
 				<br>
-				<input name="type" value="suppression_photo" type="submit" />
-				<br><br>
-			<?}?>
+			<?php }?>
+			<br>
 
-			<? if ($commentaire->id_createur_commentaire==0) { ?><!-- Seulement modifiable si n'était pas authentifié -->
+			<?php if ($commentaire->id_createur_commentaire==0) { ?><!-- Seulement modifiable si n'était pas authentifié -->
 				<label>Auteur:
 					<input type="text" name="auteur_commentaire" value="<?=$commentaire->auteur_commentaire?>" />
 				</label>
 				<br><br>
-			<?}?>
-
-			<!-- 4 actions possible -->
-			<input name="type" value="modification" type="submit" />
-			<input name="type" value="transfert_forum" type="submit" />
-			<input name="type" value="suppression" type="submit" />
-			<br><br>
-
-			<input name="type" value="transfert_autre_point" label="x" type="submit" />
-			Indiquez le numéro de l'autre point :
-			<input type="text" name="id_autre_point" value="" size="16"/>
+			<?php } else if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur (lui faire dire ce qu'il n'a pas dit), mais ça se discute ? ?>
+			Auteur du commentaire :
+			<select name='id_createur'>
+              <option  value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>Anonyme</option>
+            <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
+            <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
+                <?=$utilisateur->username_clean?>
+            </option>
+            <?php } }?>
+            </select>
+            <br>
+			<button name="type" value="modification" type="submit">Modifier</button><br><br>
+			<button name="type" value="suppression_photo" type="submit">Modifier et supprimer la photo</button><br>
+			<button name="type" value="transfert_forum" type="submit">Modifier et transférer sur le forum</button><br>
+			<button name="type" value="transfert_autre_point" type="submit">Modifier et transférer le commentaire sur la fiche dont le numéro est :</button>
+			<input type="text" name="id_autre_point" value="" size="16"/><br>
+			<button name="type" value="suppression" type="submit">Supprimer le commentaire et sa photo</button><br>
 		</form>
-		<p>
-		'suppression' entraine également la suppression de la photo.<br>
-		'transfert_forum' entraîne aussi le déplacement de la photo vers le forum
-		</p>
-	<?}?>
-
-	<a href="<?=lien_point($vue->point)?>">Retour à la fiche de <?=$vue->point->nom?></a>
+	<?php }?>
+    <br>
+	<a href="<?=lien_point($vue->point)?>">Retour à la fiche de <?=$vue->point->nom?> sans rien modifier</a>
 </div>
