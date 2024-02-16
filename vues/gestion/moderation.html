@@ -46,12 +46,12 @@
 					<input type="text" name="auteur_commentaire" value="<?=$commentaire->auteur_commentaire?>" />
 				</label>
 				<br><br>
-			<?php } else if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur (lui faire dire ce qu'il n'a pas dit), mais ça se discute ? ?>
+			<?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur (lui faire dire ce qu'il n'a pas dit), mais ça se discute ? ?>
 			Auteur du commentaire :
 			<select name='id_createur'>
-              <option  value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>Anonyme</option>
+              <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Anonyme</option>
             <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
-            <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
+            <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
                 <?=$utilisateur->username_clean?>
             </option>
             <?php } }?>
