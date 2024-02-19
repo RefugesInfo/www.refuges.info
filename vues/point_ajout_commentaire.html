@@ -19,7 +19,7 @@
       <?php if (!est_connecte()) { ?>
         <p>
           <label>Auteur:</label>
-          <input type="text" value="<?=$_REQUEST['auteur_commentaire'] ?? ''?>" name="auteur_commentaire" maxlength="120" size="40" />(facultatif)
+          <input type="text" value="<?=$_REQUEST['auteur_commentaire'] ?? ''?>" name="auteur_commentaire" class="input_en_ligne" />(facultatif)
         </p>
       <?php } ?>
       <p>
