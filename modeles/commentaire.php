@@ -219,7 +219,7 @@ les versions réduite de la photo et même de remplacer la photo si celle-ci est
 Cette fonction retourne un objet contenant :
 $retour->erreur=true si un problème est survenu
 avec
-$retour->message un message d'erreur explicite qui peut être fourni à l'utilisateur final
+$retour->message un message explicite qui peut être fourni à l'utilisateur final sur ce qui s'est passé : Commentaire modifié ou ajouté. Modification impossible car une erreur l'empêche. Photo invalide ou dans un format non accepté.
 
 si tout c'est bien passé elle retourne :
 $retour->id_commentaire (l'id du commentaire créé ou modifié)
@@ -277,6 +277,9 @@ function modification_ajout_commentaire($commentaire)
     else
       $ajout_photo=False;
     $mode="modification";
+    if ($commentaire_avant_modification->id_point != $commentaire->id_point)
+      $un_transfert_a_eu_lieu=TRUE;    
+    
   }
   else
     $mode="ajout";
@@ -335,12 +338,16 @@ function modification_ajout_commentaire($commentaire)
     $commentaire->id_commentaire = $pdo->lastInsertId();
 
   if ($mode=="ajout")
-    $retour->message="Commentaire ajouté";
+    $retour->message="Le commentaire a été ajouté";
   else
-    $retour->message="Commentaire modifié";
-
+    $retour->message="Le commentaire a été modifié";
+    
+  // C'est juste "cosmétique" : si on détecte que le numéro du point a changé, on signale qu'un transfert a eu lieu.
+  if ($un_transfert_a_eu_lieu)  
+    $retour->message.=" et a été transféré sur la fiche : <a href=\"".lien_point($point)."\">".$point->nom."</a>";
+    
   $retour->erreur=False;
-
+    
   // On avait une photo valide sur le disque mais il est demandé qu'il n'y en ait pas, il faut donc faire le ménage
   if ($commentaire->photo_existe==0 and $photo_valide)
     suppression_photos($commentaire);
