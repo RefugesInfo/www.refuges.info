@@ -1,6 +1,5 @@
-var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
-  mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
-  layerOptions = <?=json_encode($config_wri['layerOptions'])?>;
+var host = '<?=$config_wri["sous_dossier_installation"]?>',
+  mapKeys = <?=json_encode($config_wri['mapKeys'])?>;
 
 var editorlayer = new myol.layer.Editor({
     geoJsonId: 'edit-json',
@@ -17,10 +16,12 @@ var editorlayer = new myol.layer.Editor({
 
   map = new ol.Map({
     target: 'carte-edit',
+
     view: new ol.View({
       enableRotation: false,
       constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
     }),
+
     controls: [
       // Haut gauche
       new ol.control.Zoom(),
@@ -46,6 +47,7 @@ var editorlayer = new myol.layer.Editor({
         layers: fondsCarte('edit', mapKeys),
       }),
     ],
+
     layers: [
       coucheContourMassif({
         host: host,

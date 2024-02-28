@@ -10,7 +10,7 @@ export class Permalink extends ol.control.Control {
   constructor(options) {
     options = {
       // display: false, // {false | true} Display permalink link the map.
-      // init: false, // {false | true | [<zoom>, <lon>, <lat>]} use url hash or localStorage to position the map.
+      // init: false, // {undefined | false | true | [<zoom>, <lon>, <lat>]} use url hash or localStorage to position the map.
       default: [6, 2, 47], // France
       // setUrl: false, // {false | true} Change url hash when moving the map.
       hash: '?', // {?, #} the permalink delimiter after the url
@@ -37,10 +37,10 @@ export class Permalink extends ol.control.Control {
 
   render(evt) {
     const view = evt.map.getView(),
-      urlMod =
-      //BEST init with res=<resolution>
-      //BEST init with extent (not zoom, lon, lat)
-      'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' + // init: [<zoom>, <lon>, <lat>]
+      //BEST init with res=<resolution> or extent (not zoom, lon, lat)
+      urlMod = (typeof this.options.init == 'object' ? // init: [<zoom>, <lon>, <lat>]
+        'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
+        '') +
       location.href.replace( // Get value from params with priority url / ? / #
         /map=([0-9.]+)\/(-?[0-9.]+)\/(-?[0-9.]+)/, // map=<zoom>/<lon>/<lat>
         'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>

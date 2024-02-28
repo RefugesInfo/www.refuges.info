@@ -1,25 +1,25 @@
-var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+var host = '<?=$config_wri["sous_dossier_installation"]?>',
   mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
   layerOptions = <?=json_encode($config_wri['layerOptions'])?>,
-  initPermalink = <?=$vue->polygone->id_polygone?'false':'true'?>;
+  id_polygone = <?=isset($vue->polygone)?$vue->polygone->id_polygone:0?>,
+  extent = <?=json_encode($vue->polygone->extent)?>;
 
 // Forçage de l'init des coches
-  // Supprime toutes les sélections commençant par myol_selecteur
-  Object.keys(localStorage)
-    .filter(k => k.substring(0, 14) == 'myol_selecteur')
-    .forEach(k => localStorage.removeItem(k));
+// Supprime toutes les sélections commençant par myol_selecteur
+Object.keys(localStorage)
+  .filter(k => k.substring(0, 14) == 'myol_selecteur')
+  .forEach(k => localStorage.removeItem(k));
 
-  // Force tous les points et le contour
-<?php if ( $vue->polygone->id_polygone ) { ?>
-  localStorage.myol_selectmassif = <?=$vue->polygone->id_polygone?>;
-<?php } ?>
-  localStorage.myol_selectwri = 'all';
-  localStorage.myol_selectmassifs =
-  localStorage.myol_selectosm =
-  localStorage.myol_selectprc =
-  localStorage.myol_selectcc =
-  localStorage.myol_selectchem =
-  localStorage.myol_selectalpages = '';
+// Force tous les points et le contour
+if (id_polygone)
+  localStorage.myol_selectmassif = id_polygone;
+localStorage.myol_selectwri = 'all';
+localStorage.myol_selectmassifs =
+localStorage.myol_selectosm =
+localStorage.myol_selectprc =
+localStorage.myol_selectcc =
+localStorage.myol_selectchem =
+localStorage.myol_selectalpages = '';
 
 var contourMassif = coucheContourMassif({
     host: host,
@@ -28,10 +28,12 @@ var contourMassif = coucheContourMassif({
 
   map = new ol.Map({
     target: 'carte-nav',
+
     view: new ol.View({
       enableRotation: false,
       constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
     }),
+
     controls: [
       // Haut gauche
       new ol.control.Zoom(),
@@ -52,7 +54,7 @@ var contourMassif = coucheContourMassif({
       }),
       new myol.control.Permalink({ // Permet de garder le même réglage de carte
         display: true, // Affiche le lien
-        init: initPermalink, // On cadre le massif, s'il y a massif
+        init: !extent, // On reprend la même position s'il n'y a pas de massif
       }),
 
       // Haut droit
@@ -60,12 +62,11 @@ var contourMassif = coucheContourMassif({
         layers: fondsCarte('nav', mapKeys),
       }),
     ],
+
     layers: [
       coucheMassifsColores({
         host: host,
-<?php if ( !$vue->contenu ) { ?>
         selectName: 'select-massifs',
-<?php } ?>
       }),
       new myol.layer.vector.Chemineur({
         selectName: 'select-chem',
@@ -86,10 +87,13 @@ var contourMassif = coucheContourMassif({
       contourMassif,
 
       couchePointsWRI({
-        host: host, // Appeler la couche de CE serveur
-        selectName: 'select-wri',
-        selectMassif: contourMassif.options.selector,
-      }, 'nav'),
+          host: host,
+          selectName: 'select-wri',
+          selectMassif: contourMassif.options.selector,
+        },
+        'nav',
+        layerOptions
+      ),
       new myol.layer.Hover(), // Gère le survol du curseur
     ],
   });
@@ -97,11 +101,5 @@ var contourMassif = coucheContourMassif({
 myol.trace(map);
 
 // Centrer sur la zone du polygone
-<?if ($vue->polygone->id_polygone) { ?>
-  map.getView().fit(ol.proj.transformExtent([
-    <?=$vue->polygone->ouest?>,
-    <?=$vue->polygone->sud?>,
-    <?=$vue->polygone->est?>,
-    <?=$vue->polygone->nord?>,
-  ], 'EPSG:4326', 'EPSG:3857'));
-<? } ?>
+if (extent)
+  map.getView().fit(ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857'));

@@ -4,7 +4,6 @@ header("Pragma: no-cache");
 
 error_reporting(E_ALL);
 ini_set("display_errors", "on");
-//TODO click on new version button reloads
 
 // Default config.php
 $myol_rep = "../dist/";

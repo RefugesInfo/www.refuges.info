@@ -1,20 +1,37 @@
 /*
  * editor.css
  */
-.myol-button-edit-modify button::after {
+
+/* Close submenu after enable draw */
+.myol-button-modify.myol-button-selected div,
+.myol-button-draw-line.myol-button-selected div,
+.myol-button-draw-poly.myol-button-selected div {
+  display: none;
+}
+
+/* Modify */
+.myol-button-modify button::after {
   content: "\2725";
 }
 
-.myol-button-edit-line button::after {
-  content: "\1F58D";
+.map-edit-1 {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">+</text></svg>') 17 17, move;
 }
 
-.myol-button-edit-poly button::after {
+/* Draw line */
+.myol-button-draw-line button::after {
+  content: "\1526";
+}
+
+.map-edit-2 {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F589</text></svg>') 2 34, copy;
+}
+
+/* Draw poly */
+.myol-button-draw-poly button::after {
   content: "\23E2";
 }
 
-/* Close submenu after enable draw */
-.myol-button-edit-line.myol-button-selected div,
-.myol-button-edit-poly.myol-button-selected div {
-  display: none;
+.map-edit-3 {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F58C</text></svg>') 2 34, copy;
 }

@@ -1,15 +1,15 @@
-var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+var host = '<?=$config_wri["sous_dossier_installation"]?>',
   mapKeys = <?=json_encode($config_wri['mapKeys'])?>,
-  layerOptions = <?=json_encode($config_wri['layerOptions'])?>,
-  centre = [<?=$vue->point->longitude?>, <?=$vue->point->latitude?>],
-  cadre = '<?=$config_wri["sous_dossier_installation"]?>images/cadre.svg';
+  layerOptions = <?=json_encode($config_wri['layerOptions'])?>;
 
 var map = new ol.Map({
   target: 'carte-point',
+
   view: new ol.View({
     enableRotation: false,
     constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
   }),
+
   controls: [
     // Haut gauche
     new ol.control.Zoom(),
@@ -37,10 +37,11 @@ var map = new ol.Map({
       layers: fondsCarte('point', mapKeys),
     }),
   ],
+
   layers: [
     // Les autres points refuges.info
     couchePointsWRI({
-      host: host, // Appeler la couche de CE serveur
+      host: host,
       browserClusterMinResolution: 4, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
     }, 'point'),
 
@@ -48,7 +49,7 @@ var map = new ol.Map({
     new myol.layer.Marker({
       prefix: 'cadre', // S'interface avec les <TAG id="cadre-xxx"...>
       // Prend la position qui est dans <input id="cadre-json">
-      src: cadre,
+      src: host + 'images/cadre.svg',
       focus: 15, // Centrer
       zIndex: 300, // Above the features, under the hover label
     }),

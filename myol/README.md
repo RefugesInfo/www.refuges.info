@@ -26,17 +26,19 @@ npm run build
 
 Simple example
 ==============
-This [Example demo](https://Dominique92.github.io/myol/) implements a single map with the most current maps layers providers.
+This [Example](https://Dominique92.github.io/myol/examples/) implements a single map with the most current maps layers providers.
 * You can download the [DISTRIBUTION ZIPPED PACKAGE](https://github.com/Dominique92/dev/archive/refs/heads/master.zip) and unzip it in your website FTP section.
 * You can include the css & js sections of this example on your own page (adjust the include files path to your implementation)
 
 Layer Switcher
 ==============
-See a [Layer Switcher demo](https://Dominique92.github.io/myol/examples/layerSwitcher.html)
+Simple layer switcher with base & vector layers.
+See a [Layer Switcher example](https://Dominique92.github.io/myol/examples/?layerSwitcher)
 
 Tile layers
 ===========
-See a [Tile layers demo](https://Dominique92.github.io/myol/examples/tileLayer.html)
+Collection of base layers from different vendors.
+See a [Tile layers example](https://Dominique92.github.io/myol/examples/?tileLayer)
 * OSM, OSM-FR, OpenTopo, CyclOsm, Maps.Refuges.Info
 * ThunderForest Outdoors, OpenTopoMap, Cycles, Landscape, Transport, ...
 * IGN France, TOP25, cadastre, satellite, ...
@@ -51,29 +53,34 @@ See a [Tile layers demo](https://Dominique92.github.io/myol/examples/tileLayer.h
 
 Vector layers
 =============
-See a [Vector layer demo](https://Dominique92.github.io/myol/examples/vectorLayer.html)
-* GeoJson ajax layers,
-* OverPass (OSM vector points of interest)
+Collection of GeoJson ajax layers from different vendors with style, hover & click features.
+See a [Vector layer example](https://Dominique92.github.io/myol/examples/?vectorLayer)
+* Mountain (refuges.info, pyrenees-refuges.com, camptocamp.org)
+* Personal (chemineur.fr, alpages.info)
+* OpenstreetMap vector points of interest
 
 Misc controls
 =============
-See a [Control demo](https://Dominique92.github.io/myol/examples/controls.html)
+Collection of miscellaneous controls and buttons.
+See a [Control example](https://Dominique92.github.io/myol/examples/?controls)
 * Keep position, zoom & zoom on localStorage
 * Geocoder
-* Line length display
 * GPX upload & download
 * Off connexion GPS
 * Print map
+* Permalink
+* Customisable help
+* Line length display
 
 Marker display & edit
 =====================
-See a [Marker demo](https://Dominique92.github.io/myol/examples/marker.html)
-* Editable position marker with multi-projection position display,
+Editable position marker with multi-projection position display
+See a [Marker example](https://Dominique92.github.io/myol/examples/?marker)
 
 Lines & Polygons editor
 =======================
-See an [Editor demo](https://Dominique92.github.io/myol/examples/editor.html)
-* Polylines & polygons editor.
+Polylines & polygons editor.
+See an [Editor example](https://Dominique92.github.io/myol/examples/?editor)
 
 Off line GPS
 ============
@@ -105,7 +112,7 @@ If you want to use external providers layers, you must acquire free keys and rep
 Architecture
 ============
 Just include myol.js & myos.css after ol/dist, proj4js & geocoder's js & css.
-* See this [example](https://Dominique92.github.io/myol/examples/index.html)
+* See this [example](https://Dominique92.github.io/myol/examples/)
 * Code & all tiled layers use EPSG:3857 spherical mercator projection
 
 The coding rules are volontary simple & don't follow all openlayers's
@@ -117,8 +124,8 @@ Files
 =====
 * src/... : Source files
 * dist/myol.* : Distribution files, for your website
-* examples/... : Demos & visual tests
-* gps/... : Off line demo with GPS capabilities
+* examples/... : Examples & visual tests
+* gps/... : Off line example with GPS capabilities
 
 Included packages
 =================

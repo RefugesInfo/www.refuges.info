@@ -84,6 +84,10 @@
   background: #d1e9ff;
 }
 
+.myol-button div a {
+  color: blue !important;
+}
+
 .myol-button p,
 .myol-button span,
 .myol-button .select-ext {

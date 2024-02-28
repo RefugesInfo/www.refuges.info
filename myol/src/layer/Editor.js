@@ -11,6 +11,8 @@ import './editor.css';
 export class Editor extends ol.layer.Vector {
   constructor(options) {
     options = {
+      background: 'transparent',
+
       geoJsonId: 'geojson',
       format: new ol.format.GeoJSON(),
       dataProjection: 'EPSG:4326',
@@ -104,31 +106,41 @@ export class Editor extends ol.layer.Vector {
     this.optimiseEdited(); // Optimise at init
 
     this.interactions = [
-      new ol.interaction.Modify({ // 0 Modify
+      new ol.interaction.Select({ // 0 Hover
+        condition: ol.events.condition.pointerMove,
+        style: () => new ol.style.Style({
+          // Lines or polygons border
+          stroke: new ol.style.Stroke({
+            color: 'red',
+            width: 3,
+          }),
+        }),
+      }),
+      new ol.interaction.Modify({ // 1 Modify
         source: this.source,
         pixelTolerance: 16, // Default is 10
-        style: this.style, //BEST change cursor to move
+        style: this.style,
       }),
-      new ol.interaction.Draw({ // 1 Draw line
+      new ol.interaction.Draw({ // 2 Draw line
         source: this.source,
         type: 'LineString',
         style: this.style,
         stopClick: true, // Avoid zoom when you finish drawing by doubleclick
       }),
-      new ol.interaction.Draw({ // 2 Draw poly
+      new ol.interaction.Draw({ // 3 Draw poly
         source: this.source,
         type: 'Polygon',
         style: this.style,
         stopClick: true, // Avoid zoom when you finish drawing by doubleclick
       }),
-      new ol.interaction.Snap({ // 3 snap
+      new ol.interaction.Snap({ // 4 snap
         source: this.source,
         pixelTolerance: 7.5, // 6 + line width / 2 : default is 10
       }),
     ];
 
     // End of modify
-    this.interactions[0].on('modifyend', evt => {
+    this.interactions[1].on('modifyend', evt => {
       //BEST move only one summit when dragging
       //BEST Ctrl+Alt+click on summit : delete the line or poly
 
@@ -148,7 +160,7 @@ export class Editor extends ol.layer.Vector {
       }
 
       // Alt+click on segment : delete the segment & split the line
-      const tmpFeature = this.interactions[3].snapTo(
+      const tmpFeature = this.interactions[4].snapTo(
         evt.mapBrowserEvent.pixel,
         evt.mapBrowserEvent.coordinate,
         map
@@ -166,13 +178,13 @@ export class Editor extends ol.layer.Vector {
     });
 
     // End of line & poly drawing
-    [1, 2].forEach(i => this.interactions[i].on('drawend', () => {
+    [2, 3].forEach(i => this.interactions[i].on('drawend', () => {
       // Warn source 'on change' to save the feature
       // Don't do it now as it's not yet added to the source
       this.source.modified = true;
 
       // Reset interaction & button to modify
-      this.changeInteraction(0); // Init to modify
+      this.changeInteraction(0); // Init to hover
     }));
 
     // End of feature creation
@@ -188,55 +200,56 @@ export class Editor extends ol.layer.Vector {
       }
     });
 
+    this.changeInteraction(0, 'click'); // Init to modify
+
     this.map.addControl(new Button({
-      className: 'myol-button-edit-modify',
+      className: 'myol-button-modify',
       subMenuId: 'myol-edit-help-modify',
       subMenuHTML: '<p>Modification</p>',
       subMenuHTML_fr: helpModif_fr[this.options.editOnly || 'both'],
-      buttonAction: evt => this.changeInteraction(0, evt.type),
+      buttonAction: (type, active) => this.changeInteraction(1, type, active),
     }));
 
     if (this.options.editOnly != 'poly')
       this.map.addControl(new Button({
-        className: 'myol-button-edit-line',
+        className: 'myol-button-draw-line',
         subMenuId: 'myol-edit-help-line',
         subMenuHTML: '<p>New line</p>',
         subMenuHTML_fr: helpLine_fr,
-        buttonAction: evt => this.changeInteraction(1, evt.type),
+        buttonAction: (type, active) => this.changeInteraction(2, type, active),
       }));
 
     if (this.options.editOnly != 'line')
       this.map.addControl(new Button({
-        className: 'myol-button-edit-poly',
+        className: 'myol-button-draw-poly',
         subMenuId: 'myol-edit-help-poly',
         subMenuHTML: '<p>New polygon</p>',
         subMenuHTML_fr: helpPoly_fr,
-        buttonAction: evt => this.changeInteraction(2, evt.type),
+        buttonAction: (type, active) => this.changeInteraction(3, type, active),
       }));
-
-    this.changeInteraction(0); // Init to modify
 
     return super.setMapInternal(map);
   } // End setMapInternal
 
-  changeInteraction(interaction, type = 'click') {
-    if (type == 'click') {
-      this.interactions.forEach(i => this.map.removeInteraction(i));
-      this.map.addInteraction(this.interactions[interaction]);
-      this.map.addInteraction(this.interactions[3]); // Snap must be added after the others
+  changeInteraction(interaction, type, active) {
+    if (!active) // Click twice on the same button
+      interaction = 0;
 
-      // Register again the full list of features as addFeature manages already registered
-      this.map.getLayers().forEach(l => {
-        if (l.getSource() && l.getSource().getFeatures) // Vector layers only
-          l.getSource().getFeatures()
-          .forEach(f =>
-            this.interactions[3].addFeature(f));
-      });
+    this.interactions.forEach(i => this.map.removeInteraction(i));
+    this.map.addInteraction(this.interactions[interaction]);
+    this.map.addInteraction(this.interactions[4]); // Snap must be added after the others
 
-      const mapEl = this.map.getTargetElement();
-      if (mapEl)
-        mapEl.style.cursor = interaction ? 'copy' : 'auto';
-    }
+    // Register again the full list of features as addFeature manages already registered
+    this.map.getLayers().forEach(l => {
+      if (l.getSource() && l.getSource().getFeatures) // Vector layers only
+        l.getSource().getFeatures().forEach(f =>
+          this.interactions[4].addFeature(f)
+        );
+    });
+
+    const mapEl = this.map.getTargetElement();
+    if (mapEl)
+      mapEl.className = 'map-edit-' + interaction;
   }
 
   // Processing the data
@@ -412,50 +425,54 @@ export class Editor extends ol.layer.Vector {
   }
 }
 
+// Default french text
 var helpModif_fr = {
-  line: '\
-<p><u>Déplacer un sommet:</u> cliquer sur le sommet et le déplacer</p>\
-<p><u>Ajouter un sommet au milieu d\'un segment:</u> cliquer le long du segment puis déplacer</p>\
-<p><u>Supprimer un sommet:</u> Alt+cliquer sur le sommet</p>\
-<p><u>Couper une ligne en deux:</u> Alt+cliquer sur le segment à supprimer</p>\
-<p><u>Inverser la direction d\'une ligne:</u> Shift+cliquer sur le segment à inverser</p>\
-<p><u>Fusionner deux lignes:</u> déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
-<p><u>Supprimer une ligne:</u> Ctrl+Alt+cliquer sur un segment</p>',
-  poly: '\
-<p><u>Déplacer un sommet:</u> cliquer sur le sommet et le déplacer</p>\
-<p><u>Ajouter un sommet au milieu d\'un segment:</u> cliquer le long du segment puis déplacer</p>\
-<p><u>Supprimer un sommet:</u> Alt+cliquer sur le sommet</p>\
-<p><u>Scinder un polygone:</u> joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
-<p><u>Fusionner 2 polygones:</u> superposer un côté (entre 2 sommets consécutifs)\
+    line: '\
+<p>Cliquer sur le bouton &#x2725; puis</p>\
+<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
+<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
+<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
+<p><u>Couper une ligne en deux</u>: Alt+cliquer sur le segment à supprimer</p>\
+<p><u>Inverser la direction d\'une ligne</u>: Shift+cliquer sur le segment à inverser</p>\
+<p><u>Fusionner deux lignes</u>: déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
+<p><u>Supprimer une ligne</u>: Ctrl+Alt+cliquer sur un segment</p>',
+    poly: '\
+<p>Cliquer sur le bouton &#x2725; puis </p>\
+<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
+<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
+<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
+<p><u>Scinder un polygone</u>: joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
+<p><u>Fusionner 2 polygones</u>: superposer un côté (entre 2 sommets consécutifs)\
  de chaque polygone puis Alt+cliquer dessus</p>\
-<p><u>Supprimer un polygone:</u> Ctrl+Alt+cliquer sur un segment</p>',
-  both: '\
-<p><u>Déplacer un sommet:</u> cliquer sur le sommet et le déplacer</p>\
-<p><u>Ajouter un sommet au milieu d\'un segment:</u> cliquer le long du segment puis déplacer</p>\
-<p><u>Supprimer un sommet:</u> Alt+cliquer sur le sommet</p>\
-<p><u>Couper une ligne en deux:</u> Alt+cliquer sur le segment à supprimer</p>\
-<p><u>Inverser la direction d\'une ligne:</u> Shift+cliquer sur le segment à inverser</p>\
-<p><u>Transformer un polygone en ligne:</u> Alt+cliquer sur un côté</p>\
-<p><u>Fusionner deux lignes:</u> déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
-<p><u>Transformer une ligne en polygone:</u> déplacer une extrémité pour rejoindre l\'autre</p>\
-<p><u>Scinder un polygone:</u> joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
-<p><u>Fusionner 2 polygones:</u> superposer un côté (entre 2 sommets consécutifs)\
+<p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
+    both: '\
+<p>Cliquer sur le bouton &#x2725; puis</p>\
+<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
+<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
+<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
+<p><u>Couper une ligne en deux</u>: Alt+cliquer sur le segment à supprimer</p>\
+<p><u>Inverser la direction d\'une ligne</u>: Shift+cliquer sur le segment à inverser</p>\
+<p><u>Transformer un polygone en ligne</u>: Alt+cliquer sur un côté</p>\
+<p><u>Fusionner deux lignes</u>: déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
+<p><u>Transformer une ligne en polygone</u>: déplacer une extrémité pour rejoindre l\'autre</p>\
+<p><u>Scinder un polygone</u>: joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
+<p><u>Fusionner 2 polygones</u>: superposer un côté (entre 2 sommets consécutifs)\
  de chaque polygone puis Alt+cliquer dessus</p>\
-<p><u>Supprimer une ligne ou un polygone:</u> Ctrl+Alt+cliquer sur un segment</p>',
-};
+<p><u>Supprimer une ligne ou un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
+  },
 
-var helpLine_fr = '\
-  <p><u>Pour créer une ligne:</u></p>\
-  <p><a>Cliquer sur le bouton &#128397;</a></p>\
+  helpLine_fr = '\
+  <p><u>Pour créer une ligne</u>:</p>\
+  <p>Cliquer sur le bouton &#x1526;</p>\
   <p>Cliquer sur l\'emplacement du début</p>\
   <p>Puis sur chaque sommet</p>\
   <p>Double cliquer sur le dernier sommet pour terminer</p>\
   <hr>\
-  <p>Cliquer sur une extrémité d\'une ligne existante pour l\'étendre</p>';
+  <p>Cliquer sur une extrémité d\'une ligne existante pour l\'étendre</p>',
 
-var helpPoly_fr = '\
-  <p><u>Pour créer un polygone:</u></p>\
-  <p><a>Cliquer sur le bouton &#9186;</a></p>\
+  helpPoly_fr = '\
+  <p><u>Pour créer un polygone</u>:</p>\
+  <p>Cliquer sur le bouton &#9186;</p>\
   <p>Cliquer sur l\'emplacement du premier sommet</p>\
   <p>Puis sur chaque sommet</p>\
   <p>Double cliquer sur le dernier sommet pour terminer</p>\

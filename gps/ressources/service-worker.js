@@ -1,3 +1,5 @@
+/* global jsVars */
+
 // Create/install cache
 self.addEventListener('install', evt => {
   // Last file date will trigger the cache reload

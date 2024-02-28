@@ -794,12 +794,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* Carte NAV présentation mobile verticale */
 #carte-nav {
-  width: 75%; /* Support of non CSS3 browsers (Safari on Windows)*/
-  height: 75%;
-  width: 100%;
   height: 96vw;
   max-height: calc(100% - 65px); /* Pour ne pas trop déborder en bas */
-  margin: 0 0;
 }
 #selecteur-carte-edit {
   padding-left: 1px;
@@ -880,10 +876,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 /* Carte formulaire de modification de massif */
 #carte-edit {
-  float: right;
-  width: 99vw;
+  width: 99%;
   height: 97vw;
   max-height: 450px;
+  margin: 0 auto;
 }
 /* Carte formulaire de modification présentation écrans */
 @media screen and (min-width: 800px) {
@@ -901,7 +897,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   }
 }
   #carte-nav {
-    margin: 0;
+    margin: 4px;
 }
 
 #check-types {

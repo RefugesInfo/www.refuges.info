@@ -9,6 +9,7 @@ import ol from '../ol';
 export class Hover extends ol.layer.Vector {
   constructor(options) {
     super({
+      background: 'transparent',
       source: new ol.source.Vector(),
       zIndex: 500, // Above all layers
       wrapX: false,

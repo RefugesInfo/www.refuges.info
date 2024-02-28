@@ -56,6 +56,7 @@ export class Load extends Button {
         wrapX: false,
       }),
       gpxLayer = new ol.layer.Vector({
+        background: 'transparent',
         source: gpxSource,
         style: feature => {
           const properties = feature.getProperties();

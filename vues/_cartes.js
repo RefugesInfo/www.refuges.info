@@ -1,6 +1,6 @@
 // Contient les fonctions communes à plusieurs cartes
 
-function couchePointsWRI(options, page) {
+function couchePointsWRI(options, page, layerOptions) {
   const layer = new myol.layer.MyVectorLayer({
     selectMassif: new myol.Selector('no-selector'), // Defaut = pas de sélecteur de massif
 

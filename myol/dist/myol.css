@@ -526,6 +526,10 @@
   background: #d1e9ff;
 }
 
+.myol-button div a {
+  color: blue !important;
+}
+
 .myol-button p,
 .myol-button span,
 .myol-button .select-ext {
@@ -580,10 +584,10 @@
   background: #fcffd1 !important;
 }
 /*!
- * @myol/geocoder - v4.2.16
+ * @myol/geocoder - v4.2.17-dev
  * DEVELOPMENT : DON'T USE
  * https://github.com/Dominique92/ol-geocoder
- * Built: 14/09/2023 15:59:54
+ * Built: 27/02/2024 10:06:16
  */
  
  .ol-touch .ol-control.gcd-gl-control button {
@@ -655,7 +659,8 @@
   width: 1.5625em;
   height: 1.5625em;
   top: 0.125em;
-  left: 0.125em; }
+  left: 0.125em;
+  cursor: pointer; }
 
 .ol-geocoder .gcd-gl-btn:after {
   content: "\1F50D"; }
@@ -842,6 +847,7 @@
   font-weight: lighter;
   color: #333; }
 
+
 /*
  * myGeocodeur.css
  */
@@ -934,20 +940,37 @@ body:has(.myol-print-landscape)>*:not(.myol-print-landscape),
 /*
  * editor.css
  */
-.myol-button-edit-modify button::after {
+
+/* Close submenu after enable draw */
+.myol-button-modify.myol-button-selected div,
+.myol-button-draw-line.myol-button-selected div,
+.myol-button-draw-poly.myol-button-selected div {
+  display: none;
+}
+
+/* Modify */
+.myol-button-modify button::after {
   content: "\2725";
 }
 
-.myol-button-edit-line button::after {
-  content: "\1F58D";
+.map-edit-1 {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">+</text></svg>') 17 17, move;
 }
 
-.myol-button-edit-poly button::after {
+/* Draw line */
+.myol-button-draw-line button::after {
+  content: "\1526";
+}
+
+.map-edit-2 {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F589</text></svg>') 2 34, copy;
+}
+
+/* Draw poly */
+.myol-button-draw-poly button::after {
   content: "\23E2";
 }
 
-/* Close submenu after enable draw */
-.myol-button-edit-line.myol-button-selected div,
-.myol-button-edit-poly.myol-button-selected div {
-  display: none;
+.map-edit-3 {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F58C</text></svg>') 2 34, copy;
 }

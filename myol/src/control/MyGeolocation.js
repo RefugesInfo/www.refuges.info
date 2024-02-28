@@ -63,6 +63,7 @@ export class MyGeolocation extends Button {
     }));
 
     this.graticuleLayer = new ol.layer.Vector({
+      background: 'transparent',
       source: new ol.source.Vector({
         features: [this.graticuleFeature, this.northGraticuleFeature],
       }),

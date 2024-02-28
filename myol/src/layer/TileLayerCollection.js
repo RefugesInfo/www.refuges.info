@@ -410,7 +410,7 @@ export class MapboxElevation extends Maxbox {
  * elevation = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1
  * Key : https://cloud.maptiler.com/account/keys/
  */
-/*// Opportunity : backup of Maxbox elevation 
+/*// Backup of Maxbox elevation 
 export class MapTilerElevation extends XYZ {
   constructor(options = {}) {
     super({
@@ -430,11 +430,13 @@ export function collection(options = {}) {
   return {
     'OSM': new OpenStreetMap(),
     'OSM outdoors': new Thunderforest({
+      key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'outdoors',
     }),
     'OpenTopo': new OpenTopo(),
     'OSM transports': new Thunderforest({
+      key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'transport',
     }),
@@ -444,6 +446,7 @@ export function collection(options = {}) {
     'Refuges.info': new MRI(),
 
     'IGN TOP25': new IGN({
+      key: options.ign, // For simplified options
       ...options.ign, // Include key
       layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
     }),
@@ -464,25 +467,31 @@ export function collection(options = {}) {
       subLayer: 'osm', // No key
     }),
     'Kompas winter': new Kompass({
+      key: options.kompass, // For simplified options
       ...options.kompass, // Include key
       subLayer: 'winter',
       maxZoom: 22,
     }),
-    'England': new OS(options.os), // options include key
+    'England': new OS({
+      key: options.os, // For simplified options
+      ...options.os, // Include key
+    }),
     'Italie': new IGM(),
 
     'España': new IgnES(),
     'Google': new Google(),
 
     'Maxar': new Maxbox({
+      key: options.mapbox, // For simplified options
+      ...options.mapbox, // Include key
       tileset: 'mapbox.satellite',
-      ...options.mapbox,
     }),
     'Photo Google': new Google({
       subLayers: 's',
     }),
     'Photo ArcGIS': new ArcGIS(),
     'Photo Bing': new Bing({
+      key: options.bing, // For simplified options
       ...options.bing, // Include key
       imagerySet: 'Aerial',
     }),
@@ -516,58 +525,67 @@ export function collection(options = {}) {
   };
 }
 
-export function demo(options = {}) {
+export function examples(options = {}) {
   return {
     ...collection(options),
 
     'OSM fr': new OpenStreetMap({
       url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
-      //BEST BUG Ensure CORS response header values are valid
     }),
     'OSM orthos FR': new OpenStreetMap({
       url: 'https://wms.openstreetmap.fr/tms/1.0.0/tous_fr/{z}/{x}/{y}',
     }),
 
     'ThF cycle': new Thunderforest({
+      key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'cycle',
       maxZoom: 14,
     }),
     'ThF trains': new Thunderforest({
+      key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'pioneer',
     }),
     'ThF villes': new Thunderforest({
+      key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'neighbourhood',
     }),
     'ThF landscape': new Thunderforest({
+      key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'landscape',
     }),
     'ThF contraste': new Thunderforest({
+      key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'mobile-atlas',
     }),
 
     'OS light': new OS({
+      key: options.os, // For simplified options
       ...options.os, // Include key
       subLayer: 'Light_3857',
     }),
     'OS road': new OS({
+      key: options.os, // For simplified options
       ...options.os, // Include key
       subLayer: 'Road_3857',
     }),
     'Kompas topo': new Kompass({
+      key: options.kompass, // For simplified options
       ...options.kompass, // Include key
       subLayer: 'topo',
     }),
 
     'Bing': new Bing({
+      key: options.bing, // For simplified options
       ...options.bing, // Include key
       imagerySet: 'Road',
     }),
     'Bing hybrid': new Bing({
+      key: options.bing, // For simplified options
       ...options.bing, // Include key
       imagerySet: 'AerialWithLabels',
     }),
@@ -593,7 +611,10 @@ export function demo(options = {}) {
       key: 'an7nvfzojv5wa96dsga5nk8w', //BEST use owner key
     }),
 
-    'MapBox elevation': new MapboxElevation(options.mapbox), // options include key
+    'MapBox elevation': new MapboxElevation({
+      key: options.mapbox, // For simplified options
+      ...options.mapbox, // Include key
+    }),
 
     'Positron': new Positron(),
     'No tile': new NoTile(),

@@ -1,17 +1,20 @@
-var host = '<?=$config_wri["sous_dossier_installation"]?>', // Appeler la couche de CE serveur
+var host = '<?=$config_wri["sous_dossier_installation"]?>',
   extent = [<?=$vue->bbox?>];
 
 var map = new ol.Map({
   target: 'carte-accueil',
+
   view: new ol.View({
     enableRotation: false,
     constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
   }),
+
   controls: [
     new ol.control.Attribution({ // Du fond de carte
       collapsed: false,
     }),
   ],
+
   layers: [
     new myol.layer.tile.MRI(), // Fond de carte
     coucheMassifsColores({ // Les massifs

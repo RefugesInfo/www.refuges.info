@@ -61,18 +61,9 @@ export class Button extends ol.control.Control {
   }
 
   setMap(map) {
-    // Register action listeners when html is fully loaded
-    this.buttonEl.addEventListener('click', evt => this.buttonListener(evt));
     this.element.addEventListener('mouseover', evt => this.buttonListener(evt));
     this.element.addEventListener('mouseout', evt => this.buttonListener(evt));
-
-    // Close the submenu when click or touch on the map
-    document.addEventListener('click', evt => {
-      const el = document.elementFromPoint(evt.x, evt.y);
-
-      if (el && el.tagName == 'CANVAS')
-        this.element.classList.remove('myol-button-selected');
-    });
+    this.buttonEl.addEventListener('click', evt => this.buttonListener(evt));
 
     this.subMenuEl.querySelectorAll('a, input')
       .forEach(el => ['click', 'change'].forEach(type =>
@@ -84,8 +75,6 @@ export class Button extends ol.control.Control {
   }
 
   buttonListener(evt) {
-    this.buttonAction(evt);
-
     if (evt.type == 'mouseover')
       this.element.classList.add('myol-button-hover');
     else // mouseout | click
@@ -98,6 +87,8 @@ export class Button extends ol.control.Control {
     for (let el of document.getElementsByClassName('myol-button'))
       if (el != this.element)
         el.classList.remove('myol-button-selected');
+
+    this.buttonAction(evt.type, this.element.classList.contains('myol-button-selected'));
   }
 
   buttonAction() {}

@@ -23,10 +23,16 @@ import * as source from 'ol/source';
 import * as sphere from 'ol/sphere';
 import * as style from 'ol/style';
 import * as util from 'ol/util';
+import * as condition from 'ol/events/condition';
 
 export default {
   control: control,
   coordinate: coordinate,
+  events: {
+    condition: {
+      pointerMove: condition.pointerMove,
+    },
+  },
   extent: extent,
   Feature: Feature,
   format: { // Not all formats are used & the total file is big
