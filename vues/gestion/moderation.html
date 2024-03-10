@@ -42,11 +42,12 @@
 			<br>
 
 			<?php if ($commentaire->id_createur_commentaire==0) { ?><!-- Seulement modifiable si n'était pas authentifié -->
-				<label>Auteur:
+				<label>Auteur (si anonyme):
 					<input type="text" name="auteur_commentaire" value="<?=protege($commentaire->auteur_commentaire)?>" class="input_en_ligne" />
 				</label>
 				<br><br>
 			<?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur (lui faire dire ce qu'il n'a pas dit), mais ça se discute ? ?>
+			ou<br>
 			Auteur du commentaire :
 			<select name='id_createur_commentaire'>
               <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Anonyme</option>
