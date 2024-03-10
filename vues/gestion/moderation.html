@@ -48,7 +48,7 @@
 				<br><br>
 			<?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur (lui faire dire ce qu'il n'a pas dit), mais ça se discute ? ?>
 			Auteur du commentaire :
-			<select name='id_createur'>
+			<select name='id_createur_commentaire'>
               <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Anonyme</option>
             <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
             <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
