@@ -1,0 +1,30 @@
+<style>
+table, td, th {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  height: 30px;
+}
+</style>
+<div class="contenu">
+	<p>Liste des 50 derniers email envoyés depuis le forum qui sont revenu en erreur</p>
+<table>
+  <tr>
+    <th>date</th>
+    <th>contenu</th>
+  </tr>
+  <?php if (isset($vue->emails)) foreach ($vue->emails as $email) { ?>
+  <tr>
+    <td><?=$email->date_email?></td>
+    <td><?=nl2br(htmlentities($email->contenu))?></td>
+  </tr>
+
+  <?}?>
+</table>
+</div>

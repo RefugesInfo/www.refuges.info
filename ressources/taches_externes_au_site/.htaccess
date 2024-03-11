@@ -1,0 +1,2 @@
+#Aucune raison d'être accessible depuis l'extérieur, on pourrait même les sortir de l'arborescence web ce serait encore mieux
+deny from all 
