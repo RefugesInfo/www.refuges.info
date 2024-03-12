@@ -1,4 +1,4 @@
-<?
+<?php
 
 header("Content-disposition: filename=contributions.rss");
 header("Content-Type: application/xml; UTF-8"); // rajout du charset
@@ -6,51 +6,53 @@ header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
 headers_cache_api();
 
-
-
-$rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
-$rss .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
-$rss .= "<channel>\r\n";
-$rss .= "	<title>Refuges.info</title>\r\n";
-$rss .= "	<link>https://".$config_wri['nom_hote']."/</link>\r\n";
-$rss .= "	<atom:link href=\"https://".$config_wri['nom_hote'].htmlspecialchars($_SERVER["REQUEST_URI"])."\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
-$rss .= "	<description>".$config_wri['copyright_API']."</description>\r\n";
-$rss .= "	<language>fr</language>\r\n";
-$rss .= "	<image>\r\n";
-$rss .= "		<url>https://".$config_wri['nom_hote']."/images/icone-rss.svg</url>\r\n";
-$rss .= "		<title>Refuges.info</title>\r\n";
-$rss .= "		<link>https://".$config_wri['nom_hote']."/</link>\r\n";
-$rss .= "		<height>64</height>\r\n";
-$rss .= "		<width>64</width>\r\n";
-$rss .= "	</image>\r\n";
-
-foreach ($news AS $nouvelle) {
-	$rss .= "	<item>\r\n";
-	$rss .= "		<title>".$nouvelle['categorie']." : ".$nouvelle['titre']."</title>\r\n";
-	$rss .= "		<link>".$nouvelle['lien']."</link>\r\n";
-	$rss .= "		<guid>".$nouvelle['lien']."</guid>\r\n";
-	$rss .= "		<pubDate>".date('r',$nouvelle['date'])."</pubDate>\r\n";
-	$rss .= "		<description><![CDATA[
-			<b><big>".$nouvelle['texte']."</big></b><br>\r\n";
-	switch ($nouvelle['categorie']) {
-		case 'Commentaire':
-			$rss .= "			<p style='color:grey;'>".$nouvelle['commentaire']."";
-			if (!empty($nouvelle['photo'])) {
-				$rss .= "<br><a href='".$nouvelle['photo_originale']."'><img src='".$nouvelle['photo_mini']."' /></a>";
-			}
-			$rss .= "</p>\r\n";
-			break;
-		case 'Point':
-			$rss .= "			<p style='color:grey;'><b>Remarques :</b> ".$nouvelle['remarques']."<br><b>Accès :</b> ".$nouvelle['acces']."</p>";
-			break;
-	}
-	$rss .= "			]]></description>\r\n";
-	$rss .= "	</item>\r\n"; 
-}
-
-$rss .= '</channel>';
-$rss .= '</rss>';
-
-echo $rss;
-
 ?>
+<?='<?'?>xml version="1.0" encoding="UTF-8"<?='?>'?>
+
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Refuges.info</title>
+  <link>https://<?=$config_wri['nom_hote']?>/</link>
+  <atom:link href="https://<?=$config_wri['nom_hote'].htmlspecialchars($_SERVER["REQUEST_URI"])?>" rel="self" type="application/rss+xml" />
+  <description><?=$config_wri['copyright_API']?></description>
+  <language>fr</language>
+  <image>
+    <url>https://<?=$config_wri['nom_hote']?>/images/icone-rss.svg</url>
+    <title>Refuges.info</title>
+    <link>https://<?=$config_wri['nom_hote']?>/</link>
+    <height>64</height>
+    <width>64</width>
+  </image>
+
+  <?php foreach ($news AS $nouvelle) { ?>
+      <item>
+        <title><?=$nouvelle['categorie']?> : <?=$nouvelle['titre']?></title>
+        <link><?=$nouvelle['lien']?></link>
+        <guid><?=$nouvelle['lien'].rand(1,10000)?></guid>
+        <pubDate><?=date('r',$nouvelle['date'])?></pubDate>
+        <description><![CDATA[
+          <b><big><?=$nouvelle['texte']?></big></b><br>
+            <?php switch ($nouvelle['categorie']) {
+                    case 'Commentaire':
+            ?>
+            <p style='color:grey;'><?=$nouvelle['texte']?>
+              <?php if (!empty($nouvelle['photo'])) { ?>
+              <br><a href="https://<?=$config_wri['nom_hote'].$nouvelle['photo_originale']?>"><img src="https://<?=$config_wri['nom_hote'].$nouvelle['photo_mini']?>" /></a>
+              <?php } ?>
+            </p>
+            
+            <?php   break;
+                    case 'Point':
+            ?>
+            <p style='color:grey;'><b>Remarques :</b> <?=$nouvelle['remarques']?><br><b>Accès :</b> <?=$nouvelle['acces']?></p>
+            <?php     break; 
+            }
+            ?>
+              ]]></description>
+      </item> 
+  <?php } ?>
+
+</channel>
+</rss>
+
+
