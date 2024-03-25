@@ -18,8 +18,11 @@ $config_wri['includes_directory']=basename(__DIR__);
 // Ceci est le chemin d'accès physique au / du projet wri
 $config_wri['racine_projet']=str_replace($config_wri['includes_directory'],"",__DIR__);
 
-// Ceci est le chemin relatif à la racine web d'accès au projet wri : / si on est à la racine ou /mon/installation/ par exemple. Commence et fini par un "/"
-$config_wri['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config_wri['racine_projet']);
+// Ceci est le chemin relatif à la racine web d'accès au projet wri : / si on est à la racine ou /mon/installation/ par exemple. Doit finir par un "/".
+if (isset($_SERVER['DOCUMENT_ROOT']))
+  $config_wri['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config_wri['racine_projet']);
+else
+  $config_wri['sous_dossier_installation']='/'; // si on est appelé depuis la ligne de commande, $_SERVER['DOCUMENT_ROOT'] n'existe pas, on suppose "/" mais en vrai, on s'en fiche un peu car en ligne de commande aucun de ces chemins de devrait servir
 
 $config_wri['rep_web_photos_points']=$config_wri['sous_dossier_installation']."photos_points/";
 $config_wri['rep_photos_points']=$config_wri['racine_projet']."photos_points/";
@@ -82,9 +85,8 @@ $config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/dist/';
 $config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'myol/dist/';
 $config_wri['nom_ol']='myol'; // Peut-être surchargé avec 'myol-debug'
 
-// En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
-
-$config_wri['nom_hote']=$_SERVER['HTTP_HOST'];
+// En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique. Si cette variable n'est pas définie on utilise du vide.
+$config_wri['nom_hote'] = $_SERVER['HTTP_HOST'] ?? '';
 
 // Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
 // afin de pouvoir faire des require_once('modele.php');
