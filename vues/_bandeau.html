@@ -15,7 +15,15 @@
 	<div class="menu-haut">
 		<div class="menu-connexion menu-bouton">
 	<?php if (est_connecte() && $infos_identification->username) { ?>
-			<span>&#128104;</span><span class="menu-large"><?=$infos_identification->username?> <?php if ($vue->demande_correction && est_moderateur()) {?><span title="Commentaires à corriger">⭐</span><?php } ?></span>
+			<span>&#128104;</span><span class="menu-large"><?=$infos_identification->username?> 
+			<?php if ( est_moderateur()) 
+                    if( $vue->demande_correction)
+                      {?>
+                  <span title="Commentaires à corriger">⭐</span>
+                      <?php } elseif ($vue->email_en_erreur) { ?>
+                  <span title="Emails en erreur">🌙</span>
+            <?php } ?>
+            </span>
 			<ul>
 				<li>
 		<?php if (!est_moderateur()) { ?>
@@ -53,7 +61,7 @@
 					</a>
 				</li><li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_envoi_emails">
-						Emails en erreur
+						<?php if ($vue->email_en_erreur) {?>🌙 <?php } ?>Emails en erreur
 					</a>
 				</li><li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=1">

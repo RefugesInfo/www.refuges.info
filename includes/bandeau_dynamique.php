@@ -8,7 +8,7 @@ require_once ('polygone.php'); // Nécessaire pour générer le menu des zones c
 require_once ('wiki.php');
 require_once ('meta_donnee.php'); // Pour la liste des types de points
 
-function remplissage_zones_bandeau()
+function remplissage_zones_bandeau() // Note 2024, cette liste n'est plus utilisée dans le bandeau, juste sur la page d'accueil, on pourrait mettre ça ailleurs...
 {
     global $config_wri;
     // Ajoute les liens vers les autres zones
@@ -33,6 +33,20 @@ function info_demande_correction ()
         return true;
     else
         return false;
+}
+// Fonction qui va permettre ensuite d'afficher la "petite étoile :☆" en haut à coté du nom du modérateur
+// Pour le prévenir si un email envoyé par le forum est resté bloqué
+function info_email_bounce ()
+{
+  global $pdo;
+  $query_emails_erreur="select * from emails_bounce where a_traiter='t' LIMIT 1";
+  if (! ($res = $pdo->query($query_emails_erreur)))
+    return false; // Pas une erreur gràve, on échoue silencieusement
+  
+  if (count($res->fetchAll())==0)
+    return false;
+  else
+    return true;
 }
 // Cette fonction permet de préparer le menu des pages d'aide
 function prepare_lien_wiki_du_bandeau()

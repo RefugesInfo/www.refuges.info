@@ -21,7 +21,12 @@ th {
   </tr>
   <?php if (isset($vue->emails)) foreach ($vue->emails as $email) { ?>
   <tr>
-    <td><?=$email->date_email?></td>
+    <td><?=$email->date_email?>
+      <?php if ($email->a_traiter) { ?>
+        <br>
+        <a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_envoi_emails?id_email_bounce=<?=$email->id_email_bounce?>">Marquer comme traité</button>
+      <?php } ?>
+    </td>
     <td><?=nl2br(htmlentities($email->contenu))?></td>
   </tr>
 

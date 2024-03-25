@@ -92,8 +92,10 @@ class listener implements EventSubscriberInterface
 		$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes
 		$vue->lien_wiki=prepare_lien_wiki_du_bandeau(); // Menu des pages d'aide
 		$vue->types_point_affichables=types_point_affichables(); // Menu des types de points
-        if (est_moderateur())
+        if (est_moderateur()) {
             $vue->demande_correction=info_demande_correction ();
+            $vue->email_en_erreur=info_email_bounce ();
+        }
 
 		ob_start();
 		include ($config_wri['chemin_vues'].'_bandeau.html');

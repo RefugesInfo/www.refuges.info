@@ -16,10 +16,6 @@ Soit depuis la config de postfix ou du MTA
 
 */
 
-// Ces variables n'exitent pas en ligne de commande, mais comme je ne m'en sers pas, je les vide pour éviter une NOTICE
-$_SERVER['DOCUMENT_ROOT']="";
-$_SERVER['HTTP_HOST']="";
-
 
 require_once ( dirname(__FILE__) . '/../../includes/config.php');
 require_once ("bdd.php");
@@ -27,8 +23,8 @@ require_once ('mise_en_forme_texte.php');
 
 $input_data = $pdo->quote(stream_get_contents(STDIN));
 
-$query_email_bounce="INSERT INTO emails_bounce (date, contenu)
-                          VALUES (now(), $input_data);";
+$query_email_bounce="INSERT INTO emails_bounce (date, contenu, a_traiter)
+                          VALUES (now(), $input_data, 'true');";
 if (! ($res = $pdo->query($query_email_bounce)))
     return erreur("Requête en erreur, impossible d'ajouter cet email à la base",$query_email_bounce);
 

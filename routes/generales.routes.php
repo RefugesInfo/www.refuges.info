@@ -81,11 +81,14 @@ if (!isset($vue->type))
 // On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config_wri['chemin_controlleurs'].$controlleur->type.".php");
 
-// et vérification s'il n'y a pas un commentaire à modérer pour notre équipe de modération
+// et vérification s'il n'y a pas un commentaire à modérer ou un email non reçu par un membre pour notre équipe de modération
 // FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
 // Si quelqu'un veut le bouger, il a mon feu vert -- sly
 if (est_moderateur())
+{
 	$vue->demande_correction=info_demande_correction ();
+    $vue->email_en_erreur=info_email_bounce();
+}
 
 $vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_bandeau.js?'
 	.filemtime($config_wri['chemin_vues'].'_bandeau.js');
