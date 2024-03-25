@@ -81,10 +81,9 @@ $config_wri['forum_refuges']=4;
 $config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/dist/';
 $config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'myol/dist/';
 $config_wri['nom_ol']='myol'; // Peut-être surchargé avec 'myol-debug'
-error_reporting(E_ALL);
-ini_set('display_errors','on');
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique
+
 $config_wri['nom_hote']=$_SERVER['HTTP_HOST'];
 
 // Permet d'ajouter le chemin des includes et des modeles au path de recherche, ainsi, il suffit d'inclure le config.php
