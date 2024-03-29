@@ -39,11 +39,11 @@ headers_cors_par_default();
   
 <?php foreach ($points AS $point) { ?>
   <Placemark id='<?=$point->id?>'>
-    <name><?=htmlspecialchars($point->nom,ENT_NOQUOTES)?></name>
+    <name><?=htmlspecialchars($point->nom)?></name>
       <description>
         <![CDATA[ <em><?=$point->type['valeur']?></em> 
               <br>
-              <p><?=bbcode2html($point->description['valeur'],true)?></p>
+              <p><?=bbcode2html(htmlspecialchars($point->description['valeur']),true)?></p>
               <br>
             <center><a href='<?=$point->lien?>'>Détails</a></center>
         ]]>

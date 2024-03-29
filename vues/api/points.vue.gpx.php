@@ -31,7 +31,7 @@ headers_cors_par_default();
   <ele><?=$point->coord['alt']?></ele>
   <name><?=htmlspecialchars($point->nom)?> <?php if ($point->etat['valeur']!="") print('('.$point->etat['valeur'].')')?></name>
     <type><?=$point->type['valeur']?></type>
-    <desc><?=$point->description['valeur']?></desc>
+    <desc><?=htmlspecialchars(bbcode2txt($point->description['valeur']))?></desc>
     <src><?=$point->coord['precision']['nom']?></src>
     <link href="<?=$point->lien?>" />
 </wpt>

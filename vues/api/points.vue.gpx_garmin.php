@@ -25,8 +25,7 @@ header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
   <ele><?=$point->coord['alt']?></ele>
   <name><?=htmlspecialchars($point->nom)?><?php if ($point->etat['valeur']!="") print(' ('.$point->etat['valeur'].')')?></name>
   <cmt><?=$point->type['valeur']?>
-
-<?=$point->description['valeur']?></cmt>
+<?=htmlspecialchars($point->description['valeur'])?></cmt>
   <link href="<?=$point->lien?>" />
   <sym><?=$point->sym?></sym>
   <type><?=$point->type['valeur']?></type>

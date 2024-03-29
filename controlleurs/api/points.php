@@ -259,7 +259,7 @@ foreach ($points_bruts as $i=>$point) {
       $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
 
       /*
-      sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx, ça pourrait aussi être réutilisé pour le kml
+      sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx et du kml
       */
       $description="";
       if ($point->equivalent_places!="" and !empty($point->places))
@@ -268,12 +268,11 @@ foreach ($points_bruts as $i=>$point) {
       if ($point->equivalent_places_matelas!="" and !empty($point->places_matelas))
         $description.=$point->equivalent_places_matelas.": ".$point->places_matelas."\n";
         
-      $description.=$point->remark;
-      $description.=$point->acces;
-      if ( $point->equivalent_proprio!="")
-        $description.=$point->proprio;
+      $description.=$point->remark."\n";
+      $description.=$point->acces."\n";
+      $description.=$point->proprio."\n";
       
-      $points->$i->description['valeur']=htmlspecialchars(bbcode2txt($description));
+      $points->$i->description['valeur']=$description;
     }
 
     /****************************** FORMATAGE DU TEXTE ******************************/
