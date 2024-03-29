@@ -15,8 +15,8 @@ header("Content-Transfer-Encoding: binary");
 <?php foreach ($points as $point) { ?>
   <gml:featureMember>
     <point_wri>
-        <nom><?=$point->nom?></nom>
-        <type><?=$point->type['valeur']?></type>
+        <nom><?=protege($point->nom)?></nom>
+        <type><?=protege($point->type['valeur'])?></type>
         <icone><?=$point->type['icone']?></icone>
         <url><?=$point->lien?></url>
         <altitude><?=$point->coord['alt']?></altitude>
