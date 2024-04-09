@@ -28,7 +28,7 @@ require_once ("utilisateur.php");
     // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
     // PDO jmb re ecriture en une seule requete
     $q = "SELECT
-        ( SELECT count(*) FROM points WHERE id_point_type IN ( ".$config_wri['tout_type_refuge']." )
+        ( SELECT count(*) FROM points WHERE id_point_type IN ( ".implode(',',$config_wri['tout_type_refuge'])." )
         AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
         AND points.modele <> 1
         AND points.cache <> TRUE
@@ -127,7 +127,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
                 }	
                 break;
                 
-            case "refuges": $conditions->ids_types_point=$config_wri['tout_type_refuge'];
+            case "refuges": $conditions->ids_types_point=implode(',',$config_wri['tout_type_refuge']);
             case "points":
                 $conditions->ordre="date_creation DESC";
                 $conditions->limite=$nombre;

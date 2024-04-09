@@ -121,8 +121,7 @@ $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réser
 
 // certes une gestion par catégorie directement dans la base serait préférable, mais on a au plus 1 ou 2 catégorie donc, bon,
 // à la main dans la config : ( ce sont les id des refuges gardés, non gardés          Si vous voulez les contacter, vous devez les appeler directement. et gites)
-$config_wri['tout_type_refuge']="7,9,10";
-$config_wri['array_tout_type_refuge']=explode(',',$config_wri['tout_type_refuge']);
+$config_wri['tout_type_refuge']=array(7,9,10);
 
 $config_wri['bbox_page_accueil']='4,43.5,8.5,47';
 

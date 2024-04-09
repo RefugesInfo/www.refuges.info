@@ -815,7 +815,7 @@ function choix_icone($point)
   if ( ($point->cheminee or $point->poele) and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
     $nom_icone.="_feu";
 
-  if ( $point->eau_a_proximite and in_array($point->id_point_type,explode(',',$config_wri['tout_type_refuge'])) )
+  if ( $point->eau_a_proximite and in_array($point->id_point_type,$config_wri['tout_type_refuge']) )
     $nom_icone.="_eau";
 
   // il faut une clé pour rentrer dans cette cabane

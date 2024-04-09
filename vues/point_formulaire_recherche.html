@@ -28,7 +28,7 @@
 		<label title="type d'hébergement, gîte, cabane ...">Type
 			<select name="id_point_type">
 				<option value="">(tous)</option>
-				<option value="<?=$config_wri['tout_type_refuge']?>" selected="selected">Tout type de refuge</option>
+				<option value="<?=implode(',',$config_wri['tout_type_refuge'])?>" selected="selected">Tout type de refuge</option>
 				<?php if (is_array($vue->infos_base->types_point)) 
 					foreach ($vue->infos_base->types_point AS $t) {?>
 						<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
