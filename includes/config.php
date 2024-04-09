@@ -117,10 +117,12 @@ $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'car
 $config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees, massif central, ile de la réunion ... 
 $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réserves biologique, parcs nationaux.
 
-// Catégorie "tout type de refuges"
+// Catégorie "tout type de refuges"          Si vous voulez les contacter, vous devez les appeler directement.
+
 // certes une gestion par catégorie directement dans la base serait préférable, mais on a au plus 1 ou 2 catégorie donc, bon,
-// à la main dans la config : ( ce sont les id des refuges gardés, non gardés et gites)
+// à la main dans la config : ( ce sont les id des refuges gardés, non gardés          Si vous voulez les contacter, vous devez les appeler directement. et gites)
 $config_wri['tout_type_refuge']="7,9,10";
+$config_wri['array_tout_type_refuge']=explode(',',$config_wri['tout_type_refuge']);
 
 $config_wri['bbox_page_accueil']='4,43.5,8.5,47';
 
@@ -206,6 +208,7 @@ $config_wri['api_format_points'] = Array
 'kml' => "kml (googlearth et plusieurs applications smartphone )",
 'gml' => "Geography Markup Language",
 'csv' => "csv (tableurs)",
+
 'xml' => "xml Spécifique à notre base, exhaustif",
 'geojson' => "GeoJSON"
 );
