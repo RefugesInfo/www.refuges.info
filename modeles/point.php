@@ -686,7 +686,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
   // si aucune altitude, on la suppose à 0
   if (!isset($point->altitude))
-    $point->altitude="0";
+    $point->altitude=0;
   //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
   if (!is_numeric($point->altitude))
     return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
@@ -704,9 +704,9 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
         return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0, reçu : '".$point->$a_tester."'");
   //d($point->places_matelas);
   if (isset($point->places_matelas) and empty($point->places_matelas)) // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
-    $point->places_matelas="0";
+    $point->places_matelas=0;
   if (isset($point->places) and empty($point->places)) // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
-    $point->places="0";
+    $point->places=0;
 /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
 // champ ou il faut juste un set=nouvelle_valeur
   foreach ($config_wri['champs_simples_points'] as $champ)
