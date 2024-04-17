@@ -155,7 +155,7 @@
         <dt><?=$vue->point->equivalent_proprio?>:</dt>
         <dd><?=$vue->proprio?></dd>
         <br>
-        <?php if (in_array($vue->point->id_point_type,$config_wri['array_tout_type_refuge'])) {?>
+        <?php if (in_array($vue->point->id_point_type,$config_wri['tout_type_refuge'])) {?>
         <dd>
           <i>
             Refuge.info n'assure pas le contact avec les gestionnaires de <?=$vue->point->article_demonstratif?> <?=$vue->point->nom_type?>.
