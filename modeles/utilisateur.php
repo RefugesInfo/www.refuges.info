@@ -14,10 +14,10 @@ function infos_utilisateur($id_utilisateur)
   $query="SELECT * FROM phpbb3_users WHERE user_id=$id_utilisateur";
   $res=$pdo->query($query);
   $utilisateur=$res->fetch();
-  // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
   if (!$utilisateur)
     return erreur("Utilisateur inexistant",$query,"pasunbug");
   else {
+    // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés, donc je ré-inverse le processus pour avoir le nom d'utilisateur tel que saisi par l'utilisateur lui même
     $utilisateur->username=html_entity_decode($utilisateur->username);
     return $utilisateur;
   }
