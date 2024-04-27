@@ -103,7 +103,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
                     }
                     if (!empty($commentaire->auteur_commentaire))
                     {
-                        $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
+                        $news_array[$i]['auteur']=html_entity_decode($commentaire->auteur_commentaire);
                         if ($commentaire->id_createur_commentaire!=0)
                         {
                           $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
