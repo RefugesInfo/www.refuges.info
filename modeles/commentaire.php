@@ -542,7 +542,7 @@ function transfert_forum($commentaire)
   $retour=suppression_commentaire($commentaire);
 
   if ($retour->erreur)
-    return erreur($retour->message.", mais la copie à réussie");
+    return erreur($retour->message.", mais la copie a réussie");
   else
     return ok("Message transféré sur le forum");
 
