@@ -220,14 +220,18 @@ $config_wri['copyright_API']="The data included in this document is from www.ref
 
 // ******* options php *******
 setlocale(LC_TIME, "fr_FR.UTF-8"); // Pour avoir les affichage de date en french et en UTF-8
+// Pour l'instant, en statique mais le jour ou on passera en multi-langue, on pourra ici choisir les chaines de caractères générées (en 2024 les dates inclus les jours et mois en français
+$config_wri['langue']="fr_FR";
+
+// Timezone par défaut pour choisir l'affichage des dates+heures
+$config_wri['timezone']='Europe/Paris';
+
 mb_internal_encoding("UTF-8");
-// FIXME : les dates que nous avons dans notre base sont déjà en heure locale (de Paris) si j'indique ici Europe/Paris, lors de formatage de date en php, on se retrouve à ajouter une fois de trop 1h ou 2h
-// donc en lui disant "UTC" il ne fait pas d'ajout et nous laisse les heures comme elle devrait être
-// La bonne solution serait sûrement de convertir toutes les dates de notre base en UTC et de faire les opérations ensuite pour la présentation à l'affichage
-date_default_timezone_set('UTC');
+
+
 
 ini_set('short_open_tag','1'); // on utilise encore par ci par là la notation < ? print(1); ? > qui a besoin de cette option
-ini_set('date.timezone','Europe/Paris');
+ini_set('date.timezone',$config_wri['timezone']);
 // NOTE: j'aurais aimé tout mettre ici, par exemple la taille max de fichier qu'on peut envoyer, mais ça n'est pas pris en compte par php, voir le fichier .user.ini
 
 // option de développement et debug 

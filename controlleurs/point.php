@@ -156,7 +156,7 @@ else // le point est valide
     {
         $commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
         $commentaire->auteur_commentaire_affichage=protege($commentaire->auteur_commentaire);
-        $commentaire->date_commentaire_format_francais=strftime ("%A %e %B %Y à %H:%M", $commentaire->ts_unix_commentaire);
+        $commentaire->date_commentaire_format_francais= date_format_francais($commentaire->ts_unix_commentaire);
         // Préparation des données et affichage d'un commentaire de la fiche d'un point
         // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire
         if (est_autorise($commentaire->id_createur_commentaire)) 

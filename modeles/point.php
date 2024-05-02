@@ -552,11 +552,7 @@ function infos_point_forum ($point)
     if (strlen ($res->post_text) > $config_wri['point_posts_lon_max_text'])
         $res->post_text = substr ($res->post_text,0,$config_wri['point_posts_lon_max_text']).'&nbsp;<b> . . .</b>';
 
-    //FIXME : Bon, C pa BO mais ça marche pour l'instant ! On passe temporairement en timezone Paris pour décoder l'heure du forum
-    // Pas sûr que ça marche encore en heure d'hiver !
-    date_default_timezone_set('Europe/Paris');
-    $res->date_humaine=strftime ('%A %e %B %Y à %H:%M',$res->post_time).':';
-    date_default_timezone_set('UTC');
+    $res->date_humaine=date_format_francais($res->post_time);
 
     if (strlen($res->post_text)) { // Elimine le premier post généré automatiquement lors de la création du point
       if (count($result) == $config_wri['point_posts_nb_max_post']) {
@@ -724,7 +720,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
     if (!$pdo->exec($query_finale))
-        return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouver un bug !",$query_finale);
+        return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);
     
     /********* Renommage du topic point dans le forum refuges, sauf s'il s'agit d'un modèle, qui n'a pas (ou pas besoin) de sujet dans le forum *************/
     if (!$point_avant->modele)

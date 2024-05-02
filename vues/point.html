@@ -246,7 +246,7 @@
       <?php } else
       foreach ($vue->forum_point AS $k=>$post) { ?>
         <a href="<?=$vue->lienforum?>#p<?=$post->post_id?>" title="Voir le post">
-          <b><?=ucfirst($post->date_humaine)?></b>
+          <b><?=$post->date_humaine?></b>
           <blockquote cite="<?=$vue->lienforum?>">
             <?=$post->post_text?>
           </blockquote>
