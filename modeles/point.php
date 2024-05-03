@@ -577,7 +577,7 @@ function point_historisation_modification($point_avant,$point_apres,$id_utilisat
   global $pdo;
   
   $point_avant_simple = new stdClass;
-    if (!empty($point_apres)) // la point après modification existe, on stockera d'utile que les propriétés qui ont été passé par le formulaire (moins lourd)
+    if (isset($point_apres)) // la point après modification existe, on stockera d'utile que les propriétés qui ont été passé par le formulaire (moins lourd)
      foreach ($point_apres as $propriete => $valeur)
        $point_avant_simple->$propriete=$point_avant->$propriete;
     else
@@ -618,8 +618,9 @@ Si une erreur grave survient, rien n'est fait et un retour par la fonction erreu
 function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 {  
   global $config_wri,$pdo;
+  
   // désolé, le nom du point ne peut être vide, unset ou juste des espaces
-  if ( empty($point->nom) or empty(trim($point->nom)) )
+  if ( empty($point->nom) or empty(trim($point->nom)))
     return erreur("Le nom ne peut être vide");
   if ( preg_match("/[\<\>\]\[\;]/",$point->nom) )
     return erreur("Le nom contient un des caractères non autorisé suivant : [ ] < > ;");
@@ -705,13 +706,20 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     $point->places=0;
 /********* Préparation des champs à mettre à jour, tous ceux qui sont dans $point->xx ET dans $config_wri['champs_simples_points'] *************/
 // champ ou il faut juste un set=nouvelle_valeur
+
   foreach ($config_wri['champs_simples_points'] as $champ)
     if (isset($point->$champ))
-      if($point->$champ  == "ne_sait_pas")
+      if($point->$champ  === "ne_sait_pas") // cas spécial qui vient directement du formulaire avec la coche "Ne sait pas"
         $champs_sql[$champ]= "NULL";
-      else
+      elseif (is_string($point->$champ))
         $champs_sql[$champ]=$pdo->quote($point->$champ);
-    
+      elseif ($point->$champ === false)
+        $champs_sql[$champ]="'f'";
+      elseif ($point->$champ === true)
+        $champs_sql[$champ]="'t'";
+      else
+        $champs_sql[$champ]=$point->$champ;
+
   if ( !empty($point->id_point) )  // update
   {
     $point_avant = infos_point($point->id_point,true,false,true);
@@ -719,6 +727,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
         return erreur("Erreur de modification du point : $point_avant->message");
 
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
+    
     if (!$pdo->exec($query_finale))
         return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);
     
