@@ -29,7 +29,7 @@
   "dependencies": {
     "ol": "9.0.0",
     "proj4": "2.10.0",
-    "@myol/geocoder": "1.0.2"
+    "@myol/geocoder": "latest"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "25.0.4",
@@ -39,6 +39,7 @@
     "eslint": "8.49.0",
     "js-beautify": "1.14.9",
     "rollup": "3.29.2",
-    "rollup-plugin-import-css": "3.3.3"
+    "rollup-plugin-import-css": "3.3.3",
+    "vite": "latest"
   }
 }

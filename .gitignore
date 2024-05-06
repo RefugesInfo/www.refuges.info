@@ -24,3 +24,4 @@
 /forum/store/*
 !/forum/store/.htaccess
 !/forum/store/index.htm
+/myol/node_modules/*

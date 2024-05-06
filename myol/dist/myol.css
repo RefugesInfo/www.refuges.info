@@ -583,39 +583,46 @@
 .select-ext {
   background: #fcffd1 !important;
 }
-/*!
- * @myol/geocoder - v4.2.17-dev
- * DEVELOPMENT : DON'T USE
+/*
+ * ol-geocoder
+ * A geocoder extension compatible with OpenLayers v6.x to v9.0
  * https://github.com/Dominique92/ol-geocoder
- * Built: 27/02/2024 10:06:16
  */
- 
- .ol-touch .ol-control.gcd-gl-control button {
-  font-size: 1.14em; }
+
+/* Glass style */
+.ol-touch .ol-control.gcd-gl-control button {
+  font-size: 1.14em;
+}
 
 .ol-touch .ol-geocoder.gcd-gl-container {
-  font-size: 1.1em; }
+  font-size: 1.1em;
+}
 
 .ol-geocoder.gcd-gl-container {
   position: absolute;
   top: 4.875em;
   left: .5em;
   box-sizing: border-box;
-  font-size: 0.9em; }
-  .ol-geocoder.gcd-gl-container *,
-  .ol-geocoder.gcd-gl-container *::before,
-  .ol-geocoder.gcd-gl-container *::after {
-    box-sizing: inherit; }
+  font-size: 0.9em;
+}
+
+.ol-geocoder.gcd-gl-container *,
+.ol-geocoder.gcd-gl-container *::before,
+.ol-geocoder.gcd-gl-container *::after {
+  box-sizing: inherit;
+}
 
 .ol-geocoder .gcd-gl-control {
   width: 2.1875em;
   height: 2.1875em;
   overflow: hidden;
-  transition: width 200ms, height 200ms; }
+  transition: width 200ms, height 200ms;
+}
 
 .ol-geocoder .gcd-gl-expanded {
   width: 15.625em;
-  height: 2.1875em; }
+  height: 2.1875em;
+}
 
 .ol-geocoder .gcd-gl-input {
   position: absolute;
@@ -628,11 +635,14 @@
   font-family: inherit;
   font-size: 0.875em;
   background-color: #fff;
-  color: #222; }
-  .ol-geocoder .gcd-gl-input:focus {
-    border: none;
-    outline: none;
-    box-shadow: inset 0 0 0 1px #4d90fe, inset 0 0 5px #4d90fe; }
+  color: #222;
+}
+
+.ol-geocoder .gcd-gl-input:focus {
+  border: none;
+  outline: none;
+  box-shadow: inset 0 0 0 1px #4d90fe, inset 0 0 5px #4d90fe;
+}
 
 .ol-geocoder .gcd-gl-search {
   position: absolute;
@@ -646,13 +656,16 @@
   background-color: transparent;
   display: inline-block;
   outline: 0;
-  cursor: pointer; }
-  .ol-geocoder .gcd-gl-search::after {
-    content: "\2386";
-    display: inline-block;
-    color: #333;
-    font-size: 1.5em;
-    cursor: pointer; }
+  cursor: pointer;
+}
+
+.ol-geocoder .gcd-gl-search::after {
+  content: "\2386";
+  display: inline-block;
+  color: #333;
+  font-size: 1.5em;
+  cursor: pointer;
+}
 
 .ol-geocoder .gcd-gl-btn {
   position: absolute;
@@ -660,10 +673,12 @@
   height: 1.5625em;
   top: 0.125em;
   left: 0.125em;
-  cursor: pointer; }
+  cursor: pointer;
+}
 
 .ol-geocoder .gcd-gl-btn:after {
-  content: "\1F50D"; }
+  content: "\1F50D";
+}
 
 .ol-geocoder ul.gcd-gl-result {
   position: absolute;
@@ -683,36 +698,50 @@
   overflow-x: hidden;
   overflow-y: auto;
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.8);
-  transition: max-height 300ms ease-in; }
-  .ol-geocoder ul.gcd-gl-result > li {
-    width: 100%;
-    overflow: hidden;
-    border-bottom: 1px solid #eee;
-    padding: 0;
-    line-height: 0.875rem; }
-    .ol-geocoder ul.gcd-gl-result > li > a {
-      display: block;
-      text-decoration: none;
-      padding: 3px 5px; }
-      .ol-geocoder ul.gcd-gl-result > li > a:hover {
-        background-color: #d4d4d4; }
-  .ol-geocoder ul.gcd-gl-result > li:nth-child(odd) {
-    background-color: #e0ffe0; }
+  transition: max-height 300ms ease-in;
+}
+
+.ol-geocoder ul.gcd-gl-result>li {
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid #eee;
+  padding: 0;
+  line-height: 0.875rem;
+}
+
+.ol-geocoder ul.gcd-gl-result>li>a {
+  display: block;
+  text-decoration: none;
+  padding: 3px 5px;
+}
+
+.ol-geocoder ul.gcd-gl-result>li>a:hover {
+  background-color: #d4d4d4;
+}
+
+.ol-geocoder ul.gcd-gl-result>li:nth-child(odd) {
+  background-color: #e0ffe0;
+}
 
 .ol-geocoder ul.gcd-gl-result:empty {
-  display: none; }
+  display: none;
+}
 
+/* Text style */
 .ol-geocoder.gcd-txt-container {
   position: absolute;
   width: 25em;
   height: 4.375em;
   top: .5em;
   left: calc(50% - 12.5em);
-  box-sizing: border-box; }
-  .ol-geocoder.gcd-txt-container *,
-  .ol-geocoder.gcd-txt-container *::before,
-  .ol-geocoder.gcd-txt-container *::after {
-    box-sizing: inherit; }
+  box-sizing: border-box;
+}
+
+.ol-geocoder.gcd-txt-container *,
+.ol-geocoder.gcd-txt-container *::before,
+.ol-geocoder.gcd-txt-container *::after {
+  box-sizing: inherit;
+}
 
 .ol-geocoder .gcd-txt-control {
   position: relative;
@@ -720,12 +749,14 @@
   height: 4.375em;
   border: 1px solid #ccc;
   background-color: #fff;
-  overflow: hidden; }
+  overflow: hidden;
+}
 
 .ol-geocoder .gcd-txt-label {
   display: inline-block;
   width: 100%;
-  text-align: center; }
+  text-align: center;
+}
 
 .ol-geocoder .gcd-txt-input {
   position: absolute;
@@ -739,10 +770,13 @@
   text-indent: 6px;
   background-color: transparent;
   font-family: inherit;
-  font-size: 0.875em; }
-  .ol-geocoder .gcd-txt-input:focus {
-    outline: none;
-    box-shadow: inset 0 0 0 1px #4d90fe, inset 0 0 6px #4d90fe; }
+  font-size: 0.875em;
+}
+
+.ol-geocoder .gcd-txt-input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px #4d90fe, inset 0 0 6px #4d90fe;
+}
 
 .ol-geocoder .gcd-txt-search {
   position: absolute;
@@ -757,13 +791,16 @@
   display: inline-block;
   vertical-align: middle;
   outline: 0;
-  cursor: pointer; }
-  .ol-geocoder .gcd-txt-search::after {
-    content: "\2386";
-    display: inline-block;
-    color: #333;
-    font-size: 2em;
-    cursor: pointer; }
+  cursor: pointer;
+}
+
+.ol-geocoder .gcd-txt-search::after {
+  content: "\2386";
+  display: inline-block;
+  color: #333;
+  font-size: 2em;
+  cursor: pointer;
+}
 
 .ol-geocoder .gcd-txt-glass {
   position: absolute;
@@ -772,10 +809,12 @@
   z-index: 100;
   display: inline-block;
   width: 2.5em;
-  height: 100%; }
+  height: 100%;
+}
 
 .ol-geocoder .gcd-txt-glass:after {
-  content: "\1F50D"; }
+  content: "\1F50D";
+}
 
 .ol-geocoder ul.gcd-txt-result {
   position: absolute;
@@ -795,59 +834,78 @@
   overflow-x: hidden;
   overflow-y: auto;
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.8);
-  transition: max-height 300ms ease-in; }
-  .ol-geocoder ul.gcd-txt-result > li {
-    width: 100%;
-    overflow: hidden;
-    border-bottom: 1px solid #eee;
-    padding: 0;
-    line-height: 0.875rem; }
-    .ol-geocoder ul.gcd-txt-result > li > a {
-      display: block;
-      text-decoration: none;
-      padding: 3px 5px; }
-      .ol-geocoder ul.gcd-txt-result > li > a:hover {
-        background-color: #d4d4d4; }
-  .ol-geocoder ul.gcd-txt-result > li:nth-child(odd) {
-    background-color: #e0ffe0; }
+  transition: max-height 300ms ease-in;
+}
+
+.ol-geocoder ul.gcd-txt-result>li {
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid #eee;
+  padding: 0;
+  line-height: 0.875rem;
+}
+
+.ol-geocoder ul.gcd-txt-result>li>a {
+  display: block;
+  text-decoration: none;
+  padding: 3px 5px;
+}
+
+.ol-geocoder ul.gcd-txt-result>li>a:hover {
+  background-color: #d4d4d4;
+}
+
+.ol-geocoder ul.gcd-txt-result>li:nth-child(odd) {
+  background-color: #e0ffe0;
+}
 
 .ol-geocoder ul.gcd-txt-result:empty {
-  display: none; }
+  display: none;
+}
 
+/* Common */
 .ol-geocoder .gcd-hidden {
   opacity: 0;
-  visibility: hidden; }
+  visibility: hidden;
+}
 
 .ol-geocoder .gcd-pseudo-rotate::after {
-  animation: spin .7s linear infinite; }
+  animation: spin .7s linear infinite;
+}
 
 @keyframes spin {
   from {
-    transform: rotate(0deg); }
+    transform: rotate(0deg);
+  }
+
   to {
-    transform: rotate(360deg); } }
+    transform: rotate(360deg);
+  }
+}
 
 .gcd-address {
   font-size: 0.875em;
   font-weight: 500;
-  color: #333; }
+  color: #333;
+}
 
 .gcd-road {
   font-size: 0.875em;
   font-weight: 500;
-  color: #333; }
+  color: #333;
+}
 
 .gcd-city {
   font-size: 0.75em;
   font-weight: normal;
-  color: #333; }
+  color: #333;
+}
 
 .gcd-country {
   font-size: 0.75em;
   font-weight: lighter;
-  color: #333; }
-
-
+  color: #333;
+}
 /*
  * myGeocodeur.css
  */

@@ -232,7 +232,7 @@ export class Overpass extends MyVectorLayer {
 
     // Extract features from data when received
     this.format.readFeatures = function(doc, options) {
-      // Transform an area to a node (picto) at the center of this area
+      const newNodes = [];
 
       for (let node = doc.documentElement.firstElementChild; node; node = node.nextSibling) {
         // Translate attributes to standard myol
@@ -243,19 +243,21 @@ export class Overpass extends MyVectorLayer {
               tag.getAttribute('k') != 'type') {
               addTag(node, 'type', tag.getAttribute('v'));
               addTag(node, 'icon', chemIconUrl(tag.getAttribute('v')));
+
               // Only once for a node
-              addTag(node, 'link', 'https://www.openstreetmap.org/node/' + node.id);
+              addTag(node, 'link', 'https://www.openstreetmap.org/' + node.nodeName + '/' + node.id);
             }
 
             if (tag.getAttribute('k') && tag.getAttribute('k').includes('capacity:'))
               addTag(node, 'capacity', tag.getAttribute('v'));
           }
 
-        // Create a new 'node' element centered on the surface
+        // Transform an area to a node (picto) at the center of this area
         if (node.nodeName == 'way') {
           const newNode = doc.createElement('node');
+
           newNode.id = node.id;
-          doc.documentElement.appendChild(newNode);
+          newNodes.push(newNode);
 
           // Browse <way> attributes to build a new node
           for (let subTagNode = node.firstElementChild; subTagNode; subTagNode = subTagNode.nextSibling)
@@ -267,13 +269,12 @@ export class Overpass extends MyVectorLayer {
                 newNode.setAttribute('nodeName', subTagNode.nodeName);
                 break;
 
-              case 'tag': {
+              case 'tag':
                 // Get existing properties
                 newNode.appendChild(subTagNode.cloneNode());
 
                 // Add a tag to mem what node type it was (for link build)
                 addTag(newNode, 'nodetype', node.nodeName);
-              }
             }
         }
 
@@ -282,14 +283,18 @@ export class Overpass extends MyVectorLayer {
           statusEl.textContent = node.textContent;
       }
 
+      // Add new nodes to the document
+      newNodes.forEach(n => doc.documentElement.appendChild(n));
+
+      return ol.format.OSMXML.prototype.readFeatures.call(this, doc, options);
+
       function addTag(node, k, v) {
         const newTag = doc.createElement('tag');
+
         newTag.setAttribute('k', k);
         newTag.setAttribute('v', v);
         node.appendChild(newTag);
       }
-
-      return ol.format.OSMXML.prototype.readFeatures.call(this, doc, options);
     };
   }
 
