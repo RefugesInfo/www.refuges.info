@@ -300,21 +300,16 @@ export class Overpass extends MyVectorLayer {
 
   query(extent, resolution, mapProjection) {
     const selections = this.selector.getSelection(),
-      items = selections[0].split(','), // The 1st (and only) selector
       ex4326 = ol.proj.transformExtent(extent, mapProjection, 'EPSG:4326').map(c => c.toPrecision(6)),
       bbox = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
       args = [];
 
-    // Convert selected items on overpass_api language
-    for (let l = 0; l < items.length; l++) {
-      const champs = items[l].split('+');
-
-      for (let ls = 0; ls < champs.length; ls++)
+    for (let s = 0; s < selections.length; s++) // For each selected input checkbox
+      selections[s].split('+').forEach(sel => // Multiple choices separated by +
         args.push(
-          'node' + champs[ls] + bbox + // Ask for nodes in the bbox
-          'way' + champs[ls] + bbox // Also ask for areas
-        );
-    }
+          'node' + sel + bbox + // Ask for nodes in the bbox
+          'way' + sel + bbox // Also ask for areas
+        ));
 
     return {
       _path: '/api/interpreter',
