@@ -305,11 +305,8 @@ export class Overpass extends MyVectorLayer {
       args = [];
 
     for (let s = 0; s < selections.length; s++) // For each selected input checkbox
-      selections[s].split('+').forEach(sel => // Multiple choices separated by +
-        args.push(
-          'node' + sel + bbox + // Ask for nodes in the bbox
-          'way' + sel + bbox // Also ask for areas
-        ));
+      selections[s].split('+') // Multiple choices separated by "+"
+      .forEach(sel => args.push('nwr' + sel + bbox)); // Ask for node, way & relation in the bbox
 
     return {
       _path: '/api/interpreter',

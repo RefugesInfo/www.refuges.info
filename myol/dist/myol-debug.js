@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 06/05/2024 21:09:18 using npm run build from the src/... sources
+ * Built 07/05/2024 16:11:37 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -75552,11 +75552,8 @@ var myol = (function () {
         args = [];
 
       for (let s = 0; s < selections.length; s++) // For each selected input checkbox
-        selections[s].split('+').forEach(sel => // Multiple choices separated by +
-          args.push(
-            'node' + sel + bbox + // Ask for nodes in the bbox
-            'way' + sel + bbox // Also ask for areas
-          ));
+        selections[s].split('+') // Multiple choices separated by "+"
+        .forEach(sel => args.push('nwr' + sel + bbox)); // Ask for node, way & relation in the bbox
 
       return {
         _path: '/api/interpreter',
