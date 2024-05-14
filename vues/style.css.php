@@ -353,7 +353,7 @@ IMG { /* images sans bordures */
 }
 
 /*=========LIENS==========*/
-A:hover { /*met en valeur les liens qd on est dessus */
+body:not(#phpbb) A:hover { /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;
   text-decoration: none;
 }
@@ -362,12 +362,12 @@ J'intègre également les class des liens du forum
 en gros je veux tout de la même couleur
 */
 
-A,A.mainmenu,A.nav,A.forumlink,A.cattitle,A.topictitle,A.postlink,A.gen,A.genmed,A.gensmall {
+body:not(#phpbb) A,A.mainmenu,A.nav,A.forumlink,A.cattitle,A.topictitle,A.postlink,A.gen,A.genmed,A.gensmall {
   color : #<?=$couleur_lien?>; /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
 }
 
-A:visited {
+body:not(#phpbb) A:visited {
   color : #<?=$couleur_lien_visite?>;
 }
 
