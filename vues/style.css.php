@@ -353,7 +353,7 @@ IMG { /* images sans bordures */
 }
 
 /*=========LIENS==========*/
-body:not(#phpbb) A:hover { /*met en valeur les liens qd on est dessus */
+A:hover { /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;
   text-decoration: none;
 }
