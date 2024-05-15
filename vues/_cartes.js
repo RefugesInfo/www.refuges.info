@@ -201,3 +201,316 @@ function fondsCarte(page, mapKeys) {
     }),
   };
 }
+
+// Carte de la page d'accueil
+function mapIndex(options) {
+  const map = new ol.Map({
+    target: options.target,
+
+    view: new ol.View({
+      enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+    }),
+
+    controls: [
+      new ol.control.Attribution({ // Du fond de carte
+        collapsed: false,
+      }),
+    ],
+
+    layers: [
+      new myol.layer.tile.MRI(), // Fond de carte
+      coucheMassifsColores({ // Les massifs
+        host: options.host,
+      }),
+      new myol.layer.Hover(), // Gère le survol du curseur
+    ],
+  });
+
+  // Centre la carte sur la zone souhaitée
+  map.getView().fit(ol.proj.transformExtent(options.extent, 'EPSG:4326', 'EPSG:3857'));
+
+  return map;
+}
+
+// Carte de la page de visualisation d'un point
+function mapPoint(options) {
+  return new ol.Map({
+    target: options.target,
+
+    view: new ol.View({
+      enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+    }),
+
+    controls: [
+      // Haut gauche
+      new ol.control.Zoom(),
+      new ol.control.FullScreen(),
+      new myol.control.MyGeocoder(),
+      new myol.control.MyGeolocation(),
+      new myol.control.Download(),
+      new myol.control.Print(),
+
+      // Bas gauche
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+
+      // Bas droit
+      new ol.control.Attribution({ // Attribution doit être défini avant LayerSwitcher
+        collapsed: false,
+      }),
+      new myol.control.Permalink({ // Permet de garder le même réglage de carte
+        visible: false, // Mais on ne visualise pas le lien du permalink
+        init: false, // Ici, on utilisera plutôt la position du point
+      }),
+
+      // Haut droit
+      new myol.control.LayerSwitcher({
+        layers: fondsCarte('point', options.mapKeys),
+      }),
+    ],
+
+    layers: [
+      // Les autres points refuges.info
+      couchePointsWRI({
+        host: options.host,
+        browserClusterMinResolution: 4, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
+        ...options.layerOptions,
+      }, 'point'),
+
+      // Le cadre rouge autour du point de la fiche
+      new myol.layer.Marker({
+        prefix: 'cadre', // S'interface avec les <TAG id="cadre-xxx"...>
+        // Prend la position qui est dans <input id="cadre-json">
+        src: options.host + 'images/cadre.svg',
+        focus: 15, // Centrer
+        zIndex: 300, // Above the features, under the hover label
+      }),
+
+      // Gère le survol du curseur
+      new myol.layer.Hover(),
+    ],
+  });
+}
+
+// Carte de la page de modification d'un point
+function mapModif(options) {
+  return new ol.Map({
+    target: options.target,
+
+    view: new ol.View({
+      enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+    }),
+
+    controls: [
+      // Haut gauche
+      new ol.control.Zoom(),
+      new ol.control.FullScreen(),
+      new myol.control.MyGeocoder(),
+      new myol.control.MyGeolocation(),
+
+      // Bas gauche
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+
+      // Bas droit
+      new ol.control.Attribution({ // Attribution doit être défini avant LayerSwitcher
+        collapsed: false,
+      }),
+      new myol.control.Permalink({
+        init: !options.idPoint, // Garde la position courante en création de point
+      }),
+
+      // Haut droit
+      new myol.control.LayerSwitcher({
+        layers: fondsCarte('modif', options.mapKeys),
+      }),
+    ],
+
+    layers: [
+      // Les autres points refuges.info
+      couchePointsWRI({
+          host: options.host,
+          browserClusterMinResolution: null, // Pour ne pas générer de gigue
+          noClick: true,
+        },
+        'modif',
+      ),
+
+      // Le viseur jaune pour modifier la position du point
+      new myol.layer.Marker({
+        src: options.host + 'images/viseur.svg',
+        prefix: 'marker', // S'interface avec les <TAG id="marker-xxx"...>
+        // Prend la position qui est dans <input id="cadre-json">
+        dragable: true,
+        focus: 15, // Centre la carte sur le curseur
+      }),
+
+      // Gère le survol du curseur
+      new myol.layer.Hover(),
+    ],
+  });
+}
+
+// Carte de la page des cartes
+function mapNav(options) {
+  // Forçage de l'init des coches
+  // Supprime toutes les sélections commençant par myol_selecteur
+  Object.keys(localStorage)
+    .filter(k => k.substring(0, 14) == 'myol_selecteur')
+    .forEach(k => localStorage.removeItem(k));
+
+  // Force tous les points et le contour
+  if (options.id_polygone)
+    localStorage.myol_selectmassif = options.id_polygone;
+  localStorage.myol_selectwri = 'all';
+  localStorage.myol_selectmassifs =
+    localStorage.myol_selectosm =
+    localStorage.myol_selectprc =
+    localStorage.myol_selectcc =
+    localStorage.myol_selectchem =
+    localStorage.myol_selectalpages = '';
+
+  const contourMassif = coucheContourMassif({
+    host: options.host,
+    selectName: 'select-massif',
+  });
+
+  const map = new ol.Map({
+    target: options.target,
+
+    view: new ol.View({
+      enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+    }),
+
+    controls: [
+      // Haut gauche
+      new ol.control.Zoom(),
+      new ol.control.FullScreen(),
+      new myol.control.MyGeocoder(),
+      new myol.control.MyGeolocation(),
+      new myol.control.Load(),
+      new myol.control.Download(),
+      new myol.control.Print(),
+
+      // Bas gauche
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+
+      // Bas droit
+      new ol.control.Attribution({ // Attribution doit être défini avant LayerSwitcher
+        collapsed: false,
+      }),
+      new myol.control.Permalink({ // Permet de garder le même réglage de carte
+        display: true, // Affiche le lien
+        init: !options.extent, // On reprend la même position s'il n'y a pas de massif
+      }),
+
+      // Haut droit
+      new myol.control.LayerSwitcher({
+        layers: fondsCarte('nav', options.mapKeys),
+      }),
+    ],
+
+    layers: [
+      coucheMassifsColores({
+        host: options.host,
+        selectName: 'select-massifs',
+      }),
+      new myol.layer.vector.Chemineur({
+        selectName: 'select-chem',
+      }),
+      new myol.layer.vector.Alpages({
+        selectName: 'select-alpages',
+      }),
+      new myol.layer.vector.PRC({
+        selectName: 'select-prc',
+      }),
+      new myol.layer.vector.C2C({
+        selectName: 'select-c2c',
+      }),
+      new myol.layer.vector.Overpass({
+        selectName: 'select-osm',
+      }),
+
+      contourMassif,
+
+      couchePointsWRI({
+          host: options.host,
+          selectName: 'select-wri',
+          selectMassif: contourMassif.options.selector,
+        },
+        'nav',
+        ...options.layerOptions,
+      ),
+      new myol.layer.Hover(), // Gère le survol du curseur
+    ],
+  });
+
+  // Centrer sur la zone du polygone
+  if (options.extent)
+    map.getView().fit(ol.proj.transformExtent(options.extent, 'EPSG:4326', 'EPSG:3857'));
+
+  return map;
+}
+
+// Carte de la page d'édion de massif ou de zone
+function navEdit(options) {
+  const editorlayer = new myol.layer.Editor({
+    geoJsonId: 'edit-json',
+    editOnly: 'poly',
+
+    featuresToSave: function(coordinates) {
+      return this.format.writeGeometry(
+        new ol.geom.MultiPolygon(coordinates.polys), {
+          featureProjection: 'EPSG:3857',
+          decimals: 5,
+        });
+    },
+  });
+
+  return new ol.Map({
+    target: options.target,
+
+    view: new ol.View({
+      enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+    }),
+
+    controls: [
+      // Haut gauche
+      new ol.control.Zoom(),
+      new ol.control.FullScreen(),
+      new myol.control.MyGeocoder(),
+      new myol.control.MyGeolocation,
+      new myol.control.Load(),
+      new myol.control.Download({
+        savedLayer: editorlayer,
+      }),
+
+      // Bas gauche
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+
+      // Bas droit
+      new ol.control.Attribution({ // Attribution doit être défini avant LayerSwitcher
+        collapsed: false,
+      }),
+
+      // Haut droit
+      new myol.control.LayerSwitcher({
+        layers: fondsCarte('edit', options.mapKeys),
+      }),
+    ],
+
+    layers: [
+      coucheContourMassif({
+        host: options.host,
+      }),
+      editorlayer,
+    ],
+  });
+}
