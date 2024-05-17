@@ -547,49 +547,5 @@ function transfert_forum($commentaire)
     return ok("Message transféré sur le forum");
 
 }
-/************************************************************************
-Derniers messages du forum
-$conditions->limite : nombre maximum de messages retournés
-$conditions->ordre : exemple "ORDER BY date"
-$conditions->ids_forum : (5 ou 4,7,8) pour restreindre la provenance des messages
-************************************************************************/
-// jmb: return un tableau vide au lieu d'un undefined si aucun message
-function messages_du_forum($conditions)
-{
-  global $pdo; $messages_du_forum= array();
-  $quels_ids="";
-  if (isset($conditions->ids_forum))
-    $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
-  if ( !isset($conditions->ordre))
-    $conditions->ordre="ORDER BY date DESC";
 
-    // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
-    //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
-    // réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
-    $query_messages_du_forum=
-    "SELECT
-      max(phpbb3_posts.post_time) AS date,
-      phpbb3_posts.topic_id,
-      phpbb3_posts.post_text,
-      phpbb3_topics.topic_title,
-      max(phpbb3_posts.post_id) AS post_id
-    FROM phpbb3_topics, phpbb3_posts
-        WHERE
-        phpbb3_posts.post_text!=''
-    AND phpbb3_topics.topic_id = phpbb3_posts.topic_id
-    $quels_ids
-    GROUP BY phpbb3_posts.topic_id,phpbb3_topics.topic_title,phpbb3_posts.post_text
-    $conditions->ordre
-    LIMIT $conditions->limite";
-
-    if (! ($res=$pdo->query($query_messages_du_forum)))
-      return erreur("Impossible d'obtenir les derniers messages du forum",$query_messages_du_forum);
-    else
-    {
-    while ($message_du_forum = $res->fetch())
-      $messages_du_forum[]=$message_du_forum;
-    }
-    return $messages_du_forum;
-
-}
 
