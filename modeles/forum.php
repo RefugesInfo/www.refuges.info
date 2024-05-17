@@ -128,6 +128,7 @@ function messages_du_forum($conditions)
     FROM phpbb3_topics, phpbb3_posts
         WHERE
         phpbb3_posts.post_text!=''
+    AND phpbb3_posts.post_visibility=1
     AND phpbb3_topics.topic_id = phpbb3_posts.topic_id
     $quels_ids
     GROUP BY phpbb3_posts.topic_id,phpbb3_topics.topic_title,phpbb3_posts.post_text
