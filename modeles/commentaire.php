@@ -180,7 +180,7 @@ function infos_commentaires ($conditions)
     }
     
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
-    if (isset($commentaire->id_createur_com))
+    if (isset($commentaire->id_createur_commentaire))
         $commentaire->auteur_commentaire=html_entity_decode($commentaire->auteur_commentaire);
     $commentaires [] = $commentaire;
   }

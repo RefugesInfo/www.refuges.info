@@ -53,7 +53,7 @@
               <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
             <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
             <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
-                <?=$utilisateur->username_clean?>
+                <?=$utilisateur->username?>
             </option>
             <?php } }?>
             </select>

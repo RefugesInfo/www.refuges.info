@@ -376,7 +376,7 @@ SELECT points.*,
       $point->article_partitif_massif = $point->article_partitif;
     }
     $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
-    // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
+    // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
     if (!empty($point->id_createur))
       $point->nom_createur=html_entity_decode($point->nom_createur);
     

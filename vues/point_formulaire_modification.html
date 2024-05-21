@@ -82,7 +82,7 @@
           </option>
           <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
           <option value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
-            <?=$utilisateur->username_clean?>
+            <?=$utilisateur->username?>
           </option>
           <?php } ?>
         </select>
