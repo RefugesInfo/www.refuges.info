@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 07/05/2024 16:11:37 using npm run build from the src/... sources
+ * Built 23/05/2024 08:09:01 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 
@@ -74786,7 +74786,7 @@ var myol = (function () {
 
       return {
         text: new ol.style.Text({
-          text: elLabel.innerHTML,
+          text: elLabel.innerHTML.replace('&amp;', '&'), // Specific tratement for &
           overflow: properties.overflow, // Display label even if not contained in polygon
           textBaseline: featureArea ? 'middle' : 'bottom',
           offsetY: featureArea ? 0 : -13, // Above the icon
