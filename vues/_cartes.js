@@ -451,8 +451,12 @@ function mapNav(options) {
   });
 
   // Centrer sur la zone du polygone
-  if (options.extent)
-    map.getView().fit(ol.proj.transformExtent(options.extent, 'EPSG:4326', 'EPSG:3857'));
+  if (options.extent) {
+    const extent4326 = options.extent.map(c => parseFloat(c)),
+      extent3857 = ol.proj.transformExtent(extent4326, 'EPSG:4326', 'EPSG:3857');
+
+    map.getView().fit(extent3857);
+  }
 
   return map;
 }
