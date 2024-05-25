@@ -1,4 +1,4 @@
-/* global ol, myol, jsVars */
+/* global jsVars */
 
 console.log('MyGPS version ' + jsVars.lastChangeDate);
 
@@ -12,7 +12,7 @@ if (!location.pathname.match(/index/) || // Force script name
   location.replace(
     (location.hostname.match(/\./) ? 'https://' : 'http://') +
     location.hostname +
-    location.pathname + (location.pathname.slice(-1) == '/' ? 'index.php' : '') +
+    location.pathname + (location.pathname.slice(-1) === '/' ? 'index.php' : '') +
     location.search +
     location.hash);
 }
@@ -22,7 +22,7 @@ if ("serviceWorker" in navigator)
   .catch(error => console.log(error));
 
 // Display the map
-var loadControl = new myol.control.Load(),
+const loadControl = new myol.control.Load(),
   map = new ol.Map({
     target: 'map',
     view: new ol.View({
@@ -63,7 +63,7 @@ var loadControl = new myol.control.Load(),
 // Preload 2 more layers zoom
 map.once('precompose', () => {
   map.getLayers().forEach(layer => {
-    if (typeof layer.setPreload == 'function')
+    if (typeof layer.setPreload === 'function')
       layer.setPreload(2);
   });
 });
@@ -100,7 +100,7 @@ navigator.serviceWorker.addEventListener('controllerchange', () => {
 
       // Reload when click on the "New" button
       buttonAction: evt => {
-        if (evt.type == 'click')
+        if (evt.type === 'click')
           location.reload();
       },
     })

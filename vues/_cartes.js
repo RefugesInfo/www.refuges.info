@@ -1,6 +1,6 @@
 // Contient les fonctions communes à plusieurs cartes
 
-function couchePointsWRI(options, page, layerOptions) {
+function couchePointsWRI(options, page) {
   const layer = new myol.layer.MyVectorLayer({
     selectMassif: new myol.Selector('no-selector'), // Defaut = pas de sélecteur de massif
 
@@ -9,7 +9,6 @@ function couchePointsWRI(options, page, layerOptions) {
     nbMaxClusters: 108, // Nombre de clusters sur la carte (12 rangées de 9). Remplace la distance
     browserClusterMinResolution: 10, // (mètres par pixel) résolution en-dessous de laquelle le navigateur ne clusterise plus et ajoute une gigue
 
-    ...layerOptions, // Config_privee
     ...options,
 
     // Calcul de l'url de l'API refuges?.info
@@ -276,7 +275,6 @@ function mapPoint(options) {
       couchePointsWRI({
         host: options.host,
         browserClusterMinResolution: 4, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
-        ...options.layerOptions,
       }, 'point'),
 
       // Le cadre rouge autour du point de la fiche
@@ -444,7 +442,6 @@ function mapNav(options) {
           selectMassif: contourMassif.options.selector,
         },
         'nav',
-        ...options.layerOptions,
       ),
       new myol.layer.Hover(), // Gère le survol du curseur
     ],

@@ -21,13 +21,6 @@ $config_wri['mapKeys'] = [
   // SwissTopo : You need to register your domain in https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
 ];
 
-// Les paramètres d'affichage de la couche refuges.info
-$config_wri['layerOptions'] = [
-  // 'serverClusterMinResolution' => 100, // (mètres par pixel) résolution au dessus de laquelle on demande des clusters au serveur
-  // 'nbMaxClusters' => 108, // Nombre de clusters sur la carte (12 rangées de 9). Remplace la distance
-  // 'browserClusterMinResolution' => 10, // (mètres par pixel) résolution en-dessous de laquelle le navigateur ne clusterise plus et ajoute une gigue
-];
-
 // Décommenter pour
 //$config_wri['debug']=true; // afficher un peu plus de debug sur certaines fonctions utilisant la fonction erreur()
 //$config_wri['nom_ol']='myol-debug'; // utiliser myol-debug.js à la place de myol.js

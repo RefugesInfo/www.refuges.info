@@ -14,12 +14,12 @@ Based on https://openlayers.org
   <meta name="description" content="Offline GPS based on openlayers & Progressive Web Application">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <!-- Good old favicon -->
-  <link href="ressources/favicon.svg" type="image/svg+xml" rel="icon">
+  <link rel="icon" href="ressources/favicon.svg" type="image/svg+xml">
   <!-- Android / Chrome -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="white">
   <!-- IOS app icon + mobile Safari -->
-  <link href="ressources/icon-512.png" rel="apple-touch-icon">
+  <link rel="apple-touch-icon" href="ressources/icon-512.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Hello World">
@@ -87,7 +87,7 @@ Based on https://openlayers.org
 
   <script src="<?=$myol_rep?>myol.js"></script>
   <script>
-    var jsVars = <?=$js_vars?>;
+    const jsVars = <?=$js_vars?>;
 
     <?php foreach ($js_include as $js)
       echo file_get_contents($js).PHP_EOL;
