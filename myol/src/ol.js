@@ -9,6 +9,7 @@ import Map from 'ol/Map';
 import OSMXML from 'ol/format/OSMXML';
 import View from 'ol/View';
 import WMTSTileGrid from 'ol/tilegrid/WMTS';
+import * as condition from 'ol/events/condition';
 import * as control from 'ol/control';
 import * as coordinate from 'ol/coordinate';
 import * as extent from 'ol/extent';
@@ -23,7 +24,6 @@ import * as source from 'ol/source';
 import * as sphere from 'ol/sphere';
 import * as style from 'ol/style';
 import * as util from 'ol/util';
-import * as condition from 'ol/events/condition';
 
 export default {
   control: control,

@@ -4,12 +4,14 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 23/05/2024 08:09:01 using npm run build from the src/... sources
+ * Built 26/05/2024 16:25:17 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
-
-var myol = (function () {
-  'use strict';
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.myol = factory());
+})(this, (function () { 'use strict';
 
   /**
    * @module ol/events/Event
@@ -80,8 +82,6 @@ var myol = (function () {
     evt.stopPropagation();
   }
 
-  var Event = BaseEvent;
-
   /**
    * @module ol/ObjectEventType
    */
@@ -136,8 +136,6 @@ var myol = (function () {
      */
     disposeInternal() {}
   }
-
-  var Disposable$1 = Disposable;
 
   /**
    * @module ol/array
@@ -330,7 +328,7 @@ var myol = (function () {
         return true;
       }
       const res = compare(arr[index - 1], currentVal);
-      return !(res > 0 || (strict && res === 0));
+      return !(res > 0 || (res === 0));
     });
   }
 
@@ -395,6 +393,27 @@ var myol = (function () {
   }
 
   /**
+   * @template T
+   * @param {function(): (T | Promise<T>)} getter A function that returns a value or a promise for a value.
+   * @return {Promise<T>} A promise for the value.
+   */
+  function toPromise(getter) {
+    function promiseGetter() {
+      let value;
+      try {
+        value = getter();
+      } catch (err) {
+        return Promise.reject(err);
+      }
+      if (value instanceof Promise) {
+        return value;
+      }
+      return Promise.resolve(value);
+    }
+    return promiseGetter();
+  }
+
+  /**
    * @module ol/obj
    */
 
@@ -444,7 +463,7 @@ var myol = (function () {
    *    more listeners after this one will be called. Same as when the listener
    *    returns false.
    */
-  class Target extends Disposable$1 {
+  class Target extends Disposable {
     /**
      * @param {*} [target] Default event target for dispatched events.
      */
@@ -509,7 +528,7 @@ var myol = (function () {
         return;
       }
 
-      const evt = isString ? new Event(event) : /** @type {Event} */ (event);
+      const evt = isString ? new BaseEvent(event) : /** @type {Event} */ (event);
       if (!evt.target) {
         evt.target = this.eventTarget_ || this;
       }
@@ -607,8 +626,6 @@ var myol = (function () {
       }
     }
   }
-
-  var EventTarget = Target;
 
   /**
    * @module ol/events/EventType
@@ -792,7 +809,7 @@ var myol = (function () {
    * @fires import("./events/Event.js").default
    * @api
    */
-  class Observable extends EventTarget {
+  class Observable extends Target {
     constructor() {
       super();
 
@@ -942,8 +959,6 @@ var myol = (function () {
     }
   }
 
-  var Observable$1 = Observable;
-
   /**
    * @module ol/util
    */
@@ -979,7 +994,7 @@ var myol = (function () {
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION = '9.0.0';
+  const VERSION = '9.2.3';
 
   /**
    * @module ol/Object
@@ -989,7 +1004,7 @@ var myol = (function () {
    * @classdesc
    * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of this type.
    */
-  class ObjectEvent extends Event {
+  class ObjectEvent extends BaseEvent {
     /**
      * @param {string} type The event type.
      * @param {string} key The property name.
@@ -1065,7 +1080,7 @@ var myol = (function () {
    * @fires ObjectEvent
    * @api
    */
-  class BaseObject extends Observable$1 {
+  class BaseObject extends Observable {
     /**
      * @param {Object<string, *>} [values] An object with key-value pairs.
      */
@@ -1248,8 +1263,6 @@ var myol = (function () {
     }
   }
 
-  var BaseObject$1 = BaseObject;
-
   /**
    * @module ol/asserts
    */
@@ -1334,7 +1347,7 @@ var myol = (function () {
    * @api
    * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
    */
-  class Feature extends BaseObject$1 {
+  class Feature extends BaseObject {
     /**
      * @param {Geometry|ObjectWithGeometry<Geometry>} [geometryOrProperties]
      *     You may pass a Geometry object directly, or an object literal containing
@@ -1596,7 +1609,6 @@ var myol = (function () {
       return styles;
     };
   }
-  var Feature$1 = Feature;
 
   /**
    * @module ol/transform
@@ -1636,27 +1648,6 @@ var myol = (function () {
   }
 
   /**
-   * Set the transform components a-f on a given transform.
-   * @param {!Transform} transform Transform.
-   * @param {number} a The a component of the transform.
-   * @param {number} b The b component of the transform.
-   * @param {number} c The c component of the transform.
-   * @param {number} d The d component of the transform.
-   * @param {number} e The e component of the transform.
-   * @param {number} f The f component of the transform.
-   * @return {!Transform} Matrix with transform applied.
-   */
-  function set(transform, a, b, c, d, e, f) {
-    transform[0] = a;
-    transform[1] = b;
-    transform[2] = c;
-    transform[3] = d;
-    transform[4] = e;
-    transform[5] = f;
-    return transform;
-  }
-
-  /**
    * Set transform on one matrix from another matrix.
    * @param {!Transform} transform1 Matrix to set transform to.
    * @param {!Transform} transform2 Matrix to set transform from.
@@ -1687,17 +1678,6 @@ var myol = (function () {
     coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
     coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
     return coordinate;
-  }
-
-  /**
-   * Creates a scale transform.
-   * @param {!Transform} target Transform to overwrite.
-   * @param {number} x Scale factor x.
-   * @param {number} y Scale factor y.
-   * @return {!Transform} The scale transform.
-   */
-  function makeScale(target, x, y) {
-    return set(target, x, 0, 0, y, 0, 0);
   }
 
   /**
@@ -2689,9 +2669,10 @@ var myol = (function () {
    *
    * @param {Extent} extent Extent.
    * @param {import("./proj/Projection.js").default} projection Projection
+   * @param {boolean} [multiWorld] Return all worlds
    * @return {Array<Extent>} The extent within the real world extent.
    */
-  function wrapAndSliceX(extent, projection) {
+  function wrapAndSliceX(extent, projection, multiWorld) {
     if (projection.canWrapX()) {
       const projectionExtent = projection.getExtent();
 
@@ -2702,7 +2683,7 @@ var myol = (function () {
       wrapX$2(extent, projection);
       const worldWidth = getWidth(projectionExtent);
 
-      if (getWidth(extent) > worldWidth) {
+      if (getWidth(extent) > worldWidth && !multiWorld) {
         // the extent wraps around on itself
         return [[projectionExtent[0], extent[1], projectionExtent[2], extent[3]]];
       }
@@ -4342,32 +4323,11 @@ var myol = (function () {
    * @module ol/console
    */
 
-  /**
-   * @typedef {'info'|'warn'|'error'|'none'} Level
-   */
-
-  /**
-   * @type {Object<Level, number>}
-   */
-  const levels = {
-    info: 1,
-    warn: 2,
-    error: 3,
-    none: 4,
-  };
-
-  /**
-   * @type {number}
-   */
-  let level = levels.info;
 
   /**
    * @param  {...any} args Arguments to log
    */
   function warn(...args) {
-    if (level > levels.warn) {
-      return;
-    }
     console.warn(...args); // eslint-disable-line no-console
   }
 
@@ -5251,7 +5211,7 @@ var myol = (function () {
    * @abstract
    * @api
    */
-  class Geometry extends BaseObject$1 {
+  class Geometry extends BaseObject {
     constructor() {
       super();
 
@@ -7120,8 +7080,6 @@ var myol = (function () {
     }
   };
 
-  var Point$2 = Point$1;
-
   /**
    * @module ol/geom/flat/contains
    */
@@ -8106,7 +8064,7 @@ var myol = (function () {
      * @api
      */
     getInteriorPoint() {
-      return new Point$2(this.getFlatInteriorPoint(), 'XYM');
+      return new Point$1(this.getFlatInteriorPoint(), 'XYM');
     }
 
     /**
@@ -8341,7 +8299,7 @@ var myol = (function () {
     }
     const ends = [flatCoordinates.length];
     const polygon = new Polygon(flatCoordinates, layout, ends);
-    makeRegular(polygon, center, circle.getRadius(), angle);
+    makeRegular(polygon, center, circle.getRadius());
     return polygon;
   }
 
@@ -8357,7 +8315,7 @@ var myol = (function () {
     const flatCoordinates = polygon.getFlatCoordinates();
     const stride = polygon.getStride();
     const sides = flatCoordinates.length / stride - 1;
-    const startAngle = angle ? angle : 0;
+    const startAngle = 0;
     for (let i = 0; i <= sides; ++i) {
       const offset = i * stride;
       const angle = startAngle + (modulo(i, sides) * 2 * Math.PI) / sides;
@@ -8403,7 +8361,7 @@ var myol = (function () {
    * @classdesc
    * Events emitted on [GeolocationPositionError](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError).
    */
-  class GeolocationError extends Event {
+  class GeolocationError extends BaseEvent {
     /**
      * @param {GeolocationPositionError} error error object.
      */
@@ -8477,7 +8435,7 @@ var myol = (function () {
    * @fires GeolocationError
    * @api
    */
-  class Geolocation extends BaseObject$1 {
+  class Geolocation extends BaseObject {
     /**
      * @param {Options} [options] Options.
      */
@@ -8774,8 +8732,6 @@ var myol = (function () {
     }
   }
 
-  var Geolocation$1 = Geolocation;
-
   /**
    * @module ol/CollectionEventType
    */
@@ -8816,7 +8772,7 @@ var myol = (function () {
    * type.
    * @template T
    */
-  class CollectionEvent extends Event {
+  class CollectionEvent extends BaseEvent {
     /**
      * @param {import("./CollectionEventType.js").default} type Type.
      * @param {T} element Element.
@@ -8870,7 +8826,7 @@ var myol = (function () {
    * @template T
    * @api
    */
-  class Collection extends BaseObject$1 {
+  class Collection extends BaseObject {
     /**
      * @param {Array<T>} [array] Array.
      * @param {Options} [options] Collection options.
@@ -9122,8 +9078,6 @@ var myol = (function () {
     }
   }
 
-  var Collection$1 = Collection;
-
   /**
    * @module ol/layer/Property
    */
@@ -9201,7 +9155,7 @@ var myol = (function () {
    *
    * @api
    */
-  class BaseLayer extends BaseObject$1 {
+  class BaseLayer extends BaseObject {
     /**
      * @param {Options} options Layer options.
      */
@@ -9542,8 +9496,6 @@ var myol = (function () {
       super.disposeInternal();
     }
   }
-
-  var BaseLayer$1 = BaseLayer;
 
   /**
    * @module ol/render/EventType
@@ -10023,7 +9975,7 @@ var myol = (function () {
    * @return {Type} Rotation constraint.
    */
   function createSnapToZero(tolerance) {
-    const t = tolerance === undefined ? toRadians(5) : tolerance;
+    const t = toRadians(5) ;
     return (
       /**
        * @param {number|undefined} rotation Rotation.
@@ -10354,7 +10306,7 @@ var myol = (function () {
    *
    * @api
    */
-  class View extends BaseObject$1 {
+  class View extends BaseObject {
     /**
      * @param {ViewOptions} [options] View options.
      */
@@ -12201,8 +12153,6 @@ var myol = (function () {
     return [centerX, centerY];
   }
 
-  var View$1 = View;
-
   /**
    * @module ol/layer/Layer
    */
@@ -12294,7 +12244,7 @@ var myol = (function () {
    * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
    * @api
    */
-  class Layer extends BaseLayer$1 {
+  class Layer extends BaseLayer {
     /**
      * @param {Options<SourceType>} options Layer options.
      */
@@ -12497,7 +12447,7 @@ var myol = (function () {
       if (!view && map) {
         view = map.getView();
       }
-      if (view instanceof View$1) {
+      if (view instanceof View) {
         frameState = {
           viewState: view.getState(),
           extent: view.calculateExtent(),
@@ -12545,7 +12495,7 @@ var myol = (function () {
         return [];
       }
       const frameState =
-        view instanceof View$1 ? view.getViewStateAndExtent() : view;
+        view instanceof View ? view.getViewStateAndExtent() : view;
       let attributions = getAttributions(frameState);
       if (!Array.isArray(attributions)) {
         attributions = [attributions];
@@ -12740,8 +12690,6 @@ var myol = (function () {
     return zoom > layerState.minZoom && zoom <= layerState.maxZoom;
   }
 
-  var Layer$1 = Layer;
-
   function quickselect(arr, k, left, right, compare) {
       quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare);
   }
@@ -12796,7 +12744,7 @@ var myol = (function () {
       return a < b ? -1 : a > b ? 1 : 0;
   }
 
-  let RBush$2 = class RBush {
+  let RBush$1 = class RBush {
       constructor(maxEntries = 9) {
           // max entries in a node is 9 by default; min node fill is 40% for best performance
           this._maxEntries = Math.max(4, maxEntries);
@@ -13977,7 +13925,7 @@ var myol = (function () {
     return luv.lchuv(xyz.luv(arg));
   };
 
-  var names$x = {
+  var names$y = {
   	aliceblue: [240, 248, 255],
   	antiquewhite: [250, 235, 215],
   	aqua: [0, 255, 255],
@@ -14163,8 +14111,8 @@ var myol = (function () {
   	cstr = String(cstr).toLowerCase();
 
   	//keyword
-  	if (names$x[cstr]) {
-  		parts = names$x[cstr].slice();
+  	if (names$y[cstr]) {
+  		parts = names$y[cstr].slice();
   		space = 'rgb';
   	}
 
@@ -14890,9 +14838,6 @@ var myol = (function () {
       }
       image.addEventListener('load', handleLoad);
       image.addEventListener('error', handleError);
-      if (src) {
-        image.src = src;
-      }
     });
   }
 
@@ -15082,7 +15027,7 @@ var myol = (function () {
    */
   let taintedTestContext = null;
 
-  class IconImage extends EventTarget {
+  class IconImage extends Target {
     /**
      * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
      * @param {string|undefined} src Src.
@@ -15381,7 +15326,7 @@ var myol = (function () {
     if (!iconImage) {
       iconImage = new IconImage(
         image,
-        image instanceof HTMLImageElement ? image.src || undefined : cacheKey,
+        image && 'src' in image ? image.src || undefined : cacheKey,
         crossOrigin,
         imageState,
         color,
@@ -15772,7 +15717,7 @@ var myol = (function () {
   /**
    * @type {BaseObject}
    */
-  const checkedFonts = new BaseObject$1();
+  const checkedFonts = new BaseObject();
 
   /**
    * @type {CanvasRenderingContext2D}
@@ -15992,6 +15937,7 @@ var myol = (function () {
         lineWidths.push(lineWidth);
         lineWidth = 0;
         height += lineHeight;
+        lineHeight = 0;
         continue;
       }
       const font = chunks[i + 1] || baseStyle.font;
@@ -17702,8 +17648,6 @@ var myol = (function () {
     return feature.getGeometry();
   }
 
-  var Style$1 = Style;
-
   /**
    * @module ol/style/Icon
    */
@@ -17885,7 +17829,7 @@ var myol = (function () {
       if (options.src !== undefined) {
         imageState = ImageState.IDLE;
       } else if (image !== undefined) {
-        if (image instanceof HTMLImageElement) {
+        if ('complete' in image) {
           if (image.complete) {
             imageState = image.src ? ImageState.LOADED : ImageState.IDLE;
           } else {
@@ -18265,8 +18209,6 @@ var myol = (function () {
       return this.iconImage_.ready();
     }
   }
-
-  var Icon$1 = Icon;
 
   /**
    * @module ol/style/Text
@@ -18912,7 +18854,7 @@ var myol = (function () {
    * Base type used for literal style parameters; can be a number literal or the output of an operator,
    * which in turns takes {@link import("./expression.js").ExpressionValue} arguments.
    *
-   * The following operators can be used:
+   * See below for details on the available operators (with notes for those that are WebGL or Canvas only).
    *
    * * Reading operators:
    *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
@@ -18967,8 +18909,15 @@ var myol = (function () {
    *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
    *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
    *     between `output1` and `outputN`.
+   *   * `['string', value1, value2, ...]` returns the first value in the list that evaluates to a string.
+   *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 'default value']]`
+   *     (Canvas only).
+   *   * `['number', value1, value2, ...]` returns the first value in the list that evaluates to a number.
+   *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 42]]`
+   *     (Canvas only).
    *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
-   *     An example would be to provide a default value for get: ['coalesce',['get','propertynanme'],'default value']]
+   *     An example would be to provide a default value for get: `['coalesce', ['get','propertyname'], 'default value']]`
+   *     (Canvas only).
    *
    * * Logical operators:
    *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
@@ -18981,9 +18930,9 @@ var myol = (function () {
    *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
    *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
    *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
-   *     (inclusively), or `false` otherwise (WebGL only).
+   *     (inclusively), or `false` otherwise.
    *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
-   *     `false` otherwise (WebGL only).
+   *     `false` otherwise.
    *     This operator has the following limitations:
    *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
    *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
@@ -19001,6 +18950,9 @@ var myol = (function () {
    *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
    *     named colors (e.g. `'red'`), or array literals with 3 ([r, g, b]) or 4 ([r, g, b, a]) values (with r, g, and b
    *     in the 0-255 range and a in the 0-1 range) (WebGL only).
+   *   * `['to-string', value]` converts the input value to a string. If the input is a boolean, the result is "true" or "false".
+   *     If the input is a number, it is converted to a string as specified by the "NumberToString" algorithm of the ECMAScript
+   *     Language Specification. If the input is a color, it is converted to a string of the form "rgba(r,g,b,a)". (Canvas only)
    *
    * Values can either be literals or another operator, as they will be evaluated recursively.
    * Literal values can be of the following types:
@@ -19021,6 +18973,7 @@ var myol = (function () {
   const StringType = 1 << numTypes++;
   const ColorType = 1 << numTypes++;
   const NumberArrayType = 1 << numTypes++;
+  const SizeType = 1 << numTypes++;
   const AnyType = Math.pow(2, numTypes) - 1;
 
   const typeNames = {
@@ -19029,6 +18982,7 @@ var myol = (function () {
     [StringType]: 'string',
     [ColorType]: 'color',
     [NumberArrayType]: 'number[]',
+    [SizeType]: 'size',
   };
 
   const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
@@ -19172,7 +19126,10 @@ var myol = (function () {
         return new LiteralExpression(BooleanType, encoded);
       }
       case 'number': {
-        return new LiteralExpression(NumberType, encoded);
+        return new LiteralExpression(
+          typeHint === SizeType ? SizeType : NumberType,
+          encoded,
+        );
       }
       case 'string': {
         let type = StringType;
@@ -19206,7 +19163,9 @@ var myol = (function () {
     }
 
     let type = NumberArrayType;
-    if (encoded.length === 3 || encoded.length === 4) {
+    if (encoded.length === 2) {
+      type |= SizeType;
+    } else if (encoded.length === 3 || encoded.length === 4) {
       type |= ColorType;
     }
     if (typeHint) {
@@ -19263,6 +19222,7 @@ var myol = (function () {
     Id: 'id',
     Band: 'band',
     Palette: 'palette',
+    ToString: 'to-string',
   };
 
   /**
@@ -19505,9 +19465,11 @@ var myol = (function () {
     ),
     [Ops.Array]: createParser(
       (parsedArgs) => {
-        return parsedArgs.length === 3 || parsedArgs.length === 4
-          ? NumberArrayType | ColorType
-          : NumberArrayType;
+        return parsedArgs.length === 2
+          ? NumberArrayType | SizeType
+          : parsedArgs.length === 3 || parsedArgs.length === 4
+            ? NumberArrayType | ColorType
+            : NumberArrayType;
       },
       withArgsCount(1, Infinity),
       parseArgsOfType(NumberType),
@@ -19523,6 +19485,11 @@ var myol = (function () {
       parseArgsOfType(NumberType),
     ),
     [Ops.Palette]: createParser(ColorType, withArgsCount(2, 2), parsePaletteArgs),
+    [Ops.ToString]: createParser(
+      StringType,
+      withArgsCount(1, 1),
+      parseArgsOfType(BooleanType | NumberType | StringType | ColorType),
+    ),
   };
 
   /**
@@ -19752,6 +19719,7 @@ var myol = (function () {
           `, got ${typeName(inputType)} instead`,
       );
     }
+    inputType &= expectedInputType;
     if (isType(outputType, NoneType)) {
       throw new Error(
         `Could not find a common output type for the following match operation: ` +
@@ -20184,6 +20152,8 @@ var myol = (function () {
       }
       case Ops.Any:
       case Ops.All:
+      case Ops.Between:
+      case Ops.In:
       case Ops.Not: {
         return compileLogicalExpression(expression);
       }
@@ -20221,14 +20191,15 @@ var myol = (function () {
       case Ops.Interpolate: {
         return compileInterpolateExpression(expression);
       }
+      case Ops.ToString: {
+        return compileConvertExpression(expression);
+      }
       default: {
         throw new Error(`Unsupported operator ${operator}`);
       }
       // TODO: unimplemented
       // Ops.Zoom
       // Ops.Time
-      // Ops.Between
-      // Ops.In
       // Ops.Array
       // Ops.Color
       // Ops.Band
@@ -20366,6 +20337,25 @@ var myol = (function () {
             }
           }
           return true;
+        };
+      }
+      case Ops.Between: {
+        return (context) => {
+          const value = args[0](context);
+          const min = args[1](context);
+          const max = args[2](context);
+          return value >= min && value <= max;
+        };
+      }
+      case Ops.In: {
+        return (context) => {
+          const value = args[0](context);
+          for (let i = 1; i < length; ++i) {
+            if (value === args[i](context)) {
+              return true;
+            }
+          }
+          return false;
         };
       }
       case Ops.Not: {
@@ -20564,6 +20554,35 @@ var myol = (function () {
       }
       return previousOutput;
     };
+  }
+
+  /**
+   * @param {import('./expression.js').CallExpression} expression The call expression.
+   * @param {import('./expression.js').ParsingContext} context The parsing context.
+   * @return {ExpressionEvaluator} The evaluator function.
+   */
+  function compileConvertExpression(expression, context) {
+    const op = expression.operator;
+    const length = expression.args.length;
+
+    const args = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      args[i] = compileExpression(expression.args[i]);
+    }
+    switch (op) {
+      case Ops.ToString: {
+        return (context) => {
+          const value = args[0](context);
+          if (expression.args[0].type === ColorType) {
+            return toString(value);
+          }
+          return value.toString();
+        };
+      }
+      default: {
+        throw new Error(`Unsupported convert operator ${op}`);
+      }
+    }
   }
 
   /**
@@ -20855,7 +20874,7 @@ var myol = (function () {
       );
     }
 
-    const style = new Style$1();
+    const style = new Style();
     return function (context) {
       let empty = true;
       if (evaluateFill) {
@@ -21355,7 +21374,7 @@ var myol = (function () {
       prefix + 'declutter-mode',
     );
 
-    const icon = new Icon$1({
+    const icon = new Icon({
       src,
       anchorOrigin,
       anchorXUnits,
@@ -21945,7 +21964,7 @@ var myol = (function () {
    */
 
   /**
-   * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
+   * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
    * @typedef {Object} Options
    * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
    * @property {number} [opacity=1] Opacity (0, 1).
@@ -22009,12 +22028,12 @@ var myol = (function () {
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
+   * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
    * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
    * @extends {Layer<VectorSourceType, RendererType>}
    * @api
    */
-  class BaseVectorLayer extends Layer$1 {
+  class BaseVectorLayer extends Layer {
     /**
      * @param {Options<VectorSourceType>} [options] Options.
      */
@@ -22044,7 +22063,7 @@ var myol = (function () {
 
       /**
        * User provided style.
-       * @type {import("../style/Style.js").StyleLike}
+       * @type {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike}
        * @private
        */
       this.style_ = null;
@@ -22122,7 +22141,7 @@ var myol = (function () {
     /**
      * Get the style for features.  This returns whatever was passed to the `style`
      * option at construction or to the `setStyle` method.
-     * @return {import("../style/Style.js").StyleLike|null|undefined} Layer style.
+     * @return {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null|undefined} Layer style.
      * @api
      */
     getStyle() {
@@ -22162,7 +22181,7 @@ var myol = (function () {
     renderDeclutter(frameState, layerState) {
       const declutterGroup = this.getDeclutter();
       if (declutterGroup in frameState.declutter === false) {
-        frameState.declutter[declutterGroup] = new RBush$2(9);
+        frameState.declutter[declutterGroup] = new RBush$1(9);
       }
       this.getRenderer().renderDeclutter(frameState, layerState);
     }
@@ -22197,9 +22216,10 @@ var myol = (function () {
      * @api
      */
     setStyle(style) {
-      this.style_ = toStyleLike(style);
+      this.style_ = style === undefined ? createDefaultStyle : style;
+      const styleLike = toStyleLike(style);
       this.styleFunction_ =
-        style === null ? undefined : toFunction(this.style_);
+        style === null ? undefined : toFunction(styleLike);
       this.changed();
     }
   }
@@ -22221,7 +22241,7 @@ var myol = (function () {
     if (typeof style === 'function') {
       return style;
     }
-    if (style instanceof Style$1) {
+    if (style instanceof Style) {
       return style;
     }
     if (!Array.isArray(style)) {
@@ -22234,14 +22254,14 @@ var myol = (function () {
     const length = style.length;
     const first = style[0];
 
-    if (first instanceof Style$1) {
+    if (first instanceof Style) {
       /**
        * @type {Array<Style>}
        */
       const styles = new Array(length);
       for (let i = 0; i < length; ++i) {
         const candidate = style[i];
-        if (!(candidate instanceof Style$1)) {
+        if (!(candidate instanceof Style)) {
           throw new Error('Expected a list of style instances');
         }
         styles[i] = candidate;
@@ -22269,8 +22289,6 @@ var myol = (function () {
     return flatStylesToStyleFunction(flatStyles);
   }
 
-  var BaseVectorLayer$1 = BaseVectorLayer;
-
   /**
    * @module ol/renderer/Map
    */
@@ -22288,7 +22306,7 @@ var myol = (function () {
   /**
    * @abstract
    */
-  class MapRenderer extends Disposable$1 {
+  class MapRenderer extends Disposable {
     /**
      * @param {import("../Map.js").default} map Map.
      */
@@ -22505,14 +22523,12 @@ var myol = (function () {
     shared.expire();
   }
 
-  var MapRenderer$1 = MapRenderer;
-
   /**
    * @module ol/render/Event
    */
 
 
-  class RenderEvent extends Event {
+  class RenderEvent extends BaseEvent {
     /**
      * @param {import("./EventType.js").default} type Type.
      * @param {import("../transform.js").Transform} [inversePixelTransform] Transform for
@@ -22549,8 +22565,6 @@ var myol = (function () {
     }
   }
 
-  var RenderEvent$1 = RenderEvent;
-
   /**
    * @module ol/renderer/Composite
    */
@@ -22560,7 +22574,7 @@ var myol = (function () {
    * Canvas map renderer.
    * @api
    */
-  class CompositeMapRenderer extends MapRenderer$1 {
+  class CompositeMapRenderer extends MapRenderer {
     /**
      * @param {import("../Map.js").default} map Map.
      */
@@ -22612,7 +22626,7 @@ var myol = (function () {
     dispatchRenderEvent(type, frameState) {
       const map = this.getMap();
       if (map.hasListener(type)) {
-        const event = new RenderEvent$1(type, undefined, frameState);
+        const event = new RenderEvent(type, undefined, frameState);
         map.dispatchEvent(event);
       }
     }
@@ -22644,7 +22658,7 @@ var myol = (function () {
       });
       const declutter = layerStatesArray.some(
         (layerState) =>
-          layerState.layer instanceof BaseVectorLayer$1 &&
+          layerState.layer instanceof BaseVectorLayer &&
           layerState.layer.getDeclutter(),
       );
       if (declutter) {
@@ -22702,6 +22716,9 @@ var myol = (function () {
      * @param {Array<import('../layer/Layer.js').State>} layerStates Layers.
      */
     declutter(frameState, layerStates) {
+      if (!frameState.declutter) {
+        return;
+      }
       for (let i = layerStates.length - 1; i >= 0; --i) {
         const layerState = layerStates[i];
         const layer = layerState.layer;
@@ -22715,14 +22732,12 @@ var myol = (function () {
     }
   }
 
-  var CompositeMapRenderer$1 = CompositeMapRenderer;
-
   /**
    * @module ol/layer/Group
    */
 
   /**
-   * @typedef {'addlayer'|'removelayer'} EventType
+   * @typedef {'addlayer'|'removelayer'} GroupEventType
    */
 
   /**
@@ -22731,9 +22746,9 @@ var myol = (function () {
    * the group or one of its child groups.  When a layer group is added to or removed from another layer group,
    * a single event will be triggered (instead of one per layer in the group added or removed).
    */
-  class GroupEvent extends Event {
+  class GroupEvent extends BaseEvent {
     /**
-     * @param {EventType} type The event type.
+     * @param {GroupEventType} type The event type.
      * @param {BaseLayer} layer The layer.
      */
     constructor(type, layer) {
@@ -22794,7 +22809,7 @@ var myol = (function () {
    *
    * @api
    */
-  class LayerGroup extends BaseLayer$1 {
+  class LayerGroup extends BaseLayer {
     /**
      * @param {Options} [options] Layer options.
      */
@@ -22838,7 +22853,7 @@ var myol = (function () {
 
       if (layers) {
         if (Array.isArray(layers)) {
-          layers = new Collection$1(layers.slice(), {unique: true});
+          layers = new Collection(layers.slice(), {unique: true});
         } else {
           assert$1(
             typeof (/** @type {?} */ (layers).getArray) === 'function',
@@ -22846,7 +22861,7 @@ var myol = (function () {
           );
         }
       } else {
-        layers = new Collection$1(undefined, {unique: true});
+        layers = new Collection(undefined, {unique: true});
       }
 
       this.setLayers(layers);
@@ -23061,8 +23076,6 @@ var myol = (function () {
     }
   }
 
-  var LayerGroup$1 = LayerGroup;
-
   /**
    * @module ol/MapEvent
    */
@@ -23072,7 +23085,7 @@ var myol = (function () {
    * Events emitted as map events are instances of this type.
    * See {@link module:ol/Map~Map} for which events trigger a map event.
    */
-  class MapEvent extends Event {
+  class MapEvent extends BaseEvent {
     /**
      * @param {string} type Event type.
      * @param {import("./Map.js").default} map Map.
@@ -23097,8 +23110,6 @@ var myol = (function () {
     }
   }
 
-  var MapEvent$1 = MapEvent;
-
   /**
    * @module ol/MapBrowserEvent
    */
@@ -23109,7 +23120,7 @@ var myol = (function () {
    * See {@link module:ol/Map~Map} for which events trigger a map browser event.
    * @template {UIEvent} EVENT
    */
-  class MapBrowserEvent extends MapEvent$1 {
+  class MapBrowserEvent extends MapEvent {
     /**
      * @param {string} type Event type.
      * @param {import("./Map.js").default} map Map.
@@ -23212,8 +23223,6 @@ var myol = (function () {
     }
   }
 
-  var MapBrowserEvent$1 = MapBrowserEvent;
-
   /**
    * @module ol/MapBrowserEventType
    */
@@ -23297,7 +23306,7 @@ var myol = (function () {
    */
 
 
-  class MapBrowserEventHandler extends EventTarget {
+  class MapBrowserEventHandler extends Target {
     /**
      * @param {import("./Map.js").default} map The map with the viewport to listen to events on.
      * @param {number} [moveTolerance] The minimal distance the pointer must travel to trigger a move.
@@ -23412,7 +23421,7 @@ var myol = (function () {
      * @private
      */
     emulateClick_(pointerEvent) {
-      let newEvent = new MapBrowserEvent$1(
+      let newEvent = new MapBrowserEvent(
         MapBrowserEventType.CLICK,
         this.map_,
         pointerEvent,
@@ -23422,7 +23431,7 @@ var myol = (function () {
         // double-click
         clearTimeout(this.clickTimeoutId_);
         this.clickTimeoutId_ = undefined;
-        newEvent = new MapBrowserEvent$1(
+        newEvent = new MapBrowserEvent(
           MapBrowserEventType.DBLCLICK,
           this.map_,
           pointerEvent,
@@ -23432,7 +23441,7 @@ var myol = (function () {
         // click
         this.clickTimeoutId_ = setTimeout(() => {
           this.clickTimeoutId_ = undefined;
-          const newEvent = new MapBrowserEvent$1(
+          const newEvent = new MapBrowserEvent(
             MapBrowserEventType.SINGLECLICK,
             this.map_,
             pointerEvent,
@@ -23484,7 +23493,7 @@ var myol = (function () {
      */
     handlePointerUp_(pointerEvent) {
       this.updateActivePointers_(pointerEvent);
-      const newEvent = new MapBrowserEvent$1(
+      const newEvent = new MapBrowserEvent(
         MapBrowserEventType.POINTERUP,
         this.map_,
         pointerEvent,
@@ -23535,7 +23544,7 @@ var myol = (function () {
     handlePointerDown_(pointerEvent) {
       this.emulateClicks_ = this.activePointers_.length === 0;
       this.updateActivePointers_(pointerEvent);
-      const newEvent = new MapBrowserEvent$1(
+      const newEvent = new MapBrowserEvent(
         MapBrowserEventType.POINTERDOWN,
         this.map_,
         pointerEvent,
@@ -23606,7 +23615,7 @@ var myol = (function () {
       if (this.isMoving_(pointerEvent)) {
         this.updateActivePointers_(pointerEvent);
         this.dragging_ = true;
-        const newEvent = new MapBrowserEvent$1(
+        const newEvent = new MapBrowserEvent(
           MapBrowserEventType.POINTERDRAG,
           this.map_,
           pointerEvent,
@@ -23628,7 +23637,7 @@ var myol = (function () {
       this.originalPointerMoveEvent_ = pointerEvent;
       const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
       this.dispatchEvent(
-        new MapBrowserEvent$1(
+        new MapBrowserEvent(
           MapBrowserEventType.POINTERMOVE,
           this.map_,
           pointerEvent,
@@ -23698,8 +23707,6 @@ var myol = (function () {
       super.disposeInternal();
     }
   }
-
-  var MapBrowserEventHandler$1 = MapBrowserEventHandler;
 
   /**
    * @module ol/MapEventType
@@ -24025,8 +24032,6 @@ var myol = (function () {
     }
   }
 
-  var PriorityQueue$1 = PriorityQueue;
-
   /**
    * @module ol/TileState
    */
@@ -24054,7 +24059,7 @@ var myol = (function () {
    * @typedef {function(import("./Tile.js").default, string, import("./coordinate.js").Coordinate, number): number} PriorityFunction
    */
 
-  class TileQueue extends PriorityQueue$1 {
+  class TileQueue extends PriorityQueue {
     /**
      * @param {PriorityFunction} tilePriorityFunction Tile priority function.
      * @param {function(): ?} tileChangeCallback Function called on each tile change event.
@@ -24168,8 +24173,6 @@ var myol = (function () {
     }
   }
 
-  var TileQueue$1 = TileQueue;
-
   /**
    * @param {import('./Map.js').FrameState} frameState Frame state.
    * @param {import("./Tile.js").default} tile Tile.
@@ -24248,7 +24251,7 @@ var myol = (function () {
    *
    * @api
    */
-  class Control extends BaseObject$1 {
+  class Control extends BaseObject {
     /**
      * @param {Options} options Control options.
      */
@@ -24363,8 +24366,6 @@ var myol = (function () {
     }
   }
 
-  var Control$1 = Control;
-
   /**
    * @module ol/control/Attribution
    */
@@ -24405,7 +24406,7 @@ var myol = (function () {
    *
    * @api
    */
-  class Attribution extends Control$1 {
+  class Attribution extends Control {
     /**
      * @param {Options} [options] Attribution options.
      */
@@ -24577,7 +24578,7 @@ var myol = (function () {
      * @private
      * @param {?import("../Map.js").FrameState} frameState Frame state.
      */
-    updateElement_(frameState) {
+    async updateElement_(frameState) {
       if (!frameState) {
         if (this.renderedVisible_) {
           this.element.style.display = 'none';
@@ -24586,7 +24587,11 @@ var myol = (function () {
         return;
       }
 
-      const attributions = this.collectSourceAttributions_(frameState);
+      const attributions = await Promise.all(
+        this.collectSourceAttributions_(frameState).map((attribution) =>
+          toPromise(() => attribution),
+        ),
+      );
 
       const visible = attributions.length > 0;
       if (this.renderedVisible_ != visible) {
@@ -24725,7 +24730,7 @@ var myol = (function () {
    *
    * @api
    */
-  class Rotate extends Control$1 {
+  class Rotate extends Control {
     /**
      * @param {Options} [options] Rotate options.
      */
@@ -24904,7 +24909,7 @@ var myol = (function () {
    *
    * @api
    */
-  class Zoom extends Control$1 {
+  class Zoom extends Control {
     /**
      * @param {Options} [options] Zoom options.
      */
@@ -25068,7 +25073,7 @@ var myol = (function () {
     options = options ? options : {};
 
     /** @type {Collection<import("./Control.js").default>} */
-    const controls = new Collection$1();
+    const controls = new Collection();
 
     const zoomControl = options.zoom !== undefined ? options.zoom : true;
     if (zoomControl) {
@@ -25137,7 +25142,7 @@ var myol = (function () {
    * vectors and so are visible on the screen.
    * @api
    */
-  class Interaction extends BaseObject$1 {
+  class Interaction extends BaseObject {
     /**
      * @param {InteractionOptions} [options] Options.
      */
@@ -25266,8 +25271,6 @@ var myol = (function () {
     });
   }
 
-  var Interaction$1 = Interaction;
-
   /**
    * @module ol/interaction/DoubleClickZoom
    */
@@ -25283,7 +25286,7 @@ var myol = (function () {
    * Allows the user to zoom by double-clicking on the map.
    * @api
    */
-  class DoubleClickZoom extends Interaction$1 {
+  class DoubleClickZoom extends Interaction {
     /**
      * @param {Options} [options] Options.
      */
@@ -25329,8 +25332,6 @@ var myol = (function () {
     }
   }
 
-  var DoubleClickZoom$1 = DoubleClickZoom;
-
   /**
    * @module ol/interaction/Pointer
    */
@@ -25373,7 +25374,7 @@ var myol = (function () {
    * user function is called and returns `false`.
    * @api
    */
-  class PointerInteraction extends Interaction$1 {
+  class PointerInteraction extends Interaction {
     /**
      * @param {Options} [options] Options.
      */
@@ -25533,8 +25534,6 @@ var myol = (function () {
     }
     return {clientX: clientX / length, clientY: clientY / length};
   }
-
-  var PointerInteraction$1 = PointerInteraction;
 
   /**
    * @module ol/events/condition
@@ -25827,7 +25826,7 @@ var myol = (function () {
    * Allows the user to pan the map by dragging the map.
    * @api
    */
-  class DragPan extends PointerInteraction$1 {
+  class DragPan extends PointerInteraction {
     /**
      * @param {Options} [options] Options.
      */
@@ -25980,8 +25979,6 @@ var myol = (function () {
     }
   }
 
-  var DragPan$1 = DragPan;
-
   /**
    * @module ol/interaction/DragRotate
    */
@@ -26004,7 +26001,7 @@ var myol = (function () {
    * This interaction is only supported for mouse devices.
    * @api
    */
-  class DragRotate extends PointerInteraction$1 {
+  class DragRotate extends PointerInteraction {
     /**
      * @param {Options} [options] Options.
      */
@@ -26097,14 +26094,12 @@ var myol = (function () {
     }
   }
 
-  var DragRotate$1 = DragRotate;
-
   /**
    * @module ol/render/Box
    */
 
 
-  class RenderBox extends Disposable$1 {
+  class RenderBox extends Disposable {
     /**
      * @param {string} className CSS class name.
      */
@@ -26199,6 +26194,10 @@ var myol = (function () {
      * Creates or updates the cached geometry.
      */
     createOrUpdateGeometry() {
+      if (!this.map_) {
+        return;
+      }
+
       const startPixel = this.startPixel_;
       const endPixel = this.endPixel_;
       const pixels = [
@@ -26227,8 +26226,6 @@ var myol = (function () {
       return this.geometry_;
     }
   }
-
-  var RenderBox$1 = RenderBox;
 
   /**
    * @module ol/interaction/DragBox
@@ -26295,7 +26292,7 @@ var myol = (function () {
    * Events emitted by {@link module:ol/interaction/DragBox~DragBox} instances are instances of
    * this type.
    */
-  class DragBoxEvent extends Event {
+  class DragBoxEvent extends BaseEvent {
     /**
      * @param {string} type The event type.
      * @param {import("../coordinate.js").Coordinate} coordinate The event coordinate.
@@ -26343,7 +26340,7 @@ var myol = (function () {
    * @fires DragBoxEvent
    * @api
    */
-  class DragBox extends PointerInteraction$1 {
+  class DragBox extends PointerInteraction {
     /**
      * @param {Options} [options] Options.
      */
@@ -26371,7 +26368,7 @@ var myol = (function () {
        * @type {import("../render/Box.js").default}
        * @private
        */
-      this.box_ = new RenderBox$1(options.className || 'ol-dragbox');
+      this.box_ = new RenderBox(options.className || 'ol-dragbox');
 
       /**
        * @type {number}
@@ -26433,6 +26430,10 @@ var myol = (function () {
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      */
     handleDragEvent(mapBrowserEvent) {
+      if (!this.startPixel_) {
+        return;
+      }
+
       this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
       this.dispatchEvent(
@@ -26450,6 +26451,10 @@ var myol = (function () {
      * @return {boolean} If the event was consumed.
      */
     handleUpEvent(mapBrowserEvent) {
+      if (!this.startPixel_) {
+        return false;
+      }
+
       this.box_.setMap(null);
 
       const completeBox = this.boxEndCondition_(
@@ -26497,9 +26502,27 @@ var myol = (function () {
      * @param {import("../MapBrowserEvent.js").default} event Event.
      */
     onBoxEnd(event) {}
-  }
 
-  var DragBox$1 = DragBox;
+    /**
+     * Activate or deactivate the interaction.
+     * @param {boolean} active Active.
+     * @observable
+     * @api
+     */
+    setActive(active) {
+      if (!active) {
+        this.box_.setMap(null);
+        if (this.startPixel_) {
+          this.dispatchEvent(
+            new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+          );
+          this.startPixel_ = null;
+        }
+      }
+
+      super.setActive(active);
+    }
+  }
 
   /**
    * @module ol/interaction/DragZoom
@@ -26529,7 +26552,7 @@ var myol = (function () {
    * your custom one configured with `className`.
    * @api
    */
-  class DragZoom extends DragBox$1 {
+  class DragZoom extends DragBox {
     /**
      * @param {Options} [options] Options.
      */
@@ -26581,8 +26604,6 @@ var myol = (function () {
     }
   }
 
-  var DragZoom$1 = DragZoom;
-
   /**
    * @module ol/events/Key
    */
@@ -26627,7 +26648,7 @@ var myol = (function () {
    * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
    * @api
    */
-  class KeyboardPan extends Interaction$1 {
+  class KeyboardPan extends Interaction {
     /**
      * @param {Options} [options] Options.
      */
@@ -26716,8 +26737,6 @@ var myol = (function () {
     }
   }
 
-  var KeyboardPan$1 = KeyboardPan;
-
   /**
    * @module ol/interaction/KeyboardZoom
    */
@@ -26747,7 +26766,7 @@ var myol = (function () {
    * See also {@link module:ol/interaction/KeyboardPan~KeyboardPan}.
    * @api
    */
-  class KeyboardZoom extends Interaction$1 {
+  class KeyboardZoom extends Interaction {
     /**
      * @param {Options} [options] Options.
      */
@@ -26811,8 +26830,6 @@ var myol = (function () {
       return !stopEvent;
     }
   }
-
-  var KeyboardZoom$1 = KeyboardZoom;
 
   /**
    * @module ol/Kinetic
@@ -26939,8 +26956,6 @@ var myol = (function () {
     }
   }
 
-  var Kinetic$1 = Kinetic;
-
   /**
    * @module ol/interaction/MouseWheelZoom
    */
@@ -26973,7 +26988,7 @@ var myol = (function () {
    * Allows the user to zoom the map by scrolling the mouse wheel.
    * @api
    */
-  class MouseWheelZoom extends Interaction$1 {
+  class MouseWheelZoom extends Interaction {
     /**
      * @param {Options} [options] Options.
      */
@@ -27233,8 +27248,6 @@ var myol = (function () {
     }
   }
 
-  var MouseWheelZoom$1 = MouseWheelZoom;
-
   /**
    * @module ol/interaction/PinchRotate
    */
@@ -27252,7 +27265,7 @@ var myol = (function () {
    * on a touch screen.
    * @api
    */
-  class PinchRotate extends PointerInteraction$1 {
+  class PinchRotate extends PointerInteraction {
     /**
      * @param {Options} [options] Options.
      */
@@ -27388,8 +27401,6 @@ var myol = (function () {
     }
   }
 
-  var PinchRotate$1 = PinchRotate;
-
   /**
    * @module ol/interaction/PinchZoom
    */
@@ -27405,7 +27416,7 @@ var myol = (function () {
    * on a touch screen.
    * @api
    */
-  class PinchZoom extends PointerInteraction$1 {
+  class PinchZoom extends PointerInteraction {
     /**
      * @param {Options} [options] Options.
      */
@@ -27520,8 +27531,6 @@ var myol = (function () {
     }
   }
 
-  var PinchZoom$1 = PinchZoom;
-
   /**
    * @module ol/interaction/defaults
    */
@@ -27577,23 +27586,23 @@ var myol = (function () {
     options = options ? options : {};
 
     /** @type {Collection<import("./Interaction.js").default>} */
-    const interactions = new Collection$1();
+    const interactions = new Collection();
 
-    const kinetic = new Kinetic$1(-0.005, 0.05, 100);
+    const kinetic = new Kinetic(-0.005, 0.05, 100);
 
     const altShiftDragRotate =
       options.altShiftDragRotate !== undefined
         ? options.altShiftDragRotate
         : true;
     if (altShiftDragRotate) {
-      interactions.push(new DragRotate$1());
+      interactions.push(new DragRotate());
     }
 
     const doubleClickZoom =
       options.doubleClickZoom !== undefined ? options.doubleClickZoom : true;
     if (doubleClickZoom) {
       interactions.push(
-        new DoubleClickZoom$1({
+        new DoubleClickZoom({
           delta: options.zoomDelta,
           duration: options.zoomDuration,
         }),
@@ -27603,7 +27612,7 @@ var myol = (function () {
     const dragPan = options.dragPan !== undefined ? options.dragPan : true;
     if (dragPan) {
       interactions.push(
-        new DragPan$1({
+        new DragPan({
           onFocusOnly: options.onFocusOnly,
           kinetic: kinetic,
         }),
@@ -27613,13 +27622,13 @@ var myol = (function () {
     const pinchRotate =
       options.pinchRotate !== undefined ? options.pinchRotate : true;
     if (pinchRotate) {
-      interactions.push(new PinchRotate$1());
+      interactions.push(new PinchRotate());
     }
 
     const pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
     if (pinchZoom) {
       interactions.push(
-        new PinchZoom$1({
+        new PinchZoom({
           duration: options.zoomDuration,
         }),
       );
@@ -27627,9 +27636,9 @@ var myol = (function () {
 
     const keyboard = options.keyboard !== undefined ? options.keyboard : true;
     if (keyboard) {
-      interactions.push(new KeyboardPan$1());
+      interactions.push(new KeyboardPan());
       interactions.push(
-        new KeyboardZoom$1({
+        new KeyboardZoom({
           delta: options.zoomDelta,
           duration: options.zoomDuration,
         }),
@@ -27640,7 +27649,7 @@ var myol = (function () {
       options.mouseWheelZoom !== undefined ? options.mouseWheelZoom : true;
     if (mouseWheelZoom) {
       interactions.push(
-        new MouseWheelZoom$1({
+        new MouseWheelZoom({
           onFocusOnly: options.onFocusOnly,
           duration: options.zoomDuration,
         }),
@@ -27651,7 +27660,7 @@ var myol = (function () {
       options.shiftDragZoom !== undefined ? options.shiftDragZoom : true;
     if (shiftDragZoom) {
       interactions.push(
-        new DragZoom$1({
+        new DragZoom({
           duration: options.zoomDuration,
         }),
       );
@@ -27778,11 +27787,11 @@ var myol = (function () {
    * @param {import("./layer/Base.js").default} layer Layer.
    */
   function removeLayerMapProperty(layer) {
-    if (layer instanceof Layer$1) {
+    if (layer instanceof Layer) {
       layer.setMapInternal(null);
       return;
     }
-    if (layer instanceof LayerGroup$1) {
+    if (layer instanceof LayerGroup) {
       layer.getLayers().forEach(removeLayerMapProperty);
     }
   }
@@ -27792,11 +27801,11 @@ var myol = (function () {
    * @param {Map} map Map.
    */
   function setLayerMapProperty(layer, map) {
-    if (layer instanceof Layer$1) {
+    if (layer instanceof Layer) {
       layer.setMapInternal(map);
       return;
     }
-    if (layer instanceof LayerGroup$1) {
+    if (layer instanceof LayerGroup) {
       const layers = layer.getLayers().getArray();
       for (let i = 0, ii = layers.length; i < ii; ++i) {
         setLayerMapProperty(layers[i], map);
@@ -27856,7 +27865,7 @@ var myol = (function () {
    * @fires import("./render/Event.js").default#rendercomplete
    * @api
    */
-  class Map extends BaseObject$1 {
+  class Map extends BaseObject {
     /**
      * @param {MapOptions} [options] Map options.
      */
@@ -28097,7 +28106,7 @@ var myol = (function () {
        * @private
        * @type {TileQueue}
        */
-      this.tileQueue_ = new TileQueue$1(
+      this.tileQueue_ = new TileQueue(
         this.getTilePriority.bind(this),
         this.handleTileChange_.bind(this),
       );
@@ -28115,9 +28124,9 @@ var myol = (function () {
       this.setProperties(optionsInternal.values);
 
       const map = this;
-      if (options.view && !(options.view instanceof View$1)) {
+      if (options.view && !(options.view instanceof View)) {
         options.view.then(function (viewOptions) {
-          map.setView(new View$1(viewOptions));
+          map.setView(new View(viewOptions));
         });
       }
 
@@ -28353,7 +28362,7 @@ var myol = (function () {
       const layers = [];
       function addLayersFrom(layerGroup) {
         layerGroup.forEach(function (layer) {
-          if (layer instanceof LayerGroup$1) {
+          if (layer instanceof LayerGroup) {
             addLayersFrom(layer.getLayers());
           } else {
             layers.push(layer);
@@ -28552,7 +28561,7 @@ var myol = (function () {
      */
     setLayers(layers) {
       const group = this.getLayerGroup();
-      if (layers instanceof Collection$1) {
+      if (layers instanceof Collection) {
         group.setLayers(layers);
         return;
       }
@@ -28719,7 +28728,7 @@ var myol = (function () {
      */
     handleBrowserEvent(browserEvent, type) {
       type = type || browserEvent.type;
-      const mapBrowserEvent = new MapBrowserEvent$1(type, this, browserEvent);
+      const mapBrowserEvent = new MapBrowserEvent(type, this, browserEvent);
       this.handleMapBrowserEvent(mapBrowserEvent);
     }
 
@@ -28823,13 +28832,13 @@ var myol = (function () {
           if (this.loaded_ === false) {
             this.loaded_ = true;
             this.dispatchEvent(
-              new MapEvent$1(MapEventType.LOADEND, this, frameState),
+              new MapEvent(MapEventType.LOADEND, this, frameState),
             );
           }
         } else if (this.loaded_ === true) {
           this.loaded_ = false;
           this.dispatchEvent(
-            new MapEvent$1(MapEventType.LOADSTART, this, frameState),
+            new MapEvent(MapEventType.LOADSTART, this, frameState),
           );
         }
       }
@@ -28907,10 +28916,10 @@ var myol = (function () {
       } else {
         targetElement.appendChild(this.viewport_);
         if (!this.renderer_) {
-          this.renderer_ = new CompositeMapRenderer$1(this);
+          this.renderer_ = new CompositeMapRenderer(this);
         }
 
-        this.mapBrowserEventHandler_ = new MapBrowserEventHandler$1(
+        this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
           this,
           this.moveTolerance_,
         );
@@ -29205,7 +29214,7 @@ var myol = (function () {
               !equals$1(frameState.extent, this.previousExtent_));
           if (moveStart) {
             this.dispatchEvent(
-              new MapEvent$1(MapEventType.MOVESTART, this, previousFrameState),
+              new MapEvent(MapEventType.MOVESTART, this, previousFrameState),
             );
             this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
           }
@@ -29219,13 +29228,13 @@ var myol = (function () {
 
         if (idle) {
           this.dispatchEvent(
-            new MapEvent$1(MapEventType.MOVEEND, this, frameState),
+            new MapEvent(MapEventType.MOVEEND, this, frameState),
           );
           clone(frameState.extent, this.previousExtent_);
         }
       }
 
-      this.dispatchEvent(new MapEvent$1(MapEventType.POSTRENDER, this, frameState));
+      this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
       this.renderComplete_ =
         this.hasListener(MapEventType.LOADSTART) ||
@@ -29289,15 +29298,15 @@ var myol = (function () {
      * @api
      */
     setView(view) {
-      if (!view || view instanceof View$1) {
+      if (!view || view instanceof View) {
         this.set(MapProperty.VIEW, view);
         return;
       }
-      this.set(MapProperty.VIEW, new View$1());
+      this.set(MapProperty.VIEW, new View());
 
       const map = this;
       view.then(function (viewOptions) {
-        map.setView(new View$1(viewOptions));
+        map.setView(new View(viewOptions));
       });
     }
 
@@ -29386,7 +29395,7 @@ var myol = (function () {
       options.layers &&
       typeof (/** @type {?} */ (options.layers).getLayers) === 'function'
         ? /** @type {LayerGroup} */ (options.layers)
-        : new LayerGroup$1({
+        : new LayerGroup({
             layers:
               /** @type {Collection<import("./layer/Base.js").default>|Array<import("./layer/Base.js").default>} */ (
                 options.layers
@@ -29397,13 +29406,13 @@ var myol = (function () {
     values[MapProperty.TARGET] = options.target;
 
     values[MapProperty.VIEW] =
-      options.view instanceof View$1 ? options.view : new View$1();
+      options.view instanceof View ? options.view : new View();
 
     /** @type {Collection<import("./control/Control.js").default>} */
     let controls;
     if (options.controls !== undefined) {
       if (Array.isArray(options.controls)) {
-        controls = new Collection$1(options.controls.slice());
+        controls = new Collection(options.controls.slice());
       } else {
         assert$1(
           typeof (/** @type {?} */ (options.controls).getArray) === 'function',
@@ -29417,7 +29426,7 @@ var myol = (function () {
     let interactions;
     if (options.interactions !== undefined) {
       if (Array.isArray(options.interactions)) {
-        interactions = new Collection$1(options.interactions.slice());
+        interactions = new Collection(options.interactions.slice());
       } else {
         assert$1(
           typeof (/** @type {?} */ (options.interactions).getArray) ===
@@ -29432,7 +29441,7 @@ var myol = (function () {
     let overlays;
     if (options.overlays !== undefined) {
       if (Array.isArray(options.overlays)) {
-        overlays = new Collection$1(options.overlays.slice());
+        overlays = new Collection(options.overlays.slice());
       } else {
         assert$1(
           typeof (/** @type {?} */ (options.overlays).getArray) === 'function',
@@ -29441,7 +29450,7 @@ var myol = (function () {
         overlays = options.overlays;
       }
     } else {
-      overlays = new Collection$1();
+      overlays = new Collection();
     }
 
     return {
@@ -29452,7 +29461,6 @@ var myol = (function () {
       values: values,
     };
   }
-  var Map$1 = Map;
 
   /**
    * @module ol/geom/flat/interpolate
@@ -31031,7 +31039,7 @@ var myol = (function () {
       if (index < 0 || n <= index) {
         return null;
       }
-      return new Point$2(
+      return new Point$1(
         this.flatCoordinates.slice(
           index * this.stride,
           (index + 1) * this.stride,
@@ -31052,7 +31060,7 @@ var myol = (function () {
       /** @type {Array<Point>} */
       const points = [];
       for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-        const point = new Point$2(flatCoordinates.slice(i, i + stride), layout);
+        const point = new Point$1(flatCoordinates.slice(i, i + stride), layout);
         points.push(point);
       }
       return points;
@@ -31602,7 +31610,7 @@ var myol = (function () {
     MultiLineString: MultiLineString$1,
     MultiPoint: MultiPoint$1,
     MultiPolygon: MultiPolygon$1,
-    Point: Point$2,
+    Point: Point$1,
     Polygon: Polygon$1,
     SimpleGeometry: SimpleGeometry$1
   });
@@ -32038,8 +32046,6 @@ var myol = (function () {
   RenderFeature.prototype.getFlatCoordinates =
     RenderFeature.prototype.getOrientedFlatCoordinates;
 
-  var RenderFeature$1 = RenderFeature;
-
   /**
    * @module ol/format/Feature
    */
@@ -32113,13 +32119,13 @@ var myol = (function () {
    */
 
   /***
-   * @template {import("../Feature.js").FeatureLike} T
-   * @typedef {T extends import("../render/Feature.js").default ? typeof import("../render/Feature.js").default : typeof import("../Feature.js").default} FeatureToFeatureClass<T>
+   * @template {Feature|RenderFeature} T
+   * @typedef {T extends RenderFeature ? typeof RenderFeature : typeof Feature} FeatureToFeatureClass
    */
 
   /***
    * @template {import("../Feature.js").FeatureClass} T
-   * @typedef {T[keyof T] extends import("../render/Feature.js").default ? import("../render/Feature.js").default : import("../Feature.js").default} FeatureClassToFeature<T>
+   * @typedef {T[keyof T] extends RenderFeature ? RenderFeature : Feature} FeatureClassToFeature
    */
 
   /**
@@ -32151,9 +32157,9 @@ var myol = (function () {
 
       /**
        * @protected
-       * @type {import("../Feature.js").FeatureClass}
+       * @type {T}
        */
-      this.featureClass = Feature$1;
+      this.featureClass = /** @type {T} */ (Feature);
 
       /**
        * A list media types supported by the format in descending order of preference.
@@ -32269,7 +32275,7 @@ var myol = (function () {
      * Encode a feature in this format.
      *
      * @abstract
-     * @param {import("../Feature.js").default} feature Feature.
+     * @param {Feature} feature Feature.
      * @param {WriteOptions} [options] Write options.
      * @return {string|ArrayBuffer} Result.
      */
@@ -32281,7 +32287,7 @@ var myol = (function () {
      * Encode an array of features in this format.
      *
      * @abstract
-     * @param {Array<import("../Feature.js").default>} features Features.
+     * @param {Array<Feature>} features Features.
      * @param {WriteOptions} [options] Write options.
      * @return {string|ArrayBuffer} Result.
      */
@@ -32358,7 +32364,7 @@ var myol = (function () {
   }
 
   const GeometryConstructor = {
-    Point: Point$2,
+    Point: Point$1,
     LineString: LineString$1,
     Polygon: Polygon$1,
     MultiPoint: MultiPoint$1,
@@ -32406,7 +32412,7 @@ var myol = (function () {
 
     const stride = geometry.layout.length;
     return transformGeometryWithOptions(
-      new RenderFeature$1(
+      new RenderFeature(
         geometryType,
         geometryType === 'Polygon'
           ? orientFlatCoordinates(geometry.flatCoordinates, geometry.ends, stride)
@@ -32505,9 +32511,7 @@ var myol = (function () {
       node.nodeType == Node.CDATA_SECTION_NODE ||
       node.nodeType == Node.TEXT_NODE
     ) {
-      if (normalizeWhitespace) {
-        accumulator.push(String(node.nodeValue).replace(/(\r\n|\r|\n)/g, ''));
-      } else {
+      {
         accumulator.push(node.nodeValue);
       }
     } else {
@@ -32613,7 +32617,7 @@ var myol = (function () {
        */
       function (node, objectStack) {
         const value = valueReader.call(
-          thisArg !== undefined ? thisArg : this,
+          this,
           node,
           objectStack,
         );
@@ -32640,7 +32644,7 @@ var myol = (function () {
        */
       function (node, objectStack) {
         const value = valueReader.call(
-          thisArg !== undefined ? thisArg : this,
+          this,
           node,
           objectStack,
         );
@@ -32667,7 +32671,7 @@ var myol = (function () {
   function makeChildAppender(nodeWriter, thisArg) {
     return function (node, value, objectStack) {
       nodeWriter.call(
-        thisArg !== undefined ? thisArg : this,
+        this,
         node,
         value,
         objectStack,
@@ -32738,7 +32742,7 @@ var myol = (function () {
         }
 
         const namespaceURI =
-          fixedNamespaceURI !== undefined ? fixedNamespaceURI : node.namespaceURI;
+          node.namespaceURI;
         return createElementNS(namespaceURI, /** @type {string} */ (nodeName));
       }
     );
@@ -33227,8 +33231,6 @@ var myol = (function () {
     }
   }
 
-  var XMLFeature$1 = XMLFeature;
-
   /**
    * @module ol/format/OSMXML
    */
@@ -33267,7 +33269,7 @@ var myol = (function () {
    *
    * @api
    */
-  class OSMXML extends XMLFeature$1 {
+  class OSMXML extends XMLFeature {
     constructor() {
       super();
 
@@ -33317,7 +33319,7 @@ var myol = (function () {
             geometry = new LineString$1(flatCoordinates, 'XY');
           }
           transformGeometryWithOptions(geometry, false, options);
-          const feature = new Feature$1(geometry);
+          const feature = new Feature(geometry);
           if (values.id !== undefined) {
             feature.setId(values.id);
           }
@@ -33367,9 +33369,9 @@ var myol = (function () {
       objectStack,
     );
     if (!isEmpty$1(values.tags)) {
-      const geometry = new Point$2(coordinates);
+      const geometry = new Point$1(coordinates);
       transformGeometryWithOptions(geometry, false, options);
-      const feature = new Feature$1(geometry);
+      const feature = new Feature(geometry);
       if (id !== undefined) {
         feature.setId(id);
       }
@@ -33420,8 +33422,6 @@ var myol = (function () {
     const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     values.tags[node.getAttribute('k')] = node.getAttribute('v');
   }
-
-  var OSMXML$1 = OSMXML;
 
   /**
    * @module ol/TileRange
@@ -33574,8 +33574,6 @@ var myol = (function () {
     }
     return new TileRange(minX, maxX, minY, maxY);
   }
-
-  var TileRange$1 = TileRange;
 
   /**
    * @module ol/tilecoord
@@ -33738,9 +33736,7 @@ var myol = (function () {
            * @param {number} b Second resolution
            * @return {number} Comparison result
            */
-          (a, b) => b - a,
-          true,
-        ),
+          (a, b) => b - a),
         '`resolutions` must be sorted in descending order',
       );
 
@@ -33856,7 +33852,7 @@ var myol = (function () {
 
       if (options.sizes !== undefined) {
         this.fullTileRanges_ = options.sizes.map((size, z) => {
-          const tileRange = new TileRange$1(
+          const tileRange = new TileRange(
             Math.min(0, size[0]),
             Math.max(size[0] - 1, -1),
             Math.min(0, size[1]),
@@ -34322,8 +34318,6 @@ var myol = (function () {
     }
   }
 
-  var TileGrid$1 = TileGrid;
-
   /**
    * @module ol/tilegrid/WMTS
    */
@@ -34366,7 +34360,7 @@ var myol = (function () {
    * Set the grid pattern for sources accessing WMTS tiled-image servers.
    * @api
    */
-  class WMTSTileGrid extends TileGrid$1 {
+  class WMTSTileGrid extends TileGrid {
     /**
      * @param {Options} options WMTS options.
      */
@@ -34405,8 +34399,6 @@ var myol = (function () {
       return this.matrixIds_;
     }
   }
-
-  var WMTSTileGrid$1 = WMTSTileGrid;
 
   /**
    * @module ol/control/FullScreen
@@ -34482,7 +34474,7 @@ var myol = (function () {
    * @fires FullScreenEventType#leavefullscreen
    * @api
    */
-  class FullScreen extends Control$1 {
+  class FullScreen extends Control {
     /**
      * @param {Options} [options] Options.
      */
@@ -34854,7 +34846,7 @@ var myol = (function () {
    *
    * @api
    */
-  class MousePosition extends Control$1 {
+  class MousePosition extends Control {
     /**
      * @param {Options} [options] Mouse position options.
      */
@@ -35203,7 +35195,7 @@ var myol = (function () {
    *
    * @api
    */
-  class Overlay extends BaseObject$1 {
+  class Overlay extends BaseObject {
     /**
      * @param {Options} options Overlay options.
      */
@@ -35673,8 +35665,6 @@ var myol = (function () {
     }
   }
 
-  var Overlay$1 = Overlay;
-
   /**
    * @module ol/control/OverviewMap
    */
@@ -35720,7 +35710,7 @@ var myol = (function () {
    *
    * @api
    */
-  class OverviewMap extends Control$1 {
+  class OverviewMap extends Control {
     /**
      * @param {Options} [options] OverviewMap options.
      */
@@ -35829,10 +35819,10 @@ var myol = (function () {
        */
       this.view_ = options.view;
 
-      const ovmap = new Map$1({
+      const ovmap = new Map({
         view: options.view,
-        controls: new Collection$1(),
-        interactions: new Collection$1(),
+        controls: new Collection(),
+        interactions: new Collection(),
       });
 
       /**
@@ -35855,7 +35845,7 @@ var myol = (function () {
        * @type {import("../Overlay.js").default}
        * @private
        */
-      this.boxOverlay_ = new Overlay$1({
+      this.boxOverlay_ = new Overlay({
         position: [0, 0],
         positioning: 'center-center',
         element: box,
@@ -35996,7 +35986,7 @@ var myol = (function () {
     bindView_(view) {
       if (!this.view_) {
         // Unless an explicit view definition was given, derive default from whatever main map uses.
-        const newView = new View$1({
+        const newView = new View({
           projection: view.getProjection(),
         });
         this.ovmap_.setView(newView);
@@ -36405,7 +36395,7 @@ var myol = (function () {
    *
    * @api
    */
-  class ScaleLine extends Control$1 {
+  class ScaleLine extends Control {
     /**
      * @param {Options} [options] Scale line options.
      */
@@ -36851,7 +36841,7 @@ var myol = (function () {
    *
    * @api
    */
-  class ZoomSlider extends Control$1 {
+  class ZoomSlider extends Control {
     /**
      * @param {Options} [options] Zoom slider options.
      */
@@ -37223,7 +37213,7 @@ var myol = (function () {
    *
    * @api
    */
-  class ZoomToExtent extends Control$1 {
+  class ZoomToExtent extends Control {
     /**
      * @param {Options} [options] Options.
      */
@@ -37298,7 +37288,7 @@ var myol = (function () {
   var control$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     Attribution: Attribution$1,
-    Control: Control$1,
+    Control: Control,
     FullScreen: FullScreen$1,
     MousePosition: MousePosition$1,
     OverviewMap: OverviewMap$1,
@@ -37523,8 +37513,6 @@ var myol = (function () {
     return null;
   }
 
-  var JSONFeature$1 = JSONFeature;
-
   /**
    * @module ol/format/GeoJSON
    */
@@ -37570,7 +37558,7 @@ var myol = (function () {
    * @extends {JSONFeature<T>}
    * @api
    */
-  class GeoJSON extends JSONFeature$1 {
+  class GeoJSON extends JSONFeature {
     /**
      * @param {Options<T>} [options] Options.
      */
@@ -37639,7 +37627,7 @@ var myol = (function () {
       }
 
       const geometry = readGeometryInternal(geoJSONFeature['geometry']);
-      if (this.featureClass === RenderFeature$1) {
+      if (this.featureClass === RenderFeature) {
         return createRenderFeature(
           {
             geometry,
@@ -37650,7 +37638,7 @@ var myol = (function () {
         );
       }
 
-      const feature = new Feature$1();
+      const feature = new Feature();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
       } else if (this.extractGeometryName_ && geoJSONFeature['geometry_name']) {
@@ -38157,8 +38145,6 @@ var myol = (function () {
     };
   }
 
-  var GeoJSON$1 = GeoJSON;
-
   /**
    * @module ol/format/xsd
    */
@@ -38476,7 +38462,7 @@ var myol = (function () {
    *
    * @api
    */
-  class GPX extends XMLFeature$1 {
+  class GPX extends XMLFeature {
     /**
      * @param {Options} [options] Options.
      */
@@ -39171,7 +39157,7 @@ var myol = (function () {
     const layout = applyLayoutOptions(layoutOptions, flatCoordinates);
     const geometry = new LineString$1(flatCoordinates, layout);
     transformGeometryWithOptions(geometry, false, options);
-    const feature = new Feature$1(geometry);
+    const feature = new Feature(geometry);
     feature.setProperties(values, true);
     return feature;
   }
@@ -39209,7 +39195,7 @@ var myol = (function () {
     const layout = applyLayoutOptions(layoutOptions, flatCoordinates, ends);
     const geometry = new MultiLineString$1(flatCoordinates, layout, ends);
     transformGeometryWithOptions(geometry, false, options);
-    const feature = new Feature$1(geometry);
+    const feature = new Feature(geometry);
     feature.setProperties(values, true);
     return feature;
   }
@@ -39230,9 +39216,9 @@ var myol = (function () {
     const layoutOptions = /** @type {LayoutOptions} */ ({});
     const coordinates = appendCoordinate([], layoutOptions, node, values);
     const layout = applyLayoutOptions(layoutOptions, coordinates);
-    const geometry = new Point$2(coordinates, layout);
+    const geometry = new Point$1(coordinates, layout);
     transformGeometryWithOptions(geometry, false, options);
-    const feature = new Feature$1(geometry);
+    const feature = new Feature(geometry);
     feature.setProperties(values, true);
     return feature;
   }
@@ -39410,8 +39396,6 @@ var myol = (function () {
       writeWptType(node, point.getCoordinates(), objectStack);
     }
   }
-
-  var GPX$1 = GPX;
 
   /**
    * @module ol/format/KML
@@ -39663,7 +39647,7 @@ var myol = (function () {
     DEFAULT_IMAGE_STYLE_SRC =
       'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
 
-    DEFAULT_IMAGE_STYLE = new Icon$1({
+    DEFAULT_IMAGE_STYLE = new Icon({
       anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
       anchorOrigin: 'bottom-left',
       anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
@@ -39694,7 +39678,7 @@ var myol = (function () {
       scale: 0.8,
     });
 
-    DEFAULT_STYLE = new Style$1({
+    DEFAULT_STYLE = new Style({
       fill: DEFAULT_FILL_STYLE,
       image: DEFAULT_IMAGE_STYLE,
       text: DEFAULT_TEXT_STYLE,
@@ -39754,7 +39738,7 @@ var myol = (function () {
    *
    * @api
    */
-  class KML extends XMLFeature$1 {
+  class KML extends XMLFeature {
     /**
      * @param {Options} [options] Options.
      */
@@ -39863,7 +39847,7 @@ var myol = (function () {
       if (!object) {
         return undefined;
       }
-      const feature = new Feature$1();
+      const feature = new Feature();
       const id = node.getAttribute('id');
       if (id !== null) {
         feature.setId(id);
@@ -40373,7 +40357,7 @@ var myol = (function () {
     textStyle.setOffsetY(textOffset[1]);
     textStyle.setTextAlign(textAlign);
 
-    const nameStyle = new Style$1({
+    const nameStyle = new Style({
       image: imageStyle,
       text: textStyle,
     });
@@ -40449,7 +40433,7 @@ var myol = (function () {
             // style without image or text for geometries requiring fill or stroke
             // including any polygon specific style if there is one
             nameStyle.setGeometry(new GeometryCollection$1(multiGeometryPoints));
-            const baseStyle = new Style$1({
+            const baseStyle = new Style({
               geometry: featureStyle[0].getGeometry(),
               image: null,
               fill: featureStyle[0].getFill(),
@@ -40721,7 +40705,7 @@ var myol = (function () {
         size = DEFAULT_IMAGE_STYLE_SIZE;
       }
 
-      const imageStyle = new Icon$1({
+      const imageStyle = new Icon({
         anchor: anchor,
         anchorOrigin: anchorOrigin,
         anchorXUnits: anchorXUnits,
@@ -41193,7 +41177,7 @@ var myol = (function () {
     );
     const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
     if (flatCoordinates) {
-      const point = new Point$2(flatCoordinates, 'XYZ');
+      const point = new Point$1(flatCoordinates, 'XYZ');
       point.setProperties(properties, true);
       return point;
     }
@@ -41308,7 +41292,7 @@ var myol = (function () {
       // one for non-polygon geometries where linestrings require a stroke
       // and one for polygons where there should be no stroke
       return [
-        new Style$1({
+        new Style({
           geometry: function (feature) {
             const geometry = feature.getGeometry();
             const type = geometry.getType();
@@ -41336,7 +41320,7 @@ var myol = (function () {
           text: textStyle,
           zIndex: undefined, // FIXME
         }),
-        new Style$1({
+        new Style({
           geometry: function (feature) {
             const geometry = feature.getGeometry();
             const type = geometry.getType();
@@ -41365,7 +41349,7 @@ var myol = (function () {
       ];
     }
     return [
-      new Style$1({
+      new Style({
         fill: fillStyle,
         image: imageStyle,
         stroke: strokeStyle,
@@ -42764,8 +42748,6 @@ var myol = (function () {
     node.setAttribute('yunits', vec2.yunits);
   }
 
-  var KML$1 = KML;
-
   /**
    * @module ol/render/canvas/Instruction
    */
@@ -42808,8 +42790,6 @@ var myol = (function () {
    * @type {Array<Instruction>}
    */
   const closePathInstruction = [Instruction.CLOSE_PATH];
-
-  var CanvasInstruction = Instruction;
 
   /**
    * @module ol/render/VectorContext
@@ -42936,13 +42916,11 @@ var myol = (function () {
     setTextStyle(textStyle, declutterImageWithText) {}
   }
 
-  var VectorContext$1 = VectorContext;
-
   /**
    * @module ol/render/canvas/Builder
    */
 
-  class CanvasBuilder extends VectorContext$1 {
+  class CanvasBuilder extends VectorContext {
     /**
      * @param {number} tolerance Tolerance.
      * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -43197,7 +43175,7 @@ var myol = (function () {
             builderEndss.push(myEnds);
           }
           this.instructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEndss,
             geometry,
@@ -43206,7 +43184,7 @@ var myol = (function () {
             index,
           ]);
           this.hitDetectionInstructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEndss,
             geometry,
@@ -43234,7 +43212,7 @@ var myol = (function () {
             builderEnds,
           );
           this.instructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEnds,
             geometry,
@@ -43243,7 +43221,7 @@ var myol = (function () {
             index,
           ]);
           this.hitDetectionInstructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEnds,
             geometry,
@@ -43264,7 +43242,7 @@ var myol = (function () {
             false,
           );
           this.instructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEnd,
             geometry,
@@ -43273,7 +43251,7 @@ var myol = (function () {
             index,
           ]);
           this.hitDetectionInstructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEnd,
             geometry,
@@ -43288,7 +43266,7 @@ var myol = (function () {
 
           if (builderEnd > builderBegin) {
             this.instructions.push([
-              CanvasInstruction.CUSTOM,
+              Instruction.CUSTOM,
               builderBegin,
               builderEnd,
               geometry,
@@ -43297,7 +43275,7 @@ var myol = (function () {
               index,
             ]);
             this.hitDetectionInstructions.push([
-              CanvasInstruction.CUSTOM,
+              Instruction.CUSTOM,
               builderBegin,
               builderEnd,
               geometry,
@@ -43313,7 +43291,7 @@ var myol = (function () {
           builderEnd = this.coordinates.length;
 
           this.instructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEnd,
             geometry,
@@ -43322,7 +43300,7 @@ var myol = (function () {
             index,
           ]);
           this.hitDetectionInstructions.push([
-            CanvasInstruction.CUSTOM,
+            Instruction.CUSTOM,
             builderBegin,
             builderEnd,
             geometry,
@@ -43343,7 +43321,7 @@ var myol = (function () {
      */
     beginGeometry(geometry, feature, index) {
       this.beginGeometryInstruction1_ = [
-        CanvasInstruction.BEGIN_GEOMETRY,
+        Instruction.BEGIN_GEOMETRY,
         feature,
         0,
         geometry,
@@ -43351,7 +43329,7 @@ var myol = (function () {
       ];
       this.instructions.push(this.beginGeometryInstruction1_);
       this.beginGeometryInstruction2_ = [
-        CanvasInstruction.BEGIN_GEOMETRY,
+        Instruction.BEGIN_GEOMETRY,
         feature,
         0,
         geometry,
@@ -43387,9 +43365,9 @@ var myol = (function () {
       for (i = 0; i < n; ++i) {
         instruction = hitDetectionInstructions[i];
         type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
-        if (type == CanvasInstruction.END_GEOMETRY) {
+        if (type == Instruction.END_GEOMETRY) {
           begin = i;
-        } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
+        } else if (type == Instruction.BEGIN_GEOMETRY) {
           instruction[2] = i;
           reverseSubArray(this.hitDetectionInstructions, begin, i);
           begin = -1;
@@ -43470,7 +43448,7 @@ var myol = (function () {
     createFill(state) {
       const fillStyle = state.fillStyle;
       /** @type {Array<*>} */
-      const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
+      const fillInstruction = [Instruction.SET_FILL_STYLE, fillStyle];
       if (typeof fillStyle !== 'string') {
         // Fill is a pattern or gradient - align and scale it!
         fillInstruction.push(state.fillPatternScale);
@@ -43491,7 +43469,7 @@ var myol = (function () {
      */
     createStroke(state) {
       return [
-        CanvasInstruction.SET_STROKE_STYLE,
+        Instruction.SET_STROKE_STYLE,
         state.strokeStyle,
         state.lineWidth * this.pixelRatio,
         state.lineCap,
@@ -43559,7 +43537,7 @@ var myol = (function () {
       this.beginGeometryInstruction1_ = null;
       this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
       this.beginGeometryInstruction2_ = null;
-      const endGeometryInstruction = [CanvasInstruction.END_GEOMETRY, feature];
+      const endGeometryInstruction = [Instruction.END_GEOMETRY, feature];
       this.instructions.push(endGeometryInstruction);
       this.hitDetectionInstructions.push(endGeometryInstruction);
     }
@@ -43583,13 +43561,11 @@ var myol = (function () {
     }
   }
 
-  var Builder = CanvasBuilder;
-
   /**
    * @module ol/render/canvas/ImageBuilder
    */
 
-  class CanvasImageBuilder extends Builder {
+  class CanvasImageBuilder extends CanvasBuilder {
     /**
      * @param {number} tolerance Tolerance.
      * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -43710,7 +43686,7 @@ var myol = (function () {
       const myBegin = this.coordinates.length;
       const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
       this.instructions.push([
-        CanvasInstruction.DRAW_IMAGE,
+        Instruction.DRAW_IMAGE,
         myBegin,
         myEnd,
         this.image_,
@@ -43732,7 +43708,7 @@ var myol = (function () {
         this.declutterImageWithText_,
       ]);
       this.hitDetectionInstructions.push([
-        CanvasInstruction.DRAW_IMAGE,
+        Instruction.DRAW_IMAGE,
         myBegin,
         myEnd,
         this.hitDetectionImage_,
@@ -43783,7 +43759,7 @@ var myol = (function () {
       const myBegin = this.coordinates.length;
       const myEnd = this.appendFlatPointCoordinates(filteredFlatCoordinates, 2);
       this.instructions.push([
-        CanvasInstruction.DRAW_IMAGE,
+        Instruction.DRAW_IMAGE,
         myBegin,
         myEnd,
         this.image_,
@@ -43805,7 +43781,7 @@ var myol = (function () {
         this.declutterImageWithText_,
       ]);
       this.hitDetectionInstructions.push([
-        CanvasInstruction.DRAW_IMAGE,
+        Instruction.DRAW_IMAGE,
         myBegin,
         myEnd,
         this.hitDetectionImage_,
@@ -43874,13 +43850,11 @@ var myol = (function () {
     }
   }
 
-  var ImageBuilder = CanvasImageBuilder;
-
   /**
    * @module ol/render/canvas/LineStringBuilder
    */
 
-  class CanvasLineStringBuilder extends Builder {
+  class CanvasLineStringBuilder extends CanvasBuilder {
     /**
      * @param {number} tolerance Tolerance.
      * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -43910,7 +43884,7 @@ var myol = (function () {
         false,
       );
       const moveToLineToInstruction = [
-        CanvasInstruction.MOVE_TO_LINE_TO,
+        Instruction.MOVE_TO_LINE_TO,
         myBegin,
         myEnd,
       ];
@@ -43935,7 +43909,7 @@ var myol = (function () {
       this.beginGeometry(lineStringGeometry, feature, index);
       this.hitDetectionInstructions.push(
         [
-          CanvasInstruction.SET_STROKE_STYLE,
+          Instruction.SET_STROKE_STYLE,
           state.strokeStyle,
           state.lineWidth,
           state.lineCap,
@@ -43974,7 +43948,7 @@ var myol = (function () {
       this.beginGeometry(multiLineStringGeometry, feature, index);
       this.hitDetectionInstructions.push(
         [
-          CanvasInstruction.SET_STROKE_STYLE,
+          Instruction.SET_STROKE_STYLE,
           state.strokeStyle,
           state.lineWidth,
           state.lineCap,
@@ -44034,13 +44008,11 @@ var myol = (function () {
     }
   }
 
-  var LineStringBuilder = CanvasLineStringBuilder;
-
   /**
    * @module ol/render/canvas/PolygonBuilder
    */
 
-  class CanvasPolygonBuilder extends Builder {
+  class CanvasPolygonBuilder extends CanvasBuilder {
     /**
      * @param {number} tolerance Tolerance.
      * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -44078,7 +44050,7 @@ var myol = (function () {
           !stroke,
         );
         const moveToLineToInstruction = [
-          CanvasInstruction.MOVE_TO_LINE_TO,
+          Instruction.MOVE_TO_LINE_TO,
           myBegin,
           myEnd,
         ];
@@ -44119,13 +44091,13 @@ var myol = (function () {
       this.beginGeometry(circleGeometry, feature, index);
       if (state.fillStyle !== undefined) {
         this.hitDetectionInstructions.push([
-          CanvasInstruction.SET_FILL_STYLE,
+          Instruction.SET_FILL_STYLE,
           defaultFillStyle,
         ]);
       }
       if (state.strokeStyle !== undefined) {
         this.hitDetectionInstructions.push([
-          CanvasInstruction.SET_STROKE_STYLE,
+          Instruction.SET_STROKE_STYLE,
           state.strokeStyle,
           state.lineWidth,
           state.lineCap,
@@ -44146,7 +44118,7 @@ var myol = (function () {
         false,
         false,
       );
-      const circleInstruction = [CanvasInstruction.CIRCLE, myBegin];
+      const circleInstruction = [Instruction.CIRCLE, myBegin];
       this.instructions.push(beginPathInstruction, circleInstruction);
       this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
       if (state.fillStyle !== undefined) {
@@ -44176,13 +44148,13 @@ var myol = (function () {
       this.beginGeometry(polygonGeometry, feature, index);
       if (state.fillStyle !== undefined) {
         this.hitDetectionInstructions.push([
-          CanvasInstruction.SET_FILL_STYLE,
+          Instruction.SET_FILL_STYLE,
           defaultFillStyle,
         ]);
       }
       if (state.strokeStyle !== undefined) {
         this.hitDetectionInstructions.push([
-          CanvasInstruction.SET_STROKE_STYLE,
+          Instruction.SET_STROKE_STYLE,
           state.strokeStyle,
           state.lineWidth,
           state.lineCap,
@@ -44220,13 +44192,13 @@ var myol = (function () {
       this.beginGeometry(multiPolygonGeometry, feature, index);
       if (state.fillStyle !== undefined) {
         this.hitDetectionInstructions.push([
-          CanvasInstruction.SET_FILL_STYLE,
+          Instruction.SET_FILL_STYLE,
           defaultFillStyle,
         ]);
       }
       if (state.strokeStyle !== undefined) {
         this.hitDetectionInstructions.push([
-          CanvasInstruction.SET_STROKE_STYLE,
+          Instruction.SET_STROKE_STYLE,
           state.strokeStyle,
           state.lineWidth,
           state.lineCap,
@@ -44285,8 +44257,6 @@ var myol = (function () {
       }
     }
   }
-
-  var PolygonBuilder = CanvasPolygonBuilder;
 
   /**
    * Creates chunks of equal length from a linestring
@@ -44414,7 +44384,7 @@ var myol = (function () {
     'bottom': 1,
   };
 
-  class CanvasTextBuilder extends Builder {
+  class CanvasTextBuilder extends CanvasBuilder {
     /**
      * @param {number} tolerance Tolerance.
      * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -44752,7 +44722,7 @@ var myol = (function () {
         // render time.
         const pixelRatio = this.pixelRatio;
         this.instructions.push([
-          CanvasInstruction.DRAW_IMAGE,
+          Instruction.DRAW_IMAGE,
           begin,
           end,
           null,
@@ -44791,7 +44761,7 @@ var myol = (function () {
           this.hitDetectionInstructions.push(this.createFill(this.state));
         }
         this.hitDetectionInstructions.push([
-          CanvasInstruction.DRAW_IMAGE,
+          Instruction.DRAW_IMAGE,
           begin,
           end,
           null,
@@ -44894,7 +44864,7 @@ var myol = (function () {
         : 0;
 
       this.instructions.push([
-        CanvasInstruction.DRAW_CHARS,
+        Instruction.DRAW_CHARS,
         begin,
         end,
         baseline,
@@ -44911,7 +44881,7 @@ var myol = (function () {
         this.declutterMode_,
       ]);
       this.hitDetectionInstructions.push([
-        CanvasInstruction.DRAW_CHARS,
+        Instruction.DRAW_CHARS,
         begin,
         end,
         baseline,
@@ -45052,11 +45022,11 @@ var myol = (function () {
    * @type {Object<import("../canvas.js").BuilderType, typeof Builder>}
    */
   const BATCH_CONSTRUCTORS = {
-    'Circle': PolygonBuilder,
-    'Default': Builder,
-    'Image': ImageBuilder,
-    'LineString': LineStringBuilder,
-    'Polygon': PolygonBuilder,
+    'Circle': CanvasPolygonBuilder,
+    'Default': CanvasBuilder,
+    'Image': CanvasImageBuilder,
+    'LineString': CanvasLineStringBuilder,
+    'Polygon': CanvasPolygonBuilder,
     'Text': CanvasTextBuilder,
   };
 
@@ -45142,8 +45112,6 @@ var myol = (function () {
     }
   }
 
-  var CanvasBuilderGroup = BuilderGroup;
-
   /**
    * @module ol/renderer/Layer
    */
@@ -45151,7 +45119,7 @@ var myol = (function () {
   /**
    * @template {import("../layer/Layer.js").default} LayerType
    */
-  class LayerRenderer extends Observable$1 {
+  class LayerRenderer extends Observable {
     /**
      * @param {LayerType} layer Layer.
      */
@@ -45172,11 +45140,6 @@ var myol = (function () {
        * @type {LayerType}
        */
       this.layer_ = layer;
-
-      /**
-       * @type {import("../render/canvas/ExecutorGroup").default}
-       */
-      this.declutterExecutorGroup = null;
     }
 
     /**
@@ -45345,8 +45308,6 @@ var myol = (function () {
     }
   }
 
-  var LayerRenderer$1 = LayerRenderer;
-
   /**
    * @module ol/render/canvas/ZIndexContext
    */
@@ -45378,7 +45339,7 @@ var myol = (function () {
        * @type {ZIndexContextProxy}
        */
       this.context_ = /** @type {ZIndexContextProxy} */ (
-        new Proxy(CanvasRenderingContext2D.prototype, {
+        new Proxy(getSharedCanvasContext2D(), {
           get: (target, property) => {
             if (
               typeof (/** @type {*} */ (getSharedCanvasContext2D())[property]) !==
@@ -45415,6 +45376,14 @@ var myol = (function () {
     };
 
     /**
+     * Push a function that renders to the context directly.
+     * @param {function(CanvasRenderingContext2D): void} render Function.
+     */
+    pushFunction(render) {
+      this.instructions_[this.zIndex + this.offset_].push(render);
+    }
+
+    /**
      * Get a proxy for CanvasRenderingContext2D which does not support getting state
      * (e.g. `context.globalAlpha`, which will return `undefined`). To set state, if it relies on a
      * previous state (e.g. `context.globalAlpha = context.globalAlpha / 2`), set a function,
@@ -45430,9 +45399,13 @@ var myol = (function () {
      */
     draw(context) {
       this.instructions_.forEach((instructionsAtIndex) => {
-        for (let i = 0, ii = instructionsAtIndex.length; i < ii; i += 2) {
+        for (let i = 0, ii = instructionsAtIndex.length; i < ii; ++i) {
           const property = instructionsAtIndex[i];
-          const instructionAtIndex = instructionsAtIndex[i + 1];
+          if (typeof property === 'function') {
+            property(context);
+            continue;
+          }
+          const instructionAtIndex = instructionsAtIndex[++i];
           if (typeof (/** @type {*} */ (context)[property]) === 'function') {
             /** @type {*} */ (context)[property](...instructionAtIndex);
           } else {
@@ -45462,8 +45435,6 @@ var myol = (function () {
     }
   }
 
-  var ZIndexContext$1 = ZIndexContext;
-
   /**
    * @module ol/renderer/canvas/Layer
    */
@@ -45489,7 +45460,7 @@ var myol = (function () {
    * @template {import("../../layer/Layer.js").default} LayerType
    * @extends {LayerRenderer<LayerType>}
    */
-  class CanvasLayerRenderer extends LayerRenderer$1 {
+  class CanvasLayerRenderer extends LayerRenderer {
     /**
      * @param {LayerType} layer Layer.
      */
@@ -45694,6 +45665,48 @@ var myol = (function () {
     }
 
     /**
+     * @param {import("../../Map.js").FrameState} frameState Frame state.
+     * @param {HTMLElement} target Target that may be used to render content to.
+     * @protected
+     */
+    prepareContainer(frameState, target) {
+      const extent = frameState.extent;
+      const resolution = frameState.viewState.resolution;
+      const rotation = frameState.viewState.rotation;
+      const pixelRatio = frameState.pixelRatio;
+      const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+      const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+      // set forward and inverse pixel transforms
+      compose(
+        this.pixelTransform,
+        frameState.size[0] / 2,
+        frameState.size[1] / 2,
+        1 / pixelRatio,
+        1 / pixelRatio,
+        rotation,
+        -width / 2,
+        -height / 2,
+      );
+      makeInverse(this.inversePixelTransform, this.pixelTransform);
+
+      const canvasTransform = toString$1(this.pixelTransform);
+      this.useContainer(target, canvasTransform, this.getBackground(frameState));
+
+      if (!this.containerReused) {
+        const canvas = this.context.canvas;
+        if (canvas.width != width || canvas.height != height) {
+          canvas.width = width;
+          canvas.height = height;
+        } else {
+          this.context.clearRect(0, 0, width, height);
+        }
+        if (canvasTransform !== canvas.style.transform) {
+          canvas.style.transform = canvasTransform;
+        }
+      }
+    }
+
+    /**
      * @param {import("../../render/EventType.js").default} type Event type.
      * @param {CanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
@@ -45702,7 +45715,7 @@ var myol = (function () {
     dispatchRenderEvent_(type, context, frameState) {
       const layer = this.getLayer();
       if (layer.hasListener(type)) {
-        const event = new RenderEvent$1(
+        const event = new RenderEvent(
           type,
           this.inversePixelTransform,
           frameState,
@@ -45748,7 +45761,7 @@ var myol = (function () {
      */
     getRenderContext(frameState) {
       if (frameState.declutter && !this.deferredContext_) {
-        this.deferredContext_ = new ZIndexContext$1();
+        this.deferredContext_ = new ZIndexContext();
       }
       return frameState.declutter
         ? this.deferredContext_.getContext()
@@ -45827,8 +45840,6 @@ var myol = (function () {
       super.disposeInternal();
     }
   }
-
-  var CanvasLayerRenderer$1 = CanvasLayerRenderer;
 
   /**
    * @module ol/geom/flat/textpath
@@ -46015,7 +46026,7 @@ var myol = (function () {
 
   /**
    * @template T
-   * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default): T} FeatureCallback
+   * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default, import("../../style/Style.js").DeclutterMode): T} FeatureCallback
    */
 
   /**
@@ -46193,7 +46204,7 @@ var myol = (function () {
        * @private
        * @type {import("../canvas/ZIndexContext.js").default}
        */
-      this.zIndexContext_ = deferredRendering ? new ZIndexContext$1() : null;
+      this.zIndexContext_ = deferredRendering ? new ZIndexContext() : null;
     }
 
     /**
@@ -46698,7 +46709,7 @@ var myol = (function () {
           instruction[0]
         );
         switch (type) {
-          case CanvasInstruction.BEGIN_GEOMETRY:
+          case Instruction.BEGIN_GEOMETRY:
             feature = /** @type {import("../../Feature.js").FeatureLike} */ (
               instruction[1]
             );
@@ -46717,7 +46728,7 @@ var myol = (function () {
               zIndexContext.zIndex = instruction[4];
             }
             break;
-          case CanvasInstruction.BEGIN_PATH:
+          case Instruction.BEGIN_PATH:
             if (pendingFill > batchSize) {
               this.fill_(context);
               pendingFill = 0;
@@ -46733,7 +46744,7 @@ var myol = (function () {
             }
             ++i;
             break;
-          case CanvasInstruction.CIRCLE:
+          case Instruction.CIRCLE:
             d = /** @type {number} */ (instruction[1]);
             const x1 = pixelCoordinates[d];
             const y1 = pixelCoordinates[d + 1];
@@ -46746,11 +46757,11 @@ var myol = (function () {
             context.arc(x1, y1, r, 0, 2 * Math.PI, true);
             ++i;
             break;
-          case CanvasInstruction.CLOSE_PATH:
+          case Instruction.CLOSE_PATH:
             context.closePath();
             ++i;
             break;
-          case CanvasInstruction.CUSTOM:
+          case Instruction.CUSTOM:
             d = /** @type {number} */ (instruction[1]);
             dd = instruction[2];
             const geometry =
@@ -46778,7 +46789,7 @@ var myol = (function () {
             renderer(coords, state);
             ++i;
             break;
-          case CanvasInstruction.DRAW_IMAGE:
+          case Instruction.DRAW_IMAGE:
             d = /** @type {number} */ (instruction[1]);
             dd = /** @type {number} */ (instruction[2]);
             image =
@@ -46951,7 +46962,7 @@ var myol = (function () {
             }
             ++i;
             break;
-          case CanvasInstruction.DRAW_CHARS:
+          case Instruction.DRAW_CHARS:
             const begin = /** @type {number} */ (instruction[1]);
             const end = /** @type {number} */ (instruction[2]);
             const baseline = /** @type {number} */ (instruction[3]);
@@ -47113,19 +47124,23 @@ var myol = (function () {
             }
             ++i;
             break;
-          case CanvasInstruction.END_GEOMETRY:
+          case Instruction.END_GEOMETRY:
             if (featureCallback !== undefined) {
               feature = /** @type {import("../../Feature.js").FeatureLike} */ (
                 instruction[1]
               );
-              const result = featureCallback(feature, currentGeometry);
+              const result = featureCallback(
+                feature,
+                currentGeometry,
+                declutterMode,
+              );
               if (result) {
                 return result;
               }
             }
             ++i;
             break;
-          case CanvasInstruction.FILL:
+          case Instruction.FILL:
             if (batchSize) {
               pendingFill++;
             } else {
@@ -47133,18 +47148,14 @@ var myol = (function () {
             }
             ++i;
             break;
-          case CanvasInstruction.MOVE_TO_LINE_TO:
+          case Instruction.MOVE_TO_LINE_TO:
             d = /** @type {number} */ (instruction[1]);
             dd = /** @type {number} */ (instruction[2]);
             x = pixelCoordinates[d];
             y = pixelCoordinates[d + 1];
-            roundX = (x + 0.5) | 0;
-            roundY = (y + 0.5) | 0;
-            if (roundX !== prevX || roundY !== prevY) {
-              context.moveTo(x, y);
-              prevX = roundX;
-              prevY = roundY;
-            }
+            context.moveTo(x, y);
+            prevX = (x + 0.5) | 0;
+            prevY = (y + 0.5) | 0;
             for (d += 2; d < dd; d += 2) {
               x = pixelCoordinates[d];
               y = pixelCoordinates[d + 1];
@@ -47158,7 +47169,7 @@ var myol = (function () {
             }
             ++i;
             break;
-          case CanvasInstruction.SET_FILL_STYLE:
+          case Instruction.SET_FILL_STYLE:
             lastFillInstruction = instruction;
             this.alignAndScaleFill_ = instruction[2];
 
@@ -47175,7 +47186,7 @@ var myol = (function () {
             context.fillStyle = instruction[1];
             ++i;
             break;
-          case CanvasInstruction.SET_STROKE_STYLE:
+          case Instruction.SET_STROKE_STYLE:
             lastStrokeInstruction = instruction;
             if (pendingStroke) {
               context.stroke();
@@ -47184,7 +47195,7 @@ var myol = (function () {
             this.setStrokeStyle_(context, /** @type {Array<*>} */ (instruction));
             ++i;
             break;
-          case CanvasInstruction.STROKE:
+          case Instruction.STROKE:
             if (batchSize) {
               pendingStroke++;
             } else {
@@ -47264,8 +47275,6 @@ var myol = (function () {
       );
     }
   }
-
-  var Executor$1 = Executor;
 
   /**
    * @module ol/render/canvas/ExecutorGroup
@@ -47377,9 +47386,9 @@ var myol = (function () {
       this.renderedContext_ = null;
 
       /**
-       * @type {Array<Array<import("./ZIndexContext.js").default>>}
+       * @type {Object<number, Array<import("./ZIndexContext.js").default>>}
        */
-      this.deferredZIndexContexts_ = [];
+      this.deferredZIndexContexts_ = {};
 
       this.createExecutors_(allInstructions, deferredRendering);
     }
@@ -47414,7 +47423,7 @@ var myol = (function () {
         const instructionByZindex = allInstructions[zIndex];
         for (const builderType in instructionByZindex) {
           const instructions = instructionByZindex[builderType];
-          executors[builderType] = new Executor$1(
+          executors[builderType] = new Executor(
             this.resolution_,
             this.pixelRatio_,
             this.overlaps_,
@@ -47514,9 +47523,10 @@ var myol = (function () {
       /**
        * @param {import("../../Feature.js").FeatureLike} feature Feature.
        * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+       * @param {import('../../style/Style.js').DeclutterMode} declutterMode Declutter mode.
        * @return {T|undefined} Callback result.
        */
-      function featureCallback(feature, geometry) {
+      function featureCallback(feature, geometry, declutterMode) {
         const imageData = context.getImageData(
           0,
           0,
@@ -47527,6 +47537,7 @@ var myol = (function () {
           if (imageData[indexes[i]] > 0) {
             if (
               !declutteredFeatures ||
+              declutterMode === 'none' ||
               (builderType !== 'Image' && builderType !== 'Text') ||
               declutteredFeatures.includes(feature)
             ) {
@@ -47623,7 +47634,8 @@ var myol = (function () {
       zs.sort(ascending);
 
       builderTypes = builderTypes ? builderTypes : ALL;
-      let i, ii, j, jj, replays, replay;
+      const maxBuilderTypes = ALL.length;
+      let i, ii, j, jj, replays;
       if (declutterTree) {
         zs.reverse();
       }
@@ -47632,7 +47644,7 @@ var myol = (function () {
         replays = this.executorsByZIndex_[zIndexKey];
         for (j = 0, jj = builderTypes.length; j < jj; ++j) {
           const builderType = builderTypes[j];
-          replay = replays[builderType];
+          const replay = replays[builderType];
           if (replay !== undefined) {
             const zIndexContext =
               declutterTree === null ? undefined : replay.getZIndexContext();
@@ -47649,24 +47661,41 @@ var myol = (function () {
               // visible outside the current extent when panning
               this.clip(context, transform);
             }
-            replay.execute(
-              context,
-              scaledCanvasSize,
-              transform,
-              viewRotation,
-              snapToPixel,
-              declutterTree,
-            );
+            if (
+              !zIndexContext ||
+              builderType === 'Text' ||
+              builderType === 'Image'
+            ) {
+              replay.execute(
+                context,
+                scaledCanvasSize,
+                transform,
+                viewRotation,
+                snapToPixel,
+                declutterTree,
+              );
+            } else {
+              zIndexContext.pushFunction((context) =>
+                replay.execute(
+                  context,
+                  scaledCanvasSize,
+                  transform,
+                  viewRotation,
+                  snapToPixel,
+                  declutterTree,
+                ),
+              );
+            }
             if (requireClip) {
               context.restore();
             }
             if (zIndexContext) {
               zIndexContext.offset();
-              const z = zs[i];
-              if (!this.deferredZIndexContexts_[z]) {
-                this.deferredZIndexContexts_[z] = [];
+              const index = zs[i] * maxBuilderTypes + j;
+              if (!this.deferredZIndexContexts_[index]) {
+                this.deferredZIndexContexts_[index] = [];
               }
-              this.deferredZIndexContexts_[z].push(zIndexContext);
+              this.deferredZIndexContexts_[index].push(zIndexContext);
             }
           }
         }
@@ -47684,12 +47713,15 @@ var myol = (function () {
     }
 
     renderDeferred() {
-      this.deferredZIndexContexts_.forEach((zIndexContexts) => {
-        zIndexContexts.forEach((zIndexContext) => {
+      const deferredZIndexContexts = this.deferredZIndexContexts_;
+      const zs = Object.keys(deferredZIndexContexts).map(Number).sort(ascending);
+      for (let i = 0, ii = zs.length; i < ii; ++i) {
+        deferredZIndexContexts[zs[i]].forEach((zIndexContext) => {
           zIndexContext.draw(this.renderedContext_); // FIXME Pass clip to replay for temporarily enabling clip
           zIndexContext.clear();
         });
-      });
+        deferredZIndexContexts[zs[i]].length = 0;
+      }
     }
   }
 
@@ -47751,8 +47783,6 @@ var myol = (function () {
     return pixelIndex;
   }
 
-  var CanvasExecutorGroup = ExecutorGroup;
-
   /**
    * @module ol/render/canvas/Immediate
    */
@@ -47770,7 +47800,7 @@ var myol = (function () {
    * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
    * render events emitted by layers and maps.
    */
-  class CanvasImmediateRenderer extends VectorContext$1 {
+  class CanvasImmediateRenderer extends VectorContext {
     /**
      * @param {CanvasRenderingContext2D} context Context.
      * @param {number} pixelRatio Pixel ratio.
@@ -48909,8 +48939,6 @@ var myol = (function () {
     }
   }
 
-  var CanvasImmediateRenderer$1 = CanvasImmediateRenderer;
-
   /**
    * @module ol/style
    */
@@ -48919,12 +48947,12 @@ var myol = (function () {
     __proto__: null,
     Circle: Circle$2,
     Fill: Fill$1,
-    Icon: Icon$1,
+    Icon: Icon,
     IconImage: IconImage$1,
     Image: ImageStyle$1,
     RegularShape: RegularShape$1,
     Stroke: Stroke$1,
-    Style: Style$1,
+    Style: Style,
     Text: Text$1
   });
 
@@ -48968,7 +48996,7 @@ var myol = (function () {
     const context = createCanvasContext2D(width, height);
     context.imageSmoothingEnabled = false;
     const canvas = context.canvas;
-    const renderer = new CanvasImmediateRenderer$1(
+    const renderer = new CanvasImmediateRenderer(
       context,
       HIT_DETECT_RESOLUTION,
       extent,
@@ -49032,7 +49060,7 @@ var myol = (function () {
           imgContext.fillStyle = color;
           imgContext.fillRect(0, 0, img.width, img.height);
           style.setImage(
-            new Icon$1({
+            new Icon({
               img: img,
               anchor: image.getAnchor(),
               anchorXUnits: 'pixels',
@@ -49197,14 +49225,15 @@ var myol = (function () {
    * @param {import("../geom/Circle.js").default} geometry Geometry.
    * @param {import("../style/Style.js").default} style Style.
    * @param {import("../Feature.js").default} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  function renderCircleGeometry(builderGroup, geometry, style, feature) {
+  function renderCircleGeometry(builderGroup, geometry, style, feature, index) {
     const fillStyle = style.getFill();
     const strokeStyle = style.getStroke();
     if (fillStyle || strokeStyle) {
       const circleReplay = builderGroup.getBuilder(style.getZIndex(), 'Circle');
       circleReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-      circleReplay.drawCircle(geometry, feature);
+      circleReplay.drawCircle(geometry, feature, index);
     }
     const textStyle = style.getText();
     if (textStyle && textStyle.getText()) {
@@ -49571,7 +49600,7 @@ var myol = (function () {
    * Canvas renderer for vector layers.
    * @api
    */
-  class CanvasVectorLayerRenderer extends CanvasLayerRenderer$1 {
+  class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     /**
      * @param {import("../../layer/BaseVector.js").default} vectorLayer Vector layer.
      */
@@ -49592,6 +49621,13 @@ var myol = (function () {
       this.hitDetectionImageData_ = null;
 
       /**
+       * @private
+       * @type {boolean}
+       */
+      this.clipped_ = false;
+
+      /**
+       * @private
        * @type {Array<import("../../Feature.js").default>}
        */
       this.renderedFeatures_ = null;
@@ -49652,6 +49688,12 @@ var myol = (function () {
 
       /**
        * @private
+       * @type {boolean}
+       */
+      this.renderedFrameDeclutter_;
+
+      /**
+       * @private
        * @type {import("../../render/canvas/ExecutorGroup").default}
        */
       this.replayGroup_ = null;
@@ -49672,7 +49714,7 @@ var myol = (function () {
        * @private
        * @type {CanvasRenderingContext2D}
        */
-      this.compositionContext_ = null;
+      this.targetContext_ = null;
 
       /**
        * @private
@@ -49702,9 +49744,9 @@ var myol = (function () {
       const snapToPixel = !(
         viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
       );
-      const context = this.compositionContext_;
-      const width = Math.round(frameState.size[0] * pixelRatio);
-      const height = Math.round(frameState.size[1] * pixelRatio);
+      const context = this.context;
+      const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+      const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
       const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
       const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
@@ -49715,15 +49757,18 @@ var myol = (function () {
         ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
         : 0;
       do {
-        const transform = this.getRenderTransform(
+        let transform = this.getRenderTransform(
           center,
           resolution,
-          rotation,
+          0,
           pixelRatio,
           width,
           height,
           world * worldWidth,
         );
+        if (frameState.declutter) {
+          transform = transform.slice(0);
+        }
         executorGroup.execute(
           context,
           [context.canvas.width, context.canvas.height],
@@ -49742,28 +49787,33 @@ var myol = (function () {
       } while (++world < endWorld);
     }
 
-    setupCompositionContext_() {
+    /**
+     * @private
+     */
+    setDrawContext_() {
       if (this.opacity_ !== 1) {
-        const compositionContext = createCanvasContext2D(
+        this.targetContext_ = this.context;
+        this.context = createCanvasContext2D(
           this.context.canvas.width,
           this.context.canvas.height,
           canvasPool$1,
         );
-        this.compositionContext_ = compositionContext;
-      } else {
-        this.compositionContext_ = this.context;
       }
     }
 
-    releaseCompositionContext_() {
+    /**
+     * @private
+     */
+    resetDrawContext_() {
       if (this.opacity_ !== 1) {
-        const alpha = this.context.globalAlpha;
-        this.context.globalAlpha = this.opacity_;
-        this.context.drawImage(this.compositionContext_.canvas, 0, 0);
-        this.context.globalAlpha = alpha;
-        releaseCanvas(this.compositionContext_);
-        canvasPool$1.push(this.compositionContext_.canvas);
-        this.compositionContext_ = null;
+        const alpha = this.targetContext_.globalAlpha;
+        this.targetContext_.globalAlpha = this.opacity_;
+        this.targetContext_.drawImage(this.context.canvas, 0, 0);
+        this.targetContext_.globalAlpha = alpha;
+        releaseCanvas(this.context);
+        canvasPool$1.push(this.context.canvas);
+        this.context = this.targetContext_;
+        this.targetContext_ = null;
       }
     }
 
@@ -49772,13 +49822,10 @@ var myol = (function () {
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      */
     renderDeclutter(frameState) {
-      const declutter = this.getLayer().getDeclutter();
-      if (!declutter) {
+      if (!this.replayGroup_ || !this.getLayer().getDeclutter()) {
         return;
       }
-      this.setupCompositionContext_(); //FIXME Check if this works, or if we need to defer something.
       this.renderWorlds(this.replayGroup_, frameState, true);
-      this.releaseCompositionContext_();
     }
 
     /**
@@ -49786,7 +49833,14 @@ var myol = (function () {
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      */
     renderDeferredInternal(frameState) {
+      if (!this.replayGroup_) {
+        return;
+      }
       this.replayGroup_.renderDeferred();
+      if (this.clipped_) {
+        this.context.restore();
+      }
+      this.resetDrawContext_();
     }
 
     /**
@@ -49796,18 +49850,12 @@ var myol = (function () {
      * @return {HTMLElement|null} The rendered element.
      */
     renderFrame(frameState, target) {
-      const pixelRatio = frameState.pixelRatio;
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
+      this.opacity_ = layerState.opacity;
+      const viewState = frameState.viewState;
 
-      // set forward and inverse pixel transforms
-      makeScale(this.pixelTransform, 1 / pixelRatio, 1 / pixelRatio);
-      makeInverse(this.inversePixelTransform, this.pixelTransform);
-
-      const canvasTransform = toString$1(this.pixelTransform);
-
-      this.useContainer(target, canvasTransform, this.getBackground(frameState));
+      this.prepareContainer(frameState, target);
       const context = this.context;
-      const canvas = context.canvas;
 
       const replayGroup = this.replayGroup_;
       let render = replayGroup && !replayGroup.isEmpty();
@@ -49820,35 +49868,20 @@ var myol = (function () {
         }
       }
 
-      // resize and clear
-      const width = Math.round(frameState.size[0] * pixelRatio);
-      const height = Math.round(frameState.size[1] * pixelRatio);
-      if (canvas.width != width || canvas.height != height) {
-        canvas.width = width;
-        canvas.height = height;
-        if (canvas.style.transform !== canvasTransform) {
-          canvas.style.transform = canvasTransform;
-        }
-      } else if (!this.containerReused) {
-        context.clearRect(0, 0, width, height);
-      }
+      this.setDrawContext_();
 
       this.preRender(context, frameState);
 
-      const viewState = frameState.viewState;
       const projection = viewState.projection;
 
-      this.opacity_ = layerState.opacity;
-      this.setupCompositionContext_();
-
       // clipped rendering if layer extent is set
-      let clipped = false;
+      this.clipped_ = false;
       if (render && layerState.extent && this.clipping) {
         const layerExtent = fromUserExtent(layerState.extent, projection);
         render = intersects$1(layerExtent, frameState.extent);
-        clipped = render && !containsExtent(layerExtent, frameState.extent);
-        if (clipped) {
-          this.clipUnrotated(this.compositionContext_, frameState, layerExtent);
+        this.clipped_ = render && !containsExtent(layerExtent, frameState.extent);
+        if (this.clipped_) {
+          this.clipUnrotated(context, frameState, layerExtent);
         }
       }
 
@@ -49860,17 +49893,18 @@ var myol = (function () {
         );
       }
 
-      if (clipped) {
-        this.compositionContext_.restore();
+      if (!frameState.declutter && this.clipped_) {
+        context.restore();
       }
-
-      this.releaseCompositionContext_();
 
       this.postRender(context, frameState);
 
       if (this.renderedRotation_ !== viewState.rotation) {
         this.renderedRotation_ = viewState.rotation;
         this.hitDetectionImageData_ = null;
+      }
+      if (!frameState.declutter) {
+        this.resetDrawContext_();
       }
       return this.container;
     }
@@ -49883,9 +49917,12 @@ var myol = (function () {
      */
     getFeatures(pixel) {
       return new Promise((resolve) => {
-        if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
-          const size = [this.context.canvas.width, this.context.canvas.height];
-          apply(this.pixelTransform, size);
+        if (
+          this.frameState &&
+          !this.hitDetectionImageData_ &&
+          !this.animatingOrInteracting_
+        ) {
+          const size = this.frameState.size.slice();
           const center = this.renderedCenter_;
           const resolution = this.renderedResolution_;
           const rotation = this.renderedRotation_;
@@ -50163,6 +50200,7 @@ var myol = (function () {
         this.renderedResolution_ == resolution &&
         this.renderedRevision_ == vectorLayerRevision &&
         this.renderedRenderOrder_ == vectorLayerRenderOrder &&
+        this.renderedFrameDeclutter_ === !!frameState.declutter &&
         containsExtent(this.wrappedRenderedExtent_, extent)
       ) {
         if (!equals$2(this.renderedExtent_, renderedExtent)) {
@@ -50176,7 +50214,7 @@ var myol = (function () {
 
       this.replayGroup_ = null;
 
-      const replayGroup = new CanvasBuilderGroup(
+      const replayGroup = new BuilderGroup(
         getTolerance(resolution, pixelRatio),
         extent,
         resolution,
@@ -50243,7 +50281,7 @@ var myol = (function () {
       this.ready = ready;
 
       const replayGroupInstructions = replayGroup.finish();
-      const executorGroup = new CanvasExecutorGroup(
+      const executorGroup = new ExecutorGroup(
         extent,
         resolution,
         pixelRatio,
@@ -50256,6 +50294,7 @@ var myol = (function () {
       this.renderedResolution_ = resolution;
       this.renderedRevision_ = vectorLayerRevision;
       this.renderedRenderOrder_ = vectorLayerRenderOrder;
+      this.renderedFrameDeclutter_ = !!frameState.declutter;
       this.renderedExtent_ = renderedExtent;
       this.wrappedRenderedExtent_ = extent;
       this.renderedCenter_ = center;
@@ -50321,10 +50360,58 @@ var myol = (function () {
     }
   }
 
-  var CanvasVectorLayerRenderer$1 = CanvasVectorLayerRenderer;
-
   /**
    * @module ol/layer/Vector
+   */
+
+  /**
+   * @template {import('../Feature.js').FeatureLike} FeatureType
+   * @typedef {Object} Options
+   * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
+   * @property {number} [opacity=1] Opacity (0, 1).
+   * @property {boolean} [visible=true] Visibility.
+   * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+   * rendered outside of this extent.
+   * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+   * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
+   * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
+   * method was used.
+   * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+   * visible.
+   * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+   * be visible.
+   * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+   * visible.
+   * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+   * be visible.
+   * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
+   * features before rendering. By default features are drawn in the order that they are created. Use
+   * `null` to avoid the sort, but get an undefined draw order.
+   * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
+   * renderer when getting features from the vector source for the rendering or hit-detection.
+   * Recommended value: the size of the largest symbol, line width or label.
+   * @property {import("../source/Vector.js").default<FeatureType>} [source] Source.
+   * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+   * this layer in its layers collection, and the layer will be rendered on top. This is useful for
+   * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
+   * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
+   * @property {boolean|string|number} [declutter=false] Declutter images and text. Any truthy value will enable
+   * decluttering. Within a layer, a feature rendered before another has higher priority. All layers with the
+   * same `declutter` value will be decluttered together. The priority is determined by the drawing order of the
+   * layers with the same `declutter` value. Higher in the layer stack means higher priority. To declutter distinct
+   * layers or groups of layers separately, use different truthy values for `declutter`.
+   * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style. When set to `null`, only
+   * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
+   * which will be used if this is not set.
+   * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
+   * will be rendered.
+   * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
+   * be recreated during animations. This means that no vectors will be shown clipped, but the
+   * setting will have a performance impact for large amounts of vector data. When set to `false`,
+   * batches will be recreated when no animation is active.
+   * @property {boolean} [updateWhileInteracting=false] When set to `true`, feature batches will
+   * be recreated during interactions. See also `updateWhileAnimating`.
+   * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
    */
 
   /**
@@ -50338,24 +50425,22 @@ var myol = (function () {
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @template {import("../source/Vector.js").default} VectorSourceType
-   * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorLayerRenderer>}
+   * @template {import('../Feature.js').FeatureLike} FeatureType
+   * @extends {BaseVectorLayer<import("../source/Vector.js").default<FeatureType>, CanvasVectorLayerRenderer>}
    * @api
    */
-  class VectorLayer extends BaseVectorLayer$1 {
+  class VectorLayer extends BaseVectorLayer {
     /**
-     * @param {import("./BaseVector.js").Options<VectorSourceType>} [options] Options.
+     * @param {Options<FeatureType>} [options] Options.
      */
     constructor(options) {
       super(options);
     }
 
     createRenderer() {
-      return new CanvasVectorLayerRenderer$1(this);
+      return new CanvasVectorLayerRenderer(this);
     }
   }
-
-  var LayerVector = VectorLayer;
 
   /**
    * @module ol/structs/RBush
@@ -50385,7 +50470,7 @@ var myol = (function () {
       /**
        * @private
        */
-      this.rbush_ = new RBush$2(maxEntries);
+      this.rbush_ = new RBush$1(maxEntries);
 
       /**
        * A mapping between the objects added to this rbush wrapper
@@ -50572,8 +50657,6 @@ var myol = (function () {
     }
   }
 
-  var RBush$1 = RBush;
-
   /**
    * @module ol/source/Source
    */
@@ -50622,7 +50705,7 @@ var myol = (function () {
    * @abstract
    * @api
    */
-  class Source extends BaseObject$1 {
+  class Source extends BaseObject {
     /**
      * @param {Options} options Source options.
      */
@@ -50816,8 +50899,6 @@ var myol = (function () {
     };
   }
 
-  var Source$1 = Source;
-
   /**
    * @module ol/source/VectorEventType
    */
@@ -50987,11 +51068,13 @@ var myol = (function () {
    *
    * The function is responsible for loading the features and adding them to the
    * source.
+   *
+   * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
    * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default),
    *           import("./extent.js").Extent,
    *           number,
    *           import("./proj/Projection.js").default,
-   *           function(Array<import("./Feature.js").default>): void=,
+   *           function(Array<FeatureType>): void=,
    *           function(): void=): void} FeatureLoader
    * @api
    */
@@ -51009,12 +51092,13 @@ var myol = (function () {
    */
 
   /**
+   * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
    * @param {string|FeatureUrlFunction} url Feature URL service.
-   * @param {import("./format/Feature.js").default} format Feature format.
+   * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("./proj/Projection.js").default} projection Projection.
-   * @param {function(Array<import("./Feature.js").default>, import("./proj/Projection.js").default): void} success Success
+   * @param {function(Array<FeatureType>, import("./proj/Projection.js").default): void} success Success
    *      Function called with the loaded features and optionally with the data projection.
    * @param {function(): void} failure Failure
    *      Function called when loading failed.
@@ -51046,35 +51130,31 @@ var myol = (function () {
       // status will be 0 for file:// urls
       if (!xhr.status || (xhr.status >= 200 && xhr.status < 300)) {
         const type = format.getType();
-        /** @type {Document|Node|Object|string|undefined} */
-        let source;
-        if (type == 'json') {
-          source = JSON.parse(xhr.responseText);
-        } else if (type == 'text') {
-          source = xhr.responseText;
-        } else if (type == 'xml') {
-          source = xhr.responseXML;
-          if (!source) {
-            source = new DOMParser().parseFromString(
-              xhr.responseText,
-              'application/xml',
-            );
+        try {
+          /** @type {Document|Node|Object|string|undefined} */
+          let source;
+          if (type == 'text' || type == 'json') {
+            source = xhr.responseText;
+          } else if (type == 'xml') {
+            source = xhr.responseXML || xhr.responseText;
+          } else if (type == 'arraybuffer') {
+            source = /** @type {ArrayBuffer} */ (xhr.response);
           }
-        } else if (type == 'arraybuffer') {
-          source = /** @type {ArrayBuffer} */ (xhr.response);
-        }
-        if (source) {
-          success(
-            /** @type {Array<import("./Feature.js").default>} */
-            (
-              format.readFeatures(source, {
-                extent: extent,
-                featureProjection: projection,
-              })
-            ),
-            format.readProjection(source),
-          );
-        } else {
+          if (source) {
+            success(
+              /** @type {Array<FeatureType>} */
+              (
+                format.readFeatures(source, {
+                  extent: extent,
+                  featureProjection: projection,
+                })
+              ),
+              format.readProjection(source),
+            );
+          } else {
+            failure();
+          }
+        } catch {
           failure();
         }
       } else {
@@ -51092,9 +51172,10 @@ var myol = (function () {
    * Create an XHR feature loader for a `url` and `format`. The feature loader
    * loads features (with XHR), parses the features, and adds them to the
    * vector source.
+   * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
    * @param {string|FeatureUrlFunction} url Feature URL service.
-   * @param {import("./format/Feature.js").default<typeof import("./Feature.js").default|typeof import("./render/Feature.js").default>} format Feature format.
-   * @return {FeatureLoader} The feature loader.
+   * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
+   * @return {FeatureLoader<FeatureType>} The feature loader.
    * @api
    */
   function xhr(url, format) {
@@ -51102,13 +51183,14 @@ var myol = (function () {
      * @param {import("./extent.js").Extent} extent Extent.
      * @param {number} resolution Resolution.
      * @param {import("./proj/Projection.js").default} projection Projection.
-     * @param {function(Array<import("./Feature.js").default>): void} [success] Success
+     * @param {function(Array<FeatureType>): void} [success] Success
      *      Function called when loading succeeded.
      * @param {function(): void} [failure] Failure
      *      Function called when loading failed.
      */
     return function (extent, resolution, projection, success, failure) {
-      const source = /** @type {import("./source/Vector").default} */ (this);
+      const source =
+        /** @type {import("./source/Vector").default<FeatureType>} */ (this);
       loadFeaturesXhr(
         url,
         format,
@@ -51116,7 +51198,7 @@ var myol = (function () {
         resolution,
         projection,
         /**
-         * @param {Array<import("./Feature.js").default>} features The loaded features.
+         * @param {Array<FeatureType>} features The loaded features.
          * @param {import("./proj/Projection.js").default} dataProjection Data
          * projection.
          */
@@ -51151,7 +51233,7 @@ var myol = (function () {
    * type.
    * @template {import("../Feature.js").FeatureLike} [FeatureClass=import("../Feature.js").default]
    */
-  class VectorSourceEvent extends Event {
+  class VectorSourceEvent extends BaseEvent {
     /**
      * @param {string} type Type.
      * @param {FeatureClass} [feature] Feature.
@@ -51183,9 +51265,10 @@ var myol = (function () {
 
   /***
    * @template Return
+   * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
    * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
    *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent, Return> &
+   *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent<FeatureType>, Return> &
    *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
    *     import("./VectorEventType").VectorSourceEventTypes, Return>} VectorSourceOnSignature
    */
@@ -51199,7 +51282,7 @@ var myol = (function () {
    * and the collection will stay in sync.
    * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] The feature format used by the XHR
    * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
-   * @property {import("../featureloader.js").FeatureLoader} [loader]
+   * @property {import("../featureloader.js").FeatureLoader<FeatureType>} [loader]
    * The loader function used to load features, from a remote source for example.
    * If this is not set and `url` is set, the source will create and use an XHR
    * feature loader. The `'featuresloadend'` and `'featuresloaderror'` events
@@ -51293,7 +51376,7 @@ var myol = (function () {
    * @api
    * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
    */
-  class VectorSource extends Source$1 {
+  class VectorSource extends Source {
     /**
      * @param {Options<FeatureType>} [options] Vector source options.
      */
@@ -51309,12 +51392,12 @@ var myol = (function () {
       });
 
       /***
-       * @type {VectorSourceOnSignature<import("../events").EventsKey>}
+       * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
        */
       this.on;
 
       /***
-       * @type {VectorSourceOnSignature<import("../events").EventsKey>}
+       * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
        */
       this.once;
 
@@ -51325,7 +51408,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {import("../featureloader.js").FeatureLoader}
+       * @type {import("../featureloader.js").FeatureLoader<FeatureType>}
        */
       this.loader_ = VOID;
 
@@ -51352,10 +51435,7 @@ var myol = (function () {
       } else if (this.url_ !== undefined) {
         assert$1(this.format_, '`format` must be set when `url` is set');
         // create a XHR feature loader for "url" and "format"
-        this.loader_ = xhr(
-          this.url_,
-          /** @type {import("../format/Feature.js").default} */ (this.format_),
-        );
+        this.loader_ = xhr(this.url_, this.format_);
       }
 
       /**
@@ -51372,13 +51452,13 @@ var myol = (function () {
        * @private
        * @type {RBush<FeatureType>}
        */
-      this.featuresRtree_ = useSpatialIndex ? new RBush$1() : null;
+      this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
       /**
        * @private
        * @type {RBush<{extent: import("../extent.js").Extent}>}
        */
-      this.loadedExtentsRtree_ = new RBush$1();
+      this.loadedExtentsRtree_ = new RBush();
 
       /**
        * @type {number}
@@ -51429,7 +51509,7 @@ var myol = (function () {
         features = collection.getArray();
       }
       if (!useSpatialIndex && collection === undefined) {
-        collection = new Collection$1(features);
+        collection = new Collection(features);
       }
       if (features !== undefined) {
         this.addFeaturesInternal(features);
@@ -51494,7 +51574,7 @@ var myol = (function () {
      * @private
      */
     setupChangeEvents_(featureKey, feature) {
-      if (feature instanceof RenderFeature$1) {
+      if (feature instanceof RenderFeature) {
         return;
       }
       this.featureChangeKeys_[featureKey] = [
@@ -51521,9 +51601,9 @@ var myol = (function () {
         const id = String(feature.getId());
         if (!(id in this.idIndex_)) {
           this.idIndex_[id] = feature;
-        } else if (feature instanceof RenderFeature$1) {
+        } else if (feature instanceof RenderFeature) {
           const indexedFeature = this.idIndex_[id];
-          if (!(indexedFeature instanceof RenderFeature$1)) {
+          if (!(indexedFeature instanceof RenderFeature)) {
             valid = false;
           } else {
             if (!Array.isArray(indexedFeature)) {
@@ -51746,7 +51826,7 @@ var myol = (function () {
       return this.forEachFeatureInExtent(extent, function (feature) {
         const geometry = feature.getGeometry();
         if (
-          geometry instanceof RenderFeature$1 ||
+          geometry instanceof RenderFeature ||
           geometry.intersectsCoordinate(coordinate)
         ) {
           return callback(feature);
@@ -51808,7 +51888,7 @@ var myol = (function () {
         function (feature) {
           const geometry = feature.getGeometry();
           if (
-            geometry instanceof RenderFeature$1 ||
+            geometry instanceof RenderFeature ||
             geometry.intersectsExtent(extent)
           ) {
             const result = callback(feature);
@@ -51936,7 +52016,7 @@ var myol = (function () {
             const geometry = feature.getGeometry();
             const previousMinSquaredDistance = minSquaredDistance;
             minSquaredDistance =
-              geometry instanceof RenderFeature$1
+              geometry instanceof RenderFeature
                 ? 0
                 : geometry.closestPointXY(x, y, closestPoint, minSquaredDistance);
             if (minSquaredDistance < previousMinSquaredDistance) {
@@ -52184,8 +52264,29 @@ var myol = (function () {
     }
 
     /**
-     * Remove a single feature from the source.  If you want to remove all features
+     * Batch remove features from the source.  If you want to remove all features
      * at once, use the {@link module:ol/source/Vector~VectorSource#clear #clear()} method
+     * instead.
+     * @param {Array<FeatureType>} features Features to remove.
+     * @api
+     */
+    removeFeatures(features) {
+      const removedFeatures = [];
+      for (let i = 0, ii = features.length; i < ii; ++i) {
+        const feature = features[i];
+        const removedFeature = this.removeFeatureInternal(feature);
+        if (removedFeature) {
+          removedFeatures.push(removedFeature);
+        }
+      }
+      if (removedFeatures.length > 0) {
+        this.changed();
+      }
+    }
+
+    /**
+     * Remove a single feature from the source. If you want to batch remove
+     * features, use the {@link module:ol/source/Vector~VectorSource#removeFeatures #removeFeatures()} method
      * instead.
      * @param {FeatureType} feature Feature to remove.
      * @api
@@ -52193,14 +52294,6 @@ var myol = (function () {
     removeFeature(feature) {
       if (!feature) {
         return;
-      }
-      const featureKey = getUid(feature);
-      if (featureKey in this.nullGeometryFeatures_) {
-        delete this.nullGeometryFeatures_[featureKey];
-      } else {
-        if (this.featuresRtree_) {
-          this.featuresRtree_.remove(feature);
-        }
       }
       const result = this.removeFeatureInternal(feature);
       if (result) {
@@ -52217,20 +52310,41 @@ var myol = (function () {
      */
     removeFeatureInternal(feature) {
       const featureKey = getUid(feature);
-      const featureChangeKeys = this.featureChangeKeys_[featureKey];
-      if (!featureChangeKeys) {
+      if (!(featureKey in this.uidIndex_)) {
         return;
       }
-      featureChangeKeys.forEach(unlistenByKey);
+
+      if (featureKey in this.nullGeometryFeatures_) {
+        delete this.nullGeometryFeatures_[featureKey];
+      } else {
+        if (this.featuresRtree_) {
+          this.featuresRtree_.remove(feature);
+        }
+      }
+
+      const featureChangeKeys = this.featureChangeKeys_[featureKey];
+      featureChangeKeys?.forEach(unlistenByKey);
       delete this.featureChangeKeys_[featureKey];
+
       const id = feature.getId();
       if (id !== undefined) {
-        delete this.idIndex_[id.toString()];
+        const idString = id.toString();
+        const indexedFeature = this.idIndex_[idString];
+        if (indexedFeature === feature) {
+          delete this.idIndex_[idString];
+        } else if (Array.isArray(indexedFeature)) {
+          indexedFeature.splice(indexedFeature.indexOf(feature), 1);
+          if (indexedFeature.length === 1) {
+            this.idIndex_[idString] = indexedFeature[0];
+          }
+        }
       }
       delete this.uidIndex_[featureKey];
-      this.dispatchEvent(
-        new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature),
-      );
+      if (this.hasListener(VectorEventType.REMOVEFEATURE)) {
+        this.dispatchEvent(
+          new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature),
+        );
+      }
       return feature;
     }
 
@@ -52246,7 +52360,7 @@ var myol = (function () {
       for (const id in this.idIndex_) {
         const indexedFeature = this.idIndex_[id];
         if (
-          feature instanceof RenderFeature$1 &&
+          feature instanceof RenderFeature &&
           Array.isArray(indexedFeature) &&
           indexedFeature.includes(feature)
         ) {
@@ -52263,7 +52377,7 @@ var myol = (function () {
     /**
      * Set the new loader of the source. The next render cycle will use the
      * new loader.
-     * @param {import("../featureloader.js").FeatureLoader} loader The loader to set.
+     * @param {import("../featureloader.js").FeatureLoader<FeatureType>} loader The loader to set.
      * @api
      */
     setLoader(loader) {
@@ -52281,8 +52395,6 @@ var myol = (function () {
       this.setLoader(xhr(url, this.format_));
     }
   }
-
-  var SourceVector = VectorSource;
 
   /**
    * @module ol/interaction/Draw
@@ -52439,7 +52551,7 @@ var myol = (function () {
    * Events emitted by {@link module:ol/interaction/Draw~Draw} instances are
    * instances of this type.
    */
-  class DrawEvent extends Event {
+  class DrawEvent extends BaseEvent {
     /**
      * @param {DrawEventType} type Type.
      * @param {Feature} feature The feature drawn.
@@ -52838,7 +52950,7 @@ var myol = (function () {
    * @fires DrawEvent
    * @api
    */
-  class Draw extends PointerInteraction$1 {
+  class Draw extends PointerInteraction {
     /**
      * @param {Options} options Options.
      */
@@ -53025,7 +53137,7 @@ var myol = (function () {
         } else {
           let Constructor;
           if (mode === 'Point') {
-            Constructor = Point$2;
+            Constructor = Point$1;
           } else if (mode === 'LineString') {
             Constructor = LineString$1;
           } else if (mode === 'Polygon') {
@@ -53132,8 +53244,8 @@ var myol = (function () {
        * @type {VectorLayer}
        * @private
        */
-      this.overlay_ = new LayerVector({
-        source: new SourceVector({
+      this.overlay_ = new VectorLayer({
+        source: new VectorSource({
           useSpatialIndex: false,
           wrapX: options.wrapX ? options.wrapX : false,
         }),
@@ -53317,7 +53429,7 @@ var myol = (function () {
       this.lastDragTime_ = Date.now();
       this.downTimeout_ = setTimeout(() => {
         this.handlePointerMove_(
-          new MapBrowserEvent$1(
+          new MapBrowserEvent(
             MapBrowserEventType.POINTERMOVE,
             event.map,
             event.originalEvent,
@@ -53687,7 +53799,7 @@ var myol = (function () {
      */
     createOrUpdateSketchPoint_(coordinates) {
       if (!this.sketchPoint_) {
-        this.sketchPoint_ = new Feature$1(new Point$2(coordinates));
+        this.sketchPoint_ = new Feature(new Point$1(coordinates));
         this.updateSketchFeatures_();
       } else {
         const sketchPointGeom = this.sketchPoint_.getGeometry();
@@ -53701,7 +53813,7 @@ var myol = (function () {
      */
     createOrUpdateCustomSketchLine_(geometry) {
       if (!this.sketchLine_) {
-        this.sketchLine_ = new Feature$1();
+        this.sketchLine_ = new Feature();
       }
       const ring = geometry.getLinearRing(0);
       let sketchLineGeom = this.sketchLine_.getGeometry();
@@ -53741,14 +53853,14 @@ var myol = (function () {
         this.sketchCoords_ = [start.slice(), start.slice()];
       }
       if (this.sketchLineCoords_) {
-        this.sketchLine_ = new Feature$1(new LineString$1(this.sketchLineCoords_));
+        this.sketchLine_ = new Feature(new LineString$1(this.sketchLineCoords_));
       }
       const geometry = this.geometryFunction_(
         this.sketchCoords_,
         undefined,
         projection,
       );
-      this.sketchFeature_ = new Feature$1();
+      this.sketchFeature_ = new Feature();
       if (this.geometryName_) {
         this.sketchFeature_.setGeometryName(this.geometryName_);
       }
@@ -54058,7 +54170,7 @@ var myol = (function () {
       const last = this.sketchCoords_[this.sketchCoords_.length - 1];
       this.finishCoordinate_ = last.slice();
       this.sketchCoords_.push(last.slice());
-      this.sketchPoint_ = new Feature$1(new Point$2(last));
+      this.sketchPoint_ = new Feature(new Point$1(last));
       this.updateSketchFeatures_();
       this.dispatchEvent(
         new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_),
@@ -54131,8 +54243,6 @@ var myol = (function () {
         throw new Error('Invalid type: ' + type);
     }
   }
-
-  var Draw$1 = Draw;
 
   /**
    * @module ol/interaction/Modify
@@ -54231,7 +54341,7 @@ var myol = (function () {
    * Events emitted by {@link module:ol/interaction/Modify~Modify} instances are
    * instances of this type.
    */
-  class ModifyEvent extends Event {
+  class ModifyEvent extends BaseEvent {
     /**
      * @param {ModifyEventType} type Type.
      * @param {Collection<Feature>} features
@@ -54289,7 +54399,7 @@ var myol = (function () {
    * @fires ModifyEvent
    * @api
    */
-  class Modify extends PointerInteraction$1 {
+  class Modify extends PointerInteraction {
     /**
      * @param {Options} options Options.
      */
@@ -54384,7 +54494,7 @@ var myol = (function () {
        * @type {RBush<SegmentData>}
        * @private
        */
-      this.rBush_ = new RBush$1();
+      this.rBush_ = new RBush();
 
       /**
        * @type {number}
@@ -54418,8 +54528,8 @@ var myol = (function () {
        * @type {VectorLayer}
        * @private
        */
-      this.overlay_ = new LayerVector({
-        source: new SourceVector({
+      this.overlay_ = new VectorLayer({
+        source: new VectorSource({
           useSpatialIndex: false,
           wrapX: !!options.wrapX,
         }),
@@ -54462,7 +54572,7 @@ var myol = (function () {
         features = options.features;
       } else if (options.source) {
         this.source_ = options.source;
-        features = new Collection$1(this.source_.getFeatures());
+        features = new Collection(this.source_.getFeatures());
         this.source_.addEventListener(
           VectorEventType.ADDFEATURE,
           this.handleSourceAdd_.bind(this),
@@ -54544,7 +54654,7 @@ var myol = (function () {
      */
     willModifyFeatures_(evt, segments) {
       if (!this.featuresBeingModified_) {
-        this.featuresBeingModified_ = new Collection$1();
+        this.featuresBeingModified_ = new Collection();
         const features = this.featuresBeingModified_.getArray();
         for (let i = 0, ii = segments.length; i < ii; ++i) {
           const segment = segments[i];
@@ -54915,7 +55025,7 @@ var myol = (function () {
     createOrUpdateVertexFeature_(coordinates, features, geometries) {
       let vertexFeature = this.vertexFeature_;
       if (!vertexFeature) {
-        vertexFeature = new Feature$1(new Point$2(coordinates));
+        vertexFeature = new Feature(new Point$1(coordinates));
         this.vertexFeature_ = vertexFeature;
         this.overlay_.getSource().addFeature(vertexFeature);
       } else {
@@ -55278,13 +55388,13 @@ var myol = (function () {
           pixel,
           (feature, layer, geometry) => {
             if (geometry && geometry.getType() === 'Point') {
-              geometry = new Point$2(
+              geometry = new Point$1(
                 toUserCoordinate(geometry.getCoordinates(), projection),
               );
             }
             const geom = geometry || feature.getGeometry();
             if (
-              feature instanceof Feature$1 &&
+              feature instanceof Feature &&
               this.features_.getArray().includes(feature)
             ) {
               hitPointGeometry = /** @type {Point} */ (geom);
@@ -55750,8 +55860,6 @@ var myol = (function () {
     };
   }
 
-  var Modify$1 = Modify;
-
   /**
    * @module ol/interaction/Select
    */
@@ -55835,7 +55943,7 @@ var myol = (function () {
    * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
    * this type.
    */
-  class SelectEvent extends Event {
+  class SelectEvent extends BaseEvent {
     /**
      * @param {SelectEventType} type The event type.
      * @param {Array<import("../Feature.js").default>} selected Selected features.
@@ -55898,7 +56006,7 @@ var myol = (function () {
    * @fires SelectEvent
    * @api
    */
-  class Select extends Interaction$1 {
+  class Select extends Interaction {
     /**
      * @param {Options} [options] Options.
      */
@@ -55989,7 +56097,7 @@ var myol = (function () {
        * @private
        * @type {Collection<Feature>}
        */
-      this.features_ = options.features || new Collection$1();
+      this.features_ = options.features || new Collection();
 
       /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
       let layerFilter;
@@ -56123,7 +56231,7 @@ var myol = (function () {
             .getAllLayers()
             .find(function (layer) {
               if (
-                layer instanceof LayerVector &&
+                layer instanceof VectorLayer &&
                 layer.getSource() &&
                 layer.getSource().hasFeature(feature)
               ) {
@@ -56238,7 +56346,7 @@ var myol = (function () {
            * @return {boolean|undefined} Continue to iterate over the features.
            */
           (feature, layer) => {
-            if (!(feature instanceof Feature$1) || !this.filter_(feature, layer)) {
+            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
               return;
             }
             this.addFeatureLayerAssociation_(feature, layer);
@@ -56274,7 +56382,7 @@ var myol = (function () {
            * @return {boolean|undefined} Continue to iterate over the features.
            */
           (feature, layer) => {
-            if (!(feature instanceof Feature$1) || !this.filter_(feature, layer)) {
+            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
               return;
             }
             if ((add || toggle) && !features.getArray().includes(feature)) {
@@ -56329,8 +56437,6 @@ var myol = (function () {
     };
   }
 
-  var Select$1 = Select;
-
   /**
    * @module ol/events/SnapEvent
    */
@@ -56351,7 +56457,7 @@ var myol = (function () {
    * @classdesc
    * Events emitted by {@link module:ol/interaction/Snap~Snap} instances are instances of this
    */
-  class SnapEvent extends Event {
+  class SnapEvent extends BaseEvent {
     /**
      * @param {SnapEventType} type Type.
      * @param {Object} options Options.
@@ -56476,7 +56582,7 @@ var myol = (function () {
    * @fires SnapEvent
    * @api
    */
-  class Snap extends PointerInteraction$1 {
+  class Snap extends PointerInteraction {
     /**
      * @param {Options} [options] Options.
      */
@@ -56577,7 +56683,7 @@ var myol = (function () {
        * @type {import("../structs/RBush.js").default<SegmentData>}
        * @private
        */
-      this.rBush_ = new RBush$1();
+      this.rBush_ = new RBush();
 
       /**
        * @const
@@ -56923,6 +57029,7 @@ var myol = (function () {
                   ? null
                   : segmentData.segment;
               minSquaredDistance = delta;
+              closestFeature = segmentData.feature;
             }
           }
         }
@@ -57065,8 +57172,6 @@ var myol = (function () {
     }
   }
 
-  var Snap$1 = Snap;
-
   /**
    * @module ol/reproj/common
    */
@@ -57149,7 +57254,7 @@ var myol = (function () {
    *
    * @abstract
    */
-  class Tile extends EventTarget {
+  class Tile extends Target {
     /**
      * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
      * @param {import("./TileState.js").default} state State.
@@ -57390,8 +57495,6 @@ var myol = (function () {
       }
     }
   }
-
-  var Tile$1 = Tile;
 
   /**
    * @module ol/reproj/Triangulation
@@ -57880,8 +57983,6 @@ var myol = (function () {
     }
   }
 
-  var Triangulation$1 = Triangulation;
-
   /**
    * @module ol/reproj
    */
@@ -58057,6 +58158,7 @@ var myol = (function () {
   /**
    * @typedef {Object} ImageExtent
    * @property {import("./extent.js").Extent} extent Extent.
+   * @property {import("./extent.js").Extent} [clipExtent] Clip extent.
    * @property {import('./DataTile.js').ImageLike} image Image.
    */
 
@@ -58127,7 +58229,7 @@ var myol = (function () {
     // Round up Float32 scale values to prevent interpolation in Firefox.
     const inverseScale = (interpolate ? 1 : 1 + Math.pow(2, -24)) / stitchScale;
 
-    if (!drawSingle || sources.length !== 1 || gutter !== 0) {
+    {
       stitchContext = createCanvasContext2D(
         Math.round(getWidth(sourceDataExtent) * stitchScale),
         Math.round(getHeight(sourceDataExtent) * stitchScale),
@@ -58147,13 +58249,27 @@ var myol = (function () {
       }
 
       sources.forEach(function (src, i, arr) {
-        const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
-        const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
-        const srcWidth = getWidth(src.extent) * stitchScale;
-        const srcHeight = getHeight(src.extent) * stitchScale;
-
         // This test should never fail -- but it does. Need to find a fix the upstream condition
         if (src.image.width > 0 && src.image.height > 0) {
+          if (src.clipExtent) {
+            stitchContext.save();
+            const xPos = (src.clipExtent[0] - sourceDataExtent[0]) * stitchScale;
+            const yPos = -(src.clipExtent[3] - sourceDataExtent[3]) * stitchScale;
+            const width = getWidth(src.clipExtent) * stitchScale;
+            const height = getHeight(src.clipExtent) * stitchScale;
+            stitchContext.rect(
+              interpolate ? xPos : Math.round(xPos),
+              interpolate ? yPos : Math.round(yPos),
+              interpolate ? width : Math.round(xPos + width) - Math.round(xPos),
+              interpolate ? height : Math.round(yPos + height) - Math.round(yPos),
+            );
+            stitchContext.clip();
+          }
+
+          const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
+          const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
+          const srcWidth = getWidth(src.extent) * stitchScale;
+          const srcHeight = getHeight(src.extent) * stitchScale;
           stitchContext.drawImage(
             src.image,
             gutter,
@@ -58169,6 +58285,10 @@ var myol = (function () {
               ? srcHeight
               : Math.round(yPos + srcHeight) - Math.round(yPos),
           );
+
+          if (src.clipExtent) {
+            stitchContext.restore();
+          }
         }
       });
     }
@@ -58349,12 +58469,18 @@ var myol = (function () {
    */
 
   /**
+   * @typedef {Object} TileOffset
+   * @property {import("../ImageTile.js").default} tile Tile.
+   * @property {number} offset Offset.
+   */
+
+  /**
    * @classdesc
    * Class encapsulating single reprojected tile.
    * See {@link module:ol/source/TileImage~TileImage}.
    *
    */
-  class ReprojTile extends Tile$1 {
+  class ReprojTile extends Tile {
     /**
      * @param {import("../proj/Projection.js").default} sourceProj Source projection.
      * @param {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.
@@ -58430,7 +58556,7 @@ var myol = (function () {
 
       /**
        * @private
-       * @type {!Array<import("../ImageTile.js").default>}
+       * @type {!Array<TileOffset>}
        */
       this.sourceTiles_ = [];
 
@@ -58445,6 +58571,14 @@ var myol = (function () {
        * @type {number}
        */
       this.sourceZ_ = 0;
+
+      /**
+       * @private
+       * @type {import("../extent.js").Extent}
+       */
+      this.clipExtent_ = sourceProj.canWrapX()
+        ? sourceProj.getExtent()
+        : undefined;
 
       const targetExtent = targetTileGrid.getTileCoordExtent(
         this.wrappedTileCoord_,
@@ -58497,7 +58631,7 @@ var myol = (function () {
        * @private
        * @type {!import("./Triangulation.js").default}
        */
-      this.triangulation_ = new Triangulation$1(
+      this.triangulation_ = new Triangulation(
         sourceProj,
         targetProj,
         limitedTargetExtent,
@@ -58535,19 +58669,37 @@ var myol = (function () {
       if (!getArea$1(sourceExtent)) {
         this.state = TileState.EMPTY;
       } else {
-        const sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
-          sourceExtent,
-          this.sourceZ_,
-        );
+        let worldWidth = 0;
+        let worldsAway = 0;
+        if (sourceProj.canWrapX()) {
+          worldWidth = getWidth(sourceProjExtent);
+          worldsAway = Math.floor(
+            (sourceExtent[0] - sourceProjExtent[0]) / worldWidth,
+          );
+        }
 
-        for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
-          for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
-            const tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
-            if (tile) {
-              this.sourceTiles_.push(tile);
+        const sourceExtents = wrapAndSliceX(
+          sourceExtent.slice(),
+          sourceProj,
+          true,
+        );
+        sourceExtents.forEach((extent) => {
+          const sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
+            extent,
+            this.sourceZ_,
+          );
+
+          for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
+            for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
+              const tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
+              if (tile) {
+                const offset = worldsAway * worldWidth;
+                this.sourceTiles_.push({tile, offset});
+              }
             }
           }
-        }
+          ++worldsAway;
+        });
 
         if (this.sourceTiles_.length === 0) {
           this.state = TileState.EMPTY;
@@ -58568,10 +58720,20 @@ var myol = (function () {
      */
     reproject_() {
       const sources = [];
-      this.sourceTiles_.forEach((tile) => {
+      this.sourceTiles_.forEach((source) => {
+        const tile = source.tile;
         if (tile && tile.getState() == TileState.LOADED) {
+          const extent = this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord);
+          extent[0] += source.offset;
+          extent[2] += source.offset;
+          const clipExtent = this.clipExtent_?.slice();
+          if (clipExtent) {
+            clipExtent[0] += source.offset;
+            clipExtent[2] += source.offset;
+          }
           sources.push({
-            extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
+            extent: extent,
+            clipExtent: clipExtent,
             image: tile.getImage(),
           });
         }
@@ -58625,7 +58787,7 @@ var myol = (function () {
         let leftToLoad = 0;
 
         this.sourcesListenerKeys_ = [];
-        this.sourceTiles_.forEach((tile) => {
+        this.sourceTiles_.forEach(({tile}) => {
           const state = tile.getState();
           if (state == TileState.IDLE || state == TileState.LOADING) {
             leftToLoad++;
@@ -58657,7 +58819,7 @@ var myol = (function () {
         if (leftToLoad === 0) {
           setTimeout(this.reproject_.bind(this), 0);
         } else {
-          this.sourceTiles_.forEach(function (tile, i, arr) {
+          this.sourceTiles_.forEach(function ({tile}, i, arr) {
             const state = tile.getState();
             if (state == TileState.IDLE) {
               tile.load();
@@ -58688,13 +58850,11 @@ var myol = (function () {
     }
   }
 
-  var ReprojTile$1 = ReprojTile;
-
   /**
    * @module ol/ImageTile
    */
 
-  class ImageTile extends Tile$1 {
+  class ImageTile extends Tile {
     /**
      * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
      * @param {import("./TileState.js").default} state State.
@@ -58872,8 +59032,6 @@ var myol = (function () {
     ctx.fillRect(0, 0, 1, 1);
     return ctx.canvas;
   }
-
-  var ImageTile$1 = ImageTile;
 
   /**
    * @module ol/structs/LRUCache
@@ -59166,8 +59324,6 @@ var myol = (function () {
     }
   }
 
-  var LRUCache$1 = LRUCache;
-
   /**
    * @module ol/layer/TileProperty
    */
@@ -59238,7 +59394,7 @@ var myol = (function () {
    * @extends {Layer<TileSourceType, RendererType>}
    * @api
    */
-  class BaseTileLayer extends Layer$1 {
+  class BaseTileLayer extends Layer {
     /**
      * @param {Options<TileSourceType>} [options] Tile layer options.
      */
@@ -59337,8 +59493,6 @@ var myol = (function () {
     }
   }
 
-  var BaseTileLayer$1 = BaseTileLayer;
-
   /**
    * @module ol/renderer/canvas/TileLayer
    */
@@ -59350,7 +59504,7 @@ var myol = (function () {
    * @template {import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default} [LayerType=import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default]
    * @extends {CanvasLayerRenderer<LayerType>}
    */
-  class CanvasTileLayerRenderer extends CanvasLayerRenderer$1 {
+  class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     /**
      * @param {LayerType} tileLayer Tile layer.
      */
@@ -59409,7 +59563,7 @@ var myol = (function () {
        * @private
        * @type {import("../../TileRange.js").default}
        */
-      this.tmpTileRange_ = new TileRange$1(0, 0, 0, 0);
+      this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
     }
 
     /**
@@ -59497,8 +59651,8 @@ var myol = (function () {
           projection,
         );
         if (
-          !(tile instanceof ImageTile$1 || tile instanceof ReprojTile$1) ||
-          (tile instanceof ReprojTile$1 && tile.getState() === TileState.EMPTY)
+          !(tile instanceof ImageTile || tile instanceof ReprojTile) ||
+          (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY)
         ) {
           return null;
         }
@@ -59580,9 +59734,12 @@ var myol = (function () {
       let extent = frameState.extent;
       const resolution = frameState.viewState.resolution;
       const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
+
+      this.prepareContainer(frameState, target);
+
       // desired dimensions of the canvas in pixels
-      const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-      const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+      const width = this.context.canvas.width;
+      const height = this.context.canvas.height;
 
       const layerExtent =
         layerState.extent && fromUserExtent(layerState.extent, projection);
@@ -59683,26 +59840,7 @@ var myol = (function () {
       const canvasScale =
         ((tileResolution / viewResolution) * pixelRatio) / tilePixelRatio;
 
-      // set forward and inverse pixel transforms
-      compose(
-        this.pixelTransform,
-        frameState.size[0] / 2,
-        frameState.size[1] / 2,
-        1 / pixelRatio,
-        1 / pixelRatio,
-        rotation,
-        -width / 2,
-        -height / 2,
-      );
-
-      const canvasTransform = toString$1(this.pixelTransform);
-
-      this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
       const context = this.getRenderContext(frameState);
-      const canvas = this.context.canvas;
-
-      makeInverse(this.inversePixelTransform, this.pixelTransform);
 
       // set scale transform for calculating tile positions on the canvas
       compose(
@@ -59715,13 +59853,6 @@ var myol = (function () {
         -width / 2,
         -height / 2,
       );
-
-      if (canvas.width != width || canvas.height != height) {
-        canvas.width = width;
-        canvas.height = height;
-      } else if (!this.containerReused) {
-        context.clearRect(0, 0, width, height);
-      }
 
       if (layerExtent) {
         this.clipUnrotated(context, frameState, layerExtent);
@@ -59880,10 +60011,6 @@ var myol = (function () {
         context.restore();
       }
       context.imageSmoothingEnabled = true;
-
-      if (canvasTransform !== canvas.style.transform) {
-        canvas.style.transform = canvasTransform;
-      }
 
       return this.container;
     }
@@ -60084,8 +60211,6 @@ var myol = (function () {
     }
   }
 
-  var CanvasTileLayerRenderer$1 = CanvasTileLayerRenderer;
-
   /**
    * @module ol/layer/Tile
    */
@@ -60102,7 +60227,7 @@ var myol = (function () {
    * @extends BaseTileLayer<TileSourceType, CanvasTileLayerRenderer>
    * @api
    */
-  class TileLayer extends BaseTileLayer$1 {
+  class TileLayer extends BaseTileLayer {
     /**
      * @param {import("./BaseTile.js").Options<TileSourceType>} [options] Tile layer options.
      */
@@ -60111,11 +60236,9 @@ var myol = (function () {
     }
 
     createRenderer() {
-      return new CanvasTileLayerRenderer$1(this);
+      return new CanvasTileLayerRenderer(this);
     }
   }
-
-  var TileLayer$1 = TileLayer;
 
   /**
    * @module ol/proj/proj4
@@ -60349,7 +60472,7 @@ var myol = (function () {
    * @module ol/TileCache
    */
 
-  class TileCache extends LRUCache$1 {
+  class TileCache extends LRUCache {
     clear() {
       while (this.getCount() > 0) {
         this.pop().release();
@@ -60389,8 +60512,6 @@ var myol = (function () {
       });
     }
   }
-
-  var TileCache$1 = TileCache;
 
   /**
    * @module ol/source/TileEventType
@@ -60482,7 +60603,7 @@ var myol = (function () {
 
     const resolutions = resolutionsFromExtent(extent, maxZoom, tileSize);
 
-    return new TileGrid$1({
+    return new TileGrid({
       extent: extent,
       origin: getCorner(extent, corner),
       resolutions: resolutions,
@@ -60524,7 +60645,7 @@ var myol = (function () {
         xyzOptions.maxResolution,
       ),
     };
-    return new TileGrid$1(gridOptions);
+    return new TileGrid(gridOptions);
   }
 
   /**
@@ -60627,7 +60748,7 @@ var myol = (function () {
    * @abstract
    * @api
    */
-  class TileSource extends Source$1 {
+  class TileSource extends Source {
     /**
      * @param {Options} options SourceTile source options.
      */
@@ -60683,7 +60804,7 @@ var myol = (function () {
        * @protected
        * @type {import("../TileCache.js").default}
        */
-      this.tileCache = new TileCache$1(options.cacheSize || 0);
+      this.tileCache = new TileCache(options.cacheSize || 0);
 
       /**
        * @protected
@@ -60955,7 +61076,7 @@ var myol = (function () {
    * Events emitted by {@link module:ol/source/Tile~TileSource} instances are instances of this
    * type.
    */
-  class TileSourceEvent extends Event {
+  class TileSourceEvent extends BaseEvent {
     /**
      * @param {string} type Type.
      * @param {import("../Tile.js").default} tile The tile.
@@ -60971,8 +61092,6 @@ var myol = (function () {
       this.tile = tile;
     }
   }
-
-  var TileSource$1 = TileSource;
 
   /**
    * @module ol/tileurlfunction
@@ -61120,7 +61239,7 @@ var myol = (function () {
    *
    * @fires import("./Tile.js").TileSourceEvent
    */
-  class UrlTile extends TileSource$1 {
+  class UrlTile extends TileSource {
     /**
      * @param {Options} options Image tile options.
      */
@@ -61312,8 +61431,6 @@ var myol = (function () {
     }
   }
 
-  var UrlTile$1 = UrlTile;
-
   /**
    * @module ol/source/TileImage
    */
@@ -61370,7 +61487,7 @@ var myol = (function () {
    * @fires import("./Tile.js").TileSourceEvent
    * @api
    */
-  class TileImage extends UrlTile$1 {
+  class TileImage extends UrlTile {
     /**
      * @param {!Options} options Image tile options.
      */
@@ -61410,7 +61527,7 @@ var myol = (function () {
        * @type {typeof ImageTile}
        */
       this.tileClass =
-        options.tileClass !== undefined ? options.tileClass : ImageTile$1;
+        options.tileClass !== undefined ? options.tileClass : ImageTile;
 
       /**
        * @protected
@@ -61546,7 +61663,7 @@ var myol = (function () {
       }
       const projKey = getUid(projection);
       if (!(projKey in this.tileCacheForProjection)) {
-        this.tileCacheForProjection[projKey] = new TileCache$1(
+        this.tileCacheForProjection[projKey] = new TileCache(
           this.tileCache.highWaterMark,
         );
       }
@@ -61625,7 +61742,7 @@ var myol = (function () {
         tileCoord,
         projection,
       );
-      const newTile = new ReprojTile$1(
+      const newTile = new ReprojTile(
         sourceProjection,
         sourceTileGrid,
         projection,
@@ -61746,8 +61863,6 @@ var myol = (function () {
       src;
   }
 
-  var TileImage$1 = TileImage;
-
   /**
    * @module ol/source/BingMaps
    */
@@ -61859,7 +61974,7 @@ var myol = (function () {
    * Layer source for Bing Maps tile data.
    * @api
    */
-  class BingMaps extends TileImage$1 {
+  class BingMaps extends TileImage {
     /**
      * @param {Options} options Bing Maps options.
      */
@@ -62078,8 +62193,6 @@ var myol = (function () {
     }
   }
 
-  var BingMaps$1 = BingMaps;
-
   /**
    * @module ol/source/XYZ
    */
@@ -62150,7 +62263,7 @@ var myol = (function () {
    * ```
    * @api
    */
-  let XYZ$1 = class XYZ extends TileImage$1 {
+  let XYZ$1 = class XYZ extends TileImage {
     /**
      * @param {Options} [options] XYZ options.
      */
@@ -62206,14 +62319,13 @@ var myol = (function () {
     }
   };
 
-  var XYZ$2 = XYZ$1;
-
   /**
    * @module ol/source/Cluster
    */
 
 
   /**
+   * @template {import("../Feature.js").FeatureLike} FeatureType
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {number} [distance=20] Distance in pixels within which features will
@@ -62223,7 +62335,7 @@ var myol = (function () {
    * By default no minimum distance is guaranteed. This config can be used to avoid
    * overlapping icons. As a tradoff, the cluster feature's position will no longer be
    * the center of all its features.
-   * @property {function(Feature):Point} [geometryFunction]
+   * @property {function(FeatureType):(Point)} [geometryFunction]
    * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
    * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
    * feature should not be considered for clustering, the function should return
@@ -62236,7 +62348,7 @@ var myol = (function () {
    * ```
    * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
    * calculation point for polygons.
-   * @property {function(Point, Array<Feature>):Feature} [createCluster]
+   * @property {function(Point, Array<FeatureType>):Feature} [createCluster]
    * Function that takes the cluster's center {@link module:ol/geom/Point~Point} and an array
    * of {@link module:ol/Feature~Feature} included in this cluster. Must return a
    * {@link module:ol/Feature~Feature} that will be used to render. Default implementation is:
@@ -62248,7 +62360,7 @@ var myol = (function () {
    *   });
    * }
    * ```
-   * @property {VectorSource} [source=null] Source.
+   * @property {VectorSource<FeatureType>} [source=null] Source.
    * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
    */
 
@@ -62262,12 +62374,15 @@ var myol = (function () {
    * source `setSource(null)` has to be called to remove the listener reference
    * from the wrapped source.
    * @api
+   * @template {import('../Feature.js').FeatureLike} FeatureType
+   * @extends {VectorSource<Feature<import("../geom/Geometry.js").default>>}
    */
-  class Cluster extends SourceVector {
+  class Cluster extends VectorSource {
     /**
-     * @param {Options} options Cluster options.
+     * @param {Options<FeatureType>} [options] Cluster options.
      */
     constructor(options) {
+      options = options || {};
       super({
         attributions: options.attributions,
         wrapX: options.wrapX,
@@ -62304,7 +62419,7 @@ var myol = (function () {
       this.features = [];
 
       /**
-       * @param {Feature} feature Feature.
+       * @param {FeatureType} feature Feature.
        * @return {Point} Cluster calculation point.
        * @protected
        */
@@ -62320,13 +62435,13 @@ var myol = (function () {
         };
 
       /**
-       * @type {function(Point, Array<Feature>):Feature}
+       * @type {function(Point, Array<FeatureType>):Feature}
        * @private
        */
       this.createCustomCluster_ = options.createCluster;
 
       /**
-       * @type {VectorSource|null}
+       * @type {VectorSource<FeatureType>|null}
        * @protected
        */
       this.source = null;
@@ -62361,7 +62476,7 @@ var myol = (function () {
 
     /**
      * Get a reference to the wrapped source.
-     * @return {VectorSource|null} Source.
+     * @return {VectorSource<FeatureType>|null} Source.
      * @api
      */
     getSource() {
@@ -62374,7 +62489,7 @@ var myol = (function () {
      * @param {import("../proj/Projection.js").default} projection Projection.
      */
     loadFeatures(extent, resolution, projection) {
-      this.source.loadFeatures(extent, resolution, projection);
+      this.source?.loadFeatures(extent, resolution, projection);
       if (resolution !== this.resolution) {
         this.resolution = resolution;
         this.refresh();
@@ -62411,7 +62526,7 @@ var myol = (function () {
 
     /**
      * Replace the wrapped source.
-     * @param {VectorSource|null} source The new source for this instance.
+     * @param {VectorSource<FeatureType>|null} source The new source for this instance.
      * @api
      */
     setSource(source) {
@@ -62492,7 +62607,7 @@ var myol = (function () {
     }
 
     /**
-     * @param {Array<Feature>} features Features
+     * @param {Array<FeatureType>} features Features
      * @param {import("../extent.js").Extent} extent The searched extent for these features.
      * @return {Feature} The cluster feature.
      * @protected
@@ -62510,21 +62625,19 @@ var myol = (function () {
       scale$2(centroid, 1 / features.length);
       const searchCenter = getCenter(extent);
       const ratio = this.interpolationRatio;
-      const geometry = new Point$2([
+      const geometry = new Point$1([
         centroid[0] * (1 - ratio) + searchCenter[0] * ratio,
         centroid[1] * (1 - ratio) + searchCenter[1] * ratio,
       ]);
       if (this.createCustomCluster_) {
         return this.createCustomCluster_(geometry, features);
       }
-      return new Feature$1({
+      return new Feature({
         geometry,
         features,
       });
     }
   }
-
-  var Cluster$1 = Cluster;
 
   /**
    * @module ol/source/common
@@ -62737,7 +62850,7 @@ var myol = (function () {
    * Layer source for the OpenStreetMap tile server.
    * @api
    */
-  class OSM extends XYZ$2 {
+  class OSM extends XYZ$1 {
     /**
      * @param {Options} [options] Open Street Map options.
      */
@@ -62776,8 +62889,6 @@ var myol = (function () {
       });
     }
   }
-
-  var OSM$1 = OSM;
 
   /**
    * @module ol/source/TileWMS
@@ -62847,7 +62958,7 @@ var myol = (function () {
    * Layer source for tile data from WMS servers.
    * @api
    */
-  class TileWMS extends TileImage$1 {
+  class TileWMS extends TileImage {
     /**
      * @param {Options} [options] Tile WMS options.
      */
@@ -63176,8 +63287,6 @@ var myol = (function () {
     }
   }
 
-  var TileWMS$1 = TileWMS;
-
   /**
    * @module ol/source/WMTS
    */
@@ -63241,7 +63350,7 @@ var myol = (function () {
    * Layer source for tile data from WMTS servers.
    * @api
    */
-  class WMTS extends TileImage$1 {
+  class WMTS extends TileImage {
     /**
      * @param {Options} options WMTS options.
      */
@@ -63507,8 +63616,6 @@ var myol = (function () {
     }
   }
 
-  var WMTS$1 = WMTS;
-
   // Openlayers imports used in this package
   // Will be used both in the sources & the build
 
@@ -63522,51 +63629,51 @@ var myol = (function () {
       },
     },
     extent: extent,
-    Feature: Feature$1,
+    Feature: Feature,
     format: { // Not all formats are used & the total file is big
-      GeoJSON: GeoJSON$1,
-      GPX: GPX$1,
-      KML: KML$1,
-      OSMXML: OSMXML$1,
+      GeoJSON: GeoJSON,
+      GPX: GPX,
+      KML: KML,
+      OSMXML: OSMXML,
     },
-    Geolocation: Geolocation$1,
+    Geolocation: Geolocation,
     geom: geom,
     interaction: {
-      Draw: Draw$1,
-      Modify: Modify$1,
-      MouseWheelZoom: MouseWheelZoom$1,
-      Pointer: PointerInteraction$1,
-      Select: Select$1,
-      Snap: Snap$1,
+      Draw: Draw,
+      Modify: Modify,
+      MouseWheelZoom: MouseWheelZoom,
+      Pointer: PointerInteraction,
+      Select: Select,
+      Snap: Snap,
     },
     layer: {
-      Tile: TileLayer$1,
-      Vector: LayerVector,
+      Tile: TileLayer,
+      Vector: VectorLayer,
     },
-    Map: Map$1,
+    Map: Map,
     loadingstrategy: loadingstrategy,
     proj: {
       ...proj,
       proj4: projProj4,
     },
     source: {
-      BingMaps: BingMaps$1,
-      Cluster: Cluster$1,
-      OSM: OSM$1,
-      TileWMS: TileWMS$1,
-      Vector: SourceVector,
-      WMTS: WMTS$1,
-      XYZ: XYZ$2,
+      BingMaps: BingMaps,
+      Cluster: Cluster,
+      OSM: OSM,
+      TileWMS: TileWMS,
+      Vector: VectorSource,
+      WMTS: WMTS,
+      XYZ: XYZ$1,
     },
     sphere: sphere$1,
     style: style,
     tilegrid: {
-      WMTS: WMTSTileGrid$1,
+      WMTS: WMTSTileGrid,
     },
     util: {
       VERSION: VERSION,
     },
-    View: View$1,
+    View: View,
   };
 
   /**
@@ -63580,8 +63687,8 @@ var myol = (function () {
    * Abstract class to be used by other control buttons definitions
    */
   class Button extends ol.control.Control {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         label: ' ', // An ascii or unicode character to decorate the button (OR : css button::after)
         className: '', // To be added to the control.element
 
@@ -63590,17 +63697,16 @@ var myol = (function () {
         // subMenuHTML_fr: '', // html code of the scrolling menu in locale lang
         subMenuHTML: '', // html code of the scrolling menu
 
+        // buttonAction() {}, // (evt, active) To run when an <input> ot <a> of the subMenu is clicked / hovered, ...
         // subMenuAction() {}, // (evt) To run when the button is clicked / hovered, ...
-        // buttonAction() {}, // (evt) To run when an <input> ot <a> of the subMenu is clicked / hovered, ...
 
         // All ol.control.Control options
 
-        ...options,
+        ...opt,
       };
 
       super({
         element: document.createElement('div'),
-
         ...options,
       });
 
@@ -63616,11 +63722,11 @@ var myol = (function () {
 
       // Add submenu below the button
       this.subMenuEl =
-        document.getElementById(options.subMenuId + '-' + navigator.language.match(/[a-z]+/)) ||
+        document.getElementById(options.subMenuId + '-' + navigator.language.match(/[a-z]+/u)) ||
         document.getElementById(options.subMenuId) ||
         document.createElement('div');
       this.subMenuEl.innerHTML ||=
-        options['subMenuHTML_' + navigator.language.match(/[a-z]+/)] ||
+        options['subMenuHTML_' + navigator.language.match(/[a-z]+/u)] ||
         options.subMenuHTML;
 
       // Populate the control
@@ -63644,20 +63750,22 @@ var myol = (function () {
     }
 
     buttonListener(evt) {
-      if (evt.type == 'mouseover')
+      if (evt.type === 'mouseover')
         this.element.classList.add('myol-button-hover');
       else // mouseout | click
         this.element.classList.remove('myol-button-hover');
 
-      if (evt.type == 'click') // Mouse click & touch
+      if (evt.type === 'click') // Mouse click & touch
         this.element.classList.toggle('myol-button-selected');
 
       // Close other open buttons
-      for (let el of document.getElementsByClassName('myol-button'))
-        if (el != this.element)
+      for (const el of document.getElementsByClassName('myol-button'))
+        if (el !== this.element &&
+          (!el.classList.contains('myol-button-keepselect') || evt.type === 'click'))
           el.classList.remove('myol-button-selected');
 
-      this.buttonAction(evt.type, this.element.classList.contains('myol-button-selected'));
+      // Trigger action on the selected button
+      this.buttonAction(evt, this.element.classList.contains('myol-button-selected'));
     }
 
     buttonAction() {}
@@ -63670,10 +63778,20 @@ var myol = (function () {
    */
 
 
+  const subMenuHTML$3 = '\
+  <p><a mime="application/gpx+xml">GPX</a></p>\
+  <p><a mime="vnd.google-earth.kml+xml">KML</a></p>\
+  <p><a mime="application/json">GeoJSON</a></p>',
+
+    subMenuHTML_fr$3 = '\
+  <p>Cliquer sur un format ci-dessous pour obtenir\
+  un fichier contenant les éléments visibles dans la fenêtre:</p>' +
+    subMenuHTML$3;
+
   //BEST BUG incompatible with clusters
   class Download extends Button {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         // Button options
         className: 'myol-button-download',
         subMenuId: 'myol-button-download',
@@ -63683,7 +63801,7 @@ var myol = (function () {
         fileName: document.title || 'openlayers', // Name of the file to be downloaded //BEST name from feature
         // savedLayer: layer, // Layer to download
 
-        ...options,
+        ...opt,
       };
 
       super(options);
@@ -63701,6 +63819,7 @@ var myol = (function () {
         downloadFormat = new ol.format[formatName](),
         mime = evt.target.getAttribute('mime'),
         mapExtent = map.getView().calculateExtent();
+
       let featuresToSave = [];
 
       if (this.options.savedLayer)
@@ -63715,14 +63834,14 @@ var myol = (function () {
             );
         });
 
-      if (formatName == 'GPX')
+      if (formatName === 'GPX')
         // Transform *Polygons in linestrings
-        for (let f in featuresToSave) {
+        for (const f in featuresToSave) {
           const geometry = featuresToSave[f].getGeometry();
 
           if (geometry.getType().includes('Polygon')) {
             geometry.getCoordinates().forEach(coords => {
-              if (typeof coords[0][0] == 'number')
+              if (typeof coords[0][0] === 'number')
                 // Polygon
                 featuresToSave.push(new ol.Feature(new ol.geom.LineString(coords)));
               else
@@ -63740,19 +63859,19 @@ var myol = (function () {
           decimals: 5,
         })
         // Beautify the output
-        .replace(/<[a-z]*>(0|null|[[object Object]|[NTZa:-]*)<\/[a-z]*>/g, '')
-        .replace(/<Data name="[a-z_]*"\/>|<Data name="[a-z_]*"><\/Data>|,"[a-z_]*":""/g, '')
-        .replace(/<Data name="copy"><value>[a-z_.]*<\/value><\/Data>|,"copy":"[a-z_.]*"/g, '')
-        .replace(/(<\/gpx|<\/?wpt|<\/?trk>|<\/?rte>|<\/kml|<\/?Document)/g, '\n$1')
-        .replace(/(<\/?Placemark|POINT|LINESTRING|POLYGON|<Point|"[a-z_]*":|})/g, '\n$1')
-        .replace(/(<name|<ele|<sym|<link|<type|<rtept|<\/?trkseg|<\/?ExtendedData)/g, '\n\t$1')
-        .replace(/(<trkpt|<Data|<LineString|<\/?Polygon|<Style)/g, '\n\t\t$1')
-        .replace(/(<[a-z]+BoundaryIs)/g, '\n\t\t\t$1')
-        .replace(/ ([cvx])/g, '\n\t$1'),
+        .replace(/<[a-z]*>(0|null|[[object Object]|[NTZa:-]*)<\/[a-z]*>/gu, '')
+        .replace(/<Data name="[a-z_]*"\/>|<Data name="[a-z_]*"><\/Data>|,"[a-z_]*":""/gu, '')
+        .replace(/<Data name="copy"><value>[a-z_.]*<\/value><\/Data>|,"copy":"[a-z_.]*"/gu, '')
+        .replace(/(<\/gpx|<\/?wpt|<\/?trk>|<\/?rte>|<\/kml|<\/?Document)/gu, '\n$1')
+        .replace(/(<\/?Placemark|POINT|LINESTRING|POLYGON|<Point|"[a-z_]*":|\})/gu, '\n$1')
+        .replace(/(<name|<ele|<sym|<link|<type|<rtept|<\/?trkseg|<\/?ExtendedData)/gu, '\n\t$1')
+        .replace(/(<trkpt|<Data|<LineString|<\/?Polygon|<Style)/gu, '\n\t\t$1')
+        .replace(/(<[a-z]+BoundaryIs)/gu, '\n\t\t\t$1')
+        .replace(/ ([cvx])/gu, '\n\t$1');
 
-        file = new Blob([data], {
-          type: mime,
-        });
+      const file = new Blob([data], {
+        type: mime,
+      });
 
       this.hiddenEl.download = this.options.fileName + '.' + formatName.toLowerCase();
       this.hiddenEl.href = URL.createObjectURL(file);
@@ -63762,16 +63881,6 @@ var myol = (function () {
       this.element.classList.remove('myol-display-submenu');
     }
   }
-
-  var subMenuHTML$3 = '\
-  <p><a mime="application/gpx+xml">GPX</a></p>\
-  <p><a mime="vnd.google-earth.kml+xml">KML</a></p>\
-  <p><a mime="application/json">GeoJSON</a></p>';
-
-  var subMenuHTML_fr$3 = '\
-  <p>Cliquer sur un format ci-dessous pour obtenir\
-  un fichier contenant les éléments visibles dans la fenêtre:</p>' +
-    subMenuHTML$3;
 
   /**
    * TileLayerCollection.js
@@ -63871,7 +63980,7 @@ var myol = (function () {
   class Kompass extends OpenStreetMap { // Austria
     constructor(options = {}) {
       super({
-        hidden: !options.key && options.subLayer != 'osm', // For LayerSwitcher
+        hidden: !options.key && options.subLayer !== 'osm', // For LayerSwitcher
         url: options.key ?
           'https://map{1-4}.kompass.de/{z}/{x}/{y}/kompass_' + options.subLayer + '?key=' + options.key : // Specific
           'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
@@ -63907,11 +64016,11 @@ var myol = (function () {
    */
   class IGN extends ol.layer.Tile {
     constructor(options = {}) {
-      let IGNresolutions = [],
+      const IGNresolutions = [],
         IGNmatrixIds = [];
 
       for (let i = 0; i < 18; i++) {
-        IGNresolutions[i] = ol.extent.getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / Math.pow(2, i);
+        IGNresolutions[i] = ol.extent.getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / (2 ** i);
         IGNmatrixIds[i] = i.toString();
       }
 
@@ -63944,15 +64053,15 @@ var myol = (function () {
    * API : https://api3.geo.admin.ch/services/sdiservices.html#wmts
    */
   class SwissTopo extends ol.layer.Tile {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         host: 'https://wmts2{0-4}.geo.admin.ch/1.0.0/',
         subLayer: 'ch.swisstopo.pixelkarte-farbe',
         maxResolution: 2000, // Resolution limit above which we switch to a more global service
         extent: [640000, 5730000, 1200000, 6100000],
         attributions: '&copy <a href="https://map.geo.admin.ch/">SwissTopo</a>',
 
-        ...options,
+        ...opt,
       };
 
       const projectionExtent = ol.proj.get('EPSG:3857').getExtent(),
@@ -63960,7 +64069,7 @@ var myol = (function () {
         matrixIds = [];
 
       for (let r = 0; r < 18; ++r) {
-        resolutions[r] = ol.extent.getWidth(projectionExtent) / 256 / Math.pow(2, r);
+        resolutions[r] = ol.extent.getWidth(projectionExtent) / 256 / (2 ** r);
         matrixIds[r] = r;
       }
 
@@ -63987,14 +64096,15 @@ var myol = (function () {
    * API : https://api-maps.ign.es/
    */
   class IgnES extends XYZ {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         host: 'https://www.ign.es/wmts/',
         server: 'mapa-raster',
         subLayer: 'MTN',
         maxZoom: 20,
         attributions: '&copy; <a href="https://www.ign.es/">IGN España</a>',
-        ...options,
+
+        ...opt,
       };
 
       super({
@@ -64037,12 +64147,12 @@ var myol = (function () {
 
     updateResolution(view) {
       const mapResolution = view.getResolutionForZoom(view.getZoom()),
-        layerResolution = mapResolution < 10 ? 25000 : mapResolution < 30 ? 100000 : 250000;
+        layerResolution = mapResolution < 10 ? 25000 : (mapResolution < 30 ? 100000 : 250000);
 
       this.getSource().updateParams({
         type: 'png',
         map: '/ms_ogc/WMS_v1.3/raster/IGM_' + layerResolution + '.map',
-        layers: (layerResolution == 100000 ? 'MB.IGM' : 'CB.IGM') + layerResolution,
+        layers: (layerResolution === 100000 ? 'MB.IGM' : 'CB.IGM') + layerResolution,
       });
     }
   }
@@ -64052,16 +64162,16 @@ var myol = (function () {
    * API & key : https://osdatahub.os.uk/
    */
   class OS extends XYZ {
-    constructor(options = {}) {
-      options = {
-        hidden: !options.key, // For LayerSwitcher
+    constructor(opt) {
+      const options = {
+        hidden: !opt.key, // For LayerSwitcher
         subLayer: 'Outdoor_3857',
         minZoom: 7,
         maxZoom: 16,
         extent: [-1198263, 6365000, 213000, 8702260],
         attributions: '&copy <a href="https://explore.osmaps.com/">UK Ordnancesurvey maps</a>',
 
-        ...options,
+        ...opt,
       };
 
       super({
@@ -64081,13 +64191,14 @@ var myol = (function () {
    * No key
    */
   class ArcGIS extends XYZ {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         host: 'https://server.arcgisonline.com/ArcGIS/rest/services/',
         subLayer: 'World_Imagery',
         maxZoom: 19,
         attributions: '&copy; <a href="https://www.arcgis.com/">ArcGIS (Esri)</a>',
-        ...options,
+
+        ...opt,
       };
 
       super({
@@ -64116,12 +64227,13 @@ var myol = (function () {
    * Google
    */
   class Google extends XYZ {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         subLayers: 'p', // Terrain
         maxZoom: 22,
         attributions: '&copy; <a href="https://www.google.com/maps">Google</a>',
-        ...options,
+
+        ...opt,
       };
 
       super({
@@ -64452,11 +64564,12 @@ var myol = (function () {
 
     tuneDisplay(map) {
       const mapExtent = map.getView().calculateExtent(map.getSize());
+
       let needed = true;
 
       map.getLayers().forEach(l => {
         if (l.getUseInterimTilesOnError && // Is a tile layer
-          l != this && l != this.lowResLayer && // Not one of the background layers
+          l !== this && l !== this.lowResLayer && // Not one of the background layers
           l.isVisible() && // Is visible
           ol.extent.containsExtent(l.getExtent() || mapExtent, mapExtent))
           needed = false;
@@ -64489,12 +64602,13 @@ var myol = (function () {
 
       // Filter null or hidden layers
       this.layers = {};
-      for (let name in options.layers)
+      for (const name in options.layers)
         if (options.layers[name] && !options.layers[name].getProperties().hidden)
           this.layers[name] = options.layers[name];
 
       // Get baselayer from url hash (#baselayer=...) if any
-      const bl = location.href.match(/baselayer=([^&]+)/);
+      const bl = location.href.match(/baselayer=([^&]+)/u);
+
       if (bl)
         localStorage.myol_baselayer = decodeURI(bl[1]);
 
@@ -64507,7 +64621,7 @@ var myol = (function () {
     setMap(map) {
       map.addLayer(new BackgroundLayer());
 
-      for (let name in this.layers) {
+      for (const name in this.layers) {
         // Build html layers selectors
         this.subMenuEl.insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="baselayer" value="' + name + '">' + name + '</label>');
 
@@ -64521,6 +64635,7 @@ var myol = (function () {
 
       // Attach html additional selector (must be there to be after base layers)
       const selectExtEl = document.getElementById(this.selectExtId);
+
       if (selectExtEl) {
         selectExtEl.classList.add('select-ext');
         this.subMenuEl.appendChild(selectExtEl);
@@ -64550,7 +64665,9 @@ var myol = (function () {
     action(evt) {
       // Clean checks
       if (evt && !evt.ctrlKey) {
-        this.selectorEls.forEach(el => el.checked = false);
+        this.selectorEls.forEach(el => {
+          el.checked = false;
+        });
         evt.target.checked = true;
       }
       if (!this.element.querySelector('input[name="baselayer"]:checked'))
@@ -64618,10 +64735,10 @@ var myol = (function () {
     //BEST calculate distance to the ends
     calculateLength(feature) {
       if (feature) {
-        let geometry = feature.getGeometry(),
+        const geometry = feature.getGeometry(),
           length = ol.sphere.getLength(geometry),
-          fcs = this.getFlatCoordinates(geometry),
-          denivPos = 0,
+          fcs = this.getFlatCoordinates(geometry);
+        let denivPos = 0,
           denivNeg = 0;
 
         // Height difference calculation
@@ -64654,11 +64771,11 @@ var myol = (function () {
     getFlatCoordinates(geometry) {
       let fcs = [];
 
-      if (geometry.stride == 3)
+      if (geometry.stride === 3)
         fcs = geometry.flatCoordinates;
 
-      if (geometry.getType() == 'GeometryCollection')
-        for (let g of geometry.getGeometries())
+      if (geometry.getType() === 'GeometryCollection')
+        for (const g of geometry.getGeometries())
           fcs.push(...this.getFlatCoordinates(g));
 
       return fcs;
@@ -64669,6 +64786,9 @@ var myol = (function () {
    * GPX file loader control
    */
 
+
+  const subMenuHTML$2 = '<input type="file" accept=".gpx,.kml,.json,.geojson">',
+    subMenuHTML_fr$2 = '<p>Importer un fichier de points ou de traces</p>' + subMenuHTML$2;
 
   class Load extends Button {
     constructor(options) {
@@ -64690,7 +64810,7 @@ var myol = (function () {
     subMenuAction(evt) {
       const blob = evt.target.files[0];
 
-      if (evt.type == 'change' && evt.target.files)
+      if (evt.type === 'change' && evt.target.files)
         this.reader.readAsText(blob);
 
       this.reader.onload = () => this.loadText(this.reader.result, blob.name);
@@ -64709,35 +64829,43 @@ var myol = (function () {
       const map = this.getMap(),
         formatName = url.split('.').pop().toUpperCase(), // Extract extension to be used as format name
         loadFormat = new ol.format[formatName in ol.format ? formatName : 'GeoJSON'](), // Find existing format
-        receivedLat = text.match(/lat="-?([0-9]+)/), // Received projection depending on the first value
-        receivedProjection = receivedLat && receivedLat.length && parseInt(receivedLat[1]) > 100 ? 'EPSG:3857' : 'EPSG:4326',
-        features = loadFormat.readFeatures(text, {
-          dataProjection: receivedProjection,
-          featureProjection: map.getView().getProjection(), // Map projection
-        }),
-        gpxSource = new ol.source.Vector({
-          format: loadFormat,
-          features: features,
-          wrapX: false,
-        }),
-        gpxLayer = new ol.layer.Vector({
-          background: 'transparent',
-          source: gpxSource,
-          style: feature => {
-            const properties = feature.getProperties();
+        receivedLat = text.match(/lat="-?([0-9]+)/u); // Received projection depending on the first value
 
-            return new ol.style.Style({
-              stroke: new ol.style.Stroke({
-                color: 'blue',
-                width: 2,
-              }),
-              image: properties.sym ? new ol.style.Icon({
-                src: 'https://chemineur.fr/ext/Dominique92/GeoBB/icones/' + properties.sym + '.svg',
-              }) : null,
-            });
-          },
-        }),
-        fileExtent = gpxSource.getExtent();
+      const receivedProjection =
+        receivedLat &&
+        receivedLat.length &&
+        (parseInt(receivedLat[1]) > 100 ? 'EPSG:3857' : 'EPSG:4326');
+
+      const features = loadFormat.readFeatures(text, {
+        dataProjection: receivedProjection,
+        featureProjection: map.getView().getProjection(), // Map projection
+      });
+
+      const gpxSource = new ol.source.Vector({
+        format: loadFormat,
+        features: features,
+        wrapX: false,
+      });
+
+      const gpxLayer = new ol.layer.Vector({
+        background: 'transparent',
+        source: gpxSource,
+        style: feature => {
+          const properties = feature.getProperties();
+
+          return new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: 'blue',
+              width: 2,
+            }),
+            image: properties.sym ? new ol.style.Icon({
+              src: 'https://chemineur.fr/ext/Dominique92/GeoBB/icones/' + properties.sym + '.svg',
+            }) : null,
+          });
+        },
+      });
+
+      const fileExtent = gpxSource.getExtent();
 
       if (ol.extent.isEmpty(fileExtent))
         alert(url + ' ne comporte pas de point ni de trace.');
@@ -64759,9 +64887,6 @@ var myol = (function () {
       this.element.classList.remove('myol-display-submenu');
     }
   }
-
-  var subMenuHTML$2 = '<input type="file" accept=".gpx,.kml,.json,.geojson">',
-    subMenuHTML_fr$2 = '<p>Importer un fichier de points ou de traces</p>' + subMenuHTML$2;
 
   var containerId = "gcd-container";
   var buttonControlId = "gcd-button-control";
@@ -64892,10 +65017,6 @@ var myol = (function () {
     return prefix ? prefix + id : id;
   }
 
-  function isNumeric(str) {
-    return /^\d+$/u.test(str);
-  }
-
   /* eslint-disable prefer-named-capture-group */
 
   /**
@@ -64917,7 +65038,7 @@ var myol = (function () {
 
     while (i--) {
       if (!hasClass(element, array[i])) {
-        _addClass(element, array[i], timeout);
+        _addClass(element, array[i]);
       }
     }
   }
@@ -64930,7 +65051,7 @@ var myol = (function () {
    */
   function removeClass(element, classname, timeout) {
     if (Array.isArray(element)) {
-      element.forEach((each) => removeClass(each, classname, timeout));
+      element.forEach((each) => removeClass(each, classname));
 
       return;
     }
@@ -64941,7 +65062,7 @@ var myol = (function () {
 
     while (i--) {
       if (hasClass(element, array[i])) {
-        _removeClass(element, array[i], timeout);
+        _removeClass(element, array[i]);
       }
     }
   }
@@ -65028,10 +65149,6 @@ var myol = (function () {
     } else {
       el.className = `${el.className} ${klass}`.trim();
     }
-
-    if (timeout && isNumeric(timeout)) {
-      window.setTimeout(() => _removeClass(el, klass), timeout);
-    }
   }
 
   function _removeClass(el, klass, timeout) {
@@ -65039,10 +65156,6 @@ var myol = (function () {
       el.classList.remove(klass);
     } else {
       el.className = el.className.replace(classRegex(klass), ' ').trim();
-    }
-
-    if (timeout && isNumeric(timeout)) {
-      window.setTimeout(() => _addClass(el, klass), timeout);
     }
   }
 
@@ -65527,10 +65640,10 @@ var myol = (function () {
       this.Base = base;
 
       this.layerName = randomId('geocoder-layer-');
-      this.layer = new LayerVector({
+      this.layer = new VectorLayer({
         background: 'transparent',
         name: this.layerName,
-        source: new SourceVector(),
+        source: new VectorSource(),
         displayInLayerSwitcher: false, // Remove search layer from legend
       });
 
@@ -65753,7 +65866,7 @@ var myol = (function () {
     }
 
     createFeature(coord) {
-      const feature = new Feature$1(new Point$2(coord));
+      const feature = new Feature(new Point$1(coord));
 
       this.addLayer();
       feature.setStyle(this.options.featureStyle);
@@ -65871,7 +65984,7 @@ var myol = (function () {
    * @class Base
    * @extends {ol.control.Control}
    */
-  class Base extends Control$1 {
+  class Base extends Control {
     /**
      * @constructor
      * @param {string} type nominatim|reverse.
@@ -65887,8 +66000,8 @@ var myol = (function () {
       const options = {
         ...DEFAULT_OPTIONS,
         featureStyle: [
-          new Style$1({
-            image: new Icon$1({
+          new Style({
+            image: new Icon({
               anchor: [0.5, 1],
               src: 'data:image/svg+xml;charset=utf-8,' +
                 '<svg width="26" height="42" viewBox="0 0 26 42" xmlns="http://www.w3.org/2000/svg">' +
@@ -65960,7 +66073,7 @@ var myol = (function () {
      * @return {String} Returns the version & build date
      */
     getVersion() {
-      return '__geocoderBuildVersion__';
+      return '4.3.3-3';
     }
   }
 
@@ -65991,8 +66104,9 @@ var myol = (function () {
 
       // Close other opened buttons when hover with a mouse
       this.element.addEventListener('pointerover', () => {
-        for (let el of document.getElementsByClassName('myol-button-selected'))
-          el.classList.remove('myol-button-selected');
+        for (const el of document.getElementsByClassName('myol-button-selected'))
+          if (!el.classList.contains('myol-button-keepselect')) //BEST colorer en bleu le bouton quand sélectionné
+            el.classList.remove('myol-button-selected');
       });
 
       // Close submenu when hover another button
@@ -66000,7 +66114,7 @@ var myol = (function () {
         const hoveredEl = document.elementFromPoint(evt.x, evt.y),
           controlEl = this.element.firstElementChild;
 
-        if (hoveredEl && hoveredEl.tagName == 'BUTTON')
+        if (hoveredEl && hoveredEl.tagName === 'BUTTON')
           controlEl.classList.remove('gcd-gl-expanded');
       });
     }
@@ -66012,10 +66126,44 @@ var myol = (function () {
    */
 
 
+  const subMenuHTML$1 = '<p>\
+  <input type="radio" name="myol-gps-source" value="0" checked="checked">None &nbsp;\
+  <input type="radio" name="myol-gps-source" value="1">Outdoor &nbsp;\
+  <input type="radio" name="myol-gps-source" value="2">Indoor &nbsp;\
+  </p><hr><p>\
+  <input type="radio" name="myol-gps-display" value="0" checked="checked">Free map&nbsp;\
+  <input type="radio" name="myol-gps-display" value="1">Center &nbsp;\
+  <input type="radio" name="myol-gps-display" value="2">Center & orient &nbsp;\
+  </p>',
+
+    subMenuHTML_fr$1 = '\
+  <p>Localisation GPS:</p>\
+  <label>\
+    <input type="radio" name="myol-gps-source" value="0" checked="checked">\
+    Inactif</label><label>\
+    <input type="radio" name="myol-gps-source" value="1">\
+    Position GPS <span>(1) extérieur</span></label><label>\
+    <input type="radio" name="myol-gps-source" value="2">\
+    Position GPS ou IP <span>(2) intérieur</span></label>\
+  <hr><label>\
+    <input type="radio" name="myol-gps-display" value="0" checked="checked">\
+    Graticule, carte libre</label><label>\
+    <input type="radio" name="myol-gps-display" value="1">\
+    Centre la carte, nord en haut</label><label>\
+    <input type="radio" name="myol-gps-display" value="2">\
+    Centre et oriente la carte <span>(3)</span></label>\
+  <hr>\
+  <p>(1) plus précis en extérieur mais plus lent à initialiser,\
+    nécessite un capteur et une réception GPS.</p>\
+  <p>(2) plus précis et rapide en intérieur ou en zone urbaine\
+    mais peut être très erroné en extérieur à l\'initialisation.\
+    Utilise les position des points WiFi proches en plus du GPS dont il peut se passer.</p>\
+  <p>(3) nécessite un capteur magnétique et un explorateur le supportant.</p>';
+
   class MyGeolocation extends Button {
     constructor(options) {
       super(
-        location.href.match(/(https|localhost)/) ? {
+        location.href.match(/(https|localhost)/u) ? {
           // Button options
           className: 'myol-button-geolocation',
           subMenuId: 'myol-button-geolocation',
@@ -66096,11 +66244,10 @@ var myol = (function () {
       return super.setMap(map);
     }
 
-    buttonAction(evt) {
-      const sourceEls = document.getElementsByName('myol-gps-source'),
-        buttonSelected = document.querySelector('.myol-button-geolocation.myol-button-selected');
+    buttonAction(evt, active) {
+      const sourceEls = document.getElementsByName('myol-gps-source');
 
-      if (evt.type == 'click' && !buttonSelected && sourceEls[0].checked)
+      if (evt.type === 'click' && active && sourceEls[0].checked)
         sourceEls[1].click();
     }
 
@@ -66114,25 +66261,26 @@ var myol = (function () {
         view = map ? map.getView() : null;
 
       // Tune the tracking level
-      if (evt.target.name == 'myol-gps-source') {
+      if (evt.target.name === 'myol-gps-source') {
         this.geolocation.setTracking(sourceLevel > 0);
         this.graticuleLayer.setVisible(false);
         if (!sourceLevel)
           displayEls[0].checked = true;
-        if (sourceLevel && displayLevel == 0)
+        if (sourceLevel && displayLevel === 0)
           displayEls[2].checked = true;
       }
 
       // Get geolocation values
       ['Position', 'AccuracyGeometry', 'Speed', 'Altitude'].forEach(valueName => {
         const value = this.geolocation['get' + valueName]();
+
         if (value)
           this[valueName.toLowerCase()] = value;
       });
 
       // State 1 only takes positions from the GPS which have an altitude
-      if (sourceLevel == 0 ||
-        (sourceLevel == 1 && !this.altitude))
+      if (sourceLevel === 0 ||
+        (sourceLevel === 1 && !this.altitude))
         this.position = null;
 
       // Aware all who needs
@@ -66147,8 +66295,9 @@ var myol = (function () {
         const p = this.position,
           hg = map.getCoordinateFromPixel([0, 0]),
           bd = map.getCoordinateFromPixel(map.getSize()),
-          far = Math.hypot(hg[0] - bd[0], hg[1] - bd[1]) * 10,
-          // The graticule
+          far = Math.hypot(hg[0] - bd[0], hg[1] - bd[1]) * 10;
+
+        const // The graticule
           geometry = [
             new ol.geom.MultiLineString([
               [
@@ -66181,9 +66330,9 @@ var myol = (function () {
           view.setCenter(p);
 
         // Orientation
-        if (!sourceLevel || displayLevel == 1)
+        if (!sourceLevel || displayLevel === 1)
           view.setRotation(0);
-        else if (this.heading && displayLevel == 2)
+        else if (this.heading && displayLevel === 2)
           view.setRotation(
             Math.PI / 180 * (this.heading - screen.orientation.angle) // Delivered ° reverse clockwize
           );
@@ -66217,40 +66366,6 @@ var myol = (function () {
     } // End subMenuAction
   }
 
-  var subMenuHTML$1 = '<p>\
-  <input type="radio" name="myol-gps-source" value="0" checked="checked">None &nbsp;\
-  <input type="radio" name="myol-gps-source" value="1">Outdoor &nbsp;\
-  <input type="radio" name="myol-gps-source" value="2">Indoor &nbsp;\
-  </p><hr><p>\
-  <input type="radio" name="myol-gps-display" value="0" checked="checked">Free map&nbsp;\
-  <input type="radio" name="myol-gps-display" value="1">Center &nbsp;\
-  <input type="radio" name="myol-gps-display" value="2">Center & orient &nbsp;\
-  </p>';
-
-  var subMenuHTML_fr$1 = '\
-  <p>Localisation GPS:</p>\
-  <label>\
-    <input type="radio" name="myol-gps-source" value="0" checked="checked">\
-    Inactif</label><label>\
-    <input type="radio" name="myol-gps-source" value="1">\
-    Position GPS <span>(1) extérieur</span></label><label>\
-    <input type="radio" name="myol-gps-source" value="2">\
-    Position GPS ou IP <span>(2) intérieur</span></label>\
-  <hr><label>\
-    <input type="radio" name="myol-gps-display" value="0" checked="checked">\
-    Graticule, carte libre</label><label>\
-    <input type="radio" name="myol-gps-display" value="1">\
-    Centre la carte, nord en haut</label><label>\
-    <input type="radio" name="myol-gps-display" value="2">\
-    Centre et oriente la carte <span>(3)</span></label>\
-  <hr>\
-  <p>(1) plus précis en extérieur mais plus lent à initialiser,\
-    nécessite un capteur et une réception GPS.</p>\
-  <p>(2) plus précis et rapide en intérieur ou en zone urbaine\
-    mais peut être très erroné en extérieur à l\'initialisation.\
-    Utilise les position des points WiFi proches en plus du GPS dont il peut se passer.</p>\
-  <p>(3) nécessite un capteur magnétique et un explorateur le supportant.</p>';
-
   /**
    * Control to display the mouse position
    */
@@ -66270,7 +66385,9 @@ var myol = (function () {
     }
 
     setMap(map) {
-      map.on('myol:gpspositionchanged', evt => this.position = evt.position);
+      map.on('myol:gpspositionchanged', evt => {
+        this.position = evt.position;
+      });
 
       return super.setMap(map);
     }
@@ -66283,8 +66400,8 @@ var myol = (function () {
         return distance < 1000 ?
           (Math.round(distance)) + ' m' :
           (Math.round(distance / 10) / 100) + ' km';
-      } else
-        return ol.coordinate.createStringXY(4)(coordinates);
+      }
+      return ol.coordinate.createStringXY(4)(coordinates);
     }
   }
 
@@ -66296,15 +66413,15 @@ var myol = (function () {
 
 
   class Permalink extends ol.control.Control {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         // display: false, // {false | true} Display permalink link the map.
         // init: false, // {undefined | false | true | [<zoom>, <lon>, <lat>]} use url hash or localStorage to position the map.
         default: [6, 2, 47], // France
         // setUrl: false, // {false | true} Change url hash when moving the map.
         hash: '?', // {?, #} the permalink delimiter after the url
 
-        ...options,
+        ...opt,
       };
 
       super({
@@ -66327,11 +66444,11 @@ var myol = (function () {
     render(evt) {
       const view = evt.map.getView(),
         //BEST init with res=<resolution> or extent (not zoom, lon, lat)
-        urlMod = (typeof this.options.init == 'object' ? // init: [<zoom>, <lon>, <lat>]
+        urlMod = (typeof this.options.init === 'object' ? // init: [<zoom>, <lon>, <lat>]
           'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
           '') +
         location.href.replace( // Get value from params with priority url / ? / #
-          /map=([0-9.]+)\/(-?[0-9.]+)\/(-?[0-9.]+)/, // map=<zoom>/<lon>/<lat>
+          /map=([0-9.]+)\/(-?[0-9.]+)\/(-?[0-9.]+)/u, // map=<zoom>/<lon>/<lat>
           'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>
         ) + ',' +
         // Last values
@@ -66345,11 +66462,11 @@ var myol = (function () {
       if (this.options.init) {
         this.options.init = false; // Only once
 
-        view.setZoom(urlMod.match(/zoom=([0-9.]+)/)[1]);
+        view.setZoom(urlMod.match(/zoom=([0-9.]+)/u)[1]);
 
         view.setCenter(ol.proj.transform([
-          urlMod.match(/lon=(-?[0-9.]+)/)[1],
-          urlMod.match(/lat=(-?[0-9.]+)/)[1],
+          urlMod.match(/lon=(-?[0-9.]+)/u)[1],
+          urlMod.match(/lat=(-?[0-9.]+)/u)[1],
         ], 'EPSG:4326', 'EPSG:3857'));
       }
 
@@ -66378,6 +66495,18 @@ var myol = (function () {
    */
 
 
+  const subMenuHTML = '\
+  <label><input type="radio" name="myol-print-orientation" value="0">Portrait</label>\
+  <label><input type="radio" name="myol-print-orientation" value="1">Landscape</label>\
+  <p><a id="myol-print">Print</a></p>',
+
+    subMenuHTML_fr = '\
+  <p style="float:right" title="Cancel"><a onclick="location.reload()">&#10006;</a></p>\
+  <p style="width:175px">Choisir le format et recadrer</p>' +
+    subMenuHTML
+    .replace('Landscape', 'Paysage')
+    .replace('Print', 'Imprimer');
+
   class Print extends Button {
     constructor(options) {
       super({
@@ -66392,7 +66521,7 @@ var myol = (function () {
 
       // To return without print
       document.addEventListener('keydown', evt => {
-        if (evt.key == 'Escape')
+        if (evt.key === 'Escape')
           setTimeout(() => { // Delay reload for FF & Opera
             location.reload();
           });
@@ -66403,13 +66532,13 @@ var myol = (function () {
       const map = this.getMap(),
         mapEl = map.getTargetElement(),
         poEl = this.element.querySelector('input:checked'), // Selected orientation inputs
-        orientation = poEl && poEl.value == '1' ? 'landscape' : 'portrait';
+        orientation = poEl && poEl.value === '1' ? 'landscape' : 'portrait';
 
       // Fix resolution to an available tiles resolution
       map.getView().setConstrainResolution(true);
 
       // Set or replace the page style
-      if (document.head.lastChild.textContent.match(/^@page{size:/))
+      if (document.head.lastChild.textContent.match(/^@page\{size:/u))
         document.head.lastChild.remove();
       document.head.insertAdjacentHTML('beforeend', '<style>@page{size: A4 ' + orientation + '}</style>');
 
@@ -66418,7 +66547,7 @@ var myol = (function () {
       mapEl.className = 'myol-print-' + orientation;
 
       // Finally print if required
-      if (evt.target.id == 'myol-print') {
+      if (evt.target.id === 'myol-print') {
         if (poEl) { // If a format is set, the full page is already loaded
           window.print();
           location.reload();
@@ -66430,18 +66559,6 @@ var myol = (function () {
       }
     }
   }
-
-  var subMenuHTML = '\
-  <label><input type="radio" name="myol-print-orientation" value="0">Portrait</label>\
-  <label><input type="radio" name="myol-print-orientation" value="1">Landscape</label>\
-  <p><a id="myol-print">Print</a></p>',
-
-    subMenuHTML_fr = '\
-  <p style="float:right" title="Cancel"><a onclick="location.reload()">&#10006;</a></p>\
-  <p style="width:175px">Choisir le format et recadrer</p>' +
-    subMenuHTML
-    .replace('Landscape', 'Paysage')
-    .replace('Print', 'Imprimer');
 
   /**
    * This file defines the myol.control exports
@@ -66492,10 +66609,75 @@ var myol = (function () {
    */
 
 
+  //TODO ? ne montre pas départ / arrivée + tests sur permutation de sens
+
+  // Default french text
+  const helpModif_fr = {
+      inspect: '\
+<p><b><u>EDITEUR</u>: Inspecter une ligne ou un polygone</b></p>\
+<p>Cliquer sur le bouton &#x1F4CF (qui doit bleuir) puis</p>\
+<p>Survoler l\'objet avec le curseur pour:</p>\
+<p>Distinguer une ligne ou un polygone des autres</p>\
+<p>Calculer la longueur d\'une ligne ou un polygone</p>',
+      line: '\
+<p><b><u>EDITEUR</u>: Modifier une ligne</b></p>\
+<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis</p>\
+<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
+<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
+<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
+<p><u>Couper une ligne en deux</u>: Alt+cliquer sur le segment à supprimer</p>\
+<p><u>Inverser la direction d\'une ligne</u>: Shift+cliquer sur le segment à inverser</p>\
+<p><u>Fusionner deux lignes</u>: déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
+<p><u>Supprimer une ligne</u>: Ctrl+Alt+cliquer sur un segment</p>',
+      poly: '\
+<p><b><u>EDITEUR</u>: Modifier un polygone</b></p>\
+<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis </p>\
+<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
+<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
+<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
+<p><u>Scinder un polygone</u>: joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
+<p><u>Fusionner 2 polygones</u>: superposer un côté (entre 2 sommets consécutifs)\
+ de chaque polygone puis Alt+cliquer dessus</p>\
+<p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
+      both: '\
+<p><b><u>EDITEUR</u>: Modifier une ligne ou un polygone</b></p>\
+<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis</p>\
+<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
+<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
+<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
+<p><u>Couper une ligne en deux</u>: Alt+cliquer sur le segment à supprimer</p>\
+<p><u>Inverser la direction d\'une ligne</u>: Shift+cliquer sur le segment à inverser</p>\
+<p><u>Transformer un polygone en ligne</u>: Alt+cliquer sur un côté</p>\
+<p><u>Fusionner deux lignes</u>: déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
+<p><u>Transformer une ligne en polygone</u>: déplacer une extrémité pour rejoindre l\'autre</p>\
+<p><u>Scinder un polygone</u>: joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
+<p><u>Fusionner 2 polygones</u>: superposer un côté (entre 2 sommets consécutifs)\
+ de chaque polygone puis Alt+cliquer dessus</p>\
+<p><u>Supprimer une ligne ou un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
+    },
+
+    helpLine_fr = '\
+<p><b><u>EDITEUR</u>: Créer une ligne</b></p>\
+<p>Cliquer sur le bouton &#x1F589; (qui doit bleuir) puis</p>\
+<p>Cliquer sur l\'emplacement du début</p>\
+<p>Puis sur chaque sommet</p>\
+<p>Double cliquer sur le dernier sommet pour terminer</p>\
+<hr>\
+<p>Cliquer sur une extrémité d\'une ligne existante pour l\'étendre</p>',
+
+    helpPoly_fr = '\
+<p><b><u>EDITEUR</u>: Créer un polygone</b></p>\
+<p>Cliquer sur le bouton &#x1F58C; (qui doit bleuir) puis</p>\
+<p>Cliquer sur l\'emplacement du premier sommet</p>\
+<p>Puis sur chaque sommet</p>\
+<p>Double cliquer sur le dernier sommet pour terminer</p>\
+<hr>\
+<p>Un polygone entièrement compris dans un autre crée un "trou"</p>';
+
   // Editor
   class Editor extends ol.layer.Vector {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         background: 'transparent',
 
         geoJsonId: 'geojson',
@@ -66516,38 +66698,40 @@ var myol = (function () {
             decimals: 5,
           }),
 
-        ...options,
+        ...opt,
       };
 
       const geoJsonEl = document.getElementById(options.geoJsonId), // Read data in an html element
-        geoJson = (geoJsonEl ? geoJsonEl.value : '') || '{"type":"FeatureCollection","features":[]}',
-        source = new ol.source.Vector({
-          features: options.format.readFeatures(geoJson, options),
-          wrapX: false,
+        geoJson = (geoJsonEl ? geoJsonEl.value : '') || '{"type":"FeatureCollection","features":[]}';
 
-          ...options,
-        }),
-        style = new ol.style.Style({
-          // Marker
-          image: new ol.style.Circle({
-            radius: 4,
-            stroke: new ol.style.Stroke({
-              color: 'red',
-              width: 2,
-            }),
-          }),
-          // Lines or polygons border
+      const source = new ol.source.Vector({
+        features: options.format.readFeatures(geoJson, options),
+        wrapX: false,
+
+        ...options,
+      });
+
+      const style = new ol.style.Style({
+        // Marker
+        image: new ol.style.Circle({
+          radius: 4,
           stroke: new ol.style.Stroke({
             color: 'red',
             width: 2,
           }),
-          // Polygons
-          fill: new ol.style.Fill({
-            color: 'rgba(0,0,255,0.2)',
-          }),
+        }),
+        // Lines or polygons border
+        stroke: new ol.style.Stroke({
+          color: 'red',
+          width: 2,
+        }),
+        // Polygons
+        fill: new ol.style.Fill({
+          color: 'rgba(0,0,255,0.2)',
+        }),
 
-          ...options.styleOptions,
-        });
+        ...options.styleOptions,
+      });
 
       super({
         source: source,
@@ -66590,14 +66774,49 @@ var myol = (function () {
 
       this.optimiseEdited(); // Optimise at init
 
+      this.buttons = [
+        new Button({ // 0
+          className: 'myol-button-inspect myol-button-keepselect',
+          subMenuId: 'myol-edit-help-inspect',
+          subMenuHTML: '<p>Inspect</p>',
+          subMenuHTML_fr: helpModif_fr.inspect,
+          buttonAction: (evt, active) => this.changeInteraction(0, evt, active),
+        }),
+        new Button({ // 1
+          className: 'myol-button-modify myol-button-keepselect',
+          subMenuId: 'myol-edit-help-modify',
+          subMenuHTML: '<p>Modification</p>',
+          subMenuHTML_fr: helpModif_fr[this.options.editOnly || 'both'],
+          buttonAction: (evt, active) => this.changeInteraction(1, evt, active),
+        }),
+        new Button({ // 2
+          className: 'myol-button-draw-line myol-button-keepselect',
+          subMenuId: 'myol-edit-help-line',
+          subMenuHTML: '<p>New line</p>',
+          subMenuHTML_fr: helpLine_fr,
+          buttonAction: (evt, active) => this.changeInteraction(2, evt, active),
+        }),
+        new Button({ // 3
+          className: 'myol-button-draw-poly myol-button-keepselect',
+          subMenuId: 'myol-edit-help-poly',
+          subMenuHTML: '<p>New polygon</p>',
+          subMenuHTML_fr: helpPoly_fr,
+          buttonAction: (evt, active) => this.changeInteraction(3, evt, active),
+        }),
+      ];
+
       this.interactions = [
-        new ol.interaction.Select({ // 0 Hover
+        new ol.interaction.Select({ // 0 Inspect
           condition: ol.events.condition.pointerMove,
           style: () => new ol.style.Style({
             // Lines or polygons border
             stroke: new ol.style.Stroke({
               color: 'red',
               width: 3,
+            }),
+            // Polygons
+            fill: new ol.style.Fill({
+              color: 'rgba(0,0,255,0.5)',
             }),
           }),
         }),
@@ -66624,7 +66843,7 @@ var myol = (function () {
         }),
       ];
 
-      // End of modify
+      // End of one modify interaction
       this.interactions[1].on('modifyend', evt => {
         //BEST move only one summit when dragging
         //BEST Ctrl+Alt+click on summit : delete the line or poly
@@ -66635,12 +66854,10 @@ var myol = (function () {
           const selectedFeatures = map.getFeaturesAtPixel(
             evt.mapBrowserEvent.pixel, {
               hitTolerance: 6, // Default is 0
-              layerFilter: l => {
-                return l.ol_uid == this.ol_uid;
-              }
+              layerFilter: l => l.ol_uid === this.ol_uid
             });
 
-          for (let f in selectedFeatures) // We delete the selected feature
+          for (const f in selectedFeatures) // We delete the selected feature
             this.source.removeFeature(selectedFeatures[f]);
         }
 
@@ -66669,7 +66886,9 @@ var myol = (function () {
         this.source.modified = true;
 
         // Reset interaction & button to modify
-        this.changeInteraction(0); // Init to hover
+        this.buttons[1].buttonListener({
+          type: 'click',
+        });
       }));
 
       // End of feature creation
@@ -66685,76 +66904,68 @@ var myol = (function () {
         }
       });
 
-      this.changeInteraction(0, 'click'); // Init to modify
+      if (this.options.editOnly !== 'poly')
+        this.map.addControl(this.buttons[0]); // 0 Inspect
+      this.map.addControl(this.buttons[1]); // 1 Modify
+      if (this.options.editOnly !== 'poly')
+        this.map.addControl(this.buttons[2]); // 2 Draw line
+      if (this.options.editOnly !== 'line')
+        this.map.addControl(this.buttons[3]); // 3 Draw poly
 
-      this.map.addControl(new Button({
-        className: 'myol-button-modify',
-        subMenuId: 'myol-edit-help-modify',
-        subMenuHTML: '<p>Modification</p>',
-        subMenuHTML_fr: helpModif_fr[this.options.editOnly || 'both'],
-        buttonAction: (type, active) => this.changeInteraction(1, type, active),
-      }));
+      super.setMapInternal(map);
 
-      if (this.options.editOnly != 'poly')
-        this.map.addControl(new Button({
-          className: 'myol-button-draw-line',
-          subMenuId: 'myol-edit-help-line',
-          subMenuHTML: '<p>New line</p>',
-          subMenuHTML_fr: helpLine_fr,
-          buttonAction: (type, active) => this.changeInteraction(2, type, active),
-        }));
-
-      if (this.options.editOnly != 'line')
-        this.map.addControl(new Button({
-          className: 'myol-button-draw-poly',
-          subMenuId: 'myol-edit-help-poly',
-          subMenuHTML: '<p>New polygon</p>',
-          subMenuHTML_fr: helpPoly_fr,
-          buttonAction: (type, active) => this.changeInteraction(3, type, active),
-        }));
-
-      return super.setMapInternal(map);
+      // Set modify after map init
+      this.buttons[1].buttonListener({
+        type: 'click',
+      });
     } // End setMapInternal
 
-    changeInteraction(interaction, type, active) {
+    changeInteraction(interaction, evt, active) {
       if (!active) // Click twice on the same button
-        interaction = 0;
+        return this.buttons[1].buttonListener({
+          type: 'click',
+        });
 
-      this.interactions.forEach(i => this.map.removeInteraction(i));
-      this.map.addInteraction(this.interactions[interaction]);
-      this.map.addInteraction(this.interactions[4]); // Snap must be added after the others
+      if (evt.type === 'click') {
+        this.interactions.forEach(inter => this.map.removeInteraction(inter));
+        this.map.addInteraction(this.interactions[interaction]);
+        this.map.addInteraction(this.interactions[4]); // Snap must be added after the others
 
-      // Register again the full list of features as addFeature manages already registered
-      this.map.getLayers().forEach(l => {
-        if (l.getSource() && l.getSource().getFeatures) // Vector layers only
-          l.getSource().getFeatures().forEach(f =>
-            this.interactions[4].addFeature(f)
-          );
-      });
+        // For snap : register again the full list of features as addFeature manages already registered
+        this.map.getLayers().forEach(l => {
+          if (l.getSource() && l.getSource().getFeatures) // Vector layers only
+            l.getSource().getFeatures().forEach(f =>
+              this.interactions[4].addFeature(f)
+            );
+        });
+      }
 
+      // Set the cursor dependng on the activity
       const mapEl = this.map.getTargetElement();
+
       if (mapEl)
         mapEl.className = 'map-edit-' + interaction;
     }
 
     // Processing the data
     optimiseEdited(selectedVertex, reverseLine) {
-      const view = this.map.getView(),
-        coordinates = this.optimiseFeatures(
-          this.source.getFeatures(),
-          selectedVertex,
-          reverseLine
-        );
+      const view = this.map.getView();
+
+      const coordinates = this.optimiseFeatures(
+        this.source.getFeatures(),
+        selectedVertex,
+        reverseLine
+      );
 
       // Recreate features
       this.source.clear();
 
       //BEST Multilinestring / Multipolygon
-      for (let l in coordinates.lines)
+      for (const l in coordinates.lines)
         this.source.addFeature(new ol.Feature({
           geometry: new ol.geom.LineString(coordinates.lines[l]),
         }));
-      for (let p in coordinates.polys)
+      for (const p in coordinates.polys)
         this.source.addFeature(new ol.Feature({
           geometry: new ol.geom.Polygon(coordinates.polys[p]),
         }));
@@ -66762,7 +66973,7 @@ var myol = (function () {
       // Save geometries in <EL> as geoJSON at every change
       if (this.geoJsonEl && view)
         this.geoJsonEl.value = this.featuresToSave(coordinates)
-        .replace(/,"properties":(\{[^}]*}|null)/, '');
+        .replace(/,"properties":(\{[^}]*\}|null)/u, '');
     }
 
     // Refurbish Lines & Polygons
@@ -66773,10 +66984,10 @@ var myol = (function () {
         polys = [];
 
       // Get all edited features as array of coordinates
-      for (let f in features)
+      for (const f in features)
         this.flatFeatures(features[f].getGeometry(), points, lines, polys, selectedVertex, reverseLine);
 
-      for (let a in lines)
+      for (const a in lines)
         // Exclude 1 coordinate features (points)
         if (lines[a].length < 2)
           delete lines[a];
@@ -66786,6 +66997,7 @@ var myol = (function () {
         for (let b = 0; b < a; b++) // Once each combination
           if (lines[b]) {
             const m = [a, b];
+
             for (let i = 4; i; i--) // 4 times
               if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
                 // Shake lines end to explore all possibilities
@@ -66800,11 +67012,10 @@ var myol = (function () {
           }
 
       // Make polygons with looped lines
-      for (let a in lines)
-        if (this.options.editOnly != 'line' &&
-          lines[a]) {
+      for (const a in lines)
+        if (this.options.editOnly !== 'line' && lines[a]) {
           // Close open lines
-          if (this.options.editOnly == 'poly')
+          if (this.options.editOnly === 'poly')
             if (!this.compareCoords(lines[a]))
               lines[a].push(lines[a][0]);
 
@@ -66813,12 +67024,13 @@ var myol = (function () {
             // Explore all summits combinaison
             for (let i1 = 0; i1 < lines[a].length - 1; i1++)
               for (let i2 = 0; i2 < i1; i2++)
-                if (lines[a][i1][0] == lines[a][i2][0] &&
-                  lines[a][i1][1] == lines[a][i2][1]) { // Find 2 identical summits
-                  let squized = lines[a].splice(i2, i1 - i2); // Extract the squized part
+                if (lines[a][i1][0] === lines[a][i2][0] &&
+                  lines[a][i1][1] === lines[a][i2][1]) { // Find 2 identical summits
+                  const squized = lines[a].splice(i2, i1 - i2); // Extract the squized part
                   squized.push(squized[0]); // Close the poly
                   polys.push([squized]); // Add the squized poly
-                  i1 = i2 = lines[a].length; // End loop
+                  i1 = lines[a].length; // End loop
+                  i2 = lines[a].length;
                 }
 
             // Convert closed lines into polygons
@@ -66828,14 +67040,14 @@ var myol = (function () {
         }
 
       // Makes holes if a polygon is included in a biggest one
-      for (let p1 in polys) // Explore all Polygons combinaison
-        if (this.options.withHoles &&
-          polys[p1]) {
+      for (const p1 in polys) // Explore all Polygons combinaison
+        if (this.options.withHoles && polys[p1]) {
           const fs = new ol.geom.Polygon(polys[p1]);
-          for (let p2 in polys)
-            if (polys[p2] && p1 != p2) {
+
+          for (const p2 in polys)
+            if (polys[p2] && p1 !== p2) {
               let intersects = true;
-              for (let c in polys[p2][0])
+              for (const c in polys[p2][0])
                 if (!fs.intersectsCoordinate(polys[p2][0][c]))
                   intersects = false;
               if (intersects) { // If one intersects a bigger
@@ -66854,13 +67066,14 @@ var myol = (function () {
 
     flatFeatures(geom, points, lines, polys, selectedVertex, reverseLine) {
       // Expand geometryCollection
-      if (geom.getType() == 'GeometryCollection') {
+      if (geom.getType() === 'GeometryCollection') {
         const geometries = geom.getGeometries();
-        for (let g in geometries)
+
+        for (const g in geometries)
           this.flatFeatures(geometries[g], points, lines, polys, selectedVertex, reverseLine);
       }
       // Point
-      else if (geom.getType().match(/point$/i))
+      else if (geom.getType().match(/point$/iu))
         points.push(geom.getCoordinates());
 
       // line & poly
@@ -66872,14 +67085,14 @@ var myol = (function () {
     // Get all lines fragments (lines, polylines, polygons, multipolygons, hole polygons, ...)
     // at the same level & split if one point = selectedVertex
     flatCoord(lines, coords, selectedVertex, reverseLine) {
-      if (typeof coords[0][0] == 'object') {
+      if (typeof coords[0][0] === 'object') {
         // Multi*
-        for (let c1 in coords)
+        for (const c1 in coords)
           this.flatCoord(lines, coords[c1], selectedVertex, reverseLine);
       } else {
         // LineString
-        let begCoords = [], // Coords before the selectedVertex
-          selectedLine = false;
+        const begCoords = []; // Coords before the selectedVertex
+        let selectedLine = false;
 
         while (coords.length) {
           const c = coords.shift();
@@ -66906,63 +67119,9 @@ var myol = (function () {
     compareCoords(a, b) {
       if (!a) return false;
       if (!b) return this.compareCoords(a[0], a[a.length - 1]); // Compare start with end
-      return a[0] == b[0] && a[1] == b[1]; // 2 coordinates
+      return a[0] === b[0] && a[1] === b[1]; // 2 coordinates
     }
   }
-
-  // Default french text
-  var helpModif_fr = {
-      line: '\
-<p>Cliquer sur le bouton &#x2725; puis</p>\
-<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
-<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
-<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
-<p><u>Couper une ligne en deux</u>: Alt+cliquer sur le segment à supprimer</p>\
-<p><u>Inverser la direction d\'une ligne</u>: Shift+cliquer sur le segment à inverser</p>\
-<p><u>Fusionner deux lignes</u>: déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
-<p><u>Supprimer une ligne</u>: Ctrl+Alt+cliquer sur un segment</p>',
-      poly: '\
-<p>Cliquer sur le bouton &#x2725; puis </p>\
-<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
-<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
-<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
-<p><u>Scinder un polygone</u>: joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
-<p><u>Fusionner 2 polygones</u>: superposer un côté (entre 2 sommets consécutifs)\
- de chaque polygone puis Alt+cliquer dessus</p>\
-<p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
-      both: '\
-<p>Cliquer sur le bouton &#x2725; puis</p>\
-<p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
-<p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
-<p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
-<p><u>Couper une ligne en deux</u>: Alt+cliquer sur le segment à supprimer</p>\
-<p><u>Inverser la direction d\'une ligne</u>: Shift+cliquer sur le segment à inverser</p>\
-<p><u>Transformer un polygone en ligne</u>: Alt+cliquer sur un côté</p>\
-<p><u>Fusionner deux lignes</u>: déplacer l\'extrémité d\'une ligne pour rejoindre l\'autre</p>\
-<p><u>Transformer une ligne en polygone</u>: déplacer une extrémité pour rejoindre l\'autre</p>\
-<p><u>Scinder un polygone</u>: joindre 2 sommets du polygone puis Alt+cliquer sur le sommet commun</p>\
-<p><u>Fusionner 2 polygones</u>: superposer un côté (entre 2 sommets consécutifs)\
- de chaque polygone puis Alt+cliquer dessus</p>\
-<p><u>Supprimer une ligne ou un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
-    },
-
-    helpLine_fr = '\
-  <p><u>Pour créer une ligne</u>:</p>\
-  <p>Cliquer sur le bouton &#x1526;</p>\
-  <p>Cliquer sur l\'emplacement du début</p>\
-  <p>Puis sur chaque sommet</p>\
-  <p>Double cliquer sur le dernier sommet pour terminer</p>\
-  <hr>\
-  <p>Cliquer sur une extrémité d\'une ligne existante pour l\'étendre</p>',
-
-    helpPoly_fr = '\
-  <p><u>Pour créer un polygone</u>:</p>\
-  <p>Cliquer sur le bouton &#9186;</p>\
-  <p>Cliquer sur l\'emplacement du premier sommet</p>\
-  <p>Puis sur chaque sommet</p>\
-  <p>Double cliquer sur le dernier sommet pour terminer</p>\
-  <hr>\
-  <p>Un polygone entièrement compris dans un autre crée un "trou"</p>';
 
   /**
    * Hover & click management
@@ -67011,12 +67170,12 @@ var myol = (function () {
         source = this.getSource();
 
       // Find the first hovered feature & layer
-      let hoveredLayer = null,
-        hoveredFeature = map.forEachFeatureAtPixel(
+      let hoveredLayer = null;
+      const hoveredFeature = map.forEachFeatureAtPixel(
           map.getEventPixel(evt.originalEvent),
           (f, l) => {
             if ((l && l.options && l.options.hoverStylesOptions) ||
-              l == this) {
+              l === this) {
               hoveredLayer = l;
               return f; // Return feature & stop the search
             }
@@ -67031,7 +67190,7 @@ var myol = (function () {
           hoveredSubProperties = hoveredSubFeature.getProperties();
 
         // Click
-        if (evt.type == 'click' &&
+        if (evt.type === 'click' &&
           !(hoveredLayer.options && hoveredLayer.options.noClick)) {
           // Click cluster
           if (hoveredSubProperties.cluster) {
@@ -67056,7 +67215,7 @@ var myol = (function () {
           }
         }
         // Hover
-        else if (hoveredSubFeature != map.lastHoveredSubFeature &&
+        else if (hoveredSubFeature !== map.lastHoveredSubFeature &&
           !(hoveredLayer.options && hoveredLayer.options.noHover)) {
           const f = hoveredSubFeature.clone();
 
@@ -67233,6 +67392,9 @@ var myol = (function () {
       },
       b: function(v) {
         self.b = parseFloat(v);
+      },
+      r: function(v) {
+        self.a = self.b = parseFloat(v);
       },
       r_a: function() {
         self.R_A = true;
@@ -67947,7 +68109,7 @@ var myol = (function () {
     return -9999;
   }
 
-  function init$v() {
+  function init$w() {
     var con = this.b / this.a;
     this.es = 1 - con * con;
     if(!('x0' in this)){
@@ -67980,7 +68142,7 @@ var myol = (function () {
   /* Mercator forward equations--mapping lat,long to x,y
     --------------------------------------------------*/
 
-  function forward$u(p) {
+  function forward$v(p) {
     var lon = p.x;
     var lat = p.y;
     // convert to radians
@@ -68011,7 +68173,7 @@ var myol = (function () {
 
   /* Mercator inverse equations--mapping x,y to lat/long
     --------------------------------------------------*/
-  function inverse$u(p) {
+  function inverse$v(p) {
 
     var x = p.x - this.x0;
     var y = p.y - this.y0;
@@ -68034,31 +68196,31 @@ var myol = (function () {
     return p;
   }
 
-  var names$w = ["Mercator", "Popular Visualisation Pseudo Mercator", "Mercator_1SP", "Mercator_Auxiliary_Sphere", "merc"];
+  var names$x = ["Mercator", "Popular Visualisation Pseudo Mercator", "Mercator_1SP", "Mercator_Auxiliary_Sphere", "merc"];
   var merc = {
-    init: init$v,
-    forward: forward$u,
-    inverse: inverse$u,
-    names: names$w
+    init: init$w,
+    forward: forward$v,
+    inverse: inverse$v,
+    names: names$x
   };
 
-  function init$u() {
+  function init$v() {
     //no-op for longlat
   }
 
   function identity(pt) {
     return pt;
   }
-  var names$v = ["longlat", "identity"];
+  var names$w = ["longlat", "identity"];
   var longlat = {
-    init: init$u,
+    init: init$v,
     forward: identity,
     inverse: identity,
-    names: names$v
+    names: names$w
   };
 
   var projs = [merc, longlat];
-  var names$u = {};
+  var names$v = {};
   var projStore = [];
 
   function add(proj, i) {
@@ -68069,7 +68231,7 @@ var myol = (function () {
     }
     projStore[len] = proj;
     proj.names.forEach(function(n) {
-      names$u[n.toLowerCase()] = len;
+      names$v[n.toLowerCase()] = len;
     });
     return this;
   }
@@ -68079,8 +68241,8 @@ var myol = (function () {
       return false;
     }
     var n = name.toLowerCase();
-    if (typeof names$u[n] !== 'undefined' && projStore[names$u[n]]) {
-      return projStore[names$u[n]];
+    if (typeof names$v[n] !== 'undefined' && projStore[names$v[n]]) {
+      return projStore[names$v[n]];
     }
   }
 
@@ -69489,8 +69651,8 @@ var myol = (function () {
   var V = 86; // V
   var Z = 90; // Z
   var mgrs = {
-    forward: forward$t,
-    inverse: inverse$t,
+    forward: forward$u,
+    inverse: inverse$u,
     toPoint: toPoint
   };
   /**
@@ -69502,7 +69664,7 @@ var myol = (function () {
    *      100 m, 2 for 1000 m or 1 for 10000 m). Optional, default is 5.
    * @return {string} the MGRS string for the given location and accuracy.
    */
-  function forward$t(ll, accuracy) {
+  function forward$u(ll, accuracy) {
     accuracy = accuracy || 5; // default accuracy 1m
     return encode(LLtoUTM({
       lat: ll[1],
@@ -69517,7 +69679,7 @@ var myol = (function () {
    *     (longitude) and top (latitude) values in WGS84, representing the
    *     bounding box for the provided MGRS reference.
    */
-  function inverse$t(mgrs) {
+  function inverse$u(mgrs) {
     var bbox = UTMtoLL(decode(mgrs.toUpperCase()));
     if (bbox.lat && bbox.lon) {
       return [bbox.lon, bbox.lat, bbox.lon, bbox.lat];
@@ -70229,7 +70391,7 @@ var myol = (function () {
     return new Point(toPoint(mgrsStr));
   };
   Point.prototype.toMGRS = function(accuracy) {
-    return forward$t([this.x, this.y], accuracy);
+    return forward$u([this.x, this.y], accuracy);
   };
 
   var C00 = 1;
@@ -70287,7 +70449,7 @@ var myol = (function () {
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/tmerc.js
 
 
-  function init$t() {
+  function init$u() {
     this.x0 = this.x0 !== undefined ? this.x0 : 0;
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
@@ -70303,7 +70465,7 @@ var myol = (function () {
       Transverse Mercator Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$s(p) {
+  function forward$t(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -70378,7 +70540,7 @@ var myol = (function () {
   /**
       Transverse Mercator Inverse  -  x/y to long/lat
     */
-  function inverse$s(p) {
+  function inverse$t(p) {
     var con, phi;
     var lat, lon;
     var x = (p.x - this.x0) * (1 / this.a);
@@ -70442,12 +70604,12 @@ var myol = (function () {
     return p;
   }
 
-  var names$t = ["Fast_Transverse_Mercator", "Fast Transverse Mercator"];
+  var names$u = ["Fast_Transverse_Mercator", "Fast Transverse Mercator"];
   var tmerc = {
-    init: init$t,
-    forward: forward$s,
-    inverse: inverse$s,
-    names: names$t
+    init: init$u,
+    forward: forward$t,
+    inverse: inverse$t,
+    names: names$u
   };
 
   function sinh(x) {
@@ -70551,7 +70713,7 @@ var myol = (function () {
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/etmerc.js
 
 
-  function init$s() {
+  function init$t() {
     if (!this.approx && (isNaN(this.es) || this.es <= 0)) {
       throw new Error('Incorrect elliptical usage. Try using the +approx option in the proj string, or PROJECTION["Fast_Transverse_Mercator"] in the WKT.');
     }
@@ -70628,7 +70790,7 @@ var myol = (function () {
     this.Zb = -this.Qn * (Z + clens(this.gtu, 2 * Z));
   }
 
-  function forward$r(p) {
+  function forward$s(p) {
     var Ce = adjust_lon(p.x - this.long0);
     var Cn = p.y;
 
@@ -70665,7 +70827,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$r(p) {
+  function inverse$s(p) {
     var Ce = (p.x - this.x0) * (1 / this.a);
     var Cn = (p.y - this.y0) * (1 / this.a);
 
@@ -70704,12 +70866,12 @@ var myol = (function () {
     return p;
   }
 
-  var names$s = ["Extended_Transverse_Mercator", "Extended Transverse Mercator", "etmerc", "Transverse_Mercator", "Transverse Mercator", "Gauss Kruger", "Gauss_Kruger", "tmerc"];
+  var names$t = ["Extended_Transverse_Mercator", "Extended Transverse Mercator", "etmerc", "Transverse_Mercator", "Transverse Mercator", "Gauss Kruger", "Gauss_Kruger", "tmerc"];
   var etmerc = {
-    init: init$s,
-    forward: forward$r,
-    inverse: inverse$r,
-    names: names$s
+    init: init$t,
+    forward: forward$s,
+    inverse: inverse$s,
+    names: names$t
   };
 
   function adjust_zone(zone, lon) {
@@ -70728,7 +70890,7 @@ var myol = (function () {
   var dependsOn = 'etmerc';
 
 
-  function init$r() {
+  function init$s() {
     var zone = adjust_zone(this.zone, this.long0);
     if (zone === undefined) {
       throw new Error('unknown utm zone');
@@ -70744,10 +70906,10 @@ var myol = (function () {
     this.inverse = etmerc.inverse;
   }
 
-  var names$r = ["Universal Transverse Mercator System", "utm"];
+  var names$s = ["Universal Transverse Mercator System", "utm"];
   var utm = {
-    init: init$r,
-    names: names$r,
+    init: init$s,
+    names: names$s,
     dependsOn: dependsOn
   };
 
@@ -70757,7 +70919,7 @@ var myol = (function () {
 
   var MAX_ITER$2 = 20;
 
-  function init$q() {
+  function init$r() {
     var sphi = Math.sin(this.lat0);
     var cphi = Math.cos(this.lat0);
     cphi *= cphi;
@@ -70768,7 +70930,7 @@ var myol = (function () {
     this.K = Math.tan(0.5 * this.phic0 + FORTPI) / (Math.pow(Math.tan(0.5 * this.lat0 + FORTPI), this.C) * srat(this.e * sphi, this.ratexp));
   }
 
-  function forward$q(p) {
+  function forward$r(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -70777,7 +70939,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$q(p) {
+  function inverse$r(p) {
     var DEL_TOL = 1e-14;
     var lon = p.x / this.C;
     var lat = p.y;
@@ -70798,15 +70960,15 @@ var myol = (function () {
     return p;
   }
 
-  var names$q = ["gauss"];
+  var names$r = ["gauss"];
   var gauss = {
-    init: init$q,
-    forward: forward$q,
-    inverse: inverse$q,
-    names: names$q
+    init: init$r,
+    forward: forward$r,
+    inverse: inverse$r,
+    names: names$r
   };
 
-  function init$p() {
+  function init$q() {
     gauss.init.apply(this);
     if (!this.rc) {
       return;
@@ -70819,7 +70981,7 @@ var myol = (function () {
     }
   }
 
-  function forward$p(p) {
+  function forward$q(p) {
     var sinc, cosc, cosl, k;
     p.x = adjust_lon(p.x - this.long0);
     gauss.forward.apply(this, [p]);
@@ -70834,7 +70996,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$p(p) {
+  function inverse$q(p) {
     var sinc, cosc, lon, lat, rho;
     p.x = (p.x - this.x0) / this.a;
     p.y = (p.y - this.y0) / this.a;
@@ -70860,12 +71022,12 @@ var myol = (function () {
     return p;
   }
 
-  var names$p = ["Stereographic_North_Pole", "Oblique_Stereographic", "sterea","Oblique Stereographic Alternative","Double_Stereographic"];
+  var names$q = ["Stereographic_North_Pole", "Oblique_Stereographic", "sterea","Oblique Stereographic Alternative","Double_Stereographic"];
   var sterea = {
-    init: init$p,
-    forward: forward$p,
-    inverse: inverse$p,
-    names: names$p
+    init: init$q,
+    forward: forward$q,
+    inverse: inverse$q,
+    names: names$q
   };
 
   function ssfn_(phit, sinphi, eccen) {
@@ -70873,7 +71035,7 @@ var myol = (function () {
     return (Math.tan(0.5 * (HALF_PI + phit)) * Math.pow((1 - sinphi) / (1 + sinphi), 0.5 * eccen));
   }
 
-  function init$o() {
+  function init$p() {
 
     // setting default parameters
     this.x0 = this.x0 || 0;
@@ -70915,7 +71077,7 @@ var myol = (function () {
   }
 
   // Stereographic forward equations--mapping lat,long to x,y
-  function forward$o(p) {
+  function forward$p(p) {
     var lon = p.x;
     var lat = p.y;
     var sinlat = Math.sin(lat);
@@ -70968,7 +71130,7 @@ var myol = (function () {
   }
 
   //* Stereographic inverse equations--mapping x,y to lat/long
-  function inverse$o(p) {
+  function inverse$p(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat, ts, ce, Chi;
@@ -71035,12 +71197,12 @@ var myol = (function () {
 
   }
 
-  var names$o = ["stere", "Stereographic_South_Pole", "Polar Stereographic (variant B)", "Polar_Stereographic"];
+  var names$p = ["stere", "Stereographic_South_Pole", "Polar Stereographic (variant B)", "Polar_Stereographic"];
   var stere = {
-    init: init$o,
-    forward: forward$o,
-    inverse: inverse$o,
-    names: names$o,
+    init: init$p,
+    forward: forward$p,
+    inverse: inverse$p,
+    names: names$p,
     ssfn_: ssfn_
   };
 
@@ -71052,7 +71214,7 @@ var myol = (function () {
       http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf
     */
 
-  function init$n() {
+  function init$o() {
     var phy0 = this.lat0;
     this.lambda0 = this.long0;
     var sinPhy0 = Math.sin(phy0);
@@ -71070,7 +71232,7 @@ var myol = (function () {
     this.K = k1 - this.alpha * k2 + this.alpha * e / 2 * k3;
   }
 
-  function forward$n(p) {
+  function forward$o(p) {
     var Sa1 = Math.log(Math.tan(Math.PI / 4 - p.y / 2));
     var Sa2 = this.e / 2 * Math.log((1 + this.e * Math.sin(p.y)) / (1 - this.e * Math.sin(p.y)));
     var S = -this.alpha * (Sa1 + Sa2) + this.K;
@@ -71091,7 +71253,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$n(p) {
+  function inverse$o(p) {
     var Y = p.x - this.x0;
     var X = p.y - this.y0;
 
@@ -71123,12 +71285,12 @@ var myol = (function () {
     return p;
   }
 
-  var names$n = ["somerc"];
+  var names$o = ["somerc"];
   var somerc = {
-    init: init$n,
-    forward: forward$n,
-    inverse: inverse$n,
-    names: names$n
+    init: init$o,
+    forward: forward$o,
+    inverse: inverse$o,
+    names: names$o
   };
 
   var TOL = 1e-7;
@@ -71143,7 +71305,7 @@ var myol = (function () {
 
   /* Initialize the Oblique Mercator  projection
       ------------------------------------------*/
-  function init$m() {  
+  function init$n() {  
     var con, com, cosph0, D, F, H, L, sinph0, p, J, gamma = 0,
       gamma0, lamc = 0, lam1 = 0, lam2 = 0, phi1 = 0, phi2 = 0, alpha_c = 0;
     
@@ -71274,7 +71436,7 @@ var myol = (function () {
 
   /* Oblique Mercator forward equations--mapping lat,long to x,y
       ----------------------------------------------------------*/
-  function forward$m(p) {
+  function forward$n(p) {
     var coords = {};
     var S, T, U, V, W, temp, u, v;
     p.x = p.x - this.lam0;
@@ -71320,7 +71482,7 @@ var myol = (function () {
     return coords;
   }
 
-  function inverse$m(p) {
+  function inverse$n(p) {
     var u, v, Qp, Sp, Tp, Vp, Up;
     var coords = {};
     
@@ -71360,15 +71522,15 @@ var myol = (function () {
     return coords;
   }
 
-  var names$m = ["Hotine_Oblique_Mercator", "Hotine Oblique Mercator", "Hotine_Oblique_Mercator_Azimuth_Natural_Origin", "Hotine_Oblique_Mercator_Two_Point_Natural_Origin", "Hotine_Oblique_Mercator_Azimuth_Center", "Oblique_Mercator", "omerc"];
+  var names$n = ["Hotine_Oblique_Mercator", "Hotine Oblique Mercator", "Hotine_Oblique_Mercator_Azimuth_Natural_Origin", "Hotine_Oblique_Mercator_Two_Point_Natural_Origin", "Hotine_Oblique_Mercator_Azimuth_Center", "Oblique_Mercator", "omerc"];
   var omerc = {
-    init: init$m,
-    forward: forward$m,
-    inverse: inverse$m,
-    names: names$m
+    init: init$n,
+    forward: forward$n,
+    inverse: inverse$n,
+    names: names$n
   };
 
-  function init$l() {
+  function init$m() {
     
     //double lat0;                    /* the reference latitude               */
     //double long0;                   /* the reference longitude              */
@@ -71428,7 +71590,7 @@ var myol = (function () {
 
   // Lambert Conformal conic forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$l(p) {
+  function forward$m(p) {
 
     var lon = p.x;
     var lat = p.y;
@@ -71460,7 +71622,7 @@ var myol = (function () {
 
   // Lambert Conformal Conic inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$l(p) {
+  function inverse$m(p) {
 
     var rh1, con, ts;
     var lat, lon;
@@ -71496,7 +71658,7 @@ var myol = (function () {
     return p;
   }
 
-  var names$l = [
+  var names$m = [
     "Lambert Tangential Conformal Conic Projection",
     "Lambert_Conformal_Conic",
     "Lambert_Conformal_Conic_1SP",
@@ -71507,13 +71669,13 @@ var myol = (function () {
   ];
 
   var lcc = {
-    init: init$l,
-    forward: forward$l,
-    inverse: inverse$l,
-    names: names$l
+    init: init$m,
+    forward: forward$m,
+    inverse: inverse$m,
+    names: names$m
   };
 
-  function init$k() {
+  function init$l() {
     this.a = 6377397.155;
     this.es = 0.006674372230614;
     this.e = Math.sqrt(this.es);
@@ -71548,7 +71710,7 @@ var myol = (function () {
   /* ellipsoid */
   /* calculate xy from lat/lon */
   /* Constants, identical to inverse transform function */
-  function forward$k(p) {
+  function forward$l(p) {
     var gfi, u, deltav, s, d, eps, ro;
     var lon = p.x;
     var lat = p.y;
@@ -71572,7 +71734,7 @@ var myol = (function () {
   }
 
   /* calculate lat/lon from xy */
-  function inverse$k(p) {
+  function inverse$l(p) {
     var u, deltav, s, d, eps, ro, fi1;
     var ok;
 
@@ -71610,12 +71772,12 @@ var myol = (function () {
     return (p);
   }
 
-  var names$k = ["Krovak", "krovak"];
+  var names$l = ["Krovak", "krovak"];
   var krovak = {
-    init: init$k,
-    forward: forward$k,
-    inverse: inverse$k,
-    names: names$k
+    init: init$l,
+    forward: forward$l,
+    inverse: inverse$l,
+    names: names$l
   };
 
   function mlfn(e0, e1, e2, e3, phi) {
@@ -71664,7 +71826,7 @@ var myol = (function () {
     return NaN;
   }
 
-  function init$j() {
+  function init$k() {
     if (!this.sphere) {
       this.e0 = e0fn(this.es);
       this.e1 = e1fn(this.es);
@@ -71676,7 +71838,7 @@ var myol = (function () {
 
   /* Cassini forward equations--mapping lat,long to x,y
     -----------------------------------------------------------------------*/
-  function forward$j(p) {
+  function forward$k(p) {
 
     /* Forward equations
         -----------------*/
@@ -71713,7 +71875,7 @@ var myol = (function () {
 
   /* Inverse equations
     -----------------*/
-  function inverse$j(p) {
+  function inverse$k(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -71754,12 +71916,12 @@ var myol = (function () {
 
   }
 
-  var names$j = ["Cassini", "Cassini_Soldner", "cass"];
+  var names$k = ["Cassini", "Cassini_Soldner", "cass"];
   var cass = {
-    init: init$j,
-    forward: forward$j,
-    inverse: inverse$j,
-    names: names$j
+    init: init$k,
+    forward: forward$k,
+    inverse: inverse$k,
+    names: names$k
   };
 
   function qsfnz(eccent, sinphi) {
@@ -71787,7 +71949,7 @@ var myol = (function () {
 
   /* Initialize the Lambert Azimuthal Equal Area projection
     ------------------------------------------------------*/
-  function init$i() {
+  function init$j() {
     var t = Math.abs(this.lat0);
     if (Math.abs(t - HALF_PI) < EPSLN) {
       this.mode = this.lat0 < 0 ? this.S_POLE : this.N_POLE;
@@ -71838,7 +72000,7 @@ var myol = (function () {
 
   /* Lambert Azimuthal Equal Area forward equations--mapping lat,long to x,y
     -----------------------------------------------------------------------*/
-  function forward$i(p) {
+  function forward$j(p) {
 
     /* Forward equations
         -----------------*/
@@ -71936,7 +72098,7 @@ var myol = (function () {
 
   /* Inverse equations
     -----------------*/
-  function inverse$i(p) {
+  function inverse$j(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -72054,12 +72216,12 @@ var myol = (function () {
     return (beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t + t) + APA[2] * Math.sin(t + t + t));
   }
 
-  var names$i = ["Lambert Azimuthal Equal Area", "Lambert_Azimuthal_Equal_Area", "laea"];
+  var names$j = ["Lambert Azimuthal Equal Area", "Lambert_Azimuthal_Equal_Area", "laea"];
   var laea = {
-    init: init$i,
-    forward: forward$i,
-    inverse: inverse$i,
-    names: names$i,
+    init: init$j,
+    forward: forward$j,
+    inverse: inverse$j,
+    names: names$j,
     S_POLE: S_POLE,
     N_POLE: N_POLE,
     EQUIT: EQUIT,
@@ -72073,7 +72235,7 @@ var myol = (function () {
     return Math.asin(x);
   }
 
-  function init$h() {
+  function init$i() {
 
     if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
       return;
@@ -72112,7 +72274,7 @@ var myol = (function () {
 
   /* Albers Conical Equal Area forward equations--mapping lat,long to x,y
     -------------------------------------------------------------------*/
-  function forward$h(p) {
+  function forward$i(p) {
 
     var lon = p.x;
     var lat = p.y;
@@ -72131,7 +72293,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$h(p) {
+  function inverse$i(p) {
     var rh1, qs, con, theta, lon, lat;
 
     p.x -= this.x0;
@@ -72188,12 +72350,12 @@ var myol = (function () {
     return null;
   }
 
-  var names$h = ["Albers_Conic_Equal_Area", "Albers", "aea"];
+  var names$i = ["Albers_Conic_Equal_Area", "Albers", "aea"];
   var aea = {
-    init: init$h,
-    forward: forward$h,
-    inverse: inverse$h,
-    names: names$h,
+    init: init$i,
+    forward: forward$i,
+    inverse: inverse$i,
+    names: names$i,
     phi1z: phi1z
   };
 
@@ -72203,7 +72365,7 @@ var myol = (function () {
       http://mathworld.wolfram.com/GnomonicProjection.html
       Accessed: 12th November 2009
     */
-  function init$g() {
+  function init$h() {
 
     /* Place parameters in static storage for common use
         -------------------------------------------------*/
@@ -72216,7 +72378,7 @@ var myol = (function () {
 
   /* Gnomonic forward equations--mapping lat,long to x,y
       ---------------------------------------------------*/
-  function forward$g(p) {
+  function forward$h(p) {
     var sinphi, cosphi; /* sin and cos value        */
     var dlon; /* delta longitude value      */
     var coslon; /* cos of longitude        */
@@ -72257,7 +72419,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$g(p) {
+  function inverse$h(p) {
     var rh; /* Rho */
     var sinc, cosc;
     var c;
@@ -72290,12 +72452,12 @@ var myol = (function () {
     return p;
   }
 
-  var names$g = ["gnom"];
+  var names$h = ["gnom"];
   var gnom = {
-    init: init$g,
-    forward: forward$g,
-    inverse: inverse$g,
-    names: names$g
+    init: init$h,
+    forward: forward$h,
+    inverse: inverse$h,
+    names: names$h
   };
 
   function iqsfnz(eccent, q) {
@@ -72335,7 +72497,7 @@ var myol = (function () {
       A User's Manual" by Gerald I. Evenden,
       USGS Open File Report 90-284and Release 4 Interim Reports (2003)
   */
-  function init$f() {
+  function init$g() {
     //no-op
     if (!this.sphere) {
       this.k0 = msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
@@ -72344,7 +72506,7 @@ var myol = (function () {
 
   /* Cylindrical Equal Area forward equations--mapping lat,long to x,y
       ------------------------------------------------------------*/
-  function forward$f(p) {
+  function forward$g(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y;
@@ -72368,7 +72530,7 @@ var myol = (function () {
 
   /* Cylindrical Equal Area inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------*/
-  function inverse$f(p) {
+  function inverse$g(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat;
@@ -72387,15 +72549,15 @@ var myol = (function () {
     return p;
   }
 
-  var names$f = ["cea"];
+  var names$g = ["cea"];
   var cea = {
-    init: init$f,
-    forward: forward$f,
-    inverse: inverse$f,
-    names: names$f
+    init: init$g,
+    forward: forward$g,
+    inverse: inverse$g,
+    names: names$g
   };
 
-  function init$e() {
+  function init$f() {
 
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -72409,7 +72571,7 @@ var myol = (function () {
 
   // forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$e(p) {
+  function forward$f(p) {
 
     var lon = p.x;
     var lat = p.y;
@@ -72423,7 +72585,7 @@ var myol = (function () {
 
   // inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$e(p) {
+  function inverse$f(p) {
 
     var x = p.x;
     var y = p.y;
@@ -72433,17 +72595,17 @@ var myol = (function () {
     return p;
   }
 
-  var names$e = ["Equirectangular", "Equidistant_Cylindrical", "eqc"];
+  var names$f = ["Equirectangular", "Equidistant_Cylindrical", "eqc"];
   var eqc = {
-    init: init$e,
-    forward: forward$e,
-    inverse: inverse$e,
-    names: names$e
+    init: init$f,
+    forward: forward$f,
+    inverse: inverse$f,
+    names: names$f
   };
 
   var MAX_ITER$1 = 20;
 
-  function init$d() {
+  function init$e() {
     /* Place parameters in static storage for common use
         -------------------------------------------------*/
     this.temp = this.b / this.a;
@@ -72458,7 +72620,7 @@ var myol = (function () {
 
   /* Polyconic forward equations--mapping lat,long to x,y
       ---------------------------------------------------*/
-  function forward$d(p) {
+  function forward$e(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y, el;
@@ -72493,7 +72655,7 @@ var myol = (function () {
 
   /* Inverse equations
     -----------------*/
-  function inverse$d(p) {
+  function inverse$e(p) {
     var lon, lat, x, y, i;
     var al, bl;
     var phi, dphi;
@@ -72559,15 +72721,15 @@ var myol = (function () {
     return p;
   }
 
-  var names$d = ["Polyconic", "poly"];
+  var names$e = ["Polyconic", "poly"];
   var poly = {
-    init: init$d,
-    forward: forward$d,
-    inverse: inverse$d,
-    names: names$d
+    init: init$e,
+    forward: forward$e,
+    inverse: inverse$e,
+    names: names$e
   };
 
-  function init$c() {
+  function init$d() {
     this.A = [];
     this.A[1] = 0.6399175073;
     this.A[2] = -0.1358797613;
@@ -72626,7 +72788,7 @@ var myol = (function () {
       New Zealand Map Grid Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$c(p) {
+  function forward$d(p) {
     var n;
     var lon = p.x;
     var lat = p.y;
@@ -72677,7 +72839,7 @@ var myol = (function () {
   /**
       New Zealand Map Grid Inverse  -  x/y to long/lat
     */
-  function inverse$c(p) {
+  function inverse$d(p) {
     var n;
     var x = p.x;
     var y = p.y;
@@ -72768,12 +72930,12 @@ var myol = (function () {
     return p;
   }
 
-  var names$c = ["New_Zealand_Map_Grid", "nzmg"];
+  var names$d = ["New_Zealand_Map_Grid", "nzmg"];
   var nzmg = {
-    init: init$c,
-    forward: forward$c,
-    inverse: inverse$c,
-    names: names$c
+    init: init$d,
+    forward: forward$d,
+    inverse: inverse$d,
+    names: names$d
   };
 
   /*
@@ -72785,13 +72947,13 @@ var myol = (function () {
 
   /* Initialize the Miller Cylindrical projection
     -------------------------------------------*/
-  function init$b() {
+  function init$c() {
     //no-op
   }
 
   /* Miller Cylindrical forward equations--mapping lat,long to x,y
       ------------------------------------------------------------*/
-  function forward$b(p) {
+  function forward$c(p) {
     var lon = p.x;
     var lat = p.y;
     /* Forward equations
@@ -72807,7 +72969,7 @@ var myol = (function () {
 
   /* Miller Cylindrical inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------*/
-  function inverse$b(p) {
+  function inverse$c(p) {
     p.x -= this.x0;
     p.y -= this.y0;
 
@@ -72819,18 +72981,18 @@ var myol = (function () {
     return p;
   }
 
-  var names$b = ["Miller_Cylindrical", "mill"];
+  var names$c = ["Miller_Cylindrical", "mill"];
   var mill = {
-    init: init$b,
-    forward: forward$b,
-    inverse: inverse$b,
-    names: names$b
+    init: init$c,
+    forward: forward$c,
+    inverse: inverse$c,
+    names: names$c
   };
 
   var MAX_ITER = 20;
 
 
-  function init$a() {
+  function init$b() {
     /* Place parameters in static storage for common use
       -------------------------------------------------*/
 
@@ -72850,7 +73012,7 @@ var myol = (function () {
 
   /* Sinusoidal forward equations--mapping lat,long to x,y
     -----------------------------------------------------*/
-  function forward$a(p) {
+  function forward$b(p) {
     var x, y;
     var lon = p.x;
     var lat = p.y;
@@ -72889,7 +73051,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$a(p) {
+  function inverse$b(p) {
     var lat, temp, lon, s;
 
     p.x -= this.x0;
@@ -72927,18 +73089,18 @@ var myol = (function () {
     return p;
   }
 
-  var names$a = ["Sinusoidal", "sinu"];
+  var names$b = ["Sinusoidal", "sinu"];
   var sinu = {
-    init: init$a,
-    forward: forward$a,
-    inverse: inverse$a,
-    names: names$a
+    init: init$b,
+    forward: forward$b,
+    inverse: inverse$b,
+    names: names$b
   };
 
-  function init$9() {}
+  function init$a() {}
   /* Mollweide forward equations--mapping lat,long to x,y
       ----------------------------------------------------*/
-  function forward$9(p) {
+  function forward$a(p) {
 
     /* Forward equations
         -----------------*/
@@ -72974,7 +73136,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$9(p) {
+  function inverse$a(p) {
     var theta;
     var arg;
 
@@ -73009,15 +73171,15 @@ var myol = (function () {
     return p;
   }
 
-  var names$9 = ["Mollweide", "moll"];
+  var names$a = ["Mollweide", "moll"];
   var moll = {
-    init: init$9,
-    forward: forward$9,
-    inverse: inverse$9,
-    names: names$9
+    init: init$a,
+    forward: forward$a,
+    inverse: inverse$a,
+    names: names$a
   };
 
-  function init$8() {
+  function init$9() {
 
     /* Place parameters in static storage for common use
         -------------------------------------------------*/
@@ -73057,7 +73219,7 @@ var myol = (function () {
 
   /* Equidistant Conic forward equations--mapping lat,long to x,y
     -----------------------------------------------------------*/
-  function forward$8(p) {
+  function forward$9(p) {
     var lon = p.x;
     var lat = p.y;
     var rh1;
@@ -73081,7 +73243,7 @@ var myol = (function () {
 
   /* Inverse equations
     -----------------*/
-  function inverse$8(p) {
+  function inverse$9(p) {
     p.x -= this.x0;
     p.y = this.rh - p.y + this.y0;
     var con, rh1, lat, lon;
@@ -73116,22 +73278,22 @@ var myol = (function () {
 
   }
 
-  var names$8 = ["Equidistant_Conic", "eqdc"];
+  var names$9 = ["Equidistant_Conic", "eqdc"];
   var eqdc = {
-    init: init$8,
-    forward: forward$8,
-    inverse: inverse$8,
-    names: names$8
+    init: init$9,
+    forward: forward$9,
+    inverse: inverse$9,
+    names: names$9
   };
 
   /* Initialize the Van Der Grinten projection
     ----------------------------------------*/
-  function init$7() {
+  function init$8() {
     //this.R = 6370997; //Radius of earth
     this.R = this.a;
   }
 
-  function forward$7(p) {
+  function forward$8(p) {
 
     var lon = p.x;
     var lat = p.y;
@@ -73188,7 +73350,7 @@ var myol = (function () {
 
   /* Van Der Grinten inverse equations--mapping x,y to lat/long
     ---------------------------------------------------------*/
-  function inverse$7(p) {
+  function inverse$8(p) {
     var lon, lat;
     var xx, yy, xys, c1, c2, c3;
     var a1;
@@ -73240,20 +73402,20 @@ var myol = (function () {
     return p;
   }
 
-  var names$7 = ["Van_der_Grinten_I", "VanDerGrinten", "vandg"];
+  var names$8 = ["Van_der_Grinten_I", "VanDerGrinten", "vandg"];
   var vandg = {
-    init: init$7,
-    forward: forward$7,
-    inverse: inverse$7,
-    names: names$7
+    init: init$8,
+    forward: forward$8,
+    inverse: inverse$8,
+    names: names$8
   };
 
-  function init$6() {
+  function init$7() {
     this.sin_p12 = Math.sin(this.lat0);
     this.cos_p12 = Math.cos(this.lat0);
   }
 
-  function forward$6(p) {
+  function forward$7(p) {
     var lon = p.x;
     var lat = p.y;
     var sinphi = Math.sin(p.y);
@@ -73338,7 +73500,7 @@ var myol = (function () {
 
   }
 
-  function inverse$6(p) {
+  function inverse$7(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var rh, z, sinz, cosz, lon, lat, con, e0, e1, e2, e3, Mlp, M, N1, psi, Az, cosAz, tmp, A, B, D, Ee, F, sinpsi;
@@ -73435,15 +73597,15 @@ var myol = (function () {
 
   }
 
-  var names$6 = ["Azimuthal_Equidistant", "aeqd"];
+  var names$7 = ["Azimuthal_Equidistant", "aeqd"];
   var aeqd = {
-    init: init$6,
-    forward: forward$6,
-    inverse: inverse$6,
-    names: names$6
+    init: init$7,
+    forward: forward$7,
+    inverse: inverse$7,
+    names: names$7
   };
 
-  function init$5() {
+  function init$6() {
     //double temp;      /* temporary variable    */
 
     /* Place parameters in static storage for common use
@@ -73454,7 +73616,7 @@ var myol = (function () {
 
   /* Orthographic forward equations--mapping lat,long to x,y
       ---------------------------------------------------*/
-  function forward$5(p) {
+  function forward$6(p) {
     var sinphi, cosphi; /* sin and cos value        */
     var dlon; /* delta longitude value      */
     var coslon; /* cos of longitude        */
@@ -73481,7 +73643,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$5(p) {
+  function inverse$6(p) {
     var rh; /* height above ellipsoid      */
     var z; /* angle          */
     var sinz, cosz; /* sin of z and cos of z      */
@@ -73523,12 +73685,12 @@ var myol = (function () {
     return p;
   }
 
-  var names$5 = ["ortho"];
+  var names$6 = ["ortho"];
   var ortho = {
-    init: init$5,
-    forward: forward$5,
-    inverse: inverse$5,
-    names: names$5
+    init: init$6,
+    forward: forward$6,
+    inverse: inverse$6,
+    names: names$6
   };
 
   // QSC projection rewritten from the original PROJ4
@@ -73552,7 +73714,7 @@ var myol = (function () {
       AREA_3: 4
   };
 
-  function init$4() {
+  function init$5() {
 
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -73584,7 +73746,7 @@ var myol = (function () {
 
   // QSC forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$4(p) {
+  function forward$5(p) {
     var xy = {x: 0, y: 0};
     var lat, lon;
     var theta, phi;
@@ -73707,7 +73869,7 @@ var myol = (function () {
 
   // QSC inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$4(p) {
+  function inverse$5(p) {
     var lp = {lam: 0, phi: 0};
     var mu, nu, cosmu, tannu;
     var tantheta, theta, cosphi, phi;
@@ -73890,12 +74052,12 @@ var myol = (function () {
     return slon;
   }
 
-  var names$4 = ["Quadrilateralized Spherical Cube", "Quadrilateralized_Spherical_Cube", "qsc"];
+  var names$5 = ["Quadrilateralized Spherical Cube", "Quadrilateralized_Spherical_Cube", "qsc"];
   var qsc = {
-    init: init$4,
-    forward: forward$4,
-    inverse: inverse$4,
-    names: names$4
+    init: init$5,
+    forward: forward$5,
+    inverse: inverse$5,
+    names: names$5
   };
 
   // Robinson projection
@@ -73973,7 +74135,7 @@ var myol = (function () {
       return x;
   }
 
-  function init$3() {
+  function init$4() {
       this.x0 = this.x0 || 0;
       this.y0 = this.y0 || 0;
       this.long0 = this.long0 || 0;
@@ -73981,7 +74143,7 @@ var myol = (function () {
       this.title = this.title || "Robinson";
   }
 
-  function forward$3(ll) {
+  function forward$4(ll) {
       var lon = adjust_lon(ll.x - this.long0);
 
       var dphi = Math.abs(ll.y);
@@ -74005,7 +74167,7 @@ var myol = (function () {
       return xy;
   }
 
-  function inverse$3(xy) {
+  function inverse$4(xy) {
       var ll = {
           x: (xy.x - this.x0) / (this.a * FXC),
           y: Math.abs(xy.y - this.y0) / (this.a * FYC)
@@ -74050,35 +74212,35 @@ var myol = (function () {
       return ll;
   }
 
-  var names$3 = ["Robinson", "robin"];
+  var names$4 = ["Robinson", "robin"];
   var robin = {
-    init: init$3,
-    forward: forward$3,
-    inverse: inverse$3,
-    names: names$3
+    init: init$4,
+    forward: forward$4,
+    inverse: inverse$4,
+    names: names$4
   };
 
-  function init$2() {
+  function init$3() {
       this.name = 'geocent';
 
   }
 
-  function forward$2(p) {
+  function forward$3(p) {
       var point = geodeticToGeocentric(p, this.es, this.a);
       return point;
   }
 
-  function inverse$2(p) {
+  function inverse$3(p) {
       var point = geocentricToGeodetic(p, this.es, this.a, this.b);
       return point;
   }
 
-  var names$2 = ["Geocentric", 'geocentric', "geocent", "Geocent"];
+  var names$3 = ["Geocentric", 'geocentric', "geocent", "Geocent"];
   var geocent = {
-      init: init$2,
-      forward: forward$2,
-      inverse: inverse$2,
-      names: names$2
+      init: init$3,
+      forward: forward$3,
+      inverse: inverse$3,
+      names: names$3
   };
 
   var mode = {
@@ -74096,7 +74258,7 @@ var myol = (function () {
     lat0:  { def: 0, num: true }                 // default is Equator, conversion to rad is automatic
   };
 
-  function init$1() {
+  function init$2() {
     Object.keys(params).forEach(function (p) {
       if (typeof this[p] === "undefined") {
         this[p] = params[p].def;
@@ -74140,7 +74302,7 @@ var myol = (function () {
     this.sw = Math.sin(omega);
   }
 
-  function forward$1(p) {
+  function forward$2(p) {
     p.x -= this.long0;
     var sinphi = Math.sin(p.y);
     var cosphi = Math.cos(p.y);
@@ -74190,7 +74352,7 @@ var myol = (function () {
     return p;
   }
 
-  function inverse$1(p) {
+  function inverse$2(p) {
     p.x /= this.a;
     p.y /= this.a;
     var r = { x: p.x, y: p.y };
@@ -74239,15 +74401,15 @@ var myol = (function () {
     return p;
   }
 
-  var names$1 = ["Tilted_Perspective", "tpers"];
+  var names$2 = ["Tilted_Perspective", "tpers"];
   var tpers = {
-    init: init$1,
-    forward: forward$1,
-    inverse: inverse$1,
-    names: names$1
+    init: init$2,
+    forward: forward$2,
+    inverse: inverse$2,
+    names: names$2
   };
 
-  function init() {
+  function init$1() {
       this.flip_axis = (this.sweep === 'x' ? 1 : 0);
       this.h = Number(this.h);
       this.radius_g_1 = this.h / this.a;
@@ -74281,7 +74443,7 @@ var myol = (function () {
       }
   }
 
-  function forward(p) {
+  function forward$1(p) {
       var lon = p.x;
       var lat = p.y;
       var tmp, v_x, v_y, v_z;
@@ -74329,7 +74491,7 @@ var myol = (function () {
       return p;
   }
 
-  function inverse(p) {
+  function inverse$1(p) {
       var v_x = -1.0;
       var v_y = 0.0;
       var v_z = 0.0;
@@ -74396,12 +74558,105 @@ var myol = (function () {
       return p;
   }
 
-  var names = ["Geostationary Satellite View", "Geostationary_Satellite", "geos"];
+  var names$1 = ["Geostationary Satellite View", "Geostationary_Satellite", "geos"];
   var geos = {
-      init: init,
-      forward: forward,
-      inverse: inverse,
-      names: names,
+      init: init$1,
+      forward: forward$1,
+      inverse: inverse$1,
+      names: names$1,
+  };
+
+  /**
+   * Copyright 2018 Bernie Jenny, Monash University, Melbourne, Australia.
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * Equal Earth is a projection inspired by the Robinson projection, but unlike
+   * the Robinson projection retains the relative size of areas. The projection
+   * was designed in 2018 by Bojan Savric, Tom Patterson and Bernhard Jenny.
+   *
+   * Publication:
+   * Bojan Savric, Tom Patterson & Bernhard Jenny (2018). The Equal Earth map
+   * projection, International Journal of Geographical Information Science,
+   * DOI: 10.1080/13658816.2018.1504949
+   *
+   * Code released August 2018
+   * Ported to JavaScript and adapted for mapshaper-proj by Matthew Bloch August 2018
+   * Modified for proj4js by Andreas Hocevar by Andreas Hocevar March 2024
+   */
+
+
+  var A1 = 1.340264,
+      A2 = -0.081106,
+      A3 = 0.000893,
+      A4 = 0.003796,
+      M = Math.sqrt(3) / 2.0;
+
+  function init() {
+    this.es = 0;
+    this.long0 = this.long0 !== undefined ? this.long0 : 0;
+  }
+
+  function forward(p) {
+    var lam = adjust_lon(p.x - this.long0);
+    var phi = p.y;
+    var paramLat = Math.asin(M * Math.sin(phi)),
+    paramLatSq = paramLat * paramLat,
+    paramLatPow6 = paramLatSq * paramLatSq * paramLatSq;
+    p.x = lam * Math.cos(paramLat) /
+    (M * (A1 + 3 * A2 * paramLatSq + paramLatPow6 * (7 * A3 + 9 * A4 * paramLatSq)));
+    p.y = paramLat * (A1 + A2 * paramLatSq + paramLatPow6 * (A3 + A4 * paramLatSq));
+
+    p.x = this.a * p.x + this.x0;
+    p.y = this.a * p.y + this.y0;
+    return p;
+  }
+
+  function inverse(p) {
+    p.x = (p.x - this.x0) / this.a;
+    p.y = (p.y - this.y0) / this.a;
+
+    var EPS = 1e-9,
+        NITER = 12,
+        paramLat = p.y,
+        paramLatSq, paramLatPow6, fy, fpy, dlat, i;
+
+    for (i = 0; i < NITER; ++i) {
+      paramLatSq = paramLat * paramLat;
+      paramLatPow6 = paramLatSq * paramLatSq * paramLatSq;
+      fy = paramLat * (A1 + A2 * paramLatSq + paramLatPow6 * (A3 + A4 * paramLatSq)) - p.y;
+      fpy = A1 + 3 * A2 * paramLatSq + paramLatPow6 * (7 * A3 + 9 * A4 * paramLatSq);
+      paramLat -= dlat = fy / fpy;
+      if (Math.abs(dlat) < EPS) {
+          break;
+      }
+    }
+    paramLatSq = paramLat * paramLat;
+    paramLatPow6 = paramLatSq * paramLatSq * paramLatSq;
+    p.x = M * p.x * (A1 + 3 * A2 * paramLatSq + paramLatPow6 * (7 * A3 + 9 * A4 * paramLatSq)) /
+            Math.cos(paramLat);
+    p.y = Math.asin(Math.sin(paramLat) / M);
+
+    p.x = adjust_lon(p.x + this.long0);
+    return p;
+  }
+
+  var names = ["eqearth", "Equal Earth", "Equal_Earth"];
+  var eqearth = {
+    init: init,
+    forward: forward,
+    inverse: inverse,
+    names: names
   };
 
   function includedProjections(proj4){
@@ -74434,6 +74689,7 @@ var myol = (function () {
     proj4.Proj.projections.add(geocent);
     proj4.Proj.projections.add(tpers);
     proj4.Proj.projections.add(geos);
+    proj4.Proj.projections.add(eqearth);
   }
 
   proj4.defaultDatum = 'WGS84'; //default datum
@@ -74454,8 +74710,8 @@ var myol = (function () {
 
 
   class Marker extends ol.layer.Vector {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         // src: 'imageUrl', // url of marker image
         defaultPosition: [localStorage.myol_lon || 2, localStorage.myol_lat || 47], // Initial position of the marker
         // dragable: false, // Can draw the marker to edit position
@@ -74468,8 +74724,9 @@ var myol = (function () {
         // marker-lon, marker-lat, // <input> longitude / latitude
         // marker-x, marker-y', // <input> Swiss EPSG:21781
         // marker-select, marker-string, select // display coords format
+        //BEST split in 4 options
 
-        ...options,
+        ...opt,
       };
 
       const point = new ol.geom.Point(
@@ -74492,14 +74749,14 @@ var myol = (function () {
           marker: true, // To recognise that this is a marker
         },
 
-        ...options
+        ...options,
       });
 
       this.options = options;
       this.point = point;
 
       // Initialise specific projection
-      if (typeof proj4 == 'function') {
+      if (typeof proj4 === 'function') {
         // Swiss
         proj4.defs('EPSG:21781',
           '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
@@ -74526,10 +74783,11 @@ var myol = (function () {
       map.once('postrender', () => { //HACK the only event to trigger if the map is not centered
         this.view = map.getView();
 
-        this.action(this.els.lon); // Il value is provided in lon / lat inputs fields
-        this.action(this.els.json); // Il value is provided in json inputs fields
-        if (this.options.focus)
+        if (this.options.focus) {
+          this.action(this.els.lon); // Il value is provided in lon / lat inputs fields
+          this.action(this.els.json); // Il value is provided in json inputs fields
           this.view.setZoom(this.options.focus);
+        }
       });
 
       // Change the cursor over a dragable feature
@@ -74537,7 +74795,7 @@ var myol = (function () {
         const hoverDragable = map.getFeaturesAtPixel(evt.pixel, {
           layerFilter: l => {
             if (this.options.dragable)
-              return l.ol_uid == this.ol_uid;
+              return l.ol_uid === this.ol_uid;
           }
         });
 
@@ -74547,13 +74805,9 @@ var myol = (function () {
       // Drag the marker
       if (this.options.dragable) {
         map.addInteraction(new ol.interaction.Pointer({
-          handleDownEvent: evt => {
-            return map.getFeaturesAtPixel(evt.pixel, {
-              layerFilter: l => {
-                return l.ol_uid == this.ol_uid;
-              }
-            }).length;
-          },
+          handleDownEvent: evt => map.getFeaturesAtPixel(evt.pixel, {
+            layerFilter: l => l.ol_uid === this.ol_uid
+          }).length,
           handleDragEvent: evt => {
             this.changeLL(evt.coordinate, 'EPSG:3857');
           },
@@ -74572,12 +74826,12 @@ var myol = (function () {
     // Read new values
     action(el) {
       // Find changed input type from tne input id
-      const idMatch = el.id.match(/-([a-z]+)/);
+      const idMatch = el.id.match(/-([a-z]+)/u);
 
       if (idMatch)
         switch (idMatch[1]) {
           case 'json': // Init the field
-            this.changeLL([...this.els.json.value.matchAll(/-?[0-9.]+/g)], 'EPSG:4326', true);
+            this.changeLL([...this.els.json.value.matchAll(/-?[0-9.]+/gu)], 'EPSG:4326', true);
             break;
           case 'lon': // Change lon / lat
           case 'lat':
@@ -74593,29 +74847,34 @@ var myol = (function () {
     }
 
     // Display values
-    changeLL(pos, projection, focus) {
+    changeLL(pos, prj, focus) {
+      let position = pos,
+        projection = prj || 'EPSG:3857';
+
       sessionStorage.myol_lastchange = Date.now(); // Mem the last change date
 
       // If no position is given, use the marker's (dragged)
-      if (!pos || pos.length < 2) {
-        pos = this.point.getCoordinates();
+      if (!position || position.length < 2) {
+        position = this.point.getCoordinates();
         projection = 'EPSG:3857';
       }
 
       // Don't change if none entry
-      if (!pos[0] && !pos[1])
+      if (!position[0] && !position[1])
         return;
 
       const ll4326 = ol.proj.transform([
         // Protection against non-digital entries / transform , into .
-        parseFloat(pos[0].toString().replace(/[^-0-9]+/, '.')),
-        parseFloat(pos[1].toString().replace(/[^-0-9]+/, '.'))
+        parseFloat(position[0].toString().replace(/[^-0-9]+/u, '.')),
+        parseFloat(position[1].toString().replace(/[^-0-9]+/u, '.'))
       ], projection, 'EPSG:4326');
 
       ll4326[0] -= Math.round(ll4326[0] / 360) * 360; // Wrap +-180°
 
-      const ll3857 = ol.proj.transform(ll4326, 'EPSG:4326', 'EPSG:3857'),
-        inEPSG21781 = typeof proj4 == 'function' &&
+      const ll3857 = ol.proj.transform(ll4326, 'EPSG:4326', 'EPSG:3857');
+
+      const inEPSG21781 =
+        typeof proj4 === 'function' &&
         ol.extent.containsCoordinate([664577, 5753148, 1167741, 6075303], ll3857);
 
       // Move the marker
@@ -74653,13 +74912,13 @@ var myol = (function () {
         strings.swiss = 'X=' + this.els.x.value + ', Y=' + this.els.y.value + ' (CH1903)';
       }
       // When not on the CH1903 extend, hide the choice
-      else if (this.els.select.value == 'swiss')
+      else if (this.els.select.value === 'swiss')
         this.els.select.value = 'dec';
 
       // Hide Swiss coordinates when out of extent
-      document.querySelectorAll('.xy').forEach(el =>
-        el.style.display = inEPSG21781 ? '' : 'none'
-      );
+      document.querySelectorAll('.xy').forEach(el => {
+        el.style.display = inEPSG21781 ? '' : 'none';
+      });
 
       // Display selected format
       this.els.string.textContent = strings[this.els.select.value || 'dec'];
@@ -74679,17 +74938,21 @@ var myol = (function () {
    */
 
   class Selector {
-    constructor(name) {
+    constructor(name, initSelect) {
       if (name) {
-        this.safeName = 'myol_' + name.replace(/[^a-z]/ig, '');
-        this.init = (localStorage[this.safeName] || '').split(',');
+        this.safeName = 'myol_' + name.replace(/[^a-z]/giu, '');
+        this.init =
+          typeof initSelect !== 'undefined' ?
+          initSelect.toString() :
+          localStorage[this.safeName] || '';
+        this.init = this.init.split(',');
         this.selectEls = [...document.getElementsByName(name)];
         this.selectEls.forEach(el => {
           el.addEventListener('click', evt => this.action(evt));
           el.checked =
             this.init.includes(el.value) ||
             this.init.includes('all') ||
-            this.init.join(',') == el.value;
+            this.init.join(',') === el.value;
         });
         this.action(); // Init with "all"
       }
@@ -74698,18 +74961,19 @@ var myol = (function () {
 
     action(evt) {
       // Test the "all" box & set other boxes
-      if (evt && evt.target.value == 'all')
-        this.selectEls
-        .forEach(el => el.checked = evt.target.checked);
+      if (evt && evt.target.value === 'all')
+        this.selectEls.forEach(el => {
+          el.checked = evt.target.checked;
+        });
 
       // Test if all values are checked
       const allChecked = this.selectEls
-        .filter(el => !el.checked && el.value != 'all');
+        .filter(el => !el.checked && el.value !== 'all');
 
       // Set the "all" box
       this.selectEls
         .forEach(el => {
-          if (el.value == 'all')
+          if (el.value === 'all')
             el.checked = !allChecked.length;
         });
 
@@ -74728,7 +74992,7 @@ var myol = (function () {
     getSelection() {
       if (this.selectEls)
         return this.selectEls
-          .filter(el => el.checked && el.value != 'all')
+          .filter(el => el.checked && el.value !== 'all')
           .map(el => el.value);
 
       return [null];
@@ -74744,36 +75008,6 @@ var myol = (function () {
    */
 
 
-  // Basic style to display a geo vector layer based on standard properties
-  function basic(feature, resolution, layer) {
-    const properties = feature.getProperties();
-
-    return [{
-      // Point
-      image: properties.icon ? new ol.style.Icon({
-        anchor: resolution < layer.options.minResolution ? [
-          feature.getId() / 5 % 1 / 2 + 0.25, // 32 px width frame
-          feature.getId() / 9 % 1, // 44 px hight frame
-        ] : [0.5, 0.5],
-        src: properties.icon, // 24 * 24 icons
-      }) : null,
-
-      // Lines
-      stroke: new ol.style.Stroke({
-        color: 'blue',
-        width: 2,
-      }),
-
-      // Polygons
-      fill: new ol.style.Fill({
-        color: 'rgba(0,0,256,0.3)',
-      }),
-      // properties.label if any
-      //BEST appliquer gigue anchor au label
-      ...label(...arguments),
-    }];
-  }
-
   // Display a label with properties.label
   function label(feature) {
     const properties = feature.getProperties();
@@ -74786,7 +75020,7 @@ var myol = (function () {
 
       return {
         text: new ol.style.Text({
-          text: elLabel.innerHTML.replace('&amp;', '&'), // Specific tratement for &
+          text: elLabel.innerText,
           overflow: properties.overflow, // Display label even if not contained in polygon
           textBaseline: featureArea ? 'middle' : 'bottom',
           offsetY: featureArea ? 0 : -13, // Above the icon
@@ -74805,6 +75039,37 @@ var myol = (function () {
         }),
       };
     }
+  }
+
+  // Basic style to display a geo vector layer based on standard properties
+  function basic(feature, resolution, layer) {
+    const properties = feature.getProperties();
+
+    return [{
+      // Point
+      image: properties.icon ?
+        new ol.style.Icon({
+          anchor: resolution < layer.options.minResolution ? [
+            feature.getId() / 5 % 1 / 2 + 0.25, // 32 px width frame
+            feature.getId() / 9 % 1, // 44 px hight frame
+          ] : [0.5, 0.5],
+          src: properties.icon, // 24 * 24 icons
+        }) : null,
+
+      // Lines
+      stroke: new ol.style.Stroke({
+        color: 'blue',
+        width: 2,
+      }),
+
+      // Polygons
+      fill: new ol.style.Fill({
+        color: 'rgba(0,0,256,0.3)',
+      }),
+      // properties.label if any
+      //BEST appliquer gigue anchor au label
+      ...label(...arguments),
+    }];
   }
 
   // Display a circle with the number of features on the cluster
@@ -74828,6 +75093,15 @@ var myol = (function () {
   }
 
   // Display the detailed information of a cluster based on standard properties
+  // Simplify & aggregate an array of lines
+  function agregateText(lines, glue) {
+    return lines
+      .filter(Boolean) // Avoid empty lines
+      .map(l => l.toString().replace('_', ' ').trim())
+      .map(l => l[0].toUpperCase() + l.substring(1))
+      .join(glue || '\n');
+  }
+
   function details(feature, resolution, layer) {
     const properties = feature.getProperties();
 
@@ -74848,24 +75122,15 @@ var myol = (function () {
   }
 
   // Display the basic hovered features
-  function hover() {
+  function hover(...args) {
     return {
-      ...details(...arguments),
+      ...details(...args),
 
       stroke: new ol.style.Stroke({
         color: 'red',
         width: 2,
       }),
     };
-  }
-
-  // Simplify & aggregate an array of lines
-  function agregateText(lines, glue) {
-    return lines
-      .filter(Boolean) // Avoid empty lines
-      .map(l => l.toString().replace('_', ' ').trim())
-      .map(l => l[0].toUpperCase() + l.substring(1))
-      .join(glue || '\n');
   }
 
   var stylesOptions = /*#__PURE__*/Object.freeze({
@@ -74901,16 +75166,16 @@ var myol = (function () {
       this.on(['featuresloadstart', 'featuresloadend', 'error', 'featuresloaderror'], evt => {
         // Display loading satus
         if (this.statusEl) this.statusEl.innerHTML =
-          evt.type == 'featuresloadstart' ? '&#8987;' :
-          evt.type == 'featuresloadend' ? '' :
+          evt.type === 'featuresloadstart' ? '&#8987;' :
+          evt.type === 'featuresloadend' ? '' :
           '&#9888;'; // Error symbol
       });
 
       // Compute properties when the layer is loaded & before the cluster layer is computed
       this.on('change', () =>
         this.getFeatures().forEach(f => {
-          if (!f._yetAdded) {
-            f._yetAdded = true;
+          if (!f.yetAdded) {
+            f.yetAdded = true;
             f.setProperties(
               options.addProperties(f.getProperties()),
               true, // Silent : add the feature without refresh the layer
@@ -74933,12 +75198,9 @@ var myol = (function () {
    */
   class MyClusterSource extends ol.source.Cluster {
     constructor(options) {
-      options = {
-        // browserClusterFeaturelMaxPerimeter: 300, // (pixels) perimeter of a line or poly above which we do not cluster
-
-        // Any MyVectorSource options
-        ...options,
-      };
+      // options:
+      // browserClusterFeaturelMaxPerimeter: 300, // (pixels) perimeter of a line or poly above which we do not cluster
+      // Any MyVectorSource options
 
       // Source to handle the features
       const initialSource = new MyVectorSource(options);
@@ -74987,7 +75249,7 @@ var myol = (function () {
       });
 
       // Single feature : display it
-      if (nbMaxClusters == 1)
+      if (nbMaxClusters === 1)
         return features[0];
 
       if (includeCluster || lines.length > 5)
@@ -75138,8 +75400,8 @@ var myol = (function () {
    * Layer & features selector
    */
   class MyVectorLayer extends MyServerClusterVectorLayer {
-    constructor(options) {
-      options = {
+    constructor(opt) {
+      const options = {
         // host: '',
         strategy: ol.loadingstrategy.bbox,
         dataProjection: 'EPSG:4326',
@@ -75157,7 +75419,8 @@ var myol = (function () {
         basicStylesOptions: basic, // (feature, resolution, layer)
         hoverStylesOptions: hover, // (feature, resolution, layer)
         // selectName: '', // Name of checkbox inputs to tune the url parameters
-        selector: new Selector(options.selectName), // Tune the url parameters
+        // initSelect: string|true|false, // If defined, force the selector
+        selector: new Selector(opt.selectName, opt.initSelect), // Tune the url parameters
         zIndex: 100, // Above tiles layers
 
         // Any ol.source.Vector options
@@ -75169,7 +75432,7 @@ var myol = (function () {
         // bbox (extent, resolution, mapProjection) => {}
         // addProperties (properties) => {}, // Add properties to each received features
 
-        ...options,
+        ...opt,
       };
       options.format ||= new ol.format.GeoJSON(options); //BEST treat & display JSON errors
 
@@ -75197,24 +75460,24 @@ var myol = (function () {
       this.reload();
     }
 
-    url() {
-      const args = this.query(...arguments, this.options),
-        url = this.host + args._path; // Mem _path
+    url(...args) {
+      const urlArgs = this.query(...args, this.options),
+        url = this.host + urlArgs._path; // Mem _path
 
-      if (this.strategy == ol.loadingstrategy.bbox)
-        args.bbox = this.bbox(...arguments);
+      if (this.strategy === ol.loadingstrategy.bbox)
+        urlArgs.bbox = this.bbox(...args);
 
       // Add a pseudo parameter if any marker or edit has been done
       const version = sessionStorage.myol_lastchange ?
         '&' + Math.round(sessionStorage.myol_lastchange / 2500 % 46600).toString(36) : '';
 
       // Clean null & not relative parameters
-      Object.keys(args).forEach(k => {
-        if (k == '_path' || args[k] == 'on' || !args[k] || !args[k].toString())
-          delete args[k];
+      Object.keys(urlArgs).forEach(k => {
+        if (k === '_path' || urlArgs[k] === 'on' || !urlArgs[k] || !urlArgs[k].toString())
+          delete urlArgs[k];
       });
 
-      return url + '?' + new URLSearchParams(args).toString() + version;
+      return url + '?' + new URLSearchParams(urlArgs).toString() + version;
     }
 
     bbox(extent, resolution, mapProjection) {
@@ -75228,10 +75491,12 @@ var myol = (function () {
     addProperties() {}
 
     // Function returning an array of styles options
-    style(feature) {
-      const sof = feature.getProperties().cluster ? cluster : this.options.basicStylesOptions;
+    style(feature, ...args) {
+      const sof = feature.getProperties().cluster ?
+        cluster :
+        this.options.basicStylesOptions;
 
-      return sof(...arguments) // Call the styleOptions function
+      return sof(feature, ...args) // Call the styleOptions function
         .map(so => new ol.style.Style(so)); // Transform into an array of Style objects
     }
 
@@ -75258,12 +75523,20 @@ var myol = (function () {
     if (type) {
       const icons = type.split(' ');
 
-      return (host || 'https://chemineur.fr/') +
+      return ('https://chemineur.fr/') +
         'ext/Dominique92/GeoBB/icones/' +
         icons[0] +
         (icons.length > 1 ? '_' + icons[1] : '') + // Limit to 2 type names & ' ' -> '_'
         '.svg';
     }
+  }
+
+  function addTag(doc, node, k, v) {
+    const newTag = doc.createElement('tag');
+
+    newTag.setAttribute('k', k);
+    newTag.setAttribute('v', v);
+    node.appendChild(newTag);
   }
 
   class GeoBB extends MyVectorLayer {
@@ -75412,9 +75685,7 @@ var myol = (function () {
       this.format.readFeatures = json => {
         const features = [];
 
-        for (let p in json.documents) {
-          const properties = json.documents[p];
-
+        JSON.parse(json).documents.forEach(properties =>
           features.push({
             id: properties.document_id,
             type: 'Feature',
@@ -75426,8 +75697,8 @@ var myol = (function () {
               ele: properties.elevation,
               link: 'https://www.camptocamp.org/waypoints/' + properties.document_id,
             },
-          });
-        }
+          })
+        );
 
         return this.format.readFeaturesFromObject({
           type: 'FeatureCollection',
@@ -75473,12 +75744,12 @@ var myol = (function () {
       // List of acceptable tags in the request return
       let tags = '';
 
-      for (let e in selectEls)
+      for (const e in selectEls)
         if (selectEls[e].value)
           tags += selectEls[e].value.replace('private', '');
 
       // Extract features from data when received
-      this.format.readFeatures = function(doc, options) {
+      this.format.readFeatures = function(doc, opt) {
         const newNodes = [];
 
         for (let node = doc.documentElement.firstElementChild; node; node = node.nextSibling) {
@@ -75487,20 +75758,20 @@ var myol = (function () {
             if (tag.attributes) {
               if (tags.indexOf(tag.getAttribute('k')) !== -1 &&
                 tags.indexOf(tag.getAttribute('v')) !== -1 &&
-                tag.getAttribute('k') != 'type') {
-                addTag(node, 'type', tag.getAttribute('v'));
-                addTag(node, 'icon', chemIconUrl(tag.getAttribute('v')));
+                tag.getAttribute('k') !== 'type') {
+                addTag(doc, node, 'type', tag.getAttribute('v'));
+                addTag(doc, node, 'icon', chemIconUrl(tag.getAttribute('v')));
 
                 // Only once for a node
-                addTag(node, 'link', 'https://www.openstreetmap.org/' + node.nodeName + '/' + node.id);
+                addTag(doc, node, 'link', 'https://www.openstreetmap.org/' + node.nodeName + '/' + node.id);
               }
 
               if (tag.getAttribute('k') && tag.getAttribute('k').includes('capacity:'))
-                addTag(node, 'capacity', tag.getAttribute('v'));
+                addTag(doc, node, 'capacity', tag.getAttribute('v'));
             }
 
           // Transform an area to a node (picto) at the center of this area
-          if (node.nodeName == 'way') {
+          if (node.nodeName === 'way') {
             const newNode = doc.createElement('node');
 
             newNode.id = node.id;
@@ -75521,27 +75792,19 @@ var myol = (function () {
                   newNode.appendChild(subTagNode.cloneNode());
 
                   // Add a tag to mem what node type it was (for link build)
-                  addTag(newNode, 'nodetype', node.nodeName);
+                  addTag(doc, newNode, 'nodetype', node.nodeName);
               }
           }
 
           // Status 200 / error message
-          if (node.nodeName == 'remark' && statusEl)
+          if (node.nodeName === 'remark' && statusEl)
             statusEl.textContent = node.textContent;
         }
 
         // Add new nodes to the document
         newNodes.forEach(n => doc.documentElement.appendChild(n));
 
-        return ol.format.OSMXML.prototype.readFeatures.call(this, doc, options);
-
-        function addTag(node, k, v) {
-          const newTag = doc.createElement('tag');
-
-          newTag.setAttribute('k', k);
-          newTag.setAttribute('v', v);
-          node.appendChild(newTag);
-        }
+        return ol.format.OSMXML.prototype.readFeatures.call(this, doc, opt);
       };
     }
 
@@ -75608,12 +75871,12 @@ var myol = (function () {
    * Display misc values
    */
 
-
   async function trace() {
     const data = [
-      //BEST myol & geocoder version
       'Ol v' + ol.util.VERSION,
-      'language: ' + navigator.language,
+      'Geocoder ' + Base.prototype.getVersion(),
+      'MyOl ' + myol.VERSION,
+      'language ' + navigator.language,
     ];
 
     // Storages in the subdomain
@@ -75631,19 +75894,19 @@ var myol = (function () {
         if (registrations.length) {
           data.push('service-workers:');
 
-          for (let registration of registrations)
+          for (const registration of registrations)
             if (registration.active)
               data.push('  ' + registration.active.scriptURL);
         }
       });
 
     // Registered caches in the scope
-    if (typeof caches == 'object')
-      await caches.keys().then(function(names) {
+    if (typeof caches === 'object')
+      await caches.keys().then(names => {
         if (names.length) {
           data.push('caches:');
 
-          for (let name of names)
+          for (const name of names)
             data.push('  ' + name);
         }
       });
@@ -75654,14 +75917,6 @@ var myol = (function () {
 
   // Zoom & resolution
   /* global map */
-  window.addEventListener('load', () => { // Wait for doculment load
-    if (typeof map == 'object' && map.once)
-      map.once('precompose', () => { // Wait for view load
-        traceZoom(); //BEST put in data.join
-        map.getView().on('change:resolution', traceZoom);
-      });
-  });
-
   function traceZoom() {
     console.log(
       'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
@@ -75669,27 +75924,39 @@ var myol = (function () {
     );
   }
 
+  window.addEventListener('load', () => { // Wait for document load
+    if (typeof map === 'object' && map.once)
+      map.once('precompose', () => { // Wait for view load
+        traceZoom();
+        map.getView().on('change:resolution', traceZoom);
+      });
+  });
+
   /**
    * This file defines the myol exports
    */
 
 
-  var myol = {
+  var myol$1 = {
     control: control,
     layer: layer,
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
+    VERSION: '1.1.2.dev 26/05/2024 16:25:17',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries
-  // This contains all what is necessary for refuges.info & chemineur.fr websites
+  // It contains all what is necessary for refuges.info & chemineur.fr websites
 
 
-  // Export ol & myol as global vars if not already defined
+  // Add ol as member of myol
+  myol$1.ol = ol;
+
+  // Export ol & myol as globals if not already defined
   window.ol ||= ol;
-  window.myol ||= myol;
+  window.myol ||= myol$1;
 
-  return myol;
+  return myol$1;
 
-})();
+}));

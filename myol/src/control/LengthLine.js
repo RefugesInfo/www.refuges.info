@@ -32,10 +32,10 @@ export class LengthLine extends ol.control.Control {
   //BEST calculate distance to the ends
   calculateLength(feature) {
     if (feature) {
-      let geometry = feature.getGeometry(),
+      const geometry = feature.getGeometry(),
         length = ol.sphere.getLength(geometry),
-        fcs = this.getFlatCoordinates(geometry),
-        denivPos = 0,
+        fcs = this.getFlatCoordinates(geometry);
+      let denivPos = 0,
         denivNeg = 0;
 
       // Height difference calculation
@@ -68,11 +68,11 @@ export class LengthLine extends ol.control.Control {
   getFlatCoordinates(geometry) {
     let fcs = [];
 
-    if (geometry.stride == 3)
+    if (geometry.stride === 3)
       fcs = geometry.flatCoordinates;
 
-    if (geometry.getType() == 'GeometryCollection')
-      for (let g of geometry.getGeometries())
+    if (geometry.getType() === 'GeometryCollection')
+      for (const g of geometry.getGeometries())
         fcs.push(...this.getFlatCoordinates(g));
 
     return fcs;

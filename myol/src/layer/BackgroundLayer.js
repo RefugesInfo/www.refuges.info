@@ -33,11 +33,12 @@ export class BackgroundLayer extends layerTile.Positron {
 
   tuneDisplay(map) {
     const mapExtent = map.getView().calculateExtent(map.getSize());
+
     let needed = true;
 
     map.getLayers().forEach(l => {
       if (l.getUseInterimTilesOnError && // Is a tile layer
-        l != this && l != this.lowResLayer && // Not one of the background layers
+        l !== this && l !== this.lowResLayer && // Not one of the background layers
         l.isVisible() && // Is visible
         ol.extent.containsExtent(l.getExtent() || mapExtent, mapExtent))
         needed = false;

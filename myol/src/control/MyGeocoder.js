@@ -5,10 +5,13 @@
  * Corrected https://github.com/Dominique92/ol-geocoder
  */
 
-// Geocoder
-import Geocoder from '@myol/geocoder/src/base';
-import '@myol/geocoder/dist/ol-geocoder.css';
-import './myGeocoder.css'; // Import after ol-geocoder.css
+// ol-geocoder library (dev repo)
+import '@myol/geocoder/src/base.css'; //BEST BUG to be replaced by ol-geocoder when /src published in npm
+import Geocoder from '@myol/geocoder/src/base'; //BEST BUG to be replaced by ol-geocoder when /src published in npm
+
+// This package css
+// Import after ol-geocoder.css
+import './myGeocoder.css';
 
 export class MyGeocoder extends Geocoder {
   constructor(options) {
@@ -29,8 +32,9 @@ export class MyGeocoder extends Geocoder {
 
     // Close other opened buttons when hover with a mouse
     this.element.addEventListener('pointerover', () => {
-      for (let el of document.getElementsByClassName('myol-button-selected'))
-        el.classList.remove('myol-button-selected');
+      for (const el of document.getElementsByClassName('myol-button-selected'))
+        if (!el.classList.contains('myol-button-keepselect')) //BEST colorer en bleu le bouton quand sélectionné
+          el.classList.remove('myol-button-selected');
     });
 
     // Close submenu when hover another button
@@ -38,7 +42,7 @@ export class MyGeocoder extends Geocoder {
       const hoveredEl = document.elementFromPoint(evt.x, evt.y),
         controlEl = this.element.firstElementChild;
 
-      if (hoveredEl && hoveredEl.tagName == 'BUTTON')
+      if (hoveredEl && hoveredEl.tagName === 'BUTTON')
         controlEl.classList.remove('gcd-gl-expanded');
     });
   }

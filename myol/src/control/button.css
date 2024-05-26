@@ -67,7 +67,7 @@
 .myol-button:not(.myol-button-hover):not(.myol-button-selected)>div,
 .myol-button>*:empty {
   max-height: 0;
-  /* For beauty of the transition */
+  /* For the beauty of the transition */
   opacity: 0;
 }
 
@@ -78,14 +78,16 @@
   font-size: 16px;
 }
 
-/* Coloring the button when touch selected */
-.myol-button-selected button,
 .myol-button div {
   background: #d1e9ff;
 }
 
 .myol-button div a {
   color: blue !important;
+}
+
+.myol-button.myol-button-selected button {
+  background: #d1e9ff;
 }
 
 .myol-button p,

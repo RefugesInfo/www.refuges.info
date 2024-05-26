@@ -3,14 +3,14 @@
 console.log('MyGPS version ' + jsVars.lastChangeDate);
 
 // Force uri to be compliant with PWA
-if (!location.pathname.match(/index/) || // Force script name 
-  (!location.protocol.match(/https/) && // Force https
-    location.hostname.match(/\./) // Only for remote server (domain.extension) versus localhost
+if (!location.pathname.match(/index/u) || // Force script name 
+  (!location.protocol.match(/https/u) && // Force https
+    location.hostname.match(/\./u) // Only for remote server (domain.extension) versus localhost
   )
 ) {
   console.log('index.php reload');
   location.replace(
-    (location.hostname.match(/\./) ? 'https://' : 'http://') +
+    (location.hostname.match(/\./u) ? 'https://' : 'http://') +
     location.hostname +
     location.pathname + (location.pathname.slice(-1) === '/' ? 'index.php' : '') +
     location.search +
@@ -73,7 +73,7 @@ if (jsVars.gpxFiles.length) {
   const tracesEl = document.getElementById('myol-gps-traces');
 
   jsVars.gpxFiles.forEach(f => {
-    const name = f.match(/([^/]*)\./);
+    const name = f.match(/([^/]*)\./u);
 
     if (name)
       tracesEl.insertAdjacentHTML(

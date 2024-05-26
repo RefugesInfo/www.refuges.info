@@ -6,8 +6,8 @@ import ol from '../ol';
 import proj4Lib from 'proj4/lib/index';
 
 export class Marker extends ol.layer.Vector {
-  constructor(options) {
-    options = {
+  constructor(opt) {
+    const options = {
       // src: 'imageUrl', // url of marker image
       defaultPosition: [localStorage.myol_lon || 2, localStorage.myol_lat || 47], // Initial position of the marker
       // dragable: false, // Can draw the marker to edit position
@@ -20,8 +20,9 @@ export class Marker extends ol.layer.Vector {
       // marker-lon, marker-lat, // <input> longitude / latitude
       // marker-x, marker-y', // <input> Swiss EPSG:21781
       // marker-select, marker-string, select // display coords format
+      //BEST split in 4 options
 
-      ...options,
+      ...opt,
     };
 
     const point = new ol.geom.Point(
@@ -44,14 +45,14 @@ export class Marker extends ol.layer.Vector {
         marker: true, // To recognise that this is a marker
       },
 
-      ...options
+      ...options,
     });
 
     this.options = options;
     this.point = point;
 
     // Initialise specific projection
-    if (typeof proj4Lib == 'function') {
+    if (typeof proj4Lib === 'function') {
       // Swiss
       proj4Lib.defs('EPSG:21781',
         '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
@@ -78,10 +79,11 @@ export class Marker extends ol.layer.Vector {
     map.once('postrender', () => { //HACK the only event to trigger if the map is not centered
       this.view = map.getView();
 
-      this.action(this.els.lon); // Il value is provided in lon / lat inputs fields
-      this.action(this.els.json); // Il value is provided in json inputs fields
-      if (this.options.focus)
+      if (this.options.focus) {
+        this.action(this.els.lon); // Il value is provided in lon / lat inputs fields
+        this.action(this.els.json); // Il value is provided in json inputs fields
         this.view.setZoom(this.options.focus);
+      }
     });
 
     // Change the cursor over a dragable feature
@@ -89,7 +91,7 @@ export class Marker extends ol.layer.Vector {
       const hoverDragable = map.getFeaturesAtPixel(evt.pixel, {
         layerFilter: l => {
           if (this.options.dragable)
-            return l.ol_uid == this.ol_uid;
+            return l.ol_uid === this.ol_uid;
         }
       });
 
@@ -99,13 +101,9 @@ export class Marker extends ol.layer.Vector {
     // Drag the marker
     if (this.options.dragable) {
       map.addInteraction(new ol.interaction.Pointer({
-        handleDownEvent: evt => {
-          return map.getFeaturesAtPixel(evt.pixel, {
-            layerFilter: l => {
-              return l.ol_uid == this.ol_uid;
-            }
-          }).length;
-        },
+        handleDownEvent: evt => map.getFeaturesAtPixel(evt.pixel, {
+          layerFilter: l => l.ol_uid === this.ol_uid
+        }).length,
         handleDragEvent: evt => {
           this.changeLL(evt.coordinate, 'EPSG:3857');
         },
@@ -124,12 +122,12 @@ export class Marker extends ol.layer.Vector {
   // Read new values
   action(el) {
     // Find changed input type from tne input id
-    const idMatch = el.id.match(/-([a-z]+)/);
+    const idMatch = el.id.match(/-([a-z]+)/u);
 
     if (idMatch)
       switch (idMatch[1]) {
         case 'json': // Init the field
-          this.changeLL([...this.els.json.value.matchAll(/-?[0-9.]+/g)], 'EPSG:4326', true);
+          this.changeLL([...this.els.json.value.matchAll(/-?[0-9.]+/gu)], 'EPSG:4326', true);
           break;
         case 'lon': // Change lon / lat
         case 'lat':
@@ -145,29 +143,34 @@ export class Marker extends ol.layer.Vector {
   }
 
   // Display values
-  changeLL(pos, projection, focus) {
+  changeLL(pos, prj, focus) {
+    let position = pos,
+      projection = prj || 'EPSG:3857';
+
     sessionStorage.myol_lastchange = Date.now(); // Mem the last change date
 
     // If no position is given, use the marker's (dragged)
-    if (!pos || pos.length < 2) {
-      pos = this.point.getCoordinates();
+    if (!position || position.length < 2) {
+      position = this.point.getCoordinates();
       projection = 'EPSG:3857';
     }
 
     // Don't change if none entry
-    if (!pos[0] && !pos[1])
+    if (!position[0] && !position[1])
       return;
 
     const ll4326 = ol.proj.transform([
       // Protection against non-digital entries / transform , into .
-      parseFloat(pos[0].toString().replace(/[^-0-9]+/, '.')),
-      parseFloat(pos[1].toString().replace(/[^-0-9]+/, '.'))
+      parseFloat(position[0].toString().replace(/[^-0-9]+/u, '.')),
+      parseFloat(position[1].toString().replace(/[^-0-9]+/u, '.'))
     ], projection, 'EPSG:4326');
 
     ll4326[0] -= Math.round(ll4326[0] / 360) * 360; // Wrap +-180°
 
-    const ll3857 = ol.proj.transform(ll4326, 'EPSG:4326', 'EPSG:3857'),
-      inEPSG21781 = typeof proj4Lib == 'function' &&
+    const ll3857 = ol.proj.transform(ll4326, 'EPSG:4326', 'EPSG:3857');
+
+    const inEPSG21781 =
+      typeof proj4Lib === 'function' &&
       ol.extent.containsCoordinate([664577, 5753148, 1167741, 6075303], ll3857);
 
     // Move the marker
@@ -205,13 +208,13 @@ export class Marker extends ol.layer.Vector {
       strings.swiss = 'X=' + this.els.x.value + ', Y=' + this.els.y.value + ' (CH1903)';
     }
     // When not on the CH1903 extend, hide the choice
-    else if (this.els.select.value == 'swiss')
+    else if (this.els.select.value === 'swiss')
       this.els.select.value = 'dec';
 
     // Hide Swiss coordinates when out of extent
-    document.querySelectorAll('.xy').forEach(el =>
-      el.style.display = inEPSG21781 ? '' : 'none'
-    );
+    document.querySelectorAll('.xy').forEach(el => {
+      el.style.display = inEPSG21781 ? '' : 'none';
+    });
 
     // Display selected format
     this.els.string.textContent = strings[this.els.select.value || 'dec'];

@@ -23,23 +23,24 @@
   "type": "module",
   "scripts": {
     "build": "rollup -c build/config.js",
-    "lint": "npx eslint build/* src/*.js src/*/*.js gps/*/*.js ex*/*.js ex*/includes/*.js",
-    "beautify": "js-beautify -s=2 package.json build/* src/*.js src/*/* gps/*/*.*s ex*/*.html ex*/*.*s ex*/*/*.html ex*/*/*.*s"
+    "lint": "npx eslint *.js* build/* src/*.js src/*/*.js gps/*/*.js ex*/*.js ex*/*/*.js",
+    "beautify": "js-beautify -s=2 *.js* build/* src/*.js src/*/* gps/*/*.*s ex*/*.html ex*/*.*s ex*/*/*.html ex*/*/*.*s"
   },
   "dependencies": {
-    "ol": "9.0.0",
-    "proj4": "2.10.0",
-    "@myol/geocoder": "latest"
+    "@myol/geocoder": "4.3.3-3",
+    "ol": "9.2.3",
+    "proj4": "2.11.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "25.0.4",
-    "@rollup/plugin-json": "6.0.0",
-    "@rollup/plugin-node-resolve": "15.2.1",
-    "@rollup/plugin-terser": "0.4.3",
-    "eslint": "8.49.0",
-    "js-beautify": "1.14.9",
-    "rollup": "3.29.2",
-    "rollup-plugin-import-css": "3.3.3",
+    "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-json": "latest",
+    "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-replace": "latest",
+    "@rollup/plugin-terser": "latest",
+    "eslint": "latest",
+    "js-beautify": "latest",
+    "rollup": "latest",
+    "rollup-plugin-import-css": "latest",
     "vite": "latest"
   }
 }

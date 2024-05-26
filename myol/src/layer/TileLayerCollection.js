@@ -97,7 +97,7 @@ export class MRI extends OpenStreetMap {
 export class Kompass extends OpenStreetMap { // Austria
   constructor(options = {}) {
     super({
-      hidden: !options.key && options.subLayer != 'osm', // For LayerSwitcher
+      hidden: !options.key && options.subLayer !== 'osm', // For LayerSwitcher
       url: options.key ?
         'https://map{1-4}.kompass.de/{z}/{x}/{y}/kompass_' + options.subLayer + '?key=' + options.key : // Specific
         'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
@@ -133,11 +133,11 @@ export class Thunderforest extends OpenStreetMap {
  */
 export class IGN extends ol.layer.Tile {
   constructor(options = {}) {
-    let IGNresolutions = [],
+    const IGNresolutions = [],
       IGNmatrixIds = [];
 
     for (let i = 0; i < 18; i++) {
-      IGNresolutions[i] = ol.extent.getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / Math.pow(2, i);
+      IGNresolutions[i] = ol.extent.getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / (2 ** i);
       IGNmatrixIds[i] = i.toString();
     }
 
@@ -170,15 +170,15 @@ export class IGN extends ol.layer.Tile {
  * API : https://api3.geo.admin.ch/services/sdiservices.html#wmts
  */
 export class SwissTopo extends ol.layer.Tile {
-  constructor(options) {
-    options = {
+  constructor(opt) {
+    const options = {
       host: 'https://wmts2{0-4}.geo.admin.ch/1.0.0/',
       subLayer: 'ch.swisstopo.pixelkarte-farbe',
       maxResolution: 2000, // Resolution limit above which we switch to a more global service
       extent: [640000, 5730000, 1200000, 6100000],
       attributions: '&copy <a href="https://map.geo.admin.ch/">SwissTopo</a>',
 
-      ...options,
+      ...opt,
     };
 
     const projectionExtent = ol.proj.get('EPSG:3857').getExtent(),
@@ -186,7 +186,7 @@ export class SwissTopo extends ol.layer.Tile {
       matrixIds = [];
 
     for (let r = 0; r < 18; ++r) {
-      resolutions[r] = ol.extent.getWidth(projectionExtent) / 256 / Math.pow(2, r);
+      resolutions[r] = ol.extent.getWidth(projectionExtent) / 256 / (2 ** r);
       matrixIds[r] = r;
     }
 
@@ -213,14 +213,15 @@ export class SwissTopo extends ol.layer.Tile {
  * API : https://api-maps.ign.es/
  */
 export class IgnES extends XYZ {
-  constructor(options) {
-    options = {
+  constructor(opt) {
+    const options = {
       host: 'https://www.ign.es/wmts/',
       server: 'mapa-raster',
       subLayer: 'MTN',
       maxZoom: 20,
       attributions: '&copy; <a href="https://www.ign.es/">IGN España</a>',
-      ...options,
+
+      ...opt,
     };
 
     super({
@@ -263,12 +264,12 @@ export class IGM extends ol.layer.Tile {
 
   updateResolution(view) {
     const mapResolution = view.getResolutionForZoom(view.getZoom()),
-      layerResolution = mapResolution < 10 ? 25000 : mapResolution < 30 ? 100000 : 250000;
+      layerResolution = mapResolution < 10 ? 25000 : (mapResolution < 30 ? 100000 : 250000);
 
     this.getSource().updateParams({
       type: 'png',
       map: '/ms_ogc/WMS_v1.3/raster/IGM_' + layerResolution + '.map',
-      layers: (layerResolution == 100000 ? 'MB.IGM' : 'CB.IGM') + layerResolution,
+      layers: (layerResolution === 100000 ? 'MB.IGM' : 'CB.IGM') + layerResolution,
     });
   }
 }
@@ -278,16 +279,16 @@ export class IGM extends ol.layer.Tile {
  * API & key : https://osdatahub.os.uk/
  */
 export class OS extends XYZ {
-  constructor(options = {}) {
-    options = {
-      hidden: !options.key, // For LayerSwitcher
+  constructor(opt) {
+    const options = {
+      hidden: !opt.key, // For LayerSwitcher
       subLayer: 'Outdoor_3857',
       minZoom: 7,
       maxZoom: 16,
       extent: [-1198263, 6365000, 213000, 8702260],
       attributions: '&copy <a href="https://explore.osmaps.com/">UK Ordnancesurvey maps</a>',
 
-      ...options,
+      ...opt,
     };
 
     super({
@@ -307,13 +308,14 @@ export class OS extends XYZ {
  * No key
  */
 export class ArcGIS extends XYZ {
-  constructor(options) {
-    options = {
+  constructor(opt) {
+    const options = {
       host: 'https://server.arcgisonline.com/ArcGIS/rest/services/',
       subLayer: 'World_Imagery',
       maxZoom: 19,
       attributions: '&copy; <a href="https://www.arcgis.com/">ArcGIS (Esri)</a>',
-      ...options,
+
+      ...opt,
     };
 
     super({
@@ -342,12 +344,13 @@ export class Maxbox extends XYZ {
  * Google
  */
 export class Google extends XYZ {
-  constructor(options) {
-    options = {
+  constructor(opt) {
+    const options = {
       subLayers: 'p', // Terrain
       maxZoom: 22,
       attributions: '&copy; <a href="https://www.google.com/maps">Google</a>',
-      ...options,
+
+      ...opt,
     };
 
     super({

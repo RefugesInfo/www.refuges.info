@@ -23,12 +23,13 @@ export class LayerSwitcher extends Button {
 
     // Filter null or hidden layers
     this.layers = {};
-    for (let name in options.layers)
+    for (const name in options.layers)
       if (options.layers[name] && !options.layers[name].getProperties().hidden)
         this.layers[name] = options.layers[name];
 
     // Get baselayer from url hash (#baselayer=...) if any
-    const bl = location.href.match(/baselayer=([^&]+)/);
+    const bl = location.href.match(/baselayer=([^&]+)/u);
+
     if (bl)
       localStorage.myol_baselayer = decodeURI(bl[1]);
 
@@ -41,7 +42,7 @@ export class LayerSwitcher extends Button {
   setMap(map) {
     map.addLayer(new BackgroundLayer());
 
-    for (let name in this.layers) {
+    for (const name in this.layers) {
       // Build html layers selectors
       this.subMenuEl.insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="baselayer" value="' + name + '">' + name + '</label>');
 
@@ -55,6 +56,7 @@ export class LayerSwitcher extends Button {
 
     // Attach html additional selector (must be there to be after base layers)
     const selectExtEl = document.getElementById(this.selectExtId);
+
     if (selectExtEl) {
       selectExtEl.classList.add('select-ext');
       this.subMenuEl.appendChild(selectExtEl);
@@ -84,7 +86,9 @@ export class LayerSwitcher extends Button {
   action(evt) {
     // Clean checks
     if (evt && !evt.ctrlKey) {
-      this.selectorEls.forEach(el => el.checked = false);
+      this.selectorEls.forEach(el => {
+        el.checked = false;
+      });
       evt.target.checked = true;
     }
     if (!this.element.querySelector('input[name="baselayer"]:checked'))

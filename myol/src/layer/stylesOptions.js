@@ -8,36 +8,6 @@
 
 import ol from '../ol';
 
-// Basic style to display a geo vector layer based on standard properties
-export function basic(feature, resolution, layer) {
-  const properties = feature.getProperties();
-
-  return [{
-    // Point
-    image: properties.icon ? new ol.style.Icon({
-      anchor: resolution < layer.options.minResolution ? [
-        feature.getId() / 5 % 1 / 2 + 0.25, // 32 px width frame
-        feature.getId() / 9 % 1, // 44 px hight frame
-      ] : [0.5, 0.5],
-      src: properties.icon, // 24 * 24 icons
-    }) : null,
-
-    // Lines
-    stroke: new ol.style.Stroke({
-      color: 'blue',
-      width: 2,
-    }),
-
-    // Polygons
-    fill: new ol.style.Fill({
-      color: 'rgba(0,0,256,0.3)',
-    }),
-    // properties.label if any
-    //BEST appliquer gigue anchor au label
-    ...label(...arguments),
-  }];
-}
-
 // Display a label with properties.label
 export function label(feature) {
   const properties = feature.getProperties();
@@ -50,7 +20,7 @@ export function label(feature) {
 
     return {
       text: new ol.style.Text({
-        text: elLabel.innerHTML.replace('&amp;', '&'), // Specific tratement for &
+        text: elLabel.innerText,
         overflow: properties.overflow, // Display label even if not contained in polygon
         textBaseline: featureArea ? 'middle' : 'bottom',
         offsetY: featureArea ? 0 : -13, // Above the icon
@@ -69,6 +39,37 @@ export function label(feature) {
       }),
     };
   }
+}
+
+// Basic style to display a geo vector layer based on standard properties
+export function basic(feature, resolution, layer) {
+  const properties = feature.getProperties();
+
+  return [{
+    // Point
+    image: properties.icon ?
+      new ol.style.Icon({
+        anchor: resolution < layer.options.minResolution ? [
+          feature.getId() / 5 % 1 / 2 + 0.25, // 32 px width frame
+          feature.getId() / 9 % 1, // 44 px hight frame
+        ] : [0.5, 0.5],
+        src: properties.icon, // 24 * 24 icons
+      }) : null,
+
+    // Lines
+    stroke: new ol.style.Stroke({
+      color: 'blue',
+      width: 2,
+    }),
+
+    // Polygons
+    fill: new ol.style.Fill({
+      color: 'rgba(0,0,256,0.3)',
+    }),
+    // properties.label if any
+    //BEST appliquer gigue anchor au label
+    ...label(...arguments),
+  }];
 }
 
 // Display a circle with the number of features on the cluster
@@ -92,6 +93,15 @@ export function cluster(feature) {
 }
 
 // Display the detailed information of a cluster based on standard properties
+// Simplify & aggregate an array of lines
+export function agregateText(lines, glue) {
+  return lines
+    .filter(Boolean) // Avoid empty lines
+    .map(l => l.toString().replace('_', ' ').trim())
+    .map(l => l[0].toUpperCase() + l.substring(1))
+    .join(glue || '\n');
+}
+
 export function details(feature, resolution, layer) {
   const properties = feature.getProperties();
 
@@ -112,22 +122,13 @@ export function details(feature, resolution, layer) {
 }
 
 // Display the basic hovered features
-export function hover() {
+export function hover(...args) {
   return {
-    ...details(...arguments),
+    ...details(...args),
 
     stroke: new ol.style.Stroke({
       color: 'red',
       width: 2,
     }),
   };
-}
-
-// Simplify & aggregate an array of lines
-export function agregateText(lines, glue) {
-  return lines
-    .filter(Boolean) // Avoid empty lines
-    .map(l => l.toString().replace('_', ' ').trim())
-    .map(l => l[0].toUpperCase() + l.substring(1))
-    .join(glue || '\n');
 }

@@ -2,6 +2,7 @@
  * This file defines the myol exports
  */
 
+//BEST resizable map
 import control from './control';
 import layer from './layer';
 import * as stylesOptions from './layer/stylesOptions';
@@ -13,4 +14,5 @@ export default {
   Selector: layer.Selector,
   stylesOptions: stylesOptions,
   trace: trace,
+  VERSION: '__myolBuildVersion__ __myolBuildDate__',
 };

@@ -18,7 +18,9 @@ export class MyMousePosition extends ol.control.MousePosition {
   }
 
   setMap(map) {
-    map.on('myol:gpspositionchanged', evt => this.position = evt.position);
+    map.on('myol:gpspositionchanged', evt => {
+      this.position = evt.position;
+    });
 
     return super.setMap(map);
   }
@@ -31,8 +33,8 @@ export class MyMousePosition extends ol.control.MousePosition {
       return distance < 1000 ?
         (Math.round(distance)) + ' m' :
         (Math.round(distance / 10) / 100) + ' km';
-    } else
-      return ol.coordinate.createStringXY(4)(coordinates);
+    }
+    return ol.coordinate.createStringXY(4)(coordinates);
   }
 }
 

@@ -3,6 +3,8 @@
  * Add some usefull controls with buttons
  */
 
+//BEST click sur in/out file / ...
+
 import ol from '../ol';
 import './button.css';
 
@@ -11,8 +13,8 @@ import './button.css';
  * Abstract class to be used by other control buttons definitions
  */
 export class Button extends ol.control.Control {
-  constructor(options) {
-    options = {
+  constructor(opt) {
+    const options = {
       label: ' ', // An ascii or unicode character to decorate the button (OR : css button::after)
       className: '', // To be added to the control.element
 
@@ -21,17 +23,16 @@ export class Button extends ol.control.Control {
       // subMenuHTML_fr: '', // html code of the scrolling menu in locale lang
       subMenuHTML: '', // html code of the scrolling menu
 
+      // buttonAction() {}, // (evt, active) To run when an <input> ot <a> of the subMenu is clicked / hovered, ...
       // subMenuAction() {}, // (evt) To run when the button is clicked / hovered, ...
-      // buttonAction() {}, // (evt) To run when an <input> ot <a> of the subMenu is clicked / hovered, ...
 
       // All ol.control.Control options
 
-      ...options,
+      ...opt,
     };
 
     super({
       element: document.createElement('div'),
-
       ...options,
     });
 
@@ -47,11 +48,11 @@ export class Button extends ol.control.Control {
 
     // Add submenu below the button
     this.subMenuEl =
-      document.getElementById(options.subMenuId + '-' + navigator.language.match(/[a-z]+/)) ||
+      document.getElementById(options.subMenuId + '-' + navigator.language.match(/[a-z]+/u)) ||
       document.getElementById(options.subMenuId) ||
       document.createElement('div');
     this.subMenuEl.innerHTML ||=
-      options['subMenuHTML_' + navigator.language.match(/[a-z]+/)] ||
+      options['subMenuHTML_' + navigator.language.match(/[a-z]+/u)] ||
       options.subMenuHTML;
 
     // Populate the control
@@ -75,20 +76,22 @@ export class Button extends ol.control.Control {
   }
 
   buttonListener(evt) {
-    if (evt.type == 'mouseover')
+    if (evt.type === 'mouseover')
       this.element.classList.add('myol-button-hover');
     else // mouseout | click
       this.element.classList.remove('myol-button-hover');
 
-    if (evt.type == 'click') // Mouse click & touch
+    if (evt.type === 'click') // Mouse click & touch
       this.element.classList.toggle('myol-button-selected');
 
     // Close other open buttons
-    for (let el of document.getElementsByClassName('myol-button'))
-      if (el != this.element)
+    for (const el of document.getElementsByClassName('myol-button'))
+      if (el !== this.element &&
+        (!el.classList.contains('myol-button-keepselect') || evt.type === 'click'))
         el.classList.remove('myol-button-selected');
 
-    this.buttonAction(evt.type, this.element.classList.contains('myol-button-selected'));
+    // Trigger action on the selected button
+    this.buttonAction(evt, this.element.classList.contains('myol-button-selected'));
   }
 
   buttonAction() {}

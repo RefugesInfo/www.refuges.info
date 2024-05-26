@@ -5,6 +5,18 @@
 import Button from './Button.js';
 import './print.css';
 
+const subMenuHTML = '\
+  <label><input type="radio" name="myol-print-orientation" value="0">Portrait</label>\
+  <label><input type="radio" name="myol-print-orientation" value="1">Landscape</label>\
+  <p><a id="myol-print">Print</a></p>',
+
+  subMenuHTML_fr = '\
+  <p style="float:right" title="Cancel"><a onclick="location.reload()">&#10006;</a></p>\
+  <p style="width:175px">Choisir le format et recadrer</p>' +
+  subMenuHTML
+  .replace('Landscape', 'Paysage')
+  .replace('Print', 'Imprimer');
+
 export class Print extends Button {
   constructor(options) {
     super({
@@ -19,7 +31,7 @@ export class Print extends Button {
 
     // To return without print
     document.addEventListener('keydown', evt => {
-      if (evt.key == 'Escape')
+      if (evt.key === 'Escape')
         setTimeout(() => { // Delay reload for FF & Opera
           location.reload();
         });
@@ -30,13 +42,13 @@ export class Print extends Button {
     const map = this.getMap(),
       mapEl = map.getTargetElement(),
       poEl = this.element.querySelector('input:checked'), // Selected orientation inputs
-      orientation = poEl && poEl.value == '1' ? 'landscape' : 'portrait';
+      orientation = poEl && poEl.value === '1' ? 'landscape' : 'portrait';
 
     // Fix resolution to an available tiles resolution
     map.getView().setConstrainResolution(true);
 
     // Set or replace the page style
-    if (document.head.lastChild.textContent.match(/^@page{size:/))
+    if (document.head.lastChild.textContent.match(/^@page\{size:/u))
       document.head.lastChild.remove();
     document.head.insertAdjacentHTML('beforeend', '<style>@page{size: A4 ' + orientation + '}</style>');
 
@@ -45,7 +57,7 @@ export class Print extends Button {
     mapEl.className = 'myol-print-' + orientation;
 
     // Finally print if required
-    if (evt.target.id == 'myol-print') {
+    if (evt.target.id === 'myol-print') {
       if (poEl) { // If a format is set, the full page is already loaded
         window.print();
         location.reload();
@@ -57,17 +69,5 @@ export class Print extends Button {
     }
   }
 }
-
-var subMenuHTML = '\
-  <label><input type="radio" name="myol-print-orientation" value="0">Portrait</label>\
-  <label><input type="radio" name="myol-print-orientation" value="1">Landscape</label>\
-  <p><a id="myol-print">Print</a></p>',
-
-  subMenuHTML_fr = '\
-  <p style="float:right" title="Cancel"><a onclick="location.reload()">&#10006;</a></p>\
-  <p style="width:175px">Choisir le format et recadrer</p>' +
-  subMenuHTML
-  .replace('Landscape', 'Paysage')
-  .replace('Print', 'Imprimer');
 
 export default Print;
