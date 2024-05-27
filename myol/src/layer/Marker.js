@@ -9,7 +9,7 @@ export class Marker extends ol.layer.Vector {
   constructor(opt) {
     const options = {
       // src: 'imageUrl', // url of marker image
-      defaultPosition: [localStorage.myol_lon || 2, localStorage.myol_lat || 47], // Initial position of the marker
+      defaultPosition: [localStorage.myolLon || 2, localStorage.myolLat || 47], // Initial position of the marker
       // dragable: false, // Can draw the marker to edit position
       // focus: number // Center & value of zoom on the marker
       zIndex: 600, // Above points & hover
@@ -147,7 +147,7 @@ export class Marker extends ol.layer.Vector {
     let position = pos,
       projection = prj || 'EPSG:3857';
 
-    sessionStorage.myol_lastchange = Date.now(); // Mem the last change date
+    sessionStorage.myolLastchange = Date.now(); // Mem the last change date
 
     // If no position is given, use the marker's (dragged)
     if (!position || position.length < 2) {

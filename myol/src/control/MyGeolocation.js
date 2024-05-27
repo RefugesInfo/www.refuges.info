@@ -16,7 +16,7 @@ const subMenuHTML = '<p>\
   <input type="radio" name="myol-gps-display" value="2">Center & orient &nbsp;\
   </p>',
 
-  subMenuHTML_fr = '\
+  subMenuHTMLfr = '\
   <p>Localisation GPS:</p>\
   <label>\
     <input type="radio" name="myol-gps-source" value="0" checked="checked">\
@@ -48,7 +48,7 @@ export class MyGeolocation extends Button {
         className: 'myol-button-geolocation',
         subMenuId: 'myol-button-geolocation',
         subMenuHTML: subMenuHTML,
-        subMenuHTML_fr: subMenuHTML_fr,
+        subMenuHTMLfr: subMenuHTMLfr,
 
         // ol.Geolocation options
         // https://www.w3.org/TR/geolocation/#position_options_interface
@@ -135,8 +135,8 @@ export class MyGeolocation extends Button {
     const sourceLevelEl = document.querySelector('input[name="myol-gps-source"]:checked'),
       displayEls = document.getElementsByName('myol-gps-display'),
       displayLevelEl = document.querySelector('input[name="myol-gps-display"]:checked'),
-      sourceLevel = sourceLevelEl ? parseInt(sourceLevelEl.value) : 0, // On/off, GPS, GPS&WiFi
-      displayLevel = displayLevelEl ? parseInt(displayLevelEl.value) : 0, // Graticule & sourceLevel
+      sourceLevel = sourceLevelEl ? parseInt(sourceLevelEl.value, 10) : 0, // On/off, GPS, GPS&WiFi
+      displayLevel = displayLevelEl ? parseInt(displayLevelEl.value, 10) : 0, // Graticule & sourceLevel
       map = this.getMap(),
       view = map ? map.getView() : null;
 

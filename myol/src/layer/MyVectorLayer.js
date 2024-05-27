@@ -22,12 +22,19 @@ class MyVectorSource extends ol.source.Vector {
     this.options = options;
     this.statusEl = document.getElementById(options.selectName + '-status');
 
+    // Display loading satus
     this.on(['featuresloadstart', 'featuresloadend', 'error', 'featuresloaderror'], evt => {
-      // Display loading satus
-      if (this.statusEl) this.statusEl.innerHTML =
-        evt.type === 'featuresloadstart' ? '&#8987;' :
-        evt.type === 'featuresloadend' ? '' :
-        '&#9888;'; // Error symbol
+      if (this.statusEl)
+        switch (evt.type) {
+          case 'featuresloadstart':
+            this.statusEl.innerHTML = '&#8987;';
+            break;
+          case 'featuresloadend':
+            this.statusEl.innerHTML = '';
+            break;
+          default:
+            this.statusEl.innerHTML = '&#9888;'; // Error symbol
+        }
     });
 
     // Compute properties when the layer is loaded & before the cluster layer is computed
@@ -102,7 +109,7 @@ class MyClusterSource extends ol.source.Cluster {
       const properties = f.getProperties();
 
       lines.push(properties.name);
-      nbMaxClusters += parseInt(properties.cluster) || 1;
+      nbMaxClusters += parseInt(properties.cluster, 10) || 1;
       if (properties.cluster)
         includeCluster = true;
     });
@@ -327,8 +334,8 @@ export class MyVectorLayer extends MyServerClusterVectorLayer {
       urlArgs.bbox = this.bbox(...args);
 
     // Add a pseudo parameter if any marker or edit has been done
-    const version = sessionStorage.myol_lastchange ?
-      '&' + Math.round(sessionStorage.myol_lastchange / 2500 % 46600).toString(36) : '';
+    const version = sessionStorage.myolLastchange ?
+      '&' + Math.round(sessionStorage.myolLastchange / 2500 % 46600).toString(36) : '';
 
     // Clean null & not relative parameters
     Object.keys(urlArgs).forEach(k => {

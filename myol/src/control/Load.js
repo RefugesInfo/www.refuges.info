@@ -6,7 +6,7 @@ import ol from '../ol';
 import Button from './Button.js';
 
 const subMenuHTML = '<input type="file" accept=".gpx,.kml,.json,.geojson">',
-  subMenuHTML_fr = '<p>Importer un fichier de points ou de traces</p>' + subMenuHTML;
+  subMenuHTMLfr = '<p>Importer un fichier de points ou de traces</p>' + subMenuHTML;
 
 export class Load extends Button {
   constructor(options) {
@@ -15,7 +15,7 @@ export class Load extends Button {
       className: 'myol-button-load',
       subMenuId: 'myol-button-load',
       subMenuHTML: subMenuHTML,
-      subMenuHTML_fr: subMenuHTML_fr,
+      subMenuHTMLfr: subMenuHTMLfr,
 
       // receivingLayer: layer, // Layer to addFeatures when loaded
 
@@ -52,7 +52,7 @@ export class Load extends Button {
     const receivedProjection =
       receivedLat &&
       receivedLat.length &&
-      (parseInt(receivedLat[1]) > 100 ? 'EPSG:3857' : 'EPSG:4326');
+      (parseInt(receivedLat[1], 10) > 100 ? 'EPSG:3857' : 'EPSG:4326');
 
     const features = loadFormat.readFeatures(text, {
       dataProjection: receivedProjection,

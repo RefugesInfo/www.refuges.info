@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 27/05/2024 14:19:37 using npm run build from the src/... sources
+ * Built 27/05/2024 21:00:43 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -63694,7 +63694,7 @@
 
         // Sub menu, by priority :
         // subMenuId : 'id', // Html id-fr or Id containing the scrolling menu
-        // subMenuHTML_fr: '', // html code of the scrolling menu in locale lang
+        // subMenuHTMLfr: '', // html code of the scrolling menu in locale lang
         subMenuHTML: '', // html code of the scrolling menu
 
         // buttonAction() {}, // (evt, active) To run when an <input> ot <a> of the subMenu is clicked / hovered, ...
@@ -63726,7 +63726,7 @@
         document.getElementById(options.subMenuId) ||
         document.createElement('div');
       this.subMenuEl.innerHTML ||=
-        options['subMenuHTML_' + navigator.language.match(/[a-z]+/u)] ||
+        options['subMenuHTML' + navigator.language.match(/[a-z]+/u)] ||
         options.subMenuHTML;
 
       // Populate the control
@@ -63783,7 +63783,7 @@
   <p><a mime="vnd.google-earth.kml+xml">KML</a></p>\
   <p><a mime="application/json">GeoJSON</a></p>',
 
-    subMenuHTML_fr$3 = '\
+    subMenuHTMLfr$3 = '\
   <p>Cliquer sur un format ci-dessous pour obtenir\
   un fichier contenant les éléments visibles dans la fenêtre:</p>' +
     subMenuHTML$3;
@@ -63796,7 +63796,7 @@
         className: 'myol-button-download',
         subMenuId: 'myol-button-download',
         subMenuHTML: subMenuHTML$3,
-        subMenuHTML_fr: subMenuHTML_fr$3,
+        subMenuHTMLfr: subMenuHTMLfr$3,
 
         fileName: document.title || 'openlayers', // Name of the file to be downloaded //BEST name from feature
         // savedLayer: layer, // Layer to download
@@ -64146,8 +64146,11 @@
     }
 
     updateResolution(view) {
-      const mapResolution = view.getResolutionForZoom(view.getZoom()),
-        layerResolution = mapResolution < 10 ? 25000 : (mapResolution < 30 ? 100000 : 250000);
+      const mapResolution = view.getResolutionForZoom(view.getZoom());
+      let layerResolution = 25000; // mapResolution < 10
+
+      if (mapResolution > 10) layerResolution = 100000;
+      if (mapResolution > 30) layerResolution = 250000;
 
       this.getSource().updateParams({
         type: 'png',
@@ -64610,7 +64613,7 @@
       const bl = location.href.match(/baselayer=([^&]+)/u);
 
       if (bl)
-        localStorage.myol_baselayer = decodeURI(bl[1]);
+        localStorage.myolBaselayer = decodeURI(bl[1]);
 
       this.sliderEl = document.createElement('input');
       this.sliderEl.type = 'range';
@@ -64652,10 +64655,10 @@
 
       // Hide the selector when the cursor is out of the selector
       map.on('pointermove', evt => {
-        const max_x = map.getTargetElement().offsetWidth - this.element.offsetWidth - 20,
-          max_y = this.element.offsetHeight + 20;
+        const maxX = map.getTargetElement().offsetWidth - this.element.offsetWidth - 20,
+          maxY = this.element.offsetHeight + 20;
 
-        if (evt.pixel[0] < max_x || evt.pixel[1] > max_y)
+        if (evt.pixel[0] < maxX || evt.pixel[1] > maxY)
           this.element.classList.remove('myol-button-switcher-open');
       });
 
@@ -64671,13 +64674,13 @@
         evt.target.checked = true;
       }
       if (!this.element.querySelector('input[name="baselayer"]:checked'))
-        (this.element.querySelector('input[value="' + localStorage.myol_baselayer + '"]') ||
+        (this.element.querySelector('input[value="' + localStorage.myolBaselayer + '"]') ||
           this.selectorEls[0]
         ).checked = true;
 
       const selectedEls = this.element.querySelectorAll('input[name="baselayer"]:checked');
 
-      localStorage.myol_baselayer = selectedEls[0].value;
+      localStorage.myolBaselayer = selectedEls[0].value;
       this.sliderEl.value = 50;
       this.sliderEl.remove();
       this.transparentlayer = null;
@@ -64788,7 +64791,7 @@
 
 
   const subMenuHTML$2 = '<input type="file" accept=".gpx,.kml,.json,.geojson">',
-    subMenuHTML_fr$2 = '<p>Importer un fichier de points ou de traces</p>' + subMenuHTML$2;
+    subMenuHTMLfr$2 = '<p>Importer un fichier de points ou de traces</p>' + subMenuHTML$2;
 
   class Load extends Button {
     constructor(options) {
@@ -64797,7 +64800,7 @@
         className: 'myol-button-load',
         subMenuId: 'myol-button-load',
         subMenuHTML: subMenuHTML$2,
-        subMenuHTML_fr: subMenuHTML_fr$2,
+        subMenuHTMLfr: subMenuHTMLfr$2,
 
         // receivingLayer: layer, // Layer to addFeatures when loaded
 
@@ -64834,7 +64837,7 @@
       const receivedProjection =
         receivedLat &&
         receivedLat.length &&
-        (parseInt(receivedLat[1]) > 100 ? 'EPSG:3857' : 'EPSG:4326');
+        (parseInt(receivedLat[1], 10) > 100 ? 'EPSG:3857' : 'EPSG:4326');
 
       const features = loadFormat.readFeatures(text, {
         dataProjection: receivedProjection,
@@ -66136,7 +66139,7 @@
   <input type="radio" name="myol-gps-display" value="2">Center & orient &nbsp;\
   </p>',
 
-    subMenuHTML_fr$1 = '\
+    subMenuHTMLfr$1 = '\
   <p>Localisation GPS:</p>\
   <label>\
     <input type="radio" name="myol-gps-source" value="0" checked="checked">\
@@ -66168,7 +66171,7 @@
           className: 'myol-button-geolocation',
           subMenuId: 'myol-button-geolocation',
           subMenuHTML: subMenuHTML$1,
-          subMenuHTML_fr: subMenuHTML_fr$1,
+          subMenuHTMLfr: subMenuHTMLfr$1,
 
           // ol.Geolocation options
           // https://www.w3.org/TR/geolocation/#position_options_interface
@@ -66255,8 +66258,8 @@
       const sourceLevelEl = document.querySelector('input[name="myol-gps-source"]:checked'),
         displayEls = document.getElementsByName('myol-gps-display'),
         displayLevelEl = document.querySelector('input[name="myol-gps-display"]:checked'),
-        sourceLevel = sourceLevelEl ? parseInt(sourceLevelEl.value) : 0, // On/off, GPS, GPS&WiFi
-        displayLevel = displayLevelEl ? parseInt(displayLevelEl.value) : 0, // Graticule & sourceLevel
+        sourceLevel = sourceLevelEl ? parseInt(sourceLevelEl.value, 10) : 0, // On/off, GPS, GPS&WiFi
+        displayLevel = displayLevelEl ? parseInt(displayLevelEl.value, 10) : 0, // Graticule & sourceLevel
         map = this.getMap(),
         view = map ? map.getView() : null;
 
@@ -66452,9 +66455,9 @@
           'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>
         ) + ',' +
         // Last values
-        'zoom=' + localStorage.myol_zoom + ',' +
-        'lon=' + localStorage.myol_lon + ',' +
-        'lat=' + localStorage.myol_lat + ',' +
+        'zoom=' + localStorage.myolZoom + ',' +
+        'lon=' + localStorage.myolLon + ',' +
+        'lat=' + localStorage.myolLat + ',' +
         // Default
         'zoom=' + this.options.default[0] + '&lon=' + this.options.default[1] + '&lat=' + this.options.default[2];
 
@@ -66474,9 +66477,9 @@
       if (view.getCenter()) {
         const ll4326 = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
           newParams = 'map=' +
-          (localStorage.myol_zoom = Math.round(view.getZoom() * 10) / 10) + '/' +
-          (localStorage.myol_lon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
-          (localStorage.myol_lat = Math.round(ll4326[1] * 10000) / 10000);
+          (localStorage.myolZoom = Math.round(view.getZoom() * 10) / 10) + '/' +
+          (localStorage.myolLon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
+          (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000);
 
         if (this.linkEl) {
           this.linkEl.href = this.options.hash + newParams;
@@ -66500,7 +66503,7 @@
   <label><input type="radio" name="myol-print-orientation" value="1">Landscape</label>\
   <p><a id="myol-print">Print</a></p>',
 
-    subMenuHTML_fr = '\
+    subMenuHTMLfr = '\
   <p style="float:right" title="Cancel"><a onclick="location.reload()">&#10006;</a></p>\
   <p style="width:175px">Choisir le format et recadrer</p>' +
     subMenuHTML
@@ -66514,7 +66517,7 @@
         className: 'myol-button-print',
         subMenuId: 'myol-button-print',
         subMenuHTML: subMenuHTML,
-        subMenuHTML_fr: subMenuHTML_fr,
+        subMenuHTMLfr: subMenuHTMLfr,
 
         ...options,
       });
@@ -66612,7 +66615,7 @@
   //TODO ? ne montre pas départ / arrivée + tests sur permutation de sens
 
   // Default french text
-  const helpModif_fr = {
+  const helpModifFr = {
       inspect: '\
 <p><b><u>EDITEUR</u>: Inspecter une ligne ou un polygone</b></p>\
 <p>Cliquer sur le bouton &#x2048 (qui bleuit) puis</p>\
@@ -66656,7 +66659,7 @@
 <p><u>Supprimer une ligne ou un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
     },
 
-    helpLine_fr = '\
+    helpLineFr = '\
 <p><b><u>EDITEUR</u>: Créer une ligne</b></p>\
 <p>Cliquer sur le bouton &#x2608; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du début</p>\
@@ -66665,7 +66668,7 @@
 <hr>\
 <p>Cliquer sur une extrémité d\'une ligne existante pour l\'étendre</p>',
 
-    helpPoly_fr = '\
+    helpPolyFr = '\
 <p><b><u>EDITEUR</u>: Créer un polygone</b></p>\
 <p>Cliquer sur le bouton &#x23E2; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du premier sommet</p>\
@@ -66756,14 +66759,14 @@
       // Fit to the source at the init
       map.once('postrender', () => { //HACK the only event to trigger if the map is not centered
         const extent = this.source.getExtent(),
-          defaultPosition = [localStorage.myol_lon || 2, localStorage.myol_lat || 47], // Initial position of the marker
+          defaultPosition = [localStorage.myolLon || 2, localStorage.myolLat || 47], // Initial position of the marker
           view = map.getView();
 
         if (ol.extent.isEmpty(extent)) {
           view.setCenter(
             ol.proj.transform(defaultPosition, 'EPSG:4326', 'EPSG:3857') // If no json value
           );
-          view.setZoom(localStorage.myol_zoom || 6);
+          view.setZoom(localStorage.myolZoom || 6);
         } else
           view.fit(
             extent, {
@@ -66779,28 +66782,28 @@
           className: 'myol-button-inspect myol-button-keepselect',
           subMenuId: 'myol-edit-help-inspect',
           subMenuHTML: '<p>Inspect</p>',
-          subMenuHTML_fr: helpModif_fr.inspect,
+          subMenuHTMLfr: helpModifFr.inspect,
           buttonAction: (evt, active) => this.changeInteraction(0, evt, active),
         }),
         new Button({ // 1
           className: 'myol-button-modify myol-button-keepselect',
           subMenuId: 'myol-edit-help-modify',
           subMenuHTML: '<p>Modification</p>',
-          subMenuHTML_fr: helpModif_fr[this.options.editOnly || 'both'],
+          subMenuHTMLfr: helpModifFr[this.options.editOnly || 'both'],
           buttonAction: (evt, active) => this.changeInteraction(1, evt, active),
         }),
         new Button({ // 2
           className: 'myol-button-draw-line myol-button-keepselect',
           subMenuId: 'myol-edit-help-line',
           subMenuHTML: '<p>New line</p>',
-          subMenuHTML_fr: helpLine_fr,
+          subMenuHTMLfr: helpLineFr,
           buttonAction: (evt, active) => this.changeInteraction(2, evt, active),
         }),
         new Button({ // 3
           className: 'myol-button-draw-poly myol-button-keepselect',
           subMenuId: 'myol-edit-help-poly',
           subMenuHTML: '<p>New polygon</p>',
-          subMenuHTML_fr: helpPoly_fr,
+          subMenuHTMLfr: helpPolyFr,
           buttonAction: (evt, active) => this.changeInteraction(3, evt, active),
         }),
       ];
@@ -66893,7 +66896,7 @@
 
       // End of feature creation
       this.source.on('change', () => { // Call all sliding long
-        sessionStorage.myol_lastchange = Date.now(); // Mem the last change date
+        sessionStorage.myolLastchange = Date.now(); // Mem the last change date
 
         if (this.source.modified) { // Awaiting adding complete to save it
           this.source.modified = false; // To avoid loops
@@ -67097,16 +67100,13 @@
         while (coords.length) {
           const c = coords.shift();
 
-          // Remove duplicated points
-          if (coords.length && this.compareCoords(c, coords[0]))
-            continue;
-
-          if (selectedVertex && this.compareCoords(c, selectedVertex)) {
-            selectedLine = true;
-            break; // Ignore this point and stop selection
+          if (!coords.length || !this.compareCoords(c, coords[0])) { // Skip duplicated points
+            if (selectedVertex && this.compareCoords(c, selectedVertex)) {
+              selectedLine = true;
+              break; // Ignore this point and stop selection
+            }
+            begCoords.push(c);
           }
-
-          begCoords.push(c);
         }
 
         if (selectedLine && reverseLine)
@@ -67116,6 +67116,7 @@
       }
     }
 
+    // Are coords identials ?
     compareCoords(a, b) {
       if (!a) return false;
       if (!b) return this.compareCoords(a[0], a[a.length - 1]); // Compare start with end
@@ -74713,7 +74714,7 @@
     constructor(opt) {
       const options = {
         // src: 'imageUrl', // url of marker image
-        defaultPosition: [localStorage.myol_lon || 2, localStorage.myol_lat || 47], // Initial position of the marker
+        defaultPosition: [localStorage.myolLon || 2, localStorage.myolLat || 47], // Initial position of the marker
         // dragable: false, // Can draw the marker to edit position
         // focus: number // Center & value of zoom on the marker
         zIndex: 600, // Above points & hover
@@ -74851,7 +74852,7 @@
       let position = pos,
         projection = prj || 'EPSG:3857';
 
-      sessionStorage.myol_lastchange = Date.now(); // Mem the last change date
+      sessionStorage.myolLastchange = Date.now(); // Mem the last change date
 
       // If no position is given, use the marker's (dragged)
       if (!position || position.length < 2) {
@@ -74942,9 +74943,9 @@
       if (name) {
         this.safeName = 'myol_' + name.replace(/[^a-z]/giu, '');
         this.init =
-          typeof initSelect !== 'undefined' ?
-          initSelect.toString() :
-          localStorage[this.safeName] || '';
+          typeof initSelect === 'undefined' ?
+          localStorage[this.safeName] || '' :
+          initSelect.toString();
         this.init = this.init.split(',');
         this.selectEls = [...document.getElementsByName(name)];
         this.selectEls.forEach(el => {
@@ -75110,8 +75111,8 @@
       label: agregateText([
         properties.name,
         agregateText([
-          properties.ele ? parseInt(properties.ele) + ' m' : null,
-          properties.bed ? parseInt(properties.bed) + '\u255E\u2550\u2555' : null,
+          properties.ele ? parseInt(properties.ele, 10) + ' m' : null,
+          properties.bed ? parseInt(properties.bed, 10) + '\u255E\u2550\u2555' : null,
         ], ', '),
         properties.type,
         properties.cluster ? null : properties.attribution || layer.options.attribution,
@@ -75163,12 +75164,19 @@
       this.options = options;
       this.statusEl = document.getElementById(options.selectName + '-status');
 
+      // Display loading satus
       this.on(['featuresloadstart', 'featuresloadend', 'error', 'featuresloaderror'], evt => {
-        // Display loading satus
-        if (this.statusEl) this.statusEl.innerHTML =
-          evt.type === 'featuresloadstart' ? '&#8987;' :
-          evt.type === 'featuresloadend' ? '' :
-          '&#9888;'; // Error symbol
+        if (this.statusEl)
+          switch (evt.type) {
+            case 'featuresloadstart':
+              this.statusEl.innerHTML = '&#8987;';
+              break;
+            case 'featuresloadend':
+              this.statusEl.innerHTML = '';
+              break;
+            default:
+              this.statusEl.innerHTML = '&#9888;'; // Error symbol
+          }
       });
 
       // Compute properties when the layer is loaded & before the cluster layer is computed
@@ -75243,7 +75251,7 @@
         const properties = f.getProperties();
 
         lines.push(properties.name);
-        nbMaxClusters += parseInt(properties.cluster) || 1;
+        nbMaxClusters += parseInt(properties.cluster, 10) || 1;
         if (properties.cluster)
           includeCluster = true;
       });
@@ -75468,8 +75476,8 @@
         urlArgs.bbox = this.bbox(...args);
 
       // Add a pseudo parameter if any marker or edit has been done
-      const version = sessionStorage.myol_lastchange ?
-        '&' + Math.round(sessionStorage.myol_lastchange / 2500 % 46600).toString(36) : '';
+      const version = sessionStorage.myolLastchange ?
+        '&' + Math.round(sessionStorage.myolLastchange / 2500 % 46600).toString(36) : '';
 
       // Clean null & not relative parameters
       Object.keys(urlArgs).forEach(k => {
@@ -75624,8 +75632,8 @@
     query(extent, resolution) {
       return {
         _path: 'api/bbox',
-        nb_points: 'all',
-        type_points: this.options.selector.getSelection(),
+        'nb_points': 'all',
+        'type_points': this.options.selector.getSelection(),
         cluster: resolution > this.options.serverClusterMinResolution ? 0.1 : null, // For server cluster layer
       };
     }
@@ -75916,7 +75924,6 @@
   }
 
   // Zoom & resolution
-  /* global map */
   function traceZoom() {
     console.log(
       'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
@@ -75943,7 +75950,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 27/05/2024 14:19:37',
+    VERSION: '1.1.2.dev 27/05/2024 21:00:43',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries

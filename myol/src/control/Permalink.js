@@ -46,9 +46,9 @@ export class Permalink extends ol.control.Control {
         'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>
       ) + ',' +
       // Last values
-      'zoom=' + localStorage.myol_zoom + ',' +
-      'lon=' + localStorage.myol_lon + ',' +
-      'lat=' + localStorage.myol_lat + ',' +
+      'zoom=' + localStorage.myolZoom + ',' +
+      'lon=' + localStorage.myolLon + ',' +
+      'lat=' + localStorage.myolLat + ',' +
       // Default
       'zoom=' + this.options.default[0] + '&lon=' + this.options.default[1] + '&lat=' + this.options.default[2];
 
@@ -68,9 +68,9 @@ export class Permalink extends ol.control.Control {
     if (view.getCenter()) {
       const ll4326 = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
         newParams = 'map=' +
-        (localStorage.myol_zoom = Math.round(view.getZoom() * 10) / 10) + '/' +
-        (localStorage.myol_lon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
-        (localStorage.myol_lat = Math.round(ll4326[1] * 10000) / 10000);
+        (localStorage.myolZoom = Math.round(view.getZoom() * 10) / 10) + '/' +
+        (localStorage.myolLon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
+        (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000);
 
       if (this.linkEl) {
         this.linkEl.href = this.options.hash + newParams;

@@ -10,7 +10,7 @@ import './editor.css';
 //TODO ? ne montre pas départ / arrivée + tests sur permutation de sens
 
 // Default french text
-const helpModif_fr = {
+const helpModifFr = {
     inspect: '\
 <p><b><u>EDITEUR</u>: Inspecter une ligne ou un polygone</b></p>\
 <p>Cliquer sur le bouton &#x2048 (qui bleuit) puis</p>\
@@ -54,7 +54,7 @@ const helpModif_fr = {
 <p><u>Supprimer une ligne ou un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
   },
 
-  helpLine_fr = '\
+  helpLineFr = '\
 <p><b><u>EDITEUR</u>: Créer une ligne</b></p>\
 <p>Cliquer sur le bouton &#x2608; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du début</p>\
@@ -63,7 +63,7 @@ const helpModif_fr = {
 <hr>\
 <p>Cliquer sur une extrémité d\'une ligne existante pour l\'étendre</p>',
 
-  helpPoly_fr = '\
+  helpPolyFr = '\
 <p><b><u>EDITEUR</u>: Créer un polygone</b></p>\
 <p>Cliquer sur le bouton &#x23E2; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du premier sommet</p>\
@@ -154,14 +154,14 @@ export class Editor extends ol.layer.Vector {
     // Fit to the source at the init
     map.once('postrender', () => { //HACK the only event to trigger if the map is not centered
       const extent = this.source.getExtent(),
-        defaultPosition = [localStorage.myol_lon || 2, localStorage.myol_lat || 47], // Initial position of the marker
+        defaultPosition = [localStorage.myolLon || 2, localStorage.myolLat || 47], // Initial position of the marker
         view = map.getView();
 
       if (ol.extent.isEmpty(extent)) {
         view.setCenter(
           ol.proj.transform(defaultPosition, 'EPSG:4326', 'EPSG:3857') // If no json value
         );
-        view.setZoom(localStorage.myol_zoom || 6);
+        view.setZoom(localStorage.myolZoom || 6);
       } else
         view.fit(
           extent, {
@@ -177,28 +177,28 @@ export class Editor extends ol.layer.Vector {
         className: 'myol-button-inspect myol-button-keepselect',
         subMenuId: 'myol-edit-help-inspect',
         subMenuHTML: '<p>Inspect</p>',
-        subMenuHTML_fr: helpModif_fr.inspect,
+        subMenuHTMLfr: helpModifFr.inspect,
         buttonAction: (evt, active) => this.changeInteraction(0, evt, active),
       }),
       new Button({ // 1
         className: 'myol-button-modify myol-button-keepselect',
         subMenuId: 'myol-edit-help-modify',
         subMenuHTML: '<p>Modification</p>',
-        subMenuHTML_fr: helpModif_fr[this.options.editOnly || 'both'],
+        subMenuHTMLfr: helpModifFr[this.options.editOnly || 'both'],
         buttonAction: (evt, active) => this.changeInteraction(1, evt, active),
       }),
       new Button({ // 2
         className: 'myol-button-draw-line myol-button-keepselect',
         subMenuId: 'myol-edit-help-line',
         subMenuHTML: '<p>New line</p>',
-        subMenuHTML_fr: helpLine_fr,
+        subMenuHTMLfr: helpLineFr,
         buttonAction: (evt, active) => this.changeInteraction(2, evt, active),
       }),
       new Button({ // 3
         className: 'myol-button-draw-poly myol-button-keepselect',
         subMenuId: 'myol-edit-help-poly',
         subMenuHTML: '<p>New polygon</p>',
-        subMenuHTML_fr: helpPoly_fr,
+        subMenuHTMLfr: helpPolyFr,
         buttonAction: (evt, active) => this.changeInteraction(3, evt, active),
       }),
     ];
@@ -291,7 +291,7 @@ export class Editor extends ol.layer.Vector {
 
     // End of feature creation
     this.source.on('change', () => { // Call all sliding long
-      sessionStorage.myol_lastchange = Date.now(); // Mem the last change date
+      sessionStorage.myolLastchange = Date.now(); // Mem the last change date
 
       if (this.source.modified) { // Awaiting adding complete to save it
         this.source.modified = false; // To avoid loops
@@ -495,16 +495,13 @@ export class Editor extends ol.layer.Vector {
       while (coords.length) {
         const c = coords.shift();
 
-        // Remove duplicated points
-        if (coords.length && this.compareCoords(c, coords[0]))
-          continue;
-
-        if (selectedVertex && this.compareCoords(c, selectedVertex)) {
-          selectedLine = true;
-          break; // Ignore this point and stop selection
+        if (!coords.length || !this.compareCoords(c, coords[0])) { // Skip duplicated points
+          if (selectedVertex && this.compareCoords(c, selectedVertex)) {
+            selectedLine = true;
+            break; // Ignore this point and stop selection
+          }
+          begCoords.push(c);
         }
-
-        begCoords.push(c);
       }
 
       if (selectedLine && reverseLine)
@@ -514,6 +511,7 @@ export class Editor extends ol.layer.Vector {
     }
   }
 
+  // Are coords identials ?
   compareCoords(a, b) {
     if (!a) return false;
     if (!b) return this.compareCoords(a[0], a[a.length - 1]); // Compare start with end

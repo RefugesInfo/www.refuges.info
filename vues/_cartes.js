@@ -7,9 +7,9 @@ function etiquetteComplette(properties) {
 
   // On calcule d'abord la deuxième ligne
   if (properties.coord && properties.coord.alt)
-    caracteristiques.push(parseInt(properties.coord.alt) + ' m');
+    caracteristiques.push(parseInt(properties.coord.alt, 10) + ' m');
   if (properties.places && properties.places.valeur)
-    caracteristiques.push(parseInt(properties.places.valeur) + '\u255E\u2550\u2555');
+    caracteristiques.push(parseInt(properties.places.valeur, 10) + '\u255E\u2550\u2555');
 
   // Calcul des lignes de l'étiquette
   lignes.push(properties.name);
@@ -38,8 +38,8 @@ function couchePointsWRI(options) {
       return {
         _path: selectionMassif.length ? 'api/massif' : 'api/bbox',
         massif: selectionMassif,
-        type_points: opt.selector.getSelection(),
-        nb_points: 'all',
+        'type_points': opt.selector.getSelection(),
+        'nb_points': 'all',
         cluster: resolution > opt.serverClusterMinResolution ? 0.1 : null, // For server cluster layer
       };
     },
@@ -82,7 +82,7 @@ function coucheMassifsColores(options) {
     strategy: ol.loadingstrategy.all, // Pas de bbox
     query: () => ({
       _path: 'api/polygones',
-      type_polygon: 1, // Massifs
+      'type_polygon': 1, // Massifs
       intersection: options.intersection,
     }),
     ...options,
@@ -138,7 +138,7 @@ function coucheContourMassif(options) {
     // Construction de l'url
     query: (extent, resolution, projection, opt) => ({
       _path: 'api/polygones',
-      type_polygon: 1, // Massifs
+      'type_polygon': 1, // Massifs
       massif: opt.selector.getSelection(),
     }),
     strategy: ol.loadingstrategy.all, // Pas de bbox
@@ -434,7 +434,7 @@ function mapNav(options) {
 
 // Carte de la page de création ou d'édion de massif ou de zone
 /* eslint-disable-next-line no-unused-vars */
-function navEdit(options) {
+function mapEdit(options) {
   const editorLayer = new myol.layer.Editor({
     geoJsonId: 'edit-json',
     editOnly: 'poly',

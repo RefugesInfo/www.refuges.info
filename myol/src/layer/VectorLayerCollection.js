@@ -112,8 +112,8 @@ export class WRI extends MyVectorLayer {
   query(extent, resolution) {
     return {
       _path: 'api/bbox',
-      nb_points: 'all',
-      type_points: this.options.selector.getSelection(),
+      'nb_points': 'all',
+      'type_points': this.options.selector.getSelection(),
       cluster: resolution > this.options.serverClusterMinResolution ? 0.1 : null, // For server cluster layer
     };
   }

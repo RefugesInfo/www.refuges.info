@@ -15,9 +15,9 @@ export class Selector {
     if (name) {
       this.safeName = 'myol_' + name.replace(/[^a-z]/giu, '');
       this.init =
-        typeof initSelect !== 'undefined' ?
-        initSelect.toString() :
-        localStorage[this.safeName] || '';
+        typeof initSelect === 'undefined' ?
+        localStorage[this.safeName] || '' :
+        initSelect.toString();
       this.init = this.init.split(',');
       this.selectEls = [...document.getElementsByName(name)];
       this.selectEls.forEach(el => {

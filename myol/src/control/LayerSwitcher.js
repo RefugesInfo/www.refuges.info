@@ -31,7 +31,7 @@ export class LayerSwitcher extends Button {
     const bl = location.href.match(/baselayer=([^&]+)/u);
 
     if (bl)
-      localStorage.myol_baselayer = decodeURI(bl[1]);
+      localStorage.myolBaselayer = decodeURI(bl[1]);
 
     this.sliderEl = document.createElement('input');
     this.sliderEl.type = 'range';
@@ -73,10 +73,10 @@ export class LayerSwitcher extends Button {
 
     // Hide the selector when the cursor is out of the selector
     map.on('pointermove', evt => {
-      const max_x = map.getTargetElement().offsetWidth - this.element.offsetWidth - 20,
-        max_y = this.element.offsetHeight + 20;
+      const maxX = map.getTargetElement().offsetWidth - this.element.offsetWidth - 20,
+        maxY = this.element.offsetHeight + 20;
 
-      if (evt.pixel[0] < max_x || evt.pixel[1] > max_y)
+      if (evt.pixel[0] < maxX || evt.pixel[1] > maxY)
         this.element.classList.remove('myol-button-switcher-open');
     });
 
@@ -92,13 +92,13 @@ export class LayerSwitcher extends Button {
       evt.target.checked = true;
     }
     if (!this.element.querySelector('input[name="baselayer"]:checked'))
-      (this.element.querySelector('input[value="' + localStorage.myol_baselayer + '"]') ||
+      (this.element.querySelector('input[value="' + localStorage.myolBaselayer + '"]') ||
         this.selectorEls[0]
       ).checked = true;
 
     const selectedEls = this.element.querySelectorAll('input[name="baselayer"]:checked');
 
-    localStorage.myol_baselayer = selectedEls[0].value;
+    localStorage.myolBaselayer = selectedEls[0].value;
     this.sliderEl.value = 50;
     this.sliderEl.remove();
     this.transparentlayer = null;

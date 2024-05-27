@@ -263,8 +263,11 @@ export class IGM extends ol.layer.Tile {
   }
 
   updateResolution(view) {
-    const mapResolution = view.getResolutionForZoom(view.getZoom()),
-      layerResolution = mapResolution < 10 ? 25000 : (mapResolution < 30 ? 100000 : 250000);
+    const mapResolution = view.getResolutionForZoom(view.getZoom());
+    let layerResolution = 25000; // mapResolution < 10
+
+    if (mapResolution > 10) layerResolution = 100000;
+    if (mapResolution > 30) layerResolution = 250000;
 
     this.getSource().updateParams({
       type: 'png',

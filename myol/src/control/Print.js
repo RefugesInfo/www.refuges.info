@@ -10,7 +10,7 @@ const subMenuHTML = '\
   <label><input type="radio" name="myol-print-orientation" value="1">Landscape</label>\
   <p><a id="myol-print">Print</a></p>',
 
-  subMenuHTML_fr = '\
+  subMenuHTMLfr = '\
   <p style="float:right" title="Cancel"><a onclick="location.reload()">&#10006;</a></p>\
   <p style="width:175px">Choisir le format et recadrer</p>' +
   subMenuHTML
@@ -24,7 +24,7 @@ export class Print extends Button {
       className: 'myol-button-print',
       subMenuId: 'myol-button-print',
       subMenuHTML: subMenuHTML,
-      subMenuHTML_fr: subMenuHTML_fr,
+      subMenuHTMLfr: subMenuHTMLfr,
 
       ...options,
     });

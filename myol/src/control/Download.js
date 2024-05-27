@@ -10,7 +10,7 @@ const subMenuHTML = '\
   <p><a mime="vnd.google-earth.kml+xml">KML</a></p>\
   <p><a mime="application/json">GeoJSON</a></p>',
 
-  subMenuHTML_fr = '\
+  subMenuHTMLfr = '\
   <p>Cliquer sur un format ci-dessous pour obtenir\
   un fichier contenant les éléments visibles dans la fenêtre:</p>' +
   subMenuHTML;
@@ -23,7 +23,7 @@ export class Download extends Button {
       className: 'myol-button-download',
       subMenuId: 'myol-button-download',
       subMenuHTML: subMenuHTML,
-      subMenuHTML_fr: subMenuHTML_fr,
+      subMenuHTMLfr: subMenuHTMLfr,
 
       fileName: document.title || 'openlayers', // Name of the file to be downloaded //BEST name from feature
       // savedLayer: layer, // Layer to download
