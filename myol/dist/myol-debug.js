@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 27/05/2024 21:00:43 using npm run build from the src/... sources
+ * Built 27/05/2024 21:11:50 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -75950,7 +75950,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 27/05/2024 21:00:43',
+    VERSION: '1.1.2.dev 27/05/2024 21:11:50',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries
