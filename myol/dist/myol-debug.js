@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 27/05/2024 21:11:50 using npm run build from the src/... sources
+ * Built 27/05/2024 21:18:01 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -66625,6 +66625,7 @@
       line: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne</b></p>\
 <p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
+<p>Pointer le curseur sur une ligne</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -66635,6 +66636,7 @@
       poly: '\
 <p><b><u>EDITEUR</u>: Modifier un polygone</b></p>\
 <p>Cliquer sur le bouton &#x2725; (qui bleuit) puis </p>\
+<p>Pointer le curseur sur un polygone</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -66644,6 +66646,7 @@
 <p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
       both: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne ou un polygone</b></p>\
+<p>Pointer le curseur sur une ligne ou un polygone</p>\
 <p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
@@ -75950,7 +75953,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 27/05/2024 21:11:50',
+    VERSION: '1.1.2.dev 27/05/2024 21:18:01',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries

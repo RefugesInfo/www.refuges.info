@@ -1016,7 +1016,7 @@ body:has(.myol-print-landscape)>*:not(.myol-print-landscape),
 }
 
 .map-edit-1 {
-  cursor: alias;
+  cursor: default;
 }
 
 /* Draw line */
