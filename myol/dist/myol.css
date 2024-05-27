@@ -1003,38 +1003,38 @@ body:has(.myol-print-landscape)>*:not(.myol-print-landscape),
 
 /* Inspect */
 .myol-button-inspect button::after {
-  content: "\1F4CF";
+  content: "\2048";
 }
 
 .map-edit-0 {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F4CF</text></svg>') 20 20, help;
+  cursor: help;
 }
 
 /* Modify */
 .myol-button-modify button::after {
-  content: "\1F90F";
+  content: "\2725";
 }
 
 .map-edit-1 {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F90F</text></svg>') 4 16, grabbing;
+  cursor: alias;
 }
 
 /* Draw line */
 .myol-button-draw-line button::after {
-  content: "\1F589";
+  content: "\2608";
 }
 
 .map-edit-2 {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F589</text></svg>') 2 34, copy;
+  cursor: copy;
 }
 
 /* Draw poly */
 .myol-button-draw-poly button::after {
-  content: "\1F58C";
+  content: "\23E2";
 }
 
 .map-edit-3 {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><text style="font-size: 34px" y="34">\1F58C</text></svg>') 2 34, copy;
+  cursor: copy;
 }
 
 /* Submenu */

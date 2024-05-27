@@ -13,13 +13,13 @@ import './editor.css';
 const helpModif_fr = {
     inspect: '\
 <p><b><u>EDITEUR</u>: Inspecter une ligne ou un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F4CF (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2048 (qui bleuit) puis</p>\
 <p>Survoler l\'objet avec le curseur pour:</p>\
 <p>Distinguer une ligne ou un polygone des autres</p>\
 <p>Calculer la longueur d\'une ligne ou un polygone</p>',
     line: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne</b></p>\
-<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -29,7 +29,7 @@ const helpModif_fr = {
 <p><u>Supprimer une ligne</u>: Ctrl+Alt+cliquer sur un segment</p>',
     poly: '\
 <p><b><u>EDITEUR</u>: Modifier un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis </p>\
+<p>Cliquer sur le bouton &#x2725; (qui bleuit) puis </p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -39,7 +39,7 @@ const helpModif_fr = {
 <p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
     both: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne ou un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -56,7 +56,7 @@ const helpModif_fr = {
 
   helpLine_fr = '\
 <p><b><u>EDITEUR</u>: Créer une ligne</b></p>\
-<p>Cliquer sur le bouton &#x1F589; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2608; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du début</p>\
 <p>Puis sur chaque sommet</p>\
 <p>Double cliquer sur le dernier sommet pour terminer</p>\
@@ -65,7 +65,7 @@ const helpModif_fr = {
 
   helpPoly_fr = '\
 <p><b><u>EDITEUR</u>: Créer un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F58C; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x23E2; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du premier sommet</p>\
 <p>Puis sur chaque sommet</p>\
 <p>Double cliquer sur le dernier sommet pour terminer</p>\

@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 26/05/2024 16:25:17 using npm run build from the src/... sources
+ * Built 27/05/2024 14:19:37 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -66615,13 +66615,13 @@
   const helpModif_fr = {
       inspect: '\
 <p><b><u>EDITEUR</u>: Inspecter une ligne ou un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F4CF (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2048 (qui bleuit) puis</p>\
 <p>Survoler l\'objet avec le curseur pour:</p>\
 <p>Distinguer une ligne ou un polygone des autres</p>\
 <p>Calculer la longueur d\'une ligne ou un polygone</p>',
       line: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne</b></p>\
-<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -66631,7 +66631,7 @@
 <p><u>Supprimer une ligne</u>: Ctrl+Alt+cliquer sur un segment</p>',
       poly: '\
 <p><b><u>EDITEUR</u>: Modifier un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis </p>\
+<p>Cliquer sur le bouton &#x2725; (qui bleuit) puis </p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -66641,7 +66641,7 @@
 <p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
       both: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne ou un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F90F; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -66658,7 +66658,7 @@
 
     helpLine_fr = '\
 <p><b><u>EDITEUR</u>: Créer une ligne</b></p>\
-<p>Cliquer sur le bouton &#x1F589; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x2608; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du début</p>\
 <p>Puis sur chaque sommet</p>\
 <p>Double cliquer sur le dernier sommet pour terminer</p>\
@@ -66667,7 +66667,7 @@
 
     helpPoly_fr = '\
 <p><b><u>EDITEUR</u>: Créer un polygone</b></p>\
-<p>Cliquer sur le bouton &#x1F58C; (qui doit bleuir) puis</p>\
+<p>Cliquer sur le bouton &#x23E2; (qui bleuit) puis</p>\
 <p>Cliquer sur l\'emplacement du premier sommet</p>\
 <p>Puis sur chaque sommet</p>\
 <p>Double cliquer sur le dernier sommet pour terminer</p>\
@@ -75943,7 +75943,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 26/05/2024 16:25:17',
+    VERSION: '1.1.2.dev 27/05/2024 14:19:37',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries
