@@ -6,9 +6,9 @@ Fonctions permettant de faire des modifications dans le forum
 
 // Récupère l'environnement du forum
 // Cette séquence ne peut pas être dans une function
-include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+include($config_wri['rep_forum'] . 'includes/functions_posting.php');
+include($config_wri['rep_forum'] . 'includes/message_parser.php');
+include($config_wri['rep_forum'] . 'includes/functions_admin.php');
 
 // Fonction générique qui permet - entre autre - de créer un topic, modifier le titre et ajouter un post
 function forum_submit_post ($args) {
