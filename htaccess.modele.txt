@@ -17,6 +17,11 @@ RedirectMatch 403 ^/.git/.*$
 AddDefaultCharset UTF-8
 
 RewriteEngine On
+
+#Blocage d'une liste UserAgent (parfois y'a tellement d'abus depuis certains bots qu'on en arrive à là, en voici 3 pourtant issues de maisons célèbres qui abusent parfois)
+#RewriteCond %{HTTP_USER_AGENT} ^.*(facebookexternalhit|Amazonbot|AhrefsBot).*$ [NC]
+#RewriteRule .* - [F,L]
+
 # Ici on détecte si la connexion a lieu par http ou https et on stock dans la variable "proto"
 RewriteCond %{HTTPS} =on
 RewriteRule ^(.*)$ - [env=proto:https]
