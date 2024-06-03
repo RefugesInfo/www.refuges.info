@@ -37,9 +37,3 @@
 .map-edit-3 {
   cursor: copy;
 }
-
-/* Submenu */
-.myol-button:not(.myol-button-hover)>div {
-  max-height: 0;
-  opacity: 0;
-}
