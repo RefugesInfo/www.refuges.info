@@ -144,6 +144,7 @@ html {
   height: 100%;
 }
 body {
+  margin: 0px;
   width: 100%;
   height: 100%;
   background-color: #<?=$couleur_fond?>;
@@ -235,10 +236,10 @@ dt { /* listes, de definitions */
   font-weight: bold;
   margin-top:4px;
 }
-dl > dl { /* decale les elements imbriques de 1em */
-  padding-left: 1em;
+dd { /* listes, de definitions */
+  margin-left:1em;
 }
-dt > BUTTON {
+dt > button {
   font-size: 60%;
   padding: 0px ;
 }
@@ -703,13 +704,10 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
   .fauxfieldset { /* div imite un fieldset */
     border: thin solid black;
     margin-top: 1em;
-    /*padding: 1em;*/
 }
-  .fauxfieldset-legend  { /* P imite un fieldset legend */
+  .fauxfieldset-legend  {
     float: left;
     margin: -0.2em 1em 0em 1em;
-    /*margin-bottom: 1em;*/
-    /*vertical-align: super;*/
 }
   .spacer { /* HR de spacer pour la mise en page, en particulier dans les fiches */
     clear: both;
@@ -872,6 +870,12 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
     height: 450px;
   }
 }
+@media (pointer:coarse) {
+  .hide-touch-screen {
+    display: none;
+  }
+}
+
 @media print {
   html {
     height: initial;
@@ -900,3 +904,6 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 	padding: 4px;
 }
 
+.texte-tout-petit {
+  font-size: x-small;
+}
