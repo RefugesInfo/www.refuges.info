@@ -140,12 +140,11 @@ switch ($periode)
 /*===== Général =======*/
 
 html {
-  width: 100%; /* jmb 01/2008 , pour gmaps */
+  width: 100%;
   height: 100%;
 }
 body {
-  margin: 0px; /* il le faut pour FF */
-  width: 100%; /* jmb 01/2008 , pour gmaps */
+  width: 100%;
   height: 100%;
   background-color: #<?=$couleur_fond?>;
 }
@@ -167,15 +166,6 @@ cite { /* Citation: gras+droit */
   font-weight: bold ;
   font-style: normal ;
 }
-dfn { /*Definitions */
-  border-bottom: thin dotted blue;
-  font-style: normal;
-}
-dfn:after { /*Definition, ajoute un ? a la fin pour inciter a passer la souris dessus*/
-  content: "?";
-  font-size: smaller;
-  vertical-align: text-top;
-}
 blockquote > div { /* en particulier les ciations forum */
   border-left: double blue;
 }
@@ -183,7 +173,7 @@ blockquote p:before  { /* message forum et commentaires *//* HS sous IE */
   content: open-quote;
   font-size: xx-large;
 }
-blockquote P:after  { /* message forum et commentaires */
+blockquote p:after  { /* message forum et commentaires */
   content: close-quote;
   font-size: xx-large;
   vertical-align: text-top; /* pour pas que cette derniere quote decale la derniere ligne */
@@ -378,14 +368,14 @@ body:not(#phpbb) a:visited {
   color : #<?=$couleur_lien_visite?>;
 }
 
-/*=========ERREUR==========*/
+/*========= Erreurs ==========*/
 .erreur_saisie {
 	border: 2px double red;
 	background-color: yellow;
 	padding: 10px;
 }
 
-/*=========INFOBulLES===========*/
+/*========= Infobulles ===========*/
 a.infobulle {
   position:relative;
   text-decoration: none;
@@ -404,22 +394,9 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
   border: 1px solid #bbb;
   background: #ffc;
   white-space: nowrap;
-  z-index: 100; /* ?? */
+  z-index: 100;
 }
 
-/*========= Liens ==========*/
-.don {
-  text-decoration: underline;
-  margin-left: 450px;
-  position: relative; top: 15px;
-}
-
-/*========= Wiki surgissants ==========*/
-.wiki {
-	border: 5px solid #<?=$couleur_decoration_titres?>;
-	background-color: #f8fff4;
-    z-index: 500000;
-}
 /*==================================================================*/
 /*  Entête de page : Logo, menus, identification                    */
 /*==================================================================*/
