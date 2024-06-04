@@ -184,6 +184,7 @@
         <a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">Géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
       <?php }?>
     </dd>
+  </dl>
 <!--============================= Infos assez internes finalement, plutôt pour modérateurs devrais-je dire ===================-->
   <p class="noprint">
     Fiche n°<?=$vue->point->id_point?> sur le site depuis le <?=date ("d/m/Y", $vue->point->date_creation_timestamp)?>
@@ -199,8 +200,9 @@
         <?php if ($vue->point->id_createur != 0) { ?>
             <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
               <?=$vue->nom_createur?>
+            </a>
         <?php } else { ?>
-        <?=$vue->nom_createur?>
+          <?=$vue->nom_createur?>
         <?php }
       }
       ?>
@@ -231,7 +233,7 @@
         </a>
       <?php }?>
   </div>
-<!--===================================== LIEN AJOUT COMENTAIRE ====================================-->
+<!--===================================== LIEN AJOUT COMMENTAIRE ====================================-->
   <h5 class="noprint">Informations récentes</h5>
     <p class="lien_ajout_commentaire noprint">
       <a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
