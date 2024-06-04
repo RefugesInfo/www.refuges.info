@@ -135,15 +135,15 @@ switch ($periode)
 }
 
 /*==================================================================*/
-/* MISE EN PAGE GENERALE DES TYPES                                  */
+/* Mise en page générales des types                                 */
 /*==================================================================*/
-/*=====GENERAL=======*/
+/*===== Général =======*/
 
-HTML {
+html {
   width: 100%; /* jmb 01/2008 , pour gmaps */
   height: 100%;
 }
-BODY {
+body {
   margin: 0px; /* il le faut pour FF */
   width: 100%; /* jmb 01/2008 , pour gmaps */
   height: 100%;
@@ -159,39 +159,46 @@ BODY {
 }
 
 /*=====TEXTE=======*/
-STRONG { /* Strong Emphasis: gras+rouge */
+strong { /* Strong Emphasis: gras+rouge */
   font-weight: bold;
   color: #FF0000 ;
 }
-CITE { /* Citation: gras+droit */
+cite { /* Citation: gras+droit */
   font-weight: bold ;
   font-style: normal ;
 }
-DFN { /*Definitions */
+dfn { /*Definitions */
   border-bottom: thin dotted blue;
   font-style: normal;
 }
-DFN:after { /*Definition, ajoute un ? a la fin pour inciter a passer la souris dessus*/
+dfn:after { /*Definition, ajoute un ? a la fin pour inciter a passer la souris dessus*/
   content: "?";
   font-size: smaller;
   vertical-align: text-top;
 }
-BLOCKQUOTE > DIV { /* en particulier les ciations forum */
+blockquote > div { /* en particulier les ciations forum */
   border-left: double blue;
 }
-BLOCKQUOTE P:before  { /* message forum et commentaires *//* HS sous IE */
+blockquote p:before  { /* message forum et commentaires *//* HS sous IE */
   content: open-quote;
   font-size: xx-large;
 }
-BLOCKQUOTE P:after  { /* message forum et commentaires */
+blockquote P:after  { /* message forum et commentaires */
   content: close-quote;
   font-size: xx-large;
   vertical-align: text-top; /* pour pas que cette derniere quote decale la derniere ligne */
 }
 
-/*======TITRES=======*/
-/* on commence au H3 car 1,2 sont vraiment trop gros. je sais ... CSS .... mais maintenant c'est fait.*/
-H3 { /* titres de pages */
+/*====== Titres =======*/
+
+h1 { /* Ce titre principal n'est pas plus gros ou gras que les autres, mais significativement, c'est le titre le plus important de la page */
+  font-weight: bold ;
+  font-style: normal ;
+  font-size: large;
+  margin-bottom:3px;
+}
+
+h3 { /* titres de pages */
   font-weight: bold ;
   font-style: normal ;
   font-size: large;
@@ -202,7 +209,7 @@ H3 { /* titres de pages */
   color: white;
   background-color: #<?=$couleur_lien?>;
 }
-H4 { /* sous titres */
+h4 { /* sous titres */
   padding-top: 4px; /* sous FF, la padding par defo est immense */
   padding-bottom: 2px;
   padding-left: 10px;
@@ -211,66 +218,66 @@ H4 { /* sous titres */
   border-bottom: 2px solid #<?=$couleur_decoration_titres?>;
   border-left: 2px solid #<?=$couleur_decoration_titres?>;
 }
-H5 { /* sou-sou titre, pour l'instant que dans les fiches de refuges */
+h5 { /* sou-sou titre, pour l'instant que dans les fiches de refuges */
   border-bottom: thin solid #<?=$couleur_decoration_titres?> ;
   font-size: medium; /* sinon H5 cest tout petit ... */
   margin-top:15px;
   margin-bottom:3px;
   padding-left: 10px;
 }
-H6 { /* utilisé dans la "FAQ" comme question */
+h6 { /* utilisé dans la "FAQ" comme question */
   margin-bottom: 0px;
   margin-top: 1em;
   font-size: 12px;
   font-weight: bold ;
   font-size: medium; /* sinon H6, c'est tout petit ... */
 }
-P {
+p {
   margin-bottom: 1em;
 }
-/*===== LISTES=====*/
-UL { /* les listes , y compris news en page de garde */
+/*===== Listes =====*/
+ul { /* les listes , y compris news en page de garde */
   list-style-type: none;
   margin: 0px;
   padding: 0px 0px 0px 5px;
 }
-DT { /* listes, de definitions */
+dt { /* listes, de definitions */
   font-weight: bold;
   margin-top:4px;
 }
-DL > DL { /* decale les elements imbriques de 1em */
+dl > dl { /* decale les elements imbriques de 1em */
   padding-left: 1em;
 }
-DT > BUTTON {
+dt > BUTTON {
   font-size: 60%;
   padding: 0px ;
 }
-LI {
+li {
   margin-bottom:3px;
 }
 
-/*====== FORMULAIRES======*/
+/*====== Formulaires======*/
 /* 
   Utilisé pour le formulaire de création ou modification ainsi que l'ajout de commentaires. 
   J'aimerais pouvoir rendre un peu plus cohérent (factoriser) les style de la plupart des formulaires du site (zone modérateur, modif fiche, ajout commentaires) 
-  mais ça demande un peu de tests.
+  mais ça demande un peu de tests, je (sly 2024) le fais au fûr et à mesure.
 */
 
-FORM#form_point FIELDSET {
+form#form_point fieldset {
   border: thin solid transparent;  /* pour les allergiques aux barrieres ;) */
   padding: 0.75em 0;
 }
-FORM#form_point .textarea {
+form#form_point .textarea {
   width: 100%;
   min-width: 150px;
   max-width: 1000px;
   min-height: 10em;
 }
-FORM#form_point .textarea LABEL,
-FORM#form_point .textarea TEXTAREA {
+form#form_point .textarea label,
+form#form_point .textarea textarea {
   width: 100%;
 }
-FORM#form_point .booleen {
+form#form_point .booleen {
   clear: left;
   float:left;
   width: 700px;
@@ -279,43 +286,43 @@ FORM#form_point .booleen {
   text-align: right;
   padding: 1px;
 }
-FORM#form_point .booleen LEGEND {
+form#form_point .booleen legend {
   clear: left;
   float:left;
 }
-FORM#form_point .booleen LABEL {
+form#form_point .booleen label {
   clear: none;
   float: none;
   padding-left: 5px;
 }
-FORM#form_export LABEL {
+form#form_export label {
   clear: none;
   float: left;
   width: 16em;
 }
-#form_export FIELDSET FIELDSET:hover {  /* deco sur le fieldset actif, pour bien le differencier des autres */
+#form_export fieldset fieldset:hover {  /* deco sur le fieldset actif, pour bien le differencier des autres */
   border: thin dotted black;
 }
-FORM.wri LABEL { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
+form.wri label { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
   clear: left;
   float: left;
 }
-FORM LABEL[title]:after, FORM LEGEND[title]:after {  /* combine pour exclure OL , leurs LABEL ne sont pas dans des FORM */
+form label[title]:after, form legend[title]:after {  /* combine pour exclure OL , leurs label ne sont pas dans des form */
   content: url(../images/tooltip.png);
 }
-FIELDSET FIELDSET {  /* moins de déco pour les fieldset imbriques */
+fieldset fieldset {  /* moins de déco pour les fieldset imbriques */
   float: left;
   border: thin solid transparent;
 }
-FORM .champs_null_masque>INPUT { /* couleur de la case "champ null" et masquee par defo */
+form .champs_null_masque>input { /* couleur de la case "champ null" et masquee par defo */
   outline : red solid 2px ;
   float: left;
   display: none;
 }
-FORM .champs_null_masque > INPUT:checked  + *  INPUT { /* desactive les INPUT qui suivent */
+form .champs_null_masque > input:checked  + *  input { /* desactive les input qui suivent */
   visibility: hidden;
 }
-FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon endroit */
+form .champs_null_masque > label { /* permet a la case de s'intercaler au bon endroit */
   clear: none;
 }
 .input_en_ligne {
@@ -337,7 +344,7 @@ FORM .champs_null_masque > LABEL { /* permet a la case de s'intercaler au bon en
   font-weight: bold;
 }
 /* Cas particulier pour OL qui a des labels non standards */
-DIV#switch_nav LABEL {
+div#switch_nav label {
   float: none;
   clear: none;
 }
@@ -345,15 +352,15 @@ input[type=checkbox]:hover, input[type=radio]:hover{
     box-shadow: 0px 0px 10px #1300ff;
 }
 
-/*==========DIVERS=======*/
-IMG { /* images sans bordures */
+/*==========divers=======*/
+img { /* images sans bordures */
   border: 0px;
   margin: 0px;
   padding: 0px;
 }
 
-/*=========LIENS==========*/
-A:hover { /*met en valeur les liens qd on est dessus */
+/*=========liENS==========*/
+a:hover { /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;
   text-decoration: none;
 }
@@ -362,12 +369,12 @@ J'intègre également les class des liens du forum
 en gros je veux tout de la même couleur
 */
 
-body:not(#phpbb) A,A.mainmenu,A.nav,A.forumlink,A.cattitle,A.topictitle,A.postlink,A.gen,A.genmed,A.gensmall {
+body:not(#phpbb) a,a.mainmenu,a.nav,a.forumlink,a.cattitle,a.topictitle,a.postlink,a.gen,a.genmed,a.gensmall {
   color : #<?=$couleur_lien?>; /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
 }
 
-body:not(#phpbb) A:visited {
+body:not(#phpbb) a:visited {
   color : #<?=$couleur_lien_visite?>;
 }
 
@@ -378,18 +385,18 @@ body:not(#phpbb) A:visited {
 	padding: 10px;
 }
 
-/*=========INFOBULLES===========*/
-A.infobulle {
+/*=========INFOBulLES===========*/
+a.infobulle {
   position:relative;
   text-decoration: none;
   color: black;
 }
-A.infobulle SPAN { /* au repos, on efface */
+a.infobulle span { /* au repos, on efface */
   display: none;
 }
-A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
+a.infobulle:hover span { /* qd on passe dessus, ca affiche */
   display: block;
-  position: absolute; /* relativement au relatif du A */
+  position: absolute; /* relativement au relatif du a */
   top: 18px;
   left: -10px;
   padding: 5px;
@@ -400,21 +407,21 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   z-index: 100; /* ?? */
 }
 
-/*=========LIENS==========*/
+/*========= Liens ==========*/
 .don {
   text-decoration: underline;
   margin-left: 450px;
   position: relative; top: 15px;
 }
 
-/*=========WIKIS SURGISSANTS==========*/
+/*========= Wiki surgissants ==========*/
 .wiki {
 	border: 5px solid #<?=$couleur_decoration_titres?>;
 	background-color: #f8fff4;
     z-index: 500000;
 }
 /*==================================================================*/
-/*  ENTETE DE PAGE : Logo, menus, identification                    */
+/*  Entête de page : Logo, menus, identification                    */
 /*==================================================================*/
 .bandeau-haut * {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -423,7 +430,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 .menu-bouton * {
 	font-family: Times New Roman;
 }
-.menu-haut FORM LI {
+.menu-haut form li {
 	margin: 5px 2px 10px 2px;
 }
 
@@ -448,7 +455,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		padding: 11px 0;
 		font-size: 16px;
 	}
-	.recherche-haut INPUT {
+	.recherche-haut input {
 		font-size: 16px;
 	}
 	.menu-haut {
@@ -456,23 +463,23 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	}
 
 	/* Ligne de menus */
-	.menu-liste > UL {
+	.menu-liste > ul {
 		display: flex;
 		justify-content: space-between;
 		padding: 0;
 	}
-	.menu-liste > SPAN,
+	.menu-liste > span,
 	.menu-titre {
 		display: none;
 	}
 	.menu-connexion {
 		float: right;
 	}
-	.menu-connexion UL {
+	.menu-connexion ul {
 		right: 0;
 		border-radius: 10px 0 10px 10px !important;
 	}
-	.menu-connexion SPAN SPAN {
+	.menu-connexion span span {
 		vertical-align:super;
 		font-size: 12px;
 	}
@@ -492,8 +499,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	}
 
 	/* Blocs rétractables en dessous des boutons */
-	.menu-bouton:not(.menu-liste) > P,
-	.menu-bouton:not(.menu-liste) > UL {
+	.menu-bouton:not(.menu-liste) > p,
+	.menu-bouton:not(.menu-liste) > ul {
 		position: absolute;
 		margin: 2px 0 0 -4px;
 		border-radius: 0 10px 10px 10px;
@@ -503,21 +510,21 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		opacity: 0;
 		z-index: -10;
 	}
-	.menu-touch:not(.menu-liste) > UL,
-	.menu-hover:not(.menu-liste) > UL,
-	.menu-hover:not(.menu-liste) > P,
-	.menu-hover:not(.menu-liste) > A {
+	.menu-touch:not(.menu-liste) > ul,
+	.menu-hover:not(.menu-liste) > ul,
+	.menu-hover:not(.menu-liste) > p,
+	.menu-hover:not(.menu-liste) > a {
 		opacity: 1;
 		z-index: 1000;
 	}
 
 	/* Lignes des blocs rétractables */
-	.menu-bouton:not(.menu-liste) LI {
+	.menu-bouton:not(.menu-liste) li {
 		max-height: 0;
 		transition: max-height 0.2s ease-in;
 	}
-	.menu-touch:not(.menu-liste) LI,
-	.menu-hover:not(.menu-liste) LI {
+	.menu-touch:not(.menu-liste) li,
+	.menu-hover:not(.menu-liste) li {
 		max-height: 2.2em;
 	}
 }
@@ -536,7 +543,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	.menu-bouton:not(.menu-liste) {
 		background: #<?=$couleur_fond?>;
 	}
-	.menu-connexion UL {
+	.menu-connexion ul {
 		right: initial;
 		border-radius: 0 10px 10px 10px !important;
 	}
@@ -547,7 +554,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 
 /* On enlève les icones pour les fenêtres moyenes */
 @media screen and (min-width: 500px) and (max-width: 650px) {
-	.menu-bouton SPAN:first-child {
+	.menu-bouton span:first-child {
 		display: none;
 	}
 }
@@ -559,15 +566,15 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	}
 	.logo-haut,
 	.recherche-haut,
-	.menu-titre SPAN {
+	.menu-titre span {
 		display: none;
 	}
 }
 @media screen and (max-height: 600px) and (min-width: 500px) and (max-width: 700px) {
-	.menu-bouton SPAN {
+	.menu-bouton span {
 		line-height: 1.5em;
 	}
-	.menu-bouton SPAN:first-child {
+	.menu-bouton span:first-child {
 		display: none;
 	}
 }
@@ -582,7 +589,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	.menu-haut .menu-large,
 	.menu-bouton P,
 	.headerbar,
-	body:not(#phpbb) .menu-titre SPAN {
+	body:not(#phpbb) .menu-titre span {
 		display: none;
 	}
 	.menu-haut {
@@ -594,7 +601,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	}
 
 	/* Boutons */
-	DIV.menu-bouton > SPAN,
+	div.menu-bouton > span,
 	.menu-titre {
 		display: block;
 		padding: 0 8px 2px 8px;
@@ -610,8 +617,8 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 	}
 
 	/* Blocs rétractables en dessous des boutons */
-	.menu-liste > UL,
-	.menu-connexion UL {
+	.menu-liste > ul,
+	.menu-connexion ul {
 		position: absolute;
 		border-radius: 0 0 10px 10px;
 		border: 2px solid #<?=$couleur_decoration_titres?>;
@@ -621,46 +628,46 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 		z-index: -10;
 		opacity: 0;
 	}
-	.menu-connexion UL {
+	.menu-connexion ul {
 		right: 0;
 	}
-	.menu-liste > UL {
+	.menu-liste > ul {
 		padding-top: 3px;
 	}
-	.menu-liste.menu-touch > UL,
-	.menu-liste.menu-hover > UL,
-	.menu-connexion.menu-touch > UL,
-	.menu-connexion.menu-hover > UL {
+	.menu-liste.menu-touch > ul,
+	.menu-liste.menu-hover > ul,
+	.menu-connexion.menu-touch > ul,
+	.menu-connexion.menu-hover > ul {
 		opacity: 1;
 		z-index: 1000;
 	}
 
 	/* Lignes des blocs rétractables */
-	.menu-liste LI,
-	.menu-connexion LI {
+	.menu-liste li,
+	.menu-connexion li {
 		max-height: 0;
 		transition: max-height 0.2s ease-in;
 	}
-	.menu-liste.menu-touch LI,
-	.menu-liste.menu-hover LI {
+	.menu-liste.menu-touch li,
+	.menu-liste.menu-hover li {
 		max-height: initial;
 	}
-	.menu-liste.menu-touch UL UL LI,
-	.menu-liste.menu-hover UL UL LI,
-	.menu-connexion.menu-touch LI,
-	.menu-connexion.menu-hover LI {
+	.menu-liste.menu-touch ul ul li,
+	.menu-liste.menu-hover ul ul li,
+	.menu-connexion.menu-touch li,
+	.menu-connexion.menu-hover li {
 		padding: 1.5px 0;
 		max-height: 1.2em;
 	}
 }
 /* Fenêtres très étroites */
 @media screen and (max-width: 300px) {
-	.menu-titre SPAN {
+	.menu-titre span {
 		display: none;
 	}
 }
 
-/* ==========MENU DU BAS ========== */
+/* ========== Menu du bas ========== */
 
 /* en bas, il y a un gros div "basdepage" qui englobe la fin */
   #basdepage {
@@ -673,19 +680,19 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   /* c'est la liste en bas de page */
   #basdepage #racourcismenus {
     clear: both;
-    border: dashed thin #096EA1;
+    border: dashed thin #096Ea1;
     text-align: center;
     margin: 0px;
 }
-  #basdepage UL {
+  #basdepage ul {
     clear: both;
     text-align: center;
 }
-  #basdepage LI {
+  #basdepage li {
     display: inline;
     margin-right: 2em;
 }
-  #basdepage IMG,IFRAME,FORM { /* tout le bazar de pub de bas de page, en ligne! */
+  #basdepage img,form { /* tout le bazar de pub de bas de page, en ligne! */
     display: inline;
     vertical-align: middle;
 }
@@ -694,7 +701,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
   .lien_ajout_commentaire {
     text-align: center;
 }
-  .lien_ajout_commentaire A {
+  .lien_ajout_commentaire a {
     border-style: solid;
     border-color: #<?=$couleur_decoration_titres?>;
     padding-right: 0.5em;
@@ -702,10 +709,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /*==================================================================*/
-/* LA PAGES DES MASSIFS (Accueil)                                   */
+/* La pages des massifs (accueil)                                   */
 /*==================================================================*/
 
-  .tablo { /* DIV imite une table */
+  .tablo { /* div imite une table */
     display:table-cell;
     min-width:400px; //En dessous de 400 pixels, c'est trop tassé/pas lisible, en mettant ça, on force un affichage en dessous de la carte de l'accueil
     vertical-align: top;
@@ -713,10 +720,10 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /*==================================================================*/
-/* LES PAGES POINTS                                                 */
+/* Les pages points                                                 */
 /*==================================================================*/
 
-  .fauxfieldset { /* DIV imite un fieldset */
+  .fauxfieldset { /* div imite un fieldset */
     border: thin solid black;
     margin-top: 1em;
     /*padding: 1em;*/
@@ -734,7 +741,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     padding: 0px;
 }
   /* ENCADRE de présentation de FICHE */
-  .fiche_cadre .condense, .fiche_cadre .condense DD, .fiche_cadre .condense DT {
+  .fiche_cadre .condense, .fiche_cadre .condense dd, .fiche_cadre .condense dt {
     display: inline;
     margin: 1px 5px 1px 0px;
 }
@@ -768,9 +775,9 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 }
 
 /*==================================================================*/
-/*                              CARTES                              */
+/*                              Cartes                              */
 /*==================================================================*/
-.carte /* utilisé par TOUTES les images cartes */
+.carte /* utilisé par toutes les images cartes */
  {
   background-image: url(../images/sablier.png);
   background-position: center center;
@@ -800,16 +807,16 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
 #selecteur-carte-edit {
   padding-left: 1px;
 }
-#selecteur-carte-edit P {
+#selecteur-carte-edit p {
   margin-top: 0;
   margin-bottom: 5px;
 }
-#selecteur-carte-edit SPAN {
+#selecteur-carte-edit span {
   font-size: .8em;
   font-style: oblique;
 }
-#selecteur-carte-edit INPUT,
-#selecteur-carte-edit LABEL {
+#selecteur-carte-edit input,
+#selecteur-carte-edit label {
   text-align: justify;
   cursor: pointer;
 }
@@ -819,7 +826,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     max-height: calc(100% - 126px);
   }
 }
-/* Carte NAV présentation mobile horizontale */
+/* Carte NaV présentation mobile horizontale */
 @media screen and (min-aspect-ratio: 1/1) and (min-width: 365px) and (max-device-height: 360px) {
   #carte-nav {
     float: right;
@@ -831,7 +838,7 @@ A.infobulle:hover SPAN { /* qd on passe dessus, ca affiche */
     width: 33%;
   }
 }
-/* Carte NAV présentation écrans */
+/* Carte nav présentation écrans */
 @media screen and (min-width: 800px) {
   #carte-nav {
     float: right;
