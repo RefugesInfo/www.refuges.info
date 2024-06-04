@@ -34,7 +34,7 @@
 		<a href="http://validator.w3.org/check?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">
 			<img src="<?=$config_wri['sous_dossier_installation']?>images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict">
 		</a>
-		<a href="http://jigsaw.w3.org/css-validator/check/referer">
+		<a href="https://jigsaw.w3.org/css-validator/validator?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">
 			<img src="<?=$config_wri['sous_dossier_installation']?>images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1">
 		</a>
 		<?=(temps_execution()."s")?>

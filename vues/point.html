@@ -12,15 +12,12 @@
   <div class="fiche_cadre">
 <!--======================================== DESCRIPTIONS =========================================-->
     <div>
-    <dl style="margin: 2px;">
 <!--======= LIEN DE MODIFICATION (modérateurs et modérateur de fiche) =======-->
       <?php // Signaler les fiches cachées
       if ($vue->point->cache) {?>
-        <dd class="lien_ajout_commentaire">
           <strong class="warning">
             Cette fiche est cachée du public, elle n'est visible que des modérateurs
           </strong>
-        </dd>
       <?php }?>
       <?php // Si les droits sont suffisants, lien de modification
       if (est_autorise($point->id_createur)) {?>
@@ -36,71 +33,26 @@
         </div>
       <?php }?>
 <!--========================================== FICHE DE ===========================================-->
-      <dt class="condense">
-        Fiche (n°<?=$vue->point->id_point?>) de:
-      </dt>
-      <dd class="condense">
-        <b><?=$vue->nom_debut_majuscule?></b>, 
-      </dd>
-      <dd class="condense">
-        <a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?><sup>?</sup></a>
+      <h1>
+        <?=$vue->nom_debut_majuscule?> (<?=$vue->point->altitude?>m), <a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?><sup>?</sup></a>
         <?php
         //Si elle/il est fermé, détruit, ou besoin de la clé pour rentrer on l'indique directement en haut en rouge
         if ($vue->annonce_fermeture) {?>
           <strong>(<?=$vue->annonce_fermeture?>)</strong>
         <?php }?>
-      </dd>
-    </dl>
+    </h1>
     </div>
 <!--============================================ CARTE ============================================-->
     <?php // Veut-on une carte point ? (oui sauf cas des coordonnées inconnues
     if (!empty($vue->mini_carte)) {?>
       <div id="container-carte-point">
         <div id="carte-point"></div>
-        <div class="noprint">Ctrl+click: nouvel onglet</div>
-        <div class="noprint">Maj+click: nouvelle fenêtre</div>
-        <div class="noprint">
-          <a href="<?=$config_wri['sous_dossier_installation']?>nav" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">
-            Agrandir la carte
-          </a>
+        <div class="noprint texte-tout-petit"><div class="hide-touch-screen">Ctrl+click: nouvel onglet ; Maj+click: nouvelle fenêtre :</div><a href="<?=$config_wri['sous_dossier_installation']?>nav" title="'Shfit + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">Grande carte</a>
         </div>
       </div>
     <?php }?>
-    <div>
-    <dl style="margin: 2px;">
-<!--========================================= COORDONNÉES =========================================-->
-      <dt>Coordonnées:</dt>
-        <dd>
-          Provenance:
-          <?php if ($vue->point->id_type_precision_gps == $config_wri['id_coordonees_gps_approximative']) {?>
-            <strong><?=$vue->point->nom_precision_gps?></strong>
-          <?php }else{ ?>
-            <?=$vue->point->nom_precision_gps?>
-          <?php }?>
-        </dd>
-      <dd>
-        Altitude: <b><?=$vue->point->altitude?>m,</b>
-        <?php if (empty($vue->mini_carte)) {?>
-          <strong><?=$vue->point->nom_precision_gps?></strong>
-        <?php }else{?>
-          <input type="hidden" id="cadre-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}'>
-          <span id="cadre-string"></span>
-          <select id="cadre-select">
-            <option value="dec" selected="selected">Degrés décimaux</option>
-            <option value="dms">Deg Min Sec</option>
-            <option class="xy" value="swiss">Suisse</option>
-            <option value="utm">UTM</option>
-          </select>
-      </dd>
-      <dd>
-        Export:
-          <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,
-          <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">Garmin</a>,
-          <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">KML</a>,
-          <a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">Géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
-        <?php }?>
-      </dd>
 <!--======================================== LOCALISATION =========================================-->
+    <dl>
       <?php if ($vue->localisation_point)
         foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
           <dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
@@ -117,32 +69,8 @@
                   </sup>
                 <?=$virgule?>
               <?php } ?>
-            <dd>
+            </dd>
       <?php } ?>
-<!--===================================== SUR LE SITE DEPUIS ======================================-->
-      <dt class="condense noprint">Sur le site depuis:</dt>
-      <dd class="condense noprint"><?=date ("d/m/Y", $vue->point->date_creation_timestamp)?></dd>
-
-      <?php // Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
-      if (isset($vue->point->date_derniere_modification)) {?>
-        <dt class="condense noprint">Dernière modification du</dt>
-        <dd class="condense noprint"><?echo date ("d/m/Y",$vue->point->date_modif_timestamp)?>.</dd>
-      <?php }
-
-      // modérateur de fiche
-      if ($vue->nom_createur!="") { ?>
-        <dt class="condense noprint">Modérateur actuel de cette fiche:</dt>
-        <?php if ($vue->point->id_createur != 0) { ?>
-          <dd class="condense noprint">
-            <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
-              <?=$vue->nom_createur?>
-            </a>
-          </dd>
-        <?php } else { ?>
-        <dd class="condense noprint"><?=$vue->nom_createur?></dd>
-        <?php }
-      }
-      ?>
 <!--================================= DEMANDE DE MODIFICATION =================================-->
     <dd class="lien_ajout_commentaire noprint">
       <a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
@@ -154,12 +82,10 @@
       if ($vue->point->equivalent_proprio) {?>
         <dt><?=$vue->point->equivalent_proprio?>:</dt>
         <dd><?=$vue->proprio?></dd>
-        <br>
         <?php if (in_array($vue->point->id_point_type,$config_wri['tout_type_refuge'])) {?>
         <dd>
-          <i>
-            Refuge.info n'assure pas le contact avec les gestionnaires de <?=$vue->point->article_demonstratif?> <?=$vue->point->nom_type?>.
-            Si vous voulez les contacter, vous devez les appeler directement.
+          <i><br>
+            Refuge.info n'a aucun lien avec les gestionnaires. Vous devez les appeler directement.
           </i>
         </dd>
         <?php } }?>
@@ -226,7 +152,59 @@
       <?php }?>
     </dl>
     </div>
-  </div>
+<!--========================================= Informations technique sur la fiche =========================================-->
+  <dl>
+    <dt>Coordonnées:</dt>
+      <dd class="noprint">
+        Provenance:
+        <?php if ($vue->point->id_type_precision_gps == $config_wri['id_coordonees_gps_approximative']) {?>
+          <strong><?=$vue->point->nom_precision_gps?></strong>
+        <?php }else{ ?>
+          <?=$vue->point->nom_precision_gps?>
+        <?php }?>
+      </dd>
+    <dd>
+      <?php if (empty($vue->mini_carte)) {?>
+        <strong><?=$vue->point->nom_precision_gps?></strong>
+      <?php }else{?>
+        <input type="hidden" id="cadre-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}'>
+        <span id="cadre-string"></span>
+        <select id="cadre-select">
+          <option value="dec" selected="selected">Degrés décimaux</option>
+          <option value="dms">Deg Min Sec</option>
+          <option class="xy" value="swiss">Suisse</option>
+          <option value="utm">UTM</option>
+        </select>
+    </dd>
+    <dd class="noprint">
+      Export:
+        <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,
+        <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">Garmin</a>,
+        <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">KML</a>,
+        <a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">Géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
+      <?php }?>
+    </dd>
+<!--============================= Infos assez internes finalement, plutôt pour modérateurs devrais-je dire ===================-->
+  <p class="noprint">
+    Fiche n°<?=$vue->point->id_point?> sur le site depuis le <?=date ("d/m/Y", $vue->point->date_creation_timestamp)?>
+      <?php // Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
+      if (isset($vue->point->date_derniere_modification)) {?>
+, dernière modification du
+        <?= date ("d/m/Y",$vue->point->date_modif_timestamp)?>.
+      <?php }
+
+      // modérateur de fiche
+      if ($vue->nom_createur!="") { ?>
+        Modérateur actuel :
+        <?php if ($vue->point->id_createur != 0) { ?>
+            <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
+              <?=$vue->nom_createur?>
+        <?php } else { ?>
+        <?=$vue->nom_createur?>
+        <?php }
+      }
+      ?>
+  </p>
 <!--============================ LIEN VERS LE FORUM D'UN POINT ===========================-->
   <h5 class="noprint">Discussions sur <?=$vue->nom?></h5>
   <p class="noprint" id="forum">
