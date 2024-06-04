@@ -52,7 +52,7 @@
       </div>
     <?php }?>
 <!--======================================== LOCALISATION =========================================-->
-    <dl>
+    <dl class="liste-wri">
       <?php if ($vue->localisation_point)
         foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
           <dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
@@ -150,10 +150,7 @@
           <?php } ?>
         </dd>
       <?php }?>
-    </dl>
-    </div>
 <!--========================================= Informations technique sur la fiche =========================================-->
-  <dl>
     <dt>Coordonnées:</dt>
       <dd class="noprint">
         Provenance:

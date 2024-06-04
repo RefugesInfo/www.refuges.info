@@ -236,7 +236,7 @@ dt { /* listes, de definitions */
   font-weight: bold;
   margin-top:4px;
 }
-dd { /* listes, de definitions */
+.liste-wri > dd { /* listes, de definitions */
   margin-left:1em;
 }
 dt > button {
