@@ -170,7 +170,7 @@ cite { /* Citation: gras+droit */
 blockquote > div { /* en particulier les ciations forum */
   border-left: double blue;
 }
-blockquote p:before  { /* message forum et commentaires *//* HS sous IE */
+blockquote p:before  { /* message forum et commentaires */
   content: open-quote;
   font-size: xx-large;
 }
@@ -583,7 +583,7 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 	.menu-titre {
 		display: block;
 		padding: 0 8px 2px 8px;
-		Wfont-size: 20px;
+		font-size: 20px;
 		font-weight: 700;
 		color: white !important;
 		cursor: pointer;
@@ -692,7 +692,8 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 
   .tablo { /* div imite une table */
     display:table-cell;
-    min-width:400px; //En dessous de 400 pixels, c'est trop tassé/pas lisible, en mettant ça, on force un affichage en dessous de la carte de l'accueil
+    /* En dessous de 400 pixels, c'est trop tassé/pas lisible, en mettant ça, on force un affichage en dessous de la carte de l'accueil */
+    min-width:400px;
     vertical-align: top;
     float: left; /* pour IE7 */
 }
