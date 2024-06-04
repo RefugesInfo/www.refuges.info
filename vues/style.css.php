@@ -678,6 +678,7 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 /*==================================================================*/
   .lien_ajout_commentaire {
     text-align: center;
+    font-weight: bold;
 }
   .lien_ajout_commentaire a {
     border-style: solid;

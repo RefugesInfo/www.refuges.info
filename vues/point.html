@@ -11,7 +11,6 @@
 <div class="contenu" id="contenu">
   <div class="fiche_cadre">
 <!--======================================== DESCRIPTIONS =========================================-->
-    <div>
 <!--======= LIEN DE MODIFICATION (modérateurs et modérateur de fiche) =======-->
       <?php // Signaler les fiches cachées
       if ($vue->point->cache) {?>
@@ -52,11 +51,10 @@
       </div>
     <?php }?>
 <!--======================================== LOCALISATION =========================================-->
-    <dl class="liste-wri">
+    <p>
       <?php if ($vue->localisation_point)
         foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
-          <dt class="condense">Localisation <?=$categorie_polygone?>:</dt>
-            <dd class="condense">
+          <b>Localisation <?=$categorie_polygone?>:</b>
               <?php foreach ($polygones as $key => $polygone) { ?>
                 <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; ?>
                   <?php if ($polygone->site_web) { ?>
@@ -69,15 +67,17 @@
                   </sup>
                 <?=$virgule?>
               <?php } ?>
-            </dd>
+          <br>
       <?php } ?>
+    </p>
 <!--================================= DEMANDE DE MODIFICATION =================================-->
-    <dd class="lien_ajout_commentaire noprint">
+    <div class="lien_ajout_commentaire noprint">
       <a href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
-        <b>Demander une modification de la fiche</b>
+        Demander une modification de la fiche
       </a>
-    </dd>
+    </div>
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
+  <dl class="liste-wri">
       <?php // Champs textes libres
       if ($vue->point->equivalent_proprio) {?>
         <dt><?=$vue->point->equivalent_proprio?>:</dt>
