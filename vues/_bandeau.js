@@ -22,8 +22,10 @@ function menuAction(evt) {
 	// directement fils de l'élément de classe 'menu-bouton'
 	// ajoute la classe 'menu-touch' à cet élément
 	if (evt.type == 'click' && // Mouse click & touch
-		this == evt.target.parentNode)
+		this == evt.target.parentNode) {
 		this.classList.toggle('menu-touch');
+		this.classList.remove('menu-hover');
+	}
 
 	// Ferme les autres boutons ouverts
 	for (let el of menuEls)
