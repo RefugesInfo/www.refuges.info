@@ -14,7 +14,8 @@ function menuAction(evt) {
 	// Traiter le hover en js pour améliorer sa gestion sur mobiles
 	if (evt.type == 'mouseover')
 		this.classList.add('menu-hover');
-	else // mouseout | click
+	else if (evt.type == 'mouseout' &&
+		evt.relatedTarget) // Pour éviter de sortir quand on survolle le gestionnaire de mot de passe
 		this.classList.remove('menu-hover');
 
 	// Click de la souris ou touch sur un élement
