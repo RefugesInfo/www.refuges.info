@@ -19,6 +19,7 @@ require_once ("polygone.php");
 require_once ("point.php");
 require_once ("utilisateur.php");
 require_once ("commentaire.php");
+require_once ("forum.php");
 
   function stat_site ()
   {
