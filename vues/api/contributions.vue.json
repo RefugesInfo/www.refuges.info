@@ -7,5 +7,5 @@ headers_cors_par_default();
 headers_cache_api();
 
 
-$news['copyright'] = $config_wri[copyright_API];
+$news['copyright'] = $config_wri['copyright_API'];
 echo json_encode($news);
