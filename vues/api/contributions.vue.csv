@@ -5,13 +5,9 @@ header("Content-Type: text/csv; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
 headers_cache_api();
+?>
+"date;categorie;lien;titre;auteur;Avec photo"
+<?php foreach ($news AS $nouvelle) { ?>
+<?=$nouvelle['date_formatee']?>;<?=$nouvelle['categorie']?>;<?=$nouvelle['lien']?>;"<?=$nouvelle['titre']?>";"<?=($nouvelle['auteur'] ?? 'utilisateur supprimé')?>";<?=$nouvelle['photo']?>
 
-
-$separateur=";";
-
-echo "#".$config_wri['copyright_API']."\r\n";
-echo "date".$separateur."categorie".$separateur."lien".$separateur."titre".$separateur."auteur\r\n";
-
-foreach ($news AS $nouvelle) {
-	echo $nouvelle['date'].$separateur.'"'.$nouvelle['categorie'].'"'.$separateur.'"'.$nouvelle['lien'].'"'.$separateur.'"'.$nouvelle['titre'].'"'.$separateur.'"'.$nouvelle['auteur'].'"'."\r\n";
-}
+<?php } ?>

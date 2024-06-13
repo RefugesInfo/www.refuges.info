@@ -98,6 +98,7 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
                     if ($req && $req->avec_texte)
                         $news_array[$i]['commentaire']=$commentaire->texte;
                     $news_array[$i]['id_commentaire']=$commentaire->id_commentaire;
+                    $news_array[$i]['photo']=0;
                     if ($commentaire->photo_existe) {
                         $news_array[$i]['photo']="1";
                         $news_array[$i]['photo_mini']=$commentaire->lien_photo['reduite'] ?? '';
@@ -109,7 +110,8 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
                         if ($commentaire->id_createur_commentaire!=0)
                         {
                           $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
-                          $news_array[$i]['lien_auteur'] = lien_utilisateur($utilisateur,$lien_locaux);
+                          if (!isset($utilisateur->erreur))
+                            $news_array[$i]['lien_auteur'] = lien_utilisateur($utilisateur,$lien_locaux);
                         }
                     }
                     // si le commentaire ne porte pas sur un point d'un massif, pas de lien vers le massif
@@ -142,11 +144,15 @@ function nouvelles($nombre,$type,$id_massif="",$lien_locaux=True,$req=null)
                         $news_array[$i]['categorie']="Point";
                         if ($point->nom_createur!="")
                         {
-                            $news_array[$i]['auteur']=$point->nom_createur;
+                            if (!empty($point->nom_createur))
+                              $news_array[$i]['auteur']=$point->nom_createur;
+                            else
+                              $news_array[$i]['auteur']="Auteur supprimé";
                             if ($point->id_createur!=0)
                             {
                                 $utilisateur=infos_utilisateur($point->id_createur);
-                                $news_array[$i]['lien_auteur'] =  lien_utilisateur($utilisateur,$lien_locaux);
+                                if (!isset($utilisateur->erreur))
+                                  $news_array[$i]['lien_auteur'] =  lien_utilisateur($utilisateur,$lien_locaux);
                             }
                         }
                         

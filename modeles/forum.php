@@ -6,6 +6,9 @@ Fonctions permettant de faire des modifications dans le forum
 
 // Récupère l'environnement du forum
 // Cette séquence ne peut pas être dans une function
+define('IN_PHPBB', true);
+$phpEx="php";
+$phpbb_root_path=$config_wri['rep_forum'];
 include($config_wri['rep_forum'] . 'includes/functions_posting.php');
 include($config_wri['rep_forum'] . 'includes/message_parser.php');
 include($config_wri['rep_forum'] . 'includes/functions_admin.php');

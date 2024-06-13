@@ -15,7 +15,7 @@ function infos_utilisateur($id_utilisateur)
   $res=$pdo->query($query);
   $utilisateur=$res->fetch();
   if (!$utilisateur)
-    return erreur("Utilisateur inexistant",$query,"pasunbug");
+    return erreur("Utilisateur inexistant","pasunbug");
   else {
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés, donc je ré-inverse le processus pour avoir le nom d'utilisateur tel que saisi par l'utilisateur lui même (quitte à lui repasser ensuite un htmlentities si on doit l'afficher dans une page html, mais au moins, dans les logs, les tables, l'historique interne il sera stoqué proprement
     $utilisateur->username=html_entity_decode($utilisateur->username);

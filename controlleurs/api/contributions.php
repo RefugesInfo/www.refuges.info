@@ -59,10 +59,8 @@ $temp = explode(",", $req->type);
 foreach ($temp as $type) {
     if(!in_array($type,$val->type)) { $req->type = "points,commentaires"; break; }
 }
-// On vérifie que le nom est correct, ou pas trop élevé
+// Par défaut, on exporte 100 nouvelles
 if(!is_numeric($req->nombre))
-	$req->nombre = 15;
-elseif ($req->nombre > 100)
 	$req->nombre = 100;
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
@@ -76,7 +74,7 @@ $news = nouvelles($req->nombre,$req->type,$req->massif,False,$req);
 $news = texte_nouvelles($news); // On ajoute le texte
 foreach ($news as $id => $nouvelle)
 {
-	$news[$id]['date_formatee']=date("d/m/y", $nouvelle['date']);
+	$news[$id]['date_formatee']=date("Y-m-d", $nouvelle['date']);
 }
 
 /****************************** FORMATAGE DU TEXTE ******************************/
