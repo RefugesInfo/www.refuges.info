@@ -522,10 +522,10 @@ function transfert_forum($commentaire)
       // note sly 17/08/2013 : j'ajoute un "_".rand(1,999) à la suite du nom de l'auteur, c'est un peu curieux,
       // mais ça permet de réduire les chances qu'on le confonde avec un utilisateur du forum portant le même nom exactement
       // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
-      // Et comme un utilisateur phpBB doit contenir au moins 3 caractères et 25 maximum, s'il s'appelait "a" ça ferait "a_1" au pire, soit les 3 caractères mini
-      // et s'il s'appellait abcdefghijklmnopqrstuvwxyz0123456789 (36 caractères) substr 0,20 + _ + rand(1,999) va donner abcdefghijklmnopqrst_999 max soit 24 charactères
+      // Et comme un utilisateur phpBB doit contenir au moins 1 caractère et 80 maximum (selon config), s'il s'appelait "" (vide) ça ferait "_1" au pire, soit plus que les 1 caractères mini
+      // et s'il s'appellait abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghij (83 caractères) substr 0,76 + _ + rand(1,999) va donner abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abc_999 au max soit 80 charactères qui est autorisé.
       if ($commentaire->auteur_commentaire)
-        $auteur = substr($commentaire->auteur_commentaire,0,20).'_'.rand(1,999);
+        $auteur = substr($commentaire->auteur_commentaire,0,76).'_'.rand(1,999);
   
   // On appelle la fonction du forum qui cree un post
   forum_submit_post ([
