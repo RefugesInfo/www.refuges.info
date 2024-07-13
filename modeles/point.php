@@ -738,14 +738,14 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
           'topic_id' => $point->topic_id,
           'topic_title' => mb_ucfirst($point->nom),
       ]);
-    point_historisation_modification($point_avant,$point,$id_utilisateur_qui_modifie,'modification');
-   }
-   else  // INSERT
-   {
+     point_historisation_modification($point_avant,$point,$id_utilisateur_qui_modifie,'modification');
+  }
+  else  // INSERT
+  {
     // On appelle la fonction du forum qui crée un topic dans le forum refuges
     $r = forum_submit_post ([
         'action' => 'post',
-		'forum_id' => $config_wri['forum_refuges'],
+        'forum_id' => $config_wri['forum_refuges'],
         'topic_title' => mb_ucfirst($point->nom),
     ]);
     if (!$r['topic_id'])
