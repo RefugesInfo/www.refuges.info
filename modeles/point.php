@@ -731,11 +731,13 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     if (!$pdo->exec($query_finale))
         return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);
     
-    /********* Renommage du topic point dans le forum refuges, sauf s'il s'agit d'un modèle, qui n'a pas (ou pas besoin) de sujet dans le forum *************/
-    if (!$point_avant->modele)
+    /********* Renommage du titre "topic point" dans le forum refuges si le nom de la fiche change, sauf s'il s'agit d'un modèle, qui n'a pas de sujet dans le forum, en réalité, on pourrait uniformiser et leur laisser un forum, ça ne poserait aucun problème, mais des modérateurs s'en sont trouvé étonné et on voulu bien faire, et on supprimé les forum en question, créant finalement un bug, alors, en 2020 j'ai décidé de ne plus avoir de forum pour les modèles *************/
+    if (!$point_avant->modele and $point_avant->nom!=$point->nom)
       forum_submit_post ([
           'action' => 'edit',
+          'post_edit_reason' => 'Le nom de la fiche a été changée, le titre du forum change aussi. Il était '.mb_ucfirst($point_avant->nom),
           'topic_id' => $point->topic_id,
+          'topic_poster' => $id_utilisateur_qui_modifie, // En cas de modification, cet id servira dans le log de modération pour dire qui a modifié la fiche, ça rassure Pascal 74
           'topic_title' => mb_ucfirst($point->nom),
       ]);
      point_historisation_modification($point_avant,$point,$id_utilisateur_qui_modifie,'modification');
