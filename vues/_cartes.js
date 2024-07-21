@@ -243,6 +243,8 @@ function mapIndex(options) {
     ...basicMapOptions(options),
 
     controls: [
+      new ol.control.Zoom(),
+      new ol.control.FullScreen(),
       new ol.control.Attribution({ // Du fond de carte
         collapsed: false,
       }),
