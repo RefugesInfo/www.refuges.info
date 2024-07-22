@@ -255,6 +255,12 @@ function edit_info_polygone()
 
     if ($_POST['enregistrer'] && $_POST['id_polygone'])
     {
+        if (!json_decode($_POST['json_polygones'])->coordinates)
+        {
+            echo '<p style="color:red">MASSIF NON ENREGISTRÉ CAR IL NE COMPORTE PAS DE POLYGONE</p>';
+            exit;
+        }
+
         $query_update = "UPDATE polygones SET "
       ."article_partitif = '$article_partitif', "
       ."nom_polygone = '$nom_polygone', "
@@ -269,6 +275,12 @@ function edit_info_polygone()
   // Création
     if ($_POST['enregistrer'] && $_POST['id_polygone'] == 0)
     {
+        if (!json_decode($_POST['json_polygones'])->coordinates)
+        {
+            echo '<p style="color:red"MASSIF NON CRÉÉ CAR IL NE COMPORTE PAS DE POLYGONE</p>';
+            exit;
+        }
+
         // On commence par chercher s'il existe déjà un polygone homonyme
         $query_no = "SELECT id_polygone FROM polygones WHERE nom_polygone = '$nom_polygone'";
         $res=$pdo->query($query_no);
