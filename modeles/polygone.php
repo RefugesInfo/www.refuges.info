@@ -277,7 +277,7 @@ function edit_info_polygone()
     {
         if (!json_decode($_POST['json_polygones'])->coordinates)
         {
-            echo '<p style="color:red"MASSIF NON CRÉÉ CAR IL NE COMPORTE PAS DE POLYGONE</p>';
+            echo '<p style="color:red">MASSIF NON CRÉÉ CAR IL NE COMPORTE PAS DE POLYGONE</p>';
             exit;
         }
 
