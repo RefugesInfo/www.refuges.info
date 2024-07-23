@@ -46,7 +46,7 @@ if (empty($point->erreur))
     $commentaire->texte_propre=protege($commentaire->texte);
     
     // peut être un robot ?
-    if ( ($vue->lettre_verification!="f") AND !est_connecte() )
+    if ( ($vue->lettre_verification != $config_wri['captcha_reponse']) AND !est_connecte() )
     {
       $vue->erreur_captcha=True;
       $vue->lettre_verification="";

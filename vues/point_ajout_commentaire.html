@@ -46,9 +46,9 @@
           </p>
         <?}?>
           <p>
-            Merci de simplement écrire la lettre "f" dans la case :
+            <?=$config_wri['captcha_question']?> :
             <input type="text" class="input_captcha_court" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
-            <i class="texte-tout-petit">Ceci afin d'éviter les messages indésirables automatiques, désolé)</i>
+            <i class="texte-tout-petit">Ceci afin d'éviter les messages indésirables automatiques, désolé.</i>
           </p>
       <?}?>
       <input type="submit" name="action" value="Envoyer" />

@@ -27,7 +27,7 @@ else
   {
     $vue->type="page_simple";
     // Si l'internaute est connecté au forum ou qu'il a saisi la lettre anti-robot
-    if (est_connecte() or $_REQUEST['anti_robot']=="f")
+    if (est_connecte() or $_REQUEST['anti_robot'] == $config_wri['captcha_reponse'])
     {
       $commentaire->demande_correction=$_REQUEST['demande_correction'];
       $commentaire->raison_demande_correction=$_REQUEST['raison_demande_correction'];

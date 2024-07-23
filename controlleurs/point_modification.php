@@ -42,7 +42,7 @@ switch( $_REQUEST["action"] )
 {
     case 'Ajouter' :
         // Il faut soit être identifié, soit avoir rentré la bonne lettre anti-robot
-        if ( !est_connecte() AND ($_REQUEST['lettre_securite']!="d") ) 
+        if ( !est_connecte() AND ($_REQUEST['lettre_securite'] != $config_wri['captcha_reponse']) ) 
         {
             $vue->erreur = "ERREUR: vous n'avez pas rentré la lettre demandée";
             break; // on sort, on ne passe pas à "modifier" qui est l'action groupée

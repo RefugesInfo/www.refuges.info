@@ -18,7 +18,7 @@
       <li>Une raison pour expliquer ? <input type="text" name="raison_demande_correction" value="" size="100"/> (facultatif)</li>
       <?php if ($vue->test_anti_robot) { ?>
       
-      <li>Contre les robots merci d'écrire la lettre f ici :<input type="text" name="anti_robot"></li>
+      <li>Contre les robots <?=$config_wri['captcha_question']?> s'il vous plait:<input type="text" name="anti_robot"></li>
       <?php } ?>
     </ul>
   </p>
