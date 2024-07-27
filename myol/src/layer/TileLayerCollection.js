@@ -142,10 +142,9 @@ export class IGN extends ol.layer.Tile {
     }
 
     super({
-      hidden: !options.key, // For LayerSwitcher
       source: new ol.source.WMTS({
         // WMTS options
-        url: 'https://wxs.ign.fr/' + options.key + '/wmts',
+        url: options.key ? 'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://wmts.geopf.fr/wmts',
         style: 'normal',
         matrixSet: 'PM',
         format: 'image/jpeg',
@@ -157,7 +156,7 @@ export class IGN extends ol.layer.Tile {
         }),
 
         // IGN options
-        ...options, // Include key & layer
+        ...options, // Include layer
       }),
       ...options, // For layer limits
     });
@@ -452,18 +451,19 @@ export function collection(options = {}) {
     'Refuges.info': new MRI(),
 
     'IGN TOP25': new IGN({
-      key: options.ign, // For simplified options
       ...options.ign, // Include key
       layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
     }),
     'IGN V2': new IGN({
       layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-      key: 'essentiels',
+      format: 'image/png',
+    }),
+    'IGN N+1': new IGN({
+      layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1',
       format: 'image/png',
     }),
     'IGN cartes 1950': new IGN({
       layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950',
-      key: 'cartes/geoportail',
       extent: [-580000, 506000, 1070000, 6637000],
       minZoom: 6,
     }),
@@ -483,7 +483,6 @@ export function collection(options = {}) {
       ...options.os, // Include key
     }),
     'Italie': new IGM(),
-
     'España': new IgnES(),
     'Google': new Google(),
 
@@ -501,33 +500,35 @@ export function collection(options = {}) {
       ...options.bing, // Include key
       imagerySet: 'Aerial',
     }),
+
     'Photo IGN': new IGN({
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-      key: 'essentiels',
     }),
-
     'Photo IGN 1950-65': new IGN({
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS.1950-1965',
-      key: 'orthohisto/geoportail',
       style: 'BDORTHOHISTORIQUE',
       format: 'image/png',
       extent: [-580000, 506000, 1070000, 6637000],
       minZoom: 12,
     }),
-
     'IGN E.M. 1820-66': new IGN({
       layer: 'GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40',
-      key: 'cartes/geoportail',
       extent: [-580000, 506000, 1070000, 6637000],
       minZoom: 6,
     }),
     'Cadastre': new IGN({
       layer: 'CADASTRALPARCELS.PARCELLAIRE_EXPRESS',
-      key: 'essentiels',
       format: 'image/png',
       extent: [-580000, 506000, 1070000, 6637000],
       minZoom: 6,
     }),
+    /* //BEST Cassini ? clé
+	'IGN Cassini': new IGN({
+      ...options.ign,
+      layer: 'GEOGRAPHICALGRIDSYSTEMS.CASSINI',
+      key: 'an7nvfzojv5wa96dsga5nk8w', //BEST use owner key
+    }),
+	*/
   };
 }
 
@@ -609,12 +610,6 @@ export function examples(options = {}) {
     }),
     'Google hybrid': new Google({
       subLayers: 's,h',
-    }),
-
-    'IGN Cassini': new IGN({
-      ...options.ign,
-      layer: 'GEOGRAPHICALGRIDSYSTEMS.CASSINI',
-      key: 'an7nvfzojv5wa96dsga5nk8w', //BEST use owner key
     }),
 
     'MapBox elevation': new MapboxElevation({

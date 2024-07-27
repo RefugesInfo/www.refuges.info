@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 27/05/2024 21:18:01 using npm run build from the src/... sources
+ * Built 27/07/2024 15:36:32 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -370,20 +370,21 @@
    * @template ReturnType
    */
   function memoizeOne(fn) {
-    let called = false;
-
     /** @type {ReturnType} */
     let lastResult;
 
-    /** @type {Array<any>} */
+    /** @type {Array<any>|undefined} */
     let lastArgs;
 
     let lastThis;
 
+    /**
+     * @this {*} Only need to know if `this` changed, don't care what type
+     * @return {ReturnType} Memoized value
+     */
     return function () {
       const nextArgs = Array.prototype.slice.call(arguments);
-      if (!called || this !== lastThis || !equals$2(nextArgs, lastArgs)) {
-        called = true;
+      if (!lastArgs || this !== lastThis || !equals$2(nextArgs, lastArgs)) {
         lastThis = this;
         lastArgs = nextArgs;
         lastResult = fn.apply(this, arguments);
@@ -569,6 +570,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       this.listeners_ && clear$2(this.listeners_);
@@ -713,15 +715,17 @@
    * @return {EventsKey} Unique key for the listener.
    */
   function listen(target, type, listener, thisArg, once) {
-    if (thisArg && thisArg !== target) {
-      listener = listener.bind(thisArg);
-    }
     if (once) {
       const originalListener = listener;
+      /**
+       * @this {typeof target}
+       */
       listener = function () {
         target.removeEventListener(type, listener);
-        originalListener.apply(this, arguments);
+        originalListener.apply(thisArg ?? this, arguments);
       };
+    } else if (thisArg && thisArg !== target) {
+      listener = listener.bind(thisArg);
     }
     const eventsKey = {
       target: target,
@@ -994,7 +998,7 @@
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION = '9.2.3';
+  const VERSION = '10.0.0';
 
   /**
    * @module ol/Object
@@ -5547,6 +5551,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @protected
      * @return {import("../extent.js").Extent} extent Extent.
+     * @override
      */
     computeExtent(extent) {
       return createOrUpdateFromFlatCoordinates(
@@ -5606,6 +5611,7 @@
      * Create a simplified version of this geometry using the Douglas Peucker algorithm.
      * @param {number} squaredTolerance Squared tolerance.
      * @return {SimpleGeometry} Simplified geometry.
+     * @override
      */
     getSimplifiedGeometry(squaredTolerance) {
       if (this.simplifiedGeometryRevision !== this.getRevision()) {
@@ -5707,6 +5713,7 @@
      * @param {import("../proj.js").TransformFunction} transformFn Transform function.
      * Called with a flat array of geometry coordinates.
      * @api
+     * @override
      */
     applyTransform(transformFn) {
       if (this.flatCoordinates) {
@@ -5721,6 +5728,7 @@
      * @param {number} angle Rotation angle in counter-clockwise radians.
      * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
      * @api
+     * @override
      */
     rotate(angle, anchor) {
       const flatCoordinates = this.getFlatCoordinates();
@@ -5747,6 +5755,7 @@
      * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
      *     of the geometry extent).
      * @api
+     * @override
      */
     scale(sx, sy, anchor) {
       if (sy === undefined) {
@@ -5778,6 +5787,7 @@
      * @param {number} deltaX Delta X.
      * @param {number} deltaY Delta Y.
      * @api
+     * @override
      */
     translate(deltaX, deltaY) {
       const flatCoordinates = this.getFlatCoordinates();
@@ -6737,14 +6747,16 @@
    */
   function linearRing(flatCoordinates, offset, end, stride) {
     let twiceArea = 0;
-    let x1 = flatCoordinates[end - stride];
-    let y1 = flatCoordinates[end - stride + 1];
+    const x0 = flatCoordinates[end - stride];
+    const y0 = flatCoordinates[end - stride + 1];
+    let dx1 = 0;
+    let dy1 = 0;
     for (; offset < end; offset += stride) {
-      const x2 = flatCoordinates[offset];
-      const y2 = flatCoordinates[offset + 1];
-      twiceArea += y1 * x2 - x1 * y2;
-      x1 = x2;
-      y1 = y2;
+      const dx2 = flatCoordinates[offset] - x0;
+      const dy2 = flatCoordinates[offset + 1] - y0;
+      twiceArea += dy1 * dx2 - dx1 * dy2;
+      dx1 = dx2;
+      dy1 = dy2;
     }
     return twiceArea / 2;
   }
@@ -6834,6 +6846,7 @@
      * Make a complete copy of the geometry.
      * @return {!LinearRing} Clone.
      * @api
+     * @override
      */
     clone() {
       return new LinearRing(this.flatCoordinates.slice(), this.layout);
@@ -6845,6 +6858,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -6894,6 +6908,7 @@
      * Return the coordinates of the linear ring.
      * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
      * @api
+     * @override
      */
     getCoordinates() {
       return inflateCoordinates(
@@ -6908,6 +6923,7 @@
      * @param {number} squaredTolerance Squared tolerance.
      * @return {LinearRing} Simplified LinearRing.
      * @protected
+     * @override
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
       /** @type {Array<number>} */
@@ -6928,6 +6944,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'LinearRing';
@@ -6938,6 +6955,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       return false;
@@ -6948,6 +6966,7 @@
      * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
      * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
      * @api
+     * @override
      */
     setCoordinates(coordinates, layout) {
       this.setLayout(layout, coordinates, 1);
@@ -6990,6 +7009,7 @@
      * Make a complete copy of the geometry.
      * @return {!Point} Clone.
      * @api
+     * @override
      */
     clone() {
       const point = new Point(this.flatCoordinates.slice(), this.layout);
@@ -7003,6 +7023,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       const flatCoordinates = this.flatCoordinates;
@@ -7027,6 +7048,7 @@
      * Return the coordinate of the point.
      * @return {import("../coordinate.js").Coordinate} Coordinates.
      * @api
+     * @override
      */
     getCoordinates() {
       return this.flatCoordinates.slice();
@@ -7036,6 +7058,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @protected
      * @return {import("../extent.js").Extent} extent Extent.
+     * @override
      */
     computeExtent(extent) {
       return createOrUpdateFromCoordinate(this.flatCoordinates, extent);
@@ -7045,6 +7068,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'Point';
@@ -7055,6 +7079,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       return containsXY(extent, this.flatCoordinates[0], this.flatCoordinates[1]);
@@ -7064,6 +7089,7 @@
      * @param {!Array<*>} coordinates Coordinates.
      * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
      * @api
+     * @override
      */
     setCoordinates(coordinates, layout) {
       this.setLayout(layout, coordinates, 0);
@@ -7926,6 +7952,7 @@
      * Make a complete copy of the geometry.
      * @return {!Polygon} Clone.
      * @api
+     * @override
      */
     clone() {
       const polygon = new Polygon(
@@ -7943,6 +7970,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -7978,6 +8006,7 @@
      * @param {number} x X.
      * @param {number} y Y.
      * @return {boolean} Contains (x, y).
+     * @override
      */
     containsXY(x, y) {
       return linearRingsContainsXY(
@@ -8016,6 +8045,7 @@
      *     constructed.
      * @return {Array<Array<import("../coordinate.js").Coordinate>>} Coordinates.
      * @api
+     * @override
      */
     getCoordinates(right) {
       let flatCoordinates;
@@ -8150,6 +8180,7 @@
      * @param {number} squaredTolerance Squared tolerance.
      * @return {Polygon} Simplified Polygon.
      * @protected
+     * @override
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
       /** @type {Array<number>} */
@@ -8173,6 +8204,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'Polygon';
@@ -8183,6 +8215,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       return intersectsLinearRingArray(
@@ -8199,6 +8232,7 @@
      * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
      * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
      * @api
+     * @override
      */
     setCoordinates(coordinates, layout) {
       this.setLayout(layout, coordinates, 2);
@@ -8493,6 +8527,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       this.setTracking(false);
@@ -9487,6 +9522,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       if (this.state_) {
@@ -12211,7 +12247,7 @@
    * @property {boolean} visible Visible.
    * @property {boolean} managed Managed.
    * @property {import("../extent.js").Extent} [extent] Extent.
-   * @property {number | undefined} zIndex ZIndex.
+   * @property {number} zIndex ZIndex.
    * @property {number} maxResolution Maximum resolution.
    * @property {number} minResolution Minimum resolution.
    * @property {number} minZoom Minimum zoom.
@@ -12328,6 +12364,7 @@
     /**
      * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
      * @return {Array<import("./Layer.js").default>} Array of layers.
+     * @override
      */
     getLayersArray(array) {
       array = array ? array : [];
@@ -12338,6 +12375,7 @@
     /**
      * @param {Array<import("./Layer.js").State>} [states] Optional list of layer states (to be modified in place).
      * @return {Array<import("./Layer.js").State>} List of layer states.
+     * @override
      */
     getLayerStatesArray(states) {
       states = states ? states : [];
@@ -12364,6 +12402,7 @@
 
     /**
      * @return {import("../source/Source.js").State} Source state.
+     * @override
      */
     getSourceState() {
       const source = this.getSource();
@@ -12486,11 +12525,7 @@
       if (!this.isVisible(view)) {
         return [];
       }
-      let getAttributions;
-      const source = this.getSource();
-      if (source) {
-        getAttributions = source.getAttributions();
-      }
+      const getAttributions = this.getSource()?.getAttributions();
       if (!getAttributions) {
         return [];
       }
@@ -12597,7 +12632,7 @@
         this.mapPrecomposeKey_ = listen(
           map,
           RenderEventType.PRECOMPOSE,
-          function (evt) {
+          (evt) => {
             const renderEvent =
               /** @type {import("../render/Event.js").default} */ (evt);
             const layerStatesArray = renderEvent.frameState.layerStatesArray;
@@ -12610,7 +12645,6 @@
             );
             layerStatesArray.push(layerState);
           },
-          this,
         );
         this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
         this.changed();
@@ -12656,6 +12690,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       if (this.renderer_) {
@@ -14437,11 +14472,11 @@
 
     const color = rgba(s);
     if (color.length !== 4) {
-      throw new Error('Failed to parse "' + s + '" as color');
+      throw new Error('failed to parse "' + s + '" as color');
     }
     for (const c of color) {
       if (isNaN(c)) {
-        throw new Error('Failed to parse "' + s + '" as color');
+        throw new Error('failed to parse "' + s + '" as color');
       }
     }
     normalize(color);
@@ -14496,19 +14531,6 @@
     }
     const a = color[3] === undefined ? 1 : Math.round(color[3] * 1000) / 1000;
     return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-  }
-
-  /**
-   * @param {string} s String.
-   * @return {boolean} Whether the string is actually a valid color
-   */
-  function isStringColor(s) {
-    try {
-      fromString(s);
-      return true;
-    } catch (_) {
-      return false;
-    }
   }
 
   /**
@@ -14703,19 +14725,11 @@
   }
 
   /**
-   * @param {Node} node The node to remove.
-   * @return {Node|null} The node that was removed or null.
-   */
-  function removeNode(node) {
-    return node && node.parentNode ? node.parentNode.removeChild(node) : null;
-  }
-
-  /**
    * @param {Node} node The node to remove the children from.
    */
   function removeChildren(node) {
     while (node.lastChild) {
-      node.removeChild(node.lastChild);
+      node.lastChild.remove();
     }
   }
 
@@ -14937,7 +14951,7 @@
      * @return {import("./IconImage.js").default} Icon image.
      */
     get(src, crossOrigin, color) {
-      const key = getCacheKey(src, crossOrigin, color);
+      const key = getCacheKey$1(src, crossOrigin, color);
       return key in this.cache_ ? this.cache_[key] : null;
     }
 
@@ -14948,7 +14962,7 @@
      * @return {CanvasPattern} Icon image.
      */
     getPattern(src, crossOrigin, color) {
-      const key = getCacheKey(src, crossOrigin, color);
+      const key = getCacheKey$1(src, crossOrigin, color);
       return key in this.patternCache_ ? this.patternCache_[key] : null;
     }
 
@@ -14960,7 +14974,7 @@
      * @param {boolean} [pattern] Also cache a `'repeat'` pattern with this `iconImage`.
      */
     set(src, crossOrigin, color, iconImage, pattern) {
-      const key = getCacheKey(src, crossOrigin, color);
+      const key = getCacheKey$1(src, crossOrigin, color);
       const update = key in this.cache_;
       this.cache_[key] = iconImage;
       if (pattern) {
@@ -15005,7 +15019,7 @@
    * @param {import("../color.js").Color|string|null} color Color.
    * @return {string} Cache key.
    */
-  function getCacheKey(src, crossOrigin, color) {
+  function getCacheKey$1(src, crossOrigin, color) {
     const colorString = color ? asArray(color) : 'null';
     return crossOrigin + ':' + src + ':' + colorString;
   }
@@ -15293,7 +15307,7 @@
           ) {
             resolve();
           } else {
-            this.addEventListener(EventType.CHANGE, function onChange() {
+            const onChange = () => {
               if (
                 this.imageState_ === ImageState.LOADED ||
                 this.imageState_ === ImageState.ERROR
@@ -15301,7 +15315,8 @@
                 this.removeEventListener(EventType.CHANGE, onChange);
                 resolve();
               }
-            });
+            };
+            this.addEventListener(EventType.CHANGE, onChange);
           }
         });
       }
@@ -15789,7 +15804,8 @@
       for (let i = 0, ii = fonts.length; i < ii; ++i) {
         const font = fonts[i];
         if (checkedFonts.get(font) < retries) {
-          if (isAvailable.apply(this, font.split('\n'))) {
+          const [style, weight, family] = font.split('\n');
+          if (isAvailable(style, weight, family)) {
             clear$2(textHeights);
             // Make sure that loaded fonts are picked up by Safari
             measureContext = null;
@@ -16143,7 +16159,7 @@
        * @protected
        * @type {number}
        */
-      this.radius_ = options.radius;
+      this.radius = options.radius;
 
       /**
        * @private
@@ -16175,6 +16191,9 @@
        */
       this.renderOptions_;
 
+      /**
+       * @private
+       */
       this.imageState_ =
         this.fill_ && this.fill_.loading()
           ? ImageState.LOADING
@@ -16189,6 +16208,7 @@
      * Clones the style.
      * @return {RegularShape} The cloned style.
      * @api
+     * @override
      */
     clone() {
       const scale = this.getScale();
@@ -16214,6 +16234,7 @@
      * symbolizer.
      * @return {Array<number>} Anchor.
      * @api
+     * @override
      */
     getAnchor() {
       const size = this.size_;
@@ -16257,6 +16278,7 @@
 
     /**
      * @return {HTMLCanvasElement} Image element.
+     * @override
      */
     getHitDetectionImage() {
       if (!this.hitDetectionCanvas_) {
@@ -16272,6 +16294,7 @@
      * @param {number} pixelRatio Pixel ratio.
      * @return {HTMLCanvasElement} Image or Canvas element.
      * @api
+     * @override
      */
     getImage(pixelRatio) {
       let image = this.canvases_[pixelRatio];
@@ -16293,6 +16316,7 @@
      * Get the image pixel ratio.
      * @param {number} pixelRatio Pixel ratio.
      * @return {number} Pixel ratio.
+     * @override
      */
     getPixelRatio(pixelRatio) {
       return pixelRatio;
@@ -16300,6 +16324,7 @@
 
     /**
      * @return {import("../size.js").Size} Image size.
+     * @override
      */
     getImageSize() {
       return this.size_;
@@ -16307,6 +16332,7 @@
 
     /**
      * @return {import("../ImageState.js").default} Image state.
+     * @override
      */
     getImageState() {
       return this.imageState_;
@@ -16316,6 +16342,7 @@
      * Get the origin of the symbolizer.
      * @return {Array<number>} Origin.
      * @api
+     * @override
      */
     getOrigin() {
       return this.origin_;
@@ -16336,7 +16363,7 @@
      * @api
      */
     getRadius() {
-      return this.radius_;
+      return this.radius;
     }
 
     /**
@@ -16352,6 +16379,7 @@
      * Get the size of the symbolizer (in pixels).
      * @return {import("../size.js").Size} Size.
      * @api
+     * @override
      */
     getSize() {
       return this.size_;
@@ -16378,16 +16406,19 @@
 
     /**
      * @param {function(import("../events/Event.js").default): void} listener Listener function.
+     * @override
      */
     listenImageChange(listener) {}
 
     /**
      * Load not yet loaded URI.
+     * @override
      */
     load() {}
 
     /**
      * @param {function(import("../events/Event.js").default): void} listener Listener function.
+     * @override
      */
     unlistenImageChange(listener) {}
 
@@ -16429,7 +16460,7 @@
       //      |α                                   .   .
       //       /                                         .   .
       //      ° center
-      let r1 = this.radius_;
+      let r1 = this.radius;
       let r2 = this.radius2_ === undefined ? r1 : this.radius2_;
       if (r1 < r2) {
         const tmp = r1;
@@ -16505,7 +16536,7 @@
       }
 
       const add = this.calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit);
-      const maxRadius = Math.max(this.radius_, this.radius2_ || 0);
+      const maxRadius = Math.max(this.radius, this.radius2_ || 0);
       const size = Math.ceil(2 * maxRadius + add);
 
       return {
@@ -16602,7 +16633,7 @@
      */
     createPath_(context) {
       let points = this.points_;
-      const radius = this.radius_;
+      const radius = this.radius;
       if (points === Infinity) {
         context.arc(0, 0, radius, 0, 2 * Math.PI);
       } else {
@@ -16647,6 +16678,9 @@
       }
     }
 
+    /**
+     * @override
+     */
     ready() {
       return this.fill_ ? this.fill_.ready() : Promise.resolve();
     }
@@ -16705,6 +16739,7 @@
      * Clones the style.
      * @return {CircleStyle} The cloned style.
      * @api
+     * @override
      */
     clone() {
       const scale = this.getScale();
@@ -16729,7 +16764,7 @@
      * @api
      */
     setRadius(radius) {
-      this.radius_ = radius;
+      this.radius = radius;
       this.render();
     }
   }
@@ -16779,7 +16814,7 @@
     }
 
     /**
-     * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
+     * Clones the style. The color is not cloned if it is a {@link module:ol/colorlike~ColorLike}.
      * @return {Fill} The cloned style.
      * @api
      */
@@ -17090,7 +17125,7 @@
    */
 
   /**
-   * A function that takes an {@link module:ol/Feature~Feature} and a `{number}`
+   * A function that takes a {@link module:ol/Feature~Feature} and a `{number}`
    * representing the view's resolution. The function should return a
    * {@link module:ol/style/Style~Style} or an array of them. This way e.g. a
    * vector layer can be styled. If the function returns `undefined`, the
@@ -17105,7 +17140,7 @@
    */
 
   /**
-   * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+   * A function that takes a {@link module:ol/Feature~Feature} as argument and returns an
    * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
    *
    * @typedef {function(import("../Feature.js").FeatureLike):
@@ -17883,6 +17918,11 @@
       this.size_ = options.size !== undefined ? options.size : null;
 
       /**
+       * @private
+       */
+      this.initialOptions_;
+
+      /**
        * Calculate the scale if width or height were given.
        */
       if (options.width !== undefined || options.height !== undefined) {
@@ -17927,6 +17967,7 @@
      * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
      * @return {Icon} The cloned style.
      * @api
+     * @override
      */
     clone() {
       let scale, width, height;
@@ -17967,6 +18008,7 @@
      * symbolizer.
      * @return {Array<number>} Anchor.
      * @api
+     * @override
      */
     getAnchor() {
       let anchor = this.normalizedAnchor_;
@@ -18048,6 +18090,7 @@
      * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element. If the Icon
      * style was configured with `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
      * @api
+     * @override
      */
     getImage(pixelRatio) {
       return this.iconImage_.getImage(pixelRatio);
@@ -18058,6 +18101,7 @@
      * @param {number} pixelRatio Pixel ratio.
      * @return {number} The pixel ratio of the image.
      * @api
+     * @override
      */
     getPixelRatio(pixelRatio) {
       return this.iconImage_.getPixelRatio(pixelRatio);
@@ -18065,6 +18109,7 @@
 
     /**
      * @return {import("../size.js").Size} Image size.
+     * @override
      */
     getImageSize() {
       return this.iconImage_.getSize();
@@ -18072,6 +18117,7 @@
 
     /**
      * @return {import("../ImageState.js").default} Image state.
+     * @override
      */
     getImageState() {
       return this.iconImage_.getImageState();
@@ -18079,6 +18125,7 @@
 
     /**
      * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+     * @override
      */
     getHitDetectionImage() {
       return this.iconImage_.getHitDetectionImage();
@@ -18088,6 +18135,7 @@
      * Get the origin of the symbolizer.
      * @return {Array<number>} Origin.
      * @api
+     * @override
      */
     getOrigin() {
       if (this.origin_) {
@@ -18132,6 +18180,7 @@
      * Get the size of the icon (in pixels).
      * @return {import("../size.js").Size} Image size.
      * @api
+     * @override
      */
     getSize() {
       return !this.size_ ? this.iconImage_.getSize() : this.size_;
@@ -18174,6 +18223,7 @@
      *
      * @param {number|import("../size.js").Size} scale Scale.
      * @api
+     * @override
      */
     setScale(scale) {
       delete this.initialOptions_;
@@ -18182,6 +18232,7 @@
 
     /**
      * @param {function(import("../events/Event.js").default): void} listener Listener function.
+     * @override
      */
     listenImageChange(listener) {
       this.iconImage_.addEventListener(EventType.CHANGE, listener);
@@ -18193,6 +18244,7 @@
      * automatically call this method. However, you might want to call this
      * method yourself for preloading or other purposes.
      * @api
+     * @override
      */
     load() {
       this.iconImage_.load();
@@ -18200,11 +18252,15 @@
 
     /**
      * @param {function(import("../events/Event.js").default): void} listener Listener function.
+     * @override
      */
     unlistenImageChange(listener) {
       this.iconImage_.removeEventListener(EventType.CHANGE, listener);
     }
 
+    /**
+     * @override
+     */
     ready() {
       return this.iconImage_.ready();
     }
@@ -18864,9 +18920,9 @@
    *     of bands, depending on the underlying data source and
    *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
    *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
-   *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
-   *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
-   *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
+   *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
+   *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
+   *     feature property. The result is `undefined` when there is nothing at the specified key or index.
    *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
    *     `Multi*` values are returned as their singular equivalent
    *     `Circle` geometries are returned as 'Polygon'
@@ -18967,7 +19023,6 @@
    */
 
   let numTypes = 0;
-  const NoneType = 0;
   const BooleanType = 1 << numTypes++;
   const NumberType = 1 << numTypes++;
   const StringType = 1 << numTypes++;
@@ -18986,6 +19041,14 @@
   };
 
   const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
+
+  /**
+   * @param {number} type The type.
+   * @return {boolean} The type is one of the specific types (not any or a union type).
+   */
+  function isSpecific(type) {
+    return type in typeNames;
+  }
 
   /**
    * Get a string representation for a type.
@@ -19018,15 +19081,6 @@
   }
 
   /**
-   * @param {number} oneType One type.
-   * @param {number} otherType Another type.
-   * @return {boolean} The set of types overlap (share a common specific type)
-   */
-  function overlapsType(oneType, otherType) {
-    return !!(oneType & otherType);
-  }
-
-  /**
    * @param {number} type The type.
    * @param {number} expected The expected type.
    * @return {boolean} The given type is exactly the expected type.
@@ -19045,6 +19099,11 @@
      * @param {LiteralValue} value The literal value.
      */
     constructor(type, value) {
+      if (!isSpecific(type)) {
+        throw new Error(
+          `literal expressions must have a specific type, got ${typeName(type)}`,
+        );
+      }
       this.type = type;
       this.value = value;
     }
@@ -19073,7 +19132,6 @@
    * @property {Set<string>} properties Properties referenced with the 'get' operator.
    * @property {boolean} featureId The style uses the feature id.
    * @property {boolean} geometryType The style uses the feature geometry type.
-   * @property {import("../style/flat.js").FlatStyle|import("../style/webgl.js").WebGLStyle} style The style being parsed
    */
 
   /**
@@ -19085,29 +19143,7 @@
       properties: new Set(),
       featureId: false,
       geometryType: false,
-      style: {},
     };
-  }
-
-  /**
-   * @param {string} typeHint Type hint
-   * @return {number} Resulting value type (will be a single type)
-   */
-  function getTypeFromHint(typeHint) {
-    switch (typeHint) {
-      case 'string':
-        return StringType;
-      case 'color':
-        return ColorType;
-      case 'number':
-        return NumberType;
-      case 'boolean':
-        return BooleanType;
-      case 'number[]':
-        return NumberArrayType;
-      default:
-        throw new Error(`Unrecognized type hint: ${typeHint}`);
-    }
   }
 
   /**
@@ -19116,62 +19152,98 @@
 
   /**
    * @param {EncodedExpression} encoded The encoded expression.
+   * @param {number} expectedType The expected type.
    * @param {ParsingContext} context The parsing context.
-   * @param {number} [typeHint] Optional type hint
    * @return {Expression} The parsed expression result.
    */
-  function parse$2(encoded, context, typeHint) {
+  function parse$2(encoded, expectedType, context) {
     switch (typeof encoded) {
       case 'boolean': {
+        if (isType(expectedType, StringType)) {
+          return new LiteralExpression(StringType, encoded ? 'true' : 'false');
+        }
+        if (!includesType(expectedType, BooleanType)) {
+          throw new Error(
+            `got a boolean, but expected ${typeName(expectedType)}`,
+          );
+        }
         return new LiteralExpression(BooleanType, encoded);
       }
       case 'number': {
-        return new LiteralExpression(
-          typeHint === SizeType ? SizeType : NumberType,
-          encoded,
-        );
+        if (isType(expectedType, SizeType)) {
+          return new LiteralExpression(SizeType, toSize(encoded));
+        }
+        if (isType(expectedType, BooleanType)) {
+          return new LiteralExpression(BooleanType, !!encoded);
+        }
+        if (isType(expectedType, StringType)) {
+          return new LiteralExpression(StringType, encoded.toString());
+        }
+        if (!includesType(expectedType, NumberType)) {
+          throw new Error(`got a number, but expected ${typeName(expectedType)}`);
+        }
+        return new LiteralExpression(NumberType, encoded);
       }
       case 'string': {
-        let type = StringType;
-        if (isStringColor(encoded)) {
-          type |= ColorType;
+        if (isType(expectedType, ColorType)) {
+          return new LiteralExpression(ColorType, fromString(encoded));
         }
-        // apply the given type hint only if it won't result in an empty type
-        if (!isType(type & typeHint, NoneType)) {
-          type &= typeHint;
+        if (isType(expectedType, BooleanType)) {
+          return new LiteralExpression(BooleanType, !!encoded);
         }
-        return new LiteralExpression(type, encoded);
+        if (!includesType(expectedType, StringType)) {
+          throw new Error(`got a string, but expected ${typeName(expectedType)}`);
+        }
+        return new LiteralExpression(StringType, encoded);
       }
     }
 
     if (!Array.isArray(encoded)) {
-      throw new Error('Expression must be an array or a primitive value');
+      throw new Error('expression must be an array or a primitive value');
     }
 
     if (encoded.length === 0) {
-      throw new Error('Empty expression');
+      throw new Error('empty expression');
     }
 
     if (typeof encoded[0] === 'string') {
-      return parseCallExpression(encoded, context, typeHint);
+      return parseCallExpression(encoded, expectedType, context);
     }
 
     for (const item of encoded) {
       if (typeof item !== 'number') {
-        throw new Error('Expected an array of numbers');
+        throw new Error('expected an array of numbers');
       }
     }
 
-    let type = NumberArrayType;
-    if (encoded.length === 2) {
-      type |= SizeType;
-    } else if (encoded.length === 3 || encoded.length === 4) {
-      type |= ColorType;
+    if (isType(expectedType, SizeType)) {
+      if (encoded.length !== 2) {
+        throw new Error(
+          `expected an array of two values for a size, got ${encoded.length}`,
+        );
+      }
+      return new LiteralExpression(SizeType, encoded);
     }
-    if (typeHint) {
-      type &= typeHint;
+
+    if (isType(expectedType, ColorType)) {
+      if (encoded.length === 3) {
+        return new LiteralExpression(ColorType, [...encoded, 1]);
+      }
+      if (encoded.length === 4) {
+        return new LiteralExpression(ColorType, encoded);
+      }
+      throw new Error(
+        `expected an array of 3 or 4 values for a color, got ${encoded.length}`,
+      );
     }
-    return new LiteralExpression(type, encoded);
+
+    if (!includesType(expectedType, NumberArrayType)) {
+      throw new Error(
+        `got an array of numbers, but expected ${typeName(expectedType)}`,
+      );
+    }
+
+    return new LiteralExpression(NumberArrayType, encoded);
   }
 
   /**
@@ -19226,348 +19298,247 @@
   };
 
   /**
-   * @typedef {function(Array, ParsingContext, number):Expression} Parser
-   * Third argument is a type hint
+   * @typedef {function(Array, number, ParsingContext):Expression} Parser
+   *
+   * Second argument is the expected type.
    */
 
   /**
    * @type {Object<string, Parser>}
    */
   const parsers = {
-    [Ops.Get]: createParser(
-      ([_, typeHint]) => {
-        if (typeHint !== undefined) {
-          return getTypeFromHint(
-            /** @type {string} */ (
-              /** @type {LiteralExpression} */ (typeHint).value
-            ),
-          );
-        }
-        return AnyType;
-      },
-      withArgsCount(1, 2),
-      withGetArgs,
+    [Ops.Get]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
+    [Ops.Var]: createCallExpressionParser(hasArgsCount(1, 1), withVarArgs),
+    [Ops.Id]: createCallExpressionParser(usesFeatureId, withNoArgs),
+    [Ops.Concat]: createCallExpressionParser(
+      hasArgsCount(2, Infinity),
+      withArgsOfType(StringType),
     ),
-    [Ops.Var]: createParser(
-      ([firstArg]) => firstArg.type,
-      withArgsCount(1, 1),
-      withVarArgs,
+    [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
+    [Ops.Resolution]: createCallExpressionParser(withNoArgs),
+    [Ops.Zoom]: createCallExpressionParser(withNoArgs),
+    [Ops.Time]: createCallExpressionParser(withNoArgs),
+    [Ops.Any]: createCallExpressionParser(
+      hasArgsCount(2, Infinity),
+      withArgsOfType(BooleanType),
     ),
-    [Ops.Id]: createParser(NumberType | StringType, withNoArgs, usesFeatureId),
-    [Ops.Concat]: createParser(
-      StringType,
-      withArgsCount(2, Infinity),
-      parseArgsOfType(AnyType),
+    [Ops.All]: createCallExpressionParser(
+      hasArgsCount(2, Infinity),
+      withArgsOfType(BooleanType),
     ),
-    [Ops.GeometryType]: createParser(StringType, withNoArgs, usesGeometryType),
-    [Ops.Resolution]: createParser(NumberType, withNoArgs),
-    [Ops.Zoom]: createParser(NumberType, withNoArgs),
-    [Ops.Time]: createParser(NumberType, withNoArgs),
-    [Ops.Any]: createParser(
-      BooleanType,
-      withArgsCount(2, Infinity),
-      parseArgsOfType(BooleanType),
+    [Ops.Not]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(BooleanType),
     ),
-    [Ops.All]: createParser(
-      BooleanType,
-      withArgsCount(2, Infinity),
-      parseArgsOfType(BooleanType),
+    [Ops.Equal]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(AnyType),
     ),
-    [Ops.Not]: createParser(
-      BooleanType,
-      withArgsCount(1, 1),
-      parseArgsOfType(BooleanType),
+    [Ops.NotEqual]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(AnyType),
     ),
-    [Ops.Equal]: createParser(
-      BooleanType,
-      withArgsCount(2, 2),
-      parseArgsOfType(AnyType),
-      narrowArgsType,
+    [Ops.GreaterThan]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.NotEqual]: createParser(
-      BooleanType,
-      withArgsCount(2, 2),
-      parseArgsOfType(AnyType),
-      narrowArgsType,
+    [Ops.GreaterThanOrEqualTo]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.GreaterThan]: createParser(
-      BooleanType,
-      withArgsCount(2, 2),
-      parseArgsOfType(AnyType),
-      narrowArgsType,
+    [Ops.LessThan]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.GreaterThanOrEqualTo]: createParser(
-      BooleanType,
-      withArgsCount(2, 2),
-      parseArgsOfType(AnyType),
-      narrowArgsType,
+    [Ops.LessThanOrEqualTo]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.LessThan]: createParser(
-      BooleanType,
-      withArgsCount(2, 2),
-      parseArgsOfType(AnyType),
-      narrowArgsType,
+    [Ops.Multiply]: createCallExpressionParser(
+      hasArgsCount(2, Infinity),
+      withArgsOfReturnType,
     ),
-    [Ops.LessThanOrEqualTo]: createParser(
-      BooleanType,
-      withArgsCount(2, 2),
-      parseArgsOfType(AnyType),
-      narrowArgsType,
+    [Ops.Coalesce]: createCallExpressionParser(
+      hasArgsCount(2, Infinity),
+      withArgsOfReturnType,
     ),
-    [Ops.Multiply]: createParser(
-      (parsedArgs) => {
-        let outputType = NumberType | ColorType;
-        for (let i = 0; i < parsedArgs.length; i++) {
-          outputType &= parsedArgs[i].type;
-        }
-        return outputType;
-      },
-      withArgsCount(2, Infinity),
-      parseArgsOfType(NumberType | ColorType),
-      narrowArgsType,
+    [Ops.Divide]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Coalesce]: createParser(
-      (parsedArgs) => {
-        let type = AnyType;
-        for (let i = 1; i < parsedArgs.length; i += 2) {
-          type &= parsedArgs[i].type;
-        }
-        type &= parsedArgs[parsedArgs.length - 1].type;
-        return type;
-      },
-      withArgsCount(2, Infinity),
-      parseArgsOfType(AnyType),
-      narrowArgsType,
+    [Ops.Add]: createCallExpressionParser(
+      hasArgsCount(2, Infinity),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Divide]: createParser(
-      NumberType,
-      withArgsCount(2, 2),
-      parseArgsOfType(NumberType),
+    [Ops.Subtract]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Add]: createParser(
-      NumberType,
-      withArgsCount(2, Infinity),
-      parseArgsOfType(NumberType),
+    [Ops.Clamp]: createCallExpressionParser(
+      hasArgsCount(3, 3),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Subtract]: createParser(
-      NumberType,
-      withArgsCount(2, 2),
-      parseArgsOfType(NumberType),
+    [Ops.Mod]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Clamp]: createParser(
-      NumberType,
-      withArgsCount(3, 3),
-      parseArgsOfType(NumberType),
+    [Ops.Pow]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Mod]: createParser(
-      NumberType,
-      withArgsCount(2, 2),
-      parseArgsOfType(NumberType),
+    [Ops.Abs]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Pow]: createParser(
-      NumberType,
-      withArgsCount(2, 2),
-      parseArgsOfType(NumberType),
+    [Ops.Floor]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Abs]: createParser(
-      NumberType,
-      withArgsCount(1, 1),
-      parseArgsOfType(NumberType),
+    [Ops.Ceil]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Floor]: createParser(
-      NumberType,
-      withArgsCount(1, 1),
-      parseArgsOfType(NumberType),
+    [Ops.Round]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Ceil]: createParser(
-      NumberType,
-      withArgsCount(1, 1),
-      parseArgsOfType(NumberType),
+    [Ops.Sin]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Round]: createParser(
-      NumberType,
-      withArgsCount(1, 1),
-      parseArgsOfType(NumberType),
+    [Ops.Cos]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Sin]: createParser(
-      NumberType,
-      withArgsCount(1, 1),
-      parseArgsOfType(NumberType),
+    [Ops.Atan]: createCallExpressionParser(
+      hasArgsCount(1, 2),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Cos]: createParser(
-      NumberType,
-      withArgsCount(1, 1),
-      parseArgsOfType(NumberType),
+    [Ops.Sqrt]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Atan]: createParser(
-      NumberType,
-      withArgsCount(1, 2),
-      parseArgsOfType(NumberType),
+    [Ops.Match]: createCallExpressionParser(
+      hasArgsCount(4, Infinity),
+      hasEvenArgs,
+      withMatchArgs,
     ),
-    [Ops.Sqrt]: createParser(
-      NumberType,
-      withArgsCount(1, 1),
-      parseArgsOfType(NumberType),
+    [Ops.Between]: createCallExpressionParser(
+      hasArgsCount(3, 3),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Match]: createParser(
-      (parsedArgs) => {
-        let type = AnyType;
-        for (let i = 2; i < parsedArgs.length; i += 2) {
-          type &= parsedArgs[i].type;
-        }
-        type &= parsedArgs[parsedArgs.length - 1].type;
-        return type;
-      },
-      withArgsCount(4, Infinity),
-      withEvenArgs,
-      parseMatchArgs,
+    [Ops.Interpolate]: createCallExpressionParser(
+      hasArgsCount(6, Infinity),
+      hasEvenArgs,
+      withInterpolateArgs,
     ),
-    [Ops.Between]: createParser(
-      BooleanType,
-      withArgsCount(3, 3),
-      parseArgsOfType(NumberType),
+    [Ops.Case]: createCallExpressionParser(
+      hasArgsCount(3, Infinity),
+      hasOddArgs,
+      withCaseArgs,
     ),
-    [Ops.Interpolate]: createParser(
-      (parsedArgs) => {
-        let type = ColorType | NumberType;
-        for (let i = 3; i < parsedArgs.length; i += 2) {
-          type &= parsedArgs[i].type;
-        }
-        return type;
-      },
-      withArgsCount(6, Infinity),
-      withEvenArgs,
-      parseInterpolateArgs,
+    [Ops.In]: createCallExpressionParser(hasArgsCount(2, 2), withInArgs),
+    [Ops.Number]: createCallExpressionParser(
+      hasArgsCount(1, Infinity),
+      withArgsOfType(AnyType),
     ),
-    [Ops.Case]: createParser(
-      (parsedArgs) => {
-        let type = AnyType;
-        for (let i = 1; i < parsedArgs.length; i += 2) {
-          type &= parsedArgs[i].type;
-        }
-        type &= parsedArgs[parsedArgs.length - 1].type;
-        return type;
-      },
-      withArgsCount(3, Infinity),
-      withOddArgs,
-      parseCaseArgs,
+    [Ops.String]: createCallExpressionParser(
+      hasArgsCount(1, Infinity),
+      withArgsOfType(AnyType),
     ),
-    [Ops.In]: createParser(BooleanType, withArgsCount(2, 2), parseInArgs),
-    [Ops.Number]: createParser(
-      NumberType,
-      withArgsCount(1, Infinity),
-      parseArgsOfType(AnyType),
+    [Ops.Array]: createCallExpressionParser(
+      hasArgsCount(1, Infinity),
+      withArgsOfType(NumberType),
     ),
-    [Ops.String]: createParser(
-      StringType,
-      withArgsCount(1, Infinity),
-      parseArgsOfType(AnyType),
+    [Ops.Color]: createCallExpressionParser(
+      hasArgsCount(1, 4),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Array]: createParser(
-      (parsedArgs) => {
-        return parsedArgs.length === 2
-          ? NumberArrayType | SizeType
-          : parsedArgs.length === 3 || parsedArgs.length === 4
-            ? NumberArrayType | ColorType
-            : NumberArrayType;
-      },
-      withArgsCount(1, Infinity),
-      parseArgsOfType(NumberType),
+    [Ops.Band]: createCallExpressionParser(
+      hasArgsCount(1, 3),
+      withArgsOfType(NumberType),
     ),
-    [Ops.Color]: createParser(
-      ColorType,
-      withArgsCount(1, 4),
-      parseArgsOfType(NumberType),
+    [Ops.Palette]: createCallExpressionParser(
+      hasArgsCount(2, 2),
+      withPaletteArgs,
     ),
-    [Ops.Band]: createParser(
-      NumberType,
-      withArgsCount(1, 3),
-      parseArgsOfType(NumberType),
-    ),
-    [Ops.Palette]: createParser(ColorType, withArgsCount(2, 2), parsePaletteArgs),
-    [Ops.ToString]: createParser(
-      StringType,
-      withArgsCount(1, 1),
-      parseArgsOfType(BooleanType | NumberType | StringType | ColorType),
+    [Ops.ToString]: createCallExpressionParser(
+      hasArgsCount(1, 1),
+      withArgsOfType(BooleanType | NumberType | StringType | ColorType),
     ),
   };
 
   /**
-   * @typedef {function(Array<EncodedExpression>, ParsingContext, Array<Expression>, number?):Array<Expression>|void} ArgValidator
-   * An argument validator applies various checks to an encoded expression arguments
-   * Returns the parsed arguments if any.
-   * Third argument is the array of parsed arguments from previous validators
-   * Fourth argument is an optional type hint
+   * @typedef {function(Array<EncodedExpression>, number, ParsingContext):Array<Expression>|void} ArgValidator
+   *
+   * An argument validator applies various checks to an encoded expression arguments and
+   * returns the parsed arguments if any.  The second argument is the return type of the call expression.
    */
 
   /**
    * @type ArgValidator
    */
-  function withGetArgs(encoded, context) {
-    const arg = parse$2(encoded[1], context);
-    if (!(arg instanceof LiteralExpression)) {
-      throw new Error('Expected a literal argument for get operation');
+  function withGetArgs(encoded, returnType, context) {
+    const argsCount = encoded.length - 1;
+    const args = new Array(argsCount);
+    for (let i = 0; i < argsCount; ++i) {
+      const key = encoded[i + 1];
+      switch (typeof key) {
+        case 'number': {
+          args[i] = new LiteralExpression(NumberType, key);
+          break;
+        }
+        case 'string': {
+          args[i] = new LiteralExpression(StringType, key);
+          break;
+        }
+        default: {
+          throw new Error(
+            `expected a string key or numeric array index for a get operation, got ${key}`,
+          );
+        }
+      }
+      if (i === 0) {
+        context.properties.add(String(key));
+      }
     }
-    if (typeof arg.value !== 'string') {
-      throw new Error('Expected a string argument for get operation');
-    }
-    context.properties.add(arg.value);
-    if (encoded.length === 3) {
-      const hint = parse$2(encoded[2], context);
-      return [arg, hint];
-    }
-    return [arg];
+    return args;
   }
 
   /**
    * @type ArgValidator
    */
-  function withVarArgs(encoded, context, parsedArgs, typeHint) {
-    const varName = encoded[1];
-    if (typeof varName !== 'string') {
-      throw new Error('Expected a string argument for var operation');
+  function withVarArgs(encoded, returnType, context) {
+    const name = encoded[1];
+    if (typeof name !== 'string') {
+      throw new Error('expected a string argument for var operation');
     }
-    context.variables.add(varName);
-    if (
-      !('variables' in context.style) ||
-      context.style.variables[varName] === undefined
-    ) {
-      return [new LiteralExpression(AnyType, varName)];
-    }
-    const initialValue = context.style.variables[varName];
-    const arg = /** @type {LiteralExpression} */ (parse$2(initialValue, context));
-    arg.value = varName;
-    if (typeHint && !overlapsType(typeHint, arg.type)) {
-      throw new Error(
-        `The variable ${varName} has type ${typeName(
-        arg.type,
-      )} but the following type was expected: ${typeName(typeHint)}`,
-      );
-    }
-    return [arg];
+    context.variables.add(name);
+
+    return [new LiteralExpression(StringType, name)];
   }
 
   /**
    * @type ArgValidator
    */
-  function usesFeatureId(encoded, context) {
+  function usesFeatureId(encoded, returnType, context) {
     context.featureId = true;
   }
 
   /**
    * @type ArgValidator
    */
-  function usesGeometryType(encoded, context) {
+  function usesGeometryType(encoded, returnType, context) {
     context.geometryType = true;
   }
 
   /**
    * @type ArgValidator
    */
-  function withNoArgs(encoded, context) {
+  function withNoArgs(encoded, returnType, context) {
     const operation = encoded[0];
     if (encoded.length !== 1) {
-      throw new Error(`Expected no arguments for ${operation} operation`);
+      throw new Error(`expected no arguments for ${operation} operation`);
     }
     return [];
   }
@@ -19577,15 +19548,15 @@
    * @param {number} maxArgs The maximum number of arguments.
    * @return {ArgValidator} The argument validator
    */
-  function withArgsCount(minArgs, maxArgs) {
-    return function (encoded, context) {
+  function hasArgsCount(minArgs, maxArgs) {
+    return function (encoded, returnType, context) {
       const operation = encoded[0];
       const argCount = encoded.length - 1;
       if (minArgs === maxArgs) {
         if (argCount !== minArgs) {
           const plural = minArgs === 1 ? '' : 's';
           throw new Error(
-            `Expected ${minArgs} argument${plural} for ${operation}, got ${argCount}`,
+            `expected ${minArgs} argument${plural} for ${operation}, got ${argCount}`,
           );
         }
       } else if (argCount < minArgs || argCount > maxArgs) {
@@ -19594,35 +19565,41 @@
             ? `${minArgs} or more`
             : `${minArgs} to ${maxArgs}`;
         throw new Error(
-          `Expected ${range} arguments for ${operation}, got ${argCount}`,
+          `expected ${range} arguments for ${operation}, got ${argCount}`,
         );
       }
     };
   }
 
   /**
+   * @type {ArgValidator}
+   */
+  function withArgsOfReturnType(encoded, returnType, context) {
+    const argCount = encoded.length - 1;
+    /**
+     * @type {Array<Expression>}
+     */
+    const args = new Array(argCount);
+    for (let i = 0; i < argCount; ++i) {
+      const expression = parse$2(encoded[i + 1], returnType, context);
+      args[i] = expression;
+    }
+    return args;
+  }
+
+  /**
    * @param {number} argType The argument type.
    * @return {ArgValidator} The argument validator
    */
-  function parseArgsOfType(argType) {
-    return function (encoded, context) {
-      const operation = encoded[0];
+  function withArgsOfType(argType) {
+    return function (encoded, returnType, context) {
       const argCount = encoded.length - 1;
       /**
        * @type {Array<Expression>}
        */
       const args = new Array(argCount);
       for (let i = 0; i < argCount; ++i) {
-        const expression = parse$2(encoded[i + 1], context);
-        if (!overlapsType(argType, expression.type)) {
-          const gotType = typeName(argType);
-          const expectedType = typeName(expression.type);
-          throw new Error(
-            `Unexpected type for argument ${i} of ${operation} operation` +
-              `, got ${gotType} but expected ${expectedType}`,
-          );
-        }
-        expression.type &= argType;
+        const expression = parse$2(encoded[i + 1], argType, context);
         args[i] = expression;
       }
       return args;
@@ -19632,41 +19609,12 @@
   /**
    * @type {ArgValidator}
    */
-  function narrowArgsType(encoded, context, parsedArgs) {
-    const operation = encoded[0];
-    const argCount = encoded.length - 1;
-
-    // first pass to determine a narrowed down type
-    let sameType = AnyType;
-    for (let i = 0; i < parsedArgs.length; ++i) {
-      sameType &= parsedArgs[i].type;
-    }
-
-    if (sameType === NoneType) {
-      throw new Error(
-        `No common type could be found for arguments of ${operation} operation`,
-      );
-    }
-
-    // re-parse args
-    const args = new Array(argCount);
-    for (let i = 0; i < argCount; ++i) {
-      args[i] = parse$2(encoded[i + 1], context, sameType);
-    }
-    return args;
-  }
-
-  /**
-   * @type {ArgValidator}
-   */
-  function withOddArgs(encoded, context) {
+  function hasOddArgs(encoded, returnType, context) {
     const operation = encoded[0];
     const argCount = encoded.length - 1;
     if (argCount % 2 === 0) {
       throw new Error(
-        `An odd amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
-        argCount,
-      )} instead`,
+        `expected an odd number of arguments for ${operation}, got ${argCount} instead`,
       );
     }
   }
@@ -19674,14 +19622,12 @@
   /**
    * @type {ArgValidator}
    */
-  function withEvenArgs(encoded, context) {
+  function hasEvenArgs(encoded, returnType, context) {
     const operation = encoded[0];
     const argCount = encoded.length - 1;
     if (argCount % 2 === 1) {
       throw new Error(
-        `An even amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
-        argCount,
-      )} instead`,
+        `expected an even number of arguments for operation ${operation}, got ${argCount} instead`,
       );
     }
   }
@@ -19689,119 +19635,96 @@
   /**
    * @type ArgValidator
    */
-  function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
+  function withMatchArgs(encoded, returnType, context) {
     const argsCount = encoded.length - 1;
 
-    const input = parse$2(encoded[1], context);
-    let inputType = input.type;
-    const fallback = parse$2(encoded[encoded.length - 1], context);
-    let outputType =
-      typeHint !== undefined ? typeHint & fallback.type : fallback.type;
+    const inputType = StringType | NumberType | BooleanType;
 
-    // first parse args to figure out possible types
+    const input = parse$2(encoded[1], inputType, context);
+
+    const fallback = parse$2(encoded[encoded.length - 1], returnType, context);
+
     const args = new Array(argsCount - 2);
     for (let i = 0; i < argsCount - 2; i += 2) {
-      const match = parse$2(encoded[i + 2], context);
-      const output = parse$2(encoded[i + 3], context);
-      inputType &= match.type;
-      outputType &= output.type;
-      args[i] = match;
-      args[i + 1] = output;
+      try {
+        const match = parse$2(encoded[i + 2], input.type, context);
+        args[i] = match;
+      } catch (err) {
+        throw new Error(
+          `failed to parse argument ${i + 1} of match expression: ${err.message}`,
+        );
+      }
+      try {
+        const output = parse$2(encoded[i + 3], fallback.type, context);
+        args[i + 1] = output;
+      } catch (err) {
+        throw new Error(
+          `failed to parse argument ${i + 2} of match expression: ${err.message}`,
+        );
+      }
     }
 
-    // check input and output types validity
-    const expectedInputType = StringType | NumberType | BooleanType;
-    if (!overlapsType(expectedInputType, inputType)) {
-      throw new Error(
-        `Expected an input of type ${typeName(
-        expectedInputType,
-      )} for the interpolate operation` +
-          `, got ${typeName(inputType)} instead`,
-      );
-    }
-    inputType &= expectedInputType;
-    if (isType(outputType, NoneType)) {
-      throw new Error(
-        `Could not find a common output type for the following match operation: ` +
-          JSON.stringify(encoded),
-      );
-    }
-
-    // parse again inputs and outputs with common type
-    for (let i = 0; i < argsCount - 2; i += 2) {
-      const match = parse$2(encoded[i + 2], context, inputType);
-      const output = parse$2(encoded[i + 3], context, outputType);
-      args[i] = match;
-      args[i + 1] = output;
-    }
-
-    return [
-      parse$2(encoded[1], context, inputType),
-      ...args,
-      parse$2(encoded[encoded.length - 1], context, outputType),
-    ];
+    return [input, ...args, fallback];
   }
 
   /**
    * @type ArgValidator
    */
-  function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
+  function withInterpolateArgs(encoded, returnType, context) {
     const interpolationType = encoded[1];
-    let interpolation;
+    /**
+     * @type {number}
+     */
+    let base;
     switch (interpolationType[0]) {
       case 'linear':
-        interpolation = 1;
+        base = 1;
         break;
       case 'exponential':
-        interpolation = interpolationType[1];
-        if (typeof interpolation !== 'number') {
+        const b = interpolationType[1];
+        if (typeof b !== 'number' || b <= 0) {
           throw new Error(
-            `Expected a number base for exponential interpolation` +
-              `, got ${JSON.stringify(interpolation)} instead`,
+            `expected a number base for exponential interpolation` +
+              `, got ${JSON.stringify(b)} instead`,
           );
         }
+        base = b;
         break;
       default:
-        interpolation = null;
+        throw new Error(
+          `invalid interpolation type: ${JSON.stringify(interpolationType)}`,
+        );
     }
-    if (!interpolation) {
-      throw new Error(
-        `Invalid interpolation type: ${JSON.stringify(interpolationType)}`,
-      );
-    }
-    interpolation = parse$2(interpolation, context);
 
-    // check input types
-    let input = parse$2(encoded[2], context);
-    if (!overlapsType(NumberType, input.type)) {
+    const interpolation = new LiteralExpression(NumberType, base);
+
+    let input;
+    try {
+      input = parse$2(encoded[2], NumberType, context);
+    } catch (err) {
       throw new Error(
-        `Expected an input of type number for the interpolate operation` +
-          `, got ${typeName(input.type)} instead`,
+        `failed to parse argument 1 in interpolate expression: ${err.message}`,
       );
     }
-    input = parse$2(encoded[2], context, NumberType); // parse again with narrower output
 
     const args = new Array(encoded.length - 3);
     for (let i = 0; i < args.length; i += 2) {
-      let stop = parse$2(encoded[i + 3], context);
-      if (!overlapsType(NumberType, stop.type)) {
+      try {
+        const stop = parse$2(encoded[i + 3], NumberType, context);
+        args[i] = stop;
+      } catch (err) {
         throw new Error(
-          `Expected all stop input values in the interpolate operation to be of type number` +
-            `, got ${typeName(stop.type)} at position ${i + 2} instead`,
+          `failed to parse argument ${i + 2} for interpolate expression: ${err.message}`,
         );
       }
-      let output = parse$2(encoded[i + 4], context);
-      if (!overlapsType(NumberType | ColorType, output.type)) {
+      try {
+        const output = parse$2(encoded[i + 4], returnType, context);
+        args[i + 1] = output;
+      } catch (err) {
         throw new Error(
-          `Expected all stop output values in the interpolate operation to be a number or color` +
-            `, got ${typeName(output.type)} at position ${i + 3} instead`,
+          `failed to parse argument ${i + 3} for interpolate expression: ${err.message}`,
         );
       }
-      // parse again with narrower types
-      stop = parse$2(encoded[i + 3], context, NumberType);
-      output = parse$2(encoded[i + 4], context, NumberType | ColorType);
-      args[i] = stop;
-      args[i + 1] = output;
     }
 
     return [interpolation, input, ...args];
@@ -19810,119 +19733,109 @@
   /**
    * @type ArgValidator
    */
-  function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
-    const fallback = parse$2(encoded[encoded.length - 1], context);
-    let outputType =
-      typeHint !== undefined ? typeHint & fallback.type : fallback.type;
+  function withCaseArgs(encoded, returnType, context) {
+    const fallback = parse$2(encoded[encoded.length - 1], returnType, context);
 
-    // first parse args to figure out possible types
     const args = new Array(encoded.length - 1);
     for (let i = 0; i < args.length - 1; i += 2) {
-      const condition = parse$2(encoded[i + 1], context);
-      const output = parse$2(encoded[i + 2], context);
-      if (!overlapsType(BooleanType, condition.type)) {
+      try {
+        const condition = parse$2(encoded[i + 1], BooleanType, context);
+        args[i] = condition;
+      } catch (err) {
         throw new Error(
-          `Expected all conditions in the case operation to be of type boolean` +
-            `, got ${typeName(condition.type)} at position ${i} instead`,
+          `failed to parse argument ${i} of case expression: ${err.message}`,
         );
       }
-      outputType &= output.type;
-      args[i] = condition;
-      args[i + 1] = output;
+      try {
+        const output = parse$2(encoded[i + 2], fallback.type, context);
+        args[i + 1] = output;
+      } catch (err) {
+        throw new Error(
+          `failed to parse argument ${i + 1} of case expression: ${err.message}`,
+        );
+      }
     }
 
-    if (isType(outputType, NoneType)) {
-      throw new Error(
-        `Could not find a common output type for the following case operation: ` +
-          JSON.stringify(encoded),
-      );
-    }
-
-    // parse again args with common output type
-    for (let i = 0; i < args.length - 1; i += 2) {
-      args[i + 1] = parse$2(encoded[i + 2], context, outputType);
-    }
-    args[args.length - 1] = parse$2(
-      encoded[encoded.length - 1],
-      context,
-      outputType,
-    );
-
+    args[args.length - 1] = fallback;
     return args;
   }
 
   /**
    * @type ArgValidator
    */
-  function parseInArgs(encoded, context) {
-    /** @type {Array<number|string>} */
-    let haystack = /** @type {any} */ (encoded[2]);
+  function withInArgs(encoded, returnType, context) {
+    let haystack = encoded[2];
     if (!Array.isArray(haystack)) {
       throw new Error(
-        `The "in" operator was provided a literal value which was not an array as second argument.`,
+        `the second argument for the "in" operator must be an array`,
       );
     }
+    /**
+     * @type {number}
+     */
+    let needleType;
     if (typeof haystack[0] === 'string') {
       if (haystack[0] !== 'literal') {
         throw new Error(
-          `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`,
+          `for the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions`,
         );
       }
       if (!Array.isArray(haystack[1])) {
         throw new Error(
-          `The "in" operator was provided a literal value which was not an array as second argument.`,
+          `failed to parse "in" expression: the literal operator must be followed by an array`,
         );
       }
       haystack = haystack[1];
+      needleType = StringType;
+    } else {
+      needleType = NumberType;
     }
 
-    let needleType = StringType | NumberType;
     const args = new Array(haystack.length);
     for (let i = 0; i < args.length; i++) {
-      const arg = parse$2(haystack[i], context);
-      needleType &= arg.type;
-      args[i] = arg;
-    }
-    if (isType(needleType, NoneType)) {
-      throw new Error(
-        `Could not find a common type for the following in operation: ` +
-          JSON.stringify(encoded),
-      );
+      try {
+        const arg = parse$2(haystack[i], needleType, context);
+        args[i] = arg;
+      } catch (err) {
+        throw new Error(
+          `failed to parse haystack item ${i} for "in" expression: ${err.message}`,
+        );
+      }
     }
 
-    const needle = parse$2(encoded[1], context, needleType);
+    const needle = parse$2(encoded[1], needleType, context);
     return [needle, ...args];
   }
 
   /**
    * @type ArgValidator
    */
-  function parsePaletteArgs(encoded, context) {
-    const index = parse$2(encoded[1], context, NumberType);
-    if (index.type !== NumberType) {
+  function withPaletteArgs(encoded, returnType, context) {
+    let index;
+    try {
+      index = parse$2(encoded[1], NumberType, context);
+    } catch (err) {
       throw new Error(
-        `The first argument of palette must be an number, got ${typeName(
-        index.type,
-      )} instead`,
+        `failed to parse first argument in palette expression: ${err.message}`,
       );
     }
     const colors = encoded[2];
     if (!Array.isArray(colors)) {
-      throw new Error('The second argument of palette must be an array');
+      throw new Error('the second argument of palette must be an array');
     }
     const parsedColors = new Array(colors.length);
     for (let i = 0; i < parsedColors.length; i++) {
-      const color = parse$2(colors[i], context, ColorType);
-      if (!(color instanceof LiteralExpression)) {
+      let color;
+      try {
+        color = parse$2(colors[i], ColorType, context);
+      } catch (err) {
         throw new Error(
-          `The palette color at index ${i} must be a literal value`,
+          `failed to parse color at index ${i} in palette expression: ${err.message}`,
         );
       }
-      if (!overlapsType(color.type, ColorType)) {
+      if (!(color instanceof LiteralExpression)) {
         throw new Error(
-          `The palette color at index ${i} should be of type color, got ${typeName(
-          color.type,
-        )} instead`,
+          `the palette color at index ${i} must be a literal value`,
         );
       }
       parsedColors[i] = color;
@@ -19931,59 +19844,47 @@
   }
 
   /**
-   * @param {number|function(Array<Expression>):number} returnType The return type of the operator; can be a fixed value or a callback taking the parsed
-   * arguments
-   * @param {Array<ArgValidator>} argValidators A chain of argument validators; the return value of the last validator
-   * will be used as parsed arguments
+   * @param {Array<ArgValidator>} validators A chain of argument validators.  The last validator is expected
+   * to return the parsed arguments.
    * @return {Parser} The parser.
    */
-  function createParser(returnType, ...argValidators) {
-    return function (encoded, context, typeHint) {
+  function createCallExpressionParser(...validators) {
+    return function (encoded, returnType, context) {
       const operator = encoded[0];
-      let parsedArgs = [];
-      for (let i = 0; i < argValidators.length; i++) {
-        parsedArgs =
-          argValidators[i](encoded, context, parsedArgs, typeHint) || parsedArgs;
-      }
-      let actualType =
-        typeof returnType === 'function' ? returnType(parsedArgs) : returnType;
-      if (typeHint !== undefined) {
-        if (!overlapsType(actualType, typeHint)) {
-          throw new Error(
-            `The following expression was expected to return ${typeName(
-            typeHint,
-          )}, but returns ${typeName(actualType)} instead: ${JSON.stringify(
-            encoded,
-          )}`,
-          );
+
+      /**
+       * @type {Array<Expression>}
+       */
+      let args;
+      for (let i = 0; i < validators.length; i++) {
+        const parsed = validators[i](encoded, returnType, context);
+        if (i == validators.length - 1) {
+          if (!parsed) {
+            throw new Error(
+              'expected last argument validator to return the parsed args',
+            );
+          }
+          args = parsed;
         }
-        actualType &= typeHint;
       }
-      if (actualType === NoneType) {
-        throw new Error(
-          `No matching type was found for the following expression: ${JSON.stringify(
-          encoded,
-        )}`,
-        );
-      }
-      return new CallExpression(actualType, operator, ...parsedArgs);
+      return new CallExpression(returnType, operator, ...args);
     };
   }
 
   /**
    * @param {Array} encoded The encoded expression.
+   * @param {number} returnType The expected return type of the call expression.
    * @param {ParsingContext} context The parsing context.
-   * @param {number} [typeHint] Optional type hint
    * @return {Expression} The parsed expression.
    */
-  function parseCallExpression(encoded, context, typeHint) {
+  function parseCallExpression(encoded, returnType, context) {
     const operator = encoded[0];
 
     const parser = parsers[operator];
     if (!parser) {
-      throw new Error(`Unknown operator: ${operator}`);
+      throw new Error(`unknown operator: ${operator}`);
     }
-    return parser(encoded, context, typeHint);
+    return parser(encoded, returnType, context);
   }
 
   /**
@@ -20096,14 +19997,7 @@
    * @return {ExpressionEvaluator} The expression evaluator.
    */
   function buildExpression(encoded, type, context) {
-    const expression = parse$2(encoded, context);
-    if (!overlapsType(type, expression.type)) {
-      const expected = typeName(type);
-      const actual = typeName(expression.type);
-      throw new Error(
-        `Expected expression to be of type ${expected}, got ${actual}`,
-      );
-    }
+    const expression = parse$2(encoded, type, context);
     return compileExpression(expression);
   }
 
@@ -20260,7 +20154,16 @@
     const name = /** @type {string} */ (nameExpression.value);
     switch (expression.operator) {
       case Ops.Get: {
-        return (context) => context.properties[name];
+        return (context) => {
+          const args = expression.args;
+          let value = context.properties[name];
+          for (let i = 1, ii = args.length; i < ii; ++i) {
+            const keyExpression = /** @type {LiteralExpression} */ (args[i]);
+            const key = /** @type {string|number} */ (keyExpression.value);
+            value = value[key];
+          }
+          return value;
+        };
       }
       case Ops.Var: {
         return (context) => context.variables[name];
@@ -20930,6 +20833,11 @@
     if (prefix + 'fill-pattern-src' in flatStyle) {
       evaluateColor = patternEvaluator(flatStyle, prefix + 'fill-', context);
     } else {
+      if (flatStyle[prefix + 'fill-color'] === 'none') {
+        // avoids hit detection
+        return (context) => null;
+      }
+
       evaluateColor = colorLikeEvaluator(
         flatStyle,
         prefix + 'fill-color',
@@ -21651,11 +21559,7 @@
     if (!(name in flatStyle)) {
       return null;
     }
-    const evaluator = buildExpression(
-      flatStyle[name],
-      ColorType | StringType,
-      context,
-    );
+    const evaluator = buildExpression(flatStyle[name], ColorType, context);
     return function (context) {
       return requireColorLike(evaluator(context), name);
     };
@@ -21964,7 +21868,8 @@
    */
 
   /**
-   * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
+   * @template {import('../Feature').FeatureLike} FeatureType
+   * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
    * @typedef {Object} Options
    * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
    * @property {number} [opacity=1] Opacity (0, 1).
@@ -22028,14 +21933,15 @@
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
-   * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
+   * @template {import('../Feature').FeatureLike} FeatureType
+   * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
    * @extends {Layer<VectorSourceType, RendererType>}
+   * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
    * @api
    */
   class BaseVectorLayer extends Layer {
     /**
-     * @param {Options<VectorSourceType>} [options] Options.
+     * @param {Options<FeatureType, VectorSourceType>} [options] Options.
      */
     constructor(options) {
       options = options ? options : {};
@@ -22098,6 +22004,7 @@
 
     /**
      * @return {string} Declutter group.
+     * @override
      */
     getDeclutter() {
       return this.declutter_;
@@ -22116,6 +22023,7 @@
      * @param {import("../pixel.js").Pixel} pixel Pixel.
      * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
      * @api
+     * @override
      */
     getFeatures(pixel) {
       return super.getFeatures(pixel);
@@ -22177,6 +22085,7 @@
      * Render declutter items for this layer
      * @param {import("../Map.js").FrameState} frameState Frame state.
      * @param {import("../layer/Layer.js").State} layerState Layer state.
+     * @override
      */
     renderDeclutter(frameState, layerState) {
       const declutterGroup = this.getDeclutter();
@@ -22582,6 +22491,7 @@
       super(map);
 
       /**
+       * @private
        * @type {import("../events.js").EventsKey}
        */
       this.fontChangeListenerKey_ = listen(
@@ -22622,6 +22532,7 @@
     /**
      * @param {import("../render/EventType.js").default} type Event type.
      * @param {import("../Map.js").FrameState} frameState Frame state.
+     * @override
      */
     dispatchRenderEvent(type, frameState) {
       const map = this.getMap();
@@ -22631,15 +22542,19 @@
       }
     }
 
+    /**
+     * @override
+     */
     disposeInternal() {
       unlistenByKey(this.fontChangeListenerKey_);
-      this.element_.parentNode.removeChild(this.element_);
+      this.element_.remove();
       super.disposeInternal();
     }
 
     /**
      * Render.
      * @param {?import("../Map.js").FrameState} frameState Frame state.
+     * @override
      */
     renderFrame(frameState) {
       if (!frameState) {
@@ -22653,9 +22568,9 @@
       this.calculateMatrices2D(frameState);
       this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
-      const layerStatesArray = frameState.layerStatesArray.sort(function (a, b) {
-        return a.zIndex - b.zIndex;
-      });
+      const layerStatesArray = frameState.layerStatesArray.sort(
+        (a, b) => a.zIndex - b.zIndex,
+      );
       const declutter = layerStatesArray.some(
         (layerState) =>
           layerState.layer instanceof BaseVectorLayer &&
@@ -23005,6 +22920,7 @@
     /**
      * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
      * @return {Array<import("./Layer.js").default>} Array of layers.
+     * @override
      */
     getLayersArray(array) {
       array = array !== undefined ? array : [];
@@ -23022,6 +22938,7 @@
      * @param {Array<import("./Layer.js").State>} [dest] Optional list
      * of layer states (to be modified in place).
      * @return {Array<import("./Layer.js").State>} List of layer states.
+     * @override
      */
     getLayerStatesArray(dest) {
       const states = dest !== undefined ? dest : [];
@@ -23070,6 +22987,7 @@
 
     /**
      * @return {import("../source/Source.js").State} Source state.
+     * @override
      */
     getSourceState() {
       return 'ready';
@@ -23143,12 +23061,14 @@
       /**
        * The map pixel relative to the viewport corresponding to the original browser event.
        * @type {?import("./pixel.js").Pixel}
+       * @private
        */
       this.pixel_ = null;
 
       /**
        * The coordinate in the user projection corresponding to the original browser event.
        * @type {?import("./coordinate.js").Coordinate}
+       * @private
        */
       this.coordinate_ = null;
 
@@ -23202,6 +23122,7 @@
      * Prevents the default browser action.
      * See https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault.
      * @api
+     * @override
      */
     preventDefault() {
       super.preventDefault();
@@ -23214,6 +23135,7 @@
      * Prevents further propagation of the current event.
      * See https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation.
      * @api
+     * @override
      */
     stopPropagation() {
       super.stopPropagation();
@@ -23373,6 +23295,9 @@
        */
       this.trackedTouches_ = {};
 
+      /**
+       * @private
+       */
       this.element_ = element;
 
       /**
@@ -23684,6 +23609,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       if (this.relayedListenerKey_) {
@@ -24107,6 +24033,7 @@
     /**
      * @param {Array} element Element.
      * @return {boolean} The element was added to the queue.
+     * @override
      */
     enqueue(element) {
       const added = super.enqueue(element);
@@ -24154,15 +24081,17 @@
      */
     loadMoreTiles(maxTotalLoading, maxNewLoads) {
       let newLoads = 0;
-      let state, tile, tileKey;
       while (
         this.tilesLoading_ < maxTotalLoading &&
         newLoads < maxNewLoads &&
         this.getCount() > 0
       ) {
-        tile = /** @type {import("./Tile.js").default} */ (this.dequeue()[0]);
-        tileKey = tile.getKey();
-        state = tile.getState();
+        /**
+         * @type {import("./Tile.js").default}
+         */
+        const tile = this.dequeue()[0];
+        const tileKey = tile.getKey();
+        const state = tile.getState();
         if (state === TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
           this.tilesLoadingKeys_[tileKey] = true;
           ++this.tilesLoading_;
@@ -24298,9 +24227,10 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
-      removeNode(this.element);
+      this.element?.remove();
       super.disposeInternal();
     }
 
@@ -24323,7 +24253,7 @@
      */
     setMap(map) {
       if (this.map_) {
-        removeNode(this.element);
+        this.element?.remove();
       }
       for (let i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
         unlistenByKey(this.listenerKeys[i]);
@@ -24331,9 +24261,7 @@
       this.listenerKeys.length = 0;
       this.map_ = map;
       if (map) {
-        const target = this.target_
-          ? this.target_
-          : map.getOverlayContainerStopEvent();
+        const target = this.target_ ?? map.getOverlayContainerStopEvent();
         target.appendChild(this.element);
         if (this.render !== VOID) {
           this.listenerKeys.push(
@@ -24553,22 +24481,15 @@
      * @private
      */
     collectSourceAttributions_(frameState) {
+      const layers = this.getMap().getAllLayers();
       const visibleAttributions = Array.from(
-        new Set(
-          this.getMap()
-            .getAllLayers()
-            .flatMap((layer) => layer.getAttributions(frameState)),
-        ),
+        new Set(layers.flatMap((layer) => layer.getAttributions(frameState))),
       );
 
-      const collapsible = !this.getMap()
-        .getAllLayers()
-        .some(
-          (layer) =>
-            layer.getSource() &&
-            layer.getSource().getAttributionsCollapsible() === false,
-        );
       if (!this.overrideCollapsible_) {
+        const collapsible = !layers.some(
+          (layer) => layer.getSource()?.getAttributionsCollapsible() === false,
+        );
         this.setCollapsible(collapsible);
       }
       return visibleAttributions;
@@ -24788,6 +24709,9 @@
       element.className = cssClasses;
       element.appendChild(button);
 
+      /**
+       * @private
+       */
       this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
       /**
@@ -25313,6 +25237,7 @@
      * doubleclick) and eventually zooms the map.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
+     * @override
      */
     handleEvent(mapBrowserEvent) {
       let stopEvent = false;
@@ -25452,6 +25377,7 @@
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
      * @api
+     * @override
      */
     handleEvent(mapBrowserEvent) {
       if (!mapBrowserEvent.originalEvent) {
@@ -25540,7 +25466,7 @@
    */
 
   /**
-   * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * `{boolean}`. If the condition is met, true should be returned.
    *
    * @typedef {function(this: ?, import("../MapBrowserEvent.js").default): boolean} Condition
@@ -25813,7 +25739,7 @@
 
   /**
    * @typedef {Object} Options
-   * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+   * @property {import("../events/condition.js").Condition} [condition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
    * to indicate whether that event should be handled.
    * Default is {@link module:ol/events/condition.noModifierKeys} and {@link module:ol/events/condition.primaryAction}.
    * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
@@ -25850,11 +25776,13 @@
 
       /**
        * @type {number}
+       * @private
        */
       this.lastPointersCount_;
 
       /**
        * @type {boolean}
+       * @private
        */
       this.panning_ = false;
 
@@ -25880,6 +25808,7 @@
     /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @override
      */
     handleDragEvent(mapBrowserEvent) {
       const map = mapBrowserEvent.map;
@@ -25918,6 +25847,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(mapBrowserEvent) {
       const map = mapBrowserEvent.map;
@@ -25957,6 +25887,7 @@
      * Handle pointer down events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleDownEvent(mapBrowserEvent) {
       if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
@@ -25985,7 +25916,7 @@
 
   /**
    * @typedef {Object} Options
-   * @property {import("../events/condition.js").Condition} [condition] A function that takes an
+   * @property {import("../events/condition.js").Condition} [condition] A function that takes a
    * {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
    * to indicate whether that event should be handled.
    * Default is {@link module:ol/events/condition.altShiftKeysOnly}.
@@ -25995,7 +25926,7 @@
   /**
    * @classdesc
    * Allows the user to rotate the map by clicking and dragging on the map,
-   * normally combined with an {@link module:ol/events/condition} that limits
+   * normally combined with a {@link module:ol/events/condition} that limits
    * it to when the alt and shift keys are held down.
    *
    * This interaction is only supported for mouse devices.
@@ -26034,6 +25965,7 @@
     /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @override
      */
     handleDragEvent(mapBrowserEvent) {
       if (!mouseOnly(mapBrowserEvent)) {
@@ -26059,6 +25991,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(mapBrowserEvent) {
       if (!mouseOnly(mapBrowserEvent)) {
@@ -26075,6 +26008,7 @@
      * Handle pointer down events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleDownEvent(mapBrowserEvent) {
       if (!mouseOnly(mapBrowserEvent)) {
@@ -26142,6 +26076,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       this.setMap(null);
@@ -26242,7 +26177,7 @@
   /**
    * @typedef {Object} Options
    * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
-   * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+   * @property {import("../events/condition.js").Condition} [condition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
    * to indicate whether that event should be handled.
    * Default is {@link ol/events/condition~mouseActionButton}.
    * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
@@ -26331,7 +26266,7 @@
   /**
    * @classdesc
    * Allows the user to draw a vector box by clicking and dragging on the map,
-   * normally combined with an {@link module:ol/events/condition} that limits
+   * normally combined with a {@link module:ol/events/condition} that limits
    * it to when the shift or other key is held down. This is used, for example,
    * for zooming to a specific area of the map
    * (see {@link module:ol/interaction/DragZoom~DragZoom} and
@@ -26428,6 +26363,7 @@
     /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @override
      */
     handleDragEvent(mapBrowserEvent) {
       if (!this.startPixel_) {
@@ -26449,6 +26385,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(mapBrowserEvent) {
       if (!this.startPixel_) {
@@ -26479,6 +26416,7 @@
      * Handle pointer down events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleDownEvent(mapBrowserEvent) {
       if (this.condition_(mapBrowserEvent)) {
@@ -26508,6 +26446,7 @@
      * @param {boolean} active Active.
      * @observable
      * @api
+     * @override
      */
     setActive(active) {
       if (!active) {
@@ -26533,7 +26472,7 @@
    * @property {string} [className='ol-dragzoom'] CSS class name for styling the
    * box.
    * @property {import("../events/condition.js").Condition} [condition] A function that
-   * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled.
    * Default is {@link module:ol/events/condition.shiftKeyOnly}.
    * @property {number} [duration=200] Animation duration in milliseconds.
@@ -26545,7 +26484,7 @@
   /**
    * @classdesc
    * Allows the user to zoom the map by clicking and dragging on the map,
-   * normally combined with an {@link module:ol/events/condition} that limits
+   * normally combined with a {@link module:ol/events/condition} that limits
    * it to when a key, shift by default, is held down.
    *
    * To change the style of the box, use CSS and the `.ol-dragzoom` selector, or
@@ -26583,6 +26522,7 @@
     /**
      * Function to execute just before `onboxend` is fired
      * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @override
      */
     onBoxEnd(event) {
       const map = this.getMap();
@@ -26626,7 +26566,7 @@
   /**
    * @typedef {Object} Options
    * @property {import("../events/condition.js").Condition} [condition] A function that
-   * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled. Default is
    * {@link module:ol/events/condition.noModifierKeys} and
    * {@link module:ol/events/condition.targetNotEditable}.
@@ -26697,6 +26637,7 @@
      * pressed).
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
+     * @override
      */
     handleEvent(mapBrowserEvent) {
       let stopEvent = false;
@@ -26745,7 +26686,7 @@
    * @typedef {Object} Options
    * @property {number} [duration=100] Animation duration in milliseconds.
    * @property {import("../events/condition.js").Condition} [condition] A function that
-   * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled. The default condition is
    * that {@link module:ol/events/condition.targetNotEditable} is fulfilled and that
    * the platform modifier key isn't pressed
@@ -26807,6 +26748,7 @@
      * key pressed was '+' or '-').
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
+     * @override
      */
     handleEvent(mapBrowserEvent) {
       let stopEvent = false;
@@ -26967,7 +26909,7 @@
   /**
    * @typedef {Object} Options
    * @property {import("../events/condition.js").Condition} [condition] A function that
-   * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled. Default is
    * {@link module:ol/events/condition.always}.
    * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
@@ -27123,6 +27065,7 @@
      * zooms the map.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
+     * @override
      */
     handleEvent(mapBrowserEvent) {
       if (!this.condition_(mapBrowserEvent)) {
@@ -27322,6 +27265,7 @@
     /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @override
      */
     handleDragEvent(mapBrowserEvent) {
       let rotationDelta = 0.0;
@@ -27369,6 +27313,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(mapBrowserEvent) {
       if (this.targetPointers.length < 2) {
@@ -27384,6 +27329,7 @@
      * Handle pointer down events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleDownEvent(mapBrowserEvent) {
       if (this.targetPointers.length >= 2) {
@@ -27461,6 +27407,7 @@
     /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @override
      */
     handleDragEvent(mapBrowserEvent) {
       let scaleDelta = 1.0;
@@ -27499,6 +27446,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(mapBrowserEvent) {
       if (this.targetPointers.length < 2) {
@@ -27515,6 +27463,7 @@
      * Handle pointer down events.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleDownEvent(mapBrowserEvent) {
       if (this.targetPointers.length >= 2) {
@@ -27682,7 +27631,8 @@
    * @property {import("./View.js").State} viewState The state of the current view.
    * @property {boolean} animate Animate.
    * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
-   * @property {Object<string, import("rbush").default>|null} declutter Declutter trees by declutter group.
+   * @property {Object<string, import("rbush").default<import('./render/canvas/Executor.js').DeclutterEntry>>|null} declutter
+   * Declutter trees by declutter group.
    * When null, no decluttering is needed because no layers have decluttering enabled.
    * @property {null|import("./extent.js").Extent} extent Extent (in view projection coordinates).
    * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
@@ -27893,9 +27843,9 @@
 
       /**
        * @private
-       * @type {boolean|undefined}
+       * @type {boolean}
        */
-      this.renderComplete_;
+      this.renderComplete_ = false;
 
       /**
        * @private
@@ -28057,6 +28007,7 @@
       this.targetElement_ = null;
 
       /**
+       * @private
        * @type {ResizeObserver}
        */
       this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
@@ -28282,6 +28233,7 @@
     /**
      *
      * Clean up.
+     * @override
      */
     disposeInternal() {
       this.controls.clear();
@@ -28822,7 +28774,7 @@
       }
 
       if (frameState && this.renderer_ && !frameState.animate) {
-        if (this.renderComplete_ === true) {
+        if (this.renderComplete_) {
           if (this.hasListener(RenderEventType.RENDERCOMPLETE)) {
             this.renderer_.dispatchRenderEvent(
               RenderEventType.RENDERCOMPLETE,
@@ -28880,7 +28832,7 @@
         );
         this.mapBrowserEventHandler_.dispose();
         this.mapBrowserEventHandler_ = null;
-        removeNode(this.viewport_);
+        this.viewport_.remove();
       }
 
       if (this.targetElement_) {
@@ -29237,13 +29189,12 @@
       this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
       this.renderComplete_ =
-        this.hasListener(MapEventType.LOADSTART) ||
-        this.hasListener(MapEventType.LOADEND) ||
-        this.hasListener(RenderEventType.RENDERCOMPLETE)
-          ? !this.tileQueue_.getTilesLoading() &&
-            !this.tileQueue_.getCount() &&
-            !this.getLoadingOrNotReady()
-          : undefined;
+        (this.hasListener(MapEventType.LOADSTART) ||
+          this.hasListener(MapEventType.LOADEND) ||
+          this.hasListener(RenderEventType.RENDERCOMPLETE)) &&
+        !this.tileQueue_.getTilesLoading() &&
+        !this.tileQueue_.getCount() &&
+        !this.getLoadingOrNotReady();
 
       if (!this.postRenderTimeoutHandle_) {
         this.postRenderTimeoutHandle_ = setTimeout(() => {
@@ -29334,7 +29285,7 @@
           parseFloat(computedStyle['paddingBottom']) -
           parseFloat(computedStyle['borderBottomWidth']);
         if (!isNaN(width) && !isNaN(height)) {
-          size = [width, height];
+          size = [Math.max(0, width), Math.max(0, height)];
           if (
             !hasArea(size) &&
             !!(
@@ -29766,6 +29717,7 @@
      * Make a complete copy of the geometry.
      * @return {!LineString} Clone.
      * @api
+     * @override
      */
     clone() {
       const lineString = new LineString(
@@ -29782,6 +29734,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -29867,6 +29820,7 @@
      * Return the coordinates of the linestring.
      * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
      * @api
+     * @override
      */
     getCoordinates() {
       return inflateCoordinates(
@@ -29931,6 +29885,7 @@
      * @param {number} squaredTolerance Squared tolerance.
      * @return {LineString} Simplified LineString.
      * @protected
+     * @override
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
       /** @type {Array<number>} */
@@ -29951,6 +29906,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'LineString';
@@ -29961,6 +29917,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       return intersectsLineString(
@@ -29977,6 +29934,7 @@
      * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
      * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
      * @api
+     * @override
      */
     setCoordinates(coordinates, layout) {
       this.setLayout(layout, coordinates, 1);
@@ -30027,6 +29985,7 @@
      * Make a complete copy of the geometry.
      * @return {!Circle} Clone.
      * @api
+     * @override
      */
     clone() {
       const circle = new Circle(
@@ -30044,6 +30003,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       const flatCoordinates = this.flatCoordinates;
@@ -30073,6 +30033,7 @@
      * @param {number} x X.
      * @param {number} y Y.
      * @return {boolean} Contains (x, y).
+     * @override
      */
     containsXY(x, y) {
       const flatCoordinates = this.flatCoordinates;
@@ -30094,6 +30055,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @protected
      * @return {import("../extent.js").Extent} extent Extent.
+     * @override
      */
     computeExtent(extent) {
       const flatCoordinates = this.flatCoordinates;
@@ -30130,6 +30092,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'Circle';
@@ -30140,6 +30103,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       const circleExtent = this.getExtent();
@@ -30199,10 +30163,16 @@
       this.changed();
     }
 
+    /**
+     * @override
+     */
     getCoordinates() {
       return null;
     }
 
+    /**
+     * @override
+     */
     setCoordinates(coordinates, layout) {}
 
     /**
@@ -30221,6 +30191,7 @@
      * @param {number} angle Rotation angle in counter-clockwise radians.
      * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
      * @api
+     * @override
      */
     rotate(angle, anchor) {
       const center = this.getCenter();
@@ -30281,6 +30252,7 @@
       this.geometries_ = geometries;
 
       /**
+       * @private
        * @type {Array<import("../events.js").EventsKey>}
        */
       this.changeEventsKeys_ = [];
@@ -30312,6 +30284,7 @@
      * Make a complete copy of the geometry.
      * @return {!GeometryCollection} Clone.
      * @api
+     * @override
      */
     clone() {
       const geometryCollection = new GeometryCollection(
@@ -30327,6 +30300,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -30348,6 +30322,7 @@
      * @param {number} x X.
      * @param {number} y Y.
      * @return {boolean} Contains (x, y).
+     * @override
      */
     containsXY(x, y) {
       const geometries = this.geometries_;
@@ -30363,6 +30338,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @protected
      * @return {import("../extent.js").Extent} extent Extent.
+     * @override
      */
     computeExtent(extent) {
       createOrUpdateEmpty(extent);
@@ -30414,6 +30390,7 @@
      * Create a simplified version of this geometry using the Douglas Peucker algorithm.
      * @param {number} squaredTolerance Squared tolerance.
      * @return {GeometryCollection} Simplified GeometryCollection.
+     * @override
      */
     getSimplifiedGeometry(squaredTolerance) {
       if (this.simplifiedGeometryRevision !== this.getRevision()) {
@@ -30454,6 +30431,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'GeometryCollection';
@@ -30464,6 +30442,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       const geometries = this.geometries_;
@@ -30488,6 +30467,7 @@
      * @param {number} angle Rotation angle in radians.
      * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
      * @api
+     * @override
      */
     rotate(angle, anchor) {
       const geometries = this.geometries_;
@@ -30506,6 +30486,7 @@
      * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
      *     of the geometry extent).
      * @api
+     * @override
      */
     scale(sx, sy, anchor) {
       if (!anchor) {
@@ -30545,6 +30526,7 @@
      * @param {import("../proj.js").TransformFunction} transformFn Transform function.
      * Called with a flat array of geometry coordinates.
      * @api
+     * @override
      */
     applyTransform(transformFn) {
       const geometries = this.geometries_;
@@ -30560,6 +30542,7 @@
      * @param {number} deltaX Delta X.
      * @param {number} deltaY Delta Y.
      * @api
+     * @override
      */
     translate(deltaX, deltaY) {
       const geometries = this.geometries_;
@@ -30571,6 +30554,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       this.unlistenGeometriesChange_();
@@ -30674,6 +30658,7 @@
      * Make a complete copy of the geometry.
      * @return {!MultiLineString} Clone.
      * @api
+     * @override
      */
     clone() {
       const multiLineString = new MultiLineString(
@@ -30691,6 +30676,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -30768,6 +30754,7 @@
      * Return the coordinates of the multilinestring.
      * @return {Array<Array<import("../coordinate.js").Coordinate>>} Coordinates.
      * @api
+     * @override
      */
     getCoordinates() {
       return inflateCoordinatesArray(
@@ -30857,6 +30844,7 @@
      * @param {number} squaredTolerance Squared tolerance.
      * @return {MultiLineString} Simplified MultiLineString.
      * @protected
+     * @override
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
       /** @type {Array<number>} */
@@ -30880,6 +30868,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'MultiLineString';
@@ -30890,6 +30879,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       return intersectsLineStringArray(
@@ -30906,6 +30896,7 @@
      * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
      * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
      * @api
+     * @override
      */
     setCoordinates(coordinates, layout) {
       this.setLayout(layout, coordinates, 2);
@@ -30973,6 +30964,7 @@
      * Make a complete copy of the geometry.
      * @return {!MultiPoint} Clone.
      * @api
+     * @override
      */
     clone() {
       const multiPoint = new MultiPoint(
@@ -30989,6 +30981,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -31018,6 +31011,7 @@
      * Return the coordinates of the multipoint.
      * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
      * @api
+     * @override
      */
     getCoordinates() {
       return inflateCoordinates(
@@ -31070,6 +31064,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'MultiPoint';
@@ -31080,6 +31075,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       const flatCoordinates = this.flatCoordinates;
@@ -31099,6 +31095,7 @@
      * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
      * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
      * @api
+     * @override
      */
     setCoordinates(coordinates, layout) {
       this.setLayout(layout, coordinates, 1);
@@ -31271,6 +31268,7 @@
      * Make a complete copy of the geometry.
      * @return {!MultiPolygon} Clone.
      * @api
+     * @override
      */
     clone() {
       const len = this.endss_.length;
@@ -31295,6 +31293,7 @@
      * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
+     * @override
      */
     closestPointXY(x, y, closestPoint, minSquaredDistance) {
       if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -31330,6 +31329,7 @@
      * @param {number} x X.
      * @param {number} y Y.
      * @return {boolean} Contains (x, y).
+     * @override
      */
     containsXY(x, y) {
       return linearRingssContainsXY(
@@ -31368,6 +31368,7 @@
      *     constructed.
      * @return {Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
      * @api
+     * @override
      */
     getCoordinates(right) {
       let flatCoordinates;
@@ -31460,6 +31461,7 @@
      * @param {number} squaredTolerance Squared tolerance.
      * @return {MultiPolygon} Simplified MultiPolygon.
      * @protected
+     * @override
      */
     getSimplifiedGeometryInternal(squaredTolerance) {
       /** @type {Array<number>} */
@@ -31544,6 +31546,7 @@
      * Get the type of this geometry.
      * @return {import("./Geometry.js").Type} Geometry type.
      * @api
+     * @override
      */
     getType() {
       return 'MultiPolygon';
@@ -31554,6 +31557,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
+     * @override
      */
     intersectsExtent(extent) {
       return intersectsLinearRingMultiArray(
@@ -31570,6 +31574,7 @@
      * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
      * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
      * @api
+     * @override
      */
     setCoordinates(coordinates, layout) {
       this.setLayout(layout, coordinates, 3);
@@ -31700,11 +31705,13 @@
       this.properties_ = properties;
 
       /**
+       * @private
        * @type {number}
        */
       this.squaredTolerance_;
 
       /**
+       * @private
        * @type {number}
        */
       this.stride_ = stride;
@@ -32119,7 +32126,7 @@
    */
 
   /***
-   * @template {Feature|RenderFeature} T
+   * @template {import('../Feature.js').FeatureLike} T
    * @typedef {T extends RenderFeature ? typeof RenderFeature : typeof Feature} FeatureToFeatureClass
    */
 
@@ -32137,7 +32144,7 @@
    * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
    * file formats.  See the documentation for each format for more details.
    *
-   * @template {import('../Feature.js').FeatureClass} [T=typeof import('../Feature.js').default]
+   * @template {import('../Feature.js').FeatureLike} [FeatureType=import("../Feature.js").default]
    * @abstract
    * @api
    */
@@ -32157,9 +32164,11 @@
 
       /**
        * @protected
-       * @type {T}
+       * @type {FeatureToFeatureClass<FeatureType>}
        */
-      this.featureClass = /** @type {T} */ (Feature);
+      this.featureClass = /** @type {FeatureToFeatureClass<FeatureType>} */ (
+        Feature
+      );
 
       /**
        * A list media types supported by the format in descending order of preference.
@@ -32230,7 +32239,7 @@
      * @abstract
      * @param {Document|Element|Object|string} source Source.
      * @param {ReadOptions} [options] Read options.
-     * @return {import("../Feature.js").FeatureLike|Array<import("../render/Feature.js").default>} Feature.
+     * @return {FeatureType|Array<FeatureType>} Feature.
      */
     readFeature(source, options) {
       return abstract();
@@ -32242,7 +32251,7 @@
      * @abstract
      * @param {Document|Element|ArrayBuffer|Object|string} source Source.
      * @param {ReadOptions} [options] Read options.
-     * @return {Array<import('../Feature.js').FeatureLike|FeatureClassToFeature<T>>} Features.
+     * @return {Array<FeatureType>} Features.
      */
     readFeatures(source, options) {
       return abstract();
@@ -32554,13 +32563,10 @@
       /**
        * @param {Node} node Node.
        * @param {Array<*>} objectStack Object stack.
+       * @this {*}
        */
       function (node, objectStack) {
-        const value = valueReader.call(
-          thisArg !== undefined ? thisArg : this,
-          node,
-          objectStack,
-        );
+        const value = valueReader.call(thisArg ?? this, node, objectStack);
         if (value !== undefined) {
           const array = /** @type {Array<*>} */ (
             objectStack[objectStack.length - 1]
@@ -32584,13 +32590,10 @@
       /**
        * @param {Element} node Node.
        * @param {Array<*>} objectStack Object stack.
+       * @this {*}
        */
       function (node, objectStack) {
-        const value = valueReader.call(
-          thisArg !== undefined ? thisArg : this,
-          node,
-          objectStack,
-        );
+        const value = valueReader.call(thisArg ?? this, node, objectStack);
         if (value !== undefined) {
           const array = /** @type {Array<*>} */ (
             objectStack[objectStack.length - 1]
@@ -32614,13 +32617,10 @@
       /**
        * @param {Node} node Node.
        * @param {Array<*>} objectStack Object stack.
+       * @this {*}
        */
       function (node, objectStack) {
-        const value = valueReader.call(
-          this,
-          node,
-          objectStack,
-        );
+        const value = valueReader.call(this, node, objectStack);
         if (value !== undefined) {
           objectStack[objectStack.length - 1] = value;
         }
@@ -32641,13 +32641,10 @@
       /**
        * @param {Element} node Node.
        * @param {Array<*>} objectStack Object stack.
+       * @this {*}
        */
       function (node, objectStack) {
-        const value = valueReader.call(
-          this,
-          node,
-          objectStack,
-        );
+        const value = valueReader.call(this, node, objectStack);
         if (value !== undefined) {
           const object = /** @type {!Object} */ (
             objectStack[objectStack.length - 1]
@@ -32669,19 +32666,22 @@
    * @template T, V
    */
   function makeChildAppender(nodeWriter, thisArg) {
-    return function (node, value, objectStack) {
-      nodeWriter.call(
-        this,
-        node,
-        value,
-        objectStack,
-      );
-      const parent = /** @type {NodeStackItem} */ (
-        objectStack[objectStack.length - 1]
-      );
-      const parentNode = parent.node;
-      parentNode.appendChild(node);
-    };
+    return (
+      /**
+       * @param {Element} node Node.
+       * @param {*} value Value to be written.
+       * @param {Array<*>} objectStack Object stack.
+       * @this {*}
+       */
+      function (node, value, objectStack) {
+        nodeWriter.call(this, node, value, objectStack);
+        const parent = /** @type {NodeStackItem} */ (
+          objectStack[objectStack.length - 1]
+        );
+        const parentNode = parent.node;
+        parentNode.appendChild(node);
+      }
+    );
   }
 
   /**
@@ -32870,7 +32870,7 @@
       value = values[i];
       if (value !== undefined) {
         node = nodeFactory.call(
-          thisArg !== undefined ? thisArg : this,
+          thisArg,
           value,
           objectStack,
           keys !== undefined ? keys[i] : undefined,
@@ -32974,6 +32974,7 @@
 
     /**
      * @return {import("./Feature.js").Type} Format.
+     * @override
      */
     getType() {
       return 'xml';
@@ -32986,6 +32987,7 @@
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @return {import("../Feature.js").default} Feature.
      * @api
+     * @override
      */
     readFeature(source, options) {
       if (!source) {
@@ -33033,6 +33035,7 @@
      * @param {import("./Feature.js").ReadOptions} [options] Options.
      * @return {Array<import("../Feature.js").default>} Features.
      * @api
+     * @override
      */
     readFeatures(source, options) {
       if (!source) {
@@ -33088,6 +33091,7 @@
      * @param {Document|Element|Object|string} source Source.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @return {import("../geom/Geometry.js").default} Geometry.
+     * @override
      */
     readGeometry(source, options) {
       if (!source) {
@@ -33132,6 +33136,7 @@
      * @param {Document|Element|Object|string} source Source.
      * @return {import("../proj/Projection.js").default} Projection.
      * @api
+     * @override
      */
     readProjection(source) {
       if (!source) {
@@ -33171,6 +33176,7 @@
      * @param {import("../Feature.js").default} feature Feature.
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {string} Encoded feature.
+     * @override
      */
     writeFeature(feature, options) {
       const node = this.writeFeatureNode(feature, options);
@@ -33194,6 +33200,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {string} Result.
      * @api
+     * @override
      */
     writeFeatures(features, options) {
       const node = this.writeFeaturesNode(features, options);
@@ -33215,6 +33222,7 @@
      * @param {import("../geom/Geometry.js").default} geometry Geometry.
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {string} Encoded geometry.
+     * @override
      */
     writeGeometry(geometry, options) {
       const node = this.writeGeometryNode(geometry, options);
@@ -33284,6 +33292,7 @@
      * @param {Element} node Node.
      * @param {import("./Feature.js").ReadOptions} [options] Options.
      * @return {Array<import("../Feature.js").default>} Features.
+     * @override
      */
     readFeaturesFromNode(node, options) {
       options = this.getReadOptions(node, options);
@@ -33636,7 +33645,17 @@
    * @return {number} Hash.
    */
   function hash(tileCoord) {
-    return (tileCoord[1] << tileCoord[0]) + tileCoord[2];
+    return hashZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
+  }
+
+  /**
+   * @param {number} z The tile z coordinate.
+   * @param {number} x The tile x coordinate.
+   * @param {number} y The tile y coordinate.
+   * @return {number} Hash.
+   */
+  function hashZXY(z, x, y) {
+    return (x << z) + y;
   }
 
   /**
@@ -34683,6 +34702,7 @@
      * the map here.
      * @param {import("../Map.js").default|null} map Map.
      * @api
+     * @override
      */
     setMap(map) {
       const oldMap = this.getMap();
@@ -34982,6 +35002,7 @@
      * the map here.
      * @param {import("../Map.js").default|null} map Map.
      * @api
+     * @override
      */
     setMap(map) {
       super.setMap(map);
@@ -35377,7 +35398,7 @@
      */
     handleMapChanged() {
       if (this.mapPostrenderListenerKey) {
-        removeNode(this.element);
+        this.element?.remove();
         unlistenByKey(this.mapPostrenderListenerKey);
         this.mapPostrenderListenerKey = null;
       }
@@ -35883,7 +35904,7 @@
 
       const move = function (event) {
         const position = /** @type {?} */ (computeDesiredMousePosition(event));
-        const coordinates = ovmap.getEventCoordinateInternal(
+        const coordinates = ovmap.getEventCoordinate(
           /** @type {MouseEvent} */ (position),
         );
 
@@ -35895,15 +35916,17 @@
 
         scope.getMap().getView().setCenterInternal(coordinates);
 
-        window.removeEventListener('mousemove', move);
-        window.removeEventListener('mouseup', endMoving);
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', endMoving);
       };
 
       /* Binding */
 
-      overlayBox.addEventListener('mousedown', function () {
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mouseup', endMoving);
+      this.ovmapDiv_.addEventListener('pointerdown', function () {
+        if (event.target === overlayBox) {
+          window.addEventListener('pointermove', move);
+        }
+        window.addEventListener('pointerup', endMoving);
       });
     }
 
@@ -35914,6 +35937,7 @@
      * the map here.
      * @param {import("../Map.js").default|null} map Map.
      * @api
+     * @override
      */
     setMap(map) {
       const oldMap = this.getMap();
@@ -35943,10 +35967,6 @@
         const view = map.getView();
         if (view) {
           this.bindView_(view);
-          if (view.isDef()) {
-            this.ovmap_.updateSize();
-            this.resetExtent_();
-          }
         }
 
         if (!this.ovmap_.isRendered()) {
@@ -35998,6 +36018,11 @@
       );
       // Sync once with the new view
       this.handleRotationChanged_();
+
+      if (view.isDef()) {
+        this.ovmap_.updateSize();
+        this.resetExtent_();
+      }
     }
 
     /**
@@ -36148,7 +36173,7 @@
 
       const overlay = this.boxOverlay_;
       const box = this.boxOverlay_.getElement();
-      const center = view.getCenterInternal();
+      const center = view.getCenter();
       const resolution = view.getResolution();
       const ovresolution = ovview.getResolution();
       const width = (mapSize[0] * resolution) / ovresolution;
@@ -36176,11 +36201,10 @@
       this.ovmapPostrenderKey_ = listenOnce(
         this.ovmap_,
         MapEventType.POSTRENDER,
-        function (event) {
+        (event) => {
           delete this.ovmapPostrenderKey_;
           this.updateBox_();
         },
-        this,
       );
     }
 
@@ -36969,6 +36993,7 @@
      * the map here.
      * @param {import("../Map.js").default|null} map Map.
      * @api
+     * @override
      */
     setMap(map) {
       super.setMap(map);
@@ -37310,8 +37335,8 @@
    * instantiated in apps.
    * Base class for JSON feature formats.
    *
-   * @template {import('../Feature.js').FeatureClass} [T=typeof import('../Feature.js').default]
-   * @extends {FeatureFormat<T>}
+   * @template {import('../Feature.js').FeatureLike} [FeatureType=import("../Feature.js").default]
+   * @extends {FeatureFormat<FeatureType>}
    * @abstract
    */
   class JSONFeature extends FeatureFormat {
@@ -37321,6 +37346,7 @@
 
     /**
      * @return {import("./Feature.js").Type} Format.
+     * @override
      */
     getType() {
       return 'json';
@@ -37332,15 +37358,14 @@
      *
      * @param {ArrayBuffer|Document|Element|Object|string} source Source.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
-     * @return {import('./Feature.js').FeatureClassToFeature<T>} Feature.
+     * @return {FeatureType|Array<FeatureType>} Feature.
      * @api
+     * @override
      */
     readFeature(source, options) {
-      return /** @type {import('./Feature.js').FeatureClassToFeature<T>} */ (
-        this.readFeatureFromObject(
-          getObject(source),
-          this.getReadOptions(source, options),
-        )
+      return this.readFeatureFromObject(
+        getObject(source),
+        this.getReadOptions(source, options),
       );
     }
 
@@ -37350,15 +37375,14 @@
      *
      * @param {ArrayBuffer|Document|Element|Object|string} source Source.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
-     * @return {Array<import('./Feature.js').FeatureClassToFeature<T>>} Features.
+     * @return {Array<FeatureType>} Features.
      * @api
+     * @override
      */
     readFeatures(source, options) {
-      return /** @type {Array<import('./Feature.js').FeatureClassToFeature<T>>} */ (
-        this.readFeaturesFromObject(
-          getObject(source),
-          this.getReadOptions(source, options),
-        )
+      return this.readFeaturesFromObject(
+        getObject(source),
+        this.getReadOptions(source, options),
       );
     }
 
@@ -37367,7 +37391,7 @@
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {import("../Feature.js").default|import("../render/Feature.js").default|Array<import("../render/Feature.js").default>} Feature.
+     * @return {FeatureType|Array<FeatureType>} Feature.
      */
     readFeatureFromObject(object, options) {
       return abstract();
@@ -37378,7 +37402,7 @@
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {Array<import("../Feature.js").default|import("../render/Feature.js").default>} Features.
+     * @return {Array<FeatureType>} Features.
      */
     readFeaturesFromObject(object, options) {
       return abstract();
@@ -37391,6 +37415,7 @@
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @return {import("../geom/Geometry.js").default} Geometry.
      * @api
+     * @override
      */
     readGeometry(source, options) {
       return this.readGeometryFromObject(
@@ -37416,6 +37441,7 @@
      * @param {ArrayBuffer|Document|Element|Object|string} source Source.
      * @return {import("../proj/Projection.js").default} Projection.
      * @api
+     * @override
      */
     readProjection(source) {
       return this.readProjectionFromObject(getObject(source));
@@ -37438,6 +37464,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {string} Encoded feature.
      * @api
+     * @override
      */
     writeFeature(feature, options) {
       return JSON.stringify(this.writeFeatureObject(feature, options));
@@ -37460,6 +37487,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {string} Encoded features.
      * @api
+     * @override
      */
     writeFeatures(features, options) {
       return JSON.stringify(this.writeFeaturesObject(features, options));
@@ -37482,6 +37510,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {string} Encoded geometry.
      * @api
+     * @override
      */
     writeGeometry(geometry, options) {
       return JSON.stringify(this.writeGeometryObject(geometry, options));
@@ -37533,7 +37562,7 @@
    */
 
   /**
-   * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
+   * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
    * @typedef {Object} Options
    *
    * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
@@ -37544,7 +37573,7 @@
    * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
    * will look for that field to set the geometry name. If both this field is set to `true`
    * and a `geometryName` is provided, the `geometryName` will take precedence.
-   * @property {FeatureClassToFeature} [featureClass] Feature class
+   * @property {import('./Feature.js').FeatureToFeatureClass<FeatureType>} [featureClass] Feature class
    * to be used when reading features. The default is {@link module:ol/Feature~Feature}. If performance is
    * the primary concern, and features are not going to be modified or round-tripped through the format,
    * consider using {@link module:ol/render/Feature~RenderFeature}
@@ -37554,13 +37583,13 @@
    * @classdesc
    * Feature format for reading and writing data in the GeoJSON format.
    *
-   * @template {import('../Feature.js').FeatureClass} [T=typeof Feature]
-   * @extends {JSONFeature<T>}
+   * @template {import('../Feature.js').FeatureLike} [FeatureType=import("../Feature.js").default]
+   * @extends {JSONFeature<FeatureType>}
    * @api
    */
   class GeoJSON extends JSONFeature {
     /**
-     * @param {Options<T>} [options] Options.
+     * @param {Options<FeatureType>} [options] Options.
      */
     constructor(options) {
       options = options ? options : {};
@@ -37609,7 +37638,8 @@
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {Feature|RenderFeature|Array<RenderFeature>}.default} Feature.
+     * @return {FeatureType|Array<FeatureType>} Feature.
+     * @override
      */
     readFeatureFromObject(object, options) {
       /**
@@ -37628,13 +37658,15 @@
 
       const geometry = readGeometryInternal(geoJSONFeature['geometry']);
       if (this.featureClass === RenderFeature) {
-        return createRenderFeature(
-          {
-            geometry,
-            id: geoJSONFeature['id'],
-            properties: geoJSONFeature['properties'],
-          },
-          options,
+        return /** @type {FeatureType|Array<FeatureType>} */ (
+          createRenderFeature(
+            {
+              geometry,
+              id: geoJSONFeature['id'],
+              properties: geoJSONFeature['properties'],
+            },
+            options,
+          )
         );
       }
 
@@ -37653,18 +37685,18 @@
       if (geoJSONFeature['properties']) {
         feature.setProperties(geoJSONFeature['properties'], true);
       }
-      return feature;
+      return /** @type {FeatureType|Array<FeatureType>} */ (feature);
     }
 
     /**
      * @param {Object} object Object.
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
-     * @return {Array<Feature|RenderFeature>} Features.
+     * @return {Array<FeatureType>} Features.
+     * @override
      */
     readFeaturesFromObject(object, options) {
       const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-      /** @type {Array<Feature|RenderFeature|Array<RenderFeature>>} */
       let features = null;
       if (geoJSONObject['type'] === 'FeatureCollection') {
         const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (
@@ -37685,7 +37717,7 @@
       } else {
         features = [this.readFeatureFromObject(object, options)];
       }
-      return features.flat();
+      return /** @type {Array<FeatureType>} */ (features.flat());
     }
 
     /**
@@ -37693,6 +37725,7 @@
      * @param {import("./Feature.js").ReadOptions} [options] Read options.
      * @protected
      * @return {import("../geom/Geometry.js").default} Geometry.
+     * @override
      */
     readGeometryFromObject(object, options) {
       return readGeometry(object, options);
@@ -37702,6 +37735,7 @@
      * @param {Object} object Object.
      * @protected
      * @return {import("../proj/Projection.js").default} Projection.
+     * @override
      */
     readProjectionFromObject(object) {
       const crs = object['crs'];
@@ -37727,6 +37761,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {GeoJSONFeature} Object.
      * @api
+     * @override
      */
     writeFeatureObject(feature, options) {
       options = this.adaptOptions(options);
@@ -37769,6 +37804,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {GeoJSONFeatureCollection} GeoJSON Object.
      * @api
+     * @override
      */
     writeFeaturesObject(features, options) {
       options = this.adaptOptions(options);
@@ -37789,6 +37825,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Write options.
      * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
      * @api
+     * @override
      */
     writeGeometryObject(geometry, options) {
       return writeGeometry(geometry, this.adaptOptions(options));
@@ -38565,6 +38602,7 @@
      * @param {Element} node Node.
      * @param {import("./Feature.js").ReadOptions} [options] Options.
      * @return {import("../Feature.js").default} Feature.
+     * @override
      */
     readFeatureFromNode(node, options) {
       if (!NAMESPACE_URIS$1.includes(node.namespaceURI)) {
@@ -38586,6 +38624,7 @@
      * @param {Element} node Node.
      * @param {import("./Feature.js").ReadOptions} [options] Options.
      * @return {Array<import("../Feature.js").default>} Features.
+     * @override
      */
     readFeaturesFromNode(node, options) {
       if (!NAMESPACE_URIS$1.includes(node.namespaceURI)) {
@@ -38614,6 +38653,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Options.
      * @return {Node} Node.
      * @api
+     * @override
      */
     writeFeaturesNode(features, options) {
       options = this.adaptOptions(options);
@@ -39942,6 +39982,7 @@
      * @param {Element} node Node.
      * @param {import("./Feature.js").ReadOptions} [options] Options.
      * @return {import("../Feature.js").default} Feature.
+     * @override
      */
     readFeatureFromNode(node, options) {
       if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -39961,6 +40002,7 @@
      * @param {Element} node Node.
      * @param {import("./Feature.js").ReadOptions} [options] Options.
      * @return {Array<import("../Feature.js").default>} Features.
+     * @override
      */
     readFeaturesFromNode(node, options) {
       if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -40280,6 +40322,7 @@
      * @param {import("./Feature.js").WriteOptions} [options] Options.
      * @return {Node} Node.
      * @api
+     * @override
      */
     writeFeaturesNode(features, options) {
       options = this.adaptOptions(options);
@@ -41152,7 +41195,7 @@
       } else if (type == 'Polygon') {
         multiGeometry = new MultiPolygon$1(geometries);
         setCommonGeometryProperties(multiGeometry, geometries);
-      } else if (type == 'GeometryCollection') {
+      } else if (type == 'GeometryCollection' || type.startsWith('Multi')) {
         multiGeometry = new GeometryCollection$1(geometries);
       } else {
         throw new Error('Unknown geometry type found');
@@ -41468,6 +41511,7 @@
   });
 
   /**
+   * @this {KML}
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    */
@@ -43140,6 +43184,7 @@
      * @param {Function} renderer Renderer.
      * @param {Function} hitDetectionRenderer Renderer.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawCustom(geometry, feature, renderer, hitDetectionRenderer, index) {
       this.beginGeometry(geometry, feature, index);
@@ -43378,6 +43423,7 @@
     /**
      * @param {import("../../style/Fill.js").default} fillStyle Fill style.
      * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+     * @override
      */
     setFillStrokeStyle(fillStyle, strokeStyle) {
       const state = this.state;
@@ -43671,6 +43717,7 @@
      * @param {import("../../geom/Point.js").default|import("../Feature.js").default} pointGeometry Point geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawPoint(pointGeometry, feature, index) {
       if (
@@ -43733,6 +43780,7 @@
      * @param {import("../../geom/MultiPoint.js").default|import("../Feature.js").default} multiPointGeometry MultiPoint geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawMultiPoint(multiPointGeometry, feature, index) {
       if (!this.image_) {
@@ -43804,6 +43852,7 @@
 
     /**
      * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
+     * @override
      */
     finish() {
       this.reverseHitDetectionInstructions();
@@ -43827,6 +43876,7 @@
     /**
      * @param {import("../../style/Image.js").default} imageStyle Image style.
      * @param {Object} [sharedData] Shared data.
+     * @override
      */
     setImageStyle(imageStyle, sharedData) {
       const anchor = imageStyle.getAnchor();
@@ -43897,6 +43947,7 @@
      * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} lineStringGeometry Line string geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawLineString(lineStringGeometry, feature, index) {
       const state = this.state;
@@ -43936,6 +43987,7 @@
      * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} multiLineStringGeometry MultiLineString geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawMultiLineString(multiLineStringGeometry, feature, index) {
       const state = this.state;
@@ -43977,6 +44029,7 @@
 
     /**
      * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
+     * @override
      */
     finish() {
       const state = this.state;
@@ -43993,6 +44046,7 @@
 
     /**
      * @param {import("../canvas.js").FillStrokeState} state State.
+     * @override
      */
     applyStroke(state) {
       if (
@@ -44079,6 +44133,7 @@
      * @param {import("../../geom/Circle.js").default} circleGeometry Circle geometry.
      * @param {import("../../Feature.js").default} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawCircle(circleGeometry, feature, index) {
       const state = this.state;
@@ -44136,6 +44191,7 @@
      * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} polygonGeometry Polygon geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawPolygon(polygonGeometry, feature, index) {
       const state = this.state;
@@ -44180,6 +44236,7 @@
      * @param {import("../../geom/MultiPolygon.js").default} multiPolygonGeometry MultiPolygon geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawMultiPolygon(multiPolygonGeometry, feature, index) {
       const state = this.state;
@@ -44225,6 +44282,7 @@
 
     /**
      * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
+     * @override
      */
     finish() {
       this.reverseHitDetectionInstructions();
@@ -44483,6 +44541,7 @@
       this.strokeKey_ = '';
 
       /**
+       * @private
        * @type {import('../../style/Style.js').DeclutterMode}
        */
       this.declutterMode_ = undefined;
@@ -44497,6 +44556,7 @@
 
     /**
      * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
+     * @override
      */
     finish() {
       const instructions = super.finish();
@@ -44510,6 +44570,7 @@
      * @param {import("../../geom/SimpleGeometry.js").default|import("../Feature.js").default} geometry Geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} [index] Render order index.
+     * @override
      */
     drawText(geometry, feature, index) {
       const fillState = this.textFillState_;
@@ -44902,6 +44963,7 @@
     /**
      * @param {import("../../style/Text.js").default} textStyle Text style.
      * @param {Object} [sharedData] Shared data.
+     * @override
      */
     setTextStyle(textStyle, sharedData) {
       let textState, fillState, strokeState;
@@ -45116,6 +45178,8 @@
    * @module ol/renderer/Layer
    */
 
+  const maxStaleKeys = 5;
+
   /**
    * @template {import("../layer/Layer.js").default} LayerType
    */
@@ -45136,10 +45200,39 @@
       this.boundHandleImageChange_ = this.handleImageChange_.bind(this);
 
       /**
-       * @protected
+       * @private
        * @type {LayerType}
        */
       this.layer_ = layer;
+
+      /**
+       * @type {Array<string>}
+       * @private
+       */
+      this.staleKeys_ = new Array();
+
+      /**
+       * @type {number}
+       * @protected
+       */
+      this.maxStaleKeys = maxStaleKeys;
+    }
+
+    /**
+     * @return {Array<string>} Get the list of stale keys.
+     */
+    getStaleKeys() {
+      return this.staleKeys_;
+    }
+
+    /**
+     * @param {string} key The new stale key.
+     */
+    prependStaleKey(key) {
+      this.staleKeys_.unshift(key);
+      if (this.staleKeys_.length > this.maxStaleKeys) {
+        this.staleKeys_.length = this.maxStaleKeys;
+      }
     }
 
     /**
@@ -45181,42 +45274,6 @@
       return abstract();
     }
 
-    /**
-     * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
-     * @param {number} zoom Zoom level.
-     * @param {import("../Tile.js").default} tile Tile.
-     * @return {boolean|void} If `false`, the tile will not be considered loaded.
-     */
-    loadedTileCallback(tiles, zoom, tile) {
-      if (!tiles[zoom]) {
-        tiles[zoom] = {};
-      }
-      tiles[zoom][tile.tileCoord.toString()] = tile;
-      return undefined;
-    }
-
-    /**
-     * Create a function that adds loaded tiles to the tile lookup.
-     * @param {import("../source/Tile.js").default} source Tile source.
-     * @param {import("../proj/Projection.js").default} projection Projection of the tiles.
-     * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
-     * @return {function(number, import("../TileRange.js").default):boolean} A function that can be
-     *     called with a zoom level and a tile range to add loaded tiles to the lookup.
-     * @protected
-     */
-    createLoadedTileFinder(source, projection, tiles) {
-      return (
-        /**
-         * @param {number} zoom Zoom level.
-         * @param {import("../TileRange.js").default} tileRange Tile range.
-         * @return {boolean} The tile range is fully loaded.
-         */
-        (zoom, tileRange) => {
-          const callback = this.loadedTileCallback.bind(this, tiles, zoom);
-          return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-        }
-      );
-    }
     /**
      * @abstract
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
@@ -45301,6 +45358,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       delete this.layer_;
@@ -45336,6 +45394,7 @@
       this.offset_ = 0;
 
       /**
+       * @private
        * @type {ZIndexContextProxy}
        */
       this.context_ = /** @type {ZIndexContextProxy} */ (
@@ -45518,12 +45577,6 @@
        * @type {boolean}
        */
       this.containerReused = false;
-
-      /**
-       * @private
-       * @type {CanvasRenderingContext2D}
-       */
-      this.pixelContext_ = null;
 
       /**
        * @protected
@@ -45834,6 +45887,7 @@
 
     /**
      * Clean up.
+     * @override
      */
     disposeInternal() {
       delete this.frameState;
@@ -45999,12 +46053,7 @@
    */
 
   /**
-   * @typedef {Object} BBox
-   * @property {number} minX Minimal x.
-   * @property {number} minY Minimal y.
-   * @property {number} maxX Maximal x.
-   * @property {number} maxY Maximal y
-   * @property {*} value Value.
+   * @typedef {import('../../structs/RBush.js').Entry<import('../../Feature.js').FeatureLike>} DeclutterEntry
    */
 
   /**
@@ -46016,7 +46065,7 @@
    * @property {number} originX OriginX.
    * @property {number} originY OriginY.
    * @property {Array<number>} scale Scale.
-   * @property {BBox} declutterBox DeclutterBox.
+   * @property {DeclutterEntry} declutterBox DeclutterBox.
    * @property {import("../../transform.js").Transform} canvasTransform CanvasTransform.
    */
 
@@ -46045,7 +46094,7 @@
 
   /**
    * @param {ReplayImageOrLabelArgs} replayImageOrLabelArgs Arguments to replayImageOrLabel
-   * @return {BBox} Declutter bbox.
+   * @return {DeclutterEntry} Declutter rbush entry.
    */
   function getDeclutterBox(replayImageOrLabelArgs) {
     return replayImageOrLabelArgs[3].declutterBox;
@@ -46234,7 +46283,6 @@
         textState.scale[0] * pixelRatio,
         textState.scale[1] * pixelRatio,
       ];
-      const textIsArray = Array.isArray(text);
       const align = textState.justify
         ? TEXT_ALIGN[textState.justify]
         : horizontalTextAlign(
@@ -46244,9 +46292,9 @@
       const strokeWidth =
         strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
-      const chunks = textIsArray
+      const chunks = Array.isArray(text)
         ? text
-        : text.split('\n').reduce(createTextChunks, []);
+        : String(text).split('\n').reduce(createTextChunks, []);
 
       const {width, height, widths, heights, lineWidths} = getTextDimensions(
         textState,
@@ -46631,7 +46679,7 @@
      * @param {FeatureCallback<T>} [featureCallback] Feature callback.
      * @param {import("../../extent.js").Extent} [hitExtent] Only check
      *     features that intersect this extent.
-     * @param {import("rbush").default} [declutterTree] Declutter tree.
+     * @param {import("rbush").default<DeclutterEntry>} [declutterTree] Declutter tree.
      * @return {T|undefined} Callback result.
      * @template T
      */
@@ -47223,7 +47271,7 @@
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {number} viewRotation View rotation.
      * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-     * @param {import("rbush").default} [declutterTree] Declutter tree.
+     * @param {import("rbush").default<DeclutterEntry>} [declutterTree] Declutter tree.
      */
     execute(
       context,
@@ -47386,6 +47434,7 @@
       this.renderedContext_ = null;
 
       /**
+       * @private
        * @type {Object<number, Array<import("./ZIndexContext.js").default>>}
        */
       this.deferredZIndexContexts_ = {};
@@ -47617,7 +47666,7 @@
      * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
      * @param {Array<import("../canvas.js").BuilderType>} [builderTypes] Ordered replay types to replay.
      *     Default is {@link module:ol/render/replay~ALL}
-     * @param {import("rbush").default|null} [declutterTree] Declutter tree.
+     * @param {import("rbush").default<import('./Executor.js').DeclutterEntry>|null} [declutterTree] Declutter tree.
      *     When set to null, no decluttering is done, even when the executor group has a `ZIndexContext`.
      */
     execute(
@@ -48246,6 +48295,7 @@
      *
      * @param {import("../../geom/Circle.js").default} geometry Circle geometry.
      * @api
+     * @override
      */
     drawCircle(geometry) {
       if (this.squaredTolerance_) {
@@ -48301,6 +48351,7 @@
      *
      * @param {import("../../style/Style.js").default} style The rendering style.
      * @api
+     * @override
      */
     setStyle(style) {
       this.setFillStrokeStyle(style.getFill(), style.getStroke());
@@ -48321,6 +48372,7 @@
      *
      * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry to render.
      * @api
+     * @override
      */
     drawGeometry(geometry) {
       const type = geometry.getType();
@@ -48383,6 +48435,7 @@
      * @param {import("../../Feature.js").default} feature Feature.
      * @param {import("../../style/Style.js").default} style Style.
      * @api
+     * @override
      */
     drawFeature(feature, style) {
       const geometry = style.getGeometryFunction()(feature);
@@ -48398,6 +48451,7 @@
      * uses the current styles appropriate for each geometry in the collection.
      *
      * @param {import("../../geom/GeometryCollection.js").default} geometry Geometry collection.
+     * @override
      */
     drawGeometryCollection(geometry) {
       const geometries = geometry.getGeometriesArray();
@@ -48411,6 +48465,7 @@
      * the current style.
      *
      * @param {import("../../geom/Point.js").default|import("../Feature.js").default} geometry Point geometry.
+     * @override
      */
     drawPoint(geometry) {
       if (this.squaredTolerance_) {
@@ -48436,6 +48491,7 @@
      * uses the current style.
      *
      * @param {import("../../geom/MultiPoint.js").default|import("../Feature.js").default} geometry MultiPoint geometry.
+     * @override
      */
     drawMultiPoint(geometry) {
       if (this.squaredTolerance_) {
@@ -48461,6 +48517,7 @@
      * the current style.
      *
      * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} geometry LineString geometry.
+     * @override
      */
     drawLineString(geometry) {
       if (this.squaredTolerance_) {
@@ -48499,6 +48556,7 @@
      * and uses the current style.
      *
      * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} geometry MultiLineString geometry.
+     * @override
      */
     drawMultiLineString(geometry) {
       if (this.squaredTolerance_) {
@@ -48544,6 +48602,7 @@
      * the current style.
      *
      * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} geometry Polygon geometry.
+     * @override
      */
     drawPolygon(geometry) {
       if (this.squaredTolerance_) {
@@ -48589,6 +48648,7 @@
      * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
      * uses the current style.
      * @param {import("../../geom/MultiPolygon.js").default} geometry MultiPolygon geometry.
+     * @override
      */
     drawMultiPolygon(geometry) {
       if (this.squaredTolerance_) {
@@ -48750,6 +48810,7 @@
      *
      * @param {import("../../style/Fill.js").default} fillStyle Fill style.
      * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+     * @override
      */
     setFillStrokeStyle(fillStyle, strokeStyle) {
       if (!fillStyle) {
@@ -48812,6 +48873,7 @@
      * the image style.
      *
      * @param {import("../../style/Image.js").default} imageStyle Image style.
+     * @override
      */
     setImageStyle(imageStyle) {
       let imageSize;
@@ -48844,6 +48906,7 @@
      * remove the text style.
      *
      * @param {import("../../style/Text.js").default} textStyle Text style.
+     * @override
      */
     setTextStyle(textStyle) {
       if (!textStyle) {
@@ -49611,11 +49674,13 @@
       this.boundHandleStyleImageChange_ = this.handleStyleImageChange_.bind(this);
 
       /**
+       * @private
        * @type {boolean}
        */
       this.animatingOrInteracting_;
 
       /**
+       * @private
        * @type {ImageData|null}
        */
       this.hitDetectionImageData_ = null;
@@ -49831,6 +49896,7 @@
     /**
      * Render deferred instructions.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
+     * @override
      */
     renderDeferredInternal(frameState) {
       if (!this.replayGroup_) {
@@ -49848,6 +49914,7 @@
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @param {HTMLElement|null} target Target that may be used to render content to.
      * @return {HTMLElement|null} The rendered element.
+     * @override
      */
     renderFrame(frameState, target) {
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
@@ -49914,6 +49981,7 @@
      * @param {import("../../pixel.js").Pixel} pixel Pixel.
      * @return {Promise<Array<import("../../Feature").default>>} Promise
      * that resolves with an array of features.
+     * @override
      */
     getFeatures(pixel) {
       return new Promise((resolve) => {
@@ -50016,6 +50084,7 @@
      * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
      * @return {T|undefined} Callback result.
      * @template T
+     * @override
      */
     forEachFeatureAtCoordinate(
       coordinate,
@@ -50090,6 +50159,7 @@
 
     /**
      * Perform action necessary to get the layer rendered after new fonts have loaded
+     * @override
      */
     handleFontsChanged() {
       const layer = this.getLayer();
@@ -50111,6 +50181,7 @@
      * Determine whether render should be called.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @return {boolean} Layer is ready to be rendered.
+     * @override
      */
     prepareFrame(frameState) {
       const vectorLayer = this.getLayer();
@@ -50364,8 +50435,14 @@
    * @module ol/layer/Vector
    */
 
+  /***
+   * @template T
+   * @typedef {T extends import("../source/Vector.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
+   */
+
   /**
-   * @template {import('../Feature.js').FeatureLike} FeatureType
+   * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
+   * @template {import('../Feature.js').FeatureLike} [FeatureType=ExtractedFeatureType<VectorSourceType>]
    * @typedef {Object} Options
    * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
    * @property {number} [opacity=1] Opacity (0, 1).
@@ -50390,7 +50467,7 @@
    * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
    * renderer when getting features from the vector source for the rendering or hit-detection.
    * Recommended value: the size of the largest symbol, line width or label.
-   * @property {import("../source/Vector.js").default<FeatureType>} [source] Source.
+   * @property {VectorSourceType} [source] Source.
    * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
    * this layer in its layers collection, and the layer will be rendered on top. This is useful for
    * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -50425,18 +50502,22 @@
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @template {import('../Feature.js').FeatureLike} FeatureType
-   * @extends {BaseVectorLayer<import("../source/Vector.js").default<FeatureType>, CanvasVectorLayerRenderer>}
+   * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
+   * @template {import('../Feature.js').FeatureLike} [FeatureType=ExtractedFeatureType<VectorSourceType>]
+   * @extends {BaseVectorLayer<FeatureType, VectorSourceType, CanvasVectorLayerRenderer>}
    * @api
    */
   class VectorLayer extends BaseVectorLayer {
     /**
-     * @param {Options<FeatureType>} [options] Options.
+     * @param {Options<VectorSourceType, FeatureType>} [options] Options.
      */
     constructor(options) {
       super(options);
     }
 
+    /**
+     * @override
+     */
     createRenderer() {
       return new CanvasVectorLayerRenderer(this);
     }
@@ -50447,12 +50528,8 @@
    */
 
   /**
-   * @typedef {Object} Entry
-   * @property {number} minX MinX.
-   * @property {number} minY MinY.
-   * @property {number} maxX MaxX.
-   * @property {number} maxY MaxY.
-   * @property {Object} [value] Value.
+   * @typedef {import("rbush").BBox & {value: T}} Entry
+   * @template T
    */
 
   /**
@@ -50460,7 +50537,7 @@
    * Wrapper around the RBush by Vladimir Agafonkin.
    * See https://github.com/mourner/rbush.
    *
-   * @template T
+   * @template {Object} T
    */
   class RBush {
     /**
@@ -50469,6 +50546,7 @@
     constructor(maxEntries) {
       /**
        * @private
+       * @type {RBush_<Entry<T>>}
        */
       this.rbush_ = new RBush$1(maxEntries);
 
@@ -50476,7 +50554,7 @@
        * A mapping between the objects added to this rbush wrapper
        * and the objects that are actually added to the internal rbush.
        * @private
-       * @type {Object<string, Entry>}
+       * @type {Object<string, Entry<T>>}
        */
       this.items_ = {};
     }
@@ -50487,7 +50565,7 @@
      * @param {T} value Value.
      */
     insert(extent, value) {
-      /** @type {Entry} */
+      /** @type {Entry<T>} */
       const item = {
         minX: extent[0],
         minY: extent[1],
@@ -50511,7 +50589,7 @@
         const extent = extents[i];
         const value = values[i];
 
-        /** @type {Entry} */
+        /** @type {Entry<T>} */
         const item = {
           minX: extent[0],
           minY: extent[1],
@@ -50571,7 +50649,7 @@
      * @return {Array<T>} All in extent.
      */
     getInExtent(extent) {
-      /** @type {Entry} */
+      /** @type {import("rbush").BBox} */
       const bbox = {
         minX: extent[0],
         minY: extent[1],
@@ -50647,7 +50725,7 @@
     }
 
     /**
-     * @param {RBush} rbush R-Tree.
+     * @param {RBush<T>} rbush R-Tree.
      */
     concat(rbush) {
       this.rbush_.load(rbush.rbush_.all());
@@ -50728,10 +50806,7 @@
        * @private
        * @type {boolean}
        */
-      this.attributionsCollapsible_ =
-        options.attributionsCollapsible !== undefined
-          ? options.attributionsCollapsible
-          : true;
+      this.attributionsCollapsible_ = options.attributionsCollapsible ?? true;
 
       /**
        * This source is currently loading data. Sources that defer loading to the
@@ -50884,19 +50959,13 @@
     if (!attributionLike) {
       return null;
     }
-    if (Array.isArray(attributionLike)) {
-      return function (frameState) {
-        return attributionLike;
-      };
-    }
-
     if (typeof attributionLike === 'function') {
       return attributionLike;
     }
-
-    return function (frameState) {
-      return [attributionLike];
-    };
+    if (!Array.isArray(attributionLike)) {
+      attributionLike = [attributionLike];
+    }
+    return (frameState) => attributionLike;
   }
 
   /**
@@ -51059,7 +51128,7 @@
    * load features.
    *
    * This function takes up to 5 arguments. These are an {@link module:ol/extent~Extent} representing
-   * the area to be loaded, a `{number}` representing the resolution (map units per pixel), an
+   * the area to be loaded, a `{number}` representing the resolution (map units per pixel), a
    * {@link module:ol/proj/Projection~Projection} for the projection, an optional success callback that should get
    * the loaded features passed as an argument and an optional failure callback with no arguments. If
    * the callbacks are not used, the corresponding vector source will not fire `'featuresloadend'` and
@@ -51070,7 +51139,7 @@
    * source.
    *
    * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
-   * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default),
+   * @typedef {function(this:(import("./source/Vector").default<FeatureType>|import("./VectorTile.js").default),
    *           import("./extent.js").Extent,
    *           number,
    *           import("./proj/Projection.js").default,
@@ -51092,9 +51161,9 @@
    */
 
   /**
-   * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
+   * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
    * @param {string|FeatureUrlFunction} url Feature URL service.
-   * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
+   * @param {import("./format/Feature.js").default<FeatureType>} format Feature format.
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("./proj/Projection.js").default} projection Projection.
@@ -51172,9 +51241,9 @@
    * Create an XHR feature loader for a `url` and `format`. The feature loader
    * loads features (with XHR), parses the features, and adds them to the
    * vector source.
-   * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
+   * @template {import("./Feature.js").FeatureLike} FeatureType
    * @param {string|FeatureUrlFunction} url Feature URL service.
-   * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
+   * @param {import("./format/Feature.js").default<FeatureType>} format Feature format.
    * @return {FeatureLoader<FeatureType>} The feature loader.
    * @api
    */
@@ -51231,27 +51300,27 @@
    * @classdesc
    * Events emitted by {@link module:ol/source/Vector~VectorSource} instances are instances of this
    * type.
-   * @template {import("../Feature.js").FeatureLike} [FeatureClass=import("../Feature.js").default]
+   * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
    */
   class VectorSourceEvent extends BaseEvent {
     /**
      * @param {string} type Type.
-     * @param {FeatureClass} [feature] Feature.
-     * @param {Array<FeatureClass>} [features] Features.
+     * @param {FeatureType} [feature] Feature.
+     * @param {Array<FeatureType>} [features] Features.
      */
     constructor(type, feature, features) {
       super(type);
 
       /**
        * The added or removed feature for the `ADDFEATURE` and `REMOVEFEATURE` events, `undefined` otherwise.
-       * @type {FeatureClass|undefined}
+       * @type {FeatureType|undefined}
        * @api
        */
       this.feature = feature;
 
       /**
        * The loaded features for the `FEATURESLOADED` event, `undefined` otherwise.
-       * @type {Array<FeatureClass>|undefined}
+       * @type {Array<FeatureType>|undefined}
        * @api
        */
       this.features = features;
@@ -51274,13 +51343,13 @@
    */
 
   /**
-   * @template {import("../Feature.js").FeatureLike} FeatureType
+   * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {Array<FeatureType>|Collection<FeatureType>} [features]
    * Features. If provided as {@link module:ol/Collection~Collection}, the features in the source
    * and the collection will stay in sync.
-   * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] The feature format used by the XHR
+   * @property {import("../format/Feature.js").default<FeatureType>} [format] The feature format used by the XHR
    * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
    * @property {import("../featureloader.js").FeatureLoader<FeatureType>} [loader]
    * The loader function used to load features, from a remote source for example.
@@ -51414,9 +51483,9 @@
 
       /**
        * @private
-       * @type {import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>>|undefined}
+       * @type {import("../format/Feature.js").default<FeatureType>|null}
        */
-      this.format_ = options.format;
+      this.format_ = options.format || null;
 
       /**
        * @private
@@ -51525,7 +51594,7 @@
      * instead. A feature will not be added to the source if feature with
      * the same id is already there. The reason for this behavior is to avoid
      * feature duplication when using bbox or tile loading strategies.
-     * Note: this also applies if an {@link module:ol/Collection~Collection} is used for features,
+     * Note: this also applies if a {@link module:ol/Collection~Collection} is used for features,
      * meaning that if a feature with a duplicate id is added in the collection, it will
      * be removed from it right away.
      * @param {FeatureType} feature Feature to add.
@@ -51645,7 +51714,7 @@
       const extents = [];
       /** @type {Array<FeatureType>} */
       const newFeatures = [];
-      /** @type Array<FeatureType> */
+      /** @type {Array<FeatureType>} */
       const geometryFeatures = [];
 
       for (let i = 0, length = features.length; i < length; i++) {
@@ -51903,7 +51972,7 @@
     /**
      * Get the features collection associated with this source. Will be `null`
      * unless the source was configured with `useSpatialIndex` set to `false`, or
-     * with an {@link module:ol/Collection~Collection} as `features`.
+     * with a {@link module:ol/Collection~Collection} as `features`.
      * @return {Collection<FeatureType>|null} The collection of features.
      * @api
      */
@@ -52086,7 +52155,7 @@
     /**
      * Get the format associated with this source.
      *
-     * @return {import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>>|undefined} The feature format.
+     * @return {import("../format/Feature.js").default<FeatureType>|null}} The feature format.
      * @api
      */
     getFormat() {
@@ -52238,6 +52307,9 @@
         this.loader_.length < 4 ? false : this.loadingExtentsCount_ > 0;
     }
 
+    /**
+     * @override
+     */
     refresh() {
       this.clear(true);
       this.loadedExtentsRtree_.clear();
@@ -52271,15 +52343,11 @@
      * @api
      */
     removeFeatures(features) {
-      const removedFeatures = [];
+      let removed = false;
       for (let i = 0, ii = features.length; i < ii; ++i) {
-        const feature = features[i];
-        const removedFeature = this.removeFeatureInternal(feature);
-        if (removedFeature) {
-          removedFeatures.push(removedFeature);
-        }
+        removed = this.removeFeatureInternal(features[i]) || removed;
       }
-      if (removedFeatures.length > 0) {
+      if (removed) {
         this.changed();
       }
     }
@@ -52295,8 +52363,8 @@
       if (!feature) {
         return;
       }
-      const result = this.removeFeatureInternal(feature);
-      if (result) {
+      const removed = this.removeFeatureInternal(feature);
+      if (removed) {
         this.changed();
       }
     }
@@ -52304,14 +52372,13 @@
     /**
      * Remove feature without firing a `change` event.
      * @param {FeatureType} feature Feature.
-     * @return {FeatureType|undefined} The removed feature
-     *     (or undefined if the feature was not found).
+     * @return {boolean} True if the feature was removed, false if it was not found.
      * @protected
      */
     removeFeatureInternal(feature) {
       const featureKey = getUid(feature);
       if (!(featureKey in this.uidIndex_)) {
-        return;
+        return false;
       }
 
       if (featureKey in this.nullGeometryFeatures_) {
@@ -52345,33 +52412,22 @@
           new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature),
         );
       }
-      return feature;
+      return true;
     }
 
     /**
      * Remove a feature from the id index.  Called internally when the feature id
      * may have changed.
      * @param {FeatureType} feature The feature.
-     * @return {boolean} Removed the feature from the index.
      * @private
      */
     removeFromIdIndex_(feature) {
-      let removed = false;
       for (const id in this.idIndex_) {
-        const indexedFeature = this.idIndex_[id];
-        if (
-          feature instanceof RenderFeature &&
-          Array.isArray(indexedFeature) &&
-          indexedFeature.includes(feature)
-        ) {
-          indexedFeature.splice(indexedFeature.indexOf(feature), 1);
-        } else if (this.idIndex_[id] === feature) {
+        if (this.idIndex_[id] === feature) {
           delete this.idIndex_[id];
-          removed = true;
           break;
         }
       }
-      return removed;
     }
 
     /**
@@ -52426,7 +52482,7 @@
    * before a polygon ring or line string can be finished. Default is `3` for
    * polygon rings and `2` for line strings.
    * @property {import("../events/condition.js").Condition} [finishCondition] A function
-   * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether the drawing can be finished. Not used when drawing
    * POINT or MULTI_POINT geometries.
    * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
@@ -52444,7 +52500,7 @@
    * @property {string} [geometryName] Geometry name to use for features created
    * by the draw interaction.
    * @property {import("../events/condition.js").Condition} [condition] A function that
-   * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled.
    * By default {@link module:ol/events/condition.noModifierKeys}, i.e. a click,
    * adds a vertex or deactivates freehand drawing.
@@ -52453,7 +52509,7 @@
    * mode and takes precedence over any `freehandCondition` option.
    * @property {import("../events/condition.js").Condition} [freehandCondition]
    * Condition that activates freehand drawing for lines and polygons. This
-   * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
+   * function takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
    * returns a boolean to indicate whether that event should be handled. The
    * default is {@link module:ol/events/condition.shiftKeyOnly}, meaning that the
    * Shift key activates freehand drawing.
@@ -53114,7 +53170,7 @@
            * @param {import("../proj/Projection.js").default} projection The view projection.
            * @return {import("../geom/SimpleGeometry.js").default} A geometry.
            */
-          geometryFunction = function (coordinates, geometry, projection) {
+          geometryFunction = (coordinates, geometry, projection) => {
             const circle = geometry
               ? /** @type {Circle} */ (geometry)
               : new Circle$1([NaN, NaN]);
@@ -53149,7 +53205,7 @@
            * @param {import("../proj/Projection.js").default} projection The view projection.
            * @return {import("../geom/SimpleGeometry.js").default} A geometry.
            */
-          geometryFunction = function (coordinates, geometry, projection) {
+          geometryFunction = (coordinates, geometry, projection) => {
             if (geometry) {
               if (mode === 'Polygon') {
                 if (coordinates[0].length) {
@@ -53324,6 +53380,7 @@
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
      * @param {import("../Map.js").default} map Map.
+     * @override
      */
     setMap(map) {
       super.setMap(map);
@@ -53344,6 +53401,7 @@
      * @param {import("../MapBrowserEvent.js").default} event Map browser event.
      * @return {boolean} `false` to stop event propagation.
      * @api
+     * @override
      */
     handleEvent(event) {
       if (event.originalEvent.type === EventType.CONTEXTMENU) {
@@ -53409,6 +53467,7 @@
      * Handle pointer down events.
      * @param {import("../MapBrowserEvent.js").default} event Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleDownEvent(event) {
       this.shouldHandle_ = !this.freehand_;
@@ -53659,6 +53718,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} event Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(event) {
       let pass = true;
@@ -54296,17 +54356,17 @@
   /**
    * @typedef {Object} Options
    * @property {import("../events/condition.js").Condition} [condition] A function that
-   * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event will be considered to add or move a
    * vertex to the sketch. Default is
    * {@link module:ol/events/condition.primaryAction}.
    * @property {import("../events/condition.js").Condition} [deleteCondition] A function
-   * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled. By default,
    * {@link module:ol/events/condition.singleClick} with
    * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
    * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
-   * function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
+   * function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
    * returns a boolean to indicate whether a new vertex should be added to the sketch
    * features. Default is {@link module:ol/events/condition.always}.
    * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
@@ -54563,6 +54623,7 @@
 
       /**
        * @type {boolean|import("../layer/BaseVector").default}
+       * @private
        */
       this.hitDetection_ = null;
 
@@ -54616,6 +54677,7 @@
       /**
        * Delta (x, y in map units) between matched rtree vertex and pointer vertex.
        * @type {Array<number>}
+       * @private
        */
       this.delta_ = [0, 0];
 
@@ -54730,6 +54792,7 @@
      * @param {boolean} active Active.
      * @observable
      * @api
+     * @override
      */
     setActive(active) {
       if (this.vertexFeature_ && !active) {
@@ -54744,6 +54807,7 @@
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
      * @param {import("../Map.js").default} map Map.
+     * @override
      */
     setMap(map) {
       this.overlay_.setMap(map);
@@ -55041,6 +55105,7 @@
      * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may modify the geometry.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
+     * @override
      */
     handleEvent(mapBrowserEvent) {
       if (!mapBrowserEvent.originalEvent) {
@@ -55077,6 +55142,7 @@
     /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} evt Event.
+     * @override
      */
     handleDragEvent(evt) {
       this.ignoreNextSingleClick_ = false;
@@ -55183,6 +55249,7 @@
      * Handle pointer down events.
      * @param {import("../MapBrowserEvent.js").default} evt Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleDownEvent(evt) {
       if (!this.condition_(evt)) {
@@ -55302,6 +55369,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} evt Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(evt) {
       for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
@@ -55877,7 +55945,7 @@
   };
 
   /**
-   * A function that takes an {@link module:ol/Feature~Feature} and returns `true` if the feature may be
+   * A function that takes a {@link module:ol/Feature~Feature} and returns `true` if the feature may be
    * selected or `false` otherwise.
    * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
    */
@@ -55885,12 +55953,12 @@
   /**
    * @typedef {Object} Options
    * @property {import("../events/condition.js").Condition} [addCondition] A function
-   * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled.
    * By default, this is {@link module:ol/events/condition.never}. Use this if you
    * want to use different events for add and remove instead of `toggle`.
    * @property {import("../events/condition.js").Condition} [condition] A function that
-   * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled. This is the event
    * for the selected features as a whole. By default, this is
    * {@link module:ol/events/condition.singleClick}. Clicking on a feature selects that
@@ -55910,12 +55978,12 @@
    * any style changes for selected features.
    * If set to a falsey value, the selected feature's style will not change.
    * @property {import("../events/condition.js").Condition} [removeCondition] A function
-   * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled.
    * By default, this is {@link module:ol/events/condition.never}. Use this if you
    * want to use different events for add and remove instead of `toggle`.
    * @property {import("../events/condition.js").Condition} [toggleCondition] A function
-   * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+   * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether that event should be handled. This is in addition
    * to the `condition` event. By default,
    * {@link module:ol/events/condition.shiftKeyOnly}, i.e. pressing `shift` as
@@ -55931,7 +55999,7 @@
    * used by the interaction is returned by
    * {@link module:ol/interaction/Select~Select#getFeatures}.
    * @property {FilterFunction} [filter] A function
-   * that takes an {@link module:ol/Feature~Feature} and an
+   * that takes a {@link module:ol/Feature~Feature} and a
    * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
    * selected or `false` otherwise.
    * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside
@@ -56184,6 +56252,7 @@
      * map, if any. Pass `null` to just remove the interaction from the current map.
      * @param {import("../Map.js").default|null} map Map.
      * @api
+     * @override
      */
     setMap(map) {
       const currentMap = this.getMap();
@@ -56311,6 +56380,7 @@
      * selected state of features.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
+     * @override
      */
     handleEvent(mapBrowserEvent) {
       if (!this.condition_(mapBrowserEvent)) {
@@ -56567,7 +56637,7 @@
    * as it is added before.
    *
    * The snap interaction modifies map browser event `coordinate` and `pixel`
-   * properties to force the snap to occur to any interaction that them.
+   * properties to force the snap to occur to any interaction that uses them.
    *
    * Example:
    *
@@ -56767,6 +56837,7 @@
      * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
      * @return {boolean} `false` to stop event propagation.
      * @api
+     * @override
      */
     handleEvent(evt) {
       const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
@@ -56827,6 +56898,7 @@
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default} evt Event.
      * @return {boolean} If the event was consumed.
+     * @override
      */
     handleUpEvent(evt) {
       const featuresToUpdate = Object.values(this.pendingFeatures_);
@@ -56872,6 +56944,7 @@
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
      * @param {import("../Map.js").default} map Map.
+     * @override
      */
     setMap(map) {
       const currentMap = this.getMap();
@@ -57188,7 +57261,7 @@
    */
 
   /**
-   * A function that takes an {@link module:ol/Tile~Tile} for the tile and a
+   * A function that takes a {@link module:ol/Tile~Tile} for the tile and a
    * `{string}` for the url as arguments. The default is
    * ```js
    * source.setTileLoadFunction(function(tile, src) {
@@ -57228,7 +57301,7 @@
    * {@link module:ol/source/Tile~TileSource} sources use a function of this type to get
    * the url that provides a tile for a given tile coordinate.
    *
-   * This function takes an {@link module:ol/tilecoord~TileCoord} for the tile
+   * This function takes a {@link module:ol/tilecoord~TileCoord} for the tile
    * coordinate, a `{number}` representing the pixel ratio and a
    * {@link module:ol/proj/Projection~Projection} for the projection  as arguments
    * and returns a `{string}` representing the tile URL, or undefined if no tile
@@ -57277,23 +57350,15 @@
       this.state = state;
 
       /**
-       * An "interim" tile for this tile. The interim tile may be used while this
-       * one is loading, for "smooth" transitions when changing params/dimensions
-       * on the source.
-       * @type {Tile|null}
-       */
-      this.interimTile = null;
-
-      /**
-       * A key assigned to the tile. This is used by the tile source to determine
-       * if this tile can effectively be used, or if a new tile should be created
-       * and this one be used as an interim tile for this new tile.
+       * A key assigned to the tile. This is used in conjunction with a source key
+       * to determine if a cached version of this tile may be used by the renderer.
        * @type {string}
        */
       this.key = '';
 
       /**
        * The duration for the opacity transition.
+       * @private
        * @type {number}
        */
       this.transition_ =
@@ -57302,6 +57367,7 @@
       /**
        * Lookup of start times for rendering transitions.  If the start time is
        * equal to -1, the transition is complete.
+       * @private
        * @type {Object<string, number>}
        */
       this.transitionStarts_ = {};
@@ -57334,72 +57400,6 @@
      */
     getKey() {
       return this.key + '/' + this.tileCoord;
-    }
-
-    /**
-     * Get the interim tile most suitable for rendering using the chain of interim
-     * tiles. This corresponds to the  most recent tile that has been loaded, if no
-     * such tile exists, the original tile is returned.
-     * @return {!Tile} Best tile for rendering.
-     */
-    getInterimTile() {
-      let tile = this.interimTile;
-      if (!tile) {
-        //empty chain
-        return this;
-      }
-
-      // find the first loaded tile and return it. Since the chain is sorted in
-      // decreasing order of creation time, there is no need to search the remainder
-      // of the list (all those tiles correspond to older requests and will be
-      // cleaned up by refreshInterimChain)
-      do {
-        if (tile.getState() == TileState.LOADED) {
-          // Show tile immediately instead of fading it in after loading, because
-          // the interim tile is in place already
-          this.transition_ = 0;
-          return tile;
-        }
-        tile = tile.interimTile;
-      } while (tile);
-
-      // we can not find a better tile
-      return this;
-    }
-
-    /**
-     * Goes through the chain of interim tiles and discards sections of the chain
-     * that are no longer relevant.
-     */
-    refreshInterimChain() {
-      let tile = this.interimTile;
-      if (!tile) {
-        return;
-      }
-
-      /** @type {Tile} */
-      let prev = this;
-      do {
-        if (tile.getState() == TileState.LOADED) {
-          //we have a loaded tile, we can discard the rest of the list
-          //we would could abort any LOADING tile request
-          //older than this tile (i.e. any LOADING tile following this entry in the chain)
-          tile.interimTile = null;
-          break;
-        }
-        if (tile.getState() == TileState.LOADING) {
-          //keep this LOADING tile any loaded tiles later in the chain are
-          //older than this tile, so we're still interested in the request
-          prev = tile;
-        } else if (tile.getState() == TileState.IDLE) {
-          //the head of the list is the most current tile, we don't need
-          //to start any other requests for this chain
-          prev.interimTile = tile.interimTile;
-        } else {
-          prev = tile;
-        }
-        tile = prev.interimTile;
-      } while (tile);
     }
 
     /**
@@ -57493,6 +57493,220 @@
       if (this.transition_) {
         this.transitionStarts_[id] = -1;
       }
+    }
+  }
+
+  /**
+   * @module ol/DataTile
+   */
+
+  /**
+   * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
+   */
+
+  /**
+   * @typedef {Uint8Array|Uint8ClampedArray|Float32Array|DataView} ArrayLike
+   */
+
+  /**
+   * Data that can be used with a DataTile.
+   * @typedef {ArrayLike|ImageLike} Data
+   */
+
+  /**
+   * @param {Data} data Tile data.
+   * @return {ImageLike|null} The image-like data.
+   */
+  function asImageLike(data) {
+    return data instanceof Image ||
+      data instanceof HTMLCanvasElement ||
+      data instanceof HTMLVideoElement ||
+      data instanceof ImageBitmap
+      ? data
+      : null;
+  }
+
+  /**
+   * @param {Data} data Tile data.
+   * @return {ArrayLike|null} The array-like data.
+   */
+  function asArrayLike(data) {
+    return data instanceof Uint8Array ||
+      data instanceof Uint8ClampedArray ||
+      data instanceof Float32Array ||
+      data instanceof DataView
+      ? data
+      : null;
+  }
+
+  /**
+   * This is set as the cancellation reason when a tile is disposed.
+   */
+  const disposedError = new Error('disposed');
+
+  /**
+   * @type {CanvasRenderingContext2D|null}
+   */
+  let sharedContext = null;
+
+  /**
+   * @param {ImageLike} image The image.
+   * @return {Uint8ClampedArray} The data.
+   */
+  function toArray(image) {
+    if (!sharedContext) {
+      sharedContext = createCanvasContext2D(
+        image.width,
+        image.height,
+        undefined,
+        {willReadFrequently: true},
+      );
+    }
+    const canvas = sharedContext.canvas;
+    const width = image.width;
+    if (canvas.width !== width) {
+      canvas.width = width;
+    }
+    const height = image.height;
+    if (canvas.height !== height) {
+      canvas.height = height;
+    }
+    sharedContext.clearRect(0, 0, width, height);
+    sharedContext.drawImage(image, 0, 0);
+    return sharedContext.getImageData(0, 0, width, height).data;
+  }
+
+  /**
+   * @type {import('./size.js').Size}
+   */
+  const defaultSize = [256, 256];
+
+  /**
+   * @typedef {Object} Options
+   * @property {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @property {function(): Promise<Data>} loader Data loader.  For loaders that generate images,
+   * the promise should not resolve until the image is loaded.
+   * @property {number} [transition=250] A duration for tile opacity
+   * transitions in milliseconds. A duration of 0 disables the opacity transition.
+   * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+   * the nearest neighbor is used when resampling.
+   * @property {import('./size.js').Size} [size=[256, 256]] Tile size.
+   * @property {AbortController} [controller] An abort controller.
+   * @api
+   */
+
+  class DataTile extends Tile {
+    /**
+     * @param {Options} options Tile options.
+     */
+    constructor(options) {
+      const state = TileState.IDLE;
+
+      super(options.tileCoord, state, {
+        transition: options.transition,
+        interpolate: options.interpolate,
+      });
+
+      /**
+       * @type {function(): Promise<Data>}
+       * @private
+       */
+      this.loader_ = options.loader;
+
+      /**
+       * @type {Data}
+       * @private
+       */
+      this.data_ = null;
+
+      /**
+       * @type {Error}
+       * @private
+       */
+      this.error_ = null;
+
+      /**
+       * @type {import('./size.js').Size|null}
+       * @private
+       */
+      this.size_ = options.size || null;
+
+      /**
+       * @type {AbortController|null}
+       * @private
+       */
+      this.controller_ = options.controller || null;
+    }
+
+    /**
+     * Get the tile size.
+     * @return {import('./size.js').Size} Tile size.
+     */
+    getSize() {
+      if (this.size_) {
+        return this.size_;
+      }
+      const imageData = asImageLike(this.data_);
+      if (imageData) {
+        return [imageData.width, imageData.height];
+      }
+      return defaultSize;
+    }
+
+    /**
+     * Get the data for the tile.
+     * @return {Data} Tile data.
+     * @api
+     */
+    getData() {
+      return this.data_;
+    }
+
+    /**
+     * Get any loading error.
+     * @return {Error} Loading error.
+     * @api
+     */
+    getError() {
+      return this.error_;
+    }
+
+    /**
+     * Load the tile data.
+     * @api
+     * @override
+     */
+    load() {
+      if (this.state !== TileState.IDLE && this.state !== TileState.ERROR) {
+        return;
+      }
+      this.state = TileState.LOADING;
+      this.changed();
+
+      const self = this;
+      this.loader_()
+        .then(function (data) {
+          self.data_ = data;
+          self.state = TileState.LOADED;
+          self.changed();
+        })
+        .catch(function (error) {
+          self.error_ = error;
+          self.state = TileState.ERROR;
+          self.changed();
+        });
+    }
+
+    /**
+     * Clean up.
+     * @override
+     */
+    disposeInternal() {
+      if (this.controller_) {
+        this.controller_.abort(disposedError);
+        this.controller_ = null;
+      }
+      super.disposeInternal();
     }
   }
 
@@ -58229,7 +58443,7 @@
     // Round up Float32 scale values to prevent interpolation in Firefox.
     const inverseScale = (interpolate ? 1 : 1 + Math.pow(2, -24)) / stitchScale;
 
-    {
+    if (!drawSingle || sources.length !== 1 || gutter !== 0) {
       stitchContext = createCanvasContext2D(
         Math.round(getWidth(sourceDataExtent) * stitchScale),
         Math.round(getHeight(sourceDataExtent) * stitchScale),
@@ -58458,6 +58672,537 @@
       context.restore();
     }
     return context.canvas;
+  }
+
+  /**
+   * @module ol/reproj/DataTile
+   */
+
+  /**
+   * @typedef {function(number, number, number, number) : import("../DataTile.js").default} TileGetter
+   */
+
+  /**
+   * @typedef {Object} TileOffset
+   * @property {DataTile} tile Tile.
+   * @property {number} offset Offset.
+   */
+
+  /**
+   * @typedef {Object} Options
+   * @property {import("../proj/Projection.js").default} sourceProj Source projection.
+   * @property {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.
+   * @property {import("../proj/Projection.js").default} targetProj Target projection.
+   * @property {import("../tilegrid/TileGrid.js").default} targetTileGrid Target tile grid.
+   * @property {import("../tilecoord.js").TileCoord} tileCoord Coordinate of the tile.
+   * @property {import("../tilecoord.js").TileCoord} [wrappedTileCoord] Coordinate of the tile wrapped in X.
+   * @property {number} pixelRatio Pixel ratio.
+   * @property {number} gutter Gutter of the source tiles.
+   * @property {TileGetter} getTileFunction Function returning source tiles (z, x, y, pixelRatio).
+   * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+   * the nearest neighbor is used when resampling.
+   * @property {number} [errorThreshold] Acceptable reprojection error (in px).
+   * @property {number} [transition=250] A duration for tile opacity
+   * transitions in milliseconds. A duration of 0 disables the opacity transition.
+   */
+
+  /**
+   * @classdesc
+   * Class encapsulating single reprojected data tile.
+   * See {@link module:ol/source/DataTile~DataTileSource}.
+   *
+   */
+  class ReprojDataTile extends DataTile {
+    /**
+     * @param {Options} options Tile options.
+     */
+    constructor(options) {
+      super({
+        tileCoord: options.tileCoord,
+        loader: () => Promise.resolve(new Uint8ClampedArray(4)),
+        interpolate: options.interpolate,
+        transition: options.transition,
+      });
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.pixelRatio_ = options.pixelRatio;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.gutter_ = options.gutter;
+
+      /**
+       * @type {import("../DataTile.js").Data}
+       * @private
+       */
+      this.reprojData_ = null;
+
+      /**
+       * @type {Error}
+       * @private
+       */
+      this.reprojError_ = null;
+
+      /**
+       * @type {import('../size.js').Size}
+       * @private
+       */
+      this.reprojSize_ = undefined;
+
+      /**
+       * @private
+       * @type {import("../tilegrid/TileGrid.js").default}
+       */
+      this.sourceTileGrid_ = options.sourceTileGrid;
+
+      /**
+       * @private
+       * @type {import("../tilegrid/TileGrid.js").default}
+       */
+      this.targetTileGrid_ = options.targetTileGrid;
+
+      /**
+       * @private
+       * @type {import("../tilecoord.js").TileCoord}
+       */
+      this.wrappedTileCoord_ = options.wrappedTileCoord || options.tileCoord;
+
+      /**
+       * @private
+       * @type {!Array<TileOffset>}
+       */
+      this.sourceTiles_ = [];
+
+      /**
+       * @private
+       * @type {?Array<import("../events.js").EventsKey>}
+       */
+      this.sourcesListenerKeys_ = null;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.sourceZ_ = 0;
+
+      const sourceProj = options.sourceProj;
+      const sourceProjExtent = sourceProj.getExtent();
+      const sourceTileGridExtent = options.sourceTileGrid.getExtent();
+
+      /**
+       * @private
+       * @type {import("../extent.js").Extent}
+       */
+      this.clipExtent_ = sourceProj.canWrapX()
+        ? sourceTileGridExtent
+          ? getIntersection(sourceProjExtent, sourceTileGridExtent)
+          : sourceProjExtent
+        : sourceTileGridExtent;
+
+      const targetExtent = this.targetTileGrid_.getTileCoordExtent(
+        this.wrappedTileCoord_,
+      );
+      const maxTargetExtent = this.targetTileGrid_.getExtent();
+      let maxSourceExtent = this.sourceTileGrid_.getExtent();
+
+      const limitedTargetExtent = maxTargetExtent
+        ? getIntersection(targetExtent, maxTargetExtent)
+        : targetExtent;
+
+      if (getArea$1(limitedTargetExtent) === 0) {
+        // Tile is completely outside range -> EMPTY
+        // TODO: is it actually correct that the source even creates the tile ?
+        this.state = TileState.EMPTY;
+        return;
+      }
+
+      if (sourceProjExtent) {
+        if (!maxSourceExtent) {
+          maxSourceExtent = sourceProjExtent;
+        } else {
+          maxSourceExtent = getIntersection(maxSourceExtent, sourceProjExtent);
+        }
+      }
+
+      const targetResolution = this.targetTileGrid_.getResolution(
+        this.wrappedTileCoord_[0],
+      );
+
+      const targetProj = options.targetProj;
+      const sourceResolution = calculateSourceExtentResolution(
+        sourceProj,
+        targetProj,
+        limitedTargetExtent,
+        targetResolution,
+      );
+
+      if (!isFinite(sourceResolution) || sourceResolution <= 0) {
+        // invalid sourceResolution -> EMPTY
+        // probably edges of the projections when no extent is defined
+        this.state = TileState.EMPTY;
+        return;
+      }
+
+      const errorThresholdInPixels =
+        options.errorThreshold !== undefined
+          ? options.errorThreshold
+          : ERROR_THRESHOLD;
+
+      /**
+       * @private
+       * @type {!import("./Triangulation.js").default}
+       */
+      this.triangulation_ = new Triangulation(
+        sourceProj,
+        targetProj,
+        limitedTargetExtent,
+        maxSourceExtent,
+        sourceResolution * errorThresholdInPixels,
+        targetResolution,
+      );
+
+      if (this.triangulation_.getTriangles().length === 0) {
+        // no valid triangles -> EMPTY
+        this.state = TileState.EMPTY;
+        return;
+      }
+
+      this.sourceZ_ = this.sourceTileGrid_.getZForResolution(sourceResolution);
+      let sourceExtent = this.triangulation_.calculateSourceExtent();
+
+      if (maxSourceExtent) {
+        if (sourceProj.canWrapX()) {
+          sourceExtent[1] = clamp(
+            sourceExtent[1],
+            maxSourceExtent[1],
+            maxSourceExtent[3],
+          );
+          sourceExtent[3] = clamp(
+            sourceExtent[3],
+            maxSourceExtent[1],
+            maxSourceExtent[3],
+          );
+        } else {
+          sourceExtent = getIntersection(sourceExtent, maxSourceExtent);
+        }
+      }
+
+      if (!getArea$1(sourceExtent)) {
+        this.state = TileState.EMPTY;
+      } else {
+        let worldWidth = 0;
+        let worldsAway = 0;
+        if (sourceProj.canWrapX()) {
+          worldWidth = getWidth(sourceProjExtent);
+          worldsAway = Math.floor(
+            (sourceExtent[0] - sourceProjExtent[0]) / worldWidth,
+          );
+        }
+
+        const sourceExtents = wrapAndSliceX(
+          sourceExtent.slice(),
+          sourceProj,
+          true,
+        );
+        sourceExtents.forEach((extent) => {
+          const sourceRange = this.sourceTileGrid_.getTileRangeForExtentAndZ(
+            extent,
+            this.sourceZ_,
+          );
+          const getTile = options.getTileFunction;
+          for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
+            for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
+              const tile = getTile(this.sourceZ_, srcX, srcY, this.pixelRatio_);
+              if (tile) {
+                const offset = worldsAway * worldWidth;
+                this.sourceTiles_.push({tile, offset});
+              }
+            }
+          }
+          ++worldsAway;
+        });
+
+        if (this.sourceTiles_.length === 0) {
+          this.state = TileState.EMPTY;
+        }
+      }
+    }
+
+    /**
+     * Get the tile size.
+     * @return {import('../size.js').Size} Tile size.
+     * @override
+     */
+    getSize() {
+      return this.reprojSize_;
+    }
+
+    /**
+     * Get the data for the tile.
+     * @return {import("../DataTile.js").Data} Tile data.
+     * @override
+     */
+    getData() {
+      return this.reprojData_;
+    }
+
+    /**
+     * Get any loading error.
+     * @return {Error} Loading error.
+     * @override
+     */
+    getError() {
+      return this.reprojError_;
+    }
+
+    /**
+     * @private
+     */
+    reproject_() {
+      const dataSources = [];
+      let imageLike = false;
+      this.sourceTiles_.forEach((source) => {
+        const tile = source.tile;
+        if (!tile || tile.getState() !== TileState.LOADED) {
+          return;
+        }
+        const size = tile.getSize();
+        const gutter = this.gutter_;
+        /**
+         * @type {import("../DataTile.js").ArrayLike}
+         */
+        let tileData;
+        const arrayData = asArrayLike(tile.getData());
+        if (arrayData) {
+          tileData = arrayData;
+        } else {
+          imageLike = true;
+          tileData = toArray(asImageLike(tile.getData()));
+        }
+        const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
+        const isFloat = tileData instanceof Float32Array;
+        const pixelCount = pixelSize[0] * pixelSize[1];
+        const DataType = isFloat ? Float32Array : Uint8ClampedArray;
+        const tileDataR = new DataType(tileData.buffer);
+        const bytesPerElement = DataType.BYTES_PER_ELEMENT;
+        const bytesPerPixel = (bytesPerElement * tileDataR.length) / pixelCount;
+        const bytesPerRow = tileDataR.byteLength / pixelSize[1];
+        const bandCount = Math.floor(
+          bytesPerRow / bytesPerElement / pixelSize[0],
+        );
+        const packedLength = pixelCount * bandCount;
+        let packedData = tileDataR;
+        if (tileDataR.length !== packedLength) {
+          packedData = new DataType(packedLength);
+          let dataIndex = 0;
+          let rowOffset = 0;
+          const colCount = pixelSize[0] * bandCount;
+          for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
+            for (let colIndex = 0; colIndex < colCount; ++colIndex) {
+              packedData[dataIndex++] = tileDataR[rowOffset + colIndex];
+            }
+            rowOffset += bytesPerRow / bytesPerElement;
+          }
+        }
+        const extent = this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord);
+        extent[0] += source.offset;
+        extent[2] += source.offset;
+        const clipExtent = this.clipExtent_?.slice();
+        if (clipExtent) {
+          clipExtent[0] += source.offset;
+          clipExtent[2] += source.offset;
+        }
+        dataSources.push({
+          extent: extent,
+          clipExtent: clipExtent,
+          data: new Uint8ClampedArray(packedData.buffer),
+          dataType: DataType,
+          bytesPerPixel: bytesPerPixel,
+          pixelSize: pixelSize,
+        });
+      });
+      this.sourceTiles_.length = 0;
+
+      if (dataSources.length === 0) {
+        this.state = TileState.ERROR;
+        this.changed();
+        return;
+      }
+
+      const z = this.wrappedTileCoord_[0];
+      const size = this.targetTileGrid_.getTileSize(z);
+      const targetWidth = typeof size === 'number' ? size : size[0];
+      const targetHeight = typeof size === 'number' ? size : size[1];
+      const targetResolution = this.targetTileGrid_.getResolution(z);
+      const sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
+
+      const targetExtent = this.targetTileGrid_.getTileCoordExtent(
+        this.wrappedTileCoord_,
+      );
+
+      let dataR, dataU;
+
+      const bytesPerPixel = dataSources[0].bytesPerPixel;
+
+      const reprojs = Math.ceil(bytesPerPixel / 3);
+      for (let reproj = reprojs - 1; reproj >= 0; --reproj) {
+        const sources = [];
+        for (let i = 0, len = dataSources.length; i < len; ++i) {
+          const dataSource = dataSources[i];
+          const buffer = dataSource.data;
+          const pixelSize = dataSource.pixelSize;
+          const width = pixelSize[0];
+          const height = pixelSize[1];
+          const context = createCanvasContext2D(width, height, canvasPool);
+          const imageData = context.createImageData(width, height);
+          const data = imageData.data;
+          let offset = reproj * 3;
+          for (let j = 0, len = data.length; j < len; j += 4) {
+            data[j] = buffer[offset];
+            data[j + 1] = buffer[offset + 1];
+            data[j + 2] = buffer[offset + 2];
+            data[j + 3] = 255;
+            offset += bytesPerPixel;
+          }
+          context.putImageData(imageData, 0, 0);
+          sources.push({
+            extent: dataSource.extent,
+            clipExtent: dataSource.clipExtent,
+            image: context.canvas,
+          });
+        }
+
+        const canvas = render(
+          targetWidth,
+          targetHeight,
+          this.pixelRatio_,
+          sourceResolution,
+          this.sourceTileGrid_.getExtent(),
+          targetResolution,
+          targetExtent,
+          this.triangulation_,
+          sources,
+          this.gutter_,
+          false,
+          false,
+          false,
+        );
+
+        for (let i = 0, len = sources.length; i < len; ++i) {
+          const canvas = sources[i].image;
+          const context = canvas.getContext('2d');
+          releaseCanvas(context);
+          canvasPool.push(context.canvas);
+        }
+
+        const context = canvas.getContext('2d');
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+        releaseCanvas(context);
+        canvasPool.push(canvas);
+
+        if (!dataR) {
+          dataU = new Uint8ClampedArray(
+            bytesPerPixel * imageData.width * imageData.height,
+          );
+          dataR = new dataSources[0].dataType(dataU.buffer);
+        }
+
+        const data = imageData.data;
+        let offset = reproj * 3;
+        for (let i = 0, len = data.length; i < len; i += 4) {
+          if (data[i + 3] === 255) {
+            dataU[offset] = data[i];
+            dataU[offset + 1] = data[i + 1];
+            dataU[offset + 2] = data[i + 2];
+          } else {
+            dataU[offset] = 0;
+            dataU[offset + 1] = 0;
+            dataU[offset + 2] = 0;
+          }
+          offset += bytesPerPixel;
+        }
+      }
+
+      if (imageLike) {
+        const context = createCanvasContext2D(targetWidth, targetHeight);
+        const imageData = new ImageData(dataR, targetWidth);
+        context.putImageData(imageData, 0, 0);
+        this.reprojData_ = context.canvas;
+      } else {
+        this.reprojData_ = dataR;
+      }
+      this.reprojSize_ = [
+        Math.round(targetWidth * this.pixelRatio_),
+        Math.round(targetHeight * this.pixelRatio_),
+      ];
+      this.state = TileState.LOADED;
+      this.changed();
+    }
+
+    /**
+     * Load not yet loaded URI.
+     * @override
+     */
+    load() {
+      if (this.state !== TileState.IDLE && this.state !== TileState.ERROR) {
+        return;
+      }
+      this.state = TileState.LOADING;
+      this.changed();
+
+      let leftToLoad = 0;
+
+      this.sourcesListenerKeys_ = [];
+      this.sourceTiles_.forEach(({tile}) => {
+        const state = tile.getState();
+        if (state !== TileState.IDLE && state !== TileState.LOADING) {
+          return;
+        }
+        leftToLoad++;
+
+        const sourceListenKey = listen(tile, EventType.CHANGE, () => {
+          const state = tile.getState();
+          if (
+            state == TileState.LOADED ||
+            state == TileState.ERROR ||
+            state == TileState.EMPTY
+          ) {
+            unlistenByKey(sourceListenKey);
+            leftToLoad--;
+            if (leftToLoad === 0) {
+              this.unlistenSources_();
+              this.reproject_();
+            }
+          }
+        });
+        this.sourcesListenerKeys_.push(sourceListenKey);
+      });
+
+      if (leftToLoad === 0) {
+        setTimeout(this.reproject_.bind(this), 0);
+      } else {
+        this.sourceTiles_.forEach(function ({tile}) {
+          const state = tile.getState();
+          if (state == TileState.IDLE) {
+            tile.load();
+          }
+        });
+      }
+    }
+
+    /**
+     * @private
+     */
+    unlistenSources_() {
+      this.sourcesListenerKeys_.forEach(unlistenByKey);
+      this.sourcesListenerKeys_ = null;
+    }
   }
 
   /**
@@ -58778,6 +59523,7 @@
 
     /**
      * Load not yet loaded URI.
+     * @override
      */
     load() {
       if (this.state == TileState.IDLE) {
@@ -58792,26 +59538,21 @@
           if (state == TileState.IDLE || state == TileState.LOADING) {
             leftToLoad++;
 
-            const sourceListenKey = listen(
-              tile,
-              EventType.CHANGE,
-              function (e) {
-                const state = tile.getState();
-                if (
-                  state == TileState.LOADED ||
-                  state == TileState.ERROR ||
-                  state == TileState.EMPTY
-                ) {
-                  unlistenByKey(sourceListenKey);
-                  leftToLoad--;
-                  if (leftToLoad === 0) {
-                    this.unlistenSources_();
-                    this.reproject_();
-                  }
+            const sourceListenKey = listen(tile, EventType.CHANGE, (e) => {
+              const state = tile.getState();
+              if (
+                state == TileState.LOADED ||
+                state == TileState.ERROR ||
+                state == TileState.EMPTY
+              ) {
+                unlistenByKey(sourceListenKey);
+                leftToLoad--;
+                if (leftToLoad === 0) {
+                  this.unlistenSources_();
+                  this.reproject_();
                 }
-              },
-              this,
-            );
+              }
+            });
             this.sourcesListenerKeys_.push(sourceListenKey);
           }
         });
@@ -58839,6 +59580,7 @@
 
     /**
      * Remove from the cache due to expiry
+     * @override
      */
     release() {
       if (this.canvas_) {
@@ -58986,8 +59728,8 @@
      *     .catch(() => tile.setState(3)); // error
      * });
      * ```
-     *
      * @api
+     * @override
      */
     load() {
       if (this.state == TileState.ERROR) {
@@ -59377,8 +60119,10 @@
    * this layer in its layers collection, and the layer will be rendered on top. This is useful for
    * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
    * use {@link import("../Map.js").default#addLayer map.addLayer()}.
-   * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+   * @property {boolean} [useInterimTilesOnError=true] Deprecated.  Use interim tiles on error.
    * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+   * @property {number} [cacheSize=512] The internal tile cache size.  This needs to be large enough to render
+   * two zoom levels worth of tiles.
    */
 
   /**
@@ -59403,6 +60147,9 @@
 
       const baseOptions = Object.assign({}, options);
 
+      const cacheSize = options.cacheSize;
+      delete options.cacheSize;
+
       delete baseOptions.preload;
       delete baseOptions.useInterimTilesOnError;
       super(baseOptions);
@@ -59422,12 +60169,26 @@
        */
       this.un;
 
+      /**
+       * @type {number|undefined}
+       * @private
+       */
+      this.cacheSize_ = cacheSize;
+
       this.setPreload(options.preload !== undefined ? options.preload : 0);
       this.setUseInterimTilesOnError(
         options.useInterimTilesOnError !== undefined
           ? options.useInterimTilesOnError
           : true,
       );
+    }
+
+    /**
+     * @return {number|undefined} The suggested cache size
+     * @protected
+     */
+    getCacheSize() {
+      return this.cacheSize_;
     }
 
     /**
@@ -59451,7 +60212,7 @@
     }
 
     /**
-     * Whether we use interim tiles on error.
+     * Deprecated.  Whether we use interim tiles on error.
      * @return {boolean} Use interim tiles on error.
      * @observable
      * @api
@@ -59463,7 +60224,7 @@
     }
 
     /**
-     * Set whether we use interim tiles on error.
+     * Deprecated.  Set whether we use interim tiles on error.
      * @param {boolean} useInterimTilesOnError Use interim tiles on error.
      * @observable
      * @api
@@ -59487,6 +60248,7 @@
      * @param {import("../pixel").Pixel} pixel Pixel.
      * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
      * @api
+     * @override
      */
     getData(pixel) {
       return super.getData(pixel);
@@ -59498,24 +60260,115 @@
    */
 
   /**
+   * @param {string} sourceKey The source key.
+   * @param {number} z The tile z level.
+   * @param {number} x The tile x level.
+   * @param {number} y The tile y level.
+   * @return {string} The cache key.
+   */
+  function getCacheKey(sourceKey, z, x, y) {
+    return `${sourceKey},${getKeyZXY(z, x, y)}`;
+  }
+
+  /**
+   * @typedef {Object<number, Set<import("../../Tile.js").default>>} TileLookup
+   */
+
+  /**
+   * Add a tile to the lookup.
+   * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
+   * @param {import("../../Tile.js").default} tile A tile.
+   * @param {number} z The zoom level.
+   * @return {boolean} The tile was added to the lookup.
+   */
+  function addTileToLookup(tilesByZ, tile, z) {
+    if (!(z in tilesByZ)) {
+      tilesByZ[z] = new Set([tile]);
+      return true;
+    }
+    const set = tilesByZ[z];
+    const existing = set.has(tile);
+    if (!existing) {
+      set.add(tile);
+    }
+    return !existing;
+  }
+
+  /**
+   * Remove a tile from the lookup.
+   * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
+   * @param {import("../../Tile.js").default} tile A tile.
+   * @param {number} z The zoom level.
+   * @return {boolean} The tile was removed from the lookup.
+   */
+  function removeTileFromLookup(tilesByZ, tile, z) {
+    const set = tilesByZ[z];
+    if (set) {
+      return set.delete(tile);
+    }
+    return false;
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../extent.js").Extent} extent The frame extent.
+   * @return {import("../../extent.js").Extent} Frame extent intersected with layer extents.
+   */
+  function getRenderExtent(frameState, extent) {
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    if (layerState.extent) {
+      extent = getIntersection(
+        extent,
+        fromUserExtent(layerState.extent, frameState.viewState.projection),
+      );
+    }
+    const source = /** @type {import("../../source/Tile.js").default} */ (
+      layerState.layer.getRenderSource()
+    );
+    if (!source.getWrapX()) {
+      const gridExtent = source
+        .getTileGridForProjection(frameState.viewState.projection)
+        .getExtent();
+      if (gridExtent) {
+        extent = getIntersection(extent, gridExtent);
+      }
+    }
+    return extent;
+  }
+
+  /**
+   * @typedef {Object} Options
+   * @property {number} [cacheSize=512] The cache size.
+   */
+
+  /**
    * @classdesc
    * Canvas renderer for tile layers.
    * @api
-   * @template {import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default} [LayerType=import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default]
+   * @template {import("../../layer/Tile.js").default|import("../../layer/VectorTile.js").default} [LayerType=import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default]
    * @extends {CanvasLayerRenderer<LayerType>}
    */
   class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     /**
      * @param {LayerType} tileLayer Tile layer.
+     * @param {Options} [options] Options.
      */
-    constructor(tileLayer) {
+    constructor(tileLayer, options) {
       super(tileLayer);
+
+      options = options || {};
 
       /**
        * Rendered extent has changed since the previous `renderFrame()` call
        * @type {boolean}
        */
       this.extentChanged = true;
+
+      /**
+       * The last call to `renderFrame` was completed with all tiles loaded
+       * @type {boolean}
+       */
+      this.renderComplete = false;
 
       /**
        * @private
@@ -59549,37 +60402,87 @@
 
       /**
        * @private
-       * @type {boolean}
+       * @type {string}
        */
-      this.newTiles_ = false;
+      this.renderedSourceKey_;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.renderedSourceRevision_;
 
       /**
        * @protected
        * @type {import("../../extent.js").Extent}
        */
-      this.tmpExtent = createEmpty();
+      this.tempExtent = createEmpty();
 
       /**
        * @private
        * @type {import("../../TileRange.js").default}
        */
-      this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
+      this.tempTileRange_ = new TileRange(0, 0, 0, 0);
+
+      /**
+       * @type {import("../../tilecoord.js").TileCoord}
+       * @private
+       */
+      this.tempTileCoord_ = createOrUpdate(0, 0, 0);
+
+      const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
+
+      /**
+       * @type {import("../../structs/LRUCache.js").default<import("../../Tile.js").default>}
+       * @private
+       */
+      this.tileCache_ = new LRUCache(cacheSize);
+
+      this.maxStaleKeys = cacheSize * 0.5;
     }
 
     /**
-     * @protected
-     * @param {import("../../Tile.js").default} tile Tile.
-     * @return {boolean} Tile is drawable.
+     * @return {LRUCache} Tile cache.
      */
-    isDrawableTile(tile) {
+    getTileCache() {
+      return this.tileCache_;
+    }
+
+    /**
+     * Get a tile from the cache or create one if needed.
+     *
+     * @param {number} z Tile coordinate z.
+     * @param {number} x Tile coordinate x.
+     * @param {number} y Tile coordinate y.
+     * @param {import("../../Map.js").FrameState} frameState Frame state.
+     * @return {import("../../Tile.js").default|null} Tile (or null if outside source extent).
+     * @protected
+     */
+    getOrCreateTile(z, x, y, frameState) {
+      const tileCache = this.tileCache_;
       const tileLayer = this.getLayer();
-      const tileState = tile.getState();
-      const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-      return (
-        tileState == TileState.LOADED ||
-        tileState == TileState.EMPTY ||
-        (tileState == TileState.ERROR && !useInterimTilesOnError)
-      );
+      const tileSource = tileLayer.getSource();
+      const cacheKey = getCacheKey(tileSource.getKey(), z, x, y);
+
+      /** @type {import("../../Tile.js").default} */
+      let tile;
+
+      if (tileCache.containsKey(cacheKey)) {
+        tile = tileCache.get(cacheKey);
+      } else {
+        tile = tileSource.getTile(
+          z,
+          x,
+          y,
+          frameState.pixelRatio,
+          frameState.viewState.projection,
+        );
+        if (!tile) {
+          return null;
+        }
+        tileCache.set(cacheKey, tile);
+      }
+      return tile;
     }
 
     /**
@@ -59587,22 +60490,13 @@
      * @param {number} x Tile coordinate x.
      * @param {number} y Tile coordinate y.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
-     * @return {!import("../../Tile.js").default} Tile.
+     * @return {import("../../Tile.js").default|null} Tile (or null if outside source extent).
+     * @protected
      */
     getTile(z, x, y, frameState) {
-      const pixelRatio = frameState.pixelRatio;
-      const projection = frameState.viewState.projection;
-      const tileLayer = this.getLayer();
-      const tileSource = tileLayer.getSource();
-      let tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      if (tile.getState() == TileState.ERROR) {
-        if (tileLayer.getUseInterimTilesOnError() && tileLayer.getPreload() > 0) {
-          // Preloaded tiles for lower resolutions might have finished loading.
-          this.newTiles_ = true;
-        }
-      }
-      if (!this.isDrawableTile(tile)) {
-        tile = tile.getInterimTile();
+      const tile = this.getOrCreateTile(z, x, y, frameState);
+      if (!tile) {
+        return null;
       }
       return tile;
     }
@@ -59610,6 +60504,7 @@
     /**
      * @param {import("../../pixel.js").Pixel} pixel Pixel.
      * @return {Uint8ClampedArray} Data at the pixel location.
+     * @override
      */
     getData(pixel) {
       const frameState = this.frameState;
@@ -59630,8 +60525,6 @@
         }
       }
 
-      const pixelRatio = frameState.pixelRatio;
-      const projection = frameState.viewState.projection;
       const viewState = frameState.viewState;
       const source = layer.getRenderSource();
       const tileGrid = source.getTileGridForProjection(viewState.projection);
@@ -59643,27 +60536,29 @@
         --z
       ) {
         const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
-        const tile = source.getTile(
-          z,
-          tileCoord[1],
-          tileCoord[2],
-          pixelRatio,
-          projection,
-        );
-        if (
-          !(tile instanceof ImageTile || tile instanceof ReprojTile) ||
-          (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY)
-        ) {
-          return null;
-        }
-
-        if (tile.getState() !== TileState.LOADED) {
+        const tile = this.getTile(z, tileCoord[1], tileCoord[2], frameState);
+        if (!tile || tile.getState() !== TileState.LOADED) {
           continue;
         }
 
         const tileOrigin = tileGrid.getOrigin(z);
         const tileSize = toSize(tileGrid.getTileSize(z));
         const tileResolution = tileGrid.getResolution(z);
+
+        /**
+         * @type {import('../../DataTile.js').ImageLike}
+         */
+        let image;
+        if (tile instanceof ImageTile) {
+          image = tile.getImage();
+        } else if (tile instanceof DataTile) {
+          image = asImageLike(tile.getData());
+          if (!image) {
+            continue;
+          }
+        } else {
+          continue;
+        }
 
         const col = Math.floor(
           tilePixelRatio *
@@ -59681,47 +60576,210 @@
           tilePixelRatio * source.getGutterForProjection(viewState.projection),
         );
 
-        return this.getImageData(tile.getImage(), col + gutter, row + gutter);
+        return this.getImageData(image, col + gutter, row + gutter);
       }
 
       return null;
     }
 
     /**
-     * @param {Object<number, Object<string, import("../../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
-     * @param {number} zoom Zoom level.
-     * @param {import("../../Tile.js").default} tile Tile.
-     * @return {boolean|void} If `false`, the tile will not be considered loaded.
+     * Determine whether render should be called.
+     * @param {import("../../Map.js").FrameState} frameState Frame state.
+     * @return {boolean} Layer is ready to be rendered.
+     * @override
      */
-    loadedTileCallback(tiles, zoom, tile) {
-      if (this.isDrawableTile(tile)) {
-        return super.loadedTileCallback(tiles, zoom, tile);
+    prepareFrame(frameState) {
+      const source = this.getLayer().getSource();
+      if (!source) {
+        return false;
+      }
+      const sourceRevision = this.getLayer().getSource().getRevision();
+      if (!this.renderedRevision_) {
+        this.renderedRevision_ = sourceRevision;
+      } else if (this.renderedRevision_ !== sourceRevision) {
+        this.renderedRevision_ = sourceRevision;
+        if (this.renderedSourceKey_ === source.getKey()) {
+          this.tileCache_.clear();
+        }
+      }
+      return true;
+    }
+
+    /**
+     * @param {import("../../Map.js").FrameState} frameState Frame state.
+     * @param {import("../../extent.js").Extent} extent The extent to be rendered.
+     * @param {number} initialZ The zoom level.
+     * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
+     * @param {number} preload Number of additional levels to load.
+     */
+    enqueueTiles(frameState, extent, initialZ, tilesByZ, preload) {
+      const viewState = frameState.viewState;
+      const tileLayer = this.getLayer();
+      const tileSource = tileLayer.getRenderSource();
+      const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
+
+      const tileSourceKey = getUid(tileSource);
+      if (!(tileSourceKey in frameState.wantedTiles)) {
+        frameState.wantedTiles[tileSourceKey] = {};
+      }
+
+      const wantedTiles = frameState.wantedTiles[tileSourceKey];
+
+      const map = tileLayer.getMapInternal();
+      const minZ = Math.max(
+        initialZ - preload,
+        tileGrid.getMinZoom(),
+        tileGrid.getZForResolution(
+          Math.min(
+            tileLayer.getMaxResolution(),
+            map
+              ? map
+                  .getView()
+                  .getResolutionForZoom(Math.max(tileLayer.getMinZoom(), 0))
+              : tileGrid.getResolution(0),
+          ),
+          tileSource.zDirection,
+        ),
+      );
+      for (let z = initialZ; z >= minZ; --z) {
+        const tileRange = tileGrid.getTileRangeForExtentAndZ(
+          extent,
+          z,
+          this.tempTileRange_,
+        );
+
+        const tileResolution = tileGrid.getResolution(z);
+
+        for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+          for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+            const tile = this.getTile(z, x, y, frameState);
+            if (!tile) {
+              continue;
+            }
+            const added = addTileToLookup(tilesByZ, tile, z);
+            if (!added) {
+              continue;
+            }
+
+            const tileQueueKey = tile.getKey();
+            wantedTiles[tileQueueKey] = true;
+
+            if (tile.getState() === TileState.IDLE) {
+              if (!frameState.tileQueue.isKeyQueued(tileQueueKey)) {
+                const tileCoord = createOrUpdate(z, x, y, this.tempTileCoord_);
+                frameState.tileQueue.enqueue([
+                  tile,
+                  tileSourceKey,
+                  tileGrid.getTileCoordCenter(tileCoord),
+                  tileResolution,
+                ]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /**
+     * Look for tiles covering the provided tile coordinate at an alternate
+     * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
+     * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
+     * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
+     * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
+     * @private
+     */
+    findStaleTile_(tileCoord, tilesByZ) {
+      const tileCache = this.tileCache_;
+      const z = tileCoord[0];
+      const x = tileCoord[1];
+      const y = tileCoord[2];
+      const staleKeys = this.getStaleKeys();
+      for (let i = 0; i < staleKeys.length; ++i) {
+        const cacheKey = getCacheKey(staleKeys[i], z, x, y);
+        if (tileCache.containsKey(cacheKey)) {
+          const tile = tileCache.get(cacheKey);
+          if (tile.getState() === TileState.LOADED) {
+            tile.endTransition(getUid(this));
+            addTileToLookup(tilesByZ, tile, z);
+            return true;
+          }
+        }
       }
       return false;
     }
 
     /**
-     * Determine whether render should be called.
-     * @param {import("../../Map.js").FrameState} frameState Frame state.
-     * @return {boolean} Layer is ready to be rendered.
+     * Look for tiles covering the provided tile coordinate at an alternate
+     * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
+     * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
+     * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
+     * @param {number} altZ The alternate zoom level.
+     * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
+     * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
+     * @private
      */
-    prepareFrame(frameState) {
-      return !!this.getLayer().getSource();
+    findAltTiles_(tileGrid, tileCoord, altZ, tilesByZ) {
+      const tileRange = tileGrid.getTileRangeForTileCoordAndZ(
+        tileCoord,
+        altZ,
+        this.tempTileRange_,
+      );
+
+      if (!tileRange) {
+        return false;
+      }
+
+      let covered = true;
+      const tileCache = this.tileCache_;
+      const source = this.getLayer().getRenderSource();
+      const sourceKey = source.getKey();
+      for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+        for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          const cacheKey = getCacheKey(sourceKey, altZ, x, y);
+          let loaded = false;
+          if (tileCache.containsKey(cacheKey)) {
+            const tile = tileCache.get(cacheKey);
+            if (tile.getState() === TileState.LOADED) {
+              addTileToLookup(tilesByZ, tile, altZ);
+              loaded = true;
+            }
+          }
+          if (!loaded) {
+            covered = false;
+          }
+        }
+      }
+      return covered;
     }
 
     /**
      * Render the layer.
+     *
+     * The frame rendering logic has three parts:
+     *
+     *  1. Enqueue tiles
+     *  2. Find alt tiles for those that are not yet loaded
+     *  3. Render loaded tiles
+     *
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @param {HTMLElement} target Target that may be used to render content to.
      * @return {HTMLElement} The rendered element.
+     * @override
      */
     renderFrame(frameState, target) {
+      this.renderComplete = true;
+
+      /**
+       * TODO:
+       *  * maybe skip transition when not fully opaque
+       *  * decide if this.renderComplete is useful
+       */
+
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
       const viewState = frameState.viewState;
       const projection = viewState.projection;
       const viewResolution = viewState.resolution;
       const viewCenter = viewState.center;
-      const rotation = viewState.rotation;
       const pixelRatio = frameState.pixelRatio;
 
       const tileLayer = this.getLayer();
@@ -59731,8 +60789,15 @@
       const z = tileGrid.getZForResolution(viewResolution, tileSource.zDirection);
       const tileResolution = tileGrid.getResolution(z);
 
-      let extent = frameState.extent;
-      const resolution = frameState.viewState.resolution;
+      const sourceKey = tileSource.getKey();
+      if (!this.renderedSourceKey_) {
+        this.renderedSourceKey_ = sourceKey;
+      } else if (this.renderedSourceKey_ !== sourceKey) {
+        this.prependStaleKey(this.renderedSourceKey_);
+        this.renderedSourceKey_ = sourceKey;
+      }
+
+      let frameExtent = frameState.extent;
       const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
 
       this.prepareContainer(frameState, target);
@@ -59744,8 +60809,8 @@
       const layerExtent =
         layerState.extent && fromUserExtent(layerState.extent, projection);
       if (layerExtent) {
-        extent = getIntersection(
-          extent,
+        frameExtent = getIntersection(
+          frameExtent,
           fromUserExtent(layerState.extent, projection),
         );
       }
@@ -59759,83 +60824,106 @@
         viewCenter[1] + dy,
       ];
 
-      const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+      /**
+       * @type {TileLookup}
+       */
+      const tilesByZ = {};
 
       /**
-       * @type {Object<number, Object<string, import("../../Tile.js").default>>}
+       * Part 1: Enqueue tiles
        */
-      const tilesToDrawByZ = {};
-      tilesToDrawByZ[z] = {};
 
-      const findLoadedTiles = this.createLoadedTileFinder(
-        tileSource,
-        projection,
-        tilesToDrawByZ,
-      );
+      const preload = tileLayer.getPreload();
+      if (frameState.nextExtent) {
+        const targetZ = tileGrid.getZForResolution(
+          viewState.nextResolution,
+          tileSource.zDirection,
+        );
+        const nextExtent = getRenderExtent(frameState, frameState.nextExtent);
+        this.enqueueTiles(frameState, nextExtent, targetZ, tilesByZ, preload);
+      }
 
-      const tmpExtent = this.tmpExtent;
-      const tmpTileRange = this.tmpTileRange_;
-      this.newTiles_ = false;
-      const viewport = rotation
-        ? getRotatedViewport(
-            viewState.center,
-            resolution,
-            rotation,
-            frameState.size,
-          )
-        : undefined;
-      for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
-        for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          if (
-            rotation &&
-            !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
-          ) {
+      const renderExtent = getRenderExtent(frameState, frameExtent);
+      this.enqueueTiles(frameState, renderExtent, z, tilesByZ, 0);
+      if (preload > 0) {
+        setTimeout(() => {
+          this.enqueueTiles(
+            frameState,
+            renderExtent,
+            z - 1,
+            tilesByZ,
+            preload - 1,
+          );
+        }, 0);
+      }
+
+      /**
+       * Part 2: Find alt tiles for those that are not yet loaded
+       */
+
+      const uid = getUid(this);
+      const time = frameState.time;
+
+      // look for cached tiles to use if a target tile is not ready
+      for (const tile of tilesByZ[z]) {
+        const tileState = tile.getState();
+        if (
+          (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
+          tileState === TileState.EMPTY
+        ) {
+          continue;
+        }
+        const tileCoord = tile.tileCoord;
+
+        if (tileState === TileState.LOADED) {
+          const alpha = tile.getAlpha(uid, time);
+          if (alpha === 1) {
+            // no need to look for alt tiles
+            tile.endTransition(uid);
             continue;
           }
-          const tile = this.getTile(z, x, y, frameState);
-          if (this.isDrawableTile(tile)) {
-            const uid = getUid(this);
-            if (tile.getState() == TileState.LOADED) {
-              tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-              let inTransition = tile.inTransition(uid);
-              if (inTransition && layerState.opacity !== 1) {
-                // Skipping transition when layer is not fully opaque avoids visual artifacts.
-                tile.endTransition(uid);
-                inTransition = false;
-              }
-              if (
-                !this.newTiles_ &&
-                (inTransition || !this.renderedTiles.includes(tile))
-              ) {
-                this.newTiles_ = true;
-              }
-            }
-            if (tile.getAlpha(uid, frameState.time) === 1) {
-              // don't look for alt tiles if alpha is 1
-              continue;
-            }
-          }
+        }
+        this.renderComplete = false;
 
-          const childTileRange = tileGrid.getTileCoordChildTileRange(
-            tile.tileCoord,
-            tmpTileRange,
-            tmpExtent,
+        const hasStaleTile = this.findStaleTile_(tileCoord, tilesByZ);
+        if (hasStaleTile) {
+          // use the stale tile before the new tile's transition has completed
+          removeTileFromLookup(tilesByZ, tile, z);
+          frameState.animate = true;
+          continue;
+        }
+
+        // first look for child tiles (at z + 1)
+        const coveredByChildren = this.findAltTiles_(
+          tileGrid,
+          tileCoord,
+          z + 1,
+          tilesByZ,
+        );
+
+        if (coveredByChildren) {
+          continue;
+        }
+
+        // next look for parent tiles
+        const minZoom = tileGrid.getMinZoom();
+        for (let parentZ = z - 1; parentZ >= minZoom; --parentZ) {
+          const coveredByParent = this.findAltTiles_(
+            tileGrid,
+            tileCoord,
+            parentZ,
+            tilesByZ,
           );
 
-          let covered = false;
-          if (childTileRange) {
-            covered = findLoadedTiles(z + 1, childTileRange);
-          }
-          if (!covered) {
-            tileGrid.forEachTileCoordParentTileRange(
-              tile.tileCoord,
-              findLoadedTiles,
-              tmpTileRange,
-              tmpExtent,
-            );
+          if (coveredByParent) {
+            break;
           }
         }
       }
+
+      /**
+       * Part 3: Render loaded tiles
+       */
 
       const canvasScale =
         ((tileResolution / viewResolution) * pixelRatio) / tilePixelRatio;
@@ -59854,7 +60942,7 @@
         -height / 2,
       );
 
-      if (layerExtent) {
+      if (layerState.extent) {
         this.clipUnrotated(context, frameState, layerExtent);
       }
 
@@ -59866,20 +60954,12 @@
 
       this.renderedTiles.length = 0;
       /** @type {Array<number>} */
-      let zs = Object.keys(tilesToDrawByZ).map(Number);
+      const zs = Object.keys(tilesByZ).map(Number);
       zs.sort(ascending);
 
-      let clips, clipZs, currentClip;
-      if (
-        layerState.opacity === 1 &&
-        (!this.containerReused ||
-          tileSource.getOpaque(frameState.viewState.projection))
-      ) {
-        zs = zs.reverse();
-      } else {
-        clips = [];
-        clipZs = [];
-      }
+      let currentClip;
+      const clips = [];
+      const clipZs = [];
       for (let i = zs.length - 1; i >= 0; --i) {
         const currentZ = zs[i];
         const currentTilePixelSize = tileSource.getTilePixelSize(
@@ -59904,11 +60984,10 @@
         ]);
         const tileGutter =
           tilePixelRatio * tileSource.getGutterForProjection(projection);
-        const tilesToDraw = tilesToDrawByZ[currentZ];
-        for (const tileCoordKey in tilesToDraw) {
-          const tile = /** @type {import("../../ImageTile.js").default} */ (
-            tilesToDraw[tileCoordKey]
-          );
+        for (const tile of tilesByZ[currentZ]) {
+          if (tile.getState() !== TileState.LOADED) {
+            continue;
+          }
           const tileCoord = tile.tileCoord;
 
           // Calculate integer positions and sizes so that tiles align
@@ -59920,67 +60999,50 @@
           const y = Math.round(origin[1] - yIndex * dy);
           const w = nextX - x;
           const h = nextY - y;
-          const transition = z === currentZ;
+          const transition = zs.length === 1;
 
-          const inTransition =
-            transition && tile.getAlpha(getUid(this), frameState.time) !== 1;
           let contextSaved = false;
-          if (!inTransition) {
-            if (clips) {
-              // Clip mask for regions in this tile that already filled by a higher z tile
-              currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
-              for (let i = 0, ii = clips.length; i < ii; ++i) {
-                if (z !== currentZ && currentZ < clipZs[i]) {
-                  const clip = clips[i];
-                  if (
-                    intersects$1(
-                      [x, y, x + w, y + h],
-                      [clip[0], clip[3], clip[4], clip[7]],
-                    )
-                  ) {
-                    if (!contextSaved) {
-                      context.save();
-                      contextSaved = true;
-                    }
-                    context.beginPath();
-                    // counter-clockwise (outer ring) for current tile
-                    context.moveTo(currentClip[0], currentClip[1]);
-                    context.lineTo(currentClip[2], currentClip[3]);
-                    context.lineTo(currentClip[4], currentClip[5]);
-                    context.lineTo(currentClip[6], currentClip[7]);
-                    // clockwise (inner ring) for higher z tile
-                    context.moveTo(clip[6], clip[7]);
-                    context.lineTo(clip[4], clip[5]);
-                    context.lineTo(clip[2], clip[3]);
-                    context.lineTo(clip[0], clip[1]);
-                    context.clip();
-                  }
+
+          // Clip mask for regions in this tile that already filled by a higher z tile
+          currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
+          for (let i = 0, ii = clips.length; i < ii; ++i) {
+            if (!transition && currentZ < clipZs[i]) {
+              const clip = clips[i];
+              if (
+                intersects$1(
+                  [x, y, x + w, y + h],
+                  [clip[0], clip[3], clip[4], clip[7]],
+                )
+              ) {
+                if (!contextSaved) {
+                  context.save();
+                  contextSaved = true;
                 }
+                context.beginPath();
+                // counter-clockwise (outer ring) for current tile
+                context.moveTo(currentClip[0], currentClip[1]);
+                context.lineTo(currentClip[2], currentClip[3]);
+                context.lineTo(currentClip[4], currentClip[5]);
+                context.lineTo(currentClip[6], currentClip[7]);
+                // clockwise (inner ring) for higher z tile
+                context.moveTo(clip[6], clip[7]);
+                context.lineTo(clip[4], clip[5]);
+                context.lineTo(clip[2], clip[3]);
+                context.lineTo(clip[0], clip[1]);
+                context.clip();
               }
-              clips.push(currentClip);
-              clipZs.push(currentZ);
-            } else {
-              context.clearRect(x, y, w, h);
             }
           }
-          this.drawTileImage(
-            tile,
-            frameState,
-            x,
-            y,
-            w,
-            h,
-            tileGutter,
-            transition,
-          );
-          if (clips && !inTransition) {
-            if (contextSaved) {
-              context.restore();
-            }
-            this.renderedTiles.unshift(tile);
-          } else {
-            this.renderedTiles.push(tile);
+          clips.push(currentClip);
+          clipZs.push(currentZ);
+
+          this.drawTile(tile, frameState, x, y, w, h, tileGutter, transition);
+          if (contextSaved) {
+            context.restore();
           }
+          this.renderedTiles.unshift(tile);
+
+          // TODO: decide if this is necessary
           this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
         }
       }
@@ -59993,18 +61055,6 @@
       this.renderedPixelRatio = pixelRatio;
       this.renderedProjection = projection;
 
-      this.manageTilePyramid(
-        frameState,
-        tileSource,
-        tileGrid,
-        pixelRatio,
-        projection,
-        extent,
-        z,
-        tileLayer.getPreload(),
-      );
-      this.scheduleExpireCache(frameState, tileSource);
-
       this.postRender(this.context, frameState);
 
       if (layerState.extent) {
@@ -60012,11 +61062,39 @@
       }
       context.imageSmoothingEnabled = true;
 
+      // TODO: let the renderers manage their own cache instead of managing the source cache
+      /**
+       * Here we unconditionally expire the source cache since the renderer maintains
+       * its own cache.
+       * @param {import("../../Map.js").default} map Map.
+       * @param {import("../../Map.js").FrameState} frameState Frame state.
+       */
+      const postRenderFunction = (map, frameState) => {
+        const tileSourceKey = getUid(tileSource);
+        const wantedTiles = frameState.wantedTiles[tileSourceKey];
+        const tilesCount = wantedTiles ? Object.keys(wantedTiles).length : 0;
+        this.updateCacheSize(tilesCount);
+        this.tileCache_.expireCache();
+      };
+
+      frameState.postRenderFunctions.push(postRenderFunction);
+
       return this.container;
     }
 
     /**
-     * @param {import("../../ImageTile.js").default} tile Tile.
+     * Increases the cache size if needed
+     * @param {number} tileCount Minimum number of tiles needed.
+     */
+    updateCacheSize(tileCount) {
+      this.tileCache_.highWaterMark = Math.max(
+        this.tileCache_.highWaterMark,
+        tileCount * 2,
+      );
+    }
+
+    /**
+     * @param {import("../../Tile.js").default} tile Tile.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @param {number} x Left of the tile.
      * @param {number} y Top of the tile.
@@ -60024,9 +61102,20 @@
      * @param {number} h Height of the tile.
      * @param {number} gutter Tile gutter.
      * @param {boolean} transition Apply an alpha transition.
+     * @protected
      */
-    drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
-      const image = this.getTileImage(tile);
+    drawTile(tile, frameState, x, y, w, h, gutter, transition) {
+      let image;
+      if (tile instanceof DataTile) {
+        image = asImageLike(tile.getData());
+        if (!image) {
+          throw new Error('Rendering array data is not yet supported');
+        }
+      } else {
+        image = this.getTileImage(
+          /** @type {import("../../ImageTile.js").default} */ (tile),
+        );
+      }
       if (!image) {
         return;
       }
@@ -60082,36 +61171,6 @@
     }
 
     /**
-     * @param {import("../../Map.js").FrameState} frameState Frame state.
-     * @param {import("../../source/Tile.js").default} tileSource Tile source.
-     * @protected
-     */
-    scheduleExpireCache(frameState, tileSource) {
-      if (tileSource.canExpireCache()) {
-        /**
-         * @param {import("../../source/Tile.js").default} tileSource Tile source.
-         * @param {import("../../Map.js").default} map Map.
-         * @param {import("../../Map.js").FrameState} frameState Frame state.
-         */
-        const postRenderFunction = function (tileSource, map, frameState) {
-          const tileSourceKey = getUid(tileSource);
-          if (tileSourceKey in frameState.usedTiles) {
-            tileSource.expireCache(
-              frameState.viewState.projection,
-              frameState.usedTiles[tileSourceKey],
-            );
-          }
-        }.bind(null, tileSource);
-
-        frameState.postRenderFunctions.push(
-          /** @type {import("../../Map.js").PostRenderFunction} */ (
-            postRenderFunction
-          ),
-        );
-      }
-    }
-
-    /**
      * @param {!Object<string, !Object<string, boolean>>} usedTiles Used tiles.
      * @param {import("../../source/Tile.js").default} tileSource Tile source.
      * @param {import('../../Tile.js').default} tile Tile.
@@ -60124,90 +61183,6 @@
         usedTiles[tileSourceKey] = {};
       }
       usedTiles[tileSourceKey][tile.getKey()] = true;
-    }
-
-    /**
-     * Manage tile pyramid.
-     * This function performs a number of functions related to the tiles at the
-     * current zoom and lower zoom levels:
-     * - registers idle tiles in frameState.wantedTiles so that they are not
-     *   discarded by the tile queue
-     * - enqueues missing tiles
-     * @param {import("../../Map.js").FrameState} frameState Frame state.
-     * @param {import("../../source/Tile.js").default} tileSource Tile source.
-     * @param {import("../../tilegrid/TileGrid.js").default} tileGrid Tile grid.
-     * @param {number} pixelRatio Pixel ratio.
-     * @param {import("../../proj/Projection.js").default} projection Projection.
-     * @param {import("../../extent.js").Extent} extent Extent.
-     * @param {number} currentZ Current Z.
-     * @param {number} preload Load low resolution tiles up to `preload` levels.
-     * @param {function(import("../../Tile.js").default):void} [tileCallback] Tile callback.
-     * @protected
-     */
-    manageTilePyramid(
-      frameState,
-      tileSource,
-      tileGrid,
-      pixelRatio,
-      projection,
-      extent,
-      currentZ,
-      preload,
-      tileCallback,
-    ) {
-      const tileSourceKey = getUid(tileSource);
-      if (!(tileSourceKey in frameState.wantedTiles)) {
-        frameState.wantedTiles[tileSourceKey] = {};
-      }
-      const wantedTiles = frameState.wantedTiles[tileSourceKey];
-      const tileQueue = frameState.tileQueue;
-      const minZoom = tileGrid.getMinZoom();
-      const rotation = frameState.viewState.rotation;
-      const viewport = rotation
-        ? getRotatedViewport(
-            frameState.viewState.center,
-            frameState.viewState.resolution,
-            rotation,
-            frameState.size,
-          )
-        : undefined;
-      let tileCount = 0;
-      let tile, tileRange, tileResolution, x, y, z;
-      for (z = minZoom; z <= currentZ; ++z) {
-        tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
-        tileResolution = tileGrid.getResolution(z);
-        for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-          for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-            if (
-              rotation &&
-              !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
-            ) {
-              continue;
-            }
-            if (currentZ - z <= preload) {
-              ++tileCount;
-              tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-              if (tile.getState() == TileState.IDLE) {
-                wantedTiles[tile.getKey()] = true;
-                if (!tileQueue.isKeyQueued(tile.getKey())) {
-                  tileQueue.enqueue([
-                    tile,
-                    tileSourceKey,
-                    tileGrid.getTileCoordCenter(tile.tileCoord),
-                    tileResolution,
-                  ]);
-                }
-              }
-              if (tileCallback !== undefined) {
-                tileCallback(tile);
-              }
-            } else {
-              tileSource.useTile(z, x, y, projection);
-            }
-          }
-        }
-      }
-      tileSource.updateCacheSize(tileCount, projection);
     }
   }
 
@@ -60223,7 +61198,7 @@
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @template {import("../source/Tile.js").default} TileSourceType
+   * @template {import("../source/Tile.js").default} [TileSourceType=import("../source/Tile.js").default]
    * @extends BaseTileLayer<TileSourceType, CanvasTileLayerRenderer>
    * @api
    */
@@ -60235,8 +61210,13 @@
       super(options);
     }
 
+    /**
+     * @override
+     */
     createRenderer() {
-      return new CanvasTileLayerRenderer(this);
+      return new CanvasTileLayerRenderer(this, {
+        cacheSize: this.getCacheSize(),
+      });
     }
   }
 
@@ -60473,6 +61453,9 @@
    */
 
   class TileCache extends LRUCache {
+    /**
+     * @override
+     */
     clear() {
       while (this.getCount() > 0) {
         this.pop().release();
@@ -60482,6 +61465,7 @@
 
     /**
      * @param {!Object<string, boolean>} usedTiles Used tiles.
+     * @override
      */
     expireCache(usedTiles) {
       while (this.canExpireCache()) {
@@ -60726,8 +61710,7 @@
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
-   * @property {number} [cacheSize] CacheSize.
-   * @property {boolean} [opaque=false] Whether the layer is opaque.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {number} [tilePixelRatio] TilePixelRatio.
    * @property {import("../proj.js").ProjectionLike} [projection] Projection.
    * @property {import("./Source.js").State} [state] State.
@@ -60745,6 +61728,8 @@
    * Abstract base class; normally only used for creating subclasses and not
    * instantiated in apps.
    * Base class for sources providing images divided into a tile grid.
+   *
+   * @template {import("../Tile.js").default} [TileType=import("../Tile.js").default]
    * @abstract
    * @api
    */
@@ -60776,12 +61761,6 @@
        * @type {TileSourceOnSignature<void>}
        */
       this.un;
-
-      /**
-       * @private
-       * @type {boolean}
-       */
-      this.opaque_ = options.opaque !== undefined ? options.opaque : false;
 
       /**
        * @private
@@ -60857,44 +61836,6 @@
 
     /**
      * @param {import("../proj/Projection.js").default} projection Projection.
-     * @param {number} z Zoom level.
-     * @param {import("../TileRange.js").default} tileRange Tile range.
-     * @param {function(import("../Tile.js").default):(boolean|void)} callback Called with each
-     *     loaded tile.  If the callback returns `false`, the tile will not be
-     *     considered loaded.
-     * @return {boolean} The tile range is fully covered with loaded tiles.
-     */
-    forEachLoadedTile(projection, z, tileRange, callback) {
-      const tileCache = this.getTileCacheForProjection(projection);
-      if (!tileCache) {
-        return false;
-      }
-
-      let covered = true;
-      let tile, tileCoordKey, loaded;
-      for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
-        for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          tileCoordKey = getKeyZXY(z, x, y);
-          loaded = false;
-          if (tileCache.containsKey(tileCoordKey)) {
-            tile = /** @type {!import("../Tile.js").default} */ (
-              tileCache.get(tileCoordKey)
-            );
-            loaded = tile.getState() === TileState.LOADED;
-            if (loaded) {
-              loaded = callback(tile) !== false;
-            }
-          }
-          if (!loaded) {
-            covered = false;
-          }
-        }
-      }
-      return covered;
-    }
-
-    /**
-     * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {number} Gutter.
      */
     getGutterForProjection(projection) {
@@ -60922,16 +61863,9 @@
     }
 
     /**
-     * @param {import("../proj/Projection.js").default} projection Projection.
-     * @return {boolean} Opaque.
-     */
-    getOpaque(projection) {
-      return this.opaque_;
-    }
-
-    /**
      * @param {import("../proj/Projection").default} [projection] Projection.
      * @return {Array<number>|null} Resolutions.
+     * @override
      */
     getResolutions(projection) {
       const tileGrid = projection
@@ -60950,7 +61884,7 @@
      * @param {number} y Tile coordinate y.
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../proj/Projection.js").default} projection Projection.
-     * @return {!import("../Tile.js").default} Tile.
+     * @return {TileType|null} Tile.
      */
     getTile(z, x, y, pixelRatio, projection) {
       return abstract();
@@ -61043,21 +61977,12 @@
       this.tileCache.clear();
     }
 
+    /**
+     * @override
+     */
     refresh() {
       this.clear();
       super.refresh();
-    }
-
-    /**
-     * Increases the cache size if needed
-     * @param {number} tileCount Minimum number of tiles needed.
-     * @param {import("../proj/Projection.js").default} projection Projection.
-     */
-    updateCacheSize(tileCount, projection) {
-      const tileCache = this.getTileCacheForProjection(projection);
-      if (tileCount > tileCache.highWaterMark) {
-        tileCache.highWaterMark = tileCount;
-      }
     }
 
     /**
@@ -61094,19 +62019,104 @@
   }
 
   /**
+   * @module ol/uri
+   */
+
+
+  /**
+   * Appends query parameters to a URI.
+   *
+   * @param {string} uri The original URI, which may already have query data.
+   * @param {!Object} params An object where keys are URI-encoded parameter keys,
+   *     and the values are arbitrary types or arrays.
+   * @return {string} The new URI.
+   */
+  function appendParams(uri, params) {
+    /** @type {Array<string>} */
+    const keyParams = [];
+    // Skip any null or undefined parameter values
+    Object.keys(params).forEach(function (k) {
+      if (params[k] !== null && params[k] !== undefined) {
+        keyParams.push(k + '=' + encodeURIComponent(params[k]));
+      }
+    });
+    const qs = keyParams.join('&');
+    // remove any trailing ? or &
+    uri = uri.replace(/[?&]$/, '');
+    // append ? or & depending on whether uri has existing parameters
+    uri += uri.includes('?') ? '&' : '?';
+    return uri + qs;
+  }
+
+  const zRegEx = /\{z\}/g;
+  const xRegEx = /\{x\}/g;
+  const yRegEx = /\{y\}/g;
+  const dashYRegEx = /\{-y\}/g;
+
+  /**
+   * @param {string} template The URL template.  Should have `{x}`, `{y}`, and `{z}` placeholders.  If
+   * the template has a `{-y}` placeholder, the `maxY` parameter must be supplied.
+   * @param {number} z The tile z coordinate.
+   * @param {number} x The tile x coordinate.
+   * @param {number} y The tile y coordinate.
+   * @param {number} [maxY] The maximum y coordinate at the given z level.
+   * @return {string} The URL.
+   */
+  function renderXYZTemplate(template, z, x, y, maxY) {
+    return template
+      .replace(zRegEx, z.toString())
+      .replace(xRegEx, x.toString())
+      .replace(yRegEx, y.toString())
+      .replace(dashYRegEx, function () {
+        if (maxY === undefined) {
+          throw new Error(
+            'If the URL template has a {-y} placeholder, the grid extent must be known',
+          );
+        }
+        return (maxY - y).toString();
+      });
+  }
+
+  /**
+   * @param {string} url URL.
+   * @return {Array<string>} Array of urls.
+   */
+  function expandUrl(url) {
+    const urls = [];
+    let match = /\{([a-z])-([a-z])\}/.exec(url);
+    if (match) {
+      // char range
+      const startCharCode = match[1].charCodeAt(0);
+      const stopCharCode = match[2].charCodeAt(0);
+      let charCode;
+      for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
+        urls.push(url.replace(match[0], String.fromCharCode(charCode)));
+      }
+      return urls;
+    }
+    match = /\{(\d+)-(\d+)\}/.exec(url);
+    if (match) {
+      // number range
+      const stop = parseInt(match[2], 10);
+      for (let i = parseInt(match[1], 10); i <= stop; i++) {
+        urls.push(url.replace(match[0], i.toString()));
+      }
+      return urls;
+    }
+    urls.push(url);
+    return urls;
+  }
+
+  /**
    * @module ol/tileurlfunction
    */
 
   /**
    * @param {string} template Template.
-   * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
+   * @param {import("./tilegrid/TileGrid.js").default|null} tileGrid Tile grid.
    * @return {import("./Tile.js").UrlFunction} Tile URL function.
    */
   function createFromTemplate(template, tileGrid) {
-    const zRegEx = /\{z\}/g;
-    const xRegEx = /\{x\}/g;
-    const yRegEx = /\{y\}/g;
-    const dashYRegEx = /\{-y\}/g;
     return (
       /**
        * @param {import("./tilecoord.js").TileCoord} tileCoord Tile Coordinate.
@@ -61118,21 +62128,16 @@
         if (!tileCoord) {
           return undefined;
         }
-        return template
-          .replace(zRegEx, tileCoord[0].toString())
-          .replace(xRegEx, tileCoord[1].toString())
-          .replace(yRegEx, tileCoord[2].toString())
-          .replace(dashYRegEx, function () {
-            const z = tileCoord[0];
-            const range = tileGrid.getFullTileRange(z);
-            if (!range) {
-              throw new Error(
-                'The {-y} placeholder requires a tile grid with extent',
-              );
-            }
-            const y = range.getHeight() - tileCoord[2] - 1;
-            return y.toString();
-          });
+        let maxY;
+        const z = tileCoord[0];
+        if (tileGrid) {
+          // The `{-y}` placeholder only works for sources that have a tile grid at construction
+          const range = tileGrid.getFullTileRange(z);
+          if (range) {
+            maxY = range.getHeight() - 1;
+          }
+        }
+        return renderXYZTemplate(template, z, tileCoord[1], tileCoord[2], maxY);
       }
     );
   }
@@ -61178,36 +62183,6 @@
   }
 
   /**
-   * @param {string} url URL.
-   * @return {Array<string>} Array of urls.
-   */
-  function expandUrl(url) {
-    const urls = [];
-    let match = /\{([a-z])-([a-z])\}/.exec(url);
-    if (match) {
-      // char range
-      const startCharCode = match[1].charCodeAt(0);
-      const stopCharCode = match[2].charCodeAt(0);
-      let charCode;
-      for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
-        urls.push(url.replace(match[0], String.fromCharCode(charCode)));
-      }
-      return urls;
-    }
-    match = /\{(\d+)-(\d+)\}/.exec(url);
-    if (match) {
-      // number range
-      const stop = parseInt(match[2], 10);
-      for (let i = parseInt(match[1], 10); i <= stop; i++) {
-        urls.push(url.replace(match[0], i.toString()));
-      }
-      return urls;
-    }
-    urls.push(url);
-    return urls;
-  }
-
-  /**
    * @module ol/source/UrlTile
    */
 
@@ -61215,14 +62190,14 @@
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
-   * @property {number} [cacheSize] Cache size.
-   * @property {boolean} [opaque=false] Whether the layer is opaque.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {import("../proj.js").ProjectionLike} [projection] Projection.
    * @property {import("./Source.js").State} [state] State.
    * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
    * @property {import("../Tile.js").LoadFunction} tileLoadFunction TileLoadFunction.
    * @property {number} [tilePixelRatio] TilePixelRatio.
-   * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] TileUrlFunction.
+   * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Deprecated.  Use an ImageTile source and provide a function
+   * for the url option instead.
    * @property {string} [url] Url.
    * @property {Array<string>} [urls] Urls.
    * @property {boolean} [wrapX=true] WrapX.
@@ -61234,8 +62209,7 @@
    */
 
   /**
-   * @classdesc
-   * Base class for sources providing tiles divided into a tile grid over http.
+   * @deprecated Use the ol/source/ImageTile.js instead.
    *
    * @fires import("./Tile.js").TileSourceEvent
    */
@@ -61247,7 +62221,6 @@
       super({
         attributions: options.attributions,
         cacheSize: options.cacheSize,
-        opaque: options.opaque,
         projection: options.projection,
         state: options.state,
         tileGrid: options.tileGrid,
@@ -61297,6 +62270,7 @@
     }
 
     /**
+     * Deprecated.  Use an ImageTile source instead.
      * Return the tile load function of the source.
      * @return {import("../Tile.js").LoadFunction} TileLoadFunction
      * @api
@@ -61306,6 +62280,7 @@
     }
 
     /**
+     * Deprecated.  Use an ImageTile source instead.
      * Return the tile URL function of the source.
      * @return {import("../Tile.js").UrlFunction} TileUrlFunction
      * @api
@@ -61317,6 +62292,7 @@
     }
 
     /**
+     * Deprecated.  Use an ImageTile source instead.
      * Return the URLs used for this source.
      * When a tileUrlFunction is used instead of url or urls,
      * null will be returned.
@@ -61355,6 +62331,7 @@
     }
 
     /**
+     * Deprecated.  Use an ImageTile source instead.
      * Set the tile load function of the source.
      * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
      * @api
@@ -61366,6 +62343,7 @@
     }
 
     /**
+     * Deprecated.  Use an ImageTile source instead.
      * Set the tile URL function of the source.
      * @param {import("../Tile.js").UrlFunction} tileUrlFunction Tile URL function.
      * @param {string} [key] Optional new tile key for the source.
@@ -61393,6 +62371,7 @@
     }
 
     /**
+     * Deprecated.  Use an ImageTile source instead.
      * Set the URLs to use for requests.
      * @param {Array<string>} urls URLs.
      * @api
@@ -61422,6 +62401,7 @@
      * @param {number} z Tile coordinate z.
      * @param {number} x Tile coordinate x.
      * @param {number} y Tile coordinate y.
+     * @override
      */
     useTile(z, x, y) {
       const tileCoordKey = getKeyZXY(z, x, y);
@@ -61439,13 +62419,12 @@
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
-   * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
    * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
    * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
-   * @property {boolean} [opaque=false] Whether the layer is opaque.
    * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
    * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
    * Higher values can increase reprojection performance, but decrease precision.
@@ -61463,7 +62442,8 @@
    * service advertizes 256px by 256px tiles but actually sends 512px
    * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
    * should be set to `2`.
-   * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
+   * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Deprecated.  Use an ImageTile source and provide a function
+   * for the url option instead.
    * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
    * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
    * used instead of defining each one separately in the `urls` option.
@@ -61481,8 +62461,7 @@
    */
 
   /**
-   * @classdesc
-   * Base class for sources providing images divided into a tile grid.
+   * @deprecated Use the ol/source/ImageTile.js instead.
    *
    * @fires import("./Tile.js").TileSourceEvent
    * @api
@@ -61495,7 +62474,6 @@
       super({
         attributions: options.attributions,
         cacheSize: options.cacheSize,
-        opaque: options.opaque,
         projection: options.projection,
         state: options.state,
         tileGrid: options.tileGrid,
@@ -61556,6 +62534,7 @@
 
     /**
      * @return {boolean} Can expire cache.
+     * @override
      */
     canExpireCache() {
       if (this.tileCache.canExpireCache()) {
@@ -61573,6 +62552,7 @@
     /**
      * @param {import("../proj/Projection.js").default} projection Projection.
      * @param {!Object<string, boolean>} usedTiles Used tiles.
+     * @override
      */
     expireCache(projection, usedTiles) {
       const usedTileCache = this.getTileCacheForProjection(projection);
@@ -61589,6 +62569,7 @@
     /**
      * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {number} Gutter.
+     * @override
      */
     getGutterForProjection(projection) {
       if (
@@ -61611,6 +62592,7 @@
     /**
      * Return the key to be used for all tiles in the source.
      * @return {string} The key for all tiles.
+     * @override
      */
     getKey() {
       let key = super.getKey();
@@ -61622,22 +62604,8 @@
 
     /**
      * @param {import("../proj/Projection.js").default} projection Projection.
-     * @return {boolean} Opaque.
-     */
-    getOpaque(projection) {
-      if (
-        this.getProjection() &&
-        projection &&
-        !equivalent(this.getProjection(), projection)
-      ) {
-        return false;
-      }
-      return super.getOpaque(projection);
-    }
-
-    /**
-     * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+     * @override
      */
     getTileGridForProjection(projection) {
       const thisProj = this.getProjection();
@@ -61655,6 +62623,7 @@
     /**
      * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {import("../TileCache.js").default} Tile cache.
+     * @override
      */
     getTileCacheForProjection(projection) {
       const thisProj = this.getProjection();
@@ -61709,6 +62678,7 @@
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {!(ImageTile|ReprojTile)} Tile.
+     * @override
      */
     getTile(z, x, y, pixelRatio, projection) {
       const sourceProjection = this.getProjection();
@@ -61760,8 +62730,6 @@
       newTile.key = key;
 
       if (tile) {
-        newTile.interimTile = tile;
-        newTile.refreshInterimChain();
         cache.replace(tileCoordKey, newTile);
       } else {
         cache.set(tileCoordKey, newTile);
@@ -61779,31 +62747,18 @@
      * @protected
      */
     getTileInternal(z, x, y, pixelRatio, projection) {
-      let tile = null;
       const tileCoordKey = getKeyZXY(z, x, y);
       const key = this.getKey();
       if (!this.tileCache.containsKey(tileCoordKey)) {
-        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+        const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
         this.tileCache.set(tileCoordKey, tile);
-      } else {
-        tile = this.tileCache.get(tileCoordKey);
-        if (tile.key != key) {
-          // The source's params changed. If the tile has an interim tile and if we
-          // can use it then we use it. Otherwise we create a new tile.  In both
-          // cases we attempt to assign an interim tile to the new tile.
-          const interimTile = tile;
-          tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+        return tile;
+      }
 
-          //make the new tile the head of the list,
-          if (interimTile.getState() == TileState.IDLE) {
-            //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
-            tile.interimTile = interimTile.interimTile;
-          } else {
-            tile.interimTile = interimTile;
-          }
-          tile.refreshInterimChain();
-          this.tileCache.replace(tileCoordKey, tile);
-        }
+      let tile = this.tileCache.get(tileCoordKey);
+      if (tile.key != key) {
+        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+        this.tileCache.replace(tileCoordKey, tile);
       }
       return tile;
     }
@@ -61846,6 +62801,9 @@
       }
     }
 
+    /**
+     * @override
+     */
     clear() {
       super.clear();
       for (const id in this.tileCacheForProjection) {
@@ -61905,7 +62863,7 @@
 
   /**
    * @typedef {Object} Options
-   * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
    * @property {string} [culture='en-us'] Culture code.
    * @property {string} key Bing Maps API key. Get yours at https://www.bingmapsportal.com/.
@@ -61985,7 +62943,6 @@
         cacheSize: options.cacheSize,
         crossOrigin: 'anonymous',
         interpolate: options.interpolate,
-        opaque: true,
         projection: get$2('EPSG:3857'),
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
         state: 'loading',
@@ -62202,13 +63159,12 @@
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
-   * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
    * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
    * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
-   * @property {boolean} [opaque=false] Whether the layer is opaque.
    * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
    * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
    * Higher values can increase reprojection performance, but decrease precision.
@@ -62216,7 +63172,8 @@
    * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
    * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
    * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
-   * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+   * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Deprecated.  Use an ImageTile source with a loader
+   * instead.  Optional function to load a tile given a URL. The default is
    * ```js
    * function(imageTile, src) {
    *   imageTile.getImage().src = src;
@@ -62231,13 +63188,13 @@
    * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
    * This allows artifacts of rendering at tile edges to be ignored.
    * Supported images should be wider and taller than the tile size by a value of `2 x gutter`.
-   * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get
-   * tile URL given a tile coordinate and the projection.
-   * Required if `url` or `urls` are not provided.
+   * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Deprecated.  Use an ImageTile source and provide a function
+   * for the url option instead.
    * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`,
    * and `{z}` placeholders. A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`,
    * may be used instead of defining each one separately in the `urls` option.
-   * @property {Array<string>} [urls] An array of URL templates.
+   * @property {Array<string>} [urls] Deprecated.  Use an ImageTile source and provide an array of URLs for the
+   * url option instead.
    * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
    * @property {number} [transition=250] Duration of the opacity transition for rendering.
    * To disable the opacity transition, pass `transition: 0`.
@@ -62289,7 +63246,6 @@
         cacheSize: options.cacheSize,
         crossOrigin: options.crossOrigin,
         interpolate: options.interpolate,
-        opaque: options.opaque,
         projection: projection,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
         tileGrid: tileGrid,
@@ -62313,6 +63269,7 @@
 
     /**
      * @return {number} Gutter.
+     * @override
      */
     getGutter() {
       return this.gutter_;
@@ -62335,8 +63292,8 @@
    * By default no minimum distance is guaranteed. This config can be used to avoid
    * overlapping icons. As a tradoff, the cluster feature's position will no longer be
    * the center of all its features.
-   * @property {function(FeatureType):(Point)} [geometryFunction]
-   * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+   * @property {function(FeatureType):(Point|null)} [geometryFunction]
+   * Function that takes a {@link module:ol/Feature~Feature} as argument and returns a
    * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
    * feature should not be considered for clustering, the function should return
    * `null`. The default, which works when the underlying source contains point
@@ -62459,6 +63416,7 @@
      * Remove all features from the source.
      * @param {boolean} [fast] Skip dispatching of {@link module:ol/source/VectorEventType~VectorEventType#removefeature} events.
      * @api
+     * @override
      */
     clear(fast) {
       this.features.length = 0;
@@ -62487,6 +63445,7 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @param {number} resolution Resolution.
      * @param {import("../proj/Projection.js").default} projection Projection.
+     * @override
      */
     loadFeatures(extent, resolution, projection) {
       this.source?.loadFeatures(extent, resolution, projection);
@@ -62542,6 +63501,7 @@
 
     /**
      * Handle the source changing.
+     * @override
      */
     refresh() {
       this.clear();
@@ -62651,35 +63611,6 @@
   const DECIMALS = 4;
 
   /**
-   * @module ol/uri
-   */
-
-  /**
-   * Appends query parameters to a URI.
-   *
-   * @param {string} uri The original URI, which may already have query data.
-   * @param {!Object} params An object where keys are URI-encoded parameter keys,
-   *     and the values are arbitrary types or arrays.
-   * @return {string} The new URI.
-   */
-  function appendParams(uri, params) {
-    /** @type {Array<string>} */
-    const keyParams = [];
-    // Skip any null or undefined parameter values
-    Object.keys(params).forEach(function (k) {
-      if (params[k] !== null && params[k] !== undefined) {
-        keyParams.push(k + '=' + encodeURIComponent(params[k]));
-      }
-    });
-    const qs = keyParams.join('&');
-    // remove any trailing ? or &
-    uri = uri.replace(/[?&]$/, '');
-    // append ? or & depending on whether uri has existing parameters
-    uri += uri.includes('?') ? '&' : '?';
-    return uri + qs;
-  }
-
-  /**
    * @module ol/source/wms
    */
 
@@ -62713,17 +63644,15 @@
     params['HEIGHT'] = size[1];
 
     const axisOrientation = projection.getAxisOrientation();
-    let bbox;
     const v13 = compareVersions(params['VERSION'], '1.3') >= 0;
     params[v13 ? 'CRS' : 'SRS'] = projection.getCode();
-    if (v13 && axisOrientation.substr(0, 2) == 'ne') {
-      bbox = [extent[1], extent[0], extent[3], extent[2]];
-    } else {
-      bbox = extent;
-    }
+    const bbox =
+      v13 && axisOrientation.startsWith('ne')
+        ? [extent[1], extent[0], extent[3], extent[2]]
+        : extent;
     params['BBOX'] = bbox.join(',');
 
-    return appendParams(/** @type {string} */ (baseUrl), params);
+    return appendParams(baseUrl, params);
   }
 
   /**
@@ -62819,14 +63748,13 @@
   /**
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
-   * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
    * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
    * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
    * @property {number} [maxZoom=19] Max zoom.
-   * @property {boolean} [opaque=true] Whether the layer is opaque.
    * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
    * Higher values can increase reprojection performance, but decrease precision.
    * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
@@ -62879,7 +63807,6 @@
         crossOrigin: crossOrigin,
         interpolate: options.interpolate,
         maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
-        opaque: options.opaque !== undefined ? options.opaque : true,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
         tileLoadFunction: options.tileLoadFunction,
         transition: options.transition,
@@ -62899,7 +63826,7 @@
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
-   * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -62967,15 +63894,12 @@
 
       const params = Object.assign({}, options.params);
 
-      const transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
-
       super({
         attributions: options.attributions,
         attributionsCollapsible: options.attributionsCollapsible,
         cacheSize: options.cacheSize,
         crossOrigin: options.crossOrigin,
         interpolate: options.interpolate,
-        opaque: !transparent,
         projection: options.projection,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
         tileClass: options.tileClass,
@@ -63152,6 +64076,7 @@
 
     /**
      * @return {number} Gutter.
+     * @override
      */
     getGutter() {
       return this.gutter_;
@@ -63206,6 +64131,7 @@
      * Get the tile pixel ratio for this source.
      * @param {number} pixelRatio Pixel ratio.
      * @return {number} Tile pixel ratio.
+     * @override
      */
     getTilePixelRatio(pixelRatio) {
       return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;
@@ -63301,7 +64227,7 @@
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
-   * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -63446,6 +64372,7 @@
      * Set the URLs to use for requests.
      * URLs may contain OGC conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
      * @param {Array<string>} urls URLs.
+     * @override
      */
     setUrls(urls) {
       this.urls = urls;
@@ -63736,10 +64663,12 @@
     }
 
     setMap(map) {
+      // Add listeners to the buttons
       this.element.addEventListener('mouseover', evt => this.buttonListener(evt));
       this.element.addEventListener('mouseout', evt => this.buttonListener(evt));
       this.buttonEl.addEventListener('click', evt => this.buttonListener(evt));
 
+      // Add listeners in the sub-menus
       this.subMenuEl.querySelectorAll('a, input')
         .forEach(el => ['click', 'change'].forEach(type =>
           el.addEventListener(type, evt =>
@@ -64025,10 +64954,9 @@
       }
 
       super({
-        hidden: !options.key, // For LayerSwitcher
         source: new ol.source.WMTS({
           // WMTS options
-          url: 'https://wxs.ign.fr/' + options.key + '/wmts',
+          url: options.key ? 'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://wmts.geopf.fr/wmts',
           style: 'normal',
           matrixSet: 'PM',
           format: 'image/jpeg',
@@ -64040,7 +64968,7 @@
           }),
 
           // IGN options
-          ...options, // Include key & layer
+          ...options, // Include layer
         }),
         ...options, // For layer limits
       });
@@ -64335,18 +65263,19 @@
       'Refuges.info': new MRI(),
 
       'IGN TOP25': new IGN({
-        key: options.ign, // For simplified options
         ...options.ign, // Include key
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
       }),
       'IGN V2': new IGN({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-        key: 'essentiels',
+        format: 'image/png',
+      }),
+      'IGN N+1': new IGN({
+        layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1',
         format: 'image/png',
       }),
       'IGN cartes 1950': new IGN({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950',
-        key: 'cartes/geoportail',
         extent: [-580000, 506000, 1070000, 6637000],
         minZoom: 6,
       }),
@@ -64366,7 +65295,6 @@
         ...options.os, // Include key
       }),
       'Italie': new IGM(),
-
       'España': new IgnES(),
       'Google': new Google(),
 
@@ -64384,33 +65312,35 @@
         ...options.bing, // Include key
         imagerySet: 'Aerial',
       }),
+
       'Photo IGN': new IGN({
         layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-        key: 'essentiels',
       }),
-
       'Photo IGN 1950-65': new IGN({
         layer: 'ORTHOIMAGERY.ORTHOPHOTOS.1950-1965',
-        key: 'orthohisto/geoportail',
         style: 'BDORTHOHISTORIQUE',
         format: 'image/png',
         extent: [-580000, 506000, 1070000, 6637000],
         minZoom: 12,
       }),
-
       'IGN E.M. 1820-66': new IGN({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40',
-        key: 'cartes/geoportail',
         extent: [-580000, 506000, 1070000, 6637000],
         minZoom: 6,
       }),
       'Cadastre': new IGN({
         layer: 'CADASTRALPARCELS.PARCELLAIRE_EXPRESS',
-        key: 'essentiels',
         format: 'image/png',
         extent: [-580000, 506000, 1070000, 6637000],
         minZoom: 6,
       }),
+      /* //BEST Cassini ? clé
+  	'IGN Cassini': new IGN({
+        ...options.ign,
+        layer: 'GEOGRAPHICALGRIDSYSTEMS.CASSINI',
+        key: 'an7nvfzojv5wa96dsga5nk8w', //BEST use owner key
+      }),
+  	*/
     };
   }
 
@@ -64492,12 +65422,6 @@
       }),
       'Google hybrid': new Google({
         subLayers: 's,h',
-      }),
-
-      'IGN Cassini': new IGN({
-        ...options.ign,
-        layer: 'GEOGRAPHICALGRIDSYSTEMS.CASSINI',
-        key: 'an7nvfzojv5wa96dsga5nk8w', //BEST use owner key
       }),
 
       'MapBox elevation': new MapboxElevation({
@@ -66636,7 +67560,7 @@
       poly: '\
 <p><b><u>EDITEUR</u>: Modifier un polygone</b></p>\
 <p>Cliquer sur le bouton &#x2725; (qui bleuit) puis </p>\
-<p>Pointer le curseur sur un polygone</p>\
+<p>Pointer le curseur sur un bord de polygone</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -66646,7 +67570,7 @@
 <p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
       both: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne ou un polygone</b></p>\
-<p>Pointer le curseur sur une ligne ou un polygone</p>\
+<p>Pointer le curseur sur une ligne ou un bord de polygone</p>\
 <p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
@@ -67091,7 +68015,7 @@
     // Get all lines fragments (lines, polylines, polygons, multipolygons, hole polygons, ...)
     // at the same level & split if one point = selectedVertex
     flatCoord(lines, coords, selectedVertex, reverseLine) {
-      if (typeof coords[0][0] === 'object') {
+      if (coords.length && typeof coords[0][0] === 'object') {
         // Multi*
         for (const c1 in coords)
           this.flatCoord(lines, coords[c1], selectedVertex, reverseLine);
@@ -75926,6 +76850,7 @@
     console.info(data.join('\n'));
   }
 
+  //TODO BUG d'où vient map ?
   // Zoom & resolution
   function traceZoom() {
     console.log(
@@ -75953,7 +76878,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 27/05/2024 21:18:01',
+    VERSION: '1.1.2.dev 27/07/2024 15:36:32',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries

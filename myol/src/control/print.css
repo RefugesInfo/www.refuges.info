@@ -5,8 +5,8 @@
 body:has(.myol-print-portrait)>*:not(.myol-print-portrait),
 body:has(.myol-print-landscape)>*:not(.myol-print-landscape),
 /* Hide useless controls */
-.myol-print-portrait .ol-control:not(.ol-zoom):not(.ol-attribution):not(.myol-button-print):not(.myol-button-switcher),
-.myol-print-landscape .ol-control:not(.ol-zoom):not(.ol-attribution):not(.myol-button-print):not(.myol-button-switcher) {
+.myol-print-portrait .ol-control:not(.ol-zoom, .ol-attribution, .myol-button-print, .myol-button-switcher),
+.myol-print-landscape .ol-control:not(.ol-zoom, .ol-attribution, .myol-button-print, .myol-button-switcher) {
   display: none;
 }
 

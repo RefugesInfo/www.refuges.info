@@ -31,7 +31,7 @@ const helpModifFr = {
     poly: '\
 <p><b><u>EDITEUR</u>: Modifier un polygone</b></p>\
 <p>Cliquer sur le bouton &#x2725; (qui bleuit) puis </p>\
-<p>Pointer le curseur sur un polygone</p>\
+<p>Pointer le curseur sur un bord de polygone</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
 <p><u>Supprimer un sommet</u>: Alt+cliquer sur le sommet</p>\
@@ -41,7 +41,7 @@ const helpModifFr = {
 <p><u>Supprimer un polygone</u>: Ctrl+Alt+cliquer sur un segment</p>',
     both: '\
 <p><b><u>EDITEUR</u>: Modifier une ligne ou un polygone</b></p>\
-<p>Pointer le curseur sur une ligne ou un polygone</p>\
+<p>Pointer le curseur sur une ligne ou un bord de polygone</p>\
 <p>Cliquer sur le bouton &#x2725; (qui bleuit) puis</p>\
 <p><u>Déplacer un sommet</u>: Cliquer sur le sommet et le déplacer</p>\
 <p><u>Ajouter un sommet au milieu d\'un segment</u>: cliquer le long du segment puis déplacer</p>\
@@ -486,7 +486,7 @@ export class Editor extends ol.layer.Vector {
   // Get all lines fragments (lines, polylines, polygons, multipolygons, hole polygons, ...)
   // at the same level & split if one point = selectedVertex
   flatCoord(lines, coords, selectedVertex, reverseLine) {
-    if (typeof coords[0][0] === 'object') {
+    if (coords.length && typeof coords[0][0] === 'object') {
       // Multi*
       for (const c1 in coords)
         this.flatCoord(lines, coords[c1], selectedVertex, reverseLine);

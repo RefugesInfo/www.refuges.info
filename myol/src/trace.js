@@ -48,6 +48,7 @@ export async function trace() {
   console.info(data.join('\n'));
 }
 
+//TODO BUG d'où vient map ?
 // Zoom & resolution
 function traceZoom() {
   console.log(

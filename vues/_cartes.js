@@ -176,7 +176,6 @@ function fondsCarte(page, mapKeys) {
       }) : null,
     'IGN V2': new myol.layer.tile.IGN({
       layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-      key: 'essentiels', // La clé pour les couches publiques
       format: 'image/png',
     }),
     'SwissTopo': 'nav,point'.includes(page) ? // Not available on edit pages
@@ -189,7 +188,6 @@ function fondsCarte(page, mapKeys) {
     'Espagne': new myol.layer.tile.IgnES(),
     'Photo IGN': new myol.layer.tile.IGN({
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-      key: 'essentiels',
     }),
     'Photo ArcGIS': new myol.layer.tile.ArcGIS(),
     'Photo Google': 'nav,point'.includes(page) ? // Not available on edit pages
