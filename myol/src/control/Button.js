@@ -88,8 +88,7 @@ export class Button extends ol.control.Control {
 
     // Close other open buttons
     for (const el of document.getElementsByClassName('myol-button'))
-      if (el !== this.element &&
-        (!el.classList.contains('myol-button-keepselect') || evt.type === 'click'))
+      if (el !== this.element && evt.type === 'click')
         el.classList.remove('myol-button-selected');
 
     // Trigger action on the selected button

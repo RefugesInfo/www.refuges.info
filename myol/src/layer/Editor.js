@@ -177,28 +177,28 @@ export class Editor extends ol.layer.Vector {
 
     this.buttons = [
       new Button({ // 0
-        className: 'myol-button-inspect myol-button-keepselect',
+        className: 'myol-button-inspect myol-button-nokeepselect', //TODO refund button hover & touch
         subMenuId: 'myol-edit-help-inspect',
         subMenuHTML: '<p>Inspect</p>',
         subMenuHTMLfr: helpModifFr.inspect,
         buttonAction: (evt, active) => this.changeInteraction(0, evt, active),
       }),
       new Button({ // 1
-        className: 'myol-button-modify myol-button-keepselect',
+        className: 'myol-button-modify myol-button-nokeepselect',
         subMenuId: 'myol-edit-help-modify',
         subMenuHTML: '<p>Modification</p>',
         subMenuHTMLfr: helpModifFr[this.options.editOnly || 'both'],
         buttonAction: (evt, active) => this.changeInteraction(1, evt, active),
       }),
       new Button({ // 2
-        className: 'myol-button-draw-line myol-button-keepselect',
+        className: 'myol-button-draw-line myol-button-nokeepselect',
         subMenuId: 'myol-edit-help-line',
         subMenuHTML: '<p>New line</p>',
         subMenuHTMLfr: helpLineFr,
         buttonAction: (evt, active) => this.changeInteraction(2, evt, active),
       }),
       new Button({ // 3
-        className: 'myol-button-draw-poly myol-button-keepselect',
+        className: 'myol-button-draw-poly myol-button-nokeepselect',
         subMenuId: 'myol-edit-help-poly',
         subMenuHTML: '<p>New polygon</p>',
         subMenuHTMLfr: helpPolyFr,

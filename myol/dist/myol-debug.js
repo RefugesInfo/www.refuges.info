@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 27/07/2024 15:36:32 using npm run build from the src/... sources
+ * Built 27/07/2024 17:29:44 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -64689,8 +64689,7 @@
 
       // Close other open buttons
       for (const el of document.getElementsByClassName('myol-button'))
-        if (el !== this.element &&
-          (!el.classList.contains('myol-button-keepselect') || evt.type === 'click'))
+        if (el !== this.element && evt.type === 'click')
           el.classList.remove('myol-button-selected');
 
       // Trigger action on the selected button
@@ -65263,8 +65262,9 @@
       'Refuges.info': new MRI(),
 
       'IGN TOP25': new IGN({
-        ...options.ign, // Include key
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+        key: options.ign, // Include key
+        ...options.ign, // Include key
       }),
       'IGN V2': new IGN({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
@@ -67032,8 +67032,7 @@
       // Close other opened buttons when hover with a mouse
       this.element.addEventListener('pointerover', () => {
         for (const el of document.getElementsByClassName('myol-button-selected'))
-          if (!el.classList.contains('myol-button-keepselect')) //BEST colorer en bleu le bouton quand sélectionné
-            el.classList.remove('myol-button-selected');
+          el.classList.remove('myol-button-selected');
       });
 
       // Close submenu when hover another button
@@ -67706,28 +67705,28 @@
 
       this.buttons = [
         new Button({ // 0
-          className: 'myol-button-inspect myol-button-keepselect',
+          className: 'myol-button-inspect myol-button-nokeepselect', //TODO refund button hover & touch
           subMenuId: 'myol-edit-help-inspect',
           subMenuHTML: '<p>Inspect</p>',
           subMenuHTMLfr: helpModifFr.inspect,
           buttonAction: (evt, active) => this.changeInteraction(0, evt, active),
         }),
         new Button({ // 1
-          className: 'myol-button-modify myol-button-keepselect',
+          className: 'myol-button-modify myol-button-nokeepselect',
           subMenuId: 'myol-edit-help-modify',
           subMenuHTML: '<p>Modification</p>',
           subMenuHTMLfr: helpModifFr[this.options.editOnly || 'both'],
           buttonAction: (evt, active) => this.changeInteraction(1, evt, active),
         }),
         new Button({ // 2
-          className: 'myol-button-draw-line myol-button-keepselect',
+          className: 'myol-button-draw-line myol-button-nokeepselect',
           subMenuId: 'myol-edit-help-line',
           subMenuHTML: '<p>New line</p>',
           subMenuHTMLfr: helpLineFr,
           buttonAction: (evt, active) => this.changeInteraction(2, evt, active),
         }),
         new Button({ // 3
-          className: 'myol-button-draw-poly myol-button-keepselect',
+          className: 'myol-button-draw-poly myol-button-nokeepselect',
           subMenuId: 'myol-edit-help-poly',
           subMenuHTML: '<p>New polygon</p>',
           subMenuHTMLfr: helpPolyFr,
@@ -76878,7 +76877,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 27/07/2024 15:36:32',
+    VERSION: '1.1.2.dev 27/07/2024 17:29:44',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries

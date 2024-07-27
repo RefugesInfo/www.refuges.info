@@ -70,6 +70,7 @@
 }
 
 .myol-button:not(.myol-button-hover, .myol-button-selected)>div,
+.myol-button-nokeepselect:not(:hover)>div,
 .myol-button>*:empty {
   max-height: 0;
   /* For the beauty of the transition */
