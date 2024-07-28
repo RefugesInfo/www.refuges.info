@@ -4,11 +4,12 @@ CREATE SEQUENCE historique_modifications_id_historique_modifications_seq INCREME
 
 CREATE TABLE "public"."historique_modifications" (
     "id_historique_modifications" integer DEFAULT nextval('historique_modifications_id_historique_modifications_seq') NOT NULL,
-    "id_point" integer DEFAULT '0' NOT NULL,
     "id_user" integer DEFAULT '0' NOT NULL,
     "date_modification" timestamptz NOT NULL,
-    "type_modification" character(50) DEFAULT 'modification' NOT NULL,
-    "raison_modification" text,
+    "commande" text,
+    "nom_table" text,
+    "id_point" integer DEFAULT '0' NOT NULL,
+    "donnees_avant" text,
     "geom_avant" geometry,
     CONSTRAINT "historique_modifications_id_historique_modifications_poi" PRIMARY KEY ("id_historique_modifications")
 ) WITH (oids = false);

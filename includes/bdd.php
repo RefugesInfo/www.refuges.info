@@ -67,5 +67,57 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
     return $query;
 }
 
+/*
+Dom : 2024-07-25 Généralisation de l'historisation
+Sauvegarde dans la table historique_modifications :
+- La commande, l'ID user, date, ...
+- Les données SQL avant la modification (seulement les données modifiées ou supprimées)
+- Le GEOM avant (même s'il n'est pas modifié)
+*/
+function historisation_modification($commande,$table,$nom_index,$valeur_index,$champs_valeurs_apres=[])
+{
+  global $pdo, $user;
+
+  // On récupère les valeurs avant modifs
+  $sql = "SELECT *, ST_AsGeoJSON(geom) AS geojson FROM $table WHERE $nom_index = $valeur_index";
+  $res = $pdo->query($sql);
+  if (!$res)
+    return erreur("Erreur sur la requête SQL","$q en erreur");
+  $champs_valeurs_avant = (array) $res->fetch();
+
+  $modifs_valeurs = [];
+  $keys = array_keys ($commande == 'delete' ? $champs_valeurs_avant : $champs_valeurs_apres);
+  foreach ($keys as $colonne)
+  {
+    $avant = $champs_valeurs_avant[$colonne];
+    $apres = str_replace ("''", "'", trim ($champs_valeurs_apres[$colonne], "'"));
+
+    if ($avant &&
+      $avant != $apres &&
+      $colonne != $nom_index &&
+      $colonne != 'geom' &&
+      $colonne != 'geojson' &&
+      strncmp($colonne, 'date', 4))
+      $modifs_valeurs[$colonne] = $avant;
+  }
+ 
+  $trace = [
+    "id_user" => $user->data['user_id'],
+    "date_modification" => 'NOW()',
+    "commande" => $pdo->quote ($commande),
+    "nom_table" => $pdo->quote ($table),
+    "id_point" => $champs_valeurs_avant[$nom_index],
+    "donnees_avant" => $pdo->quote (json_encode ($modifs_valeurs)),
+    "geom_avant" => "ST_SetSRID(ST_GeomFromGeoJSON('{$champs_valeurs_avant['geojson']}'), 4326)",
+  ];
+
+  $sql = "insert into historique_modifications 
+    (" . implode(',', array_keys($trace)) . ") 
+    values (" . implode(',',$trace) . ")";
+
+  if (!$pdo->exec ($sql))
+    return erreur ("Requête en erreur, impossible d'historiser la modification", $query_log);
+}
+
 // Vu qu'on inclus ce fichier, c'est qu'on a besoin d'une connexion, chaque appelant pourrait la faire, mais c'est plus lourd
 $pdo = new PDO_wri();

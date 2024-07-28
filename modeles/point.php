@@ -539,7 +539,7 @@ function infos_point_forum ($point)
   $q="SELECT *
       FROM phpbb3_posts
       WHERE topic_id = $point->topic_id
-	    AND post_visibility = 1
+        AND post_visibility = 1
       ORDER BY post_time DESC";
   $r = $pdo->query($q);
   if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
@@ -726,6 +726,8 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
         return erreur("Erreur de modification du point : $point_avant->message");
 
+    historisation_modification('update','points','id_point',$point->id_point,$champs_sql); // A faire avant la requette SQL !
+
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
     
     if (!$pdo->exec($query_finale))
@@ -786,6 +788,8 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
 
   // On appelle la fonction du forum qui supprime un topic
   forum_delete_topic ($point->topic_id);
+
+  historisation_modification('delete','points','id_point',$point->id_point); // A faire avant la requette SQL !
 
   $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de toute façon, même si le forum n'avait pas de topic par exemple
   
