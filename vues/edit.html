@@ -54,9 +54,12 @@
 						<p style="color:red">ATTENTION: Ceci va supprimer définitivement <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?> "<?=$vue->polygone->nom_polygone?>"</p>
 						<p style="color:red">Aucune restauration ne sera possible</p>
 					</b>
+					<form method="post" action="<?=$config_wri['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone?>" >
+					<input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone?>" />
 					<input class="bouton-supprimer" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone?>'" />
 					<br>ou<br>
 					<input type="submit" name="annuler" value="Annuler" />
+					</form>
 					<br>&nbsp;
 				<?}?>
 			</label>

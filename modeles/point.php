@@ -14,6 +14,7 @@ ou en modifier
 require_once ("bdd.php");
 require_once ("commentaire.php");
 require_once ("polygone.php");
+require_once ("historique.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("gestion_erreur.php");
 
@@ -566,38 +567,6 @@ function infos_point_forum ($point)
 
   return $result;
 }
-/**********************************************************************************************************************
-sly : 2019-09-09 Historisation du pauvre, on log dans une table un dump de l'objet point avant et après modification
-L'objet $point par défaut dispose de trop de propriété, ne gardons que celles qui peuvent être modifiées par le formulaire, 
-c'est à dire celle de $point_apres qui est issue du formulaire (donc comparaison sioux entre les propriété de $point_apres et $point_avant)
-
-**********************************************************************************************************************/
-function point_historisation_modification($point_avant,$point_apres,$id_utilisateur_qui_modifie=0,$type_operation="modification")
-{
-  global $pdo;
-  
-  $point_avant_simple = new stdClass;
-    if (isset($point_apres)) // la point après modification existe, on stockera d'utile que les propriétés qui ont été passé par le formulaire (moins lourd)
-     foreach ($point_apres as $propriete => $valeur)
-       $point_avant_simple->$propriete=$point_avant->$propriete;
-    else
-      foreach ($point_avant as $propriete => $valeur)
-        if ($propriete!='polygones') // en cas de suppression, la liste des polygones auquel appartenait le point ne nous intéresse pas tant que ça, lourd à l'écran !
-          $point_avant_simple->$propriete=$point_avant->$propriete;
-       
-  $query_log_modification="insert into historique_modifications_points 
-  (id_point,id_user,date_modification,avant,apres,type_modification) 
-  values 
-  ($point_avant->id_point,
-  $id_utilisateur_qui_modifie,
-  NOW(),
-  ".$pdo->quote(serialize($point_avant_simple)).",
-  ".$pdo->quote(serialize($point_apres)).",
-  '$type_operation')";
-  
-  if (!$pdo->exec($query_log_modification))
-      return erreur("Requête en erreur, impossible d'historiser la modification",$query_log_modification);
-}
 
 /********************************************************
 Fonction qui permet, en fonction de l'object $point passé en paramêtre la mise à jour OU la création si :
@@ -726,7 +695,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
         return erreur("Erreur de modification du point : $point_avant->message");
 
-    historisation_modification('update','points','id_point',$point->id_point,$champs_sql); // A faire avant la requette SQL !
+    //historisation_modification('update','points','id_point',$point->id_point,$champs_sql); // A faire avant la requette SQL !
 
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
     
@@ -789,7 +758,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
   // On appelle la fonction du forum qui supprime un topic
   forum_delete_topic ($point->topic_id);
 
-  historisation_modification('delete','points','id_point',$point->id_point); // A faire avant la requette SQL !
+  //historisation_modification('delete','points','id_point',$point->id_point); // A faire avant la requette SQL !
 
   $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de toute façon, même si le forum n'avait pas de topic par exemple
   

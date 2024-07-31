@@ -9,6 +9,7 @@ gestion : modification/suppression/création
 
 require_once ("bdd.php");
 require_once ('mise_en_forme_texte.php');
+require_once ("historique.php");
 
 /***********************************************************************************
 Cette fonction permet d'aller chercher un ou plusieurs polygones
@@ -266,7 +267,7 @@ function edit_info_polygone()
             "nom_polygone" => $nom_polygone,
             "id_polygone_type" => $_POST['id_polygone_type'],
 		];
-        historisation_modification('update','polygones','id_polygone',$_POST['id_polygone'],$champs_sql); // A faire avant la requette SQL !
+        //historisation_modification('update','polygones','id_polygone',$_POST['id_polygone'],$champs_sql); // A faire avant la requette SQL !
 
         $query_update = "UPDATE polygones SET "
       ."article_partitif = '$article_partitif', "
@@ -316,7 +317,7 @@ function edit_info_polygone()
 
     if ($_POST['supprimer'])
     {
-        historisation_modification('delete','polygones','id_polygone',$_POST['id_polygone']); // A faire avant la requette SQL !
+        //historisation_modification('delete','polygones','id_polygone',$_POST['id_polygone']); // A faire avant la requette SQL !
 
         $query_delate = "DELETE FROM polygones WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_delate);
