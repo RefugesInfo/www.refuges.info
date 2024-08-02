@@ -46,7 +46,7 @@
 					<input type="text" name="auteur_commentaire" value="<?=protege($commentaire->auteur_commentaire)?>" class="input_en_ligne" />
 				</label>
 				<br><br>
-			<?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur (lui faire dire ce qu'il n'a pas dit), mais ça se discute ? ?>
+			<?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur, seuls les modérateurs ont ce droit ?>
 			ou<br>
 			Auteur authentifié :
 			<select name='id_createur_commentaire'>
