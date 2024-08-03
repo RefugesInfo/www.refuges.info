@@ -187,7 +187,10 @@ function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False
   if (count($poly)!=1)
     return erreur("Le polygone d'id $id_polygone n'existe pas dans notre base");
 
-  $poly[0]->extent = [$poly[0]->ouest, $poly[0]->sud, $poly[0]->est, $poly[0]->nord];
+  // Protection contre les polygones vides
+  if ($poly[0]->ouest && $poly[0]->sud && $poly[0]->est && $poly[0]->nord)
+    $poly[0]->extent = [$poly[0]->ouest, $poly[0]->sud, $poly[0]->est, $poly[0]->nord];
+
   return $poly[0];
 }
 
