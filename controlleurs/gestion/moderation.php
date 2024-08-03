@@ -19,7 +19,9 @@ switch ($_REQUEST['type'])
 
     $commentaire->texte=stripslashes($_REQUEST['texte']);
     $commentaire->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire']);
-    $commentaire->id_createur_commentaire=stripslashes($_REQUEST['id_createur_commentaire']);
+    
+    if (est_moderateur()) // Seul les modérateurs ont le droit de changer le user d'un commentaire
+      $commentaire->id_createur_commentaire=stripslashes($_REQUEST['id_createur_commentaire']);
       
     $commentaire->rotation=$_REQUEST['rotation'];
     
