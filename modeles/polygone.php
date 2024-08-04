@@ -56,7 +56,7 @@ function infos_polygones($conditions)
 {
     global $config_wri,$pdo;
     $conditions_sql=$champs_en_plus=$table_en_plus=$limite="";
-    
+
     // Conditions sur les ids des polygones
     if (!empty($conditions->ids_polygones))
         if (!verif_multiples_entiers($conditions->ids_polygones))
@@ -127,6 +127,8 @@ function infos_polygones($conditions)
                  st_ymin(polygones.geom) AS sud,
                  st_ymax(polygones.geom) AS nord
                  ";
+      if (!empty($conditions->avec_geom))
+        $champs_en_plus.=",geom";
 
   $query="SELECT polygone_type.*,".$config_wri['champs_table_polygones']."
                  $champs_en_plus
@@ -166,24 +168,27 @@ stdClass Object
 )
 Si $avec_geometrie vaut gml/kml/svg/text/...  (voir fonction avant) la géométrie est retournée. Ce n'est pas systématique pour des raisons de performances
 ************************************************************************************/
-function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False)
+function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False,$avec_geom=False)
 {
   if (!est_entier_positif($id_polygone)) // Inutile d'aller plus loin
     return erreur("le paramètre donné pour l' id unique de polygone est invalide : $id_polygone");
 
   $conditions = new stdClass;
   $conditions->ids_polygones=$id_polygone;
-  
+
   if ($avec_geometrie)
     $conditions->avec_geometrie=$avec_geometrie;
-    
+
   if ($avec_enveloppe)
     $conditions->avec_enveloppe=True;
-    
+
+  if ($avec_geom)
+    $conditions->avec_geom=True;
+
   $poly=infos_polygones($conditions);
   if (!empty($poly->erreur))
       return erreur($poly->message);
-  
+
   if (count($poly)!=1)
     return erreur("Le polygone d'id $id_polygone n'existe pas dans notre base");
 
@@ -222,7 +227,7 @@ function lien_polygone($polygone,$local=True)
       $schema="https";
   else
       $schema="http";
-  
+
   if (!isset($polygone->type_polygone))
     $type_polygone="massif";
   else
@@ -265,12 +270,16 @@ function edit_info_polygone()
             exit;
         }
 
-        $champs_sql = [
-            "article_partitif" => $article_partitif,
-            "nom_polygone" => $nom_polygone,
-            "id_polygone_type" => $_POST['id_polygone_type'],
-		];
-        //historisation_modification('update','polygones','id_polygone',$_POST['id_polygone'],$champs_sql); // A faire avant la requette SQL !
+        // Historisation de la modification dans la table des historique des points
+        $polygone_avant = infos_polygone($_POST['id_polygone'],false,false,true); // Avec geom
+
+        $polygone_apres = new stdClass;
+        $polygone_apres->nom_polygone = $nom_polygone;
+        $polygone_apres->id_polygone = $_POST['id_polygone'];
+        $polygone_apres->article_partitif = $article_partitif;
+        $polygone_apres->id_polygone_type = $_POST['id_polygone_type'];
+
+        historisation_modification($polygone_avant,$polygone_apres,'modification polygone');
 
         $query_update = "UPDATE polygones SET "
       ."article_partitif = '$article_partitif', "
@@ -280,7 +289,7 @@ function edit_info_polygone()
       ."WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_update);
         if (!$res)
-            erreur('Requête impossible',$query_update);
+          erreur('Requête impossible',$query_update);
     }
 
   // Création
@@ -314,13 +323,25 @@ function edit_info_polygone()
             else
                 $new_poly=$res->fetch();
         }
+
+        // Historisation de la création dans la table des historique des points
+        $polygone_apres = new stdClass;
+        $polygone_apres->nom_polygone = $nom_polygone;
+        $polygone_apres->id_polygone = $new_poly->id_polygone;
+        $polygone_apres->article_partitif = $article_partitif;
+        $polygone_apres->id_polygone_type = $_POST['id_polygone_type'];
+
+        historisation_modification(null,$polygone_apres,'création polygone');
+
         // Et donc, on va voir ce polygone
         return $new_poly->id_polygone;
     }
 
     if ($_POST['supprimer'])
     {
-        //historisation_modification('delete','polygones','id_polygone',$_POST['id_polygone']); // A faire avant la requette SQL !
+        // Historisation de la suppression dans la table des historique des points
+        $polygone_avant = infos_polygone($_POST['id_polygone'],false,false,true); // Avec geom
+        historisation_modification($polygone_avant,null,'suppression polygone');
 
         $query_delate = "DELETE FROM polygones WHERE id_polygone = {$_POST['id_polygone']}";
         $res = $pdo->query($query_delate);

@@ -11,23 +11,42 @@ table {
 th {
   height: 30px;
 }
+
+th:last-child {
+  text-align: left;
+}
 </style>
 <div class="contenu">
-	<p>Liste des dernières modifications survenues sur les points de la base</p>
-<table>
-  <tr>
-    <th>Info modif</th>
-    <th>avant</th>
-    <th>après</th>
-  </tr>
-  <?php if (isset($vue->modifications_points)) foreach ($vue->modifications_points as $modification) { ?>
-  <tr>
-    <td><?=$modification->type_modification?> du/de là <br><b><?=$modification->point_avant->nom?></b><br>du <?=$modification->date?><br>par <?=$modification->moderateur?></td>
-    <td><?=nl2br(protege(print_r($modification->point_avant,true)))?></td>
-    <td><?=nl2br(protege(print_r($modification->point_apres,true)))?></td>
-  </tr>
+  <p>Liste des dernières modifications survenues sur les points de la base</p>
+  <table>
+    <tr>
+      <th>Info modif</th>
+      <th>avant</th>
+      <th>après</th>
+      <th>GEOM avant</th>
+    </tr>
+    <?php
+      if (isset($vue->modifications_points))
+        foreach ($vue->modifications_points as $modification) {
+          $nom = $modification->point_avant->nom ?: $modification->point_avant->nom_polygone ?:
+            $modification->point_apres->nom ?: $modification->point_apres->nom_polygone;
 
-  <?}?>
-</table>
-
+          $point_avant = $modification->point_avant;
+          foreach ($point_avant as $propriete => $valeur)
+            if (!$valeur)
+              unset($point_avant->$propriete);
+          $point_apres = $modification->point_apres;
+          $geom = $point_avant->geom;
+          unset ($point_avant->geom);
+    ?>
+    <tr>
+      <td><?=$modification->type_modification?> du/de là <br>
+        <b><?=$nom?></b><br>du <?=$modification->date?><br>
+        par <?=$modification->moderateur?></td>
+      <td><?=nl2br(protege(print_r($point_avant,true)))?></td>
+      <td><?=nl2br(protege(print_r($point_apres,true)))?></td>
+      <td><?=$geom?></td>
+    </tr>
+    <?}?>
+  </table>
 </div>

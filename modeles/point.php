@@ -53,10 +53,10 @@ $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'
 $conditions->precision_gps : liste des qualités GPS souhaitées, 1 ou 2,4,5, par défaut : toutes
 $conditions->pas_les_points_caches : TRUE : on ne les veut pas, FALSE on les veut quand même, par défaut : FALSE
 $conditions->chauffage : soit "chauffage" pour demander poële ou cheminée ou "poele" ou "cheminee"
-$conditions->places_matelas_minimum : (int) veut dire avec places_matelas >= places_matelas_minimum 
+$conditions->places_matelas_minimum : (int) veut dire avec places_matelas >= places_matelas_minimum
 
 $conditions->trinaire->couvertures : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
-$conditions->trinaire->eau_a_proximite : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas) 
+$conditions->trinaire->eau_a_proximite : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
 $conditions->trinaire->bois_a_proximite : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
 $conditions->trinaire->latrines : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
 $conditions->trinaire->manque_un_mur : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
@@ -151,7 +151,7 @@ function infos_points($conditions)
                           ) As liste_polys";
                         //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
 
-    $champs_polygones.=",liste_polys.liste_polygones";         
+    $champs_polygones.=",liste_polys.liste_polygones";
     $conditions_sql .= "\n\tAND liste_polys.id_point=points.id_point";
   }
 
@@ -173,7 +173,7 @@ function infos_points($conditions)
       return erreur("Le paramètre donné pour les ids des types de points n'est pas valide, reçu : $conditions->ids_types_point");
     else
       $conditions_sql .="\n\tAND points.id_point_type IN ($conditions->ids_types_point) \n";
-      
+
   if( !empty($conditions->places_minimum) )
     if( est_entier_positif($conditions->places_minimum) )
         $conditions_sql .= "\n\tAND points.places >= $conditions->places_minimum";
@@ -243,7 +243,7 @@ function infos_points($conditions)
     if ($conditions->modele=='uniquement')
       $conditions_sql.="\n\tAND modele=1";
   }
-    else 
+    else
       $conditions_sql.="\n\tAND modele!=1";
 
   //prise en compte des conditions trinaires couverture, eau à proximité, etc. (1, 0 ou NULL = ne sait pas)
@@ -267,7 +267,7 @@ function infos_points($conditions)
       case 'poele':$conditions_sql.="\n\tAND points.poele IS TRUE ";break;
     }
   }
-    
+
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
   if (!empty($conditions->ouvert))
   {
@@ -278,7 +278,7 @@ function infos_points($conditions)
   }
   if (!empty($conditions->topic_id))
     $conditions_sql.="\n\tAND topic_id =".$conditions->topic_id;
- 
+
   if (!empty($conditions->ordre))
       $ordre="\nORDER BY $conditions->ordre";
 
@@ -287,10 +287,10 @@ function infos_points($conditions)
       $conditions_sql.="\n\tAND points.conditions_utilisation = '$conditions->conditions_utilisation'";
     else
       return erreur("On nous a demandé les points avec '$conditions->conditions_utilisation' ce qui est inexistant ou signe d'un bug");
-      
+
   // CLUSTERISATION AU NIVEAU DU SERVEUR
   if (!empty($conditions->cluster))
-    if ( $conditions->cluster && 
+    if ( $conditions->cluster &&
       !$tables_en_plus ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requette compliquée :)
     {
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
@@ -344,7 +344,7 @@ SELECT points.*,
          $select_distance
          $champs_polygones
          $champs_en_plus
-  FROM 
+  FROM
          type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id $tables_en_plus
   WHERE
          points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
@@ -353,7 +353,7 @@ SELECT points.*,
   $ordre
   $limite
   ";
-  
+
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
@@ -380,7 +380,7 @@ SELECT points.*,
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
     if (!empty($point->id_createur))
       $point->nom_createur=html_entity_decode($point->nom_createur);
-    
+
     // Ici, petite particularité sur les points cachés, par défaut, on ne veut pas les renvoyer, mais on veut quand
     // même, si un seul a été demandé, pouvoir dire qu'il est caché (du public), donc on va le chercher en base mais on renvoi une erreur s'il est en caché
     // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
@@ -422,12 +422,12 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
   if (!est_entier_positif($id_point))
     return erreur("Le n°du point demandé est invalide, reçu : $id_point");
 
-  $conditions = new stdClass();
+  $conditions = new stdClass;
   $conditions->ids_points=$id_point;
-  
+
   if ($meme_si_modele)
     $conditions->modele='avec';
-    
+
   $conditions->avec_infos_massif=True;
   if ($meme_si_cache)
     $conditions->avec_points_caches=True;
@@ -437,10 +437,10 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
   // Requête impossible à executer
   if (!empty($points->erreur))
     return erreur($points->message);
-    
+
   if (count($points)==0)
     return erreur("Le numéro de point demandé $id_point est introuvable dans notre base");
-    
+
   if (count($points)>1)
     return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu...");
 
@@ -458,7 +458,7 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
         FROM polygones,polygone_type,points
         WHERE
         polygones.id_polygone_type=polygone_type.id_polygone_type
-        AND ST_Within(points.geom, polygones.geom)    
+        AND ST_Within(points.geom, polygones.geom)
         AND points.id_point=$point->id_point
         ORDER BY polygone_type.ordre_taille DESC";
 
@@ -486,7 +486,7 @@ function lien_point($point,$lien_local=false)
       $schema="https";
   else
       $schema="http";
-  
+
   if ($lien_local)
       $url_complete=$config_wri['sous_dossier_installation'];
   else
@@ -585,9 +585,9 @@ Si une erreur grave survient, rien n'est fait et un retour par la fonction erreu
 ********************************************************/
 
 function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
-{  
+{
   global $config_wri,$pdo;
-  
+
   // désolé, le nom du point ne peut être vide, unset ou juste des espaces
   if ( empty($point->nom) or empty(trim($point->nom)))
     return erreur("Le nom ne peut être vide");
@@ -695,13 +695,11 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
         return erreur("Erreur de modification du point : $point_avant->message");
 
-    //historisation_modification('update','points','id_point',$point->id_point,$champs_sql); // A faire avant la requette SQL !
-
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
-    
+
     if (!$pdo->exec($query_finale))
         return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);
-    
+
     /********* Renommage du titre "topic point" dans le forum refuges si le nom de la fiche change, sauf s'il s'agit d'un modèle, qui n'a pas de sujet dans le forum, en réalité, on pourrait uniformiser et leur laisser un forum, ça ne poserait aucun problème, mais des modérateurs s'en sont trouvé étonné et on voulu bien faire, et on supprimé les forum en question, créant finalement un bug, alors, en 2020 j'ai décidé de ne plus avoir de forum pour les modèles *************/
     if (!$point_avant->modele and $point_avant->nom!=$point->nom)
       forum_submit_post ([
@@ -711,7 +709,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
           'topic_poster' => $id_utilisateur_qui_modifie, // En cas de modification, cet id servira dans le log de modération pour dire qui a modifié la fiche, ça rassure Pascal 74
           'topic_title' => mb_ucfirst($point->nom),
       ]);
-     point_historisation_modification($point_avant,$point,$id_utilisateur_qui_modifie,'modification');
+    historisation_modification($point_avant,$point,'modification point');
   }
   else  // INSERT
   {
@@ -730,6 +728,8 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
         return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
+
+    historisation_modification(null,$point,'création point');
   }
 
   // on retourne l'id du point (surtout utile si création)
@@ -747,7 +747,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
   // toujours présent, sinon, on ne tente rien
   $point_test=infos_point($point->id_point,True);
   if (!empty($point_test->erreur))
-      return erreur($point_test->message);
+    return erreur($point_test->message);
 
   $conditions->ids_points=$point->id_point;
   $commentaires_a_supprimer=infos_commentaires($conditions);
@@ -758,11 +758,10 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
   // On appelle la fonction du forum qui supprime un topic
   forum_delete_topic ($point->topic_id);
 
-  //historisation_modification('delete','points','id_point',$point->id_point); // A faire avant la requette SQL !
+  // supp le point de toute façon, même si le forum n'avait pas de topic par exemple
+  $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point");
 
-  $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point"); // supp le point de toute façon, même si le forum n'avait pas de topic par exemple
-  
-  point_historisation_modification($point_test,Null,$id_utilisateur_qui_supprime,'suppression');
+  historisation_modification($point_test,null,'suppression point');
 
   return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés");
 }
@@ -771,7 +770,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
 Cette fonction retourne le nom de l'icone (sans le chemin ni l'extention)
 de l'icone à utiliser sur une carte de refuges.info
 
-Attention !! L'ordre des if est important, une cabane non utilisable  même si elle a un moyen de chauffage ben il faut bien 
+Attention !! L'ordre des if est important, une cabane non utilisable  même si elle a un moyen de chauffage ben il faut bien
 indiquer d'abord qu'elle est inutilisable
 La nouvelle syntaxe du nom peut être visible dans /images/icones/index.php elle permet d'être dynamique pour générer un grand nombre d'icônes semblables
 
@@ -780,15 +779,15 @@ function choix_icone($point)
 {
   global $config_wri;
   $fermee_detuite=($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit" or $point->conditions_utilisation=="tari");
-  
+
   // conversion de nos types de points vers une icône de base
   $nom_icone=$config_wri['correspondance_type_icone'][replace_url($point->nom_type)] ?? '';
-  
+
   // Une icone de base spéciale pour les cabanes dont il manque un mur
   if ( $point->manque_un_mur and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
     $nom_icone="cabane_manqueunmur";
 
-   /* options qui s'ajoutent */  
+   /* options qui s'ajoutent */
   if ( $point->id_point_type==$config_wri['id_cabane_non_gardee'] and $point->places==0 )
     $nom_icone.="_a48";
 
@@ -806,7 +805,7 @@ function choix_icone($point)
   if ( $fermee_detuite )
     $nom_icone.="_x";
 
-      
+
   return $nom_icone;
 }
 // FIXME: on devrait pouvoir s'en passer et utiliser la fonction ci-avant
