@@ -21,9 +21,8 @@ th:last-child {
   <table>
     <tr>
       <th>Info modif</th>
-      <th>avant</th>
-      <th>après</th>
-      <th>GEOM avant</th>
+      <th>Avant</th>
+      <th>Après</th>
     </tr>
     <?php
       if (isset($vue->modifications_points))
@@ -36,16 +35,15 @@ th:last-child {
             if (!$valeur)
               unset($point_avant->$propriete);
           $point_apres = $modification->point_apres;
-          $geom = $point_avant->geom;
           unset ($point_avant->geom);
+		  $ppambules = ["stdClass Object\n(\n","\n)\n",")\n"];
     ?>
     <tr>
-      <td><?=$modification->type_modification?> du/de là <br>
+      <td><?=ucfirst($modification->type_modification)?> du/de là <br>
         <b><?=$nom?></b><br>du <?=$modification->date?><br>
         par <?=$modification->moderateur?></td>
-      <td><?=nl2br(protege(print_r($point_avant,true)))?></td>
-      <td><?=nl2br(protege(print_r($point_apres,true)))?></td>
-      <td><?=$geom?></td>
+      <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_avant,true))))?></td>
+      <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_apres,true))))?></td>
     </tr>
     <?}?>
   </table>
