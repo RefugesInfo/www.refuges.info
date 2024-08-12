@@ -251,6 +251,15 @@ class MyServerClusterVectorLayer extends MyBrowserClusterVectorLayer {
     return super.setMapInternal(map);
   }
 
+  // Propagate the setVisible to the serverClusterLayer
+  //TODO check why reload doesn't do the job
+  setVisible(visible) {
+    if (this.serverClusterLayer)
+      this.serverClusterLayer.setVisible(visible);
+
+    return super.setVisible(visible);
+  }
+
   // Propagate the reload to the serverClusterLayer
   reload(visible) {
     if (this.serverClusterLayer)

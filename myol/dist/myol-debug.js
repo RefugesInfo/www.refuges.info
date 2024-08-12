@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 27/07/2024 17:29:44 using npm run build from the src/... sources
+ * Built 11/08/2024 17:54:19 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -76319,6 +76319,15 @@
       return super.setMapInternal(map);
     }
 
+    // Propagate the setVisible to the serverClusterLayer
+    //TODO check why reload doesn't do the job
+    setVisible(visible) {
+      if (this.serverClusterLayer)
+        this.serverClusterLayer.setVisible(visible);
+
+      return super.setVisible(visible);
+    }
+
     // Propagate the reload to the serverClusterLayer
     reload(visible) {
       if (this.serverClusterLayer)
@@ -76877,7 +76886,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 27/07/2024 17:29:44',
+    VERSION: '1.1.2.dev 11/08/2024 17:54:19',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries

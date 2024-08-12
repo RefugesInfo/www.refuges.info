@@ -38,7 +38,7 @@ function couchePointsWRI(options) {
       return {
         _path: selectionMassif.length ? 'api/massif' : 'api/bbox',
         massif: selectionMassif,
-        'type_points': opt.selector.getSelection(),
+        'type_points': opt.selection || opt.selector.getSelection(),
         'nb_points': 'all',
         cluster: resolution > opt.serverClusterMinResolution ? 0.1 : null, // For server cluster layer
       };
@@ -237,22 +237,75 @@ function basicMapOptions(options) {
 // Carte de la page d'accueil
 /* eslint-disable-next-line no-unused-vars */
 function mapIndex(options) {
+  const pointsLayer = couchePointsWRI({ // Les points
+      host: options.host,
+      selection: '7,9,10',
+    }),
+    massifsLayer = coucheMassifsColores({ // Les massifs
+      host: options.host,
+    });
+
+  const boutonSelectPoints = new myol.control.Button({
+      className: 'accueil-switcher',
+      label: '&#127968;',
+      buttonAction: selectIndexLayer,
+    }),
+    boutonSelectMassifs = new myol.control.Button({
+      className: 'accueil-switcher',
+      label: '&#127760;',
+      buttonAction: selectIndexLayer,
+    });
+
+  boutonSelectPoints.element.title = 'Afficher les points';
+  boutonSelectMassifs.element.title = 'Afficher les massifs"';
+
+  // Initialiser au chargement de la page
+  if (localStorage.wriaccueilmassifs === 'true') {
+    boutonSelectMassifs.element.classList.add('myol-button-selected');
+    // Pour les massifs, on prend un peu de vue
+    localStorage.myolZoom = Math.min(localStorage.myolZoom, 7);
+  } else
+    boutonSelectPoints.element.classList.add('myol-button-selected');
+
+  function selectIndexLayer(evt) {
+    if (evt && evt.type === 'click') {
+      if (this === boutonSelectPoints) {
+        boutonSelectPoints.element.classList.add('myol-button-selected');
+        boutonSelectMassifs.element.classList.remove('myol-button-selected');
+      } else {
+        boutonSelectPoints.element.classList.remove('myol-button-selected');
+        boutonSelectMassifs.element.classList.add('myol-button-selected');
+      }
+    }
+
+    const pointsSelected = boutonSelectPoints.element.classList.contains('myol-button-selected');
+
+    pointsLayer.setVisible(pointsSelected);
+    massifsLayer.setVisible(!pointsSelected);
+    localStorage.wriaccueilmassifs = !pointsSelected;
+  }
+  selectIndexLayer(); // On appelle une fois au chargement de la page
+
   const map = new ol.Map({
     ...basicMapOptions(options),
 
     controls: [
       new ol.control.Zoom(),
       new ol.control.FullScreen(),
+      boutonSelectMassifs,
+      boutonSelectPoints,
       new ol.control.Attribution({ // Du fond de carte
         collapsed: false,
+      }),
+      new myol.control.Permalink({
+        init: true, // Dernière position de carte connue
       }),
     ],
 
     layers: [
       new myol.layer.tile.MRI(), // Fond de carte
-      coucheMassifsColores({ // Les massifs
-        host: options.host,
-      }),
+      massifsLayer,
+      pointsLayer,
       new myol.layer.Hover(), // Gère le survol du curseur
     ],
   });

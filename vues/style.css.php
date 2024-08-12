@@ -531,7 +531,7 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 }
 
 /* On enlève les icones pour les fenêtres moyenes */
-@media screen and (min-width: 500px) and (max-width: 650px) {
+@media screen and (min-width: 450px) and (max-width: 650px) {
 	.menu-bouton span:first-child {
 		display: none;
 	}
@@ -574,7 +574,6 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 		display: flex;
 		flex-direction: row-reverse;
 		justify-content: space-between;
-		margin-bottom: 5px;
 		background: #<?=$couleur_lien?>;
 	}
 
@@ -766,12 +765,16 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
   width: 750px;
   height: 600px;
 }
-#carte-accueil .ol-switch-layer {
-  display: none;
+.accueil-switcher {
+  float: right !important;
+  background: white !important;
+}
+.accueil-switcher:not(.myol-button-selected) button {
+  opacity: 0.5;
 }
 @media screen and (max-width: 750px) {
   #carte-accueil {
-    width: calc(100vw - 6px);
+    width: calc(100vw - 22px);
     height: 90vw;
   }
 }
