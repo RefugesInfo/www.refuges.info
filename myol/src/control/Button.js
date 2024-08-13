@@ -22,7 +22,7 @@ export class Button extends ol.control.Control {
       // subMenuId : 'id', // Html id-fr or Id containing the scrolling menu
       // subMenuHTMLfr: '', // html code of the scrolling menu in locale lang
       subMenuHTML: '', // html code of the scrolling menu
-
+      // title: '', // html title for button hovering by a mouse
       // buttonAction() {}, // (evt, active) To run when an <input> ot <a> of the subMenu is clicked / hovered, ...
       // subMenuAction() {}, // (evt) To run when the button is clicked / hovered, ...
 
@@ -45,6 +45,8 @@ export class Button extends ol.control.Control {
     this.buttonEl = document.createElement('button');
     this.buttonEl.setAttribute('type', 'button');
     this.buttonEl.innerHTML = options.label;
+    if (options.title)
+      this.buttonEl.setAttribute('title', options.title);
 
     // Add submenu below the button
     this.subMenuEl =

@@ -249,22 +249,19 @@ function mapIndex(options) {
       className: 'accueil-switcher',
       label: '&#127968;',
       buttonAction: selectIndexLayer,
+      title: 'Afficher les points',
     }),
     boutonSelectMassifs = new myol.control.Button({
       className: 'accueil-switcher',
       label: '&#127760;',
       buttonAction: selectIndexLayer,
+      title: 'Afficher les massifs',
     });
 
-  boutonSelectPoints.element.title = 'Afficher les points';
-  boutonSelectMassifs.element.title = 'Afficher les massifs"';
-
   // Initialiser au chargement de la page
-  if (localStorage.wriaccueilmassifs === 'true') {
+  if (localStorage.wriaccueilmassifs === 'true')
     boutonSelectMassifs.element.classList.add('myol-button-selected');
-    // Pour les massifs, on prend un peu de vue
-    localStorage.myolZoom = Math.min(localStorage.myolZoom, 7);
-  } else
+  else
     boutonSelectPoints.element.classList.add('myol-button-selected');
 
   function selectIndexLayer(evt) {
@@ -296,9 +293,6 @@ function mapIndex(options) {
       boutonSelectPoints,
       new ol.control.Attribution({ // Du fond de carte
         collapsed: false,
-      }),
-      new myol.control.Permalink({
-        init: true, // Dernière position de carte connue
       }),
     ],
 

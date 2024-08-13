@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 11/08/2024 17:54:19 using npm run build from the src/... sources
+ * Built 13/08/2024 11:31:24 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -64623,7 +64623,7 @@
         // subMenuId : 'id', // Html id-fr or Id containing the scrolling menu
         // subMenuHTMLfr: '', // html code of the scrolling menu in locale lang
         subMenuHTML: '', // html code of the scrolling menu
-
+        // title: '', // html title for button hovering by a mouse
         // buttonAction() {}, // (evt, active) To run when an <input> ot <a> of the subMenu is clicked / hovered, ...
         // subMenuAction() {}, // (evt) To run when the button is clicked / hovered, ...
 
@@ -64646,6 +64646,8 @@
       this.buttonEl = document.createElement('button');
       this.buttonEl.setAttribute('type', 'button');
       this.buttonEl.innerHTML = options.label;
+      if (options.title)
+        this.buttonEl.setAttribute('title', options.title);
 
       // Add submenu below the button
       this.subMenuEl =
@@ -76886,7 +76888,7 @@
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 11/08/2024 17:54:19',
+    VERSION: '1.1.2.dev 13/08/2024 11:31:24',
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries
