@@ -131,7 +131,7 @@ $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réser
 // à la main dans la config : ( ce sont les ids des refuges gardés, non gardés et gîtes)
 $config_wri['tout_type_refuge']=array(7,9,10);
 
-$config_wri['bbox_page_accueil']='4,43.5,8.5,47';
+$config_wri['bbox_page_accueil']='-1.75,41.4,11,49.2';
 
 // C'est clair que c'est bizarre de mettre ces ids en dur, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'interroger le bon id directement
 $config_wri['id_cabane_non_gardee']=7; 

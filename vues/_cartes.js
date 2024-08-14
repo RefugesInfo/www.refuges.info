@@ -284,7 +284,11 @@ function mapIndex(options) {
   selectIndexLayer(); // On appelle une fois au chargement de la page
 
   const map = new ol.Map({
-    ...basicMapOptions(options),
+    target: options.target,
+
+    view: new ol.View({
+      enableRotation: false,
+    }),
 
     controls: [
       new ol.control.Zoom(),
