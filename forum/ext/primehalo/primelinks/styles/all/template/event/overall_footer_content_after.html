@@ -1,0 +1,26 @@
+{% if PRIME_LINK_PAGE %}
+<script>
+(function() {
+	{% if PRIME_LINK_PAGE == 'memberlist' %}
+	var links = document.querySelectorAll('table#memberlist td.info a[href]');
+	{% elseif PRIME_LINK_PAGE == 'member_profile' %}
+	var links = document.querySelectorAll('dl.details dd a[href]');
+	{% elseif PRIME_LINK_PAGE == 'member_post' %}
+	var links = document.querySelectorAll('dl.postprofile dd.profile-contact a[href]');
+	{% elseif PRIME_LINK_PAGE == 'forumlist' %}
+	var links = document.querySelectorAll('dl.forum_link dt a.forumtitle[href]');
+	{% else %}
+	var links = [];
+	{% endif %}
+	for (var i = 0; i < links.length; i++) {
+		var href = links[i].getAttribute('href');
+		if (/^https?:\/\/.+/.test(href)) {
+			{% if PRIME_LINK_TARGET %}links[i].target = '{{ PRIME_LINK_TARGET|escape("js") }}';{% endif %}
+			{% if PRIME_LINK_REL %}links[i].rel = '{{ PRIME_LINK_REL|escape("js") }}';{% endif %}
+			{% if PRIME_LINK_CLASS and PRIME_LINK_PAGE != 'member_post' %}links[i].className = '{{ PRIME_LINK_CLASS|escape("js") }}';{% endif %}
+			{% if PRIME_LINK_PREFIX %}links[i].href = '{{ PRIME_LINK_PREFIX|escape("js") }}' + href;{% endif %}
+		}
+	}
+})();
+</script>
+{% endif %}

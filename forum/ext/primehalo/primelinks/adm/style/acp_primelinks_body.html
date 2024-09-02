@@ -1,0 +1,139 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_PRIMELINKS_SETTINGS}</h1>
+
+<form id="acp_board" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_ACP_PRIMELINKS_BASIC_SETTINGS}</legend>
+		<dl>
+			<dt><label for="primelinks_enable_general">{L_ACP_PRIMELINKS_ENABLE_GENERAL}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_ENABLE_GENERAL_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_enable_general" value="1" <!-- IF PRIMELINKS_ENABLE_GENERAL -->checked="checked" <!-- ENDIF -->id="primelinks_enable_general" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_enable_general" value="0" <!-- IF not PRIMELINKS_ENABLE_GENERAL -->checked="checked" <!-- ENDIF -->/> {L_NO}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_enable_style">{L_ACP_PRIMELINKS_ENABLE_STYLE}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_ENABLE_STYLE_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_enable_style" value="1" <!-- IF PRIMELINKS_ENABLE_STYLE -->checked="checked" <!-- ENDIF -->id="primelinks_enable_style" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_enable_style" value="0" <!-- IF not PRIMELINKS_ENABLE_STYLE -->checked="checked" <!-- ENDIF -->/> {L_NO}</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{L_ACP_PRIMELINKS_INTERNAL_LINKS}</legend>
+		<dl>
+			<dt><label for="primelinks_inlink_guest_hide">{L_ACP_PRIMELINKS_LINK_GUEST_HIDE}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_GUEST_HIDE_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_inlink_guest_hide" value="1" <!-- IF PRIMELINKS_INLINK_GUEST_HIDE == 1 -->checked="checked" <!-- ENDIF -->id="primelinks_inlink_guest_hide" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_inlink_guest_hide" value="0" <!-- IF PRIMELINKS_INLINK_GUEST_HIDE == 0 -->checked="checked" <!-- ENDIF -->/> {L_NO} &nbsp;
+				<input type="radio" class="radio" name="primelinks_inlink_guest_hide" value="2" <!-- IF PRIMELINKS_INLINK_GUEST_HIDE == 2 -->checked="checked" <!-- ENDIF -->/> {L_ACP_PRIMELINKS_LINK_GUEST_HIDE_REPLACE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_inlink_rel">{L_ACP_PRIMELINKS_LINK_REL}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_REL_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_inlink_rel" value="{PRIMELINKS_INLINK_REL}" id="primelinks_inlink_rel" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_INLINK_REL_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_inlink_target">{L_ACP_PRIMELINKS_LINK_TARGET}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_TARGET_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_inlink_target" value="{PRIMELINKS_INLINK_TARGET}" id="primelinks_inlink_target" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_INLINK_TARGET_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_inlink_class">{L_ACP_PRIMELINKS_LINK_CLASS}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_CLASS_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_inlink_class" value="{PRIMELINKS_INLINK_CLASS}" id="primelinks_inlink_class" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_INLINK_CLASS_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_inlink_prefix">{L_ACP_PRIMELINKS_LINK_PREFIX}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_PREFIX_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_inlink_prefix" value="{PRIMELINKS_INLINK_PREFIX}" id="primelinks_inlink_prefix" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_INLINK_PREFIX_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_inlink_domains">{L_ACP_PRIMELINKS_INLINK_DOMAINS}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_INLINK_DOMAINS_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_inlink_domains" value="{PRIMELINKS_INLINK_DOMAINS}" id="primelinks_inlink_domains" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_INLINK_DOMAINS_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_inlink_use_titles">{L_ACP_PRIMELINKS_INLINK_USE_TITLES}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_INLINK_USE_TITLES_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_inlink_use_titles" value="1" <!-- IF PRIMELINKS_INLINK_USE_TITLES == 1 -->checked="checked" <!-- ENDIF -->id="primelinks_inlink_use_titles" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_inlink_use_titles" value="0" <!-- IF PRIMELINKS_INLINK_USE_TITLES == 0 -->checked="checked" <!-- ENDIF -->/> {L_NO}</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{L_ACP_PRIMELINKS_EXTERNAL_LINKS}</legend>
+		<dl>
+			<dt><label for="primelinks_exlink_guest_hide">{L_ACP_PRIMELINKS_LINK_GUEST_HIDE}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_GUEST_HIDE_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_exlink_guest_hide" value="1" <!-- IF PRIMELINKS_EXLINK_GUEST_HIDE == 1 -->checked="checked" <!-- ENDIF -->id="primelinks_exlink_guest_hide" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_exlink_guest_hide" value="0" <!-- IF PRIMELINKS_EXLINK_GUEST_HIDE == 0 -->checked="checked" <!-- ENDIF -->/> {L_NO} &nbsp;
+				<input type="radio" class="radio" name="primelinks_exlink_guest_hide" value="2" <!-- IF PRIMELINKS_EXLINK_GUEST_HIDE == 2 -->checked="checked" <!-- ENDIF -->/> {L_ACP_PRIMELINKS_LINK_GUEST_HIDE_REPLACE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_exlink_rel">{L_ACP_PRIMELINKS_LINK_REL}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_REL_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_exlink_rel" value="{PRIMELINKS_EXLINK_REL}" id="primelinks_exlink_rel" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_EXLINK_REL_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_exlink_target">{L_ACP_PRIMELINKS_LINK_TARGET}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_TARGET_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_exlink_target" value="{PRIMELINKS_EXLINK_TARGET}" id="primelinks_exlink_target" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_EXLINK_TARGET_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_exlink_class">{L_ACP_PRIMELINKS_LINK_CLASS}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_CLASS_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_exlink_class" value="{PRIMELINKS_EXLINK_CLASS}" id="primelinks_exlink_class" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_EXLINK_CLASS_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_exlink_prefix">{L_ACP_PRIMELINKS_LINK_PREFIX}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_LINK_PREFIX_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_exlink_prefix" value="{PRIMELINKS_EXLINK_PREFIX}" id="primelinks_exlink_prefix" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_EXLINK_PREFIX_EXAMPLE}</dd>
+		</dl>
+
+		<dl>
+			<dt><label for="primelinks_enable_forumlist">{L_ACP_PRIMELINKS_ENABLE_FORUMLIST}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_ENABLE_FORUMLIST_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_enable_forumlist" value="1" <!-- IF PRIMELINKS_ENABLE_FORUMLIST -->checked="checked" <!-- ENDIF -->id="primelinks_enable_forumlist" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_enable_forumlist" value="0" <!-- IF not PRIMELINKS_ENABLE_FORUMLIST -->checked="checked" <!-- ENDIF -->/> {L_NO}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_enable_members">{L_ACP_PRIMELINKS_ENABLE_MEMBERS}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_ENABLE_MEMBERS_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_enable_members" value="1" <!-- IF PRIMELINKS_ENABLE_MEMBERS -->checked="checked" <!-- ENDIF -->id="primelinks_enable_members" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_enable_members" value="0" <!-- IF not PRIMELINKS_ENABLE_MEMBERS -->checked="checked" <!-- ENDIF -->/> {L_NO}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_forbidden_domains">{L_ACP_PRIMELINKS_FORBIDDEN_DOMAINS}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_FORBIDDEN_DOMAINS_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_forbidden_domains" value="{PRIMELINKS_FORBIDDEN_DOMAINS}" id="primelinks_forbidden_domains" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_FORBIDDEN_DOMAINS_EXAMPLE}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_forbidden_msg">{L_ACP_PRIMELINKS_FORBIDDEN_MSG}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_FORBIDDEN_MSG_EXPLAIN}</span></dt>
+			<dd><input type="radio" class="radio" name="primelinks_forbidden_msg" value="1" <!-- IF PRIMELINKS_FORBIDDEN_MSG -->checked="checked" <!-- ENDIF -->id="primelinks_forbidden_msg" /> {L_YES} &nbsp;
+				<input type="radio" class="radio" name="primelinks_forbidden_msg" value="0" <!-- IF not PRIMELINKS_FORBIDDEN_MSG -->checked="checked" <!-- ENDIF -->/> {L_NO}</dd>
+		</dl>
+		<dl>
+			<dt><label for="primelinks_forbidden_new_url">{L_ACP_PRIMELINKS_FORBIDDEN_NEW_URL}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_FORBIDDEN_NEW_URL_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" maxlength="255" name="primelinks_forbidden_new_url" value="{PRIMELINKS_FORBIDDEN_NEW_URL}" id="primelinks_forbidden_new_url" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_FORBIDDEN_NEW_URL_EXAMPLE}</dd>
+		</dl>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>{L_ACP_PRIMELINKS_ADV_SETTINGS}</legend>
+		<dl>
+			<dt><label for="primelinks_skip_regex">{L_ACP_PRIMELINKS_SKIP_REGEX}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_SKIP_REGEX_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" size="35" maxlength="255" name="primelinks_skip_regex" value="{PRIMELINKS_SKIP_REGEX}" id="primelinks_skip_regex" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_SKIP_REGEX_EXAMPLE}</dd>
+		</dl>
+
+		<dl>
+			<dt><label for="primelinks_inlink_regex">{L_ACP_PRIMELINKS_INLINK_REGEX}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_INLINK_REGEX_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" size="35" maxlength="255" name="primelinks_inlink_regex" value="{PRIMELINKS_INLINK_REGEX}" id="primelinks_inlink_regex" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_INLINK_REGEX_EXAMPLE}</dd>
+		</dl>
+
+		<dl>
+			<dt><label for="primelinks_exlink_regex">{L_ACP_PRIMELINKS_EXLINK_REGEX}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_EXLINK_REGEX_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" size="35" maxlength="255" name="primelinks_exlink_regex" value="{PRIMELINKS_EXLINK_REGEX}" id="primelinks_exlink_regex" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_EXLINK_REGEX_EXAMPLE}</dd>
+		</dl>
+
+		<dl>
+			<dt><label for="primelinks_skip_prefix_regex">{L_ACP_PRIMELINKS_SKIP_PREFIX_REGEX}{L_COLON}</label><br /><span>{L_ACP_PRIMELINKS_SKIP_PREFIX_REGEX_EXPLAIN}</span></dt>
+			<dd><input type="text" class="input" size="35" maxlength="255" name="primelinks_skip_prefix_regex" value="{PRIMELINKS_SKIP_PREFIX_REGEX}" id="primelinks_skip_prefix_regex" /> {L_ACP_PRIMELINKS_EXAMPLE}{L_ACP_PRIMELINKS_SKIP_PREFIX_REGEX_EXAMPLE}</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+		<p class="submit-buttons">
+			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		</p>
+		{S_FORM_TOKEN}
+	</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->

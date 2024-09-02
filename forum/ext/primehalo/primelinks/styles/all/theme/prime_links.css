@@ -1,0 +1,13 @@
+.postlink {
+	background:url("./images/window.gif") no-repeat right center;
+	padding-right:16px;
+}
+
+.postlink:hover {
+	background-image:url("./images/window_a.gif");
+}
+
+.pdf-link, .pdf-link:hover {
+	background:url("./images/pdf.gif") no-repeat right center;
+	padding-right:14px;
+}
