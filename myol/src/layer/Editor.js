@@ -13,7 +13,7 @@ import './editor.css';
 const helpModifFr = {
     inspect: '\
 <p><b><u>EDITEUR</u>: Inspecter une ligne ou un polygone</b></p>\
-<p>Cliquer sur le bouton &#x2048 (qui bleuit) puis</p>\
+<p>Cliquer sur le bouton &#x2048; (qui bleuit) puis</p>\
 <p>Survoler l\'objet avec le curseur pour:</p>\
 <p>Distinguer une ligne ou un polygone des autres</p>\
 <p>Calculer la longueur d\'une ligne ou un polygone</p>',
@@ -246,6 +246,7 @@ export class Editor extends ol.layer.Vector {
 
     // End of one modify interaction
     this.interactions[1].on('modifyend', evt => {
+      //TODO BUG edit polygone : ne peut pas supprimer un côté
       //BEST move only one summit when dragging
       //BEST Ctrl+Alt+click on summit : delete the line or poly
 
@@ -263,6 +264,8 @@ export class Editor extends ol.layer.Vector {
       }
 
       // Alt+click on segment : delete the segment & split the line
+      //TODO Snap : register again the full list of features as addFeature manages already registered
+      //TODO Le faire aussi à l’init vers edit
       const tmpFeature = this.interactions[4].snapTo(
         evt.mapBrowserEvent.pixel,
         evt.mapBrowserEvent.coordinate,

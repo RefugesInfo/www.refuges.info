@@ -11,6 +11,7 @@ Chaque <element> désigne :
 - a123.4.5 (caractère Ascii décimal &#123; à la position x = 4, y = 5)
 - t123 (taille de l'icône 123*123) défaut 24
 */
+//TODO BUG ne marche pas si le nom de l'icône comporte %20
 
 // Traduit le nom si nécéssaire
 include ('alias.php');
@@ -49,11 +50,12 @@ $couleurs[] = $couleurs[] = null;
 
 // Génération du fichier SVG
 header ('Content-type: image/svg+xml');
-header ('Cache-Control: max-age=86000');
+header ('Cache-Control: max-age=10000'); // 3 h
+//header ('Cache-Control: max-age=0'); // Tests
 header ('Access-Control-Allow-Headers: *');
 header ('Access-Control-Allow-Origin: *');
 
-if (isset ($inconnu) || !isset ($images)) {
+if (isset ($inconnu)) {
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	$images = ['_404']; // Uniquement l'élément erreur 404
 }

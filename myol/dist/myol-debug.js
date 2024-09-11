@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 13/08/2024 11:31:24 using npm run build from the src/... sources
+ * Built 11/09/2024 20:26:03 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -998,7 +998,7 @@
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION = '10.0.0';
+  const VERSION$1 = '10.1.0';
 
   /**
    * @module ol/Object
@@ -3142,11 +3142,13 @@
    * @param {Array<number>} input Input array of coordinate values.
    * @param {Array<number>} [output] Output array of coordinate values.
    * @param {number} [dimension] Dimension (default is `2`).
+   * @param {number} [stride] Stride (default is `dimension`).
    * @return {Array<number>} Output array of coordinate values.
    */
-  function fromEPSG4326(input, output, dimension) {
+  function fromEPSG4326(input, output, dimension, stride) {
     const length = input.length;
     dimension = dimension > 1 ? dimension : 2;
+    stride = stride ?? dimension;
     if (output === undefined) {
       if (dimension > 2) {
         // preserve values beyond second dimension
@@ -3155,7 +3157,7 @@
         output = new Array(length);
       }
     }
-    for (let i = 0; i < length; i += dimension) {
+    for (let i = 0; i < length; i += stride) {
       output[i] = (HALF_SIZE * input[i]) / 180;
       let y = RADIUS$1 * Math.log(Math.tan((Math.PI * (+input[i + 1] + 90)) / 360));
       if (y > MAX_SAFE_Y) {
@@ -3174,11 +3176,13 @@
    * @param {Array<number>} input Input array of coordinate values.
    * @param {Array<number>} [output] Output array of coordinate values.
    * @param {number} [dimension] Dimension (default is `2`).
+   * @param {number} [stride] Stride (default is `dimension`).
    * @return {Array<number>} Output array of coordinate values.
    */
-  function toEPSG4326(input, output, dimension) {
+  function toEPSG4326(input, output, dimension, stride) {
     const length = input.length;
     dimension = dimension > 1 ? dimension : 2;
+    stride = stride ?? dimension;
     if (output === undefined) {
       if (dimension > 2) {
         // preserve values beyond second dimension
@@ -3187,7 +3191,7 @@
         output = new Array(length);
       }
     }
-    for (let i = 0; i < length; i += dimension) {
+    for (let i = 0; i < length; i += stride) {
       output[i] = (180 * input[i]) / HALF_SIZE;
       output[i + 1] =
         (360 * Math.atan(Math.exp(input[i + 1] / RADIUS$1))) / Math.PI - 90;
@@ -4572,17 +4576,19 @@
       /**
        * @param {Array<number>} input Input.
        * @param {Array<number>} [output] Output.
-       * @param {number} [dimension] Dimension.
+       * @param {number} [dimension] Dimensions that should be transformed.
+       * @param {number} [stride] Stride.
        * @return {Array<number>} Output.
        */
-      function (input, output, dimension) {
+      function (input, output, dimension, stride) {
         const length = input.length;
         dimension = dimension !== undefined ? dimension : 2;
+        stride = stride ?? dimension;
         output = output !== undefined ? output : new Array(length);
-        for (let i = 0; i < length; i += dimension) {
+        for (let i = 0; i < length; i += stride) {
           const point = coordTransform(input.slice(i, i + dimension));
           const pointLength = point.length;
-          for (let j = 0, jj = dimension; j < jj; ++j) {
+          for (let j = 0, jj = stride; j < jj; ++j) {
             output[i + j] = j >= pointLength ? input[i + j] : point[j];
           }
         }
@@ -5042,6 +5048,7 @@
    * @param {number} stride Stride.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<number>} [dest] Destination.
+   * @param {number} [destinationStride] Stride of destination coordinates; if unspecified, assumed to be 2.
    * @return {Array<number>} Transformed coordinates.
    */
   function transform2D(
@@ -5051,15 +5058,22 @@
     stride,
     transform,
     dest,
+    destinationStride,
   ) {
     dest = dest ? dest : [];
+    destinationStride = destinationStride ? destinationStride : 2;
     let i = 0;
     for (let j = offset; j < end; j += stride) {
       const x = flatCoordinates[j];
       const y = flatCoordinates[j + 1];
       dest[i++] = transform[0] * x + transform[2] * y + transform[4];
       dest[i++] = transform[1] * x + transform[3] * y + transform[5];
+
+      for (let k = 2; k < destinationStride; k++) {
+        dest[i++] = flatCoordinates[j + k];
+      }
     }
+
     if (dest && dest.length != i) {
       dest.length = i;
     }
@@ -5717,7 +5731,12 @@
      */
     applyTransform(transformFn) {
       if (this.flatCoordinates) {
-        transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+        transformFn(
+          this.flatCoordinates,
+          this.flatCoordinates,
+          this.layout.startsWith('XYZ') ? 3 : 2,
+          this.stride,
+        );
         this.changed();
       }
     }
@@ -12725,27 +12744,35 @@
     return zoom > layerState.minZoom && zoom <= layerState.maxZoom;
   }
 
-  function quickselect(arr, k, left, right, compare) {
-      quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare);
-  }
-
-  function quickselectStep(arr, k, left, right, compare) {
+  /**
+   * Rearranges items so that all items in the [left, k] are the smallest.
+   * The k-th element will have the (k - left + 1)-th smallest value in [left, right].
+   *
+   * @template T
+   * @param {T[]} arr the array to partially sort (in place)
+   * @param {number} k middle index for partial sorting (as defined above)
+   * @param {number} [left=0] left index of the range to sort
+   * @param {number} [right=arr.length-1] right index
+   * @param {(a: T, b: T) => number} [compare = (a, b) => a - b] compare function
+   */
+  function quickselect(arr, k, left = 0, right = arr.length - 1, compare = defaultCompare) {
 
       while (right > left) {
           if (right - left > 600) {
-              var n = right - left + 1;
-              var m = k - left + 1;
-              var z = Math.log(n);
-              var s = 0.5 * Math.exp(2 * z / 3);
-              var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-              var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-              var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-              quickselectStep(arr, k, newLeft, newRight, compare);
+              const n = right - left + 1;
+              const m = k - left + 1;
+              const z = Math.log(n);
+              const s = 0.5 * Math.exp(2 * z / 3);
+              const sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+              const newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+              const newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+              quickselect(arr, k, newLeft, newRight, compare);
           }
 
-          var t = arr[k];
-          var i = left;
-          var j = right;
+          const t = arr[k];
+          let i = left;
+          /** @type {number} */
+          let j = right;
 
           swap(arr, left, k);
           if (compare(arr[right], t) > 0) swap(arr, left, right);
@@ -12769,12 +12796,24 @@
       }
   }
 
+  /**
+   * @template T
+   * @param {T[]} arr
+   * @param {number} i
+   * @param {number} j
+   */
   function swap(arr, i, j) {
-      var tmp = arr[i];
+      const tmp = arr[i];
       arr[i] = arr[j];
       arr[j] = tmp;
   }
 
+  /**
+   * @template T
+   * @param {T} a
+   * @param {T} b
+   * @returns {number}
+   */
   function defaultCompare(a, b) {
       return a < b ? -1 : a > b ? 1 : 0;
   }
@@ -13960,7 +13999,7 @@
     return luv.lchuv(xyz.luv(arg));
   };
 
-  var names$y = {
+  var names$z = {
   	aliceblue: [240, 248, 255],
   	antiquewhite: [250, 235, 215],
   	aqua: [0, 255, 255],
@@ -14146,8 +14185,8 @@
   	cstr = String(cstr).toLowerCase();
 
   	//keyword
-  	if (names$y[cstr]) {
-  		parts = names$y[cstr].slice();
+  	if (names$z[cstr]) {
+  		parts = names$z[cstr].slice();
   		space = 'rgb';
   	}
 
@@ -14387,6 +14426,13 @@
    */
 
   /**
+   * Color to indicate that no color should be rendered. This is meant to be used for per-reference
+   * comparisons only.
+   * @type {Color}
+   */
+  const NO_COLOR = [NaN, NaN, NaN, 0];
+
+  /**
    * Return the color as an rgba string.
    * @param {Color|string} color Color.
    * @return {string} Rgba string.
@@ -14457,6 +14503,9 @@
    * @return {Color} Color.
    */
   function fromString(s) {
+    if (s === 'none') {
+      return NO_COLOR;
+    }
     if (cache.hasOwnProperty(s)) {
       return cache[s];
     }
@@ -18931,6 +18980,9 @@
    *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
    *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
    *   * `['zoom']` The current zoom level (WebGL only).
+   *   * `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
+   *      does not contain an M component (e.g. XY or XYZ), 0 is returned; 0 is also returned for geometries other than lines.
+   *      Please note that the M component will be linearly interpolated between the two points composing a segment.
    *
    * * Math operators:
    *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
@@ -18985,6 +19037,8 @@
    *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
    *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
    *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
+   *   * `['has', attributeName, keyOrArrayIndex, ...]` returns `true` if feature properties include the (nested) key `attributeName`,
+   *     `false` otherwise.
    *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
    *     (inclusively), or `false` otherwise.
    *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
@@ -19254,6 +19308,7 @@
     Var: 'var',
     Concat: 'concat',
     GeometryType: 'geometry-type',
+    LineMetric: 'line-metric',
     Any: 'any',
     All: 'all',
     Not: '!',
@@ -19295,6 +19350,7 @@
     Band: 'band',
     Palette: 'palette',
     ToString: 'to-string',
+    Has: 'has',
   };
 
   /**
@@ -19309,12 +19365,14 @@
   const parsers = {
     [Ops.Get]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
     [Ops.Var]: createCallExpressionParser(hasArgsCount(1, 1), withVarArgs),
+    [Ops.Has]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
     [Ops.Id]: createCallExpressionParser(usesFeatureId, withNoArgs),
     [Ops.Concat]: createCallExpressionParser(
       hasArgsCount(2, Infinity),
       withArgsOfType(StringType),
     ),
     [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
+    [Ops.LineMetric]: createCallExpressionParser(withNoArgs),
     [Ops.Resolution]: createCallExpressionParser(withNoArgs),
     [Ops.Zoom]: createCallExpressionParser(withNoArgs),
     [Ops.Time]: createCallExpressionParser(withNoArgs),
@@ -20027,7 +20085,8 @@
         return compileAssertionExpression(expression);
       }
       case Ops.Get:
-      case Ops.Var: {
+      case Ops.Var:
+      case Ops.Has: {
         return compileAccessorExpression(expression);
       }
       case Ops.Id: {
@@ -20167,6 +20226,24 @@
       }
       case Ops.Var: {
         return (context) => context.variables[name];
+      }
+      case Ops.Has: {
+        return (context) => {
+          const args = expression.args;
+          if (!(name in context.properties)) {
+            return false;
+          }
+          let value = context.properties[name];
+          for (let i = 1, ii = args.length; i < ii; ++i) {
+            const keyExpression = /** @type {LiteralExpression} */ (args[i]);
+            const key = /** @type {string|number} */ (keyExpression.value);
+            if (!value || !Object.hasOwn(value, key)) {
+              return false;
+            }
+            value = value[key];
+          }
+          return true;
+        };
       }
       default: {
         throw new Error(`Unsupported accessor operator ${expression.operator}`);
@@ -20851,7 +20928,7 @@
     const fill = new Fill$1();
     return function (context) {
       const color = evaluateColor(context);
-      if (color === 'none') {
+      if (color === NO_COLOR) {
         return null;
       }
       fill.setColor(color);
@@ -20920,7 +20997,7 @@
     return function (context) {
       if (evaluateColor) {
         const color = evaluateColor(context);
-        if (color === 'none') {
+        if (color === NO_COLOR) {
           return null;
         }
         stroke.setColor(color);
@@ -24323,6 +24400,8 @@
    * @property {function(import("../MapEvent.js").default):void} [render] Function called when
    * the control should be re-rendered. This is called in a `requestAnimationFrame`
    * callback.
+   * @property {string|Array<string>|undefined} [attributions] Optional attribution(s) that will always be
+   * displayed regardless of the layers rendered
    */
 
   /**
@@ -24382,6 +24461,12 @@
       if (!this.collapsible_) {
         this.collapsed_ = false;
       }
+
+      /**
+       * @private
+       * @type {string | Array<string> | undefined}
+       */
+      this.attributions_ = options.attributions;
 
       const className =
         options.className !== undefined ? options.className : 'ol-attribution';
@@ -24482,9 +24567,14 @@
      */
     collectSourceAttributions_(frameState) {
       const layers = this.getMap().getAllLayers();
-      const visibleAttributions = Array.from(
-        new Set(layers.flatMap((layer) => layer.getAttributions(frameState))),
+      const visibleAttributions = new Set(
+        layers.flatMap((layer) => layer.getAttributions(frameState)),
       );
+      if (this.attributions_ !== undefined) {
+        Array.isArray(this.attributions_)
+          ? this.attributions_.forEach((item) => visibleAttributions.add(item))
+          : visibleAttributions.add(this.attributions_);
+      }
 
       if (!this.overrideCollapsible_) {
         const collapsible = !layers.some(
@@ -24492,7 +24582,7 @@
         );
         this.setCollapsible(collapsible);
       }
-      return visibleAttributions;
+      return Array.from(visibleAttributions);
     }
 
     /**
@@ -25543,8 +25633,12 @@
    */
   const focus = function (event) {
     const targetElement = event.map.getTargetElement();
+    const rootNode = targetElement.getRootNode();
     const activeElement = event.map.getOwnerDocument().activeElement;
-    return targetElement.contains(activeElement);
+
+    return rootNode instanceof ShadowRoot
+      ? rootNode.host.contains(activeElement)
+      : targetElement.contains(activeElement);
   };
 
   /**
@@ -25554,9 +25648,12 @@
    * @return {boolean} The map container has the focus or no 'tabindex' attribute.
    */
   const focusWithTabindex = function (event) {
-    return event.map.getTargetElement().hasAttribute('tabindex')
-      ? focus(event)
-      : true;
+    const targetElement = event.map.getTargetElement();
+    const rootNode = targetElement.getRootNode();
+    const tabIndexCandidate =
+      rootNode instanceof ShadowRoot ? rootNode.host : targetElement;
+
+    return tabIndexCandidate.hasAttribute('tabindex') ? focus(event) : true;
   };
 
   /**
@@ -26297,7 +26394,7 @@
        */
       this.un;
 
-      options = options ? options : {};
+      options = options ?? {};
 
       /**
        * @type {import("../render/Box.js").default}
@@ -26309,7 +26406,7 @@
        * @type {number}
        * @private
        */
-      this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
+      this.minArea_ = options.minArea ?? 64;
 
       if (options.onBoxEnd) {
         this.onBoxEnd = options.onBoxEnd;
@@ -26325,15 +26422,14 @@
        * @private
        * @type {import("../events/condition.js").Condition}
        */
-      this.condition_ = options.condition ? options.condition : mouseActionButton;
+      this.condition_ = options.condition ?? mouseActionButton;
 
       /**
        * @private
        * @type {EndCondition}
        */
-      this.boxEndCondition_ = options.boxEndCondition
-        ? options.boxEndCondition
-        : this.defaultBoxEndCondition;
+      this.boxEndCondition_ =
+        options.boxEndCondition ?? this.defaultBoxEndCondition;
     }
 
     /**
@@ -26392,8 +26488,6 @@
         return false;
       }
 
-      this.box_.setMap(null);
-
       const completeBox = this.boxEndCondition_(
         mapBrowserEvent,
         this.startPixel_,
@@ -26409,6 +26503,10 @@
           mapBrowserEvent,
         ),
       );
+
+      this.box_.setMap(null);
+      this.startPixel_ = null;
+
       return false;
     }
 
@@ -26460,6 +26558,27 @@
       }
 
       super.setActive(active);
+    }
+
+    /**
+     * @param {import("../Map.js").default|null} map Map.
+     * @override
+     */
+    setMap(map) {
+      const oldMap = this.getMap();
+
+      if (oldMap) {
+        this.box_.setMap(null);
+
+        if (this.startPixel_) {
+          this.dispatchEvent(
+            new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+          );
+          this.startPixel_ = null;
+        }
+      }
+
+      super.setMap(map);
     }
   }
 
@@ -27727,6 +27846,9 @@
    * element itself or the `id` of the element. If not specified at construction
    * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
    * rendered. If passed by element, the container can be in a secondary document.
+   * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+   *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+   *  `tabindex` atribute must be set on the custom element's host element.
    * **Note:** CSS `transform` support for the target element is limited to `scale`.
    * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
    * fetched unless this is specified at construction time or through
@@ -28707,6 +28829,15 @@
           ? this.viewport_.getRootNode()
           : doc;
         const target = /** @type {Node} */ (originalEvent.target);
+
+        const currentDoc =
+          rootNode instanceof ShadowRoot
+            ? rootNode.host === target
+              ? rootNode.host.ownerDocument
+              : rootNode
+            : rootNode === doc
+              ? doc.documentElement
+              : rootNode;
         if (
           // Abort if the target is a child of the container for elements whose events are not meant
           // to be handled by map interactions.
@@ -28715,7 +28846,7 @@
           // It's possible for the target to no longer be in the page if it has been removed in an
           // event listener, this might happen in a Control that recreates it's content based on
           // user interaction either manually or via a render in something like https://reactjs.org/
-          !(rootNode === doc ? doc.documentElement : rootNode).contains(target)
+          !currentDoc.contains(target)
         ) {
           return;
         }
@@ -28892,9 +29023,17 @@
           PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
         );
 
-        const keyboardEventTarget = !this.keyboardEventTarget_
-          ? targetElement
-          : this.keyboardEventTarget_;
+        let keyboardEventTarget;
+        if (!this.keyboardEventTarget_) {
+          // check if map target is in shadowDOM, if yes use host element as target
+          const targetRoot = targetElement.getRootNode();
+          const targetCandidate =
+            targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
+          keyboardEventTarget = targetCandidate;
+        } else {
+          keyboardEventTarget = this.keyboardEventTarget_;
+        }
+
         this.targetChangeHandlerKeys_ = [
           listen(
             keyboardEventTarget,
@@ -29230,6 +29369,9 @@
 
     /**
      * Set the target element to render this map into.
+     * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+     *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+     *  `tabindex` atribute must be set on the custom element's host element.
      * @param {HTMLElement|string} [target] The Element or id of the Element
      *     that the map is rendered in.
      * @observable
@@ -60593,7 +60735,7 @@
       if (!source) {
         return false;
       }
-      const sourceRevision = this.getLayer().getSource().getRevision();
+      const sourceRevision = source.getRevision();
       if (!this.renderedRevision_) {
         this.renderedRevision_ = sourceRevision;
       } else if (this.renderedRevision_ !== sourceRevision) {
@@ -60829,6 +60971,8 @@
        */
       const tilesByZ = {};
 
+      this.renderedTiles.length = 0;
+
       /**
        * Part 1: Enqueue tiles
        */
@@ -60855,6 +60999,10 @@
             preload - 1,
           );
         }, 0);
+      }
+
+      if (!(z in tilesByZ)) {
+        return this.container;
       }
 
       /**
@@ -60952,7 +61100,6 @@
 
       this.preRender(context, frameState);
 
-      this.renderedTiles.length = 0;
       /** @type {Array<number>} */
       const zs = Object.keys(tilesByZ).map(Number);
       zs.sort(ascending);
@@ -64598,7 +64745,7 @@
       WMTS: WMTSTileGrid,
     },
     util: {
-      VERSION: VERSION,
+      VERSION: VERSION$1,
     },
     View: View,
   };
@@ -65228,7 +65375,7 @@
    * elevation = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1
    * Key : https://cloud.maptiler.com/account/keys/
    */
-  /*// Backup of Maxbox elevation 
+  /*// Backup of Maxbox elevation
   export class MapTilerElevation extends XYZ {
     constructor(options = {}) {
       super({
@@ -65799,7 +65946,7 @@
       if (ol.extent.isEmpty(fileExtent))
         alert(url + ' ne comporte pas de point ni de trace.');
       else {
-        if (this.options.receivingLayer)
+        if (this.options.receivingLayer) //TODO replace it by map.on('loadend') when new editor will be published
           this.options.receivingLayer.getSource().addFeatures(features);
         else
           map.addLayer(gpxLayer);
@@ -67543,7 +67690,7 @@
   const helpModifFr = {
       inspect: '\
 <p><b><u>EDITEUR</u>: Inspecter une ligne ou un polygone</b></p>\
-<p>Cliquer sur le bouton &#x2048 (qui bleuit) puis</p>\
+<p>Cliquer sur le bouton &#x2048; (qui bleuit) puis</p>\
 <p>Survoler l\'objet avec le curseur pour:</p>\
 <p>Distinguer une ligne ou un polygone des autres</p>\
 <p>Calculer la longueur d\'une ligne ou un polygone</p>',
@@ -67776,6 +67923,7 @@
 
       // End of one modify interaction
       this.interactions[1].on('modifyend', evt => {
+        //TODO BUG edit polygone : ne peut pas supprimer un côté
         //BEST move only one summit when dragging
         //BEST Ctrl+Alt+click on summit : delete the line or poly
 
@@ -67793,6 +67941,8 @@
         }
 
         // Alt+click on segment : delete the segment & split the line
+        //TODO Snap : register again the full list of features as addFeature manages already registered
+        //TODO Le faire aussi à l’init vers edit
         const tmpFeature = this.interactions[4].snapTo(
           evt.mapBrowserEvent.pixel,
           evt.mapBrowserEvent.coordinate,
@@ -69038,7 +69188,7 @@
     return -9999;
   }
 
-  function init$w() {
+  function init$x() {
     var con = this.b / this.a;
     this.es = 1 - con * con;
     if(!('x0' in this)){
@@ -69125,31 +69275,31 @@
     return p;
   }
 
-  var names$x = ["Mercator", "Popular Visualisation Pseudo Mercator", "Mercator_1SP", "Mercator_Auxiliary_Sphere", "merc"];
+  var names$y = ["Mercator", "Popular Visualisation Pseudo Mercator", "Mercator_1SP", "Mercator_Auxiliary_Sphere", "merc"];
   var merc = {
-    init: init$w,
+    init: init$x,
     forward: forward$v,
     inverse: inverse$v,
-    names: names$x
+    names: names$y
   };
 
-  function init$v() {
+  function init$w() {
     //no-op for longlat
   }
 
   function identity(pt) {
     return pt;
   }
-  var names$w = ["longlat", "identity"];
+  var names$x = ["longlat", "identity"];
   var longlat = {
-    init: init$v,
+    init: init$w,
     forward: identity,
     inverse: identity,
-    names: names$w
+    names: names$x
   };
 
   var projs = [merc, longlat];
-  var names$v = {};
+  var names$w = {};
   var projStore = [];
 
   function add(proj, i) {
@@ -69160,7 +69310,7 @@
     }
     projStore[len] = proj;
     proj.names.forEach(function(n) {
-      names$v[n.toLowerCase()] = len;
+      names$w[n.toLowerCase()] = len;
     });
     return this;
   }
@@ -69170,8 +69320,8 @@
       return false;
     }
     var n = name.toLowerCase();
-    if (typeof names$v[n] !== 'undefined' && projStore[names$v[n]]) {
-      return projStore[names$v[n]];
+    if (typeof names$w[n] !== 'undefined' && projStore[names$w[n]]) {
+      return projStore[names$w[n]];
     }
   }
 
@@ -69792,12 +69942,12 @@
     };
     var json = parse(srsCode);
     if(typeof json !== 'object'){
-      callback(srsCode);
+      callback('Could not parse to valid json: ' + srsCode);
       return;
     }
     var ourProj = Projection.projections.get(json.projName);
     if(!ourProj){
-      callback(srsCode);
+      callback('Could not get projection name from: ' + srsCode);
       return;
     }
     if (json.datumCode && json.datumCode !== 'none') {
@@ -71378,7 +71528,7 @@
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/tmerc.js
 
 
-  function init$u() {
+  function init$v() {
     this.x0 = this.x0 !== undefined ? this.x0 : 0;
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
@@ -71533,12 +71683,12 @@
     return p;
   }
 
-  var names$u = ["Fast_Transverse_Mercator", "Fast Transverse Mercator"];
+  var names$v = ["Fast_Transverse_Mercator", "Fast Transverse Mercator"];
   var tmerc = {
-    init: init$u,
+    init: init$v,
     forward: forward$t,
     inverse: inverse$t,
-    names: names$u
+    names: names$v
   };
 
   function sinh(x) {
@@ -71642,7 +71792,7 @@
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/etmerc.js
 
 
-  function init$t() {
+  function init$u() {
     if (!this.approx && (isNaN(this.es) || this.es <= 0)) {
       throw new Error('Incorrect elliptical usage. Try using the +approx option in the proj string, or PROJECTION["Fast_Transverse_Mercator"] in the WKT.');
     }
@@ -71795,12 +71945,12 @@
     return p;
   }
 
-  var names$t = ["Extended_Transverse_Mercator", "Extended Transverse Mercator", "etmerc", "Transverse_Mercator", "Transverse Mercator", "Gauss Kruger", "Gauss_Kruger", "tmerc"];
+  var names$u = ["Extended_Transverse_Mercator", "Extended Transverse Mercator", "etmerc", "Transverse_Mercator", "Transverse Mercator", "Gauss Kruger", "Gauss_Kruger", "tmerc"];
   var etmerc = {
-    init: init$t,
+    init: init$u,
     forward: forward$s,
     inverse: inverse$s,
-    names: names$t
+    names: names$u
   };
 
   function adjust_zone(zone, lon) {
@@ -71819,7 +71969,7 @@
   var dependsOn = 'etmerc';
 
 
-  function init$s() {
+  function init$t() {
     var zone = adjust_zone(this.zone, this.long0);
     if (zone === undefined) {
       throw new Error('unknown utm zone');
@@ -71835,10 +71985,10 @@
     this.inverse = etmerc.inverse;
   }
 
-  var names$s = ["Universal Transverse Mercator System", "utm"];
+  var names$t = ["Universal Transverse Mercator System", "utm"];
   var utm = {
-    init: init$s,
-    names: names$s,
+    init: init$t,
+    names: names$t,
     dependsOn: dependsOn
   };
 
@@ -71848,7 +71998,7 @@
 
   var MAX_ITER$2 = 20;
 
-  function init$r() {
+  function init$s() {
     var sphi = Math.sin(this.lat0);
     var cphi = Math.cos(this.lat0);
     cphi *= cphi;
@@ -71889,15 +72039,15 @@
     return p;
   }
 
-  var names$r = ["gauss"];
+  var names$s = ["gauss"];
   var gauss = {
-    init: init$r,
+    init: init$s,
     forward: forward$r,
     inverse: inverse$r,
-    names: names$r
+    names: names$s
   };
 
-  function init$q() {
+  function init$r() {
     gauss.init.apply(this);
     if (!this.rc) {
       return;
@@ -71951,12 +72101,12 @@
     return p;
   }
 
-  var names$q = ["Stereographic_North_Pole", "Oblique_Stereographic", "sterea","Oblique Stereographic Alternative","Double_Stereographic"];
+  var names$r = ["Stereographic_North_Pole", "Oblique_Stereographic", "sterea","Oblique Stereographic Alternative","Double_Stereographic"];
   var sterea = {
-    init: init$q,
+    init: init$r,
     forward: forward$q,
     inverse: inverse$q,
-    names: names$q
+    names: names$r
   };
 
   function ssfn_(phit, sinphi, eccen) {
@@ -71964,7 +72114,7 @@
     return (Math.tan(0.5 * (HALF_PI + phit)) * Math.pow((1 - sinphi) / (1 + sinphi), 0.5 * eccen));
   }
 
-  function init$p() {
+  function init$q() {
 
     // setting default parameters
     this.x0 = this.x0 || 0;
@@ -72126,12 +72276,12 @@
 
   }
 
-  var names$p = ["stere", "Stereographic_South_Pole", "Polar Stereographic (variant B)", "Polar_Stereographic"];
+  var names$q = ["stere", "Stereographic_South_Pole", "Polar Stereographic (variant B)", "Polar_Stereographic"];
   var stere = {
-    init: init$p,
+    init: init$q,
     forward: forward$p,
     inverse: inverse$p,
-    names: names$p,
+    names: names$q,
     ssfn_: ssfn_
   };
 
@@ -72143,7 +72293,7 @@
       http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf
     */
 
-  function init$o() {
+  function init$p() {
     var phy0 = this.lat0;
     this.lambda0 = this.long0;
     var sinPhy0 = Math.sin(phy0);
@@ -72214,12 +72364,12 @@
     return p;
   }
 
-  var names$o = ["somerc"];
+  var names$p = ["somerc"];
   var somerc = {
-    init: init$o,
+    init: init$p,
     forward: forward$o,
     inverse: inverse$o,
-    names: names$o
+    names: names$p
   };
 
   var TOL = 1e-7;
@@ -72234,7 +72384,7 @@
 
   /* Initialize the Oblique Mercator  projection
       ------------------------------------------*/
-  function init$n() {  
+  function init$o() {  
     var con, com, cosph0, D, F, H, L, sinph0, p, J, gamma = 0,
       gamma0, lamc = 0, lam1 = 0, lam2 = 0, phi1 = 0, phi2 = 0, alpha_c = 0;
     
@@ -72451,15 +72601,15 @@
     return coords;
   }
 
-  var names$n = ["Hotine_Oblique_Mercator", "Hotine Oblique Mercator", "Hotine_Oblique_Mercator_Azimuth_Natural_Origin", "Hotine_Oblique_Mercator_Two_Point_Natural_Origin", "Hotine_Oblique_Mercator_Azimuth_Center", "Oblique_Mercator", "omerc"];
+  var names$o = ["Hotine_Oblique_Mercator", "Hotine Oblique Mercator", "Hotine_Oblique_Mercator_Azimuth_Natural_Origin", "Hotine_Oblique_Mercator_Two_Point_Natural_Origin", "Hotine_Oblique_Mercator_Azimuth_Center", "Oblique_Mercator", "omerc"];
   var omerc = {
-    init: init$n,
+    init: init$o,
     forward: forward$n,
     inverse: inverse$n,
-    names: names$n
+    names: names$o
   };
 
-  function init$m() {
+  function init$n() {
     
     //double lat0;                    /* the reference latitude               */
     //double long0;                   /* the reference longitude              */
@@ -72587,7 +72737,7 @@
     return p;
   }
 
-  var names$m = [
+  var names$n = [
     "Lambert Tangential Conformal Conic Projection",
     "Lambert_Conformal_Conic",
     "Lambert_Conformal_Conic_1SP",
@@ -72598,13 +72748,13 @@
   ];
 
   var lcc = {
-    init: init$m,
+    init: init$n,
     forward: forward$m,
     inverse: inverse$m,
-    names: names$m
+    names: names$n
   };
 
-  function init$l() {
+  function init$m() {
     this.a = 6377397.155;
     this.es = 0.006674372230614;
     this.e = Math.sqrt(this.es);
@@ -72701,12 +72851,12 @@
     return (p);
   }
 
-  var names$l = ["Krovak", "krovak"];
+  var names$m = ["Krovak", "krovak"];
   var krovak = {
-    init: init$l,
+    init: init$m,
     forward: forward$l,
     inverse: inverse$l,
-    names: names$l
+    names: names$m
   };
 
   function mlfn(e0, e1, e2, e3, phi) {
@@ -72755,7 +72905,7 @@
     return NaN;
   }
 
-  function init$k() {
+  function init$l() {
     if (!this.sphere) {
       this.e0 = e0fn(this.es);
       this.e1 = e1fn(this.es);
@@ -72845,12 +72995,12 @@
 
   }
 
-  var names$k = ["Cassini", "Cassini_Soldner", "cass"];
+  var names$l = ["Cassini", "Cassini_Soldner", "cass"];
   var cass = {
-    init: init$k,
+    init: init$l,
     forward: forward$k,
     inverse: inverse$k,
-    names: names$k
+    names: names$l
   };
 
   function qsfnz(eccent, sinphi) {
@@ -72878,7 +73028,7 @@
 
   /* Initialize the Lambert Azimuthal Equal Area projection
     ------------------------------------------------------*/
-  function init$j() {
+  function init$k() {
     var t = Math.abs(this.lat0);
     if (Math.abs(t - HALF_PI) < EPSLN) {
       this.mode = this.lat0 < 0 ? this.S_POLE : this.N_POLE;
@@ -73145,12 +73295,12 @@
     return (beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t + t) + APA[2] * Math.sin(t + t + t));
   }
 
-  var names$j = ["Lambert Azimuthal Equal Area", "Lambert_Azimuthal_Equal_Area", "laea"];
+  var names$k = ["Lambert Azimuthal Equal Area", "Lambert_Azimuthal_Equal_Area", "laea"];
   var laea = {
-    init: init$j,
+    init: init$k,
     forward: forward$j,
     inverse: inverse$j,
-    names: names$j,
+    names: names$k,
     S_POLE: S_POLE,
     N_POLE: N_POLE,
     EQUIT: EQUIT,
@@ -73164,7 +73314,7 @@
     return Math.asin(x);
   }
 
-  function init$i() {
+  function init$j() {
 
     if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
       return;
@@ -73279,12 +73429,12 @@
     return null;
   }
 
-  var names$i = ["Albers_Conic_Equal_Area", "Albers", "aea"];
+  var names$j = ["Albers_Conic_Equal_Area", "Albers", "aea"];
   var aea = {
-    init: init$i,
+    init: init$j,
     forward: forward$i,
     inverse: inverse$i,
-    names: names$i,
+    names: names$j,
     phi1z: phi1z
   };
 
@@ -73294,7 +73444,7 @@
       http://mathworld.wolfram.com/GnomonicProjection.html
       Accessed: 12th November 2009
     */
-  function init$h() {
+  function init$i() {
 
     /* Place parameters in static storage for common use
         -------------------------------------------------*/
@@ -73381,12 +73531,12 @@
     return p;
   }
 
-  var names$h = ["gnom"];
+  var names$i = ["gnom"];
   var gnom = {
-    init: init$h,
+    init: init$i,
     forward: forward$h,
     inverse: inverse$h,
-    names: names$h
+    names: names$i
   };
 
   function iqsfnz(eccent, q) {
@@ -73426,7 +73576,7 @@
       A User's Manual" by Gerald I. Evenden,
       USGS Open File Report 90-284and Release 4 Interim Reports (2003)
   */
-  function init$g() {
+  function init$h() {
     //no-op
     if (!this.sphere) {
       this.k0 = msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
@@ -73478,15 +73628,15 @@
     return p;
   }
 
-  var names$g = ["cea"];
+  var names$h = ["cea"];
   var cea = {
-    init: init$g,
+    init: init$h,
     forward: forward$g,
     inverse: inverse$g,
-    names: names$g
+    names: names$h
   };
 
-  function init$f() {
+  function init$g() {
 
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -73524,17 +73674,17 @@
     return p;
   }
 
-  var names$f = ["Equirectangular", "Equidistant_Cylindrical", "eqc"];
+  var names$g = ["Equirectangular", "Equidistant_Cylindrical", "eqc"];
   var eqc = {
-    init: init$f,
+    init: init$g,
     forward: forward$f,
     inverse: inverse$f,
-    names: names$f
+    names: names$g
   };
 
   var MAX_ITER$1 = 20;
 
-  function init$e() {
+  function init$f() {
     /* Place parameters in static storage for common use
         -------------------------------------------------*/
     this.temp = this.b / this.a;
@@ -73650,15 +73800,15 @@
     return p;
   }
 
-  var names$e = ["Polyconic", "poly"];
+  var names$f = ["Polyconic", "poly"];
   var poly = {
-    init: init$e,
+    init: init$f,
     forward: forward$e,
     inverse: inverse$e,
-    names: names$e
+    names: names$f
   };
 
-  function init$d() {
+  function init$e() {
     this.A = [];
     this.A[1] = 0.6399175073;
     this.A[2] = -0.1358797613;
@@ -73859,12 +74009,12 @@
     return p;
   }
 
-  var names$d = ["New_Zealand_Map_Grid", "nzmg"];
+  var names$e = ["New_Zealand_Map_Grid", "nzmg"];
   var nzmg = {
-    init: init$d,
+    init: init$e,
     forward: forward$d,
     inverse: inverse$d,
-    names: names$d
+    names: names$e
   };
 
   /*
@@ -73876,7 +74026,7 @@
 
   /* Initialize the Miller Cylindrical projection
     -------------------------------------------*/
-  function init$c() {
+  function init$d() {
     //no-op
   }
 
@@ -73910,18 +74060,18 @@
     return p;
   }
 
-  var names$c = ["Miller_Cylindrical", "mill"];
+  var names$d = ["Miller_Cylindrical", "mill"];
   var mill = {
-    init: init$c,
+    init: init$d,
     forward: forward$c,
     inverse: inverse$c,
-    names: names$c
+    names: names$d
   };
 
   var MAX_ITER = 20;
 
 
-  function init$b() {
+  function init$c() {
     /* Place parameters in static storage for common use
       -------------------------------------------------*/
 
@@ -74018,15 +74168,15 @@
     return p;
   }
 
-  var names$b = ["Sinusoidal", "sinu"];
+  var names$c = ["Sinusoidal", "sinu"];
   var sinu = {
-    init: init$b,
+    init: init$c,
     forward: forward$b,
     inverse: inverse$b,
-    names: names$b
+    names: names$c
   };
 
-  function init$a() {}
+  function init$b() {}
   /* Mollweide forward equations--mapping lat,long to x,y
       ----------------------------------------------------*/
   function forward$a(p) {
@@ -74100,15 +74250,15 @@
     return p;
   }
 
-  var names$a = ["Mollweide", "moll"];
+  var names$b = ["Mollweide", "moll"];
   var moll = {
-    init: init$a,
+    init: init$b,
     forward: forward$a,
     inverse: inverse$a,
-    names: names$a
+    names: names$b
   };
 
-  function init$9() {
+  function init$a() {
 
     /* Place parameters in static storage for common use
         -------------------------------------------------*/
@@ -74207,17 +74357,17 @@
 
   }
 
-  var names$9 = ["Equidistant_Conic", "eqdc"];
+  var names$a = ["Equidistant_Conic", "eqdc"];
   var eqdc = {
-    init: init$9,
+    init: init$a,
     forward: forward$9,
     inverse: inverse$9,
-    names: names$9
+    names: names$a
   };
 
   /* Initialize the Van Der Grinten projection
     ----------------------------------------*/
-  function init$8() {
+  function init$9() {
     //this.R = 6370997; //Radius of earth
     this.R = this.a;
   }
@@ -74331,15 +74481,15 @@
     return p;
   }
 
-  var names$8 = ["Van_der_Grinten_I", "VanDerGrinten", "vandg"];
+  var names$9 = ["Van_der_Grinten_I", "VanDerGrinten", "vandg"];
   var vandg = {
-    init: init$8,
+    init: init$9,
     forward: forward$8,
     inverse: inverse$8,
-    names: names$8
+    names: names$9
   };
 
-  function init$7() {
+  function init$8() {
     this.sin_p12 = Math.sin(this.lat0);
     this.cos_p12 = Math.cos(this.lat0);
   }
@@ -74526,15 +74676,15 @@
 
   }
 
-  var names$7 = ["Azimuthal_Equidistant", "aeqd"];
+  var names$8 = ["Azimuthal_Equidistant", "aeqd"];
   var aeqd = {
-    init: init$7,
+    init: init$8,
     forward: forward$7,
     inverse: inverse$7,
-    names: names$7
+    names: names$8
   };
 
-  function init$6() {
+  function init$7() {
     //double temp;      /* temporary variable    */
 
     /* Place parameters in static storage for common use
@@ -74614,12 +74764,12 @@
     return p;
   }
 
-  var names$6 = ["ortho"];
+  var names$7 = ["ortho"];
   var ortho = {
-    init: init$6,
+    init: init$7,
     forward: forward$6,
     inverse: inverse$6,
-    names: names$6
+    names: names$7
   };
 
   // QSC projection rewritten from the original PROJ4
@@ -74643,7 +74793,7 @@
       AREA_3: 4
   };
 
-  function init$5() {
+  function init$6() {
 
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -74981,12 +75131,12 @@
     return slon;
   }
 
-  var names$5 = ["Quadrilateralized Spherical Cube", "Quadrilateralized_Spherical_Cube", "qsc"];
+  var names$6 = ["Quadrilateralized Spherical Cube", "Quadrilateralized_Spherical_Cube", "qsc"];
   var qsc = {
-    init: init$5,
+    init: init$6,
     forward: forward$5,
     inverse: inverse$5,
-    names: names$5
+    names: names$6
   };
 
   // Robinson projection
@@ -75064,7 +75214,7 @@
       return x;
   }
 
-  function init$4() {
+  function init$5() {
       this.x0 = this.x0 || 0;
       this.y0 = this.y0 || 0;
       this.long0 = this.long0 || 0;
@@ -75141,15 +75291,15 @@
       return ll;
   }
 
-  var names$4 = ["Robinson", "robin"];
+  var names$5 = ["Robinson", "robin"];
   var robin = {
-    init: init$4,
+    init: init$5,
     forward: forward$4,
     inverse: inverse$4,
-    names: names$4
+    names: names$5
   };
 
-  function init$3() {
+  function init$4() {
       this.name = 'geocent';
 
   }
@@ -75164,12 +75314,12 @@
       return point;
   }
 
-  var names$3 = ["Geocentric", 'geocentric', "geocent", "Geocent"];
+  var names$4 = ["Geocentric", 'geocentric', "geocent", "Geocent"];
   var geocent = {
-      init: init$3,
+      init: init$4,
       forward: forward$3,
       inverse: inverse$3,
-      names: names$3
+      names: names$4
   };
 
   var mode = {
@@ -75187,7 +75337,7 @@
     lat0:  { def: 0, num: true }                 // default is Equator, conversion to rad is automatic
   };
 
-  function init$2() {
+  function init$3() {
     Object.keys(params).forEach(function (p) {
       if (typeof this[p] === "undefined") {
         this[p] = params[p].def;
@@ -75330,15 +75480,15 @@
     return p;
   }
 
-  var names$2 = ["Tilted_Perspective", "tpers"];
+  var names$3 = ["Tilted_Perspective", "tpers"];
   var tpers = {
-    init: init$2,
+    init: init$3,
     forward: forward$2,
     inverse: inverse$2,
-    names: names$2
+    names: names$3
   };
 
-  function init$1() {
+  function init$2() {
       this.flip_axis = (this.sweep === 'x' ? 1 : 0);
       this.h = Number(this.h);
       this.radius_g_1 = this.h / this.a;
@@ -75487,12 +75637,12 @@
       return p;
   }
 
-  var names$1 = ["Geostationary Satellite View", "Geostationary_Satellite", "geos"];
+  var names$2 = ["Geostationary Satellite View", "Geostationary_Satellite", "geos"];
   var geos = {
-      init: init$1,
+      init: init$2,
       forward: forward$1,
       inverse: inverse$1,
-      names: names$1,
+      names: names$2,
   };
 
   /**
@@ -75531,7 +75681,7 @@
       A4 = 0.003796,
       M = Math.sqrt(3) / 2.0;
 
-  function init() {
+  function init$1() {
     this.es = 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
   }
@@ -75580,11 +75730,117 @@
     return p;
   }
 
-  var names = ["eqearth", "Equal Earth", "Equal_Earth"];
+  var names$1 = ["eqearth", "Equal Earth", "Equal_Earth"];
   var eqearth = {
-    init: init,
+    init: init$1,
     forward: forward,
     inverse: inverse,
+    names: names$1
+  };
+
+  var EPS10 = 1e-10;
+
+  function init() {
+    var c;
+
+    this.phi1 = this.lat1;
+    if (Math.abs(this.phi1) < EPS10) {
+      throw new Error();
+    }
+    if (this.es) {
+      this.en = pj_enfn(this.es);
+      this.m1 = pj_mlfn(this.phi1, this.am1 = Math.sin(this.phi1),
+        c = Math.cos(this.phi1), this.en);
+      this.am1 = c / (Math.sqrt(1 - this.es * this.am1 * this.am1) * this.am1);
+      this.inverse = e_inv;
+      this.forward = e_fwd;
+    } else {
+      if (Math.abs(this.phi1) + EPS10 >= HALF_PI) {
+        this.cphi1 = 0;
+      }
+      else {
+        this.cphi1 = 1 / Math.tan(this.phi1);
+      }
+      this.inverse = s_inv;
+      this.forward = s_fwd;
+    }
+  }
+
+  function e_fwd(p) {
+    var lam = adjust_lon(p.x - (this.long0 || 0));
+    var phi = p.y;
+    var rh, E, c;
+    rh = this.am1 + this.m1 - pj_mlfn(phi, E = Math.sin(phi), c = Math.cos(phi), this.en);
+    E = c * lam / (rh * Math.sqrt(1 - this.es * E * E));
+    p.x = rh * Math.sin(E);
+    p.y = this.am1 - rh * Math.cos(E);
+
+    p.x = this.a * p.x + (this.x0 || 0);
+    p.y = this.a * p.y + (this.y0 || 0);
+    return p;
+  }
+
+  function e_inv(p) {
+    p.x = (p.x - (this.x0 || 0)) / this.a;
+    p.y = (p.y - (this.y0 || 0)) / this.a;
+
+    var s, rh, lam, phi;
+    rh = hypot(p.x, p.y = this.am1 - p.y);
+    phi = pj_inv_mlfn(this.am1 + this.m1 - rh, this.es, this.en);
+    if ((s = Math.abs(phi)) < HALF_PI) {
+      s = Math.sin(phi);
+      lam = rh * Math.atan2(p.x, p.y) * Math.sqrt(1 - this.es * s * s) / Math.cos(phi);
+    } else if (Math.abs(s - HALF_PI) <= EPS10) {
+      lam = 0;
+    }
+    else {
+      throw new Error();
+    }
+    p.x = adjust_lon(lam + (this.long0 || 0));
+    p.y = adjust_lat(phi);
+    return p;
+  }
+
+  function s_fwd(p) {
+    var lam = adjust_lon(p.x - (this.long0 || 0));
+    var phi = p.y;
+    var E, rh;
+    rh = this.cphi1 + this.phi1 - phi;
+    if (Math.abs(rh) > EPS10) {
+      p.x = rh * Math.sin(E = lam * Math.cos(phi) / rh);
+      p.y = this.cphi1 - rh * Math.cos(E);
+    } else {
+      p.x = p.y = 0;
+    }
+
+    p.x = this.a * p.x + (this.x0 || 0);
+    p.y = this.a * p.y + (this.y0 || 0);
+    return p;
+  }
+
+  function s_inv(p) {
+    p.x = (p.x - (this.x0 || 0)) / this.a;
+    p.y = (p.y - (this.y0 || 0)) / this.a;
+
+    var lam, phi;
+    var rh = hypot(p.x, p.y = this.cphi1 - p.y);
+    phi = this.cphi1 + this.phi1 - rh;
+    if (Math.abs(phi) > HALF_PI) {
+      throw new Error();
+    }
+    if (Math.abs(Math.abs(phi) - HALF_PI) <= EPS10) {
+      lam = 0;
+    } else {
+      lam = rh * Math.atan2(p.x, p.y) / Math.cos(phi);
+    }
+    p.x = adjust_lon(lam + (this.long0 || 0));
+    p.y = adjust_lat(phi);
+    return p;
+  }
+
+  var names = ["bonne", "Bonne (Werner lat_1=90)"];
+  var bonne = {
+    init: init,
     names: names
   };
 
@@ -75619,6 +75875,7 @@
     proj4.Proj.projections.add(tpers);
     proj4.Proj.projections.add(geos);
     proj4.Proj.projections.add(eqearth);
+    proj4.Proj.projections.add(bonne);
   }
 
   proj4.defaultDatum = 'WGS84'; //default datum
@@ -76322,7 +76579,7 @@
     }
 
     // Propagate the setVisible to the serverClusterLayer
-    //TODO check why reload doesn't do the job
+    //BEST check why reload doesn't do the job
     setVisible(visible) {
       if (this.serverClusterLayer)
         this.serverClusterLayer.setVisible(visible);
@@ -76464,12 +76721,11 @@
 
 
   // Get icon from chemineur.fr
-  function chemIconUrl(type, host) {
+  function genericIconUrl(type, hostIcons) {
     if (type) {
       const icons = type.split(' ');
 
-      return ('https://chemineur.fr/') +
-        'ext/Dominique92/GeoBB/icones/' +
+      return (hostIcons || 'https://chemineur.fr/ext/Dominique92/GeoBB/icones/') +
         icons[0] +
         (icons.length > 1 ? '_' + icons[1] : '') + // Limit to 2 type names & ' ' -> '_'
         '.svg';
@@ -76543,7 +76799,7 @@
 
     addProperties(properties) {
       return {
-        icon: chemIconUrl(properties.type), // Replace the alpages icon
+        icon: genericIconUrl(properties.type, this.options.hostIcons), // Replace the alpages icon
         link: this.host + 'viewtopic.php?t=' + properties.id,
       };
     }
@@ -76606,7 +76862,7 @@
     addProperties(properties) {
       return {
         type: properties.type_hebergement,
-        icon: chemIconUrl(properties.type_hebergement),
+        icon: genericIconUrl(properties.type_hebergement, this.options.hostIcons),
         ele: properties.altitude,
         capacity: properties.cap_ete,
         link: properties.url,
@@ -76638,7 +76894,7 @@
             properties: {
               name: properties.locales[0].title,
               type: properties.waypoint_type,
-              icon: chemIconUrl(properties.waypoint_type),
+              icon: genericIconUrl(properties.waypoint_type, options.hostIcons),
               ele: properties.elevation,
               link: 'https://www.camptocamp.org/waypoints/' + properties.document_id,
             },
@@ -76701,18 +76957,21 @@
           // Translate attributes to standard myol
           for (let tag = node.firstElementChild; tag; tag = tag.nextSibling)
             if (tag.attributes) {
+              const tagv = tag.getAttribute('v');
               if (tags.indexOf(tag.getAttribute('k')) !== -1 &&
-                tags.indexOf(tag.getAttribute('v')) !== -1 &&
+                tags.indexOf(tagv) !== -1 &&
                 tag.getAttribute('k') !== 'type') {
-                addTag(doc, node, 'type', tag.getAttribute('v'));
-                addTag(doc, node, 'icon', chemIconUrl(tag.getAttribute('v')));
+                addTag(doc, node, 'type', tagv);
+                addTag(doc, node, 'icon',
+                  genericIconUrl(tagv, options.hostIcons)
+                );
 
                 // Only once for a node
                 addTag(doc, node, 'link', 'https://www.openstreetmap.org/' + node.nodeName + '/' + node.id);
               }
 
               if (tag.getAttribute('k') && tag.getAttribute('k').includes('capacity:'))
-                addTag(doc, node, 'capacity', tag.getAttribute('v'));
+                addTag(doc, node, 'capacity', tagv);
             }
 
           // Transform an area to a node (picto) at the center of this area
@@ -76802,11 +77061,11 @@
 
 
   var layer = {
-    ...myVectorLayer,
     BackgroundLayer: BackgroundLayer,
     Editor: Editor,
     Hover: Hover,
     Marker: Marker,
+    ...myVectorLayer,
     Selector: Selector,
     tile: tileLayercollection,
     vector: vectorLayerCollection,
@@ -76816,11 +77075,14 @@
    * Display misc values
    */
 
+
+  const VERSION = '1.1.2.dev 11/09/2024 20:26:03';
+
   async function trace() {
     const data = [
       'Ol v' + ol.util.VERSION,
       'Geocoder ' + Base.prototype.getVersion(),
-      'MyOl ' + myol.VERSION,
+      'MyOl ' + VERSION,
       'language ' + navigator.language,
     ];
 
@@ -76860,7 +77122,7 @@
     console.info(data.join('\n'));
   }
 
-  //TODO BUG d'où vient map ?
+  /* global map */
   // Zoom & resolution
   function traceZoom() {
     console.log(
@@ -76882,13 +77144,13 @@
    */
 
 
-  var myol$1 = {
+  var myol = {
     control: control,
     layer: layer,
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
     trace: trace,
-    VERSION: '1.1.2.dev 13/08/2024 11:31:24',
+    VERSION: VERSION,
   };
 
   // This file defines the contents of the dist/myol.css & dist/myol libraries
@@ -76896,12 +77158,12 @@
 
 
   // Add ol as member of myol
-  myol$1.ol = ol;
+  myol.ol = ol;
 
   // Export ol & myol as globals if not already defined
   window.ol ||= ol;
-  window.myol ||= myol$1;
+  window.myol ||= myol;
 
-  return myol$1;
+  return myol;
 
 }));

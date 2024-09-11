@@ -1,0 +1,1 @@
+	<ellipse cx="12" cy="20" rx="10" ry="18" stroke-width="3" stroke="<?=$couleurs[1]?:'black'?>" fill="<?=$couleurs[0]?:'#ffeedd'?>" />

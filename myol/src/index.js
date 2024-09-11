@@ -6,13 +6,13 @@
 import control from './control';
 import layer from './layer';
 import * as stylesOptions from './layer/stylesOptions';
-import trace from './trace';
+import * as trace from './trace';
 
 export default {
   control: control,
   layer: layer,
   Selector: layer.Selector,
   stylesOptions: stylesOptions,
-  trace: trace,
-  VERSION: '__myolBuildVersion__ __myolBuildDate__',
+  trace: trace.trace,
+  VERSION: trace.VERSION,
 };
