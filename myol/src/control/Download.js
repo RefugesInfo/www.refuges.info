@@ -1,9 +1,12 @@
 /**
- * File downloader control
+ * Download control to download vectors features
+ * Supports GPX, KML, GeoJSON formats
  */
+import Feature from 'ol/Feature';
+import * as format from 'ol/format';
+import LineString from 'ol/geom/LineString';
 
-import ol from '../ol';
-import Button from './Button.js';
+import Button from './Button';
 
 const subMenuHTML = '\
   <p><a mime="application/gpx+xml">GPX</a></p>\
@@ -16,7 +19,7 @@ const subMenuHTML = '\
   subMenuHTML;
 
 //BEST BUG incompatible with clusters
-export class Download extends Button {
+class Download extends Button {
   constructor(opt) {
     const options = {
       // Button options
@@ -43,7 +46,7 @@ export class Download extends Button {
   subMenuAction(evt) {
     const map = this.getMap(),
       formatName = evt.target.innerText,
-      downloadFormat = new ol.format[formatName](),
+      downloadFormat = new format[formatName](),
       mime = evt.target.getAttribute('mime'),
       mapExtent = map.getView().calculateExtent();
 
@@ -70,11 +73,11 @@ export class Download extends Button {
           geometry.getCoordinates().forEach(coords => {
             if (typeof coords[0][0] === 'number')
               // Polygon
-              featuresToSave.push(new ol.Feature(new ol.geom.LineString(coords)));
+              featuresToSave.push(new Feature(new LineString(coords)));
             else
               // MultiPolygon
               coords.forEach(subCoords =>
-                featuresToSave.push(new ol.Feature(new ol.geom.LineString(subCoords)))
+                featuresToSave.push(new Feature(new LineString(subCoords)))
               );
           });
         }

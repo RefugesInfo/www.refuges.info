@@ -33,12 +33,12 @@ This [Example](https://Dominique92.github.io/myol/examples/) implements a single
 Layer Switcher
 ==============
 Simple layer switcher with base & vector layers.
-See a [Layer Switcher example](https://Dominique92.github.io/myol/examples/?layerSwitcher)
+See a [Layer Switcher example](https://Dominique92.github.io/myol/examples/?sample=layerSwitcher)
 
 Tile layers
 ===========
 Collection of base layers from different vendors.
-See a [Tile layers example](https://Dominique92.github.io/myol/examples/?tileLayer)
+See a [Tile layers example](https://Dominique92.github.io/myol/examples/?sample=tileLayer)
 * OSM, OSM-FR, OpenTopo, CyclOsm, Maps.Refuges.Info
 * ThunderForest Outdoors, OpenTopoMap, Cycles, Landscape, Transport, ...
 * IGN France, TOP25, cadastre, satellite, ...
@@ -54,7 +54,7 @@ See a [Tile layers example](https://Dominique92.github.io/myol/examples/?tileLay
 Vector layers
 =============
 Collection of GeoJson ajax layers from different vendors with style, hover & click features.
-See a [Vector layer example](https://Dominique92.github.io/myol/examples/?vectorLayer)
+See a [Vector layer example](https://Dominique92.github.io/myol/examples/?sample=vectorLayer)
 * Mountain (refuges.info, pyrenees-refuges.com, camptocamp.org)
 * Personal (chemineur.fr, alpages.info)
 * OpenstreetMap vector points of interest
@@ -62,7 +62,7 @@ See a [Vector layer example](https://Dominique92.github.io/myol/examples/?vector
 Misc controls
 =============
 Collection of miscellaneous controls and buttons.
-See a [Control example](https://Dominique92.github.io/myol/examples/?controls)
+See a [Control example](https://Dominique92.github.io/myol/examples/?sample=controls)
 * Keep position, zoom & zoom on localStorage
 * Geocoder
 * GPX upload & download
@@ -75,12 +75,12 @@ See a [Control example](https://Dominique92.github.io/myol/examples/?controls)
 Marker display & edit
 =====================
 Editable position marker with multi-projection position display
-See a [Marker example](https://Dominique92.github.io/myol/examples/?marker)
+See a [Marker example](https://Dominique92.github.io/myol/examples/?sample=marker)
 
 Lines & Polygons editor
 =======================
 Polylines & polygons editor.
-See an [Editor example](https://Dominique92.github.io/myol/examples/?editor)
+See an [Editor example](https://Dominique92.github.io/myol/examples/?sample=editor)
 
 Off line GPS
 ============

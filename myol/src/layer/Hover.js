@@ -4,13 +4,14 @@
  * Go to the link property when click a feature
  */
 
-import ol from '../ol';
+import Style from 'ol/style/Style';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
 
-export class Hover extends ol.layer.Vector {
+class Hover extends VectorLayer {
   constructor(options) {
     super({
-      background: 'transparent',
-      source: new ol.source.Vector(),
+      source: new VectorSource(),
       zIndex: 500, // Above all layers
       wrapX: false,
 
@@ -97,7 +98,7 @@ export class Hover extends ol.layer.Vector {
 
         if (hoveredLayer.options && hoveredLayer.options.hoverStylesOptions)
           f.setStyle(
-            new ol.style.Style(hoveredLayer.options.hoverStylesOptions(f, resolution, hoveredLayer))
+            new Style(hoveredLayer.options.hoverStylesOptions(f, resolution, hoveredLayer))
           );
 
         source.clear();

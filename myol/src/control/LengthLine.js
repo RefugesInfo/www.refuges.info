@@ -1,11 +1,15 @@
 /**
- * LengthLine control
- * Control to display the length & height difference of an hovered line
+ * LengthLine control to display the length of an hovered line
  */
 
-import ol from '../ol';
+import Control from 'ol/control/Control';
+import {
+  getLength as sphereGetLength,
+} from 'ol/sphere';
 
-export class LengthLine extends ol.control.Control {
+import './lengthLine.css';
+
+class LengthLine extends Control {
   constructor() {
     super({
       element: document.createElement('div'), //HACK button not visible
@@ -33,7 +37,7 @@ export class LengthLine extends ol.control.Control {
   calculateLength(feature) {
     if (feature) {
       const geometry = feature.getGeometry(),
-        length = ol.sphere.getLength(geometry),
+        length = sphereGetLength(geometry),
         fcs = this.getFlatCoordinates(geometry);
       let denivPos = 0,
         denivNeg = 0;

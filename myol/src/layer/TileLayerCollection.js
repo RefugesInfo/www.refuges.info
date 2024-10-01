@@ -1,9 +1,13 @@
 /**
- * TileLayerCollection.js
- * Acces to various tiles layers services
+ * Many simplified display of various tiles layers services
  */
 
-import ol from '../ol';
+import ol from '../ol'; //BEST imports direct de node_modules/ol
+
+import {
+  getTopLeft,
+  getWidth,
+} from 'ol/extent';
 
 /**
  * Virtual class to factorise XYZ layers code
@@ -39,6 +43,7 @@ export class NoTile extends XYZ {
     super({
       url: 'https://ecn.t0.tiles.virtualearth.net/tiles/r000000000000000000.jpeg?g=1',
       attributions: 'Out of zoom',
+
       ...options,
     });
   }
@@ -103,6 +108,7 @@ export class Kompass extends OpenStreetMap { // Austria
         'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
       maxZoom: 17,
       attributions: '<a href="https://www.kompass.de/">Kompass</a>',
+
       ...options,
     });
   }
@@ -122,6 +128,7 @@ export class Thunderforest extends OpenStreetMap {
       // subLayer: 'outdoors', ...
       // key: '...',
       attributions: '<a href="https://www.thunderforest.com/">Thunderforest</a>',
+
       ...options, // Include key
     });
   }
@@ -129,7 +136,8 @@ export class Thunderforest extends OpenStreetMap {
 
 /**
  * IGN France
- * Doc, API & key : https://geoservices.ign.fr/services-web
+ * Doc & API : https://geoservices.ign.fr/services-web
+ * Key : https://cartes.gouv.fr
  */
 export class IGN extends ol.layer.Tile {
   constructor(options = {}) {
@@ -137,7 +145,7 @@ export class IGN extends ol.layer.Tile {
       IGNmatrixIds = [];
 
     for (let i = 0; i < 18; i++) {
-      IGNresolutions[i] = ol.extent.getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / (2 ** i);
+      IGNresolutions[i] = getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / (2 ** i);
       IGNmatrixIds[i] = i.toString();
     }
 
@@ -158,6 +166,7 @@ export class IGN extends ol.layer.Tile {
         // IGN options
         ...options, // Include layer
       }),
+
       ...options, // For layer limits
     });
   }
@@ -185,7 +194,7 @@ export class SwissTopo extends ol.layer.Tile {
       matrixIds = [];
 
     for (let r = 0; r < 18; ++r) {
-      resolutions[r] = ol.extent.getWidth(projectionExtent) / 256 / (2 ** r);
+      resolutions[r] = getWidth(projectionExtent) / 256 / (2 ** r);
       matrixIds[r] = r;
     }
 
@@ -194,7 +203,7 @@ export class SwissTopo extends ol.layer.Tile {
         url: options.host + options.subLayer +
           '/default/current/3857/{TileMatrix}/{TileCol}/{TileRow}.jpeg',
         tileGrid: new ol.tilegrid.WMTS({
-          origin: ol.extent.getTopLeft(projectionExtent),
+          origin: getTopLeft(projectionExtent),
           resolutions: resolutions,
           matrixIds: matrixIds,
         }),
@@ -230,6 +239,7 @@ export class IgnES extends XYZ {
         '&Format=image/jpeg' +
         '&style=default&tilematrixset=GoogleMapsCompatible' +
         '&TileMatrix={z}&TileCol={x}&TileRow={y}',
+
       ...options,
     });
   }
@@ -298,6 +308,7 @@ export class OS extends XYZ {
         options.subLayer +
         '/{z}/{x}/{y}.png' +
         '?key=' + options.key,
+
       ...options,
     });
   }
@@ -415,7 +426,7 @@ export class MapboxElevation extends Maxbox {
  * elevation = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1
  * Key : https://cloud.maptiler.com/account/keys/
  */
-/*// Backup of Maxbox elevation 
+/*// Backup of Maxbox elevation
 export class MapTilerElevation extends XYZ {
   constructor(options = {}) {
     super({
@@ -423,6 +434,7 @@ export class MapTilerElevation extends XYZ {
       url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
       maxZoom: 12,
       attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap contributors</a>',
+	  
       ...options,
     });
   }

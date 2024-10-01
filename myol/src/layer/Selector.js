@@ -10,7 +10,7 @@
  * If no name is specified or there are no checkbox with this name, return []
  */
 
-export class Selector {
+class Selector {
   constructor(name, initSelect) {
     if (name) {
       this.safeName = 'myol_' + name.replace(/[^a-z]/giu, '');

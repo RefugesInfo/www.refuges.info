@@ -9,8 +9,7 @@
 /* Buttonless controls */
 .myol-permalink,
 .ol-attribution,
-.myol-mouse-position,
-.myol-length-line {
+.myol-mouse-position {
   font-size: 12px;
 }
 
@@ -24,18 +23,7 @@
   color: white;
 }
 
-.myol-length-line {
-  position: absolute;
-  bottom: 52px;
-  left: 8px;
-  padding: 2px;
-  border-radius: 4px;
-  background: rgba(0, 60, 136, 0.3);
-  color: white;
-}
-
-.myol-mouse-position:empty,
-.myol-length-line:empty {
+.myol-mouse-position:empty {
   display: none;
 }
 

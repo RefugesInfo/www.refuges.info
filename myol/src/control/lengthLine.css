@@ -1,0 +1,25 @@
+/*
+ * lengthLine.css
+ */
+/* PhpBB compatibility */
+.ol-overlaycontainer-stopevent>div:not(.ol-control) {
+  margin: 0;
+}
+
+.myol-length-line {
+  font-size: 12px;
+}
+
+.myol-length-line {
+  position: absolute;
+  bottom: 52px;
+  left: 8px;
+  padding: 2px;
+  border-radius: 4px;
+  background: rgba(0, 60, 136, 0.3);
+  color: white;
+}
+
+.myol-length-line:empty {
+  display: none;
+}

@@ -1,9 +1,21 @@
 /**
- * MyVectorLayer.js
- * Facilities to vector layers
+ * MyVectorLayer class to facilitate vector layers display
  */
 
-import ol from '../ol';
+import ol from '../ol'; //BEST imports direct de node_modules/ol
+
+import ClusterSource from 'ol/source/Cluster';
+import Feature from 'ol/Feature';
+import {
+  getCenter,
+} from 'ol/extent';
+import Point from 'ol/geom/Point';
+import Style from 'ol/style/Style';
+import {
+  transformExtent,
+} from 'ol/proj';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
 
 import Selector from './Selector';
 import * as stylesOptions from './stylesOptions';
@@ -12,7 +24,7 @@ import * as stylesOptions from './stylesOptions';
  * GeoJSON vector display
  * display the loading status
  */
-class MyVectorSource extends ol.source.Vector {
+class MyVectorSource extends VectorSource {
   constructor(options) {
     // selectName: '', // Name of checkbox inputs to tune the url parameters
     // addProperties: properties => {}, // Add properties to each received feature
@@ -62,7 +74,7 @@ class MyVectorSource extends ol.source.Vector {
 /**
  * Cluster source to manage clusters in the browser
  */
-class MyClusterSource extends ol.source.Cluster {
+class MyClusterSource extends ClusterSource {
   constructor(options) {
     // options:
     // browserClusterFeaturelMaxPerimeter: 300, // (pixels) perimeter of a line or poly above which we do not cluster
@@ -95,7 +107,7 @@ class MyClusterSource extends ol.source.Cluster {
       if (featurePixelPerimeter > options.browserClusterFeaturelMaxPerimeter)
         this.addFeature(feature); // And return null to not cluster this feature
       else
-        return new ol.geom.Point(ol.extent.getCenter(feature.getGeometry().getExtent()));
+        return new Point(getCenter(feature.getGeometry().getExtent()));
     }
   }
 
@@ -122,7 +134,7 @@ class MyClusterSource extends ol.source.Cluster {
       lines = ['Cliquer pour zoomer'];
 
     // Display a cluster point
-    return new ol.Feature({
+    return new Feature({
       id: features[0].getId(), // Pseudo id = the id of the first feature in the cluster
       name: stylesOptions.agregateText(lines),
       geometry: point, // The gravity center of all the features in the cluster
@@ -149,7 +161,7 @@ class MyClusterSource extends ol.source.Cluster {
 /**
  * Browser & server clustered layer
  */
-class MyBrowserClusterVectorLayer extends ol.layer.Vector {
+class MyBrowserClusterVectorLayer extends VectorLayer {
   constructor(options) {
     // browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters but add a jitter
 
@@ -157,8 +169,6 @@ class MyBrowserClusterVectorLayer extends ol.layer.Vector {
 
     // High resolutions layer, can call for server clustering
     const hiResOptions = {
-      background: 'transparent',
-
       source: options.nbMaxClusters ?
         new MyClusterSource(options) : // Use a cluster source and a vector source to manages clusters
         new MyVectorSource(options), // or a vector source to get the data
@@ -178,7 +188,6 @@ class MyBrowserClusterVectorLayer extends ol.layer.Vector {
     if (options.browserClusterMinResolution &&
       options.browserClusterMinResolution < options.maxResolution) {
       const lowResOptions = {
-        background: 'transparent',
         source: new MyVectorSource(options),
 
         ...options,
@@ -187,7 +196,7 @@ class MyBrowserClusterVectorLayer extends ol.layer.Vector {
         type: 'lowResolution',
       };
 
-      this.lowResolutionLayer = new ol.layer.Vector(lowResOptions);
+      this.lowResolutionLayer = new VectorLayer(lowResOptions);
       this.lowResolutionLayer.options = lowResOptions;
     }
   }
@@ -252,7 +261,7 @@ class MyServerClusterVectorLayer extends MyBrowserClusterVectorLayer {
   }
 
   // Propagate the setVisible to the serverClusterLayer
-  //TODO check why reload doesn't do the job
+  //BEST check why reload doesn't do the job
   setVisible(visible) {
     if (this.serverClusterLayer)
       this.serverClusterLayer.setVisible(visible);
@@ -274,7 +283,7 @@ class MyServerClusterVectorLayer extends MyBrowserClusterVectorLayer {
  * Style features
  * Layer & features selector
  */
-export class MyVectorLayer extends MyServerClusterVectorLayer {
+class MyVectorLayer extends MyServerClusterVectorLayer {
   constructor(opt) {
     const options = {
       // host: '',
@@ -309,7 +318,7 @@ export class MyVectorLayer extends MyServerClusterVectorLayer {
 
       ...opt,
     };
-    options.format ||= new ol.format.GeoJSON(options); //BEST treat & display JSON errors
+    options.format ||= new ol.format.GeoJSON(options); //BEST treat & display Json errors
 
     super({
       url: (e, r, p) => this.url(e, r, p),
@@ -356,7 +365,7 @@ export class MyVectorLayer extends MyServerClusterVectorLayer {
   }
 
   bbox(extent, resolution, mapProjection) {
-    return ol.proj.transformExtent(
+    return transformExtent(
       extent,
       mapProjection,
       this.dataProjection, // Received projection
@@ -372,7 +381,7 @@ export class MyVectorLayer extends MyServerClusterVectorLayer {
       this.options.basicStylesOptions;
 
     return sof(feature, ...args) // Call the styleOptions function
-      .map(so => new ol.style.Style(so)); // Transform into an array of Style objects
+      .map(so => new Style(so)); // Transform into an array of Style objects
   }
 
   // Define reload action

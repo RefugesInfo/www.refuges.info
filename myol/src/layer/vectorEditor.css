@@ -1,0 +1,69 @@
+/*
+ * vectorEditor.css
+ */
+
+/* Position of the buttons */
+.ol-zoom,
+.ol-full-screen,
+.edit-button {
+  position: static;
+  float: left;
+  margin: 2px;
+}
+
+.edit-button-modify button::after {
+  content: "\2725";
+}
+
+.edit-button-drawLine button::after {
+  content: "\2710";
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+.edit-button-drawPoly button::after {
+  content: "\23E2";
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+.edit-view-modify .edit-button-modify button,
+.edit-view-drawLine .edit-button-drawLine button,
+.edit-view-drawPoly .edit-button-drawPoly button {
+  background: lightblue;
+}
+
+.edit-pointed .edit-view-modify {
+  cursor: pointer;
+}
+
+.edit-view-drawLine,
+.edit-view-drawPoly {
+  cursor: copy;
+}
+
+/* Submenu */
+.edit-button>div {
+  display: none;
+}
+
+.edit-button:hover>div,
+.edit-button>div:hover {
+  display: initial;
+}
+
+.edit-button>div {
+  position: absolute;
+  top: 26px;
+  max-height: calc(100% - 38px);
+  max-width: calc(100% - 115px);
+  overflow-y: auto;
+  opacity: 0.8;
+  font-size: 16px;
+  background: #d1e9ff;
+  z-index: 30;
+}
+
+.edit-button>div * {
+  margin: 0;
+}

@@ -1,23 +1,31 @@
 /**
- * GPX file loader control
+ * Load control to load vectors features
+ * Supports any format supported by Openlayers
  */
 
-import ol from '../ol';
-import Button from './Button.js';
+import * as format from 'ol/format';
+import Icon from 'ol/style/Icon';
+import {
+  isEmpty,
+} from 'ol/extent';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import Stroke from 'ol/style/Stroke';
+import Style from 'ol/style/Style';
+
+import Button from './Button';
 
 const subMenuHTML = '<input type="file" accept=".gpx,.kml,.json,.geojson">',
   subMenuHTMLfr = '<p>Importer un fichier de points ou de traces</p>' + subMenuHTML;
 
-export class Load extends Button {
+class Load extends Button {
   constructor(options) {
     super({
-      // Button options
-      className: 'myol-button-load',
+      className: 'myol-button-load', // Button options
       subMenuId: 'myol-button-load',
       subMenuHTML: subMenuHTML,
       subMenuHTMLfr: subMenuHTMLfr,
-
-      // receivingLayer: layer, // Layer to addFeatures when loaded
+      //loadedStyleOptions: {},// Style of the loaded features
 
       ...options,
     });
@@ -42,11 +50,13 @@ export class Load extends Button {
       .then(text => this.loadText(text, url));
   }
 
-  // Method to load features from a geoJson text
+  // Method to load features from a GeoJSON text
   loadText(text, url) {
     const map = this.getMap(),
       formatName = url.split('.').pop().toUpperCase(), // Extract extension to be used as format name
-      loadFormat = new ol.format[formatName in ol.format ? formatName : 'GeoJSON'](), // Find existing format
+      loadFormat = new format[formatName in format ? formatName : 'GeoJSON']({ // Find existing format
+        extractStyles: false, // For KML
+      }),
       receivedLat = text.match(/lat="-?([0-9]+)/u); // Received projection depending on the first value
 
     const receivedProjection =
@@ -59,39 +69,38 @@ export class Load extends Button {
       featureProjection: map.getView().getProjection(), // Map projection
     });
 
-    const gpxSource = new ol.source.Vector({
+    const gpxSource = new VectorSource({
       format: loadFormat,
       features: features,
       wrapX: false,
     });
 
-    const gpxLayer = new ol.layer.Vector({
-      background: 'transparent',
+    const gpxLayer = new VectorLayer({
       source: gpxSource,
+
       style: feature => {
         const properties = feature.getProperties();
 
-        return new ol.style.Style({
-          stroke: new ol.style.Stroke({
+        return new Style({
+          stroke: new Stroke({
             color: 'blue',
             width: 2,
           }),
-          image: properties.sym ? new ol.style.Icon({
+          image: properties.sym ? new Icon({
             src: 'https://chemineur.fr/ext/Dominique92/GeoBB/icones/' + properties.sym + '.svg',
           }) : null,
+
+          ...this.options.loadedStyleOptions,
         });
       },
     });
 
     const fileExtent = gpxSource.getExtent();
 
-    if (ol.extent.isEmpty(fileExtent))
+    if (isEmpty(fileExtent))
       alert(url + ' ne comporte pas de point ni de trace.');
     else {
-      if (this.options.receivingLayer)
-        this.options.receivingLayer.getSource().addFeatures(features);
-      else
-        map.addLayer(gpxLayer);
+      map.addLayer(gpxLayer);
 
       // Zoom the map on the added features
       map.getView().fit(

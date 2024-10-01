@@ -3,20 +3,20 @@
  */
 
 import BackgroundLayer from './BackgroundLayer';
-import Editor from './Editor';
+import VectorEditor from './VectorEditor';
 import Hover from './Hover';
 import Marker from './Marker';
+import MyVectorLayer from './MyVectorLayer';
 import Selector from './Selector';
-import * as myVectorLayer from './MyVectorLayer';
 import * as tileLayercollection from './TileLayerCollection';
 import * as vectorLayerCollection from './VectorLayerCollection';
 
 export default {
-  ...myVectorLayer,
   BackgroundLayer: BackgroundLayer,
-  Editor: Editor,
+  VectorEditor: VectorEditor,
   Hover: Hover,
   Marker: Marker,
+  MyVectorLayer,
   Selector: Selector,
   tile: tileLayercollection,
   vector: vectorLayerCollection,

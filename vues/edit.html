@@ -29,6 +29,10 @@
 				<p>Article partitif (max 20 car)
 				<input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif?>" /></p>
 				<br>
+				<p class="edit-error-lines">
+				Il ne doit pas y avoir de ligne pour enregistrer.</p>
+				<p class="edit-error-polys">
+				Il doit y avoir au moins 1 polygone pour enregistrer.</p>
 				<p><input type="submit" name="enregistrer" value="Enregistrer et rester" /></p>
 			</label>
 		</form>
@@ -37,6 +41,61 @@
 			<p><input type="submit" value="Quitter sans enregistrer" /></p>
 		</form>
 	</fieldset>
+
+	<div id="edit-help-modify">
+		<p>L'élément sélectionné est <span style="color:red"><b>rouge</b></span></p>
+		<p>Les éléments sélectionnables sont <span style="color:blue"><b>bleus</b></span></p>
+		<p>Les éléments en fond sont <b>noirs</b></p>
+		<br />
+		<p><b>Modifier un polygone:</b></p>
+		<p>Cliquer sur un sommet et glisser pour le <u>déplacer</u></p>
+		<p>Cliquer le long d'un segment et glisser pour
+			<u>ajouter un sommet au milieu d'un segment</u></p>
+		<p>Alt+cliquer sur un sommet pour le <u>supprimer</u></p>
+		<p>Ctrl+Alt+cliquer sur un de ses segment pour
+			<u>supprimer un polygone ou une ligne</u></p>
+		<p>Un polygone entièrement inclus dans un autre
+			<u>crée un trou</u></p>
+		<br />
+		<p><b>Utiliser des lignes pour les éditions complexes:</b></p>
+		<p>Ctrl+cliquer sur un sommet ou un segment d'un polygone rouge pour le
+		 <u>transformer en ligne</u></p>
+		<p>...puis déplacer l'une des 2 extrémités (rond rouge)</p>
+		<p>Ctrl+cliquer sur une ligne pour la <u>couper en deux</u></p>
+		<p>Déplacer l'extrémité d'une ligne jusqu'à l'extrémité
+			d'une autre ligne pour les <u>fusionner</u></p>
+		<p>Fusionner les 2 extrémités d'une ligne pour la
+			<u>transformer en polygone</u></p>
+		<p style="color:red">Vous devez transformer toutes les lignes en polygones
+			ou les supprimer avant d'enregistrer</p>
+	</div>
+
+	<div id="edit-help-drawPoly">
+		<p><b>Créer un polygone:</b></p>
+		<p>Cliquer sur le bouton
+			<span style="display:inline-block;transform:scaleX(-1)">&#x23E2;</span>
+			(qui bleuit)
+		</p>
+		<p>Cliquer sur l'emplacement du <u>début</u></p>
+		<p>Puis sur chaque <u>sommet à créer</u></p>
+		<p>Double cliquer sur le <u>dernier sommet</u> pour terminer</p>
+	</div>
+
+	<div id="edit-help-drawLine">
+		<p><b>Créer une ligne:</b></p>
+		<p>Cliquer sur le bouton
+			<span style="display:inline-block;transform:scaleX(-1)">&#x2710;</span>
+			(qui bleuit)
+		</p>
+		<p>Cliquer sur l'emplacement du <u>début</u></p>
+		<p>Puis sur chaque <u>sommet à créer</u></p>
+		<p>Double cliquer sur le <u>dernier sommet</u> pour terminer</p>
+		<br />
+		<p><b>Suivre un tracé existant:</b></p>
+		<p>Utiliser une <u>trace en fond</u> (non modifiable, en noir)</p>
+		<p>ou charger un <u>fichier de trace</u> (non modifiable, en bleu fin)</p>
+		<p>Pendant la création, <u>cliquer sur cette trace et suivre le contour</u></p>
+	</div>
 
 	<?if ($vue->polygone->id_polygone) {?>
 		<fieldset>

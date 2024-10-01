@@ -2,10 +2,28 @@
  * Marker position display & edit
  */
 
-import ol from '../ol';
+import {
+  containsCoordinate,
+} from 'ol/extent';
+import Feature from 'ol/Feature';
+import Icon from 'ol/style/Icon';
+import Point from 'ol/geom/Point';
+import Pointer from 'ol/interaction/Pointer';
 import proj4Lib from 'proj4/lib/index';
+import {
+  register,
+} from 'ol/proj/proj4';
+import Style from 'ol/style/Style';
+import {
+  toStringHDMS,
+} from 'ol/coordinate';
+import {
+  transform,
+} from 'ol/proj';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
 
-export class Marker extends ol.layer.Vector {
+class Marker extends VectorLayer {
   constructor(opt) {
     const options = {
       // src: 'imageUrl', // url of marker image
@@ -13,7 +31,6 @@ export class Marker extends ol.layer.Vector {
       // dragable: false, // Can draw the marker to edit position
       // focus: number // Center & value of zoom on the marker
       zIndex: 600, // Above points & hover
-      background: 'transparent',
 
       prefix: 'marker', // Will take the values on
       // marker-json, // <input> json form
@@ -25,21 +42,22 @@ export class Marker extends ol.layer.Vector {
       ...opt,
     };
 
-    const point = new ol.geom.Point(
-      ol.proj.transform(options.defaultPosition, 'EPSG:4326', 'EPSG:3857') // If no json value
+    const point = new Point(
+      transform(options.defaultPosition, 'EPSG:4326', 'EPSG:3857') // If no json value
     );
 
     super({
-      source: new ol.source.Vector({
-        features: [new ol.Feature({
+      source: new VectorSource({
+        features: [new Feature({
           geometry: point,
         })],
         wrapX: false,
 
         ...options,
       }),
-      style: new ol.style.Style({
-        image: new ol.style.Icon(options),
+      style: new Style({
+        image: new Icon(options),
+        ...options.styleOptions,
       }),
       properties: {
         marker: true, // To recognise that this is a marker
@@ -64,7 +82,7 @@ export class Marker extends ol.layer.Vector {
         proj4Lib.defs('EPSG:' + (32600 + u), '+proj=utm +zone=' + u + ' +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
         proj4Lib.defs('EPSG:' + (32700 + u), '+proj=utm +zone=' + u + ' +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
       }
-      ol.proj.proj4.register(proj4Lib);
+      register(proj4Lib);
     }
 
     // Register the action listeners
@@ -100,7 +118,7 @@ export class Marker extends ol.layer.Vector {
 
     // Drag the marker
     if (this.options.dragable) {
-      map.addInteraction(new ol.interaction.Pointer({
+      map.addInteraction(new Pointer({
         handleDownEvent: evt => map.getFeaturesAtPixel(evt.pixel, {
           layerFilter: l => l.ol_uid === this.ol_uid
         }).length,
@@ -159,7 +177,7 @@ export class Marker extends ol.layer.Vector {
     if (!position[0] && !position[1])
       return;
 
-    const ll4326 = ol.proj.transform([
+    const ll4326 = transform([
       // Protection against non-digital entries / transform , into .
       parseFloat(position[0].toString().replace(/[^-0-9]+/u, '.')),
       parseFloat(position[1].toString().replace(/[^-0-9]+/u, '.'))
@@ -167,11 +185,11 @@ export class Marker extends ol.layer.Vector {
 
     ll4326[0] -= Math.round(ll4326[0] / 360) * 360; // Wrap +-180°
 
-    const ll3857 = ol.proj.transform(ll4326, 'EPSG:4326', 'EPSG:3857');
+    const ll3857 = transform(ll4326, 'EPSG:4326', 'EPSG:3857');
 
     const inEPSG21781 =
       typeof proj4Lib === 'function' &&
-      ol.extent.containsCoordinate([664577, 5753148, 1167741, 6075303], ll3857);
+      containsCoordinate([664577, 5753148, 1167741, 6075303], ll3857);
 
     // Move the marker
     this.point.setCoordinates(ll3857);
@@ -188,14 +206,14 @@ export class Marker extends ol.layer.Vector {
     // Display
     const strings = {
       dec: 'Lon: ' + this.els.lon.value + ', Lat: ' + this.els.lat.value,
-      dms: ol.coordinate.toStringHDMS(ll4326),
+      dms: toStringHDMS(ll4326),
     };
 
     if (inEPSG21781) {
-      const ll21781 = ol.proj.transform(ll4326, 'EPSG:4326', 'EPSG:21781'),
+      const ll21781 = transform(ll4326, 'EPSG:4326', 'EPSG:21781'),
         z = Math.floor(ll4326[0] / 6 + 90) % 60 + 1,
         u = 32600 + z + (ll4326[1] < 0 ? 100 : 0),
-        llutm = ol.proj.transform(ll3857, 'EPSG:4326', 'EPSG:' + u);
+        llutm = transform(ll3857, 'EPSG:4326', 'EPSG:' + u);
 
       // UTM zones
       strings.utm = ' UTM ' + z +

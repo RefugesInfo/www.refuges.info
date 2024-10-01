@@ -7,6 +7,145 @@
  * Built using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
+/*
+ * button.css
+ */
+/* Top aligned buttons */
+/* Container */
+.ol-zoom,
+.ol-full-screen,
+.myol-button {
+  position: static !important;
+  float: left;
+  margin: 2px;
+  /* No grey line around the button */
+  padding: 0 !important;
+}
+
+/* Button */
+/* Also for zoom, fullScreen, ... */
+.ol-control button {
+  font-size: 18px !important;
+  color: black;
+  background: white;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+}
+
+.ol-control button:hover {
+  box-shadow: 1px 1px 10px black;
+}
+
+/* Full screen */
+.ol-full-screen-false {
+  text-indent: -1em;
+  color: transparent !important;
+}
+
+.ol-full-screen-false::after {
+  font-style: italic;
+  color: black !important;
+  content: "\21F3";
+}
+
+/* Button labels */
+.myol-button-download button::after {
+  content: "\21e9";
+}
+
+.myol-button-geolocation button::after {
+  content: "\2295";
+}
+
+.myol-button-load button::after {
+  content: "\1F4C2";
+}
+
+.myol-button-print button::after {
+  content: "\1F5A8";
+}
+
+.myol-button-hide {
+  display: none;
+}
+
+/* Submenu */
+.myol-button>div {
+  max-height: calc(100% - 38px);
+  opacity: 0.8;
+  transition: max-height 0.3s ease-in, opacity 0.3s ease-out;
+  overflow: auto;
+  z-index: 30;
+}
+
+.myol-button:not(.myol-button-hover, .myol-button-selected)>div,
+.myol-button-nokeepselect:not(:hover)>div,
+.myol-button>*:empty {
+  max-height: 0;
+  /* For the beauty of the transition */
+  opacity: 0;
+}
+
+@media screen and (max-width: 400px) {
+  .myol-button:not(.myol-button-switcher)>div {
+    width: 100%;
+    left: 0;
+  }
+}
+
+.myol-button>*:not(button) {
+  position: absolute;
+  top: 30px;
+  background: white;
+  font-size: 16px;
+}
+
+.myol-button div {
+  background: #d1e9ff;
+}
+
+.myol-button div a {
+  color: blue !important;
+}
+
+.myol-button.myol-button-selected button {
+  background: #d1e9ff;
+}
+
+.myol-button p,
+.myol-button span,
+.myol-button .select-ext {
+  margin: 3px 0;
+  padding: 0 3px;
+  font-size: 14px;
+}
+
+.myol-button label {
+  display: block;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.myol-button a {
+  cursor: pointer;
+}
+
+.myol-button a {
+  color: blue;
+}
+
+.myol-button input {
+  margin: 0 3px;
+}
+
+.myol-button label:hover,
+.myol-button a:hover {
+  background: #ffe8d1;
+}
+
+.myol-button hr {
+  margin: 1px;
+}
 :root,
 :host {
   --ol-background-color: white;
@@ -363,227 +502,6 @@
 }
 
 /*
- * control.css
- */
-/* PhpBB compatibility */
-.ol-overlaycontainer-stopevent>div:not(.ol-control) {
-  margin: 0;
-}
-
-/* Buttonless controls */
-.myol-permalink,
-.ol-attribution,
-.myol-mouse-position,
-.myol-length-line {
-  font-size: 12px;
-}
-
-.myol-mouse-position {
-  position: absolute;
-  bottom: 30px;
-  left: 8px;
-  padding: 2px;
-  border-radius: 4px;
-  background: rgba(0, 60, 136, 0.3);
-  color: white;
-}
-
-.myol-length-line {
-  position: absolute;
-  bottom: 52px;
-  left: 8px;
-  padding: 2px;
-  border-radius: 4px;
-  background: rgba(0, 60, 136, 0.3);
-  color: white;
-}
-
-.myol-mouse-position:empty,
-.myol-length-line:empty {
-  display: none;
-}
-
-.myol-permalink {
-  position: absolute;
-  bottom: 35px;
-  right: 0;
-  padding: 3px;
-  border-radius: 8px 0 0 8px;
-  background: rgba(0, 60, 136, 0.3);
-}
-
-.ol-attribution button,
-.ol-attribution button:focus {
-  font-size: 14px !important;
-}
-
-/* When printing, hide all controls except scale & attribution */
-@media print {
-  @page {
-    /* Hide the header, footer & margins */
-    margin: 0;
-  }
-
-  body {
-    margin: 1mm 0 0 1mm;
-    padding: 0;
-  }
-
-  /* Force attribution open */
-  .ol-scale-line,
-  .ol-attribution {
-    display: flex !important;
-  }
-
-  .ol-attribution ul {
-    display: block !important;
-  }
-
-  .ol-attribution button,
-  .ol-overlaycontainer-stopevent>div {
-    display: none;
-  }
-}
-/*
- * button.css
- */
-/* Top aligned buttons */
-/* Container */
-.ol-zoom,
-.ol-full-screen,
-.myol-button {
-  position: static !important;
-  float: left;
-  margin: 2px;
-  /* No grey line around the button */
-  padding: 0 !important;
-}
-
-/* Button */
-/* Also for zoom, fullScreen, ... */
-.ol-control button {
-  font-size: 18px !important;
-  color: black;
-  background: white;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
-  cursor: pointer;
-}
-
-.ol-control button:hover {
-  box-shadow: 1px 1px 10px black;
-}
-
-/* Full screen */
-.ol-full-screen-false {
-  text-indent: -1em;
-  color: transparent !important;
-}
-
-.ol-full-screen-false::after {
-  font-style: italic;
-  color: black !important;
-  content: "\21F3";
-}
-
-/* Button labels */
-.myol-button-download button::after {
-  content: "\21e9";
-}
-
-.myol-button-geolocation button::after {
-  content: "\2295";
-}
-
-.myol-button-load button::after {
-  content: "\1F4C2";
-}
-
-.myol-button-print button::after {
-  content: "\1F5A8";
-}
-
-.myol-button-hide {
-  display: none;
-}
-
-/* Submenu */
-.myol-button>div {
-  max-height: calc(100% - 38px);
-  opacity: 0.8;
-  transition: max-height 0.3s ease-in, opacity 0.3s ease-out;
-  overflow: auto;
-  z-index: 30;
-}
-
-.myol-button:not(.myol-button-hover, .myol-button-selected)>div,
-.myol-button-nokeepselect:not(:hover)>div,
-.myol-button>*:empty {
-  max-height: 0;
-  /* For the beauty of the transition */
-  opacity: 0;
-}
-
-@media screen and (max-width: 400px) {
-  .myol-button:not(.myol-button-switcher)>div {
-    width: 100%;
-    left: 0;
-  }
-}
-
-.myol-button>*:not(button) {
-  position: absolute;
-  top: 30px;
-  background: white;
-  font-size: 16px;
-}
-
-.myol-button div {
-  background: #d1e9ff;
-}
-
-.myol-button div a {
-  color: blue !important;
-}
-
-.myol-button.myol-button-selected button {
-  background: #d1e9ff;
-}
-
-.myol-button p,
-.myol-button span,
-.myol-button .select-ext {
-  margin: 3px 0;
-  padding: 0 3px;
-  font-size: 14px;
-}
-
-.myol-button label {
-  display: block;
-  padding: 2px 0;
-  cursor: pointer;
-}
-
-.myol-button a {
-  cursor: pointer;
-}
-
-.myol-button a {
-  color: blue;
-}
-
-.myol-button input {
-  margin: 0 3px;
-}
-
-.myol-button label:hover,
-.myol-button a:hover {
-  background: #ffe8d1;
-}
-
-.myol-button hr {
-  margin: 1px;
-}
-/*
  * layerSwitcher.css
  */
 .myol-button-switcher {
@@ -601,6 +519,31 @@
 
 .select-ext {
   background: #fcffd1 !important;
+}
+/*
+ * lengthLine.css
+ */
+/* PhpBB compatibility */
+.ol-overlaycontainer-stopevent>div:not(.ol-control) {
+  margin: 0;
+}
+
+.myol-length-line {
+  font-size: 12px;
+}
+
+.myol-length-line {
+  position: absolute;
+  bottom: 52px;
+  left: 8px;
+  padding: 2px;
+  border-radius: 4px;
+  background: rgba(0, 60, 136, 0.3);
+  color: white;
+}
+
+.myol-length-line:empty {
+  display: none;
 }
 /*
  * ol-geocoder
@@ -977,6 +920,76 @@
   left: 66px !important;
 }
 /*
+ * control.css
+ */
+/* PhpBB compatibility */
+.ol-overlaycontainer-stopevent>div:not(.ol-control) {
+  margin: 0;
+}
+
+/* Buttonless controls */
+.myol-permalink,
+.ol-attribution,
+.myol-mouse-position {
+  font-size: 12px;
+}
+
+.myol-mouse-position {
+  position: absolute;
+  bottom: 30px;
+  left: 8px;
+  padding: 2px;
+  border-radius: 4px;
+  background: rgba(0, 60, 136, 0.3);
+  color: white;
+}
+
+.myol-mouse-position:empty {
+  display: none;
+}
+
+.myol-permalink {
+  position: absolute;
+  bottom: 35px;
+  right: 0;
+  padding: 3px;
+  border-radius: 8px 0 0 8px;
+  background: rgba(0, 60, 136, 0.3);
+}
+
+.ol-attribution button,
+.ol-attribution button:focus {
+  font-size: 14px !important;
+}
+
+/* When printing, hide all controls except scale & attribution */
+@media print {
+  @page {
+    /* Hide the header, footer & margins */
+    margin: 0;
+  }
+
+  body {
+    margin: 1mm 0 0 1mm;
+    padding: 0;
+  }
+
+  /* Force attribution open */
+  .ol-scale-line,
+  .ol-attribution {
+    display: flex !important;
+  }
+
+  .ol-attribution ul {
+    display: block !important;
+  }
+
+  .ol-attribution button,
+  .ol-overlaycontainer-stopevent>div {
+    display: none;
+  }
+}
+/*
  * print.css
  */
 /* Display only the map when the format is chosen */
@@ -1015,41 +1028,71 @@ body:has(.myol-print-landscape)>*:not(.myol-print-landscape),
   right: calc(max(2px, 100% - 100vw + 20px));
 }
 /*
- * editor.css
+ * vectorEditor.css
  */
 
-/* Inspect */
-.myol-button-inspect button::after {
-  content: "\2048";
+/* Position of the buttons */
+.ol-zoom,
+.ol-full-screen,
+.edit-button {
+  position: static;
+  float: left;
+  margin: 2px;
 }
 
-.map-edit-0 {
-  cursor: help;
-}
-
-/* Modify */
-.myol-button-modify button::after {
+.edit-button-modify button::after {
   content: "\2725";
 }
 
-.map-edit-1 {
-  cursor: default;
+.edit-button-drawLine button::after {
+  content: "\2710";
+  display: inline-block;
+  transform: scaleX(-1);
 }
 
-/* Draw line */
-.myol-button-draw-line button::after {
-  content: "\2608";
-}
-
-.map-edit-2 {
-  cursor: copy;
-}
-
-/* Draw poly */
-.myol-button-draw-poly button::after {
+.edit-button-drawPoly button::after {
   content: "\23E2";
+  display: inline-block;
+  transform: scaleX(-1);
 }
 
-.map-edit-3 {
+.edit-view-modify .edit-button-modify button,
+.edit-view-drawLine .edit-button-drawLine button,
+.edit-view-drawPoly .edit-button-drawPoly button {
+  background: lightblue;
+}
+
+.edit-pointed .edit-view-modify {
+  cursor: pointer;
+}
+
+.edit-view-drawLine,
+.edit-view-drawPoly {
   cursor: copy;
+}
+
+/* Submenu */
+.edit-button>div {
+  display: none;
+}
+
+.edit-button:hover>div,
+.edit-button>div:hover {
+  display: initial;
+}
+
+.edit-button>div {
+  position: absolute;
+  top: 26px;
+  max-height: calc(100% - 38px);
+  max-width: calc(100% - 115px);
+  overflow-y: auto;
+  opacity: 0.8;
+  font-size: 16px;
+  background: #d1e9ff;
+  z-index: 30;
+}
+
+.edit-button>div * {
+  margin: 0;
 }

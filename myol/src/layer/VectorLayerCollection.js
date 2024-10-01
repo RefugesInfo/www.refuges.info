@@ -1,9 +1,13 @@
 /**
- * VectorLayerCollection.js
- * Various acces to geoJson services
+ * Many simplified display of various vector layers services
  */
 
-import ol from '../ol';
+import ol from '../ol'; //BEST imports direct de node_modules/ol
+
+import {
+  transformExtent,
+} from 'ol/proj';
+
 import MyVectorLayer from './MyVectorLayer';
 
 // Get icon from chemineur.fr
@@ -63,6 +67,7 @@ export class Chemineur extends GeoBB {
 }
 
 // alpages.info
+//TODO vite : Access to XMLHttpRequest at 'https://alpages.info/ext/Dominique92/GeoBB/gis.php?forums=on&bbox=5.85311%2C44.7727%2C5.91689%2C44.8093' from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 export class Alpages extends MyVectorLayer {
   constructor(options) {
     super({
@@ -300,7 +305,7 @@ export class Overpass extends MyVectorLayer {
 
   query(extent, resolution, mapProjection) {
     const selections = this.selector.getSelection(),
-      ex4326 = ol.proj.transformExtent(extent, mapProjection, 'EPSG:4326').map(c => c.toPrecision(6)),
+      ex4326 = transformExtent(extent, mapProjection, 'EPSG:4326').map(c => c.toPrecision(6)),
       bbox = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
       args = [];
 

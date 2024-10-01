@@ -6,20 +6,27 @@
  *   layer : that owns the feature
  */
 
-import ol from '../ol';
+import Circle from 'ol/style/Circle';
+import Fill from 'ol/style/Fill';
+import {
+  getArea,
+} from 'ol/extent';
+import Icon from 'ol/style/Icon';
+import Stroke from 'ol/style/Stroke';
+import Text from 'ol/style/Text';
 
 // Display a label with properties.label
 export function label(feature) {
   const properties = feature.getProperties();
 
   if (properties.label) {
-    const featureArea = ol.extent.getArea(feature.getGeometry().getExtent()),
+    const featureArea = getArea(feature.getGeometry().getExtent()),
       elLabel = document.createElement('span');
 
     elLabel.innerHTML = properties.label; //HACK to render the html entities in the canvas
 
     return {
-      text: new ol.style.Text({
+      text: new Text({
         text: elLabel.innerText,
         overflow: properties.overflow, // Display label even if not contained in polygon
         textBaseline: featureArea ? 'middle' : 'bottom',
@@ -27,13 +34,13 @@ export function label(feature) {
         padding: [1, 1, -1, 3],
         //BEST line & poly label following the cursor
         font: '12px Verdana',
-        fill: new ol.style.Fill({
+        fill: new Fill({
           color: 'black',
         }),
-        backgroundFill: new ol.style.Fill({
+        backgroundFill: new Fill({
           color: 'white',
         }),
-        backgroundStroke: new ol.style.Stroke({
+        backgroundStroke: new Stroke({
           color: 'blue',
         }),
       }),
@@ -48,7 +55,7 @@ export function basic(feature, resolution, layer) {
   return [{
     // Point
     image: properties.icon ?
-      new ol.style.Icon({
+      new Icon({
         anchor: resolution < layer.options.minResolution ? [
           feature.getId() / 5 % 1 / 2 + 0.25, // 32 px width frame
           feature.getId() / 9 % 1, // 44 px hight frame
@@ -57,13 +64,13 @@ export function basic(feature, resolution, layer) {
       }) : null,
 
     // Lines
-    stroke: new ol.style.Stroke({
+    stroke: new Stroke({
       color: 'blue',
       width: 2,
     }),
 
     // Polygons
-    fill: new ol.style.Fill({
+    fill: new Fill({
       color: 'rgba(0,0,256,0.3)',
     }),
     // properties.label if any
@@ -75,17 +82,17 @@ export function basic(feature, resolution, layer) {
 // Display a circle with the number of features on the cluster
 export function cluster(feature) {
   return [{
-    image: new ol.style.Circle({
+    image: new Circle({
       radius: 14,
-      stroke: new ol.style.Stroke({
+      stroke: new Stroke({
         color: 'blue',
       }),
-      fill: new ol.style.Fill({
+      fill: new Fill({
         color: 'white',
       }),
     }),
     //BEST laisser le texte sur les clusters < 3 icônes
-    text: new ol.style.Text({
+    text: new Text({
       text: feature.getProperties().cluster.toString(),
       font: '12px Verdana',
     }),
@@ -126,7 +133,7 @@ export function hover(...args) {
   return {
     ...details(...args),
 
-    stroke: new ol.style.Stroke({
+    stroke: new Stroke({
       color: 'red',
       width: 2,
     }),

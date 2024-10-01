@@ -1,19 +1,20 @@
 /**
- * Geocoder
+ * MyGeocoder control that overloads ol-geocoder
  * From https://github.com/jonataswalker/ol-geocoder
  * Corrected https://github.com/kirtan-desai/ol-geocoder
  * Corrected https://github.com/Dominique92/ol-geocoder
  */
 
 // ol-geocoder library (dev repo)
-import '@myol/geocoder/src/base.css'; //BEST BUG to be replaced by ol-geocoder when /src published in npm
-import Geocoder from '@myol/geocoder/src/base'; //BEST BUG to be replaced by ol-geocoder when /src published in npm
+//BEST to be replaced by ol-geocoder when /src published in npm
+import '@myol/geocoder/src/base.css';
+import Geocoder from '@myol/geocoder/src/base';
 
 // This package css
 // Import after ol-geocoder.css
 import './myGeocoder.css';
 
-export class MyGeocoder extends Geocoder {
+class MyGeocoder extends Geocoder {
   constructor(options) {
     super('nominatim', {
       // See https://github.com/kirtan-desai/ol-geocoder#user-content-api

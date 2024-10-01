@@ -2,14 +2,16 @@
  * Display misc values
  */
 
-import ol from './ol';
-import Geocoder from '@myol/geocoder/src/base'; //TODO BUG to be replaced by ol-geocoder when /src published in npm
+import {
+  VERSION as olVersion,
+} from 'ol/util';
+import Geocoder from '@myol/geocoder/src/base'; //BEST to be replaced by ol-geocoder when /src published in npm
 
 export const VERSION = '__myolBuildVersion__ __myolBuildDate__';
 
 export async function trace() {
   const data = [
-    'Ol v' + ol.util.VERSION,
+    'Ol v' + olVersion,
     'Geocoder ' + Geocoder.prototype.getVersion(),
     'MyOl ' + VERSION,
     'language ' + navigator.language,

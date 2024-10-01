@@ -25,13 +25,11 @@ import * as sphere from 'ol/sphere';
 import * as style from 'ol/style';
 import * as util from 'ol/util';
 
-export default {
+const ol = {
   control: control,
   coordinate: coordinate,
   events: {
-    condition: {
-      pointerMove: condition.pointerMove,
-    },
+    condition: condition,
   },
   extent: extent,
   Feature: Feature,
@@ -80,3 +78,8 @@ export default {
   },
   View: View,
 };
+
+// Export as globals if not already defined
+window.ol ||= ol;
+
+export default ol;

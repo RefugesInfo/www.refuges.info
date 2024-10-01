@@ -4,9 +4,14 @@
  * Don't set view when you declare the map
  */
 
-import ol from '../ol';
+import Control from 'ol/control/Control.js';
+import {
+  transform,
+} from 'ol/proj';
 
-export class Permalink extends ol.control.Control {
+import './control.css';
+
+class Permalink extends Control {
   constructor(opt) {
     const options = {
       // display: false, // {false | true} Display permalink link the map.
@@ -58,7 +63,7 @@ export class Permalink extends ol.control.Control {
 
       view.setZoom(urlMod.match(/zoom=([0-9.]+)/u)[1]);
 
-      view.setCenter(ol.proj.transform([
+      view.setCenter(transform([
         urlMod.match(/lon=(-?[0-9.]+)/u)[1],
         urlMod.match(/lat=(-?[0-9.]+)/u)[1],
       ], 'EPSG:4326', 'EPSG:3857'));
@@ -66,7 +71,7 @@ export class Permalink extends ol.control.Control {
 
     // Set the permalink with current map zoom & position
     if (view.getCenter()) {
-      const ll4326 = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
+      const ll4326 = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
         newParams = 'map=' +
         (localStorage.myolZoom = Math.round(view.getZoom() * 10) / 10) + '/' +
         (localStorage.myolLon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
