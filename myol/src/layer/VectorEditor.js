@@ -373,19 +373,21 @@ class VectorEditor extends VectorLayer {
     const lines = [];
 
     coords.forEach(segmentCoords => {
-      if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
-        lines.push(...this.flatCoord(segmentCoords, splitCord));
-      else if (typeof segmentCoords[0][0] === 'number') { // Lines
-        if (splitCord) {
-          lines.push([]);
-          segmentCoords.forEach(p => {
-            lines[lines.length - 1].push(p);
-            // Split segments if required
-            if (this.compareCoords(splitCord, p))
-              lines.push([p]);
-          });
-        } else
-          lines.push(segmentCoords);
+      if (typeof segmentCoords[0] === 'object') {
+        if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
+          lines.push(...this.flatCoord(segmentCoords, splitCord));
+        else if (typeof segmentCoords[0][0] === 'number') { // Lines
+          if (splitCord) {
+            lines.push([]);
+            segmentCoords.forEach(p => {
+              lines[lines.length - 1].push(p);
+              // Split segments if required
+              if (this.compareCoords(splitCord, p))
+                lines.push([p]);
+            });
+          } else
+            lines.push(segmentCoords);
+        }
       }
     });
 

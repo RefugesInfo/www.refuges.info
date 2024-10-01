@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 01/10/2024 09:35:44 using npm run build from the src/... sources
+ * Built 01/10/2024 09:46:32 using npm run build from the src/... sources
  * Please don't modify it : modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -79584,19 +79584,21 @@
       const lines = [];
 
       coords.forEach(segmentCoords => {
-        if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
-          lines.push(...this.flatCoord(segmentCoords, splitCord));
-        else if (typeof segmentCoords[0][0] === 'number') { // Lines
-          if (splitCord) {
-            lines.push([]);
-            segmentCoords.forEach(p => {
-              lines[lines.length - 1].push(p);
-              // Split segments if required
-              if (this.compareCoords(splitCord, p))
-                lines.push([p]);
-            });
-          } else
-            lines.push(segmentCoords);
+        if (typeof segmentCoords[0] === 'object') {
+          if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
+            lines.push(...this.flatCoord(segmentCoords, splitCord));
+          else if (typeof segmentCoords[0][0] === 'number') { // Lines
+            if (splitCord) {
+              lines.push([]);
+              segmentCoords.forEach(p => {
+                lines[lines.length - 1].push(p);
+                // Split segments if required
+                if (this.compareCoords(splitCord, p))
+                  lines.push([p]);
+              });
+            } else
+              lines.push(segmentCoords);
+          }
         }
       });
 
@@ -88543,7 +88545,7 @@
    */
 
 
-  const VERSION = '1.1.2.dev 01/10/2024 09:35:44';
+  const VERSION = '1.1.2.dev 01/10/2024 09:46:32';
 
   async function trace() {
     const data = [
