@@ -28,8 +28,9 @@ class Download extends Button {
       subMenuHTML: subMenuHTML,
       subMenuHTMLfr: subMenuHTMLfr,
 
-      fileName: document.title || 'openlayers', // Name of the file to be downloaded //BEST name from feature
       // savedLayer: layer, // Layer to download
+      fileName: document.title || 'openlayers', // Name of the file to be downloaded 
+      //BEST name from feature
 
       ...opt,
     };

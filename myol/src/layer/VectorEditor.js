@@ -34,12 +34,12 @@ class VectorEditor extends VectorLayer {
       featureProjection: 'EPSG:3857',
       decimals: 5, //Output precision
       tolerance: 7, // Px
-      //direction: false, // Add arrows to each line segment to show the direction
-      //canMerge: false, // Merge lines having a common end
-      //withPolys: false, // Can edit polygons
-      //withHoles: false, // Allow holes in polygons
-      //baseStyleOptions: {},
-      //selectedStyleOptions: {},
+      // direction: false, // Add arrows to each line segment to show the direction
+      // canMerge: false, // Merge lines having a common end
+      // withPolys: false, // Can edit polygons
+      // withHoles: false, // Allow holes in polygons
+      // baseStyleOptions: {},
+      // selectedStyleOptions: {},
 
       writeGeoJson: () => // writeGeoJson (features, lines, polys, options)
         this.options.format.writeFeatures(
@@ -177,24 +177,12 @@ class VectorEditor extends VectorLayer {
         this.editedSource.removeFeature(selectedFeature);
     });
 
-    this.modifyInteraction.on('modifyend', () => this.optimiseAndSave());
-
-    this.drawLineInteraction.on('drawend', () => {
-      this.modified = true; // Wait for modifyend completion before optim
-    });
-
-    if (this.options.withPolys)
-      this.drawPolyInteraction.on('drawend', () => {
-        this.modified = true; // Wait for modifyend completion before optim
-      });
-
     this.editedSource.on('addfeature', () => {
-      if (this.modified) {
-        this.modified = false;
-        this.optimiseAndSave();
-        this.restartInteractions('modify');
-      }
+      this.optimiseAndSave();
+      this.restartInteractions('modify');
     });
+
+    this.modifyInteraction.on('modifyend', () => this.optimiseAndSave());
 
     // At init
     this.map.once('loadend', () => {
@@ -268,97 +256,103 @@ class VectorEditor extends VectorLayer {
   }
 
   optimiseAndSave(splitCord) {
-    // Get optimized coords
-    const editedFeatures = this.editedSource.getFeatures(), // Get edited features
-      coordinates = editedFeatures.map(
-        f => this.flatFeatures(f.getGeometry()) // Get flat coordinates
-      ),
-      // Get all edited features as array of lines coordinates
-      lines = this.flatCoord(coordinates, splitCord),
-      polys = [];
+    if (!this.semaphore) { // Avoid recursion when adding the features
+      this.semaphore = true;
 
-    // Merge lines having a common end
-    if (this.options.canMerge)
-      for (const a in lines) {
-        for (let b = 0; b < a; b++) { // Once each combination
-          if (lines[b]) {
-            const m = [a, b];
+      // Get optimized coords
+      const editedFeatures = this.editedSource.getFeatures(), // Get edited features
+        coordinates = editedFeatures.map(
+          f => this.flatFeatures(f.getGeometry()) // Get flat coordinates
+        ),
+        // Get all edited features as array of lines coordinates
+        lines = this.flatCoord(coordinates, splitCord),
+        polys = [];
 
-            for (let i = 4; i; i--) // 4 times
-              if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
-                // Shake lines end to explore all possibilities
-                m.reverse();
-                lines[m[0]].reverse();
+      // Merge lines having a common end
+      if (this.options.canMerge)
+        for (const a in lines) {
+          for (let b = 0; b < a; b++) { // Once each combination
+            if (lines[b]) {
+              const m = [a, b];
 
-                // Merge 2 lines having 2 ends in common
-                if (this.compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0], splitCord)) {
-                  lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1)).reverse();
-                  delete lines[m[1]]; // Remove the line but don't renumber the array keys
+              for (let i = 4; i; i--) // 4 times
+                if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
+                  // Shake lines end to explore all possibilities
+                  m.reverse();
+                  lines[m[0]].reverse();
+
+                  // Merge 2 lines having 2 ends in common
+                  if (this.compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0], splitCord)) {
+                    lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1)).reverse();
+                    delete lines[m[1]]; // Remove the line but don't renumber the array keys
+                  }
                 }
-              }
-          }
-        }
-      }
-
-    // Make polygons with looped lines
-    if (this.options.withPolys)
-      for (const a in lines)
-        if (this.compareCoords(lines[a]) && // If this line is closed
-          !this.compareCoords(splitCord, lines[a][0])) { // Except if we just split it
-          polys.push([lines[a]]); // Add the polygon
-          delete lines[a]; // Forget the line
-        }
-
-    // Makes holes if a polygon is included in a biggest one
-    if (this.options.withHoles)
-      for (const p1 in polys) { // Explore all Polygons combinaison
-        const fs = new Polygon(polys[p1]);
-
-        for (const p2 in polys)
-          if (polys[p2] && p1 !== p2) {
-            let intersects = true;
-
-            for (const c in polys[p2][0])
-              if (!fs.intersectsCoordinate(polys[p2][0][c]))
-                intersects = false;
-
-            if (intersects) { // If one intersects a bigger
-              polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
-              delete polys[p2]; // Forget the smaller
             }
           }
+        }
+
+      // Make polygons with looped lines
+      if (this.options.withPolys)
+        for (const a in lines)
+          if (this.compareCoords(lines[a]) && // If this line is closed
+            !this.compareCoords(splitCord, lines[a][0])) { // Except if we just split it
+            polys.push([lines[a]]); // Add the polygon
+            delete lines[a]; // Forget the line
+          }
+
+      // Makes holes if a polygon is included in a biggest one
+      if (this.options.withHoles)
+        for (const p1 in polys) { // Explore all Polygons combinaison
+          const fs = new Polygon(polys[p1]);
+
+          for (const p2 in polys)
+            if (polys[p2] && p1 !== p2) {
+              let intersects = true;
+
+              for (const c in polys[p2][0])
+                if (!fs.intersectsCoordinate(polys[p2][0][c]))
+                  intersects = false;
+
+              if (intersects) { // If one intersects a bigger
+                polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
+                delete polys[p2]; // Forget the smaller
+              }
+            }
+        }
+
+      // Recreate features
+      this.editedSource.clear();
+      lines.forEach(l => {
+        this.editedSource.addFeature(new Feature({
+          geometry: new LineString(l),
+        }));
+      });
+      polys.forEach(p => {
+        this.editedSource.addFeature(new Feature({
+          geometry: new Polygon(p),
+        }));
+      });
+
+      // Save geometries in <EL> as geoJSON at every change
+      if (this.geoJsonEl)
+        this.geoJsonEl.value = this.options.writeGeoJson(
+          this.editedSource.getFeatures(),
+          lines.filter(Boolean),
+          polys.filter(Boolean),
+          this.options,
+        ).replaceAll(',"properties":null', '');
+
+      // Select the feature closest to the mouse position
+      //TODO do it also when loading a file
+      const selectedFeatures = this.selectInteraction.getFeatures();
+
+      if (this.editedSource.getFeatures().length) {
+        selectedFeatures.clear();
+        selectedFeatures.push(
+          this.editedSource.getClosestFeatureToCoordinate(this.coordinate)
+        );
       }
-
-    // Recreate features
-    this.editedSource.clear();
-    lines.forEach(l => {
-      this.editedSource.addFeature(new Feature({
-        geometry: new LineString(l),
-      }));
-    });
-    polys.forEach(p => {
-      this.editedSource.addFeature(new Feature({
-        geometry: new Polygon(p),
-      }));
-    });
-
-    // Save geometries in <EL> as geoJSON at every change
-    if (this.geoJsonEl)
-      this.geoJsonEl.value = this.options.writeGeoJson(
-        this.editedSource.getFeatures(),
-        lines.filter(Boolean),
-        polys.filter(Boolean),
-        this.options,
-      ).replaceAll(',"properties":null', '');
-
-    // Select the feature closest to the mouse position
-    const selectedFeatures = this.selectInteraction.getFeatures();
-
-    if (this.editedSource.getFeatures().length) {
-      selectedFeatures.clear();
-      selectedFeatures.push(
-        this.editedSource.getClosestFeatureToCoordinate(this.coordinate)
-      );
+      delete this.semaphore;
     }
   } // End optimiseAndSave
 
@@ -404,20 +398,32 @@ class VectorEditor extends VectorLayer {
   // Style to color selected features with arrows, begin & end points
   selectStyles(feature, resolution) {
     const geometry = feature.getGeometry(),
-      selectedStyle = {
+
+      selectedStyleOptions = {
+        // Lines
         stroke: new Stroke({
           color: 'red',
           width: 2,
         }),
-        fill: new Fill({ // Polygons
+        // Polygons
+        fill: new Fill({
           color: 'rgba(255,0,0,0.2)',
         }),
-        radius: 3, // Move & begin line marker
+        // Begin & end marker
+        radius: 3,
 
         ...this.options.selectedStyleOptions,
       },
+
+      circle = new Circle(selectedStyleOptions),
+
       featureStyles = [
-        new Style(selectedStyle), // Line style
+        new Style({
+          // Line & Poly
+          ...selectedStyleOptions,
+          // Draw marker
+          image: circle,
+        }),
       ];
 
     // Circle at the ends of the line
@@ -432,7 +438,7 @@ class VectorEditor extends VectorLayer {
         featureStyles.push(
           new Style({
             geometry: new Point(cc),
-            image: new Circle(selectedStyle),
+            image: circle,
           }),
         );
       });

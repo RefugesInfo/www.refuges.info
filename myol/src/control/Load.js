@@ -25,7 +25,8 @@ class Load extends Button {
       subMenuId: 'myol-button-load',
       subMenuHTML: subMenuHTML,
       subMenuHTMLfr: subMenuHTMLfr,
-      //loadedStyleOptions: {},// Style of the loaded features
+      // loadedStyleOptions: {}, // Style of the loaded features
+      // receivingLayer: layer, // Layer to addFeatures when loaded
 
       ...options,
     });
@@ -75,32 +76,36 @@ class Load extends Button {
       wrapX: false,
     });
 
-    const gpxLayer = new VectorLayer({
-      source: gpxSource,
-
-      style: feature => {
-        const properties = feature.getProperties();
-
-        return new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 2,
-          }),
-          image: properties.sym ? new Icon({
-            src: 'https://chemineur.fr/ext/Dominique92/GeoBB/icones/' + properties.sym + '.svg',
-          }) : null,
-
-          ...this.options.loadedStyleOptions,
-        });
-      },
-    });
-
     const fileExtent = gpxSource.getExtent();
 
     if (isEmpty(fileExtent))
       alert(url + ' ne comporte pas de point ni de trace.');
     else {
-      map.addLayer(gpxLayer);
+      // Add received features to the layer defined in potion
+      if (this.options.receivingLayer)
+        this.options.receivingLayer.getSource().addFeatures(features);
+      // Or create a new layer
+      else {
+        map.addLayer(new VectorLayer({
+          source: gpxSource,
+
+          style: feature => {
+            const properties = feature.getProperties();
+
+            return new Style({
+              stroke: new Stroke({
+                color: 'blue',
+                width: 2,
+              }),
+              image: properties.sym ? new Icon({
+                src: 'https://chemineur.fr/ext/Dominique92/GeoBB/icones/' + properties.sym + '.svg',
+              }) : null,
+
+              ...this.options.loadedStyleOptions,
+            });
+          },
+        }));
+      }
 
       // Zoom the map on the added features
       map.getView().fit(

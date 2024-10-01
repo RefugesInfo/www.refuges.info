@@ -306,6 +306,9 @@ function mapPoint(options) {
       new ol.control.FullScreen(),
       new myol.control.MyGeolocation(),
       new myol.control.Download(),
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+      new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
       new myol.control.LayerSwitcher({
         layers: fondsCarte(options.mapKeys),
       }),
@@ -356,6 +359,9 @@ function mapModif(options) {
       new ol.control.FullScreen(),
       new myol.control.MyGeocoder(),
       new myol.control.MyGeolocation(),
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+      new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
       new myol.control.LayerSwitcher({
         layers: fondsCarte(options.mapKeys, true),
       }),
@@ -450,6 +456,9 @@ function mapNav(options) {
       new myol.control.Load(),
       new myol.control.Download(),
       new myol.control.Print(),
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+      new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
       new myol.control.LayerSwitcher({
         layers: fondsCarte(options.mapKeys),
       }),
@@ -535,6 +544,9 @@ function mapEdit(options) {
         new myol.control.Download({
           savedLayer: editorLayer,
         }),
+        new myol.control.MyMousePosition(),
+        new ol.control.ScaleLine(),
+        new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
         new myol.control.LayerSwitcher({
           layers: fondsCarte(options.mapKeys, true),
         }),
