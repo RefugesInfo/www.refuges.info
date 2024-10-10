@@ -1,7 +1,7 @@
 <script>
 	// Patch du bug PhpBB https://tracker.phpbb.com/browse/PHPBB3-14422 mal corrigé sur 3.2+
 	// on pourra l'enlever quand PhpBB l'aura correctement livré
-	document.getElementBytag('body')[0].addEventListener ('keydown', function(e) {
+	document.getElementsByTagName('body')[0].addEventListener ('keydown', function(e) {
 		if (e.keyCode === 13 && (e.metaKey || e.ctrlKey))
 			document.getElementsByName('post')[0].click();
 	});
