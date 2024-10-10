@@ -104,9 +104,10 @@ class listener implements EventSubscriberInterface
 			$vars['post_info']['post_id'].
 			' ORDER BY trace_id DESC';
 		$result = $db->sql_query ($sql);
-		$template->assign_vars(
-			array_change_key_case ($db->sql_fetchrow ($result), CASE_UPPER)
-		);
+		if ($result)
+			$template->assign_vars(
+				array_change_key_case ($db->sql_fetchrow ($result), CASE_UPPER)
+			);
 		$db->sql_freeresult($result);
 	}
 
