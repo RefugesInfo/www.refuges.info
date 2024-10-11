@@ -708,6 +708,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
           'topic_id' => $point->topic_id,
           'topic_poster' => $id_utilisateur_qui_modifie, // En cas de modification, cet id servira dans le log de modération pour dire qui a modifié la fiche, ça rassure Pascal 74
           'topic_title' => mb_ucfirst($point->nom),
+          'post_time' => '', // sly : ça ressemble à une magouille, mais si post_time est vide, alors lors d'une modif du post le code de phpBB va prendre la date actuelle comme date de modification. Oui, moi non plus je n'ai pas compris, mais c'est ce que fait le code de submit_post. Si on ne l'avait pas passé, alors il aurait pris la date actuelle du post comme date de modif.
       ]);
     historisation_modification($point_avant,$point,'modification point');
   }
