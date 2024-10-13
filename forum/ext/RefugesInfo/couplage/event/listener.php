@@ -106,7 +106,7 @@ class listener implements EventSubscriberInterface
 		$result = $db->sql_query ($sql);
 		$row = $db->sql_fetchrow ($result);
 		if ($row)
-			$row->assign_vars(
+			$template->assign_vars(
 				array_change_key_case ($row, CASE_UPPER)
 			);
 		$db->sql_freeresult($result);
