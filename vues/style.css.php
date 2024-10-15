@@ -734,9 +734,7 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
     color: white;
     text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
              1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
-    position: absolute		
-
-;
+    position: absolute;
     top: 10px;
     right: 10px;
 }
