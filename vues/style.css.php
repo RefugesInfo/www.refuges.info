@@ -186,6 +186,7 @@ blockquote p:after  { /* message forum et commentaires */
 
 /*====== Titres =======*/
 
+/* Au 15/10/2024 le titre h1 n'est utilisé qu'une seule et unique fois dans tous le site, c'est sur les fiches, pour le nom du point */
 h1 { /* Ce titre principal n'est pas plus gros ou gras que les autres, mais significativement, c'est le titre le plus important de la page */
   font-weight: bold ;
   font-style: normal ;
@@ -193,6 +194,9 @@ h1 { /* Ce titre principal n'est pas plus gros ou gras que les autres, mais sign
   margin-bottom:3px;
 }
 
+/* h2 ? faut pas chercher à comprendre, on n'utilise le h2 à aucun endroit ! Si je n'avais que ça à faire, il faudrait tout décaller h5->h4->h3->h2 dans toutes les vues, et le wiki ! */
+
+/* à noter que h3 h4 et h5 sont également très utilisés dans le wiki, dont le contenu est dans la base */
 h3 { /* titres de pages */
   font-weight: bold ;
   font-style: normal ;
@@ -219,13 +223,6 @@ h5 { /* sou-sou titre, pour l'instant que dans les fiches de refuges */
   margin-top:15px;
   margin-bottom:3px;
   padding-left: 10px;
-}
-h6 { /* utilisé dans la "FAQ" comme question */
-  margin-bottom: 0px;
-  margin-top: 1em;
-  font-size: 12px;
-  font-weight: bold ;
-  font-size: medium; /* sinon H6, c'est tout petit ... */
 }
 p {
   margin-bottom: 1em;
@@ -378,28 +375,6 @@ body:not(#phpbb) a:visited {
 	border: 2px double red;
 	background-color: yellow;
 	padding: 10px;
-}
-
-/*========= Infobulles ===========*/
-a.infobulle {
-  position:relative;
-  text-decoration: none;
-  color: black;
-}
-a.infobulle span { /* au repos, on efface */
-  display: none;
-}
-a.infobulle:hover span { /* qd on passe dessus, ca affiche */
-  display: block;
-  position: absolute; /* relativement au relatif du a */
-  top: 18px;
-  left: -10px;
-  padding: 5px;
-  color: #000;
-  border: 1px solid #bbb;
-  background: #ffc;
-  white-space: nowrap;
-  z-index: 100;
 }
 
 /*==================================================================*/
