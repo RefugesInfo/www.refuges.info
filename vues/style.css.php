@@ -821,7 +821,7 @@ body:not(#phpbb) a:visited {
   height: 50vw;
   max-height: 75vh;
 }
-/* Carte de la page des points mobiles */
+/* Cartes pour les petits écrans et mobiles */
 @media screen and (max-width: 640px) {
   #carte-point {
     width: 99vw;
@@ -829,27 +829,29 @@ body:not(#phpbb) a:visited {
     max-height: 100vw;
   }
 }
-
-/* Carte formulaire de modification de point */
-#carte-modif {
-  float: right;
-  width: 96vw;
-  height: 97vw;
-  max-height: 450px;
+/* Carte formulaire de modification présentation grand écrans */
+@media screen and (min-width: 1000px) {
+  #carte-modif {
+    width: 600px;
+    height: 600px;
+  }
 }
+/* Carte formulaire de modification de point pour moyen écran et mobiles*/
+@media screen and (max-width: 1000px) {
+  #carte-modif {
+    float: right;
+    width: 99vw;
+    height: 99vw;
+    max-height: 450px;
+  }
+}
+
 /* Carte formulaire de modification de massif */
 #carte-edit {
   width: 99%;
   height: 97vw;
   max-height: 450px;
   margin: 0 auto;
-}
-/* Carte formulaire de modification présentation écrans */
-@media screen and (min-width: 800px) {
-  #carte-modif {
-    width: 450px;
-    height: 450px;
-  }
 }
 @media (pointer:coarse) {
   .hide-touch-screen {
