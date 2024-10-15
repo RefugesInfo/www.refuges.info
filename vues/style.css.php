@@ -167,7 +167,7 @@ cite { /* Citation: gras+droit */
   font-weight: bold ;
   font-style: normal ;
 }
-blockquote > div { /* en particulier les ciations forum */
+blockquote > div { /* en particulier les citations forum */
   border-left: 2px;
 }
 blockquote  { /* message forum et commentaires */
@@ -234,7 +234,7 @@ p {
 ul { /* les listes , y compris news en page de garde */
   list-style-type: none;
   margin: 0px;
-  padding: 0px 0px 0px 5px;
+  padding: 0px 0px 0px 0px;
 }
 dt { /* listes, de definitions */
   font-weight: bold;
