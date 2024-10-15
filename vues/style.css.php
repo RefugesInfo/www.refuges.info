@@ -168,7 +168,11 @@ cite { /* Citation: gras+droit */
   font-style: normal ;
 }
 blockquote > div { /* en particulier les ciations forum */
-  border-left: double blue;
+  border-left: 2px;
+}
+blockquote  { /* message forum et commentaires */
+  margin:1em;
+  font-size: normal;
 }
 blockquote p:before  { /* message forum et commentaires */
   content: open-quote;
