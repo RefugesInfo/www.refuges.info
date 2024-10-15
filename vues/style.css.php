@@ -723,7 +723,6 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 }
   .photos {
     float: left;
-    margin: 1px;
     position: relative;
     max-width: 100%;
 }
@@ -848,7 +847,7 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
 /* Carte de la page des points mobiles */
 @media screen and (max-width: 640px) {
   #carte-point {
-    width: 96vw;
+    width: 99vw;
     height: 400px;
     max-height: 100vw;
   }
@@ -874,17 +873,6 @@ a.infobulle:hover span { /* qd on passe dessus, ca affiche */
     width: 450px;
     height: 450px;
   }
-}
-/* Blocages de l'enregistrement de mauvais polygones */
-.edit-error-lines,
-.edit-error-polys {
-	color: red;
-}
-.edit-lines-0 .edit-error-lines,
-div:not(.edit-polys-0) .edit-error-polys,
-div:not(.edit-lines-0) input[name="enregistrer"],
-.edit-polys-0 input[name="enregistrer"] {
-	display: none;
 }
 @media (pointer:coarse) {
   .hide-touch-screen {
