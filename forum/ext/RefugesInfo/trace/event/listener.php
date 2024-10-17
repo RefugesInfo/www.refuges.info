@@ -91,7 +91,7 @@ class listener implements EventSubscriberInterface
 
 	// Ajout des traces au panneau de modération d'un post et d'un user
 	function mcp_additional_options ($vars) {
-		global $template, $user, $db;
+		global $template, $user, $auth, $db;
 
 		if (isset ($this->get['p']))
 			$sql = 'SELECT * FROM trace_requettes'.
@@ -105,7 +105,7 @@ class listener implements EventSubscriberInterface
 				' ORDER BY trace_id'.
 				' DESC LIMIT 1';
 
-		if ($sql) {
+		if ($sql && $auth->acl_get('m_')) {
 			$result = $db->sql_query ($sql);
 			$row = $db->sql_fetchrow ($result);
 			if ($row)
