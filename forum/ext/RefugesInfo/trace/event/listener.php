@@ -34,48 +34,48 @@ class listener implements EventSubscriberInterface
 
 		if ($auth->acl_get('m_') || $user->data['is_bot']) return;
 
-		$ipv4 = strpos ($this->server['REMOTE_ADDR'], ':') ?
-			$this->server['HTTP_X_REAL_IP'] :
-			$this->server['REMOTE_ADDR'];
+		$ipv4 = strpos (@$this->server['REMOTE_ADDR'], ':') ?
+			@$this->server['HTTP_X_REAL_IP'] :
+			@$this->server['REMOTE_ADDR'];
 
 		if (isset ($vars['user_id'])) // user
 			$log = [ // user
-				'user_id' => $vars['user_id'],
+				'user_id' => @$vars['user_id'],
 			];
 		else {
-			$vars['user_row'] = $user->data;
+			@$vars['user_row'] = @$user->data;
 			$log = [ // post
-				'post_id' => $vars['data']['post_id'],
-				'user_id' => $vars['data']['poster_id'],
-				'topic_title' => $this->post['subject'],
-				'text' => $this->post['message'],
-				'user_posts' => $vars['user_row']['user_posts'],
+				'post_id' => @$vars['data']['post_id'],
+				'user_id' => @$vars['data']['poster_id'],
+				'topic_title' => @$this->post['subject'],
+				'text' => @$this->post['message'],
+				'user_posts' => @$vars['user_row']['user_posts'],
 			];
 		}
 		$log += [ // general
-				'uri' => $this->server['REQUEST_SCHEME'].'://'.
-					$this->server['HTTP_HOST'].
-					$this->server['REQUEST_URI'],
-				'ip' => $this->server['REMOTE_ADDR'],
-				'real_ip' => $this->server['HTTP_X_REAL_IP'],
+				'uri' => @$this->server['REQUEST_SCHEME'].'://'.
+					@$this->server['HTTP_HOST'].
+					@$this->server['REQUEST_URI'],
+				'ip' => @$this->server['REMOTE_ADDR'],
+				'real_ip' => @$this->server['HTTP_X_REAL_IP'],
 				'host' => $this->gethost($ipv4),
-				'user_agent' => $this->server['HTTP_USER_AGENT'],
-				'country_code' => $this->server['HTTP_X_COUNTRY_CODE'],
-				'language' => $this->server['HTTP_ACCEPT_LANGUAGE'],
+				'user_agent' => @$this->server['HTTP_USER_AGENT'],
+				'country_code' => @$this->server['HTTP_X_COUNTRY_CODE'],
+				'language' => @$this->server['HTTP_ACCEPT_LANGUAGE'],
 
-				'browser_locale' => $this->post['browser_locale'],
-				'browser_timezone' => $this->post['browser_timeZone'],
-				'sid' => $user->session_id,
+				'browser_locale' => @$this->post['browser_locale'],
+				'browser_timezone' => @$this->post['browser_timeZone'],
+				'sid' => @$user->session_id,
 				'date' => date('r'),
 
 				// Infos user
-				'user_name' => $vars['user_row']['username'],
-				'user_email' => $vars['user_row']['user_email'],
-				'user_signature' => str_replace ('<t></t>', '', $vars['user_row']['user_sig']),
-				'user_lang' => $vars['user_row']['user_lang'],
-				'user_timezone' => $vars['user_row']['user_timezone'],
-				'ip_enregistrement' => $vars['user_row']['user_ip'],
-				'host_enregistrement' => $this->gethost($vars['user_row']['user_ip']),
+				'user_name' => @$vars['user_row']['username'],
+				'user_email' => @$vars['user_row']['user_email'],
+				'user_signature' => str_replace ('<t></t>', '', @$vars['user_row']['user_sig']),
+				'user_lang' => @$vars['user_row']['user_lang'],
+				'user_timezone' => @$vars['user_row']['user_timezone'],
+				'ip_enregistrement' => @$vars['user_row']['user_ip'],
+				'host_enregistrement' => $this->gethost(@$vars['user_row']['user_ip']),
 		];
 
 		$sql = 'INSERT INTO trace_requettes '.
