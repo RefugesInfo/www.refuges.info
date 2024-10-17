@@ -1,0 +1,10 @@
+<input type="hidden" name="browser_locale" />
+<input type="hidden" name="browser_timeZone" />
+<script>
+var infos = Intl.DateTimeFormat().resolvedOptions(),
+	browserLocaleEls = document.getElementsByName("browser_locale"),
+	browserTimeZoneEls = document.getElementsByName("browser_timeZone");
+
+if(browserLocaleEls) browserLocaleEls[0].value = infos.locale;
+if(browserTimeZoneEls) browserTimeZoneEls[0].value = infos.timeZone;
+</script>

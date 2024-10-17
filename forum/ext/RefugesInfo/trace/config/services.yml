@@ -1,0 +1,5 @@
+services:
+    RefugesInfo.trace.listener:
+        class: RefugesInfo\trace\event\listener
+        tags:
+            - { name: event.listener }
