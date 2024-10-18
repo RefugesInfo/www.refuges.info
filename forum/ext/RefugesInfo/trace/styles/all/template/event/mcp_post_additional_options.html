@@ -1,13 +1,12 @@
-<!-- IF HOST != "" --><p><b>Hôte : </b>{HOST}</p><!-- ENDIF -->
-<!-- IF USER_AGENT != "" --><p><b>Capacités du navigateur : </b>{USER_AGENT}</p><!-- ENDIF -->
-<!-- IF COUNTRY_CODE != "" --><p><b>Pays : </b>{COUNTRY_CODE}</p><!-- ENDIF -->
-<!-- IF LANGUAGE != "" --><p><b>Langages acceptés : </b>{LANGUAGE}</p><!-- ENDIF -->
-<!-- IF BROWSER_LOCALE != "" --><p><b>Langue du navigateur : </b>{BROWSER_LOCALE}</p><!-- ENDIF -->
-<!-- IF BROWSER_TIMEZONE != "" --><p><b>Zone horaire : </b>{BROWSER_TIMEZONE}</p><!-- ENDIF -->
+<!-- gethost($ip) --><!-- IF HOST != "" --><p><b>Hôte de création du post : </b>{HOST}</p><!-- ENDIF -->
+<!-- $_SERVER[HTTP_USER_AGENT] --><!-- IF USER_AGENT != "" --><p><b>Capacités du navigateur : </b>{USER_AGENT}</p><!-- ENDIF -->
+<!-- $_SERVER[HTTP_X_COUNTRY_CODE] --><!-- IF COUNTRY_CODE != "" --><p><b>Pays : </b>{COUNTRY_CODE}</p><!-- ENDIF -->
+<!-- $_SERVER[HTTP_ACCEPT_LANGUAGE] --><!-- IF LANGUAGE != "" --><p><b>Langues acceptées par le navigateur : </b>{LANGUAGE}</p><!-- ENDIF -->
+<!-- DateTimeFormat.browser_locale --><!-- IF BROWSER_LOCALE != "" --><p><b>Langue demandée par le navigateur : </b>{BROWSER_LOCALE}</p><!-- ENDIF -->
+<!-- DateTimeFormat.browser_timeZone --><!-- IF BROWSER_TIMEZONE != "" --><p><b>Zone horaire du navigateur : </b>{BROWSER_TIMEZONE}</p><!-- ENDIF -->
 
 <!-- IF HOST_ENREGISTREMENT != "" -->
-	<h4>Paramètres de l'enregistrement de l'utilisateur</h4>
-	<p><b>Hôte : </b>{HOST_ENREGISTREMENT}</p>
-	<!-- IF USER_LANG != "" --><p><b>Langages acceptés : </b>{USER_LANG}</p><!-- ENDIF -->
-	<!-- IF USER_TIMEZONE != "" --><p><b>Zone horaire : </b>{USER_TIMEZONE}</p><!-- ENDIF -->
+	<!-- gethost($user[user_ip]) --><p><b>Hôte de création du compte : </b>{HOST_ENREGISTREMENT}</p>
+	<!-- $user[user_lang] --><!-- IF USER_LANG != "" --><p><b>Langue du compte : </b>{USER_LANG}</p><!-- ENDIF -->
+	<!-- $user[user_timezone] --><!-- IF USER_TIMEZONE != "" --><p><b>Zone horaire du compte : </b>{USER_TIMEZONE}</p><!-- ENDIF -->
 <!-- ENDIF -->
