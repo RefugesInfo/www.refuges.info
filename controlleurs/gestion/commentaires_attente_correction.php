@@ -30,9 +30,10 @@ $vue->commentaires_attente_correction=infos_commentaires($conditions_attente_cor
 
 // Petit tableau pour afficher le message de cause
 $vue->liste_causes = [
-	 1 => "apporte peut-être de l'information à la fiche selon un internaute",
-	-1 => "n'a peut-être pas/plus d'intérêt selon un internaute",
-	 2 => "contient un mot pouvant faire penser à une réservation",
-	 3 => "concerne un %s et n'a pas été traitée par un modérateur",
+	 1 => "d'un internaute nous signale une modification de fiche à faire",
+	 2 => "n'a peut-être pas/plus d'intérêt selon un internaute",
+	 3 => "apporte peut-être de l'information à la fiche selon un internaute",
+	 4 => "contient un mot pouvant faire penser à une réservation",
+	 5 => "concerne un %s et n'a pas été traitée par un modérateur",
 ];
 

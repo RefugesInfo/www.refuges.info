@@ -62,11 +62,11 @@ if (empty($point->erreur))
       
       // Et si on trouve un mot clé "censuré" on accepte le message mais on averti les modérateurs qu'il faut aller vérifier le commentaire
       if (isset ($config_wri['censure']) && preg_match ('/'.$config_wri['censure'].'/i', retrait_accents ($commentaire->texte)))
-        $commentaire->demande_correction=2;
+        $commentaire->demande_correction=4;
 
       // Et si la fiche concerne un batiment en montagne, on le signale systématiquement à un modérateur
       if ($point->id_point_type == $config_wri['id_batiment_en_montagne'])
-        $commentaire->demande_correction=3;
+        $commentaire->demande_correction=5;
 
       if (est_connecte() and est_entier_positif($infos_identification->user_id)) // l'utilisateur est connecté, il n'est pas anonyme (0) et y'a pas un user_id bizarre
         $commentaire->id_createur_commentaire=$infos_identification->user_id;
