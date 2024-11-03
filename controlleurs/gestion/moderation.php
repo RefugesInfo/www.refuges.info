@@ -24,12 +24,7 @@ switch ($_REQUEST['type'])
       $commentaire->id_createur_commentaire=stripslashes($_REQUEST['id_createur_commentaire']);
       
     $commentaire->rotation=$_REQUEST['rotation'];
-    
-    // On suppose qu'après modification par un modérateur il a fait les corrections nécessaires et qu'il n'est plus besoin de lister ce commentaire dans les demandes de modération.
-    // le but est de gagner du temps aux modérataurs qui n'ont pas besoin d'aller retirer manuellement de la liste des tâches à faire.
-    if (est_moderateur())
-      $commentaire->demande_correction=0;
-      
+          
     // On applique toutes les modifications, la fonction s'occupant de retourner une éventuelle erreur et un message en testant presque tous les cas possible (point inexistant, commentaire vide, ...)  
     $vue->retour=modification_ajout_commentaire($commentaire);
     
