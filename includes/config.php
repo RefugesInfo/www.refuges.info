@@ -61,6 +61,7 @@ $config_wri['correspondance_type_icone'] = [
 	'point-d-eau' => 'pointdeau',
 	'refuge-garde' => 'cabane_red',
 	'sommet' => 'sommet',
+	'grotte' => 'grotte',
 ];
 
 // Liste des autres icônes utilisées dans les cartes
