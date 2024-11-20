@@ -719,6 +719,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
         'action' => 'post',
         'forum_id' => $config_wri['forum_refuges'],
         'topic_title' => mb_ucfirst($point->nom),
+        'topic_poster' => $point->id_createur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
     ]);
     if (!$r['topic_id'])
         return erreur( "Erreur création forum point<br/>".var_export($r,true) );

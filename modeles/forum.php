@@ -25,13 +25,14 @@ function forum_submit_post ($args) {
   $data = [ // Données par défaut
     'forum_name' => '',
     'message' => '',
-    'username' => 'refuges.info',
+    'username' => '', // peut-être mieux de laisser vite, ça marque "invité" si non connecté, ou le vrai nom de compte si connecté
+    'user_colour' => 0,
     'enable_sig' => true,
     'enable_bbcode' => true,
     'enable_smilies' => true,
     'enable_urls' => true,
     'enable_indexing' => true,
-    'notify' => false,
+    'notify' => true,
     'notify_set' => 0,
     'post_edit_locked' => 0,
     'icon_id' => 0,
