@@ -184,9 +184,9 @@ if ( !empty($point->equivalent_conditions_utilisation) )
 {
   $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
 
-  if ($point->id_point_type==$config_wri['point_d_eau'])
-    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Coule', 'NULL' => 'Ne sait pas','detruit' => 'Détruite','fermeture' => $point->equivalent_conditions_utilisation);
-  else if ($point->id_point_type==$config_wri['passage_delicat'])
+  if ($point->id_point_type==$config_wri['id_point_d_eau'])
+    $vue->champs->conditions_utilisation->options = array( 'NULL' => 'Ne sait pas', 'ouverture' => 'Coule', 'intermittent' => 'Débit intermittent','fermeture' => $point->equivalent_conditions_utilisation);
+  else if ($point->id_point_type==$config_wri['id_passage_delicat'])
     $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','fermeture' => $point->equivalent_conditions_utilisation);
   else
     $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');

@@ -138,9 +138,9 @@ $config_wri['bbox_page_accueil']='-1.75,41.4,11,49.2';
 $config_wri['id_cabane_non_gardee']=7; 
 $config_wri['id_refuge_garde']=10; 
 $config_wri['id_gite_etape']=9;
-$config_wri['point_d_eau']=23;
+$config_wri['id_point_d_eau']=23;
 $config_wri['id_batiment_en_montagne']=28;
-$config_wri['passage_delicat']=3;
+$config_wri['id_passage_delicat']=3;
 
 //là aussi ça parait crétin de stocker ça en dur, alors qu'il y a bien une technique pour lister dynamiquement le nom des champs, et ben, allez savoir pourquoi, chez postgres, cette méthode bouffe ~10ms !! Vu que je m'en sers plusieurs fois en plus, quitte à en arriver là, je l'écris ici et zou
 //pensez à ajouter vous même à la main "geom" si vous voulez la géométrie, car c'est justement là le but de ne pas mettre "*" : éviter de récupérer la géométrie pour rien

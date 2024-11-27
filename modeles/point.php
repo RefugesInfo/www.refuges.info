@@ -505,6 +505,7 @@ function lien_point($point,$lien_local=false)
 // Par choix, la notion d'utilisabilité dans la base est enregistrée en un seul champ pour tous les cas
 // (détruite, fermée, ouverte, besoin de récupérer la clé) car ces états sont exclusifs. Moralité, je ne peux utilise le système qui détermine tout seul
 // le texte en utilisant la table point_type, donc en dur dans le code
+// Pour les points d'eau, on va aussi gérer le cas intermitent
 function texte_non_ouverte($point)
 {
     global $config_wri;
@@ -513,6 +514,8 @@ function texte_non_ouverte($point)
   {
     case 'cle_a_recuperer':
       return "Clé à récupérer avant";
+    case 'intermittent':
+      return "Débit intermittent";
     case 'detruit':
             if ($point->id_point_type==$config_wri['id_cabane_non_gardee'])
                 return "Détruite";
@@ -780,7 +783,6 @@ La nouvelle syntaxe du nom peut être visible dans /images/icones/index.php elle
 function choix_icone($point)
 {
   global $config_wri;
-  $fermee_detuite=($point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit" or $point->conditions_utilisation=="tari");
 
   // conversion de nos types de points vers une icône de base
   $nom_icone=$config_wri['correspondance_type_icone'][replace_url($point->nom_type)] ?? '';
@@ -804,8 +806,12 @@ function choix_icone($point)
     $nom_icone.="_cle";
 
   // N'importe quoi d'inutilisable, on ajoute la croix noire
-  if ( $fermee_detuite )
+  if ( $point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit" )
     $nom_icone.="_x";
+
+  // Pour les points d'eau intermittents
+  if ( $point->conditions_utilisation=="intermittent" and $point->id_point_type==$config_wri['id_point_d_eau'] )
+    $nom_icone.="_a33";
 
 
   return $nom_icone;
