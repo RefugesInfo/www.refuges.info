@@ -24,9 +24,11 @@ require_once ("upload_max_filesize.php");
 //print_r($_GET);
 //die();
 //$html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE);
-
-//$point = infos_point(105);
-
+  $conditions = new stdClass;
+  $conditions->ids_points=105;
+  
+$point = infos_points($conditions);
+d($point);
 // d ( ) et la fonction de debug qui print les variables passée et une trace des appels
 //d(lien_point($point,true));
 //d($config_wri['sous_dossier_installation']);

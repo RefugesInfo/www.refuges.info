@@ -890,3 +890,14 @@ body:not(#phpbb) a:visited {
 .texte-tout-petit {
   font-size: x-small;
 }
+
+// css pour se comporter comme une table
+.table {
+    display: table;
+}
+.tr { 
+    display: table-row; 
+}
+.td { 
+    display: table-cell;
+}

@@ -7,122 +7,70 @@ Ce fichier ne contient que des balises HTML et des balises de contrôle
 $vue contient les données passées par le fichier PHP
 **/
 ?>
-<script>
 
-function inverse_visibility_voisins( id_element )
-{
-	var node = document.getElementById(id_element).firstChild;
-	node = node.nextSibling;
-	while (node) {
-		if ( node.style ) {
-			if ( node.style.display != "none" ) {
-				node.style.display = "none";
-			} else {
-				node.style.display = ""; // pas de display, donc ca affiche
-			}
-		}
-		node = node.nextSibling;
-	} 
-}
-
-</script>
-
-<div class="contenu">
-    <?php // Parcours tous les refuges de la recherche
-    if (isset($vue->points)) { ?>
-	<h4><?=$vue->titre?></h4>
-	
-		<?php if(isset($vue->limite_atteinte) ) { ?>
-			<h5>La limite a été atteinte. seuls les <?=$vue->limite_atteinte?> premiers points sont affichés.</h5>
-		<?php }
-			
-		$arbre = array();
-		foreach ($vue->points as $point) {
-		
-			$polys = explode(",",$point->liste_polygones);
-
-			$commun = array_intersect_assoc($arbre, $polys) ; // renvoie la partie commune des 2 arborescence. le debut quoi.
-			// le nombre de fermeture, c'est la difference entre l'arbre d'avant, et la partie commune, si c'est  =<0,  ya rien a fermer.
-			$nombre_branches_a_fermer = sizeof($arbre) - sizeof($commun); 
-			
-			for( $i=0 ;$i< $nombre_branches_a_fermer; $i++ ) { ?>
-				</dl> 
-			<?php }
-						
-			$branches_a_creer = array_diff_assoc($polys, $commun) ;
-			foreach ($branches_a_creer as $branche) { 
-				$id = rand(100000,999999); // faire un id au pif. c'est crade mais c'est court. avec $branche ya un risque de doublons
-				$info = infos_polygone($branche);
-				?><dl id="<?=$id?>"><dt><button type="button" onClick="inverse_visibility_voisins(<?=$id?>);">[-]</button><a href="<?=lien_polygone ($info)?>"> <?=$info->nom_polygone?> </a> (<?=$info->type_polygone?>)</dt> <?				
-			}
-				
-			$arbre = $polys;
-
-			?>
-			<dd class="fiche_cadre condense">
-				<b>
-					<a href="<?=$point->lien?>">
-						<?=ucfirst($point->nom)?>
-					</a>
-					<?=$html_annonce_fermeture ?? ''?>
-				</b>
-				<?=$point->nom_type?>
-				<?php  if ($annonce_fermeture=texte_non_ouverte($point)) {?>
-					<strong>(<?=$annonce_fermeture?>)</strong>
-				<?php } ?>
-			</dd><?
-		}
-		for( $i=0 ;$i< sizeof($arbre); $i++ ) { ?>
-				</dl> <?php } ?>
-	
-	<h4>Même chose, présentation différente</h4>
-	
-		<dl>
-			<?php foreach ($vue->points as $point) {?>
-			
-				<dd class="fiche_cadre condense">
-					<b>
-						<a href="<?=$point->lien?>">
-							<?=ucfirst($point->nom)?>
-						</a>
-						<?=$html_annonce_fermeture ?? ''?>
-					</b>
-					<?=$point->nom_type?>
-					<?php //afficher un lien vers le massif comprenant le point
-					if (!empty($point->liste_polygones))
-					{
-						$polys = explode(",",$point->liste_polygones);
-						foreach( $polys AS $poly ) {
-							$info = infos_polygone($poly);
-							?>|<a href="<?=lien_polygone ($info)?>"> <?=$info->nom_polygone?> </a>| <?
-						}
-					}	
-					if ($annonce_fermeture=texte_non_ouverte($point)) {?>
-						<strong>(<?=$annonce_fermeture?>)</strong>
-					<?php }?>
-				</dd>
-			<?php }?>
-		</dl>
-	<?php } else { ?>
-	<p>Aucun point trouvé dans la base de <?=$config_wri['nom_hote']?></p>
+<div class="condense table">
+  <?php // Parcours tous les refuges de la recherche
+  if (isset($vue->points)) { ?>
+  <h4><?=$vue->titre?></h4>
+  
+    <?php if(isset($vue->limite_atteinte) ) { ?>
+        <h5>La limite a été atteinte. seuls les <?=$vue->limite_atteinte?> premiers points sont affichés.</h5>
     <?php } ?>
+  
+    <div class="table">
+      <?php foreach ($vue->points as $point) {?>
+      <div class="tr">
+        <div class="td">
+          <b>
+            <a href="<?=$point->lien?>">
+                <?=ucfirst($point->nom)?>
+            </a>
+          </b>
+          <?=$point->nom_type?>.
+          <?php if ($annonce_fermeture=texte_non_ouverte($point)) {?>
+            <strong>(<?=$annonce_fermeture?>)</strong>.
+          <?php }?>
+          &nbsp;
+        </div>
+        <div class="td">
+          <?php //afficher une liste des polygones auxquels le point appartient histoire de le situer, dans l'ordre d'importance (zone > massif > réserve naturelle)
+          if (!empty($point->liste_polygones))
+          {
+              print('Situation: ');
+              $polys = explode(",",$point->liste_polygones);
+              $i=0;
+              foreach( $polys AS $poly ) {
+                  $i++;
+                  $info = infos_polygone($poly);
+                  if ($i>1)
+                    print (' > ');
+                  print($info->nom_polygone); 
+              }
+          } ?>
+        </div>
+      </div>
+        <?php }?>
+    </div>
+  <?php } else { ?>
+  <p>Aucun point trouvé dans la base de <?=$config_wri['nom_hote']?></p>
+  <?php } ?>
 
-	<?php // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
-	if (!empty($vue->nominatim->nb_points)) { ?>
-		<h4>Recherche dans la base <a href="http://openstreetmap.org/">OpenStreetMap</a> : <?=$vue->nominatim->nb_points?> point<?=$vue->nominatim->pluriel?> trouvé<?=$vue->nominatim->pluriel?> avec <a href="<?=$vue->nominatim->url_site?>">Nominatim</a></h4>
-		<dl>
-			<?php foreach ($vue->nominatim->xml as $points_nominatim) { ?>
-				<dd class="fiche_cadre condense">
-				<b>
-					<a href="<?=$config_wri['sous_dossier_installation'].'nav?zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
-						<?=$points_nominatim['display_name']?>
-					</a>
-				</b>
-				(<?=$points_nominatim['class']?>)
-				</dd>
-			<?php }?>
-		</dl>
-	<?php } elseif (!empty($vue->recherche_osm_active)) { ?>
-    <p>Aucun point trouvé dans la base OpenStreetMap</p>
-    <?php } ?>
+  <?php // Parcours tous les points de la recherche sur nominatim.openstreetmap.org
+  if (!empty($vue->nominatim->nb_points)) { ?>
+      <h4>Recherche dans la base <a href="http://openstreetmap.org/">OpenStreetMap</a> : <?=$vue->nominatim->nb_points?> point<?=$vue->nominatim->pluriel?> trouvé<?=$vue->nominatim->pluriel?> avec <a href="<?=$vue->nominatim->url_site?>">Nominatim</a></h4>
+      <dl>
+          <?php foreach ($vue->nominatim->xml as $points_nominatim) { ?>
+              <dd class="fiche_cadre condense">
+              <b>
+                  <a href="<?=$config_wri['sous_dossier_installation'].'nav?zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
+                      <?=$points_nominatim['display_name']?>
+                  </a>
+              </b>
+              (<?=$points_nominatim['class']?>)
+              </dd>
+          <?php }?>
+      </dl>
+  <?php } elseif (!empty($vue->recherche_osm_active)) { ?>
+  <p>Aucun point trouvé dans la base OpenStreetMap</p>
+  <?php } ?>
 </div>

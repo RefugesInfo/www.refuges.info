@@ -139,17 +139,16 @@ function infos_points($conditions)
     $tables_en_plus.=",(
                           SELECT
                             p.id_point,
-                            STRING_AGG(pg.id_polygone::text,',' ORDER BY pty.ordre_taille DESC) AS liste_polygones
+                            STRING_AGG(pg.id_polygone::text,',' ORDER BY polygone_type.ordre_taille DESC) AS liste_polygones
                           FROM
-                            polygones pg NATURAL JOIN polygone_type pty,
+                            polygones pg NATURAL JOIN polygone_type,
                             points p
                           WHERE
                             ST_Within(p.geom, pg.geom)
                             AND
-                            pty.categorie_polygone_type='".$conditions->avec_liste_polygones."'
+                            polygone_type.categorie_polygone_type='".$conditions->avec_liste_polygones."'
                           GROUP BY p.id_point
                           ) As liste_polys";
-                        //  ca aurait pu aussi: AND pg.id_polygone_type IN (".$conditions->avec_liste_polygones.")
 
     $champs_polygones.=",liste_polys.liste_polygones";
     $conditions_sql .= "\n\tAND liste_polys.id_point=points.id_point";
