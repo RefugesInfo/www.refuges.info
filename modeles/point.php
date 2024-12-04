@@ -79,8 +79,6 @@ $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "
 $conditions->geometrie : Ne renvoir que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
 $conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
 
-$conditions->date_creation_apres : La date de création du point est >= à celle demandée (on peut utiliser une date '2020-02-01' ou toute syntaxe postgres du genre "NOW() -  INTERVAL '1 week'"
-
 $conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
 $conditions->topic_id : Dont le topic du forum est celui-ci (permet d'avoir un lien retour du forum du point vers la fiche)
 
@@ -224,10 +222,6 @@ function infos_points($conditions)
   //conditions sur la description (champ remark)
   if( !empty($conditions->description) )
     $conditions_sql.="\n\tAND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
-
-  if ( !empty($conditions->date_creation_apres) )
-    $conditions_sql.="\n\tAND points.date_creation >= $conditions->date_creation_apres"; // j'ai essayé $pdo->quote mais ça m'ajoute un ' d'escape en trop quand je met NOW() INTERVAL '3 days'
-
 
   if (!empty($conditions->uniquement_points_caches))
   {
