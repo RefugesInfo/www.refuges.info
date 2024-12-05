@@ -127,10 +127,12 @@ $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'car
 $config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees, massif central, ile de la réunion ... 
 $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réserves biologique, parcs nationaux.
 
-// Catégorie "tout type de refuges"
-// certes une gestion par catégorie directement dans la base serait préférable, mais en 2024 on a une (!) catégorie donc, bon,
-// à la main dans la config : ( ce sont les ids des refuges gardés, non gardés, gîtes et grottes)
-$config_wri['tout_type_refuge']=array(7,9,10,29);
+// Catégorie "tout type de refuges" ( ce sont les ids des refuges gardés, non gardés, gîtes)
+// certes une gestion par catégorie directement dans la base serait préférable, mais en 2024 on a 2 donc, bon...
+$config_wri['tout_type_refuge']=array(7,9,10);
+
+// Catégorie "tout type d'abris, pareil qu'avant, les grottes en plus
+$config_wri['tout_type_d_abri']=array_merge($config_wri['tout_type_refuge'],array(29));
 
 $config_wri['bbox_page_accueil']='-1.75,41.4,11,49.2';
 

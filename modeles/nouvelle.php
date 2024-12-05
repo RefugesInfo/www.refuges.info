@@ -25,7 +25,7 @@ require_once ("forum.php");
   {
     global $config_wri,$pdo;
     // Petits stats de début sur l'intégralité de la base
-    // donc je liste bien les point_type 7,9 et 10 qui sont des hébergements
+    // donc je liste bien les "refuges"
     // les autres sont des sommets, des cols, des villes où autre
     // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
     // PDO jmb re ecriture en une seule requete

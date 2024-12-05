@@ -24,7 +24,7 @@ if (!isset($_REQUEST['validation'])) // rien de valider, formulaire vierge
     $vue->types_de_point->$index = new stdClass;
     $vue->types_de_point->$index->nom_type = $type_de_point->nom_type;
     $vue->types_de_point->$index->id_point_type = $type_de_point->id_point_type;
-    if ( in_array($type_de_point->id_point_type, $config_wri['tout_type_refuge']) ) 
+    if ( in_array($type_de_point->id_point_type, $config_wri['tout_type_d_abri']) ) 
         $vue->types_de_point->$index->checked = true;
   }
 
