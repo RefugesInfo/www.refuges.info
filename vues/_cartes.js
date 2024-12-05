@@ -219,7 +219,7 @@ function coucheContourMassif(options) {
 function mapIndex(options) {
   const pointsLayer = couchePointsWRI({ // Les points
       host: options.host,
-      selection: '7,9,10',
+      selection: options.selection,
     }),
     massifsLayer = coucheMassifsColores({ // Les massifs
       host: options.host,
