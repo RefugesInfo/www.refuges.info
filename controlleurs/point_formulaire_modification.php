@@ -79,7 +79,7 @@ elseif ( !empty($_REQUEST["id_point_type"]))
         $point = new stdClass;
     }
     else
-        $point=$points_modele[0];
+        $point=reset($points_modele);
     
     // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
     $point->longitude=6;

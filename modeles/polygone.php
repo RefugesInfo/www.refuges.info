@@ -393,5 +393,27 @@ function cree_geometrie( $params , $type )
   }
   return $geotexte ;
 }
-
-
+/*************************************************************
+On lui passe un tableau de polygones et ça nous renvoi une chaine de caractère au format :
+"Alpes > Chartreuse > Réserve Naturelle des Hauts de Chartreuse"
+ou
+"France > Rhône Alpes > Savoie"
+Selon le 2ème paramètres qui est la catégorie de polygone
+*************************************************************/
+function chaine_de_localisation($polygones,$categorie_polygone_type='montagnarde')
+{
+  $localisation="";
+  if (!empty($polygones))
+  {
+    $i=0;
+    foreach( $polygones as $polygone ) 
+    if ($polygone->categorie_polygone_type==$categorie_polygone_type)
+    {
+      $i++;
+      if ($i>1)
+        $localisation.=' > ';
+      $localisation.=$polygone->nom_polygone;
+    }
+  }
+  return $localisation;
+}

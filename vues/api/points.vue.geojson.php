@@ -12,20 +12,21 @@ headers_cache_api();
   "timestamp": "<?=date(DATE_ATOM)?>",
   "size": "<?=count((array)$points)?>",
   "features": 
-  [
-  <?php foreach ($points as $j => $point)
-  if ($points_geojson[$point->id]['geojson']) // Pour éviter un point sans poition (qui ne devrait pas arriver !)
+  [<?php 
+  $i="premier";
+  foreach ($points as $j => $point)
+    if ($points_geojson[$point->id]['geojson']) // Pour éviter un point sans position (qui ne devrait pas arriver !)
+    {
+      if ( $i!='premier' )
+        print(",");
+      $i="plus_premier";
+  ?> 
   {
-    if ($j) echo ","; // Ajoute une , entre les points sauf le premier
-?> {
      "type": "Feature",
      "id": <?=$point->id?>,
      "properties": <?=json_encode($point)?>,
      "geometry": <?=$points_geojson[$point->id]['geojson']?>
 
-    }<?php
-  }
-?>
-
+  }<?php } ?>
   ]
 }

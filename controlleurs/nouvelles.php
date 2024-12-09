@@ -16,17 +16,8 @@ if (isset($_GET['nombre']) and is_numeric($_GET['nombre']))
 else
     $nombre = $config_wri['defaut_nombre_nouvelles_page_nouvelles'];
 
-$vue->stat = stat_site ();
 $vue->types_nouvelles = $_GET ['quoi'] ??  'commentaires,points,forums';
 $vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles);
-$vue->nouvelles = texte_nouvelles ($vue->nouvelles); // On ajoute le texte
-
-foreach ($vue->nouvelles as $id => $nouvelle)
-{
-	$vue->nouvelles[$id]['date_formatee']=date("d/m/y", $nouvelle['date']);
-	$vue->nouvelles[$id]['titre']=bbcode2html($nouvelle['titre']);
-	$vue->nouvelles[$id]['texte']=bbcode2html($nouvelle['texte']);
-}
 
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
 $vue->nombre=$nombre+100;

@@ -64,27 +64,25 @@ $conditions->trinaire->poele : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
 $conditions->trinaire->cheminee : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
 (pour augmenter la liste, voir $config_wri['champs_trinaires_points'])
 
-FIXME : 2 conditions pour faire presque la même chose, je me demande s'il n'y a pas matière à simplifier :
 $conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
 $conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
 
 $conditions->modele='uniquement' si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), 'avec' si on veut les points et les modèles, si empty() on ne les veux pas.
 $conditions->avec_points_caches=True : Par défaut, False : les points cachés ne sont pas retournés
-$conditions->uniquement_points_cachés=True : ne retourner que les points cachés (utiles uniquement pour les modérateurs)
+$conditions->uniquement_points_cachés=True : ne retourner que les points cachés (utiles pour les modérateurs par exemple)
 
-$conditions->avec_infos_massif=True si on veut les infos du massif auquel le point appartient, par défaut : sans
 $conditions->limite : nombre maximum d'enregistrement à aller chercher, par défaut sans limite
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 
-$conditions->geometrie : Ne renvoir que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
+$conditions->geometrie : Ne renvoi que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
 $conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
+$conditions->avec_liste_polygones=True : l'objet retourné dispose d'une propriété polygones, un array de tous les polygones auquels le point appartient.
 
 $conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
 $conditions->topic_id : Dont le topic du forum est celui-ci (permet d'avoir un lien retour du forum du point vers la fiche)
 
-FIXME, cette fonction devrait contrôler avec soins les paramètres qu'elle reçoit, certains viennent directement d'une URL !
-Etant donné qu'il faudrait de toute façon qu'elle alerte de paramètres anormaux autant le faire ici je pense sly 15/03/2010
-Je commence, elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon
+Cette fonction contrôle du mieux qu'elle peut les paramètres qu'elle reçoit, certains viennent directement d'une URL !
+Elle retourne un texte d'erreur avec $objet->erreur=True et $objet->message="un texte", sinon. (Oui, je sais, les exceptions c'est fait pour ça)
 *****************************************************/
 
 function infos_points($conditions)
@@ -92,7 +90,21 @@ function infos_points($conditions)
   global $config_wri,$pdo;
   $champs_en_plus=$select_distance=$conditions_sql=$tables_en_plus=$ordre=$limite=$champs_polygones="";
   $points = array ();
-
+  // On aurait pu prendre tout, mais la geom des polygones est énorme, et tout ne sert pas.
+  $proprietes_interessantes_polygones = array ( 
+        'id_polygone',
+        'id_polygone_type',
+        'article_partitif',
+        'nom_polygone',
+        'message_information_polygone',
+        'url_exterieure',
+        'site_web'
+        );
+  $proprietes_interessantes_type_polygones = array ( 
+        'type_polygone',
+        'categorie_polygone_type'
+  );
+   
   // condition de limite en nombre
   if (!empty($conditions->limite))
     if (!est_entier_positif ($conditions->limite))
@@ -122,38 +134,29 @@ function infos_points($conditions)
       $champs_polygones=",".$config_wri['champs_table_polygones'];
     }
   }
-  elseif (!empty($conditions->avec_infos_massif))
-  {
-    // Jointure en LEFT JOIN car certains de nos points sont dans aucun massifs mais on les veut pourtant
-    // Il s'agit donc d'un "avec infos massif si existe, sinon sans"
-    $tables_en_plus.=" LEFT JOIN polygones ON (ST_Within(points.geom, polygones.geom ) AND id_polygone_type=".$config_wri['id_massif'].")";
-    $champs_polygones=",".$config_wri['champs_table_polygones'];
-  }
 
+    // On souhaite sortir tous les polygones de la base auquel chaque point appartient
   if (!empty($conditions->avec_liste_polygones) )
   {
-    // Jointure pour la liste des polygones auquels appartient le point
-    // sly : FIXME : Cette sous requête est particulièrement couteuse en ressources, il faudrait trouver une technique pour faire ça en JOIN
-    $tables_en_plus.=",(
-                          SELECT
-                            p.id_point,
-                            STRING_AGG(pg.id_polygone::text,',' ORDER BY polygone_type.ordre_taille DESC) AS liste_polygones
-                          FROM
-                            polygones pg NATURAL JOIN polygone_type,
-                            points p
-                          WHERE
-                            ST_Within(p.geom, pg.geom)
-                            AND
-                            polygone_type.categorie_polygone_type='".$conditions->avec_liste_polygones."'
-                          GROUP BY p.id_point
-                          ) As liste_polys";
-
-    $champs_polygones.=",liste_polys.liste_polygones";
-    $conditions_sql .= "\n\tAND liste_polys.id_point=points.id_point";
+    $tables_en_plus.=", points points2 left join polygones polygones2 on ST_Within(points2.geom, polygones2.geom), polygone_type";
+    
+    foreach ($proprietes_interessantes_polygones as $propriete)
+      $champs_polygones.=",polygones2.$propriete";
+    foreach ($proprietes_interessantes_type_polygones as $propriete)
+      $champs_polygones.=",polygone_type.$propriete";
+    
+    //Condition de jointure implicite pour que la 2ème référence à la table point joigne bien avec le même point dans la table points
+    $conditions_sql .= "\n\tAND points.id_point=points2.id_point
+    AND polygones2.id_polygone_type=polygone_type.id_polygone_type";
+    if (empty($conditions->ordre))
+      $ordre="ORDER BY points.nom,polygone_type.ordre_taille DESC";
+    /* Là, c'est méga sioux et empirique comme bidouille, la limite s'appliqe au nombre de records retournés, mais avec la jointure, chaque point donne lieu à 4, 5 voir 8 lignes pour chaque polygones dont le point est membre. Alors si on voulait une limite je multiplie arbitrairement par 6 la limite demandée. (le tableau final sera tronqué pour tomber pile sur la limite demandée de nombre de points retournés) 
+    Pourquoi alors mettre une limite me diriez vous ? pour économiser des ressources et du temps à attendre cette énorme requête */
+    if (!empty($conditions->limite))
+      $limite="\n\tLIMIT ".(7*$conditions->limite);
   }
 
-  // on restreint a cette geometrie (un texte "ST machin en fait")
-  // cette fonction remplace la distance, qui n'est rien d'autre qu'un cercle geometrique
+  // on restreint les points qui appartiennent à cette geometrie (utile pour les points dans une bbox donnée ou à une distance d'un autre point, dans un cercle quoi)
   if( !empty($conditions->geometrie) )
   {
     $conditions_sql .= "\n\tAND ST_Within(points.geom,".$conditions->geometrie .") ";
@@ -234,10 +237,10 @@ function infos_points($conditions)
   if (!empty($conditions->modele))
   {
     if ($conditions->modele=='uniquement')
-      $conditions_sql.="\n\tAND modele=1";
+      $conditions_sql.="\n\tAND points.modele=1";
   }
     else
-      $conditions_sql.="\n\tAND modele!=1";
+      $conditions_sql.="\n\tAND points.modele!=1";
 
   //prise en compte des conditions trinaires couverture, eau à proximité, etc. (1, 0 ou NULL = ne sait pas)
   if (!empty($conditions->trinaire))
@@ -270,8 +273,8 @@ function infos_points($conditions)
       $conditions_sql.="\n\tAND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
   }
   if (!empty($conditions->topic_id))
-    $conditions_sql.="\n\tAND topic_id =".$conditions->topic_id;
-
+    $conditions_sql.="\n\tAND points.topic_id =".$conditions->topic_id;
+    
   if (!empty($conditions->ordre))
       $ordre="\nORDER BY $conditions->ordre";
 
@@ -327,13 +330,13 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
   }
 
   $query_points="
-SELECT points.*,
+  SELECT points.*,
          ST_AsGeoJSON(points.geom) AS geojson,
          type_precision_gps.*,
-         point_type.*,COALESCE(phpbb3_users.username,nom_createur) as nom_createur,
+         point_type.*,COALESCE(phpbb3_users.username,points.nom_createur) as nom_createur,
          ST_X(points.geom) as longitude,ST_Y(points.geom) as latitude,
-         extract('epoch' from date_derniere_modification) as date_modif_timestamp,
-         extract('epoch' from date_creation) as date_creation_timestamp
+         extract('epoch' from points.date_derniere_modification) as date_modif_timestamp,
+         extract('epoch' from points.date_creation) as date_creation_timestamp
          $select_distance
          $champs_polygones
          $champs_en_plus
@@ -350,37 +353,58 @@ SELECT points.*,
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
-  //Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
-  $point = new stdClass();
+  // Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
+  // Depuis 12/2024 On sort maintenant tous les polygones auxquels les points appartiennent chaque point peut sortir plusieurs fois, il faut en tenir compte.
+  $id_point_deja_fait=0;
+  $nouveau_point=true;
+  $nombre_point_deja_recuperes=0;
   while ($point = $res->fetch())
   {
-    // on rajoute pour chacun le massif auquel il appartient, si ça a été demandé, car c'est plus rapide
-    // FIXME sly : Encore cette spécificité liée au massif qu'il faudrait généraliser
-    // jmb: ce n'est pas le boulot de infos_points de donner les noms et adjectifs des massifs.
-    // l'appelant devrait appeler infos_polygone avec l'ID plus tard.
-    // Note sly : Le problème est que ça peut obliger à des centaines de requêtes ! (cf la recherche, les nouvelles,etc.),
-    // l'avantage d'un join ici, c'est qu'on récupère tout ça en une seule requête !
-    // définitivement non, le SQL n'est pas orienté objet !
-    // pas le boulot non plus de infos_points de donner les liens
-    // sly : d'accord avec ça, charge à l'appelant de faire l'appel à lien_point($point);
-    if (!empty($conditions->avec_infos_massif))
+    // on attaque un nouveau point
+    if ($id_point_deja_fait != $point->id_point)
     {
-      $point->nom_massif = $point->nom_polygone;
-      $point->id_massif  = $point->id_polygone;
-      $point->article_partitif_massif = $point->article_partitif;
+      $point_final=$point;
+      $nombre_point_deja_recuperes++;
+      if (!empty($conditions->limite))
+        if ($nombre_point_deja_recuperes > $conditions->limite) // On dépasse le nombre de point qu'on avait demandé, on s'arrête là
+          break;
+      
+      $polygone = new stdClass;
+      // On enlève les propriétés du polygone (si elle existe), car on les veut dans un sous array
+      if (!empty($conditions->avec_liste_polygones))
+      {
+        foreach (array_merge($proprietes_interessantes_polygones,$proprietes_interessantes_type_polygones) as $propriete)
+        {
+          $polygone->$propriete = $point->$propriete;
+          unset($point_final->$propriete);
+        }
+        $point_final->polygones[]=$polygone;
+      }
+      
+        
+      //  phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
+      if (!empty($point->id_createur))
+        $point->nom_createur=html_entity_decode($point->nom_createur);
     }
-    $point->date_formatee=date("d/m/y", $point->date_creation_timestamp);
-    // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
-    if (!empty($point->id_createur))
-      $point->nom_createur=html_entity_decode($point->nom_createur);
+    elseif (est_entier_positif($point->id_polygone))
+    {
+      // si c'est toujours le même id_point, alors c'est toujours le même point, on ne fait qu'ajouter le polygone à l'array
+      $polygone = new stdClass;
+      foreach (array_merge($proprietes_interessantes_polygones,$proprietes_interessantes_type_polygones) as $propriete)
+        $polygone->$propriete = $point->$propriete;
+      $point_final->polygones[]=$polygone;
+    }
 
     // Ici, petite particularité sur les points cachés, par défaut, on ne veut pas les renvoyer, mais on veut quand
-    // même, si un seul a été demandé, pouvoir dire qu'il est caché (du public), donc on va le chercher en base mais on renvoi une erreur s'il est en caché
+    // même, si un seul a été demandé, pouvoir dire qu'il est caché (du public) ce qui est différent d'inexistant dans la base. On va donc le chercher en base mais on renvoi un message erreur s'il est en caché
     // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
     if (!$point->cache or !empty($conditions->avec_points_caches)) // On renvoi ce point, soit il n'est pas caché, soit on a demandé aussi les points cachés
-      $points[]=$point;
-    elseif ( !empty($conditions->ids_points) and is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est en attente on retourne un message d'erreur
-      return erreur("Ce point a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique (et vous n'êtes pas modérateur, ou pas connecté)");
+    {
+      $points[$point->id_point]=$point_final;
+      $id_point_deja_fait=$point->id_point;
+    }
+    elseif ( !empty($conditions->ids_points) and is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est caché on retourne un message d'erreur
+      return erreur("Ce point d'id $conditions->ids_points a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique");
   }
   return $points;
 }
@@ -396,37 +420,32 @@ un array est disponible sous la forme
 $infos_point->polygones[$i]->champ
 ( polygones triés par importance pays>département>massif>carte>parc
 pour obtenir la liste des polygones auquels ce point appartient
-Pour simplifier $infos_point->massif contient les infos du polygone massif auquel le
-point appartient )
-FIXME: cette histoire de $infos_point->massif est qu'historiquement on s'intéresse plus aux massifs
-que aux pays/départements/autres/ une version plus logique devrait laisser tomber ça et indiquer lequel des $infos_point->polygones[$i] est le massif
-auquel le point appartient sly 14/03/2010
 
-FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui fait la même chose que celle avant, à part cette histoire de polygones.
-Mais postgis étant super rapide, je pense que l'on peut fusioner. 2022: Ou mieux ! écrire une fonction dont le but est d'aller chercher les polygones auquel un unique point appartient ?
+FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui fait la même chose que celle avant. C'est juste pour l'historique.
 
 FIXME: 2022 Et en plus, j'arrête pas d'ajouter des paramètres, on va finir par passer un tableau d'options ! ce que je voulais éviter en faisant la fonction précédente
 
 *****************************************************/
 function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_si_modele=False)
 {
-  // inutile de faire tout deux fois, j'utilise la fonction plus bas pour n'en récupérer qu'un
+  // inutile de faire tout deux fois, j'utilise la fonction plus haut pour n'en récupérer qu'un
   global $config_wri,$pdo;
-  if (!est_entier_positif($id_point))
-    return erreur("Le n°du point demandé est invalide, reçu : $id_point");
 
   $conditions = new stdClass;
   $conditions->ids_points=$id_point;
+  
+  if ($avec_polygones)
+    $conditions->avec_liste_polygones=True;
 
   if ($meme_si_modele)
     $conditions->modele='avec';
 
-  $conditions->avec_infos_massif=True;
   if ($meme_si_cache)
     $conditions->avec_points_caches=True;
 
   // récupération des infos du point
   $points=infos_points($conditions);
+  
   // Requête impossible à executer
   if (!empty($points->erreur))
     return erreur($points->message);
@@ -437,40 +456,14 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
   if (count($points)>1)
     return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu...");
 
-    $i=0;
-  $point=$points[0];
+  // Comme il n'y a qu'un élément, on le prend
+  $point=reset($points);
 
-  // recherche des différents polygones auquels appartienne le point
-  // FIXME Cette particularité n'existe que lorsque on demande un point en particulier
-  // idéalement, la fonction ci-après de recherche devrait faire la même chose, mais c'est bien plus couteux en calcul sly 18/05/2010
-  // J'hésite, car l'objet retourné va être hiddeusement gros et en fait, on a pas souvent besoin de sa localisation complète
-  // sauf sur les pages des points... doute... incertitude -- sly
-  if ($avec_polygones)
-  {
-    $query_polygones="SELECT site_web,nom_polygone,id_polygone,article_partitif,source,message_information_polygone,url_exterieure,polygone_type.*
-        FROM polygones,polygone_type,points
-        WHERE
-        polygones.id_polygone_type=polygone_type.id_polygone_type
-        AND ST_Within(points.geom, polygones.geom)
-        AND points.id_point=$point->id_point
-        ORDER BY polygone_type.ordre_taille DESC";
-
-    $res = $pdo->query($query_polygones);
-    $point->polygones = array ();
-    if ( $polygones_du_point = $res->fetch() )
-        do
-        {
-            $polygones_du_point->lien_polygone=lien_polygone($polygones_du_point,True);
-            $point->polygones[]=$polygones_du_point;
-        } while ( $polygones_du_point = $res->fetch() ) ;
-    }
-    return $point;
+  return $point;
 }
 /******************************************************************************************************************************
 Lien plus simple à utiliser maintenant ! sur la base de l'objet point "habituel" et plus rapide que celui du dessous
 car requête de moins
-FIXME uniformiser l'appel au $point->nom_massif qui devrait être atteignable dans un truc de ce style :
-$point->polygones[$x]->nom_polygone
 *******************************************************************************************************************************/
 function lien_point($point,$lien_local=false)
 {
@@ -485,13 +478,7 @@ function lien_point($point,$lien_local=false)
   else
       $url_complete="$schema://".$config_wri['nom_hote'].$config_wri['sous_dossier_installation'];
 
-  if (!empty($point->nom_massif)) // Des fois, on ne l'a pas (trop d'info à aller chercher, donc il n'apparaît pas dans l'url)
-    $info_massif=replace_url($point->nom_massif)."/";
-  elseif (!empty($point->nom_polygone)) // FIXME : des fois c'est dans nom_massif, des fois nom_polygone, il faudrait uniformiser
-    $info_massif=replace_url($point->nom_polygone)."/";
-  else
-    $info_massif="";
-   return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/$info_massif".replace_url($point->nom)."/";
+   return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/".replace_url($point->nom)."/";
 }
 
 

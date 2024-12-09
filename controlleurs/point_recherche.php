@@ -12,13 +12,10 @@ require_once ("polygone.php");
 // tous ceux dont le name du formulaire correspondent à la condition sur le champs en base du même nom
 $conditions = new stdClass;
 $conditions->trinaire = new stdClass;
+$conditions->avec_liste_polygones=True;
 
-$conditions->avec_infos_massif=1;
-$conditions->avec_liste_polygones="montagnarde";
-
-// trie par polygones, autrement dit par massifs
-// utile pour faire des listes séparées 
-$conditions->ordre="liste_polygones"; 
+// Par défaut, on veut afficher zones, massifs, régions, réserves
+$vue->condition_categorie_polygone="montagnarde";
 
 // FIXME sly : Mon rêve serait de déplacer ce bloc foreach dans une fonction générique que l'on puisse appeler 
 // à chaque fois que l'on veut des points que les conditions soient reçues par GET ou POST. Une Sorte d'API de récupération
@@ -41,6 +38,9 @@ if (!empty($_REQUEST))
         case 'champs_trinaires':
           foreach ( $valeur as $c )
               $conditions->trinaire->$c = true ; 
+          break;
+        case 'condition_categorie_polygone':
+          $vue->condition_categorie_polygone=$valeur;
           break;
           
         case 'champs_null':
@@ -72,16 +72,15 @@ if (!empty($_REQUEST))
   else
   {
     $vue->nombre_points=sizeof($points);
-    $vue->titre="Recherche sur refuges.info ($vue->nombre_points points trouvés)";
+    $vue->titre="Recherche sur refuges.info ($vue->nombre_points points affichés)";
 
-    // FIXME sly : et aller, c'est beau l'abstraction en couche mais pour une recherche, on en est à 3 (4?) fois le parcours des résultats
     if (isset($points))
       foreach ($points as $point)
       {
         $point->lien=lien_point($point,true);
         $vue->points[]=$point;
       }
-    //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on l'a atteinte ........
+    //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on l'a atteinte
     if (!empty($conditions->limite) && $vue->nombre_points == $conditions->limite)
       $vue->limite_atteinte = $conditions->limite;
     

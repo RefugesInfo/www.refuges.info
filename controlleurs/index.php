@@ -30,7 +30,6 @@ $vue->nouveaux_commentaires=infos_commentaires($conditions_nouveaux_commentaires
 
 $conditions_nouveaux_points = new stdclass();
 $conditions_nouveaux_points->limite=$config_wri['defaut_max_ajouts_recents'];
-$conditions_nouveaux_points->avec_infos_massif=True;
 $conditions_nouveaux_points->ordre="date_creation DESC";
 $vue->nouveaux_points=infos_points($conditions_nouveaux_points);
 

@@ -50,7 +50,7 @@ else // le point est valide
     $vue->localisation_point = array();
     foreach ($point->polygones as $polygone)
     {
-        if (in_array($polygone->categorie_polygone_type,array("administrative","montagnarde"))) // il existe d'autres catégories de polygone comme "interne" ce sont des polygones de positionnement de point de vu carte sans intérêt dans notre cas ici. Plutôt que de procéder par blacklist (categorie_polygone_type!="" je préfère finalement lister ceux que je veux)
+        if (in_array($polygone->categorie_polygone_type,array("administrative","montagnarde","carte"))) // il existe d'autres catégories de polygone comme "interne" ce sont des polygones de positionnement de point de vu carte sans intérêt dans notre cas ici. Plutôt que de procéder par blacklist (categorie_polygone_type!="" je préfère finalement lister ceux que je veux)
             $vue->localisation_point[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
     }
     if ($point->modele!=1)
@@ -66,7 +66,6 @@ else // le point est valide
     if ($point->id_type_precision_gps != $config_wri['id_coordonees_gps_fausses'])
     {
         $conditions = new stdClass;
-        $conditions->avec_infos_massif=True;
         $conditions->limite=10;
         $conditions->ouvert='oui';
         

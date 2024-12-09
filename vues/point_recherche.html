@@ -13,10 +13,7 @@ $vue contient les données passées par le fichier PHP
   if (isset($vue->points)) { ?>
   <h4><?=$vue->titre?></h4>
   
-    <?php if(isset($vue->limite_atteinte) ) { ?>
-        <h5>La limite a été atteinte. seuls les <?=$vue->limite_atteinte?> premiers points sont affichés.</h5>
-    <?php } ?>
-    <p>
+   <p>
     <div class="table">
       <?php foreach ($vue->points as $point) {?>
       <div class="tr">
@@ -33,23 +30,15 @@ $vue contient les données passées par le fichier PHP
           &nbsp;
         </div>
         <div class="td">
-          <?php //afficher une liste des polygones auxquels le point appartient histoire de le situer, dans l'ordre d'importance (zone > massif > réserve naturelle)
-          if (!empty($point->liste_polygones))
-          {
-              $polys = explode(",",$point->liste_polygones);
-              $i=0;
-              foreach( $polys AS $poly ) {
-                  $i++;
-                  $info = infos_polygone($poly);
-                  if ($i>1)
-                    print (' > ');
-                  print($info->nom_polygone); 
-              }
-          } ?>
+          <?=chaine_de_localisation($point->polygones)?>
         </div>
       </div>
       <?php }?>
     </div>
+    <?php if(isset($vue->limite_atteinte) ) { ?>
+      <p><strong>La limite du nombre de point a été atteinte.</strong></p>
+    <?php } ?>
+
   </p>
   <?php } else { ?>
   <p>Aucun point trouvé dans la base de <?=$config_wri['nom_hote']?></p>

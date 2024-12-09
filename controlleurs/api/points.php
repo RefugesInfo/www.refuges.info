@@ -229,7 +229,13 @@ foreach ($points_bruts as $i=>$point) {
       if ($point->id_createur==0) // non authentifié
           $points->$i->createur['nom']=$point->nom_createur;
       else
+      {
+        $utilisateur=infos_utilisateur($point->id_createur);
+        if (!empty($utilisateur->erreur)) // Aïe, le point référence un utilisateur qui n'existe plus
+          $points->$i->createur['nom'] = "Utilisateur supprimé";
+        else
           $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
+      }
       $points->$i->date['creation'] = $point->date_creation;
       $points->$i->article['demonstratif'] = $point->article_demonstratif;
       $points->$i->article['defini'] = $point->article_defini;

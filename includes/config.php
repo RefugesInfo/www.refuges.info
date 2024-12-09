@@ -191,7 +191,7 @@ $config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php?t=";
 // l'id de catégories spéciales du forum (que l'on veut voir s'afficher sur la page des nouvelles)
 $config_wri['id_forum_vie_du_site']=1;
 $config_wri['id_forum_des_refuges']=4;
-$config_wri['ids_forum_pour_les_nouvelles']=$config_wri['id_forum_vie_du_site'].",".$config_wri['id_forum_des_refuges'];
+$config_wri['ids_forum_pour_les_nouvelles']=$config_wri['id_forum_des_refuges'];
 
 $config_wri['encodage_exportation']="utf-8";
 $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];

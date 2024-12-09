@@ -48,10 +48,6 @@
 						<?}?>
 					<?}?>
 						: <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst($nouveau_point->nom)?></a>
-						<?php if (isset($nouveau_point->id_massif)) { ?>
-						dans le 
-						<a href="<?=lien_polygone($nouveau_point,True)?>">massif <?=$nouveau_point->article_partitif_massif?> <?=$nouveau_point->nom_massif?></a>
-						<?}?>
 				</li>
 			<?}?>
 			<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_max_page_nouvelles']?>&amp;quoi=points" title="Voir les <?=$config_wri['defaut_max_page_nouvelles']?> derniers points ajoutés sur le site"><b>Plus...</b></a></li>
