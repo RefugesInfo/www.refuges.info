@@ -71,7 +71,6 @@ foreach ($temp as $massif) {
 /****************************** REQUÊTE RÉCUPÉRATION NOUVELLES ******************************/
 
 $news = nouvelles($req->nombre,$req->type,$req->massif,False,$req);
-$news = texte_nouvelles($news); // On ajoute le texte
 foreach ($news as $id => $nouvelle)
 {
 	$news[$id]['date_formatee']=date("Y-m-d", $nouvelle['date']);

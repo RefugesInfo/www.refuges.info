@@ -94,7 +94,9 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
           // Ici, on retrouve les informations du point auquel ce commentaire se rapporte, dans le but de le localiser
           $conditions_point->ids_points=$commentaire->id_point;
           $conditions_point->avec_liste_polygones=True;
-          $point=reset(infos_points($conditions_point));
+          $points=infos_points($conditions_point);
+          $point=reset($points);
+          
           
           $news_array[$i]['localisation']=chaine_de_localisation($point->polygones);
           
