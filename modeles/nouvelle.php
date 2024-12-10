@@ -92,6 +92,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         foreach ( $commentaires as $commentaire )
         {
           // Ici, on retrouve les informations du point auquel ce commentaire se rapporte, dans le but de le localiser
+          // FIXME sly: ça donne bien ce que je veux, sauf que ça fait 100 fois la requête, une pour chaque message forum, même si à la fin on ne l'affiche pas, quel gaspillage !
           $conditions_point->ids_points=$commentaire->id_point;
           $conditions_point->avec_liste_polygones=True;
           $points=infos_points($conditions_point);
@@ -200,7 +201,9 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
                 $url_complete="";
               else
                 $url_complete="http://".$config_wri['nom_hote'];
+                
               // Ici, on retrouve les informations du point auquel ce Sujet de forum se rapporte
+              // FIXME sly: ça donne bien ce que je veux, sauf que ça fait 100 fois la requête, une pour chaque message forum, même si à la fin on ne l'affiche pas, quel gaspillage !
               $conditions_point = new stdclass;
               $conditions_point->topic_id=$commentaire_forum->topic_id;
               $conditions_point->avec_liste_polygones=True;
