@@ -45,25 +45,27 @@ require_once ("forum.php");
 
 /****************************************
 Fonction d'accès aux nouvelles
-elle renvoi un tableau avec :
-- les commentaires ajoutés sur les points
-- les points ajoutés avec un lien
-- les derniers messages sur les forums
-- un mix (new)
-- le titre de la liste (new) (pas pu faire autrement pour la liste)
+elle peut renvoyer selon le $type un tableau avec :
+- les commentaires ajoutés sur tous points
+et/ou
+- Tout type de points ajoutés
+et/ou 
+- Tout type de refuge (cabane, gite, refuges) ajoutés
+et/ou
+- les derniers messages sur les forums des points
 
-elle prends 3 paramêtres,$nombre news, categorie(s) de news a chercher et $ids_polygones 
+elle prends minimum 2 paramêtres : $nombre nouvelles à sortir au total, la ou les categorie(s) de nouvelles a chercher 
+
  * Les categories: séparées par "," comme "forum,refuges" pour les nouveaux messages forum et les nouveaux refuges a la fois
    A disposition : commentaires,refuges,points,forums
- * L'ID du massif n'est effectif que sur les commentaires et les points (pas sur le forum)
+ * option : L'ID du massif n'est effectif que sur les commentaires et les points (pas sur le forum)
    Possibilité de mettre une liste d'ids séparés par une virgule
 
-maintenir l'idée de tout regrouper dans un tableau qu'on tri ensuite
-NOTE : Conseils d'utilisation : Utiliser cette fonction n'a de sens que lorsqu'elle mélange plusieurs sources de natures différentes
+NOTE sly : Conseils d'utilisation : Utiliser cette fonction n'a de sens que lorsqu'on veut mélanger plusieurs sources de natures différentes
 (comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher des commentaires ou des points, les fonctions
 infos_xxxx( ) sont plus appropriées et performantes.)
-Par exemple car lorsque l'on demande 100 news on ne peut pas utiliser efficacement le LIMIT en SQL, en effet, comme c'est fait en plusieurs requêtes, on ne sait pas à l'avance comment on atteindra la limite, on est donc obligé de demander 100 de chaque catégories pour finalement ne prendre que les 100 plus récentes.
-
+Par exemple car lorsque l'on demande 100 nouvelles on ne peut pas utiliser efficacement le LIMIT en SQL, en effet, comme c'est fait en plusieurs requêtes, on ne sait pas à l'avance comment on atteindra la limite, on est donc obligé de demander 100 de chaque catégories pour finalement ne prendre que les 100 plus récentes.
+2024 sly : Comme en plus, on boucle sur chaque commentaire et chaque message du forum pour retrouver dans quels polygones on se trouve, et bien la page des nouvelles est (encore plus !) lente à s'afficher qu'avant.
 
 ***************************************/
 
@@ -83,11 +85,16 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       case "commentaires":
         $conditions_commentaires = new stdclass();
         $conditions_commentaires->limite=$nombre;
+        $conditions_commentaires->avec_points_caches=False; // On ne veut pas les commentaires sur des points cachés. Sauf si on est modérateur ?
         
         if ($req && $req->avec_photo)
-            $conditions_commentaires->avec_photo=$req->avec_photo;
-        if($ids_polygones!="") $conditions_commentaires->ids_polygones=$ids_polygones;
+          $conditions_commentaires->avec_photo=$req->avec_photo;
+          
+        if($ids_polygones!="") 
+          $conditions_commentaires->ids_polygones=$ids_polygones;
+        
         $commentaires=infos_commentaires($conditions_commentaires);
+
         $conditions_point = new stdclass;
         foreach ( $commentaires as $commentaire )
         {

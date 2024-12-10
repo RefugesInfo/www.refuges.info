@@ -72,7 +72,7 @@ function infos_commentaires ($conditions)
   if (!empty($conditions->limite) and is_numeric($conditions->limite))
     $limite="LIMIT $conditions->limite";
   else
-    $limite="LIMIT 100"; // limite de sécurité si on s'enballe, en même temps, si un jour on veut faire un export total, il faudra bien l'autoriser non ?
+    $limite="LIMIT 200"; // limite de sécurité si on a rien spécifié comme limite
 
   if (!empty($conditions->ids_points))
     if (!verif_multiples_entiers($conditions->ids_points))
@@ -103,6 +103,9 @@ function infos_commentaires ($conditions)
   if (!empty($conditions->texte))
     $conditions_sql.="\n\tAND texte ILIKE '%$conditions->texte%'";
 
+  if (isset($conditions->avec_points_caches) and !$conditions->avec_points_caches ) // On ne veut pas les commentaires de points cachés, alors il nous faut impérativement les infos sur les points si on veut vérifier qu'ils sont cachés.
+    $conditions->avec_infos_point=True;
+
   // On veut des informations supplémentaire auquel le commentaire se rapporte (nom du point, id, "massif" auquel il appartient)
   // FIXME? : usine à gaz, ça revient presque à faire la reqûete pour récupérer un point. Mais peut-être pas non plus à fusionner sinon méga usine à gaz
   // jmb ca fait un job de trop pour cette fonction. faudrait pourtant bien appeler infos_points pour etre coherent.
@@ -112,24 +115,26 @@ function infos_commentaires ($conditions)
   // FIXME 2024 sly: Ce code est en double dans infos_points() je commence vraiment à me dire que je vais laisser tomber et boucler sur infos_points (en plus, ça ne sert que pour les news et pour la page d'accueil)
   if (!empty($conditions->avec_infos_point) OR !empty($conditions->avec_commentaires_modele) OR !empty(($conditions->ids_polygones)))
   {
-            $table_en_plus=",point_type,points LEFT JOIN polygones on ST_Within(points.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'];
+    $table_en_plus=",point_type,points LEFT JOIN polygones on ST_Within(points.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'];
 
-            $condition_en_plus.=" 
-                    AND points.id_point=commentaires.id_point
-                    AND point_type.id_point_type=points.id_point_type";
+    $condition_en_plus.=" 
+            AND points.id_point=commentaires.id_point
+            AND point_type.id_point_type=points.id_point_type";
 
-            $champ_en_plus.=",points.*,point_type.*,";
-            // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
-            // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
-            $champ_en_plus.=$config_wri['champs_table_polygones'];
+    $champ_en_plus.=",points.*,point_type.*,";
+    // Pour éviter de mettre "*" sinon, en cas de demande sur les polygones contenant le point dont le commentaire est demandée
+    // ça récupère toute la géométrie pour rien, et parfois, ça fait du grabuge
+    $champ_en_plus.=$config_wri['champs_table_polygones'];
 
-            if (!empty($conditions->avec_commentaires_modele) and $conditions->avec_commentaires_modele==True)
-                    $condition_en_plus.=" AND modele!=1 ";
-            // par défaut, les points cachés ne sont pas retournés, sauf si on précise avec_points_caches=True (par exemple quand un modérateur est authentifié)
-            if (empty($conditions->avec_points_caches) or $conditions->avec_points_caches==False )
-                 $condition_en_plus.=" AND ( cache= 'f' ) ";
-            if (!empty($conditions->ids_polygones))
-                 $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
+    if (!empty($conditions->avec_commentaires_modele) and $conditions->avec_commentaires_modele==True)
+      $condition_en_plus.=" AND points.modele!=1 ";
+            
+    // par défaut, les points cachés ne sont pas retournés, sauf si on précise avec_points_caches=True (par exemple quand un modérateur est authentifié)
+    if (empty($conditions->avec_points_caches) or $conditions->avec_points_caches==False )
+      $condition_en_plus.=" AND ( points.cache= 'f' ) ";
+      
+    if (!empty($conditions->ids_polygones))
+      $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
   }
 
   $query="SELECT

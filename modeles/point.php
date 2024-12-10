@@ -349,7 +349,7 @@ SELECT count(*) AS nb_points, min(points.id_point) AS id_point, min(ST_AsGeoJSON
   $ordre
   $limite
   ";
-
+//d($query_points);
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
@@ -397,7 +397,7 @@ SELECT count(*) AS nb_points, min(points.id_point) AS id_point, min(ST_AsGeoJSON
 
     // Ici, petite particularité sur les points cachés, par défaut, on ne veut pas les renvoyer, mais on veut quand
     // même, si un seul a été demandé, pouvoir dire qu'il est caché (du public) ce qui est différent d'inexistant dans la base. On va donc le chercher en base mais on renvoi un message erreur s'il est en caché
-    // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
+    // FIXME : cela créer un bug pas bien génant sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
     if (!$point->cache or !empty($conditions->avec_points_caches)) // On renvoi ce point, soit il n'est pas caché, soit on a demandé aussi les points cachés
     {
       $points[$point->id_point]=$point_final;
@@ -423,7 +423,8 @@ pour obtenir la liste des polygones auquels ce point appartient
 
 FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui fait la même chose que celle avant. C'est juste pour l'historique.
 
-FIXME: 2022 Et en plus, j'arrête pas d'ajouter des paramètres, on va finir par passer un tableau d'options ! ce que je voulais éviter en faisant la fonction précédente
+FIXME: 2022 Et en plus, j'arrête pas d'ajouter des paramètres, on va finir par passer un tableau d'options ! ce que fait déjà la fonction précédente.
+FIXME: 2024 Aller, dès que j'ai le temps, je remplace tous les appels à elle par celle d'avant, ça nous fera une fonction de moins à connaître. Ou alors je garde juste une version ultra light qui qui s'appelle avec un seule paramètre ?
 
 *****************************************************/
 function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_si_modele=False)
@@ -442,7 +443,9 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 
   if ($meme_si_cache)
     $conditions->avec_points_caches=True;
-
+    
+  //Avec cette fonction, on est censé ne récupérer qu'un seul point pour un seul id, donc dans l'hypothèse d'un bug, inutile d'aller en chercher plus que 2, ça suffira à nous confirmer un problème
+  $conditions->limite=2;
   // récupération des infos du point
   $points=infos_points($conditions);
   
