@@ -1,0 +1,67 @@
+imports:
+    - {resource: contact_constants.yml}
+
+services:
+    rmcgirr83.contactadmin.admin.controller:
+        class: rmcgirr83\contactadmin\controller\admin_controller
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@config_text'
+            - '@dbal.conn'
+            - '@controller.helper'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@rmcgirr83.contactadmin.core'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%contact_constants%'
+
+    rmcgirr83.contactadmin.main.controller:
+        class: rmcgirr83\contactadmin\controller\main_controller
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@config_text'
+            - '@controller.helper'
+            - '@dbal.conn'
+            - '@dispatcher'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@rmcgirr83.contactadmin.core'
+            - '@captcha.factory'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%contact_constants%'
+
+    rmcgirr83.contactadmin.listener:
+        class: rmcgirr83\contactadmin\event\listener
+        arguments:
+            - '@config'
+            - '@controller.helper'
+            - '@language'
+            - '@template'
+            - '@user'
+        tags:
+            - { name: event.listener }
+
+    rmcgirr83.contactadmin.core:
+        class: rmcgirr83\contactadmin\core\contactadmin
+        arguments:
+            - '@auth'
+            - '@cache'
+            - '@config'
+            - '@dbal.conn'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@user'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%contact_constants%'

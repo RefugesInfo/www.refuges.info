@@ -337,7 +337,6 @@ $('[data-ajax]').each(function() {
 	}
 });
 
-
 /**
  * This simply appends #preview to the action of the
  * QR action when you click the Full Editor & Preview button

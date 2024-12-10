@@ -463,7 +463,7 @@ $lang = array_merge($lang, array(
 	'DOWNLOAD_CONFLICTS'				=> 'Télécharger les conflits de ce fichier',
 	'DOWNLOAD_CONFLICTS_EXPLAIN'		=> 'Rechercher &lt;&lt;&lt; afin de repérer les conflits',
 	'DOWNLOAD_UPDATE_METHOD'			=> 'Télécharger l’archive de fichiers modifiés',
-	'DOWNLOAD_UPDATE_METHOD_EXPLAIN'	=> 'Une fois téléchargée, vous devez décompresser l’archive. Vous y trouverez les fichiers modifiés que vous devez transférer dans votre répertoire à la racine de phpBB. Transférez les fichiers à leurs emplacements respectifs. Après avoir transféré tous les fichiers, vérifiez à nouveau les fichiers avec l’autre bouton ci-dessous.',
+	'DOWNLOAD_UPDATE_METHOD_EXPLAIN'	=> 'Une fois téléchargée, vous devez décompresser l’archive. Vous y trouverez les fichiers modifiés que vous devez transférer dans votre répertoire à la racine de phpBB. Transférez les fichiers à leurs emplacements respectifs. Après avoir transféré tous les fichiers, vérifiez à nouveau les fichiers en cliquant sur le bouton ci-dessous.',
 
 	'FILE_ALREADY_UP_TO_DATE'		=> 'Le fichier est déjà à jour.',
 	'FILE_DIFF_NOT_ALLOWED'			=> 'Le fichier n’est pas autorisé à être modifié.',

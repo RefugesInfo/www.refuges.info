@@ -1,0 +1,119 @@
+{% INCLUDE 'overall_header.html' %}
+<h2 class="fs-4 titlespace">{{ lang('ACP_CAT_CONTACTADMIN') }}</h2>
+
+<form method="post" id="postform" name="postform" action="{{ S_CONTACT_ACTION }}"{{ S_FORM_ENCTYPE }}>
+	{% if CONTACT_INFO %}
+	<div class="bg-light contactpanel fs-5 mb-1 px-2 py-1 rounded-3 text-center text-dark">
+		<div class="content">
+			{{ CONTACT_INFO }}
+		</div>
+	</div>
+		<br class="clear" />
+	{% endif %}
+<div class="panel bg1 bg-light rounded-3 p-2 mb-1">
+	<div class="inner">
+
+		<fieldset class="fields2">
+		{% if S_ERROR %}
+		<p class="error alert alert-warning">{{ S_ERROR }}</p>
+		{% endif %}
+
+		{% if not S_USER_LOGGED_IN %}
+		<dl class="row gx-0 mb-1">
+			<dt class="col-md-2 mb-1"><label for="username">{{ lang('CONTACT_YOUR_NAME') }}{{ lang('COLON') }}</label><br /><small class="fw-normal">{{ lang('CONTACT_YOUR_NAME_EXPLAIN') }}</small></dt>
+			<dd class="col-md-auto mb-1"><input type="text" class="inputbox autowidth form-control form-control-sm" name="username" id="username" value="{{ USERNAME }}" size="30" tabindex="1" /></dd>
+		</dl>
+		<dl class="row gx-0 mb-1">
+			<dt class="col-md-2 mb-1"><label for="email">{{ lang('CONTACT_YOUR_EMAIL') }}{{ lang('COLON') }}</label><br /><small class="fw-normal">{{ lang('CONTACT_YOUR_EMAIL_EXPLAIN') }}</small></dt>
+			<dd class="col-md-auto mb-1"><input type="text" class="inputbox autowidth form-control form-control-sm" name="email" id="email" value="{{ EMAIL }}" size="30" tabindex="2" /></dd>
+		</dl>
+		<dl class="row gx-0 mb-1">
+			<dt class="col-md-2 mb-1"><label for="email_confirm">{{ lang('CONTACT_YOUR_EMAIL_CONFIRM') }}{{ lang('COLON') }}</label></dt>
+			<dd class="col-md-auto mb-1"><input type="text" class="inputbox autowidth form-control form-control-sm" name="email_confirm" id="email_confirm" value="{{ EMAIL_CONFIRM }}" size="30" tabindex="3" /></dd>
+		</dl>
+		<hr />
+		{% endif %}
+		{% if CONTACT_REASONS %}
+		<dl class="row gx-0 mb-1">
+			<dt class="col-md-2 mb-1"><label for="contact_reason">{{ lang('CONTACT_REASON') }}{{ lang('COLON') }}</label></dt>
+			<dd class="col-md-auto mb-1"><select class="form-select form-select-sm" name="contact_reason" id="contact_reason" tabindex="4">{{ CONTACT_REASONS }}</select></dd>
+		</dl>
+		{% endif %}
+		{% if not CONTACT_REASONS %}
+		<dl class="row gx-0 mb-1">
+			<dt class="col-md-2 mb-1"><label for="contact_subject">{{ lang('SUBJECT') }}{{ lang('COLON') }}</label></dt>
+			<dd class="col-md-auto mb-1"><input type="text" size="45" maxlength="64" class="inputbox form-control form-control-sm" name="contact_subject" id="contact_subject" value="{{ CONTACT_SUBJECT }}" tabindex="5" /></dd>
+		</dl>
+		{% endif %}
+		<dl class="row gx-0 mb-1">
+			<dt class="col-md-2 mb-1"><label for="message">{{ lang('MESSAGE_BODY') }}{{ lang('COLON') }}</label></dt>
+			<dd class="col-md-10 mb-1"><textarea name="message" id="message" class="inputbox form-control form-control-sm" tabindex="6" style="width:98%;height:160px;">{{ CONTACT_MESSAGE }}</textarea></dd>
+		</dl>
+		</fieldset>
+	</div>
+</div>
+
+{% if S_CONTACT_GDPR %}
+<div class="panel bg1 bg-secondary bg-opacity-10 rounded-3 p-2 mb-1">
+	<div class="inner">
+		<fieldset class="fields2" id="gdpr">
+			<dl class="row gx-0 mb-1">
+				<dt class="col-md-2 mb-1"><label for="gdpr">{{ lang('CONTACT_PRIVACYPOLICY') }}{{ lang('COLON') }}</label></dt>
+				<dd class="col-md-10 mb-1">
+					<input type="checkbox" class="radio form-check-input" name="gdpr" id="gdpr" /><span>{{ lang('CONTACT_PRIVACYPOLICY_EXPLAIN', PRIVACY_POLICY_URL) }}</span>
+				</dd>
+			</dl>
+		</fieldset>
+	</div>
+</div>
+{% endif %}
+
+{% if CONTACT_ADMIN_CAPTCHA_TEMPLATE %}
+<div class="panel bg1 bg-light rounded-3 p-2 mb-1 captcha-panel">
+	<div class="inner">
+	<fieldset class="fields2">
+	{% DEFINE CAPTCHA_TAB_INDEX = 8 %}
+	{% INCLUDE ''~ CONTACT_ADMIN_CAPTCHA_TEMPLATE ~'' %}
+	</fieldset>
+	</div>
+</div>
+{% endif %}
+
+{% if S_ATTACH_BOX %}
+<div class="panel bg3 bg-secondary bg-opacity-10 rounded-3 p-2 mb-1" id="attach-panel">
+	<div class="inner">
+
+	<p>{{ lang('ADD_ATTACHMENT_EXPLAIN') }}</p>
+
+	<fieldset class="fields2" id="attach-panel-basic">
+	<dl class="row gx-0 mb-1">
+		<dt class="col-md-2 mb-1"><label for="fileupload">{{ lang('FILENAME') }}{{ lang('COLON') }}</label></dt>
+		<dd class="col-md-auto mb-1">
+			<input type="file" name="fileupload" id="fileupload" class="inputbox autowidth form-control form-control-sm" />
+		</dd>
+	</dl>
+	<dl class="row gx-0 mb-1">
+		<dt class="col-md-2 mb-1"><label for="filecomment">{{ lang('FILE_COMMENT') }}{{ lang('COLON') }}</label></dt>
+		<dd class="col-md-auto mb-1"><textarea name="filecomment" id="filecomment" rows="1" cols="40" class="inputbox autowidth form-control form-control-sm">{{ FILE_COMMENT }}</textarea></dd>
+	</dl>
+	</fieldset>
+	</div>
+</div>
+{% endif %}
+
+
+<div class="panel bg2 bg-secondary bg-opacity-25 rounded-3 p-2 mb-1">
+	<div class="inner">
+
+	<fieldset class="submit-buttons d-flex justify-content-center">
+		{{ S_HIDDEN_FIELDS }}
+		<input type="submit" name="submit" id="submit" value="{{ lang('SUBMIT') }}" class="btn btn-primary btn-sm button fw-bold button1" tabindex="9" />&nbsp;
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+
+	</div>
+</div>
+
+</form>
+
+{% INCLUDE 'overall_footer.html' %}

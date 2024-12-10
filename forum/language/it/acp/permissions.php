@@ -63,7 +63,7 @@ $lang = array_merge($lang, array(
 
 	'ACL_NEVER'				=> 'Mai',
 	'ACL_SET'				=> 'Imposta permessi',
-	'ACL_SET_EXPLAIN'		=> 'I permessi sono basati su un semplice sistema <strong>SI</strong>/<strong>NO</strong>. Impostare un’opzione su <strong>MAI</strong>, per un utente o gruppo, escluderà ogni altro valore assegnatogli. Se non vuoi assegnare un valore per l’opzione, per questo utente o gruppo, seleziona <strong>NO</strong>. Se da altre parti sono assegnati valori per queste opzioni saranno usate come preferenza, altrimenti sarà considerato <strong>MAI</strong>. Ogni oggetto selezionato (con la casella di fronte) copierà il set permessi che hai definito.',
+	'ACL_SET_EXPLAIN'		=> 'I permessi sono basati su un semplice sistema <strong>SI</strong>/<strong>NO</strong>. Impostare un’opzione su <strong>MAI</strong>, per un utente o gruppo, escluderà ogni altro valore assegnatogli. Se non vuoi assegnare un valore per l’opzione, per questo utente o gruppo, seleziona <strong>NO</strong>. Se da altre parti sono assegnati valori per queste opzioni saranno usate come preferenza, altrimenti sarà considerato <strong>MAI</strong>. Ogni oggetto selezionato (con la casella di fronte) copierà il set permessi che hai definito. Tieni presente che l’impostazione delle autorizzazioni amministrative per gli account dei fondatori non ha alcun effetto poiché le autorizzazioni amministrative sono sempre impostate su <strong>SÌ</strong> per i fondatori.',
 	'ACL_SETTING'			=> 'Impostazione',
 
 	'ACL_TYPE_A_'			=> 'Permessi amministratore',

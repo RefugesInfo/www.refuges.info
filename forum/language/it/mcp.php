@@ -263,7 +263,7 @@ $lang = array_merge($lang, array(
 	'ONLY_TOPIC'			=> 'Solo argomento “%s”',
 	'OTHER_USERS'			=> 'Altri utenti inviano messaggi da questo IP',
 
-	'QUICKMOD_ACTION_NOT_ALLOWED'	=> "%s non consentito come quickmod",
+	'QUICKMOD_ACTION_NOT_ALLOWED'	=> '%s non consentito come quickmod',
 
 	'PM_REPORT_CLOSED_SUCCESS'	=> 'La segnalazione relativa al messaggio privato è stata chiusa.',
 	'PM_REPORT_DELETED_SUCCESS'	=> 'La segnalazione relativa al messaggio privato è stata eliminata.',

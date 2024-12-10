@@ -159,9 +159,9 @@ $lang = array_merge($lang, array(
 	'ACL_M_MERGE'	=> 'Puede unir temas',
 
 	'ACL_M_INFO'	=> 'Puede ver detalles de mensaje',
-	'ACL_M_WARN'	=> 'Puede hacer advertencia<br><em>Este ajuste sólo se asigna a nivel global. No se basa en el foro.</em>', // This moderator setting is only global (and not local)
-	'ACL_M_PM_REPORT'	=> 'Puede cerrar y eliminar informes de mensajes privados<br><em>Esta configuración sólo se asigna globalmente. No está basado en un foro.</em>', // This moderator setting is only global (and not local)
-	'ACL_M_BAN'		=> 'Puede administrar exclusiones<br><em>Este ajuste sólo se asigna a nivel global. No se basa en el foro.</em>', // This moderator setting is only global (and not local)
+	'ACL_M_WARN'	=> 'Puede hacer advertencia',
+	'ACL_M_PM_REPORT'	=> 'Puede cerrar y eliminar informes de mensajes privados',
+	'ACL_M_BAN'		=> 'Puede administrar exclusiones',
 ));
 
 // Admin Permissions

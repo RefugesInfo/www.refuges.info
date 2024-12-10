@@ -1,0 +1,40 @@
+{
+    "name": "rmcgirr83/contactadmin",
+    "type": "phpbb-extension",
+    "description": "This form allows guests and/or registered users to either send an email to admins or to either send a PM or make a Post in a designated forum. It also overrides the default contact admin link found on the forum.  A port of the phpBB 3.0.x mod “Contact Board Adminnistration”",
+    "homepage": "https://github.com/rmcgirr83/contactadmin",
+    "version": "1.4.3",
+    "time": "2024-03-05",
+    "keywords": [
+        "phpbb",
+        "extension",
+        "contact admin"
+    ],
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "Rich McGirr",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "phpbb/phpbb": ">=3.3",
+        "composer/installers": "~1.0.0"
+    },
+    "require-dev": {
+        "phpbb/epv": "dev-master"
+    },
+    "extra": {
+        "display-name": "Contact Admin",
+        "soft-require": {
+            "phpbb/phpbb": ">=3.3"
+        },
+        "version-check": {
+            "host": "www.phpbb.com",
+            "directory": "/customise/db/extension/contact_admin",
+            "filename": "version_check",
+            "ssl": true
+        }
+    }
+}

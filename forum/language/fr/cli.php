@@ -77,6 +77,7 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_REPARSER_REPARSE'					=> 'Analyser les contenus stockés avec les services « text_formatter » actuels',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_ARG_1'			=> 'Type de texte à analyser. Laisser vide pour tout analyser',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_DRY_RUN'		=> 'Ne pas enregistrer les modifications ; seulement afficher ce qui se passerait',
+	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_FORCE_BBCODE'	=> 'Réanalyse tous les BBCodes sans exception. Notez que tous les BBCodes précédemment désactivés seront retraités, activés et correctement affichés.',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_MIN'	=> 'Plus petit ID d’enregistrement à traiter',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_MAX'	=> 'Plus grand ID d’enregistrement à traiter',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_SIZE'	=> 'Nombre approximatif d’enregistrements à traiter à la fois',
@@ -109,7 +110,9 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_USER_ADD_OPTION_EMAIL'		=> 'Adresse courriel du nouveau membre',
 	'CLI_DESCRIPTION_USER_ADD_OPTION_NOTIFY'	=> 'Envoyer un courriel d’activation du compte au nouveau membre (non envoyé par défaut)',
 	'CLI_DESCRIPTION_USER_DELETE'				=> 'Supprimer le compte d’un membre',
-	'CLI_DESCRIPTION_USER_DELETE_USERNAME'		=> 'Nom d’utilisateur du membre à supprimer',
+	'CLI_DESCRIPTION_USER_DELETE_USERNAME'		=> 'Nom d’utilisateur du compte à supprimer',
+	'CLI_DESCRIPTION_USER_DELETE_ID'			=> 'Supprimer le compte d’un membre par son ID.',
+	'CLI_DESCRIPTION_USER_DELETE_ID_OPTION_ID'	=> 'ID utilisateur du compte à supprimer',
 	'CLI_DESCRIPTION_USER_DELETE_OPTION_POSTS'	=> 'Supprimer tous les messages du membre. Si cette option n’est pas utilisée, les messages du membre seront conservés',
 	'CLI_DESCRIPTION_USER_RECLEAN'				=> 'Nettoyer les noms d’utilisateurs',
 
@@ -157,10 +160,14 @@ $lang = array_merge($lang, array(
 	'CLI_THUMBNAIL_NOTHING_TO_GENERATE'	=> 'Aucune vignette à générer',
 	'CLI_THUMBNAIL_NOTHING_TO_DELETE'	=> 'Aucune vignette à supprimer',
 
-	'CLI_USER_ADD_SUCCESS'		=> 'Le membre « %s » a été ajouté',
-	'CLI_USER_DELETE_CONFIRM'	=> 'Êtes-vous sûr de vouloir supprimer « %s » ? [y/N]',
-	'CLI_USER_RECLEAN_START'	=> 'Nettoyage des noms d’utilisateurs',
-	'CLI_USER_RECLEAN_DONE'		=> [
+	'CLI_USER_ADD_SUCCESS'			=> 'Le membre « %s » a été ajouté',
+	'CLI_USER_DELETE_CONFIRM'		=> 'Êtes-vous sûr de vouloir supprimer « %s » ? [y/N]',
+	'CLI_USER_DELETE_ID_CONFIRM'	=> 'Êtes-vous sûr de vouloir supprimer cette liste d’ID d’utilisateurs « %s » ? [y/N]',
+	'CLI_USER_DELETE_ID_SUCCESS'	=> 'Les ID d’utilisateurs ont été supprimés',
+	'CLI_USER_DELETE_ID_START'		=> 'Suppression des comptes par ID',
+	'CLI_USER_DELETE_NONE'			=> 'Aucun compte n’a été supprimé par ID d’utilisateur',
+	'CLI_USER_RECLEAN_START'		=> 'Nettoyage des noms d’utilisateurs',
+	'CLI_USER_RECLEAN_DONE'			=> [
 		0	=> 'Nettoyage terminé. Aucun nom d’utilisateur n’a nécessité d’être nettoyé',
 		1	=> 'Nettoyage terminé. %d nom d’utilisateur a été nettoyé',
 		2	=> 'Nettoyage terminé. %d noms d’utilisateurs ont été nettoyés',
@@ -175,5 +182,5 @@ Pour éventuellement envoyer un courriel d’activation au membre en utilisant l
 	'CLI_HELP_USER_ADD'			=> 'La commande <info>%command.name%</info> ajoute un nouveau membre :
 Si cette commande est exécutée sans options, vous serez invité à les saisir.
 Pour éventuellement envoyer un courriel au nouveau membre, utilisez l’option <info>--send-email</info>.',
-	'CLI_HELP_USER_RECLEAN'		=> 'la commande <info>%command.name%</info> analysera tous les noms d’utilisateurs de la base de données et s’assurera qu’une version nettoyée y sera stockée. Les noms d’utilisateurs nettoyés sont rendus insensibles à la casse, normalisés NFC et transformés en ASCII.',
+	'CLI_HELP_USER_RECLEAN'		=> 'La commande <info>%command.name%</info> analysera tous les noms d’utilisateurs de la base de données et s’assurera qu’une version nettoyée y sera stockée. Les noms d’utilisateurs nettoyés sont rendus insensibles à la casse, normalisés NFC et transformés en ASCII.',
 ));

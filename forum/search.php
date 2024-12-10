@@ -90,8 +90,21 @@ switch ($search_id)
 	break;
 }
 
+$search_auth_check_override = false;
+/**
+* This event allows you to override search auth checks
+*
+* @event core.search_auth_check_override
+* @var	bool	search_auth_check_override	Whether or not the search auth check overridden
+* @since 3.3.14-RC1
+*/
+$vars = [
+	'search_auth_check_override',
+];
+extract($phpbb_dispatcher->trigger_event('core.search_auth_check_override', compact($vars)));
+
 // Is user able to search? Has search been disabled?
-if (!$auth->acl_get('u_search') || !$auth->acl_getf_global('f_search') || !$config['load_search'])
+if (!$search_auth_check_override && (!$auth->acl_get('u_search') || !$auth->acl_getf_global('f_search') || !$config['load_search']))
 {
 	$template->assign_var('S_NO_SEARCH', true);
 	trigger_error('NO_SEARCH');
@@ -337,7 +350,13 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 	}
 
 	// define some variables needed for retrieving post_id/topic_id information
-	$sort_by_sql = array('a' => 'u.username_clean', 't' => (($show_results == 'posts') ? 'p.post_time' : 't.topic_last_post_time'), 'f' => 'f.forum_id', 'i' => 't.topic_title', 's' => (($show_results == 'posts') ? 'p.post_subject' : 't.topic_title'));
+	$sort_by_sql = [
+		'a' => 'u.username_clean',
+		't' => (($show_results == 'posts') ? 'p.post_time' : 't.topic_last_post_time'),
+		'f' => 'f.forum_id',
+		'i' => 't.topic_title',
+		's' => (($show_results == 'posts') ? 'p.post_subject' : 't.topic_title')
+	];
 
 	/**
 	* Event to modify the SQL parameters before pre-made searches
@@ -403,11 +422,11 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				$sql_sort = 'ORDER BY ' . $sort_by_sql[$sort_key] . (($sort_dir == 'a') ? ' ASC' : ' DESC');
 
 				$sort_join = ($sort_key == 'f') ? FORUMS_TABLE . ' f, ' : '';
-				$sql_sort = ($sort_key == 'f') ? ' AND f.forum_id = p.forum_id ' . $sql_sort : $sql_sort;
+				$sql_sort = ($sort_key == 'f') ? ' AND f.forum_id = t.forum_id ' . $sql_sort : $sql_sort;
 
 				if ($sort_days)
 				{
-					$last_post_time = 'AND p.post_time > ' . (time() - ($sort_days * 24 * 3600));
+					$last_post_time = 'AND ' . ($show_results == 'posts' ? 'p.post_time' : 't.topic_last_post_time') . ' > ' . (time() - ($sort_days * 24 * 3600));
 				}
 				else
 				{
@@ -417,7 +436,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				if ($sort_key == 'a')
 				{
 					$sort_join = USERS_TABLE . ' u, ';
-					$sql_sort = ' AND u.user_id = p.poster_id ' . $sql_sort;
+					$sql_sort = ' AND u.user_id = ' . ($show_results == 'posts' ? 'p.poster_id ' : 't.topic_last_poster_id ') . $sql_sort;
 				}
 				if ($show_results == 'posts')
 				{
@@ -433,14 +452,13 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				}
 				else
 				{
-					$sql = 'SELECT DISTINCT ' . $sort_by_sql[$sort_key] . ", p.topic_id
-						FROM $sort_join" . POSTS_TABLE . ' p, ' . TOPICS_TABLE . " t
+					$sql = 'SELECT DISTINCT ' . $sort_by_sql[$sort_key] . ", t.topic_id
+						FROM $sort_join" . TOPICS_TABLE . " t
 						WHERE t.topic_posts_approved = 1
 							AND t.topic_moved_id = 0
-							AND p.topic_id = t.topic_id
 							$last_post_time
 							AND $m_approve_topics_fid_sql
-							" . ((count($ex_fid_ary)) ? ' AND ' . $db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '') . "
+							" . ((count($ex_fid_ary)) ? ' AND ' . $db->sql_in_set('t.forum_id', $ex_fid_ary, true) : '') . "
 						$sql_sort";
 					$field = 'topic_id';
 				}

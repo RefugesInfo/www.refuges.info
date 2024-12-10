@@ -46,7 +46,7 @@ $lang = array_merge($lang, array(
 
 	// Introduction page
 	'INTRODUCTION_TITLE'	=> 'Introduzione',
-	'INTRODUCTION_BODY'		=> 'Benvenuto su phpBB3!<br /><br />phpBB® è la soluzione open source per Forum più utilizzata al mondo. phpBB3 è la più recente edizione di una storia iniziata nel 2000. Come i suoi predecessori il software phpBB3 è ricco di nuove caratteristiche, di facile utilizzo e completamente supportato dal Team di phpBB. Sono molti i miglioramenti apportati dalla versione phpBB2, che vanno ad integrare caratteristiche molto richieste e non presenti nella precedente versione. Speriamo che sia anche più di quello che ti aspettavi.<br /><br />Questa procedura guidata è stata studiata per aiutarti durante l’installazione di phpBB3, l’aggiornamento all’ultima versione da precedenti release di phpBB3, ed anche convertire a phpBB3 altri sistemi di Forum di discussione (incluso phpBB2). Per altre informazioni ti suggeriamo di leggere <a href="../docs/INSTALL.html">la guida all’installazione</a>.<br /><br />Per leggere la licenza d’uso di phpBB3 o scoprire come ottenere aiuto e supporto, seleziona l’opzione corretta dal menu a lato. Per continuare seleziona in alto la sezione appropriata.',
+	'INTRODUCTION_BODY'		=> 'Benvenuto su phpBB3!<br /><br />phpBB® è la soluzione open source per Forum più utilizzata al mondo. phpBB3 è la più recente edizione di una storia iniziata nel 2000. Come i suoi predecessori il software phpBB3 è ricco di nuove caratteristiche, di facile utilizzo e completamente supportato dal Team di phpBB. Sono molti i miglioramenti apportati dalla versione phpBB2, che vanno ad integrare caratteristiche molto richieste e non presenti nella precedente versione. Speriamo che sia anche più di quello che ti aspettavi.<br /><br />Questa procedura guidata è stata studiata per aiutarti durante l’installazione di phpBB3, l’aggiornamento all’ultima versione da precedenti release di phpBB3, ed anche convertire a phpBB3 altri sistemi di Forum di discussione (incluso phpBB2). Per altre informazioni ti suggeriamo di leggere <a href="%1$s">la guida all’installazione</a>.<br /><br />Per leggere la licenza d’uso di phpBB3 o scoprire come ottenere aiuto e supporto, seleziona l’opzione corretta dal menu a lato. Per continuare seleziona in alto la sezione appropriata.',
 
 	// Support page
 	'SUPPORT_TITLE'		=> 'Supporto',
@@ -106,7 +106,7 @@ $lang = array_merge($lang, array(
 
 	// Server requirements
 	'PHP_VERSION_REQD'					=> 'Versione PHP',
-	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB richiede PHP versione 7.1.3 o successiva.',
+	'PHP_VERSION_REQD_EXPLAIN'			=> 'phpBB richiede PHP versione 7.2.0 o successiva.',
 	'PHP_GETIMAGESIZE_SUPPORT'			=> 'La funzione PHP getimagesize() è disponibile',
 	'PHP_GETIMAGESIZE_SUPPORT_EXPLAIN'	=> 'Perché phpBB funzioni correttamente, la funzione getimagesize deve essere abilitata',
 	'PCRE_UTF_SUPPORT'					=> 'Supporto PCRE UTF-8',
@@ -511,10 +511,12 @@ $lang = array_merge($lang, array(
 	'CHECK_TABLE_PREFIX'		=> 'Controlla il prefisso delle tabelle e riprova.',
 
 	// Conversion in progress
+	'CATEGORY'					=> 'Categoria',
 	'CONTINUE_CONVERT'			=> 'Continua la conversione',
 	'CONTINUE_CONVERT_BODY'		=> 'È stato individuato un precedente tentativo di conversione. Puoi scegliere se iniziare una nuova conversione o continuare con quella vecchia.',
 	'CONVERT_NEW_CONVERSION'	=> 'Nuova conversione',
 	'CONTINUE_OLD_CONVERSION'	=> 'Continua la conversione precedentemente iniziata',
+	'POST_ID'					=> 'ID messaggio',
 
 	// Start conversion
 	'SUB_INTRO'					=> 'Introduzione',
@@ -570,7 +572,11 @@ $lang = array_merge($lang, array(
 	// Finish conversion
 	'CONVERT_COMPLETE'			=> 'Conversione completata',
 	'CONVERT_COMPLETE_EXPLAIN'	=> 'Hai convertito correttamente la tua Board a phpBB 3.3. Puoi effettuare il login e <a href="../">accedere alla tua Board</a>. Assicurati che le impostazioni siano state trasferite correttamente prima di cancellare la cartella d’installazione. Ricorda che l’aiuto sull’uso di phpBB è disponibile online con la <a href="https://www.phpbb.com/support/docs/en/3.3/ug/">Documentazione</a> ed i <a href="https://www.phpbb.com/community/viewforum.php?f=661">forum di supporto</a>.',
-
+	'COLLIDING_CLEAN_USERNAME'			=> '<strong>%s</strong> è il nome utente pulito, per:',
+	'COLLIDING_USER'					=> '» id utente: <strong>%d</strong> username: <strong>%s</strong> (%d posts)',
+	'COLLIDING_USERNAMES_FOUND'			=> 'Sono stati trovati nomi utente in conflitto sul tuo vecchio Forum. Per completare la conversione, elimina o rinomina questi utenti in modo che ci sia un solo utente sul tuo vecchio Forum per ogni username pulito.',
+	'CONV_ERR_FATAL'					=> 'Errore fatale nella conversione',
+	
 	'CONV_ERROR_ATTACH_FTP_DIR'			=> 'L’invio FTP degli allegati sulla vecchia Board è abilitato. Disabilita l’opzione ed assicurati di specificare una cartella upload valida, infine copia tutti i file allegati a questa cartella (che deve essere accessibile da web). Fatto questo fai ripartire il convertitore..',
 	'CONV_ERROR_CONFIG_EMPTY'			=> 'Non ci sono informazioni di configurazione disponibili per la conversione.',
 	'CONV_ERROR_FORUM_ACCESS'			=> 'Impossibile ottenere le informazioni d’accesso al Forum.',

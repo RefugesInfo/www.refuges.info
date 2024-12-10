@@ -1,0 +1,7 @@
+{% if U_CONTACTADMIN %}
+	<li class="{% if !S_FORUM_VERSION %}small-icon icon-contact {% endif %}" data-last-responsive="true">
+		<a href="{{ U_CONTACTADMIN }}" role="menuitem">
+			{% if S_FORUM_VERSION %}<i class="icon fa-envelope fa-fw" aria-hidden="true"></i>{% endif %}<span>{{ lang('CONTACT_US') }}</span>
+		</a>
+	</li>
+{% endif %}

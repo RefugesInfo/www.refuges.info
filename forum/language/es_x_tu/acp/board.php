@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'BOARD_STYLE'					=> 'Estilo del foro',
 	'CUSTOM_DATEFORMAT'				=> 'Personalizar…',
 	'DEFAULT_DATE_FORMAT'			=> 'Formato de fecha',
-	'DEFAULT_DATE_FORMAT_EXPLAIN'	=> 'El formato de fecha es el mismo que en la función <code><a href="https://secure.php.net/manual/function.date.php">date()</a></code> de PHP.',
+	'DEFAULT_DATE_FORMAT_EXPLAIN'	=> 'La sintaxis utiliza el mismo formato que las <a href="https://www.php.net/manual/datetime.format.php">funciones de fecha</a> de PHP.',
 	'DEFAULT_LANGUAGE'				=> 'Idioma por defecto',
 	'DEFAULT_STYLE'					=> 'Estilo por defecto',
 	'DEFAULT_STYLE_EXPLAIN'			=> 'El estilo por defecto para nuevos usuarios.',

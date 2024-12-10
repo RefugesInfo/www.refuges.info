@@ -1,0 +1,12 @@
+Sujet: {{ SUBJECT }}
+
+Bonjour {{ ADM_USERNAME }},
+
+Un individu du nom de "{{ USERNAME }}" ayant l’adresse e-mail "{{ USER_EMAIL }}" et l’adresse IP "{{ USER_IP }}" le "{{ DATE }}" a envoyé le message suivant :
+
+{{ MESSAGE }}
+
+en utilisant le formulaire de contact de "{{ SITENAME }}".
+
+
+{{ EMAIL_SIG }}

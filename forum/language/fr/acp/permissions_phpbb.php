@@ -161,9 +161,9 @@ $lang = array_merge($lang, array(
 	'ACL_M_MERGE'	=> 'Peut fusionner des sujets.',
 
 	'ACL_M_INFO'		=> 'Peut voir les informations du message.',
-	'ACL_M_WARN'		=> 'Peut avertir un membre.<br><em>Notez que ce paramètre est assigné globalement. Il n’est pas basé sur le forum.</em>', // This moderator setting is only global (and not local)
-	'ACL_M_PM_REPORT'	=> 'Peut fermer ou supprimer des rapports de messages privés.<br><em>Notez que ce paramètre est assigné globalement. Il n’est pas basé sur le forum.</em>', // This moderator setting is only global (and not local)
-	'ACL_M_BAN'			=> 'Peut gérer les bannissements.<br><em>Notez que ce paramètre est assigné globalement. Il n’est pas basé sur le forum.</em>', // This moderator setting is only global (and not local)
+	'ACL_M_WARN'		=> 'Peut avertir un membre.<br><em>Notez que ce paramètre est assigné globalement. Il n’est pas basé sur le forum.</em>',
+	'ACL_M_PM_REPORT'	=> 'Peut fermer ou supprimer des rapports de messages privés.<br><em>Notez que ce paramètre est assigné globalement. Il n’est pas basé sur le forum.</em>',
+	'ACL_M_BAN'			=> 'Peut gérer les bannissements.<br><em>Notez que ce paramètre est assigné globalement. Il n’est pas basé sur le forum.</em>',
 ));
 
 // Admin Permissions

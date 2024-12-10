@@ -440,6 +440,12 @@ class session
 						// Is user banned? Are they excluded? Won't return on ban, exists within method
 						$this->check_ban_for_current_session($config);
 
+						// Update user last active time accordingly, but in a minute or so
+						if ($this->time_now - (int) $this->data['user_last_active'] > 60)
+						{
+							$this->update_last_active_time();
+						}
+
 						return true;
 					}
 				}
@@ -688,10 +694,7 @@ class session
 				if ($this->time_now - $this->data['session_time'] > 60 || ($this->update_session_page && $this->data['session_page'] != $this->page['page']))
 				{
 					// Update the last visit time
-					$sql = 'UPDATE ' . USERS_TABLE . '
-						SET user_lastvisit = ' . (int) $this->data['session_time'] . '
-						WHERE user_id = ' . (int) $this->data['user_id'];
-					$db->sql_query($sql);
+					$this->update_user_lastvisit();
 				}
 
 				$SID = '?sid=';
@@ -815,20 +818,21 @@ class session
 				$this->data['user_form_salt'] = unique_id();
 				// Update the form key
 				$sql = 'UPDATE ' . USERS_TABLE . '
-					SET user_form_salt = \'' . $db->sql_escape($this->data['user_form_salt']) . '\'
+					SET user_form_salt = \'' . $db->sql_escape($this->data['user_form_salt']) . '\',
+						user_last_active = ' . (int) $this->time_now . '
 					WHERE user_id = ' . (int) $this->data['user_id'];
 				$db->sql_query($sql);
+			}
+			else
+			{
+				$this->update_last_active_time();
 			}
 		}
 		else
 		{
 			$this->data['session_time'] = $this->data['session_last_visit'] = $this->time_now;
 
-			// Update the last visit time
-			$sql = 'UPDATE ' . USERS_TABLE . '
-				SET user_lastvisit = ' . (int) $this->data['session_time'] . '
-				WHERE user_id = ' . (int) $this->data['user_id'];
-			$db->sql_query($sql);
+			$this->update_user_lastvisit();
 
 			$SID = '?sid=';
 			$_SID = '';
@@ -1475,12 +1479,12 @@ class session
 		}
 
 		$dnsbl_check = array(
-			'sbl.spamhaus.org'	=> ['http://www.spamhaus.org/query/bl?ip=', 'check_dnsbl_spamhaus'],
+			'sbl.spamhaus.org'	=> ['https://check.spamhaus.org/listed/?searchterm=', 'check_dnsbl_spamhaus'],
 		);
 
 		if ($mode == 'register')
 		{
-			$dnsbl_check['bl.spamcop.net'] = ['http://spamcop.net/bl.shtml?', 'check_dnsbl_ipv4_generic'];
+			$dnsbl_check['bl.spamcop.net'] = ['https://www.spamcop.net/bl.shtml?', 'check_dnsbl_ipv4_generic'];
 		}
 
 		if ($ip)
@@ -1760,7 +1764,7 @@ class session
 		}
 
 		// Do not update the session page for ajax requests, so the view online still works as intended
-		$page_changed = $this->update_session_page && (!isset($this->data['session_page']) || $this->data['session_page'] != $this->page['page']) && !$request->is_ajax();
+		$page_changed = $this->update_session_page && (!isset($this->data['session_page']) || $this->data['session_page'] != $this->page['page'] || $this->data['session_forum_id'] != $this->page['forum']) && !$request->is_ajax();
 
 		// Only update session DB a minute or so after last update or if page changes
 		if ($this->time_now - (isset($this->data['session_time']) ? $this->data['session_time'] : 0) > 60 || $page_changed)
@@ -1796,5 +1800,40 @@ class session
 	public function id() : int
 	{
 		return isset($this->data['user_id']) ? (int) $this->data['user_id'] : ANONYMOUS;
+	}
+
+	/**
+	 * Update user last visit time
+	 */
+	public function update_user_lastvisit()
+	{
+		global $db;
+
+		if (isset($this->data['session_time'], $this->data['user_id']))
+		{
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET user_lastvisit = ' . (int) $this->data['session_time'] . ',
+					user_last_active = ' . $this->time_now . '
+				WHERE user_id = ' . (int) $this->data['user_id'];
+			$db->sql_query($sql);
+		}
+	}
+
+	/**
+	 * Update user's last active time
+	 *
+	 * @return void
+	 */
+	public function update_last_active_time()
+	{
+		global $db;
+
+		if (isset($this->time_now, $this->data['user_id']))
+		{
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET user_last_active = ' . $this->time_now . '
+				WHERE user_id = ' . (int) $this->data['user_id'];
+			$db->sql_query($sql);
+		}
 	}
 }

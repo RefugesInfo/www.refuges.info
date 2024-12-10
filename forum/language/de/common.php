@@ -67,6 +67,7 @@ $lang = array_merge($lang, array(
 	'ACCOUNT_DEACTIVATED'			=> 'Dein Benutzerkonto wurde manuell deaktiviert und kann nur durch einen Administrator reaktiviert werden.',
 	'ACP'							=> 'Administrations-Bereich',
 	'ACP_SHORT'						=> 'Adm.',
+	'ACTIVATION_ALREADY_SENT'		=> 'Die Aktivierungs-E-Mail wurde bereits an deine E-Mail-Adresse gesendet. Du kannst sie frühestens nach 24 Stunden erneut anfordern. Solltest du weiterhin Probleme mit der Aktivierung deines Accounts haben, wende dich bitte an die Board-Adminstration.',
 	'ACTIVE'						=> 'aktiv',
 	'ACTIVE_ERROR'					=> 'Der angegebene Benutzer ist momentan inaktiv. Wenn du weiterhin Probleme bei der Aktivierung deines Benutzerkontos hast, wende dich bitte an die Board-Administration.',
 	'ADMINISTRATOR'					=> 'Administrator',
@@ -169,6 +170,11 @@ $lang = array_merge($lang, array(
 	'CHANGING_PREFERENCES'	=> 'Ändert Board-Einstellungen',
 	'CHANGING_PROFILE'		=> 'Ändert sein Profil',
 	'CHARACTERS'			=> array(
+		1	=> '%d Zeichen',
+		2	=> '%d Zeichen',
+	),
+	// Special version to be used when describing ranges e.g. "min x characters and max y characters"
+	'CHARACTERS_XY'			=> array(
 		1	=> '%d Zeichen',
 		2	=> '%d Zeichen',
 	),
@@ -629,7 +635,7 @@ $lang = array_merge($lang, array(
 	'POST_TOPIC'			=> 'Neues Thema erstellen',
 	'POST_UNAPPROVED_ACTION'	=> 'Auf Freigabe wartender Beitrag:',
 	'POST_UNAPPROVED'		=> 'Dieser Beitrag wurde noch nicht freigegeben.',
-	'POST_UNAPPROVED_EXPLAIN'	=> 'Dieser Beitrag kann von anderen Benutzer nicht gelesen werden, bis er von einem Moderator freigegeben wurde.',
+	'POST_UNAPPROVED_EXPLAIN'	=> 'Dieser Beitrag kann von anderen Benutzern nicht gelesen werden, bis er von einem Moderator freigegeben wurde.',
 	'POWERED_BY'			=> 'Powered by %s',
 
 	'QUOTE'					=> 'Zitat',

@@ -119,7 +119,7 @@ $lang = array_merge($lang, array(
 	'BIRTHDAY'					=> 'Compleanno',
 	'BIRTHDAY_EXPLAIN'			=> 'Inserendo l’anno, la tua età verrà indicata al tuo compleanno.',
 	'BOARD_DATE_FORMAT'			=> 'Formato data',
-	'BOARD_DATE_FORMAT_EXPLAIN'	=> 'La sintassi della data è uguale alla funzione <a href="https://secure.php.net/manual/function.date.php">date()</a> del PHP.',
+	'BOARD_DATE_FORMAT_EXPLAIN'	=> 'La sintassi utilizza lo stesso formato del PHP <a href="https://www.php.net/manual/datetime.format.php">date functions</a>.',
 	'BOARD_LANGUAGE'			=> 'Lingua',
 	'BOARD_STYLE'				=> 'Stile',
 	'BOARD_TIMEZONE'			=> 'Fuso orario',

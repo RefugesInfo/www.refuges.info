@@ -62,6 +62,7 @@ $lang = array_merge($lang, array(
 	'ACCOUNT_DEACTIVATED'			=> 'Votre compte a été désactivé manuellement et n’est réactivable que par un administrateur.',
 	'ACP'							=> 'Panneau d’administration',
 	'ACP_SHORT'						=> 'PCA',
+	'ACTIVATION_ALREADY_SENT'		=> 'Le courriel d’activation vous a déjà été envoyé. Vous pouvez réessayer dans 24 heures. Si le problème persiste, contactez l’administrateur du forum.',
 	'ACTIVE'						=> 'Actif',
 	'ACTIVE_ERROR'					=> 'Le nom d’utilisateur indiqué est actuellement inactif. Si vous avez des problèmes pour activer votre compte, contactez l’administrateur du forum.',
 	'ADMINISTRATOR'					=> 'Administrateur',

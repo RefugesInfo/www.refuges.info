@@ -68,6 +68,7 @@ $lang = array_merge($lang, array(
 	'ACCOUNT_DEACTIVATED'			=> 'Il tuo account è stato disattivato e può essere riattivato solo da un amministratore.',
 	'ACP'							=> 'Pannello di Controllo Amministratore',
 	'ACP_SHORT'						=> 'PCA',
+	'ACTIVATION_ALREADY_SENT'		=> 'L’email di attivazione è già stata inviata al tuo indirizzo e-mail. Puoi riprovare dopo 24 ore. Se continui ad avere problemi nell’attivazione del tuo account, contatta un amministratore del forum.',
 	'ACTIVE'						=> 'Attivo',
 	'ACTIVE_ERROR'					=> 'Il nome utente inserito risulta ancora inattivo. Se riscontri problemi nell’attivazione dell’account contatta un amministratore.',
 	'ADMINISTRATOR'					=> 'Amministratore',
@@ -170,6 +171,11 @@ $lang = array_merge($lang, array(
 	'CHANGING_PREFERENCES'	=> 'Modifica le preferenze della Board',
 	'CHANGING_PROFILE'		=> 'Modifica le impostazioni del profilo',
 	'CHARACTERS'			=> array(
+		1	=> '%d carattere',
+		2	=> '%d caratteri',
+	),
+	// Special version to be used when describing ranges e.g. "min x characters and max y characters"
+	'CHARACTERS_XY'			=> array(
 		1	=> '%d carattere',
 		2	=> '%d caratteri',
 	),

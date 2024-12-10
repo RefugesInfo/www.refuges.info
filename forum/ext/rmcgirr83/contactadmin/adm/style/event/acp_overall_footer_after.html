@@ -1,0 +1,63 @@
+{% if AJAX_BOT_USER_INFO %}
+<script>
+var AJAX_BOT_USER_INFO = "{{ AJAX_BOT_USER_INFO|escape('js') }}";
+var CONTACT_NO_BOT_USER = "{{ lang('CONTACT_NO_BOT_USER')|escape('js') }}";
+var CONTACT_BOT_IS_BOT = "{{ lang('CONTACT_BOT_IS_BOT')|escape('js') }}";
+var contact_method_email = "{{ CONTACT_METHOD_EMAIL|escape('js') }}";
+var contact_method_pm = "{{ CONTACT_METHOD_PM|escape('js') }}";
+var contact_method_post = "{{ CONTACT_METHOD_POST|escape('js') }}";
+
+(function($) { // Avoid conflicts with other libraries
+	'use strict';
+	$("#contact_bot_user").change(function () {
+		var user_id = $(this).val();
+        $.ajax({
+            url: AJAX_BOT_USER_INFO.replace(/\_bot_info\/[0-9]*/g, "_bot_info/" + user_id),
+			dataType: 'text',
+			success: function(data){
+				var json = $.parseJSON(data);
+				if (json.error == 'CONTACT_NO_BOT_USER')
+				{
+					$('#bot_user_link').html(''+CONTACT_NO_BOT_USER+'').show();
+				}
+				else if (json.error == 'CONTACT_BOT_IS_BOT')
+				{
+					$('#bot_user_link').html(''+json.user_link+'<br>'+CONTACT_BOT_IS_BOT+'').show();
+				}
+				else
+				{
+					$('#bot_user_link').html(''+json.user_link+'').show();
+				}
+			}
+		});
+	});
+
+	// hide or show contact options panel
+	$("input[name='contact_method']").each(function() {
+		if ($(this).is(':checked') && this.value == contact_method_email)
+		{
+			$(".contact-options").hide();
+		}
+		if ($(this).is(':checked') && (this.value == contact_method_post || this.value == contact_method_pm))
+		{
+			$(".contact-who").hide();
+		}
+	});
+
+	// hide or show the contact who and options on type of contact change
+	$("input[name='contact_method']").change(function() {
+		var method = $(this).val();
+		if (this.value == contact_method_email)
+		{
+			$(".contact-who").show("slow");
+			$(".contact-options").hide("slow");
+		}
+		if (this.value == contact_method_post || this.value == contact_method_pm)
+		{
+			$(".contact-options").show("slow");
+			$(".contact-who").hide("slow");
+		}
+	});
+})(jQuery);
+</script>
+{% endif %}

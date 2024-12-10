@@ -1,0 +1,119 @@
+{% INCLUDE 'overall_header.html' %}
+<h2 class="titlespace">{{ lang('ACP_CAT_CONTACTADMIN') }}</h2>
+
+<form method="post" id="postform" name="postform" action="{{ S_CONTACT_ACTION }}"{{ S_FORM_ENCTYPE }}>
+	{% if CONTACT_INFO %}
+	<div class="contactpanel">
+		<div class="content">
+			{{ CONTACT_INFO }}
+		</div>
+	</div>
+		<br class="clear" />
+	{% endif %}
+<div class="panel">
+	<div class="inner">
+
+		<fieldset class="fields2">
+		{% if S_ERROR %}
+		<p class="error">{{ S_ERROR }}</p>
+		{% endif %}
+
+		{% if not S_USER_LOGGED_IN %}
+		<dl>
+			<dt><label for="username">{{ lang('CONTACT_YOUR_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ lang('CONTACT_YOUR_NAME_EXPLAIN') }}</span></dt>
+			<dd><input type="text" class="inputbox autowidth" name="username" id="username" value="{{ USERNAME }}" size="30" tabindex="1" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="email">{{ lang('CONTACT_YOUR_EMAIL') }}{{ lang('COLON') }}</label><br /><span>{{ lang('CONTACT_YOUR_EMAIL_EXPLAIN') }}</span></dt>
+			<dd><input type="text" class="inputbox autowidth" name="email" id="email" value="{{ EMAIL }}" size="30" tabindex="2" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="email_confirm">{{ lang('CONTACT_YOUR_EMAIL_CONFIRM') }}{{ lang('COLON') }}</label></dt>
+			<dd><input type="text" class="inputbox autowidth" name="email_confirm" id="email_confirm" value="{{ EMAIL_CONFIRM }}" size="30" tabindex="3" /></dd>
+		</dl>
+		<hr />
+		{% endif %}
+		{% if CONTACT_REASONS %}
+		<dl>
+			<dt><label for="contact_reason">{{ lang('CONTACT_REASON') }}{{ lang('COLON') }}</label></dt>
+			<dd><select name="contact_reason" id="contact_reason" tabindex="4">{{ CONTACT_REASONS }}</select></dd>
+		</dl>
+		{% endif %}
+		{% if not CONTACT_REASONS %}
+		<dl>
+			<dt><label for="contact_subject">{{ lang('SUBJECT') }}{{ lang('COLON') }}</label></dt>
+			<dd><input type="text" size="45" maxlength="64" class="inputbox" name="contact_subject" id="contact_subject" value="{{ CONTACT_SUBJECT }}" tabindex="5" /></dd>
+		</dl>
+		{% endif %}
+		<dl>
+			<dt><label for="message">{{ lang('MESSAGE_BODY') }}{{ lang('COLON') }}</label></dt>
+			<dd><textarea name="message" id="message" class="inputbox" tabindex="6" style="width:98%;height:160px;">{{ CONTACT_MESSAGE }}</textarea></dd>
+		</dl>
+		</fieldset>
+	</div>
+</div>
+
+{% if S_CONTACT_GDPR %}
+<div class="panel bg1">
+	<div class="inner">
+		<fieldset class="fields2" id="gdpr">
+			<dl>
+				<dt><label for="gdpr">{{ lang('CONTACT_PRIVACYPOLICY') }}{{ lang('COLON') }}</label></dt>
+				<dd>
+					<input type="checkbox" class="radio" name="gdpr" id="gdpr" tabindex="7" /><span>{{ lang('CONTACT_PRIVACYPOLICY_EXPLAIN', PRIVACY_POLICY_URL) }}</span>
+				</dd>
+			</dl>
+		</fieldset>
+	</div>
+</div>
+{% endif %}
+
+{% if CONTACT_ADMIN_CAPTCHA_TEMPLATE %}
+<div class="panel captcha-panel">
+	<div class="inner">
+	<fieldset class="fields2">
+	{% DEFINE CAPTCHA_TAB_INDEX = 8 %}
+	{% INCLUDE ''~ CONTACT_ADMIN_CAPTCHA_TEMPLATE ~'' %}
+	</fieldset>
+	</div>
+</div>
+{% endif %}
+
+{% if S_ATTACH_BOX %}
+<div class="panel bg3 panel-container" id="attach-panel">
+	<div class="inner">
+
+	<p>{{ lang('ADD_ATTACHMENT_EXPLAIN') }}</p>
+
+	<fieldset class="fields2" id="attach-panel-basic">
+	<dl>
+		<dt><label for="fileupload">{{ lang('FILENAME') }}{{ lang('COLON') }}</label></dt>
+		<dd>
+			<input type="file" name="fileupload" id="fileupload" class="inputbox autowidth" />
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="filecomment">{{ lang('FILE_COMMENT') }}{{ lang('COLON') }}</label></dt>
+		<dd><textarea name="filecomment" id="filecomment" rows="1" cols="40" class="inputbox autowidth">{{ FILE_COMMENT }}</textarea></dd>
+	</dl>
+	</fieldset>
+	</div>
+</div>
+{% endif %}
+
+
+<div class="panel bg2">
+	<div class="inner">
+
+	<fieldset class="submit-buttons">
+		{{ S_HIDDEN_FIELDS }}
+		<input type="submit" name="submit" id="submit" value="{{ lang('SUBMIT') }}" class="button1" tabindex="9" />&nbsp;
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+
+	</div>
+</div>
+
+</form>
+
+{% INCLUDE 'overall_footer.html' %}

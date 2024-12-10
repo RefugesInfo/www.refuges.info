@@ -1,0 +1,9 @@
+rmcgirr83_contactadmin_displayform:
+    path: /contactadmin
+    defaults: { _controller: rmcgirr83.contactadmin.main.controller:displayform }
+
+rmcgirr83_contactadmin_botuserinfo:
+    path: /contact_bot_info/{user_id}
+    defaults: { _controller: rmcgirr83.contactadmin.core:bot_user_info }
+    requirements:
+        user_id: \d+

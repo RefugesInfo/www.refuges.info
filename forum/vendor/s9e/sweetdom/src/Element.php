@@ -132,11 +132,11 @@ class Element extends DOMElement
 	/**
 	* Insert given element relative to this element's position
 	*
-	* @param  string $where   One of 'beforebegin', 'afterbegin', 'beforeend', 'afterend'
-	* @param  self   $element
+	* @param  string     $where   One of 'beforebegin', 'afterbegin', 'beforeend', 'afterend'
+	* @param  DOMElement $element
 	* @return self
 	*/
-	public function insertAdjacentElement(string $where, self $element): self
+	public function insertAdjacentElement(string $where, DOMElement $element): self
 	{
 		$this->insertAdjacentNode($where, $element);
 

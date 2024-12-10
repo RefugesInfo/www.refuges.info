@@ -1,0 +1,12 @@
+parameters:
+    contact_constants:
+        CONFIRM_CONTACT: 4
+        CONTACT_METHOD_EMAIL: 0
+        CONTACT_METHOD_POST: 1
+        CONTACT_METHOD_PM: 2
+        CONTACT_WHO_ALL_ADMINS: 0
+        CONTACT_WHO_BOARD_DEFAULT: 1
+        CONTACT_WHO_BOARD_FOUNDER: 2
+        CONTACT_POST_NEITHER: 0
+        CONTACT_POST_GUEST: 1
+        CONTACT_POST_ALL: 2

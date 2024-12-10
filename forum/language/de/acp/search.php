@@ -55,7 +55,7 @@ $lang = array_merge($lang, array(
 	'DEFAULT_SEARCH_RETURN_CHARS'			=> 'Standardanzahl an angezeigten Zeichen',
 	'DEFAULT_SEARCH_RETURN_CHARS_EXPLAIN'	=> 'Die standardmäßige Anzahl von Zeichen eines Beitrags, die bei einer Suche angezeigt wird. Wenn 0 als Wert eingestellt wird, wird der komplette Beitrag angezeigt.',
 	'DELETE_INDEX'							=> 'Index löschen',
-	'DELETING_INDEX_IN_PROGRESS'			=> 'Index wird gelöscht',
+	'DELETING_INDEX_IN_PROGRESS'			=> 'Index wird gelöscht…',
 	'DELETING_INDEX_IN_PROGRESS_EXPLAIN'	=> 'Das Backend löscht seinen Index. Dieser Vorgang kann einige Minuten beanspruchen.',
 
 	'FULLTEXT_MYSQL_INCOMPATIBLE_DATABASE'	=> 'Die MySQL-Volltextsuche kann nur mit MySQL 4 oder höher verwendet werden.',
@@ -95,7 +95,7 @@ $lang = array_merge($lang, array(
 	'GO_TO_SEARCH_INDEX'					=> 'Zur Übersicht der Such-Indizes gehen',
 
 	'INDEX_STATS'							=> 'Index-Statistik',
-	'INDEXING_IN_PROGRESS'					=> 'Indizierung erfolgt',
+	'INDEXING_IN_PROGRESS'					=> 'Indizierung erfolgt…',
 	'INDEXING_IN_PROGRESS_EXPLAIN'			=> 'Das Backend indiziert alle Beiträge des Boards. Dies kann abhängig von der Größe deines Boards zwischen wenigen Minuten und einigen Stunden dauern.',
 
 	'LIMIT_SEARCH_LOAD'						=> 'Systemauslastungs-Limit für Suche',
@@ -115,18 +115,19 @@ $lang = array_merge($lang, array(
 	'SEARCH_GUEST_INTERVAL'					=> 'Wartezeit zwischen zwei Suchvorgängen von Gästen',
 	'SEARCH_GUEST_INTERVAL_EXPLAIN'			=> 'Zeit in Sekunden, die Gäste zwischen Suchvorgängen warten müssen. Wenn ein Gast eine Suche durchgeführt hat, müssen alle Gäste so lange warten, bis sie die Suchfunktion wieder nutzen können.',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
-		2	=> 'Die Beiträge bis zur Beitrag-ID #%2$d wurden bereits indiziert, davon %1$d Beiträge in diesem Durchgang.<br />',
+		2	=> 'Die Beiträge bis zur Beitrags-ID #%2$d wurden bereits indiziert, davon %1$d Beiträge in diesem Durchgang.',
 	),
 	'SEARCH_INDEX_CREATE_REDIRECT_RATE'		=> array(
-		2	=> 'Die Indizierungs-Rate beträgt ungefähr %1$.1f Beiträge pro Sekunde.<br />Indizierung erfolgt…',
+		2	=> 'Die Indizierungs-Rate beträgt ungefähr %1$.1f Beiträge pro Sekunde.',
 	),
 	'SEARCH_INDEX_DELETE_REDIRECT'			=> array(
-		2	=> 'Die Beiträge bis zur Beitrags-ID #%2$d wurden bereits vom Suchindex entfernt, davon %1$d Beiträge in diesem Durchlauf.<br />',
+		2	=> 'Die Beiträge bis zur Beitrags-ID #%2$d wurden bereits vom Suchindex entfernt, davon %1$d Beiträge in diesem Durchlauf.',
 	),
 	'SEARCH_INDEX_DELETE_REDIRECT_RATE'		=> array(
-		2	=> 'Die aktuelle Löschrate beträgt ungefähr %1$.1f Beiträge pro Sekunde.<br />Index wird gelöscht…',
+		2	=> 'Die aktuelle Löschrate beträgt ungefähr %1$.1f Beiträge pro Sekunde.',
 	),
 	'SEARCH_INDEX_CREATED'					=> 'Alle Beiträge in der Datenbank wurden erfolgreich indiziert.',
+	'SEARCH_INDEX_PROGRESS'					=> 'Erledigt: %1$d | Unerledigt: %2$d | Insgesamt: %3$d',
 	'SEARCH_INDEX_REMOVED'					=> 'Der Suchindex für das Backend wurde erfolgreich gelöscht.',
 	'SEARCH_INTERVAL'						=> 'Wartezeit zwischen zwei Suchvorgängen von Benutzern',
 	'SEARCH_INTERVAL_EXPLAIN'				=> 'Zeit in Sekunden, die ein Benutzer zwischen Suchvorgängen warten muss. Dieser Zeitabstand wird für jeden Benutzer individuell gemessen.',

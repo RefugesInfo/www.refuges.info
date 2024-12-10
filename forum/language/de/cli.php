@@ -78,6 +78,7 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_REPARSER_REPARSE'					=> 'Verarbeitet gespeicherte Texte mit dem aktuellen text_formatter-Dienst neu.',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_ARG_1'			=> 'Text-Art die neu verarbeitet werden soll. Leer lassen, um alles neu zu verarbeiten.',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_DRY_RUN'		=> 'Keine Änderungen speichern; nur ausgeben, was passieren würde',
+	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_FORCE_BBCODE'	=> 'Alle BBCodes ohne Ausnahmen erneut verarbeiten. Beachte, dass alle bereits deaktivierten BBCodes erneut bearbeitet, aktiviert und vollständig verarbeitet werden.',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_MIN'	=> 'Niedrigste Eintrags-ID, die verarbeitet wird',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_MAX'	=> 'Höchste Eintrags-ID, die verarbeitet wird',
 	'CLI_DESCRIPTION_REPARSER_REPARSE_OPT_RANGE_SIZE'	=> 'Geschätzte Zahl von Einträgen, die in einem Durchgang verarbeitet werden',
@@ -111,6 +112,8 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_USER_ADD_OPTION_NOTIFY'	=> 'Aktivierungs-E-Mail an neuen Benutzer senden (wird standardmäßig nicht gesendet)',
 	'CLI_DESCRIPTION_USER_DELETE'				=> 'Löscht ein Benutzerkonto.',
 	'CLI_DESCRIPTION_USER_DELETE_USERNAME'		=> 'Benutzername des Kontos, das gelöscht werden soll.',
+	'CLI_DESCRIPTION_USER_DELETE_ID'			=> 'Benutzerkonto anhand der ID löschen.',
+	'CLI_DESCRIPTION_USER_DELETE_ID_OPTION_ID'	=> 'Benutzer-IDs der zu löschenden Benutzer.',
 	'CLI_DESCRIPTION_USER_DELETE_OPTION_POSTS'	=> 'Löscht alle Beiträge des Benutzers. Wenn diese Option nicht gesetzt ist, bleiben die Beiträge des Benutzers erhalten.',
 	'CLI_DESCRIPTION_USER_RECLEAN'				=> 'Benutzernamen erneut bereinigen.',
 
@@ -160,6 +163,10 @@ $lang = array_merge($lang, array(
 
 	'CLI_USER_ADD_SUCCESS'		=> 'Benutzer %s erfolgreich angelegt.',
 	'CLI_USER_DELETE_CONFIRM'	=> 'Soll „%s“ wirklich gelöscht werden? [y/N]',
+	'CLI_USER_DELETE_ID_CONFIRM'	=> 'Bist du sicher, dass du die Benutzer mit den IDs „%s“ löschen möchtest? [y/N]',
+	'CLI_USER_DELETE_ID_SUCCESS'	=> 'Die Benutzer wurden erfolgreich gelöscht.',
+	'CLI_USER_DELETE_ID_START'		=> 'Löschen von Benutzern anhand ihrer Benutzer-IDs',
+	'CLI_USER_DELETE_NONE'			=> 'Es wurden keine Benutzer anhand ihrer Benutzer-IDs gelöscht.',
 	'CLI_USER_RECLEAN_START'	=> 'Benutzernamen werden erneut bereinigt',
 	'CLI_USER_RECLEAN_DONE'		=> [
 		0	=> 'Bereinigung abgeschlossen. Es musste kein Benutzername bereinigt werden.',

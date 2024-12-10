@@ -1,0 +1,7 @@
+{% if U_CONTACTADMIN %}
+	<li class="nav-item {% if !S_FORUM_VERSION %}small-icon icon-contact {% endif %}rightside" data-last-responsive="true">
+		<a class="nav-link px-1 py-0 text-body" href="{{ U_CONTACTADMIN }}" role="menuitem">
+			{% if S_FORUM_VERSION %}<i class="icon fa fs-5 fa-envelope fa-fw" aria-hidden="true"></i>{% endif %}<span>{{ lang('CONTACT_US') }}</span>
+		</a>
+	</li>
+{% endif %}

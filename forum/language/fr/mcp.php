@@ -261,7 +261,7 @@ $lang = array_merge($lang, array(
 	'ONLY_TOPIC'			=> 'Seulement le sujet « %s »',
 	'OTHER_USERS'			=> 'Autres utilisateurs postant à partir de cette IP',
 
-	'QUICKMOD_ACTION_NOT_ALLOWED' => "%s n’est pas autorisé en tant qu’action rapide de modération",
+	'QUICKMOD_ACTION_NOT_ALLOWED' => '%s n’est pas autorisé en tant qu’action rapide de modération',
 
 	'PM_REPORT_CLOSED_SUCCESS'	=> 'Le rapport de MP sélectionné a été clôturé.',
 	'PM_REPORT_DELETED_SUCCESS'	=> 'Le rapport de MP sélectionné a été supprimé.',

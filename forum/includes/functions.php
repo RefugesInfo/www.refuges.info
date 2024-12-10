@@ -107,9 +107,17 @@ function phpbb_gmgetdate($time = false)
 	}
 
 	// getdate() interprets timestamps in local time.
-	// What follows uses the fact that getdate() and
-	// date('Z') balance each other out.
-	return getdate($time - date('Z'));
+	// So use UTC timezone temporarily to get UTC date info array.
+	$current_timezone = date_default_timezone_get();
+
+	// Set UTC timezone and get respective date info
+	date_default_timezone_set('UTC');
+	$date_info = getdate($time);
+
+	// Restore timezone back
+	date_default_timezone_set($current_timezone);
+
+	return $date_info;
 }
 
 /**
@@ -1815,6 +1823,31 @@ function redirect($url, $return = false, $disable_cd_check = false)
 }
 
 /**
+ * Returns the install redirect path for phpBB.
+ *
+ * @param string $phpbb_root_path The root path of the phpBB installation.
+ * @param string $phpEx The file extension of php files, e.g., "php".
+ * @return string The install redirect path.
+ */
+function phpbb_get_install_redirect(string $phpbb_root_path, string $phpEx): string
+{
+	$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
+	if (!$script_name)
+	{
+		$script_name = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
+	}
+
+	// Add trailing dot to prevent dirname() from returning parent directory if $script_name is a directory
+	$script_name = substr($script_name, -1) === '/' ? $script_name . '.' : $script_name;
+
+	// $phpbb_root_path accounts for redirects from e.g. /adm
+	$script_path = trim(dirname($script_name)) . '/' . $phpbb_root_path . 'install/app.' . $phpEx;
+	// Replace any number of consecutive backslashes and/or slashes with a single slash
+	// (could happen on some proxy setups and/or Windows servers)
+	return preg_replace('#[\\\\/]{2,}#', '/', $script_path);
+}
+
+/**
 * Re-Apply session id after page reloads
 */
 function reapply_sid($url, $is_route = false)
@@ -3003,8 +3036,16 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 	global $phpbb_root_path, $msg_title, $msg_long_text, $phpbb_log;
 	global $phpbb_container;
 
+	// https://www.php.net/manual/en/language.operators.errorcontrol.php
+	// error_reporting() return a different error code inside the error handler after php 8.0
+	$suppresed = E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_PARSE;
+	if (PHP_VERSION_ID < 80000)
+	{
+		$suppresed = 0;
+	}
+
 	// Do not display notices if we suppress them via @
-	if (error_reporting() == 0 && $errno != E_USER_ERROR && $errno != E_USER_WARNING && $errno != E_USER_NOTICE)
+	if (error_reporting() == $suppresed && $errno != E_USER_ERROR && $errno != E_USER_WARNING && $errno != E_USER_NOTICE)
 	{
 		return;
 	}
@@ -4028,7 +4069,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'U_SEARCH_UNANSWERED'	=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unanswered'),
 		'U_SEARCH_UNREAD'		=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unreadposts'),
 		'U_SEARCH_ACTIVE_TOPICS'=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=active_topics'),
-		'U_DELETE_COOKIES'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=delete_cookies'),
+		'U_DELETE_COOKIES'		=> $controller_helper->route('phpbb_ucp_delete_cookies_controller'),
 		'U_CONTACT_US'			=> ($config['contact_admin_form_enable'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin') : '',
 		'U_TEAM'				=> (!$auth->acl_get('u_viewprofile')) ? '' : append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=team'),
 		'U_TERMS_USE'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=terms'),
@@ -4090,7 +4131,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 
 		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$web_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
 
-		'T_JQUERY_LINK'			=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$web_path}assets/javascript/jquery-3.6.0.min.js?assets_version=" . $config['assets_version'],
+		'T_JQUERY_LINK'			=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$web_path}assets/javascript/jquery-3.7.1.min.js?assets_version=" . $config['assets_version'],
 		'S_ALLOW_CDN'			=> !empty($config['allow_cdn']),
 		'S_COOKIE_NOTICE'		=> !empty($config['cookie_notice']),
 

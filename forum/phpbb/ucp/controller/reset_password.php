@@ -242,7 +242,7 @@ class reset_password
 
 				$sql_ary = [
 					'reset_token'				=> $reset_token,
-					'reset_token_expiration'	=> strtotime('+1 day'),
+					'reset_token_expiration'	=> $this->user::get_token_expiration(),
 				];
 
 				$sql = 'UPDATE ' . $this->users_table . '
@@ -407,6 +407,7 @@ class reset_password
 			{
 				$sql_ary = [
 					'user_password'				=> $this->passwords_manager->hash($data['new_password']),
+					'user_passchg'				=> time(),
 					'user_login_attempts'		=> 0,
 					'reset_token'				=> '',
 					'reset_token_expiration'	=> 0,

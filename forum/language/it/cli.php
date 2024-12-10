@@ -110,6 +110,8 @@ $lang = array_merge($lang, array(
 	'CLI_DESCRIPTION_USER_ADD_OPTION_NOTIFY'	=> 'Invia account di posta elettronica di attivazione al nuovo utente (non inviato per impostazione predefinita)',
 	'CLI_DESCRIPTION_USER_DELETE'				=> 'Elimina un account utente.',
 	'CLI_DESCRIPTION_USER_DELETE_USERNAME'		=> 'Nome dell’utente da eliminare',
+	'CLI_DESCRIPTION_USER_DELETE_ID'			=> 'Elimina account utente tramite ID.',
+	'CLI_DESCRIPTION_USER_DELETE_ID_OPTION_ID'	=> 'ID utente da eliminare',
 	'CLI_DESCRIPTION_USER_DELETE_OPTION_POSTS'	=> 'Elimina tutti i messaggi dell’utente. Senza questa opzione, i messaggi dell’utente saranno conservati.',
 	'CLI_DESCRIPTION_USER_RECLEAN'				=> 'Ri-pulisci i nomi utente.',
 
@@ -159,6 +161,10 @@ $lang = array_merge($lang, array(
 
 	'CLI_USER_ADD_SUCCESS'		=> 'Utente aggiunto con successo %s.',
 	'CLI_USER_DELETE_CONFIRM'	=> 'Sei sicuro di voler eliminare ‘%s’? [y/N]',
+	'CLI_USER_DELETE_ID_CONFIRM'	=> 'Sei sicuro di voler eliminare gli ID utente? ‘%s’? [y/N]',
+	'CLI_USER_DELETE_ID_SUCCESS'	=> 'ID utente eliminati con successo.',
+	'CLI_USER_DELETE_ID_START'		=> 'Eliminazione degli utenti tramite ID',
+	'CLI_USER_DELETE_NONE'			=> 'Nessun utente con questo ID, da eliminare.',
 	'CLI_USER_RECLEAN_START'	=> 'Ripulisci i nomi utente',
 	'CLI_USER_RECLEAN_DONE'		=> [
 		0	=> 'Pulizia completa. Nessun nome utente richiede pulizia.',

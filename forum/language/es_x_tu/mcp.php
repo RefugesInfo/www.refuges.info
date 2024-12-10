@@ -259,7 +259,7 @@ $lang = array_merge($lang, array(
 	'ONLY_TOPIC'			=> 'Solo el tema “%s”',
 	'OTHER_USERS'			=> 'Usuarios enviando mensajes desde esta IP',
 
-	'QUICKMOD_ACTION_NOT_ALLOWED' => "%s no permitido como Moderación Rápida",
+	'QUICKMOD_ACTION_NOT_ALLOWED' => '%s no permitido como Moderación Rápida',
 
 	'PM_REPORT_CLOSED_SUCCESS'	=> 'El informe de MP seleccionado ha sido cerrado correctamente.',
 	'PM_REPORT_DELETED_SUCCESS'	=> 'El informe de MP seleccionado ha sido eliminado correctamente.',

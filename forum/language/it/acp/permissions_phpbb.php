@@ -164,9 +164,9 @@ $lang = array_merge($lang, array(
 	'ACL_M_MERGE'	=> 'Può unire gli argomenti',
 
 	'ACL_M_INFO'	=> 'Può visualizzare i dettagli nei messaggi',
-	'ACL_M_WARN'	=> 'Può inviare richiami<br /><em>Questa impostazione viene assegnata solo a livello globale. Non è un forum base.</em>', // Questa impostazione di moderazione è solo globale (e non locale)
-	'ACL_M_PM_REPORT'	=> 'Possono chiudere e cancellare le segnalazioni dei messaggi privati<br /><em> Questa impostazione viene assegnata solo a livello globale. Non si basa sui forum.</em>', // Questa impostazione di moderazione è solo globale (e non locale)
-	'ACL_M_BAN'		=> 'Può gestire ban<br /><em>Questa impostazione viene assegnata solo a livello globale. Non è un forum base.</em>', // Questa impostazione di moderazione è solo globale (e non locale)
+	'ACL_M_WARN'	=> 'Può inviare richiami',
+	'ACL_M_PM_REPORT'	=> 'Possono chiudere e cancellare le segnalazioni dei messaggi privati',
+	'ACL_M_BAN'		=> 'Può gestire ban',
 ));
 
 // Admin Permissions

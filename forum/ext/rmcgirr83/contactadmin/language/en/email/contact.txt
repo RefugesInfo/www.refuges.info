@@ -1,0 +1,12 @@
+Subject: {{ SUBJECT }}
+
+Hello {{ ADM_USERNAME }},
+
+An individual by the name of "{{ USERNAME }}" with an email address of "{{ USER_EMAIL }}" and an IP address of "{{ USER_IP }}" on "{{ DATE }}" sent the following message:
+
+{{ MESSAGE }}
+
+using the Contact form at "{{ SITENAME }}".
+
+
+{{ EMAIL_SIG }}

@@ -57,7 +57,7 @@ $lang = array_merge($lang, array(
 	'DEFAULT_SEARCH_RETURN_CHARS_EXPLAIN'	=> 'Il numero predefinito di caratteri che verrà restituito durante la ricerca. Un valore pari a 0 restituirà l’intero messaggio.',
 	
 	'DELETE_INDEX'							=> 'Cancella Indice',
-	'DELETING_INDEX_IN_PROGRESS'			=> 'Eliminazione dell’Indice in corso',
+	'DELETING_INDEX_IN_PROGRESS'			=> 'Eliminazione dell’indice in corso...',
 	'DELETING_INDEX_IN_PROGRESS_EXPLAIN'	=> 'Il motore di ricerca sta pulendo il suo Indice. Questo può impiegare alcuni minuti.',
 
 	'FULLTEXT_MYSQL_INCOMPATIBLE_DATABASE'		=> 'Il motore MySQL fulltext può essere utilizzato solo con MySQL4 o superiore.',
@@ -97,7 +97,7 @@ $lang = array_merge($lang, array(
 	'GO_TO_SEARCH_INDEX'					=> 'Vai alla pagina Indice di ricerca',
 
 	'INDEX_STATS'							=> 'Statistiche dell’Indice',
-	'INDEXING_IN_PROGRESS'					=> 'Indicizzazione in corso',
+	'INDEXING_IN_PROGRESS'					=> 'Indicizzazione in corso...',
 	'INDEXING_IN_PROGRESS_EXPLAIN'			=> 'Il motore di ricerca sta indicizzando tutti i messaggi della Board. Questo può impiegare da alcuni minuti ad alcune ore; attendi.',
 
 	'LIMIT_SEARCH_LOAD'						=> 'Limite di caricamento del sistema per la pagina di ricerca',
@@ -117,18 +117,19 @@ $lang = array_merge($lang, array(
 	'SEARCH_GUEST_INTERVAL'					=> 'Intervallo del flood di ricerca per gli ospiti',
 	'SEARCH_GUEST_INTERVAL_EXPLAIN'			=> 'Numero di secondi che gli ospiti devono aspettare tra una ricerca e l’altra. Se un ospite fa una ricerca tutti gli altri devono aspettare fino a quando l’intervallo di tempo non è passato.',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
-		2	=> 'Tutti i messaggi fino al numero ID %2$d vengono ora indicizzati, di cui %1$d messaggi erano all’interno di questa fase.<br />',
+		2	=> 'Tutti i messaggi fino al numero ID %2$d vengono ora indicizzati, di cui %1$d messaggi erano all’interno di questa fase.',
 	),
 	'SEARCH_INDEX_CREATE_REDIRECT_RATE'		=> array(
-		2	=> 'La velocità di indicizzazione corrente è approssimativamente di %1$.1f messaggi al secondo.<br />Indicizzazione in corso...',
+		2	=> 'La velocità di indicizzazione corrente è approssimativamente di %1$.1f messaggi al secondo.',
 	),
 	'SEARCH_INDEX_DELETE_REDIRECT'			=> array(
-		2	=> 'Tutti i messaggi fino al numero ID %2$d sono stati rimossi dall’Indice di ricerca, di cui %1$d messaggi erano in questa fase.<br />',
+		2	=> 'Tutti i messaggi fino al numero ID %2$d sono stati rimossi dall’Indice di ricerca, di cui %1$d messaggi erano in questa fase.',
 	),
 	'SEARCH_INDEX_DELETE_REDIRECT_RATE'		=> array(
-		2	=> 'Approssimativamente vengono eliminati %1$.1f messaggi al secondo.<br />>Cancellazione in corso...',
+		2	=> 'Approssimativamente vengono eliminati %1$.1f messaggi al secondo.',
 	),	
 	'SEARCH_INDEX_CREATED'					=> 'Tutti i messaggi sono stati indicizzati correttamente nel database.',
+	'SEARCH_INDEX_PROGRESS'					=> 'Fatto: %1$d | In attesa: %2$d | Totale: %3$d',
 	'SEARCH_INDEX_REMOVED'					=> 'L’Indice di ricerca per questo motore è stato cancellato.',
 	'SEARCH_INTERVAL'						=> 'Intervallo del flood di ricerca per gli utenti',
 	'SEARCH_INTERVAL_EXPLAIN'				=> 'Numero di secondi che gli utenti devono aspettare tra una ricerca e l’altra. Questo intervallo è controllato indipendentemente per ogni utente.',

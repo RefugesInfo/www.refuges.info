@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1ce43ff815a322cce696ae3f305868d0
+class ComposerStaticIniteb658f95a4047347f31406a96a021c80
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -1466,6 +1466,7 @@ class ComposerStaticInit1ce43ff815a322cce696ae3f305868d0
         'Twig\\Sandbox\\SecurityNotAllowedTagError' => __DIR__ . '/..' . '/twig/twig/src/Sandbox/SecurityNotAllowedTagError.php',
         'Twig\\Sandbox\\SecurityPolicy' => __DIR__ . '/..' . '/twig/twig/src/Sandbox/SecurityPolicy.php',
         'Twig\\Sandbox\\SecurityPolicyInterface' => __DIR__ . '/..' . '/twig/twig/src/Sandbox/SecurityPolicyInterface.php',
+        'Twig\\Sandbox\\SourcePolicyInterface' => __DIR__ . '/..' . '/twig/twig/src/Sandbox/SourcePolicyInterface.php',
         'Twig\\Source' => __DIR__ . '/..' . '/twig/twig/src/Source.php',
         'Twig\\Template' => __DIR__ . '/..' . '/twig/twig/src/Template.php',
         'Twig\\TemplateWrapper' => __DIR__ . '/..' . '/twig/twig/src/TemplateWrapper.php',
@@ -2146,10 +2147,10 @@ class ComposerStaticInit1ce43ff815a322cce696ae3f305868d0
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1ce43ff815a322cce696ae3f305868d0::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1ce43ff815a322cce696ae3f305868d0::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit1ce43ff815a322cce696ae3f305868d0::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit1ce43ff815a322cce696ae3f305868d0::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$prefixesPsr0;
+            $loader->classMap = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$classMap;
 
         }, null, ClassLoader::class);
     }

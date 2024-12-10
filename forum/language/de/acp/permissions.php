@@ -62,7 +62,7 @@ $lang = array_merge($lang, array(
 
 	'ACL_NEVER'				=> 'Nie',
 	'ACL_SET'				=> 'Berechtigungen setzen',
-	'ACL_SET_EXPLAIN'		=> 'Berechtigungen basieren auf einem einfachen <strong>JA/NEIN</strong>-System. Wird eine Einstellung für einen Benutzer oder eine Gruppe auf <strong>NIE</strong> gesetzt, so überschreibt dieser Wert alle anderen gesetzten Werte. Wenn du bei diesem Benutzer/dieser Gruppe keinen Wert für eine Einstellung vornehmen möchtest, wähle <strong>NEIN</strong> aus. Wenn an anderer Stelle eine Einstellung vorgenommen wurde, so wird diese verwendet; ansonsten wird von <strong>NIE</strong> ausgegangen. Alle (mit dem davorstehendem Kontrollkästchen) ausgewählten Objekte werden die von dir definierten Berechtigungen übernehmen.',
+	'ACL_SET_EXPLAIN'		=> 'Berechtigungen basieren auf einem einfachen <strong>JA/NEIN</strong>-System. Wird eine Einstellung für einen Benutzer oder eine Gruppe auf <strong>NIE</strong> gesetzt, so überschreibt dieser Wert alle anderen gesetzten Werte. Wenn du bei diesem Benutzer/dieser Gruppe keinen Wert für eine Einstellung vornehmen möchtest, wähle <strong>NEIN</strong> aus. Wenn an anderer Stelle eine abweichende Einstellung vorgenommen wurde, so wird diese verwendet; ansonsten wird von <strong>NIE</strong> ausgegangen. Alle (mit dem davorstehendem Kontrollkästchen) ausgewählten Objekte werden die von dir definierten Berechtigungen übernehmen. Bitte beachte, dass die Festlegung von Administrator-Berechtigungen für Gründer keine Auswirkungen haben wird, da die Administrations-Berechtigungen für Gründer-Benutzeraccounts immer auf <strong>JA</strong> eingestellt sind.',
 	'ACL_SETTING'			=> 'Einstellung',
 
 	'ACL_TYPE_A_'			=> 'Administrator-Berechtigungen',
