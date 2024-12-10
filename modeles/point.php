@@ -138,7 +138,7 @@ function infos_points($conditions)
     // On souhaite sortir tous les polygones de la base auquel chaque point appartient
   if (!empty($conditions->avec_liste_polygones) )
   {
-    $tables_en_plus.=", points points2 left join polygones polygones2 on ST_Within(points2.geom, polygones2.geom), polygone_type";
+    $tables_en_plus.=", points points2 left join polygones polygones2 on ST_Within(points2.geom, polygones2.geom) left join polygone_type on polygones2.id_polygone_type=polygone_type.id_polygone_type";
     
     foreach ($proprietes_interessantes_polygones as $propriete)
       $champs_polygones.=",polygones2.$propriete";
@@ -146,8 +146,7 @@ function infos_points($conditions)
       $champs_polygones.=",polygone_type.$propriete";
     
     //Condition de jointure implicite pour que la 2ème référence à la table point joigne bien avec le même point dans la table points
-    $conditions_sql .= "\n\tAND points.id_point=points2.id_point
-    AND polygones2.id_polygone_type=polygone_type.id_polygone_type";
+    $conditions_sql .= "\n\tAND points.id_point=points2.id_point";
     if (empty($conditions->ordre))
       $ordre="ORDER BY points.nom,polygone_type.ordre_taille DESC";
     /* Là, c'est méga sioux et empirique comme bidouille, la limite s'appliqe au nombre de records retournés, mais avec la jointure, chaque point donne lieu à 4, 5 voir 8 lignes pour chaque polygones dont le point est membre. Alors si on voulait une limite je multiplie arbitrairement par 6 la limite demandée. (le tableau final sera tronqué pour tomber pile sur la limite demandée de nombre de points retournés) 
@@ -228,7 +227,7 @@ function infos_points($conditions)
 
   if (!empty($conditions->uniquement_points_caches))
   {
-    $conditions_sql.="\n\tAND points.cache=True";
+    $conditions_sql.="\n\tAND cache=True";
     $conditions->avec_points_caches=True;
   }
 
@@ -291,8 +290,8 @@ function infos_points($conditions)
     {
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
     $query_clusters="
-SELECT count(*) AS nb_points, min(points.id_point) AS id_point, min(ST_AsGeoJSON(points.geom)) AS geojson,
-       round(ST_X(points.geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(points.geom)/{$conditions->cluster}) AS cluster_lat
+SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom)) AS geojson,
+       round(ST_X(geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(geom)/{$conditions->cluster}) AS cluster_lat
   FROM points
   WHERE true $conditions_sql
   GROUP BY cluster_lon, cluster_lat
@@ -349,7 +348,7 @@ SELECT count(*) AS nb_points, min(points.id_point) AS id_point, min(ST_AsGeoJSON
   $ordre
   $limite
   ";
-//d($query_points);
+  
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
@@ -397,7 +396,7 @@ SELECT count(*) AS nb_points, min(points.id_point) AS id_point, min(ST_AsGeoJSON
 
     // Ici, petite particularité sur les points cachés, par défaut, on ne veut pas les renvoyer, mais on veut quand
     // même, si un seul a été demandé, pouvoir dire qu'il est caché (du public) ce qui est différent d'inexistant dans la base. On va donc le chercher en base mais on renvoi un message erreur s'il est en caché
-    // FIXME : cela créer un bug pas bien génant sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
+    // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
     if (!$point->cache or !empty($conditions->avec_points_caches)) // On renvoi ce point, soit il n'est pas caché, soit on a demandé aussi les points cachés
     {
       $points[$point->id_point]=$point_final;
@@ -423,8 +422,7 @@ pour obtenir la liste des polygones auquels ce point appartient
 
 FIXME: je pense que presque rien ne justifie l'existence de cette fonction qui fait la même chose que celle avant. C'est juste pour l'historique.
 
-FIXME: 2022 Et en plus, j'arrête pas d'ajouter des paramètres, on va finir par passer un tableau d'options ! ce que fait déjà la fonction précédente.
-FIXME: 2024 Aller, dès que j'ai le temps, je remplace tous les appels à elle par celle d'avant, ça nous fera une fonction de moins à connaître. Ou alors je garde juste une version ultra light qui qui s'appelle avec un seule paramètre ?
+FIXME: 2022 Et en plus, j'arrête pas d'ajouter des paramètres, on va finir par passer un tableau d'options ! ce que je voulais éviter en faisant la fonction précédente
 
 *****************************************************/
 function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_si_modele=False)
@@ -443,9 +441,7 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 
   if ($meme_si_cache)
     $conditions->avec_points_caches=True;
-    
-  //Avec cette fonction, on est censé ne récupérer qu'un seul point pour un seul id, donc dans l'hypothèse d'un bug, inutile d'aller en chercher plus que 2, ça suffira à nous confirmer un problème
-  $conditions->limite=2;
+
   // récupération des infos du point
   $points=infos_points($conditions);
   
