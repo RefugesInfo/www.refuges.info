@@ -41,5 +41,5 @@ switch ($_REQUEST['type'])
 }
 
 
-$vue->point=infos_point($_REQUEST['id_point_retour']);
+$vue->point=infos_point($_REQUEST['id_point_retour'],true);
 $vue->utilisateurs=infos_utilisateurs();
