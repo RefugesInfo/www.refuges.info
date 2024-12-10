@@ -228,7 +228,7 @@ function infos_points($conditions)
 
   if (!empty($conditions->uniquement_points_caches))
   {
-    $conditions_sql.="\n\tAND cache=True";
+    $conditions_sql.="\n\tAND points.cache=True";
     $conditions->avec_points_caches=True;
   }
 
@@ -291,8 +291,8 @@ function infos_points($conditions)
     {
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
     $query_clusters="
-SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom)) AS geojson,
-       round(ST_X(geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(geom)/{$conditions->cluster}) AS cluster_lat
+SELECT count(*) AS nb_points, min(points.id_point) AS id_point, min(ST_AsGeoJSON(points.geom)) AS geojson,
+       round(ST_X(points.geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(points.geom)/{$conditions->cluster}) AS cluster_lat
   FROM points
   WHERE true $conditions_sql
   GROUP BY cluster_lon, cluster_lat
