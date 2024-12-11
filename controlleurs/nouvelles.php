@@ -16,7 +16,7 @@ if (isset($_GET['nombre']) and is_numeric($_GET['nombre']))
 else
     $nombre = $config_wri['defaut_nombre_nouvelles_page_nouvelles'];
 
-$vue->types_nouvelles = $_GET ['quoi'] ??  'commentaires,points,forums';
+$vue->types_nouvelles = $_GET ['quoi'] ??  'points,forums,commentaires';
 $vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles);
 
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");

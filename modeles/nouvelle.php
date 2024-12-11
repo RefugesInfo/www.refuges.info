@@ -61,12 +61,12 @@ elle prends minimum 2 paramêtres : $nombre nouvelles à sortir au total, la ou 
  * option : L'ID du massif n'est effectif que sur les commentaires et les points (pas sur le forum)
    Possibilité de mettre une liste d'ids séparés par une virgule
 
+Une 3ème option permet de restreindre les nouvelles ne concernant que les points contenus dans un ou plusieurs polygones, utilisée uniquement par le flux RSS mais en 2025 j'ai bon espoir d'en faire un critère de filtre pour les nouvelles   
+   
 NOTE sly : Conseils d'utilisation : Utiliser cette fonction n'a de sens que lorsqu'on veut mélanger plusieurs sources de natures différentes
 (comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher des commentaires ou des points, les fonctions
 infos_xxxx( ) sont plus appropriées et performantes.)
-Par exemple car lorsque l'on demande 100 nouvelles on ne peut pas utiliser efficacement le LIMIT en SQL, en effet, comme c'est fait en plusieurs requêtes, on ne sait pas à l'avance comment on atteindra la limite, on est donc obligé de demander 100 de chaque catégories pour finalement ne prendre que les 100 plus récentes.
-2024 sly : Comme en plus, on boucle sur chaque commentaire et chaque message du forum pour retrouver dans quels polygones on se trouve, et bien la page des nouvelles est (encore plus !) lente à s'afficher qu'avant.
-
+Car lorsque l'on demande 100 nouvelles on ne peut pas utiliser efficacement le LIMIT en SQL, en effet, comme c'est fait en plusieurs requêtes, on ne sait pas à l'avance comment on atteindra la limite, on est donc obligé de demander 100 de chaque catégories pour finalement ne prendre que les 100 plus récentes.
 ***************************************/
 
 function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
@@ -76,7 +76,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   // tableau de tableau contiendra toutes les news toutes catégories confondues
   $news_array = array() ;
   
-  $i = 0;    
+  $i = 1;    
   $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
   while ($tok) // vrai tant qu'il reste une categorie a rajouter
   {
@@ -84,7 +84,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
     {
       case "commentaires":
         $conditions_commentaires = new stdclass();
-        $conditions_commentaires->limite=$nombre;
+        $conditions_commentaires->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
         $conditions_commentaires->avec_points_caches=False; // On ne veut pas les commentaires sur des points cachés. Sauf si on est modérateur ?
         
         if ($req && $req->avec_photo)
@@ -98,20 +98,9 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         $conditions_point = new stdclass;
         foreach ( $commentaires as $commentaire )
         {
-          // Ici, on retrouve les informations du point auquel ce commentaire se rapporte, dans le but de le localiser
-          // FIXME sly: ça donne bien ce que je veux, sauf que ça fait 100 fois la requête, une pour chaque message forum, même si à la fin on ne l'affiche pas, quel gaspillage !
-          $conditions_point->ids_points=$commentaire->id_point;
-          $conditions_point->avec_liste_polygones=True;
-          $points=infos_points($conditions_point);
-          $point=reset($points);
-          
-          
-          $news_array[$i]['localisation']=chaine_de_localisation($point->polygones);
-          
+          $news_array[$i]['id_point'] = $commentaire->id_point;
           $news_array[$i]['date'] = $commentaire->ts_unix_commentaire;
           $news_array[$i]['categorie']="Commentaire";
-          $news_array[$i]['lien']=lien_point($point,$lien_locaux)."#C$commentaire->id_commentaire";
-          $news_array[$i]['titre']=ucfirst($point->nom);
           if ($req && $req->avec_texte)
             $news_array[$i]['commentaire']=$commentaire->texte;
           $news_array[$i]['id_commentaire']=$commentaire->id_commentaire;
@@ -150,7 +139,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         case "refuges": $conditions->ids_types_point=implode(',',$config_wri['tout_type_refuge']);
         case "points":
           $conditions->ordre="points.date_creation DESC,polygone_type.ordre_taille DESC";
-          $conditions->limite=$nombre;
+          $conditions->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
           $conditions->avec_liste_polygones=True;
           if($ids_polygones!="") $conditions->ids_polygones=$ids_polygones;
           $points=infos_points($conditions);
@@ -196,7 +185,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
             
         case "forums":
           $conditions_messages_forum = new stdclass();
-          $conditions_messages_forum->limite=$nombre;
+          $conditions_messages_forum->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
           $conditions_messages_forum->ids_forum=$config_wri['ids_forum_pour_les_nouvelles'];
 
           $commentaires_forum=messages_du_forum($conditions_messages_forum);
@@ -209,18 +198,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
               else
                 $url_complete="http://".$config_wri['nom_hote'];
                 
-              // Ici, on retrouve les informations du point auquel ce Sujet de forum se rapporte
-              // FIXME sly: ça donne bien ce que je veux, sauf que ça fait 100 fois la requête, une pour chaque message forum, même si à la fin on ne l'affiche pas, quel gaspillage !
-              $conditions_point = new stdclass;
-              $conditions_point->topic_id=$commentaire_forum->topic_id;
-              $conditions_point->avec_liste_polygones=True;
-              $conditions_point->avec_points_caches=True;
-              $point=reset(infos_points($conditions_point));
-              
-              $news_array[$i]['lien']=lien_point($point,$lien_locaux);
-              $news_array[$i]['titre']=ucfirst($point->nom);
-              $news_array[$i]['localisation']=chaine_de_localisation($point->polygones);
-              
+              $news_array[$i]['topic_id']=$commentaire_forum->topic_id;              
               $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#p$commentaire_forum->post_id";
               $news_array[$i]['categorie']="Forum";
               $news_array[$i]['titre']=html_entity_decode ($commentaire_forum->topic_title);
@@ -240,8 +218,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   function cmp($a, $b)
   {
     if ($a['date'] == $b['date']) {
-    return 0;
-  }
+      return 0;
+    }
   return ($a['date'] < $b['date']) ? 1 : -1;
   }
   usort($news_array,"cmp");
@@ -251,10 +229,31 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   $nouvelles = array ();
   foreach ($news_array as $nouvelle)
   {
-      $nouvelles[]=$nouvelle;
-      $nb++;
-      if ($nb>=$nombre)
-          break;
+    if ($nouvelle['categorie'] == "forum") // FIXME: idée d'une magie pour s'éviter de faire x fois la requête ? where id_point in (x,y,z,t,.....) ?
+    {
+      $conditions_point = new stdclass;
+      $conditions_point->avec_liste_polygones=True;
+      $conditions_point->topic_id=$nouvelle['topic_id'];
+      $conditions_point->avec_points_caches=True; // NOTE: si le point est caché, on veut quand même les messages du forum qui s'y rapporte, et donc les infos du point ?
+      $point=reset(infos_points($conditions_point));
+      $nouvelle['lien']=lien_point($point,$lien_locaux);
+      $nouvelle['localisation']=chaine_de_localisation($point->polygones);
+    }
+    if ($nouvelle['categorie'] == "Commentaire")
+    {
+      $conditions_point = new stdclass;
+      $conditions_point->avec_liste_polygones=True;
+      $conditions_point->ids_points=$nouvelle['id_point'];
+      $point=reset(infos_points($conditions_point));
+      $nouvelle['lien']=lien_point($point,$lien_locaux)."#C".$nouvelle['id_commentaire'];
+      $nouvelle['titre']=ucfirst($point->nom);
+      $nouvelle['localisation']=chaine_de_localisation($point->polygones);
+    }
+    // $nouvelle['categorie'] == "Point" -> Les nouvelles sur les ajouts de points ont déjà toutes les infos nécessaires sur leurs polygones d'appartenance, on ne fait rien de spécifique pour eux
+    $nouvelles[]=$nouvelle;
+    $nb++;
+    if ($nb>=$nombre) // On obtient le nombre de nouvelles demandées, on s'arrête là et surtout on ne va gaspille plus de temps à chercher les infos $points sur les nouvelles qu'on affichera pas
+        break;
   }
   return $nouvelles;
 }
