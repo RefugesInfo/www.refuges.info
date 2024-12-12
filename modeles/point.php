@@ -227,7 +227,7 @@ function infos_points($conditions)
 
   if (!empty($conditions->uniquement_points_caches))
   {
-    $conditions_sql.="\n\tAND cache=True";
+    $conditions_sql.="\n\tAND points.cache=True";
     $conditions->avec_points_caches=True;
   }
 
