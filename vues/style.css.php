@@ -896,8 +896,11 @@ body:not(#phpbb) a:visited {
     display: table;
 }
 .tr { 
-    display: table-row; 
+    display: table-row;
 }
 .td { 
-    display: table-cell;
+    display: table-cell; 
+}
+.ligne_pointillee { 
+    border-bottom: 1px dotted;
 }
