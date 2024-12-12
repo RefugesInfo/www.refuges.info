@@ -63,131 +63,161 @@ switch ($periode)
 ?>
 
 /*==================================================================*/
-/* Modification du style du nouveau forum PhpBB3-prosilver          */
+/* Modification du style du nouveau forum PhpBB3-prosilver*/
 /*==================================================================*/
 /* Pas de ligne vide en haut */
-#phpbb {
-	padding: 0;
+#phpbb
+{
+  padding: 0;
 }
+
 /* Forum de la largeur de la page */
-#phpbb .wrap {
-	max-width: 100%;
+#phpbb .wrap
+{
+  max-width: 100%;
 }
 
 /* Titre des forums de refuges */
-#phpbb .section-viewtopic .topic-title a:first-child {
-	color: black !important;
+#phpbb .section-viewtopic .topic-title a:first-child
+{
+  color: black !important;
 }
-#phpbb .wri-link {
-	font-size: 70%;
+
+#phpbb .wri-link
+{
+  font-size: 70%;
 }
+
 /* Zones masquées */
-#phpbb .headerbar,
-#phpbb .navbar .avatar,
-/* Personnalisation des couleurs */
-#phpbb .navbar,
-#phpbb #basdepage {
+#phpbb .headerbar,#phpbb .navbar .avatar,/* Personnalisation des couleurs */
+#phpbb .navbar,#phpbb #basdepage
+{
   background-color: #<?=$couleur_fond?>;
 }
-#phpbb .headerbar, .forumbg,
-#phpbb .headerbar, .forabg,
-#phpbb h3 {
-	background-color: #<?=$couleur_lien?>;
-	background-image: none;
+
+#phpbb .headerbar, .forumbg,#phpbb .headerbar, .forabg,#phpbb h3
+{
+  background-color: #<?=$couleur_lien?>;
+  background-image: none;
 }
-#phpbb .panel h3,
-#phpbb .alert_text h3,
-#phpbb .stat-block h3,
-#phpbb .stat-block h3 a,
-#phpbb .headerspace h3,
-#phpbb .headerspace h3 a,
-#phpbb .postbody h3,
-#phpbb .postbody h3 a,
-#phpbb #postform .review,
-#phpbb #postform .review a {
-	color: white;
+
+#phpbb .panel h3,#phpbb .alert_text h3,#phpbb .stat-block h3,#phpbb .stat-block h3 a,#phpbb .headerspace h3,#phpbb .headerspace h3 a,#phpbb .postbody h3,#phpbb .postbody h3 a,#phpbb #postform .review,#phpbb #postform .review a
+{
+  color: white;
 }
-#phpbb .stat-block strong a {
-	color: #a00;
+
+#phpbb .stat-block strong a
+{
+  color: #a00;
 }
-#phpbb .bg1,
-#phpbb .bg2,
-#phpbb .bg3,
-#phpbb .forabg .forums,
-#phpbb .forumbg .topics > li {
-	background-color: #<?=$couleur_fond?>;
-	background-image: none;
+
+#phpbb .bg1,#phpbb .bg2,#phpbb .bg3,#phpbb .forabg .forums,#phpbb .forumbg .topics > li
+{
+  background-color: #<?=$couleur_fond?>;
+  background-image: none;
 }
-#phpbb dl a.row-item-link:hover {
-	background-color: transparent !important;
+
+#phpbb dl a.row-item-link:hover
+{
+  background-color: transparent !important;
 }
+
 /* Masquage login rapide en bas de page */
-#page-body > form > h3,
-.quick-login {
-	display: none;
+#page-body > form > h3,.quick-login
+{
+  display: none;
 }
-.section-posting #attach-panel-multi::after {
-	content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
-	background: yellow;
+
+.section-posting #attach-panel-multi::after
+{
+  content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
+  background: yellow;
 }
-.text-strong {
-	color: initial;
+
+.text-strong
+{
+  color: initial;
 }
 
 /*==================================================================*/
-/* Mise en page générales des types                                 */
+/* Mise en page générales des types*/
 /*==================================================================*/
 /*===== Général =======*/
-
-html {
+html
+{
   width: 100%;
   height: 100%;
 }
-body {
+
+body
+{
   margin: 0px;
   width: 100%;
   height: 100%;
   background-color: #<?=$couleur_fond?>;
 }
+
 /* zone de contenu */
-.contenu {
+.contenu
+{
   margin: 0.5%;
   margin-top:3px;
 }
-.couleur_fond_amplifiee {
-    background-color: #cef99c;
+
+.couleur_fond_amplifiee
+{
+  background-color: #cef99c;
 }
 
 /*=====TEXTE=======*/
-strong { /* Strong Emphasis: gras+rouge */
+strong
+{
+  /* Strong Emphasis: gras+rouge */
   font-weight: bold;
   color: #FF0000 ;
 }
-cite { /* Citation: gras+droit */
+
+cite
+{
+  /* Citation: gras+droit */
   font-weight: bold ;
   font-style: normal ;
 }
-blockquote > div { /* en particulier les citations forum */
+
+blockquote > div
+{
+  /* en particulier les citations forum */
   border-left: 2px;
 }
-blockquote  { /* message forum et commentaires */
+
+blockquote
+{
+  /* message forum et commentaires */
   margin:1em;
   font-size: normal;
 }
-blockquote p:before  { /* message forum et commentaires */
+
+blockquote p:before
+{
+  /* message forum et commentaires */
   content: open-quote;
   font-size: xx-large;
 }
-blockquote p:after  { /* message forum et commentaires */
+
+blockquote p:after
+{
+  /* message forum et commentaires */
   content: close-quote;
   font-size: xx-large;
-  vertical-align: text-top; /* pour pas que cette derniere quote decale la derniere ligne */
+  vertical-align: text-top;
+  /* pour pas que cette derniere quote decale la derniere ligne */
 }
 
 /*====== Titres =======*/
-
 /* Au 15/10/2024 le titre h1 n'est utilisé qu'une seule et unique fois dans tous le site, c'est sur les fiches, pour le nom du point */
-h1 { /* Ce titre principal n'est pas plus gros ou gras que les autres, mais significativement, c'est le titre le plus important de la page */
+h1
+{
+  /* Ce titre principal n'est pas plus gros ou gras que les autres, mais significativement, c'est le titre le plus important de la page */
   font-weight: bold ;
   font-style: normal ;
   font-size: large;
@@ -195,9 +225,10 @@ h1 { /* Ce titre principal n'est pas plus gros ou gras que les autres, mais sign
 }
 
 /* h2 ? faut pas chercher à comprendre, on n'utilise le h2 à aucun endroit ! Si je n'avais que ça à faire, il faudrait tout décaller h5->h4->h3->h2 dans toutes les vues, et le wiki ! */
-
 /* à noter que h3 h4 et h5 sont également très utilisés dans le wiki, dont le contenu est dans la base */
-h3 { /* titres de pages */
+h3
+{
+  /* titres de pages */
   font-weight: bold ;
   font-style: normal ;
   font-size: large;
@@ -208,68 +239,95 @@ h3 { /* titres de pages */
   color: white;
   background-color: #<?=$couleur_lien?>;
 }
-h4 { /* sous titres */
-  padding-top: 4px; /* sous FF, la padding par defo est immense */
+
+h4
+{
+  /* sous titres */
+  padding-top: 4px;
+  /* sous FF, la padding par defo est immense */
   padding-bottom: 2px;
   padding-left: 10px;
   font-size: large;
-  margin: 0px; /* sous FF, la padding par defo est immense */
+  margin: 0px;
+  /* sous FF, la padding par defo est immense */
   border-bottom: 2px solid #<?=$couleur_decoration_titres?>;
   border-left: 2px solid #<?=$couleur_decoration_titres?>;
 }
-h5 { /* sou-sou titre, pour l'instant que dans les fiches de refuges */
+
+h5
+{
+  /* sou-sou titre, pour l'instant que dans les fiches de refuges */
   border-bottom: thin solid #<?=$couleur_decoration_titres?> ;
-  font-size: medium; /* sinon H5 cest tout petit ... */
+  font-size: medium;
+  /* sinon H5 cest tout petit ... */
   margin-top:15px;
   margin-bottom:3px;
   padding-left: 10px;
 }
-p {
+
+p
+{
   margin-bottom: 1em;
 }
+
 /*===== Listes =====*/
-ul { /* les listes , y compris news en page de garde */
+ul
+{
+  /* les listes , y compris news en page de garde */
   list-style-type: none;
   margin: 0px;
   padding: 0px 0px 0px 0px;
 }
-dt { /* listes, de definitions */
+
+dt
+{
+  /* listes, de definitions */
   font-weight: bold;
   margin-top:4px;
 }
-.liste-wri > dd { /* listes, de definitions */
+
+.liste-wri > dd
+{
+  /* listes, de definitions */
   margin-left:1em;
 }
-dt > button {
+
+dt > button
+{
   font-size: 60%;
   padding: 0px ;
 }
-li {
+
+li
+{
   margin-bottom:3px;
 }
 
 /*====== Formulaires======*/
-/* 
-  Utilisé pour le formulaire de création ou modification ainsi que l'ajout de commentaires. 
-  J'aimerais pouvoir rendre un peu plus cohérent (factoriser) les style de la plupart des formulaires du site (zone modérateur, modif fiche, ajout commentaires) 
-  mais ça demande un peu de tests, je (sly 2024) le fais au fûr et à mesure.
-*/
-
-form#form_point fieldset {
-  border: thin solid transparent;  /* pour les allergiques aux barrieres ;) */
+/*Utilisé pour le formulaire de création ou modification ainsi que l'ajout de commentaires.J'aimerais pouvoir rendre un peu plus cohérent (factoriser) les style de la plupart des formulaires du site (zone modérateur, modif fiche, ajout commentaires)mais ça demande un peu de tests, je (sly 2024) le fais au fûr et à mesure.*/
+form#form_point fieldset
+{
+  border: thin solid transparent;
+  /* pour les allergiques aux barrieres ;
+   *	) */
   padding: 0.75em 0;
 }
-form#form_point .textarea {
+
+form#form_point .textarea
+{
   width: 100%;
   min-width: 150px;
   max-width: 1000px;
   min-height: 10em;
 }
-form#form_point .textarea label,
-form#form_point .textarea textarea {
+
+form#form_point .textarea label,form#form_point .textarea textarea
+{
   width: 100%;
 }
-form#form_point .booleen {
+
+form#form_point .booleen
+{
   clear: left;
   float:left;
   width: 700px;
@@ -278,567 +336,744 @@ form#form_point .booleen {
   text-align: right;
   padding: 1px;
 }
-form#form_point .booleen legend {
+
+form#form_point .booleen legend
+{
   clear: left;
   float:left;
 }
-form#form_point .booleen label {
+
+form#form_point .booleen label
+{
   clear: none;
   float: none;
   padding-left: 5px;
 }
-form#form_export label {
+
+form#form_export label
+{
   clear: none;
   float: left;
   width: 16em;
 }
-#form_export fieldset fieldset:hover {  /* deco sur le fieldset actif, pour bien le differencier des autres */
+
+#form_export fieldset fieldset:hover
+{
+  /* deco sur le fieldset actif, pour bien le differencier des autres */
   border: thin dotted black;
 }
-form.wri label { /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
+
+form.wri label
+{
+  /* sans la classe WRI, ca fait foirer le forum PHPBB , et oui */
   clear: left;
   float: left;
 }
-form label[title]:after, form legend[title]:after {  /* combine pour exclure OL , leurs label ne sont pas dans des form */
+
+form label[title]:after, form legend[title]:after
+{
+  /* combine pour exclure OL , leurs label ne sont pas dans des form */
   content: url(../images/tooltip.png);
 }
-fieldset fieldset {  /* moins de déco pour les fieldset imbriques */
+
+fieldset fieldset
+{
+  /* moins de déco pour les fieldset imbriques */
   float: left;
   border: thin solid transparent;
 }
-form .champs_null_masque>input { /* couleur de la case "champ null" et masquee par defo */
+
+form .champs_null_masque>input
+{
+  /* couleur de la case "champ null" et masquee par defo */
   outline : red solid 2px ;
   float: left;
   display: none;
 }
-form .champs_null_masque > input:checked  + *  input { /* desactive les input qui suivent */
+
+form .champs_null_masque > input:checked  + *  input
+{
+  /* desactive les input qui suivent */
   visibility: hidden;
 }
-form .champs_null_masque > label { /* permet a la case de s'intercaler au bon endroit */
+
+form .champs_null_masque > label
+{
+  /* permet a la case de s'intercaler au bon endroit */
   clear: none;
 }
-.input_en_ligne {
+
+.input_en_ligne
+{
   width:18em;
 }
-.input_captcha_court {
+
+.input_captcha_court
+{
   width:3em;
 }
-.textarea_large {
+
+.textarea_large
+{
   width: 99%;
   min-width: 150px;
   max-width: 1000px;
   min-height: 10em;
 }
 
-.fauxfieldset-legend {
+.fauxfieldset-legend
+{
   background-color: #<?=$couleur_legende?> ;
   border: thin solid black ;
   font-weight: bold;
 }
+
 /* Cas particulier pour OL qui a des labels non standards */
-div#switch_nav label {
+div#switch_nav label
+{
   float: none;
   clear: none;
 }
-input[type=checkbox]:hover, input[type=radio]:hover{
-    box-shadow: 0px 0px 10px #1300ff;
+
+input[type=checkbox]:hover, input[type=radio]:hover
+{
+  box-shadow: 0px 0px 10px #1300ff;
 }
 
 /*==========divers=======*/
-img { /* images sans bordures */
+img
+{
+  /* images sans bordures */
   border: 0px;
   margin: 0px;
   padding: 0px;
 }
 
 /*=========liENS==========*/
-a:hover { /*met en valeur les liens qd on est dessus */
+a:hover
+{
+  /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;
   text-decoration: none;
 }
-/*
-J'intègre également les class des liens du forum
-en gros je veux tout de la même couleur
-*/
 
-body:not(#phpbb) a,a.mainmenu,a.nav,a.forumlink,a.cattitle,a.topictitle,a.postlink,a.gen,a.genmed,a.gensmall {
-  color : #<?=$couleur_lien?>; /* en accord avec le thème du forum, et moins agressif */
+/*J'intègre également les class des liens du forumen gros je veux tout de la même couleur*/
+body:not(#phpbb) a,a.mainmenu,a.nav,a.forumlink,a.cattitle,a.topictitle,a.postlink,a.gen,a.genmed,a.gensmall
+{
+  color : #<?=$couleur_lien?>;
+  /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
 }
 
-body:not(#phpbb) a:visited {
+body:not(#phpbb) a:visited
+{
   color : #<?=$couleur_lien_visite?>;
 }
 
 /*========= Erreurs ==========*/
-.erreur_saisie {
-	border: 2px double red;
-	background-color: yellow;
-	padding: 10px;
+.erreur_saisie
+{
+  border: 2px double red;
+  background-color: yellow;
+  padding: 10px;
 }
 
 /*==================================================================*/
-/*  Entête de page : Logo, menus, identification                    */
+/*  Entête de page : Logo, menus, identification*/
 /*==================================================================*/
-.bandeau-haut * {
-	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	font-size: 18px;
+.bandeau-haut *
+{
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 18px;
 }
-.menu-bouton * {
-	font-family: Times New Roman;
+
+.menu-bouton *
+{
+  font-family: Times New Roman;
 }
-.menu-haut form li {
-	margin: 5px 2px 10px 2px;
+
+.menu-haut form li
+{
+  margin: 5px 2px 10px 2px;
 }
 
 /* Fenêtres larges */
-@media screen and (min-width: 450px) {
-	/* Le bandeau */
-	.bandeau-haut {
-		background-image: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
-		background-repeat: no-repeat;
-	}
-	.logo-haut {
-		display: block;
-		position: absolute;
-		width: calc(100% - 225px);
-		height: 50px;
-	}
-	.logo-haut:hover {
-		background: transparent;
-	}
-	.recherche-haut {
-		float: right;
-		padding: 11px 0;
-		font-size: 16px;
-	}
-	.recherche-haut input {
-		font-size: 16px;
-	}
-	.menu-haut {
-		clear: both;
-	}
-
-	/* Ligne de menus */
-	.menu-liste > ul {
-		display: flex;
-		justify-content: space-between;
-		padding: 0;
-	}
-	.menu-liste > span,
-	.menu-titre {
-		display: none;
-	}
-	.menu-connexion {
-		float: right;
-	}
-	.menu-connexion ul {
-		right: 0;
-		border-radius: 10px 0 10px 10px !important;
-	}
-	.menu-connexion span span {
-		vertical-align:super;
-		font-size: 12px;
-	}
-
-	/* Boutons */
-	.menu-bouton:not(.menu-liste) {
-		border: 2px solid transparent;
-		border-radius: 10px;
-		padding: 2px;
-	}
-	.menu-bouton:not(.menu-liste):hover {
-		border-radius: 10px 10px 0 0;
-	}
-	.menu-touch,
-	.menu-hover {
-		border-color: #<?=$couleur_decoration_titres?> !important;
-	}
-
-	/* Blocs rétractables en dessous des boutons */
-	.menu-bouton:not(.menu-liste) > p,
-	.menu-bouton:not(.menu-liste) > ul {
-		position: absolute;
-		margin: 2px 0 0 -4px;
-		border-radius: 0 10px 10px 10px;
-		border: 2px solid #<?=$couleur_decoration_titres?>;
-		background: #<?=$couleur_fond?>;
-		padding: 0 4px;
-		opacity: 0;
-		z-index: -10;
-	}
-	.menu-touch:not(.menu-liste) > ul,
-	.menu-hover:not(.menu-liste) > ul,
-	.menu-hover:not(.menu-liste) > p,
-	.menu-hover:not(.menu-liste) > a {
-		opacity: 1;
-		z-index: 1000;
-	}
-
-	/* Lignes des blocs rétractables */
-	.menu-bouton:not(.menu-liste) li {
-		max-height: 0;
-		transition: max-height 0.2s ease-in;
-	}
-	.menu-touch:not(.menu-liste) li,
-	.menu-hover:not(.menu-liste) li {
-		max-height: 2.2em;
-	}
+@media screen and (min-width: 450px)
+{
+  /* Le bandeau */
+  .bandeau-haut
+  {
+    background-image: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
+    background-repeat: no-repeat;
+  }
+  
+  .logo-haut
+  {
+    display: block;
+    position: absolute;
+    width: calc(100% - 225px);
+    height: 50px;
+  }
+  
+  .logo-haut:hover
+  {
+    background: transparent;
+  }
+  
+  .recherche-haut
+  {
+    float: right;
+    padding: 11px 0;
+    font-size: 16px;
+  }
+  
+  .recherche-haut input
+  {
+    font-size: 16px;
+  }
+  
+  .menu-haut
+  {
+    clear: both;
+  }
+  
+  /* Ligne de menus */
+  .menu-liste > ul
+  {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+  }
+  
+  .menu-liste > span,.menu-titre
+  {
+    display: none;
+  }
+  
+  .menu-connexion
+  {
+    float: right;
+  }
+  
+  .menu-connexion ul
+  {
+    right: 0;
+    border-radius: 10px 0 10px 10px !important;
+  }
+  
+  .menu-connexion span span
+  {
+    vertical-align:super;
+    font-size: 12px;
+  }
+  
+  /* Boutons */
+  .menu-bouton:not(.menu-liste)
+  {
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 2px;
+  }
+  
+  .menu-bouton:not(.menu-liste):hover
+  {
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .menu-touch,.menu-hover
+  {
+    border-color: #<?=$couleur_decoration_titres?> !important;
+  }
+  
+  /* Blocs rétractables en dessous des boutons */
+  .menu-bouton:not(.menu-liste) > p,.menu-bouton:not(.menu-liste) > ul
+  {
+    position: absolute;
+    margin: 2px 0 0 -4px;
+    border-radius: 0 10px 10px 10px;
+    border: 2px solid #<?=$couleur_decoration_titres?>;
+    background: #<?=$couleur_fond?>;
+    padding: 0 4px;
+    opacity: 0;
+    z-index: -10;
+  }
+  
+  .menu-touch:not(.menu-liste) > ul,.menu-hover:not(.menu-liste) > ul,.menu-hover:not(.menu-liste) > p,.menu-hover:not(.menu-liste) > a
+  {
+    opacity: 1;
+    z-index: 1000;
+  }
+  
+  /* Lignes des blocs rétractables */
+  .menu-bouton:not(.menu-liste) li
+  {
+    max-height: 0;
+    transition: max-height 0.2s ease-in;
+  }
+  
+  .menu-touch:not(.menu-liste) li,.menu-hover:not(.menu-liste) li
+  {
+    max-height: 2.2em;
+  }
 }
 
 /* On met tout sur une même ligne pour les très grandes fenêtres */
-@media screen and (min-width: 1200px) {
-	.menu-haut {
-		clear: none;
-		padding: 7.5px;
-	}
-	.logo-haut {
-		position: initial;
-		float: left;
-		width: 25vw;
-	}
-	.menu-bouton:not(.menu-liste) {
-		background: #<?=$couleur_fond?>;
-	}
-	.menu-connexion ul {
-		right: initial;
-		border-radius: 0 10px 10px 10px !important;
-	}
-	.recherche-haut {
-		padding-left: 20px;
-	}
+@media screen and (min-width: 1200px)
+{
+  .menu-haut
+  {
+    clear: none;
+    padding: 7.5px;
+  }
+  
+  .logo-haut
+  {
+    position: initial;
+    float: left;
+    width: 25vw;
+  }
+  
+  .menu-bouton:not(.menu-liste)
+  {
+    background: #<?=$couleur_fond?>;
+  }
+  
+  .menu-connexion ul
+  {
+    right: initial;
+    border-radius: 0 10px 10px 10px !important;
+  }
+  
+  .recherche-haut
+  {
+    padding-left: 20px;
+  }
 }
 
 /* On enlève les icones pour les fenêtres moyenes */
-@media screen and (min-width: 450px) and (max-width: 650px) {
-	.menu-bouton span:first-child {
-		display: none;
-	}
+@media screen and (min-width: 450px) and (max-width: 650px)
+{
+  .menu-bouton span:first-child
+  {
+    display: none;
+  }
 }
 
 /* On enlève le bandeau pour les fenêtres de faible hauteur */
-@media screen and (max-height: 600px) and (min-width: 500px) {
-	.bandeau-haut {
-		background-image: none;
-	}
-	.logo-haut,
-	.recherche-haut,
-	.menu-titre span {
-		display: none;
-	}
+@media screen and (max-height: 600px) and (min-width: 500px)
+{
+  .bandeau-haut
+  {
+    background-image: none;
+  }
+  
+  .logo-haut,.recherche-haut,.menu-titre span
+  {
+    display: none;
+  }
 }
-@media screen and (max-height: 600px) and (min-width: 500px) and (max-width: 700px) {
-	.menu-bouton span {
-		line-height: 1.5em;
-	}
-	.menu-bouton span:first-child {
-		display: none;
-	}
+
+@media screen and (max-height: 600px) and (min-width: 500px) and (max-width: 700px)
+{
+  .menu-bouton span
+  {
+    line-height: 1.5em;
+  }
+  
+  .menu-bouton span:first-child
+  {
+    display: none;
+  }
 }
 
 /* Fenêtres étroites */
-@media screen and (max-width: 449.9px) {
-	.bandeau-haut * {
-		font-size: 16px;
-	}
-	.logo-haut,
-	.recherche-haut,
-	.menu-haut .menu-large,
-	.menu-bouton P,
-	.headerbar,
-	body:not(#phpbb) .menu-titre span {
-		display: none;
-	}
-	.menu-haut {
-		display: flex;
-		flex-direction: row-reverse;
-		justify-content: space-between;
-		background: #<?=$couleur_lien?>;
-	}
-
-	/* Boutons */
-	div.menu-bouton > span,
-	.menu-titre {
-		display: block;
-		padding: 0 8px 2px 8px;
-		font-size: 20px;
-		font-weight: 700;
-		color: white !important;
-		cursor: pointer;
-	}
-	.menu-titre * {
-		padding-top: 4px;
-		font-size: 18px;
-		color: white !important;
-	}
-
-	/* Blocs rétractables en dessous des boutons */
-	.menu-liste > ul,
-	.menu-connexion ul {
-		position: absolute;
-		border-radius: 0 0 10px 10px;
-		border: 2px solid #<?=$couleur_decoration_titres?>;
-		padding: 0 4px;
-		background: #<?=$couleur_fond?>;
-		white-space: nowrap;
-		z-index: -10;
-		opacity: 0;
-	}
-	.menu-connexion ul {
-		right: 0;
-	}
-	.menu-liste > ul {
-		padding-top: 3px;
-	}
-	.menu-liste.menu-touch > ul,
-	.menu-liste.menu-hover > ul,
-	.menu-connexion.menu-touch > ul,
-	.menu-connexion.menu-hover > ul {
-		opacity: 1;
-		z-index: 1000;
-	}
-
-	/* Lignes des blocs rétractables */
-	.menu-liste li,
-	.menu-connexion li {
-		max-height: 0;
-		transition: max-height 0.2s ease-in;
-	}
-	.menu-liste.menu-touch li,
-	.menu-liste.menu-hover li {
-		max-height: initial;
-	}
-	.menu-liste.menu-touch ul ul li,
-	.menu-liste.menu-hover ul ul li,
-	.menu-connexion.menu-touch li,
-	.menu-connexion.menu-hover li {
-		padding: 1.5px 0;
-		max-height: 1.2em;
-	}
+@media screen and (max-width: 449.9px)
+{
+  .bandeau-haut *
+  {
+    font-size: 16px;
+  }
+  
+  .logo-haut,.recherche-haut,.menu-haut .menu-large,.menu-bouton P,.headerbar,body:not(#phpbb) .menu-titre span
+  {
+    display: none;
+  }
+  
+  .menu-haut
+  {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    background: #<?=$couleur_lien?>;
+  }
+  
+  /* Boutons */
+  div.menu-bouton > span,.menu-titre
+  {
+    display: block;
+    padding: 0 8px 2px 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: white !important;
+    cursor: pointer;
+  }
+  
+  .menu-titre *
+  {
+    padding-top: 4px;
+    font-size: 18px;
+    color: white !important;
+  }
+  
+  /* Blocs rétractables en dessous des boutons */
+  .menu-liste > ul,.menu-connexion ul
+  {
+    position: absolute;
+    border-radius: 0 0 10px 10px;
+    border: 2px solid #<?=$couleur_decoration_titres?>;
+    padding: 0 4px;
+    background: #<?=$couleur_fond?>;
+    white-space: nowrap;
+    z-index: -10;
+    opacity: 0;
+  }
+  
+  .menu-connexion ul
+  {
+    right: 0;
+  }
+  
+  .menu-liste > ul
+  {
+    padding-top: 3px;
+  }
+  
+  .menu-liste.menu-touch > ul,.menu-liste.menu-hover > ul,.menu-connexion.menu-touch > ul,.menu-connexion.menu-hover > ul
+  {
+    opacity: 1;
+    z-index: 1000;
+  }
+  
+  /* Lignes des blocs rétractables */
+  .menu-liste li,.menu-connexion li
+  {
+    max-height: 0;
+    transition: max-height 0.2s ease-in;
+  }
+  
+  .menu-liste.menu-touch li,.menu-liste.menu-hover li
+  {
+    max-height: initial;
+  }
+  
+  .menu-liste.menu-touch ul ul li,.menu-liste.menu-hover ul ul li,.menu-connexion.menu-touch li,.menu-connexion.menu-hover li
+  {
+    padding: 1.5px 0;
+    max-height: 1.2em;
+  }
 }
+
 /* Fenêtres très étroites */
-@media screen and (max-width: 300px) {
-	.menu-titre span {
-		display: none;
-	}
+@media screen and (max-width: 300px)
+{
+  .menu-titre span
+  {
+    display: none;
+  }
 }
 
 /* ========== Menu du bas ========== */
-
 /* en bas, il y a un gros div "basdepage" qui englobe la fin */
-  #basdepage {
-    clear: both;
-    padding-top: 15px;
-    text-align: center;
-    font-family: Times New Roman;
-    font-size: 16px;
+#basdepage
+{
+  clear: both;
+  padding-top: 15px;
+  text-align: center;
+  font-family: Times New Roman;
+  font-size: 16px;
 }
-  /* c'est la liste en bas de page */
-  #basdepage #racourcismenus {
-    clear: both;
-    border: dashed thin #096Ea1;
-    text-align: center;
-    margin: 0px;
+
+/* c'est la liste en bas de page */
+#basdepage #racourcismenus
+{
+  clear: both;
+  border: dashed thin #096Ea1;
+  text-align: center;
+  margin: 0px;
 }
-  #basdepage ul {
-    clear: both;
-    text-align: center;
+
+#basdepage ul
+{
+  clear: both;
+  text-align: center;
 }
-  #basdepage li {
-    display: inline;
-    margin-right: 2em;
+
+#basdepage li
+{
+  display: inline;
+  margin-right: 2em;
 }
-  #basdepage img,form { /* tout le bazar de pub de bas de page, en ligne! */
-    display: inline;
-    vertical-align: middle;
+
+#basdepage img,form
+{
+  /* tout le bazar de pub de bas de page, en ligne! */
+  display: inline;
+  vertical-align: middle;
 }
 
 /*==================================================================*/
-  .lien_ajout_commentaire {
-    text-align: center;
-    font-weight: bold;
+.lien_ajout_commentaire
+{
+  text-align: center;
+  font-weight: bold;
 }
-  .lien_ajout_commentaire a {
-    border-style: solid;
-    border-color: #<?=$couleur_decoration_titres?>;
-    padding-right: 0.5em;
-    padding-left: 0.5em;
+
+.lien_ajout_commentaire a
+{
+  border-style: solid;
+  border-color: #<?=$couleur_decoration_titres?>;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
 }
 
 /*==================================================================*/
-/* La pages des massifs (accueil)                                   */
+/* La pages des massifs (accueil)*/
 /*==================================================================*/
-
-  .tablo { /* div imite une table */
-    display:table-cell;
-    /* En dessous de 400 pixels, c'est trop tassé/pas lisible, en mettant ça, on force un affichage en dessous de la carte de l'accueil */
-    min-width:400px;
-    vertical-align: top;
-    float: left; /* pour IE7 */
-}
-
-/*==================================================================*/
-/* Les pages points                                                 */
-/*==================================================================*/
-
-  .fauxfieldset { /* div imite un fieldset */
-    border: thin solid black;
-    margin-top: 1em;
-}
-  .fauxfieldset-legend  {
-    float: left;
-    margin: -0.2em 1em 0em 1em;
-}
-  .spacer { /* HR de spacer pour la mise en page, en particulier dans les fiches */
-    clear: both;
-    visibility: hidden;
-    margin: 0px;
-    padding: 0px;
-}
-  /* ENCADRE de présentation de FICHE */
-  .fiche_cadre .condense, .fiche_cadre .condense dd, .fiche_cadre .condense dt {
-    display: inline;
-    margin: 1px 5px 1px 0px;
-}
-  .photos {
-    float: left;
-    position: relative;
-    max-width: 100%;
-}
-  .texte_sur_image {
-    color: white;
-    text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
-             1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-  .point_forum blockquote {
-    margin-block-start: 0;
-}
-  .point_forum blockquote * {
-    margin-block-start: 0;
-    margin-block-end: 0;
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-}
-  .point_forum em {
-    color: black !important;
+.tablo
+{
+  /* div imite une table */
+  display:table-cell;
+  /* En dessous de 400 pixels, c'est trop tassé/pas lisible, en mettant ça, on force un affichage en dessous de la carte de l'accueil */
+  min-width:400px;
+  vertical-align: top;
+  float: left;
+  /* pour IE7 */
 }
 
 /*==================================================================*/
-/*                              Cartes                              */
+/* Les pages points*/
+/*==================================================================*/
+.fauxfieldset
+{
+  /* div imite un fieldset */
+  border: thin solid black;
+  margin-top: 1em;
+}
+
+.fauxfieldset-legend
+{
+  float: left;
+  margin: -0.2em 1em 0em 1em;
+}
+
+.spacer
+{
+  /* HR de spacer pour la mise en page, en particulier dans les fiches */
+  clear: both;
+  visibility: hidden;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* ENCADRE de présentation de FICHE */
+.fiche_cadre .condense, .fiche_cadre .condense dd, .fiche_cadre .condense dt
+{
+  display: inline;
+  margin: 1px 5px 1px 0px;
+}
+
+.photos
+{
+  float: left;
+  position: relative;
+  max-width: 100%;
+}
+
+.texte_sur_image
+{
+  color: white;
+  text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.point_forum blockquote
+{
+  margin-block-start: 0;
+}
+
+.point_forum blockquote *
+{
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
+
+.point_forum em
+{
+  color: black !important;
+}
+
+/*==================================================================*/
+/*Cartes*/
 /*==================================================================*/
 .carte /* utilisé par toutes les images cartes */
- {
+
+{
   background-image: url(../images/sablier.png);
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 /* Carte de l'accueil */
-#carte-accueil {
+#carte-accueil
+{
   width: 750px;
   height: 600px;
 }
-.accueil-switcher {
+
+.accueil-switcher
+{
   float: right !important;
   background: white !important;
 }
-.accueil-switcher:not(.myol-button-selected) button {
+
+.accueil-switcher:not(.myol-button-selected) button
+{
   opacity: 0.5;
 }
-@media screen and (max-width: 750px) {
-  #carte-accueil {
+
+@media screen and (max-width: 750px)
+{
+  #carte-accueil
+  {
     width: calc(100vw - 22px);
     height: 90vw;
   }
 }
 
 /* Carte NAV présentation mobile verticale */
-#carte-nav {
+#carte-nav
+{
   height: 96vw;
-  max-height: calc(100% - 65px); /* Pour ne pas trop déborder en bas */
+  max-height: calc(100% - 65px);
+  /* Pour ne pas trop déborder en bas */
 }
-#selecteur-carte-edit {
+
+#selecteur-carte-edit
+{
   padding-left: 1px;
 }
-#selecteur-carte-edit p {
+
+#selecteur-carte-edit p
+{
   margin-top: 0;
   margin-bottom: 5px;
 }
-#selecteur-carte-edit span {
+
+#selecteur-carte-edit span
+{
   font-size: .8em;
   font-style: oblique;
 }
-#selecteur-carte-edit input,
-#selecteur-carte-edit label {
+
+#selecteur-carte-edit input,#selecteur-carte-edit label
+{
   text-align: justify;
   cursor: pointer;
 }
+
 /* Menu deplié */
-@media screen and (min-width: 641px) and (min-device-height: 361px) {
-  #carte-nav {
+@media screen and (min-width: 641px) and (min-device-height: 361px)
+{
+  #carte-nav
+  {
     max-height: calc(100% - 126px);
   }
 }
+
 /* Carte NaV présentation mobile horizontale */
-@media screen and (min-aspect-ratio: 1/1) and (min-width: 365px) and (max-device-height: 360px) {
-  #carte-nav {
+@media screen and (min-aspect-ratio: 1/1) and (min-width: 365px) and (max-device-height: 360px)
+{
+  #carte-nav
+  {
     float: right;
     width: 67%;
     max-height: calc(100% - 75px);
-}
-  #selecteur-carte-edit {
+  }
+  
+  #selecteur-carte-edit
+  {
     display: table-cell;
     width: 33%;
   }
 }
+
 /* Carte nav présentation écrans */
-@media screen and (min-width: 800px) {
-  #carte-nav {
+@media screen and (min-width: 800px)
+{
+  #carte-nav
+  {
     float: right;
     width: 75vw;
     height: 75vw;
-}
-  #selecteur-carte-edit {
+  }
+  
+  #selecteur-carte-edit
+  {
     display: table-cell;
     width: 33%;
     padding-left: 5px;
   }
 }
-.carte-nav-full {
+
+.carte-nav-full
+{
   width: 98.4% !important;
   margin-right: 0.8% !important;
 }
 
 /* Carte de la page des points écrans */
-#container-carte-point {
+#container-carte-point
+{
   float: right;
 }
-#carte-point {
+
+#carte-point
+{
   width: 50vw;
   height: 50vw;
   max-height: 75vh;
 }
+
 /* Cartes pour les petits écrans et mobiles */
-@media screen and (max-width: 640px) {
-  #carte-point {
+@media screen and (max-width: 640px)
+{
+  #carte-point
+  {
     width: 99vw;
     height: 400px;
     max-height: 100vw;
   }
 }
+
 /* Carte formulaire de modification présentation grand écrans */
-@media screen and (min-width: 1000px) {
-  #carte-modif {
+@media screen and (min-width: 1000px)
+{
+  #carte-modif
+  {
     width: 600px;
     height: 600px;
   }
 }
+
 /* Carte formulaire de modification de point pour moyen écran et mobiles*/
-@media screen and (max-width: 1000px) {
-  #carte-modif {
+@media screen and (max-width: 1000px)
+{
+  #carte-modif
+  {
     float: right;
     width: 99vw;
     height: 99vw;
@@ -847,57 +1082,81 @@ body:not(#phpbb) a:visited {
 }
 
 /* Carte formulaire de modification de massif */
-#carte-edit {
+#carte-edit
+{
   width: 99%;
   height: 97vw;
   max-height: 450px;
   margin: 0 auto;
 }
-@media (pointer:coarse) {
-  .hide-touch-screen {
+
+@media (pointer:coarse)
+{
+  .hide-touch-screen
+  {
     display: none;
   }
 }
 
-@media print {
-  html {
+@media print
+{
+  html
+  {
     height: initial;
-}
-  .noprint {
+  }
+  
+  .noprint
+  {
     display:none;
   }
 }
-  #carte-nav {
-    margin: 4px;
+
+#carte-nav
+{
+  margin: 4px;
 }
 
-#check-types {
-	float: right;
-	position: relative;
-	right: -10px;
-}
-#check-types input {
-	position: relative;
-	top: 3px;
+#check-types
+{
+  float: right;
+  position: relative;
+  right: -10px;
 }
 
-.bouton-supprimer {
-	color: red;
-	background-color: yellow;
-	padding: 4px;
+#check-types input
+{
+  position: relative;
+  top: 3px;
 }
 
-.texte-tout-petit {
+.bouton-supprimer
+{
+  color: red;
+  background-color: yellow;
+  padding: 4px;
+}
+
+.texte-tout-petit
+{
   font-size: x-small;
 }
 
-// css pour se comporter comme une table
-.table {
-    display: table;
+// css pour se comporter comme une table.table
+{
+  display: table;
 }
-.tr { 
-    display: table-row; 
+
+.tr
+{
+  display: table-row;
 }
-.td { 
-    display: table-cell;
+
+.td
+{
+  display: table-cell;
+}
+
+.ligne_pointillee
+{
+  border-bottom: 1px dotted;
 }

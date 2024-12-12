@@ -90,7 +90,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         if ($req && $req->avec_photo)
           $conditions_commentaires->avec_photo=$req->avec_photo;
           
-        if($ids_polygones!="") 
+        if(!empty($ids_polygones)) 
           $conditions_commentaires->ids_polygones=$ids_polygones;
         
         $commentaires=infos_commentaires($conditions_commentaires);
@@ -120,20 +120,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
                 $news_array[$i]['lien_auteur'] = lien_utilisateur($utilisateur,$lien_locaux);
             }
           }
-          $texte = "Commentaire";
-          if (!empty($news_array[$i]['photo']))
-            $texte .= " et photo";
-          if (!empty($news_array[$i]['auteur'])) {
-              $texte .= " de ";
-            if (!empty($news_array[$i]['lien_auteur']))
-              $texte .= "[url=".$news_array[$i]['lien_auteur']."]";
-              $texte .= $news_array[$i]['auteur'];
-            if (!empty($news_array[$i]['lien_auteur']))
-              $texte .= "[/url]";
-            $news_array[$i]['texte']=$texte;        
           $i++;
           }
-        }
         break;
             
         case "refuges": $conditions->ids_types_point=implode(',',$config_wri['tout_type_refuge']);
@@ -162,14 +150,14 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
                 }
                 
                 $news_array[$i]['lien']=lien_point($point,$lien_locaux);
-                $news_array[$i]['titre']=ucfirst($point->nom);
+                $news_array[$i]['nom_point']=ucfirst($point->nom);
                 $news_array[$i]['partitif_point']=$point->article_partitif_point_type;
                 $news_array[$i]['type_point']=$point->nom_type;
                 $news_array[$i]['remarques']=$point->remark;
                 $news_array[$i]['acces']=$point->acces;
                 $news_array[$i]['date']=$point->date_creation_timestamp;
                 $news_array[$i]['localisation']=chaine_de_localisation($point->polygones);
-                $texte = "Ajout ".$news_array[$i]['partitif_point']." ".$news_array[$i]['type_point'];
+                $texte = "[url=".lien_point($point,$lien_locaux)."][b]Ajout ".$news_array[$i]['partitif_point']." ".$news_array[$i]['type_point']."[/b][/url]" ;
                 if (!empty($news_array[$i]['auteur'])) {
                   $texte .= " par ";
                   if (!empty($news_array[$i]['lien_auteur']))
@@ -191,21 +179,14 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
           $commentaires_forum=messages_du_forum($conditions_messages_forum);
           
           if (count($commentaires_forum)>0)
-            foreach ( $commentaires_forum as $commentaire_forum)
+            foreach ( $commentaires_forum as $commentaire_forum )
             {
-              if ($lien_locaux)
-                $url_complete="";
-              else
-                $url_complete="http://".$config_wri['nom_hote'];
-                
               $news_array[$i]['topic_id']=$commentaire_forum->topic_id;              
-              $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=$commentaire_forum->post_id#p$commentaire_forum->post_id";
               $news_array[$i]['categorie']="Forum";
-              $news_array[$i]['titre']=html_entity_decode ($commentaire_forum->topic_title);
+              $news_array[$i]['post_id']=$commentaire_forum->post_id;
               $news_array[$i]['date']=$commentaire_forum->date;
               if ($req && $req->avec_texte)
                 $news_array[$i]['commentaire']=purge_phpbb_post_text($commentaire_forum->post_text);
-              $news_array[$i]['texte']="Message sur le forum : [url=".$lien_forum."]".$news_array[$i]['titre']."[/url]";
               $i++;
             }
           break;
@@ -229,15 +210,21 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   $nouvelles = array ();
   foreach ($news_array as $nouvelle)
   {
-    if ($nouvelle['categorie'] == "forum") // FIXME: idée d'une magie pour s'éviter de faire x fois la requête ? where id_point in (x,y,z,t,.....) ?
+    if ($nouvelle['categorie'] == "Forum") // FIXME: idée d'une magie pour s'éviter de faire x fois la requête ? where id_point in (x,y,z,t,.....) ?
     {
       $conditions_point = new stdclass;
       $conditions_point->avec_liste_polygones=True;
       $conditions_point->topic_id=$nouvelle['topic_id'];
       $conditions_point->avec_points_caches=True; // NOTE: si le point est caché, on veut quand même les messages du forum qui s'y rapporte, et donc les infos du point ?
       $point=reset(infos_points($conditions_point));
-      $nouvelle['lien']=lien_point($point,$lien_locaux);
+      $nouvelle['nom_point']=ucfirst($point->nom);
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
+      if ($lien_locaux)
+        $url_complete="";
+      else
+        $url_complete="https://".$config_wri['nom_hote'];
+      $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#".$nouvelle['post_id'];
+      $nouvelle['texte']="[url=$lien_forum][b]Message sur son forum[/b][/url]";
     }
     if ($nouvelle['categorie'] == "Commentaire")
     {
@@ -245,9 +232,19 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $conditions_point->avec_liste_polygones=True;
       $conditions_point->ids_points=$nouvelle['id_point'];
       $point=reset(infos_points($conditions_point));
-      $nouvelle['lien']=lien_point($point,$lien_locaux)."#C".$nouvelle['id_commentaire'];
-      $nouvelle['titre']=ucfirst($point->nom);
+      $lien=lien_point($point,$lien_locaux)."#C".$nouvelle['id_commentaire'];
+      $nouvelle['nom_point']=ucfirst($point->nom);
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
+      $nouvelle['texte'] = "[url=$lien][b]Commentaire[/b][/url]";
+      if (!empty($nouvelle['photo']))
+        $nouvelle['texte'] .= " et photo";
+      if (!empty($nouvelle['auteur'])) {
+          $nouvelle['texte'] .= " de ";
+        if (!empty($nouvelle['lien_auteur']))
+          $nouvelle['texte'] .= "[url=".$nouvelle['lien_auteur']."]".$nouvelle['auteur']."[/url]";
+        else
+          $nouvelle['texte'] .= $nouvelle['auteur'];
+      }
     }
     // $nouvelle['categorie'] == "Point" -> Les nouvelles sur les ajouts de points ont déjà toutes les infos nécessaires sur leurs polygones d'appartenance, on ne fait rien de spécifique pour eux
     $nouvelles[]=$nouvelle;
