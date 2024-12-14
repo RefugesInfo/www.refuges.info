@@ -126,6 +126,7 @@ function messages_du_forum($conditions)
     "SELECT
       max(phpbb3_posts.post_time) AS date,
       phpbb3_posts.topic_id,
+      phpbb3_posts.poster_id,
       phpbb3_posts.post_text,
       phpbb3_topics.topic_title,
       max(phpbb3_posts.post_id) AS post_id
@@ -135,7 +136,7 @@ function messages_du_forum($conditions)
     AND phpbb3_posts.post_visibility=1
     AND phpbb3_topics.topic_id = phpbb3_posts.topic_id
     $quels_ids
-    GROUP BY phpbb3_posts.topic_id,phpbb3_topics.topic_title,phpbb3_posts.post_text
+    GROUP BY phpbb3_posts.poster_id,phpbb3_posts.topic_id,phpbb3_topics.topic_title,phpbb3_posts.post_text
     $conditions->ordre
     LIMIT $conditions->limite";
 

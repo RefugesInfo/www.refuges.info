@@ -2,7 +2,7 @@
 /****************************************************************************************************
 Voici les fonctions qui permettent de fournir différents moyen d'avoir les dernières infos de refuges.info
 (Nouveau message sur le forum, commentaire sur un point, nouveau point, nouvelle globale)
-En format exploitable pour le flux RSS, les pages nouvelles en HTML
+En format exploitable pour le flux RSS et les pages nouvelles en HTML
 
 22/04/08 jmb	: modif de affiche_news, (bug des forums)  elle sert QUE dans news.php.
 04/07/08 jmb : modif de affiche news, forum, rajout de Post_id dans la requete, et chgt du lien forum
@@ -21,27 +21,27 @@ require_once ("utilisateur.php");
 require_once ("commentaire.php");
 require_once ("forum.php");
 
-  function stat_site ()
-  {
-    global $config_wri,$pdo;
-    // Petits stats de début sur l'intégralité de la base
-    // donc je liste bien les "refuges"
-    // les autres sont des sommets, des cols, des villes où autre
-    // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
-    // PDO jmb re ecriture en une seule requete
-    $q = "SELECT
-        ( SELECT count(*) FROM points WHERE id_point_type IN ( ".implode(',',$config_wri['tout_type_refuge'])." )
-        AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
-        AND points.modele <> 1
-        AND points.cache <> TRUE
-        )                                                                                         AS nbrefuges,
-    ( SELECT count(*) FROM points WHERE points.modele <> 1 AND points.cache <> TRUE )         AS nbpoints,
-    ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                    AS nbphotos,
-    ( SELECT count(*) FROM commentaires )                                                         AS nbcomm,
-    ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config_wri['id_massif'].")  ) AS nbmassifs ";
-    $res = $pdo->query($q);
-    return $res->fetch();
-  }
+function stat_site ()
+{
+  global $config_wri,$pdo;
+  // Petits stats de début sur l'intégralité de la base
+  // donc je liste bien les "refuges"
+  // les autres sont des sommets, des cols, des villes où autre
+  // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
+  // PDO jmb re ecriture en une seule requete
+  $q = "SELECT
+      ( SELECT count(*) FROM points WHERE id_point_type IN ( ".implode(',',$config_wri['tout_type_refuge'])." )
+      AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
+      AND points.modele <> 1
+      AND points.cache <> TRUE
+      )                                                                                         AS nbrefuges,
+  ( SELECT count(*) FROM points WHERE points.modele <> 1 AND points.cache <> TRUE )         AS nbpoints,
+  ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                    AS nbphotos,
+  ( SELECT count(*) FROM commentaires )                                                         AS nbcomm,
+  ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config_wri['id_massif'].")  ) AS nbmassifs ";
+  $res = $pdo->query($q);
+  return $res->fetch();
+}
 
 /****************************************
 Fonction d'accès aux nouvelles
@@ -105,27 +105,21 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
             $news_array[$i]['commentaire']=$commentaire->texte;
           $news_array[$i]['id_commentaire']=$commentaire->id_commentaire;
           $news_array[$i]['photo']=0;
-          if ($commentaire->photo_existe) {
+          if ($commentaire->photo_existe) 
+          {
             $news_array[$i]['photo']="1";
             $news_array[$i]['photo_mini']=$commentaire->lien_photo['reduite'] ?? '';
             $news_array[$i]['photo_originale']=$commentaire->lien_photo['originale'] ?? '';
           }
-          if (!empty($commentaire->auteur_commentaire))
-          {
-            $news_array[$i]['auteur']=html_entity_decode($commentaire->auteur_commentaire);
-            if ($commentaire->id_createur_commentaire!=0)
-            {
-              $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
-              if (!isset($utilisateur->erreur))
-                $news_array[$i]['lien_auteur'] = lien_utilisateur($utilisateur,$lien_locaux);
-            }
-          }
+          $news_array[$i]['user_id']=$commentaire->id_createur_commentaire;
+          $news_array[$i]['auteur']=$commentaire->auteur_commentaire;
           $i++;
-          }
-        break;
+          
+        }
+      break;
             
-        case "refuges": $conditions->ids_types_point=implode(',',$config_wri['tout_type_refuge']);
-        case "points":
+      case "refuges": $conditions->ids_types_point=implode(',',$config_wri['tout_type_refuge']);
+      case "points":
           $conditions->ordre="points.date_creation DESC,polygone_type.ordre_taille DESC";
           $conditions->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
           $conditions->avec_liste_polygones=True;
@@ -134,21 +128,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
           if (count($points)!=0)
             foreach($points as $point)
             {
-                $news_array[$i]['categorie']="Point";
-                if ($point->nom_createur!="")
-                {
-                  if (!empty($point->nom_createur))
-                    $news_array[$i]['auteur']=$point->nom_createur;
-                  else
-                    $news_array[$i]['auteur']="Auteur supprimé";
-                  if ($point->id_createur!=0)
-                  {
-                    $utilisateur=infos_utilisateur($point->id_createur);
-                    if (!isset($utilisateur->erreur))
-                      $news_array[$i]['lien_auteur'] =  lien_utilisateur($utilisateur,$lien_locaux);
-                  }
-                }
-                
+                $news_array[$i]['categorie']="Point";                
                 $news_array[$i]['lien']=lien_point($point,$lien_locaux);
                 $news_array[$i]['nom_point']=ucfirst($point->nom);
                 $news_array[$i]['partitif_point']=$point->article_partitif_point_type;
@@ -157,21 +137,15 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
                 $news_array[$i]['acces']=$point->acces;
                 $news_array[$i]['date']=$point->date_creation_timestamp;
                 $news_array[$i]['localisation']=chaine_de_localisation($point->polygones);
+                $news_array[$i]['user_id']=$point->id_createur;
+                $news_array[$i]['auteur']=$point->nom_createur;
                 $texte = "[url=".lien_point($point,$lien_locaux)."][b]Ajout ".$news_array[$i]['partitif_point']." ".$news_array[$i]['type_point']."[/b][/url]" ;
-                if (!empty($news_array[$i]['auteur'])) {
-                  $texte .= " par ";
-                  if (!empty($news_array[$i]['lien_auteur']))
-                    $texte .= "[url=".$news_array[$i]['lien_auteur']."]";
-                  $texte .= $news_array[$i]['auteur'];
-                  if (!empty($news_array[$i]['lien_auteur']))
-                    $texte .= "[/url]";
-                }
                 $news_array[$i]['texte']=$texte;
                 $i++;
               }
-              break;
+      break;
             
-        case "forums":
+      case "forums":
           $conditions_messages_forum = new stdclass();
           $conditions_messages_forum->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
           $conditions_messages_forum->ids_forum=$config_wri['ids_forum_pour_les_nouvelles'];
@@ -182,6 +156,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
             foreach ( $commentaires_forum as $commentaire_forum )
             {
               $news_array[$i]['topic_id']=$commentaire_forum->topic_id;              
+              $news_array[$i]['user_id']=$commentaire_forum->poster_id;              
               $news_array[$i]['categorie']="Forum";
               $news_array[$i]['post_id']=$commentaire_forum->post_id;
               $news_array[$i]['date']=$commentaire_forum->date;
@@ -189,7 +164,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
                 $news_array[$i]['commentaire']=purge_phpbb_post_text($commentaire_forum->post_text);
               $i++;
             }
-          break;
+      break;
     }
     
     
@@ -210,6 +185,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   $nouvelles = array ();
   foreach ($news_array as $nouvelle)
   {
+    $par_ou_de="par";
     if ($nouvelle['categorie'] == "Forum") // FIXME: idée d'une magie pour s'éviter de faire x fois la requête ? where id_point in (x,y,z,t,.....) ?
     {
       $conditions_point = new stdclass;
@@ -224,7 +200,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       else
         $url_complete="https://".$config_wri['nom_hote'];
       $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#".$nouvelle['post_id'];
-      $nouvelle['texte']="[url=$lien_forum][b]Message sur son forum[/b][/url]";
+      $nouvelle['texte']="[url=$lien_forum][b]Message forum[/b][/url]";
+      $par_ou_de="de";
     }
     if ($nouvelle['categorie'] == "Commentaire")
     {
@@ -236,17 +213,18 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $nouvelle['nom_point']=ucfirst($point->nom);
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
       $nouvelle['texte'] = "[url=$lien][b]Commentaire[/b][/url]";
-      if (!empty($nouvelle['photo']))
-        $nouvelle['texte'] .= " et photo";
-      if (!empty($nouvelle['auteur'])) {
-          $nouvelle['texte'] .= " de ";
-        if (!empty($nouvelle['lien_auteur']))
-          $nouvelle['texte'] .= "[url=".$nouvelle['lien_auteur']."]".$nouvelle['auteur']."[/url]";
-        else
-          $nouvelle['texte'] .= $nouvelle['auteur'];
-      }
+      $par_ou_de="de";
     }
-    // $nouvelle['categorie'] == "Point" -> Les nouvelles sur les ajouts de points ont déjà toutes les infos nécessaires sur leurs polygones d'appartenance, on ne fait rien de spécifique pour eux
+    
+    if (!empty($nouvelle['user_id']) and $nouvelle['user_id'] > 1) // Les anonymes sont 1 sur le forum et 0 dans notre base
+    {
+      $utilisateur=infos_utilisateur($nouvelle['user_id']);
+      $nouvelle['texte'] .= " $par_ou_de [url=".lien_utilisateur($utilisateur)."]".$utilisateur->username."[/url]";
+    }
+    elseif  (!empty($nouvelle['auteur'])) // on est face à un anonyme, il a peut-être saisie le champ libre "auteur" ?
+      $nouvelle['texte'] .= " $par_ou_de ".$nouvelle['auteur'];
+
+    // et $nouvelle['categorie'] == "Point" alors ? => Les nouvelles sur les ajouts de points ont déjà toutes les infos nécessaires sur leurs polygones d'appartenance, on ne fait rien de spécifique pour eux
     $nouvelles[]=$nouvelle;
     $nb++;
     if ($nb>=$nombre) // On obtient le nombre de nouvelles demandées, on s'arrête là et surtout on ne va gaspille plus de temps à chercher les infos $points sur les nouvelles qu'on affichera pas
