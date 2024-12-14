@@ -112,7 +112,7 @@ function infos_commentaires ($conditions)
   // ou alors que cette fonction ET infos _points appellent une fonction d'appartenance. Le code ne serait plus en double.
   // ca rajoute une fonction, mais ca reduit ici, et ca reduit la bas.
   // Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
-  // FIXME 2024 sly: Ce code est en double dans infos_points() je commence vraiment à me dire que je vais laisser tomber et boucler sur infos_points (en plus, ça ne sert que pour les news et pour la page d'accueil)
+  // FIXME 2024 sly: Ce code est en double dans infos_points() je commence vraiment à me dire que je vais laisser tomber et boucler sur infos_points (en plus, ça ne sert que pour les news et pour la page d'accueil) qui en contiennent en nombre limité. Là ou la recherche ou l'export de point ont vraiment besoin de vitesse car on peut en sortir des tas
   if (!empty($conditions->avec_infos_point) OR !empty($conditions->avec_commentaires_modele) OR !empty(($conditions->ids_polygones)))
   {
     $table_en_plus=",point_type,points LEFT JOIN polygones on ST_Within(points.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'];
