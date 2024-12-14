@@ -2,7 +2,7 @@
 /****************************************************************************************************
 Voici les fonctions qui permettent de fournir différents moyen d'avoir les dernières infos de refuges.info
 (Nouveau message sur le forum, commentaire sur un point, nouveau point, nouvelle globale)
-En format exploitable pour le flux RSS, les pages nouvelles en HTML
+En format exploitable pour le flux RSS et les pages nouvelles en HTML
 
 22/04/08 jmb	: modif de affiche_news, (bug des forums)  elle sert QUE dans news.php.
 04/07/08 jmb : modif de affiche news, forum, rajout de Post_id dans la requete, et chgt du lien forum
@@ -21,27 +21,27 @@ require_once ("utilisateur.php");
 require_once ("commentaire.php");
 require_once ("forum.php");
 
-  function stat_site ()
-  {
-    global $config_wri,$pdo;
-    // Petits stats de début sur l'intégralité de la base
-    // donc je liste bien les "refuges"
-    // les autres sont des sommets, des cols, des villes où autre
-    // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
-    // PDO jmb re ecriture en une seule requete
-    $q = "SELECT
-        ( SELECT count(*) FROM points WHERE id_point_type IN ( ".implode(',',$config_wri['tout_type_refuge'])." )
-        AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
-        AND points.modele <> 1
-        AND points.cache <> TRUE
-        )                                                                                         AS nbrefuges,
-    ( SELECT count(*) FROM points WHERE points.modele <> 1 AND points.cache <> TRUE )         AS nbpoints,
-    ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                    AS nbphotos,
-    ( SELECT count(*) FROM commentaires )                                                         AS nbcomm,
-    ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config_wri['id_massif'].")  ) AS nbmassifs ";
-    $res = $pdo->query($q);
-    return $res->fetch();
-  }
+function stat_site ()
+{
+  global $config_wri,$pdo;
+  // Petits stats de début sur l'intégralité de la base
+  // donc je liste bien les "refuges"
+  // les autres sont des sommets, des cols, des villes où autre
+  // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
+  // PDO jmb re ecriture en une seule requete
+  $q = "SELECT
+      ( SELECT count(*) FROM points WHERE id_point_type IN ( ".implode(',',$config_wri['tout_type_refuge'])." )
+      AND ( conditions_utilisation in ('ouverture','cle_a_recuperer') or conditions_utilisation is NULL)
+      AND points.modele <> 1
+      AND points.cache <> TRUE
+      )                                                                                         AS nbrefuges,
+  ( SELECT count(*) FROM points WHERE points.modele <> 1 AND points.cache <> TRUE )         AS nbpoints,
+  ( SELECT count(*) FROM commentaires WHERE photo_existe=1 )                                    AS nbphotos,
+  ( SELECT count(*) FROM commentaires )                                                         AS nbcomm,
+  ( SELECT count(*) FROM polygones WHERE id_polygone_type IN ( ".$config_wri['id_massif'].")  ) AS nbmassifs ";
+  $res = $pdo->query($q);
+  return $res->fetch();
+}
 
 /****************************************
 Fonction d'accès aux nouvelles
