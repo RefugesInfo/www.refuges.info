@@ -39,3 +39,25 @@ function menuClean(evt) {
 		if (!el.contains(evt.target))
 			el.classList.remove('menu-touch');
 }
+
+// Ajout d'infos pour les traces
+const formEls = document.getElementsByTagName('form');
+
+if (formEls.length) {
+	const formEl = formEls[formEls.length - 1],
+	dateTimeFormat = Intl.DateTimeFormat().resolvedOptions();
+
+	formEl.insertAdjacentHTML('beforeend',
+		'<input type="hidden" name="browser_locale" value="' + dateTimeFormat.locale + '" />'
+	),
+	formEl.insertAdjacentHTML('beforeend',
+		'<input type="hidden" name="browser_timeZone" value="' + dateTimeFormat.timeZone + '" />'
+	),
+	formEl.insertAdjacentHTML('beforeend',
+		'<input type="hidden" name="browser_operator" value="robot" />'
+	),
+
+	window.addEventListener('mousemove', () => {
+		formEl.children[formEl.childElementCount - 1].value = 'human';
+	});
+}

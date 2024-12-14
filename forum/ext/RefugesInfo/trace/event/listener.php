@@ -22,6 +22,7 @@ class listener implements EventSubscriberInterface
 		return [
 			'core.submit_post_end' => 'log_request_context',
 			'core.ucp_register_register_after' => 'log_request_context',
+			'wri.point_ajout_commentaire' => 'log_request_context',
 			'core.mcp_post_additional_options' => 'mcp_additional_options',
 			'core.memberlist_modify_view_profile_template_vars' => 'mcp_additional_options',
 		];
@@ -32,54 +33,50 @@ class listener implements EventSubscriberInterface
 		global $user, $auth, $db;
 		date_default_timezone_set ('Europe/Paris');
 
-		if ($auth->acl_get('m_') || $user->data['is_bot']) return;
+		// Sauf pour les modérateurs
+		if ($auth->acl_get('m_')) return;
 
-		$ipv4 = strpos (@$this->server['REMOTE_ADDR'], ':') ?
-			@$this->server['HTTP_X_REAL_IP'] :
-			@$this->server['REMOTE_ADDR'];
+		$user_data = $vars['user_row'] ?: $user->data;
+		$log = [ // general
+			'mode' => $vars['mode'] ?: 'Création compte', //TODO marque post à la création point
 
-		if (isset ($vars['user_id'])) // user
-			$log = [ // user
-				'user_id' => @$vars['user_id'],
-			];
-		else {
-			@$vars['user_row'] = @$user->data;
-			$log = [ // post
-				'post_id' => @$vars['data']['post_id'],
-				'user_id' => @$vars['data']['poster_id'],
-				'topic_title' => @$this->post['subject'],
-				'text' => @$this->post['message'],
-				'user_posts' => @$vars['user_row']['user_posts'],
-			];
-		}
-		$log += [ // general
-				'uri' => @$this->server['REQUEST_SCHEME'].'://'.
-					@$this->server['HTTP_HOST'].
-					@$this->server['REQUEST_URI'],
-				'ip' => @$this->server['REMOTE_ADDR'],
-				'real_ip' => @$this->server['HTTP_X_REAL_IP'],
-				'host' => $this->gethost($ipv4),
-				'user_agent' => @$this->server['HTTP_USER_AGENT'],
-				'country_code' => @$this->server['HTTP_X_COUNTRY_CODE'],
-				'language' => @$this->server['HTTP_ACCEPT_LANGUAGE'],
+			// Server
+			'uri' => @$this->server['REQUEST_SCHEME'].'://'.
+				@$this->server['HTTP_HOST'].
+				@$this->server['REQUEST_URI'],
+			'ip' => @$this->server['REMOTE_ADDR'],
+			'host' => $this->gethost($this->server['REMOTE_ADDR']),
+			'user_agent' => @$this->server['HTTP_USER_AGENT'],
+			'language' => @$this->server['HTTP_ACCEPT_LANGUAGE'],
 
-				'browser_locale' => @$this->post['browser_locale'],
-				'browser_timezone' => @$this->post['browser_timeZone'],
-				'sid' => @$user->session_id,
-				'date' => date('r'),
+			// Navigateur
+			'browser_locale' => @$this->post['browser_locale'],
+			'browser_timezone' => @$this->post['browser_timeZone'],
+			'browser_operator' => @$this->post['browser_operator'],
+			'sid' => @$user->session_id,
+			'date' => date('r'),
 
-				// Infos user
-				'user_name' => @$vars['user_row']['username'],
-				'user_email' => @$vars['user_row']['user_email'],
-				'user_signature' => str_replace ('<t></t>', '', @$vars['user_row']['user_sig']),
-				'user_lang' => @$vars['user_row']['user_lang'],
-				'user_timezone' => @$vars['user_row']['user_timezone'],
-				'ip_enregistrement' => @$vars['user_row']['user_ip'],
-				'host_enregistrement' => $this->gethost(@$vars['user_row']['user_ip']),
+			// Post & point
+			'post_id' => @$vars['data']['post_id'],
+			'point_id' => @$vars['point']->id_point, //TODO manque à la création point
+			'commentaire_id' => @$vars['commentaire']->id_commentaire,
+			'topic_title' => @$vars['data']['topic_title'],
+			'title' => @$vars['subject'] ?: @$vars['point']->nom,
+			'text' => @$this->post['message'] ?: @$vars['commentaire']->texte,
+
+			// Infos enregistrées à la création du user
+			'user_id' => @$user_data['user_id'] ?: $vars['user_id'],
+			'user_name' => @$user_data['username'],
+			'user_email' => @$user_data['user_email'],
+			'user_signature' => str_replace ('<t></t>', '', @$user_data['user_sig']),
+			'user_posts' => @$user_data['user_posts'],
+			'user_lang' => @$user_data['user_lang'],
+			'user_timezone' => @$user_data['user_timezone'],
+			'ip_enregistrement' => @$user_data['user_ip'],
+			'host_enregistrement' => $this->gethost(@$user_data['user_ip']),
 		];
 
-		$sql = 'INSERT INTO trace_requettes '.
-			$db->sql_build_array('INSERT', array_filter($log));
+		$sql = 'INSERT INTO trace_requettes '.$db->sql_build_array('INSERT', array_filter($log));
 		$db->sql_query($sql);
 	}
 

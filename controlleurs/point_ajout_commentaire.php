@@ -72,7 +72,7 @@ if (empty($point->erreur))
         $commentaire->id_createur_commentaire=$infos_identification->user_id;
         
       // Et si on trouve un mot clé "interdit" on refuse le commentaire complètement
-      if (isset ($config_wri['mots_interdits']) && preg_match ('/'.$config_wri['mots_interdits'].'/i', $commentaire->texte))
+      if ($config_wri['mots_interdits'] && preg_match ('/'.$config_wri['mots_interdits'].'/i', $commentaire->texte))
       {
         $vue->messages = new stdClass;
         $vue->messages->erreur=True;
@@ -81,6 +81,17 @@ if (empty($point->erreur))
       else
       // On tente d'ajouter le commentaire, qui peut retourner une erreur au besoin (point supprimé, erreur technique, ...)
         $vue->messages=modification_ajout_commentaire($commentaire);
+
+      // Trace
+      $mode = 'Ajout commentaire';
+      $vars = [
+          'mode',
+          'point',
+          'commentaire',
+      ];
+      // Hook ext/RefugesInfo/trace/listener.php log_request_context
+      extract($phpbb_dispatcher->trigger_event('wri.point_ajout_commentaire', compact($vars)));
+
       // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
       if (empty($vue->messages->erreur))
       {
