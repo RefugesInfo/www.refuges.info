@@ -55,8 +55,11 @@ else // formulaire validé, affichage du lien et d'un blabla
         $liste_id_massif = implode(',',$_REQUEST['id_massif']);
     
         $options_lien="format=rss&amp;format_texte=html&amp;type=$liste_id_nouvelle_type&amp;massif=$liste_id_massif";
-    
-        $vue->url = "http://".$config_wri['nom_hote']."/api/contributions?$options_lien";
+        if (isset($_SERVER['HTTPS']))
+          $schema="https";
+        else
+          $schema="http";
+        $vue->url = $schema."://".$config_wri['nom_hote']."/api/contributions?$options_lien";
     } 
     $vue->type="formulaire_rss_validation";
 } // fin du else affichage lien

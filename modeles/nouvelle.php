@@ -78,13 +78,17 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   
   $i = 1;    
   $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
-  while ($tok) // vrai tant qu'il reste une categorie a rajouter
+
+  // pour chaque catégorie, on va chercher autant que la limite qui nous a été demandée (si on nous demande 300 nouvelles : on va chercher 300 commentaires, 300 nouveaux points et 300 nouveau message forum. Et ouais, c'est triste, mais comme c'est en plusieurs requêtes, je ne sais pas sinon quels sont les 300 plus récents
+  // Je vais au moins limiter dans cette première boucle à n'aller chercher que le minimum, la deuxième boucle, qui ne prendra que les 300 nouvelles, fera les traitements de recherche des points et polygones correspondants
+  while ($tok) 
   {
+    
     switch ($tok) 
     {
       case "commentaires":
         $conditions_commentaires = new stdclass();
-        $conditions_commentaires->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
+        $conditions_commentaires->limite=$nombre;
         $conditions_commentaires->avec_points_caches=False; // On ne veut pas les commentaires sur des points cachés. Sauf si on est modérateur ?
         
         if ($req && $req->avec_photo)
@@ -121,7 +125,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       case "refuges": $conditions->ids_types_point=implode(',',$config_wri['tout_type_refuge']);
       case "points":
           $conditions->ordre="points.date_creation DESC,polygone_type.ordre_taille DESC";
-          $conditions->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
+          $conditions->limite=$nombre;
           $conditions->avec_liste_polygones=True;
           if($ids_polygones!="") $conditions->ids_polygones=$ids_polygones;
           $points=infos_points($conditions);
@@ -147,7 +151,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
             
       case "forums":
           $conditions_messages_forum = new stdclass();
-          $conditions_messages_forum->limite=$nombre; // FIXME ?: C'est toujours un peu dommage d'aller chercher le max de commentaires sachant que au total, plein ne servirons pas
+          $conditions_messages_forum->limite=$nombre;
           $conditions_messages_forum->ids_forum=$config_wri['ids_forum_pour_les_nouvelles'];
 
           $commentaires_forum=messages_du_forum($conditions_messages_forum);
@@ -192,7 +196,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $conditions_point->avec_liste_polygones=True;
       $conditions_point->topic_id=$nouvelle['topic_id'];
       $conditions_point->avec_points_caches=True; // NOTE: si le point est caché, on veut quand même les messages du forum qui s'y rapporte, et donc les infos du point ?
-      $point=reset(infos_points($conditions_point));
+      $points=infos_points($conditions_point);
+      $point=reset($points);
       $nouvelle['nom_point']=ucfirst($point->nom);
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
       if ($lien_locaux)
@@ -201,6 +206,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         $url_complete="https://".$config_wri['nom_hote'];
       $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#".$nouvelle['post_id'];
       $nouvelle['texte']="[url=$lien_forum][b]Message forum[/b][/url]";
+      $nouvelle['lien']=$lien_forum;
       $par_ou_de="de";
     }
     if ($nouvelle['categorie'] == "Commentaire")
@@ -208,11 +214,13 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $conditions_point = new stdclass;
       $conditions_point->avec_liste_polygones=True;
       $conditions_point->ids_points=$nouvelle['id_point'];
-      $point=reset(infos_points($conditions_point));
+      $points=infos_points($conditions_point);
+      $point=reset($points);
       $lien=lien_point($point,$lien_locaux)."#C".$nouvelle['id_commentaire'];
       $nouvelle['nom_point']=ucfirst($point->nom);
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
       $nouvelle['texte'] = "[url=$lien][b]Commentaire[/b][/url]";
+      $nouvelle['lien']=$lien;
       $par_ou_de="de";
     }
     
