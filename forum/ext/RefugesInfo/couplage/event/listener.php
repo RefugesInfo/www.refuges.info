@@ -21,7 +21,6 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents () {
 		return [
 			'core.viewtopic_assign_template_vars_before' => 'viewtopic_assign_template_vars_before',
-			'core.posting_modify_submission_errors' => 'posting_modify_submission_errors',
 			'core.page_footer' => 'page_footer',
 			'core.login_box_before' => 'login_box_before',
 			'core.user_add_modify_data' => 'user_add_modify_data',
@@ -41,18 +40,6 @@ class listener implements EventSubscriberInterface
 			if ($row)
 				$template->assign_var('ID_POINT', $row['id_point']);
 		}
-	}
-
-	// Permet la saisie d'un POST avec un texte vide
-	function posting_modify_submission_errors($vars) {
-		global $user;
-		$error = $vars['error'];
-
-		foreach ($error AS $k=>$v)
-			if ($v == $user->lang['TOO_FEW_CHARS'])
-				unset ($error[$k]);
-
-		$vars['error'] = $error;
 	}
 
 	function page_footer () {

@@ -1,0 +1,6 @@
+{% if SFS %}
+	<dl>
+		<dt><label for="email">{{ lang('EMAIL_ADDRESS') }}{{ lang('COLON') }}</label></dt>
+		<dd><input type="email" tabindex="2" name="email" id="email" size="25" maxlength="100" value="{{ EMAIL }}" class="inputbox autowidth" title="{{ lang('EMAIL_ADDRESS') }}" /></dd>
+	</dl>
+{% endif %}
