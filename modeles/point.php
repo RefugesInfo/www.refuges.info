@@ -592,7 +592,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   $champs_sql['date_derniere_modification'] = 'NOW()';
 
   /********* On ne peut plus créer de cabane autour d'une cabane cachée *************/
-  if ($point->id_point_type == 7 && !est_moderateur())
+  if ($point->id_point_type == 7 )
   {
     $distance = $config_wri['defaut_max_distance_cabane_cachee'] * 3;
     $q="SELECT id_point, nom
@@ -674,7 +674,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   if ( !empty($point->id_point) )  // update
   {
     $point_avant = infos_point($point->id_point,true,false,true);
-    if ($point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
+    if (isset($point_avant->erreur) and $point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
         return erreur("Erreur de modification du point : $point_avant->message");
 
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
@@ -692,7 +692,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
           'topic_title' => mb_ucfirst($point->nom),
           'post_time' => '', // sly : ça ressemble à une magouille, mais si post_time est vide, alors lors d'une modif du post le code de phpBB va prendre la date actuelle comme date de modification. Oui, moi non plus je n'ai pas compris, mais c'est ce que fait le code de submit_post. Si on ne l'avait pas passé, alors il aurait pris la date actuelle du post comme date de modif.
       ]);
-    historisation_modification($point_avant,$point,'modification point');
+    historisation_modification($point_avant,$point,'modification point',$id_utilisateur_qui_modifie);
   }
   else  // INSERT
   {
@@ -713,7 +713,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
     $point->id_point = $pdo->lastInsertId();
 
-    historisation_modification(null,$point,'création point');
+    historisation_modification(null,$point,'création point',$id_utilisateur_qui_modifie);
   }
 
   // on retourne l'id du point (surtout utile si création)

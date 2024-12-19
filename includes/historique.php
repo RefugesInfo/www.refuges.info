@@ -10,9 +10,9 @@ L'objet $point par défaut dispose de trop de propriété, ne gardons que celles
 c'est à dire celle de $point_apres qui est issue du formulaire (donc comparaison sioux entre les propriété de $point_apres et $point_avant)
 
 **********************************************************************************************************************/
-function historisation_modification($point_avant,$point_apres,$type_operation="modification")
+function historisation_modification($point_avant,$point_apres,$type_operation="modification",$user_id_faisant_la_modif=0)
 {
-  global $pdo, $user;
+  global $pdo;
 
   $point_avant_simple = new stdClass;
   $point_apres_simple = new stdClass;
@@ -36,10 +36,13 @@ function historisation_modification($point_avant,$point_apres,$type_operation="m
     // qui ont été passée par le formulaire (moins lourd)
     foreach ($point_apres as $propriete => $valeur)
     {
+      if (isset($point_avant->$propriete))
+      {
         $point_avant_simple->$propriete=$point_avant->$propriete;
 
-      if ($valeur != $point_avant->$propriete) // On ne reporte que ce qui est modifié
-        $point_apres_simple->$propriete=$valeur;
+        if ($valeur != $point_avant->$propriete) // On ne reporte que ce qui est modifié
+          $point_apres_simple->$propriete=$valeur;
+      }
 
       // Pour les polygones, on stocke le geom sous sa forme numérique
       if ($point_avant->geom)
@@ -62,7 +65,7 @@ function historisation_modification($point_avant,$point_apres,$type_operation="m
   (id_point,id_user,date_modification,avant,apres,type_modification)
   values
   ($id_point_modifie,
-  {$user->data['user_id']},
+  $user_id_faisant_la_modif,
   NOW(),
   ".$pdo->quote(serialize($point_avant_simple)).",
   ".$pdo->quote(serialize($point_apres_simple)).",
