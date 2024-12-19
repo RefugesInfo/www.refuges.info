@@ -1,6 +1,6 @@
 <?php 
 
-
+exit(0);
 require   ('../../../includes/config.php');
 // On est pas là pour les perfs, alors on inclus tout pour être tranquille !
 require_once ("bdd.php");
