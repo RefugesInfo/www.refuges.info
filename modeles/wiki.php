@@ -59,7 +59,7 @@ function wiki_page_html($page)
     // Toutefois, notre style css fait que les titres <hx> sont déjà précédés et suivi d'un retour ligne forcé, ça en ferait donc beaucoup dans le cas
     // où on souhaite garder lisible notre saisie, j'enlève donc celui qui précède et qui suit
     $contenu_html=preg_replace("/<\/h([1-9])><br>/","</h$1>\n",$contenu_html);
-    $contenu_html=preg_replace("/<br>\r\n<h([1-9])>/","\n<h$1>",$contenu_html);
+    //$contenu_html=preg_replace("/<br>\r\n<h([1-9])>/","\n<h$1>",$contenu_html);
 
     // Pareil pour les 2 tableaux qui se battent en duel
     $contenu_html=preg_replace("/<br>\r\n<t([rd])/","\n<t$1",$contenu_html);
