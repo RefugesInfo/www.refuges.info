@@ -204,7 +204,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         $url_complete="";
       else
         $url_complete="https://".$config_wri['nom_hote'];
-      $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#".$nouvelle['post_id'];
+      $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#p".$nouvelle['post_id'];
       $nouvelle['texte']="[url=$lien_forum][b]Message forum[/b][/url]";
       $nouvelle['lien']=$lien_forum;
       $par_ou_de="de";
