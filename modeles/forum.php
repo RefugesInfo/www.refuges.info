@@ -21,7 +21,10 @@ function forum_submit_post ($args) {
   $mem_user = $user->data['user_id'];
   $user->data['user_id'] = $args['topic_poster'] = max (ANONYMOUS, $args['topic_poster']);
   $user->data['is_registered'] = false;
-
+  
+  if ($user->data['user_id'] == ANONYMOUS) // Un bug de couleur se produit pour les anonymes, ils héritent de la couleur du modérateur qui a réalisé le transfert
+    $user->data['user_colour'] = "000000"; // On force la couleur de l'utilisateur dont on a transféré le commentaire à "noire"
+  
   $data = [ // Données par défaut
     'forum_name' => '',
     'message' => '',
