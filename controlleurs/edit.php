@@ -9,6 +9,7 @@ if (!est_moderateur()) {
 
 // Bon, on triche un peu ici: on factorise un max avec /nav
 require_once ("nav.php");
+require_once ("polygone.php");
 
 // Quelques trucs spécifiques
 if(!$vue->polygone)
@@ -23,3 +24,4 @@ if ($polygone)
 else
   $vue->titre="Création d'un polygone";
 
+$vue->liste_type_polygone=liste_type_polygone();

@@ -216,6 +216,20 @@ function infos_type_polygone($id_polygone_type)
     return $infos_type_polygone;
 }
 
+/************************************************************************************/
+function liste_type_polygone()
+{
+  global $pdo;
+  $query="SELECT * FROM polygone_type order by id_polygone_type";
+  $res=$pdo->query($query);
+  $liste_type_polygone = $res->fetchall();
+
+  if (empty($liste_type_polygone) )
+    return erreur("Il y a un problème dans la base, il n'y a aucune catégorie de polygone : polygone_type vide !");
+  else
+    return $liste_type_polygone;
+}
+
 /********************************************
 On génére une url vers la carte d'un polygone
 si local est False un lien absolu sera généré
