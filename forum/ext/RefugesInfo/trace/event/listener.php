@@ -118,40 +118,40 @@ class listener implements EventSubscriberInterface
 	function list_traces($vars) {
 		global $db, $auth, $config_wri;
 
-		$colonnes_traces_post = [
-			'date' => 'date',
-			'type' => 'mode',
-			'url' => 'uri',
-			'IP' => 'ip',
-			'host' => 'host',
-			'operator' => 'browser_operator',
-			'agent' => 'user_agent',
-			'languages supportés' => 'language',
-			'langage demandé' => 'browser_locale',
-			'timezone' => 'browser_timezone',
-			'topic_id' => 'topic_id',
-			'post_id' => 'post_id',
-			'point_id' => 'point_id',
-			'commentaire_id' => 'commentaire_id',
-			'nom' => 'title',
-			'titre' => 'topic_title',
-			'texte' => 'text',
-		];
-		$colonnes_traces_user = [
-			'id user' => 'user_id',
-			'nom user' => 'user_name',
-			'email user' => 'user_email',
-			'language user' => 'user_lang',
-			'timezone user' => 'user_timezone',
-			'IP enregistrement' => 'ip_enregistrement',
-		];
-		$lignes_traces_html = [];
-		$sql = 'SELECT * FROM trace_requettes'.
-			$vars['where'].
-			' ORDER BY trace_id DESC'.
-			' LIMIT 50';
+		if ($auth->acl_get('m_')) {
+			$colonnes_traces_post = [
+				'date' => 'date',
+				'type' => 'mode',
+				'url' => 'uri',
+				'IP' => 'ip',
+				'host' => 'host',
+				'operator' => 'browser_operator',
+				'agent' => 'user_agent',
+				'languages supportés' => 'language',
+				'langage demandé' => 'browser_locale',
+				'timezone' => 'browser_timezone',
+				'topic_id' => 'topic_id',
+				'post_id' => 'post_id',
+				'point_id' => 'point_id',
+				'commentaire_id' => 'commentaire_id',
+				'nom' => 'title',
+				'titre' => 'topic_title',
+				'texte' => 'text',
+			];
+			$colonnes_traces_user = [
+				'id user' => 'user_id',
+				'nom user' => 'user_name',
+				'email user' => 'user_email',
+				'language user' => 'user_lang',
+				'timezone user' => 'user_timezone',
+				'IP enregistrement' => 'ip_enregistrement',
+			];
+			$lignes_traces_html = [];
 
-		if ($sql && $auth->acl_get('m_')) {
+			$sql = 'SELECT * FROM trace_requettes'.
+				$vars['where'].
+				' ORDER BY trace_id DESC'.
+				' LIMIT 50';
 			$result = $db->sql_query ($sql);
 			while ($row = $db->sql_fetchrow($result)) {
 				$colonnes_html = [];
@@ -174,12 +174,25 @@ class listener implements EventSubscriberInterface
 						$t = ucfirst ($title);
 						$colonnes_html[] = "<div>$t: $r</div>";
 				}
+				if ($row['user_email'])
+					$colonnes_html[] =
+						'<div><a href="https://cleantalk.org/email-checker/'.$row['user_email'].
+						'">Vérification CleanTalk du mail</a></div>';
+				if ($row['ip'])
+					$colonnes_html[] =
+						'<div><a href="https://cleantalk.org/blacklists/'.$row['ip'].
+						'">Vérification CleanTalk de l\'IP</a></div>'.
+						'<div><a href="https://stopforumspam.com/ipcheck/'.$row['ip'].
+						'">Vérification StopForumSpam de l\'IP</a></div>'.
+						'<div><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
+						'">Localisation de l\'IP</a></div>';
+
 				$lignes_traces_html[] = implode (PHP_EOL, $colonnes_html);
 			}
 			$result = $db->sql_query($sql);
+			$vars['traces_html'] =  implode (PHP_EOL.'<hr/>'.PHP_EOL, $lignes_traces_html);
+			return $vars['traces_html'];
 		}
-		$vars['traces_html'] =  implode (PHP_EOL.'<hr/>'.PHP_EOL, $lignes_traces_html);
-		return $vars['traces_html'];
 	}
 
 	// Traces dans le panneau de modération d'un post et d'un user
