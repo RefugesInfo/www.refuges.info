@@ -13,6 +13,7 @@ CREATE TABLE "trace_requettes" (
   "browser_operator" character(32) NULL,
   "sid" character(128) NULL,
   "date" character(64) NULL,
+  "topic_id" integer NULL,
   "post_id" integer NULL,
   "point_id" integer NULL,
   "commentaire_id" integer NULL,

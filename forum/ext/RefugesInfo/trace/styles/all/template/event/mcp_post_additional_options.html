@@ -1,11 +1,3 @@
-<!-- gethost($ip) --><!-- IF HOST != "" --><p><b>Hôte de création du post : </b>{HOST}</p><!-- ENDIF -->
-<!-- $_SERVER[HTTP_USER_AGENT] --><!-- IF USER_AGENT != "" --><p><b>Capacités du navigateur : </b>{USER_AGENT}</p><!-- ENDIF -->
-<!-- $_SERVER[HTTP_ACCEPT_LANGUAGE] --><!-- IF LANGUAGE != "" --><p><b>Langues acceptées par le navigateur : </b>{LANGUAGE}</p><!-- ENDIF -->
-<!-- DateTimeFormat.browser_locale --><!-- IF BROWSER_LOCALE != "" --><p><b>Langue demandée par le navigateur : </b>{BROWSER_LOCALE}</p><!-- ENDIF -->
-<!-- DateTimeFormat.browser_timeZone --><!-- IF BROWSER_TIMEZONE != "" --><p><b>Zone horaire du navigateur : </b>{BROWSER_TIMEZONE}</p><!-- ENDIF -->
-
-<!-- IF HOST_ENREGISTREMENT != "" -->
-	<!-- gethost($user[user_ip]) --><p><b>Hôte de création du compte : </b>{HOST_ENREGISTREMENT}</p>
-	<!-- $user[user_lang] --><!-- IF USER_LANG != "" --><p><b>Langue du compte : </b>{USER_LANG}</p><!-- ENDIF -->
-	<!-- $user[user_timezone] --><!-- IF USER_TIMEZONE != "" --><p><b>Zone horaire du compte : </b>{USER_TIMEZONE}</p><!-- ENDIF -->
-<!-- ENDIF -->
+<div><b>Traces :</b></div>
+{TRACES}
+<br />
