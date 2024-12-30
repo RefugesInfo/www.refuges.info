@@ -408,8 +408,7 @@ function date_format_francais($unix_ts)
 {
   global $config_wri;
   $fmt = new IntlDateFormatter($config_wri['langue'], IntlDateFormatter::FULL, IntlDateFormatter::FULL, $config_wri['timezone']);
-  ;
-  $fmt->setPattern("EEEE d LLLL YYYY à HH'h'mm");
+  $fmt->setPattern("EEEE d LLLL yyyy à HH'h'mm");
 
   return mb_ucfirst($fmt->format($unix_ts));
 } 
