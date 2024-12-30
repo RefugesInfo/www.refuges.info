@@ -126,6 +126,8 @@ $config_wri['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondan
 $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
 $config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees, massif central, ile de la réunion ... 
 $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réserves biologique, parcs nationaux.
+$config_wri['id_region_naturelle']=20;
+$config_wri['id_departement']=11;
 
 // Catégorie "tout type de refuges" ( ce sont les ids des refuges gardés, non gardés, gîtes)
 // certes une gestion par catégorie directement dans la base serait préférable, mais en 2024 on a 2 donc, bon...

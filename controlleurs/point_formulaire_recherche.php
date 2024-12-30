@@ -11,15 +11,12 @@ $conditions_polygones = new stdClass;
 $vue->infos_base = infos_base ();
 $vue->titre = "Recherche de points sur refuges.info";
 
-// preparation de la liste deroulante des massifs:
-// on va faire que 2 niveau, en dur.
-// j'aurais put utiliser toute la chaine montagnarde. mais bon.
-$conditions_polygones->ids_polygone_type=$config_wri['id_massif'];
-$conditions_polygones->avec_zone_parente=True;
-$vue->massifs=infos_polygones($conditions_polygones);
-
-$conditions_polygones->ids_polygone_type=$config_wri['id_zone'];
-$conditions_polygones->avec_zone_parente=False;
-$vue->zones=infos_polygones($conditions_polygones);
 $vue->utilisateurs=infos_utilisateurs();
 
+// Pour le champ de recherche "polygone" on peut chercher dans tous ces polygones qui nous intéressent :
+$conditions_polygones->ids_polygone_type=$config_wri['id_zone'].",".$config_wri['id_massif'].",".$config_wri['id_zone_reglementee'].",".$config_wri['id_departement'].",".$config_wri['id_region_naturelle'];
+$conditions_polygones->avec_zone_parente=False;
+$vue->polygones=infos_polygones($conditions_polygones);
+
+
+$vue->java_lib_head [] = $config_wri['sous_dossier_installation'].'vues/autocomplete.js';

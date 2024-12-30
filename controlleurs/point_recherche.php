@@ -27,7 +27,7 @@ if (!empty($_REQUEST))
     if( ! empty($valeur) )
       switch ($champ) 
       {
-        case 'id_massif':
+        case 'id_polygone':
           $conditions->ids_polygones = $valeur; 
           break ;
           

@@ -7,11 +7,12 @@
 // $vue contient les données passées par le fichier PHP
 // $config_wri les données communes à tout WRI
 ?>
+
 <div class="contenu">
 	<!-- =========================== -->
 	<h3><?=$vue->titre?></h3>
 	<!-- =========================== -->
-	<form class="wri" method="get" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
+	<form autocomplete="off" class="wri" method="get" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
 
 <!-- ========== PREMIER GROUPE: CRITERES COMMUNS ================= -->
 <fieldset>
@@ -25,7 +26,7 @@
 				<input type="text" name="nom"/>
 			</label>
 		</span>
-		<label title="type d'hébergement, gîte, cabane ...">Type
+		<label title="type d'hébergement, gîte, cabane ...">Type de point
 			<select name="id_point_type">
 				<option value="" selected="selected">(tous)</option>
 				<?php if (is_array($vue->infos_base->types_point)) 
@@ -34,25 +35,11 @@
 					<?}?>
 			</select>
 		</label>
-		<label title="Massif ou Zone contenant les points recherchés">Massif: 
-			<select name="id_massif">
-				<option value="">(partout)</option>
-				<?php
-					// Ca se complique avec les zones.
-					// pour chaque zone, on fait un OPTGROUP, et dedans on reparcours les massifs.
-				
-					foreach ($vue->zones as $z) { ?>
-						<optgroup label="<?=$z->nom_polygone?>">
-						<option value="<?=$z->id_polygone?>">(toute la zone <?=$z->nom_polygone?>)</option>
-						<?php 
-						foreach ($vue->massifs AS $m) 
-							if( $m->id_zone == $z->id_polygone ) { ?>
-								<option value="<?=$m->id_polygone?>"><?=$m->nom_polygone?></option> <?php
-							} 
-						?></optgroup><?php
-					}
-				?>
-			</select>
+		<label title="Polygone contenant les points recherchés">Polygone  : 
+			<div class="autocomplete" style="width:300px;">
+              <input id="inputpolygone" name="nom_polygone" placeholder="massif/zone/département"> 
+              <input id="id_polygone" type="hidden" name="id_polygone">
+            </div>
 		</label>
 		<span class="champs_null_masque">
 			<input type="checkbox" name="champs_null[]" value="remark" />
@@ -265,3 +252,10 @@
 	</p>
 	<!-- =========================== -->
 </div>
+<script>
+const polygones = [];
+<?php foreach ( $vue->polygones as $polygone) { ?>
+  polygones[<?=$polygone->id_polygone?>] = "<?=$polygone->nom_polygone?>";
+<?php } ?>  
+autocomplete(document.getElementById("inputpolygone"), document.getElementById("id_polygone"), polygones);
+</script>

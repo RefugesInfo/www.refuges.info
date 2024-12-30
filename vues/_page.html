@@ -39,6 +39,10 @@ if (!empty($vue->http_status_code))
 			foreach ($vue->css as $css) { ?>
 				<link type="text/css" rel="stylesheet" href="<?=$css?>">
 		<?php } ?>
+		<?php if (isset ($vue->java_lib_head)) 
+          foreach ($vue->java_lib_head as $js_lib) {?>
+		<script src="<?=$js_lib?>"></script>
+<?php } ?>
 	</head>
 
 	<body>
