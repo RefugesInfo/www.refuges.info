@@ -20,7 +20,8 @@ class listener implements EventSubscriberInterface
 
 	static public function getSubscribedEvents () {
 		return [
-			'core.posting_modify_submission_errors' => 'posting_modify_submission_errors',
+			'core.posting_modify_submission_errors' => 'blockbotposts',
+			'core.ucp_register_data_before' => 'blockbotposts',
 			'core.submit_post_end' => 'log_request_context',
 			'core.ucp_register_register_after' => 'log_request_context',
 			'wri.point_ajout_commentaire' => 'log_request_context',
@@ -31,18 +32,28 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Bloque les posters qui n'ont pas javascript
-	function posting_modify_submission_errors($vars) {
+	function blockbotposts($vars) {
 		global $user, $config_wri;
 		$error = $vars['error'];
 
 		if ($config_wri['blockBotPosts'] &&
+			$vars['submit'] &&
 			$this->post['browser_operator'] != 'human'
 		) {
-			$error['POST_REJECTED'] = 'Your message has been rejected for security reasons.';
-			$this->log_request_context ([
-				'mode' => 'Rejeté',
-				'data' => $vars['post_data'],
-			]);
+			if ($vars['mode']) { // Post
+				$this->log_request_context ([
+					'mode' => 'Rejeté',
+					'data' => $vars['post_data'],
+				]);
+				$error['POST_REJECTED'] = 'Your message has been rejected for security reasons.';
+			}
+			else { // Création de compte
+				$this->log_request_context ([
+					'mode' => 'Rejeté',
+					'data' => $vars['data'],
+				]);
+				trigger_error('Your account has been rejected for security reasons.');
+			}
 		}
 
 		$vars['error'] = $error;
@@ -180,12 +191,14 @@ class listener implements EventSubscriberInterface
 						'">Vérification CleanTalk du mail</a></div>';
 				if ($row['ip'])
 					$colonnes_html[] =
+						'<div><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
+						'">Localisation de l\'IP</a></div>'.
 						'<div><a href="https://cleantalk.org/blacklists/'.$row['ip'].
 						'">Vérification CleanTalk de l\'IP</a></div>'.
 						'<div><a href="https://stopforumspam.com/ipcheck/'.$row['ip'].
 						'">Vérification StopForumSpam de l\'IP</a></div>'.
-						'<div><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
-						'">Localisation de l\'IP</a></div>';
+						'<div><a href="https://www.spamcop.net/w3m?action=checkblock&ip='.$row['ip'].
+						'">Vérification SpamCop de l\'IP</a></div>';
 
 				$lignes_traces_html[] = implode (PHP_EOL, $colonnes_html);
 			}
