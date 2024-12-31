@@ -185,10 +185,6 @@ class listener implements EventSubscriberInterface
 						$t = ucfirst ($title);
 						$colonnes_html[] = "<div>$t: $r</div>";
 				}
-				if ($row['user_email'])
-					$colonnes_html[] =
-						'<div><a href="https://cleantalk.org/email-checker/'.$row['user_email'].
-						'">Vérification CleanTalk du mail</a></div>';
 				if ($row['ip'])
 					$colonnes_html[] =
 						'<div><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
@@ -199,6 +195,10 @@ class listener implements EventSubscriberInterface
 						'">Vérification StopForumSpam de l\'IP</a></div>'.
 						'<div><a href="https://www.spamcop.net/w3m?action=checkblock&ip='.$row['ip'].
 						'">Vérification SpamCop de l\'IP</a></div>';
+				if ($row['user_email'])
+					$colonnes_html[] =
+						'<div><a href="https://cleantalk.org/email-checker/'.$row['user_email'].
+						'">Vérification CleanTalk du mail</a></div>';
 
 				$lignes_traces_html[] = implode (PHP_EOL, $colonnes_html);
 			}
