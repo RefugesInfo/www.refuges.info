@@ -20,8 +20,9 @@ class listener implements EventSubscriberInterface
 
 	static public function getSubscribedEvents () {
 		return [
-			'core.posting_modify_submission_errors' => 'blockbotposts',
-			'core.ucp_register_data_before' => 'blockbotposts',
+			'core.posting_modify_submission_errors' => 'block_bot_posts',
+			'core.ucp_register_data_before' => 'block_bot_posts',
+			'rmcgirr83.contactadmin.modify_data_and_error' => 'block_bot_posts',
 			'core.submit_post_end' => 'log_request_context',
 			'core.ucp_register_register_after' => 'log_request_context',
 			'wri.point_ajout_commentaire' => 'log_request_context',
@@ -32,20 +33,21 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Bloque les posters qui n'ont pas javascript
-	function blockbotposts($vars) {
+	function block_bot_posts($vars) {
 		global $user, $config_wri;
-		$error = $vars['error'];
 
 		if ($config_wri['blockBotPosts'] &&
-			$vars['submit'] &&
-			$this->post['browser_operator'] != 'human'
+			$this->post['browser_operator'] != 'human' &&
+			$vars['submit']
 		) {
 			if ($vars['mode']) { // Post
 				$this->log_request_context ([
 					'mode' => 'Rejeté',
 					'data' => $vars['post_data'],
 				]);
+				$error = $vars['error'];
 				$error['POST_REJECTED'] = 'Your message has been rejected for security reasons.';
+				$vars['error'] = $error;
 			}
 			else { // Création de compte
 				$this->log_request_context ([
@@ -55,8 +57,6 @@ class listener implements EventSubscriberInterface
 				trigger_error('Your account has been rejected for security reasons.');
 			}
 		}
-
-		$vars['error'] = $error;
 	}
 
 	// Log le contexte d'une soumission de post ou d'une création d'user
