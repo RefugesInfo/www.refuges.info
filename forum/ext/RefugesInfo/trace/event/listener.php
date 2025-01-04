@@ -36,9 +36,9 @@ class listener implements EventSubscriberInterface
 	function block_bot_posts($vars) {
 		global $user, $config_wri;
 
-		if ($config_wri['blockBotPosts'] &&
+		if ($this->post &&
 			$this->post['browser_operator'] != 'human' &&
-			$vars['submit']
+			$config_wri['blockBotPosts']
 		) {
 			if ($vars['mode']) { // Post
 				$this->log_request_context ([
@@ -87,9 +87,9 @@ class listener implements EventSubscriberInterface
 			'language' => @$this->server['HTTP_ACCEPT_LANGUAGE'],
 
 			// Navigateur
+			'browser_operator' => @$this->post['browser_operator'] ?: 'server bot',
 			'browser_locale' => @$this->post['browser_locale'],
 			'browser_timezone' => @$this->post['browser_timeZone'],
-			'browser_operator' => @$this->post['browser_operator'],
 			'sid' => @$user->session_id,
 			'date' => date('r'),
 
@@ -131,12 +131,12 @@ class listener implements EventSubscriberInterface
 
 		if ($auth->acl_get('m_')) {
 			$colonnes_traces_post = [
+				'type d\'operateur' => 'browser_operator',
+				'type d\'entrée' => 'mode',
 				'date' => 'date',
-				'type' => 'mode',
 				'url' => 'uri',
 				'IP' => 'ip',
 				'host' => 'host',
-				'operator' => 'browser_operator',
 				'agent' => 'user_agent',
 				'languages supportés' => 'language',
 				'langage demandé' => 'browser_locale',
@@ -166,8 +166,10 @@ class listener implements EventSubscriberInterface
 			$result = $db->sql_query ($sql);
 			while ($row = $db->sql_fetchrow($result)) {
 				$colonnes_html = [];
-				$colonnes_traces = array_merge ($colonnes_traces_post, $row['user_id'] > 1 ? $colonnes_traces_user : []);
-
+				$colonnes_traces = array_merge (
+					$colonnes_traces_post,
+					$row['user_id'] > 1 ? $colonnes_traces_user : []
+				);
 				if ($row['point_id'])
 					$colonnes_html[] = '<div><a href="'.$config_wri['sous_dossier_installation'].
 						'point/'.$row['point_id'].'#C'.@$row['commentaire_id'].'">Voir le point</a></div>';
