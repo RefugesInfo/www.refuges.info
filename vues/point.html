@@ -79,7 +79,7 @@
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
   <dl class="liste-wri">
       <?php // Champs textes libres
-      if ($vue->point->equivalent_proprio) {?>
+      if (in_array ($vue->point->id_point_type, [9, 10])) {?>
         <dt><?=$vue->point->equivalent_proprio?>:</dt>
         <dd><?=$vue->proprio?></dd>
         <?php if (in_array($vue->point->id_point_type,$config_wri['tout_type_refuge'])) {?>
@@ -88,7 +88,7 @@
             Refuge.info n'a aucun lien avec les gestionnaires. Vous devez les appeler directement.
           </i>
         </dd>
-        <?php } }?>
+      <?php } }?>
 <!--============================================ ACCÈS ============================================-->
       <dt style="clear: left;">Accès:</dt>
       <dd><?=$vue->acces?></dd>
