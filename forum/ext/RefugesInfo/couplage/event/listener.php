@@ -20,7 +20,8 @@ class listener implements EventSubscriberInterface
 
 	static public function getSubscribedEvents () {
 		return [
-			'core.viewtopic_assign_template_vars_before' => 'viewtopic_assign_template_vars_before',
+			'core.viewtopic_assign_template_vars_before' => 'assign_template_vars_before',
+			'core.posting_modify_template_vars' => 'assign_template_vars_before',
 			'core.page_footer' => 'page_footer',
 			'core.login_box_before' => 'login_box_before',
 			'core.user_add_modify_data' => 'user_add_modify_data',
@@ -29,16 +30,16 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Récupération du numéro de la fiche liée à un topic du forum refuges
-	function viewtopic_assign_template_vars_before ($vars) {
+	function assign_template_vars_before ($vars) {
 		global $db, $template;
 
-		if ($vars['topic_data']['topic_id']) {
-			$sql = "SELECT id_point FROM points WHERE topic_id = ".$vars['topic_data']['topic_id'];
+		if ($vars['topic_id']) {
+			$sql = "SELECT id_point,id_point_type FROM points WHERE topic_id = ".$vars['topic_id'];
 			$result = $db->sql_query ($sql);
 			$row = $db->sql_fetchrow ($result);
 			$db->sql_freeresult($result);
 			if ($row)
-				$template->assign_var('ID_POINT', $row['id_point']);
+				$template->assign_vars (array_change_key_case ($row, CASE_UPPER));
 		}
 	}
 
