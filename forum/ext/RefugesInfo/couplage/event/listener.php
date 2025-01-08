@@ -34,7 +34,7 @@ class listener implements EventSubscriberInterface
 		global $db, $template;
 
 		if ($vars['topic_id']) {
-			$sql = "SELECT id_point,id_point_type FROM points WHERE topic_id = ".$vars['topic_id'];
+			$sql = "SELECT id_point,id_point_type,conditions_utilisation FROM points WHERE topic_id = ".$vars['topic_id'];
 			$result = $db->sql_query ($sql);
 			$row = $db->sql_fetchrow ($result);
 			$db->sql_freeresult($result);
