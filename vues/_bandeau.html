@@ -5,6 +5,9 @@
 
 	<form class="recherche-haut"
 		method="get" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
+		<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche" title="Recherche avancée">
+			<img src="<?=$config_wri['sous_dossier_installation']?>images/recherche.png" />
+		</a>&nbsp;
 		<input type="text" name="nom" class="input-text" placeholder="Recherche de point">
 		<input type="hidden" name="limite" value="40">
 		<input type="hidden" name="avec_point_osm" value="1">

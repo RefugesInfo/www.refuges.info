@@ -492,7 +492,7 @@ body:not(#phpbb) a:visited {
   .logo-haut {
     display: block;
     position: absolute;
-    width: calc(100% - 225px);
+    width: calc(100% - 255px);
     height: 50px;
   }
 
