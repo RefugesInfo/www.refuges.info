@@ -492,7 +492,7 @@ body:not(#phpbb) a:visited {
   .logo-haut {
     display: block;
     position: absolute;
-    width: calc(100% - 255px);
+    width: calc(100% - 225px);
     height: 50px;
   }
 
@@ -508,6 +508,11 @@ body:not(#phpbb) a:visited {
 
   .recherche-haut input {
     font-size: 16px;
+  }
+
+  .recherche-haut a {
+    padding-right: 10px;
+    font-size: 24px;
   }
 
   .menu-haut {
