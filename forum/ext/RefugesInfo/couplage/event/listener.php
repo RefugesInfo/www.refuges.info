@@ -80,10 +80,10 @@ class listener implements EventSubscriberInterface
 		$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes
 		$vue->lien_wiki=prepare_lien_wiki_du_bandeau(); // Menu des pages d'aide
 		$vue->types_point_affichables=types_point_affichables(); // Menu des types de points
-        if (est_moderateur()) {
-            $vue->demande_correction=info_demande_correction ();
-            $vue->email_en_erreur=info_email_bounce ();
-        }
+		if (est_moderateur()) {
+			$vue->demande_correction=info_demande_correction ();
+			$vue->email_en_erreur=info_email_bounce ();
+		}
 
 		ob_start();
 		include ($config_wri['chemin_vues'].'_bandeau.html');
@@ -110,11 +110,11 @@ class listener implements EventSubscriberInterface
 	// Pour activer par défaut les notifications par email dans le cas de message privé (sans quoi plein d'utilisateur n'y prètent pas attention
 	function user_add_modify_notifications_data ($vars) {
 		$notifications_data = $vars['notifications_data']; 
-        $notifications_data = array(
-            array(
-                'item_type'	=> 'notification.type.pm',
-                'method'	=> 'notification.method.email',              
-            ),
+		$notifications_data = array(
+			array(
+				'item_type'	=> 'notification.type.pm',
+				'method'	=> 'notification.method.email',			  
+			),
 			array(
 				'item_type'	=> 'notification.type.post',
 				'method'	=> 'notification.method.email',
@@ -123,7 +123,7 @@ class listener implements EventSubscriberInterface
 				'item_type'	=> 'notification.type.topic',
 				'method'	=> 'notification.method.email',
 			),
-        );
+		);
 		$vars['notifications_data'] = $notifications_data; 
 	}
 }

@@ -1,0 +1,7 @@
+<script>
+	document.querySelectorAll('form').forEach(formEl => {
+		formEl.insertAdjacentHTML('beforeend',
+			'<input type="hidden" name="sid" value="{SESSION_ID}" />'
+		);
+	});
+</script>
