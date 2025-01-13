@@ -69,8 +69,6 @@ class listener implements EventSubscriberInterface
 
 			// Navigateur
 			'browser_operator' => @$this->post['browser_operator'] ?: 'server bot',
-			'browser_locale' => @$this->post['browser_locale'],
-			'browser_timezone' => @$this->post['browser_timeZone'],
 			'sid' => @$user->session_id,
 			'date' => date('r'),
 
@@ -118,8 +116,6 @@ class listener implements EventSubscriberInterface
 				'host' => 'host',
 				'agent' => 'user_agent',
 				'languages supportés' => 'language',
-				//'langage demandé' => 'browser_locale',
-				//'timezone' => 'browser_timezone',
 				'topic_id' => 'topic_id',
 				'post_id' => 'post_id',
 				'point_id' => 'point_id',

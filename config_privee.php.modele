@@ -22,7 +22,6 @@ $config_wri['mapKeys'] = [
 ];
 
 // Décommenter pour
-//$config_wri['blockBotPosts']=true; // Bloquer la création de posts dans le forum si le javascript n'est pas activé
 //$config_wri['debug']=true; // afficher un peu plus de debug sur certaines fonctions utilisant la fonction erreur()
 //$config_wri['nom_ol']='myol-debug'; // utiliser myol-debug.js à la place de myol.js
 
@@ -30,6 +29,3 @@ $config_wri['mapKeys'] = [
 //ini_set('error_reporting', E_ALL); // toutes les erreurs
 //ini_set('error_reporting', E_ALL ^ E_NOTICE); // toutes sauf les NOTICE
 //ini_set('display_errors', '1'); // pour afficher à l'écran
-  
-// Aprés l'installation des fichiers, veuillez exécuter l'utilitaire /install.php
-// Qui vérifiera les paramètres et installera ou upgradera la forum si nécéssaire
