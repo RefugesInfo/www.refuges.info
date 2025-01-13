@@ -1,0 +1,15 @@
+{% if SFS_POSTS_PMS_COUNT %}
+<script>
+(function($) {
+	'use strict';
+
+	phpbb.addAjaxCallback('sfsclrreports', function(data) {
+		if (data.success !== false) {
+			$('#sfsreportcount').hide();
+			phpbb.closeDarkenWrapper(5000);
+		}
+	});
+
+})(jQuery);
+</script>
+{% endif %}
