@@ -32,6 +32,7 @@ class listener implements EventSubscriberInterface
 
 	// Log le contexte d'une soumission de post par une machine sans js
 	function log_request_from_bot($vars) {
+		return; //TODO ne pas tracer ce qui est filtré par CleanTalk
 		if (!isset ($this->post['sid']))
 			$this->log_request_context ([
 				'mode' => 'Rejeté',
