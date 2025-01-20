@@ -79,10 +79,11 @@
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
   <dl class="liste-wri">
       <?php // Champs textes libres
-      if (in_array ($vue->point->id_point_type, [9, 10])) {?>
+      if (!empty($vue->point->equivalent_proprio)) {?>
         <dt><?=$vue->point->equivalent_proprio?>:</dt>
         <dd><?=$vue->proprio?></dd>
-        <?php if (in_array($vue->point->id_point_type,$config_wri['tout_type_refuge'])) {?>
+        <?php // Il peut y avoir des propriétaires/responsables comme la commune ou une association, mais il est rare qu'on doivent les appeler, n'encourageons pas 
+        if ($vue->point->id_point_type!=$config_wri['id_cabane_non_gardee']) { ?>
         <dd>
           <i><br>
             Refuge.info n'a aucun lien avec les gestionnaires. Vous devez les appeler directement.
