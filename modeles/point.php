@@ -746,7 +746,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
   // supp le point de toute façon, même si le forum n'avait pas de topic par exemple
   $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point");
 
-  historisation_modification($point_test,null,'suppression point');
+  historisation_modification($point_test,null,'suppression point',$id_utilisateur_qui_supprime);
 
   return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés");
 }
