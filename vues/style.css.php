@@ -132,6 +132,8 @@ switch ($periode)
   background-color: transparent !important;
 }
 
+/* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
+#nav-footer li:last-child,
 /* Masquage login rapide en bas de page */
 #page-body>form>h3,
 .quick-login {
