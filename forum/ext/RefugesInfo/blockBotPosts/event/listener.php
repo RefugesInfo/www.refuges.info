@@ -16,8 +16,8 @@ class listener implements EventSubscriberInterface
 
 	static public function getSubscribedEvents () {
 		return [
-			'core.posting_modify_submission_errors' => 'filter', // posting.php 1403
-			'core.ucp_register_data_before' => 'filter',
+			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
+			'core.ucp_register_data_after' => 'filter', // ucp_register.php 265
 			'rmcgirr83.contactadmin.modify_data_and_error' => 'filter',
 			'block_bot_posts.filter' => 'filter', // External API
 		];
@@ -27,13 +27,10 @@ class listener implements EventSubscriberInterface
 		global $user, $config_wri;
 
 		if ($this->post['sid'] != $user->session_id) {
-			if ($vars['mode']) { // Post
-				$error = $vars['error'];
-				$error['POST_REJECTED'] = 'Your message has been rejected for security reasons.';
-				$vars['error'] = $error;
-			}
-			elseif ($this->post['username']) // User creation
-				trigger_error('Your account has been rejected for security reasons.');
+			$error = $vars['error'];
+			$error['POST_REJECTED'] = 'Your '.($vars['mode'] ? 'message' : 'account').
+				' has been rejected for security reasons.';
+			$vars['error'] = $error;
 		}
 	}
 }

@@ -427,8 +427,11 @@ img {
   margin: 0px;
   padding: 0px;
 }
+.detail_traces p {
+  margin: 4px;
+}
 
-/*=========liENS==========*/
+/*=========liens==========*/
 a:hover {
   /*met en valeur les liens qd on est dessus */
   background-color: #<?=$couleur_legende?>;

@@ -49,5 +49,3 @@ $where = ' WHERE commentaire_id = '.$commentaire->id_commentaire;
 $traces_html = '';
 $vars = ['where', 'traces_html'];
 extract($phpbb_dispatcher->trigger_event('wri.list_traces', compact($vars)));
-
-$vue->traces = $traces_html;

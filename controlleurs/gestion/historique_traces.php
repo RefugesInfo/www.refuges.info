@@ -1,13 +1,18 @@
 <?php
+$numero = $controlleur->url_decoupee[3] ?: 0;
 $where_list = [
 	'accepte' => ' WHERE mode <> \'Rejeté\'',
 	'rejete' => ' WHERE mode = \'Rejeté\'',
+	'post' => ' WHERE post_id = '.$numero,
+	'point' => ' WHERE point_id = '.$numero,
+	'commentaire' => ' WHERE commentaire_id = '.$numero,
 ];
 
 // Hook ext/RefugesInfo/trace/listener.php liste des colonnes à afficher
 $where = $where_list[$controlleur->url_decoupee[2]];
 $traces_html = '';
-$vars = ['where', 'traces_html'];
+$type_trace = 'historique';
+$vars = ['where', 'traces_html', 'type_trace'];
 extract($phpbb_dispatcher->trigger_event('wri.list_traces', compact($vars)));
 
 $vue->traces = $traces_html;
