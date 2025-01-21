@@ -49,10 +49,12 @@ class listener implements EventSubscriberInterface
 
 	// Log le contexte d'une soumission de post rejeté
 	function posting_modify_template_vars($vars) {
+		/*
 		$vars['mode'] = 'Rejeté';
 
 		if (count ($this->post)) // Except when load post page
 			$this->log_request_context ($vars);
+		*/
 	}
 
 	// Log le contexte d'une soumission de post ou d'une création d'user
