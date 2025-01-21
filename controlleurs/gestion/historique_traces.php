@@ -3,6 +3,7 @@ $numero = $controlleur->url_decoupee[3] ?: 0;
 $where_list = [
 	'accepte' => ' WHERE mode <> \'Rejeté\'',
 	'rejete' => ' WHERE mode = \'Rejeté\'',
+	'topic' => ' WHERE topic_id = '.$numero,
 	'post' => ' WHERE post_id = '.$numero,
 	'point' => ' WHERE point_id = '.$numero,
 	'commentaire' => ' WHERE commentaire_id = '.$numero,

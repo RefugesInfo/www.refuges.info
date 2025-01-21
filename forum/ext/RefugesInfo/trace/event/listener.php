@@ -20,8 +20,9 @@ class listener implements EventSubscriberInterface
 
 	static public function getSubscribedEvents () {
 		return [
-			'core.ucp_register_register_after' => 'ucp_register_register_after', // Created ucp_register.php 562
-			'core.ucp_register_modify_template_data' => 'ucp_register_modify_template_data', // Blocked ucp_register.php 682
+			'core.ucp_register_register_after' => 'ucp_register_register_after', // ucp_register.php 562
+			'core.ucp_register_modify_template_data' => 'ucp_register_modify_template_data', // ucp_register.php 682
+			// Log le contexte d'une soumission de post acceptée
 			'core.submit_post_end' => 'log_request_context', // functions_posting.php 2634
 			'core.posting_modify_template_vars' => 'posting_modify_template_vars', // posting.php 2089
 			'wri.point_ajout_commentaire' => 'log_request_context',
@@ -49,12 +50,11 @@ class listener implements EventSubscriberInterface
 
 	// Log le contexte d'une soumission de post rejeté
 	function posting_modify_template_vars($vars) {
-		/*
 		$vars['mode'] = 'Rejeté';
 
-		if (count ($this->post)) // Except when load post page
+		if (count ($this->post) && // Except when load post page
+			isset ($vars['error']['POST_REJECTED'])) // Exclude CleanTalk
 			$this->log_request_context ($vars);
-		*/
 	}
 
 	// Log le contexte d'une soumission de post ou d'une création d'user
