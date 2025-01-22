@@ -28,10 +28,12 @@
             <a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications/<?=$vue->point->id_point?>">
               Consulter l'historique de cette fiche
             </a>&nbsp;
-            <a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/topic/<?=$vue->point->topic_id?>"
-			title="Trace de la création du point">
-              I
-            </a>
+            <?php if (est_autorise($point->id_createur)) {?>
+                <a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/topic/<?=$vue->point->topic_id?>"
+                title="Trace de la création du point">
+                  I
+              </a>
+            <?php }?>
           </b></p>
         </div>
       <?php }?>
@@ -249,7 +251,7 @@
       <?php foreach ($vue->commentaires AS $commentaire) {  ?>
       <li>
         <a id="C<?=$commentaire->id_commentaire?>"></a><!-- ici l'id pour l'anchor des petites vignettes du haut -->
-        <div class="fauxfieldset">
+        <div class="fauxfieldset lien_ajout_commentaire">
           <p class='fauxfieldset-legend'><?=$commentaire->date_commentaire_format_francais?>
             <?php if ($commentaire->auteur_commentaire_affichage) {?>
               par
@@ -264,10 +266,13 @@
               <?php }
             }?>
           </p>
-          <a class="fauxfieldset-legend" style="display: block; float: right;"
-			href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/commentaire/<?=$commentaire->id_commentaire?>"
-			title="Trace de la création du commentaire">
-            &nbsp; i &nbsp;</a>
+          <?php if (est_autorise($point->id_createur)) {?>
+            <a class="fauxfieldset-legend" style="display: block; float: right;"
+              href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/commentaire/<?=$commentaire->id_commentaire?>"
+              title="Trace de la création du commentaire">
+                I
+            </a>
+          <?php }?>
           <a class="fauxfieldset-legend" style="display: block; float: right;" href="<?=$commentaire->lien_commentaire?>">
             <?=$commentaire->texte_lien_commentaire?></a>
           <hr class="spacer">
