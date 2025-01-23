@@ -403,12 +403,6 @@ form .champs_null_masque>label {
   min-height: 10em;
 }
 
-.fauxfieldset-legend {
-  background-color: #<?=$couleur_legende?> ;
-  border: thin solid black;
-  font-weight: bold;
-}
-
 /* Cas particulier pour OL qui a des labels non standards */
 div#switch_nav label {
   float: none;
@@ -789,21 +783,6 @@ form {
 }
 
 /*==================================================================*/
-.lien_ajout_commentaire {
-  text-align: center;
-  font-weight: bold;
-}
-
-.lien_modification_commentaire > a,
-.lien_modification_commentaire > p > a,
-.lien_ajout_commentaire a {
-  border-style: solid;
-  border-color: #<?=$couleur_decoration_titres?>;
-  padding-right: 0.5em;
-  padding-left: 0.5em;
-}
-
-/*==================================================================*/
 /* La pages des massifs (accueil)                                   */
 /*==================================================================*/
 
@@ -821,15 +800,36 @@ form {
 /* Les pages points                                                 */
 /*==================================================================*/
 
-.fauxfieldset {
-  /* div imite un fieldset */
+.liens_avec_decoration {
+  border-style: solid;
+  border-color: #<?=$couleur_decoration_titres?>;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+}
+
+.bloc_liens_centre {
+  text-align: center;
+  font-weight: bold;
+}
+
+/* concernant la disposition des commentaires */
+.bloc_liens_haut_droit {
+  display: block; 
+  float: right;
+}
+
+.bloc_commentaire {
   border: thin solid black;
   margin-top: 1em;
 }
 
-.fauxfieldset-legend {
+.commentaire_metainfo {
+  background-color: #<?=$couleur_legende?> ;
+  border: thin solid black;
+  font-weight: bold;
   float: left;
   margin: -0.2em 1em 0em 1em;
+  border: thin solid black;
 }
 
 .spacer {
