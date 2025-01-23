@@ -795,6 +795,7 @@ form {
 }
 
 .lien_modification_commentaire > a,
+.lien_modification_commentaire > p > a,
 .lien_ajout_commentaire a {
   border-style: solid;
   border-color: #<?=$couleur_decoration_titres?>;
