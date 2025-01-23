@@ -1,8 +1,8 @@
 <?php
 $numero = $controlleur->url_decoupee[3] ?: 0;
 $where_list = [
-	'accepte' => ' WHERE mode <> \'Rejeté\'',
-	'rejete' => ' WHERE mode = \'Rejeté\'',
+	'accepte' => ' WHERE ext_error IS NULL AND mode != \'Rejeté\'',
+	'rejete' => ' WHERE ext_error IS NOT NULL OR mode = \'Rejeté\'',
 	'topic' => ' WHERE topic_id = '.$numero,
 	'post' => ' WHERE post_id = '.$numero,
 	'point' => ' WHERE point_id = '.$numero,

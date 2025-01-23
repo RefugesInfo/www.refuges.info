@@ -3,6 +3,7 @@ CREATE TABLE "trace_requettes" (
   "trace_id" integer DEFAULT nextval('trace_requettes_seq') NOT NULL,
   PRIMARY KEY ("trace_id"),
   "mode" character(32) NULL,
+  "ext_error" text NULL,
   "uri" text NULL,
   "ip" character(64) NULL,
   "host" character(128) NULL,

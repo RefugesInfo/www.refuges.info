@@ -20,11 +20,14 @@ class listener implements EventSubscriberInterface
 
 	static public function getSubscribedEvents () {
 		return [
-			'core.ucp_register_register_after' => 'ucp_register_register_after', // ucp_register.php 562
+			// Log le contexte d'une création de user acceptée
+			'core.ucp_register_register_after' => 'log_request_context', // ucp_register.php 562
+			// Log le contexte d'une création de user rejetée
 			'core.ucp_register_modify_template_data' => 'ucp_register_modify_template_data', // ucp_register.php 682
+			// Log le contexte d'une soumission de post rejeté
+			'core.posting_modify_template_vars' => 'log_request_context', // posting.php 2089
 			// Log le contexte d'une soumission de post acceptée
 			'core.submit_post_end' => 'log_request_context', // functions_posting.php 2634
-			'core.posting_modify_template_vars' => 'posting_modify_template_vars', // posting.php 2089
 			'wri.point_ajout_commentaire' => 'log_request_context',
 			'wri.list_traces' => 'list_traces',
 			'core.mcp_post_additional_options' => 'mcp_additional_options', // mcp_post.php 125
@@ -32,44 +35,28 @@ class listener implements EventSubscriberInterface
 		];
 	}
 
-	// Log le contexte d'une création de user acceptée
-	function ucp_register_register_after($vars) {
-		$vars['mode'] = 'Création compte';
-
-		$this->log_request_context ($vars);
-	}
-
-	// Log le contexte d'une création de user rejetée
-	function ucp_register_modify_template_data($vars) {
-		$vars['mode'] = 'Rejeté';
+	function ucp_register_modify_template_data($vars, $eventName) {
 		$vars['user_row'] = $this->post;
 
 		if (isset ($this->post['new_password'])) // Except when load registration page
-			$this->log_request_context ($vars);
-	}
-
-	// Log le contexte d'une soumission de post rejeté
-	function posting_modify_template_vars($vars) {
-		/*
-		$vars['mode'] = 'Rejeté';
-
-		if (count ($this->post) && // Except when load post page
-			isset ($vars['error']['POST_REJECTED'])) // Exclude CleanTalk
-			$this->log_request_context ($vars);
-		*/
+			$this->log_request_context ($vars, $eventName);
 	}
 
 	// Log le contexte d'une soumission de post ou d'une création d'user
-	function log_request_context($vars) {
+	function log_request_context($vars, $eventName) {
 		global $user, $auth, $db, $config_wri;
 
-		if (!$auth->acl_get('m_')) { // Sauf pour les modérateurs
-			$post_data = @$vars['data'] ?: @$vars['post_data'];
-			$user_data = @$vars['user_row'] ?: $user->data;
+		if (count ($this->post) && // Except when load a post page
+			!$auth->acl_get('m_')) { // Sauf pour les modérateurs
+			$post_data = $vars['data'] ?: $vars['post_data'];
+			$user_data = $vars['user_row'] ?: $user->data;
 
 			$log = [
 				// General
 				'mode' => ucfirst ($vars['mode']),
+				'ext_error' => isset ($vars['error']) ?
+					str_replace ('core.', '', $eventName) .' : '. json_encode($vars['error']) : 
+					null,
 
 				// Server
 				'uri' => @$this->server['REQUEST_SCHEME'].'://'.
@@ -88,13 +75,13 @@ class listener implements EventSubscriberInterface
 				// Post & Point
 				'topic_id' => $post_data['topic_id'] ?: $this->post['topic_id'],
 				'post_id' => $post_data['post_id'] ?: $this->post['post_id'],
-				'title' => @$vars['subject'] ?: @$post_data['topic_title'] ?: @$vars['point']->nom,
-				'text' => $this->post['message'] ?: @$vars['commentaire']->texte,
-				'point_id' => @$vars['point']->id_point,
-				'commentaire_id' => @$vars['commentaire']->id_commentaire,
+				'title' => $vars['subject'] ?: @$post_data['topic_title'] ?: $vars['point']->nom,
+				'text' => $this->post['message'] ?: $vars['commentaire']->texte,
+				'point_id' => $vars['point']->id_point,
+				'commentaire_id' => $vars['commentaire']->id_commentaire,
 
 				// Infos enregistrées à la création du user
-				'user_id' => @$user_data['user_id'] ?: @$vars['user_id'],
+				'user_id' => @$user_data['user_id'] ?: $vars['user_id'],
 				'user_name' => $this->post['username'] ?: $this->post['nom_createur'] ?: @$user_data['username'],
 				'user_email' => @$user_data['user_email'] ?: @$user_data['email'],
 				'user_signature' => str_replace ('<t></t>', '', @$user_data['user_sig']),
@@ -122,6 +109,8 @@ class listener implements EventSubscriberInterface
 
 		if ($auth->acl_get('m_')) {
 			$colonnes_traces_post = [
+				'mode' => 'mode',
+				'rejet' => 'ext_error',
 				'type d\'operateur' => 'browser_operator',
 				'date' => 'date',
 				'url' => 'uri',
