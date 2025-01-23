@@ -802,6 +802,7 @@ form {
 
 .liens_avec_decoration {
   border-style: solid;
+  background-color: #<?=$couleur_fond?>;
   border-color: #<?=$couleur_decoration_titres?>;
   padding-right: 0.5em;
   padding-left: 0.5em;
@@ -816,6 +817,7 @@ form {
 .bloc_liens_haut_droit {
   display: block; 
   float: right;
+  margin: -0.6em 1em 0em 1em;
 }
 
 .bloc_commentaire {
@@ -828,7 +830,7 @@ form {
   border: thin solid black;
   font-weight: bold;
   float: left;
-  margin: -0.2em 1em 0em 1em;
+  margin: -0.6em 1em 0em 1em;
   border: thin solid black;
 }
 
