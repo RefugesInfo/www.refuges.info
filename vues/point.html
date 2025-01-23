@@ -251,7 +251,7 @@
       <?php foreach ($vue->commentaires AS $commentaire) {  ?>
       <li>
         <a id="C<?=$commentaire->id_commentaire?>"></a><!-- ici l'id pour l'anchor des petites vignettes du haut -->
-        <div class="fauxfieldset lien_ajout_commentaire">
+        <div class="fauxfieldset lien_modification_commentaire">
           <p class='fauxfieldset-legend'><?=$commentaire->date_commentaire_format_francais?>
             <?php if ($commentaire->auteur_commentaire_affichage) {?>
               par

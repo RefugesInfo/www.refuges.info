@@ -794,6 +794,7 @@ form {
   font-weight: bold;
 }
 
+.lien_modification_commentaire > a,
 .lien_ajout_commentaire a {
   border-style: solid;
   border-color: #<?=$couleur_decoration_titres?>;
