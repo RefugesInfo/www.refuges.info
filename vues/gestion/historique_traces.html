@@ -1,6 +1,10 @@
 <div class="detail_traces">
 <p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/accepte">
 	50 dernières entrées acceptées</a></p>
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/cleantalk">
+	50 dernières entrées rejetées par CleanTalk</a></p>
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/blockbotposts">
+	50 dernières entrées rejetées par BlockBotPosts</a></p>
 <p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/rejete">
 	50 dernières entrées rejetées</a></p>
 <p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/">
@@ -11,7 +15,7 @@
 <?php if (isset ($controlleur->url_decoupee[3])) { ?>
 	Création du <?=$controlleur->url_decoupee[2].' '.$controlleur->url_decoupee[3]?> :
 <? } else { ?>
-	Historique des 50 dernières traces <?=$controlleur->url_decoupee[2] ? $controlleur->url_decoupee[2].'es' : ''?> :
+	Historique des 50 dernières traces <?=$controlleur->url_decoupee[2] ? $controlleur->url_decoupee[2] : ''?> :
 <? } ?>
 </h4>
 

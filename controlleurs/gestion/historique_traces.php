@@ -3,6 +3,8 @@ $numero = $controlleur->url_decoupee[3] ?: 0;
 $where_list = [
 	'accepte' => ' WHERE ext_error IS NULL AND mode != \'Rejeté\'',
 	'rejete' => ' WHERE ext_error IS NOT NULL OR mode = \'Rejeté\'',
+	'cleantalk' => ' WHERE ext_error LIKE \'%CleanTalk%\'',
+	'blockbotposts' => ' WHERE ext_error LIKE \'%BlockBotPosts%\' and ext_error NOT LIKE \'%CleanTalk%\'',
 	'topic' => ' WHERE topic_id = '.$numero,
 	'post' => ' WHERE post_id = '.$numero,
 	'point' => ' WHERE point_id = '.$numero,

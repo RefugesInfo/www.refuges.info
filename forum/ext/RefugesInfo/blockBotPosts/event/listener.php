@@ -29,7 +29,7 @@ class listener implements EventSubscriberInterface
 		if ($this->post['sid'] != $user->session_id) {
 			$error = $vars['error'];
 			$error['POST_REJECTED'] = 'Your '.($vars['mode'] ? 'message' : 'account').
-				' has been rejected for security reasons.';
+				' has been rejected for security reasons by BlockBotPosts.';
 			$vars['error'] = $error;
 		}
 	}
