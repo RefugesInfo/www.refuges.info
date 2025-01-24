@@ -19,9 +19,9 @@ Voici le type d'éléments que l'on peut espérer récupérer :
 En premier lieu : 
 Départements/régions/réserves naturelles et parc nationaux
 
-A voir les autres polygones qui pourraient nous intéresser :
-- Communes (pour savoir laquelle contacté car une cabane s'y trouve)
-- Massifs/zone type pyrénées/alpes/massif central (pour ne pas forcément avoir à les saisir nous)
+A voir les autres polygones qui pourraient nous intéresser (en 2025 n'a toujours pas été tenté):
+- Communes (pour savoir laquelle contacter car une cabane s'y trouve)
+- Massifs/Régions naturelles (pour ne pas forcément avoir à les saisir nous)
 - Forêt (Pour déterminer s'il y a plus de chance d'avoir du bois)
 - Autres points d'intérêts : camping/chambre d'hôtes/hôtels/arrêt bus/gare ?
 

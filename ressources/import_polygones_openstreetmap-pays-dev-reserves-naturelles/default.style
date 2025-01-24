@@ -8,10 +8,12 @@ node,way   name		text	     linear
 node,way   description  text	     linear
 node,way   description:restrictions text	     linear
 node,way   description:restrictions2 text	     linear
+node,way   description:restrictions3 text	     linear
+node,way   description:restrictions4 text	     linear
 node,way   phone        text	     linear
 node,way   website      text	     linear
 node,way   opening_hours      text	     linear
-node,way   url:restrictions	text	linear
+node,way   website:regulation	text	linear
 
 # Ces deux champs contiennent le niveau de restrictions s'appliquant au parc/à la réserve
 # Voir http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area pour tenter d'en récupérer le sens au niveau restrictions qui s'appliquent
