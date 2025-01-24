@@ -17,18 +17,27 @@ include($config_wri['rep_forum'] . 'includes/functions_admin.php');
 function forum_submit_post ($args) {
   global $config_wri, $db, $user;
 
-  // On se fait passer pour l'auteur du commentaire
-  $mem_user = $user->data['user_id'];
-  $user->data['user_id'] = $args['topic_poster'] = max (ANONYMOUS, $args['topic_poster']);
-  $user->data['is_registered'] = false;
+  // On garde de coté l'information d'identification de l'utilisateur connecté
+  $mem_user = $user;
   
-  if ($user->data['user_id'] == ANONYMOUS) // Un bug de couleur se produit pour les anonymes, ils héritent de la couleur du modérateur qui a réalisé le transfert
-    $user->data['user_colour'] = "000000"; // On force la couleur de l'utilisateur dont on a transféré le commentaire à "noire"
+  // On se fait passer pour l'auteur du commentaire à transférer si ce n'est pas déjà le même
+  if ($user->data['user_id'] != $args['topic_poster'] )
+  {
+    $user->data['user_id'] = $args['topic_poster'] = max (ANONYMOUS, $args['topic_poster']);
+    $user->data['is_registered'] = false;
+    $user->data['user_colour'] = ''; // On force la couleur de l'utilisateur dont on créer le topic à vide histoire que la couleur ne soit pas celle du modérateur connecté
+  
+    if ($user->data['user_id'] !== ANONYMOUS) // s'il n'est pas anonyme, on récupère son username
+    {
+      $utilisateur=infos_utilisateur($args['topic_poster']);
+      $user->data['username']=$utilisateur->username;  
+    }
+  }
   
   $data = [ // Données par défaut
     'forum_name' => '',
     'message' => '',
-    'username' => '', // peut-être mieux de laisser vite, ça marque "invité" si non connecté, ou le vrai nom de compte si connecté
+    'username' => '', // peut-être mieux de laisser vite par défaut, ça marque "invité" si non connecté, le vrai nom de compte si connecté en le surdéfinissant plus tard et le nom rentré par l'anonyme s'il n'a pas mis "vide"
     'user_colour' => 0,
     'enable_sig' => true,
     'enable_bbcode' => true,
@@ -72,7 +81,6 @@ function forum_submit_post ($args) {
   $data['message_md5'] = md5($message_parser->message);
 
   $poll = []; // Il n'y a pas de sondage ici mais il faut quand même définir cette variable en statique
-
   submit_post ( // Appel de la fonction PhpBB
     $data['action'],
     $data['topic_title'], // Reprend le titre modifié (qui a dû être écrasé par les infos du topic)
@@ -83,9 +91,7 @@ function forum_submit_post ($args) {
   );
 
   // On redevient nous même
-  $user->data['user_id'] = $mem_user;
-  $user->data['is_registered'] = true;
-
+  $user = $mem_user;
   return $data;
 }
 

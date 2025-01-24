@@ -518,20 +518,19 @@ function transfert_forum($commentaire)
     $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
     if ($utilisateur->erreur) //  L'utilisateur n'existe plus ?, ça voudrait dire qu'il a existé, a rentrer un commentaire, mais qu'un modérateur à supprimé son compte ? bon, tout est possible dans ce monde ! prévoyons ce cas :
       $commentaire->id_createur_commentaire=0; // on le force à Anonyme
-    else // Tout s'est bien passé, l'utilisateur existe, inutile de renseigner un nom d'auteur, vu qu'il a un compte
-      $auteur="";
+    else // Tout s'est bien passé, l'utilisateur existe, la fonction phpBB semble quand même avoir besoin du nom d'auteur (en plus de l'id FIXME: à confirmer ? peut-être inutile)
+      $auteur=$utilisateur->username;
   }
-  if ($commentaire->id_createur_commentaire==0)
-      // Par défaut on choisi ce nom si on a rien d'autre
-      $auteur = 'Anonyme';
+  else  // Par défaut on choisi ce nom si on a rien d'autre
+    $auteur = 'Anonyme';
       
-      // note sly 17/08/2013 : j'ajoute un "_".rand(1,999) à la suite du nom de l'auteur, c'est un peu curieux,
-      // mais ça permet de réduire les chances qu'on le confonde avec un utilisateur du forum portant le même nom exactement
-      // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
-      // Et comme un utilisateur phpBB doit contenir au moins 1 caractère et 80 maximum (selon config), s'il s'appelait "" (vide) ça ferait "_1" au pire, soit plus que les 1 caractères mini
-      // et s'il s'appellait abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghij (83 caractères) substr 0,76 + _ + rand(1,999) va donner abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abc_999 au max soit 80 charactères qui est autorisé.
-      if ($commentaire->auteur_commentaire)
-        $auteur = substr($commentaire->auteur_commentaire,0,76).'_'.rand(1,999);
+  // note sly 17/08/2013 : j'ajoute un "_".rand(1,999) à la suite du nom de l'auteur, c'est un peu curieux,
+  // mais ça permet de réduire les chances qu'on le confonde avec un utilisateur du forum portant le même nom exactement
+  // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
+  // Et comme un utilisateur phpBB doit contenir au moins 1 caractère et 80 maximum (selon config), s'il s'appelait "" (vide) ça ferait "_1" au pire, soit plus que les 1 caractères mini
+  // et s'il s'appellait abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghij (83 caractères) substr 0,76 + _ + rand(1,999) va donner abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abc_999 au max soit 80 charactères qui est autorisé.
+  if ($commentaire->auteur_commentaire)
+      $auteur = substr($commentaire->auteur_commentaire,0,76).'_'.rand(1,999);
   
   // On appelle la fonction du forum qui cree un post
   forum_submit_post ([
@@ -539,7 +538,7 @@ function transfert_forum($commentaire)
     'topic_id' => $commentaire->topic_id,
     'topic_title' => 'Transféré de la fiche',
     'message' => $commentaire->texte,
-    'topic_poster' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID
+    'topic_poster' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID, 0 sinon
     'username' => $auteur,
     'post_time' => strtotime ($commentaire->date), // Recalcule suivant la timezone
   ]);
