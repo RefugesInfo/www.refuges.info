@@ -324,6 +324,7 @@ function modification_ajout_commentaire($commentaire)
   // FIXME, tout correspond, y'a pas moyen de simplifier par un foreach sur $commentaire et remplir les champs SQL ?
   // 2023, pas tout à fait, l'object $commentaire contient des trucs comme la photo qui n'est pas en base, il faudrait ruser.
   isset($commentaire->id_point) ? $champs_sql['id_point']=$commentaire->id_point: false ;
+  isset($commentaire->date) ? $champs_sql['date']=$pdo->quote($commentaire->date): false ;
   isset($commentaire->texte) ? $champs_sql['texte']=$pdo->quote($commentaire->texte):false;
   isset($commentaire->auteur_commentaire) ? $champs_sql['auteur_commentaire']=$pdo->quote($commentaire->auteur_commentaire):false;
   isset($commentaire->id_createur_commentaire) ? $champs_sql['id_createur_commentaire']=$commentaire->id_createur_commentaire:false;
@@ -502,16 +503,13 @@ function transfert_forum($commentaire)
   {
     // insere la balise bbcode pour la photo
     $commentaire->texte.="\n[img]".$config_wri['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img]";
-    // et deplace la photo, question historique, on peut avoir la réduite et/ou l'originale
+    
+    // et on copie les photos, on va garder: la version original et la version en taille réduite (ça peut servir si on veut finalement refaire venir le commentaire sur le site et avoir la photo en haute résolution)
     if (isset($commentaire->photo['reduite']))
-      $photo_a_conserver=$commentaire->photo['reduite'];
-    elseif (isset($commentaire->photo['originale']))
-      $photo_a_conserver=$commentaire->photo['originale'];
-
-    // On pourrait se dire que déplacer c'est plus simple. Oui, en effet, mais je préfère profiter de la fonction "suppression_commentaire" toute faite. Et donc faire une copie à cet endroit.
-    copy($photo_a_conserver,$config_wri['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
+      copy($commentaire->photo['reduite'],$config_wri['rep_forum_photos'].$commentaire->id_commentaire.".jpeg");
+    if (isset($commentaire->photo['originale']))
+      copy($commentaire->photo['originale'],$config_wri['rep_forum_photos'].$commentaire->id_commentaire."-originale.jpeg");
   }
-  
   
   if ($commentaire->id_createur_commentaire != 0) // L'utilisateur qui a posté ce commentaire était connecté
   {    
