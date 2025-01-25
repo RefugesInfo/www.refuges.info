@@ -1,0 +1,2 @@
+ 
+update polygones set geom=st_makevalid(ST_Simplify(geom, 0.005)) where ST_Npoints(geom)>2000;
