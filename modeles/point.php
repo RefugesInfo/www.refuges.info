@@ -492,16 +492,16 @@ function texte_non_ouverte($point)
   switch ($point->conditions_utilisation)
   {
     case 'cle_a_recuperer':
-      return "Clé à récupérer avant";
+      return $point->equivalent_ouverture_contact_prealable;
     case 'intermittent':
-      return "Débit intermittent";
+      return "Débit intermittent"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
     case 'detruit':
-            if ($point->id_point_type==$config_wri['id_cabane_non_gardee'])
-                return "Détruite";
-            else
-                return "Détruit";
+      if ($point->id_point_type==$config_wri['id_cabane_non_gardee'])
+          return "Détruite"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
+      else
+          return "Détruit"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
     case 'fermeture':
-            return $point->equivalent_conditions_utilisation;
+      return $point->equivalent_conditions_utilisation;
 
     default:
       return ""; // tous les autres cas, normalement on arrive pas la

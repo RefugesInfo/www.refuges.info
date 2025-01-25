@@ -179,7 +179,7 @@ foreach($config_wri['champs_trinaires_points'] as $champ)
   }
 }
 
-//spécificité du cas des conditions d'utilisation de la cabane (clé à récup, ouvert tout le temps, fermée tout le temps, ou détruite)
+//spécificité du cas des conditions d'utilisation de la cabane (Contacter quelqu'un, clé à récupérer, ouvert tout le temps, fermée tout le temps, ou détruite)
 if ( !empty($point->equivalent_conditions_utilisation) )
 {
   $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
@@ -189,7 +189,7 @@ if ( !empty($point->equivalent_conditions_utilisation) )
   else if ($point->id_point_type==$config_wri['id_passage_delicat'])
     $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','fermeture' => $point->equivalent_conditions_utilisation);
   else
-    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => 'Clé à récupérer');
+    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => $point->equivalent_ouverture_contact_prealable);
     $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 // ===========================================
