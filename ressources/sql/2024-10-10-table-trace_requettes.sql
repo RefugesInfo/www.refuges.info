@@ -9,7 +9,7 @@ CREATE TABLE "trace_requettes" (
   "host" character(128) NULL,
   "user_agent" character(256) NULL,
   "language" character(128) NULL,
-  "browser_locale" character(128) NULL,
+  "browser_operator" character(128) NULL,
   "sid" character(128) NULL,
   "date" character(64) NULL,
   "topic_id" integer NULL,
