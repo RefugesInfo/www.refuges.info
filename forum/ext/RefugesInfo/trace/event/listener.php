@@ -26,12 +26,16 @@ class listener implements EventSubscriberInterface
 			'core.ucp_register_modify_template_data' => 'ucp_register_modify_template_data', // ucp_register.php 682
 			// Log le contexte d'une soumission de post rejeté
 			'core.posting_modify_template_vars' => 'log_request_context', // posting.php 2089
-			// Log le contexte d'une soumission de post acceptée
+			// Log le contexte d'une soumission de point ou de post acceptée
 			'core.submit_post_end' => 'log_request_context', // functions_posting.php 2634
+			// Log le contexte d'une soumission de commentaire
 			'wri.point_ajout_commentaire' => 'log_request_context',
+			// Traces dans une fiche
 			'wri.list_traces' => 'list_traces',
+			// Traces dans le panneau de modération d'un d'un user
 			'core.mcp_post_additional_options' => 'mcp_additional_options', // mcp_post.php 125
-			'core.memberlist_modify_view_profile_template_vars' => 'mcp_additional_options', // memberlist.php 818
+			// Traces dans le panneau de modération d'un post
+			'core.memberlist_view_profile' => 'mcp_additional_options', // memberlist.php 757
 		];
 	}
 
@@ -47,15 +51,20 @@ class listener implements EventSubscriberInterface
 		global $user, $auth, $db, $config_wri;
 
 		if (count ($this->post) && // Except when load a post page
-			!$auth->acl_get('m_')) { // Sauf pour les modérateurs
+			!$auth->acl_get('m_')) // Sauf pour les modérateurs
+		{
 			$post_data = $vars['data'] ?: $vars['post_data'];
 			$user_data = $vars['user_row'] ?: $user->data;
+
+			if (strpos($eventName, 'register') !== false)
+				$vars['mode'] = 'création compte';
 
 			$log = [
 				// General
 				'mode' => ucfirst ($vars['mode']),
 				'ext_error' => isset ($vars['error']) ?
-					str_replace ('core.', '', $eventName) .' : '. json_encode($vars['error']) : 
+					str_replace ('core.', '', $eventName) .' : '.
+						json_encode(array_values ($vars['error'])) :
 					null,
 
 				// Server
@@ -68,7 +77,7 @@ class listener implements EventSubscriberInterface
 				'language' => @$this->server['HTTP_ACCEPT_LANGUAGE'],
 
 				// Navigateur
-				'browser_operator' => $this->post['browser_operator'] ?: 'server bot',
+				'browser_operator' => $this->post['browser_operator'] ?: 'serveur sans javascript',
 				'sid' => @$user->session_id,
 				'date' => date('r'),
 
@@ -103,35 +112,29 @@ class listener implements EventSubscriberInterface
 		return null;
 	}
 
-	// Prépare l'affichage des traces
-	function list_traces($vars) {
-		global $db, $auth, $config_wri;
+	function mcp_additional_options ($vars, $eventName) {
+		global $template, $user, $phpbb_dispatcher;
+
+		$vars = [
+			'where' => '',
+			'ip' => $vars['post_info']['poster_ip'] ?: $vars['member']['user_ip'],
+		];
+		if (isset ($this->get['p']))
+			$vars['where'] = ' WHERE post_id = '. $this->get['p'];
+
+		if (isset ($this->get['u']))
+			$vars['where'] =
+				' WHERE uri LIKE \'%register\''.
+				' AND user_id = '.$this->get['u'];
+
+		$template->assign_var('TRACES', $this->list_traces($vars, $eventName));
+	}
+
+	// Affichage des traces
+	function list_traces($vars, $eventName) {
+		global $db, $auth;
 
 		if ($auth->acl_get('m_')) {
-			$colonnes_traces_post = [
-				'mode' => 'mode',
-				'rejet' => 'ext_error',
-				'type d\'operateur' => 'browser_operator',
-				'date' => 'date',
-				'url' => 'uri',
-				'IP' => 'ip',
-				'host' => 'host',
-				'agent' => 'user_agent',
-				'languages supportés' => 'language',
-				'topic_id' => 'topic_id',
-				'post_id' => 'post_id',
-				'point_id' => 'point_id',
-				'commentaire_id' => 'commentaire_id',
-				'Titre' => 'title',
-				'texte' => 'text',
-				'nom user' => 'user_name',
-				'id user' => 'user_id',
-			];
-			$colonnes_traces_user = [
-				'email user' => 'user_email',
-				'language user' => 'user_lang',
-				'IP enregistrement' => 'ip_enregistrement',
-			];
 			$lignes_traces_html = [];
 
 			$sql = 'SELECT * FROM trace_requettes'.
@@ -139,119 +142,148 @@ class listener implements EventSubscriberInterface
 				' ORDER BY trace_id DESC'.
 				' LIMIT 50';
 			$result = $db->sql_query ($sql);
-
-			while ($row = $db->sql_fetchrow($result)) {
-				if (isset ($row['topic_title']))
-					$row['titre'] = $row['topic_title'];
-
-				$colonnes_html = [
-					'<div class="detail_traces">',
-				];
-				$colonnes_traces = array_merge (
-					$colonnes_traces_post,
-					$row['user_email'] ? $colonnes_traces_user : []
-				);
-
-				if (isset ($vars['type_trace'])) {
-					if (strpos ($row['uri'], 'point_modification')) {
-						if (isset ($row['point_id']))
-							$colonnes_html[] = '<p>Création du '.
-								'<a href="'.$config_wri['sous_dossier_installation'].
-								'point/'.$row['point_id'].
-								'">point</a></p>';
-						elseif (isset ($row['post_id']))
-							$colonnes_html[] = '<p>Création du '.
-								'<a href="'.$config_wri['sous_dossier_installation'].
-								'forum/viewtopic.php?p='.$row['post_id']
-								.'">point</a></p>';
-					}
-					elseif (strpos ($row['uri'], 'ajout_commentaire')) {
-						if (isset ($row['point_id']))
-							$colonnes_html[] = '<p>Création du '.
-								'<a href="'.$config_wri['sous_dossier_installation'].
-								'point/'.$row['point_id'].'#C'.$row['commentaire_id'].
-								'">commentaire</a></p>';
-					}
-					elseif (strpos ($row['uri'], 'mode=register')) {
-						if (isset ($row['user_id']))
-							$colonnes_html[] = '<p>Création du compte '.
-								'<a href="'.$config_wri['sous_dossier_installation'].
-								'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
-								'">'.@$row['user_name'].'</a></p>';
-						else
-							$colonnes_html[] = '<p>Création du compte</p>';
-					}
-					elseif (strpos ($row['uri'], 'reply')) {
-						if (isset ($row['post_id']))
-							$colonnes_html[] = '<p>Réponse au '.
-								'<a href="'.$config_wri['sous_dossier_installation'].
-								'forum/viewtopic.php?p='.$row['post_id'].'#p'.$row['post_id'].
-								'">post</a></p>';
-					}
-					elseif (isset ($row['post_id']))
-						$colonnes_html[] = '<p>Création du '.
-							'<a href="'.$config_wri['sous_dossier_installation'].
-							'forum/viewtopic.php?p='.$row['post_id'].
-							'">post</a></p>';
-
-					if (!strpos ($row['uri'], 'mode=register') &&
-						@$row['user_id'] > 1)
-							$colonnes_html[] = '<p>Par '.
-								'<a href="'.$config_wri['sous_dossier_installation'].
-								'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
-								'">'.@$row['user_name'].'</a></p>';
-				}
-
-				if (isset ($row['ip']))
-					$colonnes_html[] =
-						'<p><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
-						'">Localisation de l\'IP</a></p>'.
-						'<p><a href="https://cleantalk.org/blacklists/'.$row['ip'].
-						'">Vérification CleanTalk de l\'IP</a></p>'.
-						'<p><a href="https://stopforumspam.com/ipcheck/'.$row['ip'].
-						'">Vérification StopForumSpam de l\'IP</a></p>'.
-						'<p><a href="https://www.spamcop.net/w3m?action=checkblock&ip='.$row['ip'].
-						'">Vérification SpamCop de l\'IP</a></p>';
-				if (isset ($row['user_email']))
-					$colonnes_html[] =
-						'<p><a href="https://cleantalk.org/email-checker/'.$row['user_email'].
-						'">Vérification CleanTalk du mail</a></p>';
-
-				foreach ($colonnes_traces as $title => $k)
-					if (isset ($row[$k])) {
-						$r = str_replace ("\n", " ", $row[$k]);
-						$r = preg_replace ("/\s\s+/", " ", $r);
-						$r = trim (strip_tags ($r));
-						if ($k == 'text')
-							$r = substr ($r, 0, 80).(strlen ($r) > 80 ? '&hellip;' : '');
-						$t = ucfirst ($title);
-						$colonnes_html[] = "<p>$t: $r</p>";
-					}
-				$colonnes_html[] = '</div>';
-
-				$lignes_traces_html[] = implode (PHP_EOL, $colonnes_html);
-			}
+			while ($row = $db->sql_fetchrow($result))
+				$lignes_traces_html[] = $this->affiche_trace($row);
 			$db->sql_freeresult($result);
+
+			if (!count ($lignes_traces_html))//TODO DON'T WORK
+				$lignes_traces_html[] = $this->affiche_trace (['ip' => $vars['ip']]);
 
 			$vars['traces_html'] =  implode (PHP_EOL.'<hr/>'.PHP_EOL, $lignes_traces_html);
 			return $vars['traces_html'];
 		}
 	}
 
-	// Traces dans le panneau de modération d'un post et d'un user
-	function mcp_additional_options () {
-		global $template, $phpbb_dispatcher;
+	// Affichage des traces
+	function affiche_trace($row) {
+		global $config_wri;
 
-		$vars = [
-			'where' => '',
+		$row = array_filter($row);
+
+		if (isset ($row['topic_title']))
+			$row['titre'] = $row['topic_title'];
+		if (isset ($row['ext_error']))
+			$row['display_error'] =
+				str_replace ( // Split encoded lines
+					['","','["','"]'],
+					['<br/>- ', '<br/>- ', ''],
+					preg_replace ( // Décode unicode
+						'/\\\\u([a-e0-9]{4})/',
+						'&#x$1;',
+						$row['ext_error']
+					),
+				);
+
+		$colonnes_html = [
+			'<div class="detail_traces">',
 		];
-		if (isset ($this->get['p']))
-			$vars['where'] = ' WHERE post_id = '. $this->get['p'];
-		if (isset ($this->get['u']))
-			$vars['where'] =
-				' WHERE uri LIKE \'%register\''.
-				' AND user_id = '.$this->get['u'];
 
-		$template->assign_var('TRACES', $this->list_traces($vars));
+		if (!count ($this->get) && // Si listage historique
+			!isset ($row['ext_error'])) // Uniquement si acceptée
+		{
+			if (strpos ($row['uri'], 'point_modification')) {
+				if (isset ($row['point_id']))
+					$colonnes_html[] = '<p>Création du '.
+						'<a href="'.$config_wri['sous_dossier_installation'].
+						'point/'.$row['point_id'].
+					'">point</a></p>';
+				elseif (isset ($row['post_id']))
+					$colonnes_html[] = '<p>Création d\'un point et de son '.
+						'<a href="'.$config_wri['sous_dossier_installation'].
+						'forum/viewtopic.php?p='.$row['post_id']
+					.'">forum</a></p>';
+			}
+			elseif (strpos ($row['uri'], 'ajout_commentaire')) {
+				if (isset ($row['point_id']))
+					$colonnes_html[] = '<p>Création du '.
+						'<a href="'.$config_wri['sous_dossier_installation'].
+						'point/'.$row['point_id'].'#C'.$row['commentaire_id'].
+					'">commentaire</a></p>';
+			}
+			elseif (strpos ($row['uri'], 'mode=register')) {
+				if (isset ($row['user_id']))
+					$colonnes_html[] = '<p>Création du compte '.
+						'<a href="'.$config_wri['sous_dossier_installation'].
+						'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
+					'">'.@$row['user_name'].'</a></p>';
+				else
+					$colonnes_html[] = '<p>Création du compte</p>';
+			}
+			elseif (strpos ($row['uri'], 'reply')) {
+				if (isset ($row['post_id']))
+					$colonnes_html[] = '<p>Réponse au '.
+						'<a href="'.$config_wri['sous_dossier_installation'].
+						'forum/viewtopic.php?p='.$row['post_id'].'#p'.$row['post_id'].
+					'">post</a></p>';
+			}
+			elseif (isset ($row['post_id']))
+				$colonnes_html[] = '<p>Création du '.
+					'<a href="'.$config_wri['sous_dossier_installation'].
+					'forum/viewtopic.php?p='.$row['post_id'].
+				'">post</a></p>';
+
+			if (!strpos ($row['uri'], 'mode=register') &&
+				@$row['user_id'] > 1)
+					$colonnes_html[] = '<p>Par '.
+						'<a href="'.$config_wri['sous_dossier_installation'].
+						'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
+					'">'.@$row['user_name'].'</a></p>';
+		}
+
+		if (isset ($row['ip']))
+			$colonnes_html[] =
+				'<p><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
+					'">Localisation de l\'IP '.$row['ip'].'</a></p>'.
+				'<p><a href="https://cleantalk.org/blacklists/'.$row['ip'].
+					'">Vérification CleanTalk de l\'IP '.$row['ip'].'</a></p>'.
+				'<p><a href="https://stopforumspam.com/ipcheck/'.$row['ip'].
+					'">Vérification StopForumSpam de l\'IP '.$row['ip'].'</a></p>'.
+				'<p><a href="https://www.spamcop.net/w3m?action=checkblock&ip='.$row['ip'].
+					'">Vérification SpamCop de l\'IP '.$row['ip'].'</a></p>';
+
+		if (isset ($row['user_email']))
+			$colonnes_html[] =
+				'<p><a href="https://cleantalk.org/email-checker/'.$row['user_email'].
+					'">Vérification CleanTalk du mail</a></p>';
+
+		$colonnes_traces = [
+			'date' => 'date',
+			'mode' => 'mode',
+			'type d\'operateur' => 'browser_operator',
+			'rejet' => 'display_error',
+			'url' => 'uri',
+			'IP' => 'ip',
+			'host' => 'host',
+			'agent' => 'user_agent',
+			'languages supportés' => 'language',
+			'topic_id' => 'topic_id',
+			'post_id' => 'post_id',
+			'point_id' => 'point_id',
+			'commentaire_id' => 'commentaire_id',
+			'Titre' => 'title',
+			'texte' => 'text',
+			'nom user' => 'user_name',
+			'id user' => 'user_id',
+		];
+		if ($row['user_email'])
+			$colonnes_traces = array_merge ($colonnes_traces, [
+				'email user' => 'user_email',
+				'language user' => 'user_lang',
+				'IP enregistrement' => 'ip_enregistrement',
+			]);
+
+		foreach ($colonnes_traces as $title => $k)
+			if (isset ($row[$k])) {
+				$r = str_replace ("\n", " ", $row[$k]);
+				$r = preg_replace ("/\s\s+/", " ", $r);
+				$r = trim (strip_tags ($r, '<br>'));
+				if ($k == 'text')
+					$r = substr ($r, 0, 80).(strlen ($r) > 80 ? '&hellip;' : '');
+				$t = ucfirst ($title);
+				$colonnes_html[] = "<p>$t: $r</p>";
+			}
+		$colonnes_html[] = '</div>';
+
+		return implode (PHP_EOL, $colonnes_html);
 	}
 }

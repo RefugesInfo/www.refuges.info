@@ -82,7 +82,7 @@ if (empty($point->erreur))
       // On tente d'ajouter le commentaire, qui peut retourner une erreur au besoin (point supprimé, erreur technique, ...)
         $vue->messages=modification_ajout_commentaire($commentaire);
 
-      // Trace
+      // Traces
       $mode = 'Ajout commentaire';
       $vars = [
           'mode',

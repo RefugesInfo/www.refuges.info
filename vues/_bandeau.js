@@ -40,17 +40,17 @@ function menuClean(evt) {
 			el.classList.remove('menu-touch');
 }
 
-// Captcha silencieuse
+// Captcha silencieuse insérée dans le dernier formulaire
 const formEls = document.getElementsByTagName('form');
 
 if (formEls.length) {
 	const formEl = formEls[formEls.length - 1];
 
 	formEl.insertAdjacentHTML('beforeend',
-		'<input type="hidden" name="browser_operator" value="robot" />'
+		'<input type="hidden" name="browser_operator" value="machine avec javascript mais pas d\'interaction" />'
 	);
 
 	window.addEventListener('mousemove', () => {
-		formEl.children[formEl.childElementCount - 1].value = 'human';
+		formEl.children[formEl.childElementCount - 1].value = 'humain avec mouvement de souris ou tactile';
 	});
 }

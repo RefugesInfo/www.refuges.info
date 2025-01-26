@@ -45,10 +45,3 @@ switch ($_REQUEST['type'])
 
 $vue->point=infos_point($_REQUEST['id_point_retour'],true);
 $vue->utilisateurs=infos_utilisateurs();
-
-// Traces de création du commentaire
-// Hook ext/RefugesInfo/trace/listener.php liste des colonnes à afficher
-$where = ' WHERE commentaire_id = '.$commentaire->id_commentaire;
-$traces_html = '';
-$vars = ['where', 'traces_html'];
-extract($phpbb_dispatcher->trigger_event('wri.list_traces', compact($vars)));
