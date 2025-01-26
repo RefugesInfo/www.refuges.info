@@ -1,12 +1,20 @@
 <?php
+$conditions = [];
+foreach ($_GET AS $k => $v)
+	foreach (explode (',', $v) AS $vv) {
+		$vvs = explode ('!', $vv);
+		$val = $vvs[sizeof ($vvs) - 1];
+		$not = $vv[0] === '!' ? 'NOT' : '';
+		$conditions[] = $val ?
+			"$k $not LIKE '%$val%'" :
+			"$k IS $not NULL";
+	}
+
 $numero = $controlleur->url_decoupee[3] ?: 0;
 $where_list = [
+	'filtre' => ' WHERE '.implode (' AND ', $conditions),
 	'accepte' => ' WHERE ext_error IS NULL AND mode != \'Rejeté\'',
 	'rejete' => ' WHERE ext_error IS NOT NULL OR mode = \'Rejeté\'',
-	'cleantalk' => ' WHERE ext_error NOT LIKE \'%security reasons%\' AND ext_error LIKE \'%CleanTalk%\'',
-	'blockbotposts' => ' WHERE ext_error LIKE \'%security reasons%\' AND ext_error NOT LIKE \'%CleanTalk%\'',
-	'les2' => ' WHERE ext_error LIKE \'%security reasons%\' OR ext_error LIKE \'%CleanTalk%\'',
-	'nini' => ' WHERE ext_error IS NOT NULL AND ext_error NOT LIKE \'%security reasons%\' AND ext_error NOT LIKE \'%CleanTalk%\'',
 	'topic' => ' WHERE topic_id = '.$numero,
 	'post' => ' WHERE post_id = '.$numero,
 	'point' => ' WHERE point_id = '.$numero,

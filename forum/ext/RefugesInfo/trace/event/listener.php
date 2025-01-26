@@ -147,7 +147,8 @@ class listener implements EventSubscriberInterface
 				$lignes_traces_html[] = $this->affiche_trace($row);
 			$db->sql_freeresult($result);
 
-			if (!count ($lignes_traces_html))
+
+			if (!count ($lignes_traces_html) && $vars['ip'])
 				$lignes_traces_html[] = $this->affiche_trace (['ip' => $vars['ip']]);
 
 			$vars['traces_html'] =  implode (PHP_EOL.'<hr/>'.PHP_EOL, $lignes_traces_html);

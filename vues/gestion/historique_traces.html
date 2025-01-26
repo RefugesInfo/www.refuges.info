@@ -1,24 +1,33 @@
 <div class="detail_traces">
 <p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/accepte">
 	250 dernières entrées acceptées</a></p>
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/cleantalk">
-	250 dernières entrées rejetées par CleanTalk et pas par BlockBotPosts</a></p>
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/blockbotposts">
-	250 dernières entrées rejetées par BlockBotPosts et pas par CleanTalk</a></p>
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/les2">
-	250 dernières entrées rejetées par BlockBotPosts et CleanTalk</a></p>
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/nini">
-	250 dernières entrées rejetées ni par CleanTalk ni par BlockBotPosts</a></p>
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/rejete">
+
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/filtre?ext_error=CleanTalk,!security%20reasons,!No%20soup%20for%20you">
+	250 dernières entrées rejetées seulement par CleanTalk</a></p>
+
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/filtre?ext_error=!CleanTalk,security%20reasons,!No%20soup%20for%20you">
+	250 dernières entrées rejetées seulement par BlockBotPosts</a></p>
+
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/filtre?ext_error=CleanTalk,security%20reasons,!No%20soup%20for%20you">
+	250 dernières entrées rejetées seulement par CleanTalk et BlockBotPosts</a></p>
+
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/filtre?ext_error=!CleanTalk,!security%20reasons,No%20soup%20for%20you">
+	250 dernières entrées rejetées seulement par StopForumSpam</a></p>
+
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/filtre?ext_error=!,!CleanTalk,!security%20reasons,!No%20soup%20for%20you">
+	250 dernières entrées rejetées par aucun des 3</a></p>
+
+<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/filtre?ext_error=!">
 	250 dernières entrées rejetées</a></p>
+
 <p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces/">
 	250 dernières entrées</a></p>
 </div>
 
-<h4>
 <?php if (!isset ($controlleur->url_decoupee[3])) { ?>
+<h4>
 	Historique des 250 dernières traces <?=$controlleur->url_decoupee[2] ? $controlleur->url_decoupee[2] : ''?> :
-<? } ?>
 </h4>
+<? } ?>
 
 <?=$vue->traces?>
