@@ -11,6 +11,7 @@ $where_list = [
 	'post' => ' WHERE post_id = '.$numero,
 	'point' => ' WHERE point_id = '.$numero,
 	'commentaire' => ' WHERE commentaire_id = '.$numero,
+	'detail' => ' WHERE trace_id = '.$numero,
 ];
 
 // Hook ext/RefugesInfo/trace/listener.php liste des colonnes à afficher

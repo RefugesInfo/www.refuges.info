@@ -27,6 +27,7 @@ class listener implements EventSubscriberInterface
 			// Log le contexte d'une soumission de post rejeté
 			'core.posting_modify_template_vars' => 'log_request_context', // posting.php 2089
 			// Log le contexte d'une soumission de point ou de post acceptée
+			//TODO manque le point_id
 			'core.submit_post_end' => 'log_request_context', // functions_posting.php 2634
 			// Log le contexte d'une soumission de commentaire
 			'wri.point_ajout_commentaire' => 'log_request_context',
@@ -64,7 +65,7 @@ class listener implements EventSubscriberInterface
 				'mode' => ucfirst ($vars['mode']),
 				'ext_error' => isset ($vars['error']) ?
 					str_replace ('core.', '', $eventName) .' : '.
-						json_encode(array_values ($vars['error'])) :
+						json_encode(array_values (array_filter ($vars['error']))) :
 					null,
 
 				// Server
@@ -82,12 +83,12 @@ class listener implements EventSubscriberInterface
 				'date' => date('r'),
 
 				// Post & Point
-				'topic_id' => $post_data['topic_id'] ?: $this->post['topic_id'],
-				'post_id' => $post_data['post_id'] ?: $this->post['post_id'],
-				'title' => $vars['subject'] ?: @$post_data['topic_title'] ?: $vars['point']->nom,
-				'text' => $this->post['message'] ?: $vars['commentaire']->texte,
+				'topic_id' => @$post_data['topic_id'] ?: $this->post['topic_id'],
+				'post_id' => @$post_data['post_id'] ?: $this->post['post_id'],
 				'point_id' => $vars['point']->id_point,
 				'commentaire_id' => $vars['commentaire']->id_commentaire,
+				'title' => $vars['subject'] ?: @$post_data['topic_title'] ?: $vars['point']->nom,
+				'text' => $this->post['message'] ?: $vars['commentaire']->texte,
 
 				// Infos enregistrées à la création du user
 				'user_id' => @$user_data['user_id'] ?: $vars['user_id'],
@@ -146,7 +147,7 @@ class listener implements EventSubscriberInterface
 				$lignes_traces_html[] = $this->affiche_trace($row);
 			$db->sql_freeresult($result);
 
-			if (!count ($lignes_traces_html))//TODO DON'T WORK
+			if (!count ($lignes_traces_html))
 				$lignes_traces_html[] = $this->affiche_trace (['ip' => $vars['ip']]);
 
 			$vars['traces_html'] =  implode (PHP_EOL.'<hr/>'.PHP_EOL, $lignes_traces_html);
@@ -156,12 +157,13 @@ class listener implements EventSubscriberInterface
 
 	// Affichage des traces
 	function affiche_trace($row) {
-		global $config_wri;
+		global $config_wri, $controlleur;
 
 		$row = array_filter($row);
 
 		if (isset ($row['topic_title']))
 			$row['titre'] = $row['topic_title'];
+
 		if (isset ($row['ext_error']))
 			$row['display_error'] =
 				str_replace ( // Split encoded lines
@@ -170,7 +172,7 @@ class listener implements EventSubscriberInterface
 					preg_replace ( // Décode unicode
 						'/\\\\u([a-e0-9]{4})/',
 						'&#x$1;',
-						$row['ext_error']
+						$row['ext_error'],
 					),
 				);
 
@@ -216,6 +218,13 @@ class listener implements EventSubscriberInterface
 						'forum/viewtopic.php?p='.$row['post_id'].'#p'.$row['post_id'].
 					'">post</a></p>';
 			}
+			elseif (strpos ($row['uri'], 'detail')) {
+				if (isset ($row['post_id']))
+					$colonnes_html[] = '<p>Trace '.
+						'<a href="'.$config_wri['sous_dossier_installation'].
+						'forum/viewtopic.php?p='.$row['post_id'].'#p'.$row['post_id'].
+					'">post</a></p>';
+			}
 			elseif (isset ($row['post_id']))
 				$colonnes_html[] = '<p>Création du '.
 					'<a href="'.$config_wri['sous_dossier_installation'].
@@ -229,6 +238,11 @@ class listener implements EventSubscriberInterface
 						'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
 					'">'.@$row['user_name'].'</a></p>';
 		}
+		elseif (!$controlleur->url_decoupee[3])
+			$colonnes_html[] = '<p>Refusé => '.
+				'<a href="'.$config_wri['sous_dossier_installation'].
+				'gestion/historique_traces/detail/'.$row['trace_id'].
+				'">lien vers la trace</a></p>';
 
 		if (isset ($row['ip']))
 			$colonnes_html[] =

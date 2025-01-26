@@ -16,9 +16,7 @@
 </div>
 
 <h4>
-<?php if (isset ($controlleur->url_decoupee[3])) { ?>
-	Création du <?=$controlleur->url_decoupee[2].' '.$controlleur->url_decoupee[3]?> :
-<? } else { ?>
+<?php if (!isset ($controlleur->url_decoupee[3])) { ?>
 	Historique des 50 dernières traces <?=$controlleur->url_decoupee[2] ? $controlleur->url_decoupee[2] : ''?> :
 <? } ?>
 </h4>
