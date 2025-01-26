@@ -141,7 +141,7 @@ class listener implements EventSubscriberInterface
 			$sql = 'SELECT * FROM trace_requettes'.
 				$vars['where'].
 				' ORDER BY trace_id DESC'.
-				' LIMIT 50';
+				' LIMIT 250';
 			$result = $db->sql_query ($sql);
 			while ($row = $db->sql_fetchrow($result))
 				$lignes_traces_html[] = $this->affiche_trace($row);
