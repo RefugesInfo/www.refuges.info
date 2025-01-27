@@ -20,19 +20,23 @@ function forum_submit_post ($args) {
   // On garde de coté l'information d'identification de l'utilisateur connecté
   $mem_user = $user;
   
-  // On se fait passer pour l'auteur du commentaire à transférer si ce n'est pas déjà le même
-  if ($user->data['user_id'] != $args['topic_poster'] )
+  if( $args['action'] != 'edit' ) // L'action d'édition d'un topic n'a rien à changer du poster_id ou du username, et si on le fait, les logs d'édition de phpBB n'indique plus qui a fait la modif
   {
-    $user->data['user_id'] = $args['topic_poster'] = max (ANONYMOUS, $args['topic_poster']);
-    $user->data['is_registered'] = false;
-    $user->data['user_colour'] = ''; // On force la couleur de l'utilisateur dont on créer le topic à vide histoire que la couleur ne soit pas celle du modérateur connecté
-  
-    if ($user->data['user_id'] !== ANONYMOUS) // s'il n'est pas anonyme, on récupère son username
+    // On se fait passer pour l'auteur du commentaire à transférer si ce n'est pas déjà le même
+    if ($user->data['user_id'] != $args['topic_poster'] )
     {
-      $utilisateur=infos_utilisateur($args['topic_poster']);
-      $user->data['username']=$utilisateur->username;  
+      $user->data['user_id'] = $args['topic_poster'] = max (ANONYMOUS, $args['topic_poster']);
+      $user->data['is_registered'] = false;
+      $user->data['user_colour'] = ''; // On force la couleur de l'utilisateur dont on créer le topic à vide histoire que la couleur ne soit pas celle du modérateur connecté
+    
+      if ($user->data['user_id'] !== ANONYMOUS) // s'il n'est pas anonyme, on récupère son username
+      {
+        $utilisateur=infos_utilisateur($args['topic_poster']);
+        $user->data['username']=$utilisateur->username;  
+      }
     }
   }
+  
   
   $data = [ // Données par défaut
     'forum_name' => '',
