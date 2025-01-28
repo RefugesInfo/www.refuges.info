@@ -303,6 +303,13 @@ li {
   mais ça demande un peu de tests, je (sly 2024) le fais au fûr et à mesure.
 */
 
+.fade-out { 
+  transition: opacity 5s ease-in-out; /<em> 5-second transition </em>/ 
+} 
+.fade-out.hidden { 
+  opacity: 0; 
+}
+
 form#form_point fieldset {
   border: thin solid transparent;
   /* pour les allergiques aux barrieres ;) */

@@ -13,6 +13,17 @@
       <p><?=$vue->messages->message?>.</p>
   <?php } ?>
   <div>
+  <?php if ($vue->succes_ajout_commentaire) { ?>
+  <p class="fade-out" id="myText">
+    <strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en ajouter d'autres)
+  </p>
+  <script>
+  setTimeout(() => { 
+    document.getElementById('myText').classList.add('hidden'); 
+  }, 1000); // Start fading after 1 second (adjust as needed) 
+  </script>
+  <?php } ?>
+
     <form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
       <textarea class="textarea_large" name="texte"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
       <a href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe&nbsp;possible</a>
@@ -54,11 +65,6 @@
       <input type="submit" name="action" value="Envoyer" />
       <input type="reset" value="Recommencer" />
     </form>
-      <?php if ($vue->succes_ajout_commentaire) { ?>
-      <p>
-        <b>Votre commentaire a bien été ajouté.</b> (Vous pouvez en ajouter un autre si vous le souhaitez ou <a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a>)
-      </p>
-      <?php } ?>
   </div>
   <br>
   <h4>Ce que vous pouvez ou non mettre sur le site</h4>
