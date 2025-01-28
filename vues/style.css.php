@@ -303,11 +303,16 @@ li {
   mais ça demande un peu de tests, je (sly 2024) le fais au fûr et à mesure.
 */
 
+/* Pour faire disparaitre un élément au bout de 5 secondes*/
 .fade-out { 
-  transition: opacity 5s ease-in-out; /<em> 5-second transition </em>/ 
-} 
-.fade-out.hidden { 
-  opacity: 0; 
+  opacity: 0; // l'état par défaut est d'être invisible
+  animation-iteration-count: 1;
+  animation: fade;
+  animation-duration: 8s;
+}
+@keyframes fade {
+  0% { opacity: 1; filter:alpha(opacity=100); } // première frame, 100% visible
+  100% { opacity: 0; filter:alpha(opacity=0); } // dernière, 100% invisible
 }
 
 form#form_point fieldset {

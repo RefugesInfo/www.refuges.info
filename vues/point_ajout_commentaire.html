@@ -14,14 +14,9 @@
   <?php } ?>
   <div>
   <?php if ($vue->succes_ajout_commentaire) { ?>
-  <p class="fade-out" id="myText">
+  <p class="fade-out">
     <strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en ajouter d'autres)
   </p>
-  <script>
-  setTimeout(() => { 
-    document.getElementById('myText').classList.add('hidden'); 
-  }, 1000); // Start fading after 1 second (adjust as needed) 
-  </script>
   <?php } ?>
 
     <form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
