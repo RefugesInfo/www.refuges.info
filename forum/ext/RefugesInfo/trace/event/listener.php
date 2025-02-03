@@ -257,14 +257,14 @@ class listener implements EventSubscriberInterface
 					'<a href="'.$config_wri['sous_dossier_installation'].
 					'forum/viewtopic.php?p='.$row['post_id'].
 				'">post</a>';
-
-			if (!strpos ($row['uri'], 'mode=register') &&
-				$row['user_id'] > 1)
-					$colonnes_html[] = 'par '.
-						'<a href="'.$config_wri['sous_dossier_installation'].
-						'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
-					'">'.@$row['user_name'].'</a>';
 		}
+
+		if (!strpos ($row['uri'], 'mode=register') &&
+			$row['user_id'] > 1)
+				$colonnes_html[] = 'par '.
+					'<a href="'.$config_wri['sous_dossier_installation'].
+					'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
+				'">'.@$row['user_name'].'</a>';
 
 		$colonnes_html[count ($colonnes_html) - 1] .= '. ';
 

@@ -108,21 +108,15 @@ class listener implements EventSubscriberInterface
 
 	// Pour activer par défaut les notifications par email dans le cas de message privé (sans quoi plein d'utilisateur n'y prètent pas attention
 	function user_add_modify_notifications_data ($vars) {
-		$notifications_data = $vars['notifications_data']; 
-		$notifications_data = array(
-			array(
-				'item_type'	=> 'notification.type.pm',
-				'method'	=> 'notification.method.email',			  
-			),
-			array(
-				'item_type'	=> 'notification.type.post',
-				'method'	=> 'notification.method.email',
-			),
-			array(
-				'item_type'	=> 'notification.type.topic',
-				'method'	=> 'notification.method.email',
-			),
-		);
-		$vars['notifications_data'] = $notifications_data; 
+		$vars['notifications_data'] = [[
+			'item_type'	=> 'notification.type.pm',
+			'method'	=> 'notification.method.email',
+		],[
+			'item_type'	=> 'notification.type.post',
+			'method'	=> 'notification.method.email',
+		],[
+			'item_type'	=> 'notification.type.topic',
+			'method'	=> 'notification.method.email',
+		]];
 	}
 }

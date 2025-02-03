@@ -29,22 +29,22 @@
 		<label title="type d'hébergement, gîte, cabane ...">Type de point
 			<select name="id_point_type">
 				<option value="" selected="selected">(tous)</option>
-				<?php if (is_array($vue->infos_base->types_point)) 
+				<?php if (is_array($vue->infos_base->types_point))
 					foreach ($vue->infos_base->types_point AS $t) {?>
 						<option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
 					<?}?>
 			</select>
 		</label>
-		<label title="Polygone contenant les points recherchés">Polygone  : 
+		<label title="Polygone contenant les points recherchés">Polygone  :
 			<div class="autocomplete" style="width:300px;">
-              <input id="inputpolygone" name="nom_polygone" placeholder="massif/zone/département"> 
+              <input id="inputpolygone" name="nom_polygone" placeholder="massif/zone/département">
               <input id="id_polygone" type="hidden" name="id_polygone">
             </div>
 		</label>
 		<span class="champs_null_masque">
 			<input type="checkbox" name="champs_null[]" value="remark" />
 			<label title="exemple: scie, table ..." >
-				Le champ remarques contient 
+				Le champ remarques contient
 				<input type="text" name="description"/>
 			</label>
 		</span>
@@ -149,7 +149,7 @@
 
 <!-- ========== DEUXIEME GROUPE: MODERATION ================= -->
 <?php
-  // Champs uniquement pour les modérateurs (des fonctionnalités qui ne leur sont utiles qu'a eux comme chercher les cabannes fermées 
+  // Champs uniquement pour les modérateurs (des fonctionnalités qui ne leur sont utiles qu'a eux comme chercher les cabannes fermées
   $visible = '';
   if (est_moderateur() )
   {
@@ -180,7 +180,7 @@
 			</select>
 		</label>
         <label>Dont le modérateur est :
-        <select name='id_createur'>	
+        <select name='id_createur'>
             <option  value="" selected="selected">
                 Tous
             </option>
@@ -219,7 +219,7 @@
 			</label>
 	</fieldset>
 
-	
+
 </fieldset>
 <?php } ?>
 <!-- ========== TROISIEME GROUPE: RESULTATS ================= -->
@@ -242,12 +242,12 @@
 			<!--<input type="submit" name="carte" value="Afficher sur une carte (non fonctionnel)" />-->
 </fieldset>
 <!-- =========================== -->
-			
-	</form> 
+
+	</form>
 	<!-- =========================== -->
 	<h4>Rechercher dans les Pyrénées ?</h4>
 	<p>
-		Compléter votre recherche avec l'excellent site 
+		Compléter votre recherche avec l'excellent site
 		<a href="http://www.pyrenees-refuges.com">www.pyrenees-refuges.com</a>
 	</p>
 	<!-- =========================== -->
@@ -256,6 +256,6 @@
 const polygones = [];
 <?php foreach ( $vue->polygones as $polygone) { ?>
   polygones[<?=$polygone->id_polygone?>] = "<?=$polygone->nom_polygone?>";
-<?php } ?>  
+<?php } ?>
 autocomplete(document.getElementById("inputpolygone"), document.getElementById("id_polygone"), polygones);
 </script>
