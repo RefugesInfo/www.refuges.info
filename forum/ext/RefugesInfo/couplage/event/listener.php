@@ -47,6 +47,16 @@ class listener implements EventSubscriberInterface
 		global $template, $request, $user, $language; // Contexte PhpBB
 		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
 
+		// Contexte WRI
+		global $config_wri, $pdo; // $config_wri, $pdo pour le contexte du require dans la fonction
+		require_once (__DIR__.'/../../../../../includes/config.php');
+		// Les fichiers template du bandeau et du pied de page étant au format "MVC+template type refuges.info",
+		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant
+		// dans des variables des templates de PhpBB V3.2
+		require_once ('identification.php');
+		require_once ('bandeau_dynamique.php');
+		require_once ('gestion_erreur.php');
+
 		/* Includes language files of this extension */
 		$ns = explode ('\\', __NAMESPACE__);
 		$language->add_lang('common', $ns[0].'/'.$ns[1]);
@@ -57,18 +67,8 @@ class listener implements EventSubscriberInterface
 			header('Location: https://'.$this->server['HTTP_HOST'].$request->variable('redirect', '/'));
 		}
 
-		global $config_wri, $pdo; // Contexte WRI
-		require_once (__DIR__.'/../../../../../includes/config.php');
-
 		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
 		$template->assign_var('STYLE_CSS_TIME', filemtime($config_wri['chemin_vues'].'style.css.php'));
-
-		// Les fichiers template du bandeau et du pied de page étant au format "MVC+template type refuges.info",
-		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant
-		// dans des variables des templates de PhpBB V3.2
-		require_once ('identification.php');
-		require_once ('bandeau_dynamique.php');
-		require_once ('gestion_erreur.php');
 
 		$vue = new \stdClass;
 		$vue->type = '';

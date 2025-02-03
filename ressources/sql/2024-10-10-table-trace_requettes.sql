@@ -2,7 +2,7 @@ CREATE SEQUENCE trace_requettes_seq INCREMENT 1 MINVALUE 1 MAXVALUE 922337203685
 CREATE TABLE "trace_requettes" (
   "trace_id" integer DEFAULT nextval('trace_requettes_seq') NOT NULL,
   PRIMARY KEY ("trace_id"),
-  "mode" character(32) NULL,
+  "mode" character(128) NULL,
   "ext_error" text NULL,
   "uri" text NULL,
   "ip" character(64) NULL,

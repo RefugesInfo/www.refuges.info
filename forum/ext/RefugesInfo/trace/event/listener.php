@@ -1,6 +1,18 @@
 <?php
-// Ce fichier centralise les fonctions PHP liées à l'enregistrement des traces des posts et enregistrements
+// Ce fichier centralise les fonctions PHP liées à tracer l'environnement des posts et enregistrements
 // Attention: Le code suivant s'exécute dans un "namespace" bien défini
+
+/* tests à faire
+Création user
+Création post
+Création point
+Création commentaire
+
+Déconnecté refusé
+Déconnecté
+Connecté refusé
+Connecté
+*/
 
 namespace RefugesInfo\trace\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -9,10 +21,10 @@ if (!defined('IN_PHPBB')) exit;
 
 class listener implements EventSubscriberInterface
 {
-	// List of externals
 	public function __construct(
 	) {
 		global $request;
+
 		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
 		$this->get = $request->get_super_global(\phpbb\request\request_interface::GET);
 		$this->post = $request->get_super_global(\phpbb\request\request_interface::POST);
@@ -20,14 +32,13 @@ class listener implements EventSubscriberInterface
 
 	static public function getSubscribedEvents () {
 		return [
-			// Log le contexte d'une création de user acceptée
-			'core.ucp_register_register_after' => 'log_request_context', // ucp_register.php 562
 			// Log le contexte d'une création de user rejetée
 			'core.ucp_register_modify_template_data' => 'ucp_register_modify_template_data', // ucp_register.php 682
 			// Log le contexte d'une soumission de post rejeté
 			'core.posting_modify_template_vars' => 'log_request_context', // posting.php 2089
-			// Log le contexte d'une soumission de point ou de post acceptée
-			//TODO manque le point_id
+			// Log le contexte d'une création de user acceptée
+			'core.ucp_register_register_after' => 'log_request_context', // ucp_register.php 562
+			// Log le contexte d'une soumission de point ou de post acceptée //TODO manque le point_id
 			'core.submit_post_end' => 'log_request_context', // functions_posting.php 2634
 			// Log le contexte d'une soumission de commentaire
 			'wri.point_ajout_commentaire' => 'log_request_context',
@@ -43,13 +54,13 @@ class listener implements EventSubscriberInterface
 	function ucp_register_modify_template_data($vars, $eventName) {
 		$vars['user_row'] = $this->post;
 
-		if (isset ($this->post['new_password'])) // Except when load registration page
+		if (isset ($this->post['new_password'])) // Except when load the registration page
 			$this->log_request_context ($vars, $eventName);
 	}
 
-	// Log le contexte d'une soumission de post ou d'une création d'user
+	// Log le contexte d'une soumission
 	function log_request_context($vars, $eventName) {
-		global $user, $auth, $db, $config_wri;
+		global $user, $auth, $db;
 
 		if (count ($this->post) && // Except when load a post page
 			!$auth->acl_get('m_')) // Sauf pour les modérateurs
@@ -62,10 +73,9 @@ class listener implements EventSubscriberInterface
 
 			$log = [
 				// General
-				'mode' => ucfirst ($vars['mode']),
-				'ext_error' => isset ($vars['error']) ?
-					str_replace ('core.', '', $eventName) .' : '.
-						json_encode(array_values (array_filter ($vars['error']))) :
+				'mode' => $vars['mode'] .str_replace (['core.', 'wri.'], ' ', $eventName),
+				'ext_error' => $vars['error'] && count ($vars['error']) ?
+					json_encode($vars['error']) :
 					null,
 
 				// Server
@@ -102,13 +112,13 @@ class listener implements EventSubscriberInterface
 				'host_enregistrement' => $this->gethost (@$user_data['user_ip']),
 			];
 
-			$sql = 'INSERT INTO trace_requettes '. $db->sql_build_array ('INSERT', array_filter($log));
+			$sql = 'INSERT INTO trace_requettes'. $db->sql_build_array ('INSERT', array_filter($log));
 			$db->sql_query($sql);
 		}
 	}
 
 	function gethost ($ip) {
-		if (substr_count($ip, '.') === 3)
+		if (substr_count ($ip, '.') === 3)
 			return gethostbyaddr($ip);
 		return null;
 	}
@@ -138,10 +148,13 @@ class listener implements EventSubscriberInterface
 		if ($auth->acl_get('m_')) {
 			$lignes_traces_html = [];
 
-			$sql = 'SELECT * FROM trace_requettes'.
+			$sql = 'SELECT trace_requettes.*, points.topic_id AS point_topic_id'.
+				' FROM trace_requettes'.
+				' LEFT JOIN points ON (trace_requettes.topic_id = points.topic_id)'.
 				$vars['where'].
 				' ORDER BY trace_id DESC'.
 				' LIMIT 250';
+			//echo $sql;
 			$result = $db->sql_query ($sql);
 			while ($row = $db->sql_fetchrow($result))
 				$lignes_traces_html[] = $this->affiche_trace($row);
@@ -149,7 +162,9 @@ class listener implements EventSubscriberInterface
 
 
 			if (!count ($lignes_traces_html) && $vars['ip'])
-				$lignes_traces_html[] = $this->affiche_trace (['ip' => $vars['ip']]);
+				$lignes_traces_html[] = $this->affiche_trace (['
+					ip' => $vars['ip'],
+				]);
 
 			$vars['traces_html'] =  implode (PHP_EOL.'<hr/>'.PHP_EOL, $lignes_traces_html);
 			return $vars['traces_html'];
@@ -157,10 +172,22 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Affichage des traces
-	function affiche_trace($row) {
-		global $config_wri, $controlleur;
+	function affiche_trace($input_row) {
+		// Contexte WRI
+		global $request, $config_wri; // $config_wri pour le contexte du require dans la fonction
+		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
+		require_once (__DIR__.'/../../../../../includes/config.php');
 
-		$row = array_filter($row);
+		$row = array_map('trim', array_filter ($input_row));
+		preg_match('/(.*) ([a-z_]*)/',$row['mode'],$mode);
+		if (strpos ($mode[2], '_')) {
+			$row['listener'] = $mode[2];
+			$row['mode'] = str_replace (
+				['post', 'reply', 'reply', 'quote', 'edit'],
+				['création d\'un post', 'réponse à un post', 'réponse à un post', 'èdition d\'un post'],
+				$mode[1]
+			);
+		}
 
 		if (isset ($row['topic_title']))
 			$row['titre'] = $row['topic_title'];
@@ -170,83 +197,93 @@ class listener implements EventSubscriberInterface
 				str_replace ( // Split encoded lines
 					['","','["','"]'],
 					['<br/>- ', '<br/>- ', ''],
-					preg_replace ( // Décode unicode
+					preg_replace ( // Décode unicode if such returned by extensions
 						'/\\\\u([a-e0-9]{4})/',
 						'&#x$1;',
 						$row['ext_error'],
 					),
 				);
 
-		$colonnes_html = [
-			'<div class="detail_traces">',
-		];
+		// Construction de la première ligne
+		$colonnes_html = [];
 
-		if (!count ($this->get) && // Si listage historique
-			!isset ($row['ext_error'])) // Uniquement si acceptée
-		{
+		if (isset ($row['ext_error']))
+			$colonnes_html[] = 'REJET '.$row['mode'];
+		else {
 			if (strpos ($row['uri'], 'point_modification')) {
 				if (isset ($row['point_id']))
-					$colonnes_html[] = '<p>Création du '.
+					$colonnes_html[] = 'création d\'un '.
 						'<a href="'.$config_wri['sous_dossier_installation'].
 						'point/'.$row['point_id'].
-					'">point</a></p>';
+					'">point</a>';
 				elseif (isset ($row['post_id']))
-					$colonnes_html[] = '<p>Création d\'un point et de son '.
+					$colonnes_html[] = 'création d\'un point et de son '.
 						'<a href="'.$config_wri['sous_dossier_installation'].
 						'forum/viewtopic.php?p='.$row['post_id']
-					.'">forum</a></p>';
+					.'">forum</a>';
 			}
 			elseif (strpos ($row['uri'], 'ajout_commentaire')) {
 				if (isset ($row['point_id']))
-					$colonnes_html[] = '<p>Création du '.
+					$colonnes_html[] = 'création d\'un '.
 						'<a href="'.$config_wri['sous_dossier_installation'].
 						'point/'.$row['point_id'].'#C'.$row['commentaire_id'].
-					'">commentaire</a></p>';
+					'">commentaire</a>';
 			}
 			elseif (strpos ($row['uri'], 'mode=register')) {
 				if (isset ($row['user_id']))
-					$colonnes_html[] = '<p>Création du compte '.
+					$colonnes_html[] = 'création du compte '.
 						'<a href="'.$config_wri['sous_dossier_installation'].
 						'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
-					'">'.@$row['user_name'].'</a></p>';
+					'">'.@$row['user_name'].'</a>';
 				else
-					$colonnes_html[] = '<p>Création du compte</p>';
+					$colonnes_html[] = 'création d\'un compte';
 			}
 			elseif (strpos ($row['uri'], 'reply')) {
 				if (isset ($row['post_id']))
-					$colonnes_html[] = '<p>Réponse au '.
+					$colonnes_html[] = 'réponse au '.
 						'<a href="'.$config_wri['sous_dossier_installation'].
 						'forum/viewtopic.php?p='.$row['post_id'].'#p'.$row['post_id'].
-					'">post</a></p>';
+					'">post</a>';
 			}
-			elseif (strpos ($row['uri'], 'detail')) {
+			elseif (strpos ($row['uri'], 'trace')) {
 				if (isset ($row['post_id']))
-					$colonnes_html[] = '<p>Trace '.
+					$colonnes_html[] = 'trace '.
 						'<a href="'.$config_wri['sous_dossier_installation'].
 						'forum/viewtopic.php?p='.$row['post_id'].'#p'.$row['post_id'].
-					'">post</a></p>';
+					'">post</a>';
 			}
 			elseif (isset ($row['post_id']))
-				$colonnes_html[] = '<p>Création du '.
+				$colonnes_html[] = 'création d\'un '.
 					'<a href="'.$config_wri['sous_dossier_installation'].
 					'forum/viewtopic.php?p='.$row['post_id'].
-				'">post</a></p>';
+				'">post</a>';
 
 			if (!strpos ($row['uri'], 'mode=register') &&
-				@$row['user_id'] > 1)
-					$colonnes_html[] = '<p>Par '.
+				$row['user_id'] > 1)
+					$colonnes_html[] = 'par '.
 						'<a href="'.$config_wri['sous_dossier_installation'].
 						'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
-					'">'.@$row['user_name'].'</a></p>';
+					'">'.@$row['user_name'].'</a>';
 		}
-		elseif (!$controlleur->url_decoupee[3])
-			$colonnes_html[] = '<p>Refusé => '.
-				'<a href="'.$config_wri['sous_dossier_installation'].
-				'gestion/historique_traces/detail/'.$row['trace_id'].
-				'">lien vers la trace</a></p>';
+
+		$colonnes_html[count ($colonnes_html) - 1] .= '. ';
+
+		if (!$this->get['trace_id']) {
+			$colonnes_html[] =
+				'<sup><a href="'.$config_wri['sous_dossier_installation'].
+				'gestion/historique_traces?trace_id='.$row['trace_id'].
+				'">'.$row['trace_id'].'</a></sup>';
+		}
+
+		// Construction des lignes du rapport
+		$lignes_html = [
+			'<div class="detail_traces">',
+		];
+		if (count ($colonnes_html))
+			$lignes_html[] = '<p>'. ucfirst (implode (' ', $colonnes_html)) .'</p>';
 
 		if (isset ($row['ip']))
-			$colonnes_html[] =
+			$lignes_html[] =
 				'<p><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
 					'">Localisation de l\'IP '.$row['ip'].'</a></p>'.
 				'<p><a href="https://cleantalk.org/blacklists/'.$row['ip'].
@@ -254,18 +291,21 @@ class listener implements EventSubscriberInterface
 				'<p><a href="https://stopforumspam.com/ipcheck/'.$row['ip'].
 					'">Vérification StopForumSpam de l\'IP '.$row['ip'].'</a></p>'.
 				'<p><a href="https://www.spamcop.net/w3m?action=checkblock&ip='.$row['ip'].
-					'">Vérification SpamCop de l\'IP '.$row['ip'].'</a></p>';
+					'">Vérification SpamCop de l\'IP '.$row['ip'].'</a></p>'.
+				'<p><a href="https://www.abuseipdb.com/check/'.$row['ip'].
+					'">Vérification AbuseIPdb de l\'IP '.$row['ip'].'</a></p>';
 
 		if (isset ($row['user_email']))
-			$colonnes_html[] =
+			$lignes_html[] =
 				'<p><a href="https://cleantalk.org/email-checker/'.$row['user_email'].
 					'">Vérification CleanTalk du mail</a></p>';
 
 		$colonnes_traces = [
 			'date' => 'date',
-			'mode' => 'mode',
+			//'mode' => 'mode',
 			'type d\'operateur' => 'browser_operator',
-			'rejet' => 'display_error',
+			'PhpBB listener' => 'listener',
+			'cause rejet' => 'display_error',
 			'url' => 'uri',
 			'IP' => 'ip',
 			'host' => 'host',
@@ -277,8 +317,8 @@ class listener implements EventSubscriberInterface
 			'commentaire_id' => 'commentaire_id',
 			'Titre' => 'title',
 			'texte' => 'text',
-			'nom user' => 'user_name',
 			'id user' => 'user_id',
+			'nom user' => 'user_name',
 		];
 		if ($row['user_email'])
 			$colonnes_traces = array_merge ($colonnes_traces, [
@@ -295,10 +335,10 @@ class listener implements EventSubscriberInterface
 				if ($k == 'text')
 					$r = substr ($r, 0, 80).(strlen ($r) > 80 ? '&hellip;' : '');
 				$t = ucfirst ($title);
-				$colonnes_html[] = "<p>$t: $r</p>";
+				$lignes_html[] = "<p>$t: $r</p>";
 			}
-		$colonnes_html[] = '</div>';
+		$lignes_html[] = '</div>';
 
-		return implode (PHP_EOL, $colonnes_html);
+		return implode (PHP_EOL, $lignes_html);
 	}
 }

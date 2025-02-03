@@ -9,11 +9,9 @@ class listener implements EventSubscriberInterface
 	public function __construct(
 	) {
 		global $request;
-		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
-		$this->get = $request->get_super_global(\phpbb\request\request_interface::GET);
+
 		$this->post = $request->get_super_global(\phpbb\request\request_interface::POST);
 	}
-
 	static public function getSubscribedEvents () {
 		return [
 			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
@@ -24,7 +22,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	function filter($vars) {
-		global $user, $config_wri;
+		global $user;
 
 		if ($this->post['sid'] != $user->session_id) {
 			$error = $vars['error'];

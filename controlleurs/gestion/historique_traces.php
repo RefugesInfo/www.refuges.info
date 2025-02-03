@@ -1,31 +1,27 @@
 <?php
+// /gestion/historique_traces?xxx=aaa,!bbb&yyy=ccc,zzz=123
+// => SELECT * FROM trace_requettes WHERE xxx LIKE '%aaa%' AND xxx NOT LIKE '%bbb%' AND yyy LIKE '%ccc%' AND zzz = 123
+
 $conditions = [];
 foreach ($_GET AS $k => $v)
 	foreach (explode (',', $v) AS $vv) {
-		$vvs = explode ('!', $vv);
-		$val = $vvs[sizeof ($vvs) - 1];
-		$not = $vv[0] === '!' ? 'NOT' : '';
-		$conditions[] = $val ?
-			"$k $not LIKE '%$val%'" :
-			"$k IS $not NULL";
+		$vvs = array_reverse (explode ('!', $vv));
+
+		if (!$vvs[0])
+			$conditions[] = "trace_requettes.$k IS".(isset ($vvs[1]) ? ' NOT' : '')." NULL";
+		elseif (is_numeric ($vvs[0]))
+			$conditions[] = "trace_requettes.$k ".(isset ($vvs[1]) ? '!' : '')."= {$vvs[0]}";
+		else
+			$conditions[] = "trace_requettes.$k".(isset ($vvs[1]) ? ' NOT' : '')." LIKE '%{$vvs[0]}%'";
 	}
 
-$numero = $controlleur->url_decoupee[3] ?: 0;
-$where_list = [
-	'filtre' => ' WHERE '.implode (' AND ', $conditions),
-	'accepte' => ' WHERE ext_error IS NULL AND mode != \'Rejeté\'',
-	'rejete' => ' WHERE ext_error IS NOT NULL OR mode = \'Rejeté\'',
-	'topic' => ' WHERE topic_id = '.$numero,
-	'post' => ' WHERE post_id = '.$numero,
-	'point' => ' WHERE point_id = '.$numero,
-	'commentaire' => ' WHERE commentaire_id = '.$numero,
-	'detail' => ' WHERE trace_id = '.$numero,
-];
+if (count ($conditions))
+	$where = ' WHERE '.implode (' AND ', $conditions);
 
 // Hook ext/RefugesInfo/trace/listener.php liste des colonnes à afficher
-$where = $where_list[$controlleur->url_decoupee[2]];
 $traces_html = '';
 $vars = ['where', 'traces_html'];
 extract($phpbb_dispatcher->trigger_event('wri.list_traces', compact($vars)));
 
+$vue->where = str_replace (['WHERE ', 'trace_requettes.'], '', $where);
 $vue->traces = $traces_html;
