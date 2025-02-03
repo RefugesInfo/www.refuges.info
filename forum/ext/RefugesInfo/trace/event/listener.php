@@ -51,6 +51,7 @@ class listener implements EventSubscriberInterface
 		];
 	}
 
+	// Log le contexte d'une création de user rejetée
 	function ucp_register_modify_template_data($vars, $eventName) {
 		$vars['user_row'] = $this->post;
 
@@ -154,7 +155,6 @@ class listener implements EventSubscriberInterface
 				$vars['where'].
 				' ORDER BY trace_id DESC'.
 				' LIMIT 250';
-			//echo $sql;
 			$result = $db->sql_query ($sql);
 			while ($row = $db->sql_fetchrow($result))
 				$lignes_traces_html[] = $this->affiche_trace($row);
@@ -162,8 +162,8 @@ class listener implements EventSubscriberInterface
 
 
 			if (!count ($lignes_traces_html) && $vars['ip'])
-				$lignes_traces_html[] = $this->affiche_trace (['
-					ip' => $vars['ip'],
+				$lignes_traces_html[] = $this->affiche_trace ([
+					'ip' => $vars['ip'],
 				]);
 
 			$vars['traces_html'] =  implode (PHP_EOL.'<hr/>'.PHP_EOL, $lignes_traces_html);
