@@ -1,3 +1,31 @@
+# Sur une idée de wikipedia https://en.wikipedia.org/robots.txt , en 2025 on ne peut plus se permettre d'accepter tous les robots du web qui consomment nos ressources, pompent nos contenus sans retours.
+# Les robots d'interlligence artificielle à l'énorme gourmandise, en crawling et en energie remplissent à eux seuls une grosse partie de nos logs web. In finé, c'est pour eux que je paye des ressources RAM et CPU, et tout ça pour quoi ?
+# 
+# le 04/02/2025 sur 77000 pages téléchargées 60000 sont dû à des robots : 78% de nos visiteurs sont des robots !
+# Et encore, ce calcul est basé sur la présence des 2 mots "crawl" et "bot" dans le user-agent, c'est donc la borne inférieure ! pour tout ceux qui se cachent, ceux qui n'ont pas ce mot clé, si ça se trouve on est plus proche de 85% ou même 90% ? pire
+# encore ?
+# Sur ce même jour encore, voilà les pompeurs de contenu :
+# 
+# 18% Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.2; +https://openai.com/gptbot)
+# 16% Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Amazonbot/0.1; +https://developer.amazon.com/support/amazonbot) Chrome/119.0.6045.214 Safari/537.36
+# 16% Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)
+# 6.5% Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)
+# 2.5% Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)
+# 2%  Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)
+# 1.6% Mozilla/5.0 (Linux; Android 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; Bytespider; spider-feedback@bytedance.com)
+# 1.3% Mozilla/5.0 (compatible; DotBot/1.2; +https://opensiteexplorer.org/dotbot; help@moz.com)
+
+
 User-agent: *
 Disallow: /photos_points/*
 Disallow: /forum/photos-points/*
+
+# Cette liste est construite de manière empirique et personnelle, j'ai pris les robots qui visitent le plus notre site et dont je ne parviens pas à me convaincre qu'ils nous sont bénéfiques. 
+# Cette liste pourra être augmentée de manière régulière, voir recopiée d'autres qui font déjà le même boulot.
+User-agent: GPTBot
+User-agent: Amazonbot
+User-agent: Barkrowler
+User-agent: MJ12bot
+User-agent: AhrefsBot
+User-agent: Bytespider
+Disallow: /
