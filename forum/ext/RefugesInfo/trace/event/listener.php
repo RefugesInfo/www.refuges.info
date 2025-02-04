@@ -129,11 +129,9 @@ class listener implements EventSubscriberInterface
 
 	function gethost ($ip) {
 		if (substr_count ($ip, '.') === 3) {
-			$ipinfo = @file_get_contents ("https://ipinfo.io/$ip/json");
+			$ipinfo = @json_decode( file_get_contents ("https://ipinfo.io/$ip/json"));
 			if ($ipinfo)
-				$operator = @json_decode($ipinfo)->org;
-			if ($operator)
-				return $operator.' : '.gethostbyaddr($ip);
+				return $ipinfo->org.' / '.$ipinfo->hostname;
 
 			return gethostbyaddr($ip);
 		}
@@ -318,12 +316,12 @@ class listener implements EventSubscriberInterface
 		$colonnes_traces = [
 			'date' => 'date',
 			//'mode' => 'mode',
-			'type d\'operateur' => 'browser_operator',
+			'type d\'opérateur' => 'browser_operator',
 			'PhpBB listener' => 'listener',
 			'cause rejet' => 'display_error',
 			'url' => 'uri',
 			'IP' => 'ip',
-			'host' => 'host',
+			'opérateur / host' => 'host',
 			'agent' => 'user_agent',
 			'languages supportés' => 'language',
 			'topic_id' => 'topic_id',
