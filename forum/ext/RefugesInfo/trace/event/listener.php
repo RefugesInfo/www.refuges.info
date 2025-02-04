@@ -67,8 +67,12 @@ class listener implements EventSubscriberInterface
 			!$auth->acl_get('m_')) // Sauf pour les modérateurs
 		{
 			$post_data = $vars['data'] ?: $vars['post_data'];
-			$user_data = $vars['user_row'] ?: $user->data;
 
+			if (!$vars['data']['post_visibility'])
+				$vars['error'] = array_merge (
+					$vars['error'] ?: [],
+					['Post mis en approbation par CleanTalk']
+				);
 			if (strpos($eventName, 'register') !== false)
 				$vars['mode'] = 'création compte';
 
@@ -154,7 +158,7 @@ class listener implements EventSubscriberInterface
 				' LEFT JOIN points ON (trace_requettes.topic_id = points.topic_id)'.
 				$vars['where'].
 				' ORDER BY trace_id DESC'.
-				' LIMIT 250';
+				' LIMIT '.($vars['limit'] ?: 250);
 			$result = $db->sql_query ($sql);
 			while ($row = $db->sql_fetchrow($result))
 				$lignes_traces_html[] = $this->affiche_trace($row);

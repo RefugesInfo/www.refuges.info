@@ -24,12 +24,13 @@
 	250 dernières entrées</a></p>
 </div>
 
-<h4>Historique des 250 dernières traces :</h4>
+<h4>Historique des <?=$vue->limit_traces?> dernières traces :</h4>
 
 <?php if ($vue->where) { ?>
-	<div class="detail_traces"><p>
-		<?=$vue->where?>
-	</p></div><hr/>
+	<div class="detail_traces">
+			<p>Avec les critères SQL :</p>
+			<p><?=$vue->where?></p>
+	</div><hr/>
 <?php } ?>
 
 <?=$vue->traces?>
