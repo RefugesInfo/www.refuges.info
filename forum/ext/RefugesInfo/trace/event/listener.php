@@ -68,11 +68,12 @@ class listener implements EventSubscriberInterface
 		{
 			$post_data = $vars['data'] ?: $vars['post_data'];
 
+/*//TODO marche pas !
 			if (!$vars['data']['post_visibility'])
 				$vars['error'] = array_merge (
 					$vars['error'] ?: [],
 					['Post mis en approbation par CleanTalk']
-				);
+				);*/
 			if (strpos($eventName, 'register') !== false)
 				$vars['mode'] = 'création compte';
 
