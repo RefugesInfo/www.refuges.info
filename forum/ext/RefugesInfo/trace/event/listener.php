@@ -39,7 +39,7 @@ class listener implements EventSubscriberInterface
 			// Log le contexte d'une création de user acceptée
 			'core.ucp_register_register_after' => 'log_request_context', // ucp_register.php 562
 			// Log le contexte d'une soumission de point ou de post acceptée //TODO manque le point_id
-			'core.submit_post_end' => 'log_request_context', // functions_posting.php 2634
+			'core.submit_post_end' => 'submit_post_end', // functions_posting.php 2634
 			// Log le contexte d'une soumission de commentaire
 			'wri.point_ajout_commentaire' => 'log_request_context',
 			// Traces dans une fiche
@@ -59,6 +59,16 @@ class listener implements EventSubscriberInterface
 			$this->log_request_context ($vars, $eventName);
 	}
 
+	// Log le contexte d'une soumission de post acceptée
+	function submit_post_end($vars, $eventName) {
+		if (!$vars['error'] && $vars['data']['post_visibility'] === 0)
+			$vars['error'] = array_merge (
+				$vars['error'] ?: [],
+				['Post mis en approbation par CleanTalk']
+			);
+		$this->log_request_context ($vars, $eventName);
+	}
+
 	// Log le contexte d'une soumission
 	function log_request_context($vars, $eventName) {
 		global $user, $auth, $db;
@@ -68,12 +78,6 @@ class listener implements EventSubscriberInterface
 		{
 			$post_data = $vars['data'] ?: $vars['post_data'];
 
-/*//TODO marche pas !
-			if (!$vars['data']['post_visibility'])
-				$vars['error'] = array_merge (
-					$vars['error'] ?: [],
-					['Post mis en approbation par CleanTalk']
-				);*/
 			if (strpos($eventName, 'register') !== false)
 				$vars['mode'] = 'création compte';
 
