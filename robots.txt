@@ -1,4 +1,4 @@
-# Sur une idée de wikipedia https://en.wikipedia.org/robots.txt , en 2025 on ne peut plus se permettre d'accepter tous les robots du web qui consomment nos ressources, pompent nos contenus sans retours.
+# Sur une idée https://www.theverge.com/24067997/robots-txt-ai-text-file-web-crawlers-spiders suivi par wikipedia https://en.wikipedia.org/robots.txt , en 2025 on ne peut plus se permettre d'accepter tous les robots du web qui consomment nos ressources, pompent nos contenus sans retours.
 # Les robots d'interlligence artificielle à l'énorme gourmandise, en crawling et en energie remplissent à eux seuls une grosse partie de nos logs web. In finé, c'est pour eux que je paye des ressources RAM et CPU, et tout ça pour quoi ?
 # 
 # le 04/02/2025 sur 77000 pages téléchargées 60000 sont dû à des robots : 78% de nos visiteurs sont des robots !
