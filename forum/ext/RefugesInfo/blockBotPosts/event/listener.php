@@ -21,7 +21,7 @@ class listener implements EventSubscriberInterface
 		];
 	}
 
-	function filter($vars) {
+	public function filter($vars) {
 		global $user;
 
 		if ($this->post['sid'] != $user->session_id) {

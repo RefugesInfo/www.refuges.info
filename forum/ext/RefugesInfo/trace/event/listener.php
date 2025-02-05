@@ -52,7 +52,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Log le contexte d'une création de user rejetée
-	function ucp_register_modify_template_data($vars, $eventName) {
+	 public function ucp_register_modify_template_data($vars, $eventName) {
 		$vars['user_row'] = $this->post;
 
 		if (isset ($this->post['new_password'])) // Except when load the registration page
@@ -60,7 +60,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Log le contexte d'une soumission de post acceptée
-	function submit_post_end($vars, $eventName) {
+	 public function submit_post_end($vars, $eventName) {
 		if (!$vars['error'] && $vars['data']['post_visibility'] === 0)
 			$vars['error'] = array_merge (
 				$vars['error'] ?: [],
@@ -70,7 +70,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Log le contexte d'une soumission
-	function log_request_context($vars, $eventName) {
+	 public function log_request_context($vars, $eventName) {
 		global $user, $auth, $db;
 
 		if (count ($this->post) && // Except when load a post page
@@ -127,7 +127,7 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
-	function gethost ($ip) {
+	private function gethost ($ip) {
 		if (substr_count ($ip, '.') === 3) {
 			$ipinfo = @json_decode( file_get_contents ("https://ipinfo.io/$ip/json"));
 			if ($ipinfo)
@@ -137,7 +137,7 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
-	function mcp_additional_options ($vars, $eventName) {
+	 public function mcp_additional_options ($vars, $eventName) {
 		global $template, $user, $phpbb_dispatcher;
 
 		$vars = [
@@ -156,7 +156,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Affichage des traces
-	function list_traces($vars, $eventName) {
+	 public function list_traces($vars, $eventName) {
 		global $db, $auth;
 
 		if ($auth->acl_get('m_')) {
@@ -185,7 +185,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	// Affichage des traces
-	function affiche_trace($input_row) {
+	 private function affiche_trace($input_row) {
 		// Contexte WRI
 		global $request, $config_wri; // $config_wri pour le contexte du require dans la fonction
 		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
@@ -297,21 +297,23 @@ class listener implements EventSubscriberInterface
 
 		if (isset ($row['ip']))
 			$lignes_html[] =
-				'<p><a href="https://whatismyipaddress.com/ip/'.$row['ip'].
-					'">Localisation de l\'IP '.$row['ip'].'</a></p>'.
-				'<p><a href="https://cleantalk.org/blacklists/'.$row['ip'].
-					'">Vérification CleanTalk de l\'IP '.$row['ip'].'</a></p>'.
-				'<p><a href="https://stopforumspam.com/ipcheck/'.$row['ip'].
-					'">Vérification StopForumSpam de l\'IP '.$row['ip'].'</a></p>'.
-				'<p><a href="https://www.spamcop.net/w3m?action=checkblock&ip='.$row['ip'].
-					'">Vérification SpamCop de l\'IP '.$row['ip'].'</a></p>'.
-				'<p><a href="https://www.abuseipdb.com/check/'.$row['ip'].
-					'">Vérification AbuseIPdb de l\'IP '.$row['ip'].'</a></p>';
+				'<p>Localisation <a href="https://whatismyipaddress.com/ip/'.
+					$row['ip'].'">'.$row['ip'].'</a></p>'.
+				'<p>IPinfo <a href="https://ipinfo.io/'.
+					$row['ip'].'">'.$row['ip'].'</a></p>'.
+				'<p>CleanTalk <a href="https://cleantalk.org/blacklists/'.
+					$row['ip'].'">'.$row['ip'].'</a></p>'.
+				'<p>StopForumSpam <a href="https://stopforumspam.com/ipcheck/'.
+					$row['ip'].'">'.$row['ip'].'</a></p>'.
+				'<p>SpamCop <a href="https://www.spamcop.net/w3m?action=checkblock&ip='.
+					$row['ip'].'">'.$row['ip'].'</a></p>'.
+				'<p>AbuseIPdb <a href="https://www.abuseipdb.com/check/'.
+					$row['ip'].'">'.$row['ip'].'</a></p>';
 
 		if (isset ($row['user_email']))
 			$lignes_html[] =
-				'<p><a href="https://cleantalk.org/email-checker/'.$row['user_email'].
-					'">Vérification CleanTalk du mail</a></p>';
+				'<p>CleanTalk <a href="https://cleantalk.org/email-checker/'.
+					$row['user_email'].'"></a></p>';
 
 		$colonnes_traces = [
 			'date' => 'date',
