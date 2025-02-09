@@ -3,3 +3,7 @@ services:
         class: RefugesInfo\blockBotPosts\event\listener
         tags:
             - { name: event.listener }
+        arguments:
+            - '@request'
+            - '@user'
+            - '@language'

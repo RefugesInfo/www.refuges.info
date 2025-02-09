@@ -4,31 +4,41 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 if (!defined('IN_PHPBB')) exit;
 
+use phpbb\request\request;
+use phpbb\user;
+use phpbb\language\language;
+
 class listener implements EventSubscriberInterface
 {
 	public function __construct(
-	) {
-		global $request;
-
+		request $request,
+		user $user,
+		language $language)
+	{
 		$this->post = $request->get_super_global(\phpbb\request\request_interface::POST);
+		$this->user = $user;
+		$this->language = $language;
 	}
 	static public function getSubscribedEvents () {
 		return [
 			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
 			'core.ucp_register_data_after' => 'filter', // ucp_register.php 265
-			'rmcgirr83.contactadmin.modify_data_and_error' => 'filter',
+			'rmcgirr83.contactadmin.modify_data_and_error' => 'filter', // Extension contactadmin
 			'block_bot_posts.filter' => 'filter', // External API
 		];
 	}
 
-	public function filter($vars) {
-		global $user;
+	public function filter ($event) {
+		// Includes language files of this extension
+		$ns = explode ('\\', __NAMESPACE__);
+		$this->language->add_lang ('common', $ns[0].'/'.$ns[1]);
 
-		if ($this->post['sid'] != $user->session_id) {
-			$error = $vars['error'];
-			$error[] = 'Your '.($vars['mode'] ? 'message' : 'account').
-				' has been rejected for security reasons by BlockBotPosts.';
-			$vars['error'] = $error;
+		if ($this->post['sid'] != $this->user->session_id) {
+			$error = $event['error'];
+			$error[] = $this->language->lang (
+				$event['mode'] ? 'MESSAGE_REJECTED' : 'ACCOUNT_REJECTED'
+			);
+			$event['error'] = $error;
 		}
 	}
 }

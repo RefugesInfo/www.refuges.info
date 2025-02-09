@@ -426,15 +426,26 @@ input[type=radio]:hover {
   box-shadow: 0px 0px 10px #1300ff;
 }
 
+/*==========traces=======*/
+.traces p {
+  margin: 4px;
+}
+.traces label {
+	display: block;
+	margin: 3px;
+}
+.traces button {
+	display: block;
+	margin: 10px 30px;
+	font-weight: bold;
+}
+
 /*==========divers=======*/
 img {
   /* images sans bordures */
   border: 0px;
   margin: 0px;
   padding: 0px;
-}
-.detail_traces p {
-  margin: 4px;
 }
 
 /*=========liens==========*/

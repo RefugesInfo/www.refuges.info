@@ -3,3 +3,9 @@ services:
         class: RefugesInfo\couplage\event\listener
         tags:
             - { name: event.listener }
+        arguments:
+            - '@request'
+            - '@user'
+            - '@language'
+            - '@template'
+            - '@dbal.conn'

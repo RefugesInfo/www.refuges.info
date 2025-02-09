@@ -7,6 +7,7 @@ CREATE TABLE "trace_requettes" (
   "uri" text NULL,
   "ip" character(64) NULL,
   "host" character(128) NULL,
+  "asn" character(128) NULL,
   "user_agent" character(256) NULL,
   "language" character(128) NULL,
   "browser_operator" character(128) NULL,

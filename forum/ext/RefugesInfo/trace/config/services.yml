@@ -3,3 +3,10 @@ services:
         class: RefugesInfo\trace\event\listener
         tags:
             - { name: event.listener }
+        arguments:
+            - '@request'
+            - '@user'
+            - '@auth'
+            - '@language'
+            - '@template'
+            - '@dbal.conn'

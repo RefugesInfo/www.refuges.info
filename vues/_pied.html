@@ -10,25 +10,25 @@
 	</a> - 
 	<a href="<?=lien_wiki('mentions-legales')?>">
 		Mentions légales
-	</a>
-	<?php if(!$point && !$request->variable('f', 0)) { ?>
-		-
+	</a> -
+	<?php if(!$point) { ?>
 		<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact/">
 			Contact
 		</a> - 
-		<a href="<?=$config_wri['sous_dossier_installation']?>gps/">
-			Version mobile
-		</a> - 
-		<a id="lien-api" href="<?=$config_wri['sous_dossier_installation']?>api/doc/">
-			API
-		</a> - 
-		<a id="lien-exportation" href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations">
-			Exporter la base
-		</a> -
-		<a id="formulaire-rss" href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss">
-			Flux RSS
-		</a>
 	<?php } ?>
+	<a href="<?=$config_wri['sous_dossier_installation']?>gps/">
+		Version mobile
+	</a> - 
+	<a id="lien-api" href="<?=$config_wri['sous_dossier_installation']?>api/doc/">
+		API
+	</a> - 
+	<a id="lien-exportation" href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations">
+		Exporter la base
+	</a> -
+	<a id="formulaire-rss" href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss">
+		Flux RSS
+	</a>
+
 	<?php if ($config_wri['debug']) { ?>
 		- 
 		<a href="http://validator.w3.org/check?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">

@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* This file is part of the french language pack for the Gym Forum Software package.
+* Ce fichier fait partie du pack de langue français pour le logiciel RefugesInfo.
 *
 * @copyright (c) 2020 Dominique Cavailhez
 * @license GNU General Public License, version 2 (GPL-2.0)

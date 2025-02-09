@@ -1,35 +1,42 @@
-<div class="detail_traces">
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=">
-	250 dernières entrées acceptées</a></p>
-
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!">
-	250 dernières entrées rejetées</a></p>
-
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=CleanTalk,!security%20reasons,!No%20soup">
-	250 dernières entrées rejetées seulement par CleanTalk</a></p>
-
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!CleanTalk,security%20reasons,!No%20soup">
-	250 dernières entrées rejetées seulement par BlockBotPosts</a></p>
-
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=CleanTalk,security%20reasons,!No%20soup">
-	250 dernières entrées rejetées seulement par CleanTalk et BlockBotPosts</a></p>
-
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!CleanTalk,!security%20reasons,No%20soup">
-	250 dernières entrées rejetées seulement par StopForumSpam</a></p>
-
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!CleanTalk,!security%20reasons,!No%20soup">
-	250 dernières entrées rejetées par aucun des 3</a></p>
-
-<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces">
-	250 dernières entrées</a></p>
+<div class="traces">
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=null">
+		250 dernières contributions acceptées</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!null">
+		250 dernières contributions rejetées</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=CleanTalk,!security%20reasons,!No%20soup">
+		250 dernières contributions rejetées seulement par CleanTalk</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!nullCleanTalk,security%20reasons,!No%20soup">
+		250 dernières contributions rejetées seulement par BlockBotPosts</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=CleanTalk,security%20reasons,!No%20soup">
+		250 dernières contributions rejetées seulement par CleanTalk et BlockBotPosts</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!nullCleanTalk,!security%20reasons,No%20soup">
+		250 dernières contributions rejetées seulement par StopForumSpam</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!nullCleanTalk,!security%20reasons,!No%20soup">
+		250 dernières contributions rejetées par aucun des 3</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces">
+		250 dernières contributions</a></p>
 </div>
+<hr/>
+
+<form class="traces" method="get" action="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces">
+	<div>Syntaxe : chaine (contient) , !chaine (ne contient pas) , null , !null</div>
+	<label>Trace <input type="text" name="trace_id" value="<?=$_GET['trace_id']?>" /></label>
+	<label>Erreur <input type="text" size="50" name="ext_error" value="<?=$_GET['ext_error']?>" /></label>
+	<label>Fournisseur <input type="text" name="asn" value="<?=$_GET['asn']?>" /></label>
+	<label>Host <input type="text" name="host" value="<?=$_GET['host']?>" /></label>
+	<input type="text" size="5" name="limit" value="<?=$_GET['limit']?:250?>" /> lignes,
+	en sautant <input type="text" size="5" name="offset" value="<?=$_GET['offset']?>" /> lignes,
+	<input type="checkbox" name="rebuild">rebuild ASN
+	<button type="submit">Filtrer</button>
+</form>
+<hr/>
+<!-- avoid browser_operator field --><form/>
 
 <h4>Historique des <?=$vue->limit_traces?> dernières traces :</h4>
 
 <?php if ($vue->where) { ?>
-	<div class="detail_traces">
-			<p>Avec les critères SQL :</p>
-			<p><?=$vue->where?></p>
+	<div class="traces">
+		<p><?=$vue->where?></p>
 	</div><hr/>
 <?php } ?>
 
