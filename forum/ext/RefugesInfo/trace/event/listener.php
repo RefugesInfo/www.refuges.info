@@ -51,7 +51,7 @@ class listener implements EventSubscriberInterface
 		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
 		require_once (__DIR__.'/../../../../../includes/config.php');
 		$this->config_wri = $config_wri;
-		// Uploader GeoIPAS*.dat de https://mailfud.org/geoip-legacy/
+		// Uploader Geo*.dat de https://mailfud.org/geoip-legacy/
 		geoip_setup_custom_directory ($config_wri['racine_projet'].'ressources/geoip');
 	}
 
@@ -104,9 +104,7 @@ class listener implements EventSubscriberInterface
 
 	// Log le contexte d'une soumission
 	public function log_request_context($event, $eventName) {
-		if (count ($this->post) && // Except when load a post page
-			!$this->auth->acl_get('m_')) // Sauf pour les modérateurs
-		{
+		if (count ($this->post)) { // Except when load a post page
 			$post_data = $event['data'] ?: $event['post_data'];
 
 			if (strpos($eventName, 'register') !== false)
@@ -178,7 +176,7 @@ class listener implements EventSubscriberInterface
 
 	// Affichage des traces
 	public function affiche_traces($event, $eventName) {
-		if ($this->auth->acl_get('m_')) {
+		if ($this->auth->acl_get('m_')) { // Uniquement pour les modérateurs
 			$lignes_traces_html = [];
 
 			$sql = 'SELECT trace_requettes.*, points.topic_id AS point_topic_id'.
@@ -293,8 +291,8 @@ class listener implements EventSubscriberInterface
 				$colonnes_html[] = 'création d\'un <a href="'.
 					$racine.'forum/viewtopic.php?t='.$row['topic_id'].
 				'">sujet</a>';
-			else
-				$colonnes_html[] = 'création inconnue';
+			elseif ($row['uri'])
+				$colonnes_html[] = 'contribution inconnue';
 		}
 
 		if (!strpos ($row['uri'], 'mode=register') &&
@@ -303,7 +301,8 @@ class listener implements EventSubscriberInterface
 					$racine.'forum/memberlist.php?mode=viewprofile&u='.$row['user_id'].
 				'">'.@$row['user_name'].'</a>';
 
-		$colonnes_html[count ($colonnes_html) - 1] .= '. ';
+		if (count ($colonnes_html))
+			$colonnes_html[count ($colonnes_html) - 1] .= '. ';
 
 		if (!$this->get['trace_id']) {
 			$colonnes_html[] =
@@ -329,6 +328,8 @@ class listener implements EventSubscriberInterface
 					),
 				);
 
+		if (!$row['asn'])
+			$row['asn'] = geoip_asnum_by_name ($row['ip']);
 		preg_match ('/(AS[0-9]+)(.*)/', $row['asn'], $asns);
 		$city = geoip_record_by_name ($row['ip']);
 
