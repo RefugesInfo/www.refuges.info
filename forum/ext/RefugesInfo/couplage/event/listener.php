@@ -42,6 +42,7 @@ class listener implements EventSubscriberInterface
 			'core.user_add_modify_notifications_data' => 'user_add_modify_notifications_data',
 		];
 	}
+	//TODO statistiques du membre : nombre & voir commentaires
 
 	// Récupération du numéro de la fiche liée à un topic du forum refuges
 	public function assign_template_vars_before ($event) {

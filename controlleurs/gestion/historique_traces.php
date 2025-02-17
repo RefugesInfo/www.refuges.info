@@ -10,32 +10,32 @@ while ($row = $db->sql_fetchrow($result))
 	$col_names[] = $row['column_name'];
 $db->sql_freeresult($result);
 
-$conditions = [];
+$where = [];
 foreach ($_GET AS $k => $v)
 	if (in_array ($k, $col_names) && $v)
 		foreach (explode (',', $v) AS $vv) {
 			$vvs = array_reverse (explode ('!', $vv));
 
 			if ($vvs[0] == 'null')
-				$conditions[] = "trace_requettes.$k IS".(isset ($vvs[1]) ? ' NOT' : '')." NULL";
+				$where[] = "trace_requettes.$k IS".(isset ($vvs[1]) ? ' NOT' : '')." NULL";
 			elseif (is_numeric ($vvs[0]))
-				$conditions[] = "trace_requettes.$k ".(isset ($vvs[1]) ? '!' : '')."= {$vvs[0]}";
+				$where[] = "trace_requettes.$k ".(isset ($vvs[1]) ? '!' : '')."= {$vvs[0]}";
 			else
-				$conditions[] = "trace_requettes.$k".(isset ($vvs[1]) ? ' NOT' : '')." LIKE '%{$vvs[0]}%'";
+				$where[] = "trace_requettes.$k".(isset ($vvs[1]) ? ' NOT' : '')." LIKE '%{$vvs[0]}%'";
 		}
 
-if (count ($conditions))
-	$where = ' WHERE '.implode (' AND ', $conditions);
+if ($_GET['nonojava'])
+	$where[] = 'trace_requettes.browser_operator NOT LIKE \'%serve%\'';
 
 // Hook ext/RefugesInfo/trace/listener.php liste des colonnes à afficher
 $traces_html = '';
 $vars = ['where', 'traces_html'];
 extract($phpbb_dispatcher->trigger_event('wri.affiche_traces', compact($vars)));
 
-$vue->where = str_replace (
-	['WHERE ', 'trace_requettes.', ' AND '],
-	['', '', '</p><p>AND '],
-	$where
-);
+if (count ($where))
+	$vue->where = '<p>'.
+	str_replace ('trace_requettes.', '',
+		implode ('</p><p>', $where)).
+	'</p>';
+
 $vue->traces = $traces_html;
-$vue->limit_traces = $_GET['limit'] ?: 250;

@@ -21,8 +21,8 @@ class listener implements EventSubscriberInterface
 	}
 	static public function getSubscribedEvents () {
 		return [
-			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
 			'core.ucp_register_data_after' => 'filter', // ucp_register.php 265
+			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
 			'rmcgirr83.contactadmin.modify_data_and_error' => 'filter', // Extension contactadmin
 			'block_bot_posts.filter' => 'filter', // External API
 		];
@@ -33,6 +33,7 @@ class listener implements EventSubscriberInterface
 		$ns = explode ('\\', __NAMESPACE__);
 		$this->language->add_lang ('common', $ns[0].'/'.$ns[1]);
 
+		// Générate an error if JS is not enabled
 		if ($this->post['sid'] != $this->user->session_id) {
 			$error = $event['error'];
 			$error[] = $this->language->lang (

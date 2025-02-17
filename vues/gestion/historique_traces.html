@@ -1,20 +1,14 @@
 <div class="traces">
 	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=null">
 		250 dernières contributions acceptées</a></p>
-	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!null">
-		250 dernières contributions rejetées</a></p>
-	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=CleanTalk,!security%20reasons,!No%20soup">
-		250 dernières contributions rejetées seulement par CleanTalk</a></p>
-	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!nullCleanTalk,security%20reasons,!No%20soup">
-		250 dernières contributions rejetées seulement par BlockBotPosts</a></p>
-	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=CleanTalk,security%20reasons,!No%20soup">
-		250 dernières contributions rejetées seulement par CleanTalk et BlockBotPosts</a></p>
-	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!nullCleanTalk,!security%20reasons,No%20soup">
-		250 dernières contributions rejetées seulement par StopForumSpam</a></p>
-	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!nullCleanTalk,!security%20reasons,!No%20soup">
-		250 dernières contributions rejetées par aucun des 3</a></p>
-	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces">
-		250 dernières contributions</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=!CleanTalk,!No%20soup&browser_operator=!serve">
+		250 dernières contributions rejetées pour motif interne</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?ext_error=CleanTalk&browser_operator=!serve">
+		250 dernières contributions rejetées par CleanTalk (sauf bots)</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?browser_operator=serve">
+		250 dernières contributions rejetées (bots)</a></p>
+	<p><a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?browser_operator=!serve">
+		250 dernières contributions (sauf bots)</a></p>
 </div>
 <hr/>
 
@@ -25,14 +19,19 @@
 	<label>Fournisseur <input type="text" name="asn" value="<?=$_GET['asn']?>" /></label>
 	<label>Host <input type="text" name="host" value="<?=$_GET['host']?>" /></label>
 	<input type="text" size="5" name="limit" value="<?=$_GET['limit']?:250?>" /> lignes,
-	en sautant <input type="text" size="5" name="offset" value="<?=$_GET['offset']?>" /> lignes,
-	<input type="checkbox" name="rebuild">rebuild ASN
+	en sautant <input type="text" size="5" name="offset" value="<?=$_GET['offset']?>" /> lignes<br/>
+	<input type="checkbox" name="nonojava">Exclure les sans JS
+	<input type="checkbox" name="rebuild">Reconstruire les infos FAI
 	<button type="submit">Filtrer</button>
 </form>
 <hr/>
 <!-- avoid browser_operator field --><form/>
 
-<h4>Historique des <?=$vue->limit_traces?> dernières traces :</h4>
+<h4><?=
+	$vue->nombre_traces == 0 ? 'Pas de trace correspondant à ces critères' : (
+	$vue->nombre_traces == 1 ? 'Historique de la trace '.$_GET['trace_id'] :
+	'Historique de '.$vue->nombre_traces.' traces / '.$vue->nombre_total_traces)
+?></h4>
 
 <?php if ($vue->where) { ?>
 	<div class="traces">
