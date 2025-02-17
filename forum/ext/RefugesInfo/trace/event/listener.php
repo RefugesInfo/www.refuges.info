@@ -154,7 +154,7 @@ class listener implements EventSubscriberInterface
 				'id_point' => $event['point']->id_point,
 				'id_commentaire' => $event['commentaire']->id_commentaire,
 				'title' => $event['subject'] ?: @$post_data['topic_title'] ?: $event['point']->nom,
-				'text' => substr (
+				'text' => mb_substr (
 					$this->post['message'] ?: $event['commentaire']->texte,
 					0, 256
 				),
@@ -291,7 +291,7 @@ class listener implements EventSubscriberInterface
 
 			// On limite le stockage des textes
 			if (strlen ($row['text']) > 256)
-				$row_from_history['text'] = substr ($row['text'], 0, 256);
+				$row_from_history['text'] = mb_substr ($row['text'], 0, 256);
 
 			// Récupération de l'ASN jusqu'au / dans le host (historique)
 			preg_match ('/AS[^\/]*/', $row['host'], $asns_histo);
@@ -496,7 +496,7 @@ class listener implements EventSubscriberInterface
 				$r = preg_replace ('/\s\s+/', ' ', $r);
 				$r = trim (strip_tags ($r, '<br>'));
 				if ($k == 'text')
-					$r = substr ($r, 0, 80).(strlen ($r) > 80 ? '&hellip;' : '');
+					$r = mb_substr ($r, 0, 80).(strlen ($r) > 80 ? '&hellip;' : '');
 				$t = ucfirst ($title);
 				$lignes_html[] = "$t: $r";
 			}
