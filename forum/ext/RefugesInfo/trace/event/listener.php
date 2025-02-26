@@ -43,7 +43,8 @@ class listener implements EventSubscriberInterface
 		auth $auth,
 		language $language,
 		template $template,
-		db $db)
+		db $db,
+		$phpbb_root_path)
 	{
 		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
 		$this->get = $request->get_super_global(\phpbb\request\request_interface::GET);
@@ -54,15 +55,13 @@ class listener implements EventSubscriberInterface
 		$this->language = $language;
 		$this->template = $template;
 		$this->db = $db;
+		$this->phpbb_root_path = $phpbb_root_path;
 
-		// Contexte refuges.info
-		global $config_wri;
-		$request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
-		require_once (__DIR__.'/../../../../../includes/config.php');
-		$this->config_wri = $config_wri;
-		geoip_setup_custom_directory ($config_wri['racine_projet'].'ressources/geoip');
-		// Uploader Geo*.dat de https://mailfud.org/geoip-legacy/
-		//TODO statistique sur les posts/comptes supprimés
+		// Data directory for geoip
+		$this->geoip_tmp = $this->phpbb_root_path.'cache/geoip';
+		if (!is_dir ($this->geoip_tmp))
+			mkdir ($this->geoip_tmp);
+		geoip_setup_custom_directory ($this->geoip_tmp);
 	}
 
 	static public function getSubscribedEvents () {
@@ -141,7 +140,7 @@ class listener implements EventSubscriberInterface
 					@$this->server['REQUEST_URI'],
 				'ip' => @$this->server['REMOTE_ADDR'],
 				'host' => @gethostbyaddr ($this->server['REMOTE_ADDR']),
-				'asn' => geoip_asnum_by_name ($this->server['REMOTE_ADDR']),
+				'asn' => @geoip_asnum_by_name ($this->server['REMOTE_ADDR']),
 				'user_agent' => @$this->server['HTTP_USER_AGENT'],
 				'language' => @$this->server['HTTP_ACCEPT_LANGUAGE'],
 
@@ -174,6 +173,27 @@ class listener implements EventSubscriberInterface
 
 			$sql = 'INSERT INTO trace_requettes'. $this->db->sql_build_array ('INSERT', array_filter($trace));
 			$this->db->sql_query($sql);
+
+			// Mise à jour des fichiers data geoip sur le temps des bots
+			foreach (['', 'City', 'ASNum', 'ISP', 'Org'] as $dn)
+				foreach (['', 'v6'] as $ipv) {
+					$file_name = $this->geoip_tmp."/GeoIP$dn$ipv.dat";
+					if (!is_file ($file_name) || // Si le fichier n'est pas là
+						(!$this->post['browser_operator'] && // Si c'est un bot
+							filemtime ($file_name) + 24*3600 < time () // Et si le fichier est trop vieux
+						)
+					) {
+						file_put_contents ($file_name, gzdecode (
+							file_get_contents ("https://mailfud.org/geoip-legacy/GeoIP$dn$ipv.dat.gz")
+						));
+						// Trace
+						file_put_contents ($this->geoip_tmp.'/upgrade.log',
+							$file_name.' / '.date('r').
+							PHP_EOL, FILE_APPEND);
+
+						break; // On n'en fait qu'un à la fois
+					}
+				}
 		}
 	}
 
@@ -195,6 +215,7 @@ class listener implements EventSubscriberInterface
 
 	// Affichage des traces
 	public function affiche_traces($event, $eventName) {
+		//TODO statistique sur les posts/comptes supprimés
 		global $vue;
 
 		if ($this->auth->acl_get('m_')) { // Uniquement pour les modérateurs
@@ -244,7 +265,7 @@ class listener implements EventSubscriberInterface
 		if (!$row['host'] && $row['ip'])
 			$row_updated['host'] = gethostbyaddr ($row['ip']);
 		if (!$row['asn'] && $row['ip'])
-			$row_updated['asn'] = geoip_asnum_by_name ($row['ip']);
+			$row_updated['asn'] = @geoip_asnum_by_name ($row['ip']);
 
 		// Récupération du n° de point qu'on n'avait pas au moment de la création du forum ascoscié
 		if (strpos ($row['uri'], 'point_modification')
@@ -268,13 +289,6 @@ class listener implements EventSubscriberInterface
 				$this->db->sql_build_array ('UPDATE', $row_updated).
 				' WHERE trace_id = '.$row['trace_id'];
 			$this->db->sql_query ($sql);
-
-			//TODO enlever aprés récupération historique
-			if (is_dir ($this->config_wri['racine_projet'].'../TEST-DOM'))
-				file_put_contents (
-					$this->config_wri['racine_projet'].'../TEST-DOM/trace.log',
-					$sql.PHP_EOL, FILE_APPEND
-				);
 		}
 
 		// Construction de la première ligne
@@ -390,7 +404,7 @@ class listener implements EventSubscriberInterface
 				);
 
 		preg_match ('/(AS[0-9]+)(.*)/', $row['asn'], $asns);
-		$iprecord = geoip_record_by_name ($row['ip']);
+		$iprecord = @geoip_record_by_name ($row['ip']);
 		if ($row['ip'])
 			$lignes_html = array_merge ($lignes_html, [
 				'Fournisseur d\'Accès Internet: <a href="https://ipinfo.io/'.

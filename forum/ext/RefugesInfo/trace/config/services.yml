@@ -10,3 +10,4 @@ services:
             - '@language'
             - '@template'
             - '@dbal.conn'
+            - '%core.root_path%'            
