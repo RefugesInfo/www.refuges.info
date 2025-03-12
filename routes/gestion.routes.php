@@ -31,7 +31,6 @@ switch ($controlleur->url_decoupee[1]) {
 	case 'modifier_modeles':
 	case 'commentaires_attente_correction':
 	case 'historique_modifications':
-	case 'historique_traces':
 	case 'historique_envoi_emails':
 		if (est_moderateur())
 			$controlleur->type = 'gestion/'.$controlleur->url_decoupee[1];

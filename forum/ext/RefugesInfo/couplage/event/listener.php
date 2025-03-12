@@ -5,31 +5,14 @@
 // Attention: Le code suivant s'exécute dans un "namespace" bien défini
 
 namespace RefugesInfo\couplage\event;
+
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-if (!defined('IN_PHPBB')) exit;
-
-use phpbb\request\request;
-use phpbb\user;
-use phpbb\language\language;
-use phpbb\template\template;
-use phpbb\db\driver\driver_interface as db;
-
 class listener implements EventSubscriberInterface
 {
-	public function __construct(
-		request $request,
-		user $user,
-		language $language,
-		template $template,
-		db $db)
-	{
+	public function __construct() {
+		global $request;
+
 		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
-		$this->request = $request;
-		$this->user = $user;
-		$this->language = $language;
-		$this->template = $template;
-		$this->db = $db;
 	}
 
 	static public function getSubscribedEvents () {
@@ -42,17 +25,21 @@ class listener implements EventSubscriberInterface
 			'core.user_add_modify_notifications_data' => 'user_add_modify_notifications_data',
 		];
 	}
-	//TODO statistiques du membre : nombre & voir commentaires
+	//BEST statistiques du membre : nombre & voir commentaires
 
 	// Récupération du numéro de la fiche liée à un topic du forum refuges
 	public function assign_template_vars_before ($event) {
+		global $db, $template, $point;
+
 		if ($event['topic_id']) {
 			$sql = "SELECT id_point,id_point_type,conditions_utilisation FROM points WHERE topic_id = ".$event['topic_id'];
-			$result = $this->db->sql_query ($sql);
-			$row = $this->db->sql_fetchrow ($result);
-			$this->db->sql_freeresult($result);
-			if ($row)
-				$this->template->assign_vars (array_change_key_case ($row, CASE_UPPER));
+			$result = $db->sql_query ($sql);
+			$row = $db->sql_fetchrow ($result);
+			$db->sql_freeresult($result);
+			if ($row) {
+				$template->assign_vars (array_change_key_case ($row, CASE_UPPER));
+				$point = true;
+			}
 		}
 	}
 
@@ -60,25 +47,30 @@ class listener implements EventSubscriberInterface
 		// Les fichiers template du bandeau et du pied de page étant au format "MVC+template type refuges.info",
 		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant
 		// dans des variables des templates de PhpBB V3.2
-		global $user, $auth, $config_wri, $pdo; // Pour le contexte des require à l'intérieur d'une fonction
-		$this->request->enable_super_globals(); // Pour avoir accés aux variables globales $_SERVER, ...
+		global $request, $user, $language, $template, $point; // Contexte phpbb
+
+		// Pour avoir accés aux variables globales $_SERVER, ... dans config.php
+		$request->enable_super_globals();
+		// Pour exporter $config_wri & importer $pdo à l'intérieur d'une fonction
+		global $config_wri, $pdo;
 		require_once (__DIR__.'/../../../../../includes/config.php');
+		// Connexion / infos bandeaux
 		require_once ('identification.php');
 		require_once ('bandeau_dynamique.php');
 		require_once ('gestion_erreur.php');
 
 		/* Includes language files of this extension */
 		$ns = explode ('\\', __NAMESPACE__);
-		$this->language->add_lang('common', $ns[0].'/'.$ns[1]);
+		$language->add_lang('common', $ns[0].'/'.$ns[1]);
 
 		// On traite le logout ici car la fonction de base demande un sid (on se demande pourquoi ?)
-		if ($this->request->variable('mode', '') == 'logout') {
-			$this->user->session_kill();
-			header('Location: https://'.$this->server['HTTP_HOST'].$this->request->variable('redirect', '/'));
+		if ($request->variable('mode', '') == 'logout') {
+			$user->session_kill();
+			header('Location: https://'.$this->server['HTTP_HOST'].$request->variable('redirect', '/'));
 		}
 
 		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
-		$this->template->assign_var('STYLE_CSS_TIME', filemtime($config_wri['chemin_vues'].'style.css.php'));
+		$template->assign_var('STYLE_CSS_TIME', filemtime($config_wri['chemin_vues'].'style.css.php'));
 
 		$vue = new \stdClass;
 		$vue->type = '';
@@ -96,11 +88,11 @@ class listener implements EventSubscriberInterface
 
 		ob_start();
 		include ($config_wri['chemin_vues'].'_bandeau.html');
-		$this->template->assign_var('BANDEAU', ob_get_clean());
+		$template->assign_var('BANDEAU', ob_get_clean());
 
 		ob_start();
 		include ($config_wri['chemin_vues'].'_pied.html');
-		$this->template->assign_var('PIED', ob_get_clean());
+		$template->assign_var('PIED', ob_get_clean());
 	}
 
 	// Forçage https du login

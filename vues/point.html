@@ -29,7 +29,8 @@
               Consulter l'historique de cette fiche
             </a>&nbsp;
             <?php if (est_autorise($point->id_createur)) {?>
-                <a class="liens_avec_decoration" href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?id_point=<?=$vue->point->id_point?>"
+                <a class="liens_avec_decoration"
+					href="<?=$config_wri['sous_dossier_installation']?>forum/mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_point=<?=$vue->point->id_point?>"
                 title="Trace de la création du point">
                   i
               </a>
@@ -271,7 +272,7 @@
             <?=$commentaire->texte_lien_commentaire?></a>
           <?php if (est_autorise($point->id_createur)) {?>
             <a class="liens_avec_decoration"
-              href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_traces?id_commentaire=<?=$commentaire->id_commentaire?>"
+              href="<?=$config_wri['sous_dossier_installation']?>forum/mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_commentaire=<?=$commentaire->id_commentaire?>"
               title="Trace de la création du commentaire">
                 i
             </a>

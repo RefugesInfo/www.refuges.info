@@ -11,11 +11,9 @@
 	<a href="<?=lien_wiki('mentions-legales')?>">
 		Mentions légales
 	</a> -
-	<?php if(!$point) { ?>
-		<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact/">
-			Contact
-		</a> - 
-	<?php } ?>
+	<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact<?=$point?'-refuge':''?>">
+		Contact
+	</a> - 
 	<a href="<?=$config_wri['sous_dossier_installation']?>gps/">
 		Version mobile
 	</a> - 

@@ -90,7 +90,7 @@ if (empty($point->erreur))
           'commentaire',
       ];
       // Hook ext/RefugesInfo/trace/listener.php log_request_context
-      extract($phpbb_dispatcher->trigger_event('wri.point_ajout_commentaire', compact($vars)));
+      extract($phpbb_dispatcher->trigger_event('refugesinfo.trace.log_request_context', compact($vars)));
 
       // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
       if (empty($vue->messages->erreur))
