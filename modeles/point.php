@@ -286,7 +286,7 @@ function infos_points($conditions)
   // CLUSTERISATION AU NIVEAU DU SERVEUR
   if (!empty($conditions->cluster))
     if ( $conditions->cluster &&
-      !$tables_en_plus ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requette compliquée :)
+      !$tables_en_plus ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requete compliquée :)
     {
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
     $query_clusters="

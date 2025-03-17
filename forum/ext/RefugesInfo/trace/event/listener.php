@@ -152,7 +152,7 @@ class listener implements EventSubscriberInterface
 				'host_enregistrement' => @gethostbyaddr (@$user_data['user_ip']),
 			];
 
-			$sql = 'INSERT INTO trace_requettes'. $db->sql_build_array ('INSERT', array_filter($trace));
+			$sql = 'INSERT INTO trace_requettes'. $db->sql_build_array ('INSERT', $trace);
 			$db->sql_query($sql);
 
 			// Mise à jour des fichiers data geoip sur le temps des bots
@@ -236,7 +236,7 @@ class listener implements EventSubscriberInterface
 		if (!$lignes_traces_html && $event_ip)
 			$lignes_traces_html[] = $this->display_one_trace ([
 				'ip' => $event_ip,
-				//'user_id' => $event['user_id'],
+				//TODO ? 'user_id' => $event['user_id'],
 			]);
 
 		$template->assign_vars([
@@ -279,6 +279,11 @@ class listener implements EventSubscriberInterface
 
 		// Update de la table trace_requettes
 		$row_updated = array_filter ($row_updated);
+
+		//TODO enlever aprés moulinage
+		if ($input_row['ext_error'] === '')
+			$row_updated['ext_error'] = null;
+
 		if (count ($row_updated) && $row['trace_id']) {
 			$sql = 'UPDATE trace_requettes SET '.
 				$db->sql_build_array ('UPDATE', $row_updated).
@@ -355,8 +360,10 @@ class listener implements EventSubscriberInterface
 						$appel
 					);
 				else
-					$colonnes_html[] = 'erreur posting inconnu';
+					$colonnes_html[] = 'erreur posting sans post_id';
 			}
+			else
+				$colonnes_html[] = 'erreur url inconnue';
 		}
 
 		if (!strpos ($row['uri'], 'mode=register') &&

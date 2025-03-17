@@ -5,7 +5,7 @@
 #deny from all
 #ErrorDocument 403 /maintenance.html
 #allow from 2001:cb00:... # Mettre l'adresse du développeur qui veut y accéder ici, ou plusieurs ligne possible (format ipv6 oiu ipv4
-#allow from 2001:bc8:37ca:101::1 # Mettre l'adresse du serveur (pour les requettes AJAX intra-site)
+#allow from 2001:bc8:37ca:101::1 # Mettre l'adresse du serveur (pour les requetes AJAX intra-site)
 #<FilesMatch "^maintenance.html$">
 #  Allow from all
 #</FilesMatch>
