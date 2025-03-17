@@ -1,90 +1,70 @@
 {% include 'mcp_header.html' %}
+<!-- INCLUDECSS @RefugesInfo_trace/trace.css -->
 
-<style>
-.cp-menu {
-	display: none;
-}
-.cp-main > a,
-.cp-main p,
-.cp-main label {
-	display: block;
-	margin: 5px 0;
-}
-.cp-main .mcp-trace-title {
-	text-decoration: underline;
-	margin-bottom: 5px;
-}
-.cp-main button {
-	margin-left: 50px;
-	border: 1px solid;
-	padding: 5px;
-	border-radius: 3px;
-	font-weight: bold;
-}
-</style>
-
-<!-- IF ID_POINT -->
-	<h4>Traces liées au point {ID_POINT}</h4>
-<!-- ELSEIF ID_COMMENTAIRE -->
-	<h4>Trace du commentaire {ID_COMMENTAIRE}</h4>
-<!-- ELSEIF TRACE_ID -->
-	<h4>Trace {TRACE_ID}</h4>
-<!-- ELSE -->
-	<a href="{U_MCP_ACTION}&ext_error=null">
-		{LIMIT} dernières contributions acceptées
-	</a>
-	<a href="{U_MCP_ACTION}&ext_error=!CleanTalk,!No%20soup&browser_operator=!serve">
-		{LIMIT} dernières contributions rejetées pour motif interne
-	</a>
-	<a href="{U_MCP_ACTION}&ext_error=CleanTalk&browser_operator=!serve">
-		{LIMIT} dernières contributions rejetées par CleanTalk (sauf bots)
-	</a>
-	<a href="{U_MCP_ACTION}&browser_operator=serve">
-		{LIMIT} dernières contributions rejetées (bots)
-	</a>
-	<a href="{U_MCP_ACTION}&browser_operator=!serve">
-		{LIMIT} dernières contributions (sauf bots)
-	</a>
-	<a href="{U_MCP_ACTION}&search=advanced">
-		Recherche avancée
-	</a>
-	<hr/>
-
-	<!-- IF SEARCH == "advanced" -->
-		<p class="mcp-trace-title">Sélection manuelle</p>
-		<form method="get" action="{U_MCP_ACTION}">
-			<div>Syntaxe : chaine (contient) , !chaine (ne contient pas) , null , !null</div>
-			<label>N° trace <input type="text" name="trace_id" value="{TRACE_ID}" /></label>
-			<label>Erreur inclue <input type="text" size="50" name="ext_error" value="{EXT_ERROR}" /></label>
-			<label>Fournisseur inclue <input type="text" name="asn" value="{ASN}" /></label>
-			<label>Host inclue <input type="text" name="host" value="{HOST}" /></label>
-			<label>
-				<input type="text" size="5" name="limit" value="{LIMIT}" /> traces,
-				en sautant <input type="text" size="5" name="offset" value="{OFFSET}" /> traces
-			</label>
-			<input type="hidden" name="i" value="{I}" />
-			<input type="hidden" name="search" value="advanced" />
-			<button type="submit">Filtrer</button>
-		</form>
+<div class="traces">
+	<!-- IF ID_POINT -->
+		<h4>Traces liées au point {ID_POINT}</h4>
+	<!-- ELSEIF ID_COMMENTAIRE -->
+		<h4>Trace du commentaire {ID_COMMENTAIRE}</h4>
+	<!-- ELSEIF TRACE_ID -->
+		<h4>Trace {TRACE_ID}</h4>
+	<!-- ELSE -->
+		<a href="{U_MCP_ACTION}&ext_error=null">
+			{LIMIT} dernières contributions acceptées
+		</a>
+		<a href="{U_MCP_ACTION}&ext_error=!CleanTalk,!No%20soup&browser_operator=!serve">
+			{LIMIT} dernières contributions rejetées pour motif interne
+		</a>
+		<a href="{U_MCP_ACTION}&ext_error=CleanTalk&browser_operator=!serve">
+			{LIMIT} dernières contributions rejetées par CleanTalk (sauf bots)
+		</a>
+		<a href="{U_MCP_ACTION}&browser_operator=serve">
+			{LIMIT} dernières contributions rejetées (bots)
+		</a>
+		<a href="{U_MCP_ACTION}&browser_operator=!serve">
+			{LIMIT} dernières contributions (sauf bots)
+		</a>
+		<a href="{U_MCP_ACTION}&search=advanced">
+			Recherche avancée
+		</a>
 		<hr/>
-	<!-- ENDIF -->
 
-	<h4>
-		<!-- IF NOMBRE_TRACES -->
-			Historique de {NOMBRE_LIGNES} traces
-			sur {NOMBRE_TRACES}
-			<!-- IF OFFSET -->
-				à partir de la {OFFSET} ième
-			<!-- ENDIF -->
-		<!-- ELSE -->
-			Pas de trace correspondant à ces critères
+		<!-- IF SEARCH == "advanced" -->
+			<p class="mcp-trace-title">Sélection manuelle</p>
+			<form method="get" action="{U_MCP_ACTION}">
+				<div>Syntaxe : chaine (contient) , !chaine (ne contient pas) , null , !null</div>
+				<label>N° trace <input type="text" name="trace_id" value="{TRACE_ID}" /></label>
+				<label>Erreur inclue <input type="text" size="50" name="ext_error" value="{EXT_ERROR}" /></label>
+				<label>Fournisseur inclue <input type="text" name="asn" value="{ASN}" /></label>
+				<label>Host inclue <input type="text" name="host" value="{HOST}" /></label>
+				<label>
+					<input type="text" size="5" name="limit" value="{LIMIT}" /> traces,
+					en sautant <input type="text" size="5" name="offset" value="{OFFSET}" /> traces
+				</label>
+				<input type="hidden" name="i" value="{I}" />
+				<input type="hidden" name="search" value="advanced" />
+				<button type="submit">Filtrer</button>
+			</form>
+			<hr/>
 		<!-- ENDIF -->
-	</h4>
-	<!-- IF WHERE -->
-		<p>{WHERE}</p><hr/>
-	<!-- ENDIF -->
-<!-- ENDIF -->
 
-{TRACES}
+		<h4>
+			<!-- IF NOMBRE_TRACES -->
+				Historique de {NOMBRE_LIGNES} traces
+				sur {NOMBRE_TRACES}
+				<!-- IF OFFSET -->
+					à partir de la {OFFSET} ième
+				<!-- ENDIF -->
+			<!-- ELSE -->
+				Pas de trace correspondant à ces critères
+			<!-- ENDIF -->
+		</h4>
+		<!-- IF WHERE -->
+			<p>{WHERE}</p><hr/>
+		<!-- ENDIF -->
+	<!-- ENDIF -->
+
+	{TRACES}
+</div>
 
 {% include 'mcp_footer.html' %}

@@ -156,6 +156,7 @@ class listener implements EventSubscriberInterface
 			$db->sql_query($sql);
 
 			// Mise à jour des fichiers data geoip sur le temps des bots
+			// Doc https://mailfud.org/geoip-legacy/
 			foreach (['', 'City', 'ASNum', 'ISP', 'Org'] as $dn)
 				foreach (['', 'v6'] as $ipv) {
 					$file_name = $this->geoip_tmp."/GeoIP$dn$ipv.dat";
@@ -254,24 +255,6 @@ class listener implements EventSubscriberInterface
 		// Enlever les espaces à la fin des champs character(128)
 		$row = array_map('trim', array_filter ($input_row));
 		$row_updated = [];
-
-		//TODO ENLEVER QUAND BASE MOULINEE
-		if (isset ($this->get['rebuild'])) {
-			$lines = [];
-
-			if (!$row['appel'] && $row['mode'])
-				$row['appel'] =
-				$lines['appel'] = $row['mode'];
-
-			$row = array_filter ($row);
-			$lines = array_filter ($lines);
-			if (count ($lines)) {
-				$sql = 'UPDATE trace_requettes SET '.
-					$db->sql_build_array ('UPDATE', $lines).
-					' WHERE trace_id = '.$row['trace_id'];
-				$db->sql_query ($sql);
-			}
-		}
 
 		// Extraction des infos issues de l'IP quand il n'y a pas de trace
 		if (!$row['host'] && $row['ip'])
@@ -374,8 +357,6 @@ class listener implements EventSubscriberInterface
 				else
 					$colonnes_html[] = 'erreur posting inconnu';
 			}
-			//else
-				//$colonnes_html[] = 'erreur url inconnue';
 		}
 
 		if (!strpos ($row['uri'], 'mode=register') &&
@@ -390,11 +371,10 @@ class listener implements EventSubscriberInterface
 		if (count ($colonnes_html))
 			$colonnes_html[count ($colonnes_html) - 1] .= '. ';
 
-		if (!$this->get['trace_id']) {
+		if (!$this->get['trace_id'])
 			$colonnes_html[] =
 				'<sup><a href="'.$this->u_action.'&trace_id='.$row['trace_id'].'"'.
 				'>'.$row['trace_id'].'</a></sup>';
-		}
 
 		// Construction des lignes du rapport
 		$lignes_html = [];
@@ -417,28 +397,16 @@ class listener implements EventSubscriberInterface
 		$iprecord = @geoip_record_by_name ($row['ip']);
 
 		if ($row['ip'])
-			$lignes_html = array_merge ($lignes_html, [
+			$lignes_html[] =
 				'Fournisseur d\'Accès Internet: <a href="https://ipinfo.io/'.
-					($asns[1] ?: $row['ip']).'">'.
-					(trim ($asns[2]) ?: $row['host'] ?: $row['ip']).
-					'</a> - '.
-					$iprecord['country_name'].
-					($iprecord['city'] ? ', '.$iprecord['city'] : '').
-					($asns[1] ? ' (toutes les <a '.
-					'href="'.$this->u_action.'&asn='.$asns[1].'"'.
-					'>contributions passant par ce FAI</a>) ' : ''),
-				'<a href="https://ipinfo.io/'.$row['ip'].'">IpInfo</a> de '.$row['ip'],
-				'<a href="https://whatismyipaddress.com/ip/'.$row['ip'].'">WhatIsMyIP</a> de '.$row['ip'],
-				'<a href="https://cleantalk.org/blacklists/'.$row['ip'].'">CleanTalk</a> de '.$row['ip'],
-				'<a href="https://stopforumspam.com/ipcheck/'.$row['ip'].'">StopForumSpam</a> de '.$row['ip'],
-				'<a href="https://www.spamcop.net/w3m?action=checkblock&ip='.
-					$row['ip'].'">SpamCop</a> de '.$row['ip'],
-				'<a href="https://www.abuseipdb.com/check/'.$row['ip'].'">AbuseIPdb</a> de '.$row['ip'],
-			]);
-
-		if ($row['user_email'])
-			$lignes_html[] = 'CleanTalk <a href="https://cleantalk.org/email-checker/'.
-				$row['user_email'].'"></a>';
+				($asns[1] ?: $row['ip']).'">'.
+				(trim ($asns[2]) ?: $row['host'] ?: $row['ip']).
+				'</a> - '.
+				$iprecord['country_name'].
+				($iprecord['city'] ? ', '.$iprecord['city'] : '').
+				($asns[1] ? ' (toutes les <a '.
+				'href="'.$this->u_action.'&asn='.$asns[1].'"'.
+				'>contributions passant par ce FAI</a>) ' : '');
 
 		$colonnes_traces = [
 			'date' => 'date',
@@ -460,6 +428,7 @@ class listener implements EventSubscriberInterface
 			//'PhpBB listener' => 'listener',
 			//'appel' => 'appel',
 		];
+
 		if ($row['user_email'])
 			$colonnes_traces = array_merge ($colonnes_traces, [
 				'email user' => 'user_email',
@@ -476,9 +445,23 @@ class listener implements EventSubscriberInterface
 				$lignes_html[] = "$t: $r";
 			}
 
-		return '<div class="traces">'.PHP_EOL.'<p>'.
-			implode ('</p>'.PHP_EOL.'<p>', $lignes_html).
-			'</p>'.PHP_EOL.'</div>';
+		if ($row['ip'])
+			$lignes_html = array_merge ($lignes_html, [
+				'<a href="https://ipinfo.io/'.$row['ip'].'">IpInfo</a> de '.$row['ip'],
+				'<a href="https://whatismyipaddress.com/ip/'.$row['ip'].'">WhatIsMyIP</a> de '.$row['ip'],
+				'<a href="https://www.iplocation.net/ip-lookup?query='.$row['ip'].'">IpLocation</a> de '.$row['ip'],
+				'<a href="https://stopforumspam.com/ipcheck/'.$row['ip'].'">StopForumSpam</a> de '.$row['ip'],
+				'<a href="https://www.spamcop.net/w3m?action=checkblock&ip='.
+					$row['ip'].'">SpamCop</a> de '.$row['ip'],
+				'<a href="https://www.abuseipdb.com/check/'.$row['ip'].'">AbuseIPdb</a> de '.$row['ip'],
+				'<a href="https://cleantalk.org/blacklists/'.$row['ip'].'">CleanTalk</a> de '.$row['ip'],
+			]);
+
+		if ($row['user_email'])
+			$lignes_html[] = '<a href="https://cleantalk.org/email-checker/'.
+				$row['user_email'].'">CleanTalk</a> de '.$row['user_email'];
+
+		return '<p>'.implode ('</p>'.PHP_EOL.'<p>', $lignes_html).'</p>';
 	}
 
 	// Fait les modifications de structure de la table trace_requettes à chaque purge du cache
