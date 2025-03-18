@@ -1,10 +1,10 @@
 <?php
 /**********************************************************************************************
-Je sais que c'est pas terrible d'avoir, en prod, un fichier de test, mais je m'aperçois que j'en ai
-très souvent besoin et que je passe mon temps à l'effacer puis le re-créer
-alors voilà, on peut bidouiller tant qu'on veut, la "route" d'accès est :
-http://dev.refuges.info/test
-
+Je sais que c'est pas terrible d'avoir, en prod, et qu'il faudrait mieux l'avoir dans le .gitignore ce fichier de 
+test et la route qui va avec, mais je m'aperçois que j'en ai très souvent besoin et que quitte à avoir une route pour accéder au 
+controlleur test, alors voilà, par défaut dans le git c'est une version qui ne fait rien de risqué
+on peut bidouiller tant qu'on veut, la "route" d'accès est :
+https://xxxx.refuges.info/test xxxx étant l'instance du développeur
 
 **********************************************************************************************/
 // On est pas là pour les perfs, alors on inclus tout pour être tranquille !
@@ -19,22 +19,34 @@ require_once ("nouvelle.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("upload_max_filesize.php");
  
+//t("debut");
+//d($_GET);
 
-//print("prouf");
-//print_r($_GET);
-//die();
-//$html=bbcode2html($texte,$autoriser_html=FALSE,$autoriser_balise_img=TRUE);
-  $conditions = new stdClass;
-  $conditions->ids_points=105;
+/*
+// exemples pour tester le modèle point
+$conditions = new stdClass;
+$conditions->ids_points=105;
   
 $point = infos_points($conditions);
-d($point);
 // d ( ) et la fonction de debug qui print les variables passée et une trace des appels
+d($point);
+*/
+
+
 //d(lien_point($point,true));
 //d($config_wri['sous_dossier_installation']);
 
+/*
+// exemples pour tester le modèle commentaire
+$conditions = new stdClass;
+$conditions->ids_points=105;
+  
+$commentaires = infos_commentaires($conditions);
+d($point);
+*/
 
 
-t("fin");
+
+//t("fin");
 //On quitte ici notre test parce que sinon la route va tenter d'ouvrir une vue test.html que je n'ai pas faite
 die();
