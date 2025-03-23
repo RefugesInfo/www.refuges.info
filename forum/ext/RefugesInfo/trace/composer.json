@@ -3,8 +3,8 @@
 	"type": "phpbb-extension",
 	"description": "Traces user registration & post creation",
 	"homepage": "https://github.com/RefugesInfo/www.refuges.info",
-	"version": "1.0.1",
-	"time": "2024-10-16",
+	"version": "1.0.2",
+	"time": "2025-03-21",
 	"license": "GPL-2.0",
 	"authors": [
 		{

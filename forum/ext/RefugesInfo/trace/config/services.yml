@@ -6,3 +6,10 @@ services:
 
     RefugesInfo.trace.controller.mcp:
         class: RefugesInfo\trace\controller\mcp_controller
+
+    RefugesInfo.trace.cron.task.trace_cron:
+        class: RefugesInfo\trace\cron\task\trace_cron
+        calls:
+            - [set_name, [cron.task.RefugesInfo.trace.trace_cron]]
+        tags:
+            - { name: cron.task }

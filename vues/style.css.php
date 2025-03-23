@@ -1128,3 +1128,10 @@ form {
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
+
+/* Debug PHP, style de var_dump() */
+.xdebug-var-dump {
+  background-color:black;
+  color:white;
+  font-size:14px
+}
