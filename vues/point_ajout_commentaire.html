@@ -50,14 +50,15 @@
             Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire.
             Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a toujours été d'être simple et rapide d'utilisation.
           </p>
-        <?}?>
+          <?php }?>
+
           <p>
             <?=$config_wri['captcha_question']?> :
             <input type="text" class="input_captcha_court" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
             <i class="texte-tout-petit">Ceci afin d'éviter les messages indésirables automatiques, désolé.</i>
           </p>
-      <?}?>
-      <input type="hidden" id="check_form_activity" name="browser_operator" value="serveur sans javascript" />
+        <?php }?>
+
       <input type="submit" name="action" value="Envoyer" />
       <input type="reset" value="Recommencer" />
     </form>
@@ -65,23 +66,24 @@
   <br>
   <h4>Ce que vous pouvez ou non mettre sur le site</h4>
   <p>
-    Un commentaire sur une fiche doit être utile et objectif.
-    Si vous désirez poster une appréciation, faites le plutôt sur le <a href="<?=$vue->lien_forum_point?>">forum attaché à <?=$point->article_demonstratif.' '.$point->nom_type?></a>.
+    Un commentaire sur une fiche a pour but d'être utile à tous et objectif.
+    Si vous désirez poster une appréciation ou une question faites le plutôt sur le <a href="<?=$vue->lien_forum_point?>">forum attaché à <?=$point->article_demonstratif.' '.$point->nom_type?></a>.
   </p>
-  <?php if ($point->id_point_type==$config_wri['id_cabane_non_gardee']) { ?>
+  <?php if ($point->id_point_type==$config_wri['id_cabane_non_gardee']) { // ce texte fait doublon avec le "que mettre" juste après, mais comme il parait que les gens ne lisent pas si ça dépasse 0 clics... alors en double et en rouge. Mais j'hésite à simplifier ?>
     <p>
       Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>
       car cette pratique est contraire à l'esprit dans lequel <?=$point->article_demonstratif.' '.$point->nom_type?> à été créé.
       Tout commentaire dans ce sens sera supprimé par les modérateurs.
       Voir <a href="<?=$config_wri['lien_forum']?>viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
     </p>
+  <?php } if ( in_array($point->id_point_type,$config_wri['tout_type_refuge']) ) { ?>
     <p>
-      Voir <a href="<?=$config_wri['sous_dossier_installation']?>wiki/que_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires</a>.
+      Voir <a href="<?=$config_wri['sous_dossier_installation']?>wiki/quels_commentaires_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires</a>.
     </p>
-  <?}?>
+  <?php }?>
   <?php if ($point->equivalent_proprio!="") { ?>
     <p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
-  <?}?>
+    <?php }?>
   <p>
     N'insérer pas de <strong>photo qui ne vous appartient pas.</strong> (ni une copie d'un autre site, scan d'un journal, livre ou carte).
   </p>
