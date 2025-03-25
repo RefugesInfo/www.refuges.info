@@ -30,4 +30,5 @@ User-agent: AhrefsBot
 User-agent: Bytespider
 User-agent: SemrushBot
 User-agent: Meta-ExternalAgent
+User-agent: PetalBot
 Disallow: /
