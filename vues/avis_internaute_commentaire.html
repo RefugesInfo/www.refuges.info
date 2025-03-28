@@ -17,7 +17,6 @@
       <li><input type="radio" name="demande_correction" value="3">Ou au contraire très utile : ces informations devraient être rajoutées dans la fiche en haut.</li>
       <li>Une raison pour expliquer ? <input type="text" name="raison_demande_correction" value="" size="100"/> (facultatif)</li>
       <?php if ($vue->test_anti_robot) { ?>
-      
       <li>Contre les robots <?=$config_wri['captcha_question']?> s'il vous plait:<input type="text" name="anti_robot"></li>
       <?php } ?>
     </ul>

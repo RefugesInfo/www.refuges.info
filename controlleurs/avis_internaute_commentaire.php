@@ -45,8 +45,7 @@ else
   else
   {
     $vue->lien_que_mettre=lien_wiki("que_mettre");
-    if (!est_connecte())
-      $vue->test_anti_robot=True;
+    $vue->test_anti_robot = !est_connecte();
     $vue->titre="Classement commentaire sur la fiche de $commentaire->nom";
 
   }
