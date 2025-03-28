@@ -18,9 +18,8 @@
         </div>
         <div class="td ligne_pointillee">
           <span>
-            <?=$nouvelle['localisation']?>
         <?php if (!empty($nouvelle['localisation'])) { // pour les nouvelles sur un point dans aucun polygone ?>
-        :
+          <?=$nouvelle['localisation']?> :
         <?php } ?>
           <b><?=bbcode2html($nouvelle['nom_point'])?></b>&nbsp;
           </span>
