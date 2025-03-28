@@ -11,32 +11,32 @@ J'en profite pour faire que cette classe se connecte avec les identifiants wri
 */
 class PDO_wri extends PDO
 {
-    function lastInsertId ($string=Null)
+  function lastInsertId ($string=Null)
+  {
+    $q="select LASTVAL() as last_id;";
+    $res=$this->query($q);
+    if (!$res)
+        return erreur("Impossible de récupérer le dernier id créé",$q);
+    $id=$res->fetch();
+    return $id->last_id;
+  }
+  function __construct()
+  {
+    global $config_wri;
+    try
     {
-        $q="select LASTVAL() as last_id;";
-        $res=$this->query($q);
-        if (!$res)
-            return erreur("Impossible de récupérer le dernier id créé",$q);
-        $id=$res->fetch();
-        return $id->last_id;
+      parent::__construct(
+          "pgsql:host=".$config_wri['serveur_pgsql'] . ";dbname=" . $config_wri['base_pgsql'] ,
+          $config_wri['utilisateur_pgsql'],
+          $config_wri['mot_de_passe_pgsql']
+          ,array(PDO::ATTR_PERSISTENT => true));
+      $this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
     }
-    function __construct()
+    catch(Exception $e) 
     {
-        global $config_wri;
-        try
-        {
-            parent::__construct(
-				"pgsql:host=".$config_wri['serveur_pgsql'] . ";dbname=" . $config_wri['base_pgsql'] ,
-				$config_wri['utilisateur_pgsql'],
-				$config_wri['mot_de_passe_pgsql']
-				,array(PDO::ATTR_PERSISTENT => true));
-            $this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-        }
-	catch(Exception $e) 
-        {
-            return erreur('Echec de la connexion à la base de données erreur ',$e->getCode());
-        }
+        return erreur('Echec de la connexion à la base de données erreur ',$e->getCode());
     }
+  }
 }
 
 /*
@@ -52,19 +52,19 @@ Avec ça, on pourrait se passer de cette fonction (qui n'est utilisée que 2 foi
 */
 function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition="")
 {
-    // Regroupement : un pas vers l'UPSERT
-    foreach ($champs_valeur as $champ_sql => $valeur)
-	{
-		$liste_champs[]  = $champ_sql;
-		$liste_valeurs[] = $valeur;
-	}
+  // Regroupement : un pas vers l'UPSERT
+  foreach ($champs_valeur as $champ_sql => $valeur)
+  {
+    $liste_champs[]  = $champ_sql;
+    $liste_valeurs[] = $valeur;
+  }
 
-    if( $condition )
-        $query = "UPDATE $table SET (".implode(',',$liste_champs).") = (".implode(',',$liste_valeurs).") WHERE $condition";
-    else
-        $query = "INSERT INTO $table (".implode(',',$liste_champs).") VALUES (".implode(',',$liste_valeurs).")";
+  if( $condition )
+    $query = "UPDATE $table SET (".implode(',',$liste_champs).") = (".implode(',',$liste_valeurs).") WHERE $condition";
+  else
+    $query = "INSERT INTO $table (".implode(',',$liste_champs).") VALUES (".implode(',',$liste_valeurs).")";
 
-    return $query;
+  return $query;
 }
 
 // Vu qu'on inclus ce fichier, c'est qu'on a besoin d'une connexion, chaque appelant pourrait la faire, mais c'est plus lourd
