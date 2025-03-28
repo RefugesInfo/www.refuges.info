@@ -11,7 +11,7 @@
 	<a href="<?=lien_wiki('mentions-legales')?>">
 		Mentions légales
 	</a> -
-	<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact<?=$point?'-refuge':''?>">
+	<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact<?=!empty($point) ? '-refuge' : '' ?>">
 		Contact
 	</a> - 
 	<a href="<?=$config_wri['sous_dossier_installation']?>gps/">
