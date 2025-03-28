@@ -438,16 +438,22 @@ class listener implements EventSubscriberInterface
 	{
 		global $db, $config_wri;
 
-		geoip_setup_custom_directory (__DIR__.'/../../../../cache/geoip/');
-		$row['host'] ??= gethostbyaddr($row['ip']);
-		$row['asn'] ??= geoip_asnum_by_name($row['ip']);
+		if ($row['ip'] &&
+			function_exists('geoip_setup_custom_directory') &&
+			is_dir (__DIR__.'/../../../../cache/geoip/') &&
+			is_file (__DIR__.'/../../../../cache/geoip/GeoIP.dat')) {
+			geoip_setup_custom_directory (__DIR__.'/../../../../cache/geoip/');
+			$row['host'] ??= gethostbyaddr($row['ip']);
+			$row['asn'] ??= geoip_asnum_by_name($row['ip']);
+			$row['grbn'] ??= geoip_record_by_name($row['ip']);
+		}
 
 		preg_match ('/(AS[0-9]+)(.*)/', $row['asn'], $asns);
 		$row['asn_id'] ??= @$asns[1];
 		$row['asn_name'] ??= trim (@$asns[2]);
 
-		if (!$row['country_name'] && $row['ip'])
-			$row = array_merge (geoip_record_by_name ($row['ip']), $row);
+		if (!$row['country_name'] && $row['grbn'])
+			$row = array_merge ($row['grbn'], $row);
 
 		// Find existing values in the table
 		if ($row['trace_id']) {
@@ -467,7 +473,7 @@ class listener implements EventSubscriberInterface
 			$sql_row['id_point'] ??= $sql_row['wri_point_id'];
 		}
 
-		// Récupération du n° de point qu'on n'avait pas au moment de la création du forum ascoscié
+		// Récupération du n° de point qu'on n'avait pas au moment de la création du forum associé
 		$row['id_point'] ??= $sql_row['id_point'];
 
 		// Find colums to be udated
@@ -482,7 +488,7 @@ class listener implements EventSubscriberInterface
 			ARRAY_FILTER_USE_BOTH
 		);
 
-		if(count ($delta_row)) {
+		if($delta_row && $row['uri']) {
 			// To have the NULL value on the TEXT field
 			if (!$delta_row['ext_error'])
 				$delta_row['ext_error'] = null;

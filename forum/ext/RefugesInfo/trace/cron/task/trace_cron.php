@@ -19,12 +19,12 @@ class trace_cron extends \phpbb\cron\task\base
 		if (!is_dir ($cache_dir.'../geoip/'))
 			mkdir ($cache_dir.'../geoip/');
 
-		foreach (['', 'City', 'ASNum', 'ISP', 'Org'] as $dn)
+		/*foreach (['', 'City', 'ASNum', 'ISP', 'Org'] as $dn)
 			file_put_contents (
 				$cache_dir.'../geoip/GeoIP'.$dn.'.dat',
 				gzdecode (
 					file_get_contents ('https://mailfud.org/geoip-legacy/GeoIP'.$dn.'.dat.gz')
 				)
-			);
+			);*/
 	}
 }
