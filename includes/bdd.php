@@ -9,17 +9,9 @@ Extension de la classe qui nous permet de récupérer le last inserted ID sans �
 et en restant dans la compatibilité avec PDO.
 J'en profite pour faire que cette classe se connecte avec les identifiants wri
 */
+
 class PDO_wri extends PDO
 {
-  function lastInsertId ($string=Null)
-  {
-    $q="select LASTVAL() as last_id;";
-    $res=$this->query($q);
-    if (!$res)
-        return erreur("Impossible de récupérer le dernier id créé",$q);
-    $id=$res->fetch();
-    return $id->last_id;
-  }
   function __construct()
   {
     global $config_wri;
