@@ -21,3 +21,6 @@ $vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles);
 
 $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
 $vue->nombre=$nombre+100;
+
+$vue->stat = stat_site ();
+
