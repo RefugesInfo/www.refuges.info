@@ -196,11 +196,11 @@ class listener implements EventSubscriberInterface
 			$gets = array_reverse (explode ('!', @$this->get[$column_name])); // Separate the ! at the beginning
 
 			if (@$gets[0] == 'null')
-				$conditions[] = "$column_name IS".(isset (@$gets[1]) ? ' NOT' : '')." NULL";
+				$conditions[] = "$column_name IS".(isset ($gets[1]) ? ' NOT' : '')." NULL";
 			elseif (is_numeric (@$gets[0]))
-				$conditions[] = "$column_name ".(isset (@$gets[1]) ? '!' : '')."= {$gets[0]}";
+				$conditions[] = "$column_name ".(isset ($gets[1]) ? '!' : '')."= {$gets[0]}";
 			elseif (@$gets[0])
-				$conditions[] = "$column_name".(isset (@$gets[1]) ? ' NOT' : '')." LIKE '%{$gets[0]}%'";
+				$conditions[] = "$column_name".(isset ($gets[1]) ? ' NOT' : '')." LIKE '%{$gets[0]}%'";
 		}
 
 		$lignes_traces_html = [];
