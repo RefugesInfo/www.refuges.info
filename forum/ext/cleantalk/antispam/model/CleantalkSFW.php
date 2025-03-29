@@ -5,7 +5,7 @@
  * Compatible only with phpBB 3.1+
  * @version 1.5-phpbb
  * author Cleantalk team (welcome@cleantalk.org)
- * copyright (C) 2014 CleanTalk team (http://cleantalk.org)
+ * copyright (C) 2014 CleanTalk team (https://cleantalk.org)
  * license GNU/GPL: http://www.gnu.org/copyleft/gpl.html
  * see https://github.com/CleanTalk/php-antispam
 */
@@ -339,7 +339,24 @@ class CleantalkSFW
 											$file_url_nums[] = preg_replace( '@(https://.*)\.(\d*)(\.csv\.gz)@', '$2', $file_url );
 											
 										}
+
+										$test_request = \cleantalk\antispam\model\CleantalkHelper::sendRawRequest(
+											$base_host_url,
+											array(
+												'spbc_remote_call_token'  => md5( $config['cleantalk_antispam_apikey'] ),
+												'spbc_remote_call_action' => 'sfw_update',
+												'plugin_name'             => 'apbct',
+												'api_server'              => 'test_request',
+												'data_id'                 => $data_id,
+												'file_url_nums'           => implode(',', $file_url_nums),
+											),
+											array( 'get' )
+										);
 										
+										if ($test_request !== 'OK') {
+											return self::sfw_update_direct($api_server, $data_id, $file_url_nums);
+										}
+
 										return \cleantalk\antispam\model\CleantalkHelper::sendRawRequest(
 											$base_host_url,
 											array(
@@ -366,6 +383,10 @@ class CleantalkSFW
 			} else
 				return $result;
 		} elseif( isset( $api_server, $data_id, $file_url_num ) ) {
+			
+			if ($api_server === 'test_request') {
+				return 'OK';
+			}
 			
 			$file_url = 'https://' . $api_server . '.cleantalk.org/store/' . $data_id . '.' . $file_url_num . '.csv.gz';
 			
@@ -426,6 +447,75 @@ class CleantalkSFW
 			}else
 				return array('error' => 'FILE_COULD_NOT_GET_RESPONSE_CODE: '. $response_code['error'] );
 		}		
+	}
+
+	/**
+	* Direct update SFW local base
+	* 
+	* return mixed true || array('error' => true, 'error_string' => STRING)
+	* @param null $api_server
+	* @param null $data_id
+	* @param null $file_url_num
+	*
+	* @return array|bool|type|int|mixed|string[]
+	*/
+	public static function sfw_update_direct($api_server, $data_id, $file_url_nums)
+	{
+		global $config, $db, $table_prefix;
+
+		$count_result_temp = 0;
+		foreach ($file_url_nums as $file_url_num) {
+			$file_url = 'https://' . $api_server . '.cleantalk.org/store/' . $data_id . '.' . $file_url_num . '.csv.gz';
+			
+			$response_code = \cleantalk\antispam\model\CleantalkHelper::sendRawRequest($file_url, array(), 'get_code');
+			
+			if (!empty($response_code['error'])) {
+				return array('error' => 'FILE_COULD_NOT_GET_RESPONSE_CODE: '. $response_code['error'] );
+			}
+
+			if ($response_code !== 200 && $response_code !== 501) {
+				return array('error' => 'FILE_BAD_RESPONSE_CODE: '. (int) $response_code );
+			}
+
+			$gf = gzopen($file_url, 'rb');
+			if (!$gf) {
+				return array('error' => 'ERROR_OPEN_GZ_FILE');
+			}
+
+			for($count_result = 0; !gzeof($gf); ) {
+				$query = "INSERT INTO ".$table_prefix."cleantalk_sfw VALUES %s";
+
+				for($i=0, $values = array(); 5000 !== $i && !gzeof($gf); $i++, $count_result++) {
+					$entry = trim(gzgets($gf, 1024));
+
+					if(empty($entry)) continue;
+
+					$entry = explode(',', $entry);
+
+					// Cast result to int
+					$ip   = preg_replace('/[^\d]*/', '', $entry[0]);
+					$mask = preg_replace('/[^\d]*/', '', $entry[1]);
+					$private = isset($entry[2]) ? $entry[2] : 0;
+
+					if(!$ip || !$mask) continue;
+
+					$values[] = '('. $ip .','. $mask .', '. $private .')';
+				}
+
+				if(!empty($values)) {
+					$query = sprintf($query, implode(',', $values).';');
+					$db->sql_query($query);
+				}
+			}
+			$count_result_temp += $count_result;
+		}
+		$count_result = $count_result_temp;
+
+		gzclose($gf);
+		global $config;
+		$config->set('cleantalk_stats__sfw_nets', (int)$config['cleantalk_stats__sfw_nets'] + (int)$count_result );
+		$config->set('cleantalk_stats__sfw_last_time_updated', time() );
+		return $count_result;
 	}
 	
 	/*

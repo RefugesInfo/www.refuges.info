@@ -9,7 +9,7 @@ namespace cleantalk\antispam\library\Cleantalk\Common;
  *
  * @version       4.0
  * @author        Cleantalk team (welcome@cleantalk.org)
- * @copyright (C) 2014 CleanTalk team (http://cleantalk.org)
+ * @copyright (C) 2014 CleanTalk team (https://cleantalk.org)
  * @license       GNU/GPL: http://www.gnu.org/copyleft/gpl.html
  * @see           https://github.com/CleanTalk/php-antispam
  */

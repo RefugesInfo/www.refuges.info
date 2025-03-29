@@ -3,7 +3,7 @@
     "type": "phpbb-extension",
     "description": "Antispam by CleanTalk",
     "homepage": "https://cleantalk.org",
-    "version": "5.7.6",
+    "version": "5.8.0",
     "time": "2017-06-07",
     "license": "GPL-2.0-only",
     "authors": [
