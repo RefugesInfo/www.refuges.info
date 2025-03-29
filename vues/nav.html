@@ -1,6 +1,6 @@
 <div class="contenu noprint">
 	<!-- afficher le titre du massif (en mode massif) -->
-	<?php if ( $vue->polygone->id_polygone ){?>
+	<?php if ( !empty($vue->polygone->id_polygone) ){?>
 	<h3 id="titrepage">
 		Voici les <?=$vue->quoi?>
 		<?php if ($vue->polygone->nom_polygone){?>
@@ -11,13 +11,13 @@
 </div>
 
 <div id="carte-nav"
-	<?php if ( $vue->contenu && !est_moderateur() ) { ?>
+	<?php if ( !empty($vue->contenu) && !est_moderateur() ) { ?>
 		class="carte-nav-full"
 	<?php } ?>
 ></div>
 
 <div id="select-carte-nav" class="noprint">
-	<?php if ( !$vue->contenu ) { ?>
+	<?php if ( !empty($vue->contenu) ) { ?>
 		<!-- Affichage de points : il n'y a pas de paramétre ?id_polygone_type= -->
 		<fieldset>
 			<legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
@@ -168,7 +168,7 @@
 	<?php if ( est_moderateur() ) { ?>
 		<fieldset>
 			<legend>Modifications</legend>
-			<?php if ( $vue->polygone->id_polygone ) { ?>
+			<?php if ( !empty($vue->polygone->id_polygone) ) { ?>
 				<p><a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>">
 					Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
 					<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>

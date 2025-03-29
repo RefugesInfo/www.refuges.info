@@ -42,11 +42,11 @@ $vue->infos_base = infos_base ();
 /edit/4 : édite les contours du polygone 4
 /edit?id_polygone_type=11 : crée une zone
 */
-$id_polygone = $controlleur->url_decoupee[1]; // Id du polygone contenant
+$id_polygone = $controlleur->url_decoupee[1] ?? NULL; // Id du polygone contenant
 
 
 // Récupère les soumissions du formulaire de modification de paramètres de massifs
-if (est_moderateur()) 
+if (est_moderateur() and !empty($_POST) )  // Seuls les modérteurs peuvent modifier un polygone, et si rien n'a été posté, forcément, c'est qu'il n'y a rien à faire
   if ($id_polygone_edit = edit_info_polygone())
     $id_polygone = $id_polygone_edit;
 
