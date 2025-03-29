@@ -17,7 +17,7 @@
 ></div>
 
 <div id="select-carte-nav" class="noprint">
-	<?php if ( !empty($vue->contenu) ) { ?>
+	<?php if ( empty($vue->contenu) ) { ?>
 		<!-- Affichage de points : il n'y a pas de paramétre ?id_polygone_type= -->
 		<fieldset>
 			<legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
