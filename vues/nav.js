@@ -4,7 +4,7 @@ var map = mapNav({
   mapKeys: <?=json_encode($config_wri['mapKeys'])?>,
   id_polygone: <?=isset($vue->polygone)?$vue->polygone->id_polygone:0?>,
   id_polygone_type: <?=isset($vue->polygone)?$vue->polygone->id_polygone_type:0?>,
-  extent: <?=isset($vue->polygone->extent)?json_encode($vue->polygone->extent):''?>,
+  extent: <?=json_encode($vue->polygone->extent)?>,
   initSelect: true,
 });
 
