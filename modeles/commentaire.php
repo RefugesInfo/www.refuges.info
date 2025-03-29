@@ -283,9 +283,7 @@ function modification_ajout_commentaire($commentaire)
     else
       $ajout_photo=False;
     $mode="modification";
-    if ($commentaire_avant_modification->id_point != $commentaire->id_point)
-      $un_transfert_a_eu_lieu=TRUE;    
-    
+    $un_transfert_a_eu_lieu = ($commentaire_avant_modification->id_point != $commentaire->id_point);    
   }
   else
     $mode="ajout";

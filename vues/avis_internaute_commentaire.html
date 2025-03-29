@@ -2,7 +2,7 @@
   <br>
   <h4>Merci de nous aider, le commentaire et/ou photo suivant(e) :</h4>
   <p>
-  <?php if ($vue->commentaire->photo_existe) {?>
+  <?php if (!empty($vue->commentaire->photo_existe)) {?>
     <a href="<?=$vue->commentaire->lien_photo['originale']?>">
         <img class="photos" height="400" src="<?=$vue->commentaire->lien_photo['reduite']?>" alt="Photo commentaire">
     </a>
