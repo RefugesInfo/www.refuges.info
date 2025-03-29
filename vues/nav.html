@@ -22,7 +22,7 @@
 		<fieldset>
 			<legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
 			<ul>
-				<?php if ( $vue->polygone->id_polygone ) { ?>
+				<?php if ( isset($vue->polygone->id_polygone) ) { ?>
 					<li>
 						<input type="checkbox"
 							id="select-massif" name="select-massif"
@@ -59,7 +59,7 @@
 				<ul>Maj+click: nouvelle fenêtre</ul>
 		</fieldset>
 
-		<?php if ( $vue->polygone->id_polygone ) { ?>
+		<?php if ( isset($vue->polygone->id_polygone) ) { ?>
 			<fieldset>
 				<legend>Téléchargements</legend>
 				Tous les points refuges.info
