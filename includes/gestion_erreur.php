@@ -92,7 +92,11 @@ function est_entier_positif($mixed)
 {
   if (empty($mixed))
     return False;
-  return ( ctype_digit($mixed) or (is_int($mixed) and $mixed>0) );
+  if (is_string($mixed) and ctype_digit($mixed))
+    return true;
+  if (is_int($mixed) and $mixed>0)
+    return true;
+  return false;  
 }
 
 
