@@ -73,7 +73,7 @@ if (!empty($id_polygone)) // Si on a un numéro de polygone, on affiche une cart
 
   if (empty($polygone->erreur)) 
   {
-    $vue->quoi=$vue->contenu ?
+    $vue->quoi=isset($vue->contenu->type_polygone) ?
       $vue->contenu->type_polygone."s" :
       "refuges, cabanes, sommets et points d'eau";
     $vue->ou="$polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
