@@ -2,10 +2,14 @@
   <br>
   <h4>Merci de nous aider, le commentaire et/ou photo suivant(e) :</h4>
   <p>
-  <?php if (!empty($vue->commentaire->photo_existe)) {?>
+  <?php if ( ($vue->commentaire->photo_existe) ) { // il y a une photo pour ce commentaire?>
+    <?php if (!empty($vue->commentaire->lien_photo['originale'])) { // Mais nous n'avons pas sa photo d'origine en grande taille, donc pas de lien pointant dessus?>
     <a href="<?=$vue->commentaire->lien_photo['originale']?>">
+    <?php }?>
         <img class="photos" height="400" src="<?=$vue->commentaire->lien_photo['reduite']?>" alt="Photo commentaire">
+    <?php if (!empty($vue->commentaire->lien_photo['originale'])) { ?>
     </a>
+    <?php }?>
   <?php }?>
     <?=$vue->commentaire->texte_affichage?>
   </p>
