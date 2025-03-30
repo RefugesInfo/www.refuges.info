@@ -3,7 +3,7 @@ var map = mapModif({
   target: 'carte-modif',
   host: '<?=$config_wri["sous_dossier_installation"]?>',
   mapKeys: <?=json_encode($config_wri['mapKeys'])?>,
-  idPoint: <?=intval($vue->point->id_point)?>,
+  idPoint: <?=$vue->point->id_point ?? 0?>,
 });
 
 // Utilitaire de saisie

@@ -348,7 +348,7 @@ function modification_ajout_commentaire($commentaire)
     $retour->message="Le commentaire a été modifié";
     
   // C'est juste "cosmétique" : si on détecte que le numéro du point a changé, on signale qu'un transfert a eu lieu.
-  if ($un_transfert_a_eu_lieu)  
+  if ($mode == "modification" and $un_transfert_a_eu_lieu)  
     $retour->message.=" et a été transféré sur la fiche : <a href=\"".lien_point($point)."\">".$point->nom."</a>";
     
   $retour->erreur=False;

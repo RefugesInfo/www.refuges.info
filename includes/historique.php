@@ -45,8 +45,7 @@ function historisation_modification($point_avant,$point_apres,$type_operation="m
       }
 
       // Pour les polygones, on stocke le geom sous sa forme numérique
-      if ($point_avant->geom)
-        $point_avant_simple->geom=$point_avant->geom;
+      $point_avant_simple->geom=$point_avant->geom ?? Null;
     }
   }
   else

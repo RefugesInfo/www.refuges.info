@@ -28,7 +28,7 @@ function preparation_point()
 }  
 function gestion_retour($retour,$vue)
 {
-    if ($retour->erreur) 
+    if (isset($retour->erreur) and $retour->erreur) 
         $vue->erreur=$retour->message;
     else
     {

@@ -9,7 +9,7 @@
 ?>
 <div class="contenu">
   <h3>Modification d'un point</h3>
-  <?php if ($vue->erreur) { ?>
+  <?php if (!empty($vue->erreur)) { ?>
       <p>
          <strong>
            <?=$vue->erreur?>
