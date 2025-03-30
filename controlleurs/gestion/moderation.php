@@ -8,6 +8,7 @@ require_once ('commentaire.php');
 require_once ('mise_en_forme_texte.php');
 
 // Traitement des actions
+if (!empty($_REQUEST['type']))
 switch ($_REQUEST['type'])
 {
   case 'transfert_autre_point':
