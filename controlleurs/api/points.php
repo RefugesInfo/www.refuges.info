@@ -12,7 +12,7 @@ include_once("utilisateur.php");
 include_once("entetes_http.php");
 
 // FIXME: Il doit moyen de faire mieux, mais préparer l'export en mettant tout dans un énorme tableau n'est en fait pas la meilleure idée, en 2025 nous touchons la limite en RAM de 128Mo, alors, spécifiquement pour l'export, et car j'ai la flemme de tout reprendre, je boost à 256Mo et ça ira bien
-ini_set('memory_limit',256M);
+ini_set('memory_limit','256M');
 
 /****************************************/
 // Ça permet de mettre convertir tout un objet
