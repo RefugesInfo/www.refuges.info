@@ -382,7 +382,7 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
       
         
       //  phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
-      if (!empty($point->id_createur))
+      if (!empty($point->id_createur) and !empty($point->nom_createur) )
         $point->nom_createur=html_entity_decode($point->nom_createur);
     }
     elseif (est_entier_positif($point->id_polygone))
