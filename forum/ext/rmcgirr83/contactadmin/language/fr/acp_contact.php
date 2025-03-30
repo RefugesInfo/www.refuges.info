@@ -50,8 +50,8 @@ $lang = array_merge($lang, [
 	'CONTACT_CONFIRM_GUESTS_EXPLAIN'	=> 'Si cette option est activée, la confirmation visuelle ne s‘affiche que pour les invités (si elle est activée).',
 	'CONTACT_WHO'						=> 'Qui contacter',
 	'CONTACT_WHO_EXPLAIN'				=> 'Qui doit être contacté par e-mail ou par MP',
-	//'CONTACT_FOUNDER'					=> 'Contacter uniquement le fondateur du forum',
-	//'CONTACT_FOUNDER_EXPLAIN'			=> 'Si ce paramètre est activé, seul le fondateur du forum recevra des notifications par e-mail ou en message privé.',
+	'CONTACT_FOUNDER'					=> 'Contacter uniquement le fondateur du forum',
+	'CONTACT_FOUNDER_EXPLAIN'			=> 'Si ce paramètre est activé, seul le fondateur du forum recevra des notifications par e-mail ou en message privé.',
 	'CONTACT_MAX_ATTEMPTS'				=> 'Nombre maximum de tentatives',
 	'CONTACT_MAX_ATTEMPTS_EXPLAIN'		=> 'Combien de fois un utilisateur peut-il essayer de saisir correctement l‘image de confirmation ?<br>Entrer 0 pour des tentatives illimitées.',
 	'CONTACT_METHOD'					=> 'Méthode de contact',
@@ -77,7 +77,7 @@ $lang = array_merge($lang, [
 	'CONTACT_METHOD_EMAIL'			=> 'E-mail',
 	'CONTACT_METHOD_PM'				=> 'Message privé',
 	'CONTACT_METHOD_POST'			=> 'Dans un forum',
-	//'CONTACT_METHOD_BOARD_DEFAULT'	=> 'Courriel par défaut du forum',
+	'CONTACT_METHOD_BOARD_DEFAULT'	=> 'Courriel par défaut du forum',
 
 	// Contact methods
 	'CONTACT_WHO_ALL_ADMINS'		=> 'All Admins',

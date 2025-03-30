@@ -59,7 +59,7 @@ class listener implements EventSubscriberInterface
 			' WHERE table_name = \''.$this->table_name.'\'';
 		$result = $db->sql_query ($sql);
 		while ($row = $db->sql_fetchrow($result))
-			$this->columns_names[] = @$row['column_name'];
+			$this->columns_names[] = $row['column_name'];
 		$db->sql_freeresult($result);
 	}
 
@@ -266,17 +266,19 @@ class listener implements EventSubscriberInterface
 		// Construction de la première ligne
 		$ligne1 = [];
 
-		preg_match ('/(.*) ([a-z_]*)/', @$row['appel'], $modes);
-		if (strpos ($modes[2], '_')) {
-			$row['listener'] = @$modes[2];
+		if (isset ($row['appel'])) {
+			preg_match ('/(.*) ([a-z_]*)/', $row['appel'], $modes);
+			if (isset ($modes[2]) && strpos ($modes[2], '_')) {
+				$row['listener'] = @$modes[2];
 
-			$appel = str_replace (
-				['register', 'post', 'reply',
-					'quote', 'edit', ],
-				['création d\'un user', 'création d\'un sujet', 'réponse à un post',
-					'quote d\'un post', 'èdition d\'un post'],
-				$modes[1]
-			);
+				$appel = str_replace (
+					['register', 'post', 'reply',
+						'quote', 'edit', ],
+					['création d\'un user', 'création d\'un sujet', 'réponse à un post',
+						'quote d\'un post', 'èdition d\'un post'],
+					$modes[1]
+				);
+			}
 		}
 
 		if (isset($row['ext_error']))
@@ -287,11 +289,11 @@ class listener implements EventSubscriberInterface
 			if (strpos ($row['uri'], 'point_modification')) {
 				if (isset($row['id_point']))
 					$ligne1[] = 'création d\'un <a '.
-						'href="'.$this->forum_root.'../point/'.@$row['id_point'].'"'.
+						'href="'.$this->forum_root.'../point/'.$row['id_point'].'"'.
 					'>point</a>';
 				elseif (isset($row['post_id']))
 					$ligne1[] = 'création d\'un point et de son <a '.
-						'href="'.$this->forum_root.'viewtopic.php?p='.@$row['post_id'].'"'.
+						'href="'.$this->forum_root.'viewtopic.php?p='.$row['post_id'].'"'.
 					'>forum</a>';
 				else
 					$ligne1[] = 'erreur modification point sans id_point ni post_id';
@@ -299,7 +301,7 @@ class listener implements EventSubscriberInterface
 			elseif (strpos ($row['uri'], 'ajout_commentaire')) {
 				if (isset($row['id_point']))
 					$ligne1[] = 'création d\'un <a '.
-						'href="'.$this->forum_root.'../point/'.@$row['id_point'].'#C'.@$row['id_commentaire'].'"'.
+						'href="'.$this->forum_root.'../point/'.$row['id_point'].'#C'.@$row['id_commentaire'].'"'.
 					'>commentaire</a>';
 				else
 					$ligne1[] = 'erreur ajout commentaire sans id_point';
@@ -307,7 +309,7 @@ class listener implements EventSubscriberInterface
 			elseif (strpos ($row['uri'], 'mode=register')) {
 				if (isset($row['user_id']))
 					$ligne1[] = 'création du compte <a '.
-						'href="'.$this->forum_root.'memberlist.php?mode=viewprofile&u='.@$row['user_id'].'"'.
+						'href="'.$this->forum_root.'memberlist.php?mode=viewprofile&u='.$row['user_id'].'"'.
 					'>'.@$row['user_name'].'</a>';
 				else
 					$ligne1[] = 'erreur création du compte sans user_id';
@@ -315,11 +317,11 @@ class listener implements EventSubscriberInterface
 			elseif (strpos ($row['uri'], 'mode=post')) {
 				if (isset($row['post_id']))
 					$ligne1[] = 'création d\'un <a '.
-						'href="'.$this->forum_root.'viewtopic.php?p='.@$row['post_id'].'"'.
+						'href="'.$this->forum_root.'viewtopic.php?p='.$row['post_id'].'"'.
 					'>sujet</a>';
 				elseif (isset($row['topic_id']))
 					$ligne1[] = 'création d\'un <a '.
-						'href="'.$this->forum_root.'viewtopic.php?t='.@$row['topic_id'].'"'.
+						'href="'.$this->forum_root.'viewtopic.php?t='.$row['topic_id'].'"'.
 					'>sujet</a>';
 				else
 					$ligne1[] = 'erreur création d\'un post sans topic_id ni post_id';
@@ -328,7 +330,7 @@ class listener implements EventSubscriberInterface
 				if (isset($row['post_id']))
 					$ligne1[] = str_replace (
 						'post',
-						'<a href="'.$this->forum_root.'viewtopic.php?p='.@$row['post_id'].'">post</a>',
+						'<a href="'.$this->forum_root.'viewtopic.php?p='.$row['post_id'].'">post</a>',
 						$appel
 					);
 				else
@@ -341,10 +343,10 @@ class listener implements EventSubscriberInterface
 		if (!strpos (@$row['uri'], 'mode=register') &&
 			@$row['user_id'] > 1)
 				$ligne1[] = 'par <a '.
-					'href="'.$this->forum_root.'memberlist.php?mode=viewprofile&u='.@$row['user_id'].'"'.
+					'href="'.$this->forum_root.'memberlist.php?mode=viewprofile&u='.$row['user_id'].'"'.
 				'>'.@$row['user_name'].'</a>'.
 				' (toutes <a '.
-					'href="'.$this->u_action.'&user_id='.@$row['user_id'].'"'.
+					'href="'.$this->u_action.'&user_id='.$row['user_id'].'"'.
 				'>ses contributions</a>)';
 
 		if (count ($ligne1))
@@ -352,8 +354,8 @@ class listener implements EventSubscriberInterface
 
 		if (isset($row['trace_id']) && !isset($this->get['trace_id']))
 			$ligne1[] =
-				'<sup><a href="'.$this->u_action.'&trace_id='.@$row['trace_id'].'"'.
-				'>'.@$row['trace_id'].'</a></sup>';
+				'<sup><a href="'.$this->u_action.'&trace_id='.$row['trace_id'].'"'.
+				'>'.$row['trace_id'].'</a></sup>';
 
 		// Construction des lignes du rapport
 		$lignes_html = [];
@@ -368,7 +370,7 @@ class listener implements EventSubscriberInterface
 					preg_replace ( // Décode unicode if such returned by extensions
 						'/\\\\u([a-e0-9]{4})/',
 						'&#x$1;',
-						@$row['ext_error'],
+						$row['ext_error'],
 					),
 				);
 
@@ -381,7 +383,7 @@ class listener implements EventSubscriberInterface
 		if (isset($row['ip']))
 			$lignes_html[] =
 				'Fournisseur d\'Accès Internet: '.
-				'<a href="https://ipinfo.io/'.($asns[1] ?? @$row['ip']).'">'.
+				'<a href="https://ipinfo.io/'.($asns[1] ?? $row['ip']).'">'.
 					$fai.
 				'</a> - '.
 				@$row['country_name'].@$row['city'];
@@ -421,7 +423,7 @@ class listener implements EventSubscriberInterface
 
 		foreach ($lignes_traces as $title => $k)
 			if (isset($row[$k])) {
-				$r = str_replace (PHP_EOL, ' ', @$row[$k]);
+				$r = str_replace (PHP_EOL, ' ', $row[$k]);
 				$r = preg_replace ('/\s\s+/', ' ', $r);
 				$r = trim (strip_tags ($r, '<br>'));
 				$t = ucfirst ($title);
@@ -430,19 +432,19 @@ class listener implements EventSubscriberInterface
 
 		if (isset($row['ip']))
 			$lignes_html = array_merge ($lignes_html, [
-				'<a href="https://ipinfo.io/'.@$row['ip'].'">IpInfo</a> de '.@$row['ip'],
-				'<a href="https://whatismyipaddress.com/ip/'.@$row['ip'].'">WhatIsMyIP</a> de '.@$row['ip'],
-				'<a href="https://www.iplocation.net/ip-lookup?query='.@$row['ip'].'">IpLocation</a> de '.@$row['ip'],
-				'<a href="https://stopforumspam.com/ipcheck/'.@$row['ip'].'">StopForumSpam</a> de '.@$row['ip'],
+				'<a href="https://ipinfo.io/'.$row['ip'].'">IpInfo</a> de '.$row['ip'],
+				'<a href="https://whatismyipaddress.com/ip/'.$row['ip'].'">WhatIsMyIP</a> de '.$row['ip'],
+				'<a href="https://www.iplocation.net/ip-lookup?query='.$row['ip'].'">IpLocation</a> de '.$row['ip'],
+				'<a href="https://stopforumspam.com/ipcheck/'.$row['ip'].'">StopForumSpam</a> de '.$row['ip'],
 				'<a href="https://www.spamcop.net/w3m?action=checkblock&ip='.
-					@$row['ip'].'">SpamCop</a> de '.@$row['ip'],
-				'<a href="https://www.abuseipdb.com/check/'.@$row['ip'].'">AbuseIPdb</a> de '.@$row['ip'],
-				'<a href="https://cleantalk.org/blacklists/'.@$row['ip'].'">CleanTalk</a> de '.@$row['ip'],
+					$row['ip'].'">SpamCop</a> de '.$row['ip'],
+				'<a href="https://www.abuseipdb.com/check/'.$row['ip'].'">AbuseIPdb</a> de '.$row['ip'],
+				'<a href="https://cleantalk.org/blacklists/'.$row['ip'].'">CleanTalk</a> de '.$row['ip'],
 			]);
 
 		if (isset($row['user_email']))
 			$lignes_html[] = '<a href="https://cleantalk.org/email-checker/'.
-				@$row['user_email'].'">CleanTalk</a> de '.@$row['user_email'];
+				$row['user_email'].'">CleanTalk</a> de '.$row['user_email'];
 
 		return '<p>'.implode ('</p>'.PHP_EOL.'<p>', $lignes_html).'</p>';
 	}
