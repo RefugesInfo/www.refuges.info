@@ -48,13 +48,15 @@ $lang = array_merge($lang, [
 	'CONTACT_ATTACHMENTS_EXPLAIN'		=> 'Si les pièces jointes sont autorisées, les utilisateurs pourront ajouter des fichiers dans la publication sur le forum et les messages privés.<br>Les extensions autorisées sont identiques à la configuration du forum.<br><span style="color:red;">Ne s‘applique pas à la méthode de contact par “e-mail”.</span>',
 	'CONTACT_CONFIRM_GUESTS'			=> 'Confirmation visuelle pour les invités uniquement',
 	'CONTACT_CONFIRM_GUESTS_EXPLAIN'	=> 'Si cette option est activée, la confirmation visuelle ne s‘affiche que pour les invités (si elle est activée).',
-	'CONTACT_FOUNDER'					=> 'Contacter uniquement le fondateur du forum',
-	'CONTACT_FOUNDER_EXPLAIN'			=> 'Si ce paramètre est activé, seul le fondateur du forum recevra des notifications par e-mail ou en message privé.',
-
+	'CONTACT_WHO'						=> 'Qui contacter',
+	'CONTACT_WHO_EXPLAIN'				=> 'Qui doit être contacté par e-mail ou par MP',
+	//'CONTACT_FOUNDER'					=> 'Contacter uniquement le fondateur du forum',
+	//'CONTACT_FOUNDER_EXPLAIN'			=> 'Si ce paramètre est activé, seul le fondateur du forum recevra des notifications par e-mail ou en message privé.',
 	'CONTACT_MAX_ATTEMPTS'				=> 'Nombre maximum de tentatives',
 	'CONTACT_MAX_ATTEMPTS_EXPLAIN'		=> 'Combien de fois un utilisateur peut-il essayer de saisir correctement l‘image de confirmation ?<br>Entrer 0 pour des tentatives illimitées.',
 	'CONTACT_METHOD'					=> 'Méthode de contact',
 	'CONTACT_METHOD_EXPLAIN'			=> 'Comment voulez-vous que les utilisateurs puissent entrer en contact.<br><span style="color:red;">Si défini sur «E-mail», les pièces jointes ne s‘appliquent pas.</span>',
+	'CONTACT_POST_OPTIONS'				=> 'Contact Post ou PM Options',
 	'CONTACT_REASONS'					=> 'Raisons de contact',
 	'CONTACT_REASONS_EXPLAIN'			=> 'Saisissez les raisons du contact, séparées par de nouvelles lignes.<br>Si vous ne souhaitez pas utiliser cette fonctionnalité, laissez ce champ vide.',
 	// Bot config options
@@ -65,6 +67,7 @@ $lang = array_merge($lang, [
 	'CONTACT_BOT_USER'				=> 'Utilisateur comme robot de contact',
 	'CONTACT_BOT_USER_EXPLAIN'		=> 'Sélectionnez l‘utilisateur sous lequel les messages seront publiés si la méthode de contact est définie sur "Message privé" ou "Dans un forum".',
 	'CONTACT_NO_BOT_USER'			=> '<b>L‘ID utilisateur du robot de contact choisi n‘existe pas</b>',
+	'CONTACT_BOT_IS_BOT'			=> '<strong>Le bot de contact choisi est désigné comme bot du forum. Êtes-vous sûr de vouloir utiliser cet utilisateur comme bot ?</strong>',
 	'CONTACT_USERNAME_CHK'			=> 'Vérifier le nom d‘utilisateur',
 	'CONTACT_USERNAME_CHK_EXPLAIN'	=> 'Si la valeur est oui, le nom d’utilisateur saisi sera comparé à celui de la base de données. Si le nom est trouvé, l‘utilisateur aura un message d‘erreur et sera invité à entrer un nom d‘utilisateur différent.',
 	'CONTACT_EMAIL_CHK'				=> 'Vérifier l‘adresse e-mail',
@@ -74,7 +77,12 @@ $lang = array_merge($lang, [
 	'CONTACT_METHOD_EMAIL'			=> 'E-mail',
 	'CONTACT_METHOD_PM'				=> 'Message privé',
 	'CONTACT_METHOD_POST'			=> 'Dans un forum',
-	'CONTACT_METHOD_BOARD_DEFAULT'	=> 'Courriel par défaut du forum',
+	//'CONTACT_METHOD_BOARD_DEFAULT'	=> 'Courriel par défaut du forum',
+
+	// Contact methods
+	'CONTACT_WHO_ALL_ADMINS'		=> 'All Admins',
+	'CONTACT_WHO_BOARD_FOUNDER'		=> 'Board Founder',
+	'CONTACT_WHO_BOARD_DEFAULT'	=> 'Board Default Email',
 
 	// Contact posters...user bot
 	'CONTACT_POST_NEITHER'			=> 'Ni l‘un ni l‘autre',
@@ -83,4 +91,7 @@ $lang = array_merge($lang, [
 
 	// Overwrite the default contact page lang
 	'CONTACT_EXTENSION_ACTIVE'	=> '<span style="color:red;">Les paramètres ici n‘auront pas d‘importance car vous avez actuellement activé l‘extension de contact de l‘administrateur. Vous ne pourrez pas activer cette option sans avoir préalablement désactivé l‘extension</span>',
+	'CONTACT_GDPR'	=> 'GDPR',
+	'CONTACT_GDPR_EXPLAIN' => 'Si vous cochez cette case, l\'utilisateur sera invité à accepter la politique de confidentialité du forum. Cette case doit être cochée pour que le formulaire de contact soit envoyé.',
+	'EMAIL_NOT_CONFIGURED' => 'L\'e-mail n\'est pas configuré pour le forum, veuillez effectuer une sélection différente pour la méthode de contact',
 ]);

@@ -28,8 +28,10 @@ user
 
 namespace RefugesInfo\trace\event;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use GeoIp2\Database\Reader;
+include __DIR__.'/../library/geoip2.phar';
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
 	public function __construct()
@@ -237,9 +239,9 @@ class listener implements EventSubscriberInterface
 		$db->sql_freeresult($result);
 
 		// S'il n'y a pas de trace dans la table, décode l'IP utilisée.
-		$event_ip = $event['post_info']['poster_ip'] ??
+		$event_ip = $event['post_info']['poster_ip'] ?? //TODO test isset $event['post_info']
 			@$event['member']['user_ip'];
-		if (!$lignes_traces_html && $event_ip)
+		if (!count($lignes_traces_html) && $event_ip)
 			$lignes_traces_html[] = $this->display_one_trace ([
 				'ip' => $event_ip,
 				//TODO ? 'user_id' => @$event['user_id'],
@@ -249,7 +251,7 @@ class listener implements EventSubscriberInterface
 			'WHERE' => implode ('<br/>', $conditions),
 			'TRACES' => implode ('<hr/>'.PHP_EOL, $lignes_traces_html),
 			'NOMBRE_LIGNES' => count ($lignes_traces_html),
-			'NOMBRE_TRACES' => $row_count['count'],
+			'NOMBRE_TRACES' => $row_count['count'] ?? 0,
 		]);
 		$template->assign_vars (array_change_key_case ($this->get, CASE_UPPER));
 	}
@@ -502,7 +504,7 @@ class listener implements EventSubscriberInterface
 
 		if($delta_row && @$row['uri']) {
 			// To have the NULL value on the TEXT field
-			if (!$delta_row['ext_error'])
+			if (!isset($delta_row['ext_error']))
 				$delta_row['ext_error'] = null;
 
 			if (isset($row['trace_id']))

@@ -58,7 +58,7 @@ function forum_submit_post ($args) {
   + $args; // Ecrase les valeurs par défaut par celles fournies à la fonction
 
   // Récupère les infos du topic
-  if ($data['topic_id']) {
+  if (isset($data['topic_id'])) {
     $sql = 'SELECT * FROM '.TOPICS_TABLE.' WHERE topic_id = '.$data['topic_id'];
     $result = $db->sql_query($sql);
     $row = $db->sql_fetchrow($result);
@@ -68,7 +68,7 @@ function forum_submit_post ($args) {
   }
 
   // Récupère les infos du premier post
-  if ($data['topic_first_post_id']) {
+  if (isset($data['topic_first_post_id'])) {
     $sql = 'SELECT * FROM '.POSTS_TABLE.' WHERE post_id = '.$data['topic_first_post_id'];
     $result = $db->sql_query($sql);
     $row = $db->sql_fetchrow($result);

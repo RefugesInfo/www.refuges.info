@@ -1135,3 +1135,7 @@ form {
   color:white;
   font-size:14px
 }
+.xdebug-var-dump > small:first-child {
+	display: block;
+	border-top: solid white;
+}

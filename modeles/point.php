@@ -598,7 +598,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     $q="SELECT id_point, nom
       FROM points
       WHERE cache = true AND
-          id_point <> ".($point->id_point?:0)." AND
+          id_point <> ".($point->id_point??0)." AND
           ST_DWithin(geom, ST_GeomFromGeoJSON('{$point->geojson}'), $distance, false)
         LIMIT 1";
 
