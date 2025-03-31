@@ -9,6 +9,8 @@ header("Content-disposition: filename=points-refuges-info.$req->format");
 header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
+headers_cache_api();
+
 ?>
 <?='<?'?>xml version="1.0" encoding="utf-8"<?='?>'?>
 <kml xmlns="http://earth.google.com/kml/2.1">

@@ -9,6 +9,8 @@ sly 05/12/2019 Ce format gpx est celui qui, selon ce que je comprend de la norme
 header("Content-disposition: filename=points-refuges-info-standard.gpx");
 header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
 headers_cors_par_default();
+headers_cache_api();
+
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" standalone="no"<?='?>'?>
 

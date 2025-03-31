@@ -2,6 +2,7 @@
 header("Content-disposition: filename=points-refuges-info.csv");
 header("Content-Type: text/csv; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
+headers_cors_par_default();
 
 $separateur=";";
 

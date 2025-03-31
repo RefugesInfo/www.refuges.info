@@ -1,6 +1,9 @@
 <?php 
 header("Content-disposition: filename=points-refuges-info-simple.gpx");
 header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
+headers_cors_par_default();
+headers_cache_api();
+
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" standalone="no"<?='?>'?>
 
