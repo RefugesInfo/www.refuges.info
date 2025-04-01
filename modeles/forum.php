@@ -17,6 +17,8 @@ include($config_wri['rep_forum'] . 'includes/functions_admin.php');
 function forum_submit_post ($args) {
   global $config_wri, $db, $user;
 
+  $user->add_lang('posting');
+
   // On garde de coté l'information d'identification de l'utilisateur connecté
   $mem_user = $user;
   
