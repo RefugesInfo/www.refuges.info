@@ -1,4 +1,4 @@
-<h3><?=empty($vue->point->id_point)?'Ajouter':'Modifier'?> un point dans refuges.info</h3>
+<h3><?=isset($vue->point->id_point) ? 'Ajouter' : 'Modifier'?> un point dans refuges.info</h3>
 
 <div class="contenu">
   <div id="container-carte-point">
@@ -60,7 +60,7 @@
     <fieldset>
       <label>
         Nom :
-        <input class="input_en_ligne" type="text" name="nom" placeholder="<?=!$vue->point->id_point ? $vue->point->nom : ''?>" value="<?=$vue->point->id_point ? $vue->point->nom : ''?>" />
+        <input class="input_en_ligne" type="text" name="nom" placeholder="<?=!isset($vue->point->id_point) ? $vue->point->nom : ''?>" value="<?=isset($vue->point->id_point) ? $vue->point->nom : ''?>" />
       </label>
       <label>Type de point
         <select name='id_point_type'>
@@ -95,7 +95,7 @@
       <div><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></div>
       <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
       <label><span><?=ucfirst($tx_params->label)?></span>
-        <textarea placeholder="<?=!$vue->point->id_point ? $tx_params->valeur : ''?>" style="height:<?=(substr_count($tx_params->valeur, "\n")+5)?>em;" name="<?=$tx_nom?>"><?=$vue->point->id_point ? $tx_params->valeur:''?></textarea>
+        <textarea placeholder="<?=!isset($vue->point->id_point) ? $tx_params->valeur : ''?>" style="height:<?=(substr_count($tx_params->valeur, "\n")+5)?>em;" name="<?=$tx_nom?>"><?=isset($vue->point->id_point) ? $tx_params->valeur:''?></textarea>
       </label>
       <?php } ?>
     </fieldset>
