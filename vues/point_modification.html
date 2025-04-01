@@ -9,7 +9,7 @@
 ?>
 <div class="contenu">
   <h3>Modification d'un point</h3>
-  <?php if (!empty($vue->erreur)) { ?>
+  <?php if (isset($vue->erreur) && !empty($vue->erreur)) { ?>
       <p>
          <strong>
            <?=$vue->erreur?>
@@ -18,12 +18,12 @@
            <br>(Vous pouvez retourner corriger le problème en utilisant le bouton retour de votre navigateur)
          </strong>
       </p>
-  <?php } else { ?>
+  <?php } elseif (isset($vue->message)) { ?>
      <h4>Merci de votre contribution</h4>
      <h5><?=$vue->message?></h5>
   <?php } ?>
 <p>
-    <?php if ($vue->lien_point) { ?>
+    <?php if (isset($vue->lien_point)) { ?>
         <a href="<?=$vue->lien_point?>">Cliquez ici pour voir ou retourner à la fiche</a>
     <?php } ?>
 </p>
