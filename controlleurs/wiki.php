@@ -8,7 +8,10 @@ Finalement on passe à un quasi-vrai wiki avec historique (approximatif) que pou
 require_once ("mise_en_forme_texte.php");
 require_once ("wiki.php");
 
-    $page=$controlleur->url_decoupee[1];
+
+// Si aucune page n'est précisée dans l'url on suppose que l'on souhaite la page par défaut stockée '' dans la base
+$page = $controlleur->url_decoupee[1] ?? '';
+
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (est_moderateur()) 
 {
@@ -17,9 +20,6 @@ if (est_moderateur())
 	if (!empty($_REQUEST ['supprimer']))
 		supprimer_page($page);
 }
-
-if ($page == '')
-	$page = 'index';
 
 // Conteneur standard de l'entête et pied de page
 $contenu_brut =  wiki_page_brut ($page);
