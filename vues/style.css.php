@@ -401,7 +401,7 @@ form .champs_null_masque>label {
 }
 
 .input_en_ligne {
-  width: 18em;
+  width: 26em;
 }
 
 .input_captcha_court {
