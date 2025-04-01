@@ -48,7 +48,7 @@ function infos_utilisateurs()
   global $config_wri;
   global $pdo;
   // 2 on dirait que c'est les faux users de phpbb (bots, anonymous, spiders)
-  $query="SELECT * FROM phpbb3_users where user_type!=2 order by username";
+  $query="SELECT user_id,group_id,username,username_clean FROM phpbb3_users where user_type!=2 order by username";
   $res=$pdo->query($query);
   while ($utilisateur = $res->fetch())
     $utilisateurs[]=$utilisateur;
