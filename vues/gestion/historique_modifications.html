@@ -28,8 +28,8 @@ th:last-child {
     <?php
       if (isset($vue->modifications_points))
         foreach ($vue->modifications_points as $modification) {
-          $nom = $modification->point_avant->nom ?: $modification->point_avant->nom_polygone ?:
-            $modification->point_apres->nom ?: $modification->point_apres->nom_polygone;
+          $nom = $modification->point_avant->nom ?? $modification->point_avant->nom_polygone ??
+            $modification->point_apres->nom ?? $modification->point_apres->nom_polygone ?? 'Erreur:Aucun nom?';
 
           $point_avant = $modification->point_avant;
           foreach ($point_avant as $propriete => $valeur)
