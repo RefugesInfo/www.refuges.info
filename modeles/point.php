@@ -714,8 +714,6 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
         return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
-
-    historisation_modification(null,$point,'création point',$id_utilisateur_qui_modifie);
   }
 
   // on retourne l'id du point (surtout utile si création)
