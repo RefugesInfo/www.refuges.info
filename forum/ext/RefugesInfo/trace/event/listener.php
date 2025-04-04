@@ -523,7 +523,6 @@ class listener implements EventSubscriberInterface
 					$db->sql_build_array('UPDATE', $delta_row).
 					' WHERE trace_id = '.$row['trace_id'];
 				$db->sql_query($sql);
-/*DCMM*/var_dump($delta_row);
 			}
 		}
 
