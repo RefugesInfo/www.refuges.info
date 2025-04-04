@@ -10,9 +10,12 @@ class release_1_0_2 extends \phpbb\db\migration\migration
 
 	public function update_schema()
 	{
+		include __DIR__.'/config.php';
+		$table_name = array_key_first($config['tables']);
+
 		return [
 			'add_columns' => [
-				'trace_requettes' => [
+				$table_name => [
 					'country_name' => ['CHAR:128', NULL],
 					'city' => ['CHAR:128', NULL],
 				],

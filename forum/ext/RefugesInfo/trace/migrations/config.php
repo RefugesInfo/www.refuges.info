@@ -1,0 +1,37 @@
+<?php
+$config = [
+	'tables' => [
+		'trace_requettes' => [
+			'COLUMNS' => [
+				'trace_id' => ['UINT', NULL, 'auto_increment'],
+				'appel' => ['CHAR:128', NULL],
+				'ext_error' => ['TEXT', NULL],
+				'uri' => ['TEXT', NULL],
+				'ip' => ['CHAR:64', NULL],
+				'host' => ['CHAR:255', NULL],
+				'asn_id' => ['CHAR:32', NULL],
+				'asn_name' => ['CHAR:128', NULL],
+				'country_name' => ['CHAR:128', NULL],
+				'city' => ['CHAR:128', NULL],
+				'user_agent' => ['CHAR:255', NULL],
+				'language' => ['CHAR:128', NULL],
+				'browser_operator' => ['CHAR:128', NULL],
+				'date' => ['CHAR:64', NULL],
+				'topic_id' => ['UINT', NULL],
+				'post_id' => ['UINT', NULL],
+				'id_point' => ['UINT', NULL],
+				'id_commentaire' => ['UINT', NULL],
+				'title' => ['CHAR:255', NULL],
+				'text' => ['TEXT', NULL],
+				'user_id' => ['UINT', NULL],
+				'user_name' => ['CHAR:128', NULL],
+				'user_email' => ['CHAR:128', NULL],
+				'user_lang' => ['CHAR:128', NULL],
+				'user_timezone' => ['CHAR:64', NULL],
+				'ip_enregistrement' => ['CHAR:64', NULL],
+				'host_enregistrement' => ['CHAR:128', NULL],
+			],
+			'PRIMARY_KEY' => 'trace_id',
+		],
+	],
+];

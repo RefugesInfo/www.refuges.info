@@ -9,6 +9,8 @@ namespace RefugesInfo\couplage\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
+	protected $server;
+
 	public function __construct() {
 		global $request;
 
@@ -31,7 +33,7 @@ class listener implements EventSubscriberInterface
 	public function assign_template_vars_before ($event) {
 		global $db, $template, $point;
 
-		if ($event['topic_id']) {
+		if (isset($event['topic_id'])) {
 			$sql = "SELECT id_point,id_point_type,conditions_utilisation FROM points WHERE topic_id = ".$event['topic_id'];
 			$result = $db->sql_query ($sql);
 			$row = $db->sql_fetchrow ($result);

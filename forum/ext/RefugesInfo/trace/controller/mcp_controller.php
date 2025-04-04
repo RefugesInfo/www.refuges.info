@@ -3,6 +3,8 @@ namespace RefugesInfo\trace\controller;
 
 class mcp_controller
 {
+	protected $u_action;
+
 	public function set_page_url($u_action)
 	{
 		global $request;
