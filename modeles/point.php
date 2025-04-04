@@ -698,12 +698,13 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   }
   else  // INSERT
   {
+    $id_createur = $point->id_createur ?? 0;
     // On appelle la fonction du forum qui crée un topic dans le forum refuges
     $r = forum_submit_post ([
         'action' => 'post',
         'forum_id' => $config_wri['forum_refuges'],
         'topic_title' => mb_ucfirst($point->nom),
-        'topic_poster' => $point->id_createur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
+        'topic_poster' => $id_createur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
     ]);
     if (!$r['topic_id'])
         return erreur( "Erreur création forum point<br/>".var_export($r,true) );
