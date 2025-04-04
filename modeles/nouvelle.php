@@ -197,17 +197,20 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $conditions_point->topic_id=$nouvelle['topic_id'];
       $conditions_point->avec_points_caches=True; // NOTE: si le point est caché, on veut quand même les messages du forum qui s'y rapporte, et donc les infos du point ?
       $points=infos_points($conditions_point);
-      $point=reset($points);
-      $nouvelle['nom_point']=ucfirst($point->nom);
-      $nouvelle['localisation']=chaine_de_localisation($point->polygones);
-      if ($lien_locaux)
-        $url_complete="";
-      else
-        $url_complete="https://".$config_wri['nom_hote'];
-      $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#p".$nouvelle['post_id'];
-      $nouvelle['texte']="[url=$lien_forum][b]Message forum[/b][/url]";
-      $nouvelle['lien']=$lien_forum;
-      $par_ou_de="de";
+      if (count($points)!=0) // Nous avons bien ce topic dans le forum demandé, mais il n'est rattaché à aucun point. Cela arrive quand quelqu'un ou un robot a créer manuellement un topic dans le forum des refuges. ça devrait pas, mais ça arrive, et je n'ai pas moyen de l'interdire en amont, évitons d'avoir une ligne vide
+      {
+        $point=reset($points);
+        $nouvelle['nom_point']=ucfirst($point->nom);
+        $nouvelle['localisation']=chaine_de_localisation($point->polygones);
+        if ($lien_locaux)
+          $url_complete="";
+        else
+          $url_complete="https://".$config_wri['nom_hote'];
+        $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#p".$nouvelle['post_id'];
+        $nouvelle['texte']="[url=$lien_forum][b]Message forum[/b][/url]";
+        $nouvelle['lien']=$lien_forum;
+        $par_ou_de="de";
+        }
     }
     if ($nouvelle['categorie'] == "Commentaire")
     {
@@ -233,7 +236,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $nouvelle['texte'] .= " $par_ou_de ".$nouvelle['auteur'];
 
     // et $nouvelle['categorie'] == "Point" alors ? => Les nouvelles sur les ajouts de points ont déjà toutes les infos nécessaires sur leurs polygones d'appartenance, on ne fait rien de spécifique pour eux
-    $nouvelles[]=$nouvelle;
+    if( !empty($nouvelle['nom_point']) )
+      $nouvelles[]=$nouvelle;
     $nb++;
     if ($nb>=$nombre) // On obtient le nombre de nouvelles demandées, on s'arrête là et surtout on ne va gaspille plus de temps à chercher les infos $points sur les nouvelles qu'on affichera pas
         break;
