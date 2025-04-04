@@ -519,12 +519,12 @@ class listener implements EventSubscriberInterface
 					$db->sql_build_array('UPDATE', $delta_row).
 					' WHERE trace_id = '.$row['trace_id'];
 				$db->sql_query($sql);
+			}
 		}
 		// Nouvelle trace
 		elseif(!empty($row['uri'])) { // Pas pour les vieux posts ou uisers qui n'ont pas de trace
 			$sql = 'INSERT INTO '.$this->table_name.$db->sql_build_array('INSERT', $row);
 			$db->sql_query($sql);
-			}
 		}
 
 		return $row;
