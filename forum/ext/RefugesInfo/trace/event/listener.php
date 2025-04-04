@@ -484,13 +484,8 @@ class listener implements EventSubscriberInterface
 		if(!isset($row['ext_error']))
 			$row['ext_error'] = null;
 
-		// Nouvelle trace
-		if(empty($row['trace_id'])) {
-			$sql = 'INSERT INTO '.$this->table_name.$db->sql_build_array('INSERT', $row);
-			$db->sql_query($sql);
-		}
 		// Update d'une trace existante
-		else {
+		if(!empty($row['trace_id'])) {
 			// On récupère la trace existante
 			$sql_row = [];
 			$sql = 'SELECT '.$this->table_name.'.*'.
@@ -524,6 +519,11 @@ class listener implements EventSubscriberInterface
 					$db->sql_build_array('UPDATE', $delta_row).
 					' WHERE trace_id = '.$row['trace_id'];
 				$db->sql_query($sql);
+		}
+		// Nouvelle trace
+		elseif(!empty($row['uri'])) { // Pas pour les vieux posts ou uisers qui n'ont pas de trace
+			$sql = 'INSERT INTO '.$this->table_name.$db->sql_build_array('INSERT', $row);
+			$db->sql_query($sql);
 			}
 		}
 
