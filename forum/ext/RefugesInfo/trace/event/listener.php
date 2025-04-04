@@ -36,6 +36,7 @@ class listener implements EventSubscriberInterface
 {
 	protected $server, $post, $get;
 	protected $forum_root, $u_action, $columns_names;
+	protected $reader_asn, $reader_city;
 
 	public function __construct()
 	{
@@ -462,20 +463,20 @@ class listener implements EventSubscriberInterface
 
 			if(empty($row['asn_id']) &&
 				is_file(__DIR__.'/../geoip2/GeoLite2-ASN.mmdb')) {
-					$reader = new Reader(__DIR__.'/../geoip2/GeoLite2-ASN.mmdb');
-					$geodata = $reader->asn($row['ip']);
+					if (!isset ($this->reader_asn))
+						$this->reader_asn = new Reader(__DIR__.'/../geoip2/GeoLite2-ASN.mmdb');
+					$geodata = $this->reader_asn->asn($row['ip']);
 					$row['asn_id'] = 'AS'.$geodata->autonomousSystemNumber;
 					$row['asn_name'] = $geodata->autonomousSystemOrganization;
-					$reader->close();
 				}
 
 			if(empty($row['country_name']) &&
 				is_file(__DIR__.'/../geoip2/GeoLite2-City.mmdb')) {
-					$reader = new Reader(__DIR__.'/../geoip2/GeoLite2-City.mmdb');
-					$geodata = $reader->city($row['ip']);
+					if (!isset ($this->reader_city))
+						$this->reader_city = new Reader(__DIR__.'/../geoip2/GeoLite2-City.mmdb');
+					$geodata = $this->reader_city->city($row['ip']);
 					$row['country_name'] = $geodata->country->name;
 					$row['city'] = $geodata->city->name;
-					$reader->close();
 				}
 		}
 
