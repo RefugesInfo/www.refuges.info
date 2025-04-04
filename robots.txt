@@ -31,4 +31,5 @@ User-agent: Bytespider
 User-agent: SemrushBot
 User-agent: Meta-ExternalAgent
 User-agent: PetalBot
+User-agent: ClaudeBot
 Disallow: /
