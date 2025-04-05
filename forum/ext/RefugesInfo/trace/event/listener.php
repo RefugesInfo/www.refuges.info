@@ -202,16 +202,17 @@ class listener implements EventSubscriberInterface
 
 		// Liste les colonnes pour ne prendre que les arguments qui correspondent
 		foreach($this->columns_names as $column_name)
-			if(isset($this->get[$column_name])) {
+			// Multicriteria on one column
+			foreach(explode(',', $this->get[$column_name] ?? '') as $sub_colomn) {
 				// Separate the ! at the beginning
-				$gets = array_reverse(explode('!', $this->get[$column_name]));
+				$scs = array_reverse(explode('!', $sub_colomn));
 
-				if($gets[0] == 'null')
-					$conditions[] = "$column_name IS".(isset($gets[1]) ? ' NOT' : '')." NULL";
-				elseif(is_numeric($gets[0]))
-					$conditions[] = "$column_name ".(isset($gets[1]) ? '!' : '')."= {$gets[0]}";
-				elseif($gets[0])
-					$conditions[] = "$column_name".(isset($gets[1]) ? ' NOT' : '')." LIKE '%{$gets[0]}%'";
+				if($scs[0] === 'null')
+					$conditions[] = $column_name.(isset($scs[1])?' IS NOT NULL':' IS NULL');
+				elseif(is_numeric($scs[0]))
+					$conditions[] = $column_name.(isset($scs[1])?'!=':'=').$scs[0];
+				elseif($scs[0])
+					$conditions[] = $column_name.(isset($scs[1])?' NOT':'').' LIKE \'%'.$scs[0].'%\'';
 			}
 
 		$lignes_traces_html = [];
