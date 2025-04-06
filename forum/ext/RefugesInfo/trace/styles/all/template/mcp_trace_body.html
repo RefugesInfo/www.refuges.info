@@ -33,7 +33,7 @@
 			<p class="mcp-trace-title">Sélection manuelle</p>
 			<form method="get" action="{U_MCP_ACTION}">
 				<div>Syntaxe : chaine (contient) , !chaine (ne contient pas) , null , !null</div>
-				<label>N° trace <input type="text" name="trace_id" value="{TRACE_ID}" /></label>
+				<label>N° trace <input type="number" name="trace_id" value="{TRACE_ID}" /></label>
 				<label>Erreur inclue <input type="text" size="50" name="ext_error" value="{EXT_ERROR}" /></label>
 				<label>Fournisseur inclue <input type="text" name="asn" value="{ASN}" /></label>
 				<label>Host inclue <input type="text" name="host" value="{HOST}" /></label>
@@ -43,9 +43,15 @@
 				</label>
 				<input type="hidden" name="i" value="{I}" />
 				<input type="hidden" name="search" value="advanced" />
-				<button type="submit">Filtrer</button>
+				<button type="submit" id="advanced_search_submit">Filtrer</button>
 			</form>
 			<hr/>
+			<script>
+				// Submit while pressing enter
+				const cfaEl = document.getElementById('check_form_activity');
+				if (assEl)
+					window.addEventListener('keypress', assEl.click);
+			<script/>
 		<!-- ENDIF -->
 
 		<h4>

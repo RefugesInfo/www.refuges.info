@@ -110,7 +110,7 @@ class listener implements EventSubscriberInterface
 		global $user;
 
 		if(count($this->post) && // Except when load a post page
-			!strpos($this->server['REQUEST_URI'], 'mode=edit') && // Edit is not traced
+			strpos($this->server['REQUEST_URI'], 'mode=edit') === false && // Edit is not traced
 			!isset($this->post['preview'])) // Post preview is not traced
 		{
 			$post_data = array_filter(
@@ -126,7 +126,7 @@ class listener implements EventSubscriberInterface
 			// Données à archiver
 			$trace = $this->full_row([
 				// General
-				'appel' => strpos($eventName, 'register')
+				'appel' => strpos($eventName, 'register') !== false
 					? 'création compte'
 					: ($event['mode'] ?? '') .str_replace(['core.', 'refugesinfo.'], ' ', $eventName),
 				'ext_error' => !empty($event['error']) ? json_encode($event['error']) : null,
@@ -142,7 +142,7 @@ class listener implements EventSubscriberInterface
 				// Navigateur
 				'browser_operator' =>
 					$this->post['browser_operator'] ??
-					'serveur sans javascript',
+					'inconnu',
 				'date' => date('r'),
 
 				// Post & Point
@@ -214,6 +214,7 @@ class listener implements EventSubscriberInterface
 				elseif($scs[0])
 					$conditions[] = $column_name.(isset($scs[1])?' NOT':'').' LIKE \'%'.$scs[0].'%\'';
 			}
+		//TODO afficher les critères sélectionnés
 
 		$lignes_traces_html = [];
 
@@ -265,7 +266,7 @@ class listener implements EventSubscriberInterface
 
 		if(!empty($row['appel'])) {
 			preg_match('/(.*) ([a-z_]*)/', $row['appel'], $modes);
-			if(isset($modes[2]) && strpos($modes[2], '_')) {
+			if(isset($modes[2]) && strpos($modes[2], '_') !== false) {
 				$row['listener'] = $modes[2];
 
 				$appel = str_replace(
@@ -283,7 +284,7 @@ class listener implements EventSubscriberInterface
 		else
 		if(!empty($row['uri'])) {
 			//BEST lien vers un post mis en approbation
-			if(strpos($row['uri'], 'point_modification')) {
+			if(strpos($row['uri'], 'point_modification') !== false) {
 				if(!empty($row['id_point']))
 					$ligne1[] = 'création d\'un <a '.
 						'href="'.$this->forum_root.'../point/'.$row['id_point'].'"'.
@@ -295,7 +296,7 @@ class listener implements EventSubscriberInterface
 				else
 					$ligne1[] = 'erreur modification point sans id_point ni post_id';
 			}
-			elseif(strpos($row['uri'], 'ajout_commentaire')) {
+			elseif(strpos($row['uri'], 'ajout_commentaire') !== false) {
 				if(!empty($row['id_point']))
 					$ligne1[] = 'création d\'un <a '.
 						'href="'.$this->forum_root.'../point/'.$row['id_point'].'#C'.@$row['id_commentaire'].'"'.
@@ -303,7 +304,7 @@ class listener implements EventSubscriberInterface
 				else
 					$ligne1[] = 'erreur ajout commentaire sans id_point';
 			}
-			elseif(strpos($row['uri'], 'mode=register')) {
+			elseif(strpos($row['uri'], 'mode=register') !== false) {
 				if(!empty($row['user_id']))
 					$ligne1[] = 'création du compte <a '.
 						'href="'.$this->forum_root.'memberlist.php?mode=viewprofile&u='.$row['user_id'].'"'.
@@ -311,7 +312,8 @@ class listener implements EventSubscriberInterface
 				else
 					$ligne1[] = 'erreur création du compte sans user_id';
 			}
-			elseif(strpos($row['uri'], 'mode=post')) {
+			elseif(strpos($row['uri'], 'mode=post') !== false ||
+				strpos($row['uri'], 'contactadmin') !== false) {
 				if(!empty($row['post_id']))
 					$ligne1[] = 'création d\'un <a '.
 						'href="'.$this->forum_root.'viewtopic.php?p='.$row['post_id'].'"'.
@@ -323,11 +325,13 @@ class listener implements EventSubscriberInterface
 				else
 					$ligne1[] = 'erreur création d\'un post sans topic_id ni post_id';
 			}
-			elseif(strpos($row['uri'], 'posting.php')) { // reply, quote, edit
+			elseif(strpos($row['uri'], 'posting.php') !== false) { // reply, quote, edit
 				if(!empty($row['post_id']))
 					$ligne1[] = str_replace(
 						'post',
-						'<a href="'.$this->forum_root.'viewtopic.php?p='.$row['post_id'].'">post</a>',
+						'<a href="'.$this->forum_root.'viewtopic.php?'.
+							'p='.$row['post_id'].'#p'.$row['post_id'].'">post'.
+						'</a>',
 						($appel ?? '')
 					);
 				else
@@ -337,7 +341,7 @@ class listener implements EventSubscriberInterface
 				$ligne1[] = 'erreur url inconnue';
 		}
 
-		if(!strpos($row['uri'] ?? '', 'mode=register') &&
+		if(strpos($row['uri'] ?? '', 'mode=register') === false &&
 			!empty($row['user_id'])) {
 				if($row['user_id'] > 1)
 					$ligne1[] = 'par <a '.
@@ -420,7 +424,7 @@ class listener implements EventSubscriberInterface
 				$r = preg_replace('/\s\s+/', ' ', $r);
 				$r = trim(strip_tags($r, '<br>'));
 				$t = ucfirst($title);
-				$lignes_html[] = "$t: $r";
+				$lignes_html[] = "<span title='$k'>$t</span>: $r";
 			}
 
 		if(!empty($row['ip']))
@@ -448,8 +452,8 @@ class listener implements EventSubscriberInterface
 
 		$row = array_filter($row);
 
-		// Récupération provisoire des ASN
-		//TODO supprimer quand récupéré
+		// Récupérations provisoire de données antérieurs
+		//TODO à supprimer quand récupérées sur le site de prod
 		if(!empty($row['asn']) && empty($row['asn_id'])) {
 			preg_match('/(AS[0-9]+)(.*)/', $row['asn'], $asns);
 			if(count($asns) == 3) {
@@ -457,27 +461,31 @@ class listener implements EventSubscriberInterface
 				$row['asn_name'] ??= trim($asns[2]);
 			}
 		}
+		if(strpos(@$row['uri'], 'ajout_commentaire') !== false &&
+			strpos(@$row['browser_operator'], 'erveur sans') !== false)
+			$row['browser_operator'] = 'inconnu';
+		//TODO fin récup
 
 		if(!empty($row['ip'])) {
 			if(empty($row['host']))
 				$row['host'] = gethostbyaddr($row['ip']);
 
-			if(empty($row['asn_id']) &&
+			if(empty($row['asn_id']) || empty($row['asn_name']) &&
 				is_file(__DIR__.'/../geoip2/GeoLite2-ASN.mmdb')) {
 					if (!isset ($this->reader_asn))
 						$this->reader_asn = new Reader(__DIR__.'/../geoip2/GeoLite2-ASN.mmdb');
-					$geodata = $this->reader_asn->asn($row['ip']);
-					$row['asn_id'] = 'AS'.$geodata->autonomousSystemNumber;
-					$row['asn_name'] = $geodata->autonomousSystemOrganization;
+					$geodata_asn = $this->reader_asn->asn($row['ip']);
+					$row['asn_id'] = 'AS'.$geodata_asn->autonomousSystemNumber;
+					$row['asn_name'] = $geodata_asn->autonomousSystemOrganization;
 				}
 
-			if(empty($row['country_name']) &&
+			if(empty($row['country_name']) || empty($row['city']) &&
 				is_file(__DIR__.'/../geoip2/GeoLite2-City.mmdb')) {
 					if (!isset ($this->reader_city))
 						$this->reader_city = new Reader(__DIR__.'/../geoip2/GeoLite2-City.mmdb');
-					$geodata = $this->reader_city->city($row['ip']);
-					$row['country_name'] = $geodata->country->name;
-					$row['city'] = $geodata->city->name;
+					$geodata_city = $this->reader_city->city($row['ip']);
+					$row['country_name'] = $geodata_city->country->name;
+					$row['city'] = $geodata_city->city->name;
 				}
 		}
 
@@ -508,7 +516,7 @@ class listener implements EventSubscriberInterface
 				function($v, $k) use($sql_row) {
 					return
 						in_array($k, $this->columns_names) &&
-						isset ($sql_row[$k]) &&
+						isset ($v) && isset ($sql_row[$k]) &&
 						!($v === null && $sql_row[$k] === null) &&
 						$v !== trim ($sql_row[$k]);
 				},
