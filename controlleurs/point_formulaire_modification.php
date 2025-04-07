@@ -179,7 +179,8 @@ foreach($config_wri['champs_trinaires_points'] as $champ)
   }
 }
 
-//spécificité du cas des conditions d'utilisation de la cabane (Contacter quelqu'un, clé à récupérer, ouvert tout le temps, fermée tout le temps, ou détruite)
+/* spécificité du cas des conditions d'utilisation de la cabane (Contacter quelqu'un, clé à récupérer, ouvert tout le temps, fermée tout le temps, ou détruite)
+   Une partie des textes est codé ici en dur, une autre partie dans la table point_type. J'aurais aimé stocker tout ça dans la table pour plus de cohérence, mais je n'ai pas eu le courage de m'en occuper. */
 if ( !empty($point->equivalent_conditions_utilisation) )
 {
   $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
@@ -190,7 +191,8 @@ if ( !empty($point->equivalent_conditions_utilisation) )
     $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','fermeture' => $point->equivalent_conditions_utilisation);
   else
     $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => $point->equivalent_ouverture_contact_prealable);
-    $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
+  
+  $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 // ===========================================
 // Préparation de la $vue commune à chaque cas
