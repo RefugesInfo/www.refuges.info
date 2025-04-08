@@ -24,26 +24,28 @@ if (!empty($vue->http_status_code))
 ?>
 <!doctype html>
 <html lang="fr">
-	<head>
-		<title><?=$vue->titre ?? ''?></title>
-		<link rel="icon" type="image/png" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.png">
-		<link rel="icon" type="image/svg+xml" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.svg">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<?php if (isset ($vue->css)) { ?>
-			<meta name="viewport" content="width=device-width, user-scalable=no">
-		<? } ?>
-		<meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
+  <head>
+    <title><?=$vue->titre ?? ''?></title>
+    <link rel="icon" type="image/png" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php if (isset ($vue->css)) { ?>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <?php } ?>
+    
+    <meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
 
-		<link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>">
-		<?php if (isset ($vue->css))
-			foreach ($vue->css as $css) { ?>
-				<link type="text/css" rel="stylesheet" href="<?=$css?>">
-		<?php } ?>
-		<?php if (isset ($vue->java_lib_head)) 
-          foreach ($vue->java_lib_head as $js_lib) {?>
-		<script src="<?=$js_lib?>"></script>
+    <link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>">
+    <?php if (isset ($vue->css))
+        foreach ($vue->css as $css) { ?>
+    <link type="text/css" rel="stylesheet" href="<?=$css?>">
+    <?php } ?>
+    <?php if (isset ($vue->java_lib_head)) 
+      foreach ($vue->java_lib_head as $js_lib) {?>
+      
+    <script src="<?=$js_lib?>"></script>
 <?php } ?>
-	</head>
+  </head>
 
 	<body>
 		<?php
