@@ -111,11 +111,8 @@ if (empty($point->erreur))
     }
   }
   // Qu'on arrive juste ou que l'on vienne déjà de rentrer un premier commentaire, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
-
-  $quel_point="$point->article_defini $point->nom_type : ".protege($point->nom);
-  $vue->titre="Ajout d'un commentaire sur $quel_point";
+  $vue->nom_point=protege($point->nom);
   $vue->lien_point=lien_point($point);
-  $vue->lien_texte_retour="Retour à $quel_point";
   $vue->point_existe=True;
   $vue->commentaire=$commentaire;
   $vue->lien_wiki_que_mettre=lien_wiki('que_mettre');

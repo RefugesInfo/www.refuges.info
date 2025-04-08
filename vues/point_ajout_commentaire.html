@@ -1,6 +1,5 @@
 <div class="contenu">
-  <h3><?=$vue->titre?></h3>
-  <h4><a href="<?=$vue->lien_point?>"><?=$vue->lien_texte_retour?></a></h4>
+  <p>Ajouter un commentaire sur la fiche de <a href="<?=$vue->lien_point?>"><?=$vue->nom_point?></a> :</p>
   <?php if (!est_connecte()) { ?>
     <p>
       Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
@@ -33,6 +32,9 @@
         <input type="file" name="comment_photo" size="15" value="" accept="image/*" /><i class="texte-tout-petit">facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?> de taille max=<?=getMaximumFileUploadSize()?></i>
       </p>
       <p>
+        La photo doit soit être votre propriété soit être sous une <a href="<?=lien_wiki("licence")?>">licence compatible</a> (pensez alors à citer son auteur si cela est requis).
+      </p>
+      <p>
         <input type="checkbox" id="demande_correction" name="demande_correction" value="1"
             <?php if ($vue->correction) { ?>
                 checked="checked"
@@ -59,7 +61,6 @@
           </p>
         <?php }?>
 
-      <input type="hidden" id="check_form_activity" name="browser_operator" value="serveur sans javascript" />
       <input type="submit" name="action" value="Envoyer" />
       <input type="reset" value="Recommencer" />
     </form>
@@ -85,8 +86,5 @@
   <?php if ($point->equivalent_proprio!="") { ?>
     <p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
     <?php }?>
-  <p>
-    La photo doit soit être votre propriété soit être sous une <a href="<?=lien_wiki("licence")?>">licence compatible</a> (pensez alors à citer son auteur si cela est requis).
-  </p>
   <p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config_wri['sous_dossier_installation']?>wiki/restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
 </div>
