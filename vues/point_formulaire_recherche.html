@@ -255,7 +255,7 @@
 <script>
 const polygones = [];
 <?php foreach ( $vue->polygones as $polygone) { ?>
-  polygones[<?=$polygone->id_polygone?>] = "<?=$polygone->nom_polygone?>";
+  polygones[<?=$polygone->id_polygone?>] = "<?=addslashes($polygone->nom_polygone)?>";
 <?php } ?>
 autocomplete(document.getElementById("inputpolygone"), document.getElementById("id_polygone"), polygones);
 </script>
