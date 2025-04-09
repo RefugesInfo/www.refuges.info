@@ -116,6 +116,7 @@ $lang = array_merge($lang, array(
 	'VIEW_INFO'				=> 'Dettagli messaggio',
 	'VIEW_NEXT_TOPIC'		=> 'Successivo',
 	'VIEW_PREVIOUS_TOPIC'	=> 'Precedente',
+	'VIEW_QUOTED_POST'		=> 'Visualizza il post citato',
 	'VIEW_RESULTS'			=> 'Guarda risultati',
 	'VIEW_TOPIC_POSTS'		=> array(
 		1	=> '%d messaggio',

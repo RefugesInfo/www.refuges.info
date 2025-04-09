@@ -2,7 +2,7 @@
     "name": "phpbbfr/trad-fr",
     "type": "phpbb-language",
     "description": "phpBB 3.3 French translation",
-    "version": "3.0.15",
+    "version": "3.0.16",
     "license": "GPL-2.0-only",
     "authors": [
         {

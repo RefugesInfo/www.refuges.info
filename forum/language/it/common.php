@@ -360,9 +360,9 @@ $lang = array_merge($lang, array(
 	'HIDE_GUESTS'					=> 'Nascondi ospiti',
 	'HIDE_ME'						=> 'Nascondi il mio stato per questa sessione',
 	'HOURS'							=> 'Ore',
-
 	'HOME'							=> 'Home',
-
+	'HTTP_HANDLER_NOT_FOUND'		=> 'L’operazione non può essere completata perché l’estensione PHP cURL e l’impostazione PHP ini allow_url_fopen sono state disabilitate e non è stato trovato nessun altro gestore HTTP.',
+	
 	'ICQ'						=> 'ICQ',
 	'IF'						=> 'Se',
 	'IMAGE'						=> 'Immagine',

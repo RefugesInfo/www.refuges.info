@@ -496,8 +496,8 @@ $lang = array_merge($lang, array(
 	'SMILIES_PATH_EXPLAIN'		=> 'Pfad von deinem phpBB-Hauptverzeichnis aus, z.&nbsp;B. <samp>images/smilies</samp>.',
 	'UPLOAD_ICONS_PATH'			=> 'Speicherpfad der Dateityp-Gruppen-Symbole',
 	'UPLOAD_ICONS_PATH_EXPLAIN'	=> 'Pfad von deinem phpBB-Hauptverzeichnis aus, z.&nbsp;B. <samp>images/upload_icons</samp>.',
-	'USE_SYSTEM_CRON'		=> 'Wiederkehrende Aufgaben über Cron-Job des Systems ausführen',
-	'USE_SYSTEM_CRON_EXPLAIN'		=> 'Wenn deaktiviert, wird sich phpBB darum kümmern, dass wiederkehrende Aufgaben automatisch ausgeführt werden. Wenn aktiviert, wird phpBB wiederkehrende Aufgaben nicht selbst ausführen; der System-Administrator muss dann dafür sorgen, dass <code>bin/phpbbcli.php cron:run</code> regelmäßig (z.&nbsp;B. alle 5 Minuten) durch einen Cron-Job des Systems ausgeführt wird.',
+	'USE_SYSTEM_CRON'			=> 'Wiederkehrende Aufgaben über Cron-Job des Betriebssystems ausführen',
+	'USE_SYSTEM_CRON_EXPLAIN'	=> 'Wenn deaktiviert, wird sich phpBB darum kümmern, dass wiederkehrende Aufgaben automatisch ausgeführt werden. Wenn aktiviert, wird phpBB wiederkehrende Aufgaben nicht selbst ausführen; der System-Administrator muss dann dafür sorgen, dass <code>bin/phpbbcli.php cron:run</code> regelmäßig (z.&nbsp;B. alle 5 Minuten) durch einen Cron-Job des Betriebssystems ausgeführt wird.',
 ));
 
 // Security Settings

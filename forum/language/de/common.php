@@ -361,6 +361,7 @@ $lang = array_merge($lang, array(
 	'HIDE_ME'						=> 'Meinen Online-Status während dieser Sitzung verbergen',
 	'HOURS'							=> 'Stunden',
 	'HOME'							=> 'Startseite',
+	'HTTP_HANDLER_NOT_FOUND'		=> 'Dieser Vorgang konnte konnte nicht abgeschlossen werden, weil die cURL-PHP-Erweiterung und die allow_url_fopen-PHP-ini-Einstellung deaktiviert wurden und kein anderer Dienst (HTTP-Handler) zum Aufruf von externen URLs gefunden werden konnte.',
 
 	'ICQ'						=> 'ICQ',
 	'IF'						=> 'Wenn',

@@ -386,7 +386,7 @@ class acp_board
 					'vars'	=> array(
 						'legend1'				=> 'ACP_SERVER_SETTINGS',
 						'gzip_compress'			=> array('lang' => 'ENABLE_GZIP',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
-						'use_system_cron'		=> array('lang' => 'USE_SYSTEM_CRON',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
+						'use_system_cron'		=> array('lang' => 'USE_SYSTEM_CRON',		'validate' => 'bool',	'type' => 'radio:enabled_disabled', 'explain' => true),
 
 						'legend2'				=> 'PATH_SETTINGS',
 						'enable_mod_rewrite'	=> array('lang' => 'MOD_REWRITE_ENABLE',	'validate' => 'bool',	'type' => 'custom', 'method' => 'enable_mod_rewrite', 'explain' => true),
@@ -921,7 +921,7 @@ class acp_board
 	*/
 	function select_acc_activation($selected_value, $value)
 	{
-		global $user, $config;
+		global $user, $config, $phpbb_dispatcher;
 
 		$act_ary = array(
 			'ACC_DISABLE'	=> array(true, USER_ACTIVATION_DISABLE),
@@ -931,6 +931,18 @@ class acp_board
 		);
 
 		$act_options = '';
+
+		/**
+		 * Event to add and/or modify account activation configurations
+		 *
+		 * @event core.acp_account_activation_edit_add
+		 * @var	array	act_ary		Array of account activation methods
+		 * @var	string	act_options	Options available in the activation method
+		 * @since 3.3.15-RC1
+		 */
+		$vars = ['act_ary', 'act_options'];
+		extract($phpbb_dispatcher->trigger_event('core.acp_account_activation_edit_add', compact($vars)));
+
 		foreach ($act_ary as $key => $data)
 		{
 			list($available, $value) = $data;

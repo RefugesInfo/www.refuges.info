@@ -114,7 +114,7 @@ $lang = array_merge($lang, array(
 	'AVATAR_NO_UPLOAD_PATH'			=> 'Le transfert d’avatars est activé mais le chemin du répertoire de stockage des avatars n’est pas défini.',
 	'AVATAR_PARTIAL_UPLOAD'			=> 'Le fichier n’a pu être que partiellement transféré.',
 	'AVATAR_PHP_SIZE_NA'			=> 'Le fichier image de l’avatar est trop volumineux.<br>Le maximum réglé dans php.ini n’a pas pu être déterminé.',
-	'AVATAR_PHP_SIZE_OVERRUN'		=> 'Le fichier image de l’avatar est trop volumineux. Le maximum autorisée est %1$d %2$s.<br>Notez que ce paramètre est inscrit dans php.ini et ne peut pas être dépassé.',
+	'AVATAR_PHP_SIZE_OVERRUN'		=> 'Le fichier image de l’avatar est trop volumineux. Le maximum autorisé est %1$d %2$s.<br>Notez que ce paramètre est inscrit dans php.ini et ne peut pas être dépassé.',
 	'AVATAR_REMOTE_UPLOAD_TIMEOUT'	=> 'Le fichier image de l’avatar n’a pas pu être transféré parce que le délai d’attente de la demande a expiré.',
 	'AVATAR_PHP_UPLOAD_STOPPED'		=> 'Une extension PHP a arrêté le transfert du fichier.',
 	'AVATAR_URL_INVALID'			=> 'L’adresse URL indiquée n’est pas valide.',
@@ -355,6 +355,7 @@ $lang = array_merge($lang, array(
 	'HIDE_ME'						=> 'Cacher mon statut en ligne pour cette session',
 	'HOURS'							=> 'Heures',
 	'HOME'							=> 'Accueil',
+	'HTTP_HANDLER_NOT_FOUND'		=> 'L’opération a échoué car l’extension PHP cURL et le paramètre PHP allow_url_fopen sont désactivés et aucun autre gestionnaire HTTP n’a été trouvé.',
 
 	'ICQ'						=> 'ICQ',
 	'IF'						=> 'Si',

@@ -495,8 +495,8 @@ $lang = array_merge($lang, array(
 	'SMILIES_PATH_EXPLAIN'		=> 'Chemin depuis le répertoire racine de phpBB, exemple : <samp>images/smilies</samp>',
 	'UPLOAD_ICONS_PATH'			=> 'Emplacement des icônes de groupes d’extensions',
 	'UPLOAD_ICONS_PATH_EXPLAIN'	=> 'Chemin depuis le répertoire racine de phpBB, exemple : <samp>images/upload_icons</samp>',
-	'USE_SYSTEM_CRON'			=> 'Exécuter les tâches récurrentes en utilisant le « cron » système.',
-	'USE_SYSTEM_CRON_EXPLAIN'	=> 'Si définie à « Non », phpBB fera le nécessaire pour exécuter automatiquement les tâches récurrentes. Si définie à « Oui », phpBB ne planifiera aucune tâche récurrente par lui-même ; un administrateur système devra faire le nécessaire pour que le fichier <code>bin/phpbbcli.php cron:run</code> puisse être exécuté par le « cron » système à intervalle régulier (par exemple toutes les 5 minutes).',
+	'USE_SYSTEM_CRON'			=> 'Exécuter les tâches planifiées en utilisant le cron du système d’exploitation.',
+	'USE_SYSTEM_CRON_EXPLAIN'	=> 'Si définie à « Non », phpBB s’occupera d’organiser l’exécution automatique des tâches planifiées. Si définie à « Oui », phpBB ne planifiera aucune tâche par lui-même ; un administrateur système devra configurer le service cron du système d’exploitation pour exécuter la commande <code>bin/phpbbcli.php cron:run</code> à intervalles réguliers (par exemple toutes les 5 minutes).',
 ));
 
 // Security Settings

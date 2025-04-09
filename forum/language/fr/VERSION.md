@@ -1,6 +1,6 @@
 Pack de langue
 --------------
 
-Version : 3.0.15  
-Mis à jour le : 23 novembre 2024  
-phpBB : 3.3.14
+Version : 3.0.16  
+Mis à jour le : 04 avril 2025  
+phpBB : 3.3.15
