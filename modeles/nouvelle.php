@@ -190,6 +190,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   foreach ($news_array as $nouvelle)
   {
     $par_ou_de="par";
+    $nouvelle['texte'] = "";
     if ($nouvelle['categorie'] == "Forum") // FIXME: idée d'une magie pour s'éviter de faire x fois la requête ? where id_point in (x,y,z,t,.....) ?
     {
       $conditions_point = new stdclass;
