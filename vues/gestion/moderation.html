@@ -1,6 +1,6 @@
 <div class="contenu">
 	<h3>Modération des commentaires</h3>
-	<?php if ($vue->retour->message) { ?>
+	<?php if (!empty($vue->retour->message)) { ?>
 		<h4><?=$vue->retour->message?></h4>
 	<?php } else {?>
 		<p>Vous entrez dans la zone de modification des commentaires qui va vous permettre de modifier un commentaire, de le déplacer vers le forum dans la section correspondant au point ou le transférer sur une autre fiche du site.</p>

@@ -85,9 +85,9 @@ if (!empty($_REQUEST))
       $vue->limite_atteinte = $conditions->limite;
     
     //-----------------------------------------------------------------------------------------------------
-    // Recherche de points sur nominatim.openstreetmap.org
+    // Recherche de points sur nominatim.openstreetmap.org à condition d'avoir coché la case ET avoir fourni un nom à chercher
       
-    if (!empty($_REQUEST['avec_point_osm']))
+    if (!empty($_REQUEST['avec_point_osm']) and !empty($_REQUEST['nom']) )
     {
       $nominatim = new stdClass();
       $vue->recherche_osm_active=True;

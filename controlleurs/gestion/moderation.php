@@ -12,22 +12,22 @@ if (!empty($_REQUEST['type']))
 switch ($_REQUEST['type'])
 {
   case 'transfert_autre_point':
-    $commentaire->id_point=$_REQUEST['id_autre_point'];
-    $autre_point=infos_point($_REQUEST['id_autre_point']);
+    $commentaire->id_point=$_REQUEST['id_autre_point'] ?? Null;
+    $autre_point=infos_point($commentaire->id_point);
 
   case 'modification':
   case 'transfert_forum':
   case 'suppression_photo':
-    $commentaire->texte=stripslashes($_REQUEST['texte']);
-    $commentaire->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire']);
+    $commentaire->texte=stripslashes($_REQUEST['texte'] ?? "");
+    $commentaire->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire'] ?? "");
     
     if (est_moderateur()) // Seul les modérateurs ont le droit de changer la date d'un commentaire
-      $commentaire->date=$_REQUEST['date'];
+      $commentaire->date = $_REQUEST['date'] ?? Null;
 
-    if (est_moderateur()) // Seul les modérateurs ont le droit de changer le user d'un commentaire
-      $commentaire->id_createur_commentaire=stripslashes($_REQUEST['id_createur_commentaire']);
+    if (est_moderateur()) // Seuls les modérateurs ont le droit de changer le user d'un commentaire
+      $commentaire->id_createur_commentaire=$_REQUEST['id_createur_commentaire'] ?? 0;
 
-    $commentaire->rotation=$_REQUEST['rotation'];
+    $commentaire->rotation = $_REQUEST['rotation'] ?? Null;
 
     // On applique toutes les modifications, la fonction s'occupant de retourner une éventuelle erreur et un message en testant presque tous les cas possible (point inexistant, commentaire vide, ...)
     $vue->retour=modification_ajout_commentaire($commentaire);
@@ -44,5 +44,5 @@ switch ($_REQUEST['type'])
     break;
 }
 
-$vue->point=infos_point($_REQUEST['id_point_retour'],true);
+$vue->point=infos_point($_REQUEST['id_point_retour'] ?? Null,true);
 $vue->utilisateurs=infos_utilisateurs();
