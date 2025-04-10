@@ -44,39 +44,41 @@ require_once ('identification.php');
 
 switch ($controlleur->url_decoupee[0])
 {
-    // sly: Pour toutes ces routes, on est dans un cas simple, l'url correspond au controlleur du même nom, factorisation !
-    case "point" :
-    case "nav" :
-    case "edit" :
-    case "wiki" :
-    case "nouvelles" :
-    case "point_ajout_commentaire" :
-    case "point_recherche" :
-    case "avis_internaute_commentaire" :
-    case "formulaire_exportations" :
-    case "point_formulaire_recherche" :
-    case "formulaire_rss" :
-    case "point_formulaire_modification" :
-    case "point_modification" :
-    case "test" :
-    case "point_ajout" :
-        $controlleur->type=$controlleur->url_decoupee[0];
-        break;
-    case "" : // c'est la home page "/"
-        $controlleur->type="index";
-        break;
-    case "gestion" :
-        require_once ("gestion.routes.php");
-        break;
-    default : 
-        $vue->http_status_code = 404;
-        $controlleur->type = 'page_simple';
+  // sly: Pour toutes ces routes, on est dans un cas simple, l'url correspond au controlleur du même nom, factorisation !
+  // et si, il faut les lister explicitement sinon, un pirate pourrait tenter de mettre de fausse page, et le code ouvrirait des fichiers que l'on ne préfère pas ouvrir
+  case "point" :
+  case "nav" :
+  case "edit" :
+  case "wiki" :
+  case "nouvelles" :
+  case "point_ajout_commentaire" :
+  case "point_recherche" :
+  case "avis_internaute_commentaire" :
+  case "formulaire_exportations" :
+  case "point_formulaire_recherche" :
+  case "formulaire_rss_et_nouvelles" :
+  case "formulaire_rss_et_nouvelles_validation" :
+  case "point_formulaire_modification" :
+  case "point_modification" :
+  case "test" :
+  case "point_ajout" :
+    $controlleur->type=$controlleur->url_decoupee[0];
     break;
+  case "" : // c'est la home page "/"
+    $controlleur->type="index";
+    break;
+  case "gestion" :
+    require_once ("gestion.routes.php");
+    break;
+  default : 
+    $vue->http_status_code = 404;
+    $controlleur->type = 'page_simple';
+  break;
 }
 
 // Petite factorisation, dans la majorité des cas, la vue porte le nom du controlleur + .html ... mais pas toujours
 if (!isset($vue->type))
-    $vue->type=$controlleur->type;
+  $vue->type=$controlleur->type;
 
 // On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config_wri['chemin_controlleurs'].$controlleur->type.".php");
@@ -86,11 +88,11 @@ include ($config_wri['chemin_controlleurs'].$controlleur->type.".php");
 // Si quelqu'un veut le bouger, il a mon feu vert -- sly
 if (est_moderateur())
 {
-	$vue->demande_correction=info_demande_correction ();
-    $vue->email_en_erreur=info_email_bounce();
+  $vue->demande_correction=info_demande_correction ();
+  $vue->email_en_erreur=info_email_bounce();
 }
 
 $vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_bandeau.js?'
-	.filemtime($config_wri['chemin_vues'].'_bandeau.js');
+  .filemtime($config_wri['chemin_vues'].'_bandeau.js');
 
 include ($config_wri['chemin_vues'].$vue->template);
