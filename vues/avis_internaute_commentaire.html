@@ -6,7 +6,7 @@
     <?php if (!empty($vue->commentaire->lien_photo['originale'])) { // Mais nous n'avons pas sa photo d'origine en grande taille, donc pas de lien pointant dessus?>
     <a href="<?=$vue->commentaire->lien_photo['originale']?>">
     <?php }?>
-        <img class="photos" height="400" src="<?=$vue->commentaire->lien_photo['reduite']?>" alt="Photo commentaire">
+        <img class="photos" height="400" src="<?=$vue->commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo commentaire">
     <?php if (!empty($vue->commentaire->lien_photo['originale'])) { ?>
     </a>
     <?php }?>
