@@ -73,7 +73,7 @@ foreach ($temp as $massif) {
 $news = nouvelles($req->nombre,$req->type,$req->massif,False,$req);
 foreach ($news as $id => $nouvelle)
 {
-	$news[$id]['date_formatee']=date("Y-m-d", $nouvelle['date']);
+	$news[$id]['date_formatee']=date("Y-m-d", (int) $nouvelle['date']);
 }
 
 /****************************** FORMATAGE DU TEXTE ******************************/
