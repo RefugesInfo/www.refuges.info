@@ -8,10 +8,14 @@ Fonctions permettant de faire des modifications dans le forum
 // Cette séquence ne peut pas être dans une function
 
 $phpEx="php";
+if (!defined('IN_PHPBB')) // je n'ai pas compris qui définissait cette variable, mais j'ai eu une erreur "allready defined"
+{
+  define('IN_PHPBB', true);
+}
 $phpbb_root_path=$config_wri['rep_forum'];
-include($config_wri['rep_forum'] . 'includes/functions_posting.php');
-include($config_wri['rep_forum'] . 'includes/message_parser.php');
-include($config_wri['rep_forum'] . 'includes/functions_admin.php');
+require_once($config_wri['rep_forum'] . 'includes/functions_posting.php');
+require_once($config_wri['rep_forum'] . 'includes/message_parser.php');
+require_once($config_wri['rep_forum'] . 'includes/functions_admin.php');
 
 // Fonction générique qui permet - entre autre - de créer un topic, modifier le titre et ajouter un post
 function forum_submit_post ($args) {
