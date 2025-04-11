@@ -12,14 +12,14 @@ require_once ("nav.php");
 require_once ("polygone.php");
 
 // Quelques trucs spécifiques
-if(!$vue->polygone)
+if(!isset($vue->polygone) && isset($vue->contenu))
   $vue->polygone = $vue->contenu; // En édition, c'est la même chose
 
 // Définition d'un nom par défaut à la création pour éviter de perdre tout son travail de dessin de contour
-if($vue->polygone && !$vue->polygone->nom_polygone)
+if(isset($vue->polygone) && !isset($vue->polygone->nom_polygone))
   $vue->polygone->nom_polygone='Nom';
 
-if ($polygone)
+if (isset($polygone))
   $vue->titre="Modification $polygone->article_partitif $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
 else
   $vue->titre="Création d'un polygone";

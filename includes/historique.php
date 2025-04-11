@@ -57,8 +57,8 @@ function historisation_modification($point_avant,$point_apres,$type_operation="m
         $point_avant_simple->$propriete=$point_avant->$propriete;
   }
 
-  $id_point_modifie = $point_avant->id_point ?: $point_avant->id_polygone ?:
-    $point_apres->id_point ?: $point_apres->id_polygone;
+  $id_point_modifie = $point_avant->id_point ?? $point_avant->id_polygone ??
+    $point_apres->id_point ?? $point_apres->id_polygone ?? 0;
 
   $query_log_modification="insert into historique_modifications_points
   (id_point,id_user,date_modification,avant,apres,type_modification)

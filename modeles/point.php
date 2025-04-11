@@ -730,7 +730,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
   $conditions = new stdClass;
   // On vérifie que le $point passé existe bien dans notre base, qu'il a donc un id et que cela correspond bien à un seul point
   // toujours présent, sinon, on ne tente rien
-  $point_test=infos_point($point->id_point,True);
+  $point_test=infos_point($point->id_point??0,True);
   if (!empty($point_test->erreur))
     return erreur($point_test->message);
 
