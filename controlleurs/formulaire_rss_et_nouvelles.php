@@ -18,9 +18,9 @@ $vue->types_de_nouvelles = new stdClass; // objet contenant les type de nouvelle
 $vue->massifs = new stdClass;
 
 // LES TYPES DE POINTS ====================================
-$vue->types_de_nouvelles->nom_type = ["Commentaires", "Refuges", "Tous les points", "Messages des forums"];
+$vue->types_de_nouvelles->types_de_nouvelles_en_francais = $config_wri['types_de_nouvelles_en_francais'];
 $vue->types_de_nouvelles->checked = [1, 1, 1, 0];
-$vue->types_de_nouvelles->id_nouvelle_type = ["commentaires", "refuges", "points", "forums"];
+$vue->types_de_nouvelles->types_de_nouvelles = $config_wri['types_de_nouvelles'];
 
 // LES MASSIFS/ZONES ======================================
 // Creation d'une case à cocher pour chaque type massif
