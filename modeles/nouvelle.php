@@ -58,10 +58,8 @@ elle prends minimum 2 paramêtres : $nombre nouvelles à sortir au total, la ou 
 
  * Les categories: séparées par "," comme "forum,refuges" pour les nouveaux messages forum et les nouveaux refuges a la fois
    A disposition : commentaires,refuges,points,forums
- * option : L'ID du massif n'est effectif que sur les commentaires et les points (pas sur le forum)
-   Possibilité de mettre une liste d'ids séparés par une virgule
-
-Une 3ème option permet de restreindre les nouvelles ne concernant que les points contenus dans un ou plusieurs polygones, utilisée uniquement par le flux RSS mais en 2025 j'ai bon espoir d'en faire un critère de filtre pour les nouvelles   
+ * 3ème paramètre : Le ou les ID du/des polygones n'est effectif que sur les commentaires et les points (pas sur le forum)
+   Possibilité de mettre une liste d'ids séparés par une virgule : utilisée uniquement par le flux RSS mais en 2025 j'ai bon espoir d'en faire un critère de filtre pour la page des nouvelles qui devient de plus en plus énorme les mois de rando (tant mieux pour le site, difficile à suivre pour les modérateurs)  
    
 NOTE sly : Conseils d'utilisation : Utiliser cette fonction n'a de sens que lorsqu'on veut mélanger plusieurs sources de natures différentes
 (comme message du forum et commentaire et nouveaux points, si c'est juste pour afficher des commentaires ou des points, les fonctions
@@ -190,15 +188,15 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   foreach ($news_array as $nouvelle)
   {
     $par_ou_de="par";
-    //$nouvelle['texte'] = ""; // Dom : je ne sais pas pourquoi Sly a mis ça mais ça efface 	Ajout d'un refuge...
     if ($nouvelle['categorie'] == "Forum") // FIXME: idée d'une magie pour s'éviter de faire x fois la requête ? where id_point in (x,y,z,t,.....) ?
     {
+      $nouvelle['texte'] = "";
       $conditions_point = new stdclass;
       $conditions_point->avec_liste_polygones=True;
       $conditions_point->topic_id=$nouvelle['topic_id'];
       $conditions_point->avec_points_caches=True; // NOTE: si le point est caché, on veut quand même les messages du forum qui s'y rapporte, et donc les infos du point ?
       $points=infos_points($conditions_point);
-      if (count($points)!=0) // Nous avons bien ce topic dans le forum demandé, mais il n'est rattaché à aucun point. Cela arrive quand quelqu'un ou un robot a créer manuellement un topic dans le forum des refuges. ça devrait pas, mais ça arrive, et je n'ai pas moyen de l'interdire en amont, évitons d'avoir une ligne vide
+      if (count($points)!=0) // Nous avons bien ce topic dans le forum demandé, mais il n'est rattaché à aucun point. Cela arrive quand quelqu'un ou un robot a créé manuellement un topic dans le forum des refuges. ça devrait pas, mais ça arrive, et je n'ai pas moyen de l'interdire en amont, évitons d'avoir une ligne vide
       {
         $point=reset($points);
         $nouvelle['nom_point']=ucfirst($point->nom);
