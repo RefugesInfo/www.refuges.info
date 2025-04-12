@@ -139,6 +139,10 @@ switch ($periode)
 .quick-login {
   display: none;
 }
+/* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
+ul#nav-main > li > a[href$='contactadmin'] {
+	display: none;
+}
 
 .section-posting #attach-panel-multi::after {
   content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
