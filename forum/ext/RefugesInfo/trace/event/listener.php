@@ -132,18 +132,22 @@ class listener implements EventSubscriberInterface
 				'ext_error' => !empty($event['error']) ? json_encode($event['error']) : null,
 
 				// Server
-				'ip' => $this->server['REMOTE_ADDR'],
-				'uri' => $this->server['REQUEST_SCHEME'].'://'.
-					$this->server['HTTP_HOST'].
-					$this->server['REQUEST_URI'],
-				'user_agent' => $this->server['HTTP_USER_AGENT'],
-				'language' => $this->server['HTTP_ACCEPT_LANGUAGE'],
+				'ip' => $this->server['REMOTE_ADDR']??null,
+				'uri' => isset($this->server['HTTP_HOST']) ? (
+						($this->server['REQUEST_SCHEME']??'').'://'.
+						$this->server['HTTP_HOST'].
+						($this->server['REQUEST_URI']??'')
+					) : null,
+				'referer' => $this->server['HTTP_REFERER']??null,
+				'user_agent' => $this->server['HTTP_USER_AGENT']??null,
+				'language' => $this->server['HTTP_ACCEPT_LANGUAGE']??null,
+				'date' => date('r'),
 
 				// Navigateur
-				'browser_operator' =>
-					$this->post['browser_operator'] ??
-					'inconnu',
-				'date' => date('r'),
+				'browser_operator' => $this->post['browser_operator']??null,
+				'browser_referer' => $this->post['browser_referer']??null,
+				'browser_locale' => $this->post['browser_locale']??null,
+				'browser_timezone' => $this->post['browser_timezone']??null,
 
 				// Post & Point
 				'topic_id' => $event['topic_id'] ??
@@ -398,23 +402,27 @@ class listener implements EventSubscriberInterface
 			'date' => 'date',
 			'machine' => 'browser_operator',
 			'url' => 'uri',
+			'url-1' => 'referer',
+			'url-2' => 'browser_referer',
 			'host' => 'host',
 			'agent' => 'user_agent',
-			'languages supportés' => 'language',
+			'langues supportés' => 'language',
+			'langue' => 'browser_locale',
+			'timezone' => 'browser_timezone',
 			'topic' => 'topic_id',
 			'post' => 'post_id',
 			'point' => 'id_point',
 			'commentaire' => 'id_commentaire',
 			'Titre' => 'title',
 			'texte' => 'text',
-			'id user' => 'user_id',
-			'nom user' => 'user_name',
+			'id utilisateur' => 'user_id',
+			'nom utilisateur' => 'user_name',
 		];
 
 		if(!empty($row['user_email']))
 			$lignes_traces += [
-				'email user' => 'user_email',
-				'language user' => 'user_lang',
+				'email utilisateur' => 'user_email',
+				'langue utilisateur' => 'user_lang',
 				'IP enregistrement' => 'ip_enregistrement',
 			];
 
@@ -451,20 +459,6 @@ class listener implements EventSubscriberInterface
 		global $db, $config_wri;
 
 		$row = array_filter($row);
-
-		// Récupérations provisoire de données antérieurs
-		//TODO à supprimer quand récupérées sur le site de prod
-		if(!empty($row['asn']) && empty($row['asn_id'])) {
-			preg_match('/(AS[0-9]+)(.*)/', $row['asn'], $asns);
-			if(count($asns) == 3) {
-				$row['asn_id'] ??= $asns[1];
-				$row['asn_name'] ??= trim($asns[2]);
-			}
-		}
-		if(strpos(@$row['uri'], 'ajout_commentaire') !== false &&
-			strpos(@$row['browser_operator'], 'erveur sans') !== false)
-			$row['browser_operator'] = 'inconnu';
-		//TODO fin récup
 
 		if(!empty($row['ip'])) {
 			if(empty($row['host']))

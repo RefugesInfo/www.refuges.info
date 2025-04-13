@@ -20,7 +20,6 @@
       <input type="hidden" name="<?=$nom?>" value="<?=$params->valeur?>" />
       <?php } ?>
     </div>
-    <input type="hidden" id="check_form_activity" name="browser_operator" value="serveur sans javascript" />
 
     <!-- Edition de la position -->
     <h4>Coordonnées</h4>
@@ -174,6 +173,9 @@
       </label>
     </fieldset>
     <?php } ?>
+
+    <input type="hidden" name="browser_operator" />
+
     <fieldset>
       <?php foreach ($vue->champs->boutons as $bouton) { ?>
       <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
@@ -183,3 +185,6 @@
     </fieldset>
   </form>
 </div>
+<?php @include($config_wri['rep_forum'].
+  'ext/RefugesInfo/trace/styles/all/template/event/overall_footer_after.html');
+?>

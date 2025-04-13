@@ -140,7 +140,7 @@ switch ($periode)
   display: none;
 }
 /* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
-ul#nav-main > li > a[href$='contactadmin'] {
+ul#nav-main > li > a[href*="contactadmin"] {
 	display: none;
 }
 

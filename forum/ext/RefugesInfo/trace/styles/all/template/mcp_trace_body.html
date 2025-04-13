@@ -43,15 +43,17 @@
 				</label>
 				<input type="hidden" name="i" value="{I}" />
 				<input type="hidden" name="search" value="advanced" />
-				<button type="submit" id="advanced_search_submit">Filtrer</button>
+				<button type="submit" id="advanced_traces_search_submit">Filtrer</button>
 			</form>
 			<hr/>
 			<script>
 				// Submit while pressing enter
-				const cfaEl = document.getElementById('check_form_activity');
-				if (assEl)
-					window.addEventListener('keypress', assEl.click);
-			<script/>
+				const atcssEl = document.getElementById('advanced_traces_search_submit');
+				if (atcssEl)
+					window.addEventListener('keypress', () => {
+						atcssEl.click();
+					});
+			</script>
 		<!-- ENDIF -->
 
 		<h4>

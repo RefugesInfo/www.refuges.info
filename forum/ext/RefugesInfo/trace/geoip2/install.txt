@@ -1,7 +1,7 @@
-Get geoip2.phar from
+Download geoip2.phar from
 https://github.com/maxmind/GeoIP2-php/releases
 
-Get GeoLite2-ASN.mmdb & GeoLite2-ASN.mmdb from
+Download GeoLite2-ASN.mmdb & GeoLite2-City.mmdb from
 https://www.maxmind.com/en/accounts/1147244/geoip/downloads
 (create a free account)
 
