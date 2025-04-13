@@ -305,7 +305,7 @@ class Cleantalk
      * @param $msg
      * @return boolean|\CleantalkResponse
      */
-    private function sendRequest($data = null, $url, $server_timeout = 3)
+    private function sendRequest($data = null, $url = '', $server_timeout = 3)
     {
         // Convert to array
         $data = (array)json_decode(json_encode($data), true);
