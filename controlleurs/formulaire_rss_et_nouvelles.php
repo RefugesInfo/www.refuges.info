@@ -16,12 +16,12 @@ require_once ("bdd.php");
 
 if (empty($_GET['choix']) or $_GET['choix'] == 'flux_rss' )
 {
-  $vue->titre="Choix pour le flux RSS du site Refuges.info";
+  $vue->titre="Paramétrez votre flux RSS";
   $vue->titre_bouton="Obtenir le lien vers le flux RSS";
 }
 else
 {
- $vue->titre="Choix de ce qu'il faut afficher pour la page des nouvelles du site Refuges.info";
+ $vue->titre="Choisissez ce que vous souhaitez afficher pour votre page des nouvelles";
  $vue->titre_bouton="Obtenir un lien vers les nouvelles demandées";
 }
   

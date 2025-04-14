@@ -97,8 +97,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         if ($req && $req->avec_photo)
           $conditions_commentaires->avec_photo=$req->avec_photo;
           
-        if (!empty($ids_polygones))
-          $conditions_commentaires->ids_polygones=$ids_polygones;
+        $conditions_commentaires->ids_polygones=$ids_polygones ?? Null;
         
         $commentaires=infos_commentaires($conditions_commentaires);
 
@@ -130,8 +129,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
           $conditions->ordre="points.date_creation DESC,polygone_type.ordre_taille DESC";
           $conditions->limite=$nombre;
           $conditions->avec_liste_polygones=True;
-          if (!empty($ids_polygones)) 
-            $conditions->ids_polygones=$ids_polygones;
+          $conditions->ids_polygones=$ids_polygones ?? Null;
           $points=infos_points($conditions);
           if (count($points)!=0)
             foreach($points as $point)
