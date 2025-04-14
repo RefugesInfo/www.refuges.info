@@ -51,7 +51,7 @@ $config_wri['bbcode_wiki_page']="syntaxe_bbcode";
 // Des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
 $config_wri['lien_forum']=$config_wri['sous_dossier_installation']."forum/";
 
-// Liste des icône de base pour nos types de point de base
+// Liste des icône de base pour nos types de point de base, va être utilisé comme case à cocher à gauche de la carte
 $config_wri['correspondance_type_icone'] = [
 	'batiment-en-montagne' => 'cabane_white_black_a63',
 	'cabane-non-gardee' => 'cabane',
@@ -64,7 +64,7 @@ $config_wri['correspondance_type_icone'] = [
 	'grotte' => 'grotte',
 ];
 
-// Liste des autres icônes utilisées dans les cartes
+// Liste des autres icônes utilisées dans les cartes : n'est utilisée que pour l'export kml dont la liste des icônes doit être définie comme style en en-tête de fichier
 $config_wri['definition_icones'] = array_merge ($config_wri['correspondance_type_icone'], [
 	'ancien-point-d-eau' => 'pointdeau_x',
 	'batiment-inutilisable' => 'cabane_white_black_x',
