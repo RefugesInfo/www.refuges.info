@@ -17,10 +17,8 @@ $vue->types_nouvelles = $_GET ['quoi'] ??  'points,forums,commentaires';
 // Pour une raison qui m'échappe, le robot google appel cette page avec nombre=56200 puis 56300 puis 56400, quelle qu'en soit la raison, soyons raisonnable, aucune raison d'appeler cette page avec autant, ça va rendre une page html gigantesque !
 if ($nombre > 2000 )
   $nombre = 2000;
-if ( isset($_GET['ids_polygones']) )
-  $vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles,$_GET['ids_polygones']);
-else
-  $vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles);
+
+$vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles,$_GET['ids_polygones'] ?? Null);
 
 // Le modèle des nouvelles a rencontré une erreur
 if (!empty($vue->nouvelles->erreur))
