@@ -3,10 +3,7 @@
 <!-- =========================== -->
 <!-- ======= Explications ===== -->
 <h3><?=$vue->titre?></h3> 
-    <dl> 
-      <dt>Options pour le flux RSS ou la page des nouvelles</dt>
-      <dd>Veuillez préciser les options des nouvelles et des massifs</dd>
-   </dl>
+<p>Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)</p>
 <!-- ======= Formulaire ===== -->
 
   <form class="wri" id='form_export' method='post' action="<?=$config_wri['sous_dossier_installation']?>formulaire_rss_et_nouvelles_validation/">
@@ -28,7 +25,7 @@
     
     <!-- Choix des zones massifs -->
     <fieldset id="liste_massifs">
-        <legend>Choix des Massifs de la base a exporter
+        <legend>Choix des Massifs de la base à restreindre
           <button type='button' onclick="checkboites('liste_massifs',true); return false;">☒</button>
           <button type='button' onclick="checkboites('liste_massifs',false); return false;">☐</button>
         </legend>
@@ -60,7 +57,7 @@
           <?php } ?>
 
           <label>
-            <input type='checkbox' name='id_massif[]' value='<?=$poly->id_polygone?>'<?=($poly->checked?' checked="checked"':'');?> /> 
+            <input type='checkbox' name='id_massif[]' value='<?=$poly->id_polygone?>' /> 
             <?=$poly->nom_polygone?> 
           </label>
           <?php } ?>
@@ -68,7 +65,6 @@
           </fieldset>
           <!-- fin de la derniere zone -->
       </fieldset>
-    <input type='submit' name='flux_rss' value='Obtenir le flux RSS' />
-    <?php // <input type='submit' name='nouvelles_sur_demande' value='Obtenir un lien vers les nouvelles demandées' /> par encore fonctionnel mais bientôt, et je ne veux pas bloquer d'autre développement tandis que cela répare le flux rss?>
+    <input type='submit' name='choix' value='<?=$vue->titre_bouton?>' />
   </form>
 </div>

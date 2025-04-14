@@ -1,11 +1,7 @@
 <?php 
-/* Page d'affichage des news
-Contient le code PHP de la page
-Le code html est dans /vues/*.html
-Le code javascript est dans /vues/*.js
-Les variables sont passées dans l'objet $vue->...
+/* 
+ * Page d'affichage des news
 */
-
 
 require_once ("nouvelle.php");
 require_once ("commentaire.php");
@@ -21,12 +17,24 @@ $vue->types_nouvelles = $_GET ['quoi'] ??  'points,forums,commentaires';
 // Pour une raison qui m'échappe, le robot google appel cette page avec nombre=56200 puis 56300 puis 56400, quelle qu'en soit la raison, soyons raisonnable, aucune raison d'appeler cette page avec autant, ça va rendre une page html gigantesque !
 if ($nombre > 2000 )
   $nombre = 2000;
+if ( isset($_GET['ids_polygones']) )
+  $vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles,$_GET['ids_polygones']);
+else
+  $vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles);
 
-$vue->nouvelles = nouvelles ($nombre,$vue->types_nouvelles);
-
-$vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
-$vue->nombre = $nombre+100;
-
-
-$vue->stat = stat_site ();
+// Le modèle des nouvelles a rencontré une erreur
+if (!empty($vue->nouvelles->erreur))
+{
+    $vue->type="page_simple";
+    // On affiche le message d'erreur spécifique retourné par le modèle
+    $vue->contenu=$vue->titre=$vue->nouvelles->message;
+    // Avec un code 404 pour bien préciser aux moteurs de recherche qu'il n'y a pas de page valide pour cette url
+    $vue->http_status_code=404;
+}
+else
+{
+  $vue->nouvelles_generales=wiki_page_html("nouvelles_generales");
+  $vue->nombre = $nombre+100;
+  $vue->stat = stat_site ();
+}
 

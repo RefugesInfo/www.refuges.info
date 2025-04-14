@@ -17,14 +17,13 @@ if (!empty($_REQUEST['types_de_nouvelles']) and !empty($_REQUEST['id_massif']) )
   $types_de_nouvelles = implode(',',$_REQUEST['types_de_nouvelles']);
   $liste_id_massif = implode(',',$_REQUEST['id_massif']);
   
-  if (!empty($_REQUEST['flux_rss']))
+  if (!empty($_REQUEST['choix']) and $_REQUEST['choix']=='Obtenir le lien vers le flux RSS')
   {
     $schema = $_SERVER['HTTPS'] ? "https" : "http";
     $vue->url=$schema."://".$config_wri['nom_hote']."/api/contributions?format=rss&amp;format_texte=html&amp;type=$types_de_nouvelles&amp;massif=$liste_id_massif";
     $vue->titre_lien="Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)";
   }
-  
-  if (!empty($_REQUEST['nouvelles_sur_demande']))  
+  else
   {
     $vue->url=$config_wri['sous_dossier_installation']."nouvelles/?quoi=$types_de_nouvelles&amp;ids_polygones=$liste_id_massif";
     $vue->titre_lien="Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)";

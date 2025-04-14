@@ -76,7 +76,12 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   
   $i = 1;    
   $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
-
+  // si on nous passe des ids de polygones, ils doivent être au format int,int,int,...
+  if (!empty($ids_polygones))
+    if (!verif_multiples_entiers($ids_polygones)) 
+      return erreur("La liste des ids de polygones fournie n'a pas un format correcte. Reçu : ".$ids_polygones);
+            
+            
   // pour chaque catégorie, on va chercher autant que la limite qui nous a été demandée (si on nous demande 300 nouvelles : on va chercher 300 commentaires, 300 nouveaux points et 300 nouveau message forum. Et ouais, c'est triste, mais comme c'est en plusieurs requêtes, je ne sais pas sinon quels sont les 300 plus récents
   // Je vais au moins limiter dans cette première boucle à n'aller chercher que le minimum, la deuxième boucle, qui ne prendra que les 300 nouvelles, fera les traitements de recherche des points et polygones correspondants
   while ($tok) 
@@ -92,7 +97,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         if ($req && $req->avec_photo)
           $conditions_commentaires->avec_photo=$req->avec_photo;
           
-        if(!empty($ids_polygones)) 
+        if (!empty($ids_polygones))
           $conditions_commentaires->ids_polygones=$ids_polygones;
         
         $commentaires=infos_commentaires($conditions_commentaires);
@@ -125,7 +130,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
           $conditions->ordre="points.date_creation DESC,polygone_type.ordre_taille DESC";
           $conditions->limite=$nombre;
           $conditions->avec_liste_polygones=True;
-          if($ids_polygones!="") $conditions->ids_polygones=$ids_polygones;
+          if (!empty($ids_polygones)) 
+            $conditions->ids_polygones=$ids_polygones;
           $points=infos_points($conditions);
           if (count($points)!=0)
             foreach($points as $point)

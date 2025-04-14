@@ -1,6 +1,9 @@
 <?php
 /********************************************************************************************************
-Préparer des liens d'accès direct de nos nouvelles sous différents formats.
+Préparer des liens d'accès direct de nos nouvelles sous différents formats. 
+Paramétrer son flux RSS ou paramétrer sa page des nouvelles sont tellemnet proches comme fonctionnalités
+que j'ai un seul contrôleur et une seule vue pour les deux avec un switch. J'aurais aussi pû n'avoir qu'un seul contrôleur et 2 vues
+que plutôt que faire 2 controlleurs identiques
 Depuis 2008 : un flux RSS 
 Depuis 2025 : la page des nouvelles "customisable"
 
@@ -11,9 +14,18 @@ NOTE : Ce formulaire est proche de l'exportation des points, peut-être qu'on po
 require_once ("wiki.php");
 require_once ("bdd.php");
 
-$vue->titre="Choix du flux RSS ou de la page des nouvelles du site Refuges.info";
-$vue->description="";
-
+if (empty($_GET['choix']) or $_GET['choix'] == 'flux_rss' )
+{
+  $vue->titre="Choix pour le flux RSS du site Refuges.info";
+  $vue->titre_bouton="Obtenir le lien vers le flux RSS";
+}
+else
+{
+ $vue->titre="Choix de ce qu'il faut afficher pour la page des nouvelles du site Refuges.info";
+ $vue->titre_bouton="Obtenir un lien vers les nouvelles demandées";
+}
+  
+ 
 $vue->types_de_nouvelles = new stdClass; // objet contenant les type de nouvelles (en tant quobjets eux memes)
 $vue->massifs = new stdClass;
 
@@ -39,6 +51,5 @@ foreach ( $massifs AS $index => $massif )
   $vue->massifs->$index->id_polygone = $massif->id_polygone ;
   $vue->massifs->$index->id_zone = $massif->id_zone ;
   $vue->massifs->$index->nom_zone = $massif->nom_zone ;
-  if ( !isset($_REQUEST['id_massif']) OR  ( (array) $_REQUEST['id_massif'] == $massif->id_polygone ) )
-    $vue->massifs->$index->checked = true;
 }
+
