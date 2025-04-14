@@ -201,7 +201,7 @@
 
       // modérateur de fiche
       if ($vue->nom_createur!="") { ?>
-        Modérateur actuel :
+        Modérateur actuel de cette fiche:
         <?php if ($vue->point->id_createur != 0) { ?>
             <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
               <?=$vue->nom_createur?>
