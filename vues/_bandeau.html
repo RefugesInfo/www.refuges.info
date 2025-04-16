@@ -53,7 +53,6 @@
 
 		<?php if (est_moderateur()) { ?>
 				<hr/>
-				<li>Fonctions modérateurs</li>
 				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
 						<?php if ($vue->demande_correction) {?>⭐ <?php } ?>Commentaires à traiter
@@ -208,18 +207,6 @@
 								Recherche de points
 							</a>
 						</li><li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>gps">
-								Appli GPS
-							</a>
-						</li><li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact">
-								Support site
-							</a>
-						</li><li>
-							<a href="<?=lien_wiki('prudence')?>">
-								Règles de prudence
-							</a>
-						</li><li>
 							<a href="<?=lien_wiki('cabane_principe_bonne_conduite')?>">
 								Consignes en cabane
 							</a>
@@ -228,21 +215,17 @@
 								Liens
 							</a>
 						</li><li>
-							<a href="<?=lien_wiki('cookies')?>">
-								Cookies
+							<a href="<?=$config_wri['sous_dossier_installation']?>gps">
+								Appli GPS
 							</a>
 						</li><li>
-							<a href="<?=lien_wiki('licence')?>">
-								Licence
+							<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact">
+								Support site
 							</a>
-						</li><li>
-							<a href="<?=lien_wiki('mentions-legales')?>">
-								Mentions légales
-							</a>
-						</li><li>
+						</li><hr/><li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations"
 								title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">
-								Exportation de points
+								Export de points
 							</a>
 						</li><li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss_et_nouvelles?choix=flux_rss">
@@ -255,6 +238,22 @@
 						</li><li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations">
 								Exporter la base
+							</a>
+						</li><hr/><li>
+							<a href="<?=lien_wiki('prudence')?>">
+								Règles de prudence
+							</a>
+						</li><li>
+							<a href="<?=lien_wiki('cookies')?>">
+								Cookies
+							</a>
+						</li><li>
+							<a href="<?=lien_wiki('licence')?>">
+								Licence
+							</a>
+						</li><li>
+							<a href="<?=lien_wiki('mentions-legales')?>">
+								Mentions légales
 							</a>
 						</li>
 					</ul>
