@@ -1,34 +1,5 @@
-<div id="basdepage" class="noprint">
-	<a href="<?=lien_wiki('')?>">
-		A propos
-	</a> - 
-	<a href="<?=lien_wiki('licence')?>">
-		Licence
-	</a> - 
-	<a href="<?=lien_wiki('cookies')?>">
-		Cookies
-	</a> - 
-	<a href="<?=lien_wiki('mentions-legales')?>">
-		Mentions légales
-	</a> -
-	<a href="<?=$config_wri['sous_dossier_installation']?>wiki/contact<?=!empty($point) ? '-refuge' : '' ?>">
-		Support
-	</a> - 
-	<a href="<?=$config_wri['sous_dossier_installation']?>gps/">
-		Mobile
-	</a> - 
-	<a id="lien-api" href="<?=$config_wri['sous_dossier_installation']?>api/doc/">
-		API
-	</a> - 
-	<a id="lien-exportation" href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations">
-		Exporter la base
-	</a> -
-	<a id="formulaire-rss" href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss_et_nouvelles?choix=flux_rss">
-		Flux RSS
-	</a>
-
-	<?php if ($config_wri['debug']) { ?>
-		- 
+<?php if ($config_wri['debug']); { ?>
+	<div id="basdepage" class="noprint">
 		<a href="http://validator.w3.org/check?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">
 			<img src="<?=$config_wri['sous_dossier_installation']?>images/valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict">
 		</a>
@@ -36,8 +7,8 @@
 			<img src="<?=$config_wri['sous_dossier_installation']?>images/valide/css21-blue.gif" alt="Valid CSS niveau 2.1">
 		</a>
 		<?=(temps_execution()."s")?>
-	<?php } ?>
-</div>
+	</div>
+<?php } ?>
 
 <?php if (isset ($vue->java_lib_foot)) // Pour accélérer le chargement initial de la page, on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
 	foreach ($vue->java_lib_foot as $js_lib) {?>

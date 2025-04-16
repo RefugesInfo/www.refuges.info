@@ -1,4 +1,4 @@
-/* global jsVars, fondsCarte, couchePointsWRI */
+/* global myol, jsVars, fondsCarte, couchePointsWRI */
 
 const refugeslayer = couchePointsWRI({
     host: 'https://www.refuges.info/',

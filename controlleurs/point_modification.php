@@ -69,7 +69,8 @@ switch( $_REQUEST["action"] )
         break;
     
     case 'supprimer':
-        if ( est_autorise($ancien_point->id_createur) )
+        $ancien_point=infos_point($_REQUEST['id_point'],True,false); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
+        if ( est_autorise($ancien_point->id_createur ?? 0) )
         {
             $point=infos_point($_REQUEST['id_point'],True);
             $resultat_suppression=suppression_point($point,$infos_identification->user_id);

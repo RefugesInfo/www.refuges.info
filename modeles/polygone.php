@@ -193,7 +193,9 @@ function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False
     return erreur("Le polygone d'id $id_polygone n'existe pas dans notre base");
 
   // Protection contre les polygones vides
-  if ($poly[0]->ouest && $poly[0]->sud && $poly[0]->est && $poly[0]->nord)
+  if (isset($poly[0]) &&
+    isset($poly[0]->ouest) && isset($poly[0]->sud) &&
+    isset($poly[0]->est) && isset($poly[0]->nord))
     $poly[0]->extent = [$poly[0]->ouest, $poly[0]->sud, $poly[0]->est, $poly[0]->nord];
 
   return $poly[0];
@@ -263,24 +265,31 @@ function edit_info_polygone()
     global $pdo;
 
     // On échappe les simples quotes
-    $article_partitif = str_replace ("'", "''", $_POST ['article_partitif']);
-    $nom_polygone     = str_replace ("'", "''", $_POST ['nom_polygone']);
+    $article_partitif = str_replace ("'", "''", $_POST['article_partitif']??'');
+    $nom_polygone     = str_replace ("'", "''", $_POST['nom_polygone']??'');
 
     if (isset ($_POST ['nom_polygone']) && strlen ($nom_polygone) == 0) {
-        echo 'Nom de massif vide';
+        echo '<p style="color:red">NOM DE MASSIF VIDE</p>';
+        echo '<p>Revenez en arrière pour continuer l\'édition</p>';
         exit;
     }
 
     if (strlen ($article_partitif) > 20) {
         echo 'Article partitif trop long (max = 20 caractères): '.$article_partitif;
+        echo '<p>Revenez en arrière pour continuer l\'édition</p>';
         exit;
     }
 
-    if ($_POST['enregistrer'] && $_POST['id_polygone'])
+  // Edition
+    if (!empty($_POST['enregistrer']) &&
+        !empty($_POST['id_polygone']) &&
+        !empty($_POST['id_polygone_type']) &&
+        !empty($_POST['json_polygones']))
     {
         if (!json_decode($_POST['json_polygones'])->coordinates)
         {
             echo '<p style="color:red">MASSIF OU ZONE NON MODIFIÉ(E) CAR NE COMPORTE PAS DE POLYGONE</p>';
+            echo '<p>Revenez en arrière pour continuer l\'édition</p>';
             exit;
         }
 
@@ -307,11 +316,15 @@ function edit_info_polygone()
     }
 
   // Création
-    if ($_POST['enregistrer'] && $_POST['id_polygone'] == 0)
+    if (!empty($_POST['enregistrer']) &&
+        empty($_POST['id_polygone']) &&
+        !empty($_POST['id_polygone_type']) &&
+        !empty($_POST['json_polygones']))
     {
         if (!json_decode($_POST['json_polygones'])->coordinates)
         {
             echo '<p style="color:red">MASSIF OU ZONE NON CRÉÉ(E) CAR NE COMPORTE PAS DE POLYGONE</p>';
+            echo '<p>Revenez en arrière pour continuer l\'édition</p>';
             exit;
         }
 
@@ -321,7 +334,8 @@ function edit_info_polygone()
         if (!$res)
             erreur('Requête impossible',$query_no);
 
-        if (!$new_poly=$res->fetch())
+        $new_poly = $res->fetch();
+        if (!$new_poly)
         {
             // Alors, on le crée
             $query_cree = "INSERT INTO polygones (id_polygone_type, article_partitif, nom_polygone, geom) ".
@@ -343,7 +357,7 @@ function edit_info_polygone()
         $polygone_apres->nom_polygone = $nom_polygone;
         $polygone_apres->id_polygone = $new_poly->id_polygone;
         $polygone_apres->article_partitif = $article_partitif;
-        $polygone_apres->id_polygone_type = $_POST['id_polygone_type'];
+        $polygone_apres->id_polygone_type = $_POST['id_polygone_type']??1;
 
         historisation_modification(null,$polygone_apres,'création polygone');
 
@@ -351,7 +365,7 @@ function edit_info_polygone()
         return $new_poly->id_polygone;
     }
 
-    if ($_POST['supprimer'])
+    if (!empty($_POST['supprimer']) && !empty($_POST['id_polygone']))
     {
         // Historisation de la suppression dans la table des historique des points
         $polygone_avant = infos_polygone($_POST['id_polygone'],false,false,true); // Avec geom
@@ -420,14 +434,14 @@ function chaine_de_localisation($polygones,$categorie_polygone_type='montagnarde
   if (!empty($polygones))
   {
     $i=0;
-    foreach( $polygones as $polygone ) 
-    if ($polygone->categorie_polygone_type==$categorie_polygone_type)
-    {
-      $i++;
-      if ($i>1)
-        $localisation.=' > ';
-      $localisation.=$polygone->nom_polygone;
-    }
+    foreach( $polygones as $polygone )
+      if ($polygone->categorie_polygone_type==$categorie_polygone_type)
+      {
+        $i++;
+        if ($i>1)
+          $localisation.=' > ';
+        $localisation.=$polygone->nom_polygone;
+      }
   }
   return $localisation;
 }
