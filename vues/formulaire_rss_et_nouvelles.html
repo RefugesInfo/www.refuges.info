@@ -8,19 +8,27 @@
 
   <form class="wri" id='form_export' method='post' action="<?=$config_wri['sous_dossier_installation']?>formulaire_rss_et_nouvelles_validation/">
     <fieldset id="types_nouvelles">
-        <legend>Choix des nouvelles à afficher
-            <button type='button' onclick="checkboites('types_nouvelles',true); return false;">☒</button>
-            <button type='button' onclick="checkboites('types_nouvelles',false); return false;">☐</button>
-        </legend>
-        <?php
-        $index = 0;
-        while ($index < sizeof($vue->types_de_nouvelles->checked)) { 
-            $type_nouvelle = $vue->types_de_nouvelles;?>
-        <label>
-           <input type='checkbox' name='types_de_nouvelles[]' value='<?=$type_nouvelle->types_de_nouvelles[$index]?>'<?=($type_nouvelle->checked[$index]?' checked="checked"':'');?> />
-           <?=$type_nouvelle->types_de_nouvelles_en_francais[$index]?>
+      <legend>Choix des nouvelles à afficher
+        <button type='button' onclick="checkboites('types_nouvelles',true); return false;">☒</button>
+        <button type='button' onclick="checkboites('types_nouvelles',false); return false;">☐</button>
+      </legend>
+      <label>
+        <input type='checkbox' name='types_de_nouvelles[]' value='commentaires' checked="checked" />
+          Commentaires
+      </label>
+      <label>
+        <input type='radio' name='types_de_nouvelles[]' value='refuges' checked="checked" />
+          Seulement les ajouts de refuges et cabanes
+      </label>
+      <label>
+        <b>ou</b>
+        <input type='radio' name='types_de_nouvelles[]' value='points' checked="checked" />
+          Tous les ajouts de points
         </label>
-        <?php $index++; }?>
+      <label>
+        <input type='checkbox' name='types_de_nouvelles[]' value='forums' />
+          Messages des forums        
+      </label>
     </fieldset>
     
     <!-- Choix des zones massifs -->
