@@ -105,8 +105,7 @@ function infos_polygones($conditions)
     if (!empty($conditions->avec_zone_parente))
     {
       $champs_en_plus.=",zones.nom_polygone as nom_zone,zones.id_polygone as id_zone";
-      $table_en_plus.=" LEFT JOIN polygones zones on ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom)";
-      $conditions_sql.=" AND zones.id_polygone_type=".$config_wri['id_zone'];
+      $table_en_plus.=" LEFT JOIN polygones zones on ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) AND zones.id_polygone_type=".$config_wri['id_zone'];
     }
     if (!empty($conditions->avec_enveloppe)) // FIXME: y'aurait plus simple en demandant st_envelope à postgis ?
       $champs_en_plus.=",
