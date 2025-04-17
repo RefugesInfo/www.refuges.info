@@ -81,56 +81,45 @@ function infos_polygones($conditions)
     $ordre="ORDER BY $ordre_champ";
 
     if (!empty($conditions->ids_polygone_type))
-        if (!verif_multiples_entiers($conditions->ids_polygone_type))
-            return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
-        else
-            $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
+      if (!verif_multiples_entiers($conditions->ids_polygone_type))
+        return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
+      else
+        $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
     // Ne prenons que les polygones qui intersectent une geometrie (etait: une bbox)
     if (!empty($conditions->geometrie))
-        $conditions_sql.=" AND ST_Intersects(polygones.geom, {$conditions->geometrie})";
+      $conditions_sql.=" AND ST_Intersects(polygones.geom, {$conditions->geometrie})";
 
     if (!empty($conditions->avec_geometrie))
-        $champs_en_plus.=",st_as$conditions->avec_geometrie(polygones.geom,5) AS geometrie_$conditions->avec_geometrie";
+      $champs_en_plus.=",st_as$conditions->avec_geometrie(polygones.geom,5) AS geometrie_$conditions->avec_geometrie";
 
-    if (!empty($conditions->intersection)) {
-        $table_en_plus.=",polygones AS zones ";
-        $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND zones.id_polygone = ". $conditions->intersection ;
-  }
+    if (!empty($conditions->intersection)) 
+    {
+      $table_en_plus.=",polygones AS zones ";
+      $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND zones.id_polygone = ". $conditions->intersection ;
+    }
     // jmb: nom de la zone auquel le poly appartient.
     // jmb: le nom aussi si ca peut eviter un appel de plue.
     // jmb: tout ca est crado. mais c'est 1000x plus rapide.
     // sly: faire que cette requête un peu plus lourde ne soit pas systématiquement utilisée, sauf demande
     // sly: 2020 quand un massif est dans une zone, mais en touche une autre (en bordure) ça sort au pif une zone, parfois celle juste touchée. Le AND NOT ST_TOUCHES gère ce cas
     if (!empty($conditions->avec_zone_parente))
-        $champs_en_plus.=",
-        (
-          SELECT id_polygone
-          FROM polygones AS zones
-          WHERE
-            zones.id_polygone_type=".$config_wri['id_zone']."
-            AND
-            ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) LIMIT 1
-        ) AS id_zone ,
-        (
-          SELECT nom_polygone
-          FROM polygones AS zones
-          WHERE
-            zones.id_polygone_type=".$config_wri['id_zone']."
-            AND
-            ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom) LIMIT 1
-        ) AS nom_zone
-        ";
-      if (!empty($conditions->avec_enveloppe)) // FIXME: y'aurait plus simple en demandant st_envelope à postgis ?
-        $champs_en_plus.=",
-                 st_xmin(polygones.geom) AS ouest,
-                 st_xmax(polygones.geom) AS est,
-                 st_ymin(polygones.geom) AS sud,
-                 st_ymax(polygones.geom) AS nord
-                 ";
-      if (!empty($conditions->avec_geom))
-        $champs_en_plus.=",geom";
+    {
+      $champs_en_plus.=",zones.nom_polygone as nom_zone,zones.id_polygone as id_zone";
+      $table_en_plus.=",polygones AS zones";
+      $conditions_sql.=" AND zones.id_polygone_type=".$config_wri['id_zone'];
+      $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND NOT ST_TOUCHES(polygones.geom, zones.geom)";
+    }
+    if (!empty($conditions->avec_enveloppe)) // FIXME: y'aurait plus simple en demandant st_envelope à postgis ?
+      $champs_en_plus.=",
+                st_xmin(polygones.geom) AS ouest,
+                st_xmax(polygones.geom) AS est,
+                st_ymin(polygones.geom) AS sud,
+                st_ymax(polygones.geom) AS nord
+                ";
+    if (!empty($conditions->avec_geom))
+      $champs_en_plus.=",geom";
 
-  $query="SELECT polygone_type.*,".$config_wri['champs_table_polygones']."
+    $query="SELECT polygone_type.*,".$config_wri['champs_table_polygones']."
                  $champs_en_plus
           FROM polygones,polygone_type$table_en_plus
           WHERE
@@ -139,6 +128,7 @@ function infos_polygones($conditions)
           $ordre
           $limite
   ";
+  //d($query);
   $res=$pdo->query($query);
   if (!$res)
     return erreur("Requête SQL en erreur (vous pouvez nous signaler le problème sur le forum)",$query);

@@ -36,7 +36,7 @@ $vue->massifs = new stdClass;
 
 $conditions = new stdClass;
 $conditions->ids_polygone_type=$config_wri['id_massif'];
-$conditions->ordre = "id_zone,nom_polygone"; // classe les massifs par zone, et au sein d'une zone range les par nom
+$conditions->ordre = "nom_zone,nom_polygone"; // classe les massifs par zone, et au sein d'une zone range les par nom
 $conditions->avec_zone_parente=True;
 $massifs=infos_polygones($conditions);
 
