@@ -9,7 +9,7 @@ import Feature from 'ol/Feature';
 import Icon from 'ol/style/Icon';
 import Point from 'ol/geom/Point';
 import Pointer from 'ol/interaction/Pointer';
-import proj4Lib from 'proj4/lib/index';
+import proj4Lib from 'proj4/lib';
 import {
   register,
 } from 'ol/proj/proj4';

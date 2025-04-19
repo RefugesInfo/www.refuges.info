@@ -5,13 +5,9 @@
  * Corrected https://github.com/Dominique92/ol-geocoder
  */
 
-// ol-geocoder library (dev repo)
-//BEST to be replaced by ol-geocoder when /src published in npm
 import '@myol/geocoder/src/base.css';
 import Geocoder from '@myol/geocoder/src/base';
 
-// This package css
-// Import after ol-geocoder.css
 import './myGeocoder.css';
 
 class MyGeocoder extends Geocoder {

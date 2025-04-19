@@ -5,147 +5,8 @@
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
  * Built using npm run build from the src/... sources
- * Please don't modify it : modify src/... & npm run build !
+ * Please don't modify this file : best is to modify src/... & npm run build !
  */
-/*
- * button.css
- */
-/* Top aligned buttons */
-/* Container */
-.ol-zoom,
-.ol-full-screen,
-.myol-button {
-  position: static !important;
-  float: left;
-  margin: 2px;
-  /* No grey line around the button */
-  padding: 0 !important;
-}
-
-/* Button */
-/* Also for zoom, fullScreen, ... */
-.ol-control button {
-  font-size: 18px !important;
-  color: black;
-  background: white;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
-  cursor: pointer;
-}
-
-.ol-control button:hover {
-  box-shadow: 1px 1px 10px black;
-}
-
-/* Full screen */
-.ol-full-screen-false {
-  text-indent: -1em;
-  color: transparent !important;
-}
-
-.ol-full-screen-false::after {
-  font-style: italic;
-  color: black !important;
-  content: "\21F3";
-}
-
-/* Button labels */
-.myol-button-download button::after {
-  content: "\21e9";
-}
-
-.myol-button-geolocation button::after {
-  content: "\2295";
-}
-
-.myol-button-load button::after {
-  content: "\1F4C2";
-}
-
-.myol-button-print button::after {
-  content: "\1F5A8";
-}
-
-.myol-button-hide {
-  display: none;
-}
-
-/* Submenu */
-.myol-button>div {
-  max-height: calc(100% - 38px);
-  opacity: 0.8;
-  transition: max-height 0.3s ease-in, opacity 0.3s ease-out;
-  overflow: auto;
-  z-index: 30;
-}
-
-.myol-button:not(.myol-button-hover, .myol-button-selected)>div,
-.myol-button-nokeepselect:not(:hover)>div,
-.myol-button>*:empty {
-  max-height: 0;
-  /* For the beauty of the transition */
-  opacity: 0;
-}
-
-@media screen and (max-width: 400px) {
-  .myol-button:not(.myol-button-switcher)>div {
-    width: 100%;
-    left: 0;
-  }
-}
-
-.myol-button>*:not(button) {
-  position: absolute;
-  top: 30px;
-  background: white;
-  font-size: 16px;
-}
-
-.myol-button div {
-  background: #d1e9ff;
-}
-
-.myol-button div a {
-  color: blue !important;
-}
-
-.myol-button.myol-button-selected button {
-  background: #d1e9ff;
-}
-
-.myol-button p,
-.myol-button span,
-.myol-button .select-ext {
-  margin: 3px 0;
-  padding: 0 3px;
-  font-size: 14px;
-}
-
-.myol-button label {
-  display: block;
-  padding: 2px 0;
-  cursor: pointer;
-}
-
-.myol-button a {
-  cursor: pointer;
-}
-
-.myol-button a {
-  color: blue;
-}
-
-.myol-button input {
-  margin: 0 3px;
-}
-
-.myol-button label:hover,
-.myol-button a:hover {
-  background: #ffe8d1;
-}
-
-.myol-button hr {
-  margin: 1px;
-}
 :root,
 :host {
   --ol-background-color: white;
@@ -502,6 +363,145 @@
 }
 
 /*
+ * button.css
+ */
+/* Top aligned buttons */
+/* Container */
+.ol-zoom,
+.ol-full-screen,
+.myol-button {
+  position: static !important;
+  float: left;
+  margin: 2px;
+  /* No grey line around the button */
+  padding: 0 !important;
+}
+
+/* Button */
+/* Also for zoom, fullScreen, ... */
+.ol-control button {
+  font-size: 18px !important;
+  color: black;
+  background: white;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+}
+
+.ol-control button:hover {
+  box-shadow: 1px 1px 10px black;
+}
+
+/* Full screen */
+.ol-full-screen-false {
+  text-indent: -1em;
+  color: transparent !important;
+}
+
+.ol-full-screen-false::after {
+  font-style: italic;
+  color: black !important;
+  content: "\21F3";
+}
+
+/* Button labels */
+.myol-button-download button::after {
+  content: "\21e9";
+}
+
+.myol-button-geolocation button::after {
+  content: "\2295";
+}
+
+.myol-button-load button::after {
+  content: "\1F4C2";
+}
+
+.myol-button-print button::after {
+  content: "\1F5A8";
+}
+
+.myol-button-hide {
+  display: none;
+}
+
+/* Submenu */
+.myol-button>div {
+  max-height: calc(100% - 38px);
+  opacity: 0.8;
+  transition: max-height 0.3s ease-in, opacity 0.3s ease-out;
+  overflow: auto;
+  z-index: 30;
+}
+
+.myol-button:not(.myol-button-hover, .myol-button-selected)>div,
+.myol-button-nokeepselect:not(:hover)>div,
+.myol-button>*:empty {
+  max-height: 0;
+  /* For the beauty of the transition */
+  opacity: 0;
+}
+
+@media screen and (max-width: 400px) {
+  .myol-button:not(.myol-button-switcher)>div {
+    width: 100%;
+    left: 0;
+  }
+}
+
+.myol-button>*:not(button) {
+  position: absolute;
+  top: 30px;
+  background: white;
+  font-size: 16px;
+}
+
+.myol-button div {
+  background: #d1e9ff;
+}
+
+.myol-button div a {
+  color: blue !important;
+}
+
+.myol-button.myol-button-selected button {
+  background: #d1e9ff;
+}
+
+.myol-button p,
+.myol-button span,
+.myol-button .select-ext {
+  margin: 3px 0;
+  padding: 0 3px;
+  font-size: 14px;
+}
+
+.myol-button label {
+  display: block;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.myol-button a {
+  cursor: pointer;
+}
+
+.myol-button a {
+  color: blue;
+}
+
+.myol-button input {
+  margin: 0 3px;
+}
+
+.myol-button label:hover,
+.myol-button a:hover {
+  background: #ffe8d1;
+}
+
+.myol-button hr {
+  margin: 1px;
+}
+/*
  * layerSwitcher.css
  */
 .myol-button-switcher {
@@ -545,7 +545,7 @@
 .myol-length-line:empty {
   display: none;
 }
-/*
+/*! OpenLayers Control Geocoder
  * ol-geocoder
  * A geocoder extension compatible with OpenLayers v6.x to v9.0
  * https://github.com/Dominique92/ol-geocoder
@@ -639,6 +639,7 @@
 }
 
 .ol-geocoder .gcd-gl-btn:after {
+  /* // #102 */
   content: "\1F50D";
 }
 
@@ -775,6 +776,7 @@
 }
 
 .ol-geocoder .gcd-txt-glass:after {
+  /* // #102 */
   content: "\1F50D";
 }
 
@@ -910,9 +912,8 @@
 }
 
 .ol-geocoder .gcd-gl-search {
-  top: 24px;
-  left: 170px;
-  font-size: 12.6px;
+  top: 22px;
+  left: 12em;
 }
 
 .ol-geocoder .gcd-gl-result {

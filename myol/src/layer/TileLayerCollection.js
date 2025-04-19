@@ -2,20 +2,28 @@
  * Many simplified display of various tiles layers services
  */
 
-import ol from '../ol'; //BEST imports direct de node_modules/ol
-
+import BingMaps from 'ol/source/BingMaps.js';
+import {
+  get,
+} from 'ol/proj';
 import {
   getTopLeft,
   getWidth,
 } from 'ol/extent';
+import OSM from 'ol/source/OSM.js';
+import SourceXYZ from 'ol/source/XYZ.js';
+import TilegridWMTS from 'ol/tilegrid/WMTS.js';
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS.js';
+import WMTS from 'ol/source/WMTS.js';
 
 /**
  * Virtual class to factorise XYZ layers code
  */
-class XYZ extends ol.layer.Tile {
+class XYZ extends TileLayer {
   constructor(options) {
     super({
-      source: new ol.source.XYZ(options),
+      source: new SourceXYZ(options),
       ...options,
     });
   }
@@ -54,10 +62,10 @@ export class NoTile extends XYZ {
  * Map : https://www.openstreetmap.org/
  * API : https://wiki.openstreetmap.org/wiki/API/
  */
-export class OpenStreetMap extends ol.layer.Tile {
+export class OpenStreetMap extends TileLayer {
   constructor(options) {
     super({
-      source: new ol.source.OSM(options),
+      source: new OSM(options),
       ...options,
     });
   }
@@ -139,25 +147,25 @@ export class Thunderforest extends OpenStreetMap {
  * Doc & API : https://geoservices.ign.fr/services-web
  * Key : https://cartes.gouv.fr
  */
-export class IGN extends ol.layer.Tile {
+export class IGN extends TileLayer {
   constructor(options = {}) {
     const IGNresolutions = [],
       IGNmatrixIds = [];
 
     for (let i = 0; i < 18; i++) {
-      IGNresolutions[i] = getWidth(ol.proj.get('EPSG:3857').getExtent()) / 256 / (2 ** i);
+      IGNresolutions[i] = getWidth(get('EPSG:3857').getExtent()) / 256 / (2 ** i);
       IGNmatrixIds[i] = i.toString();
     }
 
     super({
-      source: new ol.source.WMTS({
+      source: new WMTS({
         // WMTS options
         url: options.key ? 'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://wmts.geopf.fr/wmts',
         style: 'normal',
         matrixSet: 'PM',
         format: 'image/jpeg',
         attributions: '&copy; <a href="https://www.geoportail.gouv.fr/" target="_blank">IGN</a>',
-        tileGrid: new ol.tilegrid.WMTS({
+        tileGrid: new TilegridWMTS({
           origin: [-20037508, 20037508],
           resolutions: IGNresolutions,
           matrixIds: IGNmatrixIds,
@@ -177,7 +185,7 @@ export class IGN extends ol.layer.Tile {
  * Don't need key nor referer
  * API : https://api3.geo.admin.ch/services/sdiservices.html#wmts
  */
-export class SwissTopo extends ol.layer.Tile {
+export class SwissTopo extends TileLayer {
   constructor(opt) {
     const options = {
       host: 'https://wmts2{0-4}.geo.admin.ch/1.0.0/',
@@ -189,7 +197,7 @@ export class SwissTopo extends ol.layer.Tile {
       ...opt,
     };
 
-    const projectionExtent = ol.proj.get('EPSG:3857').getExtent(),
+    const projectionExtent = get('EPSG:3857').getExtent(),
       resolutions = [],
       matrixIds = [];
 
@@ -199,10 +207,10 @@ export class SwissTopo extends ol.layer.Tile {
     }
 
     super({
-      source: new ol.source.WMTS(({
+      source: new WMTS(({
         url: options.host + options.subLayer +
           '/default/current/3857/{TileMatrix}/{TileCol}/{TileRow}.jpeg',
-        tileGrid: new ol.tilegrid.WMTS({
+        tileGrid: new TilegridWMTS({
           origin: getTopLeft(projectionExtent),
           resolutions: resolutions,
           matrixIds: matrixIds,
@@ -250,10 +258,10 @@ export class IgnES extends XYZ {
  * Doc : https://gn.mase.gov.it/
  * Map : http://www.pcn.minambiente.it/viewer/
  */
-export class IGM extends ol.layer.Tile {
+export class IGM extends TileLayer {
   constructor() {
     super({
-      source: new ol.source.TileWMS({
+      source: new TileWMS({
         url: 'https://chemineur.fr/assets/proxy/?s=minambiente.it', // Not available via https
         attributions: '&copy <a href="https://gn.mase.gov.it/">IGM</a>',
       }),
@@ -378,7 +386,7 @@ export class Google extends XYZ {
  * Doc: https://docs.microsoft.com/en-us/bingmaps/getting-started/
  * Key : https://www.bingmapsportal.com/
  */
-export class Bing extends ol.layer.Tile {
+export class Bing extends TileLayer {
   constructor(options = {}) {
     super({
       hidden: !options.key, // For LayerSwitcher
@@ -397,7 +405,7 @@ export class Bing extends ol.layer.Tile {
     this.on('change:visible', evt => {
       if (evt.target.getVisible() && // When the layer becomes visible
         !this.getSource()) // Only once
-        this.setSource(new ol.source.BingMaps(options));
+        this.setSource(new BingMaps(options));
     });
   }
 }
@@ -632,6 +640,6 @@ export function examples(options = {}) {
 
     'Positron': new Positron(),
     'No tile': new NoTile(),
-    'Blank': new ol.layer.Tile(),
+    'Blank': new TileLayer(),
   };
 }

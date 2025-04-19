@@ -16,7 +16,7 @@ export default {
   VectorEditor: VectorEditor,
   Hover: Hover,
   Marker: Marker,
-  MyVectorLayer,
+  MyVectorLayer: MyVectorLayer,
   Selector: Selector,
   tile: tileLayercollection,
   vector: vectorLayerCollection,

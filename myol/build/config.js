@@ -8,16 +8,15 @@ import pluginReplace from '@rollup/plugin-replace'; // To include the version in
 import css from 'rollup-plugin-import-css'; // Collect css
 import terser from '@rollup/plugin-terser'; // Rollup plugin to minify generated es bundle
 
-//BEST remove TO-DO & BEST comments from build
-
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8')),
-  geocoderPkg = JSON.parse(readFileSync('./node_modules/@myol/geocoder/package.json', 'utf-8')),
   timeBuild = new Date().toLocaleString(),
+  packageLock = JSON.parse(readFileSync('./package-lock.json', 'utf-8')),
   pluginReplacement = {
     preventAssignment: true,
-    __myolBuildDate__: timeBuild,
     __myolBuildVersion__: pkg.version,
-    __geocoderBuildVersion__: geocoderPkg.version,
+    __myolBuildDate__: timeBuild,
+    __geocoderBuildVersion__: packageLock.packages["node_modules/@myol/geocoder"].version,
+    __proj4BuildVersion__: packageLock.packages["node_modules/proj4"].version,
   },
   banner = readFileSync('./build/banner.js', 'utf-8')
   .replace('{name}', pkg.name)

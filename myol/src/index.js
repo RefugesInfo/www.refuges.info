@@ -2,7 +2,6 @@
  * This file defines the myol exports
  */
 
-//BEST resizable map
 import control from './control';
 import layer from './layer';
 import * as stylesOptions from './layer/stylesOptions';

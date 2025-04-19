@@ -24,12 +24,12 @@
   "scripts": {
     "build": "rollup -c build/config.js",
     "lint": "npx eslint *.js* build/* src/*.js src/*/*.js gps/*/*.js ex*/*.js ex*/*/*.*js",
-    "beautify": "js-beautify -s=2 *.js* build/* src/*.js src/*/* gps/*/*.*js ex*/*.html ex*/*.*js ex*/*/*.html ex*/*/*.*js*"
+    "beautify": "js-beautify -s=2 *.js* build/* src/*.js src/*/* gps/*/*.*js ex*/*.html ex*/*.* ex*/*/*.*js* ex*/*/*.h*"
   },
   "dependencies": {
-    "@myol/geocoder": "4.3.3-3",
-    "ol": "10.2.1",
-    "proj4": "2.12.1"
+    "ol": "latest",
+    "@myol/geocoder": "latest",
+    "proj4": "latest"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "latest",

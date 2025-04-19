@@ -1,13 +1,11 @@
 /**
  * Contient les fonctions gérant les cartes
+ * Regroupées ici pour tests unitaires dans MyOl
  */
 /* global ol, myol */
 
-/**
- * Contient les fonctions gérant les cartes
- */
 // Les couches de fond des cartes de refuges.info
-function fondsCarte(mapKeys, restreint) {
+function externTilesLayers(mapKeys, restreint) {
   return {
     'Refuges.info': new myol.layer.tile.MRI(),
     'OSM': new myol.layer.tile.OpenStreetMap(),
@@ -45,6 +43,35 @@ function fondsCarte(mapKeys, restreint) {
   };
 }
 
+function externPointsLayers(options) {
+  return [
+    new myol.layer.vector.Chemineur({
+      selectName: 'select-chem',
+      initSelect: '', // Réinitialise le choix des points
+    }),
+    new myol.layer.vector.Alpages({
+      selectName: 'select-alpages',
+      initSelect: '',
+      hostIcons: options.host + 'images/icones/',
+    }),
+    new myol.layer.vector.PRC({
+      selectName: 'select-prc',
+      initSelect: '',
+      hostIcons: options.host + 'images/icones/',
+    }),
+    new myol.layer.vector.C2C({
+      selectName: 'select-c2c',
+      initSelect: '',
+      hostIcons: options.host + 'images/icones/',
+    }),
+    new myol.layer.vector.Overpass({
+      selectName: 'select-osm',
+      initSelect: '',
+      hostIcons: options.host + 'images/icones/',
+    }),
+  ];
+}
+
 /**
  * Contient les fonctions gérant les cartes
  */
@@ -73,31 +100,34 @@ function etiquetteComplette(properties) {
  */
 function couchePointsWRI(options) {
   const layer = new myol.layer.MyVectorLayer({
-    selectMassif: new myol.Selector('no-selector'), // Defaut = pas de sélecteur de massif
+    // Default options
+    selectContour: new myol.Selector('no-selector'), // Defaut = pas de sélecteur de massif
 
-    // Clusters:
+    // Default clusters options:
     serverClusterMinResolution: 100, // (mètres par pixel) Résolution au dessus de laquelle on demande des clusters au serveur
     nbMaxClusters: 108, // Nombre de clusters sur la carte (12 rangées de 9). Remplace la distance
     browserClusterMinResolution: 10, // (mètres par pixel) Résolution en-dessous de laquelle le navigateur ne clusterise plus et ajoute une gigue
 
     ...options,
 
-    // Calcul de l'url de l'API refuges?.info
-    query: (extent, resolution, projection, opt) => {
-      const selectionMassif = layer.options.selectMassif.getSelection();
+    // Calcul de l'url de l'API refuges.info
+    query: (extent, resolution, p, opt) => {
+      const selectionPolygone = layer.options.selectContour.getSelection();
 
       return {
-        _path: selectionMassif.length ? 'api/massif' : 'api/bbox',
-        massif: selectionMassif,
-        'type_points': opt.selection || opt.selector.getSelection(),
-        'nb_points': 'all',
+        _path: selectionPolygone.length ? 'api/massif' : 'api/bbox',
+        massif: selectionPolygone,
+        // eslint-disable-next-line camelcase 
+        type_points: opt.selection || opt.selector.getSelection(),
+        // eslint-disable-next-line camelcase 
+        nb_points: 'all',
         cluster: resolution > opt.serverClusterMinResolution ? 0.1 : null, // For server cluster layer
       };
     },
 
     // Traduction des propriétés reçues de WRI pour interprétation par MyVectorLayer
     addProperties: properties => ({
-      label: 'nav,point'.includes(options.page) ? properties.nom : null, // Permanence de l'étiquette dès l'affichage de la carte
+      label: options.displayLabel ? properties.nom : null, // Etiquette hors survol
       name: properties.nom, // Nom utilisé dans les listes affichées au survol des ronds des clusters
       icon: options.host + 'images/icones/' + properties.type.icone + '.svg',
       type: properties.type.valeur, // Pour export
@@ -121,21 +151,22 @@ function couchePointsWRI(options) {
   });
 
   // Recharger la couche de points quand le sélecteur de massif change
-  layer.options.selectMassif.callbacks.push(() => layer.reload());
+  layer.options.selectContour.callbacks.push(() => layer.reload());
 
   return layer;
 }
 
 /**
- * La couche des massifs colorés (accueil et couche carte nav)
+ * La couche des massifs colorés
  */
-function coucheMassifsColores(options) {
+function couchePolygonesColores(options) {
   return new myol.layer.MyVectorLayer({
     // Construction de l'url
     strategy: ol.loadingstrategy.all, // Pas de bbox
     query: () => ({
       _path: 'api/polygones',
-      'type_polygon': 1, // Massifs
+      // eslint-disable-next-line camelcase 
+      type_polygon: options.idPolygoneType,
       intersection: options.intersection,
     }),
     ...options,
@@ -186,14 +217,15 @@ function coucheMassifsColores(options) {
 }
 
 /**
- * La couche des contours massifs colorés (page nav)
+ * La couche des contours de massifs en noir
  */
-function coucheContourMassif(options) {
+function coucheContoursPolygones(options) {
   return new myol.layer.MyVectorLayer({
     // Construction de l'url
-    query: (extent, resolution, projection, opt) => ({
+    query: (extent, r, p, opt) => ({
       _path: 'api/polygones',
-      'type_polygon': 1, // Massifs
+      // eslint-disable-next-line camelcase 
+      type_polygon: options.idPolygoneType,
       massif: opt.selector.getSelection(),
     }),
     strategy: ol.loadingstrategy.all, // Pas de bbox
@@ -215,14 +247,15 @@ function coucheContourMassif(options) {
 /**
  * Carte d'accueil
  */
-/* eslint-disable-next-line no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 function mapIndex(options) {
   const pointsLayer = couchePointsWRI({ // Les points
       host: options.host,
       selection: options.selection,
     }),
-    massifsLayer = coucheMassifsColores({ // Les massifs
+    polygonesLayer = couchePolygonesColores({ // Les massifs
       host: options.host,
+      idPolygoneType: 1,
     });
 
   const boutonSelectPoints = new myol.control.Button({
@@ -230,7 +263,7 @@ function mapIndex(options) {
       label: '&#127968;',
       title: 'Afficher les points',
     }),
-    boutonSelectMassifs = new myol.control.Button({
+    boutonSelectContour = new myol.control.Button({
       className: 'accueil-switcher',
       label: '&#127760;',
       title: 'Afficher les massifs',
@@ -238,7 +271,7 @@ function mapIndex(options) {
 
   // Initialiser au chargement de la page
   if (localStorage.wriaccueilmassifs === 'true')
-    boutonSelectMassifs.element.classList.add('myol-button-selected');
+    boutonSelectContour.element.classList.add('myol-button-selected');
   else
     boutonSelectPoints.element.classList.add('myol-button-selected');
 
@@ -246,21 +279,21 @@ function mapIndex(options) {
     if (evt && evt.type === 'click') {
       if (evt.target === boutonSelectPoints.buttonEl) {
         boutonSelectPoints.element.classList.add('myol-button-selected');
-        boutonSelectMassifs.element.classList.remove('myol-button-selected');
+        boutonSelectContour.element.classList.remove('myol-button-selected');
       } else {
         boutonSelectPoints.element.classList.remove('myol-button-selected');
-        boutonSelectMassifs.element.classList.add('myol-button-selected');
+        boutonSelectContour.element.classList.add('myol-button-selected');
       }
     }
 
     const pointsSelected = boutonSelectPoints.element.classList.contains('myol-button-selected');
 
     pointsLayer.setVisible(pointsSelected);
-    massifsLayer.setVisible(!pointsSelected);
+    polygonesLayer.setVisible(!pointsSelected);
     localStorage.wriaccueilmassifs = !pointsSelected;
   }
   boutonSelectPoints.buttonAction = selectIndexLayer;
-  boutonSelectMassifs.buttonAction = selectIndexLayer;
+  boutonSelectContour.buttonAction = selectIndexLayer;
   selectIndexLayer(); // On appelle une fois au chargement de la page
 
   const map = new ol.Map({
@@ -273,7 +306,7 @@ function mapIndex(options) {
     controls: [
       new ol.control.Zoom(),
       new ol.control.FullScreen(),
-      boutonSelectMassifs,
+      boutonSelectContour,
       boutonSelectPoints,
       new ol.control.Attribution({ // Du fond de carte
         collapsed: false,
@@ -282,7 +315,7 @@ function mapIndex(options) {
 
     layers: [
       new myol.layer.tile.MRI(), // Fond de carte
-      massifsLayer,
+      polygonesLayer,
       pointsLayer,
       new myol.layer.Hover(), // Gère le survol du curseur
     ],
@@ -296,7 +329,7 @@ function mapIndex(options) {
 /**
  * Carte de visualisation d'un point
  */
-/* eslint-disable-next-line no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 function mapPoint(options) {
   return new ol.Map({
     target: options.target,
@@ -310,7 +343,7 @@ function mapPoint(options) {
       new ol.control.ScaleLine(),
       new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
       new myol.control.LayerSwitcher({
-        layers: fondsCarte(options.mapKeys),
+        layers: externTilesLayers(options.mapKeys),
       }),
       new myol.control.Permalink({ // Permet de garder le même réglage de carte
         visible: false, // Mais on ne visualise pas le lien du permalink
@@ -323,7 +356,7 @@ function mapPoint(options) {
       couchePointsWRI({
         host: options.host,
         browserClusterMinResolution: 4, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
-        page: 'point',
+        displayLabel: true,
       }),
 
       // Le cadre rouge autour du point de la fiche
@@ -349,7 +382,7 @@ function mapPoint(options) {
 /**
  * Carte des pages de création et de modification d'un point
  */
-/* eslint-disable-next-line no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 function mapModif(options) {
   return new ol.Map({
     target: options.target,
@@ -363,7 +396,7 @@ function mapModif(options) {
       new ol.control.ScaleLine(),
       new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
       new myol.control.LayerSwitcher({
-        layers: fondsCarte(options.mapKeys, true),
+        layers: externTilesLayers(options.mapKeys, true),
       }),
       new myol.control.Permalink({
         init: !options.idPoint, // Va à la position courante en création
@@ -376,7 +409,6 @@ function mapModif(options) {
         host: options.host,
         browserClusterMinResolution: null, // Pour ne pas générer de gigue
         noClick: true,
-        page: 'modif',
       }),
 
       // Le viseur jaune pour modifier la position du point
@@ -402,48 +434,27 @@ function mapModif(options) {
 /**
  * Carte de navigation
  */
-/* eslint-disable-next-line no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 function mapNav(options) {
-  const contourMassif = coucheContourMassif({
+  const intersectionLayer = coucheContoursPolygones({
     host: options.host,
     selectName: 'select-massif',
-    initSelect: options.id_polygone,
+    initSelect: 'all', // Réinitialise le choix du selecteur
   });
 
-  const pointsWRI = couchePointsWRI({
+  const pointsLayer = couchePointsWRI({
     host: options.host,
     selectName: 'select-wri',
-    initSelect: 'all',
-    selectMassif: contourMassif.options.selector,
-    page: 'nav',
+    initSelect: 'all', // Réinitialise les choix du selecteur
+    selectContour: intersectionLayer.options.selector, // Recharger quand la sélection change
+    displayLabel: true,
   });
 
-  const externLayers = [
-    new myol.layer.vector.Chemineur({
-      selectName: 'select-chem',
-      initSelect: '',
-    }),
-    new myol.layer.vector.Alpages({
-      selectName: 'select-alpages',
-      initSelect: '',
-      hostIcons: options.host + 'images/icones/',
-    }),
-    new myol.layer.vector.PRC({
-      selectName: 'select-prc',
-      initSelect: '',
-      hostIcons: options.host + 'images/icones/',
-    }),
-    new myol.layer.vector.C2C({
-      selectName: 'select-c2c',
-      initSelect: '',
-      hostIcons: options.host + 'images/icones/',
-    }),
-    new myol.layer.vector.Overpass({
-      selectName: 'select-osm',
-      initSelect: '',
-      hostIcons: options.host + 'images/icones/',
-    }),
-  ];
+  const polygonesLayer = couchePolygonesColores({ // Les massifs
+    host: options.host,
+    intersection: options.idPolygone,
+    idPolygoneType: options.idPolygoneType,
+  });
 
   const map = new ol.Map({
     target: options.target,
@@ -460,7 +471,7 @@ function mapNav(options) {
       new ol.control.ScaleLine(),
       new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
       new myol.control.LayerSwitcher({
-        layers: fondsCarte(options.mapKeys),
+        layers: externTilesLayers(options.mapKeys),
       }),
       new myol.control.Permalink({ // Permet de garder le même réglage de carte
         display: true, // Affiche le lien
@@ -469,14 +480,9 @@ function mapNav(options) {
     ],
 
     layers: [
-      coucheMassifsColores({
-        host: options.host,
-        initSelect: '',
-        intersection: options.id_polygone_type === 11 ? options.id_polygone : -1,
-      }),
-      ...externLayers,
-      contourMassif,
-      pointsWRI,
+      ...externPointsLayers(options),
+      intersectionLayer,
+      options.idPolygoneType ? polygonesLayer : pointsLayer,
       new myol.layer.Hover(), // Gère le survol du curseur
     ],
 
@@ -500,73 +506,80 @@ function mapNav(options) {
 /**
  * Carte de création ou d'édition de massif ou de zone
  */
-/* eslint-disable-next-line no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 function mapEdit(options) {
   const editorLayer = new myol.layer.VectorEditor({
-      geoJsonId: 'edit-json',
-      canMerge: true,
-      withPolys: true,
-      withHoles: true,
+    geoJsonId: 'edit-json',
+    canMerge: true,
+    withPolys: true,
+    withHoles: true,
 
-      writeGeoJson: (features, lines, polys, opt) => {
-        // Controle du statut d'enregistrement par le CSS
-        const editStatus = document.getElementById('selecteur-carte-edit');
+    writeGeoJson: (features, lines, polys, opt) => {
+      // Controle du statut d'enregistrement par le CSS
+      const editStatus = document.getElementById('selecteur-carte-edit');
 
-        if (editStatus)
-          editStatus.className = 'noprint ' +
-          'edit-lines-' + lines.length +
-          ' edit-polys-' + polys.length;
+      if (editStatus)
+        editStatus.className = 'noprint ' +
+        'edit-lines-' + lines.length +
+        ' edit-polys-' + polys.length;
 
-        // Enregistrement au format MultiPolygon
-        return opt.format.writeGeometry(
-          new ol.geom.MultiPolygon(polys),
-          opt,
-        );
-      },
-    }),
+      // Enregistrement au format MultiPolygon
+      return opt.format.writeGeometry(
+        new ol.geom.MultiPolygon(polys),
+        opt,
+      );
+    },
+  });
 
-    map = new ol.Map({
-      target: options.target,
+  const map = new ol.Map({
+    target: options.target,
 
-      controls: [
-        new ol.control.Zoom(),
-        new ol.control.FullScreen(),
-        new myol.control.MyGeocoder(),
-        new myol.control.MyGeolocation(),
-        new myol.control.Load({
-          loadedStyleOptions: {
-            stroke: new ol.style.Stroke({
-              color: 'black',
-              width: 2,
-            }),
-          }
-        }),
-        new myol.control.Download({
-          savedLayer: editorLayer,
-        }),
-        new myol.control.MyMousePosition(),
-        new ol.control.ScaleLine(),
-        new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
-        new myol.control.LayerSwitcher({
-          layers: fondsCarte(options.mapKeys, true),
-        }),
-        new myol.control.Permalink({
-          init: !options.extent,
-        }),
-      ],
-
-      layers: [
-        coucheContourMassif({
-          host: options.host,
-        }),
-        editorLayer,
-      ],
-
-      view: new ol.View({
-        enableRotation: false,
-        constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+    controls: [
+      new ol.control.Zoom(),
+      new ol.control.FullScreen(),
+      new myol.control.MyGeocoder(),
+      new myol.control.MyGeolocation(),
+      new myol.control.Load({
+        loadedStyleOptions: {
+          stroke: new ol.style.Stroke({
+            color: 'black',
+            width: 2,
+          }),
+        }
       }),
-    });
+      new myol.control.Download({
+        savedLayer: editorLayer,
+      }),
+      new myol.control.MyMousePosition(),
+      new ol.control.ScaleLine(),
+      new ol.control.Attribution(), // Attribution doit être défini avant LayerSwitcher
+      new myol.control.LayerSwitcher({
+        layers: externTilesLayers(options.mapKeys, true),
+      }),
+      new myol.control.Permalink({
+        init: !options.extent,
+      }),
+    ],
+
+    layers: [
+      // Massifs en couleur
+      couchePolygonesColores({
+        host: options.host,
+        idPolygoneType: 1,
+      }),
+      // Zones en contour noir
+      coucheContoursPolygones({
+        host: options.host,
+        idPolygoneType: 11,
+      }),
+      editorLayer,
+    ],
+
+    view: new ol.View({
+      enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
+    }),
+  });
 
   // Centrer sur la zone du polygone
   if (options.extent) {

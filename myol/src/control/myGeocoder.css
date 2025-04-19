@@ -40,9 +40,8 @@
 }
 
 .ol-geocoder .gcd-gl-search {
-  top: 24px;
-  left: 170px;
-  font-size: 12.6px;
+  top: 22px;
+  left: 12em;
 }
 
 .ol-geocoder .gcd-gl-result {

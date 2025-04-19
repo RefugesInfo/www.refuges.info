@@ -2,10 +2,12 @@
  * MyVectorLayer class to facilitate vector layers display
  */
 
-import ol from '../ol'; //BEST imports direct de node_modules/ol
-
+import {
+  bbox,
+} from 'ol/loadingstrategy';
 import ClusterSource from 'ol/source/Cluster';
 import Feature from 'ol/Feature';
+import GeoJSON from 'ol/format/GeoJSON';
 import {
   getCenter,
 } from 'ol/extent';
@@ -287,7 +289,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
   constructor(opt) {
     const options = {
       // host: '',
-      strategy: ol.loadingstrategy.bbox,
+      strategy: bbox,
       dataProjection: 'EPSG:4326',
 
       // Clusters:
@@ -318,7 +320,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
 
       ...opt,
     };
-    options.format ||= new ol.format.GeoJSON(options); //BEST treat & display Json errors
+    options.format ||= new GeoJSON(options); //BEST treat & display Json errors
 
     super({
       url: (e, r, p) => this.url(e, r, p),
@@ -348,7 +350,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
     const urlArgs = this.query(...args, this.options),
       url = this.host + urlArgs._path; // Mem _path
 
-    if (this.strategy === ol.loadingstrategy.bbox)
+    if (this.strategy === bbox)
       urlArgs.bbox = this.bbox(...args);
 
     // Add a pseudo parameter if any marker or edit has been done

@@ -73,6 +73,9 @@ class Button extends Control {
           this.subMenuAction(evt)
         )));
 
+    // Close the sub-menu when click or touch the map
+    map.on('click', () => this.element.classList.remove('myol-button-selected'));
+
     return super.setMap(map);
   }
 

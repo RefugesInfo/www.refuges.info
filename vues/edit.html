@@ -16,11 +16,11 @@
             <p>Type :
             <select name="id_polygone_type">
             <?php foreach ($vue->liste_type_polygone as $type_polygone) { ?>
-              <option value="<?=$type_polygone->id_polygone_type?>"
+              <option value="<?=$type_polygone->id_polygone_type??''?>"
                 <?=isset($vue->polygone->id_polygone_type) && isset($type_polygone->id_polygone_type) &&
                   $vue->polygone->id_polygone_type === $type_polygone->id_polygone_type ?
                   'selected="selected"' : ''?>>
-                <?=$type_polygone->type_polygone?>
+                <?=$type_polygone->type_polygone??''?>
               </option>
             <?php } ?>
             </select>
