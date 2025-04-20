@@ -495,8 +495,8 @@ $lang = array_merge($lang, array(
 	'SMILIES_PATH_EXPLAIN'		=> 'Ruta en su directorio raíz, ej. <samp>images/smilies</samp>',
 	'UPLOAD_ICONS_PATH'		=> 'Ruta de guardado de iconos de extensiones',
 	'UPLOAD_ICONS_PATH_EXPLAIN'	=> 'Ruta en su directorio raíz, ej. <samp>images/upload_icons</samp>',
-	'USE_SYSTEM_CRON'		=> 'Ejecutar tareas periódicas del sistema cron',
-	'USE_SYSTEM_CRON_EXPLAIN'		=> 'Si está apagado, phpBB se encargará de las tareas periódicas para que se ejecuten automáticamente. Si está activado, phpBB no se encargará de las tareas periódicas de por sí, un Administrador del sistema debe disponer de <code>bin/phpbbcli.php cron:run</code> para ejecutar el cron del sistema a intervalos regulares (ej. cada 5 minutos).',
+	'USE_SYSTEM_CRON'		=> 'Ejecutar tareas periódicas desde el cron del sistema operativo',
+	'USE_SYSTEM_CRON_EXPLAIN'		=> 'Si se desactiva, phpBB hará que las tareas periódicas se ejecuten automáticamente. Cuando está habilitado, phpBB no programará ninguna tarea periódica por sí mismo; un administrador del sistema debe hacer que <code>bin/phpbbcli.php cron:run</code> sea ejecutado por la herramienta cron del sistema operativo a intervalos regulares (por ejemplo, cada 5 minutos).',
 ));
 
 // Security Settings

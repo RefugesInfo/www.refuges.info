@@ -357,6 +357,7 @@ $lang = array_merge($lang, array(
 	'HIDE_ME'	=> 'Ocultar mi estado de conexión en esta sesión',
 	'HOURS'	=> 'Horas',
 	'HOME'	=> 'Inicio',
+	'HTTP_HANDLER_NOT_FOUND'		=> 'La operación no ha podido completarse porque la extensión PHP cURL y la configuración ini de PHP allow_url_fopen han sido deshabilitadas y no se ha podido encontrar ningún otro gestor HTTP.',
 
 	'ICQ'	=> 'ICQ',
 	'IF'	=> 'si',
