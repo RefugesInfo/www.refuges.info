@@ -524,7 +524,7 @@ body:not(#phpbb) a:visited {
 
   .recherche-haut a {
     padding-right: 10px;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .menu-haut {
