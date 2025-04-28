@@ -30,7 +30,7 @@
             </a>&nbsp;
             <?php if (est_autorise($point->id_createur)) {?>
                 <a class="liens_avec_decoration"
-					href="<?=$config_wri['sous_dossier_installation']?>forum/mcp.php?i=-RefugesInfo-trace-mcp-main_module&topic_id=<?=$vue->point->topic_id?>"
+					href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&topic_id=<?=$vue->point->topic_id?>"
                 title="Trace de la création du point">
                   i
               </a>
@@ -272,7 +272,7 @@
             <?=$commentaire->texte_lien_commentaire?></a>
           <?php if (est_autorise($point->id_createur)) {?>
             <a class="liens_avec_decoration"
-              href="<?=$config_wri['sous_dossier_installation']?>forum/mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_commentaire=<?=$commentaire->id_commentaire?>"
+              href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_commentaire=<?=$commentaire->id_commentaire?>"
               title="Trace de la création du commentaire">
                 i
             </a>
@@ -313,7 +313,7 @@
   </p>
   <b>Page sous licence :
     <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/fr/">
-      <img alt="Creative Commons License" src="<?=$config_wri['sous_dossier_installation']?>images/logo-licence-cc-by-sa.png">
+      <img alt="Creative Commons License" src="<?=$config_wri['url_chemin_images']?>logo-licence-cc-by-sa.png">
     </a>
   </b>
 <!--============================================= FIN ==============================================-->

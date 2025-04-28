@@ -610,7 +610,8 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       return erreur("L'emplacement de <a href='/point/{$res->id_point}'>\"{$res->nom}\"</a> \n".
         "et ses alentours sont privés.<br/>\n".
         "On ne peut pas y référencer de cabane.<br/>\n".
-        "Voir : <a href=\"/wiki/fiche-cabane-non-gardee\">Définition d'une cabane non gardée</a>.<br/>\n".
+        "Voir : <a href=\"{$config_wri['base_wiki']}fiche-cabane-non-gardee\">".
+        "Définition d'une cabane non gardée</a>.<br/>\n".
         "Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>\n");
   }
 

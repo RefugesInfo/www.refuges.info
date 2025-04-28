@@ -6,6 +6,39 @@ Ce fichier regroupe les fonctions de gestion des autres fonctions d'une manière
 - idéalement, le traitement des retours devrait se faire ici aussi
 **********************************************************************************************/
 
+/* Fonctions permettant de centraliser le chargement des vues */
+function fichier_vue($nom_fichier_vue, $chemin = 'chemin_vues', $url = false)
+{
+  global $config_wri, $user;
+
+  // [DOM] Accès aux formats alternatifs (à venir)
+  $instance_format = $user->style['style_path'].'/'.$nom_fichier_vue;
+  if (file_exists($config_wri[$chemin].$instance_format))
+    $nom_fichier_vue = $instance_format;
+
+  if (file_exists($config_wri[$chemin].$nom_fichier_vue)) {
+    if($url)
+      return $config_wri['url_'.$chemin].$nom_fichier_vue.'?'
+        .filemtime($config_wri[$chemin].$nom_fichier_vue);
+    else
+      return $config_wri[$chemin].$nom_fichier_vue;
+  }
+}
+
+// Ajoute un lien css ou js à la page
+function add_lib($nom_fichier_vue, $chemin = 'chemin_vues')
+{
+  global $vue;
+
+  $fichier_vue = fichier_vue($nom_fichier_vue, $chemin);
+
+  if(strpos($fichier_vue, '.css'))
+    $vue->css_lib_head[] = fichier_vue($nom_fichier_vue, $chemin, true);
+
+  if(strpos($fichier_vue, '.js'))
+    $vue->java_lib_foot[] = fichier_vue($nom_fichier_vue, $chemin, true);
+}
+
 function temps_execution()
 {
   //$__time_start doit être initialisé par : $__time_start = microtime(true); le plus tôt possible dans l'execution du framework wri si on veut des calculs de profiling le plus juste possible (/index.php est un bon endroit !)

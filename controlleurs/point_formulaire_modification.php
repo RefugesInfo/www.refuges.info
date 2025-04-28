@@ -197,11 +197,7 @@ if ( !empty($point->equivalent_conditions_utilisation) )
 // ===========================================
 // Préparation de la $vue commune à chaque cas
 
-// Includes cartes
-$vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
-$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].$config_wri['nom_ol'].'.js?'.
-	filemtime($config_wri['chemin_ol'].$config_wri['nom_ol'].'.js');
-$vue->java_lib_foot [] = $config_wri['url_chemin_vues'].'_cartes.js?'.filemtime($config_wri['chemin_vues'].'_cartes.js');
+$vue->carte=TRUE;
 
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");

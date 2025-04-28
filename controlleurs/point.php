@@ -88,13 +88,8 @@ else // le point est valide
         }
             
         /*********** Détermination de la carte à afficher ***/
+        $vue->carte=TRUE;
         $vue->mini_carte=TRUE;
-
-		// Includes cartes
-		$vue->css           [] = $config_wri['url_chemin_ol'].'myol.css?'.filemtime($config_wri['chemin_ol'].'myol.css');
-		$vue->java_lib_foot [] = $config_wri['url_chemin_ol'].$config_wri['nom_ol'].'.js?'.
-			filemtime($config_wri['chemin_ol'].$config_wri['nom_ol'].'.js');
-		$vue->java_lib_foot [] = $config_wri['url_chemin_vues'].'_cartes.js?'.filemtime($config_wri['chemin_vues'].'_cartes.js');
     }
 
     /***********  détermination si le point se situe dans une réserve naturelle / zone réglementée *******/

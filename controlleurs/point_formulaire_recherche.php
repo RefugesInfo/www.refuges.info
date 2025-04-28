@@ -18,5 +18,4 @@ $conditions_polygones->ids_polygone_type=$config_wri['id_zone'].",".$config_wri[
 $conditions_polygones->avec_zone_parente=False;
 $vue->polygones=infos_polygones($conditions_polygones);
 
-
-$vue->java_lib_head [] = $config_wri['sous_dossier_installation'].'vues/autocomplete.js';
+add_lib('autocomplete.js');

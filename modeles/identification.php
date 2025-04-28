@@ -12,6 +12,7 @@ if (!defined('IN_PHPBB')) // Sauf dans le forum
   $phpEx = substr(strrchr(__FILE__, '.'), 1);
   include($phpbb_root_path . 'common.' . $phpEx);
   $user->session_begin();
+  $user->setup();
   $auth->acl($user->data);
 
   // On restitue le contexte et les options WRI qui a été écrasé par le framework du forum
@@ -39,7 +40,8 @@ $infos_identification->login_form_token = sha1(
 function est_connecte()
 {
   global $user;
-  return $user->data['user_id'] > 1;
+  if (!empty($user->data['user_id']))
+    return $user->data['user_id'] > 1;
 }
 
 function est_moderateur()

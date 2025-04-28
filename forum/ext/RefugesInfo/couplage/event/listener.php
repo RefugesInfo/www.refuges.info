@@ -72,8 +72,9 @@ class listener implements EventSubscriberInterface
 		}
 
 		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
-		$template->assign_var('STYLE_CSS_TIME', filemtime($config_wri['chemin_vues'].'style.css.php'));
+		$template->assign_var('STYLE_CSS', fichier_vue('style.css.php', 'chemin_vues', true));
 
+		// On recrée le contexte car on n'est pas dans le MVC de WRI
 		$vue = new \stdClass;
 		$vue->type = '';
 		$vue->java_lib_foot = [];
@@ -89,11 +90,11 @@ class listener implements EventSubscriberInterface
 		}
 
 		ob_start();
-		include ($config_wri['chemin_vues'].'_bandeau.html');
+		include(fichier_vue('_bandeau.html'));
 		$template->assign_var('BANDEAU', ob_get_clean());
 
 		ob_start();
-		include ($config_wri['chemin_vues'].'_pied.html');
+		include(fichier_vue('_pied.html'));
 		$template->assign_var('PIED', ob_get_clean());
 	}
 

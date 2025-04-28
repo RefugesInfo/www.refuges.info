@@ -92,7 +92,4 @@ if (est_moderateur())
   $vue->email_en_erreur=info_email_bounce();
 }
 
-$vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_bandeau.js?'
-  .filemtime($config_wri['chemin_vues'].'_bandeau.js');
-
-include ($config_wri['chemin_vues'].$vue->template);
+include(fichier_vue($vue->template));

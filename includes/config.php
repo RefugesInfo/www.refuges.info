@@ -32,6 +32,7 @@ $config_wri['chemin_modeles']=$config_wri['racine_projet']."modeles/";
 $config_wri['chemin_controlleurs']=$config_wri['racine_projet']."controlleurs/";
 $config_wri['chemin_routes']=$config_wri['racine_projet']."routes/";
 
+$config_wri['url_chemin_images']=$config_wri['sous_dossier_installation']."images/";
 $config_wri['url_chemin_icones']=$config_wri['sous_dossier_installation']."images/icones/";
 $config_wri['chemin_icones']=$config_wri['racine_projet']."images/icones/";
 
@@ -84,7 +85,6 @@ $config_wri['forum_refuges']=4;
 // Paramètrage des cartes vignettes des fiches de points
 $config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/dist/';
 $config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'myol/dist/';
-$config_wri['nom_ol']='myol'; // Peut-être surchargé avec 'myol-debug'
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique. Si cette variable n'est pas définie on utilise du vide.
 $config_wri['nom_hote'] = $_SERVER['HTTP_HOST'] ?? '';

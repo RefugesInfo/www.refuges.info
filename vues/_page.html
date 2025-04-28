@@ -21,13 +21,31 @@ if (!empty($vue->http_status_code))
         default:
             break;
     }
+
+// On inclue les fichiers communs
+add_lib('style.css.php');
+add_lib('_bandeau.js');
+
+// Includes cartes
+if(!empty($vue->carte)) {
+  add_lib(
+    empty($config_wri['debug_ol']) ? 'myol-min.css' : 'myol.css',
+    'chemin_ol',
+    true
+  );
+  add_lib(
+    empty($config_wri['debug_ol']) ? 'myol.js' : 'myol-debug.js',
+    'chemin_ol'
+  );
+  add_lib('_cartes.js');
+}
 ?>
 <!doctype html>
 <html lang="fr">
   <head>
     <title><?=$vue->titre ?? ''?></title>
-    <link rel="icon" type="image/png" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.png">
-    <link rel="icon" type="image/svg+xml" href="<?=$config_wri['sous_dossier_installation']?>images/icones/favicon.svg">
+    <link rel="icon" type="image/png" href="<?=$config_wri['url_chemin_icones']?>favicon.png">
+    <link rel="icon" type="image/svg+xml" href="<?=$config_wri['url_chemin_icones']?>favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php if (isset ($vue->css)) { ?>
     <meta name="viewport" content="width=device-width, user-scalable=no">
@@ -35,23 +53,17 @@ if (!empty($vue->http_status_code))
     
     <meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
 
-    <link type="text/css" rel="stylesheet" href="<?=$config_wri['sous_dossier_installation']?>vues/style.css.php?<?=filemtime($config_wri['racine_projet'].'vues/style.css.php')?>">
-    <?php if (isset ($vue->css))
-        foreach ($vue->css as $css) { ?>
-    <link type="text/css" rel="stylesheet" href="<?=$css?>">
+    <?php if (isset ($vue->css_lib_head))
+        foreach ($vue->css_lib_head as $css_lib) {?>
+            <link type="text/css" rel="stylesheet" href="<?=$css_lib?>">
     <?php } ?>
-    <?php if (isset ($vue->java_lib_head)) 
-      foreach ($vue->java_lib_head as $js_lib) {?>
-      
-    <script src="<?=$js_lib?>"></script>
-<?php } ?>
   </head>
 
 	<body>
 		<?php
-			include ($config_wri['chemin_vues'].'_bandeau.html');
-			include ($config_wri['chemin_vues'].$vue->type.'.html');
-			include ($config_wri['chemin_vues'].'_pied.html');
+			include(fichier_vue('_bandeau.html'));
+			include(fichier_vue($vue->type.'.html'));
+			include(fichier_vue('_pied.html'));
 		?>
 	</body>
 </html>

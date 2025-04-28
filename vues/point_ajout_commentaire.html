@@ -81,13 +81,13 @@
     </p>
   <?php } if ( in_array($point->id_point_type,$config_wri['tout_type_refuge']) ) { ?>
     <p>
-      Voir <a href="<?=$config_wri['sous_dossier_installation']?>wiki/quels_commentaires_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires</a>.
+      Voir <a href="<?=$config_wri['base_wiki']?>quels_commentaires_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires</a>.
     </p>
   <?php }?>
   <?php if ($point->equivalent_proprio!="") { ?>
     <p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
     <?php }?>
-  <p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config_wri['sous_dossier_installation']?>wiki/restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
+  <p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config_wri['base_wiki']?>restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
 </div>
 <?php @include($config_wri['rep_forum'].
   'ext/RefugesInfo/trace/styles/all/template/event/overall_footer_after.html');
