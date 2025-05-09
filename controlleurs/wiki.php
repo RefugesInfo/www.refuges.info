@@ -11,7 +11,7 @@ require_once ("wiki.php");
 
 // Si aucune page n'est précisée dans l'url on suppose que l'on souhaite la page par défaut stockée '' dans la base
 $page = $controlleur->url_decoupee[1] ?? '';
-
+$page=urldecode($page);
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (est_moderateur()) 
 {
