@@ -70,45 +70,62 @@ function wiki_page_html($page)
 // Récupération en format brut
 function wiki_page_brut($page)
 {
-    global $config_wri,$pdo;
-    $page=$pdo->quote($page);
-    $query="SELECT *,extract('epoch' from date) as ts_unix_page
-              FROM pages_wiki
-              WHERE nom_page=$page order by date desc limit 1";
-    $res=$pdo->query($query);
-    if (!$res)
-        return erreur("Requête SQL impossible à executer",$query);
+  global $config_wri,$pdo;
+  $page=$pdo->quote($page);
+  $query="SELECT *,extract('epoch' from date) as ts_unix_page
+            FROM pages_wiki
+            WHERE nom_page=$page order by date desc limit 1";
+  $res=$pdo->query($query);
+  if (!$res)
+    return erreur("Requête SQL impossible à executer",$query);
 
-    $page=$res->fetch();
-    if (!$page)
-        return erreur("Cette page du wiki n'existe pas");
-    return $page;
+  $page=$res->fetch();
+  if (!$page)
+    return erreur("Cette page du wiki n'existe pas");
+  return $page;
 }
 
 // fonction qui va ré-écrire le contenu de la page
 function ecrire_contenu($page,$contenu)
 {
   global $config_wri,$pdo;
-    $page=$pdo->quote($page);
-    $contenu=$pdo->quote($contenu);
-    $query="insert into pages_wiki (nom_page,contenu) VALUES ($page,$contenu)";
-    $res=$pdo->query($query);
-    if (!$res)
-        return erreur("Requête SQL impossible à executer",$query);
+  $page=$pdo->quote($page);
+  $contenu=$pdo->quote($contenu);
+  $query="insert into pages_wiki (nom_page,contenu) VALUES ($page,$contenu)";
+  $res=$pdo->query($query);
+  if (!$res)
+    return erreur("Requête SQL impossible à executer",$query);
 
-    return ok("Page mise à jour, et ancienne verson conservée");
+  return ok("Page mise à jour, et ancienne verson conservée");
 }
 
 // Supprime la page et toute ses anciennes versions
 function supprimer_page($page)
 {
-    global $config_wri,$pdo;
-    $page=$pdo->quote($page);
-    $query="delete from pages_wiki where nom_page=$page";
-    $res=$pdo->query($query);
-    if (!$res)
-        return erreur("Requête SQL impossible à executer",$query);
+  global $config_wri,$pdo;
+  $page=$pdo->quote($page);
+  $query="delete from pages_wiki where nom_page=$page";
+  $res=$pdo->query($query);
+  if (!$res)
+    return erreur("Requête SQL impossible à executer",$query);
 
-    return ok("Page supprimée et tout ses anciennes versions");
+  return ok("Page supprimée et tout ses anciennes versions");
 }
 
+// Récupération en format brut
+function liste_pages_wiki($conditions = Null)
+{
+  global $config_wri,$pdo;
+  $query="SELECT nom_page, MAX(extract('epoch' from date)) as ts_date_derniere_modification
+          FROM pages_wiki
+          GROUP BY nom_page
+          ORDER BY nom_page ASC;";
+  $res=$pdo->query($query);
+  if (!$res)
+    return erreur("Requête SQL impossible à executer",$query);
+  while ($page_wiki = $res->fetch())
+    $pages_wiki[]=$page_wiki;
+  if (empty($pages_wiki))
+    return erreur("Il n'y a aucune page dans notre wiki, oulla, c'est louche, quelqu'un à tout purger, ou alors une nouvelle installation, ou alors un bug...");
+  return $pages_wiki;
+}

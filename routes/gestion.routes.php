@@ -28,6 +28,7 @@ switch ($controlleur->url_decoupee[1]) {
         }
     break;
 
+	case 'liste_pages_wiki':
 	case 'modifier_modeles':
 	case 'commentaires_attente_correction':
 	case 'historique_modifications':

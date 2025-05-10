@@ -1,0 +1,36 @@
+<style>
+table, td, th {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  height: 30px;
+}
+</style>
+<div class="contenu">
+  <p>  Voici la liste de toutes les pages wiki du site, classées par ordre alphabétique :</p>
+<table>
+  <tr>
+    <th>Nom de la page wiki</th>
+    <th>dernière modification</th>
+  </tr>
+  <?php if (!empty($vue->pages_wiki)) foreach ($vue->pages_wiki as $page_wiki) { ?>
+  <tr>
+    <td>
+        <a href="/wiki/<?=$page_wiki->nom_page?>"><?='->'.$page_wiki->nom_page?></a>
+    </td>
+    <td><?=date_format_francais($page_wiki->ts_date_derniere_modification)?></td>
+  </tr>
+  <?php } else { ?>
+  Aucune page wiki sur ce site
+  <?php } ?>
+</table>
+</div>
+
+
+
