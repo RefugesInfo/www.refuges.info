@@ -792,7 +792,7 @@ function choix_icone($point)
 
   // Pour les points d'eau intermittents
   if ( $point->conditions_utilisation=="intermittent" and $point->id_point_type==$config_wri['id_point_d_eau'] )
-    $nom_icone.="_a63";
+    $nom_icone.="_a63.8.21";
 
 
   return $nom_icone;
