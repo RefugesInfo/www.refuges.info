@@ -65,3 +65,7 @@ RewriteRule . ./index.php [L]
     AddOutputFilterByType DEFLATE application/rss+xml application/xml application/json application/vnd.google-earth
   </IfModule>
 </IfModule>
+
+<FilesMatch "^COPYING$">
+    ForceType text/plain
+</FilesMatch>
