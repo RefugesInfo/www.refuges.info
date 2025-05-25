@@ -355,7 +355,7 @@ function mapPoint(options) {
       // Les autres points refuges.info
       couchePointsWRI({
         host: options.host,
-        browserClusterMinResolution: 4, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
+        browserClusterMinResolution: 10, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
         displayLabel: true,
       }),
 
