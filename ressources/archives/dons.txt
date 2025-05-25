@@ -1,0 +1,24 @@
+<h3><em>Refuges.info</em> a besoin de vous !</h3>
+2011: Toutes les méthodes pour donner ont pour l'instant été désactivées, on s'est fait disons "avoir" (pour rester poli) par paypal et je me vois mal y retourner, pour les autres trucs chronophages, si quelqu'un a le courage, pourquoi pas, mais je ne l'ai pas.
+
+2017: En outre, la possibilité de donner par paypal n'a rapporté que 50 euros sur les 4 années de 2008 à 2011 alors quand je mets en balance le temps passer à gérer ça, les problèmes avec paypal et le résultat, je (sly) préfère pour l'instant laisser tomber et consacrer l'energie disponible à améliorer le site.
+
+2018: Cette page reste donc là pour le souvenir et pour expliquer que si refuges.info ne reçoit plus de dons c'est pour des raisons principalement techniques : on n'a pas de solution simple et qui marche au regard du faible nombre de gens prêt à donner financièrement.
+Et une solution simple d'accepter les virements m'obligerait à laisser mon IBAN perso traîner sur le site ce qui ne peut que créer un doute dans l'esprit de celui qui donne (Est-ce bien au bénéfice du site ?) ou des problèmes si un malhonnête l'utilise pour signer des fausses autorisation de prélèvement.
+
+
+<h4>Pourquoi donner ?</h4>
+Vous pouvez (pouviez en fait !) donner au site pour l'aider financièrement afin de couvrir les frais d'hébergement et de gestion.
+Les sommes que nous pouvons recevoir sont partagées entre Sly et Yip,
+
+<h4>Pourquoi <strong>ne pas</strong> donner ?</h4>
+L'argent <em>n'ira pas</em> à un propriétaire de cabane pour son entretien, voir directement le propriétaire dans ce cas.
+C'est un geste personnel et les raisons ne regardent que vous
+
+<h4>Où va l'argent ?</h4>
+Les sommes sont équitablement réparties entre "Yip" et "Sly". 
+  Yip est le créateur du site, co-webmaster, et auteur des copies de cartes ayant été diffusées
+  Sly est co-webmaster du site
+
+<h4>Quid de la publicité sur Refuges.info ?</h4>
+  [url=##publicite]Refuges.info et la publicité[/url]
