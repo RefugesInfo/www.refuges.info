@@ -9,16 +9,16 @@
 		<input type="hidden" name="limite" value="40">
 		<input type="hidden" name="avec_point_osm" value="1">
 		<button type="submit" title="Lancer la recherche" style="border:none">
-			&#128269;</button>
+			🔍</button>
 		<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
 			title="Recherche avancée">
-			&#128301;</a>
+			🔭</a>
 	</form>
 
 	<div class="menu-haut">
 		<div class="menu-connexion menu-bouton">
 	<?php if (est_connecte() && $infos_identification->username) { ?>
-			<span>&#128104;</span><span class="menu-large"><?=$infos_identification->username?> 
+			<span>👨</span><span class="menu-large"><?=$infos_identification->username?> 
 			<?php if ( est_moderateur()) 
                     if( $vue->demande_correction)
                       {?>
@@ -106,7 +106,7 @@
 		} ?>
 			</ul>
 	<?php } elseif ($_SERVER['REQUEST_SCHEME'] == 'http') { ?>
-			<span>&#128100;</span><span class="menu-large">Connexion</span>
+			<span>👤</span><span class="menu-large">Connexion</span>
 			<ul>
 				<li>Pour vous connecter,</li>
 				<li>
@@ -117,7 +117,7 @@
 				</li>
 			</ul>
 	<?php } else { ?>
-			<span>&#128100;</span><span class="menu-large">Connexion</span>
+			<span>👤</span><span class="menu-large">Connexion</span>
 			<ul>
                 <form method="post" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
               <li>
@@ -167,35 +167,35 @@
 		</div>
 
 		<div class="menu-liste menu-bouton">
-			<span>&#x2630;</span>
+			<span>☰</span>
 			<ul>
 				<li class="menu-bouton" style="order:1">
 					<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles">
-						<span>&#128276;</span><span>Nouvelles</span>
+						<span>🔔</span><span>Nouvelles</span>
 					</a>
 					<p>Les entrées les plus récentes</p>
 				</li>
 				<li class="menu-bouton" style="order:2">
 					<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout">
-						<span>&#128204;</span><span>Ajouter</span>
+						<span>📌</span><span>Ajouter</span>
 					</a>
 					<p>Ajouter une nouvelle cabane ou refuge</p>
 				</li>
 
 				<li class="menu-bouton" style="order:3">
 					<a href="<?=$config_wri['sous_dossier_installation']?>nav">
-						<span>&#127757;</span><span>Cartes</span>
+						<span>🌍</span><span>Cartes</span>
 					</a>
 					<p>Afficher les points sur divers fonds de cartes</p>
 				</li>
 				<li class="menu-bouton" style="order:4">
 					<a href="<?=$config_wri['lien_forum']?>">
-						<span>&#128172;</span><span>Forum</span>
+						<span>💬</span><span>Forum</span>
 					</a>
 					<p>Forum de discussion</p>
 				</li>
 				<li class="menu-bouton" style="order:0">
-					<span class="menu-large">&#9776;</span><span class="menu-large"> Refuges.info</span>
+					<span class="menu-large">☰</span><span class="menu-large"> Refuges.info</span>
 					<ul>
 						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>"
