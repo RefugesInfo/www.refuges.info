@@ -334,13 +334,13 @@ form#form_point .textarea {
 
 form#form_point .textarea label,
 form#form_point .textarea textarea {
-  width: 100%;
+  width: calc(100% - 7px);
 }
 
 form#form_point .booleen {
   clear: left;
   float: left;
-  width: 700px;
+  width: calc(100% - 7px);
   min-width: 450px;
   max-width: calc(100% - 4px);
   text-align: right;
@@ -1027,8 +1027,8 @@ form {
 @media screen and (max-width: 1000px) {
   #carte-modif {
     float: right;
-    width: 99vw;
-    height: 99vw;
+    width: calc(100vw - 21px);
+    height: 100vw;
     max-height: 450px;
   }
 }
