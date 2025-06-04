@@ -57,7 +57,8 @@ $alias = [
 	// WRI
 	//'gite-d-etape' => 'blue',
 	//'passage-delicat' => 'triangle_a33',
-
+	// Favicon
+	'favicon' => 'feu_cabane_porte_oeuil_t384',
 	// PRC
 	'cabane_fermee' => 'cabane_white_black_x',
 	'cabane_mais' => 'cabane_white_black_x',
