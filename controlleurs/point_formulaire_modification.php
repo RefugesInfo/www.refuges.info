@@ -54,7 +54,8 @@ if ( !empty($_REQUEST["id_point"]) )
     //cosmétique
     $icone="&amp;iconecenter=ne_sait_pas";
     $action="Modification";
-    $verbe="Modifier";
+    $vue->verbe="Modifier";
+    $vue->titre="Modification d'un point dans refuges.info";
   }
   else // Ni modérateur global, ni modérateur de fiche on l'informe que ses droits sont insuffisants
   {
@@ -93,7 +94,9 @@ elseif ( !empty($_REQUEST["id_point_type"]))
     // cosmétique
     $icone="&amp;iconecenter=".choix_icone($point);
     $action="Ajout";
-    $verbe="Ajouter";
+    $vue->verbe="Ajouter";
+    $vue->titre="Ajout d'un point dans refuges.info";
+
 }
 // 3) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
@@ -114,8 +117,7 @@ if (!empty($point->id_point))
 $bouton_valider = new stdClass;
 $bouton_valider->nom = "action";
 $bouton_valider->type = "submit";
-$bouton_valider->valeur = $verbe;
-$bouton_valider->label = $verbe;
+$bouton_valider->valeur = $bouton_valider->label = $vue->verbe;
 
 $bouton_reset = new stdClass;
 $bouton_reset->nom = "reset";
