@@ -49,14 +49,14 @@
 			ou<br>
 			Auteur authentifié :
 			<select name='id_createur_commentaire'>
-              <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
-            <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
-            <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
-                <?=$utilisateur->username?>
-            </option>
-            <?php } }?>
-            </select>
-            <br>
+        <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
+          <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
+        <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
+          <?=$utilisateur->username?>
+        </option>
+      </select>
+      <?php } }?>
+      <br>
 			<button name="type" value="modification" type="submit">Modifier</button><br><br>
 			<button name="type" value="suppression_photo" type="submit">Modifier et supprimer la photo</button><br>
 			<button name="type" value="transfert_forum" type="submit">Modifier et transférer sur le forum</button><br>
