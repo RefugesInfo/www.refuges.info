@@ -9,8 +9,7 @@
 			<h4>le commentaire est :</h4>
 			<br>
 			<label>Date:
-			<?php if (!est_moderateur()) $disable='disabled="disabled"'; ?>
-				<input type="text"<?=$disable?> name="date" size="25" value="<?=$commentaire->date?>"/>
+				<input type="text"<?= !est_moderateur() ? ' disabled="disabled"' : '' ?> name="date" size="25" value="<?=$commentaire->date?>"/>
 			</label>
 			<br>
 
