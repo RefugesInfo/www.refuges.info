@@ -48,22 +48,23 @@
 			<?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur, seuls les modérateurs ont ce droit ?>
 			ou<br>
 			Auteur authentifié :
-			<select name='id_createur_commentaire'>
-        <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
-          <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
-        <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
-          <?=$utilisateur->username?>
-        </option>
-      </select>
-      <?php } }?>
-      <br>
-			<button name="type" value="modification" type="submit">Modifier</button><br><br>
-			<button name="type" value="suppression_photo" type="submit">Modifier et supprimer la photo</button><br>
-			<button name="type" value="transfert_forum" type="submit">Modifier et transférer sur le forum</button><br>
-			<button name="type" value="transfert_autre_point" type="submit">Modifier et transférer le commentaire sur la fiche dont le numéro est :</button>
-			<input type="text" name="id_autre_point" value="" size="16"/><br>
-			<button name="type" value="suppression" type="submit">Supprimer le commentaire et son éventuelle photo</button><br>
-		</form>
+            <select name='id_createur_commentaire'>
+              <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
+              <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
+              <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
+              <?=$utilisateur->username?>
+              </option>
+              <?php } ?>
+            </select>
+            <?php } ?>
+          <br>
+            <button name="type" value="modification" type="submit">Modifier</button><br><br>
+            <button name="type" value="suppression_photo" type="submit">Modifier et supprimer la photo</button><br>
+            <button name="type" value="transfert_forum" type="submit">Modifier et transférer sur le forum</button><br>
+            <button name="type" value="transfert_autre_point" type="submit">Modifier et transférer le commentaire sur la fiche dont le numéro est :</button>
+            <input type="text" name="id_autre_point" value="" size="16"/><br>
+            <button name="type" value="suppression" type="submit">Supprimer le commentaire et son éventuelle photo</button><br>
+          </form>
 	<?php }?>
     <br>
 	<a href="<?=lien_point($vue->point)?>">Retourner à la fiche : <?=$vue->point->nom?></a>
