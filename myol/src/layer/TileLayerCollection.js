@@ -160,7 +160,7 @@ export class IGN extends TileLayer {
     super({
       source: new WMTS({
         // WMTS options
-        url: options.key ? 'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://wmts.geopf.fr/wmts',
+        url: options.key ? 'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://data.geopf.fr/wmts',
         style: 'normal',
         matrixSet: 'PM',
         format: 'image/jpeg',
