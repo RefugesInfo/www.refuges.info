@@ -1025,9 +1025,12 @@ form {
 
 /* Carte formulaire de modification de point pour moyen écran et mobiles*/
 @media screen and (max-width: 1000px) {
+  #container-carte-point {
+    width: 100%;
+  }
   #carte-modif {
     float: right;
-    width: calc(100vw - 21px);
+    width: 100%;
     height: 100vw;
     max-height: 450px;
   }
