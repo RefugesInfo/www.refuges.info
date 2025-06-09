@@ -44,8 +44,8 @@ $conditions->places_minimum
 $conditions->altitude_maximum
 $conditions->altitude_minimum
 
-$conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
-   La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
+$conditions->avec_geometrie=gml ou geojson ou kml (ou not set si on la veut pas)
+   La valeur choisie c'est le st_as$valeur de postgis voir : https://www.postgis.net/workshops/postgis-intro/geometries.html
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 
 $conditions->ids_polygones : points appartenant à ce ou ces polygones
@@ -158,10 +158,10 @@ function infos_points($conditions)
   // on restreint les points qui appartiennent à cette geometrie (utile pour les points dans une bbox donnée ou à une distance d'un autre point, dans un cercle quoi)
   if( !empty($conditions->geometrie) )
   {
-    $conditions_sql .= "\n\tAND ST_Within(points.geom,".$conditions->geometrie .") ";
+    $conditions_sql .= "\n\tAND ST_Within(points.geom,".$pdo->quote($conditions->geometrie).") ";
     if (!empty($conditions->avec_distance))
     {
-      $select_distance = ",ST_Transform(points.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
+      $select_distance = ",ST_Transform(points.geom,900913) <-> ST_Transform(ST_Centroid( ".$pdo->quote($conditions->geometrie)." ),900913) AS distance" ;
       $ordre = "ORDER BY distance";
     }
   }
@@ -250,7 +250,10 @@ function infos_points($conditions)
         return erreur("La demande ne peut aboutir car la condition de $champ=$valeur est incorrecte");
 
   if (!empty($conditions->avec_geometrie))
-    $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+    if (in_array($conditions->avec_geometrie,array('gml','geojson','kml')))
+      $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+    else
+      return erreur("le format demandé '".$conditions->avec_geometrie."' pour la géométrie du point n'est pas dans la liste autorisée suivante : GML GeoJSON ou KML");
 
   //prise en compte de la recherche sur le chauffage
   if (!empty($conditions->chauffage))
@@ -272,10 +275,14 @@ function infos_points($conditions)
       $conditions_sql.="\n\tAND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
   }
   if (!empty($conditions->topic_id))
-    $conditions_sql.="\n\tAND points.topic_id =".$conditions->topic_id;
+    if (est_entier_positif($conditions->topic_id))
+      $conditions_sql.="\n\tAND points.topic_id =".$conditions->topic_id;
+    else
+      return erreur("Le champ fourni pour le topic_id n'est pas un entier positif");
+    
     
   if (!empty($conditions->ordre))
-      $ordre="\nORDER BY $conditions->ordre";
+      $ordre="\nORDER BY ".$pdo->quote($conditions->ordre);
 
   if ( !empty($conditions->conditions_utilisation) )
     if (in_array($conditions->conditions_utilisation, array('ouverture', 'fermeture', 'cle_a_recuperer', 'detruit')))
@@ -291,7 +298,7 @@ function infos_points($conditions)
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
     $query_clusters="
 SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom)) AS geojson,
-       round(ST_X(geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(geom)/{$conditions->cluster}) AS cluster_lat
+       round(ST_X(geom)/".$pdo->quote($conditions->cluster)." AS cluster_lon, round(ST_Y(geom)/".$pdo->quote($conditions->cluster)." AS cluster_lat
   FROM points
   WHERE true $conditions_sql
   GROUP BY cluster_lon, cluster_lat
