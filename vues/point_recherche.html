@@ -30,7 +30,7 @@ $vue contient les données passées par le fichier PHP
           &nbsp;
         </div>
         <div class="td">
-          <?=chaine_de_localisation($point->polygones)?>
+          <?=chaine_de_localisation($point->polygones,$vue->condition_categorie_polygone)?>
         </div>
       </div>
       <?php }?>

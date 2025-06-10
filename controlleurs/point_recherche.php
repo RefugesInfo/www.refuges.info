@@ -14,9 +14,6 @@ $conditions = new stdClass;
 $conditions->trinaire = new stdClass;
 $conditions->avec_liste_polygones=True;
 
-// Par défaut, on veut afficher zones, massifs, régions, réserves naturelles
-$vue->condition_categorie_polygone="montagnarde";
-
 // Le formulaire nous envoi les données en GET, mais j'accepte aussi en POST en provenance possible d'un tiers ($_REQUEST combinant GET et POST)
 if (!empty($_REQUEST))
 {
@@ -49,8 +46,8 @@ if (!empty($_REQUEST))
   if (isset($_REQUEST['ne_manque_pas_un_mur']))
     $conditions->trinaire->manque_un_mur=false;
       
-  // Le rangement par pays/département (administrative) ou massif/réserves naturelle (montagnarde) n'est plus une condition de la recherche, car tout est toujours renvoyé, mais lors de l'affichage par la vue, on peut inclure juste l'une des deux catégories souhaités
-  $vue->condition_categorie_polygone = $_REQUEST['condition_categorie_polygone'] ?? '';
+  // Le rangement par pays/département (administrative) ou massif/réserves naturelle (montagnarde) n'est plus une condition de la recherche, car tout est toujours renvoyé, mais lors de l'affichage par la vue, on peut inclure juste l'une des deux catégories souhaités, Par défaut, on veut afficher zones, massifs, régions, réserves naturelles :
+  $vue->condition_categorie_polygone = $_REQUEST['condition_categorie_polygone'] ?? 'montagnarde';
 
 
   //======================================
