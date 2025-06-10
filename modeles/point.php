@@ -44,8 +44,8 @@ $conditions->places_minimum
 $conditions->altitude_maximum
 $conditions->altitude_minimum
 
-$conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
-   La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
+$conditions->avec_geometrie=gml ou geojson ou kml (ou not set si on la veut pas)
+   La valeur choisie c'est le st_as$valeur de postgis voir : https://www.postgis.net/workshops/postgis-intro/geometries.html
    la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 
 $conditions->ids_polygones : points appartenant à ce ou ces polygones
@@ -250,7 +250,10 @@ function infos_points($conditions)
         return erreur("La demande ne peut aboutir car la condition de $champ=$valeur est incorrecte");
 
   if (!empty($conditions->avec_geometrie))
-    $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+    if (in_array($conditions->avec_geometrie,array('gml','geojson','kml')))
+      $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
+    else
+      return erreur("le format demandé '$conditions->avec_geometrie' pour la géométrie du point n'est pas dans la liste autorisée suivante : gml geojson ou kml");
 
   //prise en compte de la recherche sur le chauffage
   if (!empty($conditions->chauffage))
@@ -262,7 +265,7 @@ function infos_points($conditions)
       case 'poele':$conditions_sql.="\n\tAND points.poele IS TRUE ";break;
     }
   }
-
+  
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
   if (!empty($conditions->ouvert))
   {
@@ -272,7 +275,11 @@ function infos_points($conditions)
       $conditions_sql.="\n\tAND (points.conditions_utilisation is null or points.conditions_utilisation in ( 'ouverture','cle_a_recuperer') )  ";
   }
   if (!empty($conditions->topic_id))
-    $conditions_sql.="\n\tAND points.topic_id =".$conditions->topic_id;
+    if (est_entier_positif($conditions->topic_id))
+      $conditions_sql.="\n\tAND points.topic_id =".$conditions->topic_id;
+    else
+      return erreur("Le champ fourni pour le topic_id n'est pas un entier positif");
+    
     
   if (!empty($conditions->ordre))
       $ordre="\nORDER BY $conditions->ordre";
@@ -348,7 +355,6 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
   $ordre
   $limite
   ";
-  
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
 
