@@ -69,39 +69,40 @@ function infos_commentaires ($conditions)
   $conditions_sql=$condition_en_plus=$champ_en_plus=$table_en_plus="";
   
   // conditions de limite
-  if (!empty($conditions->limite) and is_numeric($conditions->limite))
+  if (!empty($conditions->limite) and est_entier_positif($conditions->limite))
     $limite="LIMIT $conditions->limite";
   else
     $limite="LIMIT 200"; // limite de sécurité si on a rien spécifié comme limite
 
   if (!empty($conditions->ids_points))
     if (!verif_multiples_entiers($conditions->ids_points))
-      return erreur("Le paramètre donné pour les ids des points n'est pas valide","Reçu : $conditions->ids_points");
+      return erreur("Le paramètre donné pour les ids des points dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_points");
+    else
+      $conditions_sql.=" AND id_point IN ($conditions->ids_points)";
 
   if (!empty($conditions->ids_commentaires))
     if (!verif_multiples_entiers($conditions->ids_commentaires))
-      return erreur("Le paramètre donné pour les ids n'est pas valide","Reçu : $conditions->ids_commentaires");
-
-  if (!empty($conditions->ids_commentaires))
-    $conditions_sql.=" AND id_commentaire IN ($conditions->ids_commentaires)";
-
-  if (!empty($conditions->ids_points))
-    $conditions_sql.=" AND id_point IN ($conditions->ids_points)";
+      return erreur("Le paramètre donné pour les ids des commentaires n'est pas valide. Reçu : $conditions->ids_commentaires");
+    else
+      $conditions_sql.=" AND id_commentaire IN ($conditions->ids_commentaires)";
 
   if (!empty($conditions->avec_photo))
     $conditions_sql.=" AND photo_existe=1";
 
   if (!empty($conditions->ids_createurs_commentaires))
-    $conditions_sql.=" AND id_createur_commentaire in ($conditions->ids_createurs_commentaires)";
+    if (!verif_multiples_entiers($conditions->ids_createurs_commentaires))
+      return erreur("Le paramètre donné pour les ids des utilisateurs dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_createurs_commentaires");
+    else
+      $conditions_sql.=" AND id_createur_commentaire in ($conditions->ids_createurs_commentaires)";
 
   if (!empty($conditions->demande_correction))
     $conditions_sql.=" AND demande_correction!=0";
 
   if (!empty($conditions->date_apres))
-    $conditions_sql.="\n\tAND date >= $conditions->date_apres";
+    $conditions_sql.="\n\tAND date >= ".$pdo->quote($conditions->date_apres);
     
   if (!empty($conditions->texte))
-    $conditions_sql.="\n\tAND texte ILIKE '%$conditions->texte%'";
+    $conditions_sql.="\n\tAND texte ILIKE ".$pdo->quote("%$conditions->texte%");
 
   if (isset($conditions->avec_points_caches) and !$conditions->avec_points_caches ) // On ne veut pas les commentaires de points cachés, alors il nous faut impérativement les infos sur les points si on veut vérifier qu'ils sont cachés.
     $conditions->avec_infos_point=True;
@@ -134,7 +135,10 @@ function infos_commentaires ($conditions)
       $condition_en_plus.=" AND ( points.cache= 'f' ) ";
       
     if (!empty($conditions->ids_polygones))
-      $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
+      if (!verif_multiples_entiers($conditions->ids_polygones))
+        return erreur("Le paramètre donné pour les ids de polygones auxquels les points appariennent dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_polygones");
+      else
+        $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
   }
 
   $query="SELECT
