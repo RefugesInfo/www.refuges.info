@@ -1,7 +1,7 @@
 Comment installer le code de www.refuges.info sur son propre hébergement ?
 ==========================================================================
 
-Cette doc a été remise à jour en 2022 mais c'est pas très complet ! il est même possible que ça ait changé depuis, demandez moi conseil en ouvrant une issue.
+Cette doc a été remise à jour en 2025 mais c'est pas très complet ! il est même possible que ça ait changé depuis, demandez moi conseil en ouvrant une issue.
 Je ne la tiens pas trop à jour car cela me servait surtout à moi en cas de besoin de tout ré-installer. Je dirais que si votre but est d'améliorer le code de www.refuges.info il me semble plus simple que je vous ouvre une zone de développement sur notre serveur, 
 ça vous évitera sans doute des complications.
 
@@ -10,12 +10,12 @@ Installation
 
 Pour installer le code du site de www.refuges.info nous utilisons actuellement (toute autre configuration m'est inconnue si fonctionnelle)  :
 
-* linux Debian 10 ou 11
+* linux Debian 12. Ça marchait en 10 et 11 de 2020 à 2025 ou même sur n'importe linux avec :
 * apache 2.4.x
-* php 7.3 ou 7.4 avec modules :
+* php 8.2, 7.3 ou 7.4 avec modules :
   pgsql gd json mbstring opcache readline xml
-  apt install php-common  php-mbstring  php-pgsql php7.4-cli php7.4-common php7.4-gd  php7.4-json  php7.4-mbstring  php7.4-opcache  php7.4-pgsql  php7.4-readline  php7.4-xml
-* postgresql 13
+  apt install php-common  php-mbstring  php-pgsql php8.2-cli php8.2-common php8.2-gd  php8.2-json  php8.2-mbstring  php8.2-opcache  php8.2-pgsql  php8.2-readline  php8.2-xml
+* postgresql 15 (en 13 et 11 ça marchait aussi)
 * postgis 3
 * git
 
