@@ -14,49 +14,44 @@ $conditions = new stdClass;
 $conditions->trinaire = new stdClass;
 $conditions->avec_liste_polygones=True;
 
-// Par défaut, on veut afficher zones, massifs, régions, réserves
+// Par défaut, on veut afficher zones, massifs, régions, réserves naturelles
 $vue->condition_categorie_polygone="montagnarde";
 
-// FIXME sly : Mon rêve serait de déplacer ce bloc foreach dans une fonction générique que l'on puisse appeler 
-// à chaque fois que l'on veut des points que les conditions soient reçues par GET ou POST. Une Sorte d'API de récupération
-// dont les paramètres de recherche et conditions soient homogène sur tout le site (API interne, API externe GET/POST)
+// Le formulaire nous envoi les données en GET, mais j'accepte aussi en POST en provenance possible d'un tiers ($_REQUEST combinant GET et POST)
 if (!empty($_REQUEST))
 {
-  foreach ($_REQUEST as $champ => $valeur)
-  {
-    if( ! empty($valeur) )
-      switch ($champ) 
-      {
-        case 'id_polygone':
-          $conditions->ids_polygones = $valeur; 
-          break ;
-          
-        case 'id_point_type':
-          $conditions->ids_types_point = $valeur ;
-          break;
-          
-        case 'champs_trinaires':
-          foreach ( $valeur as $c )
-              $conditions->trinaire->$c = true ; 
-          break;
-        case 'condition_categorie_polygone':
-          $vue->condition_categorie_polygone=$valeur;
-          break;
-          
-        case 'champs_null':
-          foreach ( $valeur as $c )
-              $conditions->trinaire->$c = NULL ; 
-          break; // TODO, ne pas restreindre aux champs trinaires.
-        case 'ne_manque_pas_un_mur':
-          $conditions->trinaire->manque_un_mur=false;
-          break;
-          
-        default:  // tous les autres cas: nom, ouvert, places on repositionne comme condition la valeur telle qu'elle était dans le formulaire
-          $conditions->$champ=trim($valeur); 
-          break;
-        }
-          
-  }
+  $conditions->ids_polygones = $_REQUEST['id_polygone'] ?? '';
+  $conditions->ids_types_point = $_REQUEST['id_point_type'] ?? '';
+  $conditions->nom = $_REQUEST['nom'] ?? '';
+  $conditions->description = $_REQUEST['description'] ?? '';
+  $conditions->places_minimum = $_REQUEST['places_minimum'] ?? '';
+  $conditions->places_maximum = $_REQUEST['places_maximum'] ?? '';
+  $conditions->places_matelas_minimum = $_REQUEST['places_matelas_minimum'] ?? '';
+  $conditions->altitude_minimum = $_REQUEST['altitude_minimum'] ?? '';
+  $conditions->altitude_maximum = $_REQUEST['altitude_maximum'] ?? '';
+  $conditions->chauffage = $_REQUEST['chauffage'] ?? '';
+  $conditions->precision_gps = $_REQUEST['precision_gps'] ?? '';
+  $conditions->id_createur = $_REQUEST['id_createur'] ?? '';
+  $conditions->ouvert = $_REQUEST['ouvert'] ?? '';
+  $conditions->limite = $_REQUEST['limite'] ?? $config_wri['points_maximum_recherche'];
+
+  // les cases à cocher qui peuvent être soit "cochée" = true, pas cochée = (vide)
+  if (!empty($_REQUEST['champs_trinaires']))
+    foreach ( $_REQUEST['champs_trinaires'] as $c )
+      $conditions->trinaire->$c = true ; 
+
+  //  ou la case rouge ajoutée en javascript "cochées spécialement" avec l'option "état inconnu" qui ne sert qu'aux modérateurs pour l'entretient des fiches
+  if (!empty($_REQUEST['champs_null']))
+    foreach ( $_REQUEST['champs_null'] as $c )
+      $conditions->trinaire->$c = NULL; 
+
+  // Un peu spécial pour cette option, personne ne souhaite chercher les cabanes dont il manque des murs, par contre, on cherche celle qui sont bien isolées.
+  if (isset($_REQUEST['ne_manque_pas_un_mur']))
+    $conditions->trinaire->manque_un_mur=false;
+      
+  // Le rangement par pays/département (administrative) ou massif/réserves naturelle (montagnarde) n'est plus une condition de la recherche, car tout est toujours renvoyé, mais lors de l'affichage par la vue, on peut inclure juste l'une des deux catégories souhaités
+  $vue->condition_categorie_polygone = $_REQUEST['condition_categorie_polygone'] ?? '';
+
 
   //======================================
   // C'est LA que ca cherche
