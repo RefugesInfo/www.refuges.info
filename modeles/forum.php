@@ -125,7 +125,7 @@ function forum_delete_topic ($topic_id) {
 /************************************************************************
 Derniers messages du forum
 $conditions->limite : nombre maximum de messages retournés
-$conditions->ordre : exemple "date"
+$conditions->ordre : exemple "ORDER BY date"
 $conditions->ids_forum : (5 ou 4,7,8) pour restreindre la provenance des messages
 ************************************************************************/
 // jmb: return un tableau vide au lieu d'un undefined si aucun message
@@ -136,43 +136,36 @@ function messages_du_forum($conditions)
   if (isset($conditions->ids_forum))
     $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
   if ( !isset($conditions->ordre))
-    $conditions->ordre="date DESC";
+    $conditions->ordre="ORDER BY date DESC";
 
-  // condition de limite en nombre
-  if (!empty($conditions->limite))
-    if (!est_entier_positif ($conditions->limite))
-      return erreur("Le paramètre de limite \$conditions->limite est mal formé, reçu : ".$conditions->limite);
-  else
-    $limite="\n\tLIMIT $conditions->limite";
-    
-  // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
-  //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
-  // réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
-  $query_messages_du_forum=
-  "SELECT
-    max(phpbb3_posts.post_time) AS date,
-    phpbb3_posts.topic_id,
-    phpbb3_posts.poster_id,
-    phpbb3_posts.post_text,
-    phpbb3_topics.topic_title,
-    max(phpbb3_posts.post_id) AS post_id
-  FROM phpbb3_topics, phpbb3_posts
-      WHERE
-      phpbb3_posts.post_text!=''
-  AND phpbb3_posts.post_visibility=1
-  AND phpbb3_topics.topic_id = phpbb3_posts.topic_id
-  $quels_ids
-  GROUP BY phpbb3_posts.poster_id,phpbb3_posts.topic_id,phpbb3_topics.topic_title,phpbb3_posts.post_text
-  ".$pdo->quote($conditions->ordre)."
-  LIMIT $conditions->limite";
+    // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
+    //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
+    // réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
+    $query_messages_du_forum=
+    "SELECT
+      max(phpbb3_posts.post_time) AS date,
+      phpbb3_posts.topic_id,
+      phpbb3_posts.poster_id,
+      phpbb3_posts.post_text,
+      phpbb3_topics.topic_title,
+      max(phpbb3_posts.post_id) AS post_id
+    FROM phpbb3_topics, phpbb3_posts
+        WHERE
+        phpbb3_posts.post_text!=''
+    AND phpbb3_posts.post_visibility=1
+    AND phpbb3_topics.topic_id = phpbb3_posts.topic_id
+    $quels_ids
+    GROUP BY phpbb3_posts.poster_id,phpbb3_posts.topic_id,phpbb3_topics.topic_title,phpbb3_posts.post_text
+    $conditions->ordre
+    LIMIT $conditions->limite";
 
-  if (! ($res=$pdo->query($query_messages_du_forum)))
-    return erreur("Impossible d'obtenir les derniers messages du forum",$query_messages_du_forum);
-  else
-  {
-  while ($message_du_forum = $res->fetch())
-    $messages_du_forum[]=$message_du_forum;
-  }
-  return $messages_du_forum;
+    if (! ($res=$pdo->query($query_messages_du_forum)))
+      return erreur("Impossible d'obtenir les derniers messages du forum",$query_messages_du_forum);
+    else
+    {
+    while ($message_du_forum = $res->fetch())
+      $messages_du_forum[]=$message_du_forum;
+    }
+    return $messages_du_forum;
 
 }
