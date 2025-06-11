@@ -134,8 +134,11 @@ function messages_du_forum($conditions)
   global $pdo; $messages_du_forum= array();
   $quels_ids="";
   
-  if (verif_multiples_entiers($conditions->ids_forum))
-    $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
+  if (!empty($conditions->ids_forum))
+    if (!verif_multiples_entiers($conditions->ids_forum))
+      return erreur("Le paramètre donné pour les ids des forum dont on veut les messages n'est pas valide. Reçu : $conditions->ids_forum");
+    else
+      $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
     
   if ( empty($conditions->ordre ))
     $conditions->ordre="date DESC";
@@ -143,9 +146,9 @@ function messages_du_forum($conditions)
   // condition de limite en nombre
   if (!empty($conditions->limite))
     if (!est_entier_positif ($conditions->limite))
-      return erreur("Le paramètre de limite \$conditions->limite est mal formé, reçu : ".$conditions->limite);
-  else
-    $limite="\n\tLIMIT $conditions->limite";
+      return erreur("Le paramètre de limite \$conditions->limite est mal formé (devrait être un entier positif), reçu : ".$conditions->limite);
+    else
+      $limite="\n\tLIMIT $conditions->limite";
     
   // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
   //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
