@@ -6,10 +6,12 @@ si ça semble utile, je pourrais l'améliorer avec conditions sur le point et p'
 2020 : Et aussi ranger proprement avec un modèle pour gérer la table historique_modifications_points.
 sly : mais j'ai la flemme d'y passer du temps en sachant que ça n'est de toute façon pas la bonne solution
 sly 2022: bonne solution ou pas, pour l'instant, on a que ça ! Alors j'ajoute quelques option dans l'url pour le tri
+sly 2025: grand classique du "vu que ça marche, pourquoi changer", j'ajoute encore des fonctions...
 ***/
 
 require_once ('mise_en_forme_texte.php');
 require_once ('utilisateur.php');
+
 
 $condition_point=" WHERE 1=1 ";
 if (!empty($controlleur->url_decoupee[2]) and est_entier_positif($controlleur->url_decoupee[2]))
@@ -19,7 +21,7 @@ if (!empty($controlleur->url_decoupee[2]) and est_entier_positif($controlleur->u
 if (!empty($_GET['id_user']) and est_entier_positif($_GET['id_user']))
     $condition_point.=" AND id_user=".$_GET['id_user'];
 
-if (!empty($_GET['type_modification']) and ($_GET['type_modification']=='suppression'))
+if (!empty($_GET['type_modification']) and ($_GET['type_modification']=='suppression point'))
     $condition_point.=" AND type_modification='suppression'";
 
 $limite=100;
@@ -33,10 +35,22 @@ if (! ($res = $pdo->query($query_log_modification)))
         
   while ($modification_point = $res->fetch())
   {
+    // Si authentifié, on indique qui a fait la modif
     if ($modification_point->id_user!=0)
         $utilisateur=infos_utilisateur($modification_point->id_user);
     else
-        $utilisateur->username="anonyme ??";
+        $utilisateur->username="anonyme ?";
+    
+    // si cela concerne un point du site, on fait un lien vers lui pour se simplifier la consultation
+    $lien_de_base="";    
+    if (in_array($modification_point->type_modification, array ("modification point","création point","suppression point")))
+      $lien_de_base="point";
+    if (in_array($modification_point->type_modification, array ("modification polygone","suppression polygone")))
+      $lien_de_base="nav";
+    
+    if (!empty($modification_point->id_point))
+      $modification_point->lien_point="/$lien_de_base/$modification_point->id_point";
+
     $point_avant=unserialize($modification_point->avant);
     $point_apres=unserialize($modification_point->apres);
     

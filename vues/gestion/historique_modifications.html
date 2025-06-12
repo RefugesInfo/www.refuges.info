@@ -41,11 +41,18 @@ th:last-child {
     ?>
     <tr>
       <td><?=ucfirst($modification->type_modification)?> du/de là <br>
-        <b><?=$nom?></b><br>du <?=$modification->date?><br>
+        <?php if (!empty($modification->lien_point)) { ?>
+        <a href="<?=$modification->lien_point?>">
+          <b><?=$nom?></b>
+        </a>
+        <?php }  else { ?>
+          <b><?=$nom?></b>
+        <?php } ?>
+        <br>du <?=$modification->date?><br>
         par <?=$modification->moderateur?></td>
       <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_avant,true))))?></td>
       <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_apres,true))))?></td>
     </tr>
-    <?}?>
+    <?php } ?>
   </table>
 </div>

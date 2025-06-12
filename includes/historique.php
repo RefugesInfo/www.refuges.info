@@ -10,7 +10,7 @@ L'objet $point par défaut dispose de trop de propriété, ne gardons que celles
 c'est à dire celle de $point_apres qui est issue du formulaire (donc comparaison sioux entre les propriété de $point_apres et $point_avant)
 
 **********************************************************************************************************************/
-function historisation_modification($point_avant,$point_apres,$type_operation="modification",$user_id_faisant_la_modif=0)
+function historisation_modification($point_avant,$point_apres,$type_operation="modification point",$user_id_faisant_la_modif=0)
 {
   global $pdo;
 
