@@ -31,6 +31,7 @@ if (!empty($_REQUEST))
   $conditions->id_createur = $_REQUEST['id_createur'] ?? '';
   $conditions->ouvert = $_REQUEST['ouvert'] ?? '';
   $conditions->limite = $_REQUEST['limite'] ?? $config_wri['points_maximum_recherche'];
+  $conditions->uniquement_points_caches = $_REQUEST['uniquement_points_caches'] ?? False;
 
   // les cases à cocher qui peuvent être soit "cochée" = true, pas cochée = (vide)
   if (!empty($_REQUEST['champs_trinaires']))
