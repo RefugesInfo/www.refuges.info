@@ -40,7 +40,7 @@
       <?php }?>
 <!--========================================== FICHE DE ===========================================-->
       <h1>
-        <?=$vue->nom_debut_majuscule?> (<?=$vue->point->altitude?>m), <a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?><sup>?</sup></a>
+        <?=$vue->nom_debut_majuscule?> (<?=$vue->point->altitude?>m), <a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?></a>
         <?php
         //Si elle/il est fermé, détruit, ou besoin de la clé pour rentrer on l'indique directement en haut en rouge
         if ($vue->annonce_fermeture) {?>
