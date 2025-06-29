@@ -81,7 +81,16 @@ else // le point est valide
             {
                 $point_proche->lien=lien_point($point_proche);
                 $point_proche->nom=mb_ucfirst($point_proche->nom);
-                $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
+                if ($point_proche->distance<1000) // si le point est plus proche qu'1km on afficera en mètre
+                {
+                  $point_proche->distance_au_point=number_format($point_proche->distance,"0",",","");
+                  $point_proche->distance_au_point_unite="m";
+                }
+                else 
+                {
+                  $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
+                  $point_proche->distance_au_point_unite="km";
+                }
                 $vue->points_proches[]=$point_proche;
             }
         }

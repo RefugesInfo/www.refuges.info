@@ -119,7 +119,7 @@
           <?php foreach ($vue->points_proches as $point_proche) {?>
             <dd>
               <a href="<?=$point_proche->lien?>"><?=$point_proche->nom?></a>, 
-              <?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$point_proche->distance_au_point?>km
+              <?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$point_proche->distance_au_point?><?=$point_proche->distance_au_point_unite?>
             </dd>
         <?php }
       } ?>
