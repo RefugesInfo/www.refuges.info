@@ -67,7 +67,6 @@ else // le point est valide
     {
         $conditions = new stdClass;
         $conditions->limite=10;
-        $conditions->ouvert='oui';
         
         $g = array ( 'lat' => $point->latitude, 'lon' => $point->longitude , 'rayon' => 5000 );
         $conditions->geometrie = cree_geometrie( $g , 'cercle' );
