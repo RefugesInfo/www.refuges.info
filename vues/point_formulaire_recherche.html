@@ -226,9 +226,9 @@
 <fieldset>
 	<legend>Résultats</legend>
 		<fieldset>
-			<label title="Si cette case est cochée, la recherche se limitera aux X premiers résultats">
-				<input type="checkbox" name="limite" value="<?=$config_wri['points_maximum_recherche']?>" checked="checked" />
-				Limiter le nombre de résultat aux <?=$config_wri['points_maximum_recherche']?> premiers
+			<label title="Si cette case est cochée, la recherche renvois tous résultats sans limite (attention, cela peut lancer une recherche parfois longue)">
+				<input type="checkbox" name="limite" value="100000" />
+				Ne pas limiter aux <?=$config_wri['points_maximum_recherche']?> premiers résultats.
 			</label>
 			<label title="En plus des résultats de WRI, inclure les points OpenStreetMap grâce au service Nominatim">
 				<input type="checkbox" name="avec_point_osm" value="1" />
