@@ -1,7 +1,7 @@
 Qu'est ce que www.refuges.info ?
 ===============================
 
-Le mieux, c'est d'aller voir : https://www.refuges.info/wiki/index
+Le mieux, c'est d'aller voir : https://www.refuges.info/wiki/
 Le code source est sous licence WTFPL voir COPYING et toute personne est bienvenue pour nous aider à améliorer le site
 
 Comment installer une copie du code sur votre serveur ?
