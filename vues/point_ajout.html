@@ -1,17 +1,6 @@
 <div class="contenu">
-<h4><?=$vue->titre?></h4>
-<dl> 
-  <dt>Licence des contenus</dt>
-  <dd>
-    <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
-  </dd>
-</dl>  
-<dl> 
-  <dt>Que mettre ou ne pas mettre ?</dt>
-  <dd>
-    <p>Tout ne trouve pas sa place sur le site, merci de prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a></p>
-  </dd>
-</dl>
+<h5>Que mettre ou ne pas mettre ?</h5>
+  <p>Prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a>  (plusieurs changements importants en Mars 2025, ça vaut le coup de relire)</p>
 <?php if (!est_connecte()) { ?>
 <dl> 
   <dt>Pas encore de compte ?</dt>
@@ -38,4 +27,6 @@
     </ul>
     <p><input type="submit" value="Passer à l'étape suivante" /></p>
 </form> 
+<h5>Licence des contenus</h5>
+  <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
 </div>
