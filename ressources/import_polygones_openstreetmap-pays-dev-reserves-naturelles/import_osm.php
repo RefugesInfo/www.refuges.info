@@ -17,7 +17,6 @@ Ensuite, on spécifie manuellement l'id de ce polygone dans la reqûete where ci
 Toutes les opérations longues ou critique sont débutée par un if (false) {
 de sorte que si on le lance, rien ne se passe, juste un "dry run", ensuite, on passe à true chaque opération que l'on veut réaliser vraiment
 
-FIXME: question à se poser : ce truc est relativement indépendant de wri, dois-je l'inclure dans les modeles ? sachant que ça ne s'appel pas par le web de toute façon ?
 */
 require_once("../../includes/config.php");
 require_once("bdd.php");
