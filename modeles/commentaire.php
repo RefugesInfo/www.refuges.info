@@ -201,6 +201,7 @@ function infos_commentaires ($conditions)
 // Un appel plus simple qui utilise le précédent
 // jmb , comme infos_point, je vois pas l'interet, les fonctions pointS et sommentaireS savent gerer les cas unique
 // sly : totalement d'accord sur le principe, j'ai juste voulu reproduire l'appel historique qui récupére un commentaire à partir de son id
+// sly 2025 mini avantage détecté, par rapport à infos_commentaires cette fonction ajoute un test du nombre retourné et un message d'erreur plus propre. Si un commentaire est demandé par id, mais qu'on en trouve aucun, alors une alerte est renvoyée, pas infos_commentaires
 function infos_commentaire($id_commentaire,$meme_si_cache=False)
 {
   $conditions = new stdClass;
@@ -211,7 +212,7 @@ function infos_commentaire($id_commentaire,$meme_si_cache=False)
   if (!empty($c->erreur))
     return erreur($c->texte);
   if (count($c)!=1)
-      return erreur("un commentaire demandé mais ".count($c)." trouvés");
+      return erreur("Le commentaire d'id=".$id_commentaire." a été demandé mais il n'a pas été trouvé et ce n'est pas normal, je m'arrète là");
   return $c[0];
 }
 
