@@ -598,7 +598,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   $champs_sql['date_derniere_modification'] = 'NOW()';
 
   /********* On ne peut plus créer de cabane autour d'une cabane cachée *************/
-  if ($point->id_point_type == 7 )
+  if (in_array($point->id_point_type,array($config_wri['id_cabane_non_gardee'],$config_wri['id_batiment_en_montagne'])))
   {
     $distance = $config_wri['defaut_max_distance_cabane_cachee'] * 3;
     $q="SELECT id_point, nom
