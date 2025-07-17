@@ -23,7 +23,7 @@ class listener implements EventSubscriberInterface
 		$language->add_lang ('common', $ns[0].'/'.$ns[1]);
 
 		// Générate an error if JS is not enabled
-		if ($post['sid'] != $user->session_id) {
+		if (strlen($post['sid']) != strlen($user->session_id)) {
 			$error = $event['error'];
 			$error[] = $language->lang (
 				$event['mode'] ? 'MESSAGE_REJECTED' : 'ACCOUNT_REJECTED'
