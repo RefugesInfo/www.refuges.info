@@ -4,9 +4,10 @@
  * 2022+ : il ne prend pas en charge notre nouveau système dynamique d'icone
  * Mais bon, il a le mérite d'exister, c'est déjà ça !
  */
-
-header("Content-disposition: filename=points-refuges-info.$req->format");
-header("Content-Type: application/vnd.google-earth.$req->format; UTF-8"); // rajout du charset
+if (empty($filename))
+  $filename="points-refuges-info";
+header("Content-disposition: filename=$filename.kml");
+header("Content-Type: application/vnd.google-earth.kml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
 headers_cache_api();

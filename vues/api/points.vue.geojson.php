@@ -1,5 +1,8 @@
 <?php
-header("Content-disposition: filename=points.json");
+if (empty($filename))
+  $filename="points-refuges-info";
+
+header("Content-disposition: filename=$filename.json");
 header("Content-Type: application/json; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();

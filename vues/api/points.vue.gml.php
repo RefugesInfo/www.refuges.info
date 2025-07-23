@@ -1,6 +1,8 @@
 <?php
 // FIXME sly : 06/12/2019 est-ce qu'il y en a encore qui s'en serve de celui là ? aucune trace dans 15 jours de logs... ménage ménage ?
-header("Content-disposition: filename=points-refuges-info.gml");
+if (empty($filename))
+  $filename="points-refuges-info";
+header("Content-disposition: filename=$filename.gml");
 header("Content-Type: text/xml; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();

@@ -6,7 +6,9 @@ sly 05/12/2019 Ce format gpx est celui qui, selon ce que je comprend de la norme
 - Le logiciel Marble n'ouvre pas les gpx avec une balise <link> contenant un <text> et <type>, viking ouvre mais indique un "thumbnail cannot be loaded" car il tente d'ouvrir le lien en local   je change alors pour un format plus simple <link href="http://la-bas" />
 
 */
-header("Content-disposition: filename=points-refuges-info-standard.gpx");
+if (empty($filename))
+  $filename="points-refuges-info";
+header("Content-disposition: filename=$filename-standard.gpx");
 header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
 headers_cors_par_default();
 headers_cache_api();

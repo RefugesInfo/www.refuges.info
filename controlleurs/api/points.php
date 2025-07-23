@@ -173,6 +173,7 @@ L'idée est de générer une grosse collection de points avec presque toutes leu
 Seule exception à ça, le cas du format "geojson" :
 Car c'est celui utilisé par la carte et que le fichier est généré par un json_encode($point) qui deviendrait trop gros pour les usages en mobilité et débit pourri.
 */
+
 foreach ($points_bruts as $i=>$point) {
   if(isset ($point->nb_points)) // cas des clusters
   {
@@ -299,6 +300,15 @@ foreach ($points_bruts as $i=>$point) {
     array_walk_recursive($points->$i, 'updatebool2char'); // Remplace les False et True en 0 ou 1
   }
 }
+
+
+
+if (count($points_bruts)==1) // Dans le cas bien spécifique ou l'api ne va renvoyer qu'un seul point, nous stockons son nom pour renvoyer un nom de fichier indiquant le nom de ce point !
+{
+    $point=reset($points_bruts);
+    $filename=replace_url($point->nom);  
+}
+
 /****************************** FORMAT VUE ******************************/
 
 include($config_wri['chemin_vues'].'api/points.vue.'.$req->format.".php");

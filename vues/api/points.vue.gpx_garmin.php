@@ -6,7 +6,9 @@ sly 05/12/2019 Ce format gpx est celui qui devrait être le plus adapté à base
 - <src> est présente, mais je ne sais pas si c'est utilisé
 - j'ai viré les extensions
 */
-header("Content-disposition: filename=points-refuges-info-garmin.gpx");
+if (empty($filename))
+  $filename="points-refuges-info";
+header("Content-disposition: filename=$filename-garmin.gpx");
 header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" standalone="no"<?='?>'?>

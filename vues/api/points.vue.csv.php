@@ -1,5 +1,7 @@
 <?php
-header("Content-disposition: filename=points-refuges-info.csv");
+if (empty($filename))
+  $filename="points-refuges-info";
+header("Content-disposition: filename=$filename.csv");
 header("Content-Type: text/csv; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
