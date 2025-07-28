@@ -367,48 +367,6 @@ function edit_info_polygone()
     return null;
 }
 
-/********************************************
-Cree un objet geometrie a utiliser dans le SQL PostGIS
-
-Par exemple, cree un Polygone avec une bbox ou un massif, cree un cercle avec un point et un rayon.
-
-$params  contient les coordonnées
-$type est le type de geometrie a creer : "cercle", "polygone", "bboxOL" (FIXME pleonasme: une bbox c'est un polygone)
-
-Elle renvoie une chaine de texte a utiliser en SQL, par exemple:
-WHERE Within(geom, cree_geometrie(...)  )
-*********************************************/
-function cree_geometrie( $params , $type )
-{
-  switch ($type) {
-
-    case 'bboxOL':
-      //bbox OL: ouest,sud,est,nord
-      // mise en forme avec des points, des vrais
-      list($ouest,$sud,$est,$nord) = explode(",",$params);
-      $geotexte = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
-      break;
-
-    case 'polygone':
-      //FIXME check les params: [0]->lat, [0]->lon , [1].....
-      $geotexte = "FIXME";
-      break;
-
-    case 'cercle':
-      //FIXME check les params: lat, lon, et rayon
-      $lat = $params['lat'];
-      $lon = $params['lon'];
-      $rayon = $params['rayon'] ;
-      // au depart on a du 4326 en degres. Transform vers 900913 en metres. application du Buffer en metres. Retransformation en 4326.
-      // Vu qu'on parle en metres et pas en degrés, c'est necessaire.
-      $geotexte = "ST_Transform(ST_Buffer(ST_Transform(ST_GeomFromText('POINT($lon $lat)',4326),900913),$rayon),4326)";
-      break;
-
-    default:
-      $geotexte = "mauvais type de geometrie";
-  }
-  return $geotexte ;
-}
 /*************************************************************
 On lui passe un tableau de polygones et ça nous renvoi une chaine de caractère au format :
 "Alpes > Chartreuse > Réserve Naturelle des Hauts de Chartreuse"

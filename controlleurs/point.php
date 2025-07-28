@@ -68,10 +68,10 @@ else // le point est valide
         $conditions = new stdClass;
         $conditions->limite=10;
         
-        $g = array ( 'lat' => $point->latitude, 'lon' => $point->longitude , 'rayon' => 5000 );
-        $conditions->geometrie = cree_geometrie( $g , 'cercle' );
+        // On défini le cercle (centre et rayon) dont on veut les points à proximité
+        $conditions->rayon_du_cercle=5000;
+        $conditions->centre_du_cercle=$point->geom;
         
-        $conditions->avec_distance=True;
         $points_proches=infos_points($conditions);
         $vue->points_proches = array();
         foreach ($points_proches as $point_proche) 
@@ -81,7 +81,7 @@ else // le point est valide
             {
                 $point_proche->lien=lien_point($point_proche);
                 $point_proche->nom=mb_ucfirst($point_proche->nom);
-                if ($point_proche->distance<1000) // si le point est plus proche qu'1km on afficera en mètre
+                if ($point_proche->distance<1000) // si le point est plus proche qu'1km on affichera en mètre
                 {
                   $point_proche->distance_au_point=number_format($point_proche->distance,"0",",","");
                   $point_proche->distance_au_point_unite="m";

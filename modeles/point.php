@@ -75,7 +75,11 @@ $conditions->limite : nombre maximum d'enregistrement à aller chercher, par dé
 $conditions->ordre (champ sur lequel on ordonne clause SQL : ORDER BY, sans le "ORDER BY" example 'date_derniere_modification DESC')
 
 $conditions->geometrie : Ne renvoi que les points se trouvant dans cette géométrie (qui doit être de type (MULTI-)POLY au format WKB
-$conditions->avec_distance : Renvoi la distance au centroid de la géométrie, le point sont alors automatiquement triés par distance
+
+Ces 2 conditions vont ensemble et les deux doivent être fournies, elle définisse un cercle dans lequel on veut les points
+$conditions->rayon_du_cercle : renvoi les points situés à une distance inférieure (en mètre) de ...
+$conditions->centre_du_cercle : la géométrie d'un point au format WKB (en 2025 uniquement utilisé pour renvoyer les points à une distance d'un point, mais en on peut passer n'importe quelle géométrie, un segment, un polygone)
+
 $conditions->avec_liste_polygones=True : l'objet retourné dispose d'une propriété polygones, un array de tous les polygones auquels le point appartient.
 
 $conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
@@ -155,17 +159,18 @@ function infos_points($conditions)
       $limite="\n\tLIMIT ".(7*$conditions->limite);
   }
 
-  // on restreint les points qui appartiennent à cette geometrie (utile pour les points dans une bbox donnée ou à une distance d'un autre point, dans un cercle quoi)
+  // on restreint les points qui appartiennent à cette geometrie (utile pour les points dans une bbox donnée)
   if( !empty($conditions->geometrie) )
-  {
     $conditions_sql .= "\n\tAND ST_Within(points.geom,".$conditions->geometrie .") ";
-    if (!empty($conditions->avec_distance))
-    {
-      $select_distance = ",ST_Transform(points.geom,900913) <-> ST_Transform(ST_Centroid( ".$conditions->geometrie." ),900913) AS distance" ;
-      $ordre = "ORDER BY distance";
-    }
+  
+  if (!empty($conditions->rayon_du_cercle) and !empty($conditions->centre_du_cercle))
+  {
+    $formule_distance="ST_DistanceSphere(points.geom , '$conditions->centre_du_cercle')";
+    $select_distance = ", $formule_distance AS distance";
+    $conditions_sql .= "\n\tAND $formule_distance < ".$conditions->rayon_du_cercle;
+    $ordre = "ORDER BY distance";
   }
-
+  
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if( !empty($conditions->ids_types_point) )
     if (!verif_multiples_entiers($conditions->ids_types_point))
@@ -306,7 +311,6 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
   ";
     if ( ! ($res_clusters = $pdo->query($query_clusters)) )
       return erreur("Une erreur sur la requête est survenue",$query_clusters);
-
     $points_isoles = [];
 
     while ( $raw = $res_clusters->fetch() )
@@ -357,7 +361,7 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
   ";
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
-
+      
   // Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
   // Depuis 12/2024 On sort maintenant tous les polygones auxquels les points appartiennent chaque point peut sortir plusieurs fois, il faut en tenir compte.
   $id_point_deja_fait=0;
