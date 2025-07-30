@@ -11,13 +11,20 @@ if (!empty($_REQUEST["corrections_faites"]))
     if (!empty($commentaire->erreur))
     {
       $vue->type = "page_simple";
-      $vue->titre=$vue->contenu=$commentaire->message;
+      $vue->titre= "Erreur de modération";
+      $vue->contenu=$commentaire->message."<br>peut être pouvez-vous essayer de ré-ouvrir ce formulaire : ";
+      $vue->lien="./commentaires_attente_correction";
+      $vue->titre_lien="Liste des commentaires en attente de correction";
     }
     else {
       $commentaire->demande_correction=0; 
       $retour=modification_ajout_commentaire($commentaire);
-      if ($retour->erreur)
-        print($retour->message);
+      if (!empty($retour->erreur))
+      {
+        $vue->type = "page_simple";
+        $vue->titre= "Erreur de modération";
+        $vue->contenu=$retour->erreur;
+      }
     }
   }
 
