@@ -15,17 +15,9 @@
 // Par défaut
 $controlleur->type = 'page_simple';
 
-// C'est le point unique qui contrôle les autorisations de toutes les URL /gestion...
 switch ($controlleur->url_decoupee[1]) {
-	case 'moderation':
-		$commentaire = infos_commentaire($_REQUEST['id_commentaire'],true);
-		if ( est_autorise($commentaire->id_createur_commentaire))
-			$controlleur->type = 'gestion/moderation';
-        else
-        {
-          $vue->http_status_code = 403;
-          $vue->interdit_raison =", pour modifier un commentaire, soit ça doit être le votre, soit vous devez être modérateur global, êtes vous bien connecté ?";
-        }
+	case 'moderation': // cas spécial de "moderation" qui est autorisée aussi à l'auteur de son propre commentaire. Peut-être qu'il faudrait d'ailleurs sortir ça de la /gestion qui pourrait alors être réservée à 100% aux modérateurs, là, ça oblige une petite condition sur mesure
+    $controlleur->type = 'gestion/'.$controlleur->url_decoupee[1];
     break;
 
 	case 'liste_pages_wiki':

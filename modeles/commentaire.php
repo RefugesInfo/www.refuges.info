@@ -210,7 +210,7 @@ function infos_commentaire($id_commentaire,$meme_si_cache=False)
   $conditions->avec_points_caches=$meme_si_cache;
   $c=infos_commentaires ($conditions);
   if (!empty($c->erreur))
-    return erreur($c->texte);
+    return erreur($c->message);
   if (count($c)!=1)
       return erreur("Le commentaire d'id=".$id_commentaire." a été demandé mais il n'a pas été trouvé et ce n'est pas normal, je m'arrète là");
   return $c[0];

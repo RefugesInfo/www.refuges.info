@@ -13,7 +13,8 @@ if (!empty($commentaire->erreur))
 {
   $vue->http_status_code = 404;
   $vue->type = "page_simple";
-  $vue->titre=$commentaire->message;
+  $vue->titre= "Erreur 404 : commentaire introuvable";
+  $vue->contenu=$commentaire->message;
 }
 else
 {
