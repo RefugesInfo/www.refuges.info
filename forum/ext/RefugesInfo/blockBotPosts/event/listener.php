@@ -10,6 +10,7 @@ class listener implements EventSubscriberInterface
 			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
 			'rmcgirr83.contactadmin.modify_data_and_error' => 'filter', // Extension contactadmin
 			'block_bot_posts.filter' => 'filter', // External API
+			'core.append_sid' => 'append_sid', // includes/functions.php 1543
 		];
 	}
 
@@ -30,5 +31,15 @@ class listener implements EventSubscriberInterface
 			);
 			$event['error'] = $error;
 		}
+	}
+
+	// Do not add sid to urls if cookies not enabled
+	public function append_sid ($event) {
+		global $request, $config_wri;
+
+		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
+		if (isset($config_wri['no_sid_urls']) &&
+			!$this->server['HTTP_COOKIE'])
+			$event['append_sid_overwrite'] = $event['url'];	
 	}
 }
