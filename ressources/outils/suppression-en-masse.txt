@@ -1,0 +1,16 @@
+<?php
+// Voici un code que j'ai utilisé pour la suppression en masse de points du site. Par défaut, il ne fait rien gràce à :
+exit(0);
+
+// je garde ce code en cas de nouveau besoin d'utilisation, copié le dans le controlleur de test par exemple, mais ne le laisser pas définitivement histoire d'éviter un accident
+
+// ici on défini les conditions
+$conditions = new stdClass;
+
+// 16 c'était l'id des lacs avant qu'on décide de les retirer du site
+$conditions->ids_types_point=16;
+  
+$points = infos_points($conditions);
+foreach ($points as $point)
+    suppression_point($point,3); // 3 c'est l'id dans le forum de sly, qui sera noté dans les logs d'historique comme étant celui ayant supprimé les points
+
