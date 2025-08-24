@@ -53,9 +53,9 @@ $req->type_points = $_REQUEST['type_points'] ?? '';
 // Ici c'est les valeurs possibles
 $val = new stdClass();
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
-// FIXME sly 2019 : tout ça devrait être récupéré de la base de donnée, ça exite déjà dans point_type, quel dommage de maintenir 2 duplicats
-$val->type_points = array("cabane", "refuge", "gite", "grotte", "pt_eau", "sommet", "pt_passage", "bivouac", "lac", "batiment_a_explorer");
-$val->type_points_id = array(7, 10, 9, 29, 23, 6, 3, 19, 16, 28);
+// FIXME sly 2019 : tout ça devrait être récupéré de la base de donnée, ça exite déjà dans point_type, quel dommage de maintenir 2 duplicats ;-(
+$val->type_points = array("cabane", "refuge", "gite", "grotte", "pt_eau", "pt_passage", "batiment_a_explorer");
+$val->type_points_id = array(7, 10, 9, 29, 23, 3, 28);
 
 /****************************** VALEURS PAR DÉFAUT - PARAMS FACULTATIFS ******************************/
 

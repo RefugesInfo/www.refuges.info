@@ -37,12 +37,12 @@ La table des commentaires des internautes sur un point de la base
 
 points
 ======
-la table des points du site (refuge, sommets, lac...)
+la table des points du site (refuge, cabanes, grottes, ...)
 A noter qu'une seule table regroupe tous les points quels qu'ils soient, même s'ils ne partagent pas forcément les mêmes champs de description, il est donc normal par exemple
 de trouver un nombre de place vide pour un point d'eau.
 Cette notion de mutation des propriétés des points (icones, champs) est géré par la table point_type
 
-* id_point_type, un lien vers la table point_type (refuge ou abri ou sommet ou lac, etc.)
+* id_point_type, un lien vers la table point_type (refuge ou abri ou ...)
 * auteur_derniere_modification (le nom de l'auteur qui l'a créé si celui ci est anonyme)
 et/ou
 * id_createur, l'id de l'utilisateur qui est modérateur de cette fiche (il peut la modifier), par défaut, lors de la création, c'est celui qui la créé qui devient id_createur
@@ -64,7 +64,7 @@ la table des types possibles pour un point et des informations mutantes s'y rapp
 * id_point_type -> l'identifiant unique du type de point
 * article_demonstratif, article_definif, article_partitif -> des champs pour faire du joli français tout au long du site selon le nom du point.
 exemple : une cabane, mais un refuge.
-* nom_type -> le nom de ce que c'est "refuge gardé", "cabane non gardée", "sommets" ...
+* nom_type -> le nom de ce que c'est "refuge gardé", "cabane non gardée", ...
 * equivalent_XY -> ceci et un champs mutant, dans le XY se cache le nom du champs que l'on trouve dans la table points. Si sa valeur est vide
 c'est que ce type de point n'a pas cette propriété (un point d'eau n'a pas de personne à contacter par exemple) si il est non vide, c'est que ce type de point a cette propriété et que cette
 propriété porte le nom indiqué. Cela donne lieu est des champs mutant comme par exemple la notion de fermeture pour une cabane et pour un point d'eau. Un point d'eau n'a pas de sens à être fermé

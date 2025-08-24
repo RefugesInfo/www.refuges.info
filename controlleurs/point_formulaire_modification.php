@@ -133,7 +133,7 @@ if (!empty($bouton_suppr))
     $vue->champs->boutons->suppr=$bouton_suppr;
 
 //3 Champs text area similaires, on fait une boucle
-// tous les points n'ont pas forcément un propriétaire ( lac, sommet, etc. )
+// tous les points n'ont pas forcément un propriétaire ( grotte, point d'eau, ... )
 if ( !empty($point->equivalent_proprio) )
     $textes_area[$point->equivalent_proprio]="proprio";
 

@@ -26,7 +26,6 @@ function stat_site ()
   global $config_wri,$pdo;
   // Petits stats de début sur l'intégralité de la base
   // donc je liste bien les "refuges"
-  // les autres sont des sommets, des cols, des villes où autre
   // FIXME sly : cette fonction devrait faire appels aux fonctions d'accès génériques, sinon, je suis obligé de la retoucher à chaque changement dans la base
   // PDO jmb re ecriture en une seule requete
   $q = "SELECT
@@ -124,7 +123,6 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         }
       break;
       // FIXME sly: franchement, je ne suis pas fier de cette bidouille, d'accord, ça tient en 3 lignes mais c'est pas du tout extensible, il faudrait que les nouvelles acceptent un code du genre forum,points=8-9-7-8,commentaires=7-9 histoire de vraiment sélectionner ce qu'on veut par thèmes
-      case "sommets": $conditions->ids_types_point=$config_wri['id_sommet'];
       case "points_d_eau": $conditions->ids_types_point=$conditions->ids_types_point ?? $config_wri['id_point_d_eau'];
       case "grottes": $conditions->ids_types_point=$conditions->ids_types_point ?? $config_wri['id_grotte'];
       case "refuges": $conditions->ids_types_point=$conditions->ids_types_point ?? implode(',',$config_wri['tout_type_refuge']);

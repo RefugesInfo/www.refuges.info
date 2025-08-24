@@ -118,7 +118,7 @@ else // le point est valide
     foreach ($champs as $champ) 
     {
         $champ_equivalent = "equivalent_$champ";
-        // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour un sommet)
+        // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour une grotte)
         if ($point->$champ_equivalent!="") 
         {
             switch ($champ)

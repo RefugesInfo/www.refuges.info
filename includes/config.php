@@ -61,7 +61,6 @@ $config_wri['correspondance_type_icone'] = [
 	'passage-delicat' => 'triangle_a33.10',
 	'point-d-eau' => 'pointdeau',
 	'refuge-garde' => 'cabane_red',
-	'sommet' => 'sommet',
 	'grotte' => 'grotte',
 ];
 
@@ -132,7 +131,6 @@ $config_wri['id_departement']=10;
 $config_wri['bbox_page_accueil']='-1.75,41.4,11,49.2';
 
 // C'est clair que c'est bizarre de mettre ces ids en dur, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'interroger le bon id directement
-$config_wri['id_sommet']=6;
 $config_wri['id_passage_delicat']=3;
 $config_wri['id_cabane_non_gardee']=7; 
 $config_wri['id_gite_etape']=9;

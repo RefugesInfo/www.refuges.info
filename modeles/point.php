@@ -65,7 +65,7 @@ $conditions->trinaire->cheminee : 1 (avec) ou 0 (sans) ou NULL (on ne sait pas)
 (pour augmenter la liste, voir $config_wri['champs_trinaires_points'])
 
 $conditions->conditions_utilisation : ouverture, fermeture, cle_a_recuperer, detruit (qui sont les valeurs possibles pour ce champs)
-$conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables (pour les points pour lesquels ça n'a pas de sens comme demander un sommet "détruit" il ne sera pas retourné)
+$conditions->ouvert : si 'oui', on ne veut que les points utilisables, si 'non' alors non utilisables
 
 $conditions->modele='uniquement' si on ne veut QUE les modèles (voir ce qu'est un modèle dans /ressources/a_lire.txt), 'avec' si on veut les points et les modèles, si empty() on ne les veux pas.
 $conditions->avec_points_caches=True : Par défaut, False : les points cachés ne sont pas retournés
