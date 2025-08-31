@@ -793,7 +793,7 @@ function choix_icone($point)
     $nom_icone.="_eau";
 
   // il faut une clé pour rentrer dans cette cabane
-  if ( $point->conditions_utilisation=='cle_a_recuperer' and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
+  if ( $point->conditions_utilisation=='cle_a_recuperer' and in_array($point->id_point_type,$config_wri['tout_type_refuge']) )
     $nom_icone.="_cle";
 
   // N'importe quoi d'inutilisable, on ajoute la croix noire
