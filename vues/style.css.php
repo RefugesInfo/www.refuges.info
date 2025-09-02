@@ -62,6 +62,40 @@ switch ($periode)
 }
 
 ?>
+
+/* Couleurs du mode normal des pages du site */
+:root {
+  --couleur_fond: #<?=$couleur_fond?>;
+  --couleur_fond_amplifiee: #cef99c;
+  --couleur_lien: #<?=$couleur_lien?>;
+  --couleur_lien_visite: #<?=$couleur_lien_visite?>;
+  --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
+  --couleur_legende: #<?=$couleur_legende?>;
+  --image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
+}
+
+/* Couleurs du mode sombre des pages du site */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --couleur_fond: #2c1c0c;
+    --couleur_fond: #432;
+    --couleur_fond_amplifiee: #886544;
+    --couleur_lien: #80d4ff;
+    --couleur_lien_visite: var(--couleur_lien);
+    --couleur_decoration_titres: #fb3;
+    --couleur_legende: var(--couleur_fond_amplifiee);
+  }
+
+  body {
+    color: white;
+  }
+
+  h3 {
+	/* TODO BUG MINEUR : est mentionnée plusiers fois */
+    background-color: var(--couleur_fond_amplifiee) !important;
+  }
+}
+
 /*==================================================================*/
 /* Modification du style du nouveau forum PhpBB3-prosilver          */
 /*==================================================================*/
@@ -90,15 +124,15 @@ switch ($periode)
 /* Personnalisation des couleurs */
 #phpbb .navbar,
 #phpbb #basdepage {
-  background-color: #<?=$couleur_fond?>;
+  background-color: var(--couleur_fond);
 }
 
 #phpbb .headerbar,
-.forumbg,
+#phpbb .forumbg,
 #phpbb .headerbar,
-.forabg,
+#phpbb .forabg,
 #phpbb h3 {
-  background-color: #<?=$couleur_lien?>;
+  background-color: var(--couleur_lien);
   background-image: none;
 }
 
@@ -124,7 +158,7 @@ switch ($periode)
 #phpbb .bg3,
 #phpbb .forabg .forums,
 #phpbb .forumbg .topics>li {
-  background-color: #<?=$couleur_fond?>;
+  background-color: var(--couleur_fond);
   background-image: none;
 }
 
@@ -133,24 +167,61 @@ switch ($periode)
 }
 
 /* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
-#nav-footer li:last-child,
+#phpbb #nav-footer li:last-child,
 /* Masquage login rapide en bas de page */
-#page-body>form>h3,
-.quick-login {
+#phpbb #page-body>form>h3,
+#phpbb .quick-login {
   display: none;
 }
 /* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
-ul#nav-main > li > a[href*="contactadmin"] {
-	display: none;
+#phpbb ul#nav-main > li > a[href*="contactadmin"] {
+  display: none;
 }
 
-.section-posting #attach-panel-multi::after {
+#phpbb .section-posting #attach-panel-multi::after {
   content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
   background: yellow;
 }
 
-.text-strong {
+#phpbb .text-strong {
   color: initial;
+}
+
+/* Couleurs du mode sombre du forum */
+@media (prefers-color-scheme: dark) {
+  #phpbb .wrap,
+  #phpbb ul {
+    background-color: var(--couleur_fond) !important;
+  }
+
+  #phpbb .headerbar,
+  #phpbb h2,
+  #phpbb h3,
+  #phpbb li.row:hover,
+  #phpbb .tabs .tab > a,
+  #phpbb .tabs .activetab > a,
+  #phpbb .tabs .activetab > a:hover,
+  #phpbb .panel-container .panel,
+  #phpbb #navigation a, .rtl #navigation a,
+  #phpbb .cp-mini {
+    background-color: var(--couleur_fond_amplifiee) !important;
+    background-image: none;
+  }
+
+  #phpbb h2,
+  #phpbb p,
+  #phpbb dt,
+  #phpbb label,
+  #phpbb ul.topiclist li,
+  #phpbb .postbody,
+  #phpbb .content,
+  #phpbb .post:target .content {
+    color: white;
+  }
+
+  #phpbb a {
+    color: var(--couleur_lien);
+  }
 }
 
 /*==================================================================*/
@@ -167,7 +238,7 @@ body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  background-color: #<?=$couleur_fond?>;
+  background-color: var(--couleur_fond);
 }
 
 /* zone de contenu */
@@ -177,7 +248,7 @@ body {
 }
 
 .couleur_fond_amplifiee {
-  background-color: #cef99c;
+  background-color: var(--couleur_fond_amplifiee);
 }
 
 /*=====TEXTE=======*/
@@ -242,7 +313,7 @@ h3 {
   text-align: center;
   margin-bottom: 3px;
   color: white;
-  background-color: #<?=$couleur_lien?>;
+  background-color: var(--couleur_lien);  
 }
 
 h4 {
@@ -254,13 +325,13 @@ h4 {
   font-size: large;
   margin: 0px;
   /* sous FF, la padding par defo est immense */
-  border-bottom: 2px solid #<?=$couleur_decoration_titres?>;
-  border-left: 2px solid #<?=$couleur_decoration_titres?>;
+  border-bottom: 2px solid var(--couleur_decoration_titres);
+  border-left: 2px solid var(--couleur_decoration_titres);
 }
 
 h5 {
   /* sou-sou titre, pour l'instant que dans les fiches de refuges */
-  border-bottom: thin solid #<?=$couleur_decoration_titres?> ;
+  border-bottom: thin solid var(--couleur_decoration_titres) ;
   font-size: medium;
   /* sinon H5 cest tout petit ... */
   margin-top: 15px;
@@ -441,7 +512,7 @@ img {
 /*=========liens==========*/
 a:hover {
   /*met en valeur les liens qd on est dessus */
-  background-color: #<?=$couleur_legende?>;
+  background-color: var(--couleur_legende);
   text-decoration: none;
 }
 
@@ -460,13 +531,13 @@ a.postlink,
 a.gen,
 a.genmed,
 a.gensmall {
-  color: #<?=$couleur_lien?>;
+  color: var(--couleur_lien);
   /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
 }
 
 body:not(#phpbb) a:visited {
-  color: #<?=$couleur_lien_visite?>;
+  color: var(--couleur_lien_visite);
 }
 
 /*========= Erreurs ==========*/
@@ -497,7 +568,7 @@ body:not(#phpbb) a:visited {
 
   /* Le bandeau */
   .bandeau-haut {
-    background-image: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
+    background-image: var(--image_bandeau);
     background-repeat: no-repeat;
   }
 
@@ -570,7 +641,7 @@ body:not(#phpbb) a:visited {
 
   .menu-touch,
   .menu-hover {
-    border-color: #<?=$couleur_decoration_titres?>  !important;
+    border-color: var(--couleur_decoration_titres)  !important;
   }
 
   /* Blocs rétractables en dessous des boutons */
@@ -579,8 +650,8 @@ body:not(#phpbb) a:visited {
     position: absolute;
     margin: 2px 0 0 -4px;
     border-radius: 0 10px 10px 10px;
-    border: 2px solid #<?=$couleur_decoration_titres?>;
-    background: #<?=$couleur_fond?>;
+    border: 2px solid var(--couleur_decoration_titres);
+    background: var(--couleur_fond);
     padding: 0 4px;
     opacity: 0;
     z-index: -10;
@@ -620,7 +691,7 @@ body:not(#phpbb) a:visited {
   }
 
   .menu-bouton:not(.menu-liste) {
-    background: #<?=$couleur_fond?>;
+    background: var(--couleur_fond);
   }
 
   .menu-connexion ul {
@@ -682,7 +753,7 @@ body:not(#phpbb) a:visited {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    background: #<?=$couleur_lien?>;
+    background: var(--couleur_lien);
   }
 
   /* Boutons */
@@ -707,9 +778,9 @@ body:not(#phpbb) a:visited {
   .menu-connexion ul {
     position: absolute;
     border-radius: 0 0 10px 10px;
-    border: 2px solid #<?=$couleur_decoration_titres?>;
+    border: 2px solid var(--couleur_decoration_titres);
     padding: 0 4px;
-    background: #<?=$couleur_fond?>;
+    background: var(--couleur_fond);
     white-space: nowrap;
     z-index: -10;
     opacity: 0;
@@ -815,8 +886,8 @@ form {
 
 .liens_avec_decoration {
   border-style: solid;
-  background-color: #<?=$couleur_fond?>;
-  border-color: #<?=$couleur_decoration_titres?>;
+  background-color: var(--couleur_fond);
+  border-color: var(--couleur_decoration_titres);
   padding-right: 0.5em;
   padding-left: 0.5em;
 }
@@ -839,7 +910,7 @@ form {
 }
 
 .commentaire_metainfo {
-  background-color: #<?=$couleur_legende?> ;
+  background-color: var(--couleur_legende) ;
   border: thin solid black;
   font-weight: bold;
   float: left;
@@ -1143,6 +1214,6 @@ form {
   font-size:14px
 }
 .xdebug-var-dump > small:first-child {
-	display: block;
-	border-top: solid white;
+  display: block;
+  border-top: solid white;
 }
