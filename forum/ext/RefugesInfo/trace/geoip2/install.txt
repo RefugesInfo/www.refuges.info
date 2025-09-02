@@ -1,9 +1,10 @@
-Download geoip2.phar from
 https://github.com/maxmind/GeoIP2-php/releases
+Download geoip2.phar
 
-Download GeoLite2-ASN.mmdb & GeoLite2-City.mmdb from
 https://www.maxmind.com/en/accounts/1147244/geoip/downloads
 (create a free account)
+Download GeoLite2-ASN.GZIP, extract GeoLite2-ASN.mmdb
+Download GeoLite2-City.GZIP, extract GeoLite2-City.mmdb
 
 Doc:
 https://support.maxmind.com/hc/en-us/articles/4408216129947-Download-and-Update-Databases#h_01FM56FTVAWJQK3XBQVAJGWY66
