@@ -63,6 +63,8 @@ switch ($periode)
 
 ?>
 
+// DOM 09/2025 on passe des constantes PHP aux constantes CSS
+
 /* Couleurs du mode normal des pages du site */
 :root {
   --couleur_fond: #<?=$couleur_fond?>;
@@ -97,7 +99,7 @@ switch ($periode)
 }
 
 /*==================================================================*/
-/* Modification du style du nouveau forum PhpBB3-prosilver          */
+/* Style du forum PhpBB3-prosilver                                  */
 /*==================================================================*/
 /* Pas de ligne vide en haut */
 #phpbb {
@@ -114,8 +116,16 @@ switch ($periode)
   color: black !important;
 }
 
+/* Utilisé dans ext\RefugesInfo\couplage\styles */
 #phpbb .wri-link {
   font-size: 70%;
+}
+
+:not(#phpbb) a,
+a.topictitle,
+a.postlink {
+  color: var(--couleur_lien);
+  text-decoration: none;
 }
 
 /* Zones masquées */
@@ -194,16 +204,17 @@ switch ($periode)
     background-color: var(--couleur_fond) !important;
   }
 
-  #phpbb .headerbar,
   #phpbb h2,
   #phpbb h3,
+  #phpbb blockquote,
   #phpbb li.row:hover,
+  #phpbb .cp-mini,
+  #phpbb .headerbar,
+  #phpbb .panel-container .panel,
   #phpbb .tabs .tab > a,
   #phpbb .tabs .activetab > a,
   #phpbb .tabs .activetab > a:hover,
-  #phpbb .panel-container .panel,
-  #phpbb #navigation a, .rtl #navigation a,
-  #phpbb .cp-mini {
+  #phpbb #navigation a, .rtl #navigation a {
     background-color: var(--couleur_fond_amplifiee) !important;
     background-image: none;
   }
@@ -225,10 +236,8 @@ switch ($periode)
 }
 
 /*==================================================================*/
-/* Mise en page générales des types                                 */
+/* Styles communs au site et au forum                               */
 /*==================================================================*/
-/*===== Général =======*/
-
 html {
   width: 100%;
   height: 100%;
@@ -241,6 +250,21 @@ body {
   background-color: var(--couleur_fond);
 }
 
+@media print {
+  html {
+    height: initial;
+  }
+
+  .noprint {
+    display: none;
+  }
+}
+
+/*==================================================================*/
+/* Styles propre au site                                            */
+/*==================================================================*/
+// Pour les noms de classes communs au site et au forum, la pseudo-classe :not(#phpbb) est utilisé
+
 /* zone de contenu */
 .contenu {
   margin: 0.5%;
@@ -252,36 +276,36 @@ body {
 }
 
 /*=====TEXTE=======*/
-strong {
+:not(#phpbb) strong {
   /* Strong Emphasis: gras+rouge */
   font-weight: bold;
   color: #FF0000;
 }
 
-cite {
+:not(#phpbb) cite {
   /* Citation: gras+droit */
   font-weight: bold;
   font-style: normal;
 }
 
-blockquote>div {
+:not(#phpbb) blockquote>div {
   /* en particulier les citations forum */
   border-left: 2px;
 }
 
-blockquote {
+:not(#phpbb) blockquote {
   /* message forum et commentaires */
   margin: 1em;
   font-size: normal;
 }
 
-blockquote p:before {
+:not(#phpbb) blockquote p:before {
   /* message forum et commentaires */
   content: open-quote;
   font-size: xx-large;
 }
 
-blockquote p:after {
+:not(#phpbb) blockquote p:after {
   /* message forum et commentaires */
   content: close-quote;
   font-size: xx-large;
@@ -292,7 +316,7 @@ blockquote p:after {
 /*====== Titres =======*/
 
 /* Au 15/10/2024 le titre h1 n'est utilisé qu'une seule et unique fois dans tous le site, c'est sur les fiches, pour le nom du point */
-h1 {
+:not(#phpbb) h1 {
   /* Ce titre principal n'est pas plus gros ou gras que les autres, mais significativement, c'est le titre le plus important de la page */
   font-weight: bold;
   font-style: normal;
@@ -303,7 +327,7 @@ h1 {
 /* h2 ? faut pas chercher à comprendre, on n'utilise le h2 à aucun endroit ! Si je n'avais que ça à faire, il faudrait tout décaller h5->h4->h3->h2 dans toutes les vues, et le wiki ! */
 
 /* à noter que h3 h4 et h5 sont également très utilisés dans le wiki, dont le contenu est dans la base */
-h3 {
+:not(#phpbb) h3 {
   /* titres de pages */
   font-weight: bold;
   font-style: normal;
@@ -316,7 +340,7 @@ h3 {
   background-color: var(--couleur_lien);  
 }
 
-h4 {
+:not(#phpbb) h4 {
   /* sous titres */
   padding-top: 4px;
   /* sous FF, la padding par defo est immense */
@@ -329,7 +353,7 @@ h4 {
   border-left: 2px solid var(--couleur_decoration_titres);
 }
 
-h5 {
+:not(#phpbb) h5 {
   /* sou-sou titre, pour l'instant que dans les fiches de refuges */
   border-bottom: thin solid var(--couleur_decoration_titres) ;
   font-size: medium;
@@ -339,19 +363,19 @@ h5 {
   padding-left: 10px;
 }
 
-p {
+:not(#phpbb) p {
   margin-bottom: 1em;
 }
 
 /*===== Listes =====*/
-ul {
+:not(#phpbb) ul {
   /* les listes , y compris news en page de garde */
   list-style-type: none;
   margin: 0px;
   padding: 0px 0px 0px 0px;
 }
 
-dt {
+:not(#phpbb) dt {
   /* listes, de definitions */
   font-weight: bold;
   margin-top: 4px;
@@ -362,12 +386,12 @@ dt {
   margin-left: 1em;
 }
 
-dt>button {
+:not(#phpbb) dt>button {
   font-size: 60%;
   padding: 0px;
 }
 
-li {
+:not(#phpbb) li {
   margin-bottom: 3px;
 }
 
@@ -446,13 +470,13 @@ form.wri label {
   float: left;
 }
 
-form label[title]:after,
-form legend[title]:after {
+:not(#phpbb) form label[title]:after,
+:not(#phpbb) form legend[title]:after {
   /* combine pour exclure OL , leurs label ne sont pas dans des form */
   content: url(../images/tooltip.png);
 }
 
-fieldset fieldset {
+:not(#phpbb) fieldset fieldset {
   /* moins de déco pour les fieldset imbriques */
   float: left;
   border: thin solid transparent;
@@ -496,13 +520,13 @@ div#switch_nav label {
   clear: none;
 }
 
-input[type=checkbox]:hover,
-input[type=radio]:hover {
+:not(#phpbb) input[type=checkbox]:hover,
+:not(#phpbb) input[type=radio]:hover {
   box-shadow: 0px 0px 10px #1300ff;
 }
 
 /*==========divers=======*/
-img {
+:not(#phpbb) img {
   /* images sans bordures */
   border: 0px;
   margin: 0px;
@@ -510,7 +534,7 @@ img {
 }
 
 /*=========liens==========*/
-a:hover {
+:not(#phpbb) a:hover {
   /*met en valeur les liens qd on est dessus */
   background-color: var(--couleur_legende);
   text-decoration: none;
@@ -521,22 +545,21 @@ J'intègre également les class des liens du forum
 en gros je veux tout de la même couleur
 */
 
-body:not(#phpbb) a,
-a.mainmenu,
-a.nav,
-a.forumlink,
-a.cattitle,
-a.topictitle,
-a.postlink,
-a.gen,
-a.genmed,
-a.gensmall {
+:not(#phpbb) a,
+:not(#phpbb) a.mainmenu,
+:not(#phpbb) a.nav,
+:not(#phpbb) a.forumlink,
+:not(#phpbb) a.cattitle,
+:not(#phpbb) a.topictitle,
+:not(#phpbb) a.postlink,
+:not(#phpbb) a.gen,
+:not(#phpbb) a.genmed,
+:not(#phpbb) a.gensmall {
   color: var(--couleur_lien);
-  /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
 }
 
-body:not(#phpbb) a:visited {
+:not(#phpbb) a:visited {
   color: var(--couleur_lien_visite);
 }
 
@@ -580,7 +603,7 @@ body:not(#phpbb) a:visited {
   }
 
   .logo-haut:hover {
-    background: transparent;
+    background: transparent !important;
   }
 
   .recherche-haut {
@@ -745,7 +768,7 @@ body:not(#phpbb) a:visited {
   .menu-haut .menu-large,
   .menu-bouton P,
   .headerbar,
-  body:not(#phpbb) .menu-titre span {
+  :not(#phpbb) .menu-titre span {
     display: none;
   }
 
@@ -860,7 +883,7 @@ body:not(#phpbb) a:visited {
 }
 
 #basdepage img,
-form {
+:not(#phpbb) form {
   /* tout le bazar de pub de bas de page, en ligne! */
   display: inline;
   vertical-align: middle;
@@ -918,7 +941,7 @@ form {
   border: thin solid black;
 }
 
-.spacer {
+:not(#phpbb) .spacer {
   /* HR de spacer pour la mise en page, en particulier dans les fiches */
   clear: both;
   visibility: hidden;
@@ -1121,16 +1144,6 @@ form {
   }
 }
 
-@media print {
-  html {
-    height: initial;
-  }
-
-  .noprint {
-    display: none;
-  }
-}
-
 #carte-nav {
   margin: 4px;
 }
@@ -1205,15 +1218,4 @@ form {
   /*when navigating through the items using the arrow keys:*/
   background-color: DodgerBlue !important;
   color: #ffffff;
-}
-
-/* Debug PHP, style de var_dump() */
-.xdebug-var-dump {
-  background-color:black;
-  color:white;
-  font-size:14px
-}
-.xdebug-var-dump > small:first-child {
-  display: block;
-  border-top: solid white;
 }
