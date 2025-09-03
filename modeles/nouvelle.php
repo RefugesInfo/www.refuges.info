@@ -146,7 +146,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
                 $news_array[$i]['localisation']=chaine_de_localisation($point->polygones);
                 $news_array[$i]['user_id']=$point->id_createur;
                 $news_array[$i]['auteur']=$point->nom_createur;
-                $texte = "[url=".lien_point($point,$lien_locaux)."][b]Ajout ".$news_array[$i]['partitif_point']." ".$news_array[$i]['type_point']."[/b][/url]" ;
+                $texte = "<b><a href=\"".lien_point($point,$lien_locaux)."\">Ajout ".$news_array[$i]['partitif_point']." ".$news_array[$i]['type_point']."</a></b>" ;
                 $news_array[$i]['texte']=$texte;
                 $i++;
               }
@@ -211,7 +211,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         else
           $url_complete="https://".$config_wri['nom_hote'];
         $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#p".$nouvelle['post_id'];
-        $nouvelle['texte']="[url=$lien_forum][b]Message forum[/b][/url]";
+        $nouvelle['texte']="<b><a href=\"$lien_forum\">Message forum</a></b>";
         $nouvelle['lien']=$lien_forum;
         $par_ou_de="de";
         }
@@ -226,7 +226,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $lien=lien_point($point,$lien_locaux)."#C".$nouvelle['id_commentaire'];
       $nouvelle['nom_point']=ucfirst($point->nom);
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
-      $nouvelle['texte'] = "[url=$lien][b]Commentaire[/b][/url]";
+      $nouvelle['texte'] = "<b><a href=\"$lien\">Commentaire</a></b>";
       $nouvelle['lien']=$lien;
       $par_ou_de="de";
     }
@@ -234,7 +234,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
     if (!empty($nouvelle['user_id']) and $nouvelle['user_id'] > 1) // Les anonymes sont 1 sur le forum et 0 dans notre base
     {
       $utilisateur=infos_utilisateur($nouvelle['user_id']);
-      $nouvelle['texte'] .= " $par_ou_de [url=".lien_utilisateur($utilisateur)."]".$utilisateur->username."[/url]";
+      $nouvelle['texte'] .= " $par_ou_de <a href=\"".lien_utilisateur($utilisateur)."\">".$utilisateur->username."</a>";
     }
     elseif  (!empty($nouvelle['auteur'])) // on est face à un anonyme, il a peut-être saisie le champ libre "auteur" ?
       $nouvelle['texte'] .= " $par_ou_de ".$nouvelle['auteur'];
