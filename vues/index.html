@@ -11,7 +11,7 @@
 		<h4><?=$vue->stat->nbpoints?> points, <?=$vue->stat->nbmassifs?> massifs</h4>
 		<div class="carte" id="carte-accueil"></div>
 		<h5>Et encore...</h5>
-		<ul class="basdepage">
+		<ul class="liste-massifs">
 			<?php if (isset($vue->zones_pour_bandeau)) foreach ($vue->zones_pour_bandeau AS $nom_zone => $lien) {?>
 				<li>
 					<a href="<?=$lien?>"><?=$nom_zone?></a>
