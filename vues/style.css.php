@@ -195,54 +195,58 @@ body#phpbb {
 /* Couleurs du mode sombre du forum */
 @media (prefers-color-scheme: dark) {
   /* Couleurs des caractères */
-  .wrap .row,
   .wrap .author,
   .wrap .author span,
+  .wrap code,
   .wrap .content,
-  .wrap label,
-  .wrap dt,
-  .wrap td,
   .wrap dd,
+  .wrap dd span,
+  .wrap dt,
+  .wrap dt span,
   .wrap h2,
   .wrap h3,
+  .wrap label,
   .wrap p,
-  .wrap dd span,
-  .wrap dt span {
+  .wrap .row,
+  .wrap .text-strong,
+  .wrap td {
     color: var(--couleur_texte) !important;
   }
 
   .wrap a,
-  .wrap a strong,
   .wrap a p,
-  .wrap a span {
+  .wrap a span,
+  .wrap a strong {
     color: var(--couleur_lien) !important;
   }
 
-  .wrap cite,
-  .wrap .button span {
+  .wrap .button span,
+  .wrap cite {
     color: black !important;
   }
 
-  .wrap .tabs .activetab a,
   .wrap a:hover,
-  .wrap .panel,
-  .wrap .logo,
-  .wrap .searchresults li,
-  .wrap .cp-menu li:not(active-subsection) a,
   .wrap .active-subsection a,
-  .wrap li.row:hover {
+  .wrap blockquote div,
+  .wrap .codebox,
+  .wrap .cp-menu li:not(active-subsection) a,
+  .wrap li.row:hover,
+  .wrap .logo,
+  .wrap .panel,
+  .wrap .searchresults li,
+  .wrap .tabs .activetab a {
     background-color: var(--couleur_fond_amplifiee) !important;
     background-image: none;
   }
 
   /* Couleurs de fond du mode sombre */
-  .wrap .cp-mini,
-  .wrap .tabs .tab:not(.activetab) a,
-  .wrap .post,
+  .wrap,
   .wrap .cp-menu,
   .wrap .cp-menu li:not(.active-subsection) a,
+  .wrap .cp-mini,
   .wrap .dropdown-contents a:not(:hover),
-  .wrap,
+  .wrap .post,
+  .wrap .tabs .tab:not(.activetab) a,
   .wrap ul {
     background-color: var(--couleur_fond) !important;
   }
