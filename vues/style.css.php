@@ -309,14 +309,14 @@ li {
 
 /* Pour faire disparaitre un élément au bout de 5 secondes*/
 .fade-out { 
-  opacity: 0; // l'état par défaut est d'être invisible
+  opacity: 0; /* l'état par défaut est d'être invisible */
   animation-iteration-count: 1;
   animation: fade;
   animation-duration: 8s;
 }
 @keyframes fade {
-  0% { opacity: 1; filter:alpha(opacity=100); } // première frame, 100% visible
-  100% { opacity: 0; filter:alpha(opacity=0); } // dernière, 100% invisible
+  0% { opacity: 1; filter:alpha(opacity=100); } /* première frame, 100% visible */
+  100% { opacity: 0; filter:alpha(opacity=0); } /* dernière, 100% invisible */
 }
 
 form#form_point fieldset {
@@ -1085,7 +1085,7 @@ form {
   font-size: x-small;
 }
 
-// css pour se comporter comme une table
+/* css pour se comporter comme une table */
 .table {
   display: table;
 }
@@ -1134,15 +1134,4 @@ form {
   /*when navigating through the items using the arrow keys:*/
   background-color: DodgerBlue !important;
   color: #ffffff;
-}
-
-/* Debug PHP, style de var_dump() */
-.xdebug-var-dump {
-  background-color:black;
-  color:white;
-  font-size:14px
-}
-.xdebug-var-dump > small:first-child {
-	display: block;
-	border-top: solid white;
 }
