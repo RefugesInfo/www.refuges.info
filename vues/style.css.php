@@ -1,7 +1,8 @@
+/*==================================================================*/
+/* La seule et unique feuille de style CSS du site refuges.info     */
+/*==================================================================*/
 <?php
 /***********************************************************************************************
-La seule et unique feuille de style CSS du site refuges.info
-
 Pourquoi une feuille de style en .php ?
 - le but c'est de faire un style dynamique selon la saison pour changer les couleurs ;-)
 ouais je sais, c'est franchement de la frime et ça sert à rien, mais si on ne peut plus s'amuser sur une projet
@@ -24,46 +25,43 @@ header('content-type: text/css');
 //Évitons que soit rechargée cette page à chaque coup, elle ne bouge pas beaucoup
 header('Cache-Control: max-age=86000');
 
-
-//Génération dynamique de certaines couleurs selon la saison
-$mois=date("n");
-if ($mois>9 and $mois<12)
-  $periode="automne";
-elseif ($mois>=4 and $mois<=6)
-  $periode="printemps";
-elseif ($mois>=7 and $mois<=9)
-  $periode="été";
-else
-  $periode="hiver"; // notre thème par défaut
-
-switch ($periode)
-{
-  case "hiver":
-    $couleur_fond="f2f2f2";
-    $couleur_lien="006699";
-    $couleur_lien_visite="006699";
-    $couleur_decoration_titres="A6CEE7";
-    $couleur_legende="EEF";
-    break;
-  case "printemps":case "été":
-    $couleur_fond="f5fde8";
-    $couleur_lien="5f8c11";
-    $couleur_lien_visite="5f8c11";
-    $couleur_decoration_titres="77dc63";
-    $couleur_legende="d1f0d0";
-    break;
-  case "automne":
-    $couleur_fond="f6e8c2";
-    $couleur_lien="cf5d32";
-    $couleur_lien_visite=$couleur_lien;
-    $couleur_decoration_titres="bd742c";
-    $couleur_legende="c1ac96";
-    break;
-}
-
 ?>
 /*==================================================================*/
-/* Modification du style du nouveau forum PhpBB3-prosilver          */
+/* Couleurs du mode normal des pages du site                        */
+/*==================================================================*/
+:root {
+<?php // DOM 09/2025 on passe des constantes PHP aux constantes CSS
+switch ($periode) {
+	  case "hiver":
+?>	--couleur_lien: #006699;
+	--couleur_fond: #f2f2f2;
+	--couleur_fond_titres_clairs: #a6cee7;
+	--couleur_fond_titres_fonces: #eef;
+<?php
+	break;
+	case "automne":
+?>	--couleur_lien: #cf5d32;
+	--couleur_fond: #f6e8c2;
+	--couleur_fond_titres_clairs: #bd742c;
+	--couleur_fond_titres_fonces: #c1ac96;
+<?php
+	break;
+	default: // printemps, été
+?>	--couleur_lien: #5f8c11;
+	--couleur_fond: #f5fde8;
+	--couleur_fond_titres_clairs: #77dc63;
+	--couleur_fond_titres_fonces: #d1f0d0;
+<?php
+}	// Couleurs communes au style de base
+?>	--couleur_texte: black;
+	--couleur_titre: white;
+	--couleur_lien_visite: var(--couleur_lien);
+	--couleur_fond_moyene: #cef99c;
+	--image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
+}
+
+/*==================================================================*/
+/* Modification du style du forum PhpBB3-prosilver                  */
 /*==================================================================*/
 /* Pas de ligne vide en haut */
 #phpbb {
@@ -77,7 +75,7 @@ switch ($periode)
 
 /* Titre des forums de refuges */
 #phpbb .section-viewtopic .topic-title a:first-child {
-  color: black !important;
+  color: var(--couleur_texte) !important;
 }
 
 #phpbb .wri-link {
@@ -90,7 +88,7 @@ switch ($periode)
 /* Personnalisation des couleurs */
 #phpbb .navbar,
 #phpbb .basdepage {
-  background-color: #<?=$couleur_fond?>;
+  background-color: var(--couleur_fond);
 }
 
 #phpbb .headerbar,
@@ -98,7 +96,7 @@ switch ($periode)
 #phpbb .headerbar,
 .forabg,
 #phpbb h3 {
-  background-color: #<?=$couleur_lien?>;
+  background-color: var(--couleur_lien);
   background-image: none;
 }
 
@@ -112,7 +110,7 @@ switch ($periode)
 #phpbb .postbody h3 a,
 #phpbb #postform .review,
 #phpbb #postform .review a {
-  color: white;
+  color: var(--couleur_titre);
 }
 
 #phpbb .stat-block strong a {
@@ -124,7 +122,7 @@ switch ($periode)
 #phpbb .bg3,
 #phpbb .forabg .forums,
 #phpbb .forumbg .topics>li {
-  background-color: #<?=$couleur_fond?>;
+  background-color: var(--couleur_fond);
   background-image: none;
 }
 
@@ -167,7 +165,7 @@ body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  background-color: #<?=$couleur_fond?>;
+  background-color: var(--couleur_fond);
 }
 
 /* zone de contenu */
@@ -177,7 +175,7 @@ body {
 }
 
 .couleur_fond_amplifiee {
-  background-color: #cef99c;
+  background-color: var(--couleur_fond_moyene);
 }
 
 /*=====TEXTE=======*/
@@ -241,8 +239,8 @@ h3 {
   margin: 0em;
   text-align: center;
   margin-bottom: 3px;
-  color: white;
-  background-color: #<?=$couleur_lien?>;
+  color: var(--couleur_titre);
+  background-color: var(--couleur_lien);
 }
 
 h4 {
@@ -366,7 +364,7 @@ form#form_export label {
 
 #form_export fieldset fieldset:hover {
   /* deco sur le fieldset actif, pour bien le differencier des autres */
-  border: thin dotted black;
+  border: thin dotted var(--couleur_texte);
 }
 
 form.wri label {
@@ -441,7 +439,7 @@ img {
 /*=========liens==========*/
 a:hover {
   /*met en valeur les liens qd on est dessus */
-  background-color: #<?=$couleur_legende?>;
+  background-color: var(--couleur_fond_titres_fonces);
   text-decoration: none;
 }
 
@@ -451,6 +449,7 @@ en gros je veux tout de la même couleur
 */
 
 body:not(#phpbb) a,
+.bandeau-haut a,
 a.mainmenu,
 a.nav,
 a.forumlink,
@@ -460,7 +459,7 @@ a.postlink,
 a.gen,
 a.genmed,
 a.gensmall {
-  color: #<?=$couleur_lien?>;
+  color: var(--couleur_lien);
   /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
 }
@@ -497,7 +496,7 @@ body:not(#phpbb) a:visited {
 
   /* Le bandeau */
   .bandeau-haut {
-    background-image: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
+    background-image: var(--image_bandeau);
     background-repeat: no-repeat;
   }
 
@@ -580,7 +579,7 @@ body:not(#phpbb) a:visited {
     margin: 2px 0 0 -4px;
     border-radius: 0 10px 10px 10px;
     border: 2px solid #<?=$couleur_decoration_titres?>;
-    background: #<?=$couleur_fond?>;
+    background: var(--couleur_fond);
     padding: 0 4px;
     opacity: 0;
     z-index: -10;
@@ -620,7 +619,7 @@ body:not(#phpbb) a:visited {
   }
 
   .menu-bouton:not(.menu-liste) {
-    background: #<?=$couleur_fond?>;
+    background: var(--couleur_fond);
   }
 
   .menu-connexion ul {
@@ -682,7 +681,7 @@ body:not(#phpbb) a:visited {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    background: #<?=$couleur_lien?>;
+    background: var(--couleur_lien);
   }
 
   /* Boutons */
@@ -692,14 +691,14 @@ body:not(#phpbb) a:visited {
     padding: 0 8px 2px 8px;
     font-size: 20px;
     font-weight: 700;
-    color: white !important;
+    color: var(--couleur_titre) !important;
     cursor: pointer;
   }
 
   .menu-titre * {
     padding-top: 4px;
     font-size: 18px;
-    color: white !important;
+    color: var(--couleur_titre) !important;
   }
 
   /* Blocs rétractables en dessous des boutons */
@@ -709,7 +708,7 @@ body:not(#phpbb) a:visited {
     border-radius: 0 0 10px 10px;
     border: 2px solid #<?=$couleur_decoration_titres?>;
     padding: 0 4px;
-    background: #<?=$couleur_fond?>;
+    background: var(--couleur_fond);
     white-space: nowrap;
     z-index: -10;
     opacity: 0;
@@ -815,7 +814,7 @@ form {
 
 .liens_avec_decoration {
   border-style: solid;
-  background-color: #<?=$couleur_fond?>;
+  background-color: var(--couleur_fond);
   border-color: #<?=$couleur_decoration_titres?>;
   padding-right: 0.5em;
   padding-left: 0.5em;
@@ -834,12 +833,12 @@ form {
 }
 
 .bloc_commentaire {
-  border: thin solid black;
+  border: thin solid var(--couleur_texte);
   margin-top: 1em;
 }
 
 .commentaire_metainfo {
-  background-color: #<?=$couleur_legende?> ;
+  background-color: var(--couleur_fond_titres_fonces) ;
   border: thin solid black;
   font-weight: bold;
   float: left;
