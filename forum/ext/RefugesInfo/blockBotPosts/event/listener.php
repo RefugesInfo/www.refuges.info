@@ -39,7 +39,7 @@ class listener implements EventSubscriberInterface
 
 		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
 		if (isset($config_wri['no_sid_urls']) &&
-			!$this->server['HTTP_COOKIE'])
+			!isset($this->server['HTTP_COOKIE']))
 			$event['append_sid_overwrite'] = $event['url'];	
 	}
 }
