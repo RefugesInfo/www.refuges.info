@@ -43,13 +43,23 @@ function est_connecte()
   if (!empty($user->data['user_id']))
     return $user->data['user_id'] > 1;
 }
-
+/* retourne true si l'utilisateur identifié dispose d'au moins une permission de modération dans le forum phpBB.
+ * Attention: l'utilisateur peut disposer de cette permission de plusieures manière :
+ * - S'il est dans le groupe modérateur globaux, il dispose alors automatiquement de toutes les permissions que lui confère le groupe
+ * - s'il est dans le groupe administrateur
+ * - Ou si l'utilisateur dispose spécifiquement, dans "permissions avancées", d'au moins une de modération
+ */
 function est_moderateur()
 {
   global $auth;
   return $auth->acl_get('m_');
 }
 
+/* retourne true si l'utilisateur identifié dispose d'au moins une permission d'administration.
+ * Attention: l'utilisateur peut disposer de cette permission de plusieures manière :
+ * - s'il est dans le groupe administrateur
+ * - Ou si l'utilisateur dispose spécifiquement, dans "permissions avancées", d'au moins une d'administration
+ */
 function est_administrateur()
 {
   global $auth;
