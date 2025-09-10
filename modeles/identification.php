@@ -71,4 +71,5 @@ function est_autorise($id_utilisateur)
   global $user;
   if (est_connecte())
     return est_moderateur() || $user->data['user_id'] == $id_utilisateur;
+  return false;
 }
