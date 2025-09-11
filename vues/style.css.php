@@ -82,7 +82,7 @@ switch ($periode)
 @media (prefers-color-scheme: dark) {
   :root {
     --couleur_texte: white;
-  --couleur_bouton: black;
+    --couleur_bouton: black;
     --couleur_fond: #432;
     --couleur_fond_amplifiee: #886544;
     --couleur_lien: #80d4ff;
@@ -800,7 +800,7 @@ div#switch_nav label {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    background: var(--couleur_lien);
+    background: var(--couleur_fond_amplifiee);
   }
 
   /* Boutons */
