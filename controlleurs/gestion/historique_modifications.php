@@ -38,7 +38,7 @@ if (! ($res = $pdo->query($query_log_modification)))
     // Si authentifié, on indique qui a fait la modif
     if ($modification_point->id_user!=0)
         $utilisateur=infos_utilisateur($modification_point->id_user);
-    else
+    elseif (isset($utilisateur))
         $utilisateur->username="anonyme ?";
     
     // si cela concerne un point du site, on fait un lien vers lui pour se simplifier la consultation
