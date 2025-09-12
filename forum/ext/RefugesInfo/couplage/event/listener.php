@@ -72,7 +72,10 @@ class listener implements EventSubscriberInterface
 		}
 
 		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
-		$template->assign_var('STYLE_CSS', fichier_vue('style.css.php', 'chemin_vues', true));
+		$template->assign_var (
+			'STYLE_CSS',
+			fichier_vue('style.css.php', 'chemin_vues', true).'&style='.$user->style['style_name']
+		);
 
 		// On recrée le contexte car on n'est pas dans le MVC de WRI
 		$vue = new \stdClass;

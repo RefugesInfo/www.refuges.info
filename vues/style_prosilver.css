@@ -1,0 +1,167 @@
+/*==================================================================*/
+/* Adaptation du style du forum PhpBB3-prosilver                    */
+/*==================================================================*/
+/* Le html du forum est inclus dans l'élément "wrap" */
+
+/* Pas de ligne vide en haut */
+body#phpbb {
+  padding: 0;
+}
+
+/* Forum de la largeur de la page */
+{
+  max-width: 100%;
+}
+
+/* Titre des forums de refuges */
+.section-viewtopic .topic-title a:first-child {
+  color: var(--couleur_titre) !important;
+}
+
+/* Utilisé dans ext\RefugesInfo\couplage\styles */
+.wri-link {
+  font-size: 70%;
+}
+
+/* Zones masquées */
+.headerbar,
+.navbar .avatar,
+/* Personnalisation des couleurs */
+.navbar,
+.basdepage {
+  background-color: var(--couleur_fond_page);
+}
+
+.headerbar,
+.forumbg,
+.headerbar,
+.forabg,
+h3 {
+  background-color: var(--couleur_fond_titres_fonces);
+  background-image: none;
+}
+
+h3 {
+  font-size: large;
+}
+
+.panel h3,
+.alert_text h3,
+.stat-block h3,
+.stat-block h3 a,
+.headerspace h3,
+.headerspace h3 a,
+.postbody h3,
+.postbody h3 a,
+#postform .review,
+#postform .review a {
+  color: var(--couleur_titre);
+}
+
+.stat-block strong a {
+  color: #a00;
+}
+
+.bg1,
+.bg2,
+.bg3,
+.forabg .forums,
+.forumbg .topics>li {
+  background-color: var(--couleur_fond_page);
+  background-image: none;
+}
+
+dl a.row-item-link:hover {
+  background-color: transparent !important;
+}
+
+/* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
+#nav-footer li:last-child,
+/* Masquage login rapide en bas de page */
+#page-body>form>h3,
+.quick-login {
+  display: none;
+}
+/* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
+ul#nav-main > li > a[href*="contactadmin"] {
+  display: none;
+}
+
+.section-posting #attach-panel-multi::after {
+  content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
+  background: yellow;
+}
+
+.text-strong {
+  color: initial;
+}
+
+/* Couleurs du mode sombre du forum */
+@media (prefers-color-scheme: dark) {
+  /* Couleurs des caractères */
+  .wrap .author,
+  .wrap .author span,
+  .wrap cite,
+  .wrap code,
+  .wrap .content,
+  .wrap dd,
+  .wrap dd span,
+  .wrap dt,
+  .wrap dt span,
+  .wrap h2,
+  .wrap h3,
+  .wrap label,
+  .wrap p,
+  .wrap .panel,
+  .wrap .postprofile strong,
+  .wrap .row,
+  .wrap .signature,
+  .wrap .text-strong,
+  .wrap td {
+    color: var(--couleur_texte) !important;
+  }
+
+  .wrap .button span {
+    color: var(--couleur_bouton) !important;
+  }
+
+  .wrap a,
+  .wrap a p,
+  .wrap a span,
+  .wrap a strong {
+    color: var(--couleur_lien) !important;
+  }
+
+  .wrap a:hover,
+  .wrap .active-subsection a,
+  .wrap blockquote,
+  .wrap blockquote blockquote,
+  .wrap blockquote div,
+  .wrap .codebox,
+  .wrap .cp-menu li:not(active-subsection) a,
+  .wrap li.row:hover,
+  .wrap .logo,
+  .wrap .panel,
+  .wrap .searchresults li,
+  .wrap table.table1 tbody tr:hover,
+  .wrap .tabs .activetab a {
+    background-color: var(--couleur_fond_amplifiee) !important;
+    background-image: none;
+  }
+
+  /* Couleurs de fond du mode sombre */
+  .wrap,
+  .wrap .cp-menu,
+  .wrap .cp-menu li:not(.active-subsection) a,
+  .wrap .cp-mini,
+  .wrap .dropdown-contents a:not(:hover),
+  .wrap .post,
+  .wrap .tabs .tab:not(.activetab) a,
+  .wrap ul {
+    background-color: var(--couleur_fond_page) !important;
+  }
+
+ .panel.bg3 {
+    border: 2px solid #cadceb;
+  }
+}
