@@ -6,7 +6,7 @@
 
 <div id="carte-edit"></div>
 
-<div id="selecteur-carte-edit" class="noprint">
+<div id="selecteur-carte-edit" class="selecteur-carte-edit noprint">
   <fieldset>
     <legend><?=!empty($vue->polygone->id_polygone)?'Édition':'Création'?></legend>
     <form method="post" action="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone??0?>" >
