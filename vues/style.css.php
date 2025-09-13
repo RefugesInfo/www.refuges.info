@@ -1,8 +1,7 @@
-/*===================================================================*/
-/* La seule et unique feuille de style CSS des pages de refuges.info */
-/*===================================================================*/
 <?php
-/*********************************************************************
+/***********************************************************************************************
+La seule et unique feuille de style CSS du site refuges.info
+
 Pourquoi une feuille de style en .php ?
 - le but c'est de faire un style dynamique selon la saison pour changer les couleurs ;-)
 ouais je sais, c'est franchement de la frime et ça sert à rien, mais si on ne peut plus s'amuser sur une projet
@@ -19,11 +18,12 @@ qui ne servent nulle part, pas mal de redondance, un manque de cohérence sur le
 Un support parfois médiocre des petites écrans, des adressages par id, par class. Bref, ça mériterait vraiment un coup de neuf.
 Celui qui a le courage à bien sûr mon feu vert !
 Notes de sly sur l'année 2024: j'ai fais mal de ménage, ré-indenté tout ça, bref, ça va mieux, mais c'est pas fini !
-*********************************************************************/
+***********************************************************************************************/
 
 header('content-type: text/css');
 //Évitons que soit rechargée cette page à chaque coup, elle ne bouge pas beaucoup
 header('Cache-Control: max-age=86000');
+
 
 //Génération dynamique de certaines couleurs selon la saison
 $mois=date("n");
@@ -62,6 +62,7 @@ switch ($periode)
 }
 ?>
 
+/* DOM 09/2025 on passe des constantes PHP aux constantes CSS */
 /* Couleurs du mode normal des pages du site */
 :root {
   --couleur_texte: black;
@@ -94,6 +95,174 @@ switch ($periode)
 }
 
 /*==================================================================*/
+/* Style du forum PhpBB3-prosilver                                  */
+/*==================================================================*/
+/* Le html du forum est inclus dans l'élément "wrap" */
+
+/* Pas de ligne vide en haut */
+body#phpbb {
+  padding: 0;
+}
+
+/* Forum de la largeur de la page */
+.wrap {
+  max-width: 100%;
+}
+
+/* Titre des forums de refuges */
+.wrap .section-viewtopic .topic-title a:first-child {
+  color: var(--couleur_titre) !important;
+}
+
+/* Utilisé dans ext\RefugesInfo\couplage\styles */
+.wrap .wri-link {
+  font-size: 70%;
+}
+
+/* Zones masquées */
+.wrap .headerbar,
+.wrap .navbar .avatar,
+/* Personnalisation des couleurs */
+.wrap .navbar,
+.wrap .basdepage {
+  background-color: var(--couleur_fond_page);
+}
+
+.wrap .headerbar,
+.wrap .forumbg,
+.wrap .headerbar,
+.wrap .forabg,
+.wrap h3 {
+  background-color: var(--couleur_fond_titres_fonces);
+  background-image: none;
+}
+
+.wrap h3 {
+  font-size: large;
+}
+
+.wrap .panel h3,
+.wrap .alert_text h3,
+.wrap .stat-block h3,
+.wrap .stat-block h3 a,
+.wrap .headerspace h3,
+.wrap .headerspace h3 a,
+.wrap .postbody h3,
+.wrap .postbody h3 a,
+.wrap #postform .review,
+.wrap #postform .review a {
+  color: var(--couleur_titre);
+}
+
+.wrap .stat-block strong a {
+  color: #a00;
+}
+
+.wrap .bg1,
+.wrap .bg2,
+.wrap .bg3,
+.wrap .forabg .forums,
+.wrap .forumbg .topics>li {
+  background-color: var(--couleur_fond_page);
+  background-image: none;
+}
+
+.wrap dl a.row-item-link:hover {
+  background-color: transparent !important;
+}
+
+/* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
+.wrap #nav-footer li:last-child,
+/* Masquage login rapide en bas de page */
+.wrap #page-body>form>h3,
+.wrap .quick-login {
+  display: none;
+}
+/* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
+.wrap ul#nav-main > li > a[href*="contactadmin"] {
+  display: none;
+}
+
+.wrap .section-posting #attach-panel-multi::after {
+  content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
+  background: yellow;
+}
+
+.wrap .text-strong {
+  color: initial;
+}
+
+/* Couleurs du mode sombre du forum */
+@media (prefers-color-scheme: dark) {
+  /* Couleurs des caractères */
+  .wrap .author,
+  .wrap .author span,
+  .wrap cite,
+  .wrap code,
+  .wrap .content,
+  .wrap dd,
+  .wrap dd span,
+  .wrap dt,
+  .wrap dt span,
+  .wrap h2,
+  .wrap h3,
+  .wrap label,
+  .wrap p,
+  .wrap .panel,
+  .wrap .postprofile strong,
+  .wrap .row,
+  .wrap .signature,
+  .wrap .text-strong,
+  .wrap td {
+    color: var(--couleur_texte) !important;
+  }
+
+  .wrap .button span {
+    color: var(--couleur_bouton) !important;
+  }
+
+  .wrap a,
+  .wrap a p,
+  .wrap a span,
+  .wrap a strong {
+    color: var(--couleur_lien) !important;
+  }
+
+  .wrap a:hover,
+  .wrap .active-subsection a,
+  .wrap blockquote,
+  .wrap blockquote blockquote,
+  .wrap blockquote div,
+  .wrap .codebox,
+  .wrap .cp-menu li:not(active-subsection) a,
+  .wrap li.row:hover,
+  .wrap .logo,
+  .wrap .panel,
+  .wrap .searchresults li,
+  .wrap table.table1 tbody tr:hover,
+  .wrap .tabs .activetab a {
+    background-color: var(--couleur_fond_amplifiee) !important;
+    background-image: none;
+  }
+
+  /* Couleurs de fond du mode sombre */
+  .wrap,
+  .wrap .cp-menu,
+  .wrap .cp-menu li:not(.active-subsection) a,
+  .wrap .cp-mini,
+  .wrap .dropdown-contents a:not(:hover),
+  .wrap .post,
+  .wrap .tabs .tab:not(.activetab) a,
+  .wrap ul {
+    background-color: var(--couleur_fond_page) !important;
+  }
+
+ .panel.bg3 {
+    border: 2px solid #cadceb;
+  }
+}
+
+/*==================================================================*/
 /* Styles communs au site et au forum                               */
 /*==================================================================*/
 html {
@@ -118,12 +287,6 @@ body {
     display: none;
   }
 }
-
-<?php
-// Adaptation du style du forum PhpBB3-prosilver                                  */
-if (isset ($_GET['style']))
-	include ('style_'.$_GET['style'].'.css');
-?>
 
 /*==================================================================*/
 /* Styles propre au site                                            */
