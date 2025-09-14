@@ -72,7 +72,10 @@ class listener implements EventSubscriberInterface
 		}
 
 		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
-		$template->assign_var('STYLE_CSS', fichier_vue('style.css.php', 'chemin_vues', true));
+		$template->assign_vars([
+			'STYLE_CSS' => fichier_vue('style.css.php', 'chemin_vues', true),
+			'STYLE_FORUM_CSS' => fichier_vue('style_forum.css', 'chemin_vues', true),
+		]);
 
 		// On recrée le contexte car on n'est pas dans le MVC de WRI
 		$vue = new \stdClass;
@@ -89,6 +92,7 @@ class listener implements EventSubscriberInterface
 			$vue->email_en_erreur=info_email_bounce ();
 		}
 
+		// Récupère le contenu des fichiers pour les affecter à des variables du template PhpBB
 		ob_start();
 		include(fichier_vue('_bandeau.html'));
 		$template->assign_var('BANDEAU', ob_get_clean());
