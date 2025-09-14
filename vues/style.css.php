@@ -1,18 +1,8 @@
-
-
+/*===================================================================*/
+/* La seule et unique feuille de style CSS des pages de refuges.info */
+/*===================================================================*/
 <?php
-$forum_colors = file_get_contents('style_forum.css');
-
-echo $forum_colors;
-?>
-
-
-
-
-<?php
-/***********************************************************************************************
-La seule et unique feuille de style CSS du site refuges.info
-
+/*********************************************************************
 Pourquoi une feuille de style en .php ?
 - le but c'est de faire un style dynamique selon la saison pour changer les couleurs ;-)
 ouais je sais, c'est franchement de la frime et ça sert à rien, mais si on ne peut plus s'amuser sur une projet
@@ -29,7 +19,7 @@ qui ne servent nulle part, pas mal de redondance, un manque de cohérence sur le
 Un support parfois médiocre des petites écrans, des adressages par id, par class. Bref, ça mériterait vraiment un coup de neuf.
 Celui qui a le courage à bien sûr mon feu vert !
 Notes de sly sur l'année 2024: j'ai fais mal de ménage, ré-indenté tout ça, bref, ça va mieux, mais c'est pas fini !
-***********************************************************************************************/
+*********************************************************************/
 
 header('content-type: text/css');
 //Évitons que soit rechargée cette page à chaque coup, elle ne bouge pas beaucoup
@@ -72,7 +62,7 @@ switch ($periode)
 function inv($couleur) {
   $hex = '0123456789abcdef';
   for($i = 0; $i < strlen($couleur); $i++)
-    $couleur[$i] = $hex[15 - strpos ($hex, $couleur[$i])];
+    $couleur[$i] = $hex[15 - strpos ($hex, strtolower($couleur[$i]))];
   return $couleur;
 }
 
@@ -98,10 +88,134 @@ function inv($couleur) {
     --couleur_lien: #<?=$couleur_lien?>;
     --couleur_decoration_titres: #<?=inv($couleur_decoration_titres)?>;
     --couleur_legende: #<?=inv($couleur_legende)?>;
+
+    <?php // On surcharge les couleurs du forum par les couleurs inversées
+    $nf = '../forum/styles/prosilver/theme/colours.css';
+    echo  preg_replace_callback (
+      '/#([0-9A-Fa-f]+)/',
+      function ($matches) {
+        return '#'.inv($matches[1]);
+      },
+      file_get_contents($nf)
+    );
+    ?>
   }
 }
 
-/* Le style du forum est maintenant dans /vues/style_forum.css */
+/*==================================================================*/
+/* Modifications de refuges.info                                    */
+/*==================================================================*/
+/* Pas de ligne vide en haut */
+#phpbb {
+  padding: 0;
+}
+
+/* Forum de la largeur de la page */
+#phpbb .wrap {
+  max-width: 100%;
+}
+
+/* Titre des forums de refuges */
+#phpbb .section-viewtopic .topic-title a:first-child {
+  color: var(--couleur_texte) !important;
+}
+
+#phpbb .wri-link {
+  font-size: 70%;
+}
+
+/* Zones masquées */
+#phpbb .wrap,
+#phpbb .headerbar,
+#phpbb .navbar .avatar,
+/* Personnalisation des couleurs */
+#phpbb .navbar,
+#phpbb .basdepage {
+  background-color: var(--couleur_fond);
+}
+
+.forumbg,
+.forabg,
+#phpbb .headerbar,
+#phpbb h3 {
+  background-color: var(--couleur_lien);
+  background-image: none;
+}
+
+#phpbb a {
+  color: var(--couleur_lien);
+}
+
+#phpbb span[style="color: #000000;"] {
+  color: grey !important;
+}
+
+#phpbb a {
+  color: var(--couleur_lien);
+}
+
+#phpbb .panel h3,
+#phpbb .alert_text h3,
+#phpbb .stat-block h3,
+#phpbb .stat-block h3 a,
+#phpbb .headerspace h3,
+#phpbb .headerspace h3 a,
+#phpbb .postbody h3,
+#phpbb .postbody h3 a,
+#phpbb #postform .review,
+#phpbb #postform .review a {
+  color: var(--couleur_titre);
+}
+
+#phpbb h2,
+#phpbb blockquote,
+#phpbb .postprofile dd strong,
+#phpbb .author,
+#phpbb .content {
+  color: var(--couleur_texte);
+}
+
+#phpbb blockquote {
+  background-color: var(--couleur_legende);
+}
+
+#phpbb .stat-block strong a {
+  color: #a00;
+}
+
+#phpbb .bg1,
+#phpbb .bg2,
+#phpbb .bg3,
+#phpbb .forabg .forums,
+#phpbb .forumbg .topics>li {
+  background-color: var(--couleur_fond);
+  background-image: none;
+}
+
+#phpbb dl a.row-item-link:hover {
+  background-color: transparent !important;
+}
+
+/* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
+#nav-footer li:last-child,
+/* Masquage login rapide en bas de page */
+#page-body>form>h3,
+.quick-login {
+  display: none;
+}
+/* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
+ul#nav-main > li > a[href*="contactadmin"] {
+  display: none;
+}
+
+.section-posting #attach-panel-multi::after {
+  content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
+  background: yellow;
+}
+
+.text-strong {
+  color: initial;
+}
 
 /*==================================================================*/
 /* Styles communs au site et au forum                               */
@@ -429,7 +543,7 @@ body:not(#phpbb) a:visited {
 }
 
 /*==================================================================*/
-/*  Entête de page : Logo, menus, identification                    */
+/* Entête de page : Logo, menus, identification                     */
 /*==================================================================*/
 .bandeau-haut * {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;

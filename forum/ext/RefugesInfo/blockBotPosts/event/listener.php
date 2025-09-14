@@ -4,10 +4,13 @@ namespace RefugesInfo\blockBotPosts\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
-	static public function getSubscribedEvents () {
+	public function __construct() {
 		global $request;
-		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
 
+		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
+	}
+
+	static public function getSubscribedEvents () {
 		return [
 			'core.ucp_register_data_after' => 'filter', // ucp_register.php 265
 			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
