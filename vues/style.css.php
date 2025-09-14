@@ -84,7 +84,7 @@ function inv($couleur) {
   :root {
     --couleur_texte: white;
     --couleur_titre: black;
-    --couleur_fond: #<?=inv($couleur_fond)?>;
+    --couleur_fond: #281808;
     --couleur_lien: #<?=$couleur_lien?>;
     --couleur_decoration_titres: #<?=inv($couleur_decoration_titres)?>;
     --couleur_legende: #<?=inv($couleur_legende)?>;
@@ -115,11 +115,6 @@ function inv($couleur) {
   max-width: 100%;
 }
 
-/* Titre des forums de refuges */
-#phpbb .section-viewtopic .topic-title a:first-child {
-  color: var(--couleur_texte) !important;
-}
-
 #phpbb .wri-link {
   font-size: 70%;
 }
@@ -147,7 +142,7 @@ function inv($couleur) {
 }
 
 #phpbb li.row {
-	border-bottom-color: var(--couleur_lien);
+  border-bottom-color: var(--couleur_lien);
 }
 
 #phpbb span[style="color: #000000;"] {
@@ -171,6 +166,8 @@ function inv($couleur) {
   color: var(--couleur_titre);
 }
 
+#phpbb .section-viewtopic .topic-title a:first-child,
+#phpbb .text-strong,
 #phpbb h2,
 #phpbb blockquote,
 #phpbb .postprofile dd strong,
@@ -226,16 +223,12 @@ ul#nav-main > li > a[href*="contactadmin"] {
 /*==================================================================*/
 /*===== Général =======*/
 
-html {
-  width: 100%;
-  height: 100%;
-}
-
+html,
 body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  background-color: var(--couleur_fond);
+  background-color: var(--couleur_fond) !important;
 }
 
 /* zone de contenu */
