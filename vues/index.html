@@ -25,15 +25,12 @@
 		<br>
 		<dd>
 			<?php if (isset($vue->nouveaux_commentaires)) 
-				foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {
-					if (isset ($nouveau_commentaire->photo_existe) &&
-						isset ($nouveau_commentaire->lien_photo)) { ?>
-					<a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"
-						title="<?=$nouveau_commentaire->nom?>">
-						<img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>" />
-					</a>
-				<?	 }
-				} ?>
+				foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {  if ($nouveau_commentaire->photo_existe) {
+				  ?>
+				<a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>" title="<?=$nouveau_commentaire->nom?>">
+					<img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>" />
+				</a>
+			<?}}?>
 		</dd>
 		<br>
 
