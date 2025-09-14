@@ -134,8 +134,8 @@ function inv($couleur) {
   background-color: var(--couleur_fond);
 }
 
-.forumbg,
-.forabg,
+#phpbb .forumbg,
+#phpbb .forabg,
 #phpbb .headerbar,
 #phpbb h3 {
   background-color: var(--couleur_lien);
@@ -144,6 +144,10 @@ function inv($couleur) {
 
 #phpbb a {
   color: var(--couleur_lien);
+}
+
+#phpbb li.row {
+	border-bottom-color: var(--couleur_lien);
 }
 
 #phpbb span[style="color: #000000;"] {
