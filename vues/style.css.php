@@ -40,29 +40,32 @@ else
 switch ($periode)
 {
   case "hiver":
-    $couleur_fond="f2f2f2";
+    $couleur_fond="F2F2F2";
     $couleur_lien="006699";
+    $couleur_lien_clair="00AAFF";
     $couleur_decoration_titres="A6CEE7";
     $couleur_legende="EEF";
     break;
   case "printemps":case "été":
-    $couleur_fond="f5fde8";
-    $couleur_lien="5f8c11";
-    $couleur_decoration_titres="77dc63";
-    $couleur_legende="d1f0d0";
+    $couleur_fond="F5FDE8";
+    $couleur_lien="5F8C11";
+    $couleur_lien_clair="9AE31C";
+    $couleur_decoration_titres="77DC63";
+    $couleur_legende="D1F0D0";
     break;
   case "automne":
-    $couleur_fond="f6e8c2";
-    $couleur_lien="cf5d32";
-    $couleur_decoration_titres="bd742c";
-    $couleur_legende="c1ac96";
+    $couleur_fond="F6E8C2";
+    $couleur_lien="CF5D32";
+    $couleur_lien_clair="D36B45";
+    $couleur_decoration_titres="BD742C";
+    $couleur_legende="C1AC96";
     break;
 }
 
 function inv($couleur) {
-  $hex = '0123456789abcdef';
+  $hex = '0123456789ABCDEF';
   for($i = 0; $i < strlen($couleur); $i++)
-    $couleur[$i] = $hex[15 - strpos ($hex, strtolower($couleur[$i]))];
+    $couleur[$i] = $hex[15 - strpos ($hex, strtoupper($couleur[$i]))];
   return $couleur;
 }
 
@@ -72,8 +75,9 @@ function inv($couleur) {
 :root {
   --couleur_texte: black;
   --couleur_titre: white;
-  --couleur_fond: #<?=$couleur_fond?>;
   --couleur_lien: #<?=$couleur_lien?>;
+  --couleur_fond_titre: #<?=$couleur_lien?>;
+  --couleur_fond: #<?=$couleur_fond?>;
   --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
   --couleur_legende: #<?=$couleur_legende?>;
   --image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
@@ -84,8 +88,8 @@ function inv($couleur) {
   :root {
     --couleur_texte: white;
     --couleur_titre: black;
-    --couleur_fond: #281808;
-    --couleur_lien: #<?=$couleur_lien?>;
+    --couleur_lien: #<?=$couleur_lien_clair?>;
+    --couleur_fond: #100800;
     --couleur_decoration_titres: #<?=inv($couleur_decoration_titres)?>;
     --couleur_legende: #<?=inv($couleur_legende)?>;
 
@@ -133,7 +137,7 @@ function inv($couleur) {
 #phpbb .forabg,
 #phpbb .headerbar,
 #phpbb h3 {
-  background-color: var(--couleur_lien);
+  background-color: var(--couleur_fond_titre);
   background-image: none;
 }
 
@@ -147,10 +151,6 @@ function inv($couleur) {
 
 #phpbb span[style="color: #000000;"] {
   color: grey !important;
-}
-
-#phpbb a {
-  color: var(--couleur_lien);
 }
 
 #phpbb .panel h3,
@@ -243,6 +243,14 @@ body {
   background-color: #cef99c;
 }
 
+textarea {
+  margin-left: 1px;
+  border: thin solid red;
+  border-radius: 5px;
+  background-color: var(--couleur_fond);
+  color: var(--couleur_texte);
+}
+
 /*=====TEXTE=======*/
 strong {
   /* Strong Emphasis: gras+rouge */
@@ -305,7 +313,7 @@ h3 {
   text-align: center;
   margin-bottom: 3px;
   color: var(--couleur_titre);
-  background-color: var(--couleur_lien);
+  background-color: var(--couleur_fond_titre);
 }
 
 h4 {
@@ -745,7 +753,7 @@ body:not(#phpbb) a:visited {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    background: var(--couleur_lien);
+    background: var(--couleur_fond_titre);
   }
 
   /* Boutons */
