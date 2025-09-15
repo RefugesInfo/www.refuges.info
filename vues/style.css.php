@@ -94,14 +94,17 @@ function inv($couleur) {
     --couleur_legende: #<?=inv($couleur_legende)?>;
 
     <?php // On surcharge les couleurs du forum par les couleurs inversées
-    $nf = '../forum/styles/prosilver/theme/colours.css';
-    echo  preg_replace_callback (
-      '/#([0-9A-Fa-f]+)/',
-      function ($matches) {
-        return '#'.inv($matches[1]);
-      },
-      file_get_contents($nf)
-    );
+      $nf = '../forum/styles/prosilver/theme/colours.css';
+      echo preg_replace_callback_array(
+        [
+          'background-image: url[^;]*;' => function () {},
+
+          '#([0-9A-Fa-f]+)' => function ($match) {
+            return '#'.inv($matches[1]);
+          }
+        ],
+        file_get_contents($nf)
+      );
     ?>
   }
 }
@@ -229,6 +232,11 @@ body {
   width: 100%;
   height: 100%;
   background-color: var(--couleur_fond) !important;
+}
+
+/* Sauf les cartes */
+.ol-viewport * {
+  color: initial;
 }
 
 /* zone de contenu */
@@ -941,7 +949,6 @@ form {
 }
 
 .texte_sur_image {
-  color: var(--couleur_titre);
   text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
     1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
   position: absolute;
