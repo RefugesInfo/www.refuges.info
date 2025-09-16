@@ -2,6 +2,31 @@
 /* La seule et unique feuille de style CSS des pages de refuges.info */
 /*===================================================================*/
 <?php
+
+/*
+Validation CSS
+Signature forum gris pâle.
+a) le nom du point en noir sur noir pas lisible
+Histoire aussi de pinailler : je remonterais dans le bandeau le lien "Refuges.info" et le lien du nom d'utilisateur de, disons, trois pixels vers le haut.
+Historique des traces : texte blanc !
+
+a) le nom du point en noir sur noir pas lisible-> J'ai pas vu où ou j'ai déjà corrigé.
+e) ressources/outils/scan_liens/ -> Un peu hors de contexte de la feuille de style, je fais l'impasse.
+h) L'admin pannel est intouchable... pour une raison que chacun comprendra.
+Pascal) remonter dans le bandeau le lien "Refuges.info" et le lien du nom d'utilisateur de, disons, trois pixels vers le hau -> J'ai enfin réussi à reproduire le problème qui ne se produit que pour certains types de terminaux mais je n'ai pas réussi à comprendre pourquoi. Je garde pour plus tard.
+
+Pascal250916
+- Ex. trouvée sur : viewtopic.php?t=16169
+"Modifié en dernier par Claude Mauguier le 16 sept. 2025 09:24, modifié 1 fois.
+Raison : Le nom de la fiche a été changée, le titre du forum change aussi. Il était Sanws nom" : À part "Claude Mauguier" et "Raison" :le texte ne contraste pas assez avec le fond.
+Dans le pied de page : "Développé par phpBB® Forum Software © phpBB Limited
+Traduit par phpBB-fr.com" : Même problème (sauf phpBB) mais moins que le premier cas. ce doit être dû à la taille des caractères.
+
+- Dans le panneau de modération et le panneau de l'utilisateur, le texte vert ne contraste pas assez avec la couleur de fond (trop sombre) des liens non actifs.
+
+( ! ) Deprecated: Creation of dynamic property RefugesInfo\blockBotPosts\event\listener::$server is deprecated in /home/users/dom/dom2.refuges.info/forum/ext/RefugesInfo/blockBotPosts/event/listener.php on line 10
+*/
+
 /*********************************************************************
 Pourquoi une feuille de style en .php ?
 - le but c'est de faire un style dynamique selon la saison pour changer les couleurs ;-)
@@ -95,6 +120,7 @@ function inv($couleur) {
 
     <?php // On surcharge les couleurs du forum par les couleurs inversées
       $nf = '../forum/styles/prosilver/theme/colours.css';
+
       echo preg_replace_callback_array(
         [
           'background-image: url[^;]*;' => function () {},
@@ -139,21 +165,19 @@ function inv($couleur) {
 #phpbb .forumbg,
 #phpbb .forabg,
 #phpbb .headerbar,
+#phpbb .topiclist li,
 #phpbb h3 {
+  color: var(--couleur_texte);
   background-color: var(--couleur_fond_titre);
   background-image: none;
 }
 
-#phpbb a {
+#phpbb a:not(.button) {
   color: var(--couleur_lien);
 }
 
 #phpbb li.row {
   border-bottom-color: var(--couleur_lien);
-}
-
-#phpbb span[style="color: #000000;"] {
-  color: grey !important;
 }
 
 #phpbb .panel h3,
@@ -164,6 +188,7 @@ function inv($couleur) {
 #phpbb .headerspace h3 a,
 #phpbb .postbody h3,
 #phpbb .postbody h3 a,
+#phpbb input[type="submit"],
 #phpbb #postform .review,
 #phpbb #postform .review a {
   color: var(--couleur_titre);
@@ -175,8 +200,11 @@ function inv($couleur) {
 #phpbb blockquote,
 #phpbb .postprofile dd strong,
 #phpbb .author,
-#phpbb .content {
-  color: var(--couleur_texte);
+#phpbb .content,
+#phpbb .postbody,
+#phpbb .postprofile,
+#phpbb span[style="color: #000000;"] {
+  color: var(--couleur_texte) !important;
 }
 
 #phpbb blockquote {
@@ -231,7 +259,8 @@ body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  background-color: var(--couleur_fond) !important;
+  color: var(--couleur_texte);
+  background-color: var(--couleur_fond);
 }
 
 /* Sauf les cartes */
@@ -244,7 +273,11 @@ body {
 .contenu {
   margin: 0.5%;
   margin-top: 3px;
-  color: var(--couleur_texte);
+  color: var(--wwwwwcouleur_texte);
+}
+
+table, tr, td, th {
+  border-color: var(--couleur_texte) !important;
 }
 
 .couleur_fond_amplifiee {
@@ -256,7 +289,7 @@ textarea {
   border: thin solid red;
   border-radius: 5px;
   background-color: var(--couleur_fond);
-  color: var(--couleur_texte);
+  color: var(--wwwwwcouleur_texte);
 }
 
 /*=====TEXTE=======*/
@@ -445,7 +478,7 @@ form#form_export label {
 
 #form_export fieldset fieldset:hover {
   /* deco sur le fieldset actif, pour bien le differencier des autres */
-  border: thin dotted var(--couleur_texte);
+  border: thin dotted var(--wwwwwcouleur_texte);
 }
 
 form.wri label {
@@ -642,6 +675,9 @@ body:not(#phpbb) a:visited {
     border-radius: 10px;
     padding: 2px;
   }
+				wwwww.menu-bouton >* {
+				  background: yellow;
+				}
 
   .menu-bouton:not(.menu-liste):hover {
     border-radius: 10px 10px 0 0;
@@ -913,17 +949,17 @@ form {
 }
 
 .bloc_commentaire {
-  border: thin solid var(--couleur_texte);
+  border: thin solid var(--wwwwwcouleur_texte);
   margin-top: 1em;
 }
 
 .commentaire_metainfo {
   background-color: var(--couleur_legende);
-  border: thin solid var(--couleur_texte);
+  border: thin solid var(--wwwwwcouleur_texte);
   font-weight: bold;
   float: left;
   margin: -0.6em 1em 0em 1em;
-  border: thin solid var(--couleur_texte);
+  border: thin solid var(--wwwwwcouleur_texte);
 }
 
 .spacer {
@@ -968,7 +1004,7 @@ form {
 }
 
 .point_forum em {
-  color: var(--couleur_texte) !important;
+  color: var(--wwwwwcouleur_texte) !important;
 }
 
 /*==================================================================*/

@@ -4,12 +4,6 @@ namespace RefugesInfo\blockBotPosts\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
-	public function __construct() {
-		global $request;
-
-		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
-	}
-
 	static public function getSubscribedEvents () {
 		return [
 			'core.ucp_register_data_after' => 'filter', // ucp_register.php 265
@@ -41,8 +35,9 @@ class listener implements EventSubscriberInterface
 
 	// Do not add sid to urls if cookies not enabled
 	public function append_sid ($event) {
-		global $config_wri;
+		global $request, $config_wri;
 
+		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
 		if (isset($config_wri['no_sid_urls']) &&
 			!isset($this->server['HTTP_COOKIE']))
 			$event['append_sid_overwrite'] = $event['url'];	
