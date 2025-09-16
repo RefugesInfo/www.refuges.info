@@ -1,7 +1,8 @@
+/*===================================================================*/
+/* La seule et unique feuille de style CSS des pages de refuges.info */
+/*===================================================================*/
 <?php
-/***********************************************************************************************
-La seule et unique feuille de style CSS du site refuges.info
-
+/*********************************************************************
 Pourquoi une feuille de style en .php ?
 - le but c'est de faire un style dynamique selon la saison pour changer les couleurs ;-)
 ouais je sais, c'est franchement de la frime et ça sert à rien, mais si on ne peut plus s'amuser sur une projet
@@ -18,7 +19,7 @@ qui ne servent nulle part, pas mal de redondance, un manque de cohérence sur le
 Un support parfois médiocre des petites écrans, des adressages par id, par class. Bref, ça mériterait vraiment un coup de neuf.
 Celui qui a le courage à bien sûr mon feu vert !
 Notes de sly sur l'année 2024: j'ai fais mal de ménage, ré-indenté tout ça, bref, ça va mieux, mais c'est pas fini !
-***********************************************************************************************/
+*********************************************************************/
 
 header('content-type: text/css');
 //Évitons que soit rechargée cette page à chaque coup, elle ne bouge pas beaucoup
@@ -39,301 +40,261 @@ else
 switch ($periode)
 {
   case "hiver":
+    $couleur_fond="F2F2F2";
     $couleur_lien="006699";
-    $couleur_lien_visite="006699";
-    $couleur_fond_page="f2f2f2";
-    $couleur_fond_legende="EEF";
-    $couleur_fond_titres_moyens="A6CEE7";
+    $couleur_lien_clair="00AAFF";
+    $couleur_decoration_titres="A6CEE7";
+    $couleur_legende="EEF";
     break;
   case "printemps":case "été":
-    $couleur_lien="5f8c11";
-    $couleur_lien_visite="5f8c11";
-    $couleur_fond_page="f5fde8";
-    $couleur_fond_legende="d1f0d0";
-    $couleur_fond_titres_moyens="77dc63";
+    $couleur_fond="F5FDE8";
+    $couleur_lien="5F8C11";
+    $couleur_lien_clair="9AE31C";
+    $couleur_decoration_titres="77DC63";
+    $couleur_legende="D1F0D0";
     break;
   case "automne":
-    $couleur_lien="cf5d32";
-    $couleur_lien_visite=$couleur_lien;
-    $couleur_fond_page="f6e8c2";
-    $couleur_fond_legende="c1ac96";
-    $couleur_fond_titres_moyens="bd742c";
+    $couleur_fond="F6E8C2";
+    $couleur_lien="CF5D32";
+    $couleur_lien_clair="D36B45";
+    $couleur_decoration_titres="BD742C";
+    $couleur_legende="C1AC96";
     break;
 }
+
+function inv($couleur) {
+  $hex = '0123456789ABCDEF';
+  for($i = 0; $i < strlen($couleur); $i++)
+    $couleur[$i] = $hex[15 - strpos ($hex, strtoupper($couleur[$i]))];
+  return $couleur;
+}
+
 ?>
 
 /* DOM 09/2025 on passe des constantes PHP aux constantes CSS */
-/* Couleurs du mode normal des pages du site */
 :root {
   --couleur_texte: black;
-  --couleur_bouton: white;
-  --couleur_lien: #<?=$couleur_lien?>;
-  --couleur_lien_visite: #<?=$couleur_lien_visite?>;
   --couleur_titre: white;
-  --couleur_fond_page: #<?=$couleur_fond_page?>;
-  --couleur_fond_legende: #<?=$couleur_fond_legende?>;
-  --couleur_fond_amplifiee: #cef99c;
-  --couleur_fond_titres_moyens: #<?=$couleur_fond_titres_moyens?>;
-  --couleur_fond_titres_fonces: var(--couleur_lien);
+  --couleur_lien: #<?=$couleur_lien?>;
+  --couleur_fond_titre: #<?=$couleur_lien?>;
+  --couleur_fond: #<?=$couleur_fond?>;
+  --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
+  --couleur_legende: #<?=$couleur_legende?>;
   --image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
 }
 
-/* Couleurs du mode sombre des pages du site */
+/* Couleurs du mode sombre */
 @media (prefers-color-scheme: dark) {
   :root {
     --couleur_texte: white;
-    --couleur_bouton: black;
-    --couleur_lien: #80d4ff;
-    --couleur_lien_visite: var(--couleur_lien);
-    --couleur_titre: white;
-    --couleur_fond_page: #432;
-    --couleur_fond_legende: var(--couleur_fond_amplifiee);
-    --couleur_fond_amplifiee: #886544;
-    --couleur_fond_titres_moyens: var(--couleur_fond_amplifiee);
-    --couleur_fond_titres_fonces: var(--couleur_fond_amplifiee);
+    --couleur_titre: black;
+    --couleur_lien: #<?=$couleur_lien_clair?>;
+    --couleur_fond: #100800;
+    --couleur_decoration_titres: #<?=inv($couleur_decoration_titres)?>;
+    --couleur_legende: #<?=inv($couleur_legende)?>;
+
+    <?php // On surcharge les couleurs du forum par les couleurs inversées
+      $nf = '../forum/styles/prosilver/theme/colours.css';
+
+      echo preg_replace_callback_array(
+        [
+          'background-image: url[^;]*;' => function () {},
+
+          '#([0-9A-Fa-f]+)' => function ($match) {
+            return '#'.inv($matches[1]);
+          }
+        ],
+        file_get_contents($nf)
+      );
+    ?>
   }
 }
 
 /*==================================================================*/
-/* Style du forum PhpBB3-prosilver                                  */
+/* Modifications de refuges.info                                    */
 /*==================================================================*/
-/* Le html du forum est inclus dans l'élément "wrap" */
-
 /* Pas de ligne vide en haut */
-body#phpbb {
+#phpbb {
   padding: 0;
 }
 
 /* Forum de la largeur de la page */
-.wrap {
+#phpbb .wrap {
   max-width: 100%;
 }
 
-/* Titre des forums de refuges */
-.wrap .section-viewtopic .topic-title a:first-child {
-  color: var(--couleur_titre) !important;
-}
-
-/* Utilisé dans ext\RefugesInfo\couplage\styles */
-.wrap .wri-link {
+#phpbb .wri-link {
   font-size: 70%;
 }
 
 /* Zones masquées */
-.wrap .headerbar,
-.wrap .navbar .avatar,
+#phpbb .wrap,
+#phpbb .headerbar,
+#phpbb .navbar .avatar,
 /* Personnalisation des couleurs */
-.wrap .navbar,
-.wrap .basdepage {
-  background-color: var(--couleur_fond_page);
+#phpbb .navbar,
+#phpbb .basdepage {
+  background-color: var(--couleur_fond);
 }
 
-.wrap .headerbar,
-.wrap .forumbg,
-.wrap .headerbar,
-.wrap .forabg,
-.wrap h3 {
-  background-color: var(--couleur_fond_titres_fonces);
+#phpbb .forumbg,
+#phpbb .forabg,
+#phpbb .headerbar,
+#phpbb h3 {
+  background-color: var(--couleur_fond_titre);
   background-image: none;
 }
 
-.wrap h3 {
-  font-size: large;
+#phpbb a {
+  color: var(--couleur_lien);
 }
 
-.wrap .panel h3,
-.wrap .alert_text h3,
-.wrap .stat-block h3,
-.wrap .stat-block h3 a,
-.wrap .headerspace h3,
-.wrap .headerspace h3 a,
-.wrap .postbody h3,
-.wrap .postbody h3 a,
-.wrap #postform .review,
-.wrap #postform .review a {
+#phpbb li.row {
+  border-bottom-color: var(--couleur_lien);
+}
+
+#phpbb span[style="color: #000000;"] {
+  color: grey !important;
+}
+
+#phpbb .panel h3,
+#phpbb .alert_text h3,
+#phpbb .stat-block h3,
+#phpbb .stat-block h3 a,
+#phpbb .headerspace h3,
+#phpbb .headerspace h3 a,
+#phpbb .postbody h3,
+#phpbb .postbody h3 a,
+#phpbb #postform .review,
+#phpbb #postform .review a {
   color: var(--couleur_titre);
 }
 
-.wrap .stat-block strong a {
+#phpbb .section-viewtopic .topic-title a:first-child,
+#phpbb .text-strong,
+#phpbb h2,
+#phpbb blockquote,
+#phpbb .postprofile dd strong,
+#phpbb .author,
+#phpbb .content {
+  color: var(--couleur_texte);
+}
+
+#phpbb blockquote {
+  background-color: var(--couleur_legende);
+}
+
+#phpbb .stat-block strong a {
   color: #a00;
 }
 
-.wrap .bg1,
-.wrap .bg2,
-.wrap .bg3,
-.wrap .forabg .forums,
-.wrap .forumbg .topics>li {
-  background-color: var(--couleur_fond_page);
+#phpbb .bg1,
+#phpbb .bg2,
+#phpbb .bg3,
+#phpbb .forabg .forums,
+#phpbb .forumbg .topics>li {
+  background-color: var(--couleur_fond);
   background-image: none;
 }
 
-.wrap dl a.row-item-link:hover {
+#phpbb dl a.row-item-link:hover {
   background-color: transparent !important;
 }
 
 /* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
-.wrap #nav-footer li:last-child,
+#nav-footer li:last-child,
 /* Masquage login rapide en bas de page */
-.wrap #page-body>form>h3,
-.wrap .quick-login {
+#page-body>form>h3,
+.quick-login {
   display: none;
 }
 /* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
-.wrap ul#nav-main > li > a[href*="contactadmin"] {
+ul#nav-main > li > a[href*="contactadmin"] {
   display: none;
 }
 
-.wrap .section-posting #attach-panel-multi::after {
+.section-posting #attach-panel-multi::after {
   content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
   background: yellow;
 }
 
-.wrap .text-strong {
+.text-strong {
   color: initial;
-}
-
-/* Couleurs du mode sombre du forum */
-@media (prefers-color-scheme: dark) {
-  /* Couleurs des caractères */
-  .wrap .author,
-  .wrap .author span,
-  .wrap cite,
-  .wrap code,
-  .wrap .content,
-  .wrap dd,
-  .wrap dd span,
-  .wrap dt,
-  .wrap dt span,
-  .wrap h2,
-  .wrap h3,
-  .wrap label,
-  .wrap p,
-  .wrap .panel,
-  .wrap .postprofile strong,
-  .wrap .row,
-  .wrap .signature,
-  .wrap .text-strong,
-  .wrap td {
-    color: var(--couleur_texte) !important;
-  }
-
-  .wrap .button span {
-    color: var(--couleur_bouton) !important;
-  }
-
-  .wrap a,
-  .wrap a p,
-  .wrap a span,
-  .wrap a strong {
-    color: var(--couleur_lien) !important;
-  }
-
-  .wrap a:hover,
-  .wrap .active-subsection a,
-  .wrap blockquote,
-  .wrap blockquote blockquote,
-  .wrap blockquote div,
-  .wrap .codebox,
-  .wrap .cp-menu li:not(active-subsection) a,
-  .wrap li.row:hover,
-  .wrap .logo,
-  .wrap .panel,
-  .wrap .searchresults li,
-  .wrap table.table1 tbody tr:hover,
-  .wrap .tabs .activetab a {
-    background-color: var(--couleur_fond_amplifiee) !important;
-    background-image: none;
-  }
-
-  /* Couleurs de fond du mode sombre */
-  .wrap,
-  .wrap .cp-menu,
-  .wrap .cp-menu li:not(.active-subsection) a,
-  .wrap .cp-mini,
-  .wrap .dropdown-contents a:not(:hover),
-  .wrap .post,
-  .wrap .tabs .tab:not(.activetab) a,
-  .wrap ul {
-    background-color: var(--couleur_fond_page) !important;
-  }
-
- .panel.bg3 {
-    border: 2px solid #cadceb;
-  }
 }
 
 /*==================================================================*/
 /* Styles communs au site et au forum                               */
 /*==================================================================*/
-html {
-  width: 100%;
-  height: 100%;
-}
+/*===== Général =======*/
 
+html,
 body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  color: var(--couleur_texte);
-  background-color: var(--couleur_fond_page);
+  background-color: var(--couleur_fond) !important;
 }
 
-@media print {
-  html {
-    height: initial;
-  }
-
-  .noprint {
-    display: none;
-  }
+/* Sauf les cartes */
+.ol-viewport * {
+  color: initial;
 }
-
-/*==================================================================*/
-/* Styles propre au site                                            */
-/*==================================================================*/
-/* Pour les noms de classes communs au site et au forum,
-   la pseudo-classe .contenu est utilisé */
 
 /* zone de contenu */
+.bandeau-haut,
 .contenu {
   margin: 0.5%;
   margin-top: 3px;
+  color: var(--couleur_texte);
+}
+
+table, tr, td, th {
+  border-color: var(--couleur_texte) !important;
 }
 
 .couleur_fond_amplifiee {
-  background-color: var(--couleur_fond_amplifiee);
+  background-color: #cef99c;
+}
+
+textarea {
+  margin-left: 1px;
+  border: thin solid red;
+  border-radius: 5px;
+  background-color: var(--couleur_fond);
+  color: var(--couleur_texte);
 }
 
 /*=====TEXTE=======*/
-.contenu strong {
+strong {
   /* Strong Emphasis: gras+rouge */
   font-weight: bold;
   color: #FF0000;
 }
 
-.contenu cite {
+cite {
   /* Citation: gras+droit */
   font-weight: bold;
+  font-style: normal;
 }
 
-.contenu blockquote>div {
+blockquote>div {
   /* en particulier les citations forum */
   border-left: 2px;
 }
 
-.contenu blockquote {
+blockquote {
   /* message forum et commentaires */
   margin: 1em;
   font-size: normal;
 }
 
-.contenu blockquote p:before {
+blockquote p:before {
   /* message forum et commentaires */
   content: open-quote;
   font-size: xx-large;
 }
 
-.contenu blockquote p:after {
+blockquote p:after {
   /* message forum et commentaires */
   content: close-quote;
   font-size: xx-large;
@@ -344,7 +305,7 @@ body {
 /*====== Titres =======*/
 
 /* Au 15/10/2024 le titre h1 n'est utilisé qu'une seule et unique fois dans tous le site, c'est sur les fiches, pour le nom du point */
-.contenu h1 {
+h1 {
   /* Ce titre principal n'est pas plus gros ou gras que les autres, mais significativement, c'est le titre le plus important de la page */
   font-weight: bold;
   font-style: normal;
@@ -355,7 +316,7 @@ body {
 /* h2 ? faut pas chercher à comprendre, on n'utilise le h2 à aucun endroit ! Si je n'avais que ça à faire, il faudrait tout décaller h5->h4->h3->h2 dans toutes les vues, et le wiki ! */
 
 /* à noter que h3 h4 et h5 sont également très utilisés dans le wiki, dont le contenu est dans la base */
-.contenu h3 {
+h3 {
   /* titres de pages */
   font-weight: bold;
   font-style: normal;
@@ -365,10 +326,10 @@ body {
   text-align: center;
   margin-bottom: 3px;
   color: var(--couleur_titre);
-  background-color: var(--couleur_fond_titres_fonces);
+  background-color: var(--couleur_fond_titre);
 }
 
-.contenu h4 {
+h4 {
   /* sous titres */
   padding-top: 4px;
   /* sous FF, la padding par defo est immense */
@@ -377,13 +338,13 @@ body {
   font-size: large;
   margin: 0px;
   /* sous FF, la padding par defo est immense */
-  border-bottom: 2px solid var(--couleur_fond_titres_moyens);
-  border-left: 2px solid var(--couleur_fond_titres_moyens);
+  border-bottom: 2px solid var(--couleur_decoration_titres);
+  border-left: 2px solid var(--couleur_decoration_titres);
 }
 
-.contenu h5 {
+h5 {
   /* sou-sou titre, pour l'instant que dans les fiches de refuges */
-  border-bottom: thin solid var(--couleur_fond_titres_moyens) ;
+  border-bottom: thin solid var(--couleur_decoration_titres);
   font-size: medium;
   /* sinon H5 cest tout petit ... */
   margin-top: 15px;
@@ -391,19 +352,19 @@ body {
   padding-left: 10px;
 }
 
-.contenu p {
+p {
   margin-bottom: 1em;
 }
 
 /*===== Listes =====*/
-.contenu ul {
+ul {
   /* les listes , y compris news en page de garde */
   list-style-type: none;
   margin: 0px;
   padding: 0px 0px 0px 0px;
 }
 
-.contenu dt {
+dt {
   /* listes, de definitions */
   font-weight: bold;
   margin-top: 4px;
@@ -414,12 +375,12 @@ body {
   margin-left: 1em;
 }
 
-.contenu dt>button {
+dt>button {
   font-size: 60%;
   padding: 0px;
 }
 
-.contenu li {
+li {
   margin-bottom: 3px;
 }
 
@@ -432,14 +393,14 @@ body {
 
 /* Pour faire disparaitre un élément au bout de 5 secondes*/
 .fade-out {
-  opacity: 0; /* l'état par défaut est d'être invisible */
+  opacity: 0; // l'état par défaut est d'être invisible
   animation-iteration-count: 1;
   animation: fade;
   animation-duration: 8s;
 }
 @keyframes fade {
-  0% { opacity: 1; filter:alpha(opacity=100); } /* première frame, 100% visible */
-  100% { opacity: 0; filter:alpha(opacity=0); } /* dernière, 100% invisible */
+  0% { opacity: 1; filter:alpha(opacity=100); } // première frame, 100% visible
+  100% { opacity: 0; filter:alpha(opacity=0); } // dernière, 100% invisible
 }
 
 form#form_point fieldset {
@@ -498,13 +459,13 @@ form.wri label {
   float: left;
 }
 
-.contenu form label[title]:after,
-.contenu form legend[title]:after {
+form label[title]:after,
+form legend[title]:after {
   /* combine pour exclure OL , leurs label ne sont pas dans des form */
   content: url(../images/tooltip.png);
 }
 
-.contenu fieldset fieldset {
+fieldset fieldset {
   /* moins de déco pour les fieldset imbriques */
   float: left;
   border: thin solid transparent;
@@ -548,13 +509,13 @@ div#switch_nav label {
   clear: none;
 }
 
-.contenu input[type=checkbox]:hover,
-.contenu input[type=radio]:hover {
+input[type=checkbox]:hover,
+input[type=radio]:hover {
   box-shadow: 0px 0px 10px #1300ff;
 }
 
 /*==========divers=======*/
-.contenu img {
+img {
   /* images sans bordures */
   border: 0px;
   margin: 0px;
@@ -562,19 +523,34 @@ div#switch_nav label {
 }
 
 /*=========liens==========*/
-.basdepage a,
-.contenu a {
-  color: var(--couleur_lien);
+a:hover {
+  /*met en valeur les liens qd on est dessus */
+  background-color: var(--couleur_legende);
   text-decoration: none;
 }
 
-.contenu a:hover {
-  /*met en valeur les liens qd on est dessus */
-  background-color: var(--couleur_fond_legende);
+/*
+J'intègre également les class des liens du forum
+en gros je veux tout de la même couleur
+*/
+
+body:not(#phpbb) a,
+a.mainmenu,
+a.nav,
+a.forumlink,
+a.cattitle,
+a.topictitle,
+a.postlink,
+a.gen,
+a.genmed,
+a.gensmall {
+  color: var(--couleur_lien);
+  /* en accord avec le thème du forum, et moins agressif */
+  text-decoration: none;
 }
 
-.contenu a:visited {
-  color: var(--couleur_lien_visite);
+body:not(#phpbb) a:visited {
+  color: var(--couleur_lien);
 }
 
 /*========= Erreurs ==========*/
@@ -592,17 +568,6 @@ div#switch_nav label {
   font-size: 18px;
 }
 
-.bandeau-haut li {
-  list-style-type: none;
-}
-
-.bandeau-haut a,
-.bandeau-haut a.topictitle,
-.bandeau-haut a.postlink {
-  color: var(--couleur_lien);
-  text-decoration: none;
-}
-
 .menu-bouton * {
   font-family: Times New Roman;
 }
@@ -616,7 +581,7 @@ div#switch_nav label {
 
   /* Le bandeau */
   .bandeau-haut {
-    background-image: var(--image_bandeau);
+    background-image: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
     background-repeat: no-repeat;
   }
 
@@ -628,7 +593,7 @@ div#switch_nav label {
   }
 
   .logo-haut:hover {
-    background: transparent !important;
+    background: transparent;
   }
 
   .recherche-haut {
@@ -689,7 +654,7 @@ div#switch_nav label {
 
   .menu-touch,
   .menu-hover {
-    border-color: var(--couleur_fond_titres_moyens)  !important;
+    border-color: var(--couleur_decoration_titres)  !important;
   }
 
   /* Blocs rétractables en dessous des boutons */
@@ -698,8 +663,8 @@ div#switch_nav label {
     position: absolute;
     margin: 2px 0 0 -4px;
     border-radius: 0 10px 10px 10px;
-    border: 2px solid var(--couleur_fond_titres_moyens);
-    background: var(--couleur_fond_page);
+    border: 2px solid var(--couleur_decoration_titres);
+    background: var(--couleur_fond);
     padding: 0 4px;
     opacity: 0;
     z-index: -10;
@@ -739,7 +704,7 @@ div#switch_nav label {
   }
 
   .menu-bouton:not(.menu-liste) {
-    background: var(--couleur_fond_page);
+    background: var(--couleur_fond);
   }
 
   .menu-connexion ul {
@@ -793,7 +758,7 @@ div#switch_nav label {
   .menu-haut .menu-large,
   .menu-bouton P,
   .headerbar,
-  .bandeau-haut .menu-titre span {
+  body:not(#phpbb) .menu-titre span {
     display: none;
   }
 
@@ -801,7 +766,7 @@ div#switch_nav label {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    background: var(--couleur_fond_amplifiee);
+    background: var(--couleur_fond_titre);
   }
 
   /* Boutons */
@@ -811,14 +776,14 @@ div#switch_nav label {
     padding: 0 8px 2px 8px;
     font-size: 20px;
     font-weight: 700;
-    color: var(--couleur_texte) !important;
+    color: var(--couleur_titre) !important;
     cursor: pointer;
   }
 
   .menu-titre * {
     padding-top: 4px;
     font-size: 18px;
-    color: var(--couleur_texte) !important;
+    color: var(--couleur_titre) !important;
   }
 
   /* Blocs rétractables en dessous des boutons */
@@ -826,9 +791,9 @@ div#switch_nav label {
   .menu-connexion ul {
     position: absolute;
     border-radius: 0 0 10px 10px;
-    border: 2px solid var(--couleur_fond_titres_moyens);
+    border: 2px solid var(--couleur_decoration_titres);
     padding: 0 4px;
-    background: var(--couleur_fond_page);
+    background: var(--couleur_fond);
     white-space: nowrap;
     z-index: -10;
     opacity: 0;
@@ -908,7 +873,7 @@ div#switch_nav label {
 }
 
 .basdepage img,
-.bandeau-haut form {
+form {
   /* tout le bazar de pub de bas de page, en ligne! */
   display: inline;
   vertical-align: middle;
@@ -934,8 +899,8 @@ div#switch_nav label {
 
 .liens_avec_decoration {
   border-style: solid;
-  background-color: var(--couleur_fond_page);
-  border-color: var(--couleur_fond_titres_moyens);
+  background-color: var(--couleur_fond);
+  border-color: var(--couleur_decoration_titres);
   padding-right: 0.5em;
   padding-left: 0.5em;
 }
@@ -958,7 +923,7 @@ div#switch_nav label {
 }
 
 .commentaire_metainfo {
-  background-color: var(--couleur_fond_legende) ;
+  background-color: var(--couleur_legende);
   border: thin solid var(--couleur_texte);
   font-weight: bold;
   float: left;
@@ -966,7 +931,7 @@ div#switch_nav label {
   border: thin solid var(--couleur_texte);
 }
 
-.contenu .spacer {
+.spacer {
   /* HR de spacer pour la mise en page, en particulier dans les fiches */
   clear: both;
   visibility: hidden;
@@ -989,7 +954,6 @@ div#switch_nav label {
 }
 
 .texte_sur_image {
-  color: var(--couleur_texte);
   text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
     1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
   position: absolute;
@@ -1009,7 +973,7 @@ div#switch_nav label {
 }
 
 .point_forum em {
-  color: var(--couleur_titre) !important;
+  color: var(--couleur_texte) !important;
 }
 
 /*==================================================================*/
@@ -1032,7 +996,7 @@ div#switch_nav label {
 
 .accueil-switcher {
   float: right !important;
-  background: white !important;
+  background: var(--couleur_titre) !important;
 }
 
 .accueil-switcher:not(.myol-button-selected) button {
@@ -1169,6 +1133,16 @@ div#switch_nav label {
   }
 }
 
+@media print {
+  html {
+    height: initial;
+  }
+
+  .noprint {
+    display: none;
+  }
+}
+
 #carte-nav {
   margin: 4px;
 }
@@ -1243,11 +1217,4 @@ div#switch_nav label {
   /*when navigating through the items using the arrow keys:*/
   background-color: DodgerBlue !important;
   color: #ffffff;
-}
-
-/* Couleurs du mode sombre du pied de pages */
-@media (prefers-color-scheme: dark) {
-  .page-footer .copyright {
-    color: var(--couleur_texte) !important;
-  }
 }

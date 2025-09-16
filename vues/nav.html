@@ -10,14 +10,15 @@
 			Voici tou<?=$vue->contenu->id_polygone_type==11?'te':''?>s les <?=$vue->contenu->type_polygone?>s
 		<?php } ?>
 	</h3>
+</div>
 
-  <div id="carte-nav"
+<div id="carte-nav"
 	<?php if ( !empty($vue->contenu) && !est_moderateur() ) { ?>
 		class="carte-nav-full"
 	<?php } ?>
-  ></div>
+></div>
 
-  <div id="select-carte-nav" class="noprint">
+<div id="select-carte-nav" class="noprint">
 	<?php if ( empty($vue->contenu) ) { ?>
 		<!-- Affichage de points : il n'y a pas de paramètre ?id_polygone_type= -->
 		<fieldset>
@@ -206,9 +207,8 @@
 			<?php } ?>
 		</fieldset>
 	<?php } ?>
-  </div>
 </div>
-<p class="basdepage noprint">
+<p style="clear:both;">
 	<?php if (!empty($vue->points_de_la_zone))
 		foreach ($vue->points_de_la_zone as $point) { ?>
 			<a href="<?=lien_point($point)?>"><?=$point->nom?></a>&nbsp;
