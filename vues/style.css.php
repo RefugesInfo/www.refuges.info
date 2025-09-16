@@ -232,6 +232,7 @@ body {
   margin: 0px;
   width: 100%;
   height: 100%;
+  color: var(--couleur_texte);
   background-color: var(--couleur_fond) !important;
 }
 
