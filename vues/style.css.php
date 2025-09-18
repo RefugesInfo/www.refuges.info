@@ -77,6 +77,7 @@ function inv($couleur) {
   --couleur_titre: white;
   --couleur_lien: #<?=$couleur_lien?>;
   --couleur_fond_titre: #<?=$couleur_lien?>;
+  --couleur_fond_amplifiee: #CEF99C;
   --couleur_fond: #<?=$couleur_fond?>;
   --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
   --couleur_legende: #<?=$couleur_legende?>;
@@ -90,6 +91,7 @@ function inv($couleur) {
     --couleur_titre: black;
     --couleur_lien: #<?=$couleur_lien_clair?>;
     --couleur_fond: #100800;
+    --couleur_fond_amplifiee: #333;
     --couleur_decoration_titres: #<?=inv($couleur_decoration_titres)?>;
     --couleur_legende: #<?=inv($couleur_legende)?>;
 
@@ -267,7 +269,11 @@ table, tr, td, th {
 }
 
 .couleur_fond_amplifiee {
-  background-color: #cef99c;
+  background-color: var(--couleur_fond_amplifiee);
+}
+
+.photos div {
+  color: white;
 }
 
 textarea {
