@@ -11,13 +11,14 @@ function fichier_vue($nom_fichier_vue, $chemin = 'chemin_vues', $url = false)
 {
   global $config_wri, $user;
 
-  // [DOM] Accès aux formats alternatifs (à venir)
+  // [DOM] Accès aux formats alternatifs
   $instance_format = $user->style['style_path'].'/'.$nom_fichier_vue;
   if (file_exists($config_wri[$chemin].$instance_format))
     $nom_fichier_vue = $instance_format;
 
   if (file_exists($config_wri[$chemin].$nom_fichier_vue)) {
     if($url)
+      // Calcule la date du fichier pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
       return $config_wri['url_'.$chemin].$nom_fichier_vue.'?'
         .filemtime($config_wri[$chemin].$nom_fichier_vue);
     else

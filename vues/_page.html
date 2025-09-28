@@ -50,7 +50,7 @@ if(!empty($vue->carte)) {
     <?php if (isset ($vue->css)) { ?>
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <?php } ?>
-    
+
     <meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
 
     <?php if (isset ($vue->css_lib_head))
@@ -59,7 +59,7 @@ if(!empty($vue->carte)) {
     <?php } ?>
   </head>
 
-	<body>
+	<body class="<?=$infos_identification->style?>">
 		<?php
 			include(fichier_vue('_bandeau.html'));
 			include(fichier_vue($vue->type.'.html'));
