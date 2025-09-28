@@ -1,8 +1,7 @@
-/*===================================================================*/
-/* La seule et unique feuille de style CSS des pages de refuges.info */
-/*===================================================================*/
 <?php
-/*********************************************************************
+/***********************************************************************************************
+La seule et unique feuille de style CSS du site refuges.info
+
 Pourquoi une feuille de style en .php ?
 - le but c'est de faire un style dynamique selon la saison pour changer les couleurs ;-)
 ouais je sais, c'est franchement de la frime et ça sert à rien, mais si on ne peut plus s'amuser sur une projet
@@ -14,12 +13,12 @@ Sommaire:
     -3 classes speciales (sur-mesure, googmaps, fiche, ...)
     -4 PUB
 
-Notes de sly en 2023: ce style a évolué au fil des années et je suis sûr qu'il y a plusieurs classes
+Notes de sly en 2023: ce style a évolué au fil des années et je suis sûr qu'il y a plusieurs classes 
 qui ne servent nulle part, pas mal de redondance, un manque de cohérence sur le style au niveau des formulaires.
 Un support parfois médiocre des petites écrans, des adressages par id, par class. Bref, ça mériterait vraiment un coup de neuf.
 Celui qui a le courage à bien sûr mon feu vert !
 Notes de sly sur l'année 2024: j'ai fais mal de ménage, ré-indenté tout ça, bref, ça va mieux, mais c'est pas fini !
-*********************************************************************/
+***********************************************************************************************/
 
 header('content-type: text/css');
 //Évitons que soit rechargée cette page à chaque coup, elle ne bouge pas beaucoup
@@ -40,84 +39,32 @@ else
 switch ($periode)
 {
   case "hiver":
-    $couleur_fond="F2F2F2";
+    $couleur_fond="f2f2f2";
     $couleur_lien="006699";
-    $couleur_lien_clair="00AAFF";
+    $couleur_lien_visite="006699";
     $couleur_decoration_titres="A6CEE7";
     $couleur_legende="EEF";
     break;
   case "printemps":case "été":
-    $couleur_fond="F5FDE8";
-    $couleur_lien="5F8C11";
-    $couleur_lien_clair="9AE31C";
-    $couleur_decoration_titres="77DC63";
-    $couleur_legende="D1F0D0";
+    $couleur_fond="f5fde8";
+    $couleur_lien="5f8c11";
+    $couleur_lien_visite="5f8c11";
+    $couleur_decoration_titres="77dc63";
+    $couleur_legende="d1f0d0";
     break;
   case "automne":
-    $couleur_fond="F6E8C2";
-    $couleur_lien="CF5D32";
-    $couleur_lien_clair="D36B45";
-    $couleur_decoration_titres="BD742C";
-    $couleur_legende="C1AC96";
+    $couleur_fond="f6e8c2";
+    $couleur_lien="cf5d32";
+    $couleur_lien_visite=$couleur_lien;
+    $couleur_decoration_titres="bd742c";
+    $couleur_legende="c1ac96";
     break;
-}
-
-function inv($couleur) {
-  $hex = '0123456789ABCDEF';
-  for($i = 0; $i < strlen($couleur); $i++)
-    $couleur[$i] = $hex[15 - strpos ($hex, strtoupper($couleur[$i]))];
-  return $couleur;
 }
 
 ?>
-
-/* DOM 09/2025 on passe des constantes PHP aux constantes CSS */
-:root {
-  --couleur_texte: black;
-  --couleur_titre: white;
-  --couleur_lien: #<?=$couleur_lien?>;
-  --couleur_fond_titre: #<?=$couleur_lien?>;
-  --couleur_fond_amplifiee: #CEF99C;
-  --couleur_fond: #<?=$couleur_fond?>;
-  --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
-  --couleur_legende: #<?=$couleur_legende?>;
-  --image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
-}
-
-/* Couleurs du mode sombre */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --couleur_texte: white;
-    --couleur_titre: black;
-    --couleur_lien: #<?=$couleur_lien_clair?>;
-    --couleur_fond: #100800;
-    --couleur_fond_amplifiee: #333;
-    --couleur_decoration_titres: #<?=inv($couleur_decoration_titres)?>;
-    --couleur_legende: #<?=inv($couleur_legende)?>;
-
-    <?php // On surcharge les couleurs du forum par les couleurs inversées
-      $nf = '../forum/styles/prosilver/theme/colours.css';
-
-      echo preg_replace_callback_array(
-        [
-          'background-image: url[^;]*;' => function () {},
-
-          '#([0-9A-Fa-f]+)' => function ($match) {
-            return '#'.inv($matches[1]);
-          }
-        ],
-        file_get_contents($nf)
-      );
-    ?>
-  }
-}
-
 /*==================================================================*/
-/* Modifications de refuges.info                                    */
+/* Modification du style du nouveau forum PhpBB3-prosilver          */
 /*==================================================================*/
-/* Préfixer les déclarations avec #phpbb leur donne la priorité
-   car les déclarions sur un #id ont priorité sur .class */
-
 /* Pas de ligne vide en haut */
 #phpbb {
   padding: 0;
@@ -128,81 +75,57 @@ function inv($couleur) {
   max-width: 100%;
 }
 
-/* Couleur de fond */
-#phpbb .basdepage,
-#phpbb .bg1,
-#phpbb .bg2,
-#phpbb .bg3,
-#phpbb .forabg .forums,
-#phpbb .forumbg .topics>li,
+/* Titre des forums de refuges */
+#phpbb .section-viewtopic .topic-title a:first-child {
+  color: black !important;
+}
+
+#phpbb .wri-link {
+  font-size: 70%;
+}
+
+/* Zones masquées */
 #phpbb .headerbar,
-#phpbb .navbar ,
 #phpbb .navbar .avatar,
-#phpbb .panel,
-#phpbb .wrap {
-  background-color: var(--couleur_fond);
-  background-image: none;
+/* Personnalisation des couleurs */
+#phpbb .navbar,
+#phpbb .basdepage {
+  background-color: #<?=$couleur_fond?>;
 }
 
-/* Couleurs grands titres */
-#phpbb .forabg,
-#phpbb .forumbg,
-#phpbb h3,
 #phpbb .headerbar,
-#phpbb .site-description {
-  color: var(--couleur_texte);
-  background-color: var(--couleur_fond_titre);
+.forumbg,
+#phpbb .headerbar,
+.forabg,
+#phpbb h3 {
+  background-color: #<?=$couleur_lien?>;
   background-image: none;
 }
 
-/* Couleur des liens */
-#phpbb a:not(.button) {
-  color: var(--couleur_lien);
-}
-
-/* Couleur des bordures */
-#phpbb li.row {
-  border-bottom-color: var(--couleur_lien);
-}
-
-/* Couleurs titres moins importants */
+#phpbb .panel h3,
 #phpbb .alert_text h3,
+#phpbb .stat-block h3,
+#phpbb .stat-block h3 a,
 #phpbb .headerspace h3,
 #phpbb .headerspace h3 a,
-#phpbb input[type="submit"], 
-#phpbb .panel h3,
 #phpbb .postbody h3,
 #phpbb .postbody h3 a,
 #phpbb #postform .review,
 #phpbb #postform .review a {
-  color: var(--couleur_titre);
-}
-
-/* Couleur des textes */
-/* #phpbb, */
-#phpbb .author,
-#phpbb blockquote,
-#phpbb .content,
-#phpbb h2,
-#phpbb .postbody,
-#phpbb .postbody h3,
-#phpbb .postbody h3 a,
-#phpbb .postprofile,
-#phpbb .postprofile dd strong,
-#phpbb .section-viewtopic .topic-title a:first-child,
-#phpbb span[style="color: #000000;"],
-#phpbb .stat-block h3,
-#phpbb .stat-block h3 a,
-#phpbb .text-strong {
-  color: var(--couleur_texte) !important;
-}
-
-#phpbb blockquote {
-  background-color: var(--couleur_legende);
+  color: white;
 }
 
 #phpbb .stat-block strong a {
   color: #a00;
+}
+
+#phpbb .bg1,
+#phpbb .bg2,
+#phpbb .bg3,
+#phpbb .forabg .forums,
+#phpbb .forumbg .topics>li {
+  background-color: #<?=$couleur_fond?>;
+  background-image: none;
 }
 
 #phpbb dl a.row-item-link:hover {
@@ -211,77 +134,50 @@ function inv($couleur) {
 
 /* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
 #nav-footer li:last-child,
-
 /* Masquage login rapide en bas de page */
 #page-body>form>h3,
 .quick-login {
   display: none;
 }
-
 /* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
 ul#nav-main > li > a[href*="contactadmin"] {
-  display: none;
+	display: none;
 }
 
-/* Style de l'extension couplage */
 .section-posting #attach-panel-multi::after {
   content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
   background: yellow;
 }
 
-#phpbb .wri-link {
-  font-size: 70%;
-}
-
-#phpbb .text-strong {
+.text-strong {
   color: initial;
 }
 
 /*==================================================================*/
-/* Styles communs au site et au forum                               */
+/* Mise en page générales des types                                 */
 /*==================================================================*/
 /*===== Général =======*/
 
-html,
+html {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  color: var(--couleur_texte);
-  background-color: var(--couleur_fond);
-}
-
-/* Sauf les cartes */
-.ol-viewport * {
-  color: initial;
+  background-color: #<?=$couleur_fond?>;
 }
 
 /* zone de contenu */
-.bandeau-haut,
 .contenu {
   margin: 0.5%;
   margin-top: 3px;
-  color: var(--couleur_texte);
-}
-
-table, tr, td, th {
-  border-color: var(--couleur_texte) !important;
 }
 
 .couleur_fond_amplifiee {
-  background-color: var(--couleur_fond_amplifiee);
-}
-
-.photos div {
-  color: white;
-}
-
-textarea {
-  margin-left: 1px;
-  border: thin solid red;
-  border-radius: 5px;
-  background-color: var(--couleur_fond);
-  color: var(--couleur_texte);
+  background-color: #cef99c;
 }
 
 /*=====TEXTE=======*/
@@ -345,8 +241,8 @@ h3 {
   margin: 0em;
   text-align: center;
   margin-bottom: 3px;
-  color: var(--couleur_texte);
-  background-color: var(--couleur_fond_titre);
+  color: white;
+  background-color: #<?=$couleur_lien?>;
 }
 
 h4 {
@@ -358,13 +254,13 @@ h4 {
   font-size: large;
   margin: 0px;
   /* sous FF, la padding par defo est immense */
-  border-bottom: 2px solid var(--couleur_decoration_titres);
-  border-left: 2px solid var(--couleur_decoration_titres);
+  border-bottom: 2px solid #<?=$couleur_decoration_titres?>;
+  border-left: 2px solid #<?=$couleur_decoration_titres?>;
 }
 
 h5 {
   /* sou-sou titre, pour l'instant que dans les fiches de refuges */
-  border-bottom: thin solid var(--couleur_decoration_titres);
+  border-bottom: thin solid #<?=$couleur_decoration_titres?> ;
   font-size: medium;
   /* sinon H5 cest tout petit ... */
   margin-top: 15px;
@@ -405,14 +301,14 @@ li {
 }
 
 /*====== Formulaires======*/
-/*
-  Utilisé pour le formulaire de création ou modification ainsi que l'ajout de commentaires.
-  J'aimerais pouvoir rendre un peu plus cohérent (factoriser) les style de la plupart des formulaires du site (zone modérateur, modif fiche, ajout commentaires)
+/* 
+  Utilisé pour le formulaire de création ou modification ainsi que l'ajout de commentaires. 
+  J'aimerais pouvoir rendre un peu plus cohérent (factoriser) les style de la plupart des formulaires du site (zone modérateur, modif fiche, ajout commentaires) 
   mais ça demande un peu de tests, je (sly 2024) le fais au fûr et à mesure.
 */
 
 /* Pour faire disparaitre un élément au bout de 5 secondes*/
-.fade-out {
+.fade-out { 
   opacity: 0; // l'état par défaut est d'être invisible
   animation-iteration-count: 1;
   animation: fade;
@@ -470,7 +366,7 @@ form#form_export label {
 
 #form_export fieldset fieldset:hover {
   /* deco sur le fieldset actif, pour bien le differencier des autres */
-  border: thin dotted var(--couleur_texte);
+  border: thin dotted black;
 }
 
 form.wri label {
@@ -545,7 +441,7 @@ img {
 /*=========liens==========*/
 a:hover {
   /*met en valeur les liens qd on est dessus */
-  background-color: var(--couleur_legende);
+  background-color: #<?=$couleur_legende?>;
   text-decoration: none;
 }
 
@@ -564,13 +460,13 @@ a.postlink,
 a.gen,
 a.genmed,
 a.gensmall {
-  color: var(--couleur_lien);
+  color: #<?=$couleur_lien?>;
   /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
 }
 
 body:not(#phpbb) a:visited {
-  color: var(--couleur_lien);
+  color: #<?=$couleur_lien_visite?>;
 }
 
 /*========= Erreurs ==========*/
@@ -581,7 +477,7 @@ body:not(#phpbb) a:visited {
 }
 
 /*==================================================================*/
-/* Entête de page : Logo, menus, identification                     */
+/*  Entête de page : Logo, menus, identification                    */
 /*==================================================================*/
 .bandeau-haut * {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -674,7 +570,7 @@ body:not(#phpbb) a:visited {
 
   .menu-touch,
   .menu-hover {
-    border-color: var(--couleur_decoration_titres)  !important;
+    border-color: #<?=$couleur_decoration_titres?>  !important;
   }
 
   /* Blocs rétractables en dessous des boutons */
@@ -683,8 +579,8 @@ body:not(#phpbb) a:visited {
     position: absolute;
     margin: 2px 0 0 -4px;
     border-radius: 0 10px 10px 10px;
-    border: 2px solid var(--couleur_decoration_titres);
-    background: var(--couleur_fond);
+    border: 2px solid #<?=$couleur_decoration_titres?>;
+    background: #<?=$couleur_fond?>;
     padding: 0 4px;
     opacity: 0;
     z-index: -10;
@@ -724,7 +620,7 @@ body:not(#phpbb) a:visited {
   }
 
   .menu-bouton:not(.menu-liste) {
-    background: var(--couleur_fond);
+    background: #<?=$couleur_fond?>;
   }
 
   .menu-connexion ul {
@@ -786,8 +682,7 @@ body:not(#phpbb) a:visited {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    color: var(--couleur_texte);
-    background: var(--couleur_fond_titre);
+    background: #<?=$couleur_lien?>;
   }
 
   /* Boutons */
@@ -797,14 +692,14 @@ body:not(#phpbb) a:visited {
     padding: 0 8px 2px 8px;
     font-size: 20px;
     font-weight: 700;
-    color: var(--couleur_titre) !important;
+    color: white !important;
     cursor: pointer;
   }
 
   .menu-titre * {
     padding-top: 4px;
     font-size: 18px;
-    color: var(--couleur_titre) !important;
+    color: white !important;
   }
 
   /* Blocs rétractables en dessous des boutons */
@@ -812,9 +707,9 @@ body:not(#phpbb) a:visited {
   .menu-connexion ul {
     position: absolute;
     border-radius: 0 0 10px 10px;
-    border: 2px solid var(--couleur_decoration_titres);
+    border: 2px solid #<?=$couleur_decoration_titres?>;
     padding: 0 4px;
-    background: var(--couleur_fond);
+    background: #<?=$couleur_fond?>;
     white-space: nowrap;
     z-index: -10;
     opacity: 0;
@@ -920,8 +815,8 @@ form {
 
 .liens_avec_decoration {
   border-style: solid;
-  background-color: var(--couleur_fond);
-  border-color: var(--couleur_decoration_titres);
+  background-color: #<?=$couleur_fond?>;
+  border-color: #<?=$couleur_decoration_titres?>;
   padding-right: 0.5em;
   padding-left: 0.5em;
 }
@@ -933,23 +828,23 @@ form {
 
 /* concernant la disposition des commentaires */
 .bloc_liens_haut_droit {
-  display: block;
+  display: block; 
   float: right;
   margin: -0.6em 1em 0em 1em;
 }
 
 .bloc_commentaire {
-  border: thin solid var(--couleur_texte);
+  border: thin solid black;
   margin-top: 1em;
 }
 
 .commentaire_metainfo {
-  background-color: var(--couleur_legende);
-  border: thin solid var(--couleur_texte);
+  background-color: #<?=$couleur_legende?> ;
+  border: thin solid black;
   font-weight: bold;
   float: left;
   margin: -0.6em 1em 0em 1em;
-  border: thin solid var(--couleur_texte);
+  border: thin solid black;
 }
 
 .spacer {
@@ -975,6 +870,7 @@ form {
 }
 
 .texte_sur_image {
+  color: white;
   text-shadow: 2px 0 #555, -2px 0 #555, 0 2px #555, 0 -2px #555,
     1px 1px #555, -1px -1px #555, 1px -1px #555, -1px 1px #555;
   position: absolute;
@@ -993,9 +889,8 @@ form {
   margin-inline-end: 0;
 }
 
-.traces,
 .point_forum em {
-  color: var(--couleur_texte) !important;
+  color: black !important;
 }
 
 /*==================================================================*/
@@ -1012,14 +907,13 @@ form {
 
 /* Carte de l'accueil */
 #carte-accueil {
-  margin-top: 5px;
   width: 750px;
   height: 600px;
 }
 
 .accueil-switcher {
   float: right !important;
-  background: var(--couleur_titre) !important;
+  background: white !important;
 }
 
 .accueil-switcher:not(.myol-button-selected) button {
@@ -1191,7 +1085,7 @@ form {
   font-size: x-small;
 }
 
-/* css pour se comporter comme une table */
+// css pour se comporter comme une table
 .table {
   display: table;
 }
@@ -1208,8 +1102,9 @@ form {
   border-bottom: 1px dotted;
 }
 
+
 .autocomplete {
-  /* the container must be positioned relative */
+  /*the container must be positioned relative:*/
   position: relative;
   display: inline-block;
 }
@@ -1220,7 +1115,7 @@ form {
   border-bottom: none;
   border-top: none;
   z-index: 99;
-  /* position the autocomplete items to be the same width as the container */
+  /*position the autocomplete items to be the same width as the container:*/
   top: 100%;
   left: 0;
   right: 0;
@@ -1232,11 +1127,22 @@ form {
   border-bottom: 1px solid #d4d4d4;
 }
 .autocomplete-items div:hover {
-  /* when hovering an item */
+  /*when hovering an item:*/
   background-color: #e9e9e9;
 }
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
   background-color: DodgerBlue !important;
   color: #ffffff;
+}
+
+/* Debug PHP, style de var_dump() */
+.xdebug-var-dump {
+  background-color:black;
+  color:white;
+  font-size:14px
+}
+.xdebug-var-dump > small:first-child {
+	display: block;
+	border-top: solid white;
 }
