@@ -13,11 +13,6 @@
   max-width: 100%;
 }
 
-#phpbb li.row:hover,
-#phpbb .section-viewtopic .topic-title a:first-child {
-  color: black !important;
-}
-
 /* Personnalisation des couleurs */
 #phpbb .navbar,
 #phpbb .navbar .avatar {
@@ -30,21 +25,32 @@
   background-color: var(--couleur_fond_titre) !important;
 }
 
-#phpbb input,
-#phpbb select,
-#phpbb textarea {
-  background-color: var(--couleur_titre);
+#phpbb h3 a,
+#phpbb p,
+#phpbb span[style="color: #000000;"] { /* Couleur des anonymous */
+  color: white !important;
 }
 
+/* Couleurs des owners */
 #phpbb a:not(.username-coloured) {
   color: var(--couleur_lien) !important;
   text-decoration: none;
 }
 
-#phpbb h3 a,
-#phpbb p,
-#phpbb span[style="color: #000000;"] { /* Couleur des anonymous */
-  color: white !important;
+/* Icones de la couleur du forum */
+.pagination li.active span, .pagination li a:hover, .global_unread:before, .global_unread_mine:before, .global_unread_locked:before, .global_unread_locked_mine:before, .announce_unread:before, .announce_unread_mine:before, .announce_unread_locked:before, .announce_unread_locked_mine:before, .forum_unread:before, .forum_unread_locked:before, .forum_unread_subforum:before, .sticky_unread:before, .sticky_unread_mine:before, .sticky_unread_locked:before, .sticky_unread_locked_mine:before, .pm_unread:before, .topic_unread:before, .topic_unread_mine:before, .topic_unread_hot:before, .topic_unread_hot_mine:before, .topic_unread_locked:before, .topic_unread_locked_mine:before {
+  background-color: var(--couleur_lien) !important;
+}
+
+#phpbb li.row:hover,
+#phpbb .section-viewtopic .topic-title a:first-child {
+  color: black !important;
+}
+
+#phpbb input,
+#phpbb select,
+#phpbb textarea {
+  background-color: var(--couleur_titre);
 }
 
 #phpbb .nav-footer li:last-child {
