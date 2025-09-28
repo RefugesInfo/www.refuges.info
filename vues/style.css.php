@@ -83,11 +83,6 @@ switch ($periode)
   --couleur_lien: #<?=$couleur_lien_clair?>;
   --couleur_fond: #161210;
   --couleur_fond_amplifiee: #333;
-  /*
-  --couleur_fond_titre: #<?=$couleur_lien?>;
-  --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
-  --couleur_legende: #<?=($couleur_legende)?>;
-  */
 }
 
 /*==================================================================*/
