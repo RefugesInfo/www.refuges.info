@@ -15,6 +15,7 @@ class listener implements EventSubscriberInterface
 		global $request;
 
 		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
+		$this->cookies = $request->get_super_global(\phpbb\request\request_interface::COOKIE);
 	}
 
 	static public function getSubscribedEvents () {
@@ -23,6 +24,7 @@ class listener implements EventSubscriberInterface
 			'core.posting_modify_template_vars' => 'assign_template_vars_before',
 			'core.page_footer' => 'page_footer', // includes/functions.php 4308
 			'core.login_box_before' => 'login_box_before',
+			'core.user_setup' => 'user_setup',
 			'core.user_add_modify_data' => 'user_add_modify_data',
 			'core.user_add_modify_notifications_data' => 'user_add_modify_notifications_data',
 		];
@@ -71,8 +73,11 @@ class listener implements EventSubscriberInterface
 			header('Location: https://'.$this->server['HTTP_HOST'].$request->variable('redirect', '/'));
 		}
 
-		// Calcule la date du fichier style pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
-		$template->assign_var('STYLE_CSS', fichier_vue('style.css.php', 'chemin_vues', true));
+		$template->assign_vars([
+			'BODY_CLASS' => $user->style['style_path'],
+			'STYLE_CSS' => fichier_vue('style.css.php', 'chemin_vues', true),
+			'STYLE_FORUM_CSS' => fichier_vue('style_forum.css', 'chemin_vues', true),
+		]);
 
 		// On recrée le contexte car on n'est pas dans le MVC de WRI
 		$vue = new \stdClass;
@@ -89,6 +94,7 @@ class listener implements EventSubscriberInterface
 			$vue->email_en_erreur=info_email_bounce ();
 		}
 
+		// Récupère le contenu des fichiers pour les affecter à des variables du template PhpBB
 		ob_start();
 		include(fichier_vue('_bandeau.html'));
 		$template->assign_var('BANDEAU', ob_get_clean());
@@ -102,6 +108,21 @@ class listener implements EventSubscriberInterface
 	public function login_box_before () {
 		if (!isset($this->server['HTTPS']))
 			header('Location: https://'.$this->server['HTTP_HOST'].$this->server['REQUEST_URI'], true, 301);
+	}
+
+	// Modification du style à la volée
+	public function user_setup ($event) {
+		global $db;
+
+		if (isset ($this->cookies['style'])) {
+			$sql = 'SELECT style_id FROM '.STYLES_TABLE.' WHERE style_path = \''.$this->cookies['style'].'\'';
+			$result = $db->sql_query ($sql);
+			$row = $db->sql_fetchrow ($result);
+			$db->sql_freeresult($result);
+
+			if ($row)
+				$event['style_id'] = $row['style_id'];
+		}
 	}
 
 	// Pour cocher par défaut l'option "m'avertir si une réponse" dans le cas d'un nouveau sujet ou d'une réponse
