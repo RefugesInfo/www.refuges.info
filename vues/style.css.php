@@ -25,41 +25,34 @@ header('content-type: text/css');
 //Évitons que soit rechargée cette page à chaque coup, elle ne bouge pas beaucoup
 header('Cache-Control: max-age=86000');
 
-//Génération dynamique de certaines couleurs selon la saison
-$mois=date("n");
-if ($mois>9 and $mois<12)
-  $periode="automne";
-elseif ($mois>=4 and $mois<=6)
-  $periode="printemps";
-elseif ($mois>=7 and $mois<=9)
-  $periode="été";
-else
-  $periode="hiver"; // notre thème par défaut
+// sly 2025 : je suis un fou de l'inutile, plutôt que choisir des mois un peu au pif, désormais je colle le style aux saisons Calendaire (approximatives) https://fr.wikipedia.org/wiki/Automne
+$debut_automne = new DateTime("22 September");
+$debut_hiver = new DateTime("21 December");
+$debut_printemps = new DateTime("21 March");
+$date_maintenant = new DateTime();
 
-switch ($periode)
-{
-  case "hiver":
-    $couleur_fond="f2f2f2";
-    $couleur_lien="006699";
-    $couleur_lien_clair="00aaff"; /* Pour mode sombre, on reste en dominante verte */
-    $couleur_decoration_titres="a6cee7";
-    $couleur_legende="eef";
-    break;
-  case "printemps":case "été":
-    $couleur_fond="f5fde8";
-    $couleur_lien="5f8c11";
-    $couleur_lien_clair="9ae31c";
-    $couleur_decoration_titres="77dc63";
-    $couleur_legende="d1f0d0";
-    break;
-  case "automne":
-    $couleur_fond="f6e8c2";
-    $couleur_lien="cf5d32";
-    $couleur_lien_clair="d36b45";
-    $couleur_decoration_titres="bd742c";
-    $couleur_legende="c1ac96";
-    break;
+if ($date_maintenant > $debut_hiver or $date_maintenant < $debut_printemps) {
+  $couleur_fond="f2f2f2";
+  $couleur_lien="006699";
+  $couleur_lien_clair="00aaff"; /* Pour mode sombre, on reste en dominante verte */
+  $couleur_decoration_titres="a6cee7";
+  $couleur_legende="eef";
 }
+if ($date_maintenant > $debut_printemps and $date_maintenant < $debut_automne) {
+  $couleur_fond="f5fde8";
+  $couleur_lien="5f8c11";
+  $couleur_lien_clair="9ae31c";
+  $couleur_decoration_titres="77dc63";
+  $couleur_legende="d1f0d0";
+}
+if ($date_maintenant > $debut_automne and $date_maintenant < $debut_hiver) {
+  $couleur_fond="f6e8c2";
+  $couleur_lien="cf5d32";
+  $couleur_lien_clair="d36b45";
+  $couleur_decoration_titres="bd742c";
+  $couleur_legende="c1ac96";
+}
+
 
 ?>
 
