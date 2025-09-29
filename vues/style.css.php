@@ -456,7 +456,6 @@ blockquote>div {
 blockquote {
   /* message forum et commentaires */
   margin: 1em;
-  font-size: normal;
 }
 
 blockquote p:before {
@@ -893,14 +892,14 @@ body:not(#phpbb) a:visited {
 }
 
 /* Menu deplié */
-@media screen and (min-width: 641px) and (min-device-height: 361px) {
+@media screen and (min-width: 641px) and (min-height: 361px) {
   #carte-nav {
     max-height: calc(100% - 126px);
   }
 }
 
 /* Carte NaV présentation mobile horizontale */
-@media screen and (min-aspect-ratio: 1/1) and (min-width: 365px) and (max-device-height: 360px) {
+@media screen and (min-aspect-ratio: 1/1) and (min-width: 365px) and (max-height: 360px) {
   #carte-nav {
     float: right;
     width: 67%;
