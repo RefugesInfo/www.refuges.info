@@ -838,7 +838,7 @@ body:not(#phpbb) a:visited {
 }
 
 .ol-viewport * {
-  color: white;
+  color: black;
 }
 
 /* Carte de l'accueil */
