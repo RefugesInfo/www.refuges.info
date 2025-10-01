@@ -1,4 +1,4 @@
-<?php // Modification/création de fiche point
+f<?php // Modification/création de fiche point
 
 require_once ("bdd.php");
 require_once ("point.php");
@@ -41,8 +41,11 @@ if ( !empty($_REQUEST["id_point"]) )
   // Soit on est avec un modérateur global ou de cette fiche
   if ( est_autorise($point->id_createur) )
   {
-    // boutton supprimer uniquement pour les modérateurs globaux
-    if ( est_moderateur() )
+    /* boutton "supprimer" uniquement pour les modérateurs globaux
+       sly 09/2025 : A DÉBATTRE, Voulons nous interdire la suppression d'une fiche à son auteur ? je peux comprendre que dans le cas du gérant de gîte excédé par les commentaires peut glorieux, il puisse être tenté de supprimer la fiche ce que nous ne voulons peut-être pas, mais pour celui qui ajoute une fiche de cabane, constate après coup qu'il s'est trompé, il ne peut alors, sans l'aide de modérateurs, supprimer et recommencer ?
+       Du pour et du contre...
+    */
+    if ( est_moderateur() and !$point->modele)
     {
       $bouton_suppr = new stdClass;
       $bouton_suppr->nom = "action";

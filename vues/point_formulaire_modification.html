@@ -1,4 +1,11 @@
 <div class="contenu">
+      <?php // Signaler les fiches qui sont des modèles
+      if ($vue->point->modele) {?>
+          <strong class="warning">
+            Cette fiche est un modèle, elle n'est visible que des modérateurs
+          </strong>
+      <?php }?>
+
   <div id="container-carte-point">
     <div id="carte-modif"></div>
     <p>Double clic sur la carte y déplace le curseur.</p>

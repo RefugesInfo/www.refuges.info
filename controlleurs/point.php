@@ -13,13 +13,15 @@ $condition = new stdClass();
 // Arguments de la page
 $id_point = $controlleur->url_decoupee[1]; // l'id du point est 5 dans /point/5/... c'est le controlleur qui nous passe se tableau
 
-// On n'autorise l'accès au fiches cachées ou aux modèle qu'aux modérateurs et on indique de manière bien évidente aux modérateur que cette fiche est cachée et non visible au public
+// On n'autorise l'accès au fiches cachées ou aux modèle qu'aux modérateurs et on indique de manière bien évidente aux modérateur que cette fiche est cachée et non visible au public ou qu'il s'agit d'un modèle.
 if (est_moderateur())
   $meme_si_cache=$meme_si_modele=True;
 else
   $meme_si_cache=$meme_si_modele=False;
 
 $point=infos_point($id_point,$meme_si_cache,True,$meme_si_modele);
+
+
 
 // Partie spécifique de la page
 
