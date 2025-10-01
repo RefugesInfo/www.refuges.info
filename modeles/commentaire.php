@@ -533,11 +533,13 @@ function transfert_forum($commentaire)
   if ($commentaire->auteur_commentaire)
       $auteur = substr($commentaire->auteur_commentaire,0,76).'_'.rand(1,999);
   
+  $point_ratache=infos_point($commentaire->id_point,True); // Uniquement dans le but que le titre du message sur le forum porte le nom du point auquel il était rataché
+  
   // On appelle la fonction du forum qui cree un post
   forum_submit_post ([
     'action' => 'reply',
     'topic_id' => $commentaire->topic_id,
-    'topic_title' => 'Transféré de la fiche',
+    'topic_title' => 'Transféré de '.$point_ratache->nom,
     'message' => $commentaire->texte,
     'topic_poster' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID, 0 sinon
     'username' => $auteur,
