@@ -1,4 +1,4 @@
-f<?php // Modification/création de fiche point
+<?php // Modification/création de fiche point
 
 require_once ("bdd.php");
 require_once ("point.php");
@@ -15,6 +15,7 @@ $vue->champs->textareas = new stdClass;
 $vue->champs->boutons = new stdClass; // Modifier, supprimer...
 $vue->champs->trinaires = new stdClass; // seulement les trinaires TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
 $vue->champs->entier_ou_sait_pas = new stdClass; // seulement les trinaires TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
+
 
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
@@ -143,7 +144,6 @@ if ( !empty($point->equivalent_proprio) )
 //ils ont en revanche tous un accès et un champ remarques
 $textes_area["accès"]="acces";
 $textes_area["remarques"]="remark";
-
 
 /******** Les champs libres *****************/
 foreach ($textes_area as $libelle => $nom_variable)
