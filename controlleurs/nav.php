@@ -62,7 +62,13 @@ if (!empty($_GET['id_polygone_type']))
   }
 }
 
-if (!empty($id_polygone)) // Si on a un numéro de polygone, on affiche une carte avec uniquement les points du polygone, sinon, on affiche la carte sans conditions de polygones
+/* Si on a un numéro de polygone, on affiche une carte avec uniquement les points du polygone et centrée sur ce polygone, sinon, on affiche la carte sans conditions de polygones
+ * NOTE sly 2025: on pourrait se dire que c'est un peu nulle comme fonctionnalité, et se contenter de se centrer sur le centroid du polygone suffirait. Oui, c'est vrai, après tout, afficher ce qui se passe autour ne gênerait que peu.
+ * Mais il y a une petite idée référencement ici : cette page est le point d'entrée aux point du massif, ça aide les moteur de recherche à "ranger" (cf liens direct en bas de page)
+ * Mais je concède, que si c'est galère à maintenir (pour l'instant, je ne crois pas), se simplifier la vie est tout à fait entendable.
+ */
+
+if (!empty($id_polygone)) 
 {
   $polygone=infos_polygone ($id_polygone,False,True);
 
@@ -111,5 +117,7 @@ if (!empty($id_polygone)) // Si on a un numéro de polygone, on affiche une cart
     $vue->points_de_la_zone=infos_points($conditions);
   }
 }
+else
+  $vue->titre="Selecteur de refuges, point d'eau et cabane sur les cartes";
 $vue->types_point_affichables=types_point_affichables();
 
