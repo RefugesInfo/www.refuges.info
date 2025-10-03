@@ -188,6 +188,10 @@ body {
     display: none;
   }
 
+  .menu-recherche {
+    display: none;
+  }
+
   .menu-connexion {
     float: right;
   }
@@ -334,7 +338,7 @@ body {
   /* Boutons */
   div.menu-bouton>span,
   .menu-titre {
-    display: block;
+    wdisplay: block;
     padding: 0 8px 2px 8px;
     font-size: 20px;
     font-weight: 700;
@@ -350,6 +354,7 @@ body {
 
   /* Blocs rétractables en dessous des boutons */
   .menu-liste>ul,
+  .menu-recherche ul,
   .menu-connexion ul {
     position: absolute;
     border-radius: 0 0 10px 10px;
@@ -361,6 +366,7 @@ body {
     opacity: 0;
   }
 
+  .menu-recherche ul,
   .menu-connexion ul {
     right: 0;
   }
@@ -371,6 +377,8 @@ body {
 
   .menu-liste.menu-touch>ul,
   .menu-liste.menu-hover>ul,
+  .menu-recherche.menu-touch>ul,
+  .menu-recherche.menu-hover>ul,
   .menu-connexion.menu-touch>ul,
   .menu-connexion.menu-hover>ul {
     opacity: 1;

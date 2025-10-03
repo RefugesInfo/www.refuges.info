@@ -10,10 +10,12 @@
 		<input type="hidden" name="avec_point_osm" value="1">
 		<input type="hidden" name="marqueur_stats_utilisation_recherche_haute" value="1">
 		<button type="submit" title="Lancer la recherche" style="border:none">
-			🔍</button>
+			🔍
+		</button>
 		<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
 			title="Recherche avancée">
-			🔭</a>
+			🔭
+		</a>
 	</form>
 
 	<div class="menu-haut">
@@ -158,6 +160,28 @@
             </form>
             </ul>
 	<?php } ?>
+		</div>
+
+		<div class="menu-recherche menu-bouton">
+			<span>🔍</span>
+			<ul>
+				<li>
+					<form method="get" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
+						<input type="text" name="nom" class="input-text" placeholder="Recherche de point">
+						<input type="hidden" name="limite" value="40">
+						<input type="hidden" name="avec_point_osm" value="1">
+						<input type="hidden" name="marqueur_stats_utilisation_recherche_haute" value="1">
+						<input type="hidden" name="marqueur_stats_utilisation_recherche_haute" value="1">
+						<button type="submit" title="Lancer la recherche" style="border:none">
+							🔍
+						</button>
+						<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
+							title="Recherche avancée">
+							🔭
+						</a>
+					</form>
+				</li>
+			</ul>
 		</div>
 
 		<div class="menu-titre">
