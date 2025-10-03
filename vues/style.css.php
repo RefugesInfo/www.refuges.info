@@ -338,7 +338,7 @@ body {
   /* Boutons */
   div.menu-bouton>span,
   .menu-titre {
-    wdisplay: block;
+    display: block;
     padding: 0 8px 2px 8px;
     font-size: 20px;
     font-weight: 700;
