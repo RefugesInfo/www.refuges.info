@@ -27,7 +27,6 @@ $infos_identification = new stdClass;
 $infos_identification->user_id = $user->data['user_id'];
 $infos_identification->username = $user->data['username'];
 $infos_identification->session_id = $user->data['session_id'];
-$infos_identification->style = $user->style['style_path'];
 
 // Tokens du formulaire de login
 // Nécessite : GENERAL -> CONFIGURATION DU SERVEUR -> Paramètres de sécurité

@@ -1,0 +1,15 @@
+html {
+	--light-online: url("./fr/icon_user_online_light.svg");
+	--light-offline: url("./fr/icon_user_offline_light.svg");
+	--dark-online:	url("./fr/icon_user_online_dark.svg");
+	--dark-offline:	url("./fr/icon_user_offline_dark.svg");
+}
+ul.topiclist.two-columns dt {
+	margin-right: -100px;
+}
+ul.topiclist.two-columns dt .list-inner {
+	margin-right: 100px;
+}
+.topiclist.two-columns dd.mark {
+	width: 100px;
+}

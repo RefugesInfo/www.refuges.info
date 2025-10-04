@@ -24,6 +24,7 @@ if (!empty($vue->http_status_code))
 
 // On inclue les fichiers communs
 add_lib('style.css.php');
+add_lib('style_pages.css');
 add_lib('_bandeau.js');
 
 // Includes cartes
@@ -59,7 +60,7 @@ if(!empty($vue->carte)) {
     <?php } ?>
   </head>
 
-	<body class="<?=$infos_identification->style?>">
+	<body>
 		<?php
 			include(fichier_vue('_bandeau.html'));
 			include(fichier_vue($vue->type.'.html'));

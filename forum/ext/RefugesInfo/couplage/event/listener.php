@@ -15,7 +15,6 @@ class listener implements EventSubscriberInterface
 		global $request;
 
 		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
-		$this->cookies = $request->get_super_global(\phpbb\request\request_interface::COOKIE);
 	}
 
 	static public function getSubscribedEvents () {
@@ -24,7 +23,6 @@ class listener implements EventSubscriberInterface
 			'core.posting_modify_template_vars' => 'assign_template_vars_before',
 			'core.page_footer' => 'page_footer', // includes/functions.php 4308
 			'core.login_box_before' => 'login_box_before',
-			'core.user_setup' => 'user_setup',
 			'core.user_add_modify_data' => 'user_add_modify_data',
 			'core.user_add_modify_notifications_data' => 'user_add_modify_notifications_data',
 		];
@@ -108,21 +106,6 @@ class listener implements EventSubscriberInterface
 	public function login_box_before () {
 		if (!isset($this->server['HTTPS']))
 			header('Location: https://'.$this->server['HTTP_HOST'].$this->server['REQUEST_URI'], true, 301);
-	}
-
-	// Modification du style à la volée
-	public function user_setup ($event) {
-		global $db;
-
-		if (isset ($this->cookies['style'])) {
-			$sql = 'SELECT style_id FROM '.STYLES_TABLE.' WHERE style_path = \''.$this->cookies['style'].'\'';
-			$result = $db->sql_query ($sql);
-			$row = $db->sql_fetchrow ($result);
-			$db->sql_freeresult($result);
-
-			if ($row)
-				$event['style_id'] = $row['style_id'];
-		}
 	}
 
 	// Pour cocher par défaut l'option "m'avertir si une réponse" dans le cas d'un nouveau sujet ou d'une réponse

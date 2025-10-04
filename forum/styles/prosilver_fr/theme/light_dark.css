@@ -1,0 +1,838 @@
+@charset "utf-8";
+
+html {
+	--light-online: url("./en/icon_user_online_light.svg");
+	--light-offline: url("./en/icon_user_offline_light.svg");
+	--light-contact-icon: url("./images/icons_contact_light.svg");
+	--dark-online: url("./en/icon_user_online_dark.svg");
+	--dark-offline: url("./en/icon_user_offline_dark.svg");
+	--dark-contact-icon: url("./images/icons_contact_dark.svg");
+}
+html, [data-theme=light] {
+	--color01: #1e90ff;
+	--color02: #fff;
+	--color03: #eee;
+	--color04: #ddd;
+	--color05: #ccc;
+	--color06: #bbb;
+	--color07: #aaa;
+	--color08: #a5a5a5;
+	--color09: #d31141;
+	--color10: #ead4d9;
+	--color11: #000;
+	--color12: #333;
+	--color13: #444;
+	--color14: #fff;
+	--color15: #fff;
+	--switch-light-dark: "\f186";
+	--contact-icon: var(--light-contact-icon);
+	--online:	var(--light-online);
+	--offline:	var(--light-offline);
+	--codebox-color: green;
+	color-scheme: light;
+}
+@media (prefers-color-scheme:dark) {
+	html {
+		--color01: #1e90ff;
+		--color02: #222;
+		--color03: #333;
+		--color04: #444;
+		--color05: #555;
+		--color06: #666;
+		--color07: #6b6b6b;
+		--color08: #7a7a7a;
+		--color09: #d31141;
+		--color10: #6a1b2e;
+		--color11: #fff;
+		--color12: #ccc;
+		--color13: #ddd;
+		--color14: #000;
+		--color15: #fff;
+		--switch-light-dark: "\f185";
+		--contact-icon: var(--dark-contact-icon);
+		--online:	var(--dark-online);
+		--offline:	var(--dark-offline);
+		--codebox-color: #45db45;
+		color-scheme: dark;
+	}
+}
+[data-theme=dark] {
+	--color01: #1e90ff;
+	--color02: #222;
+	--color03: #333;
+	--color04: #444;
+	--color05: #555;
+	--color06: #666;
+	--color07: #6b6b6b;
+	--color08: #7b7b7b;
+	--color09: #d31141;
+	--color10: #6a1b2e;
+	--color11: #fff;
+	--color12: #ccc;
+	--color13: #ddd;
+	--color14: #000;
+	--color15: #fff;
+	--switch-light-dark: "\f185";
+	--contact-icon: var(--dark-contact-icon);
+	--online:	var(--dark-online);
+	--offline:	var(--dark-offline);
+	--codebox-color: #45db45;
+	color-scheme: dark;
+}
+html, body {
+	background-color: var(--color02);
+	color: var(--color13);
+}
+h1 {
+	color: var(--color13);
+}
+h2, h3 {
+	border-bottom-color: var(--color03);
+	color: var(--color11);
+}
+hr {
+	border-color: var(--color04);
+	border-top-color: var(--color05);
+}
+a {
+	color: var(--color01);
+}
+a:hover, a:focus, a:active {
+	color: var(--color11);
+}
+.forumbg .header a, .forabg .header a, th a {
+	color: var(--color13);
+}
+.forumbg .header a:hover, .forabg .header a:hover, th a:hover {
+	color: var(--color11);
+}
+.dropdown-extended a.mark_read {
+	background-color: var(--color06);
+	border-color: var(--color07);
+	color: var(--color01);
+}
+.dropdown-extended a.mark_read:hover {
+	background-color: var(--color07);
+	border-color: var(--color07);
+	color: var(--color11);
+}
+.postlink, .postlink:visited {
+	color: var(--color01);
+}
+.postlink:hover {
+	background-color: var(--color04);
+	color: var(--color11);
+}
+.signature a, .signature a:hover {
+	background-color: transparent;
+}
+.top i {
+	color: var(--color14);
+}
+.arrow-left:hover, .arrow-right:hover {
+	color: var(--color11);
+}
+.wrap {
+	background-color: var(--color02);
+	border-color: var(--color02);
+}
+.headerbar {
+	background-color: var(--color03);
+	background-image: none;
+	color: var(--color13);
+	filter: none;
+}
+.forumbg, .forabg {
+	background-color: var(--color03);
+	background-image: none;
+	filter: none;
+}
+.navbar {
+	background-color: var(--color03);
+}
+.panel {
+	background-color: var(--color03);
+	color: var(--color13);
+}
+.post h3 a.first-unread, .post:target .content, .post:target h3 a {
+	color: var(--color11);
+}
+.bg1, .bg2, .bg3, .ucprowbg, .fieldsbg, table.zebra-list tr:nth-child(odd) td, table.zebra-list tr:nth-child(even) td, ul.zebra-list li:nth-child(odd), ul.zebra-list li:nth-child(even) {
+	background-color: var(--color03);
+}
+.site_logo {
+	background-image: url("./images/site_logo.svg");
+	height: 52px;
+	width: 149px;
+}
+ul.navlinks {
+	border-top-color: var(--color04);
+}
+table.table1 thead th {
+	color: var(--color13);
+}
+table.table1 tbody tr {
+	border-color: var(--color03);
+}
+table.table1 tbody tr:hover, table.table1 tbody tr.hover {
+	background-color: var(--color04);
+	color: var(--color11);
+	border-radius: 4px;
+}
+table.table1 td {
+	color: var(--color11);
+}
+table.table1 tbody td {
+	border-top-color: var(--color03);
+}
+table.table1 tbody th {
+	border-bottom-color: var(--color03);
+	background-color: var(--color02);
+}
+table.info tbody th {
+	color: var(--color11);
+}
+dl.details dt, dl.details dd {
+	color: var(--color11);
+}
+.sep {
+	color: var(--color03);
+}
+.icon.icon-blue, a:hover .icon.icon-blue {
+	color: royalblue;
+}
+.icon.icon-green, a:hover .icon.icon-green {
+	color: forestgreen;
+}
+.icon.icon-red, a:hover .icon.icon-red {
+	color: crimson;
+}
+.icon.icon-orange, a:hover .icon.icon-orange {
+	color: coral;
+}
+.icon.icon-bluegray, a:hover .icon.icon-bluegray {
+	color: slategray;
+}
+.icon.icon-gray, a:hover .icon.icon-gray {
+	color: gray;
+}
+.icon.icon-lightgray, a:hover .icon.icon-lightgray {
+	color: darkgray;
+}
+.icon.icon-black, a:hover .icon.icon-black {
+	color: black;
+}
+.alert_close .icon:before {
+	background-color: var(--color02);
+}
+.jumpbox .dropdown li {
+	border-top-color: var(--color05);
+}
+.jumpbox-cat-link {
+	background-color: var(--color04);
+	border-top-color: var(--color05);
+	color: var(--color01);
+}
+.jumpbox-cat-link:hover {
+	background-color: var(--color05);
+	border-top-color: var(--color05);
+	color: var(--color11);
+}
+.jumpbox-forum-link {
+	background-color: var(--color04);
+}
+.jumpbox-forum-link:hover {
+	background-color: var(--color05);
+}
+.jumpbox .dropdown .pointer-inner {
+	border-color: var(--color04) transparent;
+}
+.jumpbox-sub-link {
+	background-color: var(--color04);
+}
+.jumpbox-sub-link:hover {
+	background-color: var(--color05);
+}
+.copyright {
+	color: var(--color13);
+}
+.error {
+	color: var(--color09);
+}
+.reported {
+	background-color: var(--color04);
+}
+li.reported:hover {
+	background-color: var(--color04) !important;
+}
+div.rules {
+	background-color: var(--color10);
+	color: var(--color13);
+}
+p.post-notice {
+	background-color: var(--color10);
+	background-image: none;
+}
+ul.forums {
+	background-color: var(--color03);
+	background-image: none;
+}
+ul.topiclist li {
+	color: var(--color13);
+}
+ul.topiclist dd {
+	border-left-color: var(--color03);
+}
+.rtl ul.topiclist dd {
+	border-right-color: var(--color03);
+}
+li.row {
+	border-top-color: var(--color03);
+	border-bottom-color: var(--color03);
+}
+li.row strong {
+	color: var(--color13);
+}
+li.row:hover {
+	background-color: var(--color04);
+}
+li.row:hover dd {
+	border-left-color: var(--color04);
+}
+.rtl li.row:hover dd {
+	border-right-color: var(--color04);
+	border-left-color: transparent;
+}
+li.header dt, li.header dd {
+	color: var(--color13);
+}
+.postbody {
+	color: var(--color11);
+}
+.content {
+	color: var(--color11);
+}
+.content h2, .panel h2 {
+	color: var(--color11);
+	border-bottom-color: var(--color05);
+}
+dl.faq dt {
+	color: var(--color11);
+}
+.posthilit {
+	background-color: var(--color04);
+	border: 1px solid var(--color04);
+	color: var(--color09);
+}
+.signature {
+	border-top-color: var(--color05);
+}
+.notice {
+	border-top-color: var(--color05);
+}
+blockquote {
+	background-color: var(--color04);
+	border-color: var(--color05);
+}
+blockquote blockquote {
+	background-color: var(--color05);
+	border-color: var(--color06);
+}
+blockquote blockquote blockquote {
+	background-color: var(--color04);
+	border-color: var(--color05);
+}
+.codebox {
+	background-color: var(--color02);
+	border-color: var(--color05);
+}
+.codebox p {
+	border-bottom-color: var(--color05);
+}
+.codebox code {
+	color: var(--codebox-color);
+}
+.attachbox {
+	background-color: var(--color02);
+	border-color: var(--color05);
+}
+.pm-message .attachbox {
+	background-color: var(--color02);
+}
+.attachbox dd {
+	border-top-color: var(--color05);
+}
+.attachbox p, .attachbox p.stats {
+	color: var(--color11);
+}
+.attach-image img {
+	border-color: var(--color05);
+}
+.attach-image img:hover {
+	border-color: var(--color06);
+}
+dl.file dd {
+	color: var(--color11);
+}
+dl.thumbnail img {
+	border-color: var(--color04);
+	background-color: var(--color04);
+}
+dl.thumbnail dt a:hover {
+	background-color: var(--color04);
+}
+dl.thumbnail dt a img:hover {
+	border-color: var(--color05);
+}
+fieldset.polls dl {
+	border-top-color: var(--color05);
+	color: var(--color11);
+}
+fieldset.polls dl.voted, fieldset.polls dd div {
+	color: var(--color11);
+}
+.pollbar1, .pollbar2, .pollbar3, .pollbar4, .pollbar5 {
+	background-color: var(--color10);
+	border-bottom-color: var(--color10);
+	border-right-color: var(--color10);
+}
+.rtl .pollbar1, .rtl .pollbar2, .rtl .pollbar3, .rtl .pollbar4, .rtl .pollbar5 {
+	border-right-color: transparent;
+	border-left-color: var(--color10);
+}
+.postprofile {
+	color: var(--color11);
+	border-color: var(--color04);
+}
+.postprofile strong {
+	color: var(--color13);
+}
+.online {
+	background-image: var(--online);
+}
+.offline {
+	background-image: var(--offline);
+}
+dd.profile-warnings {
+	color: var(--color09);
+}
+.button {
+	background-color: var(--color04);
+	background-image: none;
+	border-color: var(--color05);
+	box-shadow: none;
+	color: var(--color01);
+}
+.button:hover, .button:focus {
+	background-color: var(--color05);
+	background-image: none;
+	border-color: var(--color05);
+	color: var(--color11);
+	text-shadow: none;
+}
+.button .icon, .button-secondary {
+	background-color: var(--color04);
+	background-image: none;
+	border-color: var(--color05);
+	box-shadow: none;
+	color: var(--color12);
+}
+.button:focus .icon, .button:hover .icon, .button-secondary:hover, .button-secondary:focus, .button-search:hover, .button-search-end:hover {
+	background-color: var(--color05);
+	background-image: none;
+	border-color: var(--color05);
+	color: var(--color01);
+	text-shadow: none;
+}
+.caret {
+	border-color: var(--color05);
+}
+.contact-icons a {
+	border-color: var(--color05);
+}
+.contact-icons a:hover {
+	background-color: var(--color05);
+}
+.row-item[class*=_read], .row-item[class*=_unread], .forum_link, .topic_moved {
+	background-image: none;
+}
+.row-item[class*=_read]:before, .forum_link:before, .topic_moved:before {
+	background-color: var(--color05);
+}
+.row-item[class*=_unread]:before {
+	background-color: var(--color01);
+}
+.pagination li a {
+	background-color: var(--color04);
+	background-image: none;
+	border-color: var(--color05);
+	box-shadow: none;
+	color: var(--color12);
+}
+.pagination li.ellipsis span {
+	background: 0 0;
+	color: var(--color11);
+}
+.pagination li span {
+	background: var(--color05);
+	border-color: var(--color05);
+	color: var(--color12);
+}
+.pagination li.active span {
+	background: var(--color05);
+	border-color: var(--color05);
+	color: var(--color01);
+}
+.pagination li a:hover, .pagination li a:hover .icon, .pagination .dropdown-visible a.dropdown-trigger, .nojs .pagination .dropdown-container:hover a.dropdown-trigger {
+	border-color: var(--color05);
+	background-color: var(--color05);
+	background-image: none;
+	text-shadow: none;
+	color: var(--color11);
+}
+.search-header, .search-box .inputbox, .search-box .inputbox:hover, .search-box .inputbox:focus {
+	border-color: var(--color05);
+}
+.search-header {
+	box-shadow: none;
+}
+.search-results li:hover, .search-results li.active {
+	background-color: var(--color05);
+}
+.contact-icon {
+	background-image: var(--contact-icon);
+}
+.panel-container h3, .panel-container hr, .cp-menu hr {
+	border-color: var(--color03);
+}
+.panel-container .panel li.row {
+	background-color: var(--color04);
+	border-bottom-color: var(--color04);
+	border-top-color: var(--color04);
+}
+.panel-container .panel li.row:hover {
+	background-color: var(--color05);
+	border-bottom-color: var(--color05);
+	border-top-color: var(--color05);
+}
+ul.cplist {
+	border-top-color: var(--color04);
+}
+.panel-container .panel li.header dd, .panel-container .panel li.header dt {
+	color: var(--color11);
+}
+.panel-container table.table1 thead th {
+	border-bottom-color: var(--color03);
+	color: var(--color11);
+}
+.cp-main .pm-message {
+	background-color: var(--color02);
+	border-color: var(--color05);
+}
+.tabs .tab>a {
+	background: var(--color04);
+	color: var(--color13);
+}
+.tabs .tab>a:hover {
+	background: var(--color05);
+	color: var(--color01);
+}
+.tabs .activetab>a, .tabs .activetab>a:hover {
+	background-color: var(--color03);
+	background-image: none;
+	border-color: var(--color03);
+	box-shadow: none;
+	color: var(--color01);
+}
+.minitabs .tab>a {
+	background: var(--color05);
+	color: var(--color13);
+}
+.minitabs .tab>a:hover {
+	background: var(--color06);
+	color: var(--color01);
+}
+.minitabs .activetab>a, .minitabs .activetab>a:hover {
+	background-color: var(--color04);
+	background-image: none;
+	border-color: var(--color04);
+	color: var(--color01);
+}
+.responsive-tab .responsive-tab-link:before {
+	border-color: var(--color11);
+}
+.responsive-tab .responsive-tab-link:hover:before {
+	border-color: var(--color01);
+}
+.navigation a, .rtl .navigation a {
+	background: var(--color05);
+	background-image: none;
+	color: var(--color13);
+}
+.navigation a:hover, .rtl .navigation a:hover {
+	background: var(--color06);
+	color: var(--color01);
+}
+.navigation .active-subsection a, .navigation .active-subsection a:hover {
+	background-color: var(--color04);
+	background-image: none;
+	border-color: var(--color04);
+	color: var(--color01);
+}
+@media only screen and (max-width:900px), only screen and (max-width:900px) {
+	#navigation a, .rtl #navigation a {
+		background: var(--color04);
+	}
+	#navigation a:hover, .rtl #navigation a:hover {
+		background: var(--color05);
+	}
+}
+.panel-container h2 {
+	color: var(--color11);
+}
+.panel-container .panel, .cp-main .pm {
+	background-color: var(--color04);
+}
+.cp-mini {
+	background-color: var(--color02);
+}
+dl.mini dt {
+	color: var(--color11);
+}
+.current {
+	color: var(--color11) !important;
+}
+.pmlist li.pm_message_reported_colour, .pm_message_reported_colour {
+	border-left-color: crimson;
+	border-right-color: crimson;
+}
+.pmlist li.pm_marked_colour, .pm_marked_colour {
+	border-color: coral;
+}
+.pmlist li.pm_replied_colour, .pm_replied_colour {
+	border-color: gray;
+}
+.pmlist li.pm_friend_colour, .pm_friend_colour {
+	border-color: royalblue;
+}
+.pmlist li.pm_foe_colour, .pm_foe_colour {
+	border-color: black;
+}
+.gallery label {
+	background: var(--color03);
+	border-color: var(--color04);
+}
+.gallery label:hover {
+	background: var(--color05);
+	border-color: var(--color06);
+}
+select, input {
+	background-color: var(--color04);
+	border-color: var(--color05);
+	color: var(--color13);
+}
+select:hover, input:hover {
+	background-color: var(--color05);
+	border-color: var(--color05);
+}
+select:hover option {
+	background-color: var(--color05);
+	border-color: var(--color05);
+}
+select>option:hover {
+	background-color: var(--color06);
+}
+label {
+	color: var(--color11);
+}
+option.disabled-option {
+	color: var(--color11);
+}
+option:hover, dd label {
+	color: var(--color13);
+}
+fieldset.fields1 {
+	background-color: transparent;
+}
+fieldset dl:hover dt label {
+	color: var(--color11);
+}
+fieldset.fields2 dl:hover dt label {
+	color: inherit;
+}
+fieldset.quick-login input.inputbox {
+	background-color: var(--color04);
+	color: var(--color11);
+}
+fieldset.quick-login input.inputbox:hover {
+	background-color: var(--color05);
+	color: var(--color11);
+}
+.message-box textarea {
+	color: var(--color11);
+}
+.message-box textarea.drag-n-drop {
+	outline-color: var(--color11);
+}
+.message-box textarea.drag-n-drop-highlight {
+	outline-color: var(--color06);
+}
+.inputbox {
+	background-color: var(--color04);
+	border-color: var(--color05);
+	color: var(--color11);
+}
+.inputbox:hover, .inputbox:focus {
+	background-color: var(--color05);
+	border-color: var(--color05);
+	color: var(--color11);
+}
+.inputbox::placeholder {
+	color: var(--color13);
+}
+a.button1, a.button2, input.button1, input.button2, input.button3 {
+	background-color: var(--color04);
+	background-image: none;
+	border-color: var(--color05);
+	box-shadow: none;
+	color: var(--color01);
+}
+a.button1, a.button2 {
+	color: var(--color11);
+}
+a.button1, input.button1 {
+	border-color: var(--color05);
+}
+input.button3 {
+	background-image: none;
+}
+a.button1:hover, a.button2:hover, input.button1:hover, input.button2:hover, input.button3:hover {
+	background-color: var(--color05);
+	background-image: none;
+	border-color: var(--color05);
+	color: var(--color12);
+	text-shadow: none;
+}
+input.button1:focus, input.button2:focus, input.button3:focus {
+	background-color: var(--color04);
+	background-image: none;
+	border-color: var(--color05);
+	text-shadow: none;
+}
+input.disabled {
+	color: var(--color09);
+}
+.phpbb_alert {
+	background-color: var(--color02);
+	border-color: var(--color03);
+}
+.darken {
+	background-color: var(--color13);
+}
+.loading_indicator {
+	background-color: var(--color04);
+	background-image: url("./images/loading.svg");
+}
+.dropdown-extended ul li {
+	border-top-color: var(--color05);
+}
+.dropdown-extended ul li:hover {
+	background-color: var(--color05);
+	color: var(--color11);
+}
+.dropdown-extended .header, .dropdown-extended .footer {
+	border-color: var(--color04);
+	color: var(--color11);
+}
+.dropdown-extended .header {
+	background-color: var(--color04);
+	background-image: none;
+	text-shadow: none;
+}
+.dropdown-extended .bg1, .dropdown-extended .bg2 {
+	background-color: var(--color04);
+	border-color: var(--color04);
+}
+.dropdown .pointer {
+	border-color: var(--color05) transparent;
+}
+.dropdown .pointer-inner, .dropdown-extended .pointer-inner {
+	border-color: var(--color04) transparent;
+}
+.dropdown .dropdown-contents {
+	background: var(--color04);
+	border-color: var(--color05);
+}
+.dropdown li, .dropdown li.separator, .dropdown li li {
+	border-color: var(--color05);
+}
+.dropdown li:hover {
+	background-color: var(--color05);
+}
+.dropdown li:hover.page-jump-form {
+	background-color: transparent;
+}
+.dropdown li.switch-item:hover {
+	background-color: transparent;
+	border-color: transparent;
+}
+.notification_list p.notification-time {
+	color: var(--color11);
+}
+li.notification-disapproved strong, li.notification-reported strong {
+	color: var(--color09);
+}
+.badge {
+	background-color: var(--color09);
+	color: var(--color15);
+}
+.switch-theme i:before {
+	content: var(--switch-light-dark);
+}
+#phpbb .cc-btn {
+	background-color: var(--color09);
+	border: 1px solid var(--color08);
+	color: var(--color11);
+}
+#phpbb .cc-btn:hover, #phpbb .cc-btn:focus {
+	background-color: var(--color08);
+	border: 1px solid var(--color08);
+	color: var(--color11);
+}
+#phpbb .cc-message, #phpbb .cc-link, #phpbb .cc-link:hover, #phpbb .cc-link:focus {
+	color: var(--color12);
+}
+
+/* Extension Board Annoucements 1.1.1 ( https://www.phpbb.com/customise/db/extension/boardannouncements/ ) */
+.prosilver_fr .phpbb_announcement {
+	background-color: var(--color10);
+}
+.prosilver_fr .phpbb_announcement div {
+	color: var(--color12);
+}
+
+/* Extension Board Rules 2.1.3 ( https://www.phpbb.com/customise/db/extension/boardrules/ )*/
+.prosilver_fr .boardrules-container .content {
+	background-color: var(--color03);
+}
+.prosilver_fr .boardrules-categories .mini-panel {
+	background-color: var(--color03);
+}
+.prosilver_fr .boardrules-categories .mini-panel h3 {
+	color: var(--color11);
+}
+.prosilver_fr .boardrules-menu {
+	border-top: 1px solid var(--color05);
+}
+.prosilver_fr .highlight {
+	background-color: var(--color10);
+	color: var(--color13);
+}
+
+/* Extension Collapsible Forum Categories 2.0.1 ( https://www.phpbb.com/customise/db/extension/collapsible_forum_categories/ ) */
+.prosilver_fr .collapse-btn .fa-minus-square:before, .prosilver_fr .collapse-btn .fa-plus-square:before {
+	color: var(--color12);
+}
+.prosilver_fr .collapse-btn:hover .fa-minus-square:before, .prosilver_fr .collapse-btn:hover .fa-plus-square:before {
+	color: var(--color01);
+}

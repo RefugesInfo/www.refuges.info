@@ -1,1 +1,12 @@
 {PIED}
+
+<script>
+	// Coche les 2 check de la connexion
+	['autologin', 'viewonline']
+		.forEach(id => {
+			const el = document.getElementById(id);
+
+			if (el)
+				el.checked = true;
+		});
+</script>

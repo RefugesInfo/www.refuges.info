@@ -8,7 +8,6 @@
 		<input type="text" name="nom" class="input-text" placeholder="Recherche de point">
 		<input type="hidden" name="limite" value="40">
 		<input type="hidden" name="avec_point_osm" value="1">
-		<input type="hidden" name="marqueur_stats_utilisation_recherche_haute" value="1">
 		<button type="submit" title="Lancer la recherche" style="border:none">
 			🔍
 		</button>
@@ -185,7 +184,10 @@
 		</div>
 
 		<div class="menu-titre">
-			<span>Forum de </span>Refuges.info
+			<span>Forum de </span>
+			<a href="<?=$config_wri['sous_dossier_installation']?>" title="Revenir à l'accueil">
+				Refuges.info
+			</a>
 		</div>
 
 		<div class="menu-liste menu-bouton">

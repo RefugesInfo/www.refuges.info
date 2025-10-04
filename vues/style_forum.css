@@ -1,103 +1,57 @@
-/*=================================================*/
-/* Modification du style du forum PhpBB3-prosilver */
-/* Initialement dans style.css.php                 */
-/*=================================================*/
-/* #phpbb permet de prioriser par rapport au style de base */
-
-/* Pas de ligne vide en haut */
-#phpbb {
+/*====================================================*/
+/* Modification du style du forum PhpBB3-prosilver_fr */
+/* Initialement dans style.css.php                    */
+/*====================================================*/
+/* Forum de la largeur de la page */
+.wrap {
+  max-width: 100%;
   padding: 0;
 }
 
-/* Forum de la largeur de la page */
-#phpbb .wrap {
-  max-width: 100%;
+/* Liens aux couleurs de refuges.info */
+a {
+  color: var(--couleur_lien);
 }
 
-/* Titre des forums de refuges */
-#phpbb .section-viewtopic .topic-title a:first-child {
-  color: var(--couleur_texte) !important;
+/* Icones de la couleur du forum */
+.pagination li.active span, .pagination li a:hover, .global_unread:before, .global_unread_mine:before, .global_unread_locked:before, .global_unread_locked_mine:before, .announce_unread:before, .announce_unread_mine:before, .announce_unread_locked:before, .announce_unread_locked_mine:before, .forum_unread:before, .forum_unread_locked:before, .forum_unread_subforum:before, .sticky_unread:before, .sticky_unread_mine:before, .sticky_unread_locked:before, .sticky_unread_locked_mine:before, .pm_unread:before, .topic_unread:before, .topic_unread_mine:before, .topic_unread_hot:before, .topic_unread_hot_mine:before, .topic_unread_locked:before, .topic_unread_locked_mine:before {
+  background-color: var(--couleur_lien) !important;
 }
 
-/* Lien pour retourner à la fiche depuis le forum */
-.wri-link {
-  font-size: 70%;
+/* Couleur des anonymous */
+span[style="color: #000000;"] {
+  color: white !important;
 }
 
-/* Zones masquées */
-#phpbb .headerbar,
-#phpbb .navbar .avatar,
-/* Personnalisation des couleurs */
-#phpbb .navbar,
-#phpbb .basdepage {
-  background-color: var(--couleur_fond);
+/* Bandeau de phpbb */
+.headerbar h1,
+.headerbar .search-header {
+  margin: 0;
 }
 
-#phpbb .headerbar,
-.forumbg,
-#phpbb .headerbar,
-.forabg,
-#phpbb h3 {
+.headerbar h1,
+.headerbar,
+#phpbb .topiclist .header * {
   background-color: var(--couleur_fond_titre);
-  background-image: none;
-}
-
-#phpbb .panel h3,
-#phpbb .alert_text h3,
-#phpbb .stat-block h3,
-#phpbb .stat-block h3 a,
-#phpbb .headerspace h3,
-#phpbb .headerspace h3 a,
-#phpbb .postbody h3,
-#phpbb .postbody h3 a,
-#phpbb #postform .review,
-#phpbb #postform .review a {
   color: var(--couleur_titre);
 }
 
-#phpbb .stat-block strong a {
-  color: #a00;
+.topiclist li {
+	border: 0 solid transparent !important;
 }
 
-#phpbb .bg1,
-#phpbb .bg2,
-#phpbb .bg3,
-#phpbb .forabg .forums,
-#phpbb .forumbg .topics>li {
-  background-color: var(--couleur_fond);
-  background-image: none;
-}
+/* Masquages */
+/* Bandeau de phpbb */
+#logo,
+.headerbar p,
 
-#phpbb dl a.row-item-link:hover {
-  background-color: transparent !important;
-}
+/* Coches de la page de connexion */
+dl:has(#autologin),
 
-/* Masquage lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
-#nav-footer li:last-child,
-/* Masquage login rapide en bas de page */
-#page-body>form>h3,
-.quick-login {
+/* lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
+li:has(.fa-envelope),
+
+/* Changeur de couleurs de prosilver_fr */
+.dropdown-trigger {
   display: none;
-}
-/* Masquage du lien "Nous Contacter" qui fait croire à un contact avec les refuges */
-ul#nav-main > li > a[href*="contactadmin"] {
-  display: none;
-}
-
-.section-posting #attach-panel-multi::after {
-  content: "Attendre la fin du chargement des fichiers pour enregistrer le sujet.";
-  background: yellow;
-}
-
-.text-strong {
-  color: initial;
-}
-
-a.nav,
-a.topictitle,
-a.postlink,
-a.gen,
-a.gensmall {
-  color: var(--couleur_lien);
-  text-decoration: none;
 }

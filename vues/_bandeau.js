@@ -8,6 +8,10 @@ for (let el of menuEls) {
 // Ferme les boutons quand on clique sur la page
 document.body.addEventListener('click', menuClean);
 
+// Commutateur de thème jour / nuit de prosilver_fr
+if (localStorage.darksideofthemoon)
+	document.body.classList.add (localStorage.darksideofthemoon);
+
 function menuAction(evt) {
 	// Passage de la souris sur tout l'élement de classe 'menu-bouton'
 	// ajoute la classe 'menu-hover' à cet élément
@@ -38,17 +42,4 @@ function menuClean(evt) {
 	for (let el of menuEls)
 		if (!el.contains(evt.target))
 			el.classList.remove('menu-touch');
-}
-
-// Détection du prefers-color-scheme pour changer le style
-const dark_style = document.cookie.includes('prosilver_dark'),
-	dark_mode = window.matchMedia &&
-		window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-if (dark_style != dark_mode) {
-	document.cookie = dark_mode ?
-		'style=prosilver_dark; path=/' :
-		'style=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-
-	location.reload(true);
 }

@@ -1,0 +1,6 @@
+html {
+	--light-online: url("./en/icon_user_online_light.svg");
+	--light-offline: url("./en/icon_user_offline_light.svg");
+	--dark-online:	url("./en/icon_user_online_dark.svg");
+	--dark-offline:	url("./en/icon_user_offline_dark.svg");
+}
