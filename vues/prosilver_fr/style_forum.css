@@ -7,7 +7,6 @@
 /* Forum de la largeur de la page */
 .wrap {
   max-width: 100%;
-  padding: 0;
 }
 
 /* Liens aux couleurs de refuges.info */
@@ -31,7 +30,8 @@ a:visited {
 
 /* Viewforum */
 #phpbb .topiclist li:not(:hover),
-#phpbb .topiclist {
+#phpbb .topiclist,
+#phpbb .post {
   background-color: var(--couleur_fond);
 }
 
