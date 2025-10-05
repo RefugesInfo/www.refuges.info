@@ -280,23 +280,15 @@ img {
 }
 
 /*=========liens==========*/
-a:hover {
-  /*met en valeur les liens qd on est dessus */
-  background-color: var(--couleur_legende);
-  text-decoration: none;
-}
-
-/*
-J'intègre également les class des liens du forum
-en gros je veux tout de la même couleur
-*/
-
-body:not(#phpbb) a, /* //TODO DCMM */
-.bandeau-haut a, /* //TODO DCMM */
-body:not(#phpbb) a:visited { /* //TODO DCMM */
+a {
   color: var(--couleur_lien);
   /* en accord avec le thème du forum, et moins agressif */
   text-decoration: none;
+}
+
+a:hover {
+  /*met en valeur les liens qd on est dessus */
+  background-color: var(--couleur_legende);
 }
 
 /*========= Erreurs ==========*/
