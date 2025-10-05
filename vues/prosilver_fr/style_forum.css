@@ -1,0 +1,72 @@
+/*====================================================*/
+/* Modification du style du forum PhpBB3-prosilver_fr */
+/* Initialement dans style.css.php                    */
+/*====================================================*/
+/* #phpbb permet de prioriser par rapport au style de base */
+
+/* Forum de la largeur de la page */
+.wrap {
+  max-width: 100%;
+  padding: 0;
+}
+
+/* Liens aux couleurs de refuges.info */
+a,
+a:visited {
+  color: var(--couleur_lien);
+}
+
+/* Bandeau de phpbb */
+.headerbar h1,
+.headerbar .search-header {
+  margin: 0;
+}
+
+.headerbar h1,
+.headerbar,
+#phpbb .topiclist .header * {
+  background-color: var(--couleur_fond_titre);
+  color: var(--couleur_titre);
+}
+
+/* Viewforum */
+#phpbb .topiclist li:not(:hover),
+#phpbb .topiclist {
+  background-color: var(--couleur_fond);
+}
+
+/* Icones de la couleur du forum */
+.pagination li.active span, .pagination li a:hover, .global_unread:before, .global_unread_mine:before, .global_unread_locked:before, .global_unread_locked_mine:before, .announce_unread:before, .announce_unread_mine:before, .announce_unread_locked:before, .announce_unread_locked_mine:before, .forum_unread:before, .forum_unread_locked:before, .forum_unread_subforum:before, .sticky_unread:before, .sticky_unread_mine:before, .sticky_unread_locked:before, .sticky_unread_locked_mine:before, .pm_unread:before, .topic_unread:before, .topic_unread_mine:before, .topic_unread_hot:before, .topic_unread_hot_mine:before, .topic_unread_locked:before, .topic_unread_locked_mine:before {
+  background-color: var(--couleur_lien) !important;
+}
+
+/* Couleur des anonymes */
+span[style="color: #000000;"] {
+  color: var(--couleur_texte) !important;
+}
+
+/* Zones de saisies plus contrastées */
+#phpbb select,
+#phpbb input,
+#phpbb textarea {
+  color: var(--couleur_texte);
+  background: var(--couleur_titre);
+}
+
+/* Masquages */
+/* Bandeau de phpbb */
+#logo,
+.headerbar p,
+
+/* Coches de la page de connexion */
+dl:has(#autologin),
+
+/* lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
+li:has(.fa-envelope),
+
+/* Changeur de couleurs de prosilver_fr */
+.dropdown-trigger:has(.fa-paint-brush)
+
+{
+  display: none;
+}
