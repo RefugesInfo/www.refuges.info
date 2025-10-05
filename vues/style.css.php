@@ -74,7 +74,7 @@ if ($date_maintenant > $debut_automne and $date_maintenant < $debut_hiver) {
     --couleur_texte: white;
     --couleur_titre: black;
     --couleur_lien: #<?=$couleur_lien_clair?>;
-    --couleur_fond: #321;
+    --couleur_fond: #210;
     --couleur_fond_amplifiee: #333;
   }
 }
