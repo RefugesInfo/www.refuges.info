@@ -103,10 +103,15 @@ body.dark {
 /*==================================================================*/
 /* Mise en page générale                                            */
 /*==================================================================*/
-html,
+html {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   margin: 0px;
   width: 100%;
+  height: 100%;
   background-color: var(--couleur_fond);
   color: var(--couleur_texte);
 }
