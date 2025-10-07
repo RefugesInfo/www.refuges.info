@@ -61,9 +61,8 @@ span[style="color: #000000;"] {
 /* Coches de la page de connexion */
 dl:has(#autologin),
 
-/* lien vers la page contact qui fait doublon avec le bandeau WRI du bas */
-li:has(.fa-envelope),
-#nav-footer li:last-child, /* pour FF */
+/* liens vers la page contact qui fait doublon avec le bandeau WRI du bas */
+a[href*="contactadmin"],
 
 /* Changeur de couleurs de prosilver_fr */
 .style-switch {
