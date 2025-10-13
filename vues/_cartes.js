@@ -7,9 +7,9 @@
 // Les couches de fond des cartes de refuges.info
 function externTilesLayers(mapKeys, restreint) {
   return {
-    'Refuges.info': new myol.layer.tile.MRI(),
-    'OSM': new myol.layer.tile.OpenStreetMap(),
-    'OpenTopo': new myol.layer.tile.OpenTopo(),
+    'OpenHikingMap': new myol.layer.tile.OpenHikingMap(),
+    'OpenStreetMap': new myol.layer.tile.OpenStreetMap(),
+    'OpenTopoMap': new myol.layer.tile.OpenTopoMap(),
     'Outdoors': new myol.layer.tile.Thunderforest({
       subLayer: 'outdoors',
       key: mapKeys.thunderforest,
@@ -314,7 +314,7 @@ function mapIndex(options) {
     ],
 
     layers: [
-      new myol.layer.tile.MRI(), // Fond de carte
+      new myol.layer.tile.OpenHikingMap(), // Fond de carte
       polygonesLayer,
       pointsLayer,
       new myol.layer.Hover(), // Gère le survol du curseur

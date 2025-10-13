@@ -72,32 +72,34 @@ export class OpenStreetMap extends TileLayer {
 }
 
 /**
- * Nice OSM style
- * Map : opentopomap.org
- * API : https://www.opentopodata.org/#public-api
+ * OSM Topo style OpenTopoMap 
+ * Map : Hosted by https://openmaps.fr
+ * Doc : https://opentopomap.org/about
  */
-export class OpenTopo extends OpenStreetMap {
+export class OpenTopoMap extends OpenStreetMap {
   constructor() {
     super({
-      url: 'https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
       maxZoom: 17,
-      attributions: '<a href="https://opentopomap.org">OpenTopoMap</a> ' +
-        '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+      attributions: '<a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a>. ' + 
+      '<a href="https://github.com/sletuffe/OpenTopoMap/">OpenTopoMap-R</a> ' +
+      '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
     });
   }
 }
 
 /**
- * Maps of https://www.refuges.info/
- * Map : https://maps.refuges.info/
- * Doc : https://wiki.openstreetmap.org/wiki/Hiking/mri
+ * Maps of https://openmaps.fr
+ * Map : https://openmaps.fr
+ * Doc : https://wiki.openstreetmap.org/wiki/OpenHikingMap
  */
-export class MRI extends OpenStreetMap {
+export class OpenHikingMap extends OpenStreetMap {
   constructor() {
     super({
-      url: 'https://maps.refuges.info/hiking/{z}/{x}/{y}.png',
+      url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
       maxZoom: 18,
-      attributions: '<a href="https://wiki.openstreetmap.org/wiki/Hiking/mri">Refuges.info</a>',
+      attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' + 
+      '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">OpenHikingMap</a>',
     });
   }
 }
@@ -135,7 +137,8 @@ export class Thunderforest extends OpenStreetMap {
       maxZoom: 22,
       // subLayer: 'outdoors', ...
       // key: '...',
-      attributions: '<a href="https://www.thunderforest.com/">Thunderforest</a>',
+      attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' +
+      '<a href="https://www.thunderforest.com/">Thunderforest</a>',
 
       ...options, // Include key
     });
@@ -441,7 +444,7 @@ export class MapTilerElevation extends XYZ {
       hidden: !options.key, // For LayerSwitcher
       url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
       maxZoom: 12,
-      attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap contributors</a>',
+      attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>',
 	  
       ...options,
     });
@@ -453,13 +456,13 @@ export class MapTilerElevation extends XYZ {
  */
 export function collection(options = {}) {
   return {
-    'OSM': new OpenStreetMap(),
-    'OSM outdoors': new Thunderforest({
+    'OpenStreetMap': new OpenStreetMap(),
+    'Outdoors': new Thunderforest({
       key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
       subLayer: 'outdoors',
     }),
-    'OpenTopo': new OpenTopo(),
+    'OpenTopoMap': new OpenTopoMap(),
     'OSM transports': new Thunderforest({
       key: options.thunderforest, // For simplified options
       ...options.thunderforest, // Include key
@@ -468,7 +471,7 @@ export function collection(options = {}) {
     'OSM cyclo': new OpenStreetMap({
       url: 'https://{a-c}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
     }),
-    'Refuges.info': new MRI(),
+    'OpenHikingMap': new OpenHikingMap(),
 
     'IGN TOP25': new IGN({
       layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
@@ -557,7 +560,7 @@ export function examples(options = {}) {
   return {
     ...collection(options),
 
-    'OSM fr': new OpenStreetMap({
+    'OpenStreetMap fr': new OpenStreetMap({
       url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
     }),
     'OSM orthos FR': new OpenStreetMap({

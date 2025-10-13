@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 05/06/2025 17:37:05 using npm run build from the src/... sources
+ * Built 13/10/2025 12:11:01 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -76409,32 +76409,34 @@
   }
 
   /**
-   * Nice OSM style
-   * Map : opentopomap.org
-   * API : https://www.opentopodata.org/#public-api
+   * OSM Topo style OpenTopoMap 
+   * Map : Hosted by https://openmaps.fr
+   * Doc : https://opentopomap.org/about
    */
-  class OpenTopo extends OpenStreetMap {
+  class OpenTopoMap extends OpenStreetMap {
     constructor() {
       super({
-        url: 'https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png',
+        url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
         maxZoom: 17,
-        attributions: '<a href="https://opentopomap.org">OpenTopoMap</a> ' +
-          '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+        attributions: '<a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a>. ' + 
+        '<a href="https://github.com/sletuffe/OpenTopoMap/">OpenTopoMap-R</a> ' +
+        '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
       });
     }
   }
 
   /**
-   * Maps of https://www.refuges.info/
-   * Map : https://maps.refuges.info/
-   * Doc : https://wiki.openstreetmap.org/wiki/Hiking/mri
+   * Maps of https://openmaps.fr
+   * Map : https://openmaps.fr
+   * Doc : https://wiki.openstreetmap.org/wiki/OpenHikingMap
    */
-  class MRI extends OpenStreetMap {
+  class OpenHikingMap extends OpenStreetMap {
     constructor() {
       super({
-        url: 'https://maps.refuges.info/hiking/{z}/{x}/{y}.png',
+        url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
         maxZoom: 18,
-        attributions: '<a href="https://wiki.openstreetmap.org/wiki/Hiking/mri">Refuges.info</a>',
+        attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' + 
+        '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">OpenHikingMap</a>',
       });
     }
   }
@@ -76472,7 +76474,8 @@
         maxZoom: 22,
         // subLayer: 'outdoors', ...
         // key: '...',
-        attributions: '<a href="https://www.thunderforest.com/">Thunderforest</a>',
+        attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' +
+        '<a href="https://www.thunderforest.com/">Thunderforest</a>',
 
         ...options, // Include key
       });
@@ -76778,7 +76781,7 @@
         hidden: !options.key, // For LayerSwitcher
         url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
         maxZoom: 12,
-        attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap contributors</a>',
+        attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>',
   	  
         ...options,
       });
@@ -76790,13 +76793,13 @@
    */
   function collection$2(options = {}) {
     return {
-      'OSM': new OpenStreetMap(),
-      'OSM outdoors': new Thunderforest({
+      'OpenStreetMap': new OpenStreetMap(),
+      'Outdoors': new Thunderforest({
         key: options.thunderforest, // For simplified options
         ...options.thunderforest, // Include key
         subLayer: 'outdoors',
       }),
-      'OpenTopo': new OpenTopo(),
+      'OpenTopoMap': new OpenTopoMap(),
       'OSM transports': new Thunderforest({
         key: options.thunderforest, // For simplified options
         ...options.thunderforest, // Include key
@@ -76805,7 +76808,7 @@
       'OSM cyclo': new OpenStreetMap({
         url: 'https://{a-c}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
       }),
-      'Refuges.info': new MRI(),
+      'OpenHikingMap': new OpenHikingMap(),
 
       'IGN TOP25': new IGN({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
@@ -76894,7 +76897,7 @@
     return {
       ...collection$2(options),
 
-      'OSM fr': new OpenStreetMap({
+      'OpenStreetMap fr': new OpenStreetMap({
         url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
       }),
       'OSM orthos FR': new OpenStreetMap({
@@ -76990,13 +76993,13 @@
     IGN: IGN,
     IgnES: IgnES,
     Kompass: Kompass,
-    MRI: MRI,
     MapboxElevation: MapboxElevation,
     Maxbox: Maxbox,
     NoTile: NoTile,
     OS: OS,
+    OpenHikingMap: OpenHikingMap,
     OpenStreetMap: OpenStreetMap,
-    OpenTopo: OpenTopo,
+    OpenTopoMap: OpenTopoMap,
     Positron: Positron,
     SwissTopo: SwissTopo,
     Thunderforest: Thunderforest,
@@ -90381,7 +90384,7 @@
    */
 
 
-  const VERSION = '1.1.2.dev 05/06/2025 17:37:05';
+  const VERSION = '1.1.2.dev 13/10/2025 12:11:01';
 
   async function trace() {
     const data = [
