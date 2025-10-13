@@ -47,6 +47,7 @@ else // le point est valide
     $vue->nom_debut_majuscule = protege(mb_ucfirst($point->nom));
     $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
+    $vue->lien_wiki_explication_proprio=lien_wiki("informations_proprietaires");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
     
     $vue->localisation_point = array();
