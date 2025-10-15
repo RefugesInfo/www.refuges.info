@@ -39,15 +39,18 @@
 					Modérateur
 		<?php } ?>
 					<?=$infos_identification->username?>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php">
 						Panneau de l’utilisateur
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?i=pm&folder=inbox">
 						Messages privés
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php?mode=logout&redirect=<?=$_SERVER['REQUEST_URI']?>">
 						Déconnexion
 					</a>
@@ -59,23 +62,28 @@
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
 						<?php if ($vue->demande_correction) {?>⭐ <?php } ?>Commentaires à traiter
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications">
 						Historique des modifications
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&ext_error=null">
 						Historique des traces
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_envoi_emails">
 						<?php if ($vue->email_en_erreur) {?>🌙 <?php } ?>Emails en erreur
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=1">
 						Massifs & zones
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/modifier_modeles"
 						title="Pré-remplissage des champs lors d'un ajout de point">
 						Modèles de points
@@ -84,16 +92,18 @@
 					<a href="<?=lien_wiki('contenus_speciaux')?>">
 						Liste des contenus spéciaux
 					</a>
-				</li><li>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/liste_pages_wiki">
 						Liste des pages wiki
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>ressources/outils/scan_liens">
 						Scanner les liens véreux
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=$config_wri['lien_forum']?>mcp.php?i=main&mode=front">
 						Modération du forum
 					</a>
@@ -125,10 +135,12 @@
               <li>
                 <input type="text" name="username" size="15" placeholder="Nom d’utilisateur"
                     autocomplete="username">
-              </li><li>
+              </li>
+              <li>
                 <input type="password" name="password" size="15"
                       placeholder="Mot de passe" autocomplete="current-password">
-              </li><li>
+              </li>
+              <li>
                 <input type="hidden" name="autologin" value="checked">
                 <input type="hidden" name="creation_time"
                     value="<?=$infos_identification->creation_time?>">
@@ -138,20 +150,25 @@
                     value="<?=$_SERVER['REQUEST_URI']?>">
                 <input type="submit" name="login" value="Connexion">
               </li>
-              <li><hr></li>
+              <li>
+              <hr>
+              </li>
               <li>
                 <a href="<?=lien_wiki('cookies')?>">
                     Utilisation des cookies
                 </a>
-              </li><li>
+              </li>
+              <li>
                 <a href="<?=$config_wri['lien_forum']?>app.php/user/forgot_password">
                     Mot de passe oublié
                 </a>
-              </li><li>
+              </li>
+              <li>
                 <a href="<?=$config_wri['lien_forum']?>ucp.php?mode=register">
                     Créer un compte
                 </a>
-              </li><li>
+              </li>
+              <li>
                 <a href="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
                     Connexion avancée
                 </a>
@@ -226,57 +243,72 @@
 								title="Retour à l'entrée du site">
 								Accueil
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=lien_wiki('')?>">
 								Qui sommes nous ?
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
 								title="Formulaire de recherche multicritères de points dans la base de données de refuges.info">
 								Recherche de points
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=lien_wiki('cabane_principe_bonne_conduite')?>">
 								Consignes en cabane
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=lien_wiki('liens')?>">
 								Liens
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>gps">
 								Appli GPS
 							</a>
-						</li><hr/><li>
+						</li>
+						<hr/>
+						<li>
 							<a href="<?=$config_wri['base_wiki']?>contact">
 								Support site
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations"
 								title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">
 								Export de points
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss_et_nouvelles?choix=flux_rss">
 								Flux RSS
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>api/doc/">
 								Doc API
 							</a>
-						</li><hr/><li>
+						</li>
+						<hr/>
+						<li>
 							<a href="<?=lien_wiki('prudence')?>">
 								Règles de prudence
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=lien_wiki('cookies')?>">
 								Cookies
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=lien_wiki('licence')?>">
 								Licence
 							</a>
-						</li><li>
+						</li>
+						<li>
 							<a href="<?=lien_wiki('mentions-legales')?>">
 								Mentions légales
 							</a>
