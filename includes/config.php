@@ -173,11 +173,8 @@ $config_wri['defaut_max_nombre_point']=250;
 $config_wri['defaut_max_commentaires_recents']=10;
 $config_wri['defaut_max_ajouts_recents']=10;
 
-// nombre de points ou commentaires renvoyés par défaut sur la page des nouvelles si on en veut "plus"
-$config_wri['defaut_max_page_nouvelles']=150;
-
-// nombre de points ou commentaires renvoyés par défaut sur la page nouvelle
-$config_wri['defaut_nombre_nouvelles_page_nouvelles']=45;
+// nombre de lignes renvoyées par défaut sur la page nouvelle
+$config_wri['defaut_nombre_nouvelles_page_nouvelles']=100;
 
 // distance d'une cabane cachée à laquelle on ne peut pas créer d'autres cabanes
 $config_wri['defaut_max_distance_cabane_cachee']=100; // en mètres
