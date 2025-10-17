@@ -42,7 +42,7 @@ if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and empty($_REQUEST
 elseif(!empty($_REQUEST['form_modifier']) and est_moderateur())
 {
     $vue->type="wiki_modification";
-    $vue->contenu_a_modifier=protege($contenu_brut->contenu);
+    $vue->contenu_a_modifier=protege($contenu_brut->contenu??'');
     $vue->lien_validation=lien_wiki($page);
     $vue->lien_bbcode=lien_wiki('syntaxe_bbcode');
 }

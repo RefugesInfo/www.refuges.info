@@ -324,4 +324,38 @@
 			</ul>
 		</div>
 	</div>
+
+	<?php if ($vue->bandeau_info->cookie !== $vue->bandeau_info->date) { ?>
+		<div class="infos-haut">
+			<?=$vue->bandeau_info->contenu?>
+			-
+			<a onclick="masqueBandeauInfo()"
+				title="Masquer la barre d'informations"
+				style="">
+				<span class="edit-info">&#128065;</span>Masquer
+			</a>
+			<?php if (est_moderateur()) { ?>
+				-
+				<a href="/wiki/bandeau?form_modifier=1"
+					title="Mofifier la barre d'informations">
+					<span>&#128393;</span>
+				</a>
+			<?php } ?>
+		</div>
+	<?php } ?>
 </div>
+
+<script>
+	// DOM à mettre dans _bandeau.js quand celui-ci pourra accepter des variables php
+	function masqueBandeauInfo() {
+		const bandeauEls = document.getElementsByClassName('infos-haut');
+
+		if (bandeauEls.length)
+			bandeauEls[0].style.display = 'none';
+
+		document.cookie =
+			'bandeau_info=<?=$vue->bandeau_info->date?>;'+
+			'expires=<?=$vue->bandeau_info->new_cookie_expire?>;'+
+			'path=/';
+	}
+</script>

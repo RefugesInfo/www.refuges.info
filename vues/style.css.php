@@ -206,6 +206,28 @@ body {
     font-size: 12px;
   }
 
+  .infos-haut {
+    border: 1px solid red;
+    border-radius: 5px;
+    margin: 2px;
+    padding: 0 2px 2px 2px;
+  }
+
+  .infos-haut,
+  .infos-haut a {
+    font-size: 14px;
+    color: green;
+    cursor: pointer;
+  }
+
+  .infos-haut span {
+    color: orange;
+  }
+
+  .infos-haut .edit-info {
+    text-decoration: line-through;
+  }
+
   /* Boutons */
   .menu-bouton:not(.menu-liste) {
     border: 2px solid transparent;

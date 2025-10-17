@@ -92,4 +92,13 @@ if (est_moderateur())
   $vue->email_en_erreur=info_email_bounce();
 }
 
+// DOM Je mets les infos sur le bandeau info ici, comme les autres infos pour le bandeau
+$vue->bandeau_info=wiki_page_brut('bandeau');
+$vue->bandeau_info->cookie=$_COOKIE['bandeau_info'] ?? '';
+$vue->bandeau_info->new_cookie_expire=
+	gmdate('r', time() + (
+	//gmdate('r', time() + 24 * 3600 * (
+		$infos_identification->user_id > 1 ? 31 : 7 // Nombre de jours masqués
+	));
+
 include(fichier_vue($vue->template));
