@@ -96,8 +96,7 @@ if (est_moderateur())
 $vue->bandeau_info=wiki_page_brut('bandeau');
 $vue->bandeau_info->cookie=$_COOKIE['bandeau_info'] ?? '';
 $vue->bandeau_info->new_cookie_expire=
-	gmdate('r', time() + (
-	//gmdate('r', time() + 24 * 3600 * (
+	gmdate('r', time() + 24 * 3600 * (
 		$infos_identification->user_id > 1 ? 31 : 7 // Nombre de jours masqués
 	));
 
