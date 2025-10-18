@@ -93,7 +93,7 @@
   <dl class="liste-wri">
       <?php // Champs textes libres
       if (!empty($vue->point->equivalent_proprio)) {?>
-        <dt><?=$vue->point->equivalent_proprio?>:</dt>
+        <dt><?=$vue->point->equivalent_proprio?>: <a class="onhover" href="<?=$vue->lien_wiki_explication_proprio?>"><i><span>Vous êtes le gestionnaire ?</span><sup>?</sup></i></a></dt>
         <dd><?=$vue->proprio?></dd>
         <?php // Il peut y avoir des propriétaires/responsables comme la commune ou une association, mais il est rare qu'on doivent les appeler, n'encourageons pas 
         if ($vue->point->id_point_type!=$config_wri['id_cabane_non_gardee']) { ?>

@@ -399,6 +399,17 @@ a:hover {
   color: var(--couleur_texte) !important;
 }
 
+/* Pour afficher un lien au survol sur les infos pour propriétaires */
+.onhover span {
+  display: none;
+}
+.onhover:hover sup {
+  display: none;
+}
+.onhover:hover span {
+  display: inline;
+}
+
 /*==================================================================*/
 /*                              Cartes                              */
 /*==================================================================*/
