@@ -57,7 +57,9 @@
 				</li>
 
 		<?php if (est_moderateur()) { ?>
-				<hr/>
+        <li>
+				  <hr>
+        </li>
 				<li>
 					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
 						<?php if ($vue->demande_correction) {?>⭐ <?php } ?>Commentaires à traiter
@@ -152,7 +154,7 @@
                 <input type="submit" name="login" value="Connexion">
               </li>
               <li>
-              <hr>
+                <hr>
               </li>
               <li>
                 <a href="<?=lien_wiki('cookies')?>">
@@ -265,7 +267,9 @@
 								Règles de prudence
 							</a>
 						</li>
-						<hr/>
+						<li>
+						  <hr>
+            </li>
 						<li>
 							<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
 								title="Formulaire de recherche multicritères de points dans la base de données de refuges.info">
@@ -288,7 +292,9 @@
 								Flux RSS
 							</a>
 						</li>
-						<hr/>
+						<li>
+						  <hr>
+						</li>  
 						<li>
 							<a href="<?=$config_wri['base_wiki']?>contact">
 								Support site
