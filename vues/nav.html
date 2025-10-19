@@ -29,13 +29,13 @@
 						<input type="checkbox"
 							id="select-massif" name="select-massif"
 							value="<?=$vue->polygone->id_polygone?>"
-						/>
+						>
 						<label for="select-massif"><?=$vue->polygone->nom_polygone?> uniquement</label>
 					</li><hr/>
 				<?php } ?>
 				<li>
 					<label for="select-wri">Tout</label>
-					<input type="checkbox" id="select-wri" name="select-wri" value="all" />
+					<input type="checkbox" id="select-wri" name="select-wri" value="all">
 					<span id="select-wri-status"></span>
 				</li>
 				<?php foreach ($vue->types_point_affichables AS $type_affichable) { ?>
@@ -44,19 +44,19 @@
 							id="select-wri-<?=$type_affichable->id_point_type?>"
 							name="select-wri"
 							value="<?=$type_affichable->id_point_type?>"
-						/>
+						>
 						<label for="select-wri-<?=$type_affichable->id_point_type?>">
 							<img
 								id="icone_<?=$type_affichable->id_point_type?>"
 								src="<?=$config_wri['url_chemin_icones'].$config_wri['correspondance_type_icone'][replace_url($type_affichable->nom_type)]?>.svg"
 								alt="icone de <?=$type_affichable->nom_type?>"
-							/>
+							>
 							<?=$type_affichable->nom_type?>
 						</label>
 					</li>
 				<?php } ?>
 			</ul>
-			<hr />
+			<hr>
 				<ul>Ctrl+click: nouvel onglet</ul>
 				<ul>Maj+click: nouvelle fenêtre</ul>
 		</fieldset>
@@ -95,31 +95,31 @@
 				<ul>
 					<li>
 						<label for="select-osm">Tout</label>
-						<input type="checkbox" id="select-osm" name="select-osm" value="all" />
+						<input type="checkbox" id="select-osm" name="select-osm" value="all">
 						<span id="select-osm-status"></span>
 					</li><li>
 						<input type="checkbox" name="select-osm" id="City Hall"
-							value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]' />
+							value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]'>
 						<label for="City Hall">hôtel ou location</label>
 					</li><li>
 						<input type="checkbox" name="select-osm" id="Campground"
-							value='["tourism"="camp_site"]' />
+							value='["tourism"="camp_site"]'>
 						<label for="Campground">camping</label>
 					</li><li>
 						<input type="checkbox" name="select-osm" id="Drinking Water"
-							value='["natural"="spring"]+["amenity"="drinking_water"]' />
+							value='["natural"="spring"]+["amenity"="drinking_water"]'>
 						<label for="Drinking Water">point d'eau</label>
 					</li><li>
 						<input type="checkbox" name="select-osm" id="Shopping Center"
-							value='["shop"~"supermarket|convenience"]' />
+							value='["shop"~"supermarket|convenience"]'>
 						<label for="Shopping Center">alimentation</label>
 					</li><li>
 						<input type="checkbox" name="select-osm" id="Parking Area"
-							value='["amenity"="parking"]["access"!="private"]' />
+							value='["amenity"="parking"]["access"!="private"]'>
 						<label for="Parking Area">parking</label>
 					</li><li>
 						<input type="checkbox" name="select-osm" id="Ground Transportation"
-							value='["highway"="bus_stop"]' />
+							value='["highway"="bus_stop"]'>
 						<label for="Ground Transportation">bus</label>
 					</li>
 				</ul>
@@ -130,12 +130,12 @@
 			<legend>Autres sites</legend>
 			<ul>
 				<li>
-					<input type="checkbox" name="select-prc" id="select-prc" />
+					<input type="checkbox" name="select-prc" id="select-prc">
 					<label for="select-prc">pyrenees-refuges.com</label>
 					<span id="select-prc-status"></span>
 				</li><li>
 					<input type="checkbox" name="select-c2c" id="select-c2c"
-						value="hut,shelter,gite,cave,bivouac,camp_site" />
+						value="hut,shelter,gite,cave,bivouac,camp_site">
 					<label for="select-c2c">camptocamp.org</label>
 					<span id="select-c2c-status"></span>
 					(seuls les 100 premiers points sont affichés)
@@ -143,14 +143,14 @@
 					<input type="checkbox"
 						name="select-chem" id="select-chem"
 						value="3,8,20,23"
-					/>
+					>
 					<label for="select-chem">chemineur.fr</label>
 					<span id="select-chem-status"></span>
 				</li><li>
 					<input type="checkbox"
 						name="select-alpages" id="select-alpages"
 						value="4,5"
-					/>
+					>
 					<label for="select-alpages">alpages.info</label>
 					<span id="select-alpages-status"></span>
 				</li>
@@ -176,14 +176,14 @@
 			<?php if ( ($_REQUEST['id_polygone_type']??0) != 1 ) { ?>
 				<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=1">
 					Voir les massifs
-				</a><hr/>
+				</a><hr>
 			<?php } ?>
 			Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br>
 			Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.
 			<?php if ( ($_REQUEST['id_polygone_type']??0) == 1 ) { ?>
-				<hr/><a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=1">
+				<hr><a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=1">
 					Créer un massif
-				</a><hr/>
+				</a><hr>
 				Pour modifier ou supprimer un massif, ouvrez-le en édition.
 			<?php } ?>
 		</fieldset>
@@ -192,17 +192,17 @@
 			<?php if ( ($_REQUEST['id_polygone_type']??0) != 11 ) { ?>
 				<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=11">
 					Voir les zones
-				</a><hr/>
+				</a><hr>
 			<?php } ?>
 			Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br>
-			Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr/>
+			Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr>
 			La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps
 			du moment qu'il recouvre au moins un bout de chaque massif.<br>
 			Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.
 			<?php if ( ($_REQUEST['id_polygone_type']??0) == 11 ) { ?>
-				<hr/><a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=11">
+				<hr><a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=11">
 					Créer une zone
-				</a><hr/>
+				</a><hr>
 				Pour modifier ou supprimer une zone, ouvrez-la en édition.
 			<?php } ?>
 		</fieldset>
