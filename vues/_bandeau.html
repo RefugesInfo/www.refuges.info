@@ -88,7 +88,8 @@
 						title="Pré-remplissage des champs lors d'un ajout de point">
 						Modèles de points
 					</a>
-				</li><li>
+				</li>
+				<li>
 					<a href="<?=lien_wiki('contenus_speciaux')?>">
 						Liste des contenus spéciaux
 					</a>
@@ -131,16 +132,16 @@
 	<?php } else { ?>
 			<span>👤</span><span class="menu-large">Connexion</span>
 			<ul>
-                <form method="post" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
+            <form method="post" action="<?=$config_wri['lien_forum']?>ucp.php?mode=login">
               <li>
                 <input type="text" name="username" size="15" placeholder="Nom d’utilisateur"
                     autocomplete="username">
               </li>
-              <li>
+			  <li>
                 <input type="password" name="password" size="15"
                       placeholder="Mot de passe" autocomplete="current-password">
               </li>
-              <li>
+			  <li>
                 <input type="hidden" name="autologin" value="checked">
                 <input type="hidden" name="creation_time"
                     value="<?=$infos_identification->creation_time?>">
@@ -249,11 +250,17 @@
 								Qui sommes nous ?
 							</a>
 						</li>
-            <li>
-                <a href="<?=lien_wiki('dons')?>">
-                    <span>❤️</span><span> Donation €</span>
-                </a>
-            </li>						
+						<li>
+							<a href="<?=lien_wiki('dons')?>">
+								<span>❤️</span><span> Donation €</span>
+							</a>
+						</li>							<li>
+						<li>
+							<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
+								title="Formulaire de recherche multicritères de points dans la base de données de refuges.info">
+								Recherche de points
+							</a>
+						</li>
 						<li>
 							<a href="<?=lien_wiki('cabane_principe_bonne_conduite')?>">
 								Consignes en cabane
