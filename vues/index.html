@@ -23,7 +23,6 @@
 	<div class="tablo" style="float:none;">
 		<h4><?=$vue->stat->nbphotos?> photos. Les dernières :</h4>
 		<br>
-		<dd>
 			<?php if (isset($vue->nouveaux_commentaires)) 
 				foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {
 					if (isset ($nouveau_commentaire->photo_existe) &&
@@ -34,7 +33,6 @@
 					</a>
 				<?	 }
 				} ?>
-		</dd>
 		<br>
 
 		<h4><?=$vue->stat->nbpoints?> points dans la base. Les <?=$config_wri['defaut_max_ajouts_recents']?> derniers ajoutés :</h4>
