@@ -114,6 +114,10 @@ function infos_commentaires ($conditions)
   // ca rajoute une fonction, mais ca reduit ici, et ca reduit la bas.
   // Faut reduire la taille des briques. Cette fonctions donne des infos sur les commentaires, pas sur les massifs.
   // FIXME 2024 sly: Ce code est en double dans infos_points() je commence vraiment à me dire que je vais laisser tomber et boucler sur infos_points (en plus, ça ne sert que pour les news et pour la page d'accueil) qui en contiennent en nombre limité. Là ou la recherche ou l'export de point ont vraiment besoin de vitesse car on peut en sortir des tas
+  // FIXME 2025 sly: Mais ouais, mais en ajoutant en 2025 aux nouvelles une conditions sur le polygone auxquel le point dont le commentaire se rapporte, avoir ici cette particularité du massif fait qu'il n'est pas possible de filtrer sur autre chose qu'un massif : exemple, un filtre sur les commentaires de points dans les Alpes (une zone) par ids_polygones=352 ou un département ou un pays ne fonctionne pas !
+  // Pour avoir vu Laravel avec Eloquent, et bien en fait si, il ne faut pas avoir peur des LEFT JOIN à l'infini, SQL c'est fait pour, c'est juste que si on utilisait un moteur de génération de SQL, ça serait plus facile à coder qu'avec des ifs à n'en plus finir.
+  // Bref, en attendant le grand soir, il faut faire sauter cette condition id_polygone_type=".$config_wri['id_massif']; et comme pour les points, remplir un array proprement avec un sous-ensemble des polygones auxquels le points de tel commentaire se rapporte
+  
   if (!empty($conditions->avec_infos_point) OR !empty($conditions->avec_commentaires_modele) OR !empty(($conditions->ids_polygones)))
   {
     $table_en_plus=",point_type,points LEFT JOIN polygones on ST_Within(points.geom,polygones.geom) AND polygones.id_polygone_type=".$config_wri['id_massif'];
@@ -136,7 +140,7 @@ function infos_commentaires ($conditions)
       
     if (!empty($conditions->ids_polygones))
       if (!verif_multiples_entiers($conditions->ids_polygones))
-        return erreur("Le paramètre donné pour les ids de polygones auxquels les points appariennent dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_polygones");
+        return erreur("Le paramètre donné pour les ids de polygones auxquels les points appartiennent dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_polygones");
       else
         $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
   }
