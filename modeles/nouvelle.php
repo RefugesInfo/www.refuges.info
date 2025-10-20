@@ -75,11 +75,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   
   $i = 1;    
   $tok = strtok($type, ",");// le séparateur des types de news. voir aussi tt en bas
-  // si on nous passe des ids de polygones, ils doivent être au format int,int,int,...
-  if (!empty($ids_polygones))
-    if (!verif_multiples_entiers($ids_polygones)) 
-      return erreur("La liste des ids de polygones fournie n'a pas un format correcte. Reçu : ".$ids_polygones);
-            
+       
             
   // pour chaque catégorie, on va chercher autant que la limite qui nous a été demandée (si on nous demande 300 nouvelles : on va chercher 300 commentaires, 300 nouveaux points et 300 nouveau message forum. Et ouais, c'est triste, mais comme c'est en plusieurs requêtes, je ne sais pas sinon quels sont les 300 plus récents
   // Je vais au moins limiter dans cette première boucle à n'aller chercher que le minimum, la deuxième boucle, qui ne prendra que les 300 nouvelles, fera les traitements de recherche des points et polygones correspondants
@@ -99,6 +95,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         $conditions_commentaires->ids_polygones=$ids_polygones ?? Null;
         
         $commentaires=infos_commentaires($conditions_commentaires);
+        if ($commentaires->erreur)
+          return erreur($commentaires->message);
 
         $conditions_point = new stdclass;
         foreach ( $commentaires as $commentaire )
