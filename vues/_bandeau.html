@@ -20,7 +20,7 @@
 	<div class="menu-haut">
 		<div class="menu-connexion menu-bouton">
 	<?php if (est_connecte() && $infos_identification->username) { ?>
-			<span>👨</span><span class="menu-large"><?=$infos_identification->username?> 
+			<span>👨</span><span class="menu-large"><?=$infos_identification->username??''?> 
 			<?php if ( est_moderateur()) 
                     if( $vue->demande_correction)
                       {?>
@@ -38,7 +38,7 @@
 		<?php } else { ?>
 					Modérateur
 		<?php } ?>
-					<?=$infos_identification->username?>
+					<?=$infos_identification->username??''?>
 				</li>
 				<li>
 					<a href="<?=$config_wri['lien_forum']?>ucp.php">
@@ -113,7 +113,7 @@
 				</li>
 			<?php if (est_administrateur()) { ?>
 				<li>
-					<a href="<?=$config_wri['lien_forum']?>adm/index.php?sid=<?=$infos_identification->session_id?>">
+					<a href="<?=$config_wri['lien_forum']?>adm/index.php?sid=<?=$infos_identification->session_id??''?>">
 						Administration du forum
 					</a>
 				</li>
@@ -146,9 +146,9 @@
 			  <li>
                 <input type="hidden" name="autologin" value="checked">
                 <input type="hidden" name="creation_time"
-                    value="<?=$infos_identification->creation_time?>">
+                    value="<?=$infos_identification->creation_time??''?>">
                 <input type="hidden" name="form_token"
-                    value="<?=$infos_identification->login_form_token?>">
+                    value="<?=$infos_identification->login_form_token??''?>">
                 <input type="hidden" name="redirect"
                     value="<?=$_SERVER['REQUEST_URI']?>">
                 <input type="submit" name="login" value="Connexion">
@@ -334,7 +334,7 @@
 
 	<?php if ($vue->bandeau_info->cookie ?? '' !== $vue->bandeau_info->date ?? '') { ?>
 		<div class="infos-haut">
-			<?=$vue->bandeau_info->contenu?>
+			<?=$vue->bandeau_info->contenu??''?>
 			-
 			<a onclick="masqueBandeauInfo()"
 				title="Masquer la barre d'informations"
@@ -361,8 +361,8 @@
 			bandeauEls[0].style.display = 'none';
 
 		document.cookie =
-			'bandeau_info=<?=$vue->bandeau_info->date?>;'+
-			'expires=<?=$vue->bandeau_info->new_cookie_expire?>;'+
+			'bandeau_info=<?=$vue->bandeau_info->date??''?>;'+
+			'expires=<?=$vue->bandeau_info->new_cookie_expire??''?>;'+
 			'path=/';
 	}
 </script>

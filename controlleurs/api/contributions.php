@@ -11,21 +11,6 @@ include_once("mise_en_forme_texte.php");
 include_once("entetes_http.php");
 
 /****************************************/
-// Ça permet de mettre convertir tout un objet
-function updatebbcode2html(&$html, $key) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'lien')
-        $html=bbcode2html($html,0,1,0); 
-}
-function updatebbcode2markdown(&$html, $key) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'lien')
-        $html=bbcode2markdown($html);
-}
-function updatebbcode2txt(&$html, $key) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'lien')
-            $html=bbcode2txt($html);
-}
-function updatebool2char(&$html) { if($html===FALSE) { $html='0'; } elseif($html===TRUE) { $html='1'; } }
-/****************************************/
 
 // Dans un premier temps on met en place l'objet contenant la requête
 $req = new stdClass();

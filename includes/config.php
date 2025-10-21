@@ -219,6 +219,7 @@ $config_wri['api_format_points'] = Array
 'csv' => "csv (tableurs)",
 
 'xml' => "xml Spécifique à notre base, exhaustif",
+'json' => "JSON",
 'geojson' => "GeoJSON"
 );
     

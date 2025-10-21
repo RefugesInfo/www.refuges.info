@@ -412,3 +412,24 @@ function date_format_francais($unix_ts)
 
   return mb_ucfirst($fmt->format($unix_ts));
 } 
+
+// Utilisés par l'API
+// Ça permet de mettre convertir tout un objet
+function updatebbcode2html(&$html, $key) {
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url') 
+        $html=bbcode2html($html,0,1,0); 
+}
+function updatebbcode2markdown(&$html, $key) {
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url')
+        $html=bbcode2markdown($html);
+}
+function updatebbcode2txt(&$html, $key) {
+    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url')
+        $html=bbcode2txt($html);
+}
+function updatebool2char(&$html) { 
+    if($html===FALSE) 
+        $html='0';  
+    elseif($html===TRUE) 
+        $html='1'; 
+}

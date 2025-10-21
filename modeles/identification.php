@@ -31,11 +31,13 @@ $infos_identification->session_id = $user->data['session_id'];
 // Tokens du formulaire de login
 // Nécessite : GENERAL -> CONFIGURATION DU SERVEUR -> Paramètres de sécurité
 // -> Lier les formulaires aux sessions des invités : Non
-$infos_identification->creation_time = time();
-$infos_identification->login_form_token = sha1(
-  $infos_identification->creation_time .
-  $user->data['user_form_salt'] .
-  'login');
+if (!est_connecte()) {
+	$infos_identification->creation_time = time();
+	$infos_identification->login_form_token = sha1(
+	  $infos_identification->creation_time .
+	  $user->data['user_form_salt'] .
+	  'login');
+}
 
 function est_connecte()
 {

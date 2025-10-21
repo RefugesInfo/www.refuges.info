@@ -49,6 +49,9 @@
             <ul>
                 <li><a href="#/api/point"><span class="methode">GET</span> <span class="url">/api/point</span></a> &mdash; <span class="description">Export des informations détaillées sur un point</span></li>
             </ul>
+            <ul>
+                <li><a href="#/api/commentaires"><span class="methode">GET</span> <span class="url">/api/commentaires</span></a> &mdash; <span class="description">Export des commentaires d'un point</span></li>
+            </ul>
 
             <h2>Requêtes à la base de donnée</h2>
             <ul>
@@ -223,12 +226,6 @@
                         <td><span class="url">complet</span></td>
                         <td><span class="url">simple</span>, <span class="url">complet</span></td>
                     </tr>
-                    <tr>
-                        <td>commentaires</td>
-                        <td><span class="opt">Optionnel</span> N'est disponible que lorsque <b>format</b> est <span class="url">geojson</span>.</td>
-                        <td><span class="url">0</span></td>
-                        <td><span class="url">0</span>, <span class="url">1</span></td>
-                    </tr>
                  </table>
             </p>
             <p>
@@ -239,7 +236,35 @@
                 <a class="url" href="../point?id=583&format=xml&format_texte=html">api/point?id=583&format=xml&format_texte=html</a>
             </p>
         </section>
-                
+
+        <section>
+            <h1 id="/api/commentaires">Export des commentaires d'un point</h1>
+            <p>
+                La requête <a href="#/api/commentaires"><span class="methode">GET</span><span class="url">/api/commentaires</span></a> permet de retourner les commentairess d'un point
+                de la base de donnée à partir de son <b>ID</b>. Les paramètres sont définis
+                dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
+                <table>
+                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr>
+                        <td>id_point</td>
+                        <td><span class="req">Requis</span> L'id du point dont on veut les commentaires</td>
+                        <td>Aucune</td>
+                        <td><span class="url">2536</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>format_texte</td>
+                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
+                        <td><span class="url">bbcode</span></td>
+                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
+                    </tr>
+                 </table>
+            </p>
+            <p>
+                Voici un exemple de requête : 
+                <a class="url" href="../commentaires?id_point=583&format_texte=html">api/commentaires?id=583&format_texte=html</a>
+            </p>
+        </section>
+
         <section>
             <h1>Requêtes à la base de donnée</h1>
             

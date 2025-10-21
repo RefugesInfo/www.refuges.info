@@ -15,26 +15,6 @@ include_once("entetes_http.php");
 ini_set('memory_limit','256M');
 
 /****************************************/
-// Ça permet de mettre convertir tout un objet
-function updatebbcode2html(&$html, $key) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url') 
-        $html=bbcode2html($html,0,1,0); 
-}
-function updatebbcode2markdown(&$html, $key) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url')
-        $html=bbcode2markdown($html);
-}
-function updatebbcode2txt(&$html, $key) {
-    if (!($html === FALSE OR $html === TRUE OR $html === NULL) && $key != 'url')
-        $html=bbcode2txt($html);
-}
-function updatebool2char(&$html) { 
-    if($html===FALSE) 
-        $html='0';  
-    elseif($html===TRUE) 
-        $html='1'; 
-}
-/****************************************/
 
 $vue = new stdClass();
 // Dans un premier temps on met en place l'objet contenant la requête
@@ -284,35 +264,6 @@ foreach ($points_bruts as $i=>$point) {
       $description.=$point->proprio."\n";
       
       $points->$i->description['valeur']=$description;
-
-      // Dom 20/10/2025 : Extraction des commentaires
-      if($req->commentaires) {
-        $conditions_commentaires = new stdClass();
-        $conditions_commentaires->ids_points = $point->id_point;
-        $commentaires = infos_commentaires ($conditions_commentaires);
-
-        $serveur="https://".$config_wri['nom_hote'];
-        $points->$i->commentaires = [];
-        foreach ($commentaires as $commentaire) {
-          $com['id'] = $commentaire->id_commentaire;
-          $com['date'] = $commentaire->date;
-          $com['texte'] = $commentaire->texte;
-          $com['auteur'] = $commentaire->auteur_commentaire;
-
-          if($commentaire->photo_existe) {
-            if(isset ($commentaire->lien_photo['reduite']))
-              $com['photo'] = $serveur.$commentaire->lien_photo['reduite'];
-            if(isset ($commentaire->lien_photo['originale']))
-              $com['photo_vignette'] = $serveur.$commentaire->lien_photo['originale'];
-            if(isset ($commentaire->lien_photo['originale']))
-              $com['photo_originale'] = $serveur.$commentaire->lien_photo['originale'];
-            if(isset ($commentaire->date_photo))
-              $com['date_photo'] = $commentaire->date_photo;
-          }
-       
-          $points->$i->commentaires[] = $com;
-        }
-      }
     }
 
     /****************************** FORMATAGE DU TEXTE ******************************/
