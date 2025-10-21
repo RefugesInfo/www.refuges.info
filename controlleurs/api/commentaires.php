@@ -26,9 +26,9 @@ $commentaires_point = infos_commentaires ($conditions_commentaires);
 $serveur="https://".$config_wri['nom_hote'];
 foreach ($commentaires_point as $cp) {
 	$com['id_commentaire'] = $cp->id_commentaire;
-	$com['date'] = $cp->date;
+	$com['date_commentaire'] = $cp->date;
 	$com['texte'] = $cp->texte;
-	$com['auteur'] = $cp->auteur_commentaire;
+	$com['auteur_commentaire'] = $cp->auteur_commentaire;
 
 	if($cp->photo_existe) {
 		if(isset ($cp->lien_photo['reduite']))
