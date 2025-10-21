@@ -13,15 +13,16 @@ headers_cache_api();
   "generator": "Refuges.info API",
   "copyright": "<?=$config_wri['copyright_API']?>",
   "timestamp": "<?=date(DATE_ATOM)?>",
-  "size": "<?=count((array)$commentaires)?>",
-  "features":
-  [<?php 
-  foreach ($commentaires as $j => $com) { ?>
+  "size": <?=count($commentaires)?>,
+  "features": [
+  <?php foreach ($commentaires as $j => $com) { ?>
   {
      "type": "Feature",
      "id_point": <?=$req->id_point?>,
-     "properties": <?=json_encode($com, JSON_PRETTY_PRINT)?>,
+     "properties": <?=json_encode($com)?>
 
-  }<?php } ?>
+    }<?=count($commentaires)-$j-1?',':''?>
+
+  <?php } ?>
   ]
 }

@@ -27,7 +27,7 @@ $serveur="https://".$config_wri['nom_hote'];
 foreach ($commentaires_point as $cp) {
 	$com['id_commentaire'] = $cp->id_commentaire;
 	$com['date_commentaire'] = $cp->date;
-	$com['texte'] = $cp->texte;
+	$com['texte_commentaire'] = $cp->texte;
 	$com['auteur_commentaire'] = $cp->auteur_commentaire;
 
 	if($cp->photo_existe) {
