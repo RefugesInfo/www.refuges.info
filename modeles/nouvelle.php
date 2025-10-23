@@ -95,7 +95,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         $conditions_commentaires->ids_polygones=$ids_polygones ?? Null;
         
         $commentaires=infos_commentaires($conditions_commentaires);
-        if ($commentaires->erreur)
+        if ($commentaires->erreur??'')
           return erreur($commentaires->message);
 
         $conditions_point = new stdclass;
