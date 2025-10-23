@@ -23,23 +23,14 @@ $conditions_commentaires = new stdClass();
 $conditions_commentaires->ids_points = $req->id_point;
 $commentaires_point = infos_commentaires ($conditions_commentaires);
 
-$serveur="https://".$config_wri['nom_hote'];
 foreach ($commentaires_point as $cp) {
 	$com['id_commentaire'] = $cp->id_commentaire;
 	$com['date_commentaire'] = $cp->date;
 	$com['texte_commentaire'] = $cp->texte;
 	$com['auteur_commentaire'] = $cp->auteur_commentaire;
+	if($cp->photo_existe)
+		$com['photo'] = $cp->lien_photo;
 
-	if($cp->photo_existe) {
-		if(isset ($cp->lien_photo['reduite']))
-			$com['photo'] = $serveur.$cp->lien_photo['reduite'];
-		if(isset ($cp->lien_photo['originale']))
-			$com['photo_vignette'] = $serveur.$cp->lien_photo['originale'];
-		if(isset ($cp->lien_photo['originale']))
-			$com['photo_originale'] = $serveur.$cp->lien_photo['originale'];
-		if(isset ($cp->date_photo))
-			$com['date_photo'] = $cp->date_photo;
-	}
 	$commentaires[] = $com;
 }
 
