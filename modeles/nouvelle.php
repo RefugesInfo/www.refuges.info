@@ -136,6 +136,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
                 $news_array[$i]['categorie']="Point";                
                 $news_array[$i]['lien']=lien_point($point,$lien_locaux);
                 $news_array[$i]['nom_point']=ucfirst($point->nom);
+                $news_array[$i]['id_point']=$point->id_point;
                 $news_array[$i]['partitif_point']=$point->article_partitif_point_type;
                 $news_array[$i]['type_point']=$point->nom_type;
                 $news_array[$i]['remarques']=$point->remark;
