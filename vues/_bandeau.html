@@ -332,7 +332,7 @@
 		</div>
 	</div>
 
-	<?php if ($vue->bandeau_info->cookie ?? '' !== $vue->bandeau_info->date ?? '') { ?>
+	<?php if (($vue->bandeau_info->cookie ?? '') !== ($vue->bandeau_info->date ?? '')) { ?>
 		<div class="bandeau_info">
 			<?=$vue->bandeau_info->contenu??''?>
 			-
