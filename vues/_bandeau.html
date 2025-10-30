@@ -333,7 +333,7 @@
 	</div>
 
 	<?php if ($vue->bandeau_info->cookie ?? '' !== $vue->bandeau_info->date ?? '') { ?>
-		<div class="infos-haut">
+		<div class="bandeau_info">
 			<?=$vue->bandeau_info->contenu??''?>
 			-
 			<a onclick="masqueBandeauInfo()"
@@ -355,7 +355,7 @@
 <script>
 	// DOM à mettre dans _bandeau.js quand celui-ci pourra accepter des variables php
 	function masqueBandeauInfo() {
-		const bandeauEls = document.getElementsByClassName('infos-haut');
+		const bandeauEls = document.getElementsByClassName('bandeau_info');
 
 		if (bandeauEls.length)
 			bandeauEls[0].style.display = 'none';

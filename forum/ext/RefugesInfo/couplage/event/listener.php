@@ -86,6 +86,15 @@ class listener implements EventSubscriberInterface
 		// Pour le bandeau
 		$vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_bandeau.js?'
 			.filemtime($config_wri['chemin_vues'].'_bandeau.js');
+
+		// DOM pas moyen de factoriser ça dans une fonction commune. Il faudrait refondre les données vues communes
+		$vue->bandeau_info=wiki_page_brut('bandeau');
+		$vue->bandeau_info->cookie=$_COOKIE['bandeau_info'] ?? '';
+		$vue->bandeau_info->new_cookie_expire=
+			gmdate('r', time() + 24 * 3600 * (
+				$infos_identification->user_id > 1 ? 31 : 7 // Nombre de jours masqués
+			));
+
 		$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes
 		$vue->types_point_affichables=types_point_affichables(); // Menu des types de points
 		if (est_moderateur()) {

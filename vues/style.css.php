@@ -206,25 +206,25 @@ body {
     font-size: 12px;
   }
 
-  .infos-haut {
+  .bandeau_info {
     border: 1px solid red;
     border-radius: 5px;
     margin: 2px;
     padding: 0 2px 2px 2px;
   }
 
-  .infos-haut,
-  .infos-haut a {
+  .bandeau_info,
+  .bandeau_info a {
     font-size: 14px;
     color: green;
     cursor: pointer;
   }
 
-  .infos-haut span {
+  .bandeau_info span {
     color: orange;
   }
 
-  .infos-haut .edit-info {
+  .bandeau_info .edit-info {
     text-decoration: line-through;
   }
 
