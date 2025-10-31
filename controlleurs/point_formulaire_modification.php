@@ -95,6 +95,8 @@ elseif ( !empty($_REQUEST["id_point_type"]))
     unset($point->id_point);
     // et pareil pour le modérateur actuel du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
     unset($point->id_createur);
+    // et on retire le flag "est un modèle" car on s'est servit du modèle, mais ce n'en est plus un
+    unset($point->modele);
     
     // cosmétique
     $icone="&amp;iconecenter=".choix_icone($point);
