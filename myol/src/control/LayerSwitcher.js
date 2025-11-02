@@ -2,13 +2,14 @@
  * LayerSwitcher control for both tiled & vectors layers
  */
 
+//BEST how do we do on touch terminal ? alt key to switch layers / transparency
+//BEST slider transparency doesn't work out of range (no BackgroundLayer)
+//BEST BUG Attribution must be set before LayerSwitcher
+
 import Button from './Button';
 import BackgroundLayer from '../layer/BackgroundLayer';
 import './layerSwitcher.css';
 
-//BEST how do we do on touch terminal ? alt key to switch layers / transparency
-//BEST slider transparency doesn't work out of range (no BackgroundLayer)
-//BEST BUG Attribution must be set before LayerSwitcher
 class LayerSwitcher extends Button {
   constructor(options) {
     super({

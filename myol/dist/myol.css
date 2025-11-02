@@ -501,6 +501,15 @@
 .myol-button hr {
   margin: 1px;
 }
+.ol-attribution:not(.ol-collapsed) a {
+  color: black !important;
+}
+
+.ol-attribution:not(:hover) li:has([href*="stadiamaps"]),
+.ol-attribution:not(:hover) li:has([href*="openmaptiles"]),
+.ol-attribution:not(:hover):has([href*="openmaptiles"]) li:has([href*="openstreetmap"]) {
+  display: none;
+}
 /*
  * layerSwitcher.css
  */

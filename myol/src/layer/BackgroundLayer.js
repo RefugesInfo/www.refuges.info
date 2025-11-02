@@ -9,10 +9,11 @@ import {
 } from 'ol/extent';
 import * as layerTile from './TileLayerCollection';
 
-class BackgroundLayer extends layerTile.Positron {
+class BackgroundLayer extends layerTile.Stamen {
   constructor(options) {
     // High resolution background layer
     super({
+      layer: 'stamen_toner_lite',
       minResolution: 20,
       visible: false,
 

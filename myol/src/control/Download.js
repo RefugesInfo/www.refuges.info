@@ -2,6 +2,7 @@
  * Download control to download vectors features
  * Supports GPX, KML, GeoJSON formats
  */
+
 import Feature from 'ol/Feature';
 import * as format from 'ol/format';
 import LineString from 'ol/geom/LineString';

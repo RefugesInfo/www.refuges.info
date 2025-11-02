@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 13/10/2025 12:11:01 using npm run build from the src/... sources
+ * Built 02/11/2025 16:08:56 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -1004,7 +1004,7 @@
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION$1 = '10.5.0';
+  const VERSION$1 = '10.6.1';
 
   /**
    * @module ol/Object
@@ -7612,7 +7612,7 @@
     x,
     y,
   ) {
-    // https://geomalgorithms.com/a03-_inclusion.html
+    // https://web.archive.org/web/20210504233957/http://geomalgorithms.com/a03-_inclusion.html
     // Copyright 2000 softSurfer, 2012 Dan Sunday
     // This code may be freely used and modified for any purpose
     // providing that this copyright notice is included with it.
@@ -13485,6 +13485,12 @@
     'family',
   ];
 
+  /** @type {Object<string|number, number>} */
+  const fontWeights = {
+    normal: 400,
+    bold: 700,
+  };
+
   /**
    * Get the list of font families from a font spec.  Note that this doesn't work
    * for font families that have commas in them.
@@ -13500,16 +13506,22 @@
       lineHeight: 'normal',
       size: '1.2em',
       style: 'normal',
-      weight: 'normal',
+      weight: '400',
       variant: 'normal',
     });
     for (let i = 0, ii = fontRegExMatchIndex.length; i < ii; ++i) {
       const value = match[i + 1];
       if (value !== undefined) {
-        style[fontRegExMatchIndex[i]] = value;
+        style[fontRegExMatchIndex[i]] =
+          typeof value === 'string' ? value.trim() : value;
       }
     }
-    style.families = style.family.split(/,\s?/);
+    if (isNaN(Number(style.weight)) && style.weight in fontWeights) {
+      style.weight = fontWeights[style.weight];
+    }
+    style.families = style.family
+      .split(/,\s?/)
+      .map((f) => f.trim().replace(/^['"]|['"]$/g, ''));
     return style;
   };
 
@@ -13852,7 +13864,11 @@
    * the control should be re-rendered. This is called in a `requestAnimationFrame`
    * callback.
    * @property {string|Array<string>|undefined} [attributions] Optional attribution(s) that will always be
-   * displayed regardless of the layers rendered
+   * displayed regardless of the layers rendered.
+   * **Caution:** Attributions are rendered dynamically using `innerHTML`, which can lead to potential
+   * [**XSS (Cross-Site Scripting)**](https://en.wikipedia.org/wiki/Cross-site_scripting) vulnerabilities.
+   * Use this feature only for trusted content
+   * or ensure that the content is properly sanitized before inserting it.
    */
 
   /**
@@ -15050,7 +15066,7 @@
   const mouseActionButton = function (mapBrowserEvent) {
     const originalEvent = mapBrowserEvent.originalEvent;
     return (
-      originalEvent instanceof PointerEvent &&
+      'pointerId' in originalEvent &&
       originalEvent.button == 0 &&
       !(WEBKIT && MAC && originalEvent.ctrlKey)
     );
@@ -15199,9 +15215,7 @@
   const mouseOnly = function (mapBrowserEvent) {
     const pointerEvent = mapBrowserEvent.originalEvent;
     // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-    return (
-      pointerEvent instanceof PointerEvent && pointerEvent.pointerType == 'mouse'
-    );
+    return 'pointerId' in pointerEvent && pointerEvent.pointerType == 'mouse';
   };
 
   /**
@@ -15214,9 +15228,7 @@
   const touchOnly = function (mapBrowserEvent) {
     const pointerEvt = mapBrowserEvent.originalEvent;
     // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-    return (
-      pointerEvt instanceof PointerEvent && pointerEvt.pointerType === 'touch'
-    );
+    return 'pointerId' in pointerEvt && pointerEvt.pointerType === 'touch';
   };
 
   /**
@@ -15229,7 +15241,7 @@
   const penOnly = function (mapBrowserEvent) {
     const pointerEvt = mapBrowserEvent.originalEvent;
     // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-    return pointerEvt instanceof PointerEvent && pointerEvt.pointerType === 'pen';
+    return 'pointerId' in pointerEvt && pointerEvt.pointerType === 'pen';
   };
 
   /**
@@ -15244,7 +15256,7 @@
   const primaryAction = function (mapBrowserEvent) {
     const pointerEvent = mapBrowserEvent.originalEvent;
     return (
-      pointerEvent instanceof PointerEvent &&
+      'pointerId' in pointerEvent &&
       pointerEvent.isPrimary &&
       pointerEvent.button === 0
     );
@@ -16569,6 +16581,18 @@
    */
 
   /**
+   * Mutliplier for the DOM_DELTA_LINE delta value.
+   * @type {number}
+   */
+  const DELTA_LINE_MULTIPLIER = 40;
+
+  /**
+   * Mutliplier for the DOM_DELTA_PAGE delta value.
+   * @type {number}
+   */
+  const DELTA_PAGE_MULTIPLIER = 300;
+
+  /**
    * @classdesc
    * Allows the user to zoom the map by scrolling the mouse wheel.
    * @api
@@ -16731,12 +16755,16 @@
 
       // Delta normalisation inspired by
       // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-      let delta;
-      if (mapBrowserEvent.type == EventType.WHEEL) {
-        delta = wheelEvent.deltaY;
-        if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-          delta *= 40;
-        }
+      let delta = wheelEvent.deltaY;
+
+      switch (wheelEvent.deltaMode) {
+        case WheelEvent.DOM_DELTA_LINE:
+          delta *= DELTA_LINE_MULTIPLIER;
+          break;
+        case WheelEvent.DOM_DELTA_PAGE:
+          delta *= DELTA_PAGE_MULTIPLIER;
+          break;
+        // pass
       }
 
       if (delta === 0) {
@@ -18346,7 +18374,6 @@
             this.dispatchEvent('sourceready');
           }, 0);
         }
-        this.clearRenderer();
       }
       this.changed();
     }
@@ -19618,38 +19645,38 @@
    * See below for details on the available operators (with notes for those that are WebGL or Canvas only).
    *
    * Reading operators:
-   *   `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
+   *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
    *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
    *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
    *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
    *     of bands, depending on the underlying data source and
    *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
    *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
-   *   `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
-   *   `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
+   *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
+   *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
    *     feature property. The result is `undefined` when there is nothing at the specified key or index.
-   *   `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
+   *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
    *     `Multi*` values are returned as their singular equivalent
    *     `Circle` geometries are returned as 'Polygon'
    *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection (WebGL only).
-   *   `['resolution']` returns the current resolution
-   *   `['time']` The time in seconds since the creation of the layer (WebGL only).
-   *   `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
-   *   `['zoom']` The current zoom level (WebGL only).
-   *   `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
+   *   * `['resolution']` returns the current resolution
+   *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
+   *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
+   *   * `['zoom']` The current zoom level (WebGL only).
+   *   * `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
    *      does not contain an M component (e.g. XY or XYZ), 0 is returned; 0 is also returned for geometries other than lines.
    *      Please note that the M component will be linearly interpolated between the two points composing a segment.
    *
    * Math operators:
-   *   `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
-   *   `['/', value1, value2]` divides `value1` by `value2`
-   *   `['+', value1, value2, ...]` adds the values
-   *   `['-', value1, value2]` subtracts `value2` from `value1`
-   *   `['clamp', value, low, high]` clamps `value` between `low` and `high`
-   *   `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
-   *   `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
-   *   `['abs', value1]` returns the absolute value of `value1`
-   *   `['floor', value1]` returns the nearest integer less than or equal to `value1`
+   *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
+   *   * `['/', value1, value2]` divides `value1` by `value2`
+   *   * `['+', value1, value2, ...]` adds the values
+   *   * `['-', value1, value2]` subtracts `value2` from `value1`
+   *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
+   *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
+   *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
+   *   * `['abs', value1]` returns the absolute value of `value1`
+   *   * `['floor', value1]` returns the nearest integer less than or equal to `value1`
    *   * `['round', value1]` returns the nearest integer to `value1`
    *   * `['ceil', value1]` returns the nearest integer greater than or equal to `value1`
    *   * `['sin', value1]` returns the sine of `value1`
@@ -22152,98 +22179,123 @@
    */
   const textHeights = {};
 
+  const genericFontFamilies = new Set([
+    'serif',
+    'sans-serif',
+    'monospace',
+    'cursive',
+    'fantasy',
+    'system-ui',
+    'ui-serif',
+    'ui-sans-serif',
+    'ui-monospace',
+    'ui-rounded',
+    'emoji',
+    'math',
+    'fangsong',
+  ]);
+
+  /**
+   * @param {string} style Css font-style
+   * @param {string} weight Css font-weight
+   * @param {string} family Css font-family
+   * @return {string} Font key.
+   */
+  function getFontKey(style, weight, family) {
+    return `${style} ${weight} 16px "${family}"`;
+  }
+
   /**
    * Clears the label cache when a font becomes available.
    * @param {string} fontSpec CSS font spec.
    */
   const registerFont = (function () {
     const retries = 100;
-    const size = '32px ';
-    const referenceFonts = ['monospace', 'serif'];
-    const len = referenceFonts.length;
-    const text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
-    let interval, referenceWidth;
+    let timeout, fontFaceSet;
 
     /**
-     * @param {string} fontStyle Css font-style
-     * @param {string} fontWeight Css font-weight
-     * @param {*} fontFamily Css font-family
-     * @return {boolean} Font with style and weight is available
+     * @param {string} fontSpec Css font spec
+     * @return {Promise<boolean>} Font with style and weight is available
      */
-    function isAvailable(fontStyle, fontWeight, fontFamily) {
-      let available = true;
-      for (let i = 0; i < len; ++i) {
-        const referenceFont = referenceFonts[i];
-        referenceWidth = measureTextWidth(
-          fontStyle + ' ' + fontWeight + ' ' + size + referenceFont,
-          text,
-        );
-        if (fontFamily != referenceFont) {
-          const width = measureTextWidth(
-            fontStyle +
-              ' ' +
-              fontWeight +
-              ' ' +
-              size +
-              fontFamily +
-              ',' +
-              referenceFont,
-            text,
+    async function isAvailable(fontSpec) {
+      await fontFaceSet.ready;
+      const fontFaces = await fontFaceSet.load(fontSpec);
+      if (fontFaces.length === 0) {
+        return false;
+      }
+      const font = getFontParameters(fontSpec);
+      const checkFamily = font.families[0].toLowerCase();
+      const checkWeight = font.weight;
+      return fontFaces.some(
+        /**
+         * @param {import('../css.js').FontParameters} f Font.
+         * @return {boolean} Font matches.
+         */
+        (f) => {
+          const family = f.family.replace(/^['"]|['"]$/g, '').toLowerCase();
+          const weight = fontWeights[f.weight] || f.weight;
+          return (
+            family === checkFamily &&
+            f.style === font.style &&
+            weight == checkWeight
           );
-          // If width and referenceWidth are the same, then the fallback was used
-          // instead of the font we wanted, so the font is not available.
-          available = available && width != referenceWidth;
-        }
-      }
-      if (available) {
-        return true;
-      }
-      return false;
+        },
+      );
     }
 
-    function check() {
+    async function check() {
+      await fontFaceSet.ready;
       let done = true;
-      const fonts = checkedFonts.getKeys();
-      for (let i = 0, ii = fonts.length; i < ii; ++i) {
+      const checkedFontsProperties = checkedFonts.getProperties();
+      const fonts = Object.keys(checkedFontsProperties).filter(
+        (key) => checkedFontsProperties[key] < retries,
+      );
+      for (let i = fonts.length - 1; i >= 0; --i) {
         const font = fonts[i];
-        if (checkedFonts.get(font) < retries) {
-          const [style, weight, family] = font.split('\n');
-          if (isAvailable(style, weight, family)) {
+        let currentRetries = checkedFontsProperties[font];
+        if (currentRetries < retries) {
+          if (await isAvailable(font)) {
             clear$2(textHeights);
-            // Make sure that loaded fonts are picked up by Safari
-            measureContext = null;
-            measureFont = undefined;
             checkedFonts.set(font, retries);
           } else {
-            checkedFonts.set(font, checkedFonts.get(font) + 1, true);
-            done = false;
+            currentRetries += 10;
+            checkedFonts.set(font, currentRetries, true);
+            if (currentRetries < retries) {
+              done = false;
+            }
           }
         }
       }
-      if (done) {
-        clearInterval(interval);
-        interval = undefined;
+      timeout = undefined;
+      if (!done) {
+        timeout = setTimeout(check, 100);
       }
     }
 
-    return function (fontSpec) {
+    return async function (fontSpec) {
+      if (!fontFaceSet) {
+        fontFaceSet = WORKER_OFFSCREEN_CANVAS ? self.fonts : document.fonts;
+      }
       const font = getFontParameters(fontSpec);
       if (!font) {
         return;
       }
       const families = font.families;
-      for (let i = 0, ii = families.length; i < ii; ++i) {
-        const family = families[i];
-        const key = font.style + '\n' + font.weight + '\n' + family;
-        if (checkedFonts.get(key) === undefined) {
-          checkedFonts.set(key, retries, true);
-          if (!isAvailable(font.style, font.weight, family)) {
-            checkedFonts.set(key, 0, true);
-            if (interval === undefined) {
-              interval = setInterval(check, 32);
-            }
-          }
+      let needCheck = false;
+      for (const family of families) {
+        if (genericFontFamilies.has(family)) {
+          continue;
         }
+        const key = getFontKey(font.style, font.weight, family);
+        if (checkedFonts.get(key) !== undefined) {
+          continue;
+        }
+        checkedFonts.set(key, 0, true);
+        needCheck = true;
+      }
+      if (needCheck) {
+        clearTimeout(timeout);
+        timeout = setTimeout(check, 100);
       }
     };
   })();
@@ -29195,7 +29247,10 @@
      * Redraws all text after new fonts have loaded
      */
     redrawText() {
-      const layerStates = this.getLayerGroup().getLayerStatesArray();
+      if (!this.frameState_) {
+        return;
+      }
+      const layerStates = this.frameState_.layerStatesArray;
       for (let i = 0, ii = layerStates.length; i < ii; ++i) {
         const layer = layerStates[i].layer;
         if (layer.hasRenderer()) {
@@ -35870,8 +35925,8 @@
 
       this.setVisible(true);
 
-      const x = Math.round(pixel[0] + offset[0]) + 'px';
-      const y = Math.round(pixel[1] + offset[1]) + 'px';
+      const x = `${pixel[0] + offset[0]}px`;
+      const y = `${pixel[1] + offset[1]}px`;
       let posX = '0%';
       let posY = '0%';
       if (
@@ -53336,7 +53391,11 @@
    * @const
    * @type {Array<null|string>}
    */
-  const NAMESPACE_URIS$1 = [null, 'http://www.opengis.net/wms'];
+  const NAMESPACE_URIS$1 = [
+    null,
+    'http://www.opengis.net/wms',
+    'http://www.opengis.net/sld',
+  ];
 
   function isV13(objectStack) {
     return compareVersions(objectStack[0].version, '1.3') >= 0;
@@ -53352,33 +53411,19 @@
     'Capability': makeObjectPropertySetter(readCapability),
   });
 
-  const COMMON_CAPABILITY_PARSERS = {
-    'Request': makeObjectPropertySetter(readRequest),
-    'Exception': makeObjectPropertySetter(readException),
-    'Layer': makeObjectPropertySetter(readCapabilityLayer),
-  };
-
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
    */
   // @ts-ignore
   const CAPABILITY_PARSERS = makeStructureNS(NAMESPACE_URIS$1, {
-    ...COMMON_CAPABILITY_PARSERS,
+    'Request': makeObjectPropertySetter(readRequest),
+    'Exception': makeObjectPropertySetter(readException),
+    'Layer': makeObjectPropertySetter(readCapabilityLayer),
     'UserDefinedSymbolization': makeObjectPropertySetter(
       readUserDefinedSymbolization,
     ),
   });
-
-  /**
-   * @const
-   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   */
-  // @ts-ignore
-  const CAPABILITY_PARSERS_V13 = makeStructureNS(
-    NAMESPACE_URIS$1,
-    COMMON_CAPABILITY_PARSERS,
-  );
 
   /**
    * @typedef {Object} RootObject
@@ -53579,6 +53624,8 @@
     'GetCapabilities': makeObjectPropertySetter(readOperationType),
     'GetMap': makeObjectPropertySetter(readOperationType),
     'GetFeatureInfo': makeObjectPropertySetter(readOperationType),
+    'DescribeLayer': makeObjectPropertySetter(readOperationType),
+    'GetLegendGraphic': makeObjectPropertySetter(readOperationType),
   });
 
   /**
@@ -53654,12 +53701,14 @@
 
   function readUserDefinedSymbolization(node, objectStack) {
     return {
-      'SupportSLD': !!readBooleanString(
-        node.getAttribute('UserDefinedSymbolization'),
-      ),
+      'SupportSLD': !!readBooleanString(node.getAttribute('SupportSLD')),
       'UserLayer': !!readBooleanString(node.getAttribute('UserLayer')),
       'UserStyle': !!readBooleanString(node.getAttribute('UserStyle')),
       'RemoteWFS': !!readBooleanString(node.getAttribute('RemoteWFS')),
+      'InlineFeatureData': !!readBooleanString(
+        node.getAttribute('InlineFeatureData'),
+      ),
+      'RemoteWCS': !!readBooleanString(node.getAttribute('RemoteWCS')),
     };
   }
 
@@ -53748,13 +53797,9 @@
    * @param {Array<*>} objectStack Object stack.
    * @return {Object|undefined} Capability object.
    */
+  //ts-ignore
   function readCapability(node, objectStack) {
-    return pushParseAndPop(
-      {},
-      isV13(objectStack) ? CAPABILITY_PARSERS_V13 : CAPABILITY_PARSERS,
-      node,
-      objectStack,
-    );
+    return pushParseAndPop({}, CAPABILITY_PARSERS, node, objectStack);
   }
 
   /**
@@ -55419,9 +55464,7 @@
     updateFillStyle(state, createFill) {
       const fillStyle = state.fillStyle;
       if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
-        if (fillStyle !== undefined) {
-          this.instructions.push(createFill.call(this, state));
-        }
+        this.instructions.push(createFill.call(this, state));
         state.currentFillStyle = fillStyle;
       }
     }
@@ -55448,9 +55491,7 @@
         state.currentLineWidth != lineWidth ||
         state.currentMiterLimit != miterLimit
       ) {
-        if (strokeStyle !== undefined) {
-          applyStroke.call(this, state);
-        }
+        applyStroke.call(this, state);
         state.currentStrokeStyle = strokeStyle;
         state.currentLineCap = lineCap;
         state.currentLineDash = lineDash;
@@ -56192,13 +56233,8 @@
      */
     setFillStrokeStyles_() {
       const state = this.state;
-      const fillStyle = state.fillStyle;
-      if (fillStyle !== undefined) {
-        this.updateFillStyle(state, this.createFill);
-      }
-      if (state.strokeStyle !== undefined) {
-        this.updateStrokeStyle(state, this.applyStroke);
-      }
+      this.updateFillStyle(state, this.createFill);
+      this.updateStrokeStyle(state, this.applyStroke);
     }
   }
 
@@ -57943,6 +57979,9 @@
     setStrokeStyle_(context, instruction) {
       context.strokeStyle =
         /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+      if (!instruction[1]) {
+        return;
+      }
       context.lineWidth = /** @type {number} */ (instruction[2]);
       context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
       context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
@@ -58853,6 +58892,11 @@
 
       const newContext = !this.hitDetectionContext_;
       if (newContext) {
+        // Refrain from adding a 'willReadFrequently' hint in the options here.
+        // While it will remove the "Canvas2D: Multiple readback operations using
+        // getImageData are faster with the willReadFrequently attribute set
+        // to true" warnings in the console, it makes hitDetection extremely
+        // slow in Chrome when there are many features on the map
         this.hitDetectionContext_ = createCanvasContext2D(
           contextSize,
           contextSize,
@@ -59053,7 +59097,7 @@
             }
             if (zIndexContext) {
               zIndexContext.offset();
-              const index = zs[i] * maxBuilderTypes + j;
+              const index = zs[i] * maxBuilderTypes + ALL.indexOf(builderType);
               if (!this.deferredZIndexContexts_[index]) {
                 this.deferredZIndexContexts_[index] = [];
               }
@@ -61776,7 +61820,7 @@
      * @private
      */
     resetDrawContext_() {
-      if (this.opacity_ !== 1) {
+      if (this.opacity_ !== 1 && this.targetContext_) {
         const alpha = this.targetContext_.globalAlpha;
         this.targetContext_.globalAlpha = this.opacity_;
         this.targetContext_.drawImage(this.context.canvas, 0, 0);
@@ -62667,7 +62711,7 @@
     );
   }
 
-  var loadingstrategy = /*#__PURE__*/Object.freeze({
+  var loadingstrategy$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     all: all,
     bbox: bbox,
@@ -63958,7 +64002,7 @@
      * @param {function(FeatureType):boolean} [filter] Feature filter function.
      *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
      *     and it should return a boolean value. By default, no filtering is made.
-     * @return {FeatureType} Closest feature.
+     * @return {FeatureType|null} Closest feature (or `null` if none found).
      * @api
      */
     getClosestFeatureToCoordinate(coordinate, filter) {
@@ -68791,7 +68835,7 @@
       const segments = [];
       const coordinates = geometry.getFlatCoordinates();
       const stride = geometry.getStride();
-      for (let i = 0, ii = coordinates.length - stride; i < ii; i += stride) {
+      for (let i = 0, ii = coordinates.length; i < ii; i += stride) {
         segments.push([coordinates.slice(i, i + 2)]);
       }
       return segments;
@@ -71768,14 +71812,15 @@
    */
 
   /**
+   * @param {import("../../source/Tile.js").default} source The tile source.
    * @param {string} sourceKey The source key.
    * @param {number} z The tile z level.
    * @param {number} x The tile x level.
    * @param {number} y The tile y level.
    * @return {string} The cache key.
    */
-  function getCacheKey(sourceKey, z, x, y) {
-    return `${sourceKey},${getKeyZXY(z, x, y)}`;
+  function getCacheKey(source, sourceKey, z, x, y) {
+    return `${getUid(source)},${sourceKey},${getKeyZXY(z, x, y)}`;
   }
 
   /**
@@ -71897,12 +71942,6 @@
       this.renderedProjection = null;
 
       /**
-       * @private
-       * @type {number}
-       */
-      this.renderedRevision_;
-
-      /**
        * @protected
        * @type {!Array<import("../../Tile.js").default>}
        */
@@ -71970,7 +72009,7 @@
       const tileCache = this.tileCache_;
       const tileLayer = this.getLayer();
       const tileSource = tileLayer.getSource();
-      const cacheKey = getCacheKey(tileSource.getKey(), z, x, y);
+      const cacheKey = getCacheKey(tileSource, tileSource.getKey(), z, x, y);
 
       /** @type {import("../../Tile.js").default} */
       let tile;
@@ -72109,10 +72148,10 @@
         return false;
       }
       const sourceRevision = source.getRevision();
-      if (!this.renderedRevision_) {
-        this.renderedRevision_ = sourceRevision;
-      } else if (this.renderedRevision_ !== sourceRevision) {
-        this.renderedRevision_ = sourceRevision;
+      if (!this.renderedSourceRevision_) {
+        this.renderedSourceRevision_ = sourceRevision;
+      } else if (this.renderedSourceRevision_ !== sourceRevision) {
+        this.renderedSourceRevision_ = sourceRevision;
         if (this.renderedSourceKey_ === source.getKey()) {
           this.tileCache_.clear();
         }
@@ -72225,7 +72264,13 @@
       const y = tileCoord[2];
       const staleKeys = this.getStaleKeys();
       for (let i = 0; i < staleKeys.length; ++i) {
-        const cacheKey = getCacheKey(staleKeys[i], z, x, y);
+        const cacheKey = getCacheKey(
+          this.getLayer().getSource(),
+          staleKeys[i],
+          z,
+          x,
+          y,
+        );
         if (tileCache.containsKey(cacheKey)) {
           const tile = tileCache.peek(cacheKey);
           if (tile.getState() === TileState.LOADED) {
@@ -72265,7 +72310,7 @@
       const sourceKey = source.getKey();
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          const cacheKey = getCacheKey(sourceKey, altZ, x, y);
+          const cacheKey = getCacheKey(source, sourceKey, altZ, x, y);
           let loaded = false;
           if (tileCache.containsKey(cacheKey)) {
             const tile = tileCache.peek(cacheKey);
@@ -74732,7 +74777,7 @@
    * ```
    * @api
    */
-  let XYZ$1 = class XYZ extends TileImage {
+  class XYZ extends TileImage {
     /**
      * @param {Options} [options] XYZ options.
      */
@@ -74786,7 +74831,7 @@
     getGutter() {
       return this.gutter_;
     }
-  };
+  }
 
   /**
    * @module ol/source/Cluster
@@ -75294,7 +75339,7 @@
    * Layer source for the OpenStreetMap tile server.
    * @api
    */
-  class OSM extends XYZ$1 {
+  class OSM extends XYZ {
     /**
      * @param {Options} [options] Open Street Map options.
      */
@@ -75327,6 +75372,192 @@
         tileLoadFunction: options.tileLoadFunction,
         transition: options.transition,
         url: url,
+        wrapX: options.wrapX,
+        zDirection: options.zDirection,
+      });
+    }
+  }
+
+  /**
+   * @module ol/source/StadiaMaps
+   */
+
+
+  /**
+   * @type {string}
+   */
+  const STADIA_ATTRIBUTION =
+    '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>';
+
+  /**
+   * @type {string}
+   */
+  const OMT_ATTRIBUTION =
+    '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>';
+
+  /**
+   * @type {string}
+   */
+  const STAMEN_ATTRIBUTION =
+    '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';
+
+  /**
+   * @type {Object<string, {extension: string}>}
+   */
+  const LayerConfig = {
+    'stamen_terrain': {
+      extension: 'png',
+    },
+    'stamen_terrain_background': {
+      extension: 'png',
+    },
+    'stamen_terrain_labels': {
+      extension: 'png',
+    },
+    'stamen_terrain_lines': {
+      extension: 'png',
+    },
+    'stamen_toner_background': {
+      extension: 'png',
+    },
+    'stamen_toner': {
+      extension: 'png',
+    },
+    'stamen_toner_labels': {
+      extension: 'png',
+    },
+    'stamen_toner_lines': {
+      extension: 'png',
+    },
+    'stamen_toner_lite': {
+      extension: 'png',
+    },
+    'stamen_watercolor': {
+      extension: 'jpg',
+    },
+    'alidade_smooth': {
+      extension: 'png',
+    },
+    'alidade_smooth_dark': {
+      extension: 'png',
+    },
+    'alidade_satellite': {
+      extension: 'png',
+    },
+    'outdoors': {
+      extension: 'png',
+    },
+    'osm_bright': {
+      extension: 'png',
+    },
+  };
+
+  /**
+   * @type {Object<string, {minZoom: number, maxZoom: number, retina: boolean}>}
+   */
+  const ProviderConfig = {
+    'stamen_terrain': {
+      minZoom: 0,
+      maxZoom: 18,
+      retina: true,
+    },
+    'stamen_toner': {
+      minZoom: 0,
+      maxZoom: 20,
+      retina: true,
+    },
+    'stamen_watercolor': {
+      minZoom: 1,
+      maxZoom: 18,
+      retina: false,
+    },
+  };
+
+  /**
+   * @typedef {Object} Options
+   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
+   * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
+   * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
+   * @property {string} layer Layer name. Valid values: `alidade_smooth`, `alidade_smooth_dark`, `outdoors`, `stamen_terrain`, `stamen_terrain_background`, `stamen_terrain_labels`, `stamen_terrain_lines`, `stamen_toner_background`, `stamen_toner`, `stamen_toner_labels`, `stamen_toner_lines`, `stamen_toner_lite`, `stamen_watercolor`, and `osm_bright`.
+   * @property {number} [minZoom] Minimum zoom.
+   * @property {number} [maxZoom] Maximum zoom.
+   * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+   * Higher values can increase reprojection performance, but decrease precision.
+   * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
+   * Optional function to load a tile given a URL. The default is
+   * ```js
+   * function(imageTile, src) {
+   *   imageTile.getImage().src = src;
+   * };
+   * ```
+   * @property {number} [transition=250] Duration of the opacity transition for rendering.
+   * To disable the opacity transition, pass `transition: 0`.
+   * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+   * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+   * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+   * Choose whether to use tiles with a higher or lower zoom level when between integer
+   * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
+   * @property {string} [apiKey] Stadia Maps API key. Not required for localhost or most public web deployments. See https://docs.stadiamaps.com/authentication/ for details.
+   * @property {boolean} [retina] Use retina tiles (if available; not available for Stamen Watercolor).
+   */
+
+  /**
+   * @classdesc
+   * Layer source for the Stadia Maps tile server.
+   * @api
+   */
+  class StadiaMaps extends XYZ {
+    /**
+     * @param {Options} options StadiaMaps options.
+     */
+    constructor(options) {
+      const i = options.layer.indexOf('-');
+      const provider = i == -1 ? options.layer : options.layer.slice(0, i);
+      const providerConfig = ProviderConfig[provider] || {
+        'minZoom': 0,
+        'maxZoom': 20,
+        'retina': true,
+      };
+
+      const layerConfig = LayerConfig[options.layer];
+      const query = options.apiKey ? '?api_key=' + options.apiKey : '';
+      const retina = providerConfig.retina && options.retina ? '@2x' : '';
+
+      const url =
+        options.url !== undefined
+          ? options.url
+          : 'https://tiles.stadiamaps.com/tiles/' +
+            options.layer +
+            '/{z}/{x}/{y}' +
+            retina +
+            '.' +
+            layerConfig.extension +
+            query;
+
+      const attributions = [STADIA_ATTRIBUTION, OMT_ATTRIBUTION, ATTRIBUTION];
+
+      if (options.layer.startsWith('stamen_')) {
+        attributions.splice(1, 0, STAMEN_ATTRIBUTION);
+      }
+
+      super({
+        attributions: attributions,
+        cacheSize: options.cacheSize,
+        crossOrigin: 'anonymous',
+        interpolate: options.interpolate,
+        maxZoom:
+          options.maxZoom !== undefined
+            ? options.maxZoom
+            : providerConfig.maxZoom,
+        minZoom:
+          options.minZoom !== undefined
+            ? options.minZoom
+            : providerConfig.minZoom,
+        reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+        tileLoadFunction: options.tileLoadFunction,
+        transition: options.transition,
+        url: url,
+        tilePixelRatio: retina ? 2 : 1,
         wrapX: options.wrapX,
         zDirection: options.zDirection,
       });
@@ -76110,7 +76341,7 @@
       Vector: VectorLayer,
     },
     Map: Map,
-    loadingstrategy: loadingstrategy,
+    loadingstrategy: loadingstrategy$1,
     proj: {
       ...proj,
       proj4: projProj4,
@@ -76122,7 +76353,7 @@
       TileWMS: TileWMS,
       Vector: VectorSource,
       WMTS: WMTS,
-      XYZ: XYZ$1,
+      XYZ: XYZ,
     },
     sphere: sphere$1,
     style: style,
@@ -76142,8 +76373,6 @@
    * Abstract class to be used by other control buttons definitions
    * Add some usefull controls with displayed buttons
    */
-  //BEST redesign button hover & touch
-  //BEST click sur in/out file / ...
 
 
   class Button extends Control {
@@ -76243,6 +76472,7 @@
    * Download control to download vectors features
    * Supports GPX, KML, GeoJSON formats
    */
+
 
   const subMenuHTML$3 = '\
   <p><a mime="application/gpx+xml">GPX</a></p>\
@@ -76354,40 +76584,44 @@
    */
 
 
-  /**
-   * Virtual class to factorise XYZ layers code
+  /* Makes the attributions chain from:
+   {
+     contribution: 'link,name',
+     attribution: 'link,name',
+     licence: 'link,name',
+     legend: 'link',
+   }
    */
-  class XYZ extends TileLayer {
-    constructor(options) {
-      super({
-        source: new XYZ$1(options),
-        ...options,
-      });
-    }
+  function makeAttributions(options, dataAttribution) {
+    const makeLink = args => '<a target="_blank" href="' + args[0] + '">' + args[1] + '</a>',
+      ret = [];
+
+    if (options.contribution)
+      ret.push(makeLink(options.contribution.split(',')));
+    if (options.attribution)
+      ret.push(makeLink(options.attribution.split(',')));
+    if (options.licence)
+      ret.push(makeLink(options.licence.split(',')));
+    if (options.legend)
+      ret.push(makeLink([options.legend, 'Légende']));
+    if (options.dataAttribution)
+      ret.push(makeLink(dataAttribution.split(',')));
+
+    if (ret)
+      return '&copy' + ret.join(' | ');
   }
 
   /**
-   * Simple layer to be used when a layer is out of extent
-   * API : https://api-docs.carto.com/
+   * Virtual class to factorise XYZ layers classes
    */
-  class Positron extends XYZ {
+  class layerXYZ extends TileLayer {
     constructor(options) {
       super({
-        url: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-        attributions: '<a href="https://carto.com/attribution/">CartoDB</a>',
-        ...options,
-      });
-    }
-  }
+        source: new XYZ({
+          attributions: makeAttributions(options),
 
-  /**
-   * Simple layer to be used when a layer is out of scope
-   */
-  class NoTile extends XYZ {
-    constructor(options) {
-      super({
-        url: 'https://ecn.t0.tiles.virtualearth.net/tiles/r000000000000000000.jpeg?g=1',
-        attributions: 'Out of zoom',
+          ...options,
+        }),
 
         ...options,
       });
@@ -76400,9 +76634,20 @@
    * API : https://wiki.openstreetmap.org/wiki/API/
    */
   class OpenStreetMap extends TileLayer {
-    constructor(options) {
+    constructor(opt) {
+      const options = {
+        contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+        legend: 'https://www.openstreetmap.org/panes/legend',
+
+        ...opt,
+      };
+
       super({
-        source: new OSM(options),
+        source: new OSM({
+          attributions: makeAttributions(options),
+
+          ...options,
+        }),
         ...options,
       });
     }
@@ -76418,9 +76663,10 @@
       super({
         url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
         maxZoom: 17,
-        attributions: '<a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a>. ' + 
-        '<a href="https://github.com/sletuffe/OpenTopoMap/">OpenTopoMap-R</a> ' +
-        '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+
+        attribution: 'https://github.com/sletuffe/OpenTopoMap/,OpenTopoMap-R',
+        licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
+        legend: 'https://www.geograph.org/leaflet/otm-legend.php',
       });
     }
   }
@@ -76435,8 +76681,9 @@
       super({
         url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
         maxZoom: 18,
-        attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' + 
-        '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">OpenHikingMap</a>',
+
+        attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
+        legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
       });
     }
   }
@@ -76454,7 +76701,9 @@
           'https://map{1-4}.kompass.de/{z}/{x}/{y}/kompass_' + options.subLayer + '?key=' + options.key : // Specific
           'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
         maxZoom: 17,
-        attributions: '<a href="https://www.kompass.de/">Kompass</a>',
+
+        attribution: 'https://www.kompass.de/,Kompass',
+        legend: 'https://www.outdooractive.com/fr/knowledgepage/carte-kompass/43778568/#5',
 
         ...options,
       });
@@ -76474,8 +76723,8 @@
         maxZoom: 22,
         // subLayer: 'outdoors', ...
         // key: '...',
-        attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' +
-        '<a href="https://www.thunderforest.com/">Thunderforest</a>',
+
+        attribution: 'https://www.thunderforest.com/,Thunderforest',
 
         ...options, // Include key
       });
@@ -76488,7 +76737,14 @@
    * Key : https://cartes.gouv.fr
    */
   class IGN extends TileLayer {
-    constructor(options = {}) {
+    constructor(opt) {
+      const options = {
+        attribution: 'https://www.geoportail.gouv.fr/,IGN',
+        legend: '',
+
+        ...opt,
+      };
+
       const IGNresolutions = [],
         IGNmatrixIds = [];
 
@@ -76504,18 +76760,44 @@
           style: 'normal',
           matrixSet: 'PM',
           format: 'image/jpeg',
-          attributions: '&copy; <a href="https://www.geoportail.gouv.fr/" target="_blank">IGN</a>',
           tileGrid: new WMTSTileGrid({
             origin: [-20037508, 20037508],
             resolutions: IGNresolutions,
             matrixIds: IGNmatrixIds,
           }),
 
+          attributions: makeAttributions(options),
+
           // IGN options
           ...options, // Include layer
         }),
 
         ...options, // For layer limits
+      });
+    }
+  }
+
+  class IGNtop25 extends IGN {
+    constructor(options) {
+
+      super({
+        layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+        legend: 'https://geoservices.ign.fr/sites/default/files/2021-07/DC_SCAN25_3-1.pdf',
+
+        ...options,
+      });
+    }
+  }
+
+  class IGNplan extends IGN {
+    constructor(options) {
+
+      super({
+        layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+        format: 'image/png',
+        legend: 'https://geoservices.ign.fr/sites/default/files/2021-07/DC_Plan_IGN.pdf',
+
+        ...options,
       });
     }
   }
@@ -76532,7 +76814,9 @@
         subLayer: 'ch.swisstopo.pixelkarte-farbe',
         maxResolution: 2000, // Resolution limit above which we switch to a more global service
         extent: [640000, 5730000, 1200000, 6100000],
-        attributions: '&copy <a href="https://map.geo.admin.ch/">SwissTopo</a>',
+
+        attribution: 'https://map.geo.admin.ch/,SwissTopo',
+        legend: 'https://prod-swishop-s3.s3.eu-central-1.amazonaws.com/2022-04/symbols_fr_0.pdf',
 
         ...opt,
       };
@@ -76556,6 +76840,10 @@
             matrixIds: matrixIds,
           }),
           requestEncoding: 'REST',
+
+          attributions: makeAttributions(options),
+
+          ...options, // For attributionss
         })),
 
         ...options, // For layer limits
@@ -76568,14 +76856,16 @@
    * Map : https://www.ign.es/iberpix/visor
    * API : https://api-maps.ign.es/
    */
-  class IgnES extends XYZ {
+  class IgnES extends layerXYZ {
     constructor(opt) {
       const options = {
         host: 'https://www.ign.es/wmts/',
         server: 'mapa-raster',
         subLayer: 'MTN',
         maxZoom: 20,
-        attributions: '&copy; <a href="https://www.ign.es/">IGN España</a>',
+
+        attribution: 'https://www.ign.es/,Instituto Geográfico Nacional',
+        legend: 'https://www.ign.es/web/resources/docs/IGNCnig/Especificaciones/catalogo_MTN25.pdf',
 
         ...opt,
       };
@@ -76605,6 +76895,7 @@
           url: 'https://chemineur.fr/assets/proxy/?s=minambiente.it', // Not available via https
           attributions: '&copy <a href="https://gn.mase.gov.it/">IGM</a>',
         }),
+
         maxResolution: 120,
         extent: [720000, 4380000, 2070000, 5970000],
       });
@@ -76638,7 +76929,7 @@
    * Ordnance Survey : Great Britain
    * API & key : https://osdatahub.os.uk/
    */
-  class OS extends XYZ {
+  class OS extends layerXYZ {
     constructor(opt) {
       const options = {
         hidden: !opt.key, // For LayerSwitcher
@@ -76646,7 +76937,9 @@
         minZoom: 7,
         maxZoom: 16,
         extent: [-1198263, 6365000, 213000, 8702260],
-        attributions: '&copy <a href="https://explore.osmaps.com/">UK Ordnancesurvey maps</a>',
+
+        attribution: 'https://explore.osmaps.com/,UK Ordnancesurvey maps',
+        legend: 'https://www.ordnancesurvey.co.uk/mapzone/assets/doc/Explorer-25k-Legend-en.pdf',
 
         ...opt,
       };
@@ -76668,13 +76961,14 @@
    * API : https://developers.arcgis.com/javascript/latest/
    * No key
    */
-  class ArcGIS extends XYZ {
+  class ArcGIS extends layerXYZ {
     constructor(opt) {
       const options = {
         host: 'https://server.arcgisonline.com/ArcGIS/rest/services/',
         subLayer: 'World_Imagery',
         maxZoom: 19,
-        attributions: '&copy; <a href="https://www.arcgis.com/">ArcGIS (Esri)</a>',
+
+        attribution: 'https://www.arcgis.com/,ArcGIS (Esri)',
 
         ...opt,
       };
@@ -76690,13 +76984,14 @@
    * Maxbox (Maxar)
    * Key : https://www.mapbox.com/
    */
-  class Maxbox extends XYZ {
+  class Maxbox extends layerXYZ {
     constructor(options = {}) {
       super({
         hidden: !options.key, // For LayerSwitcher
         url: 'https://api.mapbox.com/v4/' + options.tileset + '/{z}/{x}/{y}@2x.webp?access_token=' + options.key,
         // No maxZoom
-        attributions: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>',
+
+        attribution: 'https://www.mapbox.com/,Mapbox',
       });
     }
   }
@@ -76704,18 +76999,20 @@
   /**
    * Google
    */
-  class Google extends XYZ {
+  class Google extends layerXYZ {
     constructor(opt) {
       const options = {
         subLayers: 'p', // Terrain
         maxZoom: 22,
-        attributions: '&copy; <a href="https://www.google.com/maps">Google</a>',
+
+        attribution: 'https://www.google.com/maps,Google',
 
         ...opt,
       };
 
       super({
         url: 'https://mt{0-3}.google.com/vt/lyrs=' + options.subLayers + '&hl=fr&x={x}&y={y}&z={z}',
+
         ...options,
       });
     }
@@ -76730,11 +77027,8 @@
     constructor(options = {}) {
       super({
         hidden: !options.key, // For LayerSwitcher
-
-        // Mandatory
-        // 'key',
         imagerySet: 'Road',
-
+        // Mandatory 'key',
         // No explicit zoom
         // attributions, defined by ol.source.BingMaps
 
@@ -76749,6 +77043,54 @@
       });
     }
   };
+
+  /**
+   * Simple layers
+   * Doc : https://maps.stamen.com/
+   */
+  class Stamen extends TileLayer {
+    constructor(options) {
+      super({
+        source: new StadiaMaps({
+          layer: 'stamen_watercolor', // Default
+          // attributions: defined by ol.source.StadiaMaps
+
+          ...options,
+        }),
+
+        ...options,
+      });
+    }
+  }
+
+  /**
+   * Simple shematic layer
+   * API : https://api-docs.carto.com/
+   */
+  class CartoDB extends layerXYZ {
+    constructor(options) {
+      super({
+        url: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+        attribution: 'https://carto.com/attribution/,CartoDB',
+
+        ...options,
+      });
+    }
+  }
+
+  /**
+   * Simple layer displaying a zoom error
+   */
+  class NoTile extends layerXYZ {
+    constructor(options) {
+      super({
+        url: 'https://ecn.t0.tiles.virtualearth.net/tiles/r000000000000000000.jpeg?g=1',
+        attributions: 'No tile',
+
+        ...options,
+      });
+    }
+  }
 
   /**
    * RGB elevation (Mapbox)
@@ -76775,13 +77117,12 @@
    * Key : https://cloud.maptiler.com/account/keys/
    */
   /*// Backup of Maxbox elevation
-  export class MapTilerElevation extends XYZ {
+  export class MapTilerElevation extends layerXYZ {
     constructor(options = {}) {
       super({
         hidden: !options.key, // For LayerSwitcher
         url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
         maxZoom: 12,
-        attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>',
   	  
         ...options,
       });
@@ -76791,48 +77132,68 @@
   /**
    * Tile layers examples
    */
-  function collection$2(options = {}) {
+  function wriNavLayers(options = {}) {
     return {
+      // Carte refuges.info
+      'OpenHikingMap': new OpenHikingMap(),
       'OpenStreetMap': new OpenStreetMap(),
+      'OpenTopoMap': new OpenTopoMap(),
       'Outdoors': new Thunderforest({
         key: options.thunderforest, // For simplified options
         ...options.thunderforest, // Include key
         subLayer: 'outdoors',
+        legend: '',
       }),
-      'OpenTopoMap': new OpenTopoMap(),
+
+      'IGN TOP25': new IGNtop25({
+        key: options.ign, // Include key
+        ...options.ign, // Include key
+      }),
+      'IGN plan': new IGNplan(),
+
+      'SwissTopo': new SwissTopo(),
+      'Österreich Kompass': new Kompass({
+        subLayer: 'osm', // No key
+      }),
+      'España': new IgnES(),
+
+      'Photo IGN': new IGN({
+        layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+      }),
+
+      'Photo ArcGIS': new ArcGIS(),
+      'Photo Google': new Google({
+        subLayers: 's',
+      }),
+      'Photo Maxar': new Maxbox({
+        key: options.mapbox, // For simplified options
+        ...options.mapbox, // Include key
+        tileset: 'mapbox.satellite',
+      }),
+    }
+  }
+
+  function collection$2(options = {}) {
+    return {
+      ...wriNavLayers(options),
+
       'OSM transports': new Thunderforest({
         key: options.thunderforest, // For simplified options
         ...options.thunderforest, // Include key
         subLayer: 'transport',
+        legend: '',
       }),
-      'OSM cyclo': new OpenStreetMap({
+      'CyclOSM': new OpenStreetMap({
         url: 'https://{a-c}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
+        legend: 'https://www.cyclosm.org/legend.html',
       }),
-      'OpenHikingMap': new OpenHikingMap(),
 
-      'IGN TOP25': new IGN({
-        layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
-        key: options.ign, // Include key
-        ...options.ign, // Include key
-      }),
-      'IGN V2': new IGN({
-        layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-        format: 'image/png',
-      }),
-      'IGN N+1': new IGN({
-        layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1',
-        format: 'image/png',
-      }),
       'IGN cartes 1950': new IGN({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950',
         extent: [-58e4, 506000, 1070000, 6637000],
         minZoom: 6,
       }),
 
-      'SwissTopo': new SwissTopo(),
-      'Österreich Kompass': new Kompass({
-        subLayer: 'osm', // No key
-      }),
       'Kompas winter': new Kompass({
         key: options.kompass, // For simplified options
         ...options.kompass, // Include key
@@ -76844,27 +77205,14 @@
         ...options.os, // Include key
       }),
       'Italie': new IGM(),
-      'España': new IgnES(),
-      'Google': new Google(),
 
-      'Maxar': new Maxbox({
-        key: options.mapbox, // For simplified options
-        ...options.mapbox, // Include key
-        tileset: 'mapbox.satellite',
-      }),
-      'Photo Google': new Google({
-        subLayers: 's',
-      }),
-      'Photo ArcGIS': new ArcGIS(),
+      'Google': new Google(),
       'Photo Bing': new Bing$1({
         key: options.bing, // For simplified options
         ...options.bing, // Include key
         imagerySet: 'Aerial',
       }),
 
-      'Photo IGN': new IGN({
-        layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-      }),
       'Photo IGN 1950-65': new IGN({
         layer: 'ORTHOIMAGERY.ORTHOPHOTOS.1950-1965',
         style: 'BDORTHOHISTORIQUE',
@@ -76883,6 +77231,7 @@
         extent: [-58e4, 506000, 1070000, 6637000],
         minZoom: 6,
       }),
+
       /* //BEST Cassini ? clé
   	'IGN Cassini': new IGN({
         ...options.ign,
@@ -76897,17 +77246,20 @@
     return {
       ...collection$2(options),
 
-      'OpenStreetMap fr': new OpenStreetMap({
+      'OpenStreetMap FR': new OpenStreetMap({
         url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+        legend: '',
       }),
       'OSM orthos FR': new OpenStreetMap({
         url: 'https://wms.openstreetmap.fr/tms/1.0.0/tous_fr/{z}/{x}/{y}',
+        legend: '',
       }),
 
-      'ThF cycle': new Thunderforest({
+      'OpenCycleMap': new Thunderforest({
         key: options.thunderforest, // For simplified options
         ...options.thunderforest, // Include key
         subLayer: 'cycle',
+        legend: 'https://www.opencyclemap.org/docs/',
         maxZoom: 14,
       }),
       'ThF trains': new Thunderforest({
@@ -76960,10 +77312,12 @@
 
       'Photo Swiss': new SwissTopo({
         subLayer: 'ch.swisstopo.swissimage',
+        legend: '',
       }),
       'Photo España': new IgnES({
         server: 'pnoa-ma',
         subLayer: 'OI.OrthoimageCoverage',
+        legend: '',
       }),
 
       'Google road': new Google({
@@ -76978,7 +77332,17 @@
         ...options.mapbox, // Include key
       }),
 
-      'Positron': new Positron(),
+      'CartoDB': new CartoDB(),
+      'Stamen watercolor': new Stamen(),
+      'Stamen terrain': new Stamen({
+        layer: 'stamen_terrain',
+      }),
+      'Stamen toner': new Stamen({
+        layer: 'stamen_toner',
+      }),
+      'Stamen toner lite': new Stamen({
+        layer: 'stamen_toner_lite',
+      }),
       'No tile': new NoTile(),
       'Blank': new TileLayer(),
     };
@@ -76988,9 +77352,12 @@
     __proto__: null,
     ArcGIS: ArcGIS,
     Bing: Bing$1,
+    CartoDB: CartoDB,
     Google: Google,
     IGM: IGM,
     IGN: IGN,
+    IGNplan: IGNplan,
+    IGNtop25: IGNtop25,
     IgnES: IgnES,
     Kompass: Kompass,
     MapboxElevation: MapboxElevation,
@@ -77000,11 +77367,12 @@
     OpenHikingMap: OpenHikingMap,
     OpenStreetMap: OpenStreetMap,
     OpenTopoMap: OpenTopoMap,
-    Positron: Positron,
+    Stamen: Stamen,
     SwissTopo: SwissTopo,
     Thunderforest: Thunderforest,
     collection: collection$2,
-    examples: examples
+    examples: examples,
+    wriNavLayers: wriNavLayers
   });
 
   /**
@@ -77014,10 +77382,11 @@
    */
 
 
-  class BackgroundLayer extends Positron {
+  class BackgroundLayer extends Stamen {
     constructor(options) {
       // High resolution background layer
       super({
+        layer: 'stamen_toner_lite',
         minResolution: 20,
         visible: false,
 
@@ -77061,9 +77430,6 @@
    */
 
 
-  //BEST how do we do on touch terminal ? alt key to switch layers / transparency
-  //BEST slider transparency doesn't work out of range (no BackgroundLayer)
-  //BEST BUG Attribution must be set before LayerSwitcher
   class LayerSwitcher extends Button {
     constructor(options) {
       super({
@@ -78610,15 +78976,28 @@
 
 
   //BEST move this in html
-  const subMenuHTML$1 = '<p>\
-  <input type="radio" name="myol-gps-source" value="0" checked="checked">None &nbsp;\
-  <input type="radio" name="myol-gps-source" value="1">Outdoor &nbsp;\
-  <input type="radio" name="myol-gps-source" value="2">Indoor &nbsp;\
-  </p><hr><p>\
-  <input type="radio" name="myol-gps-display" value="0" checked="checked">Free map&nbsp;\
-  <input type="radio" name="myol-gps-display" value="1">Center &nbsp;\
-  <input type="radio" name="myol-gps-display" value="2">Center & orient &nbsp;\
-  </p>',
+  const subMenuHTML$1 = '\
+  <p>GPS location:</p>\
+  <label>\
+    <input type="radio" name="myol-gps-source" value="0" checked="checked">\
+    Inactive</label><label>\
+    <input type="radio" name="myol-gps-source" value="1">\
+    GPS location <span>(1) outdoor</span></label><label>\
+    <input type="radio" name="myol-gps-source" value="2">\
+    Position GPS ou IP <span>(2) indoor</span></label>\
+  <hr><label>\
+    <input type="radio" name="myol-gps-display" value="0" checked="checked">\
+    Graticule, free map</label><label>\
+    <input type="radio" name="myol-gps-display" value="1">\
+    Center the map, north at the top</label><label>\
+    <input type="radio" name="myol-gps-display" value="2">\
+    Center and orient the map <span>(3)</span></label>\
+  <hr>\
+  <p>(1) More accurate outdoors but slower to initialize,\
+    requires a GPS sensor and a free space.</p>\
+  <p>(2) more precise and faster indoors or in urban areas\
+    but can be inaccurate outdoors.</p>\
+  <p>(3) requires a magnetic sensor and a compatible explorer.</p>',
 
     subMenuHTMLfr$1 = '\
   <p>Localisation GPS:</p>\
@@ -79712,21 +80091,21 @@
   // floating point error) from changing their sign.
   var SPI = 3.14159265359;
 
-  var exports$1 = {};
+  var primeMeridian = {};
 
-  exports$1.greenwich = 0.0; // "0dE",
-  exports$1.lisbon = -9.131906111111; // "9d07'54.862\"W",
-  exports$1.paris = 2.337229166667; // "2d20'14.025\"E",
-  exports$1.bogota = -74.080916666667; // "74d04'51.3\"W",
-  exports$1.madrid = -3.687938888889; // "3d41'16.58\"W",
-  exports$1.rome = 12.452333333333; // "12d27'8.4\"E",
-  exports$1.bern = 7.439583333333; // "7d26'22.5\"E",
-  exports$1.jakarta = 106.807719444444; // "106d48'27.79\"E",
-  exports$1.ferro = -17.666666666667; // "17d40'W",
-  exports$1.brussels = 4.367975; // "4d22'4.71\"E",
-  exports$1.stockholm = 18.058277777778; // "18d3'29.8\"E",
-  exports$1.athens = 23.7163375; // "23d42'58.815\"E",
-  exports$1.oslo = 10.722916666667; // "10d43'22.5\"E"
+  primeMeridian.greenwich = 0.0; // "0dE",
+  primeMeridian.lisbon = -9.131906111111; // "9d07'54.862\"W",
+  primeMeridian.paris = 2.337229166667; // "2d20'14.025\"E",
+  primeMeridian.bogota = -74.080916666667; // "74d04'51.3\"W",
+  primeMeridian.madrid = -3.687938888889; // "3d41'16.58\"W",
+  primeMeridian.rome = 12.452333333333; // "12d27'8.4\"E",
+  primeMeridian.bern = 7.439583333333; // "7d26'22.5\"E",
+  primeMeridian.jakarta = 106.807719444444; // "106d48'27.79\"E",
+  primeMeridian.ferro = -17.666666666667; // "17d40'W",
+  primeMeridian.brussels = 4.367975; // "4d22'4.71\"E",
+  primeMeridian.stockholm = 18.058277777778; // "18d3'29.8\"E",
+  primeMeridian.athens = 23.7163375; // "23d42'58.815\"E",
+  primeMeridian.oslo = 10.722916666667; // "10d43'22.5\"E"
 
   var units = {
     mm: { to_meter: 0.001 },
@@ -79769,13 +80148,19 @@
     }
   }
 
+  /**
+   * @param {string} defData
+   * @returns {import('./defs').ProjectionDefinition}
+   */
   function projStr (defData) {
+    /** @type {import('./defs').ProjectionDefinition} */
     var self = {};
     var paramObj = defData.split('+').map(function (v) {
       return v.trim();
     }).filter(function (a) {
       return a;
     }).reduce(function (p, a) {
+      /** @type {Array<?>} */
       var split = a.split('=');
       split.push(true);
       p[split[0].toLowerCase()] = split[1];
@@ -79867,7 +80252,7 @@
         self.from_greenwich = v * D2R$1;
       },
       pm: function (v) {
-        var pm = match(exports$1, v);
+        var pm = match(primeMeridian, v);
         self.from_greenwich = (pm ? pm : parseFloat(v)) * D2R$1;
       },
       nadgrids: function (v) {
@@ -81127,6 +81512,66 @@
     return obj[type];
   }
 
+  /**
+   * @typedef {Object} ProjectionDefinition
+   * @property {string} title
+   * @property {string} [projName]
+   * @property {string} [ellps]
+   * @property {import('./Proj.js').DatumDefinition} [datum]
+   * @property {string} [datumName]
+   * @property {number} [rf]
+   * @property {number} [lat0]
+   * @property {number} [lat1]
+   * @property {number} [lat2]
+   * @property {number} [lat_ts]
+   * @property {number} [long0]
+   * @property {number} [long1]
+   * @property {number} [long2]
+   * @property {number} [alpha]
+   * @property {number} [longc]
+   * @property {number} [x0]
+   * @property {number} [y0]
+   * @property {number} [k0]
+   * @property {number} [a]
+   * @property {number} [b]
+   * @property {true} [R_A]
+   * @property {number} [zone]
+   * @property {true} [utmSouth]
+   * @property {string|Array<number>} [datum_params]
+   * @property {number} [to_meter]
+   * @property {string} [units]
+   * @property {number} [from_greenwich]
+   * @property {string} [datumCode]
+   * @property {string} [nadgrids]
+   * @property {string} [axis]
+   * @property {boolean} [sphere]
+   * @property {number} [rectified_grid_angle]
+   * @property {boolean} [approx]
+   * @property {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} inverse
+   * @property {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} forward
+   */
+
+  /**
+   * @overload
+   * @param {string} name
+   * @param {string|ProjectionDefinition|import('./core.js').PROJJSONDefinition} projection
+   * @returns {void}
+   */
+  /**
+   * @overload
+   * @param {Array<[string, string]>} name
+   * @returns {Array<ProjectionDefinition|undefined>}
+   */
+  /**
+   * @overload
+   * @param {string} name
+   * @returns {ProjectionDefinition}
+   */
+
+  /**
+   * @param {string | Array<Array<string>> | Partial<Record<'EPSG'|'ESRI'|'IAU2000', ProjectionDefinition>>} name
+   * @returns {ProjectionDefinition | Array<ProjectionDefinition|undefined> | void}
+   */
   function defs(name) {
     /* global console */
     var that = this;
@@ -81134,20 +81579,20 @@
       var def = arguments[1];
       if (typeof def === 'string') {
         if (def.charAt(0) === '+') {
-          defs[name] = projStr(arguments[1]);
+          defs[/** @type {string} */ (name)] = projStr(arguments[1]);
         } else {
-          defs[name] = wkt(arguments[1]);
+          defs[/** @type {string} */ (name)] = wkt(arguments[1]);
         }
       } else {
-        defs[name] = def;
+        defs[/** @type {string} */ (name)] = def;
       }
     } else if (arguments.length === 1) {
       if (Array.isArray(name)) {
         return name.map(function (v) {
           if (Array.isArray(v)) {
-            defs.apply(that, v);
+            return defs.apply(that, v);
           } else {
-            defs(v);
+            return defs(v);
           }
         });
       } else if (typeof name === 'string') {
@@ -81196,6 +81641,10 @@
   function testProj(code) {
     return code[0] === '+';
   }
+  /**
+   * @param {string | import('./core').PROJJSONDefinition | import('./defs').ProjectionDefinition} code
+   * @returns {import('./defs').ProjectionDefinition}
+   */
   function parse(code) {
     if (testObj(code)) {
       // check to see if this is a WKT string
@@ -81217,7 +81666,7 @@
       if (testProj(code)) {
         return projStr(code);
       }
-    } else if (!code.projName) {
+    } else if (!('projName' in code)) {
       return wkt(code);
     } else {
       return code;
@@ -81275,6 +81724,14 @@
     return -9999;
   }
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {number} e
+   * @property {number} k
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$x() {
     var con = this.b / this.a;
     this.es = 1 - con * con;
@@ -81378,10 +81835,15 @@
     names: names$w
   };
 
+  /** @type {Array<Partial<import('./Proj').default>>} */
   var projs = [merc, longlat];
   var names$v = {};
   var projStore = [];
 
+  /**
+   * @param {import('./Proj').default} proj
+   * @param {number} i
+   */
   function add(proj, i) {
     var len = projStore.length;
     if (!proj.names) {
@@ -81399,6 +81861,11 @@
     return n.replace(/[-\(\)\s]+/g, ' ').trim().replace(/ /g, '_');
   }
 
+  /**
+   * Get a projection by name.
+   * @param {string} name
+   * @returns {import('./Proj').default|false}
+   */
   function get(name) {
     if (!name) {
       return false;
@@ -83015,11 +83482,80 @@
    * - http://mimaka.com/help/gs/html/004_NTV2%20Data%20Format.htm
    */
 
+  /**
+   * @typedef {Object} NadgridInfo
+   * @property {string} name The name of the NAD grid or 'null' if not specified.
+   * @property {boolean} mandatory Indicates if the grid is mandatory (true) or optional (false).
+   * @property {*} grid The loaded NAD grid object, or null if not loaded or not applicable.
+   * @property {boolean} isNull True if the grid is explicitly 'null', otherwise false.
+   */
+
+  /**
+   * @typedef {Object} NTV2GridOptions
+   * @property {boolean} [includeErrorFields=true] Whether to include error fields in the subgrids.
+   */
+
+  /**
+   * @typedef {Object} NadgridHeader
+   * @property {number} [nFields] Number of fields in the header.
+   * @property {number} [nSubgridFields] Number of fields in each subgrid header.
+   * @property {number} nSubgrids Number of subgrids in the file.
+   * @property {string} [shiftType] Type of shift (e.g., "SECONDS").
+   * @property {number} [fromSemiMajorAxis] Source ellipsoid semi-major axis.
+   * @property {number} [fromSemiMinorAxis] Source ellipsoid semi-minor axis.
+   * @property {number} [toSemiMajorAxis] Target ellipsoid semi-major axis.
+   * @property {number} [toSemiMinorAxis] Target ellipsoid semi-minor axis.
+   */
+
+  /**
+   * @typedef {Object} Subgrid
+   * @property {Array<number>} ll Lower left corner of the grid in radians [longitude, latitude].
+   * @property {Array<number>} del Grid spacing in radians [longitude interval, latitude interval].
+   * @property {Array<number>} lim Number of columns in the grid [longitude columns, latitude columns].
+   * @property {number} [count] Total number of grid nodes.
+   * @property {Array} cvs Mapped node values for the grid.
+   */
+
+  /** @typedef {{header: NadgridHeader, subgrids: Array<Subgrid>}} NADGrid */
+
+  /**
+   * @typedef {Object} GeoTIFF
+   * @property {() => Promise<number>} getImageCount - Returns the number of images in the GeoTIFF.
+   * @property {(index: number) => Promise<GeoTIFFImage>} getImage - Returns a GeoTIFFImage for the given index.
+   */
+
+  /**
+   * @typedef {Object} GeoTIFFImage
+   * @property {() => number} getWidth - Returns the width of the image.
+   * @property {() => number} getHeight - Returns the height of the image.
+   * @property {() => number[]} getBoundingBox - Returns the bounding box as [minX, minY, maxX, maxY] in degrees.
+   * @property {() => Promise<ArrayLike<ArrayLike<number>>>} readRasters - Returns the raster data as an array of bands.
+   * @property {Object} fileDirectory - The file directory object containing metadata.
+   * @property {Object} fileDirectory.ModelPixelScale - The pixel scale array [scaleX, scaleY, scaleZ] in degrees.
+   */
+
   var loadedNadgrids = {};
 
   /**
+   * @overload
+   * @param {string} key - The key to associate with the loaded grid.
+   * @param {ArrayBuffer} data - The NTv2 grid data as an ArrayBuffer.
+   * @param {NTV2GridOptions} [options] - Optional parameters for loading the grid.
+   * @returns {NADGrid} - The loaded NAD grid information.
+   */
+  /**
+   * @overload
+   * @param {string} key - The key to associate with the loaded grid.
+   * @param {GeoTIFF} data - The GeoTIFF instance to read the grid from.
+   * @returns {{ready: Promise<NADGrid>}} - A promise that resolves to the loaded grid information.
+   */
+  /**
    * Load either a NTv2 file (.gsb) or a Geotiff (.tif) to a key that can be used in a proj string like +nadgrids=<key>. Pass the NTv2 file
    * as an ArrayBuffer. Pass Geotiff as a GeoTIFF instance from the geotiff.js library.
+   * @param {string} key - The key to associate with the loaded grid.
+   * @param {ArrayBuffer|GeoTIFF} data The data to load, either an ArrayBuffer for NTv2 or a GeoTIFF instance.
+   * @param {NTV2GridOptions} [options] Optional parameters.
+   * @returns {{ready: Promise<NADGrid>}|NADGrid} - A promise that resolves to the loaded grid information.
    */
   function nadgrid(key, data, options) {
     if (data instanceof ArrayBuffer) {
@@ -83028,6 +83564,12 @@
     return { ready: readGeotiffGrid(key, data) };
   }
 
+  /**
+   * @param {string} key The key to associate with the loaded grid.
+   * @param {ArrayBuffer} data The NTv2 grid data as an ArrayBuffer.
+   * @param {NTV2GridOptions} [options] Optional parameters for loading the grid.
+   * @returns {NADGrid} The loaded NAD grid information.
+   */
   function readNTV2Grid(key, data, options) {
     var includeErrorFields = true;
     if (options !== undefined && options.includeErrorFields === false) {
@@ -83042,6 +83584,11 @@
     return nadgrid;
   }
 
+  /**
+   * @param {string} key The key to associate with the loaded grid.
+   * @param {GeoTIFF} tiff The GeoTIFF instance to read the grid from.
+   * @returns {Promise<NADGrid>} A promise that resolves to the loaded NAD grid information.
+   */
   async function readGeotiffGrid(key, tiff) {
     var subgrids = [];
     var subGridCount = await tiff.getImageCount();
@@ -83088,6 +83635,8 @@
   }
   /**
    * Given a proj4 value for nadgrids, return an array of loaded grids
+   * @param {string} nadgrids A comma-separated list of grid names, optionally prefixed with '@' to indicate optional grids.
+   * @returns
    */
   function getNadgrids(nadgrids) {
     // Format details: http://proj.maptools.org/gen_parms.html
@@ -83098,6 +83647,10 @@
     return grids.map(parseNadgridString);
   }
 
+  /**
+   * @param {string} value The nadgrid string to get information for.
+   * @returns {NadgridInfo|null} An object with grid information, or null if the input is empty.
+   */
   function parseNadgridString(value) {
     if (value.length === 0) {
       return null;
@@ -83231,10 +83784,35 @@
     return gridShiftRecords;
   }
 
+  /**
+   * @typedef {Object} DatumDefinition
+   * @property {number} datum_type - The type of datum.
+   * @property {number} a - Semi-major axis of the ellipsoid.
+   * @property {number} b - Semi-minor axis of the ellipsoid.
+   * @property {number} es - Eccentricity squared of the ellipsoid.
+   * @property {number} ep2 - Second eccentricity squared of the ellipsoid.
+   */
+
+  /**
+   * @param {string | import('./core').PROJJSONDefinition | import('./defs').ProjectionDefinition} srsCode
+   * @param {(errorMessage?: string, instance?: Projection) => void} [callback]
+   */
   function Projection(srsCode, callback) {
     if (!(this instanceof Projection)) {
       return new Projection(srsCode);
     }
+    /** @type {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} */
+    this.forward = null;
+    /** @type {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} */
+    this.inverse = null;
+    /** @type {function(): void} */
+    this.init = null;
+    /** @type {string} */
+    this.name;
+    /** @type {Array<string>} */
+    this.names = null;
+    /** @type {string} */
+    this.title;
     callback = callback || function (error) {
       if (error) {
         throw error;
@@ -83266,6 +83844,7 @@
     var sphere_ = sphere(json.a, json.b, json.rf, json.ellps, json.sphere);
     var ecc = eccentricity(sphere_.a, sphere_.b, sphere_.rf, json.R_A);
     var nadgrids = getNadgrids(json.nadgrids);
+    /** @type {DatumDefinition} */
     var datumObj = json.datum || datum(json.datumCode, json.datum_params, sphere_.a, sphere_.b, ecc.es, ecc.ep2,
       nadgrids);
 
@@ -83287,7 +83866,9 @@
     this.datum = datumObj;
 
     // init the projection
-    this.init();
+    if ('init' in this && typeof this.init === 'function') {
+      this.init();
+    }
 
     // legecy callback from back in the day when it went to spatialreference.org
     callback(null, this);
@@ -83724,6 +84305,7 @@
       yin = point.y,
       zin = point.z || 0.0;
     var v, t, i;
+    /** @type {import("./core").InterfaceCoordinates} */
     var out = {};
     for (i = 0; i < 3; i++) {
       if (denorm && i === 2 && point.z === undefined) {
@@ -83778,6 +84360,10 @@
     return out;
   }
 
+  /**
+   * @param {Array<number>} array
+   * @returns {import("../core").InterfaceCoordinates}
+   */
   function common (array) {
     var out = {
       x: array[0],
@@ -83814,6 +84400,13 @@
     || ((dest.datum.datum_type === PJD_3PARAM || dest.datum.datum_type === PJD_7PARAM || dest.datum.datum_type === PJD_GRIDSHIFT) && source.datumCode !== 'WGS84');
   }
 
+  /**
+   * @param {import('./defs').ProjectionDefinition} source
+   * @param {import('./defs').ProjectionDefinition} dest
+   * @param {import('./core').TemplateCoordinates} point
+   * @param {boolean} enforceAxis
+   * @returns {import('./core').InterfaceCoordinates | undefined}
+   */
   function transform(source, dest, point, enforceAxis) {
     var wgs84;
     if (Array.isArray(point)) {
@@ -83870,6 +84463,8 @@
       return;
     }
 
+    point = /** @type {import('./core').InterfaceCoordinates} */ (point);
+
     // Adjust for the prime meridian if necessary
     if (dest.from_greenwich) {
       point = {
@@ -83910,6 +84505,85 @@
 
   var wgs84 = Projection('WGS84');
 
+  /**
+   * @typedef {{x: number, y: number, z?: number, m?: number}} InterfaceCoordinates
+   */
+
+  /**
+   * @typedef {Array<number> | InterfaceCoordinates} TemplateCoordinates
+   */
+
+  /**
+   * @typedef {Object} Converter
+   * @property {<T extends TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} forward
+   * @property {<T extends TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} inverse
+   * @property {proj} [oProj]
+   */
+
+  /**
+   * @typedef {Object} PROJJSONDefinition
+   * @property {string} [$schema]
+   * @property {string} type
+   * @property {string} [name]
+   * @property {{authority: string, code: number}} [id]
+   * @property {string} [scope]
+   * @property {string} [area]
+   * @property {{south_latitude: number, west_longitude: number, north_latitude: number, east_longitude: number}} [bbox]
+   * @property {PROJJSONDefinition[]} [components]
+   * @property {{type: string, name: string}} [datum]
+   * @property {{
+   *   name: string,
+   *   members: Array<{
+   *     name: string,
+   *     id?: {authority: string, code: number}
+   *   }>,
+   *   ellipsoid?: {
+   *     name: string,
+   *     semi_major_axis: number,
+   *     inverse_flattening?: number
+   *   },
+   *   accuracy?: string,
+   *   id?: {authority: string, code: number}
+   * }} [datum_ensemble]
+   * @property {{
+   *   subtype: string,
+   *   axis: Array<{
+   *     name: string,
+   *     abbreviation?: string,
+   *     direction: string,
+   *     unit: string
+   *   }>
+   * }} [coordinate_system]
+   * @property {{
+   *   name: string,
+   *   method: {name: string},
+   *   parameters: Array<{
+   *     name: string,
+   *     value: number,
+   *     unit?: string
+   *   }>
+   * }} [conversion]
+   * @property {{
+   *   name: string,
+   *   method: {name: string},
+   *   parameters: Array<{
+   *     name: string,
+   *     value: number,
+   *     unit?: string,
+   *     type?: string,
+   *     file_name?: string
+   *   }>
+   * }} [transformation]
+   */
+
+  /**
+   * @template {TemplateCoordinates} T
+   * @param {proj} from
+   * @param {proj} to
+   * @param {T} coords
+   * @param {boolean} [enforceAxis]
+   * @returns {T}
+   */
   function transformer(from, to, coords, enforceAxis) {
     var transformedArray, out, keys;
     if (Array.isArray(coords)) {
@@ -83917,21 +84591,21 @@
       if (coords.length > 2) {
         if ((typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent')) {
           if (typeof transformedArray.z === 'number') {
-            return [transformedArray.x, transformedArray.y, transformedArray.z].concat(coords.slice(3));
+            return /** @type {T} */ ([transformedArray.x, transformedArray.y, transformedArray.z].concat(coords.slice(3)));
           } else {
-            return [transformedArray.x, transformedArray.y, coords[2]].concat(coords.slice(3));
+            return /** @type {T} */ ([transformedArray.x, transformedArray.y, coords[2]].concat(coords.slice(3)));
           }
         } else {
-          return [transformedArray.x, transformedArray.y].concat(coords.slice(2));
+          return /** @type {T} */ ([transformedArray.x, transformedArray.y].concat(coords.slice(2)));
         }
       } else {
-        return [transformedArray.x, transformedArray.y];
+        return /** @type {T} */ ([transformedArray.x, transformedArray.y]);
       }
     } else {
       out = transform(from, to, coords, enforceAxis);
       keys = Object.keys(coords);
       if (keys.length === 2) {
-        return out;
+        return /** @type {T} */ (out);
       }
       keys.forEach(function (key) {
         if ((typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent')) {
@@ -83945,42 +84619,100 @@
         }
         out[key] = coords[key];
       });
-      return out;
+      return /** @type {T} */ (out);
     }
   }
 
+  /**
+   * @param {proj | string | PROJJSONDefinition | Converter} item
+   * @returns {import('./Proj').default}
+   */
   function checkProj(item) {
     if (item instanceof Projection) {
       return item;
     }
-    if (item.oProj) {
+    if (typeof item === 'object' && 'oProj' in item) {
       return item.oProj;
     }
-    return Projection(item);
+    return Projection(/** @type {string | PROJJSONDefinition} */ (item));
   }
 
-  function proj4(fromProj, toProj, coord) {
-    fromProj = checkProj(fromProj);
+  /**
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @returns {Converter}
+   */
+  /**
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} fromProj
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @returns {Converter}
+   */
+  /**
+   * @template {TemplateCoordinates} T
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @param {T} coord
+   * @returns {T}
+   */
+  /**
+   * @template {TemplateCoordinates} T
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} fromProj
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @param {T} coord
+   * @returns {T}
+   */
+  /**
+   * @template {TemplateCoordinates} T
+   * @param {string | PROJJSONDefinition | proj} fromProjOrToProj
+   * @param {string | PROJJSONDefinition | proj | TemplateCoordinates} [toProjOrCoord]
+   * @param {T} [coord]
+   * @returns {T|Converter}
+   */
+  function proj4$1(fromProjOrToProj, toProjOrCoord, coord) {
+    /** @type {proj} */
+    var fromProj;
+    /** @type {proj} */
+    var toProj;
     var single = false;
+    /** @type {Converter} */
     var obj;
-    if (typeof toProj === 'undefined') {
-      toProj = fromProj;
+    if (typeof toProjOrCoord === 'undefined') {
+      toProj = checkProj(fromProjOrToProj);
       fromProj = wgs84;
       single = true;
-    } else if (typeof toProj.x !== 'undefined' || Array.isArray(toProj)) {
-      coord = toProj;
-      toProj = fromProj;
+    } else if (typeof /** @type {?} */ (toProjOrCoord).x !== 'undefined' || Array.isArray(toProjOrCoord)) {
+      coord = /** @type {T} */ (/** @type {?} */ (toProjOrCoord));
+      toProj = checkProj(fromProjOrToProj);
       fromProj = wgs84;
       single = true;
     }
-    toProj = checkProj(toProj);
+    if (!fromProj) {
+      fromProj = checkProj(fromProjOrToProj);
+    }
+    if (!toProj) {
+      toProj = checkProj(/** @type {string | PROJJSONDefinition | proj } */ (toProjOrCoord));
+    }
     if (coord) {
       return transformer(fromProj, toProj, coord);
     } else {
       obj = {
+        /**
+         * @template {TemplateCoordinates} T
+         * @param {T} coords
+         * @param {boolean=} enforceAxis
+         * @returns {T}
+         */
         forward: function (coords, enforceAxis) {
           return transformer(fromProj, toProj, coords, enforceAxis);
         },
+        /**
+         * @template {TemplateCoordinates} T
+         * @param {T} coords
+         * @param {boolean=} enforceAxis
+         * @returns {T}
+         */
         inverse: function (coords, enforceAxis) {
           return transformer(toProj, fromProj, coords, enforceAxis);
         }
@@ -84733,6 +85465,12 @@
 
   }
 
+  /**
+   * @deprecated v3.0.0 - use proj4.toPoint instead
+   * @param {number | import('./core').TemplateCoordinates | string} x
+   * @param {number} [y]
+   * @param {number} [z]
+   */
   function Point(x, y, z) {
     if (!(this instanceof Point)) {
       return new Point(x, y, z);
@@ -84747,9 +85485,9 @@
       this.z = x.z || 0.0;
     } else if (typeof x === 'string' && typeof y === 'undefined') {
       var coords = x.split(',');
-      this.x = parseFloat(coords[0], 10);
-      this.y = parseFloat(coords[1], 10);
-      this.z = parseFloat(coords[2], 10) || 0.0;
+      this.x = parseFloat(coords[0]);
+      this.y = parseFloat(coords[1]);
+      this.z = parseFloat(coords[2]) || 0.0;
     } else {
       this.x = x;
       this.y = y;
@@ -84820,6 +85558,14 @@
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/tmerc.js
 
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {Array<number>} en
+   * @property {number} ml0
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$v() {
     this.x0 = this.x0 !== undefined ? this.x0 : 0;
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
@@ -85077,6 +85823,18 @@
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/etmerc.js
 
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {Array<number>} cbg
+   * @property {Array<number>} cgb
+   * @property {Array<number>} utg
+   * @property {Array<number>} gtu
+   * @property {number} Qn
+   * @property {number} Zb
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$u() {
     if (!this.approx && (isNaN(this.es) || this.es <= 0)) {
       throw new Error('Incorrect elliptical usage. Try using the +approx option in the proj string, or PROJECTION["Fast_Transverse_Mercator"] in the WKT.');
@@ -85251,6 +86009,7 @@
 
   var dependsOn = 'etmerc';
 
+  /** @this {import('../defs.js').ProjectionDefinition} */
   function init$t() {
     var zone = adjust_zone(this.zone, this.long0);
     if (zone === undefined) {
@@ -85280,6 +86039,18 @@
 
   var MAX_ITER$2 = 20;
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} rc
+   * @property {number} C
+   * @property {number} phic0
+   * @property {number} ratexp
+   * @property {number} K
+   * @property {number} e
+   * @property {number} es
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$s() {
     var sphi = Math.sin(this.lat0);
     var cphi = Math.cos(this.lat0);
@@ -85325,6 +86096,16 @@
     forward: forward$r,
     inverse: inverse$r};
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} sinc0
+   * @property {number} cosc0
+   * @property {number} R2
+   * @property {number} rc
+   * @property {number} phic0
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$r() {
     gauss.init.apply(this);
     if (!this.rc) {
@@ -85386,11 +86167,25 @@
     names: names$r
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} coslat0
+   * @property {number} sinlat0
+   * @property {number} ms1
+   * @property {number} X0
+   * @property {number} cosX0
+   * @property {number} sinX0
+   * @property {number} con
+   * @property {number} cons
+   * @property {number} e
+   */
+
   function ssfn_(phit, sinphi, eccen) {
     sinphi *= eccen;
     return (Math.tan(0.5 * (HALF_PI + phit)) * Math.pow((1 - sinphi) / (1 + sinphi), 0.5 * eccen));
   }
 
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$q() {
     // setting default parameters
     this.x0 = this.x0 || 0;
@@ -85423,7 +86218,7 @@
         this.k0 = 0.5 * this.cons * msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts)) / tsfnz(this.e, this.con * this.lat_ts, this.con * Math.sin(this.lat_ts));
       }
       this.ms1 = msfnz(this.e, this.sinlat0, this.coslat0);
-      this.X0 = 2 * Math.atan(this.ssfn_(this.lat0, this.sinlat0, this.e)) - HALF_PI;
+      this.X0 = 2 * Math.atan(ssfn_(this.lat0, this.sinlat0, this.e)) - HALF_PI;
       this.cosX0 = Math.cos(this.X0);
       this.sinX0 = Math.sin(this.X0);
     }
@@ -85452,7 +86247,7 @@
       p.y = this.a * A * (this.coslat0 * sinlat - this.sinlat0 * coslat * Math.cos(dlon)) + this.y0;
       return p;
     } else {
-      X = 2 * Math.atan(this.ssfn_(lat, sinlat, this.e)) - HALF_PI;
+      X = 2 * Math.atan(ssfn_(lat, sinlat, this.e)) - HALF_PI;
       cosX = Math.cos(X);
       sinX = Math.sin(X);
       if (Math.abs(this.coslat0) <= EPSLN) {
@@ -85558,6 +86353,16 @@
       http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf
     */
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} lambda0
+   * @property {number} e
+   * @property {number} R
+   * @property {number} b0
+   * @property {number} K
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$p() {
     var phy0 = this.lat0;
     this.lambda0 = this.long0;
@@ -85637,6 +86442,29 @@
     names: names$p
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {boolean} no_off
+   * @property {boolean} no_rot
+   * @property {number} rectified_grid_angle
+   * @property {number} es
+   * @property {number} A
+   * @property {number} B
+   * @property {number} E
+   * @property {number} e
+   * @property {number} lam0
+   * @property {number} singam
+   * @property {number} cosgam
+   * @property {number} sinrot
+   * @property {number} cosrot
+   * @property {number} rB
+   * @property {number} ArB
+   * @property {number} BrA
+   * @property {number} u_0
+   * @property {number} v_pole_n
+   * @property {number} v_pole_s
+   */
+
   var TOL = 1e-7;
 
   function isTypeA(P) {
@@ -85646,8 +86474,10 @@
     return 'no_uoff' in P || 'no_off' in P || typeAProjections.indexOf(projectionName) !== -1 || typeAProjections.indexOf(getNormalizedProjName(projectionName)) !== -1;
   }
 
-  /* Initialize the Oblique Mercator  projection
-      ------------------------------------------ */
+  /**
+   * Initialize the Oblique Mercator  projection
+   * @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
   function init$o() {
     var con, com, cosph0, D, F, H, L, sinph0, p, J, gamma = 0,
       gamma0, lamc = 0, lam1 = 0, lam2 = 0, phi1 = 0, phi2 = 0, alpha_c = 0;
@@ -85740,9 +86570,9 @@
       J = (J - L * H) / (J + L * H);
       con = lam1 - lam2;
 
-      if (con < -Math.pi) {
+      if (con < -Math.PI) {
         lam2 -= TWO_PI;
-      } else if (con > Math.pi) {
+      } else if (con > Math.PI) {
         lam2 += TWO_PI;
       }
 
@@ -85871,6 +86701,15 @@
     names: names$o
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} e
+   * @property {number} ns
+   * @property {number} f0
+   * @property {number} rh
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$n() {
     // double lat0;                    /* the reference latitude               */
     // double long0;                   /* the reference longitude              */
@@ -86162,6 +87001,17 @@
     return NaN;
   }
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {number} e0
+   * @property {number} e1
+   * @property {number} e2
+   * @property {number} e3
+   * @property {number} ml0
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$l() {
     if (!this.sphere) {
       this.e0 = e0fn(this.es);
@@ -86263,6 +87113,24 @@
     }
   }
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} mode
+   * @property {Array<number>} apa
+   * @property {number} dd
+   * @property {number} e
+   * @property {number} es
+   * @property {number} mmf
+   * @property {number} rq
+   * @property {number} qp
+   * @property {number} sinb1
+   * @property {number} cosb1
+   * @property {number} ymf
+   * @property {number} xmf
+   * @property {number} sinph0
+   * @property {number} cosph0
+   */
+
   /*
     reference
       "New Equal-Area Map Projections for Noncircular Regions", John P. Snyder,
@@ -86270,21 +87138,22 @@
     */
 
   var S_POLE = 1;
-
   var N_POLE = 2;
   var EQUIT = 3;
   var OBLIQ = 4;
 
-  /* Initialize the Lambert Azimuthal Equal Area projection
-    ------------------------------------------------------ */
+  /**
+   * Initialize the Lambert Azimuthal Equal Area projection
+   * @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
   function init$k() {
     var t = Math.abs(this.lat0);
     if (Math.abs(t - HALF_PI) < EPSLN) {
-      this.mode = this.lat0 < 0 ? this.S_POLE : this.N_POLE;
+      this.mode = this.lat0 < 0 ? S_POLE : N_POLE;
     } else if (Math.abs(t) < EPSLN) {
-      this.mode = this.EQUIT;
+      this.mode = EQUIT;
     } else {
-      this.mode = this.OBLIQ;
+      this.mode = OBLIQ;
     }
     if (this.es > 0) {
       var sinphi;
@@ -86293,19 +87162,19 @@
       this.mmf = 0.5 / (1 - this.es);
       this.apa = authset(this.es);
       switch (this.mode) {
-        case this.N_POLE:
+        case N_POLE:
           this.dd = 1;
           break;
-        case this.S_POLE:
+        case S_POLE:
           this.dd = 1;
           break;
-        case this.EQUIT:
+        case EQUIT:
           this.rq = Math.sqrt(0.5 * this.qp);
           this.dd = 1 / this.rq;
           this.xmf = 1;
           this.ymf = 0.5 * this.qp;
           break;
-        case this.OBLIQ:
+        case OBLIQ:
           this.rq = Math.sqrt(0.5 * this.qp);
           sinphi = Math.sin(this.lat0);
           this.sinb1 = qsfnz(this.e, sinphi) / this.qp;
@@ -86316,7 +87185,7 @@
           break;
       }
     } else {
-      if (this.mode === this.OBLIQ) {
+      if (this.mode === OBLIQ) {
         this.sinph0 = Math.sin(this.lat0);
         this.cosph0 = Math.cos(this.lat0);
       }
@@ -86552,6 +87421,30 @@
     return Math.asin(x);
   }
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} temp
+   * @property {number} es
+   * @property {number} e3
+   * @property {number} sin_po
+   * @property {number} cos_po
+   * @property {number} t1
+   * @property {number} con
+   * @property {number} ms1
+   * @property {number} qs1
+   * @property {number} t2
+   * @property {number} ms2
+   * @property {number} qs2
+   * @property {number} t3
+   * @property {number} qs0
+   * @property {number} ns0
+   * @property {number} c
+   * @property {number} rh
+   * @property {number} sin_phi
+   * @property {number} cos_phi
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$j() {
     if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
       return;
@@ -86589,6 +87482,7 @@
 
   /* Albers Conical Equal Area forward equations--mapping lat,long to x,y
     ------------------------------------------------------------------- */
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function forward$i(p) {
     var lon = p.x;
     var lat = p.y;
@@ -86671,12 +87565,21 @@
     phi1z: phi1z
   };
 
-  /*
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} sin_p14
+   * @property {number} cos_p14
+   * @property {number} infinity_dist
+   * @property {number} rc
+   */
+
+  /**
     reference:
       Wolfram Mathworld "Gnomonic Projection"
       http://mathworld.wolfram.com/GnomonicProjection.html
       Accessed: 12th November 2009
-    */
+     @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
   function init$i() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
@@ -86797,11 +87700,17 @@
     return NaN;
   }
 
-  /*
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} e
+   */
+
+  /**
     reference:
       "Cartographic Projection Procedures for the UNIX Environment-
       A User's Manual" by Gerald I. Evenden,
       USGS Open File Report 90-284and Release 4 Interim Reports (2003)
+    @this {import('../defs.js').ProjectionDefinition & LocalThis}
   */
   function init$h() {
     // no-op
@@ -86904,8 +87813,21 @@
     names: names$g
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} temp
+   * @property {number} es
+   * @property {number} e
+   * @property {number} e0
+   * @property {number} e1
+   * @property {number} e2
+   * @property {number} e3
+   * @property {number} ml0
+   */
+
   var MAX_ITER$1 = 20;
 
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$f() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
@@ -87283,6 +88205,17 @@
 
   var MAX_ITER = 20;
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {Array<number>} en
+   * @property {number} n
+   * @property {number} m
+   * @property {number} C_y
+   * @property {number} C_x
+   * @property {number} es
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$c() {
     /* Place parameters in static storage for common use
       ------------------------------------------------- */
@@ -87459,6 +88392,28 @@
     names: names$b
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} temp
+   * @property {number} es
+   * @property {number} e
+   * @property {number} e0
+   * @property {number} e1
+   * @property {number} e2
+   * @property {number} e3
+   * @property {number} sin_phi
+   * @property {number} cos_phi
+   * @property {number} ms1
+   * @property {number} ml1
+   * @property {number} ms2
+   * @property {number} ml2
+   * @property {number} ns
+   * @property {number} g
+   * @property {number} ml0
+   * @property {number} rh
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$a() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
@@ -87475,18 +88430,18 @@
     this.e2 = e2fn(this.es);
     this.e3 = e3fn(this.es);
 
-    this.sinphi = Math.sin(this.lat1);
-    this.cosphi = Math.cos(this.lat1);
+    this.sin_phi = Math.sin(this.lat1);
+    this.cos_phi = Math.cos(this.lat1);
 
-    this.ms1 = msfnz(this.e, this.sinphi, this.cosphi);
+    this.ms1 = msfnz(this.e, this.sin_phi, this.cos_phi);
     this.ml1 = mlfn(this.e0, this.e1, this.e2, this.e3, this.lat1);
 
     if (Math.abs(this.lat1 - this.lat2) < EPSLN) {
-      this.ns = this.sinphi;
+      this.ns = this.sin_phi;
     } else {
-      this.sinphi = Math.sin(this.lat2);
-      this.cosphi = Math.cos(this.lat2);
-      this.ms2 = msfnz(this.e, this.sinphi, this.cosphi);
+      this.sin_phi = Math.sin(this.lat2);
+      this.cos_phi = Math.cos(this.lat2);
+      this.ms2 = msfnz(this.e, this.sin_phi, this.cos_phi);
       this.ml2 = mlfn(this.e0, this.e1, this.e2, this.e3, this.lat2);
       this.ns = (this.ms1 - this.ms2) / (this.ml2 - this.ml1);
     }
@@ -87560,8 +88515,15 @@
     names: names$a
   };
 
-  /* Initialize the Van Der Grinten projection
-    ---------------------------------------- */
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} R - Radius of the Earth
+   */
+
+  /**
+   * Initialize the Van Der Grinten projection
+   * @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
   function init$9() {
     // this.R = 6370997; //Radius of earth
     this.R = this.a;
@@ -87678,153 +88640,145 @@
     names: names$9
   };
 
-  var geographiclibGeodesic_min = {exports: {}};
+  /**
+   * Calculates the inverse geodesic problem using Vincenty's formulae.
+   * Computes the forward azimuth and ellipsoidal distance between two points
+   * specified by latitude and longitude on the surface of an ellipsoid.
+   *
+   * @param {number} lat1 Latitude of the first point in radians.
+   * @param {number} lon1 Longitude of the first point in radians.
+   * @param {number} lat2 Latitude of the second point in radians.
+   * @param {number} lon2 Longitude of the second point in radians.
+   * @param {number} a Semi-major axis of the ellipsoid (meters).
+   * @param {number} f Flattening of the ellipsoid.
+   * @returns {{ azi1: number, s12: number }} An object containing:
+   *   - azi1: Forward azimuth from the first point to the second point (radians).
+   *   - s12: Ellipsoidal distance between the two points (meters).
+   */
+  function vincentyInverse(lat1, lon1, lat2, lon2, a, f) {
+    const L = lon2 - lon1;
+    const U1 = Math.atan((1 - f) * Math.tan(lat1));
+    const U2 = Math.atan((1 - f) * Math.tan(lat2));
+    const sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
+    const sinU2 = Math.sin(U2), cosU2 = Math.cos(U2);
 
-  var hasRequiredGeographiclibGeodesic_min;
+    let lambda = L, lambdaP, iterLimit = 100;
+    let sinLambda, cosLambda, sinSigma, cosSigma, sigma, sinAlpha, cos2Alpha, cos2SigmaM, C;
+    let uSq, A, B, deltaSigma, s;
 
-  function requireGeographiclibGeodesic_min () {
-  	if (hasRequiredGeographiclibGeodesic_min) return geographiclibGeodesic_min.exports;
-  	hasRequiredGeographiclibGeodesic_min = 1;
-  	(function (module) {
-  		(function(cb){var geodesic={};geodesic.Constants={};geodesic.Math={};geodesic.Accumulator={};(function(c){c.WGS84={a:6378137,f:1/298.257223563};c.version={major:2,minor:1,patch:1};c.version_string="2.1.1";})(geodesic.Constants);(function(m){m.digits=53;m.epsilon=Math.pow(0.5,m.digits-1);m.degree=Math.PI/180;m.sq=function(x){return x*x;};m.hypot=function(x,y){return Math.sqrt(x*x+y*y);};m.cbrt=Math.cbrt||function(x){var y=Math.pow(Math.abs(x),1/3);return x>0?y:(x<0?-y:x);};m.log1p=Math.log1p||function(x){var y=1+x,z=y-1;return z===0?x:x*Math.log(y)/z;};m.atanh=Math.atanh||function(x){var y=Math.abs(x);y=m.log1p(2*y/(1-y))/2;return x>0?y:(x<0?-y:x);};m.copysign=function(x,y){return Math.abs(x)*(y<0||(y===0&&1/y<0)?-1:1);};m.sum=function(u,v){var s=u+v,up=s-v,vpp=s-up,t;up-=u;vpp-=v;t=s?0-(up+vpp):s;return {s:s,t:t};};m.polyval=function(N,p,s,x){var y=N<0?0:p[s++];while(--N>=0)y=y*x+p[s++];return y;};m.AngRound=function(x){var z=1/16,y=Math.abs(x);y=y<z?z-(z-y):y;return m.copysign(y,x);};m.remainder=function(x,y){x%=y;return x<-y/2?x+y:(x<y/2?x:x-y);};m.AngNormalize=function(x){var y=m.remainder(x,360);return Math.abs(y)===180?m.copysign(180,x):y;};m.LatFix=function(x){return Math.abs(x)>90?NaN:x;};m.AngDiff=function(x,y){var r=m.sum(m.remainder(-x,360),m.remainder(y,360)),d,e;r=m.sum(m.remainder(r.s,360),r.t);d=r.s;e=r.t;if(d===0||Math.abs(d)===180)
-  		d=m.copysign(d,e===0?y-x:-e);return {d:d,e:e};};m.sincosd=function(x){var d,r,q,s,c,sinx,cosx;d=x%360;q=Math.round(d/90);d-=90*q;r=d*this.degree;s=Math.sin(r);c=Math.cos(r);if(Math.abs(d)===45){c=Math.sqrt(0.5);s=m.copysign(c,r);}else if(Math.abs(d)===30){c=Math.sqrt(0.75);s=m.copysign(0.5,r);}
-  		switch(q&3){case 0:sinx=s;cosx=c;break;case 1:sinx=c;cosx=-s;break;case 2:sinx=-s;cosx=-c;break;default:sinx=-c;cosx=s;break;}
-  		cosx+=0;if(sinx===0)sinx=m.copysign(sinx,x);return {s:sinx,c:cosx};};m.sincosde=function(x,t){var d,r,q,s,c,sinx,cosx;d=x%360;q=Math.round(d/90);d=m.AngRound((d-90*q)+t);r=d*this.degree;s=Math.sin(r);c=Math.cos(r);if(Math.abs(d)===45){c=Math.sqrt(0.5);s=m.copysign(c,r);}else if(Math.abs(d)===30){c=Math.sqrt(0.75);s=m.copysign(0.5,r);}
-  		switch(q&3){case 0:sinx=s;cosx=c;break;case 1:sinx=c;cosx=-s;break;case 2:sinx=-s;cosx=-c;break;default:sinx=-c;cosx=s;break;}
-  		cosx+=0;if(sinx===0)sinx=m.copysign(sinx,x+t);return {s:sinx,c:cosx};};m.atan2d=function(y,x){var q=0,ang;if(Math.abs(y)>Math.abs(x)){[y,x]=[x,y];q=2;}
-  		if(m.copysign(1,x)<0){x=-x;++q;}
-  		ang=Math.atan2(y,x)/this.degree;switch(q){case 1:ang=m.copysign(180,y)-ang;break;case 2:ang=90-ang;break;case 3:ang=-90+ang;break;}
-  		return ang;};})(geodesic.Math);(function(a,m){a.Accumulator=function(y){this.Set(y);};a.Accumulator.prototype.Set=function(y){if(!y)y=0;if(y.constructor===a.Accumulator){this._s=y._s;this._t=y._t;}else {this._s=y;this._t=0;}};a.Accumulator.prototype.Add=function(y){var u=m.sum(y,this._t),v=m.sum(u.s,this._s);u=u.t;this._s=v.s;this._t=v.t;if(this._s===0)
-  		this._s=u;else
-  		this._t+=u;};a.Accumulator.prototype.Sum=function(y){var b;if(!y)
-  		return this._s;else {b=new a.Accumulator(this);b.Add(y);return b._s;}};a.Accumulator.prototype.Negate=function(){this._s*=-1;this._t*=-1;};a.Accumulator.prototype.Remainder=function(y){this._s=m.remainder(this._s,y);this.Add(0);};})(geodesic.Accumulator,geodesic.Math);geodesic.Geodesic={};geodesic.GeodesicLine={};geodesic.PolygonArea={};(function(g,l,p,m,c){var GEOGRAPHICLIB_GEODESIC_ORDER=6,nA1_=GEOGRAPHICLIB_GEODESIC_ORDER,nA2_=GEOGRAPHICLIB_GEODESIC_ORDER,nA3_=GEOGRAPHICLIB_GEODESIC_ORDER,nA3x_=nA3_,nC3x_,nC4x_,maxit1_=20,maxit2_=maxit1_+m.digits+10,tol0_=m.epsilon,tol1_=200*tol0_,tol2_=Math.sqrt(tol0_),tolb_=tol0_,xthresh_=1000*tol2_,CAP_NONE=0,CAP_ALL=0x1F,OUT_ALL=0x7F80,astroid,A1m1f_coeff,C1f_coeff,C1pf_coeff,A2m1f_coeff,C2f_coeff,A3_coeff,C3_coeff,C4_coeff;g.tiny_=Math.sqrt(Number.MIN_VALUE/Number.EPSILON);g.nC1_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC1p_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC2_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC3_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC4_=GEOGRAPHICLIB_GEODESIC_ORDER;nC3x_=(g.nC3_*(g.nC3_-1))/2;nC4x_=(g.nC4_*(g.nC4_+1))/2;g.CAP_C1=1<<0;g.CAP_C1p=1<<1;g.CAP_C2=1<<2;g.CAP_C3=1<<3;g.CAP_C4=1<<4;g.NONE=0;g.ARC=1<<6;g.LATITUDE=1<<7|CAP_NONE;g.LONGITUDE=1<<8|g.CAP_C3;g.AZIMUTH=1<<9|CAP_NONE;g.DISTANCE=1<<10|g.CAP_C1;g.STANDARD=g.LATITUDE|g.LONGITUDE|g.AZIMUTH|g.DISTANCE;g.DISTANCE_IN=1<<11|g.CAP_C1|g.CAP_C1p;g.REDUCEDLENGTH=1<<12|g.CAP_C1|g.CAP_C2;g.GEODESICSCALE=1<<13|g.CAP_C1|g.CAP_C2;g.AREA=1<<14|g.CAP_C4;g.ALL=OUT_ALL|CAP_ALL;g.LONG_UNROLL=1<<15;g.OUT_MASK=OUT_ALL|g.LONG_UNROLL;g.SinCosSeries=function(sinp,sinx,cosx,c){var k=c.length,n=k-(sinp?1:0),ar=2*(cosx-sinx)*(cosx+sinx),y0=n&1?c[--k]:0,y1=0;n=Math.floor(n/2);while(n--){y1=ar*y0-y1+c[--k];y0=ar*y1-y0+c[--k];}
-  		return(sinp?2*sinx*cosx*y0:cosx*(y0-y1));};astroid=function(x,y){var k,p=m.sq(x),q=m.sq(y),r=(p+q-1)/6,S,r2,r3,disc,u,T3,T,ang,v,uv,w;if(!(q===0&&r<=0)){S=p*q/4;r2=m.sq(r);r3=r*r2;disc=S*(S+2*r3);u=r;if(disc>=0){T3=S+r3;T3+=T3<0?-Math.sqrt(disc):Math.sqrt(disc);T=m.cbrt(T3);u+=T+(T!==0?r2/T:0);}else {ang=Math.atan2(Math.sqrt(-disc),-(S+r3));u+=2*r*Math.cos(ang/3);}
-  		v=Math.sqrt(m.sq(u)+q);uv=u<0?q/(v-u):u+v;w=(uv-q)/(2*v);k=uv/(Math.sqrt(uv+m.sq(w))+w);}else {k=0;}
-  		return k;};A1m1f_coeff=[1,4,64,0,256];g.A1m1f=function(eps){var p=Math.floor(nA1_/2),t=m.polyval(p,A1m1f_coeff,0,m.sq(eps))/A1m1f_coeff[p+1];return (t+eps)/(1-eps);};C1f_coeff=[-1,6,-16,32,-9,64,-128,2048,9,-16,768,3,-5,512,-7,1280,-7,2048];g.C1f=function(eps,c){var eps2=m.sq(eps),d=eps,o=0,l,p;for(l=1;l<=g.nC1_;++l){p=Math.floor((g.nC1_-l)/2);c[l]=d*m.polyval(p,C1f_coeff,o,eps2)/C1f_coeff[o+p+1];o+=p+2;d*=eps;}};C1pf_coeff=[205,-432,768,1536,4005,-4736,3840,12288,-225,116,384,-7173,2695,7680,3467,7680,38081,61440];g.C1pf=function(eps,c){var eps2=m.sq(eps),d=eps,o=0,l,p;for(l=1;l<=g.nC1p_;++l){p=Math.floor((g.nC1p_-l)/2);c[l]=d*m.polyval(p,C1pf_coeff,o,eps2)/C1pf_coeff[o+p+1];o+=p+2;d*=eps;}};A2m1f_coeff=[-11,-28,-192,0,256];g.A2m1f=function(eps){var p=Math.floor(nA2_/2),t=m.polyval(p,A2m1f_coeff,0,m.sq(eps))/A2m1f_coeff[p+1];return (t-eps)/(1+eps);};C2f_coeff=[1,2,16,32,35,64,384,2048,15,80,768,7,35,512,63,1280,77,2048];g.C2f=function(eps,c){var eps2=m.sq(eps),d=eps,o=0,l,p;for(l=1;l<=g.nC2_;++l){p=Math.floor((g.nC2_-l)/2);c[l]=d*m.polyval(p,C2f_coeff,o,eps2)/C2f_coeff[o+p+1];o+=p+2;d*=eps;}};g.Geodesic=function(a,f){this.a=a;this.f=f;this._f1=1-this.f;this._e2=this.f*(2-this.f);this._ep2=this._e2/m.sq(this._f1);this._n=this.f/(2-this.f);this._b=this.a*this._f1;this._c2=(m.sq(this.a)+m.sq(this._b)*(this._e2===0?1:(this._e2>0?m.atanh(Math.sqrt(this._e2)):Math.atan(Math.sqrt(-this._e2)))/Math.sqrt(Math.abs(this._e2))))/2;this._etol2=0.1*tol2_/Math.sqrt(Math.max(0.001,Math.abs(this.f))*Math.min(1,1-this.f/2)/2);if(!(isFinite(this.a)&&this.a>0))
-  		throw new Error("Equatorial radius is not positive");if(!(isFinite(this._b)&&this._b>0))
-  		throw new Error("Polar semi-axis is not positive");this._A3x=new Array(nA3x_);this._C3x=new Array(nC3x_);this._C4x=new Array(nC4x_);this.A3coeff();this.C3coeff();this.C4coeff();};A3_coeff=[-3,128,-2,-3,64,-1,-3,-1,16,3,-1,-2,8,1,-1,2,1,1];g.Geodesic.prototype.A3coeff=function(){var o=0,k=0,j,p;for(j=nA3_-1;j>=0;--j){p=Math.min(nA3_-j-1,j);this._A3x[k++]=m.polyval(p,A3_coeff,o,this._n)/A3_coeff[o+p+1];o+=p+2;}};C3_coeff=[3,128,2,5,128,-1,3,3,64,-1,0,1,8,-1,1,4,5,256,1,3,128,-3,-2,3,64,1,-3,2,32,7,512,-10,9,384,5,-9,5,192,7,512,-14,7,512,21,2560];g.Geodesic.prototype.C3coeff=function(){var o=0,k=0,l,j,p;for(l=1;l<g.nC3_;++l){for(j=g.nC3_-1;j>=l;--j){p=Math.min(g.nC3_-j-1,j);this._C3x[k++]=m.polyval(p,C3_coeff,o,this._n)/C3_coeff[o+p+1];o+=p+2;}}};C4_coeff=[97,15015,1088,156,45045,-224,-4784,1573,45045,-10656,14144,-4576,-858,45045,64,624,-4576,6864,-3003,15015,100,208,572,3432,-12012,30030,45045,1,9009,-2944,468,135135,5792,1040,-1287,135135,5952,-11648,9152,-2574,135135,-64,-624,4576,-6864,3003,135135,8,10725,1856,-936,225225,-8448,4992,-1144,225225,-1440,4160,-4576,1716,225225,-136,63063,1024,-208,105105,3584,-3328,1144,315315,-128,135135,-2560,832,405405,128,99099];g.Geodesic.prototype.C4coeff=function(){var o=0,k=0,l,j,p;for(l=0;l<g.nC4_;++l){for(j=g.nC4_-1;j>=l;--j){p=g.nC4_-j-1;this._C4x[k++]=m.polyval(p,C4_coeff,o,this._n)/C4_coeff[o+p+1];o+=p+2;}}};g.Geodesic.prototype.A3f=function(eps){return m.polyval(nA3x_-1,this._A3x,0,eps);};g.Geodesic.prototype.C3f=function(eps,c){var mult=1,o=0,l,p;for(l=1;l<g.nC3_;++l){p=g.nC3_-l-1;mult*=eps;c[l]=mult*m.polyval(p,this._C3x,o,eps);o+=p+1;}};g.Geodesic.prototype.C4f=function(eps,c){var mult=1,o=0,l,p;for(l=0;l<g.nC4_;++l){p=g.nC4_-l-1;c[l]=mult*m.polyval(p,this._C4x,o,eps);o+=p+1;mult*=eps;}};g.Geodesic.prototype.Lengths=function(eps,sig12,ssig1,csig1,dn1,ssig2,csig2,dn2,cbet1,cbet2,outmask,C1a,C2a){outmask&=g.OUT_MASK;var vals={},m0x=0,J12=0,A1=0,A2=0,B1,B2,l,csig12,t;if(outmask&(g.DISTANCE|g.REDUCEDLENGTH|g.GEODESICSCALE)){A1=g.A1m1f(eps);g.C1f(eps,C1a);if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){A2=g.A2m1f(eps);g.C2f(eps,C2a);m0x=A1-A2;A2=1+A2;}
-  		A1=1+A1;}
-  		if(outmask&g.DISTANCE){B1=g.SinCosSeries(true,ssig2,csig2,C1a)-
-  		g.SinCosSeries(true,ssig1,csig1,C1a);vals.s12b=A1*(sig12+B1);if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){B2=g.SinCosSeries(true,ssig2,csig2,C2a)-
-  		g.SinCosSeries(true,ssig1,csig1,C2a);J12=m0x*sig12+(A1*B1-A2*B2);}}else if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){for(l=1;l<=g.nC2_;++l)
-  		C2a[l]=A1*C1a[l]-A2*C2a[l];J12=m0x*sig12+(g.SinCosSeries(true,ssig2,csig2,C2a)-
-  		g.SinCosSeries(true,ssig1,csig1,C2a));}
-  		if(outmask&g.REDUCEDLENGTH){vals.m0=m0x;vals.m12b=dn2*(csig1*ssig2)-dn1*(ssig1*csig2)-
-  		csig1*csig2*J12;}
-  		if(outmask&g.GEODESICSCALE){csig12=csig1*csig2+ssig1*ssig2;t=this._ep2*(cbet1-cbet2)*(cbet1+cbet2)/(dn1+dn2);vals.M12=csig12+(t*ssig2-csig2*J12)*ssig1/dn1;vals.M21=csig12-(t*ssig1-csig1*J12)*ssig2/dn2;}
-  		return vals;};g.Geodesic.prototype.InverseStart=function(sbet1,cbet1,dn1,sbet2,cbet2,dn2,lam12,slam12,clam12,C1a,C2a){var vals={},sbet12=sbet2*cbet1-cbet2*sbet1,cbet12=cbet2*cbet1+sbet2*sbet1,sbet12a,shortline,omg12,sbetm2,somg12,comg12,t,ssig12,csig12,x,y,lamscale,betscale,k2,eps,cbet12a,bet12a,m12b,m0,nvals,k,omg12a,lam12x;vals.sig12=-1;sbet12a=sbet2*cbet1;sbet12a+=cbet2*sbet1;shortline=cbet12>=0&&sbet12<0.5&&cbet2*lam12<0.5;if(shortline){sbetm2=m.sq(sbet1+sbet2);sbetm2/=sbetm2+m.sq(cbet1+cbet2);vals.dnm=Math.sqrt(1+this._ep2*sbetm2);omg12=lam12/(this._f1*vals.dnm);somg12=Math.sin(omg12);comg12=Math.cos(omg12);}else {somg12=slam12;comg12=clam12;}
-  		vals.salp1=cbet2*somg12;vals.calp1=comg12>=0?sbet12+cbet2*sbet1*m.sq(somg12)/(1+comg12):sbet12a-cbet2*sbet1*m.sq(somg12)/(1-comg12);ssig12=m.hypot(vals.salp1,vals.calp1);csig12=sbet1*sbet2+cbet1*cbet2*comg12;if(shortline&&ssig12<this._etol2){vals.salp2=cbet1*somg12;vals.calp2=sbet12-cbet1*sbet2*(comg12>=0?m.sq(somg12)/(1+comg12):1-comg12);t=m.hypot(vals.salp2,vals.calp2);vals.salp2/=t;vals.calp2/=t;vals.sig12=Math.atan2(ssig12,csig12);}else if(Math.abs(this._n)>0.1||csig12>=0||ssig12>=6*Math.abs(this._n)*Math.PI*m.sq(cbet1));else {lam12x=Math.atan2(-slam12,-clam12);if(this.f>=0){k2=m.sq(sbet1)*this._ep2;eps=k2/(2*(1+Math.sqrt(1+k2))+k2);lamscale=this.f*cbet1*this.A3f(eps)*Math.PI;betscale=lamscale*cbet1;x=lam12x/lamscale;y=sbet12a/betscale;}else {cbet12a=cbet2*cbet1-sbet2*sbet1;bet12a=Math.atan2(sbet12a,cbet12a);nvals=this.Lengths(this._n,Math.PI+bet12a,sbet1,-cbet1,dn1,sbet2,cbet2,dn2,cbet1,cbet2,g.REDUCEDLENGTH,C1a,C2a);m12b=nvals.m12b;m0=nvals.m0;x=-1+m12b/(cbet1*cbet2*m0*Math.PI);betscale=x<-0.01?sbet12a/x:-this.f*m.sq(cbet1)*Math.PI;lamscale=betscale/cbet1;y=lam12/lamscale;}
-  		if(y>-tol1_&&x>-1-xthresh_){if(this.f>=0){vals.salp1=Math.min(1,-x);vals.calp1=-Math.sqrt(1-m.sq(vals.salp1));}else {vals.calp1=Math.max(x>-tol1_?0:-1,x);vals.salp1=Math.sqrt(1-m.sq(vals.calp1));}}else {k=astroid(x,y);omg12a=lamscale*(this.f>=0?-x*k/(1+k):-y*(1+k)/k);somg12=Math.sin(omg12a);comg12=-Math.cos(omg12a);vals.salp1=cbet2*somg12;vals.calp1=sbet12a-
-  		cbet2*sbet1*m.sq(somg12)/(1-comg12);}}
-  		if(!(vals.salp1<=0)){t=m.hypot(vals.salp1,vals.calp1);vals.salp1/=t;vals.calp1/=t;}else {vals.salp1=1;vals.calp1=0;}
-  		return vals;};g.Geodesic.prototype.Lambda12=function(sbet1,cbet1,dn1,sbet2,cbet2,dn2,salp1,calp1,slam120,clam120,diffp,C1a,C2a,C3a){var vals={},t,salp0,calp0,somg1,comg1,somg2,comg2,somg12,comg12,B312,eta,k2,nvals;if(sbet1===0&&calp1===0)
-  		calp1=-g.tiny_;salp0=salp1*cbet1;calp0=m.hypot(calp1,salp1*sbet1);vals.ssig1=sbet1;somg1=salp0*sbet1;vals.csig1=comg1=calp1*cbet1;t=m.hypot(vals.ssig1,vals.csig1);vals.ssig1/=t;vals.csig1/=t;vals.salp2=cbet2!==cbet1?salp0/cbet2:salp1;vals.calp2=cbet2!==cbet1||Math.abs(sbet2)!==-sbet1?Math.sqrt(m.sq(calp1*cbet1)+(cbet1<-sbet1?(cbet2-cbet1)*(cbet1+cbet2):(sbet1-sbet2)*(sbet1+sbet2)))/cbet2:Math.abs(calp1);vals.ssig2=sbet2;somg2=salp0*sbet2;vals.csig2=comg2=vals.calp2*cbet2;t=m.hypot(vals.ssig2,vals.csig2);vals.ssig2/=t;vals.csig2/=t;vals.sig12=Math.atan2(Math.max(0,vals.csig1*vals.ssig2-
-  		vals.ssig1*vals.csig2),vals.csig1*vals.csig2+
-  		vals.ssig1*vals.ssig2);somg12=Math.max(0,comg1*somg2-somg1*comg2);comg12=comg1*comg2+somg1*somg2;eta=Math.atan2(somg12*clam120-comg12*slam120,comg12*clam120+somg12*slam120);k2=m.sq(calp0)*this._ep2;vals.eps=k2/(2*(1+Math.sqrt(1+k2))+k2);this.C3f(vals.eps,C3a);B312=(g.SinCosSeries(true,vals.ssig2,vals.csig2,C3a)-
-  		g.SinCosSeries(true,vals.ssig1,vals.csig1,C3a));vals.domg12=-this.f*this.A3f(vals.eps)*salp0*(vals.sig12+B312);vals.lam12=eta+vals.domg12;if(diffp){if(vals.calp2===0)
-  		vals.dlam12=-2*this._f1*dn1/sbet1;else {nvals=this.Lengths(vals.eps,vals.sig12,vals.ssig1,vals.csig1,dn1,vals.ssig2,vals.csig2,dn2,cbet1,cbet2,g.REDUCEDLENGTH,C1a,C2a);vals.dlam12=nvals.m12b;vals.dlam12*=this._f1/(vals.calp2*cbet2);}}
-  		return vals;};g.Geodesic.prototype.Inverse=function(lat1,lon1,lat2,lon2,outmask){var r,vals;if(!outmask)outmask=g.STANDARD;if(outmask===g.LONG_UNROLL)outmask|=g.STANDARD;outmask&=g.OUT_MASK;r=this.InverseInt(lat1,lon1,lat2,lon2,outmask);vals=r.vals;if(outmask&g.AZIMUTH){vals.azi1=m.atan2d(r.salp1,r.calp1);vals.azi2=m.atan2d(r.salp2,r.calp2);}
-  		return vals;};g.Geodesic.prototype.InverseInt=function(lat1,lon1,lat2,lon2,outmask){var vals={},lon12,lon12s,lonsign,t,swapp,latsign,sbet1,cbet1,sbet2,cbet2,s12x,m12x,dn1,dn2,lam12,slam12,clam12,sig12,calp1,salp1,calp2,salp2,C1a,C2a,C3a,meridian,nvals,ssig1,csig1,ssig2,csig2,eps,omg12,dnm,numit,salp1a,calp1a,salp1b,calp1b,tripn,tripb,v,dv,dalp1,sdalp1,cdalp1,nsalp1,lengthmask,salp0,calp0,alp12,k2,A4,C4a,B41,B42,somg12,comg12,domg12,dbet1,dbet2,salp12,calp12,sdomg12,cdomg12;vals.lat1=lat1=m.LatFix(lat1);vals.lat2=lat2=m.LatFix(lat2);lat1=m.AngRound(lat1);lat2=m.AngRound(lat2);lon12=m.AngDiff(lon1,lon2);lon12s=lon12.e;lon12=lon12.d;if(outmask&g.LONG_UNROLL){vals.lon1=lon1;vals.lon2=(lon1+lon12)+lon12s;}else {vals.lon1=m.AngNormalize(lon1);vals.lon2=m.AngNormalize(lon2);}
-  		lonsign=m.copysign(1,lon12);lon12*=lonsign;lon12s*=lonsign;lam12=lon12*m.degree;t=m.sincosde(lon12,lon12s);slam12=t.s;clam12=t.c;lon12s=(180-lon12)-lon12s;swapp=Math.abs(lat1)<Math.abs(lat2)||isNaN(lat2)?-1:1;if(swapp<0){lonsign*=-1;[lat2,lat1]=[lat1,lat2];}
-  		latsign=m.copysign(1,-lat1);lat1*=latsign;lat2*=latsign;t=m.sincosd(lat1);sbet1=this._f1*t.s;cbet1=t.c;t=m.hypot(sbet1,cbet1);sbet1/=t;cbet1/=t;cbet1=Math.max(g.tiny_,cbet1);t=m.sincosd(lat2);sbet2=this._f1*t.s;cbet2=t.c;t=m.hypot(sbet2,cbet2);sbet2/=t;cbet2/=t;cbet2=Math.max(g.tiny_,cbet2);if(cbet1<-sbet1){if(cbet2===cbet1)
-  		sbet2=m.copysign(sbet1,sbet2);}else {if(Math.abs(sbet2)===-sbet1)
-  		cbet2=cbet1;}
-  		dn1=Math.sqrt(1+this._ep2*m.sq(sbet1));dn2=Math.sqrt(1+this._ep2*m.sq(sbet2));C1a=new Array(g.nC1_+1);C2a=new Array(g.nC2_+1);C3a=new Array(g.nC3_);meridian=lat1===-90||slam12===0;if(meridian){calp1=clam12;salp1=slam12;calp2=1;salp2=0;ssig1=sbet1;csig1=calp1*cbet1;ssig2=sbet2;csig2=calp2*cbet2;sig12=Math.atan2(Math.max(0,csig1*ssig2-ssig1*csig2),csig1*csig2+ssig1*ssig2);nvals=this.Lengths(this._n,sig12,ssig1,csig1,dn1,ssig2,csig2,dn2,cbet1,cbet2,outmask|g.DISTANCE|g.REDUCEDLENGTH,C1a,C2a);s12x=nvals.s12b;m12x=nvals.m12b;if(outmask&g.GEODESICSCALE){vals.M12=nvals.M12;vals.M21=nvals.M21;}
-  		if(sig12<1||m12x>=0){if(sig12<3*g.tiny_||(sig12<tol0_&&(s12x<0||m12x<0)))
-  		sig12=m12x=s12x=0;m12x*=this._b;s12x*=this._b;vals.a12=sig12/m.degree;}else
-  		meridian=false;}
-  		somg12=2;if(!meridian&&sbet1===0&&(this.f<=0||lon12s>=this.f*180)){calp1=calp2=0;salp1=salp2=1;s12x=this.a*lam12;sig12=omg12=lam12/this._f1;m12x=this._b*Math.sin(sig12);if(outmask&g.GEODESICSCALE)
-  		vals.M12=vals.M21=Math.cos(sig12);vals.a12=lon12/this._f1;}else if(!meridian){nvals=this.InverseStart(sbet1,cbet1,dn1,sbet2,cbet2,dn2,lam12,slam12,clam12,C1a,C2a);sig12=nvals.sig12;salp1=nvals.salp1;calp1=nvals.calp1;if(sig12>=0){salp2=nvals.salp2;calp2=nvals.calp2;dnm=nvals.dnm;s12x=sig12*this._b*dnm;m12x=m.sq(dnm)*this._b*Math.sin(sig12/dnm);if(outmask&g.GEODESICSCALE)
-  		vals.M12=vals.M21=Math.cos(sig12/dnm);vals.a12=sig12/m.degree;omg12=lam12/(this._f1*dnm);}else {numit=0;salp1a=g.tiny_;calp1a=1;salp1b=g.tiny_;calp1b=-1;for(tripn=false,tripb=false;;++numit){nvals=this.Lambda12(sbet1,cbet1,dn1,sbet2,cbet2,dn2,salp1,calp1,slam12,clam12,numit<maxit1_,C1a,C2a,C3a);v=nvals.lam12;salp2=nvals.salp2;calp2=nvals.calp2;sig12=nvals.sig12;ssig1=nvals.ssig1;csig1=nvals.csig1;ssig2=nvals.ssig2;csig2=nvals.csig2;eps=nvals.eps;domg12=nvals.domg12;dv=nvals.dlam12;if(tripb||!(Math.abs(v)>=(tripn?8:1)*tol0_)||numit==maxit2_)
-  		break;if(v>0&&(numit<maxit1_||calp1/salp1>calp1b/salp1b)){salp1b=salp1;calp1b=calp1;}else if(v<0&&(numit<maxit1_||calp1/salp1<calp1a/salp1a)){salp1a=salp1;calp1a=calp1;}
-  		if(numit<maxit1_&&dv>0){dalp1=-v/dv;if(Math.abs(dalp1)<Math.PI){sdalp1=Math.sin(dalp1);cdalp1=Math.cos(dalp1);nsalp1=salp1*cdalp1+calp1*sdalp1;if(nsalp1>0){calp1=calp1*cdalp1-salp1*sdalp1;salp1=nsalp1;t=m.hypot(salp1,calp1);salp1/=t;calp1/=t;tripn=Math.abs(v)<=16*tol0_;continue;}}}
-  		salp1=(salp1a+salp1b)/2;calp1=(calp1a+calp1b)/2;t=m.hypot(salp1,calp1);salp1/=t;calp1/=t;tripn=false;tripb=(Math.abs(salp1a-salp1)+(calp1a-calp1)<tolb_||Math.abs(salp1-salp1b)+(calp1-calp1b)<tolb_);}
-  		lengthmask=outmask|(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)?g.DISTANCE:g.NONE);nvals=this.Lengths(eps,sig12,ssig1,csig1,dn1,ssig2,csig2,dn2,cbet1,cbet2,lengthmask,C1a,C2a);s12x=nvals.s12b;m12x=nvals.m12b;if(outmask&g.GEODESICSCALE){vals.M12=nvals.M12;vals.M21=nvals.M21;}
-  		m12x*=this._b;s12x*=this._b;vals.a12=sig12/m.degree;if(outmask&g.AREA){sdomg12=Math.sin(domg12);cdomg12=Math.cos(domg12);somg12=slam12*cdomg12-clam12*sdomg12;comg12=clam12*cdomg12+slam12*sdomg12;}}}
-  		if(outmask&g.DISTANCE)
-  		vals.s12=0+s12x;if(outmask&g.REDUCEDLENGTH)
-  		vals.m12=0+m12x;if(outmask&g.AREA){salp0=salp1*cbet1;calp0=m.hypot(calp1,salp1*sbet1);if(calp0!==0&&salp0!==0){ssig1=sbet1;csig1=calp1*cbet1;ssig2=sbet2;csig2=calp2*cbet2;k2=m.sq(calp0)*this._ep2;eps=k2/(2*(1+Math.sqrt(1+k2))+k2);A4=m.sq(this.a)*calp0*salp0*this._e2;t=m.hypot(ssig1,csig1);ssig1/=t;csig1/=t;t=m.hypot(ssig2,csig2);ssig2/=t;csig2/=t;C4a=new Array(g.nC4_);this.C4f(eps,C4a);B41=g.SinCosSeries(false,ssig1,csig1,C4a);B42=g.SinCosSeries(false,ssig2,csig2,C4a);vals.S12=A4*(B42-B41);}else
-  		vals.S12=0;if(!meridian&&somg12==2){somg12=Math.sin(omg12);comg12=Math.cos(omg12);}
-  		if(!meridian&&comg12>-0.7071&&sbet2-sbet1<1.75){domg12=1+comg12;dbet1=1+cbet1;dbet2=1+cbet2;alp12=2*Math.atan2(somg12*(sbet1*dbet2+sbet2*dbet1),domg12*(sbet1*sbet2+dbet1*dbet2));}else {salp12=salp2*calp1-calp2*salp1;calp12=calp2*calp1+salp2*salp1;if(salp12===0&&calp12<0){salp12=g.tiny_*calp1;calp12=-1;}
-  		alp12=Math.atan2(salp12,calp12);}
-  		vals.S12+=this._c2*alp12;vals.S12*=swapp*lonsign*latsign;vals.S12+=0;}
-  		if(swapp<0){[salp2,salp1]=[salp1,salp2];[calp2,calp1]=[calp1,calp2];if(outmask&g.GEODESICSCALE){[vals.M21,vals.M12]=[vals.M12,vals.M21];}}
-  		salp1*=swapp*lonsign;calp1*=swapp*latsign;salp2*=swapp*lonsign;calp2*=swapp*latsign;return {vals:vals,salp1:salp1,calp1:calp1,salp2:salp2,calp2:calp2};};g.Geodesic.prototype.GenDirect=function(lat1,lon1,azi1,arcmode,s12_a12,outmask){var line;if(!outmask)outmask=g.STANDARD;else if(outmask===g.LONG_UNROLL)outmask|=g.STANDARD;if(!arcmode)outmask|=g.DISTANCE_IN;line=new l.GeodesicLine(this,lat1,lon1,azi1,outmask);return line.GenPosition(arcmode,s12_a12,outmask);};g.Geodesic.prototype.Direct=function(lat1,lon1,azi1,s12,outmask){return this.GenDirect(lat1,lon1,azi1,false,s12,outmask);};g.Geodesic.prototype.ArcDirect=function(lat1,lon1,azi1,a12,outmask){return this.GenDirect(lat1,lon1,azi1,true,a12,outmask);};g.Geodesic.prototype.Line=function(lat1,lon1,azi1,caps){return new l.GeodesicLine(this,lat1,lon1,azi1,caps);};g.Geodesic.prototype.DirectLine=function(lat1,lon1,azi1,s12,caps){return this.GenDirectLine(lat1,lon1,azi1,false,s12,caps);};g.Geodesic.prototype.ArcDirectLine=function(lat1,lon1,azi1,a12,caps){return this.GenDirectLine(lat1,lon1,azi1,true,a12,caps);};g.Geodesic.prototype.GenDirectLine=function(lat1,lon1,azi1,arcmode,s12_a12,caps){var t;if(!caps)caps=g.STANDARD|g.DISTANCE_IN;if(!arcmode)caps|=g.DISTANCE_IN;t=new l.GeodesicLine(this,lat1,lon1,azi1,caps);t.GenSetDistance(arcmode,s12_a12);return t;};g.Geodesic.prototype.InverseLine=function(lat1,lon1,lat2,lon2,caps){var r,t,azi1;if(!caps)caps=g.STANDARD|g.DISTANCE_IN;r=this.InverseInt(lat1,lon1,lat2,lon2,g.ARC);azi1=m.atan2d(r.salp1,r.calp1);if(caps&(g.OUT_MASK&g.DISTANCE_IN))caps|=g.DISTANCE;t=new l.GeodesicLine(this,lat1,lon1,azi1,caps,r.salp1,r.calp1);t.SetArc(r.vals.a12);return t;};g.Geodesic.prototype.Polygon=function(polyline){return new p.PolygonArea(this,polyline);};g.WGS84=new g.Geodesic(c.WGS84.a,c.WGS84.f);})(geodesic.Geodesic,geodesic.GeodesicLine,geodesic.PolygonArea,geodesic.Math,geodesic.Constants);(function(g,l,m){l.GeodesicLine=function(geod,lat1,lon1,azi1,caps,salp1,calp1){var t,cbet1,sbet1,eps,s,c;if(!caps)caps=g.STANDARD|g.DISTANCE_IN;this.a=geod.a;this.f=geod.f;this._b=geod._b;this._c2=geod._c2;this._f1=geod._f1;this.caps=caps|g.LATITUDE|g.AZIMUTH|g.LONG_UNROLL;this.lat1=m.LatFix(lat1);this.lon1=lon1;if(typeof salp1==='undefined'||typeof calp1==='undefined'){this.azi1=m.AngNormalize(azi1);t=m.sincosd(m.AngRound(this.azi1));this.salp1=t.s;this.calp1=t.c;}else {this.azi1=azi1;this.salp1=salp1;this.calp1=calp1;}
-  		t=m.sincosd(m.AngRound(this.lat1));sbet1=this._f1*t.s;cbet1=t.c;t=m.hypot(sbet1,cbet1);sbet1/=t;cbet1/=t;cbet1=Math.max(g.tiny_,cbet1);this._dn1=Math.sqrt(1+geod._ep2*m.sq(sbet1));this._salp0=this.salp1*cbet1;this._calp0=m.hypot(this.calp1,this.salp1*sbet1);this._ssig1=sbet1;this._somg1=this._salp0*sbet1;this._csig1=this._comg1=sbet1!==0||this.calp1!==0?cbet1*this.calp1:1;t=m.hypot(this._ssig1,this._csig1);this._ssig1/=t;this._csig1/=t;this._k2=m.sq(this._calp0)*geod._ep2;eps=this._k2/(2*(1+Math.sqrt(1+this._k2))+this._k2);if(this.caps&g.CAP_C1){this._A1m1=g.A1m1f(eps);this._C1a=new Array(g.nC1_+1);g.C1f(eps,this._C1a);this._B11=g.SinCosSeries(true,this._ssig1,this._csig1,this._C1a);s=Math.sin(this._B11);c=Math.cos(this._B11);this._stau1=this._ssig1*c+this._csig1*s;this._ctau1=this._csig1*c-this._ssig1*s;}
-  		if(this.caps&g.CAP_C1p){this._C1pa=new Array(g.nC1p_+1);g.C1pf(eps,this._C1pa);}
-  		if(this.caps&g.CAP_C2){this._A2m1=g.A2m1f(eps);this._C2a=new Array(g.nC2_+1);g.C2f(eps,this._C2a);this._B21=g.SinCosSeries(true,this._ssig1,this._csig1,this._C2a);}
-  		if(this.caps&g.CAP_C3){this._C3a=new Array(g.nC3_);geod.C3f(eps,this._C3a);this._A3c=-this.f*this._salp0*geod.A3f(eps);this._B31=g.SinCosSeries(true,this._ssig1,this._csig1,this._C3a);}
-  		if(this.caps&g.CAP_C4){this._C4a=new Array(g.nC4_);geod.C4f(eps,this._C4a);this._A4=m.sq(this.a)*this._calp0*this._salp0*geod._e2;this._B41=g.SinCosSeries(false,this._ssig1,this._csig1,this._C4a);}
-  		this.a13=this.s13=NaN;};l.GeodesicLine.prototype.GenPosition=function(arcmode,s12_a12,outmask){var vals={},sig12,ssig12,csig12,B12,AB1,ssig2,csig2,tau12,s,c,serr,omg12,lam12,lon12,E,sbet2,cbet2,somg2,comg2,salp2,calp2,dn2,B22,AB2,J12,t,B42,salp12,calp12;if(!outmask)outmask=g.STANDARD;else if(outmask===g.LONG_UNROLL)outmask|=g.STANDARD;outmask&=this.caps&g.OUT_MASK;vals.lat1=this.lat1;vals.azi1=this.azi1;vals.lon1=outmask&g.LONG_UNROLL?this.lon1:m.AngNormalize(this.lon1);if(arcmode)
-  		vals.a12=s12_a12;else
-  		vals.s12=s12_a12;if(!(arcmode||(this.caps&g.DISTANCE_IN&g.OUT_MASK))){vals.a12=NaN;return vals;}
-  		B12=0;AB1=0;if(arcmode){sig12=s12_a12*m.degree;t=m.sincosd(s12_a12);ssig12=t.s;csig12=t.c;}else {tau12=s12_a12/(this._b*(1+this._A1m1));s=Math.sin(tau12);c=Math.cos(tau12);B12=-g.SinCosSeries(true,this._stau1*c+this._ctau1*s,this._ctau1*c-this._stau1*s,this._C1pa);sig12=tau12-(B12-this._B11);ssig12=Math.sin(sig12);csig12=Math.cos(sig12);if(Math.abs(this.f)>0.01){ssig2=this._ssig1*csig12+this._csig1*ssig12;csig2=this._csig1*csig12-this._ssig1*ssig12;B12=g.SinCosSeries(true,ssig2,csig2,this._C1a);serr=(1+this._A1m1)*(sig12+(B12-this._B11))-
-  		s12_a12/this._b;sig12=sig12-serr/Math.sqrt(1+this._k2*m.sq(ssig2));ssig12=Math.sin(sig12);csig12=Math.cos(sig12);}}
-  		ssig2=this._ssig1*csig12+this._csig1*ssig12;csig2=this._csig1*csig12-this._ssig1*ssig12;dn2=Math.sqrt(1+this._k2*m.sq(ssig2));if(outmask&(g.DISTANCE|g.REDUCEDLENGTH|g.GEODESICSCALE)){if(arcmode||Math.abs(this.f)>0.01)
-  		B12=g.SinCosSeries(true,ssig2,csig2,this._C1a);AB1=(1+this._A1m1)*(B12-this._B11);}
-  		sbet2=this._calp0*ssig2;cbet2=m.hypot(this._salp0,this._calp0*csig2);if(cbet2===0)
-  		cbet2=csig2=g.tiny_;salp2=this._salp0;calp2=this._calp0*csig2;if(arcmode&&(outmask&g.DISTANCE))
-  		vals.s12=this._b*((1+this._A1m1)*sig12+AB1);if(outmask&g.LONGITUDE){somg2=this._salp0*ssig2;comg2=csig2;E=m.copysign(1,this._salp0);omg12=outmask&g.LONG_UNROLL?E*(sig12-
-  		(Math.atan2(ssig2,csig2)-
-  		Math.atan2(this._ssig1,this._csig1))+
-  		(Math.atan2(E*somg2,comg2)-
-  		Math.atan2(E*this._somg1,this._comg1))):Math.atan2(somg2*this._comg1-comg2*this._somg1,comg2*this._comg1+somg2*this._somg1);lam12=omg12+this._A3c*(sig12+(g.SinCosSeries(true,ssig2,csig2,this._C3a)-
-  		this._B31));lon12=lam12/m.degree;vals.lon2=outmask&g.LONG_UNROLL?this.lon1+lon12:m.AngNormalize(m.AngNormalize(this.lon1)+m.AngNormalize(lon12));}
-  		if(outmask&g.LATITUDE)
-  		vals.lat2=m.atan2d(sbet2,this._f1*cbet2);if(outmask&g.AZIMUTH)
-  		vals.azi2=m.atan2d(salp2,calp2);if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){B22=g.SinCosSeries(true,ssig2,csig2,this._C2a);AB2=(1+this._A2m1)*(B22-this._B21);J12=(this._A1m1-this._A2m1)*sig12+(AB1-AB2);if(outmask&g.REDUCEDLENGTH)
-  		vals.m12=this._b*((dn2*(this._csig1*ssig2)-
-  		this._dn1*(this._ssig1*csig2))-
-  		this._csig1*csig2*J12);if(outmask&g.GEODESICSCALE){t=this._k2*(ssig2-this._ssig1)*(ssig2+this._ssig1)/(this._dn1+dn2);vals.M12=csig12+
-  		(t*ssig2-csig2*J12)*this._ssig1/this._dn1;vals.M21=csig12-
-  		(t*this._ssig1-this._csig1*J12)*ssig2/dn2;}}
-  		if(outmask&g.AREA){B42=g.SinCosSeries(false,ssig2,csig2,this._C4a);if(this._calp0===0||this._salp0===0){salp12=salp2*this.calp1-calp2*this.salp1;calp12=calp2*this.calp1+salp2*this.salp1;}else {salp12=this._calp0*this._salp0*(csig12<=0?this._csig1*(1-csig12)+ssig12*this._ssig1:ssig12*(this._csig1*ssig12/(1+csig12)+this._ssig1));calp12=m.sq(this._salp0)+m.sq(this._calp0)*this._csig1*csig2;}
-  		vals.S12=this._c2*Math.atan2(salp12,calp12)+
-  		this._A4*(B42-this._B41);}
-  		if(!arcmode)
-  		vals.a12=sig12/m.degree;return vals;};l.GeodesicLine.prototype.Position=function(s12,outmask){return this.GenPosition(false,s12,outmask);};l.GeodesicLine.prototype.ArcPosition=function(a12,outmask){return this.GenPosition(true,a12,outmask);};l.GeodesicLine.prototype.GenSetDistance=function(arcmode,s13_a13){if(arcmode)
-  		this.SetArc(s13_a13);else
-  		this.SetDistance(s13_a13);};l.GeodesicLine.prototype.SetDistance=function(s13){var r;this.s13=s13;r=this.GenPosition(false,this.s13,g.ARC);this.a13=0+r.a12;};l.GeodesicLine.prototype.SetArc=function(a13){var r;this.a13=a13;r=this.GenPosition(true,this.a13,g.DISTANCE);this.s13=0+r.s12;};})(geodesic.Geodesic,geodesic.GeodesicLine,geodesic.Math);(function(p,g,m,a){var transit,transitdirect,AreaReduceA,AreaReduceB;transit=function(lon1,lon2){var lon12=m.AngDiff(lon1,lon2).d;lon1=m.AngNormalize(lon1);lon2=m.AngNormalize(lon2);return lon12>0&&((lon1<0&&lon2>=0)||(lon1>0&&lon2===0))?1:(lon12<0&&lon1>=0&&lon2<0?-1:0);};transitdirect=function(lon1,lon2){lon1=lon1%720;lon2=lon2%720;return ((0<=lon2&&lon2<360)||lon2<-360?0:1)-
-  		((0<=lon1&&lon1<360)||lon1<-360?0:1);};AreaReduceA=function(area,area0,crossings,reverse,sign){area.Remainder(area0);if(crossings&1)
-  		area.Add((area.Sum()<0?1:-1)*area0/2);if(!reverse)
-  		area.Negate();if(sign){if(area.Sum()>area0/2)
-  		area.Add(-area0);else if(area.Sum()<=-area0/2)
-  		area.Add(+area0);}else {if(area.Sum()>=area0)
-  		area.Add(-area0);else if(area.Sum()<0)
-  		area.Add(+area0);}
-  		return 0+area.Sum();};AreaReduceB=function(area,area0,crossings,reverse,sign){area=m.remainder(area,area0);if(crossings&1)
-  		area+=(area<0?1:-1)*area0/2;if(!reverse)
-  		area*=-1;if(sign){if(area>area0/2)
-  		area-=area0;else if(area<=-area0/2)
-  		area+=area0;}else {if(area>=area0)
-  		area-=area0;else if(area<0)
-  		area+=area0;}
-  		return 0+area;};p.PolygonArea=function(geod,polyline){this._geod=geod;this.a=this._geod.a;this.f=this._geod.f;this._area0=4*Math.PI*geod._c2;this.polyline=!polyline?false:polyline;this._mask=g.LATITUDE|g.LONGITUDE|g.DISTANCE|(this.polyline?g.NONE:g.AREA|g.LONG_UNROLL);if(!this.polyline)
-  		this._areasum=new a.Accumulator(0);this._perimetersum=new a.Accumulator(0);this.Clear();};p.PolygonArea.prototype.Clear=function(){this.num=0;this._crossings=0;if(!this.polyline)
-  		this._areasum.Set(0);this._perimetersum.Set(0);this._lat0=this._lon0=this.lat=this.lon=NaN;};p.PolygonArea.prototype.AddPoint=function(lat,lon){var t;if(this.num===0){this._lat0=this.lat=lat;this._lon0=this.lon=lon;}else {t=this._geod.Inverse(this.lat,this.lon,lat,lon,this._mask);this._perimetersum.Add(t.s12);if(!this.polyline){this._areasum.Add(t.S12);this._crossings+=transit(this.lon,lon);}
-  		this.lat=lat;this.lon=lon;}
-  		++this.num;};p.PolygonArea.prototype.AddEdge=function(azi,s){var t;if(this.num){t=this._geod.Direct(this.lat,this.lon,azi,s,this._mask);this._perimetersum.Add(s);if(!this.polyline){this._areasum.Add(t.S12);this._crossings+=transitdirect(this.lon,t.lon2);}
-  		this.lat=t.lat2;this.lon=t.lon2;}
-  		++this.num;};p.PolygonArea.prototype.Compute=function(reverse,sign){var vals={number:this.num},t,tempsum;if(this.num<2){vals.perimeter=0;if(!this.polyline)
-  		vals.area=0;return vals;}
-  		if(this.polyline){vals.perimeter=this._perimetersum.Sum();return vals;}
-  		t=this._geod.Inverse(this.lat,this.lon,this._lat0,this._lon0,this._mask);vals.perimeter=this._perimetersum.Sum(t.s12);tempsum=new a.Accumulator(this._areasum);tempsum.Add(t.S12);vals.area=AreaReduceA(tempsum,this._area0,this._crossings+transit(this.lon,this._lon0),reverse,sign);return vals;};p.PolygonArea.prototype.TestPoint=function(lat,lon,reverse,sign){var vals={number:this.num+1},t,tempsum,crossings,i;if(this.num===0){vals.perimeter=0;if(!this.polyline)
-  		vals.area=0;return vals;}
-  		vals.perimeter=this._perimetersum.Sum();tempsum=this.polyline?0:this._areasum.Sum();crossings=this._crossings;for(i=0;i<(this.polyline?1:2);++i){t=this._geod.Inverse(i===0?this.lat:lat,i===0?this.lon:lon,i!==0?this._lat0:lat,i!==0?this._lon0:lon,this._mask);vals.perimeter+=t.s12;if(!this.polyline){tempsum+=t.S12;crossings+=transit(i===0?this.lon:lon,i!==0?this._lon0:lon);}}
-  		if(this.polyline)
-  		return vals;vals.area=AreaReduceB(tempsum,this._area0,crossings,reverse,sign);return vals;};p.PolygonArea.prototype.TestEdge=function(azi,s,reverse,sign){var vals={number:this.num?this.num+1:0},t,tempsum,crossings;if(this.num===0)
-  		return vals;vals.perimeter=this._perimetersum.Sum()+s;if(this.polyline)
-  		return vals;tempsum=this._areasum.Sum();crossings=this._crossings;t=this._geod.Direct(this.lat,this.lon,azi,s,this._mask);tempsum+=t.S12;crossings+=transitdirect(this.lon,t.lon2);crossings+=transit(t.lon2,this._lon0);t=this._geod.Inverse(t.lat2,t.lon2,this._lat0,this._lon0,this._mask);vals.perimeter+=t.s12;tempsum+=t.S12;vals.area=AreaReduceB(tempsum,this._area0,crossings,reverse,sign);return vals;};})(geodesic.PolygonArea,geodesic.Geodesic,geodesic.Math,geodesic.Accumulator);cb(geodesic);})(function(geo){if(module.exports){module.exports=geo;}else {window.geodesic=geo;}}); 
-  	} (geographiclibGeodesic_min));
-  	return geographiclibGeodesic_min.exports;
+    do {
+      sinLambda = Math.sin(lambda);
+      cosLambda = Math.cos(lambda);
+      sinSigma = Math.sqrt(
+        (cosU2 * sinLambda) * (cosU2 * sinLambda)
+        + (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+        * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+      );
+      if (sinSigma === 0) {
+        return { azi1: 0, s12: 0 }; // coincident points
+      }
+      cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
+      sigma = Math.atan2(sinSigma, cosSigma);
+      sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
+      cos2Alpha = 1 - sinAlpha * sinAlpha;
+      cos2SigmaM = (cos2Alpha !== 0) ? (cosSigma - 2 * sinU1 * sinU2 / cos2Alpha) : 0;
+      C = f / 16 * cos2Alpha * (4 + f * (4 - 3 * cos2Alpha));
+      lambdaP = lambda;
+      lambda = L + (1 - C) * f * sinAlpha
+      * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+    } while (Math.abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
+
+    if (iterLimit === 0) {
+      return { azi1: NaN, s12: NaN }; // formula failed to converge
+    }
+
+    uSq = cos2Alpha * (a * a - (a * (1 - f)) * (a * (1 - f))) / ((a * (1 - f)) * (a * (1 - f)));
+    A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+    B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+    deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)
+      - B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+
+    s = (a * (1 - f)) * A * (sigma - deltaSigma);
+
+    // Forward azimuth
+    const azi1 = Math.atan2(cosU2 * sinLambda, cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
+
+    return { azi1, s12: s };
   }
 
-  var geographiclibGeodesic_minExports = requireGeographiclibGeodesic_min();
+  /**
+   * Solves the direct geodetic problem using Vincenty's formulae.
+   * Given a starting point, initial azimuth, and distance, computes the destination point on the ellipsoid.
+   *
+   * @param {number} lat1 Latitude of the starting point in radians.
+   * @param {number} lon1 Longitude of the starting point in radians.
+   * @param {number} azi1 Initial azimuth (forward azimuth) in radians.
+   * @param {number} s12 Distance to travel from the starting point in meters.
+   * @param {number} a Semi-major axis of the ellipsoid in meters.
+   * @param {number} f Flattening of the ellipsoid.
+   * @returns {{lat2: number, lon2: number}} The latitude and longitude (in radians) of the destination point.
+   */
+  function vincentyDirect(lat1, lon1, azi1, s12, a, f) {
+    const U1 = Math.atan((1 - f) * Math.tan(lat1));
+    const sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
+    const sinAlpha1 = Math.sin(azi1), cosAlpha1 = Math.cos(azi1);
 
+    const sigma1 = Math.atan2(sinU1, cosU1 * cosAlpha1);
+    const sinAlpha = cosU1 * sinAlpha1;
+    const cos2Alpha = 1 - sinAlpha * sinAlpha;
+    const uSq = cos2Alpha * (a * a - (a * (1 - f)) * (a * (1 - f))) / ((a * (1 - f)) * (a * (1 - f)));
+    const A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+    const B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+
+    let sigma = s12 / ((a * (1 - f)) * A), sigmaP, iterLimit = 100;
+    let cos2SigmaM, sinSigma, cosSigma, deltaSigma;
+
+    do {
+      cos2SigmaM = Math.cos(2 * sigma1 + sigma);
+      sinSigma = Math.sin(sigma);
+      cosSigma = Math.cos(sigma);
+      deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)
+        - B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+      sigmaP = sigma;
+      sigma = s12 / ((a * (1 - f)) * A) + deltaSigma;
+    } while (Math.abs(sigma - sigmaP) > 1e-12 && --iterLimit > 0);
+
+    if (iterLimit === 0) {
+      return { lat2: NaN, lon2: NaN };
+    }
+
+    const tmp = sinU1 * sinSigma - cosU1 * cosSigma * cosAlpha1;
+    const lat2 = Math.atan2(
+      sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,
+      (1 - f) * Math.sqrt(sinAlpha * sinAlpha + tmp * tmp)
+    );
+    const lambda = Math.atan2(
+      sinSigma * sinAlpha1,
+      cosU1 * cosSigma - sinU1 * sinSigma * cosAlpha1
+    );
+    const C = f / 16 * cos2Alpha * (4 + f * (4 - 3 * cos2Alpha));
+    const L = lambda - (1 - C) * f * sinAlpha
+      * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+    const lon2 = lon1 + L;
+
+    return { lat2, lon2 };
+  }
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {number} sin_p12
+   * @property {number} cos_p12
+   * @property {number} a
+   * @property {number} f
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$8() {
     this.sin_p12 = Math.sin(this.lat0);
     this.cos_p12 = Math.cos(this.lat0);
-    this.g = new geographiclibGeodesic_minExports.Geodesic.Geodesic(this.a, this.es / (1 + Math.sqrt(1 - this.es)));
+    // flattening for ellipsoid
+    this.f = this.es / (1 + Math.sqrt(1 - this.es));
   }
 
   function forward$7(p) {
@@ -87833,7 +88787,7 @@
     var sinphi = Math.sin(p.y);
     var cosphi = Math.cos(p.y);
     var dlon = adjust_lon(lon - this.long0);
-    var e0, e1, e2, e3, Mlp, Ml, c, kp, cos_c, lat1, lon1, lat2, lon2, vars, azi1;
+    var e0, e1, e2, e3, Mlp, Ml, c, kp, cos_c, vars, azi1;
     if (this.sphere) {
       if (Math.abs(this.sin_p12 - 1) <= EPSLN) {
         // North Pole case
@@ -87879,14 +88833,8 @@
           p.x = p.y = 0;
           return p;
         }
-        lat1 = this.lat0 / D2R$1;
-        lon1 = this.long0 / D2R$1;
-        lat2 = lat / D2R$1;
-        lon2 = lon / D2R$1;
-
-        vars = this.g.Inverse(lat1, lon1, lat2, lon2, this.g.AZIMUTH);
-        azi1 = vars.azi1 * D2R$1;
-
+        vars = vincentyInverse(this.lat0, this.long0, lat, lon, this.a, this.f);
+        azi1 = vars.azi1;
         p.x = vars.s12 * Math.sin(azi1);
         p.y = vars.s12 * Math.cos(azi1);
         return p;
@@ -87897,7 +88845,7 @@
   function inverse$7(p) {
     p.x -= this.x0;
     p.y -= this.y0;
-    var rh, z, sinz, cosz, lon, lat, con, e0, e1, e2, e3, Mlp, M, lat1, lon1, azi1, s12, vars;
+    var rh, z, sinz, cosz, lon, lat, con, e0, e1, e2, e3, Mlp, M, azi1, s12, vars;
     if (this.sphere) {
       rh = Math.sqrt(p.x * p.x + p.y * p.y);
       if (rh > (2 * HALF_PI * this.a)) {
@@ -87921,13 +88869,6 @@
             lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y));
           }
         } else {
-          /* con = cosz - this.sin_p12 * Math.sin(lat);
-          if ((Math.abs(con) < EPSLN) && (Math.abs(p.x) < EPSLN)) {
-            //no-op, just keep the lon value as is
-          } else {
-            var temp = Math.atan2((p.x * sinz * this.cos_p12), (con * rh));
-            lon = adjust_lon(this.long0 + Math.atan2((p.x * sinz * this.cos_p12), (con * rh)));
-          } */
           lon = adjust_lon(this.long0 + Math.atan2(p.x * sinz, rh * this.cos_p12 * cosz - p.y * this.sin_p12 * sinz));
         }
       }
@@ -87963,14 +88904,12 @@
         return p;
       } else {
         // default case
-        lat1 = this.lat0 / D2R$1;
-        lon1 = this.long0 / D2R$1;
-        azi1 = Math.atan2(p.x, p.y) / D2R$1;
+        azi1 = Math.atan2(p.x, p.y);
         s12 = Math.sqrt(p.x * p.x + p.y * p.y);
-        vars = this.g.Direct(lat1, lon1, azi1, s12, this.g.STANDARD);
+        vars = vincentyDirect(this.lat0, this.long0, azi1, s12, this.a, this.f);
 
-        p.x = vars.lon2 * D2R$1;
-        p.y = vars.lat2 * D2R$1;
+        p.x = vars.lon2;
+        p.y = vars.lat2;
         return p;
       }
     }
@@ -87984,6 +88923,13 @@
     names: names$8
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} sin_p14
+   * @property {number} cos_p14
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$7() {
     // double temp;      /* temporary variable    */
 
@@ -88075,6 +89021,16 @@
   // https://github.com/OSGeo/proj.4/blob/master/src/PJ_qsc.c
 
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} face
+   * @property {number} x0
+   * @property {number} y0
+   * @property {number} es
+   * @property {number} one_minus_f
+   * @property {number} one_minus_f_squared
+   */
+
   /* constants */
   var FACE_ENUM = {
     FRONT: 1,
@@ -88092,6 +89048,7 @@
     AREA_3: 4
   };
 
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$6() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -88187,7 +89144,7 @@
       if (this.face === FACE_ENUM.RIGHT) {
         lon = qsc_shift_lon_origin(lon, +HALF_PI);
       } else if (this.face === FACE_ENUM.BACK) {
-        lon = qsc_shift_lon_origin(lon, 3.14159265359);
+        lon = qsc_shift_lon_origin(lon, +SPI);
       } else if (this.face === FACE_ENUM.LEFT) {
         lon = qsc_shift_lon_origin(lon, -HALF_PI);
       }
@@ -88367,7 +89324,7 @@
       if (this.face === FACE_ENUM.RIGHT) {
         lp.lam = qsc_shift_lon_origin(lp.lam, -HALF_PI);
       } else if (this.face === FACE_ENUM.BACK) {
-        lp.lam = qsc_shift_lon_origin(lp.lam, -3.14159265359);
+        lp.lam = qsc_shift_lon_origin(lp.lam, -SPI);
       } else if (this.face === FACE_ENUM.LEFT) {
         lp.lam = qsc_shift_lon_origin(lp.lam, +HALF_PI);
       }
@@ -88421,9 +89378,9 @@
   /* Helper function: shift the longitude. */
   function qsc_shift_lon_origin(lon, offset) {
     var slon = lon + offset;
-    if (slon < -3.14159265359) {
+    if (slon < -SPI) {
       slon += TWO_PI;
-    } else if (slon > 3.14159265359) {
+    } else if (slon > +SPI) {
       slon -= TWO_PI;
     }
     return slon;
@@ -88619,6 +89576,26 @@
     names: names$4
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} mode
+   * @property {number} sinph0
+   * @property {number} cosph0
+   * @property {number} pn1
+   * @property {number} h
+   * @property {number} rp
+   * @property {number} p
+   * @property {number} h1
+   * @property {number} pfact
+   * @property {number} es
+   * @property {number} tilt
+   * @property {number} azi
+   * @property {number} cg
+   * @property {number} sg
+   * @property {number} cw
+   * @property {number} sw
+   */
+
   var mode = {
     N_POLE: 0,
     S_POLE: 1,
@@ -88634,6 +89611,7 @@
     lat0: { def: 0, num: true } // default is Equator, conversion to rad is automatic
   };
 
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$3() {
     Object.keys(params).forEach(function (p) {
       if (typeof this[p] === 'undefined') {
@@ -88785,6 +89763,22 @@
     names: names$3
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {1 | 0} flip_axis
+   * @property {number} h
+   * @property {number} radius_g_1
+   * @property {number} radius_g
+   * @property {number} radius_p
+   * @property {number} radius_p2
+   * @property {number} radius_p_inv2
+   * @property {'ellipse'|'sphere'} shape
+   * @property {number} C
+   * @property {string} sweep
+   * @property {number} es
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$2() {
     this.flip_axis = (this.sweep === 'x' ? 1 : 0);
     this.h = Number(this.h);
@@ -89035,8 +90029,19 @@
     names: names$1
   };
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} phi1
+   * @property {number} cphi1
+   * @property {number} es
+   * @property {Array<number>} en
+   * @property {number} m1
+   * @property {number} am1
+   */
+
   var EPS10 = 1e-10;
 
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init() {
     var c;
 
@@ -89173,16 +90178,37 @@
     proj4.Proj.projections.add(bonne);
   }
 
-  proj4.defaultDatum = 'WGS84'; // default datum
-  proj4.Proj = Projection;
-  proj4.WGS84 = new proj4.Proj('WGS84');
-  proj4.Point = Point;
-  proj4.toPoint = common;
-  proj4.defs = defs;
-  proj4.nadgrid = nadgrid;
-  proj4.transform = transform;
-  proj4.mgrs = mgrs;
-  proj4.version = '__VERSION__';
+  /**
+   * @typedef {Object} Mgrs
+   * @property {(lonlat: [number, number]) => string} forward
+   * @property {(mgrsString: string) => [number, number, number, number]} inverse
+   * @property {(mgrsString: string) => [number, number]} toPoint
+   */
+
+  /**
+   * @typedef {import('./defs').ProjectionDefinition} ProjectionDefinition
+   * @typedef {import('./core').TemplateCoordinates} TemplateCoordinates
+   * @typedef {import('./core').InterfaceCoordinates} InterfaceCoordinates
+   * @typedef {import('./core').Converter} Converter
+   * @typedef {import('./Proj').DatumDefinition} DatumDefinition
+   */
+
+  /**
+   * @template {import('./core').TemplateCoordinates} T
+   * @type {core<T> & {defaultDatum: string, Proj: typeof Proj, WGS84: Proj, Point: typeof Point, toPoint: typeof common, defs: typeof defs, nadgrid: typeof nadgrid, transform: typeof transform, mgrs: Mgrs, version: string}}
+   */
+  const proj4 = Object.assign(proj4$1, {
+    defaultDatum: 'WGS84',
+    Proj: Projection,
+    WGS84: new Projection('WGS84'),
+    Point,
+    toPoint: common,
+    defs,
+    nadgrid,
+    transform,
+    mgrs,
+    version: '__VERSION__'
+  });
   includedProjections(proj4);
 
   /**
@@ -89625,13 +90651,41 @@
   });
 
   /**
+   * Strategy for loading elements based on fixed position and size tiles
+   * The position is centered on fixed regular Mercator patterns
+   * For high resolutions, the maximum tile size corresponds to a screen square in pixels
+   * For low resolutions, the minimum tile size corresponds to a ground square in meters
+   */
+  function tiledBbox(extent, resolution) {
+    const byStepResolution = Math.exp(Math.round(Math.log(resolution))),
+      tileSize = Math.max(byStepResolution * 1000, 50000), // (pixels, meters)
+      extents = [];
+
+    for (let lon = Math.floor(extent[0] / tileSize); lon < Math.ceil(extent[2] / tileSize); lon++)
+      for (let lat = Math.floor(extent[1] / tileSize); lat < Math.ceil(extent[3] / tileSize); lat++)
+        extents.push([
+          Math.round(lon * tileSize),
+          Math.round(lat * tileSize),
+          Math.round(lon * tileSize + tileSize),
+          Math.round(lat * tileSize + tileSize),
+        ]);
+
+    return extents;
+  }
+
+  var loadingstrategy = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    tiledBbox: tiledBbox
+  });
+
+  /**
    * MyVectorLayer class to facilitate vector layers display
    */
 
 
   /**
-   * GeoJSON vector display
-   * display the loading status
+   * GeoJSON vector display &
+   * loading status display
    */
   class MyVectorSource extends VectorSource {
     constructor(options) {
@@ -89833,6 +90887,9 @@
     }
   }
 
+  /**
+   * Activate a vector & a cluster layer depending on the zoom level
+   */
   class MyServerClusterVectorLayer extends MyBrowserClusterVectorLayer {
     constructor(options) {
       // serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
@@ -89957,7 +91014,8 @@
       const urlArgs = this.query(...args, this.options),
         url = this.host + urlArgs._path; // Mem _path
 
-      if (this.strategy === bbox)
+      if (this.strategy === bbox ||
+        this.strategy === tiledBbox)
         urlArgs.bbox = this.bbox(...args);
 
       // Add a pseudo parameter if any marker or edit has been done
@@ -90375,6 +91433,7 @@
     Marker: Marker,
     MyVectorLayer: MyVectorLayer,
     Selector: Selector,
+    loadingstrategy: loadingstrategy,
     tile: tileLayercollection,
     vector: vectorLayerCollection,
   };
@@ -90384,14 +91443,14 @@
    */
 
 
-  const VERSION = '1.1.2.dev 13/10/2025 12:11:01';
+  const VERSION = '1.1.2.dev 02/11/2025 16:08:56';
 
   async function trace() {
     const data = [
       'Ol v' + VERSION$1,
       'MyOl ' + VERSION,
       'Geocoder 4.3.3-4',
-      'Proj4 2.17.0',
+      'Proj4 2.19.10',
       'language ' + navigator.language,
     ];
 

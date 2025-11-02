@@ -21,10 +21,13 @@ import VectorSource from 'ol/source/Vector';
 
 import Selector from './Selector';
 import * as stylesOptions from './stylesOptions';
+import {
+  tiledBbox,
+} from './MyLoadingStrategy';
 
 /**
- * GeoJSON vector display
- * display the loading status
+ * GeoJSON vector display &
+ * loading status display
  */
 class MyVectorSource extends VectorSource {
   constructor(options) {
@@ -226,6 +229,9 @@ class MyBrowserClusterVectorLayer extends VectorLayer {
   }
 }
 
+/**
+ * Activate a vector & a cluster layer depending on the zoom level
+ */
 class MyServerClusterVectorLayer extends MyBrowserClusterVectorLayer {
   constructor(options) {
     // serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
@@ -350,7 +356,8 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
     const urlArgs = this.query(...args, this.options),
       url = this.host + urlArgs._path; // Mem _path
 
-    if (this.strategy === bbox)
+    if (this.strategy === bbox ||
+      this.strategy === tiledBbox)
       urlArgs.bbox = this.bbox(...args);
 
     // Add a pseudo parameter if any marker or edit has been done

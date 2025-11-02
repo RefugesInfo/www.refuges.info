@@ -15,15 +15,28 @@ import VectorSource from 'ol/source/Vector';
 import Button from './Button';
 
 //BEST move this in html
-const subMenuHTML = '<p>\
-  <input type="radio" name="myol-gps-source" value="0" checked="checked">None &nbsp;\
-  <input type="radio" name="myol-gps-source" value="1">Outdoor &nbsp;\
-  <input type="radio" name="myol-gps-source" value="2">Indoor &nbsp;\
-  </p><hr><p>\
-  <input type="radio" name="myol-gps-display" value="0" checked="checked">Free map&nbsp;\
-  <input type="radio" name="myol-gps-display" value="1">Center &nbsp;\
-  <input type="radio" name="myol-gps-display" value="2">Center & orient &nbsp;\
-  </p>',
+const subMenuHTML = '\
+  <p>GPS location:</p>\
+  <label>\
+    <input type="radio" name="myol-gps-source" value="0" checked="checked">\
+    Inactive</label><label>\
+    <input type="radio" name="myol-gps-source" value="1">\
+    GPS location <span>(1) outdoor</span></label><label>\
+    <input type="radio" name="myol-gps-source" value="2">\
+    Position GPS ou IP <span>(2) indoor</span></label>\
+  <hr><label>\
+    <input type="radio" name="myol-gps-display" value="0" checked="checked">\
+    Graticule, free map</label><label>\
+    <input type="radio" name="myol-gps-display" value="1">\
+    Center the map, north at the top</label><label>\
+    <input type="radio" name="myol-gps-display" value="2">\
+    Center and orient the map <span>(3)</span></label>\
+  <hr>\
+  <p>(1) More accurate outdoors but slower to initialize,\
+    requires a GPS sensor and a free space.</p>\
+  <p>(2) more precise and faster indoors or in urban areas\
+    but can be inaccurate outdoors.</p>\
+  <p>(3) requires a magnetic sensor and a compatible explorer.</p>',
 
   subMenuHTMLfr = '\
   <p>Localisation GPS:</p>\

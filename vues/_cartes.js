@@ -1,40 +1,48 @@
 /**
  * Contient les fonctions gérant les cartes
- * Regroupées ici pour tests unitaires dans MyOl
+ * Regroupées ici pour permettre des tests unitaires dans MyOl
  */
 /* global ol, myol */
 
 // Les couches de fond des cartes de refuges.info
 function externTilesLayers(mapKeys, restreint) {
   return {
-    'OpenHikingMap': new myol.layer.tile.OpenHikingMap(),
-    'OpenStreetMap': new myol.layer.tile.OpenStreetMap(),
+    'OpenHikingMap': new myol.layer.tile.OpenHikingMap({
+      /* On peut modifier l'attribution en décommentant un ou plusieurs des champs : */
+      // contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+      // attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
+      // licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
+      // legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
+      /* OU carrément */
+      // attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' +
+      //   '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">OpenHikingMap</a>',
+      /* Idem pour les autres couches */
+    }),
+    'OpenStreetMap': new myol.layer.tile.OpenStreetMap({}),
     'OpenTopoMap': new myol.layer.tile.OpenTopoMap(),
     'Outdoors': new myol.layer.tile.Thunderforest({
       subLayer: 'outdoors',
       key: mapKeys.thunderforest,
+      legend: '',
     }),
-    'IGN TOP25': restreint ? null : new myol.layer.tile.IGN({
-      layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+
+    'IGN TOP25': restreint ? null : new myol.layer.tile.IGNtop25({
       key: mapKeys.ign,
     }),
-    'IGN V2': new myol.layer.tile.IGN({
-      layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-      format: 'image/png',
-    }),
-    'SwissTopo': restreint ? null : new myol.layer.tile.SwissTopo({
-      subLayer: 'ch.swisstopo.pixelkarte-farbe',
-    }),
+    'IGN plan': new myol.layer.tile.IGNplan(),
+
+    'SwissTopo': restreint ? null : new myol.layer.tile.SwissTopo(),
     'Autriche': new myol.layer.tile.Kompass({
       subLayer: 'osm', // No key
     }),
-    'Espagne': new myol.layer.tile.IgnES(),
+    'Espagne': new myol.layer.tile.IgnES({}),
+
     'Photo IGN': new myol.layer.tile.IGN({
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
     }),
     'Photo ArcGIS': new myol.layer.tile.ArcGIS(),
     'Photo Google': restreint ? null : new myol.layer.tile.Google({
-      subLayers: 's',
+      subLayers: 's', // Satellite
     }),
     'Photo Maxar': new myol.layer.tile.Maxbox({
       tileset: 'mapbox.satellite',
