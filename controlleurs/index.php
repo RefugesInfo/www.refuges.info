@@ -29,4 +29,13 @@ $vue->nouveaux_points=infos_points($conditions_nouveaux_points);
 
 $vue->type="index";
 $vue->bbox=$config_wri['bbox_page_accueil']; //point de vue et position initiale de la page
-$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes
+
+// Zones couvertes
+$vue->zones_couvertes=[];
+$conditions = new stdClass;
+$conditions->ids_polygone_type=$config_wri['id_zone'];
+$zones=infos_polygones($conditions);
+if ($zones)
+	foreach ($zones as $zone)
+		$vue->zones_couvertes [ucfirst($zone->nom_polygone)] =
+			lien_polygone($zone)."?id_polygone_type=".$config_wri['id_massif'];

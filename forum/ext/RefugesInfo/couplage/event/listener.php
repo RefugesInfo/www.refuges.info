@@ -9,12 +9,9 @@ namespace RefugesInfo\couplage\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
-	protected $server;
-
 	public function __construct() {
-		global $request;
-
-		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
+		global $__time_start;
+		$__time_start = microtime(true); // Stats du forum
 	}
 
 	static public function getSubscribedEvents () {
@@ -22,8 +19,6 @@ class listener implements EventSubscriberInterface
 			'core.viewtopic_assign_template_vars_before' => 'assign_template_vars_before',
 			'core.posting_modify_template_vars' => 'assign_template_vars_before',
 			'core.page_footer' => 'page_footer', // includes/functions.php 4308
-			'core.login_box_before' => 'login_box_before',
-			'core.user_setup' => 'user_setup',
 			'core.user_add_modify_data' => 'user_add_modify_data',
 			'core.user_add_modify_notifications_data' => 'user_add_modify_notifications_data',
 		];
@@ -50,30 +45,26 @@ class listener implements EventSubscriberInterface
 		// Les fichiers template du bandeau et du pied de page étant au format "MVC+template type refuges.info",
 		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant
 		// dans des variables des templates de PhpBB V3.2
-		global $request, $user, $language, $template, $point; // Contexte phpbb
+		global $config_wri, $pdo, $__time_start, $request, $template, $user;
 
 		// Pour avoir accés aux variables globales $_SERVER, ... dans config.php
 		$request->enable_super_globals();
-		// Pour exporter $config_wri & importer $pdo à l'intérieur d'une fonction
-		global $config_wri, $pdo;
-		require_once (__DIR__.'/../../../../../includes/config.php');
-		// Connexion / infos bandeaux
-		require_once ('identification.php');
-		require_once ('bandeau_dynamique.php');
-		require_once ('gestion_erreur.php');
 
-		/* Includes language files of this extension */
-		$ns = explode ('\\', __NAMESPACE__);
-		$language->add_lang('common', $ns[0].'/'.$ns[1]);
+		// Pour exporter $config_wri & importer $pdo à l'intérieur d'une fonction
+		require_once (__DIR__.'/../../../../../includes/config.php');
+		require_once ('bdd.php');
+		require_once ('gestion_erreur.php');
 
 		// On traite le logout ici car la fonction de base demande un sid (on se demande pourquoi ?)
 		if ($request->variable('mode', '') == 'logout') {
 			$user->session_kill();
-			header('Location: https://'.$this->server['HTTP_HOST'].$request->variable('redirect', '/'));
+			header('Location: https://'.$_SERVER['HTTP_HOST'].$request->variable('redirect', '/'));
 		}
 
+		// Les liens complets avec le jack de rechargement
+		// pour qu'ils soient insérés aux bons endroits
 		$template->assign_vars([
-			'BODY_CLASS' => $user->style['style_path'],
+			'BANDEAU_CSS' => fichier_vue('bandeau.css', 'chemin_vues', true),
 			'STYLE_CSS' => fichier_vue('style.css.php', 'chemin_vues', true),
 			'STYLE_FORUM_CSS' => fichier_vue('style_forum.css', 'chemin_vues', true),
 		]);
@@ -83,43 +74,18 @@ class listener implements EventSubscriberInterface
 		$vue->type = '';
 		$vue->java_lib_foot = [];
 
-		// Pour le bandeau
-		$vue->java_lib_foot [] = $config_wri['sous_dossier_installation'].'vues/_bandeau.js?'
-			.filemtime($config_wri['chemin_vues'].'_bandeau.js');
-
-		// DOM pas moyen de factoriser ça dans une fonction commune. Il faudrait refondre les données vues communes
-		$vue->bandeau_info=wiki_page_brut('bandeau');
-		$vue->bandeau_info->cookie=$_COOKIE['bandeau_info'] ?? '';
-		$vue->bandeau_info->new_cookie_expire=
-			gmdate('r', time() + 24 * 3600 * (
-				$infos_identification->user_id > 1 ? 31 : 7 // Nombre de jours masqués
-			));
-
-		$vue->zones_pour_bandeau=remplissage_zones_bandeau(); // Menu des zones couvertes
-		$vue->types_point_affichables=types_point_affichables(); // Menu des types de points
-		if (est_moderateur()) {
-			$vue->demande_correction=info_demande_correction ();
-			$vue->email_en_erreur=info_email_bounce ();
-		}
+		// On appelle le controleur du bandeau pour afficher le bloc
+		include ($config_wri['chemin_controlleurs']."bandeau.php");
 
 		// Récupère le contenu des fichiers pour les affecter à des variables du template PhpBB
+		// pour qu'ils soient insérés aux bons endroits
 		ob_start();
-		include(fichier_vue('_bandeau.html'));
+		include(fichier_vue('bandeau.html'));
 		$template->assign_var('BANDEAU', ob_get_clean());
 
 		ob_start();
 		include(fichier_vue('_pied.html'));
 		$template->assign_var('PIED', ob_get_clean());
-	}
-
-	// Forçage https du login
-	public function login_box_before () {
-		if (!isset($this->server['HTTPS']))
-			header('Location: https://'.$this->server['HTTP_HOST'].$this->server['REQUEST_URI'], true, 301);
-	}
-
-	public function user_setup ($event) {
-		/* Reserved */
 	}
 
 	// Pour cocher par défaut l'option "m'avertir si une réponse" dans le cas d'un nouveau sujet ou d'une réponse

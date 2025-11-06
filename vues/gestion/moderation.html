@@ -9,7 +9,7 @@
 			<h4>le commentaire est :</h4>
 			<br>
 			<label>Date:
-				<input type="text"<?= !est_moderateur() ? ' disabled="disabled"' : '' ?> name="date" size="25" value="<?=$commentaire->date?>"/>
+				<input type="text"<?= !est_moderateur() ? ' disabled="disabled"' : '' ?> name="date" size="25" value="<?=$commentaire->date??''?>"/>
 			</label>
 			<br>
 
@@ -18,7 +18,7 @@
 
 			<?php if ($commentaire->photo_existe==1) { ?>
 				<img
-					src="<?=$commentaire->lien_photo['reduite']?>"
+					src="<?=$commentaire->lien_photo['reduite']??''?>"
 					alt="photo liée au commentaire"
 					width="300px" />
 				<br><br>
@@ -27,7 +27,7 @@
 			<h4>Le modifier :</h4>
 			<br>
 
-			<textarea name="texte" rows="10" cols="100"><?=protege($commentaire->texte)?></textarea>
+			<textarea name="texte" rows="10" cols="100"><?=protege($commentaire->texte??'')?></textarea>
 			<br><br>
 
 			<?php if ($commentaire->photo_existe==1) { ?>
@@ -42,7 +42,7 @@
 
 			<?php if ($commentaire->id_createur_commentaire==0) { ?><!-- Seulement modifiable si n'était pas authentifié -->
 				<label>Auteur (si non authentifié)  :
-					<input type="text" name="auteur_commentaire" value="<?=protege($commentaire->auteur_commentaire)?>" class="input_en_ligne" />
+					<input type="text" name="auteur_commentaire" value="<?=protege($commentaire->auteur_commentaire??'')?>" class="input_en_ligne" />
 				</label>
 				<br><br>
 			<?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur, seuls les modérateurs ont ce droit ?>
@@ -51,8 +51,8 @@
             <select name='id_createur_commentaire'>
               <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
               <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
-              <option  value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
-              <?=$utilisateur->username?>
+              <option  value="<?=$utilisateur->user_id??''?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
+              <?=$utilisateur->username??''?>
               </option>
               <?php } ?>
             </select>
@@ -67,5 +67,5 @@
           </form>
 	<?php }?>
     <br>
-	<a href="<?=lien_point($vue->point)?>">Retourner à la fiche : <?=$vue->point->nom?></a>
+	<a href="<?=lien_point($vue->point??0)?>">Retourner à la fiche : <?=$vue->point->nom??''?></a>
 </div>

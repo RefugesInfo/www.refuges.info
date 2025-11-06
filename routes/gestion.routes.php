@@ -12,6 +12,8 @@
  * 
 **************************************************/
 
+require_once ('identification.php');
+
 // Par défaut
 $controlleur->type = 'page_simple';
 

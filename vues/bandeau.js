@@ -43,3 +43,15 @@ function menuClean(evt) {
 		if (!el.contains(evt.target))
 			el.classList.remove('menu-touch');
 }
+
+function masqueBandeauInfo() {
+	const bandeauEls = document.getElementsByClassName('bandeau_info');
+
+	if (bandeauEls.length)
+		bandeauEls[0].style.display = 'none';
+
+	document.cookie =
+		'bandeau_info=<?=$vue->bandeau_info->date??''?>;'+
+		'expires=<?=$vue->bandeau_info->new_cookie_expire??''?>;'+
+		'path=/';
+}

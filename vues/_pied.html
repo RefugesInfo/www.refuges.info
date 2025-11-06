@@ -15,14 +15,19 @@
 if (isset ($vue->java_lib_foot))
 	foreach ($vue->java_lib_foot as $js_lib) {?>
 		<script src="<?=$js_lib?>"></script>
-<?php }
-
-// Et un petit dernier qui est inclus dans la page html
-$nom_js_inclus = fichier_vue($vue->type.'.js');
-if ($nom_js_inclus) { ?>
-	<script>
-	//<![CDATA[
-		<?php include($nom_js_inclus)?>
-	//]]>
-	</script>
 <?php } ?>
+
+<script>
+//<![CDATA[
+	<?php
+		// Et deux petits derniers qui sont inclus dans la page html
+		// Un qui est toujours là
+		include(fichier_vue('bandeau.js'));
+
+		// Pour les pages du site
+		$nom_js_inclus = fichier_vue($vue->type.'.js');
+		if ($nom_js_inclus)
+			include($nom_js_inclus);
+	?>
+//]]>
+</script>

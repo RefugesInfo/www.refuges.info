@@ -20,6 +20,7 @@ require_once ("bdd.php");
 require_once ("polygone.php");
 require_once ("point.php");
 require_once ("forum.php");
+require_once ("meta_donnee.php");
 
 add_lib('wiki.js');
 $vue->carte=TRUE;
