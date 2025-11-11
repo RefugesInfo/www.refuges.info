@@ -56,10 +56,11 @@ export async function trace() {
 /* global map */
 // Zoom & resolution
 function traceZoom() {
-  console.log(
-    'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
-    'res ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
-  );
+  if (map.debug)
+    console.info(
+      'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
+      'resolution ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
+    );
 }
 
 window.addEventListener('load', () => { // Wait for document load

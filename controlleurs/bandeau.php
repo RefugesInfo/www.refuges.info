@@ -37,3 +37,25 @@ $vue->bandeau_info->new_cookie_expire=
 	gmdate('r', time() + 24 * 3600 * (
 		$infos_identification->user_id > 1 ? 31 : 7 // Nombre de jours masqués
 	));
+
+// Dates des dernières modifications
+// Délivré ici pour toute vue ou carte qui en aurait besoin
+$tables_derniere = [
+  'points' => 'date_derniere_modification',
+  'commentaires' => 'date',
+];
+foreach ($tables_derniere as $table => $champ) {
+  $query_derniere = "
+    SELECT $champ
+    FROM $table
+    WHERE $champ IS NOT NULL
+    ORDER BY $champ DESC
+    LIMIT 1";
+  $res_derniere = $pdo->query($query_derniere);
+  if ($res_derniere ) {
+    $raw_derniere = $res_derniere->fetch() ;
+    if ($raw_derniere)
+      $vue->date_derniere_modification[$table] = $raw_derniere->$champ;
+  }
+}
+

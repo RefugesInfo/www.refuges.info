@@ -50,10 +50,12 @@ $couleurs[] = $couleurs[] = null;
 
 // Génération du fichier SVG
 header ('Content-type: image/svg+xml');
-header ('Cache-Control: max-age=10000'); // 3 h
-//header ('Cache-Control: max-age=0'); // Tests
-header ('Access-Control-Allow-Headers: *');
-header ('Access-Control-Allow-Origin: *');
+header ('Content-disposition: filename='.$_GET['nom'].'.svg');
+include ('../../includes/config.php');
+include ('../../includes/entetes_http.php');
+headers_cors_par_default();
+headers_cache_api($_GET['cache']??10000);
+// Les autres headers, notamment 404 sont générés lors de l'include
 
 if (isset ($inconnu)) {
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");

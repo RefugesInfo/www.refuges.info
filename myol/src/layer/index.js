@@ -8,7 +8,6 @@ import Hover from './Hover';
 import Marker from './Marker';
 import MyVectorLayer from './MyVectorLayer';
 import Selector from './Selector';
-import * as loadingstrategy from './MyLoadingStrategy';
 import * as tileLayercollection from './TileLayerCollection';
 import * as vectorLayerCollection from './VectorLayerCollection';
 
@@ -19,7 +18,6 @@ export default {
   Marker: Marker,
   MyVectorLayer: MyVectorLayer,
   Selector: Selector,
-  loadingstrategy: loadingstrategy,
   tile: tileLayercollection,
   vector: vectorLayerCollection,
 };
