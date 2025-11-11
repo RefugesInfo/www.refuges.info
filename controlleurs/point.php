@@ -58,7 +58,7 @@ else // le point est valide
     }
     if ($point->modele!=1)
       $vue->forum_point = infos_point_forum ($point);
-    $vue->lienforum=$config_wri['forum_refuge'].$point->topic_id;
+    $vue->lienforum=$config_wri['forum_refuge']."?t=".$point->topic_id;
 
     $conditions_commentaires = new stdClass();
     $conditions_commentaires->ids_points = $id_point;

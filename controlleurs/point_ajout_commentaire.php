@@ -117,7 +117,7 @@ if (empty($point->erreur))
   $vue->commentaire=$commentaire;
   $vue->lien_wiki_que_mettre=lien_wiki('que_mettre');
   $vue->lien_wiki_restriction_licence=lien_wiki('restriction_licence');
-  $vue->lien_forum_point=$config_wri['forum_refuge'].$point->topic_id;
+  $vue->lien_forum_point=$config_wri['forum_refuge']."?t=".$point->topic_id;
 }
 else // Une erreur est survenue sur le point concerné, ne permettons pas d'ajouter un commentaire dans le vent !
 {

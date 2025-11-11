@@ -185,7 +185,7 @@ $config_wri['defaut_max_distance_cabane_cachee']=100; // en mètres
 $config_wri['connexion_forum']=$config_wri['lien_forum']."ucp.php?mode=login";
 // lien vers le profil d'un utilisateur
 $config_wri['fiche_utilisateur']=$config_wri['lien_forum']."memberlist.php?mode=viewprofile&u=";
-$config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php?t=";
+$config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php";
 
 // l'id de catégories spéciales du forum (que l'on veut voir s'afficher sur la page des nouvelles)
 $config_wri['id_forum_vie_du_site']=1;
