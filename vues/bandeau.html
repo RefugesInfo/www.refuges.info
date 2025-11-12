@@ -1,17 +1,17 @@
 <div class="bandeau-haut noprint">
-	<a class="logo-haut" href="<?=$config_wri['sous_dossier_installation']?>"
+	<a class="logo-haut" href="/"
 		title="Revenir à l'accueil">
 	</a>
 
 	<form class="recherche-haut"
-		method="get" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
+		method="get" action="/point_recherche">
 		<input type="text" name="nom" class="input-text" placeholder="Recherche de point">
 		<input type="hidden" name="limite" value="40">
 		<input type="hidden" name="avec_point_osm" value="1">
 		<button type="submit" title="Lancer la recherche" style="border:none">
 			🔍
 		</button>
-		<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
+		<a href="/point_formulaire_recherche"
 			title="Recherche avancée">
 			🔭
 		</a>
@@ -61,12 +61,12 @@
 					<hr>
 				</li>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/commentaires_attente_correction">
+					<a href="/gestion/commentaires_attente_correction">
 						<?php if ($vue->demande_correction) {?>⭐ <?php } ?>Commentaires à traiter
 					</a>
 				</li>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications">
+					<a href="/gestion/historique_modifications">
 						Historique des modifications
 					</a>
 				</li>
@@ -76,17 +76,17 @@
 					</a>
 				</li>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_envoi_emails">
+					<a href="/gestion/historique_envoi_emails">
 						<?php if ($vue->email_en_erreur) {?>🌙 <?php } ?>Emails en erreur
 					</a>
 				</li>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=1">
+					<a href="/nav?id_polygone_type=1">
 						Massifs & zones
 					</a>
 				</li>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/modifier_modeles"
+					<a href="/gestion/modifier_modeles"
 						title="Pré-remplissage des champs lors d'un ajout de point">
 						Modèles de points
 					</a>
@@ -97,12 +97,12 @@
 					</a>
 				</li>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>gestion/liste_pages_wiki">
+					<a href="/gestion/liste_pages_wiki">
 						Liste des pages wiki
 					</a>
 				</li>
 				<li>
-					<a href="<?=$config_wri['sous_dossier_installation']?>ressources/outils/scan_liens">
+					<a href="/ressources/outils/scan_liens">
 						Scanner les liens véreux
 					</a>
 				</li>
@@ -185,7 +185,7 @@
 			<span>🔍</span>
 			<ul>
 				<li>
-					<form method="get" action="<?=$config_wri['sous_dossier_installation']?>point_recherche">
+					<form method="get" action="/point_recherche">
 						<input type="text" name="nom" class="input-text" placeholder="Recherche de point">
 						<input type="hidden" name="limite" value="40">
 						<input type="hidden" name="avec_point_osm" value="1">
@@ -194,7 +194,7 @@
 						<button type="submit" title="Lancer la recherche" style="border:none">
 							🔍
 						</button>
-						<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
+						<a href="/point_formulaire_recherche"
 							title="Recherche avancée">
 							🔭
 						</a>
@@ -205,7 +205,7 @@
 
 		<div class="menu-titre">
 			<span>Forum de </span>
-			<a href="<?=$config_wri['sous_dossier_installation']?>" title="Revenir à l'accueil">
+			<a href="/" title="Revenir à l'accueil">
 				Refuges.info
 			</a>
 		</div>
@@ -214,20 +214,20 @@
 			<span>☰</span>
 			<ul>
 				<li class="menu-bouton" style="order:1">
-					<a href="<?=$config_wri['sous_dossier_installation']?>nouvelles">
+					<a href="/nouvelles">
 						<span>🔔</span><span>Nouvelles</span>
 					</a>
 					<p>Les entrées les plus récentes</p>
 				</li>
 				<li class="menu-bouton" style="order:2">
-					<a href="<?=$config_wri['sous_dossier_installation']?>point_ajout">
+					<a href="/point_ajout">
 						<span>📌</span><span>Ajouter</span>
 					</a>
 					<p>Ajouter une nouvelle cabane ou refuge</p>
 				</li>
 
 				<li class="menu-bouton" style="order:3">
-					<a href="<?=$config_wri['sous_dossier_installation']?>nav">
+					<a href="/nav">
 						<span>🌍</span><span>Cartes</span>
 					</a>
 					<p>Afficher les points sur divers fonds de cartes</p>
@@ -242,7 +242,7 @@
 					<span class="menu-large">☰</span><span class="menu-large"> Refuges.info</span>
 					<ul>
 						<li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>"
+							<a href="/"
 								title="Retour à l'entrée du site">
 								Accueil
 							</a>
@@ -271,24 +271,24 @@
 							<hr>
 						</li>
 						<li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_recherche"
+							<a href="/point_formulaire_recherche"
 								title="Formulaire de recherche multicritères de points dans la base de données de refuges.info">
 								Recherche de points
 							</a>
 						</li>
 						<li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_exportations"
+							<a href="/formulaire_exportations"
 								title="Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)">
 								Export de points
 							</a>
 						</li>
 						<li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>gps">
+							<a href="/gps">
 								Appli GPS
 							</a>
 						</li>
 						<li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss_et_nouvelles?choix=flux_rss">
+							<a href="/formulaire_rss_et_nouvelles?choix=flux_rss">
 								Flux RSS
 							</a>
 						</li>
@@ -301,7 +301,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?=$config_wri['sous_dossier_installation']?>api/doc/">
+							<a href="/api/doc/">
 								Doc API
 							</a>
 						</li>

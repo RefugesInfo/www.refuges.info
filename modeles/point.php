@@ -477,15 +477,16 @@ car requête de moins
 function lien_point($point,$lien_local=false)
 {
   global $config_wri;
+
   if (isset($_SERVER['HTTPS']))
       $schema="https";
   else
       $schema="http";
 
   if ($lien_local)
-      $url_complete=$config_wri['sous_dossier_installation'];
+      $url_complete="/";
   else
-      $url_complete="$schema://".$config_wri['nom_hote'].$config_wri['sous_dossier_installation'];
+      $url_complete="$schema://".$config_wri['nom_hote']."/";
 
    return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/".replace_url($point->nom)."/";
 }

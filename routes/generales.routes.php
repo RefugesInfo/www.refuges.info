@@ -18,7 +18,7 @@ $controlleur->url_complete=$_SERVER['REQUEST_URI'];
 $sans_parametres=explode ('?',$controlleur->url_complete);
 
 // Uniquement /point/5/toto/sfsdf (pas les ?toto=coucou...) et pas le sous dossier dans lequel wri pourrait être installé
-$controlleur->url_base=str_replace('RACINE'.$config_wri['sous_dossier_installation'],'','RACINE'.$sans_parametres[0]);
+$controlleur->url_base=str_replace('RACINE'."/",'','RACINE'.$sans_parametres[0]);
 //DOM ajout de RACINE évite d'enlever tous les / quand sous_dossier_installation = /
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 

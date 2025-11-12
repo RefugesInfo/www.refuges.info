@@ -39,7 +39,7 @@ switch ($cible) {
         
         break;
     default:
-        header('Location:'.$config_wri['sous_dossier_installation'].'api/doc/');
+        header('Location:'.'/api/doc/');
         break;
 }
 

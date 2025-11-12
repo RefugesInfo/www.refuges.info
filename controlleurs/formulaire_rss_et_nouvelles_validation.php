@@ -25,7 +25,7 @@ if (!empty($_REQUEST['types_de_nouvelles']) and !empty($_REQUEST['id_massif']) )
   }
   else
   {
-    $vue->url=$config_wri['sous_dossier_installation']."nouvelles/?quoi=$types_de_nouvelles&amp;ids_polygones=$liste_id_massif";
+    $vue->url="/nouvelles/?quoi=$types_de_nouvelles&amp;ids_polygones=$liste_id_massif";
     $vue->titre_lien="Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)";
   }
     

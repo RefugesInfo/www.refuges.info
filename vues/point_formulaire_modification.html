@@ -10,7 +10,7 @@
     <div id="carte-modif"></div>
     <p>Double clic sur la carte y déplace le curseur.</p>
   </div>
-  <form class="wri" id="form_point" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_modification">
+  <form class="wri" id="form_point" method="post" action="/point_modification">
 
     <div>
       <?php foreach ($vue->champs->boutons as $bouton) { ?> <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">

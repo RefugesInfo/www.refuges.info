@@ -51,7 +51,12 @@
 						: <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst($nouveau_point->nom)?></a>
 				</li>
 			<?}?>
-			<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&amp;quoi=points" title="Voir les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?> derniers points ajoutés sur le site"><b>Plus...</b></a></li>
+			<li>
+				<a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&amp;quoi=points"
+					title="Voir les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?> derniers points ajoutés sur le site">
+					<b>Plus...</b>
+				</a>
+			</li>
 		</ul>
 		<br>
 
@@ -75,7 +80,12 @@
 						<?}?>
 				</li>
 			<?}?>
-				<li><a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&quoi=commentaires" title="Les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?> derniers commentaires dans refuges.info"><b>Plus...</b></a></li>
+				<li>
+					<a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&quoi=commentaires"
+						title="Les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>derniers commentaires dans refuges.info">
+						<b>Plus...</b>
+					</a>
+				</li>
 		</ul>
 		<br>
 	</div>

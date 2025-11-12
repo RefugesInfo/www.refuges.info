@@ -227,6 +227,7 @@ si local est False un lien absolu sera généré
 function lien_polygone($polygone,$local=True)
 {
   global $config_wri;
+
   if (isset($_SERVER['HTTPS']))
       $schema="https";
   else
@@ -236,12 +237,13 @@ function lien_polygone($polygone,$local=True)
     $type_polygone="massif";
   else
     $type_polygone=$polygone->type_polygone;
+
   if ($local)
     $url_complete="";
   else
     $url_complete="$schema://".$config_wri['nom_hote'];
 
-return $url_complete.$config_wri['sous_dossier_installation']."nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/";
+  return $url_complete."/nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/";
 }
 
 /********************************************

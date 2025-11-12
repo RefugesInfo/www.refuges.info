@@ -9,7 +9,7 @@
 <div id="selecteur-carte-edit" class="selecteur-carte-edit noprint">
   <fieldset>
     <legend><?=!empty($vue->polygone->id_polygone)?'Édition':'Création'?></legend>
-    <form method="post" action="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone??0?>" >
+    <form method="post" action="/edit/<?=$vue->polygone->id_polygone??0?>" >
         <!-- Edition du polygone -->
         <label>
             <input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone??0?>" />
@@ -39,7 +39,7 @@
         </label>
     </form>
 
-    <form method="post" action="<?=$config_wri['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone??0?>" >
+    <form method="post" action="/nav/<?=$vue->polygone->id_polygone??0?>" >
         <p><input type="submit" value="Quitter sans enregistrer" /></p>
     </form>
   </fieldset>
@@ -106,7 +106,7 @@
               <?if (empty($_GET['test_supprimer'])) {?>
                   <p>
                       <a id="supprimer-massif"
-                          href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone??0?>?test_supprimer=1">
+                          href="/edit/<?=$vue->polygone->id_polygone??0?>?test_supprimer=1">
                           Supprimer <?=$vue->polygone->art_def_poly??''?> <?=$vue->polygone->type_polygone??0?>
                       </a>(définitif).
                   </p>
@@ -115,7 +115,7 @@
                       <p style="color:red">ATTENTION: Ceci va supprimer définitivement <?=$vue->polygone->art_def_poly??''?> <?=$vue->polygone->type_polygone??0?> "<?=$vue->polygone->nom_polygone??''?>"</p>
                       <p style="color:red">Aucune restauration ne sera possible</p>
                   </b>
-                  <form method="post" action="<?=$config_wri['sous_dossier_installation']?>nav/<?=$vue->polygone->id_polygone??0?>" >
+                  <form method="post" action="/nav/<?=$vue->polygone->id_polygone??0?>" >
                   <input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone??0?>" />
                   <input class="bouton-supprimer" type="submit" name="supprimer" value="Supprimer '<?=$vue->polygone->nom_polygone??''?>'" />
                   <br>ou<br>

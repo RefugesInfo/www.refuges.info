@@ -28,10 +28,10 @@
       if (est_autorise($point->id_createur)) {?>
         <div class="noprint bloc_liens_centre">
           <p><b>Vous êtes modérateur de cette fiche, vous pouvez :
-            <a class="liens_avec_decoration" href="<?=$config_wri['sous_dossier_installation']?>point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
+            <a class="liens_avec_decoration" href="/point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
               Modifier cette fiche
             </a>&nbsp;
-            <a class="liens_avec_decoration" href="<?=$config_wri['sous_dossier_installation']?>gestion/historique_modifications/<?=$vue->point->id_point?>">
+            <a class="liens_avec_decoration" href="/gestion/historique_modifications/<?=$vue->point->id_point?>">
               Consulter l'historique de cette fiche
             </a>&nbsp;
             <?php if (est_autorise($point->id_createur)) {?>
@@ -59,7 +59,9 @@
     if (!empty($vue->mini_carte)) {?>
       <div id="container-carte-point">
         <div id="carte-point"></div>
-        <div class="noprint texte-tout-petit"><div class="hide-touch-screen">Ctrl+click: nouvel onglet ; Maj+click: nouvelle fenêtre</div><a href="<?=$config_wri['sous_dossier_installation']?>nav" title="'Shift + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">Grande carte</a>
+        <div class="noprint texte-tout-petit">
+			<div class="hide-touch-screen">Ctrl+click: nouvel onglet ; Maj+click: nouvelle fenêtre</div>
+			<a href="/nav" title="'Shift + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">Grande carte</a>
         </div>
       </div>
     <?php }?>
@@ -85,7 +87,7 @@
     </p>
 <!--================================= DEMANDE DE MODIFICATION =================================-->
     <div class="noprint bloc_liens_centre">
-      <a class="liens_avec_decoration" href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
+      <a class="liens_avec_decoration" href="/point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
         Demander une modification de la fiche
       </a>
     </div>
@@ -189,9 +191,9 @@
     </dd>
     <dd class="noprint">
       Export:
-        <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,
-        <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">Garmin</a>,
-        <a href="<?=$config_wri['sous_dossier_installation']?>api/point?id=<?=$vue->point->id_point?>&amp;format=kml">KML</a>,
+        <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,
+        <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">Garmin</a>,
+        <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=kml">KML</a>,
         <a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">Géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
       <?php }?>
     </dd>
@@ -236,7 +238,7 @@
         </a></p>
       <?php } else
       foreach ($vue->forum_point AS $k=>$post) { ?>
-        <a href="<?=$config_wri['forum_refuge']?>?p=<?=$post->post_id?>#p<?=$post->post_id?>" title="Voir le post">
+        <a href="<?=$vue->lienforum?>#p<?=$post->post_id?>" title="Voir le post">
           <b><?=$post->date_humaine?></b>
           <blockquote cite="<?=$vue->lienforum?>">
             <?=$post->post_text?>
@@ -247,7 +249,7 @@
 <!--===================================== LIEN AJOUT COMMENTAIRE ====================================-->
   <h5 class="noprint">Informations récentes</h5>
     <div class="noprint bloc_liens_centre">
-      <a class="liens_avec_decoration" href="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->point->id_point?>">
+      <a class="liens_avec_decoration" href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
         Ajouter une information et/ou une photo
       </a>
     </div>

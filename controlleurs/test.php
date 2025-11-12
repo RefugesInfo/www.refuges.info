@@ -34,7 +34,7 @@ d($point);
 
 
 //d(lien_point($point,true));
-//d($config_wri['sous_dossier_installation']);
+//d("/");
 
 /*
 // exemples pour tester le modèle commentaire

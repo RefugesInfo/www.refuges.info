@@ -18,7 +18,7 @@
   </p>
   <?php } ?>
 
-    <form id="comment" method="post" action="<?=$config_wri['sous_dossier_installation']?>point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
+    <form id="comment" method="post" action="/point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
       <textarea class="textarea_large" name="texte"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
       <a href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe&nbsp;possible</a>
       <?php if (!est_connecte()) { ?>

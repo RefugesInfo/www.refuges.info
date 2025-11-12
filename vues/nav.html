@@ -67,15 +67,15 @@
 				Tous les points refuges.info
 				<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
 				<br>
-				<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx"
+				<a href="/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx"
 					title="Télécharger au format GPX complet">
 					GPX
 				</a> /
-				<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin"
+				<a href="/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin"
 					title="Télécharger au format GPX pour Garmin">
 					Garmin
 				</a> /
-				<a href="<?=$config_wri['sous_dossier_installation']?>api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml"
+				<a href="/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml"
 					title="Télécharger au format KML">
 					KML
 				</a>
@@ -159,11 +159,11 @@
 		<?php if ( !empty($vue->polygone->id_polygone) &&  est_moderateur() ) { ?>
 			<fieldset>
 				<legend>Modifications</legend>
-				<p><a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>">
+				<p><a href="/edit/<?=$vue->polygone->id_polygone?>">
 					Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
 					<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
 				</a></p>
-				<p><a href="<?=$config_wri['sous_dossier_installation']?>edit/<?=$vue->polygone->id_polygone?>#supprimer-massif">
+				<p><a href="/edit/<?=$vue->polygone->id_polygone?>#supprimer-massif">
 					Supprimer <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
 					<?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
 				</a></p>
@@ -174,14 +174,14 @@
 		<fieldset>
 			<legend>Massifs</legend>
 			<?php if ( ($_REQUEST['id_polygone_type']??0) != 1 ) { ?>
-				<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=1">
+				<a href="/nav?id_polygone_type=1">
 					Voir les massifs
 				</a><hr>
 			<?php } ?>
 			Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br>
 			Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.
 			<?php if ( ($_REQUEST['id_polygone_type']??0) == 1 ) { ?>
-				<hr><a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=1">
+				<hr><a href="/edit?id_polygone_type=1">
 					Créer un massif
 				</a><hr>
 				Pour modifier ou supprimer un massif, ouvrez-le en édition.
@@ -190,7 +190,7 @@
 		<fieldset>
 			<legend>Zones</legend>
 			<?php if ( ($_REQUEST['id_polygone_type']??0) != 11 ) { ?>
-				<a href="<?=$config_wri['sous_dossier_installation']?>nav?id_polygone_type=11">
+				<a href="/nav?id_polygone_type=11">
 					Voir les zones
 				</a><hr>
 			<?php } ?>
@@ -200,7 +200,7 @@
 			du moment qu'il recouvre au moins un bout de chaque massif.<br>
 			Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.
 			<?php if ( ($_REQUEST['id_polygone_type']??0) == 11 ) { ?>
-				<hr><a href="<?=$config_wri['sous_dossier_installation']?>edit?id_polygone_type=11">
+				<hr><a href="/edit?id_polygone_type=11">
 					Créer une zone
 				</a><hr>
 				Pour modifier ou supprimer une zone, ouvrez-la en édition.
