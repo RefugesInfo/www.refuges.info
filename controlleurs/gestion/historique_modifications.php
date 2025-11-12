@@ -54,7 +54,7 @@ if (! ($res = $pdo->query($query_log_modification)))
     $point_avant=unserialize($modification_point->avant);
     $point_apres=unserialize($modification_point->apres);
     
-    $modification_point->moderateur=$utilisateur->username;
+    $modification_point->moderateur=$utilisateur->username??'';
     $modification_point->point_avant=$point_avant;
     $modification_point->point_apres=$point_apres;
     $vue->modifications_points[]=$modification_point;

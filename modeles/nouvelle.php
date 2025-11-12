@@ -233,7 +233,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
     if (!empty($nouvelle['user_id']) and $nouvelle['user_id'] > 1) // Les anonymes sont 1 sur le forum et 0 dans notre base
     {
       $utilisateur=infos_utilisateur($nouvelle['user_id']);
-      $nouvelle['texte'] .= " $par_ou_de <a href=\"".lien_utilisateur($utilisateur)."\">".$utilisateur->username."</a>";
+      $nouvelle['texte'] .= " $par_ou_de <a href=\"".lien_utilisateur($utilisateur)."\">".($utilisateur->username??'Anonymous')."</a>";
     }
     elseif  (!empty($nouvelle['auteur'])) // on est face à un anonyme, il a peut-être saisie le champ libre "auteur" ?
       $nouvelle['texte'] .= " $par_ou_de ".$nouvelle['auteur'];

@@ -652,7 +652,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
   //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
   if ($point->altitude>8848 or $point->altitude<0)
-    return erreur("$point->altitude"."m comme altitude du point, vraiment ?");
+    return erreur($point->altitude."m comme altitude du point, vraiment ?");
 
   if (!empty($point->geojson))
     $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
