@@ -238,7 +238,7 @@
         </a></p>
       <?php } else
       foreach ($vue->forum_point AS $k=>$post) { ?>
-        <a href="<?=$vue->lienforum?>#p<?=$post->post_id?>" title="Voir le post">
+        <a href="<?=$config_wri['forum_refuge']?>?p=<?=$post->post_id?>#p<?=$post->post_id?>" title="Voir le post">
           <b><?=$post->date_humaine?></b>
           <blockquote cite="<?=$vue->lienforum?>">
             <?=$post->post_text?>
