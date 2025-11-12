@@ -114,17 +114,7 @@ function couchePointsWRI(options) {
     // Default clusters options:
     serverClusterMinResolution: 100, // (mètres par pixel) Résolution au dessus de laquelle on demande des clusters au serveur
     nbMaxClusters: 108, // Nombre de clusters sur la carte (12 rangées de 9). Remplace la distance
-    browserClusterMinResolution: 10, // (mètres par pixel) Résolution en-dessous
-    //   de laquelle le navigateur ne clusterise plus et ajoute une gigue
-    //
-    // Stratégie BBox tuilée, 1 unité Mercator = 0,7 mètre à la latitude = 45° : cos(45°)
-    // Supprimer ce paramètre pour revenir à une stratégie BBox simple
-    tiledBBoxStrategy: {
-      50000: 100, // Tuiles de 50 000 unités Mercator = 35 km jusqu'à une résolution de 100 mètres par pixel
-      570000: 1000, // Tuiles de 400 km jusqu'à une résolution de 1 km par pixel
-      14000000: Infinity, // Tuiles de 10 000 km au dessus
-    },
-    debug: true, // Décommenter pour avoir les traces dans la console.info
+    browserClusterMinResolution: 10, // (mètres par pixel) Résolution en-dessous de laquelle le navigateur ne clusterise plus et ajoute une gigue
 
     ...options,
 
@@ -270,7 +260,6 @@ function mapIndex(options) {
   const pointsLayer = couchePointsWRI({ // Les points
       host: options.host,
       selection: options.selection,
-      lastChangeTime: options.lastChangeTime,
     }),
     polygonesLayer = couchePolygonesColores({ // Les massifs
       host: options.host,
@@ -376,7 +365,6 @@ function mapPoint(options) {
         host: options.host,
         browserClusterMinResolution: 10, // (mètres par pixel) pour ne pas générer de gigue à l'affichage du point
         displayLabel: true,
-        lastChangeTime: options.lastChangeTime,
       }),
 
       // Le cadre rouge autour du point de la fiche
@@ -429,7 +417,6 @@ function mapModif(options) {
         host: options.host,
         browserClusterMinResolution: null, // Pour ne pas générer de gigue
         noClick: true,
-        lastChangeTime: options.lastChangeTime,
       }),
 
       // Le viseur jaune pour modifier la position du point
@@ -469,7 +456,6 @@ function mapNav(options) {
     initSelect: 'all', // Réinitialise les choix du selecteur
     selectContour: intersectionLayer.options.selector, // Recharger quand la sélection change
     displayLabel: true,
-    lastChangeTime: options.lastChangeTime,
   });
 
   const polygonesLayer = couchePolygonesColores({ // Les massifs

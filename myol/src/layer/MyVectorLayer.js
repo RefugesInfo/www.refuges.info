@@ -2,6 +2,9 @@
  * MyVectorLayer class to facilitate vector layers display
  */
 
+import {
+  bbox,
+} from 'ol/loadingstrategy';
 import ClusterSource from 'ol/source/Cluster';
 import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -11,7 +14,6 @@ import {
 import Point from 'ol/geom/Point';
 import Style from 'ol/style/Style';
 import {
-  transform,
   transformExtent,
 } from 'ol/proj';
 import VectorLayer from 'ol/layer/Vector';
@@ -19,50 +21,9 @@ import VectorSource from 'ol/source/Vector';
 
 import Selector from './Selector';
 import * as stylesOptions from './stylesOptions';
-
-/**
- * Strategy for loading elements based on fixed tile grid
- * Following layer option
-     tiledBBoxStrategy: {
-       1000: 10, // tilesize = 1000 Mercator unit up to resolution = 10 meters per pixel
-     },
- */
-function tiledBboxStrategy(extent, resolution) {
-  //TODO BUG obsolescence de toutes les tuiles après 1 modif: pb hors ligne
-  /* eslint-disable-next-line consistent-this, no-invalid-this */
-  const layer = this,
-    tsur = layer.options.tiledBBoxStrategy || {},
-    found = Object.keys(tsur).find(k => tsur[k] > resolution),
-    tileSize = parseInt(found, 10),
-    tiledExtent = [];
-
-  if (typeof found === 'undefined')
-    return [extent]; // Fall back to bbox strategy
-
-  for (let lon = Math.floor(extent[0] / tileSize); lon < Math.ceil(extent[2] / tileSize); lon++)
-    for (let lat = Math.floor(extent[1] / tileSize); lat < Math.ceil(extent[3] / tileSize); lat++)
-      tiledExtent.push([
-        Math.round(lon * tileSize),
-        Math.round(lat * tileSize),
-        Math.round(lon * tileSize + tileSize),
-        Math.round(lat * tileSize + tileSize),
-      ]);
-
-  if (layer.options.debug) {
-    layer.logs = {
-      tileSize: Math.round(tileSize / 1414) + '*' + Math.round(tileSize / 1414) + 'km',
-      isCluster: resolution > layer.options.serverClusterMinResolution,
-    };
-    console.info(
-      'Request ' + tiledExtent.length +
-      ' tile' + (tiledExtent.length > 1 ? 's ' : ' ') +
-      layer.logs.tileSize + ' for ' +
-      Math.round(resolution) + 'm/px resolution '
-    );
-  }
-
-  return tiledExtent;
-}
+import {
+  tiledBbox,
+} from './MyLoadingStrategy';
 
 /**
  * GeoJSON vector display &
@@ -94,17 +55,7 @@ class MyVectorSource extends VectorSource {
     });
 
     // Compute properties when the layer is loaded & before the cluster layer is computed
-    this.on('change', () => {
-      if (this.options.debug)
-        console.info(
-          'Receive 1 tile ' +
-          this.logs.tileSize + ', ' + this.getFeatures().length +
-          (this.logs.isCluster ? ' clusters, ' : ' points, ') +
-          transform(getCenter(this.getExtent()), 'EPSG:3857', 'EPSG:4326')
-          .map(x => Math.round(x * 1000) / 1000)
-          .join('°E/') + '°N'
-        );
-
+    this.on('change', () =>
       this.getFeatures().forEach(f => {
         if (!f.yetAdded) {
           f.yetAdded = true;
@@ -113,8 +64,8 @@ class MyVectorSource extends VectorSource {
             true, // Silent : add the feature without refresh the layer
           );
         }
-      });
-    });
+      })
+    );
   }
 
   tuneDistance() {} // MyClusterSource compatibility
@@ -344,7 +295,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
   constructor(opt) {
     const options = {
       // host: '',
-      strategy: tiledBboxStrategy,
+      strategy: bbox,
       dataProjection: 'EPSG:4326',
 
       // Clusters:
@@ -370,7 +321,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
       // Methods to instantiate
       // url (extent, resolution, mapProjection) // Calculate the url
       // query (extent, resolution, mapProjection, optioons) ({_path: '...'}),
-      // bboxParameter (extent, resolution, mapProjection) => {}
+      // bbox (extent, resolution, mapProjection) => {}
       // addProperties (properties) => {}, // Add properties to each received features
 
       ...opt,
@@ -388,7 +339,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
     this.host = options.host;
     this.url ||= options.url;
     this.query ||= options.query;
-    this.bboxParameter ||= options.bboxParameter;
+    this.bbox ||= options.bbox;
     this.addProperties ||= options.addProperties;
     this.style ||= options.style;
     this.strategy = options.strategy;
@@ -405,7 +356,13 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
     const urlArgs = this.query(...args, this.options),
       url = this.host + urlArgs._path; // Mem _path
 
-    urlArgs.bbox = this.bboxParameter(...args);
+    if (this.strategy === bbox ||
+      this.strategy === tiledBbox)
+      urlArgs.bbox = this.bbox(...args);
+
+    // Add a pseudo parameter if any marker or edit has been done
+    const version = sessionStorage.myolLastchange ?
+      '&' + Math.round(sessionStorage.myolLastchange / 2500 % 46600).toString(36) : '';
 
     // Clean null & not relative parameters
     Object.keys(urlArgs).forEach(k => {
@@ -413,14 +370,10 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
         delete urlArgs[k];
     });
 
-    // Add a pseudo parameter if any marker or edit has been done
-    if (this.options.lastChangeTime)
-      urlArgs.v = this.options.lastChangeTime;
-
-    return url + '?' + new URLSearchParams(urlArgs).toString();
+    return url + '?' + new URLSearchParams(urlArgs).toString() + version;
   }
 
-  bboxParameter(extent, resolution, mapProjection) {
+  bbox(extent, resolution, mapProjection) {
     return transformExtent(
       extent,
       mapProjection,

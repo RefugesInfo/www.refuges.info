@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 11/11/2025 17:18:50 using npm run build from the src/... sources
+ * Built 02/11/2025 16:08:56 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -62711,7 +62711,7 @@
     );
   }
 
-  var loadingstrategy = /*#__PURE__*/Object.freeze({
+  var loadingstrategy$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     all: all,
     bbox: bbox,
@@ -76341,7 +76341,7 @@
       Vector: VectorLayer,
     },
     Map: Map,
-    loadingstrategy: loadingstrategy,
+    loadingstrategy: loadingstrategy$1,
     proj: {
       ...proj,
       proj4: projProj4,
@@ -79100,7 +79100,7 @@
       });
       this.geolocation.on('change', evt => this.subMenuAction(evt));
       this.geolocation.on('error', error => {
-        console.error('Geolocation error: ' + error.message);
+        console.log('Geolocation error: ' + error.message);
       });
 
       return super.setMap(map);
@@ -90651,53 +90651,37 @@
   });
 
   /**
-   * MyVectorLayer class to facilitate vector layers display
+   * Strategy for loading elements based on fixed position and size tiles
+   * The position is centered on fixed regular Mercator patterns
+   * For high resolutions, the maximum tile size corresponds to a screen square in pixels
+   * For low resolutions, the minimum tile size corresponds to a ground square in meters
    */
-
-
-  /**
-   * Strategy for loading elements based on fixed tile grid
-   * Following layer option
-       tiledBBoxStrategy: {
-         1000: 10, // tilesize = 1000 Mercator unit up to resolution = 10 meters per pixel
-       },
-   */
-  function tiledBboxStrategy(extent, resolution) {
-    //TODO BUG obsolescence de toutes les tuiles après 1 modif: pb hors ligne
-    /* eslint-disable-next-line consistent-this, no-invalid-this */
-    const layer = this,
-      tsur = layer.options.tiledBBoxStrategy || {},
-      found = Object.keys(tsur).find(k => tsur[k] > resolution),
-      tileSize = parseInt(found, 10),
-      tiledExtent = [];
-
-    if (typeof found === 'undefined')
-      return [extent]; // Fall back to bbox strategy
+  function tiledBbox(extent, resolution) {
+    const byStepResolution = Math.exp(Math.round(Math.log(resolution))),
+      tileSize = Math.max(byStepResolution * 1000, 50000), // (pixels, meters)
+      extents = [];
 
     for (let lon = Math.floor(extent[0] / tileSize); lon < Math.ceil(extent[2] / tileSize); lon++)
       for (let lat = Math.floor(extent[1] / tileSize); lat < Math.ceil(extent[3] / tileSize); lat++)
-        tiledExtent.push([
+        extents.push([
           Math.round(lon * tileSize),
           Math.round(lat * tileSize),
           Math.round(lon * tileSize + tileSize),
           Math.round(lat * tileSize + tileSize),
         ]);
 
-    if (layer.options.debug) {
-      layer.logs = {
-        tileSize: Math.round(tileSize / 1414) + '*' + Math.round(tileSize / 1414) + 'km',
-        isCluster: resolution > layer.options.serverClusterMinResolution,
-      };
-      console.info(
-        'Request ' + tiledExtent.length +
-        ' tile' + (tiledExtent.length > 1 ? 's ' : ' ') +
-        layer.logs.tileSize + ' for ' +
-        Math.round(resolution) + 'm/px resolution '
-      );
-    }
-
-    return tiledExtent;
+    return extents;
   }
+
+  var loadingstrategy = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    tiledBbox: tiledBbox
+  });
+
+  /**
+   * MyVectorLayer class to facilitate vector layers display
+   */
+
 
   /**
    * GeoJSON vector display &
@@ -90729,17 +90713,7 @@
       });
 
       // Compute properties when the layer is loaded & before the cluster layer is computed
-      this.on('change', () => {
-        if (this.options.debug)
-          console.info(
-            'Receive 1 tile ' +
-            this.logs.tileSize + ', ' + this.getFeatures().length +
-            (this.logs.isCluster ? ' clusters, ' : ' points, ') +
-            transform$1(getCenter(this.getExtent()), 'EPSG:3857', 'EPSG:4326')
-            .map(x => Math.round(x * 1000) / 1000)
-            .join('°E/') + '°N'
-          );
-
+      this.on('change', () =>
         this.getFeatures().forEach(f => {
           if (!f.yetAdded) {
             f.yetAdded = true;
@@ -90748,8 +90722,8 @@
               true, // Silent : add the feature without refresh the layer
             );
           }
-        });
-      });
+        })
+      );
     }
 
     tuneDistance() {} // MyClusterSource compatibility
@@ -90979,7 +90953,7 @@
     constructor(opt) {
       const options = {
         // host: '',
-        strategy: tiledBboxStrategy,
+        strategy: bbox,
         dataProjection: 'EPSG:4326',
 
         // Clusters:
@@ -91005,7 +90979,7 @@
         // Methods to instantiate
         // url (extent, resolution, mapProjection) // Calculate the url
         // query (extent, resolution, mapProjection, optioons) ({_path: '...'}),
-        // bboxParameter (extent, resolution, mapProjection) => {}
+        // bbox (extent, resolution, mapProjection) => {}
         // addProperties (properties) => {}, // Add properties to each received features
 
         ...opt,
@@ -91023,7 +90997,7 @@
       this.host = options.host;
       this.url ||= options.url;
       this.query ||= options.query;
-      this.bboxParameter ||= options.bboxParameter;
+      this.bbox ||= options.bbox;
       this.addProperties ||= options.addProperties;
       this.style ||= options.style;
       this.strategy = options.strategy;
@@ -91040,7 +91014,13 @@
       const urlArgs = this.query(...args, this.options),
         url = this.host + urlArgs._path; // Mem _path
 
-      urlArgs.bbox = this.bboxParameter(...args);
+      if (this.strategy === bbox ||
+        this.strategy === tiledBbox)
+        urlArgs.bbox = this.bbox(...args);
+
+      // Add a pseudo parameter if any marker or edit has been done
+      const version = sessionStorage.myolLastchange ?
+        '&' + Math.round(sessionStorage.myolLastchange / 2500 % 46600).toString(36) : '';
 
       // Clean null & not relative parameters
       Object.keys(urlArgs).forEach(k => {
@@ -91048,14 +91028,10 @@
           delete urlArgs[k];
       });
 
-      // Add a pseudo parameter if any marker or edit has been done
-      if (this.options.lastChangeTime)
-        urlArgs.v = this.options.lastChangeTime;
-
-      return url + '?' + new URLSearchParams(urlArgs).toString();
+      return url + '?' + new URLSearchParams(urlArgs).toString() + version;
     }
 
-    bboxParameter(extent, resolution, mapProjection) {
+    bbox(extent, resolution, mapProjection) {
       return transformExtent(
         extent,
         mapProjection,
@@ -91182,11 +91158,7 @@
         serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
         nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
         browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters
-        tiledBBoxStrategy: { // Static tiled bbox. 1 Mercator unit = 0.7 meter at lat = 45° : cos(45°)
-          50000: 100, // tilesize = 10 000 Mercator units = 35 km until resolution = 100 meters per pixel
-          570000: 1000, // tilesize = 400 km until resolution = 1 km per pixel
-          14000000: Infinity, // tilesize = 10 000 km above
-        },
+
         // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
 
         ...options,
@@ -91324,7 +91296,7 @@
         host: 'https://overpass-api.de',
         //host: 'https://lz4.overpass-api.de',
         //host: 'https://overpass.kumi.systems',
-        bboxParameter: () => null, // No bbox parameter at the end of the url
+        bbox: () => null, // No bbox at the end of the url
         format: new OSMXML(),
         attribution: '&copy;OpenStreetMap',
 
@@ -91408,12 +91380,12 @@
     query(extent, resolution, mapProjection) {
       const selections = this.selector.getSelection(),
         ex4326 = transformExtent(extent, mapProjection, 'EPSG:4326').map(c => c.toPrecision(6)),
-        bboxParameter = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
+        bbox = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
         args = [];
 
       for (let s = 0; s < selections.length; s++) // For each selected input checkbox
         selections[s].split('+') // Multiple choices separated by "+"
-        .forEach(sel => args.push('nwr' + sel + bboxParameter)); // Ask for node, way & relation in the bbox
+        .forEach(sel => args.push('nwr' + sel + bbox)); // Ask for node, way & relation in the bbox
 
       return {
         _path: '/api/interpreter',
@@ -91421,7 +91393,7 @@
       };
     }
 
-    bboxParameter() {}
+    bbox() {}
   }
 
   // Vectors layers examples
@@ -91461,6 +91433,7 @@
     Marker: Marker,
     MyVectorLayer: MyVectorLayer,
     Selector: Selector,
+    loadingstrategy: loadingstrategy,
     tile: tileLayercollection,
     vector: vectorLayerCollection,
   };
@@ -91470,7 +91443,7 @@
    */
 
 
-  const VERSION = '1.1.2.dev 11/11/2025 17:18:50';
+  const VERSION = '1.1.2.dev 02/11/2025 16:08:56';
 
   async function trace() {
     const data = [
@@ -91520,11 +91493,10 @@
   /* global map */
   // Zoom & resolution
   function traceZoom() {
-    if (map.debug)
-      console.info(
-        'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
-        'resolution ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
-      );
+    console.log(
+      'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
+      'res ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
+    );
   }
 
   window.addEventListener('load', () => { // Wait for document load

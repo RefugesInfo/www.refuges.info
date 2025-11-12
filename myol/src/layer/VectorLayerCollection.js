@@ -108,11 +108,7 @@ export class WRI extends MyVectorLayer {
       serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
       nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
       browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters
-      tiledBBoxStrategy: { // Static tiled bbox. 1 Mercator unit = 0.7 meter at lat = 45° : cos(45°)
-        50000: 100, // tilesize = 10 000 Mercator units = 35 km until resolution = 100 meters per pixel
-        570000: 1000, // tilesize = 400 km until resolution = 1 km per pixel
-        14000000: Infinity, // tilesize = 10 000 km above
-      },
+
       // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
 
       ...options,
@@ -250,7 +246,7 @@ export class Overpass extends MyVectorLayer {
       host: 'https://overpass-api.de',
       //host: 'https://lz4.overpass-api.de',
       //host: 'https://overpass.kumi.systems',
-      bboxParameter: () => null, // No bbox parameter at the end of the url
+      bbox: () => null, // No bbox at the end of the url
       format: new OSMXML(),
       attribution: '&copy;OpenStreetMap',
 
@@ -334,12 +330,12 @@ export class Overpass extends MyVectorLayer {
   query(extent, resolution, mapProjection) {
     const selections = this.selector.getSelection(),
       ex4326 = transformExtent(extent, mapProjection, 'EPSG:4326').map(c => c.toPrecision(6)),
-      bboxParameter = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
+      bbox = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
       args = [];
 
     for (let s = 0; s < selections.length; s++) // For each selected input checkbox
       selections[s].split('+') // Multiple choices separated by "+"
-      .forEach(sel => args.push('nwr' + sel + bboxParameter)); // Ask for node, way & relation in the bbox
+      .forEach(sel => args.push('nwr' + sel + bbox)); // Ask for node, way & relation in the bbox
 
     return {
       _path: '/api/interpreter',
@@ -347,7 +343,7 @@ export class Overpass extends MyVectorLayer {
     };
   }
 
-  bboxParameter() {}
+  bbox() {}
 }
 
 // Vectors layers examples
