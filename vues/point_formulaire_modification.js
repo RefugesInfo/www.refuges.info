@@ -4,7 +4,6 @@ var map = mapModif({
   host: '<?=$config_wri["sous_dossier_installation"]?>',
   mapKeys: <?=json_encode($config_wri['mapKeys'])?>,
   idPoint: <?=$vue->point->id_point ?? 0?>,
-  lastChangeTime: <?=strtotime($vue->date_derniere_modification['points']??'')?>,
 });
 
 // Utilitaire de saisie
