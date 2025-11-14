@@ -11,7 +11,8 @@ include_once("mise_en_forme_texte.php");
 include_once("utilisateur.php");
 include_once("entetes_http.php");
 
-// FIXME: Il doit moyen de faire mieux, mais préparer l'export en mettant tout dans un énorme tableau n'est en fait pas la meilleure idée, en 2025 nous touchons la limite en RAM de 128Mo, alors, spécifiquement pour l'export, et car j'ai la flemme de tout reprendre, je boost à 256Mo et ça ira bien
+// FIXME: Il doit moyen de faire mieux, mais préparer l'export en mettant tout dans un énorme tableau n'est en fait pas la meilleure idée,
+// en 2025 nous touchons la limite en RAM de 128Mo, alors, spécifiquement pour l'export, et car j'ai la flemme de tout reprendre, je boost à 256Mo et ça ira bien
 ini_set('memory_limit','256M');
 
 /****************************************/
@@ -43,66 +44,68 @@ $val->type_points_id = array(7, 10, 9, 29, 23, 3, 28);
 
 // On teste chaque champ pour voir si la valeur est dans liste des formats accepté, sinon on choisir le format geojson
 if(!array_key_exists($req->format,$config_wri['api_format_points']))
-            $req->format = "geojson";
+  $req->format = "geojson";
 
 if(!in_array($req->format_texte,$val->format_texte)) {
-    switch ($req->page) {
-        case 'bbox':
-        case 'massif':
-        case 'point':
-            $req->format_texte = "bbcode";
-            break;
-        default:
-            $req->format_texte = "texte";
-            break;
+  switch ($req->page) {
+    case 'bbox':
+    case 'massif':
+    case 'point':
+      $req->format_texte = "bbcode";
+      break;
+    default:
+      $req->format_texte = "texte";
+      break;
     }
 }
+
 if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
-    switch ($req->page) {
-        case 'bbox':
-        case 'massif':
-            $req->nb_points = $config_wri['defaut_max_nombre_point'];
-            break;
-        case 'point':
-            $req->nb_points = 1;
-            break;
-        default:
-            $req->nb_points = "all";
-            break;
-    }
+  switch ($req->page) {
+    case 'bbox':
+    case 'massif':
+      $req->nb_points = $config_wri['defaut_max_nombre_point'];
+      break;
+    case 'point':
+      $req->nb_points = 1;
+      break;
+    default:
+      $req->nb_points = "all";
+      break;
+  }
 }
+
 // On vérifie que les types de points sont ok, sinon on met all comme valeur
 if($req->page!="point") {
-    $temp = explode(",", $req->type_points);
-    foreach ($temp as $type_point) {
-        if (!in_array($type_point,$val->type_points) &&
+  $temp = explode(",", $req->type_points);
+  foreach ($temp as $type_point) {
+    if (!in_array($type_point,$val->type_points) &&
       !in_array($type_point,$val->type_points_id)) {
       $req->type_points = "all"; break;
     }
-    }
+  }
 }
 else {
-    $req->type_points = "all";
+  $req->type_points = "all";
 }
 
 // On vérifie que la bbox est correcte
 $temp = explode(",", $req->bbox);
 if($req->bbox=="") {
-    $req->bbox="world";
+  $req->bbox="world";
 }
 else if(!((count($temp)==4 &&
-    is_numeric($temp[0]) &&
-    is_numeric($temp[1]) &&
-    is_numeric($temp[2]) &&
-    is_numeric($temp[3])) ||
-    $req->bbox == "world")) {
-    exit ("Error : wrong bbox parameter");
+  is_numeric($temp[0]) &&
+  is_numeric($temp[1]) &&
+  is_numeric($temp[2]) &&
+  is_numeric($temp[3])) ||
+  $req->bbox == "world")) {
+  exit ("Error : wrong bbox parameter");
 }
 
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
 foreach ($temp as $massif) {
-    if($req->page == "massif" && !is_numeric($massif)) { exit ("Error : wrong massif id"); }
+  if($req->page == "massif" && !is_numeric($massif)) { exit ("Error : wrong massif id"); }
 }
 
 /****************************** REQUÊTE RÉCUPÉRATION PTS ******************************/
@@ -110,36 +113,36 @@ foreach ($temp as $massif) {
 $params = new stdClass();
 
 if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à postgis
-    list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
-    $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
+  list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
+  $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
 }
 unset($ouest,$sud,$est,$nord);
 
 switch ($req->page) {
-    case 'bbox':
-        $params->pas_les_points_caches=1;
-        $params->ordre="point_type.importance DESC";
-        break;
-    case 'massif':
-        $params->ids_polygones = $req->massif;
-        $params->pas_les_points_caches=1;
-        $params->ordre="point_type.importance DESC";
-        break;
-    case 'point':
-        $params->ids_points = intval($req->id);
-        break;
-    default:
-        break;
+  case 'bbox':
+    $params->pas_les_points_caches=1;
+    $params->ordre="point_type.importance DESC";
+    break;
+  case 'massif':
+    $params->ids_polygones = $req->massif;
+    $params->pas_les_points_caches=1;
+    $params->ordre="point_type.importance DESC";
+    break;
+  case 'point':
+    $params->ids_points = intval($req->id);
+    break;
+  default:
+    break;
 }
 
 if($req->nb_points != "all") {
-    $params->limite = $req->nb_points;
+  $params->limite = $req->nb_points;
 }
 if(is_numeric($req->cluster)) {
-    $params->cluster = $req->cluster;
+  $params->cluster = $req->cluster;
 }
 if($req->type_points != "all") {
-    $params->ids_types_point = str_replace($val->type_points, $val->type_points_id, $req->type_points);
+  $params->ids_types_point = str_replace($val->type_points, $val->type_points_id, $req->type_points);
 }
 
 $points_bruts = new stdClass();
@@ -149,8 +152,8 @@ $points_bruts = infos_points($params);
 
 /****************************** INFOS GÉNÉRALES ******************************/
 /*
-L'idée est de générer une grosse collection de points avec presque toutes leurs propriétés, la vue ne se servant que ce dont elle a besoin selon qu'elle est csv, gpx, etc.
-ça consome plus de RAM bien sûr et plus de CPU, mais ça simplifie vachement le code en ayant le même traitement quel que soit la vue
+L'idée est de générer une grosse collection de points avec presque toutes leurs propriétés, la vue ne se servant que ce dont elle a besoin
+selon qu'elle est csv, gpx, etc.ça consome plus de RAM bien sûr et plus de CPU, mais ça simplifie vachement le code en ayant le même traitement quel que soit la vue
 Seule exception à ça, le cas du format "geojson" :
 Car c'est celui utilisé par la carte et que le fichier est généré par un json_encode($point) qui deviendrait trop gros pour les usages en mobilité et débit pourri.
 */
@@ -167,22 +170,26 @@ foreach ($points_bruts as $i=>$point) {
   }
   else
   {
-    if($point->id_type_precision_gps == $config_wri['id_coordonees_gps_fausses']) // les cabanes cachées ne sont pas exportées. Les coordonnées étant volontairement stockées fausses, les sortir ne fera que créer de la confusion
+    // les cabanes cachées ne sont pas exportées. Les coordonnées étant volontairement stockées fausses, les sortir ne fera que créer de la confusion
+    if($point->id_type_precision_gps == $config_wri['id_coordonees_gps_fausses'])
       break;
 
     $points->$i = new stdClass();
     $points->$i->id = $point->id_point;
     $points->$i->lien = lien_point($point);
     $points->$i->nom = mb_ucfirst($point->nom);
-  switch ($point->conditions_utilisation) {
-    case 'fermeture':
-    case 'detruit':
-      $points->$i->sym = "Crossing";
-      break;
-    case 'cle_a_recuperer': // TODO : trouver un symbole
-    default:
-      $points->$i->sym = $point->symbole;
-  }
+
+    switch ($point->conditions_utilisation)
+	{
+      case 'fermeture':
+      case 'detruit':
+        $points->$i->sym = "Crossing";
+        break;
+      case 'cle_a_recuperer': // TODO : trouver un symbole
+      default:
+        $points->$i->sym = $point->symbole;
+    }
+
     // FIXME sly 05/12/2019 : ça me rend fou cette recopie intégrale propriété par propriété. ça oblige à venir maintenir ça !
     // $points[]=$point; n'aurait il pas suffit ? et en plus le nom des propriété changent de peu et je passe mon temps à ne plus m'en rappeler !
     // certes ça fait un joli array final multi-niveau et un joli json_encode($point), mais franchement, le jeu en vaut-il la chandelle ?
@@ -193,9 +200,12 @@ foreach ($points_bruts as $i=>$point) {
     $points->$i->places['valeur'] = $point->places;
     $points->$i->etat['valeur'] = texte_non_ouverte($point);
     $points->$i->type['icone'] = choix_icone($point);
-    $points_geojson[$point->id_point]['geojson'] = $point->geojson; // FIXME: comme l'array $points est converti en intégralité en xml ou json, je planque dans une autre variable ce que je veux séparément
+    $points_geojson[$point->id_point]['geojson'] = $point->geojson;
+    // FIXME: comme l'array $points est converti en intégralité en xml ou json, je planque dans une autre variable ce que je veux séparément
 
-    if ($req->format!="geojson" or $req->detail=="complet") // En geojson, utilisé par la carte, on a pas besoin de tout ça, autant simplifier pour réduire le temps de chargement, sauf si on appel explicitement le mode complet avec &detail=complet
+    // En geojson, utilisé par la carte, on a pas besoin de tout ça, autant simplifier pour réduire le temps de chargement,
+    // sauf si on appel explicitement le mode complet avec &detail=complet
+    if ($req->format!="geojson" or $req->detail=="complet")
     {
       $points->$i->coord['long'] = $point->longitude;
       $points->$i->coord['lat'] = $point->latitude;
@@ -210,6 +220,7 @@ foreach ($points_bruts as $i=>$point) {
       $points->$i->proprio['nom'] = $point->equivalent_proprio;
       $points->$i->proprio['valeur'] = $point->proprio;
       $points->$i->createur['id'] = $point->id_createur;
+
       // info sur le modérateur actuel de la fiche (authentifié ou non)
       if ($point->id_createur==0) // non authentifié
           $points->$i->createur['nom']=$point->nom_createur;
@@ -221,6 +232,7 @@ foreach ($points_bruts as $i=>$point) {
         else
           $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
       }
+
       $points->$i->date['creation'] = $point->date_creation;
       $points->$i->article['demonstratif'] = $point->article_demonstratif;
       $points->$i->article['defini'] = $point->article_defini;
@@ -238,10 +250,12 @@ foreach ($points_bruts as $i=>$point) {
       $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
       $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
       $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
+
       if($point->places_matelas == 0)
           $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
       else
           $points->$i->info_comp['places_matelas']['valeur'] = $point->places_matelas;
+
       $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
       $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
       $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
@@ -250,9 +264,11 @@ foreach ($points_bruts as $i=>$point) {
       $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
 
       /*
-      sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point, afin de l'inclure dans la description des gpx et du kml
+      sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point,
+      afin de l'inclure dans la description des gpx et du kml
       */
       $description="";
+
       if ($point->equivalent_places!="" and !empty($point->places))
         $description=$point->equivalent_places. ": ".$point->places."\n";
 
@@ -262,32 +278,31 @@ foreach ($points_bruts as $i=>$point) {
       $description.=$point->remark."\n";
       $description.=$point->acces."\n";
       $description.=$point->proprio."\n";
-
       $points->$i->description['valeur']=$description;
     }
 
     /****************************** FORMATAGE DU TEXTE ******************************/
-
     // On transforme le texte dans la correcte syntaxe
     if($req->format_texte == "texte") {
-        array_walk_recursive($points->$i, 'updatebbcode2txt');
+      array_walk_recursive($points->$i, 'updatebbcode2txt');
     }
     elseif($req->format_texte == "html") {
-        array_walk_recursive($points->$i, 'updatebbcode2html');
+      array_walk_recursive($points->$i, 'updatebbcode2html');
     }
     elseif($req->format_texte == "markdown") {
-        array_walk_recursive($points->$i, 'updatebbcode2markdown');
+      array_walk_recursive($points->$i, 'updatebbcode2markdown');
     }
+
     array_walk_recursive($points->$i, 'updatebool2char'); // Remplace les False et True en 0 ou 1
   }
 }
 
-
-
-if (count($points_bruts)==1) // Dans le cas bien spécifique ou l'api ne va renvoyer qu'un seul point, nous stockons son nom pour renvoyer un nom de fichier indiquant le nom de ce point !
+// Dans le cas bien spécifique ou l'api ne va renvoyer qu'un seul point,
+// nous stockons son nom pour renvoyer un nom de fichier indiquant le nom de ce point !
+if (count($points_bruts)==1)
 {
-    $point=reset($points_bruts);
-    $filename=replace_url($point->nom);
+  $point=reset($points_bruts);
+  $filename=replace_url($point->nom);
 }
 
 /****************************** FORMAT VUE ******************************/

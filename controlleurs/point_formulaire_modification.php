@@ -1,4 +1,5 @@
-<?php // Modification/création de fiche point
+<?php
+// Modification/création de fiche point
 
 require_once ("bdd.php");
 require_once ("point.php");
@@ -39,6 +40,7 @@ if ( !empty($_REQUEST["id_point"]) )
     $vue->contenu=$point->message;
     return "";
   }
+
   // Soit on est avec un modérateur global ou de cette fiche
   if ( est_autorise($point->id_createur) )
   {
@@ -75,49 +77,49 @@ if ( !empty($_REQUEST["id_point"]) )
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
 elseif ( !empty($_REQUEST["id_point_type"]))
 {
-    $conditions = new stdClass;
-    $conditions->ids_types_point=$_REQUEST["id_point_type"];
-    $conditions->modele='uniquement';
-    $points_modele=infos_points($conditions);
-    if (count($points_modele)!=1)
-    {
-        print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
-        $point = new stdClass;
-    }
-    else
-        $point=reset($points_modele);
+  $conditions = new stdClass;
+  $conditions->ids_types_point=$_REQUEST["id_point_type"];
+  $conditions->modele='uniquement';
+  $points_modele=infos_points($conditions);
+  if (count($points_modele)!=1)
+  {
+    print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
+    $point = new stdClass;
+  }
+  else
+    $point=reset($points_modele);
 
-    // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
-    $point->longitude=6;
-    $point->latitude=47;
+  // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
+  $point->longitude=6;
+  $point->latitude=47;
 
-    // on force l'id du point à vide histoire de ne pas modifier le modèle
-    unset($point->id_point);
-    // et pareil pour le modérateur actuel du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
-    unset($point->id_createur);
-    // et on retire le flag "est un modèle" car on s'est servit du modèle, mais ce n'en est plus un
-    unset($point->modele);
+  // on force l'id du point à vide histoire de ne pas modifier le modèle
+  unset($point->id_point);
+  // et pareil pour le modérateur actuel du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
+  unset($point->id_createur);
+  // et on retire le flag "est un modèle" car on s'est servit du modèle, mais ce n'en est plus un
+  unset($point->modele);
 
-    // cosmétique
-    $icone="&amp;iconecenter=".choix_icone($point);
-    $action="Ajout";
-    $vue->verbe="Ajouter";
-    $vue->titre="Ajout d'un point dans refuges.info";
+  // cosmétique
+  $icone="&amp;iconecenter=".choix_icone($point);
+  $action="Ajout";
+  $vue->verbe="Ajouter";
+  $vue->titre="Ajout d'un point dans refuges.info";
 
 }
 // 3) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
 {
-    $vue->type="page_simple";
-    $vue->titre="Vous n'auriez pas dû arriver sur cette page de cette façon (formulaire précédent incomplet ?)";
-    return "";
+  $vue->type="page_simple";
+  $vue->titre="Vous n'auriez pas dû arriver sur cette page de cette façon (formulaire précédent incomplet ?)";
+  return "";
 }
 
 /******** Formulaire de modification/création/suppression *****************/
 if (!empty($point->id_point))
 {
-    $vue->champs->invisibles->id_point = new stdClass;
-    $vue->champs->invisibles->id_point->valeur = $point->id_point;
+  $vue->champs->invisibles->id_point = new stdClass;
+  $vue->champs->invisibles->id_point->valeur = $point->id_point;
 }
 
 /******** Boutons répétés en haut et en bas FIXME devrait être dans $vue-> *****************/
@@ -137,12 +139,12 @@ $vue->champs->boutons->valider=$bouton_valider;
 $vue->champs->boutons->reset=$bouton_reset;
 
 if (!empty($bouton_suppr))
-    $vue->champs->boutons->suppr=$bouton_suppr;
+  $vue->champs->boutons->suppr=$bouton_suppr;
 
 //3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( grotte, point d'eau, ... )
 if ( !empty($point->equivalent_proprio) )
-    $textes_area[$point->equivalent_proprio]="proprio";
+  $textes_area[$point->equivalent_proprio]="proprio";
 
 //ils ont en revanche tous un accès et un champ remarques
 $textes_area["accès"]="acces";
@@ -151,9 +153,9 @@ $textes_area["remarques"]="remark";
 /******** Les champs libres *****************/
 foreach ($textes_area as $libelle => $nom_variable)
 {
-    $vue->champs->textareas->$nom_variable = new stdClass;
-    $vue->champs->textareas->$nom_variable->label=$libelle;
-    $vue->champs->textareas->$nom_variable->valeur=protege($point->$nom_variable);
+  $vue->champs->textareas->$nom_variable = new stdClass;
+  $vue->champs->textareas->$nom_variable->label=$libelle;
+  $vue->champs->textareas->$nom_variable->valeur=protege($point->$nom_variable);
 }
 
 /******** Les informations complémentaires (places, matelas, latrines, bois à proximité, etc.) *****************/

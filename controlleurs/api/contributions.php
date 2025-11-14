@@ -36,13 +36,13 @@ $val->type = array("commentaires", "points", "refuges", "forums");
 
 // On teste chaque champ pour voir si la valeur est correcte, sinon valeur par défaut
 if(!in_array($req->format,$val->format))
-    $req->format = "json";
+  $req->format = "json";
 if(!in_array($req->format_texte,$val->format_texte))
-    $req->format_texte = "bbcode";
+  $req->format_texte = "bbcode";
 // On vérifie que les types sont ok
 $temp = explode(",", $req->type);
 foreach ($temp as $type) {
-    if(!in_array($type,$val->type)) { $req->type = "points,commentaires"; break; }
+  if(!in_array($type,$val->type)) { $req->type = "points,commentaires"; break; }
 }
 // Par défaut, on exporte 100 nouvelles
 if(!is_numeric($req->nombre))
@@ -50,7 +50,7 @@ if(!is_numeric($req->nombre))
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
 foreach ($temp as $massif) {
-    if(!is_numeric($massif)) { $req->massif = ""; }
+  if(!is_numeric($massif)) { $req->massif = ""; }
 }
 
 /****************************** REQUÊTE RÉCUPÉRATION NOUVELLES ******************************/
@@ -65,13 +65,13 @@ foreach ($news as $id => $nouvelle)
 
 // On transforme le texte dans la correcte syntaxe
 if($req->format_texte == "texte") {
-    array_walk_recursive($news, 'updatebbcode2txt');
+  array_walk_recursive($news, 'updatebbcode2txt');
 }
 elseif($req->format_texte == "html") {
-    array_walk_recursive($news, 'updatebbcode2html');
+  array_walk_recursive($news, 'updatebbcode2html');
 }
 elseif($req->format_texte == "markdown") {
-    array_walk_recursive($news, 'updatebbcode2markdown');
+  array_walk_recursive($news, 'updatebbcode2markdown');
 }
 array_walk_recursive($news, 'updatebool2char'); // Remplace les False et True en 0 ou 1
 
@@ -79,21 +79,21 @@ array_walk_recursive($news, 'updatebool2char'); // Remplace les False et True en
 /****************************** FORMAT VUE ******************************/
 
 switch ($req->format) {
-    case 'json':
-        include($config_wri['chemin_vues'].'api/contributions.vue.json');
-        break;
-    case 'xml':
-        include($config_wri['chemin_vues'].'api/contributions.vue.xml');
-        break;
-    case 'csv':
-        include($config_wri['chemin_vues'].'api/contributions.vue.csv');
-        break;
-    case 'rss':
-        include($config_wri['chemin_vues'].'api/contributions.vue.rss');
-        break;
-    default:
-        include($config_wri['chemin_vues'].'api/contributions.vue.json');
-        break;
+  case 'json':
+    include($config_wri['chemin_vues'].'api/contributions.vue.json');
+    break;
+  case 'xml':
+    include($config_wri['chemin_vues'].'api/contributions.vue.xml');
+    break;
+  case 'csv':
+    include($config_wri['chemin_vues'].'api/contributions.vue.csv');
+    break;
+  case 'rss':
+    include($config_wri['chemin_vues'].'api/contributions.vue.rss');
+    break;
+  default:
+    include($config_wri['chemin_vues'].'api/contributions.vue.json');
+    break;
 }
 
 
