@@ -9,21 +9,46 @@ function externTilesLayers(mapKeys, restreint) {
   return {
     'OpenHikingMap': new myol.layer.tile.OpenHikingMap({
       /* On peut modifier l'attribution en décommentant un ou plusieurs des champs : */
-      // contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-      // attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
-      // licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
-      // legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
+      // url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
+      // maxZoom: 18,
+      // tileSize n'est pas modifiable dans l'appel
+      // attributions: makeAttributions({
+      //   contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+      //   attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
+      //   licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
+      //   legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
+      // }),
       /* OU carrément */
       // attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' +
       //   '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">OpenHikingMap</a>',
-      /* Idem pour les autres couches */
     }),
-    'OpenStreetMap': new myol.layer.tile.OpenStreetMap({}),
-    'OpenTopoMap': new myol.layer.tile.OpenTopoMap(),
+    'OpenStreetMap': new myol.layer.tile.OpenStreetMap({
+      // url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      // attributions: makeAttributions({
+      //   contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+      //   legend: 'https://www.openstreetmap.org/panes/legend',
+      // }),
+    }),
+    'OpenTopoMap': new myol.layer.tile.OpenTopoMap({
+      // url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
+      // maxZoom: 17,
+      // attributions: makeAttributions({
+      //   contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+      //   attribution: 'https://github.com/sletuffe/OpenTopoMap/,OpenTopoMap-R',
+      //   licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
+      //   legend: 'https://www.geograph.org/leaflet/otm-legend.php',
+      // }),
+    }),
     'Outdoors': new myol.layer.tile.Thunderforest({
+      // url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + mapKeys.thunderforest,
+      // maxZoom: 22,
+      // attributions: makeAttributions({
+      //   contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+      //   attribution: 'https://www.thunderforest.com/,Thunderforest',
+      // }),
       subLayer: 'outdoors',
       key: mapKeys.thunderforest,
-      legend: '',
+      legend: '', // Ecrase la légende par défaut de myol.layer.tile.Thunderforest
     }),
 
     'IGN TOP25': restreint ? null : new myol.layer.tile.IGNtop25({
@@ -35,7 +60,7 @@ function externTilesLayers(mapKeys, restreint) {
     'Autriche': new myol.layer.tile.Kompass({
       subLayer: 'osm', // No key
     }),
-    'Espagne': new myol.layer.tile.IgnES({}),
+    'Espagne': new myol.layer.tile.IgnES(),
 
     'Photo IGN': new myol.layer.tile.IGN({
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
