@@ -27,12 +27,12 @@ if (!empty($_GET['type_modification']) and ($_GET['type_modification']=='suppres
 $limite=100;
 if (!empty($_GET['limite']) and est_entier_positif($_GET['limite']))
     $limite=$_GET['limite'];
-    
-    
+
+
 $query_log_modification="select *,date_modification::timestamp(0) as date from historique_modifications_points$condition_point order by date_modification desc LIMIT $limite";
 if (! ($res = $pdo->query($query_log_modification)))
     return erreur("Requête en erreur, impossible d'afficher l'historique de modifications",$query_log_modification);
-        
+
   while ($modification_point = $res->fetch())
   {
     // Si authentifié, on indique qui a fait la modif
@@ -40,20 +40,20 @@ if (! ($res = $pdo->query($query_log_modification)))
         $utilisateur=infos_utilisateur($modification_point->id_user);
     elseif (isset($utilisateur))
         $utilisateur->username="anonyme ?";
-    
+
     // si cela concerne un point du site, on fait un lien vers lui pour se simplifier la consultation
-    $lien_de_base="";    
+    $lien_de_base="";
     if (in_array($modification_point->type_modification, array ("modification point","création point","suppression point")))
       $lien_de_base="point";
     if (in_array($modification_point->type_modification, array ("modification polygone","suppression polygone")))
       $lien_de_base="nav";
-    
+
     if (!empty($modification_point->id_point))
       $modification_point->lien_point="/$lien_de_base/$modification_point->id_point";
 
     $point_avant=unserialize($modification_point->avant);
     $point_apres=unserialize($modification_point->apres);
-    
+
     $modification_point->moderateur=$utilisateur->username??'';
     $modification_point->point_avant=$point_avant;
     $modification_point->point_apres=$point_apres;

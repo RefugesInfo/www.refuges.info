@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once ("meta_donnee.php");
 
 $vue->titre="Ajouter un point dans refuges.info";

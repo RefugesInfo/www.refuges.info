@@ -1,6 +1,6 @@
-<?php 
+<?php
 /*****************************************************
-Controlleur du wiki du site, c'est un moteur qui permet aux modérateurs d'intervenir sur descriptif, licence, fonctionnement et presque tout type de page du site à 
+Controlleur du wiki du site, c'est un moteur qui permet aux modérateurs d'intervenir sur descriptif, licence, fonctionnement et presque tout type de page du site à
 contenu non dynamiquement généré
 
 Finalement on passe à un quasi-vrai wiki avec historique (approximatif) que pour modérateurs
@@ -13,12 +13,12 @@ require_once ("wiki.php");
 $page = $controlleur->url_decoupee[1] ?? '';
 $page=urldecode($page);
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
-if (est_moderateur()) 
+if (est_moderateur())
 {
-	if (!empty($_REQUEST ['modification']))
-		ecrire_contenu ($page, $_REQUEST ['texte']);
-	if (!empty($_REQUEST ['supprimer']))
-		supprimer_page($page);
+  if (!empty($_REQUEST ['modification']))
+    ecrire_contenu ($page, $_REQUEST ['texte']);
+  if (!empty($_REQUEST ['supprimer']))
+    supprimer_page($page);
 }
 
 // Conteneur standard de l'entête et pied de page
@@ -51,6 +51,6 @@ else // affichage de la page
     if (est_moderateur())
         $vue->montrer_lien_admin=True;
 
-	$vue->date=date("d/m/Y",$contenu_brut->ts_unix_page);
+  $vue->date=date("d/m/Y",$contenu_brut->ts_unix_page);
     $vue->contenu_html  = wiki_page_html($page);
 }

@@ -28,26 +28,26 @@ $val->format = array("geojson", "gml");
 
 // On teste chaque champ pour voir si la valeur est correcte, sinon valeur par défaut
 if(!in_array($req->format,$val->format))
-    $req->format = "geojson";
+  $req->format = "geojson";
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
 foreach ($temp as $massif) {
-    if(!is_numeric($massif)) { $req->massif = ""; }
+  if(!is_numeric($massif)) { $req->massif = ""; }
 }
 // On vérifie que la liste des types de polygones est correcte
 $temp = explode(",", $req->type_polygones);
 foreach ($temp as $type_polygone) {
-    if(!is_numeric($type_polygone)) { $req->type_polygones = ""; }
+  if(!is_numeric($type_polygone)) { $req->type_polygones = ""; }
 }
 // On vérifie que la bbox est correcte
 $temp = explode(",", $req->bbox);
 if(!((count($temp)==4 &&
-    is_numeric($temp[0]) &&
-    is_numeric($temp[1]) &&
-    is_numeric($temp[2]) &&
-    is_numeric($temp[3])) ||
-    $req->bbox == "world")) {
-    $req->bbox = "world";
+  is_numeric($temp[0]) &&
+  is_numeric($temp[1]) &&
+  is_numeric($temp[2]) &&
+  is_numeric($temp[3])) ||
+  $req->bbox == "world")) {
+  $req->bbox = "world";
 }
 
 /****************************** REQUÊTE RÉCUPÉRATION POLYS ******************************/
@@ -55,14 +55,14 @@ if(!((count($temp)==4 &&
 $params = new stdClass();
 
 if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à postgis
-	list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
-	$params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
+  list($ouest,$sud,$est,$nord) = explode(",", $req->bbox);
+  $params->geometrie = "ST_SetSRID(ST_MakeBox2D(ST_Point($ouest, $sud), ST_Point($est ,$nord)),4326)";
 }
 unset($ouest,$sud,$est,$nord);
 if($req->massif != "")
-	$params->ids_polygones=$req->massif;
+  $params->ids_polygones=$req->massif;
 if($req->type_polygones != "")
-	$params->ids_polygone_type=$req->type_polygones;
+  $params->ids_polygone_type=$req->type_polygones;
 $params->avec_geometrie=$req->format;
 $params->intersection=$req->intersection;
 $params->avec_enveloppe=True;
@@ -78,34 +78,34 @@ $nb_coul =  count ($polygones_bruts); // Pour répartir les couleurs
 // Incrément des couleurs pour ne pas avoir de couleurs proches pour des massifs de n° proches
 $i=0;
 if ($nb_coul) {
-	for ($pas = (int)($nb_coul/6+1); $nb_coul%$pas == 0; $pas++); // Le premier non diviseur de nb_coul > nb_coul / 6
-	$pas_angulaire = $pas * 2*M_PI / $nb_coul;
-	foreach($polygones_bruts as $polygone)
-	{
-		$geo = "geometrie_".$req->format;
-		if (isset($polygone->$geo) &&
-			!strpos($polygone->$geo, '[]')) { // On exclue les massifs sans polygones
-			$polygones->$i = new stdClass();
-			$couleur = '#';
-				for ($c = 0; $c < 2*M_PI; $c += 2*M_PI/3) // Chacune des 3 couleurs primaires
-					$couleur .= substr (dechex ( intval(0x100 + $lum * (1 + cos ($i * $pas_angulaire + $c)))), -2);
-					// +0x100 pour bénéficier du 0 à gauche quand on passe en hexadécimal
-			$polygones->$i->nom = $polygone->nom_polygone;
-			$polygones->$i->id = $polygone->id_polygone;
-			$polygones->$i->type['id'] = $polygone->id_polygone_type;
-			$polygones->$i->type['type'] = $polygone->type_polygone;
-			$polygones->$i->type['categorie'] = $polygone->categorie_polygone_type;
-			//if (!empty($_GET['type_geom']))
-			  $polygones->$i->geometrie =
-                $_GET['type_geom'] ?? '' =='polylines'
-                  ? str_replace (array('MultiPolygon','[[[',']]]'), array('MultiLineString','[[',']]'), $polygone->$geo)
-                  : $polygone->$geo;
-			$polygones->$i->partitif = $polygone->article_partitif;
-			$polygones->$i->lien = lien_polygone($polygone,False);
-			$polygones->$i->couleur = $couleur;
-			$i++;
-		}
-	}
+  for ($pas = (int)($nb_coul/6+1); $nb_coul%$pas == 0; $pas++); // Le premier non diviseur de nb_coul > nb_coul / 6
+  $pas_angulaire = $pas * 2*M_PI / $nb_coul;
+  foreach($polygones_bruts as $polygone)
+  {
+    $geo = "geometrie_".$req->format;
+    if (isset($polygone->$geo) &&
+      !strpos($polygone->$geo, '[]')) { // On exclue les massifs sans polygones
+      $polygones->$i = new stdClass();
+      $couleur = '#';
+        for ($c = 0; $c < 2*M_PI; $c += 2*M_PI/3) // Chacune des 3 couleurs primaires
+          $couleur .= substr (dechex ( intval(0x100 + $lum * (1 + cos ($i * $pas_angulaire + $c)))), -2);
+          // +0x100 pour bénéficier du 0 à gauche quand on passe en hexadécimal
+      $polygones->$i->nom = $polygone->nom_polygone;
+      $polygones->$i->id = $polygone->id_polygone;
+      $polygones->$i->type['id'] = $polygone->id_polygone_type;
+      $polygones->$i->type['type'] = $polygone->type_polygone;
+      $polygones->$i->type['categorie'] = $polygone->categorie_polygone_type;
+      //if (!empty($_GET['type_geom']))
+      $polygones->$i->geometrie =
+        $_GET['type_geom'] ?? '' =='polylines'
+          ? str_replace (array('MultiPolygon','[[[',']]]'), array('MultiLineString','[[',']]'), $polygone->$geo)
+          : $polygone->$geo;
+      $polygones->$i->partitif = $polygone->article_partitif;
+      $polygones->$i->lien = lien_polygone($polygone,False);
+      $polygones->$i->couleur = $couleur;
+      $i++;
+    }
+  }
 }
 $nombre_polygones = $i;
 
@@ -116,11 +116,11 @@ array_walk_recursive($polygones, 'updatebool2char'); // Remplace les False et Tr
 /****************************** FORMAT VUE ******************************/
 
 switch ($req->format) {
-    case 'gml':
-        include($config_wri['chemin_vues'].'/api/polygones.vue.gml.php');
-        break;
-    default:
-        include($config_wri['chemin_vues'].'/api/polygones.vue.json.php');
-        break;
+  case 'gml':
+    include($config_wri['chemin_vues'].'/api/polygones.vue.gml.php');
+    break;
+  default:
+    include($config_wri['chemin_vues'].'/api/polygones.vue.json.php');
+    break;
 }
 

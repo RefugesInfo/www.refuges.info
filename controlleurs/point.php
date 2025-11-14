@@ -49,7 +49,7 @@ else // le point est valide
     $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
     $vue->lien_wiki_explication_proprio=lien_wiki("informations_proprietaires");
     $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
-    
+
     $vue->localisation_point = array();
     foreach ($point->polygones as $polygone)
     {
@@ -70,14 +70,14 @@ else // le point est valide
     {
         $conditions = new stdClass;
         $conditions->limite=10;
-        
+
         // On défini le cercle (centre et rayon) dont on veut les points à proximité
         $conditions->rayon_du_cercle=5000;
         $conditions->centre_du_cercle=$point->geom;
-        
+
         $points_proches=infos_points($conditions);
         $vue->points_proches = array();
-        foreach ($points_proches as $point_proche) 
+        foreach ($points_proches as $point_proche)
         {
             //On ne veut pas dans les points proches le point lui même
             if ($point_proche->id_point!=$point->id_point)
@@ -89,7 +89,7 @@ else // le point est valide
                   $point_proche->distance_au_point=number_format($point_proche->distance,"0",",","");
                   $point_proche->distance_au_point_unite="m";
                 }
-                else 
+                else
                 {
                   $point_proche->distance_au_point=number_format($point_proche->distance/1000,"2",",","");
                   $point_proche->distance_au_point_unite="km";
@@ -97,7 +97,7 @@ else // le point est valide
                 $vue->points_proches[]=$point_proche;
             }
         }
-            
+
         /*********** Détermination de la carte à afficher ***/
         $vue->carte=TRUE;
         $vue->mini_carte=TRUE;
@@ -107,22 +107,22 @@ else // le point est valide
     foreach ($point->polygones as $polygone)
         if ($polygone->id_polygone_type==$config_wri['id_zone_reglementee'])
             $vue->polygone_avec_information=$polygone;
-            
+
     /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
     // Construction du tableau qui sera lu, ligne par ligne par la vue pour être affiché
     // On pourrait détailler en html chaque propriété entourée par un if (propriété = valide), mais ça fait beaucoup de redondance, alors ainsi, je factorise au détriment d'un peu de lisibilité
-    
+
     // Voici tous ce qui nous intéressent
     // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dur, comme par exemple récupérer
     // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
     $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points'],array('site_officiel'));
 
     $vue->infos_complementaires = array ();
-    foreach ($champs as $champ) 
+    foreach ($champs as $champ)
     {
         $champ_equivalent = "equivalent_$champ";
         // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour une grotte)
-        if ($point->$champ_equivalent!="") 
+        if ($point->$champ_equivalent!="")
         {
             switch ($champ)
             {
@@ -130,7 +130,7 @@ else // le point est valide
                     if ($point->$champ!="")
                         $val=array('valeur'=> '', 'lien' => $vue->point->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
                     break;
-                   
+
                 case 'places_matelas' : case 'places' :
                     if($point->$champ === NULL )
                         $val=array('valeur'=> '<strong>Inconnu</strong>');
@@ -146,11 +146,11 @@ else // le point est valide
                     if($point->$champ === NULL)
                         $val = array('valeur'=> '<strong>Inconnu</strong>');
                     break;
-            }            
-            
+            }
+
             if (isset($val))
                 $vue->infos_complementaires[$point->$champ_equivalent]=$val;
-            
+
         }
         unset($val);
     }
@@ -164,20 +164,20 @@ else // le point est valide
         $commentaire->date_commentaire_format_francais= date_format_francais($commentaire->ts_unix_commentaire);
         // Préparation des données et affichage d'un commentaire de la fiche d'un point
         // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire
-        if (est_autorise($commentaire->id_createur_commentaire)) 
+        if (est_autorise($commentaire->id_createur_commentaire))
         {
             $commentaire->lien_commentaire='/gestion/moderation?id_point_retour='.$commentaire->id_point.'&amp;id_commentaire='.$commentaire->id_commentaire;
             $commentaire->texte_lien_commentaire = 'Modifier';
-        } 
-        else 
+        }
+        else
         {
             // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
             $commentaire->lien_commentaire = "/avis_internaute_commentaire/$commentaire->id_commentaire/";
             $commentaire->texte_lien_commentaire = 'Info périmée ?';
         }
-        
+
         // Si, selon la base une photo existe, on va l'afficher
-        if ($commentaire->photo_existe) 
+        if ($commentaire->photo_existe)
         {
             if (isset($commentaire->date_photo))
                 $commentaire->date_photo_format_francais=strftime ("%d/%m/%Y", $commentaire->ts_unix_photo);
@@ -186,7 +186,7 @@ else // le point est valide
             // On garde une copie des commentaires avec photos pour nous fournir la liste des petite vignettes
             $vue->commentaires_avec_photo[]=$commentaire;
         }
-        
+
         $vue->commentaires[]=$commentaire;
     }
 }

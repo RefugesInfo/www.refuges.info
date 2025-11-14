@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*******************************************************************************
 Ecran d'accueil
 
@@ -36,6 +36,6 @@ $conditions = new stdClass;
 $conditions->ids_polygone_type=$config_wri['id_zone'];
 $zones=infos_polygones($conditions);
 if ($zones)
-	foreach ($zones as $zone)
-		$vue->zones_couvertes [ucfirst($zone->nom_polygone)] =
-			lien_polygone($zone)."?id_polygone_type=".$config_wri['id_massif'];
+  foreach ($zones as $zone)
+    $vue->zones_couvertes [ucfirst($zone->nom_polygone)] =
+      lien_polygone($zone)."?id_polygone_type=".$config_wri['id_massif'];

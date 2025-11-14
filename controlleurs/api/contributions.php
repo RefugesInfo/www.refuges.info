@@ -46,7 +46,7 @@ foreach ($temp as $type) {
 }
 // Par défaut, on exporte 100 nouvelles
 if(!is_numeric($req->nombre))
-	$req->nombre = 100;
+  $req->nombre = 100;
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
 foreach ($temp as $massif) {
@@ -58,7 +58,7 @@ foreach ($temp as $massif) {
 $news = nouvelles($req->nombre,$req->type,$req->massif,False,$req);
 foreach ($news as $id => $nouvelle)
 {
-	$news[$id]['date_formatee']=date("Y-m-d", (int) $nouvelle['date']);
+  $news[$id]['date_formatee']=date("Y-m-d", (int) $nouvelle['date']);
 }
 
 /****************************** FORMATAGE DU TEXTE ******************************/

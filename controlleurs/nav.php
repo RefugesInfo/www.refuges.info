@@ -1,4 +1,4 @@
-<?php 
+<?php
 /***********************************************************************************************
 Préparation d'une page HTML de type 'navigation satellite'
 avec une zone de détermination de critères de choix (couches) et une fonction de zoomage.
@@ -69,11 +69,11 @@ if (!empty($_GET['id_polygone_type']))
  * Mais je concède, que si c'est galère à maintenir (pour l'instant, je ne crois pas), se simplifier la vie est tout à fait entendable.
  */
 
-if (!empty($id_polygone)) 
+if (!empty($id_polygone))
 {
   $polygone=infos_polygone ($id_polygone,False,True);
 
-  if (empty($polygone->erreur)) 
+  if (empty($polygone->erreur))
   {
     $vue->quoi=isset($vue->contenu->type_polygone) ?
       $vue->contenu->type_polygone."s" :
@@ -104,7 +104,7 @@ if (!empty($id_polygone))
   $vue->json_polygones = $polygones_bruts[0]->geometrie_geojson;
 
   /* sly 2021-02-12 : dans un objectif de test, j'ajoute en fin de page la liste plate (dans une limite de perf de 150) des liens vers toutes les fiches du polygone considéré.
-  L'objectif est multiple : je veux savoir si ça améliore le référencement de ces pages, car je trouve que les moteurs de recherche ne les indexent que très mal. 
+  L'objectif est multiple : je veux savoir si ça améliore le référencement de ces pages, car je trouve que les moteurs de recherche ne les indexent que très mal.
   Sans doute car il ne savent pas intérpréter le js de OL alors qu'en terme de pertinence, selon moi il apparait pertinent que "refuges+écrins" devrait tomber sur la carte des écrins chez nous ;-)
   L'autre, c'est pour les utilisateurs sans javascript (ouais, ça doit plus trop exister), mais pour eux, cette page ne sert vraiment à rien !
   Et enfin, sur mobile, parfois, le js ne se charge pas en 2G, avoir cette liste donnerait a minima un truc que l'on peut "chercher" par ctrl+f
@@ -120,5 +120,6 @@ if (!empty($id_polygone))
 }
 else
   $vue->titre="Selecteur de refuges, point d'eau et cabane sur les cartes";
+
 $vue->types_point_affichables=types_point_affichables();
 

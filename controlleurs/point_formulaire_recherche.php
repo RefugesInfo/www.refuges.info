@@ -1,4 +1,4 @@
-<?php 
+<?php
 /***
 Formulaire de recherche
 ***/

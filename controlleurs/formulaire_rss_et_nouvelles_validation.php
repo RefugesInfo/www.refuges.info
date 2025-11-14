@@ -1,8 +1,7 @@
 <?php
 /**********************************************************************************************
-Préparer un lien d'exportation direct de nos données vers plein de formats pour être 
-ré-utiliser.
-Le traitement proprement dit est dans exportations.php 
+Préparer un lien d'exportation direct de nos données vers plein de formats pour êtreré-utiliser.
+Le traitement proprement dit est dans exportations.php
 **********************************************************************************************/
 
 require_once ("wiki.php");
@@ -16,7 +15,7 @@ if (!empty($_REQUEST['types_de_nouvelles']) and !empty($_REQUEST['id_massif']) )
 {
   $types_de_nouvelles = implode(',',$_REQUEST['types_de_nouvelles']);
   $liste_id_massif = implode(',',$_REQUEST['id_massif']);
-  
+
   if (!empty($_REQUEST['choix']) and $_REQUEST['choix']=='Obtenir le lien vers le flux RSS')
   {
     $schema = $_SERVER['HTTPS'] ? "https" : "http";
@@ -28,6 +27,4 @@ if (!empty($_REQUEST['types_de_nouvelles']) and !empty($_REQUEST['id_massif']) )
     $vue->url="/nouvelles/?quoi=$types_de_nouvelles&amp;ids_polygones=$liste_id_massif";
     $vue->titre_lien="Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)";
   }
-    
-} 
-
+}
