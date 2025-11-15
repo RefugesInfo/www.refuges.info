@@ -7,49 +7,48 @@
 // Les couches de fond des cartes de refuges.info
 function externTilesLayers(mapKeys, restreint) {
   return {
-    'OpenHikingMap': new myol.layer.tile.OpenHikingMap({
-      /* On peut modifier l'attribution en décommentant un ou plusieurs des champs : */
-      // url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
-      // maxZoom: 18,
-      // tileSize n'est pas modifiable dans l'appel
-      // contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-      // attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
-      // licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
-      // legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
-      /* OU carrément */
-      // attributions: '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap</a>. ' +
-      //   '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">OpenHikingMap</a>',
+    /* Appel natif d'une couche d'origine OSM :
+    'Une couche OSM': new ol.layer.Tile({
+      source: new ol.source.OSM({
+  	    // Des options de https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html
+      }),
+	    // Des options de https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html
+    }),*/
+    'OpenHikingMap': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
+        maxZoom: 18,
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+          '<a target="_blank" href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">OpenHikingMap</a> | ' +
+          '<a target="_blank" href="https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend">Légende</a>',
+      }),
     }),
-    'OpenStreetMap': new myol.layer.tile.OpenStreetMap({
-      // url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-      // contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-      // legend: 'https://www.openstreetmap.org/panes/legend',
-    }),
-    'OpenTopoMap': new myol.layer.tile.OpenTopoMap({
-      // url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
-      // maxZoom: 17,
-      // contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-      // attribution: 'https://github.com/sletuffe/OpenTopoMap/,OpenTopoMap-R',
-      // licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
-      // legend: 'https://www.geograph.org/leaflet/otm-legend.php',
-    }),
-    'Outdoors': new myol.layer.tile.Thunderforest({
-      // url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + mapKeys.thunderforest,
-      // maxZoom: 22,
-      // contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-      // attribution: 'https://www.thunderforest.com/,Thunderforest',
-      subLayer: 'outdoors',
-      key: mapKeys.thunderforest,
-      legend: '', // Ecrase la légende par défaut de myol.layer.tile.Thunderforest
-    }),
-    /* Appel natif d'une couche d'origine OSM (paramètres par défaut pour OpenStreetMap
-    'OSM': new ol.layer.Tile({
+    'OpenStreetMap': new ol.layer.Tile({
       source: new ol.source.OSM({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        attributions: undefined,
         maxZoom: 19,
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+          '<a target="_blank" href="https://www.openstreetmap.org/panes/legend">Légende</a>',
       }),
-    }),*/
+    }),
+    'OpenTopoMap': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
+        maxZoom: 17,
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+          '<a target="_blank" href="https://github.com/sletuffe/OpenTopoMap/">OpenTopoMap-R</a> | ' +
+          '<a target="_blank" href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a> | ' +
+          '<a target="_blank" href="https://www.geograph.org/leaflet/otm-legend.php">Légende</a>',
+      }),
+    }),
+    'Outdoors': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + mapKeys.thunderforest,
+        maxZoom: 22,
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+          '<a target="_blank" href="https://www.thunderforest.com/">Thunderforest</a>',
+      }),
+    }),
 
     'IGN TOP25': restreint ? null : new myol.layer.tile.IGNtop25({
       key: mapKeys.ign,
