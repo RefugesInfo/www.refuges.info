@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 02/11/2025 16:08:56 using npm run build from the src/... sources
+ * Built 16/11/2025 11:12:09 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -62711,7 +62711,7 @@
     );
   }
 
-  var loadingstrategy$1 = /*#__PURE__*/Object.freeze({
+  var loadingstrategy = /*#__PURE__*/Object.freeze({
     __proto__: null,
     all: all,
     bbox: bbox,
@@ -75379,192 +75379,6 @@
   }
 
   /**
-   * @module ol/source/StadiaMaps
-   */
-
-
-  /**
-   * @type {string}
-   */
-  const STADIA_ATTRIBUTION =
-    '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>';
-
-  /**
-   * @type {string}
-   */
-  const OMT_ATTRIBUTION =
-    '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>';
-
-  /**
-   * @type {string}
-   */
-  const STAMEN_ATTRIBUTION =
-    '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';
-
-  /**
-   * @type {Object<string, {extension: string}>}
-   */
-  const LayerConfig = {
-    'stamen_terrain': {
-      extension: 'png',
-    },
-    'stamen_terrain_background': {
-      extension: 'png',
-    },
-    'stamen_terrain_labels': {
-      extension: 'png',
-    },
-    'stamen_terrain_lines': {
-      extension: 'png',
-    },
-    'stamen_toner_background': {
-      extension: 'png',
-    },
-    'stamen_toner': {
-      extension: 'png',
-    },
-    'stamen_toner_labels': {
-      extension: 'png',
-    },
-    'stamen_toner_lines': {
-      extension: 'png',
-    },
-    'stamen_toner_lite': {
-      extension: 'png',
-    },
-    'stamen_watercolor': {
-      extension: 'jpg',
-    },
-    'alidade_smooth': {
-      extension: 'png',
-    },
-    'alidade_smooth_dark': {
-      extension: 'png',
-    },
-    'alidade_satellite': {
-      extension: 'png',
-    },
-    'outdoors': {
-      extension: 'png',
-    },
-    'osm_bright': {
-      extension: 'png',
-    },
-  };
-
-  /**
-   * @type {Object<string, {minZoom: number, maxZoom: number, retina: boolean}>}
-   */
-  const ProviderConfig = {
-    'stamen_terrain': {
-      minZoom: 0,
-      maxZoom: 18,
-      retina: true,
-    },
-    'stamen_toner': {
-      minZoom: 0,
-      maxZoom: 20,
-      retina: true,
-    },
-    'stamen_watercolor': {
-      minZoom: 1,
-      maxZoom: 18,
-      retina: false,
-    },
-  };
-
-  /**
-   * @typedef {Object} Options
-   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
-   * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
-   * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
-   * @property {string} layer Layer name. Valid values: `alidade_smooth`, `alidade_smooth_dark`, `outdoors`, `stamen_terrain`, `stamen_terrain_background`, `stamen_terrain_labels`, `stamen_terrain_lines`, `stamen_toner_background`, `stamen_toner`, `stamen_toner_labels`, `stamen_toner_lines`, `stamen_toner_lite`, `stamen_watercolor`, and `osm_bright`.
-   * @property {number} [minZoom] Minimum zoom.
-   * @property {number} [maxZoom] Maximum zoom.
-   * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
-   * Higher values can increase reprojection performance, but decrease precision.
-   * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
-   * Optional function to load a tile given a URL. The default is
-   * ```js
-   * function(imageTile, src) {
-   *   imageTile.getImage().src = src;
-   * };
-   * ```
-   * @property {number} [transition=250] Duration of the opacity transition for rendering.
-   * To disable the opacity transition, pass `transition: 0`.
-   * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
-   * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
-   * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
-   * Choose whether to use tiles with a higher or lower zoom level when between integer
-   * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
-   * @property {string} [apiKey] Stadia Maps API key. Not required for localhost or most public web deployments. See https://docs.stadiamaps.com/authentication/ for details.
-   * @property {boolean} [retina] Use retina tiles (if available; not available for Stamen Watercolor).
-   */
-
-  /**
-   * @classdesc
-   * Layer source for the Stadia Maps tile server.
-   * @api
-   */
-  class StadiaMaps extends XYZ {
-    /**
-     * @param {Options} options StadiaMaps options.
-     */
-    constructor(options) {
-      const i = options.layer.indexOf('-');
-      const provider = i == -1 ? options.layer : options.layer.slice(0, i);
-      const providerConfig = ProviderConfig[provider] || {
-        'minZoom': 0,
-        'maxZoom': 20,
-        'retina': true,
-      };
-
-      const layerConfig = LayerConfig[options.layer];
-      const query = options.apiKey ? '?api_key=' + options.apiKey : '';
-      const retina = providerConfig.retina && options.retina ? '@2x' : '';
-
-      const url =
-        options.url !== undefined
-          ? options.url
-          : 'https://tiles.stadiamaps.com/tiles/' +
-            options.layer +
-            '/{z}/{x}/{y}' +
-            retina +
-            '.' +
-            layerConfig.extension +
-            query;
-
-      const attributions = [STADIA_ATTRIBUTION, OMT_ATTRIBUTION, ATTRIBUTION];
-
-      if (options.layer.startsWith('stamen_')) {
-        attributions.splice(1, 0, STAMEN_ATTRIBUTION);
-      }
-
-      super({
-        attributions: attributions,
-        cacheSize: options.cacheSize,
-        crossOrigin: 'anonymous',
-        interpolate: options.interpolate,
-        maxZoom:
-          options.maxZoom !== undefined
-            ? options.maxZoom
-            : providerConfig.maxZoom,
-        minZoom:
-          options.minZoom !== undefined
-            ? options.minZoom
-            : providerConfig.minZoom,
-        reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-        tileLoadFunction: options.tileLoadFunction,
-        transition: options.transition,
-        url: url,
-        tilePixelRatio: retina ? 2 : 1,
-        wrapX: options.wrapX,
-        zDirection: options.zDirection,
-      });
-    }
-  }
-
-  /**
    * @module ol/source/TileWMS
    */
 
@@ -76341,7 +76155,7 @@
       Vector: VectorLayer,
     },
     Map: Map,
-    loadingstrategy: loadingstrategy$1,
+    loadingstrategy: loadingstrategy,
     proj: {
       ...proj,
       proj4: projProj4,
@@ -76584,12 +76398,13 @@
    */
 
 
-  /* Makes the attributions chain from:
-   {
-     contribution: 'link,name',
-     attribution: 'link,name',
-     licence: 'link,name',
-     legend: 'link',
+  /**
+   * Build the attributions chain from:
+    {
+      contribution: 'link,name',
+      attribution: 'link,name',
+      licence: 'link,name',
+      legend: 'link',
    }
    */
   function makeAttributions(options, dataAttribution) {
@@ -76612,99 +76427,21 @@
   }
 
   /**
-   * Virtual class to factorise XYZ layers classes
-   */
-  class layerXYZ extends TileLayer {
-    constructor(options) {
-      super({
-        source: new XYZ({
-          attributions: makeAttributions(options),
-
-          ...options,
-        }),
-
-        ...options,
-      });
-    }
-  }
-
-  /**
    * OpenStreetMap & co
    * Map : https://www.openstreetmap.org/
    * API : https://wiki.openstreetmap.org/wiki/API/
    */
   class OpenStreetMap extends TileLayer {
-    constructor(opt) {
-      const options = {
-        contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-        legend: 'https://www.openstreetmap.org/panes/legend',
-
-        ...opt,
-      };
-
+    constructor(options) {
       super({
         source: new OSM({
-          attributions: makeAttributions(options),
-
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://www.openstreetmap.org/panes/legend',
+            ...options,
+          }),
           ...options,
         }),
-        ...options,
-      });
-    }
-  }
-
-  /**
-   * OSM Topo style OpenTopoMap 
-   * Map : Hosted by https://openmaps.fr
-   * Doc : https://opentopomap.org/about
-   */
-  class OpenTopoMap extends OpenStreetMap {
-    constructor() {
-      super({
-        url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
-        maxZoom: 17,
-
-        attribution: 'https://github.com/sletuffe/OpenTopoMap/,OpenTopoMap-R',
-        licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
-        legend: 'https://www.geograph.org/leaflet/otm-legend.php',
-      });
-    }
-  }
-
-  /**
-   * Maps of https://openmaps.fr
-   * Map : https://openmaps.fr
-   * Doc : https://wiki.openstreetmap.org/wiki/OpenHikingMap
-   */
-  class OpenHikingMap extends OpenStreetMap {
-    constructor() {
-      super({
-        url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
-        maxZoom: 18,
-
-        attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
-        legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
-      });
-    }
-  }
-
-  /**
-   * Germany maps
-   * Map : https://www.kompass.de/wanderkarte/
-   * Doc : https://www.kompass.de/
-   */
-  class Kompass extends OpenStreetMap { // Austria
-    constructor(options = {}) {
-      super({
-        hidden: !options.key && options.subLayer !== 'osm', // For LayerSwitcher
-        url: options.key ?
-          'https://map{1-4}.kompass.de/{z}/{x}/{y}/kompass_' + options.subLayer + '?key=' + options.key : // Specific
-          'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
-        maxZoom: 17,
-
-        attribution: 'https://www.kompass.de/,Kompass',
-        legend: 'https://www.outdooractive.com/fr/knowledgepage/carte-kompass/43778568/#5',
-
         ...options,
       });
     }
@@ -76718,15 +76455,29 @@
   class Thunderforest extends OpenStreetMap {
     constructor(options = {}) {
       super({
-        hidden: !options.key, // For LayerSwitcher
         url: 'https://{a-c}.tile.thunderforest.com/' + options.subLayer + '/{z}/{x}/{y}.png?apikey=' + options.key,
         maxZoom: 22,
-        // subLayer: 'outdoors', ...
-        // key: '...',
-
         attribution: 'https://www.thunderforest.com/,Thunderforest',
+        ...options,
+      });
+    }
+  }
 
-        ...options, // Include key
+  /**
+   * Germany maps
+   * Map : https://www.kompass.de/wanderkarte/
+   * Doc : https://www.kompass.de/
+   */
+  class Kompass extends OpenStreetMap { // Austria
+    constructor(options = {}) {
+      super({
+        url: options.key ?
+          'https://map{1-4}.kompass.de/{z}/{x}/{y}/kompass_' + options.subLayer + '?key=' + options.key : // Specific
+          'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
+        maxZoom: 17,
+        attribution: 'https://www.kompass.de/,Kompass',
+        legend: 'https://www.outdooractive.com/fr/knowledgepage/carte-kompass/43778568/#5',
+        ...options,
       });
     }
   }
@@ -76737,14 +76488,7 @@
    * Key : https://cartes.gouv.fr
    */
   class IGN extends TileLayer {
-    constructor(opt) {
-      const options = {
-        attribution: 'https://www.geoportail.gouv.fr/,IGN',
-        legend: '',
-
-        ...opt,
-      };
-
+    constructor(options) {
       const IGNresolutions = [],
         IGNmatrixIds = [];
 
@@ -76756,34 +76500,36 @@
       super({
         source: new WMTS({
           // WMTS options
-          url: options.key ? 'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://data.geopf.fr/wmts',
+          url: options.key ?
+            'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://data.geopf.fr/wmts',
+          // layer:'mandatory',
+          // layer:'mandatory',
+          // format: 'image/???',
           style: 'normal',
           matrixSet: 'PM',
-          format: 'image/jpeg',
           tileGrid: new WMTSTileGrid({
             origin: [-20037508, 20037508],
             resolutions: IGNresolutions,
             matrixIds: IGNmatrixIds,
           }),
-
-          attributions: makeAttributions(options),
-
-          // IGN options
-          ...options, // Include layer
+          attributions: makeAttributions({
+            attribution: 'https://www.geoportail.gouv.fr/,IGN',
+            ...options,
+          }),
+          ...options,
         }),
-
         ...options, // For layer limits
       });
     }
   }
 
   class IGNtop25 extends IGN {
+    //BEST couche hors zone de définition (pôles)
     constructor(options) {
-
       super({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+        format: 'image/jpeg',
         legend: 'https://geoservices.ign.fr/sites/default/files/2021-07/DC_SCAN25_3-1.pdf',
-
         ...options,
       });
     }
@@ -76791,12 +76537,10 @@
 
   class IGNplan extends IGN {
     constructor(options) {
-
       super({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
         format: 'image/png',
         legend: 'https://geoservices.ign.fr/sites/default/files/2021-07/DC_Plan_IGN.pdf',
-
         ...options,
       });
     }
@@ -76810,18 +76554,15 @@
   class SwissTopo extends TileLayer {
     constructor(opt) {
       const options = {
-        host: 'https://wmts2{0-4}.geo.admin.ch/1.0.0/',
-        subLayer: 'ch.swisstopo.pixelkarte-farbe',
-        maxResolution: 2000, // Resolution limit above which we switch to a more global service
-        extent: [640000, 5730000, 1200000, 6100000],
-
-        attribution: 'https://map.geo.admin.ch/,SwissTopo',
-        legend: 'https://prod-swishop-s3.s3.eu-central-1.amazonaws.com/2022-04/symbols_fr_0.pdf',
-
-        ...opt,
-      };
-
-      const projectionExtent = get$2('EPSG:3857').getExtent(),
+          host: 'https://wmts2{0-4}.geo.admin.ch/1.0.0/',
+          subLayer: 'ch.swisstopo.pixelkarte-farbe',
+          maxResolution: 2000, // Resolution limit above which we switch to a more global service
+          extent: [640000, 5730000, 1200000, 6100000],
+          attribution: 'https://map.geo.admin.ch/,SwissTopo',
+          legend: 'https://prod-swishop-s3.s3.eu-central-1.amazonaws.com/2022-04/symbols_fr_0.pdf',
+          ...opt,
+        },
+        projectionExtent = get$2('EPSG:3857').getExtent(),
         resolutions = [],
         matrixIds = [];
 
@@ -76840,12 +76581,9 @@
             matrixIds: matrixIds,
           }),
           requestEncoding: 'REST',
-
           attributions: makeAttributions(options),
-
           ...options, // For attributionss
         })),
-
         ...options, // For layer limits
       });
     }
@@ -76856,28 +76594,29 @@
    * Map : https://www.ign.es/iberpix/visor
    * API : https://api-maps.ign.es/
    */
-  class IgnES extends layerXYZ {
+  class IgnES extends TileLayer {
     constructor(opt) {
       const options = {
         host: 'https://www.ign.es/wmts/',
         server: 'mapa-raster',
         subLayer: 'MTN',
         maxZoom: 20,
-
         attribution: 'https://www.ign.es/,Instituto Geográfico Nacional',
         legend: 'https://www.ign.es/web/resources/docs/IGNCnig/Especificaciones/catalogo_MTN25.pdf',
-
         ...opt,
       };
 
       super({
-        url: options.host + options.server +
-          '?layer=' + options.subLayer +
-          '&Service=WMTS&Request=GetTile&Version=1.0.0' +
-          '&Format=image/jpeg' +
-          '&style=default&tilematrixset=GoogleMapsCompatible' +
-          '&TileMatrix={z}&TileCol={x}&TileRow={y}',
-
+        source: new XYZ({
+          url: options.host + options.server +
+            '?layer=' + options.subLayer +
+            '&Service=WMTS&Request=GetTile&Version=1.0.0' +
+            '&Format=image/jpeg' +
+            '&style=default&tilematrixset=GoogleMapsCompatible' +
+            '&TileMatrix={z}&TileCol={x}&TileRow={y}',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -76895,7 +76634,6 @@
           url: 'https://chemineur.fr/assets/proxy/?s=minambiente.it', // Not available via https
           attributions: '&copy <a href="https://gn.mase.gov.it/">IGM</a>',
         }),
-
         maxResolution: 120,
         extent: [720000, 4380000, 2070000, 5970000],
       });
@@ -76929,27 +76667,27 @@
    * Ordnance Survey : Great Britain
    * API & key : https://osdatahub.os.uk/
    */
-  class OS extends layerXYZ {
+  class OS extends TileLayer {
     constructor(opt) {
       const options = {
-        hidden: !opt.key, // For LayerSwitcher
         subLayer: 'Outdoor_3857',
         minZoom: 7,
         maxZoom: 16,
         extent: [-1198263, 6365000, 213000, 8702260],
-
         attribution: 'https://explore.osmaps.com/,UK Ordnancesurvey maps',
         legend: 'https://www.ordnancesurvey.co.uk/mapzone/assets/doc/Explorer-25k-Legend-en.pdf',
-
         ...opt,
       };
 
       super({
-        url: 'https://api.os.uk/maps/raster/v1/zxy/' +
-          options.subLayer +
-          '/{z}/{x}/{y}.png' +
-          '?key=' + options.key,
-
+        source: new XYZ({
+          url: 'https://api.os.uk/maps/raster/v1/zxy/' +
+            options.subLayer +
+            '/{z}/{x}/{y}.png' +
+            '?key=' + options.key,
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -76961,37 +76699,23 @@
    * API : https://developers.arcgis.com/javascript/latest/
    * No key
    */
-  class ArcGIS extends layerXYZ {
+  class ArcGIS extends TileLayer {
     constructor(opt) {
       const options = {
         host: 'https://server.arcgisonline.com/ArcGIS/rest/services/',
         subLayer: 'World_Imagery',
         maxZoom: 19,
-
         attribution: 'https://www.arcgis.com/,ArcGIS (Esri)',
-
         ...opt,
       };
 
       super({
-        url: options.host + options.subLayer + '/MapServer/tile/{z}/{y}/{x}',
+        source: new XYZ({
+          url: options.host + options.subLayer + '/MapServer/tile/{z}/{y}/{x}',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
-      });
-    }
-  }
-
-  /**
-   * Maxbox (Maxar)
-   * Key : https://www.mapbox.com/
-   */
-  class Maxbox extends layerXYZ {
-    constructor(options = {}) {
-      super({
-        hidden: !options.key, // For LayerSwitcher
-        url: 'https://api.mapbox.com/v4/' + options.tileset + '/{z}/{x}/{y}@2x.webp?access_token=' + options.key,
-        // No maxZoom
-
-        attribution: 'https://www.mapbox.com/,Mapbox',
       });
     }
   }
@@ -76999,20 +76723,21 @@
   /**
    * Google
    */
-  class Google extends layerXYZ {
+  class Google extends TileLayer {
     constructor(opt) {
       const options = {
         subLayers: 'p', // Terrain
         maxZoom: 22,
-
         attribution: 'https://www.google.com/maps,Google',
-
         ...opt,
       };
 
       super({
-        url: 'https://mt{0-3}.google.com/vt/lyrs=' + options.subLayers + '&hl=fr&x={x}&y={y}&z={z}',
-
+        source: new XYZ({
+          url: 'https://mt{0-3}.google.com/vt/lyrs=' + options.subLayers + '&hl=fr&x={x}&y={y}&z={z}',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -77024,14 +76749,12 @@
    * Key : https://www.bingmapsportal.com/
    */
   let Bing$1 = class Bing extends TileLayer {
+    //TODO https://blogs.bing.com/maps/2025-06/Bing-Maps-for-Enterprise-Basic-Account-shutdown-June-30,2025
     constructor(options = {}) {
       super({
-        hidden: !options.key, // For LayerSwitcher
         imagerySet: 'Road',
-        // Mandatory 'key',
         // No explicit zoom
         // attributions, defined by ol.source.BingMaps
-
         ...options,
       });
 
@@ -77045,19 +76768,31 @@
   };
 
   /**
-   * Simple layers
-   * Doc : https://maps.stamen.com/
+   * Maxbox (Maxar)
+   * Key : https://www.mapbox.com/
+   * tileset
+      Satellite Streets
+      ???
+      Light
+      Dark
+      Streets
+      Outdoors
    */
-  class Stamen extends TileLayer {
-    constructor(options) {
-      super({
-        source: new StadiaMaps({
-          layer: 'stamen_watercolor', // Default
-          // attributions: defined by ol.source.StadiaMaps
+  class Maxbox extends TileLayer {
+    constructor(opt) {
+      const options = {
+        tileset: 'mapbox.satellite', // Maxar
+        attribution: 'https://www.mapbox.com/,Mapbox',
+        ...opt,
+      };
 
+      super({
+        source: new XYZ({
+          url: 'https://api.mapbox.com/v4/' + options.tileset +
+            '/{z}/{x}/{y}@2x.webp?access_token=' + options.key,
+          attributions: makeAttributions(options),
           ...options,
         }),
-
         ...options,
       });
     }
@@ -77065,14 +76800,32 @@
 
   /**
    * Simple shematic layer
+   * DOC https://github.com/CartoDB/basemap-styles/tree/master
    * API : https://api-docs.carto.com/
+      light_all,
+      dark_all,
+      light_nolabels,
+      light_only_labels,
+      dark_nolabels,
+      dark_only_labels,
+      rastertiles/voyager,
+      rastertiles/voyager_nolabels,
+      rastertiles/voyager_only_labels,
+      rastertiles/voyager_labels_under
    */
-  class CartoDB extends layerXYZ {
-    constructor(options) {
-      super({
-        url: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-        attribution: 'https://carto.com/attribution/,CartoDB',
+  class CartoDB extends TileLayer {
+    constructor(opt) {
+      const options = {
+        tileset: 'light_all',
+        ...opt,
+      };
 
+      super({
+        source: new XYZ({
+          url: 'https://basemaps.cartocdn.com/rastertiles/' + options.tileset + '/{z}/{x}/{y}.png',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -77081,68 +76834,65 @@
   /**
    * Simple layer displaying a zoom error
    */
-  class NoTile extends layerXYZ {
-    constructor(options) {
+  class NoTile extends TileLayer {
+    constructor() {
       super({
-        url: 'https://ecn.t0.tiles.virtualearth.net/tiles/r000000000000000000.jpeg?g=1',
-        attributions: 'No tile',
-
-        ...options,
+        source: new XYZ({
+          url: 'https://ecn.t0.tiles.virtualearth.net/tiles/r000000000000000000.jpeg?g=1',
+          attributions: 'No tile',
+        }),
       });
     }
   }
-
-  /**
-   * RGB elevation (Mapbox)
-   * Each pixel color encode the elevation
-   * Doc: https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/
-   * elevation = -10000 + (({R} * 256 * 256 + {G} * 256 + {B}) * 0.1)
-   * Key : https://www.mapbox.com/
-   */
-  class MapboxElevation extends Maxbox {
-    constructor(options = {}) {
-      super({
-        hidden: !options.key, // For LayerSwitcher
-        ...options,
-        tileset: 'mapbox.terrain-rgb',
-      });
-    }
-  }
-
-  /**
-   * RGB elevation (MapTiler)
-   * Doc: https://cloud.maptiler.com/tiles/terrain-rgb-v2/
-   * Doc: https://documentation.maptiler.com/hc/en-us/articles/4405444055313-RGB-Terrain-by-MapTiler
-   * elevation = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1
-   * Key : https://cloud.maptiler.com/account/keys/
-   */
-  /*// Backup of Maxbox elevation
-  export class MapTilerElevation extends layerXYZ {
-    constructor(options = {}) {
-      super({
-        hidden: !options.key, // For LayerSwitcher
-        url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
-        maxZoom: 12,
-  	  
-        ...options,
-      });
-    }
-  }*/
 
   /**
    * Tile layers examples
    */
+  // Carte refuges.info
   function wriNavLayers(options = {}) {
     return {
-      // Carte refuges.info
-      'OpenHikingMap': new OpenHikingMap(),
-      'OpenStreetMap': new OpenStreetMap(),
-      'OpenTopoMap': new OpenTopoMap(),
-      'Outdoors': new Thunderforest({
-        key: options.thunderforest, // For simplified options
-        ...options.thunderforest, // Include key
-        subLayer: 'outdoors',
-        legend: '',
+      'OpenHikingMap': new TileLayer({
+        source: new OSM({
+          url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
+          maxZoom: 18,
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
+            legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
+          }),
+        }),
+      }),
+      'OpenStreetMap': new TileLayer({
+        source: new OSM({
+          url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          maxZoom: 19,
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://www.openstreetmap.org/panes/legend',
+          }),
+        }),
+      }),
+      'OpenTopoMap': new TileLayer({
+        source: new OSM({
+          url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
+          maxZoom: 17,
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            attribution: 'https://github.com/sletuffe/OpenTopoMap/,OpenTopoMap-R',
+            licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
+            legend: 'https://www.geograph.org/leaflet/otm-legend.php',
+          }),
+        }),
+      }),
+      'Outdoors': new TileLayer({
+        source: new OSM({
+          url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + options.thunderforest,
+          maxZoom: 22,
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            attribution: 'https://www.thunderforest.com/,Thunderforest',
+          }),
+        }),
       }),
 
       'IGN TOP25': new IGNtop25({
@@ -77166,8 +76916,7 @@
         subLayers: 's',
       }),
       'Photo Maxar': new Maxbox({
-        key: options.mapbox, // For simplified options
-        ...options.mapbox, // Include key
+        key: options.mapbox,
         tileset: 'mapbox.satellite',
       }),
     }
@@ -77327,22 +77076,19 @@
         subLayers: 's,h',
       }),
 
-      'MapBox elevation': new MapboxElevation({
+      /**
+       * RGB elevation (Mapbox)
+       * Each pixel color encode the elevation
+       * Doc: https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/
+       * elevation = -10000 + (({R} * 256 * 256 + {G} * 256 + {B}) * 0.1)
+       * Key : https://www.mapbox.com/
+       */
+      'MapBox elevation': new Maxbox({
+        tileset: 'mapbox.terrain-rgb',
         key: options.mapbox, // For simplified options
-        ...options.mapbox, // Include key
       }),
 
       'CartoDB': new CartoDB(),
-      'Stamen watercolor': new Stamen(),
-      'Stamen terrain': new Stamen({
-        layer: 'stamen_terrain',
-      }),
-      'Stamen toner': new Stamen({
-        layer: 'stamen_toner',
-      }),
-      'Stamen toner lite': new Stamen({
-        layer: 'stamen_toner_lite',
-      }),
       'No tile': new NoTile(),
       'Blank': new TileLayer(),
     };
@@ -77360,14 +77106,10 @@
     IGNtop25: IGNtop25,
     IgnES: IgnES,
     Kompass: Kompass,
-    MapboxElevation: MapboxElevation,
     Maxbox: Maxbox,
     NoTile: NoTile,
     OS: OS,
-    OpenHikingMap: OpenHikingMap,
     OpenStreetMap: OpenStreetMap,
-    OpenTopoMap: OpenTopoMap,
-    Stamen: Stamen,
     SwissTopo: SwissTopo,
     Thunderforest: Thunderforest,
     collection: collection$2,
@@ -77382,11 +77124,10 @@
    */
 
 
-  class BackgroundLayer extends Stamen {
+  class BackgroundLayer extends CartoDB {
     constructor(options) {
       // High resolution background layer
       super({
-        layer: 'stamen_toner_lite',
         minResolution: 20,
         visible: false,
 
@@ -77394,7 +77135,9 @@
       });
 
       // Low resolution background layer
-      this.lowResLayer = new NoTile({
+      //TODO BUG apply to hors zone
+      //TODO BUG no apply under zoom limit
+      this.lowResLayer = new CartoDB({
         maxResolution: this.getMinResolution(),
         visible: false,
       });
@@ -77445,7 +77188,7 @@
       // Filter null or hidden layers
       this.layers = {};
       for (const name in options.layers)
-        if (options.layers[name] && !options.layers[name].getProperties().hidden)
+        if (options.layers[name]) //TODO PURGE others && !options.layers[name].getProperties().hidden)
           this.layers[name] = options.layers[name];
 
       // Get baselayer from url hash (#baselayer=...) if any
@@ -79100,7 +78843,7 @@
       });
       this.geolocation.on('change', evt => this.subMenuAction(evt));
       this.geolocation.on('error', error => {
-        console.log('Geolocation error: ' + error.message);
+        console.error('Geolocation error: ' + error.message);
       });
 
       return super.setMap(map);
@@ -79467,463 +79210,6 @@
   };
 
   /**
-   * VectorEditor layer to edit GeoJSON lines & polygons
-   */
-
-
-  class VectorEditor extends VectorLayer {
-    constructor(opt) {
-      const options = {
-        geoJsonId: 'geojson',
-        format: new GeoJSON(),
-        dataProjection: 'EPSG:4326',
-        featureProjection: 'EPSG:3857',
-        decimals: 5, //Output precision
-        tolerance: 7, // Px
-        // direction: false, // Add arrows to each line segment to show the direction
-        // canMerge: false, // Merge lines having a common end
-        // withPolys: false, // Can edit polygons
-        // withHoles: false, // Allow holes in polygons
-        // baseStyleOptions: {},
-        // selectedStyleOptions: {},
-
-        writeGeoJson: () => // writeGeoJson (features, lines, polys, options)
-          this.options.format.writeFeatures(
-            this.editedSource.getFeatures(),
-            this.options,
-          ),
-
-        ...opt,
-      };
-
-      // Read data in an html element
-      const geoJsonEl = document.getElementById(options.geoJsonId) ||
-        document.createElement('textarea'),
-        geoJson = geoJsonEl.value.trim() ||
-        geoJsonEl.innerHTML.trim() ||
-        '{"type":"FeatureCollection","features":[]}';
-
-      // The editor source
-      const editedSource = new VectorSource({
-        features: options.format.readFeatures(geoJson, options),
-        wrapX: false,
-
-        ...options,
-      });
-
-      // The editor layer
-      super({
-        source: editedSource,
-        zIndex: 400, // Editor & cursor above the features
-        style: new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 2,
-          }),
-          fill: new Fill({
-            color: 'rgba(0,0,255,0.2)',
-          }),
-
-          ...options.baseStyleOptions,
-        }),
-
-        ...options,
-      });
-
-      this.options = options;
-      this.geoJsonEl = geoJsonEl;
-      this.editedSource = editedSource;
-      this.snapSource = new VectorSource({});
-    } // End constructor
-
-    setMapInternal(map) {
-      super.setMapInternal(map);
-      this.map = map;
-
-      // Interactions
-      this.selectInteraction = new Select({
-        hitTolerance: this.options.tolerance, // Default is 0
-        toggleCondition: never, // No deselection on shift click
-        filter: (f, layer) => layer && (layer.getSource() === this.editedSource),
-        style: (f, r) => this.selectStyles(f, r),
-      });
-
-      this.modifyInteraction = new Modify({
-        features: this.selectInteraction.getFeatures(),
-        pixelTolerance: this.options.tolerance, // Default is 10
-      });
-
-      if (this.options.withPolys)
-        this.drawPolyInteraction = new Draw({ // Draw line
-          type: 'Polygon',
-          source: this.editedSource,
-          traceSource: this.snapSource,
-          trace: true,
-          stopClick: true, // Avoid zoom when finish drawing by doubleclick
-          style: f => this.selectStyles(f),
-        });
-
-      this.drawLineInteraction = new Draw({ // Draw line
-        type: 'LineString',
-        source: this.editedSource,
-        traceSource: this.snapSource,
-        trace: true,
-        stopClick: true, // Avoid zoom when finish drawing by doubleclick
-        style: f => this.selectStyles(f),
-      });
-
-      this.snapInteraction = new Snap({
-        source: this.editedSource,
-        pixelTolerance: this.options.tolerance, // Default is 10
-      });
-
-      // Buttons
-      const buttonsName = this.options.withPolys ? ['modify', 'drawPoly', 'drawLine'] : ['modify', 'drawLine'];
-
-      buttonsName.forEach(intName => {
-        const buttonEl = document.createElement('button'),
-          element = document.createElement('div');
-
-        buttonEl.setAttribute('type', 'button');
-        element.className = 'ol-unselectable ol-control edit-button edit-button-' + intName;
-        element.appendChild(buttonEl);
-
-        const helpEl = document.getElementById('edit-help-' + intName);
-        if (helpEl)
-          element.appendChild(helpEl);
-
-        buttonEl.addEventListener('click', () => this.restartInteractions(intName));
-
-        // Add the button to the map
-        map.addControl(new Control({
-          element: element,
-        }));
-      });
-
-      // Interactions listeners
-      this.selectInteraction.on('select', () => this.optimiseAndSave()); // Merge old separated segments
-
-      this.modifyInteraction.on('modifystart', evt => {
-        const oEvt = evt.mapBrowserEvent.originalEvent,
-          selectedFeature = this.selectInteraction.getFeatures().item(0),
-          coordinates = selectedFeature.getGeometry().getCoordinates();
-
-        // Shift + click : reverse line direction
-        if (oEvt.shiftKey && !oEvt.ctrlKey && !oEvt.altKey &&
-          typeof coordinates[0][0] === 'number') {
-          this.editedSource.removeFeature(selectedFeature);
-
-          this.editedSource.addFeature(new Feature({
-            geometry: new LineString(coordinates.reverse()),
-          }));
-        }
-
-        // Ctrl+Alt+click on segment : delete the line or poly
-        if (!oEvt.shiftKey && oEvt.ctrlKey && oEvt.altKey)
-          this.editedSource.removeFeature(selectedFeature);
-      });
-
-      this.editedSource.on('addfeature', () => {
-        this.optimiseAndSave();
-        this.restartInteractions('modify');
-      });
-
-      this.modifyInteraction.on('modifyend', () => this.optimiseAndSave());
-
-      // At init
-      this.map.once('loadend', () => {
-        this.coordinate = this.map.getView().getCenter();
-
-        this.optimiseAndSave();
-        this.restartInteractions('modify');
-      });
-
-      map.on('pointermove', evt => {
-        this.coordinate = evt.coordinate;
-
-        // Change pointer if a feature is hovered
-        const selectedFeatures = this.selectInteraction.getFeatures();
-
-        this.map.getTargetElement().classList.remove('edit-pointed');
-        if (selectedFeatures.getLength()) {
-          this.map.forEachFeatureAtPixel(
-            evt.pixel,
-            feature => {
-              if (feature !== selectedFeatures.item(0))
-                this.map.getTargetElement().classList.add('edit-pointed');
-            }, {
-              layerFilter: (layer) => layer.getSource() === this.editedSource, // Only the edited layer
-              hitTolerance: this.options.tolerance, // Default is 0
-            },
-          );
-        }
-      });
-
-      map.on('click', evt => {
-        const oEvt = evt.originalEvent;
-
-        if (!oEvt.shiftKey && oEvt.ctrlKey && !oEvt.altKey)
-          this.optimiseAndSave(
-            this.snapInteraction.snapTo(
-              evt.pixel,
-              evt.coordinate,
-              map,
-            ).vertex
-          );
-      });
-    } // End setMapInternal
-
-    restartInteractions(intName) {
-      const interactionName = this.options.withPolys ? ['select', 'modify', 'drawPoly', 'drawLine', 'snap'] : ['select', 'modify', 'drawLine', 'snap'];
-
-      interactionName.forEach(i =>
-        this.map.removeInteraction(this[i + 'Interaction'])
-      );
-
-      if (intName === 'modify')
-        this.map.addInteraction(this.selectInteraction);
-
-      this.map.addInteraction(this[intName + 'Interaction']);
-      this.map.addInteraction(this.snapInteraction); // Must be added after the others
-
-      this.map.getTargetElement().firstChild.className = 'ol-viewport edit-view-' + intName;
-
-      // For snap & traceSource : register again the full list of features as addFeature manages already registered
-      this.snapSource.clear();
-      this.map.getLayers().forEach(layer => {
-        if (layer.getSource() !== this.editedSource &&
-          layer.getSource() &&
-          layer.getSource().getFeatures) // Vector layers only
-          layer.getSource().getFeatures().forEach(feature => {
-            this.snapInteraction.addFeature(feature);
-            this.snapSource.addFeature(feature);
-          });
-      });
-    }
-
-    optimiseAndSave(splitCord) {
-      if (!this.semaphore) { // Avoid recursion when adding the features
-        this.semaphore = true;
-
-        // Get optimized coords
-        const editedFeatures = this.editedSource.getFeatures(), // Get edited features
-          coordinates = editedFeatures.map(
-            f => this.flatFeatures(f.getGeometry()) // Get flat coordinates
-          ),
-          // Get all edited features as array of lines coordinates
-          lines = this.flatCoord(coordinates, splitCord),
-          polys = [];
-
-        // Merge lines having a common end
-        if (this.options.canMerge)
-          for (const a in lines) {
-            for (let b = 0; b < a; b++) { // Once each combination
-              if (lines[b]) {
-                const m = [a, b];
-
-                for (let i = 4; i; i--) // 4 times
-                  if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
-                    // Shake lines end to explore all possibilities
-                    m.reverse();
-                    lines[m[0]].reverse();
-
-                    // Merge 2 lines having 2 ends in common
-                    if (this.compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0], splitCord)) {
-                      lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1)).reverse();
-                      delete lines[m[1]]; // Remove the line but don't renumber the array keys
-                    }
-                  }
-              }
-            }
-          }
-
-        // Make polygons with looped lines
-        if (this.options.withPolys)
-          for (const a in lines)
-            if (this.compareCoords(lines[a]) && // If this line is closed
-              !this.compareCoords(splitCord, lines[a][0])) { // Except if we just split it
-              polys.push([lines[a]]); // Add the polygon
-              delete lines[a]; // Forget the line
-            }
-
-        // Makes holes if a polygon is included in a biggest one
-        if (this.options.withHoles)
-          for (const p1 in polys) { // Explore all Polygons combinaison
-            const fs = new Polygon(polys[p1]);
-
-            for (const p2 in polys)
-              if (polys[p2] && p1 !== p2) {
-                let intersects = true;
-
-                for (const c in polys[p2][0])
-                  if (!fs.intersectsCoordinate(polys[p2][0][c]))
-                    intersects = false;
-
-                if (intersects) { // If one intersects a bigger
-                  polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
-                  delete polys[p2]; // Forget the smaller
-                }
-              }
-          }
-
-        // Recreate features
-        this.editedSource.clear();
-        lines.forEach(l => {
-          this.editedSource.addFeature(new Feature({
-            geometry: new LineString(l),
-          }));
-        });
-        polys.forEach(p => {
-          this.editedSource.addFeature(new Feature({
-            geometry: new Polygon(p),
-          }));
-        });
-
-        // Save geometries in <EL> as geoJSON at every change
-        if (this.geoJsonEl)
-          this.geoJsonEl.value = this.options.writeGeoJson(
-            this.editedSource.getFeatures(),
-            lines.filter(Boolean),
-            polys.filter(Boolean),
-            this.options,
-          ).replaceAll(',"properties":null', '');
-
-        // Select the feature closest to the mouse position
-        //TODO do it also when loading a file
-        const selectedFeatures = this.selectInteraction.getFeatures();
-
-        if (this.editedSource.getFeatures().length) {
-          selectedFeatures.clear();
-          selectedFeatures.push(
-            this.editedSource.getClosestFeatureToCoordinate(this.coordinate)
-          );
-        }
-        delete this.semaphore;
-      }
-    } // End optimiseAndSave
-
-    flatFeatures(geom) {
-      if (geom.getType().match(/collection/iu)) // Recurse Collections
-        return geom.getGeometries().map(g => this.flatFeatures(g));
-      return geom.getCoordinates();
-    }
-
-    // Get all lines fragments (lines, polylines, polygons, multipolygons, hole polygons, ...) at the same level
-    flatCoord(coords, splitCord) {
-      const lines = [];
-
-      coords.forEach(segmentCoords => {
-        if (typeof segmentCoords[0] === 'object') {
-          if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
-            lines.push(...this.flatCoord(segmentCoords, splitCord));
-          else if (typeof segmentCoords[0][0] === 'number') { // Lines
-            if (splitCord) {
-              lines.push([]);
-              segmentCoords.forEach(p => {
-                lines[lines.length - 1].push(p);
-                // Split segments if required
-                if (this.compareCoords(splitCord, p))
-                  lines.push([p]);
-              });
-            } else
-              lines.push(segmentCoords);
-          }
-        }
-      });
-
-      return lines;
-    }
-
-    compareCoords(a, b, splitCord) {
-      if (!a) return false;
-      if (this.compareCoords(splitCord, a)) return false; // Except if we just split it
-      if (!b) return this.compareCoords(a[0], a[a.length - 1]); // Compare start with end
-      return a[0] === b[0] && a[1] === b[1]; // 2 coordinates
-    }
-
-    // Style to color selected features with arrows, begin & end points
-    selectStyles(feature, resolution) {
-      const geometry = feature.getGeometry(),
-
-        selectedStyleOptions = {
-          // Lines
-          stroke: new Stroke({
-            color: 'red',
-            width: 2,
-          }),
-          // Polygons
-          fill: new Fill({
-            color: 'rgba(255,0,0,0.2)',
-          }),
-          // Begin & end marker
-          radius: 3,
-
-          ...this.options.selectedStyleOptions,
-        },
-
-        circle = new CircleStyle(selectedStyleOptions),
-
-        featureStyles = [
-          new Style({
-            // Line & Poly
-            ...selectedStyleOptions,
-            // Draw marker
-            image: circle,
-          }),
-        ];
-
-      // Circle at the ends of the line
-      if (geometry.getCoordinates) {
-        const coordinates = geometry.getCoordinates(),
-          circlesCoords = [coordinates[0]];
-
-        if (!this.options.direction)
-          circlesCoords.push(coordinates[coordinates.length - 1]);
-
-        circlesCoords.forEach(cc => {
-          featureStyles.push(
-            new Style({
-              geometry: new Point$1(cc),
-              image: circle,
-            }),
-          );
-        });
-      }
-
-      // Arrows to show the line direction
-      if (this.options.direction && geometry.forEachSegment && resolution) {
-        let last = null;
-
-        geometry.forEachSegment((start, end) => {
-          if (!last) last = start;
-
-          const dx = end[0] - last[0],
-            dy = end[1] - last[1];
-
-          if (Math.abs(dx) + Math.abs(dy) > resolution * 50) {
-            last = end;
-            featureStyles.push(
-              new Style({
-                geometry: new Point$1(end),
-                image: new Icon({
-                  rotateWithView: true,
-                  rotation: -Math.atan2(dy, dx),
-                  src: 'data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" width="10" height="10">\
-<path stroke="red" d="M0 0 4 3 M4 3 0 6" />\
-</svg>',
-                }),
-              }),
-            );
-          }
-        });
-      }
-
-      return featureStyles;
-    };
-  }
-
-  /**
    * Hover & click management
    * Display the hovered feature with the hover style
    * Go to the link property when click a feature
@@ -80043,6 +79329,55 @@
       map.lastHoveredSubFeature = hoveredSubFeature;
     }
   }
+
+  /**
+   * Strategy for loading elements based on fixed tile grid
+   * Following layer option
+       tiledBBoxStrategy: {
+         1000: 10, // tilesize = 1000 Mercator unit up to resolution = 10 meters per pixel
+       },
+   */
+  function tiledBboxStrategy(extent, resolution) {
+    //TODO BUG obsolescence de toutes les tuiles après 1 modif: pb hors ligne
+    /* eslint-disable-next-line consistent-this, no-invalid-this */
+    const layer = this,
+      tsur = layer.options.tiledBBoxStrategy || {},
+      found = Object.keys(tsur).find(k => tsur[k] > resolution),
+      tileSize = parseInt(found, 10),
+      tiledExtent = [];
+
+    if (typeof found === 'undefined')
+      return [extent]; // Fall back to bbox strategy
+
+    for (let lon = Math.floor(extent[0] / tileSize); lon < Math.ceil(extent[2] / tileSize); lon++)
+      for (let lat = Math.floor(extent[1] / tileSize); lat < Math.ceil(extent[3] / tileSize); lat++)
+        tiledExtent.push([
+          Math.round(lon * tileSize),
+          Math.round(lat * tileSize),
+          Math.round(lon * tileSize + tileSize),
+          Math.round(lat * tileSize + tileSize),
+        ]);
+
+    if (layer.options.debug) {
+      layer.logs = {
+        tileSize: Math.round(tileSize / 1414) + '*' + Math.round(tileSize / 1414) + 'km',
+        isCluster: resolution > layer.options.serverClusterMinResolution,
+      };
+      console.info(
+        'Request ' + tiledExtent.length +
+        ' tile' + (tiledExtent.length > 1 ? 's ' : ' ') +
+        layer.logs.tileSize + ' for ' +
+        Math.round(resolution) + 'm/px resolution '
+      );
+    }
+
+    return tiledExtent;
+  }
+
+  var myLoadingStrategy = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    tiledBboxStrategy: tiledBboxStrategy
+  });
 
   function globals (defs) {
     defs('EPSG:4326', '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees');
@@ -90651,34 +89986,6 @@
   });
 
   /**
-   * Strategy for loading elements based on fixed position and size tiles
-   * The position is centered on fixed regular Mercator patterns
-   * For high resolutions, the maximum tile size corresponds to a screen square in pixels
-   * For low resolutions, the minimum tile size corresponds to a ground square in meters
-   */
-  function tiledBbox(extent, resolution) {
-    const byStepResolution = Math.exp(Math.round(Math.log(resolution))),
-      tileSize = Math.max(byStepResolution * 1000, 50000), // (pixels, meters)
-      extents = [];
-
-    for (let lon = Math.floor(extent[0] / tileSize); lon < Math.ceil(extent[2] / tileSize); lon++)
-      for (let lat = Math.floor(extent[1] / tileSize); lat < Math.ceil(extent[3] / tileSize); lat++)
-        extents.push([
-          Math.round(lon * tileSize),
-          Math.round(lat * tileSize),
-          Math.round(lon * tileSize + tileSize),
-          Math.round(lat * tileSize + tileSize),
-        ]);
-
-    return extents;
-  }
-
-  var loadingstrategy = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    tiledBbox: tiledBbox
-  });
-
-  /**
    * MyVectorLayer class to facilitate vector layers display
    */
 
@@ -90713,7 +90020,18 @@
       });
 
       // Compute properties when the layer is loaded & before the cluster layer is computed
-      this.on('change', () =>
+      this.on('change', () => {
+        this.logs ??= {};
+        if (this.options.debug)
+          console.info(
+            'Receive 1 tile ' +
+            this.logs.tileSize + ', ' + this.getFeatures().length +
+            (this.logs.isCluster ? ' clusters, ' : ' points, ') +
+            transform$1(getCenter(this.getExtent()), 'EPSG:3857', 'EPSG:4326')
+            .map(x => Math.round(x * 1000) / 1000)
+            .join('°E/') + '°N'
+          );
+
         this.getFeatures().forEach(f => {
           if (!f.yetAdded) {
             f.yetAdded = true;
@@ -90722,8 +90040,8 @@
               true, // Silent : add the feature without refresh the layer
             );
           }
-        })
-      );
+        });
+      });
     }
 
     tuneDistance() {} // MyClusterSource compatibility
@@ -90979,7 +90297,7 @@
         // Methods to instantiate
         // url (extent, resolution, mapProjection) // Calculate the url
         // query (extent, resolution, mapProjection, optioons) ({_path: '...'}),
-        // bbox (extent, resolution, mapProjection) => {}
+        // bboxParameter (extent, resolution, mapProjection) => {}
         // addProperties (properties) => {}, // Add properties to each received features
 
         ...opt,
@@ -90997,7 +90315,7 @@
       this.host = options.host;
       this.url ||= options.url;
       this.query ||= options.query;
-      this.bbox ||= options.bbox;
+      this.bboxParameter ||= options.bboxParameter;
       this.addProperties ||= options.addProperties;
       this.style ||= options.style;
       this.strategy = options.strategy;
@@ -91014,13 +90332,7 @@
       const urlArgs = this.query(...args, this.options),
         url = this.host + urlArgs._path; // Mem _path
 
-      if (this.strategy === bbox ||
-        this.strategy === tiledBbox)
-        urlArgs.bbox = this.bbox(...args);
-
-      // Add a pseudo parameter if any marker or edit has been done
-      const version = sessionStorage.myolLastchange ?
-        '&' + Math.round(sessionStorage.myolLastchange / 2500 % 46600).toString(36) : '';
+      urlArgs.bbox = this.bboxParameter(...args);
 
       // Clean null & not relative parameters
       Object.keys(urlArgs).forEach(k => {
@@ -91028,10 +90340,14 @@
           delete urlArgs[k];
       });
 
-      return url + '?' + new URLSearchParams(urlArgs).toString() + version;
+      // Add a pseudo parameter if any marker or edit has been done
+      if (this.options.lastChangeTime)
+        urlArgs.v = this.options.lastChangeTime;
+
+      return url + '?' + new URLSearchParams(urlArgs).toString();
     }
 
-    bbox(extent, resolution, mapProjection) {
+    bboxParameter(extent, resolution, mapProjection) {
       return transformExtent(
         extent,
         mapProjection,
@@ -91055,6 +90371,463 @@
     reload() {
       return super.reload(this.selector.getSelection().length > 0);
     }
+  }
+
+  /**
+   * VectorEditor layer to edit GeoJSON lines & polygons
+   */
+
+
+  class VectorEditor extends VectorLayer {
+    constructor(opt) {
+      const options = {
+        geoJsonId: 'geojson',
+        format: new GeoJSON(),
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+        decimals: 5, //Output precision
+        tolerance: 7, // Px
+        // direction: false, // Add arrows to each line segment to show the direction
+        // canMerge: false, // Merge lines having a common end
+        // withPolys: false, // Can edit polygons
+        // withHoles: false, // Allow holes in polygons
+        // baseStyleOptions: {},
+        // selectedStyleOptions: {},
+
+        writeGeoJson: () => // writeGeoJson (features, lines, polys, options)
+          this.options.format.writeFeatures(
+            this.editedSource.getFeatures(),
+            this.options,
+          ),
+
+        ...opt,
+      };
+
+      // Read data in an html element
+      const geoJsonEl = document.getElementById(options.geoJsonId) ||
+        document.createElement('textarea'),
+        geoJson = geoJsonEl.value.trim() ||
+        geoJsonEl.innerHTML.trim() ||
+        '{"type":"FeatureCollection","features":[]}';
+
+      // The editor source
+      const editedSource = new VectorSource({
+        features: options.format.readFeatures(geoJson, options),
+        wrapX: false,
+
+        ...options,
+      });
+
+      // The editor layer
+      super({
+        source: editedSource,
+        zIndex: 400, // Editor & cursor above the features
+        style: new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 2,
+          }),
+          fill: new Fill({
+            color: 'rgba(0,0,255,0.2)',
+          }),
+
+          ...options.baseStyleOptions,
+        }),
+
+        ...options,
+      });
+
+      this.options = options;
+      this.geoJsonEl = geoJsonEl;
+      this.editedSource = editedSource;
+      this.snapSource = new VectorSource({});
+    } // End constructor
+
+    setMapInternal(map) {
+      super.setMapInternal(map);
+      this.map = map;
+
+      // Interactions
+      this.selectInteraction = new Select({
+        hitTolerance: this.options.tolerance, // Default is 0
+        toggleCondition: never, // No deselection on shift click
+        filter: (f, layer) => layer && (layer.getSource() === this.editedSource),
+        style: (f, r) => this.selectStyles(f, r),
+      });
+
+      this.modifyInteraction = new Modify({
+        features: this.selectInteraction.getFeatures(),
+        pixelTolerance: this.options.tolerance, // Default is 10
+      });
+
+      if (this.options.withPolys)
+        this.drawPolyInteraction = new Draw({ // Draw line
+          type: 'Polygon',
+          source: this.editedSource,
+          traceSource: this.snapSource,
+          trace: true,
+          stopClick: true, // Avoid zoom when finish drawing by doubleclick
+          style: f => this.selectStyles(f),
+        });
+
+      this.drawLineInteraction = new Draw({ // Draw line
+        type: 'LineString',
+        source: this.editedSource,
+        traceSource: this.snapSource,
+        trace: true,
+        stopClick: true, // Avoid zoom when finish drawing by doubleclick
+        style: f => this.selectStyles(f),
+      });
+
+      this.snapInteraction = new Snap({
+        source: this.editedSource,
+        pixelTolerance: this.options.tolerance, // Default is 10
+      });
+
+      // Buttons
+      const buttonsName = this.options.withPolys ? ['modify', 'drawPoly', 'drawLine'] : ['modify', 'drawLine'];
+
+      buttonsName.forEach(intName => {
+        const buttonEl = document.createElement('button'),
+          element = document.createElement('div');
+
+        buttonEl.setAttribute('type', 'button');
+        element.className = 'ol-unselectable ol-control edit-button edit-button-' + intName;
+        element.appendChild(buttonEl);
+
+        const helpEl = document.getElementById('edit-help-' + intName);
+        if (helpEl)
+          element.appendChild(helpEl);
+
+        buttonEl.addEventListener('click', () => this.restartInteractions(intName));
+
+        // Add the button to the map
+        map.addControl(new Control({
+          element: element,
+        }));
+      });
+
+      // Interactions listeners
+      this.selectInteraction.on('select', () => this.optimiseAndSave()); // Merge old separated segments
+
+      this.modifyInteraction.on('modifystart', evt => {
+        const oEvt = evt.mapBrowserEvent.originalEvent,
+          selectedFeature = this.selectInteraction.getFeatures().item(0),
+          coordinates = selectedFeature.getGeometry().getCoordinates();
+
+        // Shift + click : reverse line direction
+        if (oEvt.shiftKey && !oEvt.ctrlKey && !oEvt.altKey &&
+          typeof coordinates[0][0] === 'number') {
+          this.editedSource.removeFeature(selectedFeature);
+
+          this.editedSource.addFeature(new Feature({
+            geometry: new LineString(coordinates.reverse()),
+          }));
+        }
+
+        // Ctrl+Alt+click on segment : delete the line or poly
+        if (!oEvt.shiftKey && oEvt.ctrlKey && oEvt.altKey)
+          this.editedSource.removeFeature(selectedFeature);
+      });
+
+      this.editedSource.on('addfeature', () => {
+        this.optimiseAndSave();
+        this.restartInteractions('modify');
+      });
+
+      this.modifyInteraction.on('modifyend', () => this.optimiseAndSave());
+
+      // At init
+      this.map.once('loadend', () => {
+        this.coordinate = this.map.getView().getCenter();
+
+        this.optimiseAndSave();
+        this.restartInteractions('modify');
+      });
+
+      map.on('pointermove', evt => {
+        this.coordinate = evt.coordinate;
+
+        // Change pointer if a feature is hovered
+        const selectedFeatures = this.selectInteraction.getFeatures();
+
+        this.map.getTargetElement().classList.remove('edit-pointed');
+        if (selectedFeatures.getLength()) {
+          this.map.forEachFeatureAtPixel(
+            evt.pixel,
+            feature => {
+              if (feature !== selectedFeatures.item(0))
+                this.map.getTargetElement().classList.add('edit-pointed');
+            }, {
+              layerFilter: (layer) => layer.getSource() === this.editedSource, // Only the edited layer
+              hitTolerance: this.options.tolerance, // Default is 0
+            },
+          );
+        }
+      });
+
+      map.on('click', evt => {
+        const oEvt = evt.originalEvent;
+
+        if (!oEvt.shiftKey && oEvt.ctrlKey && !oEvt.altKey)
+          this.optimiseAndSave(
+            this.snapInteraction.snapTo(
+              evt.pixel,
+              evt.coordinate,
+              map,
+            ).vertex
+          );
+      });
+    } // End setMapInternal
+
+    restartInteractions(intName) {
+      const interactionName = this.options.withPolys ? ['select', 'modify', 'drawPoly', 'drawLine', 'snap'] : ['select', 'modify', 'drawLine', 'snap'];
+
+      interactionName.forEach(i =>
+        this.map.removeInteraction(this[i + 'Interaction'])
+      );
+
+      if (intName === 'modify')
+        this.map.addInteraction(this.selectInteraction);
+
+      this.map.addInteraction(this[intName + 'Interaction']);
+      this.map.addInteraction(this.snapInteraction); // Must be added after the others
+
+      this.map.getTargetElement().firstChild.className = 'ol-viewport edit-view-' + intName;
+
+      // For snap & traceSource : register again the full list of features as addFeature manages already registered
+      this.snapSource.clear();
+      this.map.getLayers().forEach(layer => {
+        if (layer.getSource() !== this.editedSource &&
+          layer.getSource() &&
+          layer.getSource().getFeatures) // Vector layers only
+          layer.getSource().getFeatures().forEach(feature => {
+            this.snapInteraction.addFeature(feature);
+            this.snapSource.addFeature(feature);
+          });
+      });
+    }
+
+    optimiseAndSave(splitCord) {
+      if (!this.semaphore) { // Avoid recursion when adding the features
+        this.semaphore = true;
+
+        // Get optimized coords
+        const editedFeatures = this.editedSource.getFeatures(), // Get edited features
+          coordinates = editedFeatures.map(
+            f => this.flatFeatures(f.getGeometry()) // Get flat coordinates
+          ),
+          // Get all edited features as array of lines coordinates
+          lines = this.flatCoord(coordinates, splitCord),
+          polys = [];
+
+        // Merge lines having a common end
+        if (this.options.canMerge)
+          for (const a in lines) {
+            for (let b = 0; b < a; b++) { // Once each combination
+              if (lines[b]) {
+                const m = [a, b];
+
+                for (let i = 4; i; i--) // 4 times
+                  if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
+                    // Shake lines end to explore all possibilities
+                    m.reverse();
+                    lines[m[0]].reverse();
+
+                    // Merge 2 lines having 2 ends in common
+                    if (this.compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0], splitCord)) {
+                      lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1)).reverse();
+                      delete lines[m[1]]; // Remove the line but don't renumber the array keys
+                    }
+                  }
+              }
+            }
+          }
+
+        // Make polygons with looped lines
+        if (this.options.withPolys)
+          for (const a in lines)
+            if (this.compareCoords(lines[a]) && // If this line is closed
+              !this.compareCoords(splitCord, lines[a][0])) { // Except if we just split it
+              polys.push([lines[a]]); // Add the polygon
+              delete lines[a]; // Forget the line
+            }
+
+        // Makes holes if a polygon is included in a biggest one
+        if (this.options.withHoles)
+          for (const p1 in polys) { // Explore all Polygons combinaison
+            const fs = new Polygon(polys[p1]);
+
+            for (const p2 in polys)
+              if (polys[p2] && p1 !== p2) {
+                let intersects = true;
+
+                for (const c in polys[p2][0])
+                  if (!fs.intersectsCoordinate(polys[p2][0][c]))
+                    intersects = false;
+
+                if (intersects) { // If one intersects a bigger
+                  polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
+                  delete polys[p2]; // Forget the smaller
+                }
+              }
+          }
+
+        // Recreate features
+        this.editedSource.clear();
+        lines.forEach(l => {
+          this.editedSource.addFeature(new Feature({
+            geometry: new LineString(l),
+          }));
+        });
+        polys.forEach(p => {
+          this.editedSource.addFeature(new Feature({
+            geometry: new Polygon(p),
+          }));
+        });
+
+        // Save geometries in <EL> as geoJSON at every change
+        if (this.geoJsonEl)
+          this.geoJsonEl.value = this.options.writeGeoJson(
+            this.editedSource.getFeatures(),
+            lines.filter(Boolean),
+            polys.filter(Boolean),
+            this.options,
+          ).replaceAll(',"properties":null', '');
+
+        // Select the feature closest to the mouse position
+        //TODO do it also when loading a file
+        const selectedFeatures = this.selectInteraction.getFeatures();
+
+        if (this.editedSource.getFeatures().length) {
+          selectedFeatures.clear();
+          selectedFeatures.push(
+            this.editedSource.getClosestFeatureToCoordinate(this.coordinate)
+          );
+        }
+        delete this.semaphore;
+      }
+    } // End optimiseAndSave
+
+    flatFeatures(geom) {
+      if (geom.getType().match(/collection/iu)) // Recurse Collections
+        return geom.getGeometries().map(g => this.flatFeatures(g));
+      return geom.getCoordinates();
+    }
+
+    // Get all lines fragments (lines, polylines, polygons, multipolygons, hole polygons, ...) at the same level
+    flatCoord(coords, splitCord) {
+      const lines = [];
+
+      coords.forEach(segmentCoords => {
+        if (typeof segmentCoords[0] === 'object') {
+          if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
+            lines.push(...this.flatCoord(segmentCoords, splitCord));
+          else if (typeof segmentCoords[0][0] === 'number') { // Lines
+            if (splitCord) {
+              lines.push([]);
+              segmentCoords.forEach(p => {
+                lines[lines.length - 1].push(p);
+                // Split segments if required
+                if (this.compareCoords(splitCord, p))
+                  lines.push([p]);
+              });
+            } else
+              lines.push(segmentCoords);
+          }
+        }
+      });
+
+      return lines;
+    }
+
+    compareCoords(a, b, splitCord) {
+      if (!a) return false;
+      if (this.compareCoords(splitCord, a)) return false; // Except if we just split it
+      if (!b) return this.compareCoords(a[0], a[a.length - 1]); // Compare start with end
+      return a[0] === b[0] && a[1] === b[1]; // 2 coordinates
+    }
+
+    // Style to color selected features with arrows, begin & end points
+    selectStyles(feature, resolution) {
+      const geometry = feature.getGeometry(),
+
+        selectedStyleOptions = {
+          // Lines
+          stroke: new Stroke({
+            color: 'red',
+            width: 2,
+          }),
+          // Polygons
+          fill: new Fill({
+            color: 'rgba(255,0,0,0.2)',
+          }),
+          // Begin & end marker
+          radius: 3,
+
+          ...this.options.selectedStyleOptions,
+        },
+
+        circle = new CircleStyle(selectedStyleOptions),
+
+        featureStyles = [
+          new Style({
+            // Line & Poly
+            ...selectedStyleOptions,
+            // Draw marker
+            image: circle,
+          }),
+        ];
+
+      // Circle at the ends of the line
+      if (geometry.getCoordinates) {
+        const coordinates = geometry.getCoordinates(),
+          circlesCoords = [coordinates[0]];
+
+        if (!this.options.direction)
+          circlesCoords.push(coordinates[coordinates.length - 1]);
+
+        circlesCoords.forEach(cc => {
+          featureStyles.push(
+            new Style({
+              geometry: new Point$1(cc),
+              image: circle,
+            }),
+          );
+        });
+      }
+
+      // Arrows to show the line direction
+      if (this.options.direction && geometry.forEachSegment && resolution) {
+        let last = null;
+
+        geometry.forEachSegment((start, end) => {
+          if (!last) last = start;
+
+          const dx = end[0] - last[0],
+            dy = end[1] - last[1];
+
+          if (Math.abs(dx) + Math.abs(dy) > resolution * 50) {
+            last = end;
+            featureStyles.push(
+              new Style({
+                geometry: new Point$1(end),
+                image: new Icon({
+                  rotateWithView: true,
+                  rotation: -Math.atan2(dy, dx),
+                  src: 'data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" width="10" height="10">\
+<path stroke="red" d="M0 0 4 3 M4 3 0 6" />\
+</svg>',
+                }),
+              }),
+            );
+          }
+        });
+      }
+
+      return featureStyles;
+    };
   }
 
   /**
@@ -91158,7 +90931,6 @@
         serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
         nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
         browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters
-
         // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
 
         ...options,
@@ -91296,7 +91068,7 @@
         host: 'https://overpass-api.de',
         //host: 'https://lz4.overpass-api.de',
         //host: 'https://overpass.kumi.systems',
-        bbox: () => null, // No bbox at the end of the url
+        bboxParameter: () => null, // No bbox parameter at the end of the url
         format: new OSMXML(),
         attribution: '&copy;OpenStreetMap',
 
@@ -91380,12 +91152,12 @@
     query(extent, resolution, mapProjection) {
       const selections = this.selector.getSelection(),
         ex4326 = transformExtent(extent, mapProjection, 'EPSG:4326').map(c => c.toPrecision(6)),
-        bbox = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
+        bboxParameter = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
         args = [];
 
       for (let s = 0; s < selections.length; s++) // For each selected input checkbox
         selections[s].split('+') // Multiple choices separated by "+"
-        .forEach(sel => args.push('nwr' + sel + bbox)); // Ask for node, way & relation in the bbox
+        .forEach(sel => args.push('nwr' + sel + bboxParameter)); // Ask for node, way & relation in the bbox
 
       return {
         _path: '/api/interpreter',
@@ -91393,7 +91165,7 @@
       };
     }
 
-    bbox() {}
+    bboxParameter() {}
   }
 
   // Vectors layers examples
@@ -91428,13 +91200,13 @@
 
   var layer = {
     BackgroundLayer: BackgroundLayer,
-    VectorEditor: VectorEditor,
     Hover: Hover,
+    myLoadingStrategy: myLoadingStrategy,
     Marker: Marker,
     MyVectorLayer: MyVectorLayer,
     Selector: Selector,
-    loadingstrategy: loadingstrategy,
     tile: tileLayercollection,
+    VectorEditor: VectorEditor,
     vector: vectorLayerCollection,
   };
 
@@ -91443,7 +91215,7 @@
    */
 
 
-  const VERSION = '1.1.2.dev 02/11/2025 16:08:56';
+  const VERSION = '1.1.2.dev 16/11/2025 11:12:09';
 
   async function trace() {
     const data = [
@@ -91493,10 +91265,11 @@
   /* global map */
   // Zoom & resolution
   function traceZoom() {
-    console.log(
-      'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
-      'res ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
-    );
+    if (map.debug)
+      console.info(
+        'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
+        'resolution ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
+      );
   }
 
   window.addEventListener('load', () => { // Wait for document load

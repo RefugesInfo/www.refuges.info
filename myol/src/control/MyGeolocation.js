@@ -139,7 +139,7 @@ class MyGeolocation extends Button {
     });
     this.geolocation.on('change', evt => this.subMenuAction(evt));
     this.geolocation.on('error', error => {
-      console.log('Geolocation error: ' + error.message);
+      console.error('Geolocation error: ' + error.message);
     });
 
     return super.setMap(map);

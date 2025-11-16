@@ -14,6 +14,7 @@ import {
 import Point from 'ol/geom/Point';
 import Style from 'ol/style/Style';
 import {
+  transform,
   transformExtent,
 } from 'ol/proj';
 import VectorLayer from 'ol/layer/Vector';
@@ -21,9 +22,6 @@ import VectorSource from 'ol/source/Vector';
 
 import Selector from './Selector';
 import * as stylesOptions from './stylesOptions';
-import {
-  tiledBbox,
-} from './MyLoadingStrategy';
 
 /**
  * GeoJSON vector display &
@@ -55,7 +53,18 @@ class MyVectorSource extends VectorSource {
     });
 
     // Compute properties when the layer is loaded & before the cluster layer is computed
-    this.on('change', () =>
+    this.on('change', () => {
+      this.logs ??= {};
+      if (this.options.debug)
+        console.info(
+          'Receive 1 tile ' +
+          this.logs.tileSize + ', ' + this.getFeatures().length +
+          (this.logs.isCluster ? ' clusters, ' : ' points, ') +
+          transform(getCenter(this.getExtent()), 'EPSG:3857', 'EPSG:4326')
+          .map(x => Math.round(x * 1000) / 1000)
+          .join('°E/') + '°N'
+        );
+
       this.getFeatures().forEach(f => {
         if (!f.yetAdded) {
           f.yetAdded = true;
@@ -64,8 +73,8 @@ class MyVectorSource extends VectorSource {
             true, // Silent : add the feature without refresh the layer
           );
         }
-      })
-    );
+      });
+    });
   }
 
   tuneDistance() {} // MyClusterSource compatibility
@@ -321,7 +330,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
       // Methods to instantiate
       // url (extent, resolution, mapProjection) // Calculate the url
       // query (extent, resolution, mapProjection, optioons) ({_path: '...'}),
-      // bbox (extent, resolution, mapProjection) => {}
+      // bboxParameter (extent, resolution, mapProjection) => {}
       // addProperties (properties) => {}, // Add properties to each received features
 
       ...opt,
@@ -339,7 +348,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
     this.host = options.host;
     this.url ||= options.url;
     this.query ||= options.query;
-    this.bbox ||= options.bbox;
+    this.bboxParameter ||= options.bboxParameter;
     this.addProperties ||= options.addProperties;
     this.style ||= options.style;
     this.strategy = options.strategy;
@@ -356,13 +365,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
     const urlArgs = this.query(...args, this.options),
       url = this.host + urlArgs._path; // Mem _path
 
-    if (this.strategy === bbox ||
-      this.strategy === tiledBbox)
-      urlArgs.bbox = this.bbox(...args);
-
-    // Add a pseudo parameter if any marker or edit has been done
-    const version = sessionStorage.myolLastchange ?
-      '&' + Math.round(sessionStorage.myolLastchange / 2500 % 46600).toString(36) : '';
+    urlArgs.bbox = this.bboxParameter(...args);
 
     // Clean null & not relative parameters
     Object.keys(urlArgs).forEach(k => {
@@ -370,10 +373,14 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
         delete urlArgs[k];
     });
 
-    return url + '?' + new URLSearchParams(urlArgs).toString() + version;
+    // Add a pseudo parameter if any marker or edit has been done
+    if (this.options.lastChangeTime)
+      urlArgs.v = this.options.lastChangeTime;
+
+    return url + '?' + new URLSearchParams(urlArgs).toString();
   }
 
-  bbox(extent, resolution, mapProjection) {
+  bboxParameter(extent, resolution, mapProjection) {
     return transformExtent(
       extent,
       mapProjection,

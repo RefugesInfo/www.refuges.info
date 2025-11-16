@@ -25,7 +25,7 @@ class LayerSwitcher extends Button {
     // Filter null or hidden layers
     this.layers = {};
     for (const name in options.layers)
-      if (options.layers[name] && !options.layers[name].getProperties().hidden)
+      if (options.layers[name]) //TODO PURGE others && !options.layers[name].getProperties().hidden)
         this.layers[name] = options.layers[name];
 
     // Get baselayer from url hash (#baselayer=...) if any

@@ -10,9 +10,9 @@ function externTilesLayers(mapKeys, restreint) {
     /* Appel natif d'une couche d'origine OSM :
     'Une couche OSM': new ol.layer.Tile({
       source: new ol.source.OSM({
-  	    // Des options de https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html
+        // Des options de https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html
       }),
-	    // Des options de https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html
+      // Des options de https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html
     }),*/
     'OpenHikingMap': new ol.layer.Tile({
       source: new ol.source.OSM({
@@ -346,7 +346,7 @@ function mapIndex(options) {
     ],
 
     layers: [
-      new myol.layer.tile.OpenHikingMap(), // Fond de carte
+      externTilesLayers(options.mapKeys).OpenHikingMap, // Fond de carte
       polygonesLayer,
       pointsLayer,
       new myol.layer.Hover(), // Gère le survol du curseur

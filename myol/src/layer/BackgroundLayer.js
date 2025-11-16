@@ -9,11 +9,10 @@ import {
 } from 'ol/extent';
 import * as layerTile from './TileLayerCollection';
 
-class BackgroundLayer extends layerTile.Stamen {
+class BackgroundLayer extends layerTile.CartoDB {
   constructor(options) {
     // High resolution background layer
     super({
-      layer: 'stamen_toner_lite',
       minResolution: 20,
       visible: false,
 
@@ -21,7 +20,9 @@ class BackgroundLayer extends layerTile.Stamen {
     });
 
     // Low resolution background layer
-    this.lowResLayer = new layerTile.NoTile({
+    //TODO BUG apply to hors zone
+    //TODO BUG no apply under zoom limit
+    this.lowResLayer = new layerTile.CartoDB({
       maxResolution: this.getMinResolution(),
       visible: false,
     });
