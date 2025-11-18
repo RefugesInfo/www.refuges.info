@@ -62,7 +62,7 @@
 
 /* Submenu */
 .myol-button>div {
-  max-height: calc(100% - 38px);
+  max-height: calc(100% - 46px);
   opacity: 0.8;
   transition: max-height 0.3s ease-in, opacity 0.3s ease-out;
   overflow: auto;

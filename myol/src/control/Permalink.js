@@ -35,7 +35,7 @@ class Permalink extends Control {
       this.element.className = 'ol-control myol-permalink';
       this.linkEl = document.createElement('a');
       this.linkEl.innerHTML = 'Permalink';
-      this.linkEl.title = 'Generate a link with map zoom & position';
+      this.linkEl.title = 'Generate a link with map zoom, position & layer';
       this.element.appendChild(this.linkEl);
     }
   }
@@ -69,13 +69,14 @@ class Permalink extends Control {
       ], 'EPSG:4326', 'EPSG:3857'));
     }
 
-    // Set the permalink with current map zoom & position
+    // Set the permalink with current map zoom, position & layer
     if (view.getCenter()) {
       const ll4326 = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
         newParams = 'map=' +
         (localStorage.myolZoom = Math.round(view.getZoom() * 10) / 10) + '/' +
         (localStorage.myolLon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
-        (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000);
+        (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000) +
+        '&baselayer=' + encodeURI(localStorage.myolBaselayer);
 
       if (this.linkEl) {
         this.linkEl.href = this.options.hash + newParams;

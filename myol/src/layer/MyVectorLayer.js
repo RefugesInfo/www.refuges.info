@@ -329,7 +329,7 @@ class MyVectorLayer extends MyServerClusterVectorLayer {
 
       // Methods to instantiate
       // url (extent, resolution, mapProjection) // Calculate the url
-      // query (extent, resolution, mapProjection, optioons) ({_path: '...'}),
+      // query (extent, resolution, mapProjection, options) ({_path: '...'}),
       // bboxParameter (extent, resolution, mapProjection) => {}
       // addProperties (properties) => {}, // Add properties to each received features
 
