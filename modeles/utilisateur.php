@@ -31,9 +31,9 @@ function lien_utilisateur($utilisateur,$local=True)
   global $config_wri, $url_complete;
 
   if (isset($_SERVER['HTTP']))
-      $schema="http";
+    $schema="http";
   else
-      $schema="https";
+    $schema="https";
 
   if ($local)
     $url_complete="";

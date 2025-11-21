@@ -45,8 +45,8 @@ $conditions->altitude_maximum
 $conditions->altitude_minimum
 
 $conditions->avec_geometrie=gml ou geojson ou kml (ou not set si on la veut pas)
-   La valeur choisie c'est le st_as$valeur de postgis voir : https://www.postgis.net/workshops/postgis-intro/geometries.html
-   la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
+  La valeur choisie c'est le st_as$valeur de postgis voir : https://www.postgis.net/workshops/postgis-intro/geometries.html
+  la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 
 $conditions->ids_polygones : points appartenant à ce ou ces polygones
 $conditions->ids_points : liste restreinte à ces id_point là, attention, si d'autres condition les intérdisent, ils ne sortiront pas
@@ -95,20 +95,20 @@ function infos_points($conditions)
   $champs_en_plus=$select_distance=$conditions_sql=$tables_en_plus=$ordre=$limite=$champs_polygones="";
   $points = array ();
   // On aurait pu prendre tout, mais la geom des polygones est énorme, et tout ne sert pas.
-  $proprietes_interessantes_polygones = array ( 
-        'id_polygone',
-        'id_polygone_type',
-        'article_partitif',
-        'nom_polygone',
-        'message_information_polygone',
-        'url_exterieure',
-        'site_web'
-        );
-  $proprietes_interessantes_type_polygones = array ( 
+  $proprietes_interessantes_polygones = [
+    'id_polygone',
+    'id_polygone_type',
+    'article_partitif',
+    'nom_polygone',
+    'message_information_polygone',
+    'url_exterieure',
+    'site_web'
+  ];
+  $proprietes_interessantes_type_polygones = [
         'type_polygone',
         'categorie_polygone_type'
-  );
-   
+  ];
+
   // condition de limite en nombre
   if (!empty($conditions->limite))
     if (!est_entier_positif ($conditions->limite))
@@ -143,17 +143,17 @@ function infos_points($conditions)
   if (!empty($conditions->avec_liste_polygones) )
   {
     $tables_en_plus.=", points points2 left join polygones polygones2 on ST_Within(points2.geom, polygones2.geom) left join polygone_type on polygones2.id_polygone_type=polygone_type.id_polygone_type";
-    
+
     foreach ($proprietes_interessantes_polygones as $propriete)
       $champs_polygones.=",polygones2.$propriete";
     foreach ($proprietes_interessantes_type_polygones as $propriete)
       $champs_polygones.=",polygone_type.$propriete";
-    
+
     //Condition de jointure implicite pour que la 2ème référence à la table point joigne bien avec le même point dans la table points
     $conditions_sql .= "\n\tAND points.id_point=points2.id_point";
     if (empty($conditions->ordre))
       $ordre="ORDER BY points.nom,polygone_type.ordre_taille DESC";
-    /* Là, c'est méga sioux et empirique comme bidouille, la limite s'appliqe au nombre de records retournés, mais avec la jointure, chaque point donne lieu à 4, 5 voir 8 lignes pour chaque polygones dont le point est membre. Alors si on voulait une limite je multiplie arbitrairement par 6 la limite demandée. (le tableau final sera tronqué pour tomber pile sur la limite demandée de nombre de points retournés) 
+    /* Là, c'est méga sioux et empirique comme bidouille, la limite s'appliqe au nombre de records retournés, mais avec la jointure, chaque point donne lieu à 4, 5 voir 8 lignes pour chaque polygones dont le point est membre. Alors si on voulait une limite je multiplie arbitrairement par 6 la limite demandée. (le tableau final sera tronqué pour tomber pile sur la limite demandée de nombre de points retournés)
     Pourquoi alors mettre une limite me diriez vous ? pour économiser des ressources et du temps à attendre cette énorme requête */
     if (!empty($conditions->limite))
       $limite="\n\tLIMIT ".(7*$conditions->limite);
@@ -162,7 +162,7 @@ function infos_points($conditions)
   // on restreint les points qui appartiennent à cette geometrie (utile pour les points dans une bbox donnée)
   if( !empty($conditions->geometrie) )
     $conditions_sql .= "\n\tAND ST_Within(points.geom,".$conditions->geometrie .") ";
-  
+
   if (!empty($conditions->rayon_du_cercle) and !empty($conditions->centre_du_cercle))
   {
     $formule_distance="ST_DistanceSphere(points.geom , '$conditions->centre_du_cercle')";
@@ -170,7 +170,7 @@ function infos_points($conditions)
     $conditions_sql .= "\n\tAND $formule_distance < ".$conditions->rayon_du_cercle;
     $ordre = "ORDER BY distance";
   }
-  
+
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if( !empty($conditions->ids_types_point) )
     if (!verif_multiples_entiers($conditions->ids_types_point))
@@ -180,12 +180,12 @@ function infos_points($conditions)
 
   if( !empty($conditions->places_minimum) )
     if( est_entier_positif($conditions->places_minimum) )
-        $conditions_sql .= "\n\tAND points.places >= $conditions->places_minimum";
+      $conditions_sql .= "\n\tAND points.places >= $conditions->places_minimum";
     else
         return erreur("Le nombre de place minimum doit être un nombre entier, reçu : $conditions->places_minimum");
   if( !empty($conditions->places_maximum) )
     if( est_entier_positif($conditions->places_maximum) )
-        $conditions_sql .= "\n\tAND points.places <= $conditions->places_maximum";
+      $conditions_sql .= "\n\tAND points.places <= $conditions->places_maximum";
     else
         return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
   // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
@@ -270,7 +270,7 @@ function infos_points($conditions)
       case 'poele':$conditions_sql.="\n\tAND points.poele IS TRUE ";break;
     }
   }
-  
+
   // Je pige pas, en pg on ne peut pas faire not in (Null,...) !
   if (!empty($conditions->ouvert))
   {
@@ -284,8 +284,8 @@ function infos_points($conditions)
       $conditions_sql.="\n\tAND points.topic_id =".$conditions->topic_id;
     else
       return erreur("Le champ fourni pour le topic_id n'est pas un entier positif");
-    
-    
+
+
   if (!empty($conditions->ordre))
       $ordre="\nORDER BY $conditions->ordre";
 
@@ -302,13 +302,13 @@ function infos_points($conditions)
     {
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
     $query_clusters="
-SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom)) AS geojson,
-       round(ST_X(geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(geom)/{$conditions->cluster}) AS cluster_lat
-  FROM points
-  WHERE true $conditions_sql
-  GROUP BY cluster_lon, cluster_lat
-  $limite
-  ";
+      SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom)) AS geojson,
+        round(ST_X(geom)/{$conditions->cluster}) AS cluster_lon, round(ST_Y(geom)/{$conditions->cluster}) AS cluster_lat
+      FROM points
+      WHERE true $conditions_sql
+      GROUP BY cluster_lon, cluster_lat
+      $limite
+    ";
     if ( ! ($res_clusters = $pdo->query($query_clusters)) )
       return erreur("Une erreur sur la requête est survenue",$query_clusters);
     $points_isoles = [];
@@ -340,28 +340,28 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
   }
 
   $query_points="
-  SELECT points.*,
-         ST_AsGeoJSON(points.geom) AS geojson,
-         type_precision_gps.*,
-         point_type.*,COALESCE(phpbb3_users.username,points.nom_createur) as nom_createur,
-         ST_X(points.geom) as longitude,ST_Y(points.geom) as latitude,
-         extract('epoch' from points.date_derniere_modification) as date_modif_timestamp,
-         extract('epoch' from points.date_creation) as date_creation_timestamp
-         $select_distance
-         $champs_polygones
-         $champs_en_plus
-  FROM
-         type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id $tables_en_plus
-  WHERE
-         points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
-         AND points.id_point_type=point_type.id_point_type
-         $conditions_sql
-  $ordre
-  $limite
+    SELECT points.*,
+      ST_AsGeoJSON(points.geom) AS geojson,
+      type_precision_gps.*,
+      point_type.*,COALESCE(phpbb3_users.username,points.nom_createur) as nom_createur,
+      ST_X(points.geom) as longitude,ST_Y(points.geom) as latitude,
+      extract('epoch' from points.date_derniere_modification) as date_modif_timestamp,
+      extract('epoch' from points.date_creation) as date_creation_timestamp
+      $select_distance
+      $champs_polygones
+      $champs_en_plus
+    FROM
+      type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id $tables_en_plus
+    WHERE
+      points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
+      AND points.id_point_type=point_type.id_point_type
+      $conditions_sql
+    $ordre
+    $limite
   ";
   if ( ! ($res = $pdo->query($query_points)))
     return erreur("Une erreur sur la requête est survenue",$query_points);
-      
+
   // Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
   // Depuis 12/2024 On sort maintenant tous les polygones auxquels les points appartiennent chaque point peut sortir plusieurs fois, il faut en tenir compte.
   $id_point_deja_fait=0;
@@ -377,7 +377,7 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
       if (!empty($conditions->limite))
         if ($nombre_point_deja_recuperes > $conditions->limite) // On dépasse le nombre de point qu'on avait demandé, on s'arrête là
           break;
-      
+
       $polygone = new stdClass;
       // On enlève les propriétés du polygone (si elle existe), car on les veut dans un sous array
       if (!empty($conditions->avec_liste_polygones))
@@ -389,8 +389,8 @@ SELECT count(*) AS nb_points, min(id_point) AS id_point, min(ST_AsGeoJSON(geom))
         }
         $point_final->polygones[]=$polygone;
       }
-      
-        
+
+
       //  phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
       if (!empty($point->id_createur) and !empty($point->nom_createur) )
         $point->nom_createur=html_entity_decode($point->nom_createur);
@@ -442,7 +442,7 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 
   $conditions = new stdClass;
   $conditions->ids_points=$id_point;
-  
+
   if ($avec_polygones)
     $conditions->avec_liste_polygones=True;
 
@@ -454,7 +454,7 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 
   // récupération des infos du point
   $points=infos_points($conditions);
-  
+
   // Requête impossible à executer
   if (!empty($points->erreur))
     return erreur($points->message);
@@ -508,9 +508,9 @@ function texte_non_ouverte($point)
       return "Débit intermittent"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
     case 'detruit':
       if ($point->id_point_type==$config_wri['id_cabane_non_gardee'])
-          return "Détruite"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
+        return "Détruite"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
       else
-          return "Détruit"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
+        return "Détruit"; // avec un peu moins de flemme, je pourrait mettre ce texte dans la table point_type comme les autres
     case 'fermeture':
       return $point->equivalent_conditions_utilisation;
 
@@ -531,10 +531,10 @@ function infos_point_forum ($point)
   if (!est_entier_positif($point->topic_id))
     return erreur("Le point passé n'a pas d'id valide ou existant sur le forum reçu :".$point->topic_id ?? '');
   $q="SELECT *
-      FROM phpbb3_posts
-      WHERE topic_id = $point->topic_id
-        AND post_visibility = 1
-      ORDER BY post_time DESC";
+    FROM phpbb3_posts
+    WHERE topic_id = $point->topic_id
+      AND post_visibility = 1
+    ORDER BY post_time DESC";
   $r = $pdo->query($q);
   if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
 
@@ -544,7 +544,7 @@ function infos_point_forum ($point)
 
     // Limite la longueur du texte
     if (strlen ($res->post_text) > $config_wri['point_posts_lon_max_text'])
-        $res->post_text = substr ($res->post_text,0,$config_wri['point_posts_lon_max_text']).'&nbsp;<b> . . .</b>';
+      $res->post_text = substr ($res->post_text,0,$config_wri['point_posts_lon_max_text']).'&nbsp;<b> . . .</b>';
 
     $res->date_humaine=date_format_francais($res->post_time);
 
@@ -591,12 +591,12 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   {
     // Pensez bien qu'un modérateur puisse vouloir remettre à "" le site n'existant plus
     if ($point->site_officiel=="")
-        $champs_sql['site_officiel'] = "''";
+      $champs_sql['site_officiel'] = "''";
     //cas du site un peu particulier ou l'internaute n'aura pas forcément pensé à mettre http://
     elseif ( !preg_match("/https?:\/\//",$point->site_officiel))
-        $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
+      $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
     else
-        $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
+      $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
   }
 
   // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
@@ -609,9 +609,9 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     $q="SELECT id_point, nom
       FROM points
       WHERE cache = true AND
-          id_point <> ".($point->id_point??0)." AND
-          ST_DWithin(geom, ST_GeomFromGeoJSON('{$point->geojson}'), $distance, false)
-        LIMIT 1";
+        id_point <> ".($point->id_point??0)." AND
+        ST_DWithin(geom, ST_GeomFromGeoJSON('{$point->geojson}'), $distance, false)
+      LIMIT 1";
 
     $r = $pdo->query($q);
     if (!$r)
@@ -687,24 +687,23 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   {
     $point_avant = infos_point($point->id_point,true,false,true);
     if (isset($point_avant->erreur) and $point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
-        return erreur("Erreur de modification du point : $point_avant->message");
+      return erreur("Erreur de modification du point : $point_avant->message");
 
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
 
     if (!$pdo->exec($query_finale))
-        return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);
+      return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);
 
     /********* Renommage du titre "topic point" dans le forum refuges si le nom de la fiche change, sauf s'il s'agit d'un modèle, qui n'a pas de sujet dans le forum, en réalité, on pourrait uniformiser et leur laisser un forum, ça ne poserait aucun problème, mais des modérateurs s'en sont trouvé étonné et on voulu bien faire, et on supprimé les forum en question, créant finalement un bug, alors, en 2020 j'ai décidé de ne plus avoir de forum pour les modèles *************/
     if (!$point_avant->modele and $point_avant->nom!=$point->nom)
       forum_submit_post ([
-          'action' => 'edit',
-
-          'post_edit_reason' => 'Le nom de la fiche a été changée, le titre du forum change aussi. Il était '.mb_ucfirst($point_avant->nom),
-          'post_edit_user' => $id_utilisateur_qui_modifie, // En cas de modification, cet id servira dans le log de modération pour dire qui a modifié la fiche, ça rassure Pascal 74
-          'user_id' => $id_utilisateur_qui_modifie, // En cas de modification, cet id servira dans le log de modération pour dire qui a modifié la fiche, ça rassure Pascal 74
-          'topic_id' => $point->topic_id,
-          'topic_title' => mb_ucfirst($point->nom),
-          'post_time' => '', // sly : ça ressemble à une magouille, mais si post_time est vide, alors lors d'une modif du post le code de phpBB va prendre la date actuelle comme date de modification. Oui, moi non plus je n'ai pas compris, mais c'est ce que fait le code de submit_post. Si on ne l'avait pas passé, alors il aurait pris la date actuelle du post comme date de modif.
+        'action' => 'edit',
+        'post_edit_reason' => 'Le nom de la fiche a été changée, le titre du forum change aussi. Il était '.mb_ucfirst($point_avant->nom),
+        'post_edit_user' => $id_utilisateur_qui_modifie, // En cas de modification, cet id servira dans le log de modération pour dire qui a modifié la fiche, ça rassure Pascal 74
+        'user_id' => $id_utilisateur_qui_modifie, // En cas de modification, cet id servira dans le log de modération pour dire qui a modifié la fiche, ça rassure Pascal 74
+        'topic_id' => $point->topic_id,
+        'topic_title' => mb_ucfirst($point->nom),
+        'post_time' => '', // sly : ça ressemble à une magouille, mais si post_time est vide, alors lors d'une modif du post le code de phpBB va prendre la date actuelle comme date de modification. Oui, moi non plus je n'ai pas compris, mais c'est ce que fait le code de submit_post. Si on ne l'avait pas passé, alors il aurait pris la date actuelle du post comme date de modif.
       ]);
     historisation_modification($point_avant,$point,'modification point',$id_utilisateur_qui_modifie);
   }
@@ -713,18 +712,18 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     $id_createur = $point->id_createur ?? 0;
     // On appelle la fonction du forum qui crée un topic dans le forum refuges
     $r = forum_submit_post ([
-        'action' => 'post',
-        'forum_id' => $config_wri['forum_refuges'],
-        'topic_title' => mb_ucfirst($point->nom),
-        'topic_poster' => $id_createur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
+      'action' => 'post',
+      'forum_id' => $config_wri['forum_refuges'],
+      'topic_title' => mb_ucfirst($point->nom),
+      'topic_poster' => $id_createur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
     ]);
     if (!$r['topic_id'])
-        return erreur( "Erreur création forum point<br/>".var_export($r,true) );
+      return erreur( "Erreur création forum point<br/>".var_export($r,true) );
 
     $champs_sql['topic_id'] = $r['topic_id']; // On note le topic_id dans la table point pour faire le lien
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
     if (!$pdo->exec($query_finale))
-        return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
+      return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
   }
@@ -805,7 +804,6 @@ function choix_icone($point)
   if ( $point->conditions_utilisation=="intermittent" and $point->id_point_type==$config_wri['id_point_d_eau'] )
     $nom_icone.="_a63.8.21";
 
-
   return $nom_icone;
 }
 // Cette fonction n'est utilisée que pour l'export kml qui a besoin d'une liste des icônes avant d'avoir la liste des points.
@@ -813,8 +811,8 @@ function choix_icone($point)
 // car $config_wri['definition_icones'] est une liste d'icône qu'il faut maintenir manuellement à jour
 function liste_icones_possibles()
 {
-    global $config_wri;
-    return array_keys($config_wri['definition_icones']);
+  global $config_wri;
+  return array_keys($config_wri['definition_icones']);
 }
 
 /********************************************************
