@@ -44,6 +44,13 @@ function externTilesLayers(mapKeys, restreint) {
           '<a target="_blank" href="https://www.thunderforest.com/">Thunderforest</a>',
       }),
     }),
+    'ISO-Maps Topo': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://api.iso-maps.com/v1/tiles/{z}/{x}/{y}.webp?api_key=' + mapKeys.isomaps,
+        maxZoom: 20,
+        attributions: '©<a target="_blank" href="https://www.iso-maps.com/">Isomaps</a> | ©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }),
+    }),
 
     'IGN TOP25': restreint ? null : new myol.layer.tile.IGNtop25({
       key: mapKeys.ign,
