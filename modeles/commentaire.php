@@ -541,7 +541,7 @@ function transfert_forum($commentaire)
   forum_submit_post ([
     'action' => 'reply',
     'topic_id' => $commentaire->topic_id,
-    'topic_title' => 'Transféré depuis "'.$point_ratache->nom.'"',
+    'topic_title' => 'Transféré depuis &quot;'.$point_ratache->nom.'&quot;',
     'message' => $commentaire->texte,
     'topic_poster' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID, 0 sinon
     'username' => $auteur,
