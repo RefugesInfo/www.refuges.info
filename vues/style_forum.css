@@ -11,8 +11,13 @@
 
 /* Liens aux couleurs de refuges.info */
 a,
+a:hover,
 a:visited {
   color: var(--couleur_lien);
+}
+
+a:hover {
+  background-color: var(--couleur_legende);
 }
 
 /* Bandeau de phpbb */

@@ -37,9 +37,9 @@ class listener implements EventSubscriberInterface
 	public function append_sid ($event) {
 		global $request, $config_wri;
 
-		$this->server = $request->get_super_global(\phpbb\request\request_interface::SERVER);
+		$request->enable_super_globals();
 		if (isset($config_wri['no_sid_urls']) &&
-			!isset($this->server['HTTP_COOKIE']))
+			!isset($_SERVER['HTTP_COOKIE']))
 			$event['append_sid_overwrite'] = $event['url'];	
 	}
 }

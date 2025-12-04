@@ -45,7 +45,7 @@ class listener implements EventSubscriberInterface
 		// Les fichiers template du bandeau et du pied de page étant au format "MVC+template type refuges.info",
 		// on les évalue dans leur contexte PHP et on introduit le code HTML résultant
 		// dans des variables des templates de PhpBB V3.2
-		global $config_wri, $pdo, $__time_start, $request, $template, $user;
+		global $config_wri, $pdo, $__time_start, $request, $template, $user, $phpbb_dispatcher;
 
 		// Pour avoir accés aux variables globales $_SERVER, ... dans config.php
 		$request->enable_super_globals();

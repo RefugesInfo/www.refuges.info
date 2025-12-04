@@ -161,7 +161,7 @@ function infos_commentaires ($conditions)
   $commentaires = array() ;
   while ($commentaire = $res->fetch())
   {
-    if ($commentaire->photo_existe)
+    if (!empty($commentaire->photo_existe))
     {
       /*
         Remplissage de l'objet avec les photos disponibles pour ce commentaire, s'il y en a et si elles existent sur le disque :
@@ -172,7 +172,7 @@ function infos_commentaires ($conditions)
       foreach (array("reduite", "vignette", "originale") as $taille)
         foreach($config_wri['extensions_fichier_photo'] as $extension_fichier_photo)
         {
-          $nom_fichier_photo=$commentaire->id_commentaire."-".$taille.".".$extension_fichier_photo;
+          $nom_fichier_photo=($commentaire->id_commentaire??'')."-".$taille.".".$extension_fichier_photo;
           $chemin_photo=$config_wri['rep_photos_points'].$nom_fichier_photo;
           if (is_file($chemin_photo))
           {
@@ -184,7 +184,7 @@ function infos_commentaires ($conditions)
         }
 
       // Ce cas peut exister quand on a plus/pas gardé la photo originale (historique) alors elle sera la même que la réduite
-      if (!isset($commentaire->photo['originale']) and isset($commentaire->photo['reduite']))
+      if (!isset($commentaire->photo['originale']) and !empty($commentaire->photo['reduite']))
       {
         $commentaire->photo['originale']=$commentaire->photo['reduite'];
         $commentaire->lien_photo['originale']=$commentaire->lien_photo['reduite'];
@@ -192,7 +192,7 @@ function infos_commentaires ($conditions)
     }
 
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
-    if (isset($commentaire->id_createur_commentaire))
+    if (!empty($commentaire->auteur_commentaire))
         $commentaire->auteur_commentaire=html_entity_decode($commentaire->auteur_commentaire);
     $commentaires [] = $commentaire;
   }
@@ -251,14 +251,14 @@ function modification_ajout_commentaire($commentaire)
   $photo_valide=False;
   $ajout_photo=False;
 
-  $point=infos_point($commentaire->id_point,True);
+  $point=infos_point($commentaire->id_point??0,True);
   if (!empty($point->erreur))
     return erreur("Le commentaire ne peut être ajouté car : ".$point->message ?? '',"Id du point: \"$commentaire->id_point\"");
   // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
   // On dirait que le commentaire dispose bien d'une photo
   if (!empty($commentaire->photo['originale']))
   {
-    if (!is_file($commentaire->photo['originale']))
+    if (!is_file($commentaire->photo['originale']??''))
       return erreur("La photo proposée ne semble pas exister ou ne nous est pas parvenue");
 
     $format_photo=exif_imagetype($commentaire->photo['originale']);
@@ -275,22 +275,22 @@ function modification_ajout_commentaire($commentaire)
   else
     $commentaire->photo_existe=0;
 
-  if (!$photo_valide and trim($commentaire->texte)=="")
+  if (!$photo_valide and trim($commentaire->texte??'')=="")
     return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
 
   // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
-  if (isset($commentaire->id_commentaire)) // On a un id de commentaire, on est donc en train de le modifier
+  if (!empty($commentaire->id_commentaire)) // On a un id de commentaire, on est donc en train de le modifier
   {
     $commentaire_avant_modification=infos_commentaire($commentaire->id_commentaire,True);
     if (!empty($commentaire_avant_modification->erreur))
       return erreur("Une modification d'un commentaire inexistant a été demandée : ".$commentaire_avant_modification->message);
 
     if (!empty($commentaire->photo['originale']))
-      $ajout_photo=!$commentaire->photo['originale'];
+      $ajout_photo=empty($commentaire->photo['originale']);
     else
       $ajout_photo=False;
     $mode="modification";
-    $un_transfert_a_eu_lieu = ($commentaire_avant_modification->id_point != $commentaire->id_point);
+    $un_transfert_a_eu_lieu = ($commentaire_avant_modification->id_point??0 != $commentaire->id_point??0);
   }
   else
     $mode="ajout";
@@ -302,7 +302,7 @@ function modification_ajout_commentaire($commentaire)
   if ($traitement_photo)
   {
     $commentaire->photo_existe=1;
-    $exif_data = @exif_read_data ($commentaire->photo['originale']);
+    $exif_data = @exif_read_data ($commentaire->photo['originale']??'');
     // la date ne semble pas exister dans les données Exif de la photo, on met ''
     $date_photo = $exif_data ['DateTimeOriginal'] ?? '';
 
@@ -317,13 +317,13 @@ function modification_ajout_commentaire($commentaire)
   // Rotation des photos réduite (la photo originale du client n'est pas touchée, ça peut être discutable, mais avec les tags exif d'orientation, j'ai eu des gags), (2023 utilisée uniquement par les modérateurs, donc a posteriori de l'ajout)
   if (!empty($commentaire->rotation) and $mode=="modification" )
   {
-    $image=imagecreatefromstring(file_get_contents($commentaire_avant_modification->photo['reduite'])); // on récupère la réduite, peut importe son format
+    $image=imagecreatefromstring(file_get_contents($commentaire_avant_modification->photo['reduite']??'')); // on récupère la réduite, peut importe son format
     $image = imagerotate ($image, $commentaire->rotation, 0); // On la fait tourner
 
-    imagejpeg($image,$commentaire_avant_modification->photo['reduite']); // On l'écrit sur le disque
-    redimensionnement_photo($commentaire_avant_modification->photo['reduite']); // on la redimensionne en mode réduite
-    imagejpeg($image,$commentaire_avant_modification->photo['vignette']);
-    redimensionnement_photo($commentaire_avant_modification->photo['vignette'],"vignette"); // on redimensionne celle là en mode vignette
+    imagejpeg($image,$commentaire_avant_modification->photo['reduite']??''); // On l'écrit sur le disque
+    redimensionnement_photo($commentaire_avant_modification->photo['reduite']??''); // on la redimensionne en mode réduite
+    imagejpeg($image,$commentaire_avant_modification->photo['vignette']??'');
+    redimensionnement_photo($commentaire_avant_modification->photo['vignette']??'',"vignette"); // on redimensionne celle là en mode vignette
   }
 
   // FIXME, tout correspond, y'a pas moyen de simplifier par un foreach sur $commentaire et remplir les champs SQL ?
@@ -361,11 +361,11 @@ function modification_ajout_commentaire($commentaire)
   $retour->erreur=False;
 
   // On avait une photo valide sur le disque mais il est demandé qu'il n'y en ait pas, il faut donc faire le ménage
-  if ($commentaire->photo_existe==0 and $photo_valide)
+  if (empty($commentaire->photo_existe) and $photo_valide)
     suppression_photos($commentaire);
 
   // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo ajoutée
-  if ($traitement_photo)
+  if ($traitement_photo && !empty($commentaire->id_commentaire))
   {
     //2023 : on accepte maintenant plusieurs format possible, on garde donc une trace dans l'extension du format d'origine (on pourrait faire sans extension, mais l'intuition me dit qu'il vaut p'tet mieux garder ça
     $choix_extension_fichier=str_replace("image/","",image_type_to_mime_type($format_photo));
@@ -378,8 +378,10 @@ function modification_ajout_commentaire($commentaire)
     $taille = getimagesize($commentaire->photo['originale']);
 
     //On garde bien la photo d'origine, sans modification (à part la renommer), comme ça, si un jour on veut changer de format, relire les exifs, etc.
-    copy($commentaire->photo['originale'],$photo_originale);
-    copy($commentaire->photo['originale'],$image_reduite);
+    if (!empty($commentaire->photo['originale'])) {
+      copy($commentaire->photo['originale'],$photo_originale);
+      copy($commentaire->photo['originale'],$image_reduite);
+    }
 
     if ( ($taille[0]>$config_wri['largeur_max_photo']) OR ($taille[1]>$config_wri['hauteur_max_photo']))
       redimensionnement_photo($image_reduite);
@@ -391,7 +393,7 @@ function modification_ajout_commentaire($commentaire)
     copy($image_reduite,$vignette_photo);
     redimensionnement_photo($vignette_photo, 'vignette');
   }
-  $retour->id_commentaire=$commentaire->id_commentaire;
+  $retour->id_commentaire=$commentaire->id_commentaire??0;
   return $retour;
 }
 
@@ -442,7 +444,7 @@ du commentaire, ça l'est.
 function suppression_photos($commentaire,$force=False)
 {
   global $config_wri;
-  if (isset($commentaire->photo) or $commentaire->photo_existe)
+  if (isset($commentaire->photo) or !empty($commentaire->photo_existe))
   {
     $commentaire->photo_existe=0;
     if (isset($commentaire->photo))
@@ -482,7 +484,7 @@ function suppression_commentaire($commentaire)
   global $config_wri,$pdo;
 
   /****** On supprime les photo (de différentes taille) si elle existe ******/
-  if ($commentaire->photo_existe)
+  if (!empty($commentaire->photo_existe))
     $retour=suppression_photos($commentaire,True);
   $query_delete="DELETE FROM commentaires WHERE id_commentaire=$commentaire->id_commentaire";
   $success = $pdo->exec($query_delete);
@@ -504,7 +506,7 @@ function transfert_forum($commentaire)
   global $config_wri;
   require_once ("forum.php");
 
-  if ($commentaire->photo_existe)
+  if (!empty($commentaire->photo_existe) && !empty($commentaire->id_commentaire))
   {
     // insere la balise bbcode pour la photo
     $commentaire->texte.="\n[img]".$config_wri['rep_web_forum_photos'].$commentaire->id_commentaire.".jpeg[/img]";
@@ -516,13 +518,13 @@ function transfert_forum($commentaire)
       copy($commentaire->photo['originale'],$config_wri['rep_forum_photos'].$commentaire->id_commentaire."-originale.jpeg");
   }
 
-  if ($commentaire->id_createur_commentaire != 0) // L'utilisateur qui a posté ce commentaire était connecté
+  if (!empty($commentaire->id_createur_commentaire)) // L'utilisateur qui a posté ce commentaire était connecté
   {
     $utilisateur=infos_utilisateur($commentaire->id_createur_commentaire);
-    if ($utilisateur->erreur) //  L'utilisateur n'existe plus ?, ça voudrait dire qu'il a existé, a rentrer un commentaire, mais qu'un modérateur à supprimé son compte ? bon, tout est possible dans ce monde ! prévoyons ce cas :
+    if (!empty($utilisateur->erreur)) //  L'utilisateur n'existe plus ?, ça voudrait dire qu'il a existé, a rentrer un commentaire, mais qu'un modérateur à supprimé son compte ? bon, tout est possible dans ce monde ! prévoyons ce cas :
       $commentaire->id_createur_commentaire=0; // on le force à Anonyme
     else // Tout s'est bien passé, l'utilisateur existe, la fonction phpBB semble quand même avoir besoin du nom d'auteur (en plus de l'id FIXME: à confirmer ? peut-être inutile)
-      $auteur=$utilisateur->username;
+      $auteur=$utilisateur->username??'';
   }
   else  // Par défaut on choisi ce nom si on a rien d'autre
     $auteur = 'Anonyme';
@@ -532,20 +534,21 @@ function transfert_forum($commentaire)
   // de plus, toute action de modération sort un message d'erreur indiquant "utilisateur existe déjà, merci d'en choisir un autre"
   // Et comme un utilisateur phpBB doit contenir au moins 1 caractère et 80 maximum (selon config), s'il s'appelait "" (vide) ça ferait "_1" au pire, soit plus que les 1 caractères mini
   // et s'il s'appellait abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abcdefghij (83 caractères) substr 0,76 + _ + rand(1,999) va donner abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abc_999 au max soit 80 charactères qui est autorisé.
-  if ($commentaire->auteur_commentaire)
+  if (!empty($commentaire->auteur_commentaire))
       $auteur = substr($commentaire->auteur_commentaire,0,76).'_'.rand(1,999);
 
-  $point_ratache=infos_point($commentaire->id_point,True); // Uniquement dans le but que le titre du message sur le forum porte le nom du point auquel il était rataché
+  if (!empty($commentaire->id_point))
+    $point_ratache=infos_point($commentaire->id_point,True); // Uniquement dans le but que le titre du message sur le forum porte le nom du point auquel il était rataché
 
   // On appelle la fonction du forum qui cree un post
   forum_submit_post ([
     'action' => 'reply',
-    'topic_id' => $commentaire->topic_id,
-    'topic_title' => 'Transféré depuis &quot;'.$point_ratache->nom.'&quot;',
-    'message' => $commentaire->texte,
-    'topic_poster' => $commentaire->id_createur_commentaire, // Si l'auteur était connecté, on garde l'ID, 0 sinon
+    'topic_id' => $commentaire->topic_id??0,
+    'topic_title' => 'Transféré depuis &quot;'.($point_ratache->nom??'').'&quot;',
+    'message' => $commentaire->texte??0,
+    'topic_poster' => $commentaire->id_createur_commentaire??0, // Si l'auteur était connecté, on garde l'ID, 0 sinon
     'username' => $auteur,
-    'post_time' => strtotime ($commentaire->date), // Recalcule suivant la timezone
+    'post_time' => strtotime ($commentaire->date)??0, // Recalcule suivant la timezone
   ]);
 
   // On s'occupe du commentaire
