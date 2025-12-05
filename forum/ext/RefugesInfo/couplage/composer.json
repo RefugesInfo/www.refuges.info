@@ -6,13 +6,11 @@
 	"version": "1.0.1",
 	"time": "2017-03-15",
 	"license": "GPL-2.0",
-	"authors": [
-		{
-			"name": "Dominique Cavailhez",
-			"homepage": "https://github.com/Dominique92",
-			"role": "Developer"
-		}
-	],
+	"authors": [{
+		"name": "Dominique Cavailhez",
+		"homepage": "https://github.com/Dominique92",
+		"role": "Developer"
+	}],
 	"require": {
 		"php": ">=7.2.0",
 		"composer/installers": "~1.0"

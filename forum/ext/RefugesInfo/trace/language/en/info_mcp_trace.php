@@ -1,15 +1,15 @@
 <?php
-if (!defined('IN_PHPBB'))
+if(!defined('IN_PHPBB'))
 {
-	exit;
+  exit;
 }
 
-if (empty($lang) || !is_array($lang))
+if(empty($lang) || !is_array($lang))
 {
-	$lang = [];
+  $lang = [];
 }
 
 $lang = array_merge($lang, [
-	'MCP_TRACE' => 'Traces',
-	'MCP_TRACE_TITLE' => 'Historique des traces',
+  'MCP_TRACE' => 'Traces',
+  'MCP_TRACE_TITLE' => 'Historique des traces',
 ]);

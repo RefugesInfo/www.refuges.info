@@ -1,15 +1,15 @@
 <?php
-if (!defined('IN_PHPBB'))
+if(!defined('IN_PHPBB'))
 {
-	exit;
+  exit;
 }
 
-if (empty($lang) || !is_array($lang))
+if(empty($lang) || !is_array($lang))
 {
-	$lang = array();
+  $lang = [];
 }
 
-$lang = array_merge($lang, array(
-	'ACCOUNT_REJECTED' => 'Votre compte a été rejeté par BlockBotPosts car vous êtes un robot.',
-	'MESSAGE_REJECTED' => 'Votre message a été rejeté par BlockBotPosts car vous êtes un robot.',
-));
+$lang = array_merge($lang, [
+  'ACCOUNT_REJECTED' => 'Votre compte a été rejeté par BlockBotPosts car vous êtes un robot.',
+  'MESSAGE_REJECTED' => 'Votre message a été rejeté par BlockBotPosts car vous êtes un robot.',
+]);

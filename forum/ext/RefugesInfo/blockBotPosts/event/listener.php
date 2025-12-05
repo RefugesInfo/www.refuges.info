@@ -4,42 +4,42 @@ namespace RefugesInfo\blockBotPosts\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
-	static public function getSubscribedEvents () {
-		return [
-			'core.ucp_register_data_after' => 'filter', // ucp_register.php 265
-			'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
-			'rmcgirr83.contactadmin.modify_data_and_error' => 'filter', // Extension contactadmin
-			'block_bot_posts.filter' => 'filter', // External API
-			'core.append_sid' => 'append_sid', // includes/functions.php 1543
-		];
-	}
+  static public function getSubscribedEvents() {
+    return [
+      'core.ucp_register_data_after' => 'filter', // ucp_register.php 265
+      'core.posting_modify_submission_errors' => 'filter', // posting.php 1428
+      'rmcgirr83.contactadmin.modify_data_and_error' => 'filter', // Extension contactadmin
+      'block_bot_posts.filter' => 'filter', // External API
+      'core.append_sid' => 'append_sid', // includes/functions.php 1543
+    ];
+  }
 
-	public function filter ($event) {
-		global $request, $language, $user;
+  public function filter($event) {
+    global $request, $language, $user;
 
-		$post = $request->get_super_global(\phpbb\request\request_interface::POST);
+    $post = $request->get_super_global(\phpbb\request\request_interface::POST);
 
-		// Includes language files of this extension
-		$ns = explode ('\\', __NAMESPACE__);
-		$language->add_lang ('common', $ns[0].'/'.$ns[1]);
+    // Includes language files of this extension
+    $ns = explode('\\', __NAMESPACE__);
+    $language->add_lang('common', $ns[0].'/'.$ns[1]);
 
-		// Générate an error if JS is not enabled
-		if (strlen($post['sid']) != strlen($user->session_id)) {
-			$error = $event['error'];
-			$error[] = $language->lang (
-				$event['mode'] ? 'MESSAGE_REJECTED' : 'ACCOUNT_REJECTED'
-			);
-			$event['error'] = $error;
-		}
-	}
+    // Générate an error if JS is not enabled
+    if(strlen($post['sid']) != strlen($user->session_id)) {
+      $error = $event['error'];
+      $error[] = $language->lang(
+        $event['mode'] ? 'MESSAGE_REJECTED' : 'ACCOUNT_REJECTED'
+      );
+      $event['error'] = $error;
+    }
+  }
 
-	// Do not add sid to urls if cookies not enabled
-	public function append_sid ($event) {
-		global $request, $config_wri;
+  // Do not add sid to urls if cookies not enabled
+  public function append_sid($event) {
+    global $request, $config_wri;
 
-		$request->enable_super_globals();
-		if (isset($config_wri['no_sid_urls']) &&
-			!isset($_SERVER['HTTP_COOKIE']))
-			$event['append_sid_overwrite'] = $event['url'];	
-	}
+    $request->enable_super_globals();
+    if(isset($config_wri['no_sid_urls']) &&
+      !isset($_SERVER['HTTP_COOKIE']))
+      $event['append_sid_overwrite'] = $event['url'];
+  }
 }
