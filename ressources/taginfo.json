@@ -1,0 +1,33 @@
+ 
+{
+    "data_format": 1,
+    "data_url": "https://www.refuges.info/ressources/taginfo.json",
+    "data_updated": "20251207T150000Z",
+    "project": {         
+        "name": "Refuges.info",
+        "description": "A community, non commercial web site grouping and displaying informations about mountain alpine huts, cabins, shelters and water sources.",   
+        "project_url": "https://www.refuges.info/",
+        "icon_url": "https://sly.refuges.info/images/icones/favicon.svg",
+        "contact_name": "sly on the refuges.info forum"
+    },
+    "tags": [
+        {
+            "key": "boundary",
+            "value": "administrative",
+            "description": "Administrative boundaries of admin_level 2, 4 and 6 are used to give a rough position of refuges.info's points of interest"
+        },
+        {
+            "key": "boundary",
+            "value": "protected_area",
+            "description": "Nature reserves of protect_class 1 2 and 4 are used to give a rough position of refuges.info's points of interest"
+        },
+        {
+            "key": "description:restrictions",
+            "description": "A description text to records restrictions applying to the object. We am using it for natural reserves and national parks to record the restrictions that apply (such as when it is forbidden to walk outside paths, cut flowers, use a tent, etc.)"
+        },
+        {
+            "key": "website:regulation",
+            "description": "A website url we are linking to to get more informations about nature reserves"
+        }
+    ]
+}
