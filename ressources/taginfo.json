@@ -8,7 +8,8 @@
         "description": "A community, non commercial web site grouping and displaying informations about mountain alpine huts, cabins, shelters and water sources.",   
         "project_url": "https://www.refuges.info/",
         "icon_url": "https://sly.refuges.info/images/icones/favicon.svg",
-        "contact_name": "sly on the refuges.info forum"
+        "contact_name": "sly",
+        "contact_email": "sylvain+taginfo@refuges.info"
     },
     "tags": [
         {
