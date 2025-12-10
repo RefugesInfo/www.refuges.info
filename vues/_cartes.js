@@ -333,6 +333,7 @@ function mapIndex(options) {
 
     view: new ol.View({
       enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
     }),
 
     controls: [
