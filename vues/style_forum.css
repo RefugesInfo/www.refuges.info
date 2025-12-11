@@ -69,6 +69,9 @@ dl:has(#autologin),
 /* liens vers la page contact qui fait doublon avec le bandeau WRI du bas */
 a[href*="contactadmin"],
 
+/* Liens dans les signatures */
+.profile-phpbb_location a,
+
 /* Changeur de couleurs de prosilver_fr */
 .style-switch {
   display: none;
