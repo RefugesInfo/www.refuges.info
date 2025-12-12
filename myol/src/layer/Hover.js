@@ -79,8 +79,8 @@ class Hover extends VectorLayer {
         }
         // Click link
         else if (hoveredSubProperties.link) {
-          // Open a new tag
-          if (evt.originalEvent.ctrlKey)
+          // Open a new tab
+          if (evt.originalEvent.ctrlKey || evt.originalEvent.metaKey)
             window.open(hoveredSubProperties.link, '_blank').focus();
           else
             // Open a new window
