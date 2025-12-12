@@ -9,6 +9,9 @@
 import Button from './Button';
 import BackgroundLayer from '../layer/BackgroundLayer';
 import './layerSwitcher.css';
+import {
+  platformModifierKey
+} from 'ol/events/condition';
 
 class LayerSwitcher extends Button {
   constructor(options) {
@@ -86,7 +89,9 @@ class LayerSwitcher extends Button {
 
   action(evt) {
     // Clean checks
-    if (evt && !evt.ctrlKey) {
+    if (evt && !platformModifierKey({
+        originalEvent: evt
+      })) {
       this.selectorEls.forEach(el => {
         el.checked = false;
       });

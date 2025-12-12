@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 18/11/2025 18:23:40 using npm run build from the src/... sources
+ * Built 12/12/2025 15:16:08 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -77249,7 +77249,9 @@
 
     action(evt) {
       // Clean checks
-      if (evt && !evt.ctrlKey) {
+      if (evt && !platformModifierKey({
+          originalEvent: evt
+        })) {
         this.selectorEls.forEach(el => {
           el.checked = false;
         });
@@ -79288,12 +79290,12 @@
           }
           // Click link
           else if (hoveredSubProperties.link) {
-            // Open a new tag
-            if (evt.originalEvent.ctrlKey)
+            // Open a new tab
+            if (platformModifierKeyOnly(evt))
               window.open(hoveredSubProperties.link, '_blank').focus();
             else
               // Open a new window
-              if (evt.originalEvent.shiftKey)
+              if (shiftKeyOnly(evt))
                 window.open(hoveredSubProperties.link, '_blank', 'resizable=yes').focus();
               // Go on the same window
               else
@@ -90468,7 +90470,7 @@
           coordinates = selectedFeature.getGeometry().getCoordinates();
 
         // Shift + click : reverse line direction
-        if (oEvt.shiftKey && !oEvt.ctrlKey && !oEvt.altKey &&
+        if (shiftKeyOnly(evt.mapBrowserEvent) &&
           typeof coordinates[0][0] === 'number') {
           this.editedSource.removeFeature(selectedFeature);
 
@@ -90478,7 +90480,7 @@
         }
 
         // Ctrl+Alt+click on segment : delete the line or poly
-        if (!oEvt.shiftKey && oEvt.ctrlKey && oEvt.altKey)
+        if (!oEvt.shiftKey && platformModifierKey(evt.mapBrowserEvent) && oEvt.altKey)
           this.editedSource.removeFeature(selectedFeature);
       });
 
@@ -90519,9 +90521,7 @@
       });
 
       map.on('click', evt => {
-        const oEvt = evt.originalEvent;
-
-        if (!oEvt.shiftKey && oEvt.ctrlKey && !oEvt.altKey)
+        if (platformModifierKeyOnly(evt))
           this.optimiseAndSave(
             this.snapInteraction.snapTo(
               evt.pixel,
@@ -91166,7 +91166,7 @@
    */
 
 
-  const VERSION = '1.1.2.dev 18/11/2025 18:23:40';
+  const VERSION = '1.1.2.dev 12/12/2025 15:16:08';
 
   async function trace() {
     const data = [
