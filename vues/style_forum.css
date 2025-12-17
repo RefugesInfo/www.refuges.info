@@ -33,6 +33,11 @@ a:hover {
   color: var(--couleur_titre);
 }
 
+/* Notifications non lues */
+.bg2 {
+	background-color: #E1EBF2;
+}
+
 /* Viewforum */
 #phpbb .topiclist li:not(:hover),
 #phpbb .topiclist,
