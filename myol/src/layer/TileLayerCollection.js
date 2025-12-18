@@ -2,7 +2,7 @@
  * Many simplified display of various tiles layers services
  */
 
-import BingMaps from 'ol/source/BingMaps.js';
+//import BingMaps from 'ol/source/BingMaps.js';
 import {
   get,
 } from 'ol/proj';
@@ -23,28 +23,31 @@ import './TileLayerCollection.css';
  * Build the attributions chain from:
   {
     contribution: 'link,name',
+    donate: 'link,name',
     attribution: 'link,name',
     licence: 'link,name',
     legend: 'link',
  }
  */
-function makeAttributions(options, dataAttribution) {
-  const makeLink = args => '<a target="_blank" href="' + args[0] + '">' + args[1] + '</a>',
+function makeAttributions(options) {
+  const makeLink = (args, pre = '') => pre + '<a target="_blank" href="' + args[0] + '">' + args[1] + '</a>',
     ret = [];
 
   if (options.contribution)
-    ret.push(makeLink(options.contribution.split(',')));
+    ret.push(makeLink(options.contribution.split(','), '&copy '));
+  if (options.donate)
+    ret.push(makeLink(options.donate.split(','), '❤️'));
   if (options.attribution)
-    ret.push(makeLink(options.attribution.split(',')));
+    ret.push(makeLink(options.attribution.split(','), '&copy '));
   if (options.licence)
-    ret.push(makeLink(options.licence.split(',')));
+    ret.push(makeLink(options.licence.split(','), '&copy '));
   if (options.legend)
     ret.push(makeLink([options.legend, 'Légende']));
-  if (options.dataAttribution)
-    ret.push(makeLink(dataAttribution.split(',')));
+  if (options.warning)
+    ret.push(options.warning);
 
   if (ret)
-    return '&copy' + ret.join(' | ');
+    return ret.join(' | ');
 }
 
 /**
@@ -369,6 +372,7 @@ export class Google extends TileLayer {
  * Doc: https://docs.microsoft.com/en-us/bingmaps/getting-started/
  * Key : https://www.bingmapsportal.com/
  */
+/*//TODO migration sur AZURE https://learn.microsoft.com/fr-fr/azure/azure-maps/migrate-bing-maps-overview
 export class Bing extends TileLayer {
   //TODO https://blogs.bing.com/maps/2025-06/Bing-Maps-for-Enterprise-Basic-Account-shutdown-June-30,2025
   constructor(options = {}) {
@@ -386,7 +390,7 @@ export class Bing extends TileLayer {
         this.setSource(new BingMaps(options));
     });
   }
-}
+}*/
 
 /**
  * Maxbox (Maxar)
@@ -477,9 +481,10 @@ export function wriNavLayers(options = {}) {
         url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
         maxZoom: 18,
         attributions: makeAttributions({
-          contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-          attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
-          legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
+          contribution: 'https://github.com/sletuffe/OpenTopoMap,OpenHikingMap',
+          donate: 'https://openmaps.fr/donate,Donation',
+          attribution: 'http://www.openstreetmap.org/copyright,OpenStreetMap',
+          legend: 'https://openmaps.fr/otm/legend.html',
         }),
       }),
     }),
@@ -498,10 +503,10 @@ export function wriNavLayers(options = {}) {
         url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
         maxZoom: 17,
         attributions: makeAttributions({
-          contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-          attribution: 'https://github.com/sletuffe/OpenTopoMap/,OpenTopoMap-R',
-          licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
-          legend: 'https://www.geograph.org/leaflet/otm-legend.php',
+          contribution: 'https://github.com/sletuffe/OpenTopoMap,OTM-R',
+          donate: 'https://openmaps.fr/donate,Donation',
+          attribution: 'http://www.openstreetmap.org/copyright,OpenStreetMap',
+          legend: 'https://openmaps.fr/otm/legend.html',
         }),
       }),
     }),
@@ -577,11 +582,11 @@ export function collection(options = {}) {
     'Italie': new IGM(),
 
     'Google': new Google(),
-    'Photo Bing': new Bing({
+    /*'Photo Bing': new Bing({
       key: options.bing, // For simplified options
       ...options.bing, // Include key
       imagerySet: 'Aerial',
-    }),
+    }),*/
 
     'Photo IGN 1950-65': new IGN({
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS.1950-1965',
@@ -620,7 +625,7 @@ export function examples(options = {}) {
       url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
       legend: '',
     }),
-    'OSM orthos FR': new OpenStreetMap({
+    'OSM photos FR': new OpenStreetMap({
       url: 'https://wms.openstreetmap.fr/tms/1.0.0/tous_fr/{z}/{x}/{y}',
       legend: '',
     }),
@@ -653,12 +658,12 @@ export function examples(options = {}) {
       subLayer: 'mobile-atlas',
     }),
 
-    'OS light': new OS({
+    'UK light': new OS({
       key: options.os, // For simplified options
       ...options.os, // Include key
       subLayer: 'Light_3857',
     }),
-    'OS road': new OS({
+    'UK road': new OS({
       key: options.os, // For simplified options
       ...options.os, // Include key
       subLayer: 'Road_3857',
@@ -669,7 +674,7 @@ export function examples(options = {}) {
       subLayer: 'topo',
     }),
 
-    'Bing': new Bing({
+    /*'Bing': new Bing({
       key: options.bing, // For simplified options
       ...options.bing, // Include key
       imagerySet: 'Road',
@@ -678,7 +683,7 @@ export function examples(options = {}) {
       key: options.bing, // For simplified options
       ...options.bing, // Include key
       imagerySet: 'AerialWithLabels',
-    }),
+    }),*/
 
     'Photo Swiss': new SwissTopo({
       subLayer: 'ch.swisstopo.swissimage',

@@ -15,6 +15,7 @@ class BackgroundLayer extends layerTile.CartoDB {
     super({
       minResolution: 20,
       visible: false,
+      warning: '<span class="warning">CARTE HORS ZONE</span>',
 
       ...options,
     });

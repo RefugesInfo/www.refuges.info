@@ -27,9 +27,9 @@
     "beautify": "js-beautify -s=2 *.j* [begs]*/*.[chj]* [egs]*/*/*.[chj]*"
   },
   "dependencies": {
-    "ol": "10.6.1",
+    "ol": "10.7.0",
     "@myol/geocoder": "latest",
-    "proj4": "2.19.10"
+    "proj4": "2.20.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "latest",

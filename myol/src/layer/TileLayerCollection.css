@@ -7,3 +7,8 @@
 .ol-attribution:not(:hover):has([href*="openmaptiles"]) li:has([href*="openstreetmap"]) {
   display: none;
 }
+
+.ol-attribution .warning {
+  color: red;
+  font-weight: bold;
+}

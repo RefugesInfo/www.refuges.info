@@ -52,7 +52,7 @@ class MyVectorSource extends VectorSource {
         }
     });
 
-    // Compute properties when the layer is loaded & before the cluster layer is computed
+    // Compute properties when one request is loaded & before the cluster layer is computed
     this.on('change', () => {
       this.logs ??= {};
       if (this.options.debug)
@@ -65,6 +65,7 @@ class MyVectorSource extends VectorSource {
           .join('°E/') + '°N'
         );
 
+      //TODO move feature.getProperties() in hover
       this.getFeatures().forEach(f => {
         if (!f.yetAdded) {
           f.yetAdded = true;

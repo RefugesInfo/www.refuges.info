@@ -47,7 +47,6 @@ See a [Tile layers example](https://Dominique92.github.io/myol/examples/?sample=
 * Great Britain Ordnance Survey
 * IDEE España, satellite
 * IGM Italie
-* Bing Microsoft, satellite
 * Google maps, satellite
 * Maxar, ArcGIS
 
@@ -102,7 +101,6 @@ Layers keys
 If you want to use external providers layers, you must acquire free keys and replace them in the html (see source comment)
 * French IGN : Get your own (free) IGN key at [https://geoservices.ign.fr/](https://geoservices.ign.fr/)
 * OSM thunderforest : Get your own (free) THUNDERFOREST key at [https://manage.thunderforest.com](https://manage.thunderforest.com)
-* Microsoft BING : Get your own (free) BING key at [https://www.microsoft.com](https://www.microsoft.com/en-us/maps/create-a-bing-maps-key)
 * England Ordnance Survey : Get your own (free) key at [https://osdatahub.os.uk/](https://osdatahub.os.uk/)
 * Austria kompass : Get your own (free) key at [http://www.kompass.de/livemap/](http://www.kompass.de/livemap/)
 * Austria kompass : Get your own (free) key at [http://www.kompass.de/livemap/](http://www.kompass.de/livemap/)

@@ -39,7 +39,7 @@ function gestion_retour($retour,$vue)
   }
 }
 
-switch( $_REQUEST["action"] )
+switch( $_REQUEST["action"]??'' )
 {
   case 'Ajouter' :
     // Il faut soit être identifié, soit avoir rentré la bonne lettre anti-robot

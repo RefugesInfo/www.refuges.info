@@ -12,7 +12,10 @@ import Icon from 'ol/style/Icon';
 import LineString from 'ol/geom/LineString';
 import Modify from 'ol/interaction/Modify';
 import {
-  never
+  never,
+  platformModifierKey,
+  platformModifierKeyOnly,
+  shiftKeyOnly,
 } from 'ol/events/condition';
 import Point from 'ol/geom/Point';
 import Polygon from 'ol/geom/Polygon';
@@ -163,7 +166,7 @@ class VectorEditor extends VectorLayer {
         coordinates = selectedFeature.getGeometry().getCoordinates();
 
       // Shift + click : reverse line direction
-      if (oEvt.shiftKey && !oEvt.ctrlKey && !oEvt.altKey &&
+      if (shiftKeyOnly(evt.mapBrowserEvent) &&
         typeof coordinates[0][0] === 'number') {
         this.editedSource.removeFeature(selectedFeature);
 
@@ -173,7 +176,7 @@ class VectorEditor extends VectorLayer {
       }
 
       // Ctrl+Alt+click on segment : delete the line or poly
-      if (!oEvt.shiftKey && oEvt.ctrlKey && oEvt.altKey)
+      if (!oEvt.shiftKey && platformModifierKey(evt.mapBrowserEvent) && oEvt.altKey)
         this.editedSource.removeFeature(selectedFeature);
     });
 
@@ -214,9 +217,7 @@ class VectorEditor extends VectorLayer {
     });
 
     map.on('click', evt => {
-      const oEvt = evt.originalEvent;
-
-      if (!oEvt.shiftKey && oEvt.ctrlKey && !oEvt.altKey)
+      if (platformModifierKeyOnly(evt))
         this.optimiseAndSave(
           this.snapInteraction.snapTo(
             evt.pixel,

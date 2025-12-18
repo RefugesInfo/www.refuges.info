@@ -4,4 +4,4 @@ var map = mapPoint({
   mapKeys: <?=json_encode($config_wri['mapKeys'])?>,
 });
 
-myol.trace(map);
+myol.traces(map);

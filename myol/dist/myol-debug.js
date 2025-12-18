@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 18/11/2025 18:23:40 using npm run build from the src/... sources
+ * Built 18/12/2025 10:21:17 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -1004,7 +1004,7 @@
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION$1 = '10.6.1';
+  const VERSION$1 = '10.7.0';
 
   /**
    * @module ol/Object
@@ -9363,10 +9363,10 @@
        * @private
        * @type {!Array<T>}
        */
-      this.array_ = array ? array : [];
+      this.array_ = array ?? [];
 
       if (this.unique_) {
-        for (let i = 0, ii = this.array_.length; i < ii; ++i) {
+        for (let i = 1, ii = this.array_.length; i < ii; ++i) {
           this.assertUnique_(this.array_[i], i);
         }
       }
@@ -9481,9 +9481,6 @@
      * @api
      */
     push(elem) {
-      if (this.unique_) {
-        this.assertUnique_(elem);
-      }
       const n = this.getLength();
       this.insertAt(n, elem);
       return this.getLength();
@@ -9572,8 +9569,9 @@
      * @param {number} [except] Optional index to ignore.
      */
     assertUnique_(elem, except) {
-      for (let i = 0, ii = this.array_.length; i < ii; ++i) {
-        if (this.array_[i] === elem && i !== except) {
+      const array = this.array_;
+      for (let i = 0, ii = array.length; i < ii; ++i) {
+        if (array[i] === elem && i !== except) {
           throw new Error('Duplicate item added to a unique collection');
         }
       }
@@ -13534,9 +13532,9 @@
    * Create an html canvas element and returns its 2d context.
    * @param {number} [width] Canvas width.
    * @param {number} [height] Canvas height.
-   * @param {Array<HTMLCanvasElement>} [canvasPool] Canvas pool to take existing canvas from.
+   * @param {Array<HTMLCanvasElement|OffscreenCanvas>} [canvasPool] Canvas pool to take existing canvas from.
    * @param {CanvasRenderingContext2DSettings} [settings] CanvasRenderingContext2DSettings
-   * @return {CanvasRenderingContext2D} The context.
+   * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} The context.
    */
   function createCanvasContext2D(width, height, canvasPool, settings) {
     /** @type {HTMLCanvasElement|OffscreenCanvas} */
@@ -13544,7 +13542,9 @@
     if (canvasPool && canvasPool.length) {
       canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
     } else if (WORKER_OFFSCREEN_CANVAS) {
-      canvas = new OffscreenCanvas(width || 300, height || 300);
+      canvas = new (class extends OffscreenCanvas {
+        style = {};
+      })(width ?? 300, height ?? 150);
     } else {
       canvas = document.createElement('canvas');
     }
@@ -13554,17 +13554,18 @@
     if (height) {
       canvas.height = height;
     }
-    //FIXME Allow OffscreenCanvasRenderingContext2D as return type
-    return /** @type {CanvasRenderingContext2D} */ (
+    return /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
       canvas.getContext('2d', settings)
     );
   }
 
-  /** @type {CanvasRenderingContext2D} */
+  /**
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+   */
   let sharedCanvasContext;
 
   /**
-   * @return {CanvasRenderingContext2D} Shared canvas context.
+   * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} Shared canvas context.
    */
   function getSharedCanvasContext2D() {
     if (!sharedCanvasContext) {
@@ -13576,7 +13577,7 @@
   /**
    * Releases canvas memory to avoid exceeding memory limits in Safari.
    * See https://pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    */
   function releaseCanvas(context) {
     const canvas = context.canvas;
@@ -13676,6 +13677,81 @@
       // reorder
       node.insertBefore(newChild, oldChild);
     }
+  }
+
+  /**
+   * Creates a minimal structure that mocks a DIV to be used by the composite and
+   * layer renderer in a worker environment
+   * @return {HTMLDivElement} mocked DIV
+   */
+  function createMockDiv() {
+    const mockedDiv = new Proxy(
+      {
+        /**
+         * @type {Array<HTMLElement>}
+         */
+        childNodes: [],
+        /**
+         * @param {HTMLElement} node html node.
+         * @return {HTMLElement} html node.
+         */
+        appendChild: function (node) {
+          this.childNodes.push(node);
+          return node;
+        },
+        /**
+         * dummy function, as this structure is not supposed to have a parent.
+         */
+        remove: function () {},
+        /**
+         * @param {HTMLElement} node html node.
+         * @return {HTMLElement} html node.
+         */
+        removeChild: function (node) {
+          const index = this.childNodes.indexOf(node);
+          if (index === -1) {
+            throw new Error('Node to remove was not found');
+          }
+          this.childNodes.splice(index, 1);
+          return node;
+        },
+        /**
+         * @param {HTMLElement} newNode new html node.
+         * @param {HTMLElement} referenceNode reference html node.
+         * @return {HTMLElement} new html node.
+         */
+        insertBefore: function (newNode, referenceNode) {
+          const index = this.childNodes.indexOf(referenceNode);
+          if (index === -1) {
+            throw new Error('Reference node not found');
+          }
+          this.childNodes.splice(index, 0, newNode);
+          return newNode;
+        },
+        style: {},
+      },
+      {
+        get(target, prop, receiver) {
+          if (prop === 'firstElementChild') {
+            return target.childNodes.length > 0 ? target.childNodes[0] : null;
+          }
+          return Reflect.get(target, prop, receiver);
+        },
+      },
+    );
+    return /** @type {HTMLDivElement} */ (/** @type {*} */ (mockedDiv));
+  }
+
+  /***
+   * @param {*} obj The object to check.
+   * @return {obj is (HTMLCanvasElement | OffscreenCanvas)} The object is a canvas.
+   */
+  function isCanvas(obj) {
+    return (
+      (typeof HTMLCanvasElement !== 'undefined' &&
+        obj instanceof HTMLCanvasElement) ||
+      (typeof OffscreenCanvas !== 'undefined' && obj instanceof OffscreenCanvas)
+    );
   }
 
   /**
@@ -17719,8 +17795,22 @@
    */
 
   /**
-   * @typedef {'addlayer'|'removelayer'} GroupEventType
+   * @enum {string}
    */
+  const GroupEventType = {
+    /**
+     * Triggered when a layer is added
+     * @event GroupEvent#addlayer
+     * @api
+     */
+    ADDLAYER: 'addlayer',
+    /**
+     * Triggered when a layer is removed
+     * @event GroupEvent#removelayer
+     * @api
+     */
+    REMOVELAYER: 'removelayer',
+  };
 
   /**
    * @classdesc
@@ -17750,7 +17840,8 @@
    * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
    *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
    *     'change:layers', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:layers', Return>} GroupOnSignature
+   *   import("../Observable").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
+   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
    */
 
   /**
@@ -17789,6 +17880,7 @@
    *
    * A generic `change` event is triggered when the group/Collection changes.
    *
+   * @fires GroupEvent
    * @api
    */
   class LayerGroup extends BaseLayer {
@@ -17883,7 +17975,7 @@
       for (let i = 0, ii = layersArray.length; i < ii; i++) {
         const layer = layersArray[i];
         this.registerLayerListeners_(layer);
-        this.dispatchEvent(new GroupEvent('addlayer', layer));
+        this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, layer));
       }
       this.changed();
     }
@@ -17904,8 +17996,13 @@
 
       if (layer instanceof LayerGroup) {
         listenerKeys.push(
-          listen(layer, 'addlayer', this.handleLayerGroupAdd_, this),
-          listen(layer, 'removelayer', this.handleLayerGroupRemove_, this),
+          listen(layer, GroupEventType.ADDLAYER, this.handleLayerGroupAdd_, this),
+          listen(
+            layer,
+            GroupEventType.REMOVELAYER,
+            this.handleLayerGroupRemove_,
+            this,
+          ),
         );
       }
 
@@ -17916,14 +18013,14 @@
      * @param {GroupEvent} event The layer group event.
      */
     handleLayerGroupAdd_(event) {
-      this.dispatchEvent(new GroupEvent('addlayer', event.layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, event.layer));
     }
 
     /**
      * @param {GroupEvent} event The layer group event.
      */
     handleLayerGroupRemove_(event) {
-      this.dispatchEvent(new GroupEvent('removelayer', event.layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.REMOVELAYER, event.layer));
     }
 
     /**
@@ -17933,7 +18030,7 @@
     handleLayersAdd_(collectionEvent) {
       const layer = collectionEvent.element;
       this.registerLayerListeners_(layer);
-      this.dispatchEvent(new GroupEvent('addlayer', layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, layer));
       this.changed();
     }
 
@@ -17946,7 +18043,7 @@
       const key = getUid(layer);
       this.listenerKeys_[key].forEach(unlistenByKey);
       delete this.listenerKeys_[key];
-      this.dispatchEvent(new GroupEvent('removelayer', layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.REMOVELAYER, layer));
       this.changed();
     }
 
@@ -17977,7 +18074,9 @@
       if (collection) {
         const currentLayers = collection.getArray();
         for (let i = 0, ii = currentLayers.length; i < ii; ++i) {
-          this.dispatchEvent(new GroupEvent('removelayer', currentLayers[i]));
+          this.dispatchEvent(
+            new GroupEvent(GroupEventType.REMOVELAYER, currentLayers[i]),
+          );
         }
       }
 
@@ -21586,13 +21685,13 @@
 
 
   /**
-   * @type {CanvasRenderingContext2D}
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
    */
   let taintedTestContext = null;
 
   class IconImage extends Target {
     /**
-     * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+     * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
      * @param {string|undefined} src Src.
      * @param {?string} crossOrigin Cross origin.
      * @param {import("../ImageState.js").default|undefined} imageState Image state.
@@ -21603,13 +21702,13 @@
 
       /**
        * @private
-       * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap}
+       * @type {HTMLImageElement|OffscreenCanvas|HTMLCanvasElement|ImageBitmap}
        */
       this.hitDetectionImage_ = null;
 
       /**
        * @private
-       * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null}
+       * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null}
        */
       this.image_ = image;
 
@@ -21621,7 +21720,7 @@
 
       /**
        * @private
-       * @type {Object<number, HTMLCanvasElement>}
+       * @type {Object<number, HTMLCanvasElement|OffscreenCanvas>}
        */
       this.canvas_ = {};
 
@@ -21721,7 +21820,7 @@
 
     /**
      * @param {number} pixelRatio Pixel ratio.
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element or image bitmap.
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element or image bitmap.
      */
     getImage(pixelRatio) {
       if (!this.image_) {
@@ -21748,7 +21847,7 @@
     }
 
     /**
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image element.
      */
     getHitDetectionImage() {
       if (!this.image_) {
@@ -21875,7 +21974,7 @@
   }
 
   /**
-   * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+   * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
    * @param {string|undefined} cacheKey Src.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
@@ -22165,7 +22264,7 @@
   const checkedFonts = new BaseObject();
 
   /**
-   * @type {CanvasRenderingContext2D}
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
    */
   let measureContext = null;
 
@@ -22505,7 +22604,7 @@
 
   /**
    * @param {Label} label Label.
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    */
   function executeLabelInstructions(label, context) {
     const contextInstructions = label.contextInstructions;
@@ -22885,7 +22984,7 @@
 
       /**
        * @private
-       * @type {HTMLCanvasElement|null}
+       * @type {HTMLCanvasElement|OffscreenCanvas|null}
        */
       this.hitDetectionCanvas_ = null;
 
@@ -23029,7 +23128,7 @@
     }
 
     /**
-     * @return {HTMLCanvasElement} Image element.
+     * @return {HTMLCanvasElement|OffscreenCanvas} Image element.
      * @override
      */
     getHitDetectionImage() {
@@ -23044,7 +23143,7 @@
     /**
      * Get the image icon.
      * @param {number} pixelRatio Pixel ratio.
-     * @return {HTMLCanvasElement} Image or Canvas element.
+     * @return {HTMLCanvasElement|OffscreenCanvas} Image or Canvas element.
      * @api
      * @override
      */
@@ -23053,7 +23152,7 @@
       const cacheKey =
         `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
         Object.values(this.renderOptions_).join(',');
-      let image = /** @type {HTMLCanvasElement} */ (
+      let image = /** @type {HTMLCanvasElement|OffscreenCanvas} */ (
         shared.get(cacheKey, null, null)?.getImage(1)
       );
       if (!image) {
@@ -23325,7 +23424,7 @@
     /**
      * @private
      * @param {RenderOptions} renderOptions Render options.
-     * @param {CanvasRenderingContext2D} context The rendering context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The rendering context.
      * @param {number} pixelRatio The pixel ratio.
      */
     draw_(renderOptions, context, pixelRatio) {
@@ -23360,7 +23459,7 @@
     /**
      * @private
      * @param {RenderOptions} renderOptions Render options.
-     * @return {HTMLCanvasElement} Canvas containing the icon
+     * @return {HTMLCanvasElement|OffscreenCanvas} Canvas containing the icon
      */
     createHitDetectionCanvas_(renderOptions) {
       let context;
@@ -23389,7 +23488,7 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context The context to draw in.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context to draw in.
      */
     createPath_(context) {
       let points = this.points_;
@@ -23415,7 +23514,7 @@
     /**
      * @private
      * @param {RenderOptions} renderOptions Render options.
-     * @param {CanvasRenderingContext2D} context The context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context.
      */
     drawHitDetectionCanvas_(renderOptions, context) {
       // set origin to canvas center
@@ -23679,7 +23778,7 @@
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
    * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
-   * @property {HTMLImageElement|HTMLCanvasElement|ImageBitmap} [img] Image object for the icon.
+   * @property {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} [img] Image object for the icon.
    * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
    * Positive values will shift the icon right and up.
    * @property {number} [opacity=1] Opacity of the icon.
@@ -24053,7 +24152,7 @@
     /**
      * Get the image icon.
      * @param {number} pixelRatio Pixel ratio.
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element. If the Icon
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element. If the Icon
      * style was configured with `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
      * @api
      * @override
@@ -24090,7 +24189,7 @@
     }
 
     /**
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image element.
      * @override
      */
     getHitDetectionImage() {
@@ -24140,6 +24239,21 @@
      */
     getSrc() {
       return this.iconImage_.getSrc();
+    }
+
+    /**
+     * Set the image URI
+     * @param {string} src Image source URI
+     * @api
+     */
+    setSrc(src) {
+      this.iconImage_ = get$1(
+        null,
+        src,
+        this.crossOrigin_,
+        ImageState.IDLE,
+        this.color_,
+      );
     }
 
     /**
@@ -25274,7 +25388,10 @@
         textAlign: this.getTextAlign(),
         justify: this.getJustify(),
         textBaseline: this.getTextBaseline(),
-        fill: this.getFill() ? this.getFill().clone() : undefined,
+        fill:
+          this.getFill() instanceof Fill
+            ? this.getFill().clone()
+            : this.getFill(),
         stroke: this.getStroke() ? this.getStroke().clone() : undefined,
         offsetX: this.getOffsetX(),
         offsetY: this.getOffsetY(),
@@ -27377,7 +27494,7 @@
      * @param {import("../transform.js").Transform} [inversePixelTransform] Transform for
      *     CSS pixels to rendered pixels.
      * @param {import("../Map.js").FrameState} [frameState] Frame state.
-     * @param {?(CanvasRenderingContext2D|WebGLRenderingContext)} [context] Context.
+     * @param {?(CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|WebGLRenderingContext)} [context] Context.
      */
     constructor(type, inversePixelTransform, frameState, context) {
       super(type);
@@ -27401,7 +27518,7 @@
        * Canvas context. Not available when the event is dispatched by the map. For Canvas 2D layers,
        * the context will be the 2D rendering context.  For WebGL layers, the context will be the WebGL
        * context.
-       * @type {CanvasRenderingContext2D|WebGLRenderingContext|undefined}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|WebGLRenderingContext|undefined}
        * @api
        */
       this.context = context;
@@ -27673,7 +27790,9 @@
        * @private
        * @type {HTMLDivElement}
        */
-      this.element_ = document.createElement('div');
+      this.element_ = WORKER_OFFSCREEN_CANVAS
+        ? createMockDiv()
+        : document.createElement('div');
       const style = this.element_.style;
       style.position = 'absolute';
       style.width = '100%';
@@ -27683,7 +27802,10 @@
       this.element_.className = CLASS_UNSELECTABLE + ' ol-layers';
 
       const container = map.getViewport();
-      container.insertBefore(this.element_, container.firstChild || null);
+      if (container) {
+        // maps in a worker do not have a viewport.
+        container.insertBefore(this.element_, container.firstChild || null);
+      }
 
       /**
        * @private
@@ -27784,6 +27906,41 @@
       this.declutter(frameState, renderedLayerStates);
 
       replaceChildren(this.element_, this.children_);
+
+      const map = this.getMap();
+      const mapCanvas = map.getTargetElement();
+      if (isCanvas(mapCanvas)) {
+        // Canvas composition when container is a canvas
+        const mapContext = mapCanvas.getContext('2d');
+        for (const container of this.children_) {
+          const canvas = container.firstElementChild || container;
+          const backgroundColor = container.style.backgroundColor;
+          if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
+            mapContext.fillStyle = backgroundColor;
+            mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+          }
+          if (isCanvas(canvas) && canvas.width > 0) {
+            const opacity = container.style.opacity || canvas.style.opacity;
+            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+            const transform = canvas.style.transform;
+            if (transform) {
+              // Get the transform parameters from the style's transform matrix
+              mapContext.setTransform(
+                .../** @type {[number, number, number, number, number, number]} */ (
+                  fromString$1(transform)
+                ),
+              );
+            } else {
+              const w = parseFloat(canvas.style.width) / canvas.width;
+              const h = parseFloat(canvas.style.height) / canvas.height;
+              mapContext.setTransform(w, 0, 0, h, 0, 0);
+            }
+            mapContext.drawImage(canvas, 0, 0);
+          }
+        }
+        mapContext.globalAlpha = 1;
+        mapContext.setTransform(1, 0, 0, 1, 0, 0);
+      }
 
       this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);
 
@@ -27895,12 +28052,12 @@
    * @typedef {Object} MapOptions
    * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
    * Controls initially added to the map. If not specified,
-   * {@link module:ol/control/defaults.defaults} is used.
+   * {@link module:ol/control/defaults.defaults} is used. In a worker, no controls are added by default.
    * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
    * physical pixels and device-independent pixels (dips) on the device.
    * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
    * Interactions that are initially added to the map. If not specified,
-   * {@link module:ol/interaction/defaults.defaults} is used.
+   * {@link module:ol/interaction/defaults.defaults} is used. In a worker, no interactions are added by default.
    * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
    * listen to keyboard events on. This determines when the `KeyboardPan` and
    * `KeyboardZoom` interactions trigger. For example, if this option is set to
@@ -27921,10 +28078,11 @@
    * Increasing this value can make it easier to click on the map.
    * @property {Collection<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
    * Overlays initially added to the map. By default, no overlays are added.
-   * @property {HTMLElement|string} [target] The container for the map, either the
+   * @property {HTMLElement|string|HTMLCanvasElement|OffscreenCanvas} [target] The container for the map, either the
    * element itself or the `id` of the element. If not specified at construction
    * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
    * rendered. If passed by element, the container can be in a secondary document.
+   * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target.
    * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
    *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
    *  `tabindex` atribute must be set on the custom element's host element.
@@ -28143,39 +28301,42 @@
        * @private
        * @type {!HTMLElement}
        */
-      this.viewport_ = document.createElement('div');
-      this.viewport_.className =
-        'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
-      this.viewport_.style.position = 'relative';
-      this.viewport_.style.overflow = 'hidden';
-      this.viewport_.style.width = '100%';
-      this.viewport_.style.height = '100%';
+      if (!WORKER_OFFSCREEN_CANVAS) {
+        this.viewport_ = document.createElement('div');
+        this.viewport_.className =
+          'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
+        this.viewport_.style.position = 'relative';
+        this.viewport_.style.overflow = 'hidden';
+        this.viewport_.style.width = '100%';
+        this.viewport_.style.height = '100%';
 
-      /**
-       * @private
-       * @type {!HTMLElement}
-       */
-      this.overlayContainer_ = document.createElement('div');
-      this.overlayContainer_.style.position = 'absolute';
-      this.overlayContainer_.style.zIndex = '0';
-      this.overlayContainer_.style.width = '100%';
-      this.overlayContainer_.style.height = '100%';
-      this.overlayContainer_.style.pointerEvents = 'none';
-      this.overlayContainer_.className = 'ol-overlaycontainer';
-      this.viewport_.appendChild(this.overlayContainer_);
+        /**
+         * @private
+         * @type {!HTMLElement}
+         */
+        this.overlayContainer_ = document.createElement('div');
+        this.overlayContainer_.style.position = 'absolute';
+        this.overlayContainer_.style.zIndex = '0';
+        this.overlayContainer_.style.width = '100%';
+        this.overlayContainer_.style.height = '100%';
+        this.overlayContainer_.style.pointerEvents = 'none';
+        this.overlayContainer_.className = 'ol-overlaycontainer';
+        this.viewport_.appendChild(this.overlayContainer_);
 
-      /**
-       * @private
-       * @type {!HTMLElement}
-       */
-      this.overlayContainerStopEvent_ = document.createElement('div');
-      this.overlayContainerStopEvent_.style.position = 'absolute';
-      this.overlayContainerStopEvent_.style.zIndex = '0';
-      this.overlayContainerStopEvent_.style.width = '100%';
-      this.overlayContainerStopEvent_.style.height = '100%';
-      this.overlayContainerStopEvent_.style.pointerEvents = 'none';
-      this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
-      this.viewport_.appendChild(this.overlayContainerStopEvent_);
+        /**
+         * @private
+         * @type {!HTMLElement}
+         */
+        this.overlayContainerStopEvent_ = document.createElement('div');
+        this.overlayContainerStopEvent_.style.position = 'absolute';
+        this.overlayContainerStopEvent_.style.zIndex = '0';
+        this.overlayContainerStopEvent_.style.width = '100%';
+        this.overlayContainerStopEvent_.style.height = '100%';
+        this.overlayContainerStopEvent_.style.pointerEvents = 'none';
+        this.overlayContainerStopEvent_.className =
+          'ol-overlaycontainer-stopevent';
+        this.viewport_.appendChild(this.overlayContainerStopEvent_);
+      }
 
       /**
        * @private
@@ -28207,17 +28368,21 @@
        */
       this.targetElement_ = null;
 
-      /**
-       * @private
-       * @type {ResizeObserver}
-       */
-      this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+      if (!WORKER_OFFSCREEN_CANVAS) {
+        /**
+         * @private
+         * @type {ResizeObserver}
+         */
+        this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+      }
 
       /**
        * @type {Collection<import("./control/Control.js").default>}
        * @protected
        */
-      this.controls = optionsInternal.controls || defaults$1();
+      this.controls =
+        optionsInternal.controls ||
+        (WORKER_OFFSCREEN_CANVAS ? new Collection() : defaults$1());
 
       /**
        * @type {Collection<import("./interaction/Interaction.js").default>}
@@ -28225,9 +28390,11 @@
        */
       this.interactions =
         optionsInternal.interactions ||
-        defaults({
-          onFocusOnly: true,
-        });
+        (WORKER_OFFSCREEN_CANVAS
+          ? new Collection()
+          : defaults({
+              onFocusOnly: true,
+            }));
 
       /**
        * @type {Collection<import("./Overlay.js").default>}
@@ -28440,7 +28607,7 @@
       this.controls.clear();
       this.interactions.clear();
       this.overlays_.clear();
-      this.resizeObserver_.disconnect();
+      this.resizeObserver_?.disconnect();
       this.setTarget(null);
       super.disposeInternal();
     }
@@ -29054,8 +29221,8 @@
         this.viewport_.remove();
       }
 
-      if (this.targetElement_) {
-        this.resizeObserver_.unobserve(this.targetElement_);
+      if (this.targetElement_ && !isCanvas(this.targetElement_)) {
+        this.resizeObserver_?.unobserve(this.targetElement_);
         const rootNode = this.targetElement_.getRootNode();
         if (rootNode instanceof ShadowRoot) {
           this.resizeObserver_.unobserve(rootNode.host);
@@ -29085,65 +29252,71 @@
           this.animationDelayKey_ = undefined;
         }
       } else {
-        targetElement.appendChild(this.viewport_);
+        if (!isCanvas(targetElement)) {
+          targetElement.appendChild(this.viewport_);
+        }
         if (!this.renderer_) {
           this.renderer_ = new CompositeMapRenderer(this);
         }
 
-        this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
-          this,
-          this.moveTolerance_,
-        );
-        for (const key in MapBrowserEventType) {
-          this.mapBrowserEventHandler_.addEventListener(
-            MapBrowserEventType[key],
-            this.handleMapBrowserEvent.bind(this),
+        if (!isCanvas(targetElement)) {
+          this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
+            this,
+            this.moveTolerance_,
           );
-        }
-        this.viewport_.addEventListener(
-          EventType.CONTEXTMENU,
-          this.boundHandleBrowserEvent_,
-          false,
-        );
-        this.viewport_.addEventListener(
-          EventType.WHEEL,
-          this.boundHandleBrowserEvent_,
-          PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
-        );
+          for (const key in MapBrowserEventType) {
+            this.mapBrowserEventHandler_.addEventListener(
+              MapBrowserEventType[key],
+              this.handleMapBrowserEvent.bind(this),
+            );
+          }
+          this.viewport_.addEventListener(
+            EventType.CONTEXTMENU,
+            this.boundHandleBrowserEvent_,
+            false,
+          );
+          this.viewport_.addEventListener(
+            EventType.WHEEL,
+            this.boundHandleBrowserEvent_,
+            PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
+          );
 
-        let keyboardEventTarget;
-        if (!this.keyboardEventTarget_) {
-          // check if map target is in shadowDOM, if yes use host element as target
-          const targetRoot = targetElement.getRootNode();
-          const targetCandidate =
-            targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
-          keyboardEventTarget = targetCandidate;
-        } else {
-          keyboardEventTarget = this.keyboardEventTarget_;
+          let keyboardEventTarget;
+          if (!this.keyboardEventTarget_) {
+            // check if map target is in shadowDOM, if yes use host element as target
+            const targetRoot = targetElement.getRootNode();
+            const targetCandidate =
+              targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
+            keyboardEventTarget = targetCandidate;
+          } else {
+            keyboardEventTarget = this.keyboardEventTarget_;
+          }
+
+          this.targetChangeHandlerKeys_ = [
+            listen(
+              keyboardEventTarget,
+              EventType.KEYDOWN,
+              this.handleBrowserEvent,
+              this,
+            ),
+            listen(
+              keyboardEventTarget,
+              EventType.KEYPRESS,
+              this.handleBrowserEvent,
+              this,
+            ),
+          ];
+          if (targetElement instanceof HTMLElement) {
+            const rootNode = targetElement.getRootNode();
+            if (rootNode instanceof ShadowRoot) {
+              this.resizeObserver_.observe(rootNode.host);
+            }
+            this.resizeObserver_?.observe(targetElement);
+          }
         }
 
-        this.targetChangeHandlerKeys_ = [
-          listen(
-            keyboardEventTarget,
-            EventType.KEYDOWN,
-            this.handleBrowserEvent,
-            this,
-          ),
-          listen(
-            keyboardEventTarget,
-            EventType.KEYPRESS,
-            this.handleBrowserEvent,
-            this,
-          ),
-        ];
-        const rootNode = targetElement.getRootNode();
-        if (rootNode instanceof ShadowRoot) {
-          this.resizeObserver_.observe(rootNode.host);
-        }
-        this.resizeObserver_.observe(targetElement);
+        this.updateSize();
       }
-
-      this.updateSize();
       // updateSize calls setSize, so no need to call this.render
       // ourselves here.
     }
@@ -29504,19 +29677,25 @@
 
       let size = undefined;
       if (targetElement) {
-        const computedStyle = getComputedStyle(targetElement);
-        const width =
-          targetElement.offsetWidth -
-          parseFloat(computedStyle['borderLeftWidth']) -
-          parseFloat(computedStyle['paddingLeft']) -
-          parseFloat(computedStyle['paddingRight']) -
-          parseFloat(computedStyle['borderRightWidth']);
-        const height =
-          targetElement.offsetHeight -
-          parseFloat(computedStyle['borderTopWidth']) -
-          parseFloat(computedStyle['paddingTop']) -
-          parseFloat(computedStyle['paddingBottom']) -
-          parseFloat(computedStyle['borderBottomWidth']);
+        let width, height;
+        if (isCanvas(targetElement)) {
+          width = targetElement.width;
+          height = targetElement.height;
+        } else {
+          const computedStyle = getComputedStyle(targetElement);
+          width =
+            targetElement.offsetWidth -
+            parseFloat(computedStyle['borderLeftWidth']) -
+            parseFloat(computedStyle['paddingLeft']) -
+            parseFloat(computedStyle['paddingRight']) -
+            parseFloat(computedStyle['borderRightWidth']);
+          height =
+            targetElement.offsetHeight -
+            parseFloat(computedStyle['borderTopWidth']) -
+            parseFloat(computedStyle['paddingTop']) -
+            parseFloat(computedStyle['paddingBottom']) -
+            parseFloat(computedStyle['borderBottomWidth']);
+        }
         if (!isNaN(width) && !isNaN(height)) {
           size = [Math.max(0, width), Math.max(0, height)];
           if (
@@ -33899,6 +34078,7 @@
    * @module ol/tilecoord
    */
 
+
   /**
    * An array of three numbers representing the location of a tile in a tile
    * grid. The order is `z` (zoom level), `x` (column), and `y` (row).
@@ -33931,6 +34111,18 @@
    */
   function getKeyZXY(z, x, y) {
     return z + '/' + x + '/' + y;
+  }
+
+  /**
+   * @param {import("./source/Tile.js").default} source The tile source.
+   * @param {string} sourceKey The source key.
+   * @param {number} z The tile z level.
+   * @param {number} x The tile x level.
+   * @param {number} y The tile y level.
+   * @return {string} The cache key.
+   */
+  function getCacheKey(source, sourceKey, z, x, y) {
+    return `${getUid(source)},${sourceKey},${getKeyZXY(z, x, y)}`;
   }
 
   /**
@@ -37511,6 +37703,8 @@
    * @property {string} [tipLabel='Fit to extent'] Text label to use for the button tip.
    * @property {import("../extent.js").Extent} [extent] The extent to zoom to. If undefined the validity
    * extent of the view projection is used.
+   * @property {import("../View.js").FitOptions} [fitOptions] Options to pass to the view when fitting
+   * the extent (e.g. `padding`, `duration`, `minResolution`, `maxZoom`, `easing`, `callback`).
    */
 
   /**
@@ -37537,6 +37731,12 @@
        * @protected
        */
       this.extent = options.extent ? options.extent : null;
+
+      /**
+       * @type {import("../View.js").FitOptions}
+       * @protected
+       */
+      this.fitOptions = options.fitOptions || {};
 
       const className =
         options.className !== undefined ? options.className : 'ol-zoom-extent';
@@ -37582,7 +37782,8 @@
       const extent = !this.extent
         ? view.getProjection().getExtent()
         : fromUserExtent(this.extent, view.getProjection());
-      view.fitInternal(fromExtent(extent));
+
+      view.fitInternal(fromExtent(extent), this.fitOptions);
     }
   }
 
@@ -49072,13 +49273,7 @@
       const stride = getStrideForLayout(this.geometryLayout_);
       const flatCoordinates = decodeDeltas(text, stride, this.factor_);
       flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-      const coordinates = inflateCoordinates(
-        flatCoordinates,
-        0,
-        flatCoordinates.length,
-        stride,
-      );
-      const lineString = new LineString(coordinates, this.geometryLayout_);
+      const lineString = new LineString(flatCoordinates, this.geometryLayout_);
 
       return transformGeometryWithOptions(
         lineString,
@@ -49121,11 +49316,9 @@
      * @override
      */
     writeGeometryText(geometry, options) {
-      geometry =
-        /** @type {LineString} */
-        (
-          transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
-        );
+      geometry = /** @type {LineString} */ (
+        transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
+      );
       const flatCoordinates = geometry.getFlatCoordinates();
       const stride = geometry.getStride();
       flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
@@ -49145,19 +49338,17 @@
    *     Default is `1e5`.
    * @return {string} The encoded string.
    * @api
+   * @deprecated
    */
   function encodeDeltas(numbers, stride, factor) {
     factor = factor ? factor : 1e5;
-    let d;
 
-    const lastNumbers = new Array(stride);
-    for (d = 0; d < stride; ++d) {
-      lastNumbers[d] = 0;
-    }
+    const lastNumbers = new Array(stride).fill(0);
 
     for (let i = 0, ii = numbers.length; i < ii; ) {
-      for (d = 0; d < stride; ++d, ++i) {
-        const num = numbers[i];
+      for (let d = 0; d < stride; ++d, ++i) {
+        const value = numbers[i] * factor;
+        const num = value < 0 ? Math.ceil(value - 0.5) : Math.round(value);
         const delta = num - lastNumbers[d];
         lastNumbers[d] = num;
 
@@ -49165,7 +49356,7 @@
       }
     }
 
-    return encodeFloats(numbers, factor);
+    return encodeSignedIntegers(numbers);
   }
 
   /**
@@ -49178,66 +49369,22 @@
    *     be divided. Default is `1e5`.
    * @return {Array<number>} A list of n-dimensional points.
    * @api
+   * @deprecated
    */
   function decodeDeltas(encoded, stride, factor) {
     factor = factor ? factor : 1e5;
-    let d;
 
     /** @type {Array<number>} */
-    const lastNumbers = new Array(stride);
-    for (d = 0; d < stride; ++d) {
-      lastNumbers[d] = 0;
-    }
-
-    const numbers = decodeFloats(encoded, factor);
+    const lastNumbers = new Array(stride).fill(0);
+    const numbers = decodeSignedIntegers(encoded);
 
     for (let i = 0, ii = numbers.length; i < ii; ) {
-      for (d = 0; d < stride; ++d, ++i) {
+      for (let d = 0; d < stride; ++d, ++i) {
         lastNumbers[d] += numbers[i];
-
-        numbers[i] = lastNumbers[d];
+        numbers[i] = lastNumbers[d] / factor;
       }
     }
 
-    return numbers;
-  }
-
-  /**
-   * Encode a list of floating point numbers and return an encoded string
-   *
-   * Attention: This function will modify the passed array!
-   *
-   * @param {Array<number>} numbers A list of floating point numbers.
-   * @param {number} [factor] The factor by which the numbers will be
-   *     multiplied. The remaining decimal places will get rounded away.
-   *     Default is `1e5`.
-   * @return {string} The encoded string.
-   * @api
-   */
-  function encodeFloats(numbers, factor) {
-    factor = factor ? factor : 1e5;
-    for (let i = 0, ii = numbers.length; i < ii; ++i) {
-      numbers[i] = Math.round(numbers[i] * factor);
-    }
-
-    return encodeSignedIntegers(numbers);
-  }
-
-  /**
-   * Decode a list of floating point numbers from an encoded string
-   *
-   * @param {string} encoded An encoded string.
-   * @param {number} [factor] The factor by which the result will be divided.
-   *     Default is `1e5`.
-   * @return {Array<number>} A list of floating point numbers.
-   * @api
-   */
-  function decodeFloats(encoded, factor) {
-    factor = factor ? factor : 1e5;
-    const numbers = decodeSignedIntegers(encoded);
-    for (let i = 0, ii = numbers.length; i < ii; ++i) {
-      numbers[i] /= factor;
-    }
     return numbers;
   }
 
@@ -57258,7 +57405,7 @@
    */
 
 
-  /** @typedef {CanvasRenderingContext2D & {globalAlpha: any}} ZIndexContextProxy */
+  /** @typedef {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D & {globalAlpha: any}} ZIndexContextProxy */
 
   /**
    * @extends {CanvasRenderingContext2D}
@@ -57348,7 +57495,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      */
     draw(context) {
       this.instructions_.forEach((instructionsAtIndex) => {
@@ -57410,7 +57557,7 @@
    */
 
   /**
-   * @typedef {{0: CanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+   * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
    */
 
   /**
@@ -57951,7 +58098,7 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      */
     fill_(context) {
       const alignAndScale = this.alignAndScaleFill_;
@@ -57973,7 +58120,7 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {Array<*>} instruction Instruction.
      */
     setStrokeStyle_(context, instruction) {
@@ -58029,7 +58176,7 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {Array<*>} instructions Instructions array.
@@ -58626,7 +58773,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {number} viewRotation View rotation.
@@ -58655,7 +58802,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {number} viewRotation View rotation.
      * @param {FeatureCallback<T>} [featureCallback] Feature callback.
@@ -58777,7 +58924,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.hitDetectionContext_ = null;
 
@@ -58789,7 +58936,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.renderedContext_ = null;
 
@@ -58803,7 +58950,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../transform.js").Transform} transform Transform.
      */
     clip(context, transform) {
@@ -59021,7 +59168,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} targetContext Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} targetContext Context.
      * @param {import('../../size.js').Size} scaledCanvasSize Scale of the context.
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {number} viewRotation View rotation.
@@ -59225,7 +59372,7 @@
    */
   class CanvasImmediateRenderer extends VectorContext {
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../../extent.js").Extent} extent Extent.
      * @param {import("../../transform.js").Transform} transform Transform.
@@ -59246,7 +59393,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.context_ = context;
 
@@ -61208,12 +61355,12 @@
    */
 
   /**
-   * @type {Array<HTMLCanvasElement>}
+   * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
    */
   const canvasPool$1 = [];
 
   /**
-   * @type {CanvasRenderingContext2D}
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
    */
   let pixelContext = null;
 
@@ -61236,6 +61383,7 @@
       super(layer);
 
       /**
+       * HTMLElement container for the layer to be rendered in.
        * @protected
        * @type {HTMLElement}
        */
@@ -61272,7 +61420,7 @@
       this.inversePixelTransform = create();
 
       /**
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.context = null;
 
@@ -61283,6 +61431,7 @@
       this.deferredContext_ = null;
 
       /**
+       * true if the container has been reused from the previous renderer
        * @type {boolean}
        */
       this.containerReused = false;
@@ -61337,6 +61486,7 @@
      * @param {string} [backgroundColor] Background color.
      */
     useContainer(target, transform, backgroundColor) {
+      // renderer canvas to target canvas
       const layerClassName = this.getLayer().getClassName();
       let container, context;
       if (
@@ -61351,7 +61501,7 @@
             )))
       ) {
         const canvas = target.firstElementChild;
-        if (canvas instanceof HTMLCanvasElement) {
+        if (isCanvas(canvas)) {
           context = canvas.getContext('2d');
         }
       }
@@ -61369,14 +61519,16 @@
         this.container.style.backgroundColor = null;
       }
       if (!this.container) {
-        container = document.createElement('div');
+        container = WORKER_OFFSCREEN_CANVAS
+          ? createMockDiv()
+          : document.createElement('div');
         container.className = layerClassName;
         let style = container.style;
         style.position = 'absolute';
         style.width = '100%';
         style.height = '100%';
         context = createCanvasContext2D();
-        const canvas = context.canvas;
+        const canvas = /** @type {HTMLCanvasElement} */ (context.canvas);
         container.appendChild(canvas);
         style = canvas.style;
         style.position = 'absolute';
@@ -61395,7 +61547,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @param {import("../../extent.js").Extent} extent Clip extent.
      * @protected
@@ -61453,7 +61605,6 @@
 
       const canvasTransform = toString$1(this.pixelTransform);
       this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
       if (!this.containerReused) {
         const canvas = this.context.canvas;
         if (canvas.width != width || canvas.height != height) {
@@ -61462,15 +61613,19 @@
         } else {
           this.context.clearRect(0, 0, width, height);
         }
-        if (canvasTransform !== canvas.style.transform) {
-          canvas.style.transform = canvasTransform;
+        if (
+          canvasTransform !==
+          /** @type {HTMLCanvasElement} */ (canvas).style.transform
+        ) {
+          /** @type {HTMLCanvasElement} */ (canvas).style.transform =
+            canvasTransform;
         }
       }
     }
 
     /**
      * @param {import("../../render/EventType.js").default} type Event type.
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @private
      */
@@ -61488,7 +61643,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @protected
      */
@@ -61501,7 +61656,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @protected
      */
@@ -61727,7 +61882,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.targetContext_ = null;
 
@@ -64407,6 +64562,407 @@
   }
 
   /**
+   * Coordinate type when drawing lines.
+   * @typedef {Array<import("../coordinate.js").Coordinate>} LineCoordType
+   */
+
+
+  /**
+   * @param {LineCoordType} coordinates The ring coordinates.
+   * @param {number} index The index.  May be wrapped.
+   * @return {import("../coordinate.js").Coordinate} The coordinate.
+   */
+  function getCoordinate(coordinates, index) {
+    const count = coordinates.length;
+    if (index < 0) {
+      return coordinates[index + count];
+    }
+    if (index >= count) {
+      return coordinates[index - count];
+    }
+    return coordinates[index];
+  }
+
+  /**
+   * @param {LineCoordType} coordinates The coordinates.
+   * @param {number} index The index.  May be fractional and may wrap.
+   * @return {import("../coordinate.js").Coordinate} The interpolated coordinate.
+   */
+  function interpolateCoordinate(coordinates, index) {
+    const count = coordinates.length;
+
+    let startIndex = Math.floor(index);
+    const along = index - startIndex;
+    if (startIndex >= count) {
+      startIndex -= count;
+    } else if (startIndex < 0) {
+      startIndex += count;
+    }
+
+    let endIndex = startIndex + 1;
+    if (endIndex >= count) {
+      endIndex -= count;
+    }
+
+    const start = coordinates[startIndex];
+    const x0 = start[0];
+    const y0 = start[1];
+    const end = coordinates[endIndex];
+    const dx = end[0] - x0;
+    const dy = end[1] - y0;
+
+    return [x0 + dx * along, y0 + dy * along];
+  }
+
+  /**
+   * @typedef {Object} TraceTarget
+   * @property {Array<import("../coordinate.js").Coordinate>} coordinates Target coordinates.
+   * @property {boolean} ring The target coordinates are a linear ring.
+   * @property {number} startIndex The index of first traced coordinate.  A fractional index represents an
+   * edge intersection.  Index values for rings will wrap (may be negative or larger than coordinates length).
+   * @property {number} endIndex The index of last traced coordinate.  Details from startIndex also apply here.
+   */
+
+  /**
+   * @typedef {Object} TraceState
+   * @property {boolean} active Tracing active.
+   * @property {import("../coordinate.js").Coordinate} [startCoord] The initially clicked coordinate.
+   * @property {Array<TraceTarget>} [targets] Targets available for tracing.
+   * @property {number} [targetIndex] The index of the currently traced target.  A value of -1 indicates
+   * that no trace target is active.
+   */
+
+  /**
+   * @typedef {Object} TraceTargetUpdateInfo
+   * @property {number} index The new target index.
+   * @property {number} endIndex The new segment end index.
+   * @property {number} closestTargetDistance The squared distance to the closest target.
+   */
+
+  /**
+   * @type {TraceTargetUpdateInfo}
+   */
+  const sharedUpdateInfo = {
+    index: -1,
+    endIndex: NaN,
+    closestTargetDistance: Infinity,
+  };
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+   * @param {TraceState} traceState The trace state.
+   * @param {import("../Map.js").default} map The map.
+   * @param {number} snapTolerance The snap tolerance.
+   * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
+   * object is reused between calls and must not be modified by the caller.
+   */
+  function getTraceTargetUpdate(
+    coordinate,
+    traceState,
+    map,
+    snapTolerance,
+  ) {
+    const x = coordinate[0];
+    const y = coordinate[1];
+
+    let closestTargetDistance = Infinity;
+
+    let newTargetIndex = -1;
+    let newEndIndex = NaN;
+
+    for (
+      let targetIndex = 0;
+      targetIndex < traceState.targets.length;
+      ++targetIndex
+    ) {
+      const target = traceState.targets[targetIndex];
+      const coordinates = target.coordinates;
+
+      let minSegmentDistance = Infinity;
+      let endIndex;
+      for (
+        let coordinateIndex = 0;
+        coordinateIndex < coordinates.length - 1;
+        ++coordinateIndex
+      ) {
+        const start = coordinates[coordinateIndex];
+        const end = coordinates[coordinateIndex + 1];
+        const rel = getPointSegmentRelationship(x, y, start, end);
+        if (rel.squaredDistance < minSegmentDistance) {
+          minSegmentDistance = rel.squaredDistance;
+          endIndex = coordinateIndex + rel.along;
+        }
+      }
+
+      if (minSegmentDistance < closestTargetDistance) {
+        closestTargetDistance = minSegmentDistance;
+        if (target.ring && traceState.targetIndex === targetIndex) {
+          // same target, maintain the same trace direction
+          if (target.endIndex > target.startIndex) {
+            // forward trace
+            if (endIndex < target.startIndex) {
+              endIndex += coordinates.length;
+            }
+          } else if (target.endIndex < target.startIndex) {
+            // reverse trace
+            if (endIndex > target.startIndex) {
+              endIndex -= coordinates.length;
+            }
+          }
+        }
+        newEndIndex = endIndex;
+        newTargetIndex = targetIndex;
+      }
+    }
+
+    const newTarget = traceState.targets[newTargetIndex];
+    let considerBothDirections = newTarget.ring;
+    if (traceState.targetIndex === newTargetIndex && considerBothDirections) {
+      // only consider switching trace direction if close to the start
+      const newCoordinate = interpolateCoordinate(
+        newTarget.coordinates,
+        newEndIndex,
+      );
+      const pixel = map.getPixelFromCoordinate(newCoordinate);
+      const startPx = map.getPixelFromCoordinate(traceState.startCoord);
+      if (distance(pixel, startPx) > snapTolerance) {
+        considerBothDirections = false;
+      }
+    }
+
+    if (considerBothDirections) {
+      const coordinates = newTarget.coordinates;
+      const count = coordinates.length;
+      const startIndex = newTarget.startIndex;
+      const endIndex = newEndIndex;
+      if (startIndex < endIndex) {
+        const forwardDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex,
+        );
+        const reverseDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex - count,
+        );
+        if (reverseDistance < forwardDistance) {
+          newEndIndex -= count;
+        }
+      } else {
+        const reverseDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex,
+        );
+        const forwardDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex + count,
+        );
+        if (forwardDistance < reverseDistance) {
+          newEndIndex += count;
+        }
+      }
+    }
+
+    sharedUpdateInfo.index = newTargetIndex;
+    sharedUpdateInfo.endIndex = newEndIndex;
+    sharedUpdateInfo.closestTargetDistance = closestTargetDistance;
+    return sharedUpdateInfo;
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+   * @param {Array<import("../Feature.js").default>} features The candidate features.
+   * @return {Array<TraceTarget>} The trace targets.
+   */
+  function getTraceTargets(coordinate, features) {
+    /**
+     * @type {Array<TraceTarget>}
+     */
+    const targets = [];
+
+    for (let i = 0; i < features.length; ++i) {
+      const feature = features[i];
+      const geometry = feature.getGeometry();
+      appendGeometryTraceTargets(coordinate, geometry, targets);
+    }
+
+    return targets;
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+   * @param {import("../geom/Geometry.js").default} geometry The candidate geometry.
+   * @param {Array<TraceTarget>} targets The trace targets.
+   */
+  function appendGeometryTraceTargets(coordinate, geometry, targets) {
+    if (geometry instanceof LineString) {
+      appendTraceTarget(coordinate, geometry.getCoordinates(), false, targets);
+      return;
+    }
+    if (geometry instanceof MultiLineString) {
+      const coordinates = geometry.getCoordinates();
+      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+        appendTraceTarget(coordinate, coordinates[i], false, targets);
+      }
+      return;
+    }
+    if (geometry instanceof Polygon) {
+      const coordinates = geometry.getCoordinates();
+      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+        appendTraceTarget(coordinate, coordinates[i], true, targets);
+      }
+      return;
+    }
+    if (geometry instanceof MultiPolygon) {
+      const polys = geometry.getCoordinates();
+      for (let i = 0, ii = polys.length; i < ii; ++i) {
+        const coordinates = polys[i];
+        for (let j = 0, jj = coordinates.length; j < jj; ++j) {
+          appendTraceTarget(coordinate, coordinates[j], true, targets);
+        }
+      }
+      return;
+    }
+    if (geometry instanceof GeometryCollection) {
+      const geometries = geometry.getGeometries();
+      for (let i = 0; i < geometries.length; ++i) {
+        appendGeometryTraceTargets(coordinate, geometries[i], targets);
+      }
+      return;
+    }
+    // other types cannot be traced
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The clicked coordinate.
+   * @param {Array<import("../coordinate.js").Coordinate>} coordinates The geometry component coordinates.
+   * @param {boolean} ring The coordinates represent a linear ring.
+   * @param {Array<TraceTarget>} targets The trace targets.
+   */
+  function appendTraceTarget(coordinate, coordinates, ring, targets) {
+    const x = coordinate[0];
+    const y = coordinate[1];
+    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      const start = coordinates[i];
+      const end = coordinates[i + 1];
+      const rel = getPointSegmentRelationship(x, y, start, end);
+      if (rel.squaredDistance === 0) {
+        const index = i + rel.along;
+        targets.push({
+          coordinates: coordinates,
+          ring: ring,
+          startIndex: index,
+          endIndex: index,
+        });
+        return;
+      }
+    }
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} a One coordinate.
+   * @param {import("../coordinate.js").Coordinate} b Another coordinate.
+   * @return {number} The squared distance between the two coordinates.
+   */
+  function getSquaredDistance(a, b) {
+    return squaredDistance$1(a[0], a[1], b[0], b[1]);
+  }
+
+  /**
+   * Get the cumulative squared distance along a ring path.  The end index index may be "wrapped" and it may
+   * be less than the start index to indicate the direction of travel.  The start and end index may have
+   * a fractional part to indicate a point between two coordinates.
+   * @param {LineCoordType} coordinates Ring coordinates.
+   * @param {number} startIndex The start index.
+   * @param {number} endIndex The end index.
+   * @return {number} The cumulative squared distance along the ring path.
+   */
+  function getCumulativeSquaredDistance(coordinates, startIndex, endIndex) {
+    let lowIndex, highIndex;
+    if (startIndex < endIndex) {
+      lowIndex = startIndex;
+      highIndex = endIndex;
+    } else {
+      lowIndex = endIndex;
+      highIndex = startIndex;
+    }
+    const lowWholeIndex = Math.ceil(lowIndex);
+    const highWholeIndex = Math.floor(highIndex);
+
+    if (lowWholeIndex > highWholeIndex) {
+      // both start and end are on the same segment
+      const start = interpolateCoordinate(coordinates, lowIndex);
+      const end = interpolateCoordinate(coordinates, highIndex);
+      return getSquaredDistance(start, end);
+    }
+
+    let sd = 0;
+
+    if (lowIndex < lowWholeIndex) {
+      const start = interpolateCoordinate(coordinates, lowIndex);
+      const end = getCoordinate(coordinates, lowWholeIndex);
+      sd += getSquaredDistance(start, end);
+    }
+
+    if (highWholeIndex < highIndex) {
+      const start = getCoordinate(coordinates, highWholeIndex);
+      const end = interpolateCoordinate(coordinates, highIndex);
+      sd += getSquaredDistance(start, end);
+    }
+
+    for (let i = lowWholeIndex; i < highWholeIndex - 1; ++i) {
+      const start = getCoordinate(coordinates, i);
+      const end = getCoordinate(coordinates, i + 1);
+      sd += getSquaredDistance(start, end);
+    }
+
+    return sd;
+  }
+
+  /**
+   * @typedef {Object} PointSegmentRelationship
+   * @property {number} along The closest point expressed as a fraction along the segment length.
+   * @property {number} squaredDistance The squared distance of the point to the segment.
+   */
+
+  /**
+   * @type {PointSegmentRelationship}
+   */
+  const sharedRel = {along: 0, squaredDistance: 0};
+
+  /**
+   * @param {number} x The point x.
+   * @param {number} y The point y.
+   * @param {import("../coordinate.js").Coordinate} start The segment start.
+   * @param {import("../coordinate.js").Coordinate} end The segment end.
+   * @return {PointSegmentRelationship} The point segment relationship.  The returned object is
+   * shared between calls and must not be modified by the caller.
+   */
+  function getPointSegmentRelationship(x, y, start, end) {
+    const x1 = start[0];
+    const y1 = start[1];
+    const x2 = end[0];
+    const y2 = end[1];
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    let along = 0;
+    let px = x1;
+    let py = y1;
+    if (dx !== 0 || dy !== 0) {
+      along = clamp(((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy), 0, 1);
+      px += dx * along;
+      py += dy * along;
+    }
+
+    sharedRel.along = along;
+    sharedRel.squaredDistance = toFixed(squaredDistance$1(x, y, px, py), 10);
+    return sharedRel;
+  }
+
+  /**
    * @module ol/interaction/Draw
    */
 
@@ -64484,8 +65040,7 @@
    */
 
   /**
-   * Coordinate type when drawing lines.
-   * @typedef {Array<import("../coordinate.js").Coordinate>} LineCoordType
+   * @typedef {import('./tracing.js').LineCoordType} LineCoordType
    */
 
   /**
@@ -64498,23 +65053,9 @@
    * @typedef {PointCoordType|LineCoordType|PolyCoordType} SketchCoordType
    */
 
-  /**
-   * @typedef {Object} TraceState
-   * @property {boolean} active Tracing active.
-   * @property {import("../pixel.js").Pixel} [startPx] The initially clicked pixel location.
-   * @property {Array<TraceTarget>} [targets] Targets available for tracing.
-   * @property {number} [targetIndex] The index of the currently traced target.  A value of -1 indicates
-   * that no trace target is active.
-   */
+  /** @typedef {import('./tracing.js').TraceState} TraceState */
 
-  /**
-   * @typedef {Object} TraceTarget
-   * @property {Array<import("../coordinate.js").Coordinate>} coordinates Target coordinates.
-   * @property {boolean} ring The target coordinates are a linear ring.
-   * @property {number} startIndex The index of first traced coordinate.  A fractional index represents an
-   * edge intersection.  Index values for rings will wrap (may be negative or larger than coordinates length).
-   * @property {number} endIndex The index of last traced coordinate.  Details from startIndex also apply here.
-   */
+  /** @typedef {import('./tracing.js').TraceTarget} TraceTarget */
 
   /**
    * Function that takes an array of coordinates and an optional existing geometry
@@ -64578,371 +65119,6 @@
     }
   }
 
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
-   * @param {Array<Feature>} features The candidate features.
-   * @return {Array<TraceTarget>} The trace targets.
-   */
-  function getTraceTargets(coordinate, features) {
-    /**
-     * @type {Array<TraceTarget>}
-     */
-    const targets = [];
-
-    for (let i = 0; i < features.length; ++i) {
-      const feature = features[i];
-      const geometry = feature.getGeometry();
-      appendGeometryTraceTargets(coordinate, geometry, targets);
-    }
-
-    return targets;
-  }
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} a One coordinate.
-   * @param {import("../coordinate.js").Coordinate} b Another coordinate.
-   * @return {number} The squared distance between the two coordinates.
-   */
-  function getSquaredDistance(a, b) {
-    return squaredDistance$1(a[0], a[1], b[0], b[1]);
-  }
-
-  /**
-   * @param {LineCoordType} coordinates The ring coordinates.
-   * @param {number} index The index.  May be wrapped.
-   * @return {import("../coordinate.js").Coordinate} The coordinate.
-   */
-  function getCoordinate(coordinates, index) {
-    const count = coordinates.length;
-    if (index < 0) {
-      return coordinates[index + count];
-    }
-    if (index >= count) {
-      return coordinates[index - count];
-    }
-    return coordinates[index];
-  }
-
-  /**
-   * Get the cumulative squared distance along a ring path.  The end index index may be "wrapped" and it may
-   * be less than the start index to indicate the direction of travel.  The start and end index may have
-   * a fractional part to indicate a point between two coordinates.
-   * @param {LineCoordType} coordinates Ring coordinates.
-   * @param {number} startIndex The start index.
-   * @param {number} endIndex The end index.
-   * @return {number} The cumulative squared distance along the ring path.
-   */
-  function getCumulativeSquaredDistance(coordinates, startIndex, endIndex) {
-    let lowIndex, highIndex;
-    if (startIndex < endIndex) {
-      lowIndex = startIndex;
-      highIndex = endIndex;
-    } else {
-      lowIndex = endIndex;
-      highIndex = startIndex;
-    }
-    const lowWholeIndex = Math.ceil(lowIndex);
-    const highWholeIndex = Math.floor(highIndex);
-
-    if (lowWholeIndex > highWholeIndex) {
-      // both start and end are on the same segment
-      const start = interpolateCoordinate(coordinates, lowIndex);
-      const end = interpolateCoordinate(coordinates, highIndex);
-      return getSquaredDistance(start, end);
-    }
-
-    let sd = 0;
-
-    if (lowIndex < lowWholeIndex) {
-      const start = interpolateCoordinate(coordinates, lowIndex);
-      const end = getCoordinate(coordinates, lowWholeIndex);
-      sd += getSquaredDistance(start, end);
-    }
-
-    if (highWholeIndex < highIndex) {
-      const start = getCoordinate(coordinates, highWholeIndex);
-      const end = interpolateCoordinate(coordinates, highIndex);
-      sd += getSquaredDistance(start, end);
-    }
-
-    for (let i = lowWholeIndex; i < highWholeIndex - 1; ++i) {
-      const start = getCoordinate(coordinates, i);
-      const end = getCoordinate(coordinates, i + 1);
-      sd += getSquaredDistance(start, end);
-    }
-
-    return sd;
-  }
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
-   * @param {import("../geom/Geometry.js").default} geometry The candidate geometry.
-   * @param {Array<TraceTarget>} targets The trace targets.
-   */
-  function appendGeometryTraceTargets(coordinate, geometry, targets) {
-    if (geometry instanceof LineString) {
-      appendTraceTarget(coordinate, geometry.getCoordinates(), false, targets);
-      return;
-    }
-    if (geometry instanceof MultiLineString) {
-      const coordinates = geometry.getCoordinates();
-      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-        appendTraceTarget(coordinate, coordinates[i], false, targets);
-      }
-      return;
-    }
-    if (geometry instanceof Polygon) {
-      const coordinates = geometry.getCoordinates();
-      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-        appendTraceTarget(coordinate, coordinates[i], true, targets);
-      }
-      return;
-    }
-    if (geometry instanceof MultiPolygon) {
-      const polys = geometry.getCoordinates();
-      for (let i = 0, ii = polys.length; i < ii; ++i) {
-        const coordinates = polys[i];
-        for (let j = 0, jj = coordinates.length; j < jj; ++j) {
-          appendTraceTarget(coordinate, coordinates[j], true, targets);
-        }
-      }
-      return;
-    }
-    if (geometry instanceof GeometryCollection) {
-      const geometries = geometry.getGeometries();
-      for (let i = 0; i < geometries.length; ++i) {
-        appendGeometryTraceTargets(coordinate, geometries[i], targets);
-      }
-      return;
-    }
-    // other types cannot be traced
-  }
-
-  /**
-   * @typedef {Object} TraceTargetUpdateInfo
-   * @property {number} index The new target index.
-   * @property {number} endIndex The new segment end index.
-   */
-
-  /**
-   * @type {TraceTargetUpdateInfo}
-   */
-  const sharedUpdateInfo = {index: -1, endIndex: NaN};
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
-   * @param {TraceState} traceState The trace state.
-   * @param {import("../Map.js").default} map The map.
-   * @param {number} snapTolerance The snap tolerance.
-   * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
-   * object is reused between calls and must not be modified by the caller.
-   */
-  function getTraceTargetUpdate(coordinate, traceState, map, snapTolerance) {
-    const x = coordinate[0];
-    const y = coordinate[1];
-
-    let closestTargetDistance = Infinity;
-
-    let newTargetIndex = -1;
-    let newEndIndex = NaN;
-
-    for (
-      let targetIndex = 0;
-      targetIndex < traceState.targets.length;
-      ++targetIndex
-    ) {
-      const target = traceState.targets[targetIndex];
-      const coordinates = target.coordinates;
-
-      let minSegmentDistance = Infinity;
-      let endIndex;
-      for (
-        let coordinateIndex = 0;
-        coordinateIndex < coordinates.length - 1;
-        ++coordinateIndex
-      ) {
-        const start = coordinates[coordinateIndex];
-        const end = coordinates[coordinateIndex + 1];
-        const rel = getPointSegmentRelationship(x, y, start, end);
-        if (rel.squaredDistance < minSegmentDistance) {
-          minSegmentDistance = rel.squaredDistance;
-          endIndex = coordinateIndex + rel.along;
-        }
-      }
-
-      if (minSegmentDistance < closestTargetDistance) {
-        closestTargetDistance = minSegmentDistance;
-        if (target.ring && traceState.targetIndex === targetIndex) {
-          // same target, maintain the same trace direction
-          if (target.endIndex > target.startIndex) {
-            // forward trace
-            if (endIndex < target.startIndex) {
-              endIndex += coordinates.length;
-            }
-          } else if (target.endIndex < target.startIndex) {
-            // reverse trace
-            if (endIndex > target.startIndex) {
-              endIndex -= coordinates.length;
-            }
-          }
-        }
-        newEndIndex = endIndex;
-        newTargetIndex = targetIndex;
-      }
-    }
-
-    const newTarget = traceState.targets[newTargetIndex];
-    let considerBothDirections = newTarget.ring;
-    if (traceState.targetIndex === newTargetIndex && considerBothDirections) {
-      // only consider switching trace direction if close to the start
-      const newCoordinate = interpolateCoordinate(
-        newTarget.coordinates,
-        newEndIndex,
-      );
-      const pixel = map.getPixelFromCoordinate(newCoordinate);
-      if (distance(pixel, traceState.startPx) > snapTolerance) {
-        considerBothDirections = false;
-      }
-    }
-
-    if (considerBothDirections) {
-      const coordinates = newTarget.coordinates;
-      const count = coordinates.length;
-      const startIndex = newTarget.startIndex;
-      const endIndex = newEndIndex;
-      if (startIndex < endIndex) {
-        const forwardDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex,
-        );
-        const reverseDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex - count,
-        );
-        if (reverseDistance < forwardDistance) {
-          newEndIndex -= count;
-        }
-      } else {
-        const reverseDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex,
-        );
-        const forwardDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex + count,
-        );
-        if (forwardDistance < reverseDistance) {
-          newEndIndex += count;
-        }
-      }
-    }
-
-    sharedUpdateInfo.index = newTargetIndex;
-    sharedUpdateInfo.endIndex = newEndIndex;
-    return sharedUpdateInfo;
-  }
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The clicked coordinate.
-   * @param {Array<import("../coordinate.js").Coordinate>} coordinates The geometry component coordinates.
-   * @param {boolean} ring The coordinates represent a linear ring.
-   * @param {Array<TraceTarget>} targets The trace targets.
-   */
-  function appendTraceTarget(coordinate, coordinates, ring, targets) {
-    const x = coordinate[0];
-    const y = coordinate[1];
-    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      const start = coordinates[i];
-      const end = coordinates[i + 1];
-      const rel = getPointSegmentRelationship(x, y, start, end);
-      if (rel.squaredDistance === 0) {
-        const index = i + rel.along;
-        targets.push({
-          coordinates: coordinates,
-          ring: ring,
-          startIndex: index,
-          endIndex: index,
-        });
-        return;
-      }
-    }
-  }
-
-  /**
-   * @typedef {Object} PointSegmentRelationship
-   * @property {number} along The closest point expressed as a fraction along the segment length.
-   * @property {number} squaredDistance The squared distance of the point to the segment.
-   */
-
-  /**
-   * @type {PointSegmentRelationship}
-   */
-  const sharedRel = {along: 0, squaredDistance: 0};
-
-  /**
-   * @param {number} x The point x.
-   * @param {number} y The point y.
-   * @param {import("../coordinate.js").Coordinate} start The segment start.
-   * @param {import("../coordinate.js").Coordinate} end The segment end.
-   * @return {PointSegmentRelationship} The point segment relationship.  The returned object is
-   * shared between calls and must not be modified by the caller.
-   */
-  function getPointSegmentRelationship(x, y, start, end) {
-    const x1 = start[0];
-    const y1 = start[1];
-    const x2 = end[0];
-    const y2 = end[1];
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    let along = 0;
-    let px = x1;
-    let py = y1;
-    if (dx !== 0 || dy !== 0) {
-      along = clamp(((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy), 0, 1);
-      px += dx * along;
-      py += dy * along;
-    }
-
-    sharedRel.along = along;
-    sharedRel.squaredDistance = toFixed(squaredDistance$1(x, y, px, py), 10);
-    return sharedRel;
-  }
-
-  /**
-   * @param {LineCoordType} coordinates The coordinates.
-   * @param {number} index The index.  May be fractional and may wrap.
-   * @return {import("../coordinate.js").Coordinate} The interpolated coordinate.
-   */
-  function interpolateCoordinate(coordinates, index) {
-    const count = coordinates.length;
-
-    let startIndex = Math.floor(index);
-    const along = index - startIndex;
-    if (startIndex >= count) {
-      startIndex -= count;
-    } else if (startIndex < 0) {
-      startIndex += count;
-    }
-
-    let endIndex = startIndex + 1;
-    if (endIndex >= count) {
-      endIndex -= count;
-    }
-
-    const start = coordinates[startIndex];
-    const x0 = start[0];
-    const y0 = start[1];
-    const end = coordinates[endIndex];
-    const dx = end[0] - x0;
-    const dy = end[1] - y0;
-
-    return [x0 + dx * along, y0 + dy * along];
-  }
-
   /***
    * @template Return
    * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
@@ -64988,6 +65164,12 @@
        * @type {DrawOnSignature<void>}
        */
       this.un;
+
+      /**
+       * @type {Options}
+       * @private
+       */
+      this.options_ = options;
 
       /**
        * @type {boolean}
@@ -65070,6 +65252,15 @@
        * @private
        */
       this.stopClick_ = !!options.stopClick;
+
+      /**
+       * Ignore the next up event. This is set to `true` when a drag event is encountered,
+       * e.g. when the user pans the map while drawing. In this case, we do not want to bail
+       * out of tracing.
+       * @type {boolean}
+       * @private
+       */
+      this.ignoreNextUpEvent_ = false;
 
       /**
        * The number of points that must be drawn before a polygon ring or line
@@ -65342,12 +65533,39 @@
     }
 
     /**
+     * Set whether the drawing is done in freehand mode.
+     *
+     * @param {boolean} freehand Freehand drawing.
+     * @api
+     */
+    setFreehand(freehand) {
+      this.freehand_ = freehand;
+      if (this.freehand_) {
+        this.freehandCondition_ = always$1;
+      } else {
+        this.freehandCondition_ =
+          this.options_ && this.options_.freehandCondition
+            ? this.options_.freehandCondition
+            : shiftKeyOnly;
+      }
+    }
+
+    /**
      * Get the overlay layer that this interaction renders sketch features to.
      * @return {VectorLayer} Overlay layer.
      * @api
      */
     getOverlay() {
       return this.overlay_;
+    }
+
+    /**
+     * Get if this interaction is in freehand mode.
+     * @return {boolean} Freehand drawing.
+     * @api
+     */
+    getFreehand() {
+      return this.freehand_;
     }
 
     /**
@@ -65496,7 +65714,7 @@
       if (targets.length) {
         this.traceState_ = {
           active: true,
-          startPx: event.pixel.slice(),
+          startCoord: event.coordinate.slice(),
           targets: targets,
           targetIndex: -1,
         };
@@ -65621,7 +65839,8 @@
 
       if (traceState.targetIndex === -1) {
         // check if we are ready to pick a target
-        if (distance(traceState.startPx, event.pixel) < this.snapTolerance_) {
+        const startPx = event.map.getPixelFromCoordinate(traceState.startCoord);
+        if (distance(startPx, event.pixel) < this.snapTolerance_) {
           return;
         }
       }
@@ -65669,6 +65888,16 @@
     }
 
     /**
+     * Handle drag events.
+     * @param {import("../MapBrowserEvent.js").default<PointerEvent>} event Event.
+     * @override
+     */
+    handleDragEvent(event) {
+      this.ignoreNextUpEvent_ = true;
+      super.handleDragEvent(event);
+    }
+
+    /**
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default<PointerEvent>} event Event.
      * @return {boolean} If the event was consumed.
@@ -65685,7 +65914,9 @@
 
         this.handlePointerMove_(event);
         const tracing = this.traceState_.active;
-        this.toggleTraceState_(event);
+        if (!this.ignoreNextUpEvent_) {
+          this.toggleTraceState_(event);
+        }
 
         if (this.shouldHandle_) {
           const startingToDraw = !this.finishCoordinate_;
@@ -65711,6 +65942,7 @@
           this.abortDrawing();
         }
       }
+      this.ignoreNextUpEvent_ = false;
 
       if (!pass && this.stopClick_) {
         event.preventDefault();
@@ -66323,6 +66555,14 @@
    * boolean to indicate whether that event should be handled. By default,
    * {@link module:ol/events/condition.singleClick} with
    * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
+   * This combination is handled by wrapping the two condition checks in a single function:
+   * ```js
+   * import { altKeyOnly, singleClick } from 'ol/events/condition.js';
+   *
+   * function (event) {
+   *   return altKeyOnly(event) && singleClick(event)
+   * }
+   * ```
    * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
    * function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
    * returns a boolean to indicate whether a new vertex should be added to the sketch
@@ -66349,11 +66589,34 @@
    * @property {Collection<Feature>} [features]
    * The features the interaction works on.  If a feature collection is not
    * provided, a vector source must be provided with the `source` option.
+   * @property {boolean|import("../events/condition.js").Condition} [trace=false] Trace a portion of another geometry.
+   * Tracing starts when two neighboring vertices are dragged onto a trace target, without any other modification in between..
+   * @property {VectorSource} [traceSource] Source for features to trace.  If tracing is active and a `traceSource` is
+   * not provided, the interaction's `source` will be used.  Tracing requires that the interaction is configured with
+   * either a `traceSource` or a `source`.
    * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
    * overlay.
    * @property {boolean} [snapToPointer=!hitDetection] The vertex, point or segment being modified snaps to the
    * pointer coordinate when clicked within the `pixelTolerance`.
    */
+
+  function getCoordinatesArray(coordinates, geometryType, depth) {
+    let coordinatesArray;
+    switch (geometryType) {
+      case 'LineString':
+        coordinatesArray = coordinates;
+        break;
+      case 'MultiLineString':
+      case 'Polygon':
+        coordinatesArray = coordinates[depth[0]];
+        break;
+      case 'MultiPolygon':
+        coordinatesArray = coordinates[depth[1]][depth[0]];
+        break;
+      // pass
+    }
+    return coordinatesArray;
+  }
 
   /**
    * @classdesc
@@ -66489,10 +66752,10 @@
       this.vertexSegments_ = null;
 
       /**
-       * @type {import("../pixel.js").Pixel}
+       * @type {import("../coordinate.js").Coordinate}
        * @private
        */
-      this.lastPixel_ = [0, 0];
+      this.lastCoordinate_ = [0, 0];
 
       /**
        * Tracks if the next `singleclick` event should be ignored to prevent
@@ -66563,15 +66826,15 @@
        * @type {!Object<string, function(Feature, import("../geom/Geometry.js").default): void>}
        */
       this.SEGMENT_WRITERS_ = {
-        'Point': this.writePointGeometry_.bind(this),
-        'LineString': this.writeLineStringGeometry_.bind(this),
-        'LinearRing': this.writeLineStringGeometry_.bind(this),
-        'Polygon': this.writePolygonGeometry_.bind(this),
-        'MultiPoint': this.writeMultiPointGeometry_.bind(this),
-        'MultiLineString': this.writeMultiLineStringGeometry_.bind(this),
-        'MultiPolygon': this.writeMultiPolygonGeometry_.bind(this),
-        'Circle': this.writeCircleGeometry_.bind(this),
-        'GeometryCollection': this.writeGeometryCollectionGeometry_.bind(this),
+        Point: this.writePointGeometry_.bind(this),
+        LineString: this.writeLineStringGeometry_.bind(this),
+        LinearRing: this.writeLineStringGeometry_.bind(this),
+        Polygon: this.writePolygonGeometry_.bind(this),
+        MultiPoint: this.writeMultiPointGeometry_.bind(this),
+        MultiLineString: this.writeMultiLineStringGeometry_.bind(this),
+        MultiPolygon: this.writeMultiPolygonGeometry_.bind(this),
+        Circle: this.writeCircleGeometry_.bind(this),
+        GeometryCollection: this.writeGeometryCollectionGeometry_.bind(this),
       };
 
       /**
@@ -66579,6 +66842,31 @@
        * @private
        */
       this.source_ = null;
+
+      /**
+       * @type {VectorSource|null}
+       * @private
+       */
+      this.traceSource_ = options.traceSource || options.source || null;
+
+      /**
+       * @type {import("../events/condition.js").Condition}
+       * @private
+       */
+      this.traceCondition_;
+      this.setTrace(options.trace || false);
+
+      /**
+       * @type {import('./tracing.js').TraceState}
+       * @private
+       */
+      this.traceState_ = {active: false};
+
+      /**
+       * @type {Array<DragSegment>|null}
+       * @private
+       */
+      this.traceSegments_ = null;
 
       /**
        * @type {boolean|import("../layer/BaseVector").default}
@@ -66650,6 +66938,24 @@
     }
 
     /**
+     * Toggle tracing mode or set a tracing condition.
+     *
+     * @param {boolean|import("../events/condition.js").Condition} trace A boolean to toggle tracing mode or an event
+     *     condition that will be checked when a feature is clicked to determine if tracing should be active.
+     */
+    setTrace(trace) {
+      let condition;
+      if (!trace) {
+        condition = never;
+      } else if (trace === true) {
+        condition = always$1;
+      } else {
+        condition = trace;
+      }
+      this.traceCondition_ = condition;
+    }
+
+    /**
      * @param {Feature} feature Feature.
      * @private
      */
@@ -66663,7 +66969,7 @@
       }
       const map = this.getMap();
       if (map && map.isRendered() && this.getActive()) {
-        this.handlePointerAtPixel_(map.getCoordinateFromPixel(this.lastPixel_));
+        this.handlePointerAtPixel_(this.lastCoordinate_);
       }
       feature.addEventListener(EventType.CHANGE, this.boundHandleFeatureChange_);
     }
@@ -67097,6 +67403,11 @@
       return super.handleEvent(mapBrowserEvent) && !handled;
     }
 
+    /**
+     * @param {import("../coordinate.js").Coordinate} pixelCoordinate Pixel coordinate.
+     * @return {Array<SegmentData>|undefined} Insert vertices and update drag segments.
+     * @private
+     */
     findInsertVerticesAndUpdateDragSegments_(pixelCoordinate) {
       this.handlePointerAtPixel_(pixelCoordinate);
       this.dragSegments_.length = 0;
@@ -67107,8 +67418,9 @@
       }
 
       const projection = this.getMap().getView().getProjection();
+      /** @type {Array<SegmentData>} */
       const insertVertices = [];
-      const vertex = vertexFeature.getGeometry().getCoordinates();
+      const vertex = this.vertexFeature_.getGeometry().getCoordinates();
       const vertexExtent = boundingExtent([vertex]);
       const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
       const componentSegments = {};
@@ -67193,6 +67505,369 @@
     }
 
     /**
+     * @private
+     */
+    deactivateTrace_() {
+      this.traceState_ = {active: false};
+    }
+
+    /**
+     * Update the trace.
+     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @private
+     */
+    updateTrace_(event) {
+      const traceState = this.traceState_;
+      if (!traceState.active) {
+        return;
+      }
+
+      if (traceState.targetIndex === -1) {
+        // check if we are ready to pick a target
+        const startPx = event.map.getPixelFromCoordinate(traceState.startCoord);
+        if (distance(startPx, event.pixel) < this.pixelTolerance_) {
+          return;
+        }
+      }
+
+      const updatedTraceTarget = getTraceTargetUpdate(
+        event.coordinate,
+        traceState,
+        event.map,
+        this.pixelTolerance_,
+      );
+
+      if (
+        traceState.targetIndex === -1 &&
+        Math.sqrt(updatedTraceTarget.closestTargetDistance) /
+          event.map.getView().getResolution() >
+          this.pixelTolerance_
+      ) {
+        return;
+      }
+
+      if (traceState.targetIndex !== updatedTraceTarget.index) {
+        // target changed
+        if (traceState.targetIndex !== -1) {
+          // remove points added during previous trace
+          const oldTarget = traceState.targets[traceState.targetIndex];
+          this.removeTracedCoordinates_(oldTarget.startIndex, oldTarget.endIndex);
+        } else {
+          for (const traceSegment of this.traceSegments_) {
+            const segmentData = traceSegment[0];
+            const geometry = segmentData.geometry;
+            const index = traceSegment[1];
+            const coordinates = geometry.getCoordinates();
+            const coordinatesArray = getCoordinatesArray(
+              coordinates,
+              geometry.getType(),
+              segmentData.depth,
+            );
+            coordinatesArray.splice(segmentData.index + index, 1);
+            geometry.setCoordinates(coordinates);
+            if (index === 0) {
+              segmentData.index -= 1;
+            }
+          }
+        }
+        // add points for the new target
+        const newTarget = traceState.targets[updatedTraceTarget.index];
+        this.addTracedCoordinates_(
+          newTarget,
+          newTarget.startIndex,
+          updatedTraceTarget.endIndex,
+        );
+      } else {
+        // target stayed the same
+        const target = traceState.targets[traceState.targetIndex];
+        this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
+      }
+
+      // modify the state with updated info
+      traceState.targetIndex = updatedTraceTarget.index;
+      const target = traceState.targets[traceState.targetIndex];
+      target.endIndex = updatedTraceTarget.endIndex;
+    }
+
+    getTraceCandidates_(event) {
+      const map = this.getMap();
+      const tolerance = this.pixelTolerance_;
+      const lowerLeft = map.getCoordinateFromPixel([
+        event.pixel[0] - tolerance,
+        event.pixel[1] + tolerance,
+      ]);
+      const upperRight = map.getCoordinateFromPixel([
+        event.pixel[0] + tolerance,
+        event.pixel[1] - tolerance,
+      ]);
+      const extent = boundingExtent([lowerLeft, upperRight]);
+      const features = this.traceSource_.getFeaturesInExtent(extent);
+      return features;
+    }
+
+    /**
+     * Activate or deactivate trace state based on a browser event.
+     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @private
+     */
+    toggleTraceState_(event) {
+      if (!this.traceSource_ || !this.traceCondition_(event)) {
+        return;
+      }
+
+      if (this.traceState_.active) {
+        this.deactivateTrace_();
+        this.traceSegments_ = null;
+        return;
+      }
+
+      const features = this.getTraceCandidates_(event);
+      if (features.length === 0) {
+        return;
+      }
+
+      const targets = getTraceTargets(event.coordinate, features);
+      if (targets.length) {
+        this.traceState_ = {
+          active: true,
+          startCoord: event.coordinate.slice(),
+          targets: targets,
+          targetIndex: -1,
+        };
+      }
+    }
+
+    /**
+     * @param {import('./tracing.js').TraceTarget} target The trace target.
+     * @param {number} endIndex The new end index of the trace.
+     * @private
+     */
+    addOrRemoveTracedCoordinates_(target, endIndex) {
+      // three cases to handle:
+      //  1. traced in the same direction and points need adding
+      //  2. traced in the same direction and points need removing
+      //  3. traced in a new direction
+      const previouslyForward = target.startIndex <= target.endIndex;
+      const currentlyForward = target.startIndex <= endIndex;
+      if (previouslyForward === currentlyForward) {
+        // same direction
+        if (
+          (previouslyForward && endIndex > target.endIndex) ||
+          (!previouslyForward && endIndex < target.endIndex)
+        ) {
+          // case 1 - add new points
+          this.addTracedCoordinates_(target, target.endIndex, endIndex);
+        } else if (
+          (previouslyForward && endIndex < target.endIndex) ||
+          (!previouslyForward && endIndex > target.endIndex)
+        ) {
+          // case 2 - remove old points
+          this.removeTracedCoordinates_(endIndex, target.endIndex);
+        }
+      } else {
+        // case 3 - remove old points, add new points
+        this.removeTracedCoordinates_(target.startIndex, target.endIndex);
+        this.addTracedCoordinates_(target, target.startIndex, endIndex);
+      }
+    }
+
+    /**
+     * @param {number} fromIndex The start index.
+     * @param {number} toIndex The end index.
+     * @private
+     */
+    removeTracedCoordinates_(fromIndex, toIndex) {
+      if (fromIndex === toIndex) {
+        return;
+      }
+
+      let remove = 0;
+      if (fromIndex < toIndex) {
+        const start = Math.ceil(fromIndex);
+        let end = Math.floor(toIndex);
+        if (end === toIndex) {
+          end -= 1;
+        }
+        remove = end - start + 1;
+      } else {
+        const start = Math.floor(fromIndex);
+        let end = Math.ceil(toIndex);
+        if (end === toIndex) {
+          end += 1;
+        }
+        remove = start - end + 1;
+      }
+
+      if (remove > 0) {
+        for (const traceSegment of this.traceSegments_) {
+          const segmentData = traceSegment[0];
+          const geometry = segmentData.geometry;
+          const index = traceSegment[1];
+          let removeIndex = traceSegment[0].index + 1;
+          if (index === 1) {
+            removeIndex -= remove;
+          }
+          const coordinates = geometry.getCoordinates();
+          const coordinatesArray = getCoordinatesArray(
+            coordinates,
+            geometry.getType(),
+            segmentData.depth,
+          );
+          coordinatesArray.splice(removeIndex, remove);
+          geometry.setCoordinates(coordinates);
+          if (index === 1) {
+            segmentData.index -= remove;
+          }
+        }
+      }
+    }
+
+    /**
+     * @param {import('./tracing.js').TraceTarget} target The trace target.
+     * @param {number} fromIndex The start index.
+     * @param {number} toIndex The end index.
+     * @private
+     */
+    addTracedCoordinates_(target, fromIndex, toIndex) {
+      if (fromIndex === toIndex) {
+        return;
+      }
+
+      const newCoordinates = [];
+      if (fromIndex < toIndex) {
+        // forward trace
+        const start = Math.ceil(fromIndex);
+        let end = Math.floor(toIndex);
+        if (end === toIndex) {
+          // if end is snapped to a vertex, it will be added later
+          end -= 1;
+        }
+        for (let i = start; i <= end; ++i) {
+          newCoordinates.push(getCoordinate(target.coordinates, i));
+        }
+      } else {
+        // reverse trace
+        const start = Math.floor(fromIndex);
+        let end = Math.ceil(toIndex);
+        if (end === toIndex) {
+          end += 1;
+        }
+        for (let i = start; i >= end; --i) {
+          newCoordinates.push(getCoordinate(target.coordinates, i));
+        }
+      }
+
+      if (newCoordinates.length) {
+        for (const traceSegment of this.traceSegments_) {
+          const segmentData = traceSegment[0];
+          const geometry = segmentData.geometry;
+          const index = traceSegment[1];
+          const insertIndex = segmentData.index + 1;
+          if (index === 0) {
+            newCoordinates.reverse();
+          }
+          const coordinates = geometry.getCoordinates();
+          const coordinatesArray = getCoordinatesArray(
+            coordinates,
+            geometry.getType(),
+            segmentData.depth,
+          );
+          coordinatesArray.splice(insertIndex, 0, ...newCoordinates);
+          geometry.setCoordinates(coordinates);
+          if (index === 1) {
+            segmentData.index += newCoordinates.length;
+          }
+        }
+      }
+    }
+
+    /**
+     * @param {import('../coordinate.js').Coordinate} vertex Vertex.
+     * @param {DragSegment} dragSegment Drag segment.
+     */
+    updateGeometry_(vertex, dragSegment) {
+      const segmentData = dragSegment[0];
+      const depth = segmentData.depth;
+      let coordinates;
+      const segment = segmentData.segment;
+      const geometry = segmentData.geometry;
+      const index = dragSegment[1];
+
+      while (vertex.length < geometry.getStride()) {
+        vertex.push(segment[index][vertex.length]);
+      }
+      switch (geometry.getType()) {
+        case 'Point':
+          coordinates = vertex;
+          segment[0] = vertex;
+          segment[1] = vertex;
+          break;
+        case 'MultiPoint':
+          coordinates = geometry.getCoordinates();
+          coordinates[segmentData.index] = vertex;
+          segment[0] = vertex;
+          segment[1] = vertex;
+          break;
+        case 'LineString':
+          coordinates = geometry.getCoordinates();
+          coordinates[segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'MultiLineString':
+          coordinates = geometry.getCoordinates();
+          coordinates[depth[0]][segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'Polygon':
+          coordinates = geometry.getCoordinates();
+          coordinates[depth[0]][segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'MultiPolygon':
+          coordinates = geometry.getCoordinates();
+          coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'Circle':
+          const circle = /** @type {import("../geom/Circle.js").default} */ (
+            geometry
+          );
+          segment[0] = vertex;
+          segment[1] = vertex;
+          if (segmentData.index === CIRCLE_CENTER_INDEX) {
+            this.changingFeature_ = true;
+            circle.setCenter(vertex);
+            this.changingFeature_ = false;
+          } else {
+            // We're dragging the circle's circumference:
+            this.changingFeature_ = true;
+            const projection = this.getMap().getView().getProjection();
+            let radius = distance(
+              fromUserCoordinate(circle.getCenter(), projection),
+              fromUserCoordinate(vertex, projection),
+            );
+            const userProjection = getUserProjection();
+            if (userProjection) {
+              const circleGeometry = circle
+                .clone()
+                .transform(userProjection, projection);
+              circleGeometry.setRadius(radius);
+              radius = circleGeometry
+                .transform(projection, userProjection)
+                .getRadius();
+            }
+            circle.setRadius(radius);
+            this.changingFeature_ = false;
+          }
+          break;
+        // pass
+      }
+      if (coordinates) {
+        this.setGeometryCoordinates_(geometry, coordinates);
+      }
+    }
+
+    /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} evt Event.
      * @override
@@ -67210,6 +67885,26 @@
       ];
       const features = [];
       const geometries = [];
+      const startTraceCoord =
+        this.traceState_.active && !this.traceSegments_
+          ? this.traceState_.startCoord
+          : null;
+      if (startTraceCoord) {
+        this.traceSegments_ = [];
+        for (const dragSegment of this.dragSegments_) {
+          const segmentData = dragSegment[0];
+          const eligibleForTracing =
+            distance(
+              closestOnSegment(startTraceCoord, segmentData.segment),
+              startTraceCoord,
+            ) /
+              evt.map.getView().getResolution() <
+            1;
+          if (eligibleForTracing) {
+            this.traceSegments_.push(dragSegment);
+          }
+        }
+      }
       for (let i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
         const dragSegment = this.dragSegments_[i];
         const segmentData = dragSegment[0];
@@ -67221,86 +67916,10 @@
         if (!geometries.includes(geometry)) {
           geometries.push(geometry);
         }
-        const depth = segmentData.depth;
-        let coordinates;
-        const segment = segmentData.segment;
-        const index = dragSegment[1];
 
-        while (vertex.length < geometry.getStride()) {
-          vertex.push(segment[index][vertex.length]);
-        }
-
-        switch (geometry.getType()) {
-          case 'Point':
-            coordinates = vertex;
-            segment[0] = vertex;
-            segment[1] = vertex;
-            break;
-          case 'MultiPoint':
-            coordinates = geometry.getCoordinates();
-            coordinates[segmentData.index] = vertex;
-            segment[0] = vertex;
-            segment[1] = vertex;
-            break;
-          case 'LineString':
-            coordinates = geometry.getCoordinates();
-            coordinates[segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'MultiLineString':
-            coordinates = geometry.getCoordinates();
-            coordinates[depth[0]][segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'Polygon':
-            coordinates = geometry.getCoordinates();
-            coordinates[depth[0]][segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'MultiPolygon':
-            coordinates = geometry.getCoordinates();
-            coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'Circle':
-            const circle = /** @type {import("../geom/Circle.js").default} */ (
-              geometry
-            );
-            segment[0] = vertex;
-            segment[1] = vertex;
-            if (segmentData.index === CIRCLE_CENTER_INDEX) {
-              this.changingFeature_ = true;
-              circle.setCenter(vertex);
-              this.changingFeature_ = false;
-            } else {
-              // We're dragging the circle's circumference:
-              this.changingFeature_ = true;
-              const projection = evt.map.getView().getProjection();
-              let radius = distance(
-                fromUserCoordinate(circle.getCenter(), projection),
-                fromUserCoordinate(vertex, projection),
-              );
-              const userProjection = getUserProjection();
-              if (userProjection) {
-                const circleGeometry = circle
-                  .clone()
-                  .transform(userProjection, projection);
-                circleGeometry.setRadius(radius);
-                radius = circleGeometry
-                  .transform(projection, userProjection)
-                  .getRadius();
-              }
-              circle.setRadius(radius);
-              this.changingFeature_ = false;
-            }
-            break;
-          // pass
-        }
-
-        if (coordinates) {
-          this.setGeometryCoordinates_(geometry, coordinates);
-        }
+        this.updateGeometry_(vertex, dragSegment);
       }
+      this.updateTrace_(evt);
       this.createOrUpdateVertexFeature_(vertex, features, geometries, true);
     }
 
@@ -67378,6 +67997,7 @@
         }
       }
       if (this.featuresBeingModified_) {
+        this.toggleTraceState_(evt);
         this.dispatchEvent(
           new ModifyEvent(
             ModifyEventType.MODIFYEND,
@@ -67395,8 +68015,8 @@
      * @private
      */
     handlePointerMove_(evt) {
-      this.lastPixel_ = evt.pixel;
-      this.handlePointerAtPixel_(evt.coordinate);
+      this.lastCoordinate_ = evt.coordinate;
+      this.handlePointerAtPixel_(this.lastCoordinate_);
     }
 
     /**
@@ -67626,6 +68246,11 @@
       return true;
     }
 
+    /**
+     * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+     * @return {import("../coordinate.js").Coordinate} The updated pointer coordinate.
+     * @private
+     */
     updatePointer_(coordinate) {
       if (coordinate) {
         this.findInsertVerticesAndUpdateDragSegments_(coordinate);
@@ -68403,19 +69028,7 @@
         this.applySelectedStyle_(feature);
       }
       if (!this.getLayer(feature)) {
-        const layer = /** @type {VectorLayer} */ (
-          this.getMap()
-            .getAllLayers()
-            .find(function (layer) {
-              if (
-                layer instanceof VectorLayer &&
-                layer.getSource() &&
-                layer.getSource().hasFeature(feature)
-              ) {
-                return layer;
-              }
-            })
-        );
+        const layer = this.findLayerOfFeature_(feature);
         if (layer) {
           this.addFeatureLayerAssociation_(feature, layer);
         }
@@ -68430,6 +69043,28 @@
       if (this.style_) {
         this.restorePreviousStyle_(evt.element);
       }
+    }
+
+    /**
+     * @param {Feature} feature Feature of which to get the layer
+     * @return {VectorLayer} layer, if one was found.
+     * @private
+     */
+    findLayerOfFeature_(feature) {
+      const layer = /** @type {VectorLayer} */ (
+        this.getMap()
+          .getAllLayers()
+          .find(function (layer) {
+            if (
+              layer instanceof VectorLayer &&
+              layer.getSource() &&
+              layer.getSource().hasFeature(feature)
+            ) {
+              return layer;
+            }
+          })
+      );
+      return layer;
     }
 
     /**
@@ -68484,6 +69119,116 @@
     }
 
     /**
+     * @param {import("../Feature.js").FeatureLike} feature The feature to select
+     * @param {import("../layer/Layer.js").default} layer Optional layer containing this feature
+     * @param {Array<Feature>} [selected] optional array to which selected features will be added
+     * @return {Feature|undefined} The feature, if it got selected.
+     * @private
+     */
+    selectFeatureInternal_(feature, layer, selected) {
+      if (!(feature instanceof Feature)) {
+        return;
+      }
+      if (!this.filter_(feature, layer)) {
+        return;
+      }
+      const features = this.getFeatures();
+      if (!features.getArray().includes(feature)) {
+        this.addFeatureLayerAssociation_(feature, layer);
+        features.push(feature);
+        selected?.push(feature);
+      }
+      return feature;
+    }
+
+    /**
+     * Try to select a feature as if it was clicked and `addCondition` evaluated to True.
+     * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     * @param {Feature} feature The feature to select
+     * @return {boolean} True if the feature was selected
+     */
+    selectFeature(feature) {
+      const layer = this.findLayerOfFeature_(feature);
+      if (!this.layerFilter_(layer)) {
+        return false;
+      }
+      const selected = this.selectFeatureInternal_(feature, layer);
+      if (selected) {
+        this.dispatchEvent(
+          new SelectEvent(SelectEventType.SELECT, [selected], [], undefined),
+        );
+      }
+      return !!selected;
+    }
+
+    /**
+     * Deselects a feature if it was previously selected. Also removes layer association.
+     * @param {import("../Feature.js").FeatureLike} feature The feature to deselect
+     * @param {Array<Feature>} [deselected] optional array to which deselected features will be added
+     * @return {Feature|undefined} The feature, if it was previously selected.
+     * @private
+     */
+    removeFeatureInternal_(feature, deselected) {
+      const features = this.getFeatures();
+      if (
+        !(feature instanceof Feature) ||
+        !features.getArray().includes(feature)
+      ) {
+        return;
+      }
+      features.remove(feature);
+      this.removeFeatureLayerAssociation_(feature);
+      deselected?.push(feature);
+      return feature;
+    }
+
+    /**
+     * Try to deselect a feature as if it was clicked.
+     * Compared to `select.getFeatures().remove(feature)` this causes a SelectEvent.
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     * @param {Feature} feature The feature to deselect
+     * @return {boolean} True if the feature was deselected
+     */
+    deselectFeature(feature) {
+      const deselected = this.removeFeatureInternal_(feature);
+      if (deselected) {
+        this.dispatchEvent(
+          new SelectEvent(SelectEventType.SELECT, [], [deselected], undefined),
+        );
+      }
+      return !!deselected;
+    }
+
+    /**
+     * Try to toggle a feature as if it was clicked and `toggleCondition` was True.
+     * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     * @param {Feature} feature The feature to deselect
+     */
+    toggleFeature(feature) {
+      if (!this.deselectFeature(feature)) {
+        this.selectFeature(feature);
+      }
+    }
+    /**
+     * Deselect all features as if a user deselected them.
+     * Compared to `select.getFeatures().clear()` this causes a SelectEvent.
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     */
+    clearSelection() {
+      clear$2(this.featureLayerAssociation_);
+      const features = this.getFeatures();
+      const deselected = features.getArray().slice(); // shallow copy
+      features.clear();
+      if (deselected.length !== 0) {
+        this.dispatchEvent(
+          new SelectEvent(SelectEventType.SELECT, [], deselected, undefined),
+        );
+      }
+    }
+
+    /**
      * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
      * selected state of features.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
@@ -68511,79 +69256,67 @@
        */
       const selected = [];
 
+      // TODO: technically the way i've restructured this logic means that
+      //       instead of first emptying the features list of all extra features and then adding the selected ones back,
+      //       the selected features get added and then the old ones get removed.
+      //       a grow then shrink, instead of a shrink then grow. I can't imagine anyone relying on this, but alas, its worth a mention.
       if (set) {
         // Replace the currently selected feature(s) with the feature(s) at the
         // pixel, or clear the selected feature(s) if there is no feature at
         // the pixel.
-        clear$2(this.featureLayerAssociation_);
+        let foundAtCursor = false;
         map.forEachFeatureAtPixel(
           mapBrowserEvent.pixel,
-          /**
-           * @param {import("../Feature.js").FeatureLike} feature Feature.
-           * @param {import("../layer/Layer.js").default} layer Layer.
-           * @return {boolean|undefined} Continue to iterate over the features.
-           */
           (feature, layer) => {
-            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-              return;
+            foundAtCursor = true;
+            if (!this.selectFeatureInternal_(feature, layer, selected)) {
+              return; // keep going, this one wasn't selected
             }
-            this.addFeatureLayerAssociation_(feature, layer);
-            selected.push(feature);
-            return !this.multi_;
+            return !this.multi_; // stop if not multi
           },
           {
             layerFilter: this.layerFilter_,
             hitTolerance: this.hitTolerance_,
           },
         );
+
         for (let i = features.getLength() - 1; i >= 0; --i) {
           const feature = features.item(i);
-          const index = selected.indexOf(feature);
-          if (index > -1) {
-            // feature is already selected
-            selected.splice(index, 1);
-          } else {
-            features.remove(feature);
-            deselected.push(feature);
+          if (
+            // remove all but selected, if there were any selected
+            (selected.length > 0 && !selected.includes(feature)) ||
+            // remove all, if click outside of layer
+            !foundAtCursor
+          ) {
+            this.removeFeatureInternal_(feature, deselected);
           }
-        }
-        if (selected.length !== 0) {
-          features.extend(selected);
         }
       } else {
         // Modify the currently selected feature(s).
         map.forEachFeatureAtPixel(
           mapBrowserEvent.pixel,
-          /**
-           * @param {import("../Feature.js").FeatureLike} feature Feature.
-           * @param {import("../layer/Layer.js").default} layer Layer.
-           * @return {boolean|undefined} Continue to iterate over the features.
-           */
           (feature, layer) => {
-            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-              return;
+            let modifiedFeature;
+            if (remove || toggle) {
+              modifiedFeature = this.removeFeatureInternal_(feature, deselected);
             }
-            if ((add || toggle) && !features.getArray().includes(feature)) {
-              this.addFeatureLayerAssociation_(feature, layer);
-              selected.push(feature);
-            } else if (
-              (remove || toggle) &&
-              features.getArray().includes(feature)
-            ) {
-              deselected.push(feature);
-              this.removeFeatureLayerAssociation_(feature);
+            if ((add || toggle) && !modifiedFeature) {
+              modifiedFeature = this.selectFeatureInternal_(
+                feature,
+                layer,
+                selected,
+              );
             }
-            return !this.multi_;
+            if (!modifiedFeature) {
+              return; // keep going, this one wasn't removed/selected
+            }
+            return !this.multi_; // stop if not multi
           },
           {
             layerFilter: this.layerFilter_,
             hitTolerance: this.hitTolerance_,
           },
         );
-        for (let j = deselected.length - 1; j >= 0; --j) {
-          features.remove(deselected[j]);
-        }
-        features.extend(selected);
       }
       if (selected.length > 0 || deselected.length > 0) {
         this.dispatchEvent(
@@ -68629,6 +69362,11 @@
      * @api
      */
     SNAP: 'snap',
+    /**
+     * Triggered if no longer snapped
+     * @event SnapEvent#unsnap
+     * @api
+     */
     UNSNAP: 'unsnap',
   };
 
@@ -68687,8 +69425,8 @@
   /**
    * @typedef {Object} SegmentData
    * @property {import("../Feature.js").default} feature Feature.
+   * @property {import("../Feature.js").default} [intersectionFeature] Feature which intersects.
    * @property {Segment} segment Segment.
-   * @property {boolean} [isIntersection] Is intersection.
    */
 
   /**
@@ -68776,7 +69514,7 @@
       const segments = [];
       const geometries = geometry.getGeometriesArray();
       for (let i = 0; i < geometries.length; ++i) {
-        const segmenter = GEOMETRY_SEGMENTERS[geometries[i].getType()];
+        const segmenter = this[geometries[i].getType()];
         if (segmenter) {
           segments.push(segmenter(geometries[i], projection));
         }
@@ -68971,19 +69709,10 @@
     constructor(options) {
       options = options ? options : {};
 
-      const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
-        options
-      );
-
-      if (!pointerOptions.handleDownEvent) {
-        pointerOptions.handleDownEvent = TRUE;
-      }
-
-      if (!pointerOptions.stopDown) {
-        pointerOptions.stopDown = FALSE;
-      }
-
-      super(pointerOptions);
+      super({
+        handleDownEvent: TRUE,
+        stopDown: FALSE,
+      });
 
       /***
        * @type {SnapOnSignature<import("../events").EventsKey>}
@@ -69108,7 +69837,8 @@
         if (segmenter) {
           this.indexedFeaturesExtents_[feature_uid] =
             geometry.getExtent(createEmpty());
-          const segments = segmenter(
+          const segments = segmenter.call(
+            this.segmenters_,
             geometry,
             this.getMap().getView().getProjection(),
           );
@@ -69121,8 +69851,6 @@
               segment: segment,
             };
           }
-          tempExtents.length = segmentCount;
-          tempSegmentData.length = segmentCount;
 
           if (this.intersection_) {
             for (let j = 0, jj = segments.length; j < jj; ++j) {
@@ -69131,12 +69859,9 @@
                 continue;
               }
               const extent = tempExtents[j];
-              // Calculate intersections with own segments
-              for (let k = 0, kk = segments.length; k < kk; ++k) {
-                if (j === k || j - 1 === k || j + 1 === k) {
-                  // Exclude self and neighbours
-                  continue;
-                }
+              // Calculate intersections with own segments excluding self and
+              // neighbors
+              for (let k = 0, kk = j - 1; k < kk; ++k) {
                 const otherSegment = segments[k];
                 if (!intersects$1(extent, tempExtents[k])) {
                   continue;
@@ -69149,13 +69874,14 @@
                 tempExtents[segmentCount] = boundingExtent(intersectionSegment);
                 tempSegmentData[segmentCount++] = {
                   feature,
+                  intersectionFeature: feature,
                   segment: intersectionSegment,
-                  isIntersection: true,
                 };
               }
               // Calculate intersections with existing segments
               const otherSegments = this.rBush_.getInExtent(tempExtents[j]);
-              for (const {segment: otherSegment} of otherSegments) {
+              for (let k = 0, kk = otherSegments.length; k < kk; ++k) {
+                const otherSegment = otherSegments[k].segment;
                 if (otherSegment.length === 1) {
                   continue;
                 }
@@ -69167,8 +69893,8 @@
                 tempExtents[segmentCount] = boundingExtent(intersectionSegment);
                 tempSegmentData[segmentCount++] = {
                   feature,
+                  intersectionFeature: otherSegments[k].feature,
                   segment: intersectionSegment,
-                  isIntersection: true,
                 };
               }
             }
@@ -69177,12 +69903,17 @@
           if (segmentCount === 1) {
             this.rBush_.insert(tempExtents[0], tempSegmentData[0]);
           } else {
+            tempExtents.length = segmentCount;
+            tempSegmentData.length = segmentCount;
             this.rBush_.load(tempExtents, tempSegmentData);
           }
         }
       }
 
       if (register) {
+        if (this.featureChangeListenerKeys_[feature_uid]) {
+          unlistenByKey(this.featureChangeListenerKeys_[feature_uid]);
+        }
         this.featureChangeListenerKeys_[feature_uid] = listen(
           feature,
           EventType.CHANGE,
@@ -69273,6 +70004,7 @@
       const feature = getFeatureFromEvent(evt);
       if (feature) {
         this.removeFeature(feature);
+        delete this.pendingFeatures_[getUid(feature)];
       }
     }
 
@@ -69283,10 +70015,7 @@
     handleFeatureChange_(evt) {
       const feature = /** @type {import("../Feature.js").default} */ (evt.target);
       if (this.handlingDownUpSequence) {
-        const uid = getUid(feature);
-        if (!(uid in this.pendingFeatures_)) {
-          this.pendingFeatures_[uid] = feature;
-        }
+        this.pendingFeatures_[getUid(feature)] = feature;
       } else {
         this.updateFeature_(feature);
       }
@@ -69304,6 +70033,7 @@
         for (const feature of featuresToUpdate) {
           this.updateFeature_(feature);
         }
+        clear$2(this.pendingFeatures_);
       }
       return false;
     }
@@ -69321,15 +70051,11 @@
       const extent = this.indexedFeaturesExtents_[feature_uid];
       if (extent) {
         const rBush = this.rBush_;
-        const nodesToRemove = [];
-        rBush.forEachInExtent(extent, function (node) {
-          if (feature === node.feature) {
-            nodesToRemove.push(node);
+        rBush.getInExtent(extent).forEach((node) => {
+          if (feature === node.feature || feature === node.intersectionFeature) {
+            rBush.remove(node);
           }
         });
-        for (let i = nodesToRemove.length - 1; i >= 0; --i) {
-          rBush.remove(nodesToRemove[i]);
-        }
       }
 
       if (unregister) {
@@ -69428,30 +70154,23 @@
       let minSquaredDistance = Infinity;
       let closestFeature;
       let closestSegment = null;
-      let isIntersection;
 
       const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
       const getResult = () => {
-        if (closestVertex) {
-          const vertexPixel = map.getPixelFromCoordinate(closestVertex);
-          const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
-          if (
-            squaredPixelDistance <= squaredPixelTolerance &&
-            ((isIntersection && this.intersection_) ||
-              (!isIntersection && (this.vertex_ || this.edge_)))
-          ) {
-            return {
-              vertex: closestVertex,
-              vertexPixel: [
-                Math.round(vertexPixel[0]),
-                Math.round(vertexPixel[1]),
-              ],
-              feature: closestFeature,
-              segment: closestSegment,
-            };
-          }
+        if (!closestVertex) {
+          return null;
         }
-        return null;
+        const vertexPixel = map.getPixelFromCoordinate(closestVertex);
+        const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
+        if (squaredPixelDistance > squaredPixelTolerance) {
+          return null;
+        }
+        return {
+          vertex: closestVertex,
+          vertexPixel: [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])],
+          feature: closestFeature,
+          segment: closestSegment,
+        };
       };
 
       if (this.vertex_ || this.intersection_) {
@@ -69461,11 +70180,14 @@
             for (const vertex of segmentData.segment) {
               const tempVertexCoord = fromUserCoordinate(vertex, projection);
               const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
-              if (delta < minSquaredDistance) {
+              if (
+                delta < minSquaredDistance &&
+                ((this.intersection_ && segmentData.intersectionFeature) ||
+                  (this.vertex_ && !segmentData.intersectionFeature))
+              ) {
                 closestVertex = vertex;
                 minSquaredDistance = delta;
                 closestFeature = segmentData.feature;
-                isIntersection = segmentData.isIntersection;
               }
             }
           }
@@ -69789,7 +70511,7 @@
    */
 
   /**
-   * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
+   * @typedef {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|HTMLVideoElement|ImageBitmap} ImageLike
    */
 
   /**
@@ -69987,11 +70709,17 @@
 
       /**
        * @private
-       * @type {HTMLImageElement|HTMLCanvasElement}
+       * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas}
        */
-      this.image_ = new Image();
-      if (crossOrigin !== null) {
-        this.image_.crossOrigin = crossOrigin;
+      this.image_;
+
+      if (WORKER_OFFSCREEN_CANVAS) {
+        this.image_ = new OffscreenCanvas(1, 1);
+      } else {
+        this.image_ = new Image();
+        if (crossOrigin !== null) {
+          this.image_.crossOrigin = crossOrigin;
+        }
       }
 
       /**
@@ -70008,8 +70736,8 @@
     }
 
     /**
-     * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
-     * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+     * Get the HTML image element for this tile (may be a Canvas, OffscreenCanvas, Image, or Video).
+     * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
      * @api
      */
     getImage() {
@@ -70018,13 +70746,21 @@
 
     /**
      * Sets an HTML image element for this tile (may be a Canvas or preloaded Image).
-     * @param {HTMLCanvasElement|HTMLImageElement} element Element.
+     * @param {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement} element Element.
      */
     setImage(element) {
       this.image_ = element;
       this.state = TileState.LOADED;
       this.unlistenImage_();
       this.changed();
+    }
+
+    /**
+     * Get the cross origin of the ImageTile.
+     * @return {string} Cross origin.
+     */
+    getCrossOrigin() {
+      return this.crossOrigin_;
     }
 
     /**
@@ -70045,11 +70781,16 @@
      * @private
      */
     handleImageLoad_() {
-      const image = /** @type {HTMLImageElement} */ (this.image_);
-      if (image.naturalWidth && image.naturalHeight) {
+      if (WORKER_OFFSCREEN_CANVAS) {
+        // OffscreenCanvas does not have naturalWidth and naturalHeight
         this.state = TileState.LOADED;
       } else {
-        this.state = TileState.EMPTY;
+        const image = /** @type {HTMLImageElement} */ (this.image_);
+        if (image.naturalWidth && image.naturalHeight) {
+          this.state = TileState.LOADED;
+        } else {
+          this.state = TileState.EMPTY;
+        }
       }
       this.unlistenImage_();
       this.changed();
@@ -70136,7 +70877,7 @@
 
   /**
    * Get a 1-pixel blank image.
-   * @return {HTMLCanvasElement} Blank image.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Blank image.
    */
   function getBlankImage() {
     const ctx = createCanvasContext2D(1, 1);
@@ -70152,7 +70893,7 @@
   let brokenDiagonalRendering_;
 
   /**
-   * @type {Array<HTMLCanvasElement>}
+   * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
    */
   const canvasPool = [];
 
@@ -70160,7 +70901,7 @@
    * This draws a small triangle into a canvas by setting the triangle as the clip region
    * and then drawing a (too large) rectangle
    *
-   * @param {CanvasRenderingContext2D} ctx The context in which to draw the triangle
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} ctx The context in which to draw the triangle
    * @param {number} u1 The x-coordinate of the second point. The first point is 0,0.
    * @param {number} v1 The y-coordinate of the second point.
    * @param {number} u2 The x-coordinate of the third point.
@@ -70341,7 +71082,7 @@
    * @param {boolean} [interpolate] Use linear interpolation when resampling.
    * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
    * @param {boolean} [clipExtent] Clip stitchContext to sourceExtent.
-   * @return {HTMLCanvasElement} Canvas with reprojected data.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas with reprojected data.
    */
   function render(
     width,
@@ -71194,7 +71935,7 @@
 
       /**
        * @private
-       * @type {HTMLCanvasElement}
+       * @type {HTMLCanvasElement|OffscreenCanvas}
        */
       this.canvas_ = null;
 
@@ -71371,7 +72112,7 @@
 
     /**
      * Get the HTML Canvas element for this tile.
-     * @return {HTMLCanvasElement} Canvas.
+     * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
      */
     getImage() {
       return this.canvas_;
@@ -71501,7 +72242,11 @@
      */
     release() {
       if (this.canvas_) {
-        releaseCanvas(this.canvas_.getContext('2d'));
+        releaseCanvas(
+          /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+            this.canvas_.getContext('2d')
+          ),
+        );
         canvasPool.push(this.canvas_);
         this.canvas_ = null;
       }
@@ -71812,18 +72557,6 @@
    */
 
   /**
-   * @param {import("../../source/Tile.js").default} source The tile source.
-   * @param {string} sourceKey The source key.
-   * @param {number} z The tile z level.
-   * @param {number} x The tile x level.
-   * @param {number} y The tile y level.
-   * @return {string} The cache key.
-   */
-  function getCacheKey(source, sourceKey, z, x, y) {
-    return `${getUid(source)},${sourceKey},${getKeyZXY(z, x, y)}`;
-  }
-
-  /**
    * @typedef {Object<number, Set<import("../../Tile.js").default>>} TileLookup
    */
 
@@ -71985,6 +72718,12 @@
        */
       this.tileCache_ = new LRUCache(cacheSize);
 
+      /**
+       * @type {import("../../structs/LRUCache.js").default<import("../../Tile.js").default|null>}
+       * @private
+       */
+      this.sourceTileCache_ = null;
+
       this.maxStaleKeys = cacheSize * 0.5;
     }
 
@@ -71993,6 +72732,16 @@
      */
     getTileCache() {
       return this.tileCache_;
+    }
+
+    /**
+     * @return {LRUCache} Tile cache.
+     */
+    getSourceTileCache() {
+      if (!this.sourceTileCache_) {
+        this.sourceTileCache_ = new LRUCache(512);
+      }
+      return this.sourceTileCache_;
     }
 
     /**
@@ -72017,12 +72766,17 @@
       if (tileCache.containsKey(cacheKey)) {
         tile = tileCache.get(cacheKey);
       } else {
+        const projection = frameState.viewState.projection;
+        const sourceProjection = tileSource.getProjection();
         tile = tileSource.getTile(
           z,
           x,
           y,
           frameState.pixelRatio,
-          frameState.viewState.projection,
+          projection,
+          !sourceProjection || equivalent$1(sourceProjection, projection)
+            ? undefined
+            : this.getSourceTileCache(),
         );
         if (!tile) {
           return null;
@@ -72154,8 +72908,18 @@
         this.renderedSourceRevision_ = sourceRevision;
         if (this.renderedSourceKey_ === source.getKey()) {
           this.tileCache_.clear();
+          this.sourceTileCache_?.clear();
         }
       }
+      return true;
+    }
+
+    /**
+     * Determine whether tiles for next extent should be enqueued for rendering.
+     * @return {boolean} Rendering tiles for next extent is supported.
+     * @protected
+     */
+    enqueueTilesForNextExtent() {
       return true;
     }
 
@@ -72343,7 +73107,6 @@
      */
     renderFrame(frameState, target) {
       this.renderComplete = true;
-
       /**
        * TODO:
        *  maybe skip transition when not fully opaque
@@ -72410,7 +73173,7 @@
        */
 
       const preload = tileLayer.getPreload();
-      if (frameState.nextExtent) {
+      if (frameState.nextExtent && this.enqueueTilesForNextExtent()) {
         const targetZ = tileGrid.getZForResolution(
           viewState.nextResolution,
           tileSource.zDirection,
@@ -72649,11 +73412,13 @@
           const tilesCount = wantedTiles ? Object.keys(wantedTiles).length : 0;
           this.updateCacheSize(tilesCount);
           this.tileCache_.expireCache();
+          this.sourceTileCache_?.expireCache();
         };
 
         frameState.postRenderFunctions.push(postRenderFunction);
       }
 
+      // this normally is `div.ol-layer` and is a mocked div in worker
       return this.container;
     }
 
@@ -72691,6 +73456,7 @@
           /** @type {import("../../ImageTile.js").default} */ (tile),
         );
       }
+
       if (!image) {
         return;
       }
@@ -72728,7 +73494,7 @@
     }
 
     /**
-     * @return {HTMLCanvasElement} Image
+     * @return {HTMLCanvasElement|OffscreenCanvas} Image
      */
     getImage() {
       const context = this.context;
@@ -72738,7 +73504,7 @@
     /**
      * Get the image from a tile.
      * @param {import("../../ImageTile.js").default} tile Tile.
-     * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+     * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
      * @protected
      */
     getTileImage(tile) {
@@ -73705,9 +74471,10 @@
      * @param {number} y Tile coordinate y.
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../proj/Projection.js").default} projection Projection.
+     * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
      * @return {TileType|null} Tile.
      */
-    getTile(z, x, y, pixelRatio, projection) {
+    getTile(z, x, y, pixelRatio, projection, tileCache) {
       return abstract();
     }
 
@@ -74274,10 +75041,11 @@
      * @param {number} y Tile coordinate y.
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../proj/Projection.js").default} projection Projection.
+     * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
      * @return {!(ImageTile|ReprojTile)} Tile.
      * @override
      */
-    getTile(z, x, y, pixelRatio, projection) {
+    getTile(z, x, y, pixelRatio, projection, tileCache) {
       const sourceProjection = this.getProjection();
       if (
         !sourceProjection ||
@@ -74310,7 +75078,7 @@
         this.getTilePixelRatio(pixelRatio),
         this.getGutter(),
         (z, x, y, pixelRatio) =>
-          this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
+          this.getTileInternal(z, x, y, pixelRatio, sourceProjection, tileCache),
         this.reprojectionErrorThreshold_,
         this.renderReprojectionEdges_,
         this.tileOptions,
@@ -74325,12 +75093,20 @@
      * @param {number} y Tile coordinate y.
      * @param {number} pixelRatio Pixel ratio.
      * @param {!import("../proj/Projection.js").default} projection Projection.
+     * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
      * @return {!ImageTile} Tile.
      * @protected
      */
-    getTileInternal(z, x, y, pixelRatio, projection) {
+    getTileInternal(z, x, y, pixelRatio, projection, tileCache) {
       const key = this.getKey();
-      return this.createTile_(z, x, y, pixelRatio, projection, key);
+      const cacheKey = getCacheKey(this, key, z, x, y);
+      if (tileCache && tileCache.containsKey(cacheKey)) {
+        const tile = /** @type {!ImageTile} */ (tileCache.get(cacheKey));
+        return tile;
+      }
+      const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      tileCache?.set(cacheKey, tile);
+      return tile;
     }
 
     /**
@@ -74374,337 +75150,54 @@
    * @param {string} src Source.
    */
   function defaultTileLoadFunction(imageTile, src) {
+    if (WORKER_OFFSCREEN_CANVAS) {
+      // special treatment for offscreen canvas
+      const crossOrigin = imageTile.getCrossOrigin();
+
+      /** @type {RequestMode} */
+      let mode = 'same-origin';
+      /** @type {RequestCredentials} */
+      let credentials = 'same-origin';
+      if (crossOrigin === 'anonymous' || crossOrigin === '') {
+        mode = 'cors';
+        credentials = 'omit';
+      } else if (crossOrigin === 'use-credentials') {
+        mode = 'cors';
+        credentials = 'include';
+      }
+
+      fetch(src, {
+        mode,
+        credentials,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          return createImageBitmap(blob);
+        })
+        .then((imageBitmap) => {
+          const canvas = imageTile.getImage();
+          canvas.width = imageBitmap.width;
+          canvas.height = imageBitmap.height;
+          const ctx = /** @type {OffscreenCanvas} */ (canvas).getContext('2d');
+          ctx.drawImage(imageBitmap, 0, 0);
+          imageBitmap.close?.();
+          // mock the image 'load' event
+          canvas.dispatchEvent(new Event('load'));
+        })
+        .catch(() => {
+          const canvas = imageTile.getImage();
+          canvas.dispatchEvent(new Event('error'));
+        });
+      return;
+    }
+
     /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =
       src;
-  }
-
-  /**
-   * @module ol/source/BingMaps
-   */
-
-
-  /**
-   * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
-   * @return {string} Quad key.
-   */
-  function quadKey(tileCoord) {
-    const z = tileCoord[0];
-    const digits = new Array(z);
-    let mask = 1 << (z - 1);
-    let i, charCode;
-    for (i = 0; i < z; ++i) {
-      // 48 is charCode for 0 - '0'.charCodeAt(0)
-      charCode = 48;
-      if (tileCoord[1] & mask) {
-        charCode += 1;
-      }
-      if (tileCoord[2] & mask) {
-        charCode += 2;
-      }
-      digits[i] = String.fromCharCode(charCode);
-      mask >>= 1;
-    }
-    return digits.join('');
-  }
-
-  /**
-   * The attribution containing a link to the Microsoft® Bing™ Maps Platform APIs’
-   * Terms Of Use.
-   * @const
-   * @type {string}
-   */
-  const TOS_ATTRIBUTION =
-    '<a class="ol-attribution-bing-tos" ' +
-    'href="https://www.microsoft.com/maps/product/terms.html" target="_blank">' +
-    'Terms of Use</a>';
-
-  /**
-   * @typedef {Object} Options
-   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
-   * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
-   * @property {string} [culture='en-us'] Culture code.
-   * @property {string} key Bing Maps API key. Get yours at https://www.bingmapsportal.com/.
-   * @property {string} imagerySet Type of imagery.
-   * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
-   * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
-   * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
-   * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
-   * Higher values can increase reprojection performance, but decrease precision.
-   * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
-   * ```js
-   * function(imageTile, src) {
-   *   imageTile.getImage().src = src;
-   * };
-   * ```
-   * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
-   * @property {number} [transition] Duration of the opacity transition for rendering.
-   * To disable the opacity transition, pass `transition: 0`.
-   * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
-   * Choose whether to use tiles with a higher or lower zoom level when between integer
-   * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
-   * @property {boolean} [placeholderTiles] Whether to show BingMaps placeholder tiles when zoomed past the maximum level provided in an area. When `false`, requests beyond
-   * the maximum zoom level will return no tile. When `true`, the placeholder tile will be returned. When not set, the default behaviour of the imagery set takes place,
-   * which is unique for each imagery set in BingMaps.
-   */
-
-  /**
-   * @typedef {Object} BingMapsImageryMetadataResponse
-   * @property {number} statusCode The response status code
-   * @property {string} statusDescription The response status description
-   * @property {string} authenticationResultCode The authentication result code
-   * @property {Array<ResourceSet>} resourceSets The array of resource sets
-   */
-
-  /**
-   * @typedef {Object} ResourceSet
-   * @property {Array<Resource>} resources Resources.
-   */
-
-  /**
-   * @typedef {Object} Resource
-   * @property {number} imageHeight The image height
-   * @property {number} imageWidth The image width
-   * @property {number} zoomMin The minimum zoom level
-   * @property {number} zoomMax The maximum zoom level
-   * @property {string} imageUrl The image URL
-   * @property {Array<string>} imageUrlSubdomains The image URL subdomains for rotation
-   * @property {Array<ImageryProvider>} [imageryProviders] The array of ImageryProviders
-   */
-
-  /**
-   * @typedef {Object} ImageryProvider
-   * @property {Array<CoverageArea>} coverageAreas The coverage areas
-   * @property {string} [attribution] The attribution
-   */
-
-  /**
-   * @typedef {Object} CoverageArea
-   * @property {number} zoomMin The minimum zoom
-   * @property {number} zoomMax The maximum zoom
-   * @property {Array<number>} bbox The coverage bounding box
-   */
-
-  /**
-   * @classdesc
-   * Layer source for Bing Maps tile data.
-   * @api
-   */
-  class BingMaps extends TileImage {
-    /**
-     * @param {Options} options Bing Maps options.
-     */
-    constructor(options) {
-      const hidpi = options.hidpi !== undefined ? options.hidpi : false;
-
-      super({
-        cacheSize: options.cacheSize,
-        crossOrigin: 'anonymous',
-        interpolate: options.interpolate,
-        projection: get$2('EPSG:3857'),
-        reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-        state: 'loading',
-        tileLoadFunction: options.tileLoadFunction,
-        tilePixelRatio: hidpi ? 2 : 1,
-        wrapX: options.wrapX !== undefined ? options.wrapX : true,
-        transition: options.transition,
-        zDirection: options.zDirection,
-      });
-
-      /**
-       * @private
-       * @type {boolean}
-       */
-      this.hidpi_ = hidpi;
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.culture_ = options.culture !== undefined ? options.culture : 'en-us';
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.maxZoom_ = options.maxZoom !== undefined ? options.maxZoom : -1;
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.apiKey_ = options.key;
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.imagerySet_ = options.imagerySet;
-
-      /**
-       * @private
-       * @type {boolean|undefined}
-       */
-      this.placeholderTiles_ = options.placeholderTiles;
-
-      const url =
-        'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-        this.imagerySet_ +
-        '?uriScheme=https&include=ImageryProviders&key=' +
-        this.apiKey_ +
-        '&c=' +
-        this.culture_;
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((json) => this.handleImageryMetadataResponse(json));
-    }
-
-    /**
-     * Get the api key used for this source.
-     *
-     * @return {string} The api key.
-     * @api
-     */
-    getApiKey() {
-      return this.apiKey_;
-    }
-
-    /**
-     * Get the imagery set associated with this source.
-     *
-     * @return {string} The imagery set.
-     * @api
-     */
-    getImagerySet() {
-      return this.imagerySet_;
-    }
-
-    /**
-     * @param {BingMapsImageryMetadataResponse} response Response.
-     */
-    handleImageryMetadataResponse(response) {
-      if (
-        response.statusCode != 200 ||
-        response.statusDescription != 'OK' ||
-        response.authenticationResultCode != 'ValidCredentials' ||
-        response.resourceSets.length != 1 ||
-        response.resourceSets[0].resources.length != 1
-      ) {
-        this.setState('error');
-        return;
-      }
-
-      const resource = response.resourceSets[0].resources[0];
-      const maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
-
-      const sourceProjection = this.getProjection();
-      const extent = extentFromProjection(sourceProjection);
-      const scale = this.hidpi_ ? 2 : 1;
-      const tileSize =
-        resource.imageWidth == resource.imageHeight
-          ? resource.imageWidth / scale
-          : [resource.imageWidth / scale, resource.imageHeight / scale];
-
-      const tileGrid = createXYZ({
-        extent: extent,
-        minZoom: resource.zoomMin,
-        maxZoom: maxZoom,
-        tileSize: tileSize,
-      });
-      this.tileGrid = tileGrid;
-
-      const culture = this.culture_;
-      const hidpi = this.hidpi_;
-      const placeholderTiles = this.placeholderTiles_;
-      this.tileUrlFunction = createFromTileUrlFunctions(
-        resource.imageUrlSubdomains.map(function (subdomain) {
-          /** @type {import('../tilecoord.js').TileCoord} */
-          const quadKeyTileCoord = [0, 0, 0];
-          const imageUrl = resource.imageUrl
-            .replace('{subdomain}', subdomain)
-            .replace('{culture}', culture);
-          return (
-            /**
-             * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-             * @param {number} pixelRatio Pixel ratio.
-             * @param {import("../proj/Projection.js").default} projection Projection.
-             * @return {string|undefined} Tile URL.
-             */
-            function (tileCoord, pixelRatio, projection) {
-              if (!tileCoord) {
-                return undefined;
-              }
-              createOrUpdate(
-                tileCoord[0],
-                tileCoord[1],
-                tileCoord[2],
-                quadKeyTileCoord,
-              );
-              const url = new URL(
-                imageUrl.replace('{quadkey}', quadKey(quadKeyTileCoord)),
-              );
-              const params = url.searchParams;
-              if (hidpi) {
-                params.set('dpi', 'd1');
-                params.set('device', 'mobile');
-              }
-              if (placeholderTiles === true) {
-                params.delete('n');
-              } else if (placeholderTiles === false) {
-                params.set('n', 'z');
-              }
-              return url.toString();
-            }
-          );
-        }),
-      );
-
-      if (resource.imageryProviders) {
-        const transform = getTransformFromProjections(
-          get$2('EPSG:4326'),
-          this.getProjection(),
-        );
-
-        this.setAttributions((frameState) => {
-          const attributions = [];
-          const viewState = frameState.viewState;
-          const tileGrid = this.getTileGrid();
-          const z = tileGrid.getZForResolution(
-            viewState.resolution,
-            this.zDirection,
-          );
-          const tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            viewState.center,
-            z,
-          );
-          const zoom = tileCoord[0];
-          resource.imageryProviders.map(function (imageryProvider) {
-            let intersecting = false;
-            const coverageAreas = imageryProvider.coverageAreas;
-            for (let i = 0, ii = coverageAreas.length; i < ii; ++i) {
-              const coverageArea = coverageAreas[i];
-              if (zoom >= coverageArea.zoomMin && zoom <= coverageArea.zoomMax) {
-                const bbox = coverageArea.bbox;
-                const epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-                const extent = applyTransform(epsg4326Extent, transform);
-                if (intersects$1(extent, frameState.extent)) {
-                  intersecting = true;
-                  break;
-                }
-              }
-            }
-            if (intersecting) {
-              attributions.push(imageryProvider.attribution);
-            }
-          });
-
-          attributions.push(TOS_ATTRIBUTION);
-          return attributions;
-        });
-      }
-
-      this.setState('ready');
-    }
   }
 
   /**
@@ -75369,7 +75862,19 @@
         interpolate: options.interpolate,
         maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-        tileLoadFunction: options.tileLoadFunction,
+        tileLoadFunction:
+          /**
+           * @param {import("../ImageTile.js").default} tile Image tile
+           * @param {string} src Image src
+           */
+          (tile, src) => {
+            const image = tile.getImage();
+            // FIXME referrer policy for worker fetch requests
+            if (!WORKER_OFFSCREEN_CANVAS && image instanceof HTMLImageElement) {
+              image.referrerPolicy = 'origin-when-cross-origin';
+            }
+            (options.tileLoadFunction || defaultTileLoadFunction)(tile, src);
+          },
         transition: options.transition,
         url: url,
         wrapX: options.wrapX,
@@ -76161,7 +76666,7 @@
       proj4: projProj4,
     },
     source: {
-      BingMaps: BingMaps,
+      //BingMaps: source.BingMaps,
       Cluster: Cluster,
       OSM: OSM,
       TileWMS: TileWMS,
@@ -76172,6 +76677,7 @@
     sphere: sphere$1,
     style: style,
     tilegrid: {
+      TileGrid: TileGrid,
       WMTS: WMTSTileGrid,
     },
     util: {
@@ -76402,28 +76908,31 @@
    * Build the attributions chain from:
     {
       contribution: 'link,name',
+      donate: 'link,name',
       attribution: 'link,name',
       licence: 'link,name',
       legend: 'link',
    }
    */
-  function makeAttributions(options, dataAttribution) {
-    const makeLink = args => '<a target="_blank" href="' + args[0] + '">' + args[1] + '</a>',
+  function makeAttributions(options) {
+    const makeLink = (args, pre = '') => pre + '<a target="_blank" href="' + args[0] + '">' + args[1] + '</a>',
       ret = [];
 
     if (options.contribution)
-      ret.push(makeLink(options.contribution.split(',')));
+      ret.push(makeLink(options.contribution.split(','), '&copy '));
+    if (options.donate)
+      ret.push(makeLink(options.donate.split(','), '❤️'));
     if (options.attribution)
-      ret.push(makeLink(options.attribution.split(',')));
+      ret.push(makeLink(options.attribution.split(','), '&copy '));
     if (options.licence)
-      ret.push(makeLink(options.licence.split(',')));
+      ret.push(makeLink(options.licence.split(','), '&copy '));
     if (options.legend)
       ret.push(makeLink([options.legend, 'Légende']));
-    if (options.dataAttribution)
-      ret.push(makeLink(dataAttribution.split(',')));
+    if (options.warning)
+      ret.push(options.warning);
 
     if (ret)
-      return '&copy' + ret.join(' | ');
+      return ret.join(' | ');
   }
 
   /**
@@ -76748,7 +77257,8 @@
    * Doc: https://docs.microsoft.com/en-us/bingmaps/getting-started/
    * Key : https://www.bingmapsportal.com/
    */
-  let Bing$1 = class Bing extends TileLayer {
+  /*//TODO migration sur AZURE https://learn.microsoft.com/fr-fr/azure/azure-maps/migrate-bing-maps-overview
+  export class Bing extends TileLayer {
     //TODO https://blogs.bing.com/maps/2025-06/Bing-Maps-for-Enterprise-Basic-Account-shutdown-June-30,2025
     constructor(options = {}) {
       super({
@@ -76765,7 +77275,7 @@
           this.setSource(new BingMaps(options));
       });
     }
-  };
+  }*/
 
   /**
    * Maxbox (Maxar)
@@ -76856,9 +77366,10 @@
           url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
           maxZoom: 18,
           attributions: makeAttributions({
-            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-            attribution: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap,OpenHikingMap',
-            legend: 'https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend',
+            contribution: 'https://github.com/sletuffe/OpenTopoMap,OpenHikingMap',
+            donate: 'https://openmaps.fr/donate,Donation',
+            attribution: 'http://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://openmaps.fr/otm/legend.html',
           }),
         }),
       }),
@@ -76877,10 +77388,10 @@
           url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
           maxZoom: 17,
           attributions: makeAttributions({
-            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
-            attribution: 'https://github.com/sletuffe/OpenTopoMap/,OpenTopoMap-R',
-            licence: 'https://creativecommons.org/licenses/by-sa/3.0/,CC-BY-SA',
-            legend: 'https://www.geograph.org/leaflet/otm-legend.php',
+            contribution: 'https://github.com/sletuffe/OpenTopoMap,OTM-R',
+            donate: 'https://openmaps.fr/donate,Donation',
+            attribution: 'http://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://openmaps.fr/otm/legend.html',
           }),
         }),
       }),
@@ -76956,11 +77467,11 @@
       'Italie': new IGM(),
 
       'Google': new Google(),
-      'Photo Bing': new Bing$1({
+      /*'Photo Bing': new Bing({
         key: options.bing, // For simplified options
         ...options.bing, // Include key
         imagerySet: 'Aerial',
-      }),
+      }),*/
 
       'Photo IGN 1950-65': new IGN({
         layer: 'ORTHOIMAGERY.ORTHOPHOTOS.1950-1965',
@@ -76999,7 +77510,7 @@
         url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
         legend: '',
       }),
-      'OSM orthos FR': new OpenStreetMap({
+      'OSM photos FR': new OpenStreetMap({
         url: 'https://wms.openstreetmap.fr/tms/1.0.0/tous_fr/{z}/{x}/{y}',
         legend: '',
       }),
@@ -77032,12 +77543,12 @@
         subLayer: 'mobile-atlas',
       }),
 
-      'OS light': new OS({
+      'UK light': new OS({
         key: options.os, // For simplified options
         ...options.os, // Include key
         subLayer: 'Light_3857',
       }),
-      'OS road': new OS({
+      'UK road': new OS({
         key: options.os, // For simplified options
         ...options.os, // Include key
         subLayer: 'Road_3857',
@@ -77048,16 +77559,16 @@
         subLayer: 'topo',
       }),
 
-      'Bing': new Bing$1({
+      /*'Bing': new Bing({
         key: options.bing, // For simplified options
         ...options.bing, // Include key
         imagerySet: 'Road',
       }),
-      'Bing hybrid': new Bing$1({
+      'Bing hybrid': new Bing({
         key: options.bing, // For simplified options
         ...options.bing, // Include key
         imagerySet: 'AerialWithLabels',
-      }),
+      }),*/
 
       'Photo Swiss': new SwissTopo({
         subLayer: 'ch.swisstopo.swissimage',
@@ -77097,7 +77608,6 @@
   var tileLayercollection = /*#__PURE__*/Object.freeze({
     __proto__: null,
     ArcGIS: ArcGIS,
-    Bing: Bing$1,
     CartoDB: CartoDB,
     Google: Google,
     IGM: IGM,
@@ -77130,6 +77640,7 @@
       super({
         minResolution: 20,
         visible: false,
+        warning: '<span class="warning">CARTE HORS ZONE</span>',
 
         ...options,
       });
@@ -77211,7 +77722,7 @@
         this.subMenuEl.insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="baselayer" value="' + name + '">' + name + '</label>');
 
         // Make layers available for display
-        this.layers[name].setVisible(false); // Don't begin to get the tiles yet (Necessary for Bing)
+        //this.layers[name].setVisible(false); // Don't begin to get the tiles yet (Necessary for Bing)
         map.addLayer(this.layers[name]);
       }
       this.selectorEls = this.element.querySelectorAll('input[name="baselayer"]');
@@ -77249,7 +77760,9 @@
 
     action(evt) {
       // Clean checks
-      if (evt && !evt.ctrlKey) {
+      if (evt && !platformModifierKey({
+          originalEvent: evt
+        })) {
         this.selectorEls.forEach(el => {
           el.checked = false;
         });
@@ -79288,12 +79801,12 @@
           }
           // Click link
           else if (hoveredSubProperties.link) {
-            // Open a new tag
-            if (evt.originalEvent.ctrlKey)
+            // Open a new tab
+            if (platformModifierKeyOnly(evt))
               window.open(hoveredSubProperties.link, '_blank').focus();
             else
               // Open a new window
-              if (evt.originalEvent.shiftKey)
+              if (shiftKeyOnly(evt))
                 window.open(hoveredSubProperties.link, '_blank', 'resizable=yes').focus();
               // Go on the same window
               else
@@ -79340,6 +79853,8 @@
       defs('EPSG:' + (32600 + i), '+proj=utm +zone=' + i + ' +datum=WGS84 +units=m');
       defs('EPSG:' + (32700 + i), '+proj=utm +zone=' + i + ' +south +datum=WGS84 +units=m');
     }
+    defs('EPSG:5041', '+title=WGS 84 / UPS North (E,N) +proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m');
+    defs('EPSG:5042', '+title=WGS 84 / UPS South (E,N) +proj=stere +lat_0=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m');
 
     defs.WGS84 = defs['EPSG:4326'];
     defs['EPSG:3785'] = defs['EPSG:3857']; // maintain backward compat, official code is 3857
@@ -79557,6 +80072,9 @@
       },
       approx: function () {
         self.approx = true;
+      },
+      over: function () {
+        self.over = true;
       }
     };
     for (paramName in paramObj) {
@@ -79575,6 +80093,7 @@
     if (typeof self.datumCode === 'string' && self.datumCode !== 'WGS84') {
       self.datumCode = self.datumCode.toLowerCase();
     }
+    self['projStr'] = defData;
     return self;
   }
 
@@ -80834,6 +81353,8 @@
    * @property {boolean} [sphere]
    * @property {number} [rectified_grid_angle]
    * @property {boolean} [approx]
+   * @property {boolean} [over]
+   * @property {string} [projStr]
    * @property {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} inverse
    * @property {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} forward
    */
@@ -80870,8 +81391,14 @@
         } else {
           defs[/** @type {string} */ (name)] = wkt(arguments[1]);
         }
+      } else if (def && typeof def === 'object' && !('projName' in def)) {
+        // PROJJSON
+        defs[/** @type {string} */ (name)] = wkt(arguments[1]);
       } else {
         defs[/** @type {string} */ (name)] = def;
+        if (!def) {
+          delete defs[/** @type {string} */ (name)];
+        }
       }
     } else if (arguments.length === 1) {
       if (Array.isArray(name)) {
@@ -80984,7 +81511,10 @@
     return x < 0 ? -1 : 1;
   }
 
-  function adjust_lon (x) {
+  function adjust_lon (x, skipAdjust) {
+    if (skipAdjust) {
+      return x;
+    }
     return (Math.abs(x) <= SPI) ? x : (x - (sign(x) * TWO_PI));
   }
 
@@ -81019,7 +81549,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$x() {
+  function init$y() {
     var con = this.b / this.a;
     this.es = 1 - con * con;
     if (!('x0' in this)) {
@@ -81049,7 +81579,7 @@
   /* Mercator forward equations--mapping lat,long to x,y
     -------------------------------------------------- */
 
-  function forward$v(p) {
+  function forward$w(p) {
     var lon = p.x;
     var lat = p.y;
     // convert to radians
@@ -81062,12 +81592,12 @@
       return null;
     } else {
       if (this.sphere) {
-        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0);
+        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0, this.over);
         y = this.y0 + this.a * this.k0 * Math.log(Math.tan(FORTPI + 0.5 * lat));
       } else {
         var sinphi = Math.sin(lat);
         var ts = tsfnz(this.e, lat, sinphi);
-        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0);
+        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0, this.over);
         y = this.y0 - this.a * this.k0 * Math.log(ts);
       }
       p.x = x;
@@ -81078,7 +81608,7 @@
 
   /* Mercator inverse equations--mapping x,y to lat/long
     -------------------------------------------------- */
-  function inverse$v(p) {
+  function inverse$w(p) {
     var x = p.x - this.x0;
     var y = p.y - this.y0;
     var lon, lat;
@@ -81092,39 +81622,39 @@
         return null;
       }
     }
-    lon = adjust_lon(this.long0 + x / (this.a * this.k0));
+    lon = adjust_lon(this.long0 + x / (this.a * this.k0), this.over);
 
     p.x = lon;
     p.y = lat;
     return p;
   }
 
-  var names$x = ['Mercator', 'Popular Visualisation Pseudo Mercator', 'Mercator_1SP', 'Mercator_Auxiliary_Sphere', 'Mercator_Variant_A', 'merc'];
+  var names$y = ['Mercator', 'Popular Visualisation Pseudo Mercator', 'Mercator_1SP', 'Mercator_Auxiliary_Sphere', 'Mercator_Variant_A', 'merc'];
   var merc = {
-    init: init$x,
-    forward: forward$v,
-    inverse: inverse$v,
-    names: names$x
+    init: init$y,
+    forward: forward$w,
+    inverse: inverse$w,
+    names: names$y
   };
 
-  function init$w() {
+  function init$x() {
     // no-op for longlat
   }
 
   function identity(pt) {
     return pt;
   }
-  var names$w = ['longlat', 'identity'];
+  var names$x = ['longlat', 'identity'];
   var longlat = {
-    init: init$w,
+    init: init$x,
     forward: identity,
     inverse: identity,
-    names: names$w
+    names: names$x
   };
 
   /** @type {Array<Partial<import('./Proj').default>>} */
   var projs = [merc, longlat];
-  var names$v = {};
+  var names$w = {};
   var projStore = [];
 
   /**
@@ -81139,7 +81669,7 @@
     }
     projStore[len] = proj;
     proj.names.forEach(function (n) {
-      names$v[n.toLowerCase()] = len;
+      names$w[n.toLowerCase()] = len;
     });
     return this;
   }
@@ -81158,12 +81688,12 @@
       return false;
     }
     var n = name.toLowerCase();
-    if (typeof names$v[n] !== 'undefined' && projStore[names$v[n]]) {
-      return projStore[names$v[n]];
+    if (typeof names$w[n] !== 'undefined' && projStore[names$w[n]]) {
+      return projStore[names$w[n]];
     }
     n = getNormalizedProjName(n);
-    if (n in names$v && projStore[names$v[n]]) {
-      return projStore[names$v[n]];
+    if (n in names$w && projStore[names$w[n]]) {
+      return projStore[names$w[n]];
     }
   }
 
@@ -84041,8 +84571,8 @@
   var V = 86; // V
   var Z = 90; // Z
   var mgrs = {
-    forward: forward$u,
-    inverse: inverse$u,
+    forward: forward$v,
+    inverse: inverse$v,
     toPoint: toPoint
   };
   /**
@@ -84054,7 +84584,7 @@
    *      100 m, 2 for 1000 m or 1 for 10000 m). Optional, default is 5.
    * @return {string} the MGRS string for the given location and accuracy.
    */
-  function forward$u(ll, accuracy) {
+  function forward$v(ll, accuracy) {
     accuracy = accuracy || 5; // default accuracy 1m
     return encode(LLtoUTM({
       lat: ll[1],
@@ -84069,7 +84599,7 @@
    *     (longitude) and top (latitude) values in WGS84, representing the
    *     bounding box for the provided MGRS reference.
    */
-  function inverse$u(mgrs) {
+  function inverse$v(mgrs) {
     var bbox = UTMtoLL(decode(mgrs.toUpperCase()));
     if (bbox.lat && bbox.lon) {
       return [bbox.lon, bbox.lat, bbox.lon, bbox.lat];
@@ -84787,7 +85317,7 @@
     return new Point(toPoint(mgrsStr));
   };
   Point.prototype.toMGRS = function (accuracy) {
-    return forward$u([this.x, this.y], accuracy);
+    return forward$v([this.x, this.y], accuracy);
   };
 
   var C00 = 1;
@@ -84853,7 +85383,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$v() {
+  function init$w() {
     this.x0 = this.x0 !== undefined ? this.x0 : 0;
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
@@ -84869,11 +85399,11 @@
       Transverse Mercator Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$t(p) {
+  function forward$u(p) {
     var lon = p.x;
     var lat = p.y;
 
-    var delta_lon = adjust_lon(lon - this.long0);
+    var delta_lon = adjust_lon(lon - this.long0, this.over);
     var con;
     var x, y;
     var sin_phi = Math.sin(lat);
@@ -84940,7 +85470,7 @@
   /**
       Transverse Mercator Inverse  -  x/y to long/lat
     */
-  function inverse$t(p) {
+  function inverse$u(p) {
     var con, phi;
     var lat, lon;
     var x = (p.x - this.x0) * (1 / this.a);
@@ -84961,7 +85491,7 @@
       if ((g === 0) && (h === 0)) {
         lon = 0;
       } else {
-        lon = adjust_lon(Math.atan2(g, h) + this.long0);
+        lon = adjust_lon(Math.atan2(g, h) + this.long0, this.over);
       }
     } else { // ellipsoidal form
       con = this.ml0 + y / this.k0;
@@ -84988,7 +85518,7 @@
         lon = adjust_lon(this.long0 + (d * (1
           - ds / 6 * (1 + 2 * t + c
             - ds / 20 * (5 + 28 * t + 24 * ts + 8 * c * t + 6 * c
-              - ds / 42 * (61 + 662 * t + 1320 * ts + 720 * ts * t)))) / cos_phi));
+              - ds / 42 * (61 + 662 * t + 1320 * ts + 720 * ts * t)))) / cos_phi), this.over);
       } else {
         lat = HALF_PI * sign(y);
         lon = 0;
@@ -85001,12 +85531,12 @@
     return p;
   }
 
-  var names$u = ['Fast_Transverse_Mercator', 'Fast Transverse Mercator'];
+  var names$v = ['Fast_Transverse_Mercator', 'Fast Transverse Mercator'];
   var tmerc = {
-    init: init$v,
-    forward: forward$t,
-    inverse: inverse$t,
-    names: names$u
+    init: init$w,
+    forward: forward$u,
+    inverse: inverse$u,
+    names: names$v
   };
 
   function sinh (x) {
@@ -85122,7 +85652,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$u() {
+  function init$v() {
     if (!this.approx && (isNaN(this.es) || this.es <= 0)) {
       throw new Error('Incorrect elliptical usage. Try using the +approx option in the proj string, or PROJECTION["Fast_Transverse_Mercator"] in the WKT.');
     }
@@ -85199,8 +85729,8 @@
     this.Zb = -this.Qn * (Z + clens(this.gtu, 2 * Z));
   }
 
-  function forward$s(p) {
-    var Ce = adjust_lon(p.x - this.long0);
+  function forward$t(p) {
+    var Ce = adjust_lon(p.x - this.long0, this.over);
     var Cn = p.y;
 
     Cn = gatg(this.cbg, Cn);
@@ -85235,7 +85765,7 @@
     return p;
   }
 
-  function inverse$s(p) {
+  function inverse$t(p) {
     var Ce = (p.x - this.x0) * (1 / this.a);
     var Cn = (p.y - this.y0) * (1 / this.a);
 
@@ -85260,7 +85790,7 @@
       Cn = Math.atan2(sin_Cn * cos_Ce, hypot(sin_Ce, cos_Ce * cos_Cn));
       Ce = Math.atan2(sin_Ce, cos_Ce * cos_Cn);
 
-      lon = adjust_lon(Ce + this.long0);
+      lon = adjust_lon(Ce + this.long0, this.over);
       lat = gatg(this.cgb, Cn);
     } else {
       lon = Infinity;
@@ -85273,12 +85803,12 @@
     return p;
   }
 
-  var names$t = ['Extended_Transverse_Mercator', 'Extended Transverse Mercator', 'etmerc', 'Transverse_Mercator', 'Transverse Mercator', 'Gauss Kruger', 'Gauss_Kruger', 'tmerc'];
+  var names$u = ['Extended_Transverse_Mercator', 'Extended Transverse Mercator', 'etmerc', 'Transverse_Mercator', 'Transverse Mercator', 'Gauss Kruger', 'Gauss_Kruger', 'tmerc'];
   var etmerc = {
-    init: init$u,
-    forward: forward$s,
-    inverse: inverse$s,
-    names: names$t
+    init: init$v,
+    forward: forward$t,
+    inverse: inverse$t,
+    names: names$u
   };
 
   function adjust_zone (zone, lon) {
@@ -85297,7 +85827,7 @@
   var dependsOn = 'etmerc';
 
   /** @this {import('../defs.js').ProjectionDefinition} */
-  function init$t() {
+  function init$u() {
     var zone = adjust_zone(this.zone, this.long0);
     if (zone === undefined) {
       throw new Error('unknown utm zone');
@@ -85313,10 +85843,10 @@
     this.inverse = etmerc.inverse;
   }
 
-  var names$s = ['Universal Transverse Mercator System', 'utm'];
+  var names$t = ['Universal Transverse Mercator System', 'utm'];
   var utm = {
-    init: init$t,
-    names: names$s,
+    init: init$u,
+    names: names$t,
     dependsOn: dependsOn
   };
 
@@ -85338,7 +85868,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$s() {
+  function init$t() {
     var sphi = Math.sin(this.lat0);
     var cphi = Math.cos(this.lat0);
     cphi *= cphi;
@@ -85349,7 +85879,7 @@
     this.K = Math.tan(0.5 * this.phic0 + FORTPI) / (Math.pow(Math.tan(0.5 * this.lat0 + FORTPI), this.C) * srat(this.e * sphi, this.ratexp));
   }
 
-  function forward$r(p) {
+  function forward$s(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -85358,7 +85888,7 @@
     return p;
   }
 
-  function inverse$r(p) {
+  function inverse$s(p) {
     var DEL_TOL = 1e-14;
     var lon = p.x / this.C;
     var lat = p.y;
@@ -85379,9 +85909,9 @@
     return p;
   }
   var gauss = {
-    init: init$s,
-    forward: forward$r,
-    inverse: inverse$r};
+    init: init$t,
+    forward: forward$s,
+    inverse: inverse$s};
 
   /**
    * @typedef {Object} LocalThis
@@ -85393,7 +85923,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$r() {
+  function init$s() {
     gauss.init.apply(this);
     if (!this.rc) {
       return;
@@ -85406,9 +85936,9 @@
     }
   }
 
-  function forward$q(p) {
+  function forward$r(p) {
     var sinc, cosc, cosl, k;
-    p.x = adjust_lon(p.x - this.long0);
+    p.x = adjust_lon(p.x - this.long0, this.over);
     gauss.forward.apply(this, [p]);
     sinc = Math.sin(p.y);
     cosc = Math.cos(p.y);
@@ -85421,7 +85951,7 @@
     return p;
   }
 
-  function inverse$q(p) {
+  function inverse$r(p) {
     var sinc, cosc, lon, lat, rho;
     p.x = (p.x - this.x0) / this.a;
     p.y = (p.y - this.y0) / this.a;
@@ -85442,16 +85972,16 @@
     p.x = lon;
     p.y = lat;
     gauss.inverse.apply(this, [p]);
-    p.x = adjust_lon(p.x + this.long0);
+    p.x = adjust_lon(p.x + this.long0, this.over);
     return p;
   }
 
-  var names$r = ['Stereographic_North_Pole', 'Oblique_Stereographic', 'sterea', 'Oblique Stereographic Alternative', 'Double_Stereographic'];
+  var names$s = ['Stereographic_North_Pole', 'Oblique_Stereographic', 'sterea', 'Oblique Stereographic Alternative', 'Double_Stereographic'];
   var sterea = {
-    init: init$r,
-    forward: forward$q,
-    inverse: inverse$q,
-    names: names$r
+    init: init$s,
+    forward: forward$r,
+    inverse: inverse$r,
+    names: names$s
   };
 
   /**
@@ -85473,7 +86003,7 @@
   }
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$q() {
+  function init$r() {
     // setting default parameters
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -85512,13 +86042,13 @@
   }
 
   // Stereographic forward equations--mapping lat,long to x,y
-  function forward$p(p) {
+  function forward$q(p) {
     var lon = p.x;
     var lat = p.y;
     var sinlat = Math.sin(lat);
     var coslat = Math.cos(lat);
     var A, X, sinX, cosX, ts, rh;
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
 
     if (Math.abs(Math.abs(lon - this.long0) - Math.PI) <= EPSLN && Math.abs(lat + this.lat0) <= EPSLN) {
       // case of the origine point
@@ -85562,7 +86092,7 @@
   }
 
   //* Stereographic inverse equations--mapping x,y to lat/long
-  function inverse$p(p) {
+  function inverse$q(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat, ts, ce, Chi;
@@ -85579,12 +86109,12 @@
       lat = Math.asin(Math.cos(c) * this.sinlat0 + p.y * Math.sin(c) * this.coslat0 / rh);
       if (Math.abs(this.coslat0) < EPSLN) {
         if (this.lat0 > 0) {
-          lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y), this.over);
         } else {
-          lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y), this.over);
         }
       } else {
-        lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(c), rh * this.coslat0 * Math.cos(c) - p.y * this.sinlat0 * Math.sin(c)));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(c), rh * this.coslat0 * Math.cos(c) - p.y * this.sinlat0 * Math.sin(c)), this.over);
       }
       p.x = lon;
       p.y = lat;
@@ -85603,7 +86133,7 @@
         p.y *= this.con;
         ts = rh * this.cons / (2 * this.a * this.k0);
         lat = this.con * phi2z(this.e, ts);
-        lon = this.con * adjust_lon(this.con * this.long0 + Math.atan2(p.x, -1 * p.y));
+        lon = this.con * adjust_lon(this.con * this.long0 + Math.atan2(p.x, -1 * p.y), this.over);
       } else {
         ce = 2 * Math.atan(rh * this.cosX0 / (2 * this.a * this.k0 * this.ms1));
         lon = this.long0;
@@ -85611,7 +86141,7 @@
           Chi = this.X0;
         } else {
           Chi = Math.asin(Math.cos(ce) * this.sinX0 + p.y * Math.sin(ce) * this.cosX0 / rh);
-          lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(ce), rh * this.cosX0 * Math.cos(ce) - p.y * this.sinX0 * Math.sin(ce)));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(ce), rh * this.cosX0 * Math.cos(ce) - p.y * this.sinX0 * Math.sin(ce)), this.over);
         }
         lat = -1 * phi2z(this.e, Math.tan(0.5 * (HALF_PI + Chi)));
       }
@@ -85623,12 +86153,12 @@
     return p;
   }
 
-  var names$q = ['stere', 'Stereographic_South_Pole', 'Polar_Stereographic_variant_A', 'Polar_Stereographic_variant_B', 'Polar_Stereographic'];
+  var names$r = ['stere', 'Stereographic_South_Pole', 'Polar_Stereographic_variant_A', 'Polar_Stereographic_variant_B', 'Polar_Stereographic'];
   var stere = {
-    init: init$q,
-    forward: forward$p,
-    inverse: inverse$p,
-    names: names$q,
+    init: init$r,
+    forward: forward$q,
+    inverse: inverse$q,
+    names: names$r,
     ssfn_: ssfn_
   };
 
@@ -85650,7 +86180,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$p() {
+  function init$q() {
     var phy0 = this.lat0;
     this.lambda0 = this.long0;
     var sinPhy0 = Math.sin(phy0);
@@ -85668,7 +86198,7 @@
     this.K = k1 - this.alpha * k2 + this.alpha * e / 2 * k3;
   }
 
-  function forward$o(p) {
+  function forward$p(p) {
     var Sa1 = Math.log(Math.tan(Math.PI / 4 - p.y / 2));
     var Sa2 = this.e / 2 * Math.log((1 + this.e * Math.sin(p.y)) / (1 - this.e * Math.sin(p.y)));
     var S = -this.alpha * (Sa1 + Sa2) + this.K;
@@ -85689,7 +86219,7 @@
     return p;
   }
 
-  function inverse$o(p) {
+  function inverse$p(p) {
     var Y = p.x - this.x0;
     var X = p.y - this.y0;
 
@@ -85721,12 +86251,12 @@
     return p;
   }
 
-  var names$p = ['somerc'];
+  var names$q = ['somerc'];
   var somerc = {
-    init: init$p,
-    forward: forward$o,
-    inverse: inverse$o,
-    names: names$p
+    init: init$q,
+    forward: forward$p,
+    inverse: inverse$p,
+    names: names$q
   };
 
   /**
@@ -85765,7 +86295,7 @@
    * Initialize the Oblique Mercator  projection
    * @this {import('../defs.js').ProjectionDefinition & LocalThis}
    */
-  function init$o() {
+  function init$p() {
     var con, com, cosph0, D, F, H, L, sinph0, p, J, gamma = 0,
       gamma0, lamc = 0, lam1 = 0, lam2 = 0, phi1 = 0, phi2 = 0, alpha_c = 0;
 
@@ -85863,8 +86393,8 @@
         lam2 += TWO_PI;
       }
 
-      this.lam0 = adjust_lon(0.5 * (lam1 + lam2) - Math.atan(J * Math.tan(0.5 * this.B * (lam1 - lam2)) / p) / this.B);
-      gamma0 = Math.atan(2 * Math.sin(this.B * adjust_lon(lam1 - this.lam0)) / (F - 1 / F));
+      this.lam0 = adjust_lon(0.5 * (lam1 + lam2) - Math.atan(J * Math.tan(0.5 * this.B * (lam1 - lam2)) / p) / this.B, this.over);
+      gamma0 = Math.atan(2 * Math.sin(this.B * adjust_lon(lam1 - this.lam0, this.over)) / (F - 1 / F));
       gamma = alpha_c = Math.asin(D * Math.sin(gamma0));
     }
 
@@ -85894,7 +86424,7 @@
 
   /* Oblique Mercator forward equations--mapping lat,long to x,y
       ---------------------------------------------------------- */
-  function forward$n(p) {
+  function forward$o(p) {
     var coords = {};
     var S, T, U, V, W, temp, u, v;
     p.x = p.x - this.lam0;
@@ -85940,7 +86470,7 @@
     return coords;
   }
 
-  function inverse$n(p) {
+  function inverse$o(p) {
     var u, v, Qp, Sp, Tp, Vp, Up;
     var coords = {};
 
@@ -85980,12 +86510,12 @@
     return coords;
   }
 
-  var names$o = ['Hotine_Oblique_Mercator', 'Hotine Oblique Mercator', 'Hotine_Oblique_Mercator_variant_A', 'Hotine_Oblique_Mercator_Variant_B', 'Hotine_Oblique_Mercator_Azimuth_Natural_Origin', 'Hotine_Oblique_Mercator_Two_Point_Natural_Origin', 'Hotine_Oblique_Mercator_Azimuth_Center', 'Oblique_Mercator', 'omerc'];
+  var names$p = ['Hotine_Oblique_Mercator', 'Hotine Oblique Mercator', 'Hotine_Oblique_Mercator_variant_A', 'Hotine_Oblique_Mercator_Variant_B', 'Hotine_Oblique_Mercator_Azimuth_Natural_Origin', 'Hotine_Oblique_Mercator_Two_Point_Natural_Origin', 'Hotine_Oblique_Mercator_Azimuth_Center', 'Oblique_Mercator', 'omerc'];
   var omerc = {
-    init: init$o,
-    forward: forward$n,
-    inverse: inverse$n,
-    names: names$o
+    init: init$p,
+    forward: forward$o,
+    inverse: inverse$o,
+    names: names$p
   };
 
   /**
@@ -85997,7 +86527,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$n() {
+  function init$o() {
     // double lat0;                    /* the reference latitude               */
     // double long0;                   /* the reference longitude              */
     // double lat1;                    /* first standard parallel              */
@@ -86057,7 +86587,7 @@
 
   // Lambert Conformal conic forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$m(p) {
+  function forward$n(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -86078,7 +86608,7 @@
       }
       rh1 = 0;
     }
-    var theta = this.ns * adjust_lon(lon - this.long0);
+    var theta = this.ns * adjust_lon(lon - this.long0, this.over);
     p.x = this.k0 * (rh1 * Math.sin(theta)) + this.x0;
     p.y = this.k0 * (this.rh - rh1 * Math.cos(theta)) + this.y0;
 
@@ -86087,7 +86617,7 @@
 
   // Lambert Conformal Conic inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$m(p) {
+  function inverse$n(p) {
     var rh1, con, ts;
     var lat, lon;
     var x = (p.x - this.x0) / this.k0;
@@ -86113,14 +86643,14 @@
     } else {
       lat = -HALF_PI;
     }
-    lon = adjust_lon(theta / this.ns + this.long0);
+    lon = adjust_lon(theta / this.ns + this.long0, this.over);
 
     p.x = lon;
     p.y = lat;
     return p;
   }
 
-  var names$n = [
+  var names$o = [
     'Lambert Tangential Conformal Conic Projection',
     'Lambert_Conformal_Conic',
     'Lambert_Conformal_Conic_1SP',
@@ -86131,13 +86661,13 @@
   ];
 
   var lcc = {
-    init: init$n,
-    forward: forward$m,
-    inverse: inverse$m,
-    names: names$n
+    init: init$o,
+    forward: forward$n,
+    inverse: inverse$n,
+    names: names$o
   };
 
-  function init$m() {
+  function init$n() {
     this.a = 6377397.155;
     this.es = 0.006674372230614;
     this.e = Math.sqrt(this.es);
@@ -86172,11 +86702,11 @@
   /* ellipsoid */
   /* calculate xy from lat/lon */
   /* Constants, identical to inverse transform function */
-  function forward$l(p) {
+  function forward$m(p) {
     var gfi, u, deltav, s, d, eps, ro;
     var lon = p.x;
     var lat = p.y;
-    var delta_lon = adjust_lon(lon - this.long0);
+    var delta_lon = adjust_lon(lon - this.long0, this.over);
     /* Transformation */
     gfi = Math.pow(((1 + this.e * Math.sin(lat)) / (1 - this.e * Math.sin(lat))), (this.alfa * this.e / 2));
     u = 2 * (Math.atan(this.k * Math.pow(Math.tan(lat / 2 + this.s45), this.alfa) / gfi) - this.s45);
@@ -86196,7 +86726,7 @@
   }
 
   /* calculate lat/lon from xy */
-  function inverse$l(p) {
+  function inverse$m(p) {
     var u, deltav, s, d, eps, ro, fi1;
     var ok;
 
@@ -86234,12 +86764,12 @@
     return (p);
   }
 
-  var names$m = ['Krovak', 'krovak'];
+  var names$n = ['Krovak', 'krovak'];
   var krovak = {
-    init: init$m,
-    forward: forward$l,
-    inverse: inverse$l,
-    names: names$m
+    init: init$n,
+    forward: forward$m,
+    inverse: inverse$m,
+    names: names$n
   };
 
   function mlfn (e0, e1, e2, e3, phi) {
@@ -86299,7 +86829,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$l() {
+  function init$m() {
     if (!this.sphere) {
       this.e0 = e0fn(this.es);
       this.e1 = e1fn(this.es);
@@ -86311,13 +86841,13 @@
 
   /* Cassini forward equations--mapping lat,long to x,y
     ----------------------------------------------------------------------- */
-  function forward$k(p) {
+  function forward$l(p) {
     /* Forward equations
         ----------------- */
     var x, y;
     var lam = p.x;
     var phi = p.y;
-    lam = adjust_lon(lam - this.long0);
+    lam = adjust_lon(lam - this.long0, this.over);
 
     if (this.sphere) {
       x = this.a * Math.asin(Math.cos(phi) * Math.sin(lam));
@@ -86344,7 +86874,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$k(p) {
+  function inverse$l(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -86377,17 +86907,17 @@
       lam = dl * (1 - dsq * (tl1 / 3 + (1 + 3 * tl1) * tl1 * dsq / 15)) / Math.cos(phi1);
     }
 
-    p.x = adjust_lon(lam + this.long0);
+    p.x = adjust_lon(lam + this.long0, this.over);
     p.y = adjust_lat(phi);
     return p;
   }
 
-  var names$l = ['Cassini', 'Cassini_Soldner', 'cass'];
+  var names$m = ['Cassini', 'Cassini_Soldner', 'cass'];
   var cass = {
-    init: init$l,
-    forward: forward$k,
-    inverse: inverse$k,
-    names: names$l
+    init: init$m,
+    forward: forward$l,
+    inverse: inverse$l,
+    names: names$m
   };
 
   function qsfnz (eccent, sinphi) {
@@ -86433,7 +86963,7 @@
    * Initialize the Lambert Azimuthal Equal Area projection
    * @this {import('../defs.js').ProjectionDefinition & LocalThis}
    */
-  function init$k() {
+  function init$l() {
     var t = Math.abs(this.lat0);
     if (Math.abs(t - HALF_PI) < EPSLN) {
       this.mode = this.lat0 < 0 ? S_POLE : N_POLE;
@@ -86481,14 +87011,14 @@
 
   /* Lambert Azimuthal Equal Area forward equations--mapping lat,long to x,y
     ----------------------------------------------------------------------- */
-  function forward$j(p) {
+  function forward$k(p) {
     /* Forward equations
         ----------------- */
     var x, y, coslam, sinlam, sinphi, q, sinb, cosb, b, cosphi;
     var lam = p.x;
     var phi = p.y;
 
-    lam = adjust_lon(lam - this.long0);
+    lam = adjust_lon(lam - this.long0, this.over);
     if (this.sphere) {
       sinphi = Math.sin(phi);
       cosphi = Math.cos(phi);
@@ -86574,7 +87104,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$j(p) {
+  function inverse$k(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -86656,7 +87186,7 @@
       phi = authlat(Math.asin(ab), this.apa);
     }
 
-    p.x = adjust_lon(this.long0 + lam);
+    p.x = adjust_lon(this.long0 + lam, this.over);
     p.y = phi;
     return p;
   }
@@ -86689,12 +87219,12 @@
     return (beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t + t) + APA[2] * Math.sin(t + t + t));
   }
 
-  var names$k = ['Lambert Azimuthal Equal Area', 'Lambert_Azimuthal_Equal_Area', 'laea'];
+  var names$l = ['Lambert Azimuthal Equal Area', 'Lambert_Azimuthal_Equal_Area', 'laea'];
   var laea = {
-    init: init$k,
-    forward: forward$j,
-    inverse: inverse$j,
-    names: names$k,
+    init: init$l,
+    forward: forward$k,
+    inverse: inverse$k,
+    names: names$l,
     S_POLE: S_POLE,
     N_POLE: N_POLE,
     EQUIT: EQUIT,
@@ -86732,7 +87262,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$j() {
+  function init$k() {
     if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
       return;
     }
@@ -86770,7 +87300,7 @@
   /* Albers Conical Equal Area forward equations--mapping lat,long to x,y
     ------------------------------------------------------------------- */
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function forward$i(p) {
+  function forward$j(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -86779,7 +87309,7 @@
 
     var qs = qsfnz(this.e3, this.sin_phi);
     var rh1 = this.a * Math.sqrt(this.c - this.ns0 * qs) / this.ns0;
-    var theta = this.ns0 * adjust_lon(lon - this.long0);
+    var theta = this.ns0 * adjust_lon(lon - this.long0, this.over);
     var x = rh1 * Math.sin(theta) + this.x0;
     var y = this.rh - rh1 * Math.cos(theta) + this.y0;
 
@@ -86788,7 +87318,7 @@
     return p;
   }
 
-  function inverse$i(p) {
+  function inverse$j(p) {
     var rh1, qs, con, theta, lon, lat;
 
     p.x -= this.x0;
@@ -86812,7 +87342,7 @@
       lat = this.phi1z(this.e3, qs);
     }
 
-    lon = adjust_lon(theta / this.ns0 + this.long0);
+    lon = adjust_lon(theta / this.ns0 + this.long0, this.over);
     p.x = lon;
     p.y = lat;
     return p;
@@ -86843,12 +87373,12 @@
     return null;
   }
 
-  var names$j = ['Albers_Conic_Equal_Area', 'Albers_Equal_Area', 'Albers', 'aea'];
+  var names$k = ['Albers_Conic_Equal_Area', 'Albers_Equal_Area', 'Albers', 'aea'];
   var aea = {
-    init: init$j,
-    forward: forward$i,
-    inverse: inverse$i,
-    names: names$j,
+    init: init$k,
+    forward: forward$j,
+    inverse: inverse$j,
+    names: names$k,
     phi1z: phi1z
   };
 
@@ -86867,7 +87397,7 @@
       Accessed: 12th November 2009
      @this {import('../defs.js').ProjectionDefinition & LocalThis}
    */
-  function init$i() {
+  function init$j() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     this.sin_p14 = Math.sin(this.lat0);
@@ -86879,7 +87409,7 @@
 
   /* Gnomonic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$h(p) {
+  function forward$i(p) {
     var sinphi, cosphi; /* sin and cos value        */
     var dlon; /* delta longitude value      */
     var coslon; /* cos of longitude        */
@@ -86890,7 +87420,7 @@
     var lat = p.y;
     /* Forward equations
         ----------------- */
-    dlon = adjust_lon(lon - this.long0);
+    dlon = adjust_lon(lon - this.long0, this.over);
 
     sinphi = Math.sin(lat);
     cosphi = Math.cos(lat);
@@ -86917,7 +87447,7 @@
     return p;
   }
 
-  function inverse$h(p) {
+  function inverse$i(p) {
     var rh; /* Rho */
     var sinc, cosc;
     var c;
@@ -86938,7 +87468,7 @@
 
       lat = asinz(cosc * this.sin_p14 + (p.y * sinc * this.cos_p14) / rh);
       lon = Math.atan2(p.x * sinc, rh * this.cos_p14 * cosc - p.y * this.sin_p14 * sinc);
-      lon = adjust_lon(this.long0 + lon);
+      lon = adjust_lon(this.long0 + lon, this.over);
     } else {
       lat = this.phic0;
       lon = 0;
@@ -86949,12 +87479,12 @@
     return p;
   }
 
-  var names$i = ['gnom'];
+  var names$j = ['gnom'];
   var gnom = {
-    init: init$i,
-    forward: forward$h,
-    inverse: inverse$h,
-    names: names$i
+    init: init$j,
+    forward: forward$i,
+    inverse: inverse$i,
+    names: names$j
   };
 
   function iqsfnz (eccent, q) {
@@ -86999,7 +87529,7 @@
       USGS Open File Report 90-284and Release 4 Interim Reports (2003)
     @this {import('../defs.js').ProjectionDefinition & LocalThis}
   */
-  function init$h() {
+  function init$i() {
     // no-op
     if (!this.sphere) {
       this.k0 = msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
@@ -87008,13 +87538,13 @@
 
   /* Cylindrical Equal Area forward equations--mapping lat,long to x,y
       ------------------------------------------------------------ */
-  function forward$g(p) {
+  function forward$h(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y;
     /* Forward equations
         ----------------- */
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     if (this.sphere) {
       x = this.x0 + this.a * dlon * Math.cos(this.lat_ts);
       y = this.y0 + this.a * Math.sin(lat) / Math.cos(this.lat_ts);
@@ -87031,17 +87561,17 @@
 
   /* Cylindrical Equal Area inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------ */
-  function inverse$g(p) {
+  function inverse$h(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat;
 
     if (this.sphere) {
-      lon = adjust_lon(this.long0 + (p.x / this.a) / Math.cos(this.lat_ts));
+      lon = adjust_lon(this.long0 + (p.x / this.a) / Math.cos(this.lat_ts), this.over);
       lat = Math.asin((p.y / this.a) * Math.cos(this.lat_ts));
     } else {
       lat = iqsfnz(this.e, 2 * p.y * this.k0 / this.a);
-      lon = adjust_lon(this.long0 + p.x / (this.a * this.k0));
+      lon = adjust_lon(this.long0 + p.x / (this.a * this.k0), this.over);
     }
 
     p.x = lon;
@@ -87049,15 +87579,15 @@
     return p;
   }
 
-  var names$h = ['cea'];
+  var names$i = ['cea'];
   var cea = {
-    init: init$h,
-    forward: forward$g,
-    inverse: inverse$g,
-    names: names$h
+    init: init$i,
+    forward: forward$h,
+    inverse: inverse$h,
+    names: names$i
   };
 
-  function init$g() {
+  function init$h() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
     this.lat0 = this.lat0 || 0;
@@ -87070,11 +87600,11 @@
 
   // forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$f(p) {
+  function forward$g(p) {
     var lon = p.x;
     var lat = p.y;
 
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     var dlat = adjust_lat(lat - this.lat0);
     p.x = this.x0 + (this.a * dlon * this.rc);
     p.y = this.y0 + (this.a * dlat);
@@ -87083,21 +87613,21 @@
 
   // inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$f(p) {
+  function inverse$g(p) {
     var x = p.x;
     var y = p.y;
 
-    p.x = adjust_lon(this.long0 + ((x - this.x0) / (this.a * this.rc)));
+    p.x = adjust_lon(this.long0 + ((x - this.x0) / (this.a * this.rc)), this.over);
     p.y = adjust_lat(this.lat0 + ((y - this.y0) / (this.a)));
     return p;
   }
 
-  var names$g = ['Equirectangular', 'Equidistant_Cylindrical', 'Equidistant_Cylindrical_Spherical', 'eqc'];
+  var names$h = ['Equirectangular', 'Equidistant_Cylindrical', 'Equidistant_Cylindrical_Spherical', 'eqc'];
   var eqc = {
-    init: init$g,
-    forward: forward$f,
-    inverse: inverse$f,
-    names: names$g
+    init: init$h,
+    forward: forward$g,
+    inverse: inverse$g,
+    names: names$h
   };
 
   /**
@@ -87115,7 +87645,7 @@
   var MAX_ITER$1 = 20;
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$f() {
+  function init$g() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     this.temp = this.b / this.a;
@@ -87130,11 +87660,11 @@
 
   /* Polyconic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$e(p) {
+  function forward$f(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y, el;
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     el = dlon * Math.sin(lat);
     if (this.sphere) {
       if (Math.abs(lat) <= EPSLN) {
@@ -87161,7 +87691,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$e(p) {
+  function inverse$f(p) {
     var lon, lat, x, y, i;
     var al, bl;
     var phi, dphi;
@@ -87170,7 +87700,7 @@
 
     if (this.sphere) {
       if (Math.abs(y + this.a * this.lat0) <= EPSLN) {
-        lon = adjust_lon(x / this.a + this.long0);
+        lon = adjust_lon(x / this.a + this.long0, this.over);
         lat = 0;
       } else {
         al = this.lat0 + y / this.a;
@@ -87186,12 +87716,12 @@
             break;
           }
         }
-        lon = adjust_lon(this.long0 + (Math.asin(x * Math.tan(phi) / this.a)) / Math.sin(lat));
+        lon = adjust_lon(this.long0 + (Math.asin(x * Math.tan(phi) / this.a)) / Math.sin(lat), this.over);
       }
     } else {
       if (Math.abs(y + this.ml0) <= EPSLN) {
         lat = 0;
-        lon = adjust_lon(this.long0 + x / this.a);
+        lon = adjust_lon(this.long0 + x / this.a, this.over);
       } else {
         al = (this.ml0 + y) / this.a;
         bl = x * x / this.a / this.a + al * al;
@@ -87214,7 +87744,7 @@
 
         // lat=phi4z(this.e,this.e0,this.e1,this.e2,this.e3,al,bl,0,0);
         cl = Math.sqrt(1 - this.es * Math.pow(Math.sin(lat), 2)) * Math.tan(lat);
-        lon = adjust_lon(this.long0 + Math.asin(x * cl / this.a) / Math.sin(lat));
+        lon = adjust_lon(this.long0 + Math.asin(x * cl / this.a) / Math.sin(lat), this.over);
       }
     }
 
@@ -87223,15 +87753,15 @@
     return p;
   }
 
-  var names$f = ['Polyconic', 'American_Polyconic', 'poly'];
+  var names$g = ['Polyconic', 'American_Polyconic', 'poly'];
   var poly = {
-    init: init$f,
-    forward: forward$e,
-    inverse: inverse$e,
-    names: names$f
+    init: init$g,
+    forward: forward$f,
+    inverse: inverse$f,
+    names: names$g
   };
 
-  function init$e() {
+  function init$f() {
     this.A = [];
     this.A[1] = 0.6399175073;
     this.A[2] = -0.1358797613;
@@ -87290,7 +87820,7 @@
       New Zealand Map Grid Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$d(p) {
+  function forward$e(p) {
     var n;
     var lon = p.x;
     var lat = p.y;
@@ -87341,7 +87871,7 @@
   /**
       New Zealand Map Grid Inverse  -  x/y to long/lat
     */
-  function inverse$d(p) {
+  function inverse$e(p) {
     var n;
     var x = p.x;
     var y = p.y;
@@ -87432,12 +87962,12 @@
     return p;
   }
 
-  var names$e = ['New_Zealand_Map_Grid', 'nzmg'];
+  var names$f = ['New_Zealand_Map_Grid', 'nzmg'];
   var nzmg = {
-    init: init$e,
-    forward: forward$d,
-    inverse: inverse$d,
-    names: names$e
+    init: init$f,
+    forward: forward$e,
+    inverse: inverse$e,
+    names: names$f
   };
 
   /*
@@ -87448,18 +87978,18 @@
 
   /* Initialize the Miller Cylindrical projection
     ------------------------------------------- */
-  function init$d() {
+  function init$e() {
     // no-op
   }
 
   /* Miller Cylindrical forward equations--mapping lat,long to x,y
       ------------------------------------------------------------ */
-  function forward$c(p) {
+  function forward$d(p) {
     var lon = p.x;
     var lat = p.y;
     /* Forward equations
         ----------------- */
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     var x = this.x0 + this.a * dlon;
     var y = this.y0 + this.a * Math.log(Math.tan((Math.PI / 4) + (lat / 2.5))) * 1.25;
 
@@ -87470,11 +88000,11 @@
 
   /* Miller Cylindrical inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------ */
-  function inverse$c(p) {
+  function inverse$d(p) {
     p.x -= this.x0;
     p.y -= this.y0;
 
-    var lon = adjust_lon(this.long0 + p.x / this.a);
+    var lon = adjust_lon(this.long0 + p.x / this.a, this.over);
     var lat = 2.5 * (Math.atan(Math.exp(0.8 * p.y / this.a)) - Math.PI / 4);
 
     p.x = lon;
@@ -87482,12 +88012,12 @@
     return p;
   }
 
-  var names$d = ['Miller_Cylindrical', 'mill'];
+  var names$e = ['Miller_Cylindrical', 'mill'];
   var mill = {
-    init: init$d,
-    forward: forward$c,
-    inverse: inverse$c,
-    names: names$d
+    init: init$e,
+    forward: forward$d,
+    inverse: inverse$d,
+    names: names$e
   };
 
   var MAX_ITER = 20;
@@ -87503,7 +88033,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$c() {
+  function init$d() {
     /* Place parameters in static storage for common use
       ------------------------------------------------- */
 
@@ -87520,13 +88050,13 @@
 
   /* Sinusoidal forward equations--mapping lat,long to x,y
     ----------------------------------------------------- */
-  function forward$b(p) {
+  function forward$c(p) {
     var x, y;
     var lon = p.x;
     var lat = p.y;
     /* Forward equations
       ----------------- */
-    lon = adjust_lon(lon - this.long0);
+    lon = adjust_lon(lon - this.long0, this.over);
 
     if (this.sphere) {
       if (!this.m) {
@@ -87555,7 +88085,7 @@
     return p;
   }
 
-  function inverse$b(p) {
+  function inverse$c(p) {
     var lat, temp, lon, s;
 
     p.x -= this.x0;
@@ -87571,7 +88101,7 @@
       } else if (this.n !== 1) {
         lat = asinz(Math.sin(lat) / this.n);
       }
-      lon = adjust_lon(lon + this.long0);
+      lon = adjust_lon(lon + this.long0, this.over);
       lat = adjust_lat(lat);
     } else {
       lat = pj_inv_mlfn(p.y / this.a, this.es, this.en);
@@ -87580,7 +88110,7 @@
         s = Math.sin(lat);
         temp = this.long0 + p.x * Math.sqrt(1 - this.es * s * s) / (this.a * Math.cos(lat));
         // temp = this.long0 + p.x / (this.a * Math.cos(lat));
-        lon = adjust_lon(temp);
+        lon = adjust_lon(temp, this.over);
       } else if ((s - EPSLN) < HALF_PI) {
         lon = this.long0;
       }
@@ -87590,24 +88120,30 @@
     return p;
   }
 
-  var names$c = ['Sinusoidal', 'sinu'];
+  var names$d = ['Sinusoidal', 'sinu'];
   var sinu = {
-    init: init$c,
-    forward: forward$b,
-    inverse: inverse$b,
-    names: names$c
+    init: init$d,
+    forward: forward$c,
+    inverse: inverse$c,
+    names: names$d
   };
 
-  function init$b() {}
+  /** @this {import('../defs.js').ProjectionDefinition} */
+  function init$c() {
+    this.x0 = this.x0 !== undefined ? this.x0 : 0;
+    this.y0 = this.y0 !== undefined ? this.y0 : 0;
+    this.long0 = this.long0 !== undefined ? this.long0 : 0;
+  }
+
   /* Mollweide forward equations--mapping lat,long to x,y
       ---------------------------------------------------- */
-  function forward$a(p) {
+  function forward$b(p) {
     /* Forward equations
         ----------------- */
     var lon = p.x;
     var lat = p.y;
 
-    var delta_lon = adjust_lon(lon - this.long0);
+    var delta_lon = adjust_lon(lon - this.long0, this.over);
     var theta = lat;
     var con = Math.PI * Math.sin(lat);
 
@@ -87636,7 +88172,7 @@
     return p;
   }
 
-  function inverse$a(p) {
+  function inverse$b(p) {
     var theta;
     var arg;
 
@@ -87653,7 +88189,7 @@
       arg = 0.999999999999;
     }
     theta = Math.asin(arg);
-    var lon = adjust_lon(this.long0 + (p.x / (0.900316316158 * this.a * Math.cos(theta))));
+    var lon = adjust_lon(this.long0 + (p.x / (0.900316316158 * this.a * Math.cos(theta))), this.over);
     if (lon < (-Math.PI)) {
       lon = -Math.PI;
     }
@@ -87671,12 +88207,12 @@
     return p;
   }
 
-  var names$b = ['Mollweide', 'moll'];
+  var names$c = ['Mollweide', 'moll'];
   var moll = {
-    init: init$b,
-    forward: forward$a,
-    inverse: inverse$a,
-    names: names$b
+    init: init$c,
+    forward: forward$b,
+    inverse: inverse$b,
+    names: names$c
   };
 
   /**
@@ -87701,7 +88237,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$a() {
+  function init$b() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     // Standard Parallels cannot be equal and on opposite sides of the equator
@@ -87739,7 +88275,7 @@
 
   /* Equidistant Conic forward equations--mapping lat,long to x,y
     ----------------------------------------------------------- */
-  function forward$9(p) {
+  function forward$a(p) {
     var lon = p.x;
     var lat = p.y;
     var rh1;
@@ -87752,7 +88288,7 @@
       var ml = mlfn(this.e0, this.e1, this.e2, this.e3, lat);
       rh1 = this.a * (this.g - ml);
     }
-    var theta = this.ns * adjust_lon(lon - this.long0);
+    var theta = this.ns * adjust_lon(lon - this.long0, this.over);
     var x = this.x0 + rh1 * Math.sin(theta);
     var y = this.y0 + this.rh - rh1 * Math.cos(theta);
     p.x = x;
@@ -87762,7 +88298,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$9(p) {
+  function inverse$a(p) {
     p.x -= this.x0;
     p.y = this.rh - p.y + this.y0;
     var con, rh1, lat, lon;
@@ -87779,7 +88315,7 @@
     }
 
     if (this.sphere) {
-      lon = adjust_lon(this.long0 + theta / this.ns);
+      lon = adjust_lon(this.long0 + theta / this.ns, this.over);
       lat = adjust_lat(this.g - rh1 / this.a);
       p.x = lon;
       p.y = lat;
@@ -87787,19 +88323,19 @@
     } else {
       var ml = this.g - rh1 / this.a;
       lat = imlfn(ml, this.e0, this.e1, this.e2, this.e3);
-      lon = adjust_lon(this.long0 + theta / this.ns);
+      lon = adjust_lon(this.long0 + theta / this.ns, this.over);
       p.x = lon;
       p.y = lat;
       return p;
     }
   }
 
-  var names$a = ['Equidistant_Conic', 'eqdc'];
+  var names$b = ['Equidistant_Conic', 'eqdc'];
   var eqdc = {
-    init: init$a,
-    forward: forward$9,
-    inverse: inverse$9,
-    names: names$a
+    init: init$b,
+    forward: forward$a,
+    inverse: inverse$a,
+    names: names$b
   };
 
   /**
@@ -87811,18 +88347,18 @@
    * Initialize the Van Der Grinten projection
    * @this {import('../defs.js').ProjectionDefinition & LocalThis}
    */
-  function init$9() {
+  function init$a() {
     // this.R = 6370997; //Radius of earth
     this.R = this.a;
   }
 
-  function forward$8(p) {
+  function forward$9(p) {
     var lon = p.x;
     var lat = p.y;
 
     /* Forward equations
       ----------------- */
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     var x, y;
 
     if (Math.abs(lat) <= EPSLN) {
@@ -87870,7 +88406,7 @@
 
   /* Van Der Grinten inverse equations--mapping x,y to lat/long
     --------------------------------------------------------- */
-  function inverse$8(p) {
+  function inverse$9(p) {
     var lon, lat;
     var xx, yy, xys, c1, c2, c3;
     var a1;
@@ -87911,7 +88447,7 @@
     if (Math.abs(xx) < EPSLN) {
       lon = this.long0;
     } else {
-      lon = adjust_lon(this.long0 + Math.PI * (xys - 1 + Math.sqrt(1 + 2 * (xx * xx - yy * yy) + xys * xys)) / 2 / xx);
+      lon = adjust_lon(this.long0 + Math.PI * (xys - 1 + Math.sqrt(1 + 2 * (xx * xx - yy * yy) + xys * xys)) / 2 / xx, this.over);
     }
 
     p.x = lon;
@@ -87919,12 +88455,12 @@
     return p;
   }
 
-  var names$9 = ['Van_der_Grinten_I', 'VanDerGrinten', 'Van_der_Grinten', 'vandg'];
+  var names$a = ['Van_der_Grinten_I', 'VanDerGrinten', 'Van_der_Grinten', 'vandg'];
   var vandg = {
-    init: init$9,
-    forward: forward$8,
-    inverse: inverse$8,
-    names: names$9
+    init: init$a,
+    forward: forward$9,
+    inverse: inverse$9,
+    names: names$a
   };
 
   /**
@@ -88061,19 +88597,19 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$8() {
+  function init$9() {
     this.sin_p12 = Math.sin(this.lat0);
     this.cos_p12 = Math.cos(this.lat0);
     // flattening for ellipsoid
     this.f = this.es / (1 + Math.sqrt(1 - this.es));
   }
 
-  function forward$7(p) {
+  function forward$8(p) {
     var lon = p.x;
     var lat = p.y;
     var sinphi = Math.sin(p.y);
     var cosphi = Math.cos(p.y);
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     var e0, e1, e2, e3, Mlp, Ml, c, kp, cos_c, vars, azi1;
     if (this.sphere) {
       if (Math.abs(this.sin_p12 - 1) <= EPSLN) {
@@ -88129,7 +88665,7 @@
     }
   }
 
-  function inverse$7(p) {
+  function inverse$8(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var rh, z, sinz, cosz, lon, lat, con, e0, e1, e2, e3, Mlp, M, azi1, s12, vars;
@@ -88151,12 +88687,12 @@
         con = Math.abs(this.lat0) - HALF_PI;
         if (Math.abs(con) <= EPSLN) {
           if (this.lat0 >= 0) {
-            lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+            lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y), this.over);
           } else {
-            lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y));
+            lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y), this.over);
           }
         } else {
-          lon = adjust_lon(this.long0 + Math.atan2(p.x * sinz, rh * this.cos_p12 * cosz - p.y * this.sin_p12 * sinz));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x * sinz, rh * this.cos_p12 * cosz - p.y * this.sin_p12 * sinz), this.over);
         }
       }
 
@@ -88174,7 +88710,7 @@
         rh = Math.sqrt(p.x * p.x + p.y * p.y);
         M = Mlp - rh;
         lat = imlfn(M / this.a, e0, e1, e2, e3);
-        lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y), this.over);
         p.x = lon;
         p.y = lat;
         return p;
@@ -88185,7 +88721,7 @@
         M = rh - Mlp;
 
         lat = imlfn(M / this.a, e0, e1, e2, e3);
-        lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y), this.over);
         p.x = lon;
         p.y = lat;
         return p;
@@ -88202,12 +88738,12 @@
     }
   }
 
-  var names$8 = ['Azimuthal_Equidistant', 'aeqd'];
+  var names$9 = ['Azimuthal_Equidistant', 'aeqd'];
   var aeqd = {
-    init: init$8,
-    forward: forward$7,
-    inverse: inverse$7,
-    names: names$8
+    init: init$9,
+    forward: forward$8,
+    inverse: inverse$8,
+    names: names$9
   };
 
   /**
@@ -88217,7 +88753,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$7() {
+  function init$8() {
     // double temp;      /* temporary variable    */
 
     /* Place parameters in static storage for common use
@@ -88228,7 +88764,7 @@
 
   /* Orthographic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$6(p) {
+  function forward$7(p) {
     var sinphi, cosphi; /* sin and cos value        */
     var dlon; /* delta longitude value      */
     var coslon; /* cos of longitude        */
@@ -88238,7 +88774,7 @@
     var lat = p.y;
     /* Forward equations
         ----------------- */
-    dlon = adjust_lon(lon - this.long0);
+    dlon = adjust_lon(lon - this.long0, this.over);
 
     sinphi = Math.sin(lat);
     cosphi = Math.cos(lat);
@@ -88255,7 +88791,7 @@
     return p;
   }
 
-  function inverse$6(p) {
+  function inverse$7(p) {
     var rh; /* height above ellipsoid      */
     var z; /* angle          */
     var sinz, cosz; /* sin of z and cos of z      */
@@ -88282,26 +88818,26 @@
     con = Math.abs(this.lat0) - HALF_PI;
     if (Math.abs(con) <= EPSLN) {
       if (this.lat0 >= 0) {
-        lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y), this.over);
       } else {
-        lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y));
+        lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y), this.over);
       }
       p.x = lon;
       p.y = lat;
       return p;
     }
-    lon = adjust_lon(this.long0 + Math.atan2((p.x * sinz), rh * this.cos_p14 * cosz - p.y * this.sin_p14 * sinz));
+    lon = adjust_lon(this.long0 + Math.atan2((p.x * sinz), rh * this.cos_p14 * cosz - p.y * this.sin_p14 * sinz), this.over);
     p.x = lon;
     p.y = lat;
     return p;
   }
 
-  var names$7 = ['ortho'];
+  var names$8 = ['ortho'];
   var ortho = {
-    init: init$7,
-    forward: forward$6,
-    inverse: inverse$6,
-    names: names$7
+    init: init$8,
+    forward: forward$7,
+    inverse: inverse$7,
+    names: names$8
   };
 
   // QSC projection rewritten from the original PROJ4
@@ -88336,7 +88872,7 @@
   };
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$6() {
+  function init$7() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
     this.lat0 = this.lat0 || 0;
@@ -88367,7 +88903,7 @@
 
   // QSC forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$5(p) {
+  function forward$6(p) {
     var xy = { x: 0, y: 0 };
     var lat, lon;
     var theta, phi;
@@ -88490,7 +89026,7 @@
 
   // QSC inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$5(p) {
+  function inverse$6(p) {
     var lp = { lam: 0, phi: 0 };
     var mu, nu, cosmu, tannu;
     var tantheta, theta, cosphi, phi;
@@ -88673,12 +89209,12 @@
     return slon;
   }
 
-  var names$6 = ['Quadrilateralized Spherical Cube', 'Quadrilateralized_Spherical_Cube', 'qsc'];
+  var names$7 = ['Quadrilateralized Spherical Cube', 'Quadrilateralized_Spherical_Cube', 'qsc'];
   var qsc = {
-    init: init$6,
-    forward: forward$5,
-    inverse: inverse$5,
-    names: names$6
+    init: init$7,
+    forward: forward$6,
+    inverse: inverse$6,
+    names: names$7
   };
 
   // Robinson projection
@@ -88756,7 +89292,7 @@
     return x;
   }
 
-  function init$5() {
+  function init$6() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
     this.long0 = this.long0 || 0;
@@ -88764,8 +89300,8 @@
     this.title = this.title || 'Robinson';
   }
 
-  function forward$4(ll) {
-    var lon = adjust_lon(ll.x - this.long0);
+  function forward$5(ll) {
+    var lon = adjust_lon(ll.x - this.long0, this.over);
 
     var dphi = Math.abs(ll.y);
     var i = Math.floor(dphi * C1);
@@ -88788,7 +89324,7 @@
     return xy;
   }
 
-  function inverse$4(xy) {
+  function inverse$5(xy) {
     var ll = {
       x: (xy.x - this.x0) / (this.a * FXC),
       y: Math.abs(xy.y - this.y0) / (this.a * FYC)
@@ -88829,38 +89365,38 @@
       }
     }
 
-    ll.x = adjust_lon(ll.x + this.long0);
+    ll.x = adjust_lon(ll.x + this.long0, this.over);
     return ll;
   }
 
-  var names$5 = ['Robinson', 'robin'];
+  var names$6 = ['Robinson', 'robin'];
   var robin = {
-    init: init$5,
-    forward: forward$4,
-    inverse: inverse$4,
-    names: names$5
+    init: init$6,
+    forward: forward$5,
+    inverse: inverse$5,
+    names: names$6
   };
 
-  function init$4() {
+  function init$5() {
     this.name = 'geocent';
   }
 
-  function forward$3(p) {
+  function forward$4(p) {
     var point = geodeticToGeocentric(p, this.es, this.a);
     return point;
   }
 
-  function inverse$3(p) {
+  function inverse$4(p) {
     var point = geocentricToGeodetic(p, this.es, this.a, this.b);
     return point;
   }
 
-  var names$4 = ['Geocentric', 'geocentric', 'geocent', 'Geocent'];
+  var names$5 = ['Geocentric', 'geocentric', 'geocent', 'Geocent'];
   var geocent = {
-    init: init$4,
-    forward: forward$3,
-    inverse: inverse$3,
-    names: names$4
+    init: init$5,
+    forward: forward$4,
+    inverse: inverse$4,
+    names: names$5
   };
 
   /**
@@ -88899,7 +89435,7 @@
   };
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$3() {
+  function init$4() {
     Object.keys(params).forEach(function (p) {
       if (typeof this[p] === 'undefined') {
         this[p] = params[p].def;
@@ -88943,7 +89479,7 @@
     this.sw = Math.sin(omega);
   }
 
-  function forward$2(p) {
+  function forward$3(p) {
     p.x -= this.long0;
     var sinphi = Math.sin(p.y);
     var cosphi = Math.cos(p.y);
@@ -88993,7 +89529,7 @@
     return p;
   }
 
-  function inverse$2(p) {
+  function inverse$3(p) {
     p.x /= this.a;
     p.y /= this.a;
     var r = { x: p.x, y: p.y };
@@ -89042,12 +89578,12 @@
     return p;
   }
 
-  var names$3 = ['Tilted_Perspective', 'tpers'];
+  var names$4 = ['Tilted_Perspective', 'tpers'];
   var tpers = {
-    init: init$3,
-    forward: forward$2,
-    inverse: inverse$2,
-    names: names$3
+    init: init$4,
+    forward: forward$3,
+    inverse: inverse$3,
+    names: names$4
   };
 
   /**
@@ -89066,7 +89602,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$2() {
+  function init$3() {
     this.flip_axis = (this.sweep === 'x' ? 1 : 0);
     this.h = Number(this.h);
     this.radius_g_1 = this.h / this.a;
@@ -89100,7 +89636,7 @@
     }
   }
 
-  function forward$1(p) {
+  function forward$2(p) {
     var lon = p.x;
     var lat = p.y;
     var tmp, v_x, v_y, v_z;
@@ -89148,7 +89684,7 @@
     return p;
   }
 
-  function inverse$1(p) {
+  function inverse$2(p) {
     var v_x = -1;
     var v_y = 0.0;
     var v_z = 0.0;
@@ -89215,12 +89751,12 @@
     return p;
   }
 
-  var names$2 = ['Geostationary Satellite View', 'Geostationary_Satellite', 'geos'];
+  var names$3 = ['Geostationary Satellite View', 'Geostationary_Satellite', 'geos'];
   var geos = {
-    init: init$2,
-    forward: forward$1,
-    inverse: inverse$1,
-    names: names$2
+    init: init$3,
+    forward: forward$2,
+    inverse: inverse$2,
+    names: names$3
   };
 
   /**
@@ -89259,13 +89795,15 @@
     A4 = 0.003796,
     M = Math.sqrt(3) / 2.0;
 
-  function init$1() {
+  function init$2() {
     this.es = 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
+    this.x0 = this.x0 !== undefined ? this.x0 : 0;
+    this.y0 = this.y0 !== undefined ? this.y0 : 0;
   }
 
-  function forward(p) {
-    var lam = adjust_lon(p.x - this.long0);
+  function forward$1(p) {
+    var lam = adjust_lon(p.x - this.long0, this.over);
     var phi = p.y;
     var paramLat = Math.asin(M * Math.sin(phi)),
       paramLatSq = paramLat * paramLat,
@@ -89279,7 +89817,7 @@
     return p;
   }
 
-  function inverse(p) {
+  function inverse$1(p) {
     p.x = (p.x - this.x0) / this.a;
     p.y = (p.y - this.y0) / this.a;
 
@@ -89304,16 +89842,16 @@
       / Math.cos(paramLat);
     p.y = Math.asin(Math.sin(paramLat) / M);
 
-    p.x = adjust_lon(p.x + this.long0);
+    p.x = adjust_lon(p.x + this.long0, this.over);
     return p;
   }
 
-  var names$1 = ['eqearth', 'Equal Earth', 'Equal_Earth'];
+  var names$2 = ['eqearth', 'Equal Earth', 'Equal_Earth'];
   var eqearth = {
-    init: init$1,
-    forward: forward,
-    inverse: inverse,
-    names: names$1
+    init: init$2,
+    forward: forward$1,
+    inverse: inverse$1,
+    names: names$2
   };
 
   /**
@@ -89329,7 +89867,7 @@
   var EPS10 = 1e-10;
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init() {
+  function init$1() {
     var c;
 
     this.phi1 = this.lat1;
@@ -89355,7 +89893,7 @@
   }
 
   function e_fwd(p) {
-    var lam = adjust_lon(p.x - (this.long0 || 0));
+    var lam = adjust_lon(p.x - (this.long0 || 0), this.over);
     var phi = p.y;
     var rh, E, c;
     rh = this.am1 + this.m1 - pj_mlfn(phi, E = Math.sin(phi), c = Math.cos(phi), this.en);
@@ -89383,13 +89921,13 @@
     } else {
       throw new Error();
     }
-    p.x = adjust_lon(lam + (this.long0 || 0));
+    p.x = adjust_lon(lam + (this.long0 || 0), this.over);
     p.y = adjust_lat(phi);
     return p;
   }
 
   function s_fwd(p) {
-    var lam = adjust_lon(p.x - (this.long0 || 0));
+    var lam = adjust_lon(p.x - (this.long0 || 0), this.over);
     var phi = p.y;
     var E, rh;
     rh = this.cphi1 + this.phi1 - phi;
@@ -89420,14 +89958,381 @@
     } else {
       lam = rh * Math.atan2(p.x, p.y) / Math.cos(phi);
     }
-    p.x = adjust_lon(lam + (this.long0 || 0));
+    p.x = adjust_lon(lam + (this.long0 || 0), this.over);
     p.y = adjust_lat(phi);
     return p;
   }
 
-  var names = ['bonne', 'Bonne (Werner lat_1=90)'];
+  var names$1 = ['bonne', 'Bonne (Werner lat_1=90)'];
   var bonne = {
+    init: init$1,
+    names: names$1
+  };
+
+  /**
+      Original projection implementation:
+          https://github.com/OSGeo/PROJ/blob/46c47e9adf6376ae06afabe5d24a0016a05ced82/src/projections/ob_tran.cpp
+
+      Documentation:
+          https://proj.org/operations/projections/ob_tran.html
+
+      References/Formulas:
+          https://pubs.usgs.gov/pp/1395/report.pdf
+
+      Examples:
+          +proj=ob_tran +o_proj=moll +o_lat_p=45 +o_lon_p=-90
+          +proj=ob_tran +o_proj=moll +o_lat_p=45 +o_lon_p=-90 +lon_0=60
+          +proj=ob_tran +o_proj=moll +o_lat_p=45 +o_lon_p=-90 +lon_0=-90
+  */
+
+  const projectionType = {
+    OBLIQUE: {
+      forward: forwardOblique,
+      inverse: inverseOblique
+    },
+    TRANSVERSE: {
+      forward: forwardTransverse,
+      inverse: inverseTransverse
+    }
+  };
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} lamp
+   * @property {number} cphip
+   * @property {number} sphip
+   * @property {Object} projectionType
+   * @property {string | undefined} o_proj
+   * @property {string | undefined} o_lon_p
+   * @property {string | undefined} o_lat_p
+   * @property {string | undefined} o_alpha
+   * @property {string | undefined} o_lon_c
+   * @property {string | undefined} o_lat_c
+   * @property {string | undefined} o_lon_1
+   * @property {string | undefined} o_lat_1
+   * @property {string | undefined} o_lon_2
+   * @property {string | undefined} o_lat_2
+   * @property {number | undefined} oLongP
+   * @property {number | undefined} oLatP
+   * @property {number | undefined} oAlpha
+   * @property {number | undefined} oLongC
+   * @property {number | undefined} oLatC
+   * @property {number | undefined} oLong1
+   * @property {number | undefined} oLat1
+   * @property {number | undefined} oLong2
+   * @property {number | undefined} oLat2
+   * @property {boolean} isIdentity
+   * @property {import('..').Converter} obliqueProjection
+   *
+   */
+
+  /**
+   *    Parameters can be from the following sets:
+   *       New pole --> o_lat_p, o_lon_p
+   *       Rotate about point --> o_alpha, o_lon_c, o_lat_c
+   *       New equator points --> lon_1, lat_1, lon_2, lat_2
+   *
+   *    Per the original source code, the parameter sets are
+   *    checked in the order of the object below.
+   */
+  const paramSets = {
+    ROTATE: {
+      o_alpha: 'oAlpha',
+      o_lon_c: 'oLongC',
+      o_lat_c: 'oLatC'
+    },
+    NEW_POLE: {
+      o_lat_p: 'oLatP',
+      o_lon_p: 'oLongP'
+    },
+    NEW_EQUATOR: {
+      o_lon_1: 'oLong1',
+      o_lat_1: 'oLat1',
+      o_lon_2: 'oLong2',
+      o_lat_2: 'oLat2'
+    }
+  };
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init() {
+    this.x0 = this.x0 || 0;
+    this.y0 = this.y0 || 0;
+    this.long0 = this.long0 || 0;
+    this.title = this.title || 'General Oblique Transformation';
+    this.isIdentity = names$x.includes(this.o_proj);
+
+    /** Verify required parameters exist */
+    if (!this.o_proj) {
+      throw new Error('Missing parameter: o_proj');
+    }
+
+    if (this.o_proj === `ob_tran`) {
+      throw new Error('Invalid value for o_proj: ' + this.o_proj);
+    }
+
+    const newProjStr = this.projStr.replace('+proj=ob_tran', '').replace('+o_proj=', '+proj=').trim();
+
+    /** @type {import('../defs.js').ProjectionDefinition} */
+    const oProj = Projection(newProjStr);
+    if (!oProj) {
+      throw new Error('Invalid parameter: o_proj. Unknown projection ' + this.o_proj);
+    }
+    oProj.long0 = 0; // we handle long0 before/after forward/inverse
+    this.obliqueProjection = oProj;
+
+    let matchedSet;
+    const paramSetsKeys = Object.keys(paramSets);
+
+    /**
+     * parse strings, convert to radians, throw on NaN
+     * @param {string} name
+     * @returns {number | undefined}
+     */
+    const parseParam = (name) => {
+      if (typeof this[name] === `undefined`) {
+        return undefined;
+      }
+      const val = parseFloat(this[name]) * D2R$1;
+      if (isNaN(val)) {
+        throw new Error('Invalid value for ' + name + ': ' + this[name]);
+      }
+      return val;
+    };
+
+    for (let i = 0; i < paramSetsKeys.length; i++) {
+      const setKey = paramSetsKeys[i];
+      const set = paramSets[setKey];
+      const params = Object.entries(set);
+      const setHasParams = params.some(
+        ([p]) => typeof this[p] !== 'undefined'
+      );
+      if (!setHasParams) {
+        continue;
+      }
+      matchedSet = set;
+      for (let ii = 0; ii < params.length; ii++) {
+        const [inputParam, param] = params[ii];
+        const val = parseParam(inputParam);
+        if (typeof val === 'undefined') {
+          throw new Error('Missing parameter: ' + inputParam + '.');
+        }
+        this[param] = val;
+      }
+      break;
+    }
+
+    if (!matchedSet) {
+      throw new Error('No valid parameters provided for ob_tran projection.');
+    }
+
+    const { lamp, phip } = createRotation(this, matchedSet);
+    this.lamp = lamp;
+
+    if (Math.abs(phip) > EPSLN) {
+      this.cphip = Math.cos(phip);
+      this.sphip = Math.sin(phip);
+      this.projectionType = projectionType.OBLIQUE;
+    } else {
+      this.projectionType = projectionType.TRANSVERSE;
+    }
+  }
+
+  // ob_tran forward equations--mapping (lat,long) to (x,y)
+  // transverse (90 degrees from normal orientation) - forwardTransverse
+  // or oblique (arbitrary angle) used based on parameters - forwardOblique
+  // -----------------------------------------------------------------
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function forward(p) {
+    return this.projectionType.forward(this, p);
+  }
+
+  // inverse equations--mapping (x,y) to (lat,long)
+  // transverse: inverseTransverse
+  // oblique: inverseOblique
+  // -----------------------------------------------------------------
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function inverse(p) {
+    return this.projectionType.inverse(this, p);
+  }
+
+  /**
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} params - Initialized projection definition
+   * @param {Object} how - Transformation method
+   * @returns {{phip: number, lamp: number}}
+   */
+  function createRotation(params, how) {
+    let phip, lamp;
+    if (how === paramSets.ROTATE) {
+      let lamc = params.oLongC;
+      let phic = params.oLatC;
+      let alpha = params.oAlpha;
+      if (Math.abs(Math.abs(phic) - HALF_PI) <= EPSLN) {
+        throw new Error('Invalid value for o_lat_c: ' + params.o_lat_c + ' should be < 90°');
+      }
+      lamp = lamc + Math.atan2(-1 * Math.cos(alpha), -1 * Math.sin(alpha) * Math.sin(phic));
+      phip = Math.asin(Math.cos(phic) * Math.sin(alpha));
+    } else if (how === paramSets.NEW_POLE) {
+      lamp = params.oLongP;
+      phip = params.oLatP;
+    } else {
+      let lam1 = params.oLong1;
+      let phi1 = params.oLat1;
+      let lam2 = params.oLong2;
+      let phi2 = params.oLat2;
+      let con = Math.abs(phi1);
+
+      if (Math.abs(phi1) > HALF_PI - EPSLN) {
+        throw new Error('Invalid value for o_lat_1: ' + params.o_lat_1 + ' should be < 90°');
+      }
+
+      if (Math.abs(phi2) > HALF_PI - EPSLN) {
+        throw new Error('Invalid value for o_lat_2: ' + params.o_lat_2 + ' should be < 90°');
+      }
+
+      if (Math.abs(phi1 - phi2) < EPSLN) {
+        throw new Error('Invalid value for o_lat_1 and o_lat_2: o_lat_1 should be different from o_lat_2');
+      }
+      if (con < EPSLN) {
+        throw new Error('Invalid value for o_lat_1: o_lat_1 should be different from zero');
+      }
+
+      lamp = Math.atan2(
+        (Math.cos(phi1) * Math.sin(phi2) * Math.cos(lam1))
+        - (Math.sin(phi1) * Math.cos(phi2) * Math.cos(lam2)),
+        (Math.sin(phi1) * Math.cos(phi2) * Math.sin(lam2))
+        - (Math.cos(phi1) * Math.sin(phi2) * Math.sin(lam1))
+      );
+
+      phip = Math.atan(-1 * Math.cos(lamp - lam1) / Math.tan(phi1));
+    }
+
+    return { lamp, phip };
+  }
+
+  /**
+   * Forward (lng, lat) to (x, y) for oblique case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function forwardOblique(self, lp) {
+    let { x: lam, y: phi } = lp;
+    lam += self.long0;
+    const coslam = Math.cos(lam);
+    const sinphi = Math.sin(phi);
+    const cosphi = Math.cos(phi);
+
+    lp.x = adjust_lon(
+      Math.atan2(
+        cosphi * Math.sin(lam),
+        (self.sphip * cosphi * coslam) + (self.cphip * sinphi)
+      ) + self.lamp
+    );
+    lp.y = Math.asin(
+      (self.sphip * sinphi) - (self.cphip * cosphi * coslam)
+    );
+
+    const result = self.obliqueProjection.forward(lp);
+    if (self.isIdentity) {
+      result.x *= R2D;
+      result.y *= R2D;
+    }
+    return result;
+  }
+
+  /**
+   * Forward (lng, lat) to (x, y) for transverse case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function forwardTransverse(self, lp) {
+    let { x: lam, y: phi } = lp;
+    lam += self.long0;
+    const cosphi = Math.cos(phi);
+    const coslam = Math.cos(lam);
+    lp.x = adjust_lon(
+      Math.atan2(
+        cosphi * Math.sin(lam),
+        Math.sin(phi)
+      ) + self.lamp
+    );
+    lp.y = Math.asin(-1 * cosphi * coslam);
+
+    const result = self.obliqueProjection.forward(lp);
+
+    if (self.isIdentity) {
+      result.x *= R2D;
+      result.y *= R2D;
+    }
+    return result;
+  }
+
+  /**
+   * Inverse (x, y) to (lng, lat) for oblique case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function inverseOblique(self, lp) {
+    if (self.isIdentity) {
+      lp.x *= D2R$1;
+      lp.y *= D2R$1;
+    }
+
+    const innerLp = self.obliqueProjection.inverse(lp);
+    let { x: lam, y: phi } = innerLp;
+
+    if (lam < Number.MAX_VALUE) {
+      lam -= self.lamp;
+      const coslam = Math.cos(lam);
+      const sinphi = Math.sin(phi);
+      const cosphi = Math.cos(phi);
+      lp.x = Math.atan2(
+        cosphi * Math.sin(lam),
+        (self.sphip * cosphi * coslam) - (self.cphip * sinphi)
+      );
+      lp.y = Math.asin(
+        (self.sphip * sinphi) + (self.cphip * cosphi * coslam)
+      );
+    }
+
+    lp.x = adjust_lon(lp.x + self.long0);
+    return lp;
+  }
+
+  /**
+   * Inverse (x, y) to (lng, lat) for transverse case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function inverseTransverse(self, lp) {
+    if (self.isIdentity) {
+      lp.x *= D2R$1;
+      lp.y *= D2R$1;
+    }
+
+    const innerLp = self.obliqueProjection.inverse(lp);
+    let { x: lam, y: phi } = innerLp;
+
+    if (lam < Number.MAX_VALUE) {
+      const cosphi = Math.cos(phi);
+      lam -= self.lamp;
+      lp.x = Math.atan2(
+        cosphi * Math.sin(lam),
+        -1 * Math.sin(phi)
+      );
+      lp.y = Math.asin(
+        cosphi * Math.cos(lam)
+      );
+    }
+
+    lp.x = adjust_lon(lp.x + self.long0);
+    return lp;
+  }
+
+  var names = ['General Oblique Transformation', 'General_Oblique_Transformation', 'ob_tran'];
+  var ob_tran = {
     init: init,
+    forward: forward,
+    inverse: inverse,
     names: names
   };
 
@@ -89463,6 +90368,7 @@
     proj4.Proj.projections.add(geos);
     proj4.Proj.projections.add(eqearth);
     proj4.Proj.projections.add(bonne);
+    proj4.Proj.projections.add(ob_tran);
   }
 
   /**
@@ -89971,7 +90877,7 @@
           }
       });
 
-      // Compute properties when the layer is loaded & before the cluster layer is computed
+      // Compute properties when one request is loaded & before the cluster layer is computed
       this.on('change', () => {
         this.logs ??= {};
         if (this.options.debug)
@@ -89984,6 +90890,7 @@
             .join('°E/') + '°N'
           );
 
+        //TODO move feature.getProperties() in hover
         this.getFeatures().forEach(f => {
           if (!f.yetAdded) {
             f.yetAdded = true;
@@ -90468,7 +91375,7 @@
           coordinates = selectedFeature.getGeometry().getCoordinates();
 
         // Shift + click : reverse line direction
-        if (oEvt.shiftKey && !oEvt.ctrlKey && !oEvt.altKey &&
+        if (shiftKeyOnly(evt.mapBrowserEvent) &&
           typeof coordinates[0][0] === 'number') {
           this.editedSource.removeFeature(selectedFeature);
 
@@ -90478,7 +91385,7 @@
         }
 
         // Ctrl+Alt+click on segment : delete the line or poly
-        if (!oEvt.shiftKey && oEvt.ctrlKey && oEvt.altKey)
+        if (!oEvt.shiftKey && platformModifierKey(evt.mapBrowserEvent) && oEvt.altKey)
           this.editedSource.removeFeature(selectedFeature);
       });
 
@@ -90519,9 +91426,7 @@
       });
 
       map.on('click', evt => {
-        const oEvt = evt.originalEvent;
-
-        if (!oEvt.shiftKey && oEvt.ctrlKey && !oEvt.altKey)
+        if (platformModifierKeyOnly(evt))
           this.optimiseAndSave(
             this.snapInteraction.snapTo(
               evt.pixel,
@@ -91161,33 +92066,41 @@
     vector: vectorLayerCollection,
   };
 
-  /**
-   * Display misc values
-   */
+  /* global map */
 
 
-  const VERSION = '1.1.2.dev 18/11/2025 18:23:40';
+  const VERSION = '1.1.2.dev 18/12/2025 10:21:17';
 
-  async function trace() {
-    const data = [
-      'Ol v' + VERSION$1,
-      'MyOl ' + VERSION,
-      'Geocoder 4.3.3-4',
-      'Proj4 2.19.10',
-      'language ' + navigator.language,
-    ];
+  async function traces(options) {
+    const debug = {
+        versions: true,
+        storages: true,
+        serviceWorkers: true,
+        ...options
+      },
+      data = [];
+
+    if (debug.versions)
+      data.push(...[
+        'Ol v' + VERSION$1,
+        'MyOl ' + VERSION,
+        'Geocoder 4.3.3-4',
+        'Proj4 2.20.2',
+        'language ' + navigator.language,
+      ]);
 
     // Storages in the subdomain
-    ['localStorage', 'sessionStorage'].forEach(s => {
-      if (window[s].length)
-        data.push(s + ':');
+    if (debug.storages)
+      ['localStorage', 'sessionStorage'].forEach(s => {
+        if (window[s].length)
+          data.push(s + ':');
 
-      Object.keys(window[s])
-        .forEach(k => data.push('  ' + k + ': ' + window[s].getItem(k)));
-    });
+        Object.keys(window[s])
+          .forEach(k => data.push('  ' + k + ': ' + window[s].getItem(k)));
+      });
 
     // Registered service workers in the scope
-    if ('serviceWorker' in navigator)
+    if (debug.serviceWorkers && 'serviceWorker' in navigator)
       await navigator.serviceWorker.getRegistrations().then(registrations => {
         if (registrations.length) {
           data.push('service-workers:');
@@ -91200,31 +92113,41 @@
 
     // Registered caches in the scope
     if (typeof caches === 'object')
-      await caches.keys().then(names => {
-        if (names.length) {
+      await caches.keys().then(async keys => {
+        if (keys.length) {
           data.push('caches:');
 
-          for (const name of names)
-            data.push('  ' + name);
+          for (const key of keys) {
+            // Cache name
+            data.push('  ' + key);
+
+            // File names
+            await caches
+              .open(key)
+              .then(cache => cache.keys())
+              .then(requests =>
+                requests.forEach(request =>
+                  data.push('  ' + request.url)
+                )
+              );
+          }
         }
       });
 
-    // Log all the traces
+    // Display all the traces
     console.info(data.join('\n'));
   }
 
-  /* global map */
   // Zoom & resolution
   function traceZoom() {
-    if (map.debug)
-      console.info(
-        'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
-        'resolution ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
-      );
+    console.info(
+      'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
+      'resolution ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
+    );
   }
 
   window.addEventListener('load', () => { // Wait for document load
-    if (typeof map === 'object' && map.once)
+    if (typeof map === 'object' && map.once && map.debug)
       map.once('precompose', () => { // Wait for view load
         traceZoom();
         map.getView().on('change:resolution', traceZoom);
@@ -91241,7 +92164,7 @@
     layer: layer,
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
-    trace: trace,
+    traces: traces,
     VERSION: VERSION,
   };
 

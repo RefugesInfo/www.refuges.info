@@ -7,6 +7,10 @@
 import Style from 'ol/style/Style';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
+import {
+  platformModifierKeyOnly,
+  shiftKeyOnly
+} from 'ol/events/condition';
 
 class Hover extends VectorLayer {
   constructor(options) {
@@ -79,12 +83,12 @@ class Hover extends VectorLayer {
         }
         // Click link
         else if (hoveredSubProperties.link) {
-          // Open a new tag
-          if (evt.originalEvent.ctrlKey)
+          // Open a new tab
+          if (platformModifierKeyOnly(evt))
             window.open(hoveredSubProperties.link, '_blank').focus();
           else
             // Open a new window
-            if (evt.originalEvent.shiftKey)
+            if (shiftKeyOnly(evt))
               window.open(hoveredSubProperties.link, '_blank', 'resizable=yes').focus();
             // Go on the same window
             else

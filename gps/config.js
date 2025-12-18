@@ -1,4 +1,4 @@
-/* global myol, jsVars, fondsCarte, couchePointsWRI */
+/* global myol, jsVars, couchePointsWRI */
 
 const refugeslayer = couchePointsWRI({
     host: 'https://www.refuges.info/',
@@ -12,8 +12,3 @@ jsVars.vectorLayers = [
   refugeslayer,
   new myol.layer.Hover(),
 ];
-
-jsVars.layerSwitcherOptions = {
-  layers: fondsCarte('nav', jsVars.mapKeys),
-  selectExtId: 'select-ext',
-};

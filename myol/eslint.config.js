@@ -43,7 +43,7 @@ export default [{
     ////"no-alert": "warn",
     "no-array-constructor": "warn",
     "no-async-promise-executor": "warn",
-    "no-await-in-loop": "warn",
+    ////"no-await-in-loop": "warn",
     "no-bitwise": "warn",
     "no-caller": "warn",
     "no-case-declarations": "warn",

@@ -7,4 +7,4 @@ const map = mapNav({
   idPolygoneType: <?=$_REQUEST['id_polygone_type']??0?>,
 });
 
-myol.trace(map);
+myol.traces(map);
