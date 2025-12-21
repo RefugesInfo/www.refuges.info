@@ -18,7 +18,7 @@ $controlleur->url_complete=$_SERVER['REQUEST_URI'];
 $sans_parametres=explode ('?',$controlleur->url_complete);
 
 // Uniquement /point/5/toto/sfsdf (pas les ?toto=coucou...) et pas le sous dossier dans lequel wri pourrait être installé
-$controlleur->url_base=str_replace('RACINE'.$config_wri['sous_dossier_installation'],'','RACINE'.$sans_parametres[0]);
+$controlleur->url_base=str_replace('RACINE'."/",'','RACINE'.$sans_parametres[0]);
 //DOM ajout de RACINE évite d'enlever tous les / quand sous_dossier_installation = /
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 
@@ -37,10 +37,6 @@ if ($controlleur->url_decoupee[0]=="api")
   require_once ("api.routes.php");
   exit(0);
 }
-
-// Toutes page du site ci-après ayant le bandeau des menus, on a besoin de ça
-require_once ('bandeau_dynamique.php');
-require_once ('identification.php');
 
 switch ($controlleur->url_decoupee[0])
 {
@@ -80,16 +76,11 @@ switch ($controlleur->url_decoupee[0])
 if (!isset($vue->type))
   $vue->type=$controlleur->type;
 
-// On appel le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
+// On appelle le controlleur du bandeau, nécéssaire pour toutes les pages
+include ($config_wri['chemin_controlleurs']."bandeau.php");
+
+// On appelle le controlleur qui pourra, s'il le souhaite, changer le type de vue ($type->vue)
 include ($config_wri['chemin_controlleurs'].$controlleur->type.".php");
 
-// et vérification s'il n'y a pas un commentaire à modérer ou un email non reçu par un membre pour notre équipe de modération
-// FIXME : Dans une logique de rangement parfait, ça ne devrait pas être ici, mais dans chaque contrôleur qui a besoin de modifier le bandeau avec l'étoile, mais la factorisation a eu raison de moi ;-)
-// Si quelqu'un veut le bouger, il a mon feu vert -- sly
-if (est_moderateur())
-{
-  $vue->demande_correction=info_demande_correction ();
-  $vue->email_en_erreur=info_email_bounce();
-}
-
+// On affiche la page (bandeau + vue)
 include(fichier_vue($vue->template));

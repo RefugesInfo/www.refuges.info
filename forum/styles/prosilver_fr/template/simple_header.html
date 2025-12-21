@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html dir="{{ S_CONTENT_DIRECTION }}" lang="{{ S_USER_LANG }}">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark">
+{{ META }}
+<title>{{ SITENAME }} &bull; {% if S_IN_MCP %}{{ lang('MCP') }} &bull; {% elseif S_IN_UCP %}{{ lang('UCP') }} &bull; {% endif %}{{ PAGE_TITLE }}</title>
+
+{% if S_ALLOW_CDN %}
+<script>
+	WebFontConfig = {
+		google: {
+			families: ['Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese']
+		}
+	};
+
+	(function(d) {
+		var wf = d.createElement('script'), s = d.scripts[0];
+		wf.src = 'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js';
+		wf.async = true;
+		s.parentNode.insertBefore(wf, s);
+	})(document);
+</script>
+{% endif %}
+
+{% EVENT custom_simple_header_head_before %}	
+{% INCLUDE 'config.html' %}
+<link href="{{ T_FONT_AWESOME_LINK }}" rel="stylesheet">
+<link href="{{ ROOT_PATH }}styles/prosilver/theme/stylesheet.css?assets_version={{ T_ASSETS_VERSION }}" rel="stylesheet">
+<script>if (localStorage.darksideofthemoon) document.documentElement.setAttribute("data-theme", localStorage.darksideofthemoon);</script>
+<script>if (localStorage.paradoxofchoice) document.documentElement.setAttribute("data-color", localStorage.paradoxofchoice);</script>
+<link href="{{ T_THEME_PATH }}/base.css?assets_version={{ T_ASSETS_VERSION }}" rel="stylesheet">
+<link href="{{ T_THEME_PATH }}/light_dark.css?assets_version={{ T_ASSETS_VERSION }}" rel="stylesheet">
+<link href="{{ T_THEME_PATH }}/{{ T_THEME_LANG_NAME }}/stylesheet.css?assets_version={{ T_ASSETS_VERSION }}" rel="stylesheet">
+<style>
+	{% for color in definition.COLORS %}
+	[data-color="{{ color }}"] { --color01: {{ color }}; }
+	.switch-{{ color }}, .switch-{{ color }}:hover, .switch-{{ color }}:focus { color: {{ color }}; }
+	{% endfor %}
+</style>
+
+{% if S_CONTENT_DIRECTION eq 'rtl' %}
+	<link href="{{ T_THEME_PATH }}/bidi.css?assets_version={{ T_ASSETS_VERSION }}" rel="stylesheet">
+{% endif %}
+
+<!--[if lte IE 9]>
+	<link href="{{ ROOT_PATH }}styles/prosilver/theme/tweaks.css?assets_version={{ T_ASSETS_VERSION }}" rel="stylesheet">
+<![endif]-->
+
+{% DEFINE POPUP = 1 %}
+
+{% EVENT simple_header_head_append %}
+
+{{ definition.STYLESHEETS }}
+
+{% EVENT simple_header_stylesheets_after %}
+
+</head>
+
+<body id="phpbb" class="nojs {{ S_CONTENT_DIRECTION }} {{ BODY_CLASS }} prosilver_fr">
+
+{% EVENT simple_header_body_before %}
+
+<div id="wrap" class="wrap">
+	<a id="top" class="top-anchor" accesskey="t"></a>
+	<div id="page-body" class="page-body" role="main">

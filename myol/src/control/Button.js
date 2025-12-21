@@ -2,6 +2,7 @@
  * Abstract class to be used by other control buttons definitions
  * Add some usefull controls with displayed buttons
  */
+
 //BEST redesign button hover & touch
 //BEST click sur in/out file / ...
 

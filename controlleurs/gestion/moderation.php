@@ -46,7 +46,7 @@ else
       case 'suppression_photo':
         $commentaire->texte=stripslashes($_REQUEST['texte'] ?? "");
         $commentaire->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire'] ?? "");
-        
+
         if (est_moderateur()) // Seul les modérateurs ont le droit de changer la date d'un commentaire
           $commentaire->date = $_REQUEST['date'] ?? Null;
 

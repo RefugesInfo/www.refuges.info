@@ -30,7 +30,7 @@ class XMLSerializer {
 
                 $xml .= '<' . $key . '>' . self::generateXmlFromArray($value, $node_name) . '</' . $key . '>';
             }
-        } else {
+        } elseif ($array) {
             $xml = htmlspecialchars($array, ENT_QUOTES);
         }
 

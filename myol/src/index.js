@@ -5,13 +5,13 @@
 import control from './control';
 import layer from './layer';
 import * as stylesOptions from './layer/stylesOptions';
-import * as trace from './trace';
+import * as traces from './traces';
 
 export default {
   control: control,
   layer: layer,
   Selector: layer.Selector,
   stylesOptions: stylesOptions,
-  trace: trace.trace,
-  VERSION: trace.VERSION,
+  traces: traces.traces,
+  VERSION: traces.VERSION,
 };

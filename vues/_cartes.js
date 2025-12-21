@@ -1,40 +1,67 @@
 /**
  * Contient les fonctions gérant les cartes
- * Regroupées ici pour tests unitaires dans MyOl
+ * Regroupées ici pour permettre des tests unitaires dans MyOl
  */
 /* global ol, myol */
 
 // Les couches de fond des cartes de refuges.info
 function externTilesLayers(mapKeys, restreint) {
   return {
-    'Refuges.info': new myol.layer.tile.MRI(),
-    'OSM': new myol.layer.tile.OpenStreetMap(),
-    'OpenTopo': new myol.layer.tile.OpenTopo(),
-    'Outdoors': new myol.layer.tile.Thunderforest({
-      subLayer: 'outdoors',
-      key: mapKeys.thunderforest,
+    /* Appel natif d'une couche d'origine OSM :
+    'Une couche OSM': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        // Des options de https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html
+      }),
+      // Des options de https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html
+    }),*/
+    'OpenHikingMap': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
+        maxZoom: 18,
+        attributions: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend">Légende</a>',
+      }),
     }),
-    'IGN TOP25': restreint ? null : new myol.layer.tile.IGN({
-      layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+    'OpenStreetMap': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        maxZoom: 19,
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+          '<a target="_blank" href="https://www.openstreetmap.org/panes/legend">Légende</a>',
+      }),
+    }),
+    'OpenTopoMap': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
+        maxZoom: 17,
+        attributions: '<a href="https://github.com/sletuffe/OpenTopoMap">&copy; OTM-R</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://openmaps.fr/otm/legend.html">Légende</a>',
+      }),
+    }),
+    'Outdoors': new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + mapKeys.thunderforest,
+        maxZoom: 22,
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+          '<a target="_blank" href="https://www.thunderforest.com/">Thunderforest</a>',
+      }),
+    }),
+
+    'IGN TOP25': restreint ? null : new myol.layer.tile.IGNtop25({
       key: mapKeys.ign,
     }),
-    'IGN V2': new myol.layer.tile.IGN({
-      layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-      format: 'image/png',
-    }),
-    'SwissTopo': restreint ? null : new myol.layer.tile.SwissTopo({
-      subLayer: 'ch.swisstopo.pixelkarte-farbe',
-    }),
+    'IGN plan': new myol.layer.tile.IGNplan(),
+
+    'SwissTopo': restreint ? null : new myol.layer.tile.SwissTopo(),
     'Autriche': new myol.layer.tile.Kompass({
       subLayer: 'osm', // No key
     }),
     'Espagne': new myol.layer.tile.IgnES(),
+
     'Photo IGN': new myol.layer.tile.IGN({
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
     }),
     'Photo ArcGIS': new myol.layer.tile.ArcGIS(),
     'Photo Google': restreint ? null : new myol.layer.tile.Google({
-      subLayers: 's',
+      subLayers: 's', // Satellite
     }),
     'Photo Maxar': new myol.layer.tile.Maxbox({
       tileset: 'mapbox.satellite',
@@ -301,6 +328,7 @@ function mapIndex(options) {
 
     view: new ol.View({
       enableRotation: false,
+      constrainResolution: true, // Force le zoom sur la définition des dalles disponibles
     }),
 
     controls: [
@@ -314,7 +342,7 @@ function mapIndex(options) {
     ],
 
     layers: [
-      new myol.layer.tile.MRI(), // Fond de carte
+      externTilesLayers(options.mapKeys).OpenHikingMap, // Fond de carte
       polygonesLayer,
       pointsLayer,
       new myol.layer.Hover(), // Gère le survol du curseur

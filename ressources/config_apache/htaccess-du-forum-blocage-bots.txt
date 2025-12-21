@@ -1,0 +1,14 @@
+# Voici le code à manuellement rajouter en bas du .htaccess du forum pour : 
+# de sly 2025-08-05 : en urgence depuis mon smartphone
+# des centaines de robots saturent le forum en profitant du "bug" du sid= 
+# alors j'ajoute à l'arrache ces quelques lignes pour tenter de bloquer les ralentissements
+# Bannissement si :
+# - le user agent est celui d'un navigateur Mozilla/5.0 .*  
+#   (on pourrait certainement élargir encore à tous mais c'est celui que je vois dans les logs)
+# - qu'un sid= est présent en paramètre de l'url .*sid=.*
+# - que nous n'avons pas de referer : %{HTTP_REFERER} ^$# Alors on considère qu'on est face à un Robot usurpateur d'identité
+
+RewriteCond %{HTTP_USER_AGENT} "^Mozilla/5.0 .*"  [NC]
+RewriteCond %{QUERY_STRING} ".*sid=.*" [NC]
+RewriteCond %{HTTP_REFERER} ^$  [NC]
+RewriteRule ^ - [F]

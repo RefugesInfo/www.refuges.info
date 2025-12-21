@@ -1,5 +1,5 @@
 services:
-    RefugesInfo.blockBotPosts.listener:
-        class: RefugesInfo\blockBotPosts\event\listener
-        tags:
-            - { name: event.listener }
+  RefugesInfo.blockBotPosts.listener:
+    class: RefugesInfo\blockBotPosts\event\listener
+    tags:
+      - { name: event.listener }

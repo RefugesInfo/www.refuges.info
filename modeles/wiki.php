@@ -23,35 +23,35 @@ function wiki_page_html($page)
     if (!empty($contenu_page->erreur))
         return "Contenu inexistant";
 
-	// Horible bidouille pour le wiki contact
-	// A intégrer dans le bbcode2html ?
-	// Traitement de la balise {cherche_points}
-	if (!empty($_POST['cherche_points']))
+  // Horible bidouille pour le wiki contact
+  // A intégrer dans le bbcode2html ?
+  // Traitement de la balise {cherche_points}
+  if (!empty($_POST['cherche_points']))
       $contenu_page->contenu = str_replace('{cherche_points}', $_POST['cherche_points'], $contenu_page->contenu);
-	// Traitement de la balise de répétition [points]
-	$contenu_page->contenu = preg_replace_callback(
-		'/\[points\]([^\[]*)\[\/points\]/',
-		function ($matches)
-		{
-			global $config_wri,$pdo;
-			$cherche_points = $_POST ['cherche_points'] ?? '';
-			$nb_max = 20;
-			$retour=[];
-			if($cherche_points) {
-				$sql = "SELECT id_point, nom FROM points WHERE nom ILIKE ".$pdo->quote("%$cherche_points%")." LIMIT $nb_max";
-				if ( ! ($res = $pdo->query($sql)))
-					return erreur("Une erreur sur la requête est survenue",$sql);
+  // Traitement de la balise de répétition [points]
+  $contenu_page->contenu = preg_replace_callback(
+    '/\[points\]([^\[]*)\[\/points\]/',
+    function ($matches)
+    {
+      global $config_wri,$pdo;
+      $cherche_points = $_POST ['cherche_points'] ?? '';
+      $nb_max = 20;
+      $retour=[];
+      if($cherche_points) {
+        $sql = "SELECT id_point, nom FROM points WHERE nom ILIKE ".$pdo->quote("%$cherche_points%")." LIMIT $nb_max";
+        if ( ! ($res = $pdo->query($sql)))
+          return erreur("Une erreur sur la requête est survenue",$sql);
 
-				while ($row = $res->fetch())
-					$retour[] = str_replace (['{nom}','{id_point}'], [$row->nom,$row->id_point], $matches[1]);
-			}
-			if (count ($retour) >= $nb_max)
-				$retour[] = "<p style='color:red'>... trop de résultats, merci d'affiner la recherche</p>";
+        while ($row = $res->fetch())
+          $retour[] = str_replace (['{nom}','{id_point}'], [$row->nom,$row->id_point], $matches[1]);
+      }
+      if (count ($retour) >= $nb_max)
+        $retour[] = "<p style='color:red'>... trop de résultats, merci d'affiner la recherche</p>";
 
-			return implode('', $retour);
-		},
-		$contenu_page->contenu
-	);
+      return implode('', $retour);
+    },
+    $contenu_page->contenu
+  );
 
     // conversion bbcode
     $contenu_html=bbcode2html($contenu_page->contenu,True);

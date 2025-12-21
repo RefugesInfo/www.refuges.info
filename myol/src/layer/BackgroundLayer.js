@@ -9,18 +9,21 @@ import {
 } from 'ol/extent';
 import * as layerTile from './TileLayerCollection';
 
-class BackgroundLayer extends layerTile.Positron {
+class BackgroundLayer extends layerTile.CartoDB {
   constructor(options) {
     // High resolution background layer
     super({
       minResolution: 20,
       visible: false,
+      warning: '<span class="warning">CARTE HORS ZONE</span>',
 
       ...options,
     });
 
     // Low resolution background layer
-    this.lowResLayer = new layerTile.NoTile({
+    //TODO BUG apply to hors zone
+    //TODO BUG no apply under zoom limit
+    this.lowResLayer = new layerTile.CartoDB({
       maxResolution: this.getMinResolution(),
       visible: false,
     });

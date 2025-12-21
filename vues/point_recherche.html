@@ -52,7 +52,7 @@ $vue contient les données passées par le fichier PHP
           <?php foreach ($vue->nominatim->xml as $points_nominatim) { ?>
         <div class="tr">
               <b>
-                  <a href="<?=$config_wri['sous_dossier_installation'].'nav?zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
+                  <a href="<?='/nav?zoom=14&amp;lat='.$points_nominatim['lat'].'&amp;lon='.$points_nominatim['lon']?>">
                       <?=$points_nominatim['display_name']?>
                   </a>
               </b>

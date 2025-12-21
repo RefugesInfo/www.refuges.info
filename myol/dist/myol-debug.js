@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 05/06/2025 17:37:05 using npm run build from the src/... sources
+ * Built 18/12/2025 10:21:17 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -1004,7 +1004,7 @@
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION$1 = '10.5.0';
+  const VERSION$1 = '10.7.0';
 
   /**
    * @module ol/Object
@@ -7612,7 +7612,7 @@
     x,
     y,
   ) {
-    // https://geomalgorithms.com/a03-_inclusion.html
+    // https://web.archive.org/web/20210504233957/http://geomalgorithms.com/a03-_inclusion.html
     // Copyright 2000 softSurfer, 2012 Dan Sunday
     // This code may be freely used and modified for any purpose
     // providing that this copyright notice is included with it.
@@ -9363,10 +9363,10 @@
        * @private
        * @type {!Array<T>}
        */
-      this.array_ = array ? array : [];
+      this.array_ = array ?? [];
 
       if (this.unique_) {
-        for (let i = 0, ii = this.array_.length; i < ii; ++i) {
+        for (let i = 1, ii = this.array_.length; i < ii; ++i) {
           this.assertUnique_(this.array_[i], i);
         }
       }
@@ -9481,9 +9481,6 @@
      * @api
      */
     push(elem) {
-      if (this.unique_) {
-        this.assertUnique_(elem);
-      }
       const n = this.getLength();
       this.insertAt(n, elem);
       return this.getLength();
@@ -9572,8 +9569,9 @@
      * @param {number} [except] Optional index to ignore.
      */
     assertUnique_(elem, except) {
-      for (let i = 0, ii = this.array_.length; i < ii; ++i) {
-        if (this.array_[i] === elem && i !== except) {
+      const array = this.array_;
+      for (let i = 0, ii = array.length; i < ii; ++i) {
+        if (array[i] === elem && i !== except) {
           throw new Error('Duplicate item added to a unique collection');
         }
       }
@@ -13485,6 +13483,12 @@
     'family',
   ];
 
+  /** @type {Object<string|number, number>} */
+  const fontWeights = {
+    normal: 400,
+    bold: 700,
+  };
+
   /**
    * Get the list of font families from a font spec.  Note that this doesn't work
    * for font families that have commas in them.
@@ -13500,16 +13504,22 @@
       lineHeight: 'normal',
       size: '1.2em',
       style: 'normal',
-      weight: 'normal',
+      weight: '400',
       variant: 'normal',
     });
     for (let i = 0, ii = fontRegExMatchIndex.length; i < ii; ++i) {
       const value = match[i + 1];
       if (value !== undefined) {
-        style[fontRegExMatchIndex[i]] = value;
+        style[fontRegExMatchIndex[i]] =
+          typeof value === 'string' ? value.trim() : value;
       }
     }
-    style.families = style.family.split(/,\s?/);
+    if (isNaN(Number(style.weight)) && style.weight in fontWeights) {
+      style.weight = fontWeights[style.weight];
+    }
+    style.families = style.family
+      .split(/,\s?/)
+      .map((f) => f.trim().replace(/^['"]|['"]$/g, ''));
     return style;
   };
 
@@ -13522,9 +13532,9 @@
    * Create an html canvas element and returns its 2d context.
    * @param {number} [width] Canvas width.
    * @param {number} [height] Canvas height.
-   * @param {Array<HTMLCanvasElement>} [canvasPool] Canvas pool to take existing canvas from.
+   * @param {Array<HTMLCanvasElement|OffscreenCanvas>} [canvasPool] Canvas pool to take existing canvas from.
    * @param {CanvasRenderingContext2DSettings} [settings] CanvasRenderingContext2DSettings
-   * @return {CanvasRenderingContext2D} The context.
+   * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} The context.
    */
   function createCanvasContext2D(width, height, canvasPool, settings) {
     /** @type {HTMLCanvasElement|OffscreenCanvas} */
@@ -13532,7 +13542,9 @@
     if (canvasPool && canvasPool.length) {
       canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
     } else if (WORKER_OFFSCREEN_CANVAS) {
-      canvas = new OffscreenCanvas(width || 300, height || 300);
+      canvas = new (class extends OffscreenCanvas {
+        style = {};
+      })(width ?? 300, height ?? 150);
     } else {
       canvas = document.createElement('canvas');
     }
@@ -13542,17 +13554,18 @@
     if (height) {
       canvas.height = height;
     }
-    //FIXME Allow OffscreenCanvasRenderingContext2D as return type
-    return /** @type {CanvasRenderingContext2D} */ (
+    return /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
       canvas.getContext('2d', settings)
     );
   }
 
-  /** @type {CanvasRenderingContext2D} */
+  /**
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+   */
   let sharedCanvasContext;
 
   /**
-   * @return {CanvasRenderingContext2D} Shared canvas context.
+   * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} Shared canvas context.
    */
   function getSharedCanvasContext2D() {
     if (!sharedCanvasContext) {
@@ -13564,7 +13577,7 @@
   /**
    * Releases canvas memory to avoid exceeding memory limits in Safari.
    * See https://pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    */
   function releaseCanvas(context) {
     const canvas = context.canvas;
@@ -13664,6 +13677,81 @@
       // reorder
       node.insertBefore(newChild, oldChild);
     }
+  }
+
+  /**
+   * Creates a minimal structure that mocks a DIV to be used by the composite and
+   * layer renderer in a worker environment
+   * @return {HTMLDivElement} mocked DIV
+   */
+  function createMockDiv() {
+    const mockedDiv = new Proxy(
+      {
+        /**
+         * @type {Array<HTMLElement>}
+         */
+        childNodes: [],
+        /**
+         * @param {HTMLElement} node html node.
+         * @return {HTMLElement} html node.
+         */
+        appendChild: function (node) {
+          this.childNodes.push(node);
+          return node;
+        },
+        /**
+         * dummy function, as this structure is not supposed to have a parent.
+         */
+        remove: function () {},
+        /**
+         * @param {HTMLElement} node html node.
+         * @return {HTMLElement} html node.
+         */
+        removeChild: function (node) {
+          const index = this.childNodes.indexOf(node);
+          if (index === -1) {
+            throw new Error('Node to remove was not found');
+          }
+          this.childNodes.splice(index, 1);
+          return node;
+        },
+        /**
+         * @param {HTMLElement} newNode new html node.
+         * @param {HTMLElement} referenceNode reference html node.
+         * @return {HTMLElement} new html node.
+         */
+        insertBefore: function (newNode, referenceNode) {
+          const index = this.childNodes.indexOf(referenceNode);
+          if (index === -1) {
+            throw new Error('Reference node not found');
+          }
+          this.childNodes.splice(index, 0, newNode);
+          return newNode;
+        },
+        style: {},
+      },
+      {
+        get(target, prop, receiver) {
+          if (prop === 'firstElementChild') {
+            return target.childNodes.length > 0 ? target.childNodes[0] : null;
+          }
+          return Reflect.get(target, prop, receiver);
+        },
+      },
+    );
+    return /** @type {HTMLDivElement} */ (/** @type {*} */ (mockedDiv));
+  }
+
+  /***
+   * @param {*} obj The object to check.
+   * @return {obj is (HTMLCanvasElement | OffscreenCanvas)} The object is a canvas.
+   */
+  function isCanvas(obj) {
+    return (
+      (typeof HTMLCanvasElement !== 'undefined' &&
+        obj instanceof HTMLCanvasElement) ||
+      (typeof OffscreenCanvas !== 'undefined' && obj instanceof OffscreenCanvas)
+    );
   }
 
   /**
@@ -13852,7 +13940,11 @@
    * the control should be re-rendered. This is called in a `requestAnimationFrame`
    * callback.
    * @property {string|Array<string>|undefined} [attributions] Optional attribution(s) that will always be
-   * displayed regardless of the layers rendered
+   * displayed regardless of the layers rendered.
+   * **Caution:** Attributions are rendered dynamically using `innerHTML`, which can lead to potential
+   * [**XSS (Cross-Site Scripting)**](https://en.wikipedia.org/wiki/Cross-site_scripting) vulnerabilities.
+   * Use this feature only for trusted content
+   * or ensure that the content is properly sanitized before inserting it.
    */
 
   /**
@@ -15050,7 +15142,7 @@
   const mouseActionButton = function (mapBrowserEvent) {
     const originalEvent = mapBrowserEvent.originalEvent;
     return (
-      originalEvent instanceof PointerEvent &&
+      'pointerId' in originalEvent &&
       originalEvent.button == 0 &&
       !(WEBKIT && MAC && originalEvent.ctrlKey)
     );
@@ -15199,9 +15291,7 @@
   const mouseOnly = function (mapBrowserEvent) {
     const pointerEvent = mapBrowserEvent.originalEvent;
     // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-    return (
-      pointerEvent instanceof PointerEvent && pointerEvent.pointerType == 'mouse'
-    );
+    return 'pointerId' in pointerEvent && pointerEvent.pointerType == 'mouse';
   };
 
   /**
@@ -15214,9 +15304,7 @@
   const touchOnly = function (mapBrowserEvent) {
     const pointerEvt = mapBrowserEvent.originalEvent;
     // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-    return (
-      pointerEvt instanceof PointerEvent && pointerEvt.pointerType === 'touch'
-    );
+    return 'pointerId' in pointerEvt && pointerEvt.pointerType === 'touch';
   };
 
   /**
@@ -15229,7 +15317,7 @@
   const penOnly = function (mapBrowserEvent) {
     const pointerEvt = mapBrowserEvent.originalEvent;
     // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-    return pointerEvt instanceof PointerEvent && pointerEvt.pointerType === 'pen';
+    return 'pointerId' in pointerEvt && pointerEvt.pointerType === 'pen';
   };
 
   /**
@@ -15244,7 +15332,7 @@
   const primaryAction = function (mapBrowserEvent) {
     const pointerEvent = mapBrowserEvent.originalEvent;
     return (
-      pointerEvent instanceof PointerEvent &&
+      'pointerId' in pointerEvent &&
       pointerEvent.isPrimary &&
       pointerEvent.button === 0
     );
@@ -16569,6 +16657,18 @@
    */
 
   /**
+   * Mutliplier for the DOM_DELTA_LINE delta value.
+   * @type {number}
+   */
+  const DELTA_LINE_MULTIPLIER = 40;
+
+  /**
+   * Mutliplier for the DOM_DELTA_PAGE delta value.
+   * @type {number}
+   */
+  const DELTA_PAGE_MULTIPLIER = 300;
+
+  /**
    * @classdesc
    * Allows the user to zoom the map by scrolling the mouse wheel.
    * @api
@@ -16731,12 +16831,16 @@
 
       // Delta normalisation inspired by
       // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-      let delta;
-      if (mapBrowserEvent.type == EventType.WHEEL) {
-        delta = wheelEvent.deltaY;
-        if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-          delta *= 40;
-        }
+      let delta = wheelEvent.deltaY;
+
+      switch (wheelEvent.deltaMode) {
+        case WheelEvent.DOM_DELTA_LINE:
+          delta *= DELTA_LINE_MULTIPLIER;
+          break;
+        case WheelEvent.DOM_DELTA_PAGE:
+          delta *= DELTA_PAGE_MULTIPLIER;
+          break;
+        // pass
       }
 
       if (delta === 0) {
@@ -17691,8 +17795,22 @@
    */
 
   /**
-   * @typedef {'addlayer'|'removelayer'} GroupEventType
+   * @enum {string}
    */
+  const GroupEventType = {
+    /**
+     * Triggered when a layer is added
+     * @event GroupEvent#addlayer
+     * @api
+     */
+    ADDLAYER: 'addlayer',
+    /**
+     * Triggered when a layer is removed
+     * @event GroupEvent#removelayer
+     * @api
+     */
+    REMOVELAYER: 'removelayer',
+  };
 
   /**
    * @classdesc
@@ -17722,7 +17840,8 @@
    * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
    *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
    *     'change:layers', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:layers', Return>} GroupOnSignature
+   *   import("../Observable").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
+   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
    */
 
   /**
@@ -17761,6 +17880,7 @@
    *
    * A generic `change` event is triggered when the group/Collection changes.
    *
+   * @fires GroupEvent
    * @api
    */
   class LayerGroup extends BaseLayer {
@@ -17855,7 +17975,7 @@
       for (let i = 0, ii = layersArray.length; i < ii; i++) {
         const layer = layersArray[i];
         this.registerLayerListeners_(layer);
-        this.dispatchEvent(new GroupEvent('addlayer', layer));
+        this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, layer));
       }
       this.changed();
     }
@@ -17876,8 +17996,13 @@
 
       if (layer instanceof LayerGroup) {
         listenerKeys.push(
-          listen(layer, 'addlayer', this.handleLayerGroupAdd_, this),
-          listen(layer, 'removelayer', this.handleLayerGroupRemove_, this),
+          listen(layer, GroupEventType.ADDLAYER, this.handleLayerGroupAdd_, this),
+          listen(
+            layer,
+            GroupEventType.REMOVELAYER,
+            this.handleLayerGroupRemove_,
+            this,
+          ),
         );
       }
 
@@ -17888,14 +18013,14 @@
      * @param {GroupEvent} event The layer group event.
      */
     handleLayerGroupAdd_(event) {
-      this.dispatchEvent(new GroupEvent('addlayer', event.layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, event.layer));
     }
 
     /**
      * @param {GroupEvent} event The layer group event.
      */
     handleLayerGroupRemove_(event) {
-      this.dispatchEvent(new GroupEvent('removelayer', event.layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.REMOVELAYER, event.layer));
     }
 
     /**
@@ -17905,7 +18030,7 @@
     handleLayersAdd_(collectionEvent) {
       const layer = collectionEvent.element;
       this.registerLayerListeners_(layer);
-      this.dispatchEvent(new GroupEvent('addlayer', layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, layer));
       this.changed();
     }
 
@@ -17918,7 +18043,7 @@
       const key = getUid(layer);
       this.listenerKeys_[key].forEach(unlistenByKey);
       delete this.listenerKeys_[key];
-      this.dispatchEvent(new GroupEvent('removelayer', layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.REMOVELAYER, layer));
       this.changed();
     }
 
@@ -17949,7 +18074,9 @@
       if (collection) {
         const currentLayers = collection.getArray();
         for (let i = 0, ii = currentLayers.length; i < ii; ++i) {
-          this.dispatchEvent(new GroupEvent('removelayer', currentLayers[i]));
+          this.dispatchEvent(
+            new GroupEvent(GroupEventType.REMOVELAYER, currentLayers[i]),
+          );
         }
       }
 
@@ -18346,7 +18473,6 @@
             this.dispatchEvent('sourceready');
           }, 0);
         }
-        this.clearRenderer();
       }
       this.changed();
     }
@@ -19618,38 +19744,38 @@
    * See below for details on the available operators (with notes for those that are WebGL or Canvas only).
    *
    * Reading operators:
-   *   `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
+   *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
    *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
    *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
    *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
    *     of bands, depending on the underlying data source and
    *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
    *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
-   *   `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
-   *   `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
+   *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
+   *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
    *     feature property. The result is `undefined` when there is nothing at the specified key or index.
-   *   `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
+   *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
    *     `Multi*` values are returned as their singular equivalent
    *     `Circle` geometries are returned as 'Polygon'
    *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection (WebGL only).
-   *   `['resolution']` returns the current resolution
-   *   `['time']` The time in seconds since the creation of the layer (WebGL only).
-   *   `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
-   *   `['zoom']` The current zoom level (WebGL only).
-   *   `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
+   *   * `['resolution']` returns the current resolution
+   *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
+   *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
+   *   * `['zoom']` The current zoom level (WebGL only).
+   *   * `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
    *      does not contain an M component (e.g. XY or XYZ), 0 is returned; 0 is also returned for geometries other than lines.
    *      Please note that the M component will be linearly interpolated between the two points composing a segment.
    *
    * Math operators:
-   *   `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
-   *   `['/', value1, value2]` divides `value1` by `value2`
-   *   `['+', value1, value2, ...]` adds the values
-   *   `['-', value1, value2]` subtracts `value2` from `value1`
-   *   `['clamp', value, low, high]` clamps `value` between `low` and `high`
-   *   `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
-   *   `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
-   *   `['abs', value1]` returns the absolute value of `value1`
-   *   `['floor', value1]` returns the nearest integer less than or equal to `value1`
+   *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
+   *   * `['/', value1, value2]` divides `value1` by `value2`
+   *   * `['+', value1, value2, ...]` adds the values
+   *   * `['-', value1, value2]` subtracts `value2` from `value1`
+   *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
+   *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
+   *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
+   *   * `['abs', value1]` returns the absolute value of `value1`
+   *   * `['floor', value1]` returns the nearest integer less than or equal to `value1`
    *   * `['round', value1]` returns the nearest integer to `value1`
    *   * `['ceil', value1]` returns the nearest integer greater than or equal to `value1`
    *   * `['sin', value1]` returns the sine of `value1`
@@ -21559,13 +21685,13 @@
 
 
   /**
-   * @type {CanvasRenderingContext2D}
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
    */
   let taintedTestContext = null;
 
   class IconImage extends Target {
     /**
-     * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+     * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
      * @param {string|undefined} src Src.
      * @param {?string} crossOrigin Cross origin.
      * @param {import("../ImageState.js").default|undefined} imageState Image state.
@@ -21576,13 +21702,13 @@
 
       /**
        * @private
-       * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap}
+       * @type {HTMLImageElement|OffscreenCanvas|HTMLCanvasElement|ImageBitmap}
        */
       this.hitDetectionImage_ = null;
 
       /**
        * @private
-       * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null}
+       * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null}
        */
       this.image_ = image;
 
@@ -21594,7 +21720,7 @@
 
       /**
        * @private
-       * @type {Object<number, HTMLCanvasElement>}
+       * @type {Object<number, HTMLCanvasElement|OffscreenCanvas>}
        */
       this.canvas_ = {};
 
@@ -21694,7 +21820,7 @@
 
     /**
      * @param {number} pixelRatio Pixel ratio.
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element or image bitmap.
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element or image bitmap.
      */
     getImage(pixelRatio) {
       if (!this.image_) {
@@ -21721,7 +21847,7 @@
     }
 
     /**
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image element.
      */
     getHitDetectionImage() {
       if (!this.image_) {
@@ -21848,7 +21974,7 @@
   }
 
   /**
-   * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+   * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
    * @param {string|undefined} cacheKey Src.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
@@ -22138,7 +22264,7 @@
   const checkedFonts = new BaseObject();
 
   /**
-   * @type {CanvasRenderingContext2D}
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
    */
   let measureContext = null;
 
@@ -22152,98 +22278,123 @@
    */
   const textHeights = {};
 
+  const genericFontFamilies = new Set([
+    'serif',
+    'sans-serif',
+    'monospace',
+    'cursive',
+    'fantasy',
+    'system-ui',
+    'ui-serif',
+    'ui-sans-serif',
+    'ui-monospace',
+    'ui-rounded',
+    'emoji',
+    'math',
+    'fangsong',
+  ]);
+
+  /**
+   * @param {string} style Css font-style
+   * @param {string} weight Css font-weight
+   * @param {string} family Css font-family
+   * @return {string} Font key.
+   */
+  function getFontKey(style, weight, family) {
+    return `${style} ${weight} 16px "${family}"`;
+  }
+
   /**
    * Clears the label cache when a font becomes available.
    * @param {string} fontSpec CSS font spec.
    */
   const registerFont = (function () {
     const retries = 100;
-    const size = '32px ';
-    const referenceFonts = ['monospace', 'serif'];
-    const len = referenceFonts.length;
-    const text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
-    let interval, referenceWidth;
+    let timeout, fontFaceSet;
 
     /**
-     * @param {string} fontStyle Css font-style
-     * @param {string} fontWeight Css font-weight
-     * @param {*} fontFamily Css font-family
-     * @return {boolean} Font with style and weight is available
+     * @param {string} fontSpec Css font spec
+     * @return {Promise<boolean>} Font with style and weight is available
      */
-    function isAvailable(fontStyle, fontWeight, fontFamily) {
-      let available = true;
-      for (let i = 0; i < len; ++i) {
-        const referenceFont = referenceFonts[i];
-        referenceWidth = measureTextWidth(
-          fontStyle + ' ' + fontWeight + ' ' + size + referenceFont,
-          text,
-        );
-        if (fontFamily != referenceFont) {
-          const width = measureTextWidth(
-            fontStyle +
-              ' ' +
-              fontWeight +
-              ' ' +
-              size +
-              fontFamily +
-              ',' +
-              referenceFont,
-            text,
+    async function isAvailable(fontSpec) {
+      await fontFaceSet.ready;
+      const fontFaces = await fontFaceSet.load(fontSpec);
+      if (fontFaces.length === 0) {
+        return false;
+      }
+      const font = getFontParameters(fontSpec);
+      const checkFamily = font.families[0].toLowerCase();
+      const checkWeight = font.weight;
+      return fontFaces.some(
+        /**
+         * @param {import('../css.js').FontParameters} f Font.
+         * @return {boolean} Font matches.
+         */
+        (f) => {
+          const family = f.family.replace(/^['"]|['"]$/g, '').toLowerCase();
+          const weight = fontWeights[f.weight] || f.weight;
+          return (
+            family === checkFamily &&
+            f.style === font.style &&
+            weight == checkWeight
           );
-          // If width and referenceWidth are the same, then the fallback was used
-          // instead of the font we wanted, so the font is not available.
-          available = available && width != referenceWidth;
-        }
-      }
-      if (available) {
-        return true;
-      }
-      return false;
+        },
+      );
     }
 
-    function check() {
+    async function check() {
+      await fontFaceSet.ready;
       let done = true;
-      const fonts = checkedFonts.getKeys();
-      for (let i = 0, ii = fonts.length; i < ii; ++i) {
+      const checkedFontsProperties = checkedFonts.getProperties();
+      const fonts = Object.keys(checkedFontsProperties).filter(
+        (key) => checkedFontsProperties[key] < retries,
+      );
+      for (let i = fonts.length - 1; i >= 0; --i) {
         const font = fonts[i];
-        if (checkedFonts.get(font) < retries) {
-          const [style, weight, family] = font.split('\n');
-          if (isAvailable(style, weight, family)) {
+        let currentRetries = checkedFontsProperties[font];
+        if (currentRetries < retries) {
+          if (await isAvailable(font)) {
             clear$2(textHeights);
-            // Make sure that loaded fonts are picked up by Safari
-            measureContext = null;
-            measureFont = undefined;
             checkedFonts.set(font, retries);
           } else {
-            checkedFonts.set(font, checkedFonts.get(font) + 1, true);
-            done = false;
+            currentRetries += 10;
+            checkedFonts.set(font, currentRetries, true);
+            if (currentRetries < retries) {
+              done = false;
+            }
           }
         }
       }
-      if (done) {
-        clearInterval(interval);
-        interval = undefined;
+      timeout = undefined;
+      if (!done) {
+        timeout = setTimeout(check, 100);
       }
     }
 
-    return function (fontSpec) {
+    return async function (fontSpec) {
+      if (!fontFaceSet) {
+        fontFaceSet = WORKER_OFFSCREEN_CANVAS ? self.fonts : document.fonts;
+      }
       const font = getFontParameters(fontSpec);
       if (!font) {
         return;
       }
       const families = font.families;
-      for (let i = 0, ii = families.length; i < ii; ++i) {
-        const family = families[i];
-        const key = font.style + '\n' + font.weight + '\n' + family;
-        if (checkedFonts.get(key) === undefined) {
-          checkedFonts.set(key, retries, true);
-          if (!isAvailable(font.style, font.weight, family)) {
-            checkedFonts.set(key, 0, true);
-            if (interval === undefined) {
-              interval = setInterval(check, 32);
-            }
-          }
+      let needCheck = false;
+      for (const family of families) {
+        if (genericFontFamilies.has(family)) {
+          continue;
         }
+        const key = getFontKey(font.style, font.weight, family);
+        if (checkedFonts.get(key) !== undefined) {
+          continue;
+        }
+        checkedFonts.set(key, 0, true);
+        needCheck = true;
+      }
+      if (needCheck) {
+        clearTimeout(timeout);
+        timeout = setTimeout(check, 100);
       }
     };
   })();
@@ -22453,7 +22604,7 @@
 
   /**
    * @param {Label} label Label.
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    */
   function executeLabelInstructions(label, context) {
     const contextInstructions = label.contextInstructions;
@@ -22833,7 +22984,7 @@
 
       /**
        * @private
-       * @type {HTMLCanvasElement|null}
+       * @type {HTMLCanvasElement|OffscreenCanvas|null}
        */
       this.hitDetectionCanvas_ = null;
 
@@ -22977,7 +23128,7 @@
     }
 
     /**
-     * @return {HTMLCanvasElement} Image element.
+     * @return {HTMLCanvasElement|OffscreenCanvas} Image element.
      * @override
      */
     getHitDetectionImage() {
@@ -22992,7 +23143,7 @@
     /**
      * Get the image icon.
      * @param {number} pixelRatio Pixel ratio.
-     * @return {HTMLCanvasElement} Image or Canvas element.
+     * @return {HTMLCanvasElement|OffscreenCanvas} Image or Canvas element.
      * @api
      * @override
      */
@@ -23001,7 +23152,7 @@
       const cacheKey =
         `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
         Object.values(this.renderOptions_).join(',');
-      let image = /** @type {HTMLCanvasElement} */ (
+      let image = /** @type {HTMLCanvasElement|OffscreenCanvas} */ (
         shared.get(cacheKey, null, null)?.getImage(1)
       );
       if (!image) {
@@ -23273,7 +23424,7 @@
     /**
      * @private
      * @param {RenderOptions} renderOptions Render options.
-     * @param {CanvasRenderingContext2D} context The rendering context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The rendering context.
      * @param {number} pixelRatio The pixel ratio.
      */
     draw_(renderOptions, context, pixelRatio) {
@@ -23308,7 +23459,7 @@
     /**
      * @private
      * @param {RenderOptions} renderOptions Render options.
-     * @return {HTMLCanvasElement} Canvas containing the icon
+     * @return {HTMLCanvasElement|OffscreenCanvas} Canvas containing the icon
      */
     createHitDetectionCanvas_(renderOptions) {
       let context;
@@ -23337,7 +23488,7 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context The context to draw in.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context to draw in.
      */
     createPath_(context) {
       let points = this.points_;
@@ -23363,7 +23514,7 @@
     /**
      * @private
      * @param {RenderOptions} renderOptions Render options.
-     * @param {CanvasRenderingContext2D} context The context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context.
      */
     drawHitDetectionCanvas_(renderOptions, context) {
       // set origin to canvas center
@@ -23627,7 +23778,7 @@
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
    * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
-   * @property {HTMLImageElement|HTMLCanvasElement|ImageBitmap} [img] Image object for the icon.
+   * @property {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} [img] Image object for the icon.
    * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
    * Positive values will shift the icon right and up.
    * @property {number} [opacity=1] Opacity of the icon.
@@ -24001,7 +24152,7 @@
     /**
      * Get the image icon.
      * @param {number} pixelRatio Pixel ratio.
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element. If the Icon
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element. If the Icon
      * style was configured with `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
      * @api
      * @override
@@ -24038,7 +24189,7 @@
     }
 
     /**
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+     * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image element.
      * @override
      */
     getHitDetectionImage() {
@@ -24088,6 +24239,21 @@
      */
     getSrc() {
       return this.iconImage_.getSrc();
+    }
+
+    /**
+     * Set the image URI
+     * @param {string} src Image source URI
+     * @api
+     */
+    setSrc(src) {
+      this.iconImage_ = get$1(
+        null,
+        src,
+        this.crossOrigin_,
+        ImageState.IDLE,
+        this.color_,
+      );
     }
 
     /**
@@ -25222,7 +25388,10 @@
         textAlign: this.getTextAlign(),
         justify: this.getJustify(),
         textBaseline: this.getTextBaseline(),
-        fill: this.getFill() ? this.getFill().clone() : undefined,
+        fill:
+          this.getFill() instanceof Fill
+            ? this.getFill().clone()
+            : this.getFill(),
         stroke: this.getStroke() ? this.getStroke().clone() : undefined,
         offsetX: this.getOffsetX(),
         offsetY: this.getOffsetY(),
@@ -27325,7 +27494,7 @@
      * @param {import("../transform.js").Transform} [inversePixelTransform] Transform for
      *     CSS pixels to rendered pixels.
      * @param {import("../Map.js").FrameState} [frameState] Frame state.
-     * @param {?(CanvasRenderingContext2D|WebGLRenderingContext)} [context] Context.
+     * @param {?(CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|WebGLRenderingContext)} [context] Context.
      */
     constructor(type, inversePixelTransform, frameState, context) {
       super(type);
@@ -27349,7 +27518,7 @@
        * Canvas context. Not available when the event is dispatched by the map. For Canvas 2D layers,
        * the context will be the 2D rendering context.  For WebGL layers, the context will be the WebGL
        * context.
-       * @type {CanvasRenderingContext2D|WebGLRenderingContext|undefined}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|WebGLRenderingContext|undefined}
        * @api
        */
       this.context = context;
@@ -27621,7 +27790,9 @@
        * @private
        * @type {HTMLDivElement}
        */
-      this.element_ = document.createElement('div');
+      this.element_ = WORKER_OFFSCREEN_CANVAS
+        ? createMockDiv()
+        : document.createElement('div');
       const style = this.element_.style;
       style.position = 'absolute';
       style.width = '100%';
@@ -27631,7 +27802,10 @@
       this.element_.className = CLASS_UNSELECTABLE + ' ol-layers';
 
       const container = map.getViewport();
-      container.insertBefore(this.element_, container.firstChild || null);
+      if (container) {
+        // maps in a worker do not have a viewport.
+        container.insertBefore(this.element_, container.firstChild || null);
+      }
 
       /**
        * @private
@@ -27732,6 +27906,41 @@
       this.declutter(frameState, renderedLayerStates);
 
       replaceChildren(this.element_, this.children_);
+
+      const map = this.getMap();
+      const mapCanvas = map.getTargetElement();
+      if (isCanvas(mapCanvas)) {
+        // Canvas composition when container is a canvas
+        const mapContext = mapCanvas.getContext('2d');
+        for (const container of this.children_) {
+          const canvas = container.firstElementChild || container;
+          const backgroundColor = container.style.backgroundColor;
+          if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
+            mapContext.fillStyle = backgroundColor;
+            mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+          }
+          if (isCanvas(canvas) && canvas.width > 0) {
+            const opacity = container.style.opacity || canvas.style.opacity;
+            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+            const transform = canvas.style.transform;
+            if (transform) {
+              // Get the transform parameters from the style's transform matrix
+              mapContext.setTransform(
+                .../** @type {[number, number, number, number, number, number]} */ (
+                  fromString$1(transform)
+                ),
+              );
+            } else {
+              const w = parseFloat(canvas.style.width) / canvas.width;
+              const h = parseFloat(canvas.style.height) / canvas.height;
+              mapContext.setTransform(w, 0, 0, h, 0, 0);
+            }
+            mapContext.drawImage(canvas, 0, 0);
+          }
+        }
+        mapContext.globalAlpha = 1;
+        mapContext.setTransform(1, 0, 0, 1, 0, 0);
+      }
 
       this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);
 
@@ -27843,12 +28052,12 @@
    * @typedef {Object} MapOptions
    * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
    * Controls initially added to the map. If not specified,
-   * {@link module:ol/control/defaults.defaults} is used.
+   * {@link module:ol/control/defaults.defaults} is used. In a worker, no controls are added by default.
    * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
    * physical pixels and device-independent pixels (dips) on the device.
    * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
    * Interactions that are initially added to the map. If not specified,
-   * {@link module:ol/interaction/defaults.defaults} is used.
+   * {@link module:ol/interaction/defaults.defaults} is used. In a worker, no interactions are added by default.
    * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
    * listen to keyboard events on. This determines when the `KeyboardPan` and
    * `KeyboardZoom` interactions trigger. For example, if this option is set to
@@ -27869,10 +28078,11 @@
    * Increasing this value can make it easier to click on the map.
    * @property {Collection<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
    * Overlays initially added to the map. By default, no overlays are added.
-   * @property {HTMLElement|string} [target] The container for the map, either the
+   * @property {HTMLElement|string|HTMLCanvasElement|OffscreenCanvas} [target] The container for the map, either the
    * element itself or the `id` of the element. If not specified at construction
    * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
    * rendered. If passed by element, the container can be in a secondary document.
+   * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target.
    * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
    *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
    *  `tabindex` atribute must be set on the custom element's host element.
@@ -28091,39 +28301,42 @@
        * @private
        * @type {!HTMLElement}
        */
-      this.viewport_ = document.createElement('div');
-      this.viewport_.className =
-        'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
-      this.viewport_.style.position = 'relative';
-      this.viewport_.style.overflow = 'hidden';
-      this.viewport_.style.width = '100%';
-      this.viewport_.style.height = '100%';
+      if (!WORKER_OFFSCREEN_CANVAS) {
+        this.viewport_ = document.createElement('div');
+        this.viewport_.className =
+          'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
+        this.viewport_.style.position = 'relative';
+        this.viewport_.style.overflow = 'hidden';
+        this.viewport_.style.width = '100%';
+        this.viewport_.style.height = '100%';
 
-      /**
-       * @private
-       * @type {!HTMLElement}
-       */
-      this.overlayContainer_ = document.createElement('div');
-      this.overlayContainer_.style.position = 'absolute';
-      this.overlayContainer_.style.zIndex = '0';
-      this.overlayContainer_.style.width = '100%';
-      this.overlayContainer_.style.height = '100%';
-      this.overlayContainer_.style.pointerEvents = 'none';
-      this.overlayContainer_.className = 'ol-overlaycontainer';
-      this.viewport_.appendChild(this.overlayContainer_);
+        /**
+         * @private
+         * @type {!HTMLElement}
+         */
+        this.overlayContainer_ = document.createElement('div');
+        this.overlayContainer_.style.position = 'absolute';
+        this.overlayContainer_.style.zIndex = '0';
+        this.overlayContainer_.style.width = '100%';
+        this.overlayContainer_.style.height = '100%';
+        this.overlayContainer_.style.pointerEvents = 'none';
+        this.overlayContainer_.className = 'ol-overlaycontainer';
+        this.viewport_.appendChild(this.overlayContainer_);
 
-      /**
-       * @private
-       * @type {!HTMLElement}
-       */
-      this.overlayContainerStopEvent_ = document.createElement('div');
-      this.overlayContainerStopEvent_.style.position = 'absolute';
-      this.overlayContainerStopEvent_.style.zIndex = '0';
-      this.overlayContainerStopEvent_.style.width = '100%';
-      this.overlayContainerStopEvent_.style.height = '100%';
-      this.overlayContainerStopEvent_.style.pointerEvents = 'none';
-      this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
-      this.viewport_.appendChild(this.overlayContainerStopEvent_);
+        /**
+         * @private
+         * @type {!HTMLElement}
+         */
+        this.overlayContainerStopEvent_ = document.createElement('div');
+        this.overlayContainerStopEvent_.style.position = 'absolute';
+        this.overlayContainerStopEvent_.style.zIndex = '0';
+        this.overlayContainerStopEvent_.style.width = '100%';
+        this.overlayContainerStopEvent_.style.height = '100%';
+        this.overlayContainerStopEvent_.style.pointerEvents = 'none';
+        this.overlayContainerStopEvent_.className =
+          'ol-overlaycontainer-stopevent';
+        this.viewport_.appendChild(this.overlayContainerStopEvent_);
+      }
 
       /**
        * @private
@@ -28155,17 +28368,21 @@
        */
       this.targetElement_ = null;
 
-      /**
-       * @private
-       * @type {ResizeObserver}
-       */
-      this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+      if (!WORKER_OFFSCREEN_CANVAS) {
+        /**
+         * @private
+         * @type {ResizeObserver}
+         */
+        this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+      }
 
       /**
        * @type {Collection<import("./control/Control.js").default>}
        * @protected
        */
-      this.controls = optionsInternal.controls || defaults$1();
+      this.controls =
+        optionsInternal.controls ||
+        (WORKER_OFFSCREEN_CANVAS ? new Collection() : defaults$1());
 
       /**
        * @type {Collection<import("./interaction/Interaction.js").default>}
@@ -28173,9 +28390,11 @@
        */
       this.interactions =
         optionsInternal.interactions ||
-        defaults({
-          onFocusOnly: true,
-        });
+        (WORKER_OFFSCREEN_CANVAS
+          ? new Collection()
+          : defaults({
+              onFocusOnly: true,
+            }));
 
       /**
        * @type {Collection<import("./Overlay.js").default>}
@@ -28388,7 +28607,7 @@
       this.controls.clear();
       this.interactions.clear();
       this.overlays_.clear();
-      this.resizeObserver_.disconnect();
+      this.resizeObserver_?.disconnect();
       this.setTarget(null);
       super.disposeInternal();
     }
@@ -29002,8 +29221,8 @@
         this.viewport_.remove();
       }
 
-      if (this.targetElement_) {
-        this.resizeObserver_.unobserve(this.targetElement_);
+      if (this.targetElement_ && !isCanvas(this.targetElement_)) {
+        this.resizeObserver_?.unobserve(this.targetElement_);
         const rootNode = this.targetElement_.getRootNode();
         if (rootNode instanceof ShadowRoot) {
           this.resizeObserver_.unobserve(rootNode.host);
@@ -29033,65 +29252,71 @@
           this.animationDelayKey_ = undefined;
         }
       } else {
-        targetElement.appendChild(this.viewport_);
+        if (!isCanvas(targetElement)) {
+          targetElement.appendChild(this.viewport_);
+        }
         if (!this.renderer_) {
           this.renderer_ = new CompositeMapRenderer(this);
         }
 
-        this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
-          this,
-          this.moveTolerance_,
-        );
-        for (const key in MapBrowserEventType) {
-          this.mapBrowserEventHandler_.addEventListener(
-            MapBrowserEventType[key],
-            this.handleMapBrowserEvent.bind(this),
+        if (!isCanvas(targetElement)) {
+          this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
+            this,
+            this.moveTolerance_,
           );
-        }
-        this.viewport_.addEventListener(
-          EventType.CONTEXTMENU,
-          this.boundHandleBrowserEvent_,
-          false,
-        );
-        this.viewport_.addEventListener(
-          EventType.WHEEL,
-          this.boundHandleBrowserEvent_,
-          PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
-        );
+          for (const key in MapBrowserEventType) {
+            this.mapBrowserEventHandler_.addEventListener(
+              MapBrowserEventType[key],
+              this.handleMapBrowserEvent.bind(this),
+            );
+          }
+          this.viewport_.addEventListener(
+            EventType.CONTEXTMENU,
+            this.boundHandleBrowserEvent_,
+            false,
+          );
+          this.viewport_.addEventListener(
+            EventType.WHEEL,
+            this.boundHandleBrowserEvent_,
+            PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
+          );
 
-        let keyboardEventTarget;
-        if (!this.keyboardEventTarget_) {
-          // check if map target is in shadowDOM, if yes use host element as target
-          const targetRoot = targetElement.getRootNode();
-          const targetCandidate =
-            targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
-          keyboardEventTarget = targetCandidate;
-        } else {
-          keyboardEventTarget = this.keyboardEventTarget_;
+          let keyboardEventTarget;
+          if (!this.keyboardEventTarget_) {
+            // check if map target is in shadowDOM, if yes use host element as target
+            const targetRoot = targetElement.getRootNode();
+            const targetCandidate =
+              targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
+            keyboardEventTarget = targetCandidate;
+          } else {
+            keyboardEventTarget = this.keyboardEventTarget_;
+          }
+
+          this.targetChangeHandlerKeys_ = [
+            listen(
+              keyboardEventTarget,
+              EventType.KEYDOWN,
+              this.handleBrowserEvent,
+              this,
+            ),
+            listen(
+              keyboardEventTarget,
+              EventType.KEYPRESS,
+              this.handleBrowserEvent,
+              this,
+            ),
+          ];
+          if (targetElement instanceof HTMLElement) {
+            const rootNode = targetElement.getRootNode();
+            if (rootNode instanceof ShadowRoot) {
+              this.resizeObserver_.observe(rootNode.host);
+            }
+            this.resizeObserver_?.observe(targetElement);
+          }
         }
 
-        this.targetChangeHandlerKeys_ = [
-          listen(
-            keyboardEventTarget,
-            EventType.KEYDOWN,
-            this.handleBrowserEvent,
-            this,
-          ),
-          listen(
-            keyboardEventTarget,
-            EventType.KEYPRESS,
-            this.handleBrowserEvent,
-            this,
-          ),
-        ];
-        const rootNode = targetElement.getRootNode();
-        if (rootNode instanceof ShadowRoot) {
-          this.resizeObserver_.observe(rootNode.host);
-        }
-        this.resizeObserver_.observe(targetElement);
+        this.updateSize();
       }
-
-      this.updateSize();
       // updateSize calls setSize, so no need to call this.render
       // ourselves here.
     }
@@ -29195,7 +29420,10 @@
      * Redraws all text after new fonts have loaded
      */
     redrawText() {
-      const layerStates = this.getLayerGroup().getLayerStatesArray();
+      if (!this.frameState_) {
+        return;
+      }
+      const layerStates = this.frameState_.layerStatesArray;
       for (let i = 0, ii = layerStates.length; i < ii; ++i) {
         const layer = layerStates[i].layer;
         if (layer.hasRenderer()) {
@@ -29449,19 +29677,25 @@
 
       let size = undefined;
       if (targetElement) {
-        const computedStyle = getComputedStyle(targetElement);
-        const width =
-          targetElement.offsetWidth -
-          parseFloat(computedStyle['borderLeftWidth']) -
-          parseFloat(computedStyle['paddingLeft']) -
-          parseFloat(computedStyle['paddingRight']) -
-          parseFloat(computedStyle['borderRightWidth']);
-        const height =
-          targetElement.offsetHeight -
-          parseFloat(computedStyle['borderTopWidth']) -
-          parseFloat(computedStyle['paddingTop']) -
-          parseFloat(computedStyle['paddingBottom']) -
-          parseFloat(computedStyle['borderBottomWidth']);
+        let width, height;
+        if (isCanvas(targetElement)) {
+          width = targetElement.width;
+          height = targetElement.height;
+        } else {
+          const computedStyle = getComputedStyle(targetElement);
+          width =
+            targetElement.offsetWidth -
+            parseFloat(computedStyle['borderLeftWidth']) -
+            parseFloat(computedStyle['paddingLeft']) -
+            parseFloat(computedStyle['paddingRight']) -
+            parseFloat(computedStyle['borderRightWidth']);
+          height =
+            targetElement.offsetHeight -
+            parseFloat(computedStyle['borderTopWidth']) -
+            parseFloat(computedStyle['paddingTop']) -
+            parseFloat(computedStyle['paddingBottom']) -
+            parseFloat(computedStyle['borderBottomWidth']);
+        }
         if (!isNaN(width) && !isNaN(height)) {
           size = [Math.max(0, width), Math.max(0, height)];
           if (
@@ -33844,6 +34078,7 @@
    * @module ol/tilecoord
    */
 
+
   /**
    * An array of three numbers representing the location of a tile in a tile
    * grid. The order is `z` (zoom level), `x` (column), and `y` (row).
@@ -33876,6 +34111,18 @@
    */
   function getKeyZXY(z, x, y) {
     return z + '/' + x + '/' + y;
+  }
+
+  /**
+   * @param {import("./source/Tile.js").default} source The tile source.
+   * @param {string} sourceKey The source key.
+   * @param {number} z The tile z level.
+   * @param {number} x The tile x level.
+   * @param {number} y The tile y level.
+   * @return {string} The cache key.
+   */
+  function getCacheKey(source, sourceKey, z, x, y) {
+    return `${getUid(source)},${sourceKey},${getKeyZXY(z, x, y)}`;
   }
 
   /**
@@ -35870,8 +36117,8 @@
 
       this.setVisible(true);
 
-      const x = Math.round(pixel[0] + offset[0]) + 'px';
-      const y = Math.round(pixel[1] + offset[1]) + 'px';
+      const x = `${pixel[0] + offset[0]}px`;
+      const y = `${pixel[1] + offset[1]}px`;
       let posX = '0%';
       let posY = '0%';
       if (
@@ -37456,6 +37703,8 @@
    * @property {string} [tipLabel='Fit to extent'] Text label to use for the button tip.
    * @property {import("../extent.js").Extent} [extent] The extent to zoom to. If undefined the validity
    * extent of the view projection is used.
+   * @property {import("../View.js").FitOptions} [fitOptions] Options to pass to the view when fitting
+   * the extent (e.g. `padding`, `duration`, `minResolution`, `maxZoom`, `easing`, `callback`).
    */
 
   /**
@@ -37482,6 +37731,12 @@
        * @protected
        */
       this.extent = options.extent ? options.extent : null;
+
+      /**
+       * @type {import("../View.js").FitOptions}
+       * @protected
+       */
+      this.fitOptions = options.fitOptions || {};
 
       const className =
         options.className !== undefined ? options.className : 'ol-zoom-extent';
@@ -37527,7 +37782,8 @@
       const extent = !this.extent
         ? view.getProjection().getExtent()
         : fromUserExtent(this.extent, view.getProjection());
-      view.fitInternal(fromExtent(extent));
+
+      view.fitInternal(fromExtent(extent), this.fitOptions);
     }
   }
 
@@ -49017,13 +49273,7 @@
       const stride = getStrideForLayout(this.geometryLayout_);
       const flatCoordinates = decodeDeltas(text, stride, this.factor_);
       flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-      const coordinates = inflateCoordinates(
-        flatCoordinates,
-        0,
-        flatCoordinates.length,
-        stride,
-      );
-      const lineString = new LineString(coordinates, this.geometryLayout_);
+      const lineString = new LineString(flatCoordinates, this.geometryLayout_);
 
       return transformGeometryWithOptions(
         lineString,
@@ -49066,11 +49316,9 @@
      * @override
      */
     writeGeometryText(geometry, options) {
-      geometry =
-        /** @type {LineString} */
-        (
-          transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
-        );
+      geometry = /** @type {LineString} */ (
+        transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
+      );
       const flatCoordinates = geometry.getFlatCoordinates();
       const stride = geometry.getStride();
       flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
@@ -49090,19 +49338,17 @@
    *     Default is `1e5`.
    * @return {string} The encoded string.
    * @api
+   * @deprecated
    */
   function encodeDeltas(numbers, stride, factor) {
     factor = factor ? factor : 1e5;
-    let d;
 
-    const lastNumbers = new Array(stride);
-    for (d = 0; d < stride; ++d) {
-      lastNumbers[d] = 0;
-    }
+    const lastNumbers = new Array(stride).fill(0);
 
     for (let i = 0, ii = numbers.length; i < ii; ) {
-      for (d = 0; d < stride; ++d, ++i) {
-        const num = numbers[i];
+      for (let d = 0; d < stride; ++d, ++i) {
+        const value = numbers[i] * factor;
+        const num = value < 0 ? Math.ceil(value - 0.5) : Math.round(value);
         const delta = num - lastNumbers[d];
         lastNumbers[d] = num;
 
@@ -49110,7 +49356,7 @@
       }
     }
 
-    return encodeFloats(numbers, factor);
+    return encodeSignedIntegers(numbers);
   }
 
   /**
@@ -49123,66 +49369,22 @@
    *     be divided. Default is `1e5`.
    * @return {Array<number>} A list of n-dimensional points.
    * @api
+   * @deprecated
    */
   function decodeDeltas(encoded, stride, factor) {
     factor = factor ? factor : 1e5;
-    let d;
 
     /** @type {Array<number>} */
-    const lastNumbers = new Array(stride);
-    for (d = 0; d < stride; ++d) {
-      lastNumbers[d] = 0;
-    }
-
-    const numbers = decodeFloats(encoded, factor);
+    const lastNumbers = new Array(stride).fill(0);
+    const numbers = decodeSignedIntegers(encoded);
 
     for (let i = 0, ii = numbers.length; i < ii; ) {
-      for (d = 0; d < stride; ++d, ++i) {
+      for (let d = 0; d < stride; ++d, ++i) {
         lastNumbers[d] += numbers[i];
-
-        numbers[i] = lastNumbers[d];
+        numbers[i] = lastNumbers[d] / factor;
       }
     }
 
-    return numbers;
-  }
-
-  /**
-   * Encode a list of floating point numbers and return an encoded string
-   *
-   * Attention: This function will modify the passed array!
-   *
-   * @param {Array<number>} numbers A list of floating point numbers.
-   * @param {number} [factor] The factor by which the numbers will be
-   *     multiplied. The remaining decimal places will get rounded away.
-   *     Default is `1e5`.
-   * @return {string} The encoded string.
-   * @api
-   */
-  function encodeFloats(numbers, factor) {
-    factor = factor ? factor : 1e5;
-    for (let i = 0, ii = numbers.length; i < ii; ++i) {
-      numbers[i] = Math.round(numbers[i] * factor);
-    }
-
-    return encodeSignedIntegers(numbers);
-  }
-
-  /**
-   * Decode a list of floating point numbers from an encoded string
-   *
-   * @param {string} encoded An encoded string.
-   * @param {number} [factor] The factor by which the result will be divided.
-   *     Default is `1e5`.
-   * @return {Array<number>} A list of floating point numbers.
-   * @api
-   */
-  function decodeFloats(encoded, factor) {
-    factor = factor ? factor : 1e5;
-    const numbers = decodeSignedIntegers(encoded);
-    for (let i = 0, ii = numbers.length; i < ii; ++i) {
-      numbers[i] /= factor;
-    }
     return numbers;
   }
 
@@ -53336,7 +53538,11 @@
    * @const
    * @type {Array<null|string>}
    */
-  const NAMESPACE_URIS$1 = [null, 'http://www.opengis.net/wms'];
+  const NAMESPACE_URIS$1 = [
+    null,
+    'http://www.opengis.net/wms',
+    'http://www.opengis.net/sld',
+  ];
 
   function isV13(objectStack) {
     return compareVersions(objectStack[0].version, '1.3') >= 0;
@@ -53352,33 +53558,19 @@
     'Capability': makeObjectPropertySetter(readCapability),
   });
 
-  const COMMON_CAPABILITY_PARSERS = {
-    'Request': makeObjectPropertySetter(readRequest),
-    'Exception': makeObjectPropertySetter(readException),
-    'Layer': makeObjectPropertySetter(readCapabilityLayer),
-  };
-
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
    */
   // @ts-ignore
   const CAPABILITY_PARSERS = makeStructureNS(NAMESPACE_URIS$1, {
-    ...COMMON_CAPABILITY_PARSERS,
+    'Request': makeObjectPropertySetter(readRequest),
+    'Exception': makeObjectPropertySetter(readException),
+    'Layer': makeObjectPropertySetter(readCapabilityLayer),
     'UserDefinedSymbolization': makeObjectPropertySetter(
       readUserDefinedSymbolization,
     ),
   });
-
-  /**
-   * @const
-   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   */
-  // @ts-ignore
-  const CAPABILITY_PARSERS_V13 = makeStructureNS(
-    NAMESPACE_URIS$1,
-    COMMON_CAPABILITY_PARSERS,
-  );
 
   /**
    * @typedef {Object} RootObject
@@ -53579,6 +53771,8 @@
     'GetCapabilities': makeObjectPropertySetter(readOperationType),
     'GetMap': makeObjectPropertySetter(readOperationType),
     'GetFeatureInfo': makeObjectPropertySetter(readOperationType),
+    'DescribeLayer': makeObjectPropertySetter(readOperationType),
+    'GetLegendGraphic': makeObjectPropertySetter(readOperationType),
   });
 
   /**
@@ -53654,12 +53848,14 @@
 
   function readUserDefinedSymbolization(node, objectStack) {
     return {
-      'SupportSLD': !!readBooleanString(
-        node.getAttribute('UserDefinedSymbolization'),
-      ),
+      'SupportSLD': !!readBooleanString(node.getAttribute('SupportSLD')),
       'UserLayer': !!readBooleanString(node.getAttribute('UserLayer')),
       'UserStyle': !!readBooleanString(node.getAttribute('UserStyle')),
       'RemoteWFS': !!readBooleanString(node.getAttribute('RemoteWFS')),
+      'InlineFeatureData': !!readBooleanString(
+        node.getAttribute('InlineFeatureData'),
+      ),
+      'RemoteWCS': !!readBooleanString(node.getAttribute('RemoteWCS')),
     };
   }
 
@@ -53748,13 +53944,9 @@
    * @param {Array<*>} objectStack Object stack.
    * @return {Object|undefined} Capability object.
    */
+  //ts-ignore
   function readCapability(node, objectStack) {
-    return pushParseAndPop(
-      {},
-      isV13(objectStack) ? CAPABILITY_PARSERS_V13 : CAPABILITY_PARSERS,
-      node,
-      objectStack,
-    );
+    return pushParseAndPop({}, CAPABILITY_PARSERS, node, objectStack);
   }
 
   /**
@@ -55419,9 +55611,7 @@
     updateFillStyle(state, createFill) {
       const fillStyle = state.fillStyle;
       if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
-        if (fillStyle !== undefined) {
-          this.instructions.push(createFill.call(this, state));
-        }
+        this.instructions.push(createFill.call(this, state));
         state.currentFillStyle = fillStyle;
       }
     }
@@ -55448,9 +55638,7 @@
         state.currentLineWidth != lineWidth ||
         state.currentMiterLimit != miterLimit
       ) {
-        if (strokeStyle !== undefined) {
-          applyStroke.call(this, state);
-        }
+        applyStroke.call(this, state);
         state.currentStrokeStyle = strokeStyle;
         state.currentLineCap = lineCap;
         state.currentLineDash = lineDash;
@@ -56192,13 +56380,8 @@
      */
     setFillStrokeStyles_() {
       const state = this.state;
-      const fillStyle = state.fillStyle;
-      if (fillStyle !== undefined) {
-        this.updateFillStyle(state, this.createFill);
-      }
-      if (state.strokeStyle !== undefined) {
-        this.updateStrokeStyle(state, this.applyStroke);
-      }
+      this.updateFillStyle(state, this.createFill);
+      this.updateStrokeStyle(state, this.applyStroke);
     }
   }
 
@@ -57222,7 +57405,7 @@
    */
 
 
-  /** @typedef {CanvasRenderingContext2D & {globalAlpha: any}} ZIndexContextProxy */
+  /** @typedef {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D & {globalAlpha: any}} ZIndexContextProxy */
 
   /**
    * @extends {CanvasRenderingContext2D}
@@ -57312,7 +57495,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      */
     draw(context) {
       this.instructions_.forEach((instructionsAtIndex) => {
@@ -57374,7 +57557,7 @@
    */
 
   /**
-   * @typedef {{0: CanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+   * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
    */
 
   /**
@@ -57915,7 +58098,7 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      */
     fill_(context) {
       const alignAndScale = this.alignAndScaleFill_;
@@ -57937,12 +58120,15 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {Array<*>} instruction Instruction.
      */
     setStrokeStyle_(context, instruction) {
       context.strokeStyle =
         /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+      if (!instruction[1]) {
+        return;
+      }
       context.lineWidth = /** @type {number} */ (instruction[2]);
       context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
       context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
@@ -57990,7 +58176,7 @@
 
     /**
      * @private
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {Array<*>} instructions Instructions array.
@@ -58587,7 +58773,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {number} viewRotation View rotation.
@@ -58616,7 +58802,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {number} viewRotation View rotation.
      * @param {FeatureCallback<T>} [featureCallback] Feature callback.
@@ -58738,7 +58924,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.hitDetectionContext_ = null;
 
@@ -58750,7 +58936,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.renderedContext_ = null;
 
@@ -58764,7 +58950,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../transform.js").Transform} transform Transform.
      */
     clip(context, transform) {
@@ -58853,6 +59039,11 @@
 
       const newContext = !this.hitDetectionContext_;
       if (newContext) {
+        // Refrain from adding a 'willReadFrequently' hint in the options here.
+        // While it will remove the "Canvas2D: Multiple readback operations using
+        // getImageData are faster with the willReadFrequently attribute set
+        // to true" warnings in the console, it makes hitDetection extremely
+        // slow in Chrome when there are many features on the map
         this.hitDetectionContext_ = createCanvasContext2D(
           contextSize,
           contextSize,
@@ -58977,7 +59168,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} targetContext Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} targetContext Context.
      * @param {import('../../size.js').Size} scaledCanvasSize Scale of the context.
      * @param {import("../../transform.js").Transform} transform Transform.
      * @param {number} viewRotation View rotation.
@@ -59053,7 +59244,7 @@
             }
             if (zIndexContext) {
               zIndexContext.offset();
-              const index = zs[i] * maxBuilderTypes + j;
+              const index = zs[i] * maxBuilderTypes + ALL.indexOf(builderType);
               if (!this.deferredZIndexContexts_[index]) {
                 this.deferredZIndexContexts_[index] = [];
               }
@@ -59181,7 +59372,7 @@
    */
   class CanvasImmediateRenderer extends VectorContext {
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../../extent.js").Extent} extent Extent.
      * @param {import("../../transform.js").Transform} transform Transform.
@@ -59202,7 +59393,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.context_ = context;
 
@@ -61164,12 +61355,12 @@
    */
 
   /**
-   * @type {Array<HTMLCanvasElement>}
+   * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
    */
   const canvasPool$1 = [];
 
   /**
-   * @type {CanvasRenderingContext2D}
+   * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
    */
   let pixelContext = null;
 
@@ -61192,6 +61383,7 @@
       super(layer);
 
       /**
+       * HTMLElement container for the layer to be rendered in.
        * @protected
        * @type {HTMLElement}
        */
@@ -61228,7 +61420,7 @@
       this.inversePixelTransform = create();
 
       /**
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.context = null;
 
@@ -61239,6 +61431,7 @@
       this.deferredContext_ = null;
 
       /**
+       * true if the container has been reused from the previous renderer
        * @type {boolean}
        */
       this.containerReused = false;
@@ -61293,6 +61486,7 @@
      * @param {string} [backgroundColor] Background color.
      */
     useContainer(target, transform, backgroundColor) {
+      // renderer canvas to target canvas
       const layerClassName = this.getLayer().getClassName();
       let container, context;
       if (
@@ -61307,7 +61501,7 @@
             )))
       ) {
         const canvas = target.firstElementChild;
-        if (canvas instanceof HTMLCanvasElement) {
+        if (isCanvas(canvas)) {
           context = canvas.getContext('2d');
         }
       }
@@ -61325,14 +61519,16 @@
         this.container.style.backgroundColor = null;
       }
       if (!this.container) {
-        container = document.createElement('div');
+        container = WORKER_OFFSCREEN_CANVAS
+          ? createMockDiv()
+          : document.createElement('div');
         container.className = layerClassName;
         let style = container.style;
         style.position = 'absolute';
         style.width = '100%';
         style.height = '100%';
         context = createCanvasContext2D();
-        const canvas = context.canvas;
+        const canvas = /** @type {HTMLCanvasElement} */ (context.canvas);
         container.appendChild(canvas);
         style = canvas.style;
         style.position = 'absolute';
@@ -61351,7 +61547,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @param {import("../../extent.js").Extent} extent Clip extent.
      * @protected
@@ -61409,7 +61605,6 @@
 
       const canvasTransform = toString$1(this.pixelTransform);
       this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
       if (!this.containerReused) {
         const canvas = this.context.canvas;
         if (canvas.width != width || canvas.height != height) {
@@ -61418,15 +61613,19 @@
         } else {
           this.context.clearRect(0, 0, width, height);
         }
-        if (canvasTransform !== canvas.style.transform) {
-          canvas.style.transform = canvasTransform;
+        if (
+          canvasTransform !==
+          /** @type {HTMLCanvasElement} */ (canvas).style.transform
+        ) {
+          /** @type {HTMLCanvasElement} */ (canvas).style.transform =
+            canvasTransform;
         }
       }
     }
 
     /**
      * @param {import("../../render/EventType.js").default} type Event type.
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @private
      */
@@ -61444,7 +61643,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @protected
      */
@@ -61457,7 +61656,7 @@
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context Context.
+     * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      * @protected
      */
@@ -61683,7 +61882,7 @@
 
       /**
        * @private
-       * @type {CanvasRenderingContext2D}
+       * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
        */
       this.targetContext_ = null;
 
@@ -61776,7 +61975,7 @@
      * @private
      */
     resetDrawContext_() {
-      if (this.opacity_ !== 1) {
+      if (this.opacity_ !== 1 && this.targetContext_) {
         const alpha = this.targetContext_.globalAlpha;
         this.targetContext_.globalAlpha = this.opacity_;
         this.targetContext_.drawImage(this.context.canvas, 0, 0);
@@ -63958,7 +64157,7 @@
      * @param {function(FeatureType):boolean} [filter] Feature filter function.
      *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
      *     and it should return a boolean value. By default, no filtering is made.
-     * @return {FeatureType} Closest feature.
+     * @return {FeatureType|null} Closest feature (or `null` if none found).
      * @api
      */
     getClosestFeatureToCoordinate(coordinate, filter) {
@@ -64363,6 +64562,407 @@
   }
 
   /**
+   * Coordinate type when drawing lines.
+   * @typedef {Array<import("../coordinate.js").Coordinate>} LineCoordType
+   */
+
+
+  /**
+   * @param {LineCoordType} coordinates The ring coordinates.
+   * @param {number} index The index.  May be wrapped.
+   * @return {import("../coordinate.js").Coordinate} The coordinate.
+   */
+  function getCoordinate(coordinates, index) {
+    const count = coordinates.length;
+    if (index < 0) {
+      return coordinates[index + count];
+    }
+    if (index >= count) {
+      return coordinates[index - count];
+    }
+    return coordinates[index];
+  }
+
+  /**
+   * @param {LineCoordType} coordinates The coordinates.
+   * @param {number} index The index.  May be fractional and may wrap.
+   * @return {import("../coordinate.js").Coordinate} The interpolated coordinate.
+   */
+  function interpolateCoordinate(coordinates, index) {
+    const count = coordinates.length;
+
+    let startIndex = Math.floor(index);
+    const along = index - startIndex;
+    if (startIndex >= count) {
+      startIndex -= count;
+    } else if (startIndex < 0) {
+      startIndex += count;
+    }
+
+    let endIndex = startIndex + 1;
+    if (endIndex >= count) {
+      endIndex -= count;
+    }
+
+    const start = coordinates[startIndex];
+    const x0 = start[0];
+    const y0 = start[1];
+    const end = coordinates[endIndex];
+    const dx = end[0] - x0;
+    const dy = end[1] - y0;
+
+    return [x0 + dx * along, y0 + dy * along];
+  }
+
+  /**
+   * @typedef {Object} TraceTarget
+   * @property {Array<import("../coordinate.js").Coordinate>} coordinates Target coordinates.
+   * @property {boolean} ring The target coordinates are a linear ring.
+   * @property {number} startIndex The index of first traced coordinate.  A fractional index represents an
+   * edge intersection.  Index values for rings will wrap (may be negative or larger than coordinates length).
+   * @property {number} endIndex The index of last traced coordinate.  Details from startIndex also apply here.
+   */
+
+  /**
+   * @typedef {Object} TraceState
+   * @property {boolean} active Tracing active.
+   * @property {import("../coordinate.js").Coordinate} [startCoord] The initially clicked coordinate.
+   * @property {Array<TraceTarget>} [targets] Targets available for tracing.
+   * @property {number} [targetIndex] The index of the currently traced target.  A value of -1 indicates
+   * that no trace target is active.
+   */
+
+  /**
+   * @typedef {Object} TraceTargetUpdateInfo
+   * @property {number} index The new target index.
+   * @property {number} endIndex The new segment end index.
+   * @property {number} closestTargetDistance The squared distance to the closest target.
+   */
+
+  /**
+   * @type {TraceTargetUpdateInfo}
+   */
+  const sharedUpdateInfo = {
+    index: -1,
+    endIndex: NaN,
+    closestTargetDistance: Infinity,
+  };
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+   * @param {TraceState} traceState The trace state.
+   * @param {import("../Map.js").default} map The map.
+   * @param {number} snapTolerance The snap tolerance.
+   * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
+   * object is reused between calls and must not be modified by the caller.
+   */
+  function getTraceTargetUpdate(
+    coordinate,
+    traceState,
+    map,
+    snapTolerance,
+  ) {
+    const x = coordinate[0];
+    const y = coordinate[1];
+
+    let closestTargetDistance = Infinity;
+
+    let newTargetIndex = -1;
+    let newEndIndex = NaN;
+
+    for (
+      let targetIndex = 0;
+      targetIndex < traceState.targets.length;
+      ++targetIndex
+    ) {
+      const target = traceState.targets[targetIndex];
+      const coordinates = target.coordinates;
+
+      let minSegmentDistance = Infinity;
+      let endIndex;
+      for (
+        let coordinateIndex = 0;
+        coordinateIndex < coordinates.length - 1;
+        ++coordinateIndex
+      ) {
+        const start = coordinates[coordinateIndex];
+        const end = coordinates[coordinateIndex + 1];
+        const rel = getPointSegmentRelationship(x, y, start, end);
+        if (rel.squaredDistance < minSegmentDistance) {
+          minSegmentDistance = rel.squaredDistance;
+          endIndex = coordinateIndex + rel.along;
+        }
+      }
+
+      if (minSegmentDistance < closestTargetDistance) {
+        closestTargetDistance = minSegmentDistance;
+        if (target.ring && traceState.targetIndex === targetIndex) {
+          // same target, maintain the same trace direction
+          if (target.endIndex > target.startIndex) {
+            // forward trace
+            if (endIndex < target.startIndex) {
+              endIndex += coordinates.length;
+            }
+          } else if (target.endIndex < target.startIndex) {
+            // reverse trace
+            if (endIndex > target.startIndex) {
+              endIndex -= coordinates.length;
+            }
+          }
+        }
+        newEndIndex = endIndex;
+        newTargetIndex = targetIndex;
+      }
+    }
+
+    const newTarget = traceState.targets[newTargetIndex];
+    let considerBothDirections = newTarget.ring;
+    if (traceState.targetIndex === newTargetIndex && considerBothDirections) {
+      // only consider switching trace direction if close to the start
+      const newCoordinate = interpolateCoordinate(
+        newTarget.coordinates,
+        newEndIndex,
+      );
+      const pixel = map.getPixelFromCoordinate(newCoordinate);
+      const startPx = map.getPixelFromCoordinate(traceState.startCoord);
+      if (distance(pixel, startPx) > snapTolerance) {
+        considerBothDirections = false;
+      }
+    }
+
+    if (considerBothDirections) {
+      const coordinates = newTarget.coordinates;
+      const count = coordinates.length;
+      const startIndex = newTarget.startIndex;
+      const endIndex = newEndIndex;
+      if (startIndex < endIndex) {
+        const forwardDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex,
+        );
+        const reverseDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex - count,
+        );
+        if (reverseDistance < forwardDistance) {
+          newEndIndex -= count;
+        }
+      } else {
+        const reverseDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex,
+        );
+        const forwardDistance = getCumulativeSquaredDistance(
+          coordinates,
+          startIndex,
+          endIndex + count,
+        );
+        if (forwardDistance < reverseDistance) {
+          newEndIndex += count;
+        }
+      }
+    }
+
+    sharedUpdateInfo.index = newTargetIndex;
+    sharedUpdateInfo.endIndex = newEndIndex;
+    sharedUpdateInfo.closestTargetDistance = closestTargetDistance;
+    return sharedUpdateInfo;
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+   * @param {Array<import("../Feature.js").default>} features The candidate features.
+   * @return {Array<TraceTarget>} The trace targets.
+   */
+  function getTraceTargets(coordinate, features) {
+    /**
+     * @type {Array<TraceTarget>}
+     */
+    const targets = [];
+
+    for (let i = 0; i < features.length; ++i) {
+      const feature = features[i];
+      const geometry = feature.getGeometry();
+      appendGeometryTraceTargets(coordinate, geometry, targets);
+    }
+
+    return targets;
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+   * @param {import("../geom/Geometry.js").default} geometry The candidate geometry.
+   * @param {Array<TraceTarget>} targets The trace targets.
+   */
+  function appendGeometryTraceTargets(coordinate, geometry, targets) {
+    if (geometry instanceof LineString) {
+      appendTraceTarget(coordinate, geometry.getCoordinates(), false, targets);
+      return;
+    }
+    if (geometry instanceof MultiLineString) {
+      const coordinates = geometry.getCoordinates();
+      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+        appendTraceTarget(coordinate, coordinates[i], false, targets);
+      }
+      return;
+    }
+    if (geometry instanceof Polygon) {
+      const coordinates = geometry.getCoordinates();
+      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+        appendTraceTarget(coordinate, coordinates[i], true, targets);
+      }
+      return;
+    }
+    if (geometry instanceof MultiPolygon) {
+      const polys = geometry.getCoordinates();
+      for (let i = 0, ii = polys.length; i < ii; ++i) {
+        const coordinates = polys[i];
+        for (let j = 0, jj = coordinates.length; j < jj; ++j) {
+          appendTraceTarget(coordinate, coordinates[j], true, targets);
+        }
+      }
+      return;
+    }
+    if (geometry instanceof GeometryCollection) {
+      const geometries = geometry.getGeometries();
+      for (let i = 0; i < geometries.length; ++i) {
+        appendGeometryTraceTargets(coordinate, geometries[i], targets);
+      }
+      return;
+    }
+    // other types cannot be traced
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate The clicked coordinate.
+   * @param {Array<import("../coordinate.js").Coordinate>} coordinates The geometry component coordinates.
+   * @param {boolean} ring The coordinates represent a linear ring.
+   * @param {Array<TraceTarget>} targets The trace targets.
+   */
+  function appendTraceTarget(coordinate, coordinates, ring, targets) {
+    const x = coordinate[0];
+    const y = coordinate[1];
+    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      const start = coordinates[i];
+      const end = coordinates[i + 1];
+      const rel = getPointSegmentRelationship(x, y, start, end);
+      if (rel.squaredDistance === 0) {
+        const index = i + rel.along;
+        targets.push({
+          coordinates: coordinates,
+          ring: ring,
+          startIndex: index,
+          endIndex: index,
+        });
+        return;
+      }
+    }
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} a One coordinate.
+   * @param {import("../coordinate.js").Coordinate} b Another coordinate.
+   * @return {number} The squared distance between the two coordinates.
+   */
+  function getSquaredDistance(a, b) {
+    return squaredDistance$1(a[0], a[1], b[0], b[1]);
+  }
+
+  /**
+   * Get the cumulative squared distance along a ring path.  The end index index may be "wrapped" and it may
+   * be less than the start index to indicate the direction of travel.  The start and end index may have
+   * a fractional part to indicate a point between two coordinates.
+   * @param {LineCoordType} coordinates Ring coordinates.
+   * @param {number} startIndex The start index.
+   * @param {number} endIndex The end index.
+   * @return {number} The cumulative squared distance along the ring path.
+   */
+  function getCumulativeSquaredDistance(coordinates, startIndex, endIndex) {
+    let lowIndex, highIndex;
+    if (startIndex < endIndex) {
+      lowIndex = startIndex;
+      highIndex = endIndex;
+    } else {
+      lowIndex = endIndex;
+      highIndex = startIndex;
+    }
+    const lowWholeIndex = Math.ceil(lowIndex);
+    const highWholeIndex = Math.floor(highIndex);
+
+    if (lowWholeIndex > highWholeIndex) {
+      // both start and end are on the same segment
+      const start = interpolateCoordinate(coordinates, lowIndex);
+      const end = interpolateCoordinate(coordinates, highIndex);
+      return getSquaredDistance(start, end);
+    }
+
+    let sd = 0;
+
+    if (lowIndex < lowWholeIndex) {
+      const start = interpolateCoordinate(coordinates, lowIndex);
+      const end = getCoordinate(coordinates, lowWholeIndex);
+      sd += getSquaredDistance(start, end);
+    }
+
+    if (highWholeIndex < highIndex) {
+      const start = getCoordinate(coordinates, highWholeIndex);
+      const end = interpolateCoordinate(coordinates, highIndex);
+      sd += getSquaredDistance(start, end);
+    }
+
+    for (let i = lowWholeIndex; i < highWholeIndex - 1; ++i) {
+      const start = getCoordinate(coordinates, i);
+      const end = getCoordinate(coordinates, i + 1);
+      sd += getSquaredDistance(start, end);
+    }
+
+    return sd;
+  }
+
+  /**
+   * @typedef {Object} PointSegmentRelationship
+   * @property {number} along The closest point expressed as a fraction along the segment length.
+   * @property {number} squaredDistance The squared distance of the point to the segment.
+   */
+
+  /**
+   * @type {PointSegmentRelationship}
+   */
+  const sharedRel = {along: 0, squaredDistance: 0};
+
+  /**
+   * @param {number} x The point x.
+   * @param {number} y The point y.
+   * @param {import("../coordinate.js").Coordinate} start The segment start.
+   * @param {import("../coordinate.js").Coordinate} end The segment end.
+   * @return {PointSegmentRelationship} The point segment relationship.  The returned object is
+   * shared between calls and must not be modified by the caller.
+   */
+  function getPointSegmentRelationship(x, y, start, end) {
+    const x1 = start[0];
+    const y1 = start[1];
+    const x2 = end[0];
+    const y2 = end[1];
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    let along = 0;
+    let px = x1;
+    let py = y1;
+    if (dx !== 0 || dy !== 0) {
+      along = clamp(((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy), 0, 1);
+      px += dx * along;
+      py += dy * along;
+    }
+
+    sharedRel.along = along;
+    sharedRel.squaredDistance = toFixed(squaredDistance$1(x, y, px, py), 10);
+    return sharedRel;
+  }
+
+  /**
    * @module ol/interaction/Draw
    */
 
@@ -64440,8 +65040,7 @@
    */
 
   /**
-   * Coordinate type when drawing lines.
-   * @typedef {Array<import("../coordinate.js").Coordinate>} LineCoordType
+   * @typedef {import('./tracing.js').LineCoordType} LineCoordType
    */
 
   /**
@@ -64454,23 +65053,9 @@
    * @typedef {PointCoordType|LineCoordType|PolyCoordType} SketchCoordType
    */
 
-  /**
-   * @typedef {Object} TraceState
-   * @property {boolean} active Tracing active.
-   * @property {import("../pixel.js").Pixel} [startPx] The initially clicked pixel location.
-   * @property {Array<TraceTarget>} [targets] Targets available for tracing.
-   * @property {number} [targetIndex] The index of the currently traced target.  A value of -1 indicates
-   * that no trace target is active.
-   */
+  /** @typedef {import('./tracing.js').TraceState} TraceState */
 
-  /**
-   * @typedef {Object} TraceTarget
-   * @property {Array<import("../coordinate.js").Coordinate>} coordinates Target coordinates.
-   * @property {boolean} ring The target coordinates are a linear ring.
-   * @property {number} startIndex The index of first traced coordinate.  A fractional index represents an
-   * edge intersection.  Index values for rings will wrap (may be negative or larger than coordinates length).
-   * @property {number} endIndex The index of last traced coordinate.  Details from startIndex also apply here.
-   */
+  /** @typedef {import('./tracing.js').TraceTarget} TraceTarget */
 
   /**
    * Function that takes an array of coordinates and an optional existing geometry
@@ -64534,371 +65119,6 @@
     }
   }
 
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
-   * @param {Array<Feature>} features The candidate features.
-   * @return {Array<TraceTarget>} The trace targets.
-   */
-  function getTraceTargets(coordinate, features) {
-    /**
-     * @type {Array<TraceTarget>}
-     */
-    const targets = [];
-
-    for (let i = 0; i < features.length; ++i) {
-      const feature = features[i];
-      const geometry = feature.getGeometry();
-      appendGeometryTraceTargets(coordinate, geometry, targets);
-    }
-
-    return targets;
-  }
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} a One coordinate.
-   * @param {import("../coordinate.js").Coordinate} b Another coordinate.
-   * @return {number} The squared distance between the two coordinates.
-   */
-  function getSquaredDistance(a, b) {
-    return squaredDistance$1(a[0], a[1], b[0], b[1]);
-  }
-
-  /**
-   * @param {LineCoordType} coordinates The ring coordinates.
-   * @param {number} index The index.  May be wrapped.
-   * @return {import("../coordinate.js").Coordinate} The coordinate.
-   */
-  function getCoordinate(coordinates, index) {
-    const count = coordinates.length;
-    if (index < 0) {
-      return coordinates[index + count];
-    }
-    if (index >= count) {
-      return coordinates[index - count];
-    }
-    return coordinates[index];
-  }
-
-  /**
-   * Get the cumulative squared distance along a ring path.  The end index index may be "wrapped" and it may
-   * be less than the start index to indicate the direction of travel.  The start and end index may have
-   * a fractional part to indicate a point between two coordinates.
-   * @param {LineCoordType} coordinates Ring coordinates.
-   * @param {number} startIndex The start index.
-   * @param {number} endIndex The end index.
-   * @return {number} The cumulative squared distance along the ring path.
-   */
-  function getCumulativeSquaredDistance(coordinates, startIndex, endIndex) {
-    let lowIndex, highIndex;
-    if (startIndex < endIndex) {
-      lowIndex = startIndex;
-      highIndex = endIndex;
-    } else {
-      lowIndex = endIndex;
-      highIndex = startIndex;
-    }
-    const lowWholeIndex = Math.ceil(lowIndex);
-    const highWholeIndex = Math.floor(highIndex);
-
-    if (lowWholeIndex > highWholeIndex) {
-      // both start and end are on the same segment
-      const start = interpolateCoordinate(coordinates, lowIndex);
-      const end = interpolateCoordinate(coordinates, highIndex);
-      return getSquaredDistance(start, end);
-    }
-
-    let sd = 0;
-
-    if (lowIndex < lowWholeIndex) {
-      const start = interpolateCoordinate(coordinates, lowIndex);
-      const end = getCoordinate(coordinates, lowWholeIndex);
-      sd += getSquaredDistance(start, end);
-    }
-
-    if (highWholeIndex < highIndex) {
-      const start = getCoordinate(coordinates, highWholeIndex);
-      const end = interpolateCoordinate(coordinates, highIndex);
-      sd += getSquaredDistance(start, end);
-    }
-
-    for (let i = lowWholeIndex; i < highWholeIndex - 1; ++i) {
-      const start = getCoordinate(coordinates, i);
-      const end = getCoordinate(coordinates, i + 1);
-      sd += getSquaredDistance(start, end);
-    }
-
-    return sd;
-  }
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
-   * @param {import("../geom/Geometry.js").default} geometry The candidate geometry.
-   * @param {Array<TraceTarget>} targets The trace targets.
-   */
-  function appendGeometryTraceTargets(coordinate, geometry, targets) {
-    if (geometry instanceof LineString) {
-      appendTraceTarget(coordinate, geometry.getCoordinates(), false, targets);
-      return;
-    }
-    if (geometry instanceof MultiLineString) {
-      const coordinates = geometry.getCoordinates();
-      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-        appendTraceTarget(coordinate, coordinates[i], false, targets);
-      }
-      return;
-    }
-    if (geometry instanceof Polygon) {
-      const coordinates = geometry.getCoordinates();
-      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-        appendTraceTarget(coordinate, coordinates[i], true, targets);
-      }
-      return;
-    }
-    if (geometry instanceof MultiPolygon) {
-      const polys = geometry.getCoordinates();
-      for (let i = 0, ii = polys.length; i < ii; ++i) {
-        const coordinates = polys[i];
-        for (let j = 0, jj = coordinates.length; j < jj; ++j) {
-          appendTraceTarget(coordinate, coordinates[j], true, targets);
-        }
-      }
-      return;
-    }
-    if (geometry instanceof GeometryCollection) {
-      const geometries = geometry.getGeometries();
-      for (let i = 0; i < geometries.length; ++i) {
-        appendGeometryTraceTargets(coordinate, geometries[i], targets);
-      }
-      return;
-    }
-    // other types cannot be traced
-  }
-
-  /**
-   * @typedef {Object} TraceTargetUpdateInfo
-   * @property {number} index The new target index.
-   * @property {number} endIndex The new segment end index.
-   */
-
-  /**
-   * @type {TraceTargetUpdateInfo}
-   */
-  const sharedUpdateInfo = {index: -1, endIndex: NaN};
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
-   * @param {TraceState} traceState The trace state.
-   * @param {import("../Map.js").default} map The map.
-   * @param {number} snapTolerance The snap tolerance.
-   * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
-   * object is reused between calls and must not be modified by the caller.
-   */
-  function getTraceTargetUpdate(coordinate, traceState, map, snapTolerance) {
-    const x = coordinate[0];
-    const y = coordinate[1];
-
-    let closestTargetDistance = Infinity;
-
-    let newTargetIndex = -1;
-    let newEndIndex = NaN;
-
-    for (
-      let targetIndex = 0;
-      targetIndex < traceState.targets.length;
-      ++targetIndex
-    ) {
-      const target = traceState.targets[targetIndex];
-      const coordinates = target.coordinates;
-
-      let minSegmentDistance = Infinity;
-      let endIndex;
-      for (
-        let coordinateIndex = 0;
-        coordinateIndex < coordinates.length - 1;
-        ++coordinateIndex
-      ) {
-        const start = coordinates[coordinateIndex];
-        const end = coordinates[coordinateIndex + 1];
-        const rel = getPointSegmentRelationship(x, y, start, end);
-        if (rel.squaredDistance < minSegmentDistance) {
-          minSegmentDistance = rel.squaredDistance;
-          endIndex = coordinateIndex + rel.along;
-        }
-      }
-
-      if (minSegmentDistance < closestTargetDistance) {
-        closestTargetDistance = minSegmentDistance;
-        if (target.ring && traceState.targetIndex === targetIndex) {
-          // same target, maintain the same trace direction
-          if (target.endIndex > target.startIndex) {
-            // forward trace
-            if (endIndex < target.startIndex) {
-              endIndex += coordinates.length;
-            }
-          } else if (target.endIndex < target.startIndex) {
-            // reverse trace
-            if (endIndex > target.startIndex) {
-              endIndex -= coordinates.length;
-            }
-          }
-        }
-        newEndIndex = endIndex;
-        newTargetIndex = targetIndex;
-      }
-    }
-
-    const newTarget = traceState.targets[newTargetIndex];
-    let considerBothDirections = newTarget.ring;
-    if (traceState.targetIndex === newTargetIndex && considerBothDirections) {
-      // only consider switching trace direction if close to the start
-      const newCoordinate = interpolateCoordinate(
-        newTarget.coordinates,
-        newEndIndex,
-      );
-      const pixel = map.getPixelFromCoordinate(newCoordinate);
-      if (distance(pixel, traceState.startPx) > snapTolerance) {
-        considerBothDirections = false;
-      }
-    }
-
-    if (considerBothDirections) {
-      const coordinates = newTarget.coordinates;
-      const count = coordinates.length;
-      const startIndex = newTarget.startIndex;
-      const endIndex = newEndIndex;
-      if (startIndex < endIndex) {
-        const forwardDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex,
-        );
-        const reverseDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex - count,
-        );
-        if (reverseDistance < forwardDistance) {
-          newEndIndex -= count;
-        }
-      } else {
-        const reverseDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex,
-        );
-        const forwardDistance = getCumulativeSquaredDistance(
-          coordinates,
-          startIndex,
-          endIndex + count,
-        );
-        if (forwardDistance < reverseDistance) {
-          newEndIndex += count;
-        }
-      }
-    }
-
-    sharedUpdateInfo.index = newTargetIndex;
-    sharedUpdateInfo.endIndex = newEndIndex;
-    return sharedUpdateInfo;
-  }
-
-  /**
-   * @param {import("../coordinate.js").Coordinate} coordinate The clicked coordinate.
-   * @param {Array<import("../coordinate.js").Coordinate>} coordinates The geometry component coordinates.
-   * @param {boolean} ring The coordinates represent a linear ring.
-   * @param {Array<TraceTarget>} targets The trace targets.
-   */
-  function appendTraceTarget(coordinate, coordinates, ring, targets) {
-    const x = coordinate[0];
-    const y = coordinate[1];
-    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      const start = coordinates[i];
-      const end = coordinates[i + 1];
-      const rel = getPointSegmentRelationship(x, y, start, end);
-      if (rel.squaredDistance === 0) {
-        const index = i + rel.along;
-        targets.push({
-          coordinates: coordinates,
-          ring: ring,
-          startIndex: index,
-          endIndex: index,
-        });
-        return;
-      }
-    }
-  }
-
-  /**
-   * @typedef {Object} PointSegmentRelationship
-   * @property {number} along The closest point expressed as a fraction along the segment length.
-   * @property {number} squaredDistance The squared distance of the point to the segment.
-   */
-
-  /**
-   * @type {PointSegmentRelationship}
-   */
-  const sharedRel = {along: 0, squaredDistance: 0};
-
-  /**
-   * @param {number} x The point x.
-   * @param {number} y The point y.
-   * @param {import("../coordinate.js").Coordinate} start The segment start.
-   * @param {import("../coordinate.js").Coordinate} end The segment end.
-   * @return {PointSegmentRelationship} The point segment relationship.  The returned object is
-   * shared between calls and must not be modified by the caller.
-   */
-  function getPointSegmentRelationship(x, y, start, end) {
-    const x1 = start[0];
-    const y1 = start[1];
-    const x2 = end[0];
-    const y2 = end[1];
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    let along = 0;
-    let px = x1;
-    let py = y1;
-    if (dx !== 0 || dy !== 0) {
-      along = clamp(((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy), 0, 1);
-      px += dx * along;
-      py += dy * along;
-    }
-
-    sharedRel.along = along;
-    sharedRel.squaredDistance = toFixed(squaredDistance$1(x, y, px, py), 10);
-    return sharedRel;
-  }
-
-  /**
-   * @param {LineCoordType} coordinates The coordinates.
-   * @param {number} index The index.  May be fractional and may wrap.
-   * @return {import("../coordinate.js").Coordinate} The interpolated coordinate.
-   */
-  function interpolateCoordinate(coordinates, index) {
-    const count = coordinates.length;
-
-    let startIndex = Math.floor(index);
-    const along = index - startIndex;
-    if (startIndex >= count) {
-      startIndex -= count;
-    } else if (startIndex < 0) {
-      startIndex += count;
-    }
-
-    let endIndex = startIndex + 1;
-    if (endIndex >= count) {
-      endIndex -= count;
-    }
-
-    const start = coordinates[startIndex];
-    const x0 = start[0];
-    const y0 = start[1];
-    const end = coordinates[endIndex];
-    const dx = end[0] - x0;
-    const dy = end[1] - y0;
-
-    return [x0 + dx * along, y0 + dy * along];
-  }
-
   /***
    * @template Return
    * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
@@ -64944,6 +65164,12 @@
        * @type {DrawOnSignature<void>}
        */
       this.un;
+
+      /**
+       * @type {Options}
+       * @private
+       */
+      this.options_ = options;
 
       /**
        * @type {boolean}
@@ -65026,6 +65252,15 @@
        * @private
        */
       this.stopClick_ = !!options.stopClick;
+
+      /**
+       * Ignore the next up event. This is set to `true` when a drag event is encountered,
+       * e.g. when the user pans the map while drawing. In this case, we do not want to bail
+       * out of tracing.
+       * @type {boolean}
+       * @private
+       */
+      this.ignoreNextUpEvent_ = false;
 
       /**
        * The number of points that must be drawn before a polygon ring or line
@@ -65298,12 +65533,39 @@
     }
 
     /**
+     * Set whether the drawing is done in freehand mode.
+     *
+     * @param {boolean} freehand Freehand drawing.
+     * @api
+     */
+    setFreehand(freehand) {
+      this.freehand_ = freehand;
+      if (this.freehand_) {
+        this.freehandCondition_ = always$1;
+      } else {
+        this.freehandCondition_ =
+          this.options_ && this.options_.freehandCondition
+            ? this.options_.freehandCondition
+            : shiftKeyOnly;
+      }
+    }
+
+    /**
      * Get the overlay layer that this interaction renders sketch features to.
      * @return {VectorLayer} Overlay layer.
      * @api
      */
     getOverlay() {
       return this.overlay_;
+    }
+
+    /**
+     * Get if this interaction is in freehand mode.
+     * @return {boolean} Freehand drawing.
+     * @api
+     */
+    getFreehand() {
+      return this.freehand_;
     }
 
     /**
@@ -65452,7 +65714,7 @@
       if (targets.length) {
         this.traceState_ = {
           active: true,
-          startPx: event.pixel.slice(),
+          startCoord: event.coordinate.slice(),
           targets: targets,
           targetIndex: -1,
         };
@@ -65577,7 +65839,8 @@
 
       if (traceState.targetIndex === -1) {
         // check if we are ready to pick a target
-        if (distance(traceState.startPx, event.pixel) < this.snapTolerance_) {
+        const startPx = event.map.getPixelFromCoordinate(traceState.startCoord);
+        if (distance(startPx, event.pixel) < this.snapTolerance_) {
           return;
         }
       }
@@ -65625,6 +65888,16 @@
     }
 
     /**
+     * Handle drag events.
+     * @param {import("../MapBrowserEvent.js").default<PointerEvent>} event Event.
+     * @override
+     */
+    handleDragEvent(event) {
+      this.ignoreNextUpEvent_ = true;
+      super.handleDragEvent(event);
+    }
+
+    /**
      * Handle pointer up events.
      * @param {import("../MapBrowserEvent.js").default<PointerEvent>} event Event.
      * @return {boolean} If the event was consumed.
@@ -65641,7 +65914,9 @@
 
         this.handlePointerMove_(event);
         const tracing = this.traceState_.active;
-        this.toggleTraceState_(event);
+        if (!this.ignoreNextUpEvent_) {
+          this.toggleTraceState_(event);
+        }
 
         if (this.shouldHandle_) {
           const startingToDraw = !this.finishCoordinate_;
@@ -65667,6 +65942,7 @@
           this.abortDrawing();
         }
       }
+      this.ignoreNextUpEvent_ = false;
 
       if (!pass && this.stopClick_) {
         event.preventDefault();
@@ -66279,6 +66555,14 @@
    * boolean to indicate whether that event should be handled. By default,
    * {@link module:ol/events/condition.singleClick} with
    * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
+   * This combination is handled by wrapping the two condition checks in a single function:
+   * ```js
+   * import { altKeyOnly, singleClick } from 'ol/events/condition.js';
+   *
+   * function (event) {
+   *   return altKeyOnly(event) && singleClick(event)
+   * }
+   * ```
    * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
    * function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
    * returns a boolean to indicate whether a new vertex should be added to the sketch
@@ -66305,11 +66589,34 @@
    * @property {Collection<Feature>} [features]
    * The features the interaction works on.  If a feature collection is not
    * provided, a vector source must be provided with the `source` option.
+   * @property {boolean|import("../events/condition.js").Condition} [trace=false] Trace a portion of another geometry.
+   * Tracing starts when two neighboring vertices are dragged onto a trace target, without any other modification in between..
+   * @property {VectorSource} [traceSource] Source for features to trace.  If tracing is active and a `traceSource` is
+   * not provided, the interaction's `source` will be used.  Tracing requires that the interaction is configured with
+   * either a `traceSource` or a `source`.
    * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
    * overlay.
    * @property {boolean} [snapToPointer=!hitDetection] The vertex, point or segment being modified snaps to the
    * pointer coordinate when clicked within the `pixelTolerance`.
    */
+
+  function getCoordinatesArray(coordinates, geometryType, depth) {
+    let coordinatesArray;
+    switch (geometryType) {
+      case 'LineString':
+        coordinatesArray = coordinates;
+        break;
+      case 'MultiLineString':
+      case 'Polygon':
+        coordinatesArray = coordinates[depth[0]];
+        break;
+      case 'MultiPolygon':
+        coordinatesArray = coordinates[depth[1]][depth[0]];
+        break;
+      // pass
+    }
+    return coordinatesArray;
+  }
 
   /**
    * @classdesc
@@ -66445,10 +66752,10 @@
       this.vertexSegments_ = null;
 
       /**
-       * @type {import("../pixel.js").Pixel}
+       * @type {import("../coordinate.js").Coordinate}
        * @private
        */
-      this.lastPixel_ = [0, 0];
+      this.lastCoordinate_ = [0, 0];
 
       /**
        * Tracks if the next `singleclick` event should be ignored to prevent
@@ -66519,15 +66826,15 @@
        * @type {!Object<string, function(Feature, import("../geom/Geometry.js").default): void>}
        */
       this.SEGMENT_WRITERS_ = {
-        'Point': this.writePointGeometry_.bind(this),
-        'LineString': this.writeLineStringGeometry_.bind(this),
-        'LinearRing': this.writeLineStringGeometry_.bind(this),
-        'Polygon': this.writePolygonGeometry_.bind(this),
-        'MultiPoint': this.writeMultiPointGeometry_.bind(this),
-        'MultiLineString': this.writeMultiLineStringGeometry_.bind(this),
-        'MultiPolygon': this.writeMultiPolygonGeometry_.bind(this),
-        'Circle': this.writeCircleGeometry_.bind(this),
-        'GeometryCollection': this.writeGeometryCollectionGeometry_.bind(this),
+        Point: this.writePointGeometry_.bind(this),
+        LineString: this.writeLineStringGeometry_.bind(this),
+        LinearRing: this.writeLineStringGeometry_.bind(this),
+        Polygon: this.writePolygonGeometry_.bind(this),
+        MultiPoint: this.writeMultiPointGeometry_.bind(this),
+        MultiLineString: this.writeMultiLineStringGeometry_.bind(this),
+        MultiPolygon: this.writeMultiPolygonGeometry_.bind(this),
+        Circle: this.writeCircleGeometry_.bind(this),
+        GeometryCollection: this.writeGeometryCollectionGeometry_.bind(this),
       };
 
       /**
@@ -66535,6 +66842,31 @@
        * @private
        */
       this.source_ = null;
+
+      /**
+       * @type {VectorSource|null}
+       * @private
+       */
+      this.traceSource_ = options.traceSource || options.source || null;
+
+      /**
+       * @type {import("../events/condition.js").Condition}
+       * @private
+       */
+      this.traceCondition_;
+      this.setTrace(options.trace || false);
+
+      /**
+       * @type {import('./tracing.js').TraceState}
+       * @private
+       */
+      this.traceState_ = {active: false};
+
+      /**
+       * @type {Array<DragSegment>|null}
+       * @private
+       */
+      this.traceSegments_ = null;
 
       /**
        * @type {boolean|import("../layer/BaseVector").default}
@@ -66606,6 +66938,24 @@
     }
 
     /**
+     * Toggle tracing mode or set a tracing condition.
+     *
+     * @param {boolean|import("../events/condition.js").Condition} trace A boolean to toggle tracing mode or an event
+     *     condition that will be checked when a feature is clicked to determine if tracing should be active.
+     */
+    setTrace(trace) {
+      let condition;
+      if (!trace) {
+        condition = never;
+      } else if (trace === true) {
+        condition = always$1;
+      } else {
+        condition = trace;
+      }
+      this.traceCondition_ = condition;
+    }
+
+    /**
      * @param {Feature} feature Feature.
      * @private
      */
@@ -66619,7 +66969,7 @@
       }
       const map = this.getMap();
       if (map && map.isRendered() && this.getActive()) {
-        this.handlePointerAtPixel_(map.getCoordinateFromPixel(this.lastPixel_));
+        this.handlePointerAtPixel_(this.lastCoordinate_);
       }
       feature.addEventListener(EventType.CHANGE, this.boundHandleFeatureChange_);
     }
@@ -67053,6 +67403,11 @@
       return super.handleEvent(mapBrowserEvent) && !handled;
     }
 
+    /**
+     * @param {import("../coordinate.js").Coordinate} pixelCoordinate Pixel coordinate.
+     * @return {Array<SegmentData>|undefined} Insert vertices and update drag segments.
+     * @private
+     */
     findInsertVerticesAndUpdateDragSegments_(pixelCoordinate) {
       this.handlePointerAtPixel_(pixelCoordinate);
       this.dragSegments_.length = 0;
@@ -67063,8 +67418,9 @@
       }
 
       const projection = this.getMap().getView().getProjection();
+      /** @type {Array<SegmentData>} */
       const insertVertices = [];
-      const vertex = vertexFeature.getGeometry().getCoordinates();
+      const vertex = this.vertexFeature_.getGeometry().getCoordinates();
       const vertexExtent = boundingExtent([vertex]);
       const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
       const componentSegments = {};
@@ -67149,6 +67505,369 @@
     }
 
     /**
+     * @private
+     */
+    deactivateTrace_() {
+      this.traceState_ = {active: false};
+    }
+
+    /**
+     * Update the trace.
+     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @private
+     */
+    updateTrace_(event) {
+      const traceState = this.traceState_;
+      if (!traceState.active) {
+        return;
+      }
+
+      if (traceState.targetIndex === -1) {
+        // check if we are ready to pick a target
+        const startPx = event.map.getPixelFromCoordinate(traceState.startCoord);
+        if (distance(startPx, event.pixel) < this.pixelTolerance_) {
+          return;
+        }
+      }
+
+      const updatedTraceTarget = getTraceTargetUpdate(
+        event.coordinate,
+        traceState,
+        event.map,
+        this.pixelTolerance_,
+      );
+
+      if (
+        traceState.targetIndex === -1 &&
+        Math.sqrt(updatedTraceTarget.closestTargetDistance) /
+          event.map.getView().getResolution() >
+          this.pixelTolerance_
+      ) {
+        return;
+      }
+
+      if (traceState.targetIndex !== updatedTraceTarget.index) {
+        // target changed
+        if (traceState.targetIndex !== -1) {
+          // remove points added during previous trace
+          const oldTarget = traceState.targets[traceState.targetIndex];
+          this.removeTracedCoordinates_(oldTarget.startIndex, oldTarget.endIndex);
+        } else {
+          for (const traceSegment of this.traceSegments_) {
+            const segmentData = traceSegment[0];
+            const geometry = segmentData.geometry;
+            const index = traceSegment[1];
+            const coordinates = geometry.getCoordinates();
+            const coordinatesArray = getCoordinatesArray(
+              coordinates,
+              geometry.getType(),
+              segmentData.depth,
+            );
+            coordinatesArray.splice(segmentData.index + index, 1);
+            geometry.setCoordinates(coordinates);
+            if (index === 0) {
+              segmentData.index -= 1;
+            }
+          }
+        }
+        // add points for the new target
+        const newTarget = traceState.targets[updatedTraceTarget.index];
+        this.addTracedCoordinates_(
+          newTarget,
+          newTarget.startIndex,
+          updatedTraceTarget.endIndex,
+        );
+      } else {
+        // target stayed the same
+        const target = traceState.targets[traceState.targetIndex];
+        this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
+      }
+
+      // modify the state with updated info
+      traceState.targetIndex = updatedTraceTarget.index;
+      const target = traceState.targets[traceState.targetIndex];
+      target.endIndex = updatedTraceTarget.endIndex;
+    }
+
+    getTraceCandidates_(event) {
+      const map = this.getMap();
+      const tolerance = this.pixelTolerance_;
+      const lowerLeft = map.getCoordinateFromPixel([
+        event.pixel[0] - tolerance,
+        event.pixel[1] + tolerance,
+      ]);
+      const upperRight = map.getCoordinateFromPixel([
+        event.pixel[0] + tolerance,
+        event.pixel[1] - tolerance,
+      ]);
+      const extent = boundingExtent([lowerLeft, upperRight]);
+      const features = this.traceSource_.getFeaturesInExtent(extent);
+      return features;
+    }
+
+    /**
+     * Activate or deactivate trace state based on a browser event.
+     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @private
+     */
+    toggleTraceState_(event) {
+      if (!this.traceSource_ || !this.traceCondition_(event)) {
+        return;
+      }
+
+      if (this.traceState_.active) {
+        this.deactivateTrace_();
+        this.traceSegments_ = null;
+        return;
+      }
+
+      const features = this.getTraceCandidates_(event);
+      if (features.length === 0) {
+        return;
+      }
+
+      const targets = getTraceTargets(event.coordinate, features);
+      if (targets.length) {
+        this.traceState_ = {
+          active: true,
+          startCoord: event.coordinate.slice(),
+          targets: targets,
+          targetIndex: -1,
+        };
+      }
+    }
+
+    /**
+     * @param {import('./tracing.js').TraceTarget} target The trace target.
+     * @param {number} endIndex The new end index of the trace.
+     * @private
+     */
+    addOrRemoveTracedCoordinates_(target, endIndex) {
+      // three cases to handle:
+      //  1. traced in the same direction and points need adding
+      //  2. traced in the same direction and points need removing
+      //  3. traced in a new direction
+      const previouslyForward = target.startIndex <= target.endIndex;
+      const currentlyForward = target.startIndex <= endIndex;
+      if (previouslyForward === currentlyForward) {
+        // same direction
+        if (
+          (previouslyForward && endIndex > target.endIndex) ||
+          (!previouslyForward && endIndex < target.endIndex)
+        ) {
+          // case 1 - add new points
+          this.addTracedCoordinates_(target, target.endIndex, endIndex);
+        } else if (
+          (previouslyForward && endIndex < target.endIndex) ||
+          (!previouslyForward && endIndex > target.endIndex)
+        ) {
+          // case 2 - remove old points
+          this.removeTracedCoordinates_(endIndex, target.endIndex);
+        }
+      } else {
+        // case 3 - remove old points, add new points
+        this.removeTracedCoordinates_(target.startIndex, target.endIndex);
+        this.addTracedCoordinates_(target, target.startIndex, endIndex);
+      }
+    }
+
+    /**
+     * @param {number} fromIndex The start index.
+     * @param {number} toIndex The end index.
+     * @private
+     */
+    removeTracedCoordinates_(fromIndex, toIndex) {
+      if (fromIndex === toIndex) {
+        return;
+      }
+
+      let remove = 0;
+      if (fromIndex < toIndex) {
+        const start = Math.ceil(fromIndex);
+        let end = Math.floor(toIndex);
+        if (end === toIndex) {
+          end -= 1;
+        }
+        remove = end - start + 1;
+      } else {
+        const start = Math.floor(fromIndex);
+        let end = Math.ceil(toIndex);
+        if (end === toIndex) {
+          end += 1;
+        }
+        remove = start - end + 1;
+      }
+
+      if (remove > 0) {
+        for (const traceSegment of this.traceSegments_) {
+          const segmentData = traceSegment[0];
+          const geometry = segmentData.geometry;
+          const index = traceSegment[1];
+          let removeIndex = traceSegment[0].index + 1;
+          if (index === 1) {
+            removeIndex -= remove;
+          }
+          const coordinates = geometry.getCoordinates();
+          const coordinatesArray = getCoordinatesArray(
+            coordinates,
+            geometry.getType(),
+            segmentData.depth,
+          );
+          coordinatesArray.splice(removeIndex, remove);
+          geometry.setCoordinates(coordinates);
+          if (index === 1) {
+            segmentData.index -= remove;
+          }
+        }
+      }
+    }
+
+    /**
+     * @param {import('./tracing.js').TraceTarget} target The trace target.
+     * @param {number} fromIndex The start index.
+     * @param {number} toIndex The end index.
+     * @private
+     */
+    addTracedCoordinates_(target, fromIndex, toIndex) {
+      if (fromIndex === toIndex) {
+        return;
+      }
+
+      const newCoordinates = [];
+      if (fromIndex < toIndex) {
+        // forward trace
+        const start = Math.ceil(fromIndex);
+        let end = Math.floor(toIndex);
+        if (end === toIndex) {
+          // if end is snapped to a vertex, it will be added later
+          end -= 1;
+        }
+        for (let i = start; i <= end; ++i) {
+          newCoordinates.push(getCoordinate(target.coordinates, i));
+        }
+      } else {
+        // reverse trace
+        const start = Math.floor(fromIndex);
+        let end = Math.ceil(toIndex);
+        if (end === toIndex) {
+          end += 1;
+        }
+        for (let i = start; i >= end; --i) {
+          newCoordinates.push(getCoordinate(target.coordinates, i));
+        }
+      }
+
+      if (newCoordinates.length) {
+        for (const traceSegment of this.traceSegments_) {
+          const segmentData = traceSegment[0];
+          const geometry = segmentData.geometry;
+          const index = traceSegment[1];
+          const insertIndex = segmentData.index + 1;
+          if (index === 0) {
+            newCoordinates.reverse();
+          }
+          const coordinates = geometry.getCoordinates();
+          const coordinatesArray = getCoordinatesArray(
+            coordinates,
+            geometry.getType(),
+            segmentData.depth,
+          );
+          coordinatesArray.splice(insertIndex, 0, ...newCoordinates);
+          geometry.setCoordinates(coordinates);
+          if (index === 1) {
+            segmentData.index += newCoordinates.length;
+          }
+        }
+      }
+    }
+
+    /**
+     * @param {import('../coordinate.js').Coordinate} vertex Vertex.
+     * @param {DragSegment} dragSegment Drag segment.
+     */
+    updateGeometry_(vertex, dragSegment) {
+      const segmentData = dragSegment[0];
+      const depth = segmentData.depth;
+      let coordinates;
+      const segment = segmentData.segment;
+      const geometry = segmentData.geometry;
+      const index = dragSegment[1];
+
+      while (vertex.length < geometry.getStride()) {
+        vertex.push(segment[index][vertex.length]);
+      }
+      switch (geometry.getType()) {
+        case 'Point':
+          coordinates = vertex;
+          segment[0] = vertex;
+          segment[1] = vertex;
+          break;
+        case 'MultiPoint':
+          coordinates = geometry.getCoordinates();
+          coordinates[segmentData.index] = vertex;
+          segment[0] = vertex;
+          segment[1] = vertex;
+          break;
+        case 'LineString':
+          coordinates = geometry.getCoordinates();
+          coordinates[segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'MultiLineString':
+          coordinates = geometry.getCoordinates();
+          coordinates[depth[0]][segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'Polygon':
+          coordinates = geometry.getCoordinates();
+          coordinates[depth[0]][segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'MultiPolygon':
+          coordinates = geometry.getCoordinates();
+          coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
+          segment[index] = vertex;
+          break;
+        case 'Circle':
+          const circle = /** @type {import("../geom/Circle.js").default} */ (
+            geometry
+          );
+          segment[0] = vertex;
+          segment[1] = vertex;
+          if (segmentData.index === CIRCLE_CENTER_INDEX) {
+            this.changingFeature_ = true;
+            circle.setCenter(vertex);
+            this.changingFeature_ = false;
+          } else {
+            // We're dragging the circle's circumference:
+            this.changingFeature_ = true;
+            const projection = this.getMap().getView().getProjection();
+            let radius = distance(
+              fromUserCoordinate(circle.getCenter(), projection),
+              fromUserCoordinate(vertex, projection),
+            );
+            const userProjection = getUserProjection();
+            if (userProjection) {
+              const circleGeometry = circle
+                .clone()
+                .transform(userProjection, projection);
+              circleGeometry.setRadius(radius);
+              radius = circleGeometry
+                .transform(projection, userProjection)
+                .getRadius();
+            }
+            circle.setRadius(radius);
+            this.changingFeature_ = false;
+          }
+          break;
+        // pass
+      }
+      if (coordinates) {
+        this.setGeometryCoordinates_(geometry, coordinates);
+      }
+    }
+
+    /**
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent.js").default} evt Event.
      * @override
@@ -67166,6 +67885,26 @@
       ];
       const features = [];
       const geometries = [];
+      const startTraceCoord =
+        this.traceState_.active && !this.traceSegments_
+          ? this.traceState_.startCoord
+          : null;
+      if (startTraceCoord) {
+        this.traceSegments_ = [];
+        for (const dragSegment of this.dragSegments_) {
+          const segmentData = dragSegment[0];
+          const eligibleForTracing =
+            distance(
+              closestOnSegment(startTraceCoord, segmentData.segment),
+              startTraceCoord,
+            ) /
+              evt.map.getView().getResolution() <
+            1;
+          if (eligibleForTracing) {
+            this.traceSegments_.push(dragSegment);
+          }
+        }
+      }
       for (let i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
         const dragSegment = this.dragSegments_[i];
         const segmentData = dragSegment[0];
@@ -67177,86 +67916,10 @@
         if (!geometries.includes(geometry)) {
           geometries.push(geometry);
         }
-        const depth = segmentData.depth;
-        let coordinates;
-        const segment = segmentData.segment;
-        const index = dragSegment[1];
 
-        while (vertex.length < geometry.getStride()) {
-          vertex.push(segment[index][vertex.length]);
-        }
-
-        switch (geometry.getType()) {
-          case 'Point':
-            coordinates = vertex;
-            segment[0] = vertex;
-            segment[1] = vertex;
-            break;
-          case 'MultiPoint':
-            coordinates = geometry.getCoordinates();
-            coordinates[segmentData.index] = vertex;
-            segment[0] = vertex;
-            segment[1] = vertex;
-            break;
-          case 'LineString':
-            coordinates = geometry.getCoordinates();
-            coordinates[segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'MultiLineString':
-            coordinates = geometry.getCoordinates();
-            coordinates[depth[0]][segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'Polygon':
-            coordinates = geometry.getCoordinates();
-            coordinates[depth[0]][segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'MultiPolygon':
-            coordinates = geometry.getCoordinates();
-            coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
-            segment[index] = vertex;
-            break;
-          case 'Circle':
-            const circle = /** @type {import("../geom/Circle.js").default} */ (
-              geometry
-            );
-            segment[0] = vertex;
-            segment[1] = vertex;
-            if (segmentData.index === CIRCLE_CENTER_INDEX) {
-              this.changingFeature_ = true;
-              circle.setCenter(vertex);
-              this.changingFeature_ = false;
-            } else {
-              // We're dragging the circle's circumference:
-              this.changingFeature_ = true;
-              const projection = evt.map.getView().getProjection();
-              let radius = distance(
-                fromUserCoordinate(circle.getCenter(), projection),
-                fromUserCoordinate(vertex, projection),
-              );
-              const userProjection = getUserProjection();
-              if (userProjection) {
-                const circleGeometry = circle
-                  .clone()
-                  .transform(userProjection, projection);
-                circleGeometry.setRadius(radius);
-                radius = circleGeometry
-                  .transform(projection, userProjection)
-                  .getRadius();
-              }
-              circle.setRadius(radius);
-              this.changingFeature_ = false;
-            }
-            break;
-          // pass
-        }
-
-        if (coordinates) {
-          this.setGeometryCoordinates_(geometry, coordinates);
-        }
+        this.updateGeometry_(vertex, dragSegment);
       }
+      this.updateTrace_(evt);
       this.createOrUpdateVertexFeature_(vertex, features, geometries, true);
     }
 
@@ -67334,6 +67997,7 @@
         }
       }
       if (this.featuresBeingModified_) {
+        this.toggleTraceState_(evt);
         this.dispatchEvent(
           new ModifyEvent(
             ModifyEventType.MODIFYEND,
@@ -67351,8 +68015,8 @@
      * @private
      */
     handlePointerMove_(evt) {
-      this.lastPixel_ = evt.pixel;
-      this.handlePointerAtPixel_(evt.coordinate);
+      this.lastCoordinate_ = evt.coordinate;
+      this.handlePointerAtPixel_(this.lastCoordinate_);
     }
 
     /**
@@ -67582,6 +68246,11 @@
       return true;
     }
 
+    /**
+     * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+     * @return {import("../coordinate.js").Coordinate} The updated pointer coordinate.
+     * @private
+     */
     updatePointer_(coordinate) {
       if (coordinate) {
         this.findInsertVerticesAndUpdateDragSegments_(coordinate);
@@ -68359,19 +69028,7 @@
         this.applySelectedStyle_(feature);
       }
       if (!this.getLayer(feature)) {
-        const layer = /** @type {VectorLayer} */ (
-          this.getMap()
-            .getAllLayers()
-            .find(function (layer) {
-              if (
-                layer instanceof VectorLayer &&
-                layer.getSource() &&
-                layer.getSource().hasFeature(feature)
-              ) {
-                return layer;
-              }
-            })
-        );
+        const layer = this.findLayerOfFeature_(feature);
         if (layer) {
           this.addFeatureLayerAssociation_(feature, layer);
         }
@@ -68386,6 +69043,28 @@
       if (this.style_) {
         this.restorePreviousStyle_(evt.element);
       }
+    }
+
+    /**
+     * @param {Feature} feature Feature of which to get the layer
+     * @return {VectorLayer} layer, if one was found.
+     * @private
+     */
+    findLayerOfFeature_(feature) {
+      const layer = /** @type {VectorLayer} */ (
+        this.getMap()
+          .getAllLayers()
+          .find(function (layer) {
+            if (
+              layer instanceof VectorLayer &&
+              layer.getSource() &&
+              layer.getSource().hasFeature(feature)
+            ) {
+              return layer;
+            }
+          })
+      );
+      return layer;
     }
 
     /**
@@ -68440,6 +69119,116 @@
     }
 
     /**
+     * @param {import("../Feature.js").FeatureLike} feature The feature to select
+     * @param {import("../layer/Layer.js").default} layer Optional layer containing this feature
+     * @param {Array<Feature>} [selected] optional array to which selected features will be added
+     * @return {Feature|undefined} The feature, if it got selected.
+     * @private
+     */
+    selectFeatureInternal_(feature, layer, selected) {
+      if (!(feature instanceof Feature)) {
+        return;
+      }
+      if (!this.filter_(feature, layer)) {
+        return;
+      }
+      const features = this.getFeatures();
+      if (!features.getArray().includes(feature)) {
+        this.addFeatureLayerAssociation_(feature, layer);
+        features.push(feature);
+        selected?.push(feature);
+      }
+      return feature;
+    }
+
+    /**
+     * Try to select a feature as if it was clicked and `addCondition` evaluated to True.
+     * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     * @param {Feature} feature The feature to select
+     * @return {boolean} True if the feature was selected
+     */
+    selectFeature(feature) {
+      const layer = this.findLayerOfFeature_(feature);
+      if (!this.layerFilter_(layer)) {
+        return false;
+      }
+      const selected = this.selectFeatureInternal_(feature, layer);
+      if (selected) {
+        this.dispatchEvent(
+          new SelectEvent(SelectEventType.SELECT, [selected], [], undefined),
+        );
+      }
+      return !!selected;
+    }
+
+    /**
+     * Deselects a feature if it was previously selected. Also removes layer association.
+     * @param {import("../Feature.js").FeatureLike} feature The feature to deselect
+     * @param {Array<Feature>} [deselected] optional array to which deselected features will be added
+     * @return {Feature|undefined} The feature, if it was previously selected.
+     * @private
+     */
+    removeFeatureInternal_(feature, deselected) {
+      const features = this.getFeatures();
+      if (
+        !(feature instanceof Feature) ||
+        !features.getArray().includes(feature)
+      ) {
+        return;
+      }
+      features.remove(feature);
+      this.removeFeatureLayerAssociation_(feature);
+      deselected?.push(feature);
+      return feature;
+    }
+
+    /**
+     * Try to deselect a feature as if it was clicked.
+     * Compared to `select.getFeatures().remove(feature)` this causes a SelectEvent.
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     * @param {Feature} feature The feature to deselect
+     * @return {boolean} True if the feature was deselected
+     */
+    deselectFeature(feature) {
+      const deselected = this.removeFeatureInternal_(feature);
+      if (deselected) {
+        this.dispatchEvent(
+          new SelectEvent(SelectEventType.SELECT, [], [deselected], undefined),
+        );
+      }
+      return !!deselected;
+    }
+
+    /**
+     * Try to toggle a feature as if it was clicked and `toggleCondition` was True.
+     * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     * @param {Feature} feature The feature to deselect
+     */
+    toggleFeature(feature) {
+      if (!this.deselectFeature(feature)) {
+        this.selectFeature(feature);
+      }
+    }
+    /**
+     * Deselect all features as if a user deselected them.
+     * Compared to `select.getFeatures().clear()` this causes a SelectEvent.
+     * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     */
+    clearSelection() {
+      clear$2(this.featureLayerAssociation_);
+      const features = this.getFeatures();
+      const deselected = features.getArray().slice(); // shallow copy
+      features.clear();
+      if (deselected.length !== 0) {
+        this.dispatchEvent(
+          new SelectEvent(SelectEventType.SELECT, [], deselected, undefined),
+        );
+      }
+    }
+
+    /**
      * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
      * selected state of features.
      * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
@@ -68467,79 +69256,67 @@
        */
       const selected = [];
 
+      // TODO: technically the way i've restructured this logic means that
+      //       instead of first emptying the features list of all extra features and then adding the selected ones back,
+      //       the selected features get added and then the old ones get removed.
+      //       a grow then shrink, instead of a shrink then grow. I can't imagine anyone relying on this, but alas, its worth a mention.
       if (set) {
         // Replace the currently selected feature(s) with the feature(s) at the
         // pixel, or clear the selected feature(s) if there is no feature at
         // the pixel.
-        clear$2(this.featureLayerAssociation_);
+        let foundAtCursor = false;
         map.forEachFeatureAtPixel(
           mapBrowserEvent.pixel,
-          /**
-           * @param {import("../Feature.js").FeatureLike} feature Feature.
-           * @param {import("../layer/Layer.js").default} layer Layer.
-           * @return {boolean|undefined} Continue to iterate over the features.
-           */
           (feature, layer) => {
-            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-              return;
+            foundAtCursor = true;
+            if (!this.selectFeatureInternal_(feature, layer, selected)) {
+              return; // keep going, this one wasn't selected
             }
-            this.addFeatureLayerAssociation_(feature, layer);
-            selected.push(feature);
-            return !this.multi_;
+            return !this.multi_; // stop if not multi
           },
           {
             layerFilter: this.layerFilter_,
             hitTolerance: this.hitTolerance_,
           },
         );
+
         for (let i = features.getLength() - 1; i >= 0; --i) {
           const feature = features.item(i);
-          const index = selected.indexOf(feature);
-          if (index > -1) {
-            // feature is already selected
-            selected.splice(index, 1);
-          } else {
-            features.remove(feature);
-            deselected.push(feature);
+          if (
+            // remove all but selected, if there were any selected
+            (selected.length > 0 && !selected.includes(feature)) ||
+            // remove all, if click outside of layer
+            !foundAtCursor
+          ) {
+            this.removeFeatureInternal_(feature, deselected);
           }
-        }
-        if (selected.length !== 0) {
-          features.extend(selected);
         }
       } else {
         // Modify the currently selected feature(s).
         map.forEachFeatureAtPixel(
           mapBrowserEvent.pixel,
-          /**
-           * @param {import("../Feature.js").FeatureLike} feature Feature.
-           * @param {import("../layer/Layer.js").default} layer Layer.
-           * @return {boolean|undefined} Continue to iterate over the features.
-           */
           (feature, layer) => {
-            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-              return;
+            let modifiedFeature;
+            if (remove || toggle) {
+              modifiedFeature = this.removeFeatureInternal_(feature, deselected);
             }
-            if ((add || toggle) && !features.getArray().includes(feature)) {
-              this.addFeatureLayerAssociation_(feature, layer);
-              selected.push(feature);
-            } else if (
-              (remove || toggle) &&
-              features.getArray().includes(feature)
-            ) {
-              deselected.push(feature);
-              this.removeFeatureLayerAssociation_(feature);
+            if ((add || toggle) && !modifiedFeature) {
+              modifiedFeature = this.selectFeatureInternal_(
+                feature,
+                layer,
+                selected,
+              );
             }
-            return !this.multi_;
+            if (!modifiedFeature) {
+              return; // keep going, this one wasn't removed/selected
+            }
+            return !this.multi_; // stop if not multi
           },
           {
             layerFilter: this.layerFilter_,
             hitTolerance: this.hitTolerance_,
           },
         );
-        for (let j = deselected.length - 1; j >= 0; --j) {
-          features.remove(deselected[j]);
-        }
-        features.extend(selected);
       }
       if (selected.length > 0 || deselected.length > 0) {
         this.dispatchEvent(
@@ -68585,6 +69362,11 @@
      * @api
      */
     SNAP: 'snap',
+    /**
+     * Triggered if no longer snapped
+     * @event SnapEvent#unsnap
+     * @api
+     */
     UNSNAP: 'unsnap',
   };
 
@@ -68643,8 +69425,8 @@
   /**
    * @typedef {Object} SegmentData
    * @property {import("../Feature.js").default} feature Feature.
+   * @property {import("../Feature.js").default} [intersectionFeature] Feature which intersects.
    * @property {Segment} segment Segment.
-   * @property {boolean} [isIntersection] Is intersection.
    */
 
   /**
@@ -68732,7 +69514,7 @@
       const segments = [];
       const geometries = geometry.getGeometriesArray();
       for (let i = 0; i < geometries.length; ++i) {
-        const segmenter = GEOMETRY_SEGMENTERS[geometries[i].getType()];
+        const segmenter = this[geometries[i].getType()];
         if (segmenter) {
           segments.push(segmenter(geometries[i], projection));
         }
@@ -68791,7 +69573,7 @@
       const segments = [];
       const coordinates = geometry.getFlatCoordinates();
       const stride = geometry.getStride();
-      for (let i = 0, ii = coordinates.length - stride; i < ii; i += stride) {
+      for (let i = 0, ii = coordinates.length; i < ii; i += stride) {
         segments.push([coordinates.slice(i, i + 2)]);
       }
       return segments;
@@ -68927,19 +69709,10 @@
     constructor(options) {
       options = options ? options : {};
 
-      const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
-        options
-      );
-
-      if (!pointerOptions.handleDownEvent) {
-        pointerOptions.handleDownEvent = TRUE;
-      }
-
-      if (!pointerOptions.stopDown) {
-        pointerOptions.stopDown = FALSE;
-      }
-
-      super(pointerOptions);
+      super({
+        handleDownEvent: TRUE,
+        stopDown: FALSE,
+      });
 
       /***
        * @type {SnapOnSignature<import("../events").EventsKey>}
@@ -69064,7 +69837,8 @@
         if (segmenter) {
           this.indexedFeaturesExtents_[feature_uid] =
             geometry.getExtent(createEmpty());
-          const segments = segmenter(
+          const segments = segmenter.call(
+            this.segmenters_,
             geometry,
             this.getMap().getView().getProjection(),
           );
@@ -69077,8 +69851,6 @@
               segment: segment,
             };
           }
-          tempExtents.length = segmentCount;
-          tempSegmentData.length = segmentCount;
 
           if (this.intersection_) {
             for (let j = 0, jj = segments.length; j < jj; ++j) {
@@ -69087,12 +69859,9 @@
                 continue;
               }
               const extent = tempExtents[j];
-              // Calculate intersections with own segments
-              for (let k = 0, kk = segments.length; k < kk; ++k) {
-                if (j === k || j - 1 === k || j + 1 === k) {
-                  // Exclude self and neighbours
-                  continue;
-                }
+              // Calculate intersections with own segments excluding self and
+              // neighbors
+              for (let k = 0, kk = j - 1; k < kk; ++k) {
                 const otherSegment = segments[k];
                 if (!intersects$1(extent, tempExtents[k])) {
                   continue;
@@ -69105,13 +69874,14 @@
                 tempExtents[segmentCount] = boundingExtent(intersectionSegment);
                 tempSegmentData[segmentCount++] = {
                   feature,
+                  intersectionFeature: feature,
                   segment: intersectionSegment,
-                  isIntersection: true,
                 };
               }
               // Calculate intersections with existing segments
               const otherSegments = this.rBush_.getInExtent(tempExtents[j]);
-              for (const {segment: otherSegment} of otherSegments) {
+              for (let k = 0, kk = otherSegments.length; k < kk; ++k) {
+                const otherSegment = otherSegments[k].segment;
                 if (otherSegment.length === 1) {
                   continue;
                 }
@@ -69123,8 +69893,8 @@
                 tempExtents[segmentCount] = boundingExtent(intersectionSegment);
                 tempSegmentData[segmentCount++] = {
                   feature,
+                  intersectionFeature: otherSegments[k].feature,
                   segment: intersectionSegment,
-                  isIntersection: true,
                 };
               }
             }
@@ -69133,12 +69903,17 @@
           if (segmentCount === 1) {
             this.rBush_.insert(tempExtents[0], tempSegmentData[0]);
           } else {
+            tempExtents.length = segmentCount;
+            tempSegmentData.length = segmentCount;
             this.rBush_.load(tempExtents, tempSegmentData);
           }
         }
       }
 
       if (register) {
+        if (this.featureChangeListenerKeys_[feature_uid]) {
+          unlistenByKey(this.featureChangeListenerKeys_[feature_uid]);
+        }
         this.featureChangeListenerKeys_[feature_uid] = listen(
           feature,
           EventType.CHANGE,
@@ -69229,6 +70004,7 @@
       const feature = getFeatureFromEvent(evt);
       if (feature) {
         this.removeFeature(feature);
+        delete this.pendingFeatures_[getUid(feature)];
       }
     }
 
@@ -69239,10 +70015,7 @@
     handleFeatureChange_(evt) {
       const feature = /** @type {import("../Feature.js").default} */ (evt.target);
       if (this.handlingDownUpSequence) {
-        const uid = getUid(feature);
-        if (!(uid in this.pendingFeatures_)) {
-          this.pendingFeatures_[uid] = feature;
-        }
+        this.pendingFeatures_[getUid(feature)] = feature;
       } else {
         this.updateFeature_(feature);
       }
@@ -69260,6 +70033,7 @@
         for (const feature of featuresToUpdate) {
           this.updateFeature_(feature);
         }
+        clear$2(this.pendingFeatures_);
       }
       return false;
     }
@@ -69277,15 +70051,11 @@
       const extent = this.indexedFeaturesExtents_[feature_uid];
       if (extent) {
         const rBush = this.rBush_;
-        const nodesToRemove = [];
-        rBush.forEachInExtent(extent, function (node) {
-          if (feature === node.feature) {
-            nodesToRemove.push(node);
+        rBush.getInExtent(extent).forEach((node) => {
+          if (feature === node.feature || feature === node.intersectionFeature) {
+            rBush.remove(node);
           }
         });
-        for (let i = nodesToRemove.length - 1; i >= 0; --i) {
-          rBush.remove(nodesToRemove[i]);
-        }
       }
 
       if (unregister) {
@@ -69384,30 +70154,23 @@
       let minSquaredDistance = Infinity;
       let closestFeature;
       let closestSegment = null;
-      let isIntersection;
 
       const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
       const getResult = () => {
-        if (closestVertex) {
-          const vertexPixel = map.getPixelFromCoordinate(closestVertex);
-          const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
-          if (
-            squaredPixelDistance <= squaredPixelTolerance &&
-            ((isIntersection && this.intersection_) ||
-              (!isIntersection && (this.vertex_ || this.edge_)))
-          ) {
-            return {
-              vertex: closestVertex,
-              vertexPixel: [
-                Math.round(vertexPixel[0]),
-                Math.round(vertexPixel[1]),
-              ],
-              feature: closestFeature,
-              segment: closestSegment,
-            };
-          }
+        if (!closestVertex) {
+          return null;
         }
-        return null;
+        const vertexPixel = map.getPixelFromCoordinate(closestVertex);
+        const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
+        if (squaredPixelDistance > squaredPixelTolerance) {
+          return null;
+        }
+        return {
+          vertex: closestVertex,
+          vertexPixel: [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])],
+          feature: closestFeature,
+          segment: closestSegment,
+        };
       };
 
       if (this.vertex_ || this.intersection_) {
@@ -69417,11 +70180,14 @@
             for (const vertex of segmentData.segment) {
               const tempVertexCoord = fromUserCoordinate(vertex, projection);
               const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
-              if (delta < minSquaredDistance) {
+              if (
+                delta < minSquaredDistance &&
+                ((this.intersection_ && segmentData.intersectionFeature) ||
+                  (this.vertex_ && !segmentData.intersectionFeature))
+              ) {
                 closestVertex = vertex;
                 minSquaredDistance = delta;
                 closestFeature = segmentData.feature;
-                isIntersection = segmentData.isIntersection;
               }
             }
           }
@@ -69745,7 +70511,7 @@
    */
 
   /**
-   * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
+   * @typedef {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|HTMLVideoElement|ImageBitmap} ImageLike
    */
 
   /**
@@ -69943,11 +70709,17 @@
 
       /**
        * @private
-       * @type {HTMLImageElement|HTMLCanvasElement}
+       * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas}
        */
-      this.image_ = new Image();
-      if (crossOrigin !== null) {
-        this.image_.crossOrigin = crossOrigin;
+      this.image_;
+
+      if (WORKER_OFFSCREEN_CANVAS) {
+        this.image_ = new OffscreenCanvas(1, 1);
+      } else {
+        this.image_ = new Image();
+        if (crossOrigin !== null) {
+          this.image_.crossOrigin = crossOrigin;
+        }
       }
 
       /**
@@ -69964,8 +70736,8 @@
     }
 
     /**
-     * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
-     * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+     * Get the HTML image element for this tile (may be a Canvas, OffscreenCanvas, Image, or Video).
+     * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
      * @api
      */
     getImage() {
@@ -69974,13 +70746,21 @@
 
     /**
      * Sets an HTML image element for this tile (may be a Canvas or preloaded Image).
-     * @param {HTMLCanvasElement|HTMLImageElement} element Element.
+     * @param {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement} element Element.
      */
     setImage(element) {
       this.image_ = element;
       this.state = TileState.LOADED;
       this.unlistenImage_();
       this.changed();
+    }
+
+    /**
+     * Get the cross origin of the ImageTile.
+     * @return {string} Cross origin.
+     */
+    getCrossOrigin() {
+      return this.crossOrigin_;
     }
 
     /**
@@ -70001,11 +70781,16 @@
      * @private
      */
     handleImageLoad_() {
-      const image = /** @type {HTMLImageElement} */ (this.image_);
-      if (image.naturalWidth && image.naturalHeight) {
+      if (WORKER_OFFSCREEN_CANVAS) {
+        // OffscreenCanvas does not have naturalWidth and naturalHeight
         this.state = TileState.LOADED;
       } else {
-        this.state = TileState.EMPTY;
+        const image = /** @type {HTMLImageElement} */ (this.image_);
+        if (image.naturalWidth && image.naturalHeight) {
+          this.state = TileState.LOADED;
+        } else {
+          this.state = TileState.EMPTY;
+        }
       }
       this.unlistenImage_();
       this.changed();
@@ -70092,7 +70877,7 @@
 
   /**
    * Get a 1-pixel blank image.
-   * @return {HTMLCanvasElement} Blank image.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Blank image.
    */
   function getBlankImage() {
     const ctx = createCanvasContext2D(1, 1);
@@ -70108,7 +70893,7 @@
   let brokenDiagonalRendering_;
 
   /**
-   * @type {Array<HTMLCanvasElement>}
+   * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
    */
   const canvasPool = [];
 
@@ -70116,7 +70901,7 @@
    * This draws a small triangle into a canvas by setting the triangle as the clip region
    * and then drawing a (too large) rectangle
    *
-   * @param {CanvasRenderingContext2D} ctx The context in which to draw the triangle
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} ctx The context in which to draw the triangle
    * @param {number} u1 The x-coordinate of the second point. The first point is 0,0.
    * @param {number} v1 The y-coordinate of the second point.
    * @param {number} u2 The x-coordinate of the third point.
@@ -70297,7 +71082,7 @@
    * @param {boolean} [interpolate] Use linear interpolation when resampling.
    * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
    * @param {boolean} [clipExtent] Clip stitchContext to sourceExtent.
-   * @return {HTMLCanvasElement} Canvas with reprojected data.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas with reprojected data.
    */
   function render(
     width,
@@ -71150,7 +71935,7 @@
 
       /**
        * @private
-       * @type {HTMLCanvasElement}
+       * @type {HTMLCanvasElement|OffscreenCanvas}
        */
       this.canvas_ = null;
 
@@ -71327,7 +72112,7 @@
 
     /**
      * Get the HTML Canvas element for this tile.
-     * @return {HTMLCanvasElement} Canvas.
+     * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
      */
     getImage() {
       return this.canvas_;
@@ -71457,7 +72242,11 @@
      */
     release() {
       if (this.canvas_) {
-        releaseCanvas(this.canvas_.getContext('2d'));
+        releaseCanvas(
+          /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+            this.canvas_.getContext('2d')
+          ),
+        );
         canvasPool.push(this.canvas_);
         this.canvas_ = null;
       }
@@ -71768,17 +72557,6 @@
    */
 
   /**
-   * @param {string} sourceKey The source key.
-   * @param {number} z The tile z level.
-   * @param {number} x The tile x level.
-   * @param {number} y The tile y level.
-   * @return {string} The cache key.
-   */
-  function getCacheKey(sourceKey, z, x, y) {
-    return `${sourceKey},${getKeyZXY(z, x, y)}`;
-  }
-
-  /**
    * @typedef {Object<number, Set<import("../../Tile.js").default>>} TileLookup
    */
 
@@ -71897,12 +72675,6 @@
       this.renderedProjection = null;
 
       /**
-       * @private
-       * @type {number}
-       */
-      this.renderedRevision_;
-
-      /**
        * @protected
        * @type {!Array<import("../../Tile.js").default>}
        */
@@ -71946,6 +72718,12 @@
        */
       this.tileCache_ = new LRUCache(cacheSize);
 
+      /**
+       * @type {import("../../structs/LRUCache.js").default<import("../../Tile.js").default|null>}
+       * @private
+       */
+      this.sourceTileCache_ = null;
+
       this.maxStaleKeys = cacheSize * 0.5;
     }
 
@@ -71954,6 +72732,16 @@
      */
     getTileCache() {
       return this.tileCache_;
+    }
+
+    /**
+     * @return {LRUCache} Tile cache.
+     */
+    getSourceTileCache() {
+      if (!this.sourceTileCache_) {
+        this.sourceTileCache_ = new LRUCache(512);
+      }
+      return this.sourceTileCache_;
     }
 
     /**
@@ -71970,7 +72758,7 @@
       const tileCache = this.tileCache_;
       const tileLayer = this.getLayer();
       const tileSource = tileLayer.getSource();
-      const cacheKey = getCacheKey(tileSource.getKey(), z, x, y);
+      const cacheKey = getCacheKey(tileSource, tileSource.getKey(), z, x, y);
 
       /** @type {import("../../Tile.js").default} */
       let tile;
@@ -71978,12 +72766,17 @@
       if (tileCache.containsKey(cacheKey)) {
         tile = tileCache.get(cacheKey);
       } else {
+        const projection = frameState.viewState.projection;
+        const sourceProjection = tileSource.getProjection();
         tile = tileSource.getTile(
           z,
           x,
           y,
           frameState.pixelRatio,
-          frameState.viewState.projection,
+          projection,
+          !sourceProjection || equivalent$1(sourceProjection, projection)
+            ? undefined
+            : this.getSourceTileCache(),
         );
         if (!tile) {
           return null;
@@ -72109,14 +72902,24 @@
         return false;
       }
       const sourceRevision = source.getRevision();
-      if (!this.renderedRevision_) {
-        this.renderedRevision_ = sourceRevision;
-      } else if (this.renderedRevision_ !== sourceRevision) {
-        this.renderedRevision_ = sourceRevision;
+      if (!this.renderedSourceRevision_) {
+        this.renderedSourceRevision_ = sourceRevision;
+      } else if (this.renderedSourceRevision_ !== sourceRevision) {
+        this.renderedSourceRevision_ = sourceRevision;
         if (this.renderedSourceKey_ === source.getKey()) {
           this.tileCache_.clear();
+          this.sourceTileCache_?.clear();
         }
       }
+      return true;
+    }
+
+    /**
+     * Determine whether tiles for next extent should be enqueued for rendering.
+     * @return {boolean} Rendering tiles for next extent is supported.
+     * @protected
+     */
+    enqueueTilesForNextExtent() {
       return true;
     }
 
@@ -72225,7 +73028,13 @@
       const y = tileCoord[2];
       const staleKeys = this.getStaleKeys();
       for (let i = 0; i < staleKeys.length; ++i) {
-        const cacheKey = getCacheKey(staleKeys[i], z, x, y);
+        const cacheKey = getCacheKey(
+          this.getLayer().getSource(),
+          staleKeys[i],
+          z,
+          x,
+          y,
+        );
         if (tileCache.containsKey(cacheKey)) {
           const tile = tileCache.peek(cacheKey);
           if (tile.getState() === TileState.LOADED) {
@@ -72265,7 +73074,7 @@
       const sourceKey = source.getKey();
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          const cacheKey = getCacheKey(sourceKey, altZ, x, y);
+          const cacheKey = getCacheKey(source, sourceKey, altZ, x, y);
           let loaded = false;
           if (tileCache.containsKey(cacheKey)) {
             const tile = tileCache.peek(cacheKey);
@@ -72298,7 +73107,6 @@
      */
     renderFrame(frameState, target) {
       this.renderComplete = true;
-
       /**
        * TODO:
        *  maybe skip transition when not fully opaque
@@ -72365,7 +73173,7 @@
        */
 
       const preload = tileLayer.getPreload();
-      if (frameState.nextExtent) {
+      if (frameState.nextExtent && this.enqueueTilesForNextExtent()) {
         const targetZ = tileGrid.getZForResolution(
           viewState.nextResolution,
           tileSource.zDirection,
@@ -72604,11 +73412,13 @@
           const tilesCount = wantedTiles ? Object.keys(wantedTiles).length : 0;
           this.updateCacheSize(tilesCount);
           this.tileCache_.expireCache();
+          this.sourceTileCache_?.expireCache();
         };
 
         frameState.postRenderFunctions.push(postRenderFunction);
       }
 
+      // this normally is `div.ol-layer` and is a mocked div in worker
       return this.container;
     }
 
@@ -72646,6 +73456,7 @@
           /** @type {import("../../ImageTile.js").default} */ (tile),
         );
       }
+
       if (!image) {
         return;
       }
@@ -72683,7 +73494,7 @@
     }
 
     /**
-     * @return {HTMLCanvasElement} Image
+     * @return {HTMLCanvasElement|OffscreenCanvas} Image
      */
     getImage() {
       const context = this.context;
@@ -72693,7 +73504,7 @@
     /**
      * Get the image from a tile.
      * @param {import("../../ImageTile.js").default} tile Tile.
-     * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+     * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
      * @protected
      */
     getTileImage(tile) {
@@ -73660,9 +74471,10 @@
      * @param {number} y Tile coordinate y.
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../proj/Projection.js").default} projection Projection.
+     * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
      * @return {TileType|null} Tile.
      */
-    getTile(z, x, y, pixelRatio, projection) {
+    getTile(z, x, y, pixelRatio, projection, tileCache) {
       return abstract();
     }
 
@@ -74229,10 +75041,11 @@
      * @param {number} y Tile coordinate y.
      * @param {number} pixelRatio Pixel ratio.
      * @param {import("../proj/Projection.js").default} projection Projection.
+     * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
      * @return {!(ImageTile|ReprojTile)} Tile.
      * @override
      */
-    getTile(z, x, y, pixelRatio, projection) {
+    getTile(z, x, y, pixelRatio, projection, tileCache) {
       const sourceProjection = this.getProjection();
       if (
         !sourceProjection ||
@@ -74265,7 +75078,7 @@
         this.getTilePixelRatio(pixelRatio),
         this.getGutter(),
         (z, x, y, pixelRatio) =>
-          this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
+          this.getTileInternal(z, x, y, pixelRatio, sourceProjection, tileCache),
         this.reprojectionErrorThreshold_,
         this.renderReprojectionEdges_,
         this.tileOptions,
@@ -74280,12 +75093,20 @@
      * @param {number} y Tile coordinate y.
      * @param {number} pixelRatio Pixel ratio.
      * @param {!import("../proj/Projection.js").default} projection Projection.
+     * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
      * @return {!ImageTile} Tile.
      * @protected
      */
-    getTileInternal(z, x, y, pixelRatio, projection) {
+    getTileInternal(z, x, y, pixelRatio, projection, tileCache) {
       const key = this.getKey();
-      return this.createTile_(z, x, y, pixelRatio, projection, key);
+      const cacheKey = getCacheKey(this, key, z, x, y);
+      if (tileCache && tileCache.containsKey(cacheKey)) {
+        const tile = /** @type {!ImageTile} */ (tileCache.get(cacheKey));
+        return tile;
+      }
+      const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      tileCache?.set(cacheKey, tile);
+      return tile;
     }
 
     /**
@@ -74329,337 +75150,54 @@
    * @param {string} src Source.
    */
   function defaultTileLoadFunction(imageTile, src) {
+    if (WORKER_OFFSCREEN_CANVAS) {
+      // special treatment for offscreen canvas
+      const crossOrigin = imageTile.getCrossOrigin();
+
+      /** @type {RequestMode} */
+      let mode = 'same-origin';
+      /** @type {RequestCredentials} */
+      let credentials = 'same-origin';
+      if (crossOrigin === 'anonymous' || crossOrigin === '') {
+        mode = 'cors';
+        credentials = 'omit';
+      } else if (crossOrigin === 'use-credentials') {
+        mode = 'cors';
+        credentials = 'include';
+      }
+
+      fetch(src, {
+        mode,
+        credentials,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          return createImageBitmap(blob);
+        })
+        .then((imageBitmap) => {
+          const canvas = imageTile.getImage();
+          canvas.width = imageBitmap.width;
+          canvas.height = imageBitmap.height;
+          const ctx = /** @type {OffscreenCanvas} */ (canvas).getContext('2d');
+          ctx.drawImage(imageBitmap, 0, 0);
+          imageBitmap.close?.();
+          // mock the image 'load' event
+          canvas.dispatchEvent(new Event('load'));
+        })
+        .catch(() => {
+          const canvas = imageTile.getImage();
+          canvas.dispatchEvent(new Event('error'));
+        });
+      return;
+    }
+
     /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =
       src;
-  }
-
-  /**
-   * @module ol/source/BingMaps
-   */
-
-
-  /**
-   * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
-   * @return {string} Quad key.
-   */
-  function quadKey(tileCoord) {
-    const z = tileCoord[0];
-    const digits = new Array(z);
-    let mask = 1 << (z - 1);
-    let i, charCode;
-    for (i = 0; i < z; ++i) {
-      // 48 is charCode for 0 - '0'.charCodeAt(0)
-      charCode = 48;
-      if (tileCoord[1] & mask) {
-        charCode += 1;
-      }
-      if (tileCoord[2] & mask) {
-        charCode += 2;
-      }
-      digits[i] = String.fromCharCode(charCode);
-      mask >>= 1;
-    }
-    return digits.join('');
-  }
-
-  /**
-   * The attribution containing a link to the Microsoft® Bing™ Maps Platform APIs’
-   * Terms Of Use.
-   * @const
-   * @type {string}
-   */
-  const TOS_ATTRIBUTION =
-    '<a class="ol-attribution-bing-tos" ' +
-    'href="https://www.microsoft.com/maps/product/terms.html" target="_blank">' +
-    'Terms of Use</a>';
-
-  /**
-   * @typedef {Object} Options
-   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
-   * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
-   * @property {string} [culture='en-us'] Culture code.
-   * @property {string} key Bing Maps API key. Get yours at https://www.bingmapsportal.com/.
-   * @property {string} imagerySet Type of imagery.
-   * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
-   * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
-   * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
-   * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
-   * Higher values can increase reprojection performance, but decrease precision.
-   * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
-   * ```js
-   * function(imageTile, src) {
-   *   imageTile.getImage().src = src;
-   * };
-   * ```
-   * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
-   * @property {number} [transition] Duration of the opacity transition for rendering.
-   * To disable the opacity transition, pass `transition: 0`.
-   * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
-   * Choose whether to use tiles with a higher or lower zoom level when between integer
-   * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
-   * @property {boolean} [placeholderTiles] Whether to show BingMaps placeholder tiles when zoomed past the maximum level provided in an area. When `false`, requests beyond
-   * the maximum zoom level will return no tile. When `true`, the placeholder tile will be returned. When not set, the default behaviour of the imagery set takes place,
-   * which is unique for each imagery set in BingMaps.
-   */
-
-  /**
-   * @typedef {Object} BingMapsImageryMetadataResponse
-   * @property {number} statusCode The response status code
-   * @property {string} statusDescription The response status description
-   * @property {string} authenticationResultCode The authentication result code
-   * @property {Array<ResourceSet>} resourceSets The array of resource sets
-   */
-
-  /**
-   * @typedef {Object} ResourceSet
-   * @property {Array<Resource>} resources Resources.
-   */
-
-  /**
-   * @typedef {Object} Resource
-   * @property {number} imageHeight The image height
-   * @property {number} imageWidth The image width
-   * @property {number} zoomMin The minimum zoom level
-   * @property {number} zoomMax The maximum zoom level
-   * @property {string} imageUrl The image URL
-   * @property {Array<string>} imageUrlSubdomains The image URL subdomains for rotation
-   * @property {Array<ImageryProvider>} [imageryProviders] The array of ImageryProviders
-   */
-
-  /**
-   * @typedef {Object} ImageryProvider
-   * @property {Array<CoverageArea>} coverageAreas The coverage areas
-   * @property {string} [attribution] The attribution
-   */
-
-  /**
-   * @typedef {Object} CoverageArea
-   * @property {number} zoomMin The minimum zoom
-   * @property {number} zoomMax The maximum zoom
-   * @property {Array<number>} bbox The coverage bounding box
-   */
-
-  /**
-   * @classdesc
-   * Layer source for Bing Maps tile data.
-   * @api
-   */
-  class BingMaps extends TileImage {
-    /**
-     * @param {Options} options Bing Maps options.
-     */
-    constructor(options) {
-      const hidpi = options.hidpi !== undefined ? options.hidpi : false;
-
-      super({
-        cacheSize: options.cacheSize,
-        crossOrigin: 'anonymous',
-        interpolate: options.interpolate,
-        projection: get$2('EPSG:3857'),
-        reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-        state: 'loading',
-        tileLoadFunction: options.tileLoadFunction,
-        tilePixelRatio: hidpi ? 2 : 1,
-        wrapX: options.wrapX !== undefined ? options.wrapX : true,
-        transition: options.transition,
-        zDirection: options.zDirection,
-      });
-
-      /**
-       * @private
-       * @type {boolean}
-       */
-      this.hidpi_ = hidpi;
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.culture_ = options.culture !== undefined ? options.culture : 'en-us';
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.maxZoom_ = options.maxZoom !== undefined ? options.maxZoom : -1;
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.apiKey_ = options.key;
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.imagerySet_ = options.imagerySet;
-
-      /**
-       * @private
-       * @type {boolean|undefined}
-       */
-      this.placeholderTiles_ = options.placeholderTiles;
-
-      const url =
-        'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-        this.imagerySet_ +
-        '?uriScheme=https&include=ImageryProviders&key=' +
-        this.apiKey_ +
-        '&c=' +
-        this.culture_;
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((json) => this.handleImageryMetadataResponse(json));
-    }
-
-    /**
-     * Get the api key used for this source.
-     *
-     * @return {string} The api key.
-     * @api
-     */
-    getApiKey() {
-      return this.apiKey_;
-    }
-
-    /**
-     * Get the imagery set associated with this source.
-     *
-     * @return {string} The imagery set.
-     * @api
-     */
-    getImagerySet() {
-      return this.imagerySet_;
-    }
-
-    /**
-     * @param {BingMapsImageryMetadataResponse} response Response.
-     */
-    handleImageryMetadataResponse(response) {
-      if (
-        response.statusCode != 200 ||
-        response.statusDescription != 'OK' ||
-        response.authenticationResultCode != 'ValidCredentials' ||
-        response.resourceSets.length != 1 ||
-        response.resourceSets[0].resources.length != 1
-      ) {
-        this.setState('error');
-        return;
-      }
-
-      const resource = response.resourceSets[0].resources[0];
-      const maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
-
-      const sourceProjection = this.getProjection();
-      const extent = extentFromProjection(sourceProjection);
-      const scale = this.hidpi_ ? 2 : 1;
-      const tileSize =
-        resource.imageWidth == resource.imageHeight
-          ? resource.imageWidth / scale
-          : [resource.imageWidth / scale, resource.imageHeight / scale];
-
-      const tileGrid = createXYZ({
-        extent: extent,
-        minZoom: resource.zoomMin,
-        maxZoom: maxZoom,
-        tileSize: tileSize,
-      });
-      this.tileGrid = tileGrid;
-
-      const culture = this.culture_;
-      const hidpi = this.hidpi_;
-      const placeholderTiles = this.placeholderTiles_;
-      this.tileUrlFunction = createFromTileUrlFunctions(
-        resource.imageUrlSubdomains.map(function (subdomain) {
-          /** @type {import('../tilecoord.js').TileCoord} */
-          const quadKeyTileCoord = [0, 0, 0];
-          const imageUrl = resource.imageUrl
-            .replace('{subdomain}', subdomain)
-            .replace('{culture}', culture);
-          return (
-            /**
-             * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-             * @param {number} pixelRatio Pixel ratio.
-             * @param {import("../proj/Projection.js").default} projection Projection.
-             * @return {string|undefined} Tile URL.
-             */
-            function (tileCoord, pixelRatio, projection) {
-              if (!tileCoord) {
-                return undefined;
-              }
-              createOrUpdate(
-                tileCoord[0],
-                tileCoord[1],
-                tileCoord[2],
-                quadKeyTileCoord,
-              );
-              const url = new URL(
-                imageUrl.replace('{quadkey}', quadKey(quadKeyTileCoord)),
-              );
-              const params = url.searchParams;
-              if (hidpi) {
-                params.set('dpi', 'd1');
-                params.set('device', 'mobile');
-              }
-              if (placeholderTiles === true) {
-                params.delete('n');
-              } else if (placeholderTiles === false) {
-                params.set('n', 'z');
-              }
-              return url.toString();
-            }
-          );
-        }),
-      );
-
-      if (resource.imageryProviders) {
-        const transform = getTransformFromProjections(
-          get$2('EPSG:4326'),
-          this.getProjection(),
-        );
-
-        this.setAttributions((frameState) => {
-          const attributions = [];
-          const viewState = frameState.viewState;
-          const tileGrid = this.getTileGrid();
-          const z = tileGrid.getZForResolution(
-            viewState.resolution,
-            this.zDirection,
-          );
-          const tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            viewState.center,
-            z,
-          );
-          const zoom = tileCoord[0];
-          resource.imageryProviders.map(function (imageryProvider) {
-            let intersecting = false;
-            const coverageAreas = imageryProvider.coverageAreas;
-            for (let i = 0, ii = coverageAreas.length; i < ii; ++i) {
-              const coverageArea = coverageAreas[i];
-              if (zoom >= coverageArea.zoomMin && zoom <= coverageArea.zoomMax) {
-                const bbox = coverageArea.bbox;
-                const epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-                const extent = applyTransform(epsg4326Extent, transform);
-                if (intersects$1(extent, frameState.extent)) {
-                  intersecting = true;
-                  break;
-                }
-              }
-            }
-            if (intersecting) {
-              attributions.push(imageryProvider.attribution);
-            }
-          });
-
-          attributions.push(TOS_ATTRIBUTION);
-          return attributions;
-        });
-      }
-
-      this.setState('ready');
-    }
   }
 
   /**
@@ -74732,7 +75270,7 @@
    * ```
    * @api
    */
-  let XYZ$1 = class XYZ extends TileImage {
+  class XYZ extends TileImage {
     /**
      * @param {Options} [options] XYZ options.
      */
@@ -74786,7 +75324,7 @@
     getGutter() {
       return this.gutter_;
     }
-  };
+  }
 
   /**
    * @module ol/source/Cluster
@@ -75294,7 +75832,7 @@
    * Layer source for the OpenStreetMap tile server.
    * @api
    */
-  class OSM extends XYZ$1 {
+  class OSM extends XYZ {
     /**
      * @param {Options} [options] Open Street Map options.
      */
@@ -75324,7 +75862,19 @@
         interpolate: options.interpolate,
         maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-        tileLoadFunction: options.tileLoadFunction,
+        tileLoadFunction:
+          /**
+           * @param {import("../ImageTile.js").default} tile Image tile
+           * @param {string} src Image src
+           */
+          (tile, src) => {
+            const image = tile.getImage();
+            // FIXME referrer policy for worker fetch requests
+            if (!WORKER_OFFSCREEN_CANVAS && image instanceof HTMLImageElement) {
+              image.referrerPolicy = 'origin-when-cross-origin';
+            }
+            (options.tileLoadFunction || defaultTileLoadFunction)(tile, src);
+          },
         transition: options.transition,
         url: url,
         wrapX: options.wrapX,
@@ -76116,17 +76666,18 @@
       proj4: projProj4,
     },
     source: {
-      BingMaps: BingMaps,
+      //BingMaps: source.BingMaps,
       Cluster: Cluster,
       OSM: OSM,
       TileWMS: TileWMS,
       Vector: VectorSource,
       WMTS: WMTS,
-      XYZ: XYZ$1,
+      XYZ: XYZ,
     },
     sphere: sphere$1,
     style: style,
     tilegrid: {
+      TileGrid: TileGrid,
       WMTS: WMTSTileGrid,
     },
     util: {
@@ -76142,8 +76693,6 @@
    * Abstract class to be used by other control buttons definitions
    * Add some usefull controls with displayed buttons
    */
-  //BEST redesign button hover & touch
-  //BEST click sur in/out file / ...
 
 
   class Button extends Control {
@@ -76243,6 +76792,7 @@
    * Download control to download vectors features
    * Supports GPX, KML, GeoJSON formats
    */
+
 
   const subMenuHTML$3 = '\
   <p><a mime="application/gpx+xml">GPX</a></p>\
@@ -76355,43 +76905,34 @@
 
 
   /**
-   * Virtual class to factorise XYZ layers code
+   * Build the attributions chain from:
+    {
+      contribution: 'link,name',
+      donate: 'link,name',
+      attribution: 'link,name',
+      licence: 'link,name',
+      legend: 'link',
+   }
    */
-  class XYZ extends TileLayer {
-    constructor(options) {
-      super({
-        source: new XYZ$1(options),
-        ...options,
-      });
-    }
-  }
+  function makeAttributions(options) {
+    const makeLink = (args, pre = '') => pre + '<a target="_blank" href="' + args[0] + '">' + args[1] + '</a>',
+      ret = [];
 
-  /**
-   * Simple layer to be used when a layer is out of extent
-   * API : https://api-docs.carto.com/
-   */
-  class Positron extends XYZ {
-    constructor(options) {
-      super({
-        url: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-        attributions: '<a href="https://carto.com/attribution/">CartoDB</a>',
-        ...options,
-      });
-    }
-  }
+    if (options.contribution)
+      ret.push(makeLink(options.contribution.split(','), '&copy '));
+    if (options.donate)
+      ret.push(makeLink(options.donate.split(','), '❤️'));
+    if (options.attribution)
+      ret.push(makeLink(options.attribution.split(','), '&copy '));
+    if (options.licence)
+      ret.push(makeLink(options.licence.split(','), '&copy '));
+    if (options.legend)
+      ret.push(makeLink([options.legend, 'Légende']));
+    if (options.warning)
+      ret.push(options.warning);
 
-  /**
-   * Simple layer to be used when a layer is out of scope
-   */
-  class NoTile extends XYZ {
-    constructor(options) {
-      super({
-        url: 'https://ecn.t0.tiles.virtualearth.net/tiles/r000000000000000000.jpeg?g=1',
-        attributions: 'Out of zoom',
-
-        ...options,
-      });
-    }
+    if (ret)
+      return ret.join(' | ');
   }
 
   /**
@@ -76402,58 +76943,14 @@
   class OpenStreetMap extends TileLayer {
     constructor(options) {
       super({
-        source: new OSM(options),
-        ...options,
-      });
-    }
-  }
-
-  /**
-   * Nice OSM style
-   * Map : opentopomap.org
-   * API : https://www.opentopodata.org/#public-api
-   */
-  class OpenTopo extends OpenStreetMap {
-    constructor() {
-      super({
-        url: 'https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png',
-        maxZoom: 17,
-        attributions: '<a href="https://opentopomap.org">OpenTopoMap</a> ' +
-          '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
-      });
-    }
-  }
-
-  /**
-   * Maps of https://www.refuges.info/
-   * Map : https://maps.refuges.info/
-   * Doc : https://wiki.openstreetmap.org/wiki/Hiking/mri
-   */
-  class MRI extends OpenStreetMap {
-    constructor() {
-      super({
-        url: 'https://maps.refuges.info/hiking/{z}/{x}/{y}.png',
-        maxZoom: 18,
-        attributions: '<a href="https://wiki.openstreetmap.org/wiki/Hiking/mri">Refuges.info</a>',
-      });
-    }
-  }
-
-  /**
-   * Germany maps
-   * Map : https://www.kompass.de/wanderkarte/
-   * Doc : https://www.kompass.de/
-   */
-  class Kompass extends OpenStreetMap { // Austria
-    constructor(options = {}) {
-      super({
-        hidden: !options.key && options.subLayer !== 'osm', // For LayerSwitcher
-        url: options.key ?
-          'https://map{1-4}.kompass.de/{z}/{x}/{y}/kompass_' + options.subLayer + '?key=' + options.key : // Specific
-          'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
-        maxZoom: 17,
-        attributions: '<a href="https://www.kompass.de/">Kompass</a>',
-
+        source: new OSM({
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://www.openstreetmap.org/panes/legend',
+            ...options,
+          }),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -76467,14 +76964,29 @@
   class Thunderforest extends OpenStreetMap {
     constructor(options = {}) {
       super({
-        hidden: !options.key, // For LayerSwitcher
         url: 'https://{a-c}.tile.thunderforest.com/' + options.subLayer + '/{z}/{x}/{y}.png?apikey=' + options.key,
         maxZoom: 22,
-        // subLayer: 'outdoors', ...
-        // key: '...',
-        attributions: '<a href="https://www.thunderforest.com/">Thunderforest</a>',
+        attribution: 'https://www.thunderforest.com/,Thunderforest',
+        ...options,
+      });
+    }
+  }
 
-        ...options, // Include key
+  /**
+   * Germany maps
+   * Map : https://www.kompass.de/wanderkarte/
+   * Doc : https://www.kompass.de/
+   */
+  class Kompass extends OpenStreetMap { // Austria
+    constructor(options = {}) {
+      super({
+        url: options.key ?
+          'https://map{1-4}.kompass.de/{z}/{x}/{y}/kompass_' + options.subLayer + '?key=' + options.key : // Specific
+          'https://map{1-5}.tourinfra.com/tiles/kompass_' + options.subLayer + '/{z}/{x}/{y}.png', // No key
+        maxZoom: 17,
+        attribution: 'https://www.kompass.de/,Kompass',
+        legend: 'https://www.outdooractive.com/fr/knowledgepage/carte-kompass/43778568/#5',
+        ...options,
       });
     }
   }
@@ -76485,7 +76997,7 @@
    * Key : https://cartes.gouv.fr
    */
   class IGN extends TileLayer {
-    constructor(options = {}) {
+    constructor(options) {
       const IGNresolutions = [],
         IGNmatrixIds = [];
 
@@ -76497,22 +77009,48 @@
       super({
         source: new WMTS({
           // WMTS options
-          url: options.key ? 'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://data.geopf.fr/wmts',
+          url: options.key ?
+            'https://data.geopf.fr/private/wmts?apikey=' + options.key : 'https://data.geopf.fr/wmts',
+          // layer:'mandatory',
+          // layer:'mandatory',
+          // format: 'image/???',
           style: 'normal',
           matrixSet: 'PM',
-          format: 'image/jpeg',
-          attributions: '&copy; <a href="https://www.geoportail.gouv.fr/" target="_blank">IGN</a>',
           tileGrid: new WMTSTileGrid({
             origin: [-20037508, 20037508],
             resolutions: IGNresolutions,
             matrixIds: IGNmatrixIds,
           }),
-
-          // IGN options
-          ...options, // Include layer
+          attributions: makeAttributions({
+            attribution: 'https://www.geoportail.gouv.fr/,IGN',
+            ...options,
+          }),
+          ...options,
         }),
-
         ...options, // For layer limits
+      });
+    }
+  }
+
+  class IGNtop25 extends IGN {
+    //BEST couche hors zone de définition (pôles)
+    constructor(options) {
+      super({
+        layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+        format: 'image/jpeg',
+        legend: 'https://geoservices.ign.fr/sites/default/files/2021-07/DC_SCAN25_3-1.pdf',
+        ...options,
+      });
+    }
+  }
+
+  class IGNplan extends IGN {
+    constructor(options) {
+      super({
+        layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+        format: 'image/png',
+        legend: 'https://geoservices.ign.fr/sites/default/files/2021-07/DC_Plan_IGN.pdf',
+        ...options,
       });
     }
   }
@@ -76525,16 +77063,15 @@
   class SwissTopo extends TileLayer {
     constructor(opt) {
       const options = {
-        host: 'https://wmts2{0-4}.geo.admin.ch/1.0.0/',
-        subLayer: 'ch.swisstopo.pixelkarte-farbe',
-        maxResolution: 2000, // Resolution limit above which we switch to a more global service
-        extent: [640000, 5730000, 1200000, 6100000],
-        attributions: '&copy <a href="https://map.geo.admin.ch/">SwissTopo</a>',
-
-        ...opt,
-      };
-
-      const projectionExtent = get$2('EPSG:3857').getExtent(),
+          host: 'https://wmts2{0-4}.geo.admin.ch/1.0.0/',
+          subLayer: 'ch.swisstopo.pixelkarte-farbe',
+          maxResolution: 2000, // Resolution limit above which we switch to a more global service
+          extent: [640000, 5730000, 1200000, 6100000],
+          attribution: 'https://map.geo.admin.ch/,SwissTopo',
+          legend: 'https://prod-swishop-s3.s3.eu-central-1.amazonaws.com/2022-04/symbols_fr_0.pdf',
+          ...opt,
+        },
+        projectionExtent = get$2('EPSG:3857').getExtent(),
         resolutions = [],
         matrixIds = [];
 
@@ -76553,8 +77090,9 @@
             matrixIds: matrixIds,
           }),
           requestEncoding: 'REST',
+          attributions: makeAttributions(options),
+          ...options, // For attributionss
         })),
-
         ...options, // For layer limits
       });
     }
@@ -76565,26 +77103,29 @@
    * Map : https://www.ign.es/iberpix/visor
    * API : https://api-maps.ign.es/
    */
-  class IgnES extends XYZ {
+  class IgnES extends TileLayer {
     constructor(opt) {
       const options = {
         host: 'https://www.ign.es/wmts/',
         server: 'mapa-raster',
         subLayer: 'MTN',
         maxZoom: 20,
-        attributions: '&copy; <a href="https://www.ign.es/">IGN España</a>',
-
+        attribution: 'https://www.ign.es/,Instituto Geográfico Nacional',
+        legend: 'https://www.ign.es/web/resources/docs/IGNCnig/Especificaciones/catalogo_MTN25.pdf',
         ...opt,
       };
 
       super({
-        url: options.host + options.server +
-          '?layer=' + options.subLayer +
-          '&Service=WMTS&Request=GetTile&Version=1.0.0' +
-          '&Format=image/jpeg' +
-          '&style=default&tilematrixset=GoogleMapsCompatible' +
-          '&TileMatrix={z}&TileCol={x}&TileRow={y}',
-
+        source: new XYZ({
+          url: options.host + options.server +
+            '?layer=' + options.subLayer +
+            '&Service=WMTS&Request=GetTile&Version=1.0.0' +
+            '&Format=image/jpeg' +
+            '&style=default&tilematrixset=GoogleMapsCompatible' +
+            '&TileMatrix={z}&TileCol={x}&TileRow={y}',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -76635,25 +77176,27 @@
    * Ordnance Survey : Great Britain
    * API & key : https://osdatahub.os.uk/
    */
-  class OS extends XYZ {
+  class OS extends TileLayer {
     constructor(opt) {
       const options = {
-        hidden: !opt.key, // For LayerSwitcher
         subLayer: 'Outdoor_3857',
         minZoom: 7,
         maxZoom: 16,
         extent: [-1198263, 6365000, 213000, 8702260],
-        attributions: '&copy <a href="https://explore.osmaps.com/">UK Ordnancesurvey maps</a>',
-
+        attribution: 'https://explore.osmaps.com/,UK Ordnancesurvey maps',
+        legend: 'https://www.ordnancesurvey.co.uk/mapzone/assets/doc/Explorer-25k-Legend-en.pdf',
         ...opt,
       };
 
       super({
-        url: 'https://api.os.uk/maps/raster/v1/zxy/' +
-          options.subLayer +
-          '/{z}/{x}/{y}.png' +
-          '?key=' + options.key,
-
+        source: new XYZ({
+          url: 'https://api.os.uk/maps/raster/v1/zxy/' +
+            options.subLayer +
+            '/{z}/{x}/{y}.png' +
+            '?key=' + options.key,
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -76665,35 +77208,23 @@
    * API : https://developers.arcgis.com/javascript/latest/
    * No key
    */
-  class ArcGIS extends XYZ {
+  class ArcGIS extends TileLayer {
     constructor(opt) {
       const options = {
         host: 'https://server.arcgisonline.com/ArcGIS/rest/services/',
         subLayer: 'World_Imagery',
         maxZoom: 19,
-        attributions: '&copy; <a href="https://www.arcgis.com/">ArcGIS (Esri)</a>',
-
+        attribution: 'https://www.arcgis.com/,ArcGIS (Esri)',
         ...opt,
       };
 
       super({
-        url: options.host + options.subLayer + '/MapServer/tile/{z}/{y}/{x}',
+        source: new XYZ({
+          url: options.host + options.subLayer + '/MapServer/tile/{z}/{y}/{x}',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
-      });
-    }
-  }
-
-  /**
-   * Maxbox (Maxar)
-   * Key : https://www.mapbox.com/
-   */
-  class Maxbox extends XYZ {
-    constructor(options = {}) {
-      super({
-        hidden: !options.key, // For LayerSwitcher
-        url: 'https://api.mapbox.com/v4/' + options.tileset + '/{z}/{x}/{y}@2x.webp?access_token=' + options.key,
-        // No maxZoom
-        attributions: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>',
       });
     }
   }
@@ -76701,18 +77232,21 @@
   /**
    * Google
    */
-  class Google extends XYZ {
+  class Google extends TileLayer {
     constructor(opt) {
       const options = {
         subLayers: 'p', // Terrain
         maxZoom: 22,
-        attributions: '&copy; <a href="https://www.google.com/maps">Google</a>',
-
+        attribution: 'https://www.google.com/maps,Google',
         ...opt,
       };
 
       super({
-        url: 'https://mt{0-3}.google.com/vt/lyrs=' + options.subLayers + '&hl=fr&x={x}&y={y}&z={z}',
+        source: new XYZ({
+          url: 'https://mt{0-3}.google.com/vt/lyrs=' + options.subLayers + '&hl=fr&x={x}&y={y}&z={z}',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
@@ -76723,18 +77257,14 @@
    * Doc: https://docs.microsoft.com/en-us/bingmaps/getting-started/
    * Key : https://www.bingmapsportal.com/
    */
-  let Bing$1 = class Bing extends TileLayer {
+  /*//TODO migration sur AZURE https://learn.microsoft.com/fr-fr/azure/azure-maps/migrate-bing-maps-overview
+  export class Bing extends TileLayer {
+    //TODO https://blogs.bing.com/maps/2025-06/Bing-Maps-for-Enterprise-Basic-Account-shutdown-June-30,2025
     constructor(options = {}) {
       super({
-        hidden: !options.key, // For LayerSwitcher
-
-        // Mandatory
-        // 'key',
         imagerySet: 'Road',
-
         // No explicit zoom
         // attributions, defined by ol.source.BingMaps
-
         ...options,
       });
 
@@ -76745,91 +77275,185 @@
           this.setSource(new BingMaps(options));
       });
     }
-  };
+  }*/
 
   /**
-   * RGB elevation (Mapbox)
-   * Each pixel color encode the elevation
-   * Doc: https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/
-   * elevation = -10000 + (({R} * 256 * 256 + {G} * 256 + {B}) * 0.1)
+   * Maxbox (Maxar)
    * Key : https://www.mapbox.com/
+   * tileset
+      Satellite Streets
+      ???
+      Light
+      Dark
+      Streets
+      Outdoors
    */
-  class MapboxElevation extends Maxbox {
-    constructor(options = {}) {
+  class Maxbox extends TileLayer {
+    constructor(opt) {
+      const options = {
+        tileset: 'mapbox.satellite', // Maxar
+        attribution: 'https://www.mapbox.com/,Mapbox',
+        ...opt,
+      };
+
       super({
-        hidden: !options.key, // For LayerSwitcher
+        source: new XYZ({
+          url: 'https://api.mapbox.com/v4/' + options.tileset +
+            '/{z}/{x}/{y}@2x.webp?access_token=' + options.key,
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
-        tileset: 'mapbox.terrain-rgb',
       });
     }
   }
 
   /**
-   * RGB elevation (MapTiler)
-   * Doc: https://cloud.maptiler.com/tiles/terrain-rgb-v2/
-   * Doc: https://documentation.maptiler.com/hc/en-us/articles/4405444055313-RGB-Terrain-by-MapTiler
-   * elevation = -10000 + ((R * 256 * 256 + G * 256 + B) * 0.1
-   * Key : https://cloud.maptiler.com/account/keys/
+   * Simple shematic layer
+   * DOC https://github.com/CartoDB/basemap-styles/tree/master
+   * API : https://api-docs.carto.com/
+      light_all,
+      dark_all,
+      light_nolabels,
+      light_only_labels,
+      dark_nolabels,
+      dark_only_labels,
+      rastertiles/voyager,
+      rastertiles/voyager_nolabels,
+      rastertiles/voyager_only_labels,
+      rastertiles/voyager_labels_under
    */
-  /*// Backup of Maxbox elevation
-  export class MapTilerElevation extends XYZ {
-    constructor(options = {}) {
+  class CartoDB extends TileLayer {
+    constructor(opt) {
+      const options = {
+        tileset: 'light_all',
+        ...opt,
+      };
+
       super({
-        hidden: !options.key, // For LayerSwitcher
-        url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + options.key,
-        maxZoom: 12,
-        attributions: '<a href="https://www.maptiler.com/copyright/"">&copy; MapTiler</a> ' + '<a href="https://www.openstreetmap.org/copyright"">&copy; OpenStreetMap contributors</a>',
-  	  
+        source: new XYZ({
+          url: 'https://basemaps.cartocdn.com/rastertiles/' + options.tileset + '/{z}/{x}/{y}.png',
+          attributions: makeAttributions(options),
+          ...options,
+        }),
         ...options,
       });
     }
-  }*/
+  }
+
+  /**
+   * Simple layer displaying a zoom error
+   */
+  class NoTile extends TileLayer {
+    constructor() {
+      super({
+        source: new XYZ({
+          url: 'https://ecn.t0.tiles.virtualearth.net/tiles/r000000000000000000.jpeg?g=1',
+          attributions: 'No tile',
+        }),
+      });
+    }
+  }
 
   /**
    * Tile layers examples
    */
+  // Carte refuges.info
+  function wriNavLayers(options = {}) {
+    return {
+      'OpenHikingMap': new TileLayer({
+        source: new OSM({
+          url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
+          maxZoom: 18,
+          attributions: makeAttributions({
+            contribution: 'https://github.com/sletuffe/OpenTopoMap,OpenHikingMap',
+            donate: 'https://openmaps.fr/donate,Donation',
+            attribution: 'http://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://openmaps.fr/otm/legend.html',
+          }),
+        }),
+      }),
+      'OpenStreetMap': new TileLayer({
+        source: new OSM({
+          url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          maxZoom: 19,
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://www.openstreetmap.org/panes/legend',
+          }),
+        }),
+      }),
+      'OpenTopoMap': new TileLayer({
+        source: new OSM({
+          url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
+          maxZoom: 17,
+          attributions: makeAttributions({
+            contribution: 'https://github.com/sletuffe/OpenTopoMap,OTM-R',
+            donate: 'https://openmaps.fr/donate,Donation',
+            attribution: 'http://www.openstreetmap.org/copyright,OpenStreetMap',
+            legend: 'https://openmaps.fr/otm/legend.html',
+          }),
+        }),
+      }),
+      'Outdoors': new TileLayer({
+        source: new OSM({
+          url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + options.thunderforest,
+          maxZoom: 22,
+          attributions: makeAttributions({
+            contribution: 'https://www.openstreetmap.org/copyright,OpenStreetMap',
+            attribution: 'https://www.thunderforest.com/,Thunderforest',
+          }),
+        }),
+      }),
+
+      'IGN TOP25': new IGNtop25({
+        key: options.ign, // Include key
+        ...options.ign, // Include key
+      }),
+      'IGN plan': new IGNplan(),
+
+      'SwissTopo': new SwissTopo(),
+      'Österreich Kompass': new Kompass({
+        subLayer: 'osm', // No key
+      }),
+      'España': new IgnES(),
+
+      'Photo IGN': new IGN({
+        layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+      }),
+
+      'Photo ArcGIS': new ArcGIS(),
+      'Photo Google': new Google({
+        subLayers: 's',
+      }),
+      'Photo Maxar': new Maxbox({
+        key: options.mapbox,
+        tileset: 'mapbox.satellite',
+      }),
+    }
+  }
+
   function collection$2(options = {}) {
     return {
-      'OSM': new OpenStreetMap(),
-      'OSM outdoors': new Thunderforest({
-        key: options.thunderforest, // For simplified options
-        ...options.thunderforest, // Include key
-        subLayer: 'outdoors',
-      }),
-      'OpenTopo': new OpenTopo(),
+      ...wriNavLayers(options),
+
       'OSM transports': new Thunderforest({
         key: options.thunderforest, // For simplified options
         ...options.thunderforest, // Include key
         subLayer: 'transport',
+        legend: '',
       }),
-      'OSM cyclo': new OpenStreetMap({
+      'CyclOSM': new OpenStreetMap({
         url: 'https://{a-c}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
+        legend: 'https://www.cyclosm.org/legend.html',
       }),
-      'Refuges.info': new MRI(),
 
-      'IGN TOP25': new IGN({
-        layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
-        key: options.ign, // Include key
-        ...options.ign, // Include key
-      }),
-      'IGN V2': new IGN({
-        layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
-        format: 'image/png',
-      }),
-      'IGN N+1': new IGN({
-        layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1',
-        format: 'image/png',
-      }),
       'IGN cartes 1950': new IGN({
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950',
         extent: [-58e4, 506000, 1070000, 6637000],
         minZoom: 6,
       }),
 
-      'SwissTopo': new SwissTopo(),
-      'Österreich Kompass': new Kompass({
-        subLayer: 'osm', // No key
-      }),
       'Kompas winter': new Kompass({
         key: options.kompass, // For simplified options
         ...options.kompass, // Include key
@@ -76841,27 +77465,14 @@
         ...options.os, // Include key
       }),
       'Italie': new IGM(),
-      'España': new IgnES(),
-      'Google': new Google(),
 
-      'Maxar': new Maxbox({
-        key: options.mapbox, // For simplified options
-        ...options.mapbox, // Include key
-        tileset: 'mapbox.satellite',
-      }),
-      'Photo Google': new Google({
-        subLayers: 's',
-      }),
-      'Photo ArcGIS': new ArcGIS(),
-      'Photo Bing': new Bing$1({
+      'Google': new Google(),
+      /*'Photo Bing': new Bing({
         key: options.bing, // For simplified options
         ...options.bing, // Include key
         imagerySet: 'Aerial',
-      }),
+      }),*/
 
-      'Photo IGN': new IGN({
-        layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-      }),
       'Photo IGN 1950-65': new IGN({
         layer: 'ORTHOIMAGERY.ORTHOPHOTOS.1950-1965',
         style: 'BDORTHOHISTORIQUE',
@@ -76880,6 +77491,7 @@
         extent: [-58e4, 506000, 1070000, 6637000],
         minZoom: 6,
       }),
+
       /* //BEST Cassini ? clé
   	'IGN Cassini': new IGN({
         ...options.ign,
@@ -76894,17 +77506,20 @@
     return {
       ...collection$2(options),
 
-      'OSM fr': new OpenStreetMap({
+      'OpenStreetMap FR': new OpenStreetMap({
         url: 'https://{a-c}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+        legend: '',
       }),
-      'OSM orthos FR': new OpenStreetMap({
+      'OSM photos FR': new OpenStreetMap({
         url: 'https://wms.openstreetmap.fr/tms/1.0.0/tous_fr/{z}/{x}/{y}',
+        legend: '',
       }),
 
-      'ThF cycle': new Thunderforest({
+      'OpenCycleMap': new Thunderforest({
         key: options.thunderforest, // For simplified options
         ...options.thunderforest, // Include key
         subLayer: 'cycle',
+        legend: 'https://www.opencyclemap.org/docs/',
         maxZoom: 14,
       }),
       'ThF trains': new Thunderforest({
@@ -76928,12 +77543,12 @@
         subLayer: 'mobile-atlas',
       }),
 
-      'OS light': new OS({
+      'UK light': new OS({
         key: options.os, // For simplified options
         ...options.os, // Include key
         subLayer: 'Light_3857',
       }),
-      'OS road': new OS({
+      'UK road': new OS({
         key: options.os, // For simplified options
         ...options.os, // Include key
         subLayer: 'Road_3857',
@@ -76944,23 +77559,25 @@
         subLayer: 'topo',
       }),
 
-      'Bing': new Bing$1({
+      /*'Bing': new Bing({
         key: options.bing, // For simplified options
         ...options.bing, // Include key
         imagerySet: 'Road',
       }),
-      'Bing hybrid': new Bing$1({
+      'Bing hybrid': new Bing({
         key: options.bing, // For simplified options
         ...options.bing, // Include key
         imagerySet: 'AerialWithLabels',
-      }),
+      }),*/
 
       'Photo Swiss': new SwissTopo({
         subLayer: 'ch.swisstopo.swissimage',
+        legend: '',
       }),
       'Photo España': new IgnES({
         server: 'pnoa-ma',
         subLayer: 'OI.OrthoimageCoverage',
+        legend: '',
       }),
 
       'Google road': new Google({
@@ -76970,12 +77587,19 @@
         subLayers: 's,h',
       }),
 
-      'MapBox elevation': new MapboxElevation({
+      /**
+       * RGB elevation (Mapbox)
+       * Each pixel color encode the elevation
+       * Doc: https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/
+       * elevation = -10000 + (({R} * 256 * 256 + {G} * 256 + {B}) * 0.1)
+       * Key : https://www.mapbox.com/
+       */
+      'MapBox elevation': new Maxbox({
+        tileset: 'mapbox.terrain-rgb',
         key: options.mapbox, // For simplified options
-        ...options.mapbox, // Include key
       }),
 
-      'Positron': new Positron(),
+      'CartoDB': new CartoDB(),
       'No tile': new NoTile(),
       'Blank': new TileLayer(),
     };
@@ -76984,24 +77608,23 @@
   var tileLayercollection = /*#__PURE__*/Object.freeze({
     __proto__: null,
     ArcGIS: ArcGIS,
-    Bing: Bing$1,
+    CartoDB: CartoDB,
     Google: Google,
     IGM: IGM,
     IGN: IGN,
+    IGNplan: IGNplan,
+    IGNtop25: IGNtop25,
     IgnES: IgnES,
     Kompass: Kompass,
-    MRI: MRI,
-    MapboxElevation: MapboxElevation,
     Maxbox: Maxbox,
     NoTile: NoTile,
     OS: OS,
     OpenStreetMap: OpenStreetMap,
-    OpenTopo: OpenTopo,
-    Positron: Positron,
     SwissTopo: SwissTopo,
     Thunderforest: Thunderforest,
     collection: collection$2,
-    examples: examples
+    examples: examples,
+    wriNavLayers: wriNavLayers
   });
 
   /**
@@ -77011,18 +77634,21 @@
    */
 
 
-  class BackgroundLayer extends Positron {
+  class BackgroundLayer extends CartoDB {
     constructor(options) {
       // High resolution background layer
       super({
         minResolution: 20,
         visible: false,
+        warning: '<span class="warning">CARTE HORS ZONE</span>',
 
         ...options,
       });
 
       // Low resolution background layer
-      this.lowResLayer = new NoTile({
+      //TODO BUG apply to hors zone
+      //TODO BUG no apply under zoom limit
+      this.lowResLayer = new CartoDB({
         maxResolution: this.getMinResolution(),
         visible: false,
       });
@@ -77058,9 +77684,6 @@
    */
 
 
-  //BEST how do we do on touch terminal ? alt key to switch layers / transparency
-  //BEST slider transparency doesn't work out of range (no BackgroundLayer)
-  //BEST BUG Attribution must be set before LayerSwitcher
   class LayerSwitcher extends Button {
     constructor(options) {
       super({
@@ -77076,7 +77699,7 @@
       // Filter null or hidden layers
       this.layers = {};
       for (const name in options.layers)
-        if (options.layers[name] && !options.layers[name].getProperties().hidden)
+        if (options.layers[name]) //TODO PURGE others && !options.layers[name].getProperties().hidden)
           this.layers[name] = options.layers[name];
 
       // Get baselayer from url hash (#baselayer=...) if any
@@ -77099,7 +77722,7 @@
         this.subMenuEl.insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="baselayer" value="' + name + '">' + name + '</label>');
 
         // Make layers available for display
-        this.layers[name].setVisible(false); // Don't begin to get the tiles yet (Necessary for Bing)
+        //this.layers[name].setVisible(false); // Don't begin to get the tiles yet (Necessary for Bing)
         map.addLayer(this.layers[name]);
       }
       this.selectorEls = this.element.querySelectorAll('input[name="baselayer"]');
@@ -77137,7 +77760,9 @@
 
     action(evt) {
       // Clean checks
-      if (evt && !evt.ctrlKey) {
+      if (evt && !platformModifierKey({
+          originalEvent: evt
+        })) {
         this.selectorEls.forEach(el => {
           el.checked = false;
         });
@@ -78607,15 +79232,28 @@
 
 
   //BEST move this in html
-  const subMenuHTML$1 = '<p>\
-  <input type="radio" name="myol-gps-source" value="0" checked="checked">None &nbsp;\
-  <input type="radio" name="myol-gps-source" value="1">Outdoor &nbsp;\
-  <input type="radio" name="myol-gps-source" value="2">Indoor &nbsp;\
-  </p><hr><p>\
-  <input type="radio" name="myol-gps-display" value="0" checked="checked">Free map&nbsp;\
-  <input type="radio" name="myol-gps-display" value="1">Center &nbsp;\
-  <input type="radio" name="myol-gps-display" value="2">Center & orient &nbsp;\
-  </p>',
+  const subMenuHTML$1 = '\
+  <p>GPS location:</p>\
+  <label>\
+    <input type="radio" name="myol-gps-source" value="0" checked="checked">\
+    Inactive</label><label>\
+    <input type="radio" name="myol-gps-source" value="1">\
+    GPS location <span>(1) outdoor</span></label><label>\
+    <input type="radio" name="myol-gps-source" value="2">\
+    Position GPS ou IP <span>(2) indoor</span></label>\
+  <hr><label>\
+    <input type="radio" name="myol-gps-display" value="0" checked="checked">\
+    Graticule, free map</label><label>\
+    <input type="radio" name="myol-gps-display" value="1">\
+    Center the map, north at the top</label><label>\
+    <input type="radio" name="myol-gps-display" value="2">\
+    Center and orient the map <span>(3)</span></label>\
+  <hr>\
+  <p>(1) More accurate outdoors but slower to initialize,\
+    requires a GPS sensor and a free space.</p>\
+  <p>(2) more precise and faster indoors or in urban areas\
+    but can be inaccurate outdoors.</p>\
+  <p>(3) requires a magnetic sensor and a compatible explorer.</p>',
 
     subMenuHTMLfr$1 = '\
   <p>Localisation GPS:</p>\
@@ -78718,7 +79356,7 @@
       });
       this.geolocation.on('change', evt => this.subMenuAction(evt));
       this.geolocation.on('error', error => {
-        console.log('Geolocation error: ' + error.message);
+        console.error('Geolocation error: ' + error.message);
       });
 
       return super.setMap(map);
@@ -78917,7 +79555,7 @@
         this.element.className = 'ol-control myol-permalink';
         this.linkEl = document.createElement('a');
         this.linkEl.innerHTML = 'Permalink';
-        this.linkEl.title = 'Generate a link with map zoom & position';
+        this.linkEl.title = 'Generate a link with map zoom, position & layer';
         this.element.appendChild(this.linkEl);
       }
     }
@@ -78951,13 +79589,14 @@
         ], 'EPSG:4326', 'EPSG:3857'));
       }
 
-      // Set the permalink with current map zoom & position
+      // Set the permalink with current map zoom, position & layer
       if (view.getCenter()) {
         const ll4326 = transform$1(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
           newParams = 'map=' +
           (localStorage.myolZoom = Math.round(view.getZoom() * 10) / 10) + '/' +
           (localStorage.myolLon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
-          (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000);
+          (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000) +
+          '&baselayer=' + encodeURI(localStorage.myolBaselayer);
 
         if (this.linkEl) {
           this.linkEl.href = this.options.hash + newParams;
@@ -79085,463 +79724,6 @@
   };
 
   /**
-   * VectorEditor layer to edit GeoJSON lines & polygons
-   */
-
-
-  class VectorEditor extends VectorLayer {
-    constructor(opt) {
-      const options = {
-        geoJsonId: 'geojson',
-        format: new GeoJSON(),
-        dataProjection: 'EPSG:4326',
-        featureProjection: 'EPSG:3857',
-        decimals: 5, //Output precision
-        tolerance: 7, // Px
-        // direction: false, // Add arrows to each line segment to show the direction
-        // canMerge: false, // Merge lines having a common end
-        // withPolys: false, // Can edit polygons
-        // withHoles: false, // Allow holes in polygons
-        // baseStyleOptions: {},
-        // selectedStyleOptions: {},
-
-        writeGeoJson: () => // writeGeoJson (features, lines, polys, options)
-          this.options.format.writeFeatures(
-            this.editedSource.getFeatures(),
-            this.options,
-          ),
-
-        ...opt,
-      };
-
-      // Read data in an html element
-      const geoJsonEl = document.getElementById(options.geoJsonId) ||
-        document.createElement('textarea'),
-        geoJson = geoJsonEl.value.trim() ||
-        geoJsonEl.innerHTML.trim() ||
-        '{"type":"FeatureCollection","features":[]}';
-
-      // The editor source
-      const editedSource = new VectorSource({
-        features: options.format.readFeatures(geoJson, options),
-        wrapX: false,
-
-        ...options,
-      });
-
-      // The editor layer
-      super({
-        source: editedSource,
-        zIndex: 400, // Editor & cursor above the features
-        style: new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 2,
-          }),
-          fill: new Fill({
-            color: 'rgba(0,0,255,0.2)',
-          }),
-
-          ...options.baseStyleOptions,
-        }),
-
-        ...options,
-      });
-
-      this.options = options;
-      this.geoJsonEl = geoJsonEl;
-      this.editedSource = editedSource;
-      this.snapSource = new VectorSource({});
-    } // End constructor
-
-    setMapInternal(map) {
-      super.setMapInternal(map);
-      this.map = map;
-
-      // Interactions
-      this.selectInteraction = new Select({
-        hitTolerance: this.options.tolerance, // Default is 0
-        toggleCondition: never, // No deselection on shift click
-        filter: (f, layer) => layer && (layer.getSource() === this.editedSource),
-        style: (f, r) => this.selectStyles(f, r),
-      });
-
-      this.modifyInteraction = new Modify({
-        features: this.selectInteraction.getFeatures(),
-        pixelTolerance: this.options.tolerance, // Default is 10
-      });
-
-      if (this.options.withPolys)
-        this.drawPolyInteraction = new Draw({ // Draw line
-          type: 'Polygon',
-          source: this.editedSource,
-          traceSource: this.snapSource,
-          trace: true,
-          stopClick: true, // Avoid zoom when finish drawing by doubleclick
-          style: f => this.selectStyles(f),
-        });
-
-      this.drawLineInteraction = new Draw({ // Draw line
-        type: 'LineString',
-        source: this.editedSource,
-        traceSource: this.snapSource,
-        trace: true,
-        stopClick: true, // Avoid zoom when finish drawing by doubleclick
-        style: f => this.selectStyles(f),
-      });
-
-      this.snapInteraction = new Snap({
-        source: this.editedSource,
-        pixelTolerance: this.options.tolerance, // Default is 10
-      });
-
-      // Buttons
-      const buttonsName = this.options.withPolys ? ['modify', 'drawPoly', 'drawLine'] : ['modify', 'drawLine'];
-
-      buttonsName.forEach(intName => {
-        const buttonEl = document.createElement('button'),
-          element = document.createElement('div');
-
-        buttonEl.setAttribute('type', 'button');
-        element.className = 'ol-unselectable ol-control edit-button edit-button-' + intName;
-        element.appendChild(buttonEl);
-
-        const helpEl = document.getElementById('edit-help-' + intName);
-        if (helpEl)
-          element.appendChild(helpEl);
-
-        buttonEl.addEventListener('click', () => this.restartInteractions(intName));
-
-        // Add the button to the map
-        map.addControl(new Control({
-          element: element,
-        }));
-      });
-
-      // Interactions listeners
-      this.selectInteraction.on('select', () => this.optimiseAndSave()); // Merge old separated segments
-
-      this.modifyInteraction.on('modifystart', evt => {
-        const oEvt = evt.mapBrowserEvent.originalEvent,
-          selectedFeature = this.selectInteraction.getFeatures().item(0),
-          coordinates = selectedFeature.getGeometry().getCoordinates();
-
-        // Shift + click : reverse line direction
-        if (oEvt.shiftKey && !oEvt.ctrlKey && !oEvt.altKey &&
-          typeof coordinates[0][0] === 'number') {
-          this.editedSource.removeFeature(selectedFeature);
-
-          this.editedSource.addFeature(new Feature({
-            geometry: new LineString(coordinates.reverse()),
-          }));
-        }
-
-        // Ctrl+Alt+click on segment : delete the line or poly
-        if (!oEvt.shiftKey && oEvt.ctrlKey && oEvt.altKey)
-          this.editedSource.removeFeature(selectedFeature);
-      });
-
-      this.editedSource.on('addfeature', () => {
-        this.optimiseAndSave();
-        this.restartInteractions('modify');
-      });
-
-      this.modifyInteraction.on('modifyend', () => this.optimiseAndSave());
-
-      // At init
-      this.map.once('loadend', () => {
-        this.coordinate = this.map.getView().getCenter();
-
-        this.optimiseAndSave();
-        this.restartInteractions('modify');
-      });
-
-      map.on('pointermove', evt => {
-        this.coordinate = evt.coordinate;
-
-        // Change pointer if a feature is hovered
-        const selectedFeatures = this.selectInteraction.getFeatures();
-
-        this.map.getTargetElement().classList.remove('edit-pointed');
-        if (selectedFeatures.getLength()) {
-          this.map.forEachFeatureAtPixel(
-            evt.pixel,
-            feature => {
-              if (feature !== selectedFeatures.item(0))
-                this.map.getTargetElement().classList.add('edit-pointed');
-            }, {
-              layerFilter: (layer) => layer.getSource() === this.editedSource, // Only the edited layer
-              hitTolerance: this.options.tolerance, // Default is 0
-            },
-          );
-        }
-      });
-
-      map.on('click', evt => {
-        const oEvt = evt.originalEvent;
-
-        if (!oEvt.shiftKey && oEvt.ctrlKey && !oEvt.altKey)
-          this.optimiseAndSave(
-            this.snapInteraction.snapTo(
-              evt.pixel,
-              evt.coordinate,
-              map,
-            ).vertex
-          );
-      });
-    } // End setMapInternal
-
-    restartInteractions(intName) {
-      const interactionName = this.options.withPolys ? ['select', 'modify', 'drawPoly', 'drawLine', 'snap'] : ['select', 'modify', 'drawLine', 'snap'];
-
-      interactionName.forEach(i =>
-        this.map.removeInteraction(this[i + 'Interaction'])
-      );
-
-      if (intName === 'modify')
-        this.map.addInteraction(this.selectInteraction);
-
-      this.map.addInteraction(this[intName + 'Interaction']);
-      this.map.addInteraction(this.snapInteraction); // Must be added after the others
-
-      this.map.getTargetElement().firstChild.className = 'ol-viewport edit-view-' + intName;
-
-      // For snap & traceSource : register again the full list of features as addFeature manages already registered
-      this.snapSource.clear();
-      this.map.getLayers().forEach(layer => {
-        if (layer.getSource() !== this.editedSource &&
-          layer.getSource() &&
-          layer.getSource().getFeatures) // Vector layers only
-          layer.getSource().getFeatures().forEach(feature => {
-            this.snapInteraction.addFeature(feature);
-            this.snapSource.addFeature(feature);
-          });
-      });
-    }
-
-    optimiseAndSave(splitCord) {
-      if (!this.semaphore) { // Avoid recursion when adding the features
-        this.semaphore = true;
-
-        // Get optimized coords
-        const editedFeatures = this.editedSource.getFeatures(), // Get edited features
-          coordinates = editedFeatures.map(
-            f => this.flatFeatures(f.getGeometry()) // Get flat coordinates
-          ),
-          // Get all edited features as array of lines coordinates
-          lines = this.flatCoord(coordinates, splitCord),
-          polys = [];
-
-        // Merge lines having a common end
-        if (this.options.canMerge)
-          for (const a in lines) {
-            for (let b = 0; b < a; b++) { // Once each combination
-              if (lines[b]) {
-                const m = [a, b];
-
-                for (let i = 4; i; i--) // 4 times
-                  if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
-                    // Shake lines end to explore all possibilities
-                    m.reverse();
-                    lines[m[0]].reverse();
-
-                    // Merge 2 lines having 2 ends in common
-                    if (this.compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0], splitCord)) {
-                      lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1)).reverse();
-                      delete lines[m[1]]; // Remove the line but don't renumber the array keys
-                    }
-                  }
-              }
-            }
-          }
-
-        // Make polygons with looped lines
-        if (this.options.withPolys)
-          for (const a in lines)
-            if (this.compareCoords(lines[a]) && // If this line is closed
-              !this.compareCoords(splitCord, lines[a][0])) { // Except if we just split it
-              polys.push([lines[a]]); // Add the polygon
-              delete lines[a]; // Forget the line
-            }
-
-        // Makes holes if a polygon is included in a biggest one
-        if (this.options.withHoles)
-          for (const p1 in polys) { // Explore all Polygons combinaison
-            const fs = new Polygon(polys[p1]);
-
-            for (const p2 in polys)
-              if (polys[p2] && p1 !== p2) {
-                let intersects = true;
-
-                for (const c in polys[p2][0])
-                  if (!fs.intersectsCoordinate(polys[p2][0][c]))
-                    intersects = false;
-
-                if (intersects) { // If one intersects a bigger
-                  polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
-                  delete polys[p2]; // Forget the smaller
-                }
-              }
-          }
-
-        // Recreate features
-        this.editedSource.clear();
-        lines.forEach(l => {
-          this.editedSource.addFeature(new Feature({
-            geometry: new LineString(l),
-          }));
-        });
-        polys.forEach(p => {
-          this.editedSource.addFeature(new Feature({
-            geometry: new Polygon(p),
-          }));
-        });
-
-        // Save geometries in <EL> as geoJSON at every change
-        if (this.geoJsonEl)
-          this.geoJsonEl.value = this.options.writeGeoJson(
-            this.editedSource.getFeatures(),
-            lines.filter(Boolean),
-            polys.filter(Boolean),
-            this.options,
-          ).replaceAll(',"properties":null', '');
-
-        // Select the feature closest to the mouse position
-        //TODO do it also when loading a file
-        const selectedFeatures = this.selectInteraction.getFeatures();
-
-        if (this.editedSource.getFeatures().length) {
-          selectedFeatures.clear();
-          selectedFeatures.push(
-            this.editedSource.getClosestFeatureToCoordinate(this.coordinate)
-          );
-        }
-        delete this.semaphore;
-      }
-    } // End optimiseAndSave
-
-    flatFeatures(geom) {
-      if (geom.getType().match(/collection/iu)) // Recurse Collections
-        return geom.getGeometries().map(g => this.flatFeatures(g));
-      return geom.getCoordinates();
-    }
-
-    // Get all lines fragments (lines, polylines, polygons, multipolygons, hole polygons, ...) at the same level
-    flatCoord(coords, splitCord) {
-      const lines = [];
-
-      coords.forEach(segmentCoords => {
-        if (typeof segmentCoords[0] === 'object') {
-          if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
-            lines.push(...this.flatCoord(segmentCoords, splitCord));
-          else if (typeof segmentCoords[0][0] === 'number') { // Lines
-            if (splitCord) {
-              lines.push([]);
-              segmentCoords.forEach(p => {
-                lines[lines.length - 1].push(p);
-                // Split segments if required
-                if (this.compareCoords(splitCord, p))
-                  lines.push([p]);
-              });
-            } else
-              lines.push(segmentCoords);
-          }
-        }
-      });
-
-      return lines;
-    }
-
-    compareCoords(a, b, splitCord) {
-      if (!a) return false;
-      if (this.compareCoords(splitCord, a)) return false; // Except if we just split it
-      if (!b) return this.compareCoords(a[0], a[a.length - 1]); // Compare start with end
-      return a[0] === b[0] && a[1] === b[1]; // 2 coordinates
-    }
-
-    // Style to color selected features with arrows, begin & end points
-    selectStyles(feature, resolution) {
-      const geometry = feature.getGeometry(),
-
-        selectedStyleOptions = {
-          // Lines
-          stroke: new Stroke({
-            color: 'red',
-            width: 2,
-          }),
-          // Polygons
-          fill: new Fill({
-            color: 'rgba(255,0,0,0.2)',
-          }),
-          // Begin & end marker
-          radius: 3,
-
-          ...this.options.selectedStyleOptions,
-        },
-
-        circle = new CircleStyle(selectedStyleOptions),
-
-        featureStyles = [
-          new Style({
-            // Line & Poly
-            ...selectedStyleOptions,
-            // Draw marker
-            image: circle,
-          }),
-        ];
-
-      // Circle at the ends of the line
-      if (geometry.getCoordinates) {
-        const coordinates = geometry.getCoordinates(),
-          circlesCoords = [coordinates[0]];
-
-        if (!this.options.direction)
-          circlesCoords.push(coordinates[coordinates.length - 1]);
-
-        circlesCoords.forEach(cc => {
-          featureStyles.push(
-            new Style({
-              geometry: new Point$1(cc),
-              image: circle,
-            }),
-          );
-        });
-      }
-
-      // Arrows to show the line direction
-      if (this.options.direction && geometry.forEachSegment && resolution) {
-        let last = null;
-
-        geometry.forEachSegment((start, end) => {
-          if (!last) last = start;
-
-          const dx = end[0] - last[0],
-            dy = end[1] - last[1];
-
-          if (Math.abs(dx) + Math.abs(dy) > resolution * 50) {
-            last = end;
-            featureStyles.push(
-              new Style({
-                geometry: new Point$1(end),
-                image: new Icon({
-                  rotateWithView: true,
-                  rotation: -Math.atan2(dy, dx),
-                  src: 'data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" width="10" height="10">\
-<path stroke="red" d="M0 0 4 3 M4 3 0 6" />\
-</svg>',
-                }),
-              }),
-            );
-          }
-        });
-      }
-
-      return featureStyles;
-    };
-  }
-
-  /**
    * Hover & click management
    * Display the hovered feature with the hover style
    * Go to the link property when click a feature
@@ -79619,12 +79801,12 @@
           }
           // Click link
           else if (hoveredSubProperties.link) {
-            // Open a new tag
-            if (evt.originalEvent.ctrlKey)
+            // Open a new tab
+            if (platformModifierKeyOnly(evt))
               window.open(hoveredSubProperties.link, '_blank').focus();
             else
               // Open a new window
-              if (evt.originalEvent.shiftKey)
+              if (shiftKeyOnly(evt))
                 window.open(hoveredSubProperties.link, '_blank', 'resizable=yes').focus();
               // Go on the same window
               else
@@ -79671,6 +79853,8 @@
       defs('EPSG:' + (32600 + i), '+proj=utm +zone=' + i + ' +datum=WGS84 +units=m');
       defs('EPSG:' + (32700 + i), '+proj=utm +zone=' + i + ' +south +datum=WGS84 +units=m');
     }
+    defs('EPSG:5041', '+title=WGS 84 / UPS North (E,N) +proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m');
+    defs('EPSG:5042', '+title=WGS 84 / UPS South (E,N) +proj=stere +lat_0=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m');
 
     defs.WGS84 = defs['EPSG:4326'];
     defs['EPSG:3785'] = defs['EPSG:3857']; // maintain backward compat, official code is 3857
@@ -79709,21 +79893,21 @@
   // floating point error) from changing their sign.
   var SPI = 3.14159265359;
 
-  var exports$1 = {};
+  var primeMeridian = {};
 
-  exports$1.greenwich = 0.0; // "0dE",
-  exports$1.lisbon = -9.131906111111; // "9d07'54.862\"W",
-  exports$1.paris = 2.337229166667; // "2d20'14.025\"E",
-  exports$1.bogota = -74.080916666667; // "74d04'51.3\"W",
-  exports$1.madrid = -3.687938888889; // "3d41'16.58\"W",
-  exports$1.rome = 12.452333333333; // "12d27'8.4\"E",
-  exports$1.bern = 7.439583333333; // "7d26'22.5\"E",
-  exports$1.jakarta = 106.807719444444; // "106d48'27.79\"E",
-  exports$1.ferro = -17.666666666667; // "17d40'W",
-  exports$1.brussels = 4.367975; // "4d22'4.71\"E",
-  exports$1.stockholm = 18.058277777778; // "18d3'29.8\"E",
-  exports$1.athens = 23.7163375; // "23d42'58.815\"E",
-  exports$1.oslo = 10.722916666667; // "10d43'22.5\"E"
+  primeMeridian.greenwich = 0.0; // "0dE",
+  primeMeridian.lisbon = -9.131906111111; // "9d07'54.862\"W",
+  primeMeridian.paris = 2.337229166667; // "2d20'14.025\"E",
+  primeMeridian.bogota = -74.080916666667; // "74d04'51.3\"W",
+  primeMeridian.madrid = -3.687938888889; // "3d41'16.58\"W",
+  primeMeridian.rome = 12.452333333333; // "12d27'8.4\"E",
+  primeMeridian.bern = 7.439583333333; // "7d26'22.5\"E",
+  primeMeridian.jakarta = 106.807719444444; // "106d48'27.79\"E",
+  primeMeridian.ferro = -17.666666666667; // "17d40'W",
+  primeMeridian.brussels = 4.367975; // "4d22'4.71\"E",
+  primeMeridian.stockholm = 18.058277777778; // "18d3'29.8\"E",
+  primeMeridian.athens = 23.7163375; // "23d42'58.815\"E",
+  primeMeridian.oslo = 10.722916666667; // "10d43'22.5\"E"
 
   var units = {
     mm: { to_meter: 0.001 },
@@ -79766,13 +79950,19 @@
     }
   }
 
+  /**
+   * @param {string} defData
+   * @returns {import('./defs').ProjectionDefinition}
+   */
   function projStr (defData) {
+    /** @type {import('./defs').ProjectionDefinition} */
     var self = {};
     var paramObj = defData.split('+').map(function (v) {
       return v.trim();
     }).filter(function (a) {
       return a;
     }).reduce(function (p, a) {
+      /** @type {Array<?>} */
       var split = a.split('=');
       split.push(true);
       p[split[0].toLowerCase()] = split[1];
@@ -79864,7 +80054,7 @@
         self.from_greenwich = v * D2R$1;
       },
       pm: function (v) {
-        var pm = match(exports$1, v);
+        var pm = match(primeMeridian, v);
         self.from_greenwich = (pm ? pm : parseFloat(v)) * D2R$1;
       },
       nadgrids: function (v) {
@@ -79882,6 +80072,9 @@
       },
       approx: function () {
         self.approx = true;
+      },
+      over: function () {
+        self.over = true;
       }
     };
     for (paramName in paramObj) {
@@ -79900,6 +80093,7 @@
     if (typeof self.datumCode === 'string' && self.datumCode !== 'WGS84') {
       self.datumCode = self.datumCode.toLowerCase();
     }
+    self['projStr'] = defData;
     return self;
   }
 
@@ -81124,6 +81318,68 @@
     return obj[type];
   }
 
+  /**
+   * @typedef {Object} ProjectionDefinition
+   * @property {string} title
+   * @property {string} [projName]
+   * @property {string} [ellps]
+   * @property {import('./Proj.js').DatumDefinition} [datum]
+   * @property {string} [datumName]
+   * @property {number} [rf]
+   * @property {number} [lat0]
+   * @property {number} [lat1]
+   * @property {number} [lat2]
+   * @property {number} [lat_ts]
+   * @property {number} [long0]
+   * @property {number} [long1]
+   * @property {number} [long2]
+   * @property {number} [alpha]
+   * @property {number} [longc]
+   * @property {number} [x0]
+   * @property {number} [y0]
+   * @property {number} [k0]
+   * @property {number} [a]
+   * @property {number} [b]
+   * @property {true} [R_A]
+   * @property {number} [zone]
+   * @property {true} [utmSouth]
+   * @property {string|Array<number>} [datum_params]
+   * @property {number} [to_meter]
+   * @property {string} [units]
+   * @property {number} [from_greenwich]
+   * @property {string} [datumCode]
+   * @property {string} [nadgrids]
+   * @property {string} [axis]
+   * @property {boolean} [sphere]
+   * @property {number} [rectified_grid_angle]
+   * @property {boolean} [approx]
+   * @property {boolean} [over]
+   * @property {string} [projStr]
+   * @property {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} inverse
+   * @property {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} forward
+   */
+
+  /**
+   * @overload
+   * @param {string} name
+   * @param {string|ProjectionDefinition|import('./core.js').PROJJSONDefinition} projection
+   * @returns {void}
+   */
+  /**
+   * @overload
+   * @param {Array<[string, string]>} name
+   * @returns {Array<ProjectionDefinition|undefined>}
+   */
+  /**
+   * @overload
+   * @param {string} name
+   * @returns {ProjectionDefinition}
+   */
+
+  /**
+   * @param {string | Array<Array<string>> | Partial<Record<'EPSG'|'ESRI'|'IAU2000', ProjectionDefinition>>} name
+   * @returns {ProjectionDefinition | Array<ProjectionDefinition|undefined> | void}
+   */
   function defs(name) {
     /* global console */
     var that = this;
@@ -81131,20 +81387,26 @@
       var def = arguments[1];
       if (typeof def === 'string') {
         if (def.charAt(0) === '+') {
-          defs[name] = projStr(arguments[1]);
+          defs[/** @type {string} */ (name)] = projStr(arguments[1]);
         } else {
-          defs[name] = wkt(arguments[1]);
+          defs[/** @type {string} */ (name)] = wkt(arguments[1]);
         }
+      } else if (def && typeof def === 'object' && !('projName' in def)) {
+        // PROJJSON
+        defs[/** @type {string} */ (name)] = wkt(arguments[1]);
       } else {
-        defs[name] = def;
+        defs[/** @type {string} */ (name)] = def;
+        if (!def) {
+          delete defs[/** @type {string} */ (name)];
+        }
       }
     } else if (arguments.length === 1) {
       if (Array.isArray(name)) {
         return name.map(function (v) {
           if (Array.isArray(v)) {
-            defs.apply(that, v);
+            return defs.apply(that, v);
           } else {
-            defs(v);
+            return defs(v);
           }
         });
       } else if (typeof name === 'string') {
@@ -81193,6 +81455,10 @@
   function testProj(code) {
     return code[0] === '+';
   }
+  /**
+   * @param {string | import('./core').PROJJSONDefinition | import('./defs').ProjectionDefinition} code
+   * @returns {import('./defs').ProjectionDefinition}
+   */
   function parse(code) {
     if (testObj(code)) {
       // check to see if this is a WKT string
@@ -81214,7 +81480,7 @@
       if (testProj(code)) {
         return projStr(code);
       }
-    } else if (!code.projName) {
+    } else if (!('projName' in code)) {
       return wkt(code);
     } else {
       return code;
@@ -81245,7 +81511,10 @@
     return x < 0 ? -1 : 1;
   }
 
-  function adjust_lon (x) {
+  function adjust_lon (x, skipAdjust) {
+    if (skipAdjust) {
+      return x;
+    }
     return (Math.abs(x) <= SPI) ? x : (x - (sign(x) * TWO_PI));
   }
 
@@ -81272,7 +81541,15 @@
     return -9999;
   }
 
-  function init$x() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {number} e
+   * @property {number} k
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$y() {
     var con = this.b / this.a;
     this.es = 1 - con * con;
     if (!('x0' in this)) {
@@ -81302,7 +81579,7 @@
   /* Mercator forward equations--mapping lat,long to x,y
     -------------------------------------------------- */
 
-  function forward$v(p) {
+  function forward$w(p) {
     var lon = p.x;
     var lat = p.y;
     // convert to radians
@@ -81315,12 +81592,12 @@
       return null;
     } else {
       if (this.sphere) {
-        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0);
+        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0, this.over);
         y = this.y0 + this.a * this.k0 * Math.log(Math.tan(FORTPI + 0.5 * lat));
       } else {
         var sinphi = Math.sin(lat);
         var ts = tsfnz(this.e, lat, sinphi);
-        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0);
+        x = this.x0 + this.a * this.k0 * adjust_lon(lon - this.long0, this.over);
         y = this.y0 - this.a * this.k0 * Math.log(ts);
       }
       p.x = x;
@@ -81331,7 +81608,7 @@
 
   /* Mercator inverse equations--mapping x,y to lat/long
     -------------------------------------------------- */
-  function inverse$v(p) {
+  function inverse$w(p) {
     var x = p.x - this.x0;
     var y = p.y - this.y0;
     var lon, lat;
@@ -81345,40 +81622,45 @@
         return null;
       }
     }
-    lon = adjust_lon(this.long0 + x / (this.a * this.k0));
+    lon = adjust_lon(this.long0 + x / (this.a * this.k0), this.over);
 
     p.x = lon;
     p.y = lat;
     return p;
   }
 
-  var names$x = ['Mercator', 'Popular Visualisation Pseudo Mercator', 'Mercator_1SP', 'Mercator_Auxiliary_Sphere', 'Mercator_Variant_A', 'merc'];
+  var names$y = ['Mercator', 'Popular Visualisation Pseudo Mercator', 'Mercator_1SP', 'Mercator_Auxiliary_Sphere', 'Mercator_Variant_A', 'merc'];
   var merc = {
-    init: init$x,
-    forward: forward$v,
-    inverse: inverse$v,
-    names: names$x
+    init: init$y,
+    forward: forward$w,
+    inverse: inverse$w,
+    names: names$y
   };
 
-  function init$w() {
+  function init$x() {
     // no-op for longlat
   }
 
   function identity(pt) {
     return pt;
   }
-  var names$w = ['longlat', 'identity'];
+  var names$x = ['longlat', 'identity'];
   var longlat = {
-    init: init$w,
+    init: init$x,
     forward: identity,
     inverse: identity,
-    names: names$w
+    names: names$x
   };
 
+  /** @type {Array<Partial<import('./Proj').default>>} */
   var projs = [merc, longlat];
-  var names$v = {};
+  var names$w = {};
   var projStore = [];
 
+  /**
+   * @param {import('./Proj').default} proj
+   * @param {number} i
+   */
   function add(proj, i) {
     var len = projStore.length;
     if (!proj.names) {
@@ -81387,7 +81669,7 @@
     }
     projStore[len] = proj;
     proj.names.forEach(function (n) {
-      names$v[n.toLowerCase()] = len;
+      names$w[n.toLowerCase()] = len;
     });
     return this;
   }
@@ -81396,17 +81678,22 @@
     return n.replace(/[-\(\)\s]+/g, ' ').trim().replace(/ /g, '_');
   }
 
+  /**
+   * Get a projection by name.
+   * @param {string} name
+   * @returns {import('./Proj').default|false}
+   */
   function get(name) {
     if (!name) {
       return false;
     }
     var n = name.toLowerCase();
-    if (typeof names$v[n] !== 'undefined' && projStore[names$v[n]]) {
-      return projStore[names$v[n]];
+    if (typeof names$w[n] !== 'undefined' && projStore[names$w[n]]) {
+      return projStore[names$w[n]];
     }
     n = getNormalizedProjName(n);
-    if (n in names$v && projStore[names$v[n]]) {
-      return projStore[names$v[n]];
+    if (n in names$w && projStore[names$w[n]]) {
+      return projStore[names$w[n]];
     }
   }
 
@@ -83012,11 +83299,80 @@
    * - http://mimaka.com/help/gs/html/004_NTV2%20Data%20Format.htm
    */
 
+  /**
+   * @typedef {Object} NadgridInfo
+   * @property {string} name The name of the NAD grid or 'null' if not specified.
+   * @property {boolean} mandatory Indicates if the grid is mandatory (true) or optional (false).
+   * @property {*} grid The loaded NAD grid object, or null if not loaded or not applicable.
+   * @property {boolean} isNull True if the grid is explicitly 'null', otherwise false.
+   */
+
+  /**
+   * @typedef {Object} NTV2GridOptions
+   * @property {boolean} [includeErrorFields=true] Whether to include error fields in the subgrids.
+   */
+
+  /**
+   * @typedef {Object} NadgridHeader
+   * @property {number} [nFields] Number of fields in the header.
+   * @property {number} [nSubgridFields] Number of fields in each subgrid header.
+   * @property {number} nSubgrids Number of subgrids in the file.
+   * @property {string} [shiftType] Type of shift (e.g., "SECONDS").
+   * @property {number} [fromSemiMajorAxis] Source ellipsoid semi-major axis.
+   * @property {number} [fromSemiMinorAxis] Source ellipsoid semi-minor axis.
+   * @property {number} [toSemiMajorAxis] Target ellipsoid semi-major axis.
+   * @property {number} [toSemiMinorAxis] Target ellipsoid semi-minor axis.
+   */
+
+  /**
+   * @typedef {Object} Subgrid
+   * @property {Array<number>} ll Lower left corner of the grid in radians [longitude, latitude].
+   * @property {Array<number>} del Grid spacing in radians [longitude interval, latitude interval].
+   * @property {Array<number>} lim Number of columns in the grid [longitude columns, latitude columns].
+   * @property {number} [count] Total number of grid nodes.
+   * @property {Array} cvs Mapped node values for the grid.
+   */
+
+  /** @typedef {{header: NadgridHeader, subgrids: Array<Subgrid>}} NADGrid */
+
+  /**
+   * @typedef {Object} GeoTIFF
+   * @property {() => Promise<number>} getImageCount - Returns the number of images in the GeoTIFF.
+   * @property {(index: number) => Promise<GeoTIFFImage>} getImage - Returns a GeoTIFFImage for the given index.
+   */
+
+  /**
+   * @typedef {Object} GeoTIFFImage
+   * @property {() => number} getWidth - Returns the width of the image.
+   * @property {() => number} getHeight - Returns the height of the image.
+   * @property {() => number[]} getBoundingBox - Returns the bounding box as [minX, minY, maxX, maxY] in degrees.
+   * @property {() => Promise<ArrayLike<ArrayLike<number>>>} readRasters - Returns the raster data as an array of bands.
+   * @property {Object} fileDirectory - The file directory object containing metadata.
+   * @property {Object} fileDirectory.ModelPixelScale - The pixel scale array [scaleX, scaleY, scaleZ] in degrees.
+   */
+
   var loadedNadgrids = {};
 
   /**
+   * @overload
+   * @param {string} key - The key to associate with the loaded grid.
+   * @param {ArrayBuffer} data - The NTv2 grid data as an ArrayBuffer.
+   * @param {NTV2GridOptions} [options] - Optional parameters for loading the grid.
+   * @returns {NADGrid} - The loaded NAD grid information.
+   */
+  /**
+   * @overload
+   * @param {string} key - The key to associate with the loaded grid.
+   * @param {GeoTIFF} data - The GeoTIFF instance to read the grid from.
+   * @returns {{ready: Promise<NADGrid>}} - A promise that resolves to the loaded grid information.
+   */
+  /**
    * Load either a NTv2 file (.gsb) or a Geotiff (.tif) to a key that can be used in a proj string like +nadgrids=<key>. Pass the NTv2 file
    * as an ArrayBuffer. Pass Geotiff as a GeoTIFF instance from the geotiff.js library.
+   * @param {string} key - The key to associate with the loaded grid.
+   * @param {ArrayBuffer|GeoTIFF} data The data to load, either an ArrayBuffer for NTv2 or a GeoTIFF instance.
+   * @param {NTV2GridOptions} [options] Optional parameters.
+   * @returns {{ready: Promise<NADGrid>}|NADGrid} - A promise that resolves to the loaded grid information.
    */
   function nadgrid(key, data, options) {
     if (data instanceof ArrayBuffer) {
@@ -83025,6 +83381,12 @@
     return { ready: readGeotiffGrid(key, data) };
   }
 
+  /**
+   * @param {string} key The key to associate with the loaded grid.
+   * @param {ArrayBuffer} data The NTv2 grid data as an ArrayBuffer.
+   * @param {NTV2GridOptions} [options] Optional parameters for loading the grid.
+   * @returns {NADGrid} The loaded NAD grid information.
+   */
   function readNTV2Grid(key, data, options) {
     var includeErrorFields = true;
     if (options !== undefined && options.includeErrorFields === false) {
@@ -83039,6 +83401,11 @@
     return nadgrid;
   }
 
+  /**
+   * @param {string} key The key to associate with the loaded grid.
+   * @param {GeoTIFF} tiff The GeoTIFF instance to read the grid from.
+   * @returns {Promise<NADGrid>} A promise that resolves to the loaded NAD grid information.
+   */
   async function readGeotiffGrid(key, tiff) {
     var subgrids = [];
     var subGridCount = await tiff.getImageCount();
@@ -83085,6 +83452,8 @@
   }
   /**
    * Given a proj4 value for nadgrids, return an array of loaded grids
+   * @param {string} nadgrids A comma-separated list of grid names, optionally prefixed with '@' to indicate optional grids.
+   * @returns
    */
   function getNadgrids(nadgrids) {
     // Format details: http://proj.maptools.org/gen_parms.html
@@ -83095,6 +83464,10 @@
     return grids.map(parseNadgridString);
   }
 
+  /**
+   * @param {string} value The nadgrid string to get information for.
+   * @returns {NadgridInfo|null} An object with grid information, or null if the input is empty.
+   */
   function parseNadgridString(value) {
     if (value.length === 0) {
       return null;
@@ -83228,10 +83601,35 @@
     return gridShiftRecords;
   }
 
+  /**
+   * @typedef {Object} DatumDefinition
+   * @property {number} datum_type - The type of datum.
+   * @property {number} a - Semi-major axis of the ellipsoid.
+   * @property {number} b - Semi-minor axis of the ellipsoid.
+   * @property {number} es - Eccentricity squared of the ellipsoid.
+   * @property {number} ep2 - Second eccentricity squared of the ellipsoid.
+   */
+
+  /**
+   * @param {string | import('./core').PROJJSONDefinition | import('./defs').ProjectionDefinition} srsCode
+   * @param {(errorMessage?: string, instance?: Projection) => void} [callback]
+   */
   function Projection(srsCode, callback) {
     if (!(this instanceof Projection)) {
       return new Projection(srsCode);
     }
+    /** @type {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} */
+    this.forward = null;
+    /** @type {<T extends import('./core').TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} */
+    this.inverse = null;
+    /** @type {function(): void} */
+    this.init = null;
+    /** @type {string} */
+    this.name;
+    /** @type {Array<string>} */
+    this.names = null;
+    /** @type {string} */
+    this.title;
     callback = callback || function (error) {
       if (error) {
         throw error;
@@ -83263,6 +83661,7 @@
     var sphere_ = sphere(json.a, json.b, json.rf, json.ellps, json.sphere);
     var ecc = eccentricity(sphere_.a, sphere_.b, sphere_.rf, json.R_A);
     var nadgrids = getNadgrids(json.nadgrids);
+    /** @type {DatumDefinition} */
     var datumObj = json.datum || datum(json.datumCode, json.datum_params, sphere_.a, sphere_.b, ecc.es, ecc.ep2,
       nadgrids);
 
@@ -83284,7 +83683,9 @@
     this.datum = datumObj;
 
     // init the projection
-    this.init();
+    if ('init' in this && typeof this.init === 'function') {
+      this.init();
+    }
 
     // legecy callback from back in the day when it went to spatialreference.org
     callback(null, this);
@@ -83721,6 +84122,7 @@
       yin = point.y,
       zin = point.z || 0.0;
     var v, t, i;
+    /** @type {import("./core").InterfaceCoordinates} */
     var out = {};
     for (i = 0; i < 3; i++) {
       if (denorm && i === 2 && point.z === undefined) {
@@ -83775,6 +84177,10 @@
     return out;
   }
 
+  /**
+   * @param {Array<number>} array
+   * @returns {import("../core").InterfaceCoordinates}
+   */
   function common (array) {
     var out = {
       x: array[0],
@@ -83811,6 +84217,13 @@
     || ((dest.datum.datum_type === PJD_3PARAM || dest.datum.datum_type === PJD_7PARAM || dest.datum.datum_type === PJD_GRIDSHIFT) && source.datumCode !== 'WGS84');
   }
 
+  /**
+   * @param {import('./defs').ProjectionDefinition} source
+   * @param {import('./defs').ProjectionDefinition} dest
+   * @param {import('./core').TemplateCoordinates} point
+   * @param {boolean} enforceAxis
+   * @returns {import('./core').InterfaceCoordinates | undefined}
+   */
   function transform(source, dest, point, enforceAxis) {
     var wgs84;
     if (Array.isArray(point)) {
@@ -83867,6 +84280,8 @@
       return;
     }
 
+    point = /** @type {import('./core').InterfaceCoordinates} */ (point);
+
     // Adjust for the prime meridian if necessary
     if (dest.from_greenwich) {
       point = {
@@ -83907,6 +84322,85 @@
 
   var wgs84 = Projection('WGS84');
 
+  /**
+   * @typedef {{x: number, y: number, z?: number, m?: number}} InterfaceCoordinates
+   */
+
+  /**
+   * @typedef {Array<number> | InterfaceCoordinates} TemplateCoordinates
+   */
+
+  /**
+   * @typedef {Object} Converter
+   * @property {<T extends TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} forward
+   * @property {<T extends TemplateCoordinates>(coordinates: T, enforceAxis?: boolean) => T} inverse
+   * @property {proj} [oProj]
+   */
+
+  /**
+   * @typedef {Object} PROJJSONDefinition
+   * @property {string} [$schema]
+   * @property {string} type
+   * @property {string} [name]
+   * @property {{authority: string, code: number}} [id]
+   * @property {string} [scope]
+   * @property {string} [area]
+   * @property {{south_latitude: number, west_longitude: number, north_latitude: number, east_longitude: number}} [bbox]
+   * @property {PROJJSONDefinition[]} [components]
+   * @property {{type: string, name: string}} [datum]
+   * @property {{
+   *   name: string,
+   *   members: Array<{
+   *     name: string,
+   *     id?: {authority: string, code: number}
+   *   }>,
+   *   ellipsoid?: {
+   *     name: string,
+   *     semi_major_axis: number,
+   *     inverse_flattening?: number
+   *   },
+   *   accuracy?: string,
+   *   id?: {authority: string, code: number}
+   * }} [datum_ensemble]
+   * @property {{
+   *   subtype: string,
+   *   axis: Array<{
+   *     name: string,
+   *     abbreviation?: string,
+   *     direction: string,
+   *     unit: string
+   *   }>
+   * }} [coordinate_system]
+   * @property {{
+   *   name: string,
+   *   method: {name: string},
+   *   parameters: Array<{
+   *     name: string,
+   *     value: number,
+   *     unit?: string
+   *   }>
+   * }} [conversion]
+   * @property {{
+   *   name: string,
+   *   method: {name: string},
+   *   parameters: Array<{
+   *     name: string,
+   *     value: number,
+   *     unit?: string,
+   *     type?: string,
+   *     file_name?: string
+   *   }>
+   * }} [transformation]
+   */
+
+  /**
+   * @template {TemplateCoordinates} T
+   * @param {proj} from
+   * @param {proj} to
+   * @param {T} coords
+   * @param {boolean} [enforceAxis]
+   * @returns {T}
+   */
   function transformer(from, to, coords, enforceAxis) {
     var transformedArray, out, keys;
     if (Array.isArray(coords)) {
@@ -83914,21 +84408,21 @@
       if (coords.length > 2) {
         if ((typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent')) {
           if (typeof transformedArray.z === 'number') {
-            return [transformedArray.x, transformedArray.y, transformedArray.z].concat(coords.slice(3));
+            return /** @type {T} */ ([transformedArray.x, transformedArray.y, transformedArray.z].concat(coords.slice(3)));
           } else {
-            return [transformedArray.x, transformedArray.y, coords[2]].concat(coords.slice(3));
+            return /** @type {T} */ ([transformedArray.x, transformedArray.y, coords[2]].concat(coords.slice(3)));
           }
         } else {
-          return [transformedArray.x, transformedArray.y].concat(coords.slice(2));
+          return /** @type {T} */ ([transformedArray.x, transformedArray.y].concat(coords.slice(2)));
         }
       } else {
-        return [transformedArray.x, transformedArray.y];
+        return /** @type {T} */ ([transformedArray.x, transformedArray.y]);
       }
     } else {
       out = transform(from, to, coords, enforceAxis);
       keys = Object.keys(coords);
       if (keys.length === 2) {
-        return out;
+        return /** @type {T} */ (out);
       }
       keys.forEach(function (key) {
         if ((typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent')) {
@@ -83942,42 +84436,100 @@
         }
         out[key] = coords[key];
       });
-      return out;
+      return /** @type {T} */ (out);
     }
   }
 
+  /**
+   * @param {proj | string | PROJJSONDefinition | Converter} item
+   * @returns {import('./Proj').default}
+   */
   function checkProj(item) {
     if (item instanceof Projection) {
       return item;
     }
-    if (item.oProj) {
+    if (typeof item === 'object' && 'oProj' in item) {
       return item.oProj;
     }
-    return Projection(item);
+    return Projection(/** @type {string | PROJJSONDefinition} */ (item));
   }
 
-  function proj4(fromProj, toProj, coord) {
-    fromProj = checkProj(fromProj);
+  /**
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @returns {Converter}
+   */
+  /**
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} fromProj
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @returns {Converter}
+   */
+  /**
+   * @template {TemplateCoordinates} T
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @param {T} coord
+   * @returns {T}
+   */
+  /**
+   * @template {TemplateCoordinates} T
+   * @overload
+   * @param {string | PROJJSONDefinition | proj} fromProj
+   * @param {string | PROJJSONDefinition | proj} toProj
+   * @param {T} coord
+   * @returns {T}
+   */
+  /**
+   * @template {TemplateCoordinates} T
+   * @param {string | PROJJSONDefinition | proj} fromProjOrToProj
+   * @param {string | PROJJSONDefinition | proj | TemplateCoordinates} [toProjOrCoord]
+   * @param {T} [coord]
+   * @returns {T|Converter}
+   */
+  function proj4$1(fromProjOrToProj, toProjOrCoord, coord) {
+    /** @type {proj} */
+    var fromProj;
+    /** @type {proj} */
+    var toProj;
     var single = false;
+    /** @type {Converter} */
     var obj;
-    if (typeof toProj === 'undefined') {
-      toProj = fromProj;
+    if (typeof toProjOrCoord === 'undefined') {
+      toProj = checkProj(fromProjOrToProj);
       fromProj = wgs84;
       single = true;
-    } else if (typeof toProj.x !== 'undefined' || Array.isArray(toProj)) {
-      coord = toProj;
-      toProj = fromProj;
+    } else if (typeof /** @type {?} */ (toProjOrCoord).x !== 'undefined' || Array.isArray(toProjOrCoord)) {
+      coord = /** @type {T} */ (/** @type {?} */ (toProjOrCoord));
+      toProj = checkProj(fromProjOrToProj);
       fromProj = wgs84;
       single = true;
     }
-    toProj = checkProj(toProj);
+    if (!fromProj) {
+      fromProj = checkProj(fromProjOrToProj);
+    }
+    if (!toProj) {
+      toProj = checkProj(/** @type {string | PROJJSONDefinition | proj } */ (toProjOrCoord));
+    }
     if (coord) {
       return transformer(fromProj, toProj, coord);
     } else {
       obj = {
+        /**
+         * @template {TemplateCoordinates} T
+         * @param {T} coords
+         * @param {boolean=} enforceAxis
+         * @returns {T}
+         */
         forward: function (coords, enforceAxis) {
           return transformer(fromProj, toProj, coords, enforceAxis);
         },
+        /**
+         * @template {TemplateCoordinates} T
+         * @param {T} coords
+         * @param {boolean=} enforceAxis
+         * @returns {T}
+         */
         inverse: function (coords, enforceAxis) {
           return transformer(toProj, fromProj, coords, enforceAxis);
         }
@@ -84019,8 +84571,8 @@
   var V = 86; // V
   var Z = 90; // Z
   var mgrs = {
-    forward: forward$u,
-    inverse: inverse$u,
+    forward: forward$v,
+    inverse: inverse$v,
     toPoint: toPoint
   };
   /**
@@ -84032,7 +84584,7 @@
    *      100 m, 2 for 1000 m or 1 for 10000 m). Optional, default is 5.
    * @return {string} the MGRS string for the given location and accuracy.
    */
-  function forward$u(ll, accuracy) {
+  function forward$v(ll, accuracy) {
     accuracy = accuracy || 5; // default accuracy 1m
     return encode(LLtoUTM({
       lat: ll[1],
@@ -84047,7 +84599,7 @@
    *     (longitude) and top (latitude) values in WGS84, representing the
    *     bounding box for the provided MGRS reference.
    */
-  function inverse$u(mgrs) {
+  function inverse$v(mgrs) {
     var bbox = UTMtoLL(decode(mgrs.toUpperCase()));
     if (bbox.lat && bbox.lon) {
       return [bbox.lon, bbox.lat, bbox.lon, bbox.lat];
@@ -84730,6 +85282,12 @@
 
   }
 
+  /**
+   * @deprecated v3.0.0 - use proj4.toPoint instead
+   * @param {number | import('./core').TemplateCoordinates | string} x
+   * @param {number} [y]
+   * @param {number} [z]
+   */
   function Point(x, y, z) {
     if (!(this instanceof Point)) {
       return new Point(x, y, z);
@@ -84744,9 +85302,9 @@
       this.z = x.z || 0.0;
     } else if (typeof x === 'string' && typeof y === 'undefined') {
       var coords = x.split(',');
-      this.x = parseFloat(coords[0], 10);
-      this.y = parseFloat(coords[1], 10);
-      this.z = parseFloat(coords[2], 10) || 0.0;
+      this.x = parseFloat(coords[0]);
+      this.y = parseFloat(coords[1]);
+      this.z = parseFloat(coords[2]) || 0.0;
     } else {
       this.x = x;
       this.y = y;
@@ -84759,7 +85317,7 @@
     return new Point(toPoint(mgrsStr));
   };
   Point.prototype.toMGRS = function (accuracy) {
-    return forward$u([this.x, this.y], accuracy);
+    return forward$v([this.x, this.y], accuracy);
   };
 
   var C00 = 1;
@@ -84817,7 +85375,15 @@
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/tmerc.js
 
 
-  function init$v() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {Array<number>} en
+   * @property {number} ml0
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$w() {
     this.x0 = this.x0 !== undefined ? this.x0 : 0;
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
@@ -84833,11 +85399,11 @@
       Transverse Mercator Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$t(p) {
+  function forward$u(p) {
     var lon = p.x;
     var lat = p.y;
 
-    var delta_lon = adjust_lon(lon - this.long0);
+    var delta_lon = adjust_lon(lon - this.long0, this.over);
     var con;
     var x, y;
     var sin_phi = Math.sin(lat);
@@ -84904,7 +85470,7 @@
   /**
       Transverse Mercator Inverse  -  x/y to long/lat
     */
-  function inverse$t(p) {
+  function inverse$u(p) {
     var con, phi;
     var lat, lon;
     var x = (p.x - this.x0) * (1 / this.a);
@@ -84925,7 +85491,7 @@
       if ((g === 0) && (h === 0)) {
         lon = 0;
       } else {
-        lon = adjust_lon(Math.atan2(g, h) + this.long0);
+        lon = adjust_lon(Math.atan2(g, h) + this.long0, this.over);
       }
     } else { // ellipsoidal form
       con = this.ml0 + y / this.k0;
@@ -84952,7 +85518,7 @@
         lon = adjust_lon(this.long0 + (d * (1
           - ds / 6 * (1 + 2 * t + c
             - ds / 20 * (5 + 28 * t + 24 * ts + 8 * c * t + 6 * c
-              - ds / 42 * (61 + 662 * t + 1320 * ts + 720 * ts * t)))) / cos_phi));
+              - ds / 42 * (61 + 662 * t + 1320 * ts + 720 * ts * t)))) / cos_phi), this.over);
       } else {
         lat = HALF_PI * sign(y);
         lon = 0;
@@ -84965,12 +85531,12 @@
     return p;
   }
 
-  var names$u = ['Fast_Transverse_Mercator', 'Fast Transverse Mercator'];
+  var names$v = ['Fast_Transverse_Mercator', 'Fast Transverse Mercator'];
   var tmerc = {
-    init: init$v,
-    forward: forward$t,
-    inverse: inverse$t,
-    names: names$u
+    init: init$w,
+    forward: forward$u,
+    inverse: inverse$u,
+    names: names$v
   };
 
   function sinh (x) {
@@ -85074,7 +85640,19 @@
   // https://github.com/mbloch/mapshaper-proj/blob/master/src/projections/etmerc.js
 
 
-  function init$u() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {Array<number>} cbg
+   * @property {Array<number>} cgb
+   * @property {Array<number>} utg
+   * @property {Array<number>} gtu
+   * @property {number} Qn
+   * @property {number} Zb
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$v() {
     if (!this.approx && (isNaN(this.es) || this.es <= 0)) {
       throw new Error('Incorrect elliptical usage. Try using the +approx option in the proj string, or PROJECTION["Fast_Transverse_Mercator"] in the WKT.');
     }
@@ -85151,8 +85729,8 @@
     this.Zb = -this.Qn * (Z + clens(this.gtu, 2 * Z));
   }
 
-  function forward$s(p) {
-    var Ce = adjust_lon(p.x - this.long0);
+  function forward$t(p) {
+    var Ce = adjust_lon(p.x - this.long0, this.over);
     var Cn = p.y;
 
     Cn = gatg(this.cbg, Cn);
@@ -85187,7 +85765,7 @@
     return p;
   }
 
-  function inverse$s(p) {
+  function inverse$t(p) {
     var Ce = (p.x - this.x0) * (1 / this.a);
     var Cn = (p.y - this.y0) * (1 / this.a);
 
@@ -85212,7 +85790,7 @@
       Cn = Math.atan2(sin_Cn * cos_Ce, hypot(sin_Ce, cos_Ce * cos_Cn));
       Ce = Math.atan2(sin_Ce, cos_Ce * cos_Cn);
 
-      lon = adjust_lon(Ce + this.long0);
+      lon = adjust_lon(Ce + this.long0, this.over);
       lat = gatg(this.cgb, Cn);
     } else {
       lon = Infinity;
@@ -85225,12 +85803,12 @@
     return p;
   }
 
-  var names$t = ['Extended_Transverse_Mercator', 'Extended Transverse Mercator', 'etmerc', 'Transverse_Mercator', 'Transverse Mercator', 'Gauss Kruger', 'Gauss_Kruger', 'tmerc'];
+  var names$u = ['Extended_Transverse_Mercator', 'Extended Transverse Mercator', 'etmerc', 'Transverse_Mercator', 'Transverse Mercator', 'Gauss Kruger', 'Gauss_Kruger', 'tmerc'];
   var etmerc = {
-    init: init$u,
-    forward: forward$s,
-    inverse: inverse$s,
-    names: names$t
+    init: init$v,
+    forward: forward$t,
+    inverse: inverse$t,
+    names: names$u
   };
 
   function adjust_zone (zone, lon) {
@@ -85248,7 +85826,8 @@
 
   var dependsOn = 'etmerc';
 
-  function init$t() {
+  /** @this {import('../defs.js').ProjectionDefinition} */
+  function init$u() {
     var zone = adjust_zone(this.zone, this.long0);
     if (zone === undefined) {
       throw new Error('unknown utm zone');
@@ -85264,10 +85843,10 @@
     this.inverse = etmerc.inverse;
   }
 
-  var names$s = ['Universal Transverse Mercator System', 'utm'];
+  var names$t = ['Universal Transverse Mercator System', 'utm'];
   var utm = {
-    init: init$t,
-    names: names$s,
+    init: init$u,
+    names: names$t,
     dependsOn: dependsOn
   };
 
@@ -85277,7 +85856,19 @@
 
   var MAX_ITER$2 = 20;
 
-  function init$s() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} rc
+   * @property {number} C
+   * @property {number} phic0
+   * @property {number} ratexp
+   * @property {number} K
+   * @property {number} e
+   * @property {number} es
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$t() {
     var sphi = Math.sin(this.lat0);
     var cphi = Math.cos(this.lat0);
     cphi *= cphi;
@@ -85288,7 +85879,7 @@
     this.K = Math.tan(0.5 * this.phic0 + FORTPI) / (Math.pow(Math.tan(0.5 * this.lat0 + FORTPI), this.C) * srat(this.e * sphi, this.ratexp));
   }
 
-  function forward$r(p) {
+  function forward$s(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -85297,7 +85888,7 @@
     return p;
   }
 
-  function inverse$r(p) {
+  function inverse$s(p) {
     var DEL_TOL = 1e-14;
     var lon = p.x / this.C;
     var lat = p.y;
@@ -85318,11 +85909,21 @@
     return p;
   }
   var gauss = {
-    init: init$s,
-    forward: forward$r,
-    inverse: inverse$r};
+    init: init$t,
+    forward: forward$s,
+    inverse: inverse$s};
 
-  function init$r() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} sinc0
+   * @property {number} cosc0
+   * @property {number} R2
+   * @property {number} rc
+   * @property {number} phic0
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$s() {
     gauss.init.apply(this);
     if (!this.rc) {
       return;
@@ -85335,9 +85936,9 @@
     }
   }
 
-  function forward$q(p) {
+  function forward$r(p) {
     var sinc, cosc, cosl, k;
-    p.x = adjust_lon(p.x - this.long0);
+    p.x = adjust_lon(p.x - this.long0, this.over);
     gauss.forward.apply(this, [p]);
     sinc = Math.sin(p.y);
     cosc = Math.cos(p.y);
@@ -85350,7 +85951,7 @@
     return p;
   }
 
-  function inverse$q(p) {
+  function inverse$r(p) {
     var sinc, cosc, lon, lat, rho;
     p.x = (p.x - this.x0) / this.a;
     p.y = (p.y - this.y0) / this.a;
@@ -85371,24 +85972,38 @@
     p.x = lon;
     p.y = lat;
     gauss.inverse.apply(this, [p]);
-    p.x = adjust_lon(p.x + this.long0);
+    p.x = adjust_lon(p.x + this.long0, this.over);
     return p;
   }
 
-  var names$r = ['Stereographic_North_Pole', 'Oblique_Stereographic', 'sterea', 'Oblique Stereographic Alternative', 'Double_Stereographic'];
+  var names$s = ['Stereographic_North_Pole', 'Oblique_Stereographic', 'sterea', 'Oblique Stereographic Alternative', 'Double_Stereographic'];
   var sterea = {
-    init: init$r,
-    forward: forward$q,
-    inverse: inverse$q,
-    names: names$r
+    init: init$s,
+    forward: forward$r,
+    inverse: inverse$r,
+    names: names$s
   };
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} coslat0
+   * @property {number} sinlat0
+   * @property {number} ms1
+   * @property {number} X0
+   * @property {number} cosX0
+   * @property {number} sinX0
+   * @property {number} con
+   * @property {number} cons
+   * @property {number} e
+   */
 
   function ssfn_(phit, sinphi, eccen) {
     sinphi *= eccen;
     return (Math.tan(0.5 * (HALF_PI + phit)) * Math.pow((1 - sinphi) / (1 + sinphi), 0.5 * eccen));
   }
 
-  function init$q() {
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$r() {
     // setting default parameters
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -85420,20 +86035,20 @@
         this.k0 = 0.5 * this.cons * msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts)) / tsfnz(this.e, this.con * this.lat_ts, this.con * Math.sin(this.lat_ts));
       }
       this.ms1 = msfnz(this.e, this.sinlat0, this.coslat0);
-      this.X0 = 2 * Math.atan(this.ssfn_(this.lat0, this.sinlat0, this.e)) - HALF_PI;
+      this.X0 = 2 * Math.atan(ssfn_(this.lat0, this.sinlat0, this.e)) - HALF_PI;
       this.cosX0 = Math.cos(this.X0);
       this.sinX0 = Math.sin(this.X0);
     }
   }
 
   // Stereographic forward equations--mapping lat,long to x,y
-  function forward$p(p) {
+  function forward$q(p) {
     var lon = p.x;
     var lat = p.y;
     var sinlat = Math.sin(lat);
     var coslat = Math.cos(lat);
     var A, X, sinX, cosX, ts, rh;
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
 
     if (Math.abs(Math.abs(lon - this.long0) - Math.PI) <= EPSLN && Math.abs(lat + this.lat0) <= EPSLN) {
       // case of the origine point
@@ -85449,7 +86064,7 @@
       p.y = this.a * A * (this.coslat0 * sinlat - this.sinlat0 * coslat * Math.cos(dlon)) + this.y0;
       return p;
     } else {
-      X = 2 * Math.atan(this.ssfn_(lat, sinlat, this.e)) - HALF_PI;
+      X = 2 * Math.atan(ssfn_(lat, sinlat, this.e)) - HALF_PI;
       cosX = Math.cos(X);
       sinX = Math.sin(X);
       if (Math.abs(this.coslat0) <= EPSLN) {
@@ -85477,7 +86092,7 @@
   }
 
   //* Stereographic inverse equations--mapping x,y to lat/long
-  function inverse$p(p) {
+  function inverse$q(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat, ts, ce, Chi;
@@ -85494,12 +86109,12 @@
       lat = Math.asin(Math.cos(c) * this.sinlat0 + p.y * Math.sin(c) * this.coslat0 / rh);
       if (Math.abs(this.coslat0) < EPSLN) {
         if (this.lat0 > 0) {
-          lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y), this.over);
         } else {
-          lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y), this.over);
         }
       } else {
-        lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(c), rh * this.coslat0 * Math.cos(c) - p.y * this.sinlat0 * Math.sin(c)));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(c), rh * this.coslat0 * Math.cos(c) - p.y * this.sinlat0 * Math.sin(c)), this.over);
       }
       p.x = lon;
       p.y = lat;
@@ -85518,7 +86133,7 @@
         p.y *= this.con;
         ts = rh * this.cons / (2 * this.a * this.k0);
         lat = this.con * phi2z(this.e, ts);
-        lon = this.con * adjust_lon(this.con * this.long0 + Math.atan2(p.x, -1 * p.y));
+        lon = this.con * adjust_lon(this.con * this.long0 + Math.atan2(p.x, -1 * p.y), this.over);
       } else {
         ce = 2 * Math.atan(rh * this.cosX0 / (2 * this.a * this.k0 * this.ms1));
         lon = this.long0;
@@ -85526,7 +86141,7 @@
           Chi = this.X0;
         } else {
           Chi = Math.asin(Math.cos(ce) * this.sinX0 + p.y * Math.sin(ce) * this.cosX0 / rh);
-          lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(ce), rh * this.cosX0 * Math.cos(ce) - p.y * this.sinX0 * Math.sin(ce)));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x * Math.sin(ce), rh * this.cosX0 * Math.cos(ce) - p.y * this.sinX0 * Math.sin(ce)), this.over);
         }
         lat = -1 * phi2z(this.e, Math.tan(0.5 * (HALF_PI + Chi)));
       }
@@ -85538,12 +86153,12 @@
     return p;
   }
 
-  var names$q = ['stere', 'Stereographic_South_Pole', 'Polar_Stereographic_variant_A', 'Polar_Stereographic_variant_B', 'Polar_Stereographic'];
+  var names$r = ['stere', 'Stereographic_South_Pole', 'Polar_Stereographic_variant_A', 'Polar_Stereographic_variant_B', 'Polar_Stereographic'];
   var stere = {
-    init: init$q,
-    forward: forward$p,
-    inverse: inverse$p,
-    names: names$q,
+    init: init$r,
+    forward: forward$q,
+    inverse: inverse$q,
+    names: names$r,
     ssfn_: ssfn_
   };
 
@@ -85555,7 +86170,17 @@
       http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf
     */
 
-  function init$p() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} lambda0
+   * @property {number} e
+   * @property {number} R
+   * @property {number} b0
+   * @property {number} K
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$q() {
     var phy0 = this.lat0;
     this.lambda0 = this.long0;
     var sinPhy0 = Math.sin(phy0);
@@ -85573,7 +86198,7 @@
     this.K = k1 - this.alpha * k2 + this.alpha * e / 2 * k3;
   }
 
-  function forward$o(p) {
+  function forward$p(p) {
     var Sa1 = Math.log(Math.tan(Math.PI / 4 - p.y / 2));
     var Sa2 = this.e / 2 * Math.log((1 + this.e * Math.sin(p.y)) / (1 - this.e * Math.sin(p.y)));
     var S = -this.alpha * (Sa1 + Sa2) + this.K;
@@ -85594,7 +86219,7 @@
     return p;
   }
 
-  function inverse$o(p) {
+  function inverse$p(p) {
     var Y = p.x - this.x0;
     var X = p.y - this.y0;
 
@@ -85626,13 +86251,36 @@
     return p;
   }
 
-  var names$p = ['somerc'];
+  var names$q = ['somerc'];
   var somerc = {
-    init: init$p,
-    forward: forward$o,
-    inverse: inverse$o,
-    names: names$p
+    init: init$q,
+    forward: forward$p,
+    inverse: inverse$p,
+    names: names$q
   };
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {boolean} no_off
+   * @property {boolean} no_rot
+   * @property {number} rectified_grid_angle
+   * @property {number} es
+   * @property {number} A
+   * @property {number} B
+   * @property {number} E
+   * @property {number} e
+   * @property {number} lam0
+   * @property {number} singam
+   * @property {number} cosgam
+   * @property {number} sinrot
+   * @property {number} cosrot
+   * @property {number} rB
+   * @property {number} ArB
+   * @property {number} BrA
+   * @property {number} u_0
+   * @property {number} v_pole_n
+   * @property {number} v_pole_s
+   */
 
   var TOL = 1e-7;
 
@@ -85643,9 +86291,11 @@
     return 'no_uoff' in P || 'no_off' in P || typeAProjections.indexOf(projectionName) !== -1 || typeAProjections.indexOf(getNormalizedProjName(projectionName)) !== -1;
   }
 
-  /* Initialize the Oblique Mercator  projection
-      ------------------------------------------ */
-  function init$o() {
+  /**
+   * Initialize the Oblique Mercator  projection
+   * @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
+  function init$p() {
     var con, com, cosph0, D, F, H, L, sinph0, p, J, gamma = 0,
       gamma0, lamc = 0, lam1 = 0, lam2 = 0, phi1 = 0, phi2 = 0, alpha_c = 0;
 
@@ -85737,14 +86387,14 @@
       J = (J - L * H) / (J + L * H);
       con = lam1 - lam2;
 
-      if (con < -Math.pi) {
+      if (con < -Math.PI) {
         lam2 -= TWO_PI;
-      } else if (con > Math.pi) {
+      } else if (con > Math.PI) {
         lam2 += TWO_PI;
       }
 
-      this.lam0 = adjust_lon(0.5 * (lam1 + lam2) - Math.atan(J * Math.tan(0.5 * this.B * (lam1 - lam2)) / p) / this.B);
-      gamma0 = Math.atan(2 * Math.sin(this.B * adjust_lon(lam1 - this.lam0)) / (F - 1 / F));
+      this.lam0 = adjust_lon(0.5 * (lam1 + lam2) - Math.atan(J * Math.tan(0.5 * this.B * (lam1 - lam2)) / p) / this.B, this.over);
+      gamma0 = Math.atan(2 * Math.sin(this.B * adjust_lon(lam1 - this.lam0, this.over)) / (F - 1 / F));
       gamma = alpha_c = Math.asin(D * Math.sin(gamma0));
     }
 
@@ -85774,7 +86424,7 @@
 
   /* Oblique Mercator forward equations--mapping lat,long to x,y
       ---------------------------------------------------------- */
-  function forward$n(p) {
+  function forward$o(p) {
     var coords = {};
     var S, T, U, V, W, temp, u, v;
     p.x = p.x - this.lam0;
@@ -85820,7 +86470,7 @@
     return coords;
   }
 
-  function inverse$n(p) {
+  function inverse$o(p) {
     var u, v, Qp, Sp, Tp, Vp, Up;
     var coords = {};
 
@@ -85860,15 +86510,24 @@
     return coords;
   }
 
-  var names$o = ['Hotine_Oblique_Mercator', 'Hotine Oblique Mercator', 'Hotine_Oblique_Mercator_variant_A', 'Hotine_Oblique_Mercator_Variant_B', 'Hotine_Oblique_Mercator_Azimuth_Natural_Origin', 'Hotine_Oblique_Mercator_Two_Point_Natural_Origin', 'Hotine_Oblique_Mercator_Azimuth_Center', 'Oblique_Mercator', 'omerc'];
+  var names$p = ['Hotine_Oblique_Mercator', 'Hotine Oblique Mercator', 'Hotine_Oblique_Mercator_variant_A', 'Hotine_Oblique_Mercator_Variant_B', 'Hotine_Oblique_Mercator_Azimuth_Natural_Origin', 'Hotine_Oblique_Mercator_Two_Point_Natural_Origin', 'Hotine_Oblique_Mercator_Azimuth_Center', 'Oblique_Mercator', 'omerc'];
   var omerc = {
-    init: init$o,
-    forward: forward$n,
-    inverse: inverse$n,
-    names: names$o
+    init: init$p,
+    forward: forward$o,
+    inverse: inverse$o,
+    names: names$p
   };
 
-  function init$n() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} e
+   * @property {number} ns
+   * @property {number} f0
+   * @property {number} rh
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$o() {
     // double lat0;                    /* the reference latitude               */
     // double long0;                   /* the reference longitude              */
     // double lat1;                    /* first standard parallel              */
@@ -85928,7 +86587,7 @@
 
   // Lambert Conformal conic forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$m(p) {
+  function forward$n(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -85949,7 +86608,7 @@
       }
       rh1 = 0;
     }
-    var theta = this.ns * adjust_lon(lon - this.long0);
+    var theta = this.ns * adjust_lon(lon - this.long0, this.over);
     p.x = this.k0 * (rh1 * Math.sin(theta)) + this.x0;
     p.y = this.k0 * (this.rh - rh1 * Math.cos(theta)) + this.y0;
 
@@ -85958,7 +86617,7 @@
 
   // Lambert Conformal Conic inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$m(p) {
+  function inverse$n(p) {
     var rh1, con, ts;
     var lat, lon;
     var x = (p.x - this.x0) / this.k0;
@@ -85984,14 +86643,14 @@
     } else {
       lat = -HALF_PI;
     }
-    lon = adjust_lon(theta / this.ns + this.long0);
+    lon = adjust_lon(theta / this.ns + this.long0, this.over);
 
     p.x = lon;
     p.y = lat;
     return p;
   }
 
-  var names$n = [
+  var names$o = [
     'Lambert Tangential Conformal Conic Projection',
     'Lambert_Conformal_Conic',
     'Lambert_Conformal_Conic_1SP',
@@ -86002,13 +86661,13 @@
   ];
 
   var lcc = {
-    init: init$n,
-    forward: forward$m,
-    inverse: inverse$m,
-    names: names$n
+    init: init$o,
+    forward: forward$n,
+    inverse: inverse$n,
+    names: names$o
   };
 
-  function init$m() {
+  function init$n() {
     this.a = 6377397.155;
     this.es = 0.006674372230614;
     this.e = Math.sqrt(this.es);
@@ -86043,11 +86702,11 @@
   /* ellipsoid */
   /* calculate xy from lat/lon */
   /* Constants, identical to inverse transform function */
-  function forward$l(p) {
+  function forward$m(p) {
     var gfi, u, deltav, s, d, eps, ro;
     var lon = p.x;
     var lat = p.y;
-    var delta_lon = adjust_lon(lon - this.long0);
+    var delta_lon = adjust_lon(lon - this.long0, this.over);
     /* Transformation */
     gfi = Math.pow(((1 + this.e * Math.sin(lat)) / (1 - this.e * Math.sin(lat))), (this.alfa * this.e / 2));
     u = 2 * (Math.atan(this.k * Math.pow(Math.tan(lat / 2 + this.s45), this.alfa) / gfi) - this.s45);
@@ -86067,7 +86726,7 @@
   }
 
   /* calculate lat/lon from xy */
-  function inverse$l(p) {
+  function inverse$m(p) {
     var u, deltav, s, d, eps, ro, fi1;
     var ok;
 
@@ -86105,12 +86764,12 @@
     return (p);
   }
 
-  var names$m = ['Krovak', 'krovak'];
+  var names$n = ['Krovak', 'krovak'];
   var krovak = {
-    init: init$m,
-    forward: forward$l,
-    inverse: inverse$l,
-    names: names$m
+    init: init$n,
+    forward: forward$m,
+    inverse: inverse$m,
+    names: names$n
   };
 
   function mlfn (e0, e1, e2, e3, phi) {
@@ -86159,7 +86818,18 @@
     return NaN;
   }
 
-  function init$l() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {number} e0
+   * @property {number} e1
+   * @property {number} e2
+   * @property {number} e3
+   * @property {number} ml0
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$m() {
     if (!this.sphere) {
       this.e0 = e0fn(this.es);
       this.e1 = e1fn(this.es);
@@ -86171,13 +86841,13 @@
 
   /* Cassini forward equations--mapping lat,long to x,y
     ----------------------------------------------------------------------- */
-  function forward$k(p) {
+  function forward$l(p) {
     /* Forward equations
         ----------------- */
     var x, y;
     var lam = p.x;
     var phi = p.y;
-    lam = adjust_lon(lam - this.long0);
+    lam = adjust_lon(lam - this.long0, this.over);
 
     if (this.sphere) {
       x = this.a * Math.asin(Math.cos(phi) * Math.sin(lam));
@@ -86204,7 +86874,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$k(p) {
+  function inverse$l(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -86237,17 +86907,17 @@
       lam = dl * (1 - dsq * (tl1 / 3 + (1 + 3 * tl1) * tl1 * dsq / 15)) / Math.cos(phi1);
     }
 
-    p.x = adjust_lon(lam + this.long0);
+    p.x = adjust_lon(lam + this.long0, this.over);
     p.y = adjust_lat(phi);
     return p;
   }
 
-  var names$l = ['Cassini', 'Cassini_Soldner', 'cass'];
+  var names$m = ['Cassini', 'Cassini_Soldner', 'cass'];
   var cass = {
-    init: init$l,
-    forward: forward$k,
-    inverse: inverse$k,
-    names: names$l
+    init: init$m,
+    forward: forward$l,
+    inverse: inverse$l,
+    names: names$m
   };
 
   function qsfnz (eccent, sinphi) {
@@ -86260,6 +86930,24 @@
     }
   }
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} mode
+   * @property {Array<number>} apa
+   * @property {number} dd
+   * @property {number} e
+   * @property {number} es
+   * @property {number} mmf
+   * @property {number} rq
+   * @property {number} qp
+   * @property {number} sinb1
+   * @property {number} cosb1
+   * @property {number} ymf
+   * @property {number} xmf
+   * @property {number} sinph0
+   * @property {number} cosph0
+   */
+
   /*
     reference
       "New Equal-Area Map Projections for Noncircular Regions", John P. Snyder,
@@ -86267,21 +86955,22 @@
     */
 
   var S_POLE = 1;
-
   var N_POLE = 2;
   var EQUIT = 3;
   var OBLIQ = 4;
 
-  /* Initialize the Lambert Azimuthal Equal Area projection
-    ------------------------------------------------------ */
-  function init$k() {
+  /**
+   * Initialize the Lambert Azimuthal Equal Area projection
+   * @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
+  function init$l() {
     var t = Math.abs(this.lat0);
     if (Math.abs(t - HALF_PI) < EPSLN) {
-      this.mode = this.lat0 < 0 ? this.S_POLE : this.N_POLE;
+      this.mode = this.lat0 < 0 ? S_POLE : N_POLE;
     } else if (Math.abs(t) < EPSLN) {
-      this.mode = this.EQUIT;
+      this.mode = EQUIT;
     } else {
-      this.mode = this.OBLIQ;
+      this.mode = OBLIQ;
     }
     if (this.es > 0) {
       var sinphi;
@@ -86290,19 +86979,19 @@
       this.mmf = 0.5 / (1 - this.es);
       this.apa = authset(this.es);
       switch (this.mode) {
-        case this.N_POLE:
+        case N_POLE:
           this.dd = 1;
           break;
-        case this.S_POLE:
+        case S_POLE:
           this.dd = 1;
           break;
-        case this.EQUIT:
+        case EQUIT:
           this.rq = Math.sqrt(0.5 * this.qp);
           this.dd = 1 / this.rq;
           this.xmf = 1;
           this.ymf = 0.5 * this.qp;
           break;
-        case this.OBLIQ:
+        case OBLIQ:
           this.rq = Math.sqrt(0.5 * this.qp);
           sinphi = Math.sin(this.lat0);
           this.sinb1 = qsfnz(this.e, sinphi) / this.qp;
@@ -86313,7 +87002,7 @@
           break;
       }
     } else {
-      if (this.mode === this.OBLIQ) {
+      if (this.mode === OBLIQ) {
         this.sinph0 = Math.sin(this.lat0);
         this.cosph0 = Math.cos(this.lat0);
       }
@@ -86322,14 +87011,14 @@
 
   /* Lambert Azimuthal Equal Area forward equations--mapping lat,long to x,y
     ----------------------------------------------------------------------- */
-  function forward$j(p) {
+  function forward$k(p) {
     /* Forward equations
         ----------------- */
     var x, y, coslam, sinlam, sinphi, q, sinb, cosb, b, cosphi;
     var lam = p.x;
     var phi = p.y;
 
-    lam = adjust_lon(lam - this.long0);
+    lam = adjust_lon(lam - this.long0, this.over);
     if (this.sphere) {
       sinphi = Math.sin(phi);
       cosphi = Math.cos(phi);
@@ -86415,7 +87104,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$j(p) {
+  function inverse$k(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -86497,7 +87186,7 @@
       phi = authlat(Math.asin(ab), this.apa);
     }
 
-    p.x = adjust_lon(this.long0 + lam);
+    p.x = adjust_lon(this.long0 + lam, this.over);
     p.y = phi;
     return p;
   }
@@ -86530,12 +87219,12 @@
     return (beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t + t) + APA[2] * Math.sin(t + t + t));
   }
 
-  var names$k = ['Lambert Azimuthal Equal Area', 'Lambert_Azimuthal_Equal_Area', 'laea'];
+  var names$l = ['Lambert Azimuthal Equal Area', 'Lambert_Azimuthal_Equal_Area', 'laea'];
   var laea = {
-    init: init$k,
-    forward: forward$j,
-    inverse: inverse$j,
-    names: names$k,
+    init: init$l,
+    forward: forward$k,
+    inverse: inverse$k,
+    names: names$l,
     S_POLE: S_POLE,
     N_POLE: N_POLE,
     EQUIT: EQUIT,
@@ -86549,7 +87238,31 @@
     return Math.asin(x);
   }
 
-  function init$j() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} temp
+   * @property {number} es
+   * @property {number} e3
+   * @property {number} sin_po
+   * @property {number} cos_po
+   * @property {number} t1
+   * @property {number} con
+   * @property {number} ms1
+   * @property {number} qs1
+   * @property {number} t2
+   * @property {number} ms2
+   * @property {number} qs2
+   * @property {number} t3
+   * @property {number} qs0
+   * @property {number} ns0
+   * @property {number} c
+   * @property {number} rh
+   * @property {number} sin_phi
+   * @property {number} cos_phi
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$k() {
     if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
       return;
     }
@@ -86586,7 +87299,8 @@
 
   /* Albers Conical Equal Area forward equations--mapping lat,long to x,y
     ------------------------------------------------------------------- */
-  function forward$i(p) {
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function forward$j(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -86595,7 +87309,7 @@
 
     var qs = qsfnz(this.e3, this.sin_phi);
     var rh1 = this.a * Math.sqrt(this.c - this.ns0 * qs) / this.ns0;
-    var theta = this.ns0 * adjust_lon(lon - this.long0);
+    var theta = this.ns0 * adjust_lon(lon - this.long0, this.over);
     var x = rh1 * Math.sin(theta) + this.x0;
     var y = this.rh - rh1 * Math.cos(theta) + this.y0;
 
@@ -86604,7 +87318,7 @@
     return p;
   }
 
-  function inverse$i(p) {
+  function inverse$j(p) {
     var rh1, qs, con, theta, lon, lat;
 
     p.x -= this.x0;
@@ -86628,7 +87342,7 @@
       lat = this.phi1z(this.e3, qs);
     }
 
-    lon = adjust_lon(theta / this.ns0 + this.long0);
+    lon = adjust_lon(theta / this.ns0 + this.long0, this.over);
     p.x = lon;
     p.y = lat;
     return p;
@@ -86659,22 +87373,31 @@
     return null;
   }
 
-  var names$j = ['Albers_Conic_Equal_Area', 'Albers_Equal_Area', 'Albers', 'aea'];
+  var names$k = ['Albers_Conic_Equal_Area', 'Albers_Equal_Area', 'Albers', 'aea'];
   var aea = {
-    init: init$j,
-    forward: forward$i,
-    inverse: inverse$i,
-    names: names$j,
+    init: init$k,
+    forward: forward$j,
+    inverse: inverse$j,
+    names: names$k,
     phi1z: phi1z
   };
 
-  /*
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} sin_p14
+   * @property {number} cos_p14
+   * @property {number} infinity_dist
+   * @property {number} rc
+   */
+
+  /**
     reference:
       Wolfram Mathworld "Gnomonic Projection"
       http://mathworld.wolfram.com/GnomonicProjection.html
       Accessed: 12th November 2009
-    */
-  function init$i() {
+     @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
+  function init$j() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     this.sin_p14 = Math.sin(this.lat0);
@@ -86686,7 +87409,7 @@
 
   /* Gnomonic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$h(p) {
+  function forward$i(p) {
     var sinphi, cosphi; /* sin and cos value        */
     var dlon; /* delta longitude value      */
     var coslon; /* cos of longitude        */
@@ -86697,7 +87420,7 @@
     var lat = p.y;
     /* Forward equations
         ----------------- */
-    dlon = adjust_lon(lon - this.long0);
+    dlon = adjust_lon(lon - this.long0, this.over);
 
     sinphi = Math.sin(lat);
     cosphi = Math.cos(lat);
@@ -86724,7 +87447,7 @@
     return p;
   }
 
-  function inverse$h(p) {
+  function inverse$i(p) {
     var rh; /* Rho */
     var sinc, cosc;
     var c;
@@ -86745,7 +87468,7 @@
 
       lat = asinz(cosc * this.sin_p14 + (p.y * sinc * this.cos_p14) / rh);
       lon = Math.atan2(p.x * sinc, rh * this.cos_p14 * cosc - p.y * this.sin_p14 * sinc);
-      lon = adjust_lon(this.long0 + lon);
+      lon = adjust_lon(this.long0 + lon, this.over);
     } else {
       lat = this.phic0;
       lon = 0;
@@ -86756,12 +87479,12 @@
     return p;
   }
 
-  var names$i = ['gnom'];
+  var names$j = ['gnom'];
   var gnom = {
-    init: init$i,
-    forward: forward$h,
-    inverse: inverse$h,
-    names: names$i
+    init: init$j,
+    forward: forward$i,
+    inverse: inverse$i,
+    names: names$j
   };
 
   function iqsfnz (eccent, q) {
@@ -86794,13 +87517,19 @@
     return NaN;
   }
 
-  /*
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} e
+   */
+
+  /**
     reference:
       "Cartographic Projection Procedures for the UNIX Environment-
       A User's Manual" by Gerald I. Evenden,
       USGS Open File Report 90-284and Release 4 Interim Reports (2003)
+    @this {import('../defs.js').ProjectionDefinition & LocalThis}
   */
-  function init$h() {
+  function init$i() {
     // no-op
     if (!this.sphere) {
       this.k0 = msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
@@ -86809,13 +87538,13 @@
 
   /* Cylindrical Equal Area forward equations--mapping lat,long to x,y
       ------------------------------------------------------------ */
-  function forward$g(p) {
+  function forward$h(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y;
     /* Forward equations
         ----------------- */
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     if (this.sphere) {
       x = this.x0 + this.a * dlon * Math.cos(this.lat_ts);
       y = this.y0 + this.a * Math.sin(lat) / Math.cos(this.lat_ts);
@@ -86832,17 +87561,17 @@
 
   /* Cylindrical Equal Area inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------ */
-  function inverse$g(p) {
+  function inverse$h(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat;
 
     if (this.sphere) {
-      lon = adjust_lon(this.long0 + (p.x / this.a) / Math.cos(this.lat_ts));
+      lon = adjust_lon(this.long0 + (p.x / this.a) / Math.cos(this.lat_ts), this.over);
       lat = Math.asin((p.y / this.a) * Math.cos(this.lat_ts));
     } else {
       lat = iqsfnz(this.e, 2 * p.y * this.k0 / this.a);
-      lon = adjust_lon(this.long0 + p.x / (this.a * this.k0));
+      lon = adjust_lon(this.long0 + p.x / (this.a * this.k0), this.over);
     }
 
     p.x = lon;
@@ -86850,15 +87579,15 @@
     return p;
   }
 
-  var names$h = ['cea'];
+  var names$i = ['cea'];
   var cea = {
-    init: init$h,
-    forward: forward$g,
-    inverse: inverse$g,
-    names: names$h
+    init: init$i,
+    forward: forward$h,
+    inverse: inverse$h,
+    names: names$i
   };
 
-  function init$g() {
+  function init$h() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
     this.lat0 = this.lat0 || 0;
@@ -86871,11 +87600,11 @@
 
   // forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$f(p) {
+  function forward$g(p) {
     var lon = p.x;
     var lat = p.y;
 
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     var dlat = adjust_lat(lat - this.lat0);
     p.x = this.x0 + (this.a * dlon * this.rc);
     p.y = this.y0 + (this.a * dlat);
@@ -86884,26 +87613,39 @@
 
   // inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$f(p) {
+  function inverse$g(p) {
     var x = p.x;
     var y = p.y;
 
-    p.x = adjust_lon(this.long0 + ((x - this.x0) / (this.a * this.rc)));
+    p.x = adjust_lon(this.long0 + ((x - this.x0) / (this.a * this.rc)), this.over);
     p.y = adjust_lat(this.lat0 + ((y - this.y0) / (this.a)));
     return p;
   }
 
-  var names$g = ['Equirectangular', 'Equidistant_Cylindrical', 'Equidistant_Cylindrical_Spherical', 'eqc'];
+  var names$h = ['Equirectangular', 'Equidistant_Cylindrical', 'Equidistant_Cylindrical_Spherical', 'eqc'];
   var eqc = {
-    init: init$g,
-    forward: forward$f,
-    inverse: inverse$f,
-    names: names$g
+    init: init$h,
+    forward: forward$g,
+    inverse: inverse$g,
+    names: names$h
   };
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} temp
+   * @property {number} es
+   * @property {number} e
+   * @property {number} e0
+   * @property {number} e1
+   * @property {number} e2
+   * @property {number} e3
+   * @property {number} ml0
+   */
 
   var MAX_ITER$1 = 20;
 
-  function init$f() {
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$g() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     this.temp = this.b / this.a;
@@ -86918,11 +87660,11 @@
 
   /* Polyconic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$e(p) {
+  function forward$f(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y, el;
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     el = dlon * Math.sin(lat);
     if (this.sphere) {
       if (Math.abs(lat) <= EPSLN) {
@@ -86949,7 +87691,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$e(p) {
+  function inverse$f(p) {
     var lon, lat, x, y, i;
     var al, bl;
     var phi, dphi;
@@ -86958,7 +87700,7 @@
 
     if (this.sphere) {
       if (Math.abs(y + this.a * this.lat0) <= EPSLN) {
-        lon = adjust_lon(x / this.a + this.long0);
+        lon = adjust_lon(x / this.a + this.long0, this.over);
         lat = 0;
       } else {
         al = this.lat0 + y / this.a;
@@ -86974,12 +87716,12 @@
             break;
           }
         }
-        lon = adjust_lon(this.long0 + (Math.asin(x * Math.tan(phi) / this.a)) / Math.sin(lat));
+        lon = adjust_lon(this.long0 + (Math.asin(x * Math.tan(phi) / this.a)) / Math.sin(lat), this.over);
       }
     } else {
       if (Math.abs(y + this.ml0) <= EPSLN) {
         lat = 0;
-        lon = adjust_lon(this.long0 + x / this.a);
+        lon = adjust_lon(this.long0 + x / this.a, this.over);
       } else {
         al = (this.ml0 + y) / this.a;
         bl = x * x / this.a / this.a + al * al;
@@ -87002,7 +87744,7 @@
 
         // lat=phi4z(this.e,this.e0,this.e1,this.e2,this.e3,al,bl,0,0);
         cl = Math.sqrt(1 - this.es * Math.pow(Math.sin(lat), 2)) * Math.tan(lat);
-        lon = adjust_lon(this.long0 + Math.asin(x * cl / this.a) / Math.sin(lat));
+        lon = adjust_lon(this.long0 + Math.asin(x * cl / this.a) / Math.sin(lat), this.over);
       }
     }
 
@@ -87011,15 +87753,15 @@
     return p;
   }
 
-  var names$f = ['Polyconic', 'American_Polyconic', 'poly'];
+  var names$g = ['Polyconic', 'American_Polyconic', 'poly'];
   var poly = {
-    init: init$f,
-    forward: forward$e,
-    inverse: inverse$e,
-    names: names$f
+    init: init$g,
+    forward: forward$f,
+    inverse: inverse$f,
+    names: names$g
   };
 
-  function init$e() {
+  function init$f() {
     this.A = [];
     this.A[1] = 0.6399175073;
     this.A[2] = -0.1358797613;
@@ -87078,7 +87820,7 @@
       New Zealand Map Grid Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$d(p) {
+  function forward$e(p) {
     var n;
     var lon = p.x;
     var lat = p.y;
@@ -87129,7 +87871,7 @@
   /**
       New Zealand Map Grid Inverse  -  x/y to long/lat
     */
-  function inverse$d(p) {
+  function inverse$e(p) {
     var n;
     var x = p.x;
     var y = p.y;
@@ -87220,12 +87962,12 @@
     return p;
   }
 
-  var names$e = ['New_Zealand_Map_Grid', 'nzmg'];
+  var names$f = ['New_Zealand_Map_Grid', 'nzmg'];
   var nzmg = {
-    init: init$e,
-    forward: forward$d,
-    inverse: inverse$d,
-    names: names$e
+    init: init$f,
+    forward: forward$e,
+    inverse: inverse$e,
+    names: names$f
   };
 
   /*
@@ -87236,18 +87978,18 @@
 
   /* Initialize the Miller Cylindrical projection
     ------------------------------------------- */
-  function init$d() {
+  function init$e() {
     // no-op
   }
 
   /* Miller Cylindrical forward equations--mapping lat,long to x,y
       ------------------------------------------------------------ */
-  function forward$c(p) {
+  function forward$d(p) {
     var lon = p.x;
     var lat = p.y;
     /* Forward equations
         ----------------- */
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     var x = this.x0 + this.a * dlon;
     var y = this.y0 + this.a * Math.log(Math.tan((Math.PI / 4) + (lat / 2.5))) * 1.25;
 
@@ -87258,11 +88000,11 @@
 
   /* Miller Cylindrical inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------ */
-  function inverse$c(p) {
+  function inverse$d(p) {
     p.x -= this.x0;
     p.y -= this.y0;
 
-    var lon = adjust_lon(this.long0 + p.x / this.a);
+    var lon = adjust_lon(this.long0 + p.x / this.a, this.over);
     var lat = 2.5 * (Math.atan(Math.exp(0.8 * p.y / this.a)) - Math.PI / 4);
 
     p.x = lon;
@@ -87270,17 +88012,28 @@
     return p;
   }
 
-  var names$d = ['Miller_Cylindrical', 'mill'];
+  var names$e = ['Miller_Cylindrical', 'mill'];
   var mill = {
-    init: init$d,
-    forward: forward$c,
-    inverse: inverse$c,
-    names: names$d
+    init: init$e,
+    forward: forward$d,
+    inverse: inverse$d,
+    names: names$e
   };
 
   var MAX_ITER = 20;
 
-  function init$c() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {Array<number>} en
+   * @property {number} n
+   * @property {number} m
+   * @property {number} C_y
+   * @property {number} C_x
+   * @property {number} es
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$d() {
     /* Place parameters in static storage for common use
       ------------------------------------------------- */
 
@@ -87297,13 +88050,13 @@
 
   /* Sinusoidal forward equations--mapping lat,long to x,y
     ----------------------------------------------------- */
-  function forward$b(p) {
+  function forward$c(p) {
     var x, y;
     var lon = p.x;
     var lat = p.y;
     /* Forward equations
       ----------------- */
-    lon = adjust_lon(lon - this.long0);
+    lon = adjust_lon(lon - this.long0, this.over);
 
     if (this.sphere) {
       if (!this.m) {
@@ -87332,7 +88085,7 @@
     return p;
   }
 
-  function inverse$b(p) {
+  function inverse$c(p) {
     var lat, temp, lon, s;
 
     p.x -= this.x0;
@@ -87348,7 +88101,7 @@
       } else if (this.n !== 1) {
         lat = asinz(Math.sin(lat) / this.n);
       }
-      lon = adjust_lon(lon + this.long0);
+      lon = adjust_lon(lon + this.long0, this.over);
       lat = adjust_lat(lat);
     } else {
       lat = pj_inv_mlfn(p.y / this.a, this.es, this.en);
@@ -87357,7 +88110,7 @@
         s = Math.sin(lat);
         temp = this.long0 + p.x * Math.sqrt(1 - this.es * s * s) / (this.a * Math.cos(lat));
         // temp = this.long0 + p.x / (this.a * Math.cos(lat));
-        lon = adjust_lon(temp);
+        lon = adjust_lon(temp, this.over);
       } else if ((s - EPSLN) < HALF_PI) {
         lon = this.long0;
       }
@@ -87367,24 +88120,30 @@
     return p;
   }
 
-  var names$c = ['Sinusoidal', 'sinu'];
+  var names$d = ['Sinusoidal', 'sinu'];
   var sinu = {
-    init: init$c,
-    forward: forward$b,
-    inverse: inverse$b,
-    names: names$c
+    init: init$d,
+    forward: forward$c,
+    inverse: inverse$c,
+    names: names$d
   };
 
-  function init$b() {}
+  /** @this {import('../defs.js').ProjectionDefinition} */
+  function init$c() {
+    this.x0 = this.x0 !== undefined ? this.x0 : 0;
+    this.y0 = this.y0 !== undefined ? this.y0 : 0;
+    this.long0 = this.long0 !== undefined ? this.long0 : 0;
+  }
+
   /* Mollweide forward equations--mapping lat,long to x,y
       ---------------------------------------------------- */
-  function forward$a(p) {
+  function forward$b(p) {
     /* Forward equations
         ----------------- */
     var lon = p.x;
     var lat = p.y;
 
-    var delta_lon = adjust_lon(lon - this.long0);
+    var delta_lon = adjust_lon(lon - this.long0, this.over);
     var theta = lat;
     var con = Math.PI * Math.sin(lat);
 
@@ -87413,7 +88172,7 @@
     return p;
   }
 
-  function inverse$a(p) {
+  function inverse$b(p) {
     var theta;
     var arg;
 
@@ -87430,7 +88189,7 @@
       arg = 0.999999999999;
     }
     theta = Math.asin(arg);
-    var lon = adjust_lon(this.long0 + (p.x / (0.900316316158 * this.a * Math.cos(theta))));
+    var lon = adjust_lon(this.long0 + (p.x / (0.900316316158 * this.a * Math.cos(theta))), this.over);
     if (lon < (-Math.PI)) {
       lon = -Math.PI;
     }
@@ -87448,15 +88207,37 @@
     return p;
   }
 
-  var names$b = ['Mollweide', 'moll'];
+  var names$c = ['Mollweide', 'moll'];
   var moll = {
-    init: init$b,
-    forward: forward$a,
-    inverse: inverse$a,
-    names: names$b
+    init: init$c,
+    forward: forward$b,
+    inverse: inverse$b,
+    names: names$c
   };
 
-  function init$a() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} temp
+   * @property {number} es
+   * @property {number} e
+   * @property {number} e0
+   * @property {number} e1
+   * @property {number} e2
+   * @property {number} e3
+   * @property {number} sin_phi
+   * @property {number} cos_phi
+   * @property {number} ms1
+   * @property {number} ml1
+   * @property {number} ms2
+   * @property {number} ml2
+   * @property {number} ns
+   * @property {number} g
+   * @property {number} ml0
+   * @property {number} rh
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$b() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     // Standard Parallels cannot be equal and on opposite sides of the equator
@@ -87472,18 +88253,18 @@
     this.e2 = e2fn(this.es);
     this.e3 = e3fn(this.es);
 
-    this.sinphi = Math.sin(this.lat1);
-    this.cosphi = Math.cos(this.lat1);
+    this.sin_phi = Math.sin(this.lat1);
+    this.cos_phi = Math.cos(this.lat1);
 
-    this.ms1 = msfnz(this.e, this.sinphi, this.cosphi);
+    this.ms1 = msfnz(this.e, this.sin_phi, this.cos_phi);
     this.ml1 = mlfn(this.e0, this.e1, this.e2, this.e3, this.lat1);
 
     if (Math.abs(this.lat1 - this.lat2) < EPSLN) {
-      this.ns = this.sinphi;
+      this.ns = this.sin_phi;
     } else {
-      this.sinphi = Math.sin(this.lat2);
-      this.cosphi = Math.cos(this.lat2);
-      this.ms2 = msfnz(this.e, this.sinphi, this.cosphi);
+      this.sin_phi = Math.sin(this.lat2);
+      this.cos_phi = Math.cos(this.lat2);
+      this.ms2 = msfnz(this.e, this.sin_phi, this.cos_phi);
       this.ml2 = mlfn(this.e0, this.e1, this.e2, this.e3, this.lat2);
       this.ns = (this.ms1 - this.ms2) / (this.ml2 - this.ml1);
     }
@@ -87494,7 +88275,7 @@
 
   /* Equidistant Conic forward equations--mapping lat,long to x,y
     ----------------------------------------------------------- */
-  function forward$9(p) {
+  function forward$a(p) {
     var lon = p.x;
     var lat = p.y;
     var rh1;
@@ -87507,7 +88288,7 @@
       var ml = mlfn(this.e0, this.e1, this.e2, this.e3, lat);
       rh1 = this.a * (this.g - ml);
     }
-    var theta = this.ns * adjust_lon(lon - this.long0);
+    var theta = this.ns * adjust_lon(lon - this.long0, this.over);
     var x = this.x0 + rh1 * Math.sin(theta);
     var y = this.y0 + this.rh - rh1 * Math.cos(theta);
     p.x = x;
@@ -87517,7 +88298,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$9(p) {
+  function inverse$a(p) {
     p.x -= this.x0;
     p.y = this.rh - p.y + this.y0;
     var con, rh1, lat, lon;
@@ -87534,7 +88315,7 @@
     }
 
     if (this.sphere) {
-      lon = adjust_lon(this.long0 + theta / this.ns);
+      lon = adjust_lon(this.long0 + theta / this.ns, this.over);
       lat = adjust_lat(this.g - rh1 / this.a);
       p.x = lon;
       p.y = lat;
@@ -87542,35 +88323,42 @@
     } else {
       var ml = this.g - rh1 / this.a;
       lat = imlfn(ml, this.e0, this.e1, this.e2, this.e3);
-      lon = adjust_lon(this.long0 + theta / this.ns);
+      lon = adjust_lon(this.long0 + theta / this.ns, this.over);
       p.x = lon;
       p.y = lat;
       return p;
     }
   }
 
-  var names$a = ['Equidistant_Conic', 'eqdc'];
+  var names$b = ['Equidistant_Conic', 'eqdc'];
   var eqdc = {
-    init: init$a,
-    forward: forward$9,
-    inverse: inverse$9,
-    names: names$a
+    init: init$b,
+    forward: forward$a,
+    inverse: inverse$a,
+    names: names$b
   };
 
-  /* Initialize the Van Der Grinten projection
-    ---------------------------------------- */
-  function init$9() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} R - Radius of the Earth
+   */
+
+  /**
+   * Initialize the Van Der Grinten projection
+   * @this {import('../defs.js').ProjectionDefinition & LocalThis}
+   */
+  function init$a() {
     // this.R = 6370997; //Radius of earth
     this.R = this.a;
   }
 
-  function forward$8(p) {
+  function forward$9(p) {
     var lon = p.x;
     var lat = p.y;
 
     /* Forward equations
       ----------------- */
-    var dlon = adjust_lon(lon - this.long0);
+    var dlon = adjust_lon(lon - this.long0, this.over);
     var x, y;
 
     if (Math.abs(lat) <= EPSLN) {
@@ -87618,7 +88406,7 @@
 
   /* Van Der Grinten inverse equations--mapping x,y to lat/long
     --------------------------------------------------------- */
-  function inverse$8(p) {
+  function inverse$9(p) {
     var lon, lat;
     var xx, yy, xys, c1, c2, c3;
     var a1;
@@ -87659,7 +88447,7 @@
     if (Math.abs(xx) < EPSLN) {
       lon = this.long0;
     } else {
-      lon = adjust_lon(this.long0 + Math.PI * (xys - 1 + Math.sqrt(1 + 2 * (xx * xx - yy * yy) + xys * xys)) / 2 / xx);
+      lon = adjust_lon(this.long0 + Math.PI * (xys - 1 + Math.sqrt(1 + 2 * (xx * xx - yy * yy) + xys * xys)) / 2 / xx, this.over);
     }
 
     p.x = lon;
@@ -87667,170 +88455,162 @@
     return p;
   }
 
-  var names$9 = ['Van_der_Grinten_I', 'VanDerGrinten', 'Van_der_Grinten', 'vandg'];
+  var names$a = ['Van_der_Grinten_I', 'VanDerGrinten', 'Van_der_Grinten', 'vandg'];
   var vandg = {
-    init: init$9,
-    forward: forward$8,
-    inverse: inverse$8,
-    names: names$9
+    init: init$a,
+    forward: forward$9,
+    inverse: inverse$9,
+    names: names$a
   };
 
-  var geographiclibGeodesic_min = {exports: {}};
+  /**
+   * Calculates the inverse geodesic problem using Vincenty's formulae.
+   * Computes the forward azimuth and ellipsoidal distance between two points
+   * specified by latitude and longitude on the surface of an ellipsoid.
+   *
+   * @param {number} lat1 Latitude of the first point in radians.
+   * @param {number} lon1 Longitude of the first point in radians.
+   * @param {number} lat2 Latitude of the second point in radians.
+   * @param {number} lon2 Longitude of the second point in radians.
+   * @param {number} a Semi-major axis of the ellipsoid (meters).
+   * @param {number} f Flattening of the ellipsoid.
+   * @returns {{ azi1: number, s12: number }} An object containing:
+   *   - azi1: Forward azimuth from the first point to the second point (radians).
+   *   - s12: Ellipsoidal distance between the two points (meters).
+   */
+  function vincentyInverse(lat1, lon1, lat2, lon2, a, f) {
+    const L = lon2 - lon1;
+    const U1 = Math.atan((1 - f) * Math.tan(lat1));
+    const U2 = Math.atan((1 - f) * Math.tan(lat2));
+    const sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
+    const sinU2 = Math.sin(U2), cosU2 = Math.cos(U2);
 
-  var hasRequiredGeographiclibGeodesic_min;
+    let lambda = L, lambdaP, iterLimit = 100;
+    let sinLambda, cosLambda, sinSigma, cosSigma, sigma, sinAlpha, cos2Alpha, cos2SigmaM, C;
+    let uSq, A, B, deltaSigma, s;
 
-  function requireGeographiclibGeodesic_min () {
-  	if (hasRequiredGeographiclibGeodesic_min) return geographiclibGeodesic_min.exports;
-  	hasRequiredGeographiclibGeodesic_min = 1;
-  	(function (module) {
-  		(function(cb){var geodesic={};geodesic.Constants={};geodesic.Math={};geodesic.Accumulator={};(function(c){c.WGS84={a:6378137,f:1/298.257223563};c.version={major:2,minor:1,patch:1};c.version_string="2.1.1";})(geodesic.Constants);(function(m){m.digits=53;m.epsilon=Math.pow(0.5,m.digits-1);m.degree=Math.PI/180;m.sq=function(x){return x*x;};m.hypot=function(x,y){return Math.sqrt(x*x+y*y);};m.cbrt=Math.cbrt||function(x){var y=Math.pow(Math.abs(x),1/3);return x>0?y:(x<0?-y:x);};m.log1p=Math.log1p||function(x){var y=1+x,z=y-1;return z===0?x:x*Math.log(y)/z;};m.atanh=Math.atanh||function(x){var y=Math.abs(x);y=m.log1p(2*y/(1-y))/2;return x>0?y:(x<0?-y:x);};m.copysign=function(x,y){return Math.abs(x)*(y<0||(y===0&&1/y<0)?-1:1);};m.sum=function(u,v){var s=u+v,up=s-v,vpp=s-up,t;up-=u;vpp-=v;t=s?0-(up+vpp):s;return {s:s,t:t};};m.polyval=function(N,p,s,x){var y=N<0?0:p[s++];while(--N>=0)y=y*x+p[s++];return y;};m.AngRound=function(x){var z=1/16,y=Math.abs(x);y=y<z?z-(z-y):y;return m.copysign(y,x);};m.remainder=function(x,y){x%=y;return x<-y/2?x+y:(x<y/2?x:x-y);};m.AngNormalize=function(x){var y=m.remainder(x,360);return Math.abs(y)===180?m.copysign(180,x):y;};m.LatFix=function(x){return Math.abs(x)>90?NaN:x;};m.AngDiff=function(x,y){var r=m.sum(m.remainder(-x,360),m.remainder(y,360)),d,e;r=m.sum(m.remainder(r.s,360),r.t);d=r.s;e=r.t;if(d===0||Math.abs(d)===180)
-  		d=m.copysign(d,e===0?y-x:-e);return {d:d,e:e};};m.sincosd=function(x){var d,r,q,s,c,sinx,cosx;d=x%360;q=Math.round(d/90);d-=90*q;r=d*this.degree;s=Math.sin(r);c=Math.cos(r);if(Math.abs(d)===45){c=Math.sqrt(0.5);s=m.copysign(c,r);}else if(Math.abs(d)===30){c=Math.sqrt(0.75);s=m.copysign(0.5,r);}
-  		switch(q&3){case 0:sinx=s;cosx=c;break;case 1:sinx=c;cosx=-s;break;case 2:sinx=-s;cosx=-c;break;default:sinx=-c;cosx=s;break;}
-  		cosx+=0;if(sinx===0)sinx=m.copysign(sinx,x);return {s:sinx,c:cosx};};m.sincosde=function(x,t){var d,r,q,s,c,sinx,cosx;d=x%360;q=Math.round(d/90);d=m.AngRound((d-90*q)+t);r=d*this.degree;s=Math.sin(r);c=Math.cos(r);if(Math.abs(d)===45){c=Math.sqrt(0.5);s=m.copysign(c,r);}else if(Math.abs(d)===30){c=Math.sqrt(0.75);s=m.copysign(0.5,r);}
-  		switch(q&3){case 0:sinx=s;cosx=c;break;case 1:sinx=c;cosx=-s;break;case 2:sinx=-s;cosx=-c;break;default:sinx=-c;cosx=s;break;}
-  		cosx+=0;if(sinx===0)sinx=m.copysign(sinx,x+t);return {s:sinx,c:cosx};};m.atan2d=function(y,x){var q=0,ang;if(Math.abs(y)>Math.abs(x)){[y,x]=[x,y];q=2;}
-  		if(m.copysign(1,x)<0){x=-x;++q;}
-  		ang=Math.atan2(y,x)/this.degree;switch(q){case 1:ang=m.copysign(180,y)-ang;break;case 2:ang=90-ang;break;case 3:ang=-90+ang;break;}
-  		return ang;};})(geodesic.Math);(function(a,m){a.Accumulator=function(y){this.Set(y);};a.Accumulator.prototype.Set=function(y){if(!y)y=0;if(y.constructor===a.Accumulator){this._s=y._s;this._t=y._t;}else {this._s=y;this._t=0;}};a.Accumulator.prototype.Add=function(y){var u=m.sum(y,this._t),v=m.sum(u.s,this._s);u=u.t;this._s=v.s;this._t=v.t;if(this._s===0)
-  		this._s=u;else
-  		this._t+=u;};a.Accumulator.prototype.Sum=function(y){var b;if(!y)
-  		return this._s;else {b=new a.Accumulator(this);b.Add(y);return b._s;}};a.Accumulator.prototype.Negate=function(){this._s*=-1;this._t*=-1;};a.Accumulator.prototype.Remainder=function(y){this._s=m.remainder(this._s,y);this.Add(0);};})(geodesic.Accumulator,geodesic.Math);geodesic.Geodesic={};geodesic.GeodesicLine={};geodesic.PolygonArea={};(function(g,l,p,m,c){var GEOGRAPHICLIB_GEODESIC_ORDER=6,nA1_=GEOGRAPHICLIB_GEODESIC_ORDER,nA2_=GEOGRAPHICLIB_GEODESIC_ORDER,nA3_=GEOGRAPHICLIB_GEODESIC_ORDER,nA3x_=nA3_,nC3x_,nC4x_,maxit1_=20,maxit2_=maxit1_+m.digits+10,tol0_=m.epsilon,tol1_=200*tol0_,tol2_=Math.sqrt(tol0_),tolb_=tol0_,xthresh_=1000*tol2_,CAP_NONE=0,CAP_ALL=0x1F,OUT_ALL=0x7F80,astroid,A1m1f_coeff,C1f_coeff,C1pf_coeff,A2m1f_coeff,C2f_coeff,A3_coeff,C3_coeff,C4_coeff;g.tiny_=Math.sqrt(Number.MIN_VALUE/Number.EPSILON);g.nC1_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC1p_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC2_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC3_=GEOGRAPHICLIB_GEODESIC_ORDER;g.nC4_=GEOGRAPHICLIB_GEODESIC_ORDER;nC3x_=(g.nC3_*(g.nC3_-1))/2;nC4x_=(g.nC4_*(g.nC4_+1))/2;g.CAP_C1=1<<0;g.CAP_C1p=1<<1;g.CAP_C2=1<<2;g.CAP_C3=1<<3;g.CAP_C4=1<<4;g.NONE=0;g.ARC=1<<6;g.LATITUDE=1<<7|CAP_NONE;g.LONGITUDE=1<<8|g.CAP_C3;g.AZIMUTH=1<<9|CAP_NONE;g.DISTANCE=1<<10|g.CAP_C1;g.STANDARD=g.LATITUDE|g.LONGITUDE|g.AZIMUTH|g.DISTANCE;g.DISTANCE_IN=1<<11|g.CAP_C1|g.CAP_C1p;g.REDUCEDLENGTH=1<<12|g.CAP_C1|g.CAP_C2;g.GEODESICSCALE=1<<13|g.CAP_C1|g.CAP_C2;g.AREA=1<<14|g.CAP_C4;g.ALL=OUT_ALL|CAP_ALL;g.LONG_UNROLL=1<<15;g.OUT_MASK=OUT_ALL|g.LONG_UNROLL;g.SinCosSeries=function(sinp,sinx,cosx,c){var k=c.length,n=k-(sinp?1:0),ar=2*(cosx-sinx)*(cosx+sinx),y0=n&1?c[--k]:0,y1=0;n=Math.floor(n/2);while(n--){y1=ar*y0-y1+c[--k];y0=ar*y1-y0+c[--k];}
-  		return(sinp?2*sinx*cosx*y0:cosx*(y0-y1));};astroid=function(x,y){var k,p=m.sq(x),q=m.sq(y),r=(p+q-1)/6,S,r2,r3,disc,u,T3,T,ang,v,uv,w;if(!(q===0&&r<=0)){S=p*q/4;r2=m.sq(r);r3=r*r2;disc=S*(S+2*r3);u=r;if(disc>=0){T3=S+r3;T3+=T3<0?-Math.sqrt(disc):Math.sqrt(disc);T=m.cbrt(T3);u+=T+(T!==0?r2/T:0);}else {ang=Math.atan2(Math.sqrt(-disc),-(S+r3));u+=2*r*Math.cos(ang/3);}
-  		v=Math.sqrt(m.sq(u)+q);uv=u<0?q/(v-u):u+v;w=(uv-q)/(2*v);k=uv/(Math.sqrt(uv+m.sq(w))+w);}else {k=0;}
-  		return k;};A1m1f_coeff=[1,4,64,0,256];g.A1m1f=function(eps){var p=Math.floor(nA1_/2),t=m.polyval(p,A1m1f_coeff,0,m.sq(eps))/A1m1f_coeff[p+1];return (t+eps)/(1-eps);};C1f_coeff=[-1,6,-16,32,-9,64,-128,2048,9,-16,768,3,-5,512,-7,1280,-7,2048];g.C1f=function(eps,c){var eps2=m.sq(eps),d=eps,o=0,l,p;for(l=1;l<=g.nC1_;++l){p=Math.floor((g.nC1_-l)/2);c[l]=d*m.polyval(p,C1f_coeff,o,eps2)/C1f_coeff[o+p+1];o+=p+2;d*=eps;}};C1pf_coeff=[205,-432,768,1536,4005,-4736,3840,12288,-225,116,384,-7173,2695,7680,3467,7680,38081,61440];g.C1pf=function(eps,c){var eps2=m.sq(eps),d=eps,o=0,l,p;for(l=1;l<=g.nC1p_;++l){p=Math.floor((g.nC1p_-l)/2);c[l]=d*m.polyval(p,C1pf_coeff,o,eps2)/C1pf_coeff[o+p+1];o+=p+2;d*=eps;}};A2m1f_coeff=[-11,-28,-192,0,256];g.A2m1f=function(eps){var p=Math.floor(nA2_/2),t=m.polyval(p,A2m1f_coeff,0,m.sq(eps))/A2m1f_coeff[p+1];return (t-eps)/(1+eps);};C2f_coeff=[1,2,16,32,35,64,384,2048,15,80,768,7,35,512,63,1280,77,2048];g.C2f=function(eps,c){var eps2=m.sq(eps),d=eps,o=0,l,p;for(l=1;l<=g.nC2_;++l){p=Math.floor((g.nC2_-l)/2);c[l]=d*m.polyval(p,C2f_coeff,o,eps2)/C2f_coeff[o+p+1];o+=p+2;d*=eps;}};g.Geodesic=function(a,f){this.a=a;this.f=f;this._f1=1-this.f;this._e2=this.f*(2-this.f);this._ep2=this._e2/m.sq(this._f1);this._n=this.f/(2-this.f);this._b=this.a*this._f1;this._c2=(m.sq(this.a)+m.sq(this._b)*(this._e2===0?1:(this._e2>0?m.atanh(Math.sqrt(this._e2)):Math.atan(Math.sqrt(-this._e2)))/Math.sqrt(Math.abs(this._e2))))/2;this._etol2=0.1*tol2_/Math.sqrt(Math.max(0.001,Math.abs(this.f))*Math.min(1,1-this.f/2)/2);if(!(isFinite(this.a)&&this.a>0))
-  		throw new Error("Equatorial radius is not positive");if(!(isFinite(this._b)&&this._b>0))
-  		throw new Error("Polar semi-axis is not positive");this._A3x=new Array(nA3x_);this._C3x=new Array(nC3x_);this._C4x=new Array(nC4x_);this.A3coeff();this.C3coeff();this.C4coeff();};A3_coeff=[-3,128,-2,-3,64,-1,-3,-1,16,3,-1,-2,8,1,-1,2,1,1];g.Geodesic.prototype.A3coeff=function(){var o=0,k=0,j,p;for(j=nA3_-1;j>=0;--j){p=Math.min(nA3_-j-1,j);this._A3x[k++]=m.polyval(p,A3_coeff,o,this._n)/A3_coeff[o+p+1];o+=p+2;}};C3_coeff=[3,128,2,5,128,-1,3,3,64,-1,0,1,8,-1,1,4,5,256,1,3,128,-3,-2,3,64,1,-3,2,32,7,512,-10,9,384,5,-9,5,192,7,512,-14,7,512,21,2560];g.Geodesic.prototype.C3coeff=function(){var o=0,k=0,l,j,p;for(l=1;l<g.nC3_;++l){for(j=g.nC3_-1;j>=l;--j){p=Math.min(g.nC3_-j-1,j);this._C3x[k++]=m.polyval(p,C3_coeff,o,this._n)/C3_coeff[o+p+1];o+=p+2;}}};C4_coeff=[97,15015,1088,156,45045,-224,-4784,1573,45045,-10656,14144,-4576,-858,45045,64,624,-4576,6864,-3003,15015,100,208,572,3432,-12012,30030,45045,1,9009,-2944,468,135135,5792,1040,-1287,135135,5952,-11648,9152,-2574,135135,-64,-624,4576,-6864,3003,135135,8,10725,1856,-936,225225,-8448,4992,-1144,225225,-1440,4160,-4576,1716,225225,-136,63063,1024,-208,105105,3584,-3328,1144,315315,-128,135135,-2560,832,405405,128,99099];g.Geodesic.prototype.C4coeff=function(){var o=0,k=0,l,j,p;for(l=0;l<g.nC4_;++l){for(j=g.nC4_-1;j>=l;--j){p=g.nC4_-j-1;this._C4x[k++]=m.polyval(p,C4_coeff,o,this._n)/C4_coeff[o+p+1];o+=p+2;}}};g.Geodesic.prototype.A3f=function(eps){return m.polyval(nA3x_-1,this._A3x,0,eps);};g.Geodesic.prototype.C3f=function(eps,c){var mult=1,o=0,l,p;for(l=1;l<g.nC3_;++l){p=g.nC3_-l-1;mult*=eps;c[l]=mult*m.polyval(p,this._C3x,o,eps);o+=p+1;}};g.Geodesic.prototype.C4f=function(eps,c){var mult=1,o=0,l,p;for(l=0;l<g.nC4_;++l){p=g.nC4_-l-1;c[l]=mult*m.polyval(p,this._C4x,o,eps);o+=p+1;mult*=eps;}};g.Geodesic.prototype.Lengths=function(eps,sig12,ssig1,csig1,dn1,ssig2,csig2,dn2,cbet1,cbet2,outmask,C1a,C2a){outmask&=g.OUT_MASK;var vals={},m0x=0,J12=0,A1=0,A2=0,B1,B2,l,csig12,t;if(outmask&(g.DISTANCE|g.REDUCEDLENGTH|g.GEODESICSCALE)){A1=g.A1m1f(eps);g.C1f(eps,C1a);if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){A2=g.A2m1f(eps);g.C2f(eps,C2a);m0x=A1-A2;A2=1+A2;}
-  		A1=1+A1;}
-  		if(outmask&g.DISTANCE){B1=g.SinCosSeries(true,ssig2,csig2,C1a)-
-  		g.SinCosSeries(true,ssig1,csig1,C1a);vals.s12b=A1*(sig12+B1);if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){B2=g.SinCosSeries(true,ssig2,csig2,C2a)-
-  		g.SinCosSeries(true,ssig1,csig1,C2a);J12=m0x*sig12+(A1*B1-A2*B2);}}else if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){for(l=1;l<=g.nC2_;++l)
-  		C2a[l]=A1*C1a[l]-A2*C2a[l];J12=m0x*sig12+(g.SinCosSeries(true,ssig2,csig2,C2a)-
-  		g.SinCosSeries(true,ssig1,csig1,C2a));}
-  		if(outmask&g.REDUCEDLENGTH){vals.m0=m0x;vals.m12b=dn2*(csig1*ssig2)-dn1*(ssig1*csig2)-
-  		csig1*csig2*J12;}
-  		if(outmask&g.GEODESICSCALE){csig12=csig1*csig2+ssig1*ssig2;t=this._ep2*(cbet1-cbet2)*(cbet1+cbet2)/(dn1+dn2);vals.M12=csig12+(t*ssig2-csig2*J12)*ssig1/dn1;vals.M21=csig12-(t*ssig1-csig1*J12)*ssig2/dn2;}
-  		return vals;};g.Geodesic.prototype.InverseStart=function(sbet1,cbet1,dn1,sbet2,cbet2,dn2,lam12,slam12,clam12,C1a,C2a){var vals={},sbet12=sbet2*cbet1-cbet2*sbet1,cbet12=cbet2*cbet1+sbet2*sbet1,sbet12a,shortline,omg12,sbetm2,somg12,comg12,t,ssig12,csig12,x,y,lamscale,betscale,k2,eps,cbet12a,bet12a,m12b,m0,nvals,k,omg12a,lam12x;vals.sig12=-1;sbet12a=sbet2*cbet1;sbet12a+=cbet2*sbet1;shortline=cbet12>=0&&sbet12<0.5&&cbet2*lam12<0.5;if(shortline){sbetm2=m.sq(sbet1+sbet2);sbetm2/=sbetm2+m.sq(cbet1+cbet2);vals.dnm=Math.sqrt(1+this._ep2*sbetm2);omg12=lam12/(this._f1*vals.dnm);somg12=Math.sin(omg12);comg12=Math.cos(omg12);}else {somg12=slam12;comg12=clam12;}
-  		vals.salp1=cbet2*somg12;vals.calp1=comg12>=0?sbet12+cbet2*sbet1*m.sq(somg12)/(1+comg12):sbet12a-cbet2*sbet1*m.sq(somg12)/(1-comg12);ssig12=m.hypot(vals.salp1,vals.calp1);csig12=sbet1*sbet2+cbet1*cbet2*comg12;if(shortline&&ssig12<this._etol2){vals.salp2=cbet1*somg12;vals.calp2=sbet12-cbet1*sbet2*(comg12>=0?m.sq(somg12)/(1+comg12):1-comg12);t=m.hypot(vals.salp2,vals.calp2);vals.salp2/=t;vals.calp2/=t;vals.sig12=Math.atan2(ssig12,csig12);}else if(Math.abs(this._n)>0.1||csig12>=0||ssig12>=6*Math.abs(this._n)*Math.PI*m.sq(cbet1));else {lam12x=Math.atan2(-slam12,-clam12);if(this.f>=0){k2=m.sq(sbet1)*this._ep2;eps=k2/(2*(1+Math.sqrt(1+k2))+k2);lamscale=this.f*cbet1*this.A3f(eps)*Math.PI;betscale=lamscale*cbet1;x=lam12x/lamscale;y=sbet12a/betscale;}else {cbet12a=cbet2*cbet1-sbet2*sbet1;bet12a=Math.atan2(sbet12a,cbet12a);nvals=this.Lengths(this._n,Math.PI+bet12a,sbet1,-cbet1,dn1,sbet2,cbet2,dn2,cbet1,cbet2,g.REDUCEDLENGTH,C1a,C2a);m12b=nvals.m12b;m0=nvals.m0;x=-1+m12b/(cbet1*cbet2*m0*Math.PI);betscale=x<-0.01?sbet12a/x:-this.f*m.sq(cbet1)*Math.PI;lamscale=betscale/cbet1;y=lam12/lamscale;}
-  		if(y>-tol1_&&x>-1-xthresh_){if(this.f>=0){vals.salp1=Math.min(1,-x);vals.calp1=-Math.sqrt(1-m.sq(vals.salp1));}else {vals.calp1=Math.max(x>-tol1_?0:-1,x);vals.salp1=Math.sqrt(1-m.sq(vals.calp1));}}else {k=astroid(x,y);omg12a=lamscale*(this.f>=0?-x*k/(1+k):-y*(1+k)/k);somg12=Math.sin(omg12a);comg12=-Math.cos(omg12a);vals.salp1=cbet2*somg12;vals.calp1=sbet12a-
-  		cbet2*sbet1*m.sq(somg12)/(1-comg12);}}
-  		if(!(vals.salp1<=0)){t=m.hypot(vals.salp1,vals.calp1);vals.salp1/=t;vals.calp1/=t;}else {vals.salp1=1;vals.calp1=0;}
-  		return vals;};g.Geodesic.prototype.Lambda12=function(sbet1,cbet1,dn1,sbet2,cbet2,dn2,salp1,calp1,slam120,clam120,diffp,C1a,C2a,C3a){var vals={},t,salp0,calp0,somg1,comg1,somg2,comg2,somg12,comg12,B312,eta,k2,nvals;if(sbet1===0&&calp1===0)
-  		calp1=-g.tiny_;salp0=salp1*cbet1;calp0=m.hypot(calp1,salp1*sbet1);vals.ssig1=sbet1;somg1=salp0*sbet1;vals.csig1=comg1=calp1*cbet1;t=m.hypot(vals.ssig1,vals.csig1);vals.ssig1/=t;vals.csig1/=t;vals.salp2=cbet2!==cbet1?salp0/cbet2:salp1;vals.calp2=cbet2!==cbet1||Math.abs(sbet2)!==-sbet1?Math.sqrt(m.sq(calp1*cbet1)+(cbet1<-sbet1?(cbet2-cbet1)*(cbet1+cbet2):(sbet1-sbet2)*(sbet1+sbet2)))/cbet2:Math.abs(calp1);vals.ssig2=sbet2;somg2=salp0*sbet2;vals.csig2=comg2=vals.calp2*cbet2;t=m.hypot(vals.ssig2,vals.csig2);vals.ssig2/=t;vals.csig2/=t;vals.sig12=Math.atan2(Math.max(0,vals.csig1*vals.ssig2-
-  		vals.ssig1*vals.csig2),vals.csig1*vals.csig2+
-  		vals.ssig1*vals.ssig2);somg12=Math.max(0,comg1*somg2-somg1*comg2);comg12=comg1*comg2+somg1*somg2;eta=Math.atan2(somg12*clam120-comg12*slam120,comg12*clam120+somg12*slam120);k2=m.sq(calp0)*this._ep2;vals.eps=k2/(2*(1+Math.sqrt(1+k2))+k2);this.C3f(vals.eps,C3a);B312=(g.SinCosSeries(true,vals.ssig2,vals.csig2,C3a)-
-  		g.SinCosSeries(true,vals.ssig1,vals.csig1,C3a));vals.domg12=-this.f*this.A3f(vals.eps)*salp0*(vals.sig12+B312);vals.lam12=eta+vals.domg12;if(diffp){if(vals.calp2===0)
-  		vals.dlam12=-2*this._f1*dn1/sbet1;else {nvals=this.Lengths(vals.eps,vals.sig12,vals.ssig1,vals.csig1,dn1,vals.ssig2,vals.csig2,dn2,cbet1,cbet2,g.REDUCEDLENGTH,C1a,C2a);vals.dlam12=nvals.m12b;vals.dlam12*=this._f1/(vals.calp2*cbet2);}}
-  		return vals;};g.Geodesic.prototype.Inverse=function(lat1,lon1,lat2,lon2,outmask){var r,vals;if(!outmask)outmask=g.STANDARD;if(outmask===g.LONG_UNROLL)outmask|=g.STANDARD;outmask&=g.OUT_MASK;r=this.InverseInt(lat1,lon1,lat2,lon2,outmask);vals=r.vals;if(outmask&g.AZIMUTH){vals.azi1=m.atan2d(r.salp1,r.calp1);vals.azi2=m.atan2d(r.salp2,r.calp2);}
-  		return vals;};g.Geodesic.prototype.InverseInt=function(lat1,lon1,lat2,lon2,outmask){var vals={},lon12,lon12s,lonsign,t,swapp,latsign,sbet1,cbet1,sbet2,cbet2,s12x,m12x,dn1,dn2,lam12,slam12,clam12,sig12,calp1,salp1,calp2,salp2,C1a,C2a,C3a,meridian,nvals,ssig1,csig1,ssig2,csig2,eps,omg12,dnm,numit,salp1a,calp1a,salp1b,calp1b,tripn,tripb,v,dv,dalp1,sdalp1,cdalp1,nsalp1,lengthmask,salp0,calp0,alp12,k2,A4,C4a,B41,B42,somg12,comg12,domg12,dbet1,dbet2,salp12,calp12,sdomg12,cdomg12;vals.lat1=lat1=m.LatFix(lat1);vals.lat2=lat2=m.LatFix(lat2);lat1=m.AngRound(lat1);lat2=m.AngRound(lat2);lon12=m.AngDiff(lon1,lon2);lon12s=lon12.e;lon12=lon12.d;if(outmask&g.LONG_UNROLL){vals.lon1=lon1;vals.lon2=(lon1+lon12)+lon12s;}else {vals.lon1=m.AngNormalize(lon1);vals.lon2=m.AngNormalize(lon2);}
-  		lonsign=m.copysign(1,lon12);lon12*=lonsign;lon12s*=lonsign;lam12=lon12*m.degree;t=m.sincosde(lon12,lon12s);slam12=t.s;clam12=t.c;lon12s=(180-lon12)-lon12s;swapp=Math.abs(lat1)<Math.abs(lat2)||isNaN(lat2)?-1:1;if(swapp<0){lonsign*=-1;[lat2,lat1]=[lat1,lat2];}
-  		latsign=m.copysign(1,-lat1);lat1*=latsign;lat2*=latsign;t=m.sincosd(lat1);sbet1=this._f1*t.s;cbet1=t.c;t=m.hypot(sbet1,cbet1);sbet1/=t;cbet1/=t;cbet1=Math.max(g.tiny_,cbet1);t=m.sincosd(lat2);sbet2=this._f1*t.s;cbet2=t.c;t=m.hypot(sbet2,cbet2);sbet2/=t;cbet2/=t;cbet2=Math.max(g.tiny_,cbet2);if(cbet1<-sbet1){if(cbet2===cbet1)
-  		sbet2=m.copysign(sbet1,sbet2);}else {if(Math.abs(sbet2)===-sbet1)
-  		cbet2=cbet1;}
-  		dn1=Math.sqrt(1+this._ep2*m.sq(sbet1));dn2=Math.sqrt(1+this._ep2*m.sq(sbet2));C1a=new Array(g.nC1_+1);C2a=new Array(g.nC2_+1);C3a=new Array(g.nC3_);meridian=lat1===-90||slam12===0;if(meridian){calp1=clam12;salp1=slam12;calp2=1;salp2=0;ssig1=sbet1;csig1=calp1*cbet1;ssig2=sbet2;csig2=calp2*cbet2;sig12=Math.atan2(Math.max(0,csig1*ssig2-ssig1*csig2),csig1*csig2+ssig1*ssig2);nvals=this.Lengths(this._n,sig12,ssig1,csig1,dn1,ssig2,csig2,dn2,cbet1,cbet2,outmask|g.DISTANCE|g.REDUCEDLENGTH,C1a,C2a);s12x=nvals.s12b;m12x=nvals.m12b;if(outmask&g.GEODESICSCALE){vals.M12=nvals.M12;vals.M21=nvals.M21;}
-  		if(sig12<1||m12x>=0){if(sig12<3*g.tiny_||(sig12<tol0_&&(s12x<0||m12x<0)))
-  		sig12=m12x=s12x=0;m12x*=this._b;s12x*=this._b;vals.a12=sig12/m.degree;}else
-  		meridian=false;}
-  		somg12=2;if(!meridian&&sbet1===0&&(this.f<=0||lon12s>=this.f*180)){calp1=calp2=0;salp1=salp2=1;s12x=this.a*lam12;sig12=omg12=lam12/this._f1;m12x=this._b*Math.sin(sig12);if(outmask&g.GEODESICSCALE)
-  		vals.M12=vals.M21=Math.cos(sig12);vals.a12=lon12/this._f1;}else if(!meridian){nvals=this.InverseStart(sbet1,cbet1,dn1,sbet2,cbet2,dn2,lam12,slam12,clam12,C1a,C2a);sig12=nvals.sig12;salp1=nvals.salp1;calp1=nvals.calp1;if(sig12>=0){salp2=nvals.salp2;calp2=nvals.calp2;dnm=nvals.dnm;s12x=sig12*this._b*dnm;m12x=m.sq(dnm)*this._b*Math.sin(sig12/dnm);if(outmask&g.GEODESICSCALE)
-  		vals.M12=vals.M21=Math.cos(sig12/dnm);vals.a12=sig12/m.degree;omg12=lam12/(this._f1*dnm);}else {numit=0;salp1a=g.tiny_;calp1a=1;salp1b=g.tiny_;calp1b=-1;for(tripn=false,tripb=false;;++numit){nvals=this.Lambda12(sbet1,cbet1,dn1,sbet2,cbet2,dn2,salp1,calp1,slam12,clam12,numit<maxit1_,C1a,C2a,C3a);v=nvals.lam12;salp2=nvals.salp2;calp2=nvals.calp2;sig12=nvals.sig12;ssig1=nvals.ssig1;csig1=nvals.csig1;ssig2=nvals.ssig2;csig2=nvals.csig2;eps=nvals.eps;domg12=nvals.domg12;dv=nvals.dlam12;if(tripb||!(Math.abs(v)>=(tripn?8:1)*tol0_)||numit==maxit2_)
-  		break;if(v>0&&(numit<maxit1_||calp1/salp1>calp1b/salp1b)){salp1b=salp1;calp1b=calp1;}else if(v<0&&(numit<maxit1_||calp1/salp1<calp1a/salp1a)){salp1a=salp1;calp1a=calp1;}
-  		if(numit<maxit1_&&dv>0){dalp1=-v/dv;if(Math.abs(dalp1)<Math.PI){sdalp1=Math.sin(dalp1);cdalp1=Math.cos(dalp1);nsalp1=salp1*cdalp1+calp1*sdalp1;if(nsalp1>0){calp1=calp1*cdalp1-salp1*sdalp1;salp1=nsalp1;t=m.hypot(salp1,calp1);salp1/=t;calp1/=t;tripn=Math.abs(v)<=16*tol0_;continue;}}}
-  		salp1=(salp1a+salp1b)/2;calp1=(calp1a+calp1b)/2;t=m.hypot(salp1,calp1);salp1/=t;calp1/=t;tripn=false;tripb=(Math.abs(salp1a-salp1)+(calp1a-calp1)<tolb_||Math.abs(salp1-salp1b)+(calp1-calp1b)<tolb_);}
-  		lengthmask=outmask|(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)?g.DISTANCE:g.NONE);nvals=this.Lengths(eps,sig12,ssig1,csig1,dn1,ssig2,csig2,dn2,cbet1,cbet2,lengthmask,C1a,C2a);s12x=nvals.s12b;m12x=nvals.m12b;if(outmask&g.GEODESICSCALE){vals.M12=nvals.M12;vals.M21=nvals.M21;}
-  		m12x*=this._b;s12x*=this._b;vals.a12=sig12/m.degree;if(outmask&g.AREA){sdomg12=Math.sin(domg12);cdomg12=Math.cos(domg12);somg12=slam12*cdomg12-clam12*sdomg12;comg12=clam12*cdomg12+slam12*sdomg12;}}}
-  		if(outmask&g.DISTANCE)
-  		vals.s12=0+s12x;if(outmask&g.REDUCEDLENGTH)
-  		vals.m12=0+m12x;if(outmask&g.AREA){salp0=salp1*cbet1;calp0=m.hypot(calp1,salp1*sbet1);if(calp0!==0&&salp0!==0){ssig1=sbet1;csig1=calp1*cbet1;ssig2=sbet2;csig2=calp2*cbet2;k2=m.sq(calp0)*this._ep2;eps=k2/(2*(1+Math.sqrt(1+k2))+k2);A4=m.sq(this.a)*calp0*salp0*this._e2;t=m.hypot(ssig1,csig1);ssig1/=t;csig1/=t;t=m.hypot(ssig2,csig2);ssig2/=t;csig2/=t;C4a=new Array(g.nC4_);this.C4f(eps,C4a);B41=g.SinCosSeries(false,ssig1,csig1,C4a);B42=g.SinCosSeries(false,ssig2,csig2,C4a);vals.S12=A4*(B42-B41);}else
-  		vals.S12=0;if(!meridian&&somg12==2){somg12=Math.sin(omg12);comg12=Math.cos(omg12);}
-  		if(!meridian&&comg12>-0.7071&&sbet2-sbet1<1.75){domg12=1+comg12;dbet1=1+cbet1;dbet2=1+cbet2;alp12=2*Math.atan2(somg12*(sbet1*dbet2+sbet2*dbet1),domg12*(sbet1*sbet2+dbet1*dbet2));}else {salp12=salp2*calp1-calp2*salp1;calp12=calp2*calp1+salp2*salp1;if(salp12===0&&calp12<0){salp12=g.tiny_*calp1;calp12=-1;}
-  		alp12=Math.atan2(salp12,calp12);}
-  		vals.S12+=this._c2*alp12;vals.S12*=swapp*lonsign*latsign;vals.S12+=0;}
-  		if(swapp<0){[salp2,salp1]=[salp1,salp2];[calp2,calp1]=[calp1,calp2];if(outmask&g.GEODESICSCALE){[vals.M21,vals.M12]=[vals.M12,vals.M21];}}
-  		salp1*=swapp*lonsign;calp1*=swapp*latsign;salp2*=swapp*lonsign;calp2*=swapp*latsign;return {vals:vals,salp1:salp1,calp1:calp1,salp2:salp2,calp2:calp2};};g.Geodesic.prototype.GenDirect=function(lat1,lon1,azi1,arcmode,s12_a12,outmask){var line;if(!outmask)outmask=g.STANDARD;else if(outmask===g.LONG_UNROLL)outmask|=g.STANDARD;if(!arcmode)outmask|=g.DISTANCE_IN;line=new l.GeodesicLine(this,lat1,lon1,azi1,outmask);return line.GenPosition(arcmode,s12_a12,outmask);};g.Geodesic.prototype.Direct=function(lat1,lon1,azi1,s12,outmask){return this.GenDirect(lat1,lon1,azi1,false,s12,outmask);};g.Geodesic.prototype.ArcDirect=function(lat1,lon1,azi1,a12,outmask){return this.GenDirect(lat1,lon1,azi1,true,a12,outmask);};g.Geodesic.prototype.Line=function(lat1,lon1,azi1,caps){return new l.GeodesicLine(this,lat1,lon1,azi1,caps);};g.Geodesic.prototype.DirectLine=function(lat1,lon1,azi1,s12,caps){return this.GenDirectLine(lat1,lon1,azi1,false,s12,caps);};g.Geodesic.prototype.ArcDirectLine=function(lat1,lon1,azi1,a12,caps){return this.GenDirectLine(lat1,lon1,azi1,true,a12,caps);};g.Geodesic.prototype.GenDirectLine=function(lat1,lon1,azi1,arcmode,s12_a12,caps){var t;if(!caps)caps=g.STANDARD|g.DISTANCE_IN;if(!arcmode)caps|=g.DISTANCE_IN;t=new l.GeodesicLine(this,lat1,lon1,azi1,caps);t.GenSetDistance(arcmode,s12_a12);return t;};g.Geodesic.prototype.InverseLine=function(lat1,lon1,lat2,lon2,caps){var r,t,azi1;if(!caps)caps=g.STANDARD|g.DISTANCE_IN;r=this.InverseInt(lat1,lon1,lat2,lon2,g.ARC);azi1=m.atan2d(r.salp1,r.calp1);if(caps&(g.OUT_MASK&g.DISTANCE_IN))caps|=g.DISTANCE;t=new l.GeodesicLine(this,lat1,lon1,azi1,caps,r.salp1,r.calp1);t.SetArc(r.vals.a12);return t;};g.Geodesic.prototype.Polygon=function(polyline){return new p.PolygonArea(this,polyline);};g.WGS84=new g.Geodesic(c.WGS84.a,c.WGS84.f);})(geodesic.Geodesic,geodesic.GeodesicLine,geodesic.PolygonArea,geodesic.Math,geodesic.Constants);(function(g,l,m){l.GeodesicLine=function(geod,lat1,lon1,azi1,caps,salp1,calp1){var t,cbet1,sbet1,eps,s,c;if(!caps)caps=g.STANDARD|g.DISTANCE_IN;this.a=geod.a;this.f=geod.f;this._b=geod._b;this._c2=geod._c2;this._f1=geod._f1;this.caps=caps|g.LATITUDE|g.AZIMUTH|g.LONG_UNROLL;this.lat1=m.LatFix(lat1);this.lon1=lon1;if(typeof salp1==='undefined'||typeof calp1==='undefined'){this.azi1=m.AngNormalize(azi1);t=m.sincosd(m.AngRound(this.azi1));this.salp1=t.s;this.calp1=t.c;}else {this.azi1=azi1;this.salp1=salp1;this.calp1=calp1;}
-  		t=m.sincosd(m.AngRound(this.lat1));sbet1=this._f1*t.s;cbet1=t.c;t=m.hypot(sbet1,cbet1);sbet1/=t;cbet1/=t;cbet1=Math.max(g.tiny_,cbet1);this._dn1=Math.sqrt(1+geod._ep2*m.sq(sbet1));this._salp0=this.salp1*cbet1;this._calp0=m.hypot(this.calp1,this.salp1*sbet1);this._ssig1=sbet1;this._somg1=this._salp0*sbet1;this._csig1=this._comg1=sbet1!==0||this.calp1!==0?cbet1*this.calp1:1;t=m.hypot(this._ssig1,this._csig1);this._ssig1/=t;this._csig1/=t;this._k2=m.sq(this._calp0)*geod._ep2;eps=this._k2/(2*(1+Math.sqrt(1+this._k2))+this._k2);if(this.caps&g.CAP_C1){this._A1m1=g.A1m1f(eps);this._C1a=new Array(g.nC1_+1);g.C1f(eps,this._C1a);this._B11=g.SinCosSeries(true,this._ssig1,this._csig1,this._C1a);s=Math.sin(this._B11);c=Math.cos(this._B11);this._stau1=this._ssig1*c+this._csig1*s;this._ctau1=this._csig1*c-this._ssig1*s;}
-  		if(this.caps&g.CAP_C1p){this._C1pa=new Array(g.nC1p_+1);g.C1pf(eps,this._C1pa);}
-  		if(this.caps&g.CAP_C2){this._A2m1=g.A2m1f(eps);this._C2a=new Array(g.nC2_+1);g.C2f(eps,this._C2a);this._B21=g.SinCosSeries(true,this._ssig1,this._csig1,this._C2a);}
-  		if(this.caps&g.CAP_C3){this._C3a=new Array(g.nC3_);geod.C3f(eps,this._C3a);this._A3c=-this.f*this._salp0*geod.A3f(eps);this._B31=g.SinCosSeries(true,this._ssig1,this._csig1,this._C3a);}
-  		if(this.caps&g.CAP_C4){this._C4a=new Array(g.nC4_);geod.C4f(eps,this._C4a);this._A4=m.sq(this.a)*this._calp0*this._salp0*geod._e2;this._B41=g.SinCosSeries(false,this._ssig1,this._csig1,this._C4a);}
-  		this.a13=this.s13=NaN;};l.GeodesicLine.prototype.GenPosition=function(arcmode,s12_a12,outmask){var vals={},sig12,ssig12,csig12,B12,AB1,ssig2,csig2,tau12,s,c,serr,omg12,lam12,lon12,E,sbet2,cbet2,somg2,comg2,salp2,calp2,dn2,B22,AB2,J12,t,B42,salp12,calp12;if(!outmask)outmask=g.STANDARD;else if(outmask===g.LONG_UNROLL)outmask|=g.STANDARD;outmask&=this.caps&g.OUT_MASK;vals.lat1=this.lat1;vals.azi1=this.azi1;vals.lon1=outmask&g.LONG_UNROLL?this.lon1:m.AngNormalize(this.lon1);if(arcmode)
-  		vals.a12=s12_a12;else
-  		vals.s12=s12_a12;if(!(arcmode||(this.caps&g.DISTANCE_IN&g.OUT_MASK))){vals.a12=NaN;return vals;}
-  		B12=0;AB1=0;if(arcmode){sig12=s12_a12*m.degree;t=m.sincosd(s12_a12);ssig12=t.s;csig12=t.c;}else {tau12=s12_a12/(this._b*(1+this._A1m1));s=Math.sin(tau12);c=Math.cos(tau12);B12=-g.SinCosSeries(true,this._stau1*c+this._ctau1*s,this._ctau1*c-this._stau1*s,this._C1pa);sig12=tau12-(B12-this._B11);ssig12=Math.sin(sig12);csig12=Math.cos(sig12);if(Math.abs(this.f)>0.01){ssig2=this._ssig1*csig12+this._csig1*ssig12;csig2=this._csig1*csig12-this._ssig1*ssig12;B12=g.SinCosSeries(true,ssig2,csig2,this._C1a);serr=(1+this._A1m1)*(sig12+(B12-this._B11))-
-  		s12_a12/this._b;sig12=sig12-serr/Math.sqrt(1+this._k2*m.sq(ssig2));ssig12=Math.sin(sig12);csig12=Math.cos(sig12);}}
-  		ssig2=this._ssig1*csig12+this._csig1*ssig12;csig2=this._csig1*csig12-this._ssig1*ssig12;dn2=Math.sqrt(1+this._k2*m.sq(ssig2));if(outmask&(g.DISTANCE|g.REDUCEDLENGTH|g.GEODESICSCALE)){if(arcmode||Math.abs(this.f)>0.01)
-  		B12=g.SinCosSeries(true,ssig2,csig2,this._C1a);AB1=(1+this._A1m1)*(B12-this._B11);}
-  		sbet2=this._calp0*ssig2;cbet2=m.hypot(this._salp0,this._calp0*csig2);if(cbet2===0)
-  		cbet2=csig2=g.tiny_;salp2=this._salp0;calp2=this._calp0*csig2;if(arcmode&&(outmask&g.DISTANCE))
-  		vals.s12=this._b*((1+this._A1m1)*sig12+AB1);if(outmask&g.LONGITUDE){somg2=this._salp0*ssig2;comg2=csig2;E=m.copysign(1,this._salp0);omg12=outmask&g.LONG_UNROLL?E*(sig12-
-  		(Math.atan2(ssig2,csig2)-
-  		Math.atan2(this._ssig1,this._csig1))+
-  		(Math.atan2(E*somg2,comg2)-
-  		Math.atan2(E*this._somg1,this._comg1))):Math.atan2(somg2*this._comg1-comg2*this._somg1,comg2*this._comg1+somg2*this._somg1);lam12=omg12+this._A3c*(sig12+(g.SinCosSeries(true,ssig2,csig2,this._C3a)-
-  		this._B31));lon12=lam12/m.degree;vals.lon2=outmask&g.LONG_UNROLL?this.lon1+lon12:m.AngNormalize(m.AngNormalize(this.lon1)+m.AngNormalize(lon12));}
-  		if(outmask&g.LATITUDE)
-  		vals.lat2=m.atan2d(sbet2,this._f1*cbet2);if(outmask&g.AZIMUTH)
-  		vals.azi2=m.atan2d(salp2,calp2);if(outmask&(g.REDUCEDLENGTH|g.GEODESICSCALE)){B22=g.SinCosSeries(true,ssig2,csig2,this._C2a);AB2=(1+this._A2m1)*(B22-this._B21);J12=(this._A1m1-this._A2m1)*sig12+(AB1-AB2);if(outmask&g.REDUCEDLENGTH)
-  		vals.m12=this._b*((dn2*(this._csig1*ssig2)-
-  		this._dn1*(this._ssig1*csig2))-
-  		this._csig1*csig2*J12);if(outmask&g.GEODESICSCALE){t=this._k2*(ssig2-this._ssig1)*(ssig2+this._ssig1)/(this._dn1+dn2);vals.M12=csig12+
-  		(t*ssig2-csig2*J12)*this._ssig1/this._dn1;vals.M21=csig12-
-  		(t*this._ssig1-this._csig1*J12)*ssig2/dn2;}}
-  		if(outmask&g.AREA){B42=g.SinCosSeries(false,ssig2,csig2,this._C4a);if(this._calp0===0||this._salp0===0){salp12=salp2*this.calp1-calp2*this.salp1;calp12=calp2*this.calp1+salp2*this.salp1;}else {salp12=this._calp0*this._salp0*(csig12<=0?this._csig1*(1-csig12)+ssig12*this._ssig1:ssig12*(this._csig1*ssig12/(1+csig12)+this._ssig1));calp12=m.sq(this._salp0)+m.sq(this._calp0)*this._csig1*csig2;}
-  		vals.S12=this._c2*Math.atan2(salp12,calp12)+
-  		this._A4*(B42-this._B41);}
-  		if(!arcmode)
-  		vals.a12=sig12/m.degree;return vals;};l.GeodesicLine.prototype.Position=function(s12,outmask){return this.GenPosition(false,s12,outmask);};l.GeodesicLine.prototype.ArcPosition=function(a12,outmask){return this.GenPosition(true,a12,outmask);};l.GeodesicLine.prototype.GenSetDistance=function(arcmode,s13_a13){if(arcmode)
-  		this.SetArc(s13_a13);else
-  		this.SetDistance(s13_a13);};l.GeodesicLine.prototype.SetDistance=function(s13){var r;this.s13=s13;r=this.GenPosition(false,this.s13,g.ARC);this.a13=0+r.a12;};l.GeodesicLine.prototype.SetArc=function(a13){var r;this.a13=a13;r=this.GenPosition(true,this.a13,g.DISTANCE);this.s13=0+r.s12;};})(geodesic.Geodesic,geodesic.GeodesicLine,geodesic.Math);(function(p,g,m,a){var transit,transitdirect,AreaReduceA,AreaReduceB;transit=function(lon1,lon2){var lon12=m.AngDiff(lon1,lon2).d;lon1=m.AngNormalize(lon1);lon2=m.AngNormalize(lon2);return lon12>0&&((lon1<0&&lon2>=0)||(lon1>0&&lon2===0))?1:(lon12<0&&lon1>=0&&lon2<0?-1:0);};transitdirect=function(lon1,lon2){lon1=lon1%720;lon2=lon2%720;return ((0<=lon2&&lon2<360)||lon2<-360?0:1)-
-  		((0<=lon1&&lon1<360)||lon1<-360?0:1);};AreaReduceA=function(area,area0,crossings,reverse,sign){area.Remainder(area0);if(crossings&1)
-  		area.Add((area.Sum()<0?1:-1)*area0/2);if(!reverse)
-  		area.Negate();if(sign){if(area.Sum()>area0/2)
-  		area.Add(-area0);else if(area.Sum()<=-area0/2)
-  		area.Add(+area0);}else {if(area.Sum()>=area0)
-  		area.Add(-area0);else if(area.Sum()<0)
-  		area.Add(+area0);}
-  		return 0+area.Sum();};AreaReduceB=function(area,area0,crossings,reverse,sign){area=m.remainder(area,area0);if(crossings&1)
-  		area+=(area<0?1:-1)*area0/2;if(!reverse)
-  		area*=-1;if(sign){if(area>area0/2)
-  		area-=area0;else if(area<=-area0/2)
-  		area+=area0;}else {if(area>=area0)
-  		area-=area0;else if(area<0)
-  		area+=area0;}
-  		return 0+area;};p.PolygonArea=function(geod,polyline){this._geod=geod;this.a=this._geod.a;this.f=this._geod.f;this._area0=4*Math.PI*geod._c2;this.polyline=!polyline?false:polyline;this._mask=g.LATITUDE|g.LONGITUDE|g.DISTANCE|(this.polyline?g.NONE:g.AREA|g.LONG_UNROLL);if(!this.polyline)
-  		this._areasum=new a.Accumulator(0);this._perimetersum=new a.Accumulator(0);this.Clear();};p.PolygonArea.prototype.Clear=function(){this.num=0;this._crossings=0;if(!this.polyline)
-  		this._areasum.Set(0);this._perimetersum.Set(0);this._lat0=this._lon0=this.lat=this.lon=NaN;};p.PolygonArea.prototype.AddPoint=function(lat,lon){var t;if(this.num===0){this._lat0=this.lat=lat;this._lon0=this.lon=lon;}else {t=this._geod.Inverse(this.lat,this.lon,lat,lon,this._mask);this._perimetersum.Add(t.s12);if(!this.polyline){this._areasum.Add(t.S12);this._crossings+=transit(this.lon,lon);}
-  		this.lat=lat;this.lon=lon;}
-  		++this.num;};p.PolygonArea.prototype.AddEdge=function(azi,s){var t;if(this.num){t=this._geod.Direct(this.lat,this.lon,azi,s,this._mask);this._perimetersum.Add(s);if(!this.polyline){this._areasum.Add(t.S12);this._crossings+=transitdirect(this.lon,t.lon2);}
-  		this.lat=t.lat2;this.lon=t.lon2;}
-  		++this.num;};p.PolygonArea.prototype.Compute=function(reverse,sign){var vals={number:this.num},t,tempsum;if(this.num<2){vals.perimeter=0;if(!this.polyline)
-  		vals.area=0;return vals;}
-  		if(this.polyline){vals.perimeter=this._perimetersum.Sum();return vals;}
-  		t=this._geod.Inverse(this.lat,this.lon,this._lat0,this._lon0,this._mask);vals.perimeter=this._perimetersum.Sum(t.s12);tempsum=new a.Accumulator(this._areasum);tempsum.Add(t.S12);vals.area=AreaReduceA(tempsum,this._area0,this._crossings+transit(this.lon,this._lon0),reverse,sign);return vals;};p.PolygonArea.prototype.TestPoint=function(lat,lon,reverse,sign){var vals={number:this.num+1},t,tempsum,crossings,i;if(this.num===0){vals.perimeter=0;if(!this.polyline)
-  		vals.area=0;return vals;}
-  		vals.perimeter=this._perimetersum.Sum();tempsum=this.polyline?0:this._areasum.Sum();crossings=this._crossings;for(i=0;i<(this.polyline?1:2);++i){t=this._geod.Inverse(i===0?this.lat:lat,i===0?this.lon:lon,i!==0?this._lat0:lat,i!==0?this._lon0:lon,this._mask);vals.perimeter+=t.s12;if(!this.polyline){tempsum+=t.S12;crossings+=transit(i===0?this.lon:lon,i!==0?this._lon0:lon);}}
-  		if(this.polyline)
-  		return vals;vals.area=AreaReduceB(tempsum,this._area0,crossings,reverse,sign);return vals;};p.PolygonArea.prototype.TestEdge=function(azi,s,reverse,sign){var vals={number:this.num?this.num+1:0},t,tempsum,crossings;if(this.num===0)
-  		return vals;vals.perimeter=this._perimetersum.Sum()+s;if(this.polyline)
-  		return vals;tempsum=this._areasum.Sum();crossings=this._crossings;t=this._geod.Direct(this.lat,this.lon,azi,s,this._mask);tempsum+=t.S12;crossings+=transitdirect(this.lon,t.lon2);crossings+=transit(t.lon2,this._lon0);t=this._geod.Inverse(t.lat2,t.lon2,this._lat0,this._lon0,this._mask);vals.perimeter+=t.s12;tempsum+=t.S12;vals.area=AreaReduceB(tempsum,this._area0,crossings,reverse,sign);return vals;};})(geodesic.PolygonArea,geodesic.Geodesic,geodesic.Math,geodesic.Accumulator);cb(geodesic);})(function(geo){if(module.exports){module.exports=geo;}else {window.geodesic=geo;}}); 
-  	} (geographiclibGeodesic_min));
-  	return geographiclibGeodesic_min.exports;
+    do {
+      sinLambda = Math.sin(lambda);
+      cosLambda = Math.cos(lambda);
+      sinSigma = Math.sqrt(
+        (cosU2 * sinLambda) * (cosU2 * sinLambda)
+        + (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+        * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+      );
+      if (sinSigma === 0) {
+        return { azi1: 0, s12: 0 }; // coincident points
+      }
+      cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
+      sigma = Math.atan2(sinSigma, cosSigma);
+      sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
+      cos2Alpha = 1 - sinAlpha * sinAlpha;
+      cos2SigmaM = (cos2Alpha !== 0) ? (cosSigma - 2 * sinU1 * sinU2 / cos2Alpha) : 0;
+      C = f / 16 * cos2Alpha * (4 + f * (4 - 3 * cos2Alpha));
+      lambdaP = lambda;
+      lambda = L + (1 - C) * f * sinAlpha
+      * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+    } while (Math.abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
+
+    if (iterLimit === 0) {
+      return { azi1: NaN, s12: NaN }; // formula failed to converge
+    }
+
+    uSq = cos2Alpha * (a * a - (a * (1 - f)) * (a * (1 - f))) / ((a * (1 - f)) * (a * (1 - f)));
+    A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+    B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+    deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)
+      - B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+
+    s = (a * (1 - f)) * A * (sigma - deltaSigma);
+
+    // Forward azimuth
+    const azi1 = Math.atan2(cosU2 * sinLambda, cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
+
+    return { azi1, s12: s };
   }
 
-  var geographiclibGeodesic_minExports = requireGeographiclibGeodesic_min();
+  /**
+   * Solves the direct geodetic problem using Vincenty's formulae.
+   * Given a starting point, initial azimuth, and distance, computes the destination point on the ellipsoid.
+   *
+   * @param {number} lat1 Latitude of the starting point in radians.
+   * @param {number} lon1 Longitude of the starting point in radians.
+   * @param {number} azi1 Initial azimuth (forward azimuth) in radians.
+   * @param {number} s12 Distance to travel from the starting point in meters.
+   * @param {number} a Semi-major axis of the ellipsoid in meters.
+   * @param {number} f Flattening of the ellipsoid.
+   * @returns {{lat2: number, lon2: number}} The latitude and longitude (in radians) of the destination point.
+   */
+  function vincentyDirect(lat1, lon1, azi1, s12, a, f) {
+    const U1 = Math.atan((1 - f) * Math.tan(lat1));
+    const sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
+    const sinAlpha1 = Math.sin(azi1), cosAlpha1 = Math.cos(azi1);
 
-  function init$8() {
+    const sigma1 = Math.atan2(sinU1, cosU1 * cosAlpha1);
+    const sinAlpha = cosU1 * sinAlpha1;
+    const cos2Alpha = 1 - sinAlpha * sinAlpha;
+    const uSq = cos2Alpha * (a * a - (a * (1 - f)) * (a * (1 - f))) / ((a * (1 - f)) * (a * (1 - f)));
+    const A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+    const B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+
+    let sigma = s12 / ((a * (1 - f)) * A), sigmaP, iterLimit = 100;
+    let cos2SigmaM, sinSigma, cosSigma, deltaSigma;
+
+    do {
+      cos2SigmaM = Math.cos(2 * sigma1 + sigma);
+      sinSigma = Math.sin(sigma);
+      cosSigma = Math.cos(sigma);
+      deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)
+        - B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+      sigmaP = sigma;
+      sigma = s12 / ((a * (1 - f)) * A) + deltaSigma;
+    } while (Math.abs(sigma - sigmaP) > 1e-12 && --iterLimit > 0);
+
+    if (iterLimit === 0) {
+      return { lat2: NaN, lon2: NaN };
+    }
+
+    const tmp = sinU1 * sinSigma - cosU1 * cosSigma * cosAlpha1;
+    const lat2 = Math.atan2(
+      sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,
+      (1 - f) * Math.sqrt(sinAlpha * sinAlpha + tmp * tmp)
+    );
+    const lambda = Math.atan2(
+      sinSigma * sinAlpha1,
+      cosU1 * cosSigma - sinU1 * sinSigma * cosAlpha1
+    );
+    const C = f / 16 * cos2Alpha * (4 + f * (4 - 3 * cos2Alpha));
+    const L = lambda - (1 - C) * f * sinAlpha
+      * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+    const lon2 = lon1 + L;
+
+    return { lat2, lon2 };
+  }
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {number} sin_p12
+   * @property {number} cos_p12
+   * @property {number} a
+   * @property {number} f
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$9() {
     this.sin_p12 = Math.sin(this.lat0);
     this.cos_p12 = Math.cos(this.lat0);
-    this.g = new geographiclibGeodesic_minExports.Geodesic.Geodesic(this.a, this.es / (1 + Math.sqrt(1 - this.es)));
+    // flattening for ellipsoid
+    this.f = this.es / (1 + Math.sqrt(1 - this.es));
   }
 
-  function forward$7(p) {
+  function forward$8(p) {
     var lon = p.x;
     var lat = p.y;
     var sinphi = Math.sin(p.y);
     var cosphi = Math.cos(p.y);
-    var dlon = adjust_lon(lon - this.long0);
-    var e0, e1, e2, e3, Mlp, Ml, c, kp, cos_c, lat1, lon1, lat2, lon2, vars, azi1;
+    var dlon = adjust_lon(lon - this.long0, this.over);
+    var e0, e1, e2, e3, Mlp, Ml, c, kp, cos_c, vars, azi1;
     if (this.sphere) {
       if (Math.abs(this.sin_p12 - 1) <= EPSLN) {
         // North Pole case
@@ -87876,14 +88656,8 @@
           p.x = p.y = 0;
           return p;
         }
-        lat1 = this.lat0 / D2R$1;
-        lon1 = this.long0 / D2R$1;
-        lat2 = lat / D2R$1;
-        lon2 = lon / D2R$1;
-
-        vars = this.g.Inverse(lat1, lon1, lat2, lon2, this.g.AZIMUTH);
-        azi1 = vars.azi1 * D2R$1;
-
+        vars = vincentyInverse(this.lat0, this.long0, lat, lon, this.a, this.f);
+        azi1 = vars.azi1;
         p.x = vars.s12 * Math.sin(azi1);
         p.y = vars.s12 * Math.cos(azi1);
         return p;
@@ -87891,10 +88665,10 @@
     }
   }
 
-  function inverse$7(p) {
+  function inverse$8(p) {
     p.x -= this.x0;
     p.y -= this.y0;
-    var rh, z, sinz, cosz, lon, lat, con, e0, e1, e2, e3, Mlp, M, lat1, lon1, azi1, s12, vars;
+    var rh, z, sinz, cosz, lon, lat, con, e0, e1, e2, e3, Mlp, M, azi1, s12, vars;
     if (this.sphere) {
       rh = Math.sqrt(p.x * p.x + p.y * p.y);
       if (rh > (2 * HALF_PI * this.a)) {
@@ -87913,19 +88687,12 @@
         con = Math.abs(this.lat0) - HALF_PI;
         if (Math.abs(con) <= EPSLN) {
           if (this.lat0 >= 0) {
-            lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+            lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y), this.over);
           } else {
-            lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y));
+            lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y), this.over);
           }
         } else {
-          /* con = cosz - this.sin_p12 * Math.sin(lat);
-          if ((Math.abs(con) < EPSLN) && (Math.abs(p.x) < EPSLN)) {
-            //no-op, just keep the lon value as is
-          } else {
-            var temp = Math.atan2((p.x * sinz * this.cos_p12), (con * rh));
-            lon = adjust_lon(this.long0 + Math.atan2((p.x * sinz * this.cos_p12), (con * rh)));
-          } */
-          lon = adjust_lon(this.long0 + Math.atan2(p.x * sinz, rh * this.cos_p12 * cosz - p.y * this.sin_p12 * sinz));
+          lon = adjust_lon(this.long0 + Math.atan2(p.x * sinz, rh * this.cos_p12 * cosz - p.y * this.sin_p12 * sinz), this.over);
         }
       }
 
@@ -87943,7 +88710,7 @@
         rh = Math.sqrt(p.x * p.x + p.y * p.y);
         M = Mlp - rh;
         lat = imlfn(M / this.a, e0, e1, e2, e3);
-        lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x, -1 * p.y), this.over);
         p.x = lon;
         p.y = lat;
         return p;
@@ -87954,34 +88721,39 @@
         M = rh - Mlp;
 
         lat = imlfn(M / this.a, e0, e1, e2, e3);
-        lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x, p.y), this.over);
         p.x = lon;
         p.y = lat;
         return p;
       } else {
         // default case
-        lat1 = this.lat0 / D2R$1;
-        lon1 = this.long0 / D2R$1;
-        azi1 = Math.atan2(p.x, p.y) / D2R$1;
+        azi1 = Math.atan2(p.x, p.y);
         s12 = Math.sqrt(p.x * p.x + p.y * p.y);
-        vars = this.g.Direct(lat1, lon1, azi1, s12, this.g.STANDARD);
+        vars = vincentyDirect(this.lat0, this.long0, azi1, s12, this.a, this.f);
 
-        p.x = vars.lon2 * D2R$1;
-        p.y = vars.lat2 * D2R$1;
+        p.x = vars.lon2;
+        p.y = vars.lat2;
         return p;
       }
     }
   }
 
-  var names$8 = ['Azimuthal_Equidistant', 'aeqd'];
+  var names$9 = ['Azimuthal_Equidistant', 'aeqd'];
   var aeqd = {
-    init: init$8,
-    forward: forward$7,
-    inverse: inverse$7,
-    names: names$8
+    init: init$9,
+    forward: forward$8,
+    inverse: inverse$8,
+    names: names$9
   };
 
-  function init$7() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} sin_p14
+   * @property {number} cos_p14
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$8() {
     // double temp;      /* temporary variable    */
 
     /* Place parameters in static storage for common use
@@ -87992,7 +88764,7 @@
 
   /* Orthographic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$6(p) {
+  function forward$7(p) {
     var sinphi, cosphi; /* sin and cos value        */
     var dlon; /* delta longitude value      */
     var coslon; /* cos of longitude        */
@@ -88002,7 +88774,7 @@
     var lat = p.y;
     /* Forward equations
         ----------------- */
-    dlon = adjust_lon(lon - this.long0);
+    dlon = adjust_lon(lon - this.long0, this.over);
 
     sinphi = Math.sin(lat);
     cosphi = Math.cos(lat);
@@ -88019,7 +88791,7 @@
     return p;
   }
 
-  function inverse$6(p) {
+  function inverse$7(p) {
     var rh; /* height above ellipsoid      */
     var z; /* angle          */
     var sinz, cosz; /* sin of z and cos of z      */
@@ -88046,31 +88818,41 @@
     con = Math.abs(this.lat0) - HALF_PI;
     if (Math.abs(con) <= EPSLN) {
       if (this.lat0 >= 0) {
-        lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+        lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y), this.over);
       } else {
-        lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y));
+        lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y), this.over);
       }
       p.x = lon;
       p.y = lat;
       return p;
     }
-    lon = adjust_lon(this.long0 + Math.atan2((p.x * sinz), rh * this.cos_p14 * cosz - p.y * this.sin_p14 * sinz));
+    lon = adjust_lon(this.long0 + Math.atan2((p.x * sinz), rh * this.cos_p14 * cosz - p.y * this.sin_p14 * sinz), this.over);
     p.x = lon;
     p.y = lat;
     return p;
   }
 
-  var names$7 = ['ortho'];
+  var names$8 = ['ortho'];
   var ortho = {
-    init: init$7,
-    forward: forward$6,
-    inverse: inverse$6,
-    names: names$7
+    init: init$8,
+    forward: forward$7,
+    inverse: inverse$7,
+    names: names$8
   };
 
   // QSC projection rewritten from the original PROJ4
   // https://github.com/OSGeo/proj.4/blob/master/src/PJ_qsc.c
 
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} face
+   * @property {number} x0
+   * @property {number} y0
+   * @property {number} es
+   * @property {number} one_minus_f
+   * @property {number} one_minus_f_squared
+   */
 
   /* constants */
   var FACE_ENUM = {
@@ -88089,7 +88871,8 @@
     AREA_3: 4
   };
 
-  function init$6() {
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$7() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
     this.lat0 = this.lat0 || 0;
@@ -88120,7 +88903,7 @@
 
   // QSC forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$5(p) {
+  function forward$6(p) {
     var xy = { x: 0, y: 0 };
     var lat, lon;
     var theta, phi;
@@ -88184,7 +88967,7 @@
       if (this.face === FACE_ENUM.RIGHT) {
         lon = qsc_shift_lon_origin(lon, +HALF_PI);
       } else if (this.face === FACE_ENUM.BACK) {
-        lon = qsc_shift_lon_origin(lon, 3.14159265359);
+        lon = qsc_shift_lon_origin(lon, +SPI);
       } else if (this.face === FACE_ENUM.LEFT) {
         lon = qsc_shift_lon_origin(lon, -HALF_PI);
       }
@@ -88243,7 +89026,7 @@
 
   // QSC inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$5(p) {
+  function inverse$6(p) {
     var lp = { lam: 0, phi: 0 };
     var mu, nu, cosmu, tannu;
     var tantheta, theta, cosphi, phi;
@@ -88364,7 +89147,7 @@
       if (this.face === FACE_ENUM.RIGHT) {
         lp.lam = qsc_shift_lon_origin(lp.lam, -HALF_PI);
       } else if (this.face === FACE_ENUM.BACK) {
-        lp.lam = qsc_shift_lon_origin(lp.lam, -3.14159265359);
+        lp.lam = qsc_shift_lon_origin(lp.lam, -SPI);
       } else if (this.face === FACE_ENUM.LEFT) {
         lp.lam = qsc_shift_lon_origin(lp.lam, +HALF_PI);
       }
@@ -88418,20 +89201,20 @@
   /* Helper function: shift the longitude. */
   function qsc_shift_lon_origin(lon, offset) {
     var slon = lon + offset;
-    if (slon < -3.14159265359) {
+    if (slon < -SPI) {
       slon += TWO_PI;
-    } else if (slon > 3.14159265359) {
+    } else if (slon > +SPI) {
       slon -= TWO_PI;
     }
     return slon;
   }
 
-  var names$6 = ['Quadrilateralized Spherical Cube', 'Quadrilateralized_Spherical_Cube', 'qsc'];
+  var names$7 = ['Quadrilateralized Spherical Cube', 'Quadrilateralized_Spherical_Cube', 'qsc'];
   var qsc = {
-    init: init$6,
-    forward: forward$5,
-    inverse: inverse$5,
-    names: names$6
+    init: init$7,
+    forward: forward$6,
+    inverse: inverse$6,
+    names: names$7
   };
 
   // Robinson projection
@@ -88509,7 +89292,7 @@
     return x;
   }
 
-  function init$5() {
+  function init$6() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
     this.long0 = this.long0 || 0;
@@ -88517,8 +89300,8 @@
     this.title = this.title || 'Robinson';
   }
 
-  function forward$4(ll) {
-    var lon = adjust_lon(ll.x - this.long0);
+  function forward$5(ll) {
+    var lon = adjust_lon(ll.x - this.long0, this.over);
 
     var dphi = Math.abs(ll.y);
     var i = Math.floor(dphi * C1);
@@ -88541,7 +89324,7 @@
     return xy;
   }
 
-  function inverse$4(xy) {
+  function inverse$5(xy) {
     var ll = {
       x: (xy.x - this.x0) / (this.a * FXC),
       y: Math.abs(xy.y - this.y0) / (this.a * FYC)
@@ -88582,39 +89365,59 @@
       }
     }
 
-    ll.x = adjust_lon(ll.x + this.long0);
+    ll.x = adjust_lon(ll.x + this.long0, this.over);
     return ll;
   }
 
-  var names$5 = ['Robinson', 'robin'];
+  var names$6 = ['Robinson', 'robin'];
   var robin = {
+    init: init$6,
+    forward: forward$5,
+    inverse: inverse$5,
+    names: names$6
+  };
+
+  function init$5() {
+    this.name = 'geocent';
+  }
+
+  function forward$4(p) {
+    var point = geodeticToGeocentric(p, this.es, this.a);
+    return point;
+  }
+
+  function inverse$4(p) {
+    var point = geocentricToGeodetic(p, this.es, this.a, this.b);
+    return point;
+  }
+
+  var names$5 = ['Geocentric', 'geocentric', 'geocent', 'Geocent'];
+  var geocent = {
     init: init$5,
     forward: forward$4,
     inverse: inverse$4,
     names: names$5
   };
 
-  function init$4() {
-    this.name = 'geocent';
-  }
-
-  function forward$3(p) {
-    var point = geodeticToGeocentric(p, this.es, this.a);
-    return point;
-  }
-
-  function inverse$3(p) {
-    var point = geocentricToGeodetic(p, this.es, this.a, this.b);
-    return point;
-  }
-
-  var names$4 = ['Geocentric', 'geocentric', 'geocent', 'Geocent'];
-  var geocent = {
-    init: init$4,
-    forward: forward$3,
-    inverse: inverse$3,
-    names: names$4
-  };
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} mode
+   * @property {number} sinph0
+   * @property {number} cosph0
+   * @property {number} pn1
+   * @property {number} h
+   * @property {number} rp
+   * @property {number} p
+   * @property {number} h1
+   * @property {number} pfact
+   * @property {number} es
+   * @property {number} tilt
+   * @property {number} azi
+   * @property {number} cg
+   * @property {number} sg
+   * @property {number} cw
+   * @property {number} sw
+   */
 
   var mode = {
     N_POLE: 0,
@@ -88631,7 +89434,8 @@
     lat0: { def: 0, num: true } // default is Equator, conversion to rad is automatic
   };
 
-  function init$3() {
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$4() {
     Object.keys(params).forEach(function (p) {
       if (typeof this[p] === 'undefined') {
         this[p] = params[p].def;
@@ -88675,7 +89479,7 @@
     this.sw = Math.sin(omega);
   }
 
-  function forward$2(p) {
+  function forward$3(p) {
     p.x -= this.long0;
     var sinphi = Math.sin(p.y);
     var cosphi = Math.cos(p.y);
@@ -88725,7 +89529,7 @@
     return p;
   }
 
-  function inverse$2(p) {
+  function inverse$3(p) {
     p.x /= this.a;
     p.y /= this.a;
     var r = { x: p.x, y: p.y };
@@ -88774,15 +89578,31 @@
     return p;
   }
 
-  var names$3 = ['Tilted_Perspective', 'tpers'];
+  var names$4 = ['Tilted_Perspective', 'tpers'];
   var tpers = {
-    init: init$3,
-    forward: forward$2,
-    inverse: inverse$2,
-    names: names$3
+    init: init$4,
+    forward: forward$3,
+    inverse: inverse$3,
+    names: names$4
   };
 
-  function init$2() {
+  /**
+   * @typedef {Object} LocalThis
+   * @property {1 | 0} flip_axis
+   * @property {number} h
+   * @property {number} radius_g_1
+   * @property {number} radius_g
+   * @property {number} radius_p
+   * @property {number} radius_p2
+   * @property {number} radius_p_inv2
+   * @property {'ellipse'|'sphere'} shape
+   * @property {number} C
+   * @property {string} sweep
+   * @property {number} es
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$3() {
     this.flip_axis = (this.sweep === 'x' ? 1 : 0);
     this.h = Number(this.h);
     this.radius_g_1 = this.h / this.a;
@@ -88816,7 +89636,7 @@
     }
   }
 
-  function forward$1(p) {
+  function forward$2(p) {
     var lon = p.x;
     var lat = p.y;
     var tmp, v_x, v_y, v_z;
@@ -88864,7 +89684,7 @@
     return p;
   }
 
-  function inverse$1(p) {
+  function inverse$2(p) {
     var v_x = -1;
     var v_y = 0.0;
     var v_z = 0.0;
@@ -88931,12 +89751,12 @@
     return p;
   }
 
-  var names$2 = ['Geostationary Satellite View', 'Geostationary_Satellite', 'geos'];
+  var names$3 = ['Geostationary Satellite View', 'Geostationary_Satellite', 'geos'];
   var geos = {
-    init: init$2,
-    forward: forward$1,
-    inverse: inverse$1,
-    names: names$2
+    init: init$3,
+    forward: forward$2,
+    inverse: inverse$2,
+    names: names$3
   };
 
   /**
@@ -88975,13 +89795,15 @@
     A4 = 0.003796,
     M = Math.sqrt(3) / 2.0;
 
-  function init$1() {
+  function init$2() {
     this.es = 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
+    this.x0 = this.x0 !== undefined ? this.x0 : 0;
+    this.y0 = this.y0 !== undefined ? this.y0 : 0;
   }
 
-  function forward(p) {
-    var lam = adjust_lon(p.x - this.long0);
+  function forward$1(p) {
+    var lam = adjust_lon(p.x - this.long0, this.over);
     var phi = p.y;
     var paramLat = Math.asin(M * Math.sin(phi)),
       paramLatSq = paramLat * paramLat,
@@ -88995,7 +89817,7 @@
     return p;
   }
 
-  function inverse(p) {
+  function inverse$1(p) {
     p.x = (p.x - this.x0) / this.a;
     p.y = (p.y - this.y0) / this.a;
 
@@ -89020,21 +89842,32 @@
       / Math.cos(paramLat);
     p.y = Math.asin(Math.sin(paramLat) / M);
 
-    p.x = adjust_lon(p.x + this.long0);
+    p.x = adjust_lon(p.x + this.long0, this.over);
     return p;
   }
 
-  var names$1 = ['eqearth', 'Equal Earth', 'Equal_Earth'];
+  var names$2 = ['eqearth', 'Equal Earth', 'Equal_Earth'];
   var eqearth = {
-    init: init$1,
-    forward: forward,
-    inverse: inverse,
-    names: names$1
+    init: init$2,
+    forward: forward$1,
+    inverse: inverse$1,
+    names: names$2
   };
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} phi1
+   * @property {number} cphi1
+   * @property {number} es
+   * @property {Array<number>} en
+   * @property {number} m1
+   * @property {number} am1
+   */
 
   var EPS10 = 1e-10;
 
-  function init() {
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$1() {
     var c;
 
     this.phi1 = this.lat1;
@@ -89060,7 +89893,7 @@
   }
 
   function e_fwd(p) {
-    var lam = adjust_lon(p.x - (this.long0 || 0));
+    var lam = adjust_lon(p.x - (this.long0 || 0), this.over);
     var phi = p.y;
     var rh, E, c;
     rh = this.am1 + this.m1 - pj_mlfn(phi, E = Math.sin(phi), c = Math.cos(phi), this.en);
@@ -89088,13 +89921,13 @@
     } else {
       throw new Error();
     }
-    p.x = adjust_lon(lam + (this.long0 || 0));
+    p.x = adjust_lon(lam + (this.long0 || 0), this.over);
     p.y = adjust_lat(phi);
     return p;
   }
 
   function s_fwd(p) {
-    var lam = adjust_lon(p.x - (this.long0 || 0));
+    var lam = adjust_lon(p.x - (this.long0 || 0), this.over);
     var phi = p.y;
     var E, rh;
     rh = this.cphi1 + this.phi1 - phi;
@@ -89125,14 +89958,381 @@
     } else {
       lam = rh * Math.atan2(p.x, p.y) / Math.cos(phi);
     }
-    p.x = adjust_lon(lam + (this.long0 || 0));
+    p.x = adjust_lon(lam + (this.long0 || 0), this.over);
     p.y = adjust_lat(phi);
     return p;
   }
 
-  var names = ['bonne', 'Bonne (Werner lat_1=90)'];
+  var names$1 = ['bonne', 'Bonne (Werner lat_1=90)'];
   var bonne = {
+    init: init$1,
+    names: names$1
+  };
+
+  /**
+      Original projection implementation:
+          https://github.com/OSGeo/PROJ/blob/46c47e9adf6376ae06afabe5d24a0016a05ced82/src/projections/ob_tran.cpp
+
+      Documentation:
+          https://proj.org/operations/projections/ob_tran.html
+
+      References/Formulas:
+          https://pubs.usgs.gov/pp/1395/report.pdf
+
+      Examples:
+          +proj=ob_tran +o_proj=moll +o_lat_p=45 +o_lon_p=-90
+          +proj=ob_tran +o_proj=moll +o_lat_p=45 +o_lon_p=-90 +lon_0=60
+          +proj=ob_tran +o_proj=moll +o_lat_p=45 +o_lon_p=-90 +lon_0=-90
+  */
+
+  const projectionType = {
+    OBLIQUE: {
+      forward: forwardOblique,
+      inverse: inverseOblique
+    },
+    TRANSVERSE: {
+      forward: forwardTransverse,
+      inverse: inverseTransverse
+    }
+  };
+
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} lamp
+   * @property {number} cphip
+   * @property {number} sphip
+   * @property {Object} projectionType
+   * @property {string | undefined} o_proj
+   * @property {string | undefined} o_lon_p
+   * @property {string | undefined} o_lat_p
+   * @property {string | undefined} o_alpha
+   * @property {string | undefined} o_lon_c
+   * @property {string | undefined} o_lat_c
+   * @property {string | undefined} o_lon_1
+   * @property {string | undefined} o_lat_1
+   * @property {string | undefined} o_lon_2
+   * @property {string | undefined} o_lat_2
+   * @property {number | undefined} oLongP
+   * @property {number | undefined} oLatP
+   * @property {number | undefined} oAlpha
+   * @property {number | undefined} oLongC
+   * @property {number | undefined} oLatC
+   * @property {number | undefined} oLong1
+   * @property {number | undefined} oLat1
+   * @property {number | undefined} oLong2
+   * @property {number | undefined} oLat2
+   * @property {boolean} isIdentity
+   * @property {import('..').Converter} obliqueProjection
+   *
+   */
+
+  /**
+   *    Parameters can be from the following sets:
+   *       New pole --> o_lat_p, o_lon_p
+   *       Rotate about point --> o_alpha, o_lon_c, o_lat_c
+   *       New equator points --> lon_1, lat_1, lon_2, lat_2
+   *
+   *    Per the original source code, the parameter sets are
+   *    checked in the order of the object below.
+   */
+  const paramSets = {
+    ROTATE: {
+      o_alpha: 'oAlpha',
+      o_lon_c: 'oLongC',
+      o_lat_c: 'oLatC'
+    },
+    NEW_POLE: {
+      o_lat_p: 'oLatP',
+      o_lon_p: 'oLongP'
+    },
+    NEW_EQUATOR: {
+      o_lon_1: 'oLong1',
+      o_lat_1: 'oLat1',
+      o_lon_2: 'oLong2',
+      o_lat_2: 'oLat2'
+    }
+  };
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init() {
+    this.x0 = this.x0 || 0;
+    this.y0 = this.y0 || 0;
+    this.long0 = this.long0 || 0;
+    this.title = this.title || 'General Oblique Transformation';
+    this.isIdentity = names$x.includes(this.o_proj);
+
+    /** Verify required parameters exist */
+    if (!this.o_proj) {
+      throw new Error('Missing parameter: o_proj');
+    }
+
+    if (this.o_proj === `ob_tran`) {
+      throw new Error('Invalid value for o_proj: ' + this.o_proj);
+    }
+
+    const newProjStr = this.projStr.replace('+proj=ob_tran', '').replace('+o_proj=', '+proj=').trim();
+
+    /** @type {import('../defs.js').ProjectionDefinition} */
+    const oProj = Projection(newProjStr);
+    if (!oProj) {
+      throw new Error('Invalid parameter: o_proj. Unknown projection ' + this.o_proj);
+    }
+    oProj.long0 = 0; // we handle long0 before/after forward/inverse
+    this.obliqueProjection = oProj;
+
+    let matchedSet;
+    const paramSetsKeys = Object.keys(paramSets);
+
+    /**
+     * parse strings, convert to radians, throw on NaN
+     * @param {string} name
+     * @returns {number | undefined}
+     */
+    const parseParam = (name) => {
+      if (typeof this[name] === `undefined`) {
+        return undefined;
+      }
+      const val = parseFloat(this[name]) * D2R$1;
+      if (isNaN(val)) {
+        throw new Error('Invalid value for ' + name + ': ' + this[name]);
+      }
+      return val;
+    };
+
+    for (let i = 0; i < paramSetsKeys.length; i++) {
+      const setKey = paramSetsKeys[i];
+      const set = paramSets[setKey];
+      const params = Object.entries(set);
+      const setHasParams = params.some(
+        ([p]) => typeof this[p] !== 'undefined'
+      );
+      if (!setHasParams) {
+        continue;
+      }
+      matchedSet = set;
+      for (let ii = 0; ii < params.length; ii++) {
+        const [inputParam, param] = params[ii];
+        const val = parseParam(inputParam);
+        if (typeof val === 'undefined') {
+          throw new Error('Missing parameter: ' + inputParam + '.');
+        }
+        this[param] = val;
+      }
+      break;
+    }
+
+    if (!matchedSet) {
+      throw new Error('No valid parameters provided for ob_tran projection.');
+    }
+
+    const { lamp, phip } = createRotation(this, matchedSet);
+    this.lamp = lamp;
+
+    if (Math.abs(phip) > EPSLN) {
+      this.cphip = Math.cos(phip);
+      this.sphip = Math.sin(phip);
+      this.projectionType = projectionType.OBLIQUE;
+    } else {
+      this.projectionType = projectionType.TRANSVERSE;
+    }
+  }
+
+  // ob_tran forward equations--mapping (lat,long) to (x,y)
+  // transverse (90 degrees from normal orientation) - forwardTransverse
+  // or oblique (arbitrary angle) used based on parameters - forwardOblique
+  // -----------------------------------------------------------------
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function forward(p) {
+    return this.projectionType.forward(this, p);
+  }
+
+  // inverse equations--mapping (x,y) to (lat,long)
+  // transverse: inverseTransverse
+  // oblique: inverseOblique
+  // -----------------------------------------------------------------
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function inverse(p) {
+    return this.projectionType.inverse(this, p);
+  }
+
+  /**
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} params - Initialized projection definition
+   * @param {Object} how - Transformation method
+   * @returns {{phip: number, lamp: number}}
+   */
+  function createRotation(params, how) {
+    let phip, lamp;
+    if (how === paramSets.ROTATE) {
+      let lamc = params.oLongC;
+      let phic = params.oLatC;
+      let alpha = params.oAlpha;
+      if (Math.abs(Math.abs(phic) - HALF_PI) <= EPSLN) {
+        throw new Error('Invalid value for o_lat_c: ' + params.o_lat_c + ' should be < 90°');
+      }
+      lamp = lamc + Math.atan2(-1 * Math.cos(alpha), -1 * Math.sin(alpha) * Math.sin(phic));
+      phip = Math.asin(Math.cos(phic) * Math.sin(alpha));
+    } else if (how === paramSets.NEW_POLE) {
+      lamp = params.oLongP;
+      phip = params.oLatP;
+    } else {
+      let lam1 = params.oLong1;
+      let phi1 = params.oLat1;
+      let lam2 = params.oLong2;
+      let phi2 = params.oLat2;
+      let con = Math.abs(phi1);
+
+      if (Math.abs(phi1) > HALF_PI - EPSLN) {
+        throw new Error('Invalid value for o_lat_1: ' + params.o_lat_1 + ' should be < 90°');
+      }
+
+      if (Math.abs(phi2) > HALF_PI - EPSLN) {
+        throw new Error('Invalid value for o_lat_2: ' + params.o_lat_2 + ' should be < 90°');
+      }
+
+      if (Math.abs(phi1 - phi2) < EPSLN) {
+        throw new Error('Invalid value for o_lat_1 and o_lat_2: o_lat_1 should be different from o_lat_2');
+      }
+      if (con < EPSLN) {
+        throw new Error('Invalid value for o_lat_1: o_lat_1 should be different from zero');
+      }
+
+      lamp = Math.atan2(
+        (Math.cos(phi1) * Math.sin(phi2) * Math.cos(lam1))
+        - (Math.sin(phi1) * Math.cos(phi2) * Math.cos(lam2)),
+        (Math.sin(phi1) * Math.cos(phi2) * Math.sin(lam2))
+        - (Math.cos(phi1) * Math.sin(phi2) * Math.sin(lam1))
+      );
+
+      phip = Math.atan(-1 * Math.cos(lamp - lam1) / Math.tan(phi1));
+    }
+
+    return { lamp, phip };
+  }
+
+  /**
+   * Forward (lng, lat) to (x, y) for oblique case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function forwardOblique(self, lp) {
+    let { x: lam, y: phi } = lp;
+    lam += self.long0;
+    const coslam = Math.cos(lam);
+    const sinphi = Math.sin(phi);
+    const cosphi = Math.cos(phi);
+
+    lp.x = adjust_lon(
+      Math.atan2(
+        cosphi * Math.sin(lam),
+        (self.sphip * cosphi * coslam) + (self.cphip * sinphi)
+      ) + self.lamp
+    );
+    lp.y = Math.asin(
+      (self.sphip * sinphi) - (self.cphip * cosphi * coslam)
+    );
+
+    const result = self.obliqueProjection.forward(lp);
+    if (self.isIdentity) {
+      result.x *= R2D;
+      result.y *= R2D;
+    }
+    return result;
+  }
+
+  /**
+   * Forward (lng, lat) to (x, y) for transverse case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function forwardTransverse(self, lp) {
+    let { x: lam, y: phi } = lp;
+    lam += self.long0;
+    const cosphi = Math.cos(phi);
+    const coslam = Math.cos(lam);
+    lp.x = adjust_lon(
+      Math.atan2(
+        cosphi * Math.sin(lam),
+        Math.sin(phi)
+      ) + self.lamp
+    );
+    lp.y = Math.asin(-1 * cosphi * coslam);
+
+    const result = self.obliqueProjection.forward(lp);
+
+    if (self.isIdentity) {
+      result.x *= R2D;
+      result.y *= R2D;
+    }
+    return result;
+  }
+
+  /**
+   * Inverse (x, y) to (lng, lat) for oblique case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function inverseOblique(self, lp) {
+    if (self.isIdentity) {
+      lp.x *= D2R$1;
+      lp.y *= D2R$1;
+    }
+
+    const innerLp = self.obliqueProjection.inverse(lp);
+    let { x: lam, y: phi } = innerLp;
+
+    if (lam < Number.MAX_VALUE) {
+      lam -= self.lamp;
+      const coslam = Math.cos(lam);
+      const sinphi = Math.sin(phi);
+      const cosphi = Math.cos(phi);
+      lp.x = Math.atan2(
+        cosphi * Math.sin(lam),
+        (self.sphip * cosphi * coslam) - (self.cphip * sinphi)
+      );
+      lp.y = Math.asin(
+        (self.sphip * sinphi) + (self.cphip * cosphi * coslam)
+      );
+    }
+
+    lp.x = adjust_lon(lp.x + self.long0);
+    return lp;
+  }
+
+  /**
+   * Inverse (x, y) to (lng, lat) for transverse case
+   * @param {import('../defs.js').ProjectionDefinition & LocalThis} self
+   * @param {{x: number, y: number}} lp - lambda, phi
+   */
+  function inverseTransverse(self, lp) {
+    if (self.isIdentity) {
+      lp.x *= D2R$1;
+      lp.y *= D2R$1;
+    }
+
+    const innerLp = self.obliqueProjection.inverse(lp);
+    let { x: lam, y: phi } = innerLp;
+
+    if (lam < Number.MAX_VALUE) {
+      const cosphi = Math.cos(phi);
+      lam -= self.lamp;
+      lp.x = Math.atan2(
+        cosphi * Math.sin(lam),
+        -1 * Math.sin(phi)
+      );
+      lp.y = Math.asin(
+        cosphi * Math.cos(lam)
+      );
+    }
+
+    lp.x = adjust_lon(lp.x + self.long0);
+    return lp;
+  }
+
+  var names = ['General Oblique Transformation', 'General_Oblique_Transformation', 'ob_tran'];
+  var ob_tran = {
     init: init,
+    forward: forward,
+    inverse: inverse,
     names: names
   };
 
@@ -89168,18 +90368,40 @@
     proj4.Proj.projections.add(geos);
     proj4.Proj.projections.add(eqearth);
     proj4.Proj.projections.add(bonne);
+    proj4.Proj.projections.add(ob_tran);
   }
 
-  proj4.defaultDatum = 'WGS84'; // default datum
-  proj4.Proj = Projection;
-  proj4.WGS84 = new proj4.Proj('WGS84');
-  proj4.Point = Point;
-  proj4.toPoint = common;
-  proj4.defs = defs;
-  proj4.nadgrid = nadgrid;
-  proj4.transform = transform;
-  proj4.mgrs = mgrs;
-  proj4.version = '__VERSION__';
+  /**
+   * @typedef {Object} Mgrs
+   * @property {(lonlat: [number, number]) => string} forward
+   * @property {(mgrsString: string) => [number, number, number, number]} inverse
+   * @property {(mgrsString: string) => [number, number]} toPoint
+   */
+
+  /**
+   * @typedef {import('./defs').ProjectionDefinition} ProjectionDefinition
+   * @typedef {import('./core').TemplateCoordinates} TemplateCoordinates
+   * @typedef {import('./core').InterfaceCoordinates} InterfaceCoordinates
+   * @typedef {import('./core').Converter} Converter
+   * @typedef {import('./Proj').DatumDefinition} DatumDefinition
+   */
+
+  /**
+   * @template {import('./core').TemplateCoordinates} T
+   * @type {core<T> & {defaultDatum: string, Proj: typeof Proj, WGS84: Proj, Point: typeof Point, toPoint: typeof common, defs: typeof defs, nadgrid: typeof nadgrid, transform: typeof transform, mgrs: Mgrs, version: string}}
+   */
+  const proj4 = Object.assign(proj4$1, {
+    defaultDatum: 'WGS84',
+    Proj: Projection,
+    WGS84: new Projection('WGS84'),
+    Point,
+    toPoint: common,
+    defs,
+    nadgrid,
+    transform,
+    mgrs,
+    version: '__VERSION__'
+  });
   includedProjections(proj4);
 
   /**
@@ -89627,8 +90849,8 @@
 
 
   /**
-   * GeoJSON vector display
-   * display the loading status
+   * GeoJSON vector display &
+   * loading status display
    */
   class MyVectorSource extends VectorSource {
     constructor(options) {
@@ -89655,8 +90877,20 @@
           }
       });
 
-      // Compute properties when the layer is loaded & before the cluster layer is computed
-      this.on('change', () =>
+      // Compute properties when one request is loaded & before the cluster layer is computed
+      this.on('change', () => {
+        this.logs ??= {};
+        if (this.options.debug)
+          console.info(
+            'Receive 1 tile ' +
+            this.logs.tileSize + ', ' + this.getFeatures().length +
+            (this.logs.isCluster ? ' clusters, ' : ' points, ') +
+            transform$1(getCenter(this.getExtent()), 'EPSG:3857', 'EPSG:4326')
+            .map(x => Math.round(x * 1000) / 1000)
+            .join('°E/') + '°N'
+          );
+
+        //TODO move feature.getProperties() in hover
         this.getFeatures().forEach(f => {
           if (!f.yetAdded) {
             f.yetAdded = true;
@@ -89665,8 +90899,8 @@
               true, // Silent : add the feature without refresh the layer
             );
           }
-        })
-      );
+        });
+      });
     }
 
     tuneDistance() {} // MyClusterSource compatibility
@@ -89830,6 +91064,9 @@
     }
   }
 
+  /**
+   * Activate a vector & a cluster layer depending on the zoom level
+   */
   class MyServerClusterVectorLayer extends MyBrowserClusterVectorLayer {
     constructor(options) {
       // serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
@@ -89918,8 +91155,8 @@
 
         // Methods to instantiate
         // url (extent, resolution, mapProjection) // Calculate the url
-        // query (extent, resolution, mapProjection, optioons) ({_path: '...'}),
-        // bbox (extent, resolution, mapProjection) => {}
+        // query (extent, resolution, mapProjection, options) ({_path: '...'}),
+        // bboxParameter (extent, resolution, mapProjection) => {}
         // addProperties (properties) => {}, // Add properties to each received features
 
         ...opt,
@@ -89937,7 +91174,7 @@
       this.host = options.host;
       this.url ||= options.url;
       this.query ||= options.query;
-      this.bbox ||= options.bbox;
+      this.bboxParameter ||= options.bboxParameter;
       this.addProperties ||= options.addProperties;
       this.style ||= options.style;
       this.strategy = options.strategy;
@@ -89954,12 +91191,7 @@
       const urlArgs = this.query(...args, this.options),
         url = this.host + urlArgs._path; // Mem _path
 
-      if (this.strategy === bbox)
-        urlArgs.bbox = this.bbox(...args);
-
-      // Add a pseudo parameter if any marker or edit has been done
-      const version = sessionStorage.myolLastchange ?
-        '&' + Math.round(sessionStorage.myolLastchange / 2500 % 46600).toString(36) : '';
+      urlArgs.bbox = this.bboxParameter(...args);
 
       // Clean null & not relative parameters
       Object.keys(urlArgs).forEach(k => {
@@ -89967,10 +91199,14 @@
           delete urlArgs[k];
       });
 
-      return url + '?' + new URLSearchParams(urlArgs).toString() + version;
+      // Add a pseudo parameter if any marker or edit has been done
+      if (this.options.lastChangeTime)
+        urlArgs.v = this.options.lastChangeTime;
+
+      return url + '?' + new URLSearchParams(urlArgs).toString();
     }
 
-    bbox(extent, resolution, mapProjection) {
+    bboxParameter(extent, resolution, mapProjection) {
       return transformExtent(
         extent,
         mapProjection,
@@ -89994,6 +91230,461 @@
     reload() {
       return super.reload(this.selector.getSelection().length > 0);
     }
+  }
+
+  /**
+   * VectorEditor layer to edit GeoJSON lines & polygons
+   */
+
+
+  class VectorEditor extends VectorLayer {
+    constructor(opt) {
+      const options = {
+        geoJsonId: 'geojson',
+        format: new GeoJSON(),
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+        decimals: 5, //Output precision
+        tolerance: 7, // Px
+        // direction: false, // Add arrows to each line segment to show the direction
+        // canMerge: false, // Merge lines having a common end
+        // withPolys: false, // Can edit polygons
+        // withHoles: false, // Allow holes in polygons
+        // baseStyleOptions: {},
+        // selectedStyleOptions: {},
+
+        writeGeoJson: () => // writeGeoJson (features, lines, polys, options)
+          this.options.format.writeFeatures(
+            this.editedSource.getFeatures(),
+            this.options,
+          ),
+
+        ...opt,
+      };
+
+      // Read data in an html element
+      const geoJsonEl = document.getElementById(options.geoJsonId) ||
+        document.createElement('textarea'),
+        geoJson = geoJsonEl.value.trim() ||
+        geoJsonEl.innerHTML.trim() ||
+        '{"type":"FeatureCollection","features":[]}';
+
+      // The editor source
+      const editedSource = new VectorSource({
+        features: options.format.readFeatures(geoJson, options),
+        wrapX: false,
+
+        ...options,
+      });
+
+      // The editor layer
+      super({
+        source: editedSource,
+        zIndex: 400, // Editor & cursor above the features
+        style: new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 2,
+          }),
+          fill: new Fill({
+            color: 'rgba(0,0,255,0.2)',
+          }),
+
+          ...options.baseStyleOptions,
+        }),
+
+        ...options,
+      });
+
+      this.options = options;
+      this.geoJsonEl = geoJsonEl;
+      this.editedSource = editedSource;
+      this.snapSource = new VectorSource({});
+    } // End constructor
+
+    setMapInternal(map) {
+      super.setMapInternal(map);
+      this.map = map;
+
+      // Interactions
+      this.selectInteraction = new Select({
+        hitTolerance: this.options.tolerance, // Default is 0
+        toggleCondition: never, // No deselection on shift click
+        filter: (f, layer) => layer && (layer.getSource() === this.editedSource),
+        style: (f, r) => this.selectStyles(f, r),
+      });
+
+      this.modifyInteraction = new Modify({
+        features: this.selectInteraction.getFeatures(),
+        pixelTolerance: this.options.tolerance, // Default is 10
+      });
+
+      if (this.options.withPolys)
+        this.drawPolyInteraction = new Draw({ // Draw line
+          type: 'Polygon',
+          source: this.editedSource,
+          traceSource: this.snapSource,
+          trace: true,
+          stopClick: true, // Avoid zoom when finish drawing by doubleclick
+          style: f => this.selectStyles(f),
+        });
+
+      this.drawLineInteraction = new Draw({ // Draw line
+        type: 'LineString',
+        source: this.editedSource,
+        traceSource: this.snapSource,
+        trace: true,
+        stopClick: true, // Avoid zoom when finish drawing by doubleclick
+        style: f => this.selectStyles(f),
+      });
+
+      this.snapInteraction = new Snap({
+        source: this.editedSource,
+        pixelTolerance: this.options.tolerance, // Default is 10
+      });
+
+      // Buttons
+      const buttonsName = this.options.withPolys ? ['modify', 'drawPoly', 'drawLine'] : ['modify', 'drawLine'];
+
+      buttonsName.forEach(intName => {
+        const buttonEl = document.createElement('button'),
+          element = document.createElement('div');
+
+        buttonEl.setAttribute('type', 'button');
+        element.className = 'ol-unselectable ol-control edit-button edit-button-' + intName;
+        element.appendChild(buttonEl);
+
+        const helpEl = document.getElementById('edit-help-' + intName);
+        if (helpEl)
+          element.appendChild(helpEl);
+
+        buttonEl.addEventListener('click', () => this.restartInteractions(intName));
+
+        // Add the button to the map
+        map.addControl(new Control({
+          element: element,
+        }));
+      });
+
+      // Interactions listeners
+      this.selectInteraction.on('select', () => this.optimiseAndSave()); // Merge old separated segments
+
+      this.modifyInteraction.on('modifystart', evt => {
+        const oEvt = evt.mapBrowserEvent.originalEvent,
+          selectedFeature = this.selectInteraction.getFeatures().item(0),
+          coordinates = selectedFeature.getGeometry().getCoordinates();
+
+        // Shift + click : reverse line direction
+        if (shiftKeyOnly(evt.mapBrowserEvent) &&
+          typeof coordinates[0][0] === 'number') {
+          this.editedSource.removeFeature(selectedFeature);
+
+          this.editedSource.addFeature(new Feature({
+            geometry: new LineString(coordinates.reverse()),
+          }));
+        }
+
+        // Ctrl+Alt+click on segment : delete the line or poly
+        if (!oEvt.shiftKey && platformModifierKey(evt.mapBrowserEvent) && oEvt.altKey)
+          this.editedSource.removeFeature(selectedFeature);
+      });
+
+      this.editedSource.on('addfeature', () => {
+        this.optimiseAndSave();
+        this.restartInteractions('modify');
+      });
+
+      this.modifyInteraction.on('modifyend', () => this.optimiseAndSave());
+
+      // At init
+      this.map.once('loadend', () => {
+        this.coordinate = this.map.getView().getCenter();
+
+        this.optimiseAndSave();
+        this.restartInteractions('modify');
+      });
+
+      map.on('pointermove', evt => {
+        this.coordinate = evt.coordinate;
+
+        // Change pointer if a feature is hovered
+        const selectedFeatures = this.selectInteraction.getFeatures();
+
+        this.map.getTargetElement().classList.remove('edit-pointed');
+        if (selectedFeatures.getLength()) {
+          this.map.forEachFeatureAtPixel(
+            evt.pixel,
+            feature => {
+              if (feature !== selectedFeatures.item(0))
+                this.map.getTargetElement().classList.add('edit-pointed');
+            }, {
+              layerFilter: (layer) => layer.getSource() === this.editedSource, // Only the edited layer
+              hitTolerance: this.options.tolerance, // Default is 0
+            },
+          );
+        }
+      });
+
+      map.on('click', evt => {
+        if (platformModifierKeyOnly(evt))
+          this.optimiseAndSave(
+            this.snapInteraction.snapTo(
+              evt.pixel,
+              evt.coordinate,
+              map,
+            ).vertex
+          );
+      });
+    } // End setMapInternal
+
+    restartInteractions(intName) {
+      const interactionName = this.options.withPolys ? ['select', 'modify', 'drawPoly', 'drawLine', 'snap'] : ['select', 'modify', 'drawLine', 'snap'];
+
+      interactionName.forEach(i =>
+        this.map.removeInteraction(this[i + 'Interaction'])
+      );
+
+      if (intName === 'modify')
+        this.map.addInteraction(this.selectInteraction);
+
+      this.map.addInteraction(this[intName + 'Interaction']);
+      this.map.addInteraction(this.snapInteraction); // Must be added after the others
+
+      this.map.getTargetElement().firstChild.className = 'ol-viewport edit-view-' + intName;
+
+      // For snap & traceSource : register again the full list of features as addFeature manages already registered
+      this.snapSource.clear();
+      this.map.getLayers().forEach(layer => {
+        if (layer.getSource() !== this.editedSource &&
+          layer.getSource() &&
+          layer.getSource().getFeatures) // Vector layers only
+          layer.getSource().getFeatures().forEach(feature => {
+            this.snapInteraction.addFeature(feature);
+            this.snapSource.addFeature(feature);
+          });
+      });
+    }
+
+    optimiseAndSave(splitCord) {
+      if (!this.semaphore) { // Avoid recursion when adding the features
+        this.semaphore = true;
+
+        // Get optimized coords
+        const editedFeatures = this.editedSource.getFeatures(), // Get edited features
+          coordinates = editedFeatures.map(
+            f => this.flatFeatures(f.getGeometry()) // Get flat coordinates
+          ),
+          // Get all edited features as array of lines coordinates
+          lines = this.flatCoord(coordinates, splitCord),
+          polys = [];
+
+        // Merge lines having a common end
+        if (this.options.canMerge)
+          for (const a in lines) {
+            for (let b = 0; b < a; b++) { // Once each combination
+              if (lines[b]) {
+                const m = [a, b];
+
+                for (let i = 4; i; i--) // 4 times
+                  if (lines[m[0]] && lines[m[1]]) { // Test if the line has been removed
+                    // Shake lines end to explore all possibilities
+                    m.reverse();
+                    lines[m[0]].reverse();
+
+                    // Merge 2 lines having 2 ends in common
+                    if (this.compareCoords(lines[m[0]][lines[m[0]].length - 1], lines[m[1]][0], splitCord)) {
+                      lines[m[0]] = lines[m[0]].concat(lines[m[1]].slice(1)).reverse();
+                      delete lines[m[1]]; // Remove the line but don't renumber the array keys
+                    }
+                  }
+              }
+            }
+          }
+
+        // Make polygons with looped lines
+        if (this.options.withPolys)
+          for (const a in lines)
+            if (this.compareCoords(lines[a]) && // If this line is closed
+              !this.compareCoords(splitCord, lines[a][0])) { // Except if we just split it
+              polys.push([lines[a]]); // Add the polygon
+              delete lines[a]; // Forget the line
+            }
+
+        // Makes holes if a polygon is included in a biggest one
+        if (this.options.withHoles)
+          for (const p1 in polys) { // Explore all Polygons combinaison
+            const fs = new Polygon(polys[p1]);
+
+            for (const p2 in polys)
+              if (polys[p2] && p1 !== p2) {
+                let intersects = true;
+
+                for (const c in polys[p2][0])
+                  if (!fs.intersectsCoordinate(polys[p2][0][c]))
+                    intersects = false;
+
+                if (intersects) { // If one intersects a bigger
+                  polys[p1].push(polys[p2][0]); // Include the smaler in the bigger
+                  delete polys[p2]; // Forget the smaller
+                }
+              }
+          }
+
+        // Recreate features
+        this.editedSource.clear();
+        lines.forEach(l => {
+          this.editedSource.addFeature(new Feature({
+            geometry: new LineString(l),
+          }));
+        });
+        polys.forEach(p => {
+          this.editedSource.addFeature(new Feature({
+            geometry: new Polygon(p),
+          }));
+        });
+
+        // Save geometries in <EL> as geoJSON at every change
+        if (this.geoJsonEl)
+          this.geoJsonEl.value = this.options.writeGeoJson(
+            this.editedSource.getFeatures(),
+            lines.filter(Boolean),
+            polys.filter(Boolean),
+            this.options,
+          ).replaceAll(',"properties":null', '');
+
+        // Select the feature closest to the mouse position
+        //TODO do it also when loading a file
+        const selectedFeatures = this.selectInteraction.getFeatures();
+
+        if (this.editedSource.getFeatures().length) {
+          selectedFeatures.clear();
+          selectedFeatures.push(
+            this.editedSource.getClosestFeatureToCoordinate(this.coordinate)
+          );
+        }
+        delete this.semaphore;
+      }
+    } // End optimiseAndSave
+
+    flatFeatures(geom) {
+      if (geom.getType().match(/collection/iu)) // Recurse Collections
+        return geom.getGeometries().map(g => this.flatFeatures(g));
+      return geom.getCoordinates();
+    }
+
+    // Get all lines fragments (lines, polylines, polygons, multipolygons, hole polygons, ...) at the same level
+    flatCoord(coords, splitCord) {
+      const lines = [];
+
+      coords.forEach(segmentCoords => {
+        if (typeof segmentCoords[0] === 'object') {
+          if (typeof segmentCoords[0][0] === 'object') // Recurse for multi* or polys
+            lines.push(...this.flatCoord(segmentCoords, splitCord));
+          else if (typeof segmentCoords[0][0] === 'number') { // Lines
+            if (splitCord) {
+              lines.push([]);
+              segmentCoords.forEach(p => {
+                lines[lines.length - 1].push(p);
+                // Split segments if required
+                if (this.compareCoords(splitCord, p))
+                  lines.push([p]);
+              });
+            } else
+              lines.push(segmentCoords);
+          }
+        }
+      });
+
+      return lines;
+    }
+
+    compareCoords(a, b, splitCord) {
+      if (!a) return false;
+      if (this.compareCoords(splitCord, a)) return false; // Except if we just split it
+      if (!b) return this.compareCoords(a[0], a[a.length - 1]); // Compare start with end
+      return a[0] === b[0] && a[1] === b[1]; // 2 coordinates
+    }
+
+    // Style to color selected features with arrows, begin & end points
+    selectStyles(feature, resolution) {
+      const geometry = feature.getGeometry(),
+
+        selectedStyleOptions = {
+          // Lines
+          stroke: new Stroke({
+            color: 'red',
+            width: 2,
+          }),
+          // Polygons
+          fill: new Fill({
+            color: 'rgba(255,0,0,0.2)',
+          }),
+          // Begin & end marker
+          radius: 3,
+
+          ...this.options.selectedStyleOptions,
+        },
+
+        circle = new CircleStyle(selectedStyleOptions),
+
+        featureStyles = [
+          new Style({
+            // Line & Poly
+            ...selectedStyleOptions,
+            // Draw marker
+            image: circle,
+          }),
+        ];
+
+      // Circle at the ends of the line
+      if (geometry.getCoordinates) {
+        const coordinates = geometry.getCoordinates(),
+          circlesCoords = [coordinates[0]];
+
+        if (!this.options.direction)
+          circlesCoords.push(coordinates[coordinates.length - 1]);
+
+        circlesCoords.forEach(cc => {
+          featureStyles.push(
+            new Style({
+              geometry: new Point$1(cc),
+              image: circle,
+            }),
+          );
+        });
+      }
+
+      // Arrows to show the line direction
+      if (this.options.direction && geometry.forEachSegment && resolution) {
+        let last = null;
+
+        geometry.forEachSegment((start, end) => {
+          if (!last) last = start;
+
+          const dx = end[0] - last[0],
+            dy = end[1] - last[1];
+
+          if (Math.abs(dx) + Math.abs(dy) > resolution * 50) {
+            last = end;
+            featureStyles.push(
+              new Style({
+                geometry: new Point$1(end),
+                image: new Icon({
+                  rotateWithView: true,
+                  rotation: -Math.atan2(dy, dx),
+                  src: 'data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" width="10" height="10">\
+<path stroke="red" d="M0 0 4 3 M4 3 0 6" />\
+</svg>',
+                }),
+              }),
+            );
+          }
+        });
+      }
+
+      return featureStyles;
+    };
   }
 
   /**
@@ -90097,7 +91788,6 @@
         serverClusterMinResolution: 100, // (meters per pixel) resolution above which we ask clusters to the server
         nbMaxClusters: 108, // Number of clusters on the map display. Replace distance
         browserClusterMinResolution: 10, // (meters per pixel) resolution below which the browser no longer clusters
-
         // Any myol.layer.MyVectorLayer, ol.source.Vector options, ol.source.layer.Vector
 
         ...options,
@@ -90235,7 +91925,7 @@
         host: 'https://overpass-api.de',
         //host: 'https://lz4.overpass-api.de',
         //host: 'https://overpass.kumi.systems',
-        bbox: () => null, // No bbox at the end of the url
+        bboxParameter: () => null, // No bbox parameter at the end of the url
         format: new OSMXML(),
         attribution: '&copy;OpenStreetMap',
 
@@ -90319,12 +92009,12 @@
     query(extent, resolution, mapProjection) {
       const selections = this.selector.getSelection(),
         ex4326 = transformExtent(extent, mapProjection, 'EPSG:4326').map(c => c.toPrecision(6)),
-        bbox = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
+        bboxParameter = '(' + ex4326[1] + ',' + ex4326[0] + ',' + ex4326[3] + ',' + ex4326[2] + ');',
         args = [];
 
       for (let s = 0; s < selections.length; s++) // For each selected input checkbox
         selections[s].split('+') // Multiple choices separated by "+"
-        .forEach(sel => args.push('nwr' + sel + bbox)); // Ask for node, way & relation in the bbox
+        .forEach(sel => args.push('nwr' + sel + bboxParameter)); // Ask for node, way & relation in the bbox
 
       return {
         _path: '/api/interpreter',
@@ -90332,7 +92022,7 @@
       };
     }
 
-    bbox() {}
+    bboxParameter() {}
   }
 
   // Vectors layers examples
@@ -90367,42 +92057,50 @@
 
   var layer = {
     BackgroundLayer: BackgroundLayer,
-    VectorEditor: VectorEditor,
     Hover: Hover,
     Marker: Marker,
     MyVectorLayer: MyVectorLayer,
     Selector: Selector,
     tile: tileLayercollection,
+    VectorEditor: VectorEditor,
     vector: vectorLayerCollection,
   };
 
-  /**
-   * Display misc values
-   */
+  /* global map */
 
 
-  const VERSION = '1.1.2.dev 05/06/2025 17:37:05';
+  const VERSION = '1.1.2.dev 18/12/2025 10:21:17';
 
-  async function trace() {
-    const data = [
-      'Ol v' + VERSION$1,
-      'MyOl ' + VERSION,
-      'Geocoder 4.3.3-4',
-      'Proj4 2.17.0',
-      'language ' + navigator.language,
-    ];
+  async function traces(options) {
+    const debug = {
+        versions: true,
+        storages: true,
+        serviceWorkers: true,
+        ...options
+      },
+      data = [];
+
+    if (debug.versions)
+      data.push(...[
+        'Ol v' + VERSION$1,
+        'MyOl ' + VERSION,
+        'Geocoder 4.3.3-4',
+        'Proj4 2.20.2',
+        'language ' + navigator.language,
+      ]);
 
     // Storages in the subdomain
-    ['localStorage', 'sessionStorage'].forEach(s => {
-      if (window[s].length)
-        data.push(s + ':');
+    if (debug.storages)
+      ['localStorage', 'sessionStorage'].forEach(s => {
+        if (window[s].length)
+          data.push(s + ':');
 
-      Object.keys(window[s])
-        .forEach(k => data.push('  ' + k + ': ' + window[s].getItem(k)));
-    });
+        Object.keys(window[s])
+          .forEach(k => data.push('  ' + k + ': ' + window[s].getItem(k)));
+      });
 
     // Registered service workers in the scope
-    if ('serviceWorker' in navigator)
+    if (debug.serviceWorkers && 'serviceWorker' in navigator)
       await navigator.serviceWorker.getRegistrations().then(registrations => {
         if (registrations.length) {
           data.push('service-workers:');
@@ -90415,30 +92113,41 @@
 
     // Registered caches in the scope
     if (typeof caches === 'object')
-      await caches.keys().then(names => {
-        if (names.length) {
+      await caches.keys().then(async keys => {
+        if (keys.length) {
           data.push('caches:');
 
-          for (const name of names)
-            data.push('  ' + name);
+          for (const key of keys) {
+            // Cache name
+            data.push('  ' + key);
+
+            // File names
+            await caches
+              .open(key)
+              .then(cache => cache.keys())
+              .then(requests =>
+                requests.forEach(request =>
+                  data.push('  ' + request.url)
+                )
+              );
+          }
         }
       });
 
-    // Log all the traces
+    // Display all the traces
     console.info(data.join('\n'));
   }
 
-  /* global map */
   // Zoom & resolution
   function traceZoom() {
-    console.log(
+    console.info(
       'zoom ' + map.getView().getZoom().toFixed(2) + ', ' +
-      'res ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
+      'resolution ' + map.getView().getResolution().toPrecision(4) + ' m/pix'
     );
   }
 
   window.addEventListener('load', () => { // Wait for document load
-    if (typeof map === 'object' && map.once)
+    if (typeof map === 'object' && map.once && map.debug)
       map.once('precompose', () => { // Wait for view load
         traceZoom();
         map.getView().on('change:resolution', traceZoom);
@@ -90455,7 +92164,7 @@
     layer: layer,
     Selector: layer.Selector,
     stylesOptions: stylesOptions,
-    trace: trace,
+    traces: traces,
     VERSION: VERSION,
   };
 

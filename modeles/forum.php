@@ -25,7 +25,7 @@ function forum_submit_post ($args) {
 
   // On garde de coté l'information d'identification de l'utilisateur connecté
   $mem_user = $user;
-  
+
   if( $args['action'] != 'edit' ) // L'action d'édition d'un topic n'a rien à changer du poster_id ou du username, et si on le fait, les logs d'édition de phpBB n'indique plus qui a fait la modif
   {
     // On se fait passer pour l'auteur du commentaire à transférer si ce n'est pas déjà le même
@@ -34,16 +34,16 @@ function forum_submit_post ($args) {
       $user->data['user_id'] = $args['topic_poster'] = max (ANONYMOUS, $args['topic_poster']);
       $user->data['is_registered'] = false;
       $user->data['user_colour'] = ''; // On force la couleur de l'utilisateur dont on créer le topic à vide histoire que la couleur ne soit pas celle du modérateur connecté
-    
+
       if ($user->data['user_id'] !== ANONYMOUS) // s'il n'est pas anonyme, on récupère son username
       {
         $utilisateur=infos_utilisateur($args['topic_poster']);
-        $user->data['username']=$utilisateur->username;  
+        $user->data['username']=$utilisateur->username;
       }
     }
   }
-  
-  
+
+
   $data = [ // Données par défaut
     'forum_name' => '',
     'message' => '',
@@ -133,13 +133,13 @@ function messages_du_forum($conditions)
 {
   global $pdo; $messages_du_forum= array();
   $quels_ids="";
-  
+
   if (!empty($conditions->ids_forum))
     if (!verif_multiples_entiers($conditions->ids_forum))
       return erreur("Le paramètre donné pour les ids des forum dont on veut les messages n'est pas valide. Reçu : $conditions->ids_forum");
     else
       $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
-    
+
   if ( empty($conditions->ordre ))
     $conditions->ordre="date DESC";
 
@@ -149,7 +149,7 @@ function messages_du_forum($conditions)
       return erreur("Le paramètre de limite \$conditions->limite est mal formé (devrait être un entier positif), reçu : ".$conditions->limite);
     else
       $limite="\n\tLIMIT $conditions->limite";
-    
+
   // Il y avait aussi ça mais je ne sais pas pourquoi ? sly 02-11-2008
   //AND phpbb_topics.topic_first_post_id < phpbb_topics.topic_last_post_id
   // réponse :  pour qu'il y ait > 1 post. cad forum non vide. sinon last=first.
@@ -162,7 +162,7 @@ function messages_du_forum($conditions)
     phpbb3_topics.topic_title,
     max(phpbb3_posts.post_id) AS post_id
   FROM phpbb3_topics, phpbb3_posts
-      WHERE
+  WHERE
       phpbb3_posts.post_text!=''
   AND phpbb3_posts.post_visibility=1
   AND phpbb3_topics.topic_id = phpbb3_posts.topic_id
@@ -179,5 +179,4 @@ function messages_du_forum($conditions)
     $messages_du_forum[]=$message_du_forum;
   }
   return $messages_du_forum;
-
 }

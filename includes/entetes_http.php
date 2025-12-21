@@ -11,9 +11,8 @@ function headers_cors_par_default()
   }
 }
 
-function headers_cache_api()
+function headers_cache_api($secondes_de_cache = 60)
 {
-  $secondes_de_cache = 60;
   $ts = gmdate("D, d M Y H:i:s", time() + $secondes_de_cache) . " GMT";
   header("Pragma: cache");
   header("Expires: $ts");

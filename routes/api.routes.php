@@ -21,6 +21,9 @@ switch ($cible) {
     case 'bbox': case 'point': case 'massif':
         include($config_wri['chemin_controlleurs'].'api/points.php');
         break;
+    case 'commentaires':
+        include($config_wri['chemin_controlleurs'].'api/commentaires.php');
+        break;
     case 'contributions':
         include($config_wri['chemin_controlleurs'].'api/contributions.php');
         break;
@@ -36,7 +39,7 @@ switch ($cible) {
         
         break;
     default:
-        header('Location:'.$config_wri['sous_dossier_installation'].'api/doc/');
+        header('Location:'.'/api/doc/');
         break;
 }
 

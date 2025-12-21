@@ -1,4 +1,5 @@
-<?php // Modification/création de fiche point
+<?php
+// Modification/création de fiche point
 
 require_once ("bdd.php");
 require_once ("point.php");
@@ -16,10 +17,11 @@ $vue->champs->boutons = new stdClass; // Modifier, supprimer...
 $vue->champs->trinaires = new stdClass; // seulement les trinaires TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
 $vue->champs->entier_ou_sait_pas = new stdClass; // seulement les trinaires TRUE FALSE NULL, et seulement ceux qui ont un champs_equivalent.
 
+
 // 4 cas :
 // 1) On veut faire une modification, on ne s'arrêt que si le point n'est pas trouvé
 // ou si les droits sont insuffisants
-if ( !empty($_REQUEST["id_point"]) )  
+if ( !empty($_REQUEST["id_point"]) )
 {
   // Si c'est un modérateur, il peut voir la fiche même si elle est cachée ou si c'est un modèle
   if (est_moderateur())
@@ -30,7 +32,7 @@ if ( !empty($_REQUEST["id_point"]) )
   $point=infos_point($_REQUEST['id_point'],$meme_si_cache,True,$meme_si_modele);
 
   // Stop, le point n'existe pas (ou est caché et il ne faut pas dire que c'est le cas)
-  if (!empty($point->erreur)) 
+  if (!empty($point->erreur))
   {
     $vue->http_status_code = 404;
     $vue->type = "page_simple";
@@ -38,11 +40,16 @@ if ( !empty($_REQUEST["id_point"]) )
     $vue->contenu=$point->message;
     return "";
   }
+
   // Soit on est avec un modérateur global ou de cette fiche
   if ( est_autorise($point->id_createur) )
   {
-    // boutton supprimer uniquement pour les modérateurs globaux
-    if ( est_moderateur() )
+    /* boutton "supprimer" uniquement pour les modérateurs globaux
+       sly 09/2025 : A DÉBATTRE, Voulons nous interdire la suppression d'une fiche à son auteur ? je peux comprendre que dans le cas du gérant de gîte excédé par les commentaires peu glorieux, il puisse être tenté de supprimer la fiche ce que nous ne voulons peut-être pas, mais pour celui qui ajoute une fiche de cabane, constate après coup qu'il s'est trompé, il ne peut alors, sans l'aide de modérateurs, supprimer et recommencer ?
+       Du pour et du contre...
+       Ou alors ce serait plus subtile (au risque d'être difficile à comprendre comme ergonomie) mais une fiche pourrait n'être supprimable par son modérateur actuel uniquement si aucun commentaires autres que les siens ne sont présents. En gros, dès que quelqu'un participe à la fiche par un commentaire, celle-ci ne devient supprimable que des modérateurs globaux ?
+    */
+    if ( est_moderateur() and !$point->modele)
     {
       $bouton_suppr = new stdClass;
       $bouton_suppr->nom = "action";
@@ -50,7 +57,7 @@ if ( !empty($_REQUEST["id_point"]) )
       $bouton_suppr->valeur = "supprimer";
       $bouton_suppr->label = "Suppression de la fiche";
     }
-    
+
     //cosmétique
     $icone="&amp;iconecenter=ne_sait_pas";
     $action="Modification";
@@ -68,49 +75,51 @@ if ( !empty($_REQUEST["id_point"]) )
   }
 }
 // 2) on veut faire une création, on va rempli les champs avec ceux du modèle
-elseif ( !empty($_REQUEST["id_point_type"]))  
+elseif ( !empty($_REQUEST["id_point_type"]))
 {
-    $conditions = new stdClass;
-    $conditions->ids_types_point=$_REQUEST["id_point_type"];
-    $conditions->modele='uniquement';
-    $points_modele=infos_points($conditions);
-    if (count($points_modele)!=1)
-    {
-        print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
-        $point = new stdClass;
-    }
-    else
-        $point=reset($points_modele);
-    
-    // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
-    $point->longitude=6;
-    $point->latitude=47;
-    
-    // on force l'id du point à vide histoire de ne pas modifier le modèle
-    unset($point->id_point);
-    // et pareil pour le modérateur actuel du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
-    unset($point->id_createur);
-    
-    // cosmétique
-    $icone="&amp;iconecenter=".choix_icone($point);
-    $action="Ajout";
-    $vue->verbe="Ajouter";
-    $vue->titre="Ajout d'un point dans refuges.info";
+  $conditions = new stdClass;
+  $conditions->ids_types_point=$_REQUEST["id_point_type"];
+  $conditions->modele='uniquement';
+  $points_modele=infos_points($conditions);
+  if (count($points_modele)!=1)
+  {
+    print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
+    $point = new stdClass;
+  }
+  else
+    $point=reset($points_modele);
+
+  // on force les latitude à ce qui a été cliqué sur la carte (si existe, sinon vide)
+  $point->longitude=6;
+  $point->latitude=47;
+
+  // on force l'id du point à vide histoire de ne pas modifier le modèle
+  unset($point->id_point);
+  // et pareil pour le modérateur actuel du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
+  unset($point->id_createur);
+  // et on retire le flag "est un modèle" car on s'est servit du modèle, mais ce n'en est plus un
+  unset($point->modele);
+
+  // cosmétique
+  $icone="&amp;iconecenter=".choix_icone($point);
+  $action="Ajout";
+  $vue->verbe="Ajouter";
+  $vue->titre="Ajout d'un point dans refuges.info";
 
 }
 // 3) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
-{    
-    $vue->type="page_simple";
-    $vue->titre="Vous n'auriez pas dû arriver sur cette page de cette façon (formulaire précédent incomplet ?)";
-    return "";
+{
+  $vue->type="page_simple";
+  $vue->titre="Vous n'auriez pas dû arriver sur cette page de cette façon (formulaire précédent incomplet ?)";
+  return "";
 }
 
 /******** Formulaire de modification/création/suppression *****************/
 if (!empty($point->id_point))
 {
-    $vue->champs->invisibles->id_point = new stdClass;
-    $vue->champs->invisibles->id_point->valeur = $point->id_point;
+  $vue->champs->invisibles->id_point = new stdClass;
+  $vue->champs->invisibles->id_point->valeur = $point->id_point;
 }
 
 /******** Boutons répétés en haut et en bas FIXME devrait être dans $vue-> *****************/
@@ -125,29 +134,28 @@ $bouton_reset->type = "reset";
 $bouton_reset->valeur = "Recommencer";
 $bouton_reset->label = "Recommencer";
 
-// Gestion de l'ordre des boutons modifier/valider/supprimer 
+// Gestion de l'ordre des boutons modifier/valider/supprimer
 $vue->champs->boutons->valider=$bouton_valider;
 $vue->champs->boutons->reset=$bouton_reset;
 
 if (!empty($bouton_suppr))
-    $vue->champs->boutons->suppr=$bouton_suppr;
+  $vue->champs->boutons->suppr=$bouton_suppr;
 
 //3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( grotte, point d'eau, ... )
 if ( !empty($point->equivalent_proprio) )
-    $textes_area[$point->equivalent_proprio]="proprio";
+  $textes_area[$point->equivalent_proprio]="proprio";
 
 //ils ont en revanche tous un accès et un champ remarques
 $textes_area["accès"]="acces";
 $textes_area["remarques"]="remark";
 
-
 /******** Les champs libres *****************/
 foreach ($textes_area as $libelle => $nom_variable)
 {
-    $vue->champs->textareas->$nom_variable = new stdClass;
-    $vue->champs->textareas->$nom_variable->label=$libelle;
-    $vue->champs->textareas->$nom_variable->valeur=protege($point->$nom_variable);
+  $vue->champs->textareas->$nom_variable = new stdClass;
+  $vue->champs->textareas->$nom_variable->label=$libelle;
+  $vue->champs->textareas->$nom_variable->valeur=protege($point->$nom_variable);
 }
 
 /******** Les informations complémentaires (places, matelas, latrines, bois à proximité, etc.) *****************/
@@ -193,7 +201,7 @@ if ( !empty($point->equivalent_conditions_utilisation) )
     $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','fermeture' => $point->equivalent_conditions_utilisation);
   else
     $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => $point->equivalent_ouverture_contact_prealable);
-  
+
   $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }
 // ===========================================

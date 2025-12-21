@@ -14,7 +14,7 @@
     <?=$vue->commentaire->texte_affichage?>
   </p>
   <h4 style="clear:both;">Est :</h4>
-  <form method="post" action="<?=$config_wri['sous_dossier_installation']?>avis_internaute_commentaire/<?=$vue->commentaire->id_commentaire?>/">
+  <form method="post" action="/avis_internaute_commentaire/<?=$vue->commentaire->id_commentaire?>/">
   <p>
     <ul>
       <li><input type="radio" name="demande_correction" value="2" checked="checked">Plus d'actualité ou n'a rien a voir avec le point ou n'est pas factuel <a href="<?=$vue->lien_que_mettre?>">(Voir ce que l'on peut mettre ou ne pas mettre).</a></li>

@@ -1,14 +1,14 @@
 <div class="contenu">
   <h3><?=$vue->stat->nbrefuges?> refuges, <?=$vue->stat->nbcomm?> commentaires et <?=$vue->stat->nbphotos?> photos</h3>
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=points">Points</a> -
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=refuges">Refuges</a> -
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=points_d_eau">Points d'eau</a> -
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=grottes">Grottes</a> -
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=commentaires">Commentaires</a> -
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=forums">Forum</a> -
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?quoi=commentaires,points">Tout sauf forum</a> -
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/">Tout</a> - 
-  <a href="<?=$config_wri['sous_dossier_installation']?>formulaire_rss_et_nouvelles/?choix=nouvelles">Paramétrer par régions</a>
+  <a href="/nouvelles/?quoi=points">Points</a> -
+  <a href="/nouvelles/?quoi=refuges">Refuges</a> -
+  <a href="/nouvelles/?quoi=points_d_eau">Points d'eau</a> -
+  <a href="/nouvelles/?quoi=grottes">Grottes</a> -
+  <a href="/nouvelles/?quoi=commentaires">Commentaires</a> -
+  <a href="/nouvelles/?quoi=forums">Forum</a> -
+  <a href="/nouvelles/?quoi=commentaires,points">Tout sauf forum</a> -
+  <a href="/nouvelles/">Tout</a> - 
+  <a href="/formulaire_rss_et_nouvelles/?choix=nouvelles">Paramétrer par régions</a>
 
   <?=$vue->nouvelles_generales?>
 
@@ -34,5 +34,5 @@
     <?php } ?>
   </div>
 
-  <a href="<?=$config_wri['sous_dossier_installation']?>nouvelles/?nombre=<?=$vue->nombre?>&amp;quoi=<?=$vue->types_nouvelles?><?=$vue->ids_polygones ?? ''?>">(En voir 100 de plus...)</a>
+  <a href="/nouvelles/?nombre=<?=$vue->nombre?>&amp;quoi=<?=$vue->types_nouvelles?><?=$vue->ids_polygones ?? ''?>">(En voir 100 de plus...)</a>
 </div>

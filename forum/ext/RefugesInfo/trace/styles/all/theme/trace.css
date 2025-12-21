@@ -1,23 +1,23 @@
 .cp-menu {
-	display: none;
+  display: none;
 }
 
 .traces,
 .traces > a,
 .traces p,
 .traces label {
-	display: block;
-	margin: 4px 0;
-	font-size: 11px;
+  display: block;
+  margin: 4px 0;
+  font-size: 11px;
 }
 .traces .mcp-trace-title {
-	text-decoration: underline;
-	margin-bottom: 4px;
+  text-decoration: underline;
+  margin-bottom: 4px;
 }
 .traces button {
-	margin-left: 50px;
-	border: 1px solid;
-	padding: 5px;
-	border-radius: 3px;
-	font-weight: bold;
+  margin-left: 50px;
+  border: 1px solid;
+  padding: 5px;
+  border-radius: 3px;
+  font-weight: bold;
 }

@@ -1,7 +1,7 @@
 /* global ol, myol, jsVars */
 
-console.log('MyGPS version ' + jsVars.lastChangeDate);
-myol.trace();
+console.info('MyGPS version ' + jsVars.lastChangeDate);
+myol.traces();
 
 // Force uri to be compliant with PWA
 if (!location.pathname.match(/index/u) || // Force script name
@@ -9,7 +9,7 @@ if (!location.pathname.match(/index/u) || // Force script name
     location.hostname.match(/\./u) // Only for remote server (domain.extension) versus localhost
   )
 ) {
-  console.log('index.php reload');
+  console.info('index.php reload');
   location.replace(
     (location.hostname.match(/\./u) ? 'https://' : 'http://') +
     location.hostname +
@@ -20,7 +20,7 @@ if (!location.pathname.match(/index/u) || // Force script name
 
 if ("serviceWorker" in navigator)
   navigator.serviceWorker.register("service-worker.php")
-  .catch(error => console.log(error));
+  .catch(error => console.error(error));
 
 // Display the map
 const loadControl = new myol.control.Load(),
@@ -93,7 +93,7 @@ if (jsVars.gpxFiles.length) {
 
 // Ask user to reload the PWA when a new version is loaded
 navigator.serviceWorker.addEventListener('controllerchange', () => {
-  console.log('PWA controllerchange');
+  console.info('PWA controllerchange');
   map.addControl(
     new myol.control.Button({
       className: 'myol-button-upgrade',

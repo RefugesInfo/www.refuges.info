@@ -13,44 +13,37 @@ Si vous êtes en train d'écrire un contrôleur et une règle de routage, cette 
 
 /******** Ce bloc gère la détection automatique des chemins et où on peut trouver les différent dossiers du projet wri **********/
 // Il doit s'agir du nom du dossier dans lequel se trouve ce fichier config.php par rapport à la racine du projet wri, soit "includes" si personne ne le change
-$config_wri['includes_directory']=basename(__DIR__);
 
-// Ceci est le chemin d'accès physique au / du projet wri
-$config_wri['racine_projet']=str_replace($config_wri['includes_directory'],"",__DIR__);
+// Chemin d'accès physique au / du projet wri
+$config_wri['racine_projet']=str_replace(basename(__DIR__),"",__DIR__);
 
-// Ceci est le chemin relatif à la racine web d'accès au projet wri : / si on est à la racine ou /mon/installation/ par exemple. Doit finir par un "/".
-if (isset($_SERVER['DOCUMENT_ROOT']))
-  $config_wri['sous_dossier_installation']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config_wri['racine_projet']);
-else
-  $config_wri['sous_dossier_installation']='/'; // si on est appelé depuis la ligne de commande, $_SERVER['DOCUMENT_ROOT'] n'existe pas, on suppose "/" mais en vrai, on s'en fiche un peu car en ligne de commande aucun de ces chemins de devrait servir
-
-$config_wri['rep_web_photos_points']=$config_wri['sous_dossier_installation']."photos_points/";
+$config_wri['rep_web_photos_points']="/photos_points/";
 $config_wri['rep_photos_points']=$config_wri['racine_projet']."photos_points/";
-$config_wri['url_chemin_vues']=$config_wri['sous_dossier_installation']."vues/";
+$config_wri['url_chemin_vues']="/vues/";
 $config_wri['chemin_vues']=$config_wri['racine_projet']."vues/";
 $config_wri['chemin_modeles']=$config_wri['racine_projet']."modeles/";
 $config_wri['chemin_controlleurs']=$config_wri['racine_projet']."controlleurs/";
 $config_wri['chemin_routes']=$config_wri['racine_projet']."routes/";
 
-$config_wri['url_chemin_images']=$config_wri['sous_dossier_installation']."images/";
-$config_wri['url_chemin_icones']=$config_wri['sous_dossier_installation']."images/icones/";
+$config_wri['url_chemin_images']="/images/";
+$config_wri['url_chemin_icones']="/images/icones/";
 $config_wri['chemin_icones']=$config_wri['racine_projet']."images/icones/";
 
 //jmb 04/07 on continue avec des rep de moderation
 $config_wri['rep_forum']=$config_wri['racine_projet']."forum/";
 $config_wri['rep_moder_photos_backup']=$config_wri['racine_projet']."gestion/sauvegardes-photos/";
 $config_wri['rep_forum_photos']=$config_wri['racine_projet']."forum/photos-points/";
-$config_wri['rep_web_forum_photos']=$config_wri['sous_dossier_installation']."forum/photos-points/";
+$config_wri['rep_web_forum_photos']="/forum/photos-points/";
 
 // Lien direct vers le mode d'emploi
-$config_wri['base_wiki']=$config_wri['sous_dossier_installation']."wiki/";
+$config_wri['base_wiki']="/wiki/";
 
 // c'est le nom de la page du wiki qui explique la syntaxe bbcode
 $config_wri['bbcode_wiki_page']="syntaxe_bbcode";
 
 // On centralise ici tous les paramètres PhpBB qui sont figés
 // Des fois qu'on décide de re-bouger le forum, on ne le changera qu'ici
-$config_wri['lien_forum']=$config_wri['sous_dossier_installation']."forum/";
+$config_wri['lien_forum']="/forum/";
 
 // Liste des icône de base pour nos types de point de base, va être utilisé comme case à cocher à gauche de la carte
 $config_wri['correspondance_type_icone'] = [
@@ -83,7 +76,7 @@ $config_wri['forum_refuges']=4;
 
 // Paramètrage des cartes vignettes des fiches de points
 $config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/dist/';
-$config_wri['url_chemin_ol']=$config_wri['sous_dossier_installation'].'myol/dist/';
+$config_wri['url_chemin_ol']='/myol/dist/';
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique. Si cette variable n'est pas définie on utilise du vide.
 $config_wri['nom_hote'] = $_SERVER['HTTP_HOST'] ?? '';
@@ -173,11 +166,8 @@ $config_wri['defaut_max_nombre_point']=250;
 $config_wri['defaut_max_commentaires_recents']=10;
 $config_wri['defaut_max_ajouts_recents']=10;
 
-// nombre de points ou commentaires renvoyés par défaut sur la page des nouvelles si on en veut "plus"
-$config_wri['defaut_max_page_nouvelles']=150;
-
-// nombre de points ou commentaires renvoyés par défaut sur la page nouvelle
-$config_wri['defaut_nombre_nouvelles_page_nouvelles']=45;
+// nombre de lignes renvoyées par défaut sur la page nouvelle
+$config_wri['defaut_nombre_nouvelles_page_nouvelles']=100;
 
 // distance d'une cabane cachée à laquelle on ne peut pas créer d'autres cabanes
 $config_wri['defaut_max_distance_cabane_cachee']=100; // en mètres
@@ -188,7 +178,7 @@ $config_wri['defaut_max_distance_cabane_cachee']=100; // en mètres
 $config_wri['connexion_forum']=$config_wri['lien_forum']."ucp.php?mode=login";
 // lien vers le profil d'un utilisateur
 $config_wri['fiche_utilisateur']=$config_wri['lien_forum']."memberlist.php?mode=viewprofile&u=";
-$config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php?t=";
+$config_wri['forum_refuge']=$config_wri['lien_forum']."viewtopic.php";
 
 // l'id de catégories spéciales du forum (que l'on veut voir s'afficher sur la page des nouvelles)
 $config_wri['id_forum_vie_du_site']=1;
@@ -222,6 +212,7 @@ $config_wri['api_format_points'] = Array
 'csv' => "csv (tableurs)",
 
 'xml' => "xml Spécifique à notre base, exhaustif",
+'json' => "JSON",
 'geojson' => "GeoJSON"
 );
     
@@ -256,16 +247,7 @@ $config_wri['debug']=false; // cette option contrôle des sorties avec plus d'in
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
 // que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore 
 // il est volontairement placé "presque" à la fin pour que les variables ci-avant puissent par exemple être remplacées si on souhaite un autre comportement
-require_once($config_wri['racine_projet']."config_privee.php");
-
-// Repli si config_privee.php ne contient pas les données du serveur, on va les chercher dans /forum/config.php
-if (file_exists ($config_wri['racine_projet']."/forum/config.php") &&
-	(!isset ($config_wri['serveur_pgsql']) || !$config_wri['serveur_pgsql'] || $config_wri['serveur_pgsql']=="???")) {
-  require($config_wri['racine_projet']."/forum/config.php");
-  $config_wri['serveur_pgsql']=$dbhost;
-  $config_wri['utilisateur_pgsql']=$dbuser;
-  $config_wri['mot_de_passe_pgsql']=$dbpasswd;
-  $config_wri['base_pgsql']=$dbname;
-}
+// DOM 11/25 on force l'inclusion de config_privee car il y a des cas (forum) où il a déjà été appelé
+include($config_wri['racine_projet']."config_privee.php");
 
 /*** N'ajoutez rien *** après ce require_once("config_privee.php"); sauf si vous savez pourquoi, car ajouter après empêche de "surdéfinir" certaines variables du fichier privé à chaque instance ci avant mettez par contre tout ce que vous voulez avant le require_once("config_privee.php"); ***/

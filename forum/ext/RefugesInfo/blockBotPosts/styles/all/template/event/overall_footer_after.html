@@ -1,8 +1,8 @@
 <script>
-	document.querySelectorAll('form').forEach(formEl => {
-		if (formEl.getAttribute('method') == 'post')
-			formEl.insertAdjacentHTML('beforeend',
-				'<input type="hidden" name="sid" value="{SESSION_ID}" />'
-			);
-	});
+  document.querySelectorAll('form').forEach(formEl => {
+    if(formEl.getAttribute('method') == 'post')
+      formEl.insertAdjacentHTML('beforeend',
+        '<input type="hidden" name="sid" value="{SESSION_ID}" />'
+      );
+  });
 </script>

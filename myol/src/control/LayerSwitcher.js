@@ -2,13 +2,17 @@
  * LayerSwitcher control for both tiled & vectors layers
  */
 
-import Button from './Button';
-import BackgroundLayer from '../layer/BackgroundLayer';
-import './layerSwitcher.css';
-
 //BEST how do we do on touch terminal ? alt key to switch layers / transparency
 //BEST slider transparency doesn't work out of range (no BackgroundLayer)
 //BEST BUG Attribution must be set before LayerSwitcher
+
+import Button from './Button';
+import BackgroundLayer from '../layer/BackgroundLayer';
+import './layerSwitcher.css';
+import {
+  platformModifierKey
+} from 'ol/events/condition';
+
 class LayerSwitcher extends Button {
   constructor(options) {
     super({
@@ -24,7 +28,7 @@ class LayerSwitcher extends Button {
     // Filter null or hidden layers
     this.layers = {};
     for (const name in options.layers)
-      if (options.layers[name] && !options.layers[name].getProperties().hidden)
+      if (options.layers[name]) //TODO PURGE others && !options.layers[name].getProperties().hidden)
         this.layers[name] = options.layers[name];
 
     // Get baselayer from url hash (#baselayer=...) if any
@@ -47,7 +51,7 @@ class LayerSwitcher extends Button {
       this.subMenuEl.insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="baselayer" value="' + name + '">' + name + '</label>');
 
       // Make layers available for display
-      this.layers[name].setVisible(false); // Don't begin to get the tiles yet (Necessary for Bing)
+      //this.layers[name].setVisible(false); // Don't begin to get the tiles yet (Necessary for Bing)
       map.addLayer(this.layers[name]);
     }
     this.selectorEls = this.element.querySelectorAll('input[name="baselayer"]');
@@ -85,7 +89,9 @@ class LayerSwitcher extends Button {
 
   action(evt) {
     // Clean checks
-    if (evt && !evt.ctrlKey) {
+    if (evt && !platformModifierKey({
+        originalEvent: evt
+      })) {
       this.selectorEls.forEach(el => {
         el.checked = false;
       });
