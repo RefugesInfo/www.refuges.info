@@ -341,7 +341,7 @@ function infos_points($conditions)
 
   $query_points="
     SELECT points.*,
-      ST_AsGeoJSON(points.geom) AS geojson,
+      ST_AsGeoJSON(points.geom,5) AS geojson,
       type_precision_gps.*,
       point_type.*,COALESCE(phpbb3_users.username,points.nom_createur) as nom_createur,
       ST_X(points.geom) as longitude,ST_Y(points.geom) as latitude,
