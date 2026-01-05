@@ -62,7 +62,7 @@ if ($date_maintenant > $debut_automne and $date_maintenant < $debut_hiver) {
   --couleur_lien: #<?=$couleur_lien?>;
   --couleur_fond: #<?=$couleur_fond?>;
   --couleur_fond_titre: #<?=$couleur_lien?>;
-  --couleur_fond_amplifiee: #cef99c;
+  --couleur_fond_amplifiee: #ccc;
   --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
   --couleur_legende: #<?=$couleur_legende?>;
   --image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
