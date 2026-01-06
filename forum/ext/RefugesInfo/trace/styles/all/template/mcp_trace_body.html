@@ -1,5 +1,5 @@
 {% include 'mcp_header.html' %}
-<!-- INCLUDECSS @RefugesInfo_trace/trace.css -->
+<!-- INCLUDEJS @RefugesInfo_trace/trace.js -->
 
 <div class="traces">
   <!-- IF ID_POINT -->
@@ -9,70 +9,94 @@
   <!-- ELSEIF TRACE_ID -->
     <h4>Trace {TRACE_ID}</h4>
   <!-- ELSE -->
-    <a href="{U_MCP_ACTION}&ext_error=null">
+    <p><a href="{U_MCP_ACTION}&ext_error=null">
       {LIMIT} dernières contributions acceptées
-    </a>
-    <a href="{U_MCP_ACTION}&ext_error=!CleanTalk,!No%20soup&browser_operator=!serve">
-      {LIMIT} dernières contributions rejetées pour motif interne
-    </a>
-    <a href="{U_MCP_ACTION}&ext_error=CleanTalk&browser_operator=!serve">
-      {LIMIT} dernières contributions rejetées par CleanTalk (sauf bots)
-    </a>
-    <a href="{U_MCP_ACTION}&browser_operator=serve">
-      {LIMIT} dernières contributions rejetées (bots)
-    </a>
-    <a href="{U_MCP_ACTION}&browser_operator=!serve">
+    </a></p>
+    <p><a href="{U_MCP_ACTION}&ext_error=null&uri=edit&group_id=!201,!202&to_check=1">
+      éditions de posts par un utilisateur non vérifiées
+    </a></p>
+    <p><a href="{U_MCP_ACTION}&browser_operator=!serve">
       {LIMIT} dernières contributions (sauf bots)
-    </a>
-    <a href="{U_MCP_ACTION}&search=advanced">
-      Recherche avancée
-    </a>
+    </a></p>
+    <p><a href="{U_MCP_ACTION}">
+      {LIMIT} dernières contributions (sans filtre)
+    </a></p>
+    <p><a href="{U_MCP_ACTION}&ext_error=!CleanTalk,!No%20soup&browser_operator=!serve">
+      {LIMIT} dernières contributions rejetées pour motif interne
+    </a></p>
+    <p><a href="{U_MCP_ACTION}&ext_error=CleanTalk&browser_operator=!serve">
+      {LIMIT} dernières contributions rejetées par CleanTalk (sauf bots)
+    </a></p>
+    <p><a href="{U_MCP_ACTION}&browser_operator=serve&!AS209155">
+      {LIMIT} dernières contributions rejetées (bots sauf Onehostplanet)
+    </a></p>
+    <p><a href="{U_MCP_ACTION}&browser_operator=serve">
+      {LIMIT} dernières contributions rejetées (tous bots)
+    </a></p>
     <hr/>
-
-    <!-- IF SEARCH == "advanced" -->
-      <p class="mcp-trace-title">Sélection manuelle</p>
-      <form method="get" action="{U_MCP_ACTION}">
-        <div>Syntaxe : chaine (contient) , !chaine (ne contient pas) , null , !null</div>
-        <label>N° trace <input type="number" name="trace_id" value="{TRACE_ID}" /></label>
-        <label>Erreur inclue <input type="text" size="50" name="ext_error" value="{EXT_ERROR}" /></label>
-        <label>Fournisseur inclue <input type="text" name="asn" value="{ASN}" /></label>
-        <label>Host inclue <input type="text" name="host" value="{HOST}" /></label>
-        <label>
-          <input type="text" size="5" name="limit" value="{LIMIT}" /> traces,
-          en sautant <input type="text" size="5" name="offset" value="{OFFSET}" /> traces
-        </label>
-        <input type="hidden" name="i" value="{I}" />
-        <input type="hidden" name="search" value="advanced" />
-        <button type="submit" id="advanced_traces_search_submit">Filtrer</button>
-      </form>
-      <hr/>
-      <script>
-        // Submit while pressing enter
-        const atcssEl = document.getElementById('advanced_traces_search_submit');
-        if (atcssEl)
-          window.addEventListener('keypress', () => {
-            atcssEl.click();
-          });
-      </script>
-    <!-- ENDIF -->
 
     <h4>
       <!-- IF NOMBRE_TRACES -->
-        Historique de {NOMBRE_LIGNES} traces
-        sur {NOMBRE_TRACES}
-        <!-- IF OFFSET -->
-          à partir de la {OFFSET} ième
-        <!-- ENDIF -->
+        Historique de {NOMBRE_LIGNES} traces sur {NOMBRE_TRACES}
+        <!-- IF OFFSET -->à partir de la {OFFSET} ième<!-- ENDIF -->
       <!-- ELSE -->
         Pas de trace correspondant à ces critères
       <!-- ENDIF -->
+      <a href="{U_MCP_ACTION}&{NEXT}">{LIMIT} suivants</a>
     </h4>
-    <!-- IF WHERE -->
-      <p>{WHERE}</p><hr/>
-    <!-- ENDIF -->
+
+    <div id="edit-requete">
+      <p>{WHERE_SQL} <a title="Modifier la requête">&#9998;</a></p>
+      <form method="get" action="{U_MCP_ACTION}">
+        <br/>
+        <div>{REQUETE_SQL}</div>
+        <br/>
+        <table>
+          <tr>
+            <td></td>
+            <td>
+                <p>nombre (=), !nombre (#), caractères (contient), !caractères (ne contient pas),
+                  null (nul ou 0 ou ''), !null</p>
+                <p>On peut mettre plusieurs conditions séparées par des ,</p>
+            </td>
+          </tr>
+          <!-- BEGIN inputs_requete -->
+            <tr>
+              <td>{inputs_requete.NAME} &nbsp;</td>
+              <td>
+                <input type="text" name="{inputs_requete.NAME}" value="{inputs_requete.VALUE}">
+              </td>
+            </tr>
+          <!-- END inputs_requete -->
+          <tr>
+            <td></td>
+            <td>Offset: passer n lignes</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <input type="hidden" name="i" value="-RefugesInfo-trace-mcp-main_module">
+              <button type="submit" onclick="submitEdited(this)">Filtrer</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <hr/>
   <!-- ENDIF -->
 
-  {TRACES}
+  <!-- Tableau de résultats -->
+  <!-- EVENT mcp_post_additional_options -->
+
+  <!-- Tous le résultats -->
+    <!-- IF full_trace -->
+      <hr/>
+      <h4>Dump de l'enregistrement SQL</h4>
+    <!-- BEGIN full_trace -->
+      <p>{full_trace.NAME} = {full_trace.VALUE}</p>
+    <!-- END full_trace -->
+  <!-- ENDIF -->
+
 </div>
 
 {% include 'mcp_footer.html' %}

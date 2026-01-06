@@ -80,15 +80,22 @@ if (empty($point->erreur))
         // On tente d'ajouter le commentaire, qui peut retourner une erreur au besoin (point supprimé, erreur technique, ...)
         $vue->messages=modification_ajout_commentaire($commentaire);
 
-      // Traces
+      // Hook ext/RefugesInfo/trace pour enregistrer la trace
       $mode = 'Ajout commentaire';
+      $data = [
+        'username' => $commentaire->auteur_commentaire,
+        'id_point' => $commentaire->id_point,
+        'id_commentaire' => $commentaire->id_commentaire,
+        'title' => $point->nom,
+        'text' => $commentaire->texte,
+        'uri' => $_SERVER['REQUEST_URI'],
+        'appel' => $mode,
+      ];
       $vars = [
         'mode',
-        'point',
-        'commentaire',
+        'data',
       ];
-      // Hook ext/RefugesInfo/trace/listener.php log_request_context
-      extract($phpbb_dispatcher->trigger_event('refugesinfo.trace.log_request_context', compact($vars)));
+      extract($phpbb_dispatcher->trigger_event('refugesinfo.ajout_commentaire', compact($vars)));
 
       // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
       if (empty($vue->messages->erreur))

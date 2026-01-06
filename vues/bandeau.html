@@ -20,15 +20,20 @@
 	<div class="menu-haut">
 		<div class="menu-connexion menu-bouton">
 	<?php if (est_connecte() && $infos_identification->username) { ?>
-			<span>👨</span><span class="menu-large"><?=$infos_identification->username??''?> 
-			<?php if ( est_moderateur()) 
-                    if( $vue->demande_correction)
-                      {?>
-                  <span title="Commentaires à corriger">⭐</span>
-                      <?php } elseif ($vue->email_en_erreur) { ?>
-                  <span title="Emails en erreur">🌙</span>
-            <?php } ?>
-            </span>
+      <span>👨</span>
+      <span class="menu-large"><?=$infos_identification->username??''?> 
+        <?php if ( est_moderateur()) {
+          if( $vue->demande_correction) { ?>
+            <span title="Commentaires à corriger">⭐</span>
+          <?php }
+          if( $vue->email_en_erreur) { ?>
+            <span title="Emails en erreur">🌙</span>
+          <?php }
+          if( $vue->posts_edit) { ?>
+            <span  title="Posts édités à vérifier" class="edit-posts">&#9732;</span>
+          <?php }
+        } ?>
+      </span>
 			<ul>
 				<li>
 		<?php if (!est_moderateur()) { ?>
@@ -70,11 +75,21 @@
 						Historique des modifications
 					</a>
 				</li>
-				<li>
-					<a href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&ext_error=null">
-						Historique des traces
-					</a>
-				</li>
+        <?php if(isset($vue->posts_edit)) { ?>
+          <li>
+            <a href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&ext_error=null&uri=edit&group_id=!201,!202&to_check=1">
+              <?php if ($vue->posts_edit) { ?>
+                <span class="edit-posts">&#9732;</span>
+              <?php } ?>
+              édition de <?=$vue->posts_edit?> post<?=$vue->posts_edit>1?'s':''?> à traiter
+            </a>
+          </li>
+          <li>
+            <a href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&ext_error=null">
+              Historique des traces
+            </a>
+          </li>
+          <? } ?>
 				<li>
 					<a href="/gestion/historique_envoi_emails">
 						<?php if ($vue->email_en_erreur) {?>🌙 <?php } ?>Emails en erreur
@@ -189,7 +204,6 @@
 						<input type="text" name="nom" class="input-text" placeholder="Recherche de point">
 						<input type="hidden" name="limite" value="40">
 						<input type="hidden" name="avec_point_osm" value="1">
-						<input type="hidden" name="marqueur_stats_utilisation_recherche_haute" value="1">
 						<input type="hidden" name="marqueur_stats_utilisation_recherche_haute" value="1">
 						<button type="submit" title="Lancer la recherche" style="border:none">
 							🔍

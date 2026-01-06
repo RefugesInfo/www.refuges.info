@@ -1,23 +1,54 @@
-.cp-menu {
+.cp-main {
+  width: 100%;
+}
+
+.cp-menu,
+#edit-requete.edit-form > p,
+#edit-requete:not(.edit-form) > form {
   display: none;
 }
 
-.traces,
-.traces > a,
-.traces p,
-.traces label {
-  display: block;
-  margin: 4px 0;
-  font-size: 11px;
+.traces p {
+  margin: 0;
 }
-.traces .mcp-trace-title {
-  text-decoration: underline;
-  margin-bottom: 4px;
+
+.traces > p > a:first-letter {
+  text-transform: capitalize;
 }
+
+.traces #edit-requete input {
+  width: 30em !important;
+}
+
+.traces #edit-requete a {
+  cursor: pointer;
+}
+
+.report-trace td:last-child div {
+  max-width: 130px;
+}
+
+.report-trace td:nth-child(2) div,
+.report-trace td:last-child div {
+  max-height: 130px;
+  overflow-y: auto;
+}
+
+.report-trace td {
+  vertical-align: top;
+  border: 1px solid grey;
+  padding: 3px;
+}
+
 .traces button {
-  margin-left: 50px;
-  border: 1px solid;
+  border: 1px solid var(--couleur_texte);
   padding: 5px;
   border-radius: 3px;
   font-weight: bold;
+}
+
+.check-trace {
+  border-radius: 5px;
+  background: red;
+  color: var(--couleur_texte) !important;
 }

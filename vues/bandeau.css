@@ -103,7 +103,8 @@
     cursor: pointer;
   }
 
-  .bandeau_info span {
+  .bandeau_info span,
+  .menu-haut .edit-posts {
     color: orange;
   }
 

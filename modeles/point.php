@@ -726,6 +726,18 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
+
+    // Hook ext/RefugesInfo/trace pour metre à jour la trace du forum avec id_point
+    global $phpbb_dispatcher;
+    $mode = 'Ajout point';
+    $data = [
+      'id_point' => $point->id_point,
+      'topic_id' => $r['topic_id'],
+    ];
+    $vars = [
+      'data',
+    ];
+    extract($phpbb_dispatcher->trigger_event('refugesinfo.ajout_point', compact($vars)));
   }
 
   // on retourne l'id du point (surtout utile si création)
