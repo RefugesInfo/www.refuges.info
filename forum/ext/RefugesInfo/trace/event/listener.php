@@ -61,6 +61,7 @@ class listener implements EventSubscriberInterface
       'user_id' => 'number',
       'user_name' => 'text',
       'asn_id' => 'text',
+      'ip' => 'text',
       'uri' => 'text', // Pour profile user
       'to_check' => 'number',
       'topic_id' => 'number',
