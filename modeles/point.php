@@ -647,13 +647,13 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   // si aucune altitude, on la suppose à 0
   if (!isset($point->altitude))
     $point->altitude=0;
-  //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
-  if (!is_numeric($point->altitude))
-    return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
+  //On a bien reçu une altitude, mais ça n'est pas un entier positif (les cabanes sous marines ne sont pas encore acceptées !)
+  if (!est_entier_positif($point->altitude))
+    return erreur("L'altitude du point doit être un nombre entier positif, reçu : $point->altitude");
 
   //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
-  if ($point->altitude>8848 or $point->altitude<0)
-    return erreur($point->altitude."m comme altitude du point, vraiment ?");
+  if ($point->altitude>8848)
+    return erreur($point->altitude."m comme altitude du point, c'est plus que l'Everest, vous avez dû vous tromper ?");
 
   if (!empty($point->geojson))
     $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
