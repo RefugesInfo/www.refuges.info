@@ -1,5 +1,5 @@
 https://github.com/maxmind/GeoIP2-php/releases
-Download geoip2.phar
+Download geoip2.phar V3.3.0
 
 https://www.maxmind.com/en/accounts/1147244/geoip/downloads
 (create a free account)
