@@ -375,21 +375,24 @@ function bbcode2markdown($texte)
     return $markdown;
 }
 
-/* ucfirst( ) does not work well with UTF-8 this is it's multibyte replacement */
-function mb_ucfirst($str, $encoding = "UTF-8", $lower_str_end = false)
-{
-      $first_letter = mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding);
-      $str_end = "";
-      if ($lower_str_end) {
-  $str_end = mb_strtolower(mb_substr($str, 1, mb_strlen($str, $encoding), $encoding), $encoding);
-      }
-      else {
-  $str_end = mb_substr($str, 1, mb_strlen($str, $encoding), $encoding);
-      }
-      $str = $first_letter . $str_end;
-      return $str;
+/* ucfirst( ) ne fonctionne pas avec UTF-8, voici une version qui fonctionne en UTF-8
+ Depuis php 8.4, cette fonction existe nativement (le même nom !) alors je ne la déinie que si elle n'existe pas, afin que cela puisse marcher sur des versions antérieurs de php
+*/
+if (!function_exists('mb_ucfirst')) {
+  function mb_ucfirst($str, $encoding = "UTF-8", $lower_str_end = false)
+  {
+        $first_letter = mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding);
+        $str_end = "";
+        if ($lower_str_end) {
+    $str_end = mb_strtolower(mb_substr($str, 1, mb_strlen($str, $encoding), $encoding), $encoding);
+        }
+        else {
+    $str_end = mb_substr($str, 1, mb_strlen($str, $encoding), $encoding);
+        }
+        $str = $first_letter . $str_end;
+        return $str;
+  }
 }
-
 /* Purge les balises et autres dans le forum phpbb3.post_text */
 function purge_phpbb_post_text($s)
 {
