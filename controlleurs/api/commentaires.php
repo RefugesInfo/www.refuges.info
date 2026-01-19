@@ -25,6 +25,7 @@ $commentaires_point = infos_commentaires ($conditions_commentaires);
 
 foreach ($commentaires_point as $cp) {
   $com = [];
+  $com['id_point'] = $cp->id_point;
   $com['id_commentaire'] = $cp->id_commentaire;
   $com['date_commentaire'] = $cp->date;
   $com['texte_commentaire'] = $cp->texte;

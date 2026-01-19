@@ -26,7 +26,6 @@ $req->massif = $_REQUEST['massif'] ?? '';
 $req->id = $_REQUEST['id'] ?? '';
 $req->format = $_REQUEST['format'] ?? '';
 $req->detail = $_REQUEST['detail'] ?? '';
-$req->commentaires = $_REQUEST['commentaires'] ?? '';
 $req->format_texte = $_REQUEST['format_texte'] ?? '';
 $req->nb_points = $_REQUEST['nb_points'] ?? '';
 $req->cluster = $_REQUEST['cluster'] ?? '';
