@@ -56,6 +56,7 @@ class release_2_0_1 extends \phpbb\db\migration\migration
           'trace_id' => ['trace_id'],
           'ext_error' => ['ext_error'],
           'to_check' => ['to_check'],
+          'uri' => ['uri'],
 
           'topic_id' => ['topic_id'],
           'post_id' => ['post_id'],
