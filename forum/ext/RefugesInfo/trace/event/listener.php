@@ -503,17 +503,26 @@ class listener implements EventSubscriberInterface
 
     foreach($this->argument_names as $name => $type)
       if(isset($args[$name]))
-        foreach(explode(',', $args[$name]) as $k => $v) {
-          $vs = array_reverse(explode('!', $v ?? '')); // Separate the ! at the beginning
-          $requ = isset($vs[1]) ? ' != ' : ' = ';
-          $rnot = isset($vs[1]) ? ' NOT' : '';
+        foreach(explode('.', $args[$name]) as $v) {
+          $conditions_ou = [];
 
-          if($type === 'number')
-            $conditions[] = $name.$requ.intval($vs[0]);
-          elseif($vs[0] === 'null')
-            $conditions[] = "$name IS$rnot NULL";
+          foreach(explode('|', $v) as $k => $vv) {
+            $vs = array_reverse(explode('!', $vv ?? '')); // Separate the ! at the beginning
+            $requ = isset($vs[1]) ? ' != ' : ' = ';
+            $rnot = isset($vs[1]) ? ' NOT' : '';
+
+            if($type === 'number')
+              $conditions_ou[] = $name.$requ.intval($vs[0]);
+            elseif($vs[0] === 'null')
+              $conditions_ou[] = "$name IS$rnot NULL";
+            else
+              $conditions_ou[] = "$name$rnot LIKE '%{$vs[0]}%'";
+          }
+
+          if(sizeof($conditions_ou) < 2)
+            $conditions[] = $conditions_ou[0];
           else
-            $conditions[] = "$name$rnot LIKE '%{$vs[0]}%'";
+            $conditions[] = '('.implode(' OR ', $conditions_ou).')';
         }
 
     return $conditions ? ' WHERE '.implode(' AND ', $conditions) : '';
