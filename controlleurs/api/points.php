@@ -240,9 +240,31 @@ foreach ($points_bruts as $i=>$point) {
       $points->$i->article['demonstratif'] = $point->article_demonstratif;
       $points->$i->article['defini'] = $point->article_defini;
       $points->$i->article['partitif'] = $point->article_partitif_point_type;
+      $points->$i->info_comp['site_officiel']['nom'] = $point->equivalent_site_officiel;
+      $points->$i->info_comp['site_officiel']['url'] = $point->site_officiel;
+      $points->$i->info_comp['site_officiel']['valeur'] = $point->site_officiel;
+      $points->$i->info_comp['manque_un_mur']['nom'] = $point->equivalent_manque_un_mur;
+      $points->$i->info_comp['manque_un_mur']['valeur'] = $point->manque_un_mur;
+      $points->$i->info_comp['cheminee']['nom'] = $point->equivalent_cheminee;
+      $points->$i->info_comp['cheminee']['valeur'] = $point->cheminee;
+      $points->$i->info_comp['poele']['nom'] = $point->equivalent_poele;
+      $points->$i->info_comp['poele']['valeur'] = $point->poele;
+      $points->$i->info_comp['couvertures']['nom'] = $point->equivalent_couvertures;
+      $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
+      $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
+      $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
 
-      // Dom 01/2026 : simplification à partir des infos données par le modèle point
-      $points->$i->info_comp = $point->info_comp;
+      if($point->places_matelas == 0)
+          $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
+      else
+          $points->$i->info_comp['places_matelas']['valeur'] = $point->places_matelas;
+
+      $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
+      $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
+      $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
+      $points->$i->info_comp['bois']['valeur'] = $point->bois_a_proximite;
+      $points->$i->info_comp['eau']['nom'] = $point->equivalent_eau_a_proximite;
+      $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
 
       /*
       sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point,

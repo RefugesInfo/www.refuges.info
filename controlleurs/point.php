@@ -118,8 +118,42 @@ else // le point est valide
   // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
   $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points'],array('site_officiel'));
 
-  // Dom 01/2026 : transféré dans modeles/point.php
-  $vue->info_comp = $point->info_comp;
+  $vue->infos_complementaires = array ();
+  foreach ($champs as $champ)
+  {
+    $champ_equivalent = "equivalent_$champ";
+    // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour une grotte)
+    if ($point->$champ_equivalent!="")
+    {
+      switch ($champ)
+      {
+        case 'site_officiel':
+          if ($point->$champ!="")
+            $val=array('valeur'=> '', 'lien' => $vue->point->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
+          break;
+
+        case 'places_matelas' : case 'places' :
+          if($point->$champ === NULL )
+            $val=array('valeur'=> '<strong>Inconnu</strong>');
+          else
+            $val=array('valeur'=> $point->$champ);
+          break;
+
+        default: // Pour tous les boolééns restant
+          if($point->$champ === TRUE)
+            $val = array('valeur'=> 'Oui');
+          if($point->$champ === FALSE)
+            $val = array('valeur'=> 'Non');
+          if($point->$champ === NULL)
+            $val = array('valeur'=> '<strong>Inconnu</strong>');
+          break;
+      }
+
+      if (isset($val))
+        $vue->infos_complementaires[$point->$champ_equivalent]=$val;
+    }
+    unset($val);
+  }
 
   /*********** Préparation des infos des commentaires ***/
   $vue->commentaires=array();
