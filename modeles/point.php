@@ -390,6 +390,45 @@ function infos_points($conditions)
         $point_final->polygones[]=$polygone;
       }
 
+      // Dom 01/2026 : simplifié et transféré depuis controlleurs/point.php pour pouvoir être utilisé dans l'API
+      // Formatage des informations complèmentaires
+      $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points'],array('site_officiel'));
+      $point_final->info_comp = array ();
+      foreach ($champs as $champ)
+      {
+        $champ_equivalent = "equivalent_$champ";
+        // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour une grotte)
+        if ($point->$champ_equivalent!="")
+        {
+          switch ($champ)
+          {
+            case 'site_officiel':
+              if ($point->$champ!="")
+                $val=  $point->$champ;
+              break;
+
+            case 'places_matelas' : case 'places' :
+              if($point->$champ === NULL )
+                $val='<strong>Inconnu</strong>';
+              else
+                $val=$point->$champ;
+              break;
+
+            default: // Pour tous les boolééns restant
+              if($point->$champ === TRUE)
+                $val = 'Oui';
+              if($point->$champ === FALSE)
+                $val = 'Non';
+              if($point->$champ === NULL)
+                $val = '<strong>Inconnu</strong>';
+              break;
+          }
+
+          if (isset($val))
+            $point_final->info_comp[$point->$champ_equivalent]=$val;
+        }
+        unset($val);
+      }
 
       //  phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
       if (!empty($point->id_createur) and !empty($point->nom_createur) )
