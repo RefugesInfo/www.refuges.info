@@ -186,13 +186,13 @@ class listener implements EventSubscriberInterface
       // Infos enregistrées à la création du user
       // Sont gardées dans la table au cas où on supprimerait le user
       'user_id' => intval($data['user_id'] ?? 0),
-      'user_name' => $data['username'] ?? $data['nom_createur'] ?? '',
+      'user_name' => $user->data['username'] ?? $data['nom_createur'] ?? '',
       'user_email' => $data['user_email'] ?? $data['email'] ?? '',
       'user_lang' => $data['user_lang'] ?? $data['lang'] ?? '',
       'user_timezone' => $data['user_timezone'] ?? $data['tz'] ?? '',
       'ip_enregistrement' => $data['user_ip'] ?? '',
       'host_enregistrement' => gethostbyaddr($data['user_ip'] ?? $data['session_ip'] ?? $_SERVER['REMOTE_ADDR'] ?? ''),
-      'creator_name' => ($data['poster_id'] ?? 0) > 1 ? $data['username'] : 'Anonymous',
+      'creator_name' => ($data['poster_id'] ?? 0) > 1 ? $event['username'] : 'Anonymous',
       'creator_id' => intval($data['poster_id'] ?? 0),
 
       // ASN / FAI
@@ -335,7 +335,7 @@ class listener implements EventSubscriberInterface
     $commentaire = empty($row['id_commentaire']) ? 'commentaire' :
       '<a href="/point/'.($row['id_point']??0).'#C'.$row['id_commentaire'].'">commentaire</a>';
     $post = empty($row['post_id']) ? 'post' :
-      '<a href="'.$this->forum_root.'viewtopic.php?p='.$row['post_id'].'#'.$row['post_id'].'">post</a>';
+      '<a href="'.$this->forum_root.'viewtopic.php?p='.$row['post_id'].'#p'.$row['post_id'].'">post</a>';
     if(!empty($row['trace_id_point']))
       $post = "$point et son premier $post";
 
