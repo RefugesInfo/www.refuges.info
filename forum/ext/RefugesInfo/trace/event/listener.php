@@ -114,7 +114,7 @@ class listener implements EventSubscriberInterface
     $geodata_city = $reader_city->city($ip);
 
     // Except when load the registration page
-    if($eventName === 'core.ucp_register_modify_template_data' && is_empty($_POST['new_password']))
+    if($eventName === 'core.ucp_register_modify_template_data' && empty($_POST['new_password']))
       return;
 
     // Exclusion de certains ASN
