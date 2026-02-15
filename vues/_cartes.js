@@ -18,7 +18,7 @@ function externTilesLayers(mapKeys, restreint) {
       source: new ol.source.OSM({
         url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
         maxZoom: 18,
-        attributions: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://wiki.openstreetmap.org/wiki/OpenHikingMap#Map_Legend">Légende</a>',
+        attributions: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://openmaps.fr/map-legend/openhikingmap-legend.html">Légende</a>',
       }),
     }),
     'OpenStreetMap': new ol.layer.Tile({
@@ -33,7 +33,7 @@ function externTilesLayers(mapKeys, restreint) {
       source: new ol.source.OSM({
         url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
         maxZoom: 18,
-        attributions: '<a href="https://github.com/sletuffe/OpenTopoMap">&copy; OTM-R</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://openmaps.fr/otm/legend.html">Légende</a>',
+        attributions: '<a href="https://github.com/sletuffe/OpenTopoMap">&copy; OTM-R</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://openmaps.fr/map-legend/opentopomap-legend.html">Légende</a>',
       }),
     }),
     'Outdoors': new ol.layer.Tile({
