@@ -52,6 +52,9 @@ if(!in_array($req->format_texte,$val->format_texte)) {
     case 'point':
       $req->format_texte = "bbcode";
       break;
+    case 'contributions':
+      $req->format_texte = "rss";
+      break;
     default:
       $req->format_texte = "texte";
       break;
@@ -72,6 +75,9 @@ if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
       break;
   }
 }
+
+if(!array_key_exists($req->detail,$config_wri['api_format_detail']))
+  $req->detail = "simple";
 
 // On vérifie que les types de points sont ok, sinon on met all comme valeur
 if($req->page!="point") {
@@ -173,7 +179,7 @@ foreach ($points_bruts as $i=>$point) {
   else
   {
     // les cabanes cachées ne sont pas exportées. Les coordonnées étant volontairement stockées fausses, les sortir ne fera que créer de la confusion
-    if($point->id_type_precision_gps == $config_wri['id_coordonees_gps_fausses'])
+    if(($point->id_type_precision_gps??'') == $config_wri['id_coordonees_gps_fausses'])
       break;
 
     $points->$i = new stdClass();
@@ -181,8 +187,8 @@ foreach ($points_bruts as $i=>$point) {
     $points->$i->nom = mb_ucfirst($point->nom);
     $points->$i->type['id'] = $point->id_point_type;
 
-    // DOM 04/01/26 ajout du paramètre detail=minimal pour la carte des points
-    if ($req->format!="geojson" or $req->detail!="minimal")
+    // DOM 04/01/26 ajout du paramètre detail=icones pour la carte des points
+    if ($req->format!="geojson" or $req->detail!="icones")
     {
       switch ($point->conditions_utilisation)
       {
@@ -272,10 +278,10 @@ foreach ($points_bruts as $i=>$point) {
       */
       $description="";
 
-      if ($point->equivalent_places!="" and !empty($point->places))
+      if (!empty($point->equivalent_places) and !empty($point->places))
         $description=$point->equivalent_places. ": ".$point->places."\n";
 
-      if ($point->equivalent_places_matelas!="" and !empty($point->places_matelas))
+      if (!empty($point->equivalent_places_matelas) and !empty($point->places_matelas))
         $description.=$point->equivalent_places_matelas.": ".$point->places_matelas."\n";
 
       $description.=$point->remark."\n";
