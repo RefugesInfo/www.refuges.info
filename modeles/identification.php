@@ -20,23 +20,23 @@ if (!defined('IN_PHPBB')) // Sauf dans le forum
 
   // Pour avoir accés aux variables globales $_SERVER, ...
   $request->enable_super_globals();
-}
 
-// Infos utilisateur
-$infos_identification = new stdClass;
-$infos_identification->user_id = $user->data['user_id'];
-$infos_identification->username = $user->data['username'];
-$infos_identification->session_id = $user->data['session_id'];
+  // Infos utilisateur
+  $infos_identification = new stdClass;
+  $infos_identification->user_id = $user->data['user_id'];
+  $infos_identification->username = $user->data['username'];
+  $infos_identification->session_id = $user->data['session_id'];
 
-// Tokens du formulaire de login
-// Nécessite : GENERAL -> CONFIGURATION DU SERVEUR -> Paramètres de sécurité
-// -> Lier les formulaires aux sessions des invités : Non
-if (!est_connecte()) {
-  $infos_identification->creation_time = time();
-  $infos_identification->login_form_token = sha1(
-    $infos_identification->creation_time .
-    $user->data['user_form_salt'] .
-    'login');
+  // Tokens du formulaire de login
+  // Nécessite : GENERAL -> CONFIGURATION DU SERVEUR -> Paramètres de sécurité
+  // -> Lier les formulaires aux sessions des invités : Non
+  if (!est_connecte()) {
+    $infos_identification->creation_time = time();
+    $infos_identification->login_form_token = sha1(
+      $infos_identification->creation_time .
+      $user->data['user_form_salt'] .
+      'login');
+  }
 }
 
 function est_connecte()

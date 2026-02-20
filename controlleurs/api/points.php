@@ -26,7 +26,6 @@ $req->massif = $_REQUEST['massif'] ?? '';
 $req->id = $_REQUEST['id'] ?? '';
 $req->format = $_REQUEST['format'] ?? '';
 $req->detail = $_REQUEST['detail'] ?? '';
-$req->commentaires = $_REQUEST['commentaires'] ?? '';
 $req->format_texte = $_REQUEST['format_texte'] ?? '';
 $req->nb_points = $_REQUEST['nb_points'] ?? '';
 $req->cluster = $_REQUEST['cluster'] ?? '';
@@ -53,6 +52,9 @@ if(!in_array($req->format_texte,$val->format_texte)) {
     case 'point':
       $req->format_texte = "bbcode";
       break;
+    case 'contributions':
+      $req->format_texte = "rss";
+      break;
     default:
       $req->format_texte = "texte";
       break;
@@ -73,6 +75,9 @@ if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
       break;
   }
 }
+
+if(!array_key_exists($req->detail,$config_wri['api_format_detail']))
+  $req->detail = "simple";
 
 // On vérifie que les types de points sont ok, sinon on met all comme valeur
 if($req->page!="point") {
@@ -157,6 +162,9 @@ selon qu'elle est csv, gpx, etc.ça consome plus de RAM bien sûr et plus de CPU
 Seule exception à ça, le cas du format "geojson" :
 Car c'est celui utilisé par la carte et que le fichier est généré par un json_encode($point) qui deviendrait trop gros pour les usages en mobilité et débit pourri.
 */
+// FIXME sly 05/12/2019 : ça me rend fou cette recopie intégrale propriété par propriété. ça oblige à venir maintenir ça !
+// $points[]=$point; n'aurait il pas suffit ? et en plus le nom des propriété changent de peu et je passe mon temps à ne plus m'en rappeler !
+// certes ça fait un joli array final multi-niveau et un joli json_encode($point), mais franchement, le jeu en vaut-il la chandelle ?
 
 foreach ($points_bruts as $i=>$point) {
   if(isset ($point->nb_points)) // cas des clusters
@@ -171,34 +179,35 @@ foreach ($points_bruts as $i=>$point) {
   else
   {
     // les cabanes cachées ne sont pas exportées. Les coordonnées étant volontairement stockées fausses, les sortir ne fera que créer de la confusion
-    if($point->id_type_precision_gps == $config_wri['id_coordonees_gps_fausses'])
+    if(($point->id_type_precision_gps??'') == $config_wri['id_coordonees_gps_fausses'])
       break;
 
     $points->$i = new stdClass();
     $points->$i->id = $point->id_point;
-    $points->$i->lien = lien_point($point);
     $points->$i->nom = mb_ucfirst($point->nom);
-
-    switch ($point->conditions_utilisation)
-	{
-      case 'fermeture':
-      case 'detruit':
-        $points->$i->sym = "Crossing";
-        break;
-      case 'cle_a_recuperer': // TODO : trouver un symbole
-      default:
-        $points->$i->sym = $point->symbole;
-    }
-
-    // FIXME sly 05/12/2019 : ça me rend fou cette recopie intégrale propriété par propriété. ça oblige à venir maintenir ça !
-    // $points[]=$point; n'aurait il pas suffit ? et en plus le nom des propriété changent de peu et je passe mon temps à ne plus m'en rappeler !
-    // certes ça fait un joli array final multi-niveau et un joli json_encode($point), mais franchement, le jeu en vaut-il la chandelle ?
-    $points->$i->coord['alt'] = $point->altitude;
     $points->$i->type['id'] = $point->id_point_type;
-    $points->$i->type['valeur'] = $point->nom_type;
-    $points->$i->places['nom'] = $point->equivalent_places;
-    $points->$i->places['valeur'] = $point->places;
-    $points->$i->etat['valeur'] = texte_non_ouverte($point);
+
+    // DOM 04/01/26 ajout du paramètre detail=icones pour la carte des points
+    if ($req->format!="geojson" or $req->detail!="icones")
+    {
+      switch ($point->conditions_utilisation)
+      {
+        case 'fermeture':
+        case 'detruit':
+          $points->$i->sym = "Crossing";
+          break;
+        case 'cle_a_recuperer': // TODO : trouver un symbole
+        default:
+          $points->$i->sym = $point->symbole;
+      }
+
+      $points->$i->lien = lien_point($point);
+      $points->$i->coord['alt'] = $point->altitude;
+      $points->$i->type['valeur'] = $point->nom_type;
+      $points->$i->places['nom'] = $point->equivalent_places;
+      $points->$i->places['valeur'] = $point->places;
+      $points->$i->etat['valeur'] = texte_non_ouverte($point);
+    }
     $points->$i->type['icone'] = choix_icone($point);
     $points_geojson[$point->id_point]['geojson'] = $point->geojson;
     // FIXME: comme l'array $points est converti en intégralité en xml ou json, je planque dans une autre variable ce que je veux séparément
@@ -269,10 +278,10 @@ foreach ($points_bruts as $i=>$point) {
       */
       $description="";
 
-      if ($point->equivalent_places!="" and !empty($point->places))
+      if (!empty($point->equivalent_places) and !empty($point->places))
         $description=$point->equivalent_places. ": ".$point->places."\n";
 
-      if ($point->equivalent_places_matelas!="" and !empty($point->places_matelas))
+      if (!empty($point->equivalent_places_matelas) and !empty($point->places_matelas))
         $description.=$point->equivalent_places_matelas.": ".$point->places_matelas."\n";
 
       $description.=$point->remark."\n";

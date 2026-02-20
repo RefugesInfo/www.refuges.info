@@ -25,16 +25,17 @@ $commentaires_point = infos_commentaires ($conditions_commentaires);
 
 foreach ($commentaires_point as $cp) {
   $com = [];
+  $com['id_point'] = $cp->id_point;
   $com['id_commentaire'] = $cp->id_commentaire;
   $com['date_commentaire'] = $cp->date;
   $com['texte_commentaire'] = $cp->texte;
   $com['auteur_commentaire'] = $cp->auteur_commentaire;
   if(isset($cp->lien_photo['vignette']) )
-    $com['photo-vignette'] = $cp->lien_photo['vignette'];
+    $com['photo-vignette'] = preg_replace('/\?[0-9]*/', '', $cp->lien_photo['vignette']);
   if(isset($cp->lien_photo['reduite']) )
-    $com['photo-reduite'] = $cp->lien_photo['reduite'];
+    $com['photo-reduite'] = preg_replace('/\?[0-9]*/', '', $cp->lien_photo['reduite']);
   if(isset($cp->lien_photo['vignette']) )
-    $com['photo-originale'] = $cp->lien_photo['vignette'];
+    $com['photo-originale'] = preg_replace('/\?[0-9]*/', '', $cp->lien_photo['vignette']);
   $commentaires[] = $com;
 }
 

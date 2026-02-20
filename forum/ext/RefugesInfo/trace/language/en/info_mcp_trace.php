@@ -11,5 +11,5 @@ if(empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, [
   'MCP_TRACE' => 'Traces',
-  'MCP_TRACE_TITLE' => 'Historique des traces',
+  'MCP_TRACE_TITLE' => 'History of traces',
 ]);

@@ -341,7 +341,7 @@ function infos_points($conditions)
 
   $query_points="
     SELECT points.*,
-      ST_AsGeoJSON(points.geom) AS geojson,
+      ST_AsGeoJSON(points.geom,5) AS geojson,
       type_precision_gps.*,
       point_type.*,COALESCE(phpbb3_users.username,points.nom_createur) as nom_createur,
       ST_X(points.geom) as longitude,ST_Y(points.geom) as latitude,
@@ -647,13 +647,13 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   // si aucune altitude, on la suppose à 0
   if (!isset($point->altitude))
     $point->altitude=0;
-  //On a bien reçu une altitude, mais ça n'est pas une valeur numérique
-  if (!is_numeric($point->altitude))
-    return erreur("L'altitude du point doit être un nombre, reçu : $point->altitude");
+  //On a bien reçu une altitude, mais ça n'est pas un entier positif (les cabanes sous marines ne sont pas encore acceptées !)
+  if (!est_entier_positif($point->altitude))
+    return erreur("L'altitude du point doit être un nombre entier positif, reçu : $point->altitude");
 
   //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
-  if ($point->altitude>8848 or $point->altitude<0)
-    return erreur($point->altitude."m comme altitude du point, vraiment ?");
+  if ($point->altitude>8848)
+    return erreur($point->altitude."m comme altitude du point, c'est plus que l'Everest, vous avez dû vous tromper ?");
 
   if (!empty($point->geojson))
     $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON('$point->geojson'), 4326)";
@@ -726,6 +726,18 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
+
+    // Hook ext/RefugesInfo/trace pour metre à jour la trace du forum avec id_point
+    global $phpbb_dispatcher;
+    $mode = 'Ajout point';
+    $data = [
+      'id_point' => $point->id_point,
+      'topic_id' => $r['topic_id'],
+    ];
+    $vars = [
+      'data',
+    ];
+    extract($phpbb_dispatcher->trigger_event('refugesinfo.ajout_point', compact($vars)));
   }
 
   // on retourne l'id du point (surtout utile si création)

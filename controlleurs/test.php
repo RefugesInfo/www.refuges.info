@@ -22,14 +22,14 @@ require_once ("upload_max_filesize.php");
 //t("debut");
 //d($_GET);
 
-/*
+
 // exemples pour tester le modèle point
 $conditions = new stdClass;
 $conditions->ids_points=105;
 $point = infos_points($conditions);
 // d ( ) et la fonction de debug qui print les variables passée et une trace des appels
-d($point);
-*/
+print(json_encode($point));
+
 
 
 //d(lien_point($point,true));

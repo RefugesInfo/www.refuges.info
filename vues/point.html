@@ -36,8 +36,8 @@
             </a>&nbsp;
             <?php if (est_autorise($point->id_createur)) {?>
                 <a class="liens_avec_decoration"
-					href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&topic_id=<?=$vue->point->topic_id?>"
-                title="Trace de la création du point">
+                   href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_point=<?=$vue->point->id_point?>"
+                   title="Trace de la création du point">
                   i
               </a>
             <?php }?>
@@ -60,8 +60,8 @@
       <div id="container-carte-point">
         <div id="carte-point"></div>
         <div class="noprint texte-tout-petit">
-			<div class="hide-touch-screen">Ctrl+click: nouvel onglet ; Maj+click: nouvelle fenêtre</div>
-			<a href="/nav" title="'Shift + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">Grande carte</a>
+      <div class="hide-touch-screen">Ctrl+click: nouvel onglet ; Maj+click: nouvelle fenêtre</div>
+      <a href="/nav" title="'Shift + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">Grande carte</a>
         </div>
       </div>
     <?php }?>

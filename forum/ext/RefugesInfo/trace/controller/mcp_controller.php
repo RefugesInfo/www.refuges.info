@@ -20,6 +20,6 @@ class mcp_controller
 
     // Hook ext/RefugesInfo/trace/listener.php
     $vars = [];
-    extract($phpbb_dispatcher->trigger_event('refugesinfo.trace.display_traces', compact($vars)));
+    extract($phpbb_dispatcher->trigger_event('refugesinfo.display_traces', compact($vars)));
   }
 }

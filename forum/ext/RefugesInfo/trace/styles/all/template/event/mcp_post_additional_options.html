@@ -1,7 +1,17 @@
 <!-- INCLUDECSS @RefugesInfo_trace/trace.css -->
 
-<div class="traces">
-  <hr/>
-  {TRACES}
-  <hr/>
-</div>
+<!-- IF NOMBRE_LIGNES -->
+  <table class="report-trace">
+    <tr>
+      <!-- BEGIN output_requetes_raw -->
+        <tr>
+          <!-- BEGIN output_requetes_col -->
+            <td><div>
+              {output_requetes_raw.output_requetes_col.VALUE}
+            </div></td>
+          <!-- END output_requetes_col -->
+        </tr>
+      <!-- END output_requetes_raw -->
+    </tr>
+  </table>
+<!-- ENDIF -->
