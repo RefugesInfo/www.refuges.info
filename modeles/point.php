@@ -587,18 +587,6 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   if ( preg_match("/[\<\>\]\[\;]/",$point->nom) )
     return erreur("Le nom contient un des caractères non autorisé suivant : [ ] < > ;");
 
-  if( isset($point->site_officiel) )
-  {
-    // Pensez bien qu'un modérateur puisse vouloir remettre à "" le site n'existant plus
-    if ($point->site_officiel=="")
-      $champs_sql['site_officiel'] = "''";
-    //cas du site un peu particulier ou l'internaute n'aura pas forcément pensé à mettre http://
-    elseif ( !preg_match("/https?:\/\//",$point->site_officiel))
-      $champs_sql['site_officiel'] = $pdo->quote('http://'.$point->site_officiel);
-    else
-      $champs_sql['site_officiel'] = $pdo->quote($point->site_officiel);
-  }
-
   // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
   $champs_sql['date_derniere_modification'] = 'NOW()';
 

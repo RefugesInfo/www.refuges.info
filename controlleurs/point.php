@@ -116,7 +116,7 @@ else // le point est valide
   // Voici tous ce qui nous intéressent
   // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dur, comme par exemple récupérer
   // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
-  $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points'],array('site_officiel'));
+  $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points']);
 
   $vue->infos_complementaires = array ();
   foreach ($champs as $champ)

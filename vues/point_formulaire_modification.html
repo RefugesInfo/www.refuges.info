@@ -154,14 +154,6 @@
     </fieldset>
     <br style="clear: both;">
     <?php } ?>
-    <?php if (!empty($vue->point->equivalent_site_officiel) ) { ?>
-    <fieldset>
-      <label>
-        <?=$vue->point->equivalent_site_officiel?> :
-        <input class="input_en_ligne" name="site_officiel" type="text" value="<?=$vue->point->site_officiel?>">
-      </label>
-    </fieldset>
-    <?php } ?>
     <?php if ( !est_connecte() ) { ?>
     <br style="clear: both;">
     <h4>Questions pour les contributeurs anonymes</h4>
