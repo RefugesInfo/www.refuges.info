@@ -215,7 +215,6 @@ $vue->lien_aide_points = lien_wiki("autres_points");
 
 // En mode modification, on peut récupéer toutes les infos du point à modifier dans $vue->point->$propriété, ça peut contenir des tas de caractères douteux
 $point->nom=protege($point->nom);
-$point->site_officiel=protege($point->site_officiel);
 $point->nom_createur=protege($point->nom_createur);
 $vue->point=$point;
 $vue->utilisateurs=infos_utilisateurs();
