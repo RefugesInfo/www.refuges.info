@@ -1,0 +1,6 @@
+https://dom.refuges.info/api/point?id=5314&format=csv&detail=simple&nb_points=1
+Délai : 0.576 s.
+
+#The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0
+id_point;nom;type;altitude;latitude;longitude;état;nombre de place;lien
+5314;Refugi Baserca;cabane non gardée;1450;42.59774;0.76305;;0;https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/

@@ -1,0 +1,62 @@
+https://dom.refuges.info/api/point?id=5314&format=kml&detail=complet&nb_points=1
+Délai : 0.529 s.
+
+<?xml version="1.0" encoding="utf-8"?><kml xmlns="http://earth.google.com/kml/2.1">
+  <Document>
+  <name>points.kml</name>
+  <description>The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0</description>
+<!-- Liste des styles  (en gros, les icones possibles) -->
+  <Style id='cabane_manqueunmur_a48_eau'>
+    <IconStyle>
+    <hotSpot x='0.5' y='0.5' xunits='fraction' yunits='fraction' />
+      <Icon>
+        <href>https://dom.refuges.info/images/icones/cabane_manqueunmur_a48_eau.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+<!-- Fin des Styles -->
+  
+<!-- Liste des POINTS -->
+  <Folder><name>Points</name>
+  <open>0</open>
+  
+  <Placemark id='5314'>
+    <name>Refugi Baserca</name>
+      <description>
+        <![CDATA[ <em>cabane non gardée</em> 
+              <br>
+              <p>Cabane en bordure de l&#039;étang de Baserca.<br>
+En très grande partie détruite, mais il est possible de s&#039;abriter sous un bout de toit en cas d&#039;orage.<br>
+<br>
+L&#039;auvent est tombé.<br>
+L&#039;intérieur de la cabane est en sale état, mais il doit être possible d&#039;y dormir (si l&#039;on a pas peur de voir le toit tomber lui aussi).<br>
+Un parking le long de la N230, extrémité Nord du lac, est accolé à la cabane.<br>
+OT de Vielha ?<br>
+Site officiel: <a href="https://www.google.com/">https://www.google.com/</a><br>
+</p>
+              <br>
+            <center><a href='https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/'>Détails</a></center>
+        ]]>
+      </description>
+      <LookAt>
+        <longitude>0.76305</longitude>
+        <latitude>42.59774</latitude>
+        <range>1450</range>
+        <tilt>40</tilt>
+        <heading>50</heading>
+      </LookAt>
+        <styleUrl>#cabane_manqueunmur_a48_eau</styleUrl>
+      <Point>
+        <coordinates>0.76305,42.59774,0</coordinates>
+      </Point>
+      <ExtendedData>
+          <Data name="url">
+          <value>https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/</value>
+          </Data>
+      </ExtendedData>
+  </Placemark>
+<!-- fin des points -->
+
+  </Folder>
+  </Document>
+</kml>

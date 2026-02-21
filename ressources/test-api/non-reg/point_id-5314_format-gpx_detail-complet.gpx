@@ -1,0 +1,35 @@
+https://dom.refuges.info/api/point?id=5314&format=gpx&detail=complet&nb_points=1
+Délai : 0.542 s.
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx standard de refuges.info" version="1.1">
+<metadata>
+	<name>Points de refuges.info</name>
+	<desc>The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0</desc>
+	<author>
+		<name>Contributeurs refuges.info</name>
+	</author>
+	<copyright author="Contributeurs refuges.info">
+		<time>2026-02-20T21:16:13</time>
+		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
+	</copyright>
+	<link href="https://dom.refuges.info" />
+</metadata>
+
+<wpt lat="42.59774" lon="0.76305">
+  <ele>1450</ele>
+  <name>Refugi Baserca </name>
+    <type>cabane non gardée</type>
+    <desc>Cabane en bordure de l&#039;étang de Baserca.
+En très grande partie détruite, mais il est possible de s&#039;abriter sous un bout de toit en cas d&#039;orage.
+
+L&#039;auvent est tombé.
+L&#039;intérieur de la cabane est en sale état, mais il doit être possible d&#039;y dormir (si l&#039;on a pas peur de voir le toit tomber lui aussi).
+Un parking le long de la N230, extrémité Nord du lac, est accolé à la cabane.
+OT de Vielha ?
+Site officiel: https://www.google.com/
+</desc>
+    <src>Coordonnées pointées sur photos aériennes</src>
+    <link href="https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/" />
+</wpt>
+</gpx>

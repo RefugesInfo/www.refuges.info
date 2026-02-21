@@ -1,0 +1,114 @@
+https://dom.refuges.info/api/point?id=5314&format=rss&detail=complet&nb_points=1
+Délai : 0.595 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
+
+{
+  "copyright": "The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0",
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          0.76305,
+          42.59774
+        ],
+        "type": "Point"
+      },
+      "id": 5314,
+      "properties": {
+        "acces": {
+          "nom": "Acc\u00e8s",
+          "valeur": "Un parking le long de la N230, extr\u00e9mit\u00e9 Nord du lac, est accol\u00e9 \u00e0 la cabane."
+        },
+        "article": {
+          "defini": "la",
+          "demonstratif": "cette",
+          "partitif": "d'une"
+        },
+        "coord": {
+          "alt": 1450,
+          "lat": 42.59774,
+          "long": 0.76305,
+          "precision": {
+            "nom": "Coordonn\u00e9es point\u00e9es sur photos a\u00e9riennes",
+            "type": 7
+          }
+        },
+        "createur": {
+          "id": 1557,
+          "nom": "leosw"
+        },
+        "date": {
+          "creation": "2015-10-06 17:58:21+02",
+          "derniere_modif": "2026-02-18 17:45:16.011001+01"
+        },
+        "description": {
+          "valeur": "Cabane en bordure de l'\u00e9tang de Baserca.\r\nEn tr\u00e8s grande partie d\u00e9truite, mais il est possible de s'abriter sous un bout de toit en cas d'orage.\r\n\r\nL'auvent est tomb\u00e9.\r\nL'int\u00e9rieur de la cabane est en sale \u00e9tat, mais il doit \u00eatre possible d'y dormir (si l'on a pas peur de voir le toit tomber lui aussi).\nUn parking le long de la N230, extr\u00e9mit\u00e9 Nord du lac, est accol\u00e9 \u00e0 la cabane.\nOT de Vielha ?\nSite officiel: https:\/\/www.google.com\/\n"
+        },
+        "etat": {
+          "id": "ouverture",
+          "valeur": ""
+        },
+        "id": 5314,
+        "info_comp": {
+          "bois": {
+            "nom": "Bois \u00e0 proximit\u00e9",
+            "valeur": "1"
+          },
+          "cheminee": {
+            "nom": "Chemin\u00e9e",
+            "valeur": "0"
+          },
+          "couvertures": {
+            "nom": "Couvertures",
+            "valeur": "0"
+          },
+          "eau": {
+            "nom": "Eau \u00e0 proximit\u00e9",
+            "valeur": "1"
+          },
+          "latrines": {
+            "nom": "Latrines",
+            "valeur": "0"
+          },
+          "manque_un_mur": {
+            "nom": "Manque un mur",
+            "valeur": "1"
+          },
+          "places_matelas": {
+            "nb": 0,
+            "nom": "Places sur Matelas",
+            "valeur": "Sans"
+          },
+          "poele": {
+            "nom": "Po\u00eale",
+            "valeur": "0"
+          }
+        },
+        "lien": "https:\/\/dom.refuges.info\/point\/5314\/cabane-non-gardee\/Refugi-Baserca\/",
+        "nom": "Refugi Baserca",
+        "places": {
+          "nom": "Places pr\u00e9vues pour dormir",
+          "valeur": 0
+        },
+        "proprio": {
+          "nom": "Propri\u00e9taire \/ accessibilit\u00e9",
+          "valeur": "OT de Vielha ?\nSite officiel: https:\/\/www.google.com\/"
+        },
+        "remarque": {
+          "nom": "Remarque",
+          "valeur": "Cabane en bordure de l'\u00e9tang de Baserca.\r\nEn tr\u00e8s grande partie d\u00e9truite, mais il est possible de s'abriter sous un bout de toit en cas d'orage.\r\n\r\nL'auvent est tomb\u00e9.\r\nL'int\u00e9rieur de la cabane est en sale \u00e9tat, mais il doit \u00eatre possible d'y dormir (si l'on a pas peur de voir le toit tomber lui aussi)."
+        },
+        "sym": "Fishing Hot Spot Facility",
+        "type": {
+          "icone": "cabane_manqueunmur_a48_eau",
+          "id": 7,
+          "valeur": "cabane non gard\u00e9e"
+        }
+      },
+      "type": "Feature"
+    }
+  ],
+  "generator": "Refuges.info API",
+  "size": "1",
+  "timestamp": "2026-02-20T21:16:17+01:00",
+  "type": "FeatureCollection"
+}

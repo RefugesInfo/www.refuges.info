@@ -1,0 +1,44 @@
+https://dom.refuges.info/api/massif?massif=5066&type_points=7,10,9,29,23,3,28&nb_points=all&cluster=0.1&bbox=0.75,42.5,0.8,42.6&nb_points=1
+Délai : 0.562 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
+
+{
+  "copyright": "The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0",
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          0.76305,
+          42.59774
+        ],
+        "type": "Point"
+      },
+      "id": 5314,
+      "properties": {
+        "coord": {
+          "alt": 1450
+        },
+        "etat": {
+          "valeur": ""
+        },
+        "id": 5314,
+        "lien": "https:\/\/dom.refuges.info\/point\/5314\/cabane-non-gardee\/Refugi-Baserca\/",
+        "nom": "Refugi Baserca",
+        "places": {
+          "nom": "Places pr\u00e9vues pour dormir",
+          "valeur": 0
+        },
+        "sym": "Fishing Hot Spot Facility",
+        "type": {
+          "icone": "cabane_manqueunmur_a48_eau",
+          "id": 7,
+          "valeur": "cabane non gard\u00e9e"
+        }
+      },
+      "type": "Feature"
+    }
+  ],
+  "generator": "Refuges.info API",
+  "size": "1",
+  "timestamp": "2026-02-20T21:16:08+01:00",
+  "type": "FeatureCollection"
+}
