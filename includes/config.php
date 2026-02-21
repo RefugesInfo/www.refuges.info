@@ -215,12 +215,6 @@ $config_wri['api_format_points'] = Array
 'json' => "JSON",
 'geojson' => "GeoJSON"
 );
-
-$config_wri['api_format_detail'] = [
-  'icones' => "long, lat, nom, type, id & icone",
-  'simple' => "idem + état, places & lien",
-  'complet' => "toutes les informations disponibles sur les points",
-];
     
 /******** Nom du fichier contenant les points exportés **********/
 $config_wri['nom_fichier_export']="refuge-info";
