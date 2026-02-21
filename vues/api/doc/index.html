@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
     <head>
         <title>Documentation API refuges.info</title>
@@ -21,7 +20,7 @@
                 l'ensemble des utilisateur du service.
             </p>
             <p>
-                L'<b>API Refuges</b> permet de recevoir dans de nombreux formats une liste de points, des informations détaillées sur un point
+                L'<b>API Refuges</b> permet de recevoir dans de nombreux formats une liste de points, des informations détaillées sur des points
                 ou encore les résultats de requêtes spéciales telles que la recherche de nouvelles contributions.
                 L'API est disponible en <b>lecture seule</b> uniquement, et aucune autentification ou clé d'API n'est requise.
             </p>
@@ -38,145 +37,23 @@
         
         <section id="sommaire">
             <h1>Sommaire de l'API</h1>
-            
-            <h2>Export d'une liste de points</h2>
             <ul>
-                <li><a href="#/api/bbox"><span class="methode">GET</span> <span class="url">/api/bbox</span></a> &mdash; <span class="description">Export des points contenus dans une bbox</span></li>
-                <li><a href="#/api/massif"><span class="methode">GET</span> <span class="url">/api/massif</span></a> &mdash; <span class="description">Export des points contenus dans un massif</span></li>
-            </ul>
-
-            <h2>Informations détaillées sur un point</h2>
-            <ul>
-                <li><a href="#/api/point"><span class="methode">GET</span> <span class="url">/api/point</span></a> &mdash; <span class="description">Export des informations détaillées sur un point</span></li>
-            </ul>
-            <ul>
+                <li>
+                  <a href="#/api/point">
+                    <span class="methode">GET</span>
+                    <span class="url">/api/bbox</span>
+                    <span class="url">/api/massif</span>
+                    <span class="url">/api/point</span>
+                  </a> 
+                  &mdash; <span class="description">Export de points</span>
+                </li>
                 <li><a href="#/api/commentaires"><span class="methode">GET</span> <span class="url">/api/commentaires</span></a> &mdash; <span class="description">Export des commentaires d'un point</span></li>
-            </ul>
-
-            <h2>Requêtes à la base de donnée</h2>
-            <ul>
                 <li><a href="#/api/contributions"><span class="methode">GET</span> <span class="url">/api/contributions</span></a> &mdash; <span class="description">Export de la liste des dernières contributions</span></li>
                 <li><a href="#/api/polygones"><span class="methode">GET</span> <span class="url">/api/polygones</span></a> &mdash; <span class="description">Export des polygones de la base (massifs, parcs...)</span></li>
             </ul>
         </section>
         
         <section>
-            <h1>Export d'une liste de points</h1>
-            
-            <h2 id="/api/bbox">Sélection de la zone via une bbox</h2>
-
-            <p>
-                La requête <a href="#/api/bbox"><span class="methode">GET</span><span class="url">/api/bbox</span></a> permet de retourner une liste de points au sein d'une bbox. Les paramètres sont définis dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
-                <table>
-                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
-                    <tr>
-                        <td>bbox</td>
-                        <td><span class="req">Requis</span> Les dimensions de la bbox à exporter : ouest, sud, est, nord. Il est possible de sélectionner la planète entière via la valeur <span class="url">world</span>.</td>
-                        <td>Aucune</td>
-                        <td><span class="url">-13.00,44.05,17.00,49.79</span>, <span class="url">world</span>...</td>
-                    </tr>
-                    <tr>
-                        <td>format</td>
-                        <td><span class="opt">Optionnel</span> Le format de l'export.</td>
-                        <td><span class="url">geojson</span></td>
-                        <td><span class="url">geojson</span>, <span class="url">kmz</span>, <span class="url">kml</span>, <span class="url">gml</span>, <span class="url">gpx</span>, <span class="url">csv</span>, <span class="url">xml</span>, <span class="url">rss</span></td>
-                    </tr>
-                    <tr>
-                        <td>format_texte</td>
-                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
-                        <td><span class="url">bbcode</span></td>
-                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
-                    </tr>
-                    <tr>
-                        <td>nb_points</td>
-                        <td><span class="opt">Optionnel</span> Nombre de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, grottes, ...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).
-						</td>
-                        <td><span class="url">250</span></td>
-                        <td><span class="url">1500</span>,<span class="url">all</span>...</td>
-                    </tr>
-                    <tr>
-                        <td>cluster</td>
-                        <td><span class="opt">Optionnel</span>
-						S'il y a plusieurs points dans un carré de &lt;décimal&gt;
-						degrès de latitude et longitude (environ 100 km pour 1°),
-						ils sont regroupés et représentés par un picto "cluster"
-						(un cercle bleu avec le nombre de points regroupés).
-                        <td><span class="url">Aucune</span></td>
-                        <td><span class="url">0.1</span>,<span class="url">&lt;décimal&gt;</span></td>
-                    </tr>
-                    <tr>
-                        <td>detail</td>
-                        <td><span class="opt">Optionnel</span> N'est disponible que lorsque <b>format</b> est <span class="url">geojson</span>. Quand <span class="url">simple</span> uniquement long, lat, altitude, nom, type, id et icone. Quand <span class="url">complet</span> toutes les informations disponibles sur les points.</td>
-                        <td><span class="url">simple</span></td>
-                        <td><span class="url">simple</span>, <span class="url">complet</span>, <span class="url">minimal</span></td>
-                    </tr>
-                   <tr>
-                        <td>type_points</td>
-                        <td><span class="opt">Optionnel</span> Les types de point à exporter, parmis la liste suivante : <span class="url">cabane</span>, <span class="url">refuge</span>, <span class="url">gite</span>, <span class="url">pt_eau</span> et <span class="url">pt_passage</span> ou leur équivament numérique: <span class="url">7, 10, 9, 23, 6, 3</span>. La valeur <span class="url">all</span> sélectionne tous les types.</td>
-                        <td><span class="url">all</span></td>
-                        <td><span class="url">all</span>, <span class="url">cabane,refuge,gite</span>...</td>
-                    </tr>
-                </table>
-            </p>
-            <p>
-                Notons que lorsque les variables booléennes, sont à 1 pour VRAI et 0 pour FAUX (par exemple pour les informations complémentaires). Lorsqu'une variable est non définie (NULL), c'est tout simplement que nous le champ n'a pas de valeur car il n'a pas lieu d'être (couvertures pour un point d'eau par exemple) ou que la valeur est inconnue.
-            </p>
-            <p>
-                Voici un exemple de requête : 
-                <a class="url" href="../bbox?bbox=5.5,45.1,6.5,45.6&type_points=all&nb_points=2">api/bbox?bbox=5.5,45.1,6.5,45.6&type_points=all&nb_points=2</a>
-            </p>
-
-
-            <h2 id="/api/massif">Sélection de la zone via des massifs</h2>
-
-            <p>
-                La requête <a href="#/api/massif"><span class="methode">GET</span><span class="url">/api/massif</span></a> permet de retourner une liste de points au sein d'un ou plusieurs massif(s). Les paramètres sont définis dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
-                <table>
-                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
-                    <tr>
-                        <td>massif</td>
-                        <td><span class="req">Requis</span> L'id du ou des massif(s) à exporter (ces ids peuvent être récupérés via la requête <a href="#/api/polygones"><span class="methode">GET</span><span class="url">/api/polygones</span></a>). Les ids sont séparés par des virgules lorsqu'ils sont plusieurs.</td>
-                        <td>Aucune</td>
-                        <td><span class="url">8,9,11</span>, <span class="url">352</span>...</td>
-                    </tr>
-                    <tr>
-                        <td>bbox</td>
-                        <td><span class="opt">Optionnel</span> Ajoute une contrainte de zone aux points à rechercher. Seul les points du massif ET inclus dans la bbox seront retournés. Il est possible de sélectionner la planète entière via la valeur <span class="url">world</span>.</td>
-                        <td><span class="url">world</span></td>
-                        <td><span class="url">-13.00,44.05,17.00,49.79</span>, <span class="url">world</span>...</td>
-                    </tr>
-                    <tr>
-                        <td>format</td>
-                        <td><span class="opt">Optionnel</span> Le format de l'export.</td>
-                        <td><span class="url">geojson</span></td>
-                        <td><span class="url">geojson</span>, <span class="url">kmz</span>, <span class="url">kml</span>, <span class="url">gml</span>, <span class="url">gpx</span>, <span class="url">csv</span>, <span class="url">xml</span>, <span class="url">rss</span></td>
-                    </tr>
-                    <tr>
-                        <td>format_texte</td>
-                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
-                        <td><span class="url">bbcode</span></td>
-                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
-                    </tr>
-                    <tr>
-                        <td>nb_points</td>
-                        <td><span class="opt">Optionnel</span> Nombre de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, ...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).</td>
-                        <td><span class="url">121</span></td>
-                        <td><span class="url">1500</span>,<span class="url">all</span>...</td>
-                    </tr>
-                    <tr>
-                        <td>detail</td>
-                        <td><span class="opt">Optionnel</span> N'est disponible que lorsque <b>format</b> est <span class="url">geojson</span>. Quand <span class="url">simple</span> seul uniquement long, lat, altitude, nom, type, id et icone. Quand <span class="url">complet</span> toutes les informations disponibles sur les points</td>
-                        <td><span class="url">simple</span></td>
-                        <td><span class="url">simple</span>, <span class="url">complet</span></td>
-                    </tr>
-                    <tr>
-                        <td>type_points</td>
-                        <td><span class="opt">Optionnel</span> Les types de point à exporter, parmis la liste suivante : <span class="url">cabane</span>, <span class="url">refuge</span>, <span class="url">gite</span>, <span class="url">pt_eau</span> et <span class="url">pt_passage</span> ou leur équivament numérique: <span class="url">7, 10, 9, 23, 6, 3</span>. La valeur <span class="url">all</span> sélectionne tous les types.</td>
-                        <td><span class="url">all</span></td>
-                        <td><span class="url">all</span>, <span class="url">cabane,refuge,gite</span>...</td>
-                    </tr>
-                </table>
-            </p>
             <p>
                 Notons que lorsque les variables booléennes, sont à 1 pour VRAI et 0 pour FAUX (par exemple pour les informations complémentaires). Lorsqu'une variable est non définie (NULL), c'est tout simplement que nous le champ n'a pas de valeur car il n'a pas lieu d'être (couvertures pour un point d'eau par exemple) ou que la valeur est inconnue.
             </p>
@@ -188,24 +65,69 @@
         </section>
 
         <section>
-            <h1 id="/api/point">Informations détaillées sur un point</h1>
+            <h1 id="/api/point">Export d'une liste de points</h1>
             <p>
-                La requête <a href="#/api/point"><span class="methode">GET</span><span class="url">/api/point</span></a> permet de retourner les informations détaillées d'un point
+                Les requêtes <a href="#/api/point"><span class="methode">GET</span>
+                <span class="url">/api/bbox</span>
+                <span class="url">/api/massif</span>
+                <span class="url">/api/point</span></a>
+                permettent de retourner les informations détaillées de points
                 de la base de donnée à partir de son <b>ID</b>. Les paramètres sont définis
                 dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
                 <table>
-                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr><th>Paramètre de sélection</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
                     <tr>
                         <td>id</td>
-                        <td><span class="req">Requis</span> L'id du point dont on veut des informations</td>
+                        <td>
+                          bbox, massif: <span class="opt">Optionnel</span>
+                          L'id des points dont on veut des informations
+                          <br/>
+                          point: <span class="req">Requis</span>
+                          L'id du point
+                        </td>
                         <td>Aucune</td>
-                        <td><span class="url">2536</span>...</td>
+                        <td><span class="url">2536</span>, <span class="url">104,457</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>massif</td>
+                        <td><span class="opt">Optionnel</span> L'id du ou des massif(s) à exporter (ces ids peuvent être récupérés via la requête <a href="#/api/polygones"><span class="methode">GET</span><span class="url">/api/polygones</span></a>). Les ids sont séparés par des virgules lorsqu'ils sont plusieurs.</td>
+                        <td>Aucune</td>
+                        <td><span class="url">8,9,11</span>, <span class="url">352</span>...</td>
                     </tr>
                     <tr>
                         <td>bbox</td>
-                        <td><span class="opt">Optionnel</span> Ajoute une contrainte de zone au point à rechercher. Le point ne sera retourné que s'il est inclu dans la bbox. Il est possible de sélectionner la planète entière via la valeur <span class="url">world</span>.</td>
+                        <td><span class="opt">Optionnel</span> Ajoute une contrainte de zone aux points à rechercher.
+                        Le point ne sera retourné que s'il est inclu dans la bbox.
+                        Il est possible de sélectionner la planète entière via la valeur <span class="url">world</span>.</td>
                         <td><span class="url">world</span></td>
                         <td><span class="url">-13.00,44.05,17.00,49.79</span>, <span class="url">world</span>...</td>
+                    </tr>
+                    <tr>
+                        <td>depuis</td>
+                        <td><span class="opt">Optionnel</span> Sélectionne les points modifiés depuis une date.</td>
+                        <td><span class="url">0</span></td>
+                        <td><span class="url">Secondes depuis 1/1/1970</span></td>
+                    </tr>
+                    <tr>
+                        <td>nb_points</td>
+                        <td><span class="opt">Optionnel</span> Nombre de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, ...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).</td>
+                        <td>
+                          bbox:<span class="url">250</span><br/>
+                          massif:<span class="url">250</span><br/>
+                          point:<span class="url">1</span>
+                        </td>
+                        <td><span class="url">1500</span>,<span class="url">all</span>...</td>
+                    </tr>
+                    <tr><td></td></tr>
+                    </tr>
+                    <tr><th>Paramètre de contenu</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr>
+                        <td>detail</td>
+                        <td><span class="opt">Optionnel</span> N'est disponible que lorsque <b>format</b> est <span class="url">geojson</span>.<br/>
+                        <span class="url">Simple</span> : longitude, latitude, altitude, nom, type, id, icone, état, places & lien.<br/>
+                        <span class="url">Complet</span> : toutes les informations disponibles sur les points.<br/>
+                        <td><span class="url">simple</span></td>
+                        <td><span class="url">simple</span>, <span class="url">complet</span></td>
                     </tr>
                     <tr>
                         <td>format</td>
@@ -218,12 +140,6 @@
                         <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
                         <td><span class="url">bbcode</span></td>
                         <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
-                    </tr>
-                    <tr>
-                        <td>detail</td>
-                        <td><span class="opt">Optionnel</span> N'est disponible que lorsque <b>format</b> est <span class="url">geojson</span>. Quand <span class="url">simple</span> uniquement long, lat, altitude, nom, type, id et icone. Quand <span class="url">complet</span> toutes les informations disponibles sur les points.</td>
-                        <td><span class="url">complet</span></td>
-                        <td><span class="url">simple</span>, <span class="url">complet</span></td>
                     </tr>
                  </table>
             </p>
@@ -239,7 +155,7 @@
         <section>
             <h1 id="/api/commentaires">Export des commentaires d'un point</h1>
             <p>
-                La requête <a href="#/api/commentaires"><span class="methode">GET</span><span class="url">/api/commentaires</span></a> permet de retourner les commentairess d'un point
+                La requête <a href="#/api/commentaires"><span class="methode">GET</span><span class="url">/api/commentaires</span></a> permet de retourner les commentaires d'un point
                 de la base de donnée à partir de son <b>ID</b>. Les paramètres sont définis
                 dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
                 <table>
@@ -253,7 +169,7 @@
                     <tr>
                         <td>format_texte</td>
                         <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
-                        <td><span class="url">bbcode</span></td>
+                        <td><span class="url">texte</span></td>
                         <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
                     </tr>
                     <tr>
@@ -271,36 +187,16 @@
         </section>
 
         <section>
-            <h1>Requêtes à la base de donnée</h1>
-            
-            <h2 id="/api/contributions">Dernières contributions</h2>
+            <h1 id="/api/contributions">Dernières contributions</h1>
             <p>
                 La requête <a href="#/api/contributions"><span class="methode">GET</span><span class="url">/api/contributions</span></a> permet de retourner les dernières contributions sur refuges.info.
                 <table>
-                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr><th>Paramètre de sélection</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
                     <tr>
                         <td>type</td>
                         <td><span class="opt">Optionnel</span> Le ou les types de contributions à lister, à choisir parmis <span class="url">points</span> (tous les ajouts de points), <span class="url">refuges</span> (tous les ajouts de points pouvant servir d'abris, exclut donc point d'eau ou passages délicats), <span class="url">commentaires</span> et <span class="url">forums</span> (ne concerne pas le forum de développement).</td>
                         <td><span class="url">points,commentaires</span></td>
                         <td><span class="url">points,commentaires,forums</span>, <span class="url">forums</span>...</td>
-                    </tr>
-                    <tr>
-                        <td>format</td>
-                        <td><span class="opt">Optionnel</span> Le format de l'export.</td>
-                        <td><span class="url">json</span></td>
-                        <td><span class="url">json</span>, <span class="url">csv</span>, <span class="url">xml</span>, <span class="url">rss</span></td>
-                    </tr>
-                    <tr>
-                        <td>format_texte</td>
-                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
-                        <td><span class="url">bbcode</span></td>
-                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
-                    </tr>
-                    <tr>
-                        <td>nombre</td>
-                        <td><span class="opt">Optionnel</span> Le nombre de contributions à retourner, 100 par défaut.</td>
-                        <td><span class="url">15</span></td>
-                        <td><span class="url">42</span>...</td>
                     </tr>
                     <tr>
                         <td>massif</td>
@@ -313,6 +209,26 @@
                         <td><span class="opt">Optionnel</span> L'id du ou des forum(s) à exporter. Les ids sont séparés par des virgules lorsqu'ils sont plusieurs.</td>
                         <td>Tous les forums</td>
                         <td><span class="url">1,2,4,5,6</span> ...</td>
+                    </tr>
+                    <tr>
+                        <td>nombre</td>
+                        <td><span class="opt">Optionnel</span> Le nombre de contributions à retourner, 100 par défaut.</td>
+                        <td><span class="url">15</span></td>
+                        <td><span class="url">42</span>...</td>
+                    </tr>
+                    <tr><td></td></tr>
+                    <tr><th>Paramètre de contenu</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr>
+                        <td>format</td>
+                        <td><span class="opt">Optionnel</span> Le format de l'export.</td>
+                        <td><span class="url">rss</span></td>
+                        <td><span class="url">json</span>, <span class="url">csv</span>, <span class="url">xml</span>, <span class="url">rss</span></td>
+                    </tr>
+                    <tr>
+                        <td>format_texte</td>
+                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
+                        <td><span class="url">bbcode</span></td>
+                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
                     </tr>
                     <tr>
                         <td>avec_texte</td>
@@ -335,17 +251,11 @@
                 Voici un exemple de requête : 
                 <a class="url" href="../contributions?format=rss&format_texte=html&massif=351">api/contributions?format=rss&format_texte=html&massif=351</a>
             </p>
-            <h2 id="/api/polygones">Polygones de la base de donnée (massifs, parcs, cartes...)</h2>
+            <h1 id="/api/polygones">Polygones de la base de donnée (massifs, parcs, cartes...)</h1>
             <p>
                 La requête <a href="#/api/polygones"><span class="methode">GET</span><span class="url">/api/polygones</span></a> permet de retourner tous les polygones de la base de donnée, incluant massifs, emprises de cartes, limites administratives...
                 <table>
-                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
-                    <tr>
-                        <td>format</td>
-                        <td><span class="opt">Optionnel</span> Le format de l'export des polygones.</td>
-                        <td><span class="url">geojson</span></td>
-                        <td><span class="url">geojson</span>, <span class="url">gml</span>.</td>
-                    </tr>
+                    <tr><th>Paramètre de sélection</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
                     <tr>
                         <td>massif</td>
                         <td><span class="opt">Optionnel</span> L'id du ou des massif(s) à exporter (ces ids peuvent être récupérés via la requête <a href="#/api/polygones"><span class="methode">GET</span><span class="url">/api/polygones</span></a>). Les ids sont séparés par des virgules lorsqu'ils sont plusieurs.</td>
@@ -363,6 +273,14 @@
                         <td><span class="opt">Optionnel</span> Retourne tous les polygones ayant une intersection avec celui-ci.</td>
                         <td></td>
                         <td><span class="url">352</span>, <span class="url">50</span>...</td>
+                    </tr>
+                    <tr><td></td></tr>
+                    <tr><th>Paramètre de contenu</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
+                    <tr>
+                        <td>format</td>
+                        <td><span class="opt">Optionnel</span> Le format de l'export des polygones.</td>
+                        <td><span class="url">geojson</span></td>
+                        <td><span class="url">geojson</span>, <span class="url">gml</span>.</td>
                     </tr>
                     <tr>
                         <td>type_polygon</td>

@@ -9,6 +9,7 @@ require_once ('bdd.php');
 require_once ('point.php');
 require_once ('mise_en_forme_texte.php');
 require_once ('utilisateur.php');
+require_once ('identification.php');
 
 
 /**********************************************************************************************
@@ -179,6 +180,7 @@ function infos_commentaires ($conditions)
             $commentaire->photo[$taille]=$chemin_photo;
             // Le filemtime a pour but, après une modification sur la photo, d'éviter que les caches navigateurs ne s'activent
             $commentaire->lien_photo[$taille]=$config_wri['rep_web_photos_points'].$nom_fichier_photo."?".filemtime($chemin_photo);
+            $commentaire->lien_photo_reduite=$config_wri['rep_web_photos_points'].$nom_fichier_photo."?".filemtime($chemin_photo);
             break; // pas besoin de tester toute les extensions, on en a trouvé une
           }
         }
@@ -194,6 +196,36 @@ function infos_commentaires ($conditions)
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
     if (!empty($commentaire->auteur_commentaire))
         $commentaire->auteur_commentaire=html_entity_decode($commentaire->auteur_commentaire);
+
+    // Dom 01/2026 : Transféré depuis /controleur/point.php
+    // Mise en forme des commentaires
+    $commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
+    $commentaire->auteur_commentaire_affichage=htmlentities($commentaire->auteur_commentaire);
+    $commentaire->date_commentaire_format_francais= date_format_francais($commentaire->ts_unix_commentaire);
+
+    // Formatage des données et affichage d'un commentaire de la fiche d'un point
+    // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire
+    if (est_autorise($commentaire->id_createur_commentaire))
+    {
+      $commentaire->lien_commentaire =
+        '/gestion/moderation?id_point_retour='.$commentaire->id_point.
+        '&amp;id_commentaire='.$commentaire->id_commentaire;
+      $commentaire->texte_lien_commentaire = 'Modifier';
+    }
+    else
+    {
+      // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
+      $commentaire->lien_commentaire = "/avis_internaute_commentaire/$commentaire->id_commentaire/";
+      $commentaire->texte_lien_commentaire = 'Info périmée ?';
+    }
+
+    // Si, selon la base une photo existe, on va l'afficher
+    if ($commentaire->photo_existe)
+    {
+      if (isset($commentaire->date_photo))
+        $commentaire->date_photo_format_francais=strftime ("%d/%m/%Y", $commentaire->ts_unix_photo);
+    }
+
     $commentaires [] = $commentaire;
   }
   return $commentaires ;

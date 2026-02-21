@@ -9,6 +9,7 @@
 include_once("point.php");
 include_once("mise_en_forme_texte.php");
 include_once("utilisateur.php");
+include_once("identification.php");
 include_once("entetes_http.php");
 
 // FIXME: Il doit moyen de faire mieux, mais préparer l'export en mettant tout dans un énorme tableau n'est en fait pas la meilleure idée,
@@ -150,6 +151,91 @@ if($req->type_points != "all") {
   $params->ids_types_point = str_replace($val->type_points, $val->type_points_id, $req->type_points);
 }
 
+/****************************** FILTRE DES DÉTAILS ******************************/
+// Dom 01/2026 : On paramètre, pour chaque niveau de détail
+// les champs qu'on veut voir figurer dans la réponse de l'API
+
+switch ($req->detail) {
+  case 'complet':
+    $params->avec_infos_creation = true;
+    $params->avec_infos_complementaires = true;
+  case 'simple':
+  case 'icone':
+    $params->avec_infos_fiche = true;
+};
+
+/* Définition des informations transmises pour chaque option "detail" */
+// Uniquement affichage d'une icône cliquable avec son nom
+
+// Utilisé par la carte actuelle WRI
+$filtre['simple'] = [
+  'nom' => true,
+  'id' => true,
+  'coord' => ['alt' => true],
+  'type' => true,
+  'sym' => true,
+  'etat' => ['valeur' => true],
+  'places' => true,
+  'lien' => true,
+];
+
+$filtre['complet'] = array_merge($filtre['simple'], [
+  // Complète avec les autres valeurs
+  'coord' => true,
+  'etat' => true,
+  // Nouveaux
+  'date' => true,
+  'createur' => true,
+  'proprio' => true,
+  'acces' => true,
+  'remarque' => true,
+  'info_comp' => [
+    'bois_a_proximite' => 'bois', // On renomme
+    'cheminee' => true,
+    'couvertures' => true,
+    'eau_a_proximite' => 'eau',
+    'latrines' => true,
+    'manque_un_mur' => true,
+    'places' => true,
+    'places_matelas' => true,
+    'poele' => true,
+  ],
+  'description' => true,
+  'article' => true,
+]);
+
+/* Petite fonction qui réalise le filtrage en fonction des définitions ci-dessus */
+function filtre_recursif($properties, $filtre) {
+  // On est arrivé à la fin des règles
+  if (is_scalar($properties) || is_scalar($filtre) || is_object($filtre))
+    return $properties;
+
+  $props = (array)$properties; // On transforme toutes les entrées en array car elle sont parfois object
+  $obj = [];
+
+  foreach ($filtre as $cle_filtre => $sous_filtre)
+    // Cas des tableaux : on prend tout le contenu de ce niveau
+    if ($cle_filtre == '*') {
+      $tablo=[];
+      foreach($properties AS $p)
+        $tablo[]= filtre_recursif($p, $sous_filtre);
+      return $tablo;
+    }
+    // Cas normal
+    elseif (isset($props[$cle_filtre]) && // Si la valeur existe
+      !empty($sous_filtre)) // Sauf si 'id' => false
+    {
+      // Renommage de la variable
+      $cle = is_string($sous_filtre) ? $sous_filtre : $cle_filtre;
+      $obj[$cle] = filtre_recursif($props[$cle_filtre], $sous_filtre);
+    }
+
+  return $obj;
+}
+
+
+/****************************** RÉCUPÉRATION DES POINTS ******************************/
+
 $points_bruts = new stdClass();
 $points = new stdClass();
 
@@ -162,9 +248,6 @@ selon qu'elle est csv, gpx, etc.ça consome plus de RAM bien sûr et plus de CPU
 Seule exception à ça, le cas du format "geojson" :
 Car c'est celui utilisé par la carte et que le fichier est généré par un json_encode($point) qui deviendrait trop gros pour les usages en mobilité et débit pourri.
 */
-// FIXME sly 05/12/2019 : ça me rend fou cette recopie intégrale propriété par propriété. ça oblige à venir maintenir ça !
-// $points[]=$point; n'aurait il pas suffit ? et en plus le nom des propriété changent de peu et je passe mon temps à ne plus m'en rappeler !
-// certes ça fait un joli array final multi-niveau et un joli json_encode($point), mais franchement, le jeu en vaut-il la chandelle ?
 
 foreach ($points_bruts as $i=>$point) {
   if(isset ($point->nb_points)) // cas des clusters
@@ -182,93 +265,17 @@ foreach ($points_bruts as $i=>$point) {
     if(($point->id_type_precision_gps??'') == $config_wri['id_coordonees_gps_fausses'])
       break;
 
-    $points->$i = new stdClass();
-    $points->$i->id = $point->id_point;
-    $points->$i->nom = mb_ucfirst($point->nom);
-    $points->$i->type['id'] = $point->id_point_type;
-
-    // DOM 04/01/26 ajout du paramètre detail=icones pour la carte des points
-    if ($req->format!="geojson" or $req->detail!="icones")
-    {
-      switch ($point->conditions_utilisation)
-      {
-        case 'fermeture':
-        case 'detruit':
-          $points->$i->sym = "Crossing";
-          break;
-        case 'cle_a_recuperer': // TODO : trouver un symbole
-        default:
-          $points->$i->sym = $point->symbole;
-      }
-
-      $points->$i->lien = lien_point($point);
-      $points->$i->coord['alt'] = $point->altitude;
-      $points->$i->type['valeur'] = $point->nom_type;
-      $points->$i->places['nom'] = $point->equivalent_places;
-      $points->$i->places['valeur'] = $point->places;
-      $points->$i->etat['valeur'] = texte_non_ouverte($point);
-    }
-    $points->$i->type['icone'] = choix_icone($point);
     $points_geojson[$point->id_point]['geojson'] = $point->geojson;
     // FIXME: comme l'array $points est converti en intégralité en xml ou json, je planque dans une autre variable ce que je veux séparément
+
+    // Dom 01/2026 : transfert du formattage dans le /modele/point.php
+    if (!empty($point->infos_complementaires))
+      $point->properties->info_comp = $point->infos_complementaires;
 
     // En geojson, utilisé par la carte, on a pas besoin de tout ça, autant simplifier pour réduire le temps de chargement,
     // sauf si on appel explicitement le mode complet avec &detail=complet
     if ($req->format!="geojson" or $req->detail=="complet")
     {
-      $points->$i->coord['long'] = $point->longitude;
-      $points->$i->coord['lat'] = $point->latitude;
-      $points->$i->etat['id'] = $point->conditions_utilisation;
-      $points->$i->date['derniere_modif'] = $point->date_derniere_modification;
-      $points->$i->coord['precision']['nom'] = $point->nom_precision_gps;
-      $points->$i->coord['precision']['type'] = $point->id_type_precision_gps;
-      $points->$i->remarque['nom'] = 'Remarque';
-      $points->$i->remarque['valeur'] = $point->remark;
-      $points->$i->acces['nom'] = 'Accès';
-      $points->$i->acces['valeur'] = $point->acces;
-      $points->$i->proprio['nom'] = $point->equivalent_proprio;
-      $points->$i->proprio['valeur'] = $point->proprio;
-      $points->$i->createur['id'] = $point->id_createur;
-
-      // info sur le modérateur actuel de la fiche (authentifié ou non)
-      if ($point->id_createur==0) // non authentifié
-          $points->$i->createur['nom']=$point->nom_createur;
-      else
-      {
-        $utilisateur=infos_utilisateur($point->id_createur);
-        if (!empty($utilisateur->erreur)) // Aïe, le point référence un utilisateur qui n'existe plus
-          $points->$i->createur['nom'] = "Utilisateur supprimé";
-        else
-          $points->$i->createur['nom'] = infos_utilisateur($point->id_createur)->username;
-      }
-
-      $points->$i->date['creation'] = $point->date_creation;
-      $points->$i->article['demonstratif'] = $point->article_demonstratif;
-      $points->$i->article['defini'] = $point->article_defini;
-      $points->$i->article['partitif'] = $point->article_partitif_point_type;
-      $points->$i->info_comp['manque_un_mur']['nom'] = $point->equivalent_manque_un_mur;
-      $points->$i->info_comp['manque_un_mur']['valeur'] = $point->manque_un_mur;
-      $points->$i->info_comp['cheminee']['nom'] = $point->equivalent_cheminee;
-      $points->$i->info_comp['cheminee']['valeur'] = $point->cheminee;
-      $points->$i->info_comp['poele']['nom'] = $point->equivalent_poele;
-      $points->$i->info_comp['poele']['valeur'] = $point->poele;
-      $points->$i->info_comp['couvertures']['nom'] = $point->equivalent_couvertures;
-      $points->$i->info_comp['couvertures']['valeur'] = $point->couvertures;
-      $points->$i->info_comp['places_matelas']['nom'] = $point->equivalent_places_matelas;
-      $points->$i->info_comp['places_matelas']['nb'] = $point->places_matelas;
-
-      if($point->places_matelas == 0)
-          $points->$i->info_comp['places_matelas']['valeur'] = "Sans";
-      else
-          $points->$i->info_comp['places_matelas']['valeur'] = $point->places_matelas;
-
-      $points->$i->info_comp['latrines']['nom'] = $point->equivalent_latrines;
-      $points->$i->info_comp['latrines']['valeur'] = $point->latrines;
-      $points->$i->info_comp['bois']['nom'] = $point->equivalent_bois_a_proximite;
-      $points->$i->info_comp['bois']['valeur'] = $point->bois_a_proximite;
-      $points->$i->info_comp['eau']['nom'] = $point->equivalent_eau_a_proximite;
-      $points->$i->info_comp['eau']['valeur'] = $point->eau_a_proximite;
-
       /*
       sly 09/12/2019 : Construction d'un grand texte contenant ce qui me semble le plus pertinent concernant un point,
       afin de l'inclure dans la description des gpx et du kml
@@ -284,8 +291,14 @@ foreach ($points_bruts as $i=>$point) {
       $description.=$point->remark."\n";
       $description.=$point->acces."\n";
       $description.=$point->proprio."\n";
-      $points->$i->description['valeur']=$description;
+      $point->properties->description['valeur']=$description;
     }
+
+    // Filtre des détails
+    if(in_array($req->format, ['geojson','rss']))
+      $points->$i = filtre_recursif($point->properties, $filtre[$req->detail]);
+    else
+      $points->$i = $point->properties;
 
     /****************************** FORMATAGE DU TEXTE ******************************/
     // On transforme le texte dans la correcte syntaxe

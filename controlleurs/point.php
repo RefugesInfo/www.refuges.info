@@ -110,87 +110,19 @@ else // le point est valide
       $vue->polygone_avec_information=$polygone;
 
   /*********** Préparation des infos complémentaires (c'est à dire les attributs du bas de la fiche) ***/
-  // Construction du tableau qui sera lu, ligne par ligne par la vue pour être affiché
-  // On pourrait détailler en html chaque propriété entourée par un if (propriété = valide), mais ça fait beaucoup de redondance, alors ainsi, je factorise au détriment d'un peu de lisibilité
+  // Dom 01/2026 : transféré dans modeles/point.php
+  $vue->infos_complementaires = $point->infos_complementaires;
+  array_walk_recursive($vue->infos_complementaires, 'updatebbcode2html'); // Pour compatibilité avec l'API
 
-  // Voici tous ce qui nous intéressent
-  // FIXME: une méthode de sioux doit exister pour se passer d'une liste en dur, comme par exemple récupérer
-  // ça directement de la base, mais bon... usine à gaz non ? un avis ? -- sly
-  $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points']);
+  /*********** Formatage des infos des commentaires ***/
+  // Dom 01/2026 : Transféré dans /modele/commentaire.php
+  $conditions_commentaires = new stdClass();
+  $conditions_commentaires->ids_points = $id_point;
+  $vue->commentaires = infos_commentaires ($conditions_commentaires);
 
-  $vue->infos_complementaires = array ();
-  foreach ($champs as $champ)
-  {
-    $champ_equivalent = "equivalent_$champ";
-    // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour une grotte)
-    if ($point->$champ_equivalent!="")
-    {
-      switch ($champ)
-      {
-        case 'site_officiel':
-          if ($point->$champ!="")
-            $val=array('valeur'=> '', 'lien' => $vue->point->$champ, 'texte_lien'=> $vue->nom_debut_majuscule);
-          break;
-
-        case 'places_matelas' : case 'places' :
-          if($point->$champ === NULL )
-            $val=array('valeur'=> '<strong>Inconnu</strong>');
-          else
-            $val=array('valeur'=> $point->$champ);
-          break;
-
-        default: // Pour tous les boolééns restant
-          if($point->$champ === TRUE)
-            $val = array('valeur'=> 'Oui');
-          if($point->$champ === FALSE)
-            $val = array('valeur'=> 'Non');
-          if($point->$champ === NULL)
-            $val = array('valeur'=> '<strong>Inconnu</strong>');
-          break;
-      }
-
-      if (isset($val))
-        $vue->infos_complementaires[$point->$champ_equivalent]=$val;
-    }
-    unset($val);
-  }
-
-  /*********** Préparation des infos des commentaires ***/
-  $vue->commentaires=array();
-  $vue->commentaires_avec_photo=array();
-
-  foreach ($tous_commentaires AS $commentaire)
-  {
-    $commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
-    $commentaire->auteur_commentaire_affichage=htmlentities($commentaire->auteur_commentaire);
-    $commentaire->date_commentaire_format_francais= date_format_francais($commentaire->ts_unix_commentaire);
-
-    // Préparation des données et affichage d'un commentaire de la fiche d'un point
-    // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire
-    if (est_autorise($commentaire->id_createur_commentaire))
-    {
-      $commentaire->lien_commentaire='/gestion/moderation?id_point_retour='.$commentaire->id_point.'&amp;id_commentaire='.$commentaire->id_commentaire;
-      $commentaire->texte_lien_commentaire = 'Modifier';
-    }
-    else
-    {
-      // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
-      $commentaire->lien_commentaire = "/avis_internaute_commentaire/$commentaire->id_commentaire/";
-      $commentaire->texte_lien_commentaire = 'Info périmée ?';
-    }
-
-    // Si, selon la base une photo existe, on va l'afficher
+  $vue->commentaires_avec_photo=[];
+  foreach ($vue->commentaires AS $commentaire)
     if ($commentaire->photo_existe)
-    {
-      if (isset($commentaire->date_photo))
-        $commentaire->date_photo_format_francais=strftime ("%d/%m/%Y", $commentaire->ts_unix_photo);
-      else
-        $commentaire->date_photo_format_francais = '';
-      // On garde une copie des commentaires avec photos pour nous fournir la liste des petite vignettes
-      $vue->commentaires_avec_photo[]=$commentaire;
-    }
-
-    $vue->commentaires[]=$commentaire;
-  }
+      $vue->commentaires_avec_photo[] = $commentaire;
 }
 

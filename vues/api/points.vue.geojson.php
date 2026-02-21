@@ -6,30 +6,22 @@ header("Content-disposition: filename=$filename.json");
 header("Content-Type: application/json; UTF-8"); // rajout du charset
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
-headers_cache_api(isset ($_GET['v']) ? 3600*24*7 : 60);
-?>
-{
-  "type": "FeatureCollection",
-  "generator": "Refuges.info API",
-  "copyright": "<?=$config_wri['copyright_API']?>",
-  "timestamp": "<?=date(DATE_ATOM)?>",
-  "size": "<?=count((array)$points)?>",
-  "features": 
-  [<?php 
-  $i="premier";
-  foreach ($points as $j => $point)
-    if ($points_geojson[$point->id]['geojson']) // Pour éviter un point sans position (qui ne devrait pas arriver !)
-    {
-      if ( $i!='premier' )
-        print(",");
-      $i="plus_premier";
-  ?> 
-  {
-     "type": "Feature",
-     "id": <?=$point->id?>,
-     "properties": <?=json_encode($point)?>,
-     "geometry": <?=$points_geojson[$point->id]['geojson']?>
+headers_cache_api();
 
-  }<?php } ?>
-  ]
-}
+$features = [];
+foreach ($points as $id => $p)
+  $features[] =  [
+    "type" => "Feature",
+    "id" => intval($id),
+    "geometry" => json_decode($points_geojson[$id]["geojson"]),
+    "properties" => $p,
+  ];
+
+echo json_encode([
+  "type" => "FeatureCollection",
+  "generator" => "Refuges.info API",
+  "copyright" => $config_wri['copyright_API'],
+  "timestamp" => date(DATE_ATOM),
+  "size" => count((array)$points),
+  "features" => $features, 
+]);

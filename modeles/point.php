@@ -82,6 +82,10 @@ $conditions->centre_du_cercle : la géométrie d'un point au format WKB (en 2025
 
 $conditions->avec_liste_polygones=True : l'objet retourné dispose d'une propriété polygones, un array de tous les polygones auquels le point appartient.
 
+$conditions->avec_infos_fiche=True : Rend les informations liées à la fiche (proprio, accés, remarques, état, ...)
+$conditions->avec_infos_complementaires=True : Rend les informations complémentaires
+$conditions->avec_infos_creation=True : Rend les informations liées au créateur, date de création et modification.
+
 $conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
 $conditions->topic_id : Dont le topic du forum est celui-ci (permet d'avoir un lien retour du forum du point vers la fiche)
 
@@ -324,7 +328,7 @@ function infos_points($conditions)
         $raw->id_point = intval($raw->cluster_lon + ($raw->cluster_lat + 1000) * 2000);
 
         // Et on l'enregistre dans la liste des points
-        $points[] = $raw;
+        $points[$raw->id_point] = $raw;
       }
       elseif ( $raw->nb_points == 1 ) // S'il n'y a qu'un point dans le carré
       {
@@ -390,6 +394,135 @@ function infos_points($conditions)
         $point_final->polygones[]=$polygone;
       }
 
+      // Dom 01/2026 : factorisation de controlleurs/point.php & controlleurs/api/point.php
+      // Formatage des propriétés d'un point
+      $properties = new stdClass();
+
+      $properties->id = $point->id_point;
+      $properties->nom = mb_ucfirst($point->nom);
+      $properties->lien = lien_point($point);
+
+      $properties->type = [
+        'id' => $point->id_point_type,
+        'valeur' => $point->nom_type,
+        'icone' => choix_icone($point),
+      ];
+      $properties->article = [
+        'demonstratif' => $point->article_demonstratif,
+        'defini' => $point->article_defini,
+        'partitif' => $point->article_partitif_point_type,
+      ];
+      $properties->coord = [
+        'alt' => $point->altitude,
+        'long' => $point->longitude,
+        'lat' => $point->latitude,
+        'precision' => [
+          'nom' => $point->nom_precision_gps,
+          'type' => $point->id_type_precision_gps,
+        ],
+      ];
+
+      // Symbole Garmin
+      switch ($point->conditions_utilisation)
+      {
+        case 'fermeture':
+        case 'detruit':
+          $properties->sym = "Crossing";
+          break;
+        case 'cle_a_recuperer': // TODO : trouver un symbole
+        default:
+          $properties->sym = $point->symbole;
+      }
+
+      if (!empty($conditions->avec_infos_creation)) // Conditionnel car couteux en temps
+      {
+        $properties->createur['id'] = $point->id_createur;
+
+        // info sur le modérateur actuel de la fiche (authentifié ou non)
+        if ($point->id_createur==0) // non authentifié
+            $properties->createur['nom']=$point->nom_createur;
+        else
+        {
+          $utilisateur=infos_utilisateur($point->id_createur);
+          if (!empty($utilisateur->erreur)) // Aïe, le point référence un utilisateur qui n'existe plus
+            $properties->createur['nom'] = "Utilisateur supprimé";
+          else
+            $properties->createur['nom'] = infos_utilisateur($point->id_createur)->username;
+        }
+
+        $properties->date = [
+          'creation' => $point->date_creation,
+          'derniere_modif' => $point->date_derniere_modification,
+        ];
+      }
+
+      if (!empty($conditions->avec_infos_fiche))
+      {
+        $properties->etat = [
+          'nom' => 'Etat', //TODO : $point->equivalent_etat ???
+          'valeur' => texte_non_ouverte($point),
+          'id' => $point->conditions_utilisation,
+        ];
+        $properties->proprio = [
+          'nom' => $point->equivalent_proprio,
+          'valeur' => $point->proprio,
+        ];
+        $properties->places = [
+          'nom' => $point->equivalent_places,
+          'valeur' => $point->places,
+        ];
+        $properties->remarque = [
+          'nom' => 'Remarque',
+          'valeur' => $point->remark,
+        ];
+        $properties->acces = [
+          'nom' => 'Accès',
+          'valeur' => $point->acces,
+        ];
+      }
+
+      $point_final->properties = $properties; // Pour optimiser le temps du calcul
+
+      // Dom 01/2026 : simplifié et transféré depuis controlleurs/point.php pour pouvoir être utilisé dans l'API
+      // Formatage des informations complèmentaires
+      if (!empty($conditions->avec_infos_complementaires))
+      {
+        $champs=array_merge($config_wri['champs_entier_ou_sait_pas_points'],$config_wri['champs_trinaires_points']);
+        $point_final->infos_complementaires = [];
+
+        foreach ($champs as $champ)
+        {
+          $champ_equivalent = "equivalent_$champ";
+          // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour une grotte)
+          if ($point->$champ_equivalent!="")
+          {
+            $val = [
+              'nom' => $point->$champ_equivalent,
+            ];  
+            switch ($champ)
+            {
+              case 'places_matelas' : case 'places' :
+                if($point->$champ === NULL )
+                  $val['valeur'] = '<strong>Inconnu</strong>';
+                else
+                  $val['valeur'] = $val['nb'] = $point->$champ;
+                break;
+
+              default: // Pour tous les boolééns restant
+                if($point->$champ === TRUE)
+                  $val['valeur'] = 'Oui';
+                if($point->$champ === FALSE)
+                  $val['valeur'] = 'Non';
+                if($point->$champ === NULL)
+                  $val['valeur'] = '<strong>Inconnu</strong>';
+                break;
+            }
+            if(count($val) > 1)
+              $point_final->infos_complementaires[$champ]=$val;
+          }
+          unset($val);
+        }
+      }
 
       //  phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
       if (!empty($point->id_createur) and !empty($point->nom_createur) )
@@ -451,6 +584,9 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 
   if ($meme_si_cache)
     $conditions->avec_points_caches=True;
+
+  $conditions->avec_infos_complementaires=True;
+  $conditions->avec_infos_fiche=True;
 
   // récupération des infos du point
   $points=infos_points($conditions);
