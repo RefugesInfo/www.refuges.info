@@ -165,7 +165,6 @@ switch ($req->detail) {
 };
 
 /* Définition des informations transmises pour chaque option "detail" */
-// Uniquement affichage d'une icône cliquable avec son nom
 
 // Utilisé par la carte actuelle WRI
 $filtre['simple'] = [
