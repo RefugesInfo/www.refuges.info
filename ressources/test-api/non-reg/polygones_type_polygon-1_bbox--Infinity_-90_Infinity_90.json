@@ -1,5 +1,5 @@
 https://dom.refuges.info/api/polygones?type_polygon=1&bbox=-Infinity,-90,Infinity,90&nb_points=1
-Délai : 0.587 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
+Délai : 0.711 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
 
 {
   "copyright": "The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0",
@@ -32884,6 +32884,6 @@ Délai : 0.587 s, Les données ont été triées par clés et beautifiées pour 
     }
   ],
   "generator": "Refuges.info API",
-  "timestamp": "2026-02-20T21:16:08+01:00",
+  "timestamp": "2026-02-21T16:31:38+01:00",
   "type": "FeatureCollection"
 }

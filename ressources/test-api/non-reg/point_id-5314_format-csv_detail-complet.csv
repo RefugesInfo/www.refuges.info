@@ -1,5 +1,5 @@
 https://dom.refuges.info/api/point?id=5314&format=csv&detail=complet&nb_points=1
-Délai : 0.563 s.
+Délai : 0.629 s.
 
 #The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0
 id_point;nom;type;altitude;latitude;longitude;état;nombre de place;lien

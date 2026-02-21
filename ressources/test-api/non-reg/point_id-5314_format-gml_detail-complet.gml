@@ -1,5 +1,5 @@
 https://dom.refuges.info/api/point?id=5314&format=gml&detail=complet&nb_points=1
-Délai : 0.513 s.
+Délai : 0.601 s.
 
 <?xml version="1.0" encoding="UTF-8" ?><wfs:FeatureCollection
   xmlns:wfs="http://www.opengis.net/wfs"

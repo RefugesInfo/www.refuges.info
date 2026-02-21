@@ -1,18 +1,22 @@
 https://dom.refuges.info/api/point?id=5314&format=xml&format_texte=html&nb_points=1
-Délai : 0.558 s.
+Délai : 0.65 s.
 
 <?xml version="1.0" encoding="UTF-8" ?>
 <nodes>
 <node>
 <id>5314</id>
 <nom>Refugi Baserca</nom>
+<lien>&lt;a href=&quot;https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/&quot;&gt;https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/&lt;/a&gt;</lien>
 <type>
 <id>7</id>
 <valeur>cabane non gardée</valeur>
 <icone>cabane_manqueunmur_a48_eau</icone>
 </type>
-<sym>Fishing Hot Spot Facility</sym>
-<lien>&lt;a href=&quot;https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/&quot;&gt;https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/&lt;/a&gt;</lien>
+<article>
+<demonstratif>cette</demonstratif>
+<defini>la</defini>
+<partitif>d&amp;#039;une</partitif>
+</article>
 <coord>
 <alt>1450</alt>
 <long>0.76305</long>
@@ -22,20 +26,23 @@ Délai : 0.558 s.
 <type>7</type>
 </precision>
 </coord>
+<sym>Fishing Hot Spot Facility</sym>
+<etat>
+<nom>Etat</nom>
+<valeur>
+</valeur>
+<id>ouverture</id>
+</etat>
+<proprio>
+<nom>Propriétaire / accessibilité</nom>
+<valeur>OT de Vielha ?&lt;br&gt;
+Site officiel: &lt;a href=&quot;https://www.google.com/&quot;&gt;https://www.google.com/&lt;/a&gt;</valeur>
+</proprio>
 <places>
 <nom>Places prévues pour dormir</nom>
 <valeur>
 </valeur>
 </places>
-<etat>
-<valeur>
-</valeur>
-<id>ouverture</id>
-</etat>
-<date>
-<derniere_modif>2026-02-18 17:45:16.011001+01</derniere_modif>
-<creation>2015-10-06 17:58:21+02</creation>
-</date>
 <remarque>
 <nom>Remarque</nom>
 <valeur>Cabane en bordure de l&amp;#039;étang de Baserca.&lt;br&gt;
@@ -48,60 +55,6 @@ L&amp;#039;intérieur de la cabane est en sale état, mais il doit être possibl
 <nom>Accès</nom>
 <valeur>Un parking le long de la N230, extrémité Nord du lac, est accolé à la cabane.</valeur>
 </acces>
-<proprio>
-<nom>Propriétaire / accessibilité</nom>
-<valeur>OT de Vielha ?&lt;br&gt;
-Site officiel: &lt;a href=&quot;https://www.google.com/&quot;&gt;https://www.google.com/&lt;/a&gt;</valeur>
-</proprio>
-<createur>
-<id>1557</id>
-<nom>leosw</nom>
-</createur>
-<article>
-<demonstratif>cette</demonstratif>
-<defini>la</defini>
-<partitif>d&amp;#039;une</partitif>
-</article>
-<info_comp>
-<manque_un_mur>
-<nom>Manque un mur</nom>
-<valeur>1</valeur>
-</manque_un_mur>
-<cheminee>
-<nom>Cheminée</nom>
-<valeur>
-</valeur>
-</cheminee>
-<poele>
-<nom>Poêle</nom>
-<valeur>
-</valeur>
-</poele>
-<couvertures>
-<nom>Couvertures</nom>
-<valeur>
-</valeur>
-</couvertures>
-<places_matelas>
-<nom>Places sur Matelas</nom>
-<nb>
-</nb>
-<valeur>Sans</valeur>
-</places_matelas>
-<latrines>
-<nom>Latrines</nom>
-<valeur>
-</valeur>
-</latrines>
-<bois>
-<nom>Bois à proximité</nom>
-<valeur>1</valeur>
-</bois>
-<eau>
-<nom>Eau à proximité</nom>
-<valeur>1</valeur>
-</eau>
-</info_comp>
 <description>
 <valeur>Cabane en bordure de l&amp;#039;étang de Baserca.&lt;br&gt;
 En très grande partie détruite, mais il est possible de s&amp;#039;abriter sous un bout de toit en cas d&amp;#039;orage.&lt;br&gt;

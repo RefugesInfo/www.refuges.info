@@ -1,18 +1,22 @@
 https://dom.refuges.info/api/point?id=5314&format=xml&detail=complet&nb_points=1
-Délai : 0.584 s.
+Délai : 0.653 s.
 
 <?xml version="1.0" encoding="UTF-8" ?>
 <nodes>
 <node>
 <id>5314</id>
 <nom>Refugi Baserca</nom>
+<lien>https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/</lien>
 <type>
 <id>7</id>
 <valeur>cabane non gardée</valeur>
 <icone>cabane_manqueunmur_a48_eau</icone>
 </type>
-<sym>Fishing Hot Spot Facility</sym>
-<lien>https://dom.refuges.info/point/5314/cabane-non-gardee/Refugi-Baserca/</lien>
+<article>
+<demonstratif>cette</demonstratif>
+<defini>la</defini>
+<partitif>d&#039;une</partitif>
+</article>
 <coord>
 <alt>1450</alt>
 <long>0.76305</long>
@@ -22,20 +26,31 @@ Délai : 0.584 s.
 <type>7</type>
 </precision>
 </coord>
+<sym>Fishing Hot Spot Facility</sym>
+<createur>
+<id>1557</id>
+<nom>leosw</nom>
+</createur>
+<date>
+<creation>2015-10-06 17:58:21+02</creation>
+<derniere_modif>2026-02-18 17:45:16.011001+01</derniere_modif>
+</date>
+<etat>
+<nom>Etat</nom>
+<valeur>
+</valeur>
+<id>ouverture</id>
+</etat>
+<proprio>
+<nom>Propriétaire / accessibilité</nom>
+<valeur>OT de Vielha ?
+Site officiel: https://www.google.com/</valeur>
+</proprio>
 <places>
 <nom>Places prévues pour dormir</nom>
 <valeur>
 </valeur>
 </places>
-<etat>
-<valeur>
-</valeur>
-<id>ouverture</id>
-</etat>
-<date>
-<derniere_modif>2026-02-18 17:45:16.011001+01</derniere_modif>
-<creation>2015-10-06 17:58:21+02</creation>
-</date>
 <remarque>
 <nom>Remarque</nom>
 <valeur>Cabane en bordure de l&#039;étang de Baserca.
@@ -48,59 +63,49 @@ L&#039;intérieur de la cabane est en sale état, mais il doit être possible d&
 <nom>Accès</nom>
 <valeur>Un parking le long de la N230, extrémité Nord du lac, est accolé à la cabane.</valeur>
 </acces>
-<proprio>
-<nom>Propriétaire / accessibilité</nom>
-<valeur>OT de Vielha ?
-Site officiel: https://www.google.com/</valeur>
-</proprio>
-<createur>
-<id>1557</id>
-<nom>leosw</nom>
-</createur>
-<article>
-<demonstratif>cette</demonstratif>
-<defini>la</defini>
-<partitif>d&#039;une</partitif>
-</article>
 <info_comp>
-<manque_un_mur>
-<nom>Manque un mur</nom>
-<valeur>1</valeur>
-</manque_un_mur>
-<cheminee>
-<nom>Cheminée</nom>
+<places>
+<nom>Places prévues pour dormir</nom>
+<nb>
+</nb>
 <valeur>
 </valeur>
-</cheminee>
-<poele>
-<nom>Poêle</nom>
-<valeur>
-</valeur>
-</poele>
-<couvertures>
-<nom>Couvertures</nom>
-<valeur>
-</valeur>
-</couvertures>
+</places>
 <places_matelas>
 <nom>Places sur Matelas</nom>
 <nb>
 </nb>
-<valeur>Sans</valeur>
-</places_matelas>
-<latrines>
-<nom>Latrines</nom>
 <valeur>
 </valeur>
-</latrines>
-<bois>
-<nom>Bois à proximité</nom>
-<valeur>1</valeur>
-</bois>
-<eau>
+</places_matelas>
+<couvertures>
+<nom>Couvertures</nom>
+<valeur>Non</valeur>
+</couvertures>
+<manque_un_mur>
+<nom>Manque un mur</nom>
+<valeur>Oui</valeur>
+</manque_un_mur>
+<eau_a_proximite>
 <nom>Eau à proximité</nom>
-<valeur>1</valeur>
-</eau>
+<valeur>Oui</valeur>
+</eau_a_proximite>
+<latrines>
+<nom>Latrines</nom>
+<valeur>Non</valeur>
+</latrines>
+<poele>
+<nom>Poêle</nom>
+<valeur>Non</valeur>
+</poele>
+<cheminee>
+<nom>Cheminée</nom>
+<valeur>Non</valeur>
+</cheminee>
+<bois_a_proximite>
+<nom>Bois à proximité</nom>
+<valeur>Oui</valeur>
+</bois_a_proximite>
 </info_comp>
 <description>
 <valeur>Cabane en bordure de l&#039;étang de Baserca.

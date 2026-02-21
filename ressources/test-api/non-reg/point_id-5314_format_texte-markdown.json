@@ -1,5 +1,5 @@
 https://dom.refuges.info/api/point?id=5314&format_texte=markdown&nb_points=1
-Délai : 0.516 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
+Délai : 0.607 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
 
 {
   "copyright": "The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0",
@@ -38,7 +38,7 @@ Délai : 0.516 s, Les données ont été triées par clés et beautifiées pour 
     }
   ],
   "generator": "Refuges.info API",
-  "size": "1",
-  "timestamp": "2026-02-20T21:16:18+01:00",
+  "size": 1,
+  "timestamp": "2026-02-21T16:31:50+01:00",
   "type": "FeatureCollection"
 }

@@ -1,5 +1,5 @@
 https://dom.refuges.info/api/point?id=5314&format=rss&detail=complet&nb_points=1
-Délai : 0.595 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
+Délai : 0.621 s, Les données ont été triées par clés et beautifiées pour simplifier la comparaison.
 
 {
   "copyright": "The data included in this document is from www.refuges.info. The data is made available under CC By-Sa 2.0",
@@ -45,42 +45,48 @@ Délai : 0.595 s, Les données ont été triées par clés et beautifiées pour 
         },
         "etat": {
           "id": "ouverture",
+          "nom": "Etat",
           "valeur": ""
         },
         "id": 5314,
         "info_comp": {
           "bois": {
             "nom": "Bois \u00e0 proximit\u00e9",
-            "valeur": "1"
+            "valeur": "Oui"
           },
           "cheminee": {
             "nom": "Chemin\u00e9e",
-            "valeur": "0"
+            "valeur": "Non"
           },
           "couvertures": {
             "nom": "Couvertures",
-            "valeur": "0"
+            "valeur": "Non"
           },
           "eau": {
             "nom": "Eau \u00e0 proximit\u00e9",
-            "valeur": "1"
+            "valeur": "Oui"
           },
           "latrines": {
             "nom": "Latrines",
-            "valeur": "0"
+            "valeur": "Non"
           },
           "manque_un_mur": {
             "nom": "Manque un mur",
-            "valeur": "1"
+            "valeur": "Oui"
+          },
+          "places": {
+            "nb": 0,
+            "nom": "Places pr\u00e9vues pour dormir",
+            "valeur": 0
           },
           "places_matelas": {
             "nb": 0,
             "nom": "Places sur Matelas",
-            "valeur": "Sans"
+            "valeur": 0
           },
           "poele": {
             "nom": "Po\u00eale",
-            "valeur": "0"
+            "valeur": "Non"
           }
         },
         "lien": "https:\/\/dom.refuges.info\/point\/5314\/cabane-non-gardee\/Refugi-Baserca\/",
@@ -108,7 +114,7 @@ Délai : 0.595 s, Les données ont été triées par clés et beautifiées pour 
     }
   ],
   "generator": "Refuges.info API",
-  "size": "1",
-  "timestamp": "2026-02-20T21:16:17+01:00",
+  "size": 1,
+  "timestamp": "2026-02-21T16:31:48+01:00",
   "type": "FeatureCollection"
 }

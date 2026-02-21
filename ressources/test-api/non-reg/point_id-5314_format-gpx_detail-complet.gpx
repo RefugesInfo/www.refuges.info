@@ -1,5 +1,5 @@
 https://dom.refuges.info/api/point?id=5314&format=gpx&detail=complet&nb_points=1
-Délai : 0.542 s.
+Délai : 0.628 s.
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx standard de refuges.info" version="1.1">
@@ -10,7 +10,7 @@ Délai : 0.542 s.
 		<name>Contributeurs refuges.info</name>
 	</author>
 	<copyright author="Contributeurs refuges.info">
-		<time>2026-02-20T21:16:13</time>
+		<time>2026-02-21T16:31:44</time>
 		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 	</copyright>
 	<link href="https://dom.refuges.info" />

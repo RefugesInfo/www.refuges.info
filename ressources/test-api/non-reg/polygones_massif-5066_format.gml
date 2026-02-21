@@ -1,5 +1,5 @@
 https://dom.refuges.info/api/polygones?massif=5066&format=gml&nb_points=1
-Délai : 0.562 s.
+Délai : 0.624 s.
 
 <?xml version="1.0" encoding="utf-8"?>
 <wfs:FeatureCollection
