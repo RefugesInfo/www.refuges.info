@@ -61,9 +61,6 @@ else // le point est valide
 
   $vue->lienforum=$config_wri['forum_refuge']."?t=".$point->topic_id;
 
-  $conditions_commentaires = new stdClass();
-  $conditions_commentaires->ids_points = $id_point;
-  $tous_commentaires = infos_commentaires ($conditions_commentaires);
   $vue->annonce_fermeture = texte_non_ouverte ($point);
 
   /*********** Création de la liste des points à proximité si les coordonnées ne sont pas "cachée" et de l'affichage de la carte ***/

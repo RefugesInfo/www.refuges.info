@@ -386,6 +386,8 @@ function modification_ajout_commentaire($commentaire)
   else
     $retour->message="Le commentaire a été modifié";
 
+  touch_fiches($point, $commentaire_avant_modification??null);
+
   // C'est juste "cosmétique" : si on détecte que le numéro du point a changé, on signale qu'un transfert a eu lieu.
   if ($mode == "modification" and $un_transfert_a_eu_lieu)
     $retour->message.=" et a été transféré sur la fiche : <a href=\"".lien_point($point)."\">".$point->nom."</a>";
@@ -499,6 +501,7 @@ function suppression_photos($commentaire,$force=False)
   else
     return erreur("pas de photo dans ce commentaire");
 
+  touch_fiches($commentaire);
   return ok("photo supprimée");
 }
 
@@ -523,8 +526,10 @@ function suppression_commentaire($commentaire)
 
   if (!$success)
     return erreur("Suppression d'un commentaire inexistant",$query_delete);
-  else
+  else {
+    touch_fiches($commentaire);
     return ok("Commentaire supprimé");
+  }
 
   return True;
 }
@@ -588,7 +593,9 @@ function transfert_forum($commentaire)
 
   if ($retour->erreur)
     return erreur($retour->message.", mais la copie a réussie");
-  else
+  else {
+    touch_fiches($commentaire);
     return ok("Message transféré sur le forum");
+  }
 }
 

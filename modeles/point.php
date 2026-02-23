@@ -82,6 +82,7 @@ $conditions->centre_du_cercle : la géométrie d'un point au format WKB (en 2025
 
 $conditions->avec_liste_polygones=True : l'objet retourné dispose d'une propriété polygones, un array de tous les polygones auquels le point appartient.
 
+$conditions->depuis : fiches (point & commentaire) modifiés depuis la date epoch
 $conditions->avec_infos_fiche=True : Rend les informations liées à la fiche (proprio, accés, remarques, état, ...)
 $conditions->avec_infos_complementaires=True : Rend les informations complémentaires
 $conditions->avec_infos_creation=True : Rend les informations liées au créateur, date de création et modification.
@@ -298,6 +299,9 @@ function infos_points($conditions)
       $conditions_sql.="\n\tAND points.conditions_utilisation = '$conditions->conditions_utilisation'";
     else
       return erreur("On nous a demandé les points avec '$conditions->conditions_utilisation' ce qui est inexistant ou signe d'un bug");
+
+  if (!empty($conditions->depuis))
+    $conditions_sql.="\n\tAND points.date_modification_fiche > to_timestamp($conditions->depuis)";
 
   // CLUSTERISATION AU NIVEAU DU SERVEUR
   if (!empty($conditions->cluster))
@@ -725,6 +729,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
   // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
   $champs_sql['date_derniere_modification'] = 'NOW()';
+  $champs_sql['date_modification_fiche'] = 'NOW()';
 
   /********* On ne peut plus créer de cabane autour d'une cabane cachée *************/
   if (in_array($point->id_point_type,array($config_wri['id_cabane_non_gardee'],$config_wri['id_batiment_en_montagne'])))
@@ -896,6 +901,25 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
   historisation_modification($point_test,null,'suppression point',$id_utilisateur_qui_supprime);
 
   return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés");
+}
+
+/*******************************************************
+Cette fonction change la date_modification_fiche créées,
+modifiées ou dont un commentaire à évolué
+*******************************************************/
+function touch_fiches($commentaire, $commentaire_avant_modification=null)
+{
+  global $pdo;
+
+  if (empty($commentaire_avant_modification) || $commentaire->id_point == $commentaire_avant_modification->id_point)
+    $condition = "= $commentaire->id_point";
+  else
+    $condition = "IN ($commentaire->id_point, $commentaire_avant_modification->id_point)";
+
+  $query_modif_fiche = "UPDATE points SET date_modification_fiche=NOW() WHERE id_point $condition";
+  
+  if (!$pdo->exec($query_modif_fiche))
+    return erreur("Erreur sur la requête SQL", $query_modif_fiche);
 }
 
 /*******************************************************

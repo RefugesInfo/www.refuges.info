@@ -31,6 +31,7 @@ $req->format_texte = $_REQUEST['format_texte'] ?? '';
 $req->nb_points = $_REQUEST['nb_points'] ?? '';
 $req->cluster = $_REQUEST['cluster'] ?? '';
 $req->type_points = $_REQUEST['type_points'] ?? '';
+$req->depuis = $_REQUEST['depuis'] ?? '';
 
 // Ici c'est les valeurs possibles
 $val = new stdClass();
@@ -80,6 +81,9 @@ if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
 if(!array_key_exists($req->detail,$config_wri['api_format_detail']))
   $req->detail = "simple";
 
+if(!is_numeric($req->depuis) || $req->depuis < 0 || $req->depuis > time())
+  $req->depuis = '';
+
 // On vérifie que les types de points sont ok, sinon on met all comme valeur
 if($req->page!="point") {
   $temp = explode(",", $req->type_points);
@@ -125,14 +129,15 @@ if($req->bbox != "world") { // Si on a world, on ne passe pas de paramètre à p
 unset($ouest,$sud,$est,$nord);
 
 switch ($req->page) {
+  case 'massif':
+    if (!empty($req->massif))
+      $params->ids_polygones = $req->massif;
   case 'bbox':
     $params->pas_les_points_caches=1;
-    $params->ordre="point_type.importance DESC";
-    break;
-  case 'massif':
-    $params->ids_polygones = $req->massif;
-    $params->pas_les_points_caches=1;
-    $params->ordre="point_type.importance DESC";
+    if (empty($req->depuis))
+      $params->ordre="point_type.importance DESC";
+    else
+      $params->ordre="points.date_modification_fiche DESC";
     break;
   case 'point':
     $params->ids_points = intval($req->id);
@@ -156,6 +161,8 @@ if($req->type_points != "all") {
 // les champs qu'on veut voir figurer dans la réponse de l'API
 
 switch ($req->detail) {
+  case 'avec_commentaires':
+    $params->avec_commentaires = true;
   case 'complet':
     $params->avec_infos_creation = true;
     $params->avec_infos_complementaires = true;
@@ -166,17 +173,25 @@ switch ($req->detail) {
 
 /* Définition des informations transmises pour chaque option "detail" */
 
-// Utilisé par la carte actuelle WRI
-$filtre['simple'] = [
+// Uniquement affichage d'une icône cliquable avec son nom
+$filtre = ['icones' => [
   'nom' => true,
+  'type' => ['icone' => true],
+]];
+
+// Utilisé par la carte actuelle WRI
+$filtre['simple'] = array_merge($filtre['icones'], [
+  // Ecrase les précédents
+  'nom' => true,
+  'type' => true,
+  // Nouveaux
   'id' => true,
   'coord' => ['alt' => true],
-  'type' => true,
   'sym' => true,
   'etat' => ['valeur' => true],
   'places' => true,
   'lien' => true,
-];
+]);
 
 $filtre['complet'] = array_merge($filtre['simple'], [
   // Complète avec les autres valeurs
@@ -201,6 +216,31 @@ $filtre['complet'] = array_merge($filtre['simple'], [
   ],
   'description' => true,
   'article' => true,
+]);
+
+// Pour les applications
+$filtre['avec_commentaires'] = array_merge($filtre['complet'], [
+  // Ecrase les précédents
+  'type' => ['valeur' => true],
+  'coord' => ['alt' => true],
+  'etat' => ['valeur' => 'etat'],
+  'date' => ['creation' => true], // On enlève derniere_modif
+  // Tout l'array commentaires
+  'commentaires' => ['*' => [
+    'id_commentaire' => 'id',
+    'id_point' => true,
+    'texte_affichage' => 'texte',
+    'auteur_commentaire' => 'auteur',
+    'date_commentaire' => 'date',
+    'lien_photo_reduite' => 'photo',
+    'date_photo' => true,
+  ]],
+  // On supprime
+  'id' => false, // Déjà dans les features
+  'alt' => false, // Déjà dans geometry->coordinates
+  'places' => false, // Déplacé dans info_comp
+  'description' => false, // Doublon avec info_comp
+  'article' => false, // Pas besoin dans l'appli
 ]);
 
 /* Petite fonction qui réalise le filtrage en fonction des définitions ci-dessus */
@@ -291,6 +331,14 @@ foreach ($points_bruts as $i=>$point) {
       $description.=$point->acces."\n";
       $description.=$point->proprio."\n";
       $point->properties->description['valeur']=$description;
+    }
+
+    // Dom 01/2026 : ajout des commentaires si demandés
+    if($req->detail == 'avec_commentaires')
+    {
+      $conditions_commentaires = new stdClass();
+      $conditions_commentaires->ids_points = $point->id_point;
+      $point->properties->commentaires = infos_commentaires($conditions_commentaires);
     }
 
     // Filtre des détails

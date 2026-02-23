@@ -47,7 +47,6 @@
                   </a> 
                   &mdash; <span class="description">Export de points</span>
                 </li>
-                <li><a href="#/api/commentaires"><span class="methode">GET</span> <span class="url">/api/commentaires</span></a> &mdash; <span class="description">Export des commentaires d'un point</span></li>
                 <li><a href="#/api/contributions"><span class="methode">GET</span> <span class="url">/api/contributions</span></a> &mdash; <span class="description">Export de la liste des dernières contributions</span></li>
                 <li><a href="#/api/polygones"><span class="methode">GET</span> <span class="url">/api/polygones</span></a> &mdash; <span class="description">Export des polygones de la base (massifs, parcs...)</span></li>
             </ul>
@@ -65,32 +64,34 @@
         </section>
 
         <section>
-            <h1 id="/api/point">Export d'une liste de points</h1>
+            <h1 id="/api/points">Export d'une liste de points</h1>
             <p>
-                Les requêtes <a href="#/api/point"><span class="methode">GET</span>
-                <span class="url">/api/bbox</span>
+                Les requêtes <a href="#/api/points"><span class="methode">GET</span>
+                <span class="url">/api/box</span>
                 <span class="url">/api/massif</span>
-                <span class="url">/api/point</span></a>
-                permettent de retourner les informations détaillées de points
-                de la base de donnée à partir de son <b>ID</b>. Les paramètres sont définis
-                dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
+                <span class="url">/api/point</span>
+                </a>
+                permettent de retourner les informations détaillées de points de la base de donnée.
+                Les paramètres sont définis dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
                 <table>
                     <tr><th>Paramètre de sélection</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
                     <tr>
                         <td>id</td>
                         <td>
-                          bbox, massif: <span class="opt">Optionnel</span>
-                          L'id des points dont on veut des informations
-                          <br/>
-                          point: <span class="req">Requis</span>
-                          L'id du point
+                          <span class="url">/api/box</span><span class="url">/api/massif</span> :
+                          <span class="opt">Optionnel</span> les <b>id</b>, séparés par des virgules, des points dont on veut des informations
+                          <br>
+                          <span class="url">/api/point</span> : <span class="req">Requis</span> l'<b>id</b> du point
                         </td>
                         <td>Aucune</td>
                         <td><span class="url">2536</span>, <span class="url">104,457</span>...</td>
                     </tr>
                     <tr>
                         <td>massif</td>
-                        <td><span class="opt">Optionnel</span> L'id du ou des massif(s) à exporter (ces ids peuvent être récupérés via la requête <a href="#/api/polygones"><span class="methode">GET</span><span class="url">/api/polygones</span></a>). Les ids sont séparés par des virgules lorsqu'ils sont plusieurs.</td>
+                        <td><span class="opt">Optionnel</span> les <b>id</b> des massifs à exporter
+                        (ces ids peuvent être récupérés via la requête
+                        <a href="#/api/polygones"><span class="methode">GET</span><span class="url">/api/polygones</span></a>).
+                        Les ids sont séparés par des virgules lorsqu'ils sont plusieurs.</td>
                         <td>Aucune</td>
                         <td><span class="url">8,9,11</span>, <span class="url">352</span>...</td>
                     </tr>
@@ -103,8 +104,14 @@
                         <td><span class="url">-13.00,44.05,17.00,49.79</span>, <span class="url">world</span>...</td>
                     </tr>
                     <tr>
+                        <td>depuis</td>
+                        <td><span class="opt">Optionnel</span> Sélectionne les points modifiés depuis une date.</td>
+                        <td><span class="url">0</span></td>
+                        <td><span class="url">Secondes depuis 1/1/1970</span></td>
+                    </tr>
+                    <tr>
                         <td>nb_points</td>
-                        <td><span class="opt">Optionnel</span> Nombre de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, ...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).</td>
+                        <td><span class="opt">Optionnel</span> Nombre maximum de points à exporter (le choix est fait par un algorithme interne avec prioritées élevées pour les abris et cabanes, et faibles pour refuges, ...). <span class="url">all</span> retournera tous les points de la zone, mais à utiliser avec précautions (lecture illisible et charge serveur importante).</td>
                         <td>
                           bbox:<span class="url">250</span><br/>
                           massif:<span class="url">250</span><br/>
@@ -118,10 +125,12 @@
                     <tr>
                         <td>detail</td>
                         <td><span class="opt">Optionnel</span> N'est disponible que lorsque <b>format</b> est <span class="url">geojson</span>.<br/>
-                        <span class="url">Simple</span> : longitude, latitude, altitude, nom, type, id, icone, état, places & lien.<br/>
-                        <span class="url">Complet</span> : toutes les informations disponibles sur les points.<br/>
+                        <span class="url">icones</span> : longitude, latitude, altitude, nom, type, id & icone.<br/>
+                        <span class="url">simple</span> : idem + état, places & lien.<br/>
+                        <span class="url">complet</span> : toutes les informations disponibles sur les points.<br/>
+                        <span class="url">avec_commentaires</span> : idem + les commentaires.</td>
                         <td><span class="url">simple</span></td>
-                        <td><span class="url">simple</span>, <span class="url">complet</span></td>
+                        <td><span class="url">icones</span>, <span class="url">simple</span>, <span class="url">complet</span>, <span class="url">avec_commentaires</span></td>
                     </tr>
                     <tr>
                         <td>format</td>
@@ -132,7 +141,7 @@
                     <tr>
                         <td>format_texte</td>
                         <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
-                        <td><span class="url">bbcode</span></td>
+                        <td><span class="url">html</span></td>
                         <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
                     </tr>
                  </table>
@@ -142,41 +151,7 @@
             </p>
             <p>
                 Voici un exemple de requête : 
-                <a class="url" href="../point?id=583&format=xml&format_texte=html">api/point?id=583&format=xml&format_texte=html</a>
-            </p>
-        </section>
-
-        <section>
-            <h1 id="/api/commentaires">Export des commentaires d'un point</h1>
-            <p>
-                La requête <a href="#/api/commentaires"><span class="methode">GET</span><span class="url">/api/commentaires</span></a> permet de retourner les commentaires d'un point
-                de la base de donnée à partir de son <b>ID</b>. Les paramètres sont définis
-                dans le tableau suivant, et vous trouverez au dessous des exemples de structuration des réponses.
-                <table>
-                    <tr><th>Paramètre</th><th>Description</th><th>Valeur par défaut</th><th>Exemples</th></tr>
-                    <tr>
-                        <td>id_point</td>
-                        <td><span class="req">Requis</span> L'id du point ou des points dont on veut les commentaires</td>
-                        <td>Aucune</td>
-                        <td><span class="url">2536  583,2536</span>...</td>
-                    </tr>
-                    <tr>
-                        <td>format_texte</td>
-                        <td><span class="opt">Optionnel</span> Le formatage du texte, que vous devrez retravailler par la suite.</td>
-                        <td><span class="url">texte</span></td>
-                        <td><span class="url">bbcode</span>, <span class="url">texte</span>, <span class="url">markdown</span>, <span class="url">html</span></td>
-                    </tr>
-                    <tr>
-                        <td>format</td>
-                        <td><span class="opt">Fixe</span> Le format de l'export.</td>
-                        <td><span class="url">json</span></td>
-                        <td><span class="url">Le seul format json est accepté</td>
-                    </tr>
-                 </table>
-            </p>
-            <p>
-                Voici un exemple de requête : 
-                <a class="url" href="../commentaires?id_point=583&format_texte=html">api/commentaires?id=583&format_texte=html</a>
+                <a class="url" href="../points?id=583&format=xml&format_texte=html">api/points?id=583&format=xml&format_texte=html</a>
             </p>
         </section>
 
