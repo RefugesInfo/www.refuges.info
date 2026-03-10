@@ -188,10 +188,6 @@ $config_wri['ids_forum_pour_les_nouvelles']=$config_wri['id_forum_des_refuges'];
 $config_wri['encodage_exportation']="utf-8";
 $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];
 
-$config_wri['url_nominatim']="//nominatim.openstreetmap.org/";
-$config_wri['url_appel_nominatim']=$config_wri['url_nominatim'] . "search.php?";
-$config_wri['email_contact_nominatim']="sylvain@refuges.info";
-
 // Signalement aux modérateurs des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
 $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
 
