@@ -9,6 +9,7 @@ require_once ('bdd.php');
 require_once ('point.php');
 require_once ('mise_en_forme_texte.php');
 require_once ('utilisateur.php');
+require_once ('identification.php');
 
 
 /**********************************************************************************************
@@ -179,6 +180,7 @@ function infos_commentaires ($conditions)
             $commentaire->photo[$taille]=$chemin_photo;
             // Le filemtime a pour but, après une modification sur la photo, d'éviter que les caches navigateurs ne s'activent
             $commentaire->lien_photo[$taille]=$config_wri['rep_web_photos_points'].$nom_fichier_photo."?".filemtime($chemin_photo);
+            $commentaire->lien_photo_reduite=$config_wri['rep_web_photos_points'].$nom_fichier_photo."?".filemtime($chemin_photo);
             break; // pas besoin de tester toute les extensions, on en a trouvé une
           }
         }
@@ -194,6 +196,20 @@ function infos_commentaires ($conditions)
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés
     if (!empty($commentaire->auteur_commentaire))
         $commentaire->auteur_commentaire=html_entity_decode($commentaire->auteur_commentaire);
+
+    // Dom 01/2026 : Transféré depuis /controleur/point.php
+    // Mise en forme des commentaires
+    $commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
+    $commentaire->auteur_commentaire_affichage=htmlentities($commentaire->auteur_commentaire);
+    $commentaire->date_commentaire_format_francais= date_format_francais($commentaire->ts_unix_commentaire);
+
+    // Si, selon la base une photo existe, on va l'afficher
+    if ($commentaire->photo_existe)
+    {
+      if (isset($commentaire->date_photo))
+        $commentaire->date_photo_format_francais=strftime ("%d/%m/%Y", $commentaire->ts_unix_photo);
+    }
+
     $commentaires [] = $commentaire;
   }
   return $commentaires ;
@@ -354,6 +370,8 @@ function modification_ajout_commentaire($commentaire)
   else
     $retour->message="Le commentaire a été modifié";
 
+  touch_fiches($point, $commentaire_avant_modification??null);
+
   // C'est juste "cosmétique" : si on détecte que le numéro du point a changé, on signale qu'un transfert a eu lieu.
   if ($mode == "modification" and $un_transfert_a_eu_lieu)
     $retour->message.=" et a été transféré sur la fiche : <a href=\"".lien_point($point)."\">".$point->nom."</a>";
@@ -467,6 +485,7 @@ function suppression_photos($commentaire,$force=False)
   else
     return erreur("pas de photo dans ce commentaire");
 
+  touch_fiches($commentaire);
   return ok("photo supprimée");
 }
 
@@ -491,8 +510,10 @@ function suppression_commentaire($commentaire)
 
   if (!$success)
     return erreur("Suppression d'un commentaire inexistant",$query_delete);
-  else
+  else {
+    touch_fiches($commentaire);
     return ok("Commentaire supprimé");
+  }
 
   return True;
 }
@@ -556,7 +577,9 @@ function transfert_forum($commentaire)
 
   if ($retour->erreur)
     return erreur($retour->message.", mais la copie a réussie");
-  else
+  else {
+    touch_fiches($commentaire);
     return ok("Message transféré sur le forum");
+  }
 }
 

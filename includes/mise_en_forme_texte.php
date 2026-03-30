@@ -430,9 +430,22 @@ function updatebbcode2txt(&$html, $key) {
     if (is_string($html) && $key != 'url') 
         $html=bbcode2txt($html);
 }
-function updatebool2char(&$html) { 
+function updatebool2char(&$html) {
     if($html===FALSE) 
         $html='0';  
     elseif($html===TRUE) 
         $html='1'; 
+}
+function mise_en_forme_texte(&$html, $format) {
+  if($format == "texte") {
+    array_walk_recursive($html, 'updatebbcode2txt');
+  }
+  elseif($format == "html") {
+    array_walk_recursive($html, 'updatebbcode2html');
+  }
+  elseif($format == "markdown") {
+    array_walk_recursive($html, 'updatebbcode2markdown');
+  }
+
+  array_walk_recursive($html, 'updatebool2char'); // Remplace les False et True en 0 ou 1
 }

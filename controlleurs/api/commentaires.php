@@ -41,16 +41,7 @@ foreach ($commentaires_point as $cp) {
 
 /****************************** FORMATAGE DU TEXTE ******************************/
 
-// On transforme le texte dans la correcte syntaxe
-if($req->format_texte == "texte")
-  array_walk_recursive($commentaires, 'updatebbcode2txt');
-elseif($req->format_texte == "html")
-  array_walk_recursive($commentaires, 'updatebbcode2html');
-elseif($req->format_texte == "markdown")
-  array_walk_recursive($commentaires, 'updatebbcode2markdown');
-
-// Remplace les False et True en 0 ou 1
-array_walk_recursive($commentaires, 'updatebool2char');
+mise_en_forme_texte($commentaires, $req->format_texte);
 
 /****************************** FORMAT VUE ******************************/
 

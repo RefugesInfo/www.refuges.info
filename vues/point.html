@@ -114,11 +114,8 @@
 <!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
       <?php if (count($vue->infos_complementaires)) { ?>
       <dt style='clear: left;'>Informations complémentaires:</dt>
-        <?php foreach ($vue->infos_complementaires as $champ => $val) {?>
-          <dd><?=$champ?>: <b><?=$val['valeur']?></b> <?php
-            if (isset($val['lien'])) 
-            {?><a href="<?=$val['lien']?>"><?=$val['texte_lien']?></a><?php } 
-          ?></dd>
+        <?php foreach ($vue->infos_complementaires as $val) { ?>
+          <dd><?=$val['nom']?>: <b><?=$val['valeur']?></b></dd>
         <?php }
       }?>
 <!--===================================== POINTS À PROXIMITÉ ======================================-->
@@ -293,7 +290,7 @@
             <a href="<?=$commentaire->lien_photo['originale'] ?? ''?>">
               <img src="<?=$commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo" style="max-width:100%;">
             </a>
-            <div class="texte_sur_image"><?=$commentaire->date_photo_format_francais?></div>
+            <div class="texte_sur_image"><?=$commentaire->date_photo_format_francais??''?></div>
            </div> 
           <?php }?>
           

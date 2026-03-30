@@ -63,18 +63,7 @@ foreach ($news as $id => $nouvelle)
 
 /****************************** FORMATAGE DU TEXTE ******************************/
 
-// On transforme le texte dans la correcte syntaxe
-if($req->format_texte == "texte") {
-  array_walk_recursive($news, 'updatebbcode2txt');
-}
-elseif($req->format_texte == "html") {
-  array_walk_recursive($news, 'updatebbcode2html');
-}
-elseif($req->format_texte == "markdown") {
-  array_walk_recursive($news, 'updatebbcode2markdown');
-}
-array_walk_recursive($news, 'updatebool2char'); // Remplace les False et True en 0 ou 1
-
+mise_en_forme_texte($news, $req->format_texte);
 
 /****************************** FORMAT VUE ******************************/
 
