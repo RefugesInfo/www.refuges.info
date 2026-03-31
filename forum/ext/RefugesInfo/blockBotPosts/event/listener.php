@@ -40,6 +40,6 @@ class listener implements EventSubscriberInterface
     $request->enable_super_globals();
     if(isset($config_wri['no_sid_urls']) &&
       !isset($_SERVER['HTTP_COOKIE']))
-      $event['append_sid_overwrite'] = $event['url'].'?'.$event['params'];
+      $event['append_sid_overwrite'] = $event['url'].($event['params'] === "" ?: '?').$event['params'];
   }
 }
