@@ -18,14 +18,14 @@ function externTilesLayers(mapKeys, restreint) {
       source: new ol.source.OSM({
         url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
         maxZoom: 18,
-        attributions: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://openmaps.fr/map-legend/openhikingmap-legend.html">Légende</a>',
+        attributions: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OSM</a> <a target="_blank" href="https://openmaps.fr/map-legend/openhikingmap-legend.html">Légende</a>',
       }),
     }),
     'OpenStreetMap': new ol.layer.Tile({
       source: new ol.source.OSM({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         maxZoom: 19,
-        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OSM</a> | ' +
           '<a target="_blank" href="https://www.openstreetmap.org/panes/legend">Légende</a>',
       }),
     }),
@@ -33,14 +33,14 @@ function externTilesLayers(mapKeys, restreint) {
       source: new ol.source.OSM({
         url: 'https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png',
         maxZoom: 18,
-        attributions: '<a href="https://github.com/sletuffe/OpenTopoMap">&copy; OTM-R</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a> <a target="_blank" href="https://openmaps.fr/map-legend/opentopomap-legend.html">Légende</a>',
+        attributions: '<a href="https://github.com/sletuffe/OpenTopoMap">&copy; OTM-R</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="http://www.openstreetmap.org/copyright">&copy; OSM</a> <a target="_blank" href="https://openmaps.fr/map-legend/opentopomap-legend.html">Légende</a>',
       }),
     }),
     'Outdoors': new ol.layer.Tile({
       source: new ol.source.OSM({
         url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + mapKeys.thunderforest,
         maxZoom: 22,
-        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | ' +
+        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OSM</a> | ' +
           '<a target="_blank" href="https://www.thunderforest.com/">Thunderforest</a>',
       }),
     }),
@@ -48,7 +48,7 @@ function externTilesLayers(mapKeys, restreint) {
       source: new ol.source.OSM({
         url: 'https://api.iso-maps.com/v1/tiles/{z}/{x}/{y}.webp?api_key=' + mapKeys.isomaps,
         maxZoom: 20,
-        attributions: '©<a target="_blank" href="https://www.iso-maps.com/">Isomaps</a> | ©<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attributions: '©<a target="_blank" href="https://www.iso-maps.com/">Isomaps</a> | ©<a target="_blank" href="https://www.openstreetmap.org/copyright">OSM</a>',
       }),
     }),
 
