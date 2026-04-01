@@ -3,6 +3,9 @@
  * Supports GPX, KML, GeoJSON formats
  */
 
+import {
+  containsExtent
+} from 'ol/extent.js';
 import Feature from 'ol/Feature';
 import * as format from 'ol/format';
 import LineString from 'ol/geom/LineString';
@@ -60,10 +63,12 @@ class Download extends Button {
       // Get all visible features
       map.getLayers().forEach(l => {
         if (!l.getProperties().marker &&
-          l.getSource() && l.getSource().forEachFeatureInExtent) // For vector layers only
-          l.getSource().forEachFeatureInExtent(mapExtent, feature =>
-            featuresToSave.push(feature)
-          );
+          l.getSource() && l.getSource().getExtent) // For vector layers only
+          l.getSource().getFeatures().forEach(f => {
+            if (f.getGeometry() &&
+              containsExtent(mapExtent, f.getGeometry().getExtent()))
+              featuresToSave.push(f);
+          });
       });
 
     if (formatName === 'GPX')

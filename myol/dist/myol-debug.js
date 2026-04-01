@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 18/12/2025 10:21:17 using npm run build from the src/... sources
+ * Built 01/04/2026 20:36:06 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -76845,10 +76845,12 @@
         // Get all visible features
         map.getLayers().forEach(l => {
           if (!l.getProperties().marker &&
-            l.getSource() && l.getSource().forEachFeatureInExtent) // For vector layers only
-            l.getSource().forEachFeatureInExtent(mapExtent, feature =>
-              featuresToSave.push(feature)
-            );
+            l.getSource() && l.getSource().getExtent) // For vector layers only
+            l.getSource().getFeatures().forEach(f => {
+              if (f.getGeometry() &&
+                containsExtent(mapExtent, f.getGeometry().getExtent()))
+                featuresToSave.push(f);
+            });
         });
 
       if (formatName === 'GPX')
@@ -92069,7 +92071,7 @@
   /* global map */
 
 
-  const VERSION = '1.1.2.dev 18/12/2025 10:21:17';
+  const VERSION = '1.1.2.dev 01/04/2026 20:36:06';
 
   async function traces(options) {
     const debug = {
