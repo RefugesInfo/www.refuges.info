@@ -85,7 +85,7 @@ if (empty($point->erreur))
       $data = [
         'username' => $commentaire->auteur_commentaire,
         'id_point' => $commentaire->id_point,
-        'id_commentaire' => $commentaire->id_commentaire,
+        'id_commentaire' => $commentaire->id_commentaire??0,
         'title' => $point->nom,
         'text' => $commentaire->texte,
         'uri' => $_SERVER['REQUEST_URI'],
@@ -106,8 +106,8 @@ if (empty($point->erreur))
       else
       {
         $vue->type = "page_simple";
-        $vue->contenu="Impossible d'ajouter ce commentaire car : ".$vue->messages->message;
-		return;
+        $vue->contenu="Impossible d'ajouter ce commentaire car : ".$commentaire->message;
+        return;
       }
 
       // Nettoyage de la photo envoyée qu'elle fût ou non insérée correctement comme commentaire
