@@ -188,12 +188,14 @@ $config_wri['ids_forum_pour_les_nouvelles']=$config_wri['id_forum_des_refuges'];
 $config_wri['encodage_exportation']="utf-8";
 $config_wri['encodage_des_contenu_web']=$config_wri['encodage_exportation'];
 
-// Signalement aux modérateurs des messages de réservation (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
+// Signalement aux modérateurs des messages de réservation
+// (On peut aussi le compléter de la config_privee type $config_wri['censure'].="|nombreux")
 $config_wri['censure']="reservat|reserver|fete|noel|l\'an |l\'an$|reveillon|prevenir|previen";
 
 // Mots clés interdits dans les commentaires (le commentaire sera refusé). Par défaut vide, mais en urgence on peut en ajouter dans la config_privee type $config_wri['mots_interdits'].="|credit-immobilier-pas-cher.fr"
 // C'est une méthode de défense assez peu efficace contre les robots, mais peut décourager les commentateurs humains
-$config_wri['mots_interdits']="merde";
+// (On peut aussi le compléter de la config_privee type $config_wri['mots_interdits'].="|merde")
+$config_wri['mots_interdits']="";
 
 // tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un peu lourd à maintenir)
 // La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
