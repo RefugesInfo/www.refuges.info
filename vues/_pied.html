@@ -1,33 +1,33 @@
 <?php if ($config_wri['debug']) { ?>
-	<div class="basdepage noprint">
-		<a href="http://validator.w3.org/check?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">
-			<img src="<?=$config_wri['url_chemin_images']?>valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict">
-		</a>
-		<a href="https://jigsaw.w3.org/css-validator/validator?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">
-			<img src="<?=$config_wri['url_chemin_images']?>valide/css21-blue.gif" alt="Valid CSS niveau 2.1">
-		</a>
-		<?=(temps_execution()."s")?>
-	</div>
+  <div class="basdepage noprint">
+    <a href="http://validator.w3.org/check?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">
+      <img src="<?=$config_wri['url_chemin_images']?>valide/xhtml10-blue.png" alt="Valid XHTML 1.0 Strict">
+    </a>
+    <a href="https://jigsaw.w3.org/css-validator/validator?uri=<?=(empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>">
+      <img src="<?=$config_wri['url_chemin_images']?>valide/css21-blue.gif" alt="Valid CSS niveau 2.1">
+    </a>
+    <?=(temps_execution()."s")?>
+  </div>
 <?php }
 
 // Pour accélérer le chargement initial de la page,
 // on inclue ici les librairies qui ne sont appelées que quand la page est chargée.
 if (isset ($vue->java_lib_foot))
-	foreach ($vue->java_lib_foot as $js_lib) {?>
-		<script src="<?=$js_lib?>"></script>
+  foreach ($vue->java_lib_foot as $js_lib) { ?>
+    <script src="<?=$js_lib?>"></script>
 <?php } ?>
 
 <script>
 //<![CDATA[
-	<?php
-		// Et deux petits derniers qui sont inclus dans la page html
-		// Un qui est toujours là
-		include(fichier_vue('bandeau.js'));
+  <?php
+    // Et deux petits derniers qui sont inclus dans la page html
+    // Un qui est toujours là
+    include(fichier_vue('bandeau.js'));
 
-		// Pour les pages du site
-		$nom_js_inclus = fichier_vue($vue->type.'.js');
-		if ($nom_js_inclus)
-			include($nom_js_inclus);
-	?>
+    // Pour les pages du site
+    $nom_js_inclus = fichier_vue($vue->type.'.js');
+    if ($nom_js_inclus)
+      include($nom_js_inclus);
+  ?>
 //]]>
 </script>

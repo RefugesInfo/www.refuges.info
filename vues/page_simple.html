@@ -1,8 +1,8 @@
 <?php
 /**
-Cette page permet de présenter un message générique 
-(erreur de captcha, erreur de saisie, erreur d'un truc qui manque, votre action s'est bien passée, etc. 
-on peu lui passer un 
+Cette page permet de présenter un message générique
+(erreur de captcha, erreur de saisie, erreur d'un truc qui manque, votre action s'est bien passée, etc.
+on peu lui passer un
 $vue->titre
 $vue->contenu
 $vue->lien_special
@@ -12,8 +12,8 @@ rien de bien extraordinaire, faites votre propre vue si vous voulez plus compliq
 **/
 ?>
 <p>
-	<?=$vue->contenu ?? ''?>
-	<?php if (!empty($vue->lien)){?>
-		<a href="<?=$vue->lien?>"><?=$vue->titre_lien?></a>
-	<?php } ?>
+  <?=$vue->contenu ?? ''?>
+  <?php if (!empty($vue->lien)) { ?>
+    <a href="<?=$vue->lien?>"><?=$vue->titre_lien?></a>
+  <?php } ?>
 </p>

@@ -31,20 +31,20 @@ headers_cache_api();
         <guid><?=$nouvelle['lien'].rand(1,10000)?></guid>
         <pubDate><?=date('r',$nouvelle['date'])?></pubDate>
         <description><![CDATA[
-          <b><big><?=$nouvelle['texte']?></big></b><br>
+          <b><big><?=$nouvelle['texte']?></big></b><br/>
             <?php switch ($nouvelle['categorie']) {
                     case 'Commentaire':
             ?>
             <p style='color:grey;'><?=$nouvelle['texte']?>
               <?php if (!empty($nouvelle['photo'])) { ?>
-              <br><a href="https://<?=$config_wri['nom_hote'].$nouvelle['photo_originale']?>"><img src="https://<?=$config_wri['nom_hote'].$nouvelle['photo_mini']?>" /></a>
+              <br/><a href="https://<?=$config_wri['nom_hote'].$nouvelle['photo_originale']?>"><img src="https://<?=$config_wri['nom_hote'].$nouvelle['photo_mini']?>" /></a>
               <?php } ?>
             </p>
             
             <?php   break;
                     case 'Point':
             ?>
-            <p style='color:grey;'><b>Remarques :</b> <?=$nouvelle['remarques']?><br><b>Accès :</b> <?=$nouvelle['acces']?></p>
+            <p style='color:grey;'><b>Remarques :</b> <?=$nouvelle['remarques']?><br/><b>Accès :</b> <?=$nouvelle['acces']?></p>
             <?php     break; 
             }
             ?>

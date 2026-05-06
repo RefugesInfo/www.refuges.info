@@ -1,92 +1,92 @@
 <div class="contenu">
-	<!-- PRESENTATION   -->
+  <!-- PRESENTATION   -->
 
-	<p style="margin-top:0">
-		<?=wiki_page_html("contenu_accueil")?>
-        <?=wiki_page_html("nouvelles_generales")?>
-	</p>
+  <p style="margin-top:0">
+    <?=wiki_page_html("contenu_accueil")?>
+    <?=wiki_page_html("nouvelles_generales")?>
+  </p>
 
-	<!-- CARTE DES MASSIFS -->
-	<div class="tablo" style="padding-right:1em;">
-		<h4><?=$vue->stat->nbpoints?> points, <?=$vue->stat->nbmassifs?> massifs</h4>
-		<div class="carte" id="carte-accueil"></div>
-		<h5>Et encore...</h5>
-		<ul class="liste-massifs">
-			<?php if (isset($vue->zones_couvertes)) foreach ($vue->zones_couvertes AS $nom_zone => $lien) {?>
-				<li>
-					<a href="<?=$lien?>"><?=$nom_zone?></a>
-				</li>
-			<?}?>
-		</ul>
-	</div>
+  <!-- CARTE DES MASSIFS -->
+  <div class="tablo" style="padding-right:1em;">
+    <h4><?=$vue->stat->nbpoints?> points, <?=$vue->stat->nbmassifs?> massifs</h4>
+    <div class="carte" id="carte-accueil"></div>
+    <h5>Et encore...</h5>
+    <ul class="liste-massifs">
+      <?php if (isset($vue->zones_couvertes)) foreach ($vue->zones_couvertes AS $nom_zone => $lien) { ?>
+        <li>
+          <a href="<?=$lien?>"><?=$nom_zone?></a>
+        </li>
+      <? } ?>
+    </ul>
+  </div>
 
-	<div class="tablo" style="float:none;">
-		<h4><?=$vue->stat->nbphotos?> photos. Les dernières :</h4>
-		<br>
-			<?php if (isset($vue->nouveaux_commentaires)) 
-				foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {
-					if (isset ($nouveau_commentaire->photo_existe) &&
-						isset ($nouveau_commentaire->lien_photo)) { ?>
-					<a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"
-						title="<?=$nouveau_commentaire->nom?>">
-						<img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>">
-					</a>
-				<?	 }
-				} ?>
-		<br>
+  <div class="tablo" style="float:none;">
+    <h4><?=$vue->stat->nbphotos?> photos. Les dernières :</h4>
+    <br/>
+      <?php if (isset($vue->nouveaux_commentaires))
+        foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {
+          if (isset ($nouveau_commentaire->photo_existe) &&
+            isset ($nouveau_commentaire->lien_photo)) { ?>
+            <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"
+              title="<?=$nouveau_commentaire->nom?>">
+              <img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>">
+            </a>
+          <? }
+        } ?>
+    <br/>
 
-		<h4><?=$vue->stat->nbpoints?> points dans la base. Les <?=$config_wri['defaut_max_ajouts_recents']?> derniers ajoutés :</h4>
-		<ul>
-			<?php if (isset($vue->nouveaux_points)) foreach ($vue->nouveaux_points as $nouveau_point) { ?>
-				<li>
-					<b><?=date("d/m/y",$nouveau_point->date_creation_timestamp)?></b>
-					&nbsp;Ajout <?=$nouveau_point->article_partitif_point_type?> <?=$nouveau_point->nom_type?>
-					<?php if ($nouveau_point->nom_createur!="") { 
-						if ($nouveau_point->id_createur==0) { ?>
-							par <?=$nouveau_point->nom_createur?>
-						<?php } else { ?>
-						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
-						<?}?>
-					<?}?>
-						: <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst($nouveau_point->nom)?></a>
-				</li>
-			<?}?>
-			<li>
-				<a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&amp;quoi=points"
-					title="Voir les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?> derniers points ajoutés sur le site">
-					<b>Plus...</b>
-				</a>
-			</li>
-		</ul>
-		<br>
+    <h4><?=$vue->stat->nbpoints?> points dans la base. Les <?=$config_wri['defaut_max_ajouts_recents']?> derniers ajoutés :</h4>
+    <ul>
+      <?php if (isset($vue->nouveaux_points)) foreach ($vue->nouveaux_points as $nouveau_point) { ?>
+        <li>
+          <b><?=date("d/m/y",$nouveau_point->date_creation_timestamp)?></b>
+          &nbsp;Ajout <?=$nouveau_point->article_partitif_point_type?> <?=$nouveau_point->nom_type?>
+          <?php if ($nouveau_point->nom_createur!="") {
+            if ($nouveau_point->id_createur==0) { ?>
+              par <?=$nouveau_point->nom_createur?>
+            <?php } else { ?>
+              par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
+            <? } ?>
+          <? } ?>
+            : <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst($nouveau_point->nom)?></a>
+        </li>
+      <? } ?>
+      <li>
+        <a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&amp;quoi=points"
+          title="Voir les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?> derniers points ajoutés sur le site">
+          <b>Plus...</b>
+        </a>
+      </li>
+    </ul>
+    <br/>
 
-		<h4><?=$vue->stat->nbcomm?> commentaires. Les <?=$config_wri['defaut_max_commentaires_recents']?> derniers :</h4>
-		<ul>
-			<?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>
-				<li>
-					<b><?=date("d/m/y",$nouveau_commentaire->ts_unix_commentaire)?></b>
-					&nbsp;Commentaire
-					<?php if ($nouveau_commentaire->auteur_commentaire!="") { 
-						if ($nouveau_commentaire->id_createur_commentaire==0) { ?>
-							par <?=$nouveau_commentaire->auteur_commentaire?>
-						<?php } else { ?>
-						par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_commentaire->id_createur_commentaire?>"><?=$nouveau_commentaire->auteur_commentaire?></a>
-						<?}?>
-					<?}?>
-						sur <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=$nouveau_commentaire->nom?></a>
-						<?php if (isset($nouveau_commentaire->id_polygone)) { ?>
-						dans le 
-						<a href="<?=lien_polygone($nouveau_commentaire,True)?>">massif <?=$nouveau_commentaire->article_partitif?> <?=$nouveau_commentaire->nom_polygone?></a>
-						<?}?>
-				</li>
-			<?}?>
-				<li>
-					<a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&quoi=commentaires"
-						title="Les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>derniers commentaires dans refuges.info">
-						<b>Plus...</b>
-					</a>
-				</li>
-		</ul>
-		<br>
-	</div>
+    <h4><?=$vue->stat->nbcomm?> commentaires. Les <?=$config_wri['defaut_max_commentaires_recents']?> derniers :</h4>
+    <ul>
+      <?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>
+        <li>
+          <b><?=date("d/m/y",$nouveau_commentaire->ts_unix_commentaire)?></b>
+          &nbsp;Commentaire
+          <?php if ($nouveau_commentaire->auteur_commentaire!="") {
+            if ($nouveau_commentaire->id_createur_commentaire==0) { ?>
+              par <?=$nouveau_commentaire->auteur_commentaire?>
+            <?php } else { ?>
+              par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_commentaire->id_createur_commentaire?>"><?=$nouveau_commentaire->auteur_commentaire?></a>
+            <? } ?>
+          <? } ?>
+            sur <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=$nouveau_commentaire->nom?></a>
+            <?php if (isset($nouveau_commentaire->id_polygone)) { ?>
+              dans le
+              <a href="<?=lien_polygone($nouveau_commentaire,True)?>">massif <?=$nouveau_commentaire->article_partitif?> <?=$nouveau_commentaire->nom_polygone?></a>
+            <? } ?>
+        </li>
+      <? } ?>
+      <li>
+        <a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&quoi=commentaires"
+          title="Les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>derniers commentaires dans refuges.info">
+          <b>Plus...</b>
+        </a>
+      </li>
+    </ul>
+    <br/>
+  </div>
 </div>

@@ -35,7 +35,7 @@ a:hover {
 
 /* Notifications non lues */
 .notification_list .bg2 {
-	background-color: var(--couleur_fond_amplifiee) !important;
+  background-color: var(--couleur_fond_amplifiee) !important;
 }
 
 /* Viewforum */

@@ -45,9 +45,9 @@ headers_cache_api();
     <name><?=htmlspecialchars($point->nom)?></name>
       <description>
         <![CDATA[ <em><?=$point->type['valeur']?></em> 
-              <br>
+              <br/>
               <p><?=bbcode2html(htmlspecialchars($point->description['valeur']),true)?></p>
-              <br>
+              <br/>
             <center><a href='<?=$point->lien?>'>Détails</a></center>
         ]]>
       </description>

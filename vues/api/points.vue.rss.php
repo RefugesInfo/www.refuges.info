@@ -5,8 +5,6 @@ header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
 headers_cache_api();
 
-
-
 $rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
 $rss .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
 $rss .= "<channel>\r\n";
@@ -30,10 +28,10 @@ foreach ($points AS $point) {
 	$rss .= "		<link>$point->lien</link>\r\n";
 	$rss .= "		<pubDate>".$point->date['derniere_modif']."</pubDate>\r\n";
 	$rss .= "		<description><![CDATA[
-			<b>Type</b> : ".$point->type['valeur']."<br>\r\n";
+			<b>Type</b> : ".$point->type['valeur']."<br/>\r\n";
 	if($req->detail == "complet")
-		$rss .= "			<b>".$point->remarque['nom']."</b> : ".htmlspecialchars($point->remarque['valeur'])."<br>
-			<b>".$point->proprio['nom']."</b> : ".htmlspecialchars($point->proprio['valeur'])."<br>
+		$rss .= "			<b>".$point->remarque['nom']."</b> : ".htmlspecialchars($point->remarque['valeur'])."<br/>
+			<b>".$point->proprio['nom']."</b> : ".htmlspecialchars($point->proprio['valeur'])."<br/>
 			<b>".$point->acces['nom']."</b> : ".htmlspecialchars($point->acces['valeur'])."\r\n";
 	$rss .= "			]]></description>\r\n";
 	$rss .= "	</item>\r\n"; 

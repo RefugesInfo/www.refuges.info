@@ -10,21 +10,21 @@
 <div class="contenu">
   <h3>Modification d'un point</h3>
   <?php if (isset($vue->erreur) && !empty($vue->erreur)) { ?>
-      <p>
-         <strong>
-           <?=$vue->erreur?>
-           <?php //FIXME sly: y'a peut-être mieux à faire que "back du navigateur" en re-proposant le formulaire avec le champs en erreur surligné en rouge?>
-
-           <br>(Vous pouvez retourner corriger le problème en utilisant le bouton retour de votre navigateur)
-         </strong>
-      </p>
+    <p>
+      <strong>
+        <?=$vue->erreur?>
+        <?php //FIXME sly: y'a peut-être mieux à faire que "back du navigateur" en re-proposant le formulaire avec le champs en erreur surligné en rouge?>
+        <br/>
+        (Vous pouvez retourner corriger le problème en utilisant le bouton retour de votre navigateur)
+      </strong>
+    </p>
   <?php } elseif (isset($vue->message)) { ?>
-     <h4>Merci de votre contribution</h4>
-     <h5><?=$vue->message?></h5>
+    <h4>Merci de votre contribution</h4>
+    <h5><?=$vue->message?></h5>
   <?php } ?>
-<p>
+  <p>
     <?php if (isset($vue->lien_point)) { ?>
-        <a href="<?=$vue->lien_point?>">Cliquez ici pour voir ou retourner à la fiche</a>
+      <a href="<?=$vue->lien_point?>">Cliquez ici pour voir ou retourner à la fiche</a>
     <?php } ?>
-</p>
+  </p>
 </div>

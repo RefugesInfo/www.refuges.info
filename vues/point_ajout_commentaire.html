@@ -9,14 +9,15 @@
   <?php } if (!empty($vue->messages->erreur)) { ?>
     <p><strong><?=$vue->messages->message?></strong></p>
   <?php } elseif (!empty($vue->messages->erreur)) { ?>
-      <p><?=$vue->messages->message?>.</p>
+    <p><?=$vue->messages->message?>.</p>
   <?php } ?>
+
   <div>
-  <?php if ($vue->succes_ajout_commentaire) { ?>
-  <p class="fade-out">
-    <strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en ajouter d'autres)
-  </p>
-  <?php } ?>
+    <?php if ($vue->succes_ajout_commentaire) { ?>
+      <p class="fade-out">
+        <strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en ajouter d'autres)
+      </p>
+    <?php } ?>
 
     <form id="comment" method="post" action="/point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
       <textarea class="textarea_large" name="texte"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
@@ -29,19 +30,26 @@
       <?php } ?>
       <p>
         <label>Une photo ?</label>
-        <input type="file" name="comment_photo" size="15" value="" accept="image/*" /><i class="texte-tout-petit">facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?> de taille max=<?=getMaximumFileUploadSize()?></i>
+        <input type="file" name="comment_photo" size="15" value="" accept="image/*" />
+        <i class="texte-tout-petit">
+          facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?> de taille max=<?=getMaximumFileUploadSize()?>
+        </i>
       </p>
       <p>
         La photo doit soit être votre propriété soit être sous une <a href="<?=lien_wiki("licence")?>">licence compatible</a> (pensez alors à citer son auteur si cela est requis).
       </p>
       <p>
         <input type="checkbox" id="demande_correction" name="demande_correction" value="1"
-            <?php if ($vue->correction) { ?>
-                checked="checked"
-            <?php } ?>
+          <?php if ($vue->correction) { ?>
+            checked="checked"
+          <?php } ?>
         />
-        <label for="demande_correction">Prévenir les modérateurs globaux pour compléter la fiche.</label><i class="texte-tout-petit">Votre commentaire sera alors visible de tous immédiatement, mais par la suite un modérateur pourra compléter la fiche et le supprimer ou le garder.</i> 
+        <label for="demande_correction">Prévenir les modérateurs globaux pour compléter la fiche.</label>
+        <i class="texte-tout-petit">
+          Votre commentaire sera alors visible de tous immédiatement, mais par la suite un modérateur pourra compléter la fiche et le supprimer ou le garder.
+        </i>
       </p>
+
       <?php if (!est_connecte()) { ?>
         <?php if ($vue->erreur_captcha) { ?>
           <p class="erreur_saisie">
@@ -52,20 +60,21 @@
             Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire.
             Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a toujours été d'être simple et rapide d'utilisation.
           </p>
-          <?php }?>
+        <?php } ?>
 
-          <p>
-            <?=$config_wri['captcha_question']?> :
-            <input type="text" class="input_captcha_court" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
-            <i class="texte-tout-petit">Ceci afin d'éviter les messages indésirables automatiques, désolé.</i>
-          </p>
-        <?php }?>
+        <p>
+          <?=$config_wri['captcha_question']?> :
+          <input type="text" class="input_captcha_court" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
+          <i class="texte-tout-petit">Ceci afin d'éviter les messages indésirables automatiques, désolé.</i>
+        </p>
+      <?php } ?>
 
       <input type="submit" name="action" value="Envoyer" />
       <input type="reset" value="Recommencer" />
     </form>
   </div>
-  <br>
+  <br/>
+
   <h4>Ce que vous pouvez ou non mettre sur le site</h4>
   <p>
     Un commentaire sur une fiche a pour but d'être utile à tous et objectif.
@@ -78,16 +87,22 @@
       Tout commentaire dans ce sens sera supprimé par les modérateurs.
       Voir <a href="<?=$config_wri['lien_forum']?>viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
     </p>
-  <?php } if ( in_array($point->id_point_type,$config_wri['tout_type_refuge']) ) { ?>
+  <?php }
+  if ( in_array($point->id_point_type,$config_wri['tout_type_refuge']) ) { ?>
     <p>
       Voir <a href="<?=$config_wri['base_wiki']?>quels_commentaires_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires</a>.
     </p>
-  <?php }?>
-  <?php if ($point->equivalent_proprio!="") { ?>
+  <?php }
+  if ($point->equivalent_proprio!="") { ?>
     <p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
-    <?php }?>
-  <p>Le commentaire et/ou la photo que vous ajoutez sera soumis à la <a href="<?=$config_wri['base_wiki']?>restriction_licence">licence creative commons by-sa</a> et pourra être réutilisé dans ce cadre.</p>
+  <?php } ?>
+  <p>
+    Le commentaire et/ou la photo que vous ajoutez sera soumis à
+    la <a href="<?=$config_wri['base_wiki']?>restriction_licence">licence creative commons by-sa</a>
+    et pourra être réutilisé dans ce cadre.
+  </p>
 </div>
-<?php @include($config_wri['rep_forum'].
-  'ext/RefugesInfo/trace/styles/all/template/event/overall_footer_after.html');
+
+<?php
+  @include($config_wri['rep_forum'].'ext/RefugesInfo/trace/styles/all/template/event/overall_footer_after.html');
 ?>

@@ -25,34 +25,36 @@ th:last-child {
       <th>Avant</th>
       <th>Après</th>
     </tr>
-    <?php
-      if (isset($vue->modifications_points))
-        foreach ($vue->modifications_points as $modification) {
-          $nom = $modification->point_avant->nom ?? $modification->point_avant->nom_polygone ??
-            $modification->point_apres->nom ?? $modification->point_apres->nom_polygone ?? 'Erreur:Aucun nom?';
+    <?php if (isset($vue->modifications_points))
+      foreach ($vue->modifications_points as $modification) {
+        $nom = $modification->point_avant->nom ??
+          $modification->point_avant->nom_polygone ??
+          $modification->point_apres->nom ??
+          $modification->point_apres->nom_polygone ??
+          'Erreur:Aucun nom?';
 
-          $point_avant = $modification->point_avant;
-          foreach ($point_avant as $propriete => $valeur)
-            if (!$valeur)
-              unset($point_avant->$propriete);
-          $point_apres = $modification->point_apres;
-          unset ($point_avant->geom);
-		  $ppambules = ["stdClass Object\n(\n","\n)\n",")\n"];
-    ?>
-    <tr>
-      <td><?=ucfirst($modification->type_modification)?> du/de là <br>
-        <?php if (!empty($modification->lien_point)) { ?>
-        <a href="<?=$modification->lien_point?>">
-          <b><?=$nom?></b>
-        </a>
-        <?php }  else { ?>
-          <b><?=$nom?></b>
-        <?php } ?>
-        <br>du <?=$modification->date?><br>
-        par <?=$modification->moderateur?></td>
-      <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_avant,true))))?></td>
-      <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_apres,true))))?></td>
-    </tr>
+        $point_avant = $modification->point_avant;
+        foreach ($point_avant as $propriete => $valeur)
+          if (!$valeur)
+            unset($point_avant->$propriete);
+        $point_apres = $modification->point_apres;
+        unset ($point_avant->geom);
+      $ppambules = ["stdClass Object\n(\n","\n)\n",")\n"];
+      ?>
+      <tr>
+        <td><?=ucfirst($modification->type_modification)?> du/de là <br/>
+          <?php if (!empty($modification->lien_point)) { ?>
+          <a href="<?=$modification->lien_point?>">
+            <b><?=$nom?></b>
+          </a>
+          <?php }  else { ?>
+            <b><?=$nom?></b>
+          <?php } ?>
+          <br/>du <?=$modification->date?><br/>
+          par <?=$modification->moderateur?></td>
+        <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_avant,true))))?></td>
+        <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_apres,true))))?></td>
+      </tr>
     <?php } ?>
   </table>
 </div>

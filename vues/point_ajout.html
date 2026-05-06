@@ -1,32 +1,32 @@
 <div class="contenu">
-<h5>Que mettre ou ne pas mettre ?</h5>
+  <h5>Que mettre ou ne pas mettre ?</h5>
   <p>Prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a>  (plusieurs changements importants en Mars 2025, ça vaut le coup de relire)</p>
-<?php if (!est_connecte()) { ?>
-<dl> 
-  <dt>Pas encore de compte ?</dt>
-  <dd>
-    <p>Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur. Il restera possible après coup de vous ré-attribuer une fiche par demande sur le forum, mais c'est plus simple d'être connecté dès le départ !</p>
-  </dd>
-</dl>  
-<?php } ?>
+  <?php if (!est_connecte()) { ?>
+    <dl>
+      <dt>Pas encore de compte ?</dt>
+      <dd>
+        <p>Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur. Il restera possible après coup de vous ré-attribuer une fiche par demande sur le forum, mais c'est plus simple d'être connecté dès le départ !</p>
+      </dd>
+    </dl>
+  <?php } ?>
 
-<h5>Vous souhaitez ajouter :</h5>
-<form id="cree_point" action="/point_formulaire_modification/"> 
+  <h5>Vous souhaitez ajouter :</h5>
+  <form id="cree_point" action="/point_formulaire_modification/">
     <ul>
-         <?php
-         // Calcul de la liste déroulante pour le menu
+       <?php // Calcul de la liste déroulante pour le menu
          $checked="checked=\"checked\""; // pour cocher la première option
          foreach ($vue->types_point_affichables AS $pa) { ?>
-             <li>
-                 <input type="radio" name="id_point_type" value="<?=$pa->id_point_type?>" <?=$checked?>>
-                 <a href="<?=lien_wiki("fiche-".replace_url($pa->nom_type))?>"><?=$pa->nom_type?><sup>?</sup></a>
-             </li>
+           <li>
+               <input type="radio" name="id_point_type" value="<?=$pa->id_point_type?>" <?=$checked?>>
+               <a href="<?=lien_wiki("fiche-".replace_url($pa->nom_type))?>"><?=$pa->nom_type?><sup>?</sup></a>
+           </li>
          <?
          $checked="";
-         }?>
+        }
+      ?>
     </ul>
     <p><input type="submit" value="Passer à l'étape suivante"></p>
-</form> 
-<h5>Licence des contenus</h5>
+  </form>
+  <h5>Licence des contenus</h5>
   <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
 </div>

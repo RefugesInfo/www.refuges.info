@@ -10,79 +10,81 @@
 ?>
 <div class="contenu" id="contenu">
   <div class="fiche_cadre">
-<!--======================================== DESCRIPTIONS =========================================-->
-<!--======= LIEN DE MODIFICATION (modérateurs et modérateur de fiche) =======-->
-      <?php // Signaler les fiches cachées
-      if ($vue->point->cache) {?>
-          <strong class="warning">
-            Cette fiche est cachée du public, elle n'est visible que des modérateurs
-          </strong>
-      <?php }?>
-      <?php // Signaler les fiches qui sont des modèles
-      if ($vue->point->modele) {?>
-          <strong class="warning">
-            Cette fiche est un modèle, elle n'est visible que des modérateurs
-          </strong>
-      <?php }?>
-      <?php // Si les droits sont suffisants, lien de modification
-      if (est_autorise($point->id_createur)) {?>
-        <div class="noprint bloc_liens_centre">
-          <p><b>Vous êtes modérateur de cette fiche, vous pouvez :
-            <a class="liens_avec_decoration" href="/point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
-              Modifier cette fiche
-            </a>&nbsp;
-            <a class="liens_avec_decoration" href="/gestion/historique_modifications/<?=$vue->point->id_point?>">
-              Consulter l'historique de cette fiche
-            </a>&nbsp;
-            <?php if (est_autorise($point->id_createur)) {?>
-                <a class="liens_avec_decoration"
-                   href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_point=<?=$vue->point->id_point?>"
-                   title="Trace de la création du point">
-                  i
-              </a>
-            <?php }?>
-          </b></p>
-        </div>
-      <?php }?>
-<!--========================================== FICHE DE ===========================================-->
-      <h1>
-        <?=$vue->nom_debut_majuscule?> (<?=$vue->point->altitude?>m), <a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?></a>
-        <?php
-        //Si elle/il est fermé, détruit, ou besoin de la clé pour rentrer on l'indique directement en haut en rouge
-        if ($vue->annonce_fermeture) {?>
-          <strong>(<?=$vue->annonce_fermeture?>)</strong>
-        <?php }?>
+    <!--======================================== DESCRIPTIONS =========================================-->
+    <!--======= LIEN DE MODIFICATION (modérateurs et modérateur de fiche) =======-->
+    <?php // Signaler les fiches cachées
+    if ($vue->point->cache) { ?>
+        <strong class="warning">
+          Cette fiche est cachée du public, elle n'est visible que des modérateurs
+        </strong>
+    <?php }
+    // Signaler les fiches qui sont des modèles
+    if ($vue->point->modele) { ?>
+      <strong class="warning">
+        Cette fiche est un modèle, elle n'est visible que des modérateurs
+      </strong>
+    <?php }
+    // Si les droits sont suffisants, lien de modification
+    if (est_autorise($point->id_createur)) { ?>
+      <div class="noprint bloc_liens_centre">
+        <p><b>Vous êtes modérateur de cette fiche, vous pouvez :
+          <a class="liens_avec_decoration" href="/point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
+            Modifier cette fiche
+          </a>&nbsp;
+          <a class="liens_avec_decoration" href="/gestion/historique_modifications/<?=$vue->point->id_point?>">
+            Consulter l'historique de cette fiche
+          </a>&nbsp;
+          <?php if (est_autorise($point->id_createur)) { ?>
+            <a class="liens_avec_decoration"
+               href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_point=<?=$vue->point->id_point?>"
+               title="Trace de la création du point">
+              i
+            </a>
+          <?php } ?>
+        </b></p>
+      </div>
+    <?php } ?>
+    <!--========================================== FICHE DE ===========================================-->
+    <h1>
+      <?=$vue->nom_debut_majuscule?> (<?=$vue->point->altitude?>m), <a href="<?=$vue->lien_wiki_explication_type?>"><?=$vue->point->nom_type?></a>
+      <?php
+      //Si elle/il est fermé, détruit, ou besoin de la clé pour rentrer on l'indique directement en haut en rouge
+      if ($vue->annonce_fermeture) { ?>
+      <strong>(<?=$vue->annonce_fermeture?>)</strong>
+      <?php } ?>
     </h1>
-    </div>
+  </div>
 <!--============================================ CARTE ============================================-->
     <?php // Veut-on une carte point ? (oui sauf cas des coordonnées inconnues
-    if (!empty($vue->mini_carte)) {?>
+    if (!empty($vue->mini_carte)) { ?>
       <div id="container-carte-point">
         <div id="carte-point"></div>
         <div class="noprint texte-tout-petit">
-      <div class="hide-touch-screen">Ctrl+click: nouvel onglet ; Maj+click: nouvelle fenêtre</div>
-      <a href="/nav" title="'Shift + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">Grande carte</a>
+          <div class="hide-touch-screen">Ctrl+click: nouvel onglet ; Maj+click: nouvelle fenêtre</div>
+          <a href="/nav" title="'Shift + Click gauche' pour ouvrir la carte dans une nouvelle fenêtre">Grande carte</a>
         </div>
       </div>
-    <?php }?>
+    <?php } ?>
 <!--======================================== LOCALISATION =========================================-->
     <p>
       <?php if ($vue->localisation_point)
         foreach ($vue->localisation_point as $categorie_polygone => $polygones) { ?>
           <b>Localisation <?=$categorie_polygone?>:</b>
-              <?php foreach ($polygones as $key => $polygone) { ?>
-                <?php end($polygones) ; if ($key !== key($polygones)) $virgule=","; else $virgule=""; ?>
-                  <?php if ($polygone->site_web) { ?>
+              <?php foreach ($polygones as $key => $polygone) {
+                end($polygones);
+                if ($key !== key($polygones))
+                  $virgule=","; else $virgule="";
+                if ($polygone->site_web) { ?>
                   <a href="<?=$polygone->site_web?>"><?=$polygone->nom_polygone?></a>
-                 <?php } else { ?>
+                <?php } else { ?>
                   <?=$polygone->nom_polygone?>
-                 <?php } ?>
-                  <sup>
-                    <a href="<?=lien_polygone($polygone)?>">carte</a>
-                  </sup>
+                <?php } ?>
+                <sup>
+                  <a href="<?=lien_polygone($polygone)?>">carte</a>
+                </sup>
                 <?=$virgule?>
               <?php } ?>
-          <br>
+          <br/>
       <?php } ?>
     </p>
 <!--================================= DEMANDE DE MODIFICATION =================================-->
@@ -94,89 +96,92 @@
 <!--================================= AUPRÈS DE QUI SE RENSEIGNER =================================-->
   <dl class="liste-wri">
       <?php // Champs textes libres
-      if (!empty($vue->point->equivalent_proprio)) {?>
+      if (!empty($vue->point->equivalent_proprio)) { ?>
         <dt><?=$vue->point->equivalent_proprio?>: <a class="onhover" href="<?=$vue->lien_wiki_explication_proprio?>"><i><span>Vous êtes le gestionnaire ?</span><sup>?</sup></i></a></dt>
         <dd><?=$vue->proprio?></dd>
-        <?php // Il peut y avoir des propriétaires/responsables comme la commune ou une association, mais il est rare qu'on doivent les appeler, n'encourageons pas 
+        <?php // Il peut y avoir des propriétaires/responsables comme la commune ou une association, mais il est rare qu'on doivent les appeler, n'encourageons pas
         if ($vue->point->id_point_type!=$config_wri['id_cabane_non_gardee']) { ?>
-        <dd>
-          <i><br>
-            Refuges.info n'a aucun lien avec les gestionnaires. Vous devez les appeler directement.
-          </i>
-        </dd>
-      <?php } }?>
-<!--============================================ ACCÈS ============================================-->
-      <dt style="clear: left;">Accès:</dt>
-      <dd><?=$vue->acces?></dd>
-<!--========================================== REMARQUES ==========================================-->
-      <dt>Remarques:</dt>
-      <dd><?=$vue->remark?></dd>
-<!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
-      <?php if (count($vue->infos_complementaires)) { ?>
-      <dt style='clear: left;'>Informations complémentaires:</dt>
-        <?php foreach ($vue->infos_complementaires as $val) { ?>
-          <dd><?=$val['nom']?>: <b><?=$val['valeur']?></b></dd>
-        <?php }
-      }?>
-<!--===================================== POINTS À PROXIMITÉ ======================================-->
-      <?php if (!empty($vue->points_proches) and count($vue->points_proches)) {?>
-        <dt>Points à proximité (distance à vol d'oiseau):</dt>
-          <?php foreach ($vue->points_proches as $point_proche) {?>
-            <dd>
-              <a href="<?=$point_proche->lien?>"><?=$point_proche->nom?></a>, 
-              <?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$point_proche->distance_au_point?><?=$point_proche->distance_au_point_unite?>
-            </dd>
-        <?php }
-      } ?>
-<!--================================= Si message d'information à afficher =======================================-->
-      <?php if (isset($vue->polygone_avec_information)) {?>
-        <dt>Réglementation particulière :</dt>
           <dd>
-            <?=$vue->nom_debut_majuscule?> est situé·e dans
-              <?php if (isset($vue->polygone_avec_information->site_web)) {?>
-                <a href="<?=$vue->polygone_avec_information->site_web?>">
-              <?php } ?>
-                <?=$vue->polygone_avec_information->nom_polygone?>
-              <?php if (isset($vue->polygone_avec_information->site_web)) {?>
-                </a>.<br>
-              <?php } ?>
-              <?=$vue->polygone_avec_information->message_information_polygone?>
-            <?php if (isset($vue->polygone_avec_information->url_exterieure)) {?>
-              (Plus d'information sur <a href="<?=$vue->polygone_avec_information->url_exterieure?>">cette réglementation</a>)
-            <?php } ?>
+          <br/>
+            <i>
+              Refuges.info n'a aucun lien avec les gestionnaires. Vous devez les appeler directement.
+            </i>
+          </dd>
+        <?php }
+    } ?>
+<!--============================================ ACCÈS ============================================-->
+    <dt style="clear: left;">Accès:</dt>
+    <dd><?=$vue->acces?></dd>
+<!--========================================== REMARQUES ==========================================-->
+    <dt>Remarques:</dt>
+    <dd><?=$vue->remark?></dd>
+<!--================================= INFORMATIONS COMPLÉMENTAIRES ================================-->
+    <?php if (count($vue->infos_complementaires)) { ?>
+      <dt style='clear: left;'>Informations complémentaires:</dt>
+      <?php foreach ($vue->infos_complementaires as $val) { ?>
+        <dd><?=$val['nom']?>: <b><?=$val['valeur']?></b></dd>
+      <?php }
+    } ?>
+<!--===================================== POINTS À PROXIMITÉ ======================================-->
+    <?php if (!empty($vue->points_proches) and count($vue->points_proches)) { ?>
+      <dt>Points à proximité (distance à vol d'oiseau):</dt>
+      <?php foreach ($vue->points_proches as $point_proche) { ?>
+        <dd>
+          <a href="<?=$point_proche->lien?>"><?=$point_proche->nom?></a>,
+          <?=$point_proche->nom_type?> (altitude: <?=$point_proche->altitude?>m) situé(e) à <?=$point_proche->distance_au_point?><?=$point_proche->distance_au_point_unite?>
         </dd>
-      <?php } ?>
+      <?php }
+    } ?>
+<!--================================= Si message d'information à afficher =======================================-->
+    <?php if (isset($vue->polygone_avec_information)) { ?>
+      <dt>Réglementation particulière :</dt>
+      <dd>
+        <?=$vue->nom_debut_majuscule?>
+        est situé·e dans
+        <?php if (isset($vue->polygone_avec_information->site_web)) { ?>
+          <a href="<?=$vue->polygone_avec_information->site_web?>">
+        <?php } ?>
+        <?=$vue->polygone_avec_information->nom_polygone?>
+        <?php if (isset($vue->polygone_avec_information->site_web)) { ?>
+          </a>.<br/>
+        <?php } ?>
+        <?=$vue->polygone_avec_information->message_information_polygone?>
+        <?php if (isset($vue->polygone_avec_information->url_exterieure)) { ?>
+          (Plus d'information sur <a href="<?=$vue->polygone_avec_information->url_exterieure?>">cette réglementation</a>)
+        <?php } ?>
+      </dd>
+    <?php } ?>
 <!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
-      <!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
-      <?php if (count ($vue->commentaires_avec_photo)) {?>
-        <dt class="noprint">Photos:</dt> 
-        <dd class="noprint">
-          <?php foreach ($vue->commentaires_avec_photo AS $commentaire_avec_photo) { ?>
-            <a href="#C<?=$commentaire_avec_photo->id_commentaire?>">
-              <img
-                height="50"
-                style="vertical-align: middle ;"
-                src="<?=$commentaire_avec_photo->lien_photo['reduite'] ?? ''?>"
-                alt="photo miniature"
-              >
-            </a>
-          <?php } ?>
-        </dd>
-      <?php }?>
+    <!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
+    <?php if (count ($vue->commentaires_avec_photo)) { ?>
+      <dt class="noprint">Photos:</dt>
+      <dd class="noprint">
+        <?php foreach ($vue->commentaires_avec_photo AS $commentaire_avec_photo) { ?>
+          <a href="#C<?=$commentaire_avec_photo->id_commentaire?>">
+            <img
+              height="50"
+              style="vertical-align: middle ;"
+              src="<?=$commentaire_avec_photo->lien_photo['reduite'] ?? ''?>"
+              alt="photo miniature"
+            >
+          </a>
+        <?php } ?>
+      </dd>
+    <?php } ?>
 <!--========================================= Informations technique sur la fiche =========================================-->
     <dt>Coordonnées:</dt>
-      <dd class="noprint">
-        Provenance:
-        <?php if ($vue->point->id_type_precision_gps == $config_wri['id_coordonees_gps_approximative']) {?>
-          <strong><?=$vue->point->nom_precision_gps?></strong>
-        <?php }else{ ?>
-          <?=$vue->point->nom_precision_gps?>
-        <?php }?>
-      </dd>
-    <dd>
-      <?php if (empty($vue->mini_carte)) {?>
+    <dd class="noprint">
+      Provenance:
+      <?php if ($vue->point->id_type_precision_gps == $config_wri['id_coordonees_gps_approximative']) { ?>
         <strong><?=$vue->point->nom_precision_gps?></strong>
-      <?php }else{?>
+      <?php } else { ?>
+        <?=$vue->point->nom_precision_gps?>
+      <?php } ?>
+    </dd>
+    <dd>
+      <?php if (empty($vue->mini_carte)) { ?>
+        <strong><?=$vue->point->nom_precision_gps?></strong>
+      <?php } else { ?>
         <input type="hidden" id="cadre-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}'>
         <span id="cadre-string"></span>
         <select id="cadre-select">
@@ -188,19 +193,19 @@
     </dd>
     <dd class="noprint">
       Export:
-        <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,
-        <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">Garmin</a>,
-        <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=kml">KML</a>,
-        <a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">Géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
-      <?php }?>
+      <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=gpx">GPX</a>,
+      <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=gpx_garmin">Garmin</a>,
+      <a href="/api/point?id=<?=$vue->point->id_point?>&amp;format=kml">KML</a>,
+      <a href="geo:<?=$vue->point->latitude?>,<?=$vue->point->longitude?>">Géoloc</a><a href="<?=$vue->lien_wiki_explication_geo?>"><sup>?</sup></a>
+      <?php } ?>
     </dd>
   </dl>
 <!--============================= Infos assez internes finalement, plutôt pour modérateurs devrais-je dire ===================-->
   <p class="noprint">
     Fiche n°<?=$vue->point->id_point?> sur le site depuis le <?=date ("d/m/Y", $vue->point->date_creation_timestamp)?>
       <?php // Dans le cas ou date de dernière modification n'est pas zéro, on l'indique
-      if (isset($vue->point->date_derniere_modification)) {?>
-, dernière modification du
+      if (isset($vue->point->date_derniere_modification)) { ?>
+        , dernière modification du
         <?= date ("d/m/Y",$vue->point->date_modif_timestamp)?>.
       <?php }
 
@@ -208,9 +213,9 @@
       if ($vue->nom_createur!="") { ?>
         Modérateur actuel de cette fiche:
         <?php if ($vue->point->id_createur != 0) { ?>
-            <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
-              <?=$vue->nom_createur?>
-            </a>
+          <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
+            <?=$vue->nom_createur?>
+          </a>
         <?php } else { ?>
           <?=$vue->nom_createur?>
         <?php }
@@ -225,23 +230,23 @@
     </b>
   </p>
 <!--============================ POSTS LES PLUS RÉCENTS DU FORUM D'UN POINT ===========================-->
-  <?php if (!empty($vue->forum_point)) {?>
+  <?php if (!empty($vue->forum_point)) { ?>
     Dernier<?php if(count($vue->forum_point)>1)echo's'?> message<?php if(count($vue->forum_point)>1)echo's'?> du forum :
-  <?php }?>
+  <?php } ?>
   <div class="point_forum couleur_fond_amplifiee noprint">
-    <?php if (empty($vue->forum_point)) {?>
-        <p><a href="<?=$vue->lienforum?>">
-          Le forum est vide, n'hésitez pas à y laisser le premier message!
-        </a></p>
-      <?php } else
-      foreach ($vue->forum_point AS $k=>$post) { ?>
-        <a href="<?=$config_wri['forum_refuge']?>?p=<?=$post->post_id?>#p<?=$post->post_id?>" title="Voir le post">
-          <b><?=$post->date_humaine?></b>
-          <blockquote cite="<?=$vue->lienforum?>">
-            <?=$post->post_text?>
-          </blockquote>
-        </a>
-      <?php }?>
+    <?php if (empty($vue->forum_point)) { ?>
+      <p><a href="<?=$vue->lienforum?>">
+        Le forum est vide, n'hésitez pas à y laisser le premier message!
+      </a></p>
+    <?php } else
+    foreach ($vue->forum_point AS $k=>$post) { ?>
+      <a href="<?=$config_wri['forum_refuge']?>?p=<?=$post->post_id?>#p<?=$post->post_id?>" title="Voir le post">
+        <b><?=$post->date_humaine?></b>
+        <blockquote cite="<?=$vue->lienforum?>">
+          <?=$post->post_text?>
+        </blockquote>
+      </a>
+    <?php } ?>
   </div>
 <!--===================================== LIEN AJOUT COMMENTAIRE ====================================-->
   <h5 class="noprint">Informations récentes</h5>
@@ -259,60 +264,58 @@
         <a id="C<?=$commentaire->id_commentaire?>"></a><!-- ici l'id pour l'anchor des petites vignettes du haut -->
         <div class="bloc_commentaire">
           <div class='commentaire_metainfo'><?=$commentaire->date_commentaire_format_francais?>
-            <?php if ($commentaire->auteur_commentaire_affichage) {?>
+            <?php if ($commentaire->auteur_commentaire_affichage) { ?>
               par
-              <?php if ($commentaire->id_createur_commentaire != 0) {?>
+              <?php if ($commentaire->id_createur_commentaire != 0) { ?>
                 <a href="<?=$config_wri['fiche_utilisateur'].$commentaire->id_createur_commentaire?>">
                   <?=$commentaire->auteur_commentaire_affichage?>
                 </a>
-              <?php }
-                    else
-                    {?>
+              <?php } else { ?>
                 <?=$commentaire->auteur_commentaire_affichage?>
               <?php }
-            }?>
+            } ?>
           </div>
           <div class="bloc_liens_haut_droit">
           <a class="liens_avec_decoration" href="<?=$commentaire->lien_commentaire?>">
             <?=$commentaire->texte_lien_commentaire?></a>
-          <?php if (est_autorise($point->id_createur)) {?>
-            <a class="liens_avec_decoration"
-              href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_commentaire=<?=$commentaire->id_commentaire?>"
-              title="Trace de la création du commentaire">
-                i
-            </a>
-          <?php }?>
+            <?php if (est_autorise($point->id_createur)) { ?>
+              <a class="liens_avec_decoration"
+                href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_commentaire=<?=$commentaire->id_commentaire?>"
+                title="Trace de la création du commentaire">
+                  i
+              </a>
+            <?php } ?>
           </div>
 
           <hr class="spacer">
-          <?php if ($commentaire->photo_existe) {?>
-           <div class="photos">
-            <a href="<?=$commentaire->lien_photo['originale'] ?? ''?>">
-              <img src="<?=$commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo" style="max-width:100%;">
-            </a>
-            <div class="texte_sur_image"><?=$commentaire->date_photo_format_francais??''?></div>
-           </div> 
-          <?php }?>
-          
-          <?php if ($commentaire->texte_affichage) {?>
+          <?php if ($commentaire->photo_existe) { ?>
+            <div class="photos">
+              <a href="<?=$commentaire->lien_photo['originale'] ?? ''?>">
+                <img src="<?=$commentaire->lien_photo['reduite'] ?? ''?>" alt="Photo" style="max-width:100%;">
+              </a>
+              <div class="texte_sur_image"><?=$commentaire->date_photo_format_francais??''?></div>
+           </div>
+          <?php } ?>
+
+          <?php if ($commentaire->texte_affichage) { ?>
             <blockquote><p>
               <?=$commentaire->texte_affichage?>
             </p></blockquote>
-          <?php }?>
+          <?php } ?>
           <hr class="spacer"><!-- pour ne pas avoir la foto qui depasse -->
         </div>
       </li>
-    <?php }?>
+    <?php } ?>
   </ul>
   <?php } // fin du if(commentaires). un UL ne peut etre vide.?>
 
 <!--================== FIN DE LA PAGE DES POINTS - COMMENTAIRES DIVERS ET VARIÉS ===================-->
   <p class="noprint">
     <strong>
-      Avertissement : Les informations fournies sont indicatives. 
+      Avertissement : Les informations fournies sont indicatives.
       Elles ne sauraient engager la responsabilité des gestionnaires ou des rédacteurs
-      dans l'hypothèse où les utilisateurs de ces informations 
-      n'observeraient pas les règles de prudence que la montagne impose. 
+      dans l'hypothèse où les utilisateurs de ces informations
+      n'observeraient pas les règles de prudence que la montagne impose.
       Soyez responsables
     </strong>
   </p>

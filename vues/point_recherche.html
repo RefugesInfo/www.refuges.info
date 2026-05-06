@@ -3,7 +3,7 @@
 Bloc HTML réalisant l'affichage de repli en cas de point demandé inexistant
 Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
 Un couple <ouverture de balise> </fermeture de balise> doit se trouver dans le même fichier et avec la même indentation
-Ce fichier ne contient que des balises HTML et des balises de contrôle 
+Ce fichier ne contient que des balises HTML et des balises de contrôle
 $vue contient les données passées par le fichier PHP
 **/
 ?>
@@ -12,10 +12,10 @@ $vue contient les données passées par le fichier PHP
   <?php // Parcours tous les refuges de la recherche
   if (isset($vue->points)) { ?>
   <h4><?=$vue->titre?></h4>
-  
-   <p>
+
+  <p>
     <div class="table">
-      <?php foreach ($vue->points as $point) {?>
+      <?php foreach ($vue->points as $point) { ?>
       <div class="tr">
         <div class="td">
           <b>
@@ -24,16 +24,16 @@ $vue contient les données passées par le fichier PHP
             </a>
           </b>
           <?=$point->nom_type?>.
-          <?php if ($annonce_fermeture=texte_non_ouverte($point)) {?>
+          <?php if ($annonce_fermeture=texte_non_ouverte($point)) { ?>
             <strong>(<?=$annonce_fermeture?>)</strong>.
-          <?php }?>
+          <?php } ?>
           &nbsp;
         </div>
         <div class="td">
           <?=chaine_de_localisation($point->polygones,$vue->condition_categorie_polygone)?>
         </div>
       </div>
-      <?php }?>
+      <?php } ?>
     </div>
     <?php if(isset($vue->limite_atteinte) ) { ?>
       <p><strong>La limite du nombre de point a été atteinte.</strong></p>

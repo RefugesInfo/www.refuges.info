@@ -151,9 +151,9 @@ function couchePointsWRI(options) {
       return {
         _path: selectionPolygone.length ? 'api/massif' : 'api/bbox',
         massif: selectionPolygone,
-        // eslint-disable-next-line camelcase 
+        // eslint-disable-next-line camelcase
         type_points: opt.selection || opt.selector.getSelection(),
-        // eslint-disable-next-line camelcase 
+        // eslint-disable-next-line camelcase
         nb_points: 'all',
         cluster: resolution > opt.serverClusterMinResolution ? 0.1 : null, // For server cluster layer
       };
@@ -199,7 +199,7 @@ function couchePolygonesColores(options) {
     strategy: ol.loadingstrategy.all, // Pas de bbox
     query: () => ({
       _path: 'api/polygones',
-      // eslint-disable-next-line camelcase 
+      // eslint-disable-next-line camelcase
       type_polygon: options.idPolygoneType,
       intersection: options.intersection,
     }),
@@ -258,7 +258,7 @@ function coucheContoursPolygones(options) {
     // Construction de l'url
     query: (extent, r, p, opt) => ({
       _path: 'api/polygones',
-      // eslint-disable-next-line camelcase 
+      // eslint-disable-next-line camelcase
       type_polygon: options.idPolygoneType,
       massif: opt.selector.getSelection(),
     }),

@@ -8,19 +8,17 @@
 // Ce fichier ne contient que des balises HTML et des balises de contrôle PHP
 
 // Ici on permet de changer le code http qui, par défaut est 200
-if (!empty($vue->http_status_code)) 
-    switch ($vue->http_status_code) 
-    {
-        case 403:
-            header("HTTP/1.0 403 Forbidden");
-            break;
-
-        case 404:
-            header("HTTP/1.0 404 Not Found");
-        
-        default:
-            break;
-    }
+if (!empty($vue->http_status_code))
+  switch ($vue->http_status_code)
+  {
+    case 403:
+      header("HTTP/1.0 403 Forbidden");
+      break;
+    case 404:
+      header("HTTP/1.0 404 Not Found");
+    default:
+      break;
+  }
 
 // On inclue les fichiers communs
 add_lib('style.css.php');
@@ -39,8 +37,7 @@ if(!empty($vue->carte)) {
     'chemin_ol'
   );
   add_lib('_cartes.js');
-}
-?>
+} ?>
 <!doctype html>
 <html lang="fr">
   <head>
@@ -49,22 +46,21 @@ if(!empty($vue->carte)) {
     <link rel="icon" type="image/svg+xml" href="<?=$config_wri['url_chemin_icones']?>favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php if (isset ($vue->css)) { ?>
-    <meta name="viewport" content="width=device-width, user-scalable=no">
+      <meta name="viewport" content="width=device-width, user-scalable=no">
     <?php } ?>
-
     <meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
 
     <?php if (isset ($vue->css_lib_head))
-        foreach ($vue->css_lib_head as $css_lib) {?>
-            <link type="text/css" rel="stylesheet" href="<?=$css_lib?>">
+      foreach ($vue->css_lib_head as $css_lib) { ?>
+        <link type="text/css" rel="stylesheet" href="<?=$css_lib?>">
     <?php } ?>
   </head>
 
-	<body>
-		<?php
-			include(fichier_vue('bandeau.html'));
-			include(fichier_vue($vue->type.'.html'));
-			include(fichier_vue('_pied.html'));
-		?>
-	</body>
+  <body>
+    <?php
+      include(fichier_vue('bandeau.html'));
+      include(fichier_vue($vue->type.'.html'));
+      include(fichier_vue('_pied.html'));
+    ?>
+  </body>
 </html>
