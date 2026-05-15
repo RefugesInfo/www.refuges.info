@@ -6,7 +6,7 @@ headers_cors_par_default();
 headers_cache_api();
 
 $rss = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
-$rss .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
+$rss .= "<rss version=\"2.0\" xmlns:atom=\"https://www.w3.org/2005/Atom\">\r\n";
 $rss .= "<channel>\r\n";
 $rss .= "	<title>Refuges.info</title>\r\n";
 $rss .= "	<link>https://".$config_wri['nom_hote']."/</link>\r\n";

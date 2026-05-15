@@ -3,7 +3,7 @@
 /********************************************
  * Ici on traite l'URL de l'api
  * exemple pour le test :
- * http://leo.refuges.info/api/polygones?format=gml
+ * https://www.refuges.info/api/polygones?format=gml
 ********************************************/
 include_once("point.php");
 include_once("mise_en_forme_texte.php");

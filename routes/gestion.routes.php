@@ -3,7 +3,7 @@
  *              ROUTEUR de la gestion
  * Ce fichier appelle juste le bon controlleur.
  * La vue et le modèle sont appellés par le controlleur.
- * cf. : http://bpesquet.developpez.com/tutoriels/php/evoluer-architecture-mvc/images/3.png
+ * cf. : https://bpesquet.developpez.com/tutoriels/php/evoluer-architecture-mvc/images/3.png
  *
  * Changelog :
  *   * 08/05/2017 - Dom - Version intiale :

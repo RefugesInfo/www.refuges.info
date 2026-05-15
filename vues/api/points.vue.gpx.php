@@ -3,7 +3,7 @@
 sly 05/12/2019 Ce format gpx est celui qui, selon ce que je comprend de la norme, la respecte le mieux, utilises les champs gpx tels qu'ils ont été prévus, mais perds des fonctionnalités intéresantes que les autres pourraient exploiter.
 - J'ai enlevé la balise   <sym><?=$point->sym?></sym> car elle présentait des icônes spécifiques aux outils garmin (basecamp, mapsource, et certains autres comme viking qui reconnaissent les icones par exemple). Je pourrais sans doute la remettre car ça ne change pas grand chose, et des fois qu'un outil les supportent ?
 - <desc> est utilisés pour les remarques d'un point
-- Le logiciel Marble n'ouvre pas les gpx avec une balise <link> contenant un <text> et <type>, viking ouvre mais indique un "thumbnail cannot be loaded" car il tente d'ouvrir le lien en local   je change alors pour un format plus simple <link href="http://la-bas" />
+- Le logiciel Marble n'ouvre pas les gpx avec une balise <link> contenant un <text> et <type>, viking ouvre mais indique un "thumbnail cannot be loaded" car il tente d'ouvrir le lien en local   je change alors pour un format plus simple <link href="https://la-bas" />
 
 */
 if (empty($filename))
@@ -16,7 +16,7 @@ headers_cache_api();
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" standalone="no"<?='?>'?>
 
-<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx standard de refuges.info" version="1.1">
+<gpx xmlns="https://www.topografix.com/GPX/1/1" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx standard de refuges.info" version="1.1">
 <metadata>
 	<name>Points de refuges.info</name>
 	<desc><?=$config_wri["copyright_API"]?></desc>
@@ -25,7 +25,7 @@ headers_cache_api();
 	</author>
 	<copyright author="Contributeurs refuges.info">
 		<time><?=date('Y-m-d\TH:i:s')?></time>
-		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
+		<license>https://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 	</copyright>
 	<link href="https://<?=$config_wri['nom_hote']?>" />
 </metadata>

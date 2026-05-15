@@ -87,7 +87,7 @@ $texte_avec_bbcode=lien_inter_fiches($texte_avec_bbcode,"bbcode");
  il doit bien rester quelques cas à améliorer, mais pour l'instant ça à l'air déjà bien sly 25/03/2008
  2022: plein de caractères supportés ont été ajouté, vu qu'on met presque tout dans une url maintenant
  On devrait supporter les formats 
- - http://truc.much.bidule/machin-chose-çé?q=123&t=ou!|s$d!f#encre
+ - https://truc.much.bidule/machin-chose-çé?q=123&t=ou!|s$d!f#encre
  - www.truc.machin/
  
  Ne sont pas supportés :
@@ -115,7 +115,7 @@ if (!$autoriser_html)
 else
     $texte_avec_protection_anti_injection_html_ou_pas=$texte_avec_bbcode_apres_detection_urls;
 
-//Voir : http://www.refuges.info/forum/viewtopic.php?t=6174 expliquant pourquoi, dans certains cas, nous ne voulons pas supporter la balise img
+//Voir : https://www.refuges.info/forum/viewtopic.php?t=6174 expliquant pourquoi, dans certains cas, nous ne voulons pas supporter la balise img
 if ($autoriser_balise_img)
 {
     $search_img=array(
@@ -165,8 +165,8 @@ array_merge($replace_img,
         "<a href=\"/$1\">$2</a>", // A
         "<a href=\"$1\">$1</a>",
         "<a href=\"$1\">$2</a>",
-        "<a href=\"http://$1\">$1</a>",
-        "<a href=\"http://$1\">$2</a>",
+        "<a href=\"https://$1\">$1</a>",
+        "<a href=\"https://$1\">$2</a>",
         "<b>$2</b>",
         "<b>$1</b>",
         "<i>$2</i>",
@@ -228,10 +228,10 @@ function bbcode2txt($string)
   $string = preg_replace("#\[b\](.+?)\[/b\]#is", "*\\1*", $string);
   $string = preg_replace("#\[i\](.+?)\[/i\]#is", "\\1", $string);
   $string = preg_replace("#\[u\](.+?)\[/u\]#is", "\\1", $string);
-  $string = preg_replace("#\[link\]www\.(.+?)\[/link\]#is", "http://www.\\1", $string);
+  $string = preg_replace("#\[link\]www\.(.+?)\[/link\]#is", "https://www.\\1", $string);
   $string = preg_replace("#\[link\](.+?)\[/link\]#is", "\\1", $string);
   $string = preg_replace("#\[link=(.+?)\](.+?)\[/link\]#is", "\\2 --> \\1", $string);
-  $string = preg_replace("#\[url\]www\.(.+?)\[/url\]#is", "http://www.\\1", $string);
+  $string = preg_replace("#\[url\]www\.(.+?)\[/url\]#is", "https://www.\\1", $string);
   $string = preg_replace("#\[url\](.+?)\[/url\]#is", "\\1", $string);
   $string = preg_replace("#\[url=(.+?)\](.+?)\[/url\]#is", "\\2 --> \\1", $string);
   $string = preg_replace("#\[code\](.+?)\[/code\]#is", "\\1", $string);
@@ -338,14 +338,14 @@ function bbcode2markdown($texte)
 
     // transformation automatique des url
 
-    // au format http://truc
-    $urlauto_pattern = "/([ :\.;,\n])(http:\/\/\w\S*)/i";
+    // au format https://truc
+    $urlauto_pattern = "/([ :\.;,\n])(https:\/\/\w\S*)/i";
     $urlauto_replace = "$1<$2>";
     $markdown = preg_replace($urlauto_pattern,$urlauto_replace,$markdown);
 
     // au format www.
     $urlauto_pattern = "/([ :\.;,\n])(www.\w\S*)/i";
-    $urlauto_replace = "$1<http://$2>";
+    $urlauto_replace = "$1<https://$2>";
     $markdown = preg_replace($urlauto_pattern,$urlauto_replace,$markdown);
 
     // Gestion des codes en bloc

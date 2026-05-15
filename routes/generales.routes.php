@@ -3,7 +3,7 @@
 Ceci est le fichier des routes principales, il s'ocupe de faire correspondre 
 une route (qui correspond à une forme d'url) vers un controlleur.
 
-exemple : http://www.refuges.info/point/X/Y/Z => le controlleur point.php
+exemple : https://www.refuges.info/point/X/Y/Z => le controlleur point.php
   
 Il s'occupe alors d'analyser l'url pour en déterminer ce qui doit être fait, appeler les controlleurs
 selon cette url puis ouvrir les vues, toujours selon cet url.

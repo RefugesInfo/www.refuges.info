@@ -16,7 +16,7 @@ Cette fonction permet d'aller chercher un ou plusieurs polygones
 $conditions->ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id est cette liste
 $conditions->non_ids_polygones = 5 ou 4,7,8 -> récupère le/les polygones dont l'id n'est pas dans cette liste
 $conditions->avec_geometrie=gml/kml/svg/text/... (ou not set si on la veut pas)
-  La valeur choisie c'est le st_as$valeur de postgis voir : http://postgis.org/docs/reference.html#Geometry_Outputs
+  La valeur choisie c'est le st_as$valeur de postgis voir : https://postgis.org/docs/reference.html#Geometry_Outputs
   la géométrie retournée sera sous $retour->geometrie_<paramètre en entrée> comme : $retour->geometrie_gml
 $conditions->avec_enveloppe = True -> retourne 4 propriété ouest, est, sud et nord qui sont pour chaque polygones les bornes extrèmes (par défaut à False)
 $conditions->intersection = id_poly -> Sélectionne tous les polygones ayant une intersection avec le polygone id_poly

@@ -13,11 +13,11 @@ header("Content-Type: application/gpx+xml; UTF-8"); // rajout du charset
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" standalone="no"<?='?>'?>
 
-<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx pour garmin de refuges.info" version="1.1">
+<gpx xmlns="https://www.topografix.com/GPX/1/1" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx pour garmin de refuges.info" version="1.1">
 <metadata>
 	<name>Points de refuges.info</name>
 	<copyright author="Contributeurs refuges.info">
-		<license>http://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
+		<license>https://creativecommons.org/licenses/by-sa/2.0/deed.fr</license>
 	</copyright>
 	<link href="https://<?=$config_wri['nom_hote']?>" />
 </metadata>

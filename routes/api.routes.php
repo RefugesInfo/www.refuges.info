@@ -3,7 +3,7 @@
  *              ROUTEUR de l'API
  * Ce fichier appelle juste le bon controlleur.
  * La vue et le modèle sont appellés par le controlleur.
- * cf. : http://bpesquet.developpez.com/tutoriels/php/evoluer-architecture-mvc/images/3.png
+ * cf. : https://bpesquet.developpez.com/tutoriels/php/evoluer-architecture-mvc/images/3.png
  *
  * Changelog :
  *   * 18/10/2014 - Léo - Version intiale :

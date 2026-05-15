@@ -8,9 +8,9 @@ headers_cache_api();
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <wfs:FeatureCollection
-	xmlns:wfs=\"http://www.opengis.net/wfs\"
-	xmlns:gml=\"http://www.opengis.net/gml\"
-	xmlns:topp=\"http://www.openplans.org/topp\">
+	xmlns:wfs=\"https://www.opengis.net/wfs\"
+	xmlns:gml=\"https://www.opengis.net/gml\"
+	xmlns:topp=\"https://www.openplans.org/topp\">
 	<name>points.gml</name>
 	<description>".$config_wri['copyright_API']."</description>\r\n";
 
