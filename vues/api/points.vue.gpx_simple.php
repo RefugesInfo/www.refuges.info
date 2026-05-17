@@ -9,7 +9,7 @@ headers_cache_api();
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" standalone="no"<?='?>'?>
 
-<gpx xmlns="https://www.topografix.com/GPX/1/1" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx 'simple' de refuges.info" version="1.1">
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx 'simple' de refuges.info" version="1.1">
 
 <?php foreach ($points AS $point) { ?>
 <wpt lat="<?=$point->coord['lat']?>" lon="<?=$point->coord['long']?>">

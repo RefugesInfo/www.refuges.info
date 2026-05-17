@@ -16,7 +16,7 @@ headers_cache_api();
 ?>
 <?='<?'?>xml version="1.0" encoding="UTF-8" standalone="no"<?='?>'?>
 
-<gpx xmlns="https://www.topografix.com/GPX/1/1" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx standard de refuges.info" version="1.1">
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd" creator="Export gpx standard de refuges.info" version="1.1">
 <metadata>
 	<name>Points de refuges.info</name>
 	<desc><?=$config_wri["copyright_API"]?></desc>

@@ -14,7 +14,7 @@ headers_cache_api();
 
 ?>
 <?='<?'?>xml version="1.0" encoding="utf-8"<?='?>'?>
-<kml xmlns="https://earth.google.com/kml/2.1">
+<kml xmlns="http://earth.google.com/kml/2.1">
   <Document>
   <name>points.kml</name>
   <description><?=$config_wri['copyright_API']?></description>
