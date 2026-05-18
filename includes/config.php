@@ -99,6 +99,8 @@ $config_wri['largeur_max_vignette']=140;
 $config_wri['hauteur_max_vignette']=140*3/4;
 $config_wri['qualite_jpeg']=80;
 
+// Il est possible d'afficher un bandeau cerclé de rouge en dessous du bandeau de menu parlant de don pour refuges.info est de cookies, par défaut il n'est pas actif, mais dans le config privée on peut l'activer sans avoir besoin de faire un commit à chaque fois.
+$config_wri['affichage_bandeau_info'] = false;
 
 /***** En rapport avec les questions anti-robots ou captcha : sly 07/2024 : ok, je vous vois venir, vous vous dites que c'est trop nul une question qui ne change jamais, que c'est trop facile, que chatgpt il connait la réponse avant d'avoir lu la question, que recaptcha/google cloudflaire c'est tellement mieux.
 Et bien dites vous que ce système est en place depuis 10 (?) ans, a nécessité 2 minutes de travail, se résoud par un humain normal en une touche, et n'a jamais été craké jusqu'à.... maintenant, le 23/07/2024 quelqu'un a enfin trouvé la "réponse d".
