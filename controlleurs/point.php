@@ -70,7 +70,7 @@ else // le point est valide
     $conditions->limite=10;
 
     // On défini le cercle (centre et rayon) dont on veut les points à proximité
-    $conditions->rayon_du_cercle=5000;
+    $conditions->rayon_du_cercle=1000;
     $conditions->centre_du_cercle=$point->geom;
 
     $points_proches=infos_points($conditions);
