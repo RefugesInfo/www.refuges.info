@@ -151,23 +151,6 @@
         <?php } ?>
       </dd>
     <?php } ?>
-<!--==================== VIGNETTES PHOTOS (CLICABLE POUR ALLER VOIR EN GRAND) =====================-->
-    <!-- Liste des vignettes photos (clicable pour aller voir en grand) -->
-    <?php if (count ($vue->commentaires_avec_photo)) { ?>
-      <dt class="noprint">Photos:</dt>
-      <dd class="noprint">
-        <?php foreach ($vue->commentaires_avec_photo AS $commentaire_avec_photo) { ?>
-          <a href="#C<?=$commentaire_avec_photo->id_commentaire?>">
-            <img
-              height="50"
-              style="vertical-align: middle ;"
-              src="<?=$commentaire_avec_photo->lien_photo['reduite'] ?? ''?>"
-              alt="photo miniature"
-            >
-          </a>
-        <?php } ?>
-      </dd>
-    <?php } ?>
 <!--========================================= Informations technique sur la fiche =========================================-->
     <dt>Coordonnées:</dt>
     <dd class="noprint">
