@@ -96,13 +96,6 @@
     padding: 0 2px 2px 2px;
   }
 
-  .bandeau_info,
-  .bandeau_info a {
-    font-size: 14px;
-    color: green;
-    cursor: pointer;
-  }
-
   .bandeau_info span,
   .menu-haut .edit-posts {
     color: orange;

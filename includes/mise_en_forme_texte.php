@@ -156,7 +156,7 @@ array_merge($search_img,
         "/:([a-z]+):/",
         "/\[t\]/",
         "/\[email\](.+?)\[\/email\]/",
-        "/\[c\](.+?)\[\/c\]/s" // Inventé par sly pour placer un commentaire (ce qui se situe entre [c] et [/c] ne sera pas converti en html : C
+        "/(?:\r?\n)?\[c\](.+?)\[\/c\]/s" // Inventé par sly pour placer un commentaire; le \n précédent est aussi supprimé pour éviter un <br> superflu : C
         )
 );
 $replacearray =
@@ -194,6 +194,8 @@ $texte_avec_html = preg_replace($searcharray, $replacearray, $texte_avec_protect
 $texte_avec_html=conversion_adresse_email_vers_mailto($texte_avec_html);
 
 // gestion des retours à la ligne et des espace ajouté volontairement pour la mise en forme
+// on retire les espaces et sauts de ligne en fin de texte pour éviter des <br> superflus
+$texte_avec_html = rtrim($texte_avec_html, " \r\n");
 $texte_avec_html = nl2br($texte_avec_html,false);
 $texte_avec_html = str_replace("  ", " &nbsp;", $texte_avec_html);
 

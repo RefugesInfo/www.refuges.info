@@ -41,7 +41,8 @@ if (est_moderateur())
 }
 
 // Bandeau d'informations masquable
-$vue->bandeau_info=wiki_page_brut('bandeau');
+$vue->bandeau_info = new stdClass;
+$vue->bandeau_info->contenu = wiki_page_html('bandeau');
 $vue->bandeau_info->cookie=$_COOKIE['bandeau_info'] ?? '';
 $vue->bandeau_info->new_cookie_expire=
   gmdate('r', time() + 24 * 3600 * (
