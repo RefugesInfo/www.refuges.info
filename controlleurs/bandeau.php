@@ -21,7 +21,7 @@ if (est_moderateur())
   else
     $vue->demande_correction=false;
 
-  // Affiche la "petite étoile :☆" en haut à coté du nom du modérateur
+  // Affiche la "petite lune : 🌙" en haut à coté du nom du modérateur
   // pour le prévenir si un email envoyé par le forum est resté bloqué
   $query_emails_erreur="select * from emails_bounce where a_traiter='t' LIMIT 1";
 
