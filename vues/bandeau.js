@@ -25,11 +25,19 @@ function menuAction(evt) {
   // Click de la souris ou touch sur un élement
   // directement fils de l'élément de classe 'menu-bouton'
   // ajoute la classe 'menu-touch' à cet élément
-  if (evt.type == 'click' && // Mouse click & touch
-    this == evt.target.parentNode) {
+  // Clic sur enfant direct OU sur un <span> dans un <a> enfant direct
+  if (evt.type == 'click' &&
+    (this == evt.target.parentNode ||
+     (evt.target.parentNode?.tagName === 'A' && this == evt.target.parentNode?.parentNode))) {
     this.classList.toggle('menu-touch');
     this.classList.remove('menu-hover');
   }
+
+  // Focus l'input de recherche dès que le menu s'ouvre, quelle que soit la cible du clic
+  if (evt.type == 'click' &&
+      this.classList.contains('icone-recherche') &&
+      this.classList.contains('menu-touch'))
+    setTimeout(() => this.querySelector('input[type=text]').focus(), 50);
 
   // Ferme les autres boutons ouverts
   for (let el of menuEls)
