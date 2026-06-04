@@ -33,7 +33,7 @@ blockquote>div {
 
 blockquote {
   /* message forum et commentaires */
-  font-size: normal;
+  font-size: medium;
 }
 
 blockquote p:before {
@@ -129,7 +129,7 @@ dt>button {
 }
 
 li {
-  margin-bottom: 3px;
+  margin-bottom: 0;
 }
 
 /*====== Formulaires======*/
@@ -143,14 +143,26 @@ li {
 
 /* Pour faire disparaitre un élément au bout de 5 secondes*/
 .fade-out {
-  opacity: 0; /* l'état par défaut est d'être invisible */
+  opacity: 0;
+  /* l'état par défaut est d'être invisible */
   animation-iteration-count: 1;
   animation: fade;
   animation-duration: 8s;
 }
+
 @keyframes fade {
-  0% { opacity: 1; filter:alpha(opacity=100); } /* première frame, 100% visible */
-  100% { opacity: 0; filter:alpha(opacity=0); } /* dernière, 100% invisible */
+  0% {
+    opacity: 1;
+    filter: alpha(opacity=100);
+  }
+
+  /* première frame, 100% visible */
+  100% {
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+
+  /* dernière, 100% invisible */
 }
 
 form#form_point fieldset {
@@ -163,7 +175,11 @@ select,
 input,
 textarea {
   color: var(--couleur_texte);
-  background: var(--couleur_titre);
+  background-color: var(--couleur_titre);
+}
+
+*[type=submit] {
+  cursor: pointer;
 }
 
 form#form_point .textarea {
@@ -403,9 +419,11 @@ a:hover {
 .onhover span {
   display: none;
 }
+
 .onhover:hover sup {
   display: none;
 }
+
 .onhover:hover span {
   display: inline;
 }
@@ -433,7 +451,7 @@ a:hover {
 
 .accueil-switcher {
   float: right !important;
-  background: var(--couleur_titre) !important;
+  background-color: var(--couleur_titre) !important;
 }
 
 .accueil-switcher:not(.myol-button-selected) button {
@@ -548,6 +566,7 @@ a:hover {
   #container-carte-point {
     width: 100%;
   }
+
   #carte-modif {
     float: right;
     width: 100%;
@@ -639,22 +658,31 @@ a:hover {
   left: 0;
   right: 0;
 }
+
 .autocomplete-items div {
   padding: 10px;
   cursor: pointer;
   background-color: #fff;
   border-bottom: 1px solid #d4d4d4;
-  @media (prefers-color-scheme: dark) {
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-items div {
     background-color: #333;
   }
 }
+
 .autocomplete-items div:hover {
   /* when hovering an item */
   background-color: #e9e9e9;
-  @media (prefers-color-scheme: dark) {
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-items div:hover {
     background-color: #194459;
   }
 }
+
 .autocomplete-active {
   /* when navigating through the items using the arrow keys */
   background-color: DodgerBlue !important;

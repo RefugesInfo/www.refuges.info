@@ -2,314 +2,180 @@
 /* Entête de page : Logo, menus, identification                     */
 /* Initialement dans style.css.php                                  */
 /*==================================================================*/
-.bandeau-haut * {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size: 18px;
+
+/* Rend le bandeau fixe en haut de toutes les pages */
+body {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
 }
 
-.bandeau-haut a {
-  color: var(--couleur_lien);
+#scrolable {
+  overflow-y: auto;
 }
 
-.menu-bouton * {
-  font-family: Times New Roman;
+/* Styles modifiés par le forum */
+.menu-haut {
+  line-height: normal;
+  font-family: Verdana, Helvetica, Arial, sans-serif !important;
+  font-size: 16px !important;
+  color: white;
 }
 
 .menu-haut ul {
   list-style-type: none;
 }
 
-.menu-haut form li {
-  margin: 5px 2px 10px 2px;
+/* Pour les fontes qui ont un caractère commète en noir & blanc */
+.menu-haut .edit-posts {
+  color: orange;
 }
 
-/* Fenêtres larges */
-@media screen and (min-width: 450px) {
-
-  /* Le bandeau */
-  .bandeau-haut {
-    background-image: var(--image_bandeau);
-    background-repeat: no-repeat;
-  }
-
-  .logo-haut {
-    display: block;
-    position: absolute;
-    width: calc(100% - 225px);
-    height: 50px;
-  }
-
-  .logo-haut:hover {
-    background: transparent;
-  }
-
-  .recherche-haut {
-    float: right;
-    padding: 11px 0;
-    font-size: 16px;
-  }
-
-  .recherche-haut input {
-    font-size: 16px;
-  }
-
-  .recherche-haut a {
-    padding-right: 2px;
-    font-size: 18px;
-  }
-
-  .menu-haut {
-    clear: both;
-  }
-
-  /* Ligne de menus */
-  .menu-liste>ul {
-    display: flex;
-    justify-content: space-between;
-    padding: 0;
-  }
-
-  .menu-liste>span,
-  .menu-titre,
-  .menu-recherche {
-    display: none;
-  }
-
-  .menu-connexion {
-    float: right;
-  }
-
-  .menu-connexion ul {
-    right: 0;
-    border-radius: 10px 0 10px 10px !important;
-  }
-
-  .menu-connexion span span {
-    vertical-align: super;
-    font-size: 12px;
-  }
-
-  .bandeau_info {
-    border: 1px solid red;
-    border-radius: 5px;
-    margin: 0 0.5%;
-    padding: 0 2px 2px 2px;
-    clear: both;
-    text-align: center;
-  }
-
-  .bandeau_info span,
-  .menu-haut .edit-posts {
-    color: orange;
-  }
-
-  .bandeau_info .edit-info {
-    text-decoration: line-through;
-  }
-
-  /* Boutons */
-  .menu-bouton:not(.menu-liste) {
-    border: 2px solid transparent;
-    border-radius: 10px;
-    padding: 2px;
-  }
-
-  .menu-bouton:not(.menu-liste):hover {
-    border-radius: 10px 10px 0 0;
-  }
-
-  .menu-touch,
-  .menu-hover {
-    border-color: var(--couleur_decoration_titres) !important;
-  }
-
-  /* Blocs rétractables en dessous des boutons */
-  .menu-bouton:not(.menu-liste)>p,
-  .menu-bouton:not(.menu-liste)>ul {
-    position: absolute;
-    margin: 2px 0 0 -4px;
-    border-radius: 0 10px 10px 10px;
-    border: 2px solid var(--couleur_decoration_titres);
-    background: var(--couleur_fond);
-    padding: 0 4px;
-    opacity: 0;
-    z-index: -10;
-  }
-
-  .menu-touch:not(.menu-liste)>ul,
-  .menu-hover:not(.menu-liste)>ul,
-  .menu-hover:not(.menu-liste)>p,
-  .menu-hover:not(.menu-liste)>a {
-    opacity: 1;
-    z-index: 1000;
-  }
-
-  /* Lignes des blocs rétractables */
-  .menu-bouton:not(.menu-liste) li {
-    max-height: 0;
-    transition: max-height 0.2s ease-in;
-  }
-
-  .menu-touch:not(.menu-liste) li,
-  .menu-hover:not(.menu-liste) li {
-    max-height: 2.2em;
-  }
+/* Blocs rétractables en dessous des boutons */
+.menu-bouton:not(.menu-liste)>p,
+.menu-bouton:not(.menu-liste)>ul,
+.menu-bouton:not(.menu-liste)>form {
+  position: absolute;
+  margin: 2px 0 0 -4px;
+  border-radius: 10px;
+  border: 2px solid var(--couleur_decoration_titres);
+  background-color: var(--couleur_fond);
+  padding: 0 4px;
+  /* Scroll individuel si ne tient pas dans la fenêtre */
+  max-height: calc(100vh - 33px);
+  overflow-y: auto;
+  /* Position de départ pour les transitions */
+  opacity: 0;
+  /* Les controles de cartes leaflet sont z-index 1000 */
+  z-index: -2000;
 }
 
-/* On met tout sur une même ligne pour les très grandes fenêtres */
-@media screen and (min-width: 1200px) {
-  .menu-haut {
-    clear: none;
-    padding: 7.5px;
-  }
-
-  .logo-haut {
-    position: initial;
-    float: left;
-    width: 25vw;
-  }
-
-  .menu-bouton:not(.menu-liste) {
-    background: var(--couleur_fond);
-  }
-
-  .menu-connexion ul {
-    right: initial;
-    border-radius: 0 10px 10px 10px !important;
-  }
-
-  .recherche-haut {
-    padding-left: 20px;
-  }
+.menu-bouton button {
+  padding: 0;
+  background-color: var(--couleur_fond);
 }
 
-/* On enlève les icones pour les fenêtres moyenes */
-@media screen and (min-width: 450px) and (max-width: 650px) {
-  .menu-bouton span:not(.bouton-style):first-child {
+.menu-bouton form a,
+.menu-bouton form input {
+  margin: 3px;
+}
+
+/* Ligne de menus */
+.menu-touch:not(.menu-liste)>ul,
+.menu-hover:not(.menu-liste)>ul,
+.menu-touch:not(.menu-liste)>form,
+.menu-hover:not(.menu-liste)>form,
+.menu-hover:not(.menu-liste)>p,
+.menu-hover:not(.menu-liste)>a {
+  opacity: 1;
+  z-index: 2000;
+}
+
+/* Boutons */
+.menu-bouton:not(.menu-liste) {
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 2px;
+}
+
+/* Lignes des blocs rétractables */
+.menu-bouton:not(.menu-liste) li {
+  max-height: 0;
+  transition: max-height 0.2s ease-in;
+}
+
+.menu-touch:not(.menu-liste) li,
+.menu-hover:not(.menu-liste) li {
+  /* Pour transition */
+  max-height: 2.2em;
+}
+
+.menu-bouton:not(.menu-liste) hr {
+  margin: 0;
+  border-color: grey;
+}
+
+.menu-liste>ul {
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.menu-liste>ul li:has(>a) {
+  min-width: 0;
+}
+
+.menu-liste>ul li>a {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.menu-liste>ul li>a:hover,
+.menu-liste>ul form a:hover,
+.menu-connexion>ul form a:hover {
+  background-color: var(--couleur_fond);
+}
+
+.menu-connexion {
+  float: right;
+}
+
+.menu-connexion ul {
+  right: 0;
+  border-radius: 10px !important;
+}
+
+.icone-recherche form {
+  right: calc(100vw / 8);
+}
+
+.menu-connexion span span {
+  vertical-align: super;
+}
+
+.menu-haut *[type=submit] {
+  cursor: pointer;
+}
+
+/********** Bandeau info **********/
+.bandeau-info {
+  margin: 0 0.5%;
+  border: 1px solid red;
+  border-radius: 5px;
+  padding: 0 2px 2px 2px;
+  /* Modifié par le forum */
+  line-height: normal;
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+.bandeau-info span {
+  color: orange;
+}
+
+.bandeau-info .edit-info {
+  text-decoration: line-through;
+}
+
+/* Les deux styles d'affichage */
+@media screen and (min-width: 700px) {
+  .menu-etroit {
     display: none;
   }
 }
 
-/* On enlève le bandeau pour les fenêtres de faible hauteur */
-@media screen and (max-height: 600px) and (min-width: 500px) {
-  .bandeau-haut {
-    background-image: none;
-  }
-
-  .logo-haut,
-  .recherche-haut,
-  .menu-titre span {
-    display: none;
-  }
-}
-
-@media screen and (max-height: 600px) and (min-width: 500px) and (max-width: 700px) {
-  .menu-bouton span {
-    line-height: 1.5em;
-  }
-
-  .menu-bouton span:not(.bouton-style):first-child {
-    display: none;
-  }
-}
-
-/* Fenêtres étroites */
-@media screen and (max-width: 449.9px) {
-  .bandeau-haut * {
-    font-size: 16px;
-  }
-
-  .logo-haut,
-  .recherche-haut,
-  .menu-haut .menu-large,
-  .menu-bouton P,
-  .headerbar,
-  body:not(#phpbb) .menu-titre span {
+@media screen and (max-width: 699.9px) {
+  .menu-large {
     display: none;
   }
 
   .menu-haut {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-between;
-    background: var(--couleur_fond_titre);
-    color: var(--couleur_texte);
-  }
-
-  /* Boutons */
-  div.menu-bouton>span,
-  .menu-titre {
-    display: block;
-    padding: 0 8px 2px 8px;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--couleur_titre) !important;
-    cursor: pointer;
-  }
-
-  .menu-titre * {
-    padding-top: 4px;
-    font-size: 18px;
-    color: var(--couleur_titre) !important;
-  }
-
-  /* Blocs rétractables en dessous des boutons */
-  .menu-liste>ul,
-  .menu-recherche ul,
-  .menu-connexion ul {
-    position: absolute;
-    border-radius: 0 0 10px 10px;
-    border: 2px solid var(--couleur_decoration_titres);
-    padding: 0 4px;
-    background: var(--couleur_fond);
-    white-space: nowrap;
-    z-index: -10;
-    opacity: 0;
-  }
-
-  .menu-recherche ul,
-  .menu-connexion ul {
-    right: 0;
-  }
-
-  .menu-liste>ul {
-    padding-top: 3px;
-  }
-
-  .menu-liste.menu-touch>ul,
-  .menu-liste.menu-hover>ul,
-  .menu-recherche.menu-touch>ul,
-  .menu-recherche.menu-hover>ul,
-  .menu-connexion.menu-touch>ul,
-  .menu-connexion.menu-hover>ul {
-    opacity: 1;
-    z-index: 1000;
-  }
-
-  /* Lignes des blocs rétractables */
-  .menu-liste li,
-  .menu-connexion li {
-    max-height: 0;
-    transition: max-height 0.2s ease-in;
-  }
-
-  .menu-liste.menu-touch li,
-  .menu-liste.menu-hover li {
-    max-height: initial;
-  }
-
-  .menu-liste.menu-touch ul ul li,
-  .menu-liste.menu-hover ul ul li,
-  .menu-connexion.menu-touch li,
-  .menu-connexion.menu-hover li {
-    padding: 1.5px 0;
-    max-height: 1.2em;
+    background-color: var(--couleur_fond_titre);
   }
 }
 
-/* Fenêtres très étroites */
-@media screen and (max-width: 300px) {
-  .menu-titre span {
+@media screen and (max-width: 399px) {
+  .icone-lien {
     display: none;
   }
 }
