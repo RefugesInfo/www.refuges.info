@@ -4,9 +4,11 @@
 /*====================================================*/
 /* #phpbb permet de prioriser par rapport au style de base */
 
-/* Forum de la largeur de la page */
+/* Forum de la largeur de la page, fond vert comme le reste du site */
+body,
 .wrap {
   max-width: 100%;
+  background-color: var(--couleur_fond);
 }
 
 /* Liens aux couleurs de refuges.info */
