@@ -1,6 +1,9 @@
-/*===================================================================*/
-/* La seule et unique feuille de style CSS des pages de refuges.info */
-/*===================================================================*/
+/*===================================================================
+ * La feuille de style CSS principal des pages de refuges.info       
+ * Depuis ~2020 on a finalement décidé de diviser en plusieurs pages 
+ * histoire de mieux s'y trouver (style des formulaires, du bandeau, 
+ * surcharge du forum)
+===================================================================*/
 <?php
 /***********************************************************************************************
 Pourquoi une feuille de style en .php ?
