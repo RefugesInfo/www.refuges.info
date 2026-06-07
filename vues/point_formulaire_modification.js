@@ -1,6 +1,6 @@
 // Gestion des cartes
 var map = mapModif({
-  target: 'carte-modif',
+  target: 'carte-saisie',
   host: '/',
   mapKeys: <?=json_encode($config_wri['mapKeys'])?>,
   idPoint: <?=$vue->point->id_point ?? 0?>,

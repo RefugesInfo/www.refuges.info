@@ -1,0 +1,348 @@
+/*==================================================================*/
+/* Styles du formulaire de modification / création de point         */
+/* Chargé en plus de style_pages.css uniquement pour ce formulaire  */
+/*==================================================================*/
+
+/* --- Layout général : on remplace les floats par flexbox --- */
+
+#form_point {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Éléments structurels et fieldsets non-booleen : pleine largeur (2 colonnes) */
+#form_point > h4,
+#form_point > div,
+#form_point > p,
+#form_point > fieldset:not(.booleen) {
+  grid-column: 1 / -1;
+}
+
+#form_point > div:first-child,
+#form_point > fieldset:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  align-items: center;
+}
+
+/* Annule les floats hérités de style_pages.css pour ce formulaire */
+#form_point label {
+  clear: none;
+  float: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  margin-bottom: 0.6em;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+/* --- Fieldsets --- */
+
+#form_point fieldset {
+  border: 1.5px solid var(--couleur_decoration_titres) !important;
+  border-radius: 10px;
+  padding: 0.9em 1.1em !important;
+  margin-bottom: 0.75em;
+  background: color-mix(in srgb, var(--couleur_legende) 45%, transparent);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- Inputs, selects, textareas --- */
+
+#form_point input[type=text],
+#form_point input[type=number],
+#form_point select,
+#form_point textarea {
+  border: 1.5px solid var(--couleur_decoration_titres);
+  border-radius: 7px;
+  padding: 0.4em 0.65em;
+  font-size: 1em;
+  font-family: inherit;
+  background: var(--couleur_titre);
+  color: var(--couleur_texte);
+  box-sizing: border-box;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  width: auto;
+}
+
+#form_point input[type=text]:focus,
+#form_point input[type=number]:focus,
+#form_point select:focus,
+#form_point textarea:focus {
+  outline: none;
+  border-color: var(--couleur_lien);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--couleur_lien) 22%, transparent);
+}
+
+/* Le champ nom et le champ captcha gardent leur largeur */
+.input_en_ligne  { width: min(26em, 100%); }
+.input_captcha_court { width: 4em; }
+
+/* Textarea pleine largeur — form# pour égaler la spécificité de style_pages.css */
+form#form_point .textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: auto;
+  box-sizing: border-box;
+}
+
+form#form_point .textarea label,
+form#form_point .textarea textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* --- Fieldset coordonnées : labels en ligne --- */
+
+#form_point fieldset:not(.booleen):not(.textarea) label {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  font-weight: normal;
+  margin-bottom: 0.4em;
+}
+
+/* Petits champs de coordonnées : ne pas les étirer */
+#form_point input[size="4"],
+#form_point input[size="6"],
+#form_point input[size="7"],
+#form_point input[size="12"] {
+  width: auto;
+}
+
+/* --- Fieldsets .booleen : radio boutons en style "pilule" --- */
+
+form#form_point .booleen {
+  float: none !important;
+  clear: none !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  text-align: left !important;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1em !important;
+}
+
+form#form_point .booleen legend {
+  float: none !important;
+  clear: none !important;
+  flex-basis: 100%;
+  font-weight: bold;
+  margin-bottom: 0.35em;
+  font-size: 0.95em;
+  color: var(--couleur_texte);
+}
+
+/* Chaque option = une pilule cliquable */
+form#form_point .booleen label {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.35em;
+  cursor: pointer;
+  border: 1.5px solid var(--couleur_decoration_titres);
+  border-radius: 999px;
+  padding: 0.25em 0.9em 0.25em 0.65em;
+  background: var(--couleur_titre);
+  color: var(--couleur_texte);
+  font-weight: normal;
+  font-size: 0.95em;
+  margin-bottom: 0;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  user-select: none;
+}
+
+/* Pilule active (option sélectionnée) */
+form#form_point .booleen label:has(input[type=radio]:checked) {
+  background: var(--couleur_lien);
+  border-color: var(--couleur_lien);
+  color: white;
+}
+
+form#form_point .booleen label:hover {
+  border-color: var(--couleur_lien);
+  background: color-mix(in srgb, var(--couleur_legende) 70%, transparent);
+}
+
+form#form_point .booleen label:has(input[type=radio]:checked):hover {
+  background: var(--couleur_lien);
+  opacity: 0.88;
+}
+
+/* Le bouton radio natif reste visible mais discret à l'intérieur de la pilule */
+form#form_point .booleen input[type=radio] {
+  width: 0.9em;
+  height: 0.9em;
+  accent-color: white;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* Champ nombre (entier_ou_sait_pas) inline dans sa pilule */
+form#form_point .booleen input[type=text] {
+  width: 4em;
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  font-size: 0.9em;
+  margin-left: 0.2em;
+}
+
+/* La pilule "nombre :" contient radio + text input : on passe en row normal
+   pour que le champ nombre apparaisse à droite du texte, pas à gauche */
+form#form_point .booleen label:has(input[type=text]) {
+  flex-direction: row;
+}
+
+/* Supprime les <br clear:both> laissés par la vue entre les trinaires */
+#form_point br[style*="clear"] {
+  display: none;
+}
+
+/* --- Boutons --- */
+
+#form_point button {
+  border-radius: 7px;
+  padding: 0.5em 1.6em;
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1.5px solid var(--couleur_lien);
+  background: var(--couleur_lien);
+  color: white;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  transition: opacity 0.18s, transform 0.1s;
+}
+
+#form_point button:hover {
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+
+#form_point button:active {
+  transform: translateY(0);
+}
+
+#form_point button[value=reset] {
+  background: transparent;
+  color: var(--couleur_lien);
+}
+
+#form_point .bouton-supprimer {
+  background: #c0392b;
+  border-color: #c0392b;
+  color: white;
+}
+
+/* --- Responsive mobile --- */
+
+@media screen and (max-width: 640px) {
+  #form_point {
+    grid-template-columns: 1fr;
+  }
+  /* Tout le formulaire et ses conteneurs en pleine largeur */
+  #form_point,
+  #form_point fieldset,
+  #form_point .booleen,
+  #form_point label {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Labels en colonne sur mobile */
+  #form_point fieldset:not(.booleen):not(.textarea) label {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Tous les champs en pleine largeur */
+  #form_point input[type=text],
+  #form_point input[type=number],
+  #form_point select,
+  #form_point textarea {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Sauf : les radios dans les pilules, le champ nombre inline, et le captcha */
+  #form_point .booleen input[type=radio],
+  #form_point .booleen input[type=text],
+  .input_captcha_court {
+    width: auto !important;
+  }
+
+  /* Les pilules elles-mêmes restent leur taille naturelle */
+  #form_point .booleen label {
+    width: auto !important;
+  }
+
+  /* Les coordonnées CH1903 sont secondaires, on les cache sur mobile */
+  .xy {
+    display: none;
+  }
+}
+
+/* --- Grand écran : limiter la largeur du formulaire --- */
+
+@media screen and (min-width: 1300px) {
+  #form_point {
+    max-width: 860px;
+  }
+
+  #form_point .booleen {
+    max-width: 600px !important;
+  }
+}
+
+/* --- Layout carte de saisie + formulaire ---
+   IDs propres (#conteneur-carte-saisie, #carte-saisie) sans conflit avec style_pages.css */
+
+/* Par défaut (< 1300px) : empilement, carte pleine largeur en haut */
+#conteneur-carte-saisie {
+  width: 100%;
+}
+#carte-saisie {
+  width: 100%;
+  height: clamp(300px, 75vw, 600px);
+}
+
+/* ≥ 1300px : grille 2 colonnes — formulaire à gauche, carte à droite et grande */
+@media screen and (min-width: 1300px) {
+  .contenu {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-template-areas: "form carte";
+    gap: 1em;
+    align-items: start;
+  }
+
+  #form_point {
+    grid-area: form;
+    min-width: 0;
+  }
+
+  #conteneur-carte-saisie {
+    grid-area: carte;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #carte-saisie {
+    width: 100%;
+    height: clamp(500px, calc(100vw - 480px), 85vh);
+  }
+}

@@ -1,6 +1,8 @@
 <?php
 // Modification/création de fiche point
 
+add_lib('style_formulaire.css');
+
 require_once ("bdd.php");
 require_once ("point.php");
 require_once ("polygone.php");
