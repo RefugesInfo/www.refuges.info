@@ -9,9 +9,10 @@
     </dl>
   <?php } ?>
 
-  <h5>Vous souhaitez ajouter :</h5>
   <form id="cree_point" action="/point_formulaire_modification/">
-    <fieldset class="booleen">
+    <fieldset>
+      <legend>Ajouter un·e :</legend>
+      <fieldset class="booleen">
       <?php
         $first = true;
         foreach ($vue->types_point_affichables AS $pa) {
@@ -26,6 +27,7 @@
           <?=htmlspecialchars($pa->nom_type)?>
         </label>
       <?php } ?>
+      </fieldset>
     </fieldset>
     <p><input type="submit" value="Passer à l'étape suivante"></p>
   </form>

@@ -489,13 +489,29 @@ form#comment input#demande_correction:focus-visible + label[for=demande_correcti
    4. Formulaire de choix de type de point (form#cree_point)
    ================================================================ */
 
+form#cree_point > fieldset {
+  border: 1.5px solid var(--couleur_decoration_titres);
+  border-radius: 10px;
+  padding: 0.9em 1.1em;
+  margin: 1.2em 0 0.75em;
+  background: color-mix(in srgb, var(--couleur_legende) 45%, transparent);
+  box-sizing: border-box;
+}
+
+form#cree_point > fieldset > legend {
+  font-weight: bold;
+  font-size: 0.95em;
+  padding: 0 0.3em;
+  color: var(--couleur_texte);
+}
+
 form#cree_point fieldset.booleen {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75em;
   border: none;
   padding: 0;
-  margin: 1em 0 1.5em;
+  margin: 0;
 }
 
 /* Pilule active */
