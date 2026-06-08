@@ -1,6 +1,5 @@
 <div class="contenu">
-  <h5>Que mettre ou ne pas mettre ?</h5>
-  <p>Prendre connaissance de <a href="<?=lien_wiki('que_mettre')?>">ce qui est attendu ou pas sur le site.</a>  (plusieurs changements importants en Mars 2025, ça vaut le coup de relire)</p>
+  <?=wiki_page_html("conseil-avant-ajout-point")?>
   <?php if (!est_connecte()) { ?>
     <dl>
       <dt>Pas encore de compte ?</dt>
@@ -12,19 +11,22 @@
 
   <h5>Vous souhaitez ajouter :</h5>
   <form id="cree_point" action="/point_formulaire_modification/">
-    <ul>
-       <?php // Calcul de la liste déroulante pour le menu
-         $checked="checked=\"checked\""; // pour cocher la première option
-         foreach ($vue->types_point_affichables AS $pa) { ?>
-           <li>
-               <input type="radio" name="id_point_type" value="<?=$pa->id_point_type?>" <?=$checked?>>
-               <a href="<?=lien_wiki("fiche-".replace_url($pa->nom_type))?>"><?=$pa->nom_type?><sup>?</sup></a>
-           </li>
-         <?
-         $checked="";
-        }
+    <fieldset class="booleen">
+      <?php
+        $first = true;
+        foreach ($vue->types_point_affichables AS $pa) {
+          $cle = replace_url($pa->nom_type);
+          $icone = isset($vue->icones[$cle]) ? $vue->icones[$cle] : null;
+          $checked = $first ? 'checked' : '';
+          $first = false;
       ?>
-    </ul>
+        <input type="radio" name="id_point_type" id="type_<?=$pa->id_point_type?>" value="<?=$pa->id_point_type?>" <?=$checked?>>
+        <label for="type_<?=$pa->id_point_type?>">
+          <?php if ($icone) { ?><img src="/images/icones/svg.php?nom=<?=htmlspecialchars($icone)?>" alt="" width="20" height="20"><?php } ?>
+          <?=htmlspecialchars($pa->nom_type)?>
+        </label>
+      <?php } ?>
+    </fieldset>
     <p><input type="submit" value="Passer à l'étape suivante"></p>
   </form>
   <h5>Licence des contenus</h5>

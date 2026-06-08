@@ -41,7 +41,8 @@ form#comment .textarea_large:focus {
 
 #form_point button,
 form#comment input[type=submit],
-form#comment input[type=reset] {
+form#comment input[type=reset],
+form#cree_point input[type=submit] {
   border-radius: 7px;
   padding: 0.5em 1.6em;
   font-size: 1em;
@@ -57,14 +58,16 @@ form#comment input[type=reset] {
 
 #form_point button:hover,
 form#comment input[type=submit]:hover,
-form#comment input[type=reset]:hover {
+form#comment input[type=reset]:hover,
+form#cree_point input[type=submit]:hover {
   opacity: 0.82;
   transform: translateY(-1px);
 }
 
 #form_point button:active,
 form#comment input[type=submit]:active,
-form#comment input[type=reset]:active {
+form#comment input[type=reset]:active,
+form#cree_point input[type=submit]:active {
   transform: translateY(0);
 }
 
@@ -83,7 +86,8 @@ form#comment input[type=reset]:active {
 /* --- Style pilule partagé --- */
 
 form#form_point .booleen label,
-form#comment label[for=demande_correction] {
+form#comment label[for=demande_correction],
+form#cree_point .booleen label {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
@@ -100,7 +104,8 @@ form#comment label[for=demande_correction] {
 }
 
 form#form_point .booleen label:hover,
-form#comment label[for=demande_correction]:hover {
+form#comment label[for=demande_correction]:hover,
+form#cree_point .booleen label:hover {
   border-color: var(--couleur_lien);
   background: color-mix(in srgb, var(--couleur_legende) 70%, transparent);
 }
@@ -440,6 +445,51 @@ form#comment input#demande_correction:checked + label[for=demande_correction]:ho
 
 /* Focus clavier */
 form#comment input#demande_correction:focus-visible + label[for=demande_correction] {
+  outline: 2px solid var(--couleur_lien);
+  outline-offset: 2px;
+}
+
+
+/* ================================================================
+   4. Formulaire de choix de type de point (form#cree_point)
+   ================================================================ */
+
+form#cree_point fieldset.booleen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+  border: none;
+  padding: 0;
+  margin: 1em 0 1.5em;
+}
+
+/* Masque le radio natif (accessible via label[for]) */
+form#cree_point .booleen input[type=radio] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Pilule active */
+form#cree_point .booleen input[type=radio]:checked + label {
+  background: var(--couleur_lien);
+  border-color: var(--couleur_lien);
+  color: white;
+}
+
+form#cree_point .booleen input[type=radio]:checked + label:hover {
+  background: var(--couleur_lien);
+  opacity: 0.88;
+}
+
+/* Focus clavier */
+form#cree_point .booleen input[type=radio]:focus-visible + label {
   outline: 2px solid var(--couleur_lien);
   outline-offset: 2px;
 }
