@@ -1,5 +1,10 @@
 // Carte leaflet
-localStorage.permalink ||= '7/45/7'; // zoom/latitude/longitude Défaut : Alpes de l'Ouest
+
+const permalinkInit = (localStorage.permalink || '5/46.5/5').split('/');
+// Défaut : zoom/latitude/longitude
+
+permalinkInit[0] = Math.min(parseInt(permalinkInit[0]), 10);
+localStorage.permalink = permalinkInit.join('/');
 
 const map = initMap(
   'carte-accueil',
