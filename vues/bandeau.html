@@ -174,23 +174,27 @@
 
   <div class="menu-liste menu-bouton">
     <ul>
-      <li class="menu-bouton icone-lien" style="order:1">
+      <li class="menu-bouton" style="order:1">
+        <a href="/"><b>Refuges.info</b></a>
+        <p>Accueil du site</p>
+      </li>
+      <li class="menu-bouton icone-lien" style="order:2">
         <a href="/nouvelles">🔔<span class="menu-large">Nouvelles</span></a>
         <p>Les entrées les plus récentes</p>
       </li>
-      <li class="menu-bouton icone-lien" style="order:2">
+      <li class="menu-bouton icone-lien" style="order:3">
         <a href="/point_ajout">📌<span class="menu-large">Ajouter</span></a>
         <p>Ajouter une nouvelle cabane ou refuge</p>
       </li>
-      <li class="menu-bouton icone-lien" style="order:3">
+      <li class="menu-bouton icone-lien" style="order:4">
         <a href="/nav">🌍<span class="menu-large">Cartes</span></a>
         <p>Afficher les points sur divers fonds de cartes</p>
       </li>
-      <li class="menu-bouton icone-lien" style="order:4">
+      <li class="menu-bouton icone-lien" style="order:5">
         <a href="<?=$config_wri['lien_forum']?>">💬<span class="menu-large">Forum</span></a>
         <p>Forum de discussion</p>
       </li>
-      <li class="menu-bouton icone-recherche" style="order:5">
+      <li class="menu-bouton icone-recherche" style="order:6">
         <a>🔍<span class="menu-large">Recherche</span></a>
         <form method="get" action="/point_recherche">
           <div style="text-wrap: nowrap;">
@@ -204,7 +208,7 @@
         </form>
       </li>
       <li class="menu-bouton" style="order:0">
-        <div>☰&nbsp;<b>Refuges.info</b></div>
+        <span class="menu-burger">☰</span>
         <ul>
           <li>
             <a href="/" title="Retour à l'entrée du site">

@@ -115,6 +115,11 @@ body {
   background-color: var(--couleur_fond);
 }
 
+.menu-burger {
+  line-height: 20px;
+  font-size: 24px;
+}
+
 .menu-connexion {
   float: right;
 }
@@ -173,7 +178,7 @@ body {
   }
 }
 
-@media screen and (max-width: 399px) {
+@media screen and (max-width: 400px) {
   .icone-lien {
     display: none;
   }
