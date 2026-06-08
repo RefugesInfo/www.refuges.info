@@ -28,6 +28,7 @@ function wriPOILayer(serveurAPI, type) {
 
       onEachFeature: (feature, layer) => {
         // Etiquettes
+        //TODO BUG ne s'affiche que pour les zooms faibles et ne raffraichi pas après
         layer.bindTooltip(
           feature.properties.nom, {
             permanent: true,

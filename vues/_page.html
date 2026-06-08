@@ -41,24 +41,27 @@ switch ($vue->carte??''){
   case 'leaflet':
     if(empty($config_wri['debug'])) {
       add_lib('leaflet/dist/leaflet.js', 'chemin_leaflet');
+      add_lib('markercluster/dist/leaflet.markercluster.js', 'chemin_leaflet');
       add_lib('fullscreen/dist/Leaflet.fullscreen.min.js', 'chemin_leaflet');
+      add_lib('Coordinates/dist/Leaflet.Coordinates-0.1.5.min.js', 'chemin_leaflet');
       add_lib('gps/dist/leaflet-gps.min.css', 'chemin_leaflet');
       add_lib('gps/dist/leaflet-gps.min.js', 'chemin_leaflet');
-      add_lib('markercluster/dist/leaflet.markercluster.js', 'chemin_leaflet');
     } else {
       add_lib('leaflet/dist/leaflet-src.js', 'chemin_leaflet');
+      add_lib('markercluster/dist/leaflet.markercluster-src.js', 'chemin_leaflet');
       add_lib('fullscreen/dist/Leaflet.fullscreen.js', 'chemin_leaflet');
+      add_lib('Coordinates/dist/Leaflet.Coordinates-0.1.5.src.js', 'chemin_leaflet');
       add_lib('gps/dist/leaflet-gps.src.css', 'chemin_leaflet');
       add_lib('gps/dist/leaflet-gps.src.js', 'chemin_leaflet');
-      add_lib('markercluster/dist/leaflet.markercluster-src.js', 'chemin_leaflet');
     }
     add_lib('leaflet/dist/leaflet.css', 'chemin_leaflet');
+    add_lib('markercluster/dist/MarkerCluster.css', 'chemin_leaflet');
+    add_lib('markercluster/dist/MarkerCluster.Default.css', 'chemin_leaflet');
     add_lib('fullscreen/dist/leaflet.fullscreen.css', 'chemin_leaflet');
+    add_lib('Coordinates/dist/Leaflet.Coordinates-0.1.5.css', 'chemin_leaflet');
     add_lib('FeatureGroup.SubGroup/src/subgroup.js', 'chemin_leaflet');
     add_lib('geocoder/Control.Geocoder.css', 'chemin_leaflet');
     add_lib('geocoder/Control.Geocoder.js', 'chemin_leaflet');
-    add_lib('markercluster/dist/MarkerCluster.css', 'chemin_leaflet');
-    add_lib('markercluster/dist/MarkerCluster.Default.css', 'chemin_leaflet');
     add_lib('src/patch.css', 'chemin_leaflet');
     add_lib('src/MarkerCompass.js', 'chemin_leaflet');
     add_lib('src/vectorLayers.css', 'chemin_leaflet');
