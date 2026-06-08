@@ -152,24 +152,10 @@
       // Champs uniquement pour les modérateurs (des fonctionnalités qui ne leur sont utiles qu'a eux comme chercher les cabannes fermées
       $visible = '';
       if (est_moderateur() ) { ?>
-
-        <fieldset>
-          <legend>Critères uniquement pour les modérateurs</legend>
-          <!-- =========================== -->
-        </fieldset>
-        <fieldset>
-          <legend>Tri des résultats</legend>
-          <label title="Résultats triés par Zones->Massifs->Reserves">
-            <input type="radio" name="condition_categorie_polygone" value="montagnarde" checked="checked" />
-            Montagne
-          </label>
-          <label title="Résultats triés par Pays->Région->Département">
-            <input type="radio" name="condition_categorie_polygone" value="administrative" />
-            Administratif
-          </label>
-        </fieldset>
+      <h4>Critères uniquement pour les modérateurs</h4>
         <!-- =========================== -->
         <fieldset>
+          <legend>Meta-informations</legend>
           <label title="Un positionnement précis est-il indispensable ?">Provenance des coordonnéés GPS :
             <select name="precision_gps" >
               <option value="">(Peu importe)</option>
@@ -203,9 +189,6 @@
             <input type="checkbox" name="uniquement_points_caches" value="True"/>
             Uniquement les points cachés
           </label>
-        </fieldset>
-        <!-- =========================== -->
-        <fieldset>
           <span class="champs_null_masque">
             <input type="checkbox" name="champs_null[]" value="manque_un_mur" />
             <label>
@@ -227,6 +210,14 @@
           <input type="checkbox" name="limite" value="100000" />
           Ne pas limiter aux <?=$config_wri['points_maximum_recherche']?> premiers résultats.
         </label>
+          <label>
+            <input type="radio" name="condition_categorie_polygone" value="montagnarde" checked="checked" />
+            Tri montagne (Résultats triés par Zones->Massifs->Reserves)
+          </label>
+          <label>
+            <input type="radio" name="condition_categorie_polygone" value="administrative" />
+            Tri administratif (Résultats triés par Pays->Région->Département)
+          </label>
       </fieldset>
 
       <label>
