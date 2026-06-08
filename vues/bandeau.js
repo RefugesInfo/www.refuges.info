@@ -29,8 +29,6 @@ function menuAction(evt) {
   if (evt.type == 'click' &&
     (this == evt.target.parentNode ||
      (evt.target.parentNode?.tagName === 'A' && this == evt.target.parentNode?.parentNode))) {
-    if (!window.matchMedia('(hover: hover)').matches)
-      evt.preventDefault(); // mobile : ouvre le dropdown sans suivre le lien
     this.classList.toggle('menu-touch');
     this.classList.remove('menu-hover');
   }
