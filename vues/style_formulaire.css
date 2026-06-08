@@ -90,11 +90,12 @@ form#comment label[for=demande_correction],
 form#cree_point .booleen label {
   display: inline-flex;
   align-items: center;
-  gap: 0.35em;
+  justify-content: center;
+  gap: 0.4em;
   cursor: pointer;
   border: 1.5px solid var(--couleur_decoration_titres);
   border-radius: 999px;
-  padding: 0.25em 0.9em 0.25em 0.65em;
+  padding: 0.3em 1.1em;
   background: var(--couleur_titre);
   color: var(--couleur_texte);
   font-weight: normal;
@@ -108,6 +109,20 @@ form#comment label[for=demande_correction]:hover,
 form#cree_point .booleen label:hover {
   border-color: var(--couleur_lien);
   background: color-mix(in srgb, var(--couleur_legende) 70%, transparent);
+}
+
+/* Radio/checkbox natif masqué dans toutes les pilules (accessible via label) */
+form#form_point .booleen input[type=radio],
+form#cree_point .booleen input[type=radio] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* --- Utilitaires --- */
@@ -146,6 +161,13 @@ form#cree_point .booleen label:hover {
   align-items: center;
 }
 
+#form_point > fieldset:last-child {
+  border: none !important;
+  background: none;
+  padding: 0 !important;
+  margin-bottom: 0;
+}
+
 /* Annule les floats hérités de style_pages.css (form.wri) */
 #form_point label {
   clear: none;
@@ -156,6 +178,23 @@ form#cree_point .booleen label:hover {
   margin-bottom: 0.6em;
   font-weight: bold;
   font-size: 0.95em;
+}
+
+/* --- Legend comme titre du bloc --- */
+
+#form_point fieldset:not(.booleen) > legend {
+  font-weight: bold;
+  font-size: 0.95em;
+  padding: 0 0.3em;
+  color: var(--couleur_texte);
+}
+
+/* Fieldset imbriqué (ex: textarea dans infos de base) : pas de double visuel */
+#form_point fieldset fieldset {
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* --- Fieldsets --- */
@@ -240,11 +279,10 @@ form#form_point .booleen legend {
   color: var(--couleur_texte);
 }
 
-/* Spécificités des pilules radio (radio à gauche via row-reverse) */
 form#form_point .booleen label {
-  flex-direction: row-reverse;
   white-space: nowrap;
   margin-bottom: 0;
+  padding-left: 1.1em !important; /* annule le padding-left: 5px de style_pages.css */
 }
 
 /* Pilule active */
@@ -257,15 +295,6 @@ form#form_point .booleen label:has(input[type=radio]:checked) {
 form#form_point .booleen label:has(input[type=radio]:checked):hover {
   background: var(--couleur_lien);
   opacity: 0.88;
-}
-
-/* Radio natif dans la pilule */
-form#form_point .booleen input[type=radio] {
-  width: 0.9em;
-  height: 0.9em;
-  accent-color: white;
-  flex-shrink: 0;
-  cursor: pointer;
 }
 
 /* Champ nombre inline dans sa pilule */
@@ -354,6 +383,12 @@ form#form_point .booleen label:has(input[type=text]) {
 
 #conteneur-carte-saisie {
   width: 100%;
+}
+
+#conteneur-carte-saisie p {
+  font-size: 0.8em;
+  color: var(--couleur_legende);
+  margin: 0.2em 0 0;
 }
 
 #carte-saisie {
@@ -461,19 +496,6 @@ form#cree_point fieldset.booleen {
   border: none;
   padding: 0;
   margin: 1em 0 1.5em;
-}
-
-/* Masque le radio natif (accessible via label[for]) */
-form#cree_point .booleen input[type=radio] {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 /* Pilule active */
