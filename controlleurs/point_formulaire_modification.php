@@ -209,7 +209,7 @@ if ( !empty($point->equivalent_conditions_utilisation) )
 // ===========================================
 // Préparation de la $vue commune à chaque cas
 
-$vue->carte=TRUE;
+$vue->carte='myol';
 
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");

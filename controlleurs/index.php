@@ -11,7 +11,7 @@ Les variables sont passées dans l'objet $vue->...
 require_once ("nouvelle.php");
 require_once ("polygone.php");
 $vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
-$vue->carte=TRUE;
+$vue->carte='leaflet';
 $vue->stat = stat_site ();
 
 // Préparation de la liste des photos et commentaires récent(e)s

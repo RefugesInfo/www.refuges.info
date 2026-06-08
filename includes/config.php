@@ -76,7 +76,9 @@ $config_wri['forum_refuges']=4;
 
 // Paramètrage des cartes vignettes des fiches de points
 $config_wri['chemin_ol']=$config_wri['racine_projet'].'myol/dist/';
+$config_wri['chemin_leaflet']=$config_wri['racine_projet'].'leaflet/';
 $config_wri['url_chemin_ol']='/myol/dist/';
+$config_wri['url_chemin_leaflet']='/leaflet/';
 
 // En version opérationnelle, deviendra www.refuges.info, mais permet aux zones de dev sur d'autres domaine d'être plus dynamique. Si cette variable n'est pas définie on utilise du vide.
 $config_wri['nom_hote'] = $_SERVER['HTTP_HOST'] ?? '';

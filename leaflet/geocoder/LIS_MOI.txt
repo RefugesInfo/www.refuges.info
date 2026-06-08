@@ -1,0 +1,5 @@
+Downloads 3.3.1 :
+https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css
+https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js
+
+DOC: https://github.com/perliedman/leaflet-control-geocoder/

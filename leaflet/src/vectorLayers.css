@@ -1,0 +1,12 @@
+.leaflet-tooltip {
+  top: -8px;
+  left: 12px;
+  padding: 0;
+  line-height: 12px;
+  border-radius: 3px;
+  color: blue;
+}
+
+.hide-tooltips .leaflet-tooltip {
+  opacity: 0 !important;
+}

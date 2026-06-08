@@ -26,18 +26,47 @@ add_lib('style_pages.css');
 add_lib('bandeau.css');
 
 // Includes cartes
-if(!empty($vue->carte)) {
-  add_lib(
-    empty($config_wri['debug_ol']) ? 'myol-min.css' : 'myol.css',
-    'chemin_ol',
-    true
-  );
-  add_lib(
-    empty($config_wri['debug_ol']) ? 'myol.js' : 'myol-debug.js',
-    'chemin_ol'
-  );
-  add_lib('_cartes.js');
-} ?>
+switch ($vue->carte??''){
+  case 'myol':
+    if(empty($config_wri['debug'])) {
+      add_lib('myol-min.css', 'chemin_ol');
+      add_lib('myol.js', 'chemin_ol');
+    } else {
+      add_lib('myol.css', 'chemin_ol');
+      add_lib('myol-debug.js', 'chemin_ol');
+    }
+    add_lib('_cartes.js');
+    break;
+
+  case 'leaflet':
+    if(empty($config_wri['debug'])) {
+      add_lib('leaflet/dist/leaflet.js', 'chemin_leaflet');
+      add_lib('fullscreen/dist/Leaflet.fullscreen.min.js', 'chemin_leaflet');
+      add_lib('gps/dist/leaflet-gps.min.css', 'chemin_leaflet');
+      add_lib('gps/dist/leaflet-gps.min.js', 'chemin_leaflet');
+      add_lib('markercluster/dist/leaflet.markercluster.js', 'chemin_leaflet');
+    } else {
+      add_lib('leaflet/dist/leaflet-src.js', 'chemin_leaflet');
+      add_lib('fullscreen/dist/Leaflet.fullscreen.js', 'chemin_leaflet');
+      add_lib('gps/dist/leaflet-gps.src.css', 'chemin_leaflet');
+      add_lib('gps/dist/leaflet-gps.src.js', 'chemin_leaflet');
+      add_lib('markercluster/dist/leaflet.markercluster-src.js', 'chemin_leaflet');
+    }
+    add_lib('leaflet/dist/leaflet.css', 'chemin_leaflet');
+    add_lib('fullscreen/dist/leaflet.fullscreen.css', 'chemin_leaflet');
+    add_lib('FeatureGroup.SubGroup/src/subgroup.js', 'chemin_leaflet');
+    add_lib('geocoder/Control.Geocoder.css', 'chemin_leaflet');
+    add_lib('geocoder/Control.Geocoder.js', 'chemin_leaflet');
+    add_lib('markercluster/dist/MarkerCluster.css', 'chemin_leaflet');
+    add_lib('markercluster/dist/MarkerCluster.Default.css', 'chemin_leaflet');
+    add_lib('src/patch.css', 'chemin_leaflet');
+    add_lib('src/MarkerCompass.js', 'chemin_leaflet');
+    add_lib('src/vectorLayers.css', 'chemin_leaflet');
+    add_lib('src/vectorLayers.js', 'chemin_leaflet');
+    add_lib('_cartes_leaflet.js');
+    break;
+}
+?>
 <!doctype html>
 <html lang="fr">
   <head>

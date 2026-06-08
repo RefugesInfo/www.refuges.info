@@ -1,0 +1,2 @@
+Download the v1.4.1 release (with all files)
+https://github.com/Leaflet/Leaflet.markercluster/releases/tag/v1.4.1

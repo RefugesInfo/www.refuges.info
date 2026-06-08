@@ -23,7 +23,7 @@ require_once ("forum.php");
 require_once ("meta_donnee.php");
 
 add_lib('wiki.js');
-$vue->carte=TRUE;
+$vue->carte='myol';
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();

@@ -56,7 +56,7 @@
   </div>
 <!--============================================ CARTE ============================================-->
     <?php // Veut-on une carte point ? (oui sauf cas des coordonnées inconnues
-    if (!empty($vue->mini_carte)) { ?>
+    if (!empty($vue->carte)) { ?>
       <div id="container-carte-point">
         <div id="carte-point"></div>
         <div class="noprint texte-tout-petit">
@@ -162,7 +162,7 @@
       <?php } ?>
     </dd>
     <dd>
-      <?php if (empty($vue->mini_carte)) { ?>
+      <?php if (empty($vue->carte)) { ?>
         <strong><?=$vue->point->nom_precision_gps?></strong>
       <?php } else { ?>
         <input type="hidden" id="cadre-json" value='{"type":"Point","coordinates":[<?=$vue->point->longitude?>,<?=$vue->point->latitude?>]}'>

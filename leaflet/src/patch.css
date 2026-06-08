@@ -1,0 +1,8 @@
+/***************************************
+ * Personnal adaptations & turn around *
+ ***************************************/
+
+.leaflet-control-geocoder input {
+  /* For dark mode */
+  color: black;
+}
