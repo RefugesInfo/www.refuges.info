@@ -2,24 +2,33 @@
 Ce dossier contient le nécessaire pour importer certaines données qui nous intéressent en provenance d'openstreetmap.
 
 == Dépendances ==
-Ces scripts ont besoin de l'utilitaire osm2pgsql qui peut soit être dans les paquets debian, soit être 
-compiler en suivant :
-http://wiki.openstreetmap.org/wiki/Osm2pgsql
+Ces scripts ont besoin de : 
+- osm2pgsql et dépendent qui peut soit être dans les paquets debian, soit être compiler en suivant : http://wiki.openstreetmap.org/wiki/Osm2pgsql
+- Un accès à une Overpass API : https://wiki.openstreetmap.org/wiki/Overpass_API
 
-L'importation est un peu longue en générale, il est donc préférable de la
-lancer en ligne de commande afin d'avoir les résultats de l'importation à l'écran.
+L'importation est un peu longue en générale, il est donc préférable de la lancer en ligne de commande afin d'avoir les résultats de l'importation à l'écran.
 
 J'ai opté pour un script php qui ne fait que appeler osm2pgsql mais permettant de récupérer les identifiants 
 pgsql de notre propre site 
 
 
 == Elements d'intérêt en provenance d'osm ==
-Voici le type d'éléments que l'on peut espérer récupérer :
+Voici le type d'éléments que l'on peut espérer récupérer et qui ont déjà fonctionné :
 
 En premier lieu : 
-Départements/régions/réserves naturelles et parc nationaux
+Pays / Départements / régions / réserves naturelles et parc nationaux
+ça, c'est fonctionnel (du moins, lors du denrier import en 2020 !) ça récupère :
+- la géométrie bien sûr (un multi-polygone)
+- le nom
+- la catégorie du polygone (pays, département, autre)
+- description:restrictions
+- description:restrictions2
+- description:restrictions3
+- website:regulation
+- website
 
-A voir les autres polygones qui pourraient nous intéresser (en 2025 n'a toujours pas été tenté):
+Pour l'avenir et mes rêves :
+A voir les autres polygones qui pourraient nous intéresser (en 2025 n'a toujours pas été tenté mais le code devrait être adaptable ):
 - Communes (pour savoir laquelle contacter car une cabane s'y trouve)
 - Massifs/Régions naturelles (pour ne pas forcément avoir à les saisir nous)
 - Forêt (Pour déterminer s'il y a plus de chance d'avoir du bois)
