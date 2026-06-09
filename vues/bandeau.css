@@ -137,7 +137,8 @@ body {
   vertical-align: super;
 }
 
-.menu-haut *[type=submit] {
+.menu-haut *[type=submit],
+.bandeau-info a {
   cursor: pointer;
 }
 
