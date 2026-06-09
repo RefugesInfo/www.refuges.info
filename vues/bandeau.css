@@ -120,6 +120,10 @@ body {
   font-size: 24px;
 }
 
+.icone-recherche form {
+  right: 50px;
+}
+
 .menu-connexion {
   float: right;
 }
