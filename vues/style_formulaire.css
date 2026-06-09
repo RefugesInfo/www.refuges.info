@@ -232,6 +232,10 @@ form#form_point .textarea textarea {
   box-sizing: border-box !important;
 }
 
+form#form_point .textarea textarea {
+  min-height: 7em;
+}
+
 /* --- Fieldset coordonnées : labels en ligne --- */
 
 #form_point fieldset:not(.booleen):not(.textarea) label {
