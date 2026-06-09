@@ -10,7 +10,7 @@ document.body.addEventListener('click', menuClean);
 
 // Commutateur de thème jour / nuit de prosilver_fr
 if (localStorage.darksideofthemoon)
-  document.body.classList.add (localStorage.darksideofthemoon);
+  document.body.classList.add(localStorage.darksideofthemoon);
 
 function menuAction(evt) {
   // Passage de la souris sur tout l'élement de classe 'menu-bouton'
@@ -28,15 +28,15 @@ function menuAction(evt) {
   // Clic sur enfant direct OU sur un <span> dans un <a> enfant direct
   if (evt.type == 'click' &&
     (this == evt.target.parentNode ||
-     (evt.target.parentNode?.tagName === 'A' && this == evt.target.parentNode?.parentNode))) {
+      (evt.target.parentNode?.tagName === 'A' && this == evt.target.parentNode?.parentNode))) {
     this.classList.toggle('menu-touch');
     this.classList.remove('menu-hover');
   }
 
   // Focus l'input de recherche dès que le menu s'ouvre, quelle que soit la cible du clic
   if (evt.type == 'click' &&
-      this.classList.contains('icone-recherche') &&
-      this.classList.contains('menu-touch'))
+    this.classList.contains('icone-recherche') &&
+    this.classList.contains('menu-touch'))
     setTimeout(() => this.querySelector('input[type=text]').focus(), 50);
 
   // Ferme les autres boutons ouverts

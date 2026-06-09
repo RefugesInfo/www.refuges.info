@@ -129,10 +129,6 @@ body {
   border-radius: 10px !important;
 }
 
-.icone-recherche form {
-  right: calc(100vw / 8);
-}
-
 .menu-connexion span span {
   vertical-align: super;
 }
