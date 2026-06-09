@@ -67,18 +67,19 @@
         Nom :
         <input class="input_en_ligne" type="text" name="nom" placeholder="<?=!isset($vue->point->id_point) ? $vue->point->nom : ''?>" value="<?=isset($vue->point->id_point) ? $vue->point->nom : ''?>">
       </label>
-      <label>Type de point
-        <select name='id_point_type'>
-          <?php foreach ($vue->infos_base->types_point AS $type_point) { ?>
-            <option value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$vue->point->id_point_type)? 'selected="selected"' : '' ;?>>
-              <?=$type_point->nom_type?>
-            </option>
-          <?php } ?>
-        </select>
-        <a href="<?=$vue->lien_aide_points?>">
-          Explications plus précises sur les différents types de points
-        </a>
-      </label>
+      <?php if (!empty($vue->point->id_point)) { ?>
+        <label>Type de point
+          <select name='id_point_type'>
+            <?php foreach ($vue->infos_base->types_point AS $type_point) { ?>
+              <option value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$vue->point->id_point_type)? 'selected="selected"' : '' ;?>>
+                <?=$type_point->nom_type?>
+              </option>
+            <?php } ?>
+          </select>
+        </label>
+      <?php } else { ?>
+        <input type="hidden" name="id_point_type" value="<?=$vue->point->id_point_type?>">
+      <?php } ?>
 
       <?php if (est_moderateur() and !empty($vue->point->id_point)) { ?>
         <label>Modérateur de cette fiche:
@@ -96,13 +97,13 @@
       <?php } ?>
 
       <fieldset class="textarea">
-        <div><a href="<?=$vue->lien_bbcode?>">Syntaxe mise en forme possible</a></div>
         <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
           <label>
             <span><?=ucfirst($tx_params->label)?></span>
             <textarea placeholder="<?=!isset($vue->point->id_point) ? $tx_params->valeur : ''?>" name="<?=$tx_nom?>"><?=isset($vue->point->id_point) ? $tx_params->valeur:''?></textarea>
           </label>
         <?php } ?>
+        <a class="lien-mise-en-forme" href="<?=$vue->lien_bbcode?>">Mise en forme texte</a>
       </fieldset>
     </fieldset>
 

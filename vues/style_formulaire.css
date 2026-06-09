@@ -234,6 +234,14 @@ form#form_point .textarea textarea {
 
 form#form_point .textarea textarea {
   min-height: 7em;
+  resize: none;
+}
+
+form#form_point .lien-mise-en-forme {
+  display: block;
+  text-align: right;
+  font-size: 0.8em;
+  margin-top: 0.2em;
 }
 
 /* --- Fieldset coordonnées : labels en ligne --- */
