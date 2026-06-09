@@ -53,7 +53,7 @@ function menuClean(evt) {
 }
 
 function masqueBandeauInfo() {
-  const bandeauEls = document.getElementsByClassName('bandeau_info');
+  const bandeauEls = document.getElementsByClassName('bandeau-info');
 
   if (bandeauEls.length)
     bandeauEls[0].style.display = 'none';
