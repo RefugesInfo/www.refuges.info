@@ -234,7 +234,7 @@ form#form_point .textarea textarea {
 
 form#form_point .textarea textarea {
   min-height: 7em;
-  resize: none;
+  resize: vertical;
 }
 
 form#form_point .lien-mise-en-forme {

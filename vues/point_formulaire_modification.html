@@ -184,20 +184,18 @@
 </div>
 <script>
 document.querySelectorAll('#form_point textarea').forEach(function(ta) {
-  var clone = ta.cloneNode(false);
-  clone.setAttribute('style', 'position:fixed;top:-9999px;left:-9999px;height:auto;min-height:0;overflow:hidden;visibility:hidden;');
-  ta.parentNode.appendChild(clone);
-  function resize() {
-    clone.style.width = ta.clientWidth + 'px';
-    clone.value = ta.value || ta.placeholder;
-    var style = getComputedStyle(ta);
-    var lineHeight = parseFloat(style.lineHeight);
-    if (isNaN(lineHeight)) lineHeight = parseFloat(style.fontSize) * 1.4;
-    ta.style.height = (clone.scrollHeight + lineHeight) + 'px';
-    ta.style.overflow = 'hidden';
-  }
-  resize();
-  ta.addEventListener('input', resize);
+  ta.style.overflow = 'hidden';
+  ta.style.height = '0'; // invisible avant le premier paint
+  var style = getComputedStyle(ta);
+  var lineHeight = parseFloat(style.lineHeight);
+  if (isNaN(lineHeight)) lineHeight = parseFloat(style.fontSize) * 1.4;
+  ta.style.height = (ta.scrollHeight + lineHeight) + 'px';
+
+  // Interactif : agrandit uniquement, sans effondrer (pas de scroll parasite)
+  ta.addEventListener('input', function() {
+    if (ta.scrollHeight > ta.clientHeight)
+      ta.style.height = (ta.scrollHeight + lineHeight) + 'px';
+  });
 });
 </script>
 <?php @include($config_wri['rep_forum'].
