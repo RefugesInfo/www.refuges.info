@@ -399,7 +399,6 @@ form#form_point .booleen label:has(input[type=text]) {
 
 #conteneur-carte-saisie p {
   font-size: 0.8em;
-  color: var(--couleur_legende);
   margin: 0.2em 0 0;
 }
 
