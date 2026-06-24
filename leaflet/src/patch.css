@@ -7,3 +7,8 @@
   /* For dark mode */
   color: black;
 }
+
+/* Inhibe l'affichage du pavé coordonnées quand il n'y a rien dedans */
+.leaflet-control-coordinates:has(span:empty) {
+  display: none;
+}

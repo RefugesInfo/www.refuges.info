@@ -12,6 +12,7 @@
   geoJson sa représentation en string
 */
 
+//TODO Délai cache api / depuis
 // Points d'intérêt refuges.info
 /* eslint-disable-next-line no-unused-vars */
 function wriPOILayer(serveurAPI, type) {
@@ -22,7 +23,6 @@ function wriPOILayer(serveurAPI, type) {
         L.marker(latlng, {
           icon: L.icon({
             iconUrl: serveurAPI + '/images/icones/' + feature.properties.type.icone + '.svg',
-            size: 24,
           }),
         }),
 
@@ -60,8 +60,8 @@ function wriPOILayer(serveurAPI, type) {
 
 // Polygones de massifs de refuges.info
 /* eslint-disable-next-line no-unused-vars */
-function wriMassifsLayer(serveurAPI) {
-  const massifsLayer = L.geoJson(null, {
+function wriPolygonLayer(serveurAPI, typeId) {
+  const polygonLayer = L.geoJson(null, {
     style: function(feature) {
       return {
         stroke: false,
@@ -92,13 +92,13 @@ function wriMassifsLayer(serveurAPI) {
     },
   });
 
-  fetch(serveurAPI + '/api/polygones?type_polygon=1')
+  fetch(serveurAPI + '/api/polygones?type_polygon=' + typeId)
     .catch((er) => console.error(er + ' fetching ' + serveurAPI + '/api/polygones?type_polygon=1'))
     .then((response) => response.json())
     .then((json) => {
       if (json.features.length)
-        massifsLayer.addData(json);
+        polygonLayer.addData(json);
     });
 
-  return massifsLayer;
+  return polygonLayer;
 }
