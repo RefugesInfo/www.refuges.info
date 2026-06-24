@@ -2,7 +2,7 @@
 /**
 Fichier regroupant les paramètres + config du site
 des dossiers, des chemins, des options par défaut, etc.
-tout dans un gros tableau $config_wri qu'il suffit de récupérer en déclarant 
+tout dans un gros tableau $config_wri qu'il suffit de récupérer en déclarant
 global $config_wri; dans les fonctions
 
 un require_once("../emplacement/du/fichier/config.php") est la seule inclusion avec chemin d'accès nécessaire dans un programme non contrôlé par /index.php
@@ -47,28 +47,28 @@ $config_wri['lien_forum']="/forum/";
 
 // Liste des icône de base pour nos types de point de base, va être utilisé comme case à cocher à gauche de la carte
 $config_wri['correspondance_type_icone'] = [
-	'batiment-en-montagne' => 'cabane_white_black_a63',
-	'cabane-non-gardee' => 'cabane',
-	'gite-d-etape' => 'cabane_green',
-	'lac' => 'lac',
-	'passage-delicat' => 'triangle_a33.10',
-	'point-d-eau' => 'pointdeau',
-	'refuge-garde' => 'cabane_red',
-	'grotte' => 'grotte',
+  'batiment-en-montagne' => 'cabane_white_black_a63',
+  'cabane-non-gardee' => 'cabane',
+  'gite-d-etape' => 'cabane_green',
+  'lac' => 'lac',
+  'passage-delicat' => 'triangle_a33.10',
+  'point-d-eau' => 'pointdeau',
+  'refuge-garde' => 'cabane_red',
+  'grotte' => 'grotte',
 ];
 
 // Liste des autres icônes utilisées dans les cartes : n'est utilisée que pour l'export kml dont la liste des icônes doit être définie comme style en en-tête de fichier
 $config_wri['definition_icones'] = array_merge ($config_wri['correspondance_type_icone'], [
-	'ancien-point-d-eau' => 'pointdeau_x',
-	'batiment-inutilisable' => 'cabane_white_black_x',
-	'cabane-avec-eau' => 'cabane_eau',
-	'cabane-avec-moyen-de-chauffage' => 'cabane_feu',
-	'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => 'cabane_eau_feu',
-	'cabane-cle' => 'cabane_cle',
-	'cabane-eau-a-proximite' => 'cabane_eau',
-	'cabane-manque-un-mur' => 'cabane_manqueunmur',
-	'cabane-sans-places-dormir' => 'cabane_a48',
-	'inutilisable' => 'cabane_white_black_x',
+  'ancien-point-d-eau' => 'pointdeau_x',
+  'batiment-inutilisable' => 'cabane_white_black_x',
+  'cabane-avec-eau' => 'cabane_eau',
+  'cabane-avec-moyen-de-chauffage' => 'cabane_feu',
+  'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => 'cabane_eau_feu',
+  'cabane-cle' => 'cabane_cle',
+  'cabane-eau-a-proximite' => 'cabane_eau',
+  'cabane-manque-un-mur' => 'cabane_manqueunmur',
+  'cabane-sans-places-dormir' => 'cabane_a48',
+  'inutilisable' => 'cabane_white_black_x',
 ]);
 
 // On paramètre le numéro du forum qui contient les topics de discussion sur les fiches des points
@@ -120,7 +120,7 @@ $config_wri['point_posts_lon_max_text'] = 250;
 // sly  27/04/06 je préfère me baser sur l'id pour le retrouver plutôt que son type ( que je viens d'ailleurs de modifier )
 $config_wri['id_massif']=1; //rff 21/03/06 : id du type de polygone correspondant aux 'massifs'
 $config_wri['id_carte']=3; //sly : id du type de polygone correspondant aux 'cartes papier'
-$config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees, massif central, ile de la réunion ... 
+$config_wri['id_zone']=11; // jmb : grandes zones, alpes, pyrenees, massif central, ile de la réunion ...
 $config_wri['id_zone_reglementee']=12; // sly 2020 : réserves natuelles, réserves biologique, parcs nationaux.
 $config_wri['id_region_naturelle']=20;
 $config_wri['id_departement']=10;
@@ -129,9 +129,9 @@ $config_wri['bbox_page_accueil']='-1.75,41.4,11,49.2';
 
 // C'est clair que c'est bizarre de mettre ces ids en dur, mais à certain endroits c'est bien pratique voire dur de faire autrement qu'interroger le bon id directement
 $config_wri['id_passage_delicat']=3;
-$config_wri['id_cabane_non_gardee']=7; 
+$config_wri['id_cabane_non_gardee']=7;
 $config_wri['id_gite_etape']=9;
-$config_wri['id_refuge_garde']=10; 
+$config_wri['id_refuge_garde']=10;
 $config_wri['id_point_d_eau']=23;
 $config_wri['id_batiment_en_montagne']=28;
 $config_wri['id_grotte']=29;
@@ -204,8 +204,8 @@ $config_wri['mots_interdits']="";
 // tableau contenant les formats possibles pour exporter des points par l'API et une descripion courte (sly: j'hésite à y mettre un paté d'explication, mais ça fait un peu lourd à maintenir)
 // La vue qui doit être choisie est /vues/api/points.vue.$format. L'ordre pourra déterminer l'ordre proposé à l'internaute
 
-$config_wri['api_format_points'] = Array 
-( 
+$config_wri['api_format_points'] = Array
+(
 'gpx' => "gpx (Complet, pour logiciel type osmand, marble, ...)",
 'gpx_garmin' => "gpx (compatible basecamp/mapsource/viking/...)",
 'gpx_simple' => "gpx simplifié (sans remarques et accès)",
@@ -224,7 +224,7 @@ $config_wri['api_format_detail'] = [
   'complet' => "toutes les informations disponibles sur les points",
   'fiche' => "idem + les commentaires",
 ];
-    
+
 /******** Nom du fichier contenant les points exportés **********/
 $config_wri['nom_fichier_export']="refuge-info";
 
@@ -248,13 +248,13 @@ ini_set('short_open_tag','1'); // on utilise encore par ci par là la notation <
 ini_set('date.timezone',$config_wri['timezone']);
 // NOTE: j'aurais aimé tout mettre ici, par exemple la taille max de fichier qu'on peut envoyer, mais ça n'est pas pris en compte par php, voir le fichier .user.ini
 
-// option de développement et debug 
+// option de développement et debug
 ini_set('error_reporting', E_ERROR); // par défaut, pas d'erreur php à l'écran, développeurs : utilisez vore config_privee.php pour définir vos propres options
 ini_set('display_errors', '0');
 $config_wri['debug']=false; // cette option contrôle des sorties avec plus d'info mais un peu privée comme requêtes SQL et variables, mettez à true dans votre fichier privee
 
 // Ce fichier est privée et contient des différentes mot de passe à garder secret ou options spécifique à cette installation de refuges.info
-// que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore 
+// que l'on ne souhaite pas du tout voir atterrir sur github, il est donc indiqué dans le .gitignore
 // il est volontairement placé "presque" à la fin pour que les variables ci-avant puissent par exemple être remplacées si on souhaite un autre comportement
 // DOM 11/25 on force l'inclusion de config_privee car il y a des cas (forum) où il a déjà été appelé
 include($config_wri['racine_projet']."config_privee.php");

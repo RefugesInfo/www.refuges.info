@@ -1,10 +1,10 @@
-<?php 
+<?php
 /*******************************************************************************
-Ceci est le fichier des routes principales, il s'ocupe de faire correspondre 
+Ceci est le fichier des routes principales, il s'ocupe de faire correspondre
 une route (qui correspond à une forme d'url) vers un controlleur.
 
 exemple : https://www.refuges.info/point/X/Y/Z => le controlleur point.php
-  
+
 Il s'occupe alors d'analyser l'url pour en déterminer ce qui doit être fait, appeler les controlleurs
 selon cette url puis ouvrir les vues, toujours selon cet url.
 *******************************************************************************/
@@ -66,7 +66,7 @@ switch ($controlleur->url_decoupee[0])
   case "gestion" :
     require_once ("gestion.routes.php");
     break;
-  default : 
+  default :
     $vue->http_status_code = 404;
     $controlleur->type = 'page_simple';
   break;

@@ -63,15 +63,15 @@ FIXME on est en 2021 et il existe les exceptions, c'est ça qu'il me faut. Bon p
 function erreur($texte,$seulement_avec_debug="")
 {
   global $config_wri,$pdo;
-  
+
   if ($config_wri['debug'] and $seulement_avec_debug!="pasunbug" and $seulement_avec_debug!="") // Si aucun deuxième paramètre n'a été donné, c'est une erreur mais pas un bug
   {
     if (isset($pdo))
       if ($pdo->errorInfo())
         $erreur_pdo="Erreur PDO : ".var_export($pdo->errorInfo(),true);
-    
+
     print("<pre>
-    Mode debug actif : 
+    Mode debug actif :
     Erreur renvoyée par la fonction : $texte
     Erreur de debug envoyée manuellement : $seulement_avec_debug
     $erreur_pdo
@@ -95,7 +95,7 @@ function ok($texte)
   return $retour;
 }
 /*
-Fonction qui vérifie que le paramètre passé (string) est bien au format int ou int,int,int : "7"  "5,4,7" ou "-2" répond : true, 
+Fonction qui vérifie que le paramètre passé (string) est bien au format int ou int,int,int : "7"  "5,4,7" ou "-2" répond : true,
 sinon false pour les cas genre "2.3" "5 ; delete * from..." "," "9," ou empty
 */
 function verif_multiples_entiers($mixed)
@@ -125,7 +125,7 @@ function est_entier_positif($mixed)
     return true;
   if (is_int($mixed) and $mixed>0)
     return true;
-  return false;  
+  return false;
 }
 
 

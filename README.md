@@ -35,8 +35,8 @@ Accès à la base postgresql
 * https://sly.refuges.info/adminersly/adminer.php
 
 Notez que la base de production s'appelle "refuges" et chaque instance dispose de sa propre copie.
- 
-Rangement actuel sur le serveur : 
+
+Rangement actuel sur le serveur :
 =================================
  * /home/users/$login -> contient les dossiers de chaque développeur contenant chacun sa version dans :
  * /home/users/$login/$login.refuges.info -> contient la version de "développement" de chacun visible sur https://$login.refuges.info

@@ -10,34 +10,34 @@ require_once("bdd.php");
 Fonction donnant plusieurs informations générales sur la base
 ***************************************/
 function infos_base () {
-	global $config_wri,$pdo;
-	$r = new stdClass;
-	$sql = "SELECT * 
-		FROM point_type 
-		ORDER BY importance DESC";  
-	$q = $pdo->query( $sql );
-	while( $res = $q->fetch() )
-		$r->types_point[] = $res ;
+  global $config_wri,$pdo;
+  $r = new stdClass;
+  $sql = "SELECT *
+    FROM point_type
+    ORDER BY importance DESC";
+  $q = $pdo->query( $sql );
+  while( $res = $q->fetch() )
+    $r->types_point[] = $res ;
 
-	$sql = "SELECT *
-		FROM type_precision_gps
-		ORDER BY ordre";
-	$q = $pdo->query( $sql );
-	while( $res = $q->fetch() )
-		$r->type_precision[] = $res ;
+  $sql = "SELECT *
+    FROM type_precision_gps
+    ORDER BY ordre";
+  $q = $pdo->query( $sql );
+  while( $res = $q->fetch() )
+    $r->type_precision[] = $res ;
 
-	return $r ;
+  return $r ;
 }
 
-function types_point_affichables() 
+function types_point_affichables()
 {
-    global $pdo;
+  global $pdo;
 
-    $sql = "SELECT * 
-            FROM point_type 
-            WHERE point_type.pas_afficher=0
-            ORDER BY importance DESC";  
-    $q = $pdo->query( $sql );
-    return $q->fetchAll();
-  }
+  $sql = "SELECT *
+          FROM point_type
+          WHERE point_type.pas_afficher=0
+          ORDER BY importance DESC";
+  $q = $pdo->query( $sql );
+  return $q->fetchAll();
+}
 

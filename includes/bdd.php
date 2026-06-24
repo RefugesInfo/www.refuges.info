@@ -5,7 +5,7 @@ Fonctions liées à l'accès à ou aux bases de données et quelques "helpers" p
 **********************************************************************************************/
 
 /*
-Extension de la classe qui nous permet de récupérer le last inserted ID sans être obligé de spécifier à chaque fois la séquence postgresql, 
+Extension de la classe qui nous permet de récupérer le last inserted ID sans être obligé de spécifier à chaque fois la séquence postgresql,
 et en restant dans la compatibilité avec PDO.
 J'en profite pour faire que cette classe se connecte avec les identifiants wri
 */
@@ -18,21 +18,22 @@ class PDO_wri extends PDO
     try
     {
       parent::__construct(
-          "pgsql:host=".$config_wri['serveur_pgsql'] . ";dbname=" . $config_wri['base_pgsql'] ,
-          $config_wri['utilisateur_pgsql'],
-          $config_wri['mot_de_passe_pgsql']
-          ,array(PDO::ATTR_PERSISTENT => true));
+        "pgsql:host=".$config_wri['serveur_pgsql'] . ";dbname=" . $config_wri['base_pgsql'] ,
+        $config_wri['utilisateur_pgsql'],
+        $config_wri['mot_de_passe_pgsql']
+        ,array(PDO::ATTR_PERSISTENT => true)
+      );
       $this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
     }
-    catch(Exception $e) 
+    catch(Exception $e)
     {
-        return erreur('Echec de la connexion à la base de données erreur ',$e->getCode());
+      return erreur('Echec de la connexion à la base de données erreur ',$e->getCode());
     }
   }
 }
 
 /*
-Avec Postgresql impossible de ré-utiliser une forme commune de requête entre un update et un insert, c'est 
+Avec Postgresql impossible de ré-utiliser une forme commune de requête entre un update et un insert, c'est
 devenu tellement relou que j'ai fais cette fonction pour construire la requête
 $table = le nom de la table dans laquelle on veut mettre à jour un enregistrement ou inserer un enregistrement
 $champs_valeur = un array associatif avec comme cle, le champ à mettre à jour, sa valeur la valeur à mettre à jour

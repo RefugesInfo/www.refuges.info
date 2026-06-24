@@ -1,7 +1,7 @@
 /*===================================================================
- * La feuille de style CSS principal des pages de refuges.info       
- * Depuis ~2020 on a finalement décidé de diviser en plusieurs pages 
- * histoire de mieux s'y trouver (style des formulaires, du bandeau, 
+ * La feuille de style CSS principal des pages de refuges.info
+ * Depuis ~2020 on a finalement décidé de diviser en plusieurs pages
+ * histoire de mieux s'y trouver (style des formulaires, du bandeau,
  * surcharge du forum)
 ===================================================================*/
 <?php
@@ -12,10 +12,10 @@ ouais je sais, c'est franchement de la frime et ça sert à rien, mais si on ne 
 bénévole ! -- sly
 
 Sommaire:
-    -1 Mise en page generale (types HTML, liens, infobulles)
-    -2 menus du haut et du bas
-    -3 classes speciales (sur-mesure, googmaps, fiche, ...)
-    -4 PUB
+  -1 Mise en page generale (types HTML, liens, infobulles)
+  -2 menus du haut et du bas
+  -3 classes speciales (sur-mesure, googmaps, fiche, ...)
+  -4 PUB
 
 Notes de sly en 2023: ce style a évolué au fil des années et je suis sûr qu'il y a plusieurs classes
 qui ne servent nulle part, pas mal de redondance, un manque de cohérence sur le style au niveau des formulaires.

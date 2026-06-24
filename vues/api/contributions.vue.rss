@@ -40,16 +40,16 @@ headers_cache_api();
               <br/><a href="https://<?=$config_wri['nom_hote'].$nouvelle['photo_originale']?>"><img src="https://<?=$config_wri['nom_hote'].$nouvelle['photo_mini']?>" /></a>
               <?php } ?>
             </p>
-            
+
             <?php   break;
                     case 'Point':
             ?>
             <p style='color:grey;'><b>Remarques :</b> <?=$nouvelle['remarques']?><br/><b>Accès :</b> <?=$nouvelle['acces']?></p>
-            <?php     break; 
+            <?php     break;
             }
             ?>
               ]]></description>
-      </item> 
+      </item>
   <?php } ?>
 
 </channel>

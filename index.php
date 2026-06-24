@@ -1,17 +1,17 @@
-<?php 
+<?php
 /*******************************************************************************
 Ce fichier index.php est le fichier de point d'entrée de tout le site qu'on a codé nous
 (ou presque, reste des vielleries toujours pas converties)
- 
-Il charge des trucs absoument généraux à tout le site mais par défaut, son seul 
+
+Il charge des trucs absoument généraux à tout le site mais par défaut, son seul
 rôle consiste à charger la config, et le fichier de ./routes/ pour mapper les urls
-On fera un petit effort pour ne lui faire faire qu'un minimum de choses car il peut 
-très bien être appelé pour des routes extrêmement simples qui ne font qu'ouvrir une vue html 
+On fera un petit effort pour ne lui faire faire qu'un minimum de choses car il peut
+très bien être appelé pour des routes extrêmement simples qui ne font qu'ouvrir une vue html
 toute bête ou des controlleurs n'ayant pas besoin de session par exemple
 *******************************************************************************/
 
 //Tout tout début de notre code, cela servira ultérieurement pour du profiling
-$__time_start = microtime(true); 
+$__time_start = microtime(true);
 
 // obligatoire pour tout le site, donc on include pour tous les appels
 require_once ('includes/config.php');
