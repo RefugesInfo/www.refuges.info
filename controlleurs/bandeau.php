@@ -40,6 +40,19 @@ if (est_moderateur())
   $vue->posts_edit = $posts_edit;
 }
 
+// Date de dernière modification de point pour reload de la couche points
+// (ne concerne pas les commentaires)
+$query_date_modification_point="
+  SELECT extract(epoch from date_modification)
+  FROM historique_modifications_points
+  ORDER BY date_modification DESC
+  LIMIT 1";
+
+$vue->version_points=intval(time());
+if ($res = $pdo->query($query_date_modification_point))
+  if($fetch = $res->fetch())
+    $vue->version_points=intval($fetch->extract ?? time());
+ 
 // Bandeau d'informations masquable
 $vue->bandeau_info=wiki_page_brut('bandeau'); // Attention, wiki_page_brut récupère aussi l'info ->date !
 $vue->bandeau_info->contenu = wiki_page_html('bandeau');

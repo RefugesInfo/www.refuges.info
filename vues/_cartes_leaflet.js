@@ -84,7 +84,7 @@ function tileLayersCollection(keys) {
  * Déclaration de la carte *
  ***************************/
 /* eslint-disable-next-line no-unused-vars */
-function initMap(mapId, serveurAPI, keys) {
+function initLeafletMap(mapId, serveurAPI, versionPoints, keys) {
   console.info('MAP init');
 
   /******************************
@@ -150,7 +150,7 @@ function initMap(mapId, serveurAPI, keys) {
   for (const [titre, typeId] of Object.entries(clusteredOverlays))
     vectorLayers[titre] =
     L.featureGroup.subGroup(vectorCluster).addLayer(
-      wriPOILayer(serveurAPI, typeId)
+      wriPOILayer(serveurAPI, typeId, versionPoints)
     );
 
   vectorLayers['Régions'] = wriPolygonLayer(serveurAPI, 11);
