@@ -40,7 +40,6 @@ class MarkerCompass extends L.Marker {
         // Add the direction to the icon if it is not already done.
         this.setIcon(iconCompas);
         this._icon.style.transformOrigin = 'center';
-
         this.rotateIcon();
       }
     });

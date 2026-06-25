@@ -11,19 +11,15 @@
   json est une structure contenant des définitions de points
   geoJson sa représentation en string
 
-  MISE EN CACHE :
-  Le résultat est mis en cache pendant 1 semaine par l'explorateur
-  La date de dernière modification (création, édition, suppression) de point (sans compter les commentaires) est envoyé à la page qui l'ajoute à l'API pour que la base soit rechargée tout de suite.
+  Le résultat des requêtes API est mis en cache pendant 1 semaine par l'explorateur
+  La date de dernière création, édition, suppression de polygone ou point (hors commentaires)
+  est fournie à la page HTML qui la passe en argument de l'API pour recharger si nécessaire.
 */
 
-//TODO Délai cache api / depuis
 // Points d'intérêt refuges.info
 /* eslint-disable-next-line no-unused-vars */
 function wriPOILayer(serveurAPI, type, version) {
-  const url = serveurAPI + '/api/bbox?' +
-    'nb_points=all&type_points=' + type +
-    '&version=' + version + '&cache=' + (7 * 24 * 3600),
-    poiLayer = L.geoJson(null, {
+  const poiLayer = L.geoJson(null, {
       // Icônes
       pointToLayer: (feature, latlng) =>
         L.marker(latlng, {
@@ -39,8 +35,7 @@ function wriPOILayer(serveurAPI, type, version) {
           feature.properties.nom, {
             permanent: true,
             direction: 'center',
-          }
-        ).openTooltip();
+          }).openTooltip();
 
         layer.on({
           click: () => {
@@ -48,7 +43,11 @@ function wriPOILayer(serveurAPI, type, version) {
           },
         });
       },
-    });
+    }),
+    url = serveurAPI + '/api/bbox?' +
+    'nb_points=all&type_points=' + type +
+    '&version=' + version + '&cache=' + (7 * 24 * 3600);
+  //TODO Délai cache api / depuis
 
   // Fetch remote data
   fetch(url)
@@ -66,11 +65,8 @@ function wriPOILayer(serveurAPI, type, version) {
 
 // Polygones de massifs de refuges.info
 /* eslint-disable-next-line no-unused-vars */
-function wriPolygonLayer(serveurAPI, typeId) {
-  const urlApi = serveurAPI + '/api/polygones?' +
-    'type_polygon=' + typeId +
-    '&cache=' + (24 * 3600), //TODO affiner la version et un cache plus  long
-    polygonLayer = L.geoJson(null, {
+function wriPolygonLayer(serveurAPI, typeId, version) {
+  const polygonLayer = L.geoJson(null, {
       style: function(feature) {
         return {
           stroke: false,
@@ -99,10 +95,13 @@ function wriPolygonLayer(serveurAPI, typeId) {
           },
         });
       },
-    });
+    }),
+    url = serveurAPI + '/api/polygones?' +
+    'type_polygon=' + typeId +
+    '&version=' + version + '&cache=' + (7 * 24 * 3600); // version tient compte des polygones
 
-  fetch(urlApi)
-    .catch((er) => console.error(er + ' fetching ' + urlApi))
+  fetch(url)
+    .catch((er) => console.error(er + ' fetching ' + url))
     .then((response) => response.json())
     .then((json) => {
       if (json.features.length)

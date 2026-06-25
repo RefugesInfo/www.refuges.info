@@ -9,6 +9,6 @@ localStorage.permalink = permalinkInit.join('/');
 const map = initLeafletMap(
   'carte-accueil',
   'https://<?=$_SERVER["SERVER_NAME"]?>',
-  <?=$vue->version_points?>,
+  <?=$vue->version_features?>,
   <?=json_encode($config_wri['mapKeys'])?>
 );

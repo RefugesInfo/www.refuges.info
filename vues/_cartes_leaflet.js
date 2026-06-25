@@ -5,7 +5,7 @@
  *******************/
 function tileLayersCollection(keys) {
   return {
-    // Cartes lbres
+    // Cartes libres
     OpenHikingMap: L.tileLayer(
       'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png', {
         maxZoom: 18,
@@ -84,7 +84,7 @@ function tileLayersCollection(keys) {
  * Déclaration de la carte *
  ***************************/
 /* eslint-disable-next-line no-unused-vars */
-function initLeafletMap(mapId, serveurAPI, versionPoints, keys) {
+function initLeafletMap(mapId, serveurAPI, versionFeatures, keys) {
   console.info('MAP init');
 
   /******************************
@@ -150,41 +150,11 @@ function initLeafletMap(mapId, serveurAPI, versionPoints, keys) {
   for (const [titre, typeId] of Object.entries(clusteredOverlays))
     vectorLayers[titre] =
     L.featureGroup.subGroup(vectorCluster).addLayer(
-      wriPOILayer(serveurAPI, typeId, versionPoints)
+      wriPOILayer(serveurAPI, typeId, versionFeatures)
     );
 
-  vectorLayers['Régions'] = wriPolygonLayer(serveurAPI, 11);
-  vectorLayers.Massifs = wriPolygonLayer(serveurAPI, 1);
-
-  // Pour plus tard, les couches OSM
-  /*
-  vectorLayers.EauOSM = new L.OverPassLayer({
-    'query': '(nwr["natural"="spring"]({{bbox}});nwr["amenity"="drinking_water"]({{bbox}}););out center;',
-    markerIcon: L.icon({
-      iconUrl: serveurAPI + '/images/icones/pointdeau.svg',
-    }),
-    minZoom: 12, //TODO BUG display layer only when zoom < 12
-    minZoomIndicatorEnabled: false,
-  });
-
-  vectorLayers.ParkOSM = new L.OverPassLayer({
-    'query': '(nwr["amenity"="parking"]["access"!="private"]({{bbox}}););out center;',
-    markerIcon: L.icon({
-      iconUrl: serveurAPI + '/images/icones/parking.svg',
-    }),
-    minZoom: 12,
-    minZoomIndicatorEnabled: false,
-  });
-
-  vectorLayers.BusOSM = new L.OverPassLayer({
-    'query': '(nwr["highway"="bus_stop"]({{bbox}}););out center;',
-    markerIcon: L.icon({
-      iconUrl: serveurAPI + '/images/icones/bus.svg',
-    }),
-    minZoom: 12,
-    minZoomIndicatorEnabled: false,
-  });
-  */
+  vectorLayers['Régions'] = wriPolygonLayer(serveurAPI, 11, versionFeatures);
+  vectorLayers.Massifs = wriPolygonLayer(serveurAPI, 1, versionFeatures);
 
   /******************
    * Layer switcher *

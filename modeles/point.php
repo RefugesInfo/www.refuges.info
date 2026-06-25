@@ -867,6 +867,8 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       'data',
     ];
     extract($phpbb_dispatcher->trigger_event('refugesinfo.ajout_point', compact($vars)));
+
+    historisation_modification(null,$point,'creation point',$id_createur);
   }
 
   // on retourne l'id du point (surtout utile si création)
